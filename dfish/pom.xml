@@ -5,14 +5,14 @@
   <name>dfish</name>
   <groupId>com.rongji</groupId>
   <artifactId>dfish</artifactId>
-  <version>3.2.0-SNAPSHOT</version>
+  <version>3.1.0-RELEASE</version>
   <packaging>pom</packaging>
   
   <properties>
     
     <project.groupId>com.rongji</project.groupId>
     <project.artifactId>dfish</project.artifactId>
-    <project.version>3.2.0-SNAPSHOT</project.version>
+    <project.version>3.1.0-RELEASE</project.version>
     
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
@@ -45,44 +45,44 @@
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-base</artifactId>
-              <version>3.2.0-SNAPSHOT</version>
+              <version>3.1.0-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-misc</artifactId>
-              <version>3.2.0-SNAPSHOT</version>
+              <version>3.1.0-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-ui</artifactId>
-              <version>3.2.0-SNAPSHOT</version>
+              <version>3.1.0-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-uiplugin</artifactId>
-              <version>3.2.0-SNAPSHOT</version>
+              <version>3.1.0-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-framework</artifactId>
-              <version>3.2.0-SNAPSHOT</version>
+              <version>3.1.0-RELEASE</version>
           </dependency>
       </dependencies>
   </dependencyManagement>
   
   <!--使用deploy -e 上传到nexus私服上-->
   <distributionManagement>
-  	   <!-- 
        <repository>
            <id>dfish-release</id>
-		   <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
+		   <url>http://218.5.2.35:9080/nexus/content/repositories/dfish-release</url>
            <uniqueVersion>true</uniqueVersion>
        </repository>
-        -->
+  	   <!-- 
        <snapshotRepository>
            <id>dfish-snapshot</id>
-           <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
+           <url>http://218.5.2.35:9080/nexus/content/repositories/dfish-snapshot</url>
        </snapshotRepository>
+        -->
    </distributionManagement>
   
   <modules>
