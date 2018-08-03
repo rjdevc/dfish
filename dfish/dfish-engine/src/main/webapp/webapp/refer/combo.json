@@ -1,0 +1,38 @@
+{
+  "type" : "view",
+  "cls": "f-bg-white",
+  "node": {
+    "type": "vert",
+    "nodes": [{
+     "id":"f_grid",
+      "type":"grid",
+      "face":"line", /* none,line,cell */
+      "scroll":true, /* true或.开头样式名 */
+      "height":"*",
+      "hoverable": true,
+      "focusable": true,
+      "combofield": { "value": "id", "text": "name", "search": "py", "forbid": "x" },
+      "limit": 5,
+      "pub": {
+        "height" : 36,
+        "on":{
+          "click": "$.dialog(this).parentNode.complete(this);$.dialog(this).close()"
+        }
+      },
+      "columns":[
+        {"field":"name", "width":"*","nobr":true},
+        {"field":"dept", "width":"100", "align": "right", "format":"<a href=dept/$id>$dept</a>"}
+      ],
+      "rows": [
+        {"name":"船长","dept":"刀塔部","id":"0001","py":"chuanzhang"},
+        {"name":"全能","dept":"刀塔部","id":"0004","py":"quanneng"},
+        {"name":"熊猫","dept":"刀塔部","id":"0005","py":"xiongmao"},
+        {"name":"先知","dept":"刀塔部","id":"0006","py":"xianzhi"},
+        {"name":"冰魂","dept":"刀塔部","id":"0007","py":"binghun"},
+        {"name":"炸弹","dept":"刀塔部","id":"0008","py":"zhadan"},
+        {"name":"这个名字有点长长长长长长长长长长长长长长长长长长长长啊","dept":"刀塔部","id":"0009","py":"chang"}
+      ]
+    },
+	{ "type": "page/mini", "height": "22", "btncount": 5, "align": "right", "target": "f_grid" }
+  ]}
+}
