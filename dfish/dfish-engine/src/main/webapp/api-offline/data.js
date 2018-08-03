@@ -123,7 +123,7 @@ define( {
           { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
           { name: 'support_url', type: 'String', remark: '显示支持与帮助的页面URL。如果配置此参数，系统所需的软件下载等都将指向这个地址。' },
           { name: 'server', type: 'String', remark: '服务器地址的绝对路径。当执行 ajax 命令等交互操作时会使用此路径。<br>注：如果 ajax 命令的 src 参数以 ./ 开头，将不会使用 server 参数，而是访问本地地址。', mobile: true },
-          { name: 'skin', type: 'object', remark: '配置皮肤样式。', param: [
+          { name: 'skin', type: 'Object', remark: '配置皮肤样式。', param: [
             { name: 'dir', type: 'String', remark: '皮肤目录' },
             { name: 'theme', type: 'String', remark: '主题名。在皮肤目录下应有一个和主题名相同的目录，该目录里面有一个 "主题名.css"' },
             { name: 'color', type: 'String', remark: '颜色名。在主题目录下应有一个和颜色名相同的目录，该目录里面有一个 "颜色名.css"' }
@@ -134,7 +134,8 @@ define( {
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
-          { name: 'view', type: 'object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' }
+          { name: 'view', type: 'Object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' },
+          { name: 'view_js', type: 'Object', remark: '设置view的依赖JS模块。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS。多个JS可以用数组。' }
         ] }
       ], example: [
           function() {
@@ -167,8 +168,12 @@ define( {
               view: { // 生成一个全屏的view
               	id: 'index', // view的ID。可通过 VM( '/index' ) 来访问
               	src: 'm/index/index.json' // view的src
+              },
+              view_js: { // view的依赖JS模块
+              	'/index'      : [ './m/pub.js', './m/index.js' ],
+              	'/index/task' : './m/task/task.js'
               }
-            } );
+	        } );
           }
       ] },
       { name: '$.cookie(name, [value], [expire], [path])', remark: '读/写cookie', common: true, param: [

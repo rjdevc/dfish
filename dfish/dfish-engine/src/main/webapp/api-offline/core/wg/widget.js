@@ -1458,10 +1458,11 @@ _setParent = function( a ) {
 	}
 },
 _userPriority = { 'click': T, 'close': T, 'valid': T },
+_templates = {},
+_view_js = cfg.view_js || {},
 // view的占据空间的widget，可见元素都隶属于此
 ViewLayout = define.widget( 'view/layout', {} ),
 // template实例集合
-_templates = {},
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
@@ -1531,14 +1532,13 @@ View = define.widget( 'view', {
 			this.abort();
 			this.loading = T;
 			this.trigger( 'loading' );
-			var u = this.attr( 'src' );
-			u && (this.parent || this).ajax( {
-				src: (u = $.urlLoc( cfg.path, u )), context: this, sync: a, cache: c,
-				success: function( x ) {
-					this._loadEnd( x );
-					b && b.call( this, x );
-				}
-			} );
+			var u = this.attr( 'src' ), m, n, self = this,
+				d = _view_js[ this.path ],
+				e = function() {
+					if ( m && n ) { this._loadEnd( n ); b && b.call( this, n ); n = N; }
+				};
+			d ? $.require.async( d, function() { m = T; e.call( self ); } ) : (m = T);
+			u && (this.parent || this).ajax( { src: (u = $.urlLoc( cfg.path, u )), context: this, sync: a, cache: c, success: function( x ) { n = x; e.call( self ); } } );
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> view json
@@ -4521,7 +4521,7 @@ Triplebox = define.widget( 'triplebox', {
 		}
 	},
 	Prototype: {
-		className: 'w-checkbox',
+		className: 'w-form w-checkbox',
 		checkstate: function( a ) {
 			var b = this.$t().checked ? 1 : this.$t().indeterminate ? 2 : 0;
 			if ( a == N )

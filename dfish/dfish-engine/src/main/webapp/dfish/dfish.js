@@ -200,7 +200,10 @@ Require = function( a ) {
 		var c = typeof b === _STR;
 		if ( c ) {
 			b = _mod_uri( a, b );
-			if ( _moduleCache[ b ] ) return _moduleCache[ b ];
+			if ( _moduleCache[ b ] ) {
+				f && f( _moduleCache[ b ] );
+				return _moduleCache[ b ];
+			}
 			b = [ b ];
 		} else {
 			for ( var i = 0; i < b.length; i ++ )
@@ -215,7 +218,11 @@ Require = function( a ) {
 				for ( var i = 0; i < e.length; i ++ ) {
 					! _moduleCache[ b[ i ] ] && _onModuleLoad( b[ i ], d[ i ], e[ i ] );
 				}
-				f && f();
+				if ( f ) {
+					for ( var i = 0, g = []; i < e.length; i ++ )
+						g.push( _moduleCache[ b[ i ] ] );
+					f.apply( win, g );
+				}
 			}, ! f );
 			return _moduleCache[ b[ 0 ] ];
 		}
