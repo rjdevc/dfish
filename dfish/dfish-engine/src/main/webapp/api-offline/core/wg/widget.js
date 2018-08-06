@@ -1462,19 +1462,18 @@ _templates = {},
 _view_js = cfg.view_js || {},
 // view的占据空间的widget，可见元素都隶属于此
 ViewLayout = define.widget( 'view/layout', {} ),
-// template实例集合
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
-		//if ( cfg.debug )
-		//	x.attr = 'onclick=' + $.abbr + '.debug(this)';
 		if ( x.templates )
 			$.merge( _templates, x.templates );
 		_initView.call( this );
 		_regWidget.apply( this, arguments );
 		p && _setParent.call( this, _view( p ) );
-		if ( this.x.node )
+		if ( this.x.node ) {
+			_view_js[ this.path ] && $.require( _view_js[ this.path ] );
 			this._loadEnd( this.x );
+		}
 		this.dft_x = $.extend( {}, this.x );
 		this._instanced = T;
 	},
@@ -1535,10 +1534,10 @@ View = define.widget( 'view', {
 			var u = this.attr( 'src' ), m, n, self = this,
 				d = _view_js[ this.path ],
 				e = function() {
-					if ( m && n ) { this._loadEnd( n ); b && b.call( this, n ); n = N; }
+					if ( m && n ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
 				};
-			d ? $.require.async( d, function() { m = T; e.call( self ); } ) : (m = T);
-			u && (this.parent || this).ajax( { src: (u = $.urlLoc( cfg.path, u )), context: this, sync: a, cache: c, success: function( x ) { n = x; e.call( self ); } } );
+			d ? $.require( d, function() { m = T; e(); }, ! a ) : (m = T);
+			u && (this.parent || this).ajax( { src: (u = $.urlLoc( cfg.path, u )), context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> view json
@@ -4629,13 +4628,14 @@ Select = define.widget( 'select', {
 			return this.getFocusOption( 1 );
 		},
 		html_nodes: function() {
-			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0;
+			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape;
 			while ( i -- ) {
-				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + '>' + o[ i ].text + '</option>' + s;
+				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
+					(this.x.tip ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
 			}
-			var w = this.innerWidth(), z = this.x.size;
+			var w = this.innerWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
-				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '') + '"' : '') +
+				(this.x.tip ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
 				( z ? ' size=' + z : '' ) + '>' + s + '</select><div class=_cvr></div>';
 		}
 	}

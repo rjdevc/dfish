@@ -165,16 +165,6 @@ _createClass = function( a, b ) {
 
 /* CMD模块规范 */
 _moduleCache = {}, _cssCache = {},
-_alias_uri = function( a ) {
-	if ( _alias[ a ] )
-		return _alias[ a ];
-	var b = a;
-	while ( b = _strTo( b, '/', T ) ) {
-		if ( _alias[ b + '.js' ] )
-			return _alias[ b + '.js' ];
-	}
-	return a;
-},
 //@a -> path, b -> id, f -> affix
 _mod_uri = function( a, b, f ) {
 	var c = b.charAt( 0 ) === '.' ? _urlLoc( a, b ) : b.charAt( 0 ) !== '/' ? _path + b : b;
@@ -196,39 +186,40 @@ Module = _createClass( {
 } ),
 //每个模块的运行环境下都会生成一个Require的实例 /@a -> path
 Require = function( a ) {
-	var r = function( b, f ) {
-		var c = typeof b === _STR;
-		if ( c ) {
-			b = _mod_uri( a, b );
-			if ( _moduleCache[ b ] ) {
-				f && f( _moduleCache[ b ] );
-				return _moduleCache[ b ];
+	// @ b -> id, f -> fn, s -> async?
+	var r = function( b, f, s ) {
+		if ( typeof b === _STR ) {
+			var c = _mod_uri( a, b );
+			if ( _moduleCache[ c ] ) {
+				f && f( _moduleCache[ c ] );
+				return _moduleCache[ c ];
 			}
 			b = [ b ];
-		} else {
-			for ( var i = 0; i < b.length; i ++ )
-				b[ i ] = _mod_uri( a, b[ i ] );
-		}
-		for ( var i = 0, d = [], u; i < b.length; i ++ ) {
-			if ( (u = _alias_uri( b[ i ] )) === a ) u = b[ i ];
-			u === a ? b.splice( i --, 1 ) : d.push( u );
+		} else
+			b = b.concat();
+		for ( var i = 0, d = [], e = [], u; i < b.length; i ++ ) {
+			b[ i ] = _mod_uri( a, b[ i ] );
+			if ( (u = _alias[ b[ i ] ] || b[ i ]) === a ) u = b[ i ];
+			u !== a && ! _moduleCache[ b[ i ] ] && (d.push( b[ i ] ), e.push( u ));
 		}
 		if ( d.length ) {
-			_loadJs( d, function( e ) {
-				for ( var i = 0; i < e.length; i ++ ) {
-					! _moduleCache[ b[ i ] ] && _onModuleLoad( b[ i ], d[ i ], e[ i ] );
+			_loadJs( e, function( g ) {
+				for ( var i = 0; i < g.length; i ++ ) {
+					! _moduleCache[ d[ i ] ] && _onModuleLoad( d[ i ], e[ i ], g[ i ] );
 				}
-				if ( f ) {
-					for ( var i = 0, g = []; i < e.length; i ++ )
-						g.push( _moduleCache[ b[ i ] ] );
-					f.apply( win, g );
-				}
-			}, ! f );
-			return _moduleCache[ b[ 0 ] ];
+				f && t( b, f );
+			}, ! s );
+		} else {
+			f && t( b, f );
 		}
+		return _moduleCache[ b[ 0 ] ];
+	}, t = function( b, f ) {
+		for ( var i = 0, g = []; i < b.length; i ++ )
+			g.push( _moduleCache[ b[ i ] ] );
+		f.apply( win, g );
 	};
 	// require.async(): 当传入第二个参数回调函数时，将异步装载js
-	r.async = r;
+	r.async = function( b, f ) { return r( b, f, T ) };
 	// require.resolve(): 把相对路径解析为绝对路径
 	r.resolve = function( b ) { return _urlLoc( a, b ) };
 	// require.css(): 装载css
@@ -2104,8 +2095,10 @@ function _initEnv() {
 	var _define  = new Define( _path ),
 		_require = new Require( _path ),
 		_lib     = _cfg.lib + 'wg/',
-		_jq      = _require( _lib + 'jquery/jquery-1.12.4' ),
-		_loc     = _require( _lib + 'loc/' + ( _cfg.lang || 'zh_CN' ) );
+		_loc     = _require( _lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
+		_jq      = _loc && _require( _lib + 'jquery/jquery-1.12.4' );
+	if ( ! _loc )
+		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _cfg.lib + '"\n}' );
 	for ( var k in _cfg.alias ) {
 		for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
 			_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
@@ -2209,7 +2202,7 @@ _merge( $, {
 	},
 	// a -> text, b -> pos, c -> time, d -> id
 	alert: function( a, b, c, d ) {
-		return $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.ID_ALERT } );
+		return $.vm ? $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.ID_ALERT } ) : alert( a );
 	},
 	// a -> text, b -> yes, c -> no
 	confirm: function( a, b, c ) {
