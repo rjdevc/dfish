@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("ALL")
 public class EthNetInfo {
 	protected static final String ERR_MAC="00:00:00:00:00:00";
 	private static String mac = null;
