@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,8 +34,28 @@ public class ScelReader {
 	 * @author DFish Team
 	 */
 	public static class ScelFormat{
+		Date publishTime;
+		String name;
+		String catelog;
+		String readme;
+		String readme2;
 		String[] pinyins;
 		LinkedHashMap<String,LinkedHashMap<String,Integer>> words;
+		public Date getPublishTime() {
+			return publishTime;
+		}
+		public String getName() {
+			return name;
+		}
+		public String getCatelog() {
+			return catelog;
+		}
+		public String getReadme() {
+			return readme;
+		}
+		public String getReadme2() {
+			return readme2;
+		}
 		public String[] getPinyins(){
 			return pinyins;
 		}
@@ -96,9 +118,35 @@ public class ScelReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		skip(0x1540);//细胞词库从0x1540开始
-		int pinyingCount=readInt4();
+		int pinyinStart=readInt4();//一般固定是0x1540细胞词库从0x1540开始
+		//这里面还有一些备注的内容
+//		System.out.println("未知的数字1="+readInt4());
+//		System.out.println("未知的数字2="+readInt4());
+//		System.out.println("未知的数字3="+readInt4());
+//		System.out.println("未知的数字4="+readInt4());
+//		System.out.println("未知的数字5="+readInt4());
+//		System.out.println("未知的数字6="+readInt4());
+//		System.out.println("未知的文本8="+readUnicodeString());
+		
 		ScelFormat ret=new ScelFormat();
+		pointer=0x11c;
+		ret.publishTime=new java.util.Date(1000L*readInt4());
+//		System.out.println("拼音词组数量="+readInt4());
+//		System.out.println("汉字词组数量="+readInt4());
+//		System.out.println("未知的数字12="+readInt4());
+//		System.out.println("未知的数字13="+readInt4());
+		pointer=0x130;
+		ret.name=readUnicodeString();
+		pointer=0x338;
+		ret.catelog=readUnicodeString();
+		pointer=0x540;
+		ret.readme=readUnicodeString();
+		pointer=0xd40;
+		ret.readme2=readUnicodeString();
+		
+		pointer=pinyinStart;
+		int pinyingCount=readInt4();
+		
 		ret.pinyins=new String[pinyingCount];
 		ret.words=new LinkedHashMap<String, LinkedHashMap<String,Integer>>();
 		for(int i=0;i<pinyingCount;i++){
@@ -150,6 +198,16 @@ public class ScelReader {
 		}
 		return new String(chars);
 	}
+	private String readUnicodeString() {
+		StringBuilder sb=new StringBuilder();
+		while(true){
+			char c=(char)readInt2();
+			if(c==0){break;}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
 
 
 	private int readInt4() {
