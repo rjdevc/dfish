@@ -237,12 +237,9 @@ _ajaxCmd = function( x, a, t ) {
 		d = this.cmd( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
 	var g = '$value,$ajax';
-	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers,
-		error: x.error && $.fncreate( x.error, this, '$ajax' ), beforesend: x.beforesend && $.fncreate( x.beforesend, this, '$ajax' ), 
+	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter, error: x.error, beforesend: x.beforesend, 
 		success: function( v, a ) {
 			d && (d.close(), d = N);
-			if ( ! this._disposed && x.filter )
-				v = $.fnapply( x.filter, this, [ v, a ], g );
 			if ( ! this._disposed && x.success )
 				$.fnapply( x.success, this, [ v, a ], g );
 			if ( ! this._disposed )

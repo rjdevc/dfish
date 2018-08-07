@@ -1812,7 +1812,7 @@ Ajax = _createClass( {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
 				} else if ( c.errorCode ) {
-					x.error && x.error.call( x.context, c.request.responseText, this );
+					x.error &&  && _fnapply( x.error, x.context, [ self ], '$ajax' );
 				} else {
 					c.addEvent( 'cache', this.sendCache, this );
 				}
@@ -1822,9 +1822,9 @@ Ajax = _createClass( {
 			}
 		},
 		send: function() {
-			var x = this.x, a = x.src, b = x.success, c = x.context, d = x.sync, e = x.data, f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, self = this;
+			var x = this.x, a = x.src, b = x.success, c = x.context, d = x.sync, e = x.data, f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
 			if ( typeof e === _OBJ ) {
-				var s = [], i;
+				var s = [];
 				for ( i in e ) {
 					if ( _arrIs( e[ i ] ) ) {
 						for ( var j = 0; j < e[ i ].length; j ++ )
@@ -1843,7 +1843,7 @@ Ajax = _createClass( {
 				u = _urlLoc( x.base || _path, u );
 			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! d );
 			this.request = l;
-			if ( x.beforesend && x.beforesend.call( c, self ) === F )
+			if ( x.beforesend && _fnapply( x.beforesend, c, [ self ], '$ajax' ) === F )
 				return x.complete && x.complete.call( c, N, self );
 			if ( g === 'xml' && br.ie10 )
 				l.responseType = 'msxml-document';
@@ -1877,13 +1877,14 @@ Ajax = _createClass( {
 			        	self.errorCode = l.status;
 						if ( f !== F && l.status ) {
 							if ( f ) {
-								f.call( c, self );
+								_fnapply( f, c, [ self ], '$ajax' );
 							} else {
 								$.alert( _cfg.debug ? 'ajax error ' + l.status + ': ' + a + '\n\n' + ( $.loc ? $.loc.ajax[ r ] : r + ' error' ) : $.loc.internet_error );
 								win.console && console.error( 'ajax error ' + l.status + ': ' + a + ((r = l.responseText) ? '\n' + r : '') );
 							}
 						}
 				    } else {
+				    	x.filter && (m = _fnapply( x.filter, c, [ m, self ], '$value,$ajax' ));
 				    	self.response = m;
 						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
