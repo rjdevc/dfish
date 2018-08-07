@@ -1812,7 +1812,7 @@ Ajax = _createClass( {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
 				} else if ( c.errorCode ) {
-					x.error &&  && _fnapply( x.error, x.context, [ self ], '$ajax' );
+					x.error && _fnapply( x.error, x.context, [ self ], '$ajax' );
 				} else {
 					c.addEvent( 'cache', this.sendCache, this );
 				}
