@@ -236,7 +236,7 @@ public class EthNetInfo {
 			int pos1= line.indexOf("HWaddr");
 			int pos2= line.indexOf("ether");
 			int macAddressPosition = Math.max(pos1, pos2);
-			if (macAddressPosition <= 0) {
+			if (macAddressPosition < 0) {
 				continue;
 			}
 
@@ -250,6 +250,10 @@ public class EthNetInfo {
 				lastMacAddress = macAddressCandidate;
 				continue;
 			}
+		}
+		
+		if (lastMacAddress!=null) {
+			return lastMacAddress;
 		}
 
 		ParseException ex = new ParseException("cannot read MAC address for "

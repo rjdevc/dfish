@@ -69,7 +69,7 @@ public class InitApp implements ServletContextAware, ApplicationContextAware {
 		if (systemConfig == null) {
 			DefaultSystemConfig dConfig = new DefaultSystemConfig();
 			systemConfig = dConfig;
-			dConfig.setConfigFile("dfish-config.xml");
+			dConfig.setConfigFile("dfish-config.json");
 			LOG.info("'systemConfigImpl' not define. use default config");
 		}
 		LOG.info("load system config: " + systemConfig.getClass().getName());
