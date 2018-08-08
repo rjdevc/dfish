@@ -237,16 +237,12 @@ _ajaxCmd = function( x, a, t ) {
 		d = this.cmd( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
 	var g = '$value,$ajax';
-	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers,
-		error: x.error && $.fncreate( x.error, this, '$ajax' ), beforesend: x.beforesend && $.fncreate( x.beforesend, this, '$ajax' ), 
+	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter, error: x.error, beforesend: x.beforesend, 
 		success: function( v, a ) {
 			d && (d.close(), d = N);
-			if ( ! this._disposed && x.filter )
-				v = $.fnapply( x.filter, this, [ v, a ], g );
-			if ( ! this._disposed && x.success )
-				$.fnapply( x.success, this, [ v, a ], g );
-			if ( ! this._disposed )
-				this.exec( v, N, x.transfer );
+			if ( ! this._disposed ) {
+				x.success ? $.fnapply( x.success, this, [ v, a ], g ) : (v && this.exec( v, N, x.transfer ));
+			}
 		}, complete: function( v, a ) {
 			d && d.close();
 			if ( ! this._disposed && x.complete )
@@ -6580,17 +6576,23 @@ TreeCombo = $.createClass( {
 		// 根据关键词过滤得到有效节点 /@a -> keyword
 		_filter: function( a ) {
 			if ( a ) {
-				var b = $.strSplitword( a, this._matchlength ), e = [];
-				for ( var i = 0, c; i < b.length; i ++ ) {
+				var b = $.strSplitword( a, this._matchlength ), f = [];
+				for ( var i = 0, c, s; i < b.length; i ++ ) {
 					c = $.strQuot( b[ i ] );
-					e.push( 'contains(@t,"' + c + '")', 'contains(@r,"' + c + '")' );
+					s = 'contains(@t,"' + c + '") or contains(@r,"' + c + '")';
 					if ( this._sch ) {
 						for ( var j = 0; j < this._sch; j ++ )
-							e.push( 'contains(@s' + j + ',"' + c + '")' );
+							s += ' or contains(@s' + j + ',"' + c + '")';
+					}
+					for ( var j = 0, d = $.xmlQueryAll( this.xml, './/d[(' + s + ') and @v!="" and not(@ds) and not(@f)]' ), l = d.length; j < l; j ++ ) { //translate(@t,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+						d[ j ].setAttribute( 'f', '1' );
+						f.push( d[ j ] );
 					}
 				}
-				for ( var i = 0, f = [], d = $.xmlQueryAll( this.xml, './/d[(' + e.join( ' or ' ) + ') and @v!="" and not(@ds)]' ), l = d.length; i < l; i ++ ) //translate(@t,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-					f.push( _all[ d[ i ].getAttribute( 'i' ) ] );
+				for ( var i = 0, l = f.length; i < l; i ++ ) {
+					f[ i ].removeAttribute( 'f' );
+					f[ i ] = _all[ f[ i ].getAttribute( 'i' ) ];
+				}
 				return f;
 			}
 		},
@@ -7052,6 +7054,7 @@ Leaf = define.widget( 'leaf', {
 				for ( var i = 0; i < f.length; i ++ ) {
 					if ( this.contains( f[ i ] ) ) { b = T; break; }
 				}
+				this.x.open   = b;
 				this.x.status = $.arrIn( f, this ) ? '' : 'disabled';
 				$.classAdd( this, 'z-notg', !!(this.length && !s) ); // 子节点都被过滤时，隐藏tg
 			}
