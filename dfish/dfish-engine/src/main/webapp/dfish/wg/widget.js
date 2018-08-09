@@ -6972,9 +6972,6 @@ Leaf = define.widget( 'leaf', {
 		isEvent4Box: function( e ) {
 			return this.box && e && e.srcElement && e.srcElement.id == this.box.id + 't';
 		},
-		offsetParent: function() {
-			return this.rootNode;
-		},
 		scrollIntoView: function( a ) {
 			var n = this;
 			while ( (n = n.parentNode) && n.type === this.type )
@@ -7211,9 +7208,6 @@ GridLeaf = define.widget( 'grid/leaf', {
 			l && Q( r.$() ).after( r.html_nodes() );
 			this.loaded = T;
 		},
-		offsetParent: function() {
-			return this.closest( 'td' );
-		},
 		html: function() {
 			var r = this.tr(), s = this.html_self( r.length );
 			return this.x.hr ? '<table class=w-hr-table cellspacing=0 cellpadding=0><tr><td>' + s + '<td width=100%><hr class=w-hr-line noshade></table>' : s;
@@ -7241,7 +7235,7 @@ GridToggle = define.widget( 'grid/toggle', {
 			var a = a == N ? ! (this.x.open == N ? T : this.x.open) : a, t = this.tr();
 			this.x.open = a;
 			t.toggle_rows( a );
-			for ( var i = t.$().rowIndex + 1, b = t.$().offsetParent.rows, c, l = b.length; i < l; i ++ ) {
+			for ( var i = t.$().rowIndex + 1, b = t.$().parentNode.parentNode.rows, c, l = b.length; i < l; i ++ ) {
 				c = _widget( b[ i ] );
 				if ( c.tgl )
 					break;
@@ -7585,7 +7579,7 @@ TR = define.widget( 'tr', {
 		},
 		next: function( n ) {
 			if ( this.rootNode._echo_rows ) {
-				var b = this.$().offsetParent.rows[ this.$().rowIndex + ( n === F ? -1 : 1 ) ];
+				var b = this.$().parentNode.parentNode.rows[ this.$().rowIndex + ( n === F ? -1 : 1 ) ];
 				return b && _widget( b );
 			} else
 				return this.parentNode[ this.nodeIndex + ( n === F ? -1 : 1 ) ];
@@ -7614,13 +7608,13 @@ TR = define.widget( 'tr', {
 			var s = a;
 			if ( a.isWidget ) {
 				s = [];
-				var i = a.$().rowIndex, p = a.$().offsetParent, j = a._rowlen();
+				var i = a.$().rowIndex, p = a.$().parentNode.parentNode, j = a._rowlen();
 				do { s.push( p.rows[ i ] ) } while ( j -- );
 			}
 			if ( b === 'before' )
 				Q( this.$() )[ b ]( s );
 			else
-				Q( b === 'prepend' ? this.$() : this.$().offsetParent.rows[ this.$().rowIndex + this._rowlen() ] ).after( s );
+				Q( b === 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._rowlen() ] ).after( s );
 		},
 		// @a -> T/F, b -> src
 		toggle: function( a, b ) {
