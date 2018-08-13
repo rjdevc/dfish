@@ -74,13 +74,13 @@
   <distributionManagement>
        <repository>
            <id>dfish-release</id>
-		   <url>http://218.5.2.35:9080/nexus/content/repositories/dfish-release</url>
+		   <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
            <uniqueVersion>true</uniqueVersion>
        </repository>
   	   <!-- 
        <snapshotRepository>
            <id>dfish-snapshot</id>
-           <url>http://218.5.2.35:9080/nexus/content/repositories/dfish-snapshot</url>
+           <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
        </snapshotRepository>
         -->
    </distributionManagement>
