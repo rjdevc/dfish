@@ -307,13 +307,14 @@ _cmdHooks = {
 		if ( typeof x.src === _STR )
 			x.src = $.urlFormat( x.src, a );
 		if ( x.hide )
-			_inst_del( 'tip' );
+			_inst_hide( 'tip' );
 		else
 			return new Tip( x, this ).show();
 	},
 	'loading': function( x, a ) {
 		if ( x.hide ) {
-			_inst_del( 'loading', _view( this ) );
+			var d = $.dialog( this );
+			d && d.type == 'loading' ? d.close() : _inst_hide( 'loading', _view( this ) );
 		} else {
 			return new Loading( x, this ).show();
 		}
@@ -1720,7 +1721,7 @@ View = define.widget( 'view', {
 			var e = this._err_ns, k, n;
 			for ( k in e )
 				(n = _all[ e[ k ].wid ]) && n.trigger( 'error', F );
-			_inst_del( 'tip' );
+			_inst_hide( 'tip' );
 		},
 		// @a -> target id, b -> T/F
 		linkTarget: function( a, b ) {
@@ -3432,7 +3433,6 @@ Dialog = define.widget( 'dialog', {
 				delete this.commander;
 				if( this.x.id )
 					delete Dialog.custom[ this.x.id ];
-				delete _inst_cache[ this.type ];
 				_proto.dispose.call( this );
 			}
 		}
@@ -3510,15 +3510,20 @@ Confirm = define.widget( 'confirm', {
 	Extend: Alert
 } ),
 _inst_cache = {},
-_inst_add = _inst_del = function( a, b ) {
+_inst_add = _inst_hide = function( a, b ) {
 	b = (b || _docView).id + (a.type || a);
 	_inst_cache[ b ] && _inst_cache[ b ].hide();
 	delete _inst_cache[ b ];
 	a.type && (_inst_cache[ b ] = a);
 },
 _inst_get = function( a, b ) {
-	return _inst_cache[ (b || _docView).id + a ];
+	var c = _inst_cache[ (b || _docView).id + a ];
+	return c && !c._disposed && c;
 },
+_inst_del = function( a, b ) {
+	delete _inst_cache[ (b || _docView).id + (a.type || a) ];
+},
+
 /*  `tip`  */
 Tip = define.widget( 'tip', {
 	Const: function( x, p ) {
@@ -3668,6 +3673,7 @@ Menu = define.widget( 'menu', {
 				while ( i -- )
 					this[ i ].hide();
 				Dialog.prototype._hide.call( this );
+				this.type === 'menu' && _inst_del( this );
 			}
 		},
 		listenHide: function( a ) {
