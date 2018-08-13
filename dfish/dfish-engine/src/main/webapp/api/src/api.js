@@ -5,11 +5,6 @@
 var mod = dfish.x.data.module;
 
 dfish.init( {
-	skin: { // 皮肤
-		dir: 'css/',
-		theme: 'classic',
-		color: 'blue'
-	},
 	view: {
 		id: 'index',
 		src: 'api/' + mod + '-view.json'

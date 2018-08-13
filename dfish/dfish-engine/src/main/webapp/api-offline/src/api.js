@@ -1,14 +1,20 @@
-/* api.js */
+/*
+ * api.js
+ */
 
-/* 如果调用了 dfish.noConflict()，则需以下代码
-var $  = require( 'dfish' ),
-	VM = $.view,
-	Q  = $.jQuery;
-*/
+var mod = dfish.x.data.module;
+
+dfish.init( {
+	view: {
+		id: 'index',
+		src: 'api/' + mod + '-view.json'
+	},
+	debug: true
+} );
 
 require.css( './api.css' );
 
-var data = require( './data' ),
+var data = require( '../' + mod + '-data' ),
 	path = module.path,
 	pk = 'Config,Event,Properties,Methods,Classes'.split( ',' ),
 	pn = '配置,事件,属性,方法,样式'.split( ',' );

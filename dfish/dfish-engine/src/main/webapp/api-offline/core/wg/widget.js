@@ -307,13 +307,13 @@ _cmdHooks = {
 		if ( typeof x.src === _STR )
 			x.src = $.urlFormat( x.src, a );
 		if ( x.hide )
-			_inster( 'tip', N );
+			_inst_del( 'tip' );
 		else
 			return new Tip( x, this ).show();
 	},
 	'loading': function( x, a ) {
 		if ( x.hide ) {
-			_inster( 'loading', N );
+			_inst_del( 'loading', _view( this ) );
 		} else {
 			return new Loading( x, this ).show();
 		}
@@ -1720,7 +1720,7 @@ View = define.widget( 'view', {
 			var e = this._err_ns, k, n;
 			for ( k in e )
 				(n = _all[ e[ k ].wid ]) && n.trigger( 'error', F );
-			_inster( 'tip', N );
+			_inst_del( 'tip' );
 		},
 		// @a -> target id, b -> T/F
 		linkTarget: function( a, b ) {
@@ -2190,7 +2190,7 @@ Button = define.widget( 'button', {
 				prop: T,
 				method: function( e ) {
 					$.classAdd( $( e.elemId || this.id ), 'z-hv' );
-					var m = _inster( 'menu' );
+					var m = _inst_get( 'menu' );
 					if ( this.type === 'menu/button' ) {
 						for ( var i = 0, p = this.parentNode; i < p.length; i ++ )
 							p[ i ] === this ? p[ i ].show() : p[ i ].hide();
@@ -3247,10 +3247,10 @@ Dialog = define.widget( 'dialog', {
 		},
 		// 定位 /@a -> fullscreen?
 		axis: function( a ) {
-			var f = $.number( this.x.position ), g = a ? N : this._snapElem(), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
+			var c = this.attr( 'local' ), f = $.number( this.x.position ), g = a ? N : this._snapElem(), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
 			if ( g ) {
-				r = $.snap( w, h, g, this.x.snaptype || this._snaptype, this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10) );
+				r = $.snap( w, h, g, this.x.snaptype || this._snaptype || 'cc', this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10), c && (c === T ? this.ownerView.$() : $( c )) );
 			} else if ( f ) { // 八方位浮动的起始位置
 				var b = '11,22,22,33,33,44,44,11'.split( ',' );
 				r = $.snap( w, h, N, b[ f - 1 ], this._fitpos, this.x.indent );
@@ -3285,7 +3285,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		_snapElem: function() {
 			var d = this.x.snap;
-			return typeof d === _STR ? ((d = this.ownerView.find( d )) && (d = d.$())) : (d && $( d ));
+			return typeof d === _STR ? ((d = this.ownerView.find( d )) && (d = d.$())) : (d ? $( d ) : (this.attr( 'local' ) && this.ownerView.$()));
 		},
 		_snapCls: function( a ) {
 			var d = this._snapElem(), r = this._pos;
@@ -3306,9 +3306,11 @@ Dialog = define.widget( 'dialog', {
 				return;
 			! this.parentNode && _docView.add( this );
 			this.$() && this.removeElem();
+			var c = this.attr( 'local' );
+			c && this.ownerView.addClass( 'f-rel' );
 			if ( this.x.cover )
-				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type +  '"></div>' );
-			$.db( this.html() );
+				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
+			$.db( this.html(), c && this.ownerView.$() );
 			if ( (this.x.minwidth || this.x.maxwidth) && ! this.x.width ) {
 				var w = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.attr( 'minwidth' ), m = this.attr( 'maxwidth' );
 				this.width( n && n > w ? n : m && m < w ? m : w );
@@ -3508,13 +3510,14 @@ Confirm = define.widget( 'confirm', {
 	Extend: Alert
 } ),
 _inst_cache = {},
-_inster = function( a, b ) {
-	if ( arguments.length == 2 ) {
-		_inst_cache[ a ] && _inst_cache[ a ].hide();
-		delete _inst_cache[ a ];
-		_inst_cache[ a ] = b;
-	} else
-		return _inst_cache[ a ];
+_inst_add = _inst_del = function( a, b ) {
+	b = (b || _docView).id + (a.type || a);
+	_inst_cache[ b ] && _inst_cache[ b ].hide();
+	delete _inst_cache[ b ];
+	a.type && (_inst_cache[ b ] = a);
+},
+_inst_get = function( a, b ) {
+	return _inst_cache[ (b || _docView).id + a ];
 },
 /*  `tip`  */
 Tip = define.widget( 'tip', {
@@ -3523,7 +3526,7 @@ Tip = define.widget( 'tip', {
 			node: { type: 'html', text: '<div class=w-tip-text>' + (x.text && /^<\w+/g.test( x.text ) ? x.text : '<span class=f-va' + (x.closable ? ' style="padding-right:20px;"' : '') + '>' + $.strFormat( x.text || '', x.args ) + '</span><i class=f-vi></i>') + '</div>' + (x.closable !== F ? $.image('.f-i-close',{cls: 'w-tip-x', click:$.abbr + '.close(this)'}) : '') },
 			pophide: T, independent: T, snap: p, snaptype: 'tb,rl,lr,bt,rr,ll,bb,tt,cc' } );
 		Dialog.apply( this, arguments );
-		! this.x.multiple && _inster( this.type, this );
+		! this.x.multiple && _inst_add( this );
 	},
 	Extend: Dialog,
 	Prototype: {
@@ -3537,9 +3540,10 @@ Loading = define.widget( 'loading', {
 	Const: function( x, p ) {
 		$.extend( x, { width: x.node ? 200 : -1, independent: T } );
 		Dialog.apply( this, arguments );
-		_inster( this.type, this );
+		_inst_add( this, this.ownerView );
 	},
 	Extend: Dialog,
+	Default: { local: T },
 	Prototype: {
 		className: 'w-dialog w-loading f-shadow',
 		html_nodes: function() {
@@ -3626,7 +3630,12 @@ Menu = define.widget( 'menu', {
 	},
 	Extend: Dialog,
 	Child: 'menu/button',
-	Default: { width: -1, height: -1, pophide: T },
+	Default: {
+		width: -1, height: -1, pophide: T,
+		local: function() {
+			return this.type == 'menu' && $.dialog( this.parentNode );
+		}
+	},
 	Listener: {
 		body: {
 			// menu的DOM渲染做两次，第一次测量并调整可用范围，第二次渲染menu/button。所以第一次装载完毕时不触发用户定义的load事件，等第二次渲染menu/button时再触发
@@ -3668,13 +3677,14 @@ Menu = define.widget( 'menu', {
 		checkOverflow: function() {
 			this.echoStart = 0;
 			this.echoEnd   = this.length -1;
-			var r = this._pos, m = 0, g = this.$( 'g' ), b = MenuButton.prototype.elemht();
+			var r = $.bcr( this.$() ), m = 0, g = this.$( 'g' ), b = MenuButton.prototype.elemht();
 			if ( r.top < 0 )
 				m -= r.top;
 			if ( r.bottom < 0 )
 				m -= r.bottom;
 			if ( m ) {
 				// realht 是按钮可展现区域的高度 / 22 = 上下两个翻页按钮高度 + menu的padding border高度
+
 				this.realht = g.offsetHeight - 22 - m;
 				this.realht -= this.realht % b;
 				g.style.height = this.realht + 'px';
@@ -3741,7 +3751,7 @@ Menu = define.widget( 'menu', {
 		},
 		render: function() {
 			if ( this.type === 'menu' )
-				_inster( this.type, this );
+				_inst_add( this );
 			for ( var i = 0, l = this.length, e = h = 0, m = $.height(); i < l; i ++ ) {
 				h += this[ i ].elemht();
 				if ( h > m && ! e )
@@ -3751,14 +3761,7 @@ Menu = define.widget( 'menu', {
 			Dialog.prototype.render.call( this );
 			this.checkOverflow();
 			if ( this.type === 'menu' ) {
-				// 如果 menu 是从对话框中点出来的，那么把menu的DOM对象放置到dialog中去。以便dialog中的元素的z-index属性能对menu产生效果
-				var a = $.dialog( this.parentNode ), w = 0;
-				if ( a ) {
-					for ( var i = 0, b = $.offset( a.$() ), c = [ 'top', 'left', 'right', 'bottom' ]; i < c.length; i ++ )
-						this.$().style[ c[ i ] ] && $.css( this.$(), c[ i ], '-=' + (b[ c[ i ] ] + 1) );
-					w = this.$().offsetWidth;
-					$.append( a.$(), this.$() );
-				}
+				var w = 0;
 				this.x.line && (w = Math.max( this._pos.target.width - 2, w ));
 				$.css( this.$(), 'min-width', w );
 			}
@@ -4372,9 +4375,12 @@ Checkbox = define.widget( 'checkbox', {
 						return F;
 					}
 					if ( ie && e.type ) { // 修复ie下onchange失效问题
-						var o = document.activeElement;
-						this.$t().blur(), this.$t().focus();
-						o.focus();
+						if ( ie ) {
+							var o = document.activeElement;
+							this.$t().blur(), this.$t().focus();
+							o.focus();
+						} else if ( br.fox )
+							this.trigger( 'change' );
 					}
 					this.parentNode.warn && this.parentNode.warn( F );
 					this.attr( 'bubble' ) === F && $.cancel( e );
@@ -5463,8 +5469,6 @@ Combobox = define.widget( 'combobox', {
 	Const: function( x ) {
 		AbsInput.apply( this, arguments );
 		this.className += ' z-loading';
-		//if ( x.height && x.height != -1 )
-		//	x.nobr = T;
 		x.nobr && (this.className += ' z-nobr');
 		x.face && (this.className += ' z-face-' + x.face);
 		this.more = this.createPop( x.node || x.src || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
@@ -6313,7 +6317,7 @@ Linkbox = define.widget( 'linkbox', {
 			}
 			this._val( s = s.join( ',' ) );
 			if ( this.x.validate && this.x.validate.maxlength ) {
-				_inster( 'tip', N );
+				_inst_del( 'tip' );
 				var l = $.strLen( s );
 				l > this.x.validate.maxlength && this.cmd( { type: 'tip', text: Loc.ps( Loc.form.over_maxlength, [ l - this.x.validate.maxlength ] ) } );
 			}

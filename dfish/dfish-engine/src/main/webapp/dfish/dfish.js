@@ -926,7 +926,7 @@ _frag = function( s ) {
 	try { return f } catch( e ) { return F }
 	finally { d = f = N }
 },
-db = function( a ) { return a ? ( _append( doc.body, a ), doc.body.lastChild ) : doc.body },
+db = function( a, b ) { return a ? ( _append( b || doc.body, a ), doc.body.lastChild ) : doc.body },
 // 简写 getElementsByTagName
 _tags = function( a, b ) { return (b || doc).getElementsByTagName( a ) },
 // 获取nextSibling元素
@@ -1135,9 +1135,9 @@ _snaptype = {
 	a : _arr_comma( '41,32,14,23,21,34,12,43,11' )
 },
 _snapindent = { h: {'21':-1,'34':-1,'12':1,'43':1}, v: {'14':1,'23':1,'41':-1,'32':-1} },
-// 获取对齐吸附模式的位置参数  /@ a -> width, b -> height, c -> toObj offset, d -> adsorb type, e - > fit?[是否自动选择位置，让可见区域最大化], f -> indent[缩进多少像素]
-// 元素四个角，左上为1，右上为2，右下为3，左下为4。目标元素在前，浮动元素在后。如"41"代表目标元素的左下角和浮动元素的左上角粘合。
-_snap = function( a, b, c, d, e, f ) {
+// 获取对齐吸附模式的位置参数。元素四个角，左上为1，右上为2，右下为3，左下为4。目标元素在前，浮动元素在后。如"41"代表目标元素的左下角和浮动元素的左上角粘合。
+// @ a -> width, b -> height, c -> toObj offset, d -> adsorb type, e - > fit?[是否自动选择位置，让可见区域最大化], f -> indent[缩进多少像素], u -> range?[浮动元素的限定范围元素]
+_snap = function( a, b, c, d, e, f, u ) {
 	if ( ! c )
 		c = _bcr();
 	else if ( c.nodeType )
@@ -1219,6 +1219,13 @@ _snap = function( a, b, c, d, e, f ) {
 	}
 	if ( d === 'cc' && o.top < 0 )
 		o.top = 0;
+	if ( u ) {
+		var s = _offset( u );
+		o.top -= (s.top + 1);
+		o.left -= (s.left + 1);
+		o.right -= (s.right + 1);
+		o.bottom -= (s.bottom + 1);
+	}
 	o.width  = a;
 	o.height = b;
 	o.target = c;
