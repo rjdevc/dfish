@@ -4380,7 +4380,7 @@ Checkbox = define.widget( 'checkbox', {
 						this.elements().each( function() { this.checked = this.defaultChecked } );
 						return F;
 					}
-					if ( ie && e.type ) { // 修复ie下onchange失效问题
+					if ( e.type ) { // 修复ie下onchange失效问题
 						if ( ie ) {
 							var o = document.activeElement;
 							this.$t().blur(), this.$t().focus();
