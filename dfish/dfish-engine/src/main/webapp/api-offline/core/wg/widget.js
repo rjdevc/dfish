@@ -3066,6 +3066,9 @@ Dialog = define.widget( 'dialog', {
 		if ( this.contentView ) {
 			this.contentView.addEvent( 'load', function() { this.trigger( 'load' ) }, this )
 				.addEvent( 'loading', function() { this.trigger( 'loading' ) }, this );
+			if ( x.data ) {
+				this.contentView.dft_x.data ? $.extend( this.contentView.dft_x.data, x.data ) : (this.contentView.dft_x.data = x.data);
+			}
 		}
 		if ( x.id ) {
 			Dialog.custom[ x.id ] && Dialog.custom[ x.id ].remove();
@@ -3251,7 +3254,7 @@ Dialog = define.widget( 'dialog', {
 			var c = this.attr( 'local' ), f = $.number( this.x.position ), g = a ? N : this._snapElem(), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
 			if ( g ) {
-				r = $.snap( w, h, g, this.x.snaptype || this._snaptype || 'cc', this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10), c && (c === T ? this.ownerView.$() : $( c )) );
+				r = $.snap( w, h, g, this.x.snaptype || this._snaptype || (c && 'cc'), this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10), c && (c === T ? this.ownerView.$() : $( c )) );
 			} else if ( f ) { // 八方位浮动的起始位置
 				var b = '11,22,22,33,33,44,44,11'.split( ',' );
 				r = $.snap( w, h, N, b[ f - 1 ], this._fitpos, this.x.indent );
