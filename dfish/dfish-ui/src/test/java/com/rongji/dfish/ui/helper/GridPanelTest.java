@@ -33,6 +33,9 @@ public class GridPanelTest extends DFishUITestCase {
 			{"000002","王哥，能不能把我工位上的一张XX项目的审批材料，拍个照发给我一下，谢谢","小张",new Date()},
 			}));
 		gp.getHeadRow().setCls("handle_grid_head");
+		
+		System.out.println(gp.getEscape());
+		System.out.println(gp.getScroll());
 		return gp;
 	}
 	@Test
