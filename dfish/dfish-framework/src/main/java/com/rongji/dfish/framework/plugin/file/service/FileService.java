@@ -92,7 +92,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 	 * @return
 	 */
 	public String getUploadDir() {
-		String uploadDir = FrameworkHelper.getSystemConfig("file.uploadDir", "../upload/");
+		String uploadDir = FrameworkHelper.getSystemConfig(CONFIG_UPLOAD_DIR, "../upload/");
 		String dirSeparator = getDirSeparator();
 		if (Utils.notEmpty(uploadDir) && !uploadDir.endsWith(dirSeparator)) {
 			uploadDir += dirSeparator;
@@ -122,7 +122,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 	 * @return
 	 */
 	public String getTypesImage() {
-		return FrameworkHelper.getSystemConfig(CONFIG_TYPES_IMAGE, "*.jpg;*.gif;*.png");
+		return FrameworkHelper.getSystemConfig(CONFIG_TYPES_IMAGE, "*.jpg;*.gif;*.png;");
 	}
 	
 	/**
