@@ -1144,8 +1144,7 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			if ( a[ 0 ] === this )
 				return this;
 			for ( q = a[ 0 ].parentNode, i = 0; i < a.length; i ++ )
-				a[ 0 ].removeNode( T );
-			q = q[ 0 ];
+				a[ i ].removeNode( T );
 		}
 		var i = j === 3 ? this.nodeIndex + 1 : j === 2 ? this.nodeIndex : j === 1 ? this.length : 0, d = this.nodeIndex > -1,
 			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
@@ -1164,7 +1163,8 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			}
 		}
 		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
-		d && q && (((k = {})[ s ] = q.x[ s ]), q.resize( k ));
+		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
+		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize' );
 		return p[ i ];
