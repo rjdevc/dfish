@@ -12,9 +12,11 @@ Loc = require( 'loc' ),
 br  = $.br,
 ie  = br.ie,
 ie7 = br.ie7,
+mb  = br.mobile,
 cfg = $.x,
 eve = $.abbr + '.e(this)',
 evw = $.abbr + '.w(this)',
+plus = window.plus,
 _dfopt	= cfg.default_option || {},
 _number = $.number,
 _slice  = Array.prototype.slice,
@@ -113,7 +115,8 @@ _rangeEvents = function( a ) {
 	}
 	return r;
 },
-_range_events = _rangeEvents( 'all', 'mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,mouseenter,mouseleave,contextmenu,click,dblclick,drag,dragend,dragenter,dragleave,dragover,dragstart,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,paste,beforepaste,beforedeactivate,tap',
+_range_events = _rangeEvents( 'all', 'click,contextmenu,drag,dragend,dragenter,dragleave,dragover,dragstart,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,paste,beforepaste,beforedeactivate,' +
+	(mb ? 'touchstart,touchmove,touchend,tap' : 'mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,mouseenter,mouseleave,dblclick'),
 	'input', 'focus,blur,input', 'option', 'change' ),
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( a, s ) {
@@ -172,8 +175,15 @@ _jsformat = function( a, b, c , d ) {
 		}
 		_jsf_cache[ a ] = { hdl: Function( e.join( ',' ), a.indexOf( 'function' ) === 0 ? 'return(' + a + ').call(this)' : a ), fld: f };
 	}
-	for ( var i = c.length, x = this.x, g = _jsf_cache[ a ].fld, l = g.length, v; i < l; i ++ ) {
-		v = (typeof x.data === _OBJ && (g[ i ] in x.data) ? x.data : x)[ g[ i ] ];
+	for ( var i = c.length, x = this.x, g = _jsf_cache[ a ].fld, l = g.length, k, v; i < l; i ++ ) {
+		k = g[ i ];
+		v = (x.data && (g in x.data) ? x.data : x)[ k ];
+		if ( v === U ) {
+			var t = this;
+			while ( t = t.parentNode ) {
+				if ( t.x.data && (v = t.x.data[ k ]) !== U ) break;
+			}
+		}
 		c.push( d ? d( v ) : v );
 	}
 	return _jsf_cache[ a ].hdl.apply( this, c );
@@ -200,6 +210,10 @@ _f_val = function( a, b, r ) {
 		case 'textarea':
 			// ie7-8的换行是\r\n，如果在ie7-8编辑内容后，在谷歌上浏览，换行会变成两个，所以替换掉\r
 			ie && (v = v.replace( /\\r\\n/g, '\n' ));
+		break;
+		case 'datetime-local':
+			v = v.replace( 'T', ' ' );
+		break;
 	}
 	v && (v = $.strTrim( v ));
 	if ( b ) {
@@ -1145,8 +1159,7 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			if ( a[ 0 ] === this )
 				return this;
 			for ( q = a[ 0 ].parentNode, i = 0; i < a.length; i ++ )
-				a[ 0 ].removeNode( T );
-			q = q[ 0 ];
+				a[ i ].removeNode( T );
 		}
 		var i = j === 3 ? this.nodeIndex + 1 : j === 2 ? this.nodeIndex : j === 1 ? this.length : 0, d = this.nodeIndex > -1,
 			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
@@ -1165,7 +1178,8 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			}
 		}
 		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
-		d && q && (((k = {})[ s ] = q.x[ s ]), q.resize( k ));
+		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
+		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize' );
 		return p[ i ];
@@ -1208,7 +1222,7 @@ _bind_resize_sensor = function( a ) {
 	setTimeout( function() { a.onscroll = c } );
 },
 _show_scroll = function() {
-	if ( this._scr_usable && this.$() ) {
+	if ( ! mb && this._scr_usable && this.$() ) {
 		var b = ie7 ? br.scroll : 0,
 			d = this.$( 'cont' ).offsetHeight || this.$( 'gut' ).scrollHeight,
 			g = this.$( 'ovf' ).scrollWidth - b;
@@ -1232,16 +1246,27 @@ _show_scroll = function() {
 _html_scroll = function( s ) {
 	this._scr_usable = T;
 	var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll;
-	return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class=f-scroll-overflow style="margin-bottom:-' + br.scroll + 'px;' +
-		(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + (+this.x.maxwidth + c) + 'px;' : '') + (this.x.minwidth ? 'min-width:' + (+this.x.minwidth + c) + 'px;' : '') +
-		(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
-		'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
-		'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
-		this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div><div id=' +
-		this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div>';
+	if ( mb ) {
+		return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + '<div id=' + this.id + 'ovf class=w-scroll-overflow style="' +
+			(w ? 'width:' + w + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + this.x.maxwidth + 'px;' : '') +
+			(this.x.minwidth ? 'min-width:' + this.x.minwidth + 'px;' : '') + (h ? 'height:' + h + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + this.x.maxheight + 'px;' : '') +
+			(this.x.minheight ? 'min-height:' + this.x.minheight + 'px;' : '') + '" onscroll=' + eve + '><div id=' + this.id + 'cont>' + (s || '') + '</div></div>';		
+	} else {
+		return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class=f-scroll-overflow style="margin-bottom:-' + br.scroll + 'px;' +
+			(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + (+this.x.maxwidth + c) + 'px;' : '') + (this.x.minwidth ? 'min-width:' + (+this.x.minwidth + c) + 'px;' : '') +
+			(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
+			'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
+			'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
+			this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div><div id=' +
+			this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div>';
+	}
 },
 /* `Scroll` */
 Scroll = define.widget( 'scroll', {
+	Const: function( x ) {
+		x.scroll && (this.className += ' w-scroll');
+		W.apply( this, arguments );
+	},
 	Helper: {
 		// 获取某个 widget 所在的有 scroll 的面板 / a -> widget|elem
 		get: function( a ) {
@@ -1253,6 +1278,7 @@ Scroll = define.widget( 'scroll', {
 			ready: function() {
 				// widget的dom可能会被业务重新生成，需要重置相关变量
 				delete this._scr_ready; delete this._scr_wd; delete this._scr_ht;
+				this.x.swipedown && this.setSwipedown();
 			},
 			mouseover: {
 				prop: T,
@@ -1316,7 +1342,7 @@ Scroll = define.widget( 'scroll', {
 		},
 		// 让元素滚动到可见区域。支持下面两种调用方式 /e -> el|wg, y -> (top,bottom,middle,auto), x -> (left,right,center,auto), p -> ease?, q -> divide(整除数字，让滚动的距离是这个数字的整数倍), r -> callback
 		scrollTo: function( e, y, x, p, q, r ) {
-			var a = this.$( 'ovf' ), b = this.$( 'gut' ), c = $.bcr( a ), d = $.bcr( b ), f = e ? $.bcr( e ) : d, t, l;
+			var a = this.$( 'ovf' ), b = this.$( 'gut' ) || this.$( 'cont' ), c = $.bcr( a ), d = $.bcr( b ), f = e ? $.bcr( e ) : d, t, l;
 			if ( y != N || e ) {
 				if ( y == N || ! isNaN( y ) ) {
 					t = _number( y );
@@ -1392,7 +1418,7 @@ Scroll = define.widget( 'scroll', {
 			}
 		},
 		checkScroll: function() {
-			_reset_resize_sensor.call( this ) && _show_scroll.call( this );
+			! mb && _reset_resize_sensor.call( this ) && _show_scroll.call( this );
 		},
 		isScrollable: function() {
 			return this.attr( 'scroll' ) && ((this.innerWidth() != N || this.x.maxwidth) || (this.innerHeight() != N || this.x.maxheight));
@@ -1429,6 +1455,48 @@ Scroll = define.widget( 'scroll', {
 		//@implement  /@ a -> html|widget, b -> method(prepend,append,after,before)
 		insertHTML: function( a, b ) {
 			$[ b || 'append' ]( (_putin[ b ] ? (this.$( 'vln' ) || this.$( 'cont' )) : N) || this.$(), a.isWidget ? a.$() : a );
+		},
+		setSwipedown: function() {
+			var o = this.$( 'ovf' ), d = this.$( 'swipedown' ), iy, rl, ht, self = this,
+				cmp = function() {
+					Q( o ).css( { transform: 'translate3d(0,0,0)', transition: '500ms cubic-bezier(0.165, 0.84, 0.44, 1)' } );
+			    	Q( d ).css( { visibility: '', height: '' } );
+			    	setTimeout( function() {
+			    		$.classRemove( d, 'z-loading z-release' );
+			    		Q( o ).css( { transition: '' } );
+			    	}, 500 );
+				};
+	    	o.addEventListener('touchstart', function(e) {
+	    		Q( o ).css( 'transition', '' );
+	    		iy = e.targetTouches[ 0 ].clientY;
+	    		rl = F;
+	    		if ( ! ht ) {
+	    			ht = d.offsetHeight;
+	    		}
+	    		Q( d ).css( { visibility: 'visible', height: 0 } );
+	    	});
+	    	o.addEventListener('touchmove', function(e) {
+	    		var y = e.targetTouches[ 0 ].clientY - iy;
+	    		if ( o.scrollTop == 0 && y > 0) {
+	    			e.preventDefault();
+	    			if ( y > ht && ! rl ) {
+	    				y = ht;
+	    				rl = T;
+	    				$.classAdd( d, 'z-release' );
+	    			}
+	    			d.style.height = Math.min( ht, y ) + 'px';
+	    			Q( o ).css( { 'transform': 'translate3d(0,'+ y +'px,0)' } );
+	    		}
+	    	});
+	    	o.addEventListener('touchend', function(e) {
+	    		if ( rl ) {
+	    			$.classRemove( d, 'z-release' );
+	    			$.classAdd( d, 'z-loading' );
+		    		self.cmd( { type: 'ajax', src: $.urlFormat( self.x.swipedown, this ), complete: cmp } );
+	    		} else
+	    			cmp();
+	    		e.preventDefault();
+	    	});			
 		},
 		html: function() {
 			this.width() == N && ! this.x.maxwidth && ! this.x.maxheight && $.classAdd( this, 'z-autosize' );
@@ -1817,7 +1885,7 @@ HorzScale = define.widget( 'horz/scale', {
 Horz = define.widget( 'horz', {
 	Const: function( x ) {
 		x.nobr === F && (this.className += ' z-br');
-		W.apply( this, arguments );
+		Scroll.apply( this, arguments );
 		if ( _w_lay.width.call( this ) )
 			this.addEvent( 'resize', _w_mix.width ).addEvent( 'ready', _w_mix.width );
 		if ( x.hiddens )
@@ -1853,7 +1921,7 @@ VertScale = define.widget( 'vert/scale', {
 /* `vert`  可滚动的纵向布局面板，子元素如果没有设置高度，则高度默认为-1  */
 Vert = define.widget( 'vert', {
 	Const: function( x ) {
-		W.apply( this, arguments );
+		Scroll.apply( this, arguments );
 		if ( _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 		if ( x.hiddens )
@@ -3064,11 +3132,9 @@ Dialog = define.widget( 'dialog', {
 		if ( this[ 0 ] && this[ 0 ].type_view )
 			this.contentView = this[ 0 ];
 		if ( this.contentView ) {
+			this.contentView.parentDialog = this;
 			this.contentView.addEvent( 'load', function() { this.trigger( 'load' ) }, this )
 				.addEvent( 'loading', function() { this.trigger( 'loading' ) }, this );
-			if ( x.data ) {
-				this.contentView.dft_x.data ? $.extend( this.contentView.dft_x.data, x.data ) : (this.contentView.dft_x.data = x.data);
-			}
 		}
 		if ( x.id ) {
 			Dialog.custom[ x.id ] && Dialog.custom[ x.id ].remove();
@@ -3076,7 +3142,7 @@ Dialog = define.widget( 'dialog', {
 		}
 		Dialog.all[ this.id ] = this;
 		if ( p !== _docView ) {
-			this.parentDialog = p.closest( function() { return this.type === 'dialog' } );
+			this.opener = p.closest( function() { return this.type === 'dialog' } );
 		}
 		(this.commander = p).addEventOnce( 'remove', this.remove, this );
 	},
@@ -3235,8 +3301,8 @@ Dialog = define.widget( 'dialog', {
 		front: function() {
 			if ( this._disposed )
 				return;
-			if ( this.parentDialog ) {
-				this.parentDialog.front();
+			if ( this.opener ) {
+				this.opener.front();
 			} else {
 				var a = Dialog.all, i, z;
 				for ( i in a ) {
@@ -3432,7 +3498,7 @@ Dialog = define.widget( 'dialog', {
 			if ( ! this._disposed ) {
 				this.commander && this.commander.removeEvent( 'remove', this.remove, this );
 				delete Dialog.all[ this.id ];
-				delete this.parentDialog;
+				delete this.opener;
 				delete this.commander;
 				if( this.x.id )
 					delete Dialog.custom[ this.x.id ];
@@ -3923,6 +3989,12 @@ AbsForm = define.widget( 'abs/form', {
 				prop: T,
 				method: function( e ) {
 					e == N && this.$t().focus();
+					if ( mb ) { // mobile选中表单会弹出键盘，表单可能会被键盘遮住看不到，所以要让表单滚动到可视范围
+						var r = Scroll.get( this ), self = this;
+						r && r.addEventOnce( 'resize', function() {
+							self.contains( document.activeElement ) && r.scrollTop( self, 'middle' );
+						});						
+					}
 					_z_on.call( this );
 				}
 			},
@@ -4726,7 +4798,7 @@ Calendar = CalendarDate = define.widget( 'calendar/date', {
 				o.add( x, -1 ).pop( 'h', o );
 			} else
 				return o.cmd( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 12, indent: 1, pophide: T,
-					node: x, on:{close:function(){o.isFormWidget&&!o.contains(document.activeElement)&&o.focus(F)}}} );
+					cover: mb, node: x, on:{close:function(){o.isFormWidget&&!o.contains(document.activeElement)&&o.focus(F)}}} );
 		}
 	},
 	Prototype: {
@@ -4743,10 +4815,10 @@ Calendar = CalendarDate = define.widget( 'calendar/date', {
 		nav: function( e ) {
 			var a = e.srcElement, b;
 			if ( $.classAny( a, '_y' ) ) { //年
-				this.pop( 'y', a );
+				mb ? this.$( 'iptm' ).click() : this.pop( 'y', a );
 			} else if ( $.classAny( a, '_m' ) ) { //月
-				this.pop( 'm', a );
-			} else if ( b = $.classAny( a, 'f-arw-l2 f-arw-r2' ) ) { // 前 后
+				mb ? this.$( 'iptm' ).click() : this.pop( 'm', a );
+			} else if ( b = $.classAny( a, 'f-arw-l2 f-arw-r2 f-arw-l5 f-arw-r5' ) ) { // 前 后
 				this.go( $.dateAdd( this.date, this._nav_unit, b === 1 ? - this._nav_radix : this._nav_radix ) );
 			} else if ( $.classAny( a, '_t' ) ) { // 今天
 				this.date = new Date();
@@ -4757,6 +4829,16 @@ Calendar = CalendarDate = define.widget( 'calendar/date', {
 					f ? f.focus() : this.go();
 				}
 			}
+		},
+		inputMonth: function() {
+			var v = this.$( 'iptm' ).value, f = 'yyyy-mm';
+			if ( ! v ) {
+				v = this.$( 'iptm' ).value = $.dateFormat( this.date, f );
+			}
+			v = $.dateParse( v, f );
+			this.date.setFullYear( v.getFullYear() );
+			this.date.setMonth( v.getMonth() );
+			this.go();
 		},
 		// 获取选中的值
 		val: function() {
@@ -4849,7 +4931,8 @@ Calendar = CalendarDate = define.widget( 'calendar/date', {
 		html_nodes: function() {
 			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0,
 				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 10 ), o = this.x.css,
-				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.today + '</div></div>' +
+				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( mb ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( mb ? 'r5' : 'r2' ) +
+					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class=_t>' + Loc.calendar.today + '</div></div>' +
 					'<div style="padding:0 5px 5px 5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
 			b.setDate( 1 ), b.setDate( - b.getDay() + 1 );
 			while ( b < d ) {
@@ -4935,6 +5018,13 @@ CalendarYear = define.widget( 'calendar/year', {
 
 	}
 } ),
+_date_formtype = {
+	'yyyy-mm-dd hh:ii': 'datetime-local',
+	'yyyy-mm-dd': 'date',
+	'yyyy-mm': 'month',
+	'yyyy': 'month',
+	'hh:ii': 'time'
+},
 /* `date` */
 _Date = define.widget( 'date', {
 	Const: function( x, p ) {
@@ -4949,7 +5039,14 @@ _Date = define.widget( 'date', {
 			click: {
 				prop: T,
 				method: function() {
-					this.isNormal() && this.popCalendar();
+					! mb && this.isNormal() && this.popCalendar();
+				}
+			},
+			input: mb && {
+				prop: T,
+				method: function() {
+					this.$( 'a' ).innerHTML = this.val();
+					this.focus( F );
 				}
 			},
 			resize: function() {
@@ -4959,6 +5056,7 @@ _Date = define.widget( 'date', {
 	},
 	Prototype: {
 		dropSnapType: 'v',
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		validHooks: {
 			minvalue: function( b, v ) {
 				return $.dateParse( v, this.x.format ) < $.dateParse( b.minvalue, this.x.format );
@@ -4988,6 +5086,19 @@ _Date = define.widget( 'date', {
 				}
 			}
 		},
+		val: mb ? function( a ) {
+			if ( a == N )
+				return this.$v() ? this.$v().value.replace( 'T', ' ' ) : this.x.value;
+			if ( this.$() ) {
+				this.$v().value = $.strTrim( a ).replace( ' ', 'T' );
+				this.$v() && this.resetEffect();
+				this.trigger( 'change' );
+			} else
+				this.x.value = a;
+		} : Text.prototype.val,
+		clkhdr: mb ? function( e ) {
+			this.$t().click();
+		} : Text.prototype.clkhdr,
 		popCalendar: function() {
 			var b = $.dateFormat( new Date, this.x.format ), c = this.cal, d = this.x.validate, e = c && c.isShow(), f = d && d.compare, g = f && d.comparemode,
 				m = d && (d.maxvalue || (d.beforenow && b)), n = d && (d.minvalue || (d.afternow && b)), p = this.parentNode, t, v = this.val() || b;
@@ -5004,8 +5115,10 @@ _Date = define.widget( 'date', {
 			this.cal && this.cal.close();
 			this.list && this.list.close();
 		},
-		width_minus: function() { return 20 + _input_indent() },
-		html_nodes: function() { return '<input type=text' + this.form_prop() + '><em class="f-boxbtn" onclick=' + eve + '></em>' }
+		html_nodes: function() {
+			var v = this.x.value || '';
+			return mb ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.form_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;text-indent:' + _input_indent() + 'px">' + (this.x.value || '') + '</label>' : '<input type=text' + this.form_prop() + '><em class="f-boxbtn" onclick=' + eve + '></em>';
+		}
 	}
 } ),
 /* `range` */
@@ -5042,7 +5155,7 @@ Muldate = define.widget( 'muldate', {
 	},
 	Prototype: {
 		validHooks: N,
-		width_minus: function() { return 20 + _input_indent() },
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		$v: function() { return $( this.id + 'v' ) },
 		v2t: function( v ) {
 			for ( var i = 0, b = v.split( ',' ), s = []; v && i < b.length; i ++ )
@@ -5111,7 +5224,7 @@ Muldate = define.widget( 'muldate', {
 Spinner = define.widget( 'spinner', {
 	Extend: Text,
 	Default: {
-		width: 100
+		width: mb ? 125 : 100
 	},
 	Prototype: {
 		validHooks: {
@@ -5134,7 +5247,7 @@ Spinner = define.widget( 'spinner', {
 				}
 			}
 		},
-		width_minus: function() { return 20 + _input_indent() },
+		width_minus: function() { return (mb ? 78 : _boxbtn_width) + _input_indent() },
 		step: function( a ) {
 			if ( this.isNormal() ) {
 				var d = this.x.validate, m = d && d.maxvalue, n = d && d.minvalue, v = $.numAdd( _number( this.val() ), a * ( this.x.step || 1 ) );
@@ -5146,7 +5259,8 @@ Spinner = define.widget( 'spinner', {
 			}
 		},
 		html_nodes: function() {
-			return '<input type=text' + this.form_prop() + '><cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
+			return mb ? '<cite class="f-boxbtn _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite><input type=number' + this.form_prop() + '><cite class="f-boxbtn _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
+				'<input type=text' + this.form_prop() + '><cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
 		}
 	}
 } ),
@@ -5205,7 +5319,7 @@ Slider = define.widget( 'slider', {
 	}
 } ),
 /* `xbox` */
-_boxbtn_width = 20,
+_boxbtn_width = mb ? 36 : 20,
 XBox = define.widget( 'xbox', {
 	Const: function( x ) {
 		this.initOptions( x );
@@ -5226,7 +5340,7 @@ XBox = define.widget( 'xbox', {
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return 20 + _input_indent() },
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		initOptions: function( x ) {
 			var o = x.options || (x.options = []), i = o.length;
 			this._sel = [];
@@ -5439,7 +5553,7 @@ Pickbox = define.widget( 'pickbox', {
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return 20 + _input_indent() },
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		val: function( v, t ) {
 			v != N && this.text( t || v );
 			return AbsForm.prototype.val.apply( this, arguments );
@@ -5464,7 +5578,7 @@ Pickbox = define.widget( 'pickbox', {
 		},
 		html_nodes: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" style="width:' + (this.innerWidth() - this.width_minus()) + 'px" ' + _html_on( this ) + '>' + $.strEscape( this.x.text ) + '</div><em class="f-boxbtn _dot" onclick=' + evw + '.pick()></em>';
+				't" class="f-inbl f-fix _t" style="width:' + (this.innerWidth() - this.width_minus()) + 'px" ' + _html_on( this ) + '>' + $.strEscape( this.x.text ) + '</div><em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 		}
 	}
 } ),
@@ -5647,7 +5761,7 @@ Combobox = define.widget( 'combobox', {
 			}
 		},
 		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return (this.x.dropsrc ? 20 : 0) + (this.x.picker ? 20 : 0); },
+		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -5931,7 +6045,7 @@ Combobox = define.widget( 'combobox', {
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
-				s += '<em class="f-boxbtn _dot" onclick=' + evw + '.pick()></em>';
+				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
 		}
 	}
@@ -5948,6 +6062,12 @@ ComboboxOption = define.widget( 'combobox/option', {
 	Listener: {
 		tag: 'g',
 		body: {
+			touchstart: {
+				prop: T, 
+				method: function() {
+					this._focus = $.classAny( this.parentNode.$(), 'z-on' );
+				}
+			},
 			click: {
 				prop: T,
 				// 禁用用户事件
@@ -5956,14 +6076,19 @@ ComboboxOption = define.widget( 'combobox/option', {
 					if ( this.loading || this._disposed )
 						return;
 					// 没有成功匹配文本时只做聚焦和搜索，不执行用户设置的click事件
-					var p = this.parentNode;
-					if ( this.x.error ) {
-						if ( p.focusNode !== this ) {
-							this.tabFocus();
-							p.suggest( this );
-						}
+					var p = this.parentNode, f = this._focus;
+					if ( mb ) {
+						this.close();
+						f && p.focus();
 					} else {
-						this.triggerHandler( 'click' );
+						if ( this.x.error ) {
+							if ( p.focusNode !== this ) {
+								this.tabFocus();
+								p.suggest( this );
+							}
+						} else {
+							this.triggerHandler( 'click' );
+						}
 					}
 					p.warn( F );
 				}
@@ -6088,7 +6213,7 @@ Linkbox = define.widget( 'linkbox', {
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
-		width_minus: function() { return (this.x.dropsrc ? 20 : 0) + (this.x.picker ? 20 : 0) + _input_indent(); },
+		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -6353,7 +6478,7 @@ Linkbox = define.widget( 'linkbox', {
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
-				s += '<em class="f-boxbtn _dot" onclick=' + evw + '.pick()></em>';
+				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
 		}
 	}
@@ -6411,7 +6536,7 @@ Onlinebox = define.widget( 'onlinebox', {
 	Prototype: {
 		formType: 'text',
 		_csr_pos: 0,
-		width_minus: function() { return (this.x.dropsrc ? 20 : 0) + (this.x.picker ? 20 : 0) + _input_indent(); },
+		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
 		// @a -> text /读/写光标所在的有效文本(以逗号为分隔符)
 		cursorText: function( a ) {
 			var b = this.val(),
@@ -6457,7 +6582,7 @@ Onlinebox = define.widget( 'onlinebox', {
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
-				s += '<em class="f-boxbtn _dot" onclick=' + evw + '.pick()></em>';
+				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
 		}
 	}

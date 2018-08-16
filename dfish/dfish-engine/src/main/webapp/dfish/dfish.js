@@ -841,6 +841,20 @@ _urlParam = function( a, b ) {
 				u = d.test( u ) ? u.replace( d, k + '=' + c ) : u + (u.indexOf( '?' ) < 0 ? '?' : '&') + k + '=' + c;
 			}
 		}
+	} else if ( ! b ) {
+		var r = {}, c = u.split( '?' );
+		c = c[ c.length - 1 ];
+		if ( c ) {
+			c = c.split( '&' );
+		    for ( var d = 0, e, f, g; d < c.length; d ++ ) {
+		        e = c[ d ].indexOf( '=' );
+		        if ( e == -1 ) continue;
+		        f = c[ d ].substring( 0, e );
+		        g = c[ d ].substring( e + 1 );
+		        r[ f ] = _urlDecode( g.replace( /\+/g, ' ' ) );
+			}
+		}
+		return r;
 	}
 	return u + (h ? '#' + h : '');
 },
@@ -1796,6 +1810,9 @@ _ajax_xhr = (function() {
 	try { c(); return c; } catch( e ) {}
 	alert( 'Cannot create XMLHTTP object!' );
 })(),
+_ajax_url = function( a ) {
+	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _cfg.path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
+},
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
 _ajax_contexts = {},
@@ -1812,7 +1829,7 @@ Ajax = _createClass( {
 	Extend: _Event,
 	Prototype: {
 		sendCache: function() {
-			var x = this.x, c = _ajax_cache[ x.src ];
+			var x = this.x, u = _ajax_url( x.src ), c = _ajax_cache[ x.src ];
 			if ( c ) {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
@@ -1822,12 +1839,12 @@ Ajax = _createClass( {
 					c.addEvent( 'cache', this.sendCache, this );
 				}
 			} else {
-				_ajax_cache[ x.src ] = this;
+				_ajax_cache[ u ] = this;
 				this.send();
 			}
 		},
 		send: function() {
-			var x = this.x, a = x.src, b = x.success, c = x.context, d = x.sync, e = x.data, f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
+			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = x.sync, e = x.data, f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
 			if ( typeof e === _OBJ ) {
 				var s = [];
 				for ( i in e ) {
@@ -1964,6 +1981,45 @@ _script = function( a, b ) {
 
 // 浏览器兼容
 function _compat() {
+	br.mobile ? _compatMobile() : _compatPC();
+	var tmp;
+	if ( ! ('ActiveXObject' in win) ) {
+		XMLDocument.prototype.loadXML = function( a ) {
+			var d = (new DOMParser()).parseFromString( a, 'text/xml' );
+			while ( this.hasChildNodes() )
+				this.removeChild( this.lastChild );
+			for ( var i = 0; i < d.childNodes.length; i ++ ) {
+				this.appendChild( this.importNode( d.childNodes[ i ], T ) );
+			}
+		};
+		Element.prototype.selectNodes =	function( s ) {
+			var d = this.ownerDocument, k = d.evaluate( s, this, d.createNSResolver( this ), 5, N ), r = [], e;
+			while ( e = k.iterateNext() ) r.push( e );
+			return r;
+		};
+		Element.prototype.selectSingleNode = function( s ) { var d = this.ownerDocument; return d.evaluate( s, this, d.createNSResolver( this ), 9, N ).singleNodeValue };
+		Element.prototype.__defineGetter__( 'xml', tmp = function() { return (new XMLSerializer()).serializeToString( this ) } );
+		XMLDocument.prototype.__defineGetter__( 'xml', tmp );
+	}
+	// 增加 event 的支持
+	if ( win.dispatchEvent ) {
+		_attach( win, 'eventemu', function( e ) {
+			if ( ! e.srcElement ) {
+				var S = function( n ) { while (n && n.nodeType !== 1) n = n.parentNode; return n };
+				Event.prototype.__defineGetter__( 'srcElement',  function() { return S( this.target ) } );
+				Event.prototype.__defineGetter__( 'fromElement', function() { return S( this.type === 'mouseover' ? this.relatedTarget : this.type === 'mouseout' ? this.target : U ) } );
+				Event.prototype.__defineGetter__( 'toElement',   function() { return S( this.type === 'mouseout' ? this.relatedTarget : this.type === 'mouseover' ? this.target : U ) } );
+			}
+			if ( ! win.event ) {
+				for ( var i = 0, n = 'click,dblclick,mouseover,mouseout,mousedown,mouseup,mousemove,input,keydown,keypress,keyup,dragstart'.split( ',' ); i < n.length; i ++ )
+					doc.addEventListener( n[ i ], function( e ) { win.event = e; }, T );
+			}
+		} );
+		(tmp = doc.createEvent( 'HTMLEvents' )).initEvent( 'eventemu', T, T );
+		win.dispatchEvent( tmp );
+	}	
+}
+function _compatPC() {
 	var tmp;
 	if ( window.Range && ! Range.prototype.movePoint ) {
 		if ( Range.prototype.__defineGetter__ ) {
@@ -2001,24 +2057,6 @@ function _compat() {
 			return this.startContainer.parentNode;
 		};
 		Range.prototype.moveToElementText = Range.prototype.selectNodeContents;
-	}
-	if ( ! ('ActiveXObject' in win) ) {
-		XMLDocument.prototype.loadXML = function( a ) {
-			var d = (new DOMParser()).parseFromString( a, 'text/xml' );
-			while ( this.hasChildNodes() )
-				this.removeChild( this.lastChild );
-			for ( var i = 0; i < d.childNodes.length; i ++ ) {
-				this.appendChild( this.importNode( d.childNodes[ i ], T ) );
-			}
-		};
-		Element.prototype.selectNodes =	function( s ) {
-			var d = this.ownerDocument, k = d.evaluate( s, this, d.createNSResolver( this ), 5, N ), r = [], e;
-			while ( e = k.iterateNext() ) r.push( e );
-			return r;
-		};
-		Element.prototype.selectSingleNode = function( s ) { var d = this.ownerDocument; return d.evaluate( s, this, d.createNSResolver( this ), 9, N ).singleNodeValue };
-		Element.prototype.__defineGetter__( 'xml', tmp = function() { return (new XMLSerializer()).serializeToString( this ) } );
-		XMLDocument.prototype.__defineGetter__( 'xml', tmp );
 	}
 	(tmp = doc.createElement( 'div' )).innerHTML = '1';
 	if ( ! tmp.innerText ) {
@@ -2073,22 +2111,27 @@ function _compat() {
 	_rm( tmp );
 	// 检测浏览器自带滚动条的宽度
 	br.chdiv( 'f-scroll-overflow', function() { br.scroll = 50 - this.clientWidth; } );
-	// 增加 firefox 对 event 的支持
-	if ( win.dispatchEvent ) {
-		_attach( win, 'eventemu', function( e ) {
-			if ( ! e.srcElement ) {
-				var S = function( n ) { while (n && n.nodeType !== 1) n = n.parentNode; return n };
-				Event.prototype.__defineGetter__( 'srcElement',  function() { return S( this.target ) } );
-				Event.prototype.__defineGetter__( 'fromElement', function() { return S( this.type === 'mouseover' ? this.relatedTarget : this.type === 'mouseout' ? this.target : U ) } );
-				Event.prototype.__defineGetter__( 'toElement',   function() { return S( this.type === 'mouseout' ? this.relatedTarget : this.type === 'mouseover' ? this.target : U ) } );
-			}
-			if ( ! win.event ) {
-				for ( var i = 0, n = 'click,dblclick,mouseover,mouseout,mousedown,mouseup,mousemove,input,keydown,keypress,keyup,dragstart'.split( ',' ); i < n.length; i ++ )
-					doc.addEventListener( n[ i ], function( e ) { win.event = e; }, T );
-			}
+}
+function _compatMobile() {
+	// 实现tap事件
+	var n, t, tmp;
+	$.query( doc ).on( 'touchstart', function( e ) {
+	    n = e; t = T;
+	}).on( 'touchmove', function() {
+	    t = F;
+	}).on( 'touchend', function( e ) {
+	    if ( t ) {
+	    	n.type = 'tap';
+	    	$.query( e.target ).trigger( n );
+	    }
+	    n = t = N;
+	});
+	// 检测回退键
+	if ( win.plus ) {
+		plus.key.addEventListener( 'backbutton', function() { 
+			var w = plus.webview.currentWebview(), p = w.parent();
+			$.closeAll(w);
 		} );
-		(tmp = doc.createEvent( 'HTMLEvents' )).initEvent( 'eventemu', T, T );
-		win.dispatchEvent( tmp );
 	}
 }
 
@@ -2104,7 +2147,7 @@ function _initEnv() {
 		_require = new Require( _path ),
 		_lib     = _cfg.lib + 'wg/',
 		_loc     = _require( _lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-		_jq      = _loc && _require( _lib + 'jquery/jquery-1.12.4' );
+		_jq      = _loc && _require( _lib + 'jquery/jquery-' + (br.mobile ? '1.12.4' : '3.3.1') );
 	if ( ! _loc )
 		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _cfg.lib + '"\n}' );
 	for ( var k in _cfg.alias ) {
@@ -2179,13 +2222,15 @@ function _initDocView( $ ) {
 			}
 		} );*/
 	}
-	// firefox 没有 window.event 对象，需要监听鼠标点击事件，记录每次点击的坐标
-	br.fox && doc.addEventListener( 'mousedown', _point, T );
-	// 检测回退键
-	var k8;
-	$.query( doc ).on( 'keydown', function( e ) { (k8 = e.keyCode === 8) && br.ms && e.target.readOnly && e.preventDefault(); } );
-	$.query( doc ).on( 'keyup', function( e ) { k8 = F; } );
-	$.query( win ).on( 'beforeunload', function( e ) { if ( k8 ) { k8 = F; return br.fox ? ' ' : ''; } } );
+	if ( ! br.mobile ) {
+		// firefox 没有 window.event 对象，需要监听鼠标点击事件，记录每次点击的坐标
+		br.fox && doc.addEventListener( 'mousedown', _point, T );
+		// 检测回退键
+		var k8;
+		$.query( doc ).on( 'keydown', function( e ) { (k8 = e.keyCode === 8) && br.ms && e.target.readOnly && e.preventDefault(); } );
+		$.query( doc ).on( 'keyup', function( e ) { k8 = F; } );
+		$.query( win ).on( 'beforeunload', function( e ) { if ( k8 ) { k8 = F; return br.fox ? ' ' : ''; } } );
+	}
 }
 
 /* 初始化应用环境 */
@@ -2260,7 +2305,7 @@ _merge( $, {
 		(a = this.dialog( a )) && a.close();
 	},
 	ready: function( a ) {
-		return $.query( doc ).ready( a );
+		return br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', a ) : $.query( doc ).ready( a );
 	},
 	//导入皮肤css /a -> { dir: 'css/', theme: 'classic', color: 'blue' }
 	skin: (function() {
@@ -2269,6 +2314,7 @@ _merge( $, {
 			_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
 			if ( ! $( did ) ) {
 				$.query( 'head' ).append( '<link rel="stylesheet" id=' + did + ' href="' + _ui_path + 'dfish.css' + _ver + '">' );
+				br.mobile && $.query( 'head' ).append( '<link rel="stylesheet" href="' + _ui_path + 'mobile.css' + _ver + '">' );
 			}
 			var k = location.protocol + '//' + location.host + _ui_path + 'g/';
 			_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );

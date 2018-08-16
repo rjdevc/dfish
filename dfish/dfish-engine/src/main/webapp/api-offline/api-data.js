@@ -1671,7 +1671,7 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围(某个 widget 的 ID)。多个ID用逗号隔开。如果以 "!" 开头，则表示排除。', optional: true }
       ] },
-      { name: 'isModified([range], [original])', remark: '检测表单是否有修改，对照的值为默认值。如果有修改则返回 true。', param: [
+      { name: 'isModified([range], [original])', remark: '检测表单是否有修改，对照的值为默认值。如果有修改则返回被修改的表单widget。', param: [
         { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true },
         { name: 'original', type: 'Boolean', remark: '设置为true，检测表单是否有修改，对照的值为初始值。', optional: true }
       ] },
