@@ -832,7 +832,7 @@ _urlParam = function( a, b ) {
 	var r = a.split( '#' ), u = r[ 0 ], h = r[ 1 ];
 	if ( typeof b === _STR ) {
 		return b === '#' ? h : (u.match( new RegExp('[\\?&]' + b + '=([^&]*)'), 'g' ) || A)[ 1 ];
-	} else if ( typeof b === _OBJ ) {
+	} else if ( b && typeof b === _OBJ ) {
 		for ( var k in b ) {
 			if ( k === '#' ) {
 				h = b[ k ];
@@ -841,7 +841,7 @@ _urlParam = function( a, b ) {
 				u = d.test( u ) ? u.replace( d, k + '=' + c ) : u + (u.indexOf( '?' ) < 0 ? '?' : '&') + k + '=' + c;
 			}
 		}
-	} else if ( ! b ) {
+	} else if ( arguments.length === 1 ) {
 		var r = {}, c = u.split( '?' );
 		c = c[ c.length - 1 ];
 		if ( c ) {

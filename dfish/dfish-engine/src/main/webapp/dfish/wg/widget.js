@@ -1606,7 +1606,7 @@ View = define.widget( 'view', {
 					if ( m && n ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
 				};
 			d ? $.require( d, function() { m = T; e(); }, ! a ) : (m = T);
-			u && (this.parent || this).ajax( { src: (u = $.urlLoc( cfg.path, u )), context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
+			u && (this.parent || this).ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> view json
