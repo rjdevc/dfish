@@ -2011,8 +2011,8 @@ function _compat() {
 				Event.prototype.__defineGetter__( 'toElement',   function() { return S( this.type === 'mouseout' ? this.relatedTarget : this.type === 'mouseover' ? this.target : U ) } );
 			}
 			if ( ! win.event ) {
-				for ( var i = 0, n = 'click,dblclick,mouseover,mouseout,mousedown,mouseup,mousemove,input,keydown,keypress,keyup,dragstart'.split( ',' ); i < n.length; i ++ )
-					doc.addEventListener( n[ i ], function( e ) { win.event = e; }, T );
+				for ( var i in $.white_events )
+					doc.addEventListener( $.white_events[ i ], function( e ) { win.event = e; }, T );
 			}
 		} );
 		(tmp = doc.createEvent( 'HTMLEvents' )).initEvent( 'eventemu', T, T );
@@ -2147,7 +2147,7 @@ function _initEnv() {
 		_require = new Require( _path ),
 		_lib     = _cfg.lib + 'wg/',
 		_loc     = _require( _lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-		_jq      = _loc && _require( _lib + 'jquery/jquery-' + (br.mobile ? '1.12.4' : '3.3.1') );
+		_jq      = _loc && _require( _lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
 	if ( ! _loc )
 		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _cfg.lib + '"\n}' );
 	for ( var k in _cfg.alias ) {
@@ -2237,10 +2237,22 @@ function _initDocView( $ ) {
 var $G = {};
 _merge( $, {
 	//dfish对象名，默认为"$"
-	abbr: '$',
-	ID_ALERT: 'dfish:alert',
 	_data: {},
-	// 提示
+	abbr: '$',
+	alert_id: 'dfish:alert',
+	// 事件白名单
+	white_events: (function() {
+		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,paste,beforepaste,beforedeactivate,' +
+			(br.mobile ? 'touchstart,touchmove,touchend,tap' : 'mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,mouseenter,mouseleave,dblclick'), 'input', 'focus,blur,input', 'option', 'change' ];
+		for ( var i = 0, r = {}, j, k, v; i < a.length; i += 2 ) {
+			k = a[ i ], r[ k ] = {}, v = [];
+			for ( j = 1; j < i + 2; j += 2 )
+				v.push.apply( v, a[ j ].split( ',' ) );
+			for( j = 0; j < v.length; j ++ )
+				r[ k ][ v[ j ] ] = T;
+		}
+		return r;
+	})(),
 	// 初始配置
 	config: function( a ) {
 		this.x = _cfg = _extendDeep( a, _cfg );
@@ -2255,7 +2267,7 @@ _merge( $, {
 	},
 	// a -> text, b -> pos, c -> time, d -> id
 	alert: function( a, b, c, d ) {
-		return $.vm ? $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.ID_ALERT } ) : alert( a );
+		return $.vm ? $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.alert_id } ) : alert( a );
 	},
 	// a -> text, b -> yes, c -> no
 	confirm: function( a, b, c ) {

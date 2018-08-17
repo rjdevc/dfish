@@ -105,24 +105,12 @@ _vmByElem = function ( o ) {
 	}
 	return _docView;
 },
-_rangeEvents = function( a ) {
-	for ( var i = 0, r = {}, j, k, v; i < arguments.length; i += 2 ) {
-		k = arguments[ i ], r[ k ] = {}, v = [];
-		for ( j = 1; j < i + 2; j += 2 )
-			v.push.apply( v, arguments[ j ].split( ',' ) );
-		for( j = 0; j < v.length; j ++ )
-			r[ k ][ v[ j ] ] = T;
-	}
-	return r;
-},
-_range_events = _rangeEvents( 'all', 'click,contextmenu,drag,dragend,dragenter,dragleave,dragover,dragstart,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,paste,beforepaste,beforedeactivate,' +
-	(mb ? 'touchstart,touchmove,touchend,tap' : 'mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,mouseenter,mouseleave,dblclick'),
-	'input', 'focus,blur,input', 'option', 'change' ),
+_white_events = $.white_events,
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( a, s ) {
 	var s = s || '', n;
 	if ( a.isWidget ) {
-		var h = a.Const.Listener, r = _range_events[ h && h.range ] || _range_events.all;
+		var h = a.Const.Listener, r = _white_events[ h && h.range ] || _white_events.all;
 		if ( a.x.on ) {
 			for ( var i in a.x.on )
 				s = _s_html_on( s, h && h.body, i, r );
@@ -141,7 +129,7 @@ _html_on = function( a, s ) {
 },
 // 用于leaf, row 这样的多层次子节点
 _html_on_child = function( a, s ) {
-	var s = _html_on( a, s ), r = _range_events[ a.Const.Listener && a.Const.Listener.range ] || _range_events.all,
+	var s = _html_on( a, s ), r = _white_events[ a.Const.Listener && a.Const.Listener.range ] || _white_events.all,
 		e = a.nodeIndex > -1 && a.rootNode && a.rootNode.Const.Child === a.type && a.rootNode.x.pub && a.rootNode.x.pub.on;
 	if ( e ) {
 		for ( var i in e )
@@ -1783,7 +1771,7 @@ View = define.widget( 'view', {
 					}
 					var o = _all[ n.wid ];
 					_scrollIntoView( o, T );
-					a && o.trigger( 'error', [{ type: 'alert', text: n.text, id: $.ID_ALERT }] );
+					a && o.trigger( 'error', [{ type: 'alert', text: n.text, id: $.alert_id }] );
 					h && o.trigger( 'error', [{ type: 'tip', text: n.text }] );
 				}
 			}
