@@ -812,7 +812,7 @@ define( {
       { name: 'aftercontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'beforecontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'cls', type: 'String', remark: '样式类名。', common: true },
-      { name: 'data', type: 'Object', remark: '扩展数据。', common: true },
+      { name: 'data', type: 'Object', remark: '扩展数据。key:value键值对。在当前widget及子孙节点范围内的事件可以用变量 $key 的来获取值。', common: true },
       { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。', common: true },
       { name: 'height', type: 'Number | String', remark: '高度。可以用数字, *, 百分比。如果设置为 -1, 就是自适应高度。', common: true },
       { name: 'hmin', type: 'Number', remark: '如果设置了 cls 参数，并且 cls 里定义了 padding border margin 这三种样式中的至少一种 ，那么就需要手工设置 hmin 以减去因这些样式额外增加的高度。<br>注: 如果在 style 参数里设置了这三种样式，系统会自动分析，一般不需要额外设置 hmin。', common: true },

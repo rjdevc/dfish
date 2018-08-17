@@ -262,7 +262,7 @@ Define = function( a ) {
 _onModuleLoad = function( a, b, c ) {
 	var m = new Module( b );
 	try {
-		Function( 'define,require,module,exports', c ).call( win, Define( b ), Require( b ), m, m.exports );
+		Function( 'define,require,module,exports', c + '\n//@ sourceURL=' + a ).call( win, Define( b ), Require( b ), m, m.exports );
 	} catch( e ) {
 		throw new Error( '"' + a + '": ' + e.message );
 	}

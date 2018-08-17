@@ -180,9 +180,13 @@ _jsformat = function( a, b, c , d ) {
 		v = (x.data && (g in x.data) ? x.data : x)[ k ];
 		if ( v === U ) {
 			var t = this;
-			while ( t = t.parentNode ) {
+			do {
 				if ( t.x.data && (v = t.x.data[ k ]) !== U ) break;
-			}
+				if ( t.type_view ) {
+					(t = t.parentDialog) && t.x.data && (v = t.x.data[ k ]);
+					break;
+				}
+			} while ( t = t.parentNode );
 		}
 		c.push( d ? d( v ) : v );
 	}
