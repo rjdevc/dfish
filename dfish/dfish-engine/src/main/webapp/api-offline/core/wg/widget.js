@@ -154,7 +154,18 @@ _render = function( s, k ) {
 _jsf_cache = {},
 // 解析并运行包含 "$属性名" 的js语法内容  /@a -> js, b -> arg array, c -> value array, d -> callback?
 _jsformat = function( a, b, c , d ) {
-	if ( ! _jsf_cache[ a ] ) {
+	var g = typeof a === _STR, h = g ? _jsf_cache[ a ] : a;
+	if ( ! h || ! h.dfish_format_fields ) {
+		var s = g ? a : $.strTo( a.toString(), ')' ), e = b.concat(), f = c.concat();
+		if ( s.indexOf( '$' ) > -1 ) {
+			var r = /\$(\w+)/g, k, t = {};
+			while ( k = r.exec( a ) )
+				if( ! t[k[ 0 ]] ) { e.push( k[ 0 ] ); f.push( k[ 1 ] ); t[k[ 0 ]] = T; };
+		}
+		g && (h = _jsf_cache[ a ] = Function( e.join( ',' ), a ));
+		h.dfish_format_fields = f;
+	}
+	/*if ( ! _jsf_cache[ a ] ) {
 		var e = b.concat(), f = c.concat();
 		if ( a.indexOf( '$' ) > -1 ) {
 			var h = /\$(\w+)/g, k;
@@ -162,8 +173,8 @@ _jsformat = function( a, b, c , d ) {
 				e.push( k[ 0 ] ), f.push( k[ 1 ] );
 		}
 		_jsf_cache[ a ] = { hdl: Function( e.join( ',' ), a.indexOf( 'function' ) === 0 ? 'return(' + a + ').call(this)' : a ), fld: f };
-	}
-	for ( var i = c.length, x = this.x, g = _jsf_cache[ a ].fld, l = g.length, k, v; i < l; i ++ ) {
+	}*/
+	for ( var i = c.length, x = this.x, g = h.dfish_format_fields, l = g.length, k, v; i < l; i ++ ) {
 		k = g[ i ];
 		v = (x.data && (g in x.data) ? x.data : x)[ k ];
 		if ( v === U ) {
@@ -178,7 +189,7 @@ _jsformat = function( a, b, c , d ) {
 		}
 		c.push( d ? d( v ) : v );
 	}
-	return _jsf_cache[ a ].hdl.apply( this, c );
+	return h.apply( this, c );
 },
 // 取得一个表单的值  /@ a -> input el, b -> json mode?
 _f_val = function( a, b, r ) {
@@ -616,7 +627,7 @@ W = define( 'widget', function() {
 				f = f || (this.x.on && this.x.on[ t ]);
 			if ( f ) {
 				var g = [ 'event' ], r = [ e ];
-				return typeof f === _STR ? _jsformat.call( this, f, g, r ) : ( typeof f === _FUN ? f : Function( g[ 0 ], f ) ).apply( this, arguments.length > 1 ? r.concat( a ) : r );
+				return typeof f === _STR ? _jsformat.call( this, f, g, r ) : (typeof f === _FUN ? f : Function( g[ 0 ], f )).apply( this, arguments.length > 1 ? r.concat( a ) : r );
 			}
 		},
 		// 触发系统事件
@@ -3500,7 +3511,7 @@ Dialog = define.widget( 'dialog', {
 	}
 } ),
 _operexe = function( x, g, a ) {
-	return typeof x === _OBJ ? g.exec( x, a ) : (x && $.fnapply( x, g, a ));
+	return x && (typeof x === _OBJ ? g.exec( x, a ) : _jsformat.call( g, x, [], [] ));
 },
 /* `alert/button` */
 AlertButton = define.widget( 'alert/button', {
@@ -5458,7 +5469,7 @@ XBox = define.widget( 'xbox', {
 			var s = this._sel[ 0 ];
 			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (s ? (s.value || '') : '') + '"><div class="f-inbl f-omit _t" id=' + this.id + 't ' +
 				(this.x.tip ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') +
-				' style="width:' + (this.innerWidth() - this.width_minus()) + 'px"><span id=' + this.id + 'p>' + this.htm_li( s, T ) + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
+				' style="width:' + (this.innerWidth() - this.width_minus()) + 'px"><span id=' + this.id + 'p>' + this.htm_li( s, T ) + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mb ? 'b3' : 'b2' ) + '</em>';
 		}
 	}
 }),
@@ -7249,9 +7260,9 @@ Hiddens = define.widget( 'hiddens', {
 	Child: 'hidden'
 } ),
 /* grid 辅助方法和专用类 */
-// @a -> content|js, b -> escape?, k -> key, s -> key style
+// @a -> content|js, b -> escape?
 _grid_format = function( a, b ) {
-	if ( (typeof a === _FUN && (a = a.toString())) || a.indexOf( 'javascript:' ) === 0 )
+	if ( typeof a === _FUN || a.indexOf( 'javascript:' ) === 0 )
 		return _jsformat.call( this, a, [], [], _grid_f_attr );
 	var x = this.x;
 	return a.replace( /\$(\w+|\{[\w.]+\})/g, function( $0, $1 ) {

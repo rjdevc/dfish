@@ -825,7 +825,7 @@ _urlFormat = function( a, b ) {
 // 以 a 为基础，解析出 b 的路径
 _urlLoc = function( a, b ) {
 	a = _strTo( a, '/', T );
-	return b.indexOf( './' ) === 0 ? _urlLoc( a + '/', b.slice( 2 ) ) : b.indexOf( '../' ) === 0 ? _urlLoc( a, b.slice( 3 ) ) : b.charAt( 0 ) === '/' ? b : a + '/' + b;
+	return b.indexOf( './' ) === 0 ? _urlLoc( a + '/', b.slice( 2 ) ) : b.indexOf( '../' ) === 0 ? _urlLoc( a, b.slice( 3 ) ) : b.charAt( 0 ) === '/' ? b : (b.indexOf( 'http:' ) === 0 || b.indexOf( 'https:' ) === 0) ? b : a + '/' + b;
 },
 // @ a-> url, b -> name/object
 _urlParam = function( a, b ) {
@@ -2314,7 +2314,38 @@ _merge( $, {
 	},
 	//关闭窗口
 	close: function( a ) {
-		(a = this.dialog( a )) && a.close();
+		if ( a = this.dialog( a ) ) {
+			a.close();
+		} else if ( plus ) {
+			$.closeAll( plus.webview.currentWebview() );
+		} else {
+			history.back();
+		}
+	},
+	// 关闭当前webview打开的所有webview；
+	closeOpened: function(webview) {
+		var opened = webview.opened();
+		if( opened ) {
+			for( var i = 0, len = opened.length; i < len; i ++ ) {
+				var openedWebview = opened[i];
+				var open_open = openedWebview.opened();
+				if(open_open && open_open.length > 0) {
+					//关闭打开的webview
+					$.closeOpened(openedWebview);
+					//关闭自己
+					openedWebview.close("none");
+				} else {
+					//如果直接孩子节点，就不用关闭了，因为父关闭的时候，会自动关闭子；
+					if(openedWebview.parent() !== webview) {
+						openedWebview.close('none');
+					}
+				}
+			}
+		}
+	},
+	closeAll: function( webview, aniShow ) {
+		$.closeOpened(webview);
+		aniShow ? webview.close( aniShow ) : webview.close();
 	},
 	ready: function( a ) {
 		return br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', a ) : $.query( doc ).ready( a );
