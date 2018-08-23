@@ -4660,6 +4660,18 @@ CalendarNum = define.widget( 'calendar/num', {
 					}
 				}
 			},
+			mouseover: {
+				prop: T,
+				method: function() {
+					!this.isDisabled() && this.addClass( 'z-hv' );
+				}
+			},
+			mouseout: {
+				prop: T,
+				method: function() {
+					!this.isDisabled() && this.removeClass( 'z-hv' );
+				}
+			},
 			focus: function( e ) {
 				var b = this.parentNode.getFocus();
 				if ( b && b !== this )
@@ -5329,7 +5341,7 @@ XBox = define.widget( 'xbox', {
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
-				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + '>' + this.htm_li( o[ i ] ) + '</div>' );
+				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + ' onmouseover=$.zhover(this) onmouseout=$.zout(this)>' + this.htm_li( o[ i ] ) + '</div>' );
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=$.all["' + this.id + '"].choose(this,event)>' + s.join( '' ) + '</div>';
 		},
@@ -6920,8 +6932,6 @@ Leaf = define.widget( 'leaf', {
 			},
 			nodechange: function() {
 				this.fixFolder();
-				if ( ! this.length )
-					this.loaded = this.x.open = F;
 			}
 		}
 	},

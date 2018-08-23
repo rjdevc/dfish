@@ -9,16 +9,20 @@ import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
+import com.rongji.dfish.ui.form.LabelRowContainer;
 import com.rongji.dfish.ui.layout.GridLayout;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Td;
+import com.rongji.dfish.ui.layout.grid.Tr;
 
 /**
  * 多列表单
  * @author DFish Team
  *
  */
-public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPanel, GridLayout> implements Scrollable<GridLayoutFormPanel>,HiddenContainer<GridLayoutFormPanel>,PrototypeChangeable<GridLayout>{
+public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPanel, GridLayout> implements 
+	Scrollable<GridLayoutFormPanel>,HiddenContainer<GridLayoutFormPanel>,PrototypeChangeable<GridLayout>,
+	LabelRowContainer<GridLayoutFormPanel>{
 	private static final long serialVersionUID = 3706745931483031949L;
 
 	protected static final String COLUMN_CLS_LABEL="form-tt";
@@ -82,12 +86,24 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	}
 
 	/**
+	 * 添加一个元素
+	 * @param fromRow 行
+	 * @param fromColumn 列
+	 * @param value 
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public GridLayoutFormPanel add(int fromRow, int fromColumn, Widget<?> value) {
+		add(fromRow, fromColumn, fromRow, fromColumn, value);
+		return this;
+	}
+	/**
+	 * 添加一个元素
 	 * @param fromRow
 	 * @param fromColumn
 	 * @param value
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLayoutFormPanel add(int fromRow, int fromColumn, Widget<?> value) {
+	public GridLayoutFormPanel addLabelRow(int fromRow, int fromColumn, LabelRow<?> value) {
 		add(fromRow, fromColumn, fromRow, fromColumn, value);
 		return this;
 	}
@@ -97,7 +113,22 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	    return prototype;
     }
 
+	
 	/**
+	 * 添加一个元素
+	 * @param fromRow
+	 * @param fromColumn
+	 * @param toRow
+	 * @param toColumn
+	 * @param value
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public GridLayoutFormPanel addLabelRow(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn,  LabelRow<?> value) {
+		add(fromRow, fromColumn, toRow, toColumn, value);
+		return this;
+	}
+	/**
+	 * 添加一个元素
 	 * @param fromRow
 	 * @param fromColumn
 	 * @param toRow
@@ -280,5 +311,9 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		prototype.removeHidden(name);
 		return this;
 	}
-	
+
+	@Override
+	public List<Tr> findNodes() {
+		 return prototype.findNodes();
+	}
 }

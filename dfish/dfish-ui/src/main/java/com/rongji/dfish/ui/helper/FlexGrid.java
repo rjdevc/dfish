@@ -13,6 +13,7 @@ import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.AbstractFormElement;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
+import com.rongji.dfish.ui.form.LabelRowContainer;
 import com.rongji.dfish.ui.json.JsonWrapper;
 import com.rongji.dfish.ui.layout.AbstractLayout;
 import com.rongji.dfish.ui.layout.GridLayout;
@@ -29,7 +30,8 @@ import com.rongji.dfish.ui.widget.Html;
  *
  */
 public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>> 
-		implements JsonWrapper<GridLayout>, HiddenContainer<FlexGrid>,Scrollable<FlexGrid>,PrototypeChangeable<GridLayout>{
+		implements JsonWrapper<GridLayout>, HiddenContainer<FlexGrid>,
+		Scrollable<FlexGrid>,PrototypeChangeable<GridLayout>,LabelRowContainer<FlexGrid>{
 	/**
 	 * 
 	 */

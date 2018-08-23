@@ -10,6 +10,7 @@ import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
+import com.rongji.dfish.ui.form.LabelRowContainer;
 import com.rongji.dfish.ui.layout.GridLayout;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Td;
@@ -31,7 +32,8 @@ import com.rongji.dfish.ui.layout.grid.Tr;
  * @author DFish Team
  * @since dfish 2.0
  */
-public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> implements Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout>{
+public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> implements 
+Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout>,LabelRowContainer<FormPanel>{
 	/**
 	 * 
 	 */
@@ -63,6 +65,20 @@ public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> impl
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public FormPanel add(Widget<?> row) {
+		if (row == null) {
+			return this;
+		}
+		rows.add(row);
+		this.checkConcurrentModify();
+		return this;
+	}
+	/**
+	 * 添加带有标题的行组件
+	 * 添加的组件是否带标题是根据参数hideLabel来决定是否要显示标题,默认显示标题
+	 * @param row 带有标题的行组件
+	 * @return  本身,这样以便更好地设置参数
+	 */
+	public FormPanel addLabelRow(LabelRow<?> row) {
 		if (row == null) {
 			return this;
 		}
@@ -234,6 +250,11 @@ public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> impl
 	public FormPanel removeHidden(String name) {
 		prototype.removeHidden(name);
 		return this;
+	}
+
+	@Override
+	public List<Widget<?>> findNodes() {
+		 return rows;
 	}
 
 }

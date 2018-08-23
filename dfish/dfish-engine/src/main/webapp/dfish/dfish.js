@@ -2255,6 +2255,12 @@ _merge( $, {
 	ready: function( a ) {
 		return $.query( doc ).ready( a );
 	},
+	zhover: function( a ) {
+		!a.contains( event.fromElement ) && _classAdd( a, 'z-hv' );
+	},
+	zout: function( a ) {
+		!a.contains( event.toElement ) && _classRemove( a, 'z-hv' );
+	},
 	//导入皮肤css /a -> { dir: 'css/', theme: 'classic', color: 'blue' }
 	skin: (function() {
 		var did = _uid(), gid = _uid(), tid = _uid(), cid = _uid(), y = {};
