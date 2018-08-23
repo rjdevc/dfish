@@ -238,10 +238,9 @@
 .w-calendar-head .f-arw-r2{margin-left:15px;margin-top:-1px;vertical-align:middle;cursor:pointer}
 .w-calendar-tbl{border-collapse:collapse}
 .w-calendar ._a,.w-calendar-tbl thead td{text-align:center;cursor:default;padding:5px 0}
-.w-calendar ._a:hover{background:#def0fc}
+.w-calendar ._a.z-hv{background:#def0fc}
 .w-calendar ._a.z-on{background:#cce7f9}
-.w-calendar ._a.z-ds{color:#999;}
-.w-calendar ._a.z-ds:hover{background:transparent;text-decoration:none;cursor:default}
+.w-calendar ._a.z-ds{color:#999}
 .w-calendar ._t,.w-calendar ._y,.w-calendar ._m{height:24px;vertical-align:middle;cursor:pointer}
 .w-calendar ._m{display:inline-block;min-width:32px;text-align:center}
 .w-calendar ._t:hover,.w-calendar ._y:hover,.w-calendar ._m:hover{text-decoration:underline}
@@ -330,8 +329,8 @@
 .w-xbox-ico{margin:0 5px 0 1px}
 .w-xbox ._o,.w-xbox-dialog ._o{position:relative;padding:0 5px;height:28px;line-height:28px}
 .w-xbox-dialog.z-mul ._o{padding-right:36px}
-.w-xbox-dialog ._o:hover{background-color:#E1F1FF}
-.w-xbox-dialog ._o.z-on{background-color:#B0DFFF}
+.w-xbox-dialog ._o.z-hv{background-color:#e1f1ff}
+.w-xbox-dialog ._o.z-on{background-color:#b0dfff}
 .w-xbox-dialog ._o.z-on ._box{position:absolute;width:16px;height:100%;top:0;right:16px;background:url(g/n.png) no-repeat -235px 50%}
 
 

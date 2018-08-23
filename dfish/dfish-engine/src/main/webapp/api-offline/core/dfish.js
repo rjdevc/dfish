@@ -330,10 +330,7 @@ _fncall = function( a, b, c, d ) {
 	return ( typeof a === _FUN ? a : Function( a ) ).call( b, c, d );
 },
 _fnapply = function( a, b, c, d ) {
-	return ( typeof a === _FUN ? a : Function( d || '', a ) ).apply( b, c || A );
-},
-_fncreate = function( a, b, c ) {
-	return ( typeof a === _FUN ? a : Function( c || '', a ) );
+	return b && b.isWidget ? b.formatJS( a, c, d ) : (typeof a === _FUN ? a : Function( c || '', a )).apply( b, d || A );
 },
 // a -> fn, b -> delay, c -> exclusion
 _delay = function( a, b, c ) {
@@ -463,7 +460,7 @@ _strFormat = function( a, b, c ) {
 		if ( _arrIs( b ) ) {
 			if ( a.indexOf( 'javascript:' ) === 0 )
 				return Function( '$0,$1,$2,$3,$4,$5,$6,$7,$8,$9', a.slice( 11 ) ).apply( win, b || A );
-			return a.replace( /\$\{?(\w+)\}?/g, function( $0, $1 ) { return b[ $1 ] == N ? '' : c ? _urlEncode( b[ $1 ] ) : b[ $1 ] } );
+			return a.replace( /\$\{?(\d+)\}?/g, function( $0, $1 ) { return b[ $1 ] == N ? '' : c ? _urlEncode( b[ $1 ] ) : b[ $1 ] } );
 		} else {
 			return a.replace( /\$\{?([a-z_]\w*)\}?/gi, function( $0, $1 ) { return b[ $1 ] == N ? '' : c ? _urlEncode( b[ $1 ] ) : b[ $1 ] } );
 		}
@@ -473,7 +470,7 @@ _strFormat = function( a, b, c ) {
 _s_regexp = function( a ) {
 	return a.replace( /([-.*+?^${}()|[\]\/\\])/g, '\\\$1' );
 },
-/*  下面定义ID连接字符串的方法 ( 如: 001,002,003 ) 方法名前缀: ids_  */
+/*  下面定义ID连接字符串的方法 ( 如: 001,002,003 )  */
 // 添加一个ID
 _idsAdd = function( s, n, p ) {
 	if ( ! p ) p = ',';
@@ -486,7 +483,7 @@ _idsAny = function( s, n, p ) {
 	if ( ! p ) p = ',';
 	return (p + s + p).indexOf( p + n + p ) > -1;
 },
-// s和n都是逗号隔开的字串，其中有一个相同即可。例如 _idsMatch( "a,b,c", "e,f,a" ); 其中有相同的字符a，结果为true
+// s和n都是逗号隔开的字串，其中有一个相同即可。例如 _idsPair( "a,b,c", "e,f,a" ); 其中有相同的字符a，结果为true
 _idsPair = function( s, n, p ) {
 	if ( s == n || ! s || ! n ) return T;
 	if ( ! p ) p = ',';
@@ -1834,7 +1831,7 @@ Ajax = _createClass( {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
 				} else if ( c.errorCode ) {
-					x.error && _fnapply( x.error, x.context, [ self ], '$ajax' );
+					x.error && _fnapply( x.error, x.context, '$ajax', [ self ] );
 				} else {
 					c.addEvent( 'cache', this.sendCache, this );
 				}
@@ -1865,7 +1862,7 @@ Ajax = _createClass( {
 				u = _urlLoc( x.base || _path, u );
 			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! d );
 			this.request = l;
-			if ( x.beforesend && _fnapply( x.beforesend, c, [ self ], '$ajax' ) === F )
+			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
 				return x.complete && x.complete.call( c, N, self );
 			if ( g === 'xml' && br.ie10 )
 				l.responseType = 'msxml-document';
@@ -1899,14 +1896,14 @@ Ajax = _createClass( {
 			        	self.errorCode = l.status;
 						if ( f !== F && l.status ) {
 							if ( f ) {
-								_fnapply( f, c, [ self ], '$ajax' );
+								_fnapply( f, c, '$ajax', [ self ] );
 							} else {
 								$.alert( _cfg.debug ? 'ajax error ' + l.status + ': ' + a + '\n\n' + ( $.loc ? $.loc.ajax[ r ] : r + ' error' ) : $.loc.internet_error );
 								win.console && console.error( 'ajax error ' + l.status + ': ' + a + ((r = l.responseText) ? '\n' + r : '') );
 							}
 						}
 				    } else {
-				    	x.filter && (m = _fnapply( x.filter, c, [ m, self ], '$value,$ajax' ));
+				    	x.filter && (m = _fnapply( x.filter, c, '$value,$ajax', [ m, self ] ));
 				    	self.response = m;
 						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
@@ -2350,6 +2347,12 @@ _merge( $, {
 	ready: function( a ) {
 		return br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', a ) : $.query( doc ).ready( a );
 	},
+	zhover: function( a ) {
+		!a.contains( event.fromElement ) && _classAdd( a, 'z-hv' );
+	},
+	zout: function( a ) {
+		!a.contains( event.toElement ) && _classRemove( a, 'z-hv' );
+	},
 	//导入皮肤css /a -> { dir: 'css/', theme: 'classic', color: 'blue' }
 	skin: (function() {
 		var did = _uid(), gid = _uid(), tid = _uid(), cid = _uid(), y = {};
@@ -2400,7 +2403,7 @@ _merge( $, {
 	},
 	br: br, globals: {},
 	Event: _Event, Node: _Node, uid: _uid,
-	proxy: _proxy, fncall: _fncall, fnapply: _fnapply, fncreate: _fncreate, extend: _extend, extendDeep: _extendDeep, merge: _merge, mergeDeep: _mergeDeep, createClass: _createClass, 
+	proxy: _proxy, fncall: _fncall, fnapply: _fnapply, extend: _extend, extendDeep: _extendDeep, merge: _merge, mergeDeep: _mergeDeep, createClass: _createClass, 
 	ajax: _ajax, ajaxXML: _ajaxXML, ajaxJSON: _ajaxJSON, ajaxAbort: _ajaxAbort, ajaxClean: _ajaxClean, script: _script, delay: _delay, cookie: _cookie,
 	arrIs: _arrIs, arrIn: _arrIn, arrIndex: _index, arrMake: _arrMake, arrEach: _each, arrMap: _map, arrSelect: _arrSelect, arrPop: _arrPop, arrFind: _arrFind, isArray: _arrIs, inArray: _arrIn,
 	idsAdd: _idsAdd, idsRemove: _idsRemove, idsAny: _idsAny, number: _number, numRange: _numRange, numAdd: _numAdd, scale: _scale, scaleRange: _scaleRange,

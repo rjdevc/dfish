@@ -493,11 +493,11 @@ define( {
             var s2 = $.strFrom( 'm/pub/test.js', '/', true ); // 返回 "test.js"
           }
       ] },
-      { name: '$.strHighlight(str, key, [matchlength], [keycls])', remark: '使字符串中的关键词高亮。', common: true, param: [
+      { name: '$.strHighlight(str, key, [matchlength], [keycls])', remark: '给字串中的关键词加上高亮的样式标签。', common: true, param: [
         { name: 'str', type: 'String', remark: '字符串。' },
         { name: 'key', type: 'String', remark: '关键词。' },
-        { name: 'matchlength', type: 'Number', optional: true, remark: '切词长度。如果设为0或者null则不切词。' },
-        { name: 'keycls', type: 'String', optional: true, remark: '高亮的样式名。' }
+        { name: 'matchlength', type: 'Number', optional: true, remark: '切词长度。' },
+        { name: 'keycls', type: 'String', optional: true, remark: '高亮的样式名。默认值为"f-keyword"。' }
       ] },
       { name: '$.strSlice(str, len, [ext])', remark: '把字符串按照字节数截取。中文字节数读取自 dfish 全局配置的 cn_bytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
         { name: 'str', type: 'String', remark: '要截取的字符串。' },
@@ -922,7 +922,7 @@ define( {
             wg.before( { type: 'html', text: '123' } );
           }
       ] },
-      { name: 'closest(type)', remark: '获取符合条件的祖先节点。从节点本身开始，逐级向上级匹配，并返回最先匹配的节点。', common: true, param: [
+      { name: 'closest(type)', remark: '获取符合条件的祖先节点。从当前节点开始，逐级向上级匹配，并返回最先匹配的节点。', common: true, param: [
         { name: 'type', type: 'String | Object | Function', remark: '如果是字符串，则按照 widget type 查找。如果是 Object, 返回满足所有条件的节点。' }
       ], example: [
           function() {
@@ -931,6 +931,9 @@ define( {
             var p2 = wg.closest( { type: 'vert' } );
             var p3 = wg.closest( function() { return this.type == 'vert' } );
           }
+      ] },
+      { name: 'closestData(key)', remark: '获取祖先节点的data数据。从当前节点开始，逐级向上，返回最先获取到的data值。', common: true, param: [
+        { name: 'key', type: 'String', remark: '属性名。' }
       ] },
       { name: 'cmd(cmdID, [arg1, arg2...argN])', remark: '执行命令。', common: true, param: [
         { name: 'cmdID', type: 'String | Object', remark: '命令ID，或命令参数对象' },

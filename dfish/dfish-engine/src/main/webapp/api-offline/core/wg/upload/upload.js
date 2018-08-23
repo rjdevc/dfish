@@ -1663,7 +1663,7 @@ define.widget( 'upload/image/value', {
 			var s = this.u.x.down_url;
 			if ( s ) {
 				if ( s.indexOf( 'javascript:' ) === 0 ) {
-					W.jsformat.call( this, s, [], [] );
+					this.formatJS( s );
 				} else {
 					$.download( $.urlFormat( s, this ) );
 				}
