@@ -1338,7 +1338,7 @@ define( {
         { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
         { name: 'cls', type: 'String', remark: '样式名。' },
         { name: 'field', type: 'String', remark: '字段名。' },
-        { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。' },
+        { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget格式的json对象)。' },
         { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
         { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
           { name: 'key', type: 'String', remark: '关键词。' },

@@ -450,20 +450,10 @@ _strSplitword = function( a, b, c ) {
 _strFormat = function( a, b, c ) {
 	if ( ! b )
 		return a;
-	if ( b.isWidget ) {
-		var x = b.x, d = b.x.data;
-		return a.replace( /\$\{?([a-z_]\w*)\}?/gi, function( e, f ) {
-			var v = d && d[ f ];
-			v == N && (v = x[ f ]);
-			return v == N ? '' : c ? v : _urlEncode( v ) } );
+	if ( _arrIs( b ) ) {
+		return a.replace( /\$\{?(\d+)\}?/g, function( $0, $1 ) { return b[ $1 ] == N ? '' : c ? _urlEncode( b[ $1 ] ) : b[ $1 ] } );
 	} else {
-		if ( _arrIs( b ) ) {
-			if ( a.indexOf( 'javascript:' ) === 0 )
-				return Function( '$0,$1,$2,$3,$4,$5,$6,$7,$8,$9', a.slice( 11 ) ).apply( win, b || A );
-			return a.replace( /\$\{?(\d+)\}?/g, function( $0, $1 ) { return b[ $1 ] == N ? '' : c ? _urlEncode( b[ $1 ] ) : b[ $1 ] } );
-		} else {
-			return a.replace( /\$\{?([a-z_]\w*)\}?/gi, function( $0, $1 ) { return b[ $1 ] == N ? '' : c ? _urlEncode( b[ $1 ] ) : b[ $1 ] } );
-		}
+		return a.replace( /\$\{?([a-z_]\w*)\}?/gi, function( $0, $1 ) { return b[ $1 ] == N ? '' : c ? _urlEncode( b[ $1 ] ) : b[ $1 ] } );
 	}
 },
 // 字符转为regexp支持的模式

@@ -516,7 +516,7 @@
 .w-menu-button ._m{position:absolute;right:0;top:0;padding:0 10px 0 26px}
 .w-menu-button.z-ds{color:#aaa}
 .w-menu-button.z-ds .f-arw-r1{border-left-color:#aaa}
-.w-menu-button.z-hv,.w-menu-button.z-open,.w-menu ._ar.z-us:hover{background:#edf4f7}
+.w-menu-button.z-hv,.w-menu-button.z-drop,.w-menu ._ar.z-us:hover{background:#edf4f7}
 .w-menu.z-omit ._t{position:absolute;left:32px;right:40px;}
 .w-menu.w-submenu{z-index:3}
 .w-menu-line{display:none;position:absolute;height:1px;border-left:1px solid transparent;border-right:1px solid transparent;}
