@@ -73,6 +73,20 @@ Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout
 		return this;
 	}
 	/**
+	 * 添加带有标题的行组件
+	 * 添加的组件是否带标题是根据参数hideLabel来决定是否要显示标题,默认显示标题
+	 * @param row 带有标题的行组件
+	 * @return  本身,这样以便更好地设置参数
+	 */
+	public FormPanel addLabelRow(LabelRow<?> row) {
+		if (row == null) {
+			return this;
+		}
+		rows.add(row);
+		this.checkConcurrentModify();
+		return this;
+	}
+	/**
 	 * 标签宽度
 	 */
 	protected String labelWidth;
