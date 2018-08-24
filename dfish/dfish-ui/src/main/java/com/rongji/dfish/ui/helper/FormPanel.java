@@ -10,6 +10,7 @@ import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
+import com.rongji.dfish.ui.form.LabelRowContainer;
 import com.rongji.dfish.ui.layout.GridLayout;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Td;
@@ -31,7 +32,8 @@ import com.rongji.dfish.ui.layout.grid.Tr;
  * @author DFish Team
  * @since dfish 2.0
  */
-public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> implements Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout>{
+public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> implements 
+Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout>,LabelRowContainer<FormPanel>{
 	/**
 	 * 
 	 */
@@ -234,6 +236,11 @@ public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> impl
 	public FormPanel removeHidden(String name) {
 		prototype.removeHidden(name);
 		return this;
+	}
+
+	@Override
+	public List<Widget<?>> findNodes() {
+		 return rows;
 	}
 
 }

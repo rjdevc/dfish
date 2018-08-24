@@ -9,16 +9,20 @@ import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
+import com.rongji.dfish.ui.form.LabelRowContainer;
 import com.rongji.dfish.ui.layout.GridLayout;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Td;
+import com.rongji.dfish.ui.layout.grid.Tr;
 
 /**
  * 多列表单
  * @author DFish Team
  *
  */
-public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPanel, GridLayout> implements Scrollable<GridLayoutFormPanel>,HiddenContainer<GridLayoutFormPanel>,PrototypeChangeable<GridLayout>{
+public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPanel, GridLayout> implements 
+	Scrollable<GridLayoutFormPanel>,HiddenContainer<GridLayoutFormPanel>,PrototypeChangeable<GridLayout>,
+	LabelRowContainer<GridLayoutFormPanel>{
 	private static final long serialVersionUID = 3706745931483031949L;
 
 	protected static final String COLUMN_CLS_LABEL="form-tt";
@@ -280,5 +284,9 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		prototype.removeHidden(name);
 		return this;
 	}
-	
+
+	@Override
+	public List<Tr> findNodes() {
+		 return prototype.findNodes();
+	}
 }

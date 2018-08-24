@@ -240,7 +240,10 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 
 		@Override
 		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
-			Object v=getterMethod.invoke(o);
+			Object v=null;
+			try{
+				v=getterMethod.invoke(o);
+			}catch(Exception ex){/* 如果属性获取没权限等情况这里不做任何记录，否则日志会很长 */}
 			if(v==null){//为空则跳出
 				return begin;
 			}
@@ -310,7 +313,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 			}else{
 				sb.append(',');
 			}
-			//部分属性不输输出
+			//部分属性不输出
 			sb.append('"').append(propName).append('"').append(':');
 			int propValueBegin=sb.length();
 			path.push(new PathInfo(propName,v));
