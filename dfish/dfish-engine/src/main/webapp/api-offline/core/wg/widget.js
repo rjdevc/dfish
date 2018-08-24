@@ -697,7 +697,7 @@ W = define( 'widget', function() {
 					try { eval( 'v = v' + t ); } catch( ex ) { v = N; }
 				}
 				d && (v = d( v ));
-				return v && c ? $[ c === T ? 'urlEncode' : '' ]( v ) : (v == N ? '' : v);
+				return v && c ? $[ c === T ? 'urlEncode' : c ]( v ) : (v == N ? '' : v);
 			} );
 		},
 
@@ -5327,7 +5327,7 @@ Slider = define.widget( 'slider', {
 				v = Math.floor( Math.floor((m - n) * l / w) );
 				a.style.left = l + 'px';
 				$( self.id + 'track' ).style.width = (l + (g / 2)) + 'px';
-				d && d.snapTo( a ).text( this.formatStr( t, [ v ] ) );
+				d && d.snapTo( a ).text( self.formatStr( t, [ v ] ) );
 				$( self.id + 't' ).value = v;
 				self.trigger( 'change' );
 			}, function( e ) {
