@@ -7419,7 +7419,7 @@ GridRow = define.widget( 'grid/row', {
 						g += ' class="w-td-t f-fix"';
 					if ( !e && c[ i ]._sort )
 						v += c[ i ].html_sortarrow();
-					if ( e && f.tip )
+					if ( f.tip )
 						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push( '<td class="w-td-' + u._face + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' : '') : '') +
