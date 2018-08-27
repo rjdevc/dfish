@@ -30,7 +30,7 @@ $ = dfish = function( a ) {
 },
 
 // 浏览器信息
-br = (function() {
+br = $.br = (function() {
 	var u = navigator.userAgent.toLowerCase(),
 		d = doc.documentMode,
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
@@ -65,7 +65,7 @@ br = (function() {
 ie = br.ie,
 
 // a继承b的属性。不覆盖a的既有同名属性
-_extend = function( a ) {
+_extend = $.extend = function ( a ) {
 	for ( var i = 1, c; i < arguments.length; i ++ ) {
 		if ( c = arguments[ i ] ) {
 			for ( var k in c ) if ( ! ( k in a ) ) a[ k ] = c[ k ];
@@ -74,7 +74,7 @@ _extend = function( a ) {
 	return a;
 },
 // 递归继承
-_extendDeep = function( a ) {
+_extendDeep = $.extendDeep = function ( a ) {
 	for ( var j = 1, l = arguments.length, c, i; j < l; j ++ ) {
 		c = arguments[ j ];
 		for ( i in c )
@@ -89,7 +89,7 @@ _extendDeep = function( a ) {
 	return a;
 },
 // a拷贝b的属性
-_merge = function( a ) {
+_merge = $.merge = function( a ) {
 	for ( var i = 1, c, l = arguments.length; i < l; i ++ ) {
 		if ( c = arguments[ i ] ) {
 			for ( var k in c ) a[ k ] = c[ k ];
@@ -98,7 +98,7 @@ _merge = function( a ) {
 	return a;
 },
 // a拷贝b的属性
-_mergeDeep = function( a ) {
+_mergeDeep = $.mergeDeep = function( a ) {
 	for ( var i = 1, c, l = arguments.length; i < l; i ++ ) {
 		if ( c = arguments[ i ] ) {
 			for ( var k in c ) {
@@ -112,7 +112,7 @@ _mergeDeep = function( a ) {
 	return a;
 },
 // 创建类
-_createClass = function( a, b ) {
+_createClass = $.createClass = function( a, b ) {
 	var n;
 	if ( b )
 		n = a, a = b;
@@ -2223,10 +2223,10 @@ function _initDocView( $ ) {
 /* 初始化应用环境 */
 var $G = {};
 _merge( $, {
-	//dfish对象名，默认为"$"
-	_data: {},
 	abbr: '$',
 	alert_id: 'dfish:alert',
+	_data: {},
+	globals: {},
 	// 事件白名单
 	white_events: (function() {
 		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,paste,beforepaste,beforedeactivate,' +
@@ -2391,9 +2391,8 @@ _merge( $, {
 		}
 		return d;
 	},
-	br: br, globals: {},
 	Event: _Event, Node: _Node, uid: _uid,
-	proxy: _proxy, fncall: _fncall, fnapply: _fnapply, extend: _extend, extendDeep: _extendDeep, merge: _merge, mergeDeep: _mergeDeep, createClass: _createClass, 
+	proxy: _proxy, fncall: _fncall, fnapply: _fnapply,
 	ajax: _ajax, ajaxXML: _ajaxXML, ajaxJSON: _ajaxJSON, ajaxAbort: _ajaxAbort, ajaxClean: _ajaxClean, script: _script, delay: _delay, cookie: _cookie,
 	arrIs: _arrIs, arrIn: _arrIn, arrIndex: _index, arrMake: _arrMake, arrEach: _each, arrMap: _map, arrSelect: _arrSelect, arrPop: _arrPop, arrFind: _arrFind, isArray: _arrIs, inArray: _arrIn,
 	idsAdd: _idsAdd, idsRemove: _idsRemove, idsAny: _idsAny, number: _number, numRange: _numRange, numAdd: _numAdd, scale: _scale, scaleRange: _scaleRange,

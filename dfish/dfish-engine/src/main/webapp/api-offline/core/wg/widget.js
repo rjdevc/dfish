@@ -3588,7 +3588,7 @@ Confirm = define.widget( 'confirm', {
 	Extend: Alert
 } ),
 _instCache = {},
-// 唯一实例 /@a -> widget, b -> owner widget
+// 唯一实例 /@a -> widget, b -> owner widget?
 _inst_add = _inst_hide = function( a, b ) {
 	b = (b || _docView).id + (a.type || a);
 	_instCache[ b ] && _instCache[ b ].hide();
@@ -7627,6 +7627,12 @@ TD = define.widget( 'td', {
 		}
 	}
 } ),
+_subrow_elem = function( a ) {
+	for ( var i = 0; i < this.length; i ++ ) {
+		a.push( this[ i ].$() );
+		this[ i ].length && _subrow_elem.call( this[ i ], a );
+	}
+},
 /* `tr` */
 TR = define.widget( 'tr', {
 	Extend: GridRow,
@@ -7733,9 +7739,9 @@ TR = define.widget( 'tr', {
 		// @a -> index|"+=index"
 		move: function( a ) {
 			var c = a;
-			if ( typeof a === _STR && a.charAt( 1 ) === '=' )
+			if ( typeof a === _STR && a.charAt( 1 ) == '=' )
 				eval( 'c=this.nodeIndex;c' + a );
-			if ( (c = this.parentNode[ c ]) && c !== this )
+			if ( (c = this.parentNode[ c ]) && c != this )
 				c[ c.nodeIndex > this.nodeIndex ? 'after' : 'before' ]( this );
 		},
 		// @implement tr 子节点的特殊处理
@@ -7747,6 +7753,7 @@ TR = define.widget( 'tr', {
 				s = [];
 				var i = a.$().rowIndex, p = a.$().parentNode.parentNode, j = a._rowlen();
 				do { s.push( p.rows[ i ] ) } while ( j -- );
+				a.length && _subrow_elem.call( a, s );
 			}
 			if ( b === 'before' )
 				Q( this.$() )[ b ]( s );
