@@ -11,8 +11,9 @@ public class GridLayoutFormPanelTest extends DFishUITestCase {
 		glfp.add(0, 1, new Text("name2","标签2","value2"));
 		glfp.add(0, 0, new Text("name1","标签1","value1"));
 		glfp.add(1, 0, new Text("name3","标签3","value3"));
-		glfp.add(1, 1, new Text("name4","标签4","value4"));
-		glfp.getPrototype().getColumns().get(0).setWidth("10");
+		glfp.add(1, 1, new Text("name4","标签4","value4").setId("id4"));
+//		glfp.getPrototype().getColumns().get(0).setWidth("10");
+		glfp.replaceNodeById(new Text("name5","标签5","value5").setId("id4"));
 		return glfp;
 	}
 

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rongji.dfish.ui.AbstractWidgetWrapper;
+import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.HiddenContainer;
+import com.rongji.dfish.ui.Layout;
 import com.rongji.dfish.ui.PrototypeChangeable;
 import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
@@ -33,7 +35,9 @@ import com.rongji.dfish.ui.layout.grid.Tr;
  * @since dfish 2.0
  */
 public class FormPanel extends AbstractWidgetWrapper<FormPanel, GridLayout> implements 
-Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout>,LabelRowContainer<FormPanel>{
+Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout>,LabelRowContainer<FormPanel>,
+Layout<FormPanel,Widget<?>>{
+
 	/**
 	 * 
 	 */
@@ -252,6 +256,22 @@ Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout
 		return this;
 	}
 
+	@Override
+	public Widget<?> findNodeById(String id) {
+		return super.findNodeById(id);
+	}
+	@Override
+	public FormPanel removeNodeById(String id) {
+		return super.removeNodeById(id);
+	}
+	@Override
+	public boolean replaceNodeById(Widget<?> w) {
+		return super.replaceNodeById(w);
+	}
+	@Override
+	public List<FormElement<?, ?>> findFormElementsByName(String name) {
+		return super.findFormElementsByName(name);
+	}
 	@Override
 	public List<Widget<?>> findNodes() {
 		 return rows;

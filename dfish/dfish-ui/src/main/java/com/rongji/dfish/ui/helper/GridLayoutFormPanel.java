@@ -3,7 +3,9 @@ package com.rongji.dfish.ui.helper;
 import java.util.List;
 
 import com.rongji.dfish.ui.AbstractWidgetWrapper;
+import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.HiddenContainer;
+import com.rongji.dfish.ui.Layout;
 import com.rongji.dfish.ui.PrototypeChangeable;
 import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
@@ -22,7 +24,7 @@ import com.rongji.dfish.ui.layout.grid.Tr;
  */
 public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPanel, GridLayout> implements 
 	Scrollable<GridLayoutFormPanel>,HiddenContainer<GridLayoutFormPanel>,PrototypeChangeable<GridLayout>,
-	LabelRowContainer<GridLayoutFormPanel>{
+	LabelRowContainer<GridLayoutFormPanel>,Layout<GridLayoutFormPanel,Widget<?>>{
 	private static final long serialVersionUID = 3706745931483031949L;
 
 	protected static final String COLUMN_CLS_LABEL="form-tt";
@@ -172,11 +174,12 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 //			columns.add(GridColumn.text(GridColumn.COLUMN_FIELD_UNKNOWN, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
 //			columns.add(GridColumn.text(GridColumn.COLUMN_FIELD_UNKNOWN, FormPanel.COLUMN_WIDTH_VALUE));
 //		}
-		for(int i=fromColumn;i<=toColumn;i++){
-			int columnIndex = 2 * i;
-			while(columns.size()<=columnIndex){
-				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_LABEL+i, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
-				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_VALUE+i, FormPanel.COLUMN_WIDTH_VALUE));
+//		for(int i=fromColumn;i<=toColumn;i++){
+//			int maxColumnIndex = 2 * i;
+			while(columns.size()<=toColumn*2){
+				int columnIndex=columns.size()/2;
+				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_LABEL+columnIndex, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
+				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_VALUE+columnIndex, FormPanel.COLUMN_WIDTH_VALUE));
 //			} else {
 //				GridColumn labelColumn = columns.get(columnIndex);
 //				if (labelColumn != null && GridColumn.COLUMN_FIELD_UNKNOWN.equals(labelColumn.getField())) {
@@ -187,7 +190,7 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 //					valueColumn.setField(FormPanel.COLUMN_FIELD_VALUE+i);
 //				}
 			}
-		}
+//		}
 		
 		Td cell = new Td();
 		cell.setNode(value);
@@ -311,7 +314,23 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		prototype.removeHidden(name);
 		return this;
 	}
-
+	@Override
+	public Widget<?> findNodeById(String id) {
+		return prototype.findNodeById(id);
+	}
+	@Override
+	public GridLayoutFormPanel removeNodeById(String id) {
+		prototype.removeNodeById(id);//FIXME 如果LabelRow标签不会被替换需要调用addLabelRow方法
+		return this;
+	}
+	@Override
+	public boolean replaceNodeById(Widget<?> w) {
+		return prototype.replaceNodeById(w);//FIXME 如果LabelRow标签不会被替换需要调用addLabelRow方法
+	}
+	@Override
+	public List<FormElement<?, ?>> findFormElementsByName(String name) {
+		return prototype.findFormElementsByName(name);
+	}
 	@Override
 	public List<Tr> findNodes() {
 		 return prototype.findNodes();
