@@ -237,16 +237,12 @@ _ajaxCmd = function( x, a, t ) {
 		d = this.cmd( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
 	var g = '$value,$ajax';
-	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers,
-		error: x.error && $.fncreate( x.error, this, '$ajax' ), beforesend: x.beforesend && $.fncreate( x.beforesend, this, '$ajax' ), 
+	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter, error: x.error, beforesend: x.beforesend, 
 		success: function( v, a ) {
 			d && (d.close(), d = N);
-			if ( ! this._disposed && x.filter )
-				v = $.fnapply( x.filter, this, [ v, a ], g );
-			if ( ! this._disposed && x.success )
-				$.fnapply( x.success, this, [ v, a ], g );
-			if ( ! this._disposed )
-				this.exec( v, N, x.transfer );
+			if ( ! this._disposed ) {
+				x.success ? $.fnapply( x.success, this, [ v, a ], g ) : (v && this.exec( v, N, x.transfer ));
+			}
 		}, complete: function( v, a ) {
 			d && d.close();
 			if ( ! this._disposed && x.complete )
@@ -1148,8 +1144,7 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			if ( a[ 0 ] === this )
 				return this;
 			for ( q = a[ 0 ].parentNode, i = 0; i < a.length; i ++ )
-				a[ 0 ].removeNode( T );
-			q = q[ 0 ];
+				a[ i ].removeNode( T );
 		}
 		var i = j === 3 ? this.nodeIndex + 1 : j === 2 ? this.nodeIndex : j === 1 ? this.length : 0, d = this.nodeIndex > -1,
 			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
@@ -1168,7 +1163,8 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			}
 		}
 		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
-		d && q && (((k = {})[ s ] = q.x[ s ]), q.resize( k ));
+		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
+		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize' );
 		return p[ i ];
@@ -4521,7 +4517,7 @@ Triplebox = define.widget( 'triplebox', {
 		}
 	},
 	Prototype: {
-		className: 'w-checkbox',
+		className: 'w-form w-checkbox',
 		checkstate: function( a ) {
 			var b = this.$t().checked ? 1 : this.$t().indeterminate ? 2 : 0;
 			if ( a == N )
@@ -4662,6 +4658,18 @@ CalendarNum = define.widget( 'calendar/num', {
 							! this._disposed && this.trigger( 'focus' );
 						}
 					}
+				}
+			},
+			mouseover: {
+				prop: T,
+				method: function() {
+					!this.isDisabled() && this.addClass( 'z-hv' );
+				}
+			},
+			mouseout: {
+				prop: T,
+				method: function() {
+					!this.isDisabled() && this.removeClass( 'z-hv' );
 				}
 			},
 			focus: function( e ) {
@@ -5333,7 +5341,7 @@ XBox = define.widget( 'xbox', {
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
-				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + '>' + this.htm_li( o[ i ] ) + '</div>' );
+				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + ' onmouseover=$.zhover(this) onmouseout=$.zout(this)>' + this.htm_li( o[ i ] ) + '</div>' );
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=$.all["' + this.id + '"].choose(this,event)>' + s.join( '' ) + '</div>';
 		},
@@ -6580,17 +6588,23 @@ TreeCombo = $.createClass( {
 		// 根据关键词过滤得到有效节点 /@a -> keyword
 		_filter: function( a ) {
 			if ( a ) {
-				var b = $.strSplitword( a, this._matchlength ), e = [];
-				for ( var i = 0, c; i < b.length; i ++ ) {
+				var b = $.strSplitword( a, this._matchlength ), f = [];
+				for ( var i = 0, c, s; i < b.length; i ++ ) {
 					c = $.strQuot( b[ i ] );
-					e.push( 'contains(@t,"' + c + '")', 'contains(@r,"' + c + '")' );
+					s = 'contains(@t,"' + c + '") or contains(@r,"' + c + '")';
 					if ( this._sch ) {
 						for ( var j = 0; j < this._sch; j ++ )
-							e.push( 'contains(@s' + j + ',"' + c + '")' );
+							s += ' or contains(@s' + j + ',"' + c + '")';
+					}
+					for ( var j = 0, d = $.xmlQueryAll( this.xml, './/d[(' + s + ') and @v!="" and not(@ds) and not(@f)]' ), l = d.length; j < l; j ++ ) { //translate(@t,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+						d[ j ].setAttribute( 'f', '1' );
+						f.push( d[ j ] );
 					}
 				}
-				for ( var i = 0, f = [], d = $.xmlQueryAll( this.xml, './/d[(' + e.join( ' or ' ) + ') and @v!="" and not(@ds)]' ), l = d.length; i < l; i ++ ) //translate(@t,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-					f.push( _all[ d[ i ].getAttribute( 'i' ) ] );
+				for ( var i = 0, l = f.length; i < l; i ++ ) {
+					f[ i ].removeAttribute( 'f' );
+					f[ i ] = _all[ f[ i ].getAttribute( 'i' ) ];
+				}
 				return f;
 			}
 		},
@@ -6918,8 +6932,6 @@ Leaf = define.widget( 'leaf', {
 			},
 			nodechange: function() {
 				this.fixFolder();
-				if ( ! this.length )
-					this.loaded = this.x.open = F;
 			}
 		}
 	},
@@ -6969,9 +6981,6 @@ Leaf = define.widget( 'leaf', {
 		},
 		isEvent4Box: function( e ) {
 			return this.box && e && e.srcElement && e.srcElement.id == this.box.id + 't';
-		},
-		offsetParent: function() {
-			return this.rootNode;
 		},
 		scrollIntoView: function( a ) {
 			var n = this;
@@ -7052,6 +7061,7 @@ Leaf = define.widget( 'leaf', {
 				for ( var i = 0; i < f.length; i ++ ) {
 					if ( this.contains( f[ i ] ) ) { b = T; break; }
 				}
+				this.x.open   = b;
 				this.x.status = $.arrIn( f, this ) ? '' : 'disabled';
 				$.classAdd( this, 'z-notg', !!(this.length && !s) ); // 子节点都被过滤时，隐藏tg
 			}
@@ -7208,9 +7218,6 @@ GridLeaf = define.widget( 'grid/leaf', {
 			l && Q( r.$() ).after( r.html_nodes() );
 			this.loaded = T;
 		},
-		offsetParent: function() {
-			return this.closest( 'td' );
-		},
 		html: function() {
 			var r = this.tr(), s = this.html_self( r.length );
 			return this.x.hr ? '<table class=w-hr-table cellspacing=0 cellpadding=0><tr><td>' + s + '<td width=100%><hr class=w-hr-line noshade></table>' : s;
@@ -7238,7 +7245,7 @@ GridToggle = define.widget( 'grid/toggle', {
 			var a = a == N ? ! (this.x.open == N ? T : this.x.open) : a, t = this.tr();
 			this.x.open = a;
 			t.toggle_rows( a );
-			for ( var i = t.$().rowIndex + 1, b = t.$().offsetParent.rows, c, l = b.length; i < l; i ++ ) {
+			for ( var i = t.$().rowIndex + 1, b = t.$().parentNode.parentNode.rows, c, l = b.length; i < l; i ++ ) {
 				c = _widget( b[ i ] );
 				if ( c.tgl )
 					break;
@@ -7412,7 +7419,7 @@ GridRow = define.widget( 'grid/row', {
 						g += ' class="w-td-t f-fix"';
 					if ( !e && c[ i ]._sort )
 						v += c[ i ].html_sortarrow();
-					if ( e && f.tip )
+					if ( f.tip )
 						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push( '<td class="w-td-' + u._face + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' : '') : '') +
@@ -7493,6 +7500,12 @@ TD = define.widget( 'td', {
 		}
 	}
 } ),
+_subrow_elem = function( a ) {
+	for ( var i = 0; i < this.length; i ++ ) {
+		a.push( this[ i ].$() );
+		this[ i ].length && _subrow_elem.call( this[ i ], a );
+	}
+},
 /* `tr` */
 TR = define.widget( 'tr', {
 	Extend: GridRow,
@@ -7582,7 +7595,7 @@ TR = define.widget( 'tr', {
 		},
 		next: function( n ) {
 			if ( this.rootNode._echo_rows ) {
-				var b = this.$().offsetParent.rows[ this.$().rowIndex + ( n === F ? -1 : 1 ) ];
+				var b = this.$().parentNode.parentNode.rows[ this.$().rowIndex + ( n === F ? -1 : 1 ) ];
 				return b && _widget( b );
 			} else
 				return this.parentNode[ this.nodeIndex + ( n === F ? -1 : 1 ) ];
@@ -7611,13 +7624,14 @@ TR = define.widget( 'tr', {
 			var s = a;
 			if ( a.isWidget ) {
 				s = [];
-				var i = a.$().rowIndex, p = a.$().offsetParent, j = a._rowlen();
+				var i = a.$().rowIndex, p = a.$().parentNode.parentNode, j = a._rowlen();
 				do { s.push( p.rows[ i ] ) } while ( j -- );
+				a.length && _subrow_elem.call( a, s );
 			}
 			if ( b === 'before' )
 				Q( this.$() )[ b ]( s );
 			else
-				Q( b === 'prepend' ? this.$() : this.$().offsetParent.rows[ this.$().rowIndex + this._rowlen() ] ).after( s );
+				Q( b === 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._rowlen() ] ).after( s );
 		},
 		// @a -> T/F, b -> src
 		toggle: function( a, b ) {

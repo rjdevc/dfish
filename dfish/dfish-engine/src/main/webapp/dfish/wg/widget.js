@@ -7500,6 +7500,12 @@ TD = define.widget( 'td', {
 		}
 	}
 } ),
+_subrow_elem = function( a ) {
+	for ( var i = 0; i < this.length; i ++ ) {
+		a.push( this[ i ].$() );
+		this[ i ].length && _subrow_elem.call( this[ i ], a );
+	}
+},
 /* `tr` */
 TR = define.widget( 'tr', {
 	Extend: GridRow,
@@ -7620,6 +7626,7 @@ TR = define.widget( 'tr', {
 				s = [];
 				var i = a.$().rowIndex, p = a.$().parentNode.parentNode, j = a._rowlen();
 				do { s.push( p.rows[ i ] ) } while ( j -- );
+				a.length && _subrow_elem.call( a, s );
 			}
 			if ( b === 'before' )
 				Q( this.$() )[ b ]( s );
