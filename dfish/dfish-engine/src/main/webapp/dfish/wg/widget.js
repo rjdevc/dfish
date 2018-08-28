@@ -7500,12 +7500,6 @@ TD = define.widget( 'td', {
 		}
 	}
 } ),
-_subrow_elem = function( a ) {
-	for ( var i = 0; i < this.length; i ++ ) {
-		a.push( this[ i ].$() );
-		this[ i ].length && _subrow_elem.call( this[ i ], a );
-	}
-},
 /* `tr` */
 TR = define.widget( 'tr', {
 	Extend: GridRow,
@@ -7604,9 +7598,9 @@ TR = define.widget( 'tr', {
 			return this.next( F );
 		},
 		// 计算所有子孙节点共有多少行
-		_rowlen: function() {
+		_childLen: function() {
 			for ( var l = this.length, i = 0, j = 0; j < l; j ++ )
-				this[ j ].$() && (i += this[ j ]._rowlen() + 1);
+				this[ j ].$() && (i += this[ j ]._childLen() + 1);
 			return i;
 		},
 		// @a -> index|"+=index"
@@ -7624,14 +7618,13 @@ TR = define.widget( 'tr', {
 			var s = a;
 			if ( a.isWidget ) {
 				s = [];
-				var i = a.$().rowIndex, p = a.$().parentNode.parentNode, j = a._rowlen();
-				do { s.push( p.rows[ i ] ) } while ( j -- );
-				a.length && _subrow_elem.call( a, s );
+				for ( var i = a.$().rowIndex, j = 0, p = a.$().parentNode.parentNode, l = a._childLen(); j <= l; j ++ )
+					s.push( p.rows[ i + j ] );
 			}
-			if ( b === 'before' )
+			if ( b == 'before' )
 				Q( this.$() )[ b ]( s );
 			else
-				Q( b === 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._rowlen() ] ).after( s );
+				Q( b == 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._childLen() ] ).after( s );
 		},
 		// @a -> T/F, b -> src
 		toggle: function( a, b ) {
