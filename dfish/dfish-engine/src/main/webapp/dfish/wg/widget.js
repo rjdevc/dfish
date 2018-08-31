@@ -87,7 +87,7 @@ _view = function( a ) {
 		return a.ownerView;
 	if ( typeof a === _STR ) {
 		if ( a.indexOf( 'javascript:' ) === 0 )
-			a = Function( a ).call( this );
+			return _view.call( this, Function( a ).call( this ) );
 		return a.charAt( 0 ) === '/' ? _viewCache[ a ] : a.charAt( 0 ) === '#' ? _globalCache[ a ] : (a = $.dialog( a )) && a.contentView;
 	} else {
 		return _vmByElem( a );
@@ -1767,6 +1767,7 @@ DocView = define.widget( 'docview', {
 		_initView.call( this );
 		this._wd = this.width();
 		this._ht = this.height();
+		_viewCache[ this.path ] = this;
 		var self = this, f;
 		$.attach( window, 'resize', f = function( e, w, h ) {
 			w = w || self.width(); h = h || self.height();
