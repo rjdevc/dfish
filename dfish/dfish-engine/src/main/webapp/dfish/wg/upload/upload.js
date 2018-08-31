@@ -1254,7 +1254,7 @@ BaseUpload = define.widget( 'upload/base', {
 				for ( var i = numFilesInQueue - numFilesQueued; i < numFilesInQueue; i ++ ) {
 					this.valuebar.add( { file: this.getQueueFile( i ) } );
 				}
-				this.trigger( 'fileselect' );
+				//this.trigger( 'fileselect' );
 				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
 					d[ i ].render();
 				this.startUpload();
@@ -1577,7 +1577,7 @@ define.widget( 'upload/file/upload/button', {
 				} else if ( t && ! $.idsAny( t, '.' + $.strFrom( b[ i ].name, '.', true ).toLowerCase() ) ) {
 					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.INVALID_FILETYPE );
 					continue;
-				} else if ( this.x.on && this.x.on.fileselect && (r = $.fncall( this.x.on.fileselect, this, b[ i ] )) ) {
+				} else if ( u.x.on && u.x.on.fileselect && (r = u.triggerHandler( 'fileselect', b[ i ] )) ) {
 					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.INVALID_FILENAME, r );
 					continue;
 				} else {
@@ -1758,7 +1758,7 @@ define.widget( 'upload/file/value', {
 	Extend: 'upload/image/value',
 	Listener: {
 		body: {
-			ready: $.rt_null
+			ready: $.rt()
 		}
 	},
 	Prototype: {

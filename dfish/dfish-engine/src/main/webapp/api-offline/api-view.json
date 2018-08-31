@@ -84,6 +84,7 @@
 		          { "id": "$.strEscape", "text": "$.strEscape", "datasrc": "$" },
 		          { "id": "$.strFrom", "text": "$.strFrom", "datasrc": "$" },
 		          { "id": "$.strHighlight", "text": "$.strHighlight", "datasrc": "$" },
+		          { "id": "$.strLen", "text": "$.strLen", "datasrc": "$" },
 		          { "id": "$.strSlice", "text": "$.strSlice", "datasrc": "$" },
 		          { "id": "$.strTo", "text": "$.strTo", "datasrc": "$" },
 		          { "id": "$.strTrim", "text": "$.strTrim", "datasrc": "$" },

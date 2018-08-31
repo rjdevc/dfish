@@ -499,7 +499,11 @@ define( {
         { name: 'matchlength', type: 'Number', optional: true, remark: '切词长度。' },
         { name: 'keycls', type: 'String', optional: true, remark: '高亮的样式名。默认值为"f-keyword"。' }
       ] },
-      { name: '$.strSlice(str, len, [ext])', remark: '把字符串按照字节数截取。中文字节数读取自 dfish 全局配置的 cn_bytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
+      { name: '$.strLen(str, [cnbyte])', remark: '获取字符串的字节长度。中文字符的字节数读取自 dfish 全局配置的 cn_bytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
+        { name: 'str', type: 'String', remark: '字符串。' },
+        { name: 'cnbyte', type: 'Number', remark: '中文字符的字节数。默认值为2', optional: true }
+      ] },
+      { name: '$.strSlice(str, len, [ext])', remark: '把字符串按照字节数截取。中文字符的字节数读取自 dfish 全局配置的 cn_bytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
         { name: 'str', type: 'String', remark: '要截取的字符串。' },
         { name: 'len', type: 'Number', remark: '要截取的长度。' },
         { name: 'ext', type: 'String', remark: '当字串超出长度时补充到最后的文本。', optional: true }
@@ -3121,6 +3125,7 @@ define( {
     ],
     Classes: [
       { name: '.w-menu', remark: '基础样式。' },
+      { name: '.w-menu-line', remark: '用于button和menu的连接效果。如果需要这个效果，则设置: .w-menu-line{display:block}' },
       { name: '.z-snap-{**}', remark: ' dialog 设置了 snap 参数时的样式。{**} 值根据 snap 结果类型而定。例如 snaptype 为 "41"，那么该样式名称则为: z-snap-41' },
       { name: '.z-mag-{*}', remark: ' dialog 设置了 snap 参数时的样式。{*} 值根据 snap 位置类型而定。x 的可能值有: t(top), r(right), b(bottom), l(left)' }
     ]
