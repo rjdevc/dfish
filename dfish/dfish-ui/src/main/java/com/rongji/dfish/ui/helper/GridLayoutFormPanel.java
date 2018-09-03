@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.helper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.rongji.dfish.ui.AbstractWidgetWrapper;
 import com.rongji.dfish.ui.FormElement;
@@ -318,15 +319,38 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	public Widget<?> findNodeById(String id) {
 		return prototype.findNodeById(id);
 	}
-	@Override
+//	@Override
+//	public GridLayoutFormPanel removeNodeById(String id) {
+//		prototype.removeNodeById(id);//FIXME 如果LabelRow标签不会被替换需要调用addLabelRow方法
+//		return this;
+//	}
+//	@Override
+//	public boolean replaceNodeById(Widget<?> w) {
+//		return prototype.replaceNodeById(w);//FIXME 如果LabelRow标签不会被替换需要调用addLabelRow方法
+//	}
+	
+	public boolean replaceNodeById(Widget<?> value) {
+		//存在标签且不隐藏
+		if (value instanceof LabelRow && (((LabelRow<?>) value).getHideLabel()==null||!((LabelRow<?>) value).getHideLabel())) {
+			if(prototype.replaceNodeById(value)){
+				//尝试替换左边的label
+				LabelRow<?> cast=(LabelRow<?>)value;
+				prototype.replaceNodeById((Widget<?>) new FormLabel(cast, prototype.getEscape()).getLabelWidget(true));
+				return true;
+			}else{
+				return false;
+			}
+		} else {
+			return prototype.replaceNodeById(value);
+		}
+	}
+	
 	public GridLayoutFormPanel removeNodeById(String id) {
-		prototype.removeNodeById(id);//FIXME 如果LabelRow标签不会被替换需要调用addLabelRow方法
+		prototype.removeNodeById(id);
+		prototype.removeNodeById("lbl_"+id);
 		return this;
 	}
-	@Override
-	public boolean replaceNodeById(Widget<?> w) {
-		return prototype.replaceNodeById(w);//FIXME 如果LabelRow标签不会被替换需要调用addLabelRow方法
-	}
+	
 	@Override
 	public List<FormElement<?, ?>> findFormElementsByName(String name) {
 		return prototype.findFormElementsByName(name);
