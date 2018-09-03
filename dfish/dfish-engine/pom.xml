@@ -33,6 +33,7 @@
 		    <artifactId>maven-war-plugin</artifactId>
 		    <configuration>
 		        <packagingExcludes>api/**,api-offline/**,css/**,m/**,webapp/**,*.jsp</packagingExcludes>
+		        <failOnMissingWebXml>false</failOnMissingWebXml>
 		    </configuration>
 		</plugin>
     </plugins>
