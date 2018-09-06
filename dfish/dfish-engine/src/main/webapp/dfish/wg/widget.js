@@ -776,7 +776,7 @@ W = define( 'widget', function() {
 				a ? $[ b || 'append' ]( a || document.body, s ) : _render.call( this, s );
 			this.trigger( 'render' );
 			this.triggerAll( 'ready' );
-			this.parentNode.trigger( 'nodechange' );
+			!this._disposed && this.parentNode.trigger( 'nodechange' );
 			return this;
 		},
 		// @dao 通过js增加子节点时会调用此方法 / a -> html|widget, b -> where(prepend|append|before|after)
