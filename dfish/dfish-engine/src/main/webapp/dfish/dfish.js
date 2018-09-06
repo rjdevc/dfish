@@ -1,8 +1,7 @@
 /*!
- *  dfish
- *	@version	3.0
- *	@author		cmy
- *  @modified	2016-03-31
+ * dfish.js v3.2
+ * (c) 2015-2018 Mingyuan Chen
+ * Released under the MIT License.
  */
 
 ( function( global, factory ) {
@@ -68,7 +67,7 @@ ie = br.ie,
 _extend = $.extend = function ( a ) {
 	for ( var i = 1, c; i < arguments.length; i ++ ) {
 		if ( c = arguments[ i ] ) {
-			for ( var k in c ) if ( ! ( k in a ) ) a[ k ] = c[ k ];
+			for ( var k in c ) if ( !(k in a) ) a[ k ] = c[ k ];
 		}
 	}
 	return a;
@@ -886,19 +885,18 @@ _css_camelize = (function() {
   @example:
     _css( oDiv, 'width', 100, 'height', 100 );
   @example:
-    _css( oDiv, { 'width' : 100, 'height' : 100 } );
+    _css( oDiv, { width: 100, height: 100 } );
 */
-_css = $.css = function( o, s ) {
+_css = $.css = function( o, s, n ) {
 	if ( ! o || ! s )
 		return N;
-	var l = arguments.length, i;
-	if ( l > 2 ) {
-		for ( i = 1; i < l; i += 2 )
+	if ( n != N ) {
+		for ( var i = 1, l = arguments.length; i < l; i += 2 )
 			_set_style( o, arguments[ i ], arguments[ i + 1 ] );
 	} else {
 		if ( typeof s === _STR )
 			return o.style[ s ] || o.currentStyle[ s ];
-		for ( i in s ) _set_style( o, i, s[ i ] );
+		for ( var i in s ) _set_style( o, i, s[ i ] );
 	}
 },
 // @o -> el, n -> name, v -> value
@@ -1593,7 +1591,7 @@ Ajax = _createClass( {
 							if ( f ) {
 								_fnapply( f, c, '$ajax', [ self ] );
 							} else {
-								$.alert( _cfg.debug ? 'ajax error ' + l.status + ': ' + a + '\n\n' + ( $.loc ? $.loc.ajax[ r ] : r + ' error' ) : $.loc.internet_error );
+								$.alert( _cfg.debug ? 'ajax error ' + l.status + ': ' + _strEscape( a ) + '\n\n' + ( $.loc ? $.loc.ajax[ r ] : r + ' error' ) : (l.status > 600 ? $.loc.internet_error : $.loc.server_error) );
 								win.console && console.error( 'ajax error ' + l.status + ': ' + a + ((r = l.responseText) ? '\n' + r : '') );
 							}
 						}
@@ -2043,11 +2041,11 @@ _merge( $, {
 	},
 	// @a -> src, b -> feature { id: '', cls: '', style: '', click: '', tip: '' }
 	image: function( a, b ) {
-		var d = a, e = ! d.indexOf( '.' ) && d.indexOf( '/' ) < 0, s = [];
+		var d = a || '', e = ! d.indexOf( '.' ) && d.indexOf( '/' ) < 0, s = [];
 		if ( ! e && d.indexOf( '%' ) > -1 ) {
 			d = d.replace( '%img%', _ui_path + 'g' );
 		}
-		for ( var i = 0, c, t; i < arguments.length; i ++ ) {
+		for ( var i = 1, c, t; i < arguments.length; i ++ ) {
 			c = arguments[ i ], t = '';
 			if ( c.id ) t += ' id=' + c.id;
 			if ( c.cls ) t += ' class="' + c.cls + '"';
@@ -2068,13 +2066,13 @@ _merge( $, {
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
 		var d;
-		ie ? _attach( doc, 'selectstart', _returnFalse ) : _classAdd( cvs, 'f-unsel' );
+		ie ? _attach( doc, 'selectstart', $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
 		_attach( doc, 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
 		_attach( doc, 'mouseup', function( e ) {
 			b && b( ie ? Q.event.fix( e ) : e );
 			_detach( doc, 'mousemove', d, T );
 			_detach( doc, 'mouseup', arguments.callee, T );
-			ie ? _detach( doc, 'selectstart', _returnFalse ) : _classRemove( cvs, 'f-unsel' );
+			ie ? _detach( doc, 'selectstart', $.rt( F ) ) : _classRemove( cvs, 'f-unsel' );
 			c && _rm( c );
 		}, T );
 	},

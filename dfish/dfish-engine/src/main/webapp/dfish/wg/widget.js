@@ -1,8 +1,7 @@
 /*!
- *  widget
- *	@version	3.0
- *	@author		cmy
- *  @modified	2016-03-29
+ * widget.js v3.2
+ * (c) 2015-2018 Mingyuan Chen
+ * Released under the MIT License.
  */
 
 var U, N = null, F = false, T = true, O = {}, _STR = 'string', _FUN = 'function', _OBJ = 'object', _NUM = 'number', _BOL = 'boolean',
@@ -190,9 +189,9 @@ _f_val = function( a, b, r ) {
 	} else
 		r.push( d + '=' + $.urlEncode( v ) );
 },
-// @a -> widget, b -> frame focus?, c -> pos?
+// @a -> widget|el, b -> frame focus?, c -> pos?
 _scrollIntoView = function( a, b, c ) {
-	if ( a && a.$() ) {
+	if ( a && (!a.isWidget || a.$()) ) {
 		b && (Frame.focus( a ), Toggle.focus( a ));
 		var s = Scroll.get( a );
 		if ( s ) {
@@ -450,8 +449,10 @@ W = define( 'widget', function() {
 		hasClass: function( a ) {
 			return $.classAny( this.$() || this, a );
 		},
-		css: function( a, b ) {
-			$.css( this.$(), a, b );
+		// @a -> css options
+		css: function( a, b, c ) {
+			b == N ? (b = a, a = N) : (typeof b !== _OBJ && c == N && (c = b, b = a, a = N));
+			this.$( a ) && $.css( this.$( a ), b, c );
 			return this;
 		},
 		// 获取第几个子节点
@@ -1240,15 +1241,15 @@ _show_scroll = function() {
 		if ( d > 0 ) {
 			var c = this.innerHeight() || this.$().offsetHeight,
 				e = Math.min( 1, c / d );
-			this.$( 'y' ).style.display  = e < 1 ? 'block' : '';
-			this.$( 'ytr' ).style.height = Math.max( 14, c * e ) + 'px';
+			this.css( 'y', 'display', e < 1 ? 'block' : '' )
+				.css( 'ytr', 'height', Math.max( 14, c * e ) );
 			this._scr_rateY = e < 1 && ((d - c) / (this.$( 'y' ).offsetHeight - this.$( 'ytr' ).offsetHeight ));
 		}
 		if ( g > 0 ) {
 			var f = this.innerWidth() || this.$().offsetWidth,
 				h = Math.min( 1, f / g );
-			this.$( 'x' ).style.display  = h < 1 ? 'block' : '';
-			this.$( 'xtr' ).style.width  = Math.max( 14, f * h ) + 'px';
+			this.css( 'x', 'display', h < 1 ? 'block' : '' )
+				.css( 'xtr', 'width', Math.max( 14, f * h ) );
 			this._scr_rateX = h < 1 && ((g - f + b) / (this.$( 'x' ).offsetWidth - this.$( 'xtr' ).offsetWidth ));
 		}
 		this.trigger( 'scroll' );
@@ -1467,6 +1468,7 @@ Scroll = define.widget( 'scroll', {
 		insertHTML: function( a, b ) {
 			$[ b || 'append' ]( (_putin[ b ] ? (this.$( 'vln' ) || this.$( 'cont' )) : N) || this.$(), a.isWidget ? a.$() : a );
 		},
+		// @mobile 下拉刷新
 		setSwipedown: function() {
 			var o = this.$( 'ovf' ), d = this.$( 'swipedown' ), iy, rl, ht, self = this,
 				cmp = function() {
@@ -1477,7 +1479,7 @@ Scroll = define.widget( 'scroll', {
 			    		Q( o ).css( { transition: '' } );
 			    	}, 500 );
 				};
-	    	o.addEventListener('touchstart', function(e) {
+	    	o.addEventListener( 'touchstart', function( e ) {
 	    		Q( o ).css( 'transition', '' );
 	    		iy = e.targetTouches[ 0 ].clientY;
 	    		rl = F;
@@ -1486,7 +1488,7 @@ Scroll = define.widget( 'scroll', {
 	    		}
 	    		Q( d ).css( { visibility: 'visible', height: 0 } );
 	    	});
-	    	o.addEventListener('touchmove', function(e) {
+	    	o.addEventListener( 'touchmove', function( e ) {
 	    		var y = e.targetTouches[ 0 ].clientY - iy;
 	    		if ( o.scrollTop == 0 && y > 0) {
 	    			e.preventDefault();
@@ -2106,7 +2108,7 @@ Split = define.widget( 'split', {
 				$.classAdd( this.parentNode.$(), 'f-rel' );
 				var w = this.width();
 				if ( w <= 1 ) $.classAdd( this.$(), 'z-0' );
-				ie7 && (this.$( 'bg' ).style.backgroundColor = this.$().currentStyle.backgroundColor);
+				ie7 && this.css( 'bg', 'backgroundColor', this.$().currentStyle.backgroundColor );
 			}
 		}
 	},
@@ -2609,7 +2611,7 @@ MenuButton = define.widget( 'menu/button', {
 				a += ' style="' + s + '"';
 			x.id && (a += ' w-id="' + x.id + '"');
 			a += _html_on( this, ' onclick=' + eve ) + '><div class=_c id=' + this.id + 'c>';
-			a += $.image( x.icon || '', { cls: '_i', id: this.id + 'i' } );
+			a += $.image( x.icon, { cls: '_i', id: this.id + 'i' } );
 			if ( x.text )
 				a += '<span class="_t f-omit" id=' + this.id + 't><em>' + x.text + '</em><i class=f-vi></i></span>';
 			a += '</div>';
@@ -3045,16 +3047,14 @@ _tpl_parse = function( a, b ) {
 	} else {
 		if ( a.id ) {
 			r[ a.id ] = a;
-			if ( b && b[ a.id ] ) {
+			if ( b && b[ a.id ] )
 				return r;
-			}
 		}
 		if ( ! b && a.type === t )
 			r[ t ] = a;
 		for ( var k in a ) {
-			if ( a[ k ] != N && typeof a[ k ] === _OBJ ) {
+			if ( a[ k ] != N && typeof a[ k ] === _OBJ )
 				$.merge( r, _tpl_parse( a[ k ], b ) );
-			}
 		}
 	}
 	return r;
@@ -3088,9 +3088,8 @@ TemplateView = define.widget( 'template/view', {
 					c = _tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( this.tplNode )),
 					d = _tpl_parse( x.node, c );
 				for ( var k in c ) {
-					if ( d[ k ] ) {
+					if ( d[ k ] )
 						s = s.replace( $.jsonString( c[ k ] ), $.jsonString( d[ k ] ) );
-					}
 				}
 				// 如果之前的替换处理后， template/body 没被替换掉，那么它将替换整个node
 				if ( c[ t ] ) {
@@ -3315,16 +3314,15 @@ Dialog = define.widget( 'dialog', {
 			if ( this.opener ) {
 				this.opener.front();
 			} else {
-				var a = Dialog.all, i, z;
-				for ( i in a ) {
+				var a = Dialog.all;
+				for ( var i in a ) {
 					a[ i ]._front( a[ i ] == this || this.contains( a[ i ] ) );
 				}
 			}
 		},
 		_front: function( a ) {
 			var z = a ? 2 : 1;
-			this.$() && (this.$().style.zIndex = z);
-			this.$( 'cvr' ) && (this.$( 'cvr' ).style.zIndex = z);
+			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
 		},
 		// 定位 /@a -> fullscreen?
 		axis: function( a ) {
@@ -3413,13 +3411,13 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.line ) {
 				$.append( this.$(), '<div id=' + this.id + 'ln class=w-menu-line></div>' );
 				var r = this._pos, w = r.target.width, b = this.$().currentStyle, c = this.parentNode.$().currentStyle, lw = _number( c.borderLeftWidth ), rw = _number( c.borderRightWidth );
-				$.css( this.$( 'ln' ), { height: _number( b.borderTopWidth ), width: w - lw - rw, backgroundColor: b.backgroundColor, borderColor: c.borderColor, borderLeftWidth: lw, borderRightWidth: rw } );
+				this.css( 'ln', { height: _number( b.borderTopWidth ), width: w - lw - rw, backgroundColor: b.backgroundColor, borderColor: c.borderColor, borderLeftWidth: lw, borderRightWidth: rw } );
 			}
+			this.vis = T;
 			this.attr( 'pophide' ) && this.listenHide( T );
 			this.triggerAll( 'ready' );
 			if ( this.x.timeout )
 				this.listenTimeout();
-			this.vis = T;
 			this.front();
 			return this;
 		},
@@ -3774,7 +3772,6 @@ Menu = define.widget( 'menu', {
 				m -= r.bottom;
 			if ( m ) {
 				// realht 是按钮可展现区域的高度 / 22 = 上下两个翻页按钮高度 + menu的padding border高度
-
 				this.realht = g.offsetHeight - 22 - m;
 				this.realht -= this.realht % b;
 				g.style.height = this.realht + 'px';
@@ -3854,7 +3851,7 @@ Menu = define.widget( 'menu', {
 				var w = 0;
 				// x.line: 实现一条和button结合效果的线
 				this.x.line && (w = Math.max( this._pos.target.width - 2, w ));
-				$.css( this.$(), 'min-width', w );
+				this.css( 'min-width', w );
 			}
 			this.triggerHandler( 'ready' );
 			return this;
@@ -4225,7 +4222,7 @@ AbsInput = define.widget( 'abs/input', {
 				if ( w > 0 && this.$t() ) {
 					w = Math.max( w - this.width_minus(), 0 );
 					this.$t().style.width = w + 'px';
-					this.$( 'ph' ) && (this.$( 'ph' ).style.width = w + 'px');
+					this.css( 'ph', 'width', w );
 				}
 			}
 		}
@@ -4291,6 +4288,17 @@ Hidden = define.widget( 'hidden', {
 Textarea = define.widget( 'textarea', {
 	Extend: AbsInput,
 	Default: { height: 60 },
+	Listener: {
+		body: {
+			resize: function() {
+				AbsInput.Listener.body.resize.apply( this, arguments );
+				var h = this.innerHeight();
+				if ( h > 0 && this.$t() ) {
+					this.$t().style.height = h + 'px';
+				}
+			}
+		}
+	},
 	Prototype: {
 		isModified: function( a ) {
 			var v = a ? this.x.value : this._modval;
@@ -4485,7 +4493,7 @@ Checkbox = define.widget( 'checkbox', {
 			},
 			resize: function() {
 				if ( this.x.nobr && ! this.innerWidth() && this.parentNode.innerWidth() )
-					this.$().style.maxWidth = this.parentNode.innerWidth() + 'px';
+					this.css( 'max-width', this.parentNode.innerWidth() );
 			}
 		}
 	},
@@ -4752,11 +4760,14 @@ CalendarNum = define.widget( 'calendar/num', {
 				prop: T,
 				method: function() {
 					if ( ! this.isDisabled() ) {
-						var p = this.parentNode;
-						if ( p.x.pickhour ) {
-							p.pop( 'h', this );
+						var p = this.parentNode, d = $.dateParse( this.val(), 'yyyy-mm-dd' );;
+						if ( p.x.format && p.x.format.indexOf( 'h' ) > 0 ) {
+							p.date.setFullYear( d.getFullYear() );
+							p.date.setMonth( d.getMonth() );
+							p.date.setDate( d.getDate() );
+							p.backfill();
 						} else { //表单赋值
-							p.date = $.dateParse( this.val(), 'yyyy-mm-dd' );
+							p.date = d;
 							p.trigger( 'complete' );
 							! this._disposed && this.trigger( 'focus' );
 						}
@@ -4818,7 +4829,7 @@ Calendar = define.widget( 'calendar/date', {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), h = b.indexOf( 'h' ),
-				x = { type: 'calendar/' + ( b == 'yyyy' ? 'year' : b == 'yyyy-mm' ? 'month' : b == 'yyyy-ww' ? 'week' : 'date' ), pickhour: h > 0,
+				x = { type: 'calendar/' + ( b == 'yyyy' ? 'year' : b == 'yyyy-mm' ? 'month' : b == 'yyyy-ww' ? 'week' : 'date' ), format: b, target: o, callback: g,
 					date: c, focusdate: d, begindate: e, enddate: f, on: { complete: function() { g && g.call( a, $.dateFormat( this.date, b ) ); o.isFormWidget && o.focus(); h !== 0 && $.close( this ) } } };
 			if ( h === 0 ) {
 				var f = $.dateFormat( new Date(), 'yyyy-mm-dd' ) + ' ';
@@ -4827,8 +4838,8 @@ Calendar = define.widget( 'calendar/date', {
 				x.enddate && (x.enddate = f + x.enddate);
 				o.add( x, -1 ).pop( 'h', o );
 			} else
-				return o.cmd( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 12, indent: 1, pophide: T,
-					cover: mb, node: x, on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
+				return o.cmd( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mb, node: x,
+					on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
 	Prototype: {
@@ -4859,6 +4870,9 @@ Calendar = define.widget( 'calendar/date', {
 					f ? f.focus() : this.go();
 				}
 			}
+		},
+		backfill: function() {
+			this.x.callback.call( this.x.target, $.dateFormat( this.date, this.x.format ) );
 		},
 		inputMonth: function() {
 			var v = this.$( 'iptm' ).value, f = 'yyyy-mm';
@@ -4958,6 +4972,51 @@ Calendar = define.widget( 'calendar/date', {
 				H ? self.trigger( 'complete' ) : self.go();
 			} );
 		},
+		// 弹出事件选择器 /@a -> el
+		popTime: function( a ) {
+			if ( this._dlg_time ) {
+				this._dlg_time.close();
+				delete this._dlg_time;
+				a.innerHTML = Loc.calendar.picktime;
+			} else {
+				var b = Dialog.get( this.$() ), c = [], d = this.date, f = this.x.format, h = [], self = this;
+				function list( t, k ) {
+					for ( var i = 0, s = ''; i < k; i ++ )
+						s += '<div class="_o" data-v="' + i + '" ' + _event_zhover + '>' + $.strPad( i ) + '</div>';
+					c.push( { type: 'html', cls: '_' + t + (c.length ? ' _bl' : ''), width: '*', wmin: c.length ? 1 : 0, scroll: T, text: s, on: {
+						ready: function() {
+							var o = $.get( '._o[data-v="' + d[ t === 'h' ? 'getHours' : t === 'i' ? 'getMinutes' : 'getSeconds' ]() + '"]', this.$() );
+							$.classAdd( o, 'z-on' );
+							_scrollIntoView( o );
+						},
+						click: function( e ) {
+							var o = e.srcElement;
+							if ( $.classAny( o, '_o' ) ) {
+								Q( '._o', this.$() ).removeClass( 'z-on' );
+								$.classAdd( o, 'z-on' );
+								var v = o.getAttribute( 'data-v' );
+								d[ t === 'h' ? 'setHours' : t === 'i' ? 'setMinutes' : 'setSeconds' ]( v );
+								self.backfill();
+							}
+						}
+					} } );
+					h.push( { type: 'html', width: '*', cls: '_th' + (h.length ? ' _bl' : ''), wmin: c.length ? 1 : 0, hmin: 1, text: Loc.calendar[ t ] } );
+				}
+				f.indexOf( 'h' ) > 0 && list( 'h', 24 );
+				f.indexOf( 'i' ) > 0 && list( 'i', 60 );
+				f.indexOf( 's' ) > 0 && list( 's', 60 );
+				this._dlg_time = this.cmd( { type: 'dialog', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
+					 type: 'vert', nodes: [
+					 	{ type: 'horz', height: 29, nodes: h },
+					 	{ type: 'horz', height: '*', nodes: c }
+					 ]
+				} } );
+				a.innerHTML = Loc.calendar.backdate;
+			}
+		},
+		chooseTime: function( a ) {
+			$.close( a );
+		},
 		html_nodes: function() {
 			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0,
 				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 10 ), o = this.x.css,
@@ -4973,7 +5032,11 @@ Calendar = define.widget( 'calendar/date', {
 			}
 			if ( (n = 7 - ( e.length % 7 )) > 1 )
 				e.push( '<td colspan=' + n + '>&nbsp;' );
-			return s + e.join( '' ) + '</tbody></table></div>';
+			s += e.join( '' ) + '</tbody></table></div>';
+			if ( this.x.format && this.x.format.indexOf( 'h' ) > 0 ) {
+				s += '<div class=w-calendar-time><div class=_time onclick=' + evw + '.popTime(this)>' + Loc.calendar.picktime + '</div><div class=_ok onclick=' + evw + '.chooseTime(this)>' + Loc.confirm + '</div></div>';
+			}
+			return s;
 		}
 	}
 } ),
@@ -5303,7 +5366,7 @@ Slider = define.widget( 'slider', {
 	Listener: {
 		body: {
 			resize: function() {
-				$( this.id + 'bar' ).style.width = this.innerWidth() + 'px';
+				this.css( 't', 'width', this.innerWidth() );
 				this.val( this.val() );
 			},
 			change: N
@@ -5311,28 +5374,27 @@ Slider = define.widget( 'slider', {
 	},
 	Prototype: {
 		className: 'w-form',
+		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
-			if ( a == N ) {
-				return $( this.id + 't' ).value;
-			}
-			$( this.id + 't' ).value = a;
+			if ( a == N )
+				return this.$v().value;
+			this.$v().value = a;
 			var l = this._left( a );
-			$( this.id + 'thumb' ).style.left  = l + 'px';
-			$( this.id + 'track' ).style.width = (l + (this.attr( 'thumbwidth' ) / 2)) + 'px';
+			this.css( 'thumb', 'left', l ).css( 'track', 'width', l + (this.attr( 'thumbwidth' ) / 2) );
 		},
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
 			var x = b.clientX, c = this.x.validate, m = (c && c.maxvalue) || 100, n = (c && c.minvalue) || 0, f = _number( a.style.left ), 
 				g = this.attr( 'thumbwidth' ), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
-				d = t && this.cmd({ type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F }), v = $( self.id + 't' ).value;
+				d = t && this.cmd({ type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F }), v = self.$v().value;
 			$.moveup( function( e ) {
 				var l = $.numRange(f + e.clientX - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
 				a.style.left = l + 'px';
 				$( self.id + 'track' ).style.width = (l + (g / 2)) + 'px';
 				d && d.snapTo( a ).text( self.formatStr( t, [ v ] ) );
-				$( self.id + 't' ).value = v;
+				$( self.id + 'v' ).value = v;
 				self.trigger( 'change' );
 			}, function( e ) {
 				d && d.close();
@@ -5344,7 +5406,7 @@ Slider = define.widget( 'slider', {
 		},
 		html_nodes: function() {
 			var w = this.innerWidth(), v = this.x.value == N ? n : this.x.value, f = this._left( v );
-			return '<input type=hidden id=' + this.id + 't name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 'bar class="f-va f-inbl _bar" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>';
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>';
 		}
 	}
 } ),
@@ -5758,7 +5820,6 @@ Combobox = define.widget( 'combobox', {
 			},
 			paste: {
 				prop: T,
-				//proxy: ie ? 'beforepaste' : N,
 				method: function( e ) {
 					this.focus();
 					var r = $.rngSelection(), h = this.$( 'ph' ), p = this.x.separator || ',', g = new RegExp( '[,\\s' + String.fromCharCode( 61453 ) + String.fromCharCode( 12288 ) + ']+' ), // 61453,12288: 从word文档和chrome复制来的文本可能存在的空白符
@@ -5771,9 +5832,8 @@ Combobox = define.widget( 'combobox', {
 				}
 			},
 			resize: function() {
-				var w = (this.innerWidth() - this.width_minus()) + 'px';
-				this.$( 'c' ) && (this.$( 'c' ).style.width = w);
-				this.$( 'ph' ) && (this.$( 'ph' ).style.width = w);
+				var w = (this.innerWidth() - this.width_minus());
+				this.css( 'c', 'width', w ).css( 'ph', 'width', w );
 			},
 			// 覆盖textarea的change事件定义，仅当已选项有变化时触发
 			change: N
@@ -5864,7 +5924,7 @@ Combobox = define.widget( 'combobox', {
 				var d = self.pop();
 				d && d.isShow() && self.focusNode && self.focusNode.tabFocus( F );
 			} ).addEvent( 'load', function() {
-				this.$().style.width = this.$().scrollWidth + 'px';
+				this.css( 'width', this.$().scrollWidth );
 				this.axis();
 			} );
 		},
@@ -6798,20 +6858,23 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				a.indent();
 			}
 		},
-		// 尚未装载的节点不直接增加子节点
+		// @implement
 		append: function( a ) {
-			if ( this.x.src && ! this.loaded )
+			// 尚未装载的节点不直接增加子节点
+			if ( this.x.src && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.append.apply( this, arguments );
 		},
-		// 尚未装载的节点不直接增加子节点
+		// @implement
 		prepend: function( a ) {
-			if ( this.x.src && ! this.loaded )
+			// 尚未装载的节点不直接增加子节点
+			if ( this.x.src && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.prepend.apply( this, arguments );
 		},
+		// @implement
 		attrSetter: function( a, b, c ) {
 			switch( a ) {
 				case 'text':
@@ -6834,7 +6897,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		},
 		indent: function() {
 			this.level = this.parentNode.level + 1;
-			this.$().style.paddingLeft = (this.level * this._pad_level + this._pad_left) + 'px';
+			this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
 			for ( var i = 0; i < this.length; i ++ )
 				this[ i ].indent();
 		},
@@ -6996,7 +7059,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				$.ajaxAbort( this );
 				var d = this.focusNode && this.focusNode.id, i = this.length;
 				while( i -- ) this[ i ].remove();
-				this.$( 'o' ).style.visibility = '';
+				this.css( 'o', 'visibility', '' );
 				this.loaded = this.loading = F;
 				this.toggle( T, a, function() { d && (d = this.ownerView.find( d )) && d.focus() } );
 			}
@@ -7485,7 +7548,7 @@ GridRow = define.widget( 'grid/row', {
 		addCell: function( x, i ) {
 			if ( this.rootNode.x.escape != N )
 				$.extend( x, { escape: this.rootNode.x.escape } );
-			var n = ( this.tcell || (this.tcell = new TCell( {}, this )) ).add( x );
+			var n = (this.tcell || (this.tcell = new TCell( {}, this ))).add( x );
 			n.colIndex = i;
 			return n;
 		},
@@ -7783,8 +7846,8 @@ TR = define.widget( 'tr', {
 			var i = 0, l = this.length;
 			if ( l ) {
 				for ( ; i < l; i ++ ) {
-					this[ i ].$().style.display = a ? '' : 'none';
-					this[ i ].toggle_rows( a ? this[ i ].isOpen() : a );
+					this[ i ].css( 'display', a ? '' : 'none' )
+						.toggle_rows( a ? this[ i ].isOpen() : a );
 				}
 				this.x.open = a;
 			}
@@ -7834,16 +7897,12 @@ TCell = define.widget( 'tcell', {
 				(e = r.colgrps[ 0 ][ a.colIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			if ( r._face === 'cell' && a.colIndex < r.colgrps[ 0 ].length - 1 )
+			if ( r._face == 'cell' && a.colIndex < r.colgrps[ 0 ].length - 1 )
 				w -= 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
 		},
-		scaleHeight: function( a ) {
-			return N;
-			var r = this.outerHeight();
-			return r == N ? N : r - this.rootNode._pad * 2 - (this.rootNode._face === 'none' ? 0 : 1);
-		},
+		scaleHeight: $.rt( N ),
 		html: $.rt( '' )
 	}
 } ),
@@ -7952,8 +8011,7 @@ Col = define.widget( 'col', {
 	Listener: {
 		body: {
 			resize: function() {
-				if ( this.$() )
-					this.$().style.width = Math.max( this.innerWidth() - this.width_minus(), 0 ) + 'px';
+				this.css( 'width', Math.max( this.innerWidth() - this.width_minus(), 0 ) );
 			}
 		}
 	},
@@ -8016,7 +8074,7 @@ Table = define.widget( 'table', {
 			resize: function() {
 				if ( br.ms && this.$() ) {
 					var w = this.innerWidth();
-					this.$().style.width = w == N ? 'auto' : w + 'px';
+					this.css( 'width', w == N ? 'auto' : w );
 				}
 			}
 		}
@@ -8054,8 +8112,7 @@ GridList = define.widget( 'grid/list', {
 				if ( r.x.maxheight && ! r.innerHeight() ) {
 					var h = r.x.maxheight - (r.head ? r.head.$().offsetHeight : 0);
 					this.x.maxheight = h;
-					this.$().style.maxHeight = h + 'px';
-					this.setScroll();
+					this.css( 'maxHeight', h ).setScroll();
 				}
 			},
 			scroll: function() {
@@ -8314,7 +8371,7 @@ Grid = define.widget( 'grid', {
 			}
 			i = g.length;
 			while ( i -- ) {
-				! isNaN( w ) && (g[ i ].parentNode.$().style.width = w + 'px');
+				! isNaN( w ) && g[ i ].parentNode.css( 'width', w );
 				g[ i ][ a ].x.width = v;
 			}
 		},
