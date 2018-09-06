@@ -801,9 +801,8 @@ W = define( 'widget', function() {
 					if ( (c = p[ i ]).$() ) return c.insertHTML( s, 'before' );
 				p.insertHTML( s );
 			}
-			this.trigger( 'render' );
 			this.triggerAll( 'ready' );
-			this.parentNode.trigger( 'nodechange' );
+			!this._disposed && this.parentNode.trigger( 'nodechange' );
 			return this;
 		},
 		// @dao 通过js增加子节点时会调用此方法 / a -> html|widget, b -> where(prepend|append|before|after)
@@ -1186,7 +1185,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 					o += r[ k ].html();
 				this.insertHTML( o, v );
 				for ( k = 0; k < l; k ++ )
-					r[ k ].trigger( 'render' ), r[ k ].triggerAll( 'ready' );
+					r[ k ].triggerAll( 'ready' );
 			}
 		}
 		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
@@ -1616,7 +1615,7 @@ View = define.widget( 'view', {
 			var u = this.attr( 'src' ), m, n, self = this,
 				d = _view_js[ this.path ],
 				e = function() {
-					if ( m && n ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
+					if ( !self._disposed && m && n ) {  self._loadEnd( n ); !self._disposed && b && b.call( self, n ); n = N; }
 				};
 			d ? $.require( d, function() { m = T; e(); }, ! a ) : (m = T);
 			u && (this.parent || this).ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
