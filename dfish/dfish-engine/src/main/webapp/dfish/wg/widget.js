@@ -3334,11 +3334,11 @@ Dialog = define.widget( 'dialog', {
 				var r = this._pos, w = r.target.width, b = this.$().currentStyle, c = this.parentNode.$().currentStyle, lw = _number( c.borderLeftWidth ), rw = _number( c.borderRightWidth );
 				$.css( this.$( 'ln' ), { height: _number( b.borderTopWidth ), width: w - lw - rw, backgroundColor: b.backgroundColor, borderColor: c.borderColor, borderLeftWidth: lw, borderRightWidth: rw } );
 			}
+			this.vis = T;
 			this.attr( 'pophide' ) && this.listenHide( T );
 			this.triggerAll( 'ready' );
 			if ( this.x.timeout )
 				this.listenTimeout();
-			this.vis = T;
 			this.front();
 			return this;
 		},
@@ -4193,6 +4193,17 @@ Hidden = define.widget( 'hidden', {
 Textarea = define.widget( 'textarea', {
 	Extend: AbsInput,
 	Default: { height: 60 },
+	Listener: {
+		body: {
+			resize: function() {
+				AbsInput.Listener.body.resize.apply( this, arguments );
+				var h = this.innerHeight();
+				if ( h > 0 && this.$t() ) {
+					this.$t().style.height = h + 'px';
+				}
+			}
+		}
+	},	
 	Prototype: {
 		isModified: function( a ) {
 			var v = a ? this.x.value : this._modval;
