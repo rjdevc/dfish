@@ -1351,19 +1351,19 @@ Scroll = define.widget( 'scroll', {
 		prop_cls: function() {
 			return _proto.prop_cls.call( this ) + (this.x.scroll ? ' f-scroll-wrap' : '');
 		},
-		// 让元素滚动到可见区域。支持下面两种调用方式 /e -> el|wg, y -> (top,bottom,middle,auto), x -> (left,right,center,auto), p -> ease?, q -> divide(整除数字，让滚动的距离是这个数字的整数倍), r -> callback
+		// 让元素滚动到可见区域。支持下面两种调用方式 /e -> el|wg, y -> (top,bottom,middle,auto,top+n,bottom+n,n), x -> (left,right,center,auto), p -> ease?, q -> divide(整除数字，让滚动的距离是这个数字的整数倍), r -> callback
 		scrollTo: function( e, y, x, p, q, r ) {
 			var a = this.$( 'ovf' ), b = this.$( 'gut' ) || this.$( 'cont' ), c = $.bcr( a ), d = $.bcr( b ), f = e ? $.bcr( e ) : d, t, l;
 			if ( y != N || e ) {
-				if ( y == N || ! isNaN( y ) ) {
+				if ( y == N || !isNaN( y ) ) {
 					t = _number( y );
 					if ( e ) t = f.top - d.top - t;
-				} else if ( y === 'top' ) {
-					t = f.top - d.top;
-				} else if ( y === 'bottom' ) {
-					t = f.bottom - d.top - c.height;
+				} else if ( ~y.indexOf( 'top' ) ) {
+					t = f.top - d.top - (+y.slice( 3 ));
+				} else if ( ~y.indexOf( 'bottom' ) ) {
+					t = f.bottom - d.top - c.height + (+y.slice( 6 ));
 				} else if ( y === 'middle' ) {
-					t = f.top - d.top - ( ( c.height / 2 ) - ( f.height / 2 ) );
+					t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
 				} else {
 					if ( f.top < c.top )
 						t = a.scrollTop - c.top + f.top;
@@ -1375,10 +1375,10 @@ Scroll = define.widget( 'scroll', {
 				if ( x == N || ! isNaN( x ) ) {
 					l = _number( x );
 					if ( e ) l = f.left - d.left - l;
-				} else if ( x === 'left' ) {
-					l = f.left - d.left;
-				} else if ( x === 'right' ) {
-					l = f.right - d.left - c.width;
+				} else if ( ~y.indexOf( 'left' ) ) {
+					l = f.left - d.left - (+y.slice( 4 ));
+				} else if ( ~y.indexOf( 'right' ) ) {
+					l = f.right - d.left - c.width + (+y.slice( 5 ));
 				} else if ( x === 'center' ) {
 					l = f.left - d.left - ( ( c.width / 2 ) - ( f.width / 2 ) );
 				} else {
@@ -4825,12 +4825,9 @@ Calendar = define.widget( 'calendar/date', {
 	Helper: {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
-			var o = _widget( a ),
+			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b == 'yyyy' ? 'year' : b == 'yyyy-mm' ? 'month' : b == 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
-					date: c, focusdate: d, begindate: e, enddate: f, on: {} };
-			if ( !/[ymd]/.test( b ) && /[his]/.test( b ) ) {
-				x.on.ready = function() { this.popTime(); }
-			}
+					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, focusdate: d, begindate: e, enddate: f, on: t && { ready: function() { this.popTime() } } };
 			return o.cmd( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mb, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
@@ -4972,27 +4969,12 @@ Calendar = define.widget( 'calendar/date', {
 				delete this._dlg_time;
 				a && (a.innerHTML = Loc.calendar.picktime);
 			} else {
-				var b = Dialog.get( this.$() ), c = [], d = this.date, f = this.x.format, h = [], self = this;
-				function list( t, k ) {
-					for ( var i = 0, s = ''; i < k; i ++ )
+				var b = Dialog.get( this.$() ), c = [], d = this.date, f = this.x.format, h = [], self = this,
+					y = { set: { h: 'setHours', i: 'setMinutes', s: 'setSeconds' }, get: { h: 'getHours', i: 'getMinutes', s: 'getSeconds' } };
+				function list( t, m ) {
+					for ( var i = 0, s = ''; i < m; i ++ )
 						s += '<div class="_o" data-v="' + i + '" ' + _event_zhover + '>' + $.strPad( i ) + '</div>';
-					c.push( { type: 'html', cls: '_' + t + (c.length ? ' _bl' : ''), width: '*', wmin: c.length ? 1 : 0, scroll: T, text: s, on: {
-						ready: function() {
-							var o = $.get( '._o[data-v="' + d[ t === 'h' ? 'getHours' : t === 'i' ? 'getMinutes' : 'getSeconds' ]() + '"]', this.$() );
-							$.classAdd( o, 'z-on' );
-							_scrollIntoView( o );
-						},
-						click: function( e ) {
-							var o = e.srcElement;
-							if ( $.classAny( o, '_o' ) ) {
-								Q( '._o', this.$() ).removeClass( 'z-on' );
-								$.classAdd( o, 'z-on' );
-								var v = o.getAttribute( 'data-v' );
-								d[ t === 'h' ? 'setHours' : t === 'i' ? 'setMinutes' : 'setSeconds' ]( v );
-								//self.backfill();
-							}
-						}
-					} } );
+					c.push( { type: 'html', cls: c.length ? ' _bl' : '', width: '*', wmin: c.length ? 1 : 0, scroll: T, text: s, data: { part: t, max: m } } );
 					h.push( { type: 'html', width: '*', cls: '_th' + (h.length ? ' _bl' : ''), wmin: c.length ? 1 : 0, hmin: 1, text: Loc.calendar[ t ] } );
 				}
 				~f.indexOf( 'h' ) && list( 'h', 24 );
@@ -5001,7 +4983,33 @@ Calendar = define.widget( 'calendar/date', {
 				this._dlg_time = this.cmd( { type: 'dialog', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
 					 type: 'vert', nodes: [
 					 	{ type: 'horz', height: 29, nodes: h },
-					 	{ type: 'horz', height: '*', nodes: c }
+					 	{ type: 'horz', height: '*', nodes: c,
+					 		on: {
+					 			// 让时分秒的选中项对齐
+					 			ready: function() {
+						 			var r = [], k = 0;
+						 			for ( var i = 0, o, v, n = 60, t; i < this.length; i ++ ) {
+						 				v = d[ y.get[ this[ i ].x.data.part ] ]();
+						 				r.push( $.get( '._o[data-v="' + v + '"]', this[ i ].$() ) );
+						 				t = Math.min( v, this[ i ].x.data.max - v );
+						 				if ( n > t ) { n = t; k = i; }
+						 			}
+						 			_scrollIntoView( r[ k ] );
+						 			for ( var i = 0, t = $.bcr( r[ k ] ).top - $.bcr( this[ k ].$() ).top; i < r.length; i ++ ) {
+						 				$.classAdd( r[ i ], 'z-on' );
+						 				i !== k && _scrollIntoView( r[ i ], N, 'top+' + t );
+						 			}
+						 		},
+								click: function( e ) {
+									var o = e.srcElement, g = $.widget( o );
+									if ( $.classAny( o, '_o' ) ) {
+										Q( '._o', g.$() ).removeClass( 'z-on' );
+										$.classAdd( o, 'z-on' );
+										d[ y.set[ g.x.data.part ] ]( o.getAttribute( 'data-v' ) );
+									}
+								}
+					 		}
+					 	}
 					 ]
 				} } );
 				a && (a.innerHTML = Loc.calendar.backdate);
