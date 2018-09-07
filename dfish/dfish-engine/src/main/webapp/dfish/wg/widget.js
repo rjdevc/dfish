@@ -4750,7 +4750,7 @@ CalendarNum = define.widget( 'calendar/num', {
 	Const: function( x, p ) {
 		this.rootNode = p;
 		W.apply( this, arguments );
-		x.focus && (this.className += ' z-on');
+		x.focus && x.status != 'disabled' && (this.className += ' z-on');
 	},
 	Rooter: 'calendar/date',
 	Listener: {
@@ -4760,15 +4760,13 @@ CalendarNum = define.widget( 'calendar/num', {
 				method: function() {
 					if ( ! this.isDisabled() ) {
 						var p = this.parentNode, d = $.dateParse( this.val(), 'yyyy-mm-dd' );;
-						if ( p.x.format && p.x.format.indexOf( 'h' ) > 0 ) {
-							p.date.setFullYear( d.getFullYear() );
-							p.date.setMonth( d.getMonth() );
-							p.date.setDate( d.getDate() );
-							p.backfill();
-						} else { //表单赋值
-							p.date = d;
-							p.trigger( 'complete' );
-							! this._disposed && this.trigger( 'focus' );
+						p.date.setFullYear( d.getFullYear() );
+						p.date.setMonth( d.getMonth() );
+						p.date.setDate( d.getDate() );
+						!this._disposed && this.trigger( 'focus' );
+						if ( p.x.callback ) {
+							this.trigger( 'focus' );
+							p.x.format && !/[his]/.test( p.x.format ) && p.backfill();
 						}
 					}
 				}
@@ -4827,18 +4825,14 @@ Calendar = define.widget( 'calendar/date', {
 	Helper: {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
-			var o = _widget( a ), h = b.indexOf( 'h' ),
-				x = { type: 'calendar/' + ( b == 'yyyy' ? 'year' : b == 'yyyy-mm' ? 'month' : b == 'yyyy-ww' ? 'week' : 'date' ), format: b, target: o, callback: g,
-					date: c, focusdate: d, begindate: e, enddate: f, on: { complete: function() { g && g.call( a, $.dateFormat( this.date, b ) ); o.isFormWidget && o.focus(); h !== 0 && $.close( this ) } } };
-			if ( h === 0 ) {
-				var f = $.dateFormat( new Date(), 'yyyy-mm-dd' ) + ' ';
-				x.date = x.focusdate = f + $.strTrim( c );
-				x.begindate && (x.begindate = f + x.begindate);
-				x.enddate && (x.enddate = f + x.enddate);
-				o.add( x, -1 ).pop( 'h', o );
-			} else
-				return o.cmd( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mb, node: x,
-					on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
+			var o = _widget( a ),
+				x = { type: 'calendar/' + ( b == 'yyyy' ? 'year' : b == 'yyyy-mm' ? 'month' : b == 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
+					date: c, focusdate: d, begindate: e, enddate: f, on: {} };
+			if ( !/[ymd]/.test( b ) && /[his]/.test( b ) ) {
+				x.on.ready = function() { this.popTime(); }
+			}
+			return o.cmd( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mb, node: x,
+				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
 	Prototype: {
@@ -4862,8 +4856,8 @@ Calendar = define.widget( 'calendar/date', {
 				this.go( $.dateAdd( this.date, this._nav_unit, b === 1 ? - this._nav_radix : this._nav_radix ) );
 			} else if ( $.classAny( a, '_t' ) ) { // 今天
 				this.date = new Date();
-				if ( this.x.on && this.x.on.complete ) {
-					this.trigger( 'complete' );
+				if ( this.x.callback ) {
+					this.backfill();
 				} else {
 					var f = this.get( this._fm( new Date() ) );
 					f ? f.focus() : this.go();
@@ -4871,7 +4865,7 @@ Calendar = define.widget( 'calendar/date', {
 			}
 		},
 		backfill: function() {
-			this.x.callback.call( this.x.target, $.dateFormat( this.date, this.x.format ) );
+			this.x.callback && this.x.callback( this.date );
 		},
 		inputMonth: function() {
 			var v = this.$( 'iptm' ).value, f = 'yyyy-mm';
@@ -4976,7 +4970,7 @@ Calendar = define.widget( 'calendar/date', {
 			if ( this._dlg_time ) {
 				this._dlg_time.close();
 				delete this._dlg_time;
-				a.innerHTML = Loc.calendar.picktime;
+				a && (a.innerHTML = Loc.calendar.picktime);
 			} else {
 				var b = Dialog.get( this.$() ), c = [], d = this.date, f = this.x.format, h = [], self = this;
 				function list( t, k ) {
@@ -4995,33 +4989,36 @@ Calendar = define.widget( 'calendar/date', {
 								$.classAdd( o, 'z-on' );
 								var v = o.getAttribute( 'data-v' );
 								d[ t === 'h' ? 'setHours' : t === 'i' ? 'setMinutes' : 'setSeconds' ]( v );
-								self.backfill();
+								//self.backfill();
 							}
 						}
 					} } );
 					h.push( { type: 'html', width: '*', cls: '_th' + (h.length ? ' _bl' : ''), wmin: c.length ? 1 : 0, hmin: 1, text: Loc.calendar[ t ] } );
 				}
-				f.indexOf( 'h' ) > 0 && list( 'h', 24 );
-				f.indexOf( 'i' ) > 0 && list( 'i', 60 );
-				f.indexOf( 's' ) > 0 && list( 's', 60 );
+				~f.indexOf( 'h' ) && list( 'h', 24 );
+				~f.indexOf( 'i' ) && list( 'i', 60 );
+				~f.indexOf( 's' ) && list( 's', 60 );
 				this._dlg_time = this.cmd( { type: 'dialog', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
 					 type: 'vert', nodes: [
 					 	{ type: 'horz', height: 29, nodes: h },
 					 	{ type: 'horz', height: '*', nodes: c }
 					 ]
 				} } );
-				a.innerHTML = Loc.calendar.backdate;
+				a && (a.innerHTML = Loc.calendar.backdate);
 			}
 		},
-		chooseTime: function( a ) {
-			$.close( a );
+		html_ok: function() {
+			if ( this.x.callback ) {
+				return '<div class=w-calendar-time>' + (this.x.timebtn ? '<div class=_time onclick=' + evw + '.popTime(this)>' + Loc.calendar.picktime + '</div>' : '') + '<div class=_ok onclick=' + evw + '.backfill(this)>' + Loc.confirm + '</div></div>';
+			}
+			return '';
 		},
 		html_nodes: function() {
 			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0,
 				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 10 ), o = this.x.css,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( mb ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( mb ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class=_t>' + Loc.calendar.today + '</div></div>' +
-					'<div style="padding:0 5px 5px 5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
+					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
 			b.setDate( 1 ), b.setDate( - b.getDay() + 1 );
 			while ( b < d ) {
 				var v = this._fm( b ), g = { value: v, text: b.getDate(), status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v, style: h && o && o.value && o[ o.value[ k ++ ] ] },
@@ -5031,11 +5028,7 @@ Calendar = define.widget( 'calendar/date', {
 			}
 			if ( (n = 7 - ( e.length % 7 )) > 1 )
 				e.push( '<td colspan=' + n + '>&nbsp;' );
-			s += e.join( '' ) + '</tbody></table></div>';
-			if ( this.x.format && this.x.format.indexOf( 'h' ) > 0 ) {
-				s += '<div class=w-calendar-time><div class=_time onclick=' + evw + '.popTime(this)>' + Loc.calendar.picktime + '</div><div class=_ok onclick=' + evw + '.chooseTime(this)>' + Loc.confirm + '</div></div>';
-			}
-			return s;
+			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
 	}
 } ),
@@ -5053,7 +5046,7 @@ CalendarWeek = define.widget( 'calendar/week', {
 			var a = this.date, w = $.dateWeek( a, this.x.cg, this.x.start ), y = w[ 0 ], t = this.x.begindate, m = this.x.enddate,
 				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 7 ), n = 0, o = this.x.css,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.weeknow + '</div></div>' +
-					'<div style="padding:0 5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
+					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
 			this._year = y;
 			if ( b[ 0 ] !== y )
 				b = $.dateWeek( new Date( y, 11, 31 - 7 ), this.x.cg, this.x.start );
@@ -5063,7 +5056,7 @@ CalendarWeek = define.widget( 'calendar/week', {
 			}
 			if ( (n = 7 - (i%7)) > 1 )
 				e.push( '<td colspan=' + n + '>&nbsp;' );
-			return s + e.join( '' ) + '</tbody></table></div>';
+			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
 
 	}
@@ -5078,12 +5071,12 @@ CalendarMonth = define.widget( 'calendar/month', {
 		html_nodes: function() {
 			var a = this.date, y = a.getFullYear(), t = this.x.begindate, m = this.x.enddate, e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 7 ), n = 0, o = this.x.css,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.monthnow + '</div></div>' +
-					'<div style="padding:0 5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
+					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
 				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, text: Loc.calendar.monthname[ i ], status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v, style: o && o.value && o[ o.value[ n ++ ] ] };
 				e.push( ( i % 4 === 0 ? '<tr class=_tr>' : '' ) + this.add( g ).html() );
 			}
-			return s + e.join( '' ) + '</tbody></table></div>';
+			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
 	}
 } ),
@@ -5100,12 +5093,12 @@ CalendarYear = define.widget( 'calendar/year', {
 				y = a.getFullYear() - ( a.getFullYear() % 10 ) - 1,
 				e = [], f = _number( this.x.focusdate && this.x.focusdate.slice( 0, 7 ) ), n = 0, o = this.x.css,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.yearnow + '</div></div>' +
-					'<div style="padding:0 5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
+					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
 				var v = y + i, g = { value: v, text: y + i, status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v, style: o && o.value && o[ o.value[ n ++ ] ] };
 				e.push( ( i % 4 === 0 ? '<tr class=_tr>' : '' ) + this.add( g ).html() );
 			}
-			return s + e.join( '' ) + '</tbody></table></div>';
+			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
 
 	}
@@ -5199,8 +5192,10 @@ _Date = define.widget( 'date', {
 			if ( (this === p.end && p.begin && (t = p.begin.val())) || (g && g.indexOf( '>' ) == 0 && (t = this.ownerView.fv( f ))) )
 				n = n ? (n < t ? t : n) : t;
 			this.closePop();
-			if ( ! e )
-				this.cal = Calendar.pop( this, this.x.format, v, this.val(), n, m, function( v ) { this.val( v ) } );
+			if ( ! e ) {
+				var self = this;
+				this.cal = Calendar.pop( this, this.x.format, v, v, n, m, function( d ) { self.val( $.dateFormat( d, self.x.format ) ); self.focus(); self.cal.close(); } );
+			}
 			this.focus();
 		},
 		closePop: function() {

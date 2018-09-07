@@ -228,7 +228,7 @@
 
 /* calendar */
 .w-calendar-dialog{border:1px solid #3298fe;background:#fff;}
-.w-calendar-head{position:relative;height:24px;line-height:24px;padding:5px 0;margin:0 10px 5px 10px;border-bottom:1px solid #ddd}
+.w-calendar-head{position:relative;height:24px;line-height:24px;padding:5px 0;margin:0 10px;border-bottom:1px solid #ddd}
 .w-calendar-head ._circle{text-indent:-3px;overflow:hidden}
 .w-calendar-head ._circle i{font-size:34px;line-height:21px}
 .w-calendar-head ._iptm{width:0;height:0;visibility: hidden;}
@@ -260,7 +260,7 @@
 .w-calendar-time-dlg{margin:1px;text-align:center}
 .w-calendar-time-dlg ._th{border-bottom:1px solid #eee;line-height:28px}
 .w-calendar-time-dlg ._bl{border-left:1px solid #eee}
-.w-calendar-time-dlg ._o{height:28px;line-height:28px}
+.w-calendar-time-dlg ._o{height:26px;line-height:26px}
 .w-calendar-time-dlg ._o.z-hv{background:#def0fc}
 .w-calendar-time-dlg ._o.z-on{background:#cce7f9}
 

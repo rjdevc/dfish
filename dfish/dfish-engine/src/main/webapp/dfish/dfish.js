@@ -440,7 +440,7 @@ _idsRemove = $.idsRemove = function( s, n, p ) {
 	if ( ! p ) p = ',';
 	return ( p + s + p ).replace( p + n + p, p ).slice( 1, -1 );
 },
-// s是否包含n。如果 n也是逗号隔开，那么只需匹配中一项即返回true
+// s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAny = $.idsAny = function( s, n, p ) {
 	if ( ! s ) return F;
 	if ( ! n || s == n ) return T;
