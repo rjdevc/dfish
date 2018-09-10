@@ -1534,6 +1534,12 @@ _setParent = function( a ) {
 		_viewCache[ this.path ] = this;
 	}
 },
+_renderView = function() {
+	if ( this.x ) {
+		this.showLoading( F );
+		this.layout && this.render();
+	}
+},
 _userPriority = { 'click': T, 'close': T, 'valid': T },
 _templates = {},
 _view_js = cfg.view_js || {},
@@ -1564,9 +1570,7 @@ View = define.widget( 'view', {
 						this.trigger( 'load' );
 					} else {
 						this.showLoading();
-						if ( this.loading ) {
-							this.addEventOnce( 'layoutload', _renderView );
-						} else {
+						if ( ! this.loading ) {
 							var f = Frame.edge( this );
 							if ( f && f.parentNode.getFocus() !== f )
 								f.addEventOnce( 'view', this.init, this );
@@ -1610,7 +1614,7 @@ View = define.widget( 'view', {
 		// @a -> sync?, b -> fn?, c -> cache?
 		_load: function( a, b, c ) {
 			this.abort();
-			this.loading = T;
+			this.loading = T;			
 			this.trigger( 'loading' );
 			var u = this.attr( 'src' ), m, n, self = this,
 				d = _view_js[ this.path ],
@@ -1634,7 +1638,6 @@ View = define.widget( 'view', {
 				if ( x.node )
 					this.layout = new ViewLayout( { node: x.node }, this );
 				this.loaded = T;
-				this.trigger( 'layoutload' );
 			} else
 				this.cmd( x );
 		},
@@ -1836,12 +1839,6 @@ View = define.widget( 'view', {
 		}
 	}
 } ),
-_renderView = function() {
-	if ( this.x ) {
-		this.showLoading( F );
-		this.layout && this.render();
-	}
-},
 /* `DocView` *
  *  引擎初始化后会创建一个顶级的DocView。这个view不是可见元素，但统领所有view和widget，类似于window.document
  *  只提供 find, cmd 等方法
@@ -3325,9 +3322,9 @@ Dialog = define.widget( 'dialog', {
 		},
 		// 定位 /@a -> fullscreen?
 		axis: function( a ) {
-			var c = this.attr( 'local' ), f = $.number( this.x.position ), g = a ? N : this._snapElem(), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
+			var c = this.attr( 'local' ), f = $.number( this.x.position ), g = a ? N : this._snapElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
-			if ( g ) {
+			if ( vs ) {
 				r = $.snap( w, h, g, this.x.snaptype || this._snaptype || (c && 'cc'), this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10), c && (c === T ? this.ownerView.$() : $( c )) );
 			} else if ( f ) { // 八方位浮动的起始位置
 				var b = '11,22,22,33,33,44,44,11'.split( ',' );
@@ -3352,7 +3349,7 @@ Dialog = define.widget( 'dialog', {
 			$.snapTo( this.$(), r );
 			// 八方位浮动效果
 			n && Q( this.$() ).animate( n, 100 );
-			if ( this.x.prong && g ) {
+			if ( this.x.prong && vs ) {
 				var m = r.mag_b ? 't' : r.mag_t ? 'b' : r.mag_l ? 'r' : 'l', x = Math.floor((r.target.left + r.target.right) / 2), y = Math.floor((r.target.top + r.target.bottom) / 2), 
 					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 );
 				$.append( this.$(), '<div class="w-dialog-prong z-' + m + '" style="' + (r.mag_b || r.mag_t ? 'left:' + l + 'px' : '') + (r.mag_l || r.mag_r ? 'top:' + t + 'px' : '') +
@@ -7616,12 +7613,12 @@ GridRow = define.widget( 'grid/row', {
 					var g = '';
 					if ( !e || u.x.nobr )
 						g += ' class="w-td-t f-fix"';
-					if ( !e && c[ i ]._sort )
+					if ( !e && c[ i ].x.sort )
 						v += c[ i ].html_sortarrow();
 					if ( f.tip )
 						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
-					b.push( '<td class="w-td-' + u._face + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' : '') : '') +
+					b.push( '<td class="w-td-' + u._face + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
 						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
 				}
 			}
@@ -7981,7 +7978,10 @@ THead = define.widget( 'thead', {
 				for ( var i = 0, c = r.colgrps[ 0 ], d = F; i < c.length; i ++ ) {
 					if ( c[ i ].x.sort ) {
 						Q( '.w-th-sort', this.$() ).each( function() {
-							Q( this ).click( function() { r.order( c[ Col.index( this ) ].x.field ); } );
+							Q( this ).click( function( e ) {
+								var o = Q( e.target );
+								r.order( c[ Col.index( this ) ].x.field, o.hasClass( 'f-arw-t1' ) ? 'asc' : o.hasClass( 'f-arw-b1' ) ? 'desc' : N );
+							} );
 						} );
 						break;
 					}
@@ -7997,9 +7997,8 @@ THead = define.widget( 'thead', {
 Col = define.widget( 'col', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		if ( x.sort ) {
+		if ( x.sort )
 			this._sort = x.sort.status;
-		}
 	},
 	Default: { wmin: 0, width: '*' },
 	Helper: {
@@ -8024,12 +8023,6 @@ Col = define.widget( 'col', {
 		th: function() {
 			return this.root().headrow().$().cells[ this.nodeIndex ];
 		},
-		html_sortarrow: function( a ) {
-			return $.arrow( this.root().id + 'sortarrow', (a || this._sort) === 'asc' ? 't1' : 'b1' );
-		},
-		remove_sortarrow: function() {
-			$.remove( this.root().id + 'sortarrow' );
-		},
 		width_minus: function() {
 			var n = 0;
 			if ( ie7 ) {
@@ -8037,6 +8030,10 @@ Col = define.widget( 'col', {
 					n = _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + (r._face === 'cell' && this.nodeIndex < this.parentNode.length - 1 ? 'border-right:1px solid #eee;' : '') + this.x.style ).wmin;
 			}
 			return n;
+		},
+		html_sortarrow: function( a ) {
+			return '<div class="w-th-sortwrap f-inbl f-wdbr f-va">' + $.arrow( 't1' ) +
+				$.arrow( 'b1' ) + '</div>';
 		},
 		html: function() {
 			return '<col id=' + this.id + ' style=width:' + (this.innerWidth() - this.width_minus()) + 'px>';
@@ -8543,8 +8540,8 @@ Grid = define.widget( 'grid', {
 						this.cmd( { type: 'ajax', src: s, complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
 					}
 				} else {
-					$.remove( this.id + 'sortarrow' );
-					Q( '.w-td-t', e[ k ].th() ).append( e[ k ].html_sortarrow() );
+					Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' )
+					Q( e[ k ].th() ).addClass( 'z-' + b );
 					r.sort( function( m, n ) {
 						var e = m.x.data[ d ], f = n.x.data[ d ];
 						if ( c.isnumber ) { e = _number( e ); f = _number( f ); }
