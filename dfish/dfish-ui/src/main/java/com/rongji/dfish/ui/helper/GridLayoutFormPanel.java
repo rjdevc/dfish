@@ -171,56 +171,16 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		
 		List<GridColumn> columns= prototype.getColumns();
 		// 若调用顺序不规则,需要先进行占位
-//		while(columns.size()<=widgetFromColumn) {
-//			columns.add(GridColumn.text(GridColumn.COLUMN_FIELD_UNKNOWN, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
-//			columns.add(GridColumn.text(GridColumn.COLUMN_FIELD_UNKNOWN, FormPanel.COLUMN_WIDTH_VALUE));
-//		}
-//		for(int i=fromColumn;i<=toColumn;i++){
-//			int maxColumnIndex = 2 * i;
 			while(columns.size()<=toColumn*2){
 				int columnIndex=columns.size()/2;
 				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_LABEL+columnIndex, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
 				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_VALUE+columnIndex, FormPanel.COLUMN_WIDTH_VALUE));
-//			} else {
-//				GridColumn labelColumn = columns.get(columnIndex);
-//				if (labelColumn != null && GridColumn.COLUMN_FIELD_UNKNOWN.equals(labelColumn.getField())) {
-//					labelColumn.setField(FormPanel.COLUMN_FIELD_LABEL+i);
-//				}
-//				GridColumn valueColumn = columns.get(columnIndex+1);
-//				if (valueColumn != null && GridColumn.COLUMN_FIELD_UNKNOWN.equals(valueColumn.getField())) {
-//					valueColumn.setField(FormPanel.COLUMN_FIELD_VALUE+i);
-//				}
 			}
-//		}
 		
 		Td cell = new Td();
 		cell.setNode(value);
 		if (value instanceof LabelRow && (((LabelRow<?>) value).getHideLabel()==null||!((LabelRow<?>) value).getHideLabel())) {
 			LabelRow<?> cast = (LabelRow<?>) value;
-//			StringBuilder label = new StringBuilder();
-//			if (Utils.notEmpty(cast.getId())) {
-//				// Label的ID为lbl_xxx,xxx代表控件的ID
-//				label.append("<label id='lbl_").append(cast.getId()).append("'>");
-//			}
-//			Boolean labelEscape = null;
-//			if(cast.getStar()!=null&&cast.getStar()){
-//				label.append("<span class='f-required'>*&nbsp;</span>");
-//				//控件本身只要有Validate为required=true会自动触发 z-required 样式
-//				labelEscape = false;
-//			}
-//			label.append(cast.getLabel()==null?"":Utils.escapeXMLword(cast.getLabel()));
-//			if (Utils.notEmpty(cast.getId())) {
-//				label.append("</label>");
-//			}
-//			String label=null;
-//			if(cast.getStar()!=null&&cast.getStar()){
-//				label="<span class='f-required'>*&nbsp;</span>"+cast.getLabel();
-//				//控件本身只要有Validate为required=true会自动触发 z-required 样式
-//			}else{
-//				label=cast.getLabel();
-//			}
-			
-//			Html labelWidget = new Html("lbl_" + cast.getId(), label.toString()).setEscape(calcLabelRealEscape(labelEscape, prototype.getEscape()));
 			prototype.add(widgetFromRow, widgetFromColumn, widgetToRow, widgetFromColumn, new FormLabel(cast, prototype.getEscape()).getLabelWidget());
 			prototype.add(widgetFromRow, widgetFromColumn+1, widgetToRow, widgetToColumn, cell);
 		}else{

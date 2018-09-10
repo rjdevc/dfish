@@ -26,7 +26,7 @@ public class TrieTree<V extends Object> {
 	/**
 	 * 树的根节点
 	 */
-	private Node<V> root;
+	protected Node<V> root;
 	/**
 	 * 是否反序匹配，字符串从又到左的顺序匹配。
 	 * 中文一般定语在前(左)，主要词义在后(右)，有时候从右到左匹配到的词组更能贴合自然语言
@@ -364,12 +364,12 @@ public class TrieTree<V extends Object> {
 	 *
 	 * @param <V> 内容类型
 	 */
-	private static class Node<V> {
-		private boolean end; //是否一个词结束了。
+	public static class Node<V> {
+		protected boolean end; //是否一个词结束了。
 		private HashNode<V>[] children;//注意这是Hashtable格式。并不是所有的空间都有值，并且有些值有重复的，可能是以链表的方式存在的
 		private int threshold;//hash表的参数，我们使用默认的参数，如果children的空间是16这个就是它的3/4=12如果hashtable中放置超过12(含列表内的数量)则会触发增加
-		private int size;
-		private V value;
+		protected int size;
+		protected V value;
 		
 		
 		private static final int DEFAULT_INITIAL_CAPACITY=16;
@@ -379,6 +379,52 @@ public class TrieTree<V extends Object> {
 		private static final char CHAR_L = '\u2514';//制表符└
 
 		public Node() {}
+		
+		/**
+		 * 是否一个词结束了。
+		 * @return boolean
+		 */
+		public boolean isEnd() {
+			return end;
+		}
+
+
+		/**
+		 * 是否一个词结束了。
+		 * @param end boolean
+		 */
+		public void setEnd(boolean end) {
+			this.end = end;
+		}
+		/**
+		 * 获取值
+		 * @return V
+		 */
+		public V getValue() {
+			return value;
+		}
+
+		/**
+		 * 设置值
+		 * @param value V
+		 */
+		public void setValue(V value) {
+			this.value = value;
+		}
+		/**
+		 * 这个节点下有几个内容(不含级联)
+		 * @return int
+		 */
+		public int getSize() {
+			return size;
+		}
+		/**
+		 * 这个节点下有几个内容(不含级联)
+		 * @param size int
+		 */
+		public void setSize(int  size) {
+			this.size = size;
+		}
 
 
 		/**

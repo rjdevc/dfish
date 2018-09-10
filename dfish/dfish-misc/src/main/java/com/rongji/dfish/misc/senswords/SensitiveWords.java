@@ -11,8 +11,10 @@ import com.rongji.dfish.base.TrieTree.SearchResult;
 /**
  * 敏感词过滤器
  * @author LinLW
- *
+ * @deprecated
+ * @see SensitiveWordFilter
  */
+@Deprecated
 public class SensitiveWords {
 	private static SensitiveWords instance=new SensitiveWords();
 	/**
