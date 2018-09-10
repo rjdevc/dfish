@@ -1483,9 +1483,7 @@ View = define.widget( 'view', {
 						this.trigger( 'load' );
 					} else {
 						this.showLoading();
-						if ( this.loading ) {
-							this.addEventOnce( 'layoutload', _renderView );
-						} else {
+						if ( ! this.loading ) {
 							var f = Frame.edge( this );
 							if ( f && f.parentNode.getFocus() !== f )
 								f.addEventOnce( 'view', this.init, this );
@@ -1550,7 +1548,6 @@ View = define.widget( 'view', {
 				if ( x.node )
 					this.layout = new ViewLayout( { node: x.node }, this );
 				this.loaded = T;
-				this.trigger( 'layoutload' );
 			} else
 				this.cmd( x );
 		},
