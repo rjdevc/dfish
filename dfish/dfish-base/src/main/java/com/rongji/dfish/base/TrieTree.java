@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.rongji.dfish.base.TrieTree.Node;
+
 /**
  * 字典树类
  * <p>用于多关键词的字符串匹配，利用字符串的公共前缀来减少查询时间，最大限度地减少无谓的字符串比较，查询效率比哈希树高。</p>
@@ -805,20 +807,24 @@ public class TrieTree<V extends Object> {
 			}
 			return subWords;
 		}
+		
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			if(children!=null){
+				for(HashNode<V> first:children){
+					HashNode<V> node=first;
+					while(node!=null){
+						node.value.toString("", node.key,  sb, true);
+						node=node.next;
+					}
+				}
+			}
+			return sb.toString();
+		}
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		if(root.children!=null){
-			for(HashNode<V> first:root.children){
-				HashNode<V> node=first;
-				while(node!=null){
-					node.value.toString("", node.key,  sb, true);
-					node=node.next;
-				}
-			}
-		}
-		return sb.toString();
+		return root.toString();
 	}
 	/**
 	 * 把所有的节点数据读取出来，以便复制，备份等工作。
@@ -869,6 +875,13 @@ public class TrieTree<V extends Object> {
 		public String toString(){
 			return key+"="+value;
 		}
+	}
+	/**
+	 * 获取根节点
+	 * @return root
+	 */
+	public Node<V> getRoot() {
+		return root;
 	}
 
 }

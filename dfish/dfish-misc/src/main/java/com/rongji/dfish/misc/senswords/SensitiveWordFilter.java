@@ -15,15 +15,19 @@ import com.rongji.dfish.base.util.CharUtil;
 public class SensitiveWordFilter {
 	public static void main(String[] args) {
 //		System.out.println(SensitiveTrieTree.isStopChar('，'));
+		
 		SensitiveWordFilter.getInstance();
-		String s="java你是逗比吗？fuck，FuCk！ｆｕｃｋ全角半角，口，交换，f!!!u&c ###k 停顿词ff fuuuucccckkk 重复词，法@#轮！@#功over16口交换机";
+		String s="avjava你是逗比吗？fuck，avFuCk！ｆｕｃｋ全角半角，口，交换，f!!!u&c ###k 停顿词ff fuuuucccckkk 重复词，法@#轮！@#功over16口交换机";
 //		String s="java,路口交通，8口交换机";
 		System.out.println("原语句："+s);
 		System.out.println("长度："+s.length());
-		String re;
+		String re=null;
 		long nano = System.nanoTime();
 		boolean		b=SensitiveWordFilter.getInstance().match(s);
-		re=SensitiveWordFilter.getInstance().replace(s);
+		boolean w=true;
+		while(w){
+			re=SensitiveWordFilter.getInstance().replace(s);
+		}
 		nano = (System.nanoTime()-nano);
 		System.out.println("是否包含: " + b);
 		System.out.println("解析时间 : " + nano + "ns");
@@ -51,9 +55,6 @@ public class SensitiveWordFilter {
 			BufferedReader bis=new BufferedReader(new InputStreamReader(is,"UTF-8"));
 			String line="";
 			while ((line=bis.readLine())!=null){
-				if("口交".equals(line)){
-					System.out.println("");
-				}
 				core.put(line, true);
 			}
 			if(bis!=null){
@@ -98,35 +99,97 @@ public class SensitiveWordFilter {
 		if(source==null)return null;
 
 		StringBuilder result=new StringBuilder();
-		List<SearchResult<Boolean>> matches=  core.search(source);
-		int lastMatchEnd=0;
-		for(SearchResult<Boolean> sr:matches){
-			if(sr.getBegin()>lastMatchEnd){
-				result.append(source.substring(lastMatchEnd, sr.getBegin()));
+		char[] chs = source.toCharArray();
+		int length = chs.length;
+		char currc; // 当前检查的字符
+		char cpcurrc=0; // 当前检查字符的备份
+		int filled=length;
+		TrieTree.Node<Boolean> node=core.getRoot();
+		TrieTree.Node<Boolean> find=null;
+		int wordbegin=length;
+		int wordend=length;
+		for (int i = length-1; i >=0; i--) {
+			currc=chs[i];
+			if(SensitiveTrieTree.stopChar.contains(currc)){
+				continue;
 			}
-			if(sr.getValue()){
-				for(int i=0;i<sr.getEnd()-sr.getBegin();i++){
-					result.append('*');
-				}
+			currc = toLowerCase(currc);
+			if(currc==cpcurrc){
+				continue;
 			}else{
-				result.append(source.substring(sr.getBegin(), sr.getEnd()));
+				cpcurrc=currc;
 			}
-			lastMatchEnd=sr.getEnd();
+			node=core.getRoot().get(currc);
+			
+			if(node==null){
+				continue;
+			}
+			find=null;
+			for(int k=i-1;k>=0;k--){
+				currc=chs[k];
+				if(SensitiveTrieTree.stopChar.contains(currc)){
+					continue;
+				}
+				currc = toLowerCase(currc);
+				if(currc==cpcurrc){
+					continue;
+				}else{
+					cpcurrc=currc;
+				}
+				node=node.get(currc);
+				if(node==null){
+					if(find!=null){
+						if(find.getValue()){
+							//把未压入的内容压入到字符串
+							fillWhite(chs,wordend+1,filled,result);
+							//把找到的结果压入成*
+							fillBlack(wordbegin,wordend+1,result);
+							filled=wordbegin;
+							find=null;
+						}
+						i=wordbegin;
+						cpcurrc=0;//重置否则退出
+					}
+					break;
+				}else if(node.isEnd()){
+					find=node;
+					wordbegin=k;
+					wordend=i;
+				}
+			}
 		}
-		if(source.length()>lastMatchEnd){
-			result.append(source.substring(lastMatchEnd, source.length()));
-		}
-		return result.toString();
-	}
-	
-	static class SensitiveTrieTree extends TrieTree<Boolean>{
-		public SensitiveTrieTree(){
-			super(false);
-		}
-		static char toLowerCase(char c){
-			return Character.toLowerCase(CharUtil.sbc2dbc(c));
+		if(find!=null){
+			if(find.getValue()){
+				//把未压入的内容压入到字符串
+				fillWhite(chs,wordend+1,filled,result);
+				//把找到的结果压入成*
+				fillBlack(wordbegin,wordend+1,result);
+				filled=wordbegin;
+			}
 		}
 		
+		fillWhite(chs,0,filled,result);
+		return result.reverse().toString();
+	}
+	private void fillBlack(int begin, int end, StringBuilder result) {
+
+		for(int i=end-1;i>=begin;i--){
+			result.append('*');
+		}
+	}
+	private void fillWhite(char[] chs, int begin, int end, StringBuilder result) {
+		
+		for(int i=end-1;i>=begin;i--){
+			result.append(chs[i]);
+		}
+	}
+	static char toLowerCase(char c){
+		return Character.toLowerCase(CharUtil.sbc2dbc(c));
+	}
+	
+	
+	
+	static class SensitiveTrieTree extends TrieTree<Boolean>{
 		private static HashSet<Character> stopChar;
 		static{
 			stopChar=new HashSet<Character>();
@@ -140,11 +203,9 @@ public class SensitiveWordFilter {
 				stopChar.add(c);
 			}
 		}
-		static boolean isStopChar(char c){
-			//空格//符号 全角符号和特殊中文符号，当做停止符号
-			return stopChar.contains(c);
+		public SensitiveTrieTree(){
+			super(true);
 		}
-		
 		@Override
 		public Boolean put(String key, Boolean value) {
 				Node<Boolean> current = root;
@@ -154,7 +215,7 @@ public class SensitiveWordFilter {
 						//char需要转化为半角小写 
 						//char不能有连续两个是一样的。
 						//如果有符号，则跳过一位继续查找
-						if(isStopChar(chs[i])){
+						if(stopChar.contains(chs[i])){
 							continue;
 						}
 						char c=toLowerCase(chs[i]);
@@ -177,68 +238,6 @@ public class SensitiveWordFilter {
 				current.setValue(value);
 				current.setEnd(true);
 				return oldValue;
-		}
-
-		@Override
-		public List<SearchResult<Boolean>> search(String text) {
-			List<SearchResult<Boolean>> searchResult = new ArrayList<SearchResult<Boolean>>();
-			char[] content = text.toCharArray();
-				for (int i = content.length; i >0; i--) {
-					
-					SearchResult<Boolean> r = matchReverse(content, 0, i,root,(char)-1);
-					if (r!=null) {
-						searchResult.add(r);
-						i -= (r.getEnd() - r.getBegin() - 1);
-					}
-				}
-				java.util.Collections.reverse(searchResult);
-			return searchResult;
-		}
-		
-		/**
-		 * 尝试匹配内容，并且这里反向匹配(从右向左)最长的字符串。
-		 * 比如有长沙县和沙县。如果当前节点是【沙】它并不会马上得到结果，而是尝试匹配更长的字符。
-		 * 匹配的上，则返回更长的关键字 长沙县；匹配不上则返回当前结果 沙县。
-		 * @param content 匹配的内容
-		 * @param begin 开始(数字比较小的)匹配的位置-针对于 匹配的内容，一般不限制结束匹配的位置，一般为0；
-		 * @param end 结束(数字比较大的)匹配的位置-针对于匹配的内容
-		 * @return SearchResult 仅返回最长的一个结果。没有返回所有结果。
-		 */
-		public SearchResult<Boolean> matchReverse(char[] content, int begin, int end ,Node<Boolean> node, char lastChar) {
-			char c = content[end-1];
-			// char需要转化为半角小写 
-			// char不能有连续两个是一样的。
-			// 如果有符号，则跳过一位继续查找
-			if(isStopChar(c)){
-				return matchReverse(content,begin,end-1,node,lastChar);
-			}
-			c=toLowerCase(c);
-			if(c==lastChar){
-				return matchReverse(content,begin,end-1,node,lastChar);
-			}else{
-				lastChar=c;
-			}
-			if (node.getSize() ==0) {
-				return null;
-			}
-			SearchResult<Boolean> result = null;
-			Node<Boolean> p = node.get(c);
-			if (p == null) {
-				return null;
-			} else {
-				if (p.isEnd()) {
-					result=new SearchResult<Boolean>(end-1,end,p.getValue());
-				}
-				if (p.getSize() >0) {
-					if (begin + 1 < end) {
-						SearchResult<Boolean> subMatch = matchReverse(content, begin , end-1,p,lastChar);
-						if (subMatch!=null) {
-							return new SearchResult<Boolean>(subMatch.getBegin(),end,subMatch.getValue()) ;
-						}
-					}
-				}
-			}
-			return result;
 		}
 	}
 }
