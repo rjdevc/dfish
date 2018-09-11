@@ -41,6 +41,7 @@ public class StackPanel extends AbstractWidgetWrapper<StackPanel, VerticalLayout
 			w = new Html(null);
 		}
 		subItems.add(new Object[]{ icon, title, w });
+		prototype = new VerticalLayout(id);
 		return this;
 	}
 	
@@ -51,7 +52,7 @@ public class StackPanel extends AbstractWidgetWrapper<StackPanel, VerticalLayout
     }
 	
 	private void buildPrototype() {
-		prototype = new VerticalLayout(id);
+//		prototype = new VerticalLayout(id);
 		// FIXME 标题高度默认值
 		if (labelHeight < 0) {
 			labelHeight = 25;

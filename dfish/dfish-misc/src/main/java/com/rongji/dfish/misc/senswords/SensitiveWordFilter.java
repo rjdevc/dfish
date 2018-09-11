@@ -158,7 +158,7 @@ public class SensitiveWordFilter {
 				}
 			}
 		}
-		if(find!=null){
+		if(find!=null){//如果最后一个是敏感词要补充处理
 			if(find.getValue()){
 				//把未压入的内容压入到字符串
 				fillWhite(chs,wordend+1,filled,result);
