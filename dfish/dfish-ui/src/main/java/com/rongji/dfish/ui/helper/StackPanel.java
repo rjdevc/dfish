@@ -25,6 +25,7 @@ public class StackPanel extends AbstractWidgetWrapper<StackPanel, VerticalLayout
 	 * @param id
 	 */
 	public StackPanel(String id) {
+		prototype = new VerticalLayout(id);
 		bundleProperties();
 	}
 	
@@ -51,7 +52,7 @@ public class StackPanel extends AbstractWidgetWrapper<StackPanel, VerticalLayout
     }
 	
 	private void buildPrototype() {
-		prototype = new VerticalLayout(id);
+//		prototype = new VerticalLayout(id);
 		// FIXME 标题高度默认值
 		if (labelHeight < 0) {
 			labelHeight = 25;
