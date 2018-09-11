@@ -25,6 +25,7 @@ public class StackPanel extends AbstractWidgetWrapper<StackPanel, VerticalLayout
 	 * @param id
 	 */
 	public StackPanel(String id) {
+		prototype = new VerticalLayout(id);
 		bundleProperties();
 	}
 	
@@ -41,7 +42,6 @@ public class StackPanel extends AbstractWidgetWrapper<StackPanel, VerticalLayout
 			w = new Html(null);
 		}
 		subItems.add(new Object[]{ icon, title, w });
-		prototype = new VerticalLayout(id);
 		return this;
 	}
 	
