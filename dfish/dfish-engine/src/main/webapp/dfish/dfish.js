@@ -1115,10 +1115,10 @@ _rm = function( a ) {
 	if ( typeof a === _STR ) a = $( a );
 	a && a.parentNode && a.parentNode.removeChild( a );
 },
-_bcr = function( o ) {
-	var v = _cvs(),  b = v.clientLeft, c = v.scrollLeft, d = v.clientTop, e = v.scrollTop, a = o && o !== doc && (o.isWidget ? o.$() : o).getBoundingClientRect();
-	return a ? { left : a.left - b + c, top : a.top - d + e, right : a.right - b + c, bottom : a.bottom - d + e, width : a.right - a.left, height : a.bottom - a.top } :
-		{ left: c, top: e, right: v.clientWidth + c, bottom: v.clientHeight + e, width: v.clientWidth, height: v.clientHeight };
+_bcr = function( a ) {
+	var b = cvs.clientLeft, c = cvs.scrollLeft, d = cvs.clientTop, e = cvs.scrollTop, o = a && a != doc && (a.isWidget ? a.$() : a), r = o && o.getBoundingClientRect();
+	return r ? { left : r.left - b + c, top : r.top - d + e, right : r.right - b + c, bottom : r.bottom - d + e, width : r.right - r.left, height : r.bottom - r.top } :
+		a == doc ? { left: c, top: e, right: cvs.clientWidth + c, bottom: cvs.clientHeight + e, width: cvs.clientWidth, height: cvs.clientHeight } : N;
 },
 _offset = function( o ) {
 	var v = _cvs(), a = _bcr( o );
@@ -1141,7 +1141,7 @@ _snapindent = { h: {'21':-1,'34':-1,'12':1,'43':1}, v: {'14':1,'23':1,'41':-1,'3
 // 元素四个角，左上为1，右上为2，右下为3，左下为4。目标元素在前，浮动元素在后。如"41"代表目标元素的左下角和浮动元素的左上角粘合。
 _snap = function( a, b, c, d, e, f ) {
 	if ( ! c )
-		c = _bcr();
+		c = _bcr( doc );
 	else if ( c.nodeType )
 		c = _bcr( c );
 	else if ( c.isWidget )
