@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.exception.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,8 +9,10 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import org.hibernate.HibernateException;
 import org.hibernate.classic.Session;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
@@ -24,44 +27,6 @@ public class ExceptionManager {
 	private static ExceptionManager instance;
 	private final static Executor SNGL_EXEC = Executors.newSingleThreadExecutor();
 	private PubCommonDAO dao;
-//	static class LockCache {
-//	    private static LockCache instance = new LockCache();
-//	    private static long DEFAULT_EFFECTIVE_TIME = 30L*60*1000;
-//	    // 缓存对象
-//	    private Boolean lock;
-//	    // 缓存有效时间
-//	    private  long cacheMillis;
-//	    // 缓存创建时间
-//	    private long createTime;
-//	    
-//	    private LockCache(){
-//	    	this.lock = null;
-//	    }
-//	    
-//		public Boolean getCache() {
-//			if (this.lock == null|| this.cacheMillis <= 0) {
-//				return null;
-//			}
-//	        long currentTime = System.currentTimeMillis();
-//	        if(this.cacheMillis > 0 && currentTime - this.createTime > this.cacheMillis) {
-//	            //超过缓存过期时间,返回null
-//	            return null;
-//	        } else {
-//	        	return this.lock;
-//	        }
-//	    }
-//
-//	    public void setCache(Boolean lock,long cacheMillis) {
-//	    	this.lock = lock;
-//	    	this.cacheMillis = cacheMillis;
-//	    	this.createTime = System.currentTimeMillis();
-//	    }
-//
-//	    public static LockCache getInStance(){
-//	        return instance;
-//	    }
-//	   
-//	}
 	
 	public boolean isEnabled() {
 		try {
@@ -232,7 +197,7 @@ public class ExceptionManager {
 		batchLogger.log(rec, excepid);
 	}
 	@SuppressWarnings("unchecked")
-    protected long findOrCreateException(ExceptionTypeInfoPrototype ei) {
+    protected long findOrCreateException(final ExceptionTypeInfoPrototype ei) {
 		// 转载的时候可能会同时装载多个Exception 比如说nullpointerException 并且没cause的情况，可能会通知装载很多信息。
 		//填充过程可能需要constas 反向MAP
 		List<PubExptType> types=(List<PubExptType>) dao.getQueryList("FROM PubExptType t WHERE t.className=? AND t.causeId=?", ei.name,ei.cause);
@@ -258,21 +223,25 @@ public class ExceptionManager {
 			exceptionInfoMap.put(eiItem, typeId);
 		}
 		if(exceptionInfoMap.get(ei)==null){
-			Number o=null;
+			Number o=knownMaxTypeId;
 			boolean fail=true;
 			do{
 				try{
-					o=(Number)dao.queryAsAnObject("SELECT MAX(t.typeId) FROM PubExptType t ");
+					if(o==null){
+						o=(Number)dao.queryAsAnObject("SELECT MAX(t.typeId) FROM PubExptType t ");
+					}
 					long i=o==null?0L:o.longValue();
 					i++;
 					o=i;
 					PubExptType t=new PubExptType();
-					t.setTypeId(i);
+					t.setTypeId(o.longValue());
 					t.setCauseId(ei.cause);
 					t.setClassName(ei.name);
 					dao.save(t);
+					knownMaxTypeId=o;
 					fail=false;
 				}catch(ConstraintViolationException e){
+					knownMaxTypeId=null;
 				}catch(Exception e){
 					e.printStackTrace();
 					break;
@@ -280,39 +249,58 @@ public class ExceptionManager {
 				}
 			}while(fail);
 			//循环加入stack
-			for(int order=0;order<ei.stack.size();order++){
 				fail=true;
-				Number stackId=null;
-				StackInfoPrototype si=ei.stack.get(order);
+				Number stackId=knownMaxStackId;
+				
 				do{
 					try{
-						stackId=(Number)dao.queryAsAnObject("SELECT MAX(t.stackId) FROM PubExptStack t ");
-						long i=stackId==null?0L:stackId.longValue();
-						i++;
-						stackId=i;
-						PubExptStack t=new PubExptStack();
-						t.setStackId(i);
-						t.setTypeId(o.longValue());
-						t.setStackOrder(order);
-						t.setClassName(si.clz);
-						t.setFileName(si.file);
-						t.setLineNumber(si.line);
-						t.setMethodName(si.method);
-						dao.save(t);
+						if(stackId==null){
+							stackId=(Number)dao.queryAsAnObject("SELECT MAX(t.stackId) FROM PubExptStack t ");
+						}
+						final long i=stackId==null?0L:stackId.longValue();
+						final Number initTypeId=o;
+						
+						// 批量
+						dao.getHibernateTemplate().execute(new HibernateCallback<Object>(){
+							@Override
+							public Object doInHibernate(org.hibernate.Session session)
+									throws HibernateException, SQLException {
+								long id=i;
+								for(int order=0;order<ei.stack.size();order++){
+									id++;
+									StackInfoPrototype si=ei.stack.get(order);
+									
+									PubExptStack t=new PubExptStack();
+									t.setStackId(id);
+									t.setTypeId(initTypeId.longValue());
+									t.setStackOrder(order);
+									t.setClassName(si.clz);
+									t.setFileName(si.file);
+									t.setLineNumber(si.line);
+									t.setMethodName(si.method);
+									session.save(t);
+								}
+								return null;
+							}
+						});
+						knownMaxStackId=i+ei.stack.size();
 						fail=false;
 					}catch(ConstraintViolationException e){
+						knownMaxStackId=null;
 					}catch(Exception e){
 						e.printStackTrace();
 						break;
 						//可能有多机执行，引起主键冲突。
 					}
 				}while(fail);
-			}
 			revExceptionInfoMap .put(o.longValue(), ei);
 			exceptionInfoMap.put(ei, o.longValue());
 		}
 		return exceptionInfoMap.get(ei);
 	}
+	private Number knownMaxTypeId=null;
+	private Number knownMaxStackId=null;
+	
 	private int maxConstIdHint=-1;
 	protected int findOrCreateConst(String name) {
 		Number o=(Number)dao.queryAsAnObject("SELECT t.conId FROM PubExptConstant t WHERE t.conName=?", name);
