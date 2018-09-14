@@ -1,6 +1,7 @@
 package com.rongji.dfish.base.util;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.ParseException;
@@ -655,4 +656,165 @@ public class StringUtil {
     	}
     	return ret-1;
     }
+    
+    public static final String ENCODING_UTF8="UTF-8";
+    public static final String ENCODING_GBK="GBK";
+    //根据传进来 byte[]
+    /**
+     * 根据传进来 byte[] 判定字符集。
+     * 如果传进来byte[] 能够吻合UTF8的格式。默认返回UTF8的格式。
+     * 如果传进来的byte[] 吻合GBK(GB18030)的格式。返回GBK
+     * 如果都不满足，UnsupportedEncodingException
+     * 如果byte是纯ASCII码。无法判定字符集，但都吻合UTF8/GBK的格式。则返回UTF8
+     * @param sample byte[] 
+     * @return UTF8/GBK
+     */
+    public static String detCharset(byte[] sample) throws UnsupportedEncodingException{
+    	if(sample==null||sample.length==0){
+    		return ENCODING_UTF8;
+    	}
+    	if(checkUTF8(sample)){
+    		return ENCODING_UTF8;
+    	}
+    	if(checkGBK(sample)){
+    		return ENCODING_GBK;
+    	}
+    	throw new UnsupportedEncodingException("unknown");
+    }
+
+    /**
+     * UTF8是变长字符集，所以不能强制设定非ASCII码字符都是3个字节。部分字符应该2个字节。
+	 * <table>
+	 * <tr><td>0XXX XXXX</td><td>ASCII</td></tr>
+	 * <tr><td>110X XXXX<br/>10XX XXXX</td><td>2字节，如全角等字符</td></tr>
+	 * <tr><td>1110XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>3字节，汉字主要集中在这个区域</td></tr>
+	 * <tr><td>1111 0XXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>4字节，UNICODE6.1定义范围</td></tr>
+	 * <tr><td>1111 10XX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>5字节，预留</td></tr>
+	 * <tr><td>1111 110X<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>6字节，预留</td></tr>
+	 * </table>
+     * @param sample byte[]
+     * @return boolean
+     */
+    private static boolean checkUTF8(byte[] sample) {
+    	for(int i=0;i<sample.length;i++){
+    		byte b=sample[i];
+    		if(b>0){
+    			continue;
+    		}
+    		//[-64, -32)110X XXXX 后续应该有 一个[-128,-64)10XX XXXX
+    		//[-32, -16)1110 XXXX 后续应该有 两个[-128,-64)10XX XXXX
+    		//[-16, -8)1111 0XXX 后续应该有 三个[-128,-64)10XX XXXX
+    		//根据unicode6.1暂时不判断更多
+    		if(b>=-32){
+    			if(b>=-8){
+    				//1111 1XXX
+    				return false;
+     	    	}else if(b>=-16){
+     	    		//三个[-128,-64) //1111 0XXX
+     	    		if(noFollow10Char(sample,i,3)){
+     	    			return false;
+     	    		}
+     	    		i+=3;
+     	    	}else{
+    	    		//两个[-128,-64) 1110 XXXX
+     	    		if(noFollow10Char(sample,i,2)){
+     	    			return false;
+     	    		}
+     	    		i+=2;
+    	    	}
+    		}else if(b>=-64){
+    			//一个[-128,-64) 110X XXXX
+    			if(noFollow10Char(sample,i,1)){
+ 	    			return false;
+ 	    		}
+    			i++;
+			}else{ //10XX XXXX
+				return false;
+			}
+    	}
+    	return true;
+    }
+    private static String byte2Bin(byte b){
+    	StringBuilder sb=new StringBuilder();
+    	for(int i=7;i>=0;i--){
+    		sb.append((b&1<<i)>0?'1':'0');
+    	}
+    	return sb.toString();
+    }
+    private static String byte2hex(byte b){
+    	StringBuilder sb=new StringBuilder();
+    	sb.append(Integer.toHexString(b>>>4&15));
+    	sb.append(Integer.toHexString(b&15));
+    	return sb.toString();
+    }
+    
+    
+    //判定UTF8的第二个以后的字节码因为 是10XX XXXX 所以值 访问只能是[128,-64)
+	private static boolean noFollow10Char(byte[] sample, int i, int j) {
+		//因为sample是采样的，防止越界
+		int end=Math.min(sample.length, i+j+1);
+		for(int k=i+1;k<end;k++){
+			byte b=sample[k];
+			if(b<-128||b>=-64){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * GB18030是变长字符集(主体是GBK 中文2个字节)，所以不能强制设定非ASCII码字符都是2个字节。部分字符应该4个字节。
+	 * <table>
+	 * <tr><td>0x00-0x1F</td><td>1字节 控制字符</td></tr>
+	 * <tr><td>0x20-0x7F</td><td>1字节 ASCII</td></tr>
+	 * <tr><td>首0x81-0xFE<br/>次0x40-0xFE</td><td>2字节，大部分常用汉字</td></tr>
+	 * <tr><td>首0x81-0xFE<br/>次0x30-0x39<br/>三0x81-0xFE<br/>末0x30-0x39</td><td>4字节，增补，主要为冷僻汉字</td></tr>
+	 * </table>
+	 * @param sample
+	 * @return
+	 */
+	private static boolean checkGBK(byte[] sample) {
+		for(int i=0;i<sample.length;i++){
+    		byte b=sample[i];
+//    		System.out.println("checking 1st char "+byte2hex(b));
+    		if(b>0){
+    			continue;
+    		}
+    		if(b==-1||b==-128){//首个字节不能是80 FF
+    			return false;
+    		}
+    		if(i+1>=sample.length){
+    			break;
+    		}
+   			byte b2=sample[i+1];
+//   			System.out.println("checking 2nd char "+byte2hex(b2));
+   			if(b2>=-1&&b2<48){
+   				return false;
+   			}else if(b2>=48&&b2<64){//可能是负数
+   				//GB18030的判定
+   				if(i+2>=sample.length){
+   					break;
+   				}
+   				byte b3=sample[i+2];
+//   				System.out.println("checking 3rd char "+byte2hex(b3));
+   				if(b3>=-1||b3==-128){
+   		    		return false;
+   		    	}
+   				if(i+3>=sample.length){
+   					break;
+   				}
+   				byte b4=sample[i+3];
+//   				System.out.println("checking 4rd char "+byte2hex(b4));
+   				if(b4<48||b2>=64){
+   	    			return false;
+   	    		}else{
+   	    			i+=3;
+   	    		}
+   			}else{
+   				i++;
+   			}
+    	}
+    	return true;
+	}
+
 }
