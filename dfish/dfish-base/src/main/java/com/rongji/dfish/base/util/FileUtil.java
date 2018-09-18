@@ -128,7 +128,7 @@ public final class FileUtil {
 				inputStream);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(
 				1024);
-		byte[] block = new byte[512];
+		byte[] block = new byte[8192];
 		while (true) {
 			int readLength = bufferedInputStream.read(block);
 			if (readLength == -1) {
@@ -208,6 +208,8 @@ public final class FileUtil {
 	 * @param is
 	 * @throws UnsupportedEncodingException
 	 * @throws IOException
+	 * @deprecated 经过实测证明，部分浏览器/应用可能在没有content-length 属性的时候，直接停止下载。
+	 *  请慎用该方法
 	 */
 	public static void downLoadData(final HttpServletResponse response,
 			InputStream is) throws UnsupportedEncodingException, IOException {
