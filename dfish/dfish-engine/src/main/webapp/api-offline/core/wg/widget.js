@@ -28,17 +28,13 @@ _docView,
 // 事件白名单
 _white_events = $.white_events,
 _event_zhover = (mb ? '' : ' onmouseover=$.zover(this) onmouseout=$.zout(this)'),
-
-// 鼠标点击时记录位置
 // 把mouseover和mouseout修为mouseenter和mouseleave的效果
 _event_enter = {
 	mouseover: function( a, e ) { return ! a.contains( e.fromElement ) },
 	mouseout:  function( a, e ) { return ! a.contains( e.toElement ) }
 },
 _event_stop = {
-	contextmenu: function( e ) {
-		if ( !(cfg.debug && e.ctrlKey) ) $.stop( e );
-	}
+	contextmenu: function( e ) { !(cfg.debug && e.ctrlKey) && $.stop( e ) }
 },
 
 // @a -> htmlElement: 返回html元素对象所在的widget
@@ -158,7 +154,7 @@ _f_val = function( a, b, r ) {
 		return N;
 	switch ( a.type ) {
 		case 'checkbox':
-			if ( ! a.value  || (! a.checked && !(a.indeterminate && a.getAttribute( 'w-partialsubmit' ))) )
+			if ( ! a.value  || (! a.checked && ! (a.indeterminate && a.getAttribute( 'w-partialsubmit' ))) )
 				return N;
 		break;
 		case 'radio':
@@ -1397,7 +1393,7 @@ Scroll = define.widget( 'scroll', {
 				$.ease( function( i ) {
 					if ( t != N ) a.scrollTop  = g + (t - g) * i;
 					if ( l != N ) a.scrollLeft = h + (l - h) * i;
-					i == 1 && r && r.call( this );
+					i === 1 && r && r.call( this );
 				}, p );
 			} else {
 				if ( t != N ) a.scrollTop  = t;
@@ -1500,7 +1496,7 @@ Scroll = define.widget( 'scroll', {
 	    			Q( o ).css( { 'transform': 'translate3d(0,'+ y +'px,0)' } );
 	    		}
 	    	});
-	    	o.addEventListener('touchend', function(e) {
+	    	o.addEventListener( 'touchend', function( e ) {
 	    		if ( rl ) {
 	    			$.classRemove( d, 'z-release' );
 	    			$.classAdd( d, 'z-loading' );
@@ -1534,17 +1530,17 @@ _setParent = function( a ) {
 		_viewCache[ this.path ] = this;
 	}
 },
-_renderView = function() {
-	if ( this.x ) {
-		this.showLoading( F );
-		this.layout && this.render();
-	}
-},
 _userPriority = { 'click': T, 'close': T, 'valid': T },
 _templates = {},
 _view_js = cfg.view_js || {},
 // view的占据空间的widget，可见元素都隶属于此
-ViewLayout = define.widget( 'view/layout', {} ),
+ViewLayout = define.widget( 'view/layout', {
+	Listener: {
+		body: {
+			ready: function() { this.ownerView.trigger( 'load' ); }
+		}
+	}
+} ),
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
@@ -1562,40 +1558,14 @@ View = define.widget( 'view', {
 	},
 	Listener: {
 		body: {
-			ready: {
-				block: function() { return this.layout },
-				method: function() {
-					if ( this.layout ) {
-						this.triggerHandler( 'ready' );
-						this.trigger( 'load' );
-					} else {
-						this.showLoading();
-						if ( ! this.loading ) {
-							var f = Frame.edge( this );
-							if ( f && f.parentNode.getFocus() !== f )
-								f.addEventOnce( 'view', this.init, this );
-							else
-								this.init();
-						}
-					}
-				}
-			},
-			framefocus: function() {
-				! this.layout && this.triggerListener( 'ready' );
-			}
+			ready: function() { !this.layout && this.load() },
+			framefocus: function() { !this.layout && this.load() }
 		}
 	},
 	Prototype: {
 		className: 'w-view',
 		type_view: T,
-		// @a -> sync?, b -> fn?
-		init: function( a, b ) {
-			this.showLoading();
-			this._load( a, function( x ) {
-				_renderView.call( this );
-				b && b.call( this, x );
-			} );
-		},
+		// @implement
 		init_x: function( x ) {
 			if ( this.dft_x ) {
 				$.extend( x, this.dft_x );
@@ -1604,31 +1574,47 @@ View = define.widget( 'view', {
 			delete this.__width; delete this.__height;
 			this.x = x;
 		},
+		// @implement
 		attrSetter: function( a, b ) {
 			this.dft_x && (this.dft_x[ a ] = b);
 		},
+		// @implement
 		closestData: function( a ) {
 			var v = this.data( a );
 			return v === U ? (this.parentDialog && this.parentDialog.closestData( a )) : v;
 		},
+		// @a -> sync?, b -> fn?
+		load: function( a, b ) {
+			if ( this.loading )
+				return;
+			this.showLoading();
+			var f = Frame.edge( this );
+			if ( ! f || f.parentNode.getFocus() == f ) {
+				this._load( a, function( x ) {
+					this.showLoading( F );
+					this.layout && this.layout.render();
+					b && b.call( this, x );
+				} );
+			}
+		},
 		// @a -> sync?, b -> fn?, c -> cache?
 		_load: function( a, b, c ) {
 			this.abort();
-			this.loading = T;			
-			this.trigger( 'loading' );
+			this.loading = T;
+			this.trigger( 'beforeload' );
 			var u = this.attr( 'src' ), m, n, self = this,
 				d = _view_js[ this.path ],
 				e = function() {
-					if ( !self._disposed && m && n ) {  self._loadEnd( n ); !self._disposed && b && b.call( self, n ); n = N; }
+					if ( !self._disposed && m && n ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
 				};
-			d ? $.require( d, function() { m = T; e(); }, ! a ) : (m = T);
+			d ? $.require( d, function() { m = T; e(); }, !a ) : (m = T);
 			u && (this.parent || this).ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> view json
 		_loadEnd: function( x ) {
 			this.loading = F;
-			if ( ! this.x )
+			if ( !this.x )
 				return;
 			if ( x.type === 'view' ) {
 				if ( this.x !== x )
@@ -1641,16 +1627,6 @@ View = define.widget( 'view', {
 			} else
 				this.cmd( x );
 		},
-		// a -> ajax settings
-		ajax: function( a ) {
-			this.x.base && (a.base = this.x.base);
-			!a.context &&(a.context = this);
-			return $.ajaxJSON( a );
-		},
-		abort: function() {
-			$.ajaxAbort( this );
-			this.loading = F;
-		},
 		// @a -> src, b -> sync?, c -> fn
 		reload: function( a, b, c ) {
 			this.trigger( 'unload' );
@@ -1662,13 +1638,23 @@ View = define.widget( 'view', {
 			this.loaded = F;
 			a && this.attr( 'src', a );
 			if ( this.$() ) {
-				this.attr( 'src' ) ? this.init( b, c ) : this._loadEnd( this.x );
+				this.attr( 'src' ) ? this.load( b, c ) : this._loadEnd( this.x );
 			} else
 				this._load( b, c );
 		},
 		// @a -> close?
 		showLoading: function( a ) {
 			a === F ? this.removeElem( 'loading' ) : $.html( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' );
+		},
+		// a -> ajax settings
+		ajax: function( a ) {
+			this.x.base && (a.base = this.x.base);
+			!a.context &&(a.context = this);
+			return $.ajaxJSON( a );
+		},
+		abort: function() {
+			$.ajaxAbort( this );
+			this.loading = F;
 		},
 		// 根据ID获取wg /@a -> id
 		find: function( a ) {
@@ -3136,8 +3122,8 @@ Dialog = define.widget( 'dialog', {
 			this.contentView = this[ 0 ];
 		if ( this.contentView ) {
 			this.contentView.parentDialog = this;
-			this.contentView.addEvent( 'load', function() { this.trigger( 'load' ) }, this )
-				.addEvent( 'loading', function() { this.trigger( 'loading' ) }, this );
+			this.contentView.addEvent( 'beforeload', this.trigger, this )
+				.addEvent( 'load', this.trigger, this );
 		}
 		if ( x.id ) {
 			Dialog.custom[ x.id ] && Dialog.custom[ x.id ].remove();
@@ -3219,7 +3205,7 @@ Dialog = define.widget( 'dialog', {
 						} );
 				}
 			},
-			loading: function() {
+			beforeload: function() {
 				if ( this.$() ) {
 					this.addClass( 'z-loading' );
 					this.draggable();
@@ -4909,9 +4895,9 @@ Calendar = define.widget( 'calendar/date', {
 			var b = this.get( a );
 			b && b.click();
 		},
-		// 年、月、时的浮动选择器
+		// 年、月的浮动选择器
 		pop: function( a, e ) {
-			var Y = a === 'y', M = a === 'm', H = a === 'h', d = this.date, h = 18, l = M ? 12 : 10, c = [], g = d.getMinutes(), self = this,
+			var Y = a === 'y', M = a === 'm', d = this.date, h = 18, l = M ? 12 : 10, c = [], g = d.getMinutes(), self = this,
 				b = Y ? d.getFullYear() : M ? d.getMonth() + 1 : d.getHours(),
 				y = Y ? ( b - b % 10 ) : M ? 1 : Math.max( 0, b * 2 - 5 ),
 				s = (M ? '' : '<div class="_b _scr">-</div>') + '<div class="_wr">',
@@ -4919,27 +4905,21 @@ Calendar = define.widget( 'calendar/date', {
 					var d = e.type == 'calendar/num' ? self._ps( e.val() ) : self.date, g = $.dateFormat( d, 'yyyy-mm-dd' ), f = Y ? 'yyyy' : M ? 'yyyy-mm' : 'yyyy-mm-dd hh:ii',
 						n = self.x.begindate && $.dateFormat( self._ps( self.x.begindate ), f ), m = self.x.enddate && $.dateFormat( self._ps( self.x.enddate ), f );
 					for ( var i = 0, t, s, r = ''; i < l; i ++ ) {
-						t = H ? c[ Math.min(y, 38) + i ] : y + i;
+						t = y + i;
 						s = Y ? t : M ? (d.getFullYear() + '-' + $.strPad( t )) : (g + ' ' + t);
 						r += '<div class="_b _i' + ( t == b ? ' _c' : '' ) + ( (n && n > s) || (m && m < s) ? ' z-ds' : '' ) + '">' + t + '</div>';
 					}
 					return r;
 				};
-			if ( H ) {
-				for ( var i = 0, o; i < 24; i ++ )
-					c.push( (o = $.strPad( i ) + ':') + '00', o + '30' );
-				b = $.strPad( b ) + ':' + $.strPad( g );
-			}
 			s += htm() + '</div>' + ( M ? '' : '<div class="_b _scr">+</div>' );
 			var d = this.cmd( { type: 'dialog', width: 60, height: h * 12, cls: 'w-calendar-select', snap: e, snaptype: e.dropSnapType || 'cc', pophide: T, node: { type: 'html', text: s },
 					on: { mouseleave: function(){ this.close() }, close: function() { clearTimeout( t ); Q( d.$() ).off(); } }
 				} ),
 				r = Q( '._wr', d.$() ),
 				f = function( k ) {
-					if ( Y || H ) {
+					if ( Y ) {
 						y = k === '+' ? y + l : y - l;
 						if ( Y ) y = $.numRange( y, 1900 );
-						if ( H ) y = $.numRange( y, 0, 38 );
 						r.html( htm() );
 					}
 				}, t;
@@ -4956,10 +4936,10 @@ Calendar = define.widget( 'calendar/date', {
 				var h = this.innerText;
 				with( self.date ) { Y ? setFullYear( h ) : M ? setMonth( h - 1 ) : ( h = h.split( ':' ), e.type == 'calendar/num' && setDate( e.x.text ), setHours( h[ 0 ] ), setMinutes( h[ 1 ] ) ) }
 				d.close();
-				H ? self.trigger( 'complete' ) : self.go();
+				self.go();
 			} );
 		},
-		// 弹出事件选择器 /@a -> el
+		// 弹出时间选择器 /@a -> el
 		popTime: function( a ) {
 			if ( this._dlg_time ) {
 				this._dlg_time.close();
@@ -4982,7 +4962,7 @@ Calendar = define.widget( 'calendar/date', {
 					 	{ type: 'horz', height: 29, nodes: h },
 					 	{ type: 'horz', height: '*', nodes: c,
 					 		on: {
-					 			// 让时分秒的选中项对齐
+					 			// 让时分秒的初始焦点项对齐
 					 			ready: function() {
 						 			var r = [], k = 0;
 						 			for ( var i = 0, o, v, n = 60, t; i < this.length; i ++ ) {
@@ -6034,23 +6014,21 @@ Combobox = define.widget( 'combobox', {
 			} else
 				this._suggest_end( a, this.more );
 		},
-		_suggest_text: function( a ) {
-			return $.strTrim( a.x ? a.x.text : a );
-		},
 		_suggest_end: function( a, m ) {
 			var c = this.store( m );
 			if ( c ) {
-				var t = this._suggest_text( a ), d = c.getXML( t ), s = this.store(), u = this.x.suggest && this.x.src;
+				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this.x.suggest && this.x.src;
 				d && (m != s) && s.merge( d );
-				this.closePop();
+				e && e != m && e.close();
+				a.x && m.addEvent( 'close', function() { !a._disposed && a.tabFocus( F ) } );
 				if ( u ? (c.isKeepShow() || c.getLength()) : c.filter( t ) ) {
-					m.render();
-					if ( a.x ) {
-						m.addEvent( 'close',  t = function() { a.tabFocus( F ) } );
-						a.addEvent( 'remove', function() { m.removeEvent( 'close', t ) } );
-					}
-				}
+					!(u && m.$()) && m.show();
+				} else
+					m.close();
 			}
+		},
+		_suggest_text: function( a ) {
+			return $.strTrim( a.x ? a.x.text : a );
 		},
 		// 精确匹配，在隐藏状态下进行 /@ a -> replaceObject|comboboxOption
 		// 多个立即匹配成功; 单个显示下拉选项

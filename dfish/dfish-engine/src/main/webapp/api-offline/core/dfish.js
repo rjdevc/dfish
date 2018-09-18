@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_cfg = {}, _path, _ui_path, _alias = {}, _ver = '', _expando = 'dfish',
+_path, _ui_path, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -35,7 +35,6 @@ br = $.br = (function() {
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
 		ie = navigator.appName === 'Microsoft Internet Explorer', // ie version <= 10
 		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) ));
-
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
 	return {
@@ -55,12 +54,13 @@ br = $.br = (function() {
 			var o = _div( b == N ? '1' : b );
 			o.className = a;
 			o.style.cssText = 'position:absolute;width:50px;top:-50px;';
-			db( o );
+			_db( o );
 			c && c.call( o );
 			_rm( o );
 		}
 	};
 })(),
+
 ie = br.ie,
 
 // a继承b的属性。不覆盖a的既有同名属性
@@ -290,50 +290,46 @@ _loadCss = function( a ) {
 	_tags( 'head' )[ 0 ].appendChild( l );
 	return _cssCache[ a ] = a;
 },
-_loadStyle = function( a, b ) {
-	if ( ! b || ! this( b ) ) {
-		var c = document.createElement( "style" );
-		c.setAttribute( "type", "text/css" );
-		if( c.styleSheet ) {   //For IE
-			c.styleSheet.cssText = a;
-		} else {
-		    c.appendChild( document.createTextNode( a ) );
-		}
-		if ( b ) c.id = b;
-		$.query( 'head' ).append( c );
+_loadStyle = function( a ) {
+	var c = document.createElement( 'style' );
+	c.setAttribute( 'type', 'text/css' );
+	if( c.styleSheet ) {
+		c.styleSheet.cssText = a;
+	} else {
+	    c.appendChild( document.createTextNode( a ) );
 	}
+	$.query( 'head' ).append( c );
 },
 
 /* 辅助方法 */
 _uidCnt = 0,
-_getuid = function() { return (_uidCnt ++).toString( 36 ) + ':' },
+_guid  = function() { return (_uidCnt ++).toString( 36 ) + ':' },
 _arrfn = function( a ) { return Function( 'v,i,r', 'return(' + a + ')' ) },
 _fnapply = function( a, b, c, d ) { return b && b.isWidget ? b.formatJS( a, c, d ) : (typeof a === _FUN ? a : Function( c || '', a )).apply( b, d || A ) },
 // 获取/设置全局唯一ID
 _uid = $.uid = function( o ) {
 	if ( o )
-		return o.isWidget ? ( o.id || (o.id = _getuid()) ) : ( o[ _expando ] || (o[ _expando ] = _getuid()) );
-	return _getuid();
+		return o.isWidget ? (o.id || (o.id = _guid())) : (o[ _expando ] || (o[ _expando ] = _guid()));
+	return _guid();
 },
 _number = $.number = function( a ) {
 	var r = typeof a === _STR ? parseFloat( a ) : + a;
 	return isNaN( r ) ? 0 : r;
 },
+// 如果 a 的大小在 b 和 c 之间，则返回 a。否则返回 b 或 c
 _numRange = $.numRange =  function( a, b, c ) {
-	if ( b != N && a < b ) return b;
-	if ( c != N && a > c ) return c;
-	return a;
+	return (b != N && a < b) ? b : (c != N && a > c) ? c : a;
 },
 // js小数相加运算出现多位小数的解决办法
 _numAdd = $.numAdd = function( a, b ) {
-	 var c = _strFrom('' + a, '.').length, d = _strFrom('' + b, '.').length, m = Math.pow(10, Math.max(c, d));
-	 return Math.round((a + b) * m) / m;			
+	 var c = _strFrom( a + '', '.' ).length, d = _strFrom( b + '', '.' ).length, m = Math.pow( 10, Math.max( c, d ) );
+	 return Math.round( (a + b) * m ) / m;			
 },
-_strTrim = $.strTrim = function( a ) {
-	return ('' + a).replace( /^\s+|\s+$/g, '' );
+_strTrim = $.strTrim = function (a ) {
+	return (a + '').replace( /^\s+|\s+$/g, '' );
 },
 _strQuot = $.strQuot = function( a ) {
-	return ('' + a).replace( /\"/g, '&quot;' );
+	return (a + '').replace( /\"/g, '&quot;' );
 },
 // 在a中取以b开始的字符串(不包括b) /@ c -> last indexOf ?
 _strFrom = $.strFrom = function( a, b, c ) {
@@ -347,10 +343,10 @@ _strTo = $.strTo = function( a, b, c ) {
 },
 // 数字前加0  /@ a -> num, b -> 补成多少长度的字符串？
 _strPad = $.strPad = function( a, b, c ) {
-	c = c == N ? '0' : String( c );
+	c = c == N ? '0' : (c + '');
 	if ( ! b )
 		return a < 10 ? c + a : a;
-	a = '' + a;
+	a = a + '';
 	while ( a.length < b )
 		a = c + a;
 	return a;
@@ -389,15 +385,15 @@ _strSlice = $.strSlice = function( a, b, c, n ) {
 },
 // 对html标签解码
 _strUnescape = $.strUnescape = function( s ) {
-	return s != N ? String( s ).replace( /&amp;/g, '&' ).replace( /&lt;/g, '<' ).replace( /&gt;/g, '>' ).replace( /&quot;/g, '"' ) : '';
+	return s != N ? (s + '').replace( /&amp;/g, '&' ).replace( /&lt;/g, '<' ).replace( /&gt;/g, '>' ).replace( /&quot;/g, '"' ) : '';
 },
 // 对html标签编码
 _strEscape = $.strEscape = function( s ) {
-	return s != N ? String( s ).replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /\"/g, '&quot;' ) : '';
+	return s != N ? (s + '').replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /\"/g, '&quot;' ) : '';
 },
 // 在 a 中查找 b 并给 b 加上标签样式 c /@ a -> str, b -> key, c -> matchLength?, d -> key cls?
 _strHighlight = $.strHighlight = function( a, b, c, d ) {
-	return (a = '' + a).replace( RegExp( '(<[\\/\\!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|").*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
+	return (a = a + '').replace( RegExp( '(<[\\/\\!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|").*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
 	   	return $3 === U ? $1 : '<em class="' + (d || 'f-keyword') + '">' + $3 + '</em>';
 	} );
 },
@@ -573,7 +569,7 @@ _jsonString = $.jsonString = (function() {
 	    es.lastIndex = 0;
 	    return es.test( s ) ? '"' + s.replace( es, function( a ) {
 	            var c = meta[a];
-	            return typeof c === _STR ? c : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+	            return typeof c === _STR ? c : '\\u' + ('0000' + a.charCodeAt( 0 ).toString( 16 )).slice( -4 );
 	        }) + '"' : '"' + s + '"';
 	}
 	function str( key, h ) {
@@ -586,10 +582,10 @@ _jsonString = $.jsonString = (function() {
 	    case _STR:
 	        return quote( u );
 	    case _NUM:
-	        return isFinite( u ) ? String( u ) : 'null';
+	        return isFinite( u ) ? u + '' : 'null';
 	    case 'boolean':
 	    case 'null':
-	        return String( u );
+	        return u + '';
 	    case _OBJ:
 	        if ( ! u )
 	            return 'null';
@@ -609,7 +605,7 @@ _jsonString = $.jsonString = (function() {
 	            for ( i = 0; i < length; i ++ ) {
 	                k = rep[ i ];
 	                if ( typeof k === _STR && (v = str(k, u)) ) {
-	                	_partial.push(quote(k) + (gap ? ': ' : ':') + v);
+	                	_partial.push(quote( k ) + (gap ? ': ' : ':') + v);
 	                }
 	            }
 	        } else {
@@ -620,7 +616,7 @@ _jsonString = $.jsonString = (function() {
 	                }
 	            }
 	        }
-	        v = _partial.length === 0 ? '{}' : gap ? '{\n' + gap + _partial.join( ',\n' + gap ) + '\n' + mind + '}' : '{' + _partial.join(',') + '}';
+	        v = _partial.length === 0 ? '{}' : gap ? '{\n' + gap + _partial.join( ',\n' + gap ) + '\n' + mind + '}' : '{' + _partial.join( ',' ) + '}';
 	        gap = mind;
 	        return v;
 	    }
@@ -843,12 +839,12 @@ _cookie_get = function( a ) {
 
 /* dom 方法 */
 // 获取元素所在的window对象
-_win = function( o ) { return o ? (o.ownerDocument || o)[ ie ? 'parentWindow' : 'defaultView' ] : win },
+_win = function( o ) { return o && (o = (o.ownerDocument || o)) ? (o.defaultView || o.parentWindow || o) : win },
 // 往 document.body 内写入内容
-db = $.db = function( a, b ) { return a ? ( _append( b || doc.body, a ), doc.body.lastChild ) : doc.body },
+_db = $.db = function( a, b ) { return a ? (_append( b || doc.body, a ), doc.body.lastChild) : doc.body },
 // 简写 getElementsByTagName
 _tags = $.tags = function( a, b ) { return (b || doc).getElementsByTagName( a ) },
-// 创建一个div /@ s -> html string
+// 创建一个div /@ s -> html
 _div = function( s ) {
 	var o = doc.createElement( 'div' );
 	if ( s ) o.innerHTML = s;
@@ -863,8 +859,9 @@ _frag = $.frag = function( s ) {
 	try { return f } catch( e ) { return F }
 	finally { d = f = N }
 },
+// 解析 html 中的 <d:wg> 标签 /@a -> html, b -> view?
 _parseHTML = $.parseHTML = function( a, b ) {
-	if ( (a = String( a )).indexOf( '<d:wg>' ) > -1 ) {
+	if ( (a = a + '').indexOf( '<d:wg>' ) > -1 ) {
 		return a.replace( /<d:wg>([\s\S]+?)<\/d:wg>/gi, function( $0, $1 ) {
 			return (b || $.vm()).add( Function( $1.indexOf( 'javascript:' ) === 0 ? $1 : 'return(' + $1 + ')' ).call( b || $.vm() ), -1 ).html();
 		} );
@@ -962,7 +959,7 @@ _html = $.html = function( o, s, r ) {
 			if ( s.indexOf( '<d:wg>' ) > -1 )
 				s = _parseHTML( s, $.w( r % 2 ? o : o.parentNode ) );
 			try {
-				o.nodeType === 3 || br.ie ? $.query( o )[ _adjacent_query[ r ] ]( s ) : o.insertAdjacentHTML( _adjacent_where[ r ], s );
+				o.nodeType === 3 || ie ? $.query( o )[ _adjacent_query[ r ] ]( s ) : o.insertAdjacentHTML( _adjacent_where[ r ], s );
 			} catch ( ex ) {
 				_html( o, _frag( s ), r );
 			}
@@ -1024,10 +1021,10 @@ _rm = $.remove = function( a ) {
 	if ( typeof a === _STR ) a = $( a );
 	a && a.parentNode && a.parentNode.removeChild( a );
 },
-_bcr = $.bcr = function( o ) {
-	var b = cvs.clientLeft, c = cvs.scrollLeft, d = cvs.clientTop, e = cvs.scrollTop, a = o && o !== doc && (o.isWidget ? o.$() : o).getBoundingClientRect();
-	return a ? { left : a.left - b + c, top : a.top - d + e, right : a.right - b + c, bottom : a.bottom - d + e, width : a.right - a.left, height : a.bottom - a.top } :
-		{ left: c, top: e, right: cvs.clientWidth + c, bottom: cvs.clientHeight + e, width: cvs.clientWidth, height: cvs.clientHeight };
+_bcr = $.bcr = function( a ) {
+	var b = cvs.clientLeft, c = cvs.scrollLeft, d = cvs.clientTop, e = cvs.scrollTop, o = a && a != doc && (a.isWidget ? a.$() : a), r = o && o.getBoundingClientRect();
+	return r ? { left : r.left - b + c, top : r.top - d + e, right : r.right - b + c, bottom : r.bottom - d + e, width : r.right - r.left, height : r.bottom - r.top } :
+		a == doc ? { left: c, top: e, right: cvs.clientWidth + c, bottom: cvs.clientHeight + e, width: cvs.clientWidth, height: cvs.clientHeight } : N;
 },
 _offset = function( o ) {
 	var a = _bcr( o );
@@ -1057,7 +1054,7 @@ _snapMag = (function() {
 // @ a -> width, b -> height, c -> toObj offset, d -> adsorb type, e - > fit?[是否自动选择位置，让可见区域最大化], f -> indent[缩进多少像素], u -> range?[浮动元素的限定范围元素]
 _snap = $.snap = function( a, b, c, d, e, f, u ) {
 	if ( ! c )
-		c = _bcr();
+		c = _bcr( doc );
 	else if ( c.nodeType )
 		c = _bcr( c );
 	else if ( c.isWidget )
@@ -1361,8 +1358,8 @@ _Event = $.Event = _createClass( {
 	Prototype: {
 		// type -> event type, fn -> fn, pvdr -> context, one -> exec once [T/F]
 		addEvent: function( type, fn, pvdr, one ) {
-			var k = { id : _uid( this ), type : _event_name( type ), ns : _event_space( type ),
-					fn : fn, pvdr : pvdr, one : one };
+			var k = { id: _uid( this ), type: _event_name( type ), ns: _event_space( type ),
+					fn: fn, pvdr: pvdr, one: one };
 			_jsonArray( k, _EventUser, k.id, k.type ).ori = T;
 			return this;
 		},
@@ -1437,7 +1434,7 @@ $.draggable = function( a, b ) {
 		$.moveup( function( e ) {
 			var x = e.pageX, y = e.pageY, m = e.srcElement;
 			// 鼠标按下并移动5像素后才能触发拖动，避免误操作
-			! t && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) && (t = $.db( '<div style="position:absolute;background:#f2f2f2;padding:2px;border:1px dashed #ddd;opacity:.6;z-index:2">' + (a.attr( 'text' ) || '&nbsp;') + '</div>' ));
+			! t && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) && (t = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px;border:1px dashed #ddd;opacity:.6;z-index:2">' + (a.attr( 'text' ) || '&nbsp;') + '</div>' ));
 			if ( t ) {
 				t.style.left = (e.pageX + 7) + 'px';
 				t.style.top  = (e.pageY + 7) + 'px';
@@ -1749,6 +1746,7 @@ function _compatPC() {
 		Range.prototype.moveToElementText = Range.prototype.selectNodeContents;
 	}
 	(tmp = doc.createElement( 'div' )).innerHTML = '1';
+	// for safari
 	if ( ! tmp.innerText ) {
 		HTMLElement.prototype.__defineSetter__( 'innerText', function( s ) { return this.textContent = s } );
 		HTMLElement.prototype.__defineGetter__( 'innerText', function() { return this.textContent } );
@@ -1756,7 +1754,7 @@ function _compatPC() {
 	if ( ! tmp.insertAdjacentHTML ) {
 		HTMLElement.prototype.insertAdjacentHTML = function(sWhere, sHTML) {
 			var r = this.ownerDocument.createRange();
-			switch (String(sWhere).toLowerCase()) {
+			switch ((sWhere + '').toLowerCase()) {
 				case 'beforebegin':
 					r.setStartBefore(this);
 					this.parentNode.insertBefore(r.createContextualFragment(sHTML), this);
@@ -1877,7 +1875,7 @@ function _initDocView( $ ) {
 		_compat();
 		// 生成首页view
 		if ( _cfg.view ) {
-			$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( db() );
+			$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
 		} else {
 			// 把 <d:wg> 标签转换为 widget
 			for ( var i = 0, d = _arrMake( _tags( br.css3 ? 'd:wg' : 'wg' ) ), j, l = d.length; i < l; i ++ ) {
@@ -1886,7 +1884,7 @@ function _initDocView( $ ) {
 			}
 		}
 		// ie6及以下浏览器，弹出浮动升级提示
-		if ( br.ie && br.ieVer < 7 ) {
+		if ( ie && br.ieVer < 7 ) {
 			VM().cmd({ type: 'tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
 				$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: doc.body, snaptype: 'tt', prong: F});
 		}
@@ -2195,7 +2193,7 @@ _merge( $, {
 					_classAdd( img, 'f-thumbnail' );
 				}
 				if ( fn && img.parentNode.tagName !== 'A' ) {
-					if ( typeof fn === 'string' ) { // fn范例: preview.jsp?src=$0&title=$1
+					if ( typeof fn === _STR ) { // fn范例: preview.jsp?src=$0&title=$1
 						$.query( img ).wrap( '<a href="' + _urlFormat( fn, [ img.src, img.alt || img.title ] ) + '" target=_blank></a>' );
 					} else if ( typeof fn === 'function' ) { // fn范例: function(){ window.open( this.src ) }
 						$.query( img ).click( fn );

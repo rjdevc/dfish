@@ -145,8 +145,8 @@
 .w-th-sort{cursor:pointer}
 .w-th-sort .f-i{margin-left:5px}
 .w-th-sort .f-arw{margin-left:5px;margin-top:-1px;}
-.w-th-sort .f-arw-b1{border-top-color:#ccc;border-bottom:0;margin-top:-5px}
-.w-th-sort .f-arw-t1{border-bottom-color:#ccc;border-top:0;*margin-bottom:-5px}
+.w-th-sort .f-arw-b1{border-top-color:#ccc;border-bottom:0;margin-top:-7px}
+.w-th-sort .f-arw-t1{border-bottom-color:#ccc;border-top:0;*margin-bottom:-7px}
 .w-th-sort.z-desc .f-arw-b1,.w-th-sort .f-arw-b1:hover{border-top-color:#777}
 .w-th-sort.z-asc .f-arw-t1,.w-th-sort .f-arw-t1:hover{border-bottom-color:#777}
 .w-th-sortwrap{width:12px;margin-left:2px}
@@ -483,10 +483,6 @@
 .f-button.z-normal.z-dn,.f-button.z-more.z-dn,.f-button.z-combo ._c.z-dn,.f-button.z-combo ._m.z-dn{background:#eee;box-shadow:inset 0 2px 0 #e9e9e9;}
 
 .f-button.z-combo ._m{border-left:1px solid #ddd}
-
-.f-groupbar .f-button{margin-right:-1px;border-radius:0}
-.f-groupbar .f-button.z-first{border-top-left-radius:2px;border-bottom-left-radius:2px}
-.f-groupbar .f-button.z-last{margin-right:0;border-top-right-radius:2px;border-bottom-right-radius:2px}
 
 .f-button.w-submit{background:#18b4ed;border-color:#0baae4;color:#fff}
 .f-button.w-submit.z-combo ._m{border-color:#0baae4}
