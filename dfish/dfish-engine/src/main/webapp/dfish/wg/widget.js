@@ -2721,12 +2721,15 @@ Toggle = define.widget( 'toggle', {
 			this.trigger( a ? 'expand' : 'collapse' );
 		},
 		html_nodes: function() {
-			var x = this.x, s = '<table class="w-toggle-table' + ( this.x.hr ? ' z-hr' : '' ) + '" cellspacing=0 cellpadding=0><tr><td class=f-nobr>', c = x.icon, d = x.openicon || c;
+			var x = this.x, c = x.icon, d = x.openicon || c, t = '';
 			if ( d ) {
-				s += $.image( x.open === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o' } );
+				t += $.image( x.open === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o' } );
 			} else
-				s += ( x.open != N ? $.arrow( this.id + 'o', x.open === F ? 'r1' : 'b1' ) : '' );
-			return s + ' <span class=w-toggle-text><em>' + this.x.text + '</em></span>' + ( x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '' ) + '</table>';
+				t += (x.open != N ? $.arrow( this.id + 'o', x.open === F ? 'r1' : 'b1' ) : '');
+			if ( this.x.text != N )
+				t += ' <span class=w-toggle-text><em>' + this.x.text + '</em></span>';
+			return '<table class="w-toggle-table' + (this.x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
+				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table>';
 		}
 	}
 } ),
