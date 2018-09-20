@@ -1588,8 +1588,10 @@ Ajax = _createClass( {
 							if ( f ) {
 								_fnapply( f, c, '$ajax', [ self ] );
 							} else {
-								$.alert( _cfg.debug ? 'ajax error ' + l.status + ': ' + _strEscape( a ) + '\n\n' + ( $.loc ? $.loc.ajax[ r ] : r + ' error' ) : (l.status > 600 ? $.loc.internet_error : $.loc.server_error) );
-								win.console && console.error( 'ajax error ' + l.status + ': ' + a + ((r = l.responseText) ? '\n' + r : '') );
+								var s = 'ajax ' + l.status + ': ' + a;
+								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? $.loc.ajax[ r ] : r + ' error') :
+									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
+								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
 							}
 						}
 				    } else {
@@ -1960,8 +1962,11 @@ _merge( $, {
 		typeof b === _STR && (b = Function( b ));
 		return function() { return b.apply( a, arguments ) };
 	},
-	winbox: function( a ) {
-		alert( a );
+	width: function() {
+		return cvs.clientWidth;
+	},
+	height: function() {
+		return cvs.clientHeight;
 	},
 	// a -> text, b -> pos, c -> time, d -> id
 	alert: function( a, b, c, d ) {
@@ -1971,12 +1976,10 @@ _merge( $, {
 	confirm: function( a, b, c ) {
 		return $.vm().cmd( { type: 'confirm', text: a, yes: b, no: c } );
 	},
-	width: function() {
-		return cvs.clientWidth;
-	},
-	height: function() {
-		return cvs.clientHeight;
-	},
+	// 显示一个 tip /@a -> target, b -> feature?
+	tip: function( a, b ) {
+		VM(this).cmd( _extend( b || {}, { type: 'tip', text: _strEscape( a.getAttribute( 'data-title' ) ), snap: a, snaptype: 'a', timeout: 5 } ) );
+	},	
 	show: function( a, b ) {
 		_classRemove( a, 'f-none' );
 	},
@@ -2037,6 +2040,9 @@ _merge( $, {
 		$.closeOpened(webview);
 		aniShow ? webview.close( aniShow ) : webview.close();
 	},
+	cleanPop: function() {
+		$.require( 'dialog' ).cleanPop();		
+	},
 	// @a -> src, b -> feature { id: '', cls: '', style: '', click: '', tip: '' }
 	image: function( a, b ) {
 		var d = a || '', e = ! d.indexOf( '.' ) && d.indexOf( '/' ) < 0, s = [];
@@ -2056,10 +2062,10 @@ _merge( $, {
 	},
 	arrow: function( a, b ) {
 		var c = b || a;
-		if ( a && a.nodeType )
+		if ( a && a.nodeType ) {
 			a.className = 'f-arw f-arw-' + c;
-		else
-			return '<em class="f-arw f-arw-' + ( c || 'b1' ) + '"' + ( b ? ' id=' + a : '' ) + '></em>';
+		} else
+			return '<em class="f-arw f-arw-' + (c || 'b1') + '"' + (b ? ' id=' + a : '') + '></em>';
 	},
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
@@ -2141,7 +2147,7 @@ _merge( $, {
 					$.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _cfg.path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
 			}
 		}
-	})(),	
+	})(),
 	// @a -> image array, b -> id
 	previewImage: function( a, b ) {
 		if ( typeof a === _STR )
@@ -2281,6 +2287,9 @@ _merge( $, {
 		}
 		return function( a ) { alert( _parse( a ) ) }
 	})(),
+	winbox: function( a ) {
+		alert( a );
+	},
 	// @a -> widget|HTMLElement, y -> print?, t -> head tag
 	print: function( a, z, y ) {
 		var d = a.$ ? (a.$( 'cont' ) || a.$()) : a, w = _win( d ).document, b = $.query( 'link[media=print]', w ), c = [], s = d.outerHTML;

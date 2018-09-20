@@ -742,12 +742,10 @@ W = define( 'widget', function() {
 				_w_size.width.call( this, w );
 			if ( h != N )
 				_w_size.height.call( this, h );
-			if ( w != N || h != N ) {
-				delete this._scales;
-				for ( var i = 0, l = this.length; i < l; i ++ )
-					_w_rsz_all.call( this[ i ] );
-				this.trigger( 'resize' );
-			}
+			delete this._scales;
+			for ( var i = 0, l = this.length; i < l; i ++ )
+				_w_rsz_all.call( this[ i ] );
+			this.trigger( 'resize' );
 		},
 		// 替换为另一个widget /@ a -> widget option
 		replace: function( a ) {
@@ -924,9 +922,9 @@ _w_bro   = { 'width': 'type_horz', 'height': 'type_vert' },
 _w_rsz_all = function() {
 	_w_css.width.call( this );
 	_w_css.height.call( this );
+	delete this._scales;
 	var l = this.length;
 	if ( l ) {
-		delete this._scales;
 		for ( var i = 0; i < l; i ++ )
 			_w_rsz_all.call( this[ i ] );
 	}
@@ -3598,6 +3596,9 @@ Tip = define.widget( 'tip', {
 	},
 	Extend: Dialog,
 	Prototype: {
+		// alert 类型对话框z-index固定值为3，总在最前面，不做修改
+		front: $.rt( F ),
+		_front: $.rt( F ),
 		text: function( a ) {
 			Q( '.w-tip-text', this.contentView.$() ).html( a );
 		}
@@ -3700,10 +3701,6 @@ Menu = define.widget( 'menu', {
 	Child: 'menu/button',
 	Default: {
 		width: -1, height: -1, pophide: T
-		/* // 当父节点是在对话框内，当前menu也放进对话框
-		local1: function() {
-			return this.type == 'menu' && $.dialog( this.parentNode );
-		}*/
 	},
 	Listener: {
 		body: {
@@ -4809,8 +4806,8 @@ Calendar = define.widget( 'calendar/date', {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
-				x = { type: 'calendar/' + ( b == 'yyyy' ? 'year' : b == 'yyyy-mm' ? 'month' : b == 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
-					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, focusdate: d, begindate: e, enddate: f, on: t && { ready: function() { this.popTime() } } };
+				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
+					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, on: t && { ready: function() { this.popTime() } } };
 			return o.cmd( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mb, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
@@ -4827,13 +4824,13 @@ Calendar = define.widget( 'calendar/date', {
 			return $.dateParse( a, this._formatter );
 		},
 		nav: function( e ) {
-			var a = e.srcElement, b;
+			var a = e.srcElement;
 			if ( $.classAny( a, '_y' ) ) { //年
-				mb ? this.$( 'iptm' ).click() : this.pop( 'y', a );
+				mb ? this.$( 'iptm' ).click() : this.popYM( 'y', a );
 			} else if ( $.classAny( a, '_m' ) ) { //月
-				mb ? this.$( 'iptm' ).click() : this.pop( 'm', a );
-			} else if ( b = $.classAny( a, 'f-arw-l2 f-arw-r2 f-arw-l5 f-arw-r5' ) ) { // 前 后
-				this.go( $.dateAdd( this.date, this._nav_unit, b === 1 ? - this._nav_radix : this._nav_radix ) );
+				mb ? this.$( 'iptm' ).click() : this.popYM( 'm', a );
+			} else if ( $.classAny( a, 'f-arw' ) ) { // 前 后
+				this.go( $.dateAdd( this.date, this._nav_unit, (a.id === this.id + 'arw-l' ? -1 : 1) * this._nav_radix ) );
 			} else if ( $.classAny( a, '_t' ) ) { // 今天
 				this.date = new Date();
 				if ( this.x.callback ) {
@@ -4866,13 +4863,14 @@ Calendar = define.widget( 'calendar/date', {
 			this.date = new Date();
 			this.trigger( 'complete' );
 		},
-		go: function( d, f ) {
+		go: function( d ) {
 			if ( this.x.src ) {
-				this.cmd( { type: 'ajax', src: this.x.src, success: f }, this._fm( d || this.date ) );
+				this.cmd( { type: 'ajax', src: this.x.src, success: function( x ) {
+					W.isCmd( x ) ? this.cmd( x ) : this.replace( x );
+				} }, this._fm( d || this.date ) );
 			} else {
 				d && (this.date = d);
 				$.replace( this.$(), this.html() );
-				f && f.call( this );
 			}
 		},
 		get: function( a ) {
@@ -4896,17 +4894,17 @@ Calendar = define.widget( 'calendar/date', {
 			b && b.click();
 		},
 		// 年、月的浮动选择器
-		pop: function( a, e ) {
+		popYM: function( a, e ) {
 			var Y = a === 'y', M = a === 'm', d = this.date, h = 18, l = M ? 12 : 10, c = [], g = d.getMinutes(), self = this,
-				b = Y ? d.getFullYear() : M ? d.getMonth() + 1 : d.getHours(),
-				y = Y ? ( b - b % 10 ) : M ? 1 : Math.max( 0, b * 2 - 5 ),
+				b = Y ? d.getFullYear() : d.getMonth() + 1,
+				y = Y ? (b - 5) : 1,
 				s = (M ? '' : '<div class="_b _scr">-</div>') + '<div class="_wr">',
 				htm = function() {
-					var d = e.type == 'calendar/num' ? self._ps( e.val() ) : self.date, g = $.dateFormat( d, 'yyyy-mm-dd' ), f = Y ? 'yyyy' : M ? 'yyyy-mm' : 'yyyy-mm-dd hh:ii',
+					var d = e.type == 'calendar/num' ? self._ps( e.val() ) : self.date, g = $.dateFormat( d, 'yyyy-mm-dd' ), f = Y ? 'yyyy' : 'yyyy-mm',
 						n = self.x.begindate && $.dateFormat( self._ps( self.x.begindate ), f ), m = self.x.enddate && $.dateFormat( self._ps( self.x.enddate ), f );
 					for ( var i = 0, t, s, r = ''; i < l; i ++ ) {
 						t = y + i;
-						s = Y ? t : M ? (d.getFullYear() + '-' + $.strPad( t )) : (g + ' ' + t);
+						s = Y ? t : (d.getFullYear() + '-' + $.strPad( t ));
 						r += '<div class="_b _i' + ( t == b ? ' _c' : '' ) + ( (n && n > s) || (m && m < s) ? ' z-ds' : '' ) + '">' + t + '</div>';
 					}
 					return r;
@@ -4919,7 +4917,7 @@ Calendar = define.widget( 'calendar/date', {
 				f = function( k ) {
 					if ( Y ) {
 						y = k === '+' ? y + l : y - l;
-						if ( Y ) y = $.numRange( y, 1900 );
+						Y && (y = $.numRange( y, 1900 ));
 						r.html( htm() );
 					}
 				}, t;
@@ -4934,7 +4932,7 @@ Calendar = define.widget( 'calendar/date', {
 				t = setTimeout( function() { f( e.originalEvent.wheelDelta > 0 ? '-' : '+' ) } );
 			} ).on( 'click', '._i:not(.z-ds)', function() {
 				var h = this.innerText;
-				with( self.date ) { Y ? setFullYear( h ) : M ? setMonth( h - 1 ) : ( h = h.split( ':' ), e.type == 'calendar/num' && setDate( e.x.text ), setHours( h[ 0 ] ), setMinutes( h[ 1 ] ) ) }
+				Y ? self.date.setFullYear( h ) : self.date.setMonth( h - 1 );
 				d.close();
 				self.go();
 			} );
@@ -4964,15 +4962,15 @@ Calendar = define.widget( 'calendar/date', {
 					 		on: {
 					 			// 让时分秒的初始焦点项对齐
 					 			ready: function() {
-						 			var r = [], k = 0;
-						 			for ( var i = 0, o, v, n = 60, t; i < this.length; i ++ ) {
+						 			var r = [], k = 0, i = 0, v, n = 60, t;
+						 			for ( ; i < this.length; i ++ ) {
 						 				v = d[ y.get[ this[ i ].x.data.part ] ]();
 						 				r.push( $.get( '._o[data-v="' + v + '"]', this[ i ].$() ) );
 						 				t = Math.min( v, this[ i ].x.data.max - v );
 						 				if ( n > t ) { n = t; k = i; }
 						 			}
 						 			_scrollIntoView( r[ k ] );
-						 			for ( var i = 0, t = $.bcr( r[ k ] ).top - $.bcr( this[ k ].$() ).top; i < r.length; i ++ ) {
+						 			for ( i = 0, t = $.bcr( r[ k ] ).top - $.bcr( this[ k ].$() ).top; i < r.length; i ++ ) {
 						 				$.classAdd( r[ i ], 'z-on' );
 						 				i !== k && _scrollIntoView( r[ i ], N, 'top+' + t );
 						 			}
@@ -4999,9 +4997,9 @@ Calendar = define.widget( 'calendar/date', {
 			return '';
 		},
 		html_nodes: function() {
-			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0,
-				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 10 ), o = this.x.css,
-				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( mb ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( mb ? 'r5' : 'r2' ) +
+			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0, o = this.x.css,
+				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
+				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'arw-l', mb ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'arw-r', mb ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class=_t>' + Loc.calendar.today + '</div></div>' +
 					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
 			b.setDate( 1 ), b.setDate( - b.getDay() + 1 );
@@ -6010,7 +6008,7 @@ Combobox = define.widget( 'combobox', {
 			var t = this._suggest_text( a ), u = this.x.suggest && this.x.src;
 			if ( u && (u = this.parseSrc( u, { text: t } )) ) {
 				var self = this;
-				(this.sugger || (this.sugger = this.createPop( u ))).reload( u, function() { ! self._disposed && self._suggest_end( a, this ) } );
+				(this.sugger || (this.sugger = this.createPop( u ))).reload( u, function() { !self._disposed && self._suggest_end( a, this ) } );
 			} else
 				this._suggest_end( a, this.more );
 		},
@@ -6018,7 +6016,7 @@ Combobox = define.widget( 'combobox', {
 			var c = this.store( m );
 			if ( c ) {
 				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this.x.suggest && this.x.src;
-				d && (m != s) && s.merge( d );
+				d && s != m && s.merge( d );
 				e && e != m && e.close();
 				a.x && m.addEvent( 'close', function() { !a._disposed && a.tabFocus( F ) } );
 				if ( u ? (c.isKeepShow() || c.getLength()) : c.filter( t ) ) {
@@ -6924,7 +6922,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			this.loaded = T;
 			for ( j = 0; j < l; j ++ )
 				this[ j ].triggerAll( 'ready' );
-			//this.trigger( 'nodechange' );
+			this.trigger( 'nodechange' );
 		},
 		toggle_nodes: function( a ) {
 			var c = typeof a === _BOL ? a : !this.x.open;
@@ -6959,7 +6957,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		},
 		compare: function( x ) {
 			if ( x.text ) {
-				var _x = this.x, b = [ 'icon', 'openicon', 'src', 'cls' ];
+				var _x = this.x, b = [ 'icon', 'openicon', 'src', 'cls', 'focus' ];
 				this.init_x( x );
 				for ( var i = 0, l = b.length, e; i < l; i ++ ) {
 					e = b[ i ];
@@ -7526,7 +7524,7 @@ GridRow = define.widget( 'grid/row', {
 			if ( this.rootNode.x.escape != N )
 				$.extend( x, { escape: this.rootNode.x.escape } );
 			var n = (this.tcell || (this.tcell = new TCell( {}, this ))).add( x );
-			n.colIndex = i;
+			n.col = this.rootNode.colgrps[ 0 ][ i ];
 			return n;
 		},
 		cellElem: function( i ) {
@@ -7635,7 +7633,7 @@ TD = define.widget( 'td', {
 			return _td_wg[ t ] ? 'grid/' + t : t;
 		},
 		html: function( a ) {
-			var r = this.parentNode.parentNode, g = this.rootNode, c = g.colgrps[ 0 ][ this.colIndex ], e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td-' + g._face + (a ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + '"';
 			if ( this.x.on || this.Const.Listener )
@@ -7869,12 +7867,12 @@ TCell = define.widget( 'tcell', {
 	Child: 'td',
 	Prototype: {
 		scaleWidth: function( a ) {
-			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = r.colgrps[ 0 ][ a.colIndex ], d = r._pad, e;
+			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
 			while ( l -- )
-				(e = r.colgrps[ 0 ][ a.colIndex + l ]) != N && (w += e.width());
+				(e = r.colgrps[ 0 ][ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			if ( r._face == 'cell' && a.colIndex < r.colgrps[ 0 ].length - 1 )
+			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
 				w -= 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
@@ -7907,7 +7905,7 @@ TBody = define.widget( 'tbody', {
 		insertCol: function( a, b ) {
 			var r = this.rootNode, g = r.colgrps[ 0 ];
 			b = b == N || ! g[ b ] ? g.length - 1 : b;
-			for( var i = 0, l = a.length; i < l; i ++ ) {
+			for( var i = 0, l = Math.min( a.length, this.length ); i < l; i ++ ) {
 				$.extendDeep( this[ i ].x, typeof a[ i ].data !== _OBJ ? { data: a[ i ] } : a[ i ] );
 			}
 			for( var i = 0, l = this.length; i < l; i ++ ) {
@@ -7999,7 +7997,8 @@ Col = define.widget( 'col', {
 			return this.parentNode.parentNode.rootNode;
 		},
 		th: function() {
-			return this.root().headrow().$().cells[ this.nodeIndex ];
+			var t = this.root().thead();
+			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		width_minus: function() {
 			var n = 0;
@@ -8028,9 +8027,6 @@ Colgroup = define.widget( 'colgroup', {
 		},
 		deleteCol: function( a ) {
 			this[ a ] && this[ a ].remove();
-		},
-		inBody: function() {
-			return this.parentNode.tbody;
 		},
 		html: function() { return '<colgroup id=' + this.id + '>' + this.html_nodes() + '</colgroup>' }
 	}
@@ -8246,7 +8242,7 @@ Grid = define.widget( 'grid', {
 	Prototype: {
 		NODE_ROOT: T,
 		className: 'w-grid',
-		headrow: function( a ) { return this.head && this.head.table.thead[ a == N ? 0 : a ] },
+		thead: function() { return this.head && this.head.table.thead },
 		tbody: function() { return this.list && this.list.body && this.list.body.table.tbody },
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
@@ -8418,18 +8414,20 @@ Grid = define.widget( 'grid', {
 			b = this._col_parse( b );
 			for ( var j = 0; j < this.colgrps.length; j ++ )
 				this.colgrps[ j ].insertCol( a.columns[ 0 ], b );
-			this.head && this.head.table.thead.insertCol( a.thead.rows, b );
-			this.list && this.list.table.tbody.insertCol( a.rows, b );
-			this.x.scroll && this.list.checkScroll();
+			(j = this.thead()) && j.insertCol( a.thead.rows, b );
+			(j = this.tbody()) && j.insertCol( a.tbody.rows, b );
+			this.resize();
+			this.x.scroll && this.list && this.list.checkScroll();
 		},
 		//@public 删除一列 / @a -> colIndex|colField
 		deleteColumn: function( a ) {
 			a = this._col_parse( a );
 			for ( var j = 0; j < this.colgrps.length; j ++ )
 				this.colgrps[ j ].deleteCol( a );
-			this.head && this.head.table.thead.deleteCol( a );
-			this.list && this.list.table.tbody.deleteCol( a );
-			this.x.scroll && this.list.checkScroll();
+			(j = this.thead()) && j.deleteCol( a );
+			(j = this.tbody()) && j.deleteCol( a );
+			this.resize();
+			this.x.scroll && this.list && this.list.checkScroll();
 		},
 		//@public 更新一列 / @a -> 一列的数据grid json, b -> colIndex|colField
 		updateColumn: function( a, b ) {
@@ -8462,8 +8460,6 @@ Grid = define.widget( 'grid', {
 					$.classAdd( r[ i ].$(), 'z-' + (i % 2) + ( i === 0 ? ' z-first' : i === l - 1 ? ' z-last' : '' ) );
 					r[ i ].rownum && r[ i ].rownum.reset();
 				}
-				if ( (r = this.headrow()) && Q( '.w-triplebox', r.$() ).length )
-					(r = $.get( '.w-triplebox', this.tbody().$() )) && (r = $.widget( r )) && r.relate();
 			}
 		},
 		// 高亮某个字段的关键字 /@ a -> field name, b -> key, c -> matchlength, d -> keycls

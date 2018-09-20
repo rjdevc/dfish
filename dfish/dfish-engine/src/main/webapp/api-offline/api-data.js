@@ -1485,9 +1485,6 @@ define( {
             alert( r.length );
           }
       ] },
-      { name: 'headrow([data])', remark: '获取标题行中符合条件的某一行。', param: [
-        { name: 'data', type: 'Object | Number', remark: '用来查询的字段对象，或行的序列号。默认值为0。', optional: true }
-      ] },
       { name: 'rowsData([data])', remark: '获取符合条件的所有行的 data json 的数组。', param: [
         { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
       ] },
@@ -1982,7 +1979,7 @@ define( {
       ] },
       { name: 'getFocus()', remark: '获取焦点状态的 leaf。' },
       { name: 'openTo(src, [sync], [fn])', remark: '通过src请求获取一个 json，并按照这个 json 的格式显示树。每个 leaf 节点都必须设置 id。', param: [
-        { name: 'src',  type: 'String',  remark: '获取 tree json 的地址。' },
+        { name: 'src',  type: 'String',  remark: '获取 json 的地址。' },
         { name: 'sync', type: 'Boolean',  remark: '是否同步。' },
         { name: 'fn', type: 'Function',  remark: '请求结束后执行的回调函数。' }
       ] },
