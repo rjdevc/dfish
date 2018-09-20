@@ -725,13 +725,11 @@ W = define( 'widget', function() {
 			if ( w != N )
 				_w_size.width.call( this, w );
 			if ( h != N )
-				_w_size.height.call( this, h );
-			if ( w != N || h != N ) {
-				delete this._scales;
-				for ( var i = 0, l = this.length; i < l; i ++ )
-					_w_rsz_all.call( this[ i ] );
-				this.trigger( 'resize' );
-			}
+			_w_size.height.call( this, h );
+			delete this._scales;
+			for ( var i = 0, l = this.length; i < l; i ++ )
+				_w_rsz_all.call( this[ i ] );
+			this.trigger( 'resize' );
 		},
 		// 替换为另一个widget /@ a -> widget option
 		replace: function( a ) {
@@ -7363,7 +7361,7 @@ GridRow = define.widget( 'grid/row', {
 			if ( this.rootNode.x.escape != N )
 				$.extend( x, { escape: this.rootNode.x.escape } );
 			var n = ( this.tcell || (this.tcell = new TCell( {}, this )) ).add( x );
-			n.colIndex = i;
+			n.col = this.rootNode.colgrps[ 0 ][ i ];
 			return n;
 		},
 		cellElem: function( i ) {
@@ -7472,7 +7470,7 @@ TD = define.widget( 'td', {
 			return _td_wg[ t ] ? 'grid/' + t : t;
 		},
 		html: function( a ) {
-			var r = this.parentNode.parentNode, g = this.rootNode, c = g.colgrps[ 0 ][ this.colIndex ], e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td-' + g._face + (a ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + '"';
 			if ( this.x.on || this.Const.Listener )
@@ -7706,12 +7704,12 @@ TCell = define.widget( 'tcell', {
 	Child: 'td',
 	Prototype: {
 		scaleWidth: function( a ) {
-			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = r.colgrps[ 0 ][ a.colIndex ], d = r._pad, e;
+			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
 			while ( l -- )
-				(e = r.colgrps[ 0 ][ a.colIndex + l ]) != N && (w += e.width());
+				(e = r.colgrps[ 0 ][ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			if ( r._face === 'cell' && a.colIndex < r.colgrps[ 0 ].length - 1 )
+			if ( r._face === 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
 				w -= 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
@@ -7748,7 +7746,7 @@ TBody = define.widget( 'tbody', {
 		insertCol: function( a, b ) {
 			var r = this.rootNode, g = r.colgrps[ 0 ];
 			b = b == N || ! g[ b ] ? g.length - 1 : b;
-			for( var i = 0, l = a.length; i < l; i ++ ) {
+			for( var i = 0, l = Math.min( a.length, this.length ); i < l; i ++ ) {
 				$.extendDeep( this[ i ].x, typeof a[ i ].data !== _OBJ ? { data: a[ i ] } : a[ i ] );
 			}
 			for( var i = 0, l = this.length; i < l; i ++ ) {
@@ -7839,7 +7837,8 @@ Col = define.widget( 'col', {
 			return this.parentNode.parentNode.rootNode;
 		},
 		th: function() {
-			return this.root().headrow().$().cells[ this.nodeIndex ];
+			var t = this.root().thead();
+			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		html_sortarrow: function( a ) {
 			return $.arrow( this.root().id + 'sortarrow', (a || this._sort) === 'asc' ? 't1' : 'b1' );
@@ -8089,7 +8088,7 @@ Grid = define.widget( 'grid', {
 	Prototype: {
 		NODE_ROOT: T,
 		className: 'w-grid',
-		headrow: function( a ) { return this.head && this.head.table.thead[ a == N ? 0 : a ] },
+		thead: function() { return this.head && this.head.table.thead },
 		tbody: function() { return this.list && this.list.body && this.list.body.table.tbody },
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
@@ -8261,18 +8260,20 @@ Grid = define.widget( 'grid', {
 			b = this._col_parse( b );
 			for ( var j = 0; j < this.colgrps.length; j ++ )
 				this.colgrps[ j ].insertCol( a.columns[ 0 ], b );
-			this.head && this.head.table.thead.insertCol( a.thead.rows, b );
-			this.list && this.list.table.tbody.insertCol( a.rows, b );
-			this.x.scroll && this.list.checkScroll();
+			(j = this.thead()) && j.insertCol( a.thead.rows, b );
+			(j = this.tbody()) && j.insertCol( a.tbody.rows, b );
+			this.resize();
+			this.x.scroll && this.list && this.list.checkScroll();
 		},
 		//@public 删除一列 / @a -> colIndex|colField
 		deleteColumn: function( a ) {
 			a = this._col_parse( a );
 			for ( var j = 0; j < this.colgrps.length; j ++ )
 				this.colgrps[ j ].deleteCol( a );
-			this.head && this.head.table.thead.deleteCol( a );
-			this.list && this.list.table.tbody.deleteCol( a );
-			this.x.scroll && this.list.checkScroll();
+			(j = this.thead()) && j.deleteCol( a );
+			(j = this.tbody()) && j.deleteCol( a );
+			this.resize();
+			this.x.scroll && this.list && this.list.checkScroll();
 		},
 		//@public 更新一列 / @a -> 一列的数据grid json, b -> colIndex|colField
 		updateColumn: function( a, b ) {
@@ -8305,8 +8306,6 @@ Grid = define.widget( 'grid', {
 					$.classAdd( r[ i ].$(), 'z-' + (i % 2) + ( i === 0 ? ' z-first' : i === l - 1 ? ' z-last' : '' ) );
 					r[ i ].rownum && r[ i ].rownum.reset();
 				}
-				if ( (r = this.headrow()) && Q( '.w-triplebox', r.$() ).length )
-					(r = $.get( '.w-triplebox', this.tbody().$() )) && (r = $.widget( r )) && r.relate();
 			}
 		},
 		// 高亮某个字段的关键字 /@ a -> field name, b -> key, c -> matchlength, d -> keycls
