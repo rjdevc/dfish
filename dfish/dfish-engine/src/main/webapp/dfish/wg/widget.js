@@ -4773,13 +4773,14 @@ Calendar = CalendarDate = define.widget( 'calendar/date', {
 			this.date = new Date();
 			this.trigger( 'complete' );
 		},
-		go: function( d, f ) {
+		go: function( d ) {
 			if ( this.x.src ) {
-				this.cmd( { type: 'ajax', src: $.urlFormat( this.x.src, [ this._fm( d || this.date ) ] ), success: f } );
+				this.cmd( { type: 'ajax', src: $.urlFormat( this.x.src, [ this._fm( d || this.date ) ] ), success: function( x ) {
+					W.isCmd( x ) ? this.cmd( x ) : this.replace( x );
+				} } );
 			} else {
 				d && (this.date = d);
 				$.replace( this.$(), this.html() );
-				f && f.call( this );
 			}
 		},
 		get: function( a ) {
@@ -6740,7 +6741,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			this.loaded = T;
 			for ( j = 0; j < l; j ++ )
 				this[ j ].triggerAll( 'ready' );
-			//this.trigger( 'nodechange' );
+			this.trigger( 'nodechange' );
 		},
 		toggle_nodes: function( a ) {
 			if ( this.x.src || this.length ) {
@@ -6777,7 +6778,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		},
 		compare: function( x ) {
 			if ( x.text ) {
-				var _x = this.x, b = [ 'icon', 'openicon', 'src', 'cls' ];
+				var _x = this.x, b = [ 'icon', 'openicon', 'src', 'cls', 'focus' ];
 				this.init_x( x );
 				for ( var i = 0, l = b.length, e; i < l; i ++ ) {
 					e = b[ i ];
@@ -7226,6 +7227,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 				r.add( x[ i ] );
 			l && Q( r.$() ).after( r.html_nodes() );
 			this.loaded = T;
+			this.trigger( 'nodechange' );
 		},
 		html: function() {
 			var r = this.tr(), s = this.html_self( r.length );
