@@ -380,7 +380,7 @@
 .w-imgbox-c.z-on ._t{color:#fff}
 .w-imgbox-c ._g{border:1px solid #ddd;background:#fff;text-align:center}
 .w-imgbox-c ._t{height:22px;line-height:1.5;text-align:center;}
-.w-imgbox-c ._r{position:absolute;top:0;bottom:0;right:0;width:10px;text-align:right}
+.w-imgbox-c ._r{position:absolute;top:0;bottom:0;right:0;width:10px;height:100%;text-align:right}
 .w-imgbox-c .f-arw{border-left-color:#99a8b8}
 .w-imgbox-c:hover .f-arw{border-left-color:#6e8094}
 .w-imgbox-list .w-imgbox-c:hover{background:#d0ecff}
