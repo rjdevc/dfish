@@ -128,10 +128,6 @@ _createClass = $.createClass = function( a, b ) {
 				_extendDeep( e || (e = c.Listener = {body:{}}), d[ i ].Listener );
 			if ( d[ i ].Default )
 				_extend( c.Default || (c.Default = {}), d[ i ].Default );
-			if ( d[ i ].Rooter && c.Rooter === U )
-				c.Rooter = d[ i ].Rooter;
-			if ( d[ i ].Child && c.Child === U )
-				c.Child = d[ i ].Child;
 		}
 	}
 	if ( f ) {
@@ -141,17 +137,6 @@ _createClass = $.createClass = function( a, b ) {
 			var g = new Function;
 			g[ _PRO ] = f;
 			c[ _PRO ] = new g;
-		}
-	}
-	if ( e && (e = e.body) ) {
-		for ( var k in e ) {
-			var p = e[ k ] && e[ k ].proxy;
-			if ( p ) {
-				if ( typeof e[ k ] === _FUN )
-					e[ k ] = { method: e[ k ] };
-				for ( var i = 0, q = p.split( ' ' ); i < q.length; i ++ )
-					_jsonChain( T, c, 'ListenerProxy', q[ i ], k );
-			}
 		}
 	}
 	if ( n ) {
@@ -260,11 +245,11 @@ Define = function( a ) {
 //@a -> id, b -> uri, c -> script text
 _onModuleLoad = function( a, b, c ) {
 	var m = new Module( b );
-	try {
+	//try {
 		Function( 'define,require,module,exports', c + '\n//@ sourceURL=' + a ).call( win, Define( b ), Require( b ), m, m.exports );
-	} catch( e ) {
-		throw new Error( '"' + a + '": ' + e.message );
-	}
+	//} catch( e ) {
+	//	throw new Error( '"' + a + '": ' + e.message );
+	//}
 	if ( ! _moduleCache[ a ] )
 		_moduleCache[ a ] = m.exports;
 },
@@ -990,9 +975,9 @@ _classAdd = $.classAdd = function( a, b, c ) {
 	if ( b.indexOf( ' ' ) > -1 ) {
 		b = _strTrim( b ).split( / +/ );
 		for ( var i = 0, l = b.length; i < l; i ++ )
-			s = ( c === F ? _idsRemove : _idsAdd )( s, b[ i ], ' ' );
+			s = (c === F ? _idsRemove : _idsAdd)( s, b[ i ], ' ' );
 	} else
-		s = ( c === F ? _idsRemove : _idsAdd )( s, b, ' ' );
+		s = (c === F ? _idsRemove : _idsAdd)( s, b, ' ' );
 	a.className = s;
 },
 // 删除一个class  /@ a -> el, b -> className
@@ -1264,7 +1249,6 @@ _xmlParse = $.xmlParse = function( a ) {
 _xmlQuery = $.xmlQuery = function( a, b ) { return a.selectSingleNode( b ) },
 _xmlQueryAll = $.xmlQueryAll = function( a, b ) { return a.selectNodes( b ) },
 
-// Event Node 是 widget 的基础类
 _EventUser = {},
 _event_remove = function( k ) {
 	if ( k.fn ) {
@@ -1291,68 +1275,7 @@ _event_handlers = function( a, b ) {
 	}
 	return r;
 },
-// 节点类
-_Node = $.Node = _createClass( {
-	Const: function() {},
-	Helper: {
-		// 对n节点的祖先元素逐个判断是否符合条件，条件有连续性，一旦连续性终止，返回最后一个符合条件的祖先元素 
-		edge: function( n, a ) {
-			if ( typeof a === _STR ) a = _arrfn( a );
-			var b = n;
-			while ( b = b.parentNode ) {
-				if ( ! a.call( b.parentNode ) )
-					return b;
-			}
-		}
-	},
-	Prototype: {
-		length: 0,
-		// 添加一个子节点  /@ a -> node, b -> nodeIndex [ number: 节点序号; /-1: 离散节点
-		addNode: function( a, b ) {
-			// 已有父节点时，先从父节点中解除
-			if ( a.nodeIndex != N )
-				_Node.prototype.removeNode.call( a, T );
-			var l = this.length,
-				n = b == N ? l : Math.max( -1, Math.min( l, b ) );
-			a.parentNode = this;
-			if ( a.Const.Rooter ) {
-				var r = this.rootNode || (this.NODE_ROOT && this);
-				r && a.Const.Rooter === r.type && b !== -1 && (a.rootNode = r);
-			}
-			if ( n != N ) {
-				a.nodeIndex = n;
-				if ( n === -1 ) {
-					( this.discNodes || (this.discNodes = {}) )[ _uid( a ) ] = a;
-				} else {
-					// 重新整理并编号
-					for ( var i = l; i > n; i -- )
-						( this[ i ] = this[ i - 1 ] ).nodeIndex = i;
-					this.length ++;
-					this[ n ] = a;
-				}
-			}
-			return a;
-		},
-		// a -> 设为true, 只解除当前节点的关系
-		removeNode: function( a ) {
-			if ( a !== T ) {
-				for ( var i = this.length - 1; i >= 0; i -- )
-					arguments.callee.call( this[ i ] );
-			}
-			var p = this.parentNode;
-			if ( p ) {
-				if ( this.nodeIndex > -1 ) {
-					for ( var i = this.nodeIndex, l = p.length - 1; i < l; i ++ )
-						( p[ i ] = p[ i + 1 ] ).nodeIndex = i;
-					p.length --;
-					delete p[ i ];
-				} else if ( p.discNodes )
-					delete p.discNodes[ this.id ];
-			}
-			delete this.nodeIndex; delete this.parentNode; delete this.rootNode;
-		}
-	}
-} ),
+/* `Event` */
 _Event = $.Event = _createClass( {
 	Const: function() {},
 	Prototype: {
@@ -1924,7 +1847,7 @@ _merge( $, {
 	globals: {},
 	// 事件白名单
 	white_events: (function() {
-		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,paste,beforepaste,beforedeactivate,' +
+		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,beforepaste,beforedeactivate,' +
 			(br.mobile ? 'touchstart,touchmove,touchend,tap' : 'mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,mouseenter,mouseleave,dblclick'), 'input', 'focus,blur,input', 'option', 'change' ];
 		for ( var i = 0, r = {}, j, k, v; i < a.length; i += 2 ) {
 			k = a[ i ], r[ k ] = {}, v = [];
