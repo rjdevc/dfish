@@ -176,16 +176,11 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	public List<?> getQueryList(final String strSql, final Page page, final Object... object) {
 	    if (page == null) {
 	        return getQueryList(strSql, object);
-	    } else {
-	        if (page.getAutoRowCount() == null) {
-	            page.setAutoRowCount(true);
-	        }
 	    }
-	    return getQueryList(strSql, page, page.getAutoRowCount(), object);
-	}
-	public List<?> getQueryList(final String strSql, final Page page,
-			final boolean autoGetRowCount, final Object... object) {
-		final HibernateTemplate template = getHibernateTemplate();
+	    
+	    final boolean autoRowCount = page.getAutoRowCount() == null || page.getAutoRowCount();
+	    
+	    final HibernateTemplate template = getHibernateTemplate();
 		template.setCacheQueries(true);
 		long beginTimeMillis = getCurrentTimeMillis();
 		HibernateCallback<List<?>> action = new HibernateCallback<List<?>>() {
@@ -208,7 +203,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				List<?> resultList = query.list();
 				page.setCurrentCount(resultList.size());
 				
-				if (autoGetRowCount) {
+				if (autoRowCount) {
 					if(page.getPageSize()>resultList.size()&&(resultList.size()>0||page.getCurrentPage()==1)){
 						// 2017-12-22 LinLW
 						//如果查询结果一页都没有满，明显无需count
@@ -262,7 +257,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 							}
 						}
 						
-						String strHql4cout = "select count(*) "+strSql.substring(firstForm,lastOrderBy);
+						String strHql4cout = "SELECT COUNT(*) "+strSql.substring(firstForm,lastOrderBy);
 						try{
 							Query query1 = session.createQuery(strHql4cout);
 							if (object != null) {
@@ -281,7 +276,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				}
 				
 				//LinLW 2017-07-13 如果当前页号大于1 查询结果数为0，并且autoRowcount为true。很可能是最后一页被删了。要回头显示前面的页。
-				if(resultList.size()==0 && page.getAutoRowCount()!=null && page.getAutoRowCount() && page.getCurrentPage()>1){
+				if(resultList.size()==0 && autoRowCount && page.getCurrentPage()>1){
 					//根据page的rowCount计算curpage的数量
 					if(page.getRowCount()==0){
 						page.setCurrentPage(1);
@@ -305,6 +300,15 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 			page.setCurrentCount(result.size());
 		}
 		return result;
+//	    return getQueryList(strSql, page, page.getAutoRowCount(), object);
+	}
+	
+	public List<?> getQueryList(final String strSql, final Page page,
+			final boolean autoGetRowCount, final Object... object) {
+		if (page != null) {
+			page.setAutoRowCount(autoGetRowCount);
+		}
+		return getQueryList(strSql, page, object);
 	}
 
 

@@ -23,7 +23,7 @@ public class Page {
 	
 	private Integer currentCount;
 	
-	private Boolean autoRowCount;
+	private Boolean autoRowCount = true;
 
 	public Page() {
 	}
