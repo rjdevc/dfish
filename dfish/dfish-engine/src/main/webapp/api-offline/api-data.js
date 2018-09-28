@@ -2670,7 +2670,12 @@ define( {
   	remark: '数字输入框。',
   	extend: 'text',
     Config: [
-      { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' }
+      { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
+      { name: 'format', type: 'Object', optional: true, remark: '设置分隔格式。',  param: [
+        { name: 'length', type: 'Number', remark: '分隔长度。默认值为 3' },
+        { name: 'separator', type: 'String', remark: '分隔符。默认值为 ","' },
+        { name: 'rightward', type: 'Boolean', remark: '设置为true，从左向右的方向进行分隔。默认值为 false' }        
+      ] }
     ],
   	deprecate: '.w-text',
     Classes: [

@@ -113,11 +113,9 @@ _mergeDeep = $.mergeDeep = function( a ) {
 // 创建类
 _createClass = $.createClass = function( a, b ) {
 	var n;
-	if ( b )
-		n = a, a = b;
+	b && (n = a, a = b);
 	var c = a.Const, d = a.Extend, e = a.Listener, f = a.Prototype;
-	if ( e && ! e.body )
-		e.body = {};
+	e && ! e.body && (e.body = {});
 	_mergeDeep( c, a );
 	if ( d ) {
 		if ( typeof d === _FUN )
@@ -298,7 +296,7 @@ _uid = $.uid = function( o ) {
 	return _guid();
 },
 _number = $.number = function( a ) {
-	var r = typeof a === _STR ? parseFloat( a ) : + a;
+	var r = typeof a === _STR ? parseFloat( a.replace( ',', '' ) ) : + a;
 	return isNaN( r ) ? 0 : r;
 },
 // 如果 a 的大小在 b 和 c 之间，则返回 a。否则返回 b 或 c
@@ -309,6 +307,24 @@ _numRange = $.numRange =  function( a, b, c ) {
 _numAdd = $.numAdd = function( a, b ) {
 	 var c = _strFrom( a + '', '.' ).length, d = _strFrom( b + '', '.' ).length, m = Math.pow( 10, Math.max( c, d ) );
 	 return Math.round( (a + b) * m ) / m;			
+},
+// 给数字加上分隔符  /@a -> str, b -> length?, c -> separator?, d -> rightward?
+_numFormat = $.numFormat = function( a, b, c, d ) {
+	b == N && (b = 3);
+	c == N && (c = ',');
+	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '';
+	if ( d ) {
+		do {
+			i += b;
+			t += (i < l ? s.substr( i - b, b ) + c : s.substr( i - b ));
+		} while ( i < l );
+	} else {
+		do {
+			i -= b;
+			t = (i > 0 ? c + s.substr( i, b ) : s.substr( 0, b + i )) + t;
+		} while ( i > 0 );
+	}
+	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
 },
 _strTrim = $.strTrim = function (a ) {
 	return (a + '').replace( /^\s+|\s+$/g, '' );
