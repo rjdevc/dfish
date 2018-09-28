@@ -230,7 +230,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 					rowIndex++;
 					occupied = 0;
 				}
-				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&m.getPrototype() instanceof LabelRow<?>){
+				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&m.getPrototype() instanceof LabelRow<?>
+				&&!Boolean.TRUE.equals(((LabelRow<?>)m.getPrototype()).getHideLabel())){
 					Boolean required=false;
 					if (m.getPrototype() instanceof AbstractFormElement) {
 						AbstractFormElement<?, ?> cast = (AbstractFormElement<?, ?>) m.getPrototype();
