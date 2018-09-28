@@ -1459,7 +1459,7 @@ define.widget( 'upload/file/buttonbar', {
 		x_nodes: function( x ) {
 			return this.u.x.upload_button;
 		},
-		x_type: function( t, n ) {
+		x_childtype: function( t ) {
 			return $.strTo( this.type, '/', true ) + '/' + t;
 		}
 	}
@@ -1480,7 +1480,6 @@ define.widget( 'upload/file/valuebar', {
 		this.childCls = p.x.dir === 'v' ? 'f-left f-clear' : 'f-sub-horz';
 	},
 	Extend: 'horz',
-	Child: 'upload/file/value',
 	Listener: {
 		body: {
 			ready: function() {
@@ -1491,13 +1490,16 @@ define.widget( 'upload/file/valuebar', {
 				$.classAdd( u.$(), 'z-lmt', u.isLimit() );
 			}
 		}
+	},
+	Prototype: {
+		x_childtype: $.rt( 'upload/file/value' )
 	}
 } );
 
 define.widget( 'upload/image/valuebar', {
 	Extend: 'upload/file/valuebar',
-	Child: 'upload/image/value',
 	Prototype: {
+		x_childtype: $.rt( 'upload/image/value' ),
 		// @implement / a -> html|widget, b -> where(prepend|append|before|after)
 		insertHTML: function( a, b ) {
 			if ( ! b || b === 'append' ) {
@@ -1816,7 +1818,9 @@ define.widget( 'upload/file/value', {
 
 define.widget( 'upload/value/buttonbar', {
 	Extend: 'buttonbar',
-	Child: 'upload/value/button'
+	Prototype: {
+		x_childtype: $.rt( 'upload/value/button' )
+	}
 } );
 
 define.widget( 'upload/value/button', {
@@ -1896,3 +1900,6 @@ function getFileType( a ) {
 	}
 	return c.join( ',' );
 }
+
+module.exports = Upload;
+

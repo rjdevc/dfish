@@ -46,8 +46,8 @@ click_preview	: '点击预览',
 tree_movefail1	: '无法移动：目标文件夹和源文件夹相同',
 tree_movefail2	: '无法移动：目标文件夹是源文件夹的子文件夹',
 
-internet_error	: '网络连接失败，请稍候再试',
-server_error	: '系统异常，请联系管理员',
+internet_error	: '<span{1}>[{0}] 网络连接失败，请稍候再试</span>',
+server_error	: '<span{1}>[{0}] 系统异常，请联系管理员</span>',
 
 page: '页',
 page_first: '首页',
