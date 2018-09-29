@@ -5047,7 +5047,7 @@ CalendarWeek = define.widget( 'calendar/week', {
 		},
 		html_nodes: function() {
 			var a = this.date, w = $.dateWeek( a, this.x.cg, this.x.start ), y = w[ 0 ], t = this.x.begindate, m = this.x.enddate,
-				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 7 ), n = 0, o = this.x.css,
+				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), n = 0, o = this.x.css,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.weeknow + '</div></div>' +
 					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
 			this._year = y;
@@ -5071,7 +5071,7 @@ CalendarMonth = define.widget( 'calendar/month', {
 		_nav_unit: 'y',
 		_formatter: 'yyyy-mm',
 		html_nodes: function() {
-			var a = this.date, y = a.getFullYear(), t = this.x.begindate, m = this.x.enddate, e = [], f = this.x.focusdate && this.x.focusdate.slice( 0, 7 ), n = 0, o = this.x.css,
+			var a = this.date, y = a.getFullYear(), t = this.x.begindate, m = this.x.enddate, e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), n = 0, o = this.x.css,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.monthnow + '</div></div>' +
 					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
@@ -5092,7 +5092,7 @@ CalendarYear = define.widget( 'calendar/year', {
 		html_nodes: function() {
 			var a = this.date, t = this.x.begindate, m = this.x.enddate,
 				y = a.getFullYear() - ( a.getFullYear() % 10 ) - 1,
-				e = [], f = _number( this.x.focusdate && this.x.focusdate.slice( 0, 7 ) ), n = 0, o = this.x.css,
+				e = [], f = _number( this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )) ), n = 0, o = this.x.css,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.yearnow + '</div></div>' +
 					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
