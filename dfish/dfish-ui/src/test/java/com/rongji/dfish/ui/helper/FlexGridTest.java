@@ -13,6 +13,9 @@ public class FlexGridTest extends DFishUITestCase {
 		FlexGrid fg=new FlexGrid("myflexgrid");
 		fg.addLabelRow(new Text("name","标题","value"), 4);
 		fg.addLabelRow(new Text("name2","标题2","value2"), FlexGrid.FULL_LINE);
+		fg.addLabelRow(new Text("name2","标题2","value2"), 4);
+		fg.addLabelRow(new Text("name4","标题4","value4").setHideLabel(true), FlexGrid.FULL_LINE);
+		
 		return fg;
 	}
 	
