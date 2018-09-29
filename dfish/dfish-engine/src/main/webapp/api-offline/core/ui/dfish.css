@@ -43,7 +43,7 @@
 .f-sub-horz,.f-sub-vert{vertical-align:top}
 .f-sub-horz{white-space:normal;*white-space:nowrap}
 
-.f-sub-frame,.f-hide{visibility:hidden;position:absolute;z-index:-1} 
+.f-sub-frame,.f-hide{visibility:hidden;position:absolute;z-index:-1;left:-100%} 
 .f-sub-frame-on,.f-dot{}
 
 .f-required{color:red;font-family:tahoma;font-style:normal;margin-right:6px;vertical-align:middle}
@@ -71,10 +71,6 @@
 
 /* arrow */
 .f-arw{display:inline-block;border:4px solid transparent;vertical-align:middle;*line-height:0;*font-size:0;*overflow:hidden}
-.f-arw-b1,.f-arw-b2,.f-arw-b3,.f-arw-b4,.f-arw-b5{border-bottom:0;border-top-color:#666;}
-.f-arw-r1,.f-arw-r2,.f-arw-r3,.f-arw-r4,.f-arw-r5{border-right:0;border-left-color:#666;margin:0 2px}
-.f-arw-t1,.f-arw-t2,.f-arw-t3,.f-arw-t4,.f-arw-t5{border-top:0;border-bottom-color:#666;}
-.f-arw-l1,.f-arw-l2,.f-arw-l3,.f-arw-l4,.f-arw-l5{border-left:0;border-right-color:#666;margin:0 2px}
 .f-arw-b1,.f-arw-t1{border-width:5px 4px}
 .f-arw-r1,.f-arw-l1{border-width:4px 5px}
 .f-arw-b2,.f-arw-r2,.f-arw-t2,.f-arw-l2{border-width:5px}
@@ -83,6 +79,10 @@
 .f-arw-r4,.f-arw-l4{border-width:7px 8px}
 .f-arw-b5,.f-arw-t5{border-width:9px 8px}
 .f-arw-r5,.f-arw-l5{border-width:8px 9px}
+.f-arw-b1,.f-arw-b2,.f-arw-b3,.f-arw-b4,.f-arw-b5{border-bottom:0;border-top-color:#666;}
+.f-arw-r1,.f-arw-r2,.f-arw-r3,.f-arw-r4,.f-arw-r5{border-right:0;border-left-color:#666;margin:0 2px}
+.f-arw-t1,.f-arw-t2,.f-arw-t3,.f-arw-t4,.f-arw-t5{border-top:0;border-bottom-color:#666;}
+.f-arw-l1,.f-arw-l2,.f-arw-l3,.f-arw-l4,.f-arw-l5{border-left:0;border-right-color:#666;margin:0 2px}
 
 
 .f-notop{border-top-width:0!important}
@@ -159,7 +159,7 @@
 .w-leaf.z-hv,.w-leaf.z-hv .w-leaf-t{background:#d5ecff}
 .w-leaf.z-on,.w-leaf.z-on .w-leaf-t{background:#bce0ff}
 .w-leaf-a{height:100%;text-decoration:none}
-.w-leaf-b.w-checkbox,.w-leaf-b.w-triplebox{padding:0 3px;text-align:center;line-height:0}
+.w-leaf-b.w-checkbox,.w-leaf-b.w-triplebox{padding-left:2px;padding-right:3px;text-align:center;line-height:0}
 .w-leaf-o{position:relative;visibility:hidden;display:inline-block;height:100%;width:14px;text-align:center;color:#9e9e9e;vertical-align:middle;}
 .w-leaf-o:hover .f-arw-r1{border-left-color:#1cc4f7}
 .w-leaf-o:hover .f-arw-b1{border-top-color:#1cc4f7}

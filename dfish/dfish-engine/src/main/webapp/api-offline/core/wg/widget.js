@@ -1144,7 +1144,8 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			if ( a[ 0 ] === this )
 				return this;
 			for ( q = a[ 0 ].parentNode, i = 0; i < a.length; i ++ )
-				a[ i ].removeNode( T );
+				a[ 0 ].removeNode( T );
+			q = q[ 0 ];
 		}
 		var i = j === 3 ? this.nodeIndex + 1 : j === 2 ? this.nodeIndex : j === 1 ? this.length : 0, d = this.nodeIndex > -1,
 			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
@@ -1163,8 +1164,7 @@ $.arrEach( 'prepend append before after'.split(' '), function( v, j ) {
 			}
 		}
 		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
-		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
-		q && q.trigger( 'nodechange' );
+		d && q && (((k = {})[ s ] = q.x[ s ]), q.resize( k ));
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize' );
 		return p[ i ];
@@ -1454,22 +1454,22 @@ _setParent = function( a ) {
 	}
 },
 _userPriority = { 'click': T, 'close': T, 'valid': T },
+_templates = {},
+_view_js = cfg.view_js || {},
 // view的占据空间的widget，可见元素都隶属于此
 ViewLayout = define.widget( 'view/layout', {} ),
-// template实例集合
-_templates = {},
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
-		//if ( cfg.debug )
-		//	x.attr = 'onclick=' + $.abbr + '.debug(this)';
 		if ( x.templates )
 			$.merge( _templates, x.templates );
 		_initView.call( this );
 		_regWidget.apply( this, arguments );
 		p && _setParent.call( this, _view( p ) );
-		if ( this.x.node )
+		if ( this.x.node ) {
+			_view_js[ this.path ] && $.require( _view_js[ this.path ] );
 			this._loadEnd( this.x );
+		}
 		this.dft_x = $.extend( {}, this.x );
 		this._instanced = T;
 	},
@@ -1527,14 +1527,13 @@ View = define.widget( 'view', {
 			this.abort();
 			this.loading = T;
 			this.trigger( 'loading' );
-			var u = this.attr( 'src' );
-			u && (this.parent || this).ajax( {
-				src: (u = $.urlLoc( cfg.path, u )), context: this, sync: a, cache: c,
-				success: function( x ) {
-					this._loadEnd( x );
-					b && b.call( this, x );
-				}
-			} );
+			var u = this.attr( 'src' ), m, n, self = this,
+				d = _view_js[ this.path ],
+				e = function() {
+					if ( m && n ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
+				};
+			d ? $.require( d, function() { m = T; e(); }, ! a ) : (m = T);
+			u && (this.parent || this).ajax( { src: (u = $.urlLoc( cfg.path, u )), context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> view json
@@ -4625,13 +4624,14 @@ Select = define.widget( 'select', {
 			return this.getFocusOption( 1 );
 		},
 		html_nodes: function() {
-			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0;
+			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape;
 			while ( i -- ) {
-				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + '>' + o[ i ].text + '</option>' + s;
+				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
+					(this.x.tip ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
 			}
-			var w = this.innerWidth(), z = this.x.size;
+			var w = this.innerWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
-				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '') + '"' : '') +
+				(this.x.tip ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
 				( z ? ' size=' + z : '' ) + '>' + s + '</select><div class=_cvr></div>';
 		}
 	}
@@ -4658,18 +4658,6 @@ CalendarNum = define.widget( 'calendar/num', {
 							! this._disposed && this.trigger( 'focus' );
 						}
 					}
-				}
-			},
-			mouseover: {
-				prop: T,
-				method: function() {
-					!this.isDisabled() && this.addClass( 'z-hv' );
-				}
-			},
-			mouseout: {
-				prop: T,
-				method: function() {
-					!this.isDisabled() && this.removeClass( 'z-hv' );
 				}
 			},
 			focus: function( e ) {
@@ -5341,7 +5329,7 @@ XBox = define.widget( 'xbox', {
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
-				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + ' onmouseover=$.zhover(this) onmouseout=$.zout(this)>' + this.htm_li( o[ i ] ) + '</div>' );
+				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') + '>' + this.htm_li( o[ i ] ) + '</div>' );
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=$.all["' + this.id + '"].choose(this,event)>' + s.join( '' ) + '</div>';
 		},
@@ -6932,6 +6920,8 @@ Leaf = define.widget( 'leaf', {
 			},
 			nodechange: function() {
 				this.fixFolder();
+				if ( ! this.length )
+					this.loaded = this.x.open = F;
 			}
 		}
 	},
@@ -7419,7 +7409,7 @@ GridRow = define.widget( 'grid/row', {
 						g += ' class="w-td-t f-fix"';
 					if ( !e && c[ i ]._sort )
 						v += c[ i ].html_sortarrow();
-					if ( f.tip )
+					if ( e && f.tip )
 						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push( '<td class="w-td-' + u._face + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' : '') : '') +
@@ -7500,12 +7490,6 @@ TD = define.widget( 'td', {
 		}
 	}
 } ),
-_subrow_elem = function( a ) {
-	for ( var i = 0; i < this.length; i ++ ) {
-		a.push( this[ i ].$() );
-		this[ i ].length && _subrow_elem.call( this[ i ], a );
-	}
-},
 /* `tr` */
 TR = define.widget( 'tr', {
 	Extend: GridRow,
@@ -7626,7 +7610,6 @@ TR = define.widget( 'tr', {
 				s = [];
 				var i = a.$().rowIndex, p = a.$().parentNode.parentNode, j = a._rowlen();
 				do { s.push( p.rows[ i ] ) } while ( j -- );
-				a.length && _subrow_elem.call( a, s );
 			}
 			if ( b === 'before' )
 				Q( this.$() )[ b ]( s );

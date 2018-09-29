@@ -2,26 +2,18 @@
 <html>
 <head>
 <meta charset=utf-8>
-<title>DFish3.0 API</title>
-<link rel="shortcut icon" href="../dfish/ui/g/favicon.ico">
-<script src="../dfish/dfish.js?ver=20180404"></script>
+<title>DFish3 API</title>
+<script src="../dfish3/dfish.js"></script>
 <script>
-dfish.init( {
+dfish.config( {
 	path: '/dfish3/', //工程目录。以下定义的目录如果不是以"/"开头，那么都基于本目录
 	lib:  'dfish/',  //fish目录
-	skin: { // 皮肤
-		dir: 'css/',
-		theme: 'classic',
-		color: 'blue'
-	},
-	view: { // 如果配置了此参数，将生成全屏的view
-		id: 'index',
-		src: 'api/api-view.json'
-	},
-	ver: '20180404'
+	data: {
+		module: 'api'
+	}
 } );
 // 加载运行模块
-dfish.use( './api/api.js' );
+dfish.use( './api/src/api.js' );
 </script>
 </head>
 <body style="margin:0;overflow:hidden;" scroll="no"></body>

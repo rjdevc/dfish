@@ -48,6 +48,8 @@ h4{font-size:14px}
 .bg-nav .w-leaf.z-hv,.bg-nav .w-leaf.z-hv .w-leaf-t{background:#dff0ff}
 .bg-nav .w-leaf.z-on,.bg-nav .w-leaf.z-on .w-leaf-t{background:#bce0ff}
 
+.bd-onlybottom{border-width:0 0 1px 0!important}
+
 .index-top{color:#fff;font-size:16px;font-family:verdana,HelveticaNeue,helvetica,arial,clean,sans-serif}
 
 .index-tab{background:#6ebbff;color:#fff;padding-right:6px;border-radius:3px 3px 0 0;margin-right:3px;font-size:14px;}

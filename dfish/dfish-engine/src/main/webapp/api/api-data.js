@@ -123,7 +123,7 @@ define( {
           { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
           { name: 'support_url', type: 'String', remark: '显示支持与帮助的页面URL。如果配置此参数，系统所需的软件下载等都将指向这个地址。' },
           { name: 'server', type: 'String', remark: '服务器地址的绝对路径。当执行 ajax 命令等交互操作时会使用此路径。<br>注：如果 ajax 命令的 src 参数以 ./ 开头，将不会使用 server 参数，而是访问本地地址。', mobile: true },
-          { name: 'skin', type: 'object', remark: '配置皮肤样式。', param: [
+          { name: 'skin', type: 'Object', remark: '配置皮肤样式。', param: [
             { name: 'dir', type: 'String', remark: '皮肤目录' },
             { name: 'theme', type: 'String', remark: '主题名。在皮肤目录下应有一个和主题名相同的目录，该目录里面有一个 "主题名.css"' },
             { name: 'color', type: 'String', remark: '颜色名。在主题目录下应有一个和颜色名相同的目录，该目录里面有一个 "颜色名.css"' }
@@ -134,7 +134,8 @@ define( {
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
-          { name: 'view', type: 'object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' }
+          { name: 'view', type: 'Object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' },
+          { name: 'view_js', type: 'Object', remark: '设置view的依赖JS模块。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS。多个JS可以用数组。' }
         ] }
       ], example: [
           function() {
@@ -167,8 +168,12 @@ define( {
               view: { // 生成一个全屏的view
               	id: 'index', // view的ID。可通过 VM( '/index' ) 来访问
               	src: 'm/index/index.json' // view的src
+              },
+              view_js: { // view的依赖JS模块
+              	'/index'      : [ './m/pub.js', './m/index.js' ],
+              	'/index/task' : './m/task/task.js'
               }
-            } );
+	        } );
           }
       ] },
       { name: '$.cookie(name, [value], [expire], [path])', remark: '读/写cookie', common: true, param: [
@@ -488,13 +493,17 @@ define( {
             var s2 = $.strFrom( 'm/pub/test.js', '/', true ); // 返回 "test.js"
           }
       ] },
-      { name: '$.strHighlight(str, key, [matchlength], [keycls])', remark: '使字符串中的关键词高亮。', common: true, param: [
+      { name: '$.strHighlight(str, key, [matchlength], [keycls])', remark: '给字串中的关键词加上高亮的样式标签。', common: true, param: [
         { name: 'str', type: 'String', remark: '字符串。' },
         { name: 'key', type: 'String', remark: '关键词。' },
-        { name: 'matchlength', type: 'Number', optional: true, remark: '切词长度。如果设为0或者null则不切词。' },
-        { name: 'keycls', type: 'String', optional: true, remark: '高亮的样式名。' }
+        { name: 'matchlength', type: 'Number', optional: true, remark: '切词长度。' },
+        { name: 'keycls', type: 'String', optional: true, remark: '高亮的样式名。默认值为"f-keyword"。' }
       ] },
-      { name: '$.strSlice(str, len, [ext])', remark: '把字符串按照字节数截取。中文字节数读取自 dfish 全局配置的 cn_bytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
+      { name: '$.strLen(str, [cnbyte])', remark: '获取字符串的字节长度。中文字符的字节数读取自 dfish 全局配置的 cn_bytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
+        { name: 'str', type: 'String', remark: '字符串。' },
+        { name: 'cnbyte', type: 'Number', remark: '中文字符的字节数。默认值为2', optional: true }
+      ] },
+      { name: '$.strSlice(str, len, [ext])', remark: '把字符串按照字节数截取。中文字符的字节数读取自 dfish 全局配置的 cn_bytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
         { name: 'str', type: 'String', remark: '要截取的字符串。' },
         { name: 'len', type: 'Number', remark: '要截取的长度。' },
         { name: 'ext', type: 'String', remark: '当字串超出长度时补充到最后的文本。', optional: true }
@@ -807,7 +816,7 @@ define( {
       { name: 'aftercontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'beforecontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'cls', type: 'String', remark: '样式类名。', common: true },
-      { name: 'data', type: 'Object', remark: '扩展数据。', common: true },
+      { name: 'data', type: 'Object', remark: '扩展数据。key:value键值对。在当前widget及子孙节点范围内的事件可以用变量 $key 的来获取值。', common: true },
       { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。', common: true },
       { name: 'height', type: 'Number | String', remark: '高度。可以用数字, *, 百分比。如果设置为 -1, 就是自适应高度。', common: true },
       { name: 'hmin', type: 'Number', remark: '如果设置了 cls 参数，并且 cls 里定义了 padding border margin 这三种样式中的至少一种 ，那么就需要手工设置 hmin 以减去因这些样式额外增加的高度。<br>注: 如果在 style 参数里设置了这三种样式，系统会自动分析，一般不需要额外设置 hmin。', common: true },
@@ -917,7 +926,7 @@ define( {
             wg.before( { type: 'html', text: '123' } );
           }
       ] },
-      { name: 'closest(type)', remark: '获取符合条件的祖先节点。从节点本身开始，逐级向上级匹配，并返回最先匹配的节点。', common: true, param: [
+      { name: 'closest(type)', remark: '获取符合条件的祖先节点。从当前节点开始，逐级向上级匹配，并返回最先匹配的节点。', common: true, param: [
         { name: 'type', type: 'String | Object | Function', remark: '如果是字符串，则按照 widget type 查找。如果是 Object, 返回满足所有条件的节点。' }
       ], example: [
           function() {
@@ -926,6 +935,9 @@ define( {
             var p2 = wg.closest( { type: 'vert' } );
             var p3 = wg.closest( function() { return this.type == 'vert' } );
           }
+      ] },
+      { name: 'closestData(key)', remark: '获取祖先节点的data数据。从当前节点开始，逐级向上，返回最先获取到的data值。', common: true, param: [
+        { name: 'key', type: 'String', remark: '属性名。' }
       ] },
       { name: 'cmd(cmdID, [arg1, arg2...argN])', remark: '执行命令。', common: true, param: [
         { name: 'cmdID', type: 'String | Object', remark: '命令ID，或命令参数对象' },
@@ -1330,7 +1342,7 @@ define( {
         { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
         { name: 'cls', type: 'String', remark: '样式名。' },
         { name: 'field', type: 'String', remark: '字段名。' },
-        { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。' },
+        { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget格式的json对象)。' },
         { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
         { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
           { name: 'key', type: 'String', remark: '关键词。' },
@@ -1472,9 +1484,6 @@ define( {
             var r = vm.find( 'myGrid' ).rows( { C1: '001' } );
             alert( r.length );
           }
-      ] },
-      { name: 'headrow([data])', remark: '获取标题行中符合条件的某一行。', param: [
-        { name: 'data', type: 'Object | Number', remark: '用来查询的字段对象，或行的序列号。默认值为0。', optional: true }
       ] },
       { name: 'rowsData([data])', remark: '获取符合条件的所有行的 data json 的数组。', param: [
         { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
@@ -1666,7 +1675,7 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围(某个 widget 的 ID)。多个ID用逗号隔开。如果以 "!" 开头，则表示排除。', optional: true }
       ] },
-      { name: 'isModified([range], [original])', remark: '检测表单是否有修改，对照的值为默认值。如果有修改则返回 true。', param: [
+      { name: 'isModified([range], [original])', remark: '检测表单是否有修改，对照的值为默认值。如果有修改则返回被修改的表单widget。', param: [
         { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true },
         { name: 'original', type: 'Boolean', remark: '设置为true，检测表单是否有修改，对照的值为初始值。', optional: true }
       ] },
@@ -1970,9 +1979,9 @@ define( {
       ] },
       { name: 'getFocus()', remark: '获取焦点状态的 leaf。' },
       { name: 'openTo(src, [sync], [fn])', remark: '通过src请求获取一个 json，并按照这个 json 的格式显示树。每个 leaf 节点都必须设置 id。', param: [
-        { name: 'src',  type: 'String',  remark: '获取 tree json 的地址。' },
-        { name: 'sync', type: 'Boolean',  remark: '是否同步。' },
-        { name: 'fn', type: 'Function',  remark: '请求结束后执行的回调函数。' }
+        { name: 'src',  type: 'String',  remark: '获取 json 的地址。' },
+        { name: 'sync', type: 'Boolean',  remark: '是否同步。', optional: true },
+        { name: 'fn', type: 'Function',  remark: '请求结束后执行的回调函数。', optional: true }
       ] },
       { name: 'reload()', remark: '重新装载子节点。' },
       { name: 'reloadForAdd([sync], [fn])', remark: '重新读取当前节点的 src 获取子节点数据，如果有新的子节点，将会显示这些新节点。', param: [
@@ -2661,7 +2670,12 @@ define( {
   	remark: '数字输入框。',
   	extend: 'text',
     Config: [
-      { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' }
+      { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
+      { name: 'format', type: 'Object', optional: true, remark: '设置分隔格式。',  param: [
+        { name: 'length', type: 'Number', remark: '分隔长度。默认值为 3' },
+        { name: 'separator', type: 'String', remark: '分隔符。默认值为 ","' },
+        { name: 'rightward', type: 'Boolean', remark: '设置为true，从左向右的方向进行分隔。默认值为 false' }        
+      ] }
     ],
   	deprecate: '.w-text',
     Classes: [
@@ -2917,13 +2931,14 @@ define( {
             var cmd = { type: 'ajax', src: 'abc.sp', data: 'id=001&name=a%20b' };
           }
       ] },
+      { name: 'dataType', type: 'String', remark: '指定后台返回的数据格式。可选值: <b>json</b>(默认), <b>xml</b>, <b>text</b>' },
       { name: 'download', type: 'Boolean', remark: '设置为true，转为下载模式。' },
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
       { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'headers', type: 'Object', remark: '一个额外的"{键:值}"对映射到请求一起发送。' },
       { name: 'loading', type: 'Boolean | String | LoadingCmd', remark: '显示一个"正在加载"的提示框。' },
       { name: 'src', type: 'String', remark: '路径。' },
-      { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'sync', type: 'Boolean', remark: '是否同步。' }
    ]
   },
@@ -3046,7 +3061,7 @@ define( {
       { name: 'resizable', type: 'Boolean', remark: '窗口是否可用鼠标拖动调整大小。' },
       { name: 'fullscreen', type: 'Boolean', remark: '窗口在初始化时是否最大化。' },
       { name: 'snap', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
-      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
+      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
           function() {
           	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
             var opt = { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' };
@@ -3112,6 +3127,7 @@ define( {
     ],
     Classes: [
       { name: '.w-menu', remark: '基础样式。' },
+      { name: '.w-menu-line', remark: '用于button和menu的连接效果。如果需要这个效果，则设置: .w-menu-line{display:block}' },
       { name: '.z-snap-{**}', remark: ' dialog 设置了 snap 参数时的样式。{**} 值根据 snap 结果类型而定。例如 snaptype 为 "41"，那么该样式名称则为: z-snap-41' },
       { name: '.z-mag-{*}', remark: ' dialog 设置了 snap 参数时的样式。{*} 值根据 snap 位置类型而定。x 的可能值有: t(top), r(right), b(bottom), l(left)' }
     ]
@@ -3196,7 +3212,7 @@ define( {
       { name: 'hoverdrop', type: 'Boolean', remark: '设置为true，当鼠标移开时tip自动关闭。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'snap', type: 'String | Element | Widget', remark: 'tip 的吸附对象。可以是 widget ID, widget 对象或 HTML 元素。' },
-      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
+      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
           function() {
           	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
             var opt = { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' };

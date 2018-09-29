@@ -123,7 +123,7 @@ define( {
           { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
           { name: 'support_url', type: 'String', remark: '显示支持与帮助的页面URL。如果配置此参数，系统所需的软件下载等都将指向这个地址。' },
           { name: 'server', type: 'String', remark: '服务器地址的绝对路径。当执行 ajax 命令等交互操作时会使用此路径。<br>注：如果 ajax 命令的 src 参数以 ./ 开头，将不会使用 server 参数，而是访问本地地址。', mobile: true },
-          { name: 'skin', type: 'object', remark: '配置皮肤样式。', param: [
+          { name: 'skin', type: 'Object', remark: '配置皮肤样式。', param: [
             { name: 'dir', type: 'String', remark: '皮肤目录' },
             { name: 'theme', type: 'String', remark: '主题名。在皮肤目录下应有一个和主题名相同的目录，该目录里面有一个 "主题名.css"' },
             { name: 'color', type: 'String', remark: '颜色名。在主题目录下应有一个和颜色名相同的目录，该目录里面有一个 "颜色名.css"' }
@@ -134,7 +134,8 @@ define( {
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
-          { name: 'view', type: 'object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' }
+          { name: 'view', type: 'Object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' },
+          { name: 'view_js', type: 'Object', remark: '设置view的依赖JS模块。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS。多个JS可以用数组。' }
         ] }
       ], example: [
           function() {
@@ -167,8 +168,12 @@ define( {
               view: { // 生成一个全屏的view
               	id: 'index', // view的ID。可通过 VM( '/index' ) 来访问
               	src: 'm/index/index.json' // view的src
+              },
+              view_js: { // view的依赖JS模块
+              	'/index'      : [ './m/pub.js', './m/index.js' ],
+              	'/index/task' : './m/task/task.js'
               }
-            } );
+	        } );
           }
       ] },
       { name: '$.cookie(name, [value], [expire], [path])', remark: '读/写cookie', common: true, param: [
@@ -2917,13 +2922,14 @@ define( {
             var cmd = { type: 'ajax', src: 'abc.sp', data: 'id=001&name=a%20b' };
           }
       ] },
+      { name: 'dataType', type: 'String', remark: '指定后台返回的数据格式。可选值: <b>json</b>(默认), <b>xml</b>, <b>text</b>' },
       { name: 'download', type: 'Boolean', remark: '设置为true，转为下载模式。' },
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
       { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'headers', type: 'Object', remark: '一个额外的"{键:值}"对映射到请求一起发送。' },
       { name: 'loading', type: 'Boolean | String | LoadingCmd', remark: '显示一个"正在加载"的提示框。' },
       { name: 'src', type: 'String', remark: '路径。' },
-      { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'sync', type: 'Boolean', remark: '是否同步。' }
    ]
   },
@@ -3046,7 +3052,7 @@ define( {
       { name: 'resizable', type: 'Boolean', remark: '窗口是否可用鼠标拖动调整大小。' },
       { name: 'fullscreen', type: 'Boolean', remark: '窗口在初始化时是否最大化。' },
       { name: 'snap', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
-      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
+      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
           function() {
           	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
             var opt = { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' };
@@ -3196,7 +3202,7 @@ define( {
       { name: 'hoverdrop', type: 'Boolean', remark: '设置为true，当鼠标移开时tip自动关闭。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'snap', type: 'String | Element | Widget', remark: 'tip 的吸附对象。可以是 widget ID, widget 对象或 HTML 元素。' },
-      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
+      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
           function() {
           	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
             var opt = { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' };
