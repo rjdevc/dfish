@@ -27,12 +27,12 @@
 		  	},
 		  	"nodes" : [
 		  	  { "text": "应用指南", "open": true, "icon": ".icon .icon-pkg", "nodes": [
-		  	    { "text": "简介", "id": "upgrade", "open": !true, "icon": ".icon .icon-component" },
-		  	    { "text": "模块加载规范", "id": "CommonModuleDefinition", "open": !true, "icon": ".icon .icon-component" },
+		  	    { "text": "简介", "id": "upgrade", "open": false, "icon": ".icon .icon-component" },
+		  	    { "text": "模块加载规范", "id": "CommonModuleDefinition", "open": false, "icon": ".icon .icon-component" },
 		  	    { "text": "JS/CSS规范", "id": "app", "icon": ".icon .icon-component" }
 		  	  ] },
 		  	  { "text": "全局方法", "icon": ".icon .icon-pkg", "open": true, "nodes": [
-		        { "id": "$", "text": "dfish ($)", "open": !true, "nodes": [
+		        { "id": "$", "text": "dfish ($)", "open": false, "nodes": [
 		          { "id": "$.ajax", "text": "$.ajax", "datasrc": "$" },
 		          { "id": "$.ajaxCache", "text": "$.ajaxCache", "datasrc": "$" },
 		          { "id": "$.ajaxClean", "text": "$.ajaxClean", "datasrc": "$" },
@@ -70,6 +70,7 @@
 		          { "id": "$.map", "text": "$.map", "datasrc": "$" },
 		          { "id": "$.noConflict", "text": "$.noConflict", "datasrc": "$" },
 		          { "id": "$.numAdd", "text": "$.numAdd", "datasrc": "$" },
+		          { "id": "$.numFormat", "text": "$.numFormat", "datasrc": "$" },
 		          { "id": "$.prepend", "text": "$.prepend", "datasrc": "$" },
 		          { "id": "$.print", "text": "$.print", "datasrc": "$" },
 		          { "id": "$.proxy", "text": "$.proxy", "datasrc": "$" },
@@ -83,6 +84,8 @@
 		          { "id": "$.stop", "text": "$.stop", "datasrc": "$" },
 		          { "id": "$.strEscape", "text": "$.strEscape", "datasrc": "$" },
 		          { "id": "$.strFrom", "text": "$.strFrom", "datasrc": "$" },
+		          { "id": "$.strHighlight", "text": "$.strHighlight", "datasrc": "$" },
+		          { "id": "$.strLen", "text": "$.strLen", "datasrc": "$" },
 		          { "id": "$.strSlice", "text": "$.strSlice", "datasrc": "$" },
 		          { "id": "$.strTo", "text": "$.strTo", "datasrc": "$" },
 		          { "id": "$.strTrim", "text": "$.strTrim", "datasrc": "$" },
@@ -103,7 +106,7 @@
 		        { "id": "Q", "text": "Q" },
 		        { "id": "VM", "text": "VM" }
 		      ] },
-		  	  { "text": "命令", "open": !true, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "命令", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "after", "text": "after", "icon": ".icon .icon-class" },
 		        { "id": "ajax", "text": "ajax", "icon": ".icon .icon-class" },
 		        { "id": "alert", "text": "alert", "icon": ".icon .icon-class" },
@@ -121,7 +124,7 @@
 		        { "id": "submit", "text": "submit", "icon": ".icon .icon-class" },
 		        { "id": "tip", "text": "tip", "icon": ".icon .icon-class" }
 		      ] },
-		  	  { "text": "布局类", "open": !true, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "布局类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
 		        { "id": "ewin", "text": "ewin", "icon": ".icon .icon-class" },
 		        { "id": "fieldset", "text": "fieldset", "icon": ".icon .icon-class" },
@@ -136,7 +139,7 @@
 		        { "id": "vert", "text": "vert", "icon": ".icon .icon-class" },
 		        { "id": "view", "text": "view", "icon": ".icon .icon-class" }
 		      ] },
-		  	  { "text": "功能类", "open": !true, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "功能类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "album", "text": "album", "icon": ".icon .icon-class" },
 		        { "id": "button", "text": "button", "icon": ".icon .icon-class" },
 		        { "id": "buttonbar", "text": "buttonbar", "icon": ".icon .icon-class" },
@@ -157,7 +160,7 @@
 		        { "id": "page/mini", "text": "page/mini", "icon": ".icon .icon-class" },
 		        { "id": "page/text", "text": "page/text", "icon": ".icon .icon-class" }
 		      ] },
-		  	  { "text": "表单类", "open": !true, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "表单类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "checkbox", "text": "checkbox", "icon": ".icon .icon-class" },
 		        { "id": "checkboxgroup", "text": "checkboxgroup", "icon": ".icon .icon-class" },
 		        { "id": "combobox", "text": "combobox", "icon": ".icon .icon-class" },

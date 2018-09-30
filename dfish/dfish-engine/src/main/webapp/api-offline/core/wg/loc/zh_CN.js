@@ -35,16 +35,19 @@ opertip	 : '操作提示',
 nodata	: '暂无数据',
 more : '更多',
 field: '字段',
-internet_error	: '抱歉，该操作无法执行，造成的原因可能有：\n\n1、该数据已被删除或转移\n2、您没有相关权限\n3、网络连接出现了问题',
+
 browser_upgrade : '我们发现您的IE浏览器版本过低，您的浏览体验受到影响。<br>我们强烈建议您安装新版浏览器，点击图标即可下载。',
-loading		: '正在加载..',
-wait		: '请稍候..',
-submiting   : '数据提交中，请稍候..',
-uploading	: '正在上传，请稍侯..',
-click_preview: '点击预览',
+loading			: '正在加载..',
+wait			: '请稍候..',
+submiting		: '数据提交中，请稍候..',
+uploading		: '正在上传，请稍侯..',
+click_preview	: '点击预览',
 
 tree_movefail1	: '无法移动：目标文件夹和源文件夹相同',
 tree_movefail2	: '无法移动：目标文件夹是源文件夹的子文件夹',
+
+internet_error	: '<span{1}>[{0}] 网络连接失败，请稍候再试</span>',
+server_error	: '<span{1}>[{0}] 系统异常，请联系管理员</span>',
 
 page: '页',
 page_first: '首页',
@@ -102,8 +105,12 @@ calendar : {
 	day_title : ['日','一','二','三','四','五','六'],
 	ym : '<span class="_y">{0} 年</span> &nbsp; <span class="_m">{1} 月</span>',
 	y  : '<span class="_y">{0} 年</span>',
-	monthname : ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']
-
+	monthname : ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
+	backdate: '返回日期',
+	picktime: '选择时间',
+	h: '时',
+	i: '分',
+	s: '秒'
 },
 
 error : '错误',

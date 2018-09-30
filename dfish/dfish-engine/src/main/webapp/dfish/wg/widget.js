@@ -4499,7 +4499,7 @@ Checkbox = define.widget( 'checkbox', {
 			}
 		}
 	},
-	Default: { width: -1, wmin: 1 },
+	Default: { width: -1, wmin: 1, hmin: 6 },
 	Prototype: {
 		className: 'w-form',
 		formType: 'checkbox',
