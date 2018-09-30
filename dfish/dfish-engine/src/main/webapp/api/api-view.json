@@ -70,6 +70,7 @@
 		          { "id": "$.map", "text": "$.map", "datasrc": "$" },
 		          { "id": "$.noConflict", "text": "$.noConflict", "datasrc": "$" },
 		          { "id": "$.numAdd", "text": "$.numAdd", "datasrc": "$" },
+		          { "id": "$.numFormat", "text": "$.numFormat", "datasrc": "$" },
 		          { "id": "$.prepend", "text": "$.prepend", "datasrc": "$" },
 		          { "id": "$.print", "text": "$.print", "datasrc": "$" },
 		          { "id": "$.proxy", "text": "$.proxy", "datasrc": "$" },

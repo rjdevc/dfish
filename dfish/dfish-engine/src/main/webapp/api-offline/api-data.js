@@ -361,13 +361,20 @@ define( {
         { name: 'n1', type: 'Number', remark: '数字' },
         { name: 'n2', type: 'Number', remark: '数字' }
       ] },
+      { name: '$.numFormat(number, [length], [separator], [rightward])', remark: '格式化数字。', common: true, param: [
+        { name: 'number', type: 'Number', remark: '数字' },
+        { name: 'length', type: 'Number', optional: true, remark: '分隔长度。默认值为 3' },
+        { name: 'separator', type: 'String', optional: true, remark: '分隔符。默认值为 ","' },
+        { name: 'rightward', type: 'Boolean', optional: true, remark: '从左向右的方向来分隔。默认值为 false' }
+      ], example: [
+          function() {
+          	//
+            var n = $.numFormat( 1234 ); // 返回 "1,234"
+          }
+      ] },
       { name: '$.prepend(elem, content)', id: '$.prepend', remark: '在元素内部前置内容。', common: true, param: [
         { name: 'elem', type: 'HTMLElement', remark: 'html元素对象' },
         { name: 'content', type: 'String', remark: 'html内容' }
-      ], example: [
-          function() {
-            $.prepend( $( 'myDiv' ), '<a href=#>新增链接</a>' );
-          }
       ] },
       { name: '$.print(target, [bPrint], [tag])', id: '$.print', remark: '打印目标对象的内容。', common: true, param: [
         { name: 'target', type: 'Widget | HTMLElement', remark: 'widget对象，或者HTML元素对象。' },

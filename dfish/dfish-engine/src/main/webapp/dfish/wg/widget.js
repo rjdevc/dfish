@@ -121,12 +121,14 @@ _html_on = function( s ) {
 	return s;
 },
 _s_html_on = function( s, h, i, r ) {
-	for ( var p = h && h[ i ] && h[ i ].proxy, k = p ? p.split( ' ' ) : [ i ], j = 0; j < k.length; j ++ ) {
-		p && $.jsonChain( T, this, 'proxyHooks', k[ j ], i );
-		if ( s.indexOf( 'on' + k[ j ] + '=' ) < 0 && r[ k[ j ] ] ) {
-			s += ' on' + k[ j ] + '=' + eve;
+	var p = h && h[ i ] && h[ i ].proxy;
+	if ( p ) {
+		for ( var k = p.split( ' ' ), j = 0; j < k.length; j ++ ) {
+			$.jsonChain( T, this, 'proxyHooks', k[ j ], i );
+			s.indexOf( 'on' + k[ j ] + '=' ) < 0 && r[ k[ j ] ] && (s += ' on' + k[ j ] + '=' + eve);
 		}
-	}
+	} else
+		s.indexOf( 'on' + i + '=' ) < 0 && r[ i ] && (s += ' on' + i + '=' + eve);
 	return s;
 },
 // 取得一个表单的值  /@ a -> input el, b -> json mode?
@@ -4497,7 +4499,7 @@ Checkbox = define.widget( 'checkbox', {
 			}
 		}
 	},
-	Default: { width: -1, wmin: 1 },
+	Default: { width: -1, wmin: 1, hmin: 6 },
 	Prototype: {
 		className: 'w-form',
 		formType: 'checkbox',
@@ -5076,7 +5078,7 @@ CalendarMonth = define.widget( 'calendar/month', {
 					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
 				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, text: Loc.calendar.monthname[ i ], status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v, style: o && o.value && o[ o.value[ n ++ ] ] };
-				e.push( ( i % 4 === 0 ? '<tr class=_tr>' : '' ) + this.add( g ).html() );
+				e.push( (i % 4 === 0 ? '<tr class=_tr>' : '') + this.add( g ).html() );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}

@@ -310,6 +310,7 @@ _numAdd = $.numAdd = function( a, b ) {
 },
 // 给数字加上分隔符  /@a -> str, b -> length?, c -> separator?, d -> rightward?
 _numFormat = $.numFormat = function( a, b, c, d ) {
+	a = String( a );
 	b == N && (b = 3);
 	c == N && (c = ',');
 	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '';
@@ -327,10 +328,10 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
 },
 _strTrim = $.strTrim = function (a ) {
-	return (a + '').replace( /^\s+|\s+$/g, '' );
+	return String( a ).replace( /^\s+|\s+$/g, '' );
 },
 _strQuot = $.strQuot = function( a ) {
-	return (a + '').replace( /\"/g, '&quot;' );
+	return String( a ).replace( /\"/g, '&quot;' );
 },
 // 在a中取以b开始的字符串(不包括b) /@ c -> last indexOf ?
 _strFrom = $.strFrom = function( a, b, c ) {
