@@ -269,6 +269,7 @@
 
 /* form */
 .w-form{margin:0;padding:0;}
+.w-form.z-ds{color:#999}
 .w-form input,.w-form textarea{border:0;margin:0;padding:0;background:transparent;outline:none}
 .f-css2 .w-form input,.f-css2 .w-form textarea{background:url(g/space.gif)}
 .w-form textarea{vertical-align:middle}
