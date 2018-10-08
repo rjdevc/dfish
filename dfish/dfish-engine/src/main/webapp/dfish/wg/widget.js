@@ -703,7 +703,9 @@ W = define( 'widget', function() {
 				h.dfish_format_fields = f;
 			}
 			for ( var i = 0, x = this.x, f = h.dfish_format_fields, l = f.length, v, c = c || []; i < l; i ++ ) {
-				v = this.closestData( f[ i ] );
+				v = x.data && x.data[ f[ i ] ];
+				v == N && (v = x[ f[ i ] ]);
+				v == N && (v = this.closestData( f[ i ] ));
 				c.push( d ? d( v ) : v );
 			}
 			return h.apply( this, c );
@@ -7270,17 +7272,17 @@ Leaf = define.widget( 'leaf', {
 		},
 		html_text: function() {
 			var r = this.rootNode, t = this.x.text, h;
-			if ( this.x.format )
+			if ( this.x.format ) {
 				t = _wg_format.call( this, this.x.format, r.x.escape );
-			else if ( r && r.x.escape && typeof t === _STR )
+			} else if ( r && r.x.escape && typeof t === _STR )
 				t = $.strEscape( t );
-			if ( t != N && (h = r.x.highlight) && ! this.isDisabled() ) {
+			if ( typeof t === _STR && (h = r.x.highlight) && ! this.isDisabled() ) {
 				var key = h.key == N ? (this.ownerView.combo && this.ownerView.combo.getKey()) : h.key;
 				key && (t = $.strHighlight( t, key, h.matchlength, h.keycls ));
 			}
-			if ( typeof t === _OBJ )
+			if ( typeof t === _OBJ ) {
 				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
-			else
+			} else
 				t = '<span class=w-leaf-s>' + t + '</span><i class=f-vi></i>';
 			return t;
 		},

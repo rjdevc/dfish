@@ -1535,7 +1535,7 @@ Ajax = _createClass( {
 							}
 						}
 				    } else {
-				    	x.filter && (m = _fnapply( x.filter, c, '$value,$ajax', [ m, self ] ));
+				    	(f = x.filter || _cfg.ajax_filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
 				    	self.response = m;
 						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
