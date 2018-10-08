@@ -1621,6 +1621,7 @@ View = define.widget( 'view', {
 				this._load( a, function( x ) {
 					this.showLoading( F );
 					this.layout && this.layout.render();
+					this.x.cls && this.addClass( this.x.cls );
 					b && b.call( this, x );
 				} );
 			}
