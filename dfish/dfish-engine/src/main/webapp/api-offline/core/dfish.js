@@ -264,7 +264,7 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, engine: T } );
 },
 _loadCss = function( a ) {
 	var l = doc.createElement( 'link' );
@@ -1540,7 +1540,7 @@ Ajax = _createClass( {
 							}
 						}
 				    } else {
-				    	(f = x.filter || _cfg.ajax_filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
+				    	! x.engine && (f = x.filter || _cfg.ajax_filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
 				    	self.response = m;
 						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
@@ -1757,7 +1757,7 @@ function _compatMobile() {
 	}).on( 'touchend', function( e ) {
 	    if ( t ) {
 	    	n.type = 'tap';
-	    	$.query( e.target ).trigger( n );
+	    	$.query( e.target ).trigger( n ); //实现这个代理event.type的功能，要修改jquery源码的trigger方法
 	    }
 	    n = t = N;
 	});
