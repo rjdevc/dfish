@@ -893,8 +893,13 @@ _css = $.css = function( o, s, n ) {
 		for ( var i = 1, l = arguments.length; i < l; i += 2 )
 			_set_style( o, arguments[ i ], arguments[ i + 1 ] );
 	} else {
-		if ( typeof s === _STR )
-			return o.style[ s ] || o.currentStyle[ s ];
+		if ( typeof s === _STR ) {
+			if ( s.indexOf( ':' ) > 0 ) {
+				for ( var i = 0, b = s.split( ';' ), l = b.length, k, v; i < l; i ++ )
+					(k = $.strTo( b[ i ], ':' )) && (v = $.strFrom( b[ i ], ':' )) && _set_style( o, k, v );
+			} else
+				return o.style[ s ] || o.currentStyle[ s ];
+		}
 		for ( var i in s ) _set_style( o, i, s[ i ] );
 	}
 },
@@ -1759,8 +1764,7 @@ function _compatMobile() {
 	// 检测回退键
 	if ( win.plus ) {
 		plus.key.addEventListener( 'backbutton', function() { 
-			var w = plus.webview.currentWebview(), p = w.parent();
-			$.closeAll(w);
+			$.closeAll( plus.webview.currentWebview() );
 		} );
 	}
 }
@@ -1949,10 +1953,8 @@ _merge( $, {
 	close: function( a ) {
 		if ( a = this.dialog( a ) ) {
 			a.close();
-		} else if ( plus ) {
+		} else if ( win.plus ) {
 			$.closeAll( plus.webview.currentWebview() );
-		} else {
-			history.back();
 		}
 	},
 	// 关闭当前webview打开的所有webview；

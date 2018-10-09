@@ -1620,8 +1620,9 @@ View = define.widget( 'view', {
 			if ( ! f || f.parentNode.getFocus() == f ) {
 				this._load( a, function( x ) {
 					this.showLoading( F );
-					this.layout && this.layout.render();
 					this.x.cls && this.addClass( this.x.cls );
+					this.x.style && this.css( this.x.style );
+					this.layout && this.layout.render();
 					b && b.call( this, x );
 				} );
 			}
