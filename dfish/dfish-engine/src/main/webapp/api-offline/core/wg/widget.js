@@ -2097,9 +2097,9 @@ Html = define.widget( 'html', {
 						var w = $1.match( / width="(\d+)"/ )[ 1 ], h = $1.match( / height="(\d+)"/ )[ 1 ], u = $1.match( / src="([^"]+)"/ )[ 1 ];
 						return '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 							'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
-							'<param name="movie" value="' + cfg.lib + 'wg/upload/flvplayer.swf"/>' +
+							'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
 							'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
-							'<embed src="' + cfg.lib + 'wg/upload/flvplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
+							'<embed src="' + $.LIB + 'wg/upload/flvplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
 					} );
 				}
 			}

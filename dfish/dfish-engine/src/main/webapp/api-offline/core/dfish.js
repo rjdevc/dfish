@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -26,6 +26,26 @@ doc = win.document, cvs = doc.documentElement,
 
 $ = dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
+},
+
+//获取dfish所在目录
+getPath = function(){
+	var jsPath = doc.currentScript ? doc.currentScript.src : function(){
+		var js = doc.scripts, last = js.length - 1, src;
+		for ( var i = last; i > 0; i -- ){
+			if( js[ i ].readyState === 'interactive' ) {
+				src = js[ i ].src;
+       			break;
+			}
+		}
+		return src || js[ last ].src;
+	}();
+	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' ).slice( 0, -1 );
+	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
+	_lib   = jsPath.substring( jsPath.lastIndexOf( '/' ) + 1 ) + '/';
+	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
+		_path = _urlLoc( location.pathname, _path );
+	}
 },
 
 // 浏览器信息
@@ -1443,7 +1463,7 @@ _ajax_xhr = (function() {
 	$.winbox( 'Cannot create XMLHTTP object!' );
 })(),
 _ajax_url = function( a ) {
-	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _cfg.path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
+	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
 },
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
@@ -1771,19 +1791,22 @@ function _compatMobile() {
 
 /* 初始化配置 */
 function _initEnv() {
-	_ver     = _cfg.ver ? '?ver=' + _cfg.ver : '',
-	_path    = _cfg.path;
-	_ui_path = _urlLoc( _path, _cfg.lib ) + 'ui/';
+	if ( _cfg.path != N )
+		_path = _cfg.path;
+	if ( _cfg.lib != N )
+		_lib = _cfg.lib;
+	_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
+	_ui_path = _urlLoc( _path, _lib ) + 'ui/';
 	if ( noGlobal || _cfg.no_conflict ) {
 		(Date.$ = $).abbr = 'Date.$';
 	}
 	var _define  = new Define( _path ),
 		_require = new Require( _path ),
-		_lib     = _cfg.lib + 'wg/',
-		_loc     = _require( _lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-		_jq      = _loc && _require( _lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
+		_wg_lib  = _lib + 'wg/',
+		_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
+		_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
 	if ( ! _loc )
-		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _cfg.lib + '"\n}' );
+		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
 	for ( var k in _cfg.alias ) {
 		for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
 			_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
@@ -1793,6 +1816,7 @@ function _initEnv() {
 	_define( 'loc',    function() { return _loc } );
 	
 	$.PATH = _path;
+	$.LIB  = _lib;
 	$.IMGPATH = _ui_path + 'g/';
 	
 	$.loc     = _loc;
@@ -1801,9 +1825,9 @@ function _initEnv() {
 	$.require = _require;
 	$.skin( _cfg.skin );
 
-	var w = _require( _lib + 'widget' );
-	$.vm     = w.vm;
-	$.e      = w.e;
+	var w = _require( _wg_lib + 'widget' );
+	$.vm  = w.vm;
+	$.e   = w.e;
 	$.widget = $.w = w.w;
 	$.dialog = _require( 'dialog' ).get;
 	$.scrollIntoView = w.scrollIntoView;
@@ -1893,7 +1917,7 @@ _merge( $, {
 		return br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', a ) : $.query( doc ).ready( a );
 	},
 	use: function( a ) {
-		return (new Require( _cfg.path || '' ))( a );
+		return (new Require( _path || '' ))( a );
 	},
 	rt: function( a ) {
 		return function() { return a };
@@ -2082,11 +2106,11 @@ _merge( $, {
 				}
 				y = x;
 				if ( ! $( gid ) )
-					$.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _cfg.path + x.dir + 'global.css' + _ver + '">' );
+					$.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _path + x.dir + 'global.css' + _ver + '">' );
 				if ( ! $( tid ) )
-					$.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _cfg.path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
+					$.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
 				if ( ! $( cid ) )
-					$.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _cfg.path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
+					$.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
 			}
 		}
 	})(),
@@ -2256,6 +2280,8 @@ _merge( $, {
 
 if ( ! noGlobal )
 	win.dfish = dfish;
+
+getPath();
 
 return dfish;
 });
