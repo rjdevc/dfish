@@ -1084,7 +1084,10 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			return this[ y ];
 		}
 		var r = this.parentNode[ sz ]( this, m );
-		return this.parentNode._instanced && ! m ? (this[ y ] = r) : r;
+		if ( this.parentNode._instanced && ! m ) {
+			this[ y ] = r;
+		}
+		return r;
 	};
 	_w_size[ v ] = function( a ) {
 		if ( (v in this.x) || v != N )
@@ -1102,7 +1105,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	};
 	_w_css[ v ] = function() {
 		var t = this[ y ], a = this.attr( v );
-		if ( t !== U || a != N ) {
+		if ( t != N || (a != N && a != -1) ) {
 			delete this[ y ];
 			if ( t !== this[ oz ]() ) {
 				t = this[ iz ]();
@@ -1120,7 +1123,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( a == N )
 			return a;
 		// 如果用户定义了样式且没有设置wmin和hmin，则使用系统预设的样式处理机制
-		if ( ( this.x.cls || this.x.style ) && this.attr( 'wmin' ) == N && this.attr( 'hmin' ) == N ) {
+		if ( (this.x.cls || this.x.style) && this.attr( 'wmin' ) == N && this.attr( 'hmin' ) == N ) {
 			var f = _size_fix( this.x.cls, this.x.style );
 			if ( f )
 				return a - (f[ iu ] || 0);
