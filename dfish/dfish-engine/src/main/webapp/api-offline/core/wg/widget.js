@@ -713,7 +713,7 @@ W = define( 'widget', function() {
 		// @a -> content|js, b -> args?, c -> urlEncode?, d -> callback?
 		formatStr: function( a, b, c, d ) {
 			var self = this, r = b && $.isArray( b );
-			return a.replace( /\$\{?([\w.]+)\}?/gi, function( $0, $1 ) {
+			return a.replace( /\$\{?(\w[\w.]*)\}?/gi, function( $0, $1 ) {
 				var e = $1, k = e, v, t;
 				if ( e.indexOf( '.' ) > 0 ) {
 					k = $.strTo( e, '.' );
@@ -1105,7 +1105,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	};
 	_w_css[ v ] = function() {
 		var t = this[ y ], a = this.attr( v );
-		if ( t != N || (a != N && a != -1) ) {
+		if ( t !== U || (a != N && a != -1) ) {
 			delete this[ y ];
 			if ( t !== this[ oz ]() ) {
 				t = this[ iz ]();
@@ -2773,12 +2773,6 @@ Toggle = define.widget( 'toggle', {
 		body: {
 			ready: function() {
 				this.x.open != N && this.toggle( this.x.open );
-			},
-			click: {
-				occupy: T,
-				method: function() {
-					this.toggle();
-				}
 			}
 		}
 	},
@@ -2797,8 +2791,8 @@ Toggle = define.widget( 'toggle', {
 	Prototype: {
 		className: 'w-toggle',
 		toggle: function( a ) {
-			var a = a == N ? ! (this.x.open == N ? T : this.x.open) : a, c = this.x.target, d = this.x.icon, e = this.x.openicon || d;
-			this.x.open = a;
+			var b = a == N || a.type ? ! (this.x.open == N ? T : this.x.open) : a, c = this.x.target, d = this.x.icon, e = this.x.openicon || d;
+			this.x.open = b;
 			if ( c && (c = c.split(',')) ) {
 				for ( var i = 0, g; i < c.length; i ++ ) {
 					(g = this.ownerView.find( c[ i ] )) && g.display( this );
@@ -2809,24 +2803,23 @@ Toggle = define.widget( 'toggle', {
 					break;
 				p[ i ].display( this );
 			}
-			if ( this.$( 'o' ) ) {
-				if ( e ) {
-					$.replace( this.$( 'o' ), $.image( a === F ? (d || e) : e, { cls: 'w-toggle-icon', id: this.id + 'o' } ) );
-				} else
-					$.arrow( this.$( 'o' ), a ? 'b1' : 'r1' );
-			}
-			$.classAdd( this.$(), 'z-collapse', ! a );
-			this.trigger( a ? 'expand' : 'collapse' );
+			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
+			$.classAdd( this.$(), 'z-collapse', ! b );
+			this.trigger( b ? 'expand' : 'collapse' );
+			a.type && $.stop( a );
+		},
+		// @a -> open?
+		html_icon: function( a ) {
+			var x = this.x, c = x.icon, d = x.openicon || c, t = evw + '.toggle(event)';
+			a == N && (a = x.open);
+			return d ? $.image( a === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o', click: t } ) :
+				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r1' : 'b1' ) + '</span>' : '');
 		},
 		html_nodes: function() {
-			var x = this.x, c = x.icon, d = x.openicon || c, t = '';
-			if ( d ) {
-				t += $.image( x.open === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o' } );
-			} else
-				t += (x.open != N ? $.arrow( this.id + 'o', x.open === F ? 'r1' : 'b1' ) : '');
-			if ( this.x.text != N )
-				t += ' <span class=w-toggle-text><em>' + this.x.text + '</em></span>';
-			return '<table class="w-toggle-table' + (this.x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
+			var x = this.x, t = this.html_icon();
+			if ( x.text != N )
+				t += ' <span class=w-toggle-text><em>' + x.text + '</em></span>';
+			return '<table class="w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
 				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table>';
 		}
 	}
@@ -2873,7 +2866,7 @@ Page = define.widget( 'page/mini', {
 					}
 				} else if ( this.x.src ) {
 					var s = this.x.src;
-					this.exec( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, i );
+					this.exec( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, [ i ] );
 				}
 				// 为业务 click 事件之中的 $0 提供值
 				this.data( '0', i );
@@ -3677,8 +3670,8 @@ Progress = define.widget( 'progress', {
 						if ( ! self._disposed && self.isHead() ) {
 							self.ownerView.ajax( { src: s, context: this, success: function( x ) {
 								// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
-								if ( _cmdHooks[ x.type ] ) {
-									_cmdHooks[ x.type ].call( self, x );
+								if ( W.isCmd( x ) ) {
+									self.exec( x );
 								} else {
 									for ( var i = 0, n = x.nodes || [ x ], l = n.length, d, o; i < l; i ++ ) {
 										o = ((d = n[ i ]).id && self.ownerView.find( d.id )) || self;
@@ -4605,7 +4598,7 @@ Checkbox = define.widget( 'checkbox', {
 			}
 			this.x.style && (y += this.x.style);
 			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-inbl f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
-				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.type === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
+				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)"' + (t && typeof t === _OBJ ? ' onmouseover="' + evw + '.tip()"' : '') + '>' + ((this.x.escape != N ? this.x.escape : p.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
 		}
@@ -4894,8 +4887,8 @@ Calendar = define.widget( 'calendar/date', {
 		},
 		go: function( d ) {
 			if ( this.x.src ) {
-				this.exec( { type: 'ajax', src: this.x.src, success: function( x ) {
-					W.isCmd( x ) ? this.exec( x ) : this.replace( x );
+				this.cmd( { type: 'ajax', src: this.x.src, success: function( x ) {
+					W.isCmd( x ) ? this.cmd( x ) : this.replace( x );
 				} }, this._fm( d || this.date ) );
 			} else {
 				d && (this.date = d);
@@ -5432,7 +5425,7 @@ Slider = define.widget( 'slider', {
 				return;
 			var x = b.clientX, c = this.x.validate, m = (c && c.maxvalue) || 100, n = (c && c.minvalue) || 0, f = _number( a.style.left ), 
 				g = this.attr( 'thumbwidth' ), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
-				d = t && this.exec({ type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F }), v = self.$v().value;
+				d = t && this.exec( { type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F } ), v = self.$v().value;
 			$.moveup( function( e ) {
 				var l = $.numRange(f + e.clientX - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
@@ -5487,7 +5480,9 @@ XBox = define.widget( 'xbox', {
 			}
 			if( o.length ) {
 				! this._sel.length && this._sel.push( o[ 0 ] );
-				x.value = this._sel[ 0 ].value; // 设一下value，给 isModified() 用
+				var i = this._sel.length, s = [];
+				while ( i -- ) s.push( this._sel[ i ].value );
+				x.value = s.join(); // 设一下value，给 isModified() 用
 			}
 		},
 		// @a -> options, b -> index
@@ -5534,7 +5529,7 @@ XBox = define.widget( 'xbox', {
 							b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
 					} else {
 						for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
-							if ( q[ i ].value && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
+							if ( q[ i ].value != N && q[ i ].value != '' && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
 					}
 				} else {
 					var o = a.jquery ? this.x.options[ a.attr( '_i' ) ] : $.arrFind( this.x.options, 'v.value=="' + a + '"' );
@@ -5543,7 +5538,7 @@ XBox = define.widget( 'xbox', {
 				if ( ! b.length )
 					b = [ this.x.options[ 0 ] ];
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
-					s.push( this.htm_li( b[ i ], T ) );
+					s.push( this.html_li( b[ i ], T ) );
 					t.push( b[ i ].text );
 					u.push( b[ i ].value );
 				}
@@ -5590,21 +5585,31 @@ XBox = define.widget( 'xbox', {
 		html_placehoder: function() {
 			return '';
 		},
-		htm_li: function( a, b ) {
+		html_li: function( a, b ) {
 			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape ? $.strEscape( a.text ) : a.text) + (!b && this.x.multiple ? '<i class=_box></i>' : '') : '';
+		},
+		html_text: function() {
+			if ( this.x.multiple ) {
+				for ( var i = 0, b = this._sel, s = []; i < b.length; i ++ ) {
+					s.push( b[ i ].text );
+				}
+				s = s.join();
+				return this.x.escape ? $.strEscape( s ) : s;
+			} else
+				return this.html_li( this._sel[ 0 ], T );
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
 				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') +
-					_event_zhover + '>' + this.htm_li( o[ i ] ) + '</div>' );
+					_event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(this,event)>' + s.join( '' ) + '</div>';
 		},
 		html_nodes: function() {
 			var s = this._sel[ 0 ];
-			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (s ? (s.value || '') : '') + '"><div class="f-inbl f-omit _t" id=' + this.id + 't ' +
-				(this.x.tip ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') +
-				' style="width:' + (this.innerWidth() - this.width_minus()) + 'px"><span id=' + this.id + 'p>' + this.htm_li( s, T ) + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
+			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-inbl f-omit _t" id=' + this.id + 't ' +
+				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') +
+				' style="width:' + (this.innerWidth() - this.width_minus()) + 'px"><span id=' + this.id + 'p>' + this.html_text() + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
 		}
 	}
 }),
@@ -6281,7 +6286,7 @@ Linkbox = define.widget( 'linkbox', {
 				occupy: T,
 				method: function( e ) {
 					var v = e.srcElement.getAttribute( 'data-value' ), d = this.x.on && this.x.on.dblclick;
-					v && d && this.exec( { type: 'js', text: d }, v );
+					v && d && this.cmd( { type: 'js', text: d }, v );
 					return F;
 				}
 			},
@@ -6955,15 +6960,18 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			this.loading = T;
 			this.exec( { type: 'ajax', src: this.x.src, sync: a,
 				success: function( x ) {
-					var n = x.nodes || x;
-					n.length && this.render_nodes( n );
-					this.trigger( 'load' );
+					if ( W.isCmd( x ) ) {
+						this.exec( x );
+					} else {
+						var n = x.nodes || x;
+						n.length && this.render_nodes( n );
+						this.trigger( 'load' );
+					}
 					b && b.call( this );
 				},
 				complete: function( x ) { // complete
 					this.loading = F;
 					! this.loaded && this.toggle( F );
-					W.isCmd( x ) && this.exec( x );
 					this.fixFolder();
 					if ( this.$( 'o' ) ) {
 						$.classRemove( this.$(), 'z-loading' );
@@ -7063,17 +7071,17 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			var f = (this.rootNode || this).getFocus();
 			this.exec( { type: 'ajax', src: a, sync: b,
 				success: function( x ) {
-					if ( ! this._disposed ) {
+					if ( W.isCmd( x ) ) {
+						this.exec( x );
+					} else {
 						var d = x.id ? this.ownerView.find( x.id ) : this;
 						d && d.compare( x );
 					}
 				},
 				complete: function() {
-					if ( ! this._disposed ) {
-						var d = (this.rootNode || this).getFocus();
-						d && d !== f && d.scrollIntoView();
-						c && c.call( this );
-					}
+					var d = (this.rootNode || this).getFocus();
+					d && d !== f && d.scrollIntoView();
+					c && c.call( this );
 				} } );
 		},
 		// @a -> sync?
@@ -7475,16 +7483,15 @@ GridToggle = define.widget( 'grid/toggle', {
 			return this.x.open;
 		},
 		toggle: function( a ) {
-			var a = a == N ? ! (this.x.open == N ? T : this.x.open) : a, t = this.tr();
-			this.x.open = a;
-			t.toggle_rows( a );
-			for ( var i = t.$().rowIndex + 1, b = t.$().parentNode.parentNode.rows, c, l = b.length; i < l; i ++ ) {
-				c = _widget( b[ i ] );
+			Toggle.prototype.toggle.apply( this, arguments );
+			var t = this.tr();
+			t.toggle_rows( this.x.open );
+			for ( var i = t.$().rowIndex + 1, d = t.$().parentNode.parentNode.rows, c, l = d.length; i < l; i ++ ) {
+				c = _widget( d[ i ] );
 				if ( c.tgl )
 					break;
 				c.display( this );
 			}
-			return Toggle.prototype.toggle.apply( this, arguments );
 		}
 	}
 } ),
@@ -7749,7 +7756,7 @@ TR = define.widget( 'tr', {
 				block: function( e ) {	return this.isExpandRow || this.tgl },
 				method: function( e ) {
 					var r = this.rootNode, b = this.getBox(), s = b && b.x.sync;
-					this.tgl ? this.toggle() : this.focus( r.x.focusmultiple ? (!this.isFocus()) : T, e );
+					! this.tgl && this.focus( r.x.focusmultiple ? (!this.isFocus()) : T, e );
 					b && ! this.isEvent4Box( e ) && s === 'click' && b.click();
 					this.x.src && this.toggle();
 					if( r.x.combo && ! (this.x.on && this.x.on.click) ) {
@@ -8569,7 +8576,7 @@ Grid = define.widget( 'grid', {
 						s = this.formatJS( s );
 					if ( s && typeof s === _STR && ! e[ k ]._sorting ) {
 						e[ k ]._sorting = T;
-						this.exec( { type: 'ajax', src: s, complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
+						this.cmd( { type: 'ajax', src: s, complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
 					}
 				} else {
 					Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' )

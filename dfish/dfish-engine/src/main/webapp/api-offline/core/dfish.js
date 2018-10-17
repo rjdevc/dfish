@@ -463,7 +463,7 @@ _idsAny = $.idsAny = function( s, n, p ) {
 	if ( ! s ) return F;
 	if ( ! n || s == n ) return T;
 	if ( ! p ) p = ',';
-	if ( n.indexOf( p ) > -1 ) {
+	if ( (n = String( n )).indexOf( p ) > -1 ) {
 		for ( var i = 0, b = n.split( p ), l = b.length; i < l; i ++ )
 			if ( (p + s + p).indexOf( p + b[ i ] + p ) > -1 ) return T;
 	} else
