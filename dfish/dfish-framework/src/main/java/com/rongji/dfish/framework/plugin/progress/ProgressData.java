@@ -1,8 +1,13 @@
 package com.rongji.dfish.framework.plugin.progress;
 
+import java.io.Serializable;
+
 import com.rongji.dfish.ui.Command;
 
-public class ProgressData {
+public class ProgressData implements Serializable {
+	
+	private static final long serialVersionUID = -727048341094069751L;
+	
 	private String progressKey;
 	private double[] stepScales;
 	private int stepIndex;
