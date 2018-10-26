@@ -1105,7 +1105,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	};
 	_w_css[ v ] = function() {
 		var t = this[ y ], a = this.attr( v );
-		if ( t !== U || (a != N && a != -1) ) {
+		if ( a != -1 && (t !== U || a != N) ) {
 			delete this[ y ];
 			if ( t !== this[ oz ]() ) {
 				t = this[ iz ]();
@@ -5365,11 +5365,13 @@ Spinner = define.widget( 'spinner', {
 		},
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
-			a != N && this.trigger( 'format' );
+			a != N && this.x.format && this.trigger( 'format' );
 			return this.$t().value;
 		},
 		
 		doFormat: function() {
+			if ( ! this.x.format )
+				return;
 			var v = this.$t().value, s = this.x.format.separator || ',', r = RegExp( s, 'g' ), t = $.numFormat( v, this.x.format.length, s, this.x.format.rightward );
 			if ( v !== t ) {
 				var n = Onlinebox.prototype.getSelectionStart.call( this ), b = v.slice( 0, n ).replace( r, '' );
@@ -7859,10 +7861,10 @@ TR = define.widget( 'tr', {
 				for ( var i = a.$().rowIndex, j = 0, p = a.$().parentNode.parentNode, l = a._childLen(); j <= l; j ++ )
 					s.push( p.rows[ i + j ] );
 			}
-			if ( b == 'before' )
+			if ( b === 'before' )
 				Q( this.$() )[ b ]( s );
 			else
-				Q( b == 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._childLen() ] ).after( s );
+				Q( b === 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._childLen() ] ).after( s );
 		},
 		// @a -> T/F, b -> src
 		toggle: function( a, b ) {
