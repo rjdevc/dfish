@@ -118,7 +118,7 @@ define( {
           { name: 'input_detect', type: 'object', remark: '设置表单在键入文本时是否即时检测。', param: [
             { name: 'maxlength', type: 'Boolean', remark: '设置为true，键入文本时将会即时检测是否超出最大长度。' }
           ] },
-          { name: 'lib', type: 'String', remark: 'dfish包路径，必选项。' },
+          { name: 'lib', type: 'String', remark: 'dfish包的路径，必选项。' },
           { name: 'lang', type: 'String', remark: '语言。可选项:zh_CN,zh_TW,en' },
           { name: 'no_conflict', type: 'Boolean', remark: '设置为true，将变量$的控制权让渡给第一个实现它的那个库。' },
           { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
@@ -132,6 +132,7 @@ define( {
           { name: 'template', type: 'String', remark: '对话框默认模板ID。' },
           { name: 'template_alert', type: 'String', remark: 'alert和confirm的默认对话框模板ID。' },
           { name: 'template_src', type: 'String', remark: '对话框模板路径' },
+          { name: 'templates', type: 'Object', remark: '模板集。' },
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
@@ -975,8 +976,9 @@ define( {
             alert( wg.data( 'mydata' ) ); // 显示"123"
           }
       ] },
-      { name: 'display([show])', remark: '显示或隐藏。', common: true, param: [
-        { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true }
+      { name: 'display([show], [valid])', remark: '显示或隐藏。', common: true, param: [
+        { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true },
+        { name: 'valid', type: 'Boolean', remark: 'true:验证隐藏状态下的表单。', optional: true }
       ] },
       { name: 'isDisplay()', remark: '是否在显示状态。', common: true },
       { name: 'exec(cmdID, [args], [opt])', remark: '执行命令。和 .cmd() 方法作用一样，只是参数不同。', common: true, param: [

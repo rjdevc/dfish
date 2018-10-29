@@ -591,18 +591,21 @@ W = define( 'widget', function() {
 				return ! b && this.contains( _widget( a ) );
 			}
 		},
-		// 显示或隐藏
-		display: function( a ) {
-			var b = a == N || (a.isWidget ? a.x.open : a), o = this.$();
+		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
+		display: function( a, b ) {
+			var c = a == N || (a.isWidget ? a.x.open : a), o = this.$();
 			if ( o.tagName === 'TR' ) {
-				$.classAdd( o, 'f-none', ! b );
+				$.classAdd( o, 'f-none', ! c );
 			} else {
 				if ( this.__disp_none == N ) {
 					this.__disp_none = o.currentStyle.display === 'none' ? T : F;
 				}
-				o.style.display = b ? (this.__disp_none === T ? 'block' : '') : 'none';
+				o.style.display = c ? (this.__disp_none === T ? 'block' : '') : 'none';
 			}
-			a.isWidget && (b ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
+			a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
+			if ( ! b ) {
+				(this.ownerView.layout._passvalid || (this.ownerView.layout._passvalid = {}))[ o.id ] = !c;
+			}
 		},
 		isDisplay: function() {
 			return this.$().currentStyle.display != 'none';
@@ -1783,7 +1786,12 @@ View = define.widget( 'view', {
 		getValidError: function( n, g ) {
 			var e;
 			if ( this.$() ) {
-				for ( var i = 0, q = this.getFormList( g ), l = q.length, c, v; i < l; i ++ ) {
+				var q = this.getFormList( g ), s = this.layout._passvalid;
+				if ( s ) {
+					for ( var k in s )
+						s[ k ] && (q = q.not( '[id="' + k + '"] :input' ));
+				}
+				for ( var i = 0, l = q.length, c, v; i < l; i ++ ) {
 					if ( (c = _getWidgetById( q[ i ].id )) && (v = c.trigger( 'valid', [ n ] )) )
 						(e || (e = {}))[ v.wid ] = v;
 				}
