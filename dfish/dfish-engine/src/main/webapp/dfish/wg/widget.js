@@ -2133,6 +2133,7 @@ Label = define.widget( 'label', {
 					if ( ! this.x.text )
 						$.html( this.$(), '<i class=f-required>*</i>' + (f.x.label || '') + (this.x.suffix || '') );
 					this.bindCls();
+					//this.addClass( 'z-id-' + f.x.id );
 					f.addEvent( 'statuschange', this.bindCls, this )
 					 .addEvent( 'validatechange', this.bindCls, this )
 					 .addEvent( 'replace', this.bindReplace, this )

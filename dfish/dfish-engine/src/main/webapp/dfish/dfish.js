@@ -2260,11 +2260,22 @@ _merge( $, {
 	},
 	// @a -> widget|HTMLElement, y -> print?, t -> head tag
 	print: function( a, z, y ) {
-		var d = a.$ ? (a.$( 'cont' ) || a.$()) : a, w = _win( d ).document, b = $.query( 'link[media=print]', w ), c = [], s = d.outerHTML;
+		var d = a.$ ? (a.$( 'cont' ) || a.$()) : a, w = _win( d ).document, b = $.query( 'link[media=print]', w ), c = [];
 		$.query( 'meta', w ).each( function() { c.push( this.outerHTML ) });
 		(b.length > 0 ? b : $.query( 'link', w )).each( function() { c.push( '<link rel="stylesheet" type="text/css" href="' + this.getAttribute( 'href' ) + '"/>' ); });
 		$.query( 'style', w ).each( function() { c.push( this.outerHTML ) });
+		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
+		$.query( ':text,textarea', d ).each( function() {
+			var h = this.outerHTML;
+			s = s.replace( h, h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' ) );
+		} );
+		$.query( ':radio,:checkbox', d ).each( function() {
+			var h = this.outerHTML, n = h.replace( / checked=""/, '' );
+			if ( this.checked )
+				n = n.replace( />$/, ' checked>' );
+			s = s.replace( h, n );
+		} );
 		w = window.open();
 		d = w.document;
 		d.open( 'text/html', 'replace' );
