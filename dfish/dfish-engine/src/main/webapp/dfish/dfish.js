@@ -489,7 +489,7 @@ _scale = $.scale = function( a, b ) {
 		if ( v != N && isNaN( v ) ) {
 			a == N ? (r[ i ] = N) : v === '*' ? ( s = i, t ++ ) : p = i;
 		} else
-			c += ( r[ i ] = v == N || v < 0 ? N : + v );
+			c += (r[ i ] = v == N || v < 0 ? N : + v);
 	}
 	if ( a == N ) return r;
 	if ( p !== U ) {

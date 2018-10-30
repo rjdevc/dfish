@@ -183,6 +183,10 @@
 .w-html{overflow:hidden}
 .w-html.z-autosize{overflow:visible}
 
+.w-label em{font-style:normal}
+.w-label .f-required{visibility:hidden}
+.w-label.z-required .f-required{visibility:visible}
+
 .w-fieldset{margin:0;padding:0;border:1px solid #ccc;border-radius:2px;*display:block;}
 
 .w-dialog{position:absolute;z-index:2}
@@ -436,7 +440,7 @@
  *	l: left, r: right
  *	i: icon, t: text, o: oper, p: split, d: arrow, x: remove
  */
-.w-button{position:relative;display:inline-block;height:100%;text-align:center;vertical-align:middle;cursor:default;*display:inline;*zoom:1;overflow:hidden;white-space:nowrap;word-break:keep-all;cursor:pointer}
+.w-button{position:relative;display:inline-block;height:100%;text-align:center;vertical-align:middle;overflow:hidden;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
 .w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x{position:relative;display:inline-block;height:100%;vertical-align:top;*vertical-align:middle;*display:inline;*zoom:1}
 .w-button ._c{padding-left:8px}
 .w-button ._t,.w-button ._i{padding-right:8px}

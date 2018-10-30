@@ -765,6 +765,7 @@ W = define( 'widget', function() {
 			a = a == N || a;
 			this.x.status = a ? 'disabled' : '';
 			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		// 调整大小
@@ -792,11 +793,13 @@ W = define( 'widget', function() {
 				a.height == N && (a.height = this.x.height);
 			}
 			var e = this.$();
-			this.dispose();
+			this.removeNode( T );
 			var g = p.add( a, i );
 			o && (g.focusOwner = o, o.focusNode = g);
 			g.render( e, 'replace' );
 			this.removeElem();
+			this.trigger( 'replace', g );
+			this.dispose();
 			p.trigger( 'resize' );
 			return g;
 		},
@@ -2117,6 +2120,39 @@ Html = define.widget( 'html', {
 			if ( v )
 				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>';
 			return s;
+		}
+	}
+} ),
+/* `label` */
+Label = define.widget( 'label', {
+	Listener: {
+		body: {
+			ready: function() {
+				var f = this.x.bind && this.ownerView.find( this.x.bind );
+				if ( f ) {
+					if ( ! this.x.text )
+						$.html( this.$(), '<i class=f-required>*</i>' + f.x.label + (this.x.suffix || '') );
+					this.bindCls();
+					f.addEvent( 'statuschange', this.bindCls, this )
+					 .addEvent( 'validatechange', this.bindCls, this )
+					 .addEvent( 'replace', this.bindReplace, this )
+					 .addEvent( 'remove', this.remove, this );
+				}
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-label',
+		bindCls: function() {
+			var f = this.x.bind && this.ownerView.find( this.x.bind );
+			f && this.addClass( 'z-required', !!(f.x.validate && f.x.validate.required) && !(f.isReadonly() || f.isDisabled()) );
+		},
+		// @e -> event, n -> new widget
+		bindReplace: function( e, n ) {
+			this.replace( { type: 'label', bind: n.x.id } );
+		},
+		html_nodes: function() {
+			return this.x.text || ''
 		}
 	}
 } ),
@@ -4080,6 +4116,7 @@ AbsForm = define.widget( 'abs/form', {
 			this.$v().removeAttribute( 'readOnly' );
 			this.$v().removeAttribute( 'disabled' );
 			$.classRemove( this.$(), 'z-ds' );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		readonly: function( a ) {
@@ -4088,6 +4125,7 @@ AbsForm = define.widget( 'abs/form', {
 			this.$v().readOnly = a;
 			this.$v().removeAttribute( 'disabled' );
 			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		validonly: function( a ) {
@@ -4096,13 +4134,14 @@ AbsForm = define.widget( 'abs/form', {
 			this.$v().readOnly = a;
 			this.$v().removeAttribute( 'disabled' );
 			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		disable: function( a ) {
 			a = a == N || a;
-			_proto.disable.call( this, a );
 			this.$v().disabled = a;
 			this.$v().removeAttribute( 'readOnly' );
+			_proto.disable.call( this, a );
 			return this;
 		},
 		isReadonly: function() {
@@ -4126,6 +4165,7 @@ AbsForm = define.widget( 'abs/form', {
 				c = (x.validate || (x.validate = {}));
 				a ? $.merge( c, a ) : (x.validate = N);
 				this.$() && $.classAdd( this.$(), 'z-required', !!c.required );
+				this.trigger( 'validatechange' );
 			}
 			return this;
 		},
@@ -4419,18 +4459,22 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		normal: function() {
 			this.getOptions().each( function() { this.normal() } );
 			this.x.status = 'normal';
+			this.trigger( 'statuschange' );
 		},
 		disable: function( a ) {
 			this.getOptions().each( function() { this.disable( a ) } );
 			this.x.status = a == N || a ? 'disabled' : '';
+			this.trigger( 'statuschange' );
 		},
 		readonly: function( a ) {
 			this.getOptions().each( function() { this.readonly( a ) } );
 			this.x.status = a == N || a ? 'readonly' : '';
+			this.trigger( 'statuschange' );
 		},
 		validonly: function( a ) {
 			this.getOptions().each( function() { this.validonly( a ) } );
 			this.x.validonly = a == N || a ? 'validonly' : '';
+			this.trigger( 'statuschange' );
 		},
 		scaleWidth: function( a ) {
 			if ( a.nodeIndex < 0 ) {
