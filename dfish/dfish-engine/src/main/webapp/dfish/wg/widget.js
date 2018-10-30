@@ -2128,10 +2128,10 @@ Label = define.widget( 'label', {
 	Listener: {
 		body: {
 			ready: function() {
-				var f = this.x.bind && this.ownerView.find( this.x.bind );
+				var f = this.getForm();
 				if ( f ) {
 					if ( ! this.x.text )
-						$.html( this.$(), '<i class=f-required>*</i>' + f.x.label + (this.x.suffix || '') );
+						$.html( this.$(), '<i class=f-required>*</i>' + (f.x.label || '') + (this.x.suffix || '') );
 					this.bindCls();
 					f.addEvent( 'statuschange', this.bindCls, this )
 					 .addEvent( 'validatechange', this.bindCls, this )
@@ -2143,8 +2143,12 @@ Label = define.widget( 'label', {
 	},
 	Prototype: {
 		className: 'w-label',
+		// 获取表单widget
+		getForm: function() {
+			return this.x.bind && this.ownerView.find( this.x.bind );
+		},
 		bindCls: function() {
-			var f = this.x.bind && this.ownerView.find( this.x.bind );
+			var f = this.getForm();
 			f && this.addClass( 'z-required', !!(f.x.validate && f.x.validate.required) && !(f.isReadonly() || f.isDisabled()) );
 		},
 		// @e -> event, n -> new widget
@@ -2152,7 +2156,7 @@ Label = define.widget( 'label', {
 			this.replace( { type: 'label', bind: n.x.id } );
 		},
 		html_nodes: function() {
-			return this.x.text || ''
+			return this.x.text || '';
 		}
 	}
 } ),
@@ -4458,23 +4462,31 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		},
 		normal: function() {
 			this.getOptions().each( function() { this.normal() } );
-			this.x.status = 'normal';
 			this.trigger( 'statuschange' );
 		},
 		disable: function( a ) {
 			this.getOptions().each( function() { this.disable( a ) } );
-			this.x.status = a == N || a ? 'disabled' : '';
 			this.trigger( 'statuschange' );
 		},
 		readonly: function( a ) {
 			this.getOptions().each( function() { this.readonly( a ) } );
-			this.x.status = a == N || a ? 'readonly' : '';
 			this.trigger( 'statuschange' );
 		},
 		validonly: function( a ) {
 			this.getOptions().each( function() { this.validonly( a ) } );
-			this.x.validonly = a == N || a ? 'validonly' : '';
 			this.trigger( 'statuschange' );
+		},
+		isNormal: function() {
+			return this[ 0 ] && this[ 0 ].isNormal();
+		},
+		isDisabled: function() {
+			return this[ 0 ] && this[ 0 ].isDisabled();
+		},
+		isReadonly: function() {
+			return this[ 0 ] && this[ 0 ].isReadonly();
+		},
+		isValidonly: function() {
+			return this[ 0 ] && this[ 0 ].isValidonly();
 		},
 		scaleWidth: function( a ) {
 			if ( a.nodeIndex < 0 ) {
