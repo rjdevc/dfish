@@ -1793,6 +1793,8 @@ function _compatMobile() {
 function _initEnv() {
 	if ( _cfg.path != N )
 		_path = _cfg.path;
+	else
+		_cfg.path = _path;
 	if ( _cfg.lib != N )
 		_lib = _cfg.lib;
 	_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
