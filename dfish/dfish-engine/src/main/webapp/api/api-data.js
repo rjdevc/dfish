@@ -976,7 +976,7 @@ define( {
             alert( wg.data( 'mydata' ) ); // 显示"123"
           }
       ] },
-      { name: 'display([show], [valid])', remark: '显示或隐藏。', common: true, param: [
+      { name: 'display([show], [valid])', remark: '显示或隐藏。如果设为隐藏，当前widget内的表单不做验证。如果仍然需要验证，可以设置第二个参数。', common: true, param: [
         { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true },
         { name: 'valid', type: 'Boolean', remark: 'true:验证隐藏状态下的表单。', optional: true }
       ] },
@@ -2109,6 +2109,20 @@ define( {
     ],
     Classes: [
       { name: '.w-html', remark: '基础样式。' }
+    ]
+  },
+  "label": {
+  	title: 'label',
+  	remark: '绑定表单的显示标签。',
+  	extend: 'widget',
+    Config: [
+      { name: 'bind', type: 'String', remark: '表单id。' },
+      { name: 'text', type: 'String', remark: '显示内容。如果不设置此参数，内容将从表单的label属性获取，并根据表单的必填状态决定是否加*号。' },
+      { name: 'suffix', type: 'String', remark: '后缀。' }
+    ],
+    Classes: [
+      { name: '.w-label', remark: '基础样式。' },
+      { name: '.z-required', remark: '表单必填时的样式。' }
     ]
   },
   "grid/leaf": {
