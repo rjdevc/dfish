@@ -137,7 +137,14 @@ public class CryptUtil {
 	/**
 	 * 因为 一般文本信息熵较低，直接压塑会有较好的效果。如果先加密在zip的话，压缩率就会很小。
 	 * 所以一般都是先GZIP再加密。形成一个固定用法，所以，封装一个固定用法。
-	 *
+	 * <pre>
+	 * CryptUtil.GzipAndCryptTool tool=new CryptUtil.GzipAndCryptTool(CryptUtil.BLOWFISH,"THIS.IS.PASSWORD".getBytes("UTF-8"));
+	 * tool.setIn(fis1);
+	 * tool.setOut(fos1);
+	 * tool.encrypt();
+	 * fis1.close();
+	 * fos1.close();
+	 * </pre>
 	 */
 	public static class GzipAndCryptTool extends JCECryptTool{
 
@@ -194,15 +201,18 @@ public class CryptUtil {
 				}
 				cipher.init(Cipher.DECRYPT_MODE, sks);
 				GZIPInputStream gis=new GZIPInputStream(new InputStream(){
-					@Override
-					public int read() throws IOException {
-						byte[] buff=new byte[1];
-						read(buff,0,1);
-						return buff[0]&0xFF;
-					}
 					private byte[] lastBytes;
 					private int off;
 					private int len;
+					
+					@Override
+					public int read() throws IOException {
+						byte[] buff=new byte[1];
+						if(read(buff,0,1)<1){
+							return -1;
+						}
+						return buff[0]&0xFF;
+					}
 					@Override
 					public int read(byte[] buff,int off, int len) throws IOException {
 						//1.从遗留的buff中读取内容，如果超过buff长度。则直接返回
@@ -243,10 +253,6 @@ public class CryptUtil {
 							this.len=b.length-copyBytes;
 						}
 						return readed;
-					}
-					@Override
-					public void close() throws IOException {
-						in.close();
 					}
 				});
 				byte[] buff = new byte[8192];
