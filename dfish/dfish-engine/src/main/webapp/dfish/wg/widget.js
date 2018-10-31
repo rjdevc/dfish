@@ -1620,12 +1620,12 @@ View = define.widget( 'view', {
 			var v = this.data( a );
 			return v === U ? (this.parentDialog && this.parentDialog.closestData( a )) : v;
 		},
-		// @a -> sync?, b -> fn?
-		load: function( a, b ) {
+		// @a -> sync?, b -> fn?, c -> force?[强制刷新，不论是否在frame内]
+		load: function( a, b, c ) {
 			if ( this.loading )
 				return;
 			this.showLoading();
-			var f = Frame.edge( this );
+			var f = ! c && Frame.edge( this );
 			if ( ! f || f.parentNode.getFocus() == f ) {
 				this._load( a, function( x ) {
 					this.showLoading( F );
@@ -1677,7 +1677,7 @@ View = define.widget( 'view', {
 			this.loaded = F;
 			a && this.attr( 'src', a );
 			if ( this.$() ) {
-				this.attr( 'src' ) ? this.load( b, c ) : this._loadEnd( this.x );
+				this.attr( 'src' ) ? this.load( b, c, T ) : this._loadEnd( this.x );
 			} else
 				this._load( b, c );
 		},
@@ -2133,7 +2133,6 @@ Label = define.widget( 'label', {
 					if ( ! this.x.text )
 						$.html( this.$(), '<i class=f-required>*</i>' + (f.x.label || '') + (this.x.suffix || '') );
 					this.bindCls();
-					//this.addClass( 'z-id-' + f.x.id );
 					f.addEvent( 'statuschange', this.bindCls, this )
 					 .addEvent( 'validatechange', this.bindCls, this )
 					 .addEvent( 'replace', this.bindReplace, this )
