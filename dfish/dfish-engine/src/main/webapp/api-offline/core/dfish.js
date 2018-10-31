@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -26,6 +26,26 @@ doc = win.document, cvs = doc.documentElement,
 
 $ = dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
+},
+
+//获取dfish所在目录
+getPath = function(){
+	var jsPath = doc.currentScript ? doc.currentScript.src : function(){
+		var js = doc.scripts, last = js.length - 1, src;
+		for ( var i = last; i > 0; i -- ){
+			if( js[ i ].readyState === 'interactive' ) {
+				src = js[ i ].src;
+       			break;
+			}
+		}
+		return src || js[ last ].src;
+	}();
+	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' ).slice( 0, -1 );
+	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
+	_lib   = jsPath.substring( jsPath.lastIndexOf( '/' ) + 1 ) + '/';
+	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
+		_path = _urlLoc( location.pathname, _path );
+	}
 },
 
 // 浏览器信息
@@ -113,11 +133,9 @@ _mergeDeep = $.mergeDeep = function( a ) {
 // 创建类
 _createClass = $.createClass = function( a, b ) {
 	var n;
-	if ( b )
-		n = a, a = b;
+	b && (n = a, a = b);
 	var c = a.Const, d = a.Extend, e = a.Listener, f = a.Prototype;
-	if ( e && ! e.body )
-		e.body = {};
+	e && ! e.body && (e.body = {});
 	_mergeDeep( c, a );
 	if ( d ) {
 		if ( typeof d === _FUN )
@@ -266,7 +284,7 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, engine: T } );
 },
 _loadCss = function( a ) {
 	var l = doc.createElement( 'link' );
@@ -298,7 +316,7 @@ _uid = $.uid = function( o ) {
 	return _guid();
 },
 _number = $.number = function( a ) {
-	var r = typeof a === _STR ? parseFloat( a ) : + a;
+	var r = typeof a === _STR ? parseFloat( a.replace( ',', '' ) ) : + a;
 	return isNaN( r ) ? 0 : r;
 },
 // 如果 a 的大小在 b 和 c 之间，则返回 a。否则返回 b 或 c
@@ -310,11 +328,30 @@ _numAdd = $.numAdd = function( a, b ) {
 	 var c = _strFrom( a + '', '.' ).length, d = _strFrom( b + '', '.' ).length, m = Math.pow( 10, Math.max( c, d ) );
 	 return Math.round( (a + b) * m ) / m;			
 },
+// 给数字加上分隔符  /@a -> str, b -> length?, c -> separator?, d -> rightward?
+_numFormat = $.numFormat = function( a, b, c, d ) {
+	a = String( a );
+	b == N && (b = 3);
+	c == N && (c = ',');
+	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '';
+	if ( d ) {
+		do {
+			i += b;
+			t += (i < l ? s.substr( i - b, b ) + c : s.substr( i - b ));
+		} while ( i < l );
+	} else {
+		do {
+			i -= b;
+			t = (i > 0 ? c + s.substr( i, b ) : s.substr( 0, b + i )) + t;
+		} while ( i > 0 );
+	}
+	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
+},
 _strTrim = $.strTrim = function (a ) {
-	return (a + '').replace( /^\s+|\s+$/g, '' );
+	return String( a ).replace( /^\s+|\s+$/g, '' );
 },
 _strQuot = $.strQuot = function( a ) {
-	return (a + '').replace( /\"/g, '&quot;' );
+	return String( a ).replace( /\"/g, '&quot;' );
 },
 // 在a中取以b开始的字符串(不包括b) /@ c -> last indexOf ?
 _strFrom = $.strFrom = function( a, b, c ) {
@@ -426,7 +463,7 @@ _idsAny = $.idsAny = function( s, n, p ) {
 	if ( ! s ) return F;
 	if ( ! n || s == n ) return T;
 	if ( ! p ) p = ',';
-	if ( n.indexOf( p ) > -1 ) {
+	if ( (n = String( n )).indexOf( p ) > -1 ) {
 		for ( var i = 0, b = n.split( p ), l = b.length; i < l; i ++ )
 			if ( (p + s + p).indexOf( p + b[ i ] + p ) > -1 ) return T;
 	} else
@@ -876,8 +913,13 @@ _css = $.css = function( o, s, n ) {
 		for ( var i = 1, l = arguments.length; i < l; i += 2 )
 			_set_style( o, arguments[ i ], arguments[ i + 1 ] );
 	} else {
-		if ( typeof s === _STR )
-			return o.style[ s ] || o.currentStyle[ s ];
+		if ( typeof s === _STR ) {
+			if ( s.indexOf( ':' ) > 0 ) {
+				for ( var i = 0, b = s.split( ';' ), l = b.length, k, v; i < l; i ++ )
+					(k = $.strTo( b[ i ], ':' )) && (v = $.strFrom( b[ i ], ':' )) && _set_style( o, k, v );
+			} else
+				return o.style[ s ] || o.currentStyle[ s ];
+		}
 		for ( var i in s ) _set_style( o, i, s[ i ] );
 	}
 },
@@ -1421,7 +1463,7 @@ _ajax_xhr = (function() {
 	$.winbox( 'Cannot create XMLHTTP object!' );
 })(),
 _ajax_url = function( a ) {
-	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _cfg.path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
+	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
 },
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
@@ -1518,7 +1560,7 @@ Ajax = _createClass( {
 							}
 						}
 				    } else {
-				    	x.filter && (m = _fnapply( x.filter, c, '$value,$ajax', [ m, self ] ));
+				    	! x.engine && (f = x.filter || _cfg.ajax_filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
 				    	self.response = m;
 						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
@@ -1735,34 +1777,36 @@ function _compatMobile() {
 	}).on( 'touchend', function( e ) {
 	    if ( t ) {
 	    	n.type = 'tap';
-	    	$.query( e.target ).trigger( n );
+	    	$.query( e.target ).trigger( n ); //实现这个代理event.type的功能，要修改jquery源码的trigger方法
 	    }
 	    n = t = N;
 	});
 	// 检测回退键
 	if ( win.plus ) {
 		plus.key.addEventListener( 'backbutton', function() { 
-			var w = plus.webview.currentWebview(), p = w.parent();
-			$.closeAll(w);
+			$.closeAll( plus.webview.currentWebview() );
 		} );
 	}
 }
 
 /* 初始化配置 */
 function _initEnv() {
-	_ver     = _cfg.ver ? '?ver=' + _cfg.ver : '',
-	_path    = _cfg.path;
-	_ui_path = _urlLoc( _path, _cfg.lib ) + 'ui/';
+	if ( _cfg.path != N )
+		_path = _cfg.path;
+	if ( _cfg.lib != N )
+		_lib = _cfg.lib;
+	_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
+	_ui_path = _urlLoc( _path, _lib ) + 'ui/';
 	if ( noGlobal || _cfg.no_conflict ) {
 		(Date.$ = $).abbr = 'Date.$';
 	}
 	var _define  = new Define( _path ),
 		_require = new Require( _path ),
-		_lib     = _cfg.lib + 'wg/',
-		_loc     = _require( _lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-		_jq      = _loc && _require( _lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
+		_wg_lib  = _lib + 'wg/',
+		_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
+		_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
 	if ( ! _loc )
-		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _cfg.lib + '"\n}' );
+		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
 	for ( var k in _cfg.alias ) {
 		for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
 			_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
@@ -1772,6 +1816,7 @@ function _initEnv() {
 	_define( 'loc',    function() { return _loc } );
 	
 	$.PATH = _path;
+	$.LIB  = _lib;
 	$.IMGPATH = _ui_path + 'g/';
 	
 	$.loc     = _loc;
@@ -1780,9 +1825,9 @@ function _initEnv() {
 	$.require = _require;
 	$.skin( _cfg.skin );
 
-	var w = _require( _lib + 'widget' );
-	$.vm     = w.vm;
-	$.e      = w.e;
+	var w = _require( _wg_lib + 'widget' );
+	$.vm  = w.vm;
+	$.e   = w.e;
 	$.widget = $.w = w.w;
 	$.dialog = _require( 'dialog' ).get;
 	$.scrollIntoView = w.scrollIntoView;
@@ -1872,7 +1917,7 @@ _merge( $, {
 		return br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', a ) : $.query( doc ).ready( a );
 	},
 	use: function( a ) {
-		return (new Require( _cfg.path || '' ))( a );
+		return (new Require( _path || '' ))( a );
 	},
 	rt: function( a ) {
 		return function() { return a };
@@ -1932,10 +1977,8 @@ _merge( $, {
 	close: function( a ) {
 		if ( a = this.dialog( a ) ) {
 			a.close();
-		} else if ( plus ) {
+		} else if ( win.plus ) {
 			$.closeAll( plus.webview.currentWebview() );
-		} else {
-			history.back();
 		}
 	},
 	// 关闭当前webview打开的所有webview；
@@ -2063,11 +2106,11 @@ _merge( $, {
 				}
 				y = x;
 				if ( ! $( gid ) )
-					$.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _cfg.path + x.dir + 'global.css' + _ver + '">' );
+					$.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _path + x.dir + 'global.css' + _ver + '">' );
 				if ( ! $( tid ) )
-					$.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _cfg.path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
+					$.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
 				if ( ! $( cid ) )
-					$.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _cfg.path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
+					$.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
 			}
 		}
 	})(),
@@ -2237,6 +2280,8 @@ _merge( $, {
 
 if ( ! noGlobal )
 	win.dfish = dfish;
+
+getPath();
 
 return dfish;
 });

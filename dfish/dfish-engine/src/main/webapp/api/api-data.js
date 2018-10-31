@@ -110,14 +110,15 @@ define( {
       { name: '$.config(settings)', remark: '设置环境参数。设置好的配置参数可以从 $.x 获取。', common: true, param: [
         { name: 'settings', type: 'object', remark: '配置参数', param: [
           { name: 'alias', type: 'object', remark: '新增的模块可在此注册别名' },
-          { name: 'ajax_error', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。方法接收两个参数，第一个是XMLHttpRequest实例，第二个是URL。' },
+          { name: 'ajax_error', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
+          { name: 'ajax_filter', type: 'Function', remark: '对ajax返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'cn_bytes', type: 'Number', remark: '一个汉字算几个字节。默认值为2。' },
           { name: 'debug', type: 'Boolean', remark: '开启调试模式。调试模式下按"Ctrl+鼠标右键"可查看view的信息' },
           { name: 'default_option', type: 'object', remark: '每个 widget 类都可以定义默认样式，以 widget type 作为 key' },
           { name: 'input_detect', type: 'object', remark: '设置表单在键入文本时是否即时检测。', param: [
             { name: 'maxlength', type: 'Boolean', remark: '设置为true，键入文本时将会即时检测是否超出最大长度。' }
           ] },
-          { name: 'lib', type: 'String', remark: 'dfish包路径，必选项。' },
+          { name: 'lib', type: 'String', remark: 'dfish包的路径，必选项。' },
           { name: 'lang', type: 'String', remark: '语言。可选项:zh_CN,zh_TW,en' },
           { name: 'no_conflict', type: 'Boolean', remark: '设置为true，将变量$的控制权让渡给第一个实现它的那个库。' },
           { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
@@ -131,6 +132,7 @@ define( {
           { name: 'template', type: 'String', remark: '对话框默认模板ID。' },
           { name: 'template_alert', type: 'String', remark: 'alert和confirm的默认对话框模板ID。' },
           { name: 'template_src', type: 'String', remark: '对话框模板路径' },
+          { name: 'templates', type: 'Object', remark: '模板集。' },
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
@@ -361,13 +363,20 @@ define( {
         { name: 'n1', type: 'Number', remark: '数字' },
         { name: 'n2', type: 'Number', remark: '数字' }
       ] },
+      { name: '$.numFormat(number, [length], [separator], [rightward])', remark: '格式化数字。', common: true, param: [
+        { name: 'number', type: 'Number', remark: '数字' },
+        { name: 'length', type: 'Number', optional: true, remark: '分隔长度。默认值为 3' },
+        { name: 'separator', type: 'String', optional: true, remark: '分隔符。默认值为 ","' },
+        { name: 'rightward', type: 'Boolean', optional: true, remark: '从左向右的方向来分隔。默认值为 false' }
+      ], example: [
+          function() {
+          	//
+            var n = $.numFormat( 1234 ); // 返回 "1,234"
+          }
+      ] },
       { name: '$.prepend(elem, content)', id: '$.prepend', remark: '在元素内部前置内容。', common: true, param: [
         { name: 'elem', type: 'HTMLElement', remark: 'html元素对象' },
         { name: 'content', type: 'String', remark: 'html内容' }
-      ], example: [
-          function() {
-            $.prepend( $( 'myDiv' ), '<a href=#>新增链接</a>' );
-          }
       ] },
       { name: '$.print(target, [bPrint], [tag])', id: '$.print', remark: '打印目标对象的内容。', common: true, param: [
         { name: 'target', type: 'Widget | HTMLElement', remark: 'widget对象，或者HTML元素对象。' },
@@ -967,8 +976,9 @@ define( {
             alert( wg.data( 'mydata' ) ); // 显示"123"
           }
       ] },
-      { name: 'display([show])', remark: '显示或隐藏。', common: true, param: [
-        { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true }
+      { name: 'display([show], [valid])', remark: '显示或隐藏。', common: true, param: [
+        { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true },
+        { name: 'valid', type: 'Boolean', remark: 'true:验证隐藏状态下的表单。', optional: true }
       ] },
       { name: 'isDisplay()', remark: '是否在显示状态。', common: true },
       { name: 'exec(cmdID, [args], [opt])', remark: '执行命令。和 .cmd() 方法作用一样，只是参数不同。', common: true, param: [
@@ -2670,7 +2680,12 @@ define( {
   	remark: '数字输入框。',
   	extend: 'text',
     Config: [
-      { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' }
+      { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
+      { name: 'format', type: 'Object', optional: true, remark: '设置分隔格式。',  param: [
+        { name: 'length', type: 'Number', remark: '分隔长度。默认值为 3' },
+        { name: 'separator', type: 'String', remark: '分隔符。默认值为 ","' },
+        { name: 'rightward', type: 'Boolean', remark: '设置为true，从左向右的方向进行分隔。默认值为 false' }        
+      ] }
     ],
   	deprecate: '.w-text',
     Classes: [
