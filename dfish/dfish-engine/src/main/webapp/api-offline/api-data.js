@@ -118,7 +118,7 @@ define( {
           { name: 'input_detect', type: 'object', remark: '设置表单在键入文本时是否即时检测。', param: [
             { name: 'maxlength', type: 'Boolean', remark: '设置为true，键入文本时将会即时检测是否超出最大长度。' }
           ] },
-          { name: 'lib', type: 'String', remark: 'dfish包路径，必选项。' },
+          { name: 'lib', type: 'String', remark: 'dfish包的路径，必选项。' },
           { name: 'lang', type: 'String', remark: '语言。可选项:zh_CN,zh_TW,en' },
           { name: 'no_conflict', type: 'Boolean', remark: '设置为true，将变量$的控制权让渡给第一个实现它的那个库。' },
           { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
@@ -132,6 +132,7 @@ define( {
           { name: 'template', type: 'String', remark: '对话框默认模板ID。' },
           { name: 'template_alert', type: 'String', remark: 'alert和confirm的默认对话框模板ID。' },
           { name: 'template_src', type: 'String', remark: '对话框模板路径' },
+          { name: 'templates', type: 'Object', remark: '模板集。' },
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
@@ -975,8 +976,9 @@ define( {
             alert( wg.data( 'mydata' ) ); // 显示"123"
           }
       ] },
-      { name: 'display([show])', remark: '显示或隐藏。', common: true, param: [
-        { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true }
+      { name: 'display([show], [valid])', remark: '显示或隐藏。如果设为隐藏，当前widget内的表单不做验证。如果仍然需要验证，可以设置第二个参数。', common: true, param: [
+        { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true },
+        { name: 'valid', type: 'Boolean', remark: 'true:验证隐藏状态下的表单。', optional: true }
       ] },
       { name: 'isDisplay()', remark: '是否在显示状态。', common: true },
       { name: 'exec(cmdID, [args], [opt])', remark: '执行命令。和 .cmd() 方法作用一样，只是参数不同。', common: true, param: [
@@ -2086,7 +2088,8 @@ define( {
       { name: '.z-hv', remark: '鼠标hover样式。' },
       { name: '.z-on', remark: '焦点高亮样式。' },
       { name: '.z-loading', remark: '当树节点正在装载数据时的样式。' },
-      { name: '.z-folder', remark: '有子节点时的样式。' }
+      { name: '.z-folder', remark: '有子节点时的样式。' },
+      { name: '.z-open', remark: '展开时的样式。' }
     ]
   },
   "html": {
@@ -2191,7 +2194,7 @@ define( {
     ],
     Classes: [
       { name: '.w-toggle', remark: '基础样式。' },
-      { name: '.z-collapse', remark: '当 toggle 收起时生效。' }
+      { name: '.z-open', remark: '展开时的样式。' }
     ]
   },
   "split": {
@@ -2214,8 +2217,14 @@ define( {
       { name: 'target',  type: 'String', optional: true, remark: '指定展开收拢的节点位置。可选值: <b>prev</b><font color=green>(默认,前节点)</font>, <b>next</b><font color=green>(后节点)</font>。本参数配合 icon openicon 参数一起使用。' },
       { name: 'text',  type: 'String', optional: true, remark: '显示文本。' }
     ],
+    Methods: [
+      { name: 'toggle([expand])', remark: '展开或收拢。', param: [
+        { name: 'expand', type: 'Boolean', optional: true, remark: '是否展开。' }
+      ] }
+    ],    
     Classes: [
-      { name: '.w-split', remark: '基础样式。' }
+      { name: '.w-split', remark: '基础样式。' },
+      { name: '.z-open', remark: '展开时的样式。' }
     ]
   },
   "page/mini": {

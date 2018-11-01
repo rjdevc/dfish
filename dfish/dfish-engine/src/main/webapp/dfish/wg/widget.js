@@ -2171,6 +2171,7 @@ Split = define.widget( 'split', {
 				$.classAdd( this.parentNode.$(), 'f-rel' );
 				var w = this.width();
 				if ( w <= 1 ) $.classAdd( this.$(), 'z-0' );
+				this.x.range && this.isOpen() && $.classAdd( this.$(), 'z-open' );
 				ie7 && this.css( 'bg', 'backgroundColor', this.$().currentStyle.backgroundColor );
 			}
 		}
@@ -2227,15 +2228,16 @@ Split = define.widget( 'split', {
 			if ( n === U )
 				n = this.isOpen();
 			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
+			$.classAdd( this.$(), 'z-open', n );
 		},
 		isOpen: function() {
-			return this.major() > (this.x.range || '').split( ',' )[ this.x.target == 'next' ? 1 : 0 ];
+			return this.major() > (this.x.range || '').split( ',' )[ this.x.target === 'next' ? 1 : 0 ];
 		},
 		major: function( a ) {
 			return _splitSize( this[ this.x.target || 'prev' ](), a );
 		},
 		minor: function( a ) {
-			return _splitSize( this[ this.x.target == 'next' ? 'prev' : 'next' ](), a );
+			return _splitSize( this[ this.x.target === 'next' ? 'prev' : 'next' ](), a );
 		},
 		html_icon: function( a ) {
 			a = a == N ? this.isOpen() : a;
@@ -2852,9 +2854,11 @@ Toggle = define.widget( 'toggle', {
 				p[ i ].display( this );
 			}
 			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
-			$.classAdd( this.$(), 'z-collapse', ! b );
-			this.trigger( b ? 'expand' : 'collapse' );
+			this.addClass( 'z-open', !! b );
 			a.type && $.stop( a );
+		},
+		isOpen: function() {
+			return this.x.open;
 		},
 		// @a -> open?
 		html_icon: function( a ) {

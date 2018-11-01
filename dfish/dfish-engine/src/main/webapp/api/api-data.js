@@ -976,7 +976,7 @@ define( {
             alert( wg.data( 'mydata' ) ); // 显示"123"
           }
       ] },
-      { name: 'display([show], [valid])', remark: '显示或隐藏。', common: true, param: [
+      { name: 'display([show], [valid])', remark: '显示或隐藏。如果设为隐藏，当前widget内的表单不做验证。如果仍然需要验证，可以设置第二个参数。', common: true, param: [
         { name: 'show', type: 'Boolean', remark: 'true:显示; false:隐藏。', optional: true },
         { name: 'valid', type: 'Boolean', remark: 'true:验证隐藏状态下的表单。', optional: true }
       ] },
@@ -2088,7 +2088,8 @@ define( {
       { name: '.z-hv', remark: '鼠标hover样式。' },
       { name: '.z-on', remark: '焦点高亮样式。' },
       { name: '.z-loading', remark: '当树节点正在装载数据时的样式。' },
-      { name: '.z-folder', remark: '有子节点时的样式。' }
+      { name: '.z-folder', remark: '有子节点时的样式。' },
+      { name: '.z-open', remark: '展开时的样式。' }
     ]
   },
   "html": {
@@ -2193,7 +2194,7 @@ define( {
     ],
     Classes: [
       { name: '.w-toggle', remark: '基础样式。' },
-      { name: '.z-collapse', remark: '当 toggle 收起时生效。' }
+      { name: '.z-open', remark: '展开时的样式。' }
     ]
   },
   "split": {
@@ -2216,8 +2217,14 @@ define( {
       { name: 'target',  type: 'String', optional: true, remark: '指定展开收拢的节点位置。可选值: <b>prev</b><font color=green>(默认,前节点)</font>, <b>next</b><font color=green>(后节点)</font>。本参数配合 icon openicon 参数一起使用。' },
       { name: 'text',  type: 'String', optional: true, remark: '显示文本。' }
     ],
+    Methods: [
+      { name: 'toggle([expand])', remark: '展开或收拢。', param: [
+        { name: 'expand', type: 'Boolean', optional: true, remark: '是否展开。' }
+      ] }
+    ],    
     Classes: [
-      { name: '.w-split', remark: '基础样式。' }
+      { name: '.w-split', remark: '基础样式。' },
+      { name: '.z-open', remark: '展开时的样式。' }
     ]
   },
   "page/mini": {
