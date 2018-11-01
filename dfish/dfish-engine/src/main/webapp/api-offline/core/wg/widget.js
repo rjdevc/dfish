@@ -591,18 +591,21 @@ W = define( 'widget', function() {
 				return ! b && this.contains( _widget( a ) );
 			}
 		},
-		// 显示或隐藏
-		display: function( a ) {
-			var b = a == N || (a.isWidget ? a.x.open : a), o = this.$();
+		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
+		display: function( a, b ) {
+			var c = a == N || (a.isWidget ? a.x.open : a), o = this.$();
 			if ( o.tagName === 'TR' ) {
-				$.classAdd( o, 'f-none', ! b );
+				$.classAdd( o, 'f-none', ! c );
 			} else {
 				if ( this.__disp_none == N ) {
 					this.__disp_none = o.currentStyle.display === 'none' ? T : F;
 				}
-				o.style.display = b ? (this.__disp_none === T ? 'block' : '') : 'none';
+				o.style.display = c ? (this.__disp_none === T ? 'block' : '') : 'none';
 			}
-			a.isWidget && (b ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
+			a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
+			if ( ! b ) {
+				(this.ownerView.layout._passvalid || (this.ownerView.layout._passvalid = {}))[ o.id ] = !c;
+			}
 		},
 		isDisplay: function() {
 			return this.$().currentStyle.display != 'none';
@@ -762,6 +765,7 @@ W = define( 'widget', function() {
 			a = a == N || a;
 			this.x.status = a ? 'disabled' : '';
 			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		// 调整大小
@@ -789,11 +793,13 @@ W = define( 'widget', function() {
 				a.height == N && (a.height = this.x.height);
 			}
 			var e = this.$();
-			this.dispose();
+			this.removeNode( T );
 			var g = p.add( a, i );
 			o && (g.focusOwner = o, o.focusNode = g);
 			g.render( e, 'replace' );
 			this.removeElem();
+			this.trigger( 'replace', g );
+			this.dispose();
 			p.trigger( 'resize' );
 			return g;
 		},
@@ -1105,7 +1111,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	};
 	_w_css[ v ] = function() {
 		var t = this[ y ], a = this.attr( v );
-		if ( t !== U || (a != N && a != -1) ) {
+		if ( a != -1 && (t !== U || a != N) ) {
 			delete this[ y ];
 			if ( t !== this[ oz ]() ) {
 				t = this[ iz ]();
@@ -1614,12 +1620,12 @@ View = define.widget( 'view', {
 			var v = this.data( a );
 			return v === U ? (this.parentDialog && this.parentDialog.closestData( a )) : v;
 		},
-		// @a -> sync?, b -> fn?
-		load: function( a, b ) {
+		// @a -> sync?, b -> fn?, c -> force?[强制刷新，不论是否在frame内]
+		load: function( a, b, c ) {
 			if ( this.loading )
 				return;
 			this.showLoading();
-			var f = Frame.edge( this );
+			var f = ! c && Frame.edge( this );
 			if ( ! f || f.parentNode.getFocus() == f ) {
 				this._load( a, function( x ) {
 					this.showLoading( F );
@@ -1671,7 +1677,7 @@ View = define.widget( 'view', {
 			this.loaded = F;
 			a && this.attr( 'src', a );
 			if ( this.$() ) {
-				this.attr( 'src' ) ? this.load( b, c ) : this._loadEnd( this.x );
+				this.attr( 'src' ) ? this.load( b, c, T ) : this._loadEnd( this.x );
 			} else
 				this._load( b, c );
 		},
@@ -1783,7 +1789,12 @@ View = define.widget( 'view', {
 		getValidError: function( n, g ) {
 			var e;
 			if ( this.$() ) {
-				for ( var i = 0, q = this.getFormList( g ), l = q.length, c, v; i < l; i ++ ) {
+				var q = this.getFormList( g ), s = this.layout._passvalid;
+				if ( s ) {
+					for ( var k in s )
+						s[ k ] && (q = q.not( '[id="' + k + '"] :input' ));
+				}
+				for ( var i = 0, l = q.length, c, v; i < l; i ++ ) {
 					if ( (c = _getWidgetById( q[ i ].id )) && (v = c.trigger( 'valid', [ n ] )) )
 						(e || (e = {}))[ v.wid ] = v;
 				}
@@ -2112,6 +2123,43 @@ Html = define.widget( 'html', {
 		}
 	}
 } ),
+/* `label` */
+Label = define.widget( 'label', {
+	Listener: {
+		body: {
+			ready: function() {
+				var f = this.getForm();
+				if ( f ) {
+					if ( ! this.x.text )
+						$.html( this.$(), '<i class=f-required>*</i>' + (f.x.label || '') + (this.x.suffix || '') );
+					this.bindCls();
+					f.addEvent( 'statuschange', this.bindCls, this )
+					 .addEvent( 'validatechange', this.bindCls, this )
+					 .addEvent( 'replace', this.bindReplace, this )
+					 .addEvent( 'remove', this.remove, this );
+				}
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-label',
+		// 获取表单widget
+		getForm: function() {
+			return this.x.bind && this.ownerView.find( this.x.bind );
+		},
+		bindCls: function() {
+			var f = this.getForm();
+			f && this.addClass( 'z-required', !!(f.x.validate && f.x.validate.required) && !(f.isReadonly() || f.isDisabled()) );
+		},
+		// @e -> event, n -> new widget
+		bindReplace: function( e, n ) {
+			this.replace( { type: 'label', bind: n.x.id } );
+		},
+		html_nodes: function() {
+			return this.x.text || '';
+		}
+	}
+} ),
 _splitSize = function( a, b ) {
 	return a && a[ a.parentNode.type_horz ? 'width' : 'height' ]( b );
 },
@@ -2123,6 +2171,7 @@ Split = define.widget( 'split', {
 				$.classAdd( this.parentNode.$(), 'f-rel' );
 				var w = this.width();
 				if ( w <= 1 ) $.classAdd( this.$(), 'z-0' );
+				this.x.range && this.isOpen() && $.classAdd( this.$(), 'z-open' );
 				ie7 && this.css( 'bg', 'backgroundColor', this.$().currentStyle.backgroundColor );
 			}
 		}
@@ -2179,15 +2228,16 @@ Split = define.widget( 'split', {
 			if ( n === U )
 				n = this.isOpen();
 			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
+			$.classAdd( this.$(), 'z-open', n );
 		},
 		isOpen: function() {
-			return this.major() > (this.x.range || '').split( ',' )[ this.x.target == 'next' ? 1 : 0 ];
+			return this.major() > (this.x.range || '').split( ',' )[ this.x.target === 'next' ? 1 : 0 ];
 		},
 		major: function( a ) {
 			return _splitSize( this[ this.x.target || 'prev' ](), a );
 		},
 		minor: function( a ) {
-			return _splitSize( this[ this.x.target == 'next' ? 'prev' : 'next' ](), a );
+			return _splitSize( this[ this.x.target === 'next' ? 'prev' : 'next' ](), a );
 		},
 		html_icon: function( a ) {
 			a = a == N ? this.isOpen() : a;
@@ -2804,9 +2854,11 @@ Toggle = define.widget( 'toggle', {
 				p[ i ].display( this );
 			}
 			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
-			$.classAdd( this.$(), 'z-collapse', ! b );
-			this.trigger( b ? 'expand' : 'collapse' );
+			this.addClass( 'z-open', !! b );
 			a.type && $.stop( a );
+		},
+		isOpen: function() {
+			return this.x.open;
 		},
 		// @a -> open?
 		html_icon: function( a ) {
@@ -4072,6 +4124,7 @@ AbsForm = define.widget( 'abs/form', {
 			this.$v().removeAttribute( 'readOnly' );
 			this.$v().removeAttribute( 'disabled' );
 			$.classRemove( this.$(), 'z-ds' );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		readonly: function( a ) {
@@ -4080,6 +4133,7 @@ AbsForm = define.widget( 'abs/form', {
 			this.$v().readOnly = a;
 			this.$v().removeAttribute( 'disabled' );
 			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		validonly: function( a ) {
@@ -4088,13 +4142,14 @@ AbsForm = define.widget( 'abs/form', {
 			this.$v().readOnly = a;
 			this.$v().removeAttribute( 'disabled' );
 			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
 			return this;
 		},
 		disable: function( a ) {
 			a = a == N || a;
-			_proto.disable.call( this, a );
 			this.$v().disabled = a;
 			this.$v().removeAttribute( 'readOnly' );
+			_proto.disable.call( this, a );
 			return this;
 		},
 		isReadonly: function() {
@@ -4118,6 +4173,7 @@ AbsForm = define.widget( 'abs/form', {
 				c = (x.validate || (x.validate = {}));
 				a ? $.merge( c, a ) : (x.validate = N);
 				this.$() && $.classAdd( this.$(), 'z-required', !!c.required );
+				this.trigger( 'validatechange' );
 			}
 			return this;
 		},
@@ -4410,19 +4466,31 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		},
 		normal: function() {
 			this.getOptions().each( function() { this.normal() } );
-			this.x.status = 'normal';
+			this.trigger( 'statuschange' );
 		},
 		disable: function( a ) {
 			this.getOptions().each( function() { this.disable( a ) } );
-			this.x.status = a == N || a ? 'disabled' : '';
+			this.trigger( 'statuschange' );
 		},
 		readonly: function( a ) {
 			this.getOptions().each( function() { this.readonly( a ) } );
-			this.x.status = a == N || a ? 'readonly' : '';
+			this.trigger( 'statuschange' );
 		},
 		validonly: function( a ) {
 			this.getOptions().each( function() { this.validonly( a ) } );
-			this.x.validonly = a == N || a ? 'validonly' : '';
+			this.trigger( 'statuschange' );
+		},
+		isNormal: function() {
+			return this[ 0 ] && this[ 0 ].isNormal();
+		},
+		isDisabled: function() {
+			return this[ 0 ] && this[ 0 ].isDisabled();
+		},
+		isReadonly: function() {
+			return this[ 0 ] && this[ 0 ].isReadonly();
+		},
+		isValidonly: function() {
+			return this[ 0 ] && this[ 0 ].isValidonly();
 		},
 		scaleWidth: function( a ) {
 			if ( a.nodeIndex < 0 ) {
@@ -5365,11 +5433,13 @@ Spinner = define.widget( 'spinner', {
 		},
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
-			a != N && this.trigger( 'format' );
+			a != N && this.x.format && this.trigger( 'format' );
 			return this.$t().value;
 		},
 		
 		doFormat: function() {
+			if ( ! this.x.format )
+				return;
 			var v = this.$t().value, s = this.x.format.separator || ',', r = RegExp( s, 'g' ), t = $.numFormat( v, this.x.format.length, s, this.x.format.rightward );
 			if ( v !== t ) {
 				var n = Onlinebox.prototype.getSelectionStart.call( this ), b = v.slice( 0, n ).replace( r, '' );
@@ -7000,6 +7070,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			var c = typeof a === _BOL ? a : !this.x.open;
 			this.x.open = c;
 			this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'f-none', ! c );
+			this.addClass( 'z-open', c );
 		},
 		// 展开或收拢 /@a -> T/F/event, b -> sync?, f -> fn?
 		toggle: function( a, b, f ) {
@@ -7308,7 +7379,7 @@ Leaf = define.widget( 'leaf', {
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
 			l == N  && (l = this.length);
-			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || l ? ' z-folder' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || l ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) +
 				(x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() + '<dt class="w-leaf-a">' +
 				(x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)>' + (x.src || l ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + e + '</b>') +
@@ -7859,10 +7930,10 @@ TR = define.widget( 'tr', {
 				for ( var i = a.$().rowIndex, j = 0, p = a.$().parentNode.parentNode, l = a._childLen(); j <= l; j ++ )
 					s.push( p.rows[ i + j ] );
 			}
-			if ( b == 'before' )
+			if ( b === 'before' )
 				Q( this.$() )[ b ]( s );
 			else
-				Q( b == 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._childLen() ] ).after( s );
+				Q( b === 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._childLen() ] ).after( s );
 		},
 		// @a -> T/F, b -> src
 		toggle: function( a, b ) {
