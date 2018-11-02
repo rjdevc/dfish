@@ -793,13 +793,11 @@ W = define( 'widget', function() {
 				a.height == N && (a.height = this.x.height);
 			}
 			var e = this.$();
-			this.removeNode( T );
+			this.dispose();
 			var g = p.add( a, i );
 			o && (g.focusOwner = o, o.focusNode = g);
 			g.render( e, 'replace' );
 			this.removeElem();
-			this.trigger( 'replace', g );
-			this.dispose();
 			p.trigger( 'resize' );
 			return g;
 		},
@@ -2918,7 +2916,7 @@ Page = define.widget( 'page/mini', {
 					}
 				} else if ( this.x.src ) {
 					var s = this.x.src;
-					this.exec( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, [ i ] );
+					this.cmd( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, i );
 				}
 				// 为业务 click 事件之中的 $0 提供值
 				this.data( '0', i );
