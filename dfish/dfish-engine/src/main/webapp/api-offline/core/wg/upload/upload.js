@@ -1254,7 +1254,7 @@ BaseUpload = define.widget( 'upload/base', {
 				for ( var i = numFilesInQueue - numFilesQueued; i < numFilesInQueue; i ++ ) {
 					this.valuebar.add( { file: this.getQueueFile( i ) } );
 				}
-				//this.trigger( 'fileselect' );
+				this.trigger( 'fileselect' );
 				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
 					d[ i ].render();
 				this.startUpload();
@@ -1414,7 +1414,7 @@ define.widget( 'upload/file', {
 					this.append( a[ i ] );
 			} else if ( ! this.isLimit() ) {
 				this.addValue( a );
-				this.valuebar.add( { data: a } ).render();
+				this.valuebar.add( { value: a } ).render();
 			}
 		},
 		isLoading: function() {
@@ -1459,7 +1459,7 @@ define.widget( 'upload/file/buttonbar', {
 		x_nodes: function( x ) {
 			return this.u.x.upload_button;
 		},
-		x_childtype: function( t ) {
+		x_type: function( t, n ) {
 			return $.strTo( this.type, '/', true ) + '/' + t;
 		}
 	}
@@ -1476,10 +1476,11 @@ define.widget( 'upload/file/valuebar', {
 		x.width = x.height = -1;
 		Horz.call( this, x, p );
 		for ( var i = 0, n = []; i < p._value.length; i ++ )
-			p._value[ i ] && this.add( { data: p._value[ i ] } );
+			p._value[ i ] && this.add( { value: p._value[ i ] } );
 		this.childCls = p.x.dir === 'v' ? 'f-left f-clear' : 'f-sub-horz';
 	},
 	Extend: 'horz',
+	Child: 'upload/file/value',
 	Listener: {
 		body: {
 			ready: function() {
@@ -1490,16 +1491,13 @@ define.widget( 'upload/file/valuebar', {
 				$.classAdd( u.$(), 'z-lmt', u.isLimit() );
 			}
 		}
-	},
-	Prototype: {
-		x_childtype: $.rt( 'upload/file/value' )
 	}
 } );
 
 define.widget( 'upload/image/valuebar', {
 	Extend: 'upload/file/valuebar',
+	Child: 'upload/image/value',
 	Prototype: {
-		x_childtype: $.rt( 'upload/image/value' ),
 		// @implement / a -> html|widget, b -> where(prepend|append|before|after)
 		insertHTML: function( a, b ) {
 			if ( ! b || b === 'append' ) {
@@ -1579,7 +1577,7 @@ define.widget( 'upload/file/upload/button', {
 				} else if ( t && ! $.idsAny( t, '.' + $.strFrom( b[ i ].name, '.', true ).toLowerCase() ) ) {
 					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.INVALID_FILETYPE );
 					continue;
-				} else if ( u.x.on && u.x.on.fileselect && (r = u.triggerHandler( 'fileselect', b[ i ] )) ) {
+				} else if ( this.x.on && this.x.on.fileselect && (r = $.fncall( this.x.on.fileselect, this, b[ i ] )) ) {
 					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.INVALID_FILENAME, r );
 					continue;
 				} else {
@@ -1622,8 +1620,9 @@ define.widget( 'upload/image/value', {
 	Const: function( x, p ) {
 		this.u = p.u;
 		W.apply( this, arguments );
+		x.data = x.value;
 		this.loading = false;
-		this.loaded  = !! x.data;
+		this.loaded  = !! x.value;
 		this.initButton( this.x.file );
 	},
 	Extend: Horz,
@@ -1639,7 +1638,7 @@ define.widget( 'upload/image/value', {
 		_cls: 'w-upload-value-image',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u = this.u, v = this.x.data, m = !f && (v.thumbnail || (u.x.thumbnail_url ? this.formatStr( u.x.thumbnail_url ) : v.url)), p = u.x.pub || false, w = p.width || 80, h = p.height || 80, b,
+			var u = this.u, v = this.x.value, m = !f && (v.thumbnail || (u.x.thumbnail_url ? $.urlFormat( u.x.thumbnail_url, this ) : v.url)), p = u.x.pub || false, w = p.width || 80, h = p.height || 80, b,
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
 			this.empty();
 			this.add( { type: 'html', width: w, height: h, align:'center', valign: 'middle', text: (f ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif>' :
@@ -1664,18 +1663,18 @@ define.widget( 'upload/image/value', {
 			var s = this.u.x.down_url;
 			if ( s ) {
 				if ( s.indexOf( 'javascript:' ) === 0 ) {
-					this.formatJS( s );
+					W.jsformat.call( this, s, [], [] );
 				} else {
-					$.download( this.formatStr( s ) );
+					$.download( $.urlFormat( s, this ) );
 				}
 			}
 		},
 		preview: function() {
-			for ( var i = 0, x = this.u.x, v = $.jsonClone( this.u._value ), c = this.x.data.id, d; i < v.length; i ++ ) {
-				x.down_url && $.extend( v[ i ], { url: this.formatStr( x.down_url ) } );
-				x.thumbnail_url && $.extend( v[ i ], { thumbnail: this.formatStr( x.thumbnail_url ) } );
+			for ( var i = 0, x = this.u.x, v = $.jsonClone( this.u._value ), c = this.x.value.id, d; i < v.length; i ++ ) {
+				x.down_url && $.extend( v[ i ], { url: $.urlFormat( x.down_url, this ) } );
+				x.thumbnail_url && $.extend( v[ i ], { thumbnail: $.urlFormat( x.thumbnail_url, this ) } );
 			}
-			$.previewImage( v, this.x.data.id );
+			$.previewImage( v, this.x.value.id );
 		},
 		setProgress: function( a ) {
 			this.$( 'p' ).style.left = a + '%';
@@ -1689,7 +1688,7 @@ define.widget( 'upload/image/value', {
 				$.alert( serverData.text );
 			} else {
 				delete this.x.file;
-				this.x.data = serverData;
+				this.x.value = this.x.data = serverData;
 				this.u.addValue( serverData );
 				this.initButton();
 				this.render();
@@ -1718,7 +1717,7 @@ define.widget( 'upload/image/value', {
 			return this.error ? '<em class=_ex error-code="' + this.error + '">上传失败<i class=f-vi></i></em>' : '';
 		},
 		moreNodes: function() {
-			var b = $.jsonClone( this.u.x.value_button ), v = this.x.data;
+			var b = $.jsonClone( this.u.x.value_button ), v = this.x.value;
 			(function( d ) {
 				for ( var i = 0; i < d.length; i ++ ) {
 					d[ i ].data = v;
@@ -1736,9 +1735,9 @@ define.widget( 'upload/image/value', {
 		remove: function() {
 			var u = this.u;
 			if ( u.x.remove_url )
-				this.cmd( { type: 'ajax', src: u.x.remove_url, error: false } );
-			if ( this.x.data )
-				u.removeValue( this.x.data );
+				u.cmd( { type: 'ajax', src: $.urlFormat( u.x.remove_url, this ), error: false } );
+			if ( this.x.value )
+				u.removeValue( this.x.value );
 			if ( isSWF ) {
 				if ( this.x.file )
 					u.cancelUpload( this.x.file.id );
@@ -1760,14 +1759,14 @@ define.widget( 'upload/file/value', {
 	Extend: 'upload/image/value',
 	Listener: {
 		body: {
-			ready: $.rt()
+			ready: $.rt_null
 		}
 	},
 	Prototype: {
 		_cls: 'w-upload-value-simple',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u  = this.u, c = u.x.value_button, r = u.isNormal(), t = f ? f.name : this.x.data.name;
+			var u  = this.u, c = u.x.value_button, r = u.isNormal(), t = f ? f.name : this.x.value.name;
 			this.empty();
 			this.add( { type: 'button', text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.download()' } } );
 			if ( (c && c.length) || r ) {
@@ -1818,9 +1817,7 @@ define.widget( 'upload/file/value', {
 
 define.widget( 'upload/value/buttonbar', {
 	Extend: 'buttonbar',
-	Prototype: {
-		x_childtype: $.rt( 'upload/value/button' )
-	}
+	Child: 'upload/value/button'
 } );
 
 define.widget( 'upload/value/button', {
@@ -1900,6 +1897,3 @@ function getFileType( a ) {
 	}
 	return c.join( ',' );
 }
-
-module.exports = Upload;
-
