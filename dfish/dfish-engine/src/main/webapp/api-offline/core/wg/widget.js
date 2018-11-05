@@ -793,13 +793,11 @@ W = define( 'widget', function() {
 				a.height == N && (a.height = this.x.height);
 			}
 			var e = this.$();
-			this.removeNode( T );
+			this.dispose();
 			var g = p.add( a, i );
 			o && (g.focusOwner = o, o.focusNode = g);
 			g.render( e, 'replace' );
 			this.removeElem();
-			this.trigger( 'replace', g );
-			this.dispose();
 			p.trigger( 'resize' );
 			return g;
 		},
@@ -2123,43 +2121,6 @@ Html = define.widget( 'html', {
 		}
 	}
 } ),
-/* `label` */
-Label = define.widget( 'label', {
-	Listener: {
-		body: {
-			ready: function() {
-				var f = this.getForm();
-				if ( f ) {
-					if ( ! this.x.text )
-						$.html( this.$(), '<i class=f-required>*</i>' + (f.x.label || '') + (this.x.suffix || '') );
-					this.bindCls();
-					f.addEvent( 'statuschange', this.bindCls, this )
-					 .addEvent( 'validatechange', this.bindCls, this )
-					 .addEvent( 'replace', this.bindReplace, this )
-					 .addEvent( 'remove', this.remove, this );
-				}
-			}
-		}
-	},
-	Prototype: {
-		className: 'w-label',
-		// 获取表单widget
-		getForm: function() {
-			return this.x.bind && this.ownerView.find( this.x.bind );
-		},
-		bindCls: function() {
-			var f = this.getForm();
-			f && this.addClass( 'z-required', !!(f.x.validate && f.x.validate.required) && !(f.isReadonly() || f.isDisabled()) );
-		},
-		// @e -> event, n -> new widget
-		bindReplace: function( e, n ) {
-			this.replace( { type: 'label', bind: n.x.id } );
-		},
-		html_nodes: function() {
-			return this.x.text || '';
-		}
-	}
-} ),
 _splitSize = function( a, b ) {
 	return a && a[ a.parentNode.type_horz ? 'width' : 'height' ]( b );
 },
@@ -2918,7 +2879,7 @@ Page = define.widget( 'page/mini', {
 					}
 				} else if ( this.x.src ) {
 					var s = this.x.src;
-					this.exec( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, [ i ] );
+					this.cmd( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, i );
 				}
 				// 为业务 click 事件之中的 $0 提供值
 				this.data( '0', i );
