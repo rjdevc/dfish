@@ -3,6 +3,7 @@ package com.rongji.dfish.framework.dao;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Page;
+import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
 
 public class PubCommonDAOImpl extends HibernateDaoSupport implements
@@ -58,53 +60,49 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	
 	private static final Log LOG=LogFactory.getLog(PubCommonDAOImpl.class);
 	public List<?> getQueryList(final String strSql, final Object... object) {
-		long beginTimeMillis = getCurrentTimeMillis();
 		
-		final HibernateTemplate template = getHibernateTemplate();
-		template.setCacheQueries(true);
-		// return template.find(strSql,object);
-		// ?????timeStamp???????????????????find
-		HibernateCallback<?> action = new HibernateCallback<Object>() {
-			public Object doInHibernate(Session session)
-					throws HibernateException, SQLException {
-				Query query = session.createQuery(strSql);
-				if (object != null) {  
-					for (int i = 0; i < object.length; i++) {
-						setArgument(query, i, object[i]);
+		return call(strSql,new Callable<List<?>>(){
+			@Override
+			public List<?> call() throws Exception {	
+				HibernateTemplate template = getHibernateTemplate();
+				template.setCacheQueries(true);
+				HibernateCallback<?> action = new HibernateCallback<Object>() {
+					public Object doInHibernate(Session session)
+							throws HibernateException, SQLException {
+						Query query = session.createQuery(strSql);
+						if (object != null) {  
+							for (int i = 0; i < object.length; i++) {
+								setArgument(query, i, object[i]);
+							}
+						}
+						ArrayList<?> arrayList = (ArrayList<?>) query.list();
+						return arrayList;
 					}
-				}
-
-				ArrayList<?> arrayList = (ArrayList<?>) query.list();
-
-				return arrayList;
+				};
+		
+				List<?> list= (List<?>) template.execute(action);
+				return list;
 			}
-		};
+		});
+	}
 
-		List<?> list= (List<?>) template.execute(action);
-		showExecuteResult(strSql, beginTimeMillis);
-		return list;
-	}
-	
-	/**
-	 * 获取当前时间
-	 * @return
-	 */
-	private long getCurrentTimeMillis() {
-		// 
-		if (executeWarn) {
-			return System.currentTimeMillis();
-		}
-		return 0;
-	}
+//	/**
+//	 * 显示执行结果
+//	 * @param sql
+//	 * @param beginTimeMillis
+//	 */
+//	private void traceWithBeginTime(String sql, long beginTimeMillis) {
+//		long endTimeMillis = System.currentTimeMillis();
+//		long costTime = endTimeMillis - beginTimeMillis;
+//		trace(sql,costTime);
+//	}
 	/**
 	 * 显示执行结果
 	 * @param sql
 	 * @param beginTimeMillis
 	 */
-	private void showExecuteResult(String sql, long beginTimeMillis) {
+	protected void log(String sql, long costTime) {
 		if (executeWarn) {
-			long endTimeMillis = System.currentTimeMillis();
-			long costTime = endTimeMillis - beginTimeMillis;
 			if (costTime > executeThreshold) {
 				LOG.warn("execute sql[" + sql + "] cost: " + costTime + "ms");
 			}
@@ -112,30 +110,54 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	}
 
 	public int deleteSQL(String strSql, Object... object) {
-		long beginTimeMillis = getCurrentTimeMillis();
-		List<?> list = getQueryList(strSql, object);
+		final List<?> list = getQueryList(strSql, object);
 		if (list != null) {
-			getHibernateTemplate().deleteAll(list);
+			if (object != null) {
+				call(strSql,new Callable<Object>(){
+					@Override
+					public Object call() throws Exception {
+						getHibernateTemplate().deleteAll(list);
+						return null;
+					}
+				});
+			}
 		}
-		showExecuteResult(strSql, beginTimeMillis);
 		return list == null ? 0 : list.size();
 	}
 
-	public void delete(Object obj) {
-		if (obj != null) {
-			getHibernateTemplate().delete(obj);
+	public void delete(final Object object) {
+		if (object != null) {
+			call("DELETE "+object.getClass().getSimpleName(),new Callable<Object>(){
+				@Override
+				public Object call() throws Exception {
+					getHibernateTemplate().delete(object);
+					return null;
+				}
+			});
 		}
 	}
 
 	public void save(final Object object) {
 		if (object != null) {
-			getHibernateTemplate().save(object);
+			call("SAVE "+object.getClass().getSimpleName(),new Callable<Object>(){
+				@Override
+				public Object call() throws Exception {
+					getHibernateTemplate().save(object);
+					return null;
+				}
+			});
 		}
 	}
 
 	public void update(final Object object) {
 		if (object != null) {
-			getHibernateTemplate().update(object);
+			call("UPDATE "+object.getClass().getSimpleName(),new Callable<Object>(){
+				@Override
+				public Object call() throws Exception {
+					getHibernateTemplate().update(object);
+					return null;
+				}
+			});
 		}
 	}
 
@@ -174,15 +196,22 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	}
 
 	public List<?> getQueryList(final String strSql, final Page page, final Object... object) {
-	    if (page == null) {
+		Pagination p=Pagination.fromPage(page);
+		List<?> ret=this.getQueryList(strSql, p, object);
+		page.setRowCount(p.getSize()==null?0:p.getSize());
+		page.setCurrentCount(ret.size());
+		return ret;
+	}
+	public List<?> getQueryList(final String strSql, final Pagination page, final Object... object) {
+	    if (page == null||page.getSize()==null||page.getOffset()==null) {
 	        return getQueryList(strSql, object);
 	    }
-	    
-	    final boolean autoRowCount = page.getAutoRowCount() == null || page.getAutoRowCount();
+	    if(page.getOffset()==null){
+	    	page.setOffset(0);
+	    }
 	    
 	    final HibernateTemplate template = getHibernateTemplate();
 		template.setCacheQueries(true);
-		long beginTimeMillis = getCurrentTimeMillis();
 		HibernateCallback<List<?>> action = new HibernateCallback<List<?>>() {
 			public List<?> doInHibernate(Session session)
 					throws HibernateException, SQLException {
@@ -193,22 +222,20 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 					}
 				}
 				
-				// ??????????
-				if (page.getCurrentPage() != 0) {
-					int pageno = page.getCurrentPage();
-					query.setFirstResult((pageno - 1) * (page.getPageSize()));
-					query.setMaxResults(page.getPageSize());
-				}
+				query.setFirstResult(page.getOffset());
+				query.setMaxResults(page.getLimit());
 
+		
+				long beginTimeMillis=System.currentTimeMillis();
 				List<?> resultList = query.list();
-				page.setCurrentCount(resultList.size());
+				log(strSql, System.currentTimeMillis()-beginTimeMillis);
 				
-				if (autoRowCount) {
-					if(page.getPageSize()>resultList.size()&&(resultList.size()>0||page.getCurrentPage()==1)){
+				if (page.isAutoRowCount()) {
+					if(page.getLimit()>resultList.size()&&(resultList.size()>0||page.getOffset()==0)){
 						// 2017-12-22 LinLW
 						//如果查询结果一页都没有满，明显无需count
 						//如果翻到某一页后突然没数据了，还是要去count实际大小。
-						page.setRowCount(resultList.size()+(page.getCurrentPage()-1)*page.getPageSize());
+						page.setSize(resultList.size()+page.getOffset());
 					}else{
 						// 2017-12-22 LinLW
 						// 更新比较精确的截取的方式，应该用正则表达是而不是用 FROM前面加空格的做法。
@@ -266,8 +293,10 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 								}
 							}
 							List<?> arrayList = query1.list();
+							beginTimeMillis=System.currentTimeMillis();
 							Integer inte = ((Number) arrayList.get(0)).intValue();
-							page.setRowCount(inte.intValue());
+							log(strHql4cout, System.currentTimeMillis()-beginTimeMillis);
+							page.setSize(inte.intValue());
 						}catch(Exception ex){
 							ex.printStackTrace();
 							throw new RuntimeException(new DfishException("自动计算数据行数时发生未知错误，建议设置page.setAutoRowCount(false);并自行计算数据行数。\r\n"+strHql4cout,"DFISH-01000"));
@@ -276,29 +305,30 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				}
 				
 				//LinLW 2017-07-13 如果当前页号大于1 查询结果数为0，并且autoRowcount为true。很可能是最后一页被删了。要回头显示前面的页。
-				if(resultList.size()==0 && autoRowCount && page.getCurrentPage()>1){
+				if(resultList.size()==0 && page.isAutoRowCount() && page.getOffset()>0){
 					//根据page的rowCount计算curpage的数量
-					if(page.getRowCount()==0){
-						page.setCurrentPage(1);
-					}else{
-						int pageno=(page.getRowCount()-1)/page.getPageSize()+1;
-						page.setCurrentPage(pageno);
-						query.setFirstResult((pageno - 1) * (page.getPageSize()));
-						query.setMaxResults(page.getPageSize());
+					
+						int offset=(page.getSize()-1)/page.getLimit()*page.getLimit();
+						if(offset<0){
+							offset=0;
+						}
+						page.setOffset(offset);
+						query.setFirstResult(offset);
+						query.setMaxResults(page.getLimit());
+//						query.setFirstResult((pageno - 1) * (page.getPageSize()));
+//						query.setMaxResults(page.getPageSize());
+						beginTimeMillis=System.currentTimeMillis();
 						resultList = query.list();
-						page.setCurrentCount(resultList.size());
-					}
+						log(strSql, System.currentTimeMillis()-beginTimeMillis);
+//						traceWithBeginTime(strSql, beginTimeMillis);
 				}
 				
 				return resultList;
 			}
 		};
 		List<?> result = (List<?>) template.execute(action);
-		showExecuteResult(strSql, beginTimeMillis);
+//		trace(strSql, beginTimeMillis);
 		// 当前记录数
-		if (result != null) {
-			page.setCurrentCount(result.size());
-		}
 		return result;
 //	    return getQueryList(strSql, page, page.getAutoRowCount(), object);
 	}
@@ -325,11 +355,13 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	 * @param values
 	 * @return
 	 */
-	public int bulkUpdate(String queryString, Object... values) {
-		long beginTimeMillis = getCurrentTimeMillis();
-		int result = getHibernateTemplate().bulkUpdate(queryString, values);
-		showExecuteResult(queryString, beginTimeMillis);
-		return result;
+	public int bulkUpdate(final String queryString, final Object... values) {
+		 return call("batchUpdate",new Callable<Integer>(){
+		    @Override
+			public Integer call() throws Exception {
+			    return  getHibernateTemplate().bulkUpdate(queryString, values);
+		    }
+		 });
 	}
 
 	@Override
@@ -337,19 +369,24 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	    if (Utils.isEmpty(hql)) {
 	    	return null;
 	    }
-	    return getHibernateTemplate().execute(new HibernateCallback<int[]>() {
-			@Override
-            public int[] doInHibernate(Session session) throws HibernateException, SQLException {
-				int[] result = new int[hql.length];
-				int resultIndex = 0;
-				for (String s : hql) { // 多个语句执行
-					Query query = session.createQuery(s);
-					// 多次执行的结果
-					result[resultIndex++] = query.executeUpdate();
-				}
-				return result;
-            }
-		});
+	    return call("batchUpdate",new Callable<int[]>(){
+	    	@Override
+			public int[] call() throws Exception {
+		    return getHibernateTemplate().execute(new HibernateCallback<int[]>() {
+				@Override
+	            public int[] doInHibernate(Session session) throws HibernateException, SQLException {
+					int[] result = new int[hql.length];
+					int resultIndex = 0;
+					for (String s : hql) { // 多个语句执行
+						Query query = session.createQuery(s);
+						// 多次执行的结果
+						result[resultIndex++] = query.executeUpdate();
+					}
+					return result;
+	            }
+			});
+	    }
+	    });
     }
 
 	@Override
@@ -357,27 +394,56 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		if (Utils.isEmpty(hql)) {
 	    	return null;
 	    }
-		return getHibernateTemplate().execute(new HibernateCallback<int[]>() {
+		return call(hql,new Callable<int[]>(){
 			@Override
-            public int[] doInHibernate(Session session) throws HibernateException, SQLException {
-				if (Utils.notEmpty(args)) {
-					Query query = session.createQuery(hql);
-					int[] result = new int[args.size()];
-					int resultIndex = 0;
-					for (Object[] arg : args) { // 多次执行参数
-						int paramIndex = 0;
-						for (Object param : arg) { // 单次执行的参数
-							query.setParameter(paramIndex++, param);
+			public int[] call() throws Exception {
+				return getHibernateTemplate().execute(new HibernateCallback<int[]>() {
+					@Override
+		            public int[] doInHibernate(Session session) throws HibernateException, SQLException {
+						if (Utils.notEmpty(args)) {
+							Query query = session.createQuery(hql);
+							int[] result = new int[args.size()];
+							int resultIndex = 0;
+							for (Object[] arg : args) { // 多次执行参数
+								int paramIndex = 0;
+								for (Object param : arg) { // 单次执行的参数
+									query.setParameter(paramIndex++, param);
+								}
+								// 多次执行的结果
+								result[resultIndex++] = query.executeUpdate();
+							}
+							return result;
 						}
-						// 多次执行的结果
-						result[resultIndex++] = query.executeUpdate();
-					}
-					return result;
-				}
-				return null;
-            }
+						return null;
+		            }
+				});
+			}
+			
 		});
+		 
     }
+	
+	/**
+	 * 所有的库操作都经过call操作。为以后call操作用Executor进行监管创造条件
+	 * 
+	 * @param sql
+	 * @param callable
+	 * @return
+	 */
+	protected <T>T call(String sql,Callable<T> callable) {
+		long begin=System.currentTimeMillis();
+		try{
+			T o=callable.call();
+			return o;
+		}catch(RuntimeException ex){
+			throw ex;
+		}catch(Exception ex){
+			throw new RuntimeException(ex);
+		}finally{
+			long last=System.currentTimeMillis()-begin;
+			log(sql,last);
+		}
+	}
 
 //	@Override
 //    public <T> int batchSave(final List<T> entitys) {
