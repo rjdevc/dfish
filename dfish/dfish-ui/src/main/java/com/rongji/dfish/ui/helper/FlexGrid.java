@@ -3,7 +3,9 @@ package com.rongji.dfish.ui.helper;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.Layout;
@@ -210,11 +212,28 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	public GridLayout getPrototype() {
 		if(!this.prototypeChanged){
 			prototype.prototypeBuilding(true);
-			prototype.clearNodes();
-			
-			for(int i=0;i<columns;i++){
+//			prototype.clearNodes();
+			prototype.getTbody().clearNodes();
+			prototype.getThead().clearNodes();
+			//不再删除columns 把columns当成样式的一部分。
+			int visableColumnCount=prototype.getVisableColumnNumMap().size();
+			for(int i=visableColumnCount;i<columns;i++){
 				prototype.addColumn(GridColumn.text(null, WIDTH_REMAIN));
 			}
+			if(columns<visableColumnCount){
+				//删除最后可见的几个column
+				int reduce=visableColumnCount-columns;
+				for(ListIterator<GridColumn> iter=prototype.getColumns().listIterator(prototype.getColumns().size());iter.hasPrevious();){
+					GridColumn c=iter.previous();
+					if(c.isVisable()){
+						if(--reduce<0){
+							break;
+						}
+						iter.remove();
+					}
+				}
+			}
+		
 			// 剩余列数
 			int occupied = 0;
 			int rowIndex = 0;
