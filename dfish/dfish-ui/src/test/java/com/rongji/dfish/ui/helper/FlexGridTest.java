@@ -11,6 +11,10 @@ public class FlexGridTest extends DFishUITestCase {
 
 	protected Object getWidget(){
 		FlexGrid fg=new FlexGrid("myflexgrid");
+		fg.getPrototype().getColumns().get(0).setCls("form-tt2");
+		fg.getPrototype().getColumns().get(4).setCls("form-tt2");
+		fg.getPrototype().getColumns().get(8).setCls("form-tt2");
+		
 		fg.addLabelRow(new Text("name","标题","value"), 4);
 		fg.addLabelRow(new Text("name2","标题2","value2"), FlexGrid.FULL_LINE);
 		fg.addLabelRow(new Text("name2","标题2","value2"), 4);

@@ -1,6 +1,5 @@
 package com.rongji.dfish.framework.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,17 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.rongji.dfish.base.DfishException;
-import com.rongji.dfish.base.Page;
 import com.rongji.dfish.framework.SystemData;
 
 public class DAOWithMoni extends  PubCommonDAOImpl{

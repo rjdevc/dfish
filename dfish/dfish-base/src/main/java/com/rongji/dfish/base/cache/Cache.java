@@ -36,7 +36,7 @@ public interface Cache<K, V> {
 	 * 批量设置值
 	 * @param m
 	 */
-	void putAll(Map<? extends K, ? extends V> m);
+	void putAll(Map<K, V> m);
 	/**
 	 * 删除一个值。
 	 * 删除这个值的时候，<strong>有可能</strong>把旧的值置放出来。
