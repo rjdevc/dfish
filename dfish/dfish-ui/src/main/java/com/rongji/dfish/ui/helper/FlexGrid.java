@@ -1,10 +1,9 @@
 package com.rongji.dfish.ui.helper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.ListIterator;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.HiddenContainer;
@@ -48,8 +47,6 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * 默认添加的组件所占的列数(当组件没有设定列数时,将使用该值)
 	 */
 	private int defaultOccupy = 1;
-	
-	private String labelWidth;
 	/**
 	 * 是否需要重构GridLayout中的表单元素
 	 */
@@ -113,22 +110,6 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 		return this;
 	}
 	
-	/**
-	 * 标签宽度
-	 * @return String
-	 */
-	public String getLabelWidth() {
-		return labelWidth;
-	}
-	/**
-	 * 标签宽度
-	 * @param labelWidth String
-	 * @return 本身,这样以便更好地设置参数
-	 */
-	public FlexGrid setLabelWidth(String labelWidth) {
-		this.labelWidth = labelWidth;
-		return this;
-	}
 	/**
 	 * 行高
 	 * @return Integer
@@ -231,16 +212,32 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	public GridLayout getPrototype() {
 		if(!this.prototypeChanged){
 			prototype.prototypeBuilding(true);
-			prototype.clearNodes();
-			
-			for(int i=0;i<columns;i++){
+//			prototype.clearNodes();
+			prototype.getTbody().clearNodes();
+			prototype.getThead().clearNodes();
+			//不再删除columns 把columns当成样式的一部分。
+			int visableColumnCount=prototype.getVisableColumnNumMap().size();
+			for(int i=visableColumnCount;i<columns;i++){
 				prototype.addColumn(GridColumn.text(null, WIDTH_REMAIN));
 			}
+			if(columns<visableColumnCount){
+				//删除最后可见的几个column
+				int reduce=visableColumnCount-columns;
+				for(ListIterator<GridColumn> iter=prototype.getColumns().listIterator(prototype.getColumns().size());iter.hasPrevious();){
+					GridColumn c=iter.previous();
+					if(c.isVisable()){
+						if(--reduce<0){
+							break;
+						}
+						iter.remove();
+					}
+				}
+			}
+		
 			// 剩余列数
 			int occupied = 0;
 			int rowIndex = 0;
 			
-			Set<Integer> labelColumns = new HashSet<Integer>();
 			for(FlexGridAppendingMode m : nodes) {
 				Widget<?> w=m.getPrototype();
 				int occupy = m.getOccupy()==null?defaultOccupy:m.getOccupy();
@@ -253,7 +250,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 					occupied = 0;
 				}
 				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&m.getPrototype() instanceof LabelRow<?>
-				&&!Boolean.TRUE.equals(((LabelRow<?>)m.getPrototype()).getHideLabel())){
+					&&!Boolean.TRUE.equals(((LabelRow<?>)m.getPrototype()).getHideLabel())){
 					Boolean required=false;
 					if (m.getPrototype() instanceof AbstractFormElement) {
 						AbstractFormElement<?, ?> cast = (AbstractFormElement<?, ?>) m.getPrototype();
@@ -264,9 +261,6 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 					html.setAlign(Html.ALIGN_RIGHT);
 					int fromColumn1 = occupied;
 					int toColumn1 = occupied + defaultOccupy - 1;
-					// 需要设置标签宽度的列(这里只处理占用1列的情况,至于标签多列问题这里不处理)
-					labelColumns.add(fromColumn1);
-					
 					prototype.add(rowIndex, fromColumn1, rowIndex, toColumn1, html);
 					
 					int fromColumn2 = occupied+defaultOccupy;
@@ -279,14 +273,6 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 				}
 				occupied += occupy;
 			}
-			
-			if (Utils.notEmpty(labelWidth) && !"*".equals(labelWidth)) {
-				for (Integer columnIndex : labelColumns) {
-					GridColumn column = prototype.getColumns().get(columnIndex);
-					column.setWidth(labelWidth);
-				}
-			}
-			
 			prototype.prototypeBuilding(false);
 		}
 //		Utils.copyPropertiesExact(prototype, this);

@@ -89,7 +89,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	}
 	
 	@Override
-    public void putAll(Map<? extends K, ? extends V> m) {
+    public void putAll(Map<K, V> m) {
 	    if (m == null) {
 	    	return;
 	    }
