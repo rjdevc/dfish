@@ -2121,43 +2121,6 @@ Html = define.widget( 'html', {
 		}
 	}
 } ),
-/* `label` */
-Label = define.widget( 'label', {
-	Listener: {
-		body: {
-			ready: function() {
-				var f = this.getForm();
-				if ( f ) {
-					if ( ! this.x.text )
-						$.html( this.$(), '<i class=f-required>*</i>' + (f.x.label || '') + (this.x.suffix || '') );
-					this.bindCls();
-					f.addEvent( 'statuschange', this.bindCls, this )
-					 .addEvent( 'validatechange', this.bindCls, this )
-					 .addEvent( 'replace', this.bindReplace, this )
-					 .addEvent( 'remove', this.remove, this );
-				}
-			}
-		}
-	},
-	Prototype: {
-		className: 'w-label',
-		// 获取表单widget
-		getForm: function() {
-			return this.x.bind && this.ownerView.find( this.x.bind );
-		},
-		bindCls: function() {
-			var f = this.getForm();
-			f && this.addClass( 'z-required', !!(f.x.validate && f.x.validate.required) && !(f.isReadonly() || f.isDisabled()) );
-		},
-		// @e -> event, n -> new widget
-		bindReplace: function( e, n ) {
-			this.replace( { type: 'label', bind: n.x.id } );
-		},
-		html_nodes: function() {
-			return this.x.text || '';
-		}
-	}
-} ),
 _splitSize = function( a, b ) {
 	return a && a[ a.parentNode.type_horz ? 'width' : 'height' ]( b );
 },
@@ -4418,7 +4381,7 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 	Prototype: {
 		className: 'w-form f-oh',
 		type_horz: T,
-		_boxgroup: T,
+		isBoxGroup: T,
 		x_childtype: $.rt( 'checkbox' ),
 		x_nodes: function() {
 			return this.x.options || [ { value: this.x.value, text: this.x.text, checked: this.x.checked, target: this.x.target } ];
@@ -4510,11 +4473,11 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 /* `checkbox` */
 Checkbox = define.widget( 'checkbox', {
 	Const: function( x, p ) {
-		if ( p && p._boxgroup ) {
+		if ( p && p.isBoxGroup ) {
 			this.rootNode = p;
 			this.defaults( { wmin: 7, width: p.x.targets ? 62 : -1 } );
 		}
-		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p._boxgroup && p.x.value && x.value && $.idsAny( p.x.value, x.value )));
+		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p.isBoxGroup && p.x.value && x.value && $.idsAny( p.x.value, x.value )));
 		AbsForm.apply( this, arguments );
 	},
 	Extend: AbsForm,
@@ -4536,7 +4499,10 @@ Checkbox = define.widget( 'checkbox', {
 				occupy: T,
 				block: function() { return ! this.isNormal() },
 				method: function() {
-					this.isNormal() && this.elements( '[w-target]' ).each( function() { _widget( this )._ustag() } );
+					if ( this.isNormal() ) {
+						this.parentNode.isBoxGroup && this.parentNode.triggerHandler( 'change' );
+						this.elements( '[w-target]' ).each( function() { _widget( this )._ustag() } );
+					}
 				}
 			},
 			click: {
@@ -4570,7 +4536,7 @@ Checkbox = define.widget( 'checkbox', {
 		className: 'w-form',
 		formType: 'checkbox',
 		getValidError: function( a ) {
-			return this.parentNode._boxgroup && this.parentNode.getValidError( a );
+			return this.parentNode.isBoxGroup && this.parentNode.getValidError( a );
 		},
 		_ustag: function( a ) {
 			this.ownerView.linkTarget( this.x.target, ! this.isDisabled() && this.isChecked() );
@@ -4653,7 +4619,7 @@ Checkbox = define.widget( 'checkbox', {
 			this.exec( $.extend( {}, this.x.tip, { type: 'tip', hoverdrop: true } ) );
 		},
 		html: function() {
-			var p = this.parentNode, c = this.className, g = p.type_horz && (!p._boxgroup || p.targets), w = this.innerWidth(),
+			var p = this.parentNode, c = this.className, g = p.type_horz && (!p.isBoxGroup || p.targets), w = this.innerWidth(),
 				k = this._modchk, s = this.prop_cls(), t = this.x.tip, y = '';
 			if ( w ) {
 				y += 'width:' + w + 'px;';
@@ -7692,9 +7658,8 @@ GridRow = define.widget( 'grid/row', {
 					i += r[ a ][ i ] - 1;
 					continue;
 				}
-				var s = t = '', f = c[ i ].x, v = d && d[ f.field ];
+				var k = i, s = t = '', f = c[ i ].x, v = d && d[ f.field ];
 				if ( v != N && typeof v === _OBJ ) {
-					k = i;
 					if ( v.rowspan > 1 ) {
 						for ( var j = 1; j < v.rowspan; j ++ )
 							$.jsonChain( v.colspan || 1, r, a + j, i );
@@ -7720,7 +7685,7 @@ GridRow = define.widget( 'grid/row', {
 				f.align  && (s += ' align='  + f.align);
 				f.valign && (s += ' valign=' + f.valign);
 				if ( t ) {
-					b.push( t.html( i >= L ) );
+					b.push( t.html( k, i, L ) );
 				} else {
 					v = v == N ? '' : v;
 					var g = '';
@@ -7731,7 +7696,7 @@ GridRow = define.widget( 'grid/row', {
 					if ( f.tip )
 						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
-					b.push( '<td class="w-td-' + u._face + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
+					b.push( '<td class="w-td-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
 						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
 				}
 			}
@@ -7770,9 +7735,9 @@ TD = define.widget( 'td', {
 		x_childtype: function( t ) {
 			return _td_wg[ t ] ? 'grid/' + t : t;
 		},
-		html: function( a ) {
+		html: function( k, i, L ) {
 			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
-			this.className = 'w-td-' + g._face + (a ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
+			this.className = 'w-td-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + '"';
 			if ( this.x.on || this.Const.Listener )
 				s += _html_on.call( this );

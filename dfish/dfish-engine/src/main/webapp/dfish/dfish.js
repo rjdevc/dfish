@@ -279,7 +279,7 @@ _loadJs = function( a, b, c ) {
 		g = function() {
 			if( -- f === 0 ) {
 				for ( var j = 0, r = []; j < a.length; j ++ )
-					r.push( _ajax_cache[ a[ j ] ].response );
+					r.push( _ajax_cache[ _ajax_url( a[ j ] ) ].response );
 				b && b( r );
 			}
 		};
@@ -1892,6 +1892,7 @@ _merge( $, {
 	_data: {},
 	all: {},
 	globals: {},
+	templates: {},
 	// 事件白名单
 	white_events: (function() {
 		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,beforepaste,beforedeactivate,' +
@@ -1927,6 +1928,9 @@ _merge( $, {
 	// 存取临时变量
 	data: function( a, b ) {
 		return b === U ? this._data[ a ] : (this._data[ a ] = b);
+	},
+	template: function( a, b ) {
+		return b === U ? this.templates[ a ] : (this.templates[ a ] = b);
 	},
 	proxy: function( a, b ) {
 		typeof b === _STR && (b = Function( b ));
