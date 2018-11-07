@@ -28,6 +28,7 @@
 .f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x{visibility:visible}
 .f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85}
 .f-scroll-wrap.z-ovis{overflow:visible}
+.f-scroll-overflow .w-vert,.f-scroll-overflow .w-grid{overflow:visible}
 
 .f-bl{display:block;}
 .f-inbl{display:inline-block;*display:inline;*zoom:1}
