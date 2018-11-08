@@ -1228,10 +1228,26 @@ define( {
       { name: 'dir', type: 'String', remark: '按钮排列方向。可选值: <b>h</b><font color=green>(横向,默认)</font>, <b>v</b><font color=green>(纵向)</font>' },
       { name: 'focusmultiple', type: 'Boolean', remark: '是否有多个按钮可同时设为焦点状态。' },
       { name: 'nobr', type: 'Boolean', remark: '不换行。默认为 true。' },
+      { name: 'overflow', type: 'Object', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。', param: [
+        { name: 'effect', type: 'String', remark: '效果。可选值：<b>swap</b><font color=green>(点击下拉菜单按钮，和可见按钮交换位置。)</font>', optional: true },
+        { name: 'button', type: 'Button', remark: '显示"更多"的按钮。', optional: true }
+      ], example: [
+          function() {
+            // 设置按钮栏可拖拽也可放置
+            var opt =
+            {
+              "type": "buttonbar",
+              "overflow": {
+                "effect": "swap",
+                "button": { "type": "button", "text": "更多" }
+              }
+            }
+          }
+      ] },
+      { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'space', type: 'Number', remark: '按钮之间的间隔。' },
       { name: 'split', type: 'Object', remark: '在按钮之间插入一个split widget。' },
-      { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'valign', type: 'String', remark: '垂直居中。可选值: <b>top</b>, <b>bottom</b>, <b>middle</b>' }
     ],
     Methods: [
@@ -2298,15 +2314,22 @@ define( {
   	remark: '日历。',
   	extend: 'widget',
     Config: [
+      { name: 'body', type: 'Ojbect', optional: true, remark: '定义日期的内容和样式等。以日期数字作为key，以 calendar/td 作为值。', example: [
+          function() {
+            // 给当前月的1日和5日设置样式和内容。
+            var opt =
+            {
+               "type": "canlendar/date",
+               "body": {
+                 "1": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第一个日程" }, // 可以省略 "type": "calendar/td" 这部分
+                 "5": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第二个日程" }
+               }
+            }
+          }
+      ] },
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
-      { name: 'css', type: 'Object', optional: true, remark: '设置一组日期样式。', example: [
-          function() {
-            // 按顺序对应value中值为Y的日期设置绿色字体，值为N的日期设置红色字体
-            var opt = { type: 'canlendar/date', css: { value: 'NNNNNNNNYYNNNNNNNNYYYYYYYNNNNNN', N: 'color:red;', Y : 'color:green;' } }
-          }
-      ] },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。', example: [
           function() {
             // 点击日期按钮显示日期值。
@@ -2369,6 +2392,16 @@ define( {
     ],
     Classes: [
       { name: '.w-calendar-year', remark: '基础样式。' }
+    ]
+  },
+  "calendar/td": {
+  	title: 'calendar/td',
+  	remark: '日历单元格。',
+  	extend: 'widget',
+    Config: [
+      { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
+      { name: 'focusable', type: 'Boolean', remark: '设置为 true，点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
+      { name: 'text', type: 'String', optional: true, remark: '显示内容。' }
     ]
   },
   "text": {
@@ -2726,7 +2759,16 @@ define( {
       { name: 'getNextOption()', remark: '获取下一个选项对象。' },
       { name: 'setOptions(opt, [index])', remark: '设置下拉选项。', param: [
         { name: 'opt', type: 'Array | Option', remark: '选项数组或单个选项。' },
-        { name: 'index', type: 'Number', remark: '选项序号。可替换指定的选项。' }
+        { name: 'index', type: 'Number', remark: '选项序号。可替换指定的选项。', optional: true }
+      ], example: [
+          function() {
+            // 替换所有的选项
+            xbox.setOptions( [ { value: 1, text: '选项1' }, { value: 2, text: '选项2' } ] );
+          },
+          function() {
+            // 替换第一个选项
+            xbox.setOptions( { value: 1, text: '选项1' }, 0 );
+          }
       ] }
     ]
   },

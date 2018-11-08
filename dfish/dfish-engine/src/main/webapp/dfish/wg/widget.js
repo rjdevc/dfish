@@ -612,6 +612,8 @@ W = define( 'widget', function() {
 		},
 		// 触发用户定义的事件 / @e -> event, a -> [args]?, f -> func string?
 		triggerHandler: function( e, a, f ) {
+			if ( this._disposed || this.isDisabled() )
+				return;
 			var t = e.runType || e.type || e, f = f || (this.x.on && this.x.on[ t ]), g = 'event', r = a != N ? [ e ].concat( a ) : [ e ];
 			if ( a != N ) {
 				for ( var i = 0, l = r.length - 1; i < l; i ++ )
@@ -798,8 +800,14 @@ W = define( 'widget', function() {
 			o && (g.focusOwner = o, o.focusNode = g);
 			g.render( e, 'replace' );
 			this.removeElem();
-			p.trigger( 'resize' );
+			//p.trigger( 'resize' );
 			return g;
+		},
+		// 节点交换位置
+		swap: function( a ) {
+			var b = this.nodeIndex, c = a.nodeIndex;
+			this.before( a );
+			this.parentNode[ c ][ b < c ? 'after' : 'before' ]( this );
 		},
 		// 清空子节点
 		empty: function( a ) {
@@ -1223,7 +1231,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
 		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
-		p.trigger( 'resize' );
+		//p.trigger( 'resize' );
 		return p[ i ];
 	}
 } );
@@ -2230,10 +2238,20 @@ Buttonbar = define.widget( 'buttonbar', {
 	Default: { valign: 'middle'	},
 	Listener: {
 		body: {
+			ready: function() {
+				this.x.overflow && this.overflow();
+			},
+			resize: function() {
+				this.x.overflow && this.overflow();
+			},
 			nodechange: function() {
 				Horz.Listener.body.nodechange.apply( this, arguments );
 				Q( '.w-button', this.$() ).removeClass( 'z-last z-first' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
+				if ( this.x.space > 0 ) {
+					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
+					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
+				}
 			}
 		}
 	},
@@ -2268,6 +2286,47 @@ Buttonbar = define.widget( 'buttonbar', {
 		},
 		scaleHeight: function() {
 			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
+		},
+		overflow: function( a ) {
+			clearTimeout( this._overflow_timer );
+			if ( a ) {
+				var self = this;
+				this._overflow_timer = setTimeout( function() { self._overflow() }, 50 );
+			} else
+				this._overflow();
+		},
+		_overflow: function() {
+			if ( this._more ) {
+				this._more.remove();
+				delete this._more;
+				for ( var i = 0; i < this.length; i ++ )
+					this[ i ].css( { visibility: '' } );
+			}
+			var tw = this.$().offsetWidth, o = this.x.overflow;
+			if ( this.$().scrollWidth > tw ) {
+				this._more = this.append( o.button );
+				var w = this._more.width();
+				for ( var i = 0, j; i < this.length - 1; i ++ ) {
+					j = this[ i ].width();
+					if ( w + j > tw ) break;
+					w += j;
+				}
+				this[ i ++ ].before( this._more );
+				var m = this._more.setMore( { nodes: [] } ), self = this;
+				for ( ; i < this.length; i ++ ) {
+					m.add( $.extend( { cls: '' }, this[ i ].x ) )
+					 .addEvent( 'click', (function() {
+					 	var n = self[ i ];
+					 	return function() {
+					 		if ( o.effect === 'swap' ) {
+					 			self._more.prev().swap( n );
+					 			self._overflow();
+					 		}
+					 	};
+					 })() );
+					this[ i ].css( { visibility: 'hidden' } );
+				}
+			}
 		},
 		html_nodes: function() {
 			for ( var i = 0, l = this.length, s = [], v = this.attr( 'valign' ); i < l; i ++ ) {
@@ -2370,14 +2429,17 @@ Button = define.widget( 'button', {
 		_menu_type: 'menu',
 		// @implement
 		init_nodes: function( x ) {
-			if ( x.more || x.nodes )
-				this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, hoverdrop: x.hoverdrop } );
-			if ( this.more && x.on && x.on.click )
-				this._combo = T;
+			this.setMore( x );
 		},
 		// @implement
 		insertHTML: function( a, b ) {
 			this.$() && $[ _putin[ b ] ? 'after' : b ]( this.$(), a.isWidget ? a.$() : a );
+		},
+		setMore: function( x ) {
+			if ( x.more || x.nodes )
+				this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, pophide: T, hoverdrop: x.hoverdrop || this.x.hoverdrop } );
+			this._combo = this.more && x.on && x.on.click;
+			return this.more;
 		},
 		usa: function() {
 			return ! this.isDisabled() && ! this._locked;
@@ -2415,10 +2477,7 @@ Button = define.widget( 'button', {
 						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : p; i < d.length; i ++ )
 							if ( d[ i ] !== this && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ].trigger( 'blur' ); }
 					}
-					if ( (d = this.x.target) && (d = d.split(',')) ) {
-						for ( var i = 0, e; i < d.length; i ++ )
-							(e = this.ownerView.find( d[ i ] )) && e.parentNode && e.parentNode.type_frame && e.parentNode.view( d[ i ] );
-					}
+					this.x.target && this.ownerView.linkTarget( this.x.target, T );
 				}
 			}
 			this.x.focus = a;
@@ -2570,8 +2629,10 @@ MenuButton = define.widget( 'menu/button', {
 	Listener: {
 		body: {
 			click: function() {
-				if ( ! this.isDisabled() && this.x.on && this.x.on.click )
+				if ( ! this.isDisabled() ) {
+					this.x.target && this.ownerView.linkTarget( this.x.target, T );
 					this.root().hide();
+				}
 			}
 		}
 	},
@@ -3695,10 +3756,13 @@ Progress = define.widget( 'progress', {
 						}
 					}, x.delay * 1000 );
 				}
+				var p = this.$( 'p' );
+				p.style.width = (this.width() || p.parentNode.parentNode.offsetWidth) + 'px';
 			}
 		}
 	},
 	Prototype: {
+		className: 'w-progress',
 		stop: function() {
 			clearTimeout( this._timer );
 		},
@@ -3710,8 +3774,8 @@ Progress = define.widget( 'progress', {
 		},
 		html_nodes: function() {
 			var t = this.x.text, p = this.x.percent;
-			return '<table id=' + this.id + 'g class="w-progress-table">' + (t != N ? '<tr><td colspan=2>' + t : '') +
-				'<tr><td width=100%><div class=_bar><div class=_cur id=' + this.id + 'b style="width:' + p + '%"></div></div><td width=30><span class=_num id=' + this.id + 'p>' + p + '%</span></table>';
+			return (t != N ? '<div class="_t f-fix">' + t + '</div>' : '') +
+				'<div class=_bar><div class=_dn>' + p + '%</div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p>' + p + '%</div></div></div>';
 		},
 		dispose: function() {
 			this.stop();
@@ -4217,9 +4281,10 @@ AbsInput = define.widget( 'abs/input', {
 					return (this.x.validate && this.x.validate.maxlength && cfg.input_detect && cfg.input_detect.maxlength) || this.x.tip === T || this.x.placeholder;
 				},
 				method: function( e ) {
-					if ( this.x.tip === T ) {
+					if ( this.isDisabled() )
+						return;
+					if ( this.x.tip === T )
 						this.$t().title = this.text();
-					}
 					var m = cfg.input_detect && cfg.input_detect.maxlength && this.x.validate && this.x.validate.maxlength, v = this.val(), u = v;
 					if ( this.lastValue === U )
 						this.lastValue = this.x.value;
@@ -4609,7 +4674,7 @@ Checkbox = define.widget( 'checkbox', {
 			} else {
 				var c = this.$t().checked, d = this.$t().defaultChecked;
 				this.$t().checked = d;
-				if ( c != d && this.parentNode.type.indexOf( 'group' ) > 0 ) {
+				if ( c != d && this.parentNode.isBoxGroup ) {
 					this.parentNode.targets && this.check();
 					this.parentNode.trigger( 'change' );
 				}
@@ -4797,9 +4862,9 @@ CalendarNum = define.widget( 'calendar/num', {
 						p.date.setFullYear( d.getFullYear() );
 						p.date.setMonth( d.getMonth() );
 						p.date.setDate( d.getDate() );
-						!this._disposed && this.trigger( 'focus' );
+						! this._disposed && this.x.focusable && this.trigger( 'focus' );
 						if ( p.x.callback ) {
-							this.trigger( 'focus' );
+							this.x.focusable && this.trigger( 'focus' );
 							p.x.format && !/[his]/.test( p.x.format ) && p.backfill();
 						}
 					}
@@ -4818,7 +4883,7 @@ CalendarNum = define.widget( 'calendar/num', {
 				}
 			},
 			focus: function( e ) {
-				if ( ! this.isDisabled() ) {
+				if ( this.x.focusable && ! this.isDisabled() ) {
 					var b = this.parentNode.getFocus();
 					if ( b && b !== this )
 						$.classRemove( b.$(), 'z-on' );
@@ -4829,19 +4894,19 @@ CalendarNum = define.widget( 'calendar/num', {
 	},
 	Default: { width: -1, height: -1 },
 	Prototype: {
-		className: '_a _d',
+		className: '_a',
 		tagName: 'td',
 		val: function() { return this.x.value },
 		focus: function() { this.trigger( 'focus' ) },
 		html_prop:  function() { return _proto.html_prop.call( this ) + ' w-urn="' + this.val() + '"' },
-		html_nodes: function() { return this.x.text }
+		html_nodes: function() { return '<div class=_num>' + this.x.num + '</div>' + (this.x.text ? '<div class=_tx>' + this.x.text + '</div>' : '') }
 	}
 } ),
 // 今天
 CalendarNow = define.widget( 'calendar/now', {
 	Extend: 'calendar/num',
 	Prototype: {
-		className: '_t',
+		className: '_today',
 		tagName: 'div',
 		val: function() { return this.parentNode._fm( new Date() ) },
 		html_prop: function() { return _proto.html_prop.call( this ) + ' w-urn="now"' }
@@ -4859,7 +4924,7 @@ Calendar = define.widget( 'calendar/date', {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
-				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
+				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), focusable: T, format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, on: t && { ready: function() { this.popTime() } } };
 			return o.exec( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
@@ -4879,13 +4944,13 @@ Calendar = define.widget( 'calendar/date', {
 		},
 		nav: function( e ) {
 			var a = e.srcElement;
-			if ( $.classAny( a, '_y' ) ) { //年
+			if ( $.classAny( a, '_year' ) ) { //年
 				mbi ? this.$( 'iptm' ).click() : this.popYM( 'y', a );
-			} else if ( $.classAny( a, '_m' ) ) { //月
+			} else if ( $.classAny( a, '_month' ) ) { //月
 				mbi ? this.$( 'iptm' ).click() : this.popYM( 'm', a );
 			} else if ( $.classAny( a, 'f-arw' ) ) { // 前 后
 				this.go( $.dateAdd( this.date, this._nav_unit, (a.id === this.id + 'arw-l' ? -1 : 1) * this._nav_radix ) );
-			} else if ( $.classAny( a, '_t' ) ) { // 今天
+			} else if ( $.classAny( a, '_today' ) ) { // 今天
 				this.date = new Date();
 				if ( this.x.callback ) {
 					this.backfill();
@@ -5051,21 +5116,22 @@ Calendar = define.widget( 'calendar/date', {
 			return '';
 		},
 		html_nodes: function() {
-			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0, o = this.x.css,
+			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0, o = this.x.body,
 				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'arw-l', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'arw-r', mbi ? 'r5' : 'r2' ) +
-					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class=_t>' + Loc.calendar.today + '</div></div>' +
-					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
+					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class=_today>' + Loc.calendar.today + '</div></div>' +
+					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
 			b.setDate( 1 ), b.setDate( - b.getDay() + 1 );
 			while ( b < d ) {
-				var v = this._fm( b ), h = b.getMonth() === c, t = h && o && o.value && o[ o.value[ k ++ ] ],
-					g = { value: v, text: b.getDate(), status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
-				t && (g.style = t);
-				e.push( ( b.getDay() === 0 ? '<tr>' : '' ) + (h ? this.add( g ).html() : '<td>&nbsp;') );
+				var v = this._fm( b ), h = b.getMonth() === c, t = h && o && o[ b.getDate() ],
+					g = { value: v, num: b.getDate(), status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
+				t && $.extend( g, t );
+				e.push( ( b.getDay() === 0 ? '<tr>' : '' ) + (h ? this.add( g ).html() : '<td class=_pad>&nbsp;') );
 				b.setDate( b.getDate() + 1 );
 			}
-			if ( (n = 7 - ( e.length % 7 )) > 1 )
-				e.push( '<td colspan=' + n + '>&nbsp;' );
+			if ( (n = 7 - (e.length % 7)) > 1 && n < 7 ) {
+				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
+			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
 	}
@@ -5081,21 +5147,22 @@ CalendarWeek = define.widget( 'calendar/week', {
 		},
 		html_nodes: function() {
 			var a = this.date, w = $.dateWeek( a, this.x.cg, this.x.start ), y = w[ 0 ], t = this.x.begindate, m = this.x.enddate,
-				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), n = 0, o = this.x.css,
-				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.weeknow + '</div></div>' +
-					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
+				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), n = 0, o = this.x.body,
+				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( 'r2' ) + '<div class=_today>' + Loc.calendar.weeknow + '</div></div>' +
+					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
 			this._year = y;
 			if ( b[ 0 ] !== y )
 				b = $.dateWeek( new Date( y, 11, 31 - 7 ), this.x.cg, this.x.start );
 			for ( var i = 1, l = b[ 1 ]; i <= l; i ++ ) {
-				var v = y + '-' + $.strPad( i ), g = { value: v, text: i, status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v, style: o && o.value && o[ o.value[ n ++ ] ] };
+				var v = y + '-' + $.strPad( i ), u = o && o[ i ], g = { value: v, num: i, status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				u && $.extend( g, u );
 				e.push( ( (i - 1) % 7 === 0 ? '<tr>' : '' ) + this.add( g ).html() );
 			}
-			if ( (n = 7 - (i%7)) > 1 )
-				e.push( '<td colspan=' + n + '>&nbsp;' );
+			if ( (n = 7 - (i % 7)) > 1 && n < 7 ) {
+				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
+			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
-
 	}
 } ),
 CalendarMonth = define.widget( 'calendar/month', {
@@ -5105,11 +5172,12 @@ CalendarMonth = define.widget( 'calendar/month', {
 		_nav_unit: 'y',
 		_formatter: 'yyyy-mm',
 		html_nodes: function() {
-			var a = this.date, y = a.getFullYear(), t = this.x.begindate, m = this.x.enddate, e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), n = 0, o = this.x.css,
-				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.monthnow + '</div></div>' +
-					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
+			var a = this.date, y = a.getFullYear(), t = this.x.begindate, m = this.x.enddate, e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), n = 0, o = this.x.body,
+				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( 'r2' ) + '<div class=_today>' + Loc.calendar.monthnow + '</div></div>' +
+					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, text: Loc.calendar.monthname[ i ], status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v, style: o && o.value && o[ o.value[ n ++ ] ] };
+				var v = y + '-' + $.strPad( i + 1 ), u = o && o[ i + 1 ], g = { value: v, num: Loc.calendar.monthname[ i ], status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				u && $.extend( g, u );
 				e.push( (i % 4 === 0 ? '<tr class=_tr>' : '') + this.add( g ).html() );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
@@ -5126,16 +5194,16 @@ CalendarYear = define.widget( 'calendar/year', {
 		html_nodes: function() {
 			var a = this.date, t = this.x.begindate, m = this.x.enddate,
 				y = a.getFullYear() - ( a.getFullYear() % 10 ) - 1,
-				e = [], f = _number( this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )) ), n = 0, o = this.x.css,
-				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( 'r2' ) + '<div class=_t>' + Loc.calendar.yearnow + '</div></div>' +
-					'<div style="padding:5px"><table class=w-calendar-tbl cellspacing=0 cellpadding=0 width=100%><tbody>';
+				e = [], f = _number( this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )) ), n = 0, o = this.x.body,
+				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( 'r2' ) + '<div class=_today>' + Loc.calendar.yearnow + '</div></div>' +
+					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + i, g = { value: v, text: y + i, status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v, style: o && o.value && o[ o.value[ n ++ ] ] };
+				var v = y + i, u = o && o[ v ], g = { value: v, num: y + i, status: (t && t > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				u && $.extend( g, u );
 				e.push( ( i % 4 === 0 ? '<tr class=_tr>' : '' ) + this.add( g ).html() );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
-
 	}
 } ),
 _date_formtype = {
@@ -7033,7 +7101,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		toggle_nodes: function( a ) {
 			var c = typeof a === _BOL ? a : !this.x.open;
 			this.x.open = c;
-			this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'f-none', ! c );
+			this.length && this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-open', c );
 			this.addClass( 'z-open', c );
 		},
 		// 展开或收拢 /@a -> T/F/event, b -> sync?, f -> fn?
@@ -7359,7 +7427,7 @@ Leaf = define.widget( 'leaf', {
 				this.x.status = $.inArray( f, this ) ? '' : 'disabled';
 				$.classAdd( this, 'z-notg', !!(this.length && !s) ); // 子节点都被过滤时，隐藏tg
 			}
-			return b ? this.html_self() + '<div class="w-leaf-cont' + ( this.x.open ? '' : ' f-none' ) + '" id=' + this.id + 'c>' + s + '</div>' : '';
+			return b ? this.html_self() + '<div class="w-leaf-cont' + (this.x.open ? ' z-open' : '') + '" id=' + this.id + 'c>' + s + '</div>' : '';
 		}
 	}
 } ),

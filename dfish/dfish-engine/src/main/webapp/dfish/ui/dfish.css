@@ -112,11 +112,13 @@
 .w-loading ._t,.w-view-loading ._t{vertical-align:middle;font-style:normal}
 .w-templateview{position:relative}
 
-.w-progress-table{width:100%;border-width:0;text-align:left;table-layout:auto}
-.w-progress-table ._bar,.w-progress-table ._cur{height:5px;background:#ddd;border-radius:3px;overflow:hidden}
-.w-progress-table ._cur{background:#018beb;height:100}
-.w-progress-table ._num{color:#999}
-.w-loading .w-progress-table{min-height:50px}
+.w-progress{width:100%;border-width:0;text-align:left;table-layout:auto}
+.w-progress ._t{padding:5px 0}
+.w-progress ._bar{position:relative;height:18px;line-height:18px;margin:5px 0;background:#ddd;border-radius:9px;overflow:hidden;text-align:center}
+.w-progress ._dn{position:absolute;top:0;left:0;right:0;bottom:0;color:#666}
+.w-progress ._up{position:absolute;top:0;left:0;bottom:0;background:#018beb;color:#fff;overflow:hidden}
+.w-progress ._cur{background:#018beb;}
+.w-loading .w-progress{min-height:50px}
 
 .w-vert,.w-horz,.f-oh{overflow:hidden}
 .w-vert.z-autosize,.w-horz.z-autosize{overflow:visible}
@@ -177,6 +179,8 @@
 .w-leaf.f-nobr .w-leaf-t,.w-leaf.f-nobr .w-leaf-s{display:inline-block;vertical-align:middle}
 .w-leaf.f-omit .w-leaf-a{display:inline}
 .w-leaf-o .f-arw,.w-leaf .w-form{font-style:normal}
+.w-leaf-cont{display:none}
+.w-leaf-cont.z-open{display:block}
 .w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}
 
 .w-leaf.w-grid-leaf{height:auto}
@@ -235,7 +239,8 @@
 .w-split.z-0.f-sub-horz ._next{position:relative;top:0;left:-100%}
 
 /* calendar */
-.w-calendar-dialog{border:1px solid #3298fe;background:#fff;}
+.w-calendar-dialog{border:1px solid #3298fe;background:#fff}
+.w-calendar-body{padding:5px}
 .w-calendar-head{position:relative;height:24px;line-height:24px;padding:5px 0;margin:0 10px;border-bottom:1px solid #ddd}
 .w-calendar-head ._circle{text-indent:-3px;overflow:hidden}
 .w-calendar-head ._circle i{font-size:34px;line-height:21px}
@@ -244,15 +249,14 @@
 .w-calendar-head .f-arw-r5{margin-left:20px;vertical-align:middle;cursor:pointer}
 .w-calendar-head .f-arw-l2{margin-right:15px;margin-top:-1px;vertical-align:middle;cursor:pointer}
 .w-calendar-head .f-arw-r2{margin-left:15px;margin-top:-1px;vertical-align:middle;cursor:pointer}
-.w-calendar-tbl{border-collapse:collapse}
-.w-calendar ._a,.w-calendar-tbl thead td{text-align:center;cursor:default;padding:5px 0}
+.w-calendar-tbl{table-layout:fixed;border-collapse:collapse;text-align:center;cursor:default}
 .w-calendar ._a.z-hv{background:#def0fc}
 .w-calendar ._a.z-on{background:#cce7f9}
 .w-calendar ._a.z-ds{color:#999}
-.w-calendar ._t,.w-calendar ._y,.w-calendar ._m{height:24px;vertical-align:middle;cursor:pointer}
-.w-calendar ._m{display:inline-block;min-width:32px;text-align:center}
-.w-calendar ._t:hover,.w-calendar ._y:hover,.w-calendar ._m:hover{text-decoration:underline}
-.w-calendar ._t{position:absolute;top:5px;right:5px}
+.w-calendar ._today,.w-calendar ._year,.w-calendar ._month{height:24px;vertical-align:middle;cursor:pointer}
+.w-calendar ._month{display:inline-block;min-width:32px;text-align:center}
+.w-calendar ._today:hover,.w-calendar ._year:hover,.w-calendar ._month:hover{text-decoration:underline}
+.w-calendar ._today{position:absolute;top:5px;right:5px}
 .w-calendar-select{background:#f5f5f5;text-align:center;cursor:default;border:1px solid #ccc}
 .w-calendar-select ._b{height:18px;line-height:18px}
 .w-calendar-select ._b:hover{background:#d5d5d5}

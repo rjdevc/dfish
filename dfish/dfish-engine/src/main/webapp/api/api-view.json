@@ -143,10 +143,18 @@
 		        { "id": "album", "text": "album", "icon": ".icon .icon-class" },
 		        { "id": "button", "text": "button", "icon": ".icon .icon-class" },
 		        { "id": "buttonbar", "text": "buttonbar", "icon": ".icon .icon-class" },
-		        { "id": "calendar/date", "text": "calendar/date", "icon": ".icon .icon-class" },
-		        { "id": "calendar/week", "text": "calendar/week", "icon": ".icon .icon-class" },
-		        { "id": "calendar/month","text": "calendar/month", "icon": ".icon .icon-class" },
-		        { "id": "calendar/year", "text": "calendar/year", "icon": ".icon .icon-class" },
+		        { "id": "calendar/date", "text": "calendar/date", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "calendar/week", "text": "calendar/week", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "calendar/month","text": "calendar/month", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "calendar/year", "text": "calendar/year", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "html", "text": "html", "icon": ".icon .icon-class" },
 		        { "id": "img", "text": "img", "icon": ".icon .icon-class" },
 		        { "id": "leaf", "text": "leaf", "icon": ".icon .icon-class" },
