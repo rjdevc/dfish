@@ -11,6 +11,7 @@ import com.rongji.dfish.ui.Valignable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.Button;
 import com.rongji.dfish.ui.widget.Split;
+import com.rongji.dfish.ui.widget.button.Overflow;
 
 /**
  * button 的父类。 Alignable
@@ -36,7 +37,24 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	private Boolean nobr;
 	private Boolean scroll;
 	private String scrollClass;
+	private Overflow overflow;
 
+	/**
+	 * 当按钮过多，放不下的时候，的效果
+	 * @return
+	 */
+	public Overflow getOverflow() {
+		return overflow;
+	}
+	/**
+	 * 当按钮过多，放不下的时候，的效果
+	 * @param overflow 设置当内容太多的时候不换行
+	 * @return this
+	 */
+	public ButtonBar setOverflow(Overflow overflow) {
+		this.overflow = overflow;
+		return this;
+	}
 	/**
 	 * 当内容太多的时候不换行
 	 * @return Boolean
