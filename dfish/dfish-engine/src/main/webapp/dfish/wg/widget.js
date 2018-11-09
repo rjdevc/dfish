@@ -533,11 +533,6 @@ W = define( 'widget', function() {
 		data: function( a, b ) {
 			return b === U ? (this.x.data && this.x.data[ a ]) : ((this.x.data || (this.x.data = {}))[ a ] = b);
 		},
-		// 获取data数据。如果没有找到，则往父级层层往上找。最高级为当前view或dialog
-		closestData: function( a ) {
-			var v = this.data( a );
-			return v === U ? (this.parentNode && this.parentNode.closestData( a )) : v;
-		},
 		// 获取下一个兄弟节点
 		next: function() {
 			 return this.parentNode && this.parentNode[ this.nodeIndex + 1 ];
@@ -710,7 +705,6 @@ W = define( 'widget', function() {
 			for ( var i = 0, x = this.x, f = h.dfish_format_fields, l = f.length, v, c = c || []; i < l; i ++ ) {
 				v = x.data && x.data[ f[ i ] ];
 				v == N && (v = x[ f[ i ] ]);
-				v == N && (v = this.closestData( f[ i ] ));
 				c.push( d ? d( v ) : v );
 			}
 			return h.apply( this, c );
@@ -726,8 +720,10 @@ W = define( 'widget', function() {
 				}
 				if ( b && (isNaN( k ) || r) && b[ k ] !== U ) {
 					v = b[ k ];
-				} else
-					v = self.closestData( k );
+				} else {
+					v = self.x.data && self.x.data[ k ];
+					v === U && (v = self.x[ k ]);
+				}
 				if ( t && v != N ) {
 					try { eval( 'v = v' + t ); } catch( ex ) { v = N; }
 				}
@@ -1620,11 +1616,6 @@ View = define.widget( 'view', {
 		// @implement
 		attrSetter: function( a, b ) {
 			this.dft_x && (this.dft_x[ a ] = b);
-		},
-		// @implement
-		closestData: function( a ) {
-			var v = this.data( a );
-			return v === U ? (this.parentDialog && this.parentDialog.closestData( a )) : v;
 		},
 		// @a -> sync?, b -> fn?, c -> force?[强制刷新，不论是否在frame内]
 		load: function( a, b, c ) {
@@ -3220,7 +3211,6 @@ Dialog = define.widget( 'dialog', {
 		if ( this[ 0 ] && this[ 0 ].type_view )
 			this.contentView = this[ 0 ];
 		if ( this.contentView ) {
-			this.contentView.parentDialog = this;
 			this.contentView.addEvent( 'beforeload', this.trigger, this )
 				.addEvent( 'load', this.trigger, this );
 		}
@@ -3339,8 +3329,8 @@ Dialog = define.widget( 'dialog', {
 				this.templateTitle && this.templateTitle.text( b );
 			}
 		},
-		closestData: function( a ) {
-			return this.data( a );
+		parentDialog: function() {
+			return $.dialog( this.ownerView );
 		},
 		_dft_pos: function() {
 			var w = this.width(), h = this.height();
@@ -4852,6 +4842,7 @@ CalendarNum = define.widget( 'calendar/num', {
 		this.rootNode = p;
 		W.apply( this, arguments );
 		x.focus && $.classAdd( this, 'z-on' );
+		x.value === p.nowValue && $.classAdd( this, 'z-today' );
 	},
 	Listener: {
 		body: {
@@ -4895,7 +4886,7 @@ CalendarNum = define.widget( 'calendar/num', {
 	},
 	Default: { width: -1, height: -1 },
 	Prototype: {
-		className: '_a',
+		className: '_td',
 		tagName: 'td',
 		val: function() { return this.x.value },
 		focus: function() { this.trigger( 'focus' ) },
@@ -4920,6 +4911,7 @@ Calendar = define.widget( 'calendar/date', {
 			b = x.begindate && this._ps( x.begindate ), e = x.enddate && this._ps( x.enddate );
 		this.date = $.numRange( d, b, e );
 		W.apply( this, arguments );
+		this.nowValue = this._fm( new Date() );
 	},
 	Helper: {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
@@ -5130,7 +5122,7 @@ Calendar = define.widget( 'calendar/date', {
 				e.push( ( b.getDay() === 0 ? '<tr>' : '' ) + (h ? this.add( g ).html() : '<td class=_pad>&nbsp;') );
 				b.setDate( b.getDate() + 1 );
 			}
-			if ( (n = 7 - (e.length % 7)) > 1 && n < 7 ) {
+			if ( (n = 7 - (e.length % 7)) > 0 && n < 7 ) {
 				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
@@ -5159,7 +5151,7 @@ CalendarWeek = define.widget( 'calendar/week', {
 				u && $.extend( g, u );
 				e.push( ( (i - 1) % 7 === 0 ? '<tr>' : '' ) + this.add( g ).html() );
 			}
-			if ( (n = 7 - (i % 7)) > 1 && n < 7 ) {
+			if ( (n = 7 - (i % 7)) > 0 && n < 7 ) {
 				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();

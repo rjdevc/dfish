@@ -250,9 +250,9 @@
 .w-calendar-head .f-arw-l2{margin-right:15px;margin-top:-1px;vertical-align:middle;cursor:pointer}
 .w-calendar-head .f-arw-r2{margin-left:15px;margin-top:-1px;vertical-align:middle;cursor:pointer}
 .w-calendar-tbl{table-layout:fixed;border-collapse:collapse;text-align:center;cursor:default}
-.w-calendar ._a.z-hv{background:#def0fc}
-.w-calendar ._a.z-on{background:#cce7f9}
-.w-calendar ._a.z-ds{color:#999}
+.w-calendar ._td.z-hv{background:#def0fc}
+.w-calendar ._td.z-on{background:#cce7f9}
+.w-calendar ._td.z-ds{color:#999}
 .w-calendar ._today,.w-calendar ._year,.w-calendar ._month{height:24px;vertical-align:middle;cursor:pointer}
 .w-calendar ._month{display:inline-block;min-width:32px;text-align:center}
 .w-calendar ._today:hover,.w-calendar ._year:hover,.w-calendar ._month:hover{text-decoration:underline}
@@ -264,7 +264,7 @@
 .w-calendar-select ._b.z-ds:hover{background:transparent}
 .w-calendar-select ._wr{height:180px;overflow:hidden}
 .w-calendar-select ._c{font-weight:bold}
-.w-calendar-month ._a,.w-calendar-year ._a{padding:10px}
+.w-calendar-month ._td,.w-calendar-year ._td{padding:10px}
 .w-calendar-time{height:30px;line-height:30px;border-top:1px solid #eee}
 .w-calendar-time ._time{float:left;padding-left:10px;cursor:pointer}
 .w-calendar-time ._ok{float:right;padding-right:10px;cursor:pointer}
