@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
-import java.beans.Transient;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.PubHolder;
@@ -18,7 +19,7 @@ import com.rongji.dfish.ui.PubHolder;
  * @version 2.0
  * @since xmltmpl 2.0
  */
-public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHolder<CalendarPanel,CalendarItem> {
+public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHolder<CalendarPanel,CalendarTd> {
 	/**
 	 * 
 	 */
@@ -40,6 +41,13 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * 年度列表
 	 */
 	public static final String TYPE_YEAR="calendar/year";
+	private Map<String,CalendarTd>  body;
+	private String type;
+	private String date;
+	private String focusdate;
+	private String src;
+	private CalendarTd pub;
+
 	/**
 	 * 构造函数
 	 * @param id 编号
@@ -53,12 +61,6 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 		this.id=id;
 		this.type=type;
 	}
-	private String type;
-	private String date;
-	private String focusdate;
-	private String src;
-	private CalendarCss css=new CalendarCss();
-	private CalendarItem pub;
 	
 	/**
 	 * 以此日期为基准显示一个月的日期。
@@ -124,42 +126,43 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 		this.src = src;
 		return this;
 	}
-	/**
-	 * 设置css的值
-	 * @param value String
-	 * @return 本身，这样可以继续设置其他属性
-	 * @see CalendarCss#setValue(String)
-	 */
-	public CalendarPanel setCssValue(String value){
-		css.setValue(value);
-		return this;
-	}
-	/**
-	 * 取得css的值
-	 * @return 本身，这样可以继续设置其他属性
-	 * @see CalendarCss#setValue(String)
-	 */
-	@Transient
-	public String getCssValue(){
-		return css.getPrototype().get("value");
-	}
-	/**
-	 * 设置css的关键字的值
-	 * @param key char
-	 * @param style String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public CalendarPanel setCss(char key,String style){
-		css.set(key, style);
-		return this;
-	}
-	/**
-	 * 取得css
-	 * @return CalendarCss
-	 */
-	public CalendarCss getCss(){
-		return css;
-	}
+	
+//	/**
+//	 * 设置css的值
+//	 * @param value String
+//	 * @return 本身，这样可以继续设置其他属性
+//	 * @see CalendarCss#setValue(String)
+//	 */
+//	public CalendarPanel setCssValue(String value){
+//		css.setValue(value);
+//		return this;
+//	}
+//	/**
+//	 * 取得css的值
+//	 * @return 本身，这样可以继续设置其他属性
+//	 * @see CalendarCss#setValue(String)
+//	 */
+//	@Transient
+//	public String getCssValue(){
+//		return css.getPrototype().get("value");
+//	}
+//	/**
+//	 * 设置css的关键字的值
+//	 * @param key char
+//	 * @param style String
+//	 * @return 本身，这样可以继续设置其他属性
+//	 */
+//	public CalendarPanel setCss(char key,String style){
+//		css.set(key, style);
+//		return this;
+//	}
+//	/**
+//	 * 取得css
+//	 * @return CalendarCss
+//	 */
+//	public CalendarCss getCss(){
+//		return css;
+//	}
 
 	/**
 	 * 日期按钮的公共设置。
@@ -167,9 +170,9 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * var opt = { type: 'canlendar/date', pub: { on: { click: 'alert(this.val())' } } }
 	 * @return CalendarItem
 	 */
-	public CalendarItem getPub() {
+	public CalendarTd getPub() {
 		if (pub == null) {
-			pub = new CalendarItem();
+			pub = new CalendarTd();
 		}
 		return pub;
 	}
@@ -180,7 +183,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @param pub CalendarItem
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public CalendarPanel setPub(CalendarItem pub) {
+	public CalendarPanel setPub(CalendarTd pub) {
 		this.pub = pub;
 		return this;
 	}
@@ -189,5 +192,25 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	public String getType() {
 		return type;
 	}
+	public Map<String, CalendarTd> getBody() {
+		return body;
+	}
+
+	public CalendarPanel setBody(Map<String, CalendarTd> body) {
+		this.body = body;
+		return this;
+	}
 	
+	public CalendarPanel add(String name, CalendarTd td) {
+		if(body==null){
+			body=new LinkedHashMap<String, CalendarTd>();
+		}
+		body.put(name, td);
+		return this;
+	}
+	public CalendarPanel add(int name, CalendarTd td) {
+		return add(String.valueOf(name),td);
+	}
+
+
 }
