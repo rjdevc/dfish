@@ -2466,6 +2466,12 @@ Button = define.widget( 'button', {
 		_ustag: function() {
 			this.ownerView.linkTarget( this.x.target, this.isFocus() );
 		},
+		isFocus: function() {
+			return ! this.isDisabled() && this.x.focusable && this.x.focus;
+		},
+		focus: function( a ) {
+			this.trigger( a === F ? 'blur' : 'focus' );
+		},
 		_focus: function( a ) {
 			if ( this._disposed )
 				return;
@@ -2481,12 +2487,6 @@ Button = define.widget( 'button', {
 				}
 			}
 			this.x.focus = a;
-		},
-		isFocus: function() {
-			return ! this.isDisabled() && this.x.focusable && this.x.focus;
-		},
-		focus: function( a ) {
-			this.trigger( a === F ? 'blur' : 'focus' );
 		},
 		drop: function() {
 			if ( this.usa() && this.more ) {
@@ -7291,6 +7291,7 @@ Leaf = define.widget( 'leaf', {
 			},
 			nodechange: function() {
 				this.fixFolder();
+				Q( '>.w-leaf', this.$( 'c' ) ).removeClass( 'z-first z-last' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 			}
 		}
 	},
@@ -7411,7 +7412,7 @@ Leaf = define.widget( 'leaf', {
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
 			l == N  && (l = this.length);
-			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || l ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === this.parentNode.length - 1 ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || l ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) +
 				(x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() + '<dt class="w-leaf-a">' +
 				(x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)>' + (x.src || l ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + e + '</b>') +
