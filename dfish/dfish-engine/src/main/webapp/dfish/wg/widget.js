@@ -2304,7 +2304,7 @@ Buttonbar = define.widget( 'buttonbar', {
 			}
 			var tw = this.$().offsetWidth, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
-				this._more = this.append( o.button );
+				this._more = this.append( $.extend( { focusable: F }, o.button ) );
 				var w = this._more.width();
 				for ( var i = 0, j; i < this.length - 1; i ++ ) {
 					j = this[ i ].width();
@@ -2320,6 +2320,7 @@ Buttonbar = define.widget( 'buttonbar', {
 					 	return function() {
 					 		if ( o.effect === 'swap' ) {
 					 			self._more.prev().swap( n );
+					 			n.focus();
 					 			self._overflow();
 					 		}
 					 	};
