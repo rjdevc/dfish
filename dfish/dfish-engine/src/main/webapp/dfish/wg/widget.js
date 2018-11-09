@@ -6811,8 +6811,8 @@ Onlinebox = define.widget( 'onlinebox', {
 			var u = this.formatStr( this.x.src, { text: t, value: t }, T );
 			if ( ! this.more )
 				this.more = this.createPop.call( this, u );
-			this.more.reload( u );
 			this.more.show();
+			this.more.reload( u );
 		},
 		html_nodes: function() {
 			var s = Text.prototype.html_nodes.apply( this, arguments );
