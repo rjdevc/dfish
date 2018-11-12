@@ -235,7 +235,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		if (Utils.isEmpty(fileId) || Utils.isEmpty(fileStatus)) {
 			return;
 		}
-		pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=? WHERE t.fileId=?", fileStatus, fileId);
+		getPubCommonDAO().bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=? WHERE t.fileId=?", fileStatus, fileId);
 	}
 	
 	/**
@@ -248,7 +248,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey) || Utils.isEmpty(fileStatus)) {
 			return;
 		}
-		pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=? WHERE t.fileLink=? AND t.fileKey=?", fileStatus, fileLink, fileKey);
+		getPubCommonDAO().bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=? WHERE t.fileLink=? AND t.fileKey=?", fileStatus, fileLink, fileKey);
 	}
 	
 	/**
@@ -383,7 +383,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		}
 		Map<String, List<PubFileRecord>> map = findFileRecords(fileLink, Collections.singletonList(fileKey));
 //		@SuppressWarnings("unchecked")
-//        List<PubFileRecord> result = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey=? AND t.fileStatus=?", fileLink, fileKey, STATUS_NORMAL);
+//        List<PubFileRecord> result = (List<PubFileRecord>) getPubCommonDAO().getQueryList("FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey=? AND t.fileStatus=?", fileLink, fileKey, STATUS_NORMAL);
 		List<PubFileRecord> result = map.get(fileKey);
 		if (result == null) {
 			return Collections.emptyList();
@@ -408,7 +408,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		params.add(STATUS_NORMAL);
 		// 不考虑fileKeys过多的情况
 		@SuppressWarnings("unchecked")
-		List<PubFileRecord> dataList = (List<PubFileRecord>) pubCommonDAO
+		List<PubFileRecord> dataList = (List<PubFileRecord>) getPubCommonDAO()
 				.getQueryList(
 						"FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey IN ("
 								+ getParamStr(fileKeys.size())
@@ -568,7 +568,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 			return Collections.emptyList();
 		}
 		@SuppressWarnings("unchecked")
-        List<PubFileRecord> result = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(params.size()) + ")", params.toArray());
+        List<PubFileRecord> result = (List<PubFileRecord>) getPubCommonDAO().getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(params.size()) + ")", params.toArray());
 		return result;
 	}*/
 	
@@ -615,51 +615,26 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		}
 		// 这里需要将旧文件标为删除,否则之前的文件无法删除
 		@SuppressWarnings("unchecked")
-        List<String> oldFileIds = (List<String>) pubCommonDAO.getQueryList("SELECT t.fileId FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey=? AND t.fileStatus=?", fileLink, fileKey, STATUS_NORMAL);
+        List<String> oldFileIds = (List<String>) getPubCommonDAO().getQueryList("SELECT t.fileId FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey=? AND t.fileStatus=?", fileLink, fileKey, STATUS_NORMAL);
 		
 		List<String> insertIds = new ArrayList<String>(newFileIds);
 		List<String> deleteIds = new ArrayList<String>(oldFileIds);
 		insertIds.removeAll(oldFileIds);
 		deleteIds.removeAll(newFileIds);
 		if (Utils.notEmpty(insertIds)) { // 这边的insert相当于更新附件链接和状态
-			@SuppressWarnings("unchecked")
-			List<PubFileRecord> fileList = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(insertIds.size()) + ")", insertIds.toArray());
-			final List<PubFileRecord> insertList = new ArrayList<PubFileRecord>();
-			List<String> updateIds = new ArrayList<String>(fileList.size());
-			for (PubFileRecord file : fileList) {
-				if (LINK_FILE.equals(file.getFileLink())) { // 临时文件可直接修改模块
-					updateIds.add(file.getFileId());
-				} else { // 非临时文件将产生新的记录
-					file.setFileId(getNewId());
-					file.setFileLink(fileLink);
-					file.setFileKey(fileKey);
-					file.setUpdateTime(new Date());
-					insertList.add(file);
-				}
-			}
-			
 			List<Object> params = new ArrayList<Object>();
 			params.add(fileLink);
 			params.add(fileKey);
 			params.add(new Date());
-			params.addAll(updateIds);
-			pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(updateIds.size()) + ")", params.toArray());
-			pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<Object>() {
-				@Override
-				public Object doInHibernate(Session session) throws HibernateException, SQLException {
-					for (PubFileRecord file : insertList) {
-						session.save(file);
-					}
-					return null;
-				}
-			});
+			params.addAll(insertIds);
+			getPubCommonDAO().bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(insertIds.size()) + ")", params.toArray());
 		}
 		if (Utils.notEmpty(deleteIds)){ // 这里的delete 相当于把附件状态标志为删除
 			List<Object> params = new ArrayList<Object>();
 			params.add(STATUS_DELETE);
 			params.add(new Date());
 			params.addAll(deleteIds);
-			pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(deleteIds.size()) + ")", params.toArray());
+			getPubCommonDAO().bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(deleteIds.size()) + ")", params.toArray());
 		}
 	}
 	

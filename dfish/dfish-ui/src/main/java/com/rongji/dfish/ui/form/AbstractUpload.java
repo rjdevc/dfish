@@ -171,9 +171,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	/**
 	 * 移除附件的地址
 	 * @return String
-	 * @deprecated 删除操作在保存时触发,界面点击删除是伪删除,这里的值无论怎么设置都是空值
 	 */
-	@Deprecated
 	public String getRemove_url() {
 		return remove_url;
 	}
@@ -182,12 +180,9 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * 移除附件的地址
 	 * @param remove_url String
 	 * @return 本身，这样可以继续设置其他属性
-	 * @deprecated 删除操作在保存时触发,界面点击删除是伪删除,这里的值无论怎么设置都是空值
 	 */
-	@Deprecated
     public T setRemove_url(String remove_url) {
-    	// 不做任何操作
-//		this.remove_url = remove_url;
+		this.remove_url = remove_url;
 		return (T) this;
 	}
 	
