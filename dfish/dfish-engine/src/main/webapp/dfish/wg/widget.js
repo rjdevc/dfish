@@ -2267,7 +2267,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		// @a -> name
 		getFocus: function( a ) {
 			for ( var i = 0; i < this.length; i ++ )
-				if ( this[ i ].isFocus() && (! a || a === this[ i ].x.name) ) return this[ i ];
+				if ( this[ i ].isFocus && this[ i ].isFocus() && (! a || a === this[ i ].x.name) ) return this[ i ];
 		},
 		getLocked: function() {
 			for ( var i = 0; i < this.length; i ++ )
