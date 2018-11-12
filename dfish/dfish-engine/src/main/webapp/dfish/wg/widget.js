@@ -796,7 +796,7 @@ W = define( 'widget', function() {
 			o && (g.focusOwner = o, o.focusNode = g);
 			g.render( e, 'replace' );
 			this.removeElem();
-			//p.trigger( 'resize' );
+			p.trigger( 'resize', 'replace' );
 			return g;
 		},
 		// 节点交换位置
@@ -1227,7 +1227,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
 		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
-		//p.trigger( 'resize' );
+		p.trigger( 'resize', v );
 		return p[ i ];
 	}
 } );
@@ -2232,8 +2232,8 @@ Buttonbar = define.widget( 'buttonbar', {
 			ready: function() {
 				this.x.overflow && this.overflow();
 			},
-			resize: function() {
-				this.x.overflow && this.overflow();
+			resize: function( e, f ) {
+				! f && this.x.overflow && this.overflow();
 			},
 			nodechange: function() {
 				Horz.Listener.body.nodechange.apply( this, arguments );
@@ -2264,9 +2264,10 @@ Buttonbar = define.widget( 'buttonbar', {
 				$.droppable( this[ i ], a );
 			return this;
 		},
-		getFocus: function() {
+		// @a -> name
+		getFocus: function( a ) {
 			for ( var i = 0; i < this.length; i ++ )
-				if ( this[ i ].isFocus() ) return this[ i ];
+				if ( this[ i ].isFocus() && (! a || a === this[ i ].x.name) ) return this[ i ];
 		},
 		getLocked: function() {
 			for ( var i = 0; i < this.length; i ++ )
@@ -4993,7 +4994,7 @@ Calendar = define.widget( 'calendar/date', {
 			return b && _widget( b );
 		},
 		getFocus: function() {
-			var b = $.get( '._a.z-on', this.$() );
+			var b = $.get( '._td.z-on', this.$() );
 			return b && _widget( b );
 		},
 		focus: function( a ) {
