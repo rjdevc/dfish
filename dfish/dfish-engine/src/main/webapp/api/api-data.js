@@ -1280,7 +1280,9 @@ define( {
             } );
           }
       ] },
-      { name: 'getFocus()', remark: '获取焦点状态的子节点。' },
+      { name: 'getFocus([name])', remark: '获取焦点状态的按钮。', param: [
+        { name: 'name', type: 'String', remark: '获取相同name的焦点按钮。。', optional: true }
+      ] },
       { name: 'getLocked()', remark: '获取锁定状态的子节点。' }
     ],
     Classes: [
@@ -2105,7 +2107,9 @@ define( {
       { name: '.z-on', remark: '焦点高亮样式。' },
       { name: '.z-loading', remark: '当树节点正在装载数据时的样式。' },
       { name: '.z-folder', remark: '有子节点时的样式。' },
-      { name: '.z-open', remark: '展开时的样式。' }
+      { name: '.z-open', remark: '展开时的样式。' },
+      { name: '.z-first', remark: '在兄弟节点中排行第一时的样式。' },
+      { name: '.z-last', remark: '在兄弟节点中排行最后时的样式。' }
     ]
   },
   "html": {
@@ -2330,6 +2334,7 @@ define( {
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
+      { name: 'padrow', type: 'Boolean', optional: true, remark: '设置为true，当日历不满6行时填补一行空白行。' },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。', example: [
           function() {
             // 点击日期按钮显示日期值。
@@ -3164,6 +3169,7 @@ define( {
         { name: 'iTop', type: 'Number', remark: '顶部位置。' }
       ] },
       { name: 'max()', remark: '窗口最大化。如果窗口已经是最大化的状态，那么将恢复到初始大小。' },
+      { name: 'parentDialog()', remark: '获取父窗口。' },
       { name: 'remove()', remark: '完全删除。调用本方法不会触发 close 事件。' },
       { name: 'show()', remark: '显示。和 hide() 方法对应。' }
     ],
