@@ -47,7 +47,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	private String focusdate;
 	private String src;
 	private CalendarTd pub;
-
+	private Boolean padrow ;
 	/**
 	 * 构造函数
 	 * @param id 编号
@@ -210,6 +210,22 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	}
 	public CalendarPanel add(int name, CalendarTd td) {
 		return add(String.valueOf(name),td);
+	}
+	/**
+	 * 设置为true，当日历不满6行时填补一行空白
+	 * @return Boolean
+	 */
+	public Boolean getPadrow() {
+		return this.padrow;
+	}
+	/**
+	 * 设置为true，当日历不满6行时填补一行空白
+	 * @param padrow Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public CalendarPanel setPadrow(Boolean padrow) {
+		this.padrow = padrow;
+		return this;
 	}
 
 
