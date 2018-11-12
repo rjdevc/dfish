@@ -517,18 +517,20 @@
 .w-menu ._ar .f-arw-t2{border-bottom-color:#aaa}
 .w-menu ._ar.z-us .f-arw-b2{border-top-color:#333}
 .w-menu ._ar.z-us .f-arw-t2{border-bottom-color:#333}
+.w-menu.z-omit ._t{position:absolute;left:32px;right:40px;}
+.w-menu.w-submenu{z-index:3}
+.w-menu-line{display:none;position:absolute;height:1px;border-left:1px solid transparent;border-right:1px solid transparent;}
 .w-menu-button{position:relative;display:block;height:30px;cursor:default}
 .w-menu-button ._c,.w-menu-button ._i,.w-menu-button ._t,.w-menu-button ._m,.w-menu-button ._x{display:inline-block;height:100%;vertical-align:top;*vertical-align:middle}
 .w-menu-button ._c{padding-right:36px}
 .w-menu-button ._i{width:32px;text-align:center}
 .w-menu-button ._t{white-space:pre}
 .w-menu-button ._m{position:absolute;right:0;top:0;padding:0 10px 0 26px}
+.w-menu-button.z-on{background:#ddebf0}
 .w-menu-button.z-ds{color:#aaa}
 .w-menu-button.z-ds .f-arw-r1{border-left-color:#aaa}
 .w-menu-button.z-hv,.w-menu-button.z-drop,.w-menu ._ar.z-us:hover{background:#edf4f7}
-.w-menu.z-omit ._t{position:absolute;left:32px;right:40px;}
-.w-menu.w-submenu{z-index:3}
-.w-menu-line{display:none;position:absolute;height:1px;border-left:1px solid transparent;border-right:1px solid transparent;}
+
 .w-dialog.z-snap-41 .w-menu-line{left:-1px;top:-1px}
 .w-dialog.z-snap-32 .w-menu-line{right:-1px;top:-1px}
 .w-dialog.z-snap-14 .w-menu-line{left:-1px;bottom:-1px}

@@ -2311,9 +2311,9 @@ Buttonbar = define.widget( 'buttonbar', {
 					 	return function() {
 					 		if ( o.effect === 'swap' ) {
 					 			self._more.prev().swap( n );
-					 			n.focus();
-					 			self._overflow();
 					 		}
+					 		n.focus();
+					 		self._overflow();
 					 	};
 					 })() );
 					this[ i ].css( { visibility: 'hidden' } );
@@ -2468,7 +2468,7 @@ Button = define.widget( 'button', {
 			if ( this._disposed )
 				return;
 			var a = a == N || a, p = this.parentNode, d;
-			if ( this.x.focusable && this.x.focus !== a && this.$() ) {
+			if ( this.x.focusable && this.$() ) {
 				$.classAdd( this.$(), 'z-on', a );
 				if ( a ) {
 					if ( ! p.x.focusmultiple ) {
@@ -5109,7 +5109,7 @@ Calendar = define.widget( 'calendar/date', {
 			return '';
 		},
 		html_nodes: function() {
-			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), k = 0, o = this.x.body,
+			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), o = this.x.body,
 				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'arw-l', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'arw-r', mbi ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class=_today>' + Loc.calendar.today + '</div></div>' +
@@ -5119,11 +5119,18 @@ Calendar = define.widget( 'calendar/date', {
 				var v = this._fm( b ), h = b.getMonth() === c, t = h && o && o[ b.getDate() ],
 					g = { value: v, num: b.getDate(), status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
 				t && $.extend( g, t );
-				e.push( ( b.getDay() === 0 ? '<tr>' : '' ) + (h ? this.add( g ).html() : '<td class=_pad>&nbsp;') );
+				e.push( (b.getDay() === 0 ? '<tr>' : '') + (h ? this.add( g ).html() : '<td class=_pad>&nbsp;') );
 				b.setDate( b.getDate() + 1 );
 			}
 			if ( (n = 7 - (e.length % 7)) > 0 && n < 7 ) {
 				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
+			}
+			if ( this.x.padrow && e.length < 36 ) {
+				for ( var i = 0, l = 6 - (e.length / 7); i < l; i ++ ) {
+					e.push( '<tr>' );
+					n = 7;
+					while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
+				}
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
