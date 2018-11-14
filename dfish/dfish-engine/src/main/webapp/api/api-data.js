@@ -378,14 +378,17 @@ define( {
         { name: 'elem', type: 'HTMLElement', remark: 'html元素对象' },
         { name: 'content', type: 'String', remark: 'html内容' }
       ] },
-      { name: '$.print(target, [bPrint], [tag])', id: '$.print', remark: '打印目标对象的内容。', common: true, param: [
+      { name: '$.print(target, [opt])', id: '$.print', remark: '打印目标对象的内容。', common: true, param: [
         { name: 'target', type: 'Widget | HTMLElement', remark: 'widget对象，或者HTML元素对象。' },
-        { name: 'bPrint', type: 'Boolean', remark: '设置为true，立即执行打印。', optional: true },
-        { name: 'tag', type: 'String', remark: '放在打印页面head里的标签。', optional: true }
+        { name: 'opt', type: 'Boolean', remark: '设置为true，立即执行打印。', optional: true, param: [
+          { name: 'print', type: 'Boolean', remark: '是否立即打印。' },
+          { name: 'head', type: 'String', remark: 'head标签内容。' },
+          { name: 'input2text', type: 'Boolean', remark: '是否把表单转为文本显示。' }
+        ] }
       ], example: [
           function() {
-          	//打印id=content的widget内容，并设置打印字体为36px
-            $.print( VM(this).find('content'), true, "<style>body{font-size:36px}</style>" );
+          	//打印id=content的widget内容，设置打印字体为36px，表单转为文本显示
+            $.print( VM(this).find('content'), { print: true, head: "<style>body{font-size:36px}</style>", input2text: true } );
           }
       ] },
       { name: '$.proxy(context, fn)', remark: '返回一个新函数，并且为这个函数指定一个特定的作用域对象。', common: true, param: [
@@ -1281,7 +1284,7 @@ define( {
           }
       ] },
       { name: 'getFocus([name])', remark: '获取焦点状态的按钮。', param: [
-        { name: 'name', type: 'String', remark: '获取相同name的焦点按钮。。', optional: true }
+        { name: 'name', type: 'String', remark: '获取相同name的焦点按钮。', optional: true }
       ] },
       { name: 'getLocked()', remark: '获取锁定状态的子节点。' }
     ],
@@ -2364,7 +2367,7 @@ define( {
   	title: 'calendar/week',
   	remark: '周历。',
   	extend: 'calendar/date',
-  	deprecate: '.w-calendar-date',
+  	deprecate: 'padrow,.w-calendar-date',
     Config: [
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一年的周列表。格式 yyyy-mm-dd' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一周。格式 yyyy-mm-dd' }
@@ -2377,7 +2380,7 @@ define( {
   	title: 'calendar/month',
   	remark: '月历。',
   	extend: 'calendar/date',
-  	deprecate: '.w-calendar-date',
+  	deprecate: 'padrow,.w-calendar-date',
     Config: [
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一年的月列表。格式 yyyy-mm' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一月。格式 yyyy-mm' }
@@ -2390,7 +2393,7 @@ define( {
   	title: 'calendar/year',
   	remark: '年历。',
   	extend: 'calendar/date',
-  	deprecate: '.w-calendar-date',
+  	deprecate: 'padrow,.w-calendar-date',
     Config: [
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示十年的年份列表。格式 yyyy' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一年。格式 yyyy' }
@@ -2407,6 +2410,9 @@ define( {
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
       { name: 'text', type: 'String', optional: true, remark: '显示内容。' }
+    ],
+    Classes: [
+      { name: '._td', remark: '基础样式。' }
     ]
   },
   "text": {

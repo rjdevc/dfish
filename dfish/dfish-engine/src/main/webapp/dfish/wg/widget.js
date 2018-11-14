@@ -630,7 +630,7 @@ W = define( 'widget', function() {
 		},
 		// 触发用户定义的事件和系统事件 / @e -> event, @a -> [data]
 		// 优先返回用户事件的返回值，其次返回系统事件的值
-		trigger: function( e, a ) {
+		trigger: function( e, a ) { 
 			if ( this._disposed )
 				return;
 			var b = this.Const.Listener,
@@ -650,7 +650,7 @@ W = define( 'widget', function() {
 				}
 			}
 			if ( _userPriority[ t ] ) { // 用户事件优先执行
-				if ( ! ( h && h.block && h.block.call( this, e ) ) && (r = this.triggerHandler( e, a )) === F )
+				if ( ! (h && h.block && h.block.call( this, e )) && (r = this.triggerHandler( e, a )) === F )
 					return F;
 				if ( this._disposed )
 					return;
@@ -2279,15 +2279,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		scaleHeight: function() {
 			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
 		},
-		overflow: function( a ) {
-			clearTimeout( this._overflow_timer );
-			if ( a ) {
-				var self = this;
-				this._overflow_timer = setTimeout( function() { self._overflow() }, 50 );
-			} else
-				this._overflow();
-		},
-		_overflow: function() {
+		overflow: function() {
 			if ( this._more ) {
 				this._more.remove();
 				delete this._more;
@@ -2297,7 +2289,7 @@ Buttonbar = define.widget( 'buttonbar', {
 			var tw = this.$().offsetWidth, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
 				this._more = this.append( $.extend( { focusable: F }, o.button ) );
-				var w = this._more.width();
+				var w = this._more.width() + _number( this.x.space );
 				for ( var i = 0, j; i < this.length - 1; i ++ ) {
 					j = this[ i ].width();
 					if ( w + j > tw ) break;
@@ -2306,20 +2298,18 @@ Buttonbar = define.widget( 'buttonbar', {
 				this[ i ++ ].before( this._more );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '' }, this[ i ].x ) )
-					 .addEvent( 'click', (function() {
-					 	var n = self[ i ];
-					 	return function() {
-					 		if ( o.effect === 'swap' ) {
-					 			self._more.prev().swap( n );
-					 		}
-					 		n.focus();
-					 		self._overflow();
-					 	};
-					 })() );
+					m.add( $.extend( { cls: '', on: { click: 'this.getCommander().parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
 			}
+		},
+		overflowView: function( a ) {
+			var a = $.all[ a ], o = this.x.overflow;
+			if ( o.effect === 'swap' ) {
+				this._more.prev().swap( a );
+			}
+			a.click();
+			this.overflow();
 		},
 		html_nodes: function() {
 			for ( var i = 0, l = this.length, s = [], v = this.attr( 'valign' ); i < l; i ++ ) {
@@ -4345,6 +4335,7 @@ Hidden = define.widget( 'hidden', {
 	},
 	Extend: AbsForm,
 	Prototype: {
+		isHiddenWidget: T,
 		isModified: $.rt( F ),
 		saveModified: $.rt( F ),
 		readonly: $.rt(),
@@ -4638,6 +4629,9 @@ Checkbox = define.widget( 'checkbox', {
 			this.check( a == 1 ? T : F );
 		},
 		val: CheckboxGroup.prototype.val,
+		text: function() {
+			return this.x.text;
+		},
 		selfVal: function() {
 			var t = this.$t();
 			return t.disabled || ! t.checked ? '' : t.value;
@@ -5109,29 +5103,29 @@ Calendar = define.widget( 'calendar/date', {
 			}
 			return '';
 		},
+		_padrow: function( e, n, r ) {
+			while ( n -- ) e.push( (r ? (r = ! r,'<tr>') : '') + '<td class=_pad>&nbsp;' );
+		},
 		html_nodes: function() {
 			var a = this.date, n = this.x.begindate && this._fm( this._ps( this.x.begindate ) ), m = this.x.enddate && this._fm( this._ps( this.x.enddate ) ), o = this.x.body,
 				b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'arw-l', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'arw-r', mbi ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class=_today>' + Loc.calendar.today + '</div></div>' +
 					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
-			b.setDate( 1 ), b.setDate( - b.getDay() + 1 );
-			while ( b < d ) {
-				var v = this._fm( b ), h = b.getMonth() === c, t = h && o && o[ b.getDate() ],
+			b.setDate( 1 );
+			b.getDay() > 0 && this._padrow( e, b.getDay(), T );
+			while ( b < d && b.getMonth() === c ) {
+				var v = this._fm( b ), t = o && o[ b.getDate() ],
 					g = { value: v, num: b.getDate(), status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
 				t && $.extend( g, t );
-				e.push( (b.getDay() === 0 ? '<tr>' : '') + (h ? this.add( g ).html() : '<td class=_pad>&nbsp;') );
+				e.push( (b.getDay() === 0 ? '<tr>' : '') + this.add( g ).html() );
 				b.setDate( b.getDate() + 1 );
 			}
-			if ( (n = 7 - (e.length % 7)) > 0 && n < 7 ) {
-				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
-			}
+			if ( (n = 7 - (e.length % 7)) > 0 && n < 7 )
+				this._padrow( e, n );
 			if ( this.x.padrow && e.length < 36 ) {
-				for ( var i = 0, l = 6 - (e.length / 7); i < l; i ++ ) {
-					e.push( '<tr>' );
-					n = 7;
-					while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
-				}
+				for ( var i = 0, l = 6 - (e.length / 7); i < l; i ++ )
+					this._padrow( e, 7, T );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
