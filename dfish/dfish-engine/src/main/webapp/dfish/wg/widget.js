@@ -605,6 +605,9 @@ W = define( 'widget', function() {
 		isDisplay: function() {
 			return this.$().currentStyle.display != 'none';
 		},
+		toggleDisplay: function() {
+			this.display( ! this.isDisplay() );
+		},
 		// 触发用户定义的事件 / @e -> event, a -> [args]?, f -> func string?
 		triggerHandler: function( e, a, f ) {
 			if ( this._disposed || this.isDisabled() )
@@ -2419,8 +2422,9 @@ Button = define.widget( 'button', {
 			this.$() && $[ _putin[ b ] ? 'after' : b ]( this.$(), a.isWidget ? a.$() : a );
 		},
 		setMore: function( x ) {
-			if ( x.more || x.nodes )
+			if ( x.more || x.nodes ) {
 				this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, pophide: T, hoverdrop: x.hoverdrop || this.x.hoverdrop } );
+			}
 			this._combo = this.more && x.on && x.on.click;
 			return this.more;
 		},
@@ -2429,6 +2433,14 @@ Button = define.widget( 'button', {
 		},
 		root: function() {
 			return this.parentNode.type_buttonbar && this.parentNode;
+		},
+		fixMoreCls: function() {
+			var a = this.x.cls && $.strTrim( this.x.cls );
+			if ( a ) {
+				for ( var i = 0, b = a.split( /\s+/ ), c = []; i < b.length; i ++ )
+					c.push( b[ i ] + '-' + this.more.type );
+				return c.join( ' ' );
+			}
 		},
 		fixsize: function() {
 			if ( this.x.maxwidth ) {
@@ -2455,6 +2467,9 @@ Button = define.widget( 'button', {
 		focus: function( a ) {
 			this.trigger( a === F ? 'blur' : 'focus' );
 		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
+		},
 		_focus: function( a ) {
 			if ( this._disposed )
 				return;
@@ -2473,6 +2488,8 @@ Button = define.widget( 'button', {
 		},
 		drop: function() {
 			if ( this.usa() && this.more ) {
+				var c = this.fixMoreCls();
+				c && this.more.addClass( c );
 				this.more.show();
 			}
 		},
@@ -2794,6 +2811,9 @@ Img = define.widget( 'img', {
 			$.classAdd( this.$(), 'z-on', a );
 			this.box && this.box.click( a );
 			a && b && b !== this && ! p.x.focusmultiple && b.focus( F );
+		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
 		},
 		html_img: function() {
 			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight,
@@ -4306,6 +4326,12 @@ AbsInput = define.widget( 'abs/input', {
 			this.$t()[ a === F ? 'blur' : 'focus' ]();
 			_z_on.call( this, a == N || a );
 		},
+		isFocus: function() {
+			return this.hasClass( 'z-on' );
+		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
+		},
 		focusEnd: function() {
 			this.focus();
 			this.cursorEnd();
@@ -4885,6 +4911,8 @@ CalendarNum = define.widget( 'calendar/num', {
 		tagName: 'td',
 		val: function() { return this.x.value },
 		focus: function() { this.trigger( 'focus' ) },
+		isFocus: function() { return this.hasClass( 'z-on' ) },
+		toggleFocus: function() { this.focus( ! this.isFocus() ) },
 		html_prop:  function() { return _proto.html_prop.call( this ) + ' w-urn="' + this.val() + '"' },
 		html_nodes: function() { return '<div class=_num>' + this.x.num + '</div>' + (this.x.text ? '<div class=_tx>' + this.x.text + '</div>' : '') }
 	}
@@ -7336,20 +7364,23 @@ Leaf = define.widget( 'leaf', {
 				this.checkBox( a );
 			}
 		},
+		isFocus: function() {
+			return this.rootNode.focusNode === this;
+		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
+		},
+		isOpen: function() {
+			return this.x.open;
+		},
 		isEvent4Box: function( e ) {
-			return this.box && e && e.srcElement && e.srcElement.id == this.box.id + 't';
+			return this.box && e && e.srcElement && e.srcElement.id === this.box.id + 't';
 		},
 		scrollIntoView: function( a ) {
 			var n = this;
 			while ( (n = n.parentNode) && n.type === this.type )
 				n.toggle( T );
 			_scrollIntoView( this, T, a );
-		},
-		isFocus: function() {
-			return this.rootNode.focusNode === this;
-		},
-		isOpen: function() {
-			return this.x.open;
 		},
 		checkBox: function( a ) {
 			this.box && this.box.click( a == N || a );
@@ -7902,6 +7933,9 @@ TR = define.widget( 'tr', {
 		},
 		isFocus: function( a ) {
 			return $.classAny( this.$(), 'z-on' );
+		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
 		},
 		isEvent4Box: function( e ) {
 			var b = this.getBox();
