@@ -9,6 +9,8 @@ import com.rongji.dfish.ui.widget.Button;
  *
  */
 public class Overflow extends AbstractWidget<Overflow>{
+
+	private static final long serialVersionUID = 8592484788559422098L;
 	/**
 	 * 有个折叠按钮，点击被折叠的按钮，被点击的按钮将会被交换到未被折叠的按钮的最后一个。
 	 */
@@ -22,9 +24,19 @@ public class Overflow extends AbstractWidget<Overflow>{
 	private String effect;
 	private Button button;
 	
+	/**
+	 * 效果
+	 * @return String
+	 * @see #EFFECT_SWAP
+	 */
 	public String getEffect() {
 		return effect;
 	}
+	/**
+	 * 效果
+	 * @param effect String
+	 * @return this
+	 */
 	public Overflow setEffect(String effect) {
 		this.effect = effect;
 		return this;
@@ -32,7 +44,7 @@ public class Overflow extends AbstractWidget<Overflow>{
 	/**
 	 * 如果被折叠，将会出现这个展开按钮的【更多】按钮。
 	 * 有时他和普通按钮一样大 有时可能只是个小小的右箭头。
-	 * @return
+	 * @return Button
 	 */
 	public Button getButton() {
 		return button;
@@ -40,7 +52,8 @@ public class Overflow extends AbstractWidget<Overflow>{
 	/**
 	 * 如果被折叠，将会出现这个展开按钮的【更多】按钮。
 	 * 有时他和普通按钮一样大 有时可能只是个小小的右箭头。
-	 * @param button
+	 * @param button Button
+	 * @return this
 	 */
 	public Overflow setButton(Button button) {
 		this.button = button;

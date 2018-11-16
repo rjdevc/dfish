@@ -32,19 +32,19 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	 */
 	private static final long serialVersionUID = -7218756238863890230L;
 	/**
-	 * 
+	 * 用横竖的线把表格划分成多个单元格
 	 */
 	public static final String FACE_CELL = GridLayout.FACE_CELL;
 	/**
-	 * 
+	 *  用横线(虚线)把表格划分成多行
 	 */
 	public static final String FACE_DOT = GridLayout.FACE_DOT;
 	/**
-	 * 
+	 *  用横线把表格划分成多行
 	 */
 	public static final String FACE_LINE = GridLayout.FACE_LINE;
 	/**
-	 * 
+	 * 无格式
 	 */
 	public static final String FACE_NONE = GridLayout.FACE_NONE;
 
@@ -58,10 +58,10 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 		bundleProperties();
 	}
 	
-	/**
-	 * 获取表格标题栏
-	 * @return Tr headRow
-	 */
+//	/**
+//	 * 获取表格标题栏
+//	 * @return Tr headRow
+//	 */
 //	public Tr getHeadRow() {
 //		List<Tr> headRows = prototype.getThead().getRows();
 //		Tr headRow = null;
@@ -105,7 +105,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 
 	/**
 	 * 添加表格列
-	 * @param gridColumn 
+	 * @param gridColumn GridColumn
 	 * @return 本身，这样可以继续设置其他属性
 	 */
     public T addColumn(GridColumn gridColumn) {
@@ -120,7 +120,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	/**
 	 * 添加表格列
 	 * @param index 在指定位置增加设置
-	 * @param gridColumn 
+	 * @param gridColumn GridColumn
 	 * @return 本身，这样可以继续设置其他属性
 	 */
     public T addColumn(int index,GridColumn gridColumn) {
@@ -180,7 +180,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	
 	/**
      * 获取表格行格式
-	 * @param pub 
+	 * @param pub Tr
      * @return 本身，这样可以继续设置其他属性
      */
 	public T setPub(Tr pub) {
@@ -198,7 +198,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 
 	/**
 	 * 皮肤。表格行的样式。可选值: line(默认值，横线), dot(虚线), cell(横线和竖线), none(无样式)。
-	 * @param face
+	 * @param face String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
     public T setFace(String face) {
@@ -216,7 +216,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	
 	/**
 	 * 单元格边距
-	 * @param cellpadding
+	 * @param cellpadding Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
     public T setCellpadding(Integer cellpadding) {
@@ -291,6 +291,8 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 
     /**
 	 * 点击聚焦效果,目前通过{@link #getPub()}.{@link #setFocusable(Boolean)}来设置
+	 * @param focusable Boolean
+	 * @return this
 	 */
 	@Deprecated
 	public T setFocusable(Boolean focusable) {
@@ -345,7 +347,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	/**
 	 * 内容转义
 	 * <p>描述:</p>
-	 * @param escape
+	 * @param escape Boolean 转义
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setEscape(Boolean escape) {
@@ -355,7 +357,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	
 	/**
 	 * 是否有表头配置
-	 * @param hasTableHead
+	 * @param hasTableHead boolean 是否有表头
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setHasTableHead(boolean hasTableHead){
@@ -363,7 +365,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 		return (T) this;
 	}
 	/**
-	 * 获取属性信息，支持bean中类反射获取，或者是从Map中获取(主要支持JdbcTemplate的List<Map<String,Object>>)
+	 * 获取属性信息，支持bean中类反射获取，或者是从Map中获取(主要支持JdbcTemplate的List&lt;Map&lt;String,Object&gt;&gt;)
 	 * @param item Object
 	 * @param prop String 支持点号(.)分隔的多级属性
 	 * @return Object

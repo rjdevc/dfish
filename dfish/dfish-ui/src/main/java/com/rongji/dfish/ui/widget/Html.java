@@ -32,7 +32,8 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 		this.text=text;
 	}
 	/**
-	 * @param text
+	 * 构造函数
+	 * @param text html内容。文本支持 &lt;d:wg&gt; 标签。
 	 */
 	public Html(String text){
 		this(null, text);

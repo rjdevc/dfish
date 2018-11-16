@@ -26,7 +26,7 @@ public interface JsonPropAppender {
 	 * @param begin boolean
 	 * @return 如果当前begin状态是true，并且过程中append了内容则返回false。如果begin为false则永远返回false. 
 	 * 不是begin状态是追加下个属性则要先最追加一个逗号(,)
-	 * @throws Exception
+	 * @throws Exception 可能会抛出异常
 	 */
 	boolean appendProperty(Object o, StringBuilder sb,Stack<PathInfo> path,boolean begin) throws Exception;
 }

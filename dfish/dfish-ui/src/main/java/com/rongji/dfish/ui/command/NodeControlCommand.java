@@ -38,7 +38,7 @@ public abstract class NodeControlCommand<T extends NodeControlCommand<T>> extend
 	}
 	/**
 	 * widget ID。
-	 * @param target
+	 * @param target String 目标
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")

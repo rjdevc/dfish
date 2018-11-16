@@ -76,7 +76,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 当前页数。(起始值为1)
-	 * @param currentpage
+	 * @param currentpage Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setCurrentpage(Integer currentpage) {
@@ -92,7 +92,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 总页数。(起始值为1)
-	 * @param sumpage
+	 * @param sumpage Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setSumpage(Integer sumpage) {
@@ -121,7 +121,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 按钮样式。
-	 * @param btncls
+	 * @param btncls String 
 	 * @return  this
 	 */
 	public PageBar setBtncls(String btncls) {
@@ -137,7 +137,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 中间是否有显示页数的按钮。值为0或1。
-	 * @param btncount
+	 * @param btncount Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setBtncount(Integer btncount) {
@@ -145,15 +145,15 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 		return this;
 	}
 	/**
-	 * 显示一个可填写页数的表单。
-	 * @return jump
+	 * 显示一个可直接填写页数的输入框，回车后直接跳往这个页号
+	 * @return jump Boolean
 	 */
 	public Boolean getJump() {
 		return jump;
 	}
 	/**
-	 * 显示一个可填写页数的表单。
-	 * @param jump
+	 * 显示一个可直接填写页数的输入框，回车后直接跳往这个页号。
+	 * @param jump Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setJump(Boolean jump) {
@@ -169,7 +169,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 不显示"首页"和"尾页"两个按钮。
-	 * @param nofirstlast
+	 * @param nofirstlast Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setNofirstlast(Boolean nofirstlast) {
@@ -178,14 +178,14 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 点击页数按钮将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表页数。
-	 * @return src 
+	 * @return src  String
 	 */
 	public String getSrc() {
 		return src;
 	}
 	/**
 	 * 点击页数按钮将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表页数。
-	 * @param src
+	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setSrc(String src) {
@@ -201,7 +201,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 绑定一个支持前端翻页的widget(例如grid)。
-	 * @param target
+	 * @param target String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setTarget(String target) {
@@ -211,14 +211,14 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 
 	/**
 	 * 设置为true，可去除边框背景等预设样式。
-	 * @return transparent
+	 * @return transparent Boolean
 	 */
 	public Boolean getTransparent() {
 		return transparent;
 	}
 	/**
 	 * 设置为true，可去除边框背景等预设样式。
-	 * @param transparent
+	 * @param transparent Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setTransparent(Boolean transparent) {
@@ -267,7 +267,8 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 设置尾页标签名
-	 * @param labellast
+	 * @param labellast String
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setLabellast(String labellast) {
 		this.labellast = labellast;

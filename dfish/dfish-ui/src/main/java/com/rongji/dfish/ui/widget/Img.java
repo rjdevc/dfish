@@ -72,7 +72,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	}
 	/**
 	 *  选项表单，类型是 checkbox 或 radio。取消或勾选这个box，将同步fieldset内部所有表单的状态。
-	 * @param box
+	 * @param box 附带的选项表单
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setBox(AbstractBox<?> box) {
@@ -88,7 +88,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	}
 	/**
 	 * 文本是否换行。
-	 * @param nobr
+	 * @param nobr Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setNobr(Boolean nobr) {
@@ -97,7 +97,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	}
 	/**
 	 * 是否有滚动条。
-	 * @return text
+	 * @return text 显示文本
 	 */
 	public String getText() {
 		return text;
@@ -233,7 +233,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 
 	/**
 	 * 图片描述
-	 * @param description
+	 * @param description 图片描述
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setDescription(String description) {
@@ -251,7 +251,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 
 	/**
 	 * 文本宽度
-	 * @param textwidth
+	 * @param textwidth 文本宽度
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setTextwidth(Integer textwidth) {
@@ -294,7 +294,9 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 		return this;
 	}
 	/**
-	 * 图片宽度。
+	 *  图片宽度。
+	 * @param imgwidth String
+	 * @return this
 	 */
 	public Img setImgwidth(String imgwidth) {
 		this.imgwidth = imgwidth;
@@ -318,6 +320,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	}
 	/**
 	 * 图片高度。
+	 * @param imgheight String
 	 * @return this
 	 */
 	public Img setImgheight(String imgheight) {

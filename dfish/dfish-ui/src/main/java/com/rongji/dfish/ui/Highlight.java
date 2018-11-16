@@ -46,7 +46,7 @@ public class Highlight extends AbstractJsonObject {
 	
 	/**
 	 * 构造函数
-	 * @param matchlength
+	 * @param matchlength Integer 至少要几个字相同才会触发highlight
 	 */
 	public Highlight(Integer matchlength) {
 		super();
@@ -55,8 +55,8 @@ public class Highlight extends AbstractJsonObject {
 	
 	/**
 	 * 构造函数
-	 * @param key
-	 * @param matchlength
+	 * @param key String 高亮关键字
+	 * @param matchlength Integer 至少要几个字相同才会触发highlight
 	 */
 	public Highlight(String key, Integer matchlength) {
 		super();

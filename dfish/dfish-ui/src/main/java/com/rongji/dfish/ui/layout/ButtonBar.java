@@ -40,8 +40,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	private Overflow overflow;
 
 	/**
-	 * 当按钮过多，放不下的时候，的效果
-	 * @return
+	 * 当按钮过多，放不下的时候的效果
+	 * @return Overflow
 	 */
 	public Overflow getOverflow() {
 		return overflow;
