@@ -19,7 +19,8 @@ public class TemplateView extends AbstractView<TemplateView> {
 	}
 	
 	/**
-	 * @param id
+	 * 构造函数
+	 * @param id String
 	 */
 	public TemplateView(String id){
 		super(id);

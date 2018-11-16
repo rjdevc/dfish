@@ -19,8 +19,8 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	private String text;
 	/**
 	 * 构造函数
-	 * @param id
-	 * @param percent
+	 * @param id String
+	 * @param percent Double 0.0-100.0
 	 */
 	public Progress(String id,Double percent){
 		super();

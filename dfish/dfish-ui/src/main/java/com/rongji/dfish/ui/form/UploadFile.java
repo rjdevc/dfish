@@ -19,8 +19,9 @@ public class UploadFile<T extends UploadFile<T>> extends AbstractUpload<T> {
 		
 	}
 	/**
-	 * @param name
-	 * @param label
+	 * 构造函数
+	 * @param name String 提交属性的名字
+	 * @param label String 显示的标题
 	 */
 	public UploadFile(String name,String label){
 		this.name=name;

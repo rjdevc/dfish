@@ -77,8 +77,10 @@ public interface GridOper<T> {
 	 * <p>行和列的初始坐标为0</p>
 	 * <p>删除可能是失败，比如说要删除的区块原本可能已经有一个或多个合并单元格，而当前区块不足以包含它全部内容</p>
 	 * <p>删除节点后可能会留下空行和空列，可以用{@link GridLayout#minimize()}来删除空行和空列。或去rows和column中手动清理</p>
-	 * @param row 行
-	 * @param column 列
+	 * @param fromRow 区块起始行
+	 * @param fromColumn 区块起始列
+	 * @param toRow 区块结束行
+	 * @param toColumn 区块结束列
 	 * @return this
 	 */
 	T removeNode(int fromRow,int fromColumn,int toRow, int toColumn);
@@ -90,7 +92,12 @@ public interface GridOper<T> {
 	/**
 	 * <p>判定某个区块内是否有内容</p>
 	 * <p>行和列的初始坐标为0</p>
-	 * <p>如果fromRow与toRow相等，fromColumn与toColumn相等，则相当于判定某个位置是否有内容<p>
+	 * <p>如果fromRow与toRow相等，fromColumn与toColumn相等，则相当于判定某个位置是否有内容</p>
+	 * @param fromRow 区块起始行
+	 * @param fromColumn 区块起始列
+	 * @param toRow 区块结束行
+	 * @param toColumn 区块结束列
+	 * @return boolean
 	 */
 	boolean containsNode(int fromRow,int fromColumn,int toRow, int toColumn);
 }

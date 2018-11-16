@@ -297,7 +297,6 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @param beanProp String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
 	 * @param field String 返回前端的属性名
 	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-	 * @param
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static GridColumn gridTriplebox(String beanProp, String field, String width) {
@@ -309,7 +308,6 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
 	 * @param field String 返回前端的属性名
 	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-	 * @param
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static GridColumn gridTriplebox(int dataColumnIndex, String field, String width) {
@@ -466,6 +464,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @param boxName String 单选框名称
 	 * @param checkedField String 所选值指向的列名
 	 * @param required Boolean 是否必填
+	 * @param sync String 是否和行点击动作同步
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridColumn setGridRadio(String boxName, String checkedField, Boolean required, String sync) {
@@ -587,6 +586,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * 构建一个CHECKBOX类型的GridColumn
 	 * @param checkedField String 所选中值指定的列名
 	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
+	 * @param sync 是否与行点击动作同步
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static GridColumn gridRadio(String checkedField, String width, String sync){
@@ -601,6 +601,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @param boxName box提交时的名字
 	 * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
 	 * @param required 是否必填提交时校验
+	 * @param sync 是否与行点击动作同步
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static GridColumn gridRadio(String beanProp,String field, String width,String boxName,String checkedField,Boolean required, String sync){
@@ -902,7 +903,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	}
 	/**
 	 * 格式化内容
-	 * @param dataFormat
+	 * @param dataFormat String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridColumn setDataFormat(String dataFormat) {
@@ -968,7 +969,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	
 	/**
 	 * 排序结果的 url
-	 * @param sortsrc
+	 * @param sortsrc String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Deprecated
@@ -991,7 +992,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	
 	/**
 	 * 提示的字段
-	 * @param tipfield
+	 * @param tipfield String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Deprecated
