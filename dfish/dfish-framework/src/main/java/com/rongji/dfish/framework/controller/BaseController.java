@@ -3,6 +3,7 @@ package com.rongji.dfish.framework.controller;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -111,10 +112,21 @@ public class BaseController extends MultiActionController {
 			if (method.getName().startsWith("set") && method.getParameterTypes().length == 1) {
 				Format f = new Format();
 				f.method = method;
-				f.name = method.getName().substring(3);
 				f.type = method.getParameterTypes()[0];
+				
+				String fieldName = method.getName().substring(3);
+				f.name = fieldName;
 				if (f.name.charAt(0) <= 'Z') {
 					f.name = ((char) (f.name.charAt(0) + 32)) + f.name.substring(1);
+				}
+				try {
+					Field field = clz.getField(f.name);
+					if (field == null) {
+						f.name = fieldName;
+					}
+				} catch (Exception e) {
+					FrameworkHelper.LOG.error("获取属性[" + f.name + "]异常,将采用[" + fieldName + "]@" + clz.getName(), e);
+					f.name = fieldName;
 				}
 				c.formats.add(f);
 			}
