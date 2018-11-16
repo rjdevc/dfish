@@ -120,12 +120,12 @@ public class BaseController extends MultiActionController {
 					f.name = ((char) (f.name.charAt(0) + 32)) + f.name.substring(1);
 				}
 				try {
-					Field field = clz.getField(f.name);
+					Field field = clz.getDeclaredField(f.name);
 					if (field == null) {
 						f.name = fieldName;
 					}
 				} catch (Exception e) {
-					FrameworkHelper.LOG.error("获取属性[" + f.name + "]异常,将采用[" + fieldName + "]@" + clz.getName(), e);
+					FrameworkHelper.LOG.warn("获取属性(" + f.name + ")异常,将采用(" + fieldName + ")来获取页面参数值@" + clz.getName());
 					f.name = fieldName;
 				}
 				c.formats.add(f);
