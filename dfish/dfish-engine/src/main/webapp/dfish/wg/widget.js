@@ -1382,6 +1382,7 @@ Scroll = define.widget( 'scroll', {
 					}
 					_show_scroll.call( this );
 				}
+				this.addClass( 'z-autosize', this.width() == N && ! this.x.maxwidth && ! this.x.maxheight );
 			}
 		}
 	},
