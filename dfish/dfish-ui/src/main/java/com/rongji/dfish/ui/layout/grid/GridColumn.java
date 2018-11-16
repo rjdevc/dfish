@@ -369,7 +369,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @param boxName String 复选框名称
 	 * @param checkedField String 所选值指向的列名
 	 * @param required Boolean 是否必填
-	 * @param sync String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_CLICK}
+	 * @param sync String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_FOCUS}
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridColumn setGridTriplebox(String boxName, String checkedField, Boolean required, String sync) {
