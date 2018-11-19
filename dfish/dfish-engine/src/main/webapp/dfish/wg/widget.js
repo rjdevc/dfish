@@ -236,7 +236,7 @@ _cmdHooks = {
 			for ( var i = 0; i < a.length; i ++ )
 				c.push( '$' + i );
 		}
-		return  this.formatJS( x.text, c.join( ',' ), a );
+		return x.text && this.formatJS( x.text, c.join( ',' ), a );
 	},
 	'ajax': function( x, a ) {
 		x.download ? $.download( x.src, x.data ) : _ajaxCmd.call( this, x, a );
