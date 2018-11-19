@@ -5,14 +5,14 @@
   <name>dfish</name>
   <groupId>com.rongji</groupId>
   <artifactId>dfish</artifactId>
-  <version>3.1.6-RELEASE</version>
+  <version>3.1.7-RELEASE</version>
   <packaging>pom</packaging>
   
   <properties>
     
     <project.groupId>com.rongji</project.groupId>
     <project.artifactId>dfish</project.artifactId>
-    <project.version>3.1.6-RELEASE</project.version>
+    <project.version>3.1.7-RELEASE</project.version>
     
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
@@ -45,27 +45,27 @@
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-base</artifactId>
-              <version>3.1.6-RELEASE</version>
+              <version>3.1.7-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-misc</artifactId>
-              <version>3.1.6-RELEASE</version>
+              <version>3.1.7-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-ui</artifactId>
-              <version>3.1.6-RELEASE</version>
+              <version>3.1.7-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-uiplugin</artifactId>
-              <version>3.1.6-RELEASE</version>
+              <version>3.1.7-RELEASE</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-framework</artifactId>
-              <version>3.1.6-RELEASE</version>
+              <version>3.1.7-RELEASE</version>
           </dependency>
       </dependencies>
   </dependencyManagement>
@@ -76,13 +76,13 @@
            <id>dfish-release</id>
 		   <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
            <uniqueVersion>true</uniqueVersion>
-       </repository>
-  	   <!-- 
-       <snapshotRepository>
+       </repository> 
+  	  
+      <!--  <snapshotRepository>
            <id>dfish-snapshot</id>
            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
-       </snapshotRepository>
-        -->
+       </snapshotRepository> -->
+       
    </distributionManagement>
   
   <modules>
