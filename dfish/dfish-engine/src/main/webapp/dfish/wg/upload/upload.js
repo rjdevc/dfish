@@ -1180,7 +1180,7 @@ BaseUpload = define.widget( 'upload/base', {
 			for ( var i = this.valuebar.length - 1; i > -1; i -- )
 				this.valuebar[ i ].loaded && this.valuebar[ i ].remove();
 			for ( i = 0; i < a.length; i ++ )
-				this.valuebar.append( { value: a[ i ] } );
+				this.valuebar.append( { data: a[ i ] } );
 		},
 		//@a -> orignal?
 		isModified: function( a ) {
