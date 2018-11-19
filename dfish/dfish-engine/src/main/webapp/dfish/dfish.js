@@ -2262,33 +2262,57 @@ _merge( $, {
 	winbox: function( a ) {
 		alert( a );
 	},
-	// @a -> widget|HTMLElement, y -> print?, t -> head tag
-	print: function( a, z, y ) {
-		var d = a.$ ? (a.$( 'cont' ) || a.$()) : a, w = _win( d ).document, b = $.query( 'link[media=print]', w ), c = [];
+	// @a -> widget|HTMLElement, y -> { print: T/F(是否打印), head: "head标签", input2text: T/F(把表单值转为文本)
+	print: function( a, y ) {
+		var d = a.$ ? (a.$( 'cont' ) || a.$()) : a, w = _win( d ).document, b = $.query( 'link[media=print]', w ), c = [], y = y || {};
 		$.query( 'meta', w ).each( function() { c.push( this.outerHTML ) });
 		(b.length > 0 ? b : $.query( 'link', w )).each( function() { c.push( '<link rel="stylesheet" type="text/css" href="' + this.getAttribute( 'href' ) + '"/>' ); });
 		$.query( 'style', w ).each( function() { c.push( this.outerHTML ) });
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
 		$.query( ':text,textarea', d ).each( function() {
-			var h = this.outerHTML;
-			s = s.replace( h, h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' ) );
+			var h = this.outerHTML, v;
+			if ( y.input2text ) {
+				var g = $.widget( this );
+				if ( g && g.isFormWidget ) {
+					h = g.$().outerHTML; v = g.text();
+				} else
+					v = this.value;
+			} else {
+				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
+			}
+			s = s.replace( h, v );
 		} );
 		$.query( ':radio,:checkbox', d ).each( function() {
-			var h = this.outerHTML, n = h.replace( / checked=""/, '' );
-			if ( this.checked )
-				n = n.replace( />$/, ' checked>' );
-			s = s.replace( h, n );
+			if ( y.input2text ) {
+				var g = $.widget( this );
+				if ( g && g.isFormWidget ) {
+					s = s.replace( g.$().outerHTML, g.isChecked() ? g.text() : '' );
+				}
+			} else {
+				var h = this.outerHTML, n = h.replace( / checked=""/, '' );
+				if ( this.checked )
+					n = n.replace( />$/, ' checked>' );
+				s = s.replace( h, n );
+			}
 		} );
+		if ( y.input2text ) {
+			$.query( ':hidden', d ).each( function() {
+				var g = $.widget( this );
+				if ( g && g.isFormWidget && ! g.isHiddenWidget ) {
+					s = s.replace( g.$().outerHTML, g.text() );
+				}
+			} );
+		}
 		w = window.open();
 		d = w.document;
 		d.open( 'text/html', 'replace' );
 		d.write( '<!doctype html><html><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join( '' ) +
-			(y || '') + '</head><body>' + s +
-			(! br.ms && z ? '<script>window.print();window.close()</script>' : '') +
+			(y.head || '') + '</head><body>' + s +
+			(! br.ms && y.print ? '<script>window.print();window.close()</script>' : '') +
 			'</body></html>' );
 		d.close();
-		if ( br.ms && z ) {
+		if ( br.ms && y.print ) {
 			w.print(), w.close();
 		}
 		return d;
