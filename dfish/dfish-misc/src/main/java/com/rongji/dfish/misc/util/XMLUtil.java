@@ -97,7 +97,7 @@ public class XMLUtil {
 		try {
 			doc = new SAXReader().read(file);
 		} catch (DocumentException ex) {
-			LogUtil.warn("读取XML文件[" + fileFullName + "]失败,使用空内容代替");
+			LogUtil.error("读取XML文件[" + fileFullName + "]失败,使用空内容代替", ex);
 //			DocumentFactory f = new DocumentFactory();
 //			doc = f.createDocument(f.createElement("datas"));
 			doc = DocumentHelper.createDocument();
@@ -112,7 +112,7 @@ public class XMLUtil {
 		try {
 			doc = new SAXReader().read(inputStream);
 		} catch (DocumentException ex) {
-			LogUtil.warn("读取XML文件[" + fileFullName + "]失败,使用空内容代替");
+			LogUtil.error("读取XML文件[" + fileFullName + "]失败,使用空内容代替", ex);
 //			DocumentFactory f = new DocumentFactory();
 //			doc = f.createDocument(f.createElement("datas"));
 			doc = DocumentHelper.createDocument();
@@ -144,13 +144,13 @@ public class XMLUtil {
 			doc.setXMLEncoding(encoding);
 			outputter.write(doc);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.error("写入文件异常", e);
 			error = true;
 		} finally {
 			try {
 				out.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LogUtil.error("关闭流异常", e);
 				error = true;
 			}
 		}
