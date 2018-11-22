@@ -23,8 +23,9 @@ public class TemplateTitle extends AbstractWidget<TemplateTitle> implements Scro
 	private String scrollClass;
 	
 	/**
-	 * @param id
-	 * @param text
+	 * 构造函数
+	 * @param id String 编号
+	 * @param text String 显示文本
 	 */
 	public TemplateTitle(String id,String text){
 		super();

@@ -33,7 +33,8 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	protected String labelWidth;
 //	protected Integer rowHeight;
 	/**
-	 * @param id
+	 * 构造函数
+	 * @param id String
 	 */
 	public GridLayoutFormPanel(String id) {
 		prototype = new GridLayout(id);
@@ -92,7 +93,7 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	 * 添加一个元素
 	 * @param fromRow 行
 	 * @param fromColumn 列
-	 * @param value 
+	 * @param value Widget
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridLayoutFormPanel add(int fromRow, int fromColumn, Widget<?> value) {
@@ -101,13 +102,13 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	}
 	/**
 	 * 添加一个元素
-	 * @param fromRow
-	 * @param fromColumn
-	 * @param value
+	 * @param row int
+	 * @param column int
+	 * @param value LabelRow
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLayoutFormPanel addLabelRow(int fromRow, int fromColumn, LabelRow<?> value) {
-		add(fromRow, fromColumn, fromRow, fromColumn, value);
+	public GridLayoutFormPanel addLabelRow(int row, int column, LabelRow<?> value) {
+		add(row, column, row, column, value);
 		return this;
 	}
 	
@@ -119,11 +120,11 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	
 	/**
 	 * 添加一个元素
-	 * @param fromRow
-	 * @param fromColumn
-	 * @param toRow
-	 * @param toColumn
-	 * @param value
+	 * @param fromRow Integer
+	 * @param fromColumn Integer
+	 * @param toRow Integer
+	 * @param toColumn Integer
+	 * @param value LabelRow
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridLayoutFormPanel addLabelRow(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn,  LabelRow<?> value) {
@@ -132,11 +133,11 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	}
 	/**
 	 * 添加一个元素
-	 * @param fromRow
-	 * @param fromColumn
-	 * @param toRow
-	 * @param toColumn
-	 * @param value
+	 * @param fromRow Integer
+	 * @param fromColumn Integer
+	 * @param toRow Integer
+	 * @param toColumn Integer
+	 * @param value Widget
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("deprecation")
@@ -192,11 +193,7 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		return this;
 	}
 	
-    /**
-     * @param name
-     * @param value
-     * @return 本身，这样可以继续设置其他属性
-     */
+
     public GridLayoutFormPanel addHidden(String name,String value) {
     	prototype.addHidden(name,value);
 	    return this;

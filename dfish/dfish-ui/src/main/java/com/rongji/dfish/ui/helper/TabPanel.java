@@ -358,7 +358,7 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
 	
 	/**
 	 * 根据编号移除组件
-	 * @param id
+	 * @param id String
 	 */
 	public TabPanel removeNodeById(String id) {
 		if (Utils.isEmpty(id)) {

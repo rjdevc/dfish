@@ -32,8 +32,8 @@ public class GroupingGridPanel extends AbstractGridPanel<GroupingGridPanel> {
 	
     /**
      * 设置表格数据
-     * @param label 
-     * @param col
+     * @param label 标签
+     * @param col 具体数据
      * @return 本身，这样可以继续设置其他属性
      */ 
     public GroupingGridPanel addGridData(String label,Collection<?> col) {

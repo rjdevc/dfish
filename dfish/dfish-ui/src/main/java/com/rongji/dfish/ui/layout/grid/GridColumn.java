@@ -616,6 +616,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @param boxName box提交时的名字
 	 * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
 	 * @param required 是否必填提交时校验
+	 * @param sync 是否与行点击动作同步
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static GridColumn gridRadio(int dataColumnIndex,String field, String width,String boxName,String checkedField,Boolean required, String sync){

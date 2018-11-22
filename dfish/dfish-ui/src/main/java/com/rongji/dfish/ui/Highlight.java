@@ -37,7 +37,7 @@ public class Highlight extends AbstractJsonObject {
 
 	/**
 	 * 构造函数
-	 * @param key
+	 * @param key String 关键字
 	 */
 	public Highlight(String key) {
 		super();

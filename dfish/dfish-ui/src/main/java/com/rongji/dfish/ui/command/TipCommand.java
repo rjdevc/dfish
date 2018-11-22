@@ -24,7 +24,7 @@ public class TipCommand extends AbstractNode<TipCommand> implements Command<TipC
 	
 	/**
 	 * 构造函数
-	 * @param text
+	 * @param text 提示文本
 	 */
 	public TipCommand(String text) {
 		this.text = text;
@@ -99,6 +99,7 @@ public class TipCommand extends AbstractNode<TipCommand> implements Command<TipC
 	/**
 	 * 设置鼠标移开时tip自动关闭
 	 * @param hoverdrop Boolean
+	 * @return this
 	 */
 	public TipCommand setHoverdrop(Boolean hoverdrop) {
 		this.hoverdrop = hoverdrop;

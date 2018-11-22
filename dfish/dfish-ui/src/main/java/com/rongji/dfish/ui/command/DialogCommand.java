@@ -24,7 +24,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     /**
      * 打开对话框命令
      * @param id String 编号
-     * @param template 
+     * @param template 模板
      * @param title String 标题栏内容
      * @param width String 窗口宽度
      * @param height String 窗口高度
@@ -47,7 +47,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     /**
      * 打开对话框命令
      * @param id String 编号
-     * @param template 
+     * @param template 模板
      * @param title String 标题栏内容
      * @param width String 窗口宽度
      * @param height String 窗口高度
@@ -83,7 +83,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 
     /**
      * 设置窗口使用的模板编号
-     * @param template 
+     * @param template 模板
      * @return  this
      */
     public DialogCommand setTemplate(String template) {

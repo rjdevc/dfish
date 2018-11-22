@@ -26,7 +26,8 @@ public class SubmitCommand extends CommunicateCommand<SubmitCommand> {
     public static final String VALIDATE_EFFECT_RED="red";
  
     /**
-     * @param src
+     * 构造函数
+     * @param src 提交地址
      */
     public SubmitCommand(String src) {
        super(src);
@@ -74,30 +75,39 @@ public class SubmitCommand extends CommunicateCommand<SubmitCommand> {
 	}
 	
 	/**
-	 * 验证组名。
+	 * 验证效果
 	 * @return validateeffect
+	 * @see #VALIDATE_EFFECT_ALERT
+	 * @see #VALIDATE_EFFECT_RED
 	 */
 	public String getValidateeffect() {
 		return validateeffect;
 	}
 	/**
-	 * 验证组名。
-	 * @param validateeffect
+	 *  验证效果。
+	 * @param validateeffect String
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #VALIDATE_EFFECT_ALERT
+	 * @see #VALIDATE_EFFECT_RED
 	 */
 	public SubmitCommand setValidateeffect(String validateeffect) {
 		this.validateeffect = validateeffect;
 		return this;
 	}
 	
-	
+	/**
+	 * 范围，指定一个 widget id，只校验这个 widget 内的表单。
+	 * 多个 id 用逗号隔开。如果以感叹号 ! 开头，则表示不校验 widget 内的表单。
+	 * @return String
+	 */
 	public String getValidaterange() {
 		return validaterange;
 	}
 	/**
-	 * 指定一个 widget id，只校验这个 widget 内的表单。
+	 * 范围，指定一个 widget id，只校验这个 widget 内的表单。
 	 * 多个 id 用逗号隔开。如果以感叹号 ! 开头，则表示不校验 widget 内的表单。
-	 * @param validaterange
+	 * @param validaterange String
+	 * @return this
 	 */
 	public SubmitCommand setValidaterange(String validaterange) {
 		this.validaterange = validaterange;
