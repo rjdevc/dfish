@@ -70,7 +70,7 @@ a:hover{color:#0088e4;text-decoration:underline}
 .dlg-std-title{font:normal 14px/40px "Microsoft yahei";padding-left:10px}
 .dlg-close:hover{background:#d00;cursor:pointer}
 .dlg-max:hover{background:#0093FF;cursor:pointer}
-.dlg-foot{background:#f7fafc;border-top:1px solid #ebf1f5}
+.dlg-foot{position:relative;background:#f7fafc;border-top:1px solid #ebf1f5}
 .dlg-foot:before{content:" ";position:absolute;top:0;left:0;right:0;height:1px;background:#fff}
 
 .ico-folder,.ico-folder-open,.ico-file,.ico-dlg-close,.ico-dlg-max,.ico-logo{display:inline-block;width:16px;height:16px;background:url(g/g.png) no-repeat center center;vertical-align:middle}
