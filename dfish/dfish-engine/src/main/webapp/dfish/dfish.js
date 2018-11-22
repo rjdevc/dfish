@@ -1465,6 +1465,20 @@ _ajax_xhr = (function() {
 _ajax_url = function( a ) {
 	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
 },
+_ajax_data = function( e ) {
+	if ( e && typeof e === _OBJ ) {
+		var s = [], i;
+		for ( i in e ) {
+			if ( _isArray( e[ i ] ) ) {
+				for ( var j = 0, b = e[ i ], l = b.length; j < l; j ++ )
+					s.push( i + '=' + _urlEncode( b[ j ] ) );
+			} else
+				s.push( i + '=' + _urlEncode( e[ i ] ) );
+		}
+		e = s.join( '&' );
+	}
+	return e;
+},
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
 _ajax_contexts = {},
@@ -1496,26 +1510,17 @@ Ajax = _createClass( {
 			}
 		},
 		send: function() {
-			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = x.sync, e = x.data, f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
-			if ( typeof e === _OBJ ) {
-				var s = [];
-				for ( i in e ) {
-					if ( _isArray( e[ i ] ) ) {
-						for ( var j = 0; j < e[ i ].length; j ++ )
-							s.push( i + '=' + _urlEncode( e[ i ][ j ] ) );
-					} else
-						s.push( i + '=' + _urlEncode( e[ i ] ) );
-				}
-				e = s.join( '&' );
-			}
+			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = _ajax_data( _cfg.ajax_data ), e = _ajax_data( x.data ),
+				f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
+			d && e ? (e = d + '&' + e) : (d && (e = d));
 			// get url超过长度则转为post
 			if ( ( a.length > 2000 && a.indexOf( '?' ) > 0 ) ) {
-				e = _strFrom( a, '?' ) + ( e ? e + '&' : '' );
+				e = (e ? e + '&' : '') + _strFrom( a, '?' );
 				u = _strTo( a, '?' );
 			}
 			if ( x.base || _path )
 				u = _urlLoc( x.base || _path, u );
-			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! d );
+			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
 			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
 				return x.complete && x.complete.call( c, N, self );
@@ -1569,7 +1574,7 @@ Ajax = _createClass( {
 				}
 			}
 			l.onreadystatechange = _onchange;
-			if ( d ) {
+			if ( x.sync ) {
 				l.send( e );
 			} else {
 				var p = _ajax_paused;

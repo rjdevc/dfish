@@ -4247,7 +4247,7 @@ AbsForm = define.widget( 'abs/form', {
 		},
 		resetEffect: function() {
 			if ( this.x.placeholder && this.$( 'ph' ) )
-				$.classAdd( this.$( 'ph' ), 'f-none', !! this.val() || this.$().contains( document.activeElement ) );
+				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
 		form_prop: function( a ) {
 			var t = '', w = this.innerWidth(), h = this.innerHeight();
@@ -4941,8 +4941,8 @@ Calendar = define.widget( 'calendar/date', {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
-				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), focusable: T, format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
-					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, on: t && { ready: function() { this.popTime() } } };
+				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
+					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
 			return o.exec( { type: 'dialog', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
@@ -5688,8 +5688,8 @@ XBox = define.widget( 'xbox', {
 			return $.strTrim( this.$( 'p' ).innerText );
 		},
 		choose: function( a, e ) {
-			var d = Q( e.srcElement ).closest( '._o' );
-			this.x.multiple && d.toggleClass( 'z-on' );
+			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.options[ d.attr( '_i' ) ].value;
+			this.x.multiple && v && d.toggleClass( 'z-on' );
 			this.val( d );
 			!this.x.multiple && this._dropper.close();
 		},
@@ -7125,7 +7125,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		toggle_nodes: function( a ) {
 			var c = typeof a === _BOL ? a : !this.x.open;
 			this.x.open = c;
-			this.length && this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-open', c );
+			this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-open', c );
 			this.addClass( 'z-open', c );
 		},
 		// 展开或收拢 /@a -> T/F/event, b -> sync?, f -> fn?

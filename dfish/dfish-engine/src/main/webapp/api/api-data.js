@@ -108,14 +108,15 @@ define( {
         { name: 'class', type: 'String', remark: 'CSS类名。多个用空格隔开' }
       ] },
       { name: '$.config(settings)', remark: '设置环境参数。设置好的配置参数可以从 $.x 获取。', common: true, param: [
-        { name: 'settings', type: 'object', remark: '配置参数', param: [
-          { name: 'alias', type: 'object', remark: '新增的模块可在此注册别名' },
+        { name: 'settings', type: 'Object', remark: '配置参数', param: [
+          { name: 'alias', type: 'Object', remark: '新增的模块可在此注册别名' },
+          { name: 'ajax_data', type: 'Function', remark: '以POST方式发送到服务器的数据。格式为 key:value。' },
           { name: 'ajax_error', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
           { name: 'ajax_filter', type: 'Function', remark: '对ajax返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'cn_bytes', type: 'Number', remark: '一个汉字算几个字节。默认值为2。' },
           { name: 'debug', type: 'Boolean', remark: '开启调试模式。调试模式下按"Ctrl+鼠标右键"可查看view的信息' },
-          { name: 'default_option', type: 'object', remark: '每个 widget 类都可以定义默认样式，以 widget type 作为 key' },
-          { name: 'input_detect', type: 'object', remark: '设置表单在键入文本时是否即时检测。', param: [
+          { name: 'default_option', type: 'Object', remark: '每个 widget 类都可以定义默认样式，以 widget type 作为 key' },
+          { name: 'input_detect', type: 'Object', remark: '设置表单在键入文本时是否即时检测。', param: [
             { name: 'maxlength', type: 'Boolean', remark: '设置为true，键入文本时将会即时检测是否超出最大长度。' }
           ] },
           { name: 'lib', type: 'String', remark: 'dfish包的路径，必选项。' },
