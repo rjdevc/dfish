@@ -268,7 +268,7 @@ SWFUpload.prototype.loadFlash = function () {
 	targetElement = document.getElementById(this.settings.button_placeholder_id) || this.settings.button_placeholder;
 	if (targetElement == undefined) {
 		this.support.loading = false;
-		this.queueEvent("swfupload_load_failed_handler", ["button place holder not found"]);
+		//this.queueEvent("swfupload_load_failed_handler", ["button place holder not found"]);
 		return;
 	}
 
@@ -1316,8 +1316,12 @@ Upload = UploadAjax = define.widget( 'upload/base/ajax', {
 				var d   = new FormData(),
 					f   = ldr.x.file,
 					xhr = new XMLHttpRequest(),
+					data = $.x.ajax_data,
 					self = this;
 				d.append( 'Filedata', f );
+				for ( var i in data ) {
+					d.append( i, data[ i ] );
+				}
 				xhr.upload.addEventListener( 'progress', function( e ) {
 					if ( e.lengthComputable )
 						self.upload_progress_handler( f, e.loaded, e.total );
@@ -1346,11 +1350,14 @@ UploadSwf = define.widget( 'upload/base/swf', {
 				var s = this.x.file_size_limit;
 				if ( s && /[KMG]$/i.test( s ) )
 					this.x.file_size_limit = s.toUpperCase() + 'B';
-				this.initSWFUpload( $.extend( this.x, {
+				var o = $.extend( this.x, {
 					button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
 					button_cursor: SWFUpload.CURSOR.HAND,
 					button_placeholder_id: this.id + 'swf'
-				} ) );
+				} );
+				if ( $.x.ajax_data )
+					o.post_params = $.extend( o.post_params || {}, $.x.ajax_data );
+				this.initSWFUpload( o );
 			}
 		}
 	},
