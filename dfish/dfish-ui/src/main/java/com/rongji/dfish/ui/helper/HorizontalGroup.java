@@ -38,7 +38,8 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 		return this;
 	}
 	/**
-	 * @param id
+	 * 构造函数
+	 * @param id String
 	 */
 	public HorizontalGroup(String id) {
 		super(id);

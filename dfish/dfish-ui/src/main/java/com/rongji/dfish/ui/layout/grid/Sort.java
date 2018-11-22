@@ -43,7 +43,7 @@ public class Sort {
 
 	/**
 	 * 设置排序的字段名
-	 * @param field
+	 * @param field 字段名
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Sort setField(String field) {
@@ -61,7 +61,7 @@ public class Sort {
 
 	/**
 	 * 设置是否按照数字方式排序
-	 * @param isnumber
+	 * @param isnumber 按照数字方式排序
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Sort setIsnumber(Boolean isnumber) {
@@ -79,7 +79,7 @@ public class Sort {
 
 	/**
 	 * 设置当前排序状态:{@link #STATUS_ASC} ,{@link #STATUS_DESC}
-	 * @param status
+	 * @param status 排序状态
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Sort setStatus(String status) {
@@ -88,7 +88,7 @@ public class Sort {
 	}
 
 	/**
-	 * 当前排序url
+	 * 如果排序数据需要后台支持，设置当前排序url
 	 * @return String
 	 */
 	public String getSrc() {
@@ -96,8 +96,8 @@ public class Sort {
 	}
 
 	/**
-	 * 设置当前排序url
-	 * @param src
+	 * 如果排序数据需要后台支持，设置当前排序url
+	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Sort setSrc(String src) {

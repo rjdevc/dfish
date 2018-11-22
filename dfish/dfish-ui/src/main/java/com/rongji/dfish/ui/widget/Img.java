@@ -104,7 +104,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	}
 	/**
 	 * 是否有滚动条。
-	 * @param text
+	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setText(String text) {

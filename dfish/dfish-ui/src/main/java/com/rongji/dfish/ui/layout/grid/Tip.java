@@ -28,7 +28,7 @@ public class Tip {
 
 	/**
 	 * 设置提示的字段名
-	 * @param field
+	 * @param field 字段名
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Tip setField(String field) {

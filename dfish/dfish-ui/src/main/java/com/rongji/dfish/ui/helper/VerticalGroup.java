@@ -38,7 +38,8 @@ MultiContainer<VerticalGroup,Widget<?>>{
 		return this;
 	}
 	/**
-	 * @param id
+	 * 构造函数
+	 * @param id String
 	 */
 	public VerticalGroup(String id) {
 		super(id);

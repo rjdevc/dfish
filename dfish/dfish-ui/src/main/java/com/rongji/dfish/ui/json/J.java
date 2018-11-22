@@ -32,7 +32,7 @@ public class J {
 	 * <p>改变这个构建器的方法，请参看JsonBuilder#removeProperty JsonBuilder#replaceProperty 
 	 * 以及JsonBuilder#buildJsonProps</p>
 	 * 
-	 * @param clz
+	 * @param clz Class
 	 * @return JsonBuilder
 	 * @see ClassJsonBuilder
 	 */

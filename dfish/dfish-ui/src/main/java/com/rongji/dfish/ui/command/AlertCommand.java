@@ -31,7 +31,7 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 
 	/**
 	 * 构造函数
-	 * @param text
+	 * @param text 文本
 	 */
 	public AlertCommand(String text) {
 		this.text = text;

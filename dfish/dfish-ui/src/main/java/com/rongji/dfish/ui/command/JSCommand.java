@@ -17,7 +17,8 @@ public class JSCommand extends AbstractCommand<JSCommand> implements HasText<JSC
 	private String text;
 
 	/**
-	 * @param text
+	 * 构造函数
+	 * @param text 文本内容
 	 */
 	public JSCommand(String text) {
 		this.text = text;

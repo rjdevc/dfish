@@ -26,7 +26,7 @@ public class GridBody extends AbstractLayout<GridBody, Tr> implements GridOper<G
 //	private Boolean escape;
 	/**
 	 * 构造函数
-	 * @param id
+	 * @param id String
 	 */
 	public GridBody(String id) {
 		super(id);

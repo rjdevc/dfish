@@ -40,7 +40,7 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 	
 	/**
 	 * 构造函数
-	 * @param text
+	 * @param text 提示文本
 	 */
 	public LoadingCommand(String text) {
 		this.text = text;

@@ -46,8 +46,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	}
 
 	/**
-	 * http 格式的路径。
-	 * @param src
+	 * 通信地址 http 格式的路径。
+	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")

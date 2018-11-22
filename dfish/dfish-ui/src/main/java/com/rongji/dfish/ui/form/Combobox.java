@@ -37,6 +37,7 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 	public static final String FACE_TAG = "tag";
 	
 	private String face;
+	private String template;
 	
 	/**
 	 * 构造函数
@@ -63,6 +64,22 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 
 	public Combobox setFace(String face) {
 		this.face = face;
+		return this;
+	}
+	/**
+	 * 模板
+	 * @return String
+	 */
+	public String getTemplate() {
+		return template;
+	}
+	/**
+	 * 模板
+	 * @param template String
+	 * @return this
+	 */
+	public Combobox setTemplate(String template) {
+		this.template = template;
 		return this;
 	}
 	

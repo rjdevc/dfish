@@ -20,7 +20,7 @@ import com.rongji.dfish.ui.widget.Html;
  * <p>如果没有TD本身的属性都没有设置。很可能只输出node的部分</p>
  * {"type":"html","text":"杨桃","style":"background-color:gray"}
  * <p>而如果这时候html的其他属性也没设置，很可能进一步简写为 "杨桃"</p>
- * <p>一个特殊的简写规则，如果Td设置了属性，但内部node是Html而且只设置了text属性，可以被简写为<p>
+ * <p>一个特殊的简写规则，如果Td设置了属性，但内部node是Html而且只设置了text属性，可以被简写为</p>
  * <p>{"text":"橙子","align":"right"}</p>
  * <p>而td本身并没有setText属性</p>
  * 
