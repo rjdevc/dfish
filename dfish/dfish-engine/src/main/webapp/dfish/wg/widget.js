@@ -259,6 +259,7 @@ _cmdHooks = {
 	'dialog': function( x, a ) {
 		if ( typeof x.src === _STR )
 			x.src = this.formatStr( x.src, a, T );
+		x.title && (x.title = $.strFormat( x.title, a ));
 		return new Dialog( x, this ).show();
 	},
 	'tip': function( x, a ) {
@@ -370,10 +371,6 @@ Template = $.createClass( {
 			var x = x || this.tpl, r = {}, f = {};
 			if ( ! x )
 				return;
-			if ( x[ '@w-this' ] ) {
-				var d = this.format( x[ '@w-this' ], y );
-				return d;
-			}
 			if ( x[ '@w-include' ] ) {
 				var d = Dialog.tpl( x[ '@w-include' ] );
 				return d && this.compile( d, y );
@@ -404,11 +401,11 @@ Template = $.createClass( {
 							r[ c ] = h;
 						}
 					} else if ( ! _compile_reserved[ k ] ) {
-						(r[ k.slice( 1 ) ] = this.format( b, y ));
+						(r[ k.substr( 1 ) ] = this.format( b, y ));
 					}
 				} else if ( $.isArray( b ) ) {
 					for ( var i = 0, c = [], d, l = b.length; i < l; i ++ ) {
-						(d = this.compile( b[ i ], y )) && c.push( d );
+						b[ i ] && (d = this.compile( b[ i ], y )) && c.push( d );
 					}
 					r[ k ] = c;
 				} else if ( typeof b === _OBJ ) {
@@ -6136,6 +6133,7 @@ Combobox = define.widget( 'combobox', {
 			}
 			$.extend( d, o );
 			d.src && (d.src = this.parseSrc( d.src, r ));
+			d.template = this.x.template;
 			var self = this;
 			return this.add( d, -1 ).addEvent( 'close', function() {
 				! self.$().contains( document.activeElement ) && self.focus( F );
@@ -7345,6 +7343,9 @@ Leaf = define.widget( 'leaf', {
 				occupy: T,
 				method: function() { ! this.isDisabled() && $.classRemove( this.$(), 'z-hv' ); }
 			},
+			focus: {
+				block: T
+			},
 			click: {
 				occupy: T,
 				// 点击box不触发业务设置的click事件
@@ -7410,7 +7411,7 @@ Leaf = define.widget( 'leaf', {
 			a !== F && this.scrollIntoView( 'auto' );
 		},
 		_focus: function( a, e ) {
-			a = a == N ? T : a;
+			a = a == N ? T : !! a;
 			this.tabFocus( a );
 			a !== F && this.triggerHandler( 'focus' );
 			if ( this.box && this.box.x.sync === 'focus' && ! this.isEvent4Box( e ) ) {

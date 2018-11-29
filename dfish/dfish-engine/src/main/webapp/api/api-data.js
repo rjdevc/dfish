@@ -108,14 +108,15 @@ define( {
         { name: 'class', type: 'String', remark: 'CSS类名。多个用空格隔开' }
       ] },
       { name: '$.config(settings)', remark: '设置环境参数。设置好的配置参数可以从 $.x 获取。', common: true, param: [
-        { name: 'settings', type: 'object', remark: '配置参数', param: [
-          { name: 'alias', type: 'object', remark: '新增的模块可在此注册别名' },
+        { name: 'settings', type: 'Object', remark: '配置参数', param: [
+          { name: 'alias', type: 'Object', remark: '新增的模块可在此注册别名' },
+          { name: 'ajax_data', type: 'Function', remark: '以POST方式发送到服务器的数据。格式为 key:value。' },
           { name: 'ajax_error', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
           { name: 'ajax_filter', type: 'Function', remark: '对ajax返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'cn_bytes', type: 'Number', remark: '一个汉字算几个字节。默认值为2。' },
           { name: 'debug', type: 'Boolean', remark: '开启调试模式。调试模式下按"Ctrl+鼠标右键"可查看view的信息' },
-          { name: 'default_option', type: 'object', remark: '每个 widget 类都可以定义默认样式，以 widget type 作为 key' },
-          { name: 'input_detect', type: 'object', remark: '设置表单在键入文本时是否即时检测。', param: [
+          { name: 'default_option', type: 'Object', remark: '每个 widget 类都可以定义默认样式，以 widget type 作为 key' },
+          { name: 'input_detect', type: 'Object', remark: '设置表单在键入文本时是否即时检测。', param: [
             { name: 'maxlength', type: 'Boolean', remark: '设置为true，键入文本时将会即时检测是否超出最大长度。' }
           ] },
           { name: 'lib', type: 'String', remark: 'dfish包的路径，必选项。' },
@@ -251,7 +252,8 @@ define( {
           },
           function() {
           	// 点击按钮，关闭当前窗口
-            var opt = { type: "button", text: "关闭", on: { click: "$.dialog(this).close()" } }
+            return~
+            { type: "button", text: "关闭", on: { click: "$.dialog(this).close()" } }
           }
       ] },
       { name: '$.download(url, [data])', remark: '下载文件。', common: true, param: [
@@ -378,14 +380,17 @@ define( {
         { name: 'elem', type: 'HTMLElement', remark: 'html元素对象' },
         { name: 'content', type: 'String', remark: 'html内容' }
       ] },
-      { name: '$.print(target, [bPrint], [tag])', id: '$.print', remark: '打印目标对象的内容。', common: true, param: [
+      { name: '$.print(target, [opt])', id: '$.print', remark: '打印目标对象的内容。', common: true, param: [
         { name: 'target', type: 'Widget | HTMLElement', remark: 'widget对象，或者HTML元素对象。' },
-        { name: 'bPrint', type: 'Boolean', remark: '设置为true，立即执行打印。', optional: true },
-        { name: 'tag', type: 'String', remark: '放在打印页面head里的标签。', optional: true }
+        { name: 'opt', type: 'Boolean', remark: '设置为true，立即执行打印。', optional: true, param: [
+          { name: 'print', type: 'Boolean', remark: '是否立即打印。' },
+          { name: 'head', type: 'String', remark: 'head标签内容。' },
+          { name: 'input2text', type: 'Boolean', remark: '是否把表单转为文本显示。' }
+        ] }
       ], example: [
           function() {
-          	//打印id=content的widget内容，并设置打印字体为36px
-            $.print( VM(this).find('content'), true, "<style>body{font-size:36px}</style>" );
+          	//打印id=content的widget内容，设置打印字体为36px，表单转为文本显示
+            $.print( VM(this).find('content'), { print: true, head: "<style>body{font-size:36px}</style>", input2text: true } );
           }
       ] },
       { name: '$.proxy(context, fn)', remark: '返回一个新函数，并且为这个函数指定一个特定的作用域对象。', common: true, param: [
@@ -537,17 +542,29 @@ define( {
           }
       ] },
       { name: '$.strUnescape(str)', remark: '对经过 $.strEscape 编码的字符串进行解码。', common: true, param: [
-        { name: 'html', type: 'String', remark: '要接吗的字符串' }
+        { name: 'str', type: 'String', remark: '要接吗的字符串' }
       ], example: [
           function() {
           	//
             var s = $.strUnescape( '&lt;a href=#&gt;链接&lt;/a&gt;' );
           }
       ] },
+      { name: '$.template(id, content)', remark: '定义模板。', common: true, param: [
+        { name: 'id', type: 'String', remark: '设置模板的ID。' },
+        { name: 'content', type: 'Object', remark: '模板内容。' }
+      ], example: [
+          function() {
+          	//
+            $.template( 'index_view', {
+            	type: 'view',
+            	node: { type: 'html', text: 'hello world' }
+            } );
+          }
+      ] },
       { name: '$.thumbnail(range, width, [opt])', remark: '把某个范围内的图片变成缩略图。', common: true, param: [
         { name: 'range', type: 'HtmlElement | Widget', remark: 'HTML元素或widget对象。' },
         { name: 'width', type: 'Number', remark: '图片最大宽度。' },
-        { name: 'opt', type: 'String | Function | Boolean', remark: 'String: 弹出新窗的URL(支持$0,$1变量。$0是图片地址,$1是图片标题); Function: 回调函数; Boolean: 设为false，取消点击预览功能。' },
+        { name: 'opt', type: 'String | Function | Boolean', remark: 'String: 弹出新窗的URL(支持$0,$1变量。$0是图片地址,$1是图片标题); Function: 回调函数; Boolean: 设为false，取消点击预览功能。' }
       ], example: [
           function() {
           	//
@@ -580,14 +597,25 @@ define( {
             var url = $.urlFormat( 'a.sp?id=$a&v=$b', { a: 1, b: 2 } ); // 返回 "a.sp?id=1&v=2"
           }
       ] },
-      { name: '$.urlParam(url, data)', remark: '读/写 url 中的变量。', common: true, param: [
+      { name: '$.urlParam(url, [opt])', remark: '读/写 url 中的变量。', common: true, param: [
         { name: 'url', type: 'String', remark: 'url字符串。' },
-        { name: 'data', type: 'String | Object', remark: '如果是 String 类型，读取以 data 作为 key 的值。如果是 Object 类型，则写入 URL 变量。' }
+        { name: 'opt', type: 'String | Object', remark: '如果是 String 类型，读取以 data 作为 key 的值。如果是 Object 类型，则写入 URL 变量。' }
       ], example: [
           function() {
-          	//
-            var id  = $.urlParam( 'a.sp?id=1', 'id' ); // 返回 "1"
-            var url = $.urlParam( 'a.sp?id=1', { v: 2 } ); // 返回 "a.sp?id=1&v=2"
+          	// 获取url中某一项的值
+            var id = $.urlParam( 'a.sp?id=1', 'id' ); // 返回 "1"
+          },
+          function() {
+          	// 获取url中 # 号后面的部分
+            var hash = $.urlParam( 'a.sp?id=1#cms', '#' ); // 返回 "cms"
+          },
+          function() {
+          	// 获取url所有参数
+            var para = $.urlParam( 'a.sp?id=1&page=2' ); // 返回JSON对象 { id: 1, page: 2 }
+          },
+          function() {
+          	// 设置url参数
+            var url = $.urlParam( 'a.sp?id=1', { id: 2, page: 3 } ); // 返回 "a.sp?id=2&page=3"
           }
       ] },
       { name: '$.use(url)', remark: '装载模块。模块js是在CMD模块规范的封闭环境内运行，运行环境说明参见"<a href=javascript:>模块加载</a>"', common: true, param: [
@@ -818,6 +846,138 @@ define( {
   		"<li><b>颜色CSS文件命名</b>：<br>与颜色目录名相同，放在颜色子目录下。颜色CSS文件内定义颜色相关的CSS样式。" +
   		"</ul></dd></dl>"
   },
+  "@": {
+  	title: '模板',
+  	sort: false,
+  	remark: '支持模板的widget同时具有src和template属性。src定义数据源，类型可以是字符串的URL，也可以是JSON数据对象。template定义模板，类型可以是代表模板ID的字符串，也可以是模板的JSON对象。<p>' +
+  		'支持模板的widget优先实现顺序，以 view 为范例: <ol>' +
+  		'<li>如果有node，就直接展示node。' + 
+	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
+	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
+    Properties: [
+      { name: '@propName', remark: '模板中的 widget 属性名称前面加 @ 符号，表示这是一个动态属性，对应的值是一个JS表达式，可以从数据源获取数据。', example: [
+          function() {
+          	/// 一个简单的模板使用范例，在页面上显示hello world。可以把本范例另存为html文件进行测试。
+          	return''
+            '<!doctype html>'
+            '<html>'
+            '<head>'
+            '<meta charset=utf-8>'
+            '<title>DFish3.2</title>'
+            '<script src="dfish/dfish.js"></script>'
+            '<script>'
+            'dfish.init( {'
+            '  view: {'
+            '    id: "index",'
+            '    src: {'
+            '      data: { content: "hello world!" }'
+            '    },'
+            '    template: {'
+            '      node: { type: "html", "@text": "$data.content" }'
+            '    }'
+            '  }'
+            '} );'
+            '</script>'
+            '</head>'
+            '<body style="margin:0;overflow:hidden;" scroll="no"></body>'
+            '</html>'
+          },
+          function() {
+          	/// 把上述范例中的 src 和 template 参数改为字符串格式。使用 $.template() 方法定义模板。
+          	return''
+            '<script>'
+            'dfish.init( {'
+            '  view: {'
+            '    id: "index",'
+            '    src: "index.sp?act=index",'
+            '    template: "index_view"'
+            '  }'
+            '} );'
+            '$.template( "index_view", {'
+            '    node: { type: "html", "@text": "$data.content" }'
+            '} );'
+            '</script>'
+          }
+	  ] },
+	  { name: '@propName:w-for(expr)', remark: '循环语句。propName 是属性名，循环后输出一个数组。expr 语句使用 in 语法，如 <b>($item in $data)</b>，或 <b>(($item,$index) in $data)</b>', example: [
+          function() {
+          	/// 使用模板的树
+          	return~
+            { type: "tree", src: "tree.sp", template: "tmpl_tree" }
+          },
+          function() {
+          	/// tree.sp 返回数据
+          	return~
+            { data: [
+            	{ name: "张三" },
+            	{ name: "李四" }
+            ] }
+          },
+          function() {
+            /// tmpl_tree 定义
+          	return~
+            $.template( "tmpl_tree", {
+              "@nodes:w-for($item in $data)": { "type": "leaf", "@text": "$item.name" }
+            } );
+          },
+          function() {
+            /// 上述模板解析结果为：
+          	return~
+            { nodes: [ { "type": "leaf", "text": "张三" }, { "type": "leaf", "text": "李四" } ] }
+          }
+	  ] },
+	  { name: '@w-if(expr)', remark: '条件表达式。', example: [
+          function() {
+          	/// 数据源
+          	return~
+            { data: { flag: 1, name: "张三" } }
+          },
+          function() {
+          	/// 模板
+          	return~
+            {
+              "@w-if($data.flag==1)": { "type": "text", "name": "name", "@value": "$data.name" },
+              "@else": { "type": "html", "@text": "@data.name" }
+            }
+          },
+          function() {
+          	/// 上述数据源+模板输出结果为：
+          	return~
+            { "type": "text", "name": "name", "value": "张三" }
+          }
+	  ] },
+	  { name: '@w-elseif(expr)', remark: '条件表达式。必须搭配 @w-if 使用。' },
+	  { name: '@w-else', remark: '条件表达式。必须搭配 @w-if 使用。' },
+	  { name: '@w-include', remark: '引用模板。值是模板ID。', example: [
+          function() {
+          	/// 引用 id 为 tmpl_tree 的模板
+          	return~
+            { "@w-include": "tmpl_tree" }
+          } 
+      ] },
+	  { name: '$dataKey', remark: 'dataKey是数据源第一层子节点的属性名，前面再加上$，作为表达式中可用的变量。', example: [
+          function() {
+          	/// 这个数据源可以获取 $data 和 $head 变量
+          	return~
+            {
+              data: { name: "张三" },
+              head: { limit: 15 }
+            }
+          }
+      ] },
+	  { name: '$this', remark: '特殊的数据变量名，代指数据源根节点。', example: [
+          function() {
+          	/// 在表达式中使用 $this
+          	return~
+            { type: "html", "@text": "$this.data.content" }
+          },
+          function() {
+          	/// 数据源
+          	return~
+            { data: { content: 'hello world' } }
+          }
+      ] }
+  ] },
   "widget": {
   	title: 'widget基础类',
   	remark: '所有widget都继承此类。',
@@ -963,8 +1123,8 @@ define( {
       ], example: [
           function() {
             //
-          	vm.find( 'wg' ).css( { 'width': 100, 'background': 'red' } ); // 设置宽度为100px，背景色为红色
-          	vm.find( 'wg' ).css( 'height', '+=100' ); // 高度增加100px
+            vm.find( 'wg' ).css( { 'width': 100, 'background': 'red' } ); // 设置宽度为100px，背景色为红色
+            vm.find( 'wg' ).css( 'height', '+=100' ); // 高度增加100px
           }
       ] },
       { name: 'data(name, [value])', remark: '读/写自定义的数据。', common: true, param: [
@@ -987,8 +1147,8 @@ define( {
         { name: 'opt', type: 'String', remark: '为 cmdID 命令提供额外的参数。', optional: true }
       ], example: [
           function() {
-          	//假设 view 中定义了命令: "new": { "type": "dialog", src: 'abc.sp?id=$0', width: 500, height: 400 }，使用 exec 调用此命令：
-            wg.exec( 'new', [ 5 ], { target: this, pophide: true } ); // 把 src 中的 $0 替换为5, 并增加 target 和 pophide 参数
+          	//假设 view 中定义了命令: "new_ca": { "type": "dialog", src: 'abc.sp?id=$0', width: 500, height: 400 }，使用 exec 调用此命令：
+            wg.exec( 'new_ca', [ 5 ], { target: this, pophide: true } ); // 把 src 中的 $0 替换为5, 并增加 target 和 pophide 参数
           }
       ] },
       { name: 'find(id)', remark: '根据ID获取当前widget内部的节点。', common: true, param: [
@@ -1141,18 +1301,30 @@ define( {
       { name: 'hidetoggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
       { name: 'icon', type: 'String', remark: '图标的url。支持以 "." 开头的样式名。', example: [
           function() {
-          	//
-            var opt1 = { type: 'button', icon: 'img/abc.gif' }; // 使用图片路径
-            // 假设定义了样式: .ico-edit{background:url(img/abc.gif)}, 可以使用以下调用方式
-            var opt2 = { type: 'button', icon: '.ico-edit' };
+          	// 使用图片路径
+          	return~
+            { type: 'button', icon: 'img/abc.gif' };
+          },
+          function() {
+          	// 使用样式
+          	return~
+            { type: 'button', icon: '.ico-edit' };
           }
       ] },
       { name: 'more', type: 'Menu | Dialog', remark: 'menu或dialog。点击按钮时展示。', example: [
           function() {
           	// 一个有下拉选项的按钮
-            var opt = { type: 'button', text: '更多', more: {
-              type: 'menu', nodes: [ { text: '新建' }, { text: '编辑' } ]
-            } };
+          	return~
+            {
+              type: 'button',
+              text: '更多',
+              more: {
+                type: 'menu', nodes: [
+                  { text: '新建' },
+                  { text: '编辑' }
+                ]
+              }
+            }
           }
       ] },
       { name: 'name', type: 'String', remark: '在一个 view 中设置了相同 name 的 button 将成为一组，focus 只会作用于其中一个。' },
@@ -1228,10 +1400,26 @@ define( {
       { name: 'dir', type: 'String', remark: '按钮排列方向。可选值: <b>h</b><font color=green>(横向,默认)</font>, <b>v</b><font color=green>(纵向)</font>' },
       { name: 'focusmultiple', type: 'Boolean', remark: '是否有多个按钮可同时设为焦点状态。' },
       { name: 'nobr', type: 'Boolean', remark: '不换行。默认为 true。' },
+      { name: 'overflow', type: 'Object', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。', param: [
+        { name: 'effect', type: 'String', remark: '效果。可选值：<b>swap</b><font color=green>(点击下拉菜单按钮，和可见按钮交换位置。)</font>', optional: true },
+        { name: 'button', type: 'Button', remark: '显示"更多"的按钮。', optional: true }
+      ], example: [
+          function() {
+            // 设置按钮栏可拖拽也可放置
+            return~
+            {
+              "type": "buttonbar",
+              "overflow": {
+                "effect": "swap",
+                "button": { "type": "button", "text": "更多" }
+              }
+            }
+          }
+      ] },
+      { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'space', type: 'Number', remark: '按钮之间的间隔。' },
       { name: 'split', type: 'Object', remark: '在按钮之间插入一个split widget。' },
-      { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'valign', type: 'String', remark: '垂直居中。可选值: <b>top</b>, <b>bottom</b>, <b>middle</b>' }
     ],
     Methods: [
@@ -1264,7 +1452,9 @@ define( {
             } );
           }
       ] },
-      { name: 'getFocus()', remark: '获取焦点状态的子节点。' },
+      { name: 'getFocus([name])', remark: '获取焦点状态的按钮。', param: [
+        { name: 'name', type: 'String', remark: '获取相同name的焦点按钮。', optional: true }
+      ] },
       { name: 'getLocked()', remark: '获取锁定状态的子节点。' }
     ],
     Classes: [
@@ -1281,7 +1471,8 @@ define( {
       { name: 'nodes', type: 'Array', remark: 'deck 内的单元组。每个单元由一个按钮和一个 widget 构成，点击按钮展示当前单元。', example: [
           function() {
           	// 有两个单元的deck
-            var opt =  {
+            return~
+            {
               "type": "deck",
               "buttonheight": 40,
               "nodes": [
@@ -1293,7 +1484,7 @@ define( {
                   "button": { "text": "按钮2" },
                   "content": { "type": "html", "text": "面板2" }
                 } ]
-            };
+            }
           }
       ] }
     ],
@@ -1316,7 +1507,8 @@ define( {
       ], example: [
           function() {
           	//
-            var wg = { type: 'fieldset', box: { type: 'checkbox', name: 'box', text: '选项一' } };
+            return~
+            { type: 'fieldset', box: { type: 'checkbox', name: 'box', text: '选项一' } };
           }
       ] },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' }
@@ -1348,7 +1540,7 @@ define( {
   	remark: '表格。',
   	extend: 'widget',
     Config: [
-      { name: 'columns', type: 'Array', remark: '可显示列的设置项。', param: [
+      { name: 'columns', type: 'Array', remark: '列参数的数组集合。<br>单个列的参数如下:', param: [
         { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
         { name: 'cls', type: 'String', remark: '样式名。' },
         { name: 'field', type: 'String', remark: '字段名。' },
@@ -1376,12 +1568,12 @@ define( {
       ], example: [
           function() {
           	// 使用文本格式化的列
-            var wg = { type: 'grid', columns: [ { func: 'text', field: 'C1', width: 500, format: '<a href=view.jsp?id=$C0>$C1</a>' } ] };
+            return~
+            { type: 'grid', columns: [ { func: 'text', field: 'C1', width: 500, format: '<a href=view.jsp?id=$C0>$C1</a>' } ] };
           },
           function() {
-          	// 使用 js 语法格式化的列
-            // this 是当前行对象，本例中的 this.x.data.C0 也可用 $C0 来替代
-            var wg = { type: 'grid', columns: [ { func: 'text', field: 'C1', width: 500, format: 'javascript:return myFormat(this.x.data.C0,$C1)' } ] };
+          	// 使用 js 语法格式化。this 是当前行对象(tr)，本例中的 this.x.data.C0 也可用 $C0 来替代
+            return~{ type: 'grid', columns: [ { func: 'text', field: 'C1', width: 500, format: 'javascript:return myFormat(this.x.data.C0,$C1)' } ] };
           }
       ] },
       { name: 'combo', type: 'Object', remark: '设置当前的 tree 为某个 combobox 或 onlinebox 的数据选项表。', param: [
@@ -1403,47 +1595,85 @@ define( {
           function() {
             // 设置每一行的高度为40，并绑定点击事件
             // 事件中的 this 是点击那一行的 grid/tr 对象
-            var wg = { type: 'grid', defaults: { height: 40, on: { click: 'alert(this.x.data.C0)' } } };
-          }
-      ] },
-      { name: 'rows', type: 'Array', remark: '行数据。支持简易模式和完整模式。', example: [
-          function() {
-          	// 简易模式的行数据
-            var wg = {
-              type: 'grid',
-              columns: [
-                { func: 'text', field: 'C0', width: '*' },
-                { func: 'text', field: 'C1', width: '*' }
-              ],
-              rows: [
-                { C0: '111', C1: '222' },
-                { C0: '333', C1: '444' }
-              ]
-            };
-          },
-          function() {
-          	// 完整模式的行数据
-            var wg = {
-              type: 'grid',
-              columns: [
-                { func: 'text', field: 'C0', width: '*' },
-                { func: 'text', field: 'C1', width: '*' }
-              ],
-              rows: [
-                { type: 'grid/tr', data: { C0: '111', C1: '222' } },
-                { type: 'grid/tr', data: { C0: '333', C1: '444' } }
-              ]
-            };
+            return~
+            { type: 'grid', defaults: { height: 40, on: { click: 'alert(this.x.data.C0)' } } }
           }
       ] },
       { name: 'resizable', type: 'Boolean', remark: '是否可以拖动表头调整列宽。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
-      { name: 'tbody', type: 'Object', remark: '表格内容配置。', param: [
-        { name: 'rows', type: 'Array', remark: '表格内容数据。' }
+      { name: 'tbody', type: 'Object', remark: '表格内容。', param: [
+      	{ name: 'cls', type: 'String', remark: '内容区域的样式名。' },
+      	{ name: 'style', type: 'String', remark: '内容区域的样式。' },
+        { name: 'rows', type: 'Array', remark: '内容数据的数组集合。每条数据都是一个 tr。一般情况下 tr 可以只写出 data 部分。<br>tr 的参数如下: ', param: [
+      	  { name: 'cls', type: 'String', remark: '行的样式名。' },
+          { name: 'data', type: 'Object', remark: '行的数据。' },
+          { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
+          { name: 'id', type: 'String', remark: '行的id。' },
+          { name: 'src', type: 'String', remark: '配置此参数，当前行会有点击展开的效果。展开内容从src获取。src应当返回一个view。' },
+      	  { name: 'style', type: 'String', remark: '行的样式。' }
+        ] }
+      ], example: [
+          function() {
+          	// 一个标准的grid
+            return~
+            {
+              type: 'grid',
+              face: 'cell',
+              columns: [
+                { field: 'C0', width: '*' },
+                { field: 'C1', width: '*' }
+              ],
+              thead: {
+                rows: [
+                  { type: 'tr', data: { C0: '表头1', C1: '表头2' } },
+                ]
+              },
+              tbody: {
+                rows: [
+                  { type: 'tr', data: { C0: '111', C1: '111' } },
+                  { type: 'tr', data: { C0: '222', C1: '222' } },
+                  { type: 'tr', data: { C0: { type: 'td', colspan: 2, node: { type: 'text', value: '跨列输入框' } } } }
+                ]
+              }
+            }
+          },
+          function() {
+          	// 上例的简写版本。展现效果与上例相同。
+            return~
+            {
+              type: 'grid',
+              face: 'cell',
+              columns: [
+                { field: 'C0', width: '*' },
+                { field: 'C1', width: '*' }
+              ],
+              thead: {
+                rows: [
+                  { type: 'tr', data: { C0: '表头1', C1: '表头2' } },
+                ]
+              },
+              tbody: {
+                rows: [
+                  { C0: '111', C1: '111' },
+                  { C0: '222', C1: '222' },
+                  { C0: { colspan: 2, node: { type: 'text', value: '跨列输入框' } } }
+                ]
+              }
+            }
+          }
       ] },
       { name: 'thead', type: 'Object', remark: '表头配置。', param: [
         { name: 'fix', type: 'Boolean', remark: '是否固定表头。' },
-        { name: 'rows', type: 'Array', remark: '表头数据。' }
+      	{ name: 'cls', type: 'String', remark: '内容区域的样式名。' },
+      	{ name: 'style', type: 'String', remark: '内容区域的样式。' },
+        { name: 'rows', type: 'Array', remark: '表头数据的数组集合。每条数据都是一个 tr。一般情况下 tr 可以只写出 data 部分。<br>tr 的参数如下: ', param: [
+      	  { name: 'cls', type: 'String', remark: '行的样式名。' },
+          { name: 'data', type: 'Object', remark: '行的数据。' },
+          { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
+          { name: 'id', type: 'String', remark: '行的id。' },
+          { name: 'src', type: 'String', remark: '配置此参数，当前行会有点击展开的效果。展开内容从src获取。src应当返回一个view。' },
+      	  { name: 'style', type: 'String', remark: '行的样式。' }
+        ] }
       ] }
     ],
     Methods: [
@@ -1704,6 +1934,7 @@ define( {
   	extend: 'widget',
   	deprecate: 'ownerView',
     Config: [
+      { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
       { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。', example: [
           function() {
           	// 在页面上生成一个view，并通过 path 来获取
@@ -1711,17 +1942,13 @@ define( {
             alert( VM( '/index' ) );
           }
       ] },
-      { name: 'src', type: 'String', remark: '加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。src 参数和 node 参数不应同时使用。src 通过 ajax 加载；node 是直接展示。', example: [
-          function() {
-          	//
-            var opt = { type: 'view', src: 'index.sp' }
-          }
-      ] },
-      { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
+      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。访问这个 url 时应当返回一个 view 的 json 字串。<br>3.2版本以上，src可以是JSON对象。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
       { name: 'node', type: 'Object', remark: 'View的子节点，直接展示的内容。', example: [
           function() {
           	//
-            var opt = { type: 'view', node: { type: 'html', text: '内容..' } }
+            return~
+            { type: 'view', node: { type: 'html', text: '内容..' } }
           }
       ] }
     ],
@@ -1729,7 +1956,8 @@ define( {
       { name: 'load', remark: '数据加载完毕并展示后触发。', example: [
           function() {
           	// view加载完毕后显示path
-            var opt = { type: 'view', id: 'myview', src: 'abc.sp', on: { load: "alert(this.path)" } };
+            return~
+            { type: 'view', id: 'myview', src: 'abc.sp', on: { load: "alert(this.path)" } };
           }
       ] }
     ],
@@ -1798,6 +2026,25 @@ define( {
     Classes: [
       { name: '.w-view', remark: '基础样式。' }
     ]
+  },
+  "xsrc": {
+  	title: 'xsrc',
+  	remark: '用来组合模板的容器。<p>' +
+  		'实现顺序: <ol>' +
+  		'<li>如果有node，就直接展示node。' + 
+	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
+	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
+  	extend: 'widget',
+    Config: [
+      { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
+      { name: 'template', type: 'String | Object', remark: '模板ID或内容。' },
+      { name: 'node', type: 'Object', remark: '直接展示的内容。' }
+    ],
+    Methods: [
+      { name: 'reload([src])', remark: '重新装载view。', param: [
+        { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true }
+      ] }
+	]
   },
   "tr": {
   	title: 'tr',
@@ -1954,8 +2201,9 @@ define( {
       ] },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
-      { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },
-      { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' }
+      { name: 'src', type: 'String | Object', remark: '获取子节点的 URL 地址。' },
+      { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' }
     ],
     Methods: [
       { name: 'draggable([option])', remark: '设置所有leaf可拖拽。', param: [
@@ -2034,6 +2282,7 @@ define( {
       { name: 'open', type: 'Boolean', remark: '是否展开状态。' },
       { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },
       { name: 'status', type: 'String', remark: '节点状态。可选值：<b>normal</b>, <b>disabled</b>。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'Boolean | String', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
     ],
@@ -2089,7 +2338,9 @@ define( {
       { name: '.z-on', remark: '焦点高亮样式。' },
       { name: '.z-loading', remark: '当树节点正在装载数据时的样式。' },
       { name: '.z-folder', remark: '有子节点时的样式。' },
-      { name: '.z-open', remark: '展开时的样式。' }
+      { name: '.z-open', remark: '展开时的样式。' },
+      { name: '.z-first', remark: '在兄弟节点中排行第一时的样式。' },
+      { name: '.z-last', remark: '在兄弟节点中排行最后时的样式。' }
     ]
   },
   "html": {
@@ -2205,7 +2456,8 @@ define( {
       { name: 'range', type: 'String', optional: true, remark: '设置拖动调整大小的前后范围。只在父节点为 vert, horz 时可用。此参数由2-3个数字组成，以逗号隔开。第一个数字表示前一个节点的最小size，第二个数字表示后一个节点的最小size，第三个数字可选，表示 toggle 节点的初始size。', example: [
           function() {
             // 横向布局的3个widget, 拖动中间的分割线调整大小
-            var opt = { type: 'horz', nodes:[
+            return~
+            { type: 'horz', nodes:[
                 { type: 'html',  width: '*', text: 'aaa' },
                 { type: 'split', width: 1, style: 'background:blue', range: '100,100' },
                 { type: 'html',  width: '*', text: 'bbb' }
@@ -2246,7 +2498,8 @@ define( {
       { name: 'setting', type: 'Array', remark: 'button数组。生成一个配置按钮和下拉菜单。', example: [
           function() {
             //
-            var opt = { type: 'page/mini', setting: [
+            return~
+            { type: 'page/mini', setting: [
             	{ "text": "显示设置" },
             	{ "text": "每页显示" }
             ] }
@@ -2298,19 +2551,28 @@ define( {
   	remark: '日历。',
   	extend: 'widget',
     Config: [
+      { name: 'body', type: 'Object', optional: true, remark: '定义日期的内容和样式等。以日期数字作为key，以 calendar/td 作为值。', example: [
+          function() {
+            // 给当前月的1日和5日设置样式和内容。
+            return~
+            {
+               "type": "canlendar/date",
+               "body": {
+                 "1": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第一个日程" }, // 可以省略 "type": "calendar/td" 这部分
+                 "5": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第二个日程" }
+               }
+            }
+          }
+      ] },
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
-      { name: 'css', type: 'Object', optional: true, remark: '设置一组日期样式。', example: [
-          function() {
-            // 按顺序对应value中值为Y的日期设置绿色字体，值为N的日期设置红色字体
-            var opt = { type: 'canlendar/date', css: { value: 'NNNNNNNNYYNNNNNNNNYYYYYYYNNNNNN', N: 'color:red;', Y : 'color:green;' } }
-          }
-      ] },
+      { name: 'padrow', type: 'Boolean', optional: true, remark: '设置为true，当日历不满6行时填补一行空白行。' },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。', example: [
           function() {
             // 点击日期按钮显示日期值。
-            var opt = { type: 'canlendar/date', pub: { on: { click: 'alert(this.val())' } } }
+            return~
+            { type: 'canlendar/date', pub: { on: { click: 'alert(this.val())' } } }
           }
       ] }
     ],
@@ -2336,7 +2598,7 @@ define( {
   	title: 'calendar/week',
   	remark: '周历。',
   	extend: 'calendar/date',
-  	deprecate: '.w-calendar-date',
+  	deprecate: 'padrow,.w-calendar-date',
     Config: [
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一年的周列表。格式 yyyy-mm-dd' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一周。格式 yyyy-mm-dd' }
@@ -2349,7 +2611,7 @@ define( {
   	title: 'calendar/month',
   	remark: '月历。',
   	extend: 'calendar/date',
-  	deprecate: '.w-calendar-date',
+  	deprecate: 'padrow,.w-calendar-date',
     Config: [
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一年的月列表。格式 yyyy-mm' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一月。格式 yyyy-mm' }
@@ -2362,13 +2624,26 @@ define( {
   	title: 'calendar/year',
   	remark: '年历。',
   	extend: 'calendar/date',
-  	deprecate: '.w-calendar-date',
+  	deprecate: 'padrow,.w-calendar-date',
     Config: [
       { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示十年的年份列表。格式 yyyy' },
       { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一年。格式 yyyy' }
     ],
     Classes: [
       { name: '.w-calendar-year', remark: '基础样式。' }
+    ]
+  },
+  "calendar/td": {
+  	title: 'calendar/td',
+  	remark: '日历单元格。',
+  	extend: 'widget',
+    Config: [
+      { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
+      { name: 'focusable', type: 'Boolean', remark: '设置为 true，点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
+      { name: 'text', type: 'String', optional: true, remark: '显示内容。' }
+    ],
+    Classes: [
+      { name: '._td', remark: '基础样式。' }
     ]
   },
   "text": {
@@ -2521,7 +2796,8 @@ define( {
       { name: 'pub', type: 'Object', optional: true, remark: 'checkbox 的默认参数。这里的参数不会应用于 targets 中的 widget。 ', example: [
           function() {
             // 设置 checkbox 宽度为 50%, 可以形成整齐的两列排列
-            var box = { type: 'checkbox', name: 'box', pub: { width: '50%' }, options: [ { text: '选项1' }, { text: '选项2' } ] }
+            return~
+            { type: 'checkbox', name: 'box', pub: { width: '50%' }, options: [ { text: '选项1' }, { text: '选项2' } ] }
           }
       ] },
       { name: 'space', type: 'Number', optional: true, remark: '当设置了 targets，再设置 space 可调整行间距。' }
@@ -2726,7 +3002,16 @@ define( {
       { name: 'getNextOption()', remark: '获取下一个选项对象。' },
       { name: 'setOptions(opt, [index])', remark: '设置下拉选项。', param: [
         { name: 'opt', type: 'Array | Option', remark: '选项数组或单个选项。' },
-        { name: 'index', type: 'Number', remark: '选项序号。可替换指定的选项。' }
+        { name: 'index', type: 'Number', remark: '选项序号。可替换指定的选项。', optional: true }
+      ], example: [
+          function() {
+            // 替换所有的选项
+            xbox.setOptions( [ { value: 1, text: '选项1' }, { value: 2, text: '选项2' } ] );
+          },
+          function() {
+            // 替换第一个选项
+            xbox.setOptions( { value: 1, text: '选项1' }, 0 );
+          }
       ] }
     ]
   },
@@ -2802,7 +3087,8 @@ define( {
       ], example: [
           function() {
             // 给 grid 绑一个点击事件，返回结果
-            var grid = { type: 'grid', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
+            return~
+            { type: 'grid', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
           }
       ] }
     ],
@@ -2829,11 +3115,13 @@ define( {
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
           function() {
             // 设置每个已选项的宽度为 100，并绑定点击事件，显示选项的值
-            var cmbx = { type: 'combobox', pub: { width: 100, on: { click: 'alert(this.x.value)' } } };
+            return~
+            { type: 'combobox', pub: { width: 100, on: { click: 'alert(this.x.value)' } } };
           }
       ] },
       { name: 'strict', type: 'Boolean', remark: '设为 true，如果存在没有匹配成功的选项，则不能通过表单验证。设为false，允许存在没有匹配成功的选项。默认值是true。' },
       { name: 'text', type: 'String', remark: '初始化时显示的文本。如果设置了此参数，就要和 value 值一一对应。一般只设置 value 就可以，仅当 src 是 tree 模式的数据岛，并且 value 在 tree 的初始数据中匹配不到时才需要定义 text。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '下拉候选项对话框的模板ID或内容。' },
       { name: 'value', type: 'String', remark: '表单值。多个用逗号隔开。' }
     ],
     Methods: [
@@ -2843,7 +3131,8 @@ define( {
       ], example: [
           function() {
             // 给 grid 绑一个点击事件，返回结果
-            var grid = { type: 'grid', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
+            return~
+            { type: 'grid', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
           }
       ] },
       { name: 'text()', remark: '获取文本。' },
@@ -2941,11 +3230,13 @@ define( {
       { name: 'data', type: 'String | Object', remark: 'post 数据。', example: [
           function() {
             // 对象类型的数据，不需要url编码
-            var cmd = { type: 'ajax', src: 'abc.sp', data: { id: '001', name: 'a b' } };
+            return~
+            { type: 'ajax', src: 'abc.sp', data: { id: '001', name: 'a b' } }
           },
           function() {
             // 字符串类型的数据，需要url编码
-            var cmd = { type: 'ajax', src: 'abc.sp', data: 'id=001&name=a%20b' };
+            return~
+            { type: 'ajax', src: 'abc.sp', data: 'id=001&name=a%20b' }
           }
       ] },
       { name: 'dataType', type: 'String', remark: '指定后台返回的数据格式。可选值: <b>json</b>(默认), <b>xml</b>, <b>text</b>' },
@@ -2969,7 +3260,8 @@ define( {
       { name: 'validateeffect', type: 'String', remark: '验证效果。可选值: <b>alert</b>, <b>red</b>, <b>none</b>', example: [
           function() {
             //把验证效果设置为弹出对话框提示，以及表单边框变成红色。
-            var cmd = { type: 'submit', src: 'abc.sp', validateeffect: 'red,alert' };
+            return~
+            { type: 'submit', src: 'abc.sp', validateeffect: 'red,alert' }
           }
       ] },
       { name: 'validaterange', type: 'String', remark: '指定一个 widget id，只校验这个 widget 内的表单。多个 id 用逗号隔开。如果以感叹号 ! 开头，则表示不校验 widget 内的表单。' }
@@ -3051,7 +3343,7 @@ define( {
             var dg2 = $.dialog( 'mydialog' ); // 获取方式2
           }
       ] },
-      { name: 'src', type: 'String', remark: '加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。src 参数和 node 参数不应同时使用。src 是需要 ajax 加载的；node 则是直接展示。', example: [
+      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
           function() {
           	//
             VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
@@ -3060,13 +3352,14 @@ define( {
       { name: 'node', type: 'Object', remark: 'Dialog的唯一子节点。', example: [
           function() {
           	//
-            var opt = {
+            return~
+            {
               type: 'dialog', width: 500, height: 400,
               node: {
                 type: 'view',
                 node: { type: 'html', text: '内容..' }
               }
-            };
+            }
           }
       ] },
       { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进微调多少个像素。' },
@@ -3081,13 +3374,14 @@ define( {
       { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
           function() {
           	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
-            var opt = { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' };
+            return~
+            { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' }
           }
       ] },
       { name: 'position', type: 'Number', remark: '对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
       { name: 'pophide', type: 'Boolean', remark: '设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。' },
       { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
-      { name: 'template', type: 'String', remark: '模板ID。' },
+      { name: 'template', type: 'String | Object', remark: '模板ID或内容。' },
       { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' },
       { name: 'title', type: 'String', remark: '标题。如果有设置 template, 标题将显示在 template/title 中。' }
     ],
@@ -3095,7 +3389,8 @@ define( {
       { name: 'load', remark: '对话框内的 view 加载完毕后触发。', example: [
           function() {
           	// view加载完毕后显示path
-            var opt = { type: 'dialog', width: 500, height: 400, src: 'abc.sp', on: { load: "alert(this.contentView.path)" } };
+            return~
+            { type: 'dialog', width: 500, height: 400, src: 'abc.sp', on: { load: "alert(this.contentView.path)" } }
           }
       ] },
       { name: 'close', remark: '关闭对话框后触发。' }
@@ -3122,6 +3417,7 @@ define( {
         { name: 'iTop', type: 'Number', remark: '顶部位置。' }
       ] },
       { name: 'max()', remark: '窗口最大化。如果窗口已经是最大化的状态，那么将恢复到初始大小。' },
+      { name: 'parentDialog()', remark: '获取父窗口。' },
       { name: 'remove()', remark: '完全删除。调用本方法不会触发 close 事件。' },
       { name: 'show()', remark: '显示。和 hide() 方法对应。' }
     ],
@@ -3232,7 +3528,8 @@ define( {
       { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
           function() {
           	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
-            var opt = { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' };
+            return~
+            { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' }
           }
       ] },
       { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' },

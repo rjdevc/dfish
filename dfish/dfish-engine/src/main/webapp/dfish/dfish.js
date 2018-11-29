@@ -773,7 +773,7 @@ _urlLoc = $.urlLoc = function( a, b ) {
 _urlParam = $.urlParam = function( a, b ) {
 	var r = a.split( '#' ), u = r[ 0 ], h = r[ 1 ];
 	if ( typeof b === _STR ) {
-		return b === '#' ? h : (u.match( new RegExp('[\\?&]' + b + '=([^&]*)'), 'g' ) || A)[ 1 ];
+		return b === '#' ? (h || '') : (u.match( new RegExp('[\\?&]' + b + '=([^&]*)'), 'g' ) || A)[ 1 ];
 	} else if ( b && typeof b === _OBJ ) {
 		for ( var k in b ) {
 			if ( k === '#' ) {
