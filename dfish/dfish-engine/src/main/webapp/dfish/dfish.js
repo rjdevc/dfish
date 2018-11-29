@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish', version = '3.1.7',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -769,7 +769,7 @@ _urlLoc = $.urlLoc = function( a, b ) {
 _urlParam = $.urlParam = function( a, b ) {
 	var r = a.split( '#' ), u = r[ 0 ], h = r[ 1 ];
 	if ( typeof b === _STR ) {
-		return b === '#' ? h : (u.match( new RegExp('[\\?&]' + b + '=([^&]*)'), 'g' ) || A)[ 1 ];
+		return b === '#' ? (h || '') : (u.match( new RegExp('[\\?&]' + b + '=([^&]*)'), 'g' ) || A)[ 1 ];
 	} else if ( b && typeof b === _OBJ ) {
 		for ( var k in b ) {
 			if ( k === '#' ) {
@@ -1825,6 +1825,7 @@ function _initEnv() {
 	$.PATH = _path;
 	$.LIB  = _lib;
 	$.IMGPATH = _ui_path + 'g/';
+	$.version = version;
 	
 	$.loc     = _loc;
 	$.query   = _jq;

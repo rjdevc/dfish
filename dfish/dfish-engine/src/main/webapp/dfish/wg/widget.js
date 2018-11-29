@@ -254,6 +254,7 @@ _cmdHooks = {
 	'dialog': function( x, a ) {
 		if ( typeof x.src === _STR )
 			x.src = this.formatStr( x.src, a, T );
+		x.title && (x.title = $.strFormat( x.title, a ));
 		return new Dialog( x, this ).show();
 	},
 	'tip': function( x, a ) {
@@ -2070,7 +2071,7 @@ Ewin = define.widget( 'ewin', {
 			with ( this.getContentWindow().document ){ open(), write( a ), close() };
 		},
 		html: function() {
-			return '<iframe' + this.html_prop() + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + ' w-abbr="' + $.abbr + '" src="' + (this.attr( 'src' ) || 'about:blank') + '" marginwidth=0 marginheight=0 frameborder=0 allowtransparency></iframe>';
+			return '<iframe' + this.html_prop() + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + ' w-abbr="' + $.abbr + '" src="' + (this.attr( 'src' ) || 'about:blank') + '" scrolling=' + (this.x.scroll ? 'auto' : 'no') + ' marginwidth=0 marginheight=0 frameborder=0 allowtransparency></iframe>';
 		}
 	}
 } ),
