@@ -1198,14 +1198,14 @@ BaseUpload = define.widget( 'upload/base', {
 			this.isModified( a ) && this.val( a || this._modval == null ? this.x.value : this._modval );
 		},
 		readonly: function( a ) {
-			a = a == N || a;
+			a = a == null || a;
 			this.x.status = a ? 'readonly' : '';
 			$.classAdd( this.$(), 'z-ds', a );
 			$.classRemove( this.$(), 'z-err' );
 			return this;
 		},
 		disable: function( a ) {
-			a = a == N || a;
+			a = a == null || a;
 			this.x.status = a ? 'disabled' : '';
 			$.classAdd( this.$(), 'z-ds', a );
 			$.classRemove( this.$(), 'z-err' );

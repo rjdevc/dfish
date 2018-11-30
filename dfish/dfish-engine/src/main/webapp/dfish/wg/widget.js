@@ -6295,12 +6295,12 @@ Combobox = define.widget( 'combobox', {
 		setLoading: function( a ) {
 			a = a == N || a;
 			this.loading = a;
-			this.queryText( a ? (this.x.loadingtext || 'loading..') : '' );
+			this.queryText( a ? (this.x.loadingtext || Loc.loading) : '' );
 			this.$t().contentEditable = ! a;
 		},
 		html_nodes: function() {
 			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _c' + (this.x.nobr ? ' f-nobr' : '') + '" id=' + this.id + 'c' + _html_on.call( this ) +
-				' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || 'loading..') + '</var></div>';
+				' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var></div>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
@@ -6733,7 +6733,7 @@ Linkbox = define.widget( 'linkbox', {
 		html_nodes: function() {
 			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
 				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px"></var>';
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
