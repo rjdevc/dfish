@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish', version = '3.2.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -1829,6 +1829,7 @@ function _initEnv() {
 	$.PATH = _path;
 	$.LIB  = _lib;
 	$.IMGPATH = _ui_path + 'g/';
+	$.version = version;
 	
 	$.loc     = _loc;
 	$.query   = _jq;
