@@ -363,6 +363,10 @@ _strTo = $.strTo = function( a, b, c ) {
 	var d = c ? a.lastIndexOf( b ) : a.indexOf( b );
 	return d < 0 ? '' : a.substr( 0, d );
 },
+// 在a中取以b开始，到以c结束的字符串(不包括b和c)
+_strRange = $.strRange = function( a, b, c ) {
+	return _strTo( _strFrom( a, b ), c, T );
+},
 // 数字前加0  /@ a -> num, b -> 补成多少长度的字符串？
 _strPad = $.strPad = function( a, b, c ) {
 	c = c == N ? '0' : (c + '');
@@ -2249,22 +2253,9 @@ _merge( $, {
 		}
 	})(),
 	// 调试用的方法
-	msg: (function() {
-		function _parse( a, n ) {
-			if ( $.query.isPlainObject( a ) ) {
-				var s = '{', n = n || 0, i, j;
-				for ( i in a ) {
-					j = n;
-					s += '\n';
-					while ( j -- ) s += '\t';
-					s += '"' + i + '": ' + (typeof a[ i ] === _STR ? '"' + a[ i ] + '"' : ($.query.isPlainObject( a[ i ] ) ? _parse( a[ i ], n + 1 ) : a[ i ])) + ',';
-				}
-				return s.replace( /,$/, '' ) + '}';
-			} else
-				return a;
-		}
-		return function( a ) { alert( _parse( a ) ) }
-	})(),
+	j: function( a ) {
+		alert( $.jsonString( a ) );
+	},
 	winbox: function( a ) {
 		alert( a );
 	},

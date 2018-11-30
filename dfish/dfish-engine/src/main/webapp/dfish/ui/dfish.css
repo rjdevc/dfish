@@ -677,12 +677,11 @@
 .f-i-file-file{width:30px;height:30px;background:url(g/f.png) -673px -396px}
 .f-i-file-htm{width:30px;height:30px;background:url(g/f.png) -97px -396px}
 
-.w-upload.z-err{border:1px solid red}
-
 .w-upload ._bbar{overflow:hidden}
 .w-uploadimage{line-height:0}
-.w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar,.w-upload.z-ds ._x{width:0;height:0;overflow:hidden}
-.w-upload.z-ds ._close{visibility:hidden}
+.w-upload.z-ds ._close{width:0;height:0;visibility:hidden}
+.w-upload.z-ds ._bbar{color:#999}
+.w-upload.z-err{border:1px solid red}
 
 .w-uploadimage ._bbar,.w-uploadimage ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 

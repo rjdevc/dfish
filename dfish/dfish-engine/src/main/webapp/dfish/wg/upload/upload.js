@@ -1152,6 +1152,7 @@ BaseUpload = define.widget( 'upload/base', {
 			file_types: '*.*',
 			file_types_description: 'All Files',
 			file_upload_limit: 0,
+			button_disabled: !!(x.status && x.status !== 'normal'),
 			flash_url: module.path + 'swfupload.swf',
 			flash9_url: module.path + 'swfupload_fp9.swf'
 		}, x );
@@ -1197,11 +1198,26 @@ BaseUpload = define.widget( 'upload/base', {
 		reset: function( a ) {
 			this.isModified( a ) && this.val( a || this._modval == null ? this.x.value : this._modval );
 		},
+		normal: function() {
+			this.x.status = 'normal';
+			$.classRemove( this.$(), 'z-err z-ds' );
+			this.setButtonDisabled( false );
+			return this;
+		},
 		readonly: function( a ) {
 			a = a == null || a;
 			this.x.status = a ? 'readonly' : '';
 			$.classAdd( this.$(), 'z-ds', a );
 			$.classRemove( this.$(), 'z-err' );
+			this.setButtonDisabled( a );
+			return this;
+		},
+		validonly: function( a ) {
+			a = a == null || a;
+			this.x.status = a ? 'validonly' : '';
+			$.classAdd( this.$(), 'z-ds', a );
+			$.classRemove( this.$(), 'z-err' );
+			this.setButtonDisabled( a );
 			return this;
 		},
 		disable: function( a ) {
@@ -1209,6 +1225,7 @@ BaseUpload = define.widget( 'upload/base', {
 			this.x.status = a ? 'disabled' : '';
 			$.classAdd( this.$(), 'z-ds', a );
 			$.classRemove( this.$(), 'z-err' );
+			this.setButtonDisabled( a );
 			return this;
 		},
 		ipt: function() {
@@ -1295,6 +1312,9 @@ BaseUpload = define.widget( 'upload/base', {
 Upload = UploadAjax = define.widget( 'upload/base/ajax', {
 	Extend: BaseUpload,
 	Prototype: {
+		setButtonDisabled: function() {
+			//implement
+		},
 		getQueueFile: function( i ) {
 			return this._queues[ i ]
 		},
@@ -1438,7 +1458,7 @@ define.widget( 'upload/file', {
 			return '<input type=hidden id=' + this.id + 'v name=' + this.x.name + ' value=\'' + (this._value.length ? $.jsonString( this._value ) : '') + '\'>';
 		},
 		html_nodes: function() {
-			return (this.uploadbar && this.uploadbar.html()) + this.valuebar.html() + this.html_input();
+			return (this.uploadbar && this.uploadbar.length ? this.uploadbar.html() : '') + this.valuebar.html() + this.html_input();
 		}
 	}
 } );
@@ -1557,8 +1577,10 @@ define.widget( 'upload/file/upload/button', {
 	Listener: {
 		body: {
 			click: function() {
-				Button.Listener.body.click.apply( this, arguments );
-				! this.x.nodes && this.selectFile();
+				if ( this.u.isNormal() ) {
+					Button.Listener.body.click.apply( this, arguments );
+					! this.x.nodes && this.selectFile();
+				}
 			}
 		}
 	},
@@ -1653,7 +1675,7 @@ define.widget( 'upload/image/value', {
 				'<a href="javascript:;" title="' + v.name + '"><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '></a>') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>', cls: '_name' } );
 			b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
 			u.x.value_button && u.x.value_button.length && b.add( { text: $.arrow( 'b2' ), cls: '_b', on: { click: 'this.parentNode.parentNode.more(this)' } } );
-			b.add( { text: '&times;', cls: '_x', on: { click: 'this.parentNode.parentNode.remove()' } } );
+			b.add( { text: '&times;', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
 			this.className = this._cls + ( f ? ' z-loading' : '' );
 		},
 		root: function() {
@@ -1774,13 +1796,12 @@ define.widget( 'upload/file/value', {
 		_cls: 'w-upload-value-simple',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u  = this.u, c = u.x.value_button, r = u.isNormal(), t = f ? f.name : this.x.data.name;
+			var u = this.u, c = u.x.value_button, t = f ? f.name : this.x.data.name;
 			this.empty();
 			this.add( { type: 'button', text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.download()' } } );
-			if ( (c && c.length) || r ) {
-				var b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
-				if ( r )
-					b.add( { icon: '.f-i-trash', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
+			var b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
+			b.add( { icon: '.f-i-trash', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
+			if ( c && c.length ) {
 				if ( ! f && c && c.length )
 					b.add( { icon: '.f-i-more', cls: '_more', on: { click: 'this.parentNode.parentNode.more(this)' } } );
 			}
