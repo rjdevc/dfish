@@ -101,6 +101,11 @@ _vmByElem = function ( o ) {
 	}
 	return _docView;
 },
+_repaintSelfWithBox = function() {
+	var b = this.box && this.box.isChecked();
+	Q( this.$() ).replaceWith( this.html_self() );
+	this.box && this.box.check( b );
+},
 // @a -> content|js, b -> escape?, c -> callback?
 _wg_format = function( a, b, c ) {
 	return typeof a === _FUN || a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
@@ -901,8 +906,28 @@ W = define( 'widget', function() {
 				s.push( this[ i ].html() );
 			return s.join( '' );
 		},
+		html_self: function() {
+			return this.html();
+		},
 		html: function() {
 			return '<' + this.tagName + this.html_prop() + '>' + this.html_before() + this.html_nodes() + this.html_after() + '</' + this.tagName + '>';
+		},
+		// @a -> 是否刷新子节点
+		repaint: function( a ) {
+			if ( this._disposed )
+				return;
+			if ( this.$() ) {
+				if ( a ) {
+					this.replace( this.x );
+				} else
+					this.repaintSelf();
+			} else
+				this.render();
+		},
+		repaintSelf: function() {
+			var f = $.frag( this.$() );
+			Q( this.$() ).replaceWith( '<' + this.tagName + this.html_prop() + '></' + this.tagName + '>' );
+			Q( this.$() ).append( f );
 		},
 		removeElem: function( a ) {
 			$.remove( this.$( a ) );
@@ -1159,8 +1184,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min
 	_w_scale[ v ] = function( a, m ) {
 		var b = a.attr( v ), c = this[ iz ](), s = this._scales;
-		if ( typeof b === _NUM && b > -1 && ! m )
-			return b;
+		if ( $.isNumber( b ) && b > -1 && ! m )
+			return parseFloat( b );
 		if ( ! s || m ) {
 			if ( ! this.length )
 				return N;
@@ -2795,6 +2820,8 @@ Img = define.widget( 'img', {
 	Default: { height: -1 },
 	Prototype: {
 		className: 'w-img',
+		// @implement
+		repaintSelf: _repaintSelfWithBox,
 		width_minus: function() {
 			return (p.x.space || 0);
 		},
@@ -5599,11 +5626,11 @@ XBox = define.widget( 'xbox', {
 		$v: function() { return $( this.id + 'v' ) },
 		width_minus: function() { return _boxbtn_width + _input_indent() },
 		initOptions: function( x ) {
-			var o = x.options || (x.options = []), i = o.length;
+			var o = x.options || (x.options = []), i = o.length, v = x.value != N ? String( x.value ) : '';
 			this._sel = [];
 			while ( i -- ) {
 				o[ i ].value == N && (o[ i ].value = '');
-				(o[ i ].checked || o[ i ].value == x.value) && this._sel.push( o[ i ] );
+				(o[ i ].checked || (v && $.idsAny( v, o[ i ].value ))) && this._sel.push( o[ i ] );
 			}
 			if( o.length ) {
 				! this._sel.length && this._sel.push( o[ 0 ] );
@@ -5615,18 +5642,22 @@ XBox = define.widget( 'xbox', {
 		// @a -> options, b -> index
 		setOptions: function( a, b ) {
 			var v = this.val();
-			if ( b ) {
-				var c = this.x.options[ b ];
-				if ( c ) {
-					this.x.options[ b ] = $.extend( a[ 0 ] || a, c );
-					if ( c && c == this._sel )
-						v = this.x.options[ b ].value;
-				}
+			if ( b != N ) {
+				var o = this.x.options || [];
+				o[ b ] && (o[ b ] = a);
 			} else
 				this.x.options = a;
 			this._dropper && this._dropper.close();
 			this.initOptions( this.x );
 			this.val( v );
+		},
+		addOption: function( a, i ) {
+			this.x.options.splice( i == N ? this.x.options.length : i, 0, a );
+			this.setOptions( this.x.options );
+		},
+		removeOption: function( i ) {
+			this.x.options.splice( i == N ? -1 : i, 1 );
+			this.setOptions( this.x.options );
 		},
 		getFocusOption: function( a ) {
 			for ( var i = 0, v = this.val(), o = this.x.options, l = o.length; i < l; i ++ ) {
@@ -5640,6 +5671,9 @@ XBox = define.widget( 'xbox', {
 		},
 		getNextOption: function() {
 			return this.getFocusOption( 1 );
+		},
+		getLength: function() {
+			return (this.x.options || []).length;
 		},
 		isEmpty: function() {
 			return ! this.val();
@@ -7324,6 +7358,8 @@ Leaf = define.widget( 'leaf', {
 		className: 'w-leaf',
 		// @implement
 		x_childtype: $.rt( 'leaf' ),
+		// @implement
+		repaintSelf: _repaintSelfWithBox,
 		// @a 设为 true 时，获取视觉范围内可见的相邻的下一个节点
 		next: function( a ) {
 			if ( a == N )
@@ -7710,6 +7746,8 @@ GridRow = define.widget( 'grid/row', {
 	},
 	Prototype: {
 		className: 'w-tr',
+		// @implement
+		repaintSelf: _repaintSelfWithBox,
 		getData: function() {
 			var d = { data: this.x.data }, l = this.length;
 			if ( l ) {
@@ -8453,7 +8491,8 @@ Grid = define.widget( 'grid', {
 			if ( d ) {
 				if ( a == N ) {
 					r = _slice.call( d );
-				} else if ( typeof a === _NUM ) {
+				} else if ( $.isNumber( a ) ) {
+					a = parseFloat( a );
 					if ( a < 0 ) a = d.length + a;
 					d[ a ] && r.push( d[ a ] );
 				} else if ( a.isWidget ) {

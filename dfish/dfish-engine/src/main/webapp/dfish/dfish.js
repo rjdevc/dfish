@@ -315,6 +315,9 @@ _uid = $.uid = function( o ) {
 		return o.isWidget ? (o.id || (o.id = _guid())) : (o[ _expando ] || (o[ _expando ] = _guid()));
 	return _guid();
 },
+_isNumber = $.isNumber = function( a ) {
+	return a != N && ! isNaN( a );
+},
 _number = $.number = function( a ) {
 	var r = typeof a === _STR ? parseFloat( a.replace( ',', '' ) ) : + a;
 	return isNaN( r ) ? 0 : r;
@@ -541,7 +544,7 @@ _arrMake = $.arrMake = function( a ) { return _isArray( a ) ? a : a == N ? [] : 
 _arrSelect = $.arrSelect = function( a, b, c ) {
 	if ( typeof b === _STR ) b = _arrfn( b );
     for( var i = 0, l = a.length, r = [], d; i < l; i ++ ) {
-    	 if ( d = b.call( a[ i ], a[ i ], i, a ) ) r.push( c ? d : a[ i ] );
+    	if ( d = b.call( a[ i ], a[ i ], i, a ) ) r.push( c ? d : a[ i ] );
     }
     return r;
 },
