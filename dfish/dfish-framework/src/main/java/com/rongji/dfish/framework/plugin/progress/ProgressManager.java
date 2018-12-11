@@ -170,15 +170,35 @@ public class ProgressManager {
 	public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, Command<?> completeCommand) {
 		return registerProgress(runnable, progressKey, progressText, completeCommand, 1);
 	}
+	
 	/**
 	 * 注册进度条,业务方法调用
 	 * @param runnable
 	 * @param progressKey
 	 * @param progressText
 	 * @param completeCommand
+	 * @param steps
 	 * @return
 	 */
-	public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, Command<?> completeCommand, Number... stepScale) {
+	public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, Command<?> completeCommand, int steps) {
+		steps = steps < 1 ? 1 : steps;
+		List<Integer> stepScales = new ArrayList<Integer>(steps);
+		for (int i=0; i<steps; i++) {
+			stepScales.add(1);
+		}
+		return registerProgress(runnable, progressKey, progressText, completeCommand, stepScales.toArray(new Number[]{}));
+	}
+	
+	/**
+	 * 注册进度条,业务方法调用
+	 * @param runnable
+	 * @param progressKey
+	 * @param progressText
+	 * @param completeCommand
+	 * @param stepScale
+	 * @return
+	 */
+	public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, Command<?> completeCommand, Number[] stepScale) {
 		// 空处理
 		if (runnable == null) {
 			throw new UnsupportedOperationException("系统进度条创建失败,请联系管理员");
