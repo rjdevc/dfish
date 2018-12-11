@@ -7,7 +7,7 @@ var mod = dfish.x.data.module;
 dfish.init( {
 	view: {
 		id: 'index',
-		src: '' + mod + '-view.json'
+		src: 'api/' + mod + '-view.json'
 	},
 	debug: true
 } );
@@ -58,18 +58,18 @@ function getExtend( a, k ) {
 	var b = a[ k ],
 		d = data[ a.extend ],
 		e = a.extend && d[ k ] && d[ k ].concat(),
+		t = a.sort !== false,
 		s = function( m, n ) { return m.name < n.name ? -1 : 1 };
-	b && b.sort( s );
+	b && t && b.sort( s );
 	b = uniq( b, e );
-	a.extend != 'widget' && b && b.sort( s );
+	a.extend != 'widget' && b && t && b.sort( s );
 	if ( d && d.extend ) {
 		b = uniq( b, getExtend( d, k ) );
 	}
 	if ( b ) {
 		var f = $.arrSelect( b, 'v.common' ), g = $.arrSelect( b, '!v.common' );
-		f.sort(s); g.sort(s);
+		t && (f.sort( s ), g.sort( s ));
 		b = g.concat( f );
-		//b.sort(function(m,n){ return m.name < n.name ? -1 : 1 });
 	}
 	return b && b.concat();
 }
@@ -92,7 +92,7 @@ function memberWidget( id, a, k, n, m ) {
 
 function format( row ) {
 	var d = row.x.data, e,
-		s = '<h4 id="' + ( d.id || $.strTo( d.name, '(' ) || d.name ) + '"><span class="name' + ( d.common ? '' : ' ownprop' ) + '">' + d.name + '</span>' + (d.type ? ' <span class=typeof>: ' + d.type + '</span>' : '') + (d.mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i> ': '') + '</h4><p class=remark>' + d.remark + '</p>';
+		s = '<h4 id="' + ( d.id || $.strTo( d.name, '(' ) || d.name ) + '"><span class="name' + ( d.common ? '' : ' ownprop' ) + '">' + d.name + '</span>' + (d.type ? ' <span class=typeof>: ' + d.type + '</span>' : '') + (d.ver ? '<sup>' + d.ver + '</sup>' : '') + (d.mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i> ': '') + '</h4><p class=remark>' + d.remark + '</p>';
 	if ( d.param ) {
 		s += formatParam( d.param );
 	}
@@ -104,7 +104,7 @@ function format( row ) {
 function formatParam( p ) {
 	var s = '<ul>';
 	for ( var i = 0; i < p.length; i ++ ){
-		s += '<li><div><b>' + p[ i ].name + '</b> : ' + p[ i ].type + (p[ i ].optional ? ' &nbsp;<i>[Optional]</i>' : '') + (p[ i ].mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i>' : '') + '</div><div>' + p[ i ].remark  + '</div>';
+		s += '<li class=param><div><var>' + p[ i ].name + '</var> ' + (p[ i ].ver ? '<sup>' + p[ i ].ver + '</sup>' : '') + ': <span class=typeof>' + p[ i ].type + '</span>' + (p[ i ].optional ? ' &nbsp;<i>[Optional]</i>' : '') + (p[ i ].mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i>' : '') + '</div><div class=remark>' + p[ i ].remark  + '</div>';
 		if ( p[ i ].param )
 			s += formatParam( p[ i ].param );
 	}
@@ -115,11 +115,20 @@ function exampleContent( e ) {
 	for ( var j = 0, f, h, s = '', l = e.length; j < l; j ++ ) {
 		f = e[ j ].toString().slice( 14, -1 ).replace( /\s+$/, '' ).split( '\r\n' );
 		if ( f[ 0 ].indexOf( '//' ) > -1 ) {
-			s += '<div class="example-title">// 范例' + ( l > 1 ? (j + 1) : '' ) + ': ' + $.strTrim( f[ 0 ] ).slice( 2 ) + '</div>';
+			s += '<div class="example-title">// ' + (f[ 0 ].indexOf( '///' ) > -1 ? '' : ('范例' + (l > 1 ? (j + 1) : '')) + ': ') + $.strTrim( f[ 0 ] ).replace( /^\/+/g, '' ) + '</div>';
 			f.splice( 0, 1 );
 		}
-		h = $.strEscape( f.join( '\n' ) ).replace( /\/\/.+/g, function( $0 ){ return '<font color=green>' + $0 + '</font>' } );
-		s += '<pre class=example-content><code>' + h + '</code></pre>';
+		h = f.join( '\n' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' )
+			.replace( /\/\/.+/g, function( $0 ){ return '<em class=code-ann>' + $0 + '</em>' } )
+			.replace( /return~/g, '' );
+		if ( h.indexOf( "return''" ) > -1 )
+			h = h.replace( /return''/g, '' ).replace( /(?=\s*)'|'(?=\n)/g, '' );
+		h = h.replace( /".+?"/g, function( $0 ) { return '<em class=code-str>' + $0 + '</em>' } )
+			.replace( /'.+?'/g, function( $0 ) { return '<em class=code-str>' + $0 + '</em>' } )
+			.replace(/\b(?:true|false)\b/g, function( $0 ) { return '<em class=code-lit>' + $0 + '</em>' } )
+			.replace(/\b(?:function)\b/g, function( $0 ) { return '<em class=code-fun>' + $0 + '</em>' } )
+			.replace(/\b(?:this|var|new|return|if|for)\b/g, function( $0 ) { return '<em class=code-key>' + $0 + '</em>' } );
+		s += '<pre class=example-content><code>\t    ' + $.strTrim( h ) + '</code></pre>';
 	}
 	return s;
 }
@@ -151,8 +160,8 @@ var api = {
 			}
 			if ( t ) {
 				setTimeout( function() {
-					find( d + '-scr' ).scrollTo( $( tree.x.id ) );
-				}, 500 );
+					find( d + '-scr' ).scrollTop( $( tree.x.id ), 'top', true );
+				}, 100 );
 			}
 		}
 	},

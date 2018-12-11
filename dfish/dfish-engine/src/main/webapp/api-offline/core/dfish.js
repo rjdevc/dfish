@@ -279,7 +279,7 @@ _loadJs = function( a, b, c ) {
 		g = function() {
 			if( -- f === 0 ) {
 				for ( var j = 0, r = []; j < a.length; j ++ )
-					r.push( _ajax_cache[ a[ j ] ].response );
+					r.push( _ajax_cache[ _ajax_url( a[ j ] ) ].response );
 				b && b( r );
 			}
 		};
@@ -362,6 +362,10 @@ _strFrom = $.strFrom = function( a, b, c ) {
 _strTo = $.strTo = function( a, b, c ) {
 	var d = c ? a.lastIndexOf( b ) : a.indexOf( b );
 	return d < 0 ? '' : a.substr( 0, d );
+},
+// 在a中取以b开始，到以c结束的字符串(不包括b和c)
+_strRange = $.strRange = function( a, b, c ) {
+	return _strTo( _strFrom( a, b ), c, T );
 },
 // 数字前加0  /@ a -> num, b -> 补成多少长度的字符串？
 _strPad = $.strPad = function( a, b, c ) {
@@ -769,7 +773,7 @@ _urlLoc = $.urlLoc = function( a, b ) {
 _urlParam = $.urlParam = function( a, b ) {
 	var r = a.split( '#' ), u = r[ 0 ], h = r[ 1 ];
 	if ( typeof b === _STR ) {
-		return b === '#' ? h : (u.match( new RegExp('[\\?&]' + b + '=([^&]*)'), 'g' ) || A)[ 1 ];
+		return b === '#' ? (h || '') : (u.match( new RegExp('[\\?&]' + b + '=([^&]*)'), 'g' ) || A)[ 1 ];
 	} else if ( b && typeof b === _OBJ ) {
 		for ( var k in b ) {
 			if ( k === '#' ) {
@@ -1465,6 +1469,20 @@ _ajax_xhr = (function() {
 _ajax_url = function( a ) {
 	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
 },
+_ajax_data = function( e ) {
+	if ( e && typeof e === _OBJ ) {
+		var s = [], i;
+		for ( i in e ) {
+			if ( _isArray( e[ i ] ) ) {
+				for ( var j = 0, b = e[ i ], l = b.length; j < l; j ++ )
+					s.push( i + '=' + _urlEncode( b[ j ] ) );
+			} else
+				s.push( i + '=' + _urlEncode( e[ i ] ) );
+		}
+		e = s.join( '&' );
+	}
+	return e;
+},
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
 _ajax_contexts = {},
@@ -1496,26 +1514,17 @@ Ajax = _createClass( {
 			}
 		},
 		send: function() {
-			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = x.sync, e = x.data, f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
-			if ( typeof e === _OBJ ) {
-				var s = [];
-				for ( i in e ) {
-					if ( _isArray( e[ i ] ) ) {
-						for ( var j = 0; j < e[ i ].length; j ++ )
-							s.push( i + '=' + _urlEncode( e[ i ][ j ] ) );
-					} else
-						s.push( i + '=' + _urlEncode( e[ i ] ) );
-				}
-				e = s.join( '&' );
-			}
+			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = _ajax_data( _cfg.ajax_data ), e = _ajax_data( x.data ),
+				f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
+			d && e ? (e = d + '&' + e) : (d && (e = d));
 			// get url超过长度则转为post
 			if ( ( a.length > 2000 && a.indexOf( '?' ) > 0 ) ) {
-				e = _strFrom( a, '?' ) + ( e ? e + '&' : '' );
+				e = (e ? e + '&' : '') + _strFrom( a, '?' );
 				u = _strTo( a, '?' );
 			}
 			if ( x.base || _path )
 				u = _urlLoc( x.base || _path, u );
-			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! d );
+			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
 			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
 				return x.complete && x.complete.call( c, N, self );
@@ -1569,7 +1578,7 @@ Ajax = _createClass( {
 				}
 			}
 			l.onreadystatechange = _onchange;
-			if ( d ) {
+			if ( x.sync ) {
 				l.send( e );
 			} else {
 				var p = _ajax_paused;
@@ -2243,52 +2252,63 @@ _merge( $, {
 		}
 	})(),
 	// 调试用的方法
-	msg: (function() {
-		function _parse( a, n ) {
-			if ( $.query.isPlainObject( a ) ) {
-				var s = '{', n = n || 0, i, j;
-				for ( i in a ) {
-					j = n;
-					s += '\n';
-					while ( j -- ) s += '\t';
-					s += '"' + i + '": ' + (typeof a[ i ] === _STR ? '"' + a[ i ] + '"' : ($.query.isPlainObject( a[ i ] ) ? _parse( a[ i ], n + 1 ) : a[ i ])) + ',';
-				}
-				return s.replace( /,$/, '' ) + '}';
-			} else
-				return a;
-		}
-		return function( a ) { alert( _parse( a ) ) }
-	})(),
+	j: function( a ) {
+		alert( $.jsonString( a ) );
+	},
 	winbox: function( a ) {
 		alert( a );
 	},
-	// @a -> widget|HTMLElement, y -> print?, t -> head tag
-	print: function( a, z, y ) {
-		var d = a.$ ? (a.$( 'cont' ) || a.$()) : a, w = _win( d ).document, b = $.query( 'link[media=print]', w ), c = [];
+	// @a -> widget|HTMLElement, y -> { print: T/F(是否打印), head: "head标签", input2text: T/F(把表单值转为文本)
+	print: function( a, y ) {
+		var d = a.$ ? (a.$( 'cont' ) || a.$()) : a, w = _win( d ).document, b = $.query( 'link[media=print]', w ), c = [], y = y || {};
 		$.query( 'meta', w ).each( function() { c.push( this.outerHTML ) });
 		(b.length > 0 ? b : $.query( 'link', w )).each( function() { c.push( '<link rel="stylesheet" type="text/css" href="' + this.getAttribute( 'href' ) + '"/>' ); });
 		$.query( 'style', w ).each( function() { c.push( this.outerHTML ) });
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
 		$.query( ':text,textarea', d ).each( function() {
-			var h = this.outerHTML;
-			s = s.replace( h, h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' ) );
+			var h = this.outerHTML, v;
+			if ( y.input2text ) {
+				var g = $.widget( this );
+				if ( g && g.isFormWidget ) {
+					h = g.$().outerHTML; v = g.text();
+				} else
+					v = this.value;
+			} else {
+				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
+			}
+			s = s.replace( h, v );
 		} );
 		$.query( ':radio,:checkbox', d ).each( function() {
-			var h = this.outerHTML, n = h.replace( / checked=""/, '' );
-			if ( this.checked )
-				n = n.replace( />$/, ' checked>' );
-			s = s.replace( h, n );
+			if ( y.input2text ) {
+				var g = $.widget( this );
+				if ( g && g.isFormWidget ) {
+					s = s.replace( g.$().outerHTML, g.isChecked() ? g.text() : '' );
+				}
+			} else {
+				var h = this.outerHTML, n = h.replace( / checked=""/, '' );
+				if ( this.checked )
+					n = n.replace( />$/, ' checked>' );
+				s = s.replace( h, n );
+			}
 		} );
+		if ( y.input2text ) {
+			$.query( ':hidden', d ).each( function() {
+				var g = $.widget( this );
+				if ( g && g.isFormWidget && ! g.isHiddenWidget ) {
+					s = s.replace( g.$().outerHTML, g.text() );
+				}
+			} );
+		}
 		w = window.open();
 		d = w.document;
 		d.open( 'text/html', 'replace' );
 		d.write( '<!doctype html><html><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join( '' ) +
-			(y || '') + '</head><body>' + s +
-			(! br.ms && z ? '<script>window.print();window.close()</script>' : '') +
+			(y.head || '') + '</head><body>' + s +
+			(! br.ms && y.print ? '<script>window.print();window.close()</script>' : '') +
 			'</body></html>' );
 		d.close();
-		if ( br.ms && z ) {
+		if ( br.ms && y.print ) {
 			w.print(), w.close();
 		}
 		return d;

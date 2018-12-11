@@ -26,12 +26,12 @@
 		  	  }
 		  	},
 		  	"nodes" : [
-		  	  { "text": "应用指南", "open": true, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "应用指南", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		  	    { "text": "简介", "id": "upgrade", "open": false, "icon": ".icon .icon-component" },
 		  	    { "text": "模块加载规范", "id": "CommonModuleDefinition", "open": false, "icon": ".icon .icon-component" },
 		  	    { "text": "JS/CSS规范", "id": "app", "icon": ".icon .icon-component" }
 		  	  ] },
-		  	  { "text": "全局方法", "icon": ".icon .icon-pkg", "open": true, "nodes": [
+		  	  { "text": "全局方法", "icon": ".icon .icon-pkg", "open": false, "nodes": [
 		        { "id": "$", "text": "dfish ($)", "open": false, "nodes": [
 		          { "id": "$.ajax", "text": "$.ajax", "datasrc": "$" },
 		          { "id": "$.ajaxCache", "text": "$.ajaxCache", "datasrc": "$" },
@@ -90,6 +90,7 @@
 		          { "id": "$.strTo", "text": "$.strTo", "datasrc": "$" },
 		          { "id": "$.strTrim", "text": "$.strTrim", "datasrc": "$" },
 		          { "id": "$.strUnescape", "text": "$.strUnescape", "datasrc": "$" },
+		          { "id": "$.template", "text": "$.template", "datasrc": "$" },
 		          { "id": "$.urlDecode", "text": "$.urlDecode", "datasrc": "$" },
 		          { "id": "$.urlEncode", "text": "$.urlEncode", "datasrc": "$" },
 		          { "id": "$.urlFormat", "text": "$.urlFormat", "datasrc": "$" },
@@ -106,6 +107,17 @@
 		        { "id": "Q", "text": "Q" },
 		        { "id": "VM", "text": "VM" }
 		      ] },
+		  	  { "text": "模板<sup>3.2+</sup>", "open": false, "icon": ".icon .icon-pkg", "nodes": [
+		  	    { "text": "模板说明", "id": "@", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@propName", "id": "@propName", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@propName:w-for", "id": "@propName:w-for", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@w-if", "id": "@w-if", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@w-elseif", "id": "@w-elseif", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@w-else", "id": "@w-else", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@w-include", "id": "@w-include", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "$dataKey", "id": "$dataKey", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "$this", "id": "$this", "icon": ".icon .icon-component", "datasrc": "@" }
+		  	  ] },
 		  	  { "text": "命令", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "after", "text": "after", "icon": ".icon .icon-class" },
 		        { "id": "ajax", "text": "ajax", "icon": ".icon .icon-class" },
@@ -137,16 +149,25 @@
 		        ] },
 		        { "id": "horz", "text": "horz", "icon": ".icon .icon-class" },
 		        { "id": "vert", "text": "vert", "icon": ".icon .icon-class" },
-		        { "id": "view", "text": "view", "icon": ".icon .icon-class" }
+		        { "id": "view", "text": "view", "icon": ".icon .icon-class" },
+		        { "id": "xsrc", "text": "xsrc<sup>3.2+</sup>", "icon": ".icon .icon-class" }
 		      ] },
 		  	  { "text": "功能类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "album", "text": "album", "icon": ".icon .icon-class" },
 		        { "id": "button", "text": "button", "icon": ".icon .icon-class" },
 		        { "id": "buttonbar", "text": "buttonbar", "icon": ".icon .icon-class" },
-		        { "id": "calendar/date", "text": "calendar/date", "icon": ".icon .icon-class" },
-		        { "id": "calendar/week", "text": "calendar/week", "icon": ".icon .icon-class" },
-		        { "id": "calendar/month","text": "calendar/month", "icon": ".icon .icon-class" },
-		        { "id": "calendar/year", "text": "calendar/year", "icon": ".icon .icon-class" },
+		        { "id": "calendar/date", "text": "calendar/date", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "calendar/week", "text": "calendar/week", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "calendar/month","text": "calendar/month", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "calendar/year", "text": "calendar/year", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "html", "text": "html", "icon": ".icon .icon-class" },
 		        { "id": "img", "text": "img", "icon": ".icon .icon-class" },
 		        { "id": "leaf", "text": "leaf", "icon": ".icon .icon-class" },
