@@ -1555,7 +1555,7 @@ define( {
           { name: 'field', type: 'String', remark: '排序字段名。' },
           { name: 'isnumber', type: 'Boolean', remark: '是否按数字方式排序。' },
           { name: 'status', type: 'String', remark: '当前排序状态。可选值: <b>desc</b>, <b>asc</b>。' },
-          { name: 'src', type: 'Boolean', remark: '后端排序URL。点击标题将访问此地址，支持$0变量(可选值:<b>desc</b>, <b>asc</b>)。<br>支持"javascript:"开头的JS语句。可通过 <b>this.x</b> 来获取当前列的参数。' }
+          { name: 'src', type: 'Boolean', remark: '后端排序URL。点击标题将访问此地址，支持变量$0(可用值:<b>desc</b>, <b>asc</b>)，$1(当前字段名)。<br>支持"javascript:"开头的JS语句。可通过 <b>this.x</b> 来获取当前列的参数。' }
         ] },
         { name: 'tip', type: 'Boolean | Object', remark: '浮动提示的字段名。如果设为true，使用当前字段值作为提示内容。', param: [
           { name: 'field', type: 'String', remark: '提示字段名。' }
