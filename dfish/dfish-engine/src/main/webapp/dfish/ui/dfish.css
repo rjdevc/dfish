@@ -50,8 +50,8 @@
 .f-required{color:red;font-family:tahoma;font-style:normal;margin-right:6px;vertical-align:middle}
 .f-keyword{color:red;font-style:normal}
 
-.f-nobr,.f-omit,.f-fix{white-space:nowrap;word-break:keep-all;word-wrap:normal}
-.f-omit,.f-fix{overflow:hidden;text-overflow:ellipsis}
+.f-nobr,.f-omit,.f-fix1{white-space:nowrap;word-break:keep-all;word-wrap:normal}
+.f-omit,.f-fix1{overflow:hidden;text-overflow:ellipsis}
 .f-abshide{position:absolute;width:1px;height:1px;top:-1px;left:-1px;overflow:hidden}
 .f-wdbr{white-space:normal;word-break:break-all;word-wrap:break-word}
 .f-unsel{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;}
@@ -348,7 +348,7 @@
 .w-xbox-dialog,.w-combobox-dialog{border:1px solid #3298fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
 .w-xbox-ico{margin:0 5px 0 1px}
 .w-xbox ._o,.w-xbox-dialog ._o{position:relative;padding:0 5px;height:28px;line-height:28px}
-.w-xbox-dialog.z-mul ._o{padding-right:36px}
+.w-xbox-dialog ._o{padding-right:36px}
 .w-xbox-dialog ._o.z-hv{background-color:#e1f1ff}
 .w-xbox-dialog ._o.z-on{background-color:#b0dfff}
 .w-xbox-dialog ._o.z-on ._box{position:absolute;width:16px;height:100%;top:0;right:16px;background:url(g/n.png) no-repeat -235px 50%}

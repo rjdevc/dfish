@@ -5626,14 +5626,14 @@ XBox = define.widget( 'xbox', {
 		$v: function() { return $( this.id + 'v' ) },
 		width_minus: function() { return _boxbtn_width + _input_indent() },
 		initOptions: function( x ) {
-			var o = x.options || (x.options = []), i = o.length, v = x.value != N ? String( x.value ) : '';
+			var o = x.options || (x.options = []), i = o.length, v = x.value != N ? '' : '' + x.value;
 			this._sel = [];
 			while ( i -- ) {
-				o[ i ].value == N && (o[ i ].value = '');
+				o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
 				(o[ i ].checked || (v && $.idsAny( v, o[ i ].value ))) && this._sel.push( o[ i ] );
 			}
 			if( o.length ) {
-				! this._sel.length && this._sel.push( o[ 0 ] );
+				//! this._sel.length && this._sel.push( o[ 0 ] );
 				var i = this._sel.length, s = [];
 				while ( i -- ) s.push( this._sel[ i ].value );
 				x.value = s.join(); // 设一下value，给 isModified() 用
@@ -5684,20 +5684,15 @@ XBox = define.widget( 'xbox', {
 				if ( a == N )
 					return v;
 				var b = [];
-				if ( this.x.multiple ) {
+
 					if ( a.jquery ) {
-						for ( var i = 0, q = a.parent().find( '._o.z-on' ); i < q.length; i ++ )
+						for ( var i = 0, q = a.parent().find( '._o.z-on' ), l = q.length; i < l; i ++ )
 							b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
 					} else {
 						for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
 							if ( q[ i ].value != N && q[ i ].value != '' && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
 					}
-				} else {
-					var o = a.jquery ? this.x.options[ a.attr( '_i' ) ] : $.arrFind( this.x.options, 'v.value=="' + a + '"' );
-					o && b.push( o );
-				}
-				if ( ! b.length )
-					b = [ this.x.options[ 0 ] ];
+
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
 					t.push( b[ i ].text );
@@ -5723,10 +5718,12 @@ XBox = define.widget( 'xbox', {
 			return $.strTrim( this.$( 'p' ).innerText );
 		},
 		choose: function( a, e ) {
-			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.options[ d.attr( '_i' ) ].value;
-			this.x.multiple && v && d.toggleClass( 'z-on' );
+			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.options[ d.attr( '_i' ) ].value,
+				s = d.hasClass( 'z-on' );
+			! this.x.multiple && d.siblings().removeClass( 'z-on' );
+			d.toggleClass( 'z-on' );
 			this.val( d );
-			!this.x.multiple && this._dropper.close();
+			! this.x.multiple && this._dropper.close();
 		},
 		drop: function() {
 			var o = this.x.options;
@@ -5747,7 +5744,7 @@ XBox = define.widget( 'xbox', {
 			return '';
 		},
 		html_li: function( a, b ) {
-			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape ? $.strEscape( a.text ) : a.text) + (!b && this.x.multiple ? '<i class=_box></i>' : '') : '';
+			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape ? $.strEscape( a.text ) : a.text) + (!b ? '<i class=_box></i>' : '') : '';
 		},
 		html_text: function() {
 			if ( this.x.multiple ) {
