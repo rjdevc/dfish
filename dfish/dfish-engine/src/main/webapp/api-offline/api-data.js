@@ -1226,12 +1226,6 @@ define( {
       { name: 'render([elem], [method])', remark: '生成 html 元素。', common: true, param: [
         { name: 'elem', type: 'htmlElement', remark: '目标位置。可选参数。', optional: true },
         { name: 'method', type: 'String', remark: '生成方式。可选值: <b>append</b>, <b>prepend</b>, <b>before</b>, <b>after</b>, <b>replace</b>', optional: true }
-      ], example: [
-          function() {
-          	// 创建一个 view 并生成在某个 div 里
-           var vm = $.create( { type: 'view', src: 'index.sp', width: 800, height: -1 } );
-           vm.render( $( 'mydiv' ) );
-          }
       ] },
       { name: 'repaint([deep])', remark: '重绘当前节点。', common: true, param: [
         { name: 'deep', type: 'Boolean', remark: '设置为true，子节点也全部重绘。', optional: true }
@@ -1404,7 +1398,7 @@ define( {
       { name: 'focusmultiple', type: 'Boolean', remark: '是否有多个按钮可同时设为焦点状态。' },
       { name: 'nobr', type: 'Boolean', remark: '不换行。默认为 true。' },
       { name: 'overflow', type: 'Object', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。', param: [
-        { name: 'effect', type: 'String', remark: '效果。可选值：<b>swap</b><s>(点击下拉菜单按钮，和可见按钮交换位置。)</s>', optional: true },
+        { name: 'effect', type: 'String', remark: '效果。可选值：<b>normal</b><s>(默认)</s>, <b>swap</b><s>(点击下拉菜单按钮，和可见按钮交换位置。)</s>', optional: true },
         { name: 'button', type: 'Button', remark: '显示"更多"的按钮。', optional: true }
       ], example: [
           function() {
@@ -1561,7 +1555,7 @@ define( {
           { name: 'field', type: 'String', remark: '排序字段名。' },
           { name: 'isnumber', type: 'Boolean', remark: '是否按数字方式排序。' },
           { name: 'status', type: 'String', remark: '当前排序状态。可选值: <b>desc</b>, <b>asc</b>。' },
-          { name: 'src', type: 'Boolean', remark: '后端排序URL。点击标题将访问此地址，支持$0变量(可选值:<b>desc</b>, <b>asc</b>)。' }
+          { name: 'src', type: 'Boolean', remark: '后端排序URL。点击标题将访问此地址，支持$0变量(可选值:<b>desc</b>, <b>asc</b>)。<br>支持"javascript:"开头的JS语句。可通过 <b>this.x</b> 来获取当前列的参数。' }
         ] },
         { name: 'tip', type: 'Boolean | Object', remark: '浮动提示的字段名。如果设为true，使用当前字段值作为提示内容。', param: [
           { name: 'field', type: 'String', remark: '提示字段名。' }

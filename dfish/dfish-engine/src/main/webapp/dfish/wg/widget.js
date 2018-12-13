@@ -8110,8 +8110,8 @@ TCell = define.widget( 'tcell', {
 				(e = r.colgrps[ 0 ][ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
-				w -= 1;
+			//if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
+			//	w -= 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
 		},
@@ -8741,17 +8741,17 @@ Grid = define.widget( 'grid', {
 				var c = e[ k ].x.sort, d = c.field || a, r = $.arrMake( this.getEchoRows() );
 				if ( b == N ) {
 					b = e[ k ]._sort === 'desc' ? 'asc' : 'desc';
-					e[ k ]._sort = b;
 				}
 				if ( c.src ) {
 					var s = c.src;
 					if ( s.indexOf( 'javascript:' ) == 0 )
-						s = this.formatJS( s );
+						s = e[ k ].formatJS( s, '$0', [ b ] );
 					if ( s && typeof s === _STR && ! e[ k ]._sorting ) {
 						e[ k ]._sorting = T;
-						this.cmd( { type: 'ajax', src: s, complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
+						e[ k ].cmd( { type: 'ajax', src: s, complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
 					}
 				} else {
+					e[ k ]._sort = b;
 					Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' )
 					Q( e[ k ].th() ).addClass( 'z-' + b );
 					r.sort( function( m, n ) {
