@@ -13,8 +13,11 @@ import java.util.HashMap;
  * 同城搜索通常只需要前面6位或4位一样。
  * 参考https://en.wikipedia.org/wiki/Geohash
  * @author GOOGLE
- *
+ * @deprecated 现在使用GeohashX 修正了BUG并增加了功能。因为这个是从谷歌中获取的代码，所以不做修改。直接换一个类了。
+ * 原来的BUG在 hash转化回经纬度的时候有时有较大的误差。应该是原作者对BitSet有误解。
+ * @see GeohashX
  */
+@Deprecated
 public class Geohash {  
   
     private static int numbits = 5 * 5;  
