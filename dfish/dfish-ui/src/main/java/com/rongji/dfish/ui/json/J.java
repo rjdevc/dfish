@@ -47,6 +47,8 @@ public class J {
 				jt = AYYAY_JSON_BUILDER;
 			}else if(java.util.Date.class.isAssignableFrom(clz)){
 				jt = DATE_JSON_BUILDER;
+			}else if(Number.class.isAssignableFrom(clz)){
+				jt = BASE_JSON_BUILDER;
 			}else if(Enum.class.isAssignableFrom(clz)){
 				jt = ENUM_JSON_BUILDER;
 			}else if(Widget.class.isAssignableFrom(clz)) {
