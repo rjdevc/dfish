@@ -12,7 +12,7 @@ import java.util.HashMap;
  * 原来使用从谷歌获取的Geohash，但是这个方法从hash转化回经纬度存在BUG。故重做了，并增加expand方法以供实际项目使用
  * @since 3.2.0
  */
-public class GeohashX {
+public class Geohash {
 	private static final String BASECODE="0123456789bcdefghjkmnpqrstuvwxyz";
 	private static final int TOP = 0;
 	private static final int RIGHT = 1;
@@ -70,10 +70,10 @@ public class GeohashX {
 
 	    return new String[] {topLeft, top, topRight, left, right, bottomLeft, bottom, bottomRight };
 	}
-	public GeohashX(int bytes){
+	public Geohash(int bytes){
 		this.bytes=bytes;
 	}
-	public GeohashX(){
+	public Geohash(){
 		this(5);
 	}
 	 private int bytes ;  
@@ -140,7 +140,7 @@ public class GeohashX {
 	     * @return String
 	     */
 	    public String encode(double lat, double lon) {  
-	    	return GeohashX.encode(lat, lon, bytes);
+	    	return Geohash.encode(lat, lon, bytes);
 	    }  
 	    public static  String encode(double lat, double lon,int bytes) {  
 	    	int bitlen=bytes*5;
