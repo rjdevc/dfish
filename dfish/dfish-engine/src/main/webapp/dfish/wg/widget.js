@@ -1600,7 +1600,7 @@ _setParent = function( a ) {
 	}
 },
 _userPriority = { 'click': T, 'close': T, 'valid': T },
-_templates = {},
+_templates = $.templates,
 _view_js = cfg.view_js || {},
 // view的占据空间的widget，可见元素都隶属于此
 ViewLayout = define.widget( 'view/layout', {
@@ -5626,8 +5626,8 @@ XBox = define.widget( 'xbox', {
 		$v: function() { return $( this.id + 'v' ) },
 		width_minus: function() { return _boxbtn_width + _input_indent() },
 		initOptions: function( x ) {
-			var o = x.options || (x.options = []), i = o.length, v = x.value != N ? '' : '' + x.value;
 			this._sel = [];
+			var o = x.options || (x.options = []), i = o.length, v = x.value != N ? '' : '' + x.value;
 			while ( i -- ) {
 				o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
 				(o[ i ].checked || (v && $.idsAny( v, o[ i ].value ))) && this._sel.push( o[ i ] );
@@ -5684,15 +5684,13 @@ XBox = define.widget( 'xbox', {
 				if ( a == N )
 					return v;
 				var b = [];
-
-					if ( a.jquery ) {
-						for ( var i = 0, q = a.parent().find( '._o.z-on' ), l = q.length; i < l; i ++ )
-							b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
-					} else {
-						for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
-							if ( q[ i ].value != N && q[ i ].value != '' && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
-					}
-
+				if ( a.jquery ) {
+					for ( var i = 0, q = a.parent().find( '._o.z-on' ), l = q.length; i < l; i ++ )
+						b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
+				} else {
+					for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
+						if ( q[ i ].value != N && q[ i ].value != '' && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
+				}
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
 					t.push( b[ i ].text );
@@ -8328,8 +8326,6 @@ GridList = define.widget( 'grid/list', {
 				Scroll.Listener.body.scroll.apply( this, arguments );
 				var d = this.rootNode.head;
 				if ( d ) {
-					// 滚动条在list上，则临时设置overflow样式。如果把hidden写在css里，那么当滚动条在grid的上级面板时，thead会被截掉
-					d.$().style.overflow = 'hidden';
 					d.$().scrollLeft = this.scrollLeft();
 				}
 			}
@@ -8452,6 +8448,7 @@ Grid = define.widget( 'grid', {
 		}
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
+		x.scroll && $.classAdd( this, 'z-scroll' );
 	},
 	Extend: 'vert/scale',
 	Listener: {
