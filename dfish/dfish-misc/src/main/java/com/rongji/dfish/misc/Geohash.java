@@ -146,16 +146,33 @@ public class Geohash {
 	    	int bitlen=bytes*5;
 	    	boolean[] lonbits = getBits(lon, -180, 180,(bitlen+1)/2);  
 	        boolean[] latbits = getBits(lat, -90, 90, bitlen/2);  
-	        StringBuilder buffer = new StringBuilder();  
+	        boolean[] buffer = new boolean[bitlen];  
 	        for (int i = 0; i < bitlen; i++) {  
 	        	if(i%2==0){
-	        		buffer.append( (lonbits[i/2])?'1':'0');  
+	        		buffer[i]=lonbits[i/2];  
 	        	}else{
-	        		buffer.append( (latbits[i/2])?'1':'0');  
+	        		buffer[i]=latbits[i/2];  
 	        	}
 	        }  
-	        return base32(Long.parseLong(buffer.toString(), 2));  
+	        return base32(buffer);
+//	        return base32(Long.parseLong(buffer.toString(), 2));  
 	    }  
+	    public static String base32(boolean[] buffer) {  
+	    	StringBuilder sb=new StringBuilder();
+	    	for(int i=0;i<buffer.length;i+=5){
+	    		sb.append(toBase32char(buffer,i));
+	    	}
+	    	return sb.toString();
+	    }  
+	    
+	    private static char toBase32char(boolean[] buffer, int i) {
+			int b=(buffer[i]?16:0)|
+					(buffer[i+1]?8:0)|
+					(buffer[i+2]?4:0)|
+					(buffer[i+3]?2:0)|
+					(buffer[i+4]?1:0);
+			return digits[b];
+		}
 	  
 	    private static  boolean[] getBits(double lat, double floor, double ceiling ,int bitlen) {  
 	    	 boolean[] buffer = new  boolean[bitlen];  
