@@ -28,7 +28,9 @@
 .f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x{visibility:visible}
 .f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85}
 .f-scroll-wrap.z-ovis{overflow:visible}
+
 .f-scroll-overflow .w-vert,.f-scroll-overflow .w-grid{overflow:visible}
+.f-scroll-overflow .w-grid.z-scroll .w-grid-thead{overflow:hidden}
 
 .f-bl{display:block;}
 .f-inbl{display:inline-block;*display:inline;*zoom:1}
@@ -134,11 +136,10 @@
 .w-grid-table ._ie_thead{*display:none}
 .w-grid-table ._ie_thead td{padding-top:0;padding-bottom:0}
 .w-grid-table{table-layout:fixed;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:100%;width:100%}
-/*.w-tr.z-hv{background:#f0f8ff}
-.w-tr.z-on{background:#cde6fe}*/
-.w-td-line{border-bottom:1px solid #e9e9e9}
-.w-td-dot{border-bottom:1px dashed #e3e3e3}
-.w-td-cell{border-bottom:1px solid #e9e9e9;border-right:1px solid #e9e9e9}
+.w-td-none{position:relative;overflow:hidden;*position:static;}
+.w-td-line{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;*position:static;}
+.w-td-dot{position:relative;overflow:hidden;border-bottom:1px dashed #e3e3e3;*position:static;}
+.w-td-cell{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;border-right:1px solid #e9e9e9;*position:static;}
 .w-td-cell.z-last{border-right:0}
 .w-grid-head{overflow:hidden}
 .w-grid-head td{position:relative}
@@ -154,6 +155,7 @@
 .w-th-sort.z-asc .f-arw-t1,.w-th-sort .f-arw-t1:hover{border-bottom-color:#777}
 .w-th-sortwrap{width:12px;margin-left:2px}
 .w-grid-thead{position:relative;line-height:1}
+.w-grid.z-scroll .w-grid-thead{overflow:hidden}
 .w-grid-thead .w-grid-table{height:100%}
 .w-grid-thead:hover .w-th-rsz{border-left:1px solid #ddd}
 .w-grid-thead:hover .w-grid-face-cell .w-th-rsz{border-left:0}
@@ -223,9 +225,9 @@
 
 .w-toggle{position:relative}
 .w-toggle-hr{margin:2px 0;border:1px solid #ccc;border-width:1px 0 0 0;height:0;overflow:hidden}
-.w-toggle-table{width:100%;height:100%;*height:auto}
+.w-toggle-table{height:100%;*height:auto}
 .w-toggle-table .w-leaf,.w-toggle-table .w-leaf ._a{padding-right:3px}
-.w-toggle-table.z-hr .w-toggle-text{padding-right:6px;white-space:nowrap;word-break:keep-all}
+.w-toggle-table.z-nobr .w-toggle-text{padding-right:6px;white-space:nowrap;word-break:keep-all}
 .w-toggle-text{display:inline-block;padding-left:5px;}
 .w-toggle-text em{vertical-align:middle;font-style:normal}
 .w-toggle-icon{display:inline-block;min-width:10px;line-height:0;text-align:right;cursor:pointer}
@@ -272,6 +274,14 @@
 .w-calendar-time-dlg ._o.z-hv{background:#def0fc}
 .w-calendar-time-dlg ._o.z-on{background:#cce7f9}
 
+.w-label{position:relative;}
+.w-label ._t{margin-right:6px}
+.w-label ._bg{position:absolute;top:0;left:0;}
+
+.w-grid .w-label{position:static;*position:relative}
+.w-grid .w-label ._t{position:relative;z-index:1}
+.w-grid .w-label ._bg{height:1000px;}
+
 /* form */
 .w-form{margin:0;padding:0;}
 .w-form.z-ds{color:#999}
@@ -280,7 +290,7 @@
 .w-form textarea{vertical-align:middle}
 
 .w-input,.w-input-border{border:1px solid #99a8b8;background:#fff}
-.w-input{position:relative;height:28px;border-radius:2px;text-align:left;/*box-shadow:inset 0px 2px 0px #f7f7f7;*/}
+.w-input{position:relative;height:28px;border-radius:2px;text-align:left}
 .w-input ._t{height:100%;line-height:28px;padding-left:5px;*height:28px}
 .w-input.z-on,.w-input-border.z-on{border-color:#3298fe;box-shadow:none}
 .w-input.z-ds{background:#f1f1f1;box-shadow:none}
@@ -345,11 +355,10 @@
 
 
 .w-xbox.z-ds.z-empty{color:#a9a9a9}
-.w-xbox.z-loading{color:#999}
 .w-xbox-dialog,.w-combobox-dialog{border:1px solid #3298fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
 .w-xbox-ico{margin:0 5px 0 1px}
 .w-xbox ._o,.w-xbox-dialog ._o{position:relative;padding:0 5px;height:28px;line-height:28px}
-.w-xbox-dialog.z-mul ._o{padding-right:36px}
+.w-xbox-dialog ._o{padding-right:36px}
 .w-xbox-dialog ._o.z-hv{background-color:#e1f1ff}
 .w-xbox-dialog ._o.z-on{background-color:#b0dfff}
 .w-xbox-dialog ._o.z-on ._box{position:absolute;width:16px;height:100%;top:0;right:16px;background:url(g/n.png) no-repeat -235px 50%}
