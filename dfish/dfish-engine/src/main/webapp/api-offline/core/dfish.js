@@ -1,5 +1,5 @@
 /*!
- * dfish.js v3.2
+ * dfish.js v3
  * (c) 2015-2018 Mingyuan Chen
  * Released under the MIT License.
  */
@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish', version = '3.1.7',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -30,6 +30,12 @@ $ = dfish = function( a ) {
 
 //获取dfish所在目录
 getPath = function(){
+	var jsPath = location.href;
+	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
+	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
+		_path = _urlLoc( location.pathname, _path );
+	}
 	var jsPath = doc.currentScript ? doc.currentScript.src : function(){
 		var js = doc.scripts, last = js.length - 1, src;
 		for ( var i = last; i > 0; i -- ){
@@ -40,12 +46,7 @@ getPath = function(){
 		}
 		return src || js[ last ].src;
 	}();
-	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' ).slice( 0, -1 );
-	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
-	_lib   = jsPath.substring( jsPath.lastIndexOf( '/' ) + 1 ) + '/';
-	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
-		_path = _urlLoc( location.pathname, _path );
-	}
+	_lib = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
 },
 
 // 浏览器信息
@@ -315,6 +316,9 @@ _uid = $.uid = function( o ) {
 		return o.isWidget ? (o.id || (o.id = _guid())) : (o[ _expando ] || (o[ _expando ] = _guid()));
 	return _guid();
 },
+_isNumber = $.isNumber = function( a ) {
+	return a != N && ! isNaN( a );
+},
 _number = $.number = function( a ) {
 	var r = typeof a === _STR ? parseFloat( a.replace( ',', '' ) ) : + a;
 	return isNaN( r ) ? 0 : r;
@@ -541,7 +545,7 @@ _arrMake = $.arrMake = function( a ) { return _isArray( a ) ? a : a == N ? [] : 
 _arrSelect = $.arrSelect = function( a, b, c ) {
 	if ( typeof b === _STR ) b = _arrfn( b );
     for( var i = 0, l = a.length, r = [], d; i < l; i ++ ) {
-    	 if ( d = b.call( a[ i ], a[ i ], i, a ) ) r.push( c ? d : a[ i ] );
+    	if ( d = b.call( a[ i ], a[ i ], i, a ) ) r.push( c ? d : a[ i ] );
     }
     return r;
 },
@@ -583,107 +587,18 @@ _jsonCut = $.jsonCut = function( a, b, c ) {
 	return a;
 },
 
-// 把 json 转为字符串
-_jsonString = $.jsonString = (function() {
-	if ( win.JSON )
-		return function() { return JSON.stringify.apply( JSON, arguments ) };
-	var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-	    es = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-	    meta = { '\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\' },
-		gap, idn, rep;
-	function quote( s ) {
-	    es.lastIndex = 0;
-	    return es.test( s ) ? '"' + s.replace( es, function( a ) {
-	            var c = meta[a];
-	            return typeof c === _STR ? c : '\\u' + ('0000' + a.charCodeAt( 0 ).toString( 16 )).slice( -4 );
-	        }) + '"' : '"' + s + '"';
-	}
-	function str( key, h ) {
-	    var i, k, v, length, mind = gap, _partial, u = h[ key ];
-	    if ( u && typeof u === _OBJ && u instanceof Date )
-	        u = _dateFormat( u, 'yyyy-mm-ddThh:ii:ssZ', T );
-	    if ( typeof rep === _FUN )
-	        u = rep.call(h, key, u);
-	    switch ( typeof u ) {
-	    case _STR:
-	        return quote( u );
-	    case _NUM:
-	        return isFinite( u ) ? u + '' : 'null';
-	    case 'boolean':
-	    case 'null':
-	        return u + '';
-	    case _OBJ:
-	        if ( ! u )
-	            return 'null';
-	        gap += idn;
-	        _partial = [];
-	       if ( _isArray( u ) ) {
-	            length = u.length;
-	            for ( i = 0; i < length; i ++ ) {
-	                _partial[ i ] = str( i, u ) || 'null';
-	            }
-	            v = _partial.length === 0 ? '[]' : gap ? '[\n' + gap + _partial.join(',\n' + gap) + '\n' + mind + ']' : '[' + _partial.join(',') + ']';
-	            gap = mind;
-	            return v;
-	        }
-	        if ( rep && typeof rep === _OBJ ) {
-	            length = rep.length;
-	            for ( i = 0; i < length; i ++ ) {
-	                k = rep[ i ];
-	                if ( typeof k === _STR && (v = str(k, u)) ) {
-	                	_partial.push(quote( k ) + (gap ? ': ' : ':') + v);
-	                }
-	            }
-	        } else {
-	            for ( k in u ) {
-	                if ( Object.hasOwnProperty.call( u, k ) ) {
-	                    if ( v = str( k, u ) )
-	                        _partial.push( quote( k ) + ( gap ? ': ' : ':' ) + v );
-	                }
-	            }
-	        }
-	        v = _partial.length === 0 ? '{}' : gap ? '{\n' + gap + _partial.join( ',\n' + gap ) + '\n' + mind + '}' : '{' + _partial.join( ',' ) + '}';
-	        gap = mind;
-	        return v;
-	    }
-	}
-	return function( u, r, s ) {
-	    var i;
-	    gap = '', idn = '';
-	    if ( typeof s === _NUM ) {
-	        for ( i = 0; i < s; i ++ )
-	            idn += ' ';
-	    } else if ( typeof s === _STR ) {
-	        idn = s;
-	    }
-	    rep = r;
-	    if ( r && typeof r !== _FUN && (typeof r !== _OBJ || typeof r.length !== _NUM ) ) {
-	        throw new Error( 'JSON.stringify' );
-	    }
-	    return str( '', { '' : u } );
-	};
-}()),
-_jsonParse = $.jsonParse = (function() {
-	return win.JSON ? function( a ) { return ! a ? N : JSON.parse.call( JSON, a ) } : function( a ) { return a == N ? N : (Function('return ' + a))() }
-})(),
-_jsonClone = $.jsonClone = (function() {
-	return win.JSON ? function( a ) { return typeof a === _OBJ ? _jsonParse( _jsonString( a ) ) : a } :
-		function( a ) {
-		    if( typeof a === _OBJ ) {
-		        if ( _isArray( a ) ) {
-		            for( var i = 0, b = []; i < a.length; i ++ )
-		            	b.push( _jsonClone( a[ i ] ) );
-		            return b;
-		        } else {
-		            var o = {}, k;
-		            for ( k in a )
-		                o[ k ] = _jsonClone( a[ k ] );
-		            return o;
-		        }
-		    }
-		    return a;
-		}
-})(),
+// 把 json 转为字符串 /@ a -> value, b -> replacer, c -> space
+_jsonString = $.jsonString = function( a, b, c ) {
+	return JSON.stringify( a, b, c );
+},
+// 把字符串 转为 json /@ a -> str
+_jsonParse = $.jsonParse = function( a ) {
+	return ! a ? N : JSON.parse( a );
+},
+// 复制 json
+_jsonClone = $.jsonClone = function( a ) {
+	return typeof a === _OBJ ? _jsonParse( _jsonString( a ) ) : a;
+},
 // 一天的毫秒数
 _date_D = 86400000,
 // 标准格式化字符串
@@ -869,7 +784,10 @@ _win = function( o ) { return o && (o = (o.ownerDocument || o)) ? (o.defaultView
 // 往 document.body 内写入内容
 _db = $.db = function( a, b ) { return a ? (_append( b || doc.body, a ), doc.body.lastChild) : doc.body },
 // 简写 getElementsByTagName
-_tags = $.tags = function( a, b ) { return (b || doc).getElementsByTagName( a ) },
+_tags = $.tags = function( a ) {
+	for ( var i = 0, c = doc.getElementsByTagName( a ), r = [], l = c.length; i < l; i ++ ) r.push( c[ i ] );
+	return r;
+},
 // 创建一个div /@ s -> html
 _div = function( s ) {
 	var o = doc.createElement( 'div' );
@@ -1642,9 +1560,16 @@ $.script = function( a, b ) {
 	}, ! b );
 }
 
-// 浏览器兼容
-function _compat() {
-	br.mobile ? _compatMobile() : _compatPC();
+// 浏览器JS兼容
+function _compatJS() {
+	var u = _lib + 'cp/';
+	! win.JSON && $.script( u + 'js-json.js' );
+	'a'.split( /a/ ).length === 0 && $.script( u + 'js-split.js' );
+}
+
+// 浏览器DOM兼容
+function _compatDOM() {
+	br.mobile ? _compatDOMMobile() : _compatDOMPC();
 	var tmp;
 	if ( !('ActiveXObject' in win) ) {
 		XMLDocument.prototype.loadXML = function( a ) {
@@ -1682,7 +1607,7 @@ function _compat() {
 		win.dispatchEvent( tmp );
 	}	
 }
-function _compatPC() {
+function _compatDOMPC() {
 	var tmp;
 	if ( window.Range && ! Range.prototype.movePoint ) {
 		if ( Range.prototype.__defineGetter__ ) {
@@ -1776,7 +1701,7 @@ function _compatPC() {
 	// 检测浏览器自带滚动条的宽度
 	br.chdiv( 'f-scroll-overflow', function() { br.scroll = 50 - this.clientWidth; } );
 }
-function _compatMobile() {
+function _compatDOMMobile() {
 	// 实现tap事件
 	var n, t, tmp;
 	$.query( doc ).on( 'touchstart', function( e ) {
@@ -1808,12 +1733,15 @@ function _initEnv() {
 		_lib = _cfg.lib;
 	_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
 	_ui_path = _urlLoc( _path, _lib ) + 'ui/';
+	
+	_compatJS();
+	
 	if ( noGlobal || _cfg.no_conflict ) {
 		(Date.$ = $).abbr = 'Date.$';
 	}
 	var _define  = new Define( _path ),
 		_require = new Require( _path ),
-		_wg_lib  = _lib + 'wg/',
+		_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
 		_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
 		_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
 	if ( ! _loc )
@@ -1829,6 +1757,7 @@ function _initEnv() {
 	$.PATH = _path;
 	$.LIB  = _lib;
 	$.IMGPATH = _ui_path + 'g/';
+	$.version = version;
 	
 	$.loc     = _loc;
 	$.query   = _jq;
@@ -1853,13 +1782,13 @@ function _initEnv() {
 }
 function _initDocView( $ ) {
 	$.ready( function() {
-		_compat();
+		_compatDOM();
 		// 生成首页view
 		if ( _cfg.view ) {
 			$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
 		} else {
 			// 把 <d:wg> 标签转换为 widget
-			for ( var i = 0, d = _arrMake( _tags( br.css3 ? 'd:wg' : 'wg' ) ), j, l = d.length; i < l; i ++ ) {
+			for ( var i = 0, d = _tags( br.css3 ? 'd:wg' : 'wg' ), j, l = d.length; i < l; i ++ ) {
 				if ( eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) ) )
 					$.widget( j ).render( d[ i ], 'replace' );
 			}

@@ -7,7 +7,7 @@ var mod = dfish.x.data.module;
 dfish.init( {
 	view: {
 		id: 'index',
-		src: 'api/' + mod + '-view.json'
+		src: mod + '-view.json'
 	},
 	debug: true
 } );
@@ -92,21 +92,21 @@ function memberWidget( id, a, k, n, m ) {
 
 function format( row ) {
 	var d = row.x.data, e,
-		s = '<h4 id="' + ( d.id || $.strTo( d.name, '(' ) || d.name ) + '"><span class="name' + ( d.common ? '' : ' ownprop' ) + '">' + d.name + '</span>' + (d.type ? ' <span class=typeof>: ' + d.type + '</span>' : '') + (d.ver ? '<sup>' + d.ver + '</sup>' : '') + (d.mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i> ': '') + '</h4><p class=remark>' + d.remark + '</p>';
+		s = '<h4 id="' + ( d.id || $.strTo( d.name, '(' ) || d.name ) + '"><span class="name' + (d.common ? '' : ' ownprop') + '">' + d.name + '</span>' + (d.ver ? '<sup>' + d.ver + '</sup>&nbsp;' : '') + (d.type ? ' <span class=typeof>: ' + d.type + '</span>' : '') + (d.mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i> ': '') + '</h4><p class=remark>' + d.remark + '</p>';
 	if ( d.param ) {
-		s += formatParam( d.param );
+		s += formatParam( d.param, d.common );
 	}
 	if ( e = d.example )
 		s += exampleContent( e );
 	return { type: 'html', text: s, cls: 'title' };
 }
 
-function formatParam( p ) {
+function formatParam( p, c ) {
 	var s = '<ul>';
 	for ( var i = 0; i < p.length; i ++ ){
-		s += '<li class=param><div><var>' + p[ i ].name + '</var> ' + (p[ i ].ver ? '<sup>' + p[ i ].ver + '</sup>' : '') + ': <span class=typeof>' + p[ i ].type + '</span>' + (p[ i ].optional ? ' &nbsp;<i>[Optional]</i>' : '') + (p[ i ].mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i>' : '') + '</div><div class=remark>' + p[ i ].remark  + '</div>';
+		s += '<li class="param' + (c ? ' z-common' : '') + '"><div><var>' + p[ i ].name + '</var> ' + (p[ i ].ver ? '<sup>' + p[ i ].ver + '</sup>' : '') + ': <span class=typeof>' + p[ i ].type + '</span>' + (p[ i ].optional ? ' &nbsp;<i>[Optional]</i>' : '') + (p[ i ].mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i>' : '') + '</div><div class=remark>' + p[ i ].remark  + '</div>';
 		if ( p[ i ].param )
-			s += formatParam( p[ i ].param );
+			s += formatParam( p[ i ].param, c );
 	}
 	return s + '</ul>';
 }
