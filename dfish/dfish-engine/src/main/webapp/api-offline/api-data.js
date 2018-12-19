@@ -2669,14 +2669,17 @@ define( {
   	remark: '单行文本输入框。',
   	extend: 'widget',
     Config: [
-      { name: 'label', type: 'String', optional: true, remark: '字段描述。这个描述用于校验提示中。' },
+      { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。当设为 label 对象并有宽度时，将在表单左边显示标签内容。<br>Label参数如下：', param: [
+        { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+        { name: 'text', type: 'String', remark: '标签内容。' }
+      ] },
       { name: 'name', type: 'String', remark: '表单名。' },
       { name: 'placeholder', type: 'String', optional: true, remark: '当表单没有值时显示的提示文本。' },
       { name: 'status', type: 'String', optional: true, remark: '表单状态。可选值: <b>normal</b><s>(默认)</s>, <b>readonly</b><s>(只读，不验证数据)</s>, <b>validonly</b><s>(只读，验证数据)</s>, <b>disabled</b><s>(禁用)</s>。' },
       { name: 'tip', type: 'Boolean | string', remark: '提示信息。如果设置为true，提示内容为当前的文本。' },
       { name: 'transparent', type: 'Boolean', optional: true, remark: '设置为true，表单将成为无边框无背景的状态。' },
       { name: 'value', type: 'String', remark: '表单值。' },
-      { name: 'validate', type: 'Object', optional: true, remark: '表单校验选项。',  param: [
+      { name: 'validate', type: 'Object', optional: true, remark: '表单校验选项。', param: [
         { name: 'required', type: 'Boolean', remark: '必填。' },
         { name: 'requiredtext', type: 'String', remark: '必填提示文本。' },
         { name: 'pattern', type: 'String', remark: '正则表达式。' },
