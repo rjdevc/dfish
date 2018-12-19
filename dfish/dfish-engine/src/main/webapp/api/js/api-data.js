@@ -2671,7 +2671,8 @@ define( {
     Config: [
       { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。当设为 label 对象并有宽度时，将在表单左边显示标签内容。<br>Label参数如下：', param: [
         { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
-        { name: 'text', type: 'String', remark: '标签内容。' }
+        { name: 'suffix', type: 'String', remark: '后缀。' }
+        { name: 'text', type: 'String', remark: '内容。' }
       ], example: [
           function() {
             // 显示标签的表单

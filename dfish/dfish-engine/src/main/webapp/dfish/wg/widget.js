@@ -4104,7 +4104,7 @@ var Label = define.widget( 'label', {
 		html_text: function() {
 			var s = Html.prototype.html_text.call( this ), d = this.parentNode.x.validate;
 			d && d.required && (s = this.html_star() + s);
-			return s;
+			return s + (this.x.suffix || '');
 		},
 		html_bg: function() {
 			return '<div id=' + this.id + 'bg class="_bg" style="width:' + this.innerWidth() + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
@@ -4129,7 +4129,9 @@ _z_on = function( a ) {
 },
 // /@ a -> valid object, b -> valid code, c -> args
 _form_err = function( a, b, c ) {
-	return { wid: this.id, name: this.x.name, code: b, label: this.x.label, text: ( a && a[ b + 'text' ] ) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! this.x.label ? 'complete_required' : b ], this.x.label || Loc.field ].concat( c || [] ) ) || '' };
+	var t = this.x.label;
+	t.text && (t = t.text);
+	return { wid: this.id, name: this.x.name, code: b, label: t, text: ( a && a[ b + 'text' ] ) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! t ? 'complete_required' : b ], t || Loc.field ].concat( c || [] ) ) || '' };
 },
 _valid_err = function( b, v ) {
 	if ( typeof v !== _STR )
