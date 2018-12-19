@@ -93,5 +93,6 @@
     <module>dfish-uiplugin</module>
     <module>dfish-engine</module>
     <module>dfish-config</module>
+    <module>dfish-uitemp</module>
   </modules>
 </project>
