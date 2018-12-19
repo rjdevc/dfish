@@ -224,16 +224,18 @@ public class ProgressManager {
 					// 开始执行
 					runnable.run();
                 } catch (Throwable e) {
-                	String message = null;
+                	String errorMsg = null;
                 	if (e instanceof ProgressException) {
-                		message = e.getMessage();
+                		errorMsg = e.getMessage();
                 	} else {
-                		FrameworkHelper.LOG.error("进度条运行异常", e);
-                		message = "进度条运行异常，请联系管理员";
+                		errorMsg = "进度条运行异常@" + System.currentTimeMillis();
+                		FrameworkHelper.LOG.error(errorMsg, e);
                 	}
                 	ProgressData progressData = getProgressData(progressKey);
                 	if (progressData != null) { // 进度条运行异常,原命令不应该执行,需要提示用户内部异常
-                		progressData.setCompleteCommand(new AlertCommand(message));
+                		progressData.setCompleteCommand(new AlertCommand(errorMsg));
+                		// 异常数据提示需要放到缓存中
+                		setProgressData(progressData);
                 	}
                 } finally {
                 	// 执行线程数减1
