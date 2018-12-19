@@ -2672,6 +2672,17 @@ define( {
       { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。当设为 label 对象并有宽度时，将在表单左边显示标签内容。<br>Label参数如下：', param: [
         { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
         { name: 'text', type: 'String', remark: '标签内容。' }
+      ], example: [
+          function() {
+            // 显示标签的表单
+            return~
+            { type: 'text', label: { text: '姓名', width: 100 } }
+          },
+          function() {
+            // 在css中设置标签背景色
+            return''
+            '.w-label ._bg{background:#ddd}'
+          }
       ] },
       { name: 'name', type: 'String', remark: '表单名。' },
       { name: 'placeholder', type: 'String', optional: true, remark: '当表单没有值时显示的提示文本。' },
