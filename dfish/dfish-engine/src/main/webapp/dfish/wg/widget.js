@@ -799,11 +799,10 @@ W = define( 'widget', function() {
 				a.width == N && (a.width = this.x.width);
 				a.height == N && (a.height = this.x.height);
 			}
-			var e = this.$();
 			this.dispose();
 			var g = p.add( a, i );
 			o && (g.focusOwner = o, o.focusNode = g);
-			g.render( e, 'replace' );
+			g.render( this, 'replace' );
 			this.removeElem();
 			p.trigger( 'resize', 'replace' );
 			return g;
@@ -824,18 +823,19 @@ W = define( 'widget', function() {
 					this.discNodes[ i ].remove();
 			}
 		},
-		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
+		// 生成页面可见的 DOM 元素  /@a -> elem | widget, b -> method[append|prepend|before|after|replace]
 		render: function( a, b ) {
 			// 没有父节点 则先加上父节点
 			if ( ! this.parentNode ) {
 				((a && _widget( a )) || _docView).add( this );
 			}
 			var p = this.parentNode, s = this.html();
-			if ( this.$() && ! a )
+			if ( this.$() && ! a ) {
 				$.replace( this.$(), s );
-			else if ( a )
-				 $[ b || 'append' ]( a, s );
-			else {
+			} else if ( a ) {
+				$[ b || 'append' ]( a.isWidget ? a.$() : a, s );
+				a.isWidget && b === 'replace' && a.removeElem();
+			} else {
 				for ( var i = this.nodeIndex - 1, l = p.length, c; i > -1; i -- )
 					if ( (c = p[ i ]).$() ) return c.insertHTML( s, 'after' );
 				for ( i = this.nodeIndex + 1; i < l; i ++ )
@@ -858,11 +858,8 @@ W = define( 'widget', function() {
 				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
 			return c;
 		},
-		html_prop: function() {
-			var b = ' w-type="' + this.type + '" id=' + this.id,
-				v, t = this.cssText || '', n = this.Const.Listener;
-			if ( this.x.id )
-				b += ' w-id="' + this.x.id + '"';
+		prop_style: function() {
+			var t = '';
 			if ( ( v = this.innerWidth() ) != N )
 				t += 'width:' + v + 'px;';
 			if ( ( v = this.innerHeight() ) != N )
@@ -877,14 +874,21 @@ W = define( 'widget', function() {
 				t += 'max-height:' + v + 'px;';
 			if ( this.x.style )
 				t += this.x.style;
+			return t;
+		},
+		html_prop: function() {
+			var b = ' w-type="' + this.type + '" id=' + this.id,
+				v, t = this.prop_style(), n = this.Const.Listener;
+			if ( this.x.id )
+				b += ' w-id="' + this.x.id + '"';
 			if ( t )
 				b += ' style="' + t + '"';
 			if ( ! (n && n.tag) && (this.x.on || n) )
 				b += _html_on.call( this );
 			if ( v = this.prop_cls() )
 				b += ' class="' + v + '"';
-			if ( this.x.align )
-				b += ' align=' + this.x.align;
+			if ( v = this.attr( 'align' ) )
+				b += ' align=' + v;
 			if ( this.property )
 				b += this.property;
 			return b;
@@ -1167,8 +1171,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		}
 		return a - (this.attr( iu ) || 0);
 	};
-	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget|size, m -> max, min
-	_proto[ sz ] = function( a, m ) {
+	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget|size, m -> max, min, c -> appoint size?
+	_proto[ sz ] = function( a, m, c ) {
 		if ( a == N )
 			return N;
 		var b = a.isWidget ? a.attr( v ) : a;
@@ -1176,14 +1180,15 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			b = parseFloat( b );
 		if ( typeof b === _NUM && ! m )
 			return b < 0 ? N : b;
-		var c = this[ iz ]();
+		c === U && (c = this[ iz ]());
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
 		return c == N ? N : a.isWidget ? $.scaleRange( c, { min: a.attr( nv ), max: a.attr( xv ) } ) : c;
 	};
-	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min
-	_w_scale[ v ] = function( a, m ) {
-		var b = a.attr( v ), c = this[ iz ](), s = this._scales;
+	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min, c -> appoint size?
+	_w_scale[ v ] = function( a, m, c ) {
+		var b = a.attr( v ), s = this._scales;
+		c === U && (c = this[ iz ]());
 		if ( $.isNumber( b ) && b > -1 && ! m )
 			return parseFloat( b );
 		if ( ! s || m ) {
@@ -2126,8 +2131,8 @@ Html = define.widget( 'html', {
 		thumb: function() {
 			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this.x.thumbwidth ) );
 		},
-		html_nodes: function() {
-			var t = this.x.text == N ? '' : this.x.text, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this ), v = this.attr( 'valign' );
+		html_text: function() {
+			var t = this.x.text == N ? '' : this.x.text, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this );
 			if ( ! br.css3 ) {
 				if ( ! s && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
@@ -2144,6 +2149,10 @@ Html = define.widget( 'html', {
 					} );
 				}
 			}
+			return s;
+		},
+		html_nodes: function() {
+			var s = this.html_text(), v = this.attr( 'valign' );
 			if ( v )
 				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>';
 			return s;
@@ -2786,7 +2795,6 @@ Img = define.widget( 'img', {
 	Const: function( x, p ) {
 		if ( p && p.type_album ) {
 			var c = p.x.space || 0;
-			c && (this.cssText = 'margin-top:' + c + 'px;margin-left:' + c + 'px;');
 			this.defaults( { wmin: 22 + c } );
 			this.rootNode = p;
 		}
@@ -2849,6 +2857,10 @@ Img = define.widget( 'img', {
 				g = $.image( this.x.src, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + ( h ? (isNaN( h ) ? h : h + 'px') : '100%' ) + ';">' + g + '</div>';
 		},
+		prop_style: function() {
+			var c = this.parentNode.x.space;
+			return _proto.prop_style.call( this ) + ( c ? 'margin-top:' + c + 'px;margin-left:' + c + 'px;' : '');
+		},
 		html_text: function() {
 			var x = this.x, p = this.parentNode, f = p.x.format, s, t = x.text;
 			if ( typeof t !== _OBJ && f )
@@ -2876,7 +2888,7 @@ Toggle = define.widget( 'toggle', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.open != N && this.toggle( this.x.open );
+				this.x.open != N && this.$() && this.toggle( this.x.open );
 			}
 		}
 	},
@@ -2922,10 +2934,9 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r1' : 'b1' ) + '</span>' : '');
 		},
 		html_nodes: function() {
-			var x = this.x, t = this.html_icon();
-			if ( x.text != N )
-				t += ' <span class=w-toggle-text><em>' + x.text + '</em></span>';
-			return '<table class="w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
+			var x = this.x, c = this.html_icon(), t = x.text != N && '<span class=w-toggle-text><em>' + x.text + '</em></span>';
+			return '<table class="w-toggle-table' + (x.nobr !== F ? ' z-nobr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (c ? '<td>' + c : '') +
+				(t ? '<td ' + (x.nobr === F ? '' : ' class=f-nobr') + '>' + t : '') +
 				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table>';
 		}
 	}
@@ -4035,6 +4046,76 @@ define.widget( 'deck', {
 	}
 } );
 
+/* `label` */
+var Label = define.widget( 'label', {
+	Const: function( x, p ) {
+		W.apply( this, arguments );
+		this._pad = this.x.space != N ? this.x.space : 5;
+		this.defaults( { wmin: this._pad } );
+		if ( ie7 ) {
+			this.ie7td = p.closest( 'td' );
+			this.ie7td.addEvent( 'nodechange', function() {
+				Q( '.w-label', this.parentNode.parentNode.$() ).each( function() {
+					var o = _widget( this );
+					$.replace( o.$(), o.html() );
+				}).each( function() {
+					_widget( this ).triggerListener( 'ready' );
+				} );
+				
+			} );
+		}
+	},
+	Extend: 'html',
+	Default: { align: 'right', valign: 'middle', height: -1 },
+	Listener: {
+		body: {
+			ready: function() {
+				if ( this.ie7td ) {
+					var b = $( this.id + 'bg' ), c = $.bcr( this.ie7td.$() ), d = $.bcr( b );
+					Q( b ).css( {
+						height: c.height,
+						marginLeft: c.left - d.left,
+						marginTop: c.top - d.top
+					} );
+				}
+			},
+			resize: function() {
+				$( this.id + 'bg' ).style.width = Math.max( this.innerWidth(), 0 ) + 'px';
+				this.ie7td && this.ie7td.fireEvent( 'nodechange' );
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-label f-inbl f-va',
+		setValidate: function( x ) {
+			x = x || {};
+			if ( x.required ) {
+				this.$() && ! $.get( '.f-required', this.$() ) && $.prepend( this.$( 't' ), this.html_star() );
+			} else {
+				this.$() && Q( '.f-required', this.$() ).remove();
+			}	
+		},
+		prop_style: function() {
+			return (this._pad ? 'margin-right:' + this._pad + 'px;' : '') + _proto.prop_style.call( this );
+		},
+		html_star: function() {
+			return '<span class=f-required>*</span>';
+		},
+		html_text: function() {
+			var s = Html.prototype.html_text.call( this ), d = this.parentNode.x.validate;
+			d && d.required && (s = this.html_star() + s);
+			return s;
+		},
+		html_bg: function() {
+			return '<div id=' + this.id + 'bg class="_bg" style="width:' + this.innerWidth() + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
+		},
+		html_nodes: function() {
+			var s = this.html_text(), v = this.attr( 'valign' );
+			return '<div id=' + this.id + 't class="_t">' + s + '</div>' + this.html_bg();
+		}
+	}
+} );
+
 /* 表单控件部分 包括输入表单和按钮 */
 var
 _dft_min = 2,
@@ -4105,6 +4186,10 @@ _input_indent = function() {
 AbsForm = define.widget( 'abs/form', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
+		var a = this.x.label;
+		if ( a && typeof a === _OBJ && a.width ) {
+			this.label = new Label( a, this, -1 );
+		}
 		$.classAdd( this, 'w-' + this.type.replace( '/', '-' ) );
 	},
 	Listener: {
@@ -4127,6 +4212,15 @@ AbsForm = define.widget( 'abs/form', {
 				occupy: T,
 				method: function() { ! this.contains( document.activeElement ) && _z_on.call( this, F ) }
 			},
+			resize: function() {
+				if ( this.$() ) {
+					var w = Math.max( this.formWidth(), 0 );
+					w != N && w >= 0 && this.css( 'width', w );
+					w = Math.max( this.inputWidth(), 0 );
+					w != N && w >= 0 && this.$t() && (this.$t().style.width = w + 'px');
+					this.css( 'ph', 'width', w );
+				}
+			},
 			valid: function( e, a ) {
 				return this.getValidError( a );
 			},
@@ -4141,6 +4235,24 @@ AbsForm = define.widget( 'abs/form', {
 		className: 'w-form',
 		_warncls: '',
 		validHooks: F,
+		form_minus:  function() {
+			return _dft_min + (this.label ? this.label.outerWidth() : 0);
+		},
+		input_minus:  function() {
+			return this.form_minus() + _input_indent();
+		},
+		formWidth: function() {
+			return this.innerWidth() - this.form_minus();
+		},
+		inputWidth: function() {
+			return this.innerWidth() - this.input_minus();
+		},
+		formHeight: function() {
+			return this.innerHeight() - _dft_min;
+		},
+		inputHeight: function() {
+			return this.formHeight();
+		},
 		usa: function() {
 			return this.isNormal();
 		},
@@ -4228,8 +4340,8 @@ AbsForm = define.widget( 'abs/form', {
 			} else {
 				c = (x.validate || (x.validate = {}));
 				a ? $.merge( c, a ) : (x.validate = N);
-				this.$() && $.classAdd( this.$(), 'z-required', !!c.required );
-				this.trigger( 'validatechange' );
+				this.$() && $.classAdd( this.$(), 'z-required', !! c.required );
+				this.label && this.label.setValidate( this.x.validate );
 			}
 			return this;
 		},
@@ -4277,16 +4389,34 @@ AbsForm = define.widget( 'abs/form', {
 			if ( this.x.placeholder && this.$( 'ph' ) )
 				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
+		prop_style: function() {
+			var w = this.formWidth(), h = this.formHeight(), s = '';
+			w != N && w >= 0 && (s += 'width:' + w + 'px;');
+			h != N && h >= 0 && (s += 'height:' + h + 'px;');
+			return s + (this.x.style ? this.x.style : '');
+		},
 		form_prop: function( a ) {
-			var t = '', w = this.innerWidth(), h = this.innerHeight();
-			if ( w != N )
-				t += 'width:' + (w - this.width_minus()) + 'px;';
-			if ( h != N )
-				t += 'height:' + (h - this.height_minus()) + 'px;';
+			var t = '', w = this.inputWidth(), h = this.inputHeight();
+			if ( w != N && w >= 0 )
+				t += 'width:' + w + 'px;';
+			if ( h != N && h >= 0 )
+				t += 'height:' + h + 'px;';
 			if ( t )
 				t = ' style="' + t + '"';
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? (this.x.text || this.x.value) : this.x.tip) || '') + '"' : '') +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + t + _html_on.call( this );
+		},
+		html_placehoder: $.rt( '' ),
+		html: function() {
+			return (this.label ? this.label.html() : '') + '<div' + this.html_prop() + '>' + this.html_before() + this.html_placehoder() + this.html_nodes() + this.html_after() + '</div>';
+		},
+		removeElem: function() {
+			this.label && this.label.removeElem();
+			_proto.removeElem.call( this );
+		},
+		dispose: function( a ) {
+			this.label && this.label.dispose( a );
+			_proto.dispose.call( this, a );
 		}
 	}
 } ),
@@ -4333,14 +4463,6 @@ AbsInput = define.widget( 'abs/input', {
 						f && this.exec( { type: 'tip', id: this.id + 'mxltip', text: Loc.form.reach_maxlength } );
 					}
 				}
-			},
-			resize: function() {
-				var w = this.innerWidth();
-				if ( w > 0 && this.$t() ) {
-					w = Math.max( w - this.width_minus(), 0 );
-					this.$t().style.width = w + 'px';
-					this.css( 'ph', 'width', w );
-				}
 			}
 		}
 	},
@@ -4348,7 +4470,7 @@ AbsInput = define.widget( 'abs/input', {
 		wmin: _dft_min, hmin: _dft_min
 	},
 	Prototype: {
-		className: 'w-form w-input',
+		className: 'w-form w-input f-inbl f-va',
 		width_minus:  function() { return _input_indent() },
 		height_minus: function() { return 0 },
 		focus: function( a ) {
@@ -4373,12 +4495,9 @@ AbsInput = define.widget( 'abs/input', {
 			this.trigger( e );
 		},
 		html_placehoder: function() {
-			var w = this.innerWidth(), v = this.x.value;
+			var w = this.inputWidth(), v = this.x.value;
 			return this.x.placeholder ? '<label style="width:' + ( w ? (w - this.width_minus()) + 'px' : 'auto' ) + '" class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
-		},
-		html: function() {
-			return '<div' + this.html_prop() + '>' + this.html_before() + this.html_placehoder() + this.html_nodes() + this.html_after() + '</div>';
 		}
 	}
 } ),
@@ -4482,12 +4601,15 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		range: 'option'
 	},
 	Prototype: {
-		className: 'w-form f-oh',
+		className: 'w-form f-oh f-inbl f-va',
 		type_horz: T,
 		isBoxGroup: T,
 		x_childtype: $.rt( 'checkbox' ),
 		x_nodes: function() {
 			return this.x.options || [ { value: this.x.value, text: this.x.text, checked: this.x.checked, target: this.x.target } ];
+		},
+		form_minus:  function() {
+			return this.label ? this.label.outerWidth() : 0;
 		},
 		val: function( a ) {
 			if ( a == N )
@@ -4557,11 +4679,14 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 			return this[ 0 ] && this[ 0 ].isValidonly();
 		},
 		scaleWidth: function( a ) {
-			if ( a.nodeIndex < 0 ) {
-				var i = $.arrIndex( this.targets, a ), c = $.scale( this.innerWidth(), [ this[ i ] ? this[ i ].width() : 0, a.attr( 'width' ) || '*' ] );
+			if ( a === this.label ) {
+				return _proto.scaleWidth.call( this, a );
+			} else if ( a.nodeIndex < 0 ) {
+				var i = $.arrIndex( this.targets, a ), c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() : 0, a.attr( 'width' ) || '*' ] );
 				return c[ 1 ];
-			} else
-				return AbsForm.prototype.scaleWidth.call( this, a );
+			} else {
+				return _proto.scaleWidth.call( this, a, N, this.formWidth() );
+			}
 		},
 		html_nodes: function() {
 			if ( this.targets ) {
@@ -4629,8 +4754,8 @@ Checkbox = define.widget( 'checkbox', {
 				}
 			},
 			resize: function() {
-				if ( this.x.nobr && ! this.innerWidth() && this.parentNode.innerWidth() )
-					this.css( 'max-width', this.parentNode.innerWidth() );
+				var w = this.x.nobr && ! this.innerWidth() && this.parentNode.formWidth();
+				w && this.css( 'max-width', w );
 			}
 		}
 	},
@@ -4730,7 +4855,7 @@ Checkbox = define.widget( 'checkbox', {
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
-				if ( this.x.nobr && (w = p.innerWidth()) )
+				if ( this.x.nobr && (w = p.inputWidth()) )
 					y += 'max-width:' + w + 'px;';
 				s = s.replace( / f-inbl/g, '' );
 			}
@@ -4847,7 +4972,7 @@ Select = define.widget( 'select', {
 		}
 	},
 	Prototype: {
-		width_minus: function() { return 0 },
+		input_minus: function() { return this.form_minus() },
 		isEmpty: function() {
 			return this.$t().selectedIndex !== -1 && (this.val() || this.text());
 		},
@@ -4880,7 +5005,7 @@ Select = define.widget( 'select', {
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
 					(this.x.tip ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
 			}
-			var w = this.innerWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
+			var w = this.formWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
 				(this.x.tip ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
 				( z ? ' size=' + z : '' ) + '>' + s + '</select><div class=_cvr></div>';
@@ -5288,15 +5413,16 @@ _Date = define.widget( 'date', {
 					this.$( 'a' ).innerHTML = this.val();
 					this.focus( F );
 				}
-			},
-			resize: function() {
-				this.$t().style.width = (this.innerWidth() - this.width_minus()) + 'px';
 			}
 		}
 	},
 	Prototype: {
 		dropSnapType: 'v',
-		width_minus: function() { return _boxbtn_width + _input_indent() },
+		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
+		form_minus: function() {
+			var w = this.x.width;
+			return _dft_min + (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
+		},
 		validHooks: {
 			minvalue: function( b, v ) {
 				return $.dateParse( v, this.x.format ) < $.dateParse( b.minvalue, this.x.format );
@@ -5366,18 +5492,29 @@ _Date = define.widget( 'date', {
 /* `range` */
 Range = define.widget( 'range', {
 	Const: function( x, p ) {
-		W.apply( this, arguments );
+		AbsForm.apply( this, arguments );
 		this.begin = x.begin && this.add( $.merge( { width: '*' }, x.begin ) );
 		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'html', text: x.to || Loc.to, width: 30, align: 'center' } );
 		this.end   = x.end && this.add( $.merge( { width: '*' }, x.end ) );
-		this.className = 'w-horz w-range';
+		this.className = 'w-horz w-range f-inbl f-va';
 		if ( ! x.valign && p && p.x.valign )
 			this.defaults( { valign: p.x.valign } );
 	},
-	Extend: 'horz',
+	Extend: [ AbsForm, Horz ],
 	Default: { width: -1 },
 	Prototype: {
-		x_nodes: $.rt()
+		x_nodes: $.rt(),
+		form_minus:  function() {
+			return this.label ? this.label.outerWidth() : 0;
+		},
+		scaleWidth: function( a, m ) {
+			if ( a === this.label )
+				return _proto.scaleWidth.call( this, a );
+			return _w_scale.width.call( this, a, m, this.formWidth() );
+		},
+		html1: function() {
+			return (this.label ? this.label.html() : '') + '<div ' + this.html_prop() + '>' + this.html_nodes() + '</div>';
+		}
 	}
 } ),
 /* `muldate` */
@@ -5397,7 +5534,7 @@ Muldate = define.widget( 'muldate', {
 	},
 	Prototype: {
 		validHooks: N,
-		width_minus: function() { return _boxbtn_width + _input_indent() },
+		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
 		$v: function() { return $( this.id + 'v' ) },
 		v2t: function( v ) {
 			for ( var i = 0, b = v.split( ',' ), s = []; v && i < b.length; i ++ )
@@ -5491,6 +5628,13 @@ Spinner = define.widget( 'spinner', {
 	},
 	Prototype: {
 		_csr_pos: 0,
+		input_minus: function() {
+			return this.form_minus() + (mbi ? 78 : _boxbtn_width) + _input_indent();
+		},
+		form_minus: function() {
+			var w = this.x.width;
+			return _dft_min + (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
+		},
 		validHooks: {
 			minvalue: function( b, v ) {
 				return _number( v ) < _number( b.minvalue );
@@ -5512,15 +5656,11 @@ Spinner = define.widget( 'spinner', {
 				}
 			}
 		},
-		width_minus: function() {
-			return (mbi ? 78 : _boxbtn_width) + _input_indent();
-		},
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
 			a != N && this.x.format && this.trigger( 'format' );
 			return this.$t().value;
 		},
-		
 		doFormat: function() {
 			if ( ! this.x.format )
 				return;
@@ -5566,6 +5706,7 @@ Slider = define.widget( 'slider', {
 	},
 	Prototype: {
 		className: 'w-form',
+		form_minus: function() { return 0 },
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a == N )
@@ -5593,11 +5734,11 @@ Slider = define.widget( 'slider', {
 			} );
 		},
 		_left: function( v ) {
-			var w = this.innerWidth(), d = this.x.validate, m = (d && d.maxvalue) || 100, n = (d && d.minvalue) || 0;
+			var w = this.formWidth(), d = this.x.validate, m = (d && d.maxvalue) || 100, n = (d && d.minvalue) || 0;
 			return (w - this.attr( 'thumbwidth' )) * (v - n) / (m - n);
 		},
 		html_nodes: function() {
-			var w = this.innerWidth(), v = this.x.value == N ? n : this.x.value, f = this._left( v );
+			var w = this.formWidth(), v = this.x.value == N ? n : this.x.value, f = this._left( v );
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>';
 		}
 	}
@@ -5624,7 +5765,7 @@ XBox = define.widget( 'xbox', {
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return _boxbtn_width + _input_indent() },
+		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
 		initOptions: function( x ) {
 			this._sel = [];
 			var o = x.options || (x.options = []), i = o.length, v = x.value != N ? '' : '' + x.value;
@@ -5765,7 +5906,7 @@ XBox = define.widget( 'xbox', {
 			var s = this._sel[ 0 ];
 			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-inbl f-omit _t" id=' + this.id + 't ' +
 				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') +
-				' style="width:' + (this.innerWidth() - this.width_minus()) + 'px"><span id=' + this.id + 'p>' + this.html_text() + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
+				' style="width:' + (this.innerWidth() - this.input_minus()) + 'px"><span id=' + this.id + 'p>' + this.html_text() + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
 		}
 	}
 }),
@@ -5783,7 +5924,7 @@ Imgbox = define.widget( 'imgbox', {
 	Listener: {
 		tag: N,
 		body: {
-			focus: N, blur: N
+			focus: N, blur: N, resize: N
 		}
 	},
 	Prototype: {
@@ -5847,12 +5988,13 @@ Pickbox = define.widget( 'pickbox', {
 						this.pick();
 					this.focus( F );
 				}
-			}
+			},
+			change: N
 		}
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return _boxbtn_width + _input_indent() },
+		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
 		val: function( v, t ) {
 			v != N && this.text( t || v );
 			return AbsForm.prototype.val.apply( this, arguments );
@@ -6034,10 +6176,12 @@ Combobox = define.widget( 'combobox', {
 				}
 			},
 			resize: function() {
-				var w = (this.innerWidth() - this.width_minus());
+				var w = Math.max( this.formWidth(), 0 );
+				w != N && w >= 0 && this.css( 'width', w );
+				w = Math.max( this.inputWidth(), 0 );
 				this.css( 'c', 'width', w ).css( 'ph', 'width', w );
 			},
-			// 覆盖textarea的change事件定义，仅当已选项有变化时触发
+			// 覆盖AbsInput的change事件定义，仅当已选项有变化时触发
 			change: N
 		}
 	},
@@ -6054,7 +6198,7 @@ Combobox = define.widget( 'combobox', {
 			}
 		},
 		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
+		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -6329,7 +6473,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		html_nodes: function() {
 			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _c' + (this.x.nobr ? ' f-nobr' : '') + '" id=' + this.id + 'c' + _html_on.call( this ) +
-				' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var></div>';
+				' style="width:' + (this.innerWidth() - this.input_minus()) + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var></div>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
@@ -6410,7 +6554,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		html_nodes: function() {
 			var p = this.parentNode, w = this.width(), t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N;
-			return '<i class="f-inbl _b" onclick=' + evw + '.write()></i><div class="f-inbl _g"' + _html_on.call( this ) + '><cite class="_v f-omit" style="' + ( w ? 'width:' + (w - 32) : 'max-width:' + ( p.innerWidth() - p.width_minus() - 50 ) ) + 'px" title="' + t + (r ? '\n' + r : '') + '"><i class=f-vi></i><span class=f-va>' +
+			return '<i class="f-inbl _b" onclick=' + evw + '.write()></i><div class="f-inbl _g"' + _html_on.call( this ) + '><cite class="_v f-omit" style="' + ( w ? 'width:' + (w - 32) : 'max-width:' + (p.innerWidth() - p.input_minus() - 50) ) + 'px" title="' + t + (r ? '\n' + r : '') + '"><i class=f-vi></i><span class=f-va>' +
 				( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></cite><i class="_x" onclick=' + evw + '.close(event)>&times;</i></div>';
 		}
 	}
@@ -6490,7 +6634,10 @@ Linkbox = define.widget( 'linkbox', {
 				}
 			},
 			resize: function() {
-				this.$t().style.width = ( this.innerWidth() - this.width_minus() ) + 'px';
+				var w = Math.max( this.formWidth(), 0 );
+				w != N && w >= 0 && this.css( 'width', w );
+				w = Math.max( this.inputWidth(), 0 );
+				this.css( 't', 'width', w ).css( 'ph', 'width', w );
 			}
 		}
 	},
@@ -6501,7 +6648,7 @@ Linkbox = define.widget( 'linkbox', {
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
-		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
+		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -6762,7 +6909,7 @@ Linkbox = define.widget( 'linkbox', {
 		html_nodes: function() {
 			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
 				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + (this.innerWidth() - this.input_minus()) + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
@@ -6824,9 +6971,7 @@ Onlinebox = define.widget( 'onlinebox', {
 	Prototype: {
 		formType: 'text',
 		_csr_pos: 0,
-		width_minus: function() {
-			return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent();
-		},
+		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
 		// @a -> text /读/写光标所在的有效文本(以逗号为分隔符)
 		cursorText: function( a ) {
 			var b = this.val(),
@@ -6882,6 +7027,11 @@ Rate = define.widget( 'rate', {
 	Extend: AbsForm,
 	Default: {
 		width: -1
+	},
+	Listener: {
+		body: {
+			resize: N
+		}
 	},
 	Prototype: {
 		className: 'w-rate',
@@ -8498,17 +8648,26 @@ Grid = define.widget( 'grid', {
 				} else
 					try {
 						var r = this._rows( a, b, d );
-					} catch( ex ) {
-						r.push( ex );
+					} catch( e ) {
+						r.push( e );
 					}
 			}
 			return r;
 		},
 		_rows: function( a, b, d ) {
-			R: for ( var i = 0, k, l = d.length, c, r = []; i < l; i ++ ) {
-				for ( k in a ) if ( d[ i ].x.data[ k ] !== a[ k ] ) {
-					d[ i ].length && r.push.apply( r, this._rows( a, b, d[ i ] ) );
-					continue R;
+			R: for ( var i = 0, k, l = d.length, c, e = typeof a === _FUN, r = []; i < l; i ++ ) {
+				if ( e ) {
+					if ( ! a.call( d[ i ], d[ i ].x.data ) ) {
+						d[ i ].length && r.push.apply( r, this._rows( a, b, d[ i ] ) );
+						continue R;
+					}
+				} else {
+					for ( k in a ) {
+						if ( d[ i ].x.data[ k ] !== a[ k ] ) {
+							d[ i ].length && r.push.apply( r, this._rows( a, b, d[ i ] ) );
+							continue R;
+						}
+					}
 				}
 				if ( b ) { throw d[ i ]; }
 				r.push( d[ i ] );
@@ -8725,6 +8884,11 @@ Grid = define.widget( 'grid', {
 			this._filter_rows = this._echo_rows = f;
 			this.x.page = 1;
 			this.x.limit && this.limit();
+		},
+		// @a -> condition?
+		filter: function( a ) {
+			this.setFilter( this.rows( a ) );
+			this.list.render();
 		},
 		//排序 /@a -> field, b -> [asc,desc]
 		order: function( a, b ) {

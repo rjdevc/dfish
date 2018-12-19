@@ -30,6 +30,12 @@ $ = dfish = function( a ) {
 
 //获取dfish所在目录
 getPath = function(){
+	var jsPath = location.href;
+	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
+	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
+		_path = _urlLoc( location.pathname, _path );
+	}
 	var jsPath = doc.currentScript ? doc.currentScript.src : function(){
 		var js = doc.scripts, last = js.length - 1, src;
 		for ( var i = last; i > 0; i -- ){
@@ -40,12 +46,7 @@ getPath = function(){
 		}
 		return src || js[ last ].src;
 	}();
-	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' ).slice( 0, -1 );
-	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
-	_lib   = jsPath.substring( jsPath.lastIndexOf( '/' ) + 1 ) + '/';
-	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
-		_path = _urlLoc( location.pathname, _path );
-	}
+	_lib = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
 },
 
 // 浏览器信息
@@ -1740,7 +1741,7 @@ function _initEnv() {
 	}
 	var _define  = new Define( _path ),
 		_require = new Require( _path ),
-		_wg_lib  = _lib + 'wg/',
+		_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
 		_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
 		_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
 	if ( ! _loc )
@@ -2182,6 +2183,9 @@ _merge( $, {
 	// 调试用的方法
 	j: function( a ) {
 		alert( $.jsonString( a ) );
+	},
+	debug: function() {
+		if ( _cfg.debug ) debugger;
 	},
 	winbox: function( a ) {
 		alert( a );
