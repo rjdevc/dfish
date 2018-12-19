@@ -17,6 +17,7 @@ import com.rongji.dfish.ui.form.Hidden;
  *
  */
 public class HiddenPart implements HiddenContainer<HiddenPart>{
+	private static final long serialVersionUID = 683550505780264834L;
 	Map<String, List<String>> map=null;
 	public HiddenPart addHidden(String name,String value) {
 		if(Utils.isEmpty(name)) {

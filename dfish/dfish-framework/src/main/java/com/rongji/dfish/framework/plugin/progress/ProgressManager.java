@@ -359,7 +359,7 @@ public class ProgressManager {
 		ProgressData progressData = getProgressData(progressKey);
 		if (progressData != null) {
 			if (progressData.isFinish()) {
-				throw new UnsupportedOperationException("The progress has been finished.");
+				return;
 			}
 			
 			stepPercent = stepPercent < 0.0 ? 0.0 : stepPercent;
@@ -436,10 +436,11 @@ public class ProgressManager {
 	 * 设置步骤比例
 	 * @param progressData 进度编号
 	 * @param stepScale 步骤比例组
+	 * @return boolean 是否设置成功
 	 */
 	private boolean setStepScale(ProgressData progressData, Number... stepScale) {
 		if (progressData == null) {
-			throw new UnsupportedOperationException("The progressData is illegal.");
+			return false;
 		}
 		if (progressData.getStepIndex() > 0) {
 			throw new UnsupportedOperationException("The progress has began, can not reset the stepScale.");
@@ -483,7 +484,7 @@ public class ProgressManager {
 		ProgressData progressData = getProgressData(progressKey);
 		if (progressData != null) {
 			if (progressData.isFinish()) {
-				throw new UnsupportedOperationException("The progress has been finished.");
+				return false;
 			}
 			if (progressData.getStepIndex() >= progressData.getStepScales().length) {
 				// 当前步骤已经走完

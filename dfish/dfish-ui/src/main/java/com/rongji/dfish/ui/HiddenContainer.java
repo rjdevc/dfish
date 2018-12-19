@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.rongji.dfish.ui.form.Hidden;
@@ -13,7 +14,7 @@ import com.rongji.dfish.ui.form.Hidden;
  *
  * @param <T> 当前对象类型
  */
-public interface HiddenContainer<T extends HiddenContainer<T>> {
+public interface HiddenContainer<T extends HiddenContainer<T>> extends Serializable {
 	/**
 	 * 设置隐藏值
 	 * @param name String
