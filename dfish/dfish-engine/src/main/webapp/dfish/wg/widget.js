@@ -4221,8 +4221,8 @@ AbsForm = define.widget( 'abs/form', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		var a = this.x.label;
-		if ( a && typeof a === _OBJ && a.width ) {
-			this.label = new Label( a, this, -1 );
+		if ( a && typeof a === _OBJ && (a.width || (_dfopt.label && _dfopt.label.width)) ) {
+			 this.label = new Label( a, this, -1 );
 		}
 		$.classAdd( this, 'w-' + this.type.replace( '/', '-' ) );
 	},
