@@ -1143,10 +1143,11 @@ Loc = require( 'loc' ),
 Horz = require( 'horz' ),
 Button = require( 'button' ),
 Buttonbar = require( 'buttonbar' ),
+AbsForm = require( 'abs/form' ),
 
 BaseUpload = define.widget( 'upload/base', {
 	Const: function( x, p, n ) {
-		W.apply( this, arguments );
+		AbsForm.apply( this, arguments );
 		this.x = $.merge( {
 			file_size_limit: '2MB',
 			file_types: '*.*',
@@ -1168,7 +1169,7 @@ BaseUpload = define.widget( 'upload/base', {
 		}
 	},
 	Default:{ height: -1 },
-	Extend: 'abs/form',
+	Extend: AbsForm,
 	Prototype: {
 		isFormWidget: true,
 		val: function( a ) {
@@ -1426,7 +1427,7 @@ define.widget( 'upload/file', {
 		}
 	},
 	Prototype: {
-		className: 'w-upload w-uploadfile',
+		className: 'w-upload w-uploadfile f-inbl f-va',
 		validHooks: {
 			valid: function( b, v ) {
 				if ( this.isLoading() )
@@ -1467,7 +1468,7 @@ define.widget( 'upload/file', {
 define.widget( 'upload/image', {
 	Extend: 'upload/file',
 	Prototype: {
-		className: 'w-upload w-uploadimage',
+		className: 'w-upload w-uploadimage f-inbl f-va',
 		html_nodes: function() {
 			return this.valuebar.html() + this.html_input();
 		}

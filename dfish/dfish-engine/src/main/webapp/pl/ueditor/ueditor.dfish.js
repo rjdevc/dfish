@@ -12,7 +12,7 @@ us = {};
 
 define.widget( 'ueditor', {
 	Const : function( x ) {
-		W.apply( this, arguments );
+		AbsForm.apply( this, arguments );
 		if ( x.transparent ) {
 			this.defaults( { wmin: 0, hmin: 0 } );
 			this.className += ' z-trans';
@@ -61,7 +61,7 @@ define.widget( 'ueditor', {
 	},
 	Default: { wmin: 2, hmin: 2 },
 	Prototype : {
-		className: 'w-ueditor w-input-border w-input f-oh',
+		className: 'w-ueditor w-input-border w-input f-oh f-inbl f-va',
 		val: function( a ) {
 			if ( a == null ) {
 				this.save();
@@ -100,7 +100,7 @@ define.widget( 'ueditor', {
 		},
 		_resize: function() {
 			if ( ! this.u.ui.isFullScreen() ) {
-				var u = this.u, w = this.innerWidth(), h = this.innerHeight(), t = u.ui.getDom('toolbarbox'), b = u.ui.getDom('bottombar');
+				var u = this.u, w = this.formWidth(), h = this.formHeight(), t = u.ui.getDom('toolbarbox'), b = u.ui.getDom('bottombar');
 				w && (u.container.style.width = u.ui.getDom('iframeholder').style.width = w + 'px');
 				h && (u.ui.getDom('iframeholder').style.height = Math.max( 0, h - t.offsetHeight - (b && this.options.wordCount ? b.offsetHeight : 0) ) + 'px');
 			}

@@ -37,7 +37,7 @@ more : '更多',
 field: '字段',
 
 browser_upgrade : '我们发现您的IE浏览器版本过低，您的浏览体验受到影响。<br>我们强烈建议您安装新版浏览器，点击图标即可下载。',
-loading			: '正在加载..',
+loading			: '加载中..',
 wait			: '请稍候..',
 submiting		: '数据提交中，请稍候..',
 uploading		: '正在上传，请稍侯..',

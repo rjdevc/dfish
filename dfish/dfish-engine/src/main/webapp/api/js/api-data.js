@@ -923,7 +923,7 @@ define( {
           function() {
             /// 上述模板解析结果为：
           	return~
-            { nodes: [ { "type": "leaf", "text": "张三" }, { "type": "leaf", "text": "李四" } ] }
+            { "nodes": [ { "type": "leaf", "text": "张三" }, { "type": "leaf", "text": "李四" } ] }
           }
 	  ] },
 	  { name: '@w-if(expr)', remark: '条件表达式。', example: [
@@ -967,14 +967,14 @@ define( {
       ] },
 	  { name: '$this', remark: '特殊的数据变量名，代指数据源根节点。', example: [
           function() {
-          	/// 在表达式中使用 $this
-          	return~
-            { type: "html", "@text": "$this.data.content" }
-          },
-          function() {
           	/// 数据源
           	return~
             { data: { content: 'hello world' } }
+          },
+          function() {
+          	/// 在表达式中使用 $this
+          	return~
+            { type: "html", "@text": "$this.data.content" }
           }
       ] }
   ] },
@@ -1226,12 +1226,9 @@ define( {
       { name: 'render([elem], [method])', remark: '生成 html 元素。', common: true, param: [
         { name: 'elem', type: 'htmlElement', remark: '目标位置。可选参数。', optional: true },
         { name: 'method', type: 'String', remark: '生成方式。可选值: <b>append</b>, <b>prepend</b>, <b>before</b>, <b>after</b>, <b>replace</b>', optional: true }
-      ], example: [
-          function() {
-          	// 创建一个 view 并生成在某个 div 里
-           var vm = $.create( { type: 'view', src: 'index.sp', width: 800, height: -1 } );
-           vm.render( $( 'mydiv' ) );
-          }
+      ] },
+      { name: 'repaint([deep])', remark: '重绘当前节点。', common: true, param: [
+        { name: 'deep', type: 'Boolean', remark: '设置为true，子节点也全部重绘。', optional: true }
       ] },
       { name: 'replace(opt)', remark: '把自身替换为另一个 widget。', common: true, param: [
         { name: 'opt', type: 'object | widget', remark: 'widget 配置参数或对象。' }
@@ -1397,11 +1394,11 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
-      { name: 'dir', type: 'String', remark: '按钮排列方向。可选值: <b>h</b><font color=green>(横向,默认)</font>, <b>v</b><font color=green>(纵向)</font>' },
+      { name: 'dir', type: 'String', remark: '按钮排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
       { name: 'focusmultiple', type: 'Boolean', remark: '是否有多个按钮可同时设为焦点状态。' },
       { name: 'nobr', type: 'Boolean', remark: '不换行。默认为 true。' },
       { name: 'overflow', type: 'Object', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。', param: [
-        { name: 'effect', type: 'String', remark: '效果。可选值：<b>swap</b><font color=green>(点击下拉菜单按钮，和可见按钮交换位置。)</font>', optional: true },
+        { name: 'effect', type: 'String', remark: '效果。可选值：<b>normal</b><s>(默认)</s>, <b>swap</b><s>(点击下拉菜单按钮，和可见按钮交换位置。)</s>', optional: true },
         { name: 'button', type: 'Button', remark: '显示"更多"的按钮。', optional: true }
       ], example: [
           function() {
@@ -1558,7 +1555,7 @@ define( {
           { name: 'field', type: 'String', remark: '排序字段名。' },
           { name: 'isnumber', type: 'Boolean', remark: '是否按数字方式排序。' },
           { name: 'status', type: 'String', remark: '当前排序状态。可选值: <b>desc</b>, <b>asc</b>。' },
-          { name: 'src', type: 'Boolean', remark: '后端排序URL。点击标题将访问此地址，支持$0变量(可选值:<b>desc</b>, <b>asc</b>)。' }
+          { name: 'src', type: 'Boolean', remark: '后端排序URL。点击标题将访问此地址，支持变量$0(可用值:<b>desc</b>, <b>asc</b>)，$1(当前字段名)。<br>支持"javascript:"开头的JS语句。可通过 <b>this.x</b> 来获取当前列的参数。' }
         ] },
         { name: 'tip', type: 'Boolean | Object', remark: '浮动提示的字段名。如果设为true，使用当前字段值作为提示内容。', param: [
           { name: 'field', type: 'String', remark: '提示字段名。' }
@@ -1706,38 +1703,58 @@ define( {
             } );
           }
       ] },
-      { name: 'row(data)', remark: '获取符合条件的某一行。', param: [
-        { name: 'data', type: 'Object | Number', remark: '用来查询的字段对象，或行的序列号。' }
-      ] },
-      { name: 'rows([data])', remark: '获取符合条件的所有行。返回一个由若干 tr widget 实例组成的数组集合。', param: [
-        { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
+      { name: 'filter([data])', remark: '只显示符合条件的行。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来过滤的字段对象，或行的序列号，或函数。', optional: true }
       ], example: [
           function() {
-            // 获取所有行，并循环显示所有行的html
-            var r = vm.find( 'myGrid' ).rows();
-            for ( var i = 0; i < r.length; i ++ ) {
-            	alert( r[ i ].$().outerHTML );
-            }
+            // 显示所有行
+            vm.find( 'myGrid' ).filter();
           },
           function() {
-            // 获取所有字段 C1 值为 "001" 的行
-            var r = vm.find( 'myGrid' ).rows( { C1: '001' } );
-            alert( r.length );
+            // 显示所有字段 C0 值为 "1" 的行
+            vm.find( 'myGrid' ).filter( { C0: '1' } );
+          },
+          function() {
+            // 显示所有字段 C0 值为 "1" 或 "2" 的行
+            vm.find( 'myGrid' ).filter( function( data ) {
+            	return data.C0 == '1' || data.C0 == '2';
+            } );
+          }
+      ] },
+      { name: 'row(data)', remark: '获取符合条件的某一行。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象，或行的序列号，或函数。' }
+      ] },
+      { name: 'rows([data])', remark: '获取符合条件的所有行。返回一个由若干 tr 实例组成的数组集合。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象，或行的序列号，或函数。', optional: true }
+      ], example: [
+          function() {
+            // 获取所有行
+            var r = vm.find( 'myGrid' ).rows();
+          },
+          function() {
+            // 获取所有字段 C0 值为 "1" 的行
+            var r = vm.find( 'myGrid' ).rows( { C0: '1' } );
+          },
+          function() {
+            // 获取所有字段 C0 值为 "1" 或 "2" 的行
+            var r = vm.find( 'myGrid' ).rows( function( data ) {
+            	return data.C0 == '1' || data.C0 == '2';
+            } );
           }
       ] },
       { name: 'rowsData([data])', remark: '获取符合条件的所有行的 data json 的数组。', param: [
-        { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象。', optional: true }
       ] },
       { name: 'getCheckedAll()', remark: '获取所有选中行，返回一个数组。' },
       { name: 'getEchoRows()', remark: '获取所有可显示的行，返回一个数组。' },
       { name: 'getFocus()', remark: '获取焦点行。' },
       { name: 'getFocusAll()', remark: '获取所有焦点行，返回一个数组。' },
       { name: 'focusRow(target)', remark: '设置焦点行。', param: [
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'insertRow(data, [target])', remark: '新增行。', param: [
         { name: 'data', type: 'Object | Array', remark: '新增行的JSON数据。同时新增多行可以用数组。' },
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。新增行的位置将在目标行之前。如果不设置此参数，新增位置为末尾。', optional: true }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。新增行的位置将在目标行之前。如果不设置此参数，新增位置为末尾。', optional: true }
       ], example: [
           function() {
             // { C1: '000' } 是新增行的数据，把它新增到 { C1: '001' } 之前。本例和下例效果相同。
@@ -1751,15 +1768,15 @@ define( {
       ] },
       { name: 'updateRow(data, target)', remark: '更新行。', param: [
         { name: 'data', type: 'Object', remark: '更新行的JSON数据。' },
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'deleteRow(target)', remark: '删除行。', param: [
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'deleteAllRows()', remark: '删除所有行。', param: [
       ] },
       { name: 'moveRow(target, index)', remark: '移动行。', param: [
-        { name: 'target', type: 'Object', remark: '查询目标行的字段对象，或目标行的序列号。' },
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' },
         { name: 'index', type: 'Number | String', remark: '移动到指定行的序列号。支持 "+=数字", "-=数字" 格式的用法。' }
       ] },
       { name: 'checkRow(target, [checked])', remark: '更新行的 checkbox/radio 状态为已选或未选。', param: [
@@ -2405,6 +2422,7 @@ define( {
   	remark: '生成一个内嵌窗口。',
   	extend: 'widget',
     Config: [
+      { name: 'scroll', type: 'Boolean', remark: '是否显示滚动条。' },
       { name: 'src', type: 'String', remark: '页面地址。' },
       { name: 'text', type: 'String', remark: 'HTML内容。text 属性和 src 属性不应同时使用。' }
     ],
@@ -2466,7 +2484,7 @@ define( {
       ] },
       { name: 'icon',  type: 'String', optional: true, remark: '收拢图标。图片地址url，或是以点 "." 开头的样式名。' },
       { name: 'openicon',  type: 'String', optional: true, remark: '展开图标。图片地址url，或是以点 "." 开头的样式名。' },
-      { name: 'target',  type: 'String', optional: true, remark: '指定展开收拢的节点位置。可选值: <b>prev</b><font color=green>(默认,前节点)</font>, <b>next</b><font color=green>(后节点)</font>。本参数配合 icon openicon 参数一起使用。' },
+      { name: 'target',  type: 'String', optional: true, remark: '指定展开收拢的节点位置。可选值: <b>prev</b><s>(默认,前节点)</s>, <b>next</b><s>(后节点)</s>。本参数配合 icon openicon 参数一起使用。' },
       { name: 'text',  type: 'String', optional: true, remark: '显示文本。' }
     ],
     Methods: [
@@ -2651,14 +2669,29 @@ define( {
   	remark: '单行文本输入框。',
   	extend: 'widget',
     Config: [
-      { name: 'label', type: 'String', optional: true, remark: '字段描述。这个描述用于校验提示中。' },
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。<br>&nbsp; LabelWidget 参数如下：', param: [
+        { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+        { name: 'suffix', type: 'String', remark: '后缀。' },
+        { name: 'text', type: 'String', remark: '内容。' }
+      ], example: [
+          function() {
+            // 显示标签的表单
+            return~
+            { type: 'text', label: { text: '姓名', width: 100 } }
+          },
+          function() {
+            // 在css中设置标签背景色
+            return''
+            '.w-label ._bg{background:#ddd}'
+          }
+      ] },
       { name: 'name', type: 'String', remark: '表单名。' },
       { name: 'placeholder', type: 'String', optional: true, remark: '当表单没有值时显示的提示文本。' },
-      { name: 'status', type: 'String', optional: true, remark: '表单状态。可选值: <b>normal</b><font color=green>(默认)</font>, <b>readonly</b><font color=green>(只读，不验证数据)</font>, <b>validonly</b><font color=green>(只读，验证数据)</font>, <b>disabled</b><font color=green>(禁用)</font>。' },
+      { name: 'status', type: 'String', optional: true, remark: '表单状态。可选值: <b>normal</b><s>(默认)</s>, <b>readonly</b><s>(只读，不验证数据)</s>, <b>validonly</b><s>(只读，验证数据)</s>, <b>disabled</b><s>(禁用)</s>。' },
       { name: 'tip', type: 'Boolean | string', remark: '提示信息。如果设置为true，提示内容为当前的文本。' },
       { name: 'transparent', type: 'Boolean', optional: true, remark: '设置为true，表单将成为无边框无背景的状态。' },
       { name: 'value', type: 'String', remark: '表单值。' },
-      { name: 'validate', type: 'Object', optional: true, remark: '表单校验选项。',  param: [
+      { name: 'validate', type: 'Object', optional: true, remark: '表单校验选项。', param: [
         { name: 'required', type: 'Boolean', remark: '必填。' },
         { name: 'requiredtext', type: 'String', remark: '必填提示文本。' },
         { name: 'pattern', type: 'String', remark: '正则表达式。' },
@@ -2790,7 +2823,7 @@ define( {
   	extend: 'text',
   	deprecate: 'placeholder,tip,transparent,value,focus,focusEnd,.z-trans,.w-text,.w-input,status',
     Config: [
-      { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>h</b><font color=green>(横向,默认)</font>,<b>v</b><font color=green>(纵向)</font>' },
+      { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>h</b><s>(横向,默认)</s>,<b>v</b><s>(纵向)</s>' },
       { name: 'options', type: 'Array', remark: 'checkbox 节点数组。' },
       { name: 'targets', type: 'Array', optional: true, remark: '和 checkbox 一一对应的节点数组。勾选复选框将改变 target 节点的 disabled 状态。' },
       { name: 'pub', type: 'Object', optional: true, remark: 'checkbox 的默认参数。这里的参数不会应用于 targets 中的 widget。 ', example: [
@@ -2820,7 +2853,7 @@ define( {
       { name: 'bubble', type: 'Boolean', remark: '点击事件是否冒泡。用于 leaf 或 tr 的选项box。', optional: true },
       { name: 'checked', type: 'Boolean', remark: '是否选中。', optional: true },
       { name: 'nobr', type: 'Boolean', remark: '设置为true，文本不换行。', optional: true },
-      { name: 'sync', type: 'String', remark: '选中状态跟父节点同步，用于 leaf 或 tr 的选项box。可选值: <b>click</b><font color=green>(点击父节点，box也触发点击)</font>, <b>focus</b><font color=green>(父节点聚焦则box则选中，父节点失去焦点则box未选中)</font>', optional: true },
+      { name: 'sync', type: 'String', remark: '选中状态跟父节点同步，用于 leaf 或 tr 的选项box。可选值: <b>click</b><s>(点击父节点，box也触发点击)</s>, <b>focus</b><s>(父节点聚焦则box则选中，父节点失去焦点则box未选中)</s>', optional: true },
       { name: 'target', type: 'String', remark: 'widget ID。使这个 widget 和当前 option 的 disabled 状态同步。', optional: true },
       { name: 'text', type: 'String', remark: '文本。', optional: true },
       { name: 'value', type: 'String', remark: '值。' }
@@ -2849,11 +2882,11 @@ define( {
     Config: [
       { name: 'checkall', type: 'Boolean', remark: '设为 true 时，点击它可以全选/全不选其他相同name的triplebox。一组同name的triplebox中只能有一个设置checkall参数。' },
       { name: 'partialsubmit', type: 'Boolean', remark: '设为 true 时，半选状态也会提交数据。' },
-      { name: 'checkstate', type: 'Number', remark: '选中状态。可选值: <b>0</b><font color=green>(未选)</font>，<b>1</b><font color=green>(选中)</font>，<b>2</b><font color=green>(半选)</font>' }
+      { name: 'checkstate', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>' }
     ],
     Methods: [
       { name: 'check([checked])', remark: '设置选中状态。', param: [
-        { name: 'checked', type: 'Number', remark: '选中状态。可选值: <b>0</b><font color=green>(未选)</font>，<b>1</b><font color=green>(选中)</font>，<b>2</b><font color=green>(半选)</font>', optional: true }
+        { name: 'checked', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>', optional: true }
       ] }
     ]
   },
@@ -2982,16 +3015,20 @@ define( {
   	deprecate: 'focus,.w-text',
     Config: [
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
-      { name: 'options', type: 'Array', remark: '下拉选项数组。', param: [
+      { name: 'src', type: 'String | Object',  ver: '3.2+', remark: '获取选项的 URL 地址。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
+      { name: 'options', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
+      	{ name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' },
+      	{ name: 'icon', type: 'String', optional: true, remark: '图标。可以是图片地址，或以 "." 开头的样式名。' },
       	{ name: 'text', type: 'String', remark: '文本。' },
-      	{ name: 'value', type: 'String', remark: '值。' },
-      	{ name: 'icon', type: 'String', optional: true, remark: '图标。' }
+      	{ name: 'value', type: 'String', remark: '值。' }
       ] }
     ],
     Classes: [
       { name: '.w-xbox', remark: '基础样式。' }
     ],
     Methods: [
+      { name: 'getLength()', remark: '获取选项总数。' },
       { name: 'getFocusOption()', remark: '获取当前的选项对象。', example: [
           function() {
             // 获取选中项的文本
@@ -3012,8 +3049,24 @@ define( {
             // 替换第一个选项
             xbox.setOptions( { value: 1, text: '选项1' }, 0 );
           }
-      ] }
-    ]
+      ] },
+      { name: 'addOption(opt, [index])', remark: '追加一个选项。', param: [
+        { name: 'opt', type: 'Array | Option', remark: '选项数组或单个选项。' },
+        { name: 'index', type: 'Number', remark: '追加的序号。如果不设置此参数，默认追加到末尾。', optional: true }
+      ], example: [
+          function() {
+            // 在末尾追加一个选项
+            xbox.addOption( { value: 1, text: '选项1' } );
+          }
+      ] },
+      { name: 'removeOption([index])', remark: '删除一个选项。', param: [
+        { name: 'index', type: 'Number', remark: '删除选项的序号。如果不设置此参数，默认删除末尾的选项。', optional: true }
+      ], example: [
+          function() {
+            // 删除第一个选项
+            xbox.removeOption( 0 );
+          }
+      ] }    ]
   },
   "imgbox": {
   	title: 'imgbox',
@@ -3048,7 +3101,7 @@ define( {
   	deprecate: '.w-text',
     Config: [
       { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><font color=green>(值)</font> 和 <b>$text</b><font color=green>(文本)</font>。' }
+      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
       { name: 'pick()', remark: '弹出对话框选择器。' },
@@ -3076,9 +3129,9 @@ define( {
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
       { name: 'dropsrc', type: 'String', remark: '显示下拉列表的 view src。' },
       { name: 'multiple', type: 'Boolean', remark: '多选模式。' },
-      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><font color=green>(值)</font> 和 <b>$text</b><font color=green>(文本)</font>。' },
+      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'separator', type: 'String', remark: '文本选项分隔符。默认是逗号。' },
-      { name: 'src', type: 'String', remark: '在线匹配关键词的 view src。支持变量 <b>$value</b><font color=green>(值)</font> 和 <b>$text</b><font color=green>(文本)</font>。' }
+      { name: 'src', type: 'String', remark: '在线匹配关键词的 view src。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
       { name: 'search(text)', remark: '根据关键词弹出对话框选择器。' },
@@ -3108,10 +3161,10 @@ define( {
       { name: 'node', type: 'Object', remark: '包含候选项数据的 view。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'loadingtext', type: 'String', remark: '加载数据时显示的文本。' },
-      { name: 'src', type: 'String', remark: '通过这个 src 加载候选项数据到本地。支持变量 <b>$value</b><font color=green>(值)</font> 和 <b>$text</b><font color=green>(文本)</font>。' },
+      { name: 'src', type: 'String', remark: '通过这个 src 加载候选项数据到本地。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'suggest', type: 'Boolean', remark: '设为 true，在线搜索关键词模式。设为 false，缓存搜索模式。默认值为 false。' },
       { name: 'nobr', type: 'Boolean', remark: '设为 true，已选项不换行。' },
-      { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><font color=green>(值)</font> 和 <b>$text</b><font color=green>(文本)</font>。' },
+      { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
           function() {
             // 设置每个已选项的宽度为 100，并绑定点击事件，显示选项的值
@@ -3176,12 +3229,12 @@ define( {
   	extend: 'text',
   	deprecate: 'focus,focusEnd,placeholder,tip,transparent,.w-text,.w-input,.z-trans,.z-on',
     Config: [
-      { name: 'dir', type: 'String', remark: '附件排列方向。可选值: <b>h</b><font color=green>(横向,默认)</font>, <b>v</b><font color=green>(纵向)</font>' },
+      { name: 'dir', type: 'String', remark: '附件排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
       { name: 'file_upload_limit', type: 'Number', remark: '最多可上传数量。' },
       { name: 'file_size_limit', type: 'String', remark: '单个附件最大体积。如 "50M"。' },
       { name: 'file_types', type: 'String', remark: '允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"' },
       { name: 'upload_url', type: 'String', remark: '上传地址。' +
-      	'<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <font color=green>//id 和 name 必填</font>' +
+      	'<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s>' +
       	'<br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
       { name: 'down_url', type: 'String', remark: '下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'remove_url', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },

@@ -280,7 +280,8 @@
 
 .w-grid .w-label{position:static;*position:relative}
 .w-grid .w-label ._t{position:relative;z-index:1}
-.w-grid .w-label ._bg{height:1000px;}
+.w-grid .w-label ._bg{bottom:-1000px}
+.f-css2 .w-grid .f-sub-horz.z-htmn{float:none}
 
 /* form */
 .w-form{margin:0;padding:0;}
@@ -305,7 +306,6 @@
 .w-textarea textarea._t{height:100%;line-height:1.5;overflow:auto;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
 .w-textarea .w-input-placeholder{height:22px}
 
-.w-select{display:inline-block}
 .w-select select{padding:0;height:100%;border:0}
 .w-select.w-select-multiple{height:auto}
 .w-select.z-ds select{background:#eee}
@@ -315,11 +315,9 @@
 .w-checkboxgroup,.w-radiogroup{border:1px solid transparent;padding:1px 0}
 .w-checkboxgroup-align{vertical-align:middle}
 .w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding-right:6px}
-.w-checkbox,.w-radio,.w-triplebox{padding:2px 0;border:1px solid transparent;border-left:0;font-style:normal}
+.w-checkbox,.w-radio,.w-triplebox{padding:2px 2px 2px 0;font-style:normal}
 .w-checkbox input,.w-radio input,.w-triplebox input{padding:0;vertical-align:middle}
 .w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;vertical-align:middle;cursor:default}
-/*.w-checkboxgroup.z-err .w-checkbox,.w-radiogroup.z-err .w-radio{position:relative;border-bottom-color:red}
-.w-checkboxgroup.z-err .w-checkbox:after,.w-radiogroup.z-err .w-radio:after{position:absolute;content:"";bottom:1px;left:0;right:0;border-bottom:1px dashed red}*/
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
 
 .w-date ._b,.w-muldate ._b{display:inline-block;width:19px;text-align:center;color:#666;cursor:default}
