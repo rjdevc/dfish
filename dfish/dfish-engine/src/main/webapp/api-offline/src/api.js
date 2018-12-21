@@ -7,7 +7,7 @@ var mod = dfish.x.data.module;
 dfish.init( {
 	view: {
 		id: 'index',
-		src: mod + '-view.json'
+		src: 'api/' + mod + '-view.json'
 	},
 	debug: true
 } );
