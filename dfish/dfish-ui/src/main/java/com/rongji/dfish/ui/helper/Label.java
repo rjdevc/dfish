@@ -7,6 +7,7 @@ import com.rongji.dfish.ui.HtmlContentHolder;
 import com.rongji.dfish.ui.form.LabelRow;
 import com.rongji.dfish.ui.json.JsonWrapper;
 import com.rongji.dfish.ui.widget.Html;
+import com.rongji.dfish.ui.form.FormLabel;
 
 /**
  * Label 是用于表单中的标签。
@@ -19,12 +20,12 @@ import com.rongji.dfish.ui.widget.Html;
  * @author DFish Team
  *
  */
-public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,LabelRow<Label>,
+public class Label extends AbstractWidget<Label> implements JsonWrapper<HorizontalGroup>,LabelRow<Label>,
 	HtmlContentHolder<Label>,HasText<Label>{
 
 	private static final long serialVersionUID = 2082708957092349423L;
 	private String text;
-	private String label;
+	private FormLabel label;
 	private Boolean star;
 //	private Boolean hidden;
 	private Boolean hideLabel;
@@ -38,19 +39,22 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 	 * @param text 标签内容
 	 */
 	public Label(String label, String text){
-		this.label=label;
+		this.label=new FormLabel(label);
 		this.text=text;
 		bundleProperties();
 	}
 	
 	@Override
-	public Html getPrototype() {
+	public HorizontalGroup getPrototype() {
 		Html prototype = new Html(text);
 		BeanUtil.copyPropertiesExact(prototype,this);
-		return prototype;
+		HorizontalGroup hg=new HorizontalGroup(null);
+		hg.setLabel(label);
+		hg.add(prototype);
+		return hg;
 	}
 
-	public String getLabel() {
+	public FormLabel getLabel() {
 		return label;
 	}
 
@@ -60,6 +64,9 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 
 	public Label setHideLabel(Boolean hideLabel) {
 		this.hideLabel=hideLabel;
+		if(hideLabel!=null&&label!=null){
+			label.setWidth(hideLabel?"0":null);
+		}
 		return this;
 	}
 
@@ -78,14 +85,18 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 	}
 
 	public Label setLabel(String label) {
-		this.label=label;
+		this.label=new FormLabel(label);
+		return this;
+	}
+	
+	public Label setLabel(FormLabel label) {
+		this.label= label;
 		return this;
 	}
 	
 	@Deprecated
 	public Label setTitle(String label) {
-		this.label=label;
-		return this;
+		return this.setLabel(label);
 	}
 
 	public String getType() {

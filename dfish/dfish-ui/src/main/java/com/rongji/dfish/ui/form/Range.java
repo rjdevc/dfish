@@ -21,7 +21,7 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 	 * 
 	 */
 	private static final long serialVersionUID = -4525721180514710555L;
-	private String label;
+	private FormLabel label;
 	private FormElement<?, ?> begin;
 	private FormElement<?, ?> end;
 	private Boolean hideLabel;
@@ -36,7 +36,7 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 	 */
 	public Range(String label, FormElement<?, ?> begin, FormElement<?, ?> end) {
 		super(null);
-		this.label=label;
+		this.setLabel(label);
 		this.begin=begin;
 		this.end=end;
 	}
@@ -80,24 +80,31 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 
 	@Override
 	public Range setLabel(String label) {
+		this.label=new FormLabel(label);
+		return this;
+	}
+	@Override
+	public Range setLabel(FormLabel label) {
 		this.label=label;
 		return this;
 	}
 	
 	@Deprecated
 	public Range setTitle(String label) {
-		this.label=label;
-		return this;
+		return setLabel(label);
 	}
 
 	@Override
-	public String getLabel() {
+	public FormLabel getLabel() {
 		return label;
 	}
 
 	@Override
 	public Range setHideLabel(Boolean hideLabel) {
 		this.hideLabel=hideLabel;
+		if(hideLabel!=null&&label!=null){
+			label.setWidth(hideLabel?"0":null);
+		}
 		return this;
 	}
 

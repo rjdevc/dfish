@@ -47,17 +47,8 @@ public class Rate extends AbstractFormElement<Rate,Integer> {
 	 */
 	public Rate(String name ,String label,Integer value){
 		this.name=name;
-		this.label=label;
+		setLabel(label);
 		setValue(value);
 	}
 	
-	@Deprecated
-	public Rate setTip(Boolean tip) {
-		return this;
-	}
-	
-	@Deprecated
-	public Rate setTip(String tip) {
-		return this;
-	}
 }

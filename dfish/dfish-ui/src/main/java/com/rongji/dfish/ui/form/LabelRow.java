@@ -24,10 +24,19 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      */
     T setLabel(String label);
     /**
+     * 设置标题
+     * <p>v2.3以后改方法返回自身以便可以继续对这个表单操作</p>
+     * @param label String
+     * @return 本身，这样可以继续设置其他属性
+     * @since 3.2.0
+     */
+    T setLabel(FormLabel label);
+    /**
      * 取得标题
      * @return label
+     * @since 3.2.0
      */
-    String getLabel();
+    FormLabel getLabel();
 
     /**
      * 这个元素，是否以藏标题。如果是，则不显示标题；否则显示标题。

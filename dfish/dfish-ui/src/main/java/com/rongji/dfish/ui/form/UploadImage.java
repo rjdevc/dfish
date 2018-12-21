@@ -33,7 +33,7 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
 	 */
 	public UploadImage(String name,String label){
 		this.name=name;
-		this.label=label;
+		setLabel(label);
 	}
 	@Override
 	public String getType() {

@@ -31,6 +31,7 @@ import com.rongji.dfish.ui.layout.grid.Tr;
  * </pre>
  * <p>和所有封装类相同，它输出的时候实际上并不是自己，而是会转化成原型，它的原型是GridLayout</p>
  * <p>与GridLayout不同，这个类虽然是一个Layout，但它不能随意容纳Widget。它只能容纳有标题的表单元素({@link com.rongji.dfish.ui.form.LabelRow})。</p>
+ * <p>3.1和3.2 在转化成原型上有重大差别。</p>
  * @author DFish Team
  * @since dfish 2.0
  */
@@ -42,7 +43,7 @@ Layout<FormPanel,Widget<?>>{
 	 * 
 	 */
 	private static final long serialVersionUID = -4359022902192699451L;
-	protected static final String COLUMN_FIELD_LABEL="L";
+//	protected static final String COLUMN_FIELD_LABEL="L";
 	protected static final String COLUMN_FIELD_VALUE="V";
 //	protected static final String COLUMN_WIDTH_LABEL="90";
 	protected static final String COLUMN_WIDTH_VALUE="*";
@@ -164,7 +165,7 @@ Layout<FormPanel,Widget<?>>{
 	
 //		prototype.getColumns().add(GridColumn.text("C0","20"));
 		// FIXME 标签设置样式
-		prototype.addColumn(GridColumn.text(COLUMN_FIELD_LABEL, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setStyle("padding-left:"+paddingSize+"px"));
+//		prototype.addColumn(GridColumn.text(COLUMN_FIELD_LABEL, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setStyle("padding-left:"+paddingSize+"px"));
 		prototype.addColumn(GridColumn.text(COLUMN_FIELD_VALUE, COLUMN_WIDTH_VALUE).setStyle("padding-right:"+paddingSize+"px"));
 //		prototype.getColumns().add(GridColumn.text("C3","20"));
 //		prototype.setStyle("padding:0 20px;");
@@ -183,21 +184,26 @@ Layout<FormPanel,Widget<?>>{
 			cell.setNode(row);
 			if (row instanceof LabelRow) {
 				LabelRow<?> cast = (LabelRow<?>) row;
-				if (cast.getHideLabel() != null && cast.getHideLabel()) {
-					// 将2列合并
-					cell.setColspan(2);
-					cell.setAlign(GridColumn.ALIGN_LEFT);
-					// formElement移到第一列
-					dataRow.setData(COLUMN_FIELD_LABEL, cell);
-				}else{
-					dataRow.setData(COLUMN_FIELD_LABEL, new FormLabel(cast, prototype.getEscape()).getLabelWidget());
-					dataRow.setData(COLUMN_FIELD_VALUE, cell);
+				if (cast.getHideLabel() == null || !cast.getHideLabel()) {
+					cast.getLabel().setWidth(null);
 				}
-			} else {
-				cell.setColspan(2);
-				cell.setAlign(GridColumn.ALIGN_LEFT);
-				dataRow.setData(COLUMN_FIELD_LABEL, cell);
+//				if (cast.getHideLabel() != null && cast.getHideLabel()) {
+//					// 将2列合并
+//					cell.setColspan(2);
+//					cell.setAlign(GridColumn.ALIGN_LEFT);
+//					// formElement移到第一列
+//					dataRow.setData(COLUMN_FIELD_LABEL, cell);
+//				}else{
+//					dataRow.setData(COLUMN_FIELD_LABEL, new FormLabel(cast, prototype.getEscape()).getLabelWidget());
+//					dataRow.setData(COLUMN_FIELD_VALUE, cell);
+//				}
+//			} else {
+//				cell.setColspan(2);
+//				cell.setAlign(GridColumn.ALIGN_LEFT);
+//				dataRow.setData(COLUMN_FIELD_LABEL, cell);
+//			}
 			}
+			dataRow.setData(COLUMN_FIELD_VALUE, cell);
 		}
 	}
 	

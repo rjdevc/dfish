@@ -174,7 +174,7 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		// 若调用顺序不规则,需要先进行占位
 			while(columns.size()<=toColumn*2){
 				int columnIndex=columns.size()/2;
-				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_LABEL+columnIndex, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
+//				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_LABEL+columnIndex, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
 				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_VALUE+columnIndex, FormPanel.COLUMN_WIDTH_VALUE));
 			}
 		

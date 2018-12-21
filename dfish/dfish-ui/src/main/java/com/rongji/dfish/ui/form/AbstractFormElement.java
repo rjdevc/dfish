@@ -32,7 +32,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	/**
 	 * 标题
 	 */
-	protected String label;
+	protected FormLabel label;
 	/**
 	 * 值
 	 */
@@ -92,19 +92,22 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		return value;
 	}
 
-	public String getLabel() {
+	public FormLabel getLabel() {
 		return label;
 	}
 
-	public T setLabel(String label) {
+	public T setLabel(FormLabel label) {
 		this.label = label;
+		return (T) this;
+	}
+	public T setLabel(String label) {
+		this.label = new FormLabel(label);
 		return (T) this;
 	}
 	
 	@Deprecated
 	public T setTitle(String label) {
-		this.label = label;
-		return (T) this;
+		return setLabel(label);
 	}
 
 	/**
@@ -245,6 +248,9 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 
 	public T setHideLabel(Boolean hideLabel) {
 		this.hideLabel = hideLabel;
+		if(label!=null){
+			label.setWidth(hideLabel==null||hideLabel?"0":null);
+		}
 		return (T) this;
 	}
 

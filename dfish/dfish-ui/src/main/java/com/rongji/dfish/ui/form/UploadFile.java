@@ -25,7 +25,7 @@ public class UploadFile<T extends UploadFile<T>> extends AbstractUpload<T> {
 	 */
 	public UploadFile(String name,String label){
 		this.name=name;
-		this.label=label;
+		setLabel(label);
 	}
 	
 	@Override

@@ -158,14 +158,15 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 						return begin;
 					}});
 			}
-			if(LabelRow.class.isAssignableFrom(clz)){
-				if("label".equals(jbpg.getPropName())){
-					methods.set(i, new WidgetStringPropAppender("label"){
-						protected String getValue(Object w) {
-							return ((LabelRow<?>)w).getLabel();
-						}});
-				}
-			}
+			//3.2 中label为复杂属性
+//			if(LabelRow.class.isAssignableFrom(clz)){
+//				if("label".equals(jbpg.getPropName())){
+//					methods.set(i, new WidgetStringPropAppender("label"){
+//						protected String getValue(Object w) {
+//							return ((LabelRow<?>)w).getLabel();
+//						}});
+//				}
+//			}
 			if(FormElement.class.isAssignableFrom(clz)){
 				if("name".equals(jbpg.getPropName())){
 					methods.set(i, new WidgetStringPropAppender("name"){

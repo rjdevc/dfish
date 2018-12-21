@@ -171,9 +171,11 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * 如果用于添加文字说明。请使用add(Html,Integer)
 	 * @param text 文本
 	 * @param occupy 占用列数
-	 * @param required 是否显示必填标记
+	 * @param required 是否显示必填标记 
 	 * @return this
+	 * @deprecated 3.2开始label和内容是一体的，该方法没有用处了
 	 */
+	@Deprecated
 	public FlexGrid add(String text, Integer occupy, boolean required) {
 //		StringBuilder realText = new StringBuilder();
 //		if(required){
@@ -185,11 +187,12 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 //		} else {
 //			realText.append(Utils.escapeXMLword(text));
 //			escape = false;
-//		}
-		Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
-		html.setAlign(Html.ALIGN_RIGHT);
-		
-		return add(html, occupy);
+////		}
+//		Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
+//		html.setAlign(Html.ALIGN_RIGHT);
+//		
+//		return add(html, occupy);
+		return this;
 	}
 	/**
 	 *   一般是增加标题。默认会右对齐
@@ -251,26 +254,24 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 				}
 				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&m.getPrototype() instanceof LabelRow<?>
 					&&!Boolean.TRUE.equals(((LabelRow<?>)m.getPrototype()).getHideLabel())){
-					Boolean required=false;
+//					Boolean required=false;
 					if (m.getPrototype() instanceof AbstractFormElement) {
 						AbstractFormElement<?, ?> cast = (AbstractFormElement<?, ?>) m.getPrototype();
-						required = cast.getValidate() != null && cast.getValidate().getRequired() != null && cast.getValidate().getRequired();
+//						required = cast.getValidate() != null && cast.getValidate().getRequired() != null && cast.getValidate().getRequired();
+						cast.getLabel().setWidth(null);
 					}
-					String text=((LabelRow<?>)m.getPrototype()).getLabel();
-					Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
-					html.setAlign(Html.ALIGN_RIGHT);
-					int fromColumn1 = occupied;
-					int toColumn1 = occupied + defaultOccupy - 1;
-					prototype.add(rowIndex, fromColumn1, rowIndex, toColumn1, html);
-					
-					int fromColumn2 = occupied+defaultOccupy;
-					int toColumn2 = occupied + occupy - 1;
-					prototype.add(rowIndex, fromColumn2, rowIndex, toColumn2, w);
-				}else{
-					int fromColumn = occupied;
-					int toColumn = occupied + occupy - 1;
-					prototype.add(rowIndex, fromColumn, rowIndex, toColumn, w);
+//					String text=((LabelRow<?>)m.getPrototype()).getLabel().getText();
+//					Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
+//					html.setAlign(Html.ALIGN_RIGHT);
+//					int fromColumn1 = occupied;
+//					int toColumn1 = occupied + defaultOccupy - 1;
+//					prototype.add(rowIndex, fromColumn1, rowIndex, toColumn1, html);
+//					
+//					int fromColumn2 = occupied+defaultOccupy;
 				}
+				int toColumn = occupied + occupy - 1;
+				prototype.add(rowIndex, occupied, rowIndex, toColumn, w);
+				
 				occupied += occupy;
 			}
 			prototype.prototypeBuilding(false);

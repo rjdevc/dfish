@@ -13,6 +13,7 @@ import com.rongji.dfish.ui.form.LabelRow;
 import com.rongji.dfish.ui.json.JsonWrapper;
 import com.rongji.dfish.ui.layout.HorizontalLayout;
 import com.rongji.dfish.ui.layout.LinearLayout;
+import com.rongji.dfish.ui.form.FormLabel;
 
 /**
  * 与HorzontalPanel用法一样，多了setLabel，可以添加标题，可能有些属性不全，后期补上
@@ -21,21 +22,24 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	
 	private static final long serialVersionUID = 6045136733949121294L;
 	private Boolean star;
-	private String label;
+	private FormLabel label;
 	private Boolean hideLabel;
 
-	public String getLabel() {
+	public FormLabel getLabel() {
 		return label;
 	}
 
 	public HorizontalGroup setLabel(String label) {
+		this.label=new FormLabel(label);
+		return this;
+	}
+	public HorizontalGroup setLabel(FormLabel label) {
 		this.label=label;
 		return this;
 	}
 	@Deprecated
 	public HorizontalGroup setTitle(String label) {
-		this.label=label;
-		return this;
+		return setLabel(label);
 	}
 	/**
 	 * 构造函数
@@ -46,7 +50,7 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	}
 
 	public String getType() {
-		return "horz";
+		return "formgroup";
 	}
 
 	/**
@@ -76,6 +80,9 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	@Override
 	public HorizontalGroup setHideLabel(Boolean hideLabel) {
 		this.hideLabel=hideLabel;
+		if(hideLabel!=null&&label!=null){
+			label.setWidth(hideLabel?"0":null);
+		}
 		return this;
 	}
 
