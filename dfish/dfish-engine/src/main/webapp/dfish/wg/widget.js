@@ -110,6 +110,9 @@ _repaintSelfWithBox = function() {
 	Q( this.$() ).replaceWith( this.html_self() );
 	this.box && this.box.check( b );
 },
+_getTpl = function( a ) {
+	return typeof a === _OBJ ? a : $.require( (cfg.template_dir || '') + a );
+},
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( s ) {
 	var s = s || '', n, h = this.Const.Listener, r = _white_events[ h && h.range ] || _white_events.all;
@@ -363,7 +366,7 @@ Template = $.createClass( {
 	// @ t -> template, d -> data, g -> widget
 	Const: function( t, d, g ) {
 		this.data = d;
-		this.tpl = Dialog.tpl( t );
+		this.tpl = _getTpl( t );
 		this.wg  = g;
 	},
 	Extend: Node,
@@ -377,7 +380,7 @@ Template = $.createClass( {
 			if ( ! x )
 				return;
 			if ( x[ '@w-include' ] ) {
-				var d = Dialog.tpl( x[ '@w-include' ] );
+				var d = _getTpl( x[ '@w-include' ] );
 				return d && this.compile( d, y );
 			}
 			for ( var k in x ) {
@@ -1706,11 +1709,12 @@ Xsrc = define.widget( 'xsrc', {
 		_load: function( a, b, c ) {
 			this.abort();
 			this.loading = T;
-			var u = this.attr( 'src' ), m, n, self = this,
+			var u = this.attr( 'src' ), m, n, o, t = this.x.template, self = this,
 				d = this.type_view && _view_js[ this.path ],
 				e = function() {
-					if ( ! self._disposed && m && n ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
+					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
 				};
+			t && typeof t === _STR ? $.require( (cfg.template_dir || '') + t, function() { o = T; e(); }, !a ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); }, !a ) : (m = T);
 			u && this.ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
@@ -2486,7 +2490,7 @@ Button = define.widget( 'button', {
 	},
 	Listener: {
 		block: function( e ) {
-			return e !== 'unlock' && e !== 'remove' && ! this.usa();
+			return e !== 'unlock' && e !== 'remove' && e !== 'focus' && e !== 'blur' && ! this.usa();
 		},
 		body: {
 			ready: function() {
@@ -3703,7 +3707,7 @@ Alert = define.widget( 'alert', {
 				d.push( x.buttons[ i ] );
 			}
 		}
-		if ( this._tpl = Dialog.tpl( t ) ) {
+		if ( this._tpl = _getTpl( t ) ) {
 			$.extend( x, { template: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<table border=0 style="margin:10px 20px 20px 5px;word-wrap:break-word;"><tr><td align=center valign=top><div style=width:65px;padding-top:5px>' +
 				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + (x.text || '').replace( /\n/g, '<br>' ) + '</table>' },
@@ -4456,8 +4460,8 @@ AbsForm = define.widget( 'abs/form', {
 		}
 	}
 } ),
-/* `horzgroup` */
-Horzgroup =define.widget( 'horzgroup', {
+/* `formgroup` */
+Formgroup =define.widget( 'formgroup', {
 	Const: function( x ) {
 		Horz.apply( this, arguments );
 		var a = this.x.label;
