@@ -136,10 +136,11 @@
 .w-grid-table ._ie_thead{*display:none}
 .w-grid-table ._ie_thead td{padding-top:0;padding-bottom:0}
 .w-grid-table{table-layout:fixed;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:100%;width:100%}
-.w-td-none{position:relative;overflow:hidden;*position:static;}
-.w-td-line{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;*position:static;}
-.w-td-dot{position:relative;overflow:hidden;border-bottom:1px dashed #e3e3e3;*position:static;}
-.w-td-cell{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;border-right:1px solid #e9e9e9;*position:static;}
+/*.w-tr.z-hv{background:#f0f8ff}
+.w-tr.z-on{background:#cde6fe}*/
+.w-td-line{border-bottom:1px solid #e9e9e9}
+.w-td-dot{border-bottom:1px dashed #e3e3e3}
+.w-td-cell{border-bottom:1px solid #e9e9e9;border-right:1px solid #e9e9e9}
 .w-td-cell.z-last{border-right:0}
 .w-grid-head{overflow:hidden}
 .w-grid-head td{position:relative}
@@ -225,9 +226,9 @@
 
 .w-toggle{position:relative}
 .w-toggle-hr{margin:2px 0;border:1px solid #ccc;border-width:1px 0 0 0;height:0;overflow:hidden}
-.w-toggle-table{height:100%;*height:auto}
+.w-toggle-table{width:100%;height:100%;*height:auto}
 .w-toggle-table .w-leaf,.w-toggle-table .w-leaf ._a{padding-right:3px}
-.w-toggle-table.z-nobr .w-toggle-text{padding-right:6px;white-space:nowrap;word-break:keep-all}
+.w-toggle-table.z-hr .w-toggle-text{padding-right:6px;white-space:nowrap;word-break:keep-all}
 .w-toggle-text{display:inline-block;padding-left:5px;}
 .w-toggle-text em{vertical-align:middle;font-style:normal}
 .w-toggle-icon{display:inline-block;min-width:10px;line-height:0;text-align:right;cursor:pointer}
@@ -274,14 +275,6 @@
 .w-calendar-time-dlg ._o.z-hv{background:#def0fc}
 .w-calendar-time-dlg ._o.z-on{background:#cce7f9}
 
-.w-label{position:relative;}
-.w-label ._t{margin-right:6px}
-.w-label ._bg{position:absolute;top:0;left:0;}
-
-.w-grid .w-label{position:static;*position:relative}
-.w-grid .w-label ._t{position:relative;z-index:1}
-.w-grid .w-label ._bg{bottom:-1000px}
-
 /* form */
 .w-form{margin:0;padding:0;}
 .w-form.z-ds{color:#999}
@@ -290,7 +283,7 @@
 .w-form textarea{vertical-align:middle}
 
 .w-input,.w-input-border{border:1px solid #99a8b8;background:#fff}
-.w-input{position:relative;height:28px;border-radius:2px;text-align:left}
+.w-input{position:relative;height:28px;border-radius:2px;text-align:left;/*box-shadow:inset 0px 2px 0px #f7f7f7;*/}
 .w-input ._t{height:100%;line-height:28px;padding-left:5px;*height:28px}
 .w-input.z-on,.w-input-border.z-on{border-color:#3298fe;box-shadow:none}
 .w-input.z-ds{background:#f1f1f1;box-shadow:none}

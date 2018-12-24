@@ -2184,9 +2184,6 @@ _merge( $, {
 	j: function( a ) {
 		alert( $.jsonString( a ) );
 	},
-	debug: function() {
-		if ( _cfg.debug ) debugger;
-	},
 	winbox: function( a ) {
 		alert( a );
 	},
