@@ -7,6 +7,7 @@ public class FormLabel extends AbstractFormLabel<FormLabel> implements JsonWrapp
 	private static final long serialVersionUID = -1384522916094820984L;
 	public FormLabel(String text){
 		this.setText(text);
+		this.setWidth("0");
 	}
 	@Override
 	public Object getPrototype() {

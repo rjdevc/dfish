@@ -74,6 +74,11 @@ Layout<FormPanel,Widget<?>>{
 			return this;
 		}
 		rows.add(row);
+		if (row instanceof LabelRow) {
+			if("0".equals(((LabelRow) row).getLabel().getWidth())){
+				((LabelRow) row).getLabel().setWidth(null);
+			}
+		}
 		this.checkConcurrentModify();
 		return this;
 	}
@@ -88,6 +93,9 @@ Layout<FormPanel,Widget<?>>{
 			return this;
 		}
 		rows.add(row);
+		if("0".equals(((LabelRow) row).getLabel().getWidth())){
+			((LabelRow) row).getLabel().setWidth(null);
+		}
 		this.checkConcurrentModify();
 		return this;
 	}
@@ -182,11 +190,11 @@ Layout<FormPanel,Widget<?>>{
 //			Map<String, Object> cells = dataRow.getData();
 			Td cell = new Td();
 			cell.setNode(row);
-			if (row instanceof LabelRow) {
-				LabelRow<?> cast = (LabelRow<?>) row;
-				if (cast.getHideLabel() == null || !cast.getHideLabel()) {
-					cast.getLabel().setWidth(null);
-				}
+//			if (row instanceof LabelRow) {
+//				LabelRow<?> cast = (LabelRow<?>) row;
+//				if (cast.getHideLabel() == null || !cast.getHideLabel()) {
+//					cast.getLabel().setWidth(null);
+//				}
 //				if (cast.getHideLabel() != null && cast.getHideLabel()) {
 //					// 将2列合并
 //					cell.setColspan(2);
@@ -202,7 +210,7 @@ Layout<FormPanel,Widget<?>>{
 //				cell.setAlign(GridColumn.ALIGN_LEFT);
 //				dataRow.setData(COLUMN_FIELD_LABEL, cell);
 //			}
-			}
+//			}
 			dataRow.setData(COLUMN_FIELD_VALUE, cell);
 		}
 	}

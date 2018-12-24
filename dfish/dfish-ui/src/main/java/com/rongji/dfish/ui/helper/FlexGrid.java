@@ -252,25 +252,30 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 					rowIndex++;
 					occupied = 0;
 				}
-				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&m.getPrototype() instanceof LabelRow<?>
-					&&!Boolean.TRUE.equals(((LabelRow<?>)m.getPrototype()).getHideLabel())){
-//					Boolean required=false;
-					if (m.getPrototype() instanceof AbstractFormElement) {
-						AbstractFormElement<?, ?> cast = (AbstractFormElement<?, ?>) m.getPrototype();
-//						required = cast.getValidate() != null && cast.getValidate().getRequired() != null && cast.getValidate().getRequired();
-						cast.getLabel().setWidth(null);
-					}
-//					String text=((LabelRow<?>)m.getPrototype()).getLabel().getText();
-//					Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
-//					html.setAlign(Html.ALIGN_RIGHT);
-//					int fromColumn1 = occupied;
-//					int toColumn1 = occupied + defaultOccupy - 1;
-//					prototype.add(rowIndex, fromColumn1, rowIndex, toColumn1, html);
-//					
-//					int fromColumn2 = occupied+defaultOccupy;
-				}
+//				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&m.getPrototype() instanceof LabelRow<?>
+//					&&!Boolean.TRUE.equals(((LabelRow<?>)m.getPrototype()).getHideLabel())){
+////					Boolean required=false;
+//					if (m.getPrototype() instanceof AbstractFormElement) {
+//						AbstractFormElement<?, ?> cast = (AbstractFormElement<?, ?>) m.getPrototype();
+////						required = cast.getValidate() != null && cast.getValidate().getRequired() != null && cast.getValidate().getRequired();
+//						cast.getLabel().setWidth(null);
+//					}
+////					String text=((LabelRow<?>)m.getPrototype()).getLabel().getText();
+////					Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
+////					html.setAlign(Html.ALIGN_RIGHT);
+////					int fromColumn1 = occupied;
+////					int toColumn1 = occupied + defaultOccupy - 1;
+////					prototype.add(rowIndex, fromColumn1, rowIndex, toColumn1, html);
+////					
+////					int fromColumn2 = occupied+defaultOccupy;
+//				}
 				int toColumn = occupied + occupy - 1;
 				prototype.add(rowIndex, occupied, rowIndex, toColumn, w);
+				if(m.getMode()==m.MODE_LABEL_ROW&&w instanceof AbstractFormElement){
+					if("0".equals(((AbstractFormElement)w).getLabel())){
+						((AbstractFormElement)w).getLabel().setWidth(null);
+					}
+				}
 				
 				occupied += occupy;
 			}

@@ -18,7 +18,7 @@ import com.rongji.dfish.ui.form.FormLabel;
 /**
  * 与HorzontalPanel用法一样，多了setLabel，可以添加标题，可能有些属性不全，后期补上
  */
-public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements JsonWrapper<HorizontalLayout>, LabelRow<HorizontalGroup>,Scrollable<HorizontalGroup>,Alignable<HorizontalGroup>,Valignable<HorizontalGroup>,MultiContainer<HorizontalGroup,Widget<?>>{
+public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements LabelRow<HorizontalGroup>,Scrollable<HorizontalGroup>,Alignable<HorizontalGroup>,Valignable<HorizontalGroup>,MultiContainer<HorizontalGroup,Widget<?>>{
 	
 	private static final long serialVersionUID = 6045136733949121294L;
 	private Boolean star;
@@ -30,7 +30,7 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	}
 
 	public HorizontalGroup setLabel(String label) {
-		this.label=new FormLabel(label);
+		this.label=new FormLabel(label).setWidth(null);
 		return this;
 	}
 	public HorizontalGroup setLabel(FormLabel label) {
@@ -45,8 +45,9 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	 * 构造函数
 	 * @param id String
 	 */
-	public HorizontalGroup(String id) {
-		super(id);
+	public HorizontalGroup(String label) {
+		super(null);
+		setLabel(label);
 	}
 
 	public String getType() {
@@ -117,24 +118,24 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 		return star;
 	}
 
-	@Override
-	public HorizontalLayout getPrototype() {
-		HorizontalLayout propotype=new HorizontalLayout(null);
-		BeanUtil.copyPropertiesExact(propotype,this);
-		if(getData()!=null)
-		for(Map.Entry<String, Object>entry:getData().entrySet()){
-			propotype.setData(entry.getKey(), entry.getValue());
-		}
-		if(getOn()!=null)
-		for(Map.Entry<String, String>entry:getOn().entrySet()){
-			propotype.setOn(entry.getKey(), entry.getValue());
-		}
-		if(findNodes()!=null)
-		for(Widget<?>node:findNodes()){
-			propotype.add(node);
-		}
-		return propotype;
-	}
+//	@Override
+//	public HorizontalLayout getPrototype() {
+//		HorizontalLayout propotype=new HorizontalLayout(null);
+//		BeanUtil.copyPropertiesExact(propotype,this);
+//		if(getData()!=null)
+//		for(Map.Entry<String, Object>entry:getData().entrySet()){
+//			propotype.setData(entry.getKey(), entry.getValue());
+//		}
+//		if(getOn()!=null)
+//		for(Map.Entry<String, String>entry:getOn().entrySet()){
+//			propotype.setOn(entry.getKey(), entry.getValue());
+//		}
+//		if(findNodes()!=null)
+//		for(Widget<?>node:findNodes()){
+//			propotype.add(node);
+//		}
+//		return propotype;
+//	}
 
 
 }

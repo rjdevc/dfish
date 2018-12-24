@@ -39,7 +39,7 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Horizont
 	 * @param text 标签内容
 	 */
 	public Label(String label, String text){
-		this.label=new FormLabel(label);
+		this.label=new FormLabel(label).setWidth(null);
 		this.text=text;
 		bundleProperties();
 	}

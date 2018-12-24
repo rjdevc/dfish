@@ -21,6 +21,9 @@ class FlexGridAppendingMode implements JsonWrapper<Widget<?>> {
 		mode.mode=MODE_LABEL_ROW;
 		mode.p=w;
 		mode.occupy=occupy;
+		if("0".equals(w.getWidth())){
+			w.setWidth(null);
+		}
 		return mode;
 	}
 	
