@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rongji.dfish.ui.json.J;
 	
 	/**
 	 * AbstractTemplate
@@ -44,7 +45,8 @@ public abstract class AbstractTemplate implements DFishTemplate{
 		if(json==null){
 			return "{}";
 		}
-		return JSON.toJSONString(json, true);
+		String raw=JSON.toJSONString(json);
+		return J.formatJson(raw);
 	}
 	
 	/**

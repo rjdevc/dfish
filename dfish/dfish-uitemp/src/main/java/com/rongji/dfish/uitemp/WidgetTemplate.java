@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.JsonObject;
 
 	/**
 	 * WidgetTemplate 是为DFish的widget 封装的模板
@@ -43,8 +43,8 @@ public class WidgetTemplate extends AbstractTemplate{
 	 * @param w Widget
 	 * @return template
 	 */
-	public static WidgetTemplate convert(Widget<?> w){
-		JSONObject json=JSON.parseObject(w.toString(),Feature.OrderedField);
+	public static WidgetTemplate convert(JsonObject j){
+		JSONObject json=JSON.parseObject(j.toString(),Feature.OrderedField);
 		return new WidgetTemplate(json);
 	}
 	/**
@@ -111,9 +111,9 @@ public class WidgetTemplate extends AbstractTemplate{
 	public Object get(String key) {
 		Object o=((JSONObject) json).get(key);
 		if(o instanceof JSONArray){
-			return new TemplateArray(json);
+			return new TemplateArray(o);
 		}else if(o instanceof JSONObject){
-			return new WidgetTemplate(json);
+			return new WidgetTemplate(o);
 		}
 		return  o;
 	}
@@ -160,6 +160,11 @@ public class WidgetTemplate extends AbstractTemplate{
 	 * @return this
 	 * @see WidgetTemplate#setProp(String, Object)
 	 */
+	public WidgetTemplate at(String key, Object value) {
+		return setProp("@"+key,value);
+	}
+	
+	@Deprecated
 	public WidgetTemplate setAtProp(String key, Object value) {
 		return setProp("@"+key,value);
 	}

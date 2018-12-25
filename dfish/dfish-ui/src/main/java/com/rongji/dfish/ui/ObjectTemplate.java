@@ -75,6 +75,9 @@ public class ObjectTemplate {
 		propTemps=new ArrayList<PropertyTemplate>();
 		//读取
 
+		if(RES_BUNDLE==null){
+			return;
+		}
 		String clzFullName = clz.getName();
 		String relateClzName=clzFullName;
 		if(clzFullName.startsWith(PREFIX)){
