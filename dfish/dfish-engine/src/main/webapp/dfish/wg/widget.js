@@ -216,14 +216,14 @@ _ajaxCmd = function( x, a, t ) {
 			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
 				if ( x.success )
-					typeof x.success === _FUN ? x.success.call( this, v, a ) : this.formatJS( x.success, N, { '$value': v, '$ajax': a } );
+					typeof x.success === _FUN ? x.success.call( this, v, a ) : this.formatJS( x.success, { '$value': v, '$ajax': a } );
 				else
 					(v && this.exec( v, N, x.transfer ));
 			}
 		}, complete: function( v, a ) {
 			d && d.close();
 			if ( ! this._disposed && x.complete )
-				 typeof x.complete === _FUN ? x.complete.call( this, v, a ) : this.formatJS( x.complete, N, { '$value': v, '$ajax': a } )
+				 typeof x.complete === _FUN ? x.complete.call( this, v, a ) : this.formatJS( x.complete, { '$value': v, '$ajax': a } )
 			if ( ! this._disposed )
 				this.trigger( 'unlock' );
 		}
@@ -247,9 +247,9 @@ _cmdHooks = {
 		if ( a ) {
 			c = {};
 			for ( var i = 0; i < a.length; i ++ )
-				c[ '$' + i ] = a;
+				c[ '$' + i ] = a[ i ];
 		}
-		return x.text && this.formatJS( x.text, N, c );
+		return x.text && this.formatJS( x.text, c );
 	},
 	'ajax': function( x, a ) {
 		x.download ? $.download( x.src, x.data ) : _ajaxCmd.call( this, x, a );
@@ -372,7 +372,7 @@ Template = $.createClass( {
 	Extend: Node,
 	Prototype: {
 		format: function( a, y ) {
-			return _proto.formatJS.call( this.wg, 'return ' + a, this.data, y );
+			return _proto.formatJS.call( this.wg, 'return ' + a, y, this.data );
 		},
 		// @y -> { key: value }
 		compile: function( x, y ) {
@@ -702,6 +702,9 @@ W = define( 'widget', function() {
 		isDisplay: function() {
 			return this.$().currentStyle.display != 'none';
 		},
+		toggleDisplay: function() {
+			this.display( ! this.isDisplay() );
+		},
 		// 触发用户定义的事件 / @e -> event, a -> [args]?, f -> func string?
 		triggerHandler: function( e, a, f ) {
 			if ( this._disposed || this.isDisabled() )
@@ -711,7 +714,7 @@ W = define( 'widget', function() {
 				for ( var i = 1, l = g.length; i < l; i ++ )
 					c[ '$' + (i - 1) ] = g[ i ];
 			}
-			return f && (typeof f === _FUN ? f.apply( this, g ) : this.formatJS( f, N, c ));
+			return f && (typeof f === _FUN ? f.apply( this, g ) : this.formatJS( f, c ));
 		},
 		// 触发系统事件
 		triggerListener: function( e, a ) {
@@ -775,25 +778,26 @@ W = define( 'widget', function() {
 			for ( i in this.discNodes )
 				! this.discNodes[ i ].isDialogWidget && this.discNodes[ i ].triggerAll( e ); // 弹窗不触发来自父节点的递归事件
 		},
-		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> data, c -> args({ name: value }), d -> callback?
+		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({ name: value })?, c -> data?, d -> callback?
 		formatJS: function( a, b, c, d ) {
-			var n = [ '$this' ], m = [ b || this.x.data ];
-			if ( c ) {
-				for ( var k in c ) { n.push( k ); m.push( c[ k ] ); }
+			var n = [ '$this' ], m = [ c || this.x.data ];
+			if ( b ) {
+				for ( var k in b ) { n.push( k ); m.push( b[ k ] ); }
 			}
 			var h = _formatCache[ a + n.join() ];
 			if ( ! h || ! h.dfish_format_fields ) {
 				var f = [], g = n.concat();
 				if ( a.indexOf( '$' ) > -1 ) {
 					var r = /\$([a-z_]+\w*)/ig, k;
-					while ( k = r.exec( a ) )
+					while ( k = r.exec( a ) ) {
 						if( ! $.inArray( g, k[ 0 ] ) ) { g.push( k[ 0 ] ); f.push( k[ 1 ] ); };
+					}
 				}
 				h = _formatCache[ a + n.join() ] = Function( g.join( ',' ), a );
 				h.dfish_format_fields = f;
 			}
 			for ( var i = 0, x = this.x, e, f = h.dfish_format_fields, l = f.length, v; i < l; i ++ ) {
-				v = b ? b[ f[ i ] ] : (e = x.data && x.data[ f[ i ] ]) !== U ? e : x[ f[ i ] ];
+				v = c ? c[ f[ i ] ] : (e = x.data && x.data[ f[ i ] ]) !== U ? e : x[ f[ i ] ];
 				m.push( d ? d( v ) : v );
 			}
 			return h.apply( this, m );
@@ -1669,6 +1673,8 @@ Xsrc = define.widget( 'xsrc', {
 		W.apply( this, arguments );
 		if ( ! x.node ) {
 			var s = this.attr( 'src' );
+			if ( s == N && x.template )
+				s = {};
 			if ( s && typeof s === _OBJ )
 				this._loadEnd( s );
 		}
@@ -1813,6 +1819,8 @@ View = define.widget( 'view', {
 		this.init_nodes();
 		if ( ! x.node ) {
 			var s = this.attr( 'src' );
+			if ( s == N && x.template )
+				s = {};
 			if ( s && typeof s === _OBJ ) {
 				_view_js[ this.path ] && $.require( _view_js[ this.path ] );
 				this._loadEnd( s );
@@ -2249,14 +2257,21 @@ Html = define.widget( 'html', {
 			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this.x.thumbwidth ) );
 		},
 		html_text: function() {
-			var t = this.x.text == N ? '' : this.x.text, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this );
+			var t = this.x.text == N ? '' : this.x.text;  //, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this );
+			if ( this.x.format ) {
+				t = _wg_format.call( this, this.x.format, this.x.escape );
+			} else if ( this.x.escape && typeof t === _STR )
+				t = $.strEscape( t );
+			if ( typeof t === _OBJ ) {
+				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
+			}
 			if ( ! br.css3 ) {
-				if ( ! s && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
+				if ( ! t && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
-					s = '&nbsp;';
-				} else {
+					t = '&nbsp;';
+				} else if ( t ) {
 					// 解决 ie7,8 下的video标签播放问题
-					s = s.replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
+					t = t.replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
 						var w = $1.match( / width="(\d+)"/ )[ 1 ], h = $1.match( / height="(\d+)"/ )[ 1 ], u = $1.match( / src="([^"]+)"/ )[ 1 ];
 						return '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 							'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
@@ -2266,7 +2281,7 @@ Html = define.widget( 'html', {
 					} );
 				}
 			}
-			return s;
+			return t;
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'valign' );
@@ -2969,8 +2984,10 @@ Img = define.widget( 'img', {
 			this.focus( ! this.isFocus() );
 		},
 		html_img: function() {
-			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight,
-				g = $.image( this.x.src, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
+			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight, u = this.x.src;
+			if ( u.indexOf( 'javascript:' ) === 0 )
+				u = _wg_format.call( this, u );
+			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + ( h ? (isNaN( h ) ? h : h + 'px') : '100%' ) + ';">' + g + '</div>';
 		},
 		prop_style: function() {
@@ -4460,26 +4477,6 @@ AbsForm = define.widget( 'abs/form', {
 		}
 	}
 } ),
-/* `formgroup` */
-Formgroup =define.widget( 'formgroup', {
-	Const: function( x ) {
-		Horz.apply( this, arguments );
-		var a = this.x.label;
-		if ( a && typeof a === _OBJ && a.width ) {
-			this.label = new Label( a, this, -1 );
-		}
-	},
-	Extend: [ AbsForm, Horz ],
-	Prototype: {
-		className: 'w-formgroup w-horz f-inbl f-va',
-		scaleWidth: function( a, m ) {
-			return _w_scale.width.call( this, a, m, a == this.label ? U : this.formWidth() );
-		},
-		html_nodes: function() {
-			return Horz.prototype.html_nodes.call( this );
-		}
-	}
-} ),
 /* `absinput` */
 AbsInput = define.widget( 'abs/input', {
 	Const: function( x, p ) {
@@ -4556,6 +4553,26 @@ AbsInput = define.widget( 'abs/input', {
 			var w = this.inputWidth(), v = this.x.value;
 			return this.x.placeholder ? '<label style="width:' + ( w ? w + 'px' : 'auto' ) + '" class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
+		}
+	}
+} ),
+/* `formgroup` */
+Formgroup =define.widget( 'formgroup', {
+	Const: function( x ) {
+		Horz.apply( this, arguments );
+		var a = this.x.label;
+		if ( a && typeof a === _OBJ && a.width ) {
+			this.label = new Label( a, this, -1 );
+		}
+	},
+	Extend: [ AbsForm, Horz ],
+	Prototype: {
+		className: 'w-formgroup w-horz f-inbl f-va',
+		scaleWidth: function( a, m ) {
+			return _w_scale.width.call( this, a, m, a == this.label ? U : this.formWidth() );
+		},
+		html_nodes: function() {
+			return Horz.prototype.html_nodes.call( this );
 		}
 	}
 } ),
@@ -8976,7 +8993,7 @@ Grid = define.widget( 'grid', {
 				if ( c.src ) {
 					var s = c.src;
 					if ( s.indexOf( 'javascript:' ) == 0 )
-						s = e[ k ].formatJS( s, '$0,$1', [ b, e[ k ].x.field ] );
+						s = e[ k ].formatJS( s, { '$0': b, '$1': e[ k ].x.field } );
 					if ( s && typeof s === _STR && ! e[ k ]._sorting ) {
 						e[ k ]._sorting = T;
 						e[ k ].cmd( { type: 'ajax', src: $.urlFormat( s, [ b, e[ k ].x.field ] ), complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
