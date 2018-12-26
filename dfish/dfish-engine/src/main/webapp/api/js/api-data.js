@@ -1703,38 +1703,58 @@ define( {
             } );
           }
       ] },
-      { name: 'row(data)', remark: '获取符合条件的某一行。', param: [
-        { name: 'data', type: 'Object | Number', remark: '用来查询的字段对象，或行的序列号。' }
-      ] },
-      { name: 'rows([data])', remark: '获取符合条件的所有行。返回一个由若干 tr widget 实例组成的数组集合。', param: [
-        { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
+      { name: 'filter([data])', remark: '只显示符合条件的行。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来过滤的字段对象，或行的序列号，或函数。', optional: true }
       ], example: [
           function() {
-            // 获取所有行，并循环显示所有行的html
-            var r = vm.find( 'myGrid' ).rows();
-            for ( var i = 0; i < r.length; i ++ ) {
-            	alert( r[ i ].$().outerHTML );
-            }
+            // 显示所有行
+            vm.find( 'myGrid' ).filter();
           },
           function() {
-            // 获取所有字段 C1 值为 "001" 的行
-            var r = vm.find( 'myGrid' ).rows( { C1: '001' } );
-            alert( r.length );
+            // 显示所有字段 C0 值为 "1" 的行
+            vm.find( 'myGrid' ).filter( { C0: '1' } );
+          },
+          function() {
+            // 显示所有字段 C0 值为 "1" 或 "2" 的行
+            vm.find( 'myGrid' ).filter( function( data ) {
+            	return data.C0 == '1' || data.C0 == '2';
+            } );
+          }
+      ] },
+      { name: 'row(data)', remark: '获取符合条件的某一行。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象，或行的序列号，或函数。' }
+      ] },
+      { name: 'rows([data])', remark: '获取符合条件的所有行。返回一个由若干 tr 实例组成的数组集合。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象，或行的序列号，或函数。', optional: true }
+      ], example: [
+          function() {
+            // 获取所有行
+            var r = vm.find( 'myGrid' ).rows();
+          },
+          function() {
+            // 获取所有字段 C0 值为 "1" 的行
+            var r = vm.find( 'myGrid' ).rows( { C0: '1' } );
+          },
+          function() {
+            // 获取所有字段 C0 值为 "1" 或 "2" 的行
+            var r = vm.find( 'myGrid' ).rows( function( data ) {
+            	return data.C0 == '1' || data.C0 == '2';
+            } );
           }
       ] },
       { name: 'rowsData([data])', remark: '获取符合条件的所有行的 data json 的数组。', param: [
-        { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象。', optional: true }
       ] },
       { name: 'getCheckedAll()', remark: '获取所有选中行，返回一个数组。' },
       { name: 'getEchoRows()', remark: '获取所有可显示的行，返回一个数组。' },
       { name: 'getFocus()', remark: '获取焦点行。' },
       { name: 'getFocusAll()', remark: '获取所有焦点行，返回一个数组。' },
       { name: 'focusRow(target)', remark: '设置焦点行。', param: [
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'insertRow(data, [target])', remark: '新增行。', param: [
         { name: 'data', type: 'Object | Array', remark: '新增行的JSON数据。同时新增多行可以用数组。' },
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。新增行的位置将在目标行之前。如果不设置此参数，新增位置为末尾。', optional: true }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。新增行的位置将在目标行之前。如果不设置此参数，新增位置为末尾。', optional: true }
       ], example: [
           function() {
             // { C1: '000' } 是新增行的数据，把它新增到 { C1: '001' } 之前。本例和下例效果相同。
@@ -1748,15 +1768,15 @@ define( {
       ] },
       { name: 'updateRow(data, target)', remark: '更新行。', param: [
         { name: 'data', type: 'Object', remark: '更新行的JSON数据。' },
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'deleteRow(target)', remark: '删除行。', param: [
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'deleteAllRows()', remark: '删除所有行。', param: [
       ] },
       { name: 'moveRow(target, index)', remark: '移动行。', param: [
-        { name: 'target', type: 'Object', remark: '查询目标行的字段对象，或目标行的序列号。' },
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' },
         { name: 'index', type: 'Number | String', remark: '移动到指定行的序列号。支持 "+=数字", "-=数字" 格式的用法。' }
       ] },
       { name: 'checkRow(target, [checked])', remark: '更新行的 checkbox/radio 状态为已选或未选。', param: [
@@ -2001,8 +2021,9 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围，某个 widget 的 ID。', optional: true }
       ] },
-      { name: 'reload([src])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String', remark: '获取数据的URL地址。', optional: true }
+      { name: 'reload([src], [fn])', remark: '重新装载view。', param: [
+        { name: 'src', type: 'String', remark: 'view的URL地址。', optional: true },
+        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
       ] },
       { name: 'resetForm([range], [empty])', remark: '重置表单。', param: [
         { name: 'range', type: 'String', remark: 'widget ID，多个用逗号隔开。指定表单的范围。', optional: true },
@@ -2649,9 +2670,9 @@ define( {
   	remark: '单行文本输入框。',
   	extend: 'widget',
     Config: [
-      { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。当设为 label 对象并有宽度时，将在表单左边显示标签内容。<br>Label参数如下：', param: [
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。<br>&nbsp; LabelWidget 参数如下：', param: [
         { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
-        { name: 'suffix', type: 'String', remark: '后缀。' }
+        { name: 'suffix', type: 'String', remark: '后缀。' },
         { name: 'text', type: 'String', remark: '内容。' }
       ], example: [
           function() {

@@ -1656,23 +1656,23 @@ View = define.widget( 'view', {
 		attrSetter: function( a, b ) {
 			this.dft_x && (this.dft_x[ a ] = b);
 		},
-		// @a -> sync?, b -> fn?, c -> force?[强制刷新，不论是否在frame内]
+		// @a -> fn?, b -> sync?, c -> force?[强制刷新，不论是否在frame内]
 		load: function( a, b, c ) {
 			if ( this.loading )
 				return;
 			this.showLoading();
 			var f = ! c && Frame.edge( this );
 			if ( ! f || f.parentNode.getFocus() == f ) {
-				this._load( a, function( x ) {
+				this._load( function( x ) {
 					this.showLoading( F );
 					this.x.cls && this.addClass( this.x.cls );
 					this.x.style && this.css( this.x.style );
 					this.layout && this.layout.render();
-					b && b.call( this, x );
-				} );
+					a && a.call( this, x );
+				}, b );
 			}
 		},
-		// @a -> sync?, b -> fn?, c -> cache?
+		// @a -> fn?, b -> sync?, c -> cache?
 		_load: function( a, b, c ) {
 			this.abort();
 			this.loading = T;
@@ -1680,10 +1680,10 @@ View = define.widget( 'view', {
 			var u = this.attr( 'src' ), m, n, self = this,
 				d = _view_js[ this.path ],
 				e = function() {
-					if ( !self._disposed && m && n ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
+					if ( !self._disposed && m && n ) { self._loadEnd( n ); a && a.call( self, n ); n = N; }
 				};
-			d ? $.require( d, function() { m = T; e(); }, !a ) : (m = T);
-			u && (this.parent || this).ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
+			d ? $.require( d, function() { m = T; e(); }, ! b ) : (m = T);
+			u && (this.parent || this).ajax( { src: u, context: this, sync: b, cache: c, success: function( x ) { n = x; e(); } } );
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> view json
@@ -1702,11 +1702,9 @@ View = define.widget( 'view', {
 			} else
 				this.exec( x );
 		},
-		// @a -> src, b -> sync?, c -> fn
+		// @a -> src, b -> fn, c -> sync?
 		reload: function( a, b, c ) {
 			this.trigger( 'unload' );
-			if ( typeof b === _FUN )
-				c = b, b = U;
 			this.abort();
 			this.empty();
 			_initView.call( this );
@@ -2057,7 +2055,6 @@ Frame = define.widget( 'frame', {
 			return this.focusNode || (this.x.dft && this.ownerView.find( this.x.dft ));
 		},
 		// @a -> wgid
-		// animate: scrollX(横向滚动),scrollY(纵向滚动),
 		view: function( a ) {
 			if ( this.$() ) {
 				var o = this.getFocus(), c = 'f-sub-frame', d = c + '-on',
@@ -3415,12 +3412,10 @@ Dialog = define.widget( 'dialog', {
 			s.right = s.bottom = '';
 		},
 		reload: function( a, b, c ) {
-			if ( typeof b === _FUN )
-				c = b, b = N;
-			this.contentView.reload( a, b, c && $.proxy( this, c ) );
+			this.contentView.reload( a, b && $.proxy( this, b ), c );
 		},
 		preload: function( a ) {
-			this.contentView._load( F, a && $.proxy( this, a ), T );
+			this.contentView._load( a && $.proxy( this, a ), N, T );
 		},
 		//@public 移动到指定位置 /@a -> elem|widget, b -> snap option
 		snapTo: function( a, b ) {
@@ -4150,6 +4145,12 @@ AbsForm = define.widget( 'abs/form', {
 		className: 'w-form',
 		_warncls: '',
 		validHooks: F,
+		formWidth: function() {
+			return this.innerWidth();
+		},
+		formHeight: function() {
+			return this.innerHeight();
+		},
 		usa: function() {
 			return this.isNormal();
 		},
