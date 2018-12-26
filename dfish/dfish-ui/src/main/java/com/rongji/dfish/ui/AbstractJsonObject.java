@@ -1,5 +1,8 @@
 package com.rongji.dfish.ui;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -11,7 +14,7 @@ import com.rongji.dfish.ui.json.JsonWrapper;
  * @author DFish Team
  *
  */
-public abstract class AbstractJsonObject implements JsonObject{
+public abstract class AbstractJsonObject<T extends AbstractJsonObject<?>> implements JsonObject,TemplateSupport<T>{
 
 	private static final long serialVersionUID = -2456281685328829918L;
 	//	protected Boolean escape;
@@ -39,7 +42,21 @@ public abstract class AbstractJsonObject implements JsonObject{
 		ObjectTemplate.get(getClass()).bundleProperties(this);
 	}
 	
-
+	private Map<String,String> atProps;
+	public T at(String prop,String expr){
+		if(atProps==null){
+			atProps=new LinkedHashMap<String,String>();
+		}
+		atProps.put(prop,expr);
+		return(T)this;
+	}
+	public Map<String,String> ats(){
+		return atProps;
+	}
+	public void ats(Map<String,String> ats){
+		this.atProps=ats;
+//		return atProps;
+	}
 
 	public String asJson() {
 		return toString();

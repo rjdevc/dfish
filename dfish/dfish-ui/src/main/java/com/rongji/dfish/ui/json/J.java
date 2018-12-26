@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.rongji.dfish.ui.JSFunction;
+import com.rongji.dfish.ui.TemplateSupport;
 import com.rongji.dfish.ui.Widget;
 /**
  * <p>JSON构建器工具类入口</p>，该构建器不是通用的，它是为DFish3定制的。
@@ -53,6 +54,8 @@ public class J {
 				jt = ENUM_JSON_BUILDER;
 			}else if(Widget.class.isAssignableFrom(clz)) {
 				jt = new WidgetJsonBuilder(clz);
+			}else if(TemplateSupport.class.isAssignableFrom(clz)) {
+				jt = new TemplateJsonBuilder(clz);
 			}else{
 				jt = new ClassJsonBuilder(clz);
 			}

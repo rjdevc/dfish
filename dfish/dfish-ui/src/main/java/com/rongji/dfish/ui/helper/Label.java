@@ -48,6 +48,7 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Horizont
 	public HorizontalGroup getPrototype() {
 		Html prototype = new Html(text);
 		BeanUtil.copyPropertiesExact(prototype,this);
+		prototype.ats(this.ats());
 		HorizontalGroup hg=new HorizontalGroup(null);
 		hg.setLabel(label);
 		hg.add(prototype);

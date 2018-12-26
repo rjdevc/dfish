@@ -21,6 +21,13 @@ public interface HiddenContainer<T extends HiddenContainer<T>> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T addHidden(String name, String value);
+	
+	/**
+	 * 设置隐藏值
+	 * @param hidden Hidden
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	T add(Hidden hidden);
 	/**
 	 * 取得所有隐藏值
 	 * @return Map

@@ -7,6 +7,7 @@ import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.Scrollable;
+import com.rongji.dfish.ui.TemplateSupport;
 import com.rongji.dfish.ui.Valignable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.LabelRow;
@@ -17,7 +18,7 @@ import com.rongji.dfish.ui.form.LabelRow;
  * @author LinLW
  *
  */
-public class WidgetJsonBuilder extends ClassJsonBuilder {
+public class WidgetJsonBuilder extends TemplateJsonBuilder {
 
 	public WidgetJsonBuilder(Class<?> clz) {
 		super(clz);
@@ -109,7 +110,9 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 								PathInfo parentInfo=path.peek();
 								show=!"pub".equals(parentInfo.getPropName())&&
 										!"options".equals(parentInfo.getPropName())&&
-										!"hiddens".equals(parentInfo.getPropName());
+										!"hiddens".equals(parentInfo.getPropName())&&
+										!("buttonbar".equals(parentInfo.getPropName())&&"button".equals(type))&&
+										!("album".equals(parentInfo.getPropName())&&"img".equals(type));
 							}
 							if(show){
 								if(begin){begin=false;}else{sb.append(',');}

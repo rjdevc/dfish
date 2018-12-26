@@ -267,6 +267,10 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 		return (T) this;
 	}
 	
+	public T add(Hidden hidden) {
+		prototype.add(hidden);
+		return (T) this;
+	}
     public T addHidden(String name, String value) {
 		prototype.addHidden(name, value);
 		return (T) this;

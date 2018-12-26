@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.form.Hidden;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJsonObject implements HasId<T>,
+public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJsonObject<T> implements HasId<T>,
 	DataContainer<T>,EventTarget<T>{
 	
 	/**
@@ -579,6 +579,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 		//浅拷贝
 		to.data=from.data;
 		to.events=from.events;
+		to.ats(from.ats());
 	}
 	protected String toString(Object value){
 		return value==null?(String)null:value.toString();

@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.AbstractJsonObject;
  * @author DFish Team
  *
  */
-public class BoxField extends AbstractJsonObject {
+public class BoxField extends AbstractJsonObject<BoxField> {
 	/**
 	 * 
 	 */

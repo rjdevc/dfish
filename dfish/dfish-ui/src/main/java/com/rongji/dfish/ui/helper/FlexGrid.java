@@ -130,6 +130,9 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	
 	@Override
 	public FlexGrid add(Widget<?> w) {
+		if(w instanceof Hidden){
+			return add((Hidden)w);
+		}
 		return add(w, defaultOccupy);
 	}
 	
@@ -323,6 +326,10 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	
 	public FlexGrid addHidden(String name,String value) {
 		hiddens.addHidden(name, value);
+		return this;
+	}
+	public FlexGrid add(Hidden hidden) {
+		hiddens.add(hidden);
 		return this;
 	}
 	

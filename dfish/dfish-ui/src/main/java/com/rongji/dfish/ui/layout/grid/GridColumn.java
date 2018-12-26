@@ -56,7 +56,7 @@ import com.rongji.dfish.ui.json.RawJson;
  * 可以使用 text / checkbox / hidden / radio方法快捷构建一个GridColumn
  */
 
-public class GridColumn extends AbstractJsonObject implements Alignable<GridColumn>,Valignable<GridColumn>{
+public class GridColumn extends AbstractJsonObject<GridColumn> implements Alignable<GridColumn>,Valignable<GridColumn>{
 	
 	/**
 	 * 

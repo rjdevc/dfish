@@ -3,10 +3,13 @@ package com.rongji.dfish.ui.layout;
 import java.util.List;
 
 import com.rongji.dfish.ui.Alignable;
+import com.rongji.dfish.ui.HiddenContainer;
+import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Valignable;
 import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.form.Hidden;
 
 /**
  * 通过把当前面板，简单的划分为上下或左右的方式进行布局。是最基础的布局类型。
@@ -17,7 +20,7 @@ import com.rongji.dfish.ui.Widget;
  */
 @SuppressWarnings("unchecked")
 public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractLayout<T, Widget<?>> 
-implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>{
+implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>,HiddenContainer<T>{
 	/**
 	 * 
 	 */
@@ -92,6 +95,9 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	}
 	@Override
 	public T add(Widget<?> w) {
+		if(w instanceof Hidden){
+			return add((Hidden)w);
+		}
 		return add(-1, w,null);
 	}
 	
@@ -104,6 +110,32 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	 */
 	public T add(Widget<?> w,String size) {
 		return add(-1, w,size);
+	}
+	/**
+	 * 隐藏表单组
+	 */
+	private HiddenPart hiddens = new HiddenPart();
+    
+	public T addHidden(String name,String value) {
+		hiddens.addHidden(name, value);
+		return (T)this;
+	}
+	public T add(Hidden hidden) {
+		hiddens.add(hidden);
+		return (T)this;
+	}
+	
+	public List<Hidden> getHiddens() {
+		return hiddens.getHiddens();
+	}
+	
+	public List<String> getHiddenValue(String name) {
+		return hiddens.getHiddenValue(name);
+	}
+	
+	public T removeHidden(String name) {
+		hiddens.removeHidden(name);
+		return (T)this;
 	}
 	
 }

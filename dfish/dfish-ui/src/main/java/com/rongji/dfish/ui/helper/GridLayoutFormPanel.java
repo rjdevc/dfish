@@ -193,7 +193,10 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		return this;
 	}
 	
-
+	 public GridLayoutFormPanel add(Hidden hidden) {
+	    	prototype.add(hidden);
+		    return this;
+	    }
     public GridLayoutFormPanel addHidden(String name,String value) {
     	prototype.addHidden(name,value);
 	    return this;

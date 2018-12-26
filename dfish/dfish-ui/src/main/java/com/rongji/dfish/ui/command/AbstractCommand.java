@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.Command;
  * @version 1.0
  * @since DFish 3.0
  */
-public abstract class AbstractCommand<T extends AbstractCommand<T>> extends AbstractJsonObject implements Command<T>{
+public abstract class AbstractCommand<T extends AbstractCommand<T>> extends AbstractJsonObject<T> implements Command<T>{
 	/**
 	 * 
 	 */

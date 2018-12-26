@@ -22,7 +22,7 @@ import com.rongji.dfish.ui.widget.Html;
  * 2017-8-14	DFish Team - YuLM	1.0			1.0 Version
  */
 @Deprecated
-public class FormLabel extends AbstractJsonObject {
+public class FormLabel extends AbstractJsonObject <FormLabel>{
 	
 	/**
 	 * 

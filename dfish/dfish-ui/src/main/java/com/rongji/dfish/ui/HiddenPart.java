@@ -2,6 +2,7 @@ package com.rongji.dfish.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,53 +18,46 @@ import com.rongji.dfish.ui.form.Hidden;
  *
  */
 public class HiddenPart implements HiddenContainer<HiddenPart>{
-	Map<String, List<String>> map=null;
+//	Map<String, List<String>> map=null;
+	private List<Hidden> hiddens;
 	public HiddenPart addHidden(String name,String value) {
-		if(Utils.isEmpty(name)) {
-			return this;
+		add(new Hidden(name,value));
+		return this;
+	}
+	public HiddenPart add(Hidden hidden) {
+		if(hiddens==null){
+			hiddens=new ArrayList<Hidden>();
 		}
-		if (map == null) {
-			map = new TreeMap<String, List<String>>();
-		}
-		List<String> values = map.get(name);
-		if (values == null) {
-			values = new ArrayList<String>();
-			map.put(name, values);
-		}
-		values.add(value);
+		hiddens.add(hidden);
 		return this;
 	}
 
 	public List<Hidden> getHiddens() {
-		if (Utils.isEmpty(map)) {
-			return Collections.emptyList();
-		}
-		List<Hidden> result = new ArrayList<Hidden>();
-		for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-			for (String value : entry.getValue()) {
-				result.add(new Hidden(entry.getKey(), value));
-			}
-		}
-		return result;
+		return hiddens;
 	}
 
     public List<String> getHiddenValue(String name) {
-    	if (Utils.isEmpty(name)) {
-    		return Collections.emptyList();
+    	if(hiddens==null){
+    		return null;
     	}
-    	if (map == null) {
-    		return Collections.emptyList();
-    	}
-    	List<String> result = map.get(name);
-    	if (result == null) {
-    		return Collections.emptyList();
+    	List<String> result = new ArrayList<String>();
+    	for(Hidden h:hiddens){
+    		if(h.getName().equals(name)){
+    			result.add(h.getValue());
+    		}
     	}
 	    return result;
     }
 
     public HiddenPart removeHidden(String name) {
-    	if (Utils.notEmpty(name) && map != null) {
-    		map.remove(name);
+    	if(hiddens==null){
+    		return this;
+    	}
+    	for(Iterator<Hidden>iter=hiddens.iterator();iter.hasNext();){
+    		Hidden h=iter.next();
+    		if(h.getName().equals(name)){
+    			iter.remove();
+    		}
     	}
 	    return this;
     }

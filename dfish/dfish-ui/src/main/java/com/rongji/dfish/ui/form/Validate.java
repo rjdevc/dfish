@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.AbstractJsonObject;
  * @author DFish Team
  *
  */
-public class Validate extends AbstractJsonObject {
+public class Validate extends AbstractJsonObject<Validate> {
 	/**
 	 * 
 	 */

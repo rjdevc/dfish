@@ -16,8 +16,7 @@ import com.rongji.dfish.ui.form.Hidden;
  * @author DFish Team
  *
  */
-public class VerticalLayout extends LinearLayout<VerticalLayout> implements Scrollable<VerticalLayout>,HiddenContainer<VerticalLayout>,
-MultiContainer<VerticalLayout,Widget<?>>,Alignable<VerticalLayout>, Valignable<VerticalLayout>{
+public class VerticalLayout extends LinearLayout<VerticalLayout> {
 	/**
 	 * 
 	 */
@@ -66,27 +65,6 @@ MultiContainer<VerticalLayout,Widget<?>>,Alignable<VerticalLayout>, Valignable<V
 		return this;
 	}
 	
-	/**
-	 * 隐藏表单组
-	 */
-	private HiddenPart hiddens = new HiddenPart();
-    
-	public VerticalLayout addHidden(String name,String value) {
-		hiddens.addHidden(name, value);
-		return this;
-	}
-	
-	public List<Hidden> getHiddens() {
-		return hiddens.getHiddens();
-	}
-	
-	public List<String> getHiddenValue(String name) {
-		return hiddens.getHiddenValue(name);
-	}
-	
-	public VerticalLayout removeHidden(String name) {
-		hiddens.removeHidden(name);
-		return this;
-	}
+
 	
 }

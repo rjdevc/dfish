@@ -16,8 +16,7 @@ import com.rongji.dfish.ui.form.Hidden;
  * @author DFish Team
  *
  */
-public class HorizontalLayout extends LinearLayout<HorizontalLayout>implements Scrollable<HorizontalLayout>,HiddenContainer<HorizontalLayout>,
-MultiContainer<HorizontalLayout,Widget<?>>,Alignable<HorizontalLayout>, Valignable<HorizontalLayout>{
+public class HorizontalLayout extends LinearLayout<HorizontalLayout>{
 	/**
 	 * 
 	 */
@@ -82,61 +81,5 @@ MultiContainer<HorizontalLayout,Widget<?>>,Alignable<HorizontalLayout>, Valignab
 		}
 		return this;
 	}
-
-	@Override
-	public HorizontalLayout addHidden(String name, String value) {
-//		this.add(new Hidden(name, value));
-		hiddens.addHidden(name, value);
-		return this;
-	}
-	
-	/**
-	 * 隐藏表单组
-	 */
-	private HiddenPart hiddens = new HiddenPart();
-	
-	@Override
-	public List<Hidden> getHiddens() {
-//		List<Hidden> result=new ArrayList<Hidden>();
-//		for(Widget<?> w:nodes){
-//			if(w instanceof Hidden){
-//				result.add((Hidden) w);
-//			}
-//		}
-//		return result;
-		return hiddens.getHiddens();
-	}
-
-	@Override
-	public List<String> getHiddenValue(String name) {
-//		if(name==null)return null;
-//		List<String> result=new ArrayList<String>();
-//		for(Widget<?> w:nodes){
-//			if(w instanceof Hidden){
-//				if(name.equals(((Hidden) w).getName())){
-//					result.add(((Hidden) w).getValue());
-//				}
-//			}
-//		}
-//		return result;
-		return hiddens.getHiddenValue(name);
-	}
-
-	@Override
-	public HorizontalLayout removeHidden(String name) {
-//		if(name==null)return null;
-////		List<String> result=new ArrayList<String>();
-//		for(Iterator<Widget<?>>iter=nodes.iterator();iter.hasNext();){
-//			Widget<?> w=iter.next();
-//			if(w instanceof Hidden){
-//				if(name.equals(((Hidden) w).getName())){
-//					iter.remove();
-//				}
-//			}
-//		}
-		hiddens.removeHidden(name);
-		return this;
-	}
-
 
 }

@@ -328,6 +328,10 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	  
 	private HiddenPart hiddens = new HiddenPart();
     
+	public GridLayout add(Hidden hidden) {
+		hiddens.add(hidden);
+		return this;
+	}
 	public GridLayout addHidden(String name,String value) {
 		hiddens.addHidden(name, value);
 		return this;

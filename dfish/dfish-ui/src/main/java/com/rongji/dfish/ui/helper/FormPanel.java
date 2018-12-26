@@ -73,6 +73,9 @@ Layout<FormPanel,Widget<?>>{
 		if (row == null) {
 			return this;
 		}
+		if(row instanceof Hidden){
+			return add((Hidden)row);
+		}
 		rows.add(row);
 		if (row instanceof LabelRow) {
 			if("0".equals(((LabelRow) row).getLabel().getWidth())){
@@ -247,6 +250,11 @@ Layout<FormPanel,Widget<?>>{
     public String getScrollClass() {
 	    return prototype.getScrollClass();
     }
+    @Override
+	public FormPanel add(Hidden hidden) {
+		prototype.add(hidden);
+		return this;
+	}
 
 	@Override
 	public FormPanel addHidden(String name,String value) {
