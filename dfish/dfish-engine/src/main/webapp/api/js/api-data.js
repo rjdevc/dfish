@@ -2174,7 +2174,7 @@ define( {
       { name: 'imgheight', type: 'Number | String', remark: '图片高度。' },
       { name: 'textwidth', type: 'Number | String', remark: '文本宽度。' },
       { name: 'nobr', type: 'Boolean', remark: '文本是否换行。' },
-      { name: 'src', type: 'String', remark: '图片地址。' },
+      { name: 'src', type: 'String', remark: '图片地址。支持以 "." 开头的样式名。支持以 "javascript:" 开头的JS语句。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'Boolean | string', remark: '图片的文本提示信息。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' }
@@ -2367,6 +2367,7 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
+      { name: 'format', type: 'String', remark: '格式化内容。支持"javascript:"开头的JS语句(需return返回值)。' },
       { name: 'valign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'text', type: 'String', remark: 'html内容。支持 &lt;d:wg&gt; 标签。' },

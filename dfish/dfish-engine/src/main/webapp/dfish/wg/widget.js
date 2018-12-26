@@ -2132,15 +2132,22 @@ Html = define.widget( 'html', {
 		thumb: function() {
 			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this.x.thumbwidth ) );
 		},
-		html_nodes: function() {
-			var t = this.x.text == N ? '' : this.x.text, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this ), v = this.attr( 'valign' );
+		html_text: function() {
+			var t = this.x.text == N ? '' : this.x.text;  //, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this );
+			if ( this.x.format ) {
+				t = _wg_format.call( this, this.x.format, this.x.escape );
+			} else if ( this.x.escape && typeof t === _STR )
+				t = $.strEscape( t );
+			if ( typeof t === _OBJ ) {
+				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
+			}
 			if ( ! br.css3 ) {
-				if ( ! s && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
+				if ( ! t && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
-					s = '&nbsp;';
-				} else {
+					t = '&nbsp;';
+				} else if ( t ) {
 					// 解决 ie7,8 下的video标签播放问题
-					s = s.replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
+					t = t.replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
 						var w = $1.match( / width="(\d+)"/ )[ 1 ], h = $1.match( / height="(\d+)"/ )[ 1 ], u = $1.match( / src="([^"]+)"/ )[ 1 ];
 						return '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 							'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
@@ -2150,6 +2157,10 @@ Html = define.widget( 'html', {
 					} );
 				}
 			}
+			return t;
+		},
+		html_nodes: function() {
+			var s = this.html_text(), v = this.attr( 'valign' );
 			if ( v )
 				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>';
 			return s;
@@ -2851,8 +2862,10 @@ Img = define.widget( 'img', {
 			this.focus( ! this.isFocus() );
 		},
 		html_img: function() {
-			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight,
-				g = $.image( this.x.src, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
+			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight, u = this.x.src;
+			if ( u.indexOf( 'javascript:' ) === 0 )
+				u = _wg_format.call( this, u );
+			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + ( h ? (isNaN( h ) ? h : h + 'px') : '100%' ) + ';">' + g + '</div>';
 		},
 		html_text: function() {
