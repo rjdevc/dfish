@@ -211,12 +211,16 @@ _ajaxCmd = function( x, a, t ) {
 	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter, error: x.error, beforesend: x.beforesend, 
 		success: function( v, a ) {
 			d && (d.close(), d = N);
-			if ( ! this._disposed )
-				x.success ? this.formatJS( x.success, '$value,$ajax', [ v, a ] ) : (v && this.exec( v, N, x.transfer ));
+			if ( ! this._disposed ) {
+				if ( x.success )
+					typeof x.success === _FUN ? x.success.call( this, v, a ) : this.formatJS( x.success, { '$value': v, '$ajax': a } );
+				else
+					(v && this.exec( v, N, x.transfer ));
+			}
 		}, complete: function( v, a ) {
 			d && d.close();
 			if ( ! this._disposed && x.complete )
-				 this.formatJS( x.complete, '$value,$ajax', [ v, a ] )
+				 typeof x.complete === _FUN ? x.complete.call( this, v, a ) : this.formatJS( x.complete, { '$value': v, '$ajax': a } )
 			if ( ! this._disposed )
 				this.trigger( 'unlock' );
 		}
@@ -236,12 +240,13 @@ _cmdHooks = {
 			_cmd.call( this, x );
 	},
 	'js': function( x, a ) {
-		var c = [];
+		var c;
 		if ( a ) {
+			c = {};
 			for ( var i = 0; i < a.length; i ++ )
-				c.push( '$' + i );
+				c[ '$' + i ] = a[ i ];
 		}
-		return x.text && this.formatJS( x.text, c.join( ',' ), a );
+		return x.text && this.formatJS( x.text, c );
 	},
 	'ajax': function( x, a ) {
 		x.download ? $.download( x.src, x.data ) : _ajaxCmd.call( this, x, a );
@@ -618,16 +623,16 @@ W = define( 'widget', function() {
 		triggerHandler: function( e, a, f ) {
 			if ( this._disposed || this.isDisabled() )
 				return;
-			var t = e.runType || e.type || e, f = f || (this.x.on && this.x.on[ t ]), g = 'event', r = a != N ? [ e ].concat( a ) : [ e ];
+			var t = e.runType || e.type || e, f = f || (this.x.on && this.x.on[ t ]), c = { 'event': e }, g = a ? [ e ].concat( a ) : [ e ];
 			if ( a != N ) {
-				for ( var i = 0, l = r.length - 1; i < l; i ++ )
-					g += ',$' + i;
+				for ( var i = 1, l = g.length; i < l; i ++ )
+					c[ '$' + (i - 1) ] = g[ i ];
 			}
-			return f && this.formatJS( f, g, r );
+			return f && (typeof f === _FUN ? f.apply( this, g ) : this.formatJS( f, c ));
 		},
 		// 触发系统事件
 		triggerListener: function( e, a ) {
-			if ( this._disposed )
+			if ( this._disposed || this.isDisabled() )
 				return;
 			var b = this.Const.Listener,
 				t = e.runType || e.type || e,
@@ -640,7 +645,7 @@ W = define( 'widget', function() {
 		// 触发用户定义的事件和系统事件 / @e -> event, @a -> [data]
 		// 优先返回用户事件的返回值，其次返回系统事件的值
 		trigger: function( e, a ) { 
-			if ( this._disposed )
+			if ( this._disposed || this.isDisabled() )
 				return;
 			var b = this.Const.Listener,
 				c = this.proxyHooks,
@@ -698,25 +703,29 @@ W = define( 'widget', function() {
 			}
 			return this;
 		},
-		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js, b -> arg name, c -> value array, d -> callback?
+		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({ name: value })?, c -> data?, d -> callback?
 		formatJS: function( a, b, c, d ) {
-			var g = typeof a === _STR, h = g ? _formatCache[ a ] : a;
+			var n = [ '$this' ], m = [ c || this.x.data ];
+			if ( b ) {
+				for ( var k in b ) { n.push( k ); m.push( b[ k ] ); }
+			}
+			var h = _formatCache[ a + n.join() ];
 			if ( ! h || ! h.dfish_format_fields ) {
-				var s = g ? a : $.strTo( a.toString(), ')' ), e = b ? b.split( ',' ) : [], f = [];
-				if ( s.indexOf( '$' ) > -1 ) {
-					var r = /\$([a-z_]+\w*)/ig, k, t = b || '';
-					while ( k = r.exec( a ) )
-						if( ! $.idsAny( t, k[ 0 ] ) ) { e.push( k[ 0 ] ); f.push( k[ 1 ] ); t = $.idsAdd( t, k[ 0 ] ); };
+				var f = [], g = n.concat();
+				if ( a.indexOf( '$' ) > -1 ) {
+					var r = /\$([a-z_]+\w*)/ig, k;
+					while ( k = r.exec( a ) ) {
+						if( ! $.inArray( g, k[ 0 ] ) ) { g.push( k[ 0 ] ); f.push( k[ 1 ] ); };
+					}
 				}
-				g && (h = _formatCache[ a ] = Function( e.join( ',' ), a ));
+				h = _formatCache[ a + n.join() ] = Function( g.join( ',' ), a );
 				h.dfish_format_fields = f;
 			}
-			for ( var i = 0, x = this.x, f = h.dfish_format_fields, l = f.length, v, c = c || []; i < l; i ++ ) {
-				v = x.data && x.data[ f[ i ] ];
-				v == N && (v = x[ f[ i ] ]);
-				c.push( d ? d( v ) : v );
+			for ( var i = 0, x = this.x, e, f = h.dfish_format_fields, l = f.length, v; i < l; i ++ ) {
+				v = c ? c[ f[ i ] ] : (e = x.data && x.data[ f[ i ] ]) !== U ? e : x[ f[ i ] ];
+				m.push( d ? d( v ) : v );
 			}
-			return h.apply( this, c );
+			return h.apply( this, m );
 		},
 		// @a -> content|js, b -> args?, c -> urlEncode?, d -> callback?
 		formatStr: function( a, b, c, d ) {
@@ -4387,6 +4396,10 @@ AbsInput = define.widget( 'abs/input', {
 			return '<div' + this.html_prop() + '>' + this.html_before() + this.html_placehoder() + this.html_nodes() + this.html_after() + '</div>';
 		}
 	}
+} ),
+/* `formgroup` */
+Formgroup =define.widget( 'formgroup', {
+	Extend: [ AbsForm, Horz ]
 } ),
 /* `hidden` */
 Hidden = define.widget( 'hidden', {
@@ -8344,7 +8357,6 @@ GridBody = define.widget( 'grid/body', {
 		className: 'w-grid-tbody'
 	}
 } ),
-
 /* `gridhead` */
 GridHead = define.widget( 'grid/head', {
 	Extend: GridBody,
@@ -8750,7 +8762,7 @@ Grid = define.widget( 'grid', {
 				if ( c.src ) {
 					var s = c.src;
 					if ( s.indexOf( 'javascript:' ) == 0 )
-						s = e[ k ].formatJS( s, '$0,$1', [ b, e[ k ].x.field ] );
+						s = e[ k ].formatJS( s, { '$0': b, '$1': e[ k ].x.field } );
 					if ( s && typeof s === _STR && ! e[ k ]._sorting ) {
 						e[ k ]._sorting = T;
 						e[ k ].cmd( { type: 'ajax', src: $.urlFormat( s, [ b, e[ k ].x.field ] ), complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
