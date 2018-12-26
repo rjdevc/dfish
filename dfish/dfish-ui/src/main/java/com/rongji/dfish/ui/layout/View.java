@@ -31,6 +31,7 @@ public class View extends AbstractView<View> {
 	}
 	
 //	private Boolean load;
+	private String template;
 	private String src;
 	private String base;
 	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
@@ -56,6 +57,22 @@ public class View extends AbstractView<View> {
 //		this.cache = cache;
 //		return this;
 //	}
+	/**
+	 * template 的名字
+	 * @return template
+	 */
+	public String getTemplate() {
+		return template;
+	}
+	/**
+	 * template 的名字
+	 * @param template name
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public View setTemplate(String template) {
+		this.template = template;
+		return this;
+	}
 	/**
 	 * 加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。
 	 * @return src
