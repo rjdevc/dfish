@@ -2021,8 +2021,9 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围，某个 widget 的 ID。', optional: true }
       ] },
-      { name: 'reload([src])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String', remark: '获取数据的URL地址。', optional: true }
+      { name: 'reload([src], [fn])', remark: '重新装载view。', param: [
+        { name: 'src', type: 'String', remark: 'view的URL地址。', optional: true },
+        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
       ] },
       { name: 'resetForm([range], [empty])', remark: '重置表单。', param: [
         { name: 'range', type: 'String', remark: 'widget ID，多个用逗号隔开。指定表单的范围。', optional: true },
@@ -2173,7 +2174,7 @@ define( {
       { name: 'imgheight', type: 'Number | String', remark: '图片高度。' },
       { name: 'textwidth', type: 'Number | String', remark: '文本宽度。' },
       { name: 'nobr', type: 'Boolean', remark: '文本是否换行。' },
-      { name: 'src', type: 'String', remark: '图片地址。' },
+      { name: 'src', type: 'String', remark: '图片地址。支持以 "." 开头的样式名。支持以 "javascript:" 开头的JS语句。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'Boolean | string', remark: '图片的文本提示信息。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' }
@@ -2366,6 +2367,7 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
+      { name: 'format', type: 'String', remark: '格式化内容。支持"javascript:"开头的JS语句(需return返回值)。' },
       { name: 'valign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'text', type: 'String', remark: 'html内容。支持 &lt;d:wg&gt; 标签。' },
