@@ -1,5 +1,6 @@
 package com.rongji.dfish.base.crypt;
 
+import com.rongji.dfish.base.crypt.sm.SM2Cryptor;
 import com.rongji.dfish.base.crypt.sm.SM4_ECB_PKCS7_Cryptor;
 
 /**
@@ -30,9 +31,15 @@ public class CryptFactory {
   /**
    * 国密算法SM4
    * 配合分组规则ECB 以及补位规则PKCS7
-   * @see #TRIPLE_DES
    */
   public static final String SM4_ECB_PKCS7 = "SM4_ECB_PKCS7";
+  
+  /**
+   * 国密算法SM2
+   * 椭圆曲线公钥密码算法
+   */
+  public static final String SM2 = "SM2";
+  
   /**
    * 由于加解密内码为byte[]要通过一种方法转存成字符串
    * 这里用BASE64
@@ -170,6 +177,11 @@ public static StringCryptor getStringCryptor(String algorithms,
     if (algorithms.equals(SM4_ECB_PKCS7)) {
         return new SM4_ECB_PKCS7_Cryptor(encoding, presentStyle, arg);
       }
+    if(algorithms.equals(SM2)){
+    	return new SM2Cryptor(encoding, presentStyle, arg);
+    }
+    
+    
     return new JCECryptor(algorithms, encoding, presentStyle, arg);
   }
 

@@ -3016,6 +3016,7 @@ define( {
   	extend: 'text',
   	deprecate: 'focus,.w-text',
     Config: [
+      { name: 'defaultchecked', type: 'Boolean', remark: '是否默认选中第一项。默认值为true。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'src', type: 'String | Object',  ver: '3.2+', remark: '获取选项的 URL 地址。' },
       { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
