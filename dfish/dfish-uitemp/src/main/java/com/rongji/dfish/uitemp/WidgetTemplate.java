@@ -9,8 +9,8 @@ import com.rongji.dfish.ui.JsonObject;
 	/**
 	 * WidgetTemplate 是为DFish的widget 封装的模板
 	 * <pre>
-	 * WidgetTemplate textTmp=WidgetTemplate.convert(new Text("userName","",null))
-	 *	.setAtProp("value", "$data.name");
+	 * WidgetTemplate textTmp=new WidgetTemplate(new Text("userName","",null))
+	 *	.at("value", "$data.name");
 	 * </pre>
 	 * 支持级联嵌套
 	 * Description: 

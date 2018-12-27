@@ -34,17 +34,34 @@ public class JudgeTemplate extends AbstractTemplate {
 	}
 	private static final long serialVersionUID = 767478857627210712L;
 
+	/**
+	 * 增加if 条件，一般来说if条件应该在第一个
+	 * @param expr 判断表达式
+	 * @param temp 模板，可以是wiget模板，也可以是@include
+	 * @return this
+	 */
 	public JudgeTemplate addIf(String expr,DFishTemplate temp){
 		String key="@w-if("+expr+")";
 		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
 		return this;
 	}
 	
+	/**
+	 * 增加else-if 条件，一般来说不能放在第一位
+	 * @param expr 判断表达式
+	 * @param temp 模板，可以是wiget模板，也可以是@include
+	 * @return this
+	 */
 	public JudgeTemplate addElseif(String expr,DFishTemplate temp){
 		String key="@w-elseif("+expr+")";
 		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
 		return this;
 	}
+	/**
+	 * 增加else条件，一般来说放在最后一位
+	 * @param temp 模板，可以是wiget模板，也可以是@include
+	 * @return this
+	 */
 	public JudgeTemplate addElse(DFishTemplate temp){
 		String key="@w-else";
 		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);

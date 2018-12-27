@@ -45,18 +45,11 @@ public class Xsrc extends AbstractView<Xsrc> implements LazyLoad<Xsrc>{
 		this.template = template;
 		return this;
 	}
-	/**
-	 * 加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。
-	 * @return src
-	 */
+
 	public String getSrc() {
 		return src;
 	}
-	/**
-	 * 加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。
-	 * @param src URL
-	 * @return 本身，这样可以继续设置其他属性
-	 */
+
 	public Xsrc setSrc(String src) {
 		this.src = src;
 		return this;

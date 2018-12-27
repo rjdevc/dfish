@@ -3,13 +3,17 @@ package com.rongji.dfish.uitemp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+/**
+ * 用于对模板元素进行查找和操作的工具类
+ * 
+ *
+ */
 public class MatchResult  implements Iterable<DFishTemplate>{
 	public static final int REL_AND=1;
 	public static final int REL_OR=2;
@@ -18,10 +22,13 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	public static final int OPER_GREATER_THAN=2;
 	public static final int OPER_LESS_THAN=4;
 	
-	public MatchResult(){
-		
-	}
+	public MatchResult(){}
+	
 	List<Object> curResult;
+	/**
+	 * 初始结果 一般 dt为WidgetTemplate 或 TemplateArray
+	 * @param dt DFishTemplate
+	 */
 	public MatchResult(DFishTemplate dt){
 		if(dt instanceof AbstractTemplate){
 			curResult=new ArrayList<Object>();
@@ -29,30 +36,64 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 			curResult.add(cast.json);
 		}
 	}
-	public void setProp(String key,String value){
+	/**
+	 * 为了方便 批量设置值，而制作的方法。只对结果中WidgetTemplate生效。
+	 * @param prop 属性
+	 * @param value 值 一般 为 String / Integer / Double / Boolean
+	 */
+	public void setProp(String prop,Object value){
 		for(DFishTemplate dt:this){
 			if(dt instanceof WidgetTemplate ){
-				((WidgetTemplate) dt).setProp(key, value);
-			}
-		}
-	}
-	public void at(String key,String value){
-		for(DFishTemplate dt:this){
-			if(dt instanceof WidgetTemplate ){
-				((WidgetTemplate) dt).at(key, value);
+				((WidgetTemplate) dt).setProp(prop, value);
 			}
 		}
 	}
 	
+	/**
+	 * 为了方便 批量设置值，而制作的方法。只对结果中WidgetTemplate生效。
+	 * @param prop 属性
+	 * @param expr 表达式
+	 */
+	public void at(String prop,String expr){
+		for(DFishTemplate dt:this){
+			if(dt instanceof WidgetTemplate ){
+				((WidgetTemplate) dt).at(prop, expr);
+			}
+		}
+	}
+	/**
+	 * 为了方便 批量设置值，而制作的方法。只对结果中WidgetTemplate生效。
+	 * @param prop 属性
+	 * @param temp 模板
+	 */
+	public void at(String prop,DFishTemplate temp){
+		for(DFishTemplate dt:this){
+			if(dt instanceof WidgetTemplate ){
+				((WidgetTemplate) dt).at(prop, temp);
+			}
+		}
+	}
+	/**
+	 * 找出 属性等于指定值 的节点
+	 * @param prop 属性名
+	 * @param value 值
+	 * @return MatchResult
+	 */
 	public MatchResult match(String prop,Object value){
-		return search(new Condition[]{
-			new Condition(prop,OPER_EQUALS,value),
+		return search(new Expression[]{
+			new Expression(prop,OPER_EQUALS,value),
 		},REL_AND);
 	}
 	
+	/**
+	 * 找出 id 属性等于指定值的节点
+	 * 如果widget遵循 dfish的原则，这里只应该返回一个结果。
+	 * @param id String
+	 * @return MatchResult
+	 */
 	public MatchResult findById(String id){
-		return search(new Condition[]{
-				new Condition("id",OPER_EQUALS,id),
+		return search(new Expression[]{
+				new Expression("id",OPER_EQUALS,id),
 		},REL_AND);
 	}
 	/***
@@ -68,9 +109,9 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	 * @return
 	 */
 	public MatchResult findByTypeAndName(String type, String name){
-		return search(new Condition[]{
-			new Condition("type",OPER_EQUALS,type),
-			new Condition("name",OPER_EQUALS,name),
+		return search(new Expression[]{
+			new Expression("type",OPER_EQUALS,type),
+			new Expression("name",OPER_EQUALS,name),
 		},REL_AND);
 	}
 	
@@ -115,11 +156,17 @@ public class MatchResult  implements Iterable<DFishTemplate>{
         return isNum.matches() ;
 	}
 	
-	public MatchResult search(Condition[] conditions, int realtion){
+	/**
+	 * 找出所有子节点中符合条件的节点。
+	 * @param exprs 表达式
+	 * @param realtion 关系 AND 还是OR
+	 * @return
+	 */
+	public MatchResult search(Expression[] exprs, int realtion){
 		List<Object> ret=new ArrayList<Object>();
 		if(curResult!=null){
 			for(Object o:curResult){
-				searchDown(conditions,realtion,o, ret);
+				searchDown(exprs,realtion,o, ret);
 			}
 		}
 		MatchResult mr=new MatchResult();
@@ -128,13 +175,13 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	}
 
 	//FIXME 暂时没有完整路径的的做法，只能先search 再search，而且无法根据上级属性名路径来搜索
-	protected void searchDown(Condition[] conditions, int relation,Object source,  List<Object> resultHolder) {
+	protected void searchDown(Expression[] conditions, int relation,Object source,  List<Object> resultHolder) {
 		if (source instanceof JSONObject){
 			JSONObject cast=(JSONObject)source;
 			//进行判定
 			boolean check=relation==REL_AND;
 			if(check){
-				for(Condition con:conditions){
+				for(Expression con:conditions){
 					boolean step=judge(cast,con.prop,con.oper,con.value);
 					if(!step){
 						check=false;
@@ -142,7 +189,7 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 					}
 				}
 			}else{
-				for(Condition con:conditions){
+				for(Expression con:conditions){
 					boolean step=judge(cast,con.prop,con.oper,con.value);
 					if(step){
 						check=true;
@@ -200,12 +247,22 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 		}
 		return ret;
 	}
-	public static class Condition{
+	/**
+	 * 表达式	
+	 *
+	 */
+	public static class Expression{
 		private String prop;
 		private int oper;
 		private Object value;
-		public Condition(){}
-		public Condition(String prop,int oper,Object value){
+		public Expression(){}
+		/**
+		 * 构造函数
+		 * @param prop 属性名
+		 * @param oper 操作 EQUALS NOT_EQUAL LESS_THAN GREATER_THAN
+		 * @param value 值
+		 */
+		public Expression(String prop,int oper,Object value){
 			this.prop=prop;
 			this.oper=oper;
 			this.value=value;
@@ -232,7 +289,18 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	private static class ResultIterator implements Iterator<DFishTemplate>{
 		Iterator<Object> real;
 		public ResultIterator(List<Object> curResult){
-			real=curResult.iterator();
+			if(curResult==null){
+				real=new Iterator<Object>() {
+					public boolean hasNext() {
+						return false;
+					}
+					public Object next() {
+						return null;
+					}
+				};
+			}else{
+				real=curResult.iterator();
+			}
 		}
 		@Override
 		public boolean hasNext() {

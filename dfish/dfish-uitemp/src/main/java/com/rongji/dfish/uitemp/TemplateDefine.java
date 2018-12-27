@@ -1,5 +1,12 @@
 package com.rongji.dfish.uitemp;
 
+/**
+ * TemplateDefine是模范 nodeJS 定义一个模板
+ * <p>define("t/cmd/indx",{"type":"text","name":"xxx","@value":"$data.xxx" });</p>
+ * 严格意义上来说它并不是一个有效的JSON格式。这里仅仅定义了他输出格式。
+ * @author LinLW
+ *
+ */
 public class TemplateDefine implements DFishTemplate{
 
 	private static final long serialVersionUID = -860884319838299839L;
