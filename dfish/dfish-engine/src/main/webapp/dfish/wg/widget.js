@@ -3115,7 +3115,7 @@ Page = define.widget( 'page/mini', {
 						this.render();
 					}
 				} else if ( this.x.src ) {
-					var s = this.x.src;
+					var s = this.x.src, i = $.numRange( Math.floor( i ), 1, this.x.sumpage );
 					this.exec( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, [ i ] );
 				}
 				// 为业务 click 事件之中的 $0 提供值
@@ -5840,7 +5840,7 @@ XBox = define.widget( 'xbox', {
 		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
 		init_nodes: function() {
 			this._sel.length = 0;
-			var x = this.x, o = x.options || (x.options = []), i = o.length, v = x.value != N ? '' : '' + x.value;
+			var x = this.x, o = x.options || (x.options = []), i = o.length, v = x.value == N ? '' : '' + x.value;
 			while ( i -- ) {
 				o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
 				(o[ i ].checked || (v && $.idsAny( v, o[ i ].value ))) && this._sel.push( o[ i ] );

@@ -309,7 +309,15 @@ _loadStyle = function( a ) {
 _uidCnt = 0,
 _guid  = function() { return (_uidCnt ++).toString( 36 ) + ':' },
 _arrfn = function( a ) { return Function( 'v,i,r', 'return(' + a + ')' ) },
-_fnapply = function( a, b, c, d ) { return b && b.isWidget ? b.formatJS( a, c, d ) : (typeof a === _FUN ? a : Function( c || '', a )).apply( b, d || A ) },
+_fnapply = function( a, b, c, d ) {
+	if ( typeof a === _FUN ) {
+		return a.apply( b, d || A );
+	} else {
+		for ( var i = 0, r = {}, g = c.split(','), l = (d || A).length; i < l; i ++ )
+			r[ g[ i ] ] = d[ i ];
+		return b && b.isWidget && b.formatJS( a, r );
+	}
+},
 // 获取/设置全局唯一ID
 _uid = $.uid = function( o ) {
 	if ( o )
