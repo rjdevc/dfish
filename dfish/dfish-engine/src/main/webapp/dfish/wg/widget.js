@@ -2981,6 +2981,8 @@ Page = define.widget( 'page/mini', {
 		},
 		go: function( i, a ) {
 			if ( (i = _number( i )) > 0 ) {
+				i = Math.max( Math.floor( i ), 1 );
+				this.x.sumpage && (i = Math.min( i, this.x.sumpage ));
 				this.$( 'v' ) && (this.$( 'v' ).value = i);
 				if ( this.x.target ) {
 					var g = this.ownerView.find( this.x.target );
@@ -2990,7 +2992,7 @@ Page = define.widget( 'page/mini', {
 						this.render();
 					}
 				} else if ( this.x.src ) {
-					var s = this.x.src, i = $.numRange( Math.floor( i ), 1, this.x.sumpage );
+					var s = this.x.src;
 					this.cmd( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, i );
 				}
 				// 为业务 click 事件之中的 $0 提供值
@@ -5651,10 +5653,13 @@ XBox = define.widget( 'xbox', {
 		width_minus: function() { return _boxbtn_width + _input_indent() },
 		initOptions: function( x ) {
 			this._sel = [];
-			var o = x.options || (x.options = []), i = o.length, v = x.value == N ? '' : '' + x.value;
+			var o = x.options || (x.options = []), i = o.length, v = x.value == N ? '' : '' + x.value, e, g = ! this.x.multiple;
 			while ( i -- ) {
-				o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
-				(o[ i ].checked || (v && $.idsAny( v, o[ i ].value ))) && this._sel.push( o[ i ] );
+				e = o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
+				if ( o[ i ].checked || (v && e && $.idsAny( v, o[ i ].value )) ){
+					this._sel.push( o[ i ] );
+					if ( g ) break;
+				}
 			}
 			if( o.length ) {
 				! this._sel.length && this.attr( 'defaultchecked' ) !== F && this._sel.push( o[ 0 ] );
@@ -5718,7 +5723,7 @@ XBox = define.widget( 'xbox', {
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
 					t.push( b[ i ].text );
-					u.push( b[ i ].value );
+					b[ i ].value && u.push( b[ i ].value );
 				}
 				this._sel = b;
 				this.$v().value = u = u.join();
