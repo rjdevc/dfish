@@ -54,7 +54,7 @@ public class ConditionTemplateTest {
 	}
 	private static DFishTemplate getFor() {
 		WidgetTemplate leafTmp=new WidgetTemplate(new Leaf())
-				.setAtProp("text", "$item.name");
+				.at("text", "$item.name");
 		return new WidgetTemplate ().addFor("nodes", "$data",leafTmp);
 	}
 

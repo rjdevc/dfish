@@ -2,6 +2,8 @@ package com.rongji.dfish.uitemp;
 
 import java.util.Arrays;
 
+import org.junit.Test;
+
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.command.JSCommand;
 import com.rongji.dfish.ui.form.DatePicker;
@@ -14,10 +16,8 @@ import com.rongji.dfish.ui.helper.Label;
 import com.rongji.dfish.ui.layout.ButtonBar;
 import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.widget.Button;
+import com.rongji.dfish.ui.widget.Leaf;
 import com.rongji.dfish.ui.widget.SubmitButton;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class CmsTemplateTest {
 	@Test
@@ -51,6 +51,21 @@ public class CmsTemplateTest {
 		bar.add(new Button("  取消  ").setOn(Button.EVENT_CLICK,"dfish.close(this);"));
 		
 		System.out.println( shell(vert,"myname"));
+	}
+	@Test
+	public void testTree(){
+		Leaf leaf =new Leaf();
+		leaf.setTemplate("t/cms/tree")
+			.setOn(Leaf.EVENT_FOCUS, "cms.treeClick(this);");
+		leaf.at("id","$item.cateId")
+			.at("text","$item.cateName")
+			.at("focus","$item.focus")
+			.at("src","$item.hasChild?'./interface/v2/notice_category/query?parentId='+$item.cateId:''");
+		
+		//复杂功能要转到widget 才可以处理。
+		WidgetTemplate leafWt=new WidgetTemplate(leaf);
+		leafWt.addFor("nodes", "$item.children", new IncludeTemplate("t/cms/leaf"));
+		System.out.println(leafWt);
 	}
 	
 	protected TemplateDefine shell(WidgetTemplate wt,String uri){

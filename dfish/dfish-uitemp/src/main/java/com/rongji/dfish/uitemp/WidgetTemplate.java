@@ -167,7 +167,11 @@ public class WidgetTemplate extends AbstractTemplate{
 	 * @return this
 	 */
 	public WidgetTemplate at(String prop, DFishTemplate temp) {
-		return setProp("@"+prop,temp);
+		if(temp instanceof AbstractTemplate ){
+			Object  subProp=((AbstractTemplate) temp).json;
+			setProp("@"+prop,subProp);
+		}
+		return this;
 	}
 	
 	@Deprecated
@@ -191,7 +195,11 @@ public class WidgetTemplate extends AbstractTemplate{
 		}else{
 			propFullName= "@"+prop+":w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
 		}
-		return this.setProp(propFullName, temp);
+		if(temp instanceof AbstractTemplate ){
+			Object  subProp=((AbstractTemplate) temp).json;
+			this.setProp(propFullName, subProp);
+		}
+		return this;
 	}
 	/**
 	 * 相当于itemName ="item",indexName=null 来创建这个循环。
