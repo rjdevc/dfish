@@ -55,12 +55,12 @@ public class CmsTemplateTest {
 	
 	protected TemplateDefine shell(WidgetTemplate wt,String uri){
 		JudgeTemplate jt=new JudgeTemplate();
-		jt.addIf("$error", WidgetTemplate.convert(new JSCommand(null).at("text","app.error($error);")));
+		jt.addIf("$error", new WidgetTemplate(new JSCommand(null).at("text","app.error($error);")));
 		jt.addElse(wt);
 		TemplateDefine ret= new TemplateDefine(uri,jt);
 		return ret;
 	}
 	protected TemplateDefine shell(Widget<?> w,String uri){
-		return shell(WidgetTemplate.convert(w),uri);
+		return shell(new WidgetTemplate(w),uri);
 	}
 }

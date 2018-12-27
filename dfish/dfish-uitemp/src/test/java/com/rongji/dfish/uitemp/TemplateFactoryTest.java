@@ -21,9 +21,9 @@ public class TemplateFactoryTest {
 		grid.getPub().setHeight(36).setFocusable(true)
 			.setOn(Tr.EVENT_CLICK, "$.dialog(this).commander.complete(this);$.close(this)");
 		
-		grid.addColumn(GridColumn.text("cateName", GridPanel.WIDTH_REMAIN).setLabel("±êÌâ")
+		grid.addColumn(GridColumn.text("cateName", GridPanel.WIDTH_REMAIN).setLabel("ï¿½ï¿½ï¿½ï¿½")
 				.setHighlight(new Highlight().setKeycls("f-keyword").setMatchlength(2)));//FIXME nobr
-		grid.addColumn(GridColumn.text("cateOrder", "80").setLabel("ÅÅÐò")
+		grid.addColumn(GridColumn.text("cateOrder", "80").setLabel("ï¿½ï¿½ï¿½ï¿½")
 				.setAlign(GridColumn.ALIGN_RIGHT));
 		
 		
@@ -32,12 +32,12 @@ public class TemplateFactoryTest {
 		pageBar.setBtncount(5).setAlign(PageBar.ALIGN_RIGHT).setTarget("f_grid");
 		
 		
-		WidgetTemplate w=WidgetTemplate.convert(vert);
+		WidgetTemplate w=new WidgetTemplate(vert);
 		WidgetTemplate gridTemp=w.findById("f_grid");
 		
 		WidgetTemplate tbodyTemp=gridTemp.createSubWidgetTemp("tbody");
 		tbodyTemp.setAtProp("rows", "f_grid");
-		//ÒÔÉÏÁ½¾äÓÐ¸ö¼òµ¥Ð´·¨ÈçÏÂ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¸ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //		gridTemp.setPropx("tbody.@rows","$data");
 		
 		System.out.println(w);

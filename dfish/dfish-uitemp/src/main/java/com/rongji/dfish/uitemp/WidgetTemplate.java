@@ -27,8 +27,14 @@ public class WidgetTemplate extends AbstractTemplate{
 	
 	private static final long serialVersionUID = 8524310739981005847L;
 
-	protected WidgetTemplate(){
-		this.json=new JSONObject(true);
+	public  WidgetTemplate(){
+		this(new JSONObject(true));
+	}
+	public  WidgetTemplate(JsonObject jo){
+		this(JSON.parseObject(jo.toString(),Feature.OrderedField));
+	}
+	public  WidgetTemplate(String json){
+		this(JSON.parseObject(json,Feature.OrderedField));
 	}
 	/**
 	 * 指定JSONObject的实现
@@ -38,15 +44,7 @@ public class WidgetTemplate extends AbstractTemplate{
 		//一般来说现在这个json 必须是JSONObject类型
 		this.json=json;
 	}
-	/**
-	 * 将一个widget 转化为template
-	 * @param w Widget
-	 * @return template
-	 */
-	public static WidgetTemplate convert(JsonObject j){
-		JSONObject json=JSON.parseObject(j.toString(),Feature.OrderedField);
-		return new WidgetTemplate(json);
-	}
+
 	/**
 	 * 根据ID 获得字节点的Template
 	 * @param id String
@@ -135,46 +133,75 @@ public class WidgetTemplate extends AbstractTemplate{
 	
 	/**
 	 * 设置属性 
-	 * @param key String
+	 * @param prop String
 	 * @param value 一般 为 String / Integer / Double / Boolean
 	 * @return this
 	 */
-	public WidgetTemplate setProp(String key, Object value) {
-		((JSONObject)json).put(key, value);
+	public WidgetTemplate setProp(String prop, Object value) {
+		((JSONObject)json).put(prop, value);
 		return this;
 	}
 	
 	/**
 	 * 删除属性 
-	 * @param key String
+	 * @param prop String
 	 * @return this
 	 */
-	public WidgetTemplate removeProp(String key, Object value) {
+	public WidgetTemplate removeProp(String key) {
 		((JSONObject)json).remove(key);
 		return this;
 	}
 	/**
 	 * 设置@属性 带@的属性表示这个值是动态获取的。
-	 * @param key String
-	 * @param value 一般 为 String / Integer / Double / Boolean
+	 * @param prop String
+	 * @param expr JS表达
 	 * @return this
-	 * @see WidgetTemplate#setProp(String, Object)
 	 */
-	public WidgetTemplate at(String key, Object value) {
-		return setProp("@"+key,value);
+	public WidgetTemplate at(String prop, String expr) {
+		return setProp("@"+prop,expr);
+	}
+	/**
+	 * 设置@属性 带@的属性表示这个值是动态获取的。
+	 * @param prop String
+	 * @param temp 允许是 一个完整的对象，但一般常用的是include，否则完全可以在子节点中使用@
+	 * @return this
+	 */
+	public WidgetTemplate at(String prop, DFishTemplate temp) {
+		return setProp("@"+prop,temp);
 	}
 	
 	@Deprecated
-	public WidgetTemplate setAtProp(String key, Object value) {
-		return setProp("@"+key,value);
+	public WidgetTemplate setAtProp(String prop, String expr) {
+		return setProp("@"+prop,expr);
 	}
 	
 	/**
 	 * 取得属性值
-	 * @param key String
+	 * @param prop String
 	 * @return value 一般 为 String / Integer / Double / Boolean
 	 */
-	public Object getProp(String key) {
-		return ((JSONObject)json).get(key);
+	public Object getProp(String prop) {
+		return ((JSONObject)json).get(prop);
 	}
+	
+	public WidgetTemplate addFor(String prop,String dataExpr,DFishTemplate temp,String itemName,String indexName){
+		String propFullName=null;
+		if(indexName==null||indexName.equals("")){
+			propFullName= "@"+prop+":w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
+		}else{
+			propFullName= "@"+prop+":w-for($"+itemName+" in ("+dataExpr+"))";
+		}
+		return this.at(propFullName, temp);
+	}
+	/**
+	 * 相当于itemName ="item",indexName=null 来创建这个循环。
+	 * 后续表达式中，则必须使用 $item来取值
+	 * @param prop String
+	 * @param dataExpr String
+	 * @see ForTemplate#ForTemplate(String, String, DFishTemplate, String, String)
+	 */
+	public WidgetTemplate addFor(String prop,String dataExpr,DFishTemplate temp){
+		return addFor(prop,dataExpr,temp,"item",null);
+	}
+	
 }

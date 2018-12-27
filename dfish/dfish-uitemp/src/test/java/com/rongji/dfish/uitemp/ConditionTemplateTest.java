@@ -22,7 +22,7 @@ public class ConditionTemplateTest {
 	private static DFishTemplate getDefine() {
 		String uri="t/cms/test";
 		JudgeTemplate jt=new JudgeTemplate();
-		jt.addIf("@w-if($error)", WidgetTemplate.convert(new JSCommand(null)).setAtProp("text","app.error($error);"));
+		jt.addIf("@w-if($error)", new WidgetTemplate(new JSCommand(null)).setAtProp("text","app.error($error);"));
 		jt.addElse(getWidgetTemplate());
 		TemplateDefine ret= new TemplateDefine(uri,jt);
 		return ret;
@@ -50,20 +50,20 @@ public class ConditionTemplateTest {
 		hg1.add(new Spinner("hours","小时数",null,0,999,1),"60");
 		hg1.add(new Html("小时"),"-1");
 
-		return  WidgetTemplate.convert(view);
+		return  new WidgetTemplate(view);
 	}
 	private static DFishTemplate getFor() {
-		WidgetTemplate leafTmp=WidgetTemplate.convert(new Leaf())
+		WidgetTemplate leafTmp=new WidgetTemplate(new Leaf())
 				.setAtProp("text", "$item.name");
-		return new ForTemplate("nodes", "data").setNode(leafTmp);
+		return new WidgetTemplate ().addFor("nodes", "$data",leafTmp);
 	}
 
 	private static DFishTemplate getIf() {
-		WidgetTemplate textTmp=WidgetTemplate.convert(new Text("userName","",null))
+		WidgetTemplate textTmp=new WidgetTemplate(new Text("userName","",null))
 				.setAtProp("value", "$data.name");
-		WidgetTemplate roTmp=WidgetTemplate.convert(new Text("userName","",null).setReadonly(true))
+		WidgetTemplate roTmp=new WidgetTemplate(new Text("userName","",null).setReadonly(true))
 				.setAtProp("value", "$data.name");
-		WidgetTemplate htmTmp=WidgetTemplate.convert(new Html(null))
+		WidgetTemplate htmTmp=new WidgetTemplate(new Html(null))
 				.setAtProp("text", "$data.name");
 		JudgeTemplate judge=new JudgeTemplate()
 				.addIf("$data.readonly==0", textTmp)

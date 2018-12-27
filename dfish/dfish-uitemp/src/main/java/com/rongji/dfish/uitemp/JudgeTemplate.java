@@ -1,8 +1,6 @@
 package com.rongji.dfish.uitemp;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.dfish.ui.form.Text;
-import com.rongji.dfish.ui.widget.Html;
 
 /**
  *JudgeTemplate为 判断模板
