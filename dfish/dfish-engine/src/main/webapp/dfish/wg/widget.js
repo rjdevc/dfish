@@ -5846,7 +5846,7 @@ XBox = define.widget( 'xbox', {
 				(o[ i ].checked || (v && $.idsAny( v, o[ i ].value ))) && this._sel.push( o[ i ] );
 			}
 			if( o.length ) {
-				//! this._sel.length && this._sel.push( o[ 0 ] );
+				! this._sel.length && this.attr( 'defaultchecked' ) !== F && this._sel.push( o[ 0 ] );
 				var i = this._sel.length, s = [];
 				while ( i -- ) s.push( this._sel[ i ].value );
 				x.value = s.join(); // 设一下value，给 isModified() 用
@@ -5931,8 +5931,13 @@ XBox = define.widget( 'xbox', {
 		choose: function( a, e ) {
 			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.options[ d.attr( '_i' ) ].value,
 				s = d.hasClass( 'z-on' );
-			! this.x.multiple && d.siblings().removeClass( 'z-on' );
 			d.toggleClass( 'z-on' );
+			if ( ! this.x.multiple ) {
+				d.siblings().removeClass( 'z-on' );
+				if ( this.attr( 'defaultchecked' ) !== F && s && ! this.x.options[ 0 ].value ) {
+					(d = d.siblings().first()).addClass( 'z-on' );
+				}
+			}
 			this.val( d );
 			! this.x.multiple && this._dropper.close();
 		},
