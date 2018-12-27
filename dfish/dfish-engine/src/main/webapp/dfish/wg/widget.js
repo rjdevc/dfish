@@ -3649,7 +3649,7 @@ Dialog = define.widget( 'dialog', {
 	}
 } ),
 _operexe = function( x, g, a ) {
-	return x && (typeof x === _OBJ ? g.exec( x, a ) : g.formatJS( x ));
+	return x && (typeof x === _OBJ ? g.exec( x, a ) : typeof x === _FUN ? x.apply( g, a || [] ) : g.formatJS( x ));
 },
 /* `alert/button` */
 AlertButton = define.widget( 'alert/button', {
