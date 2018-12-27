@@ -191,7 +191,7 @@ public class WidgetTemplate extends AbstractTemplate{
 		}else{
 			propFullName= "@"+prop+":w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
 		}
-		return this.at(propFullName, temp);
+		return this.setProp(propFullName, temp);
 	}
 	/**
 	 * 相当于itemName ="item",indexName=null 来创建这个循环。
