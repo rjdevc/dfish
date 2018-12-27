@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.Command;
+import com.rongji.dfish.ui.LazyLoad;
 
 /**
  * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link Combobox} {@link Linkbox}和{@link Onlinebox}
@@ -8,12 +9,13 @@ import com.rongji.dfish.ui.Command;
  *
  * @param <T> 当前对象类型
  */
-public abstract class SuggestionBox<T extends SuggestionBox<T>> extends AbstractInput<T,String> {
+public abstract class SuggestionBox<T extends SuggestionBox<T>> extends AbstractInput<T,String> implements LazyLoad<T>{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3727695759981575245L;
 	private String src;
+	private String template;
 //	private Boolean suggest;
 	private Boolean multiple;
 	private Boolean nobr;
@@ -126,6 +128,17 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	@SuppressWarnings("unchecked")
     public T setSrc(String src) {
 		this.src = src;
+		return (T) this;
+	}
+	
+	public String getTemplate() {
+		return template;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+    public T setTemplate(String template) {
+		this.template = template;
 		return (T) this;
 	}
 //	/**

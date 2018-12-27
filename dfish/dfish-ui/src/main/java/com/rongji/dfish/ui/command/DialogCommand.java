@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.AbstractDialog;
 import com.rongji.dfish.ui.Command;
+import com.rongji.dfish.ui.LazyLoad;
 
 /**
  * 该命令用于打开一个对话框(Dialog)
@@ -10,7 +11,7 @@ import com.rongji.dfish.ui.Command;
  * @version 1.0
  * @since XMLTMPL 2.0
  */
-public class DialogCommand extends AbstractDialog<DialogCommand> implements Command<DialogCommand>  {
+public class DialogCommand extends AbstractDialog<DialogCommand> implements Command<DialogCommand>,LazyLoad<DialogCommand> {
 	/**
 	 * 
 	 */

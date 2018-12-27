@@ -2,6 +2,8 @@ package com.rongji.dfish.ui.form;
 
 import java.util.List;
 
+import com.rongji.dfish.ui.LazyLoad;
+
 
 
 /**
@@ -10,11 +12,13 @@ import java.util.List;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Xbox extends AbstractOptionsHolder<Xbox, Object> {
+public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements LazyLoad<Xbox> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -953562902873398616L;
+	private String src;
+	private String template;
 	private Boolean transparent;
 	private String placeholder;
 	private Boolean multiple;
@@ -87,6 +91,28 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> {
 	 */
 	public Xbox setMultiple(Boolean multiple) {
 		this.multiple = multiple;
+		return this;
+	}
+
+	@Override
+	public String getSrc() {
+		return src;
+	}
+
+	@Override
+	public Xbox setSrc(String src) {
+		this.src=src;
+		return this;
+	}
+
+	@Override
+	public String getTemplate() {
+		return template;
+	}
+
+	@Override
+	public Xbox setTemplate(String template) {
+		this.template=template;
 		return this;
 	}
 }

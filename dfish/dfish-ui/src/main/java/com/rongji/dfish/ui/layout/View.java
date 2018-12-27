@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.rongji.dfish.ui.AbstractView;
+import com.rongji.dfish.ui.LazyLoad;
 import com.rongji.dfish.ui.widget.DialogTemplate;
 
 
@@ -12,7 +13,7 @@ import com.rongji.dfish.ui.widget.DialogTemplate;
  * @author DFish Team
  *
  */
-public class View extends AbstractView<View> {
+public class View extends AbstractView<View> implements LazyLoad<View>{
 	private static final long serialVersionUID = 8815207749140104383L;
 
 	/**
@@ -57,18 +58,11 @@ public class View extends AbstractView<View> {
 //		this.cache = cache;
 //		return this;
 //	}
-	/**
-	 * template 的名字
-	 * @return template
-	 */
+
 	public String getTemplate() {
 		return template;
 	}
-	/**
-	 * template 的名字
-	 * @param template name
-	 * @return 本身，这样可以继续设置其他属性
-	 */
+
 	public View setTemplate(String template) {
 		this.template = template;
 		return this;

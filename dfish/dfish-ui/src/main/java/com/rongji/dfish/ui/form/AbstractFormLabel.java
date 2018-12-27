@@ -15,6 +15,7 @@ public class AbstractFormLabel<T extends AbstractFormLabel<T>> extends AbstractW
 	public String getType() {
 		return null;
 	}
+	
 	public Boolean getEscape() {
 		return this.escape;
 	}

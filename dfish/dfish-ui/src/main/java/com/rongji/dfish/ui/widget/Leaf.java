@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.ui.LazyLoad;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Statusful;
 import com.rongji.dfish.ui.Widget;
@@ -37,7 +38,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @version 2.0
  * @since XMLTMPL 1.0
  */
-public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Leaf,Leaf>, Statusful<Leaf> {
+public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Leaf,Leaf>, Statusful<Leaf>,LazyLoad<Leaf> {
 	private static final long serialVersionUID = -6246121270694425393L;
 	private Boolean focus;
 	private String icon;
@@ -46,6 +47,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
     private Object text;
     private Object tip;
     private String src;
+    private String template;
 //    private Leaf pub;
     private Boolean hidetoggle;
     private AbstractBox<?> box;
@@ -524,6 +526,15 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 	
 	public Leaf setStatus(String status) {
 		this.status = status;
+		return this;
+	}
+	@Override
+	public String getTemplate() {
+		return template;
+	}
+	@Override
+	public Leaf setTemplate(String template) {
+		this.template=template;
 		return this;
 	}
 	

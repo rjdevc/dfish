@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.json.JsonWrapper;
  * @author DFish Team
  *
  */
-public abstract class AbstractJsonObject<T extends AbstractJsonObject<?>> implements JsonObject,TemplateSupport<T>{
+public abstract class AbstractJsonObject<T extends AbstractJsonObject<T>> implements JsonObject,TemplateSupport<T>{
 
 	private static final long serialVersionUID = -2456281685328829918L;
 	//	protected Boolean escape;

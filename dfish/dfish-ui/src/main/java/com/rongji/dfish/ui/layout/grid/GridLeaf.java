@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.layout.grid;
 
 import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.LazyLoad;
 
 /**
  * GridTreeItem 是可折叠表格中的折叠项
@@ -11,13 +12,14 @@ import com.rongji.dfish.ui.AbstractWidget;
  * @author DFish Team
  *
  */
-public class GridLeaf extends AbstractWidget<GridLeaf>{
+public class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridLeaf>{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7465823398383091843L;
 	private String text;
 	private String src;
+	private String template;
 	private String format;
 	
 	public GridLeaf() {
@@ -95,6 +97,17 @@ public class GridLeaf extends AbstractWidget<GridLeaf>{
 	 */
 	public GridLeaf setFormat(String format) {
 		this.format = format;
+		return this;
+	}
+
+	@Override
+	public String getTemplate() {
+		return template;
+	}
+
+	@Override
+	public GridLeaf setTemplate(String template) {
+		this.template=template;
 		return this;
 	}
 	
