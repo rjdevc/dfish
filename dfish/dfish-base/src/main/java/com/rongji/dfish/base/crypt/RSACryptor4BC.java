@@ -1,6 +1,7 @@
 package com.rongji.dfish.base.crypt;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -12,6 +13,7 @@ import java.security.interfaces.RSAPublicKey;
 
 import javax.crypto.Cipher;
 
+import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -132,12 +134,20 @@ public class RSACryptor4BC extends StringCryptor {
 		}
 
 		public byte[] getEncoded() {
-			SubjectPublicKeyInfo subjectpublickeyinfo = new SubjectPublicKeyInfo(
-					new AlgorithmIdentifier(
-							PKCSObjectIdentifiers.rsaEncryption, new DERNull()),
-					(new RSAPublicKeyStructure(getModulus(),
-							getPublicExponent())).getDERObject());
-			return subjectpublickeyinfo.getDEREncoded();
+			byte []b = null;
+			SubjectPublicKeyInfo subjectpublickeyinfo;
+			try {
+				subjectpublickeyinfo = new SubjectPublicKeyInfo(
+						new AlgorithmIdentifier(
+								PKCSObjectIdentifiers.rsaEncryption, new DERNull()),
+						(new RSAPublicKeyStructure(getModulus(),
+								getPublicExponent())).toASN1Primitive());
+				b = subjectpublickeyinfo.getEncoded(ASN1Encoding.DER);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return b;
 		}
 
 		public int hashCode() {
@@ -197,13 +207,21 @@ public class RSACryptor4BC extends StringCryptor {
 		}
 
 		public byte[] getEncoded() {
-			PrivateKeyInfo privatekeyinfo = new PrivateKeyInfo(
-					new AlgorithmIdentifier(
-							PKCSObjectIdentifiers.rsaEncryption, new DERNull()),
-					(new RSAPrivateKeyStructure(getModulus(), ZERO,
-							getPrivateExponent(), ZERO, ZERO, ZERO, ZERO, ZERO))
-							.getDERObject());
-			return privatekeyinfo.getDEREncoded();
+			byte []b = null;
+			PrivateKeyInfo privatekeyinfo;
+			try {
+				privatekeyinfo = new PrivateKeyInfo(
+						new AlgorithmIdentifier(
+								PKCSObjectIdentifiers.rsaEncryption, new DERNull()),
+						(new RSAPrivateKeyStructure(getModulus(), ZERO,
+								getPrivateExponent(), ZERO, ZERO, ZERO, ZERO, ZERO))
+								.toASN1Primitive());
+				b = privatekeyinfo.getEncoded(ASN1Encoding.DER);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return b;
 		}
 
 		public boolean equals(Object obj) {
