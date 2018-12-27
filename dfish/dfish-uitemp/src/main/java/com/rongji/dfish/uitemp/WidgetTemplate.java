@@ -187,9 +187,9 @@ public class WidgetTemplate extends AbstractTemplate{
 	public WidgetTemplate addFor(String prop,String dataExpr,DFishTemplate temp,String itemName,String indexName){
 		String propFullName=null;
 		if(indexName==null||indexName.equals("")){
-			propFullName= "@"+prop+":w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
-		}else{
 			propFullName= "@"+prop+":w-for($"+itemName+" in ("+dataExpr+"))";
+		}else{
+			propFullName= "@"+prop+":w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
 		}
 		return this.at(propFullName, temp);
 	}
