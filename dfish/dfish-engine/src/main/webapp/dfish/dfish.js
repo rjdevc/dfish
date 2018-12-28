@@ -635,7 +635,7 @@ _dateParse = $.dateParse = function( s, f ) {
 	}
 	var b = s.split( '-' );
 	if ( b.length === 1 )
-		s += '-02-01';
+		s += '-01-01';
 	else if ( b.length === 2 )
 		s += '-01';
 	var a = new Date( s.replace( /-/g, '/' ) );

@@ -2125,15 +2125,17 @@ Html = define.widget( 'html', {
 		className: 'w-html',
 		// @a -> text
 		text: function( a ) {
-			var o = this.$( 'vln' ) || this.$( 'cont' ) || this.$();
-			o && (o.innerHTML = $.parseHTML( a, this ));
+			if ( a == N )
+				return this.x.text;
+			var o = this.$( 'cont' ) || this.$();
+			o && (o.innerHTML = this.html_nodes());
 			this.trigger( 'resize' );
 		},
 		thumb: function() {
 			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this.x.thumbwidth ) );
 		},
 		html_text: function() {
-			var t = this.x.text == N ? '' : this.x.text;  //, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this );
+			var t = this.x.text == N ? '' : this.x.text;
 			if ( this.x.format ) {
 				t = _wg_format.call( this, this.x.format, this.x.escape );
 			} else if ( this.x.escape && typeof t === _STR )
@@ -5339,8 +5341,14 @@ _Date = define.widget( 'date', {
 				return ! eval( '"' + $.strQuot( v ) + '"' + (b.comparemode || '==') + '"' + $.strQuot( d ) + '"' );
 			},
 			valid: function( b, v ) {
-				if ( v && ! $.dateValid( v, this.x.format ) )
-					return _form_err.call( this, b, 'time_invalid', [ $.x.min_year, $.x.max_year ] );
+				if ( v ) {
+					var c = v.replace( /\b(\d)\b/g, '0$1' ), d = $.dateParse( c, this.x.format ), y = d.getFullYear(), m = cfg.max_year || 3000, n = cfg.min_year || 1000;
+					if ( y >= m || y <= n )
+						return _form_err.call( this, b, 'time_exceed', [ n, m ] );
+					if ( c != $.dateFormat( d, this.x.format ) ) {
+						return _form_err.call( this, b, 'time_format', [ $.dateFormat( d, this.x.format ) ] );
+					}
+				}
 				if ( b && b.beforenow && v && v > $.dateFormat( new Date(), this.x.format ) )
 					return _form_err.call( this, b, 'beforenow', [ b.beforenow ] );
 				if ( b && b.afternow && v && v < $.dateFormat( new Date(), this.x.format ) )
@@ -5668,9 +5676,8 @@ XBox = define.widget( 'xbox', {
 				x.value = s.join(); // 设一下value，给 isModified() 用
 			}
 		},
-		// @a -> options, b -> index
+		// @a -> options, b -> index[只替换指定的项]
 		setOptions: function( a, b ) {
-			var v = this.val();
 			if ( b != N ) {
 				var o = this.x.options || [];
 				o[ b ] && (o[ b ] = a);
@@ -5678,7 +5685,9 @@ XBox = define.widget( 'xbox', {
 				this.x.options = a;
 			this._dropper && this._dropper.close();
 			this.initOptions( this.x );
-			this.val( v );
+			for ( var i = 0, s = []; i < this._sel.length; i ++ )
+				s.push( this._sel[ i ].value );
+			s.length && this.val( s.join( '' ) );
 		},
 		addOption: function( a, i ) {
 			this.x.options.splice( i == N ? this.x.options.length : i, 0, a );
