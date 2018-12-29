@@ -52,7 +52,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
     private Boolean ellipsis;
     private String format;
     private String status;
-
+    private Boolean line;
 
 	/**
      * 默认构造函数,因为树经常没有下级,但一般有属性,所默认创建属性的list
@@ -524,6 +524,24 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 	
 	public Leaf setStatus(String status) {
 		this.status = status;
+		return this;
+	}
+	
+	/**
+	 * 是否有连线效果。
+	 * @return Boolean
+	 */
+	public Boolean getLine() {
+		return line;
+	}
+
+	/**
+	 * 是否有连线效果。
+	 * @param scroll Boolean
+	 * @return this
+	 */
+	public Leaf setLine(Boolean line) {
+		this.line=line;
 		return this;
 	}
 	

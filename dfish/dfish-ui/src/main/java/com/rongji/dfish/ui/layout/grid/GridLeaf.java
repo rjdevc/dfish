@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.layout.grid;
 
 import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.widget.Leaf;
 
 /**
  * GridTreeItem 是可折叠表格中的折叠项
@@ -19,6 +20,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf>{
 	private String text;
 	private String src;
 	private String format;
+	private Boolean line;
 	
 	public GridLeaf() {
 	    super();
@@ -95,6 +97,24 @@ public class GridLeaf extends AbstractWidget<GridLeaf>{
 	 */
 	public GridLeaf setFormat(String format) {
 		this.format = format;
+		return this;
+	}
+	
+	/**
+	 * 是否有连线效果。
+	 * @return Boolean
+	 */
+	public Boolean getLine() {
+		return line;
+	}
+
+	/**
+	 * 是否有连线效果。
+	 * @param scroll Boolean
+	 * @return this
+	 */
+	public GridLeaf setLine(Boolean line) {
+		this.line=line;
 		return this;
 	}
 	
