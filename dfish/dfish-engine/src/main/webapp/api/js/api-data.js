@@ -2296,6 +2296,7 @@ define( {
       ] },
       { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'open', type: 'Boolean', remark: '是否展开状态。' },
       { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },

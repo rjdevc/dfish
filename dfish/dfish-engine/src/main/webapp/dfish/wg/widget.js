@@ -7140,12 +7140,6 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				break;
 			}
 		},
-		indent: function() {
-			this.level = this.parentNode.level + 1;
-			this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
-			for ( var i = 0; i < this.length; i ++ )
-				this[ i ].indent();
-		},
 		isFolder: function() {
 			return this.length || (this.x.src && !this.loaded) ? T : F;
 		},
@@ -7389,6 +7383,7 @@ Leaf = define.widget( 'leaf', {
 			nodechange: function() {
 				this.fixFolder();
 				Q( '>.w-leaf', this.$( 'c' ) ).removeClass( 'z-first z-last' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
+				this.indent();
 			}
 		}
 	},
@@ -7424,6 +7419,9 @@ Leaf = define.widget( 'leaf', {
 			}
 			return b;
 		},
+		parent: function() {
+			return this.parentNode !== this.rootNode && this.parentNode;
+		},
 		focus: function( a, e ) {
 			this._focus( a, e );
 			a !== F && this.scrollIntoView( 'auto' );
@@ -7440,17 +7438,39 @@ Leaf = define.widget( 'leaf', {
 				this.checkBox( a );
 			}
 		},
+		indent: function( a ) {
+			this.level = this.parentNode.level + 1;
+			if ( this.x.line ) {
+				Q( '._pd,._pdvl', this.$() ).remove();
+				$.before( this.$( 'o' ), this.html_pad() );
+			} else
+				this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
+			for ( var i = 0; i < this.length; i ++ )
+				this[ i ].indent();
+		},
 		isFocus: function() {
 			return this.rootNode.focusNode === this;
-		},
-		toggleFocus: function() {
-			this.focus( ! this.isFocus() );
 		},
 		isOpen: function() {
 			return this.x.open;
 		},
 		isEvent4Box: function( e ) {
 			return this.box && e && e.srcElement && e.srcElement.id === this.box.id + 't';
+		},
+		isBoxChecked: function() {
+			return this.box && this.box.isChecked();
+		},
+		isEllipsis: function() {
+			return this.rootNode.x.ellipsis;
+		},
+		isFirst: function() {
+			return this.nodeIndex === 0;
+		},
+		isLast: function() {
+			return this.nodeIndex === this.parentNode.length - 1;
+		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
 		},
 		scrollIntoView: function( a ) {
 			var n = this;
@@ -7460,9 +7480,6 @@ Leaf = define.widget( 'leaf', {
 		},
 		checkBox: function( a ) {
 			this.box && this.box.click( a == N || a );
-		},
-		isBoxChecked: function() {
-			return this.box && this.box.isChecked();
 		},
 		// triplebox 级联勾选
 		_triple: function() {
@@ -7481,9 +7498,6 @@ Leaf = define.widget( 'leaf', {
 				(b = this[ i ].box) && b.check( a );
 				this[ i ]._tripleAll( a );
 			}
-		},
-		isEllipsis: function() {
-			return this.rootNode.x.ellipsis;
 		},
 		html_icon: function() {
 			var c = (this.x.open && this.length && this.x.openicon) || this.x.icon;
@@ -7505,20 +7519,26 @@ Leaf = define.widget( 'leaf', {
 				t = '<span class=w-leaf-s>' + t + '</span><i class=f-vi></i>';
 			return t;
 		},
-		html_self: function( l ) {
-			var x = this.x, r = this.rootNode, c = this.html_icon(), d = x.data, e = '<i class=f-vi></i>', f = this.level * this._pad_level + this._pad_left, h = this.innerHeight(), s = '';
+		html_pad: function() {
+			for ( var i = 0, b = this._pad_level / 2, e = '', p; i < this.level; i ++ ) {
+				p = (p || this).parent();
+				e = '<i class="' + (! p.parent() || p.isLast() ? '_pd' : '_pdvl') + '" style="margin-left:' + b + 'px;width:' + (b - 1) + 'px;"></i>' + e;
+			}
+			return e;
+		},
+		html_self: function( a ) {
+			var x = this.x, r = this.rootNode, p = this.parent(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', f = (c ? 0 : this.level * this._pad_level) + this._pad_left, h = this.innerHeight(), s = '';
 			if ( x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-leaf-b', bubble: F } );
 				this.box.type === 'triplebox' && this.box.addEvent( 'click', this._triple, this );
 			}
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
-			l == N  && (l = this.length);
-			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === this.parentNode.length - 1 ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || l ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
-				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) +
-				(x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() + '<dt class="w-leaf-a">' +
-				(x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)>' + (x.src || l ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + e + '</b>') +
-				( this.box ? this.box.html() : '' ) + c + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
+			a == N  && (a = this.length);
+			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (! p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() +
+				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
+				( this.box ? this.box.html() : '' ) + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();
@@ -7614,6 +7634,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 		x.src && (this.loaded = !!r.length);
 		x.open == N && (x.open = !x.src || !!r.length);
 		r.leaf = this;
+		this.row = r;
 	},
 	Extend: Leaf,
 	Listener: {
@@ -7646,8 +7667,17 @@ GridLeaf = define.widget( 'grid/leaf', {
 				t.width( t.attr( 'width' ) || '*' );
 			}
 		},
+		isFirst: function() {
+			return this.row.nodeIndex === 0;
+		},
+		isLast: function() {
+			return this.row.nodeIndex === this.row.parentNode.length - 1;
+		},
 		isFolder: function() {
-			return this.tr().length || (this.x.src && !this.loaded) ? T : F;
+			return this.row.length || (this.x.src && !this.loaded) ? T : F;
+		},
+		parent: function() {
+			return this.row.parentNode.leaf;
 		},
 		// leaf接口
 		toggle_nodes: function( a ) {
