@@ -7695,6 +7695,21 @@ GridLeaf = define.widget( 'grid/leaf', {
 			l && Q( r.$() ).after( r.html_nodes() );
 			this.loaded = T;
 		},
+		// leaf接口
+		indent: function( a ) {
+			var p = this.parent();
+			this.level = p ? p.level + 1 : 0;
+			if ( this.x.line ) {
+				Q( '._pd,._pdvl', this.$() ).remove();
+				$.before( this.$( 'o' ), this.html_pad() );
+			} else
+				this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
+			Q( this.$() ).removeClass( 'z-first z-last' );
+			this.isFirst() && $.classAdd( this.$(), 'z-first' );
+			this.isLast() && $.classAdd( this.$(), 'z-last' );
+			for ( var i = 0, l = this.row.length; i < l; i ++ )
+				this.row[ i ].leaf && this.row[ i ].leaf.indent();
+		},
 		html: function() {
 			var r = this.tr(), s = this.html_self( r.length );
 			return this.x.hr ? '<table class=w-hr-table cellspacing=0 cellpadding=0><tr><td>' + s + '<td width=100%><hr class=w-hr-line noshade></table>' : s;
@@ -8014,6 +8029,7 @@ TR = define.widget( 'tr', {
 				if ( this.leaf ) {
 					this.leaf.fixFolder();
 					this.leaf.toggle( this.isOpen() );
+					this.leaf.indent();
 				}
 			},
 			dnd_over: function( e ) {
