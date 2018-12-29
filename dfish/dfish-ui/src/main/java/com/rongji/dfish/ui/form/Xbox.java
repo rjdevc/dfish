@@ -18,6 +18,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> {
 	private Boolean transparent;
 	private String placeholder;
 	private Boolean multiple;
+	private Boolean defaultchecked;
 	/**
 	 * 占位符。当表单没有值时显示的提示文本。
 	 * @return String
@@ -87,6 +88,23 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> {
 	 */
 	public Xbox setMultiple(Boolean multiple) {
 		this.multiple = multiple;
+		return this;
+	}
+	/**
+	 * 当Xbox为勾选模式的时候，第一项要不要默认选中，默认为true
+	 * @return Boolean
+	 */
+	public Boolean getDefaultchecked() {
+		return defaultchecked;
+	}
+
+	/**
+	 *  当Xbox为勾选模式的时候，第一项要不要默认选中，默认为true
+	 * @param defaultchecked Boolean
+	 * @return this
+	 */
+	public Xbox setDefaultchecked(Boolean defaultchecked) {
+		this.defaultchecked=defaultchecked;
 		return this;
 	}
 }
