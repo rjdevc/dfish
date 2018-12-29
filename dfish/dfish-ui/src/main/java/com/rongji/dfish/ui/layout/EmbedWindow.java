@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.form.Xbox;
 
 /**
  * 引入一个独立页面
@@ -21,6 +22,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 //	private Boolean scroll;
 //	private String scrollClass;
 //	private Boolean escape;
+	private Boolean scroll;
 	
 	/**
 	 * 构造函数
@@ -81,6 +83,25 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 	 */
 	public EmbedWindow setSrc(String src) {
 		this.src = src;
+		return this;
+	}
+	
+	
+	/**
+	 * 是否显示滚动条。
+	 * @return Boolean
+	 */
+	public Boolean getScroll() {
+		return scroll;
+	}
+
+	/**
+	 * 是否显示滚动条。
+	 * @param scroll Boolean
+	 * @return this
+	 */
+	public EmbedWindow setScroll(Boolean scroll) {
+		this.scroll=scroll;
 		return this;
 	}
 }
