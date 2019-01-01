@@ -14,10 +14,13 @@ public class CollectionJsonBuilder extends AbstractJsonBuilder {
 		Collection<?> cast=(Collection<?>)o;
 		boolean begin2=true;
 		sb.append('[');
+		int i=0;
 		for(Object item:cast){
 			if(begin2)begin2=false;else sb.append(',');
+			path.push(new PathInfo("["+(i++)+"]",item));
 			J.buildJson(item, sb,path);
-		}
+			path.pop();
+		}	
 		sb.append(']');
 	}
 

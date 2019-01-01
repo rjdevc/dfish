@@ -21,7 +21,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridL
 	private String src;
 	private String template;
 	private String format;
-	
+	private Boolean line;
 	public GridLeaf() {
 	    super();
     }
@@ -110,5 +110,20 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridL
 		this.template=template;
 		return this;
 	}
-	
+	/**
+	 * 是否显示树结构的辅助线
+	 * @return Boolean
+	 */
+    public Boolean getLine() {
+		return line;
+	}
+    /**
+     * 是否显示树结构的辅助线
+     * @param line Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+	public GridLeaf setLine(Boolean line) {
+		this.line = line;
+		return this;
+	}
 }

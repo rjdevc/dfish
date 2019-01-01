@@ -1,16 +1,18 @@
 package com.rongji.dfish.ui.json;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Stack;
 
 import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.Scrollable;
-import com.rongji.dfish.ui.TemplateSupport;
 import com.rongji.dfish.ui.Valignable;
 import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.form.LabelRow;
 /**
  * WidgetJsonBuilder 为加速DFish3的json构建而设计
  * 因为JSON构建多为类反射构建，并且可能会严格检查每个属性的信息性能相对较差。
@@ -100,29 +102,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 						return ((Widget<?>)w).getWmin();
 					}});
 			}else if("type".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetPropAppender("type"){
-					public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
-						Widget<?>w=(Widget<?>)o;
-						String type=w.getType();
-						if(type!=null&&!type.equals("")){
-							boolean show=true;
-							if(path.size()>0){
-								PathInfo parentInfo=path.peek();
-								show=!"pub".equals(parentInfo.getPropName())&&
-										!"options".equals(parentInfo.getPropName())&&
-										!"hiddens".equals(parentInfo.getPropName())&&
-										!("buttonbar".equals(parentInfo.getPropName())&&"button".equals(type))&&
-										!("album".equals(parentInfo.getPropName())&&"img".equals(type));
-							}
-							if(show){
-								if(begin){begin=false;}else{sb.append(',');}
-								sb.append("\"type\":\"");
-								sb.append(type);
-								sb.append('"');
-							}
-						}
-						return begin;
-					}});
+				methods.set(i, new WidgetTypeAppender("type"));
 			}else if("on".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetPropAppender("on"){
 					public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
@@ -219,7 +199,191 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		}
 
 	}
+	public static class  WidgetTypeAppender extends WidgetPropAppender{
+		public WidgetTypeAppender(String propName){
+			super(propName);
+			//加载信息type 可以省略的信息
+			String hideTypeConfig=null;
+			try{
+				ResourceBundle rb=ResourceBundle.getBundle("com.rongji.dfish.ui.json.WidgetJsonBuilder");
+				hideTypeConfig=rb.getString("hideType");
+				J.LOG.info("hideType config = "+hideTypeConfig);
+			}catch(Exception ex){
+				J.LOG.warn("can NOT load hideType config");
+			}
+			init(hideTypeConfig);
+		}
+		
+		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
+			Widget<?>w=(Widget<?>)o;
+			String type=w.getType();
+			if(type!=null&&!type.equals("")){
+				if(!match(path)){
+					if(begin){begin=false;}else{sb.append(',');}
+					sb.append("\"type\":\"");
+					sb.append(type);
+					sb.append('"');
+				}
+			}
+			return begin;
+		}
 
+		public  static final String ANY="*";
+		public  static final String PATH_PREFIX="path:";
+		public  static final String TYPE_PREFIX="type:";
+		private Node root=new AllMatchNode(ANY);
+		public void init(String config){
+			if(config==null){
+				return;
+			}
+			//将该结构编译成用于判断的中间结构
+			for(String line:config.split("[;]")){
+				//多条规则
+				Node parent=root;
+				String[] exprs=line.split("[,]");
+				for(int index=exprs.length-1;index>=0;index--){
+					String expr=exprs[index];
+					if(expr==null||expr.equals("")){
+						continue;
+					}
+					Node node=null;
+					boolean find=false;
+					if(parent.subs!=null){
+						for(Node n:parent.subs){
+							if(expr.equals(n.expr)){
+								node=n;
+								find=true;
+							}
+						}
+					}
+					if(!find){
+						if(ANY.equals(expr)){
+							node=new AllMatchNode(ANY);
+						}else if(expr.startsWith(PATH_PREFIX)){
+							node=new PathMatchNode(expr);
+						}else if(expr.startsWith(TYPE_PREFIX)){
+							node=new TypeMatchNode(expr);
+						}
+						parent.addSubNode(node);
+					}
+					parent=node;
+					if(!node.end){
+						node.end= index==0;
+					}
+				}
+			}
+		}
+		public boolean match(Stack<PathInfo> path){
+			if(root.subs==null){
+				return false;
+			}
+			for(Node sub:root.subs){
+				if(match(sub,path,path.size()-1)){
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		private boolean match(Node node, Stack<PathInfo> path, int index) {
+			PathInfo p=path.get(index);
+			if(!node.match(p)){
+				return false;
+			}
+			if(node.end){
+				return true;
+			}
+			index--;
+			if(index<0){
+				return false;
+			}
+			for(Node sub:node.subs){
+				if(match(sub,path,index)){
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static abstract class Node {
+			protected String expr;
+			protected List<Node> subs;
+			protected boolean end;
+			public abstract boolean match(PathInfo pathInfo);
+			public Node(String expr){
+				this.expr=expr;
+			}
+			public void addSubNode(Node sub){
+				if (subs==null){
+					subs=new ArrayList<Node>();
+				}
+				subs.add(sub);
+			}
+
+			public String toString(){
+				return expr;
+			}
+		}
+		public static class AllMatchNode extends Node{
+			public boolean match(PathInfo pathInfo){
+				return true;
+			}
+			public AllMatchNode(String expr){
+				super(expr);
+			}
+		}
+		public static class TypeMatchNode extends Node{
+			private String type;
+			public boolean match(PathInfo pathInfo){
+				if(pathInfo.getPropValue() instanceof JsonObject){
+					String pType=((JsonObject)pathInfo.getPropValue()).getType();
+					return type.equals(pType);
+				}
+				return false;
+			}
+			public TypeMatchNode(String expr){
+				super(expr);
+				this.type=expr.substring(5);
+			}
+		}
+		public static class PathMatchNode extends Node{
+			private String path;
+			public boolean match(PathInfo pathInfo){
+				String pPath=pathInfo.getPropName();
+				return path.equals(pPath);
+			}
+			public PathMatchNode(String expr){
+				super(expr);
+				this.path=expr.substring(5);
+			}
+		}
+//		private boolean showType(Stack<PathInfo> path) {
+//			if(path.size()>0){
+//				PathInfo curInfo=path.peek();
+//				boolean show= !"pub".equals(curInfo.getPropName());
+//				if(show&&path.size()>1){
+//					PathInfo theInfo=path.get(path.size()-2);
+//					show=!"options".equals(theInfo.getPropName())&&
+//						!"hiddens".equals(theInfo.getPropName());
+//				}
+//				if (show&&path.size()>2){
+//					PathInfo theInfo=path.get(path.size()-3);
+//					if(theInfo.getPropValue() instanceof JsonObject
+//							&& curInfo.getPropValue() instanceof JsonObject){
+//						String theType=((JsonObject)(theInfo.getPropValue())).getType();
+//						String curType=((JsonObject)(curInfo.getPropValue())).getType();
+//						show= !("buttonbar".equals(theType)&&"button".equals(curType))&&
+//								!("button".equals(theType)&&"button".equals(curType))&&
+//								!("album".equals(theType)&&"img".equals(curType))&&
+//								!("leaf".equals(theType)&&"leaf".equals(curType))&&
+//								!("tree".equals(theType)&&"leaf".equals(curType));
+//					}
+//				}
+//				return show;
+//			}
+//			return true;
+//		}
+	}
 	public static abstract class WidgetPropAppender implements JsonPropAppender{
 		public WidgetPropAppender(String propName){
 			this.propName=propName;

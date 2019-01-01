@@ -522,7 +522,10 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	/**
 	 * 文本超出可视范围部分以省略号显示，默认为true
 	 * @return Boolean
+	 * @deprecated 在pub中设置该值
+	 * @see #getPub()
 	 */
+	@Deprecated
     public Boolean getEllipsis() {
 		return ellipsis;
 	}
@@ -530,7 +533,10 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
      * 文本超出可视范围部分以省略号显示，默认为true
      * @param ellipsis Boolean
      * @return 本身，这样可以继续设置其他属性
+     * @deprecated 在pub中设置该值
+     * @see #getPub()
      */
+    @Deprecated
 	public TreePanel setEllipsis(Boolean ellipsis) {
 		this.ellipsis = ellipsis;
 		return this;

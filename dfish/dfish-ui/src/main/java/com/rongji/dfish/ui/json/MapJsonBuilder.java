@@ -30,7 +30,9 @@ public class MapJsonBuilder extends AbstractJsonBuilder{
 			sb.append('"');
 			sb.append(':');
 			int sbBeginAppend=sb.length();
+			path.push(new PathInfo(key,value));
 			J.buildJson(value, sb,path);
+			path.pop();
 			if((sb.length()-sbBeginAppend==2&&
 					sb.charAt(sbBeginAppend)=='{'&&sb.charAt(sbBeginAppend+1)=='}')){
 				//回滚

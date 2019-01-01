@@ -9,8 +9,8 @@ public class LeafTest extends  DFishUITestCase{
 		Leaf shell=new Leaf();
 		Leaf root=new Leaf("root","根节点").setSrc("tree/open?id=root");
 		shell.add(root);
-		shell.add(new Leaf("350000","福建省"));
-		shell.add(new Leaf("350100","福州市"));
+		root.add(new Leaf("350000","福建省"));
+		root.add(new Leaf("350100","福州市"));
 		return shell;
 	}
 

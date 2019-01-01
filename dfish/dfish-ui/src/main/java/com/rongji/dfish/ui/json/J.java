@@ -156,6 +156,7 @@ public class J {
 	public static String toJson(Object o){
 		StringBuilder sb=new StringBuilder();
 		Stack<PathInfo> path =new Stack<PathInfo>();
+		path.add(new PathInfo(null,o));
 		buildJson(o, sb, path);
 		path.clear();
 		return sb.toString();

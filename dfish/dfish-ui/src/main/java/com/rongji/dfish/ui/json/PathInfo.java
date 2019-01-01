@@ -1,5 +1,12 @@
 package com.rongji.dfish.ui.json;
 
+import java.util.Collection;
+
+import com.rongji.dfish.ui.FormElement;
+import com.rongji.dfish.ui.HasId;
+import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.JsonObject;
+
 /**
  * 用于记录构建JSON过程中的路径
  * @author Dfish team
@@ -44,5 +51,62 @@ public class PathInfo {
 	 */
 	public void setPropValue(Object propValue) {
 		this.propValue = propValue;
+	}
+	public String toString(){
+		StringBuilder sb=new StringBuilder();
+		
+		sb.append("{\"");
+		if(propName!=null){
+			sb.append("path\":\"").append(propName).append("\", \"");
+		}
+		sb.append("obj\":");
+		if(propValue==null){
+			sb.append("null");
+		}else if(propValue instanceof Collection){
+			sb.append("\"Arr[size=");
+			sb.append(((Collection) propValue).size());
+			sb.append("]\"");
+		}else if(propValue instanceof Object[]){
+			sb.append("\"Arr[leng=");
+			sb.append(((Object[]) propValue).length);
+			sb.append("]\"");
+		}else if(propValue instanceof JsonObject){
+			sb.append("\"Widget[type=");
+			sb.append(((JsonObject) propValue).getType());
+			boolean showed=false;
+			if(!showed){
+				if(propValue instanceof HasId){
+					String id=((HasId) propValue).getId();
+					if(id!=null&&!id.equals("")){
+						showed=true;
+						sb.append(",id=");
+						sb.append(id);
+					}
+				}
+			}
+			if(!showed){
+				if(propValue instanceof FormElement){
+					String name=((FormElement) propValue).getName();
+					if(name!=null&&!name.equals("")){
+						showed=true;
+						sb.append(",name=");
+						sb.append(name);
+					}
+				}
+			}
+			if(!showed){
+				if(propValue instanceof HasText){
+					String text=((HasText) propValue).getText();
+					if(text!=null&&!text.equals("")){
+						showed=true;
+						sb.append(",text=");
+						sb.append(text);
+					}
+				}
+			}
+			sb.append("]\"");
+		}
+		sb.append('}');
+		return sb.toString();
 	}
 }

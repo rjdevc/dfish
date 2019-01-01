@@ -2,13 +2,14 @@ package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.Scrollable;
 
 /**
  * 引入一个独立页面
  * @author DFish Team
  *
  */
-public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<EmbedWindow>{
+public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollable<EmbedWindow>, HasText<EmbedWindow>{
 
 /**
 	 * 
@@ -18,8 +19,8 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 //	private String valign;
 	private String text;
 	private String src;
-//	private Boolean scroll;
-//	private String scrollClass;
+	private Boolean scroll;
+	private String scrollClass;
 //	private Boolean escape;
 	
 	/**
@@ -81,6 +82,20 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 	 */
 	public EmbedWindow setSrc(String src) {
 		this.src = src;
+		return this;
+	}
+	public Boolean getScroll() {
+		return scroll;
+	}
+	public EmbedWindow setScroll(Boolean scroll) {
+		this.scroll = scroll;
+		return this;
+	}
+	public String getScrollClass() {
+		return scrollClass;
+	}
+	public EmbedWindow setScrollClass(String scrollClass) {
+		this.scrollClass = scrollClass;
 		return this;
 	}
 }

@@ -52,6 +52,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
     private Boolean hidetoggle;
     private AbstractBox<?> box;
     private Boolean ellipsis;
+    private Boolean line;
     private String format;
     private String status;
 
@@ -205,7 +206,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 
 	
 	public String getType() {
-		return null;//"widget/tree";
+		return "leaf";//"widget/tree";
 	}
 
 
@@ -383,9 +384,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 	/**
 	 * 文本超出可视范围部分以省略号显示，默认为true
 	 * @return Boolean
-	 * @deprecated 在TreePanel中支持该参数，Leaf中移除
 	 */
-	@Deprecated
     public Boolean getEllipsis() {
 		return ellipsis;
 	}
@@ -393,11 +392,25 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
      * 文本超出可视范围部分以省略号显示，默认为true
      * @param ellipsis Boolean
      * @return 本身，这样可以继续设置其他属性
-     * @deprecated 在TreePanel中支持该参数，Leaf中移除
      */
-    @Deprecated
 	public Leaf setEllipsis(Boolean ellipsis) {
 		this.ellipsis = ellipsis;
+		return this;
+	}
+	/**
+	 * 是否显示树结构的辅助线
+	 * @return Boolean
+	 */
+    public Boolean getLine() {
+		return line;
+	}
+    /**
+     * 是否显示树结构的辅助线
+     * @param line Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+	public Leaf setLine(Boolean line) {
+		this.line = line;
 		return this;
 	}
 	@Override
