@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish', version = '3.1.7',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.1.7',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -29,24 +29,23 @@ $ = dfish = function( a ) {
 },
 
 //获取dfish所在目录
-getPath = function(){
-	var jsPath = location.href;
-	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
-	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
+getPath = function() {
+	var u = location.href.substring( 0, location.href.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	_path = u.substring( 0, u.lastIndexOf( '/' ) + 1 ) || './';
 	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
 		_path = _urlLoc( location.pathname, _path );
 	}
-	var jsPath = doc.currentScript ? doc.currentScript.src : function(){
-		var js = doc.scripts, last = js.length - 1, src;
-		for ( var i = last; i > 0; i -- ){
+	u = doc.currentScript ? doc.currentScript.src : (function() {
+		var js = doc.scripts, l = js.length - 1, src;
+		for ( var i = l; i > 0; i -- ) {
 			if( js[ i ].readyState === 'interactive' ) {
 				src = js[ i ].src;
        			break;
 			}
 		}
-		return src || js[ last ].src;
-	}();
-	_lib = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
+		return src || js[ l ].src;
+	})();
+	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
 },
 
 // 浏览器信息
@@ -1781,9 +1780,11 @@ function _initEnv() {
 	$.scrollIntoView = w.scrollIntoView;
 	
 	if ( !(noGlobal || _cfg.no_conflict) ) {
-		win.$  = win.dfish  = $;
 		win.Q  = win.jQuery = _jq;
 		win.VM = $.vm;
+	} else {
+		if ( _$ )
+			win.$ = _$;
 	}
 	// ie 需要定义 xmlns:d="urn:dfish" 用以解析 <d:wg> 标签
 	doc.namespaces && doc.namespaces.add( 'd', 'urn:dfish' );
@@ -2252,8 +2253,9 @@ _merge( $, {
 	}
 } );
 
-if ( ! noGlobal )
-	win.dfish = dfish;
+if ( ! noGlobal ) {
+	win.dfish = win.$ = dfish;
+}
 
 getPath();
 

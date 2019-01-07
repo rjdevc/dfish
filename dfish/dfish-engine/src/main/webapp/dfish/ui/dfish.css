@@ -173,27 +173,26 @@
 .w-leaf-o .f-arw{position:relative;z-index:1}
 .w-leaf-o:hover .f-arw-r1{border-left-color:#1cc4f7}
 .w-leaf-o:hover .f-arw-b1{border-top-color:#1cc4f7}
-.w-leaf-o .f-arw,.w-leaf .w-form{font-style:normal}
 .w-leaf-i{position:relative;display:inline-block;height:100%;min-width:20px;margin-right:3px;text-align:center;vertical-align:middle;*width:20px}
 .w-leaf.z-loading .w-leaf-i ._ico{opacity:.5}
 .w-leaf.z-ds{color:#999}
 .w-leaf.z-notg .w-leaf-o .f-arw{display:none}
 .w-leaf.z-folder .w-leaf-o,.w-leaf.z-line .w-leaf-o{visibility:visible}
 .w-leaf ._ld{position:absolute;left:0;width:100%;height:100%;background:url(g/loading-cir.gif) no-repeat 50% 50%}
-.w-leaf-t{height:100%;font-style:normal}
+.w-leaf-t{height:100%;font-style:normal;vertical-align:middle}
 .w-leaf.f-nobr .w-leaf-t,.w-leaf.f-nobr .w-leaf-s{display:inline-block;vertical-align:middle}
 .w-leaf.f-omit .w-leaf-a{display:inline}
-.w-leaf-cont{display:none}
-.w-leaf-cont.z-open{display:block}
-.w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}
-.w-leaf ._pd,.w-leaf ._pdvl{height:100%;border-left:1px dotted #999;display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
-.w-leaf ._pd{border-left-color:transparent}
+.w-leaf ._pd{height:100%;position:relative;display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
+.w-leaf ._pd ._pl{position:absolute;top:0;bottom:1px;left:0;border-left:1px dotted #999}
 .w-leaf ._vl{position:absolute;top:0;bottom:1px;right:0;width:50%;border-left:1px dotted #999}
 .w-leaf ._hl{position:absolute;top:0;bottom:50%;right:-1px;width:50%;border-bottom:1px dotted #999}
 .w-leaf.z-root ._vl,.w-leaf.z-root ._hl{display:none}
 .w-leaf.z-last ._vl{bottom:50%}
-.w-leaf.z-line .w-leaf-o .f-arw{border:0;width:9px;height:9px;background:url(g/i.png) no-repeat -76px -180px;margin-top:-1px;margin-left:-1px;}
+.w-leaf.z-line .w-leaf-o .f-arw{border:0;width:9px;height:9px;background:url(g/i.png) no-repeat -76px -180px;margin-left:-1px;}
 .w-leaf.z-line .w-leaf-o .f-arw-r1{background-position:-111px -180px;margin-left:0}
+.w-leaf-cont{display:none}
+.w-leaf-cont.z-open{display:block}
+.w-leaf-node{display:inline-block;height:100%;*display:inline;*zoom:1}
 
 
 .w-html{overflow:hidden}

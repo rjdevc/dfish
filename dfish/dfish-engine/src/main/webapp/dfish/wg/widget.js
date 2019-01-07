@@ -2288,6 +2288,8 @@ Buttonbar = define.widget( 'buttonbar', {
 				Horz.Listener.body.nodechange.apply( this, arguments );
 				Q( '.w-button', this.$() ).removeClass( 'z-last z-first' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
+				this.$( 'vi' ) && ! this.length && $.remove( this.$( 'vi' ) );
+				! this.$( 'vi' ) && this.length && Q( this.$() ).prepend( '<i id=' + this.id + 'vi class=f-vi-' + this.attr( 'valign' ) + '></i>' );
 				if ( this.x.space > 0 ) {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
@@ -2370,8 +2372,8 @@ Buttonbar = define.widget( 'buttonbar', {
 			}
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
-			var f = ie7 && this.isScrollable() ? '' : '<i class=f-vi-' + v + '></i>';
-			return ( v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>' : s) : s ) + '<div class=w-buttonbar-line></div>';
+			var f = (ie7 && this.isScrollable()) || ! this.length ? '' : '<i id=' + this.id + 'vi class=f-vi-' + v + '></i>';
+			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-buttonbar-line></div>';
 		}
 	}
 } ),
@@ -2389,6 +2391,16 @@ Button = define.widget( 'button', {
 			ready: function() {
 				this.x.target && this._ustag();
 				this.x.maxwidth && this.fixsize();
+			},
+			resize: function() {
+				if ( this.x.maxwidth ) {
+					var t = this.$( 't' ), o = this.$();
+					o.style.maxWidth = this.innerWidth( 'max' ) + 'px';
+					o.style.width = '';
+					t && (t.style.width = '');
+					$.classRemove( o, 'z-fixed' );
+					this.fixsize();
+				}
 			},
 			mouseover: {
 				occupy: T,
@@ -2490,16 +2502,20 @@ Button = define.widget( 'button', {
 		},
 		fixsize: function() {
 			if ( this.x.maxwidth ) {
-				var t = this.$( 't' );
+				var t = this.$( 't' ), o = this.$(), r;
+				o.style.width = $.boxwd( o ) + 'px';
+				$.classAdd( o, 'z-fixed' );
 				if ( t ) {
-					var r, o;
 					if ( (o = this.$( 'm' )) && (o = $.bcr( o )) && o.width ) {
 						r = o.left;
 					} else if ( (o = this.$()) && (o = $.bcr( o )) && o.width ) {
 						r = o.right;
 					}
-					if ( r && (o = this.$( 't' )) ) {
-						o.style.width = $.boxwd( o, r - $.bcr( o ).left ) + 'px';
+					if ( r ) {
+						if ( this.x.closeable )
+							r -= $.number( this.$( 'c' ).currentStyle.marginRight ) - 1;
+						if ( o = this.$( 't' ) )
+							o.style.width = Math.ceil( $.boxwd( o, r - $.bcr( o ).left ) ) + 'px';
 					}
 				}
 			}
@@ -4616,6 +4632,7 @@ Checkbox = define.widget( 'checkbox', {
 		if ( p && p.isBoxGroup ) {
 			this.rootNode = p;
 			this.defaults( { wmin: 7, width: p.x.targets ? 62 : -1 } );
+			p.x.status && $.extend( x, { status: p.x.status } );
 		}
 		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p.isBoxGroup && p.x.value && x.value && $.idsAny( p.x.value, x.value )));
 		AbsForm.apply( this, arguments );
@@ -6556,22 +6573,23 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		// 根据value设置已选项, 初始化时调用 /@v -> value, t -> text
 		_initOptions: function( v, t ) {
-			var p = this.x.separator || ',';
+			var p = this.x.separator || ',', s = '';
 			if ( v && (v = v.split( ',' )) ) {
-				for ( var i = 0, t = t && t.split( p ), o, s = [], l = v.length; i < l; i ++ ) {
+				for ( var i = 0, t = t && t.split( p ), o, b = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
 						if ( t ) {
 							var r = { value: v[ i ], text: t[ i ] };
-							s.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( t[ i ] ) + '</u>' );
+							b.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( t[ i ] ) + '</u>' );
 							this.store().merge( r );
 						} else if ( o = this.store().getParamByValue( v[ i ] ) )
-							s.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( o.text ) + '</u>' );
+							b.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( o.text ) + '</u>' );
 						else if ( ! this.x.strict )
-							s.push( '<u>' + $.strEscape( (t && t[ i ]) || v[ i ] ) + '</u>' );
+							b.push( '<u>' + $.strEscape( (t && t[ i ]) || v[ i ] ) + '</u>' );
 					}
 				}
-				s.length && (this.$t().innerHTML = s.join( '<i>' + p + '</i>' ) + (this.x.multiple ? '<i>' + p + '</i>' : ''));
+				b.length && (s = b.join( '<i>' + p + '</i>' ) + (this.x.multiple ? '<i>' + p + '</i>' : ''));
 			}
+			this.$t().innerHTML = s;
 		},
 		// @a -> value
 		val: function( a ) {
@@ -7522,7 +7540,7 @@ Leaf = define.widget( 'leaf', {
 		html_pad: function() {
 			for ( var i = 0, b = this._pad_level / 2, e = '', p; i < this.level; i ++ ) {
 				p = (p || this).parent();
-				e = '<i class="' + (! p.parent() || p.isLast() ? '_pd' : '_pdvl') + '" style="margin-left:' + b + 'px;width:' + (b - 1) + 'px;"></i>' + e;
+				e = '<i class=_pd style="margin-left:' + b + 'px;width:' + (b - 1) + 'px;">' + (! p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
 			}
 			return e;
 		},
@@ -7660,12 +7678,8 @@ GridLeaf = define.widget( 'grid/leaf', {
 		scaleWidth: function( a ) {
 			return this.parentNode.scaleWidth( a );
 		},
-		fix_text_size: function() {
-			var t = this.textNode, a = $.bcr( this.$() ), b = $.bcr( t.$() ), c = b.left - a.left;
-			if ( c > 0 ) {
-				t.attr( 'wmin', (t.attr( 'wmin' ) || 0) + c );
-				t.width( t.attr( 'width' ) || '*' );
-			}
+		parent: function() {
+			return this.row.parentNode.leaf;
 		},
 		isFirst: function() {
 			return this.row.nodeIndex === 0;
@@ -7676,8 +7690,12 @@ GridLeaf = define.widget( 'grid/leaf', {
 		isFolder: function() {
 			return this.row.length || (this.x.src && !this.loaded) ? T : F;
 		},
-		parent: function() {
-			return this.row.parentNode.leaf;
+		fix_text_size: function() {
+			var t = this.textNode, a = $.bcr( this.$() ), b = $.bcr( t.$() ), c = b.left - a.left;
+			if ( c > 0 ) {
+				t.attr( 'wmin', (t.attr( 'wmin' ) || 0) + c );
+				t.width( t.attr( 'width' ) || '*' );
+			}
 		},
 		// leaf接口
 		toggle_nodes: function( a ) {
