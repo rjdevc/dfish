@@ -39,27 +39,33 @@ public abstract class AbstractLayout<T extends AbstractLayout<T,N>,N extends Wid
      * @return 本身，这样可以继续设置其他属性
      */
 	public T add(N w) {
-        return add(-1,w);
-    }
-    /**
-     * 在指定的位置添加子面板
-     * @param index 位置
-     * @param w  N
-     * @return 本身，这样可以继续设置其他属性
-     */
-	public T add(int index, N w) {
-        if (w == null) {
+		  if (w == null) {
             return (T) this;
         }
         if(w==this)throw new IllegalArgumentException(
         		"can not add widget itself as a sub widget");
-        if(index<0){
-        	nodes.add(w);
-        }else{
-        	nodes.add(index,w);
-        }
+        nodes.add(w);
         return (T) this;
     }
+//    /**
+//     * 在指定的位置添加子面板
+//     * @param index 位置
+//     * @param w  N
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//	public T add(int index, N w) {
+//        if (w == null) {
+//            return (T) this;
+//        }
+//        if(w==this)throw new IllegalArgumentException(
+//        		"can not add widget itself as a sub widget");
+//        if(index<0){
+//        	nodes.add(w);
+//        }else{
+//        	nodes.add(index,w);
+//        }
+//        return (T) this;
+//    }
 
 	public Widget<?> findNodeById(String id) {
 		return super.findNodeById(id);

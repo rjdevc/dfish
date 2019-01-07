@@ -213,5 +213,21 @@ MultiContainer<AlbumLayout,Img>{
 	public Boolean getNobr() {
 		return nobr;
 	}
-
+	  /**
+	  * 在指定的位置添加子面板
+	  * @param index 位置
+	  * @param img  Img
+	  * @return 本身，这样可以继续设置其他属性
+	  */
+		public AlbumLayout add(int index, Img img) {
+	     if (img == null) {
+	         return  this;
+	     }
+	     if(index<0){
+	     	nodes.add(img);
+	     }else{
+	     	nodes.add(index, img);
+	     }
+	     return this;
+	 }
 }

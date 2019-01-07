@@ -63,11 +63,7 @@ public class GridBody extends AbstractLayout<GridBody, Tr> implements GridOper<G
 		w.owner(owner);
 		return super.add(w);
 	}
-	@Override
-	public GridBody add(int index, Tr w) {
-		w.owner(owner);
-		return super.add(index, w);
-	}
+
 	public GridBody add(int row,int column,Object o){
 		put(row,column,o,false);
 		return this;

@@ -59,10 +59,6 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 	public T add(Widget<?> w) {
 		throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
 	}
-	@Deprecated
-	public T add(int index ,Widget<?> w) {
-		throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
-	}
 
 	/**
 	 * 取得可折叠的子元素

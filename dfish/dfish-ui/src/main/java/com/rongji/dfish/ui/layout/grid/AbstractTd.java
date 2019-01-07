@@ -137,14 +137,7 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 		this.node = node;
 		return (T)this;
 	}
-	@Override
-	public T add(int index,Widget<?> widget) {
-		if(index<1){
-			return setNode(widget);
-		}else{
-			throw new UnsupportedOperationException("Use add(Widget);");
-		}
-	}
+
 	public Widget<?> findNodeById(String id) {
 		if (id == null || node==null) {
 			return null;

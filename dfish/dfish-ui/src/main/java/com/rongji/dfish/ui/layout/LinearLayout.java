@@ -89,10 +89,17 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	 */
 	public abstract T add(int index,Widget<?>w,String size);
 
-	@Override
+
+  /**
+  * 在指定的位置添加子面板
+  * @param index 位置
+  * @param w  N
+  * @return 本身，这样可以继续设置其他属性
+  */
 	public T add(int index, Widget<?> w) {
 		return add(index, w,null);
-	}
+ }
+	
 	@Override
 	public T add(Widget<?> w) {
 		if(w instanceof Hidden){

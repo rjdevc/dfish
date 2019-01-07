@@ -115,13 +115,4 @@ public abstract class AbstractView<T extends AbstractView<T>> extends AbstractLa
 	public T add(Widget<?> widget) {
 		return setNode(widget);
 	}
-	
-	@Override
-	public T add(int index,Widget<?> widget) {
-		if(index<1){
-			return setNode(widget);
-		}else{
-			throw new UnsupportedOperationException("Use add(Widget);");
-		}
-	}
 }

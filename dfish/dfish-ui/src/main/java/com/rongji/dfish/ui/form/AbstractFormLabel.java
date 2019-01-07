@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
 
-public class AbstractFormLabel<T extends AbstractFormLabel<T>> extends AbstractWidget<T> implements HtmlContentHolder<T>,Alignable<T>,HasText<T>{
+public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends AbstractWidget<T> implements HtmlContentHolder<T>,Alignable<T>,HasText<T>{
 
 	private static final long serialVersionUID = -8829564341034469323L;
 	protected String align;

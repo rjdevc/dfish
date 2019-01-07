@@ -81,6 +81,6 @@ public class FlexGridTest extends DFishUITestCase {
 		
 		Assert.assertTrue(fgBefore2.asJson().equals(fgAfter2.asJson()));
 
-
+		output(fgAfter2);
 	}
 }

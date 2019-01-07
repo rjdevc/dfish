@@ -34,15 +34,15 @@ import com.rongji.dfish.ui.widget.Html;
 public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>> 
 		implements JsonWrapper<GridLayout>, HiddenContainer<FlexGrid>,
 		Scrollable<FlexGrid>,PrototypeChangeable<GridLayout>,LabelRowContainer<FlexGrid>{
-	/**
-	 * 
-	 */
-	
+
 	private static final long serialVersionUID = 6148451405533076L;
+	/**
+	 * 如果设置了FULL_LINE即使columns变化了也是占满整行
+	 */
+	public static final int FULL_LINE = -1; 
+	
 	private int columns = 12;
 	private Integer rowHeight;
-	
-	private List<FlexGridAppendingMode> nodes=new ArrayList<FlexGridAppendingMode>();
 	/**
 	 * 默认添加的组件所占的列数(当组件没有设定列数时,将使用该值)
 	 */
@@ -50,14 +50,12 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	/**
 	 * 是否需要重构GridLayout中的表单元素
 	 */
-	GridLayout prototype;
-
-	/**
-	 * 如果设置了FULL_LINE即使columns变化了也是占满整行
-	 */
-	public static final int FULL_LINE = -1; 
-	
+	protected GridLayout prototype;
 	protected boolean prototypeChanged=false;
+	
+	private List<FlexGridAppendingMode> nodes=new ArrayList<FlexGridAppendingMode>();
+	protected String labelWidth;
+	
 	public void notifyChage(){
 		prototypeChanged=true;
 	}
@@ -136,10 +134,6 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 		return add(w, defaultOccupy);
 	}
 	
-	@Override
-	public FlexGrid add(int index,Widget<?> w) {
-		throw new UnsupportedOperationException();
-	}
 	
 	/**
 	 * 添加子节点
@@ -205,7 +199,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * @return this
 	 */
 	public FlexGrid add(String text, Integer occupy) {
-		return add(text, occupy, false);
+		return add(new Html(text), occupy);
 	}
 
 
@@ -255,31 +249,15 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 					rowIndex++;
 					occupied = 0;
 				}
-//				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&m.getPrototype() instanceof LabelRow<?>
-//					&&!Boolean.TRUE.equals(((LabelRow<?>)m.getPrototype()).getHideLabel())){
-////					Boolean required=false;
-//					if (m.getPrototype() instanceof AbstractFormElement) {
-//						AbstractFormElement<?, ?> cast = (AbstractFormElement<?, ?>) m.getPrototype();
-////						required = cast.getValidate() != null && cast.getValidate().getRequired() != null && cast.getValidate().getRequired();
-//						cast.getLabel().setWidth(null);
-//					}
-////					String text=((LabelRow<?>)m.getPrototype()).getLabel().getText();
-////					Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
-////					html.setAlign(Html.ALIGN_RIGHT);
-////					int fromColumn1 = occupied;
-////					int toColumn1 = occupied + defaultOccupy - 1;
-////					prototype.add(rowIndex, fromColumn1, rowIndex, toColumn1, html);
-////					
-////					int fromColumn2 = occupied+defaultOccupy;
-//				}
 				int toColumn = occupied + occupy - 1;
 				prototype.add(rowIndex, occupied, rowIndex, toColumn, w);
-				if(m.getMode()==m.MODE_LABEL_ROW&&w instanceof AbstractFormElement){
-					if("0".equals(((AbstractFormElement)w).getLabel())){
-						((AbstractFormElement)w).getLabel().setWidth(null);
+				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&w instanceof AbstractFormElement){
+					AbstractFormElement<?,?> cast=(AbstractFormElement<?,?>)w;
+					if(cast.getLabel()!=null&&"0".equals(cast.getLabel().getWidth())){
+//					if("0".equals(((AbstractFormElement<?,?>)w).getLabel().getWidth())){
+						((AbstractFormElement<?,?>)w).getLabel().setWidth(labelWidth);
 					}
 				}
-				
 				occupied += occupy;
 			}
 			prototype.prototypeBuilding(false);
@@ -479,5 +457,22 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 			}
 		}
 		return false;
+	}
+	/**
+	 * 标签宽度
+	 * @return String
+	 */
+	public String getLabelWidth() {
+		return labelWidth;
+	}
+
+	/**
+	 * 设置标签宽度
+	 * @param labelWidth String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public FlexGrid setLabelWidth(String labelWidth) {
+		this.labelWidth = labelWidth;
+		return this;
 	}
 }

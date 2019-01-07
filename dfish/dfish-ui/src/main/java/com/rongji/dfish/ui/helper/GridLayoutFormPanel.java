@@ -40,7 +40,7 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		prototype = new GridLayout(id);
 		prototype.setWrapper(this);
 		prototype.prototypeBuilding(true);
-		labelWidth="120";
+//		labelWidth="120";
 		bundleProperties();
 	}
 	
@@ -128,7 +128,10 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridLayoutFormPanel addLabelRow(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn,  LabelRow<?> value) {
-		add(fromRow, fromColumn, toRow, toColumn, value);
+		prototype.add(fromRow, fromColumn, toRow, toColumn, value);
+		if(value.getLabel()!=null){
+			value.getLabel().setWidth(labelWidth);
+		}
 		return this;
 	}
 	/**
@@ -142,53 +145,54 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	 */
 	@SuppressWarnings("deprecation")
 	public GridLayoutFormPanel add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Widget<?> value) {
-		this.checkConcurrentModify();
-		if(fromRow==null||fromColumn==null){
-			return this;
-		}
-		if(toRow==null){
-			toRow=fromRow;
-		}
-		if(toColumn==null){
-			toColumn=fromColumn;
-		}
-		if(toRow<fromRow){
-			Integer temp=fromRow;
-			fromRow=toRow;
-			toRow=temp;
-		}
-		if(toColumn<fromColumn){
-			Integer temp=fromColumn;
-			fromColumn=toColumn;
-			toColumn=temp;
-		}
-		if (value == null) {
-			return this;
-		}
-		int widgetFromRow = fromRow;
-		int widgetFromColumn = 2 * fromColumn ;
-		int widgetToRow = toRow;
-		int widgetToColumn = 2 * toColumn +1;
-		
-		List<GridColumn> columns= prototype.getColumns();
-		// 若调用顺序不规则,需要先进行占位
-			while(columns.size()<=toColumn*2){
-				int columnIndex=columns.size()/2;
-//				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_LABEL+columnIndex, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
-				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_VALUE+columnIndex, FormPanel.COLUMN_WIDTH_VALUE));
-			}
-		
-		Td cell = new Td();
-		cell.setNode(value);
-		if (value instanceof LabelRow && (((LabelRow<?>) value).getHideLabel()==null||!((LabelRow<?>) value).getHideLabel())) {
-			LabelRow<?> cast = (LabelRow<?>) value;
-			prototype.add(widgetFromRow, widgetFromColumn, widgetToRow, widgetFromColumn, new FormLabel(cast, prototype.getEscape()).getLabelWidget());
-			prototype.add(widgetFromRow, widgetFromColumn+1, widgetToRow, widgetToColumn, cell);
-		}else{
-			cell.setColspan(2);
-			cell.setAlign(GridColumn.ALIGN_LEFT);
-			prototype.add(widgetFromRow, widgetFromColumn, widgetToRow, widgetToColumn, cell);
-		}
+		prototype.add(fromRow, fromColumn, toRow, toColumn, value);
+//		this.checkConcurrentModify();
+//		if(fromRow==null||fromColumn==null){
+//			return this;
+//		}
+//		if(toRow==null){
+//			toRow=fromRow;
+//		}
+//		if(toColumn==null){
+//			toColumn=fromColumn;
+//		}
+//		if(toRow<fromRow){
+//			Integer temp=fromRow;
+//			fromRow=toRow;
+//			toRow=temp;
+//		}
+//		if(toColumn<fromColumn){
+//			Integer temp=fromColumn;
+//			fromColumn=toColumn;
+//			toColumn=temp;
+//		}
+//		if (value == null) {
+//			return this;
+//		}
+//		int widgetFromRow = fromRow;
+//		int widgetFromColumn = 2 * fromColumn ;
+//		int widgetToRow = toRow;
+//		int widgetToColumn = 2 * toColumn +1;
+//		
+//		List<GridColumn> columns= prototype.getColumns();
+//		// 若调用顺序不规则,需要先进行占位
+//			while(columns.size()<=toColumn*2){
+//				int columnIndex=columns.size()/2;
+////				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_LABEL+columnIndex, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setCls(COLUMN_CLS_LABEL));
+//				columns.add(GridColumn.text(FormPanel.COLUMN_FIELD_VALUE+columnIndex, FormPanel.COLUMN_WIDTH_VALUE));
+//			}
+//		
+//		Td cell = new Td();
+//		cell.setNode(value);
+//		if (value instanceof LabelRow && (((LabelRow<?>) value).getHideLabel()==null||!((LabelRow<?>) value).getHideLabel())) {
+//			LabelRow<?> cast = (LabelRow<?>) value;
+//			prototype.add(widgetFromRow, widgetFromColumn, widgetToRow, widgetFromColumn, new FormLabel(cast, prototype.getEscape()).getLabelWidget());
+//			prototype.add(widgetFromRow, widgetFromColumn+1, widgetToRow, widgetToColumn, cell);
+//		}else{
+//			cell.setColspan(2);
+//			cell.setAlign(GridColumn.ALIGN_LEFT);
+//			prototype.add(widgetFromRow, widgetFromColumn, widgetToRow, widgetToColumn, cell);
+//		}
 		
 		return this;
 	}
@@ -291,23 +295,23 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	
 	public boolean replaceNodeById(Widget<?> value) {
 		//存在标签且不隐藏
-		if (value instanceof LabelRow && (((LabelRow<?>) value).getHideLabel()==null||!((LabelRow<?>) value).getHideLabel())) {
-			if(prototype.replaceNodeById(value)){
-				//尝试替换左边的label
-				LabelRow<?> cast=(LabelRow<?>)value;
-				prototype.replaceNodeById((Widget<?>) new FormLabel(cast, prototype.getEscape()).getLabelWidget(true));
-				return true;
-			}else{
-				return false;
-			}
-		} else {
+//		if (value instanceof LabelRow && (((LabelRow<?>) value).getHideLabel()==null||!((LabelRow<?>) value).getHideLabel())) {
+//			if(prototype.replaceNodeById(value)){
+//				//尝试替换左边的label
+//				LabelRow<?> cast=(LabelRow<?>)value;
+//				prototype.replaceNodeById((Widget<?>) new FormLabel(cast, prototype.getEscape()).getLabelWidget(true));
+//				return true;
+//			}else{
+//				return false;
+//			}
+//		} else {
 			return prototype.replaceNodeById(value);
-		}
+//		}
 	}
 	
 	public GridLayoutFormPanel removeNodeById(String id) {
 		prototype.removeNodeById(id);
-		prototype.removeNodeById("lbl_"+id);
+//		prototype.removeNodeById("lbl_"+id);
 		return this;
 	}
 	

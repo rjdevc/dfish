@@ -33,12 +33,9 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	private Leaf pub;
 	private Boolean scroll;
 	private String scrollClass;
-//	private String format;
     private Boolean escape;
-//    private Boolean hidetoggle;
     private Combo combo;
     private Highlight highlight;
-//    private String src;
     private Boolean ellipsis;
     
 	/**
@@ -52,10 +49,6 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	}
 
 
-//	public TreePanel add(Leaf tree) {
-//		core.add(tree);
-//		return this;
-//	}
 	/**
 	 * 添加一个树节点
 	 * 
@@ -69,206 +62,6 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 		return add(tree);
 	}
 
-//	public Leaf findNodeById(String id) {
-//		return (Leaf) core.findNodeById(id);
-//	}
-//
-//	public List<FormElement<?>> findFormElementsByName(String name) {
-//		return (List<FormElement<?>>) core.findFormElementsByName(name);
-//	}
-
-//	/**
-//	 * 添加默认的Combox支持
-//	 */
-//	public void addDefaultComboboxSupport() {
-//		// pub.addDefaultComboboxSupport();
-//	}
-//
-//	/**
-//	 * 添加默认的OnlineBox支持
-//	 */
-//	public void addDefaultOnlineboboxSupport() {
-//		// pub.addDefaultOnlineboboxSupport();
-//	}
-//
-//	/**
-//	 * 拖动图标
-//	 * 
-//	 * @return 拖动图标
-//	 */
-//	public String getDragIcon() {
-//		return null;// pub.getDragIcon();
-//	}
-//
-//	/**
-//	 * 拖动动作(带排序)处理接口的后台URL
-//	 * 
-//	 * @return 拖动动作(带排序)处理接口的后台URL
-//	 */
-//	public String getDragSupportOrderSrc() {
-//		return null;// pub.getDragSupportOrderSrc();
-//	}
-//
-//	/**
-//	 * 拖动动作处理接口的后台URL
-//	 * 
-//	 * @return 拖动动作处理接口的后台URL
-//	 */
-//	public String getDragSupportSrc() {
-//		return null;// pub.getDragSupportSrc();
-//	}
-//
-//	/**
-//	 * 默认高亮的节点PK
-//	 * 
-//	 * @return 默认高亮的节点PK
-//	 */
-//	public String getFocus() {
-//		return null;// pub.getFocus();
-//	}
-//
-//	/**
-//	 * 节点过滤器 这个过滤器会排除和这个关键字无关的节点
-//	 * 
-//	 * @return 节点过滤器
-//	 */
-//	public String getItemFilter() {
-//		return null;// pub.getItemFilter();
-//	}
-//
-//	/**
-//	 * 是否支持多选
-//	 * 
-//	 * @return 是否支持多选
-//	 */
-//	public Boolean getMultiSelection() {
-//		return false;// pub.isMultiSelection();
-//	}
-
-//	/**
-//	 * 是否显示数的折线。折线太多层的时候，会影响页面显示性能
-//	 * 
-//	 * @return 是否显示数的折线
-//	 */
-//	public Boolean getShowLine() {
-//		return false;// pub.isShowLine();
-//	}
-//
-//	/**
-//	 * 支持选择框的时候，是不是显示成单选钮
-//	 * 
-//	 * @return 支持选择框的时候，是不是显示成单选钮
-//	 */
-//	public Boolean getShowSelectorAsRadio() {
-//		return false;// pub.isShowSelectorAsRadio();
-//	}
-//
-//	/**
-//	 * 设置Combobox的支持
-//	 * 
-//	 * @param valueField
-//	 *            绑定的值字段 业务上常用pk但有时PK不合适
-//	 * @param textField
-//	 *            绑定的显示内容字段 业务上常用 t，但有时会用路径
-//	 * @param searchField
-//	 *            绑定的搜索字段，比如拼音是常用的搜索字段
-//	 * @return 输入+下拉的表单
-//	 */
-//	public TreePanel setComboboxSupport(String valueField, String textField, String searchField) {
-//		// pub.setComboboxSupport(valueField, textField, searchField);
-//		return this;
-//	}
-//
-//	/**
-//	 * 设置默认的动作监听
-//	 * 
-//	 * @param eventName
-//	 *            事件名称
-//	 * @param script
-//	 *            动作脚本
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public TreePanel setDefaultOn(String eventName, String script) {
-//		// pub.setDefaultOn(eventName, script);
-//		return this;
-//	}
-
-	// /**
-	// * 设置默认值
-	// * @param key
-	// * @param value
-	// */
-	// public TreePanel setDefaultValue(String key,String value){
-	// this.defaults.setProperty(key, value);
-	// // defaultValues.put(key, value);
-	// return this;
-	// }
-
-//	/**
-//	 * 设置 拖动图标
-//	 * 
-//	 * @param dragIcon
-//	 *            拖动图标
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public TreePanel setDragIcon(String dragIcon) {
-//		// pub.setDragIcon(dragIcon);
-//		return this;
-//	}
-//
-//	/**
-//	 * 设置 拖动动作处理接口的后台URL
-//	 * 
-//	 * @param dragSupportSrc
-//	 *            拖动动作处理接口的后台URL
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public TreePanel setDragSupportSrc(String dragSupportSrc) {
-//		// pub.setDragSupportSrc(dragSupportSrc);
-//		return this;
-//	}
-//
-//	/**
-//	 * 设置 拖动动作(带排序)处理接口的后台URL
-//	 * 
-//	 * @param dragSupportOrderSrc
-//	 *            拖动动作(带排序)处理接口的后台URL
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public TreePanel setDragSupportOrderSrc(String dragSupportOrderSrc) {
-//		// pub.setDragSupportOrderSrc(dragSupportOrderSrc);
-//		return this;
-//	}
-//
-//	/**
-//	 * 设置 拖动动作处理接口的后台URL 以及拖动的图标
-//	 * 
-//	 * @param commitSrc
-//	 *            拖动动作处理接口的后台URL
-//	 * @param icon
-//	 *            拖动图标
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public TreePanel setDragSupprot(String commitSrc, String icon) {
-//		// pub.setDragSupprot(commitSrc, icon);
-//		return this;
-//	}
-//
-//	/**
-//	 * 设置 拖动动作(带排序)处理接口的后台URL
-//	 * 
-//	 * @param commitSrc
-//	 *            拖动动作处理接口的后台URL
-//	 * @param icon
-//	 *            拖动图标
-//	 * @param dragSupportOrderSrc
-//	 *            拖动动作(带排序)处理接口的后台URL
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public TreePanel setDragSupprot(String commitSrc, String icon, String dragSupportOrderSrc) {
-//		// pub.setDragSupprot(commitSrc, icon, dragSupportOrderSrc);
-//		return this;
-//	}
 
 	/**
 	 * 设置默认高亮的节点PK
@@ -276,37 +69,20 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @param pkid
 	 *            高亮的节点PK
 	 * @return 本身，这样可以继续设置其他属性
+	 * @deprecated 必须找到指定的节点，并设置setFocus(true);
 	 */
+	@Deprecated
 	public TreePanel setFocus(String pkid) {
 		// pub.setFocus(pkid);
 		return this;
 	}
 
-//	/**
-//	 * 设置节点过滤器 这个过滤器会排除和这个关键字无关的节点
-//	 * 
-//	 * @param itemFilter
-//	 *            节点过滤器
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public TreePanel setItemFilter(String itemFilter) {
-//		// pub.setItemFilter(itemFilter);
-//		return this;
-//	}
 
 
 
 	public String getType() {
 		return "tree";
 	}
-
-//	public List<Leaf> getNodes() {
-//		return core.getNodes();
-//	}
-
-	// public Map<String, Object> getDefaultValues() {
-	// return defaultValues;
-	// }
 
 	public Leaf getPub() {
 		if(pub==null){
@@ -471,7 +247,6 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 		return this;
 	}
 	
-	@Override
 	public TreePanel add(int index,Leaf w) {
 		rootLeaf.add(index,w);
 		return this;

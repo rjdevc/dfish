@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.widget.Leaf;
 
 
 /**
@@ -51,5 +52,23 @@ public class FrameLayout extends AbstractLayout<FrameLayout,Widget<?>>implements
 	public List<Widget<?>> getNodes() {
 		return nodes;
 	}
-
+	  /**
+	  * 在指定的位置添加子面板
+	  * @param index 位置
+	  * @param w  N
+	  * @return 本身，这样可以继续设置其他属性
+	  */
+		public FrameLayout add(int index, Widget<?> w) {
+	     if (w == null) {
+	         return  this;
+	     }
+	     if(w==this)throw new IllegalArgumentException(
+	     		"can not add widget itself as a sub widget");
+	     if(index<0){
+	     	nodes.add(w);
+	     }else{
+	     	nodes.add(index,w);
+	     }
+	     return this;
+	 }
 }
