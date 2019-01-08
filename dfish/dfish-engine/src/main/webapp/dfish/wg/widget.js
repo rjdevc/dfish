@@ -3705,7 +3705,7 @@ Alert = define.widget( 'alert', {
 		if ( this._tpl = Dialog.tpl( t ) ) {
 			$.extend( x, { template: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<table border=0 style="margin:10px 20px 20px 5px;word-wrap:break-word;"><tr><td align=center valign=top><div style=width:65px;padding-top:5px>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + (x.text || '').replace( /\n/g, '<br>' ) + '</table>' },
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.urlFormat( x.text || '', x.args ).replace( /\n/g, '<br>' ) + '</table>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
@@ -7281,6 +7281,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		// 深度展开。leaf需要有id进行对比  /@a -> src, b -> sync?, c -> fn
 		openTo: function( a, b, c ) {
 			var f = (this.rootNode || this).getFocus();
+			typeof b === _FUN && (c = b, b = N);
 			this.exec( { type: 'ajax', src: a, sync: b,
 				success: function( x ) {
 					if ( W.isCmd( x ) ) {

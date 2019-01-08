@@ -87,7 +87,8 @@ form : {
 	invalid_option: '存在无效选项',
 	need_valid_option: '请输入一个有效选项',
 	choose_atleastone: '请至少选择一项',
-	complete_required: '请完成必填项'
+	complete_required: '请完成必填项',
+	no_files: '<没有文件>'
 },
 
 year	: '年',

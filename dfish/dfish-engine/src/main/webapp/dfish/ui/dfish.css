@@ -691,8 +691,11 @@
 .w-upload ._bbar{overflow:hidden}
 .w-uploadimage{line-height:0}
 .w-upload.z-ds ._close{width:0;height:0;visibility:hidden}
-.w-upload.z-ds ._bbar{color:#999}
+.w-upload.z-ds ._bbar{color:#999;display:none}
 .w-upload.z-err{border:1px solid red}
+.w-upload ._nofiles{color:#999;display:none}
+.w-upload.z-ds ._nofiles{display:block}
+
 
 .w-uploadimage ._bbar,.w-uploadimage ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 
