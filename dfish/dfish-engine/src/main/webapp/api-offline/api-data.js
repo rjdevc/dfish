@@ -1703,38 +1703,58 @@ define( {
             } );
           }
       ] },
-      { name: 'row(data)', remark: '获取符合条件的某一行。', param: [
-        { name: 'data', type: 'Object | Number', remark: '用来查询的字段对象，或行的序列号。' }
-      ] },
-      { name: 'rows([data])', remark: '获取符合条件的所有行。返回一个由若干 tr widget 实例组成的数组集合。', param: [
-        { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
+      { name: 'filter([data])', remark: '只显示符合条件的行。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来过滤的字段对象，或行的序列号，或函数。', optional: true }
       ], example: [
           function() {
-            // 获取所有行，并循环显示所有行的html
-            var r = vm.find( 'myGrid' ).rows();
-            for ( var i = 0; i < r.length; i ++ ) {
-            	alert( r[ i ].$().outerHTML );
-            }
+            // 显示所有行
+            vm.find( 'myGrid' ).filter();
           },
           function() {
-            // 获取所有字段 C1 值为 "001" 的行
-            var r = vm.find( 'myGrid' ).rows( { C1: '001' } );
-            alert( r.length );
+            // 显示所有字段 C0 值为 "1" 的行
+            vm.find( 'myGrid' ).filter( { C0: '1' } );
+          },
+          function() {
+            // 显示所有字段 C0 值为 "1" 或 "2" 的行
+            vm.find( 'myGrid' ).filter( function( data ) {
+            	return data.C0 == '1' || data.C0 == '2';
+            } );
+          }
+      ] },
+      { name: 'row(data)', remark: '获取符合条件的某一行。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象，或行的序列号，或函数。' }
+      ] },
+      { name: 'rows([data])', remark: '获取符合条件的所有行。返回一个由若干 tr 实例组成的数组集合。', param: [
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象，或行的序列号，或函数。', optional: true }
+      ], example: [
+          function() {
+            // 获取所有行
+            var r = vm.find( 'myGrid' ).rows();
+          },
+          function() {
+            // 获取所有字段 C0 值为 "1" 的行
+            var r = vm.find( 'myGrid' ).rows( { C0: '1' } );
+          },
+          function() {
+            // 获取所有字段 C0 值为 "1" 或 "2" 的行
+            var r = vm.find( 'myGrid' ).rows( function( data ) {
+            	return data.C0 == '1' || data.C0 == '2';
+            } );
           }
       ] },
       { name: 'rowsData([data])', remark: '获取符合条件的所有行的 data json 的数组。', param: [
-        { name: 'data', type: 'Object', remark: '用来查询的字段对象。', optional: true }
+        { name: 'data', type: 'Object | Number | Function', remark: '用来查询的字段对象。', optional: true }
       ] },
       { name: 'getCheckedAll()', remark: '获取所有选中行，返回一个数组。' },
       { name: 'getEchoRows()', remark: '获取所有可显示的行，返回一个数组。' },
       { name: 'getFocus()', remark: '获取焦点行。' },
       { name: 'getFocusAll()', remark: '获取所有焦点行，返回一个数组。' },
       { name: 'focusRow(target)', remark: '设置焦点行。', param: [
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'insertRow(data, [target])', remark: '新增行。', param: [
         { name: 'data', type: 'Object | Array', remark: '新增行的JSON数据。同时新增多行可以用数组。' },
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。新增行的位置将在目标行之前。如果不设置此参数，新增位置为末尾。', optional: true }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。新增行的位置将在目标行之前。如果不设置此参数，新增位置为末尾。', optional: true }
       ], example: [
           function() {
             // { C1: '000' } 是新增行的数据，把它新增到 { C1: '001' } 之前。本例和下例效果相同。
@@ -1748,15 +1768,15 @@ define( {
       ] },
       { name: 'updateRow(data, target)', remark: '更新行。', param: [
         { name: 'data', type: 'Object', remark: '更新行的JSON数据。' },
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'deleteRow(target)', remark: '删除行。', param: [
-        { name: 'target', type: 'Object | Number', remark: '查询目标行的字段对象，或目标行的序列号。' }
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' }
       ] },
       { name: 'deleteAllRows()', remark: '删除所有行。', param: [
       ] },
       { name: 'moveRow(target, index)', remark: '移动行。', param: [
-        { name: 'target', type: 'Object', remark: '查询目标行的字段对象，或目标行的序列号。' },
+        { name: 'target', type: 'Object | Number | Function', remark: '查询目标行的字段对象，或目标行的序列号，或函数。' },
         { name: 'index', type: 'Number | String', remark: '移动到指定行的序列号。支持 "+=数字", "-=数字" 格式的用法。' }
       ] },
       { name: 'checkRow(target, [checked])', remark: '更新行的 checkbox/radio 状态为已选或未选。', param: [
@@ -2001,8 +2021,9 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围，某个 widget 的 ID。', optional: true }
       ] },
-      { name: 'reload([src])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String', remark: '获取数据的URL地址。', optional: true }
+      { name: 'reload([src], [fn])', remark: '重新装载view。', param: [
+        { name: 'src', type: 'String', remark: 'view的URL地址。', optional: true },
+        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
       ] },
       { name: 'resetForm([range], [empty])', remark: '重置表单。', param: [
         { name: 'range', type: 'String', remark: 'widget ID，多个用逗号隔开。指定表单的范围。', optional: true },
@@ -2153,7 +2174,7 @@ define( {
       { name: 'imgheight', type: 'Number | String', remark: '图片高度。' },
       { name: 'textwidth', type: 'Number | String', remark: '文本宽度。' },
       { name: 'nobr', type: 'Boolean', remark: '文本是否换行。' },
-      { name: 'src', type: 'String', remark: '图片地址。' },
+      { name: 'src', type: 'String', remark: '图片地址。支持以 "." 开头的样式名。支持以 "javascript:" 开头的JS语句。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'Boolean | string', remark: '图片的文本提示信息。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' }
@@ -2275,6 +2296,7 @@ define( {
       ] },
       { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'open', type: 'Boolean', remark: '是否展开状态。' },
       { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },
@@ -2346,6 +2368,7 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
+      { name: 'format', type: 'String', remark: '格式化内容。支持"javascript:"开头的JS语句(需return返回值)。' },
       { name: 'valign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'text', type: 'String', remark: 'html内容。支持 &lt;d:wg&gt; 标签。' },
@@ -2649,9 +2672,9 @@ define( {
   	remark: '单行文本输入框。',
   	extend: 'widget',
     Config: [
-      { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。当设为 label 对象并有宽度时，将在表单左边显示标签内容。<br>Label参数如下：', param: [
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。<br>&nbsp; LabelWidget 参数如下：', param: [
         { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
-        { name: 'suffix', type: 'String', remark: '后缀。' }
+        { name: 'suffix', type: 'String', remark: '后缀。' },
         { name: 'text', type: 'String', remark: '内容。' }
       ], example: [
           function() {
@@ -2994,6 +3017,7 @@ define( {
   	extend: 'text',
   	deprecate: 'focus,.w-text',
     Config: [
+      { name: 'cancelable', type: 'Boolean', remark: '设置为true，可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效。默认值为false。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'src', type: 'String | Object',  ver: '3.2+', remark: '获取选项的 URL 地址。' },
       { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
