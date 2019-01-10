@@ -3017,7 +3017,7 @@ define( {
   	extend: 'text',
   	deprecate: 'focus,.w-text',
     Config: [
-      { name: 'defaultchecked', type: 'Boolean', remark: '是否默认选中第一项。默认值为true。' },
+      { name: 'cancelable', type: 'Boolean', remark: '设置为true，可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效。默认值为false。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'src', type: 'String | Object',  ver: '3.2+', remark: '获取选项的 URL 地址。' },
       { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },

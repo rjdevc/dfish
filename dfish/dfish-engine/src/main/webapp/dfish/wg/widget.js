@@ -627,7 +627,7 @@ W = define( 'widget', function() {
 		},
 		// 触发用户定义的事件 / @e -> event, a -> [args]?, f -> func string?
 		triggerHandler: function( e, a, f ) {
-			if ( this._disposed || this.isDisabled() )
+			if ( this._disposed )
 				return;
 			var t = e.runType || e.type || e, f = f || (this.x.on && this.x.on[ t ]), c = { 'event': e }, g = a ? [ e ].concat( a ) : [ e ];
 			if ( a != N ) {
@@ -638,7 +638,7 @@ W = define( 'widget', function() {
 		},
 		// 触发系统事件
 		triggerListener: function( e, a ) {
-			if ( this._disposed || this.isDisabled() )
+			if ( this._disposed )
 				return;
 			var b = this.Const.Listener,
 				t = e.runType || e.type || e,
@@ -651,7 +651,7 @@ W = define( 'widget', function() {
 		// 触发用户定义的事件和系统事件 / @e -> event, @a -> [data]
 		// 优先返回用户事件的返回值，其次返回系统事件的值
 		trigger: function( e, a ) { 
-			if ( this._disposed || this.isDisabled() )
+			if ( this._disposed )
 				return;
 			var b = this.Const.Listener,
 				c = this.proxyHooks,
@@ -3020,8 +3020,7 @@ Page = define.widget( 'page/mini', {
 					this.cmd( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, i );
 				}
 				// 为业务 click 事件之中的 $0 提供值
-				this.data( '0', i );
-				this.triggerHandler( 'click' );
+				this.triggerHandler( 'click', [ i ] );
 			}
 		},
 		val: function( a ) {
@@ -5684,18 +5683,18 @@ XBox = define.widget( 'xbox', {
 		width_minus: function() { return _boxbtn_width + _input_indent() },
 		initOptions: function( x ) {
 			this._sel = [];
-			var o = x.options || (x.options = []), i = o.length, v = x.value == N ? '' : '' + x.value, e, g = ! this.x.multiple;
-			while ( i -- ) {
+			var o = x.options || (x.options = []), v = x.value == N ? '' : '' + x.value, e, g = ! this.x.multiple;
+			for ( var i = 0, l = o.length; i < l; i ++ ) {
 				e = o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
-				if ( o[ i ].checked || (v && e && $.idsAny( v, o[ i ].value )) ){
+				if ( o[ i ].checked || (v && e && $.idsAny( v, o[ i ].value )) ) {
 					this._sel.push( o[ i ] );
 					if ( g ) break;
 				}
 			}
 			if( o.length ) {
-				! this._sel.length && this.attr( 'defaultchecked' ) !== F && this._sel.push( o[ 0 ] );
-				var i = this._sel.length, s = [];
-				while ( i -- ) s.push( this._sel[ i ].value );
+				! this._sel.length && ! this.x.cancelable && ! this.x.multiple && this._sel.push( o[ 0 ] );
+				for ( var i = 0, l = this._sel.length, s = []; i < l; i ++ )
+					s.push( this._sel[ i ].value );
 				x.value = s.join(); // 设一下value，给 isModified() 用
 			}
 		},
@@ -5779,12 +5778,12 @@ XBox = define.widget( 'xbox', {
 		choose: function( a, e ) {
 			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.options[ d.attr( '_i' ) ].value,
 				s = d.hasClass( 'z-on' );
-			d.toggleClass( 'z-on' );
+			if ( this.x.multiple || this.x.cancelable ) {
+				d.toggleClass( 'z-on' );
+			}
 			if ( ! this.x.multiple ) {
+				! this.x.cancelable && d.addClass( 'z-on' );
 				d.siblings().removeClass( 'z-on' );
-				if ( this.attr( 'defaultchecked' ) !== F && s && ! this.x.options[ 0 ].value ) {
-					(d = d.siblings().first()).addClass( 'z-on' );
-				}
 			}
 			this.val( d );
 			! this.x.multiple && this._dropper.close();
@@ -5799,7 +5798,8 @@ XBox = define.widget( 'xbox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'dialog', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id, cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : ''), pophide: T,
+				this._dropper = this.exec( { type: 'dialog', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
+					cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
 					snaptype: 'v', snap: this, node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
 					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
 			}
