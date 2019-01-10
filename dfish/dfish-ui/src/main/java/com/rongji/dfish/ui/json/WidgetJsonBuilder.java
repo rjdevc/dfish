@@ -102,7 +102,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 						return ((Widget<?>)w).getWmin();
 					}});
 			}else if("type".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetTypeAppender("type"));
+				methods.set(i, WidgetTypeAppender.getInstance());
 			}else if("on".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetPropAppender("on"){
 					public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
@@ -200,8 +200,13 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 
 	}
 	public static class  WidgetTypeAppender extends WidgetPropAppender{
-		public WidgetTypeAppender(String propName){
-			super(propName);
+		static WidgetTypeAppender instance=new WidgetTypeAppender();
+		public static WidgetTypeAppender getInstance(){
+			return instance;
+		}
+		
+		public WidgetTypeAppender(){
+			super("type");
 			//加载信息type 可以省略的信息
 			String hideTypeConfig=null;
 			try{
@@ -215,7 +220,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		}
 		
 		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
-			Widget<?>w=(Widget<?>)o;
+			JsonObject w=(JsonObject)o;
 			String type=w.getType();
 			if(type!=null&&!type.equals("")){
 				if(!match(path)){

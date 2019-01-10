@@ -1,5 +1,7 @@
 package com.rongji.dfish.base;
 
+import java.io.Serializable;
+
 /**
  * Page作用就是当数据量太大的时候分页
  * 
@@ -13,7 +15,10 @@ package com.rongji.dfish.base;
  * v1.3 YuLM 增加currentCount字段。
  *
  */
-public class Page {
+public class Page implements Serializable{
+
+
+	private static final long serialVersionUID = -3394734675120176877L;
 
 	private int currentPage;
 

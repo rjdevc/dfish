@@ -1,5 +1,7 @@
 package com.rongji.dfish.base;
 
+import java.io.Serializable;
+
 import com.rongji.dfish.base.Page;
 
 /**
@@ -9,7 +11,10 @@ import com.rongji.dfish.base.Page;
  * @author DFish team
  *
  */
-public class Pagination {
+public class Pagination implements Serializable{
+
+	private static final long serialVersionUID = 8563611090473067679L;
+	
 	private Integer limit;
 	private Integer offset;
 	private Integer size;
