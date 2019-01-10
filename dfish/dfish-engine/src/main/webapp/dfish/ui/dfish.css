@@ -362,8 +362,7 @@
 .w-xbox-dialog ._o{padding-right:36px}
 .w-xbox-dialog ._o.z-hv{background-color:#e1f1ff}
 .w-xbox-dialog ._o.z-on{background-color:#b0dfff}
-.w-xbox-dialog ._o.z-on ._box{position:absolute;width:16px;height:100%;top:0;right:14px;background:url(g/n.png) no-repeat -235px 50%}
-
+.w-xbox-dialog.z-cancel ._o.z-on ._box,.w-xbox-dialog.z-mul ._o.z-on ._box{position:absolute;width:16px;height:100%;top:0;right:14px;background:url(g/n.png) no-repeat -235px 50%}
 
 .w-input.w-combobox{line-height:0;height:auto;min-height:28px}
 .w-combobox ._c{min-height:28px;overflow:hidden;cursor:text}
