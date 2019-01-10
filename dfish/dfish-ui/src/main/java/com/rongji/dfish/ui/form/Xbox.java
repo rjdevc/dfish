@@ -22,7 +22,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements LazyLoa
 	private Boolean transparent;
 	private String placeholder;
 	private Boolean multiple;
-	private Boolean defaultchecked;
+	private Boolean cancelable;
 	/**
 	 * 占位符。当表单没有值时显示的提示文本。
 	 * @return String
@@ -118,20 +118,20 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements LazyLoa
 	}
 	
 	/**
-	 * 当Xbox为勾选模式的时候，第一项要不要默认选中，默认为true
+	 *如果设置为true 可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效，默认值为false
 	 * @return Boolean
 	 */
-	public Boolean getDefaultchecked() {
-		return defaultchecked;
+	public Boolean getCancelable() {
+		return cancelable;
 	}
 
 	/**
-	 *  当Xbox为勾选模式的时候，第一项要不要默认选中，默认为true
+	 *  如果设置为true 可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效，默认值为false
 	 * @param defaultchecked Boolean
 	 * @return this
 	 */
-	public Xbox setDefaultchecked(Boolean defaultchecked) {
-		this.defaultchecked=defaultchecked;
+	public Xbox setCancelable(Boolean cancelable) {
+		this.cancelable=cancelable;
 		return this;
 	}
 }

@@ -212,7 +212,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			try{
 				ResourceBundle rb=ResourceBundle.getBundle("com.rongji.dfish.ui.json.WidgetJsonBuilder");
 				hideTypeConfig=rb.getString("hideType");
-				J.LOG.info("hideType config = "+hideTypeConfig);
+//				J.LOG.info("hideType config = "+hideTypeConfig);
 			}catch(Exception ex){
 				J.LOG.warn("can NOT load hideType config");
 			}
@@ -277,6 +277,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 					}
 				}
 			}
+			J.LOG.info(root.show());
 		}
 		public boolean match(Stack<PathInfo> path){
 			if(root.subs==null){
@@ -315,6 +316,48 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			protected List<Node> subs;
 			protected boolean end;
 			public abstract boolean match(PathInfo pathInfo);
+			public String show() {
+				StringBuilder sb = new StringBuilder();
+				show("","the [type] property should be hidden, when path like below ",sb);
+				return sb.toString();
+			}
+			private static final char CHAR_BLANK = '\u3000';//全角空格
+			private static final char CHAR_I = '\u2502';//制表符 │
+			private static final char CHAR_T = '\u251C';//制表符├
+			private static final char CHAR_L = '\u2514';//制表符└
+			private void show(String prefix, String expr, StringBuilder sb) {
+					sb.append(prefix);
+					sb.append(expr);
+					if (end) {
+						sb.append(" => hide");
+					}
+					sb.append("\r\n");
+				
+				if (subs == null||subs.size()==0) {
+					return;
+				}
+				String newPrefix = "";
+				if (prefix.length() > 1) {
+					newPrefix = prefix.substring(0, prefix.length() - 1);
+				}
+				if (prefix.length() > 0) {
+					char lastChar = prefix.charAt(prefix.length() - 1);
+					if (lastChar == CHAR_L) {
+						newPrefix += CHAR_BLANK;
+					} else if (lastChar == CHAR_T) {
+						newPrefix += CHAR_I;
+					}
+				}
+				int i = 0;
+				for (Node node:subs) {
+					if (++i < subs.size()) {
+						node.show(newPrefix + CHAR_T, node.expr, sb);
+					} else {
+						node.show(newPrefix + CHAR_L, node.expr, sb);
+					}
+				}
+			}
+			
 			public Node(String expr){
 				this.expr=expr;
 			}
