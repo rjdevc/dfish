@@ -33,6 +33,7 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 	
 //	private Boolean load;
 	private String schema;
+	private String template;
 	private String src;
 	private String base;
 	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
@@ -137,7 +138,9 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 	 * @param template 模板
 	 * @return 本身，这样可以继续设置其他属性
 	 * @see com.rongji.dfish.ui.widget.DialogTemplate
+	 * @deprecated 现在template和schema统一模式不再由首页附带。
 	 */
+	@Deprecated
 	public View addTemplate(String id,DialogTemplate template) {
 		templates.put(id, template);
 	     return this;
@@ -146,7 +149,9 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 	 * 取得模板
 	 * @param id String 模板ID
 	 * @return DialogTemplate
+	 * @deprecated 现在template和schema统一模式不再由首页附带。
 	 */
+	@Deprecated
 	public DialogTemplate getTemplateById(String id) {
 		return templates.get(id);
 	}
@@ -154,8 +159,19 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 	/**
 	 * 取得所有模板
 	 * @return templates
+	 * @deprecated 现在template和schema统一模式不再由首页附带。
 	 */
+	@Deprecated
 	public Map<String,DialogTemplate> getTemplates() {
 		return templates;
+	}
+	
+	public String getTemplate() {
+		return template;
+	}
+
+	public View setTemplate(String template) {
+		this.template = template;
+		return this;
 	}
 }
