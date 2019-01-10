@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -16,21 +16,21 @@ import com.alibaba.fastjson.JSONObject;
 	 * 2018年12月18日 下午1:03:56		LinLW			1.0				1.0 Version  
 	 */
 	
-public class TemplateArray extends AbstractTemplate{
+public class SchemaArray extends AbstractSchema{
 	
 
 	private static final long serialVersionUID = -2754920648053888024L;
 	/**
 	 * 新建一个空数组
 	 */
-	public TemplateArray(){
+	public SchemaArray(){
 		this.json=new JSONArray();
 	}
 	/**
 	 * 指定JSONArray的实现
 	 * @param json Object 一般是 JSONArray
 	 */
-	protected TemplateArray(Object json ){
+	protected SchemaArray(Object json ){
 		this.json=json;
 	}
 	/**
@@ -54,8 +54,8 @@ public class TemplateArray extends AbstractTemplate{
 	 * @param temp 子节点
 	 * @return this
 	 */
-	public TemplateArray addSubTemp(DFishTemplate temp) {
-		((JSONArray)json).add(((AbstractTemplate) temp).json);
+	public SchemaArray addSubTemp(DFishSchema temp) {
+		((JSONArray)json).add(((AbstractSchema) temp).json);
 		return this;
 	}
 	/**
@@ -64,10 +64,10 @@ public class TemplateArray extends AbstractTemplate{
 	 * @return 子节点
 	 * @throws 如果子节点不是一个模板，而是 String / Integer / Double / Boolean时会抛出错误
 	 */
-	public DFishTemplate getSubTemp(int index) {
+	public DFishSchema getSubTemp(int index) {
 		Object o=get(index);
-		if(o instanceof DFishTemplate){
-			return (DFishTemplate) o;
+		if(o instanceof DFishSchema){
+			return (DFishSchema) o;
 		}
 		throw new RuntimeException("the "+index+"th element is not a DFishTemplate, use get(int) instead.");
 	}
@@ -79,9 +79,9 @@ public class TemplateArray extends AbstractTemplate{
 	public Object get(int index){
 		Object o=((JSONArray) json).get(index);
 		if(o instanceof JSONArray){
-			return new TemplateArray(json);
+			return new SchemaArray(json);
 		}else if(o instanceof JSONObject){
-			return new WidgetTemplate(json);
+			return new WidgetSchema(json);
 		}
 		return  o;
 	}

@@ -8,9 +8,9 @@
     <version>3.2.0-SNAPSHOT</version>
   </parent>
   <groupId>com.rongji</groupId>
-  <artifactId>dfish-uitemp</artifactId>
+  <artifactId>dfish-uischm</artifactId>
   <version>3.2.0-SNAPSHOT</version>
-  <name>dfish-uitemp</name>
+  <name>dfish-uischm</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

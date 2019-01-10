@@ -23,14 +23,14 @@ public interface LazyLoad<T extends LazyLoad<T>> {
 	 */
 	T setSrc(String src);
 	/**
-	 * 指定用这个template编号所对应的template 将src返回的内容解析成dfish的格式。
+	 * 指定用这个schema编号所对应的schema 将src返回的内容解析成dfish的格式。
 	 * @return String
 	 */
-	String getTemplate();
+	String getSchema();
 	/**
-	 * 指定用这个template编号所对应的template 将src返回的内容解析成dfish的格式。
-	 * @param template String
+	 * 指定用这个schema编号所对应的schema 将src返回的内容解析成dfish的格式。
+	 * @param schema String
 	 * @return this
 	 */
-	T setTemplate(String template);
+	T setSchema(String schema);
 }

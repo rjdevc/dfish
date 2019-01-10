@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -28,8 +28,8 @@ import com.alibaba.fastjson.JSONObject;
  * ------------------------------------------------------------------
  * 2018年12月18日 下午7:04:51		LinLW			1.0				1.0 Version
  */
-public class JudgeTemplate extends AbstractTemplate {
-	public JudgeTemplate(){
+public class JudgeSchema extends AbstractSchema {
+	public JudgeSchema(){
 		json=new JSONObject(true);
 	}
 	private static final long serialVersionUID = 767478857627210712L;
@@ -40,9 +40,9 @@ public class JudgeTemplate extends AbstractTemplate {
 	 * @param temp 模板，可以是wiget模板，也可以是@include
 	 * @return this
 	 */
-	public JudgeTemplate addIf(String expr,DFishTemplate temp){
+	public JudgeSchema addIf(String expr,DFishSchema temp){
 		String key="@w-if("+expr+")";
-		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
+		((JSONObject)json).put(key, ((AbstractSchema) temp).json);
 		return this;
 	}
 	
@@ -52,9 +52,9 @@ public class JudgeTemplate extends AbstractTemplate {
 	 * @param temp 模板，可以是wiget模板，也可以是@include
 	 * @return this
 	 */
-	public JudgeTemplate addElseif(String expr,DFishTemplate temp){
+	public JudgeSchema addElseif(String expr,DFishSchema temp){
 		String key="@w-elseif("+expr+")";
-		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
+		((JSONObject)json).put(key, ((AbstractSchema) temp).json);
 		return this;
 	}
 	/**
@@ -62,9 +62,9 @@ public class JudgeTemplate extends AbstractTemplate {
 	 * @param temp 模板，可以是wiget模板，也可以是@include
 	 * @return this
 	 */
-	public JudgeTemplate addElse(DFishTemplate temp){
+	public JudgeSchema addElse(DFishSchema temp){
 		String key="@w-else";
-		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
+		((JSONObject)json).put(key, ((AbstractSchema) temp).json);
 		return this;
 	}
 	

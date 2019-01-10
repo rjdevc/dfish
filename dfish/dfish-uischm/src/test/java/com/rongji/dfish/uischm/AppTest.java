@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

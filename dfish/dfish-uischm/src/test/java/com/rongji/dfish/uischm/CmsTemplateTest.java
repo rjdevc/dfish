@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 import java.util.Arrays;
 
@@ -18,6 +18,10 @@ import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.widget.Button;
 import com.rongji.dfish.ui.widget.Leaf;
 import com.rongji.dfish.ui.widget.SubmitButton;
+import com.rongji.dfish.uischm.IncludeSchema;
+import com.rongji.dfish.uischm.JudgeSchema;
+import com.rongji.dfish.uischm.TemplateDefine;
+import com.rongji.dfish.uischm.WidgetSchema;
 
 public class CmsTemplateTest {
 	@Test
@@ -55,7 +59,7 @@ public class CmsTemplateTest {
 	@Test
 	public void testTree(){
 		Leaf leaf =new Leaf();
-		leaf.setTemplate("t/cms/tree")
+		leaf.setSchema("cms/tree")
 			.setOn(Leaf.EVENT_FOCUS, "cms.treeClick(this);");
 		leaf.at("id","$item.cateId")
 			.at("text","$item.cateName")
@@ -63,19 +67,19 @@ public class CmsTemplateTest {
 			.at("src","$item.hasChild?'./interface/v2/notice_category/query?parentId='+$item.cateId:''");
 		
 		//复杂功能要转到widget 才可以处理。
-		WidgetTemplate leafWt=new WidgetTemplate(leaf);
-		leafWt.addFor("nodes", "$item.children", new IncludeTemplate("t/cms/leaf"));
+		WidgetSchema leafWt=new WidgetSchema(leaf);
+		leafWt.addFor("nodes", "$item.children", new IncludeSchema("t/cms/leaf"));
 		System.out.println(leafWt);
 	}
 	
-	protected TemplateDefine shell(WidgetTemplate wt,String uri){
-		JudgeTemplate jt=new JudgeTemplate();
-		jt.addIf("$error", new WidgetTemplate(new JSCommand(null).at("text","app.error($error);")));
+	protected TemplateDefine shell(WidgetSchema wt,String uri){
+		JudgeSchema jt=new JudgeSchema();
+		jt.addIf("$error", new WidgetSchema(new JSCommand(null).at("text","app.error($error);")));
 		jt.addElse(wt);
 		TemplateDefine ret= new TemplateDefine(uri,jt);
 		return ret;
 	}
 	protected TemplateDefine shell(Widget<?> w,String uri){
-		return shell(new WidgetTemplate(w),uri);
+		return shell(new WidgetSchema(w),uri);
 	}
 }

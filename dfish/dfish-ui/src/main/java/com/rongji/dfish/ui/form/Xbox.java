@@ -18,7 +18,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements LazyLoa
 	 */
 	private static final long serialVersionUID = -953562902873398616L;
 	private String src;
-	private String template;
+	private String schema;
 	private Boolean transparent;
 	private String placeholder;
 	private Boolean multiple;
@@ -107,15 +107,16 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements LazyLoa
 	}
 
 	@Override
-	public String getTemplate() {
-		return template;
+	public String getSchema() {
+		return schema;
 	}
 
 	@Override
-	public Xbox setTemplate(String template) {
-		this.template=template;
+	public Xbox setSchema(String schema) {
+		this.schema=schema;
 		return this;
 	}
+	
 	/**
 	 * 当Xbox为勾选模式的时候，第一项要不要默认选中，默认为true
 	 * @return Boolean

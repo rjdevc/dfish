@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 import com.rongji.dfish.ui.Combo;
 import com.rongji.dfish.ui.Combo.Field;
@@ -8,6 +8,7 @@ import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Tr;
 import com.rongji.dfish.ui.widget.PageBar;
+import com.rongji.dfish.uischm.WidgetSchema;
 
 public class TemplateFactoryTest {
 	public static void main(String[] args) {
@@ -32,10 +33,10 @@ public class TemplateFactoryTest {
 		pageBar.setBtncount(5).setAlign(PageBar.ALIGN_RIGHT).setTarget("f_grid");
 		
 		
-		WidgetTemplate w=new WidgetTemplate(vert);
-		WidgetTemplate gridTemp=w.findById("f_grid");
+		WidgetSchema w=new WidgetSchema(vert);
+		WidgetSchema gridTemp=w.findById("f_grid");
 		
-		WidgetTemplate tbodyTemp=gridTemp.createSubWidgetTemp("tbody");
+		WidgetSchema tbodyTemp=gridTemp.createSubWidgetTemp("tbody");
 		tbodyTemp.setAtProp("rows", "f_grid");
 		//���������и���д������
 //		gridTemp.setPropx("tbody.@rows","$data");

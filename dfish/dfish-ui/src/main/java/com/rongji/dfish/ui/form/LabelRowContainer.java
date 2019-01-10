@@ -16,4 +16,18 @@ import com.rongji.dfish.ui.Container;
  */
 public interface LabelRowContainer<T extends LabelRowContainer<T>>  extends Container<T>{
 
+	/**
+	 * 标签宽度
+	 * @return String
+	 */
+	public String getLabelWidth() ;
+
+	/**
+	 * 设置标签宽度
+	 * @param labelWidth String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setLabelWidth(String labelWidth);
+	
+	
 }

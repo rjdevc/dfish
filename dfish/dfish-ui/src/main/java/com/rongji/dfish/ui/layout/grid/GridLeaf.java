@@ -19,7 +19,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridL
 	private static final long serialVersionUID = -7465823398383091843L;
 	private String text;
 	private String src;
-	private String template;
+	private String schema;
 	private String format;
 	private Boolean line;
 	public GridLeaf() {
@@ -101,13 +101,13 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridL
 	}
 
 	@Override
-	public String getTemplate() {
-		return template;
+	public String getSchema() {
+		return schema;
 	}
 
 	@Override
-	public GridLeaf setTemplate(String template) {
-		this.template=template;
+	public GridLeaf setSchema(String schema) {
+		this.schema=schema;
 		return this;
 	}
 	/**

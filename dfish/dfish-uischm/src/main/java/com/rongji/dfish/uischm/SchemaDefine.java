@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 /**
  * TemplateDefine是模范 nodeJS 定义一个模板
@@ -7,12 +7,12 @@ package com.rongji.dfish.uitemp;
  * @author LinLW
  *
  */
-public class TemplateDefine implements DFishTemplate{
+public class SchemaDefine implements DFishSchema{
 
 	private static final long serialVersionUID = -860884319838299839L;
 	private String  uri;
-	private DFishTemplate template;
-	public TemplateDefine(String uri,DFishTemplate template){
+	private DFishSchema template;
+	public SchemaDefine(String uri,DFishSchema template){
 		this.uri=uri;
 		this.template=template;
 	}
@@ -30,9 +30,9 @@ public class TemplateDefine implements DFishTemplate{
 		StringBuilder sb=new StringBuilder();
 		
 		if(uri==null||uri.equals("")){
-			sb.append("define(");
+			sb.append("$.schema(");
 		}else{
-			sb.append("define(\"").append(uri).append("\",");
+			sb.append("$.schema(\"").append(uri).append("\",");
 		}
 		sb.append(template);
 		sb.append(");");

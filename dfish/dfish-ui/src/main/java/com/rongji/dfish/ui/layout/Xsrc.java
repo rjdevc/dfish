@@ -28,7 +28,7 @@ public class Xsrc extends AbstractView<Xsrc> implements LazyLoad<Xsrc>{
 		super(null);
 	}
 	
-	private String template;
+	private String schema;
 	private String src;
 
 	@Override
@@ -37,12 +37,12 @@ public class Xsrc extends AbstractView<Xsrc> implements LazyLoad<Xsrc>{
 	}
 
 
-	public String getTemplate() {
-		return template;
+	public String getSchema() {
+		return schema;
 	}
 
-	public Xsrc setTemplate(String template) {
-		this.template = template;
+	public Xsrc setSchema(String schema) {
+		this.schema = schema;
 		return this;
 	}
 

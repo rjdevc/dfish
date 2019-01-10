@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
  * 
  *
  */
-public class MatchResult  implements Iterable<DFishTemplate>{
+public class MatchResult  implements Iterable<DFishSchema>{
 	public static final int REL_AND=1;
 	public static final int REL_OR=2;
 	public static final int OPER_EQUALS=1;
@@ -29,10 +29,10 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	 * 初始结果 一般 dt为WidgetTemplate 或 TemplateArray
 	 * @param dt DFishTemplate
 	 */
-	public MatchResult(DFishTemplate dt){
-		if(dt instanceof AbstractTemplate){
+	public MatchResult(DFishSchema dt){
+		if(dt instanceof AbstractSchema){
 			curResult=new ArrayList<Object>();
-			AbstractTemplate cast=(AbstractTemplate)dt;
+			AbstractSchema cast=(AbstractSchema)dt;
 			curResult.add(cast.json);
 		}
 	}
@@ -42,9 +42,9 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	 * @param value 值 一般 为 String / Integer / Double / Boolean
 	 */
 	public void setProp(String prop,Object value){
-		for(DFishTemplate dt:this){
-			if(dt instanceof WidgetTemplate ){
-				((WidgetTemplate) dt).setProp(prop, value);
+		for(DFishSchema dt:this){
+			if(dt instanceof WidgetSchema ){
+				((WidgetSchema) dt).setProp(prop, value);
 			}
 		}
 	}
@@ -55,9 +55,9 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	 * @param expr 表达式
 	 */
 	public void at(String prop,String expr){
-		for(DFishTemplate dt:this){
-			if(dt instanceof WidgetTemplate ){
-				((WidgetTemplate) dt).at(prop, expr);
+		for(DFishSchema dt:this){
+			if(dt instanceof WidgetSchema ){
+				((WidgetSchema) dt).at(prop, expr);
 			}
 		}
 	}
@@ -66,10 +66,10 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 	 * @param prop 属性
 	 * @param temp 模板
 	 */
-	public void at(String prop,DFishTemplate temp){
-		for(DFishTemplate dt:this){
-			if(dt instanceof WidgetTemplate ){
-				((WidgetTemplate) dt).at(prop, temp);
+	public void at(String prop,DFishSchema temp){
+		for(DFishSchema dt:this){
+			if(dt instanceof WidgetSchema ){
+				((WidgetSchema) dt).at(prop, temp);
 			}
 		}
 	}
@@ -232,16 +232,16 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 		}
 	}
 	@Override
-	public Iterator<DFishTemplate> iterator() {
+	public Iterator<DFishSchema> iterator() {
 		return new ResultIterator(curResult);
 	}
-	public List<DFishTemplate> getResult(){
-		List<DFishTemplate> ret=new ArrayList<DFishTemplate>();
+	public List<DFishSchema> getResult(){
+		List<DFishSchema> ret=new ArrayList<DFishSchema>();
 		for(Object  o: curResult){
 			if(o instanceof JSONArray){
-				ret.add(new TemplateArray(o));
+				ret.add(new SchemaArray(o));
 			}else if(o instanceof JSONObject){
-				ret.add(new WidgetTemplate(o));
+				ret.add(new WidgetSchema(o));
 			}
 			throw new RuntimeException("unknown result");
 		}
@@ -286,7 +286,7 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 			this.value = value;
 		}
 	}
-	private static class ResultIterator implements Iterator<DFishTemplate>{
+	private static class ResultIterator implements Iterator<DFishSchema>{
 		Iterator<Object> real;
 		public ResultIterator(List<Object> curResult){
 			if(curResult==null){
@@ -307,12 +307,12 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 			return real.hasNext();
 		}
 		@Override
-		public DFishTemplate next() {
+		public DFishSchema next() {
 			Object o=real.next();
 			if(o instanceof JSONArray){
-				return new TemplateArray(o);
+				return new SchemaArray(o);
 			}else if(o instanceof JSONObject){
-				return new WidgetTemplate(o);
+				return new WidgetSchema(o);
 			}
 			throw new RuntimeException("unknown result");
 		}

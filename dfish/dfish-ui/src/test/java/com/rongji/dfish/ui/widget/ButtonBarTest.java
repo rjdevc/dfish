@@ -18,11 +18,11 @@ public class ButtonBarTest extends DFishUITestCase{
 		return vl;
 	}
 	
-	public static void main(String[] args) {
-		ButtonBarTest test=new ButtonBarTest();
-		Widget w=(Widget) test.getWidget();
-		for(;;){
-			w.toString();
-		}
-	}
+//	public static void main(String[] args) {
+//		ButtonBarTest test=new ButtonBarTest();
+//		Widget w=(Widget) test.getWidget();
+//		for(;;){
+//			w.toString();
+//		}
+//	}
 }

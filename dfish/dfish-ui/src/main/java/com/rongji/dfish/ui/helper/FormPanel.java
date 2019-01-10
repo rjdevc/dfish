@@ -97,7 +97,7 @@ Layout<FormPanel,Widget<?>>{
 		}
 		rows.add(row);
 		if("0".equals(((LabelRow) row).getLabel().getWidth())){
-			((LabelRow) row).getLabel().setWidth(null);
+			((LabelRow) row).getLabel().setWidth(labelWidth);
 		}
 		this.checkConcurrentModify();
 		return this;

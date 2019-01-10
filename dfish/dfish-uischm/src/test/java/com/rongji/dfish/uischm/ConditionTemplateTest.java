@@ -1,4 +1,4 @@
-package com.rongji.dfish.uitemp;
+package com.rongji.dfish.uischm;
 
 import com.rongji.dfish.ui.command.JSCommand;
 import com.rongji.dfish.ui.form.DatePicker;
@@ -9,25 +9,29 @@ import com.rongji.dfish.ui.helper.HorizontalGroup;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;
 import com.rongji.dfish.ui.widget.Leaf;
+import com.rongji.dfish.uischm.DFishSchema;
+import com.rongji.dfish.uischm.JudgeSchema;
+import com.rongji.dfish.uischm.TemplateDefine;
+import com.rongji.dfish.uischm.WidgetSchema;
 
 public class ConditionTemplateTest {
 	public static void main(String[] args) {
-		DFishTemplate dt1=getDefine();
+		DFishSchema dt1=getDefine();
 		System.out.println(dt1);
 //		DFishTemplate dt2=getFor();
 //		System.out.println(dt2);
 		
 		
 	}
-	private static DFishTemplate getDefine() {
+	private static DFishSchema getDefine() {
 		String uri="t/cms/test";
-		JudgeTemplate jt=new JudgeTemplate();
-		jt.addIf("@w-if($error)", new WidgetTemplate(new JSCommand(null)).setAtProp("text","app.error($error);"));
+		JudgeSchema jt=new JudgeSchema();
+		jt.addIf("@w-if($error)", new WidgetSchema(new JSCommand(null)).setAtProp("text","app.error($error);"));
 		jt.addElse(getWidgetTemplate());
 		TemplateDefine ret= new TemplateDefine(uri,jt);
 		return ret;
 	}
-	private static WidgetTemplate getWidgetTemplate() {
+	private static WidgetSchema getWidgetTemplate() {
 		View view =new View();
 		FlexGrid fg=new FlexGrid("你猜");
 		view.add(fg);
@@ -50,22 +54,22 @@ public class ConditionTemplateTest {
 		hg1.add(new Spinner("hours","小时数",null,0,999,1),"60");
 		hg1.add(new Html("小时"),"-1");
 
-		return  new WidgetTemplate(view);
+		return  new WidgetSchema(view);
 	}
-	private static DFishTemplate getFor() {
-		WidgetTemplate leafTmp=new WidgetTemplate(new Leaf())
+	private static DFishSchema getFor() {
+		WidgetSchema leafTmp=new WidgetSchema(new Leaf())
 				.at("text", "$item.name");
-		return new WidgetTemplate ().addFor("nodes", "$data",leafTmp);
+		return new WidgetSchema ().addFor("nodes", "$data",leafTmp);
 	}
 
-	private static DFishTemplate getIf() {
-		WidgetTemplate textTmp=new WidgetTemplate(new Text("userName","",null))
+	private static DFishSchema getIf() {
+		WidgetSchema textTmp=new WidgetSchema(new Text("userName","",null))
 				.setAtProp("value", "$data.name");
-		WidgetTemplate roTmp=new WidgetTemplate(new Text("userName","",null).setReadonly(true))
+		WidgetSchema roTmp=new WidgetSchema(new Text("userName","",null).setReadonly(true))
 				.setAtProp("value", "$data.name");
-		WidgetTemplate htmTmp=new WidgetTemplate(new Html(null))
+		WidgetSchema htmTmp=new WidgetSchema(new Html(null))
 				.setAtProp("text", "$data.name");
-		JudgeTemplate judge=new JudgeTemplate()
+		JudgeSchema judge=new JudgeSchema()
 				.addIf("$data.readonly==0", textTmp)
 				.addElseif("$data.readonly==1", roTmp)
 				.addElse(htmTmp);

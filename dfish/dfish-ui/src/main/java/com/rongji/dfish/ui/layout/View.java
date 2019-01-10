@@ -32,7 +32,7 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 	}
 	
 //	private Boolean load;
-	private String template;
+	private String schema;
 	private String src;
 	private String base;
 	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
@@ -59,12 +59,12 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 //		return this;
 //	}
 
-	public String getTemplate() {
-		return template;
+	public String getSchema() {
+		return schema;
 	}
 
-	public View setTemplate(String template) {
-		this.template = template;
+	public View setSchema(String schema) {
+		this.schema = schema;
 		return this;
 	}
 	/**

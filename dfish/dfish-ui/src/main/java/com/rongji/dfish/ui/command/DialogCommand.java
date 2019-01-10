@@ -17,6 +17,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 	 */
 	private static final long serialVersionUID = -3055223672741088528L;
     private String template;
+    private String schema;
     private String src;
     private Boolean prong;
 	public String getType() {
@@ -122,5 +123,12 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 		 return this;
 	}
 
-	
+	public String getSchema() {
+		return schema;
+	}
+
+	public DialogCommand setSchema(String schema) {
+		this.schema = schema;
+		return this;
+	}
 }
