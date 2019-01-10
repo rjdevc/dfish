@@ -25,6 +25,12 @@ _putin  = { append: T, prepend: T, undefined: T },
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
+// 模板集合
+_templateCache = {},
+// 注册模板  /@a -> id, b -> template body
+_regTemplate = function( a, b ) {
+	return b === U ? _templateCache[ a ] : (_templateCache[ a ] = b);
+},
 // 事件白名单
 _white_events = $.white_events,
 _event_zhover = (mbi ? '' : ' onmouseover=$.zover(this) onmouseout=$.zout(this)'),
@@ -36,7 +42,6 @@ _event_enter = {
 _event_stop = {
 	contextmenu: function( e ) { !(cfg.debug && e.ctrlKey) && $.stop( e ) }
 },
-
 // @a -> htmlElement: 返回html元素对象所在的widget
 // @a -> JSON: 参数为符合widget配置项的json对象，则创建这个widget
 _widget = function( a ) {
@@ -392,6 +397,7 @@ W = define( 'widget', function() {
 		w: _widget,
 		e: _widgetEvent,
 		isCmd: function( a ) { return a && _cmdHooks[ a.type ] },
+		template: _regTemplate,
 		scrollIntoView: _scrollIntoView
 	},
 	Extend: Node,
@@ -1609,7 +1615,6 @@ _setParent = function( a ) {
 	}
 },
 _userPriority = { 'click': T, 'close': T, 'valid': T },
-_templates = $.templates,
 _view_js = cfg.view_js || {},
 // view的占据空间的widget，可见元素都隶属于此
 ViewLayout = define.widget( 'view/layout', {
@@ -1623,7 +1628,7 @@ ViewLayout = define.widget( 'view/layout', {
 View = define.widget( 'view', {
 	Const: function( x, p ) {
 		if ( x.templates )
-			$.merge( _templates, x.templates );
+			$.merge( _templateCache, x.templates );
 		_initView.call( this );
 		_regWidget.apply( this, arguments );
 		p && _setParent.call( this, _view( p ) );
@@ -1695,7 +1700,7 @@ View = define.widget( 'view', {
 				if ( this.x !== x )
 					this.init_x( x );
 				if ( x.templates )
-					$.merge( _templates, x.templates );
+					$.merge( _templateCache, x.templates );
 				if ( x.node )
 					this.layout = new ViewLayout( { node: x.node }, this );
 				this.loaded = T;
@@ -2127,6 +2132,7 @@ Html = define.widget( 'html', {
 		text: function( a ) {
 			if ( a == N )
 				return this.x.text;
+			this.x.text = a;
 			var o = this.$( 'cont' ) || this.$();
 			o && (o.innerHTML = this.html_nodes());
 			this.trigger( 'resize' );
@@ -3320,9 +3326,9 @@ Dialog = define.widget( 'dialog', {
 			(a = Dialog.get( a )) && a.close();
 		},
 		tpl: function( a ) {
-			var t = typeof a === _STR ? _templates[ a ] : a;
+			var t = typeof a === _STR ? _templateCache[ a ] : a;
 			if ( ! t && cfg.template_src )
-				$.ajaxJSON( $.urlFormat( cfg.template_src, [ a ] ), function( x ) { t = _templates[ a ] = x; }, N, T, N, function() { t = F; } );
+				$.ajaxJSON( $.urlFormat( cfg.template_src, [ a ] ), function( x ) { t = _templateCache[ a ] = x; }, N, T, N, function() { t = F; } );
 			return t;
 		},
 		cleanPop: function() {
