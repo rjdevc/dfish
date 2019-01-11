@@ -28,7 +28,7 @@ public class ConditionTemplateTest {
 		JudgeSchema jt=new JudgeSchema();
 		jt.addIf("@w-if($error)", new WidgetSchema(new JSCommand(null)).setAtProp("text","app.error($error);"));
 		jt.addElse(getWidgetTemplate());
-		TemplateDefine ret= new TemplateDefine(uri,jt);
+		SchemaDefine ret= new SchemaDefine(uri,jt);
 		return ret;
 	}
 	private static WidgetSchema getWidgetTemplate() {

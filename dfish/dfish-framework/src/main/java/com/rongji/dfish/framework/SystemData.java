@@ -70,7 +70,7 @@ public class SystemData {
 
 	private SystemConfigHolder systemConfig;
 	private PersonalConfigHolder PersonalConfig;
-	private FrameworkCache<?, ?> cache;
+//	private Cache<?, ?> cache;
 	private NewIdGetter newIdGetter;
 	
 	private SystemData() {}
@@ -151,13 +151,13 @@ public class SystemData {
 		PersonalConfig = personalConfig;
 	}
 
-	public FrameworkCache<?, ?> getCache() {
-		return cache;
-	}
-
-	public void setCache(FrameworkCache<?, ?> cache) {
-		this.cache = cache;
-	}
+//	public Cache<?, ?> getCache() {
+//		return cache;
+//	}
+//
+//	public void setCache(Cache<?, ?> cache) {
+//		this.cache = cache;
+//	}
 
 	public NewIdGetter getNewIdGetter() {
 		return newIdGetter;

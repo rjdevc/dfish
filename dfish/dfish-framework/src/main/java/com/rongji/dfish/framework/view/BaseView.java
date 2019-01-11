@@ -1,5 +1,5 @@
-package com.rongji.dfish.framework.view;
-
-public class BaseView {
-
-}
+//package com.rongji.dfish.framework.view;
+//
+//public class BaseView {
+//
+//}

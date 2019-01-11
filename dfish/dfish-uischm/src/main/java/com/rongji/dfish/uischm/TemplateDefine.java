@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.JsonObject;
  * @author LinLW
  *
  */
-public class TemplateDefine implements DFishSchema{
+public class TemplateDefine implements JsonObject{
 
 	private static final long serialVersionUID = -860884319838299839L;
 	private String  uri;
