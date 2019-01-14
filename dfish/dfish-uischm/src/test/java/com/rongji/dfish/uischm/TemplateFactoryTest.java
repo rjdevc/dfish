@@ -22,9 +22,9 @@ public class TemplateFactoryTest {
 		grid.getPub().setHeight(36).setFocusable(true)
 			.setOn(Tr.EVENT_CLICK, "$.dialog(this).commander.complete(this);$.close(this)");
 		
-		grid.addColumn(GridColumn.text("cateName", GridPanel.WIDTH_REMAIN).setLabel("����")
+		grid.addColumn(GridColumn.text("cateName", GridPanel.WIDTH_REMAIN).setLabel("sha")
 				.setHighlight(new Highlight().setKeycls("f-keyword").setMatchlength(2)));//FIXME nobr
-		grid.addColumn(GridColumn.text("cateOrder", "80").setLabel("����")
+		grid.addColumn(GridColumn.text("cateOrder", "80").setLabel("sha")
 				.setAlign(GridColumn.ALIGN_RIGHT));
 		
 		
@@ -42,5 +42,6 @@ public class TemplateFactoryTest {
 //		gridTemp.setPropx("tbody.@rows","$data");
 		
 		System.out.println(w);
+		System.out.println(new TemplateDefine("t/a", grid));
 	}
 }

@@ -38,9 +38,9 @@ public class TemplateDefine implements JsonObject{
 			sb.append("$.template(\"").append(uri).append("\",");
 		}
 		if(jo instanceof AbstractJsonObject){
-			((AbstractJsonObject<?>) jo).formatString();
+			sb.append(((AbstractJsonObject<?>) jo).formatString());
 		}else{
-			jo.toString();
+			sb.append(jo.toString());
 		}
 		sb.append(");");
 		return sb.toString();
