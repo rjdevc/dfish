@@ -3605,10 +3605,10 @@ Dialog = define.widget( 'dialog', {
 				this.listenHide( F );
 				var f = this.x.position;
 				if ( f && br.css3 ) {
-					var w = this.$().offsetWidth, h = this.$().offsetHeight, d = this.id,
+					var w = this.$().offsetWidth, h = this.$().offsetHeight, d = this.id, self = this,
 						n = f == 1 || f == 2 ? { top: -h } : f == 3 || f == 4 ? { right: -w } : f == 5 || f == 6 ? { bottom: -h } : { left: -w };
 					$.classAdd( this.$(), 'z-closing' ); // z-closing生成遮盖层，避免在消失过程中内容部分再被点击
-					Q( this.$() ).animate( n, 100, function() { $.remove( this ); $.remove( d + 'vcr' ); } );
+					Q( this.$() ).animate( n, 100, function() { self.removeElem(); } );
 				} else
 					this.removeElem();
 				this.vis = F;
