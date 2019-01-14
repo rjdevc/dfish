@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.layout.grid;
 
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.LazyLoad;
+import com.rongji.dfish.ui.HasSrc;
 
 /**
  * GridTreeItem 是可折叠表格中的折叠项
@@ -12,7 +12,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @author DFish Team
  *
  */
-public class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridLeaf>{
+public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLeaf>{
 	/**
 	 * 
 	 */

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.rongji.dfish.ui.DataContainer;
+import com.rongji.dfish.ui.HasSrc;
 
 /**
  * CommunicateCommand 是需要和后台交互的命令，包括 AJAX和Submit
@@ -11,12 +12,13 @@ import com.rongji.dfish.ui.DataContainer;
  *
  * @param <T> 当前对象类型
  */
-public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extends AbstractCommand<T> implements DataContainer<T> {
+public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extends AbstractCommand<T> implements DataContainer<T>,HasSrc<T> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2296464991066275984L;
 	protected String src;//http 格式的路径。
+	protected String schema;//http 格式的路径。
 	protected Boolean sync;//是否同步。
 	protected Boolean download;//是否启用下载模式
 	protected String beforesend;//js语句，在发送请求前调用
@@ -53,6 +55,21 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	@SuppressWarnings("unchecked")
 	public T setSrc(String src) {
 		this.src = src;
+		return (T) this;
+	}
+	
+	public String getSchema() {
+		return schema;
+	}
+
+	/**
+	 * 通信地址 http 格式的路径。
+	 * @param src String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	@SuppressWarnings("unchecked")
+	public T setSchema(String schema) {
+		this.schema = schema;
 		return (T) this;
 	}
 

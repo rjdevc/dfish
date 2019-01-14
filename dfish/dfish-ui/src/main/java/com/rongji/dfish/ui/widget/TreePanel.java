@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.Highlight;
 import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.LazyLoad;
+import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.PubHolder;
 import com.rongji.dfish.ui.Scrollable;
@@ -25,7 +25,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  */
 public class TreePanel extends AbstractLayout<TreePanel, Leaf> 
 	implements Scrollable<TreePanel>,HiddenContainer<TreePanel>,  HtmlContentHolder<TreePanel>,
-	 PubHolder<TreePanel,Leaf>,MultiContainer<TreePanel, Leaf>,LazyLoad<TreePanel> {
+	 PubHolder<TreePanel,Leaf>,MultiContainer<TreePanel, Leaf>,HasSrc<TreePanel> {
 	/**
 	 * 
 	 */

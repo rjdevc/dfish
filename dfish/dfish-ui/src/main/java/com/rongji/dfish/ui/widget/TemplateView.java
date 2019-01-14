@@ -5,8 +5,9 @@ import com.rongji.dfish.ui.AbstractView;
 /**
  * 对话框模板视图
  * @author DFish Team
- *
+ * @deprecated 3.2 模式变换后，该组件已经不存在了
  */
+@Deprecated
 public class TemplateView extends AbstractView<TemplateView> {
 	
 	/**

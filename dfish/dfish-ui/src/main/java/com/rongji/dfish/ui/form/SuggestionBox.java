@@ -16,6 +16,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	private static final long serialVersionUID = -3727695759981575245L;
 	private String src;
 	private String schema;
+	private String template;
 //	private Boolean suggest;
 	private Boolean multiple;
 	private Boolean nobr;
@@ -139,6 +140,23 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		this.schema = schema;
 		return (T)this;
 	}
+	/**
+	 * 模板
+	 * @return String
+	 */
+	public String getTemplate() {
+		return template;
+	}
+	/**
+	 * 模板
+	 * @param template String
+	 * @return this
+	 */
+	public T setTemplate(String template) {
+		this.template = template;
+		return (T)this;
+	}
+	
 //	/**
 //	 * 输入建议模式，该模式下，不会一次性装载全部数据
 //	 * @return Boolean

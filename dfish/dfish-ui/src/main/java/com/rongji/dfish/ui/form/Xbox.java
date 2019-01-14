@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import java.util.List;
 
-import com.rongji.dfish.ui.LazyLoad;
+import com.rongji.dfish.ui.HasSrc;
 
 
 
@@ -12,7 +12,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements LazyLoad<Xbox> {
+public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<Xbox> {
 	/**
 	 * 
 	 */
