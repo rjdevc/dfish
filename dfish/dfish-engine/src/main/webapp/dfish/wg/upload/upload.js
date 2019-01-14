@@ -1498,6 +1498,7 @@ define.widget( 'upload/image/buttonbar', {
 } );
 
 // 附件列表
+var UploadFileValuebar =
 define.widget( 'upload/file/valuebar', {
 	Const: function( x, p ) {
 		this.u = p;
@@ -1516,14 +1517,23 @@ define.widget( 'upload/file/valuebar', {
 			nodechange: function() {
 				var u = this.u;
 				$.classAdd( u.$(), 'z-lmt', u.isLimit() );
+				this.length && this.$( 'nf' ) && $.remove( this.$( 'nf' ) );
+				! this.length && ! this.$( 'nf' ) && Q( this.$() ).prepend( this.html_nofiles() );
 			}
 		}
 	},
 	Prototype: {
-		x_childtype: $.rt( 'upload/file/value' )
+		x_childtype: $.rt( 'upload/file/value' ),
+		html_nofiles: function() {
+			return '<span id=' + this.id + 'nf class=_nofiles>' + Loc.form.no_files + '</span>';
+		},
+		html_nodes: function() {
+			return (this.length ? '' : this.html_nofiles()) + Horz.prototype.html_nodes.call( this );
+		}
 	}
 } );
 
+var UploadImageValuebar =
 define.widget( 'upload/image/valuebar', {
 	Extend: 'upload/file/valuebar',
 	Prototype: {
@@ -1536,7 +1546,7 @@ define.widget( 'upload/image/valuebar', {
 				W.prototype.insertHTML.call( this, a, b );
 		},
 		html_nodes: function() {
-			return Horz.prototype.html_nodes.call( this ) + (this.parentNode.uploadbar && this.parentNode.uploadbar.html());
+			return UploadFileValuebar.prototype.html_nodes.call( this ) + (this.parentNode.uploadbar ? this.parentNode.uploadbar.html() : '');
 		}
 	}
 } );
