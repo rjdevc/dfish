@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish', version = '3.1.7',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.1.7',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -29,24 +29,23 @@ $ = dfish = function( a ) {
 },
 
 //获取dfish所在目录
-getPath = function(){
-	var jsPath = location.href;
-	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
-	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
+getPath = function() {
+	var u = location.href.substring( 0, location.href.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	_path = u.substring( 0, u.lastIndexOf( '/' ) + 1 ) || './';
 	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
 		_path = _urlLoc( location.pathname, _path );
 	}
-	var jsPath = doc.currentScript ? doc.currentScript.src : function(){
-		var js = doc.scripts, last = js.length - 1, src;
-		for ( var i = last; i > 0; i -- ){
+	u = doc.currentScript ? doc.currentScript.src : (function() {
+		var js = doc.scripts, l = js.length - 1, src;
+		for ( var i = l; i > 0; i -- ) {
 			if( js[ i ].readyState === 'interactive' ) {
 				src = js[ i ].src;
        			break;
 			}
 		}
-		return src || js[ last ].src;
-	}();
-	_lib = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
+		return src || js[ l ].src;
+	})();
+	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
 },
 
 // 浏览器信息
@@ -285,7 +284,7 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, engine: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
 },
 _loadCss = function( a ) {
 	var l = doc.createElement( 'link' );
@@ -309,7 +308,7 @@ _loadStyle = function( a ) {
 _uidCnt = 0,
 _guid  = function() { return (_uidCnt ++).toString( 36 ) + ':' },
 _arrfn = function( a ) { return Function( 'v,i,r', 'return(' + a + ')' ) },
-_fnapply = function( a, b, c, d ) {
+_fnapply = $.fnapply = function( a, b, c, d ) {
 	if ( typeof a === _FUN ) {
 		return a.apply( b, d || A );
 	} else {
@@ -635,7 +634,7 @@ _dateParse = $.dateParse = function( s, f ) {
 	}
 	var b = s.split( '-' );
 	if ( b.length === 1 )
-		s += '-02-01';
+		s += '-01-01';
 	else if ( b.length === 2 )
 		s += '-01';
 	var a = new Date( s.replace( /-/g, '/' ) );
@@ -1489,13 +1488,14 @@ Ajax = _createClass( {
 								_fnapply( f, c, '$ajax', [ self ] );
 							} else {
 								var s = 'ajax ' + l.status + ': ' + a;
+								debugger;
 								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? $.loc.ajax[ r ] : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
 								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
 							}
 						}
 				    } else {
-				    	! x.engine && (f = x.filter || _cfg.ajax_filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
+				    	(f = x.filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
 				    	self.response = m;
 						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
@@ -1778,12 +1778,16 @@ function _initEnv() {
 	$.e   = w.e;
 	$.widget = $.w = w.w;
 	$.dialog = _require( 'dialog' ).get;
+	$.template = w.template;
+	$.schema   = w.schema;
 	$.scrollIntoView = w.scrollIntoView;
 	
 	if ( !(noGlobal || _cfg.no_conflict) ) {
-		win.$  = win.dfish  = $;
 		win.Q  = win.jQuery = _jq;
 		win.VM = $.vm;
+	} else {
+		if ( _$ )
+			win.$ = _$;
 	}
 	// ie 需要定义 xmlns:d="urn:dfish" 用以解析 <d:wg> 标签
 	doc.namespaces && doc.namespaces.add( 'd', 'urn:dfish' );
@@ -1838,7 +1842,6 @@ _merge( $, {
 	_data: {},
 	all: {},
 	globals: {},
-	templates: {},
 	// 事件白名单
 	white_events: (function() {
 		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,beforepaste,beforedeactivate,' +
@@ -1874,9 +1877,6 @@ _merge( $, {
 	// 存取临时变量
 	data: function( a, b ) {
 		return b === U ? this._data[ a ] : (this._data[ a ] = b);
-	},
-	template: function( a, b ) {
-		return b === U ? this.templates[ a ] : (this.templates[ a ] = b);
 	},
 	proxy: function( a, b ) {
 		typeof b === _STR && (b = Function( b ));
@@ -2252,8 +2252,9 @@ _merge( $, {
 	}
 } );
 
-if ( ! noGlobal )
-	win.dfish = dfish;
+if ( ! noGlobal ) {
+	win.dfish = win.$ = dfish;
+}
 
 getPath();
 
