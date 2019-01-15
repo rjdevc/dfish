@@ -112,7 +112,6 @@ define( {
           { name: 'alias', type: 'Object', remark: '新增的模块可在此注册别名' },
           { name: 'ajax_data', type: 'Function', remark: '以POST方式发送到服务器的数据。格式为 key:value。' },
           { name: 'ajax_error', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
-          { name: 'ajax_filter', type: 'Function', remark: '对ajax返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'cn_bytes', type: 'Number', remark: '一个汉字算几个字节。默认值为2。' },
           { name: 'debug', type: 'Boolean', remark: '开启调试模式。调试模式下按"Ctrl+鼠标右键"可查看view的信息' },
           { name: 'default_option', type: 'Object', remark: '每个 widget 类都可以定义默认样式，以 widget type 作为 key' },
@@ -130,10 +129,7 @@ define( {
             { name: 'theme', type: 'String', remark: '主题名。在皮肤目录下应有一个和主题名相同的目录，该目录里面有一个 "主题名.css"' },
             { name: 'color', type: 'String', remark: '颜色名。在主题目录下应有一个和颜色名相同的目录，该目录里面有一个 "颜色名.css"' }
           ] },
-          { name: 'template', type: 'String', remark: '对话框默认模板ID。' },
-          { name: 'template_alert', type: 'String', remark: 'alert和confirm的默认对话框模板ID。' },
-          { name: 'template_src', type: 'String', remark: '对话框模板路径' },
-          { name: 'templates', type: 'Object', remark: '模板集。' },
+          { name: 'src_filter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
@@ -847,15 +843,14 @@ define( {
   		"</ul></dd></dl>"
   },
   "@": {
-  	title: '模板',
+  	title: '模型',
   	sort: false,
-  	remark: '支持模板的widget同时具有src和template属性。src定义数据源，类型可以是字符串的URL，也可以是JSON数据对象。template定义模板，类型可以是代表模板ID的字符串，也可以是模板的JSON对象。<p>' +
-  		'支持模板的widget优先实现顺序，以 view 为范例: <ol>' +
+  	remark: 'widget的schema参数代表模型。<p>支持模型的widget优先实现顺序，以 view 为范例: <ol>' +
   		'<li>如果有node，就直接展示node。' + 
-	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
-	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
+	 	'<li>有src，没有schema。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
+	 	'<li>有src，也有schema，那么src应当返回JSON数据，用于schema的内容填充。</ol></p>',
     Properties: [
-      { name: '@propName', remark: '模板中的 widget 属性名称前面加 @ 符号，表示这是一个动态属性，对应的值是一个JS表达式，可以从数据源获取数据。', example: [
+      { name: '@propName', remark: '模型中的 widget 属性名称前面加 @ 符号，表示这是一个动态属性，对应的值是一个JS表达式，可以从数据源获取数据。', example: [
           function() {
           	/// 一个简单的模板使用范例，在页面上显示hello world。可以把本范例另存为html文件进行测试。
           	return''
@@ -883,7 +878,7 @@ define( {
             '</html>'
           },
           function() {
-          	/// 把上述范例中的 src 和 template 参数改为字符串格式。使用 $.template() 方法定义模板。
+          	/// 把上述范例中的 src 和 template 参数改为字符串格式。使用 $.template() 方法定义模块。
           	return''
             '<script>'
             'dfish.init( {'
@@ -1959,8 +1954,9 @@ define( {
             alert( VM( '/index' ) );
           }
       ] },
-      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。访问这个 url 时应当返回一个 view 的 json 字串。<br>3.2版本以上，src可以是JSON对象。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
+      { name: 'src', type: 'String | Object', remark: 'view 的URL地址。<br>在3.2+版本中，也可以是JSON对象。' },
+      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
       { name: 'node', type: 'Object', remark: 'View的子节点，直接展示的内容。', example: [
           function() {
           	//
@@ -2055,7 +2051,8 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
-      { name: 'template', type: 'String | Object', remark: '模板ID或内容。' },
+      { name: 'schema', type: 'String | Object', remark: '模型地址，或模型内容。' },
+      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'node', type: 'Object', remark: '直接展示的内容。' }
     ],
     Methods: [
@@ -2221,7 +2218,7 @@ define( {
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
       { name: 'src', type: 'String | Object', remark: '获取子节点的 URL 地址。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' }
+      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' }
     ],
     Methods: [
       { name: 'draggable([option])', remark: '设置所有leaf可拖拽。', param: [
@@ -2296,11 +2293,12 @@ define( {
       ] },
       { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'open', type: 'Boolean', remark: '是否展开状态。' },
       { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },
       { name: 'status', type: 'String', remark: '节点状态。可选值：<b>normal</b>, <b>disabled</b>。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
+      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'Boolean | String', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
     ],
@@ -3016,10 +3014,10 @@ define( {
   	extend: 'text',
   	deprecate: 'focus,.w-text',
     Config: [
-      { name: 'defaultchecked', type: 'Boolean', remark: '是否默认选中第一项。默认值为true。' },
+      { name: 'cancelable', type: 'Boolean', remark: '设置为true，可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效。默认值为false。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'src', type: 'String | Object',  ver: '3.2+', remark: '获取选项的 URL 地址。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板ID或内容。' },
+      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
       { name: 'options', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
       	{ name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' },
       	{ name: 'icon', type: 'String', optional: true, remark: '图标。可以是图片地址，或以 "." 开头的样式名。' },
@@ -3177,7 +3175,7 @@ define( {
       ] },
       { name: 'strict', type: 'Boolean', remark: '设为 true，如果存在没有匹配成功的选项，则不能通过表单验证。设为false，允许存在没有匹配成功的选项。默认值是true。' },
       { name: 'text', type: 'String', remark: '初始化时显示的文本。如果设置了此参数，就要和 value 值一一对应。一般只设置 value 就可以，仅当 src 是 tree 模式的数据岛，并且 value 在 tree 的初始数据中匹配不到时才需要定义 text。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '下拉候选项对话框的模板ID或内容。' },
+      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
       { name: 'value', type: 'String', remark: '表单值。多个用逗号隔开。' }
     ],
     Methods: [
@@ -3302,6 +3300,7 @@ define( {
       { name: 'headers', type: 'Object', remark: '一个额外的"{键:值}"对映射到请求一起发送。' },
       { name: 'loading', type: 'Boolean | String | LoadingCmd', remark: '显示一个"正在加载"的提示框。' },
       { name: 'src', type: 'String', remark: '路径。' },
+      { name: 'schema', type: 'String | Object', remark: '模型地址，或模型内容。' },
       { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'sync', type: 'Boolean', remark: '是否同步。' }
    ]
@@ -3437,7 +3436,8 @@ define( {
       { name: 'position', type: 'Number', remark: '对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
       { name: 'pophide', type: 'Boolean', remark: '设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。' },
       { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
-      { name: 'template', type: 'String | Object', remark: '模板ID或内容。' },
+      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
+      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' },
       { name: 'title', type: 'String', remark: '标题。如果有设置 template, 标题将显示在 template/title 中。' }
     ],

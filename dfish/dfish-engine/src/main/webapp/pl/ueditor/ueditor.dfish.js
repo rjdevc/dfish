@@ -18,7 +18,7 @@ define.widget( 'ueditor', {
 			this.className += ' z-trans';
 		}
 		var o = x.option || {};
-		this.options = $.extend( {}, o, { zIndex: 0, initialContent: x.value, readonly: o.readonly || o.disabled || x.readonly || x.disabled } );
+		this.options = $.extend( {}, o, { zIndex: 0, initialContent: x.value, readonly: o.readonly || o.disabled || ! this.isNormal() } );
 		us[ this.id ] = this;
 	},
 	Extend: AbsForm,
