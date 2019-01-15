@@ -8080,6 +8080,8 @@ UE.Editor.defaultOptions = function(editor){
 
     UE.Editor.prototype.loadServerConfig = function(){
         var me = this;
+        
+        !me.options.imageActionName&& // add by cmy 判断选项是否已加载，避免重复加载
         setTimeout(function(){
             try{
                 me.options.imageUrl && me.setOpt('serverUrl', me.options.imageUrl.replace(/^(.*[\/]).+([\.].+)$/, '$1controller$2'));
@@ -8097,6 +8099,7 @@ UE.Editor.defaultOptions = function(editor){
                         try {
                             var config = isJsonp ? r:eval("("+r.responseText+")");
                             utils.extend(me.options, config);
+                            utils.extend(UEDITOR_CONFIG, config); // add by cmy 把选项复制到全局配置中，避免重复加载
                             me.fireEvent('serverConfigLoaded');
                             me._serverConfigLoaded = true;
                         } catch (e) {
