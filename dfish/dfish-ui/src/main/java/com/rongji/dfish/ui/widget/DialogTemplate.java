@@ -11,8 +11,10 @@ import com.rongji.dfish.ui.Widget;
  * 弹出窗口模板
  * 
  * @author DFish Team
+ * @deprecated 3.2以后 该方法无效了，可用Dialog代替
  * 
  */
+@Deprecated
 public class DialogTemplate extends AbstractDialog<DialogTemplate> implements Widget<DialogTemplate> {
 
 	/**

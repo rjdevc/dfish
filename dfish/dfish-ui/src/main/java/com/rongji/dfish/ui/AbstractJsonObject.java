@@ -1,7 +1,10 @@
 package com.rongji.dfish.ui;
 
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +35,16 @@ public abstract class AbstractJsonObject<T extends AbstractJsonObject<T>> implem
 			bundleProperties();
 		}
 	}
-	
+	static{
+		URL url=AbstractJsonObject.class.getClassLoader().getResource("com/rongji/dfish/ui/AbstractJsonObject.class");
+		Matcher m=Pattern.compile("dfish-ui-\\S+.jar").matcher(url.toString());
+		String version="unspecified";
+		if(m.find()){
+			String jarName=m.group();
+			version=jarName.substring(9,jarName.length()-4);
+		}
+		LOG.info("dfish-ui version : "+version);
+	}
 	/**
 	 * 绑定默认属性
 	 * 
