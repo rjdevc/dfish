@@ -1875,7 +1875,7 @@ Xsrc = define.widget( 'xsrc', {
 			this.abort();
 			this.empty();
 			this.layout = N;
-			this.loaded = F;
+			this.loaded = this.loading = F;
 		},
 		showLayout: function() {
 			this.layout && this.layout.render();
