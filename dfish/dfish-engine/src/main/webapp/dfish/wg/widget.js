@@ -1760,10 +1760,6 @@ Scroll = define.widget( 'scroll', {
  * schema 的JSON格式，即模板内容。
  */
 Xsrc = define.widget( 'xsrc', {
-	Const: function( x, p ) {
-		this.init_src( x );
-		W.apply( this, arguments );
-	},
 	Listener: {
 		body: {
 			ready: function() { ! this.layout && this.x.src && this.load() },
@@ -1771,12 +1767,8 @@ Xsrc = define.widget( 'xsrc', {
 		}
 	},
 	Prototype: {
-		// @implement
-		init_nodes: function() {
-			if ( this.x.node )
-				this.layout = new Layout( { node: this.x.node }, this );
-		},
-		init_src: function( x ) {
+		init_x: function( x ) {
+			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
 				var s = x.src;
 				if ( s == N && x.schema )
@@ -1795,6 +1787,11 @@ Xsrc = define.widget( 'xsrc', {
 					n && $.merge( x, n );
 				}
 			}
+		},
+		// @implement
+		init_nodes: function() {
+			if ( this.x.node && ! this.layout )
+				this.layout = new Layout( { node: this.x.node }, this );
 		},
 		attrSetter: function( a, b ) {
 			if ( a === 'cls' ) {
@@ -1925,7 +1922,6 @@ Layout = define.widget( 'layout', {
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
-		this.init_src( x );
 		_initView.call( this );
 		_regWidget.apply( this, arguments );
 		_setParent.call( this, p ? _view( p ) : _docView );
@@ -1938,7 +1934,7 @@ View = define.widget( 'view', {
 		type_view: T,
 		// @implement
 		init_x: function( x ) {
-			_proto.init_x.call( this, x );
+			Xsrc.prototype.init_x.call( this, x );
 			delete this.__width; delete this.__height;
 		},
 		// a -> ajax settings
