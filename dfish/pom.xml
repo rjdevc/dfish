@@ -88,11 +88,11 @@
   <modules>
     <module>dfish-base</module>
     <module>dfish-misc</module>
-    <module>dfish-framework</module>
     <module>dfish-ui</module>
-    <module>dfish-uiplugin</module>
+    <module>dfish-framework</module>
     <module>dfish-engine</module>
     <module>dfish-config</module>
-    <module>dfish-uischm</module>
+    <module>dfish-ui-plugin</module>
+    <module>dfish-ui-schema</module>
   </modules>
 </project>
