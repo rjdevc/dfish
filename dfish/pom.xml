@@ -59,12 +59,17 @@
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
-              <artifactId>dfish-uiplugin</artifactId>
+              <artifactId>dfish-ui-plugin</artifactId>
               <version>3.2.0-SNAPSHOT</version>
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
               <artifactId>dfish-framework</artifactId>
+              <version>3.2.0-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+              <groupId>com.rongji</groupId>
+              <artifactId>dfish-ui-schema</artifactId>
               <version>3.2.0-SNAPSHOT</version>
           </dependency>
       </dependencies>
