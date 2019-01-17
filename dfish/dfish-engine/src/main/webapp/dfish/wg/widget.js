@@ -1826,6 +1826,7 @@ Xsrc = define.widget( 'xsrc', {
 			t && typeof t === _STR ? _getSchema( t, function() { o = T; e(); }, !a ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); }, !a ) : (m = T);
 			u && this.ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
+			
 			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> data json
@@ -1883,7 +1884,7 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		// @a -> close?
 		showLoading: function( a ) {
-			a === F ? this.removeElem( 'loading' ) : $.append( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' );
+			a === F ? this.removeElem( 'loading' ) : (! this.$( 'loading' ) && $.append( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' ));
 		},
 		show: function() {
 			return this.render();

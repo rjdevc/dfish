@@ -1488,7 +1488,7 @@ Ajax = _createClass( {
 								_fnapply( f, c, '$ajax', [ self ] );
 							} else {
 								var s = 'ajax ' + l.status + ': ' + a;
-								debugger;
+								if ( _cfg.debug ) debugger;
 								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? $.loc.ajax[ r ] : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
 								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
