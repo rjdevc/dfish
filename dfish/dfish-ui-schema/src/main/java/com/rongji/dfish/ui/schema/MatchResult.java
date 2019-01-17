@@ -300,8 +300,7 @@ public class MatchResult  implements Iterable<DFishSchema>{
 					}
 					@Override
 					public void remove() {
-						// TODO Auto-generated method stub
-						
+						throw new UnsupportedOperationException("remove");
 					}
 				};
 			}else{
@@ -324,8 +323,7 @@ public class MatchResult  implements Iterable<DFishSchema>{
 		}
 		@Override
 		public void remove() {
-			// TODO Auto-generated method stub
-			
+			throw new UnsupportedOperationException("remove");
 		}
 	}
 }
