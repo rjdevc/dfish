@@ -4351,10 +4351,7 @@ _input_indent = function() {
 AbsForm = define.widget( 'abs/form', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		var a = this.x.label;
-		if ( a && typeof a === _OBJ && (a.width || (_dfopt.label && _dfopt.label.width)) ) {
-			 this.label = new Label( a, this, -1 );
-		}
+		this.init_label();
 		$.classAdd( this, 'w-' + this.type.replace( '/', '-' ) );
 	},
 	Listener: {
@@ -4400,6 +4397,11 @@ AbsForm = define.widget( 'abs/form', {
 		className: 'w-form',
 		_warncls: '',
 		validHooks: F,
+		init_label: function() {
+			var a = this.x.label;
+			if ( a && typeof a === _OBJ && (a.width || (_dfopt.label && _dfopt.label.width)) )
+				 this.label = new Label( a, this, -1 );
+		},
 		form_minus:  function() {
 			return (this.label ? this.label.outerWidth() : 0);
 		},
@@ -4420,6 +4422,7 @@ AbsForm = define.widget( 'abs/form', {
 		inputHeight: function() {
 			return this.formHeight();
 		},
+
 		usa: function() {
 			return this.isNormal();
 		},
@@ -4670,10 +4673,7 @@ AbsInput = define.widget( 'abs/input', {
 Formgroup =define.widget( 'formgroup', {
 	Const: function( x ) {
 		Horz.apply( this, arguments );
-		var a = this.x.label;
-		if ( a && typeof a === _OBJ && a.width ) {
-			this.label = new Label( a, this, -1 );
-		}
+		this.init_label();
 	},
 	Extend: [ AbsForm, Horz ],
 	Prototype: {
