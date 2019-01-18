@@ -59,7 +59,7 @@ public class CmsTemplateTest {
 	@Test
 	public void testTree(){
 		Leaf leaf =new Leaf();
-		leaf.setSchema("cms/tree")
+		leaf.setTemplate("cms/tree")
 			.setOn(Leaf.EVENT_FOCUS, "cms.treeClick(this);");
 		leaf.at("id","$item.cateId")
 			.at("text","$item.cateName")

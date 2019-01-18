@@ -76,5 +76,5 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 	public Combobox setTip(String tip) {
 		return this;
 	}
-	
+
 }

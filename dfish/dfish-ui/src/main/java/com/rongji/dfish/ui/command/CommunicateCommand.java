@@ -18,7 +18,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 */
 	private static final long serialVersionUID = -2296464991066275984L;
 	protected String src;//http 格式的路径。
-	protected String schema;//http 格式的路径。
+	protected String template;//http 格式的路径。
 	protected Boolean sync;//是否同步。
 	protected Boolean download;//是否启用下载模式
 	protected String beforesend;//js语句，在发送请求前调用
@@ -58,8 +58,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 		return (T) this;
 	}
 	
-	public String getSchema() {
-		return schema;
+	public String getTemplate() {
+		return template;
 	}
 
 	/**
@@ -68,8 +68,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
-	public T setSchema(String schema) {
-		this.schema = schema;
+	public T setTemplate(String template) {
+		this.template = template;
 		return (T) this;
 	}
 
@@ -240,6 +240,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 		return filter;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T setFilter(String filter) {
 		this.filter = filter;
 		return (T) this;

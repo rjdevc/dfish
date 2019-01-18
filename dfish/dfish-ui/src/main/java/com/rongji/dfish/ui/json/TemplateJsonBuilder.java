@@ -23,7 +23,7 @@ public class TemplateJsonBuilder extends ClassJsonBuilder {
 		}
 		//如果o是TemplateSupport的话，采用独立的构造器
 		if(o instanceof TemplateSupport){
-			Map<String,String>ats=((TemplateSupport) o).ats();
+			Map<String,String>ats=((TemplateSupport<?>) o).ats();
 			if(ats!=null){
 				for(Map.Entry<String,String>entry:ats.entrySet()){
 					String propName=entry.getKey();

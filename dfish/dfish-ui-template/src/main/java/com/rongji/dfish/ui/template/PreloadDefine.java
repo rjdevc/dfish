@@ -33,9 +33,9 @@ public class PreloadDefine implements JsonObject{
 		StringBuilder sb=new StringBuilder();
 		
 		if(uri==null||uri.equals("")){
-			sb.append("$.template(");
+			sb.append("$.preload(");
 		}else{
-			sb.append("$.template(\"").append(uri).append("\",");
+			sb.append("$.preload(\"").append(uri).append("\",");
 		}
 		if(jo instanceof AbstractJsonObject){
 			sb.append(((AbstractJsonObject<?>) jo).formatString());
