@@ -843,14 +843,14 @@ define( {
   		"</ul></dd></dl>"
   },
   "@": {
-  	title: '模型',
+  	title: '模板',
   	sort: false,
-  	remark: 'widget的schema参数代表模型。<p>支持模型的widget优先实现顺序，以 view 为范例: <ol>' +
+  	remark: 'widget的template参数代表模板。<p>支持模板的widget优先实现顺序，以 view 为范例: <ol>' +
   		'<li>如果有node，就直接展示node。' + 
-	 	'<li>有src，没有schema。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
-	 	'<li>有src，也有schema，那么src应当返回JSON数据，用于schema的内容填充。</ol></p>',
+	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
+	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
     Properties: [
-      { name: '@propName', remark: '模型中的 widget 属性名称前面加 @ 符号，表示这是一个动态属性，对应的值是一个JS表达式，可以从数据源获取数据。', example: [
+      { name: '@propName', remark: '模板中的 widget 属性名称前面加 @ 符号，表示这是一个动态属性，对应的值是一个JS表达式，可以从数据源获取数据。', example: [
           function() {
           	/// 一个简单的模板使用范例，在页面上显示hello world。可以把本范例另存为html文件进行测试。
           	return''
@@ -1955,7 +1955,7 @@ define( {
           }
       ] },
       { name: 'src', type: 'String | Object', remark: 'view 的URL地址。<br>在3.2+版本中，也可以是JSON对象。' },
-      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
+      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
       { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
       { name: 'node', type: 'Object', remark: 'View的子节点，直接展示的内容。', example: [
           function() {
@@ -2051,7 +2051,7 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
-      { name: 'schema', type: 'String | Object', remark: '模型地址，或模型内容。' },
+      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
       { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'node', type: 'Object', remark: '直接展示的内容。' }
     ],
@@ -2218,7 +2218,7 @@ define( {
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
       { name: 'src', type: 'String | Object', remark: '获取子节点的 URL 地址。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
-      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' }
+      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' }
     ],
     Methods: [
       { name: 'draggable([option])', remark: '设置所有leaf可拖拽。', param: [
@@ -2298,7 +2298,7 @@ define( {
       { name: 'open', type: 'Boolean', remark: '是否展开状态。' },
       { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },
       { name: 'status', type: 'String', remark: '节点状态。可选值：<b>normal</b>, <b>disabled</b>。' },
-      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
+      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'Boolean | String', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
     ],
@@ -3017,7 +3017,7 @@ define( {
       { name: 'cancelable', type: 'Boolean', remark: '设置为true，可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效。默认值为false。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'src', type: 'String | Object',  ver: '3.2+', remark: '获取选项的 URL 地址。' },
-      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
+      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'options', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
       	{ name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' },
       	{ name: 'icon', type: 'String', optional: true, remark: '图标。可以是图片地址，或以 "." 开头的样式名。' },
@@ -3175,7 +3175,8 @@ define( {
       ] },
       { name: 'strict', type: 'Boolean', remark: '设为 true，如果存在没有匹配成功的选项，则不能通过表单验证。设为false，允许存在没有匹配成功的选项。默认值是true。' },
       { name: 'text', type: 'String', remark: '初始化时显示的文本。如果设置了此参数，就要和 value 值一一对应。一般只设置 value 就可以，仅当 src 是 tree 模式的数据岛，并且 value 在 tree 的初始数据中匹配不到时才需要定义 text。' },
-      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
+      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
+      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'value', type: 'String', remark: '表单值。多个用逗号隔开。' }
     ],
     Methods: [
@@ -3300,7 +3301,7 @@ define( {
       { name: 'headers', type: 'Object', remark: '一个额外的"{键:值}"对映射到请求一起发送。' },
       { name: 'loading', type: 'Boolean | String | LoadingCmd', remark: '显示一个"正在加载"的提示框。' },
       { name: 'src', type: 'String', remark: '路径。' },
-      { name: 'schema', type: 'String | Object', remark: '模型地址，或模型内容。' },
+      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'sync', type: 'Boolean', remark: '是否同步。' }
    ]
@@ -3436,7 +3437,7 @@ define( {
       { name: 'position', type: 'Number', remark: '对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
       { name: 'pophide', type: 'Boolean', remark: '设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。' },
       { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
-      { name: 'schema', type: 'String | Object', ver: '3.2+', remark: '模型地址，或模型内容。' },
+      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
       { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' },
       { name: 'title', type: 'String', remark: '标题。如果有设置 template, 标题将显示在 template/title 中。' }

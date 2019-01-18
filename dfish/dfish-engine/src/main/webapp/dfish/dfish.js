@@ -1779,7 +1779,7 @@ function _initEnv() {
 	$.widget = $.w = w.w;
 	$.dialog = _require( 'dialog' ).get;
 	$.template = w.template;
-	$.schema   = w.schema;
+	$.preload  = w.preload;
 	$.scrollIntoView = w.scrollIntoView;
 	
 	if ( !(noGlobal || _cfg.no_conflict) ) {

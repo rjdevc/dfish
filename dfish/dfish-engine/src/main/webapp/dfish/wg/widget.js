@@ -25,28 +25,13 @@ _putin  = { append: T, prepend: T, undefined: T },
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
-// 模块集合
-_schemaCache = {},
-// 注册模块  /@ a -> id, b -> template body
-_regSchema = function( a, b ) {
-	_schemaCache[ a ] = b;
-},
-// 获取模块  /@a -> schema id, b -> fn?
-_getSchema = function( a, b ) {
-	var t = typeof a === _OBJ ? a : _schemaCache[ a ];
-	if ( t ) {
-		b && b();
-		return t;
-	}
-	return ($.require( (cfg.schema_dir || '') + a, b ), _schemaCache[ a ]);
-},
 // 模板集合
 _templateCache = {},
-// 注册模板  /@ a -> id, b -> template body
+// 注册模板  /@ a -> id, b -> preload body
 _regTemplate = function( a, b ) {
 	_templateCache[ a ] = b;
 },
-// 获取模板  /@a -> schema id, b -> fn?
+// 获取模板  /@a -> template id, b -> fn?
 _getTemplate = function( a, b ) {
 	var t = typeof a === _OBJ ? a : _templateCache[ a ];
 	if ( t ) {
@@ -54,6 +39,21 @@ _getTemplate = function( a, b ) {
 		return t;
 	}
 	return ($.require( (cfg.template_dir || '') + a, b ), _templateCache[ a ]);
+},
+// 预装模板集合
+_preloadCache = {},
+// 注册预装模板  /@ a -> id, b -> preload body
+_regPreload = function( a, b ) {
+	_preloadCache[ a ] = b;
+},
+// 获取预装模板  /@a -> template id, b -> fn?
+_getPreload = function( a, b ) {
+	var t = typeof a === _OBJ ? a : _preloadCache[ a ];
+	if ( t ) {
+		b && b();
+		return t;
+	}
+	return ($.require( (cfg.preload_dir || '') + a, b ), _preloadCache[ a ]);
 },
 // 事件白名单
 _white_events = $.white_events,
@@ -242,7 +242,7 @@ _ajaxCmd = function( x, a, t ) {
 		success: function( v, a ) {
 			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
-				v && x.schema && (v = _compileSchema( this, v, x.schema ));
+				v && x.template && (v = _compileTemplate( this, v, x.template ));
 				if ( x.success )
 					$.fnapply( x.success, this, '$value,$ajax', [ v, a ] );
 				else
@@ -251,7 +251,7 @@ _ajaxCmd = function( x, a, t ) {
 		}, complete: function( v, a ) {
 			d && d.close();
 			if ( ! this._disposed && x.complete ) {
-				v && x.schema && (v = _compileSchema( this, v, x.schema ));
+				v && x.template && (v = _compileTemplate( this, v, x.template ));
 				$.fnapply( x.complete, this, '$value,$ajax', [ v, a ] );
 			}
 			if ( ! this._disposed )
@@ -386,16 +386,16 @@ Node = $.createClass( {
 	}
 } ),
 
-_schema_reserved = { '@w-if': T, '@w-elseif': T, '@w-else': T, '@w-include': T },
-_compileSchema = function( g, d, s ) { return new Schema( s || g.x.schema, d, g ).compile() },
+_template_reserved = { '@w-if': T, '@w-elseif': T, '@w-else': T, '@w-include': T },
+_compileTemplate = function( g, d, s ) { return new Template( s || g.x.template, d, g ).compile() },
 ContinueIF = function(){},
-/* `Schema` */
-Schema = $.createClass( {
-	// @ t -> template, d -> data, g -> widget
+/* `Template` */
+Template = $.createClass( {
+	// @ t -> preload, d -> data, g -> widget
 	Const: function( t, d, g ) {
 		this.data = d;
 		this.wg   = g;
-		this.schema = _getSchema( t );
+		this.template = _getTemplate( t );
 	},
 	Extend: Node,
 	Prototype: {
@@ -404,11 +404,11 @@ Schema = $.createClass( {
 		},
 		// @y -> { key: value }
 		compile: function( x, y ) {
-			var x = x || this.schema, r = {}, f = {};
+			var x = x || this.template, r = {}, f = {};
 			if ( ! x )
 				return;
 			if ( x[ '@w-include' ] ) {
-				var d = _getSchema( x[ '@w-include' ] );
+				var d = _getTemplate( x[ '@w-include' ] );
 				return d && this.compile( d, y );
 			}
 			for ( var k in x ) {
@@ -436,7 +436,7 @@ Schema = $.createClass( {
 							}
 							r[ c ] = h;
 						}
-					} else if ( ! _schema_reserved[ k ] ) {
+					} else if ( ! _template_reserved[ k ] ) {
 						(r[ k.substr( 1 ) ] = this.format( b, y ));
 					}
 				} else if ( $.isArray( b ) ) {
@@ -471,7 +471,7 @@ Schema = $.createClass( {
 _tpl_str = {},
 _tpl_ids = {},
 _tpl_parse = function( a, b ) {
-	var r = {}, t = 'template/body';
+	var r = {}, t = 'preload/body';
 	if ( $.isArray( a ) ) {
 		for ( var i = 0, l = a.length, c; i < l; i ++ ) {
 			$.merge( r, _tpl_parse( a[ i ], b ) );
@@ -502,8 +502,8 @@ _tpl_view = function( a ) {
 			if ( v = _tpl_view( a.nodes[ i ] ) ) return v;
 	}
 },
-_compileTemplate = function( a, x ) {
-	var b = typeof a === _OBJ, n = b ? a : _getTemplate( a );
+_compilePreload = function( a, x ) {
+	var b = typeof a === _OBJ, n = b ? a : _getPreload( a );
 	if ( n ) {
 		if ( x.type === 'view' && (x.commands || x.on) ) {
 			var v = _tpl_view( n );
@@ -512,7 +512,7 @@ _compileTemplate = function( a, x ) {
 				x.on && $.merge( v.on || (v.on = {}), x.on );
 			}
 		}
-		var t = 'template/body',
+		var t = 'preload/body',
 			s = b ? $.jsonString( n ) : (_tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( n ))),
 			c = b ? _tpl_parse( n ) : (_tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( n ))),
 			d = _tpl_parse( x, c );
@@ -520,7 +520,7 @@ _compileTemplate = function( a, x ) {
 			if ( d[ k ] )
 				s = s.replace( $.jsonString( c[ k ] ), $.jsonString( d[ k ] ) );
 		}
-		// 如果之前的替换处理后， template/body 没被替换掉，那么它将替换整个node
+		// 如果之前的替换处理后， preload/body 没被替换掉，那么它将替换整个node
 		if ( c[ t ] ) {
 			s = s.replace( $.jsonString( c[ t ] ), function() { return $.jsonString( x ) } );
 		}
@@ -565,8 +565,8 @@ W = define( 'widget', function() {
 		w: _widget,
 		e: _widgetEvent,
 		isCmd: function( a ) { return a && _cmdHooks[ a.type ] },
+		preload: _regPreload,
 		template: _regTemplate,
-		schema: _regSchema,
 		scrollIntoView: _scrollIntoView
 	},
 	Extend: Node,
@@ -1138,7 +1138,7 @@ W = define( 'widget', function() {
 	} );
 } ),
 // 模板内容
-TemplateBody = define.widget( 'template/body', {} ),
+PreloadBody = define.widget( 'preload/body', {} ),
 
 _proto   = W.prototype,
 _w_scale = {},
@@ -1751,13 +1751,13 @@ Scroll = define.widget( 'scroll', {
 /* `xsrc`
  * 支持模板的widget实现顺序
  * 一、如果有node(s)，直接展示node(s)。因为node是最终结果
- * 二、有src，没有template。这个src应当返回当前widget格式的JSON
- * 三、有src，也有template，那么src应当返回配合template的JSON
+ * 二、有src，没有preload。这个src应当返回当前widget格式的JSON
+ * 三、有src，也有preload，那么src应当返回配合preload的JSON
  *
  * src 的字符格式，可以是URL地址，或是 javascript: 开头的js语句(执行后返回URL字串或数据JSON)
  * src 的JSON格式，数据JSON，和字串格式的src返回的内容相同
- * schema 的字串格式，是模板的ID。如果前端缓存没有找到模板，会以这个ID为路径去服务器获取
- * schema 的JSON格式，即模板内容。
+ * template 的字串格式，是模板的ID。如果前端缓存没有找到模板，会以这个ID为路径去服务器获取
+ * template 的JSON格式，即模板内容。
  */
 Xsrc = define.widget( 'xsrc', {
 	Listener: {
@@ -1771,7 +1771,7 @@ Xsrc = define.widget( 'xsrc', {
 			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
 				var s = x.src;
-				if ( s == N && x.schema )
+				if ( s == N && x.template )
 					s = {};
 				if ( s && typeof s === _OBJ ) {
 					this.type_view && _view_js[ this.path ] && $.require( _view_js[ this.path ] );
@@ -1779,11 +1779,11 @@ Xsrc = define.widget( 'xsrc', {
 				} else
 					this.className += ' z-loading';
 			}
-			var t = x.template && _getTemplate( x.template );
+			var t = x.preload && _getPreload( x.preload );
 			if ( t ) {
 				_mergeLoadingProp( x, t );
 				if ( x.node ) {
-					var n = _compileTemplate( x.template, x.node );
+					var n = _compilePreload( x.preload, x.node );
 					n && $.merge( x, n );
 				}
 			}
@@ -1818,12 +1818,12 @@ Xsrc = define.widget( 'xsrc', {
 		_load: function( a, b, c ) {
 			this.abort();
 			this.loading = T;
-			var u = this.attr( 'src' ), m, n, o, t = this.x.schema, self = this,
+			var u = this.attr( 'src' ), m, n, o, t = this.x.template, self = this,
 				d = this.type_view && _view_js[ this.path ],
 				e = function() {
 					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
 				};
-			t && typeof t === _STR ? _getSchema( t, function() { o = T; e(); }, !a ) : (o = T);
+			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); }, !a ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); }, !a ) : (m = T);
 			u && this.ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
 			
@@ -1834,9 +1834,9 @@ Xsrc = define.widget( 'xsrc', {
 			this.loading = F;
 			if ( d ) {
 				this._srcdata = d;
-				var x = this.x.schema ? _compileSchema( this, d ) : this._loadDataFilter( d );
-				if ( this.x.template )
-					x = _compileTemplate( this.x.template, x );
+				var x = this.x.template ? _compileTemplate( this, d ) : this._loadDataFilter( d );
+				if ( this.x.preload )
+					x = _compilePreload( this.x.preload, x );
 				if ( x.type !== this.type && W.isCmd( x ) )
 					return this.exec( x );
 				this.attr( x );
@@ -3826,7 +3826,7 @@ Alert = define.widget( 'alert', {
 		var a = this.type === 'alert', r = x.args, s = x.btncls || 'f-button',
 			b = { type: 'alert/submitbutton', cls: s, text: '    ' + Loc.confirm + '    ' },
 			c = { type: 'alert/button', cls: s, text: '    ' + Loc.cancel + '    ' },
-			t = (_dfopt.alert && _dfopt.alert.template) || (_dfopt.dialog && _dfopt.dialog.template);
+			t = (_dfopt.alert && _dfopt.alert.preload) || (_dfopt.dialog && _dfopt.dialog.preload);
 		if ( x.buttons ) {
 			for ( var i = 0, d = []; i < x.buttons.length; i ++ ) {
 				x.buttons[ i ].type = 'alert/' + x.buttons[ i ].type;
@@ -3834,8 +3834,8 @@ Alert = define.widget( 'alert', {
 				d.push( x.buttons[ i ] );
 			}
 		}
-		if ( t && (this._tpl = _getTemplate( t )) ) {
-			$.extend( x, { template: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
+		if ( t && (this._tpl = _getPreload( t )) ) {
+			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<table border=0 style="margin:10px 20px 20px 5px;word-wrap:break-word;"><tr><td align=center valign=top><div style=width:65px;padding-top:5px>' +
 				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.strFormat( x.text || '', x.args ).replace( /\n/g, '<br>' ) + '</table>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
@@ -5270,7 +5270,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', template: '', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog', preload: '', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -5374,7 +5374,7 @@ Calendar = define.widget( 'calendar/date', {
 					return r;
 				};
 			s += htm() + '</div>' + ( M ? '' : '<div class="_b _scr">+</div>' );
-			var d = this.exec( { type: 'dialog', template: '', width: 60, height: h * 12, cls: 'w-calendar-select', snap: e, snaptype: e.dropSnapType || 'cc', pophide: T, node: { type: 'html', text: s },
+			var d = this.exec( { type: 'dialog', preload: '', width: 60, height: h * 12, cls: 'w-calendar-select', snap: e, snaptype: e.dropSnapType || 'cc', pophide: T, node: { type: 'html', text: s },
 					on: { mouseleave: function(){ this.close() }, close: function() { clearTimeout( t ); Q( d.$() ).off(); } }
 				} ),
 				r = Q( '._wr', d.$() ),
@@ -5419,7 +5419,7 @@ Calendar = define.widget( 'calendar/date', {
 				~f.indexOf( 'h' ) && list( 'h', 24 );
 				~f.indexOf( 'i' ) && list( 'i', 60 );
 				~f.indexOf( 's' ) && list( 's', 60 );
-				this._dlg_time = this.exec( { type: 'dialog', template: '', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
+				this._dlg_time = this.exec( { type: 'dialog', preload: '', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
 					 type: 'vert', nodes: [
 					 	{ type: 'horz', height: 29, nodes: h },
 					 	{ type: 'horz', height: '*', nodes: c,
@@ -5736,7 +5736,7 @@ Muldate = define.widget( 'muldate', {
 			var h = (v.length + 1) * 30 + 2, c = this.list, d = c && c.isShow();
 			this.closePop();
 			if ( ! d ) 
-				this.list = this.exec( { type: 'dialog', template: '', cls: 'w-calendar-dialog w-muldate-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
+				this.list = this.exec( { type: 'dialog', preload: '', cls: 'w-calendar-dialog w-muldate-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
 					node: { type: 'html', text: b.join( '' ), scroll: T }, on: { close: function() { this.commander.focus(F) } } } );
 			this.focus();
 		},
@@ -6070,7 +6070,7 @@ XBox = define.widget( 'xbox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'dialog', template: '', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
+				this._dropper = this.exec( { type: 'dialog', preload: '', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
 					cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
 					snaptype: 'v', snap: this, node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
 					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
@@ -6155,7 +6155,7 @@ Imgbox = define.widget( 'imgbox', {
 				for ( var i = 0, v = this.val(); i < l; i ++ ) {
 					s.push( '<div class="w-imgbox-c f-inbl' + (d[ i ].value == v ? ' z-on' : '') + '"' + _event_zhover + ' onclick=' + evw + '.choose(' + i + ')>' + this.html_img( d[ i ] ) + '</div>' );
 				}
-				this.dg = this.add( { type: 'dialog', template: '', width: e, height: h, cls: 'w-input-border' + (this.txth ? ' z-tx': ''), snap: this, snaptype: g.type, pophide: T, indent: 1,
+				this.dg = this.add( { type: 'dialog', preload: '', width: e, height: h, cls: 'w-input-border' + (this.txth ? ' z-tx': ''), snap: this, snaptype: g.type, pophide: T, indent: 1,
 					node: { type: 'html', scroll: T, text: s.join( '' ) + '</div>' }, on: { close: 'this.parentNode.removeClass("z-m-' + g.mag + '")' } } ).render();
 				$.classAdd( this.$(), 'z-m-' + g.mag );
 			}
@@ -6457,7 +6457,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?, f -> callback
 		createPop: function( u, r ) {
-			var d = { type: 'dialog', template: '', cls: 'w-combobox-dialog', indent: 1 };
+			var d = { type: 'dialog', preload: '', cls: 'w-combobox-dialog', indent: 1 };
 			if ( typeof u === _STR ) {
 				d.src = u;
 			} else {
@@ -6474,7 +6474,7 @@ Combobox = define.widget( 'combobox', {
 			}
 			$.extend( d, o );
 			d.src && (d.src = this.parseSrc( d.src, r ));
-			d.schema = this.x.schema;
+			d.template = this.x.template;
 			var self = this;
 			return this.add( d, -1 ).addEvent( 'close', function() {
 				! self.$().contains( document.activeElement ) && self.focus( F );
@@ -7468,8 +7468,8 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			this.exec( { type: 'ajax', src: this.x.src, sync: a,
 				success: function( x ) {
 					this._srcdata = x;
-					if ( this.x.schema ) {
-						x = _compileSchema( this, x );
+					if ( this.x.template ) {
+						x = _compileTemplate( this, x );
 						x.pub && $.merge( (this.x.pub || (this.x.pub = {})), x.pub );
 					}
 					if ( W.isCmd( x ) ) {
@@ -7585,8 +7585,8 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			typeof b === _FUN && (c = b, b = N);
 			this.exec( { type: 'ajax', src: a, sync: b,
 				success: function( x ) {
-					if ( this.x.schema ) {
-						x = _compileSchema( this, x );
+					if ( this.x.template ) {
+						x = _compileTemplate( this, x );
 					}
 					if ( W.isCmd( x ) ) {
 						this.exec( x );
