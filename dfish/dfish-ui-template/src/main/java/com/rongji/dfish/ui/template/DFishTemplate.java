@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.schema;
+package com.rongji.dfish.ui.template;
 
 import com.rongji.dfish.ui.JsonObject;
 
@@ -15,7 +15,6 @@ import com.rongji.dfish.ui.JsonObject;
  * 可知这个rows会带@这个特殊符号，并且它的类型会变成一个String表达式。
  * 所以需要将GridLayout 内容转化成动态的模板。而DFishTemplate 将提供这些操作。
  * </p>
- * Description: 
  * Copyright:   Copyright © 2018
  * Company:     rongji
  * @author		LinLW
@@ -26,6 +25,6 @@ import com.rongji.dfish.ui.JsonObject;
  * ------------------------------------------------------------------
  * 2018年12月18日 下午6:50:07		LinLW			1.0				1.0 Version
  */
-public interface DFishSchema extends JsonObject{
+public interface DFishTemplate extends JsonObject{
 
 }

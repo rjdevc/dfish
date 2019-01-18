@@ -1,37 +1,30 @@
-package com.rongji.dfish.ui.schema;
+package com.rongji.dfish.ui.template;
+
+import org.junit.Test;
 
 import com.rongji.dfish.ui.command.JSCommand;
 import com.rongji.dfish.ui.form.DatePicker;
+import com.rongji.dfish.ui.form.FormGroup;
 import com.rongji.dfish.ui.form.Spinner;
 import com.rongji.dfish.ui.form.Text;
 import com.rongji.dfish.ui.helper.FlexGrid;
-import com.rongji.dfish.ui.helper.HorizontalGroup;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;
 import com.rongji.dfish.ui.widget.Leaf;
-import com.rongji.dfish.ui.schema.DFishSchema;
-import com.rongji.dfish.ui.schema.JudgeSchema;
-import com.rongji.dfish.ui.schema.TemplateDefine;
-import com.rongji.dfish.ui.schema.WidgetSchema;
 
 public class ConditionTemplateTest {
-	public static void main(String[] args) {
-		DFishSchema dt1=getDefine();
-		System.out.println(dt1);
-//		DFishTemplate dt2=getFor();
-//		System.out.println(dt2);
-		
-		
-	}
-	private static DFishSchema getDefine() {
+	
+	@Test
+	public void getDefine() {
 		String uri="t/cms/test";
-		JudgeSchema jt=new JudgeSchema();
-		jt.addIf("@w-if($error)", new WidgetSchema(new JSCommand(null)).setAtProp("text","app.error($error);"));
+		JudgeTemplate jt=new JudgeTemplate();
+		jt.addIf("@w-if($error)", new WidgetTemplate(new JSCommand(null)).at("text","app.error($error);"));
 		jt.addElse(getWidgetTemplate());
-		SchemaDefine ret= new SchemaDefine(uri,jt);
-		return ret;
+		TemplateDefine ret= new TemplateDefine(uri,jt);
+		System.out.println(ret);
 	}
-	private static WidgetSchema getWidgetTemplate() {
+	
+	private WidgetTemplate getWidgetTemplate() {
 		View view =new View();
 		FlexGrid fg=new FlexGrid("你猜");
 		view.add(fg);
@@ -42,7 +35,7 @@ public class ConditionTemplateTest {
 		fg.addLabelRow(text2, 8);
 		text2.getLabel().setWidth(100);
 		
-		HorizontalGroup hg1=new HorizontalGroup("加班时间");
+		FormGroup hg1=new FormGroup("加班时间");
 		fg.addLabelRow(hg1, FlexGrid.FULL_LINE);
 //		hg1.getLabel().setWidth(100);
 		hg1.add(new DatePicker("bt","开始时间","",DatePicker.DATE),"-1");
@@ -54,26 +47,29 @@ public class ConditionTemplateTest {
 		hg1.add(new Spinner("hours","小时数",null,0,999,1),"60");
 		hg1.add(new Html("小时"),"-1");
 
-		return  new WidgetSchema(view);
+		return new WidgetTemplate(view);
 	}
-	private static DFishSchema getFor() {
-		WidgetSchema leafTmp=new WidgetSchema(new Leaf())
+	
+	@Test
+	public void getFor() {
+		WidgetTemplate leafTmp=new WidgetTemplate(new Leaf())
 				.at("text", "$item.name");
-		return new WidgetSchema ().addFor("nodes", "$data",leafTmp);
+		System.out.println(new WidgetTemplate ().addFor("nodes", "$data",leafTmp));
 	}
 
-	private static DFishSchema getIf() {
-		WidgetSchema textTmp=new WidgetSchema(new Text("userName","",null))
-				.setAtProp("value", "$data.name");
-		WidgetSchema roTmp=new WidgetSchema(new Text("userName","",null).setReadonly(true))
-				.setAtProp("value", "$data.name");
-		WidgetSchema htmTmp=new WidgetSchema(new Html(null))
-				.setAtProp("text", "$data.name");
-		JudgeSchema judge=new JudgeSchema()
+	@Test
+	public void getIf() {
+		WidgetTemplate textTmp=new WidgetTemplate(new Text("userName","",null))
+				.at("value", "$data.name");
+		WidgetTemplate roTmp=new WidgetTemplate(new Text("userName","",null).setStatus(Text.STATUS_READONLY))
+				.at("value", "$data.name");
+		WidgetTemplate htmTmp=new WidgetTemplate(new Html(null))
+				.at("text", "$data.name");
+		JudgeTemplate judge=new JudgeTemplate()
 				.addIf("$data.readonly==0", textTmp)
 				.addElseif("$data.readonly==1", roTmp)
 				.addElse(htmTmp);
-		return judge;
+		System.out.println(judge);
 	}
 	
 }

@@ -8,10 +8,8 @@
 		<artifactId>dfish</artifactId>
 		<version>3.2.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.rongji</groupId>
-	<artifactId>dfish-ui-schema</artifactId>
-	<version>3.2.0-SNAPSHOT</version>
-	<name>dfish-ui-schema</name>
+	<artifactId>dfish-ui-template</artifactId>
+	<name>dfish-ui-template</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

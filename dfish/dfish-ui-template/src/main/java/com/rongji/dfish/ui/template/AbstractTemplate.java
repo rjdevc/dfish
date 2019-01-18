@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.schema;
+package com.rongji.dfish.ui.template;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,17 +22,17 @@ import com.rongji.dfish.ui.json.J;
 	 * 2018年12月18日 下午12:25:10		LinLW			1.0				1.0 Version  
 	 */
 	
-public abstract class AbstractSchema implements DFishSchema{
+public abstract class AbstractTemplate implements DFishTemplate{
 
 	private static final long serialVersionUID = -4474810267412968779L;
 	protected Object json;
 	public boolean equals(Object o){
 		if (o==null) {return false;}
 		if (o==this){return true;}
-		if(!(o instanceof AbstractSchema)){
+		if(!(o instanceof AbstractTemplate)){
 			return false;
 		}
-		Object ojson=((AbstractSchema)o).json;
+		Object ojson=((AbstractTemplate)o).json;
 		return ojson!=null&&json!=null&&json.equals(ojson);
 	}
 	public int hashCode(){

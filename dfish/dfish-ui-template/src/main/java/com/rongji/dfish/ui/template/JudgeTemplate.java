@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.schema;
+package com.rongji.dfish.ui.template;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
  *	.addElseif("$data.readonly==1", roTmp)
  *	.addElse(htmTmp);
  *</pre>
- * Description: 
  * Copyright:   Copyright © 2018
  * Company:     rongji
  * @author		DFish team
@@ -28,8 +27,8 @@ import com.alibaba.fastjson.JSONObject;
  * ------------------------------------------------------------------
  * 2018年12月18日 下午7:04:51		LinLW			1.0				1.0 Version
  */
-public class JudgeSchema extends AbstractSchema {
-	public JudgeSchema(){
+public class JudgeTemplate extends AbstractTemplate {
+	public JudgeTemplate(){
 		json=new JSONObject(true);
 	}
 	private static final long serialVersionUID = 767478857627210712L;
@@ -40,9 +39,9 @@ public class JudgeSchema extends AbstractSchema {
 	 * @param temp 模板，可以是wiget模板，也可以是@include
 	 * @return this
 	 */
-	public JudgeSchema addIf(String expr,DFishSchema temp){
+	public JudgeTemplate addIf(String expr,DFishTemplate temp){
 		String key="@w-if("+expr+")";
-		((JSONObject)json).put(key, ((AbstractSchema) temp).json);
+		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
 		return this;
 	}
 	
@@ -52,9 +51,9 @@ public class JudgeSchema extends AbstractSchema {
 	 * @param temp 模板，可以是wiget模板，也可以是@include
 	 * @return this
 	 */
-	public JudgeSchema addElseif(String expr,DFishSchema temp){
+	public JudgeTemplate addElseif(String expr,DFishTemplate temp){
 		String key="@w-elseif("+expr+")";
-		((JSONObject)json).put(key, ((AbstractSchema) temp).json);
+		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
 		return this;
 	}
 	/**
@@ -62,9 +61,9 @@ public class JudgeSchema extends AbstractSchema {
 	 * @param temp 模板，可以是wiget模板，也可以是@include
 	 * @return this
 	 */
-	public JudgeSchema addElse(DFishSchema temp){
+	public JudgeTemplate addElse(DFishTemplate temp){
 		String key="@w-else";
-		((JSONObject)json).put(key, ((AbstractSchema) temp).json);
+		((JSONObject)json).put(key, ((AbstractTemplate) temp).json);
 		return this;
 	}
 	
