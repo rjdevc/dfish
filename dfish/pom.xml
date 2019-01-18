@@ -13,9 +13,7 @@
     <project.groupId>com.rongji</project.groupId>
     <project.artifactId>dfish</project.artifactId>
     <project.version>3.2.0-SNAPSHOT</project.version>
-    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    
     <spring.version>3.2.13.RELEASE</spring.version>
   </properties>
   
@@ -69,7 +67,7 @@
           </dependency>
           <dependency>
               <groupId>com.rongji</groupId>
-              <artifactId>dfish-ui-schema</artifactId>
+              <artifactId>dfish-ui-template</artifactId>
               <version>3.2.0-SNAPSHOT</version>
           </dependency>
       </dependencies>
@@ -98,6 +96,6 @@
     <module>dfish-engine</module>
     <module>dfish-config</module>
     <module>dfish-ui-plugin</module>
-    <module>dfish-ui-schema</module>
+    <module>dfish-ui-template</module>
   </modules>
 </project>

@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.schema;
+package com.rongji.dfish.ui.template;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -23,24 +23,24 @@ import com.rongji.dfish.ui.JsonObject;
 	 * ------------------------------------------------------------------  
 	 * 2018年12月18日 下午1:04:18		LinLW			1.0				1.0 Version  
 	 */
-public class WidgetSchema extends AbstractSchema{
+public class WidgetTemplate extends AbstractTemplate{
 	
 	private static final long serialVersionUID = 8524310739981005847L;
 
-	public  WidgetSchema(){
+	public  WidgetTemplate(){
 		this(new JSONObject(true));
 	}
-	public  WidgetSchema(JsonObject jo){
+	public  WidgetTemplate(JsonObject jo){
 		this(JSON.parseObject(jo.toString(),Feature.OrderedField));
 	}
-	public  WidgetSchema(String json){
+	public  WidgetTemplate(String json){
 		this(JSON.parseObject(json,Feature.OrderedField));
 	}
 	/**
 	 * 指定JSONObject的实现
 	 * @param json Object 一般是 JSONObject
 	 */
-	protected WidgetSchema(Object json){
+	protected WidgetTemplate(Object json){
 		//一般来说现在这个json 必须是JSONObject类型
 		this.json=json;
 	}
@@ -50,13 +50,13 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param id String
 	 * @return template
 	 */
-	public WidgetSchema findById(String id) {
+	public WidgetTemplate findById(String id) {
 		if(json==null){return null;}
 		Object targetJson=findById(id, json);
 		if(targetJson ==null){
 			return null;
 		}
-		return new WidgetSchema(targetJson) ;
+		return new WidgetTemplate(targetJson) ;
 	}
 
 	/**
@@ -64,10 +64,10 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param key 名字
 	 * @return this
 	 */
-	public WidgetSchema createSubWidgetTemp(String key) {
+	public WidgetTemplate createSubWidgetTemp(String key) {
 		JSONObject subJson=new JSONObject();
 		((JSONObject) json).put(key, subJson);
-		return new WidgetSchema(subJson) ;
+		return new WidgetTemplate(subJson) ;
 	}
 	
 	/**
@@ -84,8 +84,8 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param temp 子节点
 	 * @return this
 	 */
-	public WidgetSchema addSubTemp(String key,DFishSchema temp) {
-		((JSONObject)json).put(key,((AbstractSchema) temp).json);
+	public WidgetTemplate addSubTemp(String key,DFishTemplate temp) {
+		((JSONObject)json).put(key,((AbstractTemplate) temp).json);
 		return this;
 	}
 	/**
@@ -94,10 +94,10 @@ public class WidgetSchema extends AbstractSchema{
 	 * @return DFishTemplate 子节点
 	 * @throws 如果子节点不是一个模板，而是 String / Integer / Double / Boolean时会抛出错误
 	 */
-	public DFishSchema getSubTemp(String key) {
+	public DFishTemplate getSubTemp(String key) {
 		Object o=get(key);
-		if(o instanceof DFishSchema){
-			return (DFishSchema) o;
+		if(o instanceof DFishTemplate){
+			return (DFishTemplate) o;
 		}
 		throw new RuntimeException("the "+key+" element is not a DFishTemplate, use get(String) instead.");
 	}
@@ -109,9 +109,9 @@ public class WidgetSchema extends AbstractSchema{
 	public Object get(String key) {
 		Object o=((JSONObject) json).get(key);
 		if(o instanceof JSONArray){
-			return new SchemaArray(o);
+			return new TemplateArray(o);
 		}else if(o instanceof JSONObject){
-			return new WidgetSchema(o);
+			return new WidgetTemplate(o);
 		}
 		return  o;
 	}
@@ -124,9 +124,9 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param keyPattern String 比如 nodes.0.tbody.@rows
 	 * @param value 一般 为 String / Integer / Double / Boolean
 	 * @return this 
-	 * @see WidgetSchema#setProp(String, Object)
+	 * @see WidgetTemplate#setProp(String, Object)
 	 */
-	public WidgetSchema setPropx(String keyPattern, Object value) {
+	public WidgetTemplate setPropx(String keyPattern, Object value) {
 		setJsonPropx(keyPattern,value);
 		return this;
 	}
@@ -137,7 +137,7 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param value 一般 为 String / Integer / Double / Boolean
 	 * @return this
 	 */
-	public WidgetSchema setProp(String prop, Object value) {
+	public WidgetTemplate setProp(String prop, Object value) {
 		((JSONObject)json).put(prop, value);
 		return this;
 	}
@@ -147,7 +147,7 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param prop String
 	 * @return this
 	 */
-	public WidgetSchema removeProp(String key) {
+	public WidgetTemplate removeProp(String key) {
 		((JSONObject)json).remove(key);
 		return this;
 	}
@@ -157,7 +157,7 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param expr JS表达
 	 * @return this
 	 */
-	public WidgetSchema at(String prop, String expr) {
+	public WidgetTemplate at(String prop, String expr) {
 		return setProp("@"+prop,expr);
 	}
 	/**
@@ -166,17 +166,12 @@ public class WidgetSchema extends AbstractSchema{
 	 * @param temp 允许是 一个完整的对象，但一般常用的是include，否则完全可以在子节点中使用@
 	 * @return this
 	 */
-	public WidgetSchema at(String prop, DFishSchema temp) {
-		if(temp instanceof AbstractSchema ){
-			Object  subProp=((AbstractSchema) temp).json;
+	public WidgetTemplate at(String prop, DFishTemplate temp) {
+		if(temp instanceof AbstractTemplate ){
+			Object  subProp=((AbstractTemplate) temp).json;
 			setProp("@"+prop,subProp);
 		}
 		return this;
-	}
-	
-	@Deprecated
-	public WidgetSchema setAtProp(String prop, String expr) {
-		return setProp("@"+prop,expr);
 	}
 	
 	/**
@@ -188,15 +183,15 @@ public class WidgetSchema extends AbstractSchema{
 		return ((JSONObject)json).get(prop);
 	}
 	
-	public WidgetSchema addFor(String prop,String dataExpr,DFishSchema temp,String itemName,String indexName){
+	public WidgetTemplate addFor(String prop,String dataExpr,DFishTemplate temp,String itemName,String indexName){
 		String propFullName=null;
 		if(indexName==null||indexName.equals("")){
 			propFullName= "@"+prop+":w-for($"+itemName+" in ("+dataExpr+"))";
 		}else{
 			propFullName= "@"+prop+":w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
 		}
-		if(temp instanceof AbstractSchema ){
-			Object  subProp=((AbstractSchema) temp).json;
+		if(temp instanceof AbstractTemplate ){
+			Object  subProp=((AbstractTemplate) temp).json;
 			this.setProp(propFullName, subProp);
 		}
 		return this;
@@ -206,9 +201,8 @@ public class WidgetSchema extends AbstractSchema{
 	 * 后续表达式中，则必须使用 $item来取值
 	 * @param prop String
 	 * @param dataExpr String
-	 * @see ForTemplate#ForTemplate(String, String, DFishSchema, String, String)
 	 */
-	public WidgetSchema addFor(String prop,String dataExpr,DFishSchema temp){
+	public WidgetTemplate addFor(String prop,String dataExpr,DFishTemplate temp){
 		return addFor(prop,dataExpr,temp,"item",null);
 	}
 	

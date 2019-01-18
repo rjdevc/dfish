@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.schema;
+package com.rongji.dfish.ui.template;
 
 import java.util.Arrays;
 
@@ -18,10 +18,10 @@ import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.widget.Button;
 import com.rongji.dfish.ui.widget.Leaf;
 import com.rongji.dfish.ui.widget.SubmitButton;
-import com.rongji.dfish.ui.schema.IncludeSchema;
-import com.rongji.dfish.ui.schema.JudgeSchema;
-import com.rongji.dfish.ui.schema.TemplateDefine;
-import com.rongji.dfish.ui.schema.WidgetSchema;
+import com.rongji.dfish.ui.template.IncludeTemplate;
+import com.rongji.dfish.ui.template.JudgeTemplate;
+import com.rongji.dfish.ui.template.PreloadDefine;
+import com.rongji.dfish.ui.template.WidgetTemplate;
 
 public class CmsTemplateTest {
 	@Test
@@ -67,19 +67,19 @@ public class CmsTemplateTest {
 			.at("src","$item.hasChild?'./interface/v2/notice_category/query?parentId='+$item.cateId:''");
 		
 		//复杂功能要转到widget 才可以处理。
-		WidgetSchema leafWt=new WidgetSchema(leaf);
-		leafWt.addFor("nodes", "$item.children", new IncludeSchema("t/cms/leaf"));
+		WidgetTemplate leafWt=new WidgetTemplate(leaf);
+		leafWt.addFor("nodes", "$item.children", new IncludeTemplate("t/cms/leaf"));
 		System.out.println(leafWt);
 	}
 	
-	protected TemplateDefine shell(WidgetSchema wt,String uri){
-		JudgeSchema jt=new JudgeSchema();
-		jt.addIf("$error", new WidgetSchema(new JSCommand(null).at("text","app.error($error);")));
+	protected PreloadDefine shell(WidgetTemplate wt,String uri){
+		JudgeTemplate jt=new JudgeTemplate();
+		jt.addIf("$error", new WidgetTemplate(new JSCommand(null).at("text","app.error($error);")));
 		jt.addElse(wt);
-		TemplateDefine ret= new TemplateDefine(uri,jt);
+		PreloadDefine ret= new PreloadDefine(uri,jt);
 		return ret;
 	}
-	protected TemplateDefine shell(Widget<?> w,String uri){
-		return shell(new WidgetSchema(w),uri);
+	protected PreloadDefine shell(Widget<?> w,String uri){
+		return shell(new WidgetTemplate(w),uri);
 	}
 }
