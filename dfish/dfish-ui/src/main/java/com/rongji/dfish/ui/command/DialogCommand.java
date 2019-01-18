@@ -17,7 +17,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 	 */
 	private static final long serialVersionUID = -3055223672741088528L;
     private String template;
-    private String schema;
+    private String preload;
     private String src;
     private Boolean prong;
 	public String getType() {
@@ -26,7 +26,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     /**
      * 打开对话框命令
      * @param id String 编号
-     * @param template 模板
+     * @param preload 预加载模板
      * @param title String 标题栏内容
      * @param width String 窗口宽度
      * @param height String 窗口高度
@@ -34,11 +34,11 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
      * @param src String 窗口数据的URL
      */
     @Deprecated
-    public DialogCommand(String id, String template, String title,
+    public DialogCommand(String id, String preload, String title,
             int width, int height, Integer pos,
             String src) {
 		this.id=id;
-		this.template = template;
+		this.preload = preload;
 		this.title = title;
 		this.setWidth(width);
 		this.setHeight(height);
@@ -49,18 +49,18 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     /**
      * 打开对话框命令
      * @param id String 编号
-     * @param template 模板
+     * @param preload 预加载模板
      * @param title String 标题栏内容
      * @param width String 窗口宽度
      * @param height String 窗口高度
      * @param pos DialogPosition 窗口在屏幕位置
      * @param src String 窗口数据的URL
      */
-    public DialogCommand(String id, String template, String title,
+    public DialogCommand(String id, String preload, String title,
             String width, String height, Integer pos,
             String src) {
 		this.id=id;
-		this.template = template;
+		this.preload = preload;
 		this.title = title;
 		this.setWidth(width);
 		this.setHeight(height);
@@ -123,12 +123,13 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 		 return this;
 	}
 
-	public String getSchema() {
-		return schema;
+	public String getPreload() {
+		return preload;
 	}
 
-	public DialogCommand setSchema(String schema) {
-		this.schema = schema;
+	public DialogCommand setPreload(String preload) {
+		this.preload = preload;
 		return this;
 	}
+	
 }

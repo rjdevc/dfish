@@ -6,7 +6,6 @@ import java.util.List;
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.SingleContainer;
-import com.rongji.dfish.ui.widget.DialogTemplate;
 
 /**
  * 替换命令。替换某个 widget。
@@ -57,8 +56,6 @@ public class ReplaceCommand extends NodeControlCommand<ReplaceCommand> implement
 		}
 		if (node instanceof Command<?>) {
 			super.setSection(SECTION_COMMAND);
-		} else if (node instanceof DialogTemplate) {
-			super.setSection(SECTION_TEMPLATE);
 		}
 		return this;
 	}

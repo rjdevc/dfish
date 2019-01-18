@@ -18,7 +18,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	 */
 	private static final long serialVersionUID = -953562902873398616L;
 	private String src;
-	private String schema;
+	private String template;
 	private Boolean transparent;
 	private String placeholder;
 	private Boolean multiple;
@@ -107,13 +107,13 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	}
 
 	@Override
-	public String getSchema() {
-		return schema;
+	public String getTemplate() {
+		return template;
 	}
 
 	@Override
-	public Xbox setSchema(String schema) {
-		this.schema=schema;
+	public Xbox setTemplate(String template) {
+		this.template=template;
 		return this;
 	}
 	

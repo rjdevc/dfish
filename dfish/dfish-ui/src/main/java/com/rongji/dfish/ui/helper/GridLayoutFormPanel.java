@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.helper;
 
 import java.util.List;
-import java.util.Map;
 
 import com.rongji.dfish.ui.AbstractWidgetWrapper;
 import com.rongji.dfish.ui.FormElement;
@@ -14,8 +13,6 @@ import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
 import com.rongji.dfish.ui.form.LabelRowContainer;
 import com.rongji.dfish.ui.layout.GridLayout;
-import com.rongji.dfish.ui.layout.grid.GridColumn;
-import com.rongji.dfish.ui.layout.grid.Td;
 import com.rongji.dfish.ui.layout.grid.Tr;
 
 /**
@@ -143,7 +140,6 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	 * @param value Widget
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@SuppressWarnings("deprecation")
 	public GridLayoutFormPanel add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Widget<?> value) {
 		prototype.add(fromRow, fromColumn, toRow, toColumn, value);
 //		this.checkConcurrentModify();
@@ -319,6 +315,8 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	public List<FormElement<?, ?>> findFormElementsByName(String name) {
 		return prototype.findFormElementsByName(name);
 	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Tr> findNodes() {
 		 return prototype.findNodes();

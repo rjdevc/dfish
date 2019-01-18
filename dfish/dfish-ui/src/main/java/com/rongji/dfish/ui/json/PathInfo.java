@@ -64,7 +64,7 @@ public class PathInfo {
 			sb.append("null");
 		}else if(propValue instanceof Collection){
 			sb.append("\"Arr[size=");
-			sb.append(((Collection) propValue).size());
+			sb.append(((Collection<?>) propValue).size());
 			sb.append("]\"");
 		}else if(propValue instanceof Object[]){
 			sb.append("\"Arr[leng=");
@@ -76,7 +76,7 @@ public class PathInfo {
 			boolean showed=false;
 			if(!showed){
 				if(propValue instanceof HasId){
-					String id=((HasId) propValue).getId();
+					String id=((HasId<?>) propValue).getId();
 					if(id!=null&&!id.equals("")){
 						showed=true;
 						sb.append(",id=");
@@ -86,7 +86,7 @@ public class PathInfo {
 			}
 			if(!showed){
 				if(propValue instanceof FormElement){
-					String name=((FormElement) propValue).getName();
+					String name=((FormElement<?, ?>) propValue).getName();
 					if(name!=null&&!name.equals("")){
 						showed=true;
 						sb.append(",name=");
@@ -96,7 +96,7 @@ public class PathInfo {
 			}
 			if(!showed){
 				if(propValue instanceof HasText){
-					String text=((HasText) propValue).getText();
+					String text=((HasText<?>) propValue).getText();
 					if(text!=null&&!text.equals("")){
 						showed=true;
 						sb.append(",text=");

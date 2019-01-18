@@ -55,6 +55,7 @@ public abstract class AbstractJsonObject<T extends AbstractJsonObject<T>> implem
 	}
 	
 	private Map<String,String> atProps;
+	@SuppressWarnings("unchecked")
 	public T at(String prop,String expr){
 		if(atProps==null){
 			atProps=new LinkedHashMap<String,String>();

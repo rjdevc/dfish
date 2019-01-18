@@ -319,14 +319,14 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 
 
 	@Override
-	public String getSchema() {
-		return rootLeaf.getSchema();
+	public String getTemplate() {
+		return rootLeaf.getTemplate();
 	}
 
 
 	@Override
-	public TreePanel setSchema(String schema) {
-		rootLeaf.setSchema(schema);
+	public TreePanel setTemplate(String template) {
+		rootLeaf.setTemplate(template);
 		return this;
 	}
 	

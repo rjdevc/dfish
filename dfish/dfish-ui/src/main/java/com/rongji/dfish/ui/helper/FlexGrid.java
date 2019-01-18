@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.Layout;
@@ -426,7 +425,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
             if (id.equals(item.getId())) {
                 iter.remove();
             } else if (item instanceof Layout) {
-            	Layout<?,Widget<?>> cast = (Layout<?,Widget<?>>) item;
+            	@SuppressWarnings("unchecked")
+				Layout<?,Widget<?>> cast = (Layout<?,Widget<?>>) item;
                 cast.removeNodeById(id);
             }
         }
@@ -449,7 +449,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 					return false;
 				}
 			} else if (item instanceof Layout) {
-               Layout<?,Widget<?>> cast = (Layout<?,Widget<?>>) item;
+               @SuppressWarnings("unchecked")
+			Layout<?,Widget<?>> cast = (Layout<?,Widget<?>>) item;
 				boolean replaced = cast.replaceNodeById(w);
 				if (replaced) {
 					return true;

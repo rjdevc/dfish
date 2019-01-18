@@ -19,7 +19,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	private static final long serialVersionUID = -7465823398383091843L;
 	private String text;
 	private String src;
-	private String schema;
+	private String template;
 	private String format;
 	private Boolean line;
 	public GridLeaf() {
@@ -101,13 +101,13 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	}
 
 	@Override
-	public String getSchema() {
-		return schema;
+	public String getTemplate() {
+		return template;
 	}
 
 	@Override
-	public GridLeaf setSchema(String schema) {
-		this.schema=schema;
+	public GridLeaf setTemplate(String template) {
+		this.template=template;
 		return this;
 	}
 	/**

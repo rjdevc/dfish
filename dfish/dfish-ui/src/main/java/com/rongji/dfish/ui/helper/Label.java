@@ -4,10 +4,11 @@ import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
+import com.rongji.dfish.ui.form.FormGroup;
+import com.rongji.dfish.ui.form.FormLabel;
 import com.rongji.dfish.ui.form.LabelRow;
 import com.rongji.dfish.ui.json.JsonWrapper;
 import com.rongji.dfish.ui.widget.Html;
-import com.rongji.dfish.ui.form.FormLabel;
 
 /**
  * Label 是用于表单中的标签。
@@ -20,7 +21,7 @@ import com.rongji.dfish.ui.form.FormLabel;
  * @author DFish Team
  *
  */
-public class Label extends AbstractWidget<Label> implements JsonWrapper<HorizontalGroup>,LabelRow<Label>,
+public class Label extends AbstractWidget<Label> implements JsonWrapper<FormGroup>,LabelRow<Label>,
 	HtmlContentHolder<Label>,HasText<Label>{
 
 	private static final long serialVersionUID = 2082708957092349423L;
@@ -45,11 +46,11 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Horizont
 	}
 	
 	@Override
-	public HorizontalGroup getPrototype() {
+	public FormGroup getPrototype() {
 		Html prototype = new Html(text);
 		BeanUtil.copyPropertiesExact(prototype,this);
 		prototype.ats(this.ats());
-		HorizontalGroup hg=new HorizontalGroup(null);
+		FormGroup hg=new FormGroup(null);
 		hg.setLabel(label);
 		hg.add(prototype);
 		return hg;

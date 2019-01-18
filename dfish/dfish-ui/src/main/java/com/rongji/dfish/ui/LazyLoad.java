@@ -13,11 +13,11 @@ public interface LazyLoad<T extends LazyLoad<T>> extends HasSrc<T> {
 	 * 如果有template 那么template 讲把这个字符串解析成dfish需要的格式。
 	 * @return String
 	 */
-	String getTemplate();
+	String getPreload();
 	/**
-	 * 指定用这个schema编号所对应的schema 将src返回的内容解析成dfish的格式。
-	 * @param schema String
+	 * 指定用这个编号所对应的预加载模板 将src返回的内容解析成dfish的格式。
+	 * @param preload String
 	 * @return this
 	 */
-	T setTemplate(String template);
+	T setPreload(String preload);
 }

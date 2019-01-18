@@ -15,8 +15,8 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 */
 	private static final long serialVersionUID = -3727695759981575245L;
 	private String src;
-	private String schema;
 	private String template;
+	private String preload;
 //	private Boolean suggest;
 	private Boolean multiple;
 	private Boolean nobr;
@@ -132,14 +132,6 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		return (T) this;
 	}
 	
-	public String getSchema() {
-		return schema;
-	}
-
-	public T setSchema(String schema) {
-		this.schema = schema;
-		return (T)this;
-	}
 	/**
 	 * 模板
 	 * @return String
@@ -147,13 +139,33 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	public String getTemplate() {
 		return template;
 	}
+
 	/**
 	 * 模板
 	 * @param template String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
+	@SuppressWarnings("unchecked")
 	public T setTemplate(String template) {
 		this.template = template;
+		return (T)this;
+	}
+	
+	/**
+	 * 预加载模板
+	 * @return String
+	 */
+	public String getPreload() {
+		return preload;
+	}
+	/**
+	 * 预加载模板
+	 * @param preload String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	@SuppressWarnings("unchecked")
+	public T setPreload(String preload) {
+		this.preload = preload;
 		return (T)this;
 	}
 	

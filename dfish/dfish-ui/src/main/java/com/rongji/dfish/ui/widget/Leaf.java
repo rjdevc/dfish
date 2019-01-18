@@ -47,7 +47,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
     private Object text;
     private Object tip;
     private String src;
-    private String schema;
+    private String template;
 //    private Leaf pub;
     private Boolean hidetoggle;
     private AbstractBox<?> box;
@@ -542,12 +542,12 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 		return this;
 	}
 	@Override
-	public String getSchema() {
-		return schema;
+	public String getTemplate() {
+		return template;
 	}
 	@Override
-	public Leaf setSchema(String schema) {
-		this.schema=schema;
+	public Leaf setTemplate(String template) {
+		this.template=template;
 		return this;
 	}
 	

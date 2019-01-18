@@ -13,6 +13,7 @@ import com.rongji.dfish.ui.widget.DialogTemplate;
  * @author DFish Team
  *
  */
+@SuppressWarnings("deprecation")
 public class View extends AbstractView<View> implements LazyLoad<View>{
 	private static final long serialVersionUID = 8815207749140104383L;
 
@@ -32,8 +33,8 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 	}
 	
 //	private Boolean load;
-	private String schema;
 	private String template;
+	private String preload;
 	private String src;
 	private String base;
 	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
@@ -60,12 +61,12 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 //		return this;
 //	}
 
-	public String getSchema() {
-		return schema;
+	public String getTemplate() {
+		return template;
 	}
 
-	public View setSchema(String schema) {
-		this.schema = schema;
+	public View setTemplate(String template) {
+		this.template = template;
 		return this;
 	}
 	/**
@@ -166,12 +167,12 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 		return templates;
 	}
 	
-	public String getTemplate() {
-		return template;
+	public String getPreload() {
+		return preload;
 	}
 
-	public View setTemplate(String template) {
-		this.template = template;
+	public View setPreload(String preload) {
+		this.preload = preload;
 		return this;
 	}
 }

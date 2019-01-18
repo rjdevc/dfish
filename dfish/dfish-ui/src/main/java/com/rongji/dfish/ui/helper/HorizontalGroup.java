@@ -9,6 +9,8 @@ import com.rongji.dfish.ui.form.FormGroup;
  */
 @Deprecated
 public class HorizontalGroup extends FormGroup{
+	private static final long serialVersionUID = -8524199135154814449L;
+
 	public HorizontalGroup(String label) {
 		super(label);
 	}

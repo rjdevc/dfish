@@ -78,8 +78,8 @@ Layout<FormPanel,Widget<?>>{
 		}
 		rows.add(row);
 		if (row instanceof LabelRow) {
-			if("0".equals(((LabelRow) row).getLabel().getWidth())){
-				((LabelRow) row).getLabel().setWidth(null);
+			if("0".equals(((LabelRow<?>) row).getLabel().getWidth())){
+				((LabelRow<?>) row).getLabel().setWidth(null);
 			}
 		}
 		this.checkConcurrentModify();
@@ -96,8 +96,8 @@ Layout<FormPanel,Widget<?>>{
 			return this;
 		}
 		rows.add(row);
-		if("0".equals(((LabelRow) row).getLabel().getWidth())){
-			((LabelRow) row).getLabel().setWidth(labelWidth);
+		if("0".equals(((LabelRow<?>) row).getLabel().getWidth())){
+			((LabelRow<?>) row).getLabel().setWidth(labelWidth);
 		}
 		this.checkConcurrentModify();
 		return this;
@@ -294,6 +294,8 @@ Layout<FormPanel,Widget<?>>{
 	public List<FormElement<?, ?>> findFormElementsByName(String name) {
 		return super.findFormElementsByName(name);
 	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Widget<?>> findNodes() {
 		 return rows;
