@@ -292,6 +292,7 @@ _loadCss = function( a ) {
 	l.setAttribute( 'href', a + _ver );
 	_tags( 'head' )[ 0 ].appendChild( l );
 	return _cssCache[ a ] = a;
+	//$.ajax( { src: a + _ver, sync: true, cache: T, success: _loadStyle } );
 },
 _loadStyle = function( a ) {
 	var c = document.createElement( 'style' );
@@ -453,6 +454,7 @@ _strSplitword = $.strSplitword = function( a, b, c ) {
 },
 // 替换带$变量的字符串，如 "a.sp?id=$0" /@a -> url, b -> array/object, c -> urlEncode?
 _strFormat = $.strFormat = function( a, b, c ) {
+	a = a == N ? '' : '' + a;
 	if ( ! b )
 		return a;
 	if ( _isArray( b ) ) {
@@ -1488,7 +1490,6 @@ Ajax = _createClass( {
 								_fnapply( f, c, '$ajax', [ self ] );
 							} else {
 								var s = 'ajax ' + l.status + ': ' + a;
-								if ( _cfg.debug ) debugger;
 								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? $.loc.ajax[ r ] : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
 								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
@@ -2043,26 +2044,23 @@ _merge( $, {
 		var did = _uid(), gid = _uid(), tid = _uid(), cid = _uid(), y = {};
 		return function( x ) {
 			_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
+			var k = location.protocol + '//' + location.host + _ui_path + 'g/';
+			// 谷歌浏览器首次打开页面，装载dfish.css会延迟，导致-1和*并用的布局模式无法正常解析。所以提前载入 f-inbl 和 f-sub-horz 两个样式
+			_loadStyle( (br.css3 ? '.f-inbl,.f-sub-horz{display:inline-block}' : '') + '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
 			if ( ! $( did ) ) {
 				$.query( 'head' ).append( '<link rel="stylesheet" id=' + did + ' href="' + _ui_path + 'dfish.css' + _ver + '">' );
 				br.mobile && $.query( 'head' ).append( '<link rel="stylesheet" href="' + _ui_path + 'mobile.css' + _ver + '">' );
 			}
-			var k = location.protocol + '//' + location.host + _ui_path + 'g/';
-			_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
 			if ( x ) {
 				x = _extend( {}, x, y );
 				if ( x.theme != y.theme ) {
 					_rm( tid ), _rm( cid );
 				} else if ( x.color != y.color ) {
 					_rm( cid );
-				}
-				y = x;
-				if ( ! $( gid ) )
-					$.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _path + x.dir + 'global.css' + _ver + '">' );
-				if ( ! $( tid ) )
-					$.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
-				if ( ! $( cid ) )
-					$.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
+				} 
+				! $( gid ) && $.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _path + x.dir + 'global.css' + _ver + '">' );
+				! $( tid ) && $.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
+				! $( cid ) && $.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
 			}
 		}
 	})(),
@@ -2191,6 +2189,9 @@ _merge( $, {
 	// 调试用的方法
 	j: function( a ) {
 		alert( $.jsonString( a ) );
+	},
+	debug: function() {
+		if ( _cfg.debug ) debugger;
 	},
 	winbox: function( a ) {
 		alert( a );

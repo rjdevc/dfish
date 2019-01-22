@@ -1771,7 +1771,7 @@ Xsrc = define.widget( 'xsrc', {
 			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
 				var s = x.src;
-				if ( s == N && x.template )
+				if ( ! s && x.template )
 					s = {};
 				if ( s && typeof s === _OBJ ) {
 					this.type_view && _view_js[ this.path ] && $.require( _view_js[ this.path ] );
@@ -1897,13 +1897,15 @@ _initView = function() {
 	this.views   = {};
 	this.layout  = N;
 },
+_setPath = function( p, x ) {
+	this.path = (p === _docView ? '' : p.path) + '/' + ((x || this.x).id || this.id);
+	_viewCache[ this.path ] = this;
+},
 _setParent = function( a ) {
-	if ( a ) {
-		this.parent = a;
-		_regIdName.call( this, a );
-		this.path   = (a === _docView ? '' : a.path) + '/' + (this.x.id || this.id);
-		_viewCache[ this.path ] = this;
-	}
+	this.parent && _setPath.call( this, a );
+	this.parent = a;
+	_regIdName.call( this, a );
+	
 },
 _mergeLoadingProp = function( x, a ) {
 	for ( var k in a ) {
@@ -1923,11 +1925,14 @@ Layout = define.widget( 'layout', {
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
+		var r = p ? _view( p ) : _docView;
 		_initView.call( this );
+		_setPath.call( this, r, x );
 		_regWidget.apply( this, arguments );
-		_setParent.call( this, p ? _view( p ) : _docView );
+		_setParent.call( this, r );
 		this.init_nodes();
 		this._instanced = T;
+
 	},
 	Extend: 'xsrc',
 	Prototype: {
@@ -2129,10 +2134,10 @@ View = define.widget( 'view', {
  */
 DocView = define.widget( 'docview', {
 	Const: function() {
+		_viewCache[ this.path ] = this;
 		_initView.call( this );
 		this._wd = this.width();
 		this._ht = this.height();
-		_viewCache[ this.path ] = this;
 		var self = this, f;
 		$.attach( window, 'resize', f = function( e, w, h ) {
 			w = w || self.width(); h = h || self.height();
@@ -3042,7 +3047,7 @@ Img = define.widget( 'img', {
 	Const: function( x, p ) {
 		if ( p && p.type_album ) {
 			var c = p.x.space || 0;
-			this.defaults( { wmin: 22 + c } );
+			this.defaults( { height: -1, wmin: 22 + c } );
 			this.rootNode = p;
 		}
 		W.apply( this, arguments );
@@ -3072,7 +3077,6 @@ Img = define.widget( 'img', {
 			}
 		}
 	},
-	Default: { height: -1 },
 	Prototype: {
 		className: 'w-img',
 		// @implement
@@ -3837,7 +3841,7 @@ Alert = define.widget( 'alert', {
 		if ( t && (this._tpl = _getPreload( t )) ) {
 			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<table border=0 style="margin:10px 20px 20px 5px;word-wrap:break-word;"><tr><td align=center valign=top><div style=width:65px;padding-top:5px>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.strFormat( x.text || '', x.args ).replace( /\n/g, '<br>' ) + '</table>' },
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.strFormat( x.text, x.args ).replace( /\n/g, '<br>' ) + '</table>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
