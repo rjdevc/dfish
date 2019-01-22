@@ -2,7 +2,6 @@ package com.rongji.dfish.framework;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -19,6 +18,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.json.J;
+import com.rongji.dfish.ui.template.DFishTemplate;
 
 /**
  * 用于转化JSON 并输出
@@ -53,7 +53,7 @@ public class JsonHttpMessageConverter extends AbstractHttpMessageConverter<Objec
 	private static List<Charset> ACCEPT_CHARSETS= Collections.singletonList(CHARSET);
 	private static final Executor SINGLE_EXECUTOR=Executors.newSingleThreadExecutor();
 	@Override
-	protected void writeInternal(Object jo, HttpOutputMessage outputMessage)
+	protected void writeInternal(final Object jo, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException {
 		
 		final String json=((JsonObject)jo).asJson();
@@ -67,7 +67,7 @@ public class JsonHttpMessageConverter extends AbstractHttpMessageConverter<Objec
 		if(LOG.isDebugEnabled()){
 			SINGLE_EXECUTOR.execute(new Runnable(){
 				public void run(){
-					LOG.debug(J.formatJson(json));
+					LOG.debug((jo instanceof DFishTemplate) ? json : J.formatJson(json));
 				}
 			});
 		}

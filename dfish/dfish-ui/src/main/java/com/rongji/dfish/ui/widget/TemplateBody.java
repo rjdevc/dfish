@@ -1,7 +1,5 @@
 package com.rongji.dfish.ui.widget;
 
-import com.rongji.dfish.ui.AbstractWidget;
-
 /**
  * Description: 对话模板主体
  * Copyright:   Copyright © 2018
