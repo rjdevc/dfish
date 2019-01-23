@@ -3505,7 +3505,7 @@ Dialog = define.widget( 'dialog', {
 			this._pos = r;
 			$.snapTo( this.$(), r );
 			// 八方位浮动效果
-			n && Q( this.$() ).animate( n, 100 );
+			n && Q( this.$() ).animate( n, 200 );
 			if ( this.x.prong && vs ) {
 				var m = r.mag_b ? 't' : r.mag_t ? 'b' : r.mag_l ? 'r' : 'l', x = Math.floor((r.target.left + r.target.right) / 2), y = Math.floor((r.target.top + r.target.bottom) / 2), 
 					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 );
@@ -3608,7 +3608,7 @@ Dialog = define.widget( 'dialog', {
 					var w = this.$().offsetWidth, h = this.$().offsetHeight, d = this.id, self = this,
 						n = f == 1 || f == 2 ? { top: -h } : f == 3 || f == 4 ? { right: -w } : f == 5 || f == 6 ? { bottom: -h } : { left: -w };
 					$.classAdd( this.$(), 'z-closing' ); // z-closing生成遮盖层，避免在消失过程中内容部分再被点击
-					Q( this.$() ).animate( n, 100, function() { self.removeElem(); } );
+					Q( this.$() ).animate( n, 150, function() { self.removeElem(); } );
 				} else
 					this.removeElem();
 				this.vis = F;
@@ -8177,6 +8177,12 @@ TR = define.widget( 'tr', {
 } ),
 /* `thr`  thead 的子节点 */
 THR = define.widget( 'thead/tr', {
+	Const: function( x, p, n ) {
+		GridRow.apply( this, arguments );
+		var u = this.rootNode.x.pub;
+		if ( u && u.height )
+			$.extend( x, { height: u.height } );
+	},
 	Extend: GridRow,
 	Listener: {
 		body: {
@@ -8539,28 +8545,22 @@ Grid = define.widget( 'grid', {
 		this._face = x.face || 'none';
 		W.apply( this, arguments );
 		this.colgrps = [];
-		var r = x.thead && x.thead.rows, l = r && r.length;
-		if ( l ) {
-			for ( var i = 0, c, h = 0; i < l; i ++ )
-				h += _number( r[ i ].height );
-			if ( ! h && x.thead.height )
-				h = _number( x.thead.height );
-			if ( ! h && ( c = x.pub && x.pub.height ) )
-				h = l * _number( c );
-			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*', height: h || 32 } ), this );
-		}
+		var r = x.thead && x.thead.rows;
+		if ( r && r.length )
+			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
 		var y = { table: { tbody: x.tbody, columns: x.columns }, width: '*', height: '*', scroll: x.scroll, on: { scroll: 'this.parentNode.trigger(event)' } };
 		// 为适应滚动条的位置，当没有head时把grid的样式转到list上。如果有head，这样转移样式可能会出问题，暂不做
 		! this.head && $.jsonCut( y, x, 'wmin,hmin,cls,style' );
 		this.list = new GridList( y, this );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
-		if ( x.combo ) {
+		if ( x.combo )
 			this.ownerView.combo = new GridCombo( this );
-		}
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		x.scroll && $.classAdd( this, 'z-scroll' );
+		if ( this.head && x.scroll )
+			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 	},
 	Extend: 'vert/scale',
 	Listener: {
