@@ -54,7 +54,8 @@ br = $.br = (function() {
 		d = doc.documentMode,
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
 		ie = navigator.appName === 'Microsoft Internet Explorer', // ie version <= 10
-		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) ));
+		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) )),
+		chm = u.match( /\bchrome\/(\d+)/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
 	return {
@@ -63,6 +64,7 @@ br = $.br = (function() {
 		ie7		: ie && d < 8, // ie6,ie7,兼容模式
 		ie10	: ie && d === 10,
 		ms		: ie || n, // 微软的浏览器( ie所有系列 )
+		chm		: chm && parseFloat( chm[ 1 ] ),
 		mobile  : !!u.match( /\bmobile\b/ ),
 		fox		: u.indexOf( 'firefox' ) > 0,
 		css3	: !(ie && d < 9),
@@ -166,7 +168,7 @@ _createClass = $.createClass = function( a, b ) {
 },
 
 /* CMD模块规范 */
-_moduleCache = {}, _cssCache = {},
+_moduleCache = {},
 //@a -> path, b -> id, f -> affix
 _mod_uri = function( a, b, f ) {
 	var c = b.charAt( 0 ) === '.' ? _urlLoc( a, b ) : b.charAt( 0 ) !== '/' ? _path + b : b;
@@ -226,8 +228,7 @@ Require = function( a ) {
 	r.resolve = function( b ) { return _urlLoc( a, b ) };
 	// require.css(): 装载css
 	r.css = function( b ) {
-		var c = _mod_uri( a, b, 'css' );
-		return _cssCache[ c ] || _loadCss( c );
+		_loadCss( _mod_uri( a, b, 'css' ) );
 	};
 	return r;
 },
@@ -286,17 +287,33 @@ _loadJs = function( a, b, c ) {
 	while ( i -- )
 		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
 },
-_loadCss = function( a ) {
-	var l = doc.createElement( 'link' );
-	l.setAttribute( 'rel', 'stylesheet' );
-	l.setAttribute( 'href', a + _ver );
-	_tags( 'head' )[ 0 ].appendChild( l );
-	return _cssCache[ a ] = a;
-	//$.ajax( { src: a + _ver, sync: true, cache: T, success: _loadStyle } );
+// @a -> src, b -> id?, c -> fn?
+_loadCss = function( a, b, c ) {
+	typeof a === _STR && (a = [ a ]);
+	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
+		e = doc.createElement( 'link' );
+		e.rel  = 'stylesheet';
+		e.href = a[ i ] + _ver;
+		b && ($.remove( b[ i ] ), e.id = b[ i ]);
+		if ( c ) {
+			if ( br.chm && br.chm < 19 ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
+			    var img = doc.createElement( 'img' );
+		        img.onerror = function(){ --n === 0 && c() };
+		        img.src = a[ i ] + _ver;
+		    } else {
+		    	c && (e.onload = function() { --n === 0 && c() });
+		    }
+	    }
+		_tags( 'head' )[ 0 ].appendChild( e );
+	}
 },
-_loadStyle = function( a ) {
+_loadStyle = function( a, b ) {
 	var c = document.createElement( 'style' );
 	c.setAttribute( 'type', 'text/css' );
+	if ( b ) {
+		$.remove( b );
+		c.id = b;
+	}
 	if( c.styleSheet ) {
 		c.styleSheet.cssText = a;
 	} else {
@@ -1732,109 +1749,130 @@ function _compatDOMMobile() {
 	}
 }
 
-/* 初始化配置 */
-function _initEnv() {
-	if ( _cfg.path != N )
-		_path = _cfg.path;
-	else
-		_cfg.path = _path;
-	if ( _cfg.lib != N )
-		_lib = _cfg.lib;
-	_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
-	_ui_path = _urlLoc( _path, _lib ) + 'ui/';
-	
-	_compatJS();
-	
-	if ( noGlobal || _cfg.no_conflict ) {
-		(Date.$ = $).abbr = 'Date.$';
-	}
-	var _define  = new Define( _path ),
-		_require = new Require( _path ),
-		_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
-		_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-		_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
-	if ( ! _loc )
-		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
-	for ( var k in _cfg.alias ) {
-		for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
-			_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
-	}
-	_define( 'dfish',  function() { return $ } );
-	_define( 'jquery', function() { return _jq } );
-	_define( 'loc',    function() { return _loc } );
-	
-	$.PATH = _path;
-	$.LIB  = _lib;
-	$.IMGPATH = _ui_path + 'g/';
-	$.version = version;
-	
-	$.loc     = _loc;
-	$.query   = _jq;
-	$.define  = _define;
-	$.require = _require;
-	$.skin( _cfg.skin );
 
-	var w = _require( _wg_lib + 'widget' );
-	$.vm  = w.vm;
-	$.e   = w.e;
-	$.widget = $.w = w.w;
-	$.dialog = _require( 'dialog' ).get;
-	$.template = w.template;
-	$.preload  = w.preload;
-	$.scrollIntoView = w.scrollIntoView;
-	
-	if ( !(noGlobal || _cfg.no_conflict) ) {
-		win.Q  = win.jQuery = _jq;
-		win.VM = $.vm;
-	} else {
-		if ( _$ )
-			win.$ = _$;
-	}
-	// ie 需要定义 xmlns:d="urn:dfish" 用以解析 <d:wg> 标签
-	doc.namespaces && doc.namespaces.add( 'd', 'urn:dfish' );
-}
-function _initDocView( $ ) {
-	$.ready( function() {
-		_compatDOM();
-		// 生成首页view
-		if ( _cfg.view ) {
-			$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+/* 引导启动 */
+var boot = {
+	init: function( x ) {
+		x && $.config( x );
+		this.initEnv(), this.initDocView();
+	},
+	ready: function( a ) {
+		this.fn = a;
+		br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', this.domReady ) : $.query( doc ).ready( this.domReady );
+	},
+	domReady: function() {
+		boot.dom_ok = T;
+		boot.callback();
+	},
+	cssReady: function() {
+		boot.css_ok = T;
+		boot.callback();
+	},
+	callback: function() {
+		this.dom_ok && this.css_ok && this.fn();
+	},
+	initEnv: function() {
+		if ( _cfg.path != N )
+			_path = _cfg.path;
+		else
+			_cfg.path = _path;
+		if ( _cfg.lib != N )
+			_lib = _cfg.lib;
+		_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
+		_ui_path = _urlLoc( _path, _lib ) + 'ui/';
+		
+		_compatJS();
+		
+		if ( noGlobal || _cfg.no_conflict ) {
+			(Date.$ = $).abbr = 'Date.$';
+		}
+		var _define  = new Define( _path ),
+			_require = new Require( _path ),
+			_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
+			_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
+			_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
+		if ( ! _loc )
+			return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
+		for ( var k in _cfg.alias ) {
+			for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
+				_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
+		}
+		_define( 'dfish',  function() { return $ } );
+		_define( 'jquery', function() { return _jq } );
+		_define( 'loc',    function() { return _loc } );
+		
+		$.PATH = _path;
+		$.LIB  = _lib;
+		$.IMGPATH = _ui_path + 'g/';
+		$.version = version;
+		
+		$.loc     = _loc;
+		$.query   = _jq;
+		$.define  = _define;
+		$.require = _require;
+
+		var w = _require( _wg_lib + 'widget' );
+		$.vm  = w.vm;
+		$.e   = w.e;
+		$.widget = $.w = w.w;
+		$.dialog = _require( 'dialog' ).get;
+		$.template = w.template;
+		$.preload  = w.preload;
+		$.scrollIntoView = w.scrollIntoView;
+		
+		if ( !(noGlobal || _cfg.no_conflict) ) {
+			win.Q  = win.jQuery = _jq;
+			win.VM = $.vm;
 		} else {
-			// 把 <d:wg> 标签转换为 widget
-			for ( var i = 0, d = _tags( br.css3 ? 'd:wg' : 'wg' ), j, l = d.length; i < l; i ++ ) {
-				if ( eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) ) )
-					$.widget( j ).render( d[ i ], 'replace' );
+			_$ && (win.$ = _$);
+		}
+		
+		$.skin( _cfg.skin, boot.cssReady );
+	},
+	initDocView: function() {
+		$.ready( function() {
+			_compatDOM();
+			// 生成首页view
+			if ( _cfg.view ) {
+				$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+			} else {
+				// 把 <d:wg> 标签转换为 widget
+				for ( var i = 0, d = _tags( 'script' ), j, l = d.length; i < l; i ++ ) {
+					if ( d.getAttribute( 'type' ) === 'dfish/widget' && (eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) )) )
+						$.widget( j ).render( d[ i ], 'replace' );
+				}
 			}
-		}
-		// ie6及以下浏览器，弹出浮动升级提示
-		if ( ie && br.ieVer < 7 ) {
-			VM().cmd({ type: 'tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
-				$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: doc.body, snaptype: 'tt', prong: F});
-		}
-	} );
-	// 调试模式
-	if ( _cfg.debug ) {
-		$.query( doc ).contextmenu( function( e ) {
-			if ( e.ctrlKey && ! $( ':develop' ) ) {
-				var m = $.vm( e.target ), c = $.bcr( m.$() ),
-					d = $.query( doc.body ).append( '<div id=:develop style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;position:absolute;border:2px dashed red;z-index:2"></div>' ),
-					g = m.closest( 'dialog' ), s = 'path: ' + m.path,
-					t = 'path: ' + m.path + (g ? '\ndialog: ' + (g.x.id || '') : '') + '\nsrc: <span onclick=event.ctrlKey&&window.open(this.innerText)>' + (m.x.src || '') + '</span>';
-				$.vm ? $.vm().cmd( { type: 'alert', text: t, on: { close: function() { _rm( ':develop' ) } } } ) : alert( t );
-				e.preventDefault();
+			// ie6及以下浏览器，弹出浮动升级提示
+			if ( ie && br.ieVer < 7 ) {
+				VM().cmd({ type: 'tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
+					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: doc.body, snaptype: 'tt', prong: F});
 			}
 		} );
+		// 调试模式
+		if ( _cfg.debug ) {
+			$.query( doc ).contextmenu( function( e ) {
+				if ( e.ctrlKey && ! $( ':develop' ) ) {
+					var m = $.vm( e.target ), c = $.bcr( m.$() ),
+						d = $.query( doc.body ).append( '<div id=:develop style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;position:absolute;border:2px dashed red;z-index:2"></div>' ),
+						g = m.closest( 'dialog' ), s = 'path: ' + m.path,
+						t = 'path: ' + m.path + (g ? '\ndialog: ' + (g.x.id || '') : '') + '\nsrc: <span onclick=event.ctrlKey&&window.open(this.innerText)>' + (m.x.src || '') + '</span>';
+					$.vm ? $.vm().cmd( { type: 'alert', text: t, on: { close: function() { _rm( ':develop' ) } } } ) : alert( t );
+					e.preventDefault();
+				}
+			} );
+		}
+		if ( ! br.mobile ) {
+			// firefox 没有 window.event 对象，需要监听鼠标点击事件，记录每次点击的坐标
+			br.fox && doc.addEventListener( 'mousedown', _point, T );
+			// 检测回退键
+			var k8;
+			$.query( doc ).on( 'keydown', function( e ) { (k8 = e.keyCode === 8) && br.ms && e.target.readOnly && e.preventDefault(); } );
+			$.query( doc ).on( 'keyup', function( e ) { k8 = F; } );
+			$.query( win ).on( 'beforeunload', function( e ) { if ( k8 ) { k8 = F; return br.fox ? ' ' : ''; } } );
+		}
 	}
-	if ( ! br.mobile ) {
-		// firefox 没有 window.event 对象，需要监听鼠标点击事件，记录每次点击的坐标
-		br.fox && doc.addEventListener( 'mousedown', _point, T );
-		// 检测回退键
-		var k8;
-		$.query( doc ).on( 'keydown', function( e ) { (k8 = e.keyCode === 8) && br.ms && e.target.readOnly && e.preventDefault(); } );
-		$.query( doc ).on( 'keyup', function( e ) { k8 = F; } );
-		$.query( win ).on( 'beforeunload', function( e ) { if ( k8 ) { k8 = F; return br.fox ? ' ' : ''; } } );
-	}
-}
+	
+};
 
 /* 初始化应用环境 */
 _merge( $, {
@@ -1863,11 +1901,10 @@ _merge( $, {
 	},
 	// 设置全局配置，并初始化环境，只调一次
 	init: function( x ) {
-		x && this.config( x );
-		_initEnv(), _initDocView( this );
+		boot.init( x );
 	},
 	ready: function( a ) {
-		return br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', a ) : $.query( doc ).ready( a );
+		boot.ready( a );
 	},
 	use: function( a ) {
 		return (new Require( _path || '' ))( a );
@@ -2042,14 +2079,15 @@ _merge( $, {
 	//导入皮肤css /a -> { dir: 'css/', theme: 'classic', color: 'blue' }
 	skin: (function() {
 		var did = _uid(), gid = _uid(), tid = _uid(), cid = _uid(), y = {};
-		return function( x ) {
-			_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
-			var k = location.protocol + '//' + location.host + _ui_path + 'g/';
-			// 谷歌浏览器首次打开页面，装载dfish.css会延迟，导致-1和*并用的布局模式无法正常解析。所以提前载入 f-inbl 和 f-sub-horz 两个样式
-			_loadStyle( (br.css3 ? '.f-inbl,.f-sub-horz{display:inline-block}' : '') + '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
+		return function( x, f ) {
+			var s = [], d = [];
 			if ( ! $( did ) ) {
-				$.query( 'head' ).append( '<link rel="stylesheet" id=' + did + ' href="' + _ui_path + 'dfish.css' + _ver + '">' );
-				br.mobile && $.query( 'head' ).append( '<link rel="stylesheet" href="' + _ui_path + 'mobile.css' + _ver + '">' );
+				_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
+				var k = location.protocol + '//' + location.host + _ui_path + 'g/';
+				_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
+				s.push( _ui_path + 'dfish.css' );
+				d.push( did );
+				br.mobile && (s.push(_ui_path + 'mobile.css'), d.push(''));
 			}
 			if ( x ) {
 				x = _extend( {}, x, y );
@@ -2057,11 +2095,13 @@ _merge( $, {
 					_rm( tid ), _rm( cid );
 				} else if ( x.color != y.color ) {
 					_rm( cid );
-				} 
-				! $( gid ) && $.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _path + x.dir + 'global.css' + _ver + '">' );
-				! $( tid ) && $.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
-				! $( cid ) && $.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
+				}
+				y = x;
+				! $( gid ) && (s.push( _path + x.dir + 'global.css' ), d.push( gid ));
+				! $( tid ) && (s.push( _path + x.dir + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
+				! $( cid ) && (s.push( _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
 			}
+			_loadCss( s, d, f );
 		}
 	})(),
 	// @a -> image array, b -> id
@@ -2256,7 +2296,7 @@ _merge( $, {
 if ( ! noGlobal ) {
 	win.dfish = win.$ = dfish;
 }
-
+// 获取引擎路径
 getPath();
 
 return dfish;

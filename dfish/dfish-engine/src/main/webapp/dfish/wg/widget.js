@@ -7456,7 +7456,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			}
 		},
 		isFolder: function() {
-			return this.length || (this.x.src && !this.loaded) ? T : F;
+			return this.x.folder != N ? this.x.folder : (this.length || (this.x.src && !this.loaded)) ? T : F;
 		},
 		fixFolder: function() {
 			this.addClass( 'z-folder', this.isFolder() );
@@ -7857,19 +7857,18 @@ Leaf = define.widget( 'leaf', {
 			}
 			return e;
 		},
-		html_self: function( a ) {
-			var x = this.x, r = this.rootNode, p = this.parent(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', f = (c ? 0 : this.level * this._pad_level) + this._pad_left, h = this.innerHeight(), s = '';
+		html_self: function() {
+			var x = this.x, r = this.rootNode, p = this.parent(), a = this.isFolder(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', f = (c ? 0 : this.level * this._pad_level) + this._pad_left, h = this.innerHeight(), s = '';
 			if ( x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-leaf-b', bubble: F } );
 				this.box.type === 'triplebox' && this.box.addEvent( 'click', this._triple, this );
 			}
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
-			a == N  && (a = this.length);
-			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (! p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (! p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (a ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() +
-				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
-				( this.box ? this.box.html() : '' ) + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
+				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
+				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();
@@ -8001,7 +8000,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 			return this.row.nodeIndex === this.row.parentNode.length - 1;
 		},
 		isFolder: function() {
-			return this.row.length || (this.x.src && !this.loaded) ? T : F;
+			return this.x.folder != N ? this.x.folder : (this.row.length || (this.x.src && !this.loaded)) ? T : F;
 		},
 		fix_text_size: function() {
 			var t = this.textNode, a = $.bcr( this.$() ), b = $.bcr( t.$() ), c = b.left - a.left;
@@ -8012,16 +8011,15 @@ GridLeaf = define.widget( 'grid/leaf', {
 		},
 		// leaf接口
 		toggle_nodes: function( a ) {
-			var t = this.tr();
-			if ( this.x.src || t.length ) {
+			if ( this.x.src || this.row.length ) {
 				var c = typeof a === _BOL ? a : ! this.x.open;
-				t.toggle_rows( c );
+				this.row.toggle_rows( c );
 				this.x.open = c;
 			}
 		},
 		// leaf接口
 		render_nodes: function( x ) {
-			for ( var i = 0, l = x.length, r = this.tr(); i < l; i ++ )
+			for ( var i = 0, l = x.length, r = this.row; i < l; i ++ )
 				r.add( x[ i ] );
 			l && Q( r.$() ).after( r.html_nodes() );
 			this.loaded = T;
@@ -8042,7 +8040,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 				this.row[ i ].leaf && this.row[ i ].leaf.indent();
 		},
 		html: function() {
-			var r = this.tr(), s = this.html_self( r.length );
+			var s = this.html_self();
 			return this.x.hr ? '<table class=w-hr-table cellspacing=0 cellpadding=0><tr><td>' + s + '<td width=100%><hr class=w-hr-line noshade></table>' : s;
 		}
 	}
@@ -8482,7 +8480,14 @@ TR = define.widget( 'tr', {
 } ),
 /* `thr`  thead 的子节点 */
 THR = define.widget( 'thead/tr', {
+	Const: function( x, p, n ) {
+		GridRow.apply( this, arguments );
+		var u = this.rootNode.x.pub;
+		if ( u && u.height )
+			$.extend( x, { height: u.height } );
+	},
 	Extend: GridRow,
+	Default: TR.Default,
 	Listener: {
 		body: {
 			click: {
@@ -8846,28 +8851,22 @@ Grid = define.widget( 'grid', {
 		this._face = x.face || 'none';
 		W.apply( this, arguments );
 		this.colgrps = [];
-		var r = x.thead && x.thead.rows, l = r && r.length;
-		if ( l ) {
-			for ( var i = 0, c, h = 0; i < l; i ++ )
-				h += _number( r[ i ].height );
-			if ( ! h && x.thead.height )
-				h = _number( x.thead.height );
-			if ( ! h && ( c = x.pub && x.pub.height ) )
-				h = l * _number( c );
-			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*', height: h || 32 } ), this );
-		}
+		var r = x.thead && x.thead.rows;
+		if ( r && r.length )
+			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
 		var y = { table: { tbody: x.tbody, columns: x.columns }, width: '*', height: '*', scroll: x.scroll, on: { scroll: 'this.parentNode.trigger(event)' } };
 		// 为适应滚动条的位置，当没有head时把grid的样式转到list上。如果有head，这样转移样式可能会出问题，暂不做
 		! this.head && $.jsonCut( y, x, 'wmin,hmin,cls,style' );
 		this.list = new GridList( y, this );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
-		if ( x.combo ) {
+		if ( x.combo )
 			this.ownerView.combo = new GridCombo( this );
-		}
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		x.scroll && $.classAdd( this, 'z-scroll' );
+		if ( this.head && x.scroll )
+			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 	},
 	Extend: 'vert/scale',
 	Listener: {
