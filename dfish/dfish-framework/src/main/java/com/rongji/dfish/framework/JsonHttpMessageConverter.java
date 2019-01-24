@@ -77,8 +77,7 @@ public class JsonHttpMessageConverter extends AbstractHttpMessageConverter<Objec
 		if (obj == null) {
 			return "";
 		}
-		String objJson = (obj instanceof JsonObject) ? ((JsonObject) obj).asJson() : J.toJson(obj);
-		return objJson;
+		return ((JsonObject) obj).asJson();
 	}
 
 }

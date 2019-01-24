@@ -55,7 +55,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
     private Boolean line;
     private String format;
     private String status;
-
+    private Boolean folder;
 
 	/**
      * 默认构造函数,因为树经常没有下级,但一般有属性,所默认创建属性的list
@@ -551,7 +551,25 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 		return this;
 	}
 	
-  /**
+	/**
+	 * 是否为一个可展开的目录，如果不设置本参数，那么引擎将根据是否有src属性或leaf子节点来自动判断
+	 * @return Boolean
+	 * @since 3.2.0
+	 */
+	public Boolean getFolder() {
+		return folder;
+	}
+	
+	/**
+	 * 是否为一个可展开的目录，如果不设置本参数，那么引擎将根据是否有src属性或leaf子节点来自动判断
+	 * @param folder Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Leaf setFolder(Boolean folder) {
+		this.folder = folder;
+		return this;
+	}
+/**
   * 在指定的位置添加子面板
   * @param index 位置
   * @param w  N
