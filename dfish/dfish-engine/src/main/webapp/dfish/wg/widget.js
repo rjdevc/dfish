@@ -402,6 +402,15 @@ Template = $.createClass( {
 		format: function( a, y ) {
 			return _proto.formatJS.call( this.wg, 'return ' + a, y, this.data );
 		},
+		whether: function( s, r, y ) {
+			if ( typeof s === _STR ) {
+				r = this.format( s, y );
+			} else {
+				var b = this.compile( s, y );
+				b && $.merge( r, b );
+			}
+			return r;
+		},
 		// @y -> { key: value }
 		compile: function( x, y ) {
 			var x = x || this.template, r = {}, f = {};
@@ -437,7 +446,8 @@ Template = $.createClass( {
 							r[ c ] = h;
 						}
 					} else if ( ! _template_reserved[ k ] ) {
-						(r[ k.substr( 1 ) ] = this.format( b, y ));
+						var d = typeof b === _STR ? this.format( b, y ) : this.compile( b, y );
+						d != N && (r[ k.substr( 1 ) ] = d);
 					}
 				} else if ( $.isArray( b ) ) {
 					for ( var i = 0, c = [], d, l = b.length; i < l; i ++ ) {
@@ -451,17 +461,17 @@ Template = $.createClass( {
 					r[ k ] = b;
 			}
 			if ( f._if ) {
-				if ( this.format( f._if[ 0 ], y ) )
-					return this.compile( f._if[ 1 ], y );
-				if ( f._elseif ) {
+				if ( this.format( f._if[ 0 ], y ) ) {
+					return this.whether( f._if[ 1 ], r, y );
+				} else if ( f._elseif ) {
 					f._elseif.sort( function( n, m ) { return n[ 2 ] < m[ 2 ] ? -1 : n[ 2 ] == m[ 2 ] ? 0 : 1 } );
 					for ( var i = 0; i < f._elseif.length; i ++ ) {
-						if ( this.format( f._elseif[ i ][ 0 ], y ) )
-							return this.compile( f._elseif[ i ][ 1 ], y );
+						if ( this.format( f._elseif[ i ][ 0 ], y ) ) {
+							return this.whether( f._elseif[ i ][ 1 ], r, y );
+						}
 					}
-				}
-				if ( f._else ) {
-					return this.compile( f._else, y );
+				} else if ( f._else ) {
+					return this.whether( f._else, r, y );
 				}
 			}
 			return r;
@@ -1925,7 +1935,7 @@ Layout = define.widget( 'layout', {
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
-		var r = p ? _view( p ) : _docView;
+		var r = (p && _view( p )) || _docView;
 		_initView.call( this );
 		_setPath.call( this, r, x );
 		_regWidget.apply( this, arguments );
@@ -7446,6 +7456,9 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				case 'focus':
 					this.focus( b );
 				break;
+				case 'folder':
+					this.fixFolder();
+				break;
 				case 'src':
 					this.fixFolder();
 				break;
@@ -8484,7 +8497,7 @@ THR = define.widget( 'thead/tr', {
 		GridRow.apply( this, arguments );
 		var u = this.rootNode.x.pub;
 		if ( u && u.height )
-			$.extend( x, { height: u.height } );
+			this.defaults( { height: u.height } );
 	},
 	Extend: GridRow,
 	Default: TR.Default,
