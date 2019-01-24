@@ -53,11 +53,11 @@ public class JsonHttpMessageConverter extends AbstractHttpMessageConverter<Objec
 	private static List<Charset> ACCEPT_CHARSETS= Collections.singletonList(CHARSET);
 	private static final Executor SINGLE_EXECUTOR=Executors.newSingleThreadExecutor();
 	@Override
-	protected void writeInternal(final Object jo, HttpOutputMessage outputMessage)
+	protected void writeInternal(final Object obj, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException {
 		
-		final String json=((JsonObject)jo).asJson();
-		byte[] ba=json.getBytes(CHARSET);
+		final String objJson=getObjectJson(obj);
+		byte[] ba=objJson.getBytes(CHARSET);
 		outputMessage.getHeaders().setAcceptCharset(ACCEPT_CHARSETS);
 		outputMessage.getHeaders().setContentType(new MediaType("text","json",CHARSET));
 		outputMessage.getHeaders().setExpires(0);
@@ -67,10 +67,18 @@ public class JsonHttpMessageConverter extends AbstractHttpMessageConverter<Objec
 		if(LOG.isDebugEnabled()){
 			SINGLE_EXECUTOR.execute(new Runnable(){
 				public void run(){
-					LOG.debug((jo instanceof DFishTemplate) ? json : J.formatJson(json));
+					LOG.debug((obj instanceof DFishTemplate) ? objJson : J.formatJson(objJson));
 				}
 			});
 		}
+	}
+	
+	protected String getObjectJson(Object obj) {
+		if (obj == null) {
+			return "";
+		}
+		String objJson = (obj instanceof JsonObject) ? ((JsonObject) obj).asJson() : J.toJson(obj);
+		return objJson;
 	}
 
 }
