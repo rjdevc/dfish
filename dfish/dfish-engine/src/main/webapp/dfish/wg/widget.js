@@ -6471,7 +6471,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?, f -> callback
 		createPop: function( u, r ) {
-			var d = { type: 'dialog', preload: '', cls: 'w-combobox-dialog', indent: 1 };
+			var d = { type: 'dialog', preload: '', cls: 'w-combobox-dialog', indent: 1, cover: F };
 			if ( typeof u === _STR ) {
 				d.src = u;
 			} else {
@@ -6698,7 +6698,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		html_nodes: function() {
 			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _c' + (this.x.nobr ? ' f-nobr' : '') + '" id=' + this.id + 'c' + _html_on.call( this ) +
-				' style="width:' + this.inputWidth() + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || 'loading..') + '</var></div>';
+				' style="width:' + this.inputWidth() + 'px"><div class="_e f-inbl f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || 'loading..') + '</div></div>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )

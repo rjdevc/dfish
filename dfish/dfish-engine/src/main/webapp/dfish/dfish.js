@@ -1870,7 +1870,8 @@ var boot = {
 						d = $.query( doc.body ).append( '<div id=:develop style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;position:absolute;border:2px dashed red;z-index:2"></div>' ),
 						g = m.closest( 'dialog' ), s = 'path: ' + m.path,
 						t = 'path: ' + m.path + (g ? '\ndialog: ' + (g.x.id || '') : '') + '\nsrc: <span onclick=event.ctrlKey&&window.open(this.innerText)>' + (m.x.src || '') + '</span>';
-					$.vm ? $.vm().cmd( { type: 'alert', text: t, on: { close: function() { _rm( ':develop' ) } } } ) : alert( t );
+					$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { _rm( ':develop' ) } } ) : (alert( t ), _rm( ':develop' ));
+					
 					e.preventDefault();
 				}
 			} );
