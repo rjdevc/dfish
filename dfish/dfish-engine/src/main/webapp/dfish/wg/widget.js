@@ -7430,19 +7430,15 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		},
 		// @implement
 		append: function( a ) {
-			// 尚未装载的节点不直接增加子节点
-			if ( this.x.src && !this.loaded )
-				a.isWidget && a.remove();
-			else
-				_proto.append.apply( this, arguments );
+			if ( ! this.loaded )
+				this.loaded = T;
+			_proto.append.apply( this, arguments );
 		},
 		// @implement
 		prepend: function( a ) {
-			// 尚未装载的节点不直接增加子节点
-			if ( this.x.src && !this.loaded )
-				a.isWidget && a.remove();
-			else
-				_proto.prepend.apply( this, arguments );
+			if ( ! this.loaded )
+				this.loaded = T;
+			_proto.prepend.apply( this, arguments );
 		},
 		// @implement
 		attrSetter: function( a, b, c ) {
@@ -7537,7 +7533,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		toggle: function( a, b, f ) {
 			this.toggle_nodes( a );
 			var c = this.x.open, d;
-			if ( this.x.src && c && ! this.loaded && ! this.loading ) 
+			if ( this.x.src && c && ! this.loaded && ! this.loading && this.isFolder() ) 
 				this.request( b, f );
 			if ( this.$( 'r' ) )
 				$.arrow( this.$( 'r' ), c ? 'b1' : 'r1' );
