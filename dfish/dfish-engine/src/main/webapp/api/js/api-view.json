@@ -171,6 +171,7 @@
 		        { "id": "html", "text": "html", "icon": ".icon .icon-class" },
 		        { "id": "img", "text": "img", "icon": ".icon .icon-class" },
 		        { "id": "leaf", "text": "leaf", "icon": ".icon .icon-class" },
+		        { "id": "label", "text": "label<sup>3.2+</sup>", "icon": ".icon .icon-class" },
 		        { "id": "menu/button", "text": "menu/button", "icon": ".icon .icon-class" },
 		        { "id": "progress", "text": "progress", "icon": ".icon .icon-class" },
 		        { "id": "split", "text": "split", "icon": ".icon .icon-class" },

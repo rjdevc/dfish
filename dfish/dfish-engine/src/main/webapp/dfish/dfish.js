@@ -190,8 +190,8 @@ Module = _createClass( {
 } ),
 //每个模块的运行环境下都会生成一个Require的实例 /@a -> path
 Require = function( a ) {
-	// @ b -> id, f -> fn, s -> async?
-	var r = function( b, f, s ) {
+	// @b -> js css array, f -> fn?, s -> async?
+	var	r = function( b, f, s ) {
 		if ( typeof b === _STR ) {
 			var c = _mod_uri( a, b );
 			if ( _moduleCache[ c ] ) {
@@ -201,6 +201,21 @@ Require = function( a ) {
 			b = [ b ];
 		} else
 			b = b.concat();
+		for ( var i = 0, c = [], d = [], l = b.length; i < l; i ++ )
+			(_strFrom( b[ i ], '.', T ) === 'css' ? c : d).push( b[ i ] );
+		// 同步时，由于css目前只能异步加载，所以css_ok直接设为true
+		var css_ok = ! s || ! c.length, js_ok = ! d.length,
+			g = function() { js_ok && css_ok && f && f(); };
+		c.length && r.css( c, function() { css_ok = T, g() } );
+		return d.length && r.js( d, function() { js_ok = T, g() }, s );
+	},
+	exe = function( b, f ) {
+		for ( var i = 0, g = []; i < b.length; i ++ )
+			g.push( _moduleCache[ b[ i ] ] );
+		f.apply( win, g );
+	};
+	// @ b -> js array, f -> fn, s -> async?
+	r.js = function( b, f, s ) {
 		for ( var i = 0, d = [], e = [], u; i < b.length; i ++ ) {
 			b[ i ] = _mod_uri( a, b[ i ] );
 			if ( (u = _alias[ b[ i ] ] || b[ i ]) === a ) u = b[ i ];
@@ -211,24 +226,23 @@ Require = function( a ) {
 				for ( var i = 0; i < g.length; i ++ ) {
 					! _moduleCache[ d[ i ] ] && _onModuleLoad( d[ i ], e[ i ], g[ i ] );
 				}
-				f && t( b, f );
+				f && exe( b, f );
 			}, ! s );
 		} else {
-			f && t( b, f );
+			f && exe( b, f );
 		}
 		return _moduleCache[ b[ 0 ] ];
-	}, t = function( b, f ) {
-		for ( var i = 0, g = []; i < b.length; i ++ )
-			g.push( _moduleCache[ b[ i ] ] );
-		f.apply( win, g );
 	};
-	// require.async(): 当传入第二个参数回调函数时，将异步装载js
-	r.async = function( b, f ) { return r( b, f, T ) };
-	// require.resolve(): 把相对路径解析为绝对路径
-	r.resolve = function( b ) { return _urlLoc( a, b ) };
 	// require.css(): 装载css
-	r.css = function( b ) {
-		_loadCss( _mod_uri( a, b, 'css' ) );
+	r.css = function( b, f ) {
+		typeof b === _STR && (b = [ b ]);
+		for ( var i = 0; c = [], d = [], i < b.length; i ++ )
+			b[ i ] = _mod_uri( a, b[ i ], 'css' );
+		_loadCss( b, N, f );
+	};
+	// require.async(): 异步装载js
+	r.async = function( b, f ) {
+		return r( b, f, T );
 	};
 	return r;
 },

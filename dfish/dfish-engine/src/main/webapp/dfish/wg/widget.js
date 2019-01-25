@@ -1784,7 +1784,7 @@ Xsrc = define.widget( 'xsrc', {
 				if ( ! s && x.template )
 					s = {};
 				if ( s && typeof s === _OBJ ) {
-					this.type_view && _view_js[ this.path ] && $.require( _view_js[ this.path ] );
+					this.type_view && _view_resources[ this.path ] && $.require( _view_resources[ this.path ] );
 					this._loadEnd( s );
 				} else
 					this.className += ' z-loading';
@@ -1829,7 +1829,7 @@ Xsrc = define.widget( 'xsrc', {
 			this.abort();
 			this.loading = T;
 			var u = this.attr( 'src' ), m, n, o, t = this.x.template, self = this,
-				d = this.type_view && _view_js[ this.path ],
+				d = this.type_view && _view_resources[ this.path ],
 				e = function() {
 					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
 				};
@@ -1923,7 +1923,7 @@ _mergeLoadingProp = function( x, a ) {
 	}
 },
 _userPriority = { 'click': T, 'close': T, 'valid': T },
-_view_js = cfg.view_js || {},
+_view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
 Layout = define.widget( 'layout', {
 	Listener: {
@@ -7457,7 +7457,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 					this.focus( b );
 				break;
 				case 'folder':
-					this.fixFolder();
+					this.fixFolder( b );
 				break;
 				case 'src':
 					this.fixFolder();
@@ -7469,9 +7469,11 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			}
 		},
 		isFolder: function() {
-			return this.x.folder != N ? this.x.folder : (this.length || (this.x.src && !this.loaded)) ? T : F;
+			return this.x.folder;
 		},
-		fixFolder: function() {
+		// @a -> folder?
+		fixFolder: function( a ) {
+			this.x.folder = a != N ? a : !!(this.length || (this.x.src && !this.loaded));
 			this.addClass( 'z-folder', this.isFolder() );
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
@@ -7679,7 +7681,8 @@ Leaf = define.widget( 'leaf', {
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
-		this.x.focus && this.tabFocus();
+		x.folder == N && (x.folder = !!(this.length || x.src));
+		x.focus && this.tabFocus();
 	},
 	Extend: AbsLeaf,
 	Default: { width: -1, height: -1 },

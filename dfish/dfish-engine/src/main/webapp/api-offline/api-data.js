@@ -2381,6 +2381,20 @@ define( {
       { name: '.w-html', remark: '基础样式。' }
     ]
   },
+  "label": {
+  	title: 'label',
+  	remark: '表单标签。',
+  	extend: 'widget',
+  	ver: "3.2*",
+    Config: [
+      { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+      { name: 'suffix', type: 'String', remark: '后缀。' },
+      { name: 'text', type: 'String', remark: '内容。' }
+    ],
+    Classes: [
+      { name: '.w-label', remark: '基础样式。' }
+    ]
+  },
   "grid/leaf": {
   	title: 'grid/leaf',
   	remark: '用于grid的树节点。',
@@ -2670,11 +2684,8 @@ define( {
   	remark: '单行文本输入框。',
   	extend: 'widget',
     Config: [
-      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。<br>&nbsp; LabelWidget 参数如下：', param: [
-        { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
-        { name: 'suffix', type: 'String', remark: '后缀。' },
-        { name: 'text', type: 'String', remark: '内容。' }
-      ], example: [
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2版本中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
+      	 example: [
           function() {
             // 显示标签的表单
             return~
@@ -2950,7 +2961,7 @@ define( {
   	title: 'hidden',
   	remark: '隐藏表单。',
   	extend: 'text',
-  	deprecate: 'focus,focusEnd,.w-text,.z-trans,.z-on,placeholder,tip,transparent'
+  	deprecate: 'label,focus,focusEnd,.w-text,.z-trans,.z-on,placeholder,tip,transparent'
   },
   "rate": {
   	title: 'rate',
