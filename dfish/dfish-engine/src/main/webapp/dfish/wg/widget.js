@@ -7480,7 +7480,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		// @a -> sync? b -> fn?
 		request: function( a, b ) {
 			this.loading = T;
-			this.exec( { type: 'ajax', src: this.x.src, sync: a,
+			this.exec( { type: 'ajax', src: _wg_format.call( this, this.x.src ), sync: a,
 				success: function( x ) {
 					this._srcdata = x;
 					if ( this.x.template ) {
