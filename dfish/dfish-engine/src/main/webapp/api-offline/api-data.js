@@ -134,7 +134,7 @@ define( {
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
           { name: 'view', type: 'Object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' },
-          { name: 'view_js', type: 'Object', remark: '设置view的依赖JS模块。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS。多个JS可以用数组。' }
+          { name: 'view_resources', type: 'Array', remark: '设置view的依赖JS或CSS。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS或CSS。' }
         ] }
       ], example: [
           function() {
