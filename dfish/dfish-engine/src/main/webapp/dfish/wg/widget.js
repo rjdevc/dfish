@@ -3089,6 +3089,7 @@ Img = define.widget( 'img', {
 			},
 			click: {
 				occupy: T,
+				block: function( e ) { return this.isEvent4Box( e ) },
 				method: function( e ) {
 					! this.isEvent4Box( e ) && this.x.focusable && this.focus( ! this.isFocus(), e );
 				}
