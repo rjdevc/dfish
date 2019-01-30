@@ -1216,6 +1216,7 @@ _rngCursor = $.rngCursor = function( a, b ) {
 		r.collapse( b != N );
 		r.select();
 	}
+	return r;
 },
 _rngCursorOffset = $.rngCursorOffset = function() {
 	var n = _rngSelection(), c = n.startOffset;

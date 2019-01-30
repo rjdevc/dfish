@@ -1876,6 +1876,7 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		ajax: function( a ) {
 			! a.type && (a.type = 'ajax');
+			a.loading = F;
 			this.exec( a );
 		},
 		abort: function() {
@@ -3037,6 +3038,7 @@ Album = define.widget( 'album', {
 	Prototype: {
 		className: 'w-album',
 		type_album: T,
+		x_childtype: $.rt( 'img' ),
 		getFocus: function() {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isFocus() ) return this[ i ];
@@ -3118,7 +3120,11 @@ Img = define.widget( 'img', {
 			if ( u.indexOf( 'javascript:' ) === 0 )
 				u = _wg_format.call( this, u );
 			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + ( h ? (isNaN( h ) ? h : h + 'px') : '100%' ) + ';">' + g + '</div>';
+			if ( ! h ) {
+				if ( this.x.height )
+					h = this.innerHeight() - 20;
+			}
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';' + (h ? 'height:' + (isNaN( h ) ? h : h + 'px;') : '') + '">' + g + '</div>';
 		},
 		prop_style: function() {
 			var c = this.parentNode.x.space;
@@ -3471,7 +3477,7 @@ Dialog = define.widget( 'dialog', {
 	Listener: {
 		body: {
 			ready: function() {
-				! this.layout && this.load();
+				! this.layout && this.x.src && this.load();
 				if ( this.x.resizable ) {
 					var self = this;
 					Q( '<div class="w-dialog-rsz z-w"></div><div class="w-dialog-rsz z-n"></div><div class="w-dialog-rsz z-e"></div><div class="w-dialog-rsz z-s"></div><div class="w-dialog-rsz z-nw"></div><div class="w-dialog-rsz z-ne"></div><div class="w-dialog-rsz z-sw"></div><div class="w-dialog-rsz z-se"></div>' )
@@ -3668,6 +3674,10 @@ Dialog = define.widget( 'dialog', {
 					$.classAdd( d, m, a );
 				}
 			}
+		},
+		reset: function() {
+			delete this.contentView;
+			Xsrc.prototype.reset.call( this );
 		},
 		html_nodes: ie7 ? function() {
 			return '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + _proto.html_nodes.apply( this, arguments ) + '</td></tr></table>';
@@ -3913,6 +3923,7 @@ Tip = define.widget( 'tip', {
 	Extend: Dialog,
 	Prototype: {
 		className: 'w-dialog w-tip',
+		showLoading: $.rt(),
 		// alert 类型对话框z-index固定值为3，总在最前面，不做修改
 		front: $.rt( F ),
 		_front: $.rt( F ),
@@ -3932,6 +3943,7 @@ Loading = define.widget( 'loading', {
 	Default: { local: T },
 	Prototype: {
 		className: 'w-dialog w-loading f-shadow',
+		showLoading: $.rt(),
 		html_nodes: function() {
 			if ( this.x.node ) {
 				return Dialog.prototype.html_nodes.apply( this, arguments );
@@ -6495,8 +6507,10 @@ Combobox = define.widget( 'combobox', {
 				var d = self.pop();
 				d && d.isShow() && self.focusNode && self.focusNode.tabFocus( F );
 			} ).addEvent( 'load', function() {
-				this.css( 'width', this.$().scrollWidth );
-				this.axis();
+				if ( this.$() ) {
+					this.css( 'width', this.$().scrollWidth );
+					this.axis();
+				}
 			} );
 		},
 		closePop: function() {
@@ -6946,20 +6960,42 @@ Linkbox = define.widget( 'linkbox', {
 				c = this._paste_rng.parentElement();
 			if ( c.id === this.id )
 				c = this.$t();
-			if ( c.tagName === 'VAR' ) {
-				c.innerHTML = '<u></u>';
-				if ( t ) {
-					(c = c.children[ 0 ]).innerText = t;
-					$.rngCursor( c );
-				} else
-					return this.closePop();
+			if ( c.id === this.id + 't' ) {
+				if ( br.ms ) {
+					c.innerHTML = '<u></u>';
+					if ( t ) {
+						(c = c.children[ 0 ]).innerText = t;
+						$.rngCursor( c );
+					} else
+						return this.closePop();
+				} else {
+					if ( t ) {
+						if ( c.firstChild.nodeType === 3 ) {
+							var r = $.rngCursor( c ),
+								u = document.createElement( 'u' );
+							r.extractContents();
+							u.appendChild( document.createTextNode( t ) );
+							r.insertNode( u );
+							$.rngCursor( u );
+							c = u;
+						} else {
+							Q( 'br', this.$t() ).remove();
+							if ( c.firstChild )
+								c = c.firstChild;
+							else
+								$.rngCursor( c );
+						}
+					} else
+						return this.closePop();
+				}
 			}
+			! br.ms && Q( 'br', this.$t() ).remove();
 			// 输入框内之只允许存在U和I两种标签。输入过程中浏览器可能会自动生成 <font> 标签，需要去除它
 			if ( c.tagName === 'FONT' ) {
 				if ( c.parentNode.tagName === 'U' ) {
 					var d = c.parentNode.previousSibling.nodeValue, c = c.parentNode.parentNode, t = c.innerText;
 					this._rng_text( c, t.indexOf( d ) + d.length + 1, t );
-				} else if ( c.parentNode.tagName === 'VAR' ) {
+				} else if ( c.parentNode.id === this.id + 't' ) {
 					t = c.parentNode.innerText;
 					(c = $.replace( c, '<u></u>' )).innerText = t;
 				}
@@ -6975,7 +7011,6 @@ Linkbox = define.widget( 'linkbox', {
 					g = T; // 有更新
 				}
 			}
-			! br.ms && Q( 'u:has(br)', this.$t() ).remove();
 			t = c.innerText;
 			// match text
 			var n = [], p = this.x.separator || ',';
@@ -7068,7 +7103,7 @@ Linkbox = define.widget( 'linkbox', {
 			this.store().merge( a );
 			this.focus();
 			var d = this.store().getParam( a ), u = this._currOpt || $.rngElement(), p = this.x.separator || ',', t = this.text();
-			if ( d && u && ! $.idsAny( t, d.text, p ) ) {
+			if ( d && u ) { //&& ! $.idsAny( t, d.text, p ) ) {
 				if ( u.tagName === 'U' ) {
 					this._rng_text( u, 0, d.text );
 				} else {
@@ -7128,9 +7163,9 @@ Linkbox = define.widget( 'linkbox', {
 			this._currOpt = $.rngElement();
 		},
 		html_nodes: function() {
-			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
+			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _t" id=' + this.id + 't' +
 				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + this.inputWidth() + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + this.inputWidth() + 'px">' + (this.x.loadingtext || Loc.loading) + '</div>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
@@ -7480,7 +7515,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		// @a -> sync? b -> fn?
 		request: function( a, b ) {
 			this.loading = T;
-			this.exec( { type: 'ajax', src: _wg_format.call( this, this.x.src ), sync: a,
+			this.exec( { type: 'ajax', src: _wg_format.call( this, this.x.src ), sync: a, loading: F,
 				success: function( x ) {
 					this._srcdata = x;
 					if ( this.x.template ) {
@@ -7685,6 +7720,7 @@ Leaf = define.widget( 'leaf', {
 	Listener: {
 		body: {
 			ready: function() {
+				this.length && this.trigger( 'load' );
 				this.x.src && this.x.open && ! this.loaded && this.toggle( T );
 				this.x.focus && this.focus();
 			},
@@ -7911,6 +7947,7 @@ Tree = define.widget( 'tree', {
 	Listener: {
 		body: {
 			ready: function() {
+				this.length && this.trigger( 'load' );
 				_scrollIntoView( this.getFocus() );
 				if ( this.x.src && ! this.length )
 					Leaf.prototype.request.call( this );
