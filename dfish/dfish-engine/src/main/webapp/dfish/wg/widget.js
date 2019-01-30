@@ -681,10 +681,10 @@ W = define( 'widget', function() {
 			return a == N ? _slice.call( this ) : a < 0 ? this[ this.length + a ] : this[ a ];
 		},
 		// 获取所有子孙节点
-		getAll: function() {
+		getDescendants: function() {
 			for ( var i = 0, r = [], l = this.length; i < l; i ++ ) {
 				r.push( this[ i ] );
-				this[ i ].length && r.push.apply( r, this[ i ].getAll() );
+				this[ i ].length && r.push.apply( r, this[ i ].getDescendants() );
 			}
 			return r;
 		},
@@ -967,6 +967,11 @@ W = define( 'widget', function() {
 			$.classAdd( this.$(), 'z-ds', a );
 			this.trigger( 'statuschange' );
 			return this;
+		},
+		status: function( a ) {
+			if ( a == N )
+				return this.x.status;
+			a === 'disabled' ? this.disable() : a === 'readonly' ? this.readonly() : a === 'validonly' ? this.validonly() : this.normal();
 		},
 		// 调整大小
 		resize: function( w, h ) {
@@ -2833,6 +2838,8 @@ Button = define.widget( 'button', {
 					this.$( 't' ) ? Q( 'em', this.$( 't' ) ).html( b ) : $.append( this.$( 'c' ), this.html_text( b ) );
 				else
 					this.removeElem( 't' );
+			} else if ( a === 'status' ) {
+				this.status( a, b );
 			}
 		},
 		html_icon: function( a ) {
@@ -3082,9 +3089,8 @@ Img = define.widget( 'img', {
 			},
 			click: {
 				occupy: T,
-				block: function( e ) { return this.box && e.srcElement && e.srcElement.id === this.box.id + 't' },
-				method: function() {
-					this.x.focusable && this.focus( ! this.isFocus() );
+				method: function( e ) {
+					! this.isEvent4Box( e ) && this.x.focusable && this.focus( ! this.isFocus(), e );
 				}
 			}
 		}
@@ -3103,14 +3109,20 @@ Img = define.widget( 'img', {
 				this.$( 't' ) && $.replace( this.$( 't' ), this.html_text() );
 			}
 		},
+		isEvent4Box: function( e ) {
+			return this.box && e && e.srcElement && e.srcElement.id == this.box.id + 't';
+		},
 		isFocus: function() {
 			return $.classAny( this.$(), 'z-on' );
 		},
-		focus: function( a ) {
+		focus: function( a, e ) {
+			this._focus( a, e );
+			this.box && this.box.click( a );
+		},
+		_focus: function( a, e ) {
 			var a = a == N || a, p = this.parentNode, b = p.getFocus();
 			$.classAdd( this.$(), 'z-on', a );
-			this.box && this.box.click( a );
-			a && b && b !== this && ! p.x.focusmultiple && b.focus( F );
+			a && b && b !== this && ! p.x.focusmultiple && b._focus( F );
 		},
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
@@ -3143,6 +3155,7 @@ Img = define.widget( 'img', {
 			var s = this.html_img();
 			if ( this.x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-img-box', checked: this.x.focus } );
+				this.box.type === 'triplebox' && this.box.addEvent( 'change', function() { this._focus( this.box.isChecked() ) }, this );
 				s = this.box.html() + s;
 			}
 			s += this.html_text();
@@ -4048,13 +4061,14 @@ Menu = define.widget( 'menu', {
 	},
 	Prototype: {
 		className: 'w-menu w-dialog',
-		// menu的z-index固定为3，总在最前面
-		front: $.rt( F ),
-		_front: $.rt( F ),
+		init_nodes: _proto.init_nodes,
 		// menu有两种子节点: menu/split, menu/button
 		x_childtype: function( t ) {
 			return t && t.indexOf( 'menu/' ) !== 0 ? 'menu/' + t : 'menu/button';
 		},
+		// menu的z-index固定为3，总在最前面
+		front: $.rt( F ),
+		_front: $.rt( F ),
 		_dft_pos: function() {
 			return $.snap( this.width(), this.height(), $.point, '21,12', this._fitpos );
 		},
@@ -4993,9 +5007,9 @@ Checkbox = define.widget( 'checkbox', {
 			this.check( a == 1 || a == N || a === T ? T : F );
 		},
 		// a -> true返回所有选中项，false -> 返回所有为选项，不填写本参数，返回所有兄弟项
-		getSibling: function( a ) {
+		getSiblings: function( a ) {
 			for ( var i = 0, b = this.elements( a ), c, r = []; i < b.length; i ++ ) {
-				if ( (c = $.widget( b[ i ] )) && b[ i ].id == c.id + 't' ) r.push( c );
+				if ( (c = $.widget( b[ i ] )) && b[ i ].id === c.id + 't' && ! c.x.checkall ) r.push( c );
 			}
 			return r;
 		},
@@ -5068,10 +5082,11 @@ Checkbox = define.widget( 'checkbox', {
 					y += 'max-width:' + w + 'px;';
 				s = s.replace( / f-inbl/g, '' );
 			}
+			this.x.checkstate == 2 && (s += ' z-half');
 			this.x.style && (y += this.x.style);
 			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-inbl f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
 				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)"' + (t && typeof t === _OBJ ? ' onmouseover="' + evw + '.tip()"' : '') + '>' + ((this.x.escape != N ? this.x.escape : p.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
 		}
 	}
@@ -5087,14 +5102,26 @@ Triplebox = define.widget( 'triplebox', {
 				if ( this.x.checkstate == 2 ) 
 					this.$t().indeterminate = T;
 			},
+			change: {
+				occupy: T,
+				block: function() { return ! this.isNormal() },
+				method: function( e ) {
+					if ( this.isNormal() ) {
+						Checkbox.Listener.body.change.method.apply( this, arguments );
+						this.x.checkall && e.srcElement && this.relate();
+					}
+				}
+			},
 			click: {
 				occupy: T,
-				method: function() {
+				method: function( e ) {
+					var s = this.x.checkstate;
 					Checkbox.Listener.body.click.method.apply( this, arguments );
-					if ( ie && this.$t().value == 2 ) // IE半选状态点击不会触发onchange，需要手动触发
-						this.checkstate( this.isChecked() ? 1 : 0 );
 					$.classAdd( this.$(), 'z-half', this.checkstate() == 2 );
-					this.relate();
+					if ( e.srcElement ) {
+						this.relate();
+						br.ms && this.x.checkall && s == 2 && this.checkstate( this.isChecked() ? 1 : 0 );; // ie点击半选状态的box 要手动触发change
+					}	
 				}
 			}
 		}
@@ -5108,7 +5135,9 @@ Triplebox = define.widget( 'triplebox', {
 			this.$t().checked = a == 1;
 			this.$t().indeterminate = a == 2;
 			$.classAdd( this.$(), 'z-half', a == 2 );
-			a != b && this.trigger( 'change' );
+			this.x.checkstate = a;
+			if ( a != b || this.x.checkall )
+				this.trigger( 'change' );
 		},
 		check: function( a ) {
 			this.checkstate( a === F ? 0 : (a === T || a == N) ? 1 : a );
@@ -5128,11 +5157,6 @@ Triplebox = define.widget( 'triplebox', {
 				if ( d && (c0 + c1 + c2) )
 					d.checkstate( c0 == l - 1 ? 0 : c1 == l - 1 ? 1 : 2 );
 			}			
-		},
-		html: function() {
-			return '<cite id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') +
-				'" class=_t' + (this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' +
-				(br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') + (this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</cite>';
 		}
 	}
 } ),
@@ -7684,14 +7708,14 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				this.parentNode.openTo( this.parentNode.x.src, a, b );
 		},
 		draggable: function( a ) {
-			for ( var i = 0, b = this.getAll(), l = b.length; i < l; i ++ ) {
+			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
 				$.draggable( b[ i ], a );
 				b[ i ].x.src && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.draggable.call( this, a ) } );
 			}
 			return this;
 		},
 		droppable: function( a ) {
-			for ( var i = 0, b = this.getAll(), l = b.length; i < l; i ++ ) {
+			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
 				$.droppable( b[ i ], a );
 				b[ i ].x.src && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.droppable.call( this, a ) } );
 			}
@@ -7811,7 +7835,7 @@ Leaf = define.widget( 'leaf', {
 			a !== F && this.triggerHandler( 'focus' );
 			if ( this.box && this.box.x.sync === 'focus' && ! this.isEvent4Box( e ) ) {
 				if ( a ) {
-					for ( var i = 0, r = this.rootNode.getAll(), l = r.length; i < l; i ++ )
+					for ( var i = 0, r = this.rootNode.getDescendants(), l = r.length; i < l; i ++ )
 						r[ i ] !== this && r[ i ].checkBox( F );
 				}
 				this.checkBox( a );

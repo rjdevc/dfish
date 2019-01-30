@@ -1159,7 +1159,7 @@ define( {
             wg.fireEvent( 'click' );
           }
       ] },
-      { name: 'getAll()', remark: '获取所有子孙节点，返回一个数组。', common: true },
+      { name: 'getDescendants()', remark: '获取所有子孙节点，返回一个数组。', common: true },
       { name: 'hasClass(cls)', remark: '是否包含某些样式。', common: true, param: [
         { name: 'cls', type: 'String', remark: '样式名。多个样式用空格隔开。' }
       ] },
@@ -1348,6 +1348,9 @@ define( {
       { name: 'isLocked()', remark: '是否锁定状态。' },
       { name: 'lock([locked])', remark: '锁定/解锁按钮。', param: [
         { name: 'locked', type: 'Boolean', remark: 'true: 锁定状态; false: 解除锁定。', optional: true }
+      ] },
+      { name: 'status([status])', remark: '获取或设置状态。', param: [
+        { name: 'status', type: 'String', remark: '传入此参数是设置状态。不传此参数是获取状态。可选值: <b>normal</b><s>(默认)</s>, <b>disabled</b><s>(禁用)</s>。', optional: true }
       ] },
       { name: 'text(str)', remark: '更换文本。', param: [
         { name: 'str', type: 'String', remark: '文本内容。' }
@@ -2776,6 +2779,9 @@ define( {
       { name: 'isDisabled()', remark: '获取表单状态是否为禁用。' },
       { name: 'isReadonly()', remark: '获取表单状态是否为只读。' },
       { name: 'isValidonly()', remark: '获取表单状态是否为只读并可验证数据。' },
+      { name: 'status([status])', remark: '获取或设置表单状态。', param: [
+        { name: 'status', type: 'String', remark: '传入此参数是设置表单状态。不传此参数是获取表单状态。可选值: <b>normal</b><s>(默认)</s>, <b>readonly</b><s>(只读，不验证数据)</s>, <b>validonly</b><s>(只读，验证数据)</s>, <b>disabled</b><s>(禁用)</s>。', optional: true }
+      ] },
       { name: 'isModified([original])', remark: '检测表单是否有修改。', param: [
         { name: 'original', type: 'Boolean', remark: '设为true，检测表单是否有修改，对照参考的值为初始值。', optional: true }
       ] },
@@ -2878,7 +2884,7 @@ define( {
       { name: 'checkAll([checked])', remark: '设置全选/不选。', param: [
         { name: 'checked', type: 'Boolean', remark: '是否可用。', optional: true }
       ] },
-      { name: 'getSibling([checked])', remark: '获取所有相同name的兄弟节点。', param: [
+      { name: 'getSiblings([checked])', remark: '获取所有相同name的兄弟节点。', param: [
         { name: 'checked', type: 'Boolean', remark: '设为 true，获取所有选中的同名节点；设为 false，获取所有未选的同名节点。不设此参数，获取所有同名节点。', optional: true }
       ] }
     ],
