@@ -306,10 +306,10 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 		hiddens.addHidden(name, value);
 		return this;
 	}
-	public FlexGrid addHidden(String name,AtExpression value) {
-		hiddens.addHidden(name, value);
-		return this;
-	}
+//	public FlexGrid addHidden(String name,AtExpression value) {
+//		hiddens.addHidden(name, value);
+//		return this;
+//	}
 	
 	public FlexGrid add(Hidden hidden) {
 		hiddens.add(hidden);

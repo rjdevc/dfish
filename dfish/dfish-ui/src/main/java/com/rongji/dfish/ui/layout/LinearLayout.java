@@ -128,11 +128,11 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 		hiddens.addHidden(name, value);
 		return (T)this;
 	}
-	public T addHidden(String name,AtExpression value) {
-		hiddens.addHidden(name, value);
-		return (T)this;
-	}
-	
+//	public T addHidden(String name,AtExpression value) {
+//		hiddens.addHidden(name, value);
+//		return (T)this;
+//	}
+//	
 	public T add(Hidden hidden) {
 		hiddens.add(hidden);
 		return (T)this;

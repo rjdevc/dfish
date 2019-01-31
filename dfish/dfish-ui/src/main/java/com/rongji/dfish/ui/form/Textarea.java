@@ -25,21 +25,32 @@ public final class Textarea extends AbstractInput<Textarea,String> {
         this.addValidate(Validate.maxlength(maxLength));
 	}
 	/**
-	 *  构造函数
-	 * 如果你正在使用DFish3.2新增的template功能。该构造函数可以让代码更加简约,
-	 * 你可以使用
-	 * <p>new Textarea("userName","姓名",()-&gt;"$data.userName");</p>
-	 * 表达该Hidden是动态取值，如果没有Java8 support 通常你需要使用
-	 * <p>new Textarea("userName","姓名",null).at("value","$data.userName");</p>
+	 * 构造函数
 	 * @param name 表单元素名
 	 * @param label 标题
-	 * @param value 值
+	 * @param value name
 	 */
-	public Textarea(String name, String label, AtExpression value) {
+	public Textarea(String name, String label, String value) {
 	    this.setName(name);
-	    this.setLabel(label);
-	    at("vallue",value.expr());
+        this.setValue(value);
+        this.setLabel(label);
 	}
+//	/**
+//	 *  构造函数
+//	 * 如果你正在使用DFish3.2新增的template功能。该构造函数可以让代码更加简约,
+//	 * 你可以使用
+//	 * <p>new Textarea("userName","姓名",()-&gt;"$data.userName");</p>
+//	 * 表达该Hidden是动态取值，如果没有Java8 support 通常你需要使用
+//	 * <p>new Textarea("userName","姓名",null).at("value","$data.userName");</p>
+//	 * @param name 表单元素名
+//	 * @param label 标题
+//	 * @param value 值
+//	 */
+//	public Textarea(String name, String label, AtExpression value) {
+//	    this.setName(name);
+//	    this.setLabel(label);
+//	    at("vallue",value.expr());
+//	}
 	
 
 //    private int maxLength;
