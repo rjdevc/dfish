@@ -397,7 +397,7 @@ _compileTemplate = function( g, d, s ) { return new Template( s || g.x.template,
 ContinueIF = function(){},
 /* `Template` */
 Template = $.createClass( {
-	// @ t -> preload, d -> data, g -> widget
+	// @ t -> template, d -> data, g -> widget
 	Const: function( t, d, g ) {
 		this.data = d;
 		this.wg   = g;
@@ -521,11 +521,12 @@ _tpl_view = function( a ) {
 _compilePreload = function( a, x ) {
 	var b = typeof a === _OBJ, n = b ? a : _getPreload( a );
 	if ( n ) {
-		if ( x.type === 'view' && (x.commands || x.on) ) {
+		if ( x.type === 'view' ) {
 			var v = _tpl_view( n );
 			if ( v ) {
 				x.commands && $.merge( v.commands || (v.commands = {}), x.commands );
 				x.on && $.merge( v.on || (v.on = {}), x.on );
+				x = x.node;
 			}
 		}
 		var t = 'preload/body',
@@ -3581,7 +3582,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		// 兼容3.1的处理：dialog src如果返回view，则套一层node
 		_loadDataFilter: function( x ) {
-			return x.type === 'view' ? { node: x } : x;
+			return x //x.type === 'view' ? { node: x } : x;
 		},
 		_dft_pos: function() {
 			var w = this.width(), h = this.height();
