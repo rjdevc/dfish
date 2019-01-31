@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.helper;
 
 import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
 import com.rongji.dfish.ui.form.FormGroup;
@@ -44,6 +45,21 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<FormGrou
 		this.text=text;
 		bundleProperties();
 	}
+//	/**
+//	 * 构造函数
+//	 * 如果你正在使用DFish3.2新增的template功能。该构造函数可以让代码更加简约,
+//	 * 你可以使用
+//	 * <p>new Label("姓名",()-&gt;"$data.userName");</p>
+//	 * 表达该Hidden是动态取值，如果没有Java8 support 通常你需要使用
+//	 * <p>new Label("姓名",null).at("text","$data.userName");</p>
+//	 * @param label 标题
+//	 * @param text 标签内容
+//	 */
+//	public Label(String label, AtExpression text){
+//		this.label=new FormLabel(label).setWidth(null);
+//		this.at("text",text.expr());
+//		bundleProperties();
+//	}
 	
 	@Override
 	public FormGroup getPrototype() {

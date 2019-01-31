@@ -80,6 +80,13 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     }
     
     /**
+     * 打开对话框命令
+     */
+    public DialogCommand() {
+    	
+    }
+    
+    /**
      * 设置窗口数据的URL
      * @param src String
      * @return 本身，这样可以继续设置其他属性
