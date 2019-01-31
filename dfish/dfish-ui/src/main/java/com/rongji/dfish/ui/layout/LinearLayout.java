@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.layout;
 import java.util.List;
 
 import com.rongji.dfish.ui.Alignable;
+import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.MultiContainer;
@@ -127,6 +128,11 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 		hiddens.addHidden(name, value);
 		return (T)this;
 	}
+	public T addHidden(String name,AtExpression value) {
+		hiddens.addHidden(name, value);
+		return (T)this;
+	}
+	
 	public T add(Hidden hidden) {
 		hiddens.add(hidden);
 		return (T)this;

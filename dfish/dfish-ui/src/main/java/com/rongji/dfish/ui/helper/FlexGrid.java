@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.Layout;
@@ -305,6 +306,11 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 		hiddens.addHidden(name, value);
 		return this;
 	}
+	public FlexGrid addHidden(String name,AtExpression value) {
+		hiddens.addHidden(name, value);
+		return this;
+	}
+	
 	public FlexGrid add(Hidden hidden) {
 		hiddens.add(hidden);
 		return this;

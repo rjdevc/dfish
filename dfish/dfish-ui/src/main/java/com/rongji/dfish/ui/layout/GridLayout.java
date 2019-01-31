@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.Combo;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
@@ -336,6 +337,11 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 		hiddens.addHidden(name, value);
 		return this;
 	}
+	public GridLayout addHidden(String name,AtExpression value) {
+		hiddens.addHidden(name, value);
+		return this;
+	}
+	
 	
 	public List<Hidden> getHiddens() {
 		return hiddens.getHiddens();
