@@ -300,12 +300,6 @@ _cmdHooks = {
 		x.title && (x.title = $.strFormat( x.title, a ));
 		return new Dialog( x, this ).show();
 	},
-	'dialog/drop': function( x, a ) { // 引擎内部使用的下拉框，避免 default_option 的 dialog 参数应用到内置的下拉框
-		if ( typeof x.src === _STR )
-			x.src = this.formatStr( x.src, a, T );
-		x.title && (x.title = $.strFormat( x.title, a ));
-		return new DialogDrop( x, this ).show();
-	},
 	'tip': function( x, a ) {
 		if ( typeof x.src === _STR )
 			x.src = this.formatStr( x.src, a, T );
@@ -521,6 +515,8 @@ _tpl_view = function( a ) {
 _compilePreload = function( a, x ) {
 	var b = typeof a === _OBJ, n = b ? a : _getPreload( a );
 	if ( n ) {
+		if ( x.type === 'dialog' )
+			x = x.node;
 		if ( x.type === 'view' ) {
 			var v = _tpl_view( n );
 			if ( v ) {
@@ -614,7 +610,7 @@ W = define( 'widget', function() {
 			this.x = x;
 			var r = this.rootNode;
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
-			_dfopt[ this.type ] && $.extendDeep( x, _dfopt[ this.type ] );
+			_dfopt[ this.type ] && ! x.ownproperty && $.extendDeep( x, _dfopt[ this.type ] );
 		},
 		// @private: 初始化子节点
 		init_nodes: function() {
@@ -767,7 +763,7 @@ W = define( 'widget', function() {
 				if ( c )
 					a = $.merge( {}, a, c );
 				if ( _cmdHooks[ a.type ] ) {
-					_dfopt[ a.type ] && $.extendDeep( a, _dfopt[ a.type ] );
+					_dfopt[ a.type ] && ! a.ownproperty && $.extendDeep( a, _dfopt[ a.type ] );
 					$.point();
 					return _cmdHooks[ a.type ].call( this, a, b );
 				}
@@ -2533,6 +2529,7 @@ Buttonbar = define.widget( 'buttonbar', {
 				this.x.overflow && this.overflow();
 			},
 			resize: function( e, f ) {
+				this.x.scroll && Scroll.Listener.body.resize.call( this, e );
 				! f && this.x.overflow && this.overflow();
 			},
 			nodechange: function() {
@@ -3038,7 +3035,7 @@ ButtonSplit = define.widget( 'button/split', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		var s = _dfopt.buttonbar && _dfopt.buttonbar.space;
-		s && this.defaults( { width: s } );
+		s && ! x.ownproperty && this.defaults( { width: s } );
 	},
 	Prototype: {
 		className: 'w-button-split f-inbl',
@@ -3469,7 +3466,7 @@ Dialog = define.widget( 'dialog', {
 			Dialog.custom[ x.id ] = this;
 		}
 		if ( p !== _docView ) {
-			this.opener = p.closest( function() { return this.type === 'dialog' } );
+			this.opener = p.closest( function() { return this.isDialogWidget } );
 		}
 		(this.commander = p).addEventOnce( 'remove', this.remove, this );
 	},
@@ -3582,7 +3579,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		// 兼容3.1的处理：dialog src如果返回view，则套一层node
 		_loadDataFilter: function( x ) {
-			return x //x.type === 'view' ? { node: x } : x;
+			return x.type === 'view' ? { type: this.type, node: x } : x;
 		},
 		_dft_pos: function() {
 			var w = this.width(), h = this.height();
@@ -3843,9 +3840,6 @@ Dialog = define.widget( 'dialog', {
 		}
 	}
 } ),
-DialogDrop = define.widget( 'dialog/drop', {
-	Extend: Dialog
-} ),
 _operexe = function( x, g, a ) {
 	return x && (typeof x === _OBJ ? g.exec( x, a ) : typeof x === _FUN ? x.apply( g, a || [] ) : g.formatJS( x ));
 },
@@ -3875,7 +3869,7 @@ Alert = define.widget( 'alert', {
 		var a = this.type === 'alert', r = x.args, s = x.btncls || 'f-button',
 			b = { type: 'alert/submitbutton', cls: s, text: '    ' + Loc.confirm + '    ' },
 			c = { type: 'alert/button', cls: s, text: '    ' + Loc.cancel + '    ' },
-			t = (_dfopt.alert && _dfopt.alert.preload) || (_dfopt.dialog && _dfopt.dialog.preload);
+			t = x.preload || (! x.ownproperty && (_dfopt.alert && _dfopt.alert.preload) || (_dfopt.dialog && _dfopt.dialog.preload));
 		if ( x.buttons ) {
 			for ( var i = 0, d = []; i < x.buttons.length; i ++ ) {
 				x.buttons[ i ].type = 'alert/' + x.buttons[ i ].type;
@@ -4451,7 +4445,7 @@ AbsForm = define.widget( 'abs/form', {
 		validHooks: F,
 		init_label: function() {
 			var a = this.x.label;
-			if ( a && typeof a === _OBJ && (a.width || (_dfopt.label && _dfopt.label.width)) )
+			if ( a && typeof a === _OBJ && (a.width || (!a.ownproperty && _dfopt.label && _dfopt.label.width)) )
 				 this.label = new Label( a, this, -1 );
 		},
 		form_minus:  function() {
@@ -5332,7 +5326,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog/drop', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog', ownproperty: T, snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -5436,7 +5430,7 @@ Calendar = define.widget( 'calendar/date', {
 					return r;
 				};
 			s += htm() + '</div>' + ( M ? '' : '<div class="_b _scr">+</div>' );
-			var d = this.exec( { type: 'dialog/drop', width: 60, height: h * 12, cls: 'w-calendar-select', snap: e, snaptype: e.dropSnapType || 'cc', pophide: T, node: { type: 'html', text: s },
+			var d = this.exec( { type: 'dialog', ownproperty: T, width: 60, height: h * 12, cls: 'w-calendar-select', snap: e, snaptype: e.dropSnapType || 'cc', pophide: T, node: { type: 'html', text: s },
 					on: { mouseleave: function(){ this.close() }, close: function() { clearTimeout( t ); Q( d.$() ).off(); } }
 				} ),
 				r = Q( '._wr', d.$() ),
@@ -5481,7 +5475,7 @@ Calendar = define.widget( 'calendar/date', {
 				~f.indexOf( 'h' ) && list( 'h', 24 );
 				~f.indexOf( 'i' ) && list( 'i', 60 );
 				~f.indexOf( 's' ) && list( 's', 60 );
-				this._dlg_time = this.exec( { type: 'dialog/drop', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
+				this._dlg_time = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
 					 type: 'vert', nodes: [
 					 	{ type: 'horz', height: 29, nodes: h },
 					 	{ type: 'horz', height: '*', nodes: c,
@@ -5798,7 +5792,7 @@ Muldate = define.widget( 'muldate', {
 			var h = (v.length + 1) * 30 + 2, c = this.list, d = c && c.isShow();
 			this.closePop();
 			if ( ! d ) 
-				this.list = this.exec( { type: 'dialog/drop', preload: '', cls: 'w-calendar-dialog w-muldate-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
+				this.list = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-dialog w-muldate-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
 					node: { type: 'html', text: b.join( '' ), scroll: T }, on: { close: function() { this.commander.focus(F) } } } );
 			this.focus();
 		},
@@ -6132,7 +6126,7 @@ XBox = define.widget( 'xbox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'dialog/drop', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
+				this._dropper = this.exec( { type: 'dialog', ownproperty: T, minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
 					cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
 					snaptype: 'v', snap: this, node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
 					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
@@ -6217,7 +6211,7 @@ Imgbox = define.widget( 'imgbox', {
 				for ( var i = 0, v = this.val(); i < l; i ++ ) {
 					s.push( '<div class="w-imgbox-c f-inbl' + (d[ i ].value == v ? ' z-on' : '') + '"' + _event_zhover + ' onclick=' + evw + '.choose(' + i + ')>' + this.html_img( d[ i ] ) + '</div>' );
 				}
-				this.dg = this.add( { type: 'dialog/drop', width: e, height: h, cls: 'w-input-border' + (this.txth ? ' z-tx': ''), snap: this, snaptype: g.type, pophide: T, indent: 1,
+				this.dg = this.add( { type: 'dialog', ownproperty: T, width: e, height: h, cls: 'w-input-border' + (this.txth ? ' z-tx': ''), snap: this, snaptype: g.type, pophide: T, indent: 1,
 					node: { type: 'html', scroll: T, text: s.join( '' ) + '</div>' }, on: { close: 'this.parentNode.removeClass("z-m-' + g.mag + '")' } } ).render();
 				$.classAdd( this.$(), 'z-m-' + g.mag );
 			}
@@ -6519,7 +6513,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?, f -> callback
 		createPop: function( u, r ) {
-			var d = { type: 'dialog/drop', preload: '', cls: 'w-combobox-dialog', indent: 1 };
+			var d = { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', indent: 1 };
 			if ( typeof u === _STR ) {
 				d.src = u;
 			} else {
