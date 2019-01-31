@@ -300,6 +300,12 @@ _cmdHooks = {
 		x.title && (x.title = $.strFormat( x.title, a ));
 		return new Dialog( x, this ).show();
 	},
+	'dialog/drop': function( x, a ) { // 引擎内部使用的下拉框，避免 default_option 的 dialog 参数应用到内置的下拉框
+		if ( typeof x.src === _STR )
+			x.src = this.formatStr( x.src, a, T );
+		x.title && (x.title = $.strFormat( x.title, a ));
+		return new DialogDrop( x, this ).show();
+	},
 	'tip': function( x, a ) {
 		if ( typeof x.src === _STR )
 			x.src = this.formatStr( x.src, a, T );
@@ -3836,6 +3842,9 @@ Dialog = define.widget( 'dialog', {
 		}
 	}
 } ),
+DialogDrop = define.widget( 'dialog/drop', {
+	Extend: Dialog
+} ),
 _operexe = function( x, g, a ) {
 	return x && (typeof x === _OBJ ? g.exec( x, a ) : typeof x === _FUN ? x.apply( g, a || [] ) : g.formatJS( x ));
 },
@@ -5322,7 +5331,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', preload: '', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog/drop', snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -5426,7 +5435,7 @@ Calendar = define.widget( 'calendar/date', {
 					return r;
 				};
 			s += htm() + '</div>' + ( M ? '' : '<div class="_b _scr">+</div>' );
-			var d = this.exec( { type: 'dialog', preload: '', width: 60, height: h * 12, cls: 'w-calendar-select', snap: e, snaptype: e.dropSnapType || 'cc', pophide: T, node: { type: 'html', text: s },
+			var d = this.exec( { type: 'dialog/drop', width: 60, height: h * 12, cls: 'w-calendar-select', snap: e, snaptype: e.dropSnapType || 'cc', pophide: T, node: { type: 'html', text: s },
 					on: { mouseleave: function(){ this.close() }, close: function() { clearTimeout( t ); Q( d.$() ).off(); } }
 				} ),
 				r = Q( '._wr', d.$() ),
@@ -5471,7 +5480,7 @@ Calendar = define.widget( 'calendar/date', {
 				~f.indexOf( 'h' ) && list( 'h', 24 );
 				~f.indexOf( 'i' ) && list( 'i', 60 );
 				~f.indexOf( 's' ) && list( 's', 60 );
-				this._dlg_time = this.exec( { type: 'dialog', preload: '', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
+				this._dlg_time = this.exec( { type: 'dialog/drop', cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
 					 type: 'vert', nodes: [
 					 	{ type: 'horz', height: 29, nodes: h },
 					 	{ type: 'horz', height: '*', nodes: c,
@@ -5788,7 +5797,7 @@ Muldate = define.widget( 'muldate', {
 			var h = (v.length + 1) * 30 + 2, c = this.list, d = c && c.isShow();
 			this.closePop();
 			if ( ! d ) 
-				this.list = this.exec( { type: 'dialog', preload: '', cls: 'w-calendar-dialog w-muldate-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
+				this.list = this.exec( { type: 'dialog/drop', preload: '', cls: 'w-calendar-dialog w-muldate-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
 					node: { type: 'html', text: b.join( '' ), scroll: T }, on: { close: function() { this.commander.focus(F) } } } );
 			this.focus();
 		},
@@ -6122,7 +6131,7 @@ XBox = define.widget( 'xbox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'dialog', preload: '', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
+				this._dropper = this.exec( { type: 'dialog/drop', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
 					cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
 					snaptype: 'v', snap: this, node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
 					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
@@ -6207,7 +6216,7 @@ Imgbox = define.widget( 'imgbox', {
 				for ( var i = 0, v = this.val(); i < l; i ++ ) {
 					s.push( '<div class="w-imgbox-c f-inbl' + (d[ i ].value == v ? ' z-on' : '') + '"' + _event_zhover + ' onclick=' + evw + '.choose(' + i + ')>' + this.html_img( d[ i ] ) + '</div>' );
 				}
-				this.dg = this.add( { type: 'dialog', preload: '', width: e, height: h, cls: 'w-input-border' + (this.txth ? ' z-tx': ''), snap: this, snaptype: g.type, pophide: T, indent: 1,
+				this.dg = this.add( { type: 'dialog/drop', width: e, height: h, cls: 'w-input-border' + (this.txth ? ' z-tx': ''), snap: this, snaptype: g.type, pophide: T, indent: 1,
 					node: { type: 'html', scroll: T, text: s.join( '' ) + '</div>' }, on: { close: 'this.parentNode.removeClass("z-m-' + g.mag + '")' } } ).render();
 				$.classAdd( this.$(), 'z-m-' + g.mag );
 			}
@@ -6509,7 +6518,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?, f -> callback
 		createPop: function( u, r ) {
-			var d = { type: 'dialog', preload: '', cls: 'w-combobox-dialog', indent: 1, cover: F };
+			var d = { type: 'dialog/drop', preload: '', cls: 'w-combobox-dialog', indent: 1 };
 			if ( typeof u === _STR ) {
 				d.src = u;
 			} else {
