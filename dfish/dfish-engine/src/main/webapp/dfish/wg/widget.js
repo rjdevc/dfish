@@ -1478,7 +1478,7 @@ _show_scroll = function() {
 	if ( ! mbi && this._scr_usable && this.$() ) {
 		var b = ie7 ? br.scroll : 0,
 			d = this.$( 'cont' ).offsetHeight || this.$( 'gut' ).scrollHeight,
-			g = this.$( 'ovf' ).scrollWidth - b;
+			g = ie7 ? (this.$( 'ovf' ).scrollWidth - b) : (this.$( 'gut' ).scrollWidth);
 		if ( d > 0 ) {
 			var c = this.innerHeight() || this.$().offsetHeight,
 				e = Math.min( 1, c / d );
@@ -1498,16 +1498,16 @@ _show_scroll = function() {
 },
 _html_scroll = function( s ) {
 	this._scr_usable = T;
-	var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll;
+	var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll, d = br.scroll;
 	if ( mbi ) {
 		return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + '<div id=' + this.id + 'ovf class=w-scroll-overflow style="' +
 			(w ? 'width:' + w + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + this.x.maxwidth + 'px;' : '') +
 			(this.x.minwidth ? 'min-width:' + this.x.minwidth + 'px;' : '') + (h ? 'height:' + h + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + this.x.maxheight + 'px;' : '') +
 			(this.x.minheight ? 'min-height:' + this.x.minheight + 'px;' : '') + '" onscroll=' + eve + '><div id=' + this.id + 'cont>' + (s || '') + '</div></div>';		
 	} else {
-		return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class=f-scroll-overflow style="margin-bottom:-' + br.scroll + 'px;' +
+		return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class=f-scroll-overflow style="margin-bottom:-' + c + 'px;' +
 			(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + (+this.x.maxwidth + c) + 'px;' : '') + (this.x.minwidth ? 'min-width:' + (+this.x.minwidth + c) + 'px;' : '') +
-			(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
+			(h ? 'height:' + (h + d) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + d) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + d) + 'px;' : '') +
 			'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
 			'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
 			this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div><div id=' +
@@ -2225,9 +2225,10 @@ Horz = define.widget( 'horz', {
 			v && (this.childCls += ' f-va-' + v);
 			// @compat: 兼容模式下，horz的没有高度的子节点，加上z-htmn样式(float:left)。如果不使用float，子节点内容不会自动撑开
 			// @fixme: 当widget的高度在-1和固定高度之间转变时，z-htmn也应该跟着增加或删除
-			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align == 'left') && (this.childCls += ' z-htmn');
-			var s = _proto.html_nodes.call( this ) + (this._hiddens ? this._hiddens.html() : ''), v = this.attr( 'valign' );
-			return v ? '<div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div><i class=f-vi-' + v + '></i>' : s;
+			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align === 'left') && (this.childCls += ' z-htmn');
+			var s = _proto.html_nodes.call( this ) + (this._hiddens ? this._hiddens.html() : ''),
+				ih = ie7 && this.x.scroll && this.innerHeight(); // ie7在有scroll和valign时，f-vi的100%会包含底部滚动条的高度，导致撑开。需要设置负值的margin-bottom来抵消
+			return v ? '<div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
 		}
 	}
 } ),
@@ -3134,10 +3135,10 @@ Img = define.widget( 'img', {
 				u = _wg_format.call( this, u );
 			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			if ( ! h ) {
-				if ( this.x.height )
-					h = this.innerHeight() - 20;
+				if ( x.height )
+					h = this.innerHeight() - (x.text ? 20 : 0);
 			}
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';' + (h ? 'height:' + (isNaN( h ) ? h : h + 'px;') : '') + '">' + g + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + (h ? (isNaN( h ) ? h : h + 'px;') : '100%;') + '">' + g + '</div>';
 		},
 		prop_style: function() {
 			var c = this.parentNode.x.space;

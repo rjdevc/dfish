@@ -1868,11 +1868,25 @@ var boot = {
 			$.query( doc ).contextmenu( function( e ) {
 				if ( e.ctrlKey && ! $( ':develop' ) ) {
 					var m = $.vm( e.target ), c = $.bcr( m.$() ),
-						d = $.query( doc.body ).append( '<div id=:develop style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;position:absolute;border:2px dashed red;z-index:2"></div>' ),
-						g = m.closest( 'dialog' ), s = 'path: ' + m.path,
-						t = 'path: ' + m.path + (g ? '\ndialog: ' + (g.x.id || '') : '') + '\nsrc: <span onclick=event.ctrlKey&&window.open(this.innerText)>' + (m.x.src || '') + '</span>';
-					$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { _rm( ':develop' ) } } ) : (alert( t ), _rm( ':develop' ));
-					
+						s = '<div class="f-develop" style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;"></div>',
+						d = m.closest( 'dialog' ),
+						t = 'path: ' + m.path + (d ? '\ndialog: ' + (d.x.id || '') : '') + '\nsrc: ' + (m.x.src || '');
+					if ( m.x.template )
+						t += '\ntemplate: ' + m.x.template;
+					if ( br.css3 ) {
+						Q( e.target ).closest( '[w-type="xsrc"],[w-type="tree"]' ).each( function() {
+							var g = $.all[ this.id ], c = $.bcr( this );
+							if ( g.x.template ) {
+								s += '<div class="f-develop z-tpl" style="width:' + (c.width - 6) + 'px;height:' + (c.height - 6) + 'px;left:' + (c.left + 1) + 'px;top:' + (c.top + 1) + 'px;">' +
+									'<div class=_t><span class=_s>id: ' + (g.x.id || '') + '<br>template: ' + (g.x.template || '') + '<br>src: ' + (g.x.src || '') + '</span></div>' +
+									'<div>';
+							}
+						} );
+					}
+					$.query( doc.body ).append( s );
+					setTimeout( function() {
+						$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { Q( '.f-develop' ).remove() } } ) : (alert( t ), Q( '.f-develop' ).remove());
+					}, 50 );
 					e.preventDefault();
 				}
 			} );
