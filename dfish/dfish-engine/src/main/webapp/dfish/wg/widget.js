@@ -2807,6 +2807,7 @@ Album = define.widget( 'album', {
 	Prototype: {
 		className: 'w-album',
 		type_album: T,
+		x_childtype: $.rt( 'img' ),
 		getFocus: function() {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isFocus() ) return this[ i ];
@@ -6645,13 +6646,35 @@ Linkbox = define.widget( 'linkbox', {
 			if ( c.id === this.id )
 				c = this.$t();
 			if ( c.tagName === 'VAR' ) {
-				c.innerHTML = '<u></u>';
-				if ( t ) {
-					(c = c.children[ 0 ]).innerText = t;
-					$.rngCursor( c );
-				} else
-					return this.closePop();
+				if ( br.ms ) {
+					c.innerHTML = '<u></u>';
+					if ( t ) {
+						(c = c.children[ 0 ]).innerText = t;
+						$.rngCursor( c );
+					} else
+						return this.closePop();
+				} else {
+					if ( t ) {
+						if ( c.firstChild.nodeType === 3 ) {
+							var r = $.rngCursor( c ),
+								u = document.createElement( 'u' );
+							r.extractContents();
+							u.appendChild( document.createTextNode( t ) );
+							r.insertNode( u );
+							$.rngCursor( u );
+							c = u;
+						} else {
+							Q( 'br', this.$t() ).remove();
+							if ( c.firstChild )
+								c = c.firstChild;
+							else
+								$.rngCursor( c );
+						}
+					} else
+						return this.closePop();
+				}
 			}
+			! br.ms && Q( 'br', this.$t() ).remove();
 			// 输入框内之只允许存在U和I两种标签。输入过程中浏览器可能会自动生成 <font> 标签，需要去除它
 			if ( c.tagName === 'FONT' ) {
 				if ( c.parentNode.tagName === 'U' ) {
@@ -6766,7 +6789,7 @@ Linkbox = define.widget( 'linkbox', {
 			this.store().merge( a );
 			this.focus();
 			var d = this.store().getParam( a ), u = this._currOpt || $.rngElement(), p = this.x.separator || ',', t = this.text();
-			if ( d && u && ! $.idsAny( t, d.text, p ) ) {
+			if ( d && u ) { //&& ! $.idsAny( t, d.text, p ) ) {
 				if ( u.tagName === 'U' ) {
 					this._rng_text( u, 0, d.text );
 				} else {
@@ -7945,14 +7968,16 @@ GridRow = define.widget( 'grid/row', {
 			return b.join( '' );
 		},
 		html: function( i ) {
-			var a = '', s, c = this.x.cls, h = this.x.height,
+			var a = '', c = this.x.cls, h = this.x.height,
 				s = '<tr id=' + this.id + ' class="' + this.className + (this.type_tr ? ' z-' + ((i == N ? this.nodeIndex : i) % 2) : '') + (c ? ' ' + c : '') + '"';
 			if ( h ) {
 				ie7 && (h -= this.rootNode._pad * 2 + (this.rootNode._face === 'none' ? 0 : 1));
-				a += ' style="height:' + h + 'px"';
+				a += 'height:' + h + 'px;';
 			}
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
-			s += a + _html_on.call( this ) + '>' + this.html_cells() + '</tr>';
+			this.x.style && (a += this.x.style);
+			a && (s += ' style="' + a + '"');
+			s += _html_on.call( this ) + '>' + this.html_cells() + '</tr>';
 			return this.length ? s + this.html_nodes() : s;
 		},
 		remove: function() {
@@ -8181,9 +8206,10 @@ THR = define.widget( 'thead/tr', {
 		GridRow.apply( this, arguments );
 		var u = this.rootNode.x.pub;
 		if ( u && u.height )
-			$.extend( x, { height: u.height } );
+			this.defaults( { height: u.height } );
 	},
 	Extend: GridRow,
+	Default: TR.Default,
 	Listener: {
 		body: {
 			click: {
