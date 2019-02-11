@@ -1466,7 +1466,7 @@ Scroll = define.widget( 'scroll', {
 				} else {
 					if ( f.right < c.left || f.left > c.right - br.scroll )
 						l = f.left - d.left - (( c.width / 2 ) - ( f.width / 2 ));
-					if ( f.left < c.left )
+					else if ( f.left < c.left )
 						l = a.scrollLeft - f.left + c.left;
 					else if ( f.right > c.right - br.scroll )
 						l = a.scrollLeft + f.right - c.right + br.scroll;
@@ -2606,6 +2606,10 @@ Button = define.widget( 'button', {
 					this.$( 't' ) ? Q( 'em', this.$( 't' ) ).html( b ) : $.append( this.$( 'c' ), this.html_text( b ) );
 				else
 					this.removeElem( 't' );
+			} else if ( a === 'status' ) {
+				this.status( a, b );
+			} else if ( a === 'tip' ) {
+				this.$() && (this.$().title = $.strQuot( (b === T ? this.x.text : b) || '' ));
 			}
 		},
 		html_icon: function( a ) {
@@ -2657,7 +2661,7 @@ Button = define.widget( 'button', {
 				a += ' w-target="' + ((x.target.x && x.target.x.id) || x.target) + '"';
 			a += c ? ' onmouseover=' + eve + ' onmouseout=' + eve : _html_on.call( this, ' onclick=' + eve );
 			if ( x.tip )
-				a += ' title="' + $.strQuot( x.tip === T ? x.text : x.tip ) + '"';
+				a += ' title="' + $.strQuot( (x.tip === T ? x.text : x.tip) || '' ) + '"';
 			x.id && (a += ' w-id="' + x.id + '"');
 			if ( this.property )
 				a += this.property;
@@ -3179,7 +3183,7 @@ TemplateTitle = define.widget( 'template/title', {
 						o.front();
 						var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
 							x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), self = this, m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
-						if ( o.x.moveable !== F && ! o._fullscreen ) {
+						if ( o.x.moveable !== F && ! o.x.fullscreen ) {
 							$.moveup( function( e ) {
 								! m && (m = $.db( '<div class=w-dialog-move style="width:' + $.width() + 'px;height:' + n + 'px;"></div>' ));
 								o.$().style[ v ] = $.numRange( t + b * (e.clientY - y), 0, n - 30 ) + 'px';
@@ -3288,7 +3292,6 @@ Dialog = define.widget( 'dialog', {
 		}
 		this._dft_wd = x.width;
 		this._dft_ht = x.height;
-		this._fullscreen = x.fullscreen;
 		if ( x.fullscreen || (x.width && ! isNaN( x.width ) && x.width > $.width()) )
 			x.width = '*';
 		if ( x.fullscreen || (x.height && ! isNaN( x.height ) && x.height > $.height()) )
@@ -3348,7 +3351,7 @@ Dialog = define.widget( 'dialog', {
 					var self = this;
 					Q( '<div class="w-dialog-rsz z-w"></div><div class="w-dialog-rsz z-n"></div><div class="w-dialog-rsz z-e"></div><div class="w-dialog-rsz z-s"></div><div class="w-dialog-rsz z-nw"></div><div class="w-dialog-rsz z-ne"></div><div class="w-dialog-rsz z-sw"></div><div class="w-dialog-rsz z-se"></div>' )
 						.appendTo( this.$() ).on( 'mousedown', function( e ) {
-							if ( self._fullscreen )
+							if ( self.x.fullscreen )
 								return;
 							var a = this.className.match( /z-(\w+)/ )[ 1 ], b = $.bcr( self.$() ), ix = e.clientX, iy = e.clientY, o;
 							$.moveup( function( e ) {
@@ -3431,7 +3434,7 @@ Dialog = define.widget( 'dialog', {
 			}
 		},
 		max: function() {
-			var f = this._fullscreen, s = this.$().style, o = this._stack_pos, w = this.width(), h = this.height(), x, y;
+			var f = this.x.fullscreen, s = this.$().style, o = this._stack_pos, w = this.width(), h = this.height(), x, y;
 			this.resize( f ? (o ? o.width : this._dft_wd) : '*', f ? (o ? o.height : this._dft_ht) : '*' );
 			if ( f ) {
 				if ( o ) {
@@ -3445,7 +3448,10 @@ Dialog = define.widget( 'dialog', {
 			x != N && (s[ s.left ? 'left' : 'right' ] = x);
 			y != N && (s[ s.top ? 'top' : 'bottom' ]  = y);
 			$.classAdd( this.$(), 'z-max', ! f );
-			this._fullscreen = ! f;
+			this.x.fullscreen = ! f;
+		},
+		isMax: function() {
+			return !!this.x.fullscreen;
 		},
 		//@public 移动到指定位置 /@a -> left, b -> top
 		moveTo: function( a, b ) {
@@ -3564,7 +3570,7 @@ Dialog = define.widget( 'dialog', {
 					break;
 				}
 			}
-			this.axis( this._fullscreen );
+			this.axis( this.x.fullscreen );
 			// 生成一条线，覆盖在对话框(或menu)和父节点连接的地方，形成一体的效果
 			if ( this.x.line ) {
 				$.append( this.$(), '<div id=' + this.id + 'ln class=w-menu-line></div>' );
