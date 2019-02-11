@@ -185,7 +185,7 @@ _scrollIntoView = function( a, b, c ) {
 		b && (Frame.focus( a ), Toggle.focus( a ));
 		var s = Scroll.get( a );
 		if ( s ) {
-			s.scrollTop( a, c === U ? 'middle' : c );
+			s.scrollTop( a, c === U ? 'auto' : c );
 			//s.scrollLeft( a, 'center' );
 		}
 	}
@@ -1445,7 +1445,9 @@ Scroll = define.widget( 'scroll', {
 				} else if ( y === 'middle' ) {
 					t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
 				} else {
-					if ( f.top < c.top )
+					if ( f.bottom < c.top || f.top > c.bottom - br.scroll )
+						t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
+					else if ( f.top < c.top )
 						t = a.scrollTop - c.top + f.top;
 					else if ( f.bottom > c.bottom - br.scroll )
 						t = a.scrollTop + f.bottom - c.bottom + br.scroll;
@@ -1460,8 +1462,10 @@ Scroll = define.widget( 'scroll', {
 				} else if ( ~y.indexOf( 'right' ) ) {
 					l = f.right - d.left - c.width + (+y.slice( 5 ));
 				} else if ( x === 'center' ) {
-					l = f.left - d.left - ( ( c.width / 2 ) - ( f.width / 2 ) );
+					l = f.left - d.left - (( c.width / 2 ) - ( f.width / 2 ));
 				} else {
+					if ( f.right < c.left || f.left > c.right - br.scroll )
+						l = f.left - d.left - (( c.width / 2 ) - ( f.width / 2 ));
 					if ( f.left < c.left )
 						l = a.scrollLeft - f.left + c.left;
 					else if ( f.right > c.right - br.scroll )
@@ -3902,7 +3906,12 @@ Menu = define.widget( 'menu', {
 			return t && t.indexOf( 'menu/' ) !== 0 ? 'menu/' + t : 'menu/button';
 		},
 		_dft_pos: function() {
-			return $.snap( this.width(), this.height(), $.point, '21,12', this._fitpos );
+			var b = $.point.originalEvent, c = b && this.parentNode.contains( b.srcElement ) && $.point;
+			if ( ! c ) {
+				b = $.bcr( this.parentNode.$() );
+				c = { clientX: b.left, clientY: b.top };
+			}
+			return $.snap( this.width(), this.height(), c, '21,12', this._fitpos );
 		},
 		_hide: function() {
 			if ( this.$() ) {
