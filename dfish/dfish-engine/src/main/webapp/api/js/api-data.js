@@ -2884,7 +2884,7 @@ define( {
       { name: 'checkAll([checked])', remark: '设置全选/不选。', param: [
         { name: 'checked', type: 'Boolean', remark: '是否可用。', optional: true }
       ] },
-      { name: 'getSiblings([checked])', remark: '获取所有相同name的兄弟节点。', param: [
+      { name: 'getSiblings([checked])', remark: '获取所有相同name的兄弟节点，返回一个数组。', param: [
         { name: 'checked', type: 'Boolean', remark: '设为 true，获取所有选中的同名节点；设为 false，获取所有未选的同名节点。不设此参数，获取所有同名节点。', optional: true }
       ] }
     ],
@@ -3487,6 +3487,7 @@ define( {
       ] },
       { name: 'hide()', remark: '隐藏。和 show() 方法对应。' },
       { name: 'isShow()', remark: '是否可见状态。' },
+      { name: 'isMax()', remark: '是否最大化状态。' },
       { name: 'moveTo(iLeft, iTop)', remark: '移动到指定位置。', param: [
         { name: 'iLeft', type: 'Number', remark: '左边位置。' },
         { name: 'iTop', type: 'Number', remark: '顶部位置。' }
