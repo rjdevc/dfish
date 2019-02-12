@@ -195,6 +195,12 @@ public class BaseController extends MultiActionController {
 				value = new Long(str);
 			} else if (type == Double.class) {
 				value = new Double(str);
+			} else if (type == Boolean.class) {
+				try {
+					value = Boolean.parseBoolean(str);
+				} catch (Exception e) {
+					value = "1".equals(str) || "T".equalsIgnoreCase(str);
+				}
 			} else if (type == java.util.Date.class) {
 				str = str.trim();
 				if(str.length() <= 7) {
