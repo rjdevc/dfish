@@ -189,13 +189,13 @@ public class BaseController extends MultiActionController {
 			}
 			if (type == String.class) {
 				value = str;
-			} else if (type == Integer.class) {
+			} else if (type == Integer.class || type == int.class) {
 				value = new Integer(str);
-			} else if (type == Long.class) {
+			} else if (type == Long.class || type == long.class) {
 				value = new Long(str);
-			} else if (type == Double.class) {
+			} else if (type == Double.class || type == double.class) {
 				value = new Double(str);
-			} else if (type == Boolean.class) {
+			} else if (type == Boolean.class || type == boolean.class) {
 				try {
 					value = Boolean.parseBoolean(str);
 				} catch (Exception e) {
