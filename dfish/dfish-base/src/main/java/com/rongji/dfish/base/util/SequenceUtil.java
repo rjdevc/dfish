@@ -6,26 +6,26 @@ import java.util.Arrays;
  * SequenceUtil 用于做有序的序列化文本
  *
  */
-public abstract class SequenceUtil {
+public class SequenceUtil {
 	private SequenceUtil(){}
 	/**
 	 * 纯数字， 09的下一个 是10  99或999的下一个溢出。
 	 */
-	public static final SequenceUtil DECIMAL=new DecimalSeq();
+	public static final SequenceUtil DECIMAL=new SequenceUtil("0123456789",false);
 	/**
 	 * 16进制数，0F的下一个是10， FF或FFF的下一个溢出
 	 */
-	public static final SequenceUtil HEX=new HexSeq();
+	public static final SequenceUtil HEX=new SequenceUtil("0123456789ABCDEF",true);
 	/**
 	 * 32进制数，RFC2938规范是JAVAInteger默认转化规划，或者认为是extend HEX。
 	 * 使用0-9 a-v这些字母
 	 */
-	public static final SequenceUtil BASE32_RFC2938=new B32R2938Seq();
+	public static final SequenceUtil BASE32_RFC2938=new SequenceUtil("0123456789abcdefghijklmnopqrstuv",true);
 	/**
 	 * 32进制数，RFC4648规范
 	 * 使用A-Z 2-7这些字母
 	 */
-	public static final SequenceUtil BASE32_RFC4648=new B32R4648Seq();
+	public static final SequenceUtil BASE32_RFC4648=new SequenceUtil("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",true);
 	/**
 	 * 比较推荐的一个32进制数规范
 	 * 使用0-9 A-Z 但是 oO被视作0，iIlL被视作1
@@ -36,24 +36,41 @@ public abstract class SequenceUtil {
 	 * GEOhash中用32进制规范。注意，正常情况下，GeoHash值加1没有逻辑上的意义。
 	 * 并不推荐使用。
 	 */
-	public static final SequenceUtil BASE32_GEOHASH=new B32GeohashSeq();
+	public static final SequenceUtil BASE32_GEOHASH=new SequenceUtil("0123456789bcdefghjkmnpqrstuvwxyz",true);
+	
 	/**
 	 * 所有字母和数字
 	 * 使用0-9 A-Z a-z ，使用62进制 只适合在sequence中使用，如果用于值转化性能比较低。
 	 */
-	public static final SequenceUtil ALPHABET_AND_NUMBER=new AnSeq();
+	public static final SequenceUtil ALPHABET_AND_NUMBER=
+			new SequenceUtil("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",false);
 	/**
 	 * 使用标准base64 的64进制
 	 * 使用A-Z a-z 0-9 以及+ / 字符。
 	 * 如果考虑到主键的实用性，应该避免使用+ / 等字符。所以该方式，适用范围可能需要斟酌。
 	 */
-	public static final SequenceUtil BASE64=new B64Seq();
+	public static final SequenceUtil BASE64=new SequenceUtil("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",false);
+	
+	
+	private SequenceUtil(String alphabet, boolean ignoreCase){
+		ALPHABET=alphabet.toCharArray();
+		radix=ALPHABET.length;
+		DECODE_TABLE=new int[128];
+		Arrays.fill(DECODE_TABLE, -1);
+		int i=0;
+		for(char c:ALPHABET){
+			if(ignoreCase){
+				if(c>='A'&&c<='Z'){
+					DECODE_TABLE[c+32]=i;
+				}else if(c>='a'&&c<='z'){
+					DECODE_TABLE[c-32]=i;
+				}
+			}
+			DECODE_TABLE[c]=i++;
+		}
+	}
 
-	
-	
-	
 	protected int radix=10;
-
 	protected char[] ALPHABET;
 	protected int[] DECODE_TABLE;
 	/**
@@ -136,88 +153,9 @@ public abstract class SequenceUtil {
 		return new String(cs);
 	}
 
-	protected static class DecimalSeq extends SequenceUtil{
-		public DecimalSeq(){
-			ALPHABET=new char[]{
-		            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
-		    };
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				i++;
-			}
-		}
-	}
-
-	
-	protected static class HexSeq extends SequenceUtil{
-		public HexSeq(){
-			ALPHABET=new char[]{
-					'0', '1', '2', '3', '4', '5', '6', '7',
-		            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-		    };
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				if(c>='A'&&c<='Z'){
-					DECODE_TABLE[c+32]=i;
-				}
-				i++;
-			}
-		}
-	}
-	protected static class B32R2938Seq extends SequenceUtil{
-		public B32R2938Seq(){
-			ALPHABET="0123456789abcdefghijklmnopqrstuv".toCharArray();
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				if(c>='a'&&c<='z'){
-					DECODE_TABLE[c-32]=i;
-				}
-				i++;
-			}
-		}
-	}
-	protected static class B32GeohashSeq extends SequenceUtil{
-		public B32GeohashSeq(){
-			ALPHABET="0123456789bcdefghjkmnpqrstuvwxyz".toCharArray();
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				if(c>='a'&&c<='z'){
-					DECODE_TABLE[c-32]=i;
-				}
-				i++;
-			}
-		}
-	}
 	protected static class B32CrockfordsSeq extends SequenceUtil{
 		public B32CrockfordsSeq(){
-			ALPHABET="0123456789ABCDEFGHJKMNPQRSTVWXYZ".toCharArray();
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				if(c>='A'&&c<='Z'){
-					DECODE_TABLE[c+32]=i;
-				}
-				i++;
-			}
+			super("0123456789ABCDEFGHJKMNPQRSTVWXYZ",true);
 			DECODE_TABLE['O']=0;
 			DECODE_TABLE['o']=0;
 			DECODE_TABLE['I']=1;
@@ -227,48 +165,9 @@ public abstract class SequenceUtil {
 		}
 	}
 	
-	protected static class B32R4648Seq extends SequenceUtil{
-		public B32R4648Seq(){
-			ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".toCharArray();
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				if(c>='A'&&c<='Z'){
-					DECODE_TABLE[c+32]=i;
-				}
-				i++;
-			}
-		}
-	}
-	protected static class B64Seq extends SequenceUtil{
-		public B64Seq(){
-			ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				i++;
-			}
-		}
-	}
-	protected static class AnSeq extends SequenceUtil{
-		public AnSeq(){
-			ALPHABET="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
-			radix=ALPHABET.length;
-			DECODE_TABLE=new int[128];
-			Arrays.fill(DECODE_TABLE, -1);
-			int i=0;
-			for(char c:ALPHABET){
-				DECODE_TABLE[c]=i;
-				i++;
-			}
-		}
-	}
+	
+
+
 
 //	public static void main(String[] args) {
 //		SequenceUtil s=SequenceUtil.DECIMAL;
