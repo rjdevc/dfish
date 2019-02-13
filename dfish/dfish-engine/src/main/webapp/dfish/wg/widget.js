@@ -903,7 +903,7 @@ W = define( 'widget', function() {
 			if ( ! h || ! h.dfish_format_fields ) {
 				var f = [], g = n.concat();
 				if ( a.indexOf( '$' ) > -1 ) {
-					var r = /\$([a-z_]+\w*)/ig, k;
+					var r = /\$(\w+)/ig, k;
 					while ( k = r.exec( a ) ) {
 						if( ! $.inArray( g, k[ 0 ] ) ) { g.push( k[ 0 ] ); f.push( k[ 1 ] ); };
 					}
@@ -3162,7 +3162,7 @@ Img = define.widget( 'img', {
 		},
 		prop_style: function() {
 			var c = this.parentNode.x.space;
-			return _proto.prop_style.call( this ) + ( c ? 'margin-top:' + c + 'px;margin-left:' + c + 'px;' : '');
+			return _proto.prop_style.call( this ) + (c ? 'margin-top:' + c + 'px;margin-left:' + c + 'px;' : '');
 		},
 		html_text: function() {
 			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text;
@@ -3170,7 +3170,7 @@ Img = define.widget( 'img', {
 				t = _wg_format.call( this, f, p.x.escape );
 			else if ( typeof t === _STR && p.x.escape )
 				t = $.strEscape( t );
-			return t ? '<div id=' + this.id + 't class="w-img-t f-' + ( x.nobr ? 'fix' : 'wdbr' ) + '"' + ( x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '' ) + ' style="width:' + (x.textwidth ? x.textwidth + 'px' : 'auto') + '">' +
+			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="width:' + (x.textwidth ? x.textwidth + 'px' : 'auto') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
