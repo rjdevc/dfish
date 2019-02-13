@@ -239,19 +239,21 @@ _ajaxCmd = function( x, a, t ) {
 		d = this.exec( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
 	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter || cfg.src_filter, error: x.error, beforesend: x.beforesend, 
-		success: function( v, a ) {
+		success: function( r, a ) {
 			d && (d.close(), d = N);
+			var v = r;
 			if ( ! this._disposed ) {
-				v && x.template && (v = _compileTemplate( this, v, x.template ));
+				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				if ( x.success )
 					$.fnapply( x.success, this, '$value,$ajax', [ v, a ] );
 				else
-					(v && this.exec( v, N, x.transfer ));
+					(v && this.exec( v, N, x.transfer, r ));
 			}
-		}, complete: function( v, a ) {
+		}, complete: function( r, a ) {
 			d && d.close();
+			var v = r;
 			if ( ! this._disposed && x.complete ) {
-				v && x.template && (v = _compileTemplate( this, v, x.template ));
+				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				$.fnapply( x.complete, this, '$value,$ajax', [ v, a ] );
 			}
 			if ( ! this._disposed )
@@ -259,18 +261,18 @@ _ajaxCmd = function( x, a, t ) {
 		}
 	} );
 },
-_cmd = function( x ) {
+_cmd = function( x, d ) {
 	var i = 0, e = _view.call( this, x.path ), f = x.target ? e.find( x.target ) : x.path ? e : this, l = x.nodes && x.nodes.length;
 	for ( ; i < l; i ++ )
-		f && f.exec( x.nodes[ i ] );
+		f && f.exec( x.nodes[ i ], N, N, d );
 },
 _cmdHooks = {
-	'cmd': function( x ) {
+	'cmd': function( x, a, b ) {
 		if ( x.delay != N ) {
 			var self = this;
 			setTimeout( function() { _cmd.call( self, x ) }, x.delay * 1000 );
 		} else
-			_cmd.call( this, x );
+			_cmd.call( this, x, b );
 	},
 	'js': function( x, a ) {
 		var c;
@@ -291,16 +293,19 @@ _cmdHooks = {
 			x.download ? $.download( x.src, d ) : _ajaxCmd.call( this, x, a, d );
 		}
 	},
-	'menu': function( x ) {
+	'menu': function( x, a, b ) {
+		b && (x.srcdata = b);
 		return new Menu( x, this ).show();
 	},
-	'dialog': function( x, a ) {
+	'dialog': function( x, a, b ) {
+		b && (x.srcdata = b);
 		if ( typeof x.src === _STR )
 			x.src = this.formatStr( x.src, a, T );
 		x.title && (x.title = $.strFormat( x.title, a ));
 		return new Dialog( x, this ).show();
 	},
-	'tip': function( x, a ) {
+	'tip': function( x, a, b ) {
+		b && (x.srcdata = b);
 		if ( typeof x.src === _STR )
 			x.src = this.formatStr( x.src, a, T );
 		if ( x.hide )
@@ -308,7 +313,8 @@ _cmdHooks = {
 		else
 			return new Tip( x, this ).show();
 	},
-	'loading': function( x, a ) {
+	'loading': function( x, a, b ) {
+		b && (x.srcdata = b);
 		if ( x.hide ) {
 			var d = $.dialog( this );
 			d && d.type == 'loading' ? d.close() : _inst_hide( 'loading', _view( this ) );
@@ -316,23 +322,26 @@ _cmdHooks = {
 			return new Loading( x, this ).show();
 		}
 	},
-	'alert': function( x, a ) {
+	'alert': function( x, a, b ) {
+		b && (x.srcdata = b);
 		x.args = a;
 		return new Alert( x, this ).show();
 	},
-	'confirm':  function( x, a ) {
+	'confirm':  function( x, a, b ) {
+		b && (x.srcdata = b);
 		x.args = a;
 		return new Confirm( x, this ).show();
 	}
 };
 $.each( 'before after prepend append replace remove'.split(' '), function( v, i ) {
-	_cmdHooks[ v ] = function( a ) {
-		var d = a.target || (i > 3 && a.node && a.node.id), e;
+	_cmdHooks[ v ] = function( x, a, b ) {
+		var d = x.target || (i > 3 && x.node && x.node.id), e;
 		if ( d ) {
-			if ( a.section === 'cmd' ) {
-				a.node && ((_view( this ).x.commands || (_view( this ).x.commands = {}))[ d ] = i === 5 ? N : a.node);
-			} else if ( e = _view( this ).find( d ) )
-				e[ v ]( a.node || a.nodes );
+			if ( x.section === 'cmd' ) {
+				x.node && ((_view( this ).x.commands || (_view( this ).x.commands = {}))[ d ] = i === 5 ? N : x.node);
+			} else if ( e = _view( this ).find( d ) ) {
+				e[ v ]( x.node || x.nodes );
+			}
 		}
 	}
 } );
@@ -702,7 +711,7 @@ W = define( 'widget', function() {
 					if ( p.type === a )
 						return p;
 				} else if ( b === _FUN ) {
-					if ( a.call( p, this ) === T )
+					if ( a.call( p, this ) )
 						return p;
 				} else if ( b === _OBJ ) {
 					var i, r = T;
@@ -724,6 +733,10 @@ W = define( 'widget', function() {
 					return;
 			}
 		},
+		srcData: function() {
+			var c = this.closest( function() { return this.x.srcdata; } );
+			return c && c.x.srcdata;
+		},
 		click: function() {
 			this.trigger( 'click' );
 			return this;
@@ -744,8 +757,8 @@ W = define( 'widget', function() {
 		cmd: function( a ) {
 			return this.exec( a, arguments.length > 1 ? _slice.call( arguments, 1 ) : N );
 		},
-		// 执行命令 /@a -> id[string/object], b -> args[array], c -> feature
-		exec: function( a, b, c ) {
+		// 执行命令 /@a -> id[string/object], b -> args[array], c -> feature, d -> data
+		exec: function( a, b, c, d ) {
 			if ( this._disposed )
 				return;
 			if ( typeof a === _STR ) {
@@ -765,7 +778,7 @@ W = define( 'widget', function() {
 				if ( _cmdHooks[ a.type ] ) {
 					_dfopt[ a.type ] && ! a.ownproperty && $.extendDeep( a, _dfopt[ a.type ] );
 					$.point();
-					return _cmdHooks[ a.type ].call( this, a, b );
+					return _cmdHooks[ a.type ].call( this, a, b, d );
 				}
 			}
 		},
@@ -1855,7 +1868,7 @@ Xsrc = define.widget( 'xsrc', {
 		_loadEnd: function( d ) {
 			this.loading = F;
 			if ( d ) {
-				this._srcdata = d;
+				this.x.srcdata = d;
 				var x = this.x.template ? _compileTemplate( this, d ) : this._loadDataFilter( d );
 				if ( this.x.preload )
 					x = _compilePreload( this.x.preload, x );
@@ -1882,9 +1895,6 @@ Xsrc = define.widget( 'xsrc', {
 		// @x -> data json
 		_loadDataFilter: function( x ) {
 			return x;
-		},
-		srcData: function() {
-			return this._srcdata;
 		},
 		ajax: function( a ) {
 			! a.type && (a.type = 'ajax');
@@ -3155,7 +3165,7 @@ Img = define.widget( 'img', {
 			return _proto.prop_style.call( this ) + ( c ? 'margin-top:' + c + 'px;margin-left:' + c + 'px;' : '');
 		},
 		html_text: function() {
-			var x = this.x, p = this.parentNode, f = p.x.format, s, t = x.text;
+			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text;
 			if ( typeof t !== _OBJ && f )
 				t = _wg_format.call( this, f, p.x.escape );
 			else if ( typeof t === _STR && p.x.escape )
@@ -7552,15 +7562,12 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
 		},
-		srcData: function() {
-			return this._srcdata;
-		},
 		// @a -> sync? b -> fn?
 		request: function( a, b ) {
 			this.loading = T;
 			this.exec( { type: 'ajax', src: _wg_format.call( this, this.x.src ), sync: a, loading: F,
 				success: function( x ) {
-					this._srcdata = x;
+					this.x.srcdata = x;
 					if ( this.x.template ) {
 						x = _compileTemplate( this, x );
 						x.pub && $.merge( (this.x.pub || (this.x.pub = {})), x.pub );
