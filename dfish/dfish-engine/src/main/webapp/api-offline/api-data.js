@@ -1252,6 +1252,7 @@ define( {
             wg.setOn( 'click', 'alert(this.type)' );
           }
       ] },
+      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' },      
       { name: 'triggerAll(event)', common: true, param: [
         { name: 'event', type: 'Event | String', remark: '事件对象或名称。' }
       ], remark: '触发自身和所有子孙节点的事件。', example: [
@@ -2134,7 +2135,6 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。' },
-      { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'focusmultiple', type: 'Boolean', remark: '是否可多选。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。album的子节点类型为"img"' },
@@ -2170,6 +2170,7 @@ define( {
       { name: 'description', type: 'String', remark: '图片说明。当 album face="straight" 时会显示说明。' },
       { name: 'face', type: 'String', remark: '图片展现方式。可选值: <b>none</b>, <b>straight</b>。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'imgwidth', type: 'Number | String', remark: '图片宽度。' },
       { name: 'imgheight', type: 'Number | String', remark: '图片高度。' },
       { name: 'textwidth', type: 'Number | String', remark: '文本宽度。' },
