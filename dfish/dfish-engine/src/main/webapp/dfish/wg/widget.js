@@ -397,7 +397,16 @@ Node = $.createClass( {
 
 _template_reserved = { '@w-if': T, '@w-elseif': T, '@w-else': T, '@w-include': T },
 _compileTemplate = function( g, d, s ) { return new Template( s || g.x.template, d, g ).compile() },
-ContinueIF = function(){},
+TemplateWidget = $.createClass( {
+	Const: function( x ) {
+		this.x = x;
+	},
+	Prototype: {
+		data: function() {
+			return _proto.data.apply( this, arguments );
+		}
+	}
+} ),
 /* `Template` */
 Template = $.createClass( {
 	// @ t -> template, d -> data, g -> widget
@@ -408,12 +417,13 @@ Template = $.createClass( {
 	},
 	Extend: Node,
 	Prototype: {
-		format: function( a, y ) {
-			return _proto.formatJS.call( this.wg, 'return ' + a, y, this.data );
+		// @a -> text, g -> templateWidget, y -> args
+		format: function( a, g, y ) {
+			return _proto.formatJS.call( g, 'return ' + a, y, this.data );
 		},
-		whether: function( s, r, y ) {
+		whether: function( s, r, g, y ) {
 			if ( typeof s === _STR ) {
-				r = this.format( s, y );
+				r = this.format( s, g, y );
 			} else {
 				var b = this.compile( s, y );
 				b && $.merge( r, b );
@@ -422,7 +432,7 @@ Template = $.createClass( {
 		},
 		// @y -> { key: value }
 		compile: function( x, y ) {
-			var x = x || this.template, r = {}, f = {};
+			var x = x || this.template, r = {}, f = {}, g = x && (new TemplateWidget( x ));
 			if ( ! x )
 				return;
 			if ( x[ '@w-include' ] ) {
@@ -442,7 +452,7 @@ Template = $.createClass( {
 						var c = $.strRange( k, '@', ':w-for' ), // propName
 							d = $.strRange( k, '(', ' in ' ), // (item,index)
 							e = $.strRange( k, ' in ', ')' ), // array
-							n = this.format( e, y );
+							n = this.format( e, g, y );
 						if ( n ) {
 							var g = d.replace( /[()\s]/g, '' ).split( ',' );
 							for ( var i = 0, h = [], m, l = n.length; i < l; i ++ ) {
@@ -455,7 +465,7 @@ Template = $.createClass( {
 							r[ c ] = h;
 						}
 					} else if ( ! _template_reserved[ k ] ) {
-						var d = typeof b === _STR ? this.format( b, y ) : this.compile( b, y );
+						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );
 						d != N && (r[ k.substr( 1 ) ] = d);
 					}
 				} else if ( $.isArray( b ) ) {
@@ -470,17 +480,17 @@ Template = $.createClass( {
 					r[ k ] = b;
 			}
 			if ( f._if ) {
-				if ( this.format( f._if[ 0 ], y ) ) {
-					return this.whether( f._if[ 1 ], r, y );
+				if ( this.format( f._if[ 0 ], g, y ) ) {
+					return this.whether( f._if[ 1 ], r, g, y );
 				} else if ( f._elseif ) {
 					f._elseif.sort( function( n, m ) { return n[ 2 ] < m[ 2 ] ? -1 : n[ 2 ] == m[ 2 ] ? 0 : 1 } );
 					for ( var i = 0; i < f._elseif.length; i ++ ) {
-						if ( this.format( f._elseif[ i ][ 0 ], y ) ) {
-							return this.whether( f._elseif[ i ][ 1 ], r, y );
+						if ( this.format( f._elseif[ i ][ 0 ], g, y ) ) {
+							return this.whether( f._elseif[ i ][ 1 ], r, g, y );
 						}
 					}
 				} else if ( f._else ) {
-					return this.whether( f._else, r, y );
+					return this.whether( f._else, r, g, y );
 				}
 			}
 			return r;
