@@ -90,6 +90,43 @@ public class SequenceUtil {
 		return new String(cs);
 	}
 	/**
+	 * 将值增加一，逻辑上相当于next(sequence,1)。
+	 * 与plus相比，他可以允许原有值有不规范的字符。
+	 * 比如说数字情况，如果原有值是 19E 那么next将从200开始。
+	 * 容错性较好，但性能较plus低
+	 * @param sequence 原始值
+	 * @return 下一个值
+	 * @throws ArithmeticException 如果数字越界
+	 */
+	public String next(String sequence){
+		if(sequence==null||sequence.equals("")){
+			throw new IllegalArgumentException(sequence);
+		}
+		char[] cs=sequence.toCharArray();
+		int pos=cs.length-1;
+		try{
+			while(plus(cs,pos--,1,sequence));
+		}catch(IllegalArgumentException ex){
+			//如果有不可识别的字符，尝试发现第几位开始数字是可识别的。
+			int unreg=-1;
+			for(int i=0;i<cs.length;i++){
+				if( DECODE_TABLE[ cs[i]]<0){
+					unreg=i;
+					break;
+				}
+			}
+			if(unreg==0){
+				throw new ArithmeticException(sequence);
+			}
+			pos=unreg-1;
+			while(plus(cs,pos--,1,sequence));
+			for(int i=unreg;i<cs.length;i++){
+				cs[i]=ALPHABET[0];
+			}
+		}
+		return new String(cs);
+	}
+	/**
 	 * 增加
 	 * @param cs 字节串位置
 	 * @param index 位置 0到cs.length-1
@@ -152,6 +189,42 @@ public class SequenceUtil {
 		}
 		return new String(cs);
 	}
+	/**
+	 * 将值增加一定的量。
+	 *  与plus相比，他可以允许原有值有不规范的字符。
+	 * 比如说数字情况，如果原有值是 19E 那么next将从200开始。
+	 * 容错性较好，但性能较plus低
+	 * @param sequence 原始值
+	 * @param value 增加数量
+	 * @return 下value个值。
+	 * @throws ArithmeticException 如果数字越界
+	 */
+	public String next(String sequence,long value){
+		if(sequence==null||sequence.equals("")){
+			throw new IllegalArgumentException(sequence);
+		}
+		try{
+			return plus(sequence,value);
+		}catch(IllegalArgumentException ex){
+			char[] cs=sequence.toCharArray();
+			int unreg=-1;
+			for(int i=0;i<cs.length;i++){
+				if( DECODE_TABLE[ cs[i]]<0){
+					unreg=i;
+					break;
+				}
+			}
+			if(unreg==0){
+				throw new ArithmeticException(sequence);
+			}
+			int pos=unreg-1;
+			while(plus(cs,pos--,1,sequence));
+			for(int i=unreg;i<cs.length;i++){
+				cs[i]=ALPHABET[0];
+			}
+			return plus(new String(cs),value-1);
+		}
+	}
 
 	protected static class B32CrockfordsSeq extends SequenceUtil{
 		public B32CrockfordsSeq(){
@@ -169,28 +242,30 @@ public class SequenceUtil {
 
 
 
-//	public static void main(String[] args) {
-//		SequenceUtil s=SequenceUtil.DECIMAL;
-//		System.out.println(s.plus("199"));
-//		System.out.println(s.plus("1"));
-//		System.out.println(s.plus("109"));
-//		System.out.println(s.plus("009"));
-//		System.out.println(s.plus("109",91));
-////		System.out.println(s.plus("999"));
-//		SequenceUtil s2=SequenceUtil.HEX;
-//		System.out.println(s2.plus("199"));
-//		System.out.println(s2.plus("1FF"));
-//		System.out.println(s2.plus("1ff"));
-//		System.out.println(s2.plus("1ee"));
-//		System.out.println(s2.plus("1ef"));
-//		System.out.println(s2.plus("1"));
-//		System.out.println(s2.plus("10F"));
-//		System.out.println(s2.plus("00F"));
-//		System.out.println(s2.plus("10F",0xF1));
-//		
-//		SequenceUtil s3=SequenceUtil.ALPHABET_AND_NUMBER;
-//		System.out.println(s3.plus("1zz"));
-////		System.out.println(s3.plus("zzz"));
-//	}
+	public static void main(String[] args) {
+		SequenceUtil s=SequenceUtil.DECIMAL;
+		System.out.println(s.next("19E"));
+		System.out.println(s.next("19E",2));
+		System.out.println(s.plus("199"));
+		System.out.println(s.plus("1"));
+		System.out.println(s.plus("109"));
+		System.out.println(s.plus("009"));
+		System.out.println(s.plus("109",91));
+//		System.out.println(s.plus("999"));
+		SequenceUtil s2=SequenceUtil.HEX;
+		System.out.println(s2.plus("199"));
+		System.out.println(s2.plus("1FF"));
+		System.out.println(s2.plus("1ff"));
+		System.out.println(s2.plus("1ee"));
+		System.out.println(s2.plus("1ef"));
+		System.out.println(s2.plus("1"));
+		System.out.println(s2.plus("10F"));
+		System.out.println(s2.plus("00F"));
+		System.out.println(s2.plus("10F",0xF1));
+		
+		SequenceUtil s3=SequenceUtil.ALPHABET_AND_NUMBER;
+		System.out.println(s3.plus("1zz"));
+//		System.out.println(s3.plus("zzz"));
+	}
 	
 }
