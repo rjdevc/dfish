@@ -50,7 +50,14 @@ public class SequenceUtil {
 	 * 如果考虑到主键的实用性，应该避免使用+ / 等字符。所以该方式，适用范围可能需要斟酌。
 	 */
 	public static final SequenceUtil BASE64=new SequenceUtil("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",false);
-	
+	/**
+	 * 使用人好阅读的字符
+	 * 先用纯数字，然后使用BASE32 (Crockford's)
+	 * 000-999 99A-9ZZ A00-ZZZ 不会主动出现0A0等情况
+	 * 这种情况下，性能会稍低，注意plus和next 将会有同样的结果。
+	 */
+	public static final SequenceUtil HUMAN_READABLE=new HRSeq();
+
 	
 	private SequenceUtil(String alphabet, boolean ignoreCase){
 		ALPHABET=alphabet.toCharArray();
@@ -237,6 +244,43 @@ public class SequenceUtil {
 			DECODE_TABLE['l']=1;
 		}
 	}
+	protected static class HRSeq extends SequenceUtil{
+		@Override
+		public String plus(String sequence) {
+			try{
+				return DECIMAL.next(sequence);
+			}catch(ArithmeticException e){
+				return BASE32_CROCKFORDS.next(sequence);
+			}
+		}
+
+		@Override
+		public String next(String sequence) {
+			try{
+				return DECIMAL.next(sequence);
+			}catch(ArithmeticException e){
+				return BASE32_CROCKFORDS.next(sequence);
+			}
+		}
+
+		@Override
+		public String plus(String sequence, long value) {
+			try{
+				return DECIMAL.next(sequence,value);
+			}catch(ArithmeticException e){
+				return BASE32_CROCKFORDS.next(sequence,value);
+			}
+		}
+
+		@Override
+		public String next(String sequence, long value) {
+			try{
+				return DECIMAL.next(sequence,value);
+			}catch(ArithmeticException e){
+				return BASE32_CROCKFORDS.next(sequence,value);
+			}
+		}
+	}
 	
 	
 
@@ -265,7 +309,10 @@ public class SequenceUtil {
 		
 		SequenceUtil s3=SequenceUtil.ALPHABET_AND_NUMBER;
 		System.out.println(s3.plus("1zz"));
-//		System.out.println(s3.plus("zzz"));
+		
+		SequenceUtil s4=SequenceUtil.HUMAN_READABLE;
+		System.out.println(s4.plus("899"));
+		System.out.println(s4.plus("999"));
 	}
 	
 }
