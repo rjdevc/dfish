@@ -769,7 +769,7 @@ tr.f-dnd-helper ._g{padding:0}
 
 .f-develop{position:absolute;border:2px dashed red;z-index:2}
 .f-develop.z-tpl{border-color:blue}
-.f-develop ._t{position:relative;padding:5px;color:#00f;}
+.f-develop ._t{position:relative;padding:5px;color:#fff;}
 .f-develop ._s{position:relative;z-index:2}
 .f-develop ._t:before{content:"";position:absolute;top:0;bottom:0;left:0;right:0;background:#6f84ff;opacity:.9;z-index:1}
 

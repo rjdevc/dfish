@@ -125,6 +125,8 @@ _view = function( a ) {
 _vmByElem = function ( o ) {
 	var p = _widget( o );
 	if( p ) {
+		if ( p.type_view )
+			return p;
 		while ( p && ! p.ownerView )
 			p = p.parentNode;
 		return p ? p.ownerView : ((p = _widget( o ).$()) && _vmByElem( p.parentNode ));
@@ -398,8 +400,9 @@ Node = $.createClass( {
 _template_reserved = { '@w-if': T, '@w-elseif': T, '@w-else': T, '@w-include': T },
 _compileTemplate = function( g, d, s ) { return new Template( s || g.x.template, d, g ).compile() },
 TemplateWidget = $.createClass( {
-	Const: function( x ) {
+	Const: function( x, g ) {
 		this.x = x;
+		this.id = g.id + 'tpl';
 	},
 	Prototype: {
 		data: function() {
@@ -432,7 +435,7 @@ Template = $.createClass( {
 		},
 		// @y -> { key: value }
 		compile: function( x, y ) {
-			var x = x || this.template, r = {}, f = {}, g = x && (new TemplateWidget( x ));
+			var x = x || this.template, r = {}, f = {}, g = x && (new TemplateWidget( x, this.wg ));
 			if ( ! x )
 				return;
 			if ( x[ '@w-include' ] ) {
@@ -1941,7 +1944,7 @@ _initView = function() {
 	this.layout  = N;
 },
 _setPath = function( p, x ) {
-	this.path = (p === _docView ? '' : p.path) + '/' + ((x || this.x).id || this.id);
+	this.path = (p === _docView ? '' : p.path) + '/' + ((x || this.x).id || $.uid( this ));
 	_viewCache[ this.path ] = this;
 },
 _setParent = function( a ) {
@@ -3871,7 +3874,7 @@ Dialog = define.widget( 'dialog', {
 _operexe = function( x, g, a ) {
 	return x && (typeof x === _OBJ ? g.exec( x, a ) : typeof x === _FUN ? x.apply( g, a || [] ) : g.formatJS( x ));
 },
-/* `alert/button` */
+/* `alertbutton` */
 AlertButton = define.widget( 'alert/button', {
 	Extend: Button,
 	Listener: {
@@ -5025,6 +5028,11 @@ Checkbox = define.widget( 'checkbox', {
 	Prototype: {
 		className: 'w-form',
 		formType: 'checkbox',
+		attrSetter: function( a, b ) {
+			if ( a === 'text' ) {
+				this.$( 's' ) ? $.replace( this.$( 's' ), this.html_text() ) : (this.$() && $.append( this.$(), this.html_text() ));
+			}
+		},
 		getValidError: function( a ) {
 			return this.parentNode.isBoxGroup && this.parentNode.getValidError( a );
 		},
@@ -5111,6 +5119,10 @@ Checkbox = define.widget( 'checkbox', {
 		tip: function() {
 			this.exec( $.extend( {}, this.x.tip, { type: 'tip', hoverdrop: true } ) );
 		},
+		html_text: function() {
+			var t = this.x.text == N ? '' : this.x.text;
+			return '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)"' + (t && typeof t === _OBJ ? ' onmouseover="' + evw + '.tip()"' : '') + '>' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( t ) : t) + '</span>';
+		},
 		html: function() {
 			var p = this.parentNode, c = this.className, g = p.type_horz && (!p.isBoxGroup || p.targets), w = this.innerWidth(),
 				k = this._modchk, s = this.prop_cls(), t = this.x.tip, y = '';
@@ -5126,7 +5138,7 @@ Checkbox = define.widget( 'checkbox', {
 			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-inbl f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
 				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)"' + (t && typeof t === _OBJ ? ' onmouseover="' + evw + '.tip()"' : '') + '>' + ((this.x.escape != N ? this.x.escape : p.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
+				( this.x.text ? this.html_text() : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
 		}
 	}
 } ),

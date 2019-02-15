@@ -1888,7 +1888,7 @@ var boot = {
 					}
 					$.query( doc.body ).append( s );
 					setTimeout( function() {
-						$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { Q( '.f-develop' ).remove() } } ) : (alert( t ), Q( '.f-develop' ).remove());
+						$.vm ? $.vm().cmd( { type: 'alert', text: t, on: { close: function() { Q( '.f-develop' ).remove() } } } ) : (alert( t ), Q( '.f-develop' ).remove());
 					}, 50 );
 					e.preventDefault();
 				}
