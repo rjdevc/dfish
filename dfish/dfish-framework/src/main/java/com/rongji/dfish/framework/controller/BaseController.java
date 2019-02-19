@@ -45,7 +45,7 @@ public class BaseController extends MultiActionController {
 	
 	/**
 	 * 获取Request,该获取方式未经验证,不推荐使用
-	 * @return
+	 * @return HttpServletRequest
 	 */
 	@Deprecated
 	protected HttpServletRequest getRequest() {
@@ -119,15 +119,16 @@ public class BaseController extends MultiActionController {
 				if (f.name.charAt(0) <= 'Z') {
 					f.name = ((char) (f.name.charAt(0) + 32)) + f.name.substring(1);
 				}
-				try {
-					Field field = clz.getDeclaredField(f.name);
-					if (field == null) {
-						f.name = fieldName;
-					}
-				} catch (Exception e) {
-					FrameworkHelper.LOG.warn("获取属性(" + f.name + ")异常,将采用(" + fieldName + ")来获取页面参数值@" + clz.getName());
-					f.name = fieldName;
-				}
+//				try {
+//					Field field = clz.getField(f.name);
+//					// 获取不到属性,名称按照截取的(有可能出现连续2个字母都是大写)
+//					if (field == null) {
+//						f.name = fieldName;
+//					}
+//				} catch (Exception e) {
+//					FrameworkHelper.LOG.warn("获取属性(" + f.name + ")异常,将采用(" + fieldName + ")来获取页面参数值@" + clz.getName());
+//					f.name = fieldName;
+//				}
 				c.formats.add(f);
 			}
 		}
@@ -185,16 +186,31 @@ public class BaseController extends MultiActionController {
 			Object value = null;
 			String str = Utils.getParameter(request, name);
 			if (str == null || str.equals("")) {
-				return;
+				if (name.length() > 1 && name.charAt(0) > 'Z' && name.charAt(1) <= 'Z') {
+					// 第1个字母是小写且第2个字母是大写,尝试修正首字母变大写后获取值;
+					String newName = (char) (name.charAt(0) - 32) + name.substring(1);
+					str = Utils.getParameter(request, newName);
+					if (str == null || str.equals("")) {
+						return;
+					}
+				} else {
+					return;
+				}
 			}
 			if (type == String.class) {
 				value = str;
-			} else if (type == Integer.class) {
-				value = new Integer(str);
-			} else if (type == Long.class) {
-				value = new Long(str);
-			} else if (type == Double.class) {
-				value = new Double(str);
+			} else if (type == Integer.class || type == int.class) {
+				value = Integer.parseInt(str);
+			} else if (type == Long.class || type == long.class) {
+				value = Long.parseLong(str);
+			} else if (type == Double.class || type == double.class) {
+				value = Double.parseDouble(str);
+			} else if (type == Boolean.class || type == boolean.class) {
+				try {
+					value = Boolean.parseBoolean(str);
+				} catch (Exception e) {
+					value = "1".equals(str) || "T".equalsIgnoreCase(str);
+				}
 			} else if (type == java.util.Date.class) {
 				str = str.trim();
 				if(str.length() <= 7) {

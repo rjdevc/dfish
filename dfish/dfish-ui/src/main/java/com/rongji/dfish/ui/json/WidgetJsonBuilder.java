@@ -284,7 +284,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 				return false;
 			}
 			for(Node sub:root.subs){
-				if(match(sub,path,path.size()-1)){
+				if(path.size()>0&&match(sub,path,path.size()-1)){
 					return true;
 				}
 			}

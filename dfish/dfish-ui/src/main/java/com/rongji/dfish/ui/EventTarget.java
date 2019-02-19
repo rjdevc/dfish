@@ -68,9 +68,9 @@ public interface EventTarget<T extends EventTarget<T>> {
      */
     public static final String EVENT_ERROR= "error";
     /**
-     * WINDOW事件-当文档已改变时运行的脚本
+     * WINDOW事件-当前 URL 的锚部分(以 '#' 号为开始) 发生改变时触发的脚本
      */
-    public static final String EVENT_HASCHANGE= "haschange";
+    public static final String EVENT_HASHCHANGE= "hashchange";
     /**
      * WINDOW事件-页面结束加载之后触发
      */

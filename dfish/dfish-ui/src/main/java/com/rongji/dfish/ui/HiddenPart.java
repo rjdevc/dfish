@@ -20,6 +20,10 @@ public class HiddenPart implements HiddenContainer<HiddenPart>{
 		add(new Hidden(name,value));
 		return this;
 	}
+//	public HiddenPart addHidden(String name,AtExpression value) {
+//		add(new Hidden(name,value));
+//		return this;
+//	}
 	public HiddenPart add(Hidden hidden) {
 		if(hiddens==null){
 			hiddens=new ArrayList<Hidden>();

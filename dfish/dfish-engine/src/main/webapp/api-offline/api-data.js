@@ -134,7 +134,7 @@ define( {
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
           { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
           { name: 'view', type: 'Object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' },
-          { name: 'view_js', type: 'Object', remark: '设置view的依赖JS模块。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS。多个JS可以用数组。' }
+          { name: 'view_resources', type: 'Array', remark: '设置view的依赖JS或CSS。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS或CSS。' }
         ] }
       ], example: [
           function() {
@@ -1159,7 +1159,7 @@ define( {
             wg.fireEvent( 'click' );
           }
       ] },
-      { name: 'getAll()', remark: '获取所有子孙节点，返回一个数组。', common: true },
+      { name: 'getDescendants()', remark: '获取所有子孙节点，返回一个数组。', common: true },
       { name: 'hasClass(cls)', remark: '是否包含某些样式。', common: true, param: [
         { name: 'cls', type: 'String', remark: '样式名。多个样式用空格隔开。' }
       ] },
@@ -1252,6 +1252,7 @@ define( {
             wg.setOn( 'click', 'alert(this.type)' );
           }
       ] },
+      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' },      
       { name: 'triggerAll(event)', common: true, param: [
         { name: 'event', type: 'Event | String', remark: '事件对象或名称。' }
       ], remark: '触发自身和所有子孙节点的事件。', example: [
@@ -1348,6 +1349,9 @@ define( {
       { name: 'isLocked()', remark: '是否锁定状态。' },
       { name: 'lock([locked])', remark: '锁定/解锁按钮。', param: [
         { name: 'locked', type: 'Boolean', remark: 'true: 锁定状态; false: 解除锁定。', optional: true }
+      ] },
+      { name: 'status([status])', remark: '获取或设置状态。', param: [
+        { name: 'status', type: 'String', remark: '传入此参数是设置状态。不传此参数是获取状态。可选值: <b>normal</b><s>(默认)</s>, <b>disabled</b><s>(禁用)</s>。', optional: true }
       ] },
       { name: 'text(str)', remark: '更换文本。', param: [
         { name: 'str', type: 'String', remark: '文本内容。' }
@@ -1940,30 +1944,37 @@ define( {
       ] }
     ]
   },
+  "xsrc": {
+  	title: 'xsrc',
+  	remark: '用来组合模板的容器。<p>' +
+  		'实现顺序: <ol>' +
+  		'<li>如果有node，就直接展示node。' + 
+	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
+	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
+  	extend: 'widget',
+    Config: [
+      { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
+      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
+      { name: 'node', type: 'Object', remark: '直接展示的内容节点。' }
+    ],
+    Methods: [
+      { name: 'reload([src], [template], [target], [fn])', remark: '重新装载。', param: [
+        { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true },
+        { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。', optional: true },
+        { name: 'target', type: 'String', remark: 'widget ID。重新装载数据后，只更新指定的节点。多个ID以逗号隔开。', optional: true },
+        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
+      ] }
+	]
+  },
   "view": {
   	title: 'view',
   	remark: '视图对象。',
-  	extend: 'widget',
+  	extend: 'xsrc',
   	deprecate: 'ownerView',
     Config: [
       { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
-      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。', example: [
-          function() {
-          	// 在页面上生成一个view，并通过 path 来获取
-            $.widget( { type: 'view', id: 'index', width: 500, height: 500, src: 'a.sp' } ).render( document.body );
-            alert( VM( '/index' ) );
-          }
-      ] },
-      { name: 'src', type: 'String | Object', remark: 'view 的URL地址。<br>在3.2+版本中，也可以是JSON对象。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
-      { name: 'node', type: 'Object', remark: 'View的子节点，直接展示的内容。', example: [
-          function() {
-          	//
-            return~
-            { type: 'view', node: { type: 'html', text: '内容..' } }
-          }
-      ] }
+      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。' }
     ],
     Event: [
       { name: 'load', remark: '数据加载完毕并展示后触发。', example: [
@@ -2017,10 +2028,6 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围，某个 widget 的 ID。', optional: true }
       ] },
-      { name: 'reload([src], [fn])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String', remark: 'view的URL地址。', optional: true },
-        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
-      ] },
       { name: 'resetForm([range], [empty])', remark: '重置表单。', param: [
         { name: 'range', type: 'String', remark: 'widget ID，多个用逗号隔开。指定表单的范围。', optional: true },
         { name: 'empty', type: 'Boolean', remark: '设置为true，强制清空值。', optional: true }
@@ -2040,26 +2047,6 @@ define( {
     Classes: [
       { name: '.w-view', remark: '基础样式。' }
     ]
-  },
-  "xsrc": {
-  	title: 'xsrc',
-  	remark: '用来组合模板的容器。<p>' +
-  		'实现顺序: <ol>' +
-  		'<li>如果有node，就直接展示node。' + 
-	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
-	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
-  	extend: 'widget',
-    Config: [
-      { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
-      { name: 'node', type: 'Object', remark: '直接展示的内容。' }
-    ],
-    Methods: [
-      { name: 'reload([src])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true }
-      ] }
-	]
   },
   "tr": {
   	title: 'tr',
@@ -2131,7 +2118,6 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。' },
-      { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'focusmultiple', type: 'Boolean', remark: '是否可多选。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。album的子节点类型为"img"' },
@@ -2167,6 +2153,7 @@ define( {
       { name: 'description', type: 'String', remark: '图片说明。当 album face="straight" 时会显示说明。' },
       { name: 'face', type: 'String', remark: '图片展现方式。可选值: <b>none</b>, <b>straight</b>。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'imgwidth', type: 'Number | String', remark: '图片宽度。' },
       { name: 'imgheight', type: 'Number | String', remark: '图片高度。' },
       { name: 'textwidth', type: 'Number | String', remark: '文本宽度。' },
@@ -2285,6 +2272,7 @@ define( {
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ] },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' },
+      { name: 'folder', type: 'Boolean', remark: '是否为一个可展开的目录。如果不设置本参数，那么引擎将根据是否有src参数或leaf子节点来自动判断。' },
       { name: 'hidetoggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },
@@ -2378,6 +2366,20 @@ define( {
     ],
     Classes: [
       { name: '.w-html', remark: '基础样式。' }
+    ]
+  },
+  "label": {
+  	title: 'label',
+  	remark: '表单标签。',
+  	extend: 'widget',
+  	ver: "3.2*",
+    Config: [
+      { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+      { name: 'suffix', type: 'String', remark: '后缀。' },
+      { name: 'text', type: 'String', remark: '内容。' }
+    ],
+    Classes: [
+      { name: '.w-label', remark: '基础样式。' }
     ]
   },
   "grid/leaf": {
@@ -2669,11 +2671,8 @@ define( {
   	remark: '单行文本输入框。',
   	extend: 'widget',
     Config: [
-      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。<br>&nbsp; LabelWidget 参数如下：', param: [
-        { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
-        { name: 'suffix', type: 'String', remark: '后缀。' },
-        { name: 'text', type: 'String', remark: '内容。' }
-      ], example: [
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2版本中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
+      	 example: [
           function() {
             // 显示标签的表单
             return~
@@ -2764,6 +2763,9 @@ define( {
       { name: 'isDisabled()', remark: '获取表单状态是否为禁用。' },
       { name: 'isReadonly()', remark: '获取表单状态是否为只读。' },
       { name: 'isValidonly()', remark: '获取表单状态是否为只读并可验证数据。' },
+      { name: 'status([status])', remark: '获取或设置表单状态。', param: [
+        { name: 'status', type: 'String', remark: '传入此参数是设置表单状态。不传此参数是获取表单状态。可选值: <b>normal</b><s>(默认)</s>, <b>readonly</b><s>(只读，不验证数据)</s>, <b>validonly</b><s>(只读，验证数据)</s>, <b>disabled</b><s>(禁用)</s>。', optional: true }
+      ] },
       { name: 'isModified([original])', remark: '检测表单是否有修改。', param: [
         { name: 'original', type: 'Boolean', remark: '设为true，检测表单是否有修改，对照参考的值为初始值。', optional: true }
       ] },
@@ -2866,7 +2868,7 @@ define( {
       { name: 'checkAll([checked])', remark: '设置全选/不选。', param: [
         { name: 'checked', type: 'Boolean', remark: '是否可用。', optional: true }
       ] },
-      { name: 'getSibling([checked])', remark: '获取所有相同name的兄弟节点。', param: [
+      { name: 'getSiblings([checked])', remark: '获取所有相同name的兄弟节点，返回一个数组。', param: [
         { name: 'checked', type: 'Boolean', remark: '设为 true，获取所有选中的同名节点；设为 false，获取所有未选的同名节点。不设此参数，获取所有同名节点。', optional: true }
       ] }
     ],
@@ -2949,7 +2951,7 @@ define( {
   	title: 'hidden',
   	remark: '隐藏表单。',
   	extend: 'text',
-  	deprecate: 'focus,focusEnd,.w-text,.z-trans,.z-on,placeholder,tip,transparent'
+  	deprecate: 'label,focus,focusEnd,.w-text,.z-trans,.z-on,placeholder,tip,transparent'
   },
   "rate": {
   	title: 'rate',
@@ -3469,6 +3471,7 @@ define( {
       ] },
       { name: 'hide()', remark: '隐藏。和 show() 方法对应。' },
       { name: 'isShow()', remark: '是否可见状态。' },
+      { name: 'isMax()', remark: '是否最大化状态。' },
       { name: 'moveTo(iLeft, iTop)', remark: '移动到指定位置。', param: [
         { name: 'iLeft', type: 'Number', remark: '左边位置。' },
         { name: 'iTop', type: 'Number', remark: '顶部位置。' }

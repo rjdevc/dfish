@@ -18,13 +18,17 @@
   </properties>
   
   <dependencies>
+	<dependency>
+	    <groupId>com.rongji</groupId>
+	    <artifactId>dfish-misc</artifactId>
+	</dependency>
   	<dependency>
 	    <groupId>com.rongji</groupId>
 	    <artifactId>dfish-ui-plugin</artifactId>
 	</dependency>
-	<dependency>
+  	<dependency>
 	    <groupId>com.rongji</groupId>
-	    <artifactId>dfish-misc</artifactId>
+	    <artifactId>dfish-ui-template</artifactId>
 	</dependency>
 	
 	<!-- servlet -->

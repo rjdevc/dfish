@@ -177,7 +177,7 @@ Layout<FormPanel,Widget<?>>{
 //		prototype.getColumns().add(GridColumn.text("C0","20"));
 		// FIXME 标签设置样式
 //		prototype.addColumn(GridColumn.text(COLUMN_FIELD_LABEL, labelWidth).setAlign(GridColumn.ALIGN_RIGHT).setStyle("padding-left:"+paddingSize+"px"));
-		prototype.addColumn(GridColumn.text(COLUMN_FIELD_VALUE, COLUMN_WIDTH_VALUE).setStyle("padding-right:"+paddingSize+"px"));
+		prototype.addColumn(GridColumn.text(COLUMN_FIELD_VALUE, COLUMN_WIDTH_VALUE));
 //		prototype.getColumns().add(GridColumn.text("C3","20"));
 //		prototype.setStyle("padding:0 20px;");
 //		prototype.setStyleClass("bg-white");

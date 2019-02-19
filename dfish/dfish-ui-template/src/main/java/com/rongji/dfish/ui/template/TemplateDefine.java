@@ -30,9 +30,9 @@ public class TemplateDefine implements DFishTemplate{
 		StringBuilder sb=new StringBuilder();
 		
 		if(uri==null||uri.equals("")){
-			sb.append("$.schema(");
+			sb.append("$.template(");
 		}else{
-			sb.append("$.schema(\"").append(uri).append("\",");
+			sb.append("$.template(\"").append(uri).append("\",");
 		}
 		sb.append(template);
 		sb.append(");");

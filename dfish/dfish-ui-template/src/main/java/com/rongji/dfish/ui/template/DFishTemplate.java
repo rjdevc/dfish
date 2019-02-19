@@ -25,6 +25,6 @@ import com.rongji.dfish.ui.JsonObject;
  * ------------------------------------------------------------------
  * 2018年12月18日 下午6:50:07		LinLW			1.0				1.0 Version
  */
-public interface DFishTemplate extends JsonObject{
+public interface DFishTemplate extends JsonObject {
 
 }

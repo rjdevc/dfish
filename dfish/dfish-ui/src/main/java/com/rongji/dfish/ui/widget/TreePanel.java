@@ -2,12 +2,13 @@ package com.rongji.dfish.ui.widget;
 
 import java.util.List;
 
+import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.Combo;
+import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.Highlight;
 import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.PubHolder;
 import com.rongji.dfish.ui.Scrollable;
@@ -119,6 +120,11 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
     	hiddens.addHidden(name,value);
 		return this;
     }
+//    public TreePanel addHidden(String name,AtExpression value) {
+//    	hiddens.addHidden(name,value);
+//		return this;
+//    }
+    
     public TreePanel add(Hidden hidden) {
     	hiddens.add(hidden);
 		return this;
