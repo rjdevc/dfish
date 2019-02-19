@@ -148,28 +148,9 @@ public class TrieTree<V extends Object> {
 	 * @return V 内容
 	 */
 	public V get(String key) {
-		Node<V> current = root;
-		if(reverse){
-			char[] chs=key.toCharArray();
-			for (int i=chs.length-1;i>=0;i-- ) {
-				Node<V> child = current.get(chs[i]);
-				if (child != null) {
-					current = child;
-				} else {
-					return null;
-				}
-			}
-		}else{
-			for (char c : key.toCharArray()) {
-				Node<V> child = current.get(c);
-				if (child != null) {
-					current = child;
-				} else {
-					return null;
-				}
-			}
-		}
-		return current.value;
+		Node<V> find=find(key);
+		if(find==null){return null;}
+		return find.value;
 	}
 
 	
@@ -183,6 +164,17 @@ public class TrieTree<V extends Object> {
 	 * @return 删除掉的节点值
 	 */
 	public V remove(String key) {
+		Node<V> find=find(key);
+		if(find==null){return null;}
+		V oldValue=null;
+		if(find.end){
+			oldValue=find.value;
+			find.value=null;
+			find.end=false;
+		}
+		return oldValue;
+	}
+	protected Node<V> find(String key){
 		Node<V> current = root;
 		if(reverse){
 			char[] chs=key.toCharArray();
@@ -204,13 +196,7 @@ public class TrieTree<V extends Object> {
 				}
 			}
 		}
-		V oldValue=null;
-		if(current.end){
-			oldValue=current.value;
-			current.value=null;
-			current.end=false;
-		}
-		return oldValue;
+		return current;
 	}
 	/**
 	 * 优化字典树
