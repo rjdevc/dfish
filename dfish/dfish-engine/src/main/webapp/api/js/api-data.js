@@ -1944,30 +1944,37 @@ define( {
       ] }
     ]
   },
+  "xsrc": {
+  	title: 'xsrc',
+  	remark: '用来组合模板的容器。<p>' +
+  		'实现顺序: <ol>' +
+  		'<li>如果有node，就直接展示node。' + 
+	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
+	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
+  	extend: 'widget',
+    Config: [
+      { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
+      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
+      { name: 'node', type: 'Object', remark: '直接展示的内容节点。' }
+    ],
+    Methods: [
+      { name: 'reload([src], [template], [target], [fn])', remark: '重新装载。', param: [
+        { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true },
+        { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。', optional: true },
+        { name: 'target', type: 'String', remark: 'widget ID。重新装载数据后，只更新指定的节点。多个ID以逗号隔开。', optional: true },
+        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
+      ] }
+	]
+  },
   "view": {
   	title: 'view',
   	remark: '视图对象。',
-  	extend: 'widget',
+  	extend: 'xsrc',
   	deprecate: 'ownerView',
     Config: [
       { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
-      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。', example: [
-          function() {
-          	// 在页面上生成一个view，并通过 path 来获取
-            $.widget( { type: 'view', id: 'index', width: 500, height: 500, src: 'a.sp' } ).render( document.body );
-            alert( VM( '/index' ) );
-          }
-      ] },
-      { name: 'src', type: 'String | Object', remark: 'view 的URL地址。<br>在3.2+版本中，也可以是JSON对象。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
-      { name: 'node', type: 'Object', remark: 'View的子节点，直接展示的内容。', example: [
-          function() {
-          	//
-            return~
-            { type: 'view', node: { type: 'html', text: '内容..' } }
-          }
-      ] }
+      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。' }
     ],
     Event: [
       { name: 'load', remark: '数据加载完毕并展示后触发。', example: [
@@ -2021,10 +2028,6 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围，某个 widget 的 ID。', optional: true }
       ] },
-      { name: 'reload([src], [fn])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String', remark: 'view的URL地址。', optional: true },
-        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
-      ] },
       { name: 'resetForm([range], [empty])', remark: '重置表单。', param: [
         { name: 'range', type: 'String', remark: 'widget ID，多个用逗号隔开。指定表单的范围。', optional: true },
         { name: 'empty', type: 'Boolean', remark: '设置为true，强制清空值。', optional: true }
@@ -2044,26 +2047,6 @@ define( {
     Classes: [
       { name: '.w-view', remark: '基础样式。' }
     ]
-  },
-  "xsrc": {
-  	title: 'xsrc',
-  	remark: '用来组合模板的容器。<p>' +
-  		'实现顺序: <ol>' +
-  		'<li>如果有node，就直接展示node。' + 
-	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
-	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
-  	extend: 'widget',
-    Config: [
-      { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
-      { name: 'node', type: 'Object', remark: '直接展示的内容。' }
-    ],
-    Methods: [
-      { name: 'reload([src])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true }
-      ] }
-	]
   },
   "tr": {
   	title: 'tr',

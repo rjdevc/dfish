@@ -125,11 +125,9 @@ _view = function( a ) {
 _vmByElem = function ( o ) {
 	var p = _widget( o );
 	if( p ) {
-		if ( p.type_view )
-			return p;
-		while ( p && ! p.ownerView )
+		while ( p && (! p.ownerView && ! p.type_view) )
 			p = p.parentNode;
-		return p ? p.ownerView : ((p = _widget( o ).$()) && _vmByElem( p.parentNode ));
+		return p ? (p.type_view ? p : p.ownerView) : ((p = _widget( o ).$()) && _vmByElem( p.parentNode ));
 	}
 	return _docView;
 },
@@ -400,11 +398,12 @@ Node = $.createClass( {
 _template_reserved = { '@w-if': T, '@w-elseif': T, '@w-else': T, '@w-include': T },
 _compileTemplate = function( g, d, s ) { return new Template( s || g.x.template, d, g ).compile() },
 TemplateWidget = $.createClass( {
-	Const: function( x, g ) {
+	Const: function( x, t ) {
 		this.x = x;
-		this.id = g.id + 'tpl';
+		this.parentNode = t.wg;
 	},
 	Prototype: {
+		isWidget: T,
 		data: function() {
 			return _proto.data.apply( this, arguments );
 		}
@@ -412,7 +411,7 @@ TemplateWidget = $.createClass( {
 } ),
 /* `Template` */
 Template = $.createClass( {
-	// @ t -> template, d -> data, g -> widget
+	// @ t -> template, d -> data, g -> widget, r -> target
 	Const: function( t, d, g ) {
 		this.data = d;
 		this.wg   = g;
@@ -435,7 +434,7 @@ Template = $.createClass( {
 		},
 		// @y -> { key: value }
 		compile: function( x, y ) {
-			var x = x || this.template, r = {}, f = {}, g = x && (new TemplateWidget( x, this.wg ));
+			var x = x || this.template, r = {}, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( ! x )
 				return;
 			if ( x[ '@w-include' ] ) {
@@ -1815,6 +1814,7 @@ Xsrc = define.widget( 'xsrc', {
 		}
 	},
 	Prototype: {
+		// @implement
 		init_x: function( x ) {
 			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
@@ -1841,41 +1841,39 @@ Xsrc = define.widget( 'xsrc', {
 			if ( this.x.node && ! this.layout )
 				this.layout = new Layout( { node: this.x.node }, this );
 		},
-		attrSetter: function( a, b ) {
-			if ( a === 'cls' ) {
-				this.addClass( b );
-			} else if ( a === 'style' ) {
-				this.css( b );
+		attrSetter: function( n, v ) {
+			if ( n === 'cls' ) {
+				this.addClass( v );
+			} else if ( n === 'style' ) {
+				this.css( v );
 			}
 		},
-		// @a -> sync?, b -> fn?, c -> force?[强制刷新，不论是否在frame内]
-		load: function( a, b, c ) {
+		// @force: 强制刷新，不论是否在frame内
+		load: function( tar, fn, force ) {
 			if ( this.loading )
 				return;
 			this.showLoading();
-			var f = ! c && Frame.edge( this );
+			var f = ! force && Frame.edge( this );
 			if ( ! f || f.parentNode.getFocus() == f ) {
-				this._load( a, function( x ) {
+				this._load( tar, function( x ) {
 					this.showLoading( F );
-					this.showLayout();
-					b && b.call( this, x );
+					this.showLayout( tar );
+					fn && fn.call( this, x );
 				} );
 			}
 		},
-		// @a -> sync?, b -> fn?, c -> cache?
-		_load: function( a, b, c ) {
+		_load: function( tar, fn, cache ) {
 			this.abort();
 			this.loading = T;
 			var u = this.attr( 'src' ), m, n, o, t = this.x.template, self = this,
 				d = this.type_view && _view_resources[ this.path ],
 				e = function() {
-					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); b && b.call( self, n ); n = N; }
+					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
 				};
-			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); }, !a ) : (o = T);
-			d ? $.require( d, function() { m = T; e(); }, !a ) : (m = T);
-			u && this.ajax( { src: u, context: this, sync: a, cache: c, success: function( x ) { n = x; e(); } } );
-			
-			c && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
+			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); } ) : (o = T);
+			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
+			u && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); } } );
+			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> data json
 		_loadEnd: function( d ) {
@@ -1892,22 +1890,34 @@ Xsrc = define.widget( 'xsrc', {
 				this.init_nodes();
 			}
 		},
-		// @a -> src, b -> sync?, c -> fn
-		reload: function( a, b, c ) {
-			this.reset();
-			a && this.attr( 'src', a );
+		reload: function( src, tpl, tar, fn ) {
+			this.reset( tar );
+			src && (this.x.src = src);
+			tpl && (this.x.template = tpl);
 			if ( this.$() ) {
 				var s = this.attr( 'src' );
-				typeof s === _STR ? this.load( b, c, T ) : (this._loadEnd( s ), this.showLayout());
+				typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
 			} else {
 				this.show();
-				! this.loading && this.load( b, c, T );
+				! this.loading && this.load( tar, fn, T );
 			}
 			return this;
 		},
 		// @x -> data json
 		_loadDataFilter: function( x ) {
 			return x;
+		},
+		getTargets: function( x, tar, r ) {
+			! r && (r = []);
+			if ( x.id && $.idsAny( tar, x.id ) )
+				r.push( x );
+			else if ( x.node )
+				this.getTargets( x.node, tar, r );
+			else if ( x.nodes ) {
+				for ( var i = 0, l = x.nodes.length; i < l; i ++ )
+					this.getTargets( x.nodes[ i ], tar, r );
+			}
+			return r;
 		},
 		ajax: function( a ) {
 			! a.type && (a.type = 'ajax');
@@ -1917,20 +1927,26 @@ Xsrc = define.widget( 'xsrc', {
 		abort: function() {
 			$.ajaxAbort( this );
 		},
-		reset: function() {
-			this.trigger( 'unload' );
+		reset: function( tar ) {
 			this.abort();
-			this.empty();
-			this.layout = N;
 			this.loaded = this.loading = F;
+			if ( ! tar ) {
+				this.trigger( 'unload' );
+				this.empty();
+				this.layout = N;
+			}
 		},
-		showLayout: function() {
-			this.layout && this.layout.render();
+		showLayout: function( tar ) {
+			if ( tar ) {
+				for ( var i = 0, b = this.getTargets( this.x.node, tar ); i < b.length; i ++ )
+					_view( this ).find( b[ i ].id ).replace( b[ i ] );
+			} else
+				this.layout && this.layout.render();
 			this.removeClass( 'z-loading' );
 		},
 		// @a -> close?
 		showLoading: function( a ) {
-			a === F ? this.removeElem( 'loading' ) : (! this.$( 'loading' ) && $.append( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' ));
+			a === F ? (this.removeElem( 'loading' ),this.exec( { type: 'loading', hide: true } )) : this.layout ? this.exec( { type: 'loading' } ) : (! this.$( 'loading' ) && $.append( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' ));
 		},
 		show: function() {
 			return this.render();
@@ -1996,9 +2012,9 @@ View = define.widget( 'view', {
 			! a.filter && cfg.src_filter && (a.filter = cfg.src_filter);
 			return $.ajaxJSON( a );
 		},
-		reset: function() {
-			Xsrc.prototype.reset.call( this );
-			_initView.call( this );
+		reset: function( tar ) {
+			Xsrc.prototype.reset.apply( this, arguments );
+			! tar && _initView.call( this );
 		},
 		// 根据ID获取wg /@a -> id
 		find: function( a ) {
