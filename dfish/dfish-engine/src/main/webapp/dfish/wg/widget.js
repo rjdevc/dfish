@@ -719,7 +719,7 @@ W = define( 'widget', function() {
 			if ( ! h || ! h.dfish_format_fields ) {
 				var f = [], g = n.concat();
 				if ( a.indexOf( '$' ) > -1 ) {
-					var r = /\$([a-z_]+\w*)/ig, k;
+					var r = /\$(\w+)/ig, k;
 					while ( k = r.exec( a ) ) {
 						if( ! $.inArray( g, k[ 0 ] ) ) { g.push( k[ 0 ] ); f.push( k[ 1 ] ); };
 					}
@@ -2902,12 +2902,12 @@ Img = define.widget( 'img', {
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + ( h ? (isNaN( h ) ? h : h + 'px') : '100%' ) + ';">' + g + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, p = this.parentNode, f = p.x.format, s, t = x.text;
+			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text;
 			if ( typeof t !== _OBJ && f )
 				t = _wg_format.call( this, f, p.x.escape );
 			else if ( typeof t === _STR && p.x.escape )
 				t = $.strEscape( t );
-			return t ? '<div id=' + this.id + 't class="w-img-t f-' + ( x.nobr ? 'fix' : 'wdbr' ) + '"' + ( x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '' ) + ' style="width:' + (x.textwidth ? x.textwidth + 'px' : 'auto') + '">' +
+			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="width:' + (x.textwidth ? x.textwidth + 'px' : 'auto') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
@@ -6578,7 +6578,7 @@ Linkbox = define.widget( 'linkbox', {
 	Prototype: {
 		validHooks: {
 			valid: function( b, v ) {
-				if ( this.x.strict && Q( 'u:not([data-value])', this.$() ).length )
+				if ( this.x.strict && Q( 'u:not([data-value]):not(:empty)', this.$() ).length )
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
