@@ -203,7 +203,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		return ret;
 	}
 	public List<?> getQueryList(final String strSql, final Pagination page, final Object... object) {
-	    if (page == null||page.getSize()==null||page.getOffset()==null) {
+	    if (page == null||page.getLimit()==null) {
 	        return getQueryList(strSql, object);
 	    }
 	    if(page.getOffset()==null){
