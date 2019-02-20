@@ -33,7 +33,6 @@
             <version>3.0.1</version>
             <configuration>
                 <encoding>UTF-8</encoding>
-                <aggregate>true</aggregate>
                 <charset>UTF-8</charset>
                 <docencoding>UTF-8</docencoding>
             </configuration>
