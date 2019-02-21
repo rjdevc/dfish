@@ -1965,7 +1965,7 @@ define( {
         { name: 'target', type: 'String', remark: 'widget ID。重新装载数据后，只更新指定的节点。多个ID以逗号隔开。', optional: true },
         { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
       ] },
-      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }
+      { name: 'srcData()', ver: '3.2+', remark: '获取数据源JSON对象。' }
 	]
   },
   "view": {
@@ -2254,7 +2254,7 @@ define( {
             vm.find( 'myLeaf' ).reloadForAdd();
           }
       ] },
-      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }      
+      { name: 'srcData()', ver: '3.2+', remark: '获取数据源JSON对象。' }
     ],
     Classes: [
       { name: '.w-tree', remark: '基础样式。' }
@@ -2337,7 +2337,7 @@ define( {
       ] },
       { name: 'isBoxChecked()', remark: '获取 checkbox / radio 是否为选中状态。' },
       { name: 'scrollIntoView()', remark: '当前节点滚动到可视范围。' },
-      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }
+      { name: 'srcData()', ver: '3.2+', remark: '获取数据源JSON对象。' }
     ],
     Classes: [
       { name: '.w-leaf', remark: '基础样式。' },
@@ -3483,7 +3483,7 @@ define( {
       { name: 'parentDialog()', remark: '获取父窗口。' },
       { name: 'remove()', remark: '完全删除。调用本方法不会触发 close 事件。' },
       { name: 'show()', remark: '显示。和 hide() 方法对应。' },
-      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }
+      { name: 'srcData()', ver: '3.2+', remark: '获取数据源JSON对象。' }
     ],
     Classes: [
       { name: '.w-dialog', remark: '基础样式。' },
