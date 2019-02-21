@@ -745,6 +745,10 @@ W = define( 'widget', function() {
 					return;
 			}
 		},
+		srcData: function() {
+			var c = this.srcParent();
+			return c && c.x.srcdata;
+		},
 		srcParent: function() {
 			return this.closest( function() { return this.x.srcdata } );
 		},
