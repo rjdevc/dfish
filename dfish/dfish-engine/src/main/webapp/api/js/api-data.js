@@ -1252,7 +1252,7 @@ define( {
             wg.setOn( 'click', 'alert(this.type)' );
           }
       ] },
-      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' },      
+      { name: 'srcParent()', common: true, ver: '3.2+', remark: '获取当前widget所在的数据源祖先节点。' },      
       { name: 'triggerAll(event)', common: true, param: [
         { name: 'event', type: 'Event | String', remark: '事件对象或名称。' }
       ], remark: '触发自身和所有子孙节点的事件。', example: [
@@ -1964,7 +1964,8 @@ define( {
         { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。', optional: true },
         { name: 'target', type: 'String', remark: 'widget ID。重新装载数据后，只更新指定的节点。多个ID以逗号隔开。', optional: true },
         { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
-      ] }
+      ] },
+      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }
 	]
   },
   "view": {
@@ -2252,7 +2253,8 @@ define( {
           	// 
             vm.find( 'myLeaf' ).reloadForAdd();
           }
-      ] }
+      ] },
+      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }      
     ],
     Classes: [
       { name: '.w-tree', remark: '基础样式。' }
@@ -2334,7 +2336,8 @@ define( {
         { name: 'checked', type: 'Booelan', optional: true, remark: '是否选中。' }
       ] },
       { name: 'isBoxChecked()', remark: '获取 checkbox / radio 是否为选中状态。' },
-      { name: 'scrollIntoView()', remark: '当前节点滚动到可视范围。' }
+      { name: 'scrollIntoView()', remark: '当前节点滚动到可视范围。' },
+      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }
     ],
     Classes: [
       { name: '.w-leaf', remark: '基础样式。' },
@@ -3479,7 +3482,8 @@ define( {
       { name: 'max()', remark: '窗口最大化。如果窗口已经是最大化的状态，那么将恢复到初始大小。' },
       { name: 'parentDialog()', remark: '获取父窗口。' },
       { name: 'remove()', remark: '完全删除。调用本方法不会触发 close 事件。' },
-      { name: 'show()', remark: '显示。和 hide() 方法对应。' }
+      { name: 'show()', remark: '显示。和 hide() 方法对应。' },
+      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在模板从src地址获取的JSON数据源对象。' }
     ],
     Classes: [
       { name: '.w-dialog', remark: '基础样式。' },

@@ -745,9 +745,8 @@ W = define( 'widget', function() {
 					return;
 			}
 		},
-		srcData: function() {
-			var c = this.closest( function() { return this.x.srcdata; } );
-			return c && c.x.srcdata;
+		srcParent: function() {
+			return this.closest( function() { return this.x.srcdata } );
 		},
 		click: function() {
 			this.trigger( 'click' );
@@ -1848,6 +1847,9 @@ Xsrc = define.widget( 'xsrc', {
 				this.css( v );
 			}
 		},
+		srcData: function() {
+			return this.x.srcdata;
+		},
 		// @force: 强制刷新，不论是否在frame内
 		load: function( tar, fn, force ) {
 			if ( this.loading )
@@ -1907,15 +1909,15 @@ Xsrc = define.widget( 'xsrc', {
 		_loadDataFilter: function( x ) {
 			return x;
 		},
-		getTargets: function( x, tar, r ) {
+		_getTargets: function( x, tar, r ) {
 			! r && (r = []);
 			if ( x.id && $.idsAny( tar, x.id ) )
 				r.push( x );
 			else if ( x.node )
-				this.getTargets( x.node, tar, r );
+				this._getTargets( x.node, tar, r );
 			else if ( x.nodes ) {
 				for ( var i = 0, l = x.nodes.length; i < l; i ++ )
-					this.getTargets( x.nodes[ i ], tar, r );
+					this._getTargets( x.nodes[ i ], tar, r );
 			}
 			return r;
 		},
@@ -1938,7 +1940,7 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		showLayout: function( tar ) {
 			if ( tar ) {
-				for ( var i = 0, b = this.getTargets( this.x.node, tar ); i < b.length; i ++ )
+				for ( var i = 0, b = this._getTargets( this.x.node, tar ); i < b.length; i ++ )
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
 			} else
 				this.layout && this.layout.render();
@@ -4310,6 +4312,8 @@ var Label = define.widget( 'label', {
 		W.apply( this, arguments );
 		this._pad = this.x.space != N ? this.x.space : 5;
 		this.defaults( { wmin: this._pad } );
+		var d = p.x.validate;
+		d && d.required && (this.className += ' z-required');
 		if ( ie7 ) {
 			this.ie7td = p.closest( 'td' );
 			this.ie7td.addEvent( 'nodechange', function() {
@@ -6969,7 +6973,7 @@ Linkbox = define.widget( 'linkbox', {
 	Prototype: {
 		validHooks: {
 			valid: function( b, v ) {
-				if ( this.x.strict && Q( 'u:not([data-value])', this.$() ).length )
+				if ( this.x.strict && Q( 'u:not([data-value]):not(:empty)', this.$() ).length )
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
@@ -7173,7 +7177,7 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		fixOpt: function() {
 			var self = this;
-			Q( 'u:not([data-value])', this.$t() ).each( function() {
+			Q( 'u:not([data-value]):not(:empty)', this.$t() ).each( function() {
 				var g = self.store().getParam( this.innerText );
 				if ( g ) {
 					$.classAdd( u, '_o' );
@@ -7589,6 +7593,9 @@ AbsLeaf = define.widget( 'abs/leaf', {
 					this.addClass( b );
 				break;
 			}
+		},
+		srcData: function() {
+			return this.x.srcdata;
 		},
 		isFolder: function() {
 			return this.x.folder;
@@ -8095,13 +8102,13 @@ _grid_tr = function() {
 /* `gridleaf` */
 GridLeaf = define.widget( 'grid/leaf', {
 	Const: function( x, p ) {
-		Leaf.apply( this, arguments );
-		var r = this.tr();
-		this.level = r.level;
-		x.src && (this.loaded = !!r.length);
+		var r = _grid_tr.call( p );
 		x.open == N && (x.open = !x.src || !!r.length);
-		r.leaf = this;
+		x.folder == N && (x.folder = !!(r.length || x.src));
+		Leaf.apply( this, arguments );
+		x.src && (this.loaded = !!r.length);
 		this.row = r;
+		this.level = r.level;
 	},
 	Extend: Leaf,
 	Listener: {
@@ -8136,8 +8143,12 @@ GridLeaf = define.widget( 'grid/leaf', {
 		isLast: function() {
 			return this.row.nodeIndex === this.row.parentNode.length - 1;
 		},
-		isFolder: function() {
-			return this.x.folder != N ? this.x.folder : (this.row.length || (this.x.src && !this.loaded)) ? T : F;
+		// @a -> folder?
+		fixFolder: function( a ) {
+			this.x.folder = a != N ? a : !!(this.row.length || (this.x.src && !this.loaded));
+			this.addClass( 'z-folder', this.isFolder() );
+			if ( this.$( 'o' ) && ! this.$( 'r' ) )
+				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
 		},
 		fix_text_size: function() {
 			var t = this.textNode, a = $.bcr( this.$() ), b = $.bcr( t.$() ), c = b.left - a.left;
