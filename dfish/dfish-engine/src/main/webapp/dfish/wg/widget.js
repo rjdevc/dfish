@@ -6715,7 +6715,7 @@ Combobox = define.widget( 'combobox', {
 			var t = this._suggest_text( a ), u = this.x.suggest && this.x.src;
 			if ( u && (u = this.parseSrc( u, { text: t } )) ) {
 				var self = this;
-				(this.sugger || (this.sugger = this.createPop( u ))).reload( u, function() { ! self._disposed && self._suggest_end( a, this ) } );
+				(this.sugger || (this.sugger = this.createPop( u ))).reload( u, N, N, function() { ! self._disposed && self._suggest_end( a, this ) } );
 			} else
 				this._suggest_end( a, this.more );
 		},
@@ -8000,7 +8000,7 @@ Leaf = define.widget( 'leaf', {
 		html_pad: function() {
 			for ( var i = 0, b = this._pad_level / 2, e = '', p; i < this.level; i ++ ) {
 				p = (p || this).parent();
-				e = '<i class=_pd style="margin-left:' + b + 'px;width:' + (b - 1) + 'px;">' + (! p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
+				e = '<i class=_pd style="margin-left:' + b + 'px;width:' + (b - 1) + 'px;">' + (!p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
 			}
 			return e;
 		},
@@ -8111,8 +8111,9 @@ GridLeaf = define.widget( 'grid/leaf', {
 		x.folder == N && (x.folder = !!(r.length || x.src));
 		Leaf.apply( this, arguments );
 		x.src && (this.loaded = !!r.length);
-		this.row = r;
 		this.level = r.level;
+		this.row = r;
+		r.leaf = this;
 	},
 	Extend: Leaf,
 	Listener: {
