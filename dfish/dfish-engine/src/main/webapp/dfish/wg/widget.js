@@ -6508,12 +6508,11 @@ Combobox = define.widget( 'combobox', {
 				}
 			},
 			resize: function() {
-				var w = this.innerWidth();
-				if ( w > 0 && this.$() ) {
-					var d = Math.max( w - this.form_minus(), 0 );
-					this.css( 'f', 'width', d );
-					d = Math.max( w - this.input_minus(), 0 );
-					this.css( 'c', 'width', d ).css( 'ph', 'width', d );
+				if ( this.$() ) {
+					var w = Math.max( this.formWidth(), 0 );
+					w != N && w >= 0 && this.css( 'width', w );
+					w = Math.max( this.inputWidth(), 0 );
+					w != N && w >= 0 && this.css( 'c', 'width', w ).css( 'ph', 'width', w );
 				}
 			},
 			// 覆盖textarea的change事件定义，仅当已选项有变化时触发
