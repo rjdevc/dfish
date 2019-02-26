@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 
+import com.rongji.dfish.ui.command.DialogCommand;
 
 /**
  * <p>
@@ -40,7 +41,7 @@ public class Linkbox extends LinkableSuggestionBox<Linkbox> {
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
-		this.setSrc(src);
+		this.setSuggest(new DialogCommand().setSrc(src));
 //		this.strict=true;
 //		this.text="loading...";
 	}
