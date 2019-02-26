@@ -450,9 +450,8 @@ Template = $.createClass( {
 						$.jsonArray( [ $.strRange( k, '(', ')' ), b, $.strRange( k, '-elseif', '(' ) ], f, '_elseif' );
 					} else if ( k.indexOf( 'w-else' ) === 1 ) {
 						f._else = b;
-					} else if ( k.indexOf( ':w-for' ) > 1 ) {
-						var c = $.strRange( k, '@', ':w-for' ), // propName
-							d = $.strRange( k, '(', ' in ' ), // (item,index)
+					} else if ( k.indexOf( 'w-for' ) === 1 ) {
+						var d = $.strRange( k, '(', ' in ' ), // (item,index)
 							e = $.strRange( k, ' in ', ')' ), // array
 							n = this.format( e, g, y );
 						if ( n ) {
@@ -464,15 +463,16 @@ Template = $.createClass( {
 								y && $.extend( m, y );
 								h.push( this.compile( b, m ) );
 							}
-							r[ c ] = h;
-						}
+							r = h;
+						} else
+							r = N;
 					} else if ( ! _template_reserved[ k ] ) {
 						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );
 						d != N && (r[ k.substr( 1 ) ] = d);
 					}
 				} else if ( $.isArray( b ) ) {
 					for ( var i = 0, c = [], d, l = b.length; i < l; i ++ ) {
-						b[ i ] && (d = this.compile( b[ i ], y )) && c.push( d );
+						b[ i ] && (d = this.compile( b[ i ], y )) && (c = c.concat( d ));
 					}
 					r[ k ] = c;
 				} else if ( typeof b === _OBJ ) {
@@ -6356,6 +6356,8 @@ Pickbox = define.widget( 'pickbox', {
 } ),
 /* `combobox`
  *	注1: 当有设置初始value时，text一般可以不写，程序将会从数据岛(more属性)中匹配。如果数据岛不是完整展示的(比如树)，那么text属性必须加上。
+ *  去掉 src template node 参数。suggest改造为dialog。原本的src template node等参数转移到suggest中
+ *  去掉 dropsrc 参数，增加 drop 参数。也是一个dialog
  */
 Combobox = define.widget( 'combobox', {
 	Const: function( x ) {
@@ -6363,7 +6365,8 @@ Combobox = define.widget( 'combobox', {
 		$.classAdd( this, 'z-loading' );
 		x.nobr && $.classAdd( this, 'z-nobr' );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
-		this.more = this.createPop( x.node || x.src || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
+		this._online = x.suggest && typeof x.suggest.src === _STR && /\$text\b/.test( x.suggest.src );
+		this.more = this.createPop( x.suggest || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
 		var c = this.more.getContentView();
 		if ( c && c.layout )
 			this.trigger( 'load' );
@@ -6484,7 +6487,7 @@ Combobox = define.widget( 'combobox', {
 							if ( k === 32 && s.indexOf( t.charAt( t.length - 1 ) ) > -1 && (t = $.strTrim( t.slice( 0, -1 ) )) ) { // 最后一个字符是分隔符，则生成一个已选项
 								this.queryText( '' );
 								var o = this.addOpt( t );
-								o.x.error && this.x.suggest && this.match( o ); // 新增的选项如果没即时匹配成功，并且有suggest，则以隐藏模式去后台匹配一次数据。
+								o.x.error && this._online && this.match( o ); // 新增的选项如果没即时匹配成功，并且有suggest，则以隐藏模式去后台匹配一次数据。
 								this.closePop();
 								$.stop( e );
 							} else if ( ! e.ctrlKey ) {
@@ -6579,26 +6582,17 @@ Combobox = define.widget( 'combobox', {
 		pop: function() {
 			return this.dropper && this.dropper.isShow() ? this.dropper : this.sugger && this.sugger.isShow() ? this.sugger : this.more;
 		},
-		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?, f -> callback
+		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?, f -> callback
 		createPop: function( u, r ) {
-			var d = { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', indent: 1 };
-			if ( typeof u === _STR ) {
-				d.src = u;
-			} else {
-				d.node = u;
-			}
-			var o = { pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
+			var d = $.merge( { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2, indent: 1 }, u ),
 				w = 'javascript:return this.parentNode.$().offsetWidth';
 			//如果用户设置宽度为*或百分比，则设置maxwidth为不超过combobox的宽度
 			if ( u.width ) {
-				if ( isNaN( u.width ) )
-					o.maxwidth = w;
+				isNaN( u.width ) && (d.maxwidth = w);
 			} else {
-				o.width = w;
+				d.width = w;
 			}
-			$.extend( d, o );
 			d.src && (d.src = this.parseSrc( d.src, r ));
-			d.template = this.x.template;
 			var self = this;
 			return this.add( d, -1 ).addEvent( 'close', function() {
 				! self.$().contains( document.activeElement ) && self.focus( F );
@@ -6711,17 +6705,17 @@ Combobox = define.widget( 'combobox', {
 		// 弹出模糊匹配的选项窗口  /@ a -> text|comboboxOption
 		doSuggest: function( a ) {
 			this._currOpt = a;
-			var t = this._suggest_text( a ), u = this.x.suggest && this.x.src;
-			if ( u && (u = this.parseSrc( u, { text: t } )) ) {
+			var t = this._suggest_text( a );
+			if ( this._online ) {
 				var self = this;
-				(this.sugger || (this.sugger = this.createPop( u ))).reload( u, N, N, function() { ! self._disposed && self._suggest_end( a, this ) } );
+				(this.sugger || (this.sugger = this.createPop( this.x.suggest ))).reload( this.parseSrc( this.x.suggest.src, { text: t } ), N, N, function() { ! self._disposed && self._suggest_end( a, this ) } );
 			} else
 				this._suggest_end( a, this.more );
 		},
 		_suggest_end: function( a, m ) {
 			var c = this.store( m );
 			if ( c ) {
-				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this.x.suggest && this.x.src;
+				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this._online;
 				d && s != m && s.merge( d );
 				e && e != m && e.close();
 				a.x && m.addEvent( 'close', function() { !a._disposed && a.tabFocus( F ) } );
@@ -6738,8 +6732,8 @@ Combobox = define.widget( 'combobox', {
 		// 多个立即匹配成功; 单个显示下拉选项
 		match: function( a ) {
 			var c = a.x ? a : this;
-			if ( this.x.suggest ) {
-				var d = this.createPop( this.x.src || this.x.node, a.x || a ), self = this;
+			if ( this._online ) {
+				var d = this.createPop( this.x.suggest, a.x || a ), self = this;
 				c.setLoading();
 				d.preload( function() {
 					if ( ! c._disposed ) {
@@ -6798,7 +6792,7 @@ Combobox = define.widget( 'combobox', {
 				this.closePop();
 				this.focus();
 				if ( ! b )
-					(d || (this.dropper = this.createPop( this.x.dropsrc || this.x.node ))).show();
+					(d || (this.dropper = this.createPop( this.x.drop ))).show();
 			}
 		},
 		pick: Pickbox.prototype.pick,
@@ -7152,9 +7146,7 @@ Linkbox = define.widget( 'linkbox', {
 			}
 			if ( g ) {
 				this.save();
-				if ( this.x.suggest ) {
-					n.length > 1 && this.match( { text: n.join( p ) } );
-				}	
+				this._online && n.length > 1 && this.match( { text: n.join( p ) } );
 			}
 			delete this._paste_rng;
 		},
@@ -7163,8 +7155,8 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		// 精确匹配，在隐藏状态下进行 /@ a -> replaceObject, b -> fn?
 		match: function( a, b ) {
-			if ( this.x.suggest ) {
-				var d = this.createPop( this.x.src || this.x.node, a.x || a ), self = this;
+			if ( this._online ) {
+				var d = this.createPop( this.x.suggest, a.x || a ), self = this;
 				d.preload( function() {
 					if ( ! self._disposed && this.getContentView().combo ) {
 						self.store().merge( this.getContentView().combo );
@@ -7254,7 +7246,7 @@ Linkbox = define.widget( 'linkbox', {
 				this.closePop();
 				this.focus();
 				this._query_text = N;
-				(this.dropper || (this.dropper = this.createPop( this.x.dropsrc || this.x.node ))).show();
+				(this.dropper || (this.dropper = this.createPop( this.x.drop ))).show();
 			}
 		},
 		bookmark: function() {
@@ -7360,9 +7352,8 @@ Onlinebox = define.widget( 'onlinebox', {
 			this.x.src && Combobox.prototype.suggest.apply( this, arguments );
 		},
 		doSuggest: function( t ) {
-			var u = this.formatStr( this.x.src, { text: t, value: t }, T );
 			if ( ! this.more )
-				this.more = this.createPop( u );
+				this.more = this.createPop( this.x.suggest, { text: t, value: t } );
 			this.more.reload( u );
 		},
 		html_nodes: function() {
