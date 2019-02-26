@@ -3160,13 +3160,11 @@ define( {
   	deprecate: 'tip,.w-text',
     Config: [
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
-      { name: 'dropsrc', type: 'String', remark: '显示下拉列表的 view src。' },
+      { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'face', type: 'String', remark: '设置已选项的外观效果。可选值: <b>default</b>, <b>tag</b>' },
-      { name: 'node', type: 'Object', remark: '包含候选项数据的 view。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'loadingtext', type: 'String', remark: '加载数据时显示的文本。' },
-      { name: 'src', type: 'String', remark: '通过这个 src 加载候选项数据到本地。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
-      { name: 'suggest', type: 'Boolean', remark: '设为 true，在线搜索关键词模式。设为 false，缓存搜索模式。默认值为 false。' },
+      { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'nobr', type: 'Boolean', remark: '设为 true，已选项不换行。' },
       { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
@@ -3178,8 +3176,6 @@ define( {
       ] },
       { name: 'strict', type: 'Boolean', remark: '设为 true，如果存在没有匹配成功的选项，则不能通过表单验证。设为false，允许存在没有匹配成功的选项。默认值是true。' },
       { name: 'text', type: 'String', remark: '初始化时显示的文本。如果设置了此参数，就要和 value 值一一对应。一般只设置 value 就可以，仅当 src 是 tree 模式的数据岛，并且 value 在 tree 的初始数据中匹配不到时才需要定义 text。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'value', type: 'String', remark: '表单值。多个用逗号隔开。' }
     ],
     Methods: [
