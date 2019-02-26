@@ -183,12 +183,12 @@ public class WidgetTemplate extends AbstractTemplate{
 		return ((JSONObject)json).get(prop);
 	}
 	
-	public WidgetTemplate addFor(String prop,String dataExpr,DFishTemplate temp,String itemName,String indexName){
+	public WidgetTemplate addFor(String dataExpr,DFishTemplate temp,String itemName,String indexName){
 		String propFullName=null;
 		if(indexName==null||indexName.equals("")){
-			propFullName= "@"+prop+":w-for($"+itemName+" in ("+dataExpr+"))";
+			propFullName= "@w-for($"+itemName+" in ("+dataExpr+"))";
 		}else{
-			propFullName= "@"+prop+":w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
+			propFullName= "@w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
 		}
 		if(temp instanceof AbstractTemplate ){
 			Object  subProp=((AbstractTemplate) temp).json;
@@ -199,11 +199,10 @@ public class WidgetTemplate extends AbstractTemplate{
 	/**
 	 * 相当于itemName ="item",indexName=null 来创建这个循环。
 	 * 后续表达式中，则必须使用 $item来取值
-	 * @param prop String
 	 * @param dataExpr String
 	 */
-	public WidgetTemplate addFor(String prop,String dataExpr,DFishTemplate temp){
-		return addFor(prop,dataExpr,temp,"item",null);
+	public WidgetTemplate addFor(String dataExpr,DFishTemplate temp){
+		return addFor(dataExpr,temp,"item",null);
 	}
 	
 }
