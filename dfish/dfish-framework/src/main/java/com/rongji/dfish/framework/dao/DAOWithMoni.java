@@ -14,25 +14,11 @@ public class DAOWithMoni extends  PubCommonDAOImpl{
 	
 
 	protected  void log(String sql,long last){
-		Record r=records.get(sql);
-		if(r==null){
-			r=new Record();
-			records.put(sql, r);
-			r.sql=sql;
-			r.max=last;
-			r.min=last;
-			r.times=1;
-			r.total=last;
-		}else{
-			r.times++;
-			r.total+=last;
-			if(r.min>last){r.min=last;}
-			if(r.max<last){r.max=last;}
-		}
+		record(sql, last);
 		super.log(sql, last);
 	}
-	@Deprecated
-	public static  void record(String sql,long last){
+
+	public void record(String sql,long last){
 		Record r=records.get(sql);
 		if(r==null){
 			r=new Record();
