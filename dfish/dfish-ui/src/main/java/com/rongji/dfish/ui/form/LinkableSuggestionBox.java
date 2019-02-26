@@ -22,8 +22,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 //	private String src;//在线匹配关键词的 view src。支持 $value 和 $text 变量。
 	private String loadingtext;
 //	private Boolean suggest;
-	private View node;
-	
+
 	/**
 	 * 设置初始显示文本， 提示: 如果strict值为为真，而且value不为空，那么建议设置为 loading... 可以收到较好的效果
 	 * 
@@ -98,44 +97,6 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	 */
 	public T setLoadingtext(String loadingtext) {
 		this.loadingtext = loadingtext;
-		return (T) this;
-	}
-	
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @return Boolean
-//	 */
-//	public Boolean getSuggest() {
-//		return suggest;
-//	}
-//
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @param suggest Boolean
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public T setSuggest(Boolean suggest) {
-//		this.suggest = suggest;
-//		return (T) this;
-//	}
-
-	/**
-	 * 选项节点的View
-	 * @return View
-	 * @author YuLM
-	 */
-	public View getNode() {
-		return node;
-	}
-
-	/**
-	 * 选项节点的View
-	 * @param node 视图
-	 * @return 本身，这样可以继续设置其他属性
-	 * @author YuLM
-	 */
-	public T setNode(View node) {
-		this.node = node;
 		return (T) this;
 	}
 	
