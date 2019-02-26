@@ -41,7 +41,7 @@ public class Linkbox extends LinkableSuggestionBox<Linkbox> {
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
-		this.setSuggest(new DialogCommand().setSrc(src));
+		this.setSuggest(new DialogCommand(src));
 //		this.strict=true;
 //		this.text="loading...";
 	}

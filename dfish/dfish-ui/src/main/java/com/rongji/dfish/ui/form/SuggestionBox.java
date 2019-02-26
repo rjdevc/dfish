@@ -88,9 +88,21 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		return (T) this;
 	}
 
-	
-
-	
+	/**
+	 * 设置输入提示的url地址
+	 * @param src String
+	 * @return 本身，这样可以继续设置其他属性
+	 * @deprecated 使用#setSuggest
+	 */
+	@Deprecated
+	public T setSrc(String src) {
+		if (this.getSuggest() == null) {
+			this.setSuggest(new DialogCommand(src));
+		} else {
+			this.getSuggest().setSrc(src);
+		}
+		return null;
+	}
 
 	/**
 	 * 输入字符延时时间

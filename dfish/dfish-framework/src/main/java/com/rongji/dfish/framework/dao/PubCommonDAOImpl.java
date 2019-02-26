@@ -99,7 +99,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	/**
 	 * 显示执行结果
 	 * @param sql
-	 * @param beginTimeMillis
+	 * @param costTime
 	 */
 	protected void log(String sql, long costTime) {
 		if (executeWarn) {

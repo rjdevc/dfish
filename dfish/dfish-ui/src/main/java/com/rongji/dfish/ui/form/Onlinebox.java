@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 
+import com.rongji.dfish.ui.command.DialogCommand;
 
 /**
  * <p>
@@ -39,7 +40,7 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
-		this.setSrc(src);
+		this.setSuggest(new DialogCommand(src));
 	}
 
 	public String getType() {
