@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.LazyLoad;
+import com.rongji.dfish.ui.command.DialogCommand;
 
 /**
  * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link Combobox} {@link Linkbox}和{@link Onlinebox}
@@ -9,22 +10,18 @@ import com.rongji.dfish.ui.LazyLoad;
  *
  * @param <T> 当前对象类型
  */
-public abstract class SuggestionBox<T extends SuggestionBox<T>> extends AbstractInput<T,String> implements LazyLoad<T>{
+public abstract class SuggestionBox<T extends SuggestionBox<T>> extends AbstractInput<T,String> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3727695759981575245L;
-	private String src;
-	private String template;
-	private String preload;
-//	private Boolean suggest;
 	private Boolean multiple;
 	private Boolean nobr;
-	private String dropsrc;//显示所有结果的 view src。;
 	private Command<?> picker;
 	private Long delay;
 	private String separator;
-//	private Integer matchlength;
+	private DialogCommand drop;
+	private DialogCommand suggest;
 	/**
 	 * 设置是否可以多选
 	 * 
@@ -37,18 +34,6 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		return (T)this;
 	}
 
-	/**
-	 * 在线匹配关键词的 view src。支持 $value 和 $text 变量。
-	 * @param suggestsrc String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public T setSuggestsrc(String suggestsrc) {
-		this.src = suggestsrc;
-//		this.suggest=true;
-		return (T)this;
-	}
 
 	/**
 	 * "选择"按钮点击动作
@@ -78,17 +63,6 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	}
 
 
-//	/**
-//	 * 在线匹配关键词的 view src。支持 $value 和 $text 变量。
-//	 * @return the suggestsrc
-//	 */
-//	@Deprecated
-//	public String getSuggestsrc() {
-//		return src;
-//	}
-
-
-
     /**
      * 设置当内容太多的时候不换行
 	 * @return the nobr
@@ -113,99 +87,10 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		this.value=toString(value);
 		return (T) this;
 	}
-	/**
-	 * 在线匹配关键词的 view src。支持 $value 和 $text 变量。访问这个 src 应当返回一个 view 的 JSON 数据。
-	 * @return  String
-	 */
-	public String getSrc() {
-		return src;
-	}
-	
-	/**
-	 * 在线匹配关键词的 view src。支持 $value 和 $text 变量。访问这个 src 应当返回一个 view 的 JSON 数据。
-	 * @param src 在线匹配关键词的 view src
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@SuppressWarnings("unchecked")
-    public T setSrc(String src) {
-		this.src = src;
-		return (T) this;
-	}
-	
-	/**
-	 * 模板
-	 * @return String
-	 */
-	public String getTemplate() {
-		return template;
-	}
 
-	/**
-	 * 模板
-	 * @param template String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@SuppressWarnings("unchecked")
-	public T setTemplate(String template) {
-		this.template = template;
-		return (T)this;
-	}
 	
-	/**
-	 * 预加载模板
-	 * @return String
-	 */
-	public String getPreload() {
-		return preload;
-	}
-	/**
-	 * 预加载模板
-	 * @param preload String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@SuppressWarnings("unchecked")
-	public T setPreload(String preload) {
-		this.preload = preload;
-		return (T)this;
-	}
+
 	
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @return Boolean
-//	 */
-//	public Boolean getSuggest() {
-//		return suggest;
-//	}
-//
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @param suggest Boolean
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	@SuppressWarnings({  "unchecked" })
-//	public T setSuggest(Boolean suggest) {
-//		this.suggest = suggest;
-//		return (T) this;
-//	}
-	
-	/**
-	 * 显示所有结果的 view src。;
-	 * @return String
-	 */
-	public String getDropsrc() {
-		return dropsrc;
-	}
-	
-	/**
-	 * 显示所有结果的 view src。;
-	 * @param dropsrc 所有结果的 view src
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@SuppressWarnings("unchecked")
-    public T setDropsrc(String dropsrc) {
-		this.dropsrc = dropsrc;
-		return (T) this;
-	}
 
 	/**
 	 * 输入字符延时时间
@@ -245,22 +130,43 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		return (T) this;
 	}
 
-//	/**
-//	 * 设置匹配高亮切词长度,<=0或者为空全字匹配,其他说明按照长度切词匹配
-//	 * @return Integer
-//	 */
-//	public Integer getMatchlength() {
-//		return matchlength;
-//	}
-//
-//	/**
-//	 * 设置匹配高亮切词长度,<=0或者为空全字匹配,其他说明按照长度切词匹配
-//	 * @param matchlength 切词长度
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public T setMatchlength(Integer matchlength) {
-//		this.matchlength = matchlength;
-//		return (T) this;
-//	}
-	
+	/**
+	 * 设置点击下拉的效果
+	 * @return String
+	 */
+	public DialogCommand getDrop() {
+		return drop;
+	}
+
+	/**
+	 * 点击下拉的效果
+	 * @param drop DialogCommand
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	@SuppressWarnings("unchecked")
+	public T setDrop(DialogCommand drop) {
+		this.drop = drop;
+		return (T) this;
+	}
+
+	/**
+	 * 设置输入提示的效果
+	 * @return String
+	 */
+	public DialogCommand getSuggest() {
+		return suggest;
+	}
+
+	/**
+	 * 设置输入提示的效果
+	 * @param suggest DialogCommand
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	@SuppressWarnings("unchecked")
+	public T setSuggest(DialogCommand suggest) {
+		this.suggest = suggest;
+		return (T) this;
+	}
+
+
 }

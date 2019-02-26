@@ -21,7 +21,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	private ComboboxOption pub;
 //	private String src;//在线匹配关键词的 view src。支持 $value 和 $text 变量。
 	private String loadingtext;
-	private Boolean suggest;
+//	private Boolean suggest;
 	private View node;
 	
 	/**
@@ -101,23 +101,23 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 		return (T) this;
 	}
 	
-	/**
-	 * 输入建议模式，该模式下，不会一次性装载全部数据
-	 * @return Boolean
-	 */
-	public Boolean getSuggest() {
-		return suggest;
-	}
-
-	/**
-	 * 输入建议模式，该模式下，不会一次性装载全部数据
-	 * @param suggest Boolean
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public T setSuggest(Boolean suggest) {
-		this.suggest = suggest;
-		return (T) this;
-	}
+//	/**
+//	 * 输入建议模式，该模式下，不会一次性装载全部数据
+//	 * @return Boolean
+//	 */
+//	public Boolean getSuggest() {
+//		return suggest;
+//	}
+//
+//	/**
+//	 * 输入建议模式，该模式下，不会一次性装载全部数据
+//	 * @param suggest Boolean
+//	 * @return 本身，这样可以继续设置其他属性
+//	 */
+//	public T setSuggest(Boolean suggest) {
+//		this.suggest = suggest;
+//		return (T) this;
+//	}
 
 	/**
 	 * 选项节点的View
