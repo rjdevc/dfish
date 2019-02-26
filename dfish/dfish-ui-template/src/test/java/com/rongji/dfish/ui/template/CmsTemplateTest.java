@@ -68,7 +68,9 @@ public class CmsTemplateTest {
 		
 		//复杂功能要转到widget 才可以处理。
 		WidgetTemplate leafWt=new WidgetTemplate(leaf);
-		leafWt.addFor("nodes", "$item.children", new IncludeTemplate("t/cms/leaf"));
+		WidgetTemplate nodesWt=new WidgetTemplate(leaf);
+		leafWt.addSubTemp("nodes", nodesWt);
+		nodesWt.addFor( "$item.children", new IncludeTemplate("t/cms/leaf"));
 		System.out.println(leafWt);
 	}
 	
