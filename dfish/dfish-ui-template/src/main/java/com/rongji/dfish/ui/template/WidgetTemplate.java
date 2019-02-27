@@ -92,7 +92,7 @@ public class WidgetTemplate extends AbstractTemplate{
 	 * 取得子节点
 	 * @param key 名字
 	 * @return DFishTemplate 子节点
-	 * @throws 如果子节点不是一个模板，而是 String / Integer / Double / Boolean时会抛出错误
+	 * @throws RuntimeException 如果子节点不是一个模板，而是 String / Integer / Double / Boolean时会抛出错误
 	 */
 	public DFishTemplate getSubTemp(String key) {
 		Object o=get(key);
@@ -144,7 +144,7 @@ public class WidgetTemplate extends AbstractTemplate{
 	
 	/**
 	 * 删除属性 
-	 * @param prop String
+	 * @param key String
 	 * @return this
 	 */
 	public WidgetTemplate removeProp(String key) {
@@ -183,17 +183,14 @@ public class WidgetTemplate extends AbstractTemplate{
 		return ((JSONObject)json).get(prop);
 	}
 	
-	public WidgetTemplate addFor(String dataExpr,DFishTemplate temp,String itemName,String indexName){
-		String propFullName=null;
+	public WidgetTemplate setFor(String dataExpr,String itemName,String indexName){
+		String propValue;
 		if(indexName==null||indexName.equals("")){
-			propFullName= "@w-for($"+itemName+" in ("+dataExpr+"))";
+			propValue= "$"+itemName+" in ("+dataExpr+")";
 		}else{
-			propFullName= "@w-for(($"+itemName+",$"+indexName+") in ("+dataExpr+"))";
+			propValue= "($"+itemName+",$"+indexName+") in ("+dataExpr+")";
 		}
-		if(temp instanceof AbstractTemplate ){
-			Object  subProp=((AbstractTemplate) temp).json;
-			this.setProp(propFullName, subProp);
-		}
+		this.setProp("@w-for", propValue);
 		return this;
 	}
 	/**
@@ -201,8 +198,18 @@ public class WidgetTemplate extends AbstractTemplate{
 	 * 后续表达式中，则必须使用 $item来取值
 	 * @param dataExpr String
 	 */
-	public WidgetTemplate addFor(String dataExpr,DFishTemplate temp){
-		return addFor(dataExpr,temp,"item",null);
+	public WidgetTemplate setFor(String dataExpr){
+		return setFor(dataExpr,"item",null);
 	}
-	
+
+		/**
+		 * 表示当前节点是用另一个模板代替。这个在共用某个模块
+		 * 或者有递归调用的时候有不可代替的作用
+		 * @param template 引入的节点名。
+		 * @return
+		 */
+	public WidgetTemplate setInclude(String template){
+		return at("w-include",template);
+	}
+
 }

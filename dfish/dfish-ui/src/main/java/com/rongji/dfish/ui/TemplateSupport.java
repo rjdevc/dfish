@@ -21,6 +21,22 @@ public interface TemplateSupport<T extends TemplateSupport<T>> {
 	 * @return this
 	 */
 	T at(String prop,String expr);
+
+	/**
+	 * 当这个组件在模板中使用的时候，设置这个组件是批量出现的。这里设置数据取值的表达式
+	 * @param expr 数据取值的表达式
+	 * @return
+	 */
+	T setFor(String expr);
+
+	/**
+	 * 当这个组件在模板中使用的时候，设置这个组件是批量出现的。
+	 * @param expr 数据取值的表达式
+	 * @param itemName 默认为item
+	 * @param indexName 默认为空
+	 * @return
+	 */
+	T setFor(String expr,String itemName,String indexName);
 	
 	/**
 	 * 取得所有的at设置，以便转化成json

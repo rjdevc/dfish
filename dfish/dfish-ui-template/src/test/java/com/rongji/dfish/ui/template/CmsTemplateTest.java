@@ -18,7 +18,6 @@ import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.widget.Button;
 import com.rongji.dfish.ui.widget.Leaf;
 import com.rongji.dfish.ui.widget.SubmitButton;
-import com.rongji.dfish.ui.template.IncludeTemplate;
 import com.rongji.dfish.ui.template.JudgeTemplate;
 import com.rongji.dfish.ui.template.PreloadDefine;
 import com.rongji.dfish.ui.template.WidgetTemplate;
@@ -70,7 +69,8 @@ public class CmsTemplateTest {
 		WidgetTemplate leafWt=new WidgetTemplate(leaf);
 		WidgetTemplate nodesWt=new WidgetTemplate(leaf);
 		leafWt.addSubTemp("nodes", nodesWt);
-		nodesWt.addFor( "$item.children", new IncludeTemplate("t/cms/leaf"));
+		nodesWt.addFor( "$item.children");
+		nodesWt.setInclude("cms/tree");
 		System.out.println(leafWt);
 	}
 	

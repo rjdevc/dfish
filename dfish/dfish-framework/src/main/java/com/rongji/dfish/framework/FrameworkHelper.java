@@ -34,10 +34,9 @@ import java.util.concurrent.Executors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.rongji.dfish.base.util.StringUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mozilla.intl.chardet.nsDetector;
-import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.web.multipart.MultipartFile;
@@ -933,39 +932,37 @@ public class FrameworkHelper{
 	}
 	private static StreamContent getContent(InputStream is) throws IOException {
 		final StreamContent content = new StreamContent();
-		nsDetector det = new nsDetector(nsDetector.CHINESE);
-		det.Init(new nsICharsetDetectionObserver() {
-			public void Notify(String s) {
-				content.findCharset = s;
-			}
-		});
+//		nsDetector det = new nsDetector(nsDetector.CHINESE);
+//		det.Init(new nsICharsetDetectionObserver() {
+//			public void Notify(String s) {
+//				content.findCharset = s;
+//			}
+//		});
 		byte buff[] = new byte[1024];
 		boolean done = false;
 		boolean isAscii = true;
 		int j;
 		while ((j = is.read(buff, 0, buff.length)) >= 0) {
 			content.baos.write(buff, 0, j);
-			if (isAscii)
-				isAscii = det.isAscii(buff, j);
-			if (!isAscii && !done)
-				done = det.DoIt(buff, j, false);// 模糊匹配的话，可以第一次找到就跳出
+			content.findCharset=StringUtil.detCharset(buff);
+//			if (isAscii)
+//				isAscii = det.isAscii(buff, j);
+//			if (!isAscii && !done)
+//				done = det.DoIt(buff, j, false);// 模糊匹配的话，可以第一次找到就跳出
 		}
-		det.DataEnd();
-		if (isAscii) {
-			// 纯ascii 用系统编码读取应该更快
-			content.findCharset = System.getProperty("file.encoding");
-		}
-		if (content.findCharset == null) {
-			String chars[] = det.getProbableCharsets();
-			if (chars != null && chars.length > 1) {
-				content.findCharset = chars[0];
-			} else {
-				content.findCharset = System.getProperty("file.encoding");
-			}
-		}
-		if("GB2312".equalsIgnoreCase(content.findCharset)&&Charset.isSupported("GBK")){
-			content.findCharset="GBK";//一般中文机器支持GBK
-		}
+
+
+//		if (content.findCharset == null) {
+//			String chars[] = det.getProbableCharsets();
+//			if (chars != null && chars.length > 1) {
+//				content.findCharset = chars[0];
+//			} else {
+//				content.findCharset = System.getProperty("file.encoding");
+//			}
+//		}
+//		if("GB2312".equalsIgnoreCase(content.findCharset)&&Charset.isSupported("GBK")){
+//			content.findCharset="GBK";//一般中文机器支持GBK
+//		}
 		return content;
 	}
 

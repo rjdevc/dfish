@@ -63,6 +63,19 @@ public abstract class AbstractJsonObject<T extends AbstractJsonObject<T>> implem
 		atProps.put(prop,expr);
 		return(T)this;
 	}
+	public T setFor(String expr){
+		return addFor(expr,"item",null);
+	}
+
+
+	public T setFor(String dataExpr,String itemName,String indexName){
+		if(indexName==null||indexName.equals("")){
+			at("w-for","$"+itemName+" in ("+dataExpr+")");
+		}else{
+			at("w-for","$"+itemName+" in ("+dataExpr+")");
+		}
+		return (T)this;
+	}
 	public Map<String,String> ats(){
 		return atProps;
 	}
