@@ -92,6 +92,5 @@
     <module>dfish-ui</module>
     <module>dfish-uiplugin</module>
     <module>dfish-engine</module>
-    <module>dfish-config</module>
   </modules>
 </project>
