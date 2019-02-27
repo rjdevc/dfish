@@ -434,12 +434,30 @@ Template = $.createClass( {
 		},
 		// @y -> { key: value }
 		compile: function( x, y ) {
-			var x = x || this.template, r = {}, f = {}, g = x && (new TemplateWidget( x, this ));
+			var x = x || this.template, r = {}, b, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( ! x )
 				return;
-			if ( x[ '@w-include' ] ) {
-				var d = _getTemplate( x[ '@w-include' ] );
+			if ( b = x[ '@w-include' ] ) {
+				var d = _getTemplate( b );
 				return d && this.compile( d, y );
+			}
+			if ( b = x[ '@w-for' ] ) {
+				var c = b.split( / in / ),
+					d = c[ 0 ].replace( /[^\$\w,]/g, '' ).split( ',' ), // $item,$index
+					e = this.format( c[ 1 ], g, y ); // array
+				if ( e ) {
+					var g = $.extend( {}, x );
+					delete g[ '@w-for' ];
+					for ( var i = 0, r = [], m, l = e.length; i < l; i ++ ) {
+						m = {};
+						m[ d[ 0 ] ] = e[ i ];
+						d[ 1 ] && (m[ d[ 1 ] ] = i);
+						y && $.extend( m, y );
+						(f = this.compile( g, m )) && r.push( f );
+					}
+					return r;
+				} else
+					return N;
 			}
 			for ( var k in x ) {
 				var b = x[ k ];
@@ -450,22 +468,6 @@ Template = $.createClass( {
 						$.jsonArray( [ $.strRange( k, '(', ')' ), b, $.strRange( k, '-elseif', '(' ) ], f, '_elseif' );
 					} else if ( k.indexOf( 'w-else' ) === 1 ) {
 						f._else = b;
-					} else if ( k.indexOf( 'w-for' ) === 1 ) {
-						var d = $.strRange( k, '(', ' in ' ), // (item,index)
-							e = $.strRange( k, ' in ', ')' ), // array
-							n = this.format( e, g, y );
-						if ( n ) {
-							var g = d.replace( /[()\s]/g, '' ).split( ',' );
-							for ( var i = 0, h = [], m, l = n.length; i < l; i ++ ) {
-								m = {};
-								m[ g[ 0 ] ] = n[ i ];
-								g[ 1 ] && (m[ g[ 1 ] ] = i);
-								y && $.extend( m, y );
-								h.push( this.compile( b, m ) );
-							}
-							r = h;
-						} else
-							r = N;
 					} else if ( ! _template_reserved[ k ] ) {
 						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );
 						d != N && (r[ k.substr( 1 ) ] = d);

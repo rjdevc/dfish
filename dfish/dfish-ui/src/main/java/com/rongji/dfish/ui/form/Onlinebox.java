@@ -40,7 +40,7 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
-		this.setSuggest(new DialogCommand().setSrc(src));
+		this.setSuggest(new DialogCommand(src));
 	}
 
 	public String getType() {

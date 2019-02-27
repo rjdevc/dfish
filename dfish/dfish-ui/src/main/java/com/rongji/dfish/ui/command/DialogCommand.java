@@ -78,7 +78,15 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 		this.title = title;
 		this.src = src;
     }
-    
+
+    /**
+     * 打开对话框命令
+     * @param src String 窗口数据的URL
+     */
+    public DialogCommand(String src) {
+		this.src = src;
+    }
+
     /**
      * 打开对话框命令
      */
