@@ -54,7 +54,7 @@ public class ConditionTemplateTest {
 	public void getFor() {
 		WidgetTemplate leafTmp=new WidgetTemplate(new Leaf())
 				.at("text", "$item.name");
-		System.out.println(new WidgetTemplate ().addFor( "$data"));
+		System.out.println(new WidgetTemplate ().setFor( "$data"));
 	}
 
 	@Test

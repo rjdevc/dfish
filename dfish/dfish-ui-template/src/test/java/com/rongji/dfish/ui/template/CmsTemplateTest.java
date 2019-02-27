@@ -69,7 +69,7 @@ public class CmsTemplateTest {
 		WidgetTemplate leafWt=new WidgetTemplate(leaf);
 		WidgetTemplate nodesWt=new WidgetTemplate(leaf);
 		leafWt.addSubTemp("nodes", nodesWt);
-		nodesWt.addFor( "$item.children");
+		nodesWt.setFor( "$item.children");
 		nodesWt.setInclude("cms/tree");
 		System.out.println(leafWt);
 	}
