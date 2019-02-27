@@ -64,7 +64,7 @@ public abstract class AbstractJsonObject<T extends AbstractJsonObject<T>> implem
 		return(T)this;
 	}
 	public T setFor(String expr){
-		return addFor(expr,"item",null);
+		return setFor(expr,"item",null);
 	}
 
 
