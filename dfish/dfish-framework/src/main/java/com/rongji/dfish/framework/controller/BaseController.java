@@ -319,10 +319,11 @@ public class BaseController extends MultiActionController {
 	
 	protected DialogCommand buildErrorDialog(Throwable t) {
 		View view = buildErrorView(t);
-		DialogCommand error = new DialogCommand("error", "std", "系统提示信息",
-		        DialogCommand.WIDTH_MEDIUM, DialogCommand.HEIGHT_MEDIUM, DialogCommand.POSITION_MIDDLE, null);
-		error.setNode(view);
-		return error;
+		DialogCommand dialog = new DialogCommand("error", "系统提示信息", null);
+//		DialogCommand error = new DialogCommand("error", null, "系统提示信息",
+//		        DialogCommand.WIDTH_MEDIUM, DialogCommand.HEIGHT_MEDIUM, DialogCommand.POSITION_MIDDLE, null);
+		dialog.setNode(view);
+		return dialog;
 	}
 	
 	protected View buildErrorView(Throwable t) {
