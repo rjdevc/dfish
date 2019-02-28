@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.rongji.dfish.base.Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -64,16 +65,17 @@ public abstract class AbstractJsonObject<T extends AbstractJsonObject<T>> implem
 		return(T)this;
 	}
 	public T setFor(String expr){
-		return setFor(expr,"item",null);
+		return setFor(expr,null,null);
 	}
 
 
 	public T setFor(String dataExpr,String itemName,String indexName){
-		if(indexName==null||indexName.equals("")){
-			at("w-for","$"+itemName+" in ("+dataExpr+")");
-		}else{
-			at("w-for","$"+itemName+" in ("+dataExpr+")");
-		}
+		itemName = Utils.isEmpty(itemName) ? "item" : itemName;
+//		if(indexName==null||indexName.equals("")){
+//			at("w-for","$"+itemName+" in ("+dataExpr+")");
+//		}else{
+//		}
+		at("w-for","$" + itemName + (Utils.notEmpty(indexName) ? ",$" + indexName : "") + " in ("+dataExpr+")");
 		return (T)this;
 	}
 	public Map<String,String> ats(){
