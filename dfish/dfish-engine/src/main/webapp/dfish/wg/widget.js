@@ -4714,7 +4714,7 @@ Checkbox = define.widget( 'checkbox', {
 		className: 'w-form',
 		formType: 'checkbox',
 		getValidError: function( a ) {
-			return this.parentNode.isBoxGroup && this.parentNode.getValidError( a );
+			return this.parentNode.isBoxGroup ? this.parentNode.getValidError( a ) : AbsForm.prototype.getValidError.call( this, a );
 		},
 		_ustag: function( a ) {
 			this.ownerView.linkTarget( this.x.target, ! this.isDisabled() && this.isChecked() );
@@ -6783,7 +6783,7 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		fixOpt: function() {
 			var self = this;
-			Q( 'u:not([data-value])', this.$t() ).each( function() {
+			Q( 'u:not([data-value]):not(:empty)', this.$t() ).each( function() {
 				var g = self.store().getParam( this.innerText );
 				if ( g ) {
 					$.classAdd( u, '_o' );
