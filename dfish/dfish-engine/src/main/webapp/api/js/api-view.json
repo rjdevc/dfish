@@ -110,11 +110,13 @@
 		  	  { "text": "模板<sup>3.2+</sup>", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		  	    { "text": "模板说明", "id": "@", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@propName", "id": "@propName", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@propName:w-for", "id": "@propName:w-for", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@w-for", "id": "@w-for", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-if", "id": "@w-if", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-elseif", "id": "@w-elseif", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-else", "id": "@w-else", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-include", "id": "@w-include", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@w-switch", "id": "@w-switch", "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@w-switch-default", "id": "@w-switch-default", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "$dataKey", "id": "$dataKey", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "$this", "id": "$this", "icon": ".icon .icon-component", "datasrc": "@" }
 		  	  ] },

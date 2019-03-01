@@ -894,7 +894,7 @@ define( {
             '</script>'
           }
 	  ] },
-	  { name: '@propName:w-for(expr)', remark: '循环语句。propName 是属性名，循环后输出一个数组。expr 语句使用 in 语法，如 <b>($item in $data)</b>，或 <b>(($item,$index) in $data)</b>', example: [
+	  { name: '@w-for', remark: '循环输出一组节点。expr 语句使用 in 语法，如 <b>$item in $data</b>，或 <b>$item,$index in $data</b>', example: [
           function() {
           	/// 使用模板的树
           	return~
@@ -912,16 +912,21 @@ define( {
             /// tmpl_tree 定义
           	return~
             $.template( "tmpl_tree", {
-              "@nodes:w-for($item in $data)": { "type": "leaf", "@text": "$item.name" }
+              "type": "leaf", "nodes": [
+                { "type": "leaf", "@w-for": "$item in $data", "@text": "$item.name" }
+              ]
             } );
           },
           function() {
             /// 上述模板解析结果为：
           	return~
-            { "nodes": [ { "type": "leaf", "text": "张三" }, { "type": "leaf", "text": "李四" } ] }
+            { "type": "leaf", "nodes": [
+              { "type": "leaf", "text": "张三" },
+              { "type": "leaf", "text": "李四" }
+            ] }
           }
 	  ] },
-	  { name: '@w-if(expr)', remark: '条件表达式。', example: [
+	  { name: '@w-switch(expr)', remark: '条件选择表达式。', example: [
           function() {
           	/// 数据源
           	return~
@@ -931,8 +936,8 @@ define( {
           	/// 模板
           	return~
             {
-              "@w-if($data.flag==1)": { "type": "text", "name": "name", "@value": "$data.name" },
-              "@else": { "type": "html", "@text": "@data.name" }
+              "@w-switch($data.flag==1)": { "type": "text", "name": "name", "@value": "$data.name" },
+              "@w-switch-default": { "type": "html", "@text": "@data.name" }
             }
           },
           function() {
@@ -941,7 +946,34 @@ define( {
             { "type": "text", "name": "name", "value": "张三" }
           }
 	  ] },
-	  { name: '@w-elseif(expr)', remark: '条件表达式。必须搭配 @w-if 使用。' },
+	  { name: '@w-switch-default', remark: '条件选择表达式。' },
+	  { name: '@w-if', remark: '条件表达式。', example: [
+          function() {
+          	/// 数据源
+          	return~
+            { data: { flag: 1, name: "张三" } }
+          },
+          function() {
+          	/// 模板
+          	return~
+            {
+              "type": "buttonbar", "nodes": [
+                { "type": "button", "@w-if": "$data.flag==1", "@text": "$data.name" },
+                { "type": "button", "@w-else": "", "text": "else" },
+              ]
+            }
+          },
+          function() {
+          	/// 上述数据源+模板输出结果为：
+          	return~
+            {
+              "type": "buttonbar", "nodes": [
+                { "type": "button", "@text": "张三" }
+              ]
+            }
+          }
+	  ] },
+	  { name: '@w-elseif', remark: '条件表达式。必须搭配 @w-if 使用。' },
 	  { name: '@w-else', remark: '条件表达式。必须搭配 @w-if 使用。' },
 	  { name: '@w-include', remark: '引用模板。值是模板ID。', example: [
           function() {

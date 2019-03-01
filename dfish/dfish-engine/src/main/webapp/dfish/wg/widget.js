@@ -409,6 +409,40 @@ TemplateWidget = $.createClass( {
 		}
 	}
 } ),
+_tpl_mark = function( x, k ) {
+	(_templateMarkCache[ x[ ':mark' ] ] || (new TemplateMark( x ))).addProp( k );
+},
+_markWork = function( x ) {
+	x[ ':mark' ] && _templateMarkCache[ x[ ':mark' ] ].work( x );
+	x.node && _markWork( x.node );
+	x.nodes && _markWorkLoop( x.nodes );
+	x.rows && _markWorkLoop( x.rows );
+},
+_markWorkLoop = function( a ) {
+	for ( var i = 0, l = a.length; i < l; i ++ )
+		_markWork( a[ i ] );
+},
+_templateMarkCache = {},
+TemplateMark = $.createClass( {
+	Const: function( x ) {
+		_templateMarkCache[ x[ ':mark' ] = this.id = $.uid() ] = this;
+		this.props = {};
+		this.nodes = [];
+	},
+	Prototype: {
+		addProp: function( k ) {
+			this.props[ k.replace( '@', '' ) ] = T;
+		},
+		addNode: function( n ) {
+			this.nodes.push( n );
+		},
+		work: function( x ) {
+			if ( this.props[ 'w-for' ] ) {
+				var i = this.nodes[ 0 ].nodeIndex;
+			}
+		}
+	}
+} ),
 /* `Template` */
 Template = $.createClass( {
 	// @ t -> template, d -> data, g -> widget, r -> target
@@ -423,7 +457,7 @@ Template = $.createClass( {
 		format: function( a, g, y ) {
 			return _proto.formatJS.call( g, 'return ' + a, y, this.data );
 		},
-		whether: function( s, r, g, y ) {
+		switcher: function( s, r, g, y ) {
 			if ( typeof s === _STR ) {
 				r = this.format( s, g, y );
 			} else {
@@ -432,7 +466,7 @@ Template = $.createClass( {
 			}
 			return r;
 		},
-		// @y -> { key: value }
+		// @y -> { key: value }, z -> x.parentObject
 		compile: function( x, y ) {
 			var x = x || this.template, r = {}, b, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( ! x )
@@ -441,40 +475,53 @@ Template = $.createClass( {
 				var d = _getTemplate( b );
 				return d && this.compile( d, y );
 			}
-			if ( b = x[ '@w-for' ] ) {
-				var c = b.split( / in / ),
-					d = c[ 0 ].replace( /[^\$\w,]/g, '' ).split( ',' ), // $item,$index
-					e = this.format( c[ 1 ], g, y ); // array
-				if ( e ) {
-					var g = $.extend( {}, x );
-					delete g[ '@w-for' ];
-					for ( var i = 0, r = [], m, l = e.length; i < l; i ++ ) {
-						m = {};
-						m[ d[ 0 ] ] = e[ i ];
-						d[ 1 ] && (m[ d[ 1 ] ] = i);
-						y && $.extend( m, y );
-						(f = this.compile( g, m )) && r.push( f );
-					}
-					return r;
-				} else
-					return N;
+			if ( b = x[ '@w-if' ] ) {
+				if ( ! this.format( b, g, y ) )
+					return;
 			}
 			for ( var k in x ) {
 				var b = x[ k ];
 				if ( k.charAt( 0 ) === '@' ) {  //以@开头的是JS表达式
-					if ( k.indexOf( 'w-if' ) === 1 ) {
-						f._if = [ $.strRange( k, '(', ')' ), b ];
-					} else if ( k.indexOf( 'w-elseif' ) === 1 ) {
-						$.jsonArray( [ $.strRange( k, '(', ')' ), b, $.strRange( k, '-elseif', '(' ) ], f, '_elseif' );
-					} else if ( k.indexOf( 'w-else' ) === 1 ) {
-						f._else = b;
+					if ( k.indexOf( 'w-case' ) === 1 ) {
+						if ( k === '@w-case-default' )
+							f._casedefault = b;
+						else
+							$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_case' );
 					} else if ( ! _template_reserved[ k ] ) {
 						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );
 						d != N && (r[ k.substr( 1 ) ] = d);
 					}
 				} else if ( $.isArray( b ) ) {
-					for ( var i = 0, c = [], d, l = b.length; i < l; i ++ ) {
-						b[ i ] && (d = this.compile( b[ i ], y )) && (c = c.concat( d ));
+					for ( var i = 0, c = [], d, m, l = b.length, IF, EIF; i < l; i ++ ) if ( m = b[ i ] ) {
+						if ( m[ '@w-for' ] ) {
+							//_mark( b[ i ] ).addProp( 'w-for' );
+							//_mark( x ).addProp( k, i );
+							var e = m[ '@w-for' ].split( / in / ),
+								v = e[ 0 ].replace( /[^\$\w,]/g, '' ).split( ',' ), // $item,$index
+								h = this.format( e[ 1 ], g, y ); // array
+							if ( h && h.length ) {
+								for ( var j = 0, n; j < h.length; j ++ ) {
+									n = {};
+									n[ v[ 0 ] ] = h[ j ];
+									v[ 1 ] && (n[ v[ 1 ] ] = j);
+									y && $.extend( n, y );
+									(d = this.compile( m, n )) && c.push( d );
+								}
+							}
+						} else {
+							if ( d = m[ '@w-if' ] ) {
+								EIF = F;
+								if ( ! (IF = this.format( d, g, y )) ) continue;
+							} else if ( d = m[ '@w-elseif' ] ) {
+								if ( IF || EIF || ! (EIF = this.format( d, g, y )) ) continue;
+							} else if ( d = ('@w-else' in m) )
+								if ( IF || EIF ) continue;
+							if ( d ) {
+								m = $.extend( {}, m );
+								delete m[ '@w-if' ]; delete m[ '@w-elseif' ]; delete m[ '@w-else' ];
+							}
+							(d = this.compile( m, y )) && c.push( d );
+						}
 					}
 					r[ k ] = c;
 				} else if ( typeof b === _OBJ ) {
@@ -483,20 +530,13 @@ Template = $.createClass( {
 				} else
 					r[ k ] = b;
 			}
-			if ( f._if ) {
-				if ( this.format( f._if[ 0 ], g, y ) ) {
-					return this.whether( f._if[ 1 ], r, g, y );
-				} else if ( f._elseif ) {
-					f._elseif.sort( function( n, m ) { return n[ 2 ] < m[ 2 ] ? -1 : n[ 2 ] == m[ 2 ] ? 0 : 1 } );
-					for ( var i = 0; i < f._elseif.length; i ++ ) {
-						if ( this.format( f._elseif[ i ][ 0 ], g, y ) ) {
-							return this.whether( f._elseif[ i ][ 1 ], r, g, y );
-						}
-					}
-				} else if ( f._else ) {
-					return this.whether( f._else, r, g, y );
-				}
+			if ( f._case ) {
+				for ( var i = 0; i < f._case.length; i ++ )
+					if ( this.format( f._case[ i ][ 0 ], g, y ) )
+						return this.switcher( f._case[ i ][ 1 ], r, g, y );
 			}
+			if ( f._casedefault )
+				return this.switcher( f._casedefault, r, g, y );
 			return r;
 		}		
 	}
@@ -582,6 +622,9 @@ _regIdName = function( a ) {
 _regWidget = function( x, p, n ) {
 	p && p.addNode( this, n );
 	x.gid && (_globals[ x.gid ] = this);
+	if ( x[ ':mark' ] ) {
+		_templateMarkCache[ x[ ':mark' ] ].addNode( this );
+	}
 	_all[ $.uid( this ) ] = this;
 	this.init_x( x );
 },
@@ -1853,7 +1896,11 @@ Xsrc = define.widget( 'xsrc', {
 				this.css( v );
 			}
 		},
-		srcData: function() {
+		srcData: function( a ) {
+			if ( a ) {
+				var b = _compileTemplate( this, a );
+				_markWork( b, this );
+			}
 			return this.x.srcdata;
 		},
 		// @force: 强制刷新，不论是否在frame内
@@ -4401,7 +4448,7 @@ _z_on = function( a ) {
 // /@ a -> valid object, b -> valid code, c -> args
 _form_err = function( a, b, c ) {
 	var t = this.x.label;
-	t.text && (t = t.text);
+	t && t.text && (t = t.text);
 	return { wid: this.id, name: this.x.name, code: b, label: t, text: ( a && a[ b + 'text' ] ) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! t ? 'complete_required' : b ], t || Loc.field ].concat( c || [] ) ) || '' };
 },
 _valid_err = function( b, v ) {
@@ -5060,7 +5107,7 @@ Checkbox = define.widget( 'checkbox', {
 			}
 		},
 		getValidError: function( a ) {
-			return this.parentNode.isBoxGroup && this.parentNode.getValidError( a );
+			return this.parentNode.isBoxGroup ? this.parentNode.getValidError( a ) : AbsForm.prototype.getValidError.call( this, a );
 		},
 		_ustag: function( a ) {
 			this.ownerView.linkTarget( this.x.target, ! this.isDisabled() && this.isChecked() );
