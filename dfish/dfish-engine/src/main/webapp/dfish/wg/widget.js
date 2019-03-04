@@ -410,10 +410,10 @@ TemplateWidget = $.createClass( {
 	}
 } ),
 _tpl_mark = function( x, k ) {
-	(_templateMarkCache[ x[ ':mark' ] ] || (new TemplateMark( x ))).addProp( k );
+	(_templateMarkCache[ x.at ] || (new TemplateMark( x ))).addProp( k );
 },
 _markWork = function( x ) {
-	x[ ':mark' ] && _templateMarkCache[ x[ ':mark' ] ].work( x );
+	x.at && _templateMarkCache[ x.at ].work( x );
 	x.node && _markWork( x.node );
 	x.nodes && _markWorkLoop( x.nodes );
 	x.rows && _markWorkLoop( x.rows );
@@ -425,16 +425,13 @@ _markWorkLoop = function( a ) {
 _templateMarkCache = {},
 TemplateMark = $.createClass( {
 	Const: function( x ) {
-		_templateMarkCache[ x[ ':mark' ] = this.id = $.uid() ] = this;
+		_templateMarkCache[ x.at = this.id = $.uid() ] = this;
+		this.x = x;
 		this.props = {};
-		this.nodes = [];
 	},
 	Prototype: {
 		addProp: function( k ) {
 			this.props[ k.replace( '@', '' ) ] = T;
-		},
-		addNode: function( n ) {
-			this.nodes.push( n );
 		},
 		work: function( x ) {
 			if ( this.props[ 'w-for' ] ) {
@@ -455,7 +452,7 @@ Template = $.createClass( {
 	Prototype: {
 		// @a -> text, g -> templateWidget, y -> args
 		format: function( a, g, y ) {
-			return _proto.formatJS.call( g, 'return ' + a, y, this.data );
+			return a ? _proto.formatJS.call( g, 'return ' + a, y, this.data ) : N;
 		},
 		switcher: function( s, r, g, y ) {
 			if ( typeof s === _STR ) {
@@ -482,11 +479,11 @@ Template = $.createClass( {
 			for ( var k in x ) {
 				var b = x[ k ];
 				if ( k.charAt( 0 ) === '@' ) {  //以@开头的是JS表达式
-					if ( k.indexOf( 'w-case' ) === 1 ) {
-						if ( k === '@w-case-default' )
-							f._casedefault = b;
+					if ( k.indexOf( 'w-switch' ) === 1 ) {
+						if ( k === '@w-switch-default' )
+							f._switchdefault = b;
 						else
-							$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_case' );
+							$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
 					} else if ( ! _template_reserved[ k ] ) {
 						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );
 						d != N && (r[ k.substr( 1 ) ] = d);
@@ -509,11 +506,11 @@ Template = $.createClass( {
 								}
 							}
 						} else {
-							if ( d = m[ '@w-if' ] ) {
+							if ( '@w-if' in m ) {
 								EIF = F;
-								if ( ! (IF = this.format( d, g, y )) ) continue;
-							} else if ( d = m[ '@w-elseif' ] ) {
-								if ( IF || EIF || ! (EIF = this.format( d, g, y )) ) continue;
+								if ( ! (IF = this.format( m[ '@w-if' ], g, y )) ) continue;
+							} else if ( '@w-elseif' in m ) {
+								if ( IF || EIF || ! (EIF = this.format( m[ '@w-elseif' ], g, y )) ) continue;
 							} else if ( d = ('@w-else' in m) )
 								if ( IF || EIF ) continue;
 							if ( d ) {
@@ -530,13 +527,13 @@ Template = $.createClass( {
 				} else
 					r[ k ] = b;
 			}
-			if ( f._case ) {
-				for ( var i = 0; i < f._case.length; i ++ )
-					if ( this.format( f._case[ i ][ 0 ], g, y ) )
-						return this.switcher( f._case[ i ][ 1 ], r, g, y );
+			if ( f._switch ) {
+				for ( var i = 0; i < f._switch.length; i ++ )
+					if ( this.format( f._switch[ i ][ 0 ], g, y ) )
+						return this.switcher( f._switch[ i ][ 1 ], r, g, y );
 			}
-			if ( f._casedefault )
-				return this.switcher( f._casedefault, r, g, y );
+			if ( f._switchdefault )
+				return this.switcher( f._switchdefault, r, g, y );
 			return r;
 		}		
 	}
@@ -622,9 +619,6 @@ _regIdName = function( a ) {
 _regWidget = function( x, p, n ) {
 	p && p.addNode( this, n );
 	x.gid && (_globals[ x.gid ] = this);
-	if ( x[ ':mark' ] ) {
-		_templateMarkCache[ x[ ':mark' ] ].addNode( this );
-	}
 	_all[ $.uid( this ) ] = this;
 	this.init_x( x );
 },
