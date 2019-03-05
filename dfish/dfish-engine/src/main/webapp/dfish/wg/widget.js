@@ -564,16 +564,17 @@ W = define( 'widget', function() {
 		},
 		// 执行命令 /@a -> id[string/object], b -> args[array], c -> feature
 		exec: function( a, b, c ) {
-			if ( this._disposed )
+			var self = this._disposed ? this.ownerView : this;
+			if ( ! self || self._disposed )
 				return;
 			if ( typeof a === _STR ) {
-				var e = _view( this ).x.commands;
+				var e = _view( self ).x.commands;
 				if ( e && (e = e[ a ]) ) {
 					a = $.jsonClone( e );
 				} else if ( /^\{[\s\S]+\}$/.test( a ) ) {
 					a = $.jsonParse( a );
 				} else {
-					$.alert( Loc.ps( Loc.debug.no_command, a, _view( this ).path ) ); // 没有找到命令
+					$.alert( Loc.ps( Loc.debug.no_command, a, _view( self ).path ) ); // 没有找到命令
 					return;
 				}
 			}
@@ -583,7 +584,7 @@ W = define( 'widget', function() {
 				if ( _cmdHooks[ a.type ] ) {
 					_dfopt[ a.type ] && $.extendDeep( a, _dfopt[ a.type ] );
 					$.point();
-					return _cmdHooks[ a.type ].call( this, a, b );
+					return _cmdHooks[ a.type ].call( self, a, b );
 				}
 			}
 		},
