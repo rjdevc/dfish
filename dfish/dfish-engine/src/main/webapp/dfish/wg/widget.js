@@ -336,7 +336,7 @@ Node = $.createClass( {
 					this.length ++;
 					this[ n ] = a;
 					var r = this.rootNode || (this.IS_ROOT && this);
-					if ( r && this.ROOT_TYPE === r.type )
+					if ( r && a.ROOT_TYPE === r.type )
 						a.rootNode = r;
 				}
 			}
@@ -7321,7 +7321,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 						this.attr( e, x[ e ] || '' );
 				}
 				if ( this.x.format || (_x.text !== x.text) ) {
-					this.$( 't' ) && $.html( this.$( 't' ), this.html_text() );
+					this.attr( 'text', x.text );
 				}
 			}
 			var n = x.nodes, l = n && n.length;
