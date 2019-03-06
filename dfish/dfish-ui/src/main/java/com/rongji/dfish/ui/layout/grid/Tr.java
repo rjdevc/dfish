@@ -91,7 +91,7 @@ public class Tr extends AbstractTr<Tr> implements JsonWrapper<Object>{
 				tr.getMaxheight()!=null||tr.getMaxwidth()!=null||
 				tr.getMinheight()!=null||tr.getMinwidth()!=null||
 				(tr.getOn()!=null&&tr.getOn().size()>0)||
-				tr.getWidth()!=null||tr.getWmin()!=null;
+				tr.getWidth()!=null||tr.getWmin()!=null||tr.ats()!=null;
 	}
 
 	@Override

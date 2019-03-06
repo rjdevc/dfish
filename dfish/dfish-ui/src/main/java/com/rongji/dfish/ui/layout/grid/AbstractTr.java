@@ -287,5 +287,6 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 		to.focus=from.focus;
 		to.src=from.src;
 		to.focusable=from.focusable;
+		to.ats(from.ats());
 	}
 }
