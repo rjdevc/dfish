@@ -68,4 +68,34 @@ public class GridLayoutTest extends DFishUITestCase {
 		output(gl);
 
 	}
+	@Test
+	public void templateTest(){
+		GridLayout props= new GridLayout("elemProps");
+
+		props.setFace(GridLayout.FACE_LINE);
+
+		props.addColumn(GridColumn.text("C1","160"));
+		props.addColumn(GridColumn.text("C3","80"));
+		props.addColumn(GridColumn.text("C4","80"));
+		props.addColumn(GridColumn.text("C5","120"));
+		props.addColumn(GridColumn.text("C6","*"));
+
+		Tr tHead=new Tr();
+		props.getThead().add(tHead);
+		tHead.setData("C1","属性名");
+		tHead.setData("C3","类型");
+		tHead.setData("C4","必填");
+		tHead.setData("C5","默认值");
+		tHead.setData("C6","提示信息");
+
+		Tr tBodyRow=new Tr();
+		props.getTbody().add(tBodyRow);
+		tBodyRow.setData("@C1","$item.name");
+		tBodyRow.setData("@C3","$item.type");
+		tBodyRow.setData("@C4","$item.required");
+		tBodyRow.setData("@C5","$item.defaultValue");
+		tBodyRow.setData("@C6","$item.tip");
+        tBodyRow.setFor("$data.props");
+        System.out.print(props.formatString());
+	}
 }
