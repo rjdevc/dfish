@@ -290,8 +290,8 @@
 .f-css2 .w-form input,.f-css2 .w-form textarea{background:url(g/space.gif)}
 .w-form textarea{vertical-align:middle}
 
-.w-input,.w-input-border{border:1px solid #99a8b8;background:#fff}
-.w-input{position:relative;height:28px;border-radius:2px;text-align:left;/*box-shadow:inset 0px 2px 0px #f7f7f7;*/}
+.w-input,.w-input-border{border:1px solid #ccc;background:#fff}
+.w-input{position:relative;height:28px;text-align:left;}
 .w-input ._t{height:100%;line-height:28px;padding-left:5px;*height:28px}
 .w-input.z-on,.w-input-border.z-on{border-color:#3298fe;box-shadow:none}
 .w-input.z-ds{background:#f1f1f1;box-shadow:none}
@@ -312,16 +312,6 @@
 .w-select.z-ds select{background:#eee}
 .w-select ._cvr{display:none}
 .w-select.z-ds ._cvr{display:block;position:absolute;top:0;bottom:0;left:0;right:0;background:#fff;opacity:0;filter:Alpha(opacity:0)}
-
-.w-checkboxgroup,.w-radiogroup{border:1px solid transparent;padding:1px 0}
-.w-checkboxgroup-align{vertical-align:middle}
-.w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding-right:6px}
-.w-checkbox,.w-radio,.w-triplebox{padding:2px 0;border:1px solid transparent;border-left:0;font-style:normal}
-.w-checkbox input,.w-radio input,.w-triplebox input{padding:0;vertical-align:middle}
-.w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;vertical-align:middle;cursor:default}
-/*.w-checkboxgroup.z-err .w-checkbox,.w-radiogroup.z-err .w-radio{position:relative;border-bottom-color:red}
-.w-checkboxgroup.z-err .w-checkbox:after,.w-radiogroup.z-err .w-radio:after{position:absolute;content:"";bottom:1px;left:0;right:0;border-bottom:1px dashed red}*/
-.w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
 
 .w-date ._b,.w-muldate ._b{display:inline-block;width:19px;text-align:center;color:#666;cursor:default}
 .w-date ._b:hover,.w-muldate ._b:hover{color:#333}
@@ -428,6 +418,30 @@
 .f-boxbtn:hover .f-arw-b2{border-top-color:#546272}
 .w-form.z-ds .f-boxbtn{cursor:default}
 .w-form.z-ds .f-boxbtn:hover .f-arw-b2{border-top-color:#99a8b8}
+
+.w-checkboxgroup,.w-radiogroup{border:1px solid transparent;padding:1px 0}
+.w-checkboxgroup-align{vertical-align:middle}
+.w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding-right:6px}
+.w-checkbox,.w-radio,.w-triplebox{padding:2px 0;border:1px solid transparent;border-left:0;font-style:normal}
+.w-checkbox input,.w-radio input,.w-triplebox input{padding:0;vertical-align:middle}
+.w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;vertical-align:middle;cursor:default}
+.w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
+
+/*  <!--  CSS3 checkbox  */
+.w-checkbox ._t,.w-triplebox ._t,.w-radio ._t{display:none}
+.f-css2 .w-checkbox ._t,.f-css2 .w-triplebox ._t,.f-css2 .w-radio ._t{display:inline-block}
+.w-checkbox ._t + label,.w-triplebox ._t + label,.w-radio ._t + label{background-color:#fff;border:1px solid #c1caca;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05);padding:8px;border-radius:0;display:inline-block;position:relative;margin-right:3px;vertical-align:middle;-webkit-appearance:none;}
+.w-checkbox.z-ds ._t + label,.w-triplebox.z-ds ._t + label,.w-radio.z-ds ._t + label{background-color:#ddd;}
+.w-checkbox ._t:active + label,.w-triplebox ._t:active + label{box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
+.w-checkbox ._t:checked + label:after,.w-triplebox ._t:checked + label:after,.w-triplebox.z-half ._t + label:before{content:'\2714';position:absolute;top:0;left:0;color:#758794;width:100%;text-align:center;font-size:16px;vertical-align:text-top;line-height:1;}
+.w-triplebox.z-half ._t + label:before{content:'';}
+.w-triplebox.z-half ._t + label:after{content:'';position:absolute;background:#758794;top:50%;left:1px;right:1px;height:3px;margin-top:-1px;text-align:center;vertical-align:text-top;line-height:1;}
+.w-radio ._t + label{border-radius:50px;}
+.w-radio ._t:checked + label{border:1px solid #adb8c0;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05),inset 15px 10px -12px rgba(255,255,255,0.1),inset 0px 0px 10px rgba(0,0,0,0.1);}
+.w-radio ._t:checked + label:after{content:' ';background:#758794;width:10px;height:10px;border-radius: 50px;position:absolute;top:3px;box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);text-shadow:0;left:3px;font-size:32px;}
+.w-radio ._t + label:active,.w-radio ._t:checked + label:active{box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px 1px 3px rgba(0,0,0,0.1);}
+/*  CSS3 checkbox  -->   */
+
 
 .f-locker{background:#fff;position:absolute;top:0;left:0;bottom:0;right:0;filter:alpha(opacity=20);opacity:.2;}
 
@@ -690,7 +704,7 @@
 .w-upload ._bbar{overflow:hidden}
 .w-uploadimage{line-height:0}
 .w-upload.z-ds ._close{width:0;height:0;visibility:hidden}
-.w-upload.z-ds ._bbar{color:#999;display:none}
+.w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{display:none}
 .w-upload.z-err{border:1px solid red}
 .w-upload ._nofiles{color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}

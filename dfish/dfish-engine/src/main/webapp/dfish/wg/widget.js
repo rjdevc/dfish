@@ -335,10 +335,10 @@ Node = $.createClass( {
 						(this[ i ] = this[ i - 1 ]).nodeIndex = i;
 					this.length ++;
 					this[ n ] = a;
-					var r = this.rootNode || (this.IS_ROOT && this);
-					if ( r && a.ROOT_TYPE === r.type )
-						a.rootNode = r;
 				}
+				var r = this.rootNode || (this.IS_ROOT && this);
+				if ( r && a.ROOT_TYPE === r.type )
+					a.rootNode = r;
 			}
 			return a;
 		},
@@ -597,7 +597,7 @@ W = define( 'widget', function() {
 				if ( c )
 					a = $.merge( {}, a, c );
 				if ( _cmdHooks[ a.type ] ) {
-					_dfopt[ a.type ] && $.extendDeep( a, _dfopt[ a.type ] );
+					_dfopt[ a.type ] && ! a.ownproperty && $.extendDeep( a, _dfopt[ a.type ] );
 					$.point();
 					return _cmdHooks[ a.type ].call( self, a, b );
 				}
@@ -2324,7 +2324,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		}
 	},
 	Prototype: {
-		type_buttonbar: T,
+		IS_ROOT: T,
 		className: 'w-buttonbar',
 		childCls: '',
 		x_childtype: function( t ) {
@@ -2375,7 +2375,7 @@ Buttonbar = define.widget( 'buttonbar', {
 				this[ i ++ ].before( this._more );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', on: { click: 'this.getCommander().parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
+					m.add( $.extend( { cls: '', on: { click: 'this.rootNode.parentNode.parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
 			}
@@ -2406,7 +2406,6 @@ Buttonbar = define.widget( 'buttonbar', {
 /* `button` */
 Button = define.widget( 'button', {
 	Const: function( x, p ) {
-		p && p.type_buttonbar && (this.rootNode = p);
 		W.apply( this, arguments );
 	},
 	Listener: {
@@ -2494,6 +2493,7 @@ Button = define.widget( 'button', {
 	},
 	Default: { width: -1 },
 	Prototype: {
+		ROOT_TYPE: 'buttonbar',
 		className: 'w-button',
 		_menu_snaptype: 'v',
 		_menu_type: 'menu',
@@ -2514,9 +2514,6 @@ Button = define.widget( 'button', {
 		},
 		usa: function() {
 			return ! this.isDisabled() && ! this._locked;
-		},
-		root: function() {
-			return this.parentNode.type_buttonbar && this.parentNode;
 		},
 		fixMoreCls: function() {
 			var a = this.x.cls && $.strTrim( this.x.cls );
@@ -2648,7 +2645,7 @@ Button = define.widget( 'button', {
 			}
 			if ( x.focus && x.focusable )
 				b += ' z-on';
-			if ( p.type_buttonbar ) {
+			if ( p.type === this.ROOT_TYPE ) {
 				if ( this === p[ 0 ] || ((d = this.prev()) && d.type === 'button/split') )
 					b += ' z-first';
 				if ( this === p[ p.length - 1 ] || ((d = this.next()) && d.type === 'button/split') )
@@ -2723,12 +2720,13 @@ MenuButton = define.widget( 'menu/button', {
 			click: function() {
 				if ( ! this.isDisabled() ) {
 					this.x.target && this.ownerView.linkTarget( this.x.target, T );
-					this.root().hide();
+					this.rootNode.hide();
 				}
 			}
 		}
 	},
 	Prototype: {
+		ROOT_TYPE: 'menu',
 		className: 'w-menu-button f-nobr',
 		type_menubutton: T,
 		_menu_snaptype: '',
@@ -2739,11 +2737,8 @@ MenuButton = define.widget( 'menu/button', {
 			}
 			return _menu_button_height;
 		},
-		root: function() {
-			return this.closest( 'menu' );
-		},
 		getCommander: function() {
-			return this.root().commander;
+			return this.rootNode.parentNode;
 		},
 		// @implement 右键菜单命点击后就会关闭，如果执行的是异步ajax命令，那么返回的命令不会执行。因此改变执行命令的context为menu的commander
 		exec: function() {
@@ -2829,8 +2824,8 @@ ButtonSplit = define.widget( 'button/split', {
 Album = define.widget( 'album', {
 	Extend: 'horz',
 	Prototype: {
+		IS_ROOT: T,
 		className: 'w-album',
-		type_album: T,
 		x_childtype: $.rt( 'img' ),
 		getFocus: function() {
 			for ( var i = 0; i < this.length; i ++ )
@@ -2850,11 +2845,10 @@ Album = define.widget( 'album', {
 /* `img` */
 Img = define.widget( 'img', {
 	Const: function( x, p ) {
-		if ( p && p.type_album ) {
+		if ( p && p.type === this.ROOT_TYPE ) {
 			var c = p.x.space || 0;
 			c && (this.cssText = 'margin-top:' + c + 'px;margin-left:' + c + 'px;');
 			this.defaults( { wmin: 22 + c } );
-			this.rootNode = p;
 		}
 		W.apply( this, arguments );
 		x.focusable && x.focus && $.classAdd( this, 'z-on' );
@@ -2885,6 +2879,7 @@ Img = define.widget( 'img', {
 	},
 	Default: { height: -1 },
 	Prototype: {
+		ROOT_TYPE: 'album',
 		className: 'w-img',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -3141,7 +3136,7 @@ PageGroup = define.widget( 'page/buttongroup', {
 		drop: function( a ) {
 			var i = 1, c = _number( this.x.currentpage ) || 1, s = _number( this.x.sumpage ) || 1, n = [];
 			for ( ; i <= s; i ++ ) {
-				n.push( { text: i, on: { click: 'this.root().parentNode.parentNode.parentNode.go(' + i + ')' }, status: this.x.currentpage == i ? 'disabled' : '' } );
+				n.push( { text: i, on: { click: 'this.getCommander().parentNode.parentNode.go(' + i + ')' }, status: this.x.currentpage == i ? 'disabled' : '' } );
 			}
 			a.exec( { type: 'menu', nodes: n, snap: a, snaptype: 'v', line: true, memory: T, indent: 1, focusIndex: c } );
 		},
@@ -3919,6 +3914,7 @@ Menu = define.widget( 'menu', {
 		}
 	},
 	Prototype: {
+		IS_ROOT: T,
 		className: 'w-menu w-dialog',
 		// menu的z-index固定为3，总在最前面
 		front: $.rt( F ),
@@ -4048,6 +4044,8 @@ Menu = define.widget( 'menu', {
 SubMenu = define.widget( 'submenu', {
 	Extend: Menu,
 	Prototype: {
+		IS_ROOT: F, // 只把menu设为root，submenu不设
+		ROOT_TYPE: 'menu',
 		className: 'w-menu w-submenu w-dialog',
 		_snaptype: '21,12'
 	}
@@ -4568,6 +4566,7 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		range: 'option'
 	},
 	Prototype: {
+		IS_ROOT: T,
 		className: 'w-form f-oh',
 		type_horz: T,
 		isBoxGroup: T,
@@ -4663,7 +4662,6 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 Checkbox = define.widget( 'checkbox', {
 	Const: function( x, p ) {
 		if ( p && p.isBoxGroup ) {
-			this.rootNode = p;
 			this.defaults( { wmin: 7, width: p.x.targets ? 62 : -1 } );
 			p.x.status && $.extend( x, { status: p.x.status } );
 		}
@@ -4723,6 +4721,7 @@ Checkbox = define.widget( 'checkbox', {
 	},
 	Default: { width: -1, wmin: 1, hmin: 6 },
 	Prototype: {
+		ROOT_TYPE: 'checkboxgroup',
 		className: 'w-form',
 		formType: 'checkbox',
 		getValidError: function( a ) {
@@ -4899,6 +4898,7 @@ Radiogroup = define.widget( 'radiogroup', {
 Radio = define.widget( 'radio', {
 	Extend: 'checkbox',
 	Prototype: {
+		ROOT_TYPE: 'radiogroup',
 		formType: 'radio',
 		// 为避免页面内出现相同name的radio组(如果同name，选中效果会出问题)，需要给name加上前缀
 		input_name: function() {
@@ -4976,7 +4976,6 @@ Select = define.widget( 'select', {
 } ),
 CalendarNum = define.widget( 'calendar/num', {
 	Const: function( x, p ) {
-		this.rootNode = p;
 		W.apply( this, arguments );
 		x.focus && $.classAdd( this, 'z-on' );
 		x.value === p.nowValue && $.classAdd( this, 'z-today' );
@@ -5825,10 +5824,11 @@ XBox = define.widget( 'xbox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'dialog', ownproperty: T, minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
+				var x = { type: 'dialog', ownproperty: T, minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id,
 					cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
 					snaptype: 'v', snap: this, node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
-					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
+					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } };
+				this._dropper = this.exec( x );
 			}
 		},
 		html_placehoder: function() {
@@ -6456,7 +6456,6 @@ Combobox = define.widget( 'combobox', {
  */
 ComboboxOption = define.widget( 'combobox/option', {
 	Const: function( x, p ) {
-		this.rootNode = p;
 		this.className = '_o f-inbl' + ( x.error ? ' z-err' : '' );
 		W.apply( this, arguments );
 	},
@@ -7220,7 +7219,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 					this.$( 't' ) && $.html( this.$( 't' ), this.html_text() );
 				break;
 				case 'icon': case 'openicon':
-					this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon() );
+					this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon() ) : (this.$( 't' ) && $.before( this.$( 't' ), this.html_icon() ));
 				break;
 				case 'focus':
 					this.focus( b );
@@ -7424,7 +7423,6 @@ AbsLeaf = define.widget( 'abs/leaf', {
 /* `leaf` */
 Leaf = define.widget( 'leaf', {
 	Const: function( x, p ) {
-		this.rootNode = p.rootNode || p;
 		this.level = p.level + 1;
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
@@ -7745,6 +7743,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 		}
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		className: 'w-leaf w-grid-leaf',
 		_pad_left: 0,
 		tr: _grid_tr,
@@ -7907,13 +7906,13 @@ GridRadio = define.widget( 'grid/radio', {
 		}
 	},
 	Prototype: {
+		className: 'w-form w-radio',
 		tr: _grid_tr
 	}
 } ),
 /* `gridrow` tr 和 hr 的基础类 */
 GridRow = define.widget( 'grid/row', {
 	Const: function( x, p, n ) {
-		this.rootNode = p.rootNode;
 		this.level = p.level == N ? 0 : p.level + 1;
 		if ( typeof x.data !== _OBJ )
 			x = { data: x };
@@ -7921,6 +7920,7 @@ GridRow = define.widget( 'grid/row', {
 		x.focus && $.classAdd( this, 'z-on' );
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -8037,13 +8037,13 @@ _td_wg = { leaf: T, toggle: T },
 /* `td` tcell 的子节点。当字段是一个 widget 时会先产生一个 TD 实例，包裹这个 widget 子节点。 */
 TD = define.widget( 'td', {
 	Const: function( x, p ) {
-		this.rootNode = p.rootNode;
 		if ( x.type && x.type !== 'td' )
 			x = { node: x };
-		x.node && this.rootNode.x.escape != N && $.extend( x.node, { escape: this.rootNode.x.escape } );
+		x.node && p.rootNode.x.escape != N && $.extend( x.node, { escape: p.rootNode.x.escape } );
 		W.call( this, x, p );
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		// @implement
 		x_childtype: function( t ) {
 			return _td_wg[ t ] ? 'grid/' + t : t;
@@ -8285,10 +8285,10 @@ THR = define.widget( 'thead/tr', {
 // `TCell` 是 tr 的离散节点。当 tr 添加 td 时，先创建一个 tcell ，然后 tcell 添加这个 td
 TCell = define.widget( 'tcell', {
 	Const: function( x, p ) {
-		this.rootNode = p.rootNode;
 		W.call( this, x, p, -1 );
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		x_childtype: $.rt( 'td' ),
 		scaleWidth: function( a ) {
 			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
@@ -8308,7 +8308,6 @@ TCell = define.widget( 'tcell', {
 /* `tbody` */
 TBody = define.widget( 'tbody', {
 	Const: function( x, p ) {
-		this.rootNode = p.rootNode;
 		W.apply( this, arguments );
 		this._rowspan = {};
 	},
@@ -8320,6 +8319,7 @@ TBody = define.widget( 'tbody', {
 		}
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		// @implement
 		x_childtype: $.rt( 'tr' ),
 		// @implement
@@ -8418,17 +8418,15 @@ Col = define.widget( 'col', {
 		}
 	},
 	Prototype: {
-		root: function() {
-			return this.parentNode.parentNode.rootNode;
-		},
+		ROOT_TYPE: 'grid',
 		th: function() {
-			var t = this.root().thead();
+			var t = this.rootNode.thead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		width_minus: function() {
 			var n = 0;
 			if ( ie7 ) {
-				var r = this.root(), d = r._pad,
+				var r = this.rootNode, d = r._pad,
 					n = _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + (r._face === 'cell' && this.nodeIndex < this.parentNode.length - 1 ? 'border-right:1px solid #eee;' : '') + this.x.style ).wmin;
 			}
 			return n;
@@ -8446,6 +8444,7 @@ Col = define.widget( 'col', {
 Colgroup = define.widget( 'colgroup', {
 	Extend: 'horz/scale',
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		x_childtype: $.rt( 'col' ),
 		insertCol: function( a, b ) {
 			 b == N || ! this[ b ] ? this.append( a ) : this[ b ].before( a );
@@ -8459,7 +8458,6 @@ Colgroup = define.widget( 'colgroup', {
 /* `table` */
 Table = define.widget( 'table', {
 	Const: function( x, p ) {
-		this.rootNode = p.rootNode;
 		W.apply( this, arguments );
 		p.rootNode.colgrps.push( new Colgroup( { nodes: x.columns }, this ) );
 		if ( x.thead )
@@ -8478,6 +8476,7 @@ Table = define.widget( 'table', {
 		}
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		html: function() {
 			var s = '<table id=' + this.id + ' class="w-grid-table w-grid-face-' + this.rootNode._face + '" cellspacing=0 cellpadding=' + this.rootNode._pad;
 			if ( br.ms ) {
@@ -8497,7 +8496,6 @@ Table = define.widget( 'table', {
 /* `gridlist` */
 GridList = define.widget( 'grid/list', {
 	Const: function( x, p ) {
-		this.rootNode = p;
 		W.apply( this, arguments );
 		this.body = new GridBody( $.extend( { table: x.table }, x.table.tbody ), this );
 	},
@@ -8523,18 +8521,19 @@ GridList = define.widget( 'grid/list', {
 		}
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		className: 'w-grid-list'
 	}
 } ),
 /* `gridbody` */
 GridBody = define.widget( 'grid/body', {
 	Const: function( x, p ) {
-		this.rootNode = (p.rootNode || p);
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
 	},
 	Extend: 'vert',
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		className: 'w-grid-tbody'
 	}
 } ),
@@ -8655,6 +8654,7 @@ Grid = define.widget( 'grid', {
 		}
 	},
 	Prototype: {
+		IS_ROOT: T,
 		className: 'w-grid',
 		x_childtype: $.rt( 'tr' ),
 		thead: function() { return this.head && this.head.table.thead },
