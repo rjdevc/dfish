@@ -1026,8 +1026,9 @@ _w_rsz_all = function() {
 		for ( var i = 0; i < l; i ++ )
 			_w_rsz_all.call( this[ i ] );
 	}
-	for ( i in this.discNodes )
+	for ( i in this.discNodes ) {
 		_w_rsz_all.call( this.discNodes[ i ] );
+	}
 	this.trigger( 'resize' );
 },
 _w_rsz_layout = function() {
@@ -1174,7 +1175,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	_w_css[ v ] = function() {
 		var t = this[ y ], a = this.attr( v );
 		if ( a != -1 && (t !== U || a != N) ) {
-			delete this[ y ];
+			if ( t !== U )
+				delete this[ y ];
 			if ( t !== this[ oz ]() ) {
 				t = this[ iz ]();
 				if ( this.$() ) {
@@ -2405,15 +2407,17 @@ Buttonbar = define.widget( 'buttonbar', {
 } ),
 /* `button` */
 Button = define.widget( 'button', {
-	Const: function( x, p ) {
-		W.apply( this, arguments );
-	},
 	Listener: {
 		block: function( e ) {
 			return e !== 'unlock' && e !== 'remove' && e !== 'focus' && e !== 'blur' && ! this.usa();
 		},
 		body: {
 			ready: function() {
+				if ( this.x.focus && this.x.focusable ) {
+					var p = this.parentNode;
+					if ( this.ROOT_TYPE === p.type && !p.x.focusmultiple && p.getFocus( this.x.name ) !== this )
+						this._focus( T );
+				}
 				this.x.target && this._ustag();
 				this.x.maxwidth && this.fixsize();
 			},
@@ -2432,7 +2436,7 @@ Button = define.widget( 'button', {
 				method: function( e ) {
 					$.classAdd( $( e.elemId || this.id ), 'z-hv' );
 					var m = _inst_get( 'menu' );
-					if ( this.type_menubutton ) {
+					if ( this.type === 'menu/button' ) {
 						this.show();
 					} else if ( (this.x.hoverdrop && this.more) || (m && this.more && this.more !== m && this.more.type === 'menu' && m.parentNode.parentNode === this.parentNode) ) {
 						this.drop();
@@ -2728,7 +2732,6 @@ MenuButton = define.widget( 'menu/button', {
 	Prototype: {
 		ROOT_TYPE: 'menu',
 		className: 'w-menu-button f-nobr',
-		type_menubutton: T,
 		_menu_snaptype: '',
 		_menu_type: 'submenu',
 		elemht: function() {
@@ -7253,7 +7256,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				},
 				complete: function( x ) { // complete
 					this.loading = F;
-					! this.loaded && this.toggle( F );
+					!this.loaded && this.toggle( F );
 					this.fixFolder();
 					if ( this.$( 'o' ) ) {
 						$.classRemove( this.$(), 'z-loading' );
@@ -7279,27 +7282,26 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			this.trigger( 'nodechange' );
 		},
 		toggle_nodes: function( a ) {
-			var c = typeof a === _BOL ? a : !this.x.open;
-			this.x.open = c;
-			this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-open', c );
-			this.addClass( 'z-open', c );
+			this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-open', a );
+			this.addClass( 'z-open', a );
 		},
 		// 展开或收拢 /@a -> T/F/event, b -> sync?, f -> fn?
 		toggle: function( a, b, f ) {
-			this.toggle_nodes( a );
-			var c = this.x.open, d;
-			if ( this.x.src && c && ! this.loaded && ! this.loading ) 
+			var c = this.isFolder() && (typeof a === _BOL ? a : !this.x.open), d = !!this.x.open;
+			this.x.open = c;
+			this.toggle_nodes( c );
+			if ( this.x.src && a !== F && !this.loaded && !this.loading ) 
 				this.request( b, f );
 			if ( this.$( 'r' ) )
 				$.arrow( this.$( 'r' ), c ? 'b1' : 'r1' );
 			if ( this.loading ) {
 				! this.$( 'ld' ) && $.append( this.$( 'i' ) || this.$( 'o' ), '<i id=' + this.id + 'ld class=_ld></i>' );
 				$.classAdd( this.$(), 'z-loading' );
-			} else if ( this.$( 'i' ) && (d = this.html_icon()) ) {
-				$.replace( this.$( 'i' ), d );
+			} else if ( this.$( 'i' ) && c != d ) {
+				var s = this.html_icon();
+				s && $.replace( this.$( 'i' ), s );
 			}
 			a && a.type && $.stop( a );
-			this.trigger( this.x.open ? 'expand' : 'collapse' );
 		},
 		// 当前节点展开时，其他兄弟节点全部收起 /@a -> T/F/event, b -> sync?, f -> fn?
 		toggleOne: function( a, b, f ) {
@@ -7625,7 +7627,7 @@ Leaf = define.widget( 'leaf', {
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
-			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (! p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
 				( this.box ? this.box.html() : '' ) + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
@@ -7640,7 +7642,7 @@ Leaf = define.widget( 'leaf', {
 				this.x.status = $.inArray( f, this ) ? '' : 'disabled';
 				$.classAdd( this, 'z-notg', !!(this.length && !s) ); // 子节点都被过滤时，隐藏tg
 			}
-			return b ? this.html_self() + '<div class="w-leaf-cont' + (this.x.open ? ' z-open' : '') + '" id=' + this.id + 'c>' + s + '</div>' : '';
+			return b ? this.html_self() + '<div class="w-leaf-cont' + (this.isFolder() && this.x.open ? ' z-open' : '') + '" id=' + this.id + 'c>' + s + '</div>' : '';
 		}
 	}
 } ),
@@ -7773,12 +7775,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 		},
 		// leaf接口
 		toggle_nodes: function( a ) {
-			var t = this.tr();
-			if ( this.x.src || t.length ) {
-				var c = typeof a === _BOL ? a : ! this.x.open;
-				t.toggle_rows( c );
-				this.x.open = c;
-			}
+			this.row.toggle_rows( a );
 		},
 		// leaf接口
 		render_nodes: function( x ) {
