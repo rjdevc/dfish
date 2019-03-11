@@ -717,10 +717,17 @@
 .w-upload-icon-file.f-i{display:inline-block;width:16px;height:16px;background:url(g/i.png) no-repeat -103px -38px}
 .w-upload-button{margin:3px 0}
 .w-upload-button .swfupload{position:absolute;top:0;bottom:0;left:0;right:0;}
+
+.w-button.w-upload-button{margin-right:4px;cursor:pointer}
+.w-button.w-upload-button ._c{padding-left:4px}
+.w-button.w-upload-button ._t,.w-button.w-upload-button  ._i{padding-right:4px}
+.w-button.w-upload-button.z-hv ._t{text-decoration:underline}
+
 .w-uploadimage .w-upload-button{margin:2px 0 3px 0;border:2px dashed #ccc}
 .w-uploadimage .w-upload-button.z-hv{border-color:#72a9fc}
 .w-uploadimage .w-upload-button ._m{display:none}
 .w-uploadimage .w-upload-button.z-more ._c{margin-right:0}
+
 
 .w-upload-value-simple{position:relative;height:30px;margin:5px 10px 5px 0px;padding-right:0;background:#edf4f7;border-radius:2px}
 .w-upload-value-simple ._name{text-align:left;border-radius:2px}

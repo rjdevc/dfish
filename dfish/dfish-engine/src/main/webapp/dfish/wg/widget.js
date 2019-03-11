@@ -1174,9 +1174,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	};
 	_w_css[ v ] = function() {
 		var t = this[ y ], a = this.attr( v );
-		if ( a != -1 && (t !== U || a != N) ) {
-			if ( t !== U )
-				delete this[ y ];
+		if ( a != -1 && (t !== U || a != N) && this.$() ) {
+			delete this[ y ];
 			if ( t !== this[ oz ]() ) {
 				t = this[ iz ]();
 				if ( this.$() ) {
@@ -3735,7 +3734,7 @@ Alert = define.widget( 'alert', {
 		if ( this._tpl = Dialog.tpl( t ) ) {
 			$.extend( x, { template: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<table border=0 style="margin:10px 20px 20px 5px;word-wrap:break-word;"><tr><td align=center valign=top><div style=width:65px;padding-top:5px>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.strFormat( x.text || '', x.args ).replace( /\n/g, '<br>' ) + '</table>' },
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</table>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
