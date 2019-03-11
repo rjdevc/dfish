@@ -8,8 +8,8 @@
     <version>3.1.10-RELEASE</version>
   </parent>
   
-  <artifactId>dfish-uiplugin</artifactId>
-  <name>dfish-uiplugin</name>
+  <artifactId>dfish-ui-plugin</artifactId>
+  <name>dfish-ui-plugin</name>
   <url>http://maven.apache.org</url>
   
   <properties>
