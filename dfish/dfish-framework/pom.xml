@@ -20,7 +20,7 @@
   <dependencies>
   	<dependency>
 	    <groupId>com.rongji</groupId>
-	    <artifactId>dfish-uiplugin</artifactId>
+	    <artifactId>dfish-ui-plugin</artifactId>
 	</dependency>
 	<dependency>
 	    <groupId>com.rongji</groupId>
