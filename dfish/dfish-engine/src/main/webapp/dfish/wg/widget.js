@@ -6137,6 +6137,7 @@ Combobox = define.widget( 'combobox', {
 		}
 	},
 	Prototype: {
+		IS_ROOT: T,
 		loading: T,
 		domready: F,
 		_query_text: '',
@@ -6499,6 +6500,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		}
 	},
 	Prototype: {
+		ROOT_TYPE: 'combobox',
 		val: function() {
 			return this.x.value;
 		},
@@ -6507,7 +6509,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		close: function( e ) {
 			var p = this.parentNode;
-			if ( ! this.isDisabled() && F !== this.trigger( 'close' ) ) {
+			if ( ! this.isDisabled() && F !== this.triggerHandler( 'close' ) ) {
 				this.remove();
 				p.save();
 				p.resetEffect();
