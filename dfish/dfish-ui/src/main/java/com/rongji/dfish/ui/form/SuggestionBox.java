@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.Command;
+import com.rongji.dfish.ui.JsonObject;
 
 /**
  * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link Combobox} {@link Linkbox}和{@link Onlinebox}
@@ -18,7 +18,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	private Boolean multiple;
 	private Boolean nobr;
 	private String dropsrc;//显示所有结果的 view src。;
-	private Command<?> picker;
+	private JsonObject picker;
 	private Long delay;
 	private String separator;
 //	private Integer matchlength;
@@ -49,19 +49,19 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 
 	/**
 	 * "选择"按钮点击动作
-	 * @return "选择"按钮点击动作
+	 * @return "选择"组件
 	 */
-	public Command<?> getPicker() {
+	public JsonObject getPicker() {
 		return picker;
 	}
 
 	/**
-	 * "选择"按钮点击动作
-	 * @param picker "选择"按钮点击动作
+	 * 组件最右侧显示的"选择"组件
+	 * @param picker "选择"组件
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
-	public T setPicker(Command<?> picker) {
+	public T setPicker(JsonObject picker) {
 		this.picker = picker;
 		return (T)this;
 	}
