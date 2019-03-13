@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.Command;
+import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.LazyLoad;
 import com.rongji.dfish.ui.command.DialogCommand;
 
@@ -17,7 +18,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	private static final long serialVersionUID = -3727695759981575245L;
 	private Boolean multiple;
 	private Boolean nobr;
-	private Command<?> picker;
+	private JsonObject picker;
 	private Long delay;
 	private String separator;
 	private DialogCommand drop;
@@ -36,20 +37,20 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 
 
 	/**
-	 * "选择"按钮点击动作
-	 * @return "选择"按钮点击动作
+	 * "选择"组件设置
+	 * @return "选择"组件
 	 */
-	public Command<?> getPicker() {
+	public JsonObject getPicker() {
 		return picker;
 	}
 
 	/**
-	 * "选择"按钮点击动作
-	 * @param picker "选择"按钮点击动作
+	 * "选择"组件设置
+	 * @param picker "选择"组件设置
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
-	public T setPicker(Command<?> picker) {
+	public T setPicker(JsonObject picker) {
 		this.picker = picker;
 		return (T)this;
 	}
