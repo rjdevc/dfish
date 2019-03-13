@@ -336,8 +336,9 @@ Node = $.createClass( {
 					this.length ++;
 					this[ n ] = a;
 				}
-				var r = this.rootNode || (this.IS_ROOT && this);
-				if ( r && a.ROOT_TYPE === r.type )
+				// 给有root_type的widget设置rootNode。 rootNode的用途是从根节点获取pub参数
+				var r = a.ROOT_TYPE && (this.rootNode || (a.ROOT_TYPE === this.type && this));
+				if ( r )
 					a.rootNode = r;
 			}
 			return a;
@@ -2325,7 +2326,6 @@ Buttonbar = define.widget( 'buttonbar', {
 		}
 	},
 	Prototype: {
-		IS_ROOT: T,
 		className: 'w-buttonbar',
 		childCls: '',
 		x_childtype: function( t ) {
@@ -2826,7 +2826,6 @@ ButtonSplit = define.widget( 'button/split', {
 Album = define.widget( 'album', {
 	Extend: 'horz',
 	Prototype: {
-		IS_ROOT: T,
 		className: 'w-album',
 		x_childtype: $.rt( 'img' ),
 		getFocus: function() {
@@ -3499,7 +3498,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		_front: function( a ) {
 			var z = a ? 2 : 1;
-			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
+			this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
 		},
 		// 定位 /@a -> fullscreen?
 		axis: function( a ) {
@@ -3916,7 +3915,6 @@ Menu = define.widget( 'menu', {
 		}
 	},
 	Prototype: {
-		IS_ROOT: T,
 		className: 'w-menu w-dialog',
 		// menu的z-index固定为3，总在最前面
 		front: $.rt( F ),
@@ -4046,7 +4044,6 @@ Menu = define.widget( 'menu', {
 SubMenu = define.widget( 'submenu', {
 	Extend: Menu,
 	Prototype: {
-		IS_ROOT: F, // 只把menu设为root，submenu不设
 		ROOT_TYPE: 'menu',
 		className: 'w-menu w-submenu w-dialog',
 		_snaptype: '21,12'
@@ -4353,16 +4350,9 @@ AbsForm = define.widget( 'abs/form', {
 			if ( this.x.placeholder && this.$( 'ph' ) )
 				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
-		form_prop: function( a ) {
-			var t = '', w = this.innerWidth(), h = this.innerHeight();
-			if ( w != N )
-				t += 'width:' + (w - this.width_minus()) + 'px;';
-			if ( h != N )
-				t += 'height:' + (h - this.height_minus()) + 'px;';
-			if ( t )
-				t = ' style="' + t + '"';
+		input_prop: function( a ) {
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? (this.x.text || this.x.value) : this.x.tip) || '') + '"' : '') +
-				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + t + _html_on.call( this );
+				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + _html_on.call( this );
 		}
 	}
 } ),
@@ -4409,14 +4399,6 @@ AbsInput = define.widget( 'abs/input', {
 						f && this.exec( { type: 'tip', id: this.id + 'mxltip', text: Loc.form.reach_maxlength } );
 					}
 				}
-			},
-			resize: function() {
-				var w = this.innerWidth();
-				if ( w > 0 && this.$t() ) {
-					w = Math.max( w - this.width_minus(), 0 );
-					this.$t().style.width = w + 'px';
-					this.css( 'ph', 'width', w );
-				}
 			}
 		}
 	},
@@ -4455,12 +4437,21 @@ AbsInput = define.widget( 'abs/input', {
 			this.trigger( e );
 		},
 		html_placehoder: function() {
-			var w = this.innerWidth(), v = this.x.value;
-			return this.x.placeholder ? '<label style="width:' + ( w ? (w - this.width_minus()) + 'px' : 'auto' ) + '" class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
+			var v = this.x.value;
+			return this.x.placeholder ? '<label class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
 		},
+		html_btn: function() {
+			return '';
+		},
+		html_input: function() {
+			return '';
+		},
+		html_nodes: function() {
+			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placehoder() + this.html_input() + '</div>';
+		},
 		html: function() {
-			return '<div' + this.html_prop() + '>' + this.html_before() + this.html_placehoder() + this.html_nodes() + this.html_after() + '</div>';
+			return '<div' + this.html_prop() + '>' + this.html_before() + this.html_nodes() + this.html_after() + '</div>';
 		}
 	}
 } ),
@@ -4498,25 +4489,14 @@ Hidden = define.widget( 'hidden', {
 Textarea = define.widget( 'textarea', {
 	Extend: AbsInput,
 	Default: { height: 60 },
-	Listener: {
-		body: {
-			resize: function() {
-				AbsInput.Listener.body.resize.apply( this, arguments );
-				var h = this.innerHeight();
-				if ( h > 0 && this.$t() ) {
-					this.$t().style.height = h + 'px';
-				}
-			}
-		}
-	},
 	Prototype: {
 		isModified: function( a ) {
 			var v = a ? this.x.value : this._modval;
 			v == N && (v = this.x.value || '');
 			return this.val().replace( /\r\n/g, '\n' ) != v.replace( /\r\n/g, '\n' );
 		},
-		html_nodes: function() {
-			return '<textarea' + this.form_prop( F ) + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
+		html_input: function() {
+			return '<textarea' + this.input_prop( F ) + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
 		}
 	}
 } ),
@@ -4535,8 +4515,8 @@ Text = define.widget( 'text', {
 		fixhdr: function() {
 			this.x.placeholder && $.classAdd( this.$( 'ph' ), 'f-none', this.$t().value != '' );
 		},
-		html_nodes: function() {
-			return '<input type=' + (this.formType || this.type) + this.form_prop() + '>';
+		html_input: function() {
+			return '<input type=' + (this.formType || this.type) + this.input_prop() + '>';
 		}
 	}
 } ),
@@ -4544,7 +4524,7 @@ Text = define.widget( 'text', {
 Password = define.widget( 'password', {
 	Extend: Text,
 	Prototype: {
-		form_prop: function() { return AbsForm.prototype.form_prop.call( this ) + (this.x.autocomplete === T ? '' : ' autocomplete="new-password"'); }
+		input_prop: function() { return AbsForm.prototype.input_prop.call( this ) + (this.x.autocomplete === T ? '' : ' autocomplete="new-password"'); }
 	}
 } ),
 /* `checkboxgroup` */
@@ -4568,7 +4548,6 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		range: 'option'
 	},
 	Prototype: {
-		IS_ROOT: T,
 		className: 'w-form f-oh',
 		type_horz: T,
 		isBoxGroup: T,
@@ -4656,7 +4635,7 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 					s += '<div class=w-' + this.type + '-list onclick=' + evw + '.evwClickList(' + i + ',event) style=margin-bottom:' + (i < l - 1 ? (this.x.space != N ? this.x.space : 10) : 0) + 'px>' + (this[ i ] ? this[ i ].html() : '') + (this.targets[ i ] ? this.targets[ i ].html() : '') + '</div>';
 				return s;
 			} else
-				return AbsForm.prototype.html_nodes.call( this );
+				return _proto.html_nodes.call( this );
 		}
 	}
 } ),
@@ -4969,8 +4948,8 @@ Select = define.widget( 'select', {
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
 					(this.x.tip ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
 			}
-			var w = this.innerWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
-			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
+			var z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
+			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
 				(this.x.tip ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
 				( z ? ' size=' + z : '' ) + '>' + s + '</select><div class=_cvr></div>';
 		}
@@ -5367,9 +5346,6 @@ _Date = define.widget( 'date', {
 					this.$( 'a' ).innerHTML = this.val();
 					this.focus( F );
 				}
-			},
-			resize: function() {
-				this.$t().style.width = (this.innerWidth() - this.width_minus()) + 'px';
 			}
 		}
 	},
@@ -5442,9 +5418,13 @@ _Date = define.widget( 'date', {
 			this.cal && this.cal.close();
 			this.list && this.list.close();
 		},
-		html_nodes: function() {
+		html_btn: function() {
+			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
+		},
+		html_input: function() {
 			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.form_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;text-indent:' + _input_indent() + 'px">' + (this.x.value || '') + '</label>' : '<input type=text' + this.form_prop() + '><em class="f-boxbtn" onclick=' + eve + '></em>';
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;text-indent:' + _input_indent() + 'px">' + (this.x.value || '') + '</label>' :
+				'<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),
@@ -5541,9 +5521,8 @@ Muldate = define.widget( 'muldate', {
 			return '<table width=100% height=30 cellspacing=0 cellpadding=0' + (v ? ' data-value="' + v + '"' : '') + '><tr><td>&nbsp; ' + (v ? '<a href=javascript: onclick=' + k + '(this,"=")>' + v + '</a>' : '') + '<td width=70 align=center>' +
 				$.image( '.f-i-minus ._i', { style: 'visibility:' + (v ? 'visible' : 'hidden'), click: k + '(this,"-")' } ) + ' &nbsp; ' + $.image( '.f-i-plus ._i', { click: k + '(this,"+")' } ) + '</table>';
 		},
-		html_nodes: function() {
-			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-inbl f-fix _c" style="width:' +
-				( this.innerWidth() - this.width_minus() ) + 'px"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div><em class="f-boxbtn" onclick=' + eve + '></em>';
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-inbl f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div>';
 		}
 	}
 } ),
@@ -5628,9 +5607,13 @@ Spinner = define.widget( 'spinner', {
 				this.val( v );
 			}
 		},
-		html_nodes: function() {
-			return mbi ? '<cite class="f-boxbtn _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite><input type=number' + this.form_prop() + '><cite class="f-boxbtn _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
-				'<input type=text' + this.form_prop() + '><cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
+		html_btn: function() {
+			return mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
+				'<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
+		},
+		html_input: function() {
+			return mbi ? '<input type=number' + this.input_prop() + '><cite class="f-inbl _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
+				'<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),
@@ -5856,11 +5839,13 @@ XBox = define.widget( 'xbox', {
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(this,event)>' + s.join( '' ) + '</div>';
 		},
-		html_nodes: function() {
+		html_btn: function() {
+			return '<em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
+		},
+		html_input: function() {
 			var s = this._sel[ 0 ];
-			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-inbl f-omit _t" id=' + this.id + 't ' +
-				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') +
-				' style="width:' + (this.innerWidth() - this.width_minus()) + 'px"><span id=' + this.id + 'p>' + this.html_text() + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
+			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-omit _t" id=' + this.id + 't ' +
+				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') + '><span id=' + this.id + 'p>' + this.html_text() + '</span></div>';
 		}
 	}
 }),
@@ -5970,9 +5955,12 @@ Pickbox = define.widget( 'pickbox', {
 				this.warn( F );
 			}
 		},
-		html_nodes: function() {
+		html_btn: function() {
+			return '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+		},
+		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" style="width:' + (this.innerWidth() - this.width_minus()) + 'px" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div><em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),
@@ -5983,7 +5971,7 @@ Combobox = define.widget( 'combobox', {
 	Const: function( x ) {
 		AbsInput.apply( this, arguments );
 		$.classAdd( this, 'z-loading' );
-		x.nobr && $.classAdd( this, 'z-nobr' );
+		x.nobr === F && $.classAdd( this, 'z-br' );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
 		this.more = this.createPop( x.node || x.src || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
 		if ( this.more.contentView.layout )
@@ -6128,16 +6116,11 @@ Combobox = define.widget( 'combobox', {
 					h && (h.style.display = '');
 				}
 			},
-			resize: function() {
-				var w = (this.innerWidth() - this.width_minus());
-				this.css( 'c', 'width', w ).css( 'ph', 'width', w );
-			},
 			// 覆盖textarea的change事件定义，仅当已选项有变化时触发
 			change: N
 		}
 	},
 	Prototype: {
-		IS_ROOT: T,
 		loading: T,
 		domready: F,
 		_query_text: '',
@@ -6443,14 +6426,27 @@ Combobox = define.widget( 'combobox', {
 			this.queryText( a ? (this.x.loadingtext || Loc.loading) : '' );
 			this.$t().contentEditable = ! a;
 		},
-		html_nodes: function() {
-			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _c' + (this.x.nobr ? ' f-nobr' : '') + '" id=' + this.id + 'c' + _html_on.call( this ) +
-				' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var></div>';
+		html_btn: function() {
+			var s = '';
+			if ( this.x.picker ) {
+				if ( W.isCmd( this.x.picker ) ) {
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				} else {
+					var g = this.add( this.x.picker, -1, { width: -1 } );
+					g.className += ' f-pick';
+					return g.html();
+				}
+			}
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			if ( this.x.picker )
-				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
+		},
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') +
+				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
+		},
+		html_nodes: function() {
+			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placehoder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -6604,9 +6600,6 @@ Linkbox = define.widget( 'linkbox', {
 						}
 					}
 				}
-			},
-			resize: function() {
-				this.$t().style.width = ( this.innerWidth() - this.width_minus() ) + 'px';
 			}
 		}
 	},
@@ -6898,15 +6891,25 @@ Linkbox = define.widget( 'linkbox', {
 		bookmark: function() {
 			this._currOpt = $.rngElement();
 		},
-		html_nodes: function() {
-			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
-				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
+		html_btn: function() {
+			var s = '';
+			if ( this.x.picker ) {
+				if ( W.isCmd( this.x.picker ) ) {
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				} else {
+					var g = this.add( this.x.picker, -1, { width: -1 } );
+					g.className += ' f-pick';
+					return g.html();
+				}
+			}
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			if ( this.x.picker )
-				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
+		},
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
+				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
 } ),
@@ -7006,12 +7009,19 @@ Onlinebox = define.widget( 'onlinebox', {
 			this.more.show();
 			this.more.reload( u );
 		},
-		html_nodes: function() {
-			var s = Text.prototype.html_nodes.apply( this, arguments );
+		html_btn: function() {
+			var s = '';
+			if ( this.x.picker ) {
+				if ( W.isCmd( this.x.picker ) ) {
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				} else {
+					var g = this.add( this.x.picker, -1, { width: -1 } );
+					g.className += ' f-pick';
+					return g.html();
+				}
+			}
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			if ( this.x.picker )
-				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
 		}
 	}
@@ -7670,7 +7680,6 @@ Tree = define.widget( 'tree', {
 	},
 	Prototype: {
 		className: 'w-tree',
-		IS_ROOT: T,
 		level: -1,
 		// @implement
 		x_childtype: $.rt( 'leaf' ),
@@ -8652,7 +8661,6 @@ Grid = define.widget( 'grid', {
 		}
 	},
 	Prototype: {
-		IS_ROOT: T,
 		className: 'w-grid',
 		x_childtype: $.rt( 'tr' ),
 		thead: function() { return this.head && this.head.table.thead },
