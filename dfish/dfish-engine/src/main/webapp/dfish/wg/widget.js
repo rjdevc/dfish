@@ -185,8 +185,7 @@ _scrollIntoView = function( a, b, c ) {
 		b && (Frame.focus( a ), Toggle.focus( a ));
 		var s = Scroll.get( a );
 		if ( s ) {
-			s.scrollTop( a, c === U ? 'auto' : c );
-			//s.scrollLeft( a, 'center' );
+			s.scrollTo( a, c === U ? 'auto' : c, 'auto' );
 		}
 	}
 },
@@ -337,7 +336,7 @@ Node = $.createClass( {
 					this[ n ] = a;
 				}
 				// 给有root_type的widget设置rootNode。 rootNode的用途是从根节点获取pub参数
-				var r = a.ROOT_TYPE && (this.rootNode || (a.ROOT_TYPE === this.type && this));
+				var r = a.ROOT_TYPE && (this.rootNode || ($.idsAny( a.ROOT_TYPE, this.type ) && this));
 				if ( r )
 					a.rootNode = r;
 			}
@@ -960,6 +959,9 @@ W = define( 'widget', function() {
 			var f = $.frag( this.$() );
 			Q( this.$() ).replaceWith( '<' + this.tagName + this.html_prop() + '></' + this.tagName + '>' );
 			Q( this.$() ).append( f );
+		},
+		develop: function() {
+			
 		},
 		removeElem: function( a ) {
 			$.remove( this.$( a ) );
@@ -2298,8 +2300,8 @@ Split = define.widget( 'split', {
 Buttonbar = define.widget( 'buttonbar', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		var d = x.dir || 'h';
-		(d !== 'h' || x.nobr !== F) && $.classAdd( this, 'z-dir' + d );
+		this.className += ' z-dir' + (x.dir || 'h');
+		x.nobr === F && (this.className += ' z-br');
 		(! x.valign && p && p.x.valign) && this.defaults( { valign: p.x.valign } );
 	},
 	Extend: 'horz',
@@ -2317,7 +2319,7 @@ Buttonbar = define.widget( 'buttonbar', {
 				Q( '.w-button', this.$() ).removeClass( 'z-last z-first' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
 				this.$( 'vi' ) && ! this.length && $.remove( this.$( 'vi' ) );
-				! this.$( 'vi' ) && this.length && Q( this.$() ).prepend( '<i id=' + this.id + 'vi class=f-vi-' + this.attr( 'valign' ) + '></i>' );
+				! this.$( 'vi' ) && this.length && this.x.nobr !== F && Q( this.$() ).prepend( '<i id=' + this.id + 'vi class=f-vi-' + this.attr( 'valign' ) + '></i>' );
 				if ( this.x.space > 0 ) {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
@@ -2399,7 +2401,7 @@ Buttonbar = define.widget( 'buttonbar', {
 			}
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
-			var f = (ie7 && this.isScrollable()) || ! this.length ? '' : '<i id=' + this.id + 'vi class=f-vi-' + v + '></i>';
+			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.nobr === F ? '' : '<i id=' + this.id + 'vi class=f-vi-' + v + '></i>';
 			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-buttonbar-line></div>';
 		}
 	}
@@ -2418,17 +2420,6 @@ Button = define.widget( 'button', {
 						this._focus( T );
 				}
 				this.x.target && this._ustag();
-				this.x.maxwidth && this.fixsize();
-			},
-			resize: function() {
-				if ( this.x.maxwidth ) {
-					var t = this.$( 't' ), o = this.$();
-					o.style.maxWidth = this.innerWidth( 'max' ) + 'px';
-					o.style.width = '';
-					t && (t.style.width = '');
-					$.classRemove( o, 'z-fixed' );
-					this.fixsize();
-				}
 			},
 			mouseover: {
 				occupy: T,
@@ -2526,26 +2517,6 @@ Button = define.widget( 'button', {
 				return c.join( ' ' );
 			}
 		},
-		fixsize: function() {
-			if ( this.x.maxwidth ) {
-				var t = this.$( 't' ), o = this.$(), r;
-				o.style.width = $.boxwd( o ) + 'px';
-				$.classAdd( o, 'z-fixed' );
-				if ( t ) {
-					if ( (o = this.$( 'm' )) && (o = $.bcr( o )) && o.width ) {
-						r = o.left;
-					} else if ( (o = this.$()) && (o = $.bcr( o )) && o.width ) {
-						r = o.right;
-					}
-					if ( r ) {
-						if ( this.x.closeable )
-							r -= $.number( this.$( 'c' ).currentStyle.marginRight ) - 1;
-						if ( o = this.$( 't' ) )
-							o.style.width = Math.ceil( $.boxwd( o, r - $.bcr( o ).left ) ) + 'px';
-					}
-				}
-			}
-		},
 		_ustag: function() {
 			this.ownerView.linkTarget( this.x.target, this.isFocus() );
 		},
@@ -2629,10 +2600,10 @@ Button = define.widget( 'button', {
 			}
 		},
 		html_icon: function( a ) {
-			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i', width: this.x.iconwidth, height: this.x.iconheight } );
+			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<span id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em>' + (a || this.x.text) + '</em><i class=f-vi></i></span>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em>' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
 			var x = this.x, p = this.parentNode, t = this.tagName || 'div',
@@ -2644,7 +2615,6 @@ Button = define.widget( 'button', {
 				b += ' z-x';
 			if ( (d = this.innerWidth()) != N ) {
 				s += 'width:' + d + 'px;';
-				b += ' z-fixed';
 			}
 			if ( x.focus && x.focusable )
 				b += ' z-on';
@@ -2667,8 +2637,12 @@ Button = define.widget( 'button', {
 				s += 'min-height:' + v + 'px;';
 			if ( this.x.maxheight && (v = this.innerHeight( 'max' )) )
 				s += 'max-height:' + v + 'px;';
-			if ( (d = p.x.space) != N && this !== p[ p.length - 1 ] )
-				s += 'margin-' + ( p.x.dir === 'v' ? 'bottom' : 'right' ) + ':' + d + 'px;';
+			if ( (d = p.x.space) != N ) {
+				if ( this !== p[ p.length - 1 ] )
+					s += 'margin-' + ( p.x.dir === 'v' ? 'bottom' : 'right' ) + ':' + d + 'px;';
+				if ( p.x.nobr === F )
+					s += 'margin-top:' + d + 'px;';
+			}
 			if ( x.style )
 				s += x.style;
 			if ( s )
@@ -2681,18 +2655,21 @@ Button = define.widget( 'button', {
 			x.id && (a += ' w-id="' + x.id + '"');
 			if ( this.property )
 				a += this.property;
-			a += ' w-type="' + this.type + '">' + this.html_before() + '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
-			if ( x.icon )
-				a += this.html_icon();
-			if ( x.text )
-				a += this.html_text();
-			a += '</div>';
+			a += ' w-type="' + this.type + '">' + this.html_before();
+			
 			if ( ! x.hidetoggle && this.more )
 				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><em class=f-arw></em><i class=f-vi></i></div>';
 			if ( x.closeicon )
 				a += $.image( x.closeicon, { cls: '_x', click: evw + '.close()' } );
 			else if ( x.closeable )
 				a += '<div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class="_xi">&times;</i></div>';
+			
+			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
+			if ( x.icon )
+				a += this.html_icon();
+			if ( x.text )
+				a += this.html_text();
+			a += '</div>';
 			a += this.html_after() + '</' + t + '>';
 			return a;
 		}
@@ -5003,6 +4980,7 @@ CalendarNum = define.widget( 'calendar/num', {
 	},
 	Default: { width: -1, height: -1 },
 	Prototype: {
+		ROOT_TYPE: 'calendar/date,calendar/week,calendar/month,calendar/year',
 		className: '_td',
 		tagName: 'td',
 		val: function() { return this.x.value },
@@ -5057,7 +5035,7 @@ Calendar = define.widget( 'calendar/date', {
 				if ( this.x.callback ) {
 					this.backfill();
 				} else {
-					var f = this.get( this._fm( new Date() ) );
+					var f = this.getNum( this._fm( new Date() ) );
 					f ? f.focus() : this.go();
 				}
 			}
@@ -5095,7 +5073,7 @@ Calendar = define.widget( 'calendar/date', {
 				$.replace( this.$(), this.html() );
 			}
 		},
-		get: function( a ) {
+		getNum: function( a ) {
 			if ( a.length != this._formatter.length ) {
 				a = $.dateFormat( $.dateParse( a ), this._formatter );
 			}
@@ -5107,12 +5085,12 @@ Calendar = define.widget( 'calendar/date', {
 			return b && _widget( b );
 		},
 		focus: function( a ) {
-			var b = this.get( a );
+			var b = this.getNum( a );
 			b && b.focus();
 		},
 		// 执行某个日期的点击事件
 		click: function( a ) {
-			var b = this.get( a );
+			var b = this.getNum( a );
 			b && b.click();
 		},
 		// 年、月的浮动选择器
@@ -5950,7 +5928,7 @@ Pickbox = define.widget( 'pickbox', {
 					c.src && (c.src = $.urlFormat( c.src, { value: this.val() } ));
 					this.exec( c ).addEvent( 'close', function() { ! this.$().contains( document.activeElement ) && this.focus( F ); }, this );
 				} else if ( W.isCmd( this.x.picker ) ) {
-					this.exec( this.x.picker );
+					this.cmd( this.x.picker, this.val() );
 				}
 				this.warn( F );
 			}

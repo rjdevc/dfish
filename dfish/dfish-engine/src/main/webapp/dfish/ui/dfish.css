@@ -136,8 +136,6 @@
 .w-grid-table ._ie_thead{*display:none}
 .w-grid-table ._ie_thead td{padding-top:0;padding-bottom:0}
 .w-grid-table{table-layout:fixed;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:100%;width:100%}
-/*.w-tr.z-hv{background:#f0f8ff}
-.w-tr.z-on{background:#cde6fe}*/
 .w-td-line{border-bottom:1px solid #e9e9e9}
 .w-td-dot{border-bottom:1px dashed #e3e3e3}
 .w-td-cell{border-bottom:1px solid #e9e9e9;border-right:1px solid #e9e9e9}
@@ -394,7 +392,7 @@
 .w-linkbox.z-nobr ._t{overflow:hidden;word-break:keep-all;word-wrap:normal;}
 .w-linkbox.z-ds ._t u._o{color:#999}
 
-.w-onlinebox ._t{font-family:verdana;}
+.w-onlinebox ._t{font-family:verdana}
 
 .w-imgbox.z-ds{background:#eee;cursor:default;}
 .w-imgbox-c{padding:10px;cursor:pointer}
@@ -424,7 +422,7 @@
 .w-checkboxgroup,.w-radiogroup{border:1px solid transparent;padding:1px 0}
 .w-checkboxgroup-align{vertical-align:middle}
 .w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding-right:6px}
-.w-checkbox,.w-radio,.w-triplebox{padding:2px 0;border:1px solid transparent;border-left:0;font-style:normal}
+.w-checkbox,.w-radio,.w-triplebox{padding:2px 2px 2px 0;font-style:normal}
 .w-checkbox input,.w-radio input,.w-triplebox input{padding:0;vertical-align:middle}
 .w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;vertical-align:middle;cursor:default}
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
@@ -463,7 +461,9 @@
 .w-img-box.w-checkbox{padding:0}
 
 .w-buttonbar{position:relative;overflow:hidden}
+.w-buttonbar.z-br{overflow:visible}
 .w-buttonbar.z-dirh{white-space:nowrap;word-break:keep-all}
+.w-buttonbar.z-dirh.z-br{white-space:normal;word-break:break-all}
 .w-buttonbar.z-dirv .w-button{display:block}
 .w-buttonbar.z-autosize{overflow:visible}
 .w-buttonbar-line{display:none;position:absolute;right:0;left:0;bottom:0;height:1px;background:#ddd}
@@ -473,13 +473,13 @@
  *	i: icon, t: text, o: oper, p: split, d: arrow, x: remove
  */
 .w-button{position:relative;display:inline-block;height:100%;text-align:center;vertical-align:middle;overflow:hidden;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
-.w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x{position:relative;display:inline-block;height:100%;vertical-align:top;*vertical-align:middle;*display:inline;*zoom:1}
-.w-button ._c{padding-left:8px}
+.w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x{height:100%;vertical-align:top;*vertical-align:middle;}
+.w-button ._c{padding-left:8px;overflow:hidden}
 .w-button ._t,.w-button ._i{padding-right:8px}
-.w-button ._i{line-height:1}
-.w-button ._t{white-space:pre}
-.w-button ._m{position:absolute;top:0;right:0;bottom:0;width:20px}
-.w-button ._x{padding-right:5px;color:#99a8b8}
+.w-button ._i{float:left;line-height:1}
+.w-button ._t{overflow:hidden;white-space:pre}
+.w-button ._m{float:right;width:20px}
+.w-button ._x{float:right;padding-right:5px;color:#99a8b8}
 .w-button ._xi{display:inline-block;margin-top:-2px;font:normal 18px verdana;vertical-align:middle}
 .w-button ._xi:hover{color:#f00}
 .w-button em,.w-menu-button em{font-style:normal;vertical-align:middle}
@@ -489,11 +489,7 @@
 .w-button.z-lock ._ico{opacity:.5}
 .w-button.z-on{z-index:1}
 .w-button.z-ds{color:#aaa}
-.w-button.z-more ._c,.w-button.z-combo ._c{margin-right:13px}
-.w-button.z-fixed ._c{position:absolute;left:0;right:0;overflow:hidden;white-space:nowrap;word-break:keep-all;word-wrap:normal}
-.w-button.z-combo ._c,.w-button.z-x.z-fixed ._c{margin-right:21px}
-.w-button.z-x.z-fixed{text-align:left}
-.w-button.z-x.z-fixed ._x{position:absolute;right:0}
+.w-button.z-more ._t{padding-right:4px}
 
 .w-button-split{vertical-align:middle;text-align:center}
 
@@ -723,10 +719,11 @@
 .w-button.w-upload-button{margin-right:4px;cursor:pointer}
 .w-button.w-upload-button ._c{padding-left:4px}
 .w-button.w-upload-button ._t,.w-button.w-upload-button  ._i{padding-right:4px}
-.w-button.w-upload-button.z-hv ._t{text-decoration:underline}
+
+.w-uploadfile .w-upload-button.z-hv ._t{text-decoration:underline}
 
 .w-uploadimage .w-upload-button{margin:2px 0 3px 0;border:2px dashed #ccc}
-.w-uploadimage .w-upload-button.z-hv{border-color:#72a9fc}
+.w-uploadimage .w-upload-button.z-hv{border-color:#72a9fc;color:#2678F2}
 .w-uploadimage .w-upload-button ._m{display:none}
 .w-uploadimage .w-upload-button.z-more ._c{margin-right:0}
 
