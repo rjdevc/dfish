@@ -6,17 +6,13 @@
   <parent>
     <groupId>com.rongji</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.1.10-RELEASE</version>
+    <version>3.1.10-SNAPSHOT</version>
   </parent>
   
   <artifactId>dfish-framework</artifactId>
   <name>dfish-framework</name>
   <url>http://maven.apache.org</url>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
+
   <dependencies>
   	<dependency>
 	    <groupId>com.rongji</groupId>
