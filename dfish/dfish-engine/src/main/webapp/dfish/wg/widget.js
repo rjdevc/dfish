@@ -2349,12 +2349,17 @@ Buttonbar = define.widget( 'buttonbar', {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isFocus && this[ i ].isFocus() && (! a || a === this[ i ].x.name) ) return this[ i ];
 		},
+		getFocusAll: function( a ) {
+			for ( var i = 0, r = []; i < this.length; i ++ )
+				if ( this[ i ].isFocus && this[ i ].isFocus() && (! a || a === this[ i ].x.name) ) r.push( this[ i ] );
+			return r;
+		},
 		getLocked: function() {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isLocked() ) return this[ i ];
 		},
 		scaleWidth: function() {
-			return (this.x.dir === 'v' ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
+			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
 		},
 		scaleHeight: function() {
 			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
@@ -2414,12 +2419,13 @@ Button = define.widget( 'button', {
 		},
 		body: {
 			ready: function() {
-				if ( this.x.focus && this.x.focusable ) {
+				/*if ( this.x.focus && this.x.focusable ) {
 					var p = this.parentNode;
 					if ( this.ROOT_TYPE === p.type && !p.x.focusmultiple && p.getFocus( this.x.name ) !== this )
 						this._focus( T );
-				}
+				}*/
 				this.x.target && this._ustag();
+				this.isFocus() && this.triggerHandler( 'focus' );
 			},
 			mouseover: {
 				occupy: T,
@@ -2453,12 +2459,10 @@ Button = define.widget( 'button', {
 				}
 			},
 			click: function( e ) {
-				this.x.focusable && this.trigger( this.parentNode.x.focusmultiple && this.isFocus() ? 'blur' : 'focus' );
+				this.x.focusable && (this.parentNode.x.focusmultiple ? this.toggleFocus() : this.focus());
 				if ( ! ( this.x.on && this.x.on.click ) )
 					this.drop();
 			},
-			focus: function() { this._focus( T ) },
-			blur: function() { this._focus( F ) },
 			lock: function() {
 				if ( ! this._locked ) {
 					if ( this._dft_icon === U )
@@ -2524,10 +2528,10 @@ Button = define.widget( 'button', {
 			return ! this.isDisabled() && this.x.focusable && this.x.focus;
 		},
 		focus: function( a ) {
-			this.trigger( a === F ? 'blur' : 'focus' );
-		},
-		toggleFocus: function() {
-			this.focus( ! this.isFocus() );
+			if ( this._disposed )
+				return;
+			var f = !!this.x.focus;
+			if ( this._focus( a ) !== f ) this.parentNode.trigger( 'focuschange' );
 		},
 		_focus: function( a ) {
 			if ( this._disposed )
@@ -2538,12 +2542,15 @@ Button = define.widget( 'button', {
 				if ( a ) {
 					if ( ! p.x.focusmultiple ) {
 						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : p; i < d.length; i ++ )
-							if ( d[ i ] !== this && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ].trigger( 'blur' ); }
+							if ( d[ i ] !== this && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
 					}
 					this.x.target && this.ownerView.linkTarget( this.x.target, T );
 				}
 			}
-			this.x.focus = a;
+			return (this.x.focus = !!a);
+		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
 		},
 		drop: function() {
 			if ( this.usa() && this.more ) {
@@ -2641,7 +2648,7 @@ Button = define.widget( 'button', {
 				if ( this !== p[ p.length - 1 ] )
 					s += 'margin-' + ( p.x.dir === 'v' ? 'bottom' : 'right' ) + ':' + d + 'px;';
 				if ( p.x.nobr === F )
-					s += 'margin-top:' + d + 'px;';
+					s += 'margin-bottom:' + d + 'px;';
 			}
 			if ( x.style )
 				s += x.style;
