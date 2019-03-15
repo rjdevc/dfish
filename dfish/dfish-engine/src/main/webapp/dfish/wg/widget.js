@@ -845,15 +845,16 @@ W = define( 'widget', function() {
 			this.before( a );
 			this.parentNode[ c ][ b < c ? 'after' : 'before' ]( this );
 		},
-		// 清空子节点
+		// 清空子节点  /@a -> 是否删除离散节点
 		empty: function( a ) {
-			var i = this.length;
+			var i = this.length, j = i;
 			while ( i -- )
-				this[ i ].remove();
-			if ( a !== T ) {
+				this[ i ].remove( T );
+			if ( a === T ) {
 				for ( i in this.discNodes )
 					this.discNodes[ i ].remove();
 			}
+			j != i && this.trigger( 'nodechange' );
 		},
 		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
 		render: function( a, b ) {
@@ -966,11 +967,11 @@ W = define( 'widget', function() {
 		removeElem: function( a ) {
 			$.remove( this.$( a ) );
 		},
-		remove: function() {
+		remove: function( a ) {
 			this.removeElem();
 			var p = this.parentNode;
 			this.dispose();
-			if ( p ) {
+			if ( p && a !== T ) {
 				var s = p.type_horz ? 'width' : 'height';
 				p[ 0 ] && (p.type_horz || p.type_vert) && _w_size[ s ].call( p[ 0 ], p[ 0 ].x[ s ] );
 				p.trigger( 'nodechange' );
@@ -1735,7 +1736,7 @@ View = define.widget( 'view', {
 		reload: function( a, b, c ) {
 			this.trigger( 'unload' );
 			this.abort();
-			this.empty();
+			this.empty( T );
 			_initView.call( this );
 			this.loaded = F;
 			a && this.attr( 'src', a );
@@ -2610,7 +2611,7 @@ Button = define.widget( 'button', {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em>' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class=f-omit>' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
 			var x = this.x, p = this.parentNode, t = this.tagName || 'div',
@@ -6219,7 +6220,7 @@ Combobox = define.widget( 'combobox', {
 				this._val( a );
 				return this.addEventOnce( 'load', function() { this.val( a ) } );
 			}
-			this.empty( T );
+			this.empty();
 			this._val( '' );
 			this.$t().innerHTML = '';
 			a ? this.match( { value: a } ) : this.resetEffect();
@@ -6635,7 +6636,7 @@ Linkbox = define.widget( 'linkbox', {
 				this._val( a );
 				return this.addEventOnce( 'load', function() { this.val( a ) } );
 			}
-			this.empty( T );
+			this.empty();
 			this._val( '' );
 			a ? this.match( { value: a }, function() {
 				this._initOptions( a );
@@ -8018,10 +8019,10 @@ GridRow = define.widget( 'grid/row', {
 			s += _html_on.call( this ) + '>' + this.html_cells() + '</tr>';
 			return this.length ? s + this.html_nodes() : s;
 		},
-		remove: function() {
+		remove: function( a ) {
 			var i = this.length;
-			while ( i -- ) this[ i ].remove();
-			_proto.remove.call( this );
+			while ( i -- ) this[ i ].remove( T );
+			_proto.remove.call( this, a );
 		}
 	}
 } ),
