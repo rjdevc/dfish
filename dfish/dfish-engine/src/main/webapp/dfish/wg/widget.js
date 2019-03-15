@@ -2531,7 +2531,7 @@ Button = define.widget( 'button', {
 			if ( this._disposed )
 				return;
 			var f = !!this.x.focus;
-			if ( this._focus( a ) !== f ) this.parentNode.trigger( 'focuschange' );
+			if ( this._focus( a ) !== f ) this.parentNode.trigger( 'change' );
 		},
 		_focus: function( a ) {
 			if ( this._disposed )
