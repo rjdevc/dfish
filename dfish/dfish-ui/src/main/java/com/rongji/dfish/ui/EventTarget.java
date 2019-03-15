@@ -135,7 +135,7 @@ public interface EventTarget<T extends EventTarget<T>> {
      */
     public static final String EVENT_CONTEXTMENU= "contextmenu";
     /**
-     * FORM事件-当元素失去焦点时运行的脚本
+     * FORM事件-当元素聚焦时运行的脚本
      */
     public static final String EVENT_FOCUS= "focus";
     /**
