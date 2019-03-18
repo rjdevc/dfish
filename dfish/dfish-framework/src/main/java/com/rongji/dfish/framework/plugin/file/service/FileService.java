@@ -181,7 +181,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		if(acceptTypes==null||acceptTypes.equals("")){
 			acceptTypes="*";
 		}
-		HashSet<String> accSet=new HashSet<String>(Arrays.asList(acceptTypes.split("[,;]")));
+		HashSet<String> accSet=new HashSet<>(Arrays.asList(acceptTypes.split("[,;]")));
 		if(accSet.contains("*")){
 			return true;
 		}
@@ -304,7 +304,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		if (Utils.isEmpty(fileRecords)) {
 			return Collections.emptyList();
 		}
-		List<File> fileList = new ArrayList<File>();
+		List<File> fileList = new ArrayList<>();
 		for (PubFileRecord fileRecord : fileRecords) {
 			File file = getFile(fileRecord);
 			if (file != null) {
@@ -402,7 +402,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKeys)) {
 			return Collections.emptyMap();
 		}
-		List<Object> params = new ArrayList<Object>(fileKeys.size() + 2);
+		List<Object> params = new ArrayList<>(fileKeys.size() + 2);
 		params.add(fileLink);
 		params.addAll(fileKeys);
 		params.add(STATUS_NORMAL);
@@ -413,7 +413,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 						"FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey IN ("
 								+ getParamStr(fileKeys.size())
 								+ ") AND t.fileStatus=?", params.toArray());
-		Map<String, List<PubFileRecord>> result = new HashMap<String, List<PubFileRecord>>();
+		Map<String, List<PubFileRecord>> result = new HashMap<>();
 		for (PubFileRecord data : dataList) {
 			List<PubFileRecord> tempList = result.get(data.getFileKey());
 			if (tempList == null) {
@@ -436,8 +436,8 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		if (Utils.isEmpty(file)) {
 			return Collections.emptyMap();
 		}	
-		Collection<String> fileLinks=new HashSet<String>();
-		Collection<String> fileKeys=new  HashSet<String>();
+		Collection<String> fileLinks=new HashSet<>();
+		Collection<String> fileKeys=new  HashSet<>();
 		String link=null;
 		String key=null;	
 		
@@ -454,25 +454,25 @@ public class FileService extends BaseService<PubFileRecord, String> {
 			throw new UnsupportedOperationException("查询参数fileLinks支持的最大长度[1000]");
 		}
 		
-		List<PubFileRecord> dataList=new ArrayList<PubFileRecord>();
+		List<PubFileRecord> dataList=new ArrayList<>();
 		final StringBuilder sb=new StringBuilder("FROM PubFileRecord t WHERE 1=1 ");		
-		final List<Object> params = new ArrayList<Object>();
+		final List<Object> params = new ArrayList<>();
 		
 		if(fileKeys.size()<=Math.sqrt(file.size()*2)){
 			sb.append("AND t.fileLink IN("+ getParamStr(fileLinks.size()) + ") ");
 			params.addAll(fileLinks);
 		}
 
-		final List<String> fileKeyList=new ArrayList<String>(fileKeys);		
+		final List<String> fileKeyList=new ArrayList<>(fileKeys);
 		List<PubFileRecord> tempDataList =(List<PubFileRecord>)pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<Object>() {
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException, SQLException {							
 				List<String> tofetch=fileKeyList;
-				List<PubFileRecord> tempList =new ArrayList<PubFileRecord>();
+				List<PubFileRecord> tempList =new ArrayList<>();
 				int paramSize=0;
 				String queryStr="";
 				while(tofetch.size()>0){
-					List<Object> param = new ArrayList<Object>();	
+					List<Object> param = new ArrayList<>();
 					param.addAll(params);
 					if(tofetch.size()>FETCH_SIZE){
 						List<String> cur=tofetch.subList(0, FETCH_SIZE);
@@ -500,14 +500,14 @@ public class FileService extends BaseService<PubFileRecord, String> {
 			return Collections.emptyMap();
 		}			
 		dataList.addAll(tempDataList);		
-		Map<FileRecordParam, List<PubFileRecord>> result = new HashMap<FileRecordParam, List<PubFileRecord>>();			
+		Map<FileRecordParam, List<PubFileRecord>> result = new HashMap<>();
 		for (PubFileRecord data:dataList) {
 			FileRecordParam p=new FileRecordParam();
 			p.setFileLink(data.getFileLink());
 			p.setFileKey(data.getFileKey());
 			List<PubFileRecord> tempList=result.get(p);	
 			if(tempList==null){
-				tempList=new ArrayList<PubFileRecord>();
+				tempList=new ArrayList<>();
 				result.put(p,tempList);
 			}
 			tempList.add(data);
@@ -534,7 +534,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 	 */
 	public Map<String, List<UploadItem>> findUploadItems(String fileLink, Collection<String> fileKeys) {
 		Map<String, List<PubFileRecord>> fileMap = findFileRecords(fileLink, fileKeys);
-		Map<String, List<UploadItem>> itemMap = new HashMap<String, List<UploadItem>>(fileMap.size());
+		Map<String, List<UploadItem>> itemMap = new HashMap<>(fileMap.size());
 		for (Entry<String, List<PubFileRecord>> entry : fileMap.entrySet()) {
 			itemMap.put(entry.getKey(), parseUploadItems(entry.getValue()));
 		}
@@ -604,7 +604,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 			return;
 		}
 		
-		List<String> newFileIds = new ArrayList<String>();
+		List<String> newFileIds = new ArrayList<>();
 		if (Utils.notEmpty(itemList)) {
 			for (UploadItem item : itemList) {
 				newFileIds.add(decId(item.getId()));
@@ -617,15 +617,15 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		@SuppressWarnings("unchecked")
         List<String> oldFileIds = (List<String>) pubCommonDAO.getQueryList("SELECT t.fileId FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey=? AND t.fileStatus=?", fileLink, fileKey, STATUS_NORMAL);
 		
-		List<String> insertIds = new ArrayList<String>(newFileIds);
-		List<String> deleteIds = new ArrayList<String>(oldFileIds);
+		List<String> insertIds = new ArrayList<>(newFileIds);
+		List<String> deleteIds = new ArrayList<>(oldFileIds);
 		insertIds.removeAll(oldFileIds);
 		deleteIds.removeAll(newFileIds);
 		if (Utils.notEmpty(insertIds)) { // 这边的insert相当于更新附件链接和状态
 			@SuppressWarnings("unchecked")
 			List<PubFileRecord> fileList = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(insertIds.size()) + ")", insertIds.toArray());
-			final List<PubFileRecord> insertList = new ArrayList<PubFileRecord>();
-			List<String> updateIds = new ArrayList<String>(fileList.size());
+			final List<PubFileRecord> insertList = new ArrayList<>();
+			List<String> updateIds = new ArrayList<>(fileList.size());
 			for (PubFileRecord file : fileList) {
 				if (LINK_FILE.equals(file.getFileLink())) { // 临时文件可直接修改模块
 					updateIds.add(file.getFileId());
@@ -637,13 +637,15 @@ public class FileService extends BaseService<PubFileRecord, String> {
 					insertList.add(file);
 				}
 			}
-			
-			List<Object> params = new ArrayList<Object>();
-			params.add(fileLink);
-			params.add(fileKey);
-			params.add(new Date());
-			params.addAll(updateIds);
-			pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(updateIds.size()) + ")", params.toArray());
+
+			if (Utils.notEmpty(updateIds)) {
+				List<Object> params = new ArrayList<>();
+				params.add(fileLink);
+				params.add(fileKey);
+				params.add(new Date());
+				params.addAll(updateIds);
+				pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(updateIds.size()) + ")", params.toArray());
+			}
 			pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<Object>() {
 				@Override
 				public Object doInHibernate(Session session) throws HibernateException, SQLException {
@@ -712,16 +714,9 @@ public class FileService extends BaseService<PubFileRecord, String> {
 	}
 	
 	public String parseFileId(String itemJson) {
-		List<UploadItem> itemList = parseUploadItems(itemJson);
-		for (UploadItem item : itemList) {
-			try {
-				String fileId = decId(item.getId());
-				if (Utils.notEmpty(fileId)) {
-					return fileId;
-				}
-            } catch (Exception e) {
-            	FrameworkHelper.LOG.error("文件编号解析异常", e);
-            }
+		List<String> fileIds = parseFileIds(itemJson);
+		if (Utils.notEmpty(fileIds)) {
+			return fileIds.get(0);
 		}
 		return null;
 	}
@@ -735,10 +730,12 @@ public class FileService extends BaseService<PubFileRecord, String> {
 		if (Utils.isEmpty(fileRecords)) {
 			return null;
 		}
-		List<UploadItem> uploadItems = new ArrayList<UploadItem>();
+		List<UploadItem> uploadItems = new ArrayList<>();
 		for (PubFileRecord fileRecord : fileRecords) {
 			UploadItem item = parseUploadItem(fileRecord);
-			uploadItems.add(item);
+			if (item != null) {
+				uploadItems.add(item);
+			}
 		}
 		return uploadItems;
 	}
@@ -749,6 +746,9 @@ public class FileService extends BaseService<PubFileRecord, String> {
 	 * @return
 	 */
 	public UploadItem parseUploadItem(PubFileRecord fileRecord) {
+		if (fileRecord == null) {
+			return null;
+		}
 		UploadItem item = new UploadItem();
 		String encId = encId(fileRecord.getFileId());
 		item.setId(encId);
