@@ -476,10 +476,10 @@
 .w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x{height:100%;vertical-align:top;*vertical-align:middle;}
 .w-button ._c{padding-left:8px;overflow:hidden}
 .w-button ._t,.w-button ._i{padding-right:8px}
-.w-button ._i{float:left;line-height:1}
-.w-button ._t{overflow:hidden;white-space:pre}
-.w-button ._m{float:right;width:20px}
-.w-button ._x{float:right;padding-right:5px;color:#99a8b8}
+.w-button ._i{float:left;line-height:1;text-align:center}
+.w-button ._t{overflow:hidden;white-space:pre;}
+.w-button ._m{float:right;width:20px;text-align:center}
+.w-button ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
 .w-button ._xi{display:inline-block;margin-top:-2px;font:normal 18px verdana;vertical-align:middle}
 .w-button ._xi:hover{color:#f00}
 .w-button em,.w-menu-button em{font-style:normal;vertical-align:middle}
