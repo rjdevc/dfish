@@ -1,6 +1,5 @@
 /* echarts
  * {type: 'echarts', option: {}}
- * {type: 'echarts', on: {ready: 'this.init(option)'}}
  */
 
 var echarts = require( './echarts.min' );
@@ -10,6 +9,9 @@ define.widget( 'echarts', {
 		body: {
 			ready: function() {
 				this.x.option && this.init( this.x.option );
+			},
+			resize: function() {
+				this.echarts.resize();
 			}
 		}
 	},

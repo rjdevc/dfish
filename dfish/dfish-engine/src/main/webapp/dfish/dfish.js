@@ -2056,6 +2056,33 @@ _merge( $, {
 		} else
 			return '<em class="f-arw f-arw-' + (c || 'b1') + '"' + (b ? ' id=' + a : '') + '></em>';
 	},
+	colIndex: function( o ) {
+	    var td = $.query( o ).closest( 'td' )[ 0 ], m = [], r,
+	    	$table = $.query( td ).closest( 'table, thead, tbody, tfoot' );
+	    $table.children( "tr" ).each( function( y, row ) {
+	        $.query( row ).children( "td, th" ).each( function( x, cell ) {
+	            var $cell = $.query( cell ),
+	                cspan = $cell.attr( "colspan" ) | 0,
+	                rspan = $cell.attr( "rowspan" ) | 0,
+	                tx, ty;
+	            cspan = cspan ? cspan : 1;
+	            rspan = rspan ? rspan : 1;
+	            for( ; m[y] && m[y][x]; ++x );  //skip already occupied cells in current row
+	            for( tx = x; tx < x + cspan; ++tx ) {  //mark matrix elements occupied by current cell with true
+	                for( ty = y; ty < y + rspan; ++ty ) {
+	                    if( !m[ty] ) {  //fill missing rows
+	                        m[ty] = [];
+	                    }
+	                    m[ty][tx] = true;
+	                }
+	            }
+	            if ( cell === td )
+	            	return (r = x);
+	        } );
+	        return r;
+	    } );
+	    return r;
+	},
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
 		var d;
