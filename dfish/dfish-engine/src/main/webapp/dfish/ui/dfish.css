@@ -190,7 +190,8 @@
 .w-leaf.z-line .w-leaf-o .f-arw-r1{background-position:-111px -180px;margin-left:0}
 .w-leaf-cont{display:none}
 .w-leaf-cont.z-open{display:block}
-.w-leaf-node{display:inline-block;height:100%;*display:inline;*zoom:1}
+.w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}
+.w-leaf.w-grid-leaf{height:auto}
 
 
 .w-html{overflow:hidden}
@@ -290,15 +291,15 @@
 
 .w-input,.w-input-border{border:1px solid #ccc;background:#fff}
 .w-input{position:relative;height:28px;text-align:left;}
-.w-input ._c{position:relative;height:100%;padding-left:5px;overflow:hidden;}
-.w-input ._t{width:100%;height:100%;line-height:28px;*height:28px}
+.w-input ._c{position:relative;height:100%;overflow:hidden;}
+.w-input ._t{width:100%;height:100%;text-indent:5px;line-height:28px;*height:28px}
 .w-input.z-on,.w-input-border.z-on{border-color:#3298fe;box-shadow:none}
 .w-input.z-ds{background:#f1f1f1;box-shadow:none}
 .w-input.z-ds ._t{color:#999}
 .w-input.z-err,.w-input-border.z-err{border-color:red;box-shadow:inset 0 0 2px #fbb}
 .w-input.z-trans,.w-input.z-trans.z-err,.w-input-border.z-trans,.w-input-border.z-trans.z-err{border-width:0;border-radius:0;box-shadow:none}
 
-.w-input-placeholder{position:absolute;height:100%;color:#a9a9a9;cursor:text}
+.w-input-placeholder{position:absolute;text-indent:5px;height:100%;color:#a9a9a9;cursor:text}
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
 
@@ -356,19 +357,9 @@
 .w-combobox{line-height:0}
 .w-combobox.z-br{height:auto;min-height:28px}
 .w-combobox ._c{min-height:28px;cursor:text}
-.w-combobox ._o{position:relative;height:24px;border:1px solid #edf4f7;background:#edf4f7;text-indent:0;margin:1px 0 1px 2px;line-height:1;vertical-align:middle}
-.w-combobox ._o.z-loading ._x{background:url(g/loading-cir.gif) no-repeat 50% 50%}
-.w-combobox ._o.z-loading b{display:none}
-.w-combobox ._o ._b{height:100%;vertical-align:middle}
-.w-combobox ._o ._g{height:100%;padding:0 8px;color:#333;vertical-align:middle;cursor:default}
-.w-combobox ._o:hover{background:#F8FBFC;}
-.w-combobox ._o.z-err{background:#fff;border-color:#ff7921}
-.w-combobox ._o.z-err.z-on{border-color:#3298fe}
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}
 .w-combobox ._r{color:#888;font-style:normal;font-family:verdana}
-.w-combobox ._x{display:inline-block;margin:-2px 0 0 4px;width:12px;*line-height:1;font:normal 18px verdana;color:#99a8b8;vertical-align:middle}
-.w-combobox ._x:hover,.w-combobox ._o.z-err ._x:hover{color:#f00;cursor:pointer}
-.w-combobox ._e{display:inline-block;margin:2px 0;height:24px;padding:0 2px 0 3px;line-height:24px;border:0;vertical-align:middle;font-style:normal;outline:none}
+.w-combobox ._e{display:inline-block;margin:2px 0;height:24px;padding:0 2px 0 3px;text-indent:1px;line-height:24px;border:0;vertical-align:middle;font-style:normal;outline:none}
 .w-combobox ._pick,.w-pickbox ._pick,.w-onlinebox ._pick,.w-linkbox ._pick,.w-combobox.z-ds ._pick:hover,.w-pickbox.z-ds:hover ._pick,.w-onlinebox.z-ds ._pick:hover{background:url(g/n.png) no-repeat -99px 50%}
 .w-combobox ._pick:hover,.w-linkbox ._pick:hover,.w-onlinebox ._pick:hover,.w-pickbox:hover ._pick{background-position:-124px 50%}
 .w-combobox.z-loading{color:gray}
@@ -376,8 +367,16 @@
 .w-combobox.z-ds ._o{background:#ddd}
 .w-combobox.z-ds ._x{display:none}
 
-.w-combobox.z-face-tag ._o{height:22px;border-color:#ccc;border-radius:2px;margin:2px 0 2px 5px;}
-.w-combobox.z-face-tag ._o ._g{background:#fff}
+.w-combobox-opt{position:relative;height:24px;border:1px solid #edf4f7;background:#edf4f7;text-indent:0;margin:1px 0 1px 2px;line-height:1;vertical-align:middle}
+.w-combobox-opt ._s{height:100%;padding:0 8px;color:#333;overflow:hidden;vertical-align:middle;cursor:default;*padding-right:24px;*line-height:1.8}
+.w-combobox-opt ._b{position:absolute;top:0;bottom:0;left:-3px;padding-left:3px;height:100%;vertical-align:middle}
+.w-combobox-opt ._x{float:right;margin-right:3px;*line-height:1;font:normal 18px verdana;color:#99a8b8;vertical-align:middle}
+.w-combobox-opt ._x:hover,.w-combobox-opt.z-err ._x:hover{color:#f00;cursor:pointer}
+.w-combobox-opt.z-loading ._x{background:url(g/loading-cir.gif) no-repeat 50% 50%}
+.w-combobox-opt.z-loading b{display:none}
+.w-combobox-opt:hover{background:#F8FBFC;}
+.w-combobox-opt.z-err{background:#fff;border-color:#ff7921}
+.w-combobox-opt.z-err.z-on{border-color:#3298fe}
 
 .w-input.w-linkbox{height:auto;min-height:28px}
 .w-linkbox ._t{min-height:28px;vertical-align:middle;word-break:break-all;word-wrap:break-word;font-family:verdana;font-style:normal;outline:none}
@@ -469,8 +468,7 @@
 .w-buttonbar-line{display:none;position:absolute;right:0;left:0;bottom:0;height:1px;background:#ddd}
 
 /*! button
- *	l: left, r: right
- *	i: icon, t: text, o: oper, p: split, d: arrow, x: remove
+ *	c: content, i: icon, t: text, m: more, x: close
  */
 .w-button{position:relative;display:inline-block;height:100%;text-align:center;vertical-align:middle;overflow:hidden;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
 .w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x{height:100%;vertical-align:top;*vertical-align:middle;}
@@ -490,6 +488,7 @@
 .w-button.z-on{z-index:1}
 .w-button.z-ds{color:#aaa}
 .w-button.z-more ._t{padding-right:4px}
+.w-button.z-more ._t,.w-button.z-combo ._t{*padding-right:26px}
 
 .w-button-split{vertical-align:middle;text-align:center}
 
