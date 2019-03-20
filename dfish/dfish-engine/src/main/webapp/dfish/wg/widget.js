@@ -42,6 +42,14 @@ _event_enter = {
 _event_stop = {
 	contextmenu: function( e ) { !(cfg.debug && e.ctrlKey) && $.stop( e ) }
 },
+// ie7的widget(比如button)内部有float:right元素时，整个widget会撑满。为了自适应大小而作以下处理
+_ie7floatWidth = function() {
+	if ( ! this.innerWidth() ) {
+		for ( var i = 0, b = this.$().children, w = 0, l = b.length; i < l; i ++ )
+			w += b[ i ].offsetWidth;
+		this.$().style.width = w + 'px';
+	}
+},
 // @a -> htmlElement: 返回html元素对象所在的widget
 // @a -> JSON: 参数为符合widget配置项的json对象，则创建这个widget
 _widget = function( a ) {
@@ -869,13 +877,15 @@ W = define( 'widget', function() {
 				 $[ b || 'append' ]( a, s );
 			else {
 				for ( var i = this.nodeIndex - 1, l = p.length, c; i > -1; i -- )
-					if ( (c = p[ i ]).$() ) return c.insertHTML( s, 'after' );
-				for ( i = this.nodeIndex + 1; i < l; i ++ )
-					if ( (c = p[ i ]).$() ) return c.insertHTML( s, 'before' );
-				p.insertHTML( s );
+					if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'after' ); break; }
+				if ( ! c ) {
+					for ( i = this.nodeIndex + 1; i < l; i ++ )
+						if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'before' ); break; }
+				}
+				!c && p.insertHTML( s );
 			}
 			this.triggerAll( 'ready' );
-			!this._disposed && this.parentNode.trigger( 'nodechange' );
+			! this._disposed && this.parentNode.trigger( 'nodechange' );
 			return this;
 		},
 		// @dao 通过js增加子节点时会调用此方法 / a -> html|widget, b -> where(prepend|append|before|after)
@@ -962,11 +972,12 @@ W = define( 'widget', function() {
 			Q( this.$() ).append( f );
 		},
 		develop: function() {
-			
+			//fixme: 用于调试定位
 		},
 		removeElem: function( a ) {
 			$.remove( this.$( a ) );
 		},
+		// @a -> 设置为true，不触发删除单个节点所需的处理
 		remove: function( a ) {
 			this.removeElem();
 			var p = this.parentNode;
@@ -1030,9 +1041,8 @@ _w_rsz_all = function() {
 		for ( var i = 0; i < l; i ++ )
 			_w_rsz_all.call( this[ i ] );
 	}
-	for ( i in this.discNodes ) {
+	for ( var i in this.discNodes )
 		_w_rsz_all.call( this.discNodes[ i ] );
-	}
 	this.trigger( 'resize' );
 },
 _w_rsz_layout = function() {
@@ -2664,7 +2674,8 @@ Button = define.widget( 'button', {
 			if ( this.property )
 				a += this.property;
 			a += ' w-type="' + this.type + '">' + this.html_before();
-			
+			if ( ie7 )
+				a += '<table cellpadding=0 cellspacing=0 height=100%><tr><td>';
 			if ( ! x.hidetoggle && this.more )
 				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><em class=f-arw></em><i class=f-vi></i></div>';
 			if ( x.closeicon )
@@ -2678,7 +2689,7 @@ Button = define.widget( 'button', {
 			if ( x.text )
 				a += this.html_text();
 			a += '</div>';
-			a += this.html_after() + '</' + t + '>';
+			a += this.html_after() + (ie7 ? '</table>' : '') + '</' + t + '>';
 			return a;
 		}
 	}
@@ -6134,19 +6145,18 @@ Combobox = define.widget( 'combobox', {
 		// 根据value设置已选项, 初始化时调用 /@v -> value, t -> text
 		_initOptions: function( v, t ) {
 			if ( v && (v = v.split( ',' )) ) {
-				for ( var i = 0, t = t && t.split( ',' ), o, s = '', l = v.length; i < l; i ++ ) {
+				for ( var i = 0, t = t && t.split( ',' ), o, s = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
 						if ( t ) {
 							var r = { value: v[ i ], text: t[ i ] };
-							s += this.add( r ).html();
+							this.append( r );
 							this.store().merge( r );
 						} else if ( o = this.store().getParamByValue( v[ i ] ) )
-							s += this.add( o ).html();
+							this.append( o );
 						else if ( this.x.strict === F )
-							s += this.add( { text: v[ i ], error: T } ).html();
+							this.append( { text: v[ i ], error: T } );
 					}
 				}
-				s && $.before( this.$t(), s );
 			}
 		},
 		// @implement
@@ -6253,14 +6263,15 @@ Combobox = define.widget( 'combobox', {
 				for ( var i = 0, c = this.store(), d, o, s = []; i < t.length; i ++ ) {
 					if ( t[ i ] ) {
 						if ( d = (a || c.getParam( t[ i ] )) )
-							! $.idsAny( v, d.value ) && ( s.push( this.add( d, k ).html() ), $.idsAdd( v, d.value ) );
+							! $.idsAny( v, d.value ) && ( s.push( this.add( d, k ) ), $.idsAdd( v, d.value ) );
 						else
-							s.push( this.add( { text: t[ i ], error: T }, k ).html() );
+							s.push( this.add( { text: t[ i ], error: T }, k ) );
 						if ( ! this.x.multiple && s.length )
 							break;
 					}
 				}
-				$.before( e, s.join( '' ) );
+				for ( var i = 0; i < s.length; i ++ )
+					s[ i ].render();
 			}
 			this.save();
 			return this[ this.length - 1 ];
@@ -6441,13 +6452,15 @@ Combobox = define.widget( 'combobox', {
  */
 ComboboxOption = define.widget( 'combobox/option', {
 	Const: function( x, p ) {
-		this.className = '_o f-inbl' + ( x.error ? ' z-err' : '' );
 		W.apply( this, arguments );
+		x.error && (this.className += ' z-err');
 	},
 	Default: { width: -1, height: -1 },
 	Listener: {
-		tag: 'g',
 		body: {
+			ready: function() {
+				this.fixSize();
+			},
 			touchstart: {
 				occupy: T, 
 				method: function() {
@@ -6483,6 +6496,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 	},
 	Prototype: {
 		ROOT_TYPE: 'combobox',
+		className: 'w-combobox-opt f-inbl',
 		val: function() {
 			return this.x.value;
 		},
@@ -6498,18 +6512,27 @@ ComboboxOption = define.widget( 'combobox/option', {
 				e && $.stop( e );
 			}
 		},
-		write: function() {
+		write: function( e ) {
 			var p = this.parentNode, t = p.$t();
 			t.parentNode.insertBefore( t, this.$() );
 			p.focus();
+			e && $.stop( e );
+		},
+		fixSize: function() {
+			if ( this.$() ) {
+				var w = (this.$().parentNode.offsetWidth - 5) + 'px';
+				this.$().style.maxWidth = w;
+				ie7 && (this.$().style.width = w);
+			}
 		},
 		setLoading: function( a ) {
 			$.classAdd( this.$(), 'z-loading', this.loading = a === F ? a : T );
 		},
 		html_nodes: function() {
-			var p = this.parentNode, w = this.width(), t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N;
-			return '<i class="f-inbl _b" onclick=' + evw + '.write()></i><div class="f-inbl _g"' + _html_on.call( this ) + '><cite class="_v f-omit" style="' + ( w ? 'width:' + (w - 32) : 'max-width:' + ( p.innerWidth() - p.width_minus() - 50 ) ) + 'px" title="' + t + (r ? '\n' + r : '') + '"><i class=f-vi></i><span class=f-va>' +
-				( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></cite><i class="_x" onclick=' + evw + '.close(event)>&times;</i></div>';
+			var p = this.parentNode, w = this.width(), t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
+				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit"><i class=f-vi></i><span class="f-omit f-va">' +
+					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
+			return ie7 ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}
 	}
 } ),
@@ -6853,7 +6876,7 @@ Linkbox = define.widget( 'linkbox', {
 				if ( this.x.strict )
 					d && s.push( d );
 				else
-					s.push( d || q[ i ].innerText );
+					s.push( d || Q( q[ i ] ).text() );
 			}
 			this._val( s = s.join( ',' ) );
 			if ( this.x.validate && this.x.validate.maxlength ) {
@@ -6895,7 +6918,7 @@ Linkbox = define.widget( 'linkbox', {
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
 				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
 } ),
@@ -8022,7 +8045,7 @@ GridRow = define.widget( 'grid/row', {
 		remove: function( a ) {
 			var i = this.length;
 			while ( i -- ) this[ i ].remove( T );
-			_proto.remove.call( this, a );
+			_proto.remove.apply( this, arguments );
 		}
 	}
 } ),
