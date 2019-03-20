@@ -1413,6 +1413,10 @@ if ( isSWF ) {
 
 /*! `upload/file` */
 define.widget( 'upload/file', {
+	Const: function( x ) {
+		x.label && x.label.text && $.extend( x.label, { valign: 'top' } );
+		Upload.apply( this, arguments );
+	},
 	Extend: Upload,
 	Listener: {
 		body: {
@@ -1466,6 +1470,9 @@ define.widget( 'upload/file', {
 
 /*! upload/image */
 define.widget( 'upload/image', {
+	Const: function( x ) {
+		Upload.apply( this, arguments );
+	},
 	Extend: 'upload/file',
 	Prototype: {
 		className: 'w-upload w-uploadimage f-inbl f-va',

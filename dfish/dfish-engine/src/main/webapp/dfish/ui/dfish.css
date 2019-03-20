@@ -283,7 +283,7 @@
 .w-calendar-time-dlg ._o.z-on{background:#cce7f9}
 
 .w-label{position:relative;}
-.w-label ._t{margin-right:6px}
+.w-label ._t{margin-right:6px;line-height:28px}
 .w-label ._bg{position:absolute;top:0;left:0;}
 
 .w-grid .w-label{position:static;*position:relative}

@@ -1865,6 +1865,9 @@ Scroll = define.widget( 'scroll', {
 		}
 	}
 } ),
+Error = $.createClass( {
+	Const: function( x ) { this.x = x }
+} ),
 /* `xsrc`
  * 支持模板的widget实现顺序
  * 一、如果有node(s)，直接展示node(s)。因为node是最终结果
@@ -1942,15 +1945,20 @@ Xsrc = define.widget( 'xsrc', {
 				};
 			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); } ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			u && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); } } );
+			u && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( Loc.server_error, a.request.status ) } ); e(); } } );
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> data json
 		_loadEnd: function( d ) {
 			this.loading = F;
 			if ( d ) {
-				this.x.srcdata = d;
-				var x = this.x.template ? _compileTemplate( this, d ) : this._loadDataFilter( d );
+				var x;
+				if ( d instanceof Error ) {
+					x = { type: 'html', text: d.x.text };
+				} else {
+					this.x.srcdata = d;
+					x = this.x.template ? _compileTemplate( this, d ) : this._loadDataFilter( d );
+				}
 				if ( this.x.preload )
 					x = _compilePreload( this.x.preload, x );
 				if ( x.type !== this.type && W.isCmd( x ) )
@@ -2838,8 +2846,8 @@ Button = define.widget( 'button', {
 		insertHTML: function( a, b ) {
 			this.$() && $[ _putin[ b ] ? 'after' : b ]( this.$(), a.isWidget ? a.$() : a );
 		},
-		setMore: function() {
-			var x = this.x;
+		setMore: function( x ) {
+			var x = x || this.x;
 			if ( x.more || x.nodes ) {
 				this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, pophide: T, hoverdrop: x.hoverdrop || this.x.hoverdrop } );
 			}
@@ -4365,6 +4373,7 @@ var Label = define.widget( 'label', {
 		this.defaults( { wmin: this._pad } );
 		var d = p.x.validate;
 		d && d.required && (this.className += ' z-required');
+		this.className += ' f-va' + (x.valign ? '-' + x.valign : '');
 		if ( ie7 ) {
 			this.ie7td = p.closest( 'td' );
 			this.ie7td.addEvent( 'nodechange', function() {
@@ -4399,7 +4408,7 @@ var Label = define.widget( 'label', {
 		}
 	},
 	Prototype: {
-		className: 'w-label f-inbl f-va',
+		className: 'w-label f-inbl',
 		setValidate: function( x ) {
 			x = x || {};
 			if ( x.required ) {

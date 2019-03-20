@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.1.7',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -1521,9 +1521,8 @@ Ajax = _createClass( {
 			        if ( r != N ) {
 			        	self.errorCode = l.status;
 						if ( f !== F && l.status ) {
-							if ( f ) {
-								_fnapply( f, c, '$ajax', [ self ] );
-							} else {
+							typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
+							if ( f !== F ) {
 								var s = 'ajax ' + l.status + ': ' + a;
 								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? $.loc.ajax[ r ] : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
