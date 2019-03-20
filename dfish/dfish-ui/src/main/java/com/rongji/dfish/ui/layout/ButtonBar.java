@@ -194,6 +194,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * 添加分隔符，默认添加2像素的分隔符
 	 * 
 	 * @return 本身，这样可以继续设置其他属性
+	 * @deprecated 采用add(Split)
 	 */
 	@Deprecated
 	public ButtonBar addSplit() {
@@ -257,15 +258,19 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	}
 
 	/**
-	 * 取得split widget
+	 * 在按钮之间默认插入的split
 	 * @return Split
 	 */
 	public Split getSplit() {
+		if (split == null) {
+			split = new Split();
+		}
 		return split;
 	}
 	
 	/**
-	 * 在按钮之间插入一个split widget
+	 * 在按钮之间默认插入的split;
+	 * 设置了该属性,无需调用{@link #add(Widget)}来添加split,按钮间自动添加1个split
 	 * @param split Split
 	 * @return this
 	 */
