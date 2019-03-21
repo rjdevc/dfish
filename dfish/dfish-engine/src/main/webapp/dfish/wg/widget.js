@@ -864,6 +864,26 @@ W = define( 'widget', function() {
 			}
 			j != i && this.trigger( 'nodechange' );
 		},
+		// @a -> 是否刷新子节点
+		repaint: function( a ) {
+			if ( this._disposed )
+				return;
+			if ( this.$() ) {
+				if ( a ) {
+					this.replace( this.x );
+				} else
+					this.repaintSelf();
+			} else
+				this.render();
+		},
+		repaintSelf: function() {
+			var f = $.frag( this.$() );
+			Q( this.$() ).replaceWith( '<' + this.tagName + this.html_prop() + '></' + this.tagName + '>' );
+			Q( this.$() ).append( f );
+		},
+		develop: function() {
+			//fixme: 用于调试定位
+		},
 		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
 		render: function( a, b ) {
 			// 没有父节点 则先加上父节点
@@ -953,26 +973,6 @@ W = define( 'widget', function() {
 		},
 		html: function() {
 			return '<' + this.tagName + this.html_prop() + '>' + this.html_before() + this.html_nodes() + this.html_after() + '</' + this.tagName + '>';
-		},
-		// @a -> 是否刷新子节点
-		repaint: function( a ) {
-			if ( this._disposed )
-				return;
-			if ( this.$() ) {
-				if ( a ) {
-					this.replace( this.x );
-				} else
-					this.repaintSelf();
-			} else
-				this.render();
-		},
-		repaintSelf: function() {
-			var f = $.frag( this.$() );
-			Q( this.$() ).replaceWith( '<' + this.tagName + this.html_prop() + '></' + this.tagName + '>' );
-			Q( this.$() ).append( f );
-		},
-		develop: function() {
-			//fixme: 用于调试定位
 		},
 		removeElem: function( a ) {
 			$.remove( this.$( a ) );
@@ -1499,8 +1499,8 @@ Scroll = define.widget( 'scroll', {
 						l = f.left - d.left - (( c.width / 2 ) - ( f.width / 2 ));
 					else if ( f.left < c.left )
 						l = a.scrollLeft - f.left + c.left;
-					else if ( f.right > c.right - br.scroll )
-						l = a.scrollLeft + f.right - c.right + br.scroll;
+					//else if ( f.right > c.right - br.scroll )
+					//	l = a.scrollLeft + f.right - c.right + br.scroll;
 				}
 			}
 			if ( q != N ) {
@@ -2624,15 +2624,14 @@ Button = define.widget( 'button', {
 			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class=f-omit>' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
-			var x = this.x, p = this.parentNode, t = this.tagName || 'div',
+			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
 				a = '<' + t + ' id=' + this.id + ' class="',
-				b = this.prop_cls(),
-				c = this._combo, d, s = '';
+				b = this.prop_cls(), c = this._combo, d, s = '';
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
-			if ( (d = this.innerWidth()) != N ) {
-				s += 'width:' + d + 'px;';
+			if ( w != N ) {
+				s += 'width:' + w + 'px;';
 			}
 			if ( x.focus && x.focusable )
 				b += ' z-on';
@@ -2674,7 +2673,7 @@ Button = define.widget( 'button', {
 			if ( this.property )
 				a += this.property;
 			a += ' w-type="' + this.type + '">' + this.html_before();
-			if ( ie7 )
+			if ( ie7 && !w )
 				a += '<table cellpadding=0 cellspacing=0 height=100%><tr><td>';
 			if ( ! x.hidetoggle && this.more )
 				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><em class=f-arw></em><i class=f-vi></i></div>';
@@ -2689,7 +2688,7 @@ Button = define.widget( 'button', {
 			if ( x.text )
 				a += this.html_text();
 			a += '</div>';
-			a += this.html_after() + (ie7 ? '</table>' : '') + '</' + t + '>';
+			a += this.html_after() + (ie7 && !w ? '</table>' : '') + '</' + t + '>';
 			return a;
 		}
 	}
@@ -2893,11 +2892,14 @@ Img = define.widget( 'img', {
 		isFocus: function() {
 			return $.classAny( this.$(), 'z-on' );
 		},
-		focus: function( a ) {
+		focus: function( a, e ) {
+			this._focus( a, e );
+			this.box && this.box.click( a );
+		},
+		_focus: function( a, e ) {
 			var a = a == N || a, p = this.parentNode, b = p.getFocus();
 			$.classAdd( this.$(), 'z-on', a );
-			this.box && this.box.click( a );
-			a && b && b !== this && ! p.x.focusmultiple && b.focus( F );
+			a && b && b !== this && ! p.x.focusmultiple && b._focus( F );
 		},
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
@@ -2922,6 +2924,7 @@ Img = define.widget( 'img', {
 			var s = this.html_img();
 			if ( this.x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-img-box', checked: this.x.focus } );
+				this.box.type === 'triplebox' && this.box.addEvent( 'change', function() { this._focus( this.box.isChecked() ) }, this );
 				s = this.box.html() + s;
 			}
 			s += this.html_text();
@@ -4445,9 +4448,6 @@ AbsInput = define.widget( 'abs/input', {
 		},
 		html_nodes: function() {
 			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placehoder() + this.html_input() + '</div>';
-		},
-		html: function() {
-			return '<div' + this.html_prop() + '>' + this.html_before() + this.html_nodes() + this.html_after() + '</div>';
 		}
 	}
 } ),
@@ -5615,10 +5615,11 @@ Spinner = define.widget( 'spinner', {
 	}
 } ),
 /* `slider` */
+/* 值的范围从 0 到 100 */
 Slider = define.widget( 'slider', {
 	Extend: Spinner,
 	Default: {
-		width: -1, wmin: 0, thumbwidth: 10
+		width: '*', wmin: 0, thumbwidth: 30
 	},
 	Listener: {
 		body: {
@@ -5652,9 +5653,10 @@ Slider = define.widget( 'slider', {
 				$( self.id + 'track' ).style.width = (l + (g / 2)) + 'px';
 				d && d.snapTo( a ).text( self.formatStr( t, [ v ] ) );
 				$( self.id + 'v' ).value = v;
-				self.trigger( 'change' );
+				self.trigger( 'drag' );
 			}, function( e ) {
 				d && d.close();
+				self.trigger( 'drop' );
 			} );
 		},
 		_left: function( v ) {
@@ -6397,6 +6399,12 @@ Combobox = define.widget( 'combobox', {
 			}
 		},
 		pick: Pickbox.prototype.pick,
+		setLoading: function( a ) {
+			a = a == N || a;
+			this.loading = a;
+			this.queryText( a ? (this.x.loadingtext || Loc.loading) : '' );
+			this.$t().contentEditable = ! a;
+		},
 		readonly: function( a ) {
 			AbsForm.prototype.readonly.call( this, a );
 			this.$t().contentEditable = this.isNormal();
@@ -6416,12 +6424,6 @@ Combobox = define.widget( 'combobox', {
 			AbsForm.prototype.readonly.call( this, a );
 			this.$t().contentEditable = this.isNormal();
 			return this;
-		},
-		setLoading: function( a ) {
-			a = a == N || a;
-			this.loading = a;
-			this.queryText( a ? (this.x.loadingtext || Loc.loading) : '' );
-			this.$t().contentEditable = ! a;
 		},
 		html_btn: function() {
 			var s = '';
@@ -6520,19 +6522,22 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		fixSize: function() {
 			if ( this.$() ) {
-				var w = (this.$().parentNode.offsetWidth - 5) + 'px';
-				this.$().style.maxWidth = w;
-				ie7 && (this.$().style.width = w);
+				var w = this.$().parentNode.offsetWidth - 5;
+				this.$().style.maxWidth = w + 'px';
+				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
+					this.$().style.width = w + 'px';
+					Q( 'table', this.$() ).css( 'table-layout', 'fixed' );
+				}
 			}
 		},
 		setLoading: function( a ) {
 			$.classAdd( this.$(), 'z-loading', this.loading = a === F ? a : T );
 		},
 		html_nodes: function() {
-			var p = this.parentNode, w = this.width(), t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
+			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
 				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit"><i class=f-vi></i><span class="f-omit f-va">' +
 					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
-			return ie7 ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
+			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}
 	}
 } ),
@@ -7933,7 +7938,9 @@ GridRow = define.widget( 'grid/row', {
 		if ( typeof x.data !== _OBJ )
 			x = { data: x };
 		W.call( this, x, p, n );
-		x.focus && $.classAdd( this, 'z-on' );
+		if ( x.focus ) {
+			$.classAdd( this, 'z-on' );
+		}
 	},
 	Prototype: {
 		ROOT_TYPE: 'grid',
@@ -8655,9 +8662,14 @@ Grid = define.widget( 'grid', {
 			ready: function() {
 				var a = this.tbody();
 				if ( a ) {
-					var b = a.$().rows, d = this.getFocus();
+					var b = a.$().rows, c = this.getFocusAll();
 					b.length && ($.classAdd( b[ 0 ], 'z-first' ), $.classAdd( b[ b.length - 1 ], 'z-last' ));
-					(d = this.getFocus()) && _scrollIntoView( d );
+					if ( c.length ) {
+						_scrollIntoView( c[ 0 ] );
+						for ( var i = 0, d; i < c.length; i ++ ) {
+							if ( (d = c[ i ].getBox()) && d.x.sync === 'focus' ) c[ i ].checkBox();
+						}
+					}
 				}
 			},
 			scroll: function( e ) {
