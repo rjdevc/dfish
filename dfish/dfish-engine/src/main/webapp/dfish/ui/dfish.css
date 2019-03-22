@@ -335,10 +335,15 @@
 .w-spinner.z-ds ._b em:hover .f-arw-t2{border-bottom-color:#99a8b8}
 .w-spinner.z-ds ._b em:hover .f-arw-b2{border-top-color:#99a8b8}
 
-.w-slider{position:relative;height:30px;}
-.w-slider ._t{position:relative;height:100%;background:#f2f2f2;border-radius:3px;box-shadow:inset 0 0 1px rgba(0,0,0,0.2);}
-.w-slider ._track{position:absolute;top:0;bottom:0;background:#d1e9ff;border-radius:3px;box-shadow:inset 0 0 1px rgba(0,0,255,0.3);}
-.w-slider ._thumb{position:absolute;width:30px;height:30px;background:#1891fb;border-radius:3px}
+.w-slider{position:relative;}
+.w-slider ._t{position:relative;height:100%;background:#f7f9fa}
+.w-slider ._track{position:absolute;left:0;top:0;bottom:0;background:#d1e9ff;border:1px solid transparent}
+.w-slider ._thumb{position:absolute;width:30px;height:100%;background:#fff;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
+.w-slider ._thumb:hover{background:#1891fb}
+.w-slider .w-input-placeholder{left:30px;right:0;top:0;text-align:center}
+.w-slider.z-drag .w-input-placeholder{display:none}
+.w-sliderjigsaw-dialog .small{position:absolute;top:0;left:0}
+.w-sliderjigsaw-dialog .ref{position:absolute;top:5px;right:5px;color:#fff;;cursor:pointer;text-shadow: 0 0 3px #000}
 
 .w-rate ._i{display:inline-block;width:20px;height:20px;background:url(g/n.png) no-repeat -169px 50%;vertical-align:middle}
 .w-rate ._i.z-on{background-position:-191px 50%}
@@ -534,6 +539,8 @@
 
 .w-menu{padding:3px 0;background:#fff;border:1px solid #99a8b8;box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:3}
 .w-menu.z-scroll{padding:0;}
+.w-menu.z-mag-t{box-shadow:0 -1px 1px rgba(0,0,0,0.2)}
+.w-menu.z-mag-b{box-shadow:0 2px 2px rgba(0,0,0,0.2)}
 .w-menu ._g{position:relative;overflow:hidden}
 .w-menu ._ar{position:relative;height:12px;line-height:0;text-align:center;overflow:hidden}
 .w-menu ._ar .f-arw-b2{border-top-color:#aaa}
@@ -558,8 +565,6 @@
 .w-dialog.z-snap-32 .w-menu-line{right:-1px;top:-1px}
 .w-dialog.z-snap-14 .w-menu-line{left:-1px;bottom:-1px}
 .w-dialog.z-snap-23 .w-menu-line{right:-1px;bottom:-1px}
-.w-dialog.z-mag-t{box-shadow:0 -1px 1px rgba(0,0,0,0.2)}
-.w-dialog.z-mag-b{box-shadow:0 2px 2px rgba(0,0,0,0.2)}
 
 .w-tip{border:1px solid #f3e041;background:#faf0cd;box-shadow:0 0 4px #d9d9d9;z-index:3}
 .w-tip-text{padding:4px 10px;min-height:20px;}

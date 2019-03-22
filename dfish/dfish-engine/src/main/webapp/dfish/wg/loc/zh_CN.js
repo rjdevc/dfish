@@ -30,6 +30,7 @@ create	: '新建',
 add		: '添加',
 edit	: '编辑',
 finish	: '完成',
+refresh : '刷新',
 operfail : '操作失败',
 opertip	 : '操作提示',
 nodata	: '暂无数据',
@@ -88,6 +89,8 @@ form : {
 	need_valid_option: '请输入一个有效选项',
 	choose_atleastone: '请至少选择一项',
 	complete_required: '请完成必填项',
+	sliderjigsaw_drag_right: '向右拖动滑块填充拼图',
+	sliderjigsaw_required: '请完成滑块验证',
 	no_files: '<没有文件>'
 },
 

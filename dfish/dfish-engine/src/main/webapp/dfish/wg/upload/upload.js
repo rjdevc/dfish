@@ -1705,6 +1705,7 @@ define.widget( 'upload/image/value', {
 				if ( s.indexOf( 'javascript:' ) === 0 ) {
 					this.formatJS( s );
 				} else {
+					//getSuffix( this.x.data.name ) === 'img' ? this.preview() : $.download( this.formatStr( s ) );
 					$.download( this.formatStr( s ) );
 				}
 			}
@@ -1806,9 +1807,9 @@ define.widget( 'upload/file/value', {
 		_cls: 'w-upload-value-simple',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u = this.u, c = u.x.value_button, t = f ? f.name : this.x.data.name;
+			var u = this.u, c = u.x.value_button, t = f ? f.name : this.x.data.name, s = u.x.down_url .indexOf( 'javascript:' ) !== 0 && u.x.down_url;
 			this.empty();
-			this.add( { type: 'button', text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.download()' } } );
+			this.add( { type: 'button', tip: t, text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.download()' } } );
 			var b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
 			b.add( { icon: '.f-i-trash', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
 			if ( c && c.length ) {
@@ -1902,10 +1903,13 @@ var suffix = (function() {
 	}
 	return r;
 })();
+function getSuffix( url ) {
+	var a = $.strFrom( url, '.', true ).toLowerCase();
+	return suffix[ a ] || 'file';
+};
 // 根据文件后缀名获取图标样式
 function getIco( url ) {
-	var a = $.strFrom( url, '.', true ).toLowerCase();
-	return '.f-i-file-' + (suffix[ a ] || 'file');
+	return '.f-i-file-' + getSuffix( url );
 };
 // html5支持预览本地图片
 function readImage( file, img ) {

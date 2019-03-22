@@ -1903,7 +1903,7 @@ View = define.widget( 'view', {
 					var o = _all[ n.wid ];
 					_scrollIntoView( o, T );
 					a && o.trigger( 'error', [{ type: 'alert', text: n.text, id: $.alert_id }] );
-					h && o.trigger( 'error', [{ type: 'tip', text: n.text }] );
+					h && o.trigger( 'error', [ o.validTip( n.text ) ] );
 				}
 			}
 			return !(this._err_ns = e); 
@@ -4201,7 +4201,7 @@ AbsForm = define.widget( 'abs/form', {
 				return this.getValidError( a );
 			},
 			error: function( e, a ) {
-				typeof a === _OBJ ? this.exec( a ) : this.warn( a );
+				typeof a === _OBJ ? (this.valid_tip = this.exec( a )) : this.warn( a );
 			}
 		}
 	},
@@ -4211,6 +4211,9 @@ AbsForm = define.widget( 'abs/form', {
 		className: 'w-form',
 		_warncls: '',
 		validHooks: F,
+		validTip: function( t ) {
+			return { type: 'tip', text: t };
+		},
 		formWidth: function() {
 			return this.innerWidth();
 		},
@@ -4435,7 +4438,7 @@ AbsInput = define.widget( 'abs/input', {
 			this.focus();
 			this.trigger( e );
 		},
-		html_placehoder: function() {
+		html_placeholder: function() {
 			var v = this.x.value;
 			return this.x.placeholder ? '<label class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
@@ -4447,7 +4450,7 @@ AbsInput = define.widget( 'abs/input', {
 			return '';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placehoder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -5631,42 +5634,143 @@ Slider = define.widget( 'slider', {
 		}
 	},
 	Prototype: {
-		className: 'w-form',
+		className: 'w-form w-input',
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a == N )
 				return this.$v().value;
 			this.$v().value = a;
 			var l = this._left( a );
-			this.css( 'thumb', 'left', l ).css( 'track', 'width', l + (this.attr( 'thumbwidth' ) / 2) );
+			this.css( 'thumb', 'left', l ).css( 'track', 'width', l == 0 ? 0 : l + this.attr( 'thumbwidth' ) );
 		},
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
-			var x = b.clientX, c = this.x.validate, m = (c && c.maxvalue) || 100, n = (c && c.minvalue) || 0, f = _number( a.style.left ), 
+			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
 				g = this.attr( 'thumbwidth' ), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
 				d = t && this.exec( { type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F } ), v = self.$v().value;
+			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
 				var l = $.numRange(f + e.clientX - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
 				a.style.left = l + 'px';
-				$( self.id + 'track' ).style.width = (l + (g / 2)) + 'px';
+				$( self.id + 'track' ).style.width = (l + g) + 'px';
 				d && d.snapTo( a ).text( self.formatStr( t, [ v ] ) );
 				$( self.id + 'v' ).value = v;
-				self.trigger( 'drag' );
+				self.addClass( 'z-drag' );
+				self.trigger( 'drag', [ v ] );
 			}, function( e ) {
 				d && d.close();
-				self.trigger( 'drop' );
+				self.removeClass( 'z-drag' );
+				self.trigger( 'drop', [ v ] );
 			} );
 		},
+		max: function() {
+			var v = this.x.validate && this.x.validate.maxvalue;
+			return v == N ? 100 : v;
+		},
+		min: function() {
+			var v = this.x.validate && this.x.validate.minvalue;
+			return v == N ? 0 : v;
+		},
 		_left: function( v ) {
-			var w = this.innerWidth(), d = this.x.validate, m = (d && d.maxvalue) || 100, n = (d && d.minvalue) || 0;
-			return (w - this.attr( 'thumbwidth' )) * (v - n) / (m - n);
+			var m = this.max(), n = this.min();
+			return (this.innerWidth() - this.attr( 'thumbwidth' )) * (v - n) / (m - n);
 		},
 		html_nodes: function() {
-			var w = this.innerWidth(), v = this.x.value == N ? n : this.x.value, f = this._left( v );
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>';
+			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value, f = this._left( v );
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>' + this.html_placeholder();
 		}
+	}
+} ),
+/* `SliderJigsaw`
+ * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
+ * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '' }
+ * @authsrc: { result: true }
+ */
+SliderJigsaw = define.widget( 'slider/jigsaw', {
+	Const: function() {
+		Slider.apply( this, arguments );
+		this.load();
+	},
+	Extend: 'slider',
+	Listener: {
+		tag: '',
+		body: {
+			mouseover: {
+				occupy: T,
+				method: function() {
+					if ( this.loaded ) {
+						!this.jigsaw && this.pop();
+					} else
+						this.addEventOnce( 'load.mouseover', this.pop );
+				}
+			},
+			mouseout: {
+				occupy: T,
+				method: function( e ) {
+					if ( !this.drag_ing && this.jigsaw && !(this.$().contains( e.toElement ) || this.jigsaw.$().contains( e.toElement )) )
+						this.jigsaw.close();
+					this.removeEvent( 'load.mouseover' );
+				}
+			},
+			drag: function( e, v ) {
+				if ( !this.jigsaw )
+					return;
+				this.drag_ing = T;
+				var a = Q( '.small', this.jigsaw.$() ), m = this.max(), n = this.min();
+				a.css( 'left', (this.jigsaw.x.width - a.width()) * (v / (m - n)) );
+			},
+			drop: function( e, v ) {
+				this.drag_ing = F;
+				this.cmd( { type: 'ajax', src: $.urlFormat( this.x.authsrc, { value: v, token: this.img.token } ), complete: function( r ) {
+					this.result = r && r.result;
+					this.result ? (this.jigsaw && this.jigsaw.close()) : this.reload( this.jigsaw );
+					this.val( this.min() );
+					this.valid();
+					Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
+				} } );
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-form w-input w-slider w-sliderjigsaw',
+		validHooks: {
+			valid: function( b, v ) {
+				if ( !this.result )
+					return _form_err.call( this, b, 'sliderjigsaw_required' );
+			}
+		},
+		validTip: function( t ) {
+			return { type: 'tip', text: t, snaptype: this.jigsaw ? 'rl,lr' : 'tb,bt' };
+		},
+		pop: function() {
+			var d = this.img, w = this.innerWidth() + 2, h = Math.ceil( w * (d.big.height / d.big.width) );
+			this.jigsaw = this.cmd( { type: 'dialog', cls: 'w-sliderjigsaw-dialog', width: w, height: h + 16, snap: this, snaptype: 'tb,bt', pophide: true, node: {
+				type: 'view', node: {
+					type: 'html', cls: 'f-rel', style: 'margin:8px 0', text: '<img class=big src=' + d.big.src + ' width=' + w + '><img class=small src=' + d.small.src + ' height=' + h +
+						'><span onclick=' + $.abbr + '.all["' + this.id +  '"].reload(true) class=ref>' + Loc.refresh + '</span>'
+				}
+			}, on: { close: 'this.parentNode.jigsaw=null' } } );
+		},
+		load: function( fn ) {
+			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
+				this.img = d;
+				this.loaded = T;
+				this.trigger( 'load' );
+				fn && fn.call( this );
+			} } );
+		},
+		reload: function( a ) {
+			this.loaded = F;
+			this.load( function() {
+				this.jigsaw && this.jigsaw.close();
+				a && this.pop();
+			} );
+		},
+		html_placeholder: function() {
+			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + (this.x.placeholder || Loc.form.sliderjigsaw_drag_right) + '</span></label>';
+		},
 	}
 } ),
 /* `xbox` */
@@ -5760,7 +5864,7 @@ XBox = define.widget( 'xbox', {
 						b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
 				} else {
 					for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
-						if ( q[ i ].value != N && q[ i ].value != '' && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
+						if ( q[ i ].value == '' ? (a == '') : $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
 				}
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
@@ -5795,7 +5899,9 @@ XBox = define.widget( 'xbox', {
 				! this.x.cancelable && d.addClass( 'z-on' );
 				d.siblings().removeClass( 'z-on' );
 			}
-			this.val( d );
+			if ( ! (this.x.on && this.x.on.beforechange && (this.x.multiple || this.$v().value != v) &&
+				this.triggerHandler( 'beforechange', [ this.x.multiple ? $[d.hasClass( 'z-on' ) ? 'idsAdd' : 'idsRemove']( this.$v().value, v ) : v ] ) === F) )
+				this.val( d );
 			! this.x.multiple && this._dropper.close();
 		},
 		drop: function() {
@@ -5815,7 +5921,7 @@ XBox = define.widget( 'xbox', {
 				this._dropper = this.exec( x );
 			}
 		},
-		html_placehoder: function() {
+		html_placeholder: function() {
 			return '';
 		},
 		html_li: function( a, b ) {
@@ -6445,7 +6551,7 @@ Combobox = define.widget( 'combobox', {
 				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placehoder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
