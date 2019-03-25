@@ -894,7 +894,7 @@ define( {
             '</script>'
           }
 	  ] },
-	  { name: '@propName:w-for(expr)', remark: '循环语句。propName 是属性名，循环后输出一个数组。expr 语句使用 in 语法，如 <b>($item in $data)</b>，或 <b>(($item,$index) in $data)</b>', example: [
+	  { name: '@w-for', remark: '循环输出一组节点。expr 语句使用 in 语法，如 <b>$item in $data</b>，或 <b>$item,$index in $data</b>', example: [
           function() {
           	/// 使用模板的树
           	return~
@@ -912,16 +912,21 @@ define( {
             /// tmpl_tree 定义
           	return~
             $.template( "tmpl_tree", {
-              "@nodes:w-for($item in $data)": { "type": "leaf", "@text": "$item.name" }
+              "type": "leaf", "nodes": [
+                { "type": "leaf", "@w-for": "$item in $data", "@text": "$item.name" }
+              ]
             } );
           },
           function() {
             /// 上述模板解析结果为：
           	return~
-            { "nodes": [ { "type": "leaf", "text": "张三" }, { "type": "leaf", "text": "李四" } ] }
+            { "type": "leaf", "nodes": [
+              { "type": "leaf", "text": "张三" },
+              { "type": "leaf", "text": "李四" }
+            ] }
           }
 	  ] },
-	  { name: '@w-if(expr)', remark: '条件表达式。', example: [
+	  { name: '@w-switch(expr)', remark: '条件选择表达式。', example: [
           function() {
           	/// 数据源
           	return~
@@ -931,8 +936,8 @@ define( {
           	/// 模板
           	return~
             {
-              "@w-if($data.flag==1)": { "type": "text", "name": "name", "@value": "$data.name" },
-              "@else": { "type": "html", "@text": "@data.name" }
+              "@w-switch($data.flag==1)": { "type": "text", "name": "name", "@value": "$data.name" },
+              "@w-switch-default": { "type": "html", "@text": "@data.name" }
             }
           },
           function() {
@@ -941,7 +946,34 @@ define( {
             { "type": "text", "name": "name", "value": "张三" }
           }
 	  ] },
-	  { name: '@w-elseif(expr)', remark: '条件表达式。必须搭配 @w-if 使用。' },
+	  { name: '@w-switch-default', remark: '条件选择表达式。' },
+	  { name: '@w-if', remark: '条件表达式。', example: [
+          function() {
+          	/// 数据源
+          	return~
+            { data: { flag: 1, name: "张三" } }
+          },
+          function() {
+          	/// 模板
+          	return~
+            {
+              "type": "buttonbar", "nodes": [
+                { "type": "button", "@w-if": "$data.flag==1", "@text": "$data.name" },
+                { "type": "button", "@w-else": "", "text": "else" },
+              ]
+            }
+          },
+          function() {
+          	/// 上述数据源+模板输出结果为：
+          	return~
+            {
+              "type": "buttonbar", "nodes": [
+                { "type": "button", "@text": "张三" }
+              ]
+            }
+          }
+	  ] },
+	  { name: '@w-elseif', remark: '条件表达式。必须搭配 @w-if 使用。' },
 	  { name: '@w-else', remark: '条件表达式。必须搭配 @w-if 使用。' },
 	  { name: '@w-include', remark: '引用模板。值是模板ID。', example: [
           function() {
@@ -1100,9 +1132,6 @@ define( {
             var p3 = wg.closest( function() { return this.type == 'vert' } );
           }
       ] },
-      { name: 'closestData(key)', remark: '获取祖先节点的data数据。从当前节点开始，逐级向上，返回最先获取到的data值。', common: true, param: [
-        { name: 'key', type: 'String', remark: '属性名。' }
-      ] },
       { name: 'cmd(cmdID, [arg1, arg2...argN])', remark: '执行命令。', common: true, param: [
         { name: 'cmdID', type: 'String | Object', remark: '命令ID，或命令参数对象' },
         { name: 'argN', type: 'String', remark: '调用 ajax 或 submit 命令时，会替换 src 中的 $0...$N', optional: true }
@@ -1146,6 +1175,7 @@ define( {
             wg.exec( 'new_ca', [ 5 ], { target: this, pophide: true } ); // 把 src 中的 $0 替换为5, 并增加 target 和 pophide 参数
           }
       ] },
+      { name: 'empty()', remark: '删除所有子节点。', common: true },
       { name: 'find(id)', remark: '根据ID获取当前widget内部的节点。', common: true, param: [
         { name: 'id', type: 'String', remark: 'widget ID。' }
       ] },
@@ -1252,6 +1282,8 @@ define( {
             wg.setOn( 'click', 'alert(this.type)' );
           }
       ] },
+      { name: 'srcData()', common: true, ver: '3.2+', remark: '获取当前widget所在的数据源祖先节点的数据源JSON对象。' },
+      { name: 'srcParent()', common: true, ver: '3.2+', remark: '获取当前widget所在的数据源祖先节点。' },      
       { name: 'triggerAll(event)', common: true, param: [
         { name: 'event', type: 'Event | String', remark: '事件对象或名称。' }
       ], remark: '触发自身和所有子孙节点的事件。', example: [
@@ -1943,30 +1975,37 @@ define( {
       ] }
     ]
   },
+  "xsrc": {
+  	title: 'xsrc',
+  	remark: '用来组合模板的容器。<p>' +
+  		'实现顺序: <ol>' +
+  		'<li>如果有node，就直接展示node。' + 
+	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
+	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
+  	extend: 'widget',
+    Config: [
+      { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
+      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
+      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
+      { name: 'node', type: 'Object', remark: '直接展示的内容节点。' }
+    ],
+    Methods: [
+      { name: 'reload([src], [template], [target], [fn])', remark: '重新装载。', param: [
+        { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true },
+        { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。', optional: true },
+        { name: 'target', type: 'String', remark: 'widget ID。重新装载数据后，只更新指定的节点。多个ID以逗号隔开。', optional: true },
+        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
+      ] }
+	]
+  },
   "view": {
   	title: 'view',
   	remark: '视图对象。',
-  	extend: 'widget',
+  	extend: 'xsrc',
   	deprecate: 'ownerView',
     Config: [
       { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
-      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。', example: [
-          function() {
-          	// 在页面上生成一个view，并通过 path 来获取
-            $.widget( { type: 'view', id: 'index', width: 500, height: 500, src: 'a.sp' } ).render( document.body );
-            alert( VM( '/index' ) );
-          }
-      ] },
-      { name: 'src', type: 'String | Object', remark: 'view 的URL地址。<br>在3.2+版本中，也可以是JSON对象。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
-      { name: 'node', type: 'Object', remark: 'View的子节点，直接展示的内容。', example: [
-          function() {
-          	//
-            return~
-            { type: 'view', node: { type: 'html', text: '内容..' } }
-          }
-      ] }
+      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。' }
     ],
     Event: [
       { name: 'load', remark: '数据加载完毕并展示后触发。', example: [
@@ -2020,10 +2059,6 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围，某个 widget 的 ID。', optional: true }
       ] },
-      { name: 'reload([src], [fn])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String', remark: 'view的URL地址。', optional: true },
-        { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
-      ] },
       { name: 'resetForm([range], [empty])', remark: '重置表单。', param: [
         { name: 'range', type: 'String', remark: 'widget ID，多个用逗号隔开。指定表单的范围。', optional: true },
         { name: 'empty', type: 'Boolean', remark: '设置为true，强制清空值。', optional: true }
@@ -2043,26 +2078,6 @@ define( {
     Classes: [
       { name: '.w-view', remark: '基础样式。' }
     ]
-  },
-  "xsrc": {
-  	title: 'xsrc',
-  	remark: '用来组合模板的容器。<p>' +
-  		'实现顺序: <ol>' +
-  		'<li>如果有node，就直接展示node。' + 
-	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
-	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
-  	extend: 'widget',
-    Config: [
-      { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
-      { name: 'node', type: 'Object', remark: '直接展示的内容。' }
-    ],
-    Methods: [
-      { name: 'reload([src])', remark: '重新装载view。', param: [
-        { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true }
-      ] }
-	]
   },
   "tr": {
   	title: 'tr',
@@ -2134,7 +2149,6 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。' },
-      { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'focusmultiple', type: 'Boolean', remark: '是否可多选。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。album的子节点类型为"img"' },
@@ -2170,6 +2184,7 @@ define( {
       { name: 'description', type: 'String', remark: '图片说明。当 album face="straight" 时会显示说明。' },
       { name: 'face', type: 'String', remark: '图片展现方式。可选值: <b>none</b>, <b>straight</b>。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'imgwidth', type: 'Number | String', remark: '图片宽度。' },
       { name: 'imgheight', type: 'Number | String', remark: '图片高度。' },
       { name: 'textwidth', type: 'Number | String', remark: '文本宽度。' },
@@ -2735,7 +2750,7 @@ define( {
       { name: 'validategroup', type: 'Object', optional: true, remark: '附加的表单校验选项。' }
     ],
     Event: [
-      { name: 'change', remark: '改变文本值时触发。' },
+      { name: 'change', remark: '值发生改变时触发。' },
       { name: 'valid', remark: '表单校验时触发。' }
     ],
     Methods: [
@@ -3001,10 +3016,53 @@ define( {
   	title: 'slider',
   	remark: '滑块。',
   	extend: 'text',
+  	deprecate: '.w-text,.z-trans,placeholder,transparent,focus,focusEnd,warn,change',
     Config: [
-      { name: 'tip', type: 'Boolean | String', optional: true, remark: '拖动滑块时显示的tip。支持${0}参数表示当前值。' }
+      { name: 'tip', type: 'Boolean | String', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$0</b><s>(值)</s>。' }
     ],
-  	deprecate: '.w-text,.z-trans,placeholder,transparent,focus,focusEnd,warn',
+    Event: [
+      { name: 'dragstart', remark: '拖动开始时触发。' },
+      { name: 'drag', remark: '拖动时触发。' },
+      { name: 'drop', remark: '结束拖动时触发。' }
+    ],
+    Classes: [
+      { name: '.w-slider', remark: '基础样式。' }
+    ]
+  },
+  "slider/jigsaw": {
+  	title: 'slider/jigsaw',
+  	remark: '滑块拼图。',
+  	extend: 'slider',
+    Config: [
+      { name: 'imgsrc', type: 'String', remark: '获取拼图的图片数据。', example: [
+          function() {
+            // imgsrc 返回的数据格式
+            return~
+            {
+      	      big: {
+                src: 'big.jpg', width: 200, height: 90
+              },
+              small: {
+                src: 'small.jpg', width: 200, height: 90
+              },
+              minvalue: 0,
+              maxvalue: 300,
+              token: 'abc'
+            }
+          }
+      ] },
+      { name: 'authsrc', type: 'String', remark: '验证拼图是否正确的地址。支持变量 <b>$value</b><s>(值)</s> 和 <b>$token</b><s>(imgsrc返回的token)</s>。', example: [
+          function() {
+            // authsrc 返回的数据格式
+            return~
+            { result: true }
+          }
+      ] }
+    ],
+    Event: [
+      { name: 'drag', remark: '拖动滑块时触发。' },
+      { name: 'drop', remark: '结束拖动时触发。' }
+    ],
     Classes: [
       { name: '.w-slider', remark: '基础样式。' }
     ]
@@ -3043,8 +3101,8 @@ define( {
       	{ name: 'value', type: 'String', remark: '值。' }
       ] }
     ],
-    Classes: [
-      { name: '.w-xbox', remark: '基础样式。' }
+    Event: [
+      { name: 'beforechange', remark: '在点击选项，即将改变值之前触发。可以用 return false 来取消事件。支持变量 <b>$0</b><s>(点击选项的值)</s>。' }
     ],
     Methods: [
       { name: 'getLength()', remark: '获取选项总数。' },
@@ -3085,7 +3143,11 @@ define( {
             // 删除第一个选项
             xbox.removeOption( 0 );
           }
-      ] }    ]
+      ] }
+    ],
+    Classes: [
+      { name: '.w-xbox', remark: '基础样式。' }
+    ]
   },
   "imgbox": {
   	title: 'imgbox',
@@ -3175,13 +3237,11 @@ define( {
   	deprecate: 'tip,.w-text',
     Config: [
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
-      { name: 'dropsrc', type: 'String', remark: '显示下拉列表的 view src。' },
+      { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'face', type: 'String', remark: '设置已选项的外观效果。可选值: <b>default</b>, <b>tag</b>' },
-      { name: 'node', type: 'Object', remark: '包含候选项数据的 view。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'loadingtext', type: 'String', remark: '加载数据时显示的文本。' },
-      { name: 'src', type: 'String', remark: '通过这个 src 加载候选项数据到本地。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
-      { name: 'suggest', type: 'Boolean', remark: '设为 true，在线搜索关键词模式。设为 false，缓存搜索模式。默认值为 false。' },
+      { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'nobr', type: 'Boolean', remark: '设为 true，已选项不换行。' },
       { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
@@ -3193,8 +3253,6 @@ define( {
       ] },
       { name: 'strict', type: 'Boolean', remark: '设为 true，如果存在没有匹配成功的选项，则不能通过表单验证。设为false，允许存在没有匹配成功的选项。默认值是true。' },
       { name: 'text', type: 'String', remark: '初始化时显示的文本。如果设置了此参数，就要和 value 值一一对应。一般只设置 value 就可以，仅当 src 是 tree 模式的数据岛，并且 value 在 tree 的初始数据中匹配不到时才需要定义 text。' },
-      { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
-      { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'value', type: 'String', remark: '表单值。多个用逗号隔开。' }
     ],
     Methods: [

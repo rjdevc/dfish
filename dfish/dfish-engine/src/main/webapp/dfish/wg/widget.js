@@ -25,6 +25,9 @@ _putin  = { append: T, prepend: T, undefined: T },
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
+abbr = function( a, b ) {
+	return $.abbr + '.all["' + a.id + '"].' + b;
+},
 // 模板集合
 _templateCache = {},
 // 注册模板  /@a -> id, b -> template body
@@ -3432,6 +3435,9 @@ Dialog = define.widget( 'dialog', {
 				this.templateTitle && this.templateTitle.text( b );
 			}
 		},
+		getContentView: function() {
+			return this.contentView;
+		},
 		parentDialog: function() {
 			return $.dialog( this.ownerView );
 		},
@@ -3600,6 +3606,24 @@ Dialog = define.widget( 'dialog', {
 			return this.vis;
 		},
 		show: function( a ) {
+			if ( this.x.hoverdrop ) {
+				var self = this;
+				if ( ! this._show_timer ) {
+					this._show_timer = setTimeout( function() { self._show(); }, 300 );
+					Q( document ).on( 'mouseover.' + self.id, function( e ) {
+						if ( ! self.parentNode.contains( e.target ) ) {
+							clearTimeout( self._show_timer );
+							delete self._show_timer;
+							Q( document ).off( 'mouseover.' + self.id );
+						}
+					} );
+				}
+			} else
+				this._show();
+			return this;
+		},
+		_show: function( a ) {
+			delete this._show_timer; 
 			if ( this.x.cache && this.$() ) {
 				$.show( this.$() );
 				this.x.cover && $.show( this.$( 'cvr' ) );
@@ -3607,7 +3631,9 @@ Dialog = define.widget( 'dialog', {
 				this._snapCls();
 			} else
 				this.render();
-			return this;
+		},
+		keepHover: function( a ) {
+			this._keep_hover = a;
 		},
 		hide: function() {
 			if ( this._disposed )
@@ -3654,7 +3680,7 @@ Dialog = define.widget( 'dialog', {
 				var o = d === T ? ($( this.x.snap ) || this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
 				Q( [ o, self.$() ] )[ f ]( 'mouseenter', self._hover_over || (self._hover_over = function() { clearTimeout( self._hover_timer ); delete self._hover_timer; }) );
 				Q( document )[ f ]( 'mousemove', self._hover_move || (self._hover_move = function( e ) {
-					if ( ! o.contains( e.target ) && ! self.contains( e.target ) ) {
+					if ( ! o.contains( e.target ) && ! self.contains( e.target ) && ! self._keep_hover ) {
 						if ( ! self._hover_timer )
 							self._hover_timer = setTimeout( function() { self.close() }, 300 );
 					} else
@@ -5622,10 +5648,13 @@ Spinner = define.widget( 'spinner', {
 Slider = define.widget( 'slider', {
 	Extend: Spinner,
 	Default: {
-		width: '*', wmin: 0, thumbwidth: 30
+		width: '*', wmin: 0
 	},
 	Listener: {
 		body: {
+			ready: function() {
+				this.fixPos();
+			},
 			resize: function() {
 				this.css( 't', 'width', this.innerWidth() );
 				this.val( this.val() );
@@ -5635,19 +5664,25 @@ Slider = define.widget( 'slider', {
 	},
 	Prototype: {
 		className: 'w-form w-input',
+		fixPos: function( v ) {
+			v == N && (v = this.x.value);
+			if ( v != N ) {
+				var l = this._left( v );
+				this.css( 'thumb', 'left', l ).css( 'track', 'width', l == 0 ? 0 : l + this.thumbWidth() );
+			}
+		},
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a == N )
 				return this.$v().value;
 			this.$v().value = a;
-			var l = this._left( a );
-			this.css( 'thumb', 'left', l ).css( 'track', 'width', l == 0 ? 0 : l + this.attr( 'thumbwidth' ) );
+			this.fixPos( a );
 		},
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
 			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
-				g = this.attr( 'thumbwidth' ), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
+				g = this.thumbWidth(), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
 				d = t && this.exec( { type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F } ), v = self.$v().value;
 			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
@@ -5673,13 +5708,18 @@ Slider = define.widget( 'slider', {
 			var v = this.x.validate && this.x.validate.minvalue;
 			return v == N ? 0 : v;
 		},
+		thumbWidth: function() {
+			if ( ! this._thumb_wd )
+				this._thumb_wd = this.$( 'thumb' ).offsetWidth;
+			return this._thumb_wd;
+		},
 		_left: function( v ) {
 			var m = this.max(), n = this.min();
-			return (this.innerWidth() - this.attr( 'thumbwidth' )) * (v - n) / (m - n);
+			return (this.innerWidth() - this.thumbWidth()) * (v - n) / (m - n);
 		},
 		html_nodes: function() {
-			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value, f = this._left( v );
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>' + this.html_placeholder();
+			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event)></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -5691,6 +5731,12 @@ Slider = define.widget( 'slider', {
 SliderJigsaw = define.widget( 'slider/jigsaw', {
 	Const: function() {
 		Slider.apply( this, arguments );
+		this.jigsaw = this.add( { type: 'dialog', cls: 'w-sliderjigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
+			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, node: {
+			type: 'view', node: {
+				type: 'html', cls: 'f-rel', style: 'margin:8px 0', id: 'img', format: 'javascript:return ' + abbr( this, 'html_img()' )
+			}
+		} }, -1 );
 		this.load();
 	},
 	Extend: 'slider',
@@ -5701,35 +5747,39 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 				occupy: T,
 				method: function() {
 					if ( this.loaded ) {
-						!this.jigsaw && this.pop();
+						this.pop( T );
 					} else
 						this.addEventOnce( 'load.mouseover', this.pop );
 				}
 			},
 			mouseout: {
 				occupy: T,
-				method: function( e ) {
-					if ( !this.drag_ing && this.jigsaw && !(this.$().contains( e.toElement ) || this.jigsaw.$().contains( e.toElement )) )
-						this.jigsaw.close();
+				method: function() {
 					this.removeEvent( 'load.mouseover' );
 				}
 			},
+			dragstart: function( e ) {
+				this.pop();
+				this.jigsaw.keepHover( T );
+			},
 			drag: function( e, v ) {
-				if ( !this.jigsaw )
-					return;
-				this.drag_ing = T;
-				var a = Q( '.small', this.jigsaw.$() ), m = this.max(), n = this.min();
-				a.css( 'left', (this.jigsaw.x.width - a.width()) * (v / (m - n)) );
+				if ( this.jigsaw ) {
+					this.draging = T;
+					var a = Q( '.small', this.jigsaw.$() ), m = this.max(), n = this.min();
+					a.css( 'left', (this.jigsaw.innerWidth() - a.width()) * (v / (m - n)) );
+				}
 			},
 			drop: function( e, v ) {
-				this.drag_ing = F;
+				this.draging = F;
 				this.cmd( { type: 'ajax', src: $.urlFormat( this.x.authsrc, { value: v, token: this.img.token } ), complete: function( r ) {
 					this.result = r && r.result;
 					this.result ? (this.jigsaw && this.jigsaw.close()) : this.reload( this.jigsaw );
 					this.val( this.min() );
 					this.valid();
 					Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
+					this.removeClass( 'z-drag z-on' );
 				} } );
+				this.jigsaw.keepHover( F );
 			}
 		}
 	},
@@ -5744,19 +5794,21 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		validTip: function( t ) {
 			return { type: 'tip', text: t, snaptype: this.jigsaw ? 'rl,lr' : 'tb,bt' };
 		},
-		pop: function() {
-			var d = this.img, w = this.innerWidth() + 2, h = Math.ceil( w * (d.big.height / d.big.width) );
-			this.jigsaw = this.cmd( { type: 'dialog', cls: 'w-sliderjigsaw-dialog', width: w, height: h + 16, snap: this, snaptype: 'tb,bt', pophide: true, node: {
-				type: 'view', node: {
-					type: 'html', cls: 'f-rel', style: 'margin:8px 0', text: '<img class=big src=' + d.big.src + ' width=' + w + '><img class=small src=' + d.small.src + ' height=' + h +
-						'><span onclick=' + $.abbr + '.all["' + this.id +  '"].reload(true) class=ref>' + Loc.refresh + '</span>'
-				}
-			}, on: { close: 'this.parentNode.jigsaw=null' } } );
+		pop: function( a ) {
+			! this.jigsaw.vis && (a ? this.jigsaw.show() : this.jigsaw._show());
+		},
+		popWidth: function() {
+			return this.$().offsetWidth;
+		},
+		popHeight: function() {
+			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) ) + 16;
 		},
 		load: function( fn ) {
 			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
 				this.img = d;
 				this.loaded = T;
+				d.minvalue != N && this.setValidate( { minvalue: d.minvalue } );
+				d.maxvalue != N && this.setValidate( { maxvalue: d.maxvalue } );
 				this.trigger( 'load' );
 				fn && fn.call( this );
 			} } );
@@ -5764,9 +5816,27 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		reload: function( a ) {
 			this.loaded = F;
 			this.load( function() {
-				this.jigsaw && this.jigsaw.close();
-				a && this.pop();
+				this.pop();
+				this.jigsaw.getContentView().find( 'img' ).repaint( T );
 			} );
+		},
+		dragSmall: function( a, b ) {
+			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
+				g = a.offsetWidth, w = this.jigsaw.innerWidth() - g, self = this, v;
+			this.trigger( 'dragstart' );
+			$.moveup( function( e ) {
+				var l = $.numRange(f + e.clientX - x, 0, w);
+				v = Math.floor( (m - n) * (l / w) );
+				a.style.left = l + 'px';
+				self.addClass( 'z-drag' );
+				self.val( v );
+				self.triggerHandler( 'drag', [ v ] );
+			}, function( e ) {
+				self.trigger( 'drop', [ v ] );
+			} );
+		},
+		html_img: function() {
+			return '<img class=big src=' + this.img.big.src + ' width=100% ondragstart=return(!1)><img class=small src=' + this.img.small.src + ' height=100% onmousedown=' + abbr( this, 'dragSmall(this,event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + (this.x.placeholder || Loc.form.sliderjigsaw_drag_right) + '</span></label>';

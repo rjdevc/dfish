@@ -7,7 +7,7 @@ var mod = dfish.x.data.module;
 dfish.init( {
 	view: {
 		id: 'index',
-		src: 'api/' + mod + '-view.json'
+		src: mod + '-view.json'
 	},
 	debug: true
 } );
@@ -115,7 +115,7 @@ function exampleContent( e ) {
 	for ( var j = 0, f, h, s = '', l = e.length; j < l; j ++ ) {
 		f = e[ j ].toString().slice( 14, -1 ).replace( /\s+$/, '' ).split( '\r\n' );
 		if ( f[ 0 ].indexOf( '//' ) > -1 ) {
-			s += '<div class="example-title">// ' + (f[ 0 ].indexOf( '///' ) > -1 ? '' : ('范例' + (l > 1 ? (j + 1) : '')) + ': ') + $.strTrim( f[ 0 ] ).replace( /^\/+/g, '' ) + '</div>';
+			s += '<div class="example-title">// ' + (f[ 0 ].indexOf( '///' ) > -1 ? '' : '') + $.strTrim( f[ 0 ] ).replace( /^\/+/g, '' ) + '</div>';
 			f.splice( 0, 1 );
 		}
 		h = f.join( '\n' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' )
