@@ -3057,14 +3057,24 @@ define( {
             return~
             { result: true }
           }
-      ] }
+      ] },
+      { name: 'limit', type: 'Number', optional: true, remark: '最多连续验证的次数。超过次数则暂停验证。' },
+      { name: 'timeout', type: 'Number', optional: true, remark: '暂停验证的等待时间。单位(秒)' }
     ],
     Event: [
+      { name: 'auth', remark: '验证完成后触发。' },
       { name: 'drag', remark: '拖动滑块时触发。' },
       { name: 'drop', remark: '结束拖动时触发。' }
     ],
+    Methods: [
+      { name: 'isSuccess()', remark: '验证是否成功。' }
+    ],
     Classes: [
-      { name: '.w-slider', remark: '基础样式。' }
+      { name: '.w-slider', remark: '基础样式。' },
+      { name: '.w-sliderjigsaw', remark: '基础样式。' },
+      { name: '.z-authing', remark: '正在验证时的样式。' },
+      { name: '.z-drag', remark: '拖动时的样式。' },
+      { name: '.z-success', remark: '验证成功的样式。' }
     ]
   },
   "spinner": {

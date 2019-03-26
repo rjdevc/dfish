@@ -1190,8 +1190,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		_w_css[ v ].call( this );
 	};
 	_w_css[ v ] = function() {
-		var t = this[ y ], a = this.attr( v );
-		if ( a != -1 && (t !== U || a != N) && this.$() ) {
+		var t = this[ y ], a = this.$() && this.attr( v );
+		if ( a != -1 && (t !== U || a != N) ) {
 			delete this[ y ];
 			if ( t !== this[ oz ]() ) {
 				t = this[ iz ]();
@@ -5675,6 +5675,7 @@ Slider = define.widget( 'slider', {
 		val: function( a ) {
 			if ( a == N )
 				return this.$v().value;
+			a = $.numRange( a, this.min(), this.max() );
 			this.$v().value = a;
 			this.fixPos( a );
 		},
@@ -5696,8 +5697,8 @@ Slider = define.widget( 'slider', {
 				self.trigger( 'drag', [ v ] );
 			}, function( e ) {
 				d && d.close();
-				self.removeClass( 'z-drag' );
 				self.trigger( 'drop', [ v ] );
+				self.removeClass( 'z-drag' );
 			} );
 		},
 		max: function() {
@@ -5724,7 +5725,7 @@ Slider = define.widget( 'slider', {
 	}
 } ),
 /* `SliderJigsaw`
- * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
+ * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token', limit: 5, timeout: 10 }
  * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '' }
  * @authsrc: { result: true }
  */
@@ -5746,6 +5747,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			mouseover: {
 				occupy: T,
 				method: function() {
+					if ( ! this.isNormal() ) return;
 					if ( this.loaded ) {
 						this.pop( T );
 					} else
@@ -5755,6 +5757,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			mouseout: {
 				occupy: T,
 				method: function() {
+					if ( ! this.isNormal() ) return;
 					this.removeEvent( 'load.mouseover' );
 				}
 			},
@@ -5771,13 +5774,23 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			},
 			drop: function( e, v ) {
 				this.draging = F;
+				this.addClass( 'z-authing' );
 				this.cmd( { type: 'ajax', src: $.urlFormat( this.x.authsrc, { value: v, token: this.img.token } ), complete: function( r ) {
-					this.result = r && r.result;
-					this.result ? (this.jigsaw && this.jigsaw.close()) : this.reload( this.jigsaw );
-					this.val( this.min() );
+					this.success( r && r.result );
 					this.valid();
-					Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
-					this.removeClass( 'z-drag z-on' );
+					if ( this.isSuccess() ) {
+						this.jigsaw && this.jigsaw.close();
+						this.addClass( 'z-success' );
+						this.authCnt = 0;
+					} else {
+						this.reload( this.jigsaw );
+						this.reset();
+						Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
+						if ( this.x.limit )
+							this.limit();
+					}
+					this.removeClass( 'z-drag z-on z-authing' );
+					this.trigger( 'auth' );
 				} } );
 				this.jigsaw.keepHover( F );
 			}
@@ -5785,9 +5798,10 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 	},
 	Prototype: {
 		className: 'w-form w-input w-slider w-sliderjigsaw',
+		authCnt: 0,
 		validHooks: {
 			valid: function( b, v ) {
-				if ( !this.result )
+				if ( ! this.isSuccess() )
 					return _form_err.call( this, b, 'sliderjigsaw_required' );
 			}
 		},
@@ -5803,10 +5817,15 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		popHeight: function() {
 			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) ) + 16;
 		},
+		success: function( a ) {
+			this.x.status = a || a == N ? 'success' : '';
+		},
+		isSuccess: function( a ) {
+			return this.x.status === 'success';
+		},
 		load: function( fn ) {
 			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
 				this.img = d;
-				this.img._date = { "_date": new Date().getTime() };
 				this.loaded = T;
 				d.minvalue != N && this.setValidate( { minvalue: d.minvalue } );
 				d.maxvalue != N && this.setValidate( { maxvalue: d.maxvalue } );
@@ -5820,6 +5839,10 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 				this.pop();
 				this.jigsaw.getContentView().find( 'img' ).repaint( T );
 			} );
+		},
+		reset: function() {
+			this.val( this.min() );
+			this.removeClass( 'z-on z-success' );
 		},
 		dragSmall: function( a, b ) {
 			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
@@ -5836,8 +5859,38 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 				self.trigger( 'drop', [ v ] );
 			} );
 		},
+		limit: function() {
+			if ( ! this.x.limit )
+				return;
+			this.authCnt ++;
+			if ( this.authCnt >= this.x.limit ) {
+				if ( ! this.$( 'lmt' ) )
+					$.append( this.$(), this.html_limit() );
+				this.addClass( 'z-lmt' );
+				this.readonly();
+				var a = this.x.timeout || 15, self = this;
+				this._cntdn_inter = setInterval( function() {
+					if ( a < 2 ) {
+						clearInterval( self._cntdn_inter );
+						$.remove( self.$( 'lmt' ) );
+						self.removeClass( 'z-lmt' );
+						self.normal();
+						self.authCnt = 0;
+					} else {
+						a -= 1;
+						self.$( 'lmt' ) && Q( 'em', self.$( 'lmt' ) ).html( a );
+					}
+				}, 1000 );
+			}
+		},
 		html_img: function() {
-			return '<img class=big src=' + $.urlParam( this.img.big.src, this.img._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( this.img.small.src, this.img._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(this,event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
+			var d = this.img;
+			if ( ! d._date )
+				d._date = { "_date": new Date().getTime() };
+			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(this,event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
+		},
+		html_limit: function() {
+			return '<label class="_lmt f-fix" id="' + this.id + 'lmt"><i class=f-vi></i><span class=f-va>' + Loc.ps( Loc.toomuch_wait_countdown, this.x.timeout || 15 ) + '</span></label>';
 		},
 		html_placeholder: function() {
 			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + (this.x.placeholder || Loc.form.sliderjigsaw_drag_right) + '</span></label>';
