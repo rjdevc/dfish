@@ -19,6 +19,7 @@ import java.io.FileFilter;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.rongji.dfish.base.Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -108,7 +109,7 @@ public final class FileUtil {
 	 * @return String
 	 */
 	public static String getFileExtName(String fileName) {
-		if (fileName.indexOf(".") < 0) {
+		if (Utils.isEmpty(fileName) || fileName.indexOf(".") < 0) {
 			return "";
 		}
 		int i = fileName.lastIndexOf(".");

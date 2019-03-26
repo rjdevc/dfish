@@ -162,7 +162,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 */
 	public T addUpload_button(UploadButton upload_button) {
 		if(this.upload_button==null){
-			this.upload_button=new ArrayList<UploadButton>();
+			this.upload_button=new ArrayList<>();
 		}
 		this.upload_button.add(upload_button);
 		return (T) this;

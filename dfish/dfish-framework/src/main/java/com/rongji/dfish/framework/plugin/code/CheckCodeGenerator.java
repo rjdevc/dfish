@@ -1,5 +1,9 @@
 package com.rongji.dfish.framework.plugin.code;
 
+import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.Positionable;
+import com.rongji.dfish.ui.widget.Img;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -31,7 +35,8 @@ public class CheckCodeGenerator {
 	 * 验证码的Key
 	 */
 	public static final String KEY_CHECKCODE = "com.rongji.dfish.CHECKCODE";
-	
+
+	private String alias;
 	private Color[][] colorGroup;
 	private boolean interfering;
 	private int rotateDegree;
@@ -39,6 +44,15 @@ public class CheckCodeGenerator {
 	private int height;
 	private int width;
 	private int codeLength;
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
 	public int getHeight() {
 		return height;
 	}
@@ -306,4 +320,5 @@ public class CheckCodeGenerator {
 		g.setColor(bgColor);//设置背景色
 		g.fillRect(0, 0, width, height);
 	}
+
 }

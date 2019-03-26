@@ -581,7 +581,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 		to.events=from.events;
 	}
 	protected String toString(Object value){
-		return value==null?(String)null:value.toString();
+		return value==null?null:value.toString();
 	}
 	protected Number toNumber(Object value){
 		if(value==null||"".equals(value)){
