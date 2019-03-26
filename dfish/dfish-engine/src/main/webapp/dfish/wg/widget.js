@@ -5644,7 +5644,7 @@ Spinner = define.widget( 'spinner', {
 	}
 } ),
 /* `slider` */
-/* 值的范围从 0 到 100 */
+/* 值的范围默认 0-100 */
 Slider = define.widget( 'slider', {
 	Extend: Spinner,
 	Default: {
@@ -5806,6 +5806,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		load: function( fn ) {
 			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
 				this.img = d;
+				this.img._date = { "_date": new Date().getTime() };
 				this.loaded = T;
 				d.minvalue != N && this.setValidate( { minvalue: d.minvalue } );
 				d.maxvalue != N && this.setValidate( { maxvalue: d.maxvalue } );
@@ -5836,7 +5837,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			} );
 		},
 		html_img: function() {
-			return '<img class=big src=' + this.img.big.src + ' width=100% ondragstart=return(!1)><img class=small src=' + this.img.small.src + ' height=100% onmousedown=' + abbr( this, 'dragSmall(this,event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
+			return '<img class=big src=' + $.urlParam( this.img.big.src, this.img._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( this.img.small.src, this.img._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(this,event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + (this.x.placeholder || Loc.form.sliderjigsaw_drag_right) + '</span></label>';
