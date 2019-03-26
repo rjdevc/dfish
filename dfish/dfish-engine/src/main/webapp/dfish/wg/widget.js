@@ -5783,11 +5783,13 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 						this.addClass( 'z-success' );
 						this.authCnt = 0;
 					} else {
-						this.reload( this.jigsaw );
-						this.reset();
-						Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
 						if ( this.x.limit )
 							this.limit();
+						if ( this.isNormal() )
+							this.reload( this.jigsaw );
+						this.val( this.min() );
+						this.removeClass( 'z-on z-success' );
+						Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
 					}
 					this.removeClass( 'z-drag z-on z-authing' );
 					this.trigger( 'auth' );
@@ -5842,7 +5844,9 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		},
 		reset: function() {
 			this.val( this.min() );
-			this.removeClass( 'z-on z-success' );
+			this.removeClass( 'z-on z-success z-err z-lmt' );
+			this.$( 'lmt' ) && $.remove( self.$( 'lmt' ) );
+			this.authCnt = 0;
 		},
 		dragSmall: function( a, b ) {
 			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
@@ -5868,6 +5872,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 					$.append( this.$(), this.html_limit() );
 				this.addClass( 'z-lmt' );
 				this.readonly();
+				this.jigsaw && this.jigsaw.close();
 				var a = this.x.timeout || 15, self = this;
 				this._cntdn_inter = setInterval( function() {
 					if ( a < 2 ) {
