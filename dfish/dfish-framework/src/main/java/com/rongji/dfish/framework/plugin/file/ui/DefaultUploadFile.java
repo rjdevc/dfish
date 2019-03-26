@@ -37,7 +37,7 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 //		this.setFile_types(FileService.getTypesFile());
 //		String sizeLimit = FileService.getSizeLimit();
 //		this.setFile_size_limit(FileService.getSizeLimit());
-//		this.addUpload_button(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-upload-icon-local").setCls("linkbtn"));
+//		this.addUpload_button(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-doRequest-icon-local").setCls("linkbtn"));
 //		this.addValue_button(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
 		this(name, label, null);
 	}
@@ -47,13 +47,13 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 		this.setLabel(label);
 		
 		this.setUpload_url("file/uploadFile");
-		this.setDown_url("file/downloadFile?fileId=$id");
-		this.setRemove_url("file/removeFile?fileId=$id");
+		this.setDown_url("file/download?fileId=$id");
+//		this.setRemove_url("file/removeFile?fileId=$id");
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
-		this.setFile_types(fileService.getTypesFile());
+		this.setFile_types(fileService.getFileTypes());
 		String sizeLimit = fileService.getSizeLimit();
 		this.setFile_size_limit(sizeLimit);
-		this.addUpload_button(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-upload-icon-local").setCls("linkbtn"));
+		this.addUpload_button(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-doRequest-icon-local"));
 //		this.addValue_button(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
 		this.setValue(value);
 	}

@@ -40,8 +40,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	private Overflow overflow;
 
 	/**
-	 * 当按钮过多，放不下的时候，的效果
-	 * @return
+	 * 当按钮过多，放不下的时候的效果
+	 * @return Overflow
 	 */
 	public Overflow getOverflow() {
 		return overflow;
@@ -194,7 +194,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * 添加分隔符，默认添加2像素的分隔符
 	 * 
 	 * @return 本身，这样可以继续设置其他属性
-	 * @deprecated 采用add(Split)
+	 * @deprecated 使用 {@link #add(Widget)}
 	 */
 	@Deprecated
 	public ButtonBar addSplit() {
@@ -318,4 +318,5 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		this.scrollClass = scrollClass;
 		return this;
 	}
+
 }

@@ -21,6 +21,10 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 
     private static final long serialVersionUID = -3371412187081962648L;
 
+    protected String getScheme() {
+    	return "DEFAULT";
+	}
+
 	@Deprecated
 	public DefaultUploadImage() {
 		this(null, null);
@@ -28,37 +32,25 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 	
 	@Deprecated
 	public DefaultUploadImage(String name, String label) {
-//		this.setName(name);
-//		this.setLabel(label);
-//		
-//		this.setUpload_url("file/uploadImage");
-//		this.setDown_url("file/downloadFile?fileId=$id");
-//		this.setRemove_url("file/removeFile?fileId=$id");
-//		this.setThumbnail_url("file/thumbnail?fileId=$id");
-//		this.setFile_types(FileService.getTypesImage());
-//		String sizeLimit = FileService.getSizeLimit();
-//		this.setFile_size_limit(sizeLimit);
-//		this.addUpload_button(new UploadButton("+").setCls("simplebtn"));
-//		
-//		this.setPub(new UploadItem().setOn(UploadItem.EVENT_CLICK, "this.preview();"));
-//		this.addValue_button(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
 		this(name, label, null);
 	}
 	
 	public DefaultUploadImage(String name, String label, List<UploadItem> value) {
 		this.setName(name);
 		this.setLabel(label);
-		
-		this.setUpload_url("file/uploadImage");
-		this.setDown_url("file/downloadFile?fileId=$id");
-		this.setRemove_url("file/removeFile?fileId=$id");
-		this.setThumbnail_url("file/thumbnail?fileId=$id");
+
+		String schemeStr = "scheme=" + (getScheme() == null ? "" : getScheme());
+
+		this.setUpload_url("file/uploadImage?" + schemeStr);
+		this.setDown_url("file/download?fileId=$id&" + schemeStr);
+//		this.setRemove_url("file/removeFile?fileId=$id");
+		this.setThumbnail_url("file/thumbnail?fileId=$id&" + schemeStr);
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
-		this.setFile_types(fileService.getTypesImage());
+		this.setFile_types(fileService.getImageTypes());
 		this.setFile_size_limit(fileService.getSizeLimit());
-		this.addUpload_button(new UploadButton("+").setCls("simplebtn"));
+		this.addUpload_button(new UploadButton("+"));
 		
-		this.setPub(new UploadItem().setOn(UploadItem.EVENT_CLICK, "this.preview();"));
+		this.getPub().setOn(UploadItem.EVENT_CLICK, "this.preview();");
 		this.setValue(value);
 	}
 	
@@ -69,28 +61,16 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 	protected String defaultFileTypes() {
 		return "*.jpg;*.gif;*.png";
 	}
-	
+
+    /**
+     *
+     * @param itemList
+     * @return
+     * @see #setValue(List)
+     */
 	@Deprecated
 	public DefaultUploadImage setUploadItems(List<UploadItem> itemList) {
-		if (Utils.notEmpty(itemList)) {
-			for (Iterator<UploadItem> iter=itemList.iterator(); iter.hasNext();) {
-				UploadItem item = iter.next();
-				if (item == null) {
-					iter.remove();
-					continue;
-				}
-			}
-			if (itemList.isEmpty()) {
-				super.setValue(null);
-			} else {
-				// 有值时,默认不删除图片
-				this.setRemove_url(null);
-				super.setValue(JsonUtil.toJson(itemList));
-			}
-		} else {
-			super.setValue(null);
-		}
-		return this;
+		return setValue(itemList);
 	}
 	
 	public DefaultUploadImage setValue(Object value) {

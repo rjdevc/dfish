@@ -424,8 +424,7 @@ public class FrameworkHelper{
 	public static Object getBean(String beanId) {
 		return getBean(getBeanFactory(), beanId, null);
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	/**
 	 * 获取Bean对象
 	 * @param factory bean工厂
@@ -434,6 +433,7 @@ public class FrameworkHelper{
 	 * @return T bean对象
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private static <T> T getBean(BeanFactory factory, String beanId, Class<T> beanClass) {
 		if (factory == null || (Utils.isEmpty(beanId) && beanClass == null)) {
 			return null;
@@ -446,21 +446,20 @@ public class FrameworkHelper{
 		} else {
 			try {
 				bean = factory.getBean(beanClass);
-	        } catch (NoUniqueBeanDefinitionException e) {
-	        	// 取出来bean异常的原因有可能是很多Service继承PubService,导致根据Type找的时候找到多个匹配的实例会报错
-	        	beanId = beanClass.getSimpleName();
-	        	if (Utils.notEmpty(beanId)) {
-	        		beanId = beanId.substring(0, 1).toLowerCase() + beanId.substring(1);
-	    			bean = factory.getBean(beanId, beanClass);
-	        	} else {
-	        		throw e;
-	        	}
-	        }
+			} catch (NoUniqueBeanDefinitionException e) {
+				// 取出来bean异常的原因有可能是很多Service继承PubService,导致根据Type找的时候找到多个匹配的实例会报错
+				beanId = beanClass.getSimpleName();
+				if (Utils.notEmpty(beanId)) {
+					beanId = beanId.substring(0, 1).toLowerCase() + beanId.substring(1);
+					bean = factory.getBean(beanId, beanClass);
+				} else {
+					throw e;
+				}
+			}
 		}
-		
+
 		return bean;
 	}
-	
 //	/**
 //	 * 根据类获取bean对象,若该类有多个实现类,会再尝试根据该类的默认id再获取bean对象
 //	 * @param beanClass bean对象对应的类

@@ -255,7 +255,7 @@ public class ProgressManager {
 			return new LoadingCommand(null).setId(ID_LOADING).setNode(shell).setCover(cover);
 		} else {
 			FrameworkHelper.LOG.error("添加进度条队列失败@" + progressKey);
-			return new AlertCommand("添加进度条队列失败，但后台仍在运行中，请稍后查看执行结果");
+			return new AlertCommand("进度条信息获取失败，但系统后台仍在运行中，请稍后查看执行结果");
 		}
 	}
 	

@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.HasText;
 
 /**
@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.HasText;
  * @author DFish Team
  *
  */
-public class UploadItem extends AbstractWidget<UploadItem> implements HasText<UploadItem> {
+public class UploadItem extends AbstractNode<UploadItem> implements HasText<UploadItem> {
 	/**
 	 * 
 	 */
