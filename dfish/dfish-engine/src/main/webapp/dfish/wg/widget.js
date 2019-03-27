@@ -2808,9 +2808,15 @@ MenuSubmitbutton = define.widget( 'menu/submitbutton', {
 ButtonSplit = define.widget( 'button/split', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		var s = _dfopt.buttonbar && _dfopt.buttonbar.space;
-		s && ! x.ownproperty && this.defaults( { width: s } );
+		var p = this.parentNode,
+			w = p.x.space || (_dfopt.buttonbar && _dfopt.buttonbar.space);
+		w && ! x.ownproperty && this.defaults( { width: w } );
+		if ( p.x.nobr === F ) {
+			this.defaults( { height: -1 } );
+			this.cssText = 'margin-bottom:' + w + 'px;';
+		}
 	},
+	Default: { width: -1 },
 	Prototype: {
 		className: 'w-button-split f-inbl',
 		html_nodes: function() {
@@ -5722,7 +5728,7 @@ Slider = define.widget( 'slider', {
 	}
 } ),
 /* `SliderJigsaw`
- * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token', limit: 5, timeout: 10 }
+ * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
  * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '' }
  * @authsrc: { result: true }
  */
@@ -5779,10 +5785,8 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 						this.jigsaw && this.jigsaw.close();
 						this.addClass( 'z-success' );
 					} else {
-						if ( this.x.limit )
-							this.limit();
 						if ( this.isNormal() )
-							this.reload( this.jigsaw );
+							this.reload( this.jigsaw.vis );
 						this.val( this.min() );
 						this.removeClass( 'z-on z-success' );
 						Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
@@ -5796,7 +5800,6 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 	},
 	Prototype: {
 		className: 'w-form w-input w-slider w-sliderjigsaw',
-		authCnt: 0,
 		validHooks: {
 			valid: function( b, v ) {
 				if ( ! this.isSuccess() )
@@ -5816,85 +5819,71 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) ) + 16;
 		},
 		success: function( a ) {
-			this.x.status = a || a == N ? 'success' : '';
+			this.x.status = a ? 'success' : '';
 		},
 		isSuccess: function( a ) {
 			return this.x.status === 'success';
 		},
 		load: function( fn ) {
 			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
-				this.img = d;
-				this.loaded = T;
-				d.minvalue != N && this.setValidate( { minvalue: d.minvalue } );
-				d.maxvalue != N && this.setValidate( { maxvalue: d.maxvalue } );
-				this.trigger( 'load' );
-				fn && fn.call( this );
+				if ( d.error ) {
+					this.error( d.error );
+				} else {
+					this.img = d;
+					this.loaded = T;
+					d.minvalue != N && this.setValidate( { minvalue: d.minvalue } );
+					d.maxvalue != N && this.setValidate( { maxvalue: d.maxvalue } );
+					this.trigger( 'load' );
+					fn && fn.call( this );
+				}
 			} } );
 		},
 		reload: function( a ) {
 			this.loaded = F;
 			this.load( function() {
-				this.pop();
+				a && this.pop();
 				this.jigsaw.getContentView().find( 'img' ).repaint( T );
 			} );
 		},
 		reset: function() {
 			this.val( this.min() );
 			this.removeClass( 'z-on z-success z-err z-lmt' );
-			this.$( 'lmt' ) && $.remove( self.$( 'lmt' ) );
-			this.authCnt = 0;
+			Q( this.$( 'pht' ) ).html( this.info() );
+			this.normal();
+			this.reload();
 		},
-		dragSmall: function( a, b ) {
-			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
-				g = a.offsetWidth, w = this.jigsaw.innerWidth() - g, self = this, v;
-			this.trigger( 'dragstart' );
-			$.moveup( function( e ) {
-				var l = $.numRange(f + e.clientX - x, 0, w);
-				v = Math.floor( (m - n) * (l / w) );
-				a.style.left = l + 'px';
-				self.addClass( 'z-drag' );
-				self.val( v );
-				self.triggerHandler( 'drag', [ v ] );
-			}, function( e ) {
-				self.trigger( 'drop', [ v ] );
-			} );
-		},
-		limit: function() {
-			if ( ! this.x.limit )
-				return;
-			this.authCnt ++;
-			if ( this.authCnt >= this.x.limit ) {
-				if ( ! this.$( 'lmt' ) )
-					$.append( this.$(), this.html_limit() );
-				this.addClass( 'z-lmt' );
-				this.readonly();
-				this.jigsaw && this.jigsaw.close();
-				var a = this.x.timeout || 15, self = this;
+		error: function( e ) {
+			this.addClass( 'z-err' );
+			Q( this.$( 'pht' ) ).html( this.info( e ) );
+			this.readonly();
+			this.jigsaw && this.jigsaw.close();
+			var a = e.timeout, self = this;
+			if ( a ) {
 				this._cntdn_inter = setInterval( function() {
 					if ( a < 2 ) {
 						clearInterval( self._cntdn_inter );
-						$.remove( self.$( 'lmt' ) );
-						self.removeClass( 'z-lmt' );
-						self.normal();
-						self.authCnt = 0;
+						self.reset();
 					} else {
 						a -= 1;
-						self.$( 'lmt' ) && Q( 'em', self.$( 'lmt' ) ).html( a );
+						Q( 'em', self.$( 'pht' ) ).html( a );
 					}
 				}, 1000 );
 			}
+		},
+		dragSmall: function( a ) {
+			this.dragstart( this.$( 'thumb' ), a );
+		},
+		info: function( e ) {
+			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + e.timeout + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
 			var d = this.img;
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
-			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(this,event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
-		},
-		html_limit: function() {
-			return '<label class="_lmt f-fix" id="' + this.id + 'lmt"><i class=f-vi></i><span class=f-va>' + Loc.ps( Loc.toomuch_wait_countdown, this.x.timeout || 15 ) + '</span></label>';
+			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
-			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + (this.x.placeholder || Loc.form.sliderjigsaw_drag_right) + '</span></label>';
+			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.info() + '</span></label>';
 		}
 	}
 } ),
