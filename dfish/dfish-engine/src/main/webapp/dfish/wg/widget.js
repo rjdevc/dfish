@@ -25,9 +25,7 @@ _putin  = { append: T, prepend: T, undefined: T },
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
-abbr = function( a, b ) {
-	return $.abbr + '.all["' + a.id + '"].' + b;
-},
+abbr = function( a, b ) { return $.abbr + '.all["' + a.id + '"].' + b; },
 // 模板集合
 _templateCache = {},
 // 注册模板  /@a -> id, b -> template body
@@ -2193,7 +2191,7 @@ Html = define.widget( 'html', {
 					t = '&nbsp;';
 				} else if ( t ) {
 					// 解决 ie7,8 下的video标签播放问题
-					t = t.replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
+					t = ('' + t).replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
 						var w = $1.match( / width="(\d+)"/ )[ 1 ], h = $1.match( / height="(\d+)"/ )[ 1 ], u = $1.match( / src="([^"]+)"/ )[ 1 ];
 						return '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 							'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
@@ -4824,10 +4822,9 @@ Checkbox = define.widget( 'checkbox', {
 			} else {
 				if ( this.x.nobr && (w = p.innerWidth()) )
 					y += 'max-width:' + w + 'px;';
-				s = s.replace( / f-inbl/g, '' );
 			}
 			this.x.style && (y += this.x.style);
-			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-inbl f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
+			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
 				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)"' + (t && typeof t === _OBJ ? ' onmouseover="' + evw + '.tip()"' : '') + '>' + ((this.x.escape != N ? this.x.escape : p.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
@@ -5781,7 +5778,6 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 					if ( this.isSuccess() ) {
 						this.jigsaw && this.jigsaw.close();
 						this.addClass( 'z-success' );
-						this.authCnt = 0;
 					} else {
 						if ( this.x.limit )
 							this.limit();
@@ -5899,7 +5895,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		},
 		html_placeholder: function() {
 			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + (this.x.placeholder || Loc.form.sliderjigsaw_drag_right) + '</span></label>';
-		},
+		}
 	}
 } ),
 /* `xbox` */
