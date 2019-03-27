@@ -2173,7 +2173,7 @@ _merge( $, {
 				break;
 			}
 		}
-		var w = Math.max( 600, $.width() - 300 ), h = Math.max( 400, $.height() - 100 ),
+		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 ),
 			d = $.vm().cmd( { type: 'dialog', cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
 				node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + (d.url || d.thumbnail) + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px"><em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},

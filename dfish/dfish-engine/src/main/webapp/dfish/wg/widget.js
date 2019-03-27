@@ -25,6 +25,7 @@ _putin  = { append: T, prepend: T, undefined: T },
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
+abbr = function( a, b ) { return $.abbr + '.all["' + a.id + '"].' + b; },
 // 模板集合
 _templateCache = {},
 // 注册模板  /@ a -> id, b -> preload body
@@ -807,6 +808,10 @@ W = define( 'widget', function() {
 		data: function( a, b ) {
 			return b === U ? (this.x.data && this.x.data[ a ]) : ((this.x.data || (this.x.data = {}))[ a ] = b);
 		},
+		closestData: function( a ) {
+			var d = this.x.data && this.x.data[ a ];
+			return d !== U ? d : this.parentNode.closestData( a );
+		},
 		// 获取下一个兄弟节点
 		next: function() {
 			 return this.parentNode && this.parentNode[ this.nodeIndex + 1 ];
@@ -1001,7 +1006,12 @@ W = define( 'widget', function() {
 				h.dfish_format_fields = f;
 			}
 			for ( var i = 0, x = this.x, e, f = h.dfish_format_fields, l = f.length, v; i < l; i ++ ) {
-				v = c ? c[ f[ i ] ] : (e = x.data && x.data[ f[ i ] ]) !== U ? e : x[ f[ i ] ];
+				//v = c ? c[ f[ i ] ] : (e = x.data && x.data[ f[ i ] ]) !== U ? e : x[ f[ i ] ];
+				if ( c ) {
+					v = c[ f[ i ] ];
+				} else {
+					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] ));
+				}
 				m.push( d ? d( v ) : v );
 			}
 			return h.apply( this, m );
@@ -1018,8 +1028,8 @@ W = define( 'widget', function() {
 				if ( b && (isNaN( k ) || r) && b[ k ] !== U ) {
 					v = b[ k ];
 				} else {
-					v = self.x.data && self.x.data[ k ];
-					v === U && (v = self.x[ k ]);
+					(v = self.x.data && self.x.data[ k ]) === U && (v = self.x[ k ]) === U && (v = self.closestData( k ));
+					//v === U && (v = self.x[ k ]);
 				}
 				if ( t && v != N ) {
 					try { eval( 'v = v' + t ); } catch( ex ) { v = N; }
@@ -1109,6 +1119,26 @@ W = define( 'widget', function() {
 			}
 			j != i && this.trigger( 'nodechange' );
 		},
+		// @a -> 是否刷新子节点
+		repaint: function( a ) {
+			if ( this._disposed )
+				return;
+			if ( this.$() ) {
+				if ( a ) {
+					this.replace( this.x );
+				} else
+					this.repaintSelf();
+			} else
+				this.render();
+		},
+		repaintSelf: function() {
+			var f = $.frag( this.$() );
+			Q( this.$() ).replaceWith( '<' + this.tagName + this.html_prop() + '></' + this.tagName + '>' );
+			Q( this.$() ).append( f );
+		},
+		develop: function() {
+			//fixme: 用于调试定位
+		},
 		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
 		render: function( a, b ) {
 			// 没有父节点 则先加上父节点
@@ -1122,10 +1152,12 @@ W = define( 'widget', function() {
 				 $[ b || 'append' ]( a, s );
 			else {
 				for ( var i = this.nodeIndex - 1, l = p.length, c; i > -1; i -- )
-					if ( (c = p[ i ]).$() ) return c.insertHTML( s, 'after' );
-				for ( i = this.nodeIndex + 1; i < l; i ++ )
-					if ( (c = p[ i ]).$() ) return c.insertHTML( s, 'before' );
-				p.insertHTML( s );
+					if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'after' ); break; }
+				if ( ! c ) {
+					for ( i = this.nodeIndex + 1; i < l; i ++ )
+						if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'before' ); break; }
+				}
+				!c && p.insertHTML( s );
 			}
 			this.triggerAll( 'ready' );
 			! this._disposed && this.parentNode.trigger( 'nodechange' );
@@ -1144,7 +1176,7 @@ W = define( 'widget', function() {
 			return c;
 		},
 		prop_style: function() {
-			var t = '';
+			var t = this.cssText || '';
 			if ( ( v = this.innerWidth() ) != N )
 				t += 'width:' + v + 'px;';
 			if ( ( v = this.innerHeight() ) != N )
@@ -1729,8 +1761,8 @@ Scroll = define.widget( 'scroll', {
 						l = f.left - d.left - (( c.width / 2 ) - ( f.width / 2 ));
 					else if ( f.left < c.left )
 						l = a.scrollLeft - f.left + c.left;
-					else if ( f.right > c.right - br.scroll )
-						l = a.scrollLeft + f.right - c.right + br.scroll;
+					//else if ( f.right > c.right - br.scroll )
+					//	l = a.scrollLeft + f.right - c.right + br.scroll;
 				}
 			}
 			if ( q != N ) {
@@ -1931,7 +1963,7 @@ Xsrc = define.widget( 'xsrc', {
 				this._load( tar, function( x ) {
 					this.showLoading( F );
 					this.showLayout( tar );
-					fn && fn.call( this, x );
+					fn && !(x instanceof Error) && fn.call( this, x );
 				} );
 			}
 		},
@@ -1945,7 +1977,7 @@ Xsrc = define.widget( 'xsrc', {
 				};
 			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); } ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			u && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( Loc.server_error, a.request.status ) } ); e(); } } );
+			u && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> data json
@@ -2093,6 +2125,9 @@ View = define.widget( 'view', {
 		reset: function( tar ) {
 			Xsrc.prototype.reset.apply( this, arguments );
 			! tar && _initView.call( this );
+		},
+		closestData: function( a ) {
+			return this.data( a );
 		},
 		// 根据ID获取wg /@a -> id
 		find: function( a ) {
@@ -2500,6 +2535,7 @@ Html = define.widget( 'html', {
 		text: function( a ) {
 			if ( a == N )
 				return this.x.text;
+			this.x.text = a;
 			var o = this.$( 'cont' ) || this.$();
 			o && (o.innerHTML = this.html_nodes());
 			this.trigger( 'resize' );
@@ -2508,7 +2544,7 @@ Html = define.widget( 'html', {
 			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this.x.thumbwidth ) );
 		},
 		html_text: function() {
-			var t = this.x.text == N ? '' : this.x.text;  //, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this );
+			var t = this.x.text == N ? '' : this.x.text;
 			if ( this.x.format ) {
 				t = _wg_format.call( this, this.x.format, this.x.escape );
 			} else if ( this.x.escape && typeof t === _STR )
@@ -2522,7 +2558,7 @@ Html = define.widget( 'html', {
 					t = '&nbsp;';
 				} else if ( t ) {
 					// 解决 ie7,8 下的video标签播放问题
-					t = t.replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
+					t = ('' + t).replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
 						var w = $1.match( / width="(\d+)"/ )[ 1 ], h = $1.match( / height="(\d+)"/ )[ 1 ], u = $1.match( / src="([^"]+)"/ )[ 1 ];
 						return '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 							'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
@@ -2957,15 +2993,14 @@ Button = define.widget( 'button', {
 			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class=f-omit>' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
-			var x = this.x, p = this.parentNode, t = this.tagName || 'div',
+			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
 				a = '<' + t + ' id=' + this.id + ' class="',
-				b = this.prop_cls(),
-				c = this._combo, d, s = '';
+				b = this.prop_cls(), c = this._combo, d, s = '';
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
-			if ( (d = this.innerWidth()) != N ) {
-				s += 'width:' + d + 'px;';
+			if ( w != N ) {
+				s += 'width:' + w + 'px;';
 			}
 			if ( x.focus && x.focusable )
 				b += ' z-on';
@@ -3007,7 +3042,8 @@ Button = define.widget( 'button', {
 			if ( this.property )
 				a += this.property;
 			a += ' w-type="' + this.type + '">' + this.html_before();
-			
+			if ( ie7 && !w )
+				a += '<table cellpadding=0 cellspacing=0 height=100%><tr><td>';
 			if ( ! x.hidetoggle && this.more )
 				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><em class=f-arw></em><i class=f-vi></i></div>';
 			if ( x.closeicon )
@@ -3021,7 +3057,7 @@ Button = define.widget( 'button', {
 			if ( x.text )
 				a += this.html_text();
 			a += '</div>';
-			a += this.html_after() + '</' + t + '>';
+			a += this.html_after() + (ie7 && !w ? '</table>' : '') + '</' + t + '>';
 			return a;
 		}
 	}
@@ -3051,7 +3087,7 @@ MenuButton = define.widget( 'menu/button', {
 			click: function() {
 				if ( ! this.isDisabled() ) {
 					this.x.target && this.ownerView.linkTarget( this.x.target, T );
-					this.x.on && this.x.on.click &&	this.rootNode.hide();
+					this.rootNode.hide();
 				}
 			}
 		}
@@ -3068,7 +3104,7 @@ MenuButton = define.widget( 'menu/button', {
 			return _menu_button_height;
 		},
 		getCommander: function() {
-			return this.rootNode.commander;
+			return this.rootNode.parentNode;
 		},
 		// @implement 右键菜单命点击后就会关闭，如果执行的是异步ajax命令，那么返回的命令不会执行。因此改变执行命令的context为menu的commander
 		exec: function() {
@@ -3140,9 +3176,15 @@ MenuSubmitbutton = define.widget( 'menu/submitbutton', {
 ButtonSplit = define.widget( 'button/split', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		var s = _dfopt.buttonbar && _dfopt.buttonbar.space;
-		s && ! x.ownproperty && this.defaults( { width: s } );
+		var p = this.parentNode,
+			w = p.x.space || (_dfopt.buttonbar && _dfopt.buttonbar.space);
+		w && ! x.ownproperty && this.defaults( { width: w } );
+		if ( p.x.nobr === F ) {
+			this.defaults( { height: -1 } );
+			this.cssText = 'margin-bottom:' + w + 'px;';
+		}
 	},
+	Default: { width: -1 },
 	Prototype: {
 		className: 'w-button-split f-inbl',
 		html_nodes: function() {
@@ -4373,7 +4415,7 @@ var Label = define.widget( 'label', {
 		this.defaults( { wmin: this._pad } );
 		var d = p.x.validate;
 		d && d.required && (this.className += ' z-required');
-		this.className += ' f-va' + (x.valign ? '-' + x.valign : '');
+		this.className += ' f-va' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
 		if ( ie7 ) {
 			this.ie7td = p.closest( 'td' );
 			this.ie7td.addEvent( 'nodechange', function() {
@@ -4723,20 +4765,13 @@ AbsForm = define.widget( 'abs/form', {
 			h != N && h >= 0 && (s += 'height:' + h + 'px;');
 			return s + (this.x.style ? this.x.style : '');
 		},
-		form_prop: function( a ) {
-			var t = '', w = this.inputWidth(), h = this.inputHeight();
-			if ( w != N && w >= 0 )
-				t += 'width:' + w + 'px;';
-			if ( h != N && h >= 0 )
-				t += 'height:' + h + 'px;';
-			if ( t )
-				t = ' style="' + t + '"';
+		input_prop: function( a ) {
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? (this.x.text || this.x.value) : this.x.tip) || '') + '"' : '') +
-				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + t + _html_on.call( this );
+				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + _html_on.call( this );
 		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
-			return (this.label ? this.label.html() : '') + '<div' + this.html_prop() + '>' + this.html_before() + this.html_placeholder() + this.html_nodes() + this.html_after() + '</div>';
+			return (this.label ? this.label.html() : '') + '<div' + this.html_prop() + '>' + this.html_before() + this.html_nodes() + this.html_after() + '</div>';
 		},
 		removeElem: function() {
 			this.label && this.label.removeElem();
@@ -4820,10 +4855,19 @@ AbsInput = define.widget( 'abs/input', {
 			this.focus();
 			this.trigger( e );
 		},
-		html_placeholder: function() {
-			var w = this.inputWidth(), v = this.x.value;
-			return this.x.placeholder ? '<label style="width:' + ( w ? w + 'px' : 'auto' ) + '" class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
+		html_placehoder: function() {
+			var v = this.x.value;
+			return this.x.placeholder ? '<label class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
+		},
+		html_btn: function() {
+			return '';
+		},
+		html_input: function() {
+			return '';
+		},
+		html_nodes: function() {
+			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placehoder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -4891,8 +4935,8 @@ Textarea = define.widget( 'textarea', {
 			v == N && (v = this.x.value || '');
 			return this.val().replace( /\r\n/g, '\n' ) != v.replace( /\r\n/g, '\n' );
 		},
-		html_nodes: function() {
-			return '<textarea' + this.form_prop( F ) + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
+		html_input: function() {
+			return '<textarea' + this.input_prop( F ) + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
 		}
 	}
 } ),
@@ -4911,8 +4955,8 @@ Text = define.widget( 'text', {
 		fixhdr: function() {
 			this.x.placeholder && $.classAdd( this.$( 'ph' ), 'f-none', this.$t().value != '' );
 		},
-		html_nodes: function() {
-			return '<input type=' + (this.formType || this.type) + this.form_prop() + '>';
+		html_input: function() {
+			return '<input type=' + (this.formType || this.type) + this.input_prop() + '>';
 		}
 	}
 } ),
@@ -4920,7 +4964,7 @@ Text = define.widget( 'text', {
 Password = define.widget( 'password', {
 	Extend: Text,
 	Prototype: {
-		form_prop: function() { return AbsForm.prototype.form_prop.call( this ) + (this.x.autocomplete === T ? '' : ' autocomplete="new-password"'); }
+		input_prop: function() { return AbsForm.prototype.input_prop.call( this ) + (this.x.autocomplete === T ? '' : ' autocomplete="new-password"'); }
 	}
 } ),
 /* `checkboxgroup` */
@@ -5206,11 +5250,10 @@ Checkbox = define.widget( 'checkbox', {
 			} else {
 				if ( this.x.nobr && (w = p.inputWidth()) )
 					y += 'max-width:' + w + 'px;';
-				s = s.replace( / f-inbl/g, '' );
 			}
 			this.x.checkstate == 2 && (s += ' z-half');
 			this.x.style && (y += this.x.style);
-			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-inbl f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
+			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
 				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				( this.x.text ? this.html_text() : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
@@ -5840,9 +5883,13 @@ _Date = define.widget( 'date', {
 			this.cal && this.cal.close();
 			this.list && this.list.close();
 		},
-		html_nodes: function() {
+		html_btn: function() {
+			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
+		},
+		html_input: function() {
 			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.form_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;text-indent:' + _input_indent() + 'px">' + (this.x.value || '') + '</label>' : '<input type=text' + this.form_prop() + '><em class="f-boxbtn" onclick=' + eve + '></em>';
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;text-indent:' + _input_indent() + 'px">' + (this.x.value || '') + '</label>' :
+				'<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),
@@ -5949,9 +5996,8 @@ Muldate = define.widget( 'muldate', {
 			return '<table width=100% height=30 cellspacing=0 cellpadding=0' + (v ? ' data-value="' + v + '"' : '') + '><tr><td>&nbsp; ' + (v ? '<a href=javascript: onclick=' + k + '(this,"=")>' + v + '</a>' : '') + '<td width=70 align=center>' +
 				$.image( '.f-i-minus ._i', { style: 'visibility:' + (v ? 'visible' : 'hidden'), click: k + '(this,"-")' } ) + ' &nbsp; ' + $.image( '.f-i-plus ._i', { click: k + '(this,"+")' } ) + '</table>';
 		},
-		html_nodes: function() {
-			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-inbl f-fix _c" style="width:' +
-				this.inputWidth() + 'px"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div><em class="f-boxbtn" onclick=' + eve + '></em>';
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-inbl f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div>';
 		}
 	}
 } ),
@@ -6039,20 +6085,28 @@ Spinner = define.widget( 'spinner', {
 				this.val( v );
 			}
 		},
-		html_nodes: function() {
-			return mbi ? '<cite class="f-boxbtn _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite><input type=number' + this.form_prop() + '><cite class="f-boxbtn _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
-				'<input type=text' + this.form_prop() + '><cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
+		html_btn: function() {
+			return mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
+				'<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
+		},
+		html_input: function() {
+			return mbi ? '<input type=number' + this.input_prop() + '><cite class="f-inbl _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
+				'<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),
 /* `slider` */
+/* 值的范围默认 0-100 */
 Slider = define.widget( 'slider', {
 	Extend: Spinner,
 	Default: {
-		width: -1, wmin: 0, thumbwidth: 10
+		width: '*', wmin: 0
 	},
 	Listener: {
 		body: {
+			ready: function() {
+				this.fixPos();
+			},
 			resize: function() {
 				this.css( 't', 'width', this.innerWidth() );
 				this.val( this.val() );
@@ -6061,41 +6115,224 @@ Slider = define.widget( 'slider', {
 		}
 	},
 	Prototype: {
-		className: 'w-form',
-		form_minus: function() { return 0 },
+		className: 'w-form w-input',
+		fixPos: function( v ) {
+			v == N && (v = this.x.value);
+			if ( v != N ) {
+				var l = this._left( v );
+				this.css( 'thumb', 'left', l ).css( 'track', 'width', l == 0 ? 0 : l + this.thumbWidth() );
+			}
+		},
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a == N )
 				return this.$v().value;
+			a = $.numRange( a, this.min(), this.max() );
 			this.$v().value = a;
-			var l = this._left( a );
-			this.css( 'thumb', 'left', l ).css( 'track', 'width', l + (this.attr( 'thumbwidth' ) / 2) );
+			this.fixPos( a );
 		},
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
-			var x = b.clientX, c = this.x.validate, m = (c && c.maxvalue) || 100, n = (c && c.minvalue) || 0, f = _number( a.style.left ), 
-				g = this.attr( 'thumbwidth' ), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
+			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
+				g = this.thumbWidth(), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
 				d = t && this.exec( { type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F } ), v = self.$v().value;
+			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
 				var l = $.numRange(f + e.clientX - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
 				a.style.left = l + 'px';
-				$( self.id + 'track' ).style.width = (l + (g / 2)) + 'px';
+				$( self.id + 'track' ).style.width = (l + g) + 'px';
 				d && d.snapTo( a ).text( self.formatStr( t, [ v ] ) );
 				$( self.id + 'v' ).value = v;
-				self.trigger( 'change' );
+				self.addClass( 'z-drag' );
+				self.trigger( 'drag', [ v ] );
 			}, function( e ) {
 				d && d.close();
+				self.trigger( 'drop', [ v ] );
+				self.removeClass( 'z-drag' );
 			} );
 		},
+		max: function() {
+			var v = this.x.validate && this.x.validate.maxvalue;
+			return v == N ? 100 : v;
+		},
+		min: function() {
+			var v = this.x.validate && this.x.validate.minvalue;
+			return v == N ? 0 : v;
+		},
+		thumbWidth: function() {
+			if ( ! this._thumb_wd )
+				this._thumb_wd = this.$( 'thumb' ).offsetWidth;
+			return this._thumb_wd;
+		},
 		_left: function( v ) {
-			var w = this.formWidth(), d = this.x.validate, m = (d && d.maxvalue) || 100, n = (d && d.minvalue) || 0;
-			return (w - this.attr( 'thumbwidth' )) * (v - n) / (m - n);
+			var m = this.max(), n = this.min();
+			return (this.innerWidth() - this.thumbWidth()) * (v - n) / (m - n);
 		},
 		html_nodes: function() {
-			var w = this.formWidth(), v = this.x.value == N ? n : this.x.value, f = this._left( v );
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>';
+			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event)></div></div>' + this.html_placeholder();
+		}
+	}
+} ),
+/* `SliderJigsaw`
+ * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
+ * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '' }
+ * @authsrc: { result: true }
+ */
+SliderJigsaw = define.widget( 'slider/jigsaw', {
+	Const: function() {
+		Slider.apply( this, arguments );
+		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-sliderjigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
+			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, node: {
+			type: 'view', node: {
+				type: 'html', cls: 'f-rel', style: 'margin:8px 0', id: 'img', format: 'javascript:return ' + abbr( this, 'html_img()' )
+			}
+		} }, -1 );
+		this.load();
+	},
+	Extend: 'slider',
+	Listener: {
+		tag: '',
+		body: {
+			mouseover: {
+				occupy: T,
+				method: function() {
+					if ( ! this.isNormal() ) return;
+					if ( this.loaded ) {
+						this.pop( T );
+					} else
+						this.addEventOnce( 'load.mouseover', this.pop );
+				}
+			},
+			mouseout: {
+				occupy: T,
+				method: function() {
+					if ( ! this.isNormal() ) return;
+					this.removeEvent( 'load.mouseover' );
+				}
+			},
+			dragstart: function( e ) {
+				this.pop();
+				this.jigsaw.keepHover( T );
+			},
+			drag: function( e, v ) {
+				if ( this.jigsaw ) {
+					this.draging = T;
+					var a = Q( '.small', this.jigsaw.$() ), m = this.max(), n = this.min();
+					a.css( 'left', (this.jigsaw.innerWidth() - a.width()) * (v / (m - n)) );
+				}
+			},
+			drop: function( e, v ) {
+				this.draging = F;
+				this.addClass( 'z-authing' );
+				this.cmd( { type: 'ajax', src: $.urlFormat( this.x.authsrc, { value: v, token: this.img.token } ), complete: function( r ) {
+					this.success( r && r.result );
+					this.valid();
+					if ( this.isSuccess() ) {
+						this.jigsaw && this.jigsaw.close();
+						this.addClass( 'z-success' );
+					} else {
+						if ( this.isNormal() )
+							this.reload( this.jigsaw.vis );
+						this.val( this.min() );
+						this.removeClass( 'z-on z-success' );
+						Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
+					}
+					this.removeClass( 'z-drag z-on z-authing' );
+					this.trigger( 'auth' );
+				} } );
+				this.jigsaw.keepHover( F );
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-form w-input w-slider w-sliderjigsaw',
+		validHooks: {
+			valid: function( b, v ) {
+				if ( ! this.isSuccess() )
+					return _form_err.call( this, b, 'sliderjigsaw_required' );
+			}
+		},
+		validTip: function( t ) {
+			return { type: 'tip', text: t, snaptype: this.jigsaw ? 'rl,lr' : 'tb,bt' };
+		},
+		pop: function( a ) {
+			! this.jigsaw.vis && (a ? this.jigsaw.show() : this.jigsaw._show());
+		},
+		popWidth: function() {
+			return this.$().offsetWidth;
+		},
+		popHeight: function() {
+			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) ) + 16;
+		},
+		success: function( a ) {
+			this.x.status = a ? 'success' : '';
+		},
+		isSuccess: function( a ) {
+			return this.x.status === 'success';
+		},
+		load: function( fn ) {
+			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
+				if ( d.error ) {
+					this.error( d.error );
+				} else {
+					this.img = d;
+					this.loaded = T;
+					d.minvalue != N && this.setValidate( { minvalue: d.minvalue } );
+					d.maxvalue != N && this.setValidate( { maxvalue: d.maxvalue } );
+					this.trigger( 'load' );
+					fn && fn.call( this );
+				}
+			} } );
+		},
+		reload: function( a ) {
+			this.loaded = F;
+			this.load( function() {
+				a && this.pop();
+				this.jigsaw.getContentView().find( 'img' ).repaint( T );
+			} );
+		},
+		reset: function() {
+			this.val( this.min() );
+			this.removeClass( 'z-on z-success z-err z-lmt' );
+			Q( this.$( 'pht' ) ).html( this.info() );
+			this.normal();
+			this.reload();
+		},
+		error: function( e ) {
+			this.addClass( 'z-err' );
+			Q( this.$( 'pht' ) ).html( this.info( e ) );
+			this.readonly();
+			this.jigsaw && this.jigsaw.close();
+			var a = Math.abs( e.timeout || 0 ), self = this;
+			if ( a ) {
+				this._cntdn_inter = setInterval( function() {
+					if ( a < 2 ) {
+						clearInterval( self._cntdn_inter );
+						self.reset();
+					} else {
+						a -= 1;
+						Q( 'em', self.$( 'pht' ) ).html( a );
+					}
+				}, 1000 );
+			}
+		},
+		dragSmall: function( a ) {
+			this.dragstart( this.$( 'thumb' ), a );
+		},
+		info: function( e ) {
+			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
+		},
+		html_img: function() {
+			var d = this.img;
+			if ( ! d._date )
+				d._date = { "_date": new Date().getTime() };
+			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
+		},
+		html_placeholder: function() {
+			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.info() + '</span></label>';
 		}
 	}
 } ),
@@ -6284,11 +6521,13 @@ XBox = define.widget( 'xbox', {
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(this,event)>' + s.join( '' ) + '</div>';
 		},
-		html_nodes: function() {
+		html_btn: function() {
+			return '<em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
+		},
+		html_input: function() {
 			var s = this._sel[ 0 ];
-			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-inbl f-omit _t" id=' + this.id + 't ' +
-				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') +
-				' style="width:' + this.inputWidth() + 'px"><span id=' + this.id + 'p>' + this.html_text() + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
+			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-omit _t" id=' + this.id + 't ' +
+				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') + '><span id=' + this.id + 'p>' + this.html_text() + '</span></div>';
 		}
 	}
 }),
@@ -6399,9 +6638,12 @@ Pickbox = define.widget( 'pickbox', {
 				this.warn( F );
 			}
 		},
-		html_nodes: function() {
+		html_btn: function() {
+			return '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+		},
+		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" style="width:' + this.inputWidth() + 'px" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div><em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),
@@ -6873,14 +7115,27 @@ Combobox = define.widget( 'combobox', {
 			this.$t().contentEditable = this.isNormal();
 			return this;
 		},
-		html_nodes: function() {
-			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _c' + (this.x.nobr ? ' f-nobr' : '') + '" id=' + this.id + 'c' + _html_on.call( this ) +
-				' style="width:' + this.inputWidth() + 'px"><div class="_e f-inbl f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || 'loading..') + '</div></div>';
+		html_btn: function() {
+			var s = '';
+			if ( this.x.picker ) {
+				if ( W.isCmd( this.x.picker ) ) {
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				} else {
+					var g = this.add( this.x.picker, -1, { width: -1 } );
+					g.className += ' f-pick';
+					return g.html();
+				}
+			}
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			if ( this.x.picker )
-				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
+		},
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') +
+				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
+		},
+		html_nodes: function() {
+			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placehoder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -6889,13 +7144,15 @@ Combobox = define.widget( 'combobox', {
  */
 ComboboxOption = define.widget( 'combobox/option', {
 	Const: function( x, p ) {
-		this.className = '_o f-inbl' + ( x.error ? ' z-err' : '' );
 		W.apply( this, arguments );
+		x.error && (this.className += ' z-err');
 	},
 	Default: { width: -1, height: -1 },
 	Listener: {
-		tag: 'g',
 		body: {
+			ready: function() {
+				this.fixSize();
+			},
 			touchstart: {
 				occupy: T, 
 				method: function() {
@@ -6931,6 +7188,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 	},
 	Prototype: {
 		ROOT_TYPE: 'combobox',
+		className: 'w-combobox-opt f-inbl',
 		val: function() {
 			return this.x.value;
 		},
@@ -6939,25 +7197,37 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		close: function( e ) {
 			var p = this.parentNode;
-			if ( ! this.isDisabled() && F !== this.trigger( 'close' ) ) {
+			if ( ! this.isDisabled() && F !== this.triggerHandler( 'close' ) ) {
 				this.remove();
 				p.save();
 				p.resetEffect();
 				e && $.stop( e );
 			}
 		},
-		write: function() {
+		write: function( e ) {
 			var p = this.parentNode, t = p.$t();
 			t.parentNode.insertBefore( t, this.$() );
 			p.focus();
+			e && $.stop( e );
+		},
+		fixSize: function() {
+			if ( this.$() ) {
+				var w = this.$().parentNode.offsetWidth - 5;
+				this.$().style.maxWidth = w + 'px';
+				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
+					this.$().style.width = w + 'px';
+					Q( 'table', this.$() ).css( 'table-layout', 'fixed' );
+				}
+			}
 		},
 		setLoading: function( a ) {
 			$.classAdd( this.$(), 'z-loading', this.loading = a === F ? a : T );
 		},
 		html_nodes: function() {
-			var p = this.parentNode, w = this.width(), t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N;
-			return '<i class="f-inbl _b" onclick=' + evw + '.write()></i><div class="f-inbl _g"' + _html_on.call( this ) + '><cite class="_v f-omit" style="' + (w ? 'width:' + (w - 32) : 'max-width:' + (p.innerWidth() - p.input_minus() - 50)) + 'px" title="' + t + (r ? '\n' + r : '') + '"><i class=f-vi></i><span class=f-va>' +
-				( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></cite><i class="_x" onclick=' + evw + '.close(event)>&times;</i></div>';
+			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
+				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit"><i class=f-vi></i><span class="f-omit f-va">' +
+					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
+			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}
 	}
 } ),
@@ -7323,15 +7593,25 @@ Linkbox = define.widget( 'linkbox', {
 		bookmark: function() {
 			this._currOpt = $.rngElement();
 		},
-		html_nodes: function() {
-			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _t" id=' + this.id + 't' +
-				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + this.inputWidth() + 'px">' + (this.x.loadingtext || Loc.loading) + '</div>';
+		html_btn: function() {
+			var s = '';
+			if ( this.x.picker ) {
+				if ( W.isCmd( this.x.picker ) ) {
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				} else {
+					var g = this.add( this.x.picker, -1, { width: -1 } );
+					g.className += ' f-pick';
+					return g.html();
+				}
+			}
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			if ( this.x.picker )
-				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
+		},
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
+				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
 } ),
@@ -7427,12 +7707,19 @@ Onlinebox = define.widget( 'onlinebox', {
 				this.more = this.createPop( this.x.suggest, { text: t, value: t } );
 			this.more.reload( u );
 		},
-		html_nodes: function() {
-			var s = Text.prototype.html_nodes.apply( this, arguments );
+		html_btn: function() {
+			var s = '';
+			if ( this.x.picker ) {
+				if ( W.isCmd( this.x.picker ) ) {
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				} else {
+					var g = this.add( this.x.picker, -1, { width: -1 } );
+					g.className += ' f-pick';
+					return g.html();
+				}
+			}
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			if ( this.x.picker )
-				s += '<em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 			return s;
 		}
 	}
@@ -9086,9 +9373,14 @@ Grid = define.widget( 'grid', {
 			ready: function() {
 				var a = this.tbody();
 				if ( a ) {
-					var b = a.$().rows, d = this.getFocus();
+					var b = a.$().rows, c = this.getFocusAll();
 					b.length && ($.classAdd( b[ 0 ], 'z-first' ), $.classAdd( b[ b.length - 1 ], 'z-last' ));
-					(d = this.getFocus()) && _scrollIntoView( d );
+					if ( c.length ) {
+						_scrollIntoView( c[ 0 ] );
+						for ( var i = 0, d; i < c.length; i ++ ) {
+							if ( (d = c[ i ].getBox()) && d.x.sync === 'focus' ) c[ i ].checkBox();
+						}
+					}
 				}
 			},
 			scroll: function( e ) {
