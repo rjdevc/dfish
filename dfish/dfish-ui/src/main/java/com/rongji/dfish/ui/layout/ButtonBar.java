@@ -262,9 +262,6 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @return Split
 	 */
 	public Split getSplit() {
-		if (split == null) {
-			split = new Split();
-		}
 		return split;
 	}
 	

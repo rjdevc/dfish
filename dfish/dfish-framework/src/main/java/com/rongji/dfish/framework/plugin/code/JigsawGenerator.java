@@ -28,11 +28,11 @@ public class JigsawGenerator {
     /**
      * 大图宽度
      */
-    private int bigWidth = 800;
+    private int bigWidth = 400;
     /**
      * 大图高度
      */
-    private int bigHeight = 400;
+    private int bigHeight = 200;
     /**
      * 小图大小(正方形)
      */
@@ -52,7 +52,7 @@ public class JigsawGenerator {
     /**
      * 锁定时间(单位:秒)
      */
-    private int lockTime = 60;
+    private int timeout = 60;
 
     /**
      * 大拼图缺口背景色
@@ -118,12 +118,12 @@ public class JigsawGenerator {
         this.maxErrorCount = maxErrorCount;
     }
 
-    public int getLockTime() {
-        return lockTime;
+    public int getTimeout() {
+        return timeout;
     }
 
-    public void setLockTime(int lockTime) {
-        this.lockTime = lockTime;
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     private static final Random RANDOM = new Random();
@@ -141,18 +141,37 @@ public class JigsawGenerator {
 //            throw new UnsupportedOperationException("图片切割大小图宽高设置不符合规范");
 //        }
         HttpSession session = request.getSession();
+        // 目前反暴力刷图策略暂时以session来判断,以后完善可以增加ip判断
         Integer generatorCount = (Integer) session.getAttribute(KEY_GENERATOR_COUNT);
+        JigsawData jigsaw = new JigsawData();
+
         if (generatorCount == null) {
             generatorCount = 0;
         } else if (generatorCount >= maxErrorCount) {
-            Long lockTime = (Long) session.getAttribute(KEY_LOCK_TIME);
+            // FIXME 暂不做控制,需要和前端配合
+            Long lastLockTime = (Long) session.getAttribute(KEY_LOCK_TIME);
             long now = System.currentTimeMillis();
-            if (lockTime == null) {
+            boolean isError = false;
+
+            int leftTimeout = timeout;
+            if (lastLockTime == null) {
                 session.setAttribute(KEY_LOCK_TIME, now);
-                throw new DfishException("已达到最大次数[" + maxErrorCount + "]无法生成验证码拼图");
-            } else if ((lockTime - now <= lockTime * 1000)) {// 理论上不可能为空
-                // 在锁定期内
-                throw new DfishException("已达到最大次数[" + maxErrorCount + "]无法生成验证码拼图");
+                isError = true;
+            } else {
+                leftTimeout = (int) ((lastLockTime - now) / 1000);
+                if (leftTimeout <= timeout * 1000) {
+                    isError = true;
+                } else {
+                    session.removeAttribute(KEY_GENERATOR_COUNT);
+                    session.removeAttribute(KEY_LOCK_TIME);
+                }
+            }
+            if (isError) {
+                JigsawData.JigsawError error = new JigsawData.JigsawError();
+                jigsaw.setError(error);
+                error.setMsg("次数过多,请稍后再试");
+                error.setTimeout(leftTimeout);
+                return jigsaw;
             }
         }
         session.setAttribute(KEY_GENERATOR_COUNT, ++generatorCount);
@@ -194,7 +213,7 @@ public class JigsawGenerator {
         // 将验证码放到session中
         request.getSession().setAttribute(KEY_CHECKCODE, x);
 
-        JigsawData jigsaw = new JigsawData();
+
         jigsaw.setBig(bigImg);
         jigsaw.setSmall(smallImg);
         jigsaw.setMaxvalue(bigWidth);
@@ -272,6 +291,18 @@ public class JigsawGenerator {
 //            g2.setColor(new Color(0, 0, 0, 0));
 //            g2.fillRect(0, 0, destImage.getWidth(), destImage.getHeight());
             g.drawImage(subImage, 0, y, width, height, null);
+            // 小图片周边虚化
+            g.setColor(getGapsColor());
+            // 虚化大小
+            int blurSize = 1;
+            // 上
+            g.fillRect(0, y, width, blurSize);
+            // 右
+            g.fillRect(width-blurSize, y, blurSize, height);
+            // 下
+            g.fillRect(0, y+width-blurSize, width, blurSize);
+            // 左
+            g.fillRect(0, y, blurSize, height);
 
             g.dispose();
             // 输出图片
@@ -397,6 +428,8 @@ public class JigsawGenerator {
          */
         private Number maxvalue;
 
+        private JigsawError error;
+
         public JigsawData() {
         }
 
@@ -443,6 +476,36 @@ public class JigsawGenerator {
         public void setMaxvalue(Number maxvalue) {
             this.maxvalue = maxvalue;
         }
+
+        public JigsawError getError() {
+            return error;
+        }
+
+        public void setError(JigsawError error) {
+            this.error = error;
+        }
+
+        public static class JigsawError {
+            private String msg;
+            private int timeout;
+
+            public String getMsg() {
+                return msg;
+            }
+
+            public void setMsg(String msg) {
+                this.msg = msg;
+            }
+
+            public int getTimeout() {
+                return timeout;
+            }
+
+            public void setTimeout(int timeout) {
+                this.timeout = timeout;
+            }
+        }
+
     }
 
     /**

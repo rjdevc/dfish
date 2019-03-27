@@ -21,9 +21,7 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 
     private static final long serialVersionUID = -3371412187081962648L;
 
-    protected String getScheme() {
-    	return "DEFAULT";
-	}
+    protected String scheme = "DEFAULT";
 
 	@Deprecated
 	public DefaultUploadImage() {
@@ -62,7 +60,24 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		return "*.jpg;*.gif;*.png";
 	}
 
-    /**
+	/**
+	 * 图片压缩方案
+	 * @return String
+	 */
+	public String getScheme() {
+		return scheme;
+	}
+
+	/**
+	 * 图片压缩方案
+	 * @param scheme
+	 */
+	public DefaultUploadImage setScheme(String scheme) {
+		this.scheme = scheme;
+		return this;
+	}
+
+	/**
      *
      * @param itemList
      * @return

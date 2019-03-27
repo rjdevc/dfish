@@ -119,7 +119,11 @@ public class CheckCodeController extends BaseController {
 	@RequestMapping("/jigsawCheck")
 	@ResponseBody
 	public Object jigsawCheck(HttpServletRequest request) throws Exception {
-	    Double offset = Double.parseDouble(request.getParameter("offset"));
+	    Double offset = 0.0;
+	    try {
+			offset = Double.parseDouble(request.getParameter("offset"));
+		} catch (Exception e) {
+		}
 		return getJigsawGenerator().checkJigsawOffset(request, offset);
 	}
 
