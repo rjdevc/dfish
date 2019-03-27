@@ -124,7 +124,8 @@ public class CheckCodeController extends BaseController {
 			offset = Double.parseDouble(request.getParameter("offset"));
 		} catch (Exception e) {
 		}
-		return getJigsawGenerator().checkJigsawOffset(request, offset);
+		boolean result = getJigsawGenerator().checkJigsawOffset(request, offset);
+		return new JigsawGenerator.JigsawCheckData(result);
 	}
 
 }

@@ -43,6 +43,13 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 	}
 	
 	public DefaultUploadFile(String name, String label, List<UploadItem> value) {
+		this(name, label, value, null);
+	}
+
+	public DefaultUploadFile(String name, String label, List<UploadItem> value, String scheme) {
+		// 方案设置需要在最前面
+		this.scheme = scheme;
+
 		this.setName(name);
 		this.setLabel(label);
 		
@@ -91,7 +98,7 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 				super.setValue(null);
 			} else {
 				// 有值时,默认不删除附件
-				this.setRemove_url(null);
+//				this.setRemove_url(null);
 				super.setValue(JsonUtil.toJson(value));
 			}
 		} else {

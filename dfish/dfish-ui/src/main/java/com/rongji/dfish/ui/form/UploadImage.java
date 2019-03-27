@@ -87,7 +87,7 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
 	 * @return this
 	 */
 	public T setThumbnail_url(String thumbnail_url) {
-		this.thumbnail_url = thumbnail_url;
+		this.thumbnail_url = joinScheme(thumbnail_url);
 		return (T) this;
 	}
 	

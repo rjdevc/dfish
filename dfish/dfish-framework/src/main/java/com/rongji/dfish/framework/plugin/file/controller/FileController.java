@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RequestMapping("/file")
 @Controller
@@ -185,6 +186,7 @@ public class FileController extends BaseController {
 
 		final String scheme = request.getParameter("scheme");
 		if (uploadItem != null && Utils.notEmpty(uploadItem.getId()) && Utils.notEmpty(scheme)) {
+		    final AtomicInteger doneFileCount = new AtomicInteger(0);
 			EXECUTOR_IMAGE.execute(new Runnable() {
 				@Override
 				public void run() {
@@ -229,6 +231,7 @@ public class FileController extends BaseController {
 								} else if (ImageZoomDefine.WAY_RESIZE.equals(zoomDefine.getWay())) {
 									ImageUtil.resize(input, output, fileExtName, zoomDefine.getWidth(), zoomDefine.getHeight(), zoomDefine.getBgColor());
 								}
+                                doneFileCount.incrementAndGet();
 							} catch (Exception e) {
 								LogUtil.error("生成缩略图出现异常:详见信息", e);
 							} finally {
@@ -251,6 +254,15 @@ public class FileController extends BaseController {
 					}
 				}
 			});
+			int waitCount = 0;
+			// 至少保证第1个缩略图生成才返回结果
+			while (doneFileCount.get() < 1 && waitCount++ < 30) {
+                try {
+                    // 缩略图未生成休眠等待
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+            }
 		}
 		return uploadItem;
 	}
@@ -265,7 +277,6 @@ public class FileController extends BaseController {
 		    return null;
         }
         Object result = uploadPlugin.doRequest(request);
-
 		return result;
 	}
 	
@@ -318,11 +329,17 @@ public class FileController extends BaseController {
 			response.setHeader("Accept-Ranges", "bytes");
 			response.setHeader("Accept-Charset", encoding);
 			response.setHeader("Content-type", contentType);
-			long fileSize = fileService.getFileSize(fileRecord, fileAlias);
-			response.setHeader("Content-Length", String.valueOf(fileSize));
-			response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, encoding));
-			response.setStatus(HttpServletResponse.SC_OK);
-			input = fileService.getFileInputStream(fileRecord, fileAlias);
+            input = fileService.getFileInputStream(fileRecord, fileAlias);
+            long fileSize = 0L;
+            if (input != null) {
+                fileSize = fileService.getFileSize(fileRecord, fileAlias);
+            } else { // 当别名附件不存在时,使用原附件
+                input = fileService.getFileInputStream(fileRecord);
+                fileSize = fileService.getFileSize(fileRecord);
+            }
+            response.setHeader("Content-Length", String.valueOf(fileSize));
+            response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, encoding));
+            response.setStatus(HttpServletResponse.SC_OK);
 			if (input != null) {
 				FileUtil.downLoadData(response, input);
 			} else {
@@ -373,6 +390,8 @@ public class FileController extends BaseController {
 			ImageZoomScheme zoomScheme = imageZoomSchemeMap.get(scheme);
 			if (zoomScheme != null && Utils.notEmpty(zoomScheme.getZooms())) {
 				fileAlias = zoomScheme.getZooms().get(0);
+				// 缩略图还没生成需要处理
+
 			}
 		}
 

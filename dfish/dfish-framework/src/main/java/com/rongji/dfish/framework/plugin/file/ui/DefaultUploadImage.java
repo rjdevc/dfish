@@ -21,8 +21,6 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 
     private static final long serialVersionUID = -3371412187081962648L;
 
-    protected String scheme = "DEFAULT";
-
 	@Deprecated
 	public DefaultUploadImage() {
 		this(null, null);
@@ -34,10 +32,17 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 	}
 	
 	public DefaultUploadImage(String name, String label, List<UploadItem> value) {
+		this(name, label, value, null);
+	}
+
+	public DefaultUploadImage(String name, String label, List<UploadItem> value, String scheme) {
+		// 方案设置需要在最前面
+		this.scheme = scheme;
+
 		this.setName(name);
 		this.setLabel(label);
 
-		String schemeStr = "scheme=" + (getScheme() == null ? "" : getScheme());
+		String schemeStr = "scheme=" + (scheme == null ? "DEFAULT" : scheme);
 
 		this.setUpload_url("file/uploadImage?" + schemeStr);
 		this.setDown_url("file/download?fileId=$id&" + schemeStr);
@@ -58,23 +63,6 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 	 */
 	protected String defaultFileTypes() {
 		return "*.jpg;*.gif;*.png";
-	}
-
-	/**
-	 * 图片压缩方案
-	 * @return String
-	 */
-	public String getScheme() {
-		return scheme;
-	}
-
-	/**
-	 * 图片压缩方案
-	 * @param scheme
-	 */
-	public DefaultUploadImage setScheme(String scheme) {
-		this.scheme = scheme;
-		return this;
 	}
 
 	/**
@@ -104,8 +92,8 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 			if (value.isEmpty()) {
 				super.setValue(null);
 			} else {
-				// 有值时,默认不删除图片
-				this.setRemove_url(null);
+//				// 有值时,默认不删除图片
+//				this.setRemove_url(null);
 				super.setValue(JsonUtil.toJson(value));
 			}
 		} else {

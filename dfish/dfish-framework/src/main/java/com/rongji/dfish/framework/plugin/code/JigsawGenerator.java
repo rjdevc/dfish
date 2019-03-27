@@ -36,7 +36,7 @@ public class JigsawGenerator {
     /**
      * 小图大小(正方形)
      */
-    private int smallSize = 32;
+    private int smallSize = 48;
     /**
      * 验证图片目录
      */
@@ -50,9 +50,14 @@ public class JigsawGenerator {
      */
     private int maxErrorCount = 16;
     /**
+     * 错误提示语
+     */
+    private String errorMsg = "次数过多,请稍后再试";
+    /**
      * 锁定时间(单位:秒)
      */
     private int timeout = 60;
+
 
     /**
      * 大拼图缺口背景色
@@ -93,7 +98,7 @@ public class JigsawGenerator {
 
     public Color getGapsColor() {
         if (gapsColor == null) {
-            gapsColor = new Color(255, 255, 255, 200);
+            gapsColor = new Color(255, 255, 255, 100);
         }
         return gapsColor;
     }
@@ -112,6 +117,14 @@ public class JigsawGenerator {
 
     public int getMaxErrorCount() {
         return maxErrorCount;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 
     public void setMaxErrorCount(int maxErrorCount) {
@@ -150,26 +163,24 @@ public class JigsawGenerator {
         } else if (generatorCount >= maxErrorCount) {
             // FIXME 暂不做控制,需要和前端配合
             Long lastLockTime = (Long) session.getAttribute(KEY_LOCK_TIME);
-            long now = System.currentTimeMillis();
-            boolean isError = false;
 
-            int leftTimeout = timeout;
+            int leftTimeout = 0;
             if (lastLockTime == null) {
-                session.setAttribute(KEY_LOCK_TIME, now);
-                isError = true;
+                session.setAttribute(KEY_LOCK_TIME, System.currentTimeMillis());
+                leftTimeout = timeout;
             } else {
-                leftTimeout = (int) ((lastLockTime - now) / 1000);
-                if (leftTimeout <= timeout * 1000) {
-                    isError = true;
-                } else {
+                // 剩余时间
+                leftTimeout = (int) (timeout - (System.currentTimeMillis() - lastLockTime) / 1000);
+                if (leftTimeout <= 0) {
+                    generatorCount = 0;
                     session.removeAttribute(KEY_GENERATOR_COUNT);
                     session.removeAttribute(KEY_LOCK_TIME);
                 }
             }
-            if (isError) {
+            if (leftTimeout > 0) {
                 JigsawData.JigsawError error = new JigsawData.JigsawError();
                 jigsaw.setError(error);
-                error.setMsg("次数过多,请稍后再试");
+                error.setMsg(errorMsg);
                 error.setTimeout(leftTimeout);
                 return jigsaw;
             }
@@ -207,12 +218,11 @@ public class JigsawGenerator {
         int fileIndex = RANDOM.nextInt(imageFiles.size());
         File rawFile = imageFiles.get(fileIndex);
 
-        String sessionId = request.getSession().getId();
-        Img bigImg = generatorBigImage(sessionId, rawFile, x, y, smallSize, smallSize);
-        Img smallImg = generatorSmallImage(sessionId, rawFile, x, y, smallSize, smallSize);
+        String jigsawFileName = request.getSession().getId() + "-" + System.currentTimeMillis();
+        Img bigImg = generatorBigImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
+        Img smallImg = generatorSmallImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
         // 将验证码放到session中
         request.getSession().setAttribute(KEY_CHECKCODE, x);
-
 
         jigsaw.setBig(bigImg);
         jigsaw.setSmall(smallImg);
@@ -221,23 +231,24 @@ public class JigsawGenerator {
     }
 
     /**
-     * 校验拼图
+     * 校验拼图是否正确
      * @param request
      * @param offset
-     * @return
+     * @return boolean
      */
-    public JigsawCheckData checkJigsawOffset(HttpServletRequest request, Number offset) {
+    public boolean checkJigsawOffset(HttpServletRequest request, Number offset) {
         double customOffset = offset.doubleValue() * (bigWidth - smallSize) / bigWidth;
         HttpSession session = request.getSession();
         Integer realOffset = (Integer) session.getAttribute(KEY_CHECKCODE);
         // 小于误差范围内都是校验成功
         boolean match = realOffset != null && Math.abs((customOffset - realOffset) / realOffset) <= errorRange;
         if (match) { // 匹配成功,清理数据
-            session.removeAttribute(KEY_CHECKCODE);
+            // code数据不能清理,需要二次验证
+//            session.removeAttribute(KEY_CHECKCODE);
             session.removeAttribute(KEY_GENERATOR_COUNT);
             session.removeAttribute(KEY_LOCK_TIME);
         }
-        return new JigsawCheckData(match);
+        return match;
     }
 
     /**
@@ -255,9 +266,55 @@ public class JigsawGenerator {
         return realServletPath + imageFolder;
     }
 
+
+    /**
+     * 生成大拼图
+     * @param jigsawFileName 会话编号
+     * @param rawFile 原始文件
+     * @param x 切块开始的横坐标
+     * @param y 切块开始的纵坐标
+     * @param width 切块宽度
+     * @param height 切块高度
+     * @return 大图片组件
+     * @throws Exception
+     */
+    private Img generatorBigImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
+        FileInputStream input = null;
+        FileOutputStream output = null;
+        try {
+            input = new FileInputStream(rawFile);
+            String fileExtName = FileUtil.getFileExtName(rawFile.getName());
+            String destFileName = jigsawFileName + "-B" + fileExtName;
+            File tempDestFile = getTempDestFile(destFileName);
+            output = new FileOutputStream(tempDestFile);
+            // 读取原始图片
+            BufferedImage rawImage = ImageIO.read(input);
+
+            Graphics g = rawImage.getGraphics();
+//        Graphics2D g = rawImage.createGraphics();
+//        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 1.0f));
+
+            g.setColor(getGapsColor());
+            // 必须调用这个方法将背景色填充到图片去
+            g.fillRect(x, y, width, height);
+
+            ImageIO.write(rawImage, getRealExtName(fileExtName), output);
+            g.dispose();
+
+            return parseImg(output, destFileName, rawImage.getWidth(), rawImage.getHeight());
+        } finally {
+            if (input != null) {
+                input.close();
+            }
+            if (output != null) {
+                output.close();
+            }
+        }
+    }
+
     /**
      * 生成小拼图
-     * @param sessionId 会话编号
+     * @param jigsawFileName 会话编号
      * @param rawFile 原始文件
      * @param x 切块开始的横坐标
      * @param y 切块开始的纵坐标
@@ -266,14 +323,15 @@ public class JigsawGenerator {
      * @return 小图片组件
      * @throws Exception
      */
-    private Img generatorSmallImage(String sessionId, File rawFile, int x, int y, int width, int height) throws Exception {
+    private Img generatorSmallImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
         FileInputStream input = null;
         FileOutputStream output = null;
         try {
             input = new FileInputStream(rawFile);
             String fileExtName = FileUtil.getFileExtName(rawFile.getName());
-            String destFileName = sessionId + "-small" + fileExtName;
-            output = new FileOutputStream(getTempDestFile(destFileName));
+            String destFileName = jigsawFileName + "-S" + fileExtName;
+            File tempDestFile = getTempDestFile(destFileName);
+            output = new FileOutputStream(tempDestFile);
             // 读取原始图片
             BufferedImage rawImage = ImageIO.read(input);
 
@@ -308,10 +366,7 @@ public class JigsawGenerator {
             // 输出图片
             ImageIO.write(destImage, getRealExtName(fileExtName), output);
 
-            Img img = new Img(imageFolder + FOLDER_TEMP + "/" + destFileName);
-            img.setWidth(width);
-            img.setHeight(height);
-            return img;
+            return parseImg(output, destFileName, width, height);
         } finally {
             if (input != null) {
                 input.close();
@@ -358,53 +413,11 @@ public class JigsawGenerator {
         return destFile;
     }
 
-    /**
-     * 生成大拼图
-     * @param sessionId 会话编号
-     * @param rawFile 原始文件
-     * @param x 切块开始的横坐标
-     * @param y 切块开始的纵坐标
-     * @param width 切块宽度
-     * @param height 切块高度
-     * @return 大图片组件
-     * @throws Exception
-     */
-    private Img generatorBigImage(String sessionId, File rawFile, int x, int y, int width, int height) throws Exception {
-        FileInputStream input = null;
-        FileOutputStream output = null;
-        try {
-            input = new FileInputStream(rawFile);
-            String fileExtName = FileUtil.getFileExtName(rawFile.getName());
-            String destFileName = sessionId + "-big" + fileExtName;
-//            output = new FileOutputStream(getTempDestFile(destFileName));
-            output = new FileOutputStream(new File(getImageRawDir()  + FOLDER_TEMP + "/" + destFileName));
-            // 读取原始图片
-            BufferedImage rawImage = ImageIO.read(input);
-
-            Graphics g = rawImage.getGraphics();
-//        Graphics2D g = rawImage.createGraphics();
-//        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 1.0f));
-
-            g.setColor(getGapsColor());
-            // 必须调用这个方法将背景色填充到图片去
-            g.fillRect(x, y, width, height);
-
-            ImageIO.write(rawImage, getRealExtName(fileExtName), output);
-            g.dispose();
-
-            Img img = new Img(imageFolder + FOLDER_TEMP + "/" + destFileName);
-            img.setWidth(rawImage.getWidth());
-            img.setHeight(rawImage.getHeight());
-            return img;
-        } finally {
-            if (input != null) {
-                input.close();
-            }
-            if (output != null) {
-                output.flush();
-                output.close();
-            }
-        }
+    private Img parseImg(FileOutputStream output, String destFileName, int width, int height) {
+        Img img = new Img(imageFolder + FOLDER_TEMP + "/" + destFileName);
+        img.setWidth(width);
+        img.setHeight(height);
+        return img;
     }
 
     /**

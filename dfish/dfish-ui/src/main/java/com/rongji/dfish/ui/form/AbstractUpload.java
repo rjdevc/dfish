@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.Directional;
 
 /**
@@ -18,20 +19,37 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * 
 	 */
 	private static final long serialVersionUID = 4779985030349561966L;
-	protected String down_url ;
+	protected String upload_url;
+	protected String down_url;
 	//50M
 	protected String file_size_limit ;
 	protected String file_types ;
 	protected Integer file_upload_limit ;
-	protected String upload_url ;
 	protected String value_width;
 	protected List<ValueButton> value_button;
 	protected List<UploadButton> upload_button;
-	protected String remove_url;
+//	protected String remove_url;
 	
 	protected UploadItem pub;
 	protected String dir;
-	
+	protected String scheme;
+
+	/**
+	 * 上传地址。
+	 * @return  upload_url
+	 */
+	public String getUpload_url() {
+		return upload_url;
+	}
+	/**
+	 * 上传地址。
+	 * @param upload_url 上传地址
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setUpload_url(String upload_url) {
+		this.upload_url = joinScheme(upload_url);
+		return (T) this;
+	}
 	/**
 	 * 下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
 	 * @return down_url
@@ -45,7 +63,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return 本身，这样可以继续设置其他属性
 	 */
     public T setDown_url(String down_url) {
-		this.down_url = down_url;
+		this.down_url = joinScheme(down_url);
 		return (T) this;
 	}
 	/**
@@ -94,22 +112,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 */
     public T setFile_upload_limit(Integer file_upload_limit) {
 		this.file_upload_limit = file_upload_limit;
-		return (T) this;
-	}
-	/**
-	 * 上传地址。
-	 * @return  upload_url
-	 */
-	public String getUpload_url() {
-		return upload_url;
-	}
-	/**
-	 * 上传地址。
-	 * @param upload_url 上传地址
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-    public T setUpload_url(String upload_url) {
-		this.upload_url = upload_url;
 		return (T) this;
 	}
 	/**
@@ -168,28 +170,28 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 		return (T) this;
 	}
 	
-	/**
-	 * 移除附件的地址
-	 * @return String
-	 * @deprecated 删除操作在保存时触发,界面点击删除是伪删除,这里的值无论怎么设置都是空值
-	 */
-	@Deprecated
-	public String getRemove_url() {
-		return remove_url;
-	}
+//	/**
+//	 * 移除附件的地址
+//	 * @return String
+//	 * @deprecated 删除操作在保存时触发,界面点击删除是伪删除,这里的值无论怎么设置都是空值
+//	 */
+//	@Deprecated
+//	public String getRemove_url() {
+//		return remove_url;
+//	}
 	
-	/**
-	 * 移除附件的地址
-	 * @param remove_url String
-	 * @return 本身，这样可以继续设置其他属性
-	 * @deprecated 删除操作在保存时触发,界面点击删除是伪删除,这里的值无论怎么设置都是空值
-	 */
-	@Deprecated
-    public T setRemove_url(String remove_url) {
-    	// 不做任何操作
+//	/**
+//	 * 移除附件的地址
+//	 * @param remove_url String
+//	 * @return 本身，这样可以继续设置其他属性
+//	 * @deprecated 删除操作在保存时触发,界面点击删除是伪删除,这里的值无论怎么设置都是空值
+//	 */
+//	@Deprecated
+//    public T setRemove_url(String remove_url) {
+//    	// 不做任何操作
 //		this.remove_url = remove_url;
-		return (T) this;
-	}
+//		return (T) this;
+//	}
 	
 	/**
 	 * 取得默认值
@@ -230,5 +232,16 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	public T setTip(String tip) {
 		return (T) this;
 	}
-	
+
+	protected String joinScheme(String url) {
+		if (Utils.isEmpty(url)) {
+			return url;
+		}
+		if (Utils.notEmpty(scheme)) {
+			url += (url.indexOf("?") >= 0) ? "&" : "?";
+			url += "scheme=" + scheme;
+		}
+		return url;
+	}
+
 }
