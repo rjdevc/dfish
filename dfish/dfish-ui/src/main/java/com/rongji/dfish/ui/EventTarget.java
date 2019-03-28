@@ -127,6 +127,10 @@ public interface EventTarget<T extends EventTarget<T>> {
     public static final String EVENT_BLUR= "blur";
     
     /**
+     * FORM事件-在元素值被改变前运行的脚本
+     */
+    public static final String EVENT_BEFORECHANGE= "beforechange";
+    /**
      * FORM事件-在元素值被改变时运行的脚本
      */
     public static final String EVENT_CHANGE= "change";
