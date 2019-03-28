@@ -11,7 +11,7 @@ define.widget( 'echarts', {
                 this.x.option && this.init( this.x.option );
             },
             resize: function() {
-                this.echarts.resize();
+                this.echarts && this.echarts.resize();
             }
         }
     },
