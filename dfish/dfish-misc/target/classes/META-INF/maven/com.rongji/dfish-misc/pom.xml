@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.rongji</groupId>
+    <artifactId>dfish</artifactId>
+    <version>3.1.10-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>dfish-misc</artifactId>
+  <name>dfish-misc</name>
+  <url>http://maven.apache.org</url>
+  
+  <properties>
+    <poi.version>3.8</poi.version>
+  </properties>
+  
+  <dependencies>
+  
+  	<dependency>
+	    <groupId>com.rongji</groupId>
+	    <artifactId>dfish-base</artifactId>
+	</dependency>
+	
+	<!-- dom4j -->
+	<dependency>
+	    <groupId>org.lucee</groupId>
+	    <artifactId>dom4j</artifactId>
+	    <version>1.6.1</version>
+	</dependency>
+	
+	<!-- 拼音 -->
+	<dependency>
+	    <groupId>com.belerweb</groupId>
+	    <artifactId>pinyin4j</artifactId>
+	    <version>2.5.0</version>
+	</dependency>
+	
+	<!-- poi(excel工具包) -->
+	<dependency>
+	    <groupId>org.apache.poi</groupId>
+	    <artifactId>poi</artifactId>
+	    <version>${poi.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.poi</groupId>
+	    <artifactId>poi-ooxml</artifactId>
+	    <version>${poi.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.poi</groupId>
+	    <artifactId>poi-ooxml-schemas</artifactId>
+	    <version>${poi.version}</version>
+	</dependency>
+	
+	<dependency>
+	  	<groupId>com.alibaba</groupId>
+	  	<artifactId>fastjson</artifactId>
+	  	<version>1.2.47</version>
+	</dependency>
+	
+	<!-- 二维码 -->
+	<dependency>
+	    <groupId>com.google.zxing</groupId>
+	    <artifactId>core</artifactId>
+	    <version>3.3.3</version>
+	</dependency>
+  
+  </dependencies>
+</project>
