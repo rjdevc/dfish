@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="dfish-engine:war">
+    <output-path>$PROJECT_DIR$/dfish/dfish-engine/target</output-path>
+    <root id="archive" name="dfish-engine.war">
+      <element id="artifact" artifact-name="dfish-engine:war exploded" />
+    </root>
+  </artifact>
+</component>
