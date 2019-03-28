@@ -575,6 +575,7 @@ _tpl_view = function( a ) {
 _compilePreload = function( a, x ) {
 	var b = typeof a === _OBJ, n = b ? a : _getPreload( a );
 	if ( n ) {
+		n = $.jsonClone( n );
 		if ( x.type === 'dialog' )
 			x = x.node;
 		if ( x.type === 'view' ) {
