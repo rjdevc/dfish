@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.JsonObject;
+import com.rongji.dfish.ui.command.DialogCommand;
 
 /**
  * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link Combobox} {@link Linkbox}和{@link Onlinebox}
@@ -13,7 +14,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 
 	 */
 	private static final long serialVersionUID = -3727695759981575245L;
-	private String src;
+	private DialogCommand src;
 //	private Boolean suggest;
 	private Boolean multiple;
 	private Boolean nobr;
@@ -21,6 +22,36 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	private JsonObject picker;
 	private Long delay;
 	private String separator;
+
+	/**
+	 * 构造函数
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param src 在线匹配关键词的 view src。支持 $value 和 $text 变量。
+	 */
+	public SuggestionBox(String name, String label, String value, String src) {
+		this.setName(name);
+		this.setLabel(label);
+		this.setValue(value);
+		this.setSrc(src(src));
+	}
+
+	/**
+	 * 构造函数
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param src 在线匹配关键词的 view src。支持 $value 和 $text 变量。
+	 */
+	public SuggestionBox(String name, String label, String value, DialogCommand src) {
+		this.setName(name);
+		this.setLabel(label);
+		this.setValue(value);
+		this.setSrc(src);
+	}
+
+
 //	private Integer matchlength;
 	/**
 	 * 设置是否可以多选
@@ -42,7 +73,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	@Deprecated
 	@SuppressWarnings("unchecked")
 	public T setSuggestsrc(String suggestsrc) {
-		this.src = suggestsrc;
+		this.setSrc(suggestsrc);
 //		this.suggest=true;
 		return (T)this;
 	}
@@ -111,20 +142,42 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		return (T) this;
 	}
 	/**
-	 * 在线匹配关键词的 view src。支持 $value 和 $text 变量。访问这个 src 应当返回一个 view 的 JSON 数据。
+	 * 在线匹配关键词的动作。支持 $value 和 $text 变量。
 	 * @return  String
 	 */
-	public String getSrc() {
+	public DialogCommand getSrc() {
 		return src;
 	}
-	
+
 	/**
-	 * 在线匹配关键词的 view src。支持 $value 和 $text 变量。访问这个 src 应当返回一个 view 的 JSON 数据。
+	 * 获取在线匹配关键词的命令,当不存在时,将创建新的对话框
+	 * @return
+	 */
+	protected DialogCommand src(String src) {
+		if (this.src == null) {
+			this.src = new DialogCommand(src);
+		}
+		return this.src;
+	}
+
+	/**
+	 * 在线匹配关键词的 view src。支持 $value 和 $text 变量。
 	 * @param src 在线匹配关键词的 view src
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
     public T setSrc(String src) {
+		DialogCommand thisSrc = src(src);
+		thisSrc.setSrc(src);
+		return (T) this;
+	}
+
+	/**
+	 * 在线匹配关键词的对话框命令
+	 * @param src 在线匹配关键词的对话框命令
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setSrc(DialogCommand src) {
 		this.src = src;
 		return (T) this;
 	}

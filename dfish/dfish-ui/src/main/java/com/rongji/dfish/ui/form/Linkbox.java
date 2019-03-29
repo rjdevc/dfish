@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 
+import com.rongji.dfish.ui.command.DialogCommand;
 
 /**
  * <p>
@@ -36,13 +37,20 @@ public class Linkbox extends LinkableSuggestionBox<Linkbox> {
 	 * @param value 初始值
 	 * @param src 候选项的URL
 	 */
-	public Linkbox(String name, String label, String value, String src) { 
-		this.setName(name);
-		this.setLabel(label);
-		this.setValue(value);
-		this.setSrc(src);
-//		this.strict=true;
-//		this.text="loading...";
+	public Linkbox(String name, String label, String value, String src) {
+		super(name, label, value, src);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param src 候选项的弹窗命令
+	 */
+	public Linkbox(String name, String label, String value, DialogCommand src) {
+		super(name, label, value, src);
 	}
 
 	public String getType() {

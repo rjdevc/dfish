@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 
+import com.rongji.dfish.ui.command.DialogCommand;
 
 /**
  * <p>
@@ -36,10 +37,18 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 	 * @param src 在线匹配关键词的 view src。支持 $value 和 $text 变量。
 	 */
 	public Onlinebox(String name, String label, String value, String src) {
-		this.setName(name);
-		this.setLabel(label);
-		this.setValue(value);
-		this.setSrc(src);
+		super(name, label, value, src);
+	}
+
+	/**
+	 * 构造函数
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param src 候选项的弹窗命令
+	 */
+	public Onlinebox(String name, String label, String value, DialogCommand src) {
+		super(name, label, value, src);
 	}
 
 	public String getType() {

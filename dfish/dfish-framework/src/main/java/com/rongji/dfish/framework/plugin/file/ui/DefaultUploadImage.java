@@ -37,6 +37,7 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		this.setDown_url("file/download?fileId=$id");
 //		this.setRemove_url("file/removeFile?fileId=$id");
 		this.setThumbnail_url("file/thumbnail?fileId=$id");
+		this.setPreview_url("file/preview?fileId=$id");
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
 		this.setFile_types(fileService.getImageTypes());
 		this.setFile_size_limit(fileService.getSizeLimit());

@@ -21,6 +21,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	private static final long serialVersionUID = 4779985030349561966L;
 	protected String upload_url;
 	protected String down_url;
+	protected String preview_url;
 	//50M
 	protected String file_size_limit ;
 	protected String file_types ;
@@ -66,7 +67,26 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 		this.down_url = down_url;
 		return (T) this;
 	}
-	/**
+
+    /**
+     * 文件预览地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
+     * @return 文件预览地址
+     */
+    public String getPreview_url() {
+        return joinScheme(preview_url);
+    }
+
+    /**
+     * 文件预览地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
+     * @param preview_url 文件预览地址
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setPreview_url(String preview_url) {
+        this.preview_url = preview_url;
+        return (T) this;
+    }
+
+    /**
 	 * 单个附件最大体积。如 "50M"。
 	 * @return file_size_limit
 	 */

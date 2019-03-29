@@ -47,6 +47,7 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 
 		this.setUpload_url("file/uploadFile");
 		this.setDown_url("file/download?fileId=$id");
+		this.setPreview_url("file/preview?fileId=$id");
 //		this.setRemove_url("file/removeFile?fileId=$id");
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
 		this.setFile_types(fileService.getFileTypes());

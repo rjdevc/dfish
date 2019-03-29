@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.command.DialogCommand;
 import com.rongji.dfish.ui.layout.View;
 
 /**
@@ -23,7 +24,31 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	private String loadingtext;
 	private Boolean suggest;
 	private View node;
-	
+
+	/**
+	 * 构造函数
+	 *
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param src 候选项的URL
+	 */
+	public LinkableSuggestionBox(String name, String label, String value, String src) {
+		super(name, label, value, src);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param src 候选项的弹窗命令
+	 */
+	public LinkableSuggestionBox(String name, String label, String value, DialogCommand src) {
+		super(name, label, value, src);
+	}
+
 	/**
 	 * 设置初始显示文本， 提示: 如果strict值为为真，而且value不为空，那么建议设置为 loading... 可以收到较好的效果
 	 * 

@@ -371,10 +371,24 @@ public class FileController extends BaseController {
 	@RequestMapping("/thumbnail")
 	@ResponseBody
 	public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String enFileId = request.getParameter("fileId");
-		String fileId = fileService.decId(enFileId);
-		PubFileRecord fileRecord = fileService.getFileRecord(fileId);
-		String imgType = null;
+		preview(request, response);
+	}
+
+    /**
+     * 预览文件方法
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/preview")
+    @ResponseBody
+    public void preview(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // FIXME 目前仅图片预览方法,如果是文件预览需做处理,不支持预览可能直接下载
+        String enFileId = request.getParameter("fileId");
+        String fileId = fileService.decId(enFileId);
+        PubFileRecord fileRecord = fileService.getFileRecord(fileId);
+        String imgType = null;
         if (fileRecord != null) {
             imgType = FileUtil.getFileExtName(fileRecord.getFileUrl());
             // 因取文件类型方法包含.所以需要截取
@@ -382,20 +396,20 @@ public class FileController extends BaseController {
                 imgType = imgType.substring(1);
             }
         }
-		String contentType = "image/" + (imgType == null ? "png" : imgType);
+        String contentType = "image/" + (imgType == null ? "png" : imgType);
 
         String fileAlias = request.getParameter("fileAlias");
         if (Utils.isEmpty(fileAlias)) {
-			String scheme = request.getParameter("scheme");
-			ImageZoomScheme zoomScheme = imageZoomSchemeMap.get(scheme);
-			if (zoomScheme != null && Utils.notEmpty(zoomScheme.getZooms())) {
-				fileAlias = zoomScheme.getZooms().get(0);
-				// 缩略图还没生成需要处理
+            String scheme = request.getParameter("scheme");
+            ImageZoomScheme zoomScheme = imageZoomSchemeMap.get(scheme);
+            if (zoomScheme != null && Utils.notEmpty(zoomScheme.getZooms())) {
+                fileAlias = zoomScheme.getZooms().get(0);
+                // 缩略图还没生成需要处理
 
-			}
-		}
+            }
+        }
 
-		downloadFileData(response, contentType, fileRecord, fileAlias);
-	}
+        downloadFileData(response, contentType, fileRecord, fileAlias);
+    }
 
 }
