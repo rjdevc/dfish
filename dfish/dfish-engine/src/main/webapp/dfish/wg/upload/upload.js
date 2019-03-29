@@ -1279,8 +1279,9 @@ BaseUpload = define.widget( 'upload/base', {
 					this.valuebar.add( { file: this.getQueueFile( i ) } );
 				}
 				//this.trigger( 'fileselect' );
-				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
+				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ ) {
 					d[ i ].render();
+				}
 				this.startUpload();
 				$.classRemove( this.$(), 'z-err' );
 			}
@@ -1304,9 +1305,9 @@ BaseUpload = define.widget( 'upload/base', {
 			}
 		},
 		upload_complete_handler: function( file ) {
-			if ( this.getQueueFile( 0 ) )
+			if ( this.getQueueFile( 0 ) ) {
 				this.startUpload();
-			else
+			} else
 				this.trigger( 'change' );
 		},
 		upload_error_handler: function( file, errorCode, message ) {

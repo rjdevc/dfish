@@ -898,12 +898,12 @@ W = define( 'widget', function() {
 				 $[ b || 'append' ]( a, s );
 			else {
 				for ( var i = this.nodeIndex - 1, l = p.length, c; i > -1; i -- )
-					if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'after' ); break; }
+					if ( p[ i ].$() ) { (c = p[ i ]).insertHTML( s, 'after' ); break; }
 				if ( ! c ) {
 					for ( i = this.nodeIndex + 1; i < l; i ++ )
-						if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'before' ); break; }
+						if ( p[ i ].$() ) { (c = p[ i ]).insertHTML( s, 'before' ); break; }
 				}
-				!c && p.insertHTML( s );
+				! c && p.insertHTML( s );
 			}
 			this.triggerAll( 'ready' );
 			! this._disposed && this.parentNode.trigger( 'nodechange' );
@@ -6209,7 +6209,7 @@ Combobox = define.widget( 'combobox', {
 		$.classAdd( this, 'z-loading' );
 		x.nobr === F && $.classAdd( this, 'z-br' );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
-		this.more = this.createPop( x.node || x.src || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
+		this.more = this.createPop( x.src || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
 		if ( this.more.contentView.layout )
 			this.trigger( 'load' );
 		else
@@ -6420,12 +6420,10 @@ Combobox = define.widget( 'combobox', {
 			var d = { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', indent: 1 }, s = this.x.src;
 			if ( typeof u === _STR ) {
 				d.src = u;
-			} else {
-				if ( u.type === 'view' )
-					d.node = u;
 			}
 			if ( s && typeof s === _OBJ ) {
 				$.extend( d, s );
+				s.cls && (d.cls += ' ' + s.cls);
 			}
 			var o = { pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
 				w = 'javascript:return this.parentNode.$().offsetWidth';
@@ -6537,7 +6535,8 @@ Combobox = define.widget( 'combobox', {
 		},
 		getSuggestSrc: function() {
 			var s = this.x.suggest && this.x.src;
-			return (s && s.src) || s;
+			if ( s )
+				return typeof s === _OBJ ? s.src : s;
 		},
 		// @t -> query text, s -> milliseconds?
 		suggest: function( a, s ) {
