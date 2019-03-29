@@ -39,7 +39,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return  upload_url
 	 */
 	public String getUpload_url() {
-		return upload_url;
+		return joinScheme(this.upload_url);
 	}
 	/**
 	 * 上传地址。
@@ -47,7 +47,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setUpload_url(String upload_url) {
-		this.upload_url = joinScheme(upload_url);
+		this.upload_url = upload_url;
 		return (T) this;
 	}
 	/**
@@ -55,7 +55,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return down_url
 	 */
 	public String getDown_url() {
-		return down_url;
+		return joinScheme(this.down_url);
 	}
 	/**
 	 * 下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
@@ -63,7 +63,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return 本身，这样可以继续设置其他属性
 	 */
     public T setDown_url(String down_url) {
-		this.down_url = joinScheme(down_url);
+		this.down_url = down_url;
 		return (T) this;
 	}
 	/**
@@ -230,6 +230,24 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	
 	@Deprecated
 	public T setTip(String tip) {
+		return (T) this;
+	}
+
+	/**
+	 * 附件上传方案
+	 * @return String
+	 */
+	public String getScheme() {
+		return scheme;
+	}
+
+	/**
+	 * 附件上传方案
+	 * @param scheme String
+	 * @return 本身
+	 */
+	public T setScheme(String scheme) {
+		this.scheme = scheme;
 		return (T) this;
 	}
 

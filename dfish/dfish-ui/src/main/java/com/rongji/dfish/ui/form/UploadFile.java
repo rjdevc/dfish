@@ -13,16 +13,10 @@ public class UploadFile<T extends UploadFile<T>> extends AbstractUpload<T> {
 	 */
 	private static final long serialVersionUID = 5921590784801725804L;
 	/**
-	 * 
-	 */
-	public UploadFile(){
-		
-	}
-	/**
 	 * @param name
 	 * @param label
 	 */
-	public UploadFile(String name,String label){
+	public UploadFile(String name, String label){
 		this.name=name;
 		this.label=label;
 	}

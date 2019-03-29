@@ -21,12 +21,6 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 
     private static final long serialVersionUID = -3371412187081962648L;
 
-	@Deprecated
-	public DefaultUploadImage() {
-		this(null, null);
-	}
-	
-	@Deprecated
 	public DefaultUploadImage(String name, String label) {
 		this(name, label, null);
 	}
@@ -36,18 +30,13 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 	}
 
 	public DefaultUploadImage(String name, String label, List<UploadItem> value, String scheme) {
-		// 方案设置需要在最前面
-		this.scheme = scheme;
+		super(name, label);
+		this.setScheme(scheme);
 
-		this.setName(name);
-		this.setLabel(label);
-
-		String schemeStr = "scheme=" + (scheme == null ? "DEFAULT" : scheme);
-
-		this.setUpload_url("file/uploadImage?" + schemeStr);
-		this.setDown_url("file/download?fileId=$id&" + schemeStr);
+		this.setUpload_url("file/uploadImage");
+		this.setDown_url("file/download?fileId=$id");
 //		this.setRemove_url("file/removeFile?fileId=$id");
-		this.setThumbnail_url("file/thumbnail?fileId=$id&" + schemeStr);
+		this.setThumbnail_url("file/thumbnail?fileId=$id");
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
 		this.setFile_types(fileService.getImageTypes());
 		this.setFile_size_limit(fileService.getSizeLimit());

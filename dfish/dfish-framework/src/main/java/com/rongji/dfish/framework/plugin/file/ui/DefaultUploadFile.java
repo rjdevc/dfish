@@ -21,12 +21,6 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 
     private static final long serialVersionUID = 7489001330729080679L;
 
-	@Deprecated
-	public DefaultUploadFile() {
-		this(null, null);
-	}
-	
-	@Deprecated
 	public DefaultUploadFile(String name, String label) {
 //		this.setName(name);
 //		this.setLabel(label);
@@ -47,12 +41,10 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 	}
 
 	public DefaultUploadFile(String name, String label, List<UploadItem> value, String scheme) {
-		// 方案设置需要在最前面
-		this.scheme = scheme;
+		super(name, label);
+		this.setScheme(scheme);
+		this.setValue(value);
 
-		this.setName(name);
-		this.setLabel(label);
-		
 		this.setUpload_url("file/uploadFile");
 		this.setDown_url("file/download?fileId=$id");
 //		this.setRemove_url("file/removeFile?fileId=$id");
@@ -62,7 +54,6 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 		this.setFile_size_limit(sizeLimit);
 		this.addUpload_button(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-doRequest-icon-local"));
 //		this.addValue_button(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
-		this.setValue(value);
 	}
 	
 	@Override

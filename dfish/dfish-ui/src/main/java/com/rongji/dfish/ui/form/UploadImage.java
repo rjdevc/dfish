@@ -22,19 +22,14 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
 	private String valign;
 	
 	/**
-	 * 
-	 */
-	public UploadImage(){
-		
-	}
-	/**
 	 * @param name
 	 * @param label
 	 */
-	public UploadImage(String name,String label){
+	public UploadImage(String name, String label) {
 		this.name=name;
 		this.label=label;
 	}
+
 	@Override
 	public String getType() {
 		return "upload/image";
@@ -78,7 +73,7 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
 	 * @return String
 	 */
 	public String getThumbnail_url() {
-		return thumbnail_url;
+		return joinScheme(this.thumbnail_url);
 	}
 	
 	/**
@@ -87,7 +82,7 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
 	 * @return this
 	 */
 	public T setThumbnail_url(String thumbnail_url) {
-		this.thumbnail_url = joinScheme(thumbnail_url);
+		this.thumbnail_url = thumbnail_url;
 		return (T) this;
 	}
 	
