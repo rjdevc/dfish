@@ -1153,12 +1153,12 @@ W = define( 'widget', function() {
 				 $[ b || 'append' ]( a, s );
 			else {
 				for ( var i = this.nodeIndex - 1, l = p.length, c; i > -1; i -- )
-					if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'after' ); break; }
+					if ( p[ i ].$() ) { (c = p[ i ]).insertHTML( s, 'after' ); break; }
 				if ( ! c ) {
 					for ( i = this.nodeIndex + 1; i < l; i ++ )
-						if ( (c = p[ i ]).$() ) { c.insertHTML( s, 'before' ); break; }
+						if ( p[ i ].$() ) { (c = p[ i ]).insertHTML( s, 'before' ); break; }
 				}
-				!c && p.insertHTML( s );
+				! c && p.insertHTML( s );
 			}
 			this.triggerAll( 'ready' );
 			! this._disposed && this.parentNode.trigger( 'nodechange' );
@@ -1483,7 +1483,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( b && ! isNaN( b ) )
 			b = parseFloat( b );
 		if ( typeof b === _NUM && ! m )
-			return b < 0 ? N : b;
+			return b < 0 ? N : a.isWidget ? $.scaleRange( b, a.attr( nv ), a.attr( xv ) ) : b;
 		c === U && (c = this[ iz ]());
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
@@ -6132,6 +6132,12 @@ Slider = define.widget( 'slider', {
 			this.$v().value = a;
 			this.fixPos( a );
 		},
+		hover: function( a, b ) {
+			this.isNormal() && $.classAdd( a, 'z-hv' );
+		},
+		hout: function( a, b ) {
+			this.isNormal() && ! a.contains( b.toElement ) && $.classRemove( a, 'z-hv' );
+		},
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
@@ -6173,7 +6179,8 @@ Slider = define.widget( 'slider', {
 		},
 		html_nodes: function() {
 			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event)></div></div>' + this.html_placeholder();
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
+			't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -6239,7 +6246,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 							this.reload( this.jigsaw.vis );
 						this.val( this.min() );
 						this.removeClass( 'z-on z-success' );
-						Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
+						$.classRemove( this.$( 'thumb' ), 'z-hv' );
 					}
 					this.removeClass( 'z-drag z-on z-authing' );
 					this.trigger( 'auth' );
@@ -6277,7 +6284,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		load: function( fn ) {
 			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
 				if ( d.error ) {
-					this.error( d.error );
+					this.lock( d.error );
 				} else {
 					this.img = d;
 					this.loaded = T;
@@ -6297,13 +6304,13 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		},
 		reset: function() {
 			this.val( this.min() );
-			this.removeClass( 'z-on z-success z-err z-lmt' );
+			this.removeClass( 'z-on z-success z-err z-lock' );
 			Q( this.$( 'pht' ) ).html( this.info() );
 			this.normal();
 			this.reload();
 		},
-		error: function( e ) {
-			this.addClass( 'z-err' );
+		lock: function( e ) {
+			this.addClass( 'z-err z-lock' );
 			Q( this.$( 'pht' ) ).html( this.info( e ) );
 			this.readonly();
 			this.jigsaw && this.jigsaw.close();
@@ -6718,7 +6725,7 @@ Combobox = define.widget( 'combobox', {
 							if ( k === 8 ) { // 8:backspace
 								if ( $.rngCursorOffset() == 0 ) {
 									var a = this.$t().previousSibling;
-									a && $.widget( a ).close();
+									a && (a = $.widget( a )).type === 'combobox/option' && a.close();
 								}
 							} else if ( k === 35 ) { // 35:end
 								var a = this.$t(), t = a.innerText;
@@ -7951,11 +7958,10 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			return this.x.srcdata;
 		},
 		isFolder: function() {
-			return this.x.folder;
+			return this.length || (this.x.src && !this.loaded) ? T : F;
 		},
 		// @a -> folder?
 		fixFolder: function( a ) {
-			this.x.folder = a != N ? a : !!(this.length || (this.x.src && !this.loaded));
 			this.addClass( 'z-folder', this.isFolder() );
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
@@ -8158,7 +8164,6 @@ Leaf = define.widget( 'leaf', {
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
-		x.folder == N && (x.folder = !!(this.length || x.src));
 		x.focus && this.tabFocus();
 	},
 	Extend: AbsLeaf,
@@ -8456,7 +8461,6 @@ GridLeaf = define.widget( 'grid/leaf', {
 	Const: function( x, p ) {
 		var r = _grid_tr.call( p );
 		x.open == N && (x.open = !x.src || !!r.length);
-		x.folder == N && (x.folder = !!(r.length || x.src));
 		Leaf.apply( this, arguments );
 		x.src && (this.loaded = !!r.length);
 		this.level = r.level;
@@ -8499,7 +8503,6 @@ GridLeaf = define.widget( 'grid/leaf', {
 		},
 		// @a -> folder?
 		fixFolder: function( a ) {
-			this.x.folder = a != N ? a : !!(this.row.length || (this.x.src && !this.loaded));
 			this.addClass( 'z-folder', this.isFolder() );
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );

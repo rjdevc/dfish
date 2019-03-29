@@ -105,11 +105,6 @@ _vmByElem = function ( o ) {
 _wg_format = function( a, b, c ) {
 	return a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
 },
-_repaintSelfWithBox = function() {
-	var b = this.box && this.box.isChecked();
-	Q( this.$() ).replaceWith( this.html_self() );
-	this.box && this.box.check( b );
-},
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( s ) {
 	var s = s || '', n, h = this.Const.Listener, r = _white_events[ h && h.range ] || _white_events.all;
@@ -937,8 +932,11 @@ W = define( 'widget', function() {
 				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
 			return c;
 		},
-		prop_style: function() {
-			var t = '';
+		html_prop: function() {
+			var b = ' w-type="' + this.type + '" id=' + this.id,
+				v, t = this.cssText || '', n = this.Const.Listener;
+			if ( this.x.id )
+				b += ' w-id="' + this.x.id + '"';
 			if ( ( v = this.innerWidth() ) != N )
 				t += 'width:' + v + 'px;';
 			if ( ( v = this.innerHeight() ) != N )
@@ -953,21 +951,14 @@ W = define( 'widget', function() {
 				t += 'max-height:' + v + 'px;';
 			if ( this.x.style )
 				t += this.x.style;
-			return t;
-		},
-		html_prop: function() {
-			var b = ' w-type="' + this.type + '" id=' + this.id,
-				v, t = this.prop_style(), n = this.Const.Listener;
-			if ( this.x.id )
-				b += ' w-id="' + this.x.id + '"';
 			if ( t )
 				b += ' style="' + t + '"';
 			if ( ! (n && n.tag) && (this.x.on || n) )
 				b += _html_on.call( this );
 			if ( v = this.prop_cls() )
 				b += ' class="' + v + '"';
-			if ( v = this.attr( 'align' ) )
-				b += ' align=' + v;
+			if ( this.x.align )
+				b += ' align=' + this.x.align;
 			if ( this.property )
 				b += this.property;
 			return b;
@@ -1231,8 +1222,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		}
 		return a - (this.attr( iu ) || 0);
 	};
-	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget|size, m -> max, min, c -> appoint size?
-	_proto[ sz ] = function( a, m, c ) {
+	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget|size, m -> max, min
+	_proto[ sz ] = function( a, m ) {
 		if ( a == N )
 			return N;
 		var b = a.isWidget ? a.attr( v ) : a;
@@ -1240,15 +1231,14 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			b = parseFloat( b );
 		if ( typeof b === _NUM && ! m )
 			return b < 0 ? N : b;
-		c === U && (c = this[ iz ]());
+		var c = this[ iz ]();
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
 		return c == N ? N : a.isWidget ? $.scaleRange( c, { min: a.attr( nv ), max: a.attr( xv ) } ) : c;
 	};
-	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min, c -> appoint size?
-	_w_scale[ v ] = function( a, m, c ) {
-		var b = a.attr( v ), s = this._scales;
-		c === U && (c = this[ iz ]());
+	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min
+	_w_scale[ v ] = function( a, m ) {
+		var b = a.attr( v ), c = this[ iz ](), s = this._scales;
 		if ( $.isNumber( b ) && b > -1 && ! m )
 			return parseFloat( b );
 		if ( ! s || m ) {
@@ -2090,8 +2080,7 @@ Horz = define.widget( 'horz', {
 		childCls: 'f-sub-horz',
 		scaleWidth: _w_scale.width,
 		html_nodes: function() {
-			var v = this.attr( 'valign' );
-			v && (this.childCls += ' f-va-' + v);
+			this.x.valign && (this.childCls += ' f-va-' + this.x.valign);
 			// @compat: 兼容模式下，horz的没有高度的子节点，加上z-htmn样式(float:left)。如果不使用float，子节点内容不会自动撑开
 			// @fixme: 当widget的高度在-1和固定高度之间转变时，z-htmn也应该跟着增加或删除
 			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align == 'left') && (this.childCls += ' z-htmn');
@@ -2244,8 +2233,8 @@ Html = define.widget( 'html', {
 		thumb: function() {
 			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this.x.thumbwidth ) );
 		},
-		html_text: function() {
-			var t = this.x.text == N ? '' : this.x.text, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this );
+		html_nodes: function() {
+			var t = this.x.text == N ? '' : this.x.text, s = $.parseHTML( this.x.escape ? $.strEscape( t ) : t, this ), v = this.attr( 'valign' );
 			if ( ! br.css3 ) {
 				if ( ! s && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
@@ -2262,10 +2251,6 @@ Html = define.widget( 'html', {
 					} );
 				}
 			}
-			return s;
-		},
-		html_nodes: function() {
-			var s = this.html_text(), v = this.attr( 'valign' );
 			if ( v )
 				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>';
 			return s;
@@ -2907,6 +2892,7 @@ Img = define.widget( 'img', {
 	Const: function( x, p ) {
 		if ( p && p.type_album ) {
 			var c = p.x.space || 0;
+			c && (this.cssText = 'margin-top:' + c + 'px;margin-left:' + c + 'px;');
 			this.defaults( { wmin: 22 + c } );
 			this.rootNode = p;
 		}
@@ -2940,8 +2926,6 @@ Img = define.widget( 'img', {
 	Default: { height: -1 },
 	Prototype: {
 		className: 'w-img',
-		// @implement
-		repaintSelf: _repaintSelfWithBox,
 		width_minus: function() {
 			return (p.x.space || 0);
 		},
@@ -2968,10 +2952,6 @@ Img = define.widget( 'img', {
 			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight,
 				g = $.image( this.x.src, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + ( h ? (isNaN( h ) ? h : h + 'px') : '100%' ) + ';">' + g + '</div>';
-		},
-		prop_style: function() {
-			var c = this.parentNode.x.space;
-			return _proto.prop_style.call( this ) + ( c ? 'margin-top:' + c + 'px;margin-left:' + c + 'px;' : '');
 		},
 		html_text: function() {
 			var x = this.x, p = this.parentNode, f = p.x.format, s, t = x.text;
@@ -3000,7 +2980,7 @@ Toggle = define.widget( 'toggle', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.open != N && this.$() && this.toggle( this.x.open );
+				this.x.open != N && this.toggle( this.x.open );
 			}
 		}
 	},
@@ -3046,9 +3026,10 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r1' : 'b1' ) + '</span>' : '');
 		},
 		html_nodes: function() {
-			var x = this.x, c = this.html_icon(), t = x.text != N && '<span class=w-toggle-text><em>' + x.text + '</em></span>';
-			return '<table class="w-toggle-table' + (x.nobr !== F ? ' z-nobr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (c ? '<td>' + c : '') +
-				(t ? '<td ' + (x.nobr === F ? '' : ' class=f-nobr') + '>' + t : '') +
+			var x = this.x, t = this.html_icon();
+			if ( x.text != N )
+				t += ' <span class=w-toggle-text><em>' + x.text + '</em></span>';
+			return '<table class="w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
 				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table>';
 		}
 	}
@@ -3225,7 +3206,7 @@ Fieldset = define.widget( 'fieldset', {
 				this.box = Checkbox.parseOption( this, { target: this.layout } );
 		},
 		html: function() {
-			return '<fieldset' + this.html_prop() + '><legend class=w-fieldset-legend>' + ( this.box ? this.box.html() : '' ) + this.x.legend + '</legend>' + this.html_before() + this.layout.html() + this.html_after() + '</fieldset>';
+			return '<fieldset' + this.html_prop() + '><legend class=w-fieldset-legend>' + ( this.box ? this.box.html() : '' ) + this.x.legend + '</legend>' + this.html_before() + this.layout.html() + this.html_after() + '</fieldset>'
 		}
 	}
 } ),
@@ -3772,7 +3753,7 @@ Tip = define.widget( 'tip', {
 		front: $.rt( F ),
 		_front: $.rt( F ),
 		text: function( a ) {
-			Q( '.w-tip-text', this.$() ).html( a );
+			Q( '.w-tip-text', this.getContentView().$() ).html( a );
 		}
 	}
 } ),
@@ -4075,79 +4056,6 @@ define.widget( 'deck', {
 	}
 } );
 
-/* `label` */
-var Label = define.widget( 'label', {
-	Const: function( x, p ) {
-		W.apply( this, arguments );
-		this._pad = this.x.space != N ? this.x.space : 5;
-		this.defaults( { wmin: this._pad } );
-		if ( ie7 ) {
-			this.ie7td = p.closest( 'td' );
-			this.ie7td.addEvent( 'nodechange', function() {
-				Q( '.w-label', this.parentNode.parentNode.$() ).each( function() {
-					var o = _widget( this );
-					$.replace( o.$(), o.html() );
-				}).each( function() {
-					_widget( this ).triggerListener( 'ready' );
-				} );
-				
-			} );
-		}
-	},
-	Extend: 'html',
-	Default: { align: 'right', valign: 'middle', height: -1 },
-	Listener: {
-		body: {
-			ready: function() {
-				if ( this.ie7td ) {
-					var b = $( this.id + 'bg' ), c = $.bcr( this.ie7td.$() ), d = $.bcr( b );
-					Q( b ).css( {
-						height: c.height,
-						marginLeft: c.left - d.left,
-						marginTop: c.top - d.top
-					} );
-				}
-			},
-			resize: function() {
-				$( this.id + 'bg' ).style.width = Math.max( this.innerWidth(), 0 ) + 'px';
-				this.ie7td && this.ie7td.fireEvent( 'nodechange' );
-			}
-		}
-	},
-	Prototype: {
-		className: 'w-label f-inbl f-va',
-		setValidate: function( x ) {
-			x = x || {};
-			if ( x.required ) {
-				this.$() && ! $.get( '.f-required', this.$() ) && $.prepend( this.$( 't' ), this.html_star() );
-			} else {
-				this.$() && Q( '.f-required', this.$() ).remove();
-			}	
-		},
-		prop_cls: function() {
-			return _proto.prop_cls.call( this, this.parentNode.parentNode );
-		},
-		prop_style: function() {
-			return (this._pad ? 'margin-right:' + this._pad + 'px;' : '') + _proto.prop_style.call( this );
-		},
-		html_star: function() {
-			return '<span class=f-required>*</span>';
-		},
-		html_text: function() {
-			var s = Html.prototype.html_text.call( this ), d = this.parentNode.x.validate;
-			d && d.required && (s = this.html_star() + s);
-			return s + (this.x.suffix || '');
-		},
-		html_bg: function() {
-			return '<div id=' + this.id + 'bg class="_bg" style="width:' + this.innerWidth() + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
-		},
-		html_nodes: function() {
-			var s = this.html_text(), v = this.attr( 'valign' );
-			return (br.css3 ? '<div id=' + this.id + 't class=_t>' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 't class="_t f-inbl f-va">' + s + '</div>') + this.html_bg();
-		}
-	}
-} );
-
 /* 表单控件部分 包括输入表单和按钮 */
 var
 _dft_min = 2,
@@ -4161,9 +4069,7 @@ _z_on = function( a ) {
 },
 // /@ a -> valid object, b -> valid code, c -> args
 _form_err = function( a, b, c ) {
-	var t = this.x.label;
-	t.text && (t = t.text);
-	return { wid: this.id, name: this.x.name, code: b, label: t, text: ( a && a[ b + 'text' ] ) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! t ? 'complete_required' : b ], t || Loc.field ].concat( c || [] ) ) || '' };
+	return { wid: this.id, name: this.x.name, code: b, label: this.x.label, text: ( a && a[ b + 'text' ] ) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! this.x.label ? 'complete_required' : b ], this.x.label || Loc.field ].concat( c || [] ) ) || '' };
 },
 _valid_err = function( b, v ) {
 	if ( typeof v !== _STR )
@@ -4210,8 +4116,8 @@ _listen_ime = function( a, b ) {
 _input_indent_value,
 _input_indent = function() {
 	if ( ! _input_indent_value ) {
-		br.chdiv( 'w-text', '<div class=w-form><input class=_t style=width:0></div>', function() {
-			_input_indent_value = this.children[ 0 ].children[ 0 ].offsetWidth || 5;
+		br.chdiv( 'w-form w-input w-text', '<input class=_t style=width:0>', function() {
+			_input_indent_value = this.children[ 0 ].offsetWidth || 5;
 		} );
 	}
 	return _input_indent_value;
@@ -4220,10 +4126,6 @@ _input_indent = function() {
 AbsForm = define.widget( 'abs/form', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		var a = this.x.label;
-		if ( a && typeof a === _OBJ && a.width ) {
-			this.label = new Label( a, this, -1 );
-		}
 		$.classAdd( this, 'w-' + this.type.replace( '/', '-' ) );
 	},
 	Listener: {
@@ -4246,15 +4148,6 @@ AbsForm = define.widget( 'abs/form', {
 				occupy: T,
 				method: function() { ! this.contains( document.activeElement ) && _z_on.call( this, F ) }
 			},
-			resize: function() {
-				if ( this.$() ) {
-					var w = Math.max( this.formWidth(), 0 );
-					w != N && w >= 0 && this.css( 'width', w );
-					w = Math.max( this.inputWidth(), 0 );
-					w != N && w >= 0 && this.$t() && (this.$t().style.width = w + 'px');
-					this.css( 'ph', 'width', w );
-				}
-			},
 			valid: function( e, a ) {
 				return this.getValidError( a );
 			},
@@ -4269,26 +4162,6 @@ AbsForm = define.widget( 'abs/form', {
 		className: 'w-form',
 		_warncls: '',
 		validHooks: F,
-		form_minus:  function() {
-			return (this.label ? this.label.outerWidth() : 0);
-		},
-		input_minus:  function() {
-			return this.form_minus() + _input_indent();
-		},
-		formWidth: function() {
-			var w = this.innerWidth();
-			return w == N || w < 0 ? N : w - this.form_minus();
-		},
-		inputWidth: function() {
-			var w = this.innerWidth();
-			return w == N || w < 0 ? N : w - this.input_minus();
-		},
-		formHeight: function() {
-			return this.innerHeight();
-		},
-		inputHeight: function() {
-			return this.formHeight();
-		},
 		usa: function() {
 			return this.isNormal();
 		},
@@ -4376,8 +4249,8 @@ AbsForm = define.widget( 'abs/form', {
 			} else {
 				c = (x.validate || (x.validate = {}));
 				a ? $.merge( c, a ) : (x.validate = N);
-				this.$() && $.classAdd( this.$(), 'z-required', !! c.required );
-				this.label && this.label.setValidate( this.x.validate );
+				this.$() && $.classAdd( this.$(), 'z-required', !!c.required );
+				this.trigger( 'validatechange' );
 			}
 			return this;
 		},
@@ -4425,54 +4298,16 @@ AbsForm = define.widget( 'abs/form', {
 			if ( this.x.placeholder && this.$( 'ph' ) )
 				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
-		prop_style: function() {
-			var w = this.formWidth(), h = this.formHeight(), s = '';
-			w != N && w >= 0 && (s += 'width:' + w + 'px;');
-			h != N && h >= 0 && (s += 'height:' + h + 'px;');
-			return s + (this.x.style ? this.x.style : '');
-		},
 		form_prop: function( a ) {
-			var t = '', w = this.inputWidth(), h = this.inputHeight();
-			if ( w != N && w >= 0 )
-				t += 'width:' + w + 'px;';
-			if ( h != N && h >= 0 )
-				t += 'height:' + h + 'px;';
+			var t = '', w = this.innerWidth(), h = this.innerHeight();
+			if ( w != N )
+				t += 'width:' + (w - this.width_minus()) + 'px;';
+			if ( h != N )
+				t += 'height:' + (h - this.height_minus()) + 'px;';
 			if ( t )
 				t = ' style="' + t + '"';
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? (this.x.text || this.x.value) : this.x.tip) || '') + '"' : '') +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + t + _html_on.call( this );
-		},
-		html_placeholder: $.rt( '' ),
-		html: function() {
-			return (this.label ? this.label.html() : '') + '<div' + this.html_prop() + '>' + this.html_before() + this.html_placeholder() + this.html_nodes() + this.html_after() + '</div>';
-		},
-		removeElem: function() {
-			this.label && this.label.removeElem();
-			_proto.removeElem.call( this );
-		},
-		dispose: function( a ) {
-			this.label && this.label.dispose( a );
-			_proto.dispose.call( this, a );
-		}
-	}
-} ),
-/* `horzgroup` */
-Horzgroup =define.widget( 'horzgroup', {
-	Const: function( x ) {
-		Horz.apply( this, arguments );
-		var a = this.x.label;
-		if ( a && typeof a === _OBJ && a.width ) {
-			this.label = new Label( a, this, -1 );
-		}
-	},
-	Extend: [ AbsForm, Horz ],
-	Prototype: {
-		className: 'w-formgroup w-horz f-inbl f-va',
-		scaleWidth: function( a, m ) {
-			return _w_scale.width.call( this, a, m, a == this.label ? U : this.formWidth() );
-		},
-		html_nodes: function() {
-			return Horz.prototype.html_nodes.call( this );
 		}
 	}
 } ),
@@ -4498,10 +4333,9 @@ AbsInput = define.widget( 'abs/input', {
 					return (this.x.validate && this.x.validate.maxlength && cfg.input_detect && cfg.input_detect.maxlength) || this.x.tip === T || this.x.placeholder;
 				},
 				method: function( e ) {
-					if ( this.isDisabled() )
-						return;
-					if ( this.x.tip === T )
+					if ( this.x.tip === T ) {
 						this.$t().title = this.text();
+					}
 					var m = cfg.input_detect && cfg.input_detect.maxlength && this.x.validate && this.x.validate.maxlength, v = this.val(), u = v;
 					if ( this.lastValue === U )
 						this.lastValue = this.x.value;
@@ -4519,6 +4353,14 @@ AbsInput = define.widget( 'abs/input', {
 						f && this.exec( { type: 'tip', id: this.id + 'mxltip', text: Loc.form.reach_maxlength } );
 					}
 				}
+			},
+			resize: function() {
+				var w = this.innerWidth();
+				if ( w > 0 && this.$t() ) {
+					w = Math.max( w - this.width_minus(), 0 );
+					this.$t().style.width = w + 'px';
+					this.css( 'ph', 'width', w );
+				}
 			}
 		}
 	},
@@ -4526,7 +4368,9 @@ AbsInput = define.widget( 'abs/input', {
 		wmin: _dft_min, hmin: _dft_min
 	},
 	Prototype: {
-		className: 'w-form w-input f-inbl f-va',
+		className: 'w-form w-input',
+		width_minus:  function() { return _input_indent() },
+		height_minus: function() { return 0 },
 		focus: function( a ) {
 			this.$t()[ a === F ? 'blur' : 'focus' ]();
 			_z_on.call( this, a == N || a );
@@ -4548,10 +4392,13 @@ AbsInput = define.widget( 'abs/input', {
 			this.focus();
 			this.trigger( e );
 		},
-		html_placeholder: function() {
-			var w = this.inputWidth(), v = this.x.value;
-			return this.x.placeholder ? '<label style="width:' + ( w ? w + 'px' : 'auto' ) + '" class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
+		html_placehoder: function() {
+			var w = this.innerWidth(), v = this.x.value;
+			return this.x.placeholder ? '<label style="width:' + ( w ? (w - this.width_minus()) + 'px' : 'auto' ) + '" class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
+		},
+		html: function() {
+			return '<div' + this.html_prop() + '>' + this.html_before() + this.html_placehoder() + this.html_nodes() + this.html_after() + '</div>';
 		}
 	}
 } ),
@@ -4655,22 +4502,12 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		range: 'option'
 	},
 	Prototype: {
-		className: 'w-form f-oh f-inbl f-va',
+		className: 'w-form f-oh',
 		type_horz: T,
 		isBoxGroup: T,
 		x_childtype: $.rt( 'checkbox' ),
 		x_nodes: function() {
 			return this.x.options || [ { value: this.x.value, text: this.x.text, checked: this.x.checked, target: this.x.target } ];
-		},
-		scaleWidth: function( a ) {
-			if ( a.nodeIndex < 0 && a != this.label ) {
-				var i = $.arrIndex( this.targets, a ),
-					w = a.attr( 'width' ),
-					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() : 0, w == N ? '*' : w < 0 ? '*' : w ] );
-				return c[ 1 ];
-			} else {
-				return _proto.scaleWidth.call( this, a );
-			}
 		},
 		val: function( a ) {
 			if ( a == N )
@@ -4739,6 +4576,13 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		isValidonly: function() {
 			return this[ 0 ] && this[ 0 ].isValidonly();
 		},
+		scaleWidth: function( a ) {
+			if ( a.nodeIndex < 0 ) {
+				var i = $.arrIndex( this.targets, a ), c = $.scale( this.innerWidth(), [ this[ i ] ? this[ i ].width() : 0, a.attr( 'width' ) || '*' ] );
+				return c[ 1 ];
+			} else
+				return AbsForm.prototype.scaleWidth.call( this, a );
+		},
 		html_nodes: function() {
 			if ( this.targets ) {
 				for ( var i = 0, s = '', l = Math.max( this.length, this.x.targets.length ); i < l; i ++ )
@@ -4754,7 +4598,7 @@ Checkbox = define.widget( 'checkbox', {
 	Const: function( x, p ) {
 		if ( p && p.isBoxGroup ) {
 			this.rootNode = p;
-			this.defaults( { wmin: 6, width: p.x.targets ? 62 : -1 } );
+			this.defaults( { wmin: 7, width: p.x.targets ? 62 : -1 } );
 		}
 		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p.isBoxGroup && p.x.value && x.value && $.idsAny( p.x.value, x.value )));
 		AbsForm.apply( this, arguments );
@@ -4805,8 +4649,8 @@ Checkbox = define.widget( 'checkbox', {
 				}
 			},
 			resize: function() {
-				var w = this.x.nobr && ! this.innerWidth() && this.parentNode.formWidth();
-				w && this.css( 'max-width', w );
+				if ( this.x.nobr && ! this.innerWidth() && this.parentNode.innerWidth() )
+					this.css( 'max-width', this.parentNode.innerWidth() );
 			}
 		}
 	},
@@ -4860,9 +4704,6 @@ Checkbox = define.widget( 'checkbox', {
 			this.check( a == 1 ? T : F );
 		},
 		val: CheckboxGroup.prototype.val,
-		text: function() {
-			return this.x.text;
-		},
 		selfVal: function() {
 			var t = this.$t();
 			return t.disabled || ! t.checked ? '' : t.value;
@@ -4891,7 +4732,7 @@ Checkbox = define.widget( 'checkbox', {
 			} else {
 				var c = this.$t().checked, d = this.$t().defaultChecked;
 				this.$t().checked = d;
-				if ( c != d && this.parentNode.isBoxGroup ) {
+				if ( c != d && this.parentNode.type.indexOf( 'group' ) > 0 ) {
 					this.parentNode.targets && this.check();
 					this.parentNode.trigger( 'change' );
 				}
@@ -4906,7 +4747,7 @@ Checkbox = define.widget( 'checkbox', {
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
-				if ( this.x.nobr && (w = p.inputWidth()) )
+				if ( this.x.nobr && (w = p.innerWidth()) )
 					y += 'max-width:' + w + 'px;';
 				s = s.replace( / f-inbl/g, '' );
 			}
@@ -4972,9 +4813,8 @@ Triplebox = define.widget( 'triplebox', {
 			}			
 		},
 		html: function() {
-			return '<cite id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') +
-				'" class=_t' + (this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' +
-				(br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') + (this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</cite>';
+			return '<cite id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
+				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') + (this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</cite>';
 		}
 	}
 } ),
@@ -5024,7 +4864,7 @@ Select = define.widget( 'select', {
 		}
 	},
 	Prototype: {
-		input_minus: function() { return this.form_minus() },
+		width_minus: function() { return 0 },
 		isEmpty: function() {
 			return this.$t().selectedIndex !== -1 && (this.val() || this.text());
 		},
@@ -5057,7 +4897,7 @@ Select = define.widget( 'select', {
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
 					(this.x.tip ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
 			}
-			var w = this.formWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
+			var w = this.innerWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
 				(this.x.tip ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
 				( z ? ' size=' + z : '' ) + '>' + s + '</select><div class=_cvr></div>';
@@ -5183,7 +5023,7 @@ Calendar = define.widget( 'calendar/date', {
 			}
 		},
 		backfill: function() {
-			this.x.callback && this.x.callback.call( this, this.date );
+			this.x.callback && this.x.callback( this.date );
 		},
 		inputMonth: function() {
 			var v = this.$( 'iptm' ).value, f = 'yyyy-mm';
@@ -5465,16 +5305,15 @@ _Date = define.widget( 'date', {
 					this.$( 'a' ).innerHTML = this.val();
 					this.focus( F );
 				}
+			},
+			resize: function() {
+				this.$t().style.width = (this.innerWidth() - this.width_minus()) + 'px';
 			}
 		}
 	},
 	Prototype: {
 		dropSnapType: 'v',
-		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
-		form_minus: function() {
-			var w = this.x.width;
-			return (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
-		},
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		validHooks: {
 			minvalue: function( b, v ) {
 				return $.dateParse( v, this.x.format ) < $.dateParse( b.minvalue, this.x.format );
@@ -5544,27 +5383,18 @@ _Date = define.widget( 'date', {
 /* `range` */
 Range = define.widget( 'range', {
 	Const: function( x, p ) {
-		AbsForm.apply( this, arguments );
-		this.begin = x.begin && this.add( x.begin );
+		W.apply( this, arguments );
+		this.begin = x.begin && this.add( $.merge( { width: '*' }, x.begin ) );
 		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'html', text: x.to || Loc.to, width: 30, align: 'center' } );
-		this.end   = x.end && this.add( x.end );
-		this.className = 'w-horz w-range f-inbl f-va';
+		this.end   = x.end && this.add( $.merge( { width: '*' }, x.end ) );
+		this.className = 'w-horz w-range';
 		if ( ! x.valign && p && p.x.valign )
 			this.defaults( { valign: p.x.valign } );
 	},
-	Extend: [ AbsForm, Horz ],
+	Extend: 'horz',
 	Default: { width: -1 },
 	Prototype: {
-		x_nodes: $.rt(),
-		form_minus:  function() {
-			return this.label ? this.label.outerWidth() : 0;
-		},
-		input_minus: function() {
-			return this.form_minus();
-		},
-		scaleWidth: function( a, m ) {
-			return _w_scale.width.call( this, a, m, a == this.label ? U : this.formWidth() );
-		}
+		x_nodes: $.rt()
 	}
 } ),
 /* `muldate` */
@@ -5575,14 +5405,16 @@ Muldate = define.widget( 'muldate', {
 			click: {
 				occupy: T,
 				method: function() {
-					if ( this.isNormal() )
+					if ( this.isNormal() ) {
 						this.val() ? this.popList() : this.popCalendar();
+					}
 				}
 			}
 		}
 	},
 	Prototype: {
 		validHooks: N,
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		$v: function() { return $( this.id + 'v' ) },
 		v2t: function( v ) {
 			for ( var i = 0, b = v.split( ',' ), s = []; v && i < b.length; i ++ )
@@ -5612,14 +5444,12 @@ Muldate = define.widget( 'muldate', {
 			this.focus();
 		},
 		// @a -> el, b -> act
-		addValue: function( a, b ) {
+		li_act: function( a, b ) {
 			var self = this, t = Q( a ).closest( 'table' );
 			if ( b == '+' ) {
 				Calendar.pop( a, this.x.format, N, N, N, N, function( v ) {
-					v = $.dateFormat( v, self.x.format );
 					t.before( self.li_str( v ) );
 					self.li_ref();
-					Dialog.get( this ).close();
 				} );
 			} else if ( b == '-' ) {
 				t.remove();
@@ -5627,7 +5457,6 @@ Muldate = define.widget( 'muldate', {
 			} else {
 				var d = t.data( 'value' );
 				Calendar.pop( a, this.x.format, d, d, N, N, function( v ) {
-					v = $.dateFormat( v, self.x.format );
 					a.innerText = v;
 					t.attr( 'data-value', v );
 					self.li_ref();
@@ -5637,16 +5466,16 @@ Muldate = define.widget( 'muldate', {
 		li_ref: function() {
 			var r = Q( 'table[data-value]', this.list.$() ).map( function() { return this.getAttribute( 'data-value' ) } ).get();
 			this.val( r.join() );
-			r.length ? this.list.height( Math.min( (r.length + 1) * 30 + 2, this.mh ) ) : this.list.close();
+			this.list.height( Math.min( (r.length + 1) * 30 + 2, this.mh ) );
 		},
 		li_str: function( v ) {
-			var k = $.abbr + '.all["' + this.id + '"].addValue';
+			var k = $.abbr + '.all["' + this.id + '"].li_act';
 			return '<table width=100% height=30 cellspacing=0 cellpadding=0' + (v ? ' data-value="' + v + '"' : '') + '><tr><td>&nbsp; ' + (v ? '<a href=javascript: onclick=' + k + '(this,"=")>' + v + '</a>' : '') + '<td width=70 align=center>' +
 				$.image( '.f-i-minus ._i', { style: 'visibility:' + (v ? 'visible' : 'hidden'), click: k + '(this,"-")' } ) + ' &nbsp; ' + $.image( '.f-i-plus ._i', { click: k + '(this,"+")' } ) + '</table>';
 		},
 		html_nodes: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-inbl f-fix _c" style="width:' +
-				this.inputWidth() + 'px"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div><em class="f-boxbtn" onclick=' + eve + '></em>';
+				( this.innerWidth() - this.width_minus() ) + 'px"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div><em class="f-boxbtn" onclick=' + eve + '></em>';
 		}
 	}
 } ),
@@ -5679,13 +5508,6 @@ Spinner = define.widget( 'spinner', {
 	},
 	Prototype: {
 		_csr_pos: 0,
-		input_minus: function() {
-			return this.form_minus() + (mbi ? 78 : _boxbtn_width) + _input_indent();
-		},
-		form_minus: function() {
-			var w = this.x.width;
-			return w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0);
-		},
 		validHooks: {
 			minvalue: function( b, v ) {
 				return _number( v ) < _number( b.minvalue );
@@ -5707,11 +5529,15 @@ Spinner = define.widget( 'spinner', {
 				}
 			}
 		},
+		width_minus: function() {
+			return (mbi ? 78 : _boxbtn_width) + _input_indent();
+		},
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
 			a != N && this.x.format && this.trigger( 'format' );
 			return this.$t().value;
 		},
+		
 		doFormat: function() {
 			if ( ! this.x.format )
 				return;
@@ -5757,7 +5583,6 @@ Slider = define.widget( 'slider', {
 	},
 	Prototype: {
 		className: 'w-form',
-		form_minus: function() { return 0 },
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a == N )
@@ -5785,11 +5610,11 @@ Slider = define.widget( 'slider', {
 			} );
 		},
 		_left: function( v ) {
-			var w = this.formWidth(), d = this.x.validate, m = (d && d.maxvalue) || 100, n = (d && d.minvalue) || 0;
+			var w = this.innerWidth(), d = this.x.validate, m = (d && d.maxvalue) || 100, n = (d && d.minvalue) || 0;
 			return (w - this.attr( 'thumbwidth' )) * (v - n) / (m - n);
 		},
 		html_nodes: function() {
-			var w = this.formWidth(), v = this.x.value == N ? n : this.x.value, f = this._left( v );
+			var w = this.innerWidth(), v = this.x.value == N ? n : this.x.value, f = this._left( v );
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track style="width:' + (f + 5) + 'px"></div><div id=' + this.id + 'thumb class=_thumb style="left:' + f + 'px" onmousedown=' + evw + '.dragstart(this,event)></div></div>';
 		}
 	}
@@ -5825,16 +5650,16 @@ XBox = define.widget( 'xbox', {
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		init_nodes: function() {
 			this._sel.length = 0;
-			var x = this.x, o = x.options || (x.options = []), i = o.length, v = x.value != N ? '' : '' + x.value;
+			var x = this.x, o = x.options || [], i = o.length, v = x.value != N ? String( x.value ) : '';
 			while ( i -- ) {
-				o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
+				o[ i ].value == N && (o[ i ].value = '');
 				(o[ i ].checked || (v && $.idsAny( v, o[ i ].value ))) && this._sel.push( o[ i ] );
 			}
 			if( o.length ) {
-				//! this._sel.length && this._sel.push( o[ 0 ] );
+				! this._sel.length && this._sel.push( o[ 0 ] );
 				var i = this._sel.length, s = [];
 				while ( i -- ) s.push( this._sel[ i ].value );
 				x.value = s.join(); // 设一下value，给 isModified() 用
@@ -5885,13 +5710,20 @@ XBox = define.widget( 'xbox', {
 				if ( a == N )
 					return v;
 				var b = [], o = this.x.options || [];
-				if ( a.jquery ) {
-					for ( var i = 0, q = a.parent().find( '._o.z-on' ), l = q.length; i < l; i ++ )
-						b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
+				if ( this.x.multiple ) {
+					if ( a.jquery ) {
+						for ( var i = 0, q = a.parent().find( '._o.z-on' ); i < q.length; i ++ )
+							b.push( o[ q[ i ].getAttribute( '_i' ) ] );
+					} else {
+						for ( var i = 0, l = o.length; i < l; i ++ )
+							if ( o[ i ].value != N && o[ i ].value != '' && $.idsAny( a, o[ i ].value ) ) b.push( o[ i ] );
+					}
 				} else {
-					for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
-						if ( q[ i ].value != N && q[ i ].value != '' && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
+					var n = a.jquery ? o[ a.attr( '_i' ) ] : $.arrFind( o, 'v.value=="' + a + '"' );
+					n && b.push( n );
 				}
+				if ( ! b.length && o.length )
+					b = [ o[ 0 ] ];
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
 					t.push( b[ i ].text );
@@ -5917,12 +5749,10 @@ XBox = define.widget( 'xbox', {
 			return $.strTrim( this.$( 'p' ).innerText );
 		},
 		choose: function( a, e ) {
-			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.options[ d.attr( '_i' ) ].value,
-				s = d.hasClass( 'z-on' );
-			! this.x.multiple && d.siblings().removeClass( 'z-on' );
-			d.toggleClass( 'z-on' );
+			var d = Q( e.srcElement ).closest( '._o' ), o = this.x.options || [], v = '' + o[ d.attr( '_i' ) ].value;
+			this.x.multiple && v && d.toggleClass( 'z-on' );
 			this.val( d );
-			! this.x.multiple && this._dropper.close();
+			!this.x.multiple && this._dropper.close();
 		},
 		drop: function() {
 			var o = this.x.options;
@@ -5934,7 +5764,7 @@ XBox = define.widget( 'xbox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'dialog', minwidth: this.formWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), wmin: 2, hmin: 2, indent: 1, id: this.id, cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : ''), pophide: T,
+				this._dropper = this.exec( { type: 'dialog', minwidth: this.innerWidth(), maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), hmin: 2, indent: 1, id: this.id, cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : ''), pophide: T,
 					snaptype: 'v', snap: this, node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
 					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
 			}
@@ -5946,11 +5776,11 @@ XBox = define.widget( 'xbox', {
 		showLayout: function() {
 			this.val( this.x.value );
 		},
-		html_placeholder: function() {
+		html_placehoder: function() {
 			return '';
 		},
 		html_li: function( a, b ) {
-			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape ? $.strEscape( a.text ) : a.text) + (!b ? '<i class=_box></i>' : '') : '';
+			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape ? $.strEscape( a.text ) : a.text) + (!b && this.x.multiple ? '<i class=_box></i>' : '') : '';
 		},
 		html_text: function() {
 			if ( this.loading ) {
@@ -5975,7 +5805,7 @@ XBox = define.widget( 'xbox', {
 			var s = this._sel[ 0 ];
 			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-inbl f-omit _t" id=' + this.id + 't ' +
 				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') +
-				' style="width:' + this.inputWidth() + 'px"><span id=' + this.id + 'p>' + this.html_text() + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
+				' style="width:' + (this.innerWidth() - this.width_minus()) + 'px"><span id=' + this.id + 'p>' + this.html_text() + '</span></div><em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
 		}
 	}
 }),
@@ -5993,11 +5823,11 @@ Imgbox = define.widget( 'imgbox', {
 	Listener: {
 		tag: N,
 		body: {
-			focus: N, blur: N, resize: N
+			focus: N, blur: N
 		}
 	},
 	Prototype: {
-		className: 'w-form w-input-border w-imgbox-c f-rel f-inbl f-va',
+		className: 'w-form w-input-border w-imgbox-c f-rel f-inbl',
 		drop: function() {
 			var d = this.x.options,
 				l = d.length,
@@ -6057,13 +5887,12 @@ Pickbox = define.widget( 'pickbox', {
 						this.pick();
 					this.focus( F );
 				}
-			},
-			change: N
+			}
 		}
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
+		width_minus: function() { return _boxbtn_width + _input_indent() },
 		val: function( v, t ) {
 			v != N && this.text( t || v );
 			return AbsForm.prototype.val.apply( this, arguments );
@@ -6088,7 +5917,7 @@ Pickbox = define.widget( 'pickbox', {
 		},
 		html_nodes: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" style="width:' + this.inputWidth() + 'px" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div><em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+				't" class="f-inbl f-fix _t" style="width:' + (this.innerWidth() - this.width_minus()) + 'px" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div><em class="f-boxbtn _plus" onclick=' + evw + '.pick()><i class=f-i></i></em>';
 		}
 	}
 } ),
@@ -6127,7 +5956,7 @@ Combobox = define.widget( 'combobox', {
 			blur: {
 				occupy: T,
 				method: function() {
-					AbsInput.Listener.body.blur.method.apply( this, arguments );
+					AbsForm.Listener.body.blur.method.apply( this, arguments );
 					var t = this.$t();
 					! t.innerText && t.nextSibling && ! this.contains( document.activeElement ) && t.parentNode.appendChild( t );
 				}
@@ -6246,13 +6075,8 @@ Combobox = define.widget( 'combobox', {
 				}
 			},
 			resize: function() {
-				var w = this.innerWidth();
-				if ( w > 0 && this.$() ) {
-					var d = Math.max( w - this.form_minus(), 0 );
-					this.css( 'f', 'width', d );
-					d = Math.max( w - this.input_minus(), 0 );
-					this.css( 'c', 'width', d ).css( 'ph', 'width', d );
-				}
+				var w = (this.innerWidth() - this.width_minus());
+				this.css( 'c', 'width', w ).css( 'ph', 'width', w );
 			},
 			// 覆盖textarea的change事件定义，仅当已选项有变化时触发
 			change: N
@@ -6271,7 +6095,7 @@ Combobox = define.widget( 'combobox', {
 			}
 		},
 		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
+		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -6547,7 +6371,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		html_nodes: function() {
 			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><div class="f-inbl _c' + (this.x.nobr ? ' f-nobr' : '') + '" id=' + this.id + 'c' + _html_on.call( this ) +
-				' style="width:' + this.inputWidth() + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || 'loading..') + '</var></div>';
+				' style="width:' + ( this.innerWidth() - this.width_minus() ) + 'px"><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || 'loading..') + '</var></div>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
@@ -6628,7 +6452,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		html_nodes: function() {
 			var p = this.parentNode, w = this.width(), t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N;
-			return '<i class="f-inbl _b" onclick=' + evw + '.write()></i><div class="f-inbl _g"' + _html_on.call( this ) + '><cite class="_v f-omit" style="' + (w ? 'width:' + (w - 32) : 'max-width:' + (p.innerWidth() - p.input_minus() - 50)) + 'px" title="' + t + (r ? '\n' + r : '') + '"><i class=f-vi></i><span class=f-va>' +
+			return '<i class="f-inbl _b" onclick=' + evw + '.write()></i><div class="f-inbl _g"' + _html_on.call( this ) + '><cite class="_v f-omit" style="' + ( w ? 'width:' + (w - 32) : 'max-width:' + ( p.innerWidth() - p.width_minus() - 50 ) ) + 'px" title="' + t + (r ? '\n' + r : '') + '"><i class=f-vi></i><span class=f-va>' +
 				( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></cite><i class="_x" onclick=' + evw + '.close(event)>&times;</i></div>';
 		}
 	}
@@ -6666,7 +6490,7 @@ Linkbox = define.widget( 'linkbox', {
 			},
 			blur: {
 				occupy: T,
-				method: AbsInput.Listener.body.blur.method
+				method: AbsForm.Listener.body.blur.method
 			},
 			// chrome中文模式打完字后按回车时，不会响应keyup事件，因此设置input事件来触发suggest()
 			// fixme: 在chrome的中文模式下输入英文按回车，没有响应
@@ -6707,7 +6531,9 @@ Linkbox = define.widget( 'linkbox', {
 					}
 				}
 			},
-			resize: AbsInput.Listener.body.resize
+			resize: function() {
+				this.$t().style.width = ( this.innerWidth() - this.width_minus() ) + 'px';
+			}
 		}
 	},
 	Prototype: {
@@ -6717,7 +6543,7 @@ Linkbox = define.widget( 'linkbox', {
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
+		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -6978,7 +6804,7 @@ Linkbox = define.widget( 'linkbox', {
 		html_nodes: function() {
 			var s = '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
 				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + this.inputWidth() + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + ' style="width:' + (this.innerWidth() - this.width_minus()) + 'px">' + (this.x.loadingtext || Loc.loading) + '</var>';
 			if ( this.x.dropsrc )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			if ( this.x.picker )
@@ -7040,7 +6866,9 @@ Onlinebox = define.widget( 'onlinebox', {
 	Prototype: {
 		formType: 'text',
 		_csr_pos: 0,
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
+		width_minus: function() {
+			return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent();
+		},
 		// @a -> text /读/写光标所在的有效文本(以逗号为分隔符)
 		cursorText: function( a ) {
 			var b = this.val(),
@@ -7095,12 +6923,8 @@ Onlinebox = define.widget( 'onlinebox', {
 Rate = define.widget( 'rate', {
 	Extend: AbsForm,
 	Default: { width: -1 },
-	Listener: {
-		body: {
-			resize: N
-		}
-	},
 	Prototype: {
+		className: 'w-rate',
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a === U )
@@ -8327,14 +8151,13 @@ TCell = define.widget( 'tcell', {
 	Prototype: {
 		x_childtype: $.rt( 'td' ),
 		scaleWidth: function( a ) {
-			var w = 0, r = this.rootNode, c = a.col, d = r._pad, e;
-			for ( var i = 0, l = a.x.colspan || 1; i < l; i ++ )
-				(e = r.colgrps[ 0 ][ a.col.nodeIndex + i ]) != N && (w += e.width());
+			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
+			while ( l -- )
+				(e = r.colgrps[ 0 ][ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			if ( r._face == 'cell' && e.nodeIndex < r.colgrps[ 0 ].length - 1 ) {
-				w -= ie7 ? 2 : 1; // ie7在 cell 模式下需要多减一个像素，否则可能换行，原因不明...
-			}
+			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
+				w -= 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
 		},
@@ -8554,6 +8377,8 @@ GridList = define.widget( 'grid/list', {
 				Scroll.Listener.body.scroll.apply( this, arguments );
 				var d = this.rootNode.head;
 				if ( d ) {
+					// 滚动条在list上，则临时设置overflow样式。如果把hidden写在css里，那么当滚动条在grid的上级面板时，thead会被截掉
+					d.$().style.overflow = 'hidden';
 					d.$().scrollLeft = this.scrollLeft();
 				}
 			}
@@ -8676,7 +8501,6 @@ Grid = define.widget( 'grid', {
 		}
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
-		x.scroll && $.classAdd( this, 'z-scroll' );
 	},
 	Extend: 'vert/scale',
 	Listener: {
@@ -8726,26 +8550,17 @@ Grid = define.widget( 'grid', {
 				} else
 					try {
 						var r = this._rows( a, b, d );
-					} catch( e ) {
-						r.push( e );
+					} catch( ex ) {
+						r.push( ex );
 					}
 			}
 			return r;
 		},
 		_rows: function( a, b, d ) {
-			R: for ( var i = 0, k, l = d.length, c, e = typeof a === _FUN, r = []; i < l; i ++ ) {
-				if ( e ) {
-					if ( ! a.call( d[ i ], d[ i ].x.data ) ) {
-						d[ i ].length && r.push.apply( r, this._rows( a, b, d[ i ] ) );
-						continue R;
-					}
-				} else {
-					for ( k in a ) {
-						if ( d[ i ].x.data[ k ] !== a[ k ] ) {
-							d[ i ].length && r.push.apply( r, this._rows( a, b, d[ i ] ) );
-							continue R;
-						}
-					}
+			R: for ( var i = 0, k, l = d.length, c, r = []; i < l; i ++ ) {
+				for ( k in a ) if ( d[ i ].x.data[ k ] !== a[ k ] ) {
+					d[ i ].length && r.push.apply( r, this._rows( a, b, d[ i ] ) );
+					continue R;
 				}
 				if ( b ) { throw d[ i ]; }
 				r.push( d[ i ] );
@@ -8963,11 +8778,6 @@ Grid = define.widget( 'grid', {
 			this.x.page = 1;
 			this.x.limit && this.limit();
 		},
-		// @a -> condition?
-		filter: function( a ) {
-			this.setFilter( this.rows( a ) );
-			this.list.render();
-		},
 		//排序 /@a -> field, b -> [asc,desc]
 		order: function( a, b ) {
 			for ( var k = 0, e = this.colgrps[ 0 ], l = e.length; k < l; k ++ ) {
@@ -8977,17 +8787,17 @@ Grid = define.widget( 'grid', {
 				var c = e[ k ].x.sort, d = c.field || a, r = $.arrMake( this.getEchoRows() );
 				if ( b == N ) {
 					b = e[ k ]._sort === 'desc' ? 'asc' : 'desc';
+					e[ k ]._sort = b;
 				}
 				if ( c.src ) {
 					var s = c.src;
 					if ( s.indexOf( 'javascript:' ) == 0 )
-						s = e[ k ].formatJS( s, '$0,$1', [ b, e[ k ].x.field ] );
+						s = this.formatJS( s );
 					if ( s && typeof s === _STR && ! e[ k ]._sorting ) {
 						e[ k ]._sorting = T;
-						e[ k ].cmd( { type: 'ajax', src: $.urlFormat( s, [ b, e[ k ].x.field ] ), complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
+						this.cmd( { type: 'ajax', src: s, complete: function() { e[ k ]._sorting = F; Q( '.f-arw', o ).show(); Q( '.f-i-loading', o ).remove(); } }, b );
 					}
 				} else {
-					e[ k ]._sort = b;
 					Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' )
 					Q( e[ k ].th() ).addClass( 'z-' + b );
 					r.sort( function( m, n ) {

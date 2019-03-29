@@ -1132,9 +1132,6 @@ define( {
             var p3 = wg.closest( function() { return this.type == 'vert' } );
           }
       ] },
-      { name: 'closestData(key)', remark: '获取祖先节点的data数据。从当前节点开始，逐级向上，返回最先获取到的data值。', common: true, param: [
-        { name: 'key', type: 'String', remark: '属性名。' }
-      ] },
       { name: 'cmd(cmdID, [arg1, arg2...argN])', remark: '执行命令。', common: true, param: [
         { name: 'cmdID', type: 'String | Object', remark: '命令ID，或命令参数对象' },
         { name: 'argN', type: 'String', remark: '调用 ajax 或 submit 命令时，会替换 src 中的 $0...$N', optional: true }
@@ -1178,6 +1175,7 @@ define( {
             wg.exec( 'new_ca', [ 5 ], { target: this, pophide: true } ); // 把 src 中的 $0 替换为5, 并增加 target 和 pophide 参数
           }
       ] },
+      { name: 'empty()', remark: '删除所有子节点。', common: true },
       { name: 'find(id)', remark: '根据ID获取当前widget内部的节点。', common: true, param: [
         { name: 'id', type: 'String', remark: 'widget ID。' }
       ] },
@@ -2752,7 +2750,7 @@ define( {
       { name: 'validategroup', type: 'Object', optional: true, remark: '附加的表单校验选项。' }
     ],
     Event: [
-      { name: 'change', remark: '改变文本值时触发。' },
+      { name: 'change', remark: '值发生改变时触发。' },
       { name: 'valid', remark: '表单校验时触发。' }
     ],
     Methods: [
@@ -3018,12 +3016,70 @@ define( {
   	title: 'slider',
   	remark: '滑块。',
   	extend: 'text',
+  	deprecate: '.w-text,.z-trans,placeholder,transparent,focus,focusEnd,warn,change',
     Config: [
-      { name: 'tip', type: 'Boolean | String', optional: true, remark: '拖动滑块时显示的tip。支持${0}参数表示当前值。' }
+      { name: 'tip', type: 'Boolean | String', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$0</b><s>(值)</s>。' }
     ],
-  	deprecate: '.w-text,.z-trans,placeholder,transparent,focus,focusEnd,warn',
+    Event: [
+      { name: 'dragstart', remark: '拖动开始时触发。' },
+      { name: 'drag', remark: '拖动时触发。' },
+      { name: 'drop', remark: '结束拖动时触发。' }
+    ],
     Classes: [
       { name: '.w-slider', remark: '基础样式。' }
+    ]
+  },
+  "slider/jigsaw": {
+  	title: 'slider/jigsaw',
+  	remark: '滑块拼图。',
+  	extend: 'slider',
+    Config: [
+      { name: 'imgsrc', type: 'String', remark: '获取拼图的图片数据。', example: [
+          function() {
+            // imgsrc 返回的数据格式
+            return~
+            {
+      	      big: {
+                src: 'big.jpg', width: 200, height: 90
+              },
+              small: {
+                src: 'small.jpg', width: 200, height: 90
+              },
+              minvalue: 0,
+              maxvalue: 300,
+              token: 'abc'
+            }
+          },
+          function() {
+            // imgsrc 返回的错误格式
+            return~
+            {
+      	      error: { msg: '次数过多，请稍候再试', timeout: 15 }
+            }
+          }
+      ] },
+      { name: 'authsrc', type: 'String', remark: '验证拼图是否正确的地址。支持变量 <b>$value</b><s>(值)</s> 和 <b>$token</b><s>(imgsrc返回的token)</s>。', example: [
+          function() {
+            // authsrc 返回的数据格式
+            return~
+            { result: true }
+          }
+      ] }
+    ],
+    Event: [
+      { name: 'auth', remark: '验证完成后触发。' },
+      { name: 'drag', remark: '拖动滑块时触发。' },
+      { name: 'drop', remark: '结束拖动时触发。' }
+    ],
+    Methods: [
+      { name: 'isSuccess()', remark: '验证是否成功。' }
+    ],
+    Classes: [
+      { name: '.w-slider', remark: '基础样式。' },
+      { name: '.w-sliderjigsaw', remark: '基础样式。' },
+      { name: '.z-authing', remark: '正在验证时的样式。' },
+      { name: '.z-drag', remark: '拖动时的样式。' },
+      { name: '.z-success', remark: '验证成功的样式。' }
     ]
   },
   "spinner": {
@@ -3060,8 +3116,8 @@ define( {
       	{ name: 'value', type: 'String', remark: '值。' }
       ] }
     ],
-    Classes: [
-      { name: '.w-xbox', remark: '基础样式。' }
+    Event: [
+      { name: 'beforechange', remark: '在点击选项，即将改变值之前触发。可以用 return false 来取消事件。支持变量 <b>$0</b><s>(点击选项的值)</s>。' }
     ],
     Methods: [
       { name: 'getLength()', remark: '获取选项总数。' },
@@ -3102,7 +3158,11 @@ define( {
             // 删除第一个选项
             xbox.removeOption( 0 );
           }
-      ] }    ]
+      ] }
+    ],
+    Classes: [
+      { name: '.w-xbox', remark: '基础样式。' }
+    ]
   },
   "imgbox": {
   	title: 'imgbox',
@@ -3197,6 +3257,7 @@ define( {
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'loadingtext', type: 'String', remark: '加载数据时显示的文本。' },
       { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'src', type: 'String | Dialog', ver: '3.1-', remark: '获取候选项的URL地址。可以是一个DialogWidget。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'nobr', type: 'Boolean', remark: '设为 true，已选项不换行。' },
       { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
@@ -3269,7 +3330,8 @@ define( {
       { name: 'upload_url', type: 'String', remark: '上传地址。' +
       	'<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s>' +
       	'<br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
-      { name: 'down_url', type: 'String', remark: '下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
+      { name: 'down_url', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
+      { name: 'preview_url', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'remove_url', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'upload_button', type: 'Array', remark: '上传按钮的数组。' },
       { name: 'value_button', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
