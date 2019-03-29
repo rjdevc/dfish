@@ -107,6 +107,7 @@
 .f-dialog-preview{background:#333}
 .f-dialog-preview ._dlg_x{position:absolute;top:-18px;right:-18px;width:36px;height:36px;background:url(g/i.png) no-repeat 0 -187px;cursor:pointer}
 .f-dialog-preview ._dlg_x:hover{background-position:0 -228px}
+.f-dialog-preview ._origin{position:absolute;top:10px;right:25px;color:#fff;padding:5px 10px;background:rgba(74,74,74,0.6);border-radius:3px}
 
 .w-view-loading{width:100%;height:100%;text-align:center}
 .w-view-loading ._c{display:inline-block;padding:5px 15px;margin:5px;border:1px solid #ddd;background:#fcfcfc}
@@ -337,16 +338,20 @@
 
 .w-slider{position:relative;}
 .w-slider var,.w-slider em{font-style:normal}
-.w-slider ._t{position:relative;height:100%;background:#f7f9fa}
+.w-slider ._t{position:relative;height:100%;background:#f7f9fa;text-indent:0}
 .w-slider ._track{display:none;position:absolute;left:-1px;top:-1px;bottom:-1px;background:#d1e9ff;border:1px solid transparent}
-.w-slider ._thumb{position:absolute;width:30px;height:100%;background:#fff;cursor:pointer;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
+.w-slider ._thumb{position:absolute;width:30px;height:100%;background:#fff;cursor:pointer;text-align:center;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
+.w-slider ._thumb ._i{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;background:url(g/i.png) no-repeat -73px -204px}
 .w-slider .w-input-placeholder,.w-slider ._err{left:30px;right:0;top:0;text-align:center}
 .w-slider.z-drag ._track{display:block;border-color:#1991fa}
-.w-slider.z-drag ._thumb,.w-slider ._thumb:hover{background:#1891fb}
+.w-slider.z-drag ._thumb,.w-slider ._thumb.z-hv{background:#1891fb}
+.w-slider.z-drag ._thumb ._i,.w-slider ._thumb.z-hv ._i{background-position:-93px -204px}
 .w-slider.z-success ._track{display:block;background:#d2f4ef;border-color:#52ccba}
 .w-slider.z-success ._thumb{background:#52ccba}
+.w-slider.z-success ._thumb ._i{background-position:-88px 0}
 .w-slider.z-drag .w-input-placeholder,.w-slider.z-authing .w-input-placeholder,.w-slider.z-success .w-input-placeholder{display:none}
 .w-slider.z-err ._err{color:#f00}
+.w-slider.z-lock ._thumb{cursor:default}
 
 .w-sliderjigsaw-dialog .small{position:absolute;top:0;left:0}
 .w-sliderjigsaw-dialog .ref{position:absolute;top:5px;right:5px;color:#fff;;cursor:pointer;text-shadow: 0 0 3px #000}

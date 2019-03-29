@@ -1051,6 +1051,12 @@ _w_rsz_layout = function() {
 	for ( var i = 0, l = this.length; i < l; i ++ )
 		_w_rsz_all.call( this[ i ] );	
 },
+// @a -> size, b -> min, c -> max
+_w_size_rng = function( a, b, c ) {
+	if ( b && ! isNaN( b ) ) a = Math.max( a, b );
+	if ( c && ! isNaN( c ) ) a = Math.min( a, c );
+	return a;
+},
 // widget配置项里设置了style，又没有设置wmin和hmin，则由系统解析style，获取wmin和hmin的值
 // 如果设置了cls，而cls里有 padding margin border 等，就需要人工计算并设置wmin和hmin
 //@ _c -> cls, _1 -> style, _2 -> wmin, _3 = hmin
@@ -1222,11 +1228,11 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( b && ! isNaN( b ) )
 			b = parseFloat( b );
 		if ( typeof b === _NUM && ! m )
-			return b < 0 ? N : b;
+			return b < 0 ? N : a.isWidget ? _w_size_rng( b, a.attr( nv ), a.attr( xv ) ) : b;
 		var c = this[ iz ]();
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
-		return c == N ? N : a.isWidget ? $.scaleRange( c, { min: a.attr( nv ), max: a.attr( xv ) } ) : c;
+		return c == N ? N : a.isWidget ? _w_size_rng( c, a.attr( nv ), a.attr( xv ) ) : c;
 	};
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min
 	_w_scale[ v ] = function( a, m ) {
@@ -3614,11 +3620,12 @@ Dialog = define.widget( 'dialog', {
 				var self = this;
 				if ( ! this._show_timer ) {
 					this._show_timer = setTimeout( function() { self._show(); }, 300 );
-					Q( document ).on( 'mouseover.' + self.id, function( e ) {
-						if ( ! self.parentNode.contains( e.target ) ) {
+					var n = 'mouseover.' + self.id + ':show';
+					Q( document ).on( n, function( e ) {
+						if ( self._disposed || ! self.parentNode.contains( e.target ) ) {
 							clearTimeout( self._show_timer );
 							delete self._show_timer;
-							Q( document ).off( 'mouseover.' + self.id );
+							Q( document ).off( n );
 						}
 					} );
 				}
@@ -3627,7 +3634,10 @@ Dialog = define.widget( 'dialog', {
 			return this;
 		},
 		_show: function( a ) {
-			delete this._show_timer; 
+			clearTimeout( this._show_timer );
+			delete this._show_timer;
+			if ( this._disposed )
+				return;
 			if ( this.x.cache && this.$() ) {
 				$.show( this.$() );
 				this.x.cover && $.show( this.$( 'cvr' ) );
@@ -5682,6 +5692,12 @@ Slider = define.widget( 'slider', {
 			this.$v().value = a;
 			this.fixPos( a );
 		},
+		hover: function( a, b ) {
+			this.isNormal() && $.classAdd( a, 'z-hv' );
+		},
+		hout: function( a, b ) {
+			this.isNormal() && ! a.contains( b.toElement ) && $.classRemove( a, 'z-hv' );
+		},
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
@@ -5723,7 +5739,8 @@ Slider = define.widget( 'slider', {
 		},
 		html_nodes: function() {
 			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id + 't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event)></div></div>' + this.html_placeholder();
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
+			't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -5735,7 +5752,7 @@ Slider = define.widget( 'slider', {
 SliderJigsaw = define.widget( 'slider/jigsaw', {
 	Const: function() {
 		Slider.apply( this, arguments );
-		this.jigsaw = this.add( { type: 'dialog', cls: 'w-sliderjigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
+		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-sliderjigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
 			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, node: {
 			type: 'view', node: {
 				type: 'html', cls: 'f-rel', style: 'margin:8px 0', id: 'img', format: 'javascript:return ' + abbr( this, 'html_img()' )
@@ -5789,7 +5806,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 							this.reload( this.jigsaw.vis );
 						this.val( this.min() );
 						this.removeClass( 'z-on z-success' );
-						Q( this.$( 'thumb' ) ).replaceWith( this.$( 'thumb' ).outerHTML );
+						$.classRemove( this.$( 'thumb' ), 'z-hv' );
 					}
 					this.removeClass( 'z-drag z-on z-authing' );
 					this.trigger( 'auth' );
@@ -5827,7 +5844,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		load: function( fn ) {
 			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
 				if ( d.error ) {
-					this.error( d.error );
+					this.lock( d.error );
 				} else {
 					this.img = d;
 					this.loaded = T;
@@ -5847,17 +5864,17 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		},
 		reset: function() {
 			this.val( this.min() );
-			this.removeClass( 'z-on z-success z-err z-lmt' );
+			this.removeClass( 'z-on z-success z-err z-lock' );
 			Q( this.$( 'pht' ) ).html( this.info() );
 			this.normal();
 			this.reload();
 		},
-		error: function( e ) {
-			this.addClass( 'z-err' );
+		lock: function( e ) {
+			this.addClass( 'z-err z-lock' );
 			Q( this.$( 'pht' ) ).html( this.info( e ) );
 			this.readonly();
 			this.jigsaw && this.jigsaw.close();
-			var a = e.timeout, self = this;
+			var a = Math.abs( e.timeout || 0 ), self = this;
 			if ( a ) {
 				this._cntdn_inter = setInterval( function() {
 					if ( a < 2 ) {
@@ -5874,7 +5891,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			this.dragstart( this.$( 'thumb' ), a );
 		},
 		info: function( e ) {
-			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + e.timeout + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
+			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
 			var d = this.img;
@@ -6249,7 +6266,7 @@ Combobox = define.widget( 'combobox', {
 							if ( k === 8 ) { // 8:backspace
 								if ( $.rngCursorOffset() == 0 ) {
 									var a = this.$t().previousSibling;
-									a && $.widget( a ).close();
+									a && (a = $.widget( a )).type === 'combobox/option' && a.close();
 								}
 							} else if ( k === 35 ) { // 35:end
 								var a = this.$t(), t = a.innerText;
@@ -6400,11 +6417,15 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', indent: 1 };
+			var d = { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', indent: 1 }, s = this.x.src;
 			if ( typeof u === _STR ) {
 				d.src = u;
 			} else {
-				d.node = u;
+				if ( u.type === 'view' )
+					d.node = u;
+			}
+			if ( s && typeof s === _OBJ ) {
+				$.extend( d, s );
 			}
 			var o = { pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
 				w = 'javascript:return this.parentNode.$().offsetWidth';
@@ -6514,6 +6535,10 @@ Combobox = define.widget( 'combobox', {
 				f ? this.fixOpt( f, d ) : (this.queryText( '' ), this.addOpt( d.text, d ));
 			this.focus();
 		},
+		getSuggestSrc: function() {
+			var s = this.x.suggest && this.x.src;
+			return (s && s.src) || s;
+		},
 		// @t -> query text, s -> milliseconds?
 		suggest: function( a, s ) {
 			clearTimeout( this._sug_timer );
@@ -6528,7 +6553,7 @@ Combobox = define.widget( 'combobox', {
 		// 弹出模糊匹配的选项窗口  /@ a -> text|comboboxOption
 		doSuggest: function( a ) {
 			this._currOpt = a;
-			var t = this._suggest_text( a ), u = this.x.suggest && this.x.src;
+			var t = this._suggest_text( a ), u = this.getSuggestSrc();
 			if ( u && (u = this.parseSrc( u, { text: t } )) ) {
 				var self = this;
 				(this.sugger || (this.sugger = this.createPop( u ))).reload( u, function() { !self._disposed && self._suggest_end( a, this ) } );
@@ -6538,7 +6563,7 @@ Combobox = define.widget( 'combobox', {
 		_suggest_end: function( a, m ) {
 			var c = this.store( m );
 			if ( c ) {
-				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this.x.suggest && this.x.src;
+				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this.getSuggestSrc();
 				d && s != m && s.merge( d );
 				e && e != m && e.close();
 				a.x && m.addEvent( 'close', function() { !a._disposed && a.tabFocus( F ) } );

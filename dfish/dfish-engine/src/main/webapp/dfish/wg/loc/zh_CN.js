@@ -45,6 +45,7 @@ uploading		: '正在上传，请稍侯..',
 click_preview	: '点击预览',
 toomuch_wait	: '次数过多，请稍候再试',
 toomuch_wait_countdown : '次数过多，请稍候再试(<em>{0}</em>)',
+preview_orginal_image: '查看原图',
 
 tree_movefail1	: '无法移动：目标文件夹和源文件夹相同',
 tree_movefail2	: '无法移动：目标文件夹是源文件夹的子文件夹',

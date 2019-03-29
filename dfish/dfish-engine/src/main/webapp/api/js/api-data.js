@@ -3257,6 +3257,7 @@ define( {
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'loadingtext', type: 'String', remark: '加载数据时显示的文本。' },
       { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'src', type: 'String | Dialog', ver: '3.1-', remark: '获取候选项的URL地址。可以是一个DialogWidget。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'nobr', type: 'Boolean', remark: '设为 true，已选项不换行。' },
       { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
@@ -3329,7 +3330,8 @@ define( {
       { name: 'upload_url', type: 'String', remark: '上传地址。' +
       	'<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s>' +
       	'<br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
-      { name: 'down_url', type: 'String', remark: '下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
+      { name: 'down_url', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
+      { name: 'preview_url', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'remove_url', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'upload_button', type: 'Array', remark: '上传按钮的数组。' },
       { name: 'value_button', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
