@@ -7261,11 +7261,18 @@ Onlinebox = define.widget( 'onlinebox', {
 			this.x.src && Combobox.prototype.suggest.apply( this, arguments );
 		},
 		doSuggest: function( t ) {
-			var u = this.formatStr( this.x.src, { text: t, value: t }, T );
-			if ( ! this.more )
-				this.more = this.createPop.call( this, u );
-			this.more.show();
-			this.more.reload( u );
+			var u = this.getSuggestSrc();
+			if ( u && (u = this.parseSrc( u, { text: t } )) ) {
+				if ( ! this.more )
+					this.more = this.createPop.call( this, u );
+				this.more.show();
+				this.more.reload( u );
+			}
+		},
+		getSuggestSrc: function() {
+			var s = this.x.src;
+			if ( s )
+				return typeof s === _OBJ ? s.src : s;
 		},
 		html_btn: function() {
 			var s = '';
