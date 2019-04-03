@@ -72,6 +72,7 @@
 		          { "id": "$.numAdd", "text": "$.numAdd", "datasrc": "$" },
 		          { "id": "$.numFormat", "text": "$.numFormat", "datasrc": "$" },
 		          { "id": "$.prepend", "text": "$.prepend", "datasrc": "$" },
+		          { "id": "$.previewImage", "text": "$.previewImage", "datasrc": "$" },
 		          { "id": "$.print", "text": "$.print", "datasrc": "$" },
 		          { "id": "$.proxy", "text": "$.proxy", "datasrc": "$" },
 		          { "id": "$.query", "text": "$.query", "datasrc": "$" },

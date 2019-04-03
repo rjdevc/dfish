@@ -376,9 +376,13 @@ define( {
         { name: 'elem', type: 'HTMLElement', remark: 'html元素对象' },
         { name: 'content', type: 'String', remark: 'html内容' }
       ] },
+      { name: '$.previewImage(imgsrc, [originalsrc])', id: '$.previewImage', remark: '预览图片。', common: true, param: [
+        { name: 'imgsrc', type: 'String', remark: '图片地址。' },
+        { name: 'originalsrc', type: 'String', remark: '原图地址。如果配置了此参数，将在预览窗口上生成一个"查看原图"的链接。' }
+      ] },
       { name: '$.print(target, [opt])', id: '$.print', remark: '打印目标对象的内容。', common: true, param: [
         { name: 'target', type: 'Widget | HTMLElement', remark: 'widget对象，或者HTML元素对象。' },
-        { name: 'opt', type: 'Boolean', remark: '设置为true，立即执行打印。', optional: true, param: [
+        { name: 'opt', type: 'Boolean | Object', remark: '设置为true，立即执行打印。', optional: true, param: [
           { name: 'print', type: 'Boolean', remark: '是否立即打印。' },
           { name: 'head', type: 'String', remark: 'head标签内容。' },
           { name: 'input2text', type: 'Boolean', remark: '是否把表单转为文本显示。' }
@@ -3324,28 +3328,22 @@ define( {
   	deprecate: 'focus,focusEnd,placeholder,tip,transparent,.w-text,.w-input,.z-trans,.z-on',
     Config: [
       { name: 'dir', type: 'String', remark: '附件排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
-      { name: 'file_upload_limit', type: 'Number', remark: '最多可上传数量。' },
-      { name: 'file_size_limit', type: 'String', remark: '单个附件最大体积。如 "50M"。' },
-      { name: 'file_types', type: 'String', remark: '允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"' },
-      { name: 'upload_url', type: 'String', remark: '上传地址。' +
-      	'<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s>' +
-      	'<br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
-      { name: 'down_url', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
-      { name: 'preview_url', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
-      { name: 'remove_url', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
-      { name: 'upload_button', type: 'Array', remark: '上传按钮的数组。' },
-      { name: 'value_button', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
+      { name: 'downloadsrc', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
+      { name: 'filetypes', type: 'String', remark: '允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"' },
+      { name: 'previewsrc', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
+      { name: 'removesrc', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
+      { name: 'sizelimit', type: 'String', remark: '单个附件最大体积。如 "50M"。' },
+      { name: 'uploadbutton', type: 'Array', remark: '上传按钮的数组。' },
+      { name: 'uploadlimit', type: 'Number', remark: '最多可上传数量。' },
+      { name: 'uploadsrc', type: 'String', remark: '上传地址。<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s><br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
+      { name: 'valuebutton', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
       { name: 'value', type: 'String', remark: '值。' }
     ]
   },
   "upload/image": {
   	title: 'upload/image',
   	remark: '上传图片。',
-  	extend: 'upload/file',
-    Config: [
-      { name: 'thumbnail_url', type: 'String', remark: '缩略图地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
-      { name: 'value', type: 'String', remark: '值。' }
-    ]
+  	extend: 'upload/file'
   },
   "upload/button": {
   	title: 'upload/button',
@@ -3387,7 +3385,7 @@ define( {
             { type: 'ajax', src: 'abc.sp', data: 'id=001&name=a%20b' }
           }
       ] },
-      { name: 'dataType', type: 'String', remark: '指定后台返回的数据格式。可选值: <b>json</b>(默认), <b>xml</b>, <b>text</b>' },
+      { name: 'datatype', type: 'String', remark: '指定后台返回的数据格式。可选值: <b>json</b>(默认), <b>xml</b>, <b>text</b>' },
       { name: 'download', type: 'Boolean', remark: '设置为true，转为下载模式。' },
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
       { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
