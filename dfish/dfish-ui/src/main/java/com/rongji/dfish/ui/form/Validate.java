@@ -15,6 +15,26 @@ public class Validate extends AbstractJsonObject<Validate> {
 	 * 
 	 */
 	private static final long serialVersionUID = -6934337282036061111L;
+	/**
+	 * 大于
+	 */
+	public static final String COMPARE_MODE_GREATER_THAN=">";
+	/**
+	 * 小于
+	 */
+	public static final String COMPARE_MODE_LESS_THAN="<";
+	/**
+	 * 小于或等于
+	 */
+	public static final String COMPARE_MODE_NOT_GREATER_THAN="<=";
+	/**
+	 * 大于或等于
+	 */
+	public static final String COMPARE_MODE_NOT_LESS_THAN=">=";
+	/**
+	 * 等于
+	 */
+	public static final String COMPARE_MODE_EQUALS="==";
 	private Boolean required;//必填
 	private String requiredtext;//必填提示文本  ${t}不能为空
 	private String pattern;//正则表达式
