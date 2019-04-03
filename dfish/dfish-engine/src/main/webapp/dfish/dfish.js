@@ -2100,20 +2100,12 @@ _merge( $, {
 			}
 		}
 	})(),
-	// @a -> image array, b -> id
+	// @a -> preview src, b -> download src
 	previewImage: function( a, b ) {
-		if ( typeof a === _STR )
-			a = _jsonParse( a );
-		for ( var i = 0, d = a[ 0 ]; i < a.length; i ++ ) {
-			if ( a[ i ].id == b ) {
-				d = a[ i ];
-				break;
-			}
-		}
 		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
 		$.vm().cmd( { type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
-			node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + d.preview_url + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
-				(d.down_url ? '<a class=_origin target=_blank href=' + d.down_url + '>' + $.loc.preview_orginal_image + '</a>' : '') +
+			node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	/* ! 把range内的图片变成缩略图

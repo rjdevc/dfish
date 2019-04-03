@@ -218,7 +218,7 @@ SWFUpload.prototype.initSettings = function (userSettings) {
 	
 	this.ensureDefault("button_html", null);
 	this.ensureDefault("title_width", null);
-	this.ensureDefault("down_url", null);
+	this.ensureDefault("downloadsrc", null);
 	this.ensureDefault("face", null);
 	
 
@@ -1135,11 +1135,11 @@ var swfobject = function(){var D="undefined",r="object",S="Shockwave Flash",W="S
 swfobject.addDomLoadEvent(function () {if (typeof(SWFUpload.onload) === "function") {SWFUpload.onload.call(window);}});
 
 /*
-   { type: 'upload/file', down_url: "xxx", preview_url: "xxx" }
-   如果只配置了down_url，点击文件都是下载。
-   如果同时配置down_url和preview_url，点击图片是预览，点击其他文件下载。
-   如果只设置preview_url，点击图片是预览，点击其他文件没反应。
-   如果需要特殊处理，比如doc文件要预览，那么设置 pub: { on: { click: "myFile.doSomething($id,$name)" }
+   { type: 'upload/file', downloadsrc: "xxx", previewsrc: "xxx" }
+   如果只配置了 downloadsrc，点击文件都是下载。
+   如果同时配置 downloadsrc 和 previewsrc，downloadsrc无效，previewsrc有效。
+   如果只设置 previewsrc，返回命令做处置。
+   如果需要特殊处理，比如doc文件要预览，那么设置 pub: { on: { click: "myFile.doSomething($id,$name);return false;" }
  */
 
 /* `upload` */
@@ -1150,6 +1150,8 @@ Loc = require( 'loc' ),
 Horz = require( 'horz' ),
 Button = require( 'button' ),
 Buttonbar = require( 'buttonbar' ),
+
+
 
 BaseUpload = define.widget( 'upload/base', {
 	Const: function( x, p, n ) {
@@ -1162,7 +1164,7 @@ BaseUpload = define.widget( 'upload/base', {
 			button_disabled: !!(x.status && x.status !== 'normal'),
 			flash_url: module.path + 'swfupload.swf',
 			flash9_url: module.path + 'swfupload_fp9.swf'
-		}, x );
+		}, swfOptions( x ) );
 		var v = x.value || [];
 		if ( typeof v === 'string' )
 			v = v.charAt( 0 ) == '[' ? $.jsonParse( v ) : [];
@@ -1170,7 +1172,7 @@ BaseUpload = define.widget( 'upload/base', {
 		this.uploadbar = this.add( { type: this.type + '/buttonbar' } );
 		this.valuebar  = this.add( { type: this.type + '/valuebar', nobr: false, cls: '_vbar' } );
 		this._queues   = [];
-		if ( ! x.upload_button ) {
+		if ( ! x.uploadbutton ) {
 			this.className += ' z-lmt';
 		}
 	},
@@ -1401,7 +1403,7 @@ UploadSwf = define.widget( 'upload/base/swf', {
 			}
 		},
 		swfupload_load_failed_handler: function() {
-			if ( this.x.upload_button )
+			if ( this.x.uploadbutton )
 				this.cmd( { type: 'alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'https://www.baidu.com/s?wd=Adobe%20Flash%20Player%20for%20IE') + ' target=_blank><b>点此下载>></b></a>' } );
 		},
 		swfupload_loaded_handler: function() {
@@ -1492,7 +1494,7 @@ define.widget( 'upload/file/buttonbar', {
 	Prototype: {
 		className: 'w-buttonbar _bbar',
 		x_nodes: function( x ) {
-			return this.u.x.upload_button;
+			return this.u.x.uploadbutton;
 		},
 		x_childtype: function( t ) {
 			return $.strTo( this.type, '/', true ) + '/' + t;
@@ -1686,13 +1688,13 @@ define.widget( 'upload/image/value', {
 		_cls: 'w-upload-value-image',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u = this.u, v = this.x.data, m = !f && (v.thumbnail || (u.x.thumbnail_url ? this.formatStr( u.x.thumbnail_url ) : v.url)), p = u.x.pub || false, w = p.width || 80, h = p.height || 80, b,
+			var u = this.u, v = this.x.data, m = !f && (v.thumbnail || v.url), p = u.x.pub || false, w = p.width || 80, h = p.height || 80, b,
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
 			this.empty();
 			this.add( { type: 'html', width: w, height: h, align:'center', valign: 'middle', text: (f ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif>' :
 				'<a href="javascript:;" title="' + v.name + '"><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '></a>') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>', cls: '_name' } );
 			b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
-			u.x.value_button && u.x.value_button.length && b.add( { text: $.arrow( 'b2' ), cls: '_b', on: { click: 'this.parentNode.parentNode.more(this)' } } );
+			u.x.valuebutton && u.x.valuebutton.length && b.add( { text: $.arrow( 'b2' ), cls: '_b', on: { click: 'this.parentNode.parentNode.more(this)' } } );
 			b.add( { text: '&times;', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
 			this.className = this._cls + ( f ? ' z-loading' : '' );
 		},
@@ -1702,24 +1704,20 @@ define.widget( 'upload/image/value', {
 		click: function() {
 			var p = this.u.x.pub, c = p && p.on && p.on.click;
 			if ( this.triggerHandler( 'click', null, c ) !== false ) {
-				if ( this.u.x.preview_url && getSuffix( this.x.data.name ) === 'img' ) {
+				if ( this.u.x.previewsrc ) {
 					this.preview();
-				} else if ( this.u.x.down_url ) {
+				} else if ( this.u.x.downloadsrc ) {
 					this.download();
 				}
 			}
 		},
 		download: function() {
-			var s = this.u.x.down_url;
-			if ( s )
-				$.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
+			var s = this.u.x.downloadsrc;
+			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
 		},
-		preview: function() {
-			for ( var i = 0, v = this.u.x.preview_url, a = ! /^\$\w+$/.test( v ), b = $.jsonClone( this.u._value ), c = this.x.data.id, d = this.u.x.down_url; i < b.length; i ++ ) {
-				d && (b[ i ].down_url = this.formatStr( d, null, a ));
-				v && (b[ i ].preview_url = this.formatStr( v, null, a ));
-			}
-			$.previewImage( b, this.x.data.id );
+		preview: function() {	
+			var v = this.u.x.previewsrc;
+			v && this.cmd( { type: 'ajax', src: this.formatStr( v, null, ! /^\$\w+$/.test( v ) ) } );
 		},
 		setProgress: function( a ) {
 			this.$( 'p' ).style.left = a + '%';
@@ -1762,7 +1760,7 @@ define.widget( 'upload/image/value', {
 			return this.error ? '<em class=_ex error-code="' + this.error + '">上传失败<i class=f-vi></i></em>' : '';
 		},
 		moreNodes: function() {
-			var b = $.jsonClone( this.u.x.value_button ), v = this.x.data;
+			var b = $.jsonClone( this.u.x.valuebutton ), v = this.x.data;
 			(function( d ) {
 				for ( var i = 0; i < d.length; i ++ ) {
 					d[ i ].data = v;
@@ -1779,8 +1777,8 @@ define.widget( 'upload/image/value', {
 		},
 		remove: function() {
 			var u = this.u;
-			if ( u.x.remove_url )
-				this.cmd( { type: 'ajax', src: u.x.remove_url, error: false } );
+			if ( u.x.removesrc )
+				this.cmd( { type: 'ajax', src: u.x.removesrc, error: false } );
 			if ( this.x.data )
 				u.removeValue( this.x.data );
 			if ( isSWF ) {
@@ -1811,7 +1809,7 @@ define.widget( 'upload/file/value', {
 		_cls: 'w-upload-value-simple',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u = this.u, c = u.x.value_button, t = f ? f.name : this.x.data.name, s = u.x.down_url .indexOf( 'javascript:' ) !== 0 && u.x.down_url;
+			var u = this.u, c = u.x.valuebutton, t = f ? f.name : this.x.data.name, s = u.x.downloadsrc .indexOf( 'javascript:' ) !== 0 && u.x.downloadsrc;
 			this.empty();
 			this.add( { type: 'button', tip: t, text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.click()' } } );
 			var b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
@@ -1844,7 +1842,7 @@ define.widget( 'upload/file/value', {
 			return this.x.file ? '<div class=_progress id=' + this.id + 'g><div id=' + this.id + 'p class=_percent></div></div>' : '';
 		},
 		html: function() {
-			var u = this.u, c = u.x.value_button, f = this.x.file, r = u.isNormal(),
+			var u = this.u, c = u.x.valuebutton, f = this.x.file, r = u.isNormal(),
 				pw = u.width(), vw = u.scaleWidth( u.x.pub && u.x.pub.width ), nw = 120, xw = 200, tw,
 				mn = 52 + (r ? 28 : 0) + (! f && c && c.length ? 28 : 0); //52是最外层marginRight10 + 左图标宽30 + 左图标paddingRight6 + 文本区paddingRight6
 			if ( pw ) {
@@ -1906,10 +1904,18 @@ var suffix = (function() {
 			r[ a[ i ] ] = k == '0' ? a[ i ] : k;
 	}
 	return r;
-})();
+})(),
+swfTranslate = {
+	uploadsrc: 'upload_url', uploadlimit: 'file_upload_limit', sizelimit: 'file_size_limit', filetypes: 'file_types'
+};
 function getSuffix( url ) {
 	var a = $.strFrom( url, '.', true ).toLowerCase();
 	return suffix[ a ] || 'file';
+};
+function swfOptions( x ) {
+	var r = {}, i;
+	for ( i in x ) r[ swfTranslate[ i ] || i ] = x[ i ];
+	return r;
 };
 // 根据文件后缀名获取图标样式
 function getIco( url ) {

@@ -43,14 +43,6 @@ _event_enter = {
 _event_stop = {
 	contextmenu: function( e ) { !(cfg.debug && e.ctrlKey) && $.stop( e ) }
 },
-// ie7的widget(比如button)内部有float:right元素时，整个widget会撑满。为了自适应大小而作以下处理
-_ie7floatWidth = function() {
-	if ( ! this.innerWidth() ) {
-		for ( var i = 0, b = this.$().children, w = 0, l = b.length; i < l; i ++ )
-			w += b[ i ].offsetWidth;
-		this.$().style.width = w + 'px';
-	}
-},
 // @a -> htmlElement: 返回html元素对象所在的widget
 // @a -> JSON: 参数为符合widget配置项的json对象，则创建这个widget
 _widget = function( a ) {
@@ -221,7 +213,7 @@ _ajaxCmd = function( x, a, t ) {
 	if ( x.loading )
 		d = this.exec( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
-	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter, error: x.error, beforesend: x.beforesend, 
+	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter, error: x.error, beforesend: x.beforesend, 
 		success: function( v, a ) {
 			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
