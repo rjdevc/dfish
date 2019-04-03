@@ -451,6 +451,7 @@
 .w-checkbox input,.w-radio input,.w-triplebox input{padding:0;vertical-align:middle}
 .w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;cursor:default}
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
+.w-grid-triplebox,.w-grid-radio{padding:2px}
 
 /*  <!--  CSS3 checkbox  */
 .w-checkbox ._t,.w-triplebox ._t,.w-radio ._t{display:none}
@@ -466,6 +467,7 @@
 .w-radio ._t:checked + label:after{content:' ';background:#758794;width:10px;height:10px;border-radius: 50px;position:absolute;top:3px;box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);text-shadow:0;left:3px;font-size:32px;}
 .w-radio ._t + label:active,.w-radio ._t:checked + label:active{box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px 1px 3px rgba(0,0,0,0.1);}
 .w-checkboxgroup ._t + label,.w-radiogroup ._t + label{vertical-align:top}
+.w-grid-triplebox.w-triplebox ._t + label,.w-grid-radio.w-radio ._t + label{margin-right:0}
 /*  CSS3 checkbox  -->   */
 
 .f-locker{background:#fff;position:absolute;top:0;left:0;bottom:0;right:0;filter:alpha(opacity=20);opacity:.2;}

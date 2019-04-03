@@ -238,7 +238,7 @@ _ajaxCmd = function( x, a, t ) {
 	if ( x.loading )
 		d = this.exec( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
-	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter || cfg.src_filter, error: x.error, beforesend: x.beforesend, 
+	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter || cfg.src_filter, error: x.error, beforesend: x.beforesend, 
 		success: function( r, a ) {
 			d && (d.close(), d = N);
 			var v = r;
@@ -573,32 +573,30 @@ _tpl_view = function( a ) {
 	}
 },
 _compilePreload = function( a, x ) {
-	var b = typeof a === _OBJ, n = b ? a : _getPreload( a );
-	if ( n ) {
-		n = $.jsonClone( n );
-		if ( x.type === 'dialog' )
-			x = x.node;
+	var b = typeof a === _OBJ, p = b ? a : _getPreload( a ), x = x.type === 'dialog' ? x.node : x, n = x, v;
+	if ( p ) {
 		if ( x.type === 'view' ) {
-			var v = _tpl_view( n );
-			if ( v ) {
-				x.commands && $.merge( v.commands || (v.commands = {}), x.commands );
-				x.on && $.merge( v.on || (v.on = {}), x.on );
-				x = x.node;
-			}
+			v = _tpl_view( p );
+			v && (n = x.node);
 		}
 		var t = 'preload/body',
-			s = b ? $.jsonString( n ) : (_tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( n ))),
-			c = b ? _tpl_parse( n ) : (_tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( n ))),
-			d = _tpl_parse( x, c );
+			s = b ? $.jsonString( p ) : (_tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( p ))),
+			c = b ? _tpl_parse( p ) : (_tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( p ))),
+			d = _tpl_parse( n, c );
 		for ( var k in c ) {
 			if ( d[ k ] )
 				s = s.replace( $.jsonString( c[ k ] ), $.jsonString( d[ k ] ) );
 		}
 		// 如果之前的替换处理后， preload/body 没被替换掉，那么它将替换整个node
 		if ( c[ t ] ) {
-			s = s.replace( $.jsonString( c[ t ] ), function() { return $.jsonString( x ) } );
+			s = s.replace( $.jsonString( c[ t ] ), function() { return $.jsonString( n ) } );
 		}
-		return $.jsonParse( s );
+		var r = $.jsonParse( s );
+		if ( v && (v = _tpl_view( r )) ) {
+			x.commands && $.extend( v.commands || (v.commands = {}), x.commands );
+			x.on && $.extend( v.on || (v.on = {}), x.on );
+		}
+		return r;
 	}
 },
 _setView = function( a ) {
@@ -847,7 +845,7 @@ W = define( 'widget', function() {
 				if ( _cmdHooks[ a.type ] ) {
 					_dfopt[ a.type ] && ! a.ownproperty && $.extendDeep( a, _dfopt[ a.type ] );
 					$.point();
-					return _cmdHooks[ a.type ].call( self, a, b );
+					return _cmdHooks[ a.type ].call( self, a, b, d );
 				}
 			}
 		},
@@ -1312,6 +1310,12 @@ _w_rsz_layout = function() {
 	for ( var i = 0, l = this.length; i < l; i ++ )
 		_w_rsz_all.call( this[ i ] );	
 },
+// @a -> size, b -> min, c -> max
+_w_size_rng = function( a, b, c ) {
+	if ( b && ! isNaN( b ) ) a = Math.max( a, b );
+	if ( c && ! isNaN( c ) ) a = Math.min( a, c );
+	return a;
+},
 // widget配置项里设置了style，又没有设置wmin和hmin，则由系统解析style，获取wmin和hmin的值
 // 如果设置了cls，而cls里有 padding margin border 等，就需要人工计算并设置wmin和hmin
 //@ _c -> cls, _1 -> style, _2 -> wmin, _3 = hmin
@@ -1483,11 +1487,11 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( b && ! isNaN( b ) )
 			b = parseFloat( b );
 		if ( typeof b === _NUM && ! m )
-			return b < 0 ? N : a.isWidget ? $.scaleRange( b, a.attr( nv ), a.attr( xv ) ) : b;
+			return b < 0 ? N : a.isWidget ? _w_size_rng( b, a.attr( nv ), a.attr( xv ) ) : b;
 		c === U && (c = this[ iz ]());
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
-		return c == N ? N : a.isWidget ? $.scaleRange( c, { min: a.attr( nv ), max: a.attr( xv ) } ) : c;
+		return c == N ? N : a.isWidget ? _w_size_rng( c, a.attr( nv ), a.attr( xv ) ) : c;
 	};
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min, c -> appoint size?
 	_w_scale[ v ] = function( a, m, c ) {
@@ -6879,6 +6883,27 @@ Combobox = define.widget( 'combobox', {
 		store: function( a ) {
 			return (a || this.more).getContentView().combo;
 		},
+		// 读/写隐藏值
+		_val: function( a ) {
+			if ( a == N )
+				return (this.$() ? this.$v() : this.x).value || '';
+			(this.$() ? this.$v() : this.x).value = a;
+		},
+		// @a -> value
+		val: function( a ) {
+			if ( a == N ) {
+				this.save();
+				return this._val();
+			}
+			if ( this.loading ) {
+				this._val( a );
+				return this.addEventOnce( 'load', function() { this.val( a ) } );
+			}
+			this.empty();
+			this._val( '' );
+			this.$t().innerHTML = '';
+			a ? this.match( { value: a } ) : this.resetEffect();
+		},
 		// 获取当前的选项对话框
 		pop: function() {
 			return this.dropper && this.dropper.isShow() ? this.dropper : this.sugger && this.sugger.isShow() ? this.sugger : this.more;
@@ -6887,6 +6912,7 @@ Combobox = define.widget( 'combobox', {
 		createPop: function( u, r ) {
 			var d = $.merge( { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2, indent: 1 }, u ),
 				w = 'javascript:return this.parentNode.$().offsetWidth';
+			u.cls && (d.cls += ' ' + u.cls);
 			//如果用户设置宽度为*或百分比，则设置maxwidth为不超过combobox的宽度
 			if ( u.width ) {
 				isNaN( u.width ) && (d.maxwidth = w);
@@ -6914,27 +6940,6 @@ Combobox = define.widget( 'combobox', {
 		// 解析变量: $value(值), $text(文本) /@ u -> url, r -> replace object
 		parseSrc: function( u, r ) {
 			return this.formatStr( u, $.extend( r || {}, { value: this.val() } ), T );
-		},
-		// 读/写隐藏值
-		_val: function( a ) {
-			if ( a == N )
-				return (this.$() ? this.$v() : this.x).value || '';
-			(this.$() ? this.$v() : this.x).value = a;
-		},
-		// @a -> value
-		val: function( a ) {
-			if ( a == N ) {
-				this.save();
-				return this._val();
-			}
-			if ( this.loading ) {
-				this._val( a );
-				return this.addEventOnce( 'load', function() { this.val( a ) } );
-			}
-			this.empty();
-			this._val( '' );
-			this.$t().innerHTML = '';
-			a ? this.match( { value: a } ) : this.resetEffect();
 		},
 		// 获取正在输入中的用于后台查询的文本
 		queryText: function( a ) {
@@ -7643,7 +7648,7 @@ Onlinebox = define.widget( 'onlinebox', {
 			keyup: {
 				occupy: T,
 				method: function( e ) {
-					if ( ! this._imeMode && ! this.isDisabled() && ! this._disposed && this.x.src ) {
+					if ( ! this._imeMode && ! this.isDisabled() && ! this._disposed && this.x.suggest ) {
 						var k = e.keyCode;
 						if ( k === 13 || k === 38 || k === 40 ) { // 上下键
 							var d = this.pop(), t;
@@ -7708,12 +7713,14 @@ Onlinebox = define.widget( 'onlinebox', {
 			this.focus();
 		},
 		suggest: function( t ) {
-			this.x.src && Combobox.prototype.suggest.apply( this, arguments );
+			this.x.suggest && Combobox.prototype.suggest.apply( this, arguments );
 		},
 		doSuggest: function( t ) {
-			if ( ! this.more )
-				this.more = this.createPop( this.x.suggest, { text: t, value: t } );
-			this.more.reload( u );
+			if ( this.x.suggest ) {
+				if ( ! this.more )
+					this.more = this.createPop( this.x.suggest );
+				this.more.reload( this.parseSrc( this.x.suggest.src, { text: t } ) );
+			}
 		},
 		html_btn: function() {
 			var s = '';
