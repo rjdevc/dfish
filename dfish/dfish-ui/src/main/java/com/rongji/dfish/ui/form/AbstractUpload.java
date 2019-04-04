@@ -509,24 +509,17 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 		return setValue((List<UploadItem>) value);
 	}
 
+	/**
+	 * 设置表单的元素的值
+	 * <p>在HTML协议中提交表单元素的时候，以键值对的方式提交。
+	 * 一般情况下。其中值就是value. 某些多选项的元素可能这些键值对会以复数形式出现。
+	 * 比如select 多行形式时。</p>
+	 * <p>v2.3以后改方法返回自身以便可以继续对这个表单操作</p>
+	 * @param value {@link List}&lt;{@link UploadItem}&gt;
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public T setValue(List<UploadItem> value) {
-		if (Utils.notEmpty(value)) {
-			for (Iterator<UploadItem> iter = value.iterator(); iter.hasNext();) {
-				UploadItem item = iter.next();
-				if (item == null) {
-					iter.remove();
-				}
-			}
-			if (value.isEmpty()) {
-				this.value = null;
-			} else {
-				// 有值时,默认不删除附件
-//				this.setRemove_url(null);
-				this.value = null;
-			}
-		} else {
-			this.value = null;
-		}
+		this.value = value;
 		return (T) this;
 	}
 
