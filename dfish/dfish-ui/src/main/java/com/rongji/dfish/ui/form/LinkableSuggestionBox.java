@@ -23,7 +23,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 //	private String src;//在线匹配关键词的 view src。支持 $value 和 $text 变量。
 	private String loadingtext;
 	private Boolean suggest;
-	private View node;
+//	private View node;
 
 	/**
 	 * 构造函数
@@ -144,24 +144,24 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 		return (T) this;
 	}
 
-	/**
-	 * 选项节点的View
-	 * @return View
-	 * @author YuLM
-	 */
-	public View getNode() {
-		return node;
-	}
-
-	/**
-	 * 选项节点的View
-	 * @param node 视图
-	 * @return 本身，这样可以继续设置其他属性
-	 * @author YuLM
-	 */
-	public T setNode(View node) {
-		this.node = node;
-		return (T) this;
-	}
+//	/**
+//	 * 选项节点的View
+//	 * @return View
+//	 * @author YuLM
+//	 */
+//	public View getNode() {
+//		return node;
+//	}
+//
+//	/**
+//	 * 选项节点的View
+//	 * @param node 视图
+//	 * @return 本身，这样可以继续设置其他属性
+//	 * @author YuLM
+//	 */
+//	public T setNode(View node) {
+//		this.node = node;
+//		return (T) this;
+//	}
 	
 }
