@@ -1,7 +1,5 @@
 package com.rongji.dfish.ui.form;
 
-import org.junit.Test;
-
 import com.rongji.dfish.ui.DFishUITestCase;
 
 public class ComboboxTest extends DFishUITestCase {

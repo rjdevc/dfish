@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.widget.AbstractButton;
 public class UploadButton extends AbstractButton<UploadButton > {
 	/**
 	 * 
-	 */
+	 *
 	private static final long serialVersionUID = -2174797939042068668L;
 
 	/**

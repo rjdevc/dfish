@@ -25,10 +25,5 @@ public class UploadFile<T extends UploadFile<T>> extends AbstractUpload<T> {
 	public String getType() {
 		return "upload/file";
 	}
-	@SuppressWarnings("unchecked")
-	@Override
-	public T setValue(Object value) {
-		this.value=toString(value);
-		return (T)this;
-	}
+
 }

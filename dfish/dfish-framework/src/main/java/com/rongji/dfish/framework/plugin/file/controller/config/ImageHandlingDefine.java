@@ -1,29 +1,22 @@
-package com.rongji.dfish.framework.plugin.file.controller.img;
+package com.rongji.dfish.framework.plugin.file.controller.config;
+
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
 
 import java.awt.*;
 
 /**
  * 图片缩放配置
  */
-public class ImageZoomDefine {
+public class ImageHandlingDefine extends FileHandlingDefine {
 
     public static final String WAY_ZOOM = "zoom";
     public static final String WAY_RESIZE = "resize";
     public static final String WAY_CUT = "cut";
 
-    private String alias;
     private String way;
     private int width;
     private int height;
     private Color bgColor;
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
 
     public String getWay() {
         return way;

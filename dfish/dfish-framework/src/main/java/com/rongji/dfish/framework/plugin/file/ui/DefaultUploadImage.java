@@ -33,9 +33,8 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		super(name, label);
 		this.setScheme(scheme);
 
-		this.setUpload_url("file/uploadImage");
-		this.setDown_url("file/download?fileId=$id");
-//		this.setRemove_url("file/removeFile?fileId=$id");
+		this.setUploadsrc("file/uploadImage");
+		this.setDownloadsrc("file/download?fileId=$id");
 		this.setThumbnail_url("file/thumbnail?fileId=$id");
 		this.setPreview_url("file/preview?fileId=$id");
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
@@ -55,41 +54,4 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		return "*.jpg;*.gif;*.png";
 	}
 
-	/**
-     *
-     * @param itemList
-     * @return
-     * @see #setValue(List)
-     */
-	@Deprecated
-	public DefaultUploadImage setUploadItems(List<UploadItem> itemList) {
-		return setValue(itemList);
-	}
-	
-	public DefaultUploadImage setValue(Object value) {
-		return super.setValue(value);
-	}
-	
-	public DefaultUploadImage setValue(List<UploadItem> value) {
-		if (Utils.notEmpty(value)) {
-			for (Iterator<UploadItem> iter=value.iterator(); iter.hasNext();) {
-				UploadItem item = iter.next();
-				if (item == null) {
-					iter.remove();
-					continue;
-				}
-			}
-			if (value.isEmpty()) {
-				super.setValue(null);
-			} else {
-//				// 有值时,默认不删除图片
-//				this.setRemove_url(null);
-				super.setValue(JsonUtil.toJson(value));
-			}
-		} else {
-			super.setValue(null);
-		}
-		return this;
-	}
-	
 }

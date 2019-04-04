@@ -34,7 +34,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
-		this.setSrc(src(src));
+		this.setSrc(src().setSrc(src));
 	}
 
 	/**
@@ -153,9 +153,9 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 获取在线匹配关键词的命令,当不存在时,将创建新的对话框
 	 * @return
 	 */
-	protected DialogCommand src(String src) {
+	protected DialogCommand src() {
 		if (this.src == null) {
-			this.src = new DialogCommand(src);
+			this.src = new DialogCommand();
 		}
 		return this.src;
 	}
@@ -167,7 +167,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 */
 	@SuppressWarnings("unchecked")
     public T setSrc(String src) {
-		DialogCommand thisSrc = src(src);
+		DialogCommand thisSrc = src().setSrc(src);
 		thisSrc.setSrc(src);
 		return (T) this;
 	}

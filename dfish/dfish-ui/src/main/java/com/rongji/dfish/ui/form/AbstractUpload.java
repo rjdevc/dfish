@@ -1,6 +1,8 @@
 package com.rongji.dfish.ui.form;
 
+import java.beans.Transient;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.rongji.dfish.base.Utils;
@@ -14,180 +16,383 @@ import com.rongji.dfish.ui.Directional;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractUpload<T extends AbstractUpload<T>> extends AbstractFormElement<T,String> implements Directional<T> {
+public abstract class AbstractUpload<T extends AbstractUpload<T>> extends AbstractFormElement<T, List<UploadItem>> implements Directional<T> {
+
+	/**
+	 * 方向:横向
+	 */
+	public static final String DIR_HORIZONTAL = "h";
+	/**
+	 * 方向:纵向
+	 */
+	public static final String DIR_VERTICAL = "v";
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4779985030349561966L;
-	protected String upload_url;
-	protected String down_url;
-	protected String preview_url;
-	//50M
-	protected String file_size_limit ;
-	protected String file_types ;
-	protected Integer file_upload_limit ;
-	protected String value_width;
-	protected List<ValueButton> value_button;
-	protected List<UploadButton> upload_button;
-//	protected String remove_url;
-	
-	protected UploadItem pub;
+	protected String uploadsrc;
+	protected String downloadsrc;
+	protected String previewsrc;
+	protected String removesrc;
+	protected String filetypes;
+	protected String sizelimit;
+	protected Integer uploadlimit;
+	protected List<ValueButton> valuebutton;
+	protected List<UploadButton> uploadbutton;
 	protected String dir;
 	protected String scheme;
+	protected UploadItem pub;
+
+	/**
+	 * 上传地址,最终返回结果会拼上scheme的参数值
+	 * @return String
+	 */
+	public String getUploadsrc() {
+		return joinScheme(this.uploadsrc);
+	}
+
+	/**
+	 * 上传地址
+	 * @param uploadsrc String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setUploadsrc(String uploadsrc) {
+		this.uploadsrc = uploadsrc;
+		return (T) this;
+	}
+
+	/**
+	 * 下载地址,最终返回结果会拼上scheme的参数值
+	 * @return String
+	 */
+	public String getDownloadsrc() {
+		return joinScheme(this.downloadsrc);
+	}
+
+	/**
+	 * 下载地址
+	 * @param downloadsrc String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setDownloadsrc(String downloadsrc) {
+		this.downloadsrc = downloadsrc;
+		return (T) this;
+	}
+
+	/**
+	 * 预览地址,最终返回结果会拼上scheme的参数值
+	 * @return String
+	 */
+	public String getPreviewsrc() {
+		return joinScheme(this.previewsrc);
+	}
+
+	/**
+	 * 预览地址
+	 * @param previewsrc String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setPreviewsrc(String previewsrc) {
+		this.previewsrc = previewsrc;
+		return (T) this;
+	}
+
+	/**
+	 * 移除地址,最终返回结果会拼上scheme的参数值
+	 * @return String
+	 */
+	public String getRemovesrc() {
+		return joinScheme(this.removesrc);
+	}
+
+	/**
+	 * 移除地址,默认无需设置该属性
+	 * @param removesrc String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setRemovesrc(String removesrc) {
+		this.removesrc = removesrc;
+		return (T) this;
+	}
+
+	/**
+	 * 允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"
+	 * @return String
+	 */
+	public String getFiletypes() {
+		return filetypes;
+	}
+
+	/**
+	 * 允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"
+	 * @param filetypes String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setFiletypes(String filetypes) {
+		this.filetypes = filetypes;
+		return (T) this;
+	}
+
+	/**
+	 * 单个附件文件大小。如 "50M"。
+	 * @return String
+	 */
+	public String getSizelimit() {
+		return sizelimit;
+	}
+
+	/**
+	 * 单个附件文件大小。如 "50M"。
+	 * @param sizelimit String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setSizelimit(String sizelimit) {
+		this.sizelimit = sizelimit;
+		return (T) this;
+	}
+
+	/**
+	 * 最大允许上传文件数
+	 * @return Integer
+	 */
+	public Integer getUploadlimit() {
+		return uploadlimit;
+	}
+
+	/**
+	 * 最大允许上传文件数
+	 * @param uploadlimit 最大允许上传文件数
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setUploadlimit(Integer uploadlimit) {
+		this.uploadlimit = uploadlimit;
+		return (T) this;
+	}
+
+	/**
+	 * 附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。
+	 * @return List&lt;{@link ValueButton}&gt;
+	 */
+	public List<ValueButton> getValuebutton() {
+		return valuebutton;
+	}
+
+	/**
+	 * 附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。
+	 * @param valuebutton "更多"选项 button 数组
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setValuebutton(List<ValueButton> valuebutton) {
+		this.valuebutton = valuebutton;
+		return (T) this;
+	}
+
+	/**
+	 * 添加附件项的"更多"选项按钮。点击附件项的"更多"生成一个 menu。
+	 * @param button "更多"选项按钮
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T addValuebutton(ValueButton button) {
+		if (this.valuebutton == null) {
+			this.valuebutton = new ArrayList<>();
+		}
+		valuebutton.add(button);
+		return (T) this;
+	}
+
+	/**
+	 * 上传按钮
+	 * @return List&lt;{@link UploadButton}&gt;
+	 */
+	public List<UploadButton> getUploadbutton() {
+		return uploadbutton;
+	}
+
+	/**
+	 * 上传按钮
+	 * @param uploadbutton 上传按钮
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setUploadbutton(List<UploadButton> uploadbutton) {
+		this.uploadbutton = uploadbutton;
+		return (T) this;
+	}
+
+	/**
+	 * 添加上传按钮
+	 * @param button 上传按钮
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T addUploadbutton(UploadButton button) {
+		if (this.uploadbutton == null) {
+			this.uploadbutton = new ArrayList<>();
+		}
+		this.uploadbutton.add(button);
+		return (T) this;
+	}
 
 	/**
 	 * 上传地址。
-	 * @return  upload_url
+	 * @return  String
+	 * @see #getUploadsrc()
 	 */
+	@Deprecated
+	@Transient
 	public String getUpload_url() {
-		return joinScheme(this.upload_url);
+		return getUploadsrc();
 	}
 	/**
 	 * 上传地址。
 	 * @param upload_url 上传地址
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setUploadsrc(String)
 	 */
+	@Deprecated
 	public T setUpload_url(String upload_url) {
-		this.upload_url = upload_url;
-		return (T) this;
+		return setUploadsrc(upload_url);
 	}
 	/**
 	 * 下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
 	 * @return down_url
+	 * @see #getDown_url()
 	 */
+	@Deprecated
+	@Transient
 	public String getDown_url() {
-		return joinScheme(this.down_url);
+		return getDownloadsrc();
 	}
 	/**
 	 * 下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
 	 * @param down_url 下载地址
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setDownloadsrc(String)
 	 */
+	@Deprecated
     public T setDown_url(String down_url) {
-		this.down_url = down_url;
-		return (T) this;
+		return setDownloadsrc(down_url);
 	}
 
     /**
      * 文件预览地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
      * @return 文件预览地址
+	 * @see #getPreviewsrc()
      */
+    @Deprecated
+	@Transient
     public String getPreview_url() {
-        return joinScheme(preview_url);
+        return getPreviewsrc();
     }
 
     /**
      * 文件预览地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
      * @param preview_url 文件预览地址
      * @return 本身，这样可以继续设置其他属性
+	 * @see #setPreviewsrc(String)
      */
+    @Deprecated
     public T setPreview_url(String preview_url) {
-        this.preview_url = preview_url;
-        return (T) this;
+        return setPreviewsrc(preview_url);
     }
 
     /**
 	 * 单个附件最大体积。如 "50M"。
 	 * @return file_size_limit
+	 * @see #getSizelimit()
 	 */
+    @Deprecated
+	@Transient
 	public String getFile_size_limit() {
-		return file_size_limit;
+		return getSizelimit();
 	}
 	/**
 	 * 单个附件最大体积。如 "50M"。
 	 * @param file_size_limit  单个附件最大体积。如 "50M"。
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setSizelimit(String)
 	 */
+	@Deprecated
     public T setFile_size_limit(String file_size_limit) {
-		this.file_size_limit = file_size_limit;
-		return (T) this;
+		return setSizelimit(file_size_limit);
 	}
 	/**
 	 * 允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"
 	 * @return file_types
+	 * @see #getFiletypes()
 	 */
+	@Deprecated
+	@Transient
 	public String getFile_types() {
-		return file_types;
+		return getFiletypes();
 	}
 	/**
 	 * 允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"
 	 * @param file_types 文件类型
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setFiletypes(String)
 	 */
+	@Deprecated
     public T setFile_types(String file_types) {
-		this.file_types = file_types;
-		return (T) this;
+		return setFiletypes(file_types);
 	}
 	/**
 	 * 最多可上传数量。
 	 * @return file_upload_limit
+	 * @see #getUploadlimit()
 	 */
+	@Deprecated
+	@Transient
 	public Integer getFile_upload_limit() {
-		return file_upload_limit;
+		return getUploadlimit();
 	}
 	/**
 	 * 最大允许上传文件数
 	 * @param file_upload_limit 最大允许上传文件数
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setUploadlimit(Integer)
 	 */
+	@Deprecated
     public T setFile_upload_limit(Integer file_upload_limit) {
-		this.file_upload_limit = file_upload_limit;
-		return (T) this;
-	}
-	/**
-	 * 附件项的宽度。
-	 * @return value_width
-	 */
-	public String getValue_width() {
-		return value_width;
-	}
-	/**
-	 * 附件项的宽度。 
-	 * @param value_width 附件项的宽度
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-    public T setValue_width(String value_width) {
-		this.value_width = value_width;
-		return (T) this;
+		return setUploadlimit(file_upload_limit);
 	}
 	/**
 	 * 附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。
 	 * @return value_button
+	 * @see #getValuebutton()
 	 */
+	@Deprecated
+	@Transient
 	public List<ValueButton> getValue_button() {
-		return value_button;
+		return getValuebutton();
 	}
 	/**
 	 * 附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。
 	 * @param value_button "更多"选项 button 数组
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #addValuebutton(ValueButton)
 	 */
+	@Deprecated
     public T addValue_button(ValueButton value_button) {
-		if(this.value_button==null){
-			this.value_button=new ArrayList<ValueButton>();
-		}
-		this.value_button.add(value_button);
-		return (T) this;
+		return addValuebutton(value_button);
 	}
 	/**
 	 * 上传按钮的数组。
 	 * @return upload_button
+	 * @see #getUploadbutton()
 	 */
-	
+	@Deprecated
+	@Transient
 	public List<UploadButton> getUpload_button() {
-		return upload_button;
+		return getUploadbutton();
 	}
 	/**
 	 * 增加上传按钮
 	 * @param upload_button 上传按钮
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #addUploadbutton(UploadButton)
 	 */
+	@Deprecated
 	public T addUpload_button(UploadButton upload_button) {
-		if(this.upload_button==null){
-			this.upload_button=new ArrayList<>();
-		}
-		this.upload_button.add(upload_button);
-		return (T) this;
+		return addUploadbutton(upload_button);
 	}
 	
 //	/**
@@ -233,11 +438,20 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 		this.pub = pub;
 		return (T) this;
 	}
-    
+
+	/**
+	 * 附件排列方向。可选值: h(横向,默认), v(纵向)
+	 * @return String
+	 */
 	public String getDir() {
 		return dir;
 	}
-	
+
+	/**
+	 * 附件排列方向。可选值: h(横向,默认), v(纵向)
+	 * @param dir String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public T setDir(String dir) {
 		this.dir = dir;
 		return (T)this;
@@ -264,7 +478,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	/**
 	 * 附件上传方案
 	 * @param scheme String
-	 * @return 本身
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setScheme(String scheme) {
 		this.scheme = scheme;
@@ -280,6 +494,40 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 			url += "scheme=" + scheme;
 		}
 		return url;
+	}
+
+	@Override
+	public T setValue(Object value) {
+		if (value == null) {
+			this.value = null;
+			return (T) this;
+		}
+		if (!(value instanceof List)) {
+			// 具体项如果不是UploadItem如何判断不清楚怎么写
+			throw new IllegalArgumentException("The value must be List<UploadItem>.");
+		}
+		return setValue((List<UploadItem>) value);
+	}
+
+	public T setValue(List<UploadItem> value) {
+		if (Utils.notEmpty(value)) {
+			for (Iterator<UploadItem> iter = value.iterator(); iter.hasNext();) {
+				UploadItem item = iter.next();
+				if (item == null) {
+					iter.remove();
+				}
+			}
+			if (value.isEmpty()) {
+				this.value = null;
+			} else {
+				// 有值时,默认不删除附件
+//				this.setRemove_url(null);
+				this.value = null;
+			}
+		} else {
+			this.value = null;
+		}
+		return (T) this;
 	}
 
 }
