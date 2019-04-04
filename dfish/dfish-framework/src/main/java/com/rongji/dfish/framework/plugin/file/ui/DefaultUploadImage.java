@@ -35,12 +35,11 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 
 		this.setUploadsrc("file/uploadImage");
 		this.setDownloadsrc("file/download?fileId=$id");
-		this.setThumbnail_url("file/thumbnail?fileId=$id");
-		this.setPreview_url("file/preview?fileId=$id");
+		this.setPreviewsrc("file/preview?fileId=$id");
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
-		this.setFile_types(fileService.getImageTypes());
-		this.setFile_size_limit(fileService.getSizeLimit());
-		this.addUpload_button(new UploadButton("+"));
+		this.setFiletypes(Utils.isEmpty(fileService.getImageTypes()) ? defaultFileTypes() : fileService.getImageTypes());
+		this.setSizelimit(fileService.getSizeLimit());
+		this.addUploadbutton(new UploadButton("+"));
 		
 		this.getPub().setOn(UploadItem.EVENT_CLICK, "this.preview();");
 		this.setValue(value);
