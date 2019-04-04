@@ -42,7 +42,7 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 		this.setFiletypes(fileService.getFileTypes());
 		String sizeLimit = fileService.getSizeLimit();
 		this.setSizelimit(sizeLimit);
-		this.addUploadbutton(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-doRequest-icon-local"));
+		this.addUploadbutton(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-upload-icon-local"));
 //		this.addValuebutton(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
 	}
 	

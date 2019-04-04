@@ -1,15 +1,13 @@
 package com.rongji.dfish.framework.plugin.file.ui;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
-import com.rongji.dfish.misc.util.JsonUtil;
 import com.rongji.dfish.ui.form.UploadButton;
 import com.rongji.dfish.ui.form.UploadImage;
 import com.rongji.dfish.ui.form.UploadItem;
+
+import java.util.List;
 
 /**
  * 默认图片上传组件
@@ -41,7 +39,7 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		this.setSizelimit(fileService.getSizeLimit());
 		this.addUploadbutton(new UploadButton("+"));
 		
-		this.getPub().setOn(UploadItem.EVENT_CLICK, "this.preview();");
+		this.getPub().setThumbnail(joinScheme("file/thumbnail?fileId=$id"));
 		this.setValue(value);
 	}
 	

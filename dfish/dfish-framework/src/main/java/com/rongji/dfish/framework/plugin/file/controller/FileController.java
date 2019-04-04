@@ -123,7 +123,9 @@ public class FileController extends BaseController {
                 if (accept) {
                     String loginUserId = FrameworkHelper.getLoginUser(mRequest);
                     uploadItem = fileService.saveFile(fileData, loginUserId);
-                }
+                } else {
+                	LogUtil.debug("上传文件失败;extName=" + extName + "||acceptTypes=" + acceptTypes);
+				}
             }
         } catch (Exception e) {
             long currMs = System.currentTimeMillis();
@@ -136,7 +138,7 @@ public class FileController extends BaseController {
         if (uploadItem == null) {
             uploadItem = new UploadItem();
             uploadItem.setError(true);
-            uploadItem.setText("上传文件失败" + (accept ? "，当前文件类型不符合系统规范" : ""));
+            uploadItem.setText("上传文件失败" + (!accept ? "，当前文件类型不符合系统规范" : ""));
         }
         return uploadItem;
     }
@@ -156,12 +158,13 @@ public class FileController extends BaseController {
         }
         // 这里的extName是包含.
 
-        HashSet<String> accSet=new HashSet<>(Arrays.asList(acceptTypes.split("[,;]")));
+		String[] accepts = acceptTypes.split("[,;]");
 //		extName=extName.toLowerCase();
 		// 类型是否含.
 		int extDot = extName.lastIndexOf(".");
-		String realExtName = (extDot >= 0) ? extName.substring(extDot) : extName;
-        for(String s:accSet){
+		// 统一去掉.
+		String realExtName = (extDot >= 0) ? extName.substring(extDot + 1) : extName;
+        for(String s : accepts){
             if (Utils.isEmpty(s)) {
                 continue;
             }
@@ -183,7 +186,7 @@ public class FileController extends BaseController {
 	public UploadItem uploadFile(HttpServletRequest request) {
     	String scheme = request.getParameter("scheme");
 		FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
-		String acceptTypes = Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileService.getFileTypes();
+		String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileService.getFileTypes();
 		return saveFile(request, fileService, acceptTypes);
 	}
 
@@ -204,6 +207,10 @@ public class FileController extends BaseController {
 			// 这样异常结果返回可能导致前端显示异常
 			return uploadItem;
 		}
+
+		FilterParam param = getFileParam(request);
+		// 这里先统一补thumbnail缩略图地址
+        uploadItem.setThumbnail("file/thumbnail?fileId=" + uploadItem.getId() + param);
 
 		String scheme = request.getParameter("scheme");
 		final FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
@@ -452,9 +459,9 @@ public class FileController extends BaseController {
 			FilterParam param = getFileParam(request);
 			String fileParamUrl = "?fileId=" + enFileId + param;
 			if (isImage) {
-				return new JSCommand("$.previewImage('" + fileParamUrl + "');");
+				return new JSCommand("$.previewImage('file/thumbnail" + fileParamUrl + "');");
 			} else {
-				return new JSCommand("$.download('" + fileParamUrl + "');");
+				return new JSCommand("$.download('file/download" + fileParamUrl + "');");
 			}
 		} else {
 			String error = "附件获取异常@" + System.currentTimeMillis();
