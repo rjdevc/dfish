@@ -336,22 +336,28 @@
 .w-spinner.z-ds ._b em:hover .f-arw-t2{border-bottom-color:#99a8b8}
 .w-spinner.z-ds ._b em:hover .f-arw-b2{border-top-color:#99a8b8}
 
-.w-slider{position:relative;}
-.w-slider var,.w-slider em{font-style:normal}
-.w-slider ._t{position:relative;height:100%;background:#f7f9fa;text-indent:0}
-.w-slider ._track{display:none;position:absolute;left:-1px;top:-1px;bottom:-1px;background:#d1e9ff;border:1px solid transparent}
-.w-slider ._thumb{position:absolute;width:30px;height:100%;background:#fff;cursor:pointer;text-align:center;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
-.w-slider ._thumb ._i{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;background:url(g/i.png) no-repeat -73px -204px}
-.w-slider .w-input-placeholder,.w-slider ._err{left:30px;right:0;top:0;text-align:center}
-.w-slider.z-drag ._track{display:block;border-color:#1991fa}
-.w-slider.z-drag ._thumb,.w-slider ._thumb.z-hv{background:#1891fb}
-.w-slider.z-drag ._thumb ._i,.w-slider ._thumb.z-hv ._i{background-position:-93px -204px}
-.w-slider.z-success ._track{display:block;background:#d2f4ef;border-color:#52ccba}
-.w-slider.z-success ._thumb{background:#52ccba}
-.w-slider.z-success ._thumb ._i{background-position:-88px 0}
-.w-slider.z-drag .w-input-placeholder,.w-slider.z-authing .w-input-placeholder,.w-slider.z-success .w-input-placeholder{display:none}
-.w-slider.z-err ._err{color:#f00}
-.w-slider.z-lock ._thumb{cursor:default}
+
+.w-slider{position:relative;border:0}
+.w-slider ._t{position:relative;height:6px;margin:2px 0;background:#f2f2f2;border-radius:6px;box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);}
+.w-slider ._track{position:absolute;height:6px;background:#999;border-radius:6px;}
+.w-slider ._thumb{position:absolute;width:10px;height:10px;top:-2px;background:#777;border-radius:10px}
+
+.w-sliderjigsaw{position:relative;}
+.w-sliderjigsaw var,.w-sliderjigsaw em{font-style:normal}
+.w-sliderjigsaw ._t{position:relative;height:100%;background:#f7f9fa;text-indent:0}
+.w-sliderjigsaw ._track{display:none;position:absolute;left:-1px;top:-1px;bottom:-1px;background:#d1e9ff;border:1px solid transparent}
+.w-sliderjigsaw ._thumb{position:absolute;width:30px;height:100%;background:#fff;cursor:pointer;text-align:center;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
+.w-sliderjigsaw ._thumb ._i{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;background:url(g/i.png) no-repeat -73px -204px}
+.w-sliderjigsaw .w-input-placeholder,.w-sliderjigsaw ._err{left:30px;right:0;top:0;text-align:center}
+.w-sliderjigsaw.z-drag ._track{display:block;border-color:#1991fa}
+.w-sliderjigsaw.z-drag ._thumb,.w-sliderjigsaw ._thumb.z-hv{background:#1891fb}
+.w-sliderjigsaw.z-drag ._thumb ._i,.w-sliderjigsaw ._thumb.z-hv ._i{background-position:-93px -204px}
+.w-sliderjigsaw.z-success ._track{display:block;background:#d2f4ef;border-color:#52ccba}
+.w-sliderjigsaw.z-success ._thumb{background:#52ccba}
+.w-sliderjigsaw.z-success ._thumb ._i{background-position:-88px 0}
+.w-sliderjigsaw.z-drag .w-input-placeholder,.w-sliderjigsaw.z-authing .w-input-placeholder,.w-sliderjigsaw.z-success .w-input-placeholder{display:none}
+.w-sliderjigsaw.z-err ._err{color:#f00}
+.w-sliderjigsaw.z-lock ._thumb{cursor:default}
 
 .w-sliderjigsaw-dialog .small{position:absolute;top:0;left:0}
 .w-sliderjigsaw-dialog .ref{position:absolute;top:5px;right:5px;color:#fff;;cursor:pointer;text-shadow: 0 0 3px #000}
@@ -747,7 +753,7 @@
 .w-uploadimage .w-upload-button.z-more ._c{margin-right:0}
 
 .w-upload-value-simple{position:relative;height:30px;margin:5px 10px 5px 0px;padding-right:0;background:#edf4f7;border-radius:2px}
-.w-upload-value-simple ._name{text-align:left;border-radius:2px}
+.w-upload-value-simple ._name{text-align:left;border-radius:2px;border-width:0}
 .w-upload-value-simple ._name ._t{padding-right:6px;line-height:26px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .w-upload-value-simple ._name ._t:hover{text-decoration:underline;cursor:pointer}
 .w-upload-value-simple ._name ._c{padding-left:0}
@@ -799,3 +805,5 @@ tr.f-dnd-helper ._g{padding:0}
 .f-pic-next-cursor{/*js import*/}
 
 d\:wg{display:none}
+
+/*::-ms-clear, ::-ms-reveal{display: none !important;}*/

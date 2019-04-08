@@ -1416,6 +1416,7 @@ _ajax_data = function( e ) {
 	}
 	return e;
 },
+_ajax_httpmode = location.protocol === 'http:' || location.protocol === 'https:',
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
 _ajax_contexts = {},
@@ -1491,7 +1492,7 @@ Ajax = _createClass( {
 						r = l.status;
 			        if ( r != N ) {
 			        	self.errorCode = l.status;
-						if ( f !== F && l.status ) {
+						if ( f !== F && (_ajax_httpmode || l.status) ) {
 							if ( f ) {
 								_fnapply( f, c, '$ajax', [ self ] );
 							} else {

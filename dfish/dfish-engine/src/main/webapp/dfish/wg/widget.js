@@ -5808,7 +5808,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		}
 	},
 	Prototype: {
-		className: 'w-form w-input w-slider w-sliderjigsaw',
+		className: 'w-form w-input w-sliderjigsaw',
 		validHooks: {
 			valid: function( b, v ) {
 				if ( ! this.isSuccess() )

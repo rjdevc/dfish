@@ -216,10 +216,10 @@ SWFUpload.prototype.initSettings = function (userSettings) {
 
 	this.ensureDefault("custom_settings", {});
 	
-	this.ensureDefault("button_html", null);
-	this.ensureDefault("title_width", null);
-	this.ensureDefault("downloadsrc", null);
-	this.ensureDefault("face", null);
+//	this.ensureDefault("button_html", null);
+//	this.ensureDefault("title_width", null);
+//	this.ensureDefault("down_url", null);
+//	this.ensureDefault("face", null);
 	
 
 	// Other settings
@@ -1150,12 +1150,11 @@ Loc = require( 'loc' ),
 Horz = require( 'horz' ),
 Button = require( 'button' ),
 Buttonbar = require( 'buttonbar' ),
-
-
+AbsForm = require( 'abs/form' ),
 
 BaseUpload = define.widget( 'upload/base', {
 	Const: function( x, p, n ) {
-		W.apply( this, arguments );
+		AbsForm.apply( this, arguments );
 		this.x = $.merge( {
 			file_size_limit: '2MB',
 			file_types: '*.*',
@@ -1177,7 +1176,7 @@ BaseUpload = define.widget( 'upload/base', {
 		}
 	},
 	Default:{ height: -1 },
-	Extend: 'abs/form',
+	Extend: AbsForm,
 	Prototype: {
 		isFormWidget: true,
 		val: function( a ) {
@@ -1281,9 +1280,8 @@ BaseUpload = define.widget( 'upload/base', {
 					this.valuebar.add( { file: this.getQueueFile( i ) } );
 				}
 				//this.trigger( 'fileselect' );
-				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ ) {
+				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
 					d[ i ].render();
-				}
 				this.startUpload();
 				$.classRemove( this.$(), 'z-err' );
 			}
@@ -1307,9 +1305,9 @@ BaseUpload = define.widget( 'upload/base', {
 			}
 		},
 		upload_complete_handler: function( file ) {
-			if ( this.getQueueFile( 0 ) ) {
+			if ( this.getQueueFile( 0 ) )
 				this.startUpload();
-			} else
+			else
 				this.trigger( 'change' );
 		},
 		upload_error_handler: function( file, errorCode, message ) {
@@ -1809,7 +1807,7 @@ define.widget( 'upload/file/value', {
 		_cls: 'w-upload-value-simple',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u = this.u, c = u.x.valuebutton, t = f ? f.name : this.x.data.name, s = u.x.downloadsrc .indexOf( 'javascript:' ) !== 0 && u.x.downloadsrc;
+			var u = this.u, c = u.x.valuebutton, t = f ? f.name : this.x.data.name, s = u.x.downloadsrc;
 			this.empty();
 			this.add( { type: 'button', tip: t, text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.click()' } } );
 			var b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
