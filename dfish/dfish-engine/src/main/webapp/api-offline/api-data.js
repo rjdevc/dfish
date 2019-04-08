@@ -3333,6 +3333,7 @@ define( {
       { name: 'previewsrc', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'removesrc', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'sizelimit', type: 'String', remark: '单个附件最大体积。如 "50M"。' },
+      { name: 'thumbnailsrc', type: 'String', remark: '缩略图地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'uploadbutton', type: 'Array', remark: '上传按钮的数组。' },
       { name: 'uploadlimit', type: 'Number', remark: '最多可上传数量。' },
       { name: 'uploadsrc', type: 'String', remark: '上传地址。<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s><br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
