@@ -1686,8 +1686,13 @@ define.widget( 'upload/image/value', {
 		_cls: 'w-upload-value-image',
 		// @f -> 正在上传?
 		initButton: function( f ) {
-			var u = this.u, v = this.x.data, m = !f && (v.thumbnail || v.url), p = u.x.pub || false, w = p.width || 80, h = p.height || 80, b,
+			var u = this.u, v = this.x.data, p = u.x.pub || false, m = '', w = p.width || 80, h = p.height || 80, b, c = u.x.thumbnailsrc,
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
+			if ( ! f ) {
+				m = v.thumbnail;
+				! m && (m = this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
+				! m && (m = v.url);
+			}
 			this.empty();
 			this.add( { type: 'html', width: w, height: h, align:'center', valign: 'middle', text: (f ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif>' :
 				'<a href="javascript:;" title="' + v.name + '"><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '></a>') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>', cls: '_name' } );
