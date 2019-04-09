@@ -17,6 +17,7 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
 	private static final long serialVersionUID = -2689106571559435242L;
 	private String align;
 	private String valign;
+	private String thumbnailsrc;
 
 	/**
 	 * @param name
@@ -54,4 +55,21 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
 		return (T) this;
 	}
 
+	/**
+	 * 缩略图地址
+	 * @return String
+	 */
+	public String getThumbnailsrc() {
+		return joinScheme(this.thumbnailsrc);
+	}
+
+	/**
+	 * 缩略图地址
+	 * @param thumbnailsrc 缩略图地址
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setThumbnailsrc(String thumbnailsrc) {
+		this.thumbnailsrc = thumbnailsrc;
+		return (T) this;
+	}
 }
