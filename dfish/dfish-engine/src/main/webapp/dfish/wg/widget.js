@@ -2207,6 +2207,37 @@ Html = define.widget( 'html', {
 		}
 	}
 } ),
+_video_mime = { 'video/mp4': T, 'video/ogg': T, 'video/webm': T },
+Video = define.widget( 'video', {
+	Listener: {
+		body: {
+			resize: function() {
+				var e = this.$( 'v' );
+				e && $.css( e, { width: this.innerWidth(), height: this.innerHeight() } );
+			}
+		}
+	},
+	Prototype: {
+		isSwf: function() {
+			if ( br.ie && br.ieVer <= 9 )
+				return T;
+			var m = $.mimeType( this.x.src );
+			if ( ! m || ! _video_mime[ m ] )
+				return T;
+		},
+		html_nodes: function() {
+			var w = this.innerWidth(), h = this.innerHeight(), u = this.x.src;
+			if ( this.isSwf() ) {
+				return '<object id=' + this.id + 'v classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
+					'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
+					'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
+					'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
+					'<embed src="' + $.LIB + 'wg/upload/flvplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
+			}
+			return '<video id=' + this.id + 'v src="' + u + '" width="' + w + '" height="' + h + '" controls="controls"></video>';
+		}
+	}
+} ),
 _splitSize = function( a, b ) {
 	return a && a[ a.parentNode.type_horz ? 'width' : 'height' ]( b );
 },
@@ -2915,11 +2946,12 @@ Img = define.widget( 'img', {
 			return t;
 		},
 		html_img: function() {
-			var x = this.x, b = this.parentNode.type === 'album', w = this.innerWidth(), h = this.innerHeight(), u = this.x.src;
+			var x = this.x, b = this.parentNode.type === 'album', iw = this.innerWidth(), ih = this.innerHeight(), u = this.x.src,
+				w = this.x.imgwidth || iw, h = this.x.imgheight || ih;
 			if ( u.indexOf( 'javascript:' ) === 0 )
 				u = _wg_format.call( this, u );
 			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w && isNaN( w ) ? 'width:' + w + 'px;' : '') + (h && isNaN( h ) ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w && !isNaN( w ) ? 'width:' + w + 'px;' : '') + (h && !isNaN( h ) ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
 			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text;
