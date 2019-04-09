@@ -21,6 +21,10 @@ _number = $.number,
 _slice  = Array.prototype.slice,
 _putin  = { append: T, prepend: T, undefined: T },
 
+// 给第三方插件使用的全局变量
+globalWindow = define( 'global/window', window ),
+globalDocument = define( 'global/document', document ),
+
 // widget实例缓存
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
@@ -913,11 +917,8 @@ W = define( 'widget', function() {
 				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
 			return c;
 		},
-		html_prop: function() {
-			var b = ' w-type="' + this.type + '" id=' + this.id,
-				v, t = this.cssText || '', n = this.Const.Listener;
-			if ( this.x.id )
-				b += ' w-id="' + this.x.id + '"';
+		prop_style: function() {
+			var t = this.cssText || '';
 			if ( ( v = this.innerWidth() ) != N )
 				t += 'width:' + v + 'px;';
 			if ( ( v = this.innerHeight() ) != N )
@@ -932,6 +933,13 @@ W = define( 'widget', function() {
 				t += 'max-height:' + v + 'px;';
 			if ( this.x.style )
 				t += this.x.style;
+			return t;
+		},
+		html_prop: function() {
+			var b = ' w-type="' + this.type + '" id=' + this.id,
+				v, t = this.prop_style(), n = this.Const.Listener;
+			if ( this.x.id )
+				b += ' w-id="' + this.x.id + '"';
 			if ( t )
 				b += ' style="' + t + '"';
 			if ( ! (n && n.tag) && (this.x.on || n) )
@@ -2187,16 +2195,6 @@ Html = define.widget( 'html', {
 				if ( ! t && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
 					t = '&nbsp;';
-				} else if ( t ) {
-					// 解决 ie7,8 下的video标签播放问题
-					t = ('' + t).replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
-						var w = $1.match( / width="(\d+)"/ )[ 1 ], h = $1.match( / height="(\d+)"/ )[ 1 ], u = $1.match( / src="([^"]+)"/ )[ 1 ];
-						return '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
-							'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
-							'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
-							'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
-							'<embed src="' + $.LIB + 'wg/upload/flvplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
-					} );
 				}
 			}
 			return t;
@@ -2909,12 +2907,19 @@ Img = define.widget( 'img', {
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
 		},
+		prop_style: function() {
+			var t = this.cssText || '',
+				c = this.parentNode.x.space;
+			c && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
+			this.x.style && (t += this.x.style);
+			return t;
+		},
 		html_img: function() {
-			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight, u = this.x.src;
+			var x = this.x, b = this.parentNode.type === 'album', w = this.innerWidth(), h = this.innerHeight(), u = this.x.src;
 			if ( u.indexOf( 'javascript:' ) === 0 )
 				u = _wg_format.call( this, u );
 			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + ( h ? (isNaN( h ) ? h : h + 'px') : '100%' ) + ';">' + g + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w && isNaN( w ) ? 'width:' + w + 'px;' : '') + (h && isNaN( h ) ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
 			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text;

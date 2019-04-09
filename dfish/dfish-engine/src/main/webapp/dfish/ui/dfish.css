@@ -475,7 +475,7 @@
 .w-album .w-img.z-hv{background-color:#f7f8f9;}
 .w-album .w-img.z-on{border-color:#b7c6ce;background-color:#f2f2f2;box-shadow:0 2px 3px 0 #eee;}
 .w-album .w-img.z-hv .w-img-box,.w-album .w-img.z-on .w-img-box{display:inline-block}
-.w-img .w-img-t{text-align:center}
+.w-img .w-img-t{text-align:center;margin-top:10px}
 .w-img .w-img-d{color:gray;line-height:2;}
 .w-img .w-img-i{text-align:center;vertical-align:middle}
 .w-img .w-img-i img{width:100%}
