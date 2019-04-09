@@ -1,16 +1,15 @@
 /* flowplayer
- * { "type": "flowplayer", "option": { "src": "/test.mp4", "type": "video/mp4" } },
+ * { "type": "flowplayer", "src": "/test.mp4" },
  */
 
 var $ = require( 'dfish' );
-//require.css( './skin/skin.css' );
-//var flowplayer = require( './flowplayer' );
+var videoMime = { 'video/mp4': true, 'video/ogg': true, 'video/webm': true };
 
 define.widget( 'flowplayer', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.option && this.init( this.x.option );
+				this.init();
 			},
 			resize: function() {
 				var e = this.$( 'v' );
@@ -19,19 +18,26 @@ define.widget( 'flowplayer', {
 		}
 	},
 	Prototype: {
+		isSwf: function() {
+			if ( $.br.ie && $.br.ieVer <= 9 )
+				return true;
+			var m = $.mimeType( this.x.src );
+			if ( ! m || ! videoMime[ m ] )
+				return true;
+		},
 		init: function( opt ) {
-			if ( ! $.br.ie || $.br.ieVer > 9 ) {
+			if ( ! this.isSwf() ) {
 				require.css( './skin/skin.css' );
 				var fp = require( './flowplayer.min' );
 				this.flowplayer = fp( this.$(), {
-					swf: require.resolve( './flowplayer.swf' ),
-					clip: { sources: [ { src: opt.src, type: opt.type } ] }
+					//swf: require.resolve( './flowplayer.swf' ),
+					clip: { sources: [ { src: this.x.src, type: $.mimeType( this.x.src ) } ] }
 				} );
 			}
 		},
 		html_nodes: function() {
-			if ( $.br.ie && $.br.ieVer <= 9 ) {
-				var w = this.innerWidth(), h = this.innerHeight(), u = this.x.option.src;
+			var w = this.innerWidth(), h = this.innerHeight(), u = this.x.src;
+			if ( this.isSwf() ) {
 				return '<object id=' + this.id + 'v classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 					'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
 					'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
