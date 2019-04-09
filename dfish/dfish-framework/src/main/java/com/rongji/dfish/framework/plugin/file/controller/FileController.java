@@ -421,7 +421,7 @@ public class FileController extends BaseController {
 			downloadFileData(response, contentType, fileRecord, fileAlias);
 		} else {
 			String error = "附件记录不存在@" + System.currentTimeMillis();
-			LogUtil.warn(error + "[" + fileRecord.getFileId() + "]");
+			LogUtil.warn(error + "[" + enFileId + "->" + fileId + "]");
 			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
 		}
 	}
