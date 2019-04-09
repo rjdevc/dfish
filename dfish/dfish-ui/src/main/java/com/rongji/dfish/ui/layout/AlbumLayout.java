@@ -27,7 +27,7 @@ MultiContainer<AlbumLayout,Img>{
 	private Boolean scroll;
 	private String scrollClass;
 	private Boolean escape;
-	private Boolean format;
+//	private Boolean format;
 	private String face;
 	private Boolean nobr;
 
@@ -161,23 +161,23 @@ MultiContainer<AlbumLayout,Img>{
 		return this;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @return format
-	 */
-	public Boolean getFormat() {
-		return format;
-	}
-
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @param format 格式化内容
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public AlbumLayout setFormat(Boolean format) {
-		this.format = format;
-		return this;
-	}
+//	/**
+//	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+//	 * @return format
+//	 */
+//	public Boolean getFormat() {
+//		return format;
+//	}
+//
+//	/**
+//	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+//	 * @param format 格式化内容
+//	 * @return 本身，这样可以继续设置其他属性
+//	 */
+//	public AlbumLayout setFormat(Boolean format) {
+//		this.format = format;
+//		return this;
+//	}
 
 	@Override
 	public List<Img> getNodes() {

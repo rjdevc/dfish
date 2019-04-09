@@ -208,9 +208,9 @@ public class FileController extends BaseController {
 			return uploadItem;
 		}
 
-		FilterParam param = getFileParam(request);
 		// 这里先统一补thumbnail缩略图地址
-        uploadItem.setThumbnail("file/thumbnail?fileId=" + uploadItem.getId() + param);
+//		FilterParam param = getFileParam(request);
+//        uploadItem.setThumbnail("file/thumbnail?fileId=" + uploadItem.getId() + param);
 
 		String scheme = request.getParameter("scheme");
 		final FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);

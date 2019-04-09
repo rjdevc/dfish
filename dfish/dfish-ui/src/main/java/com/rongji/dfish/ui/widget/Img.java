@@ -39,6 +39,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	private String face;
 	private String imgwidth;
 	private String imgheight;
+	private String format;
 
 	/**
      * 构造函数
@@ -206,7 +207,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 提示
 	 * @param tip String 
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setTip(Boolean tip) {
 		this.tip = tip;
@@ -216,7 +217,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 提示
 	 * @param tip String 
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setTip(String tip) {
 		this.tip = tip;
@@ -270,7 +271,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 图片展现方式。可选值: "none","straight"。默认值为"none"。
 	 * @param face String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setFace(String face) {
 		this.face = face;
@@ -287,7 +288,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 图片宽度。
 	 * @param imgwidth Integer
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setImgwidth(Integer imgwidth) {
 		this.imgwidth = String.valueOf(imgwidth);
@@ -310,7 +311,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 图片高度。
 	 * @param imgheight Integer
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setImgheight(Integer imgheight) {
 		this.imgheight = String.valueOf(imgheight);
@@ -318,11 +319,28 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	}
 	/**
 	 * 图片高度。
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setImgheight(String imgheight) {
 		this.imgheight = imgheight;
 		return this;
 	}
 
+	/**
+	 * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+	 * @return String
+	 */
+	public String getFormat() {
+		return format;
+	}
+
+	/**
+	 *  格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+	 * @param format String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Img setFormat(String format) {
+		this.format = format;
+		return this;
+	}
 }
