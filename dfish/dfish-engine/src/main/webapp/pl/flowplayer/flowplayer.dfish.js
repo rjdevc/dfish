@@ -36,8 +36,8 @@ define.widget( 'flowplayer', {
 			}
 		},
 		html_nodes: function() {
-			var w = this.innerWidth(), h = this.innerHeight(), u = this.x.src;
 			if ( this.isSwf() ) {
+				var w = this.innerWidth(), h = this.innerHeight(), u = $.urlLoc( $.PATH, this.x.src );
 				return '<object id=' + this.id + 'v classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 					'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
 					'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
