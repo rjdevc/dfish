@@ -354,6 +354,8 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 		}
 		this.setCurrentpage(page.getCurrentPage());
 		this.setSumpage(page.getPageCount());
+		// FIXME 目前每页显示数量先放在data,后续有可能也是pagebar一个属性
+		this.setData("pagesize", page.getPageSize());
 		return this;
 	}
 	/**

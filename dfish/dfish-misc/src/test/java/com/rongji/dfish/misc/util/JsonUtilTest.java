@@ -76,6 +76,16 @@ public class JsonUtilTest {
 		System.out.println(JSON.toJSONString(obj,SerializerFeature.WriteMapNullValue,
 				SerializerFeature.DisableCircularReferenceDetect,
 				SerializerFeature.WriteDateUseDateFormat));
+
+	}
+
+	@Test
+	public void getResoursePath() {
+		System.out.println(new JsonUtilTest().getClass().getResource(""));
+		System.out.println(new JsonUtilTest().getClass().getResource("/"));
+		System.out.println(JsonUtilTest.class.getClassLoader().getResource(""));
+		System.out.println(ClassLoader.getSystemResource(""));
+		System.out.println(JsonUtilTest.class.getName());
 	}
 
 }

@@ -234,6 +234,7 @@ public class FileController extends BaseController {
 					LogUtil.warn("生成缩略图出现异常:原记录文件存储记录异常[" + fileId + "]");
 					return;
 				}
+
 				String fileExtName = fileRecord.getFileUrl().substring(dotIndex + 1);
 				File imageFile = fileService.getFile(fileRecord);
 				if (imageFile == null || !imageFile.exists()) {
@@ -325,8 +326,41 @@ public class FileController extends BaseController {
 		String enFileId = request.getParameter("fileId");
 		String fileId = fileService.decId(enFileId);
 		PubFileRecord fileRecord = fileService.getFileRecord(fileId);
+		boolean inline = "1".equals(request.getParameter("inline"));
 		// 目前文件下载统一默认都是原件下载
-		downloadFileData(response, "application/octet-stream", fileRecord, null);
+		downloadFileData(response, inline,"application/octet-stream", fileRecord, null);
+	}
+
+	private static final Map<String,String> MIME_MAP = new HashMap<>();
+	private String getMimeType(String extName) {
+		if(extName==null) {
+			return null;
+		}
+		if(extName.startsWith(".")){
+			extName=extName.substring(1).toLowerCase();
+		}
+		if(MIME_MAP.size()==0){
+			//尝试读取配置。
+			try{
+				String classPath = getClass().getName();
+				int lastDotIndex = classPath.lastIndexOf(".");
+				if (lastDotIndex > 0) {
+					classPath = classPath.substring(0, lastDotIndex + 1).replace(".", "/");
+				}
+
+				ResourceBundle rb=ResourceBundle.getBundle(classPath + "mimetypes");
+				Enumeration<String> keys=rb.getKeys();
+				while(keys.hasMoreElements()){
+					String key=keys.nextElement();
+					String value=rb.getString(key);
+					MIME_MAP.put(key,value);
+				}
+			}catch (Throwable e){
+				LogUtil.error("获取内联类型异常", e);
+				MIME_MAP.put("[NONE]","application/octet-stream");
+			}
+		}
+		return MIME_MAP.get(extName);
 	}
 
 	/**
@@ -351,8 +385,11 @@ public class FileController extends BaseController {
 	 * @param fileRecord
 	 * @throws Exception
 	 */
-	private void downloadFileData(HttpServletResponse response, String contentType, PubFileRecord fileRecord, String fileAlias) throws Exception {
-		contentType = Utils.isEmpty(contentType) ? "application/octet-stream" : contentType;
+	private void downloadFileData(HttpServletResponse response, boolean inline, String contentType, PubFileRecord fileRecord, String fileAlias) throws Exception {
+		if (fileRecord == null) {
+			LogUtil.warn("下载的附件不存在");
+			return;
+		}
 		String encoding = "UTF-8";
 		InputStream input = null;
 		OutputStream output = null;
@@ -360,37 +397,46 @@ public class FileController extends BaseController {
 			String fileName = fileRecord.getFileName();
 			response.setHeader("Accept-Ranges", "bytes");
 			response.setHeader("Accept-Charset", encoding);
+			if(inline){
+				String extName = FileUtil.getFileExtName(fileName);
+				if(Utils.notEmpty(extName)){
+					contentType = getMimeType(extName);
+				}
+			}
+			if(Utils.isEmpty(contentType)){
+				contentType = "application/octet-stream";
+			}
 			response.setHeader("Content-type", contentType);
-            input = fileService.getFileInputStream(fileRecord, fileAlias);
-            long fileSize = 0L;
-            if (input != null) {
-                fileSize = fileService.getFileSize(fileRecord, fileAlias);
-            } else { // 当别名附件不存在时,使用原附件
-                input = fileService.getFileInputStream(fileRecord);
-                fileSize = fileService.getFileSize(fileRecord);
-            }
-            response.setHeader("Content-Length", String.valueOf(fileSize));
-            response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, encoding));
-            response.setStatus(HttpServletResponse.SC_OK);
+			response.setHeader("Content-Disposition", (inline?"inline":"attachment")+"; filename=" + URLEncoder.encode(fileName, encoding));
+			input = fileService.getFileInputStream(fileRecord, fileAlias);
+			long fileSize = 0L;
+			if (input != null) {
+				fileSize = fileService.getFileSize(fileRecord, fileAlias);
+			} else { // 当别名附件不存在时,使用原附件
+				input = fileService.getFileInputStream(fileRecord);
+				fileSize = fileService.getFileSize(fileRecord);
+			}
+			response.setHeader("Content-Length", String.valueOf(fileSize));
+			response.setStatus(HttpServletResponse.SC_OK);
 			if (input != null) {
 				FileUtil.downLoadData(response, input);
 			} else {
 				String error = "该附件不存在@" + System.currentTimeMillis();
-				LogUtil.error(error + ( fileRecord != null ? ("[" + fileRecord.getFileName() + "]" + (Utils.notEmpty(fileAlias) ? "[" + fileAlias + "]" : "")): ""));
+				LogUtil.error(error + "[" + fileRecord.getFileName() + "]" + (Utils.notEmpty(fileAlias) ? "[" + fileAlias + "]" : ""));
 				response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
 			}
 		} catch (Exception e) {
 			String error = "下载附件异常@" + System.currentTimeMillis();
 			LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
 			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
-        } finally {
-        	if (input != null) {
-        		input.close();
-        	}
-        	if (output != null) {
-        		output.close();
-        	}
-        }
+		} finally {
+			if (input != null) {
+				input.close();
+			}
+			if (output != null) {
+				output.close();
+			}
+		}
 	}
 	
 	/**
@@ -418,7 +464,7 @@ public class FileController extends BaseController {
 			FilterParam param = getFileParam(request);
 			// 获取附件别名
 			String fileAlias = getFileAlias(param);
-			downloadFileData(response, contentType, fileRecord, fileAlias);
+			downloadFileData(response, true, contentType, fileRecord, fileAlias);
 		} else {
 			String error = "附件记录不存在@" + System.currentTimeMillis();
 			LogUtil.warn(error + "[" + enFileId + "->" + fileId + "]");
@@ -459,9 +505,15 @@ public class FileController extends BaseController {
 			FilterParam param = getFileParam(request);
 			String fileParamUrl = "?fileId=" + enFileId + param;
 			if (isImage) {
+				// 图片形式使用框架的预览方式
 				return new JSCommand("$.previewImage('file/thumbnail" + fileParamUrl + "');");
 			} else {
-				return new JSCommand("$.download('file/download" + fileParamUrl + "');");
+				String mimeType = getMimeType(fileType);
+				if (Utils.notEmpty(mimeType)) { // 如果是浏览器支持可查看的内联类型,新窗口打开
+					return new JSCommand("window.open('file/download" + fileParamUrl + "&inline=1');");
+				} else { // 其他情况都是直接下载
+					return new JSCommand("$.download('file/download" + fileParamUrl + "');");
+				}
 			}
 		} else {
 			String error = "附件获取异常@" + System.currentTimeMillis();

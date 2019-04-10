@@ -22,7 +22,16 @@ public class Flowplayer extends AbstractWidget<Flowplayer> {
 	public Flowplayer(String id) {
 		super.setId(id);
 	}
-	
+	/**
+	 * 构造方法
+	 * @param id
+	 * @param src
+	 */
+	public Flowplayer(String id, String src) {
+		super.setId(id);
+		this.src = src;
+	}
+
 	private String src;
 
 	/**
