@@ -343,19 +343,19 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setPage(Page page) {
-		if (page == null) {
-			return this;
+		if (page != null) {
+			if (page.getCurrentPage() < 1) {
+				page.setCurrentPage(1);
+			}
+			if (page.getPageSize() < 1) {
+				page.setPageSize(10);
+			}
+			this.setCurrentpage(page.getCurrentPage());
+			this.setSumpage(page.getPageCount());
+			// FIXME 目前每页显示数量先放在data,后续有可能也是pagebar一个属性
+			this.setData("pagesize", page.getPageSize());
+			this.setData("rowcount", page.getRowCount());
 		}
-		if (page.getCurrentPage() < 1) {
-			page.setCurrentPage(1);
-		}
-		if (page.getPageSize() < 1) {
-			page.setPageSize(10);
-		}
-		this.setCurrentpage(page.getCurrentPage());
-		this.setSumpage(page.getPageCount());
-		// FIXME 目前每页显示数量先放在data,后续有可能也是pagebar一个属性
-		this.setData("pagesize", page.getPageSize());
 		return this;
 	}
 	/**

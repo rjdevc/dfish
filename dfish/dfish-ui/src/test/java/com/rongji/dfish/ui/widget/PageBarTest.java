@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.ui.DFishUITestCase;
+import org.junit.Test;
 
 public class PageBarTest extends  DFishUITestCase{
 
