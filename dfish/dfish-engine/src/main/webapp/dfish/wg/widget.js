@@ -957,7 +957,7 @@ W = define( 'widget', function() {
 		},
 		html_after: function( a ) {
 			if ( a || (a = this.x.aftercontent) ) {
-				if ( typeof a === _FUN || a.indexOf( 'javascript:' ) === 0 )
+				if ( a.indexOf( 'javascript:' ) === 0 )
 					a = this.formatJS( a );
 				if ( typeof a === _OBJ )
 					a = this.add( a, -1 ).html();
@@ -2363,6 +2363,7 @@ Buttonbar = define.widget( 'buttonbar', {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
 				}
+				Q( this.$() ).append( Q( '.w-buttonbar-line' ), this.$() );
 			}
 		}
 	},
@@ -2524,6 +2525,15 @@ Button = define.widget( 'button', {
 					$.classRemove( this.$(), 'z-lock' );
 					this.removeElem( 'lock' );
 					Q( '.z-hv', this.$() ).add( this.$() ).removeClass( 'z-hv' );
+				}
+			},
+			close: function() {
+				var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.prev() || this.next());
+				n && n.click();
+				if ( this.x.target ) {
+					for ( var i = 0, b = this.ownerView.find( this.x.target.split( ',' ) ); i < b.length; i ++ ) {
+						b[ i ].remove();
+					}
 				}
 			}
 		}
@@ -2857,6 +2867,7 @@ Album = define.widget( 'album', {
 	Prototype: {
 		className: 'w-album',
 		x_childtype: $.rt( 'img' ),
+		scaleWidth: _proto.scaleWidth,
 		getFocus: function() {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isFocus() ) return this[ i ];
@@ -2875,11 +2886,6 @@ Album = define.widget( 'album', {
 /* `img` */
 Img = define.widget( 'img', {
 	Const: function( x, p ) {
-		if ( p && p.type === this.ROOT_TYPE ) {
-			var c = p.x.space || 0;
-			c && (this.cssText = 'margin-top:' + c + 'px;margin-left:' + c + 'px;');
-			this.defaults( { wmin: 22 + c } );
-		}
 		W.apply( this, arguments );
 		x.focusable && x.focus && $.classAdd( this, 'z-on' );
 		x.face && $.classAdd( this, 'z-face-' + x.face );
@@ -2907,7 +2913,7 @@ Img = define.widget( 'img', {
 			}
 		}
 	},
-	Default: { height: -1 },
+	Default: { width: -1, height: -1 },
 	Prototype: {
 		ROOT_TYPE: 'album',
 		className: 'w-img',
@@ -2939,8 +2945,13 @@ Img = define.widget( 'img', {
 			this.focus( ! this.isFocus() );
 		},
 		prop_style: function() {
-			var t = this.cssText || '',
+			var t = this.cssText || '', v,
 				c = this.parentNode.x.space;
+			// 如果同时设置width和imgwidth，那么width作用在外框上。如果只有width没有imgwidth，那么width作用在img上
+			if ( this.x.imgwidth && (v = this.innerWidth()) != N )
+				t += 'width:' + v + 'px;';
+			if ( this.x.imgheight && (v = this.innerHeight()) != N )
+				t += 'height:' + v + 'px;';
 			c && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
 			this.x.style && (t += this.x.style);
 			return t;
@@ -2954,12 +2965,12 @@ Img = define.widget( 'img', {
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w && !isNaN( w ) ? 'width:' + w + 'px;' : '') + (h && !isNaN( h ) ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text;
+			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text, w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
 			if ( typeof t !== _OBJ && f )
 				t = _wg_format.call( this, f, p.x.escape );
 			else if ( typeof t === _STR && p.x.escape )
 				t = $.strEscape( t );
-			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="width:' + (x.textwidth ? x.textwidth + 'px' : 'auto') + '">' +
+			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
@@ -6595,7 +6606,7 @@ Combobox = define.widget( 'combobox', {
 				d && s != m && s.merge( d );
 				e && e != m && e.close();
 				a.x && m.addEvent( 'close', function() { !a._disposed && a.tabFocus( F ) } );
-				if ( u ? (c.isKeepShow() || c.getLength()) : c.filter( t ) ) {
+				if ( (u ? c.getLength() : c.filter( t )) || c.isKeepShow() ) {
 					!(u && m.$()) && m.show();
 				} else
 					m.close();

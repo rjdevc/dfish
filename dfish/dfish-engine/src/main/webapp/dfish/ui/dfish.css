@@ -657,7 +657,7 @@
 .f-tab-bar.z-horz-2 .f-tab,.f-tab-bar.z-horz-3 .f-tab{border:0;border-left:1px solid #ddd}
 .f-tab-bar.z-horz-3 .f-tab-line,.f-tab-bar.z-horz-4 .w-buttonbar-line{top:0;bottom:auto}
 .f-tab-bar .w-buttonbar-line{display:block}
-.f-tab{border-right:1px solid #ddd}
+.f-tab{border-right:1px solid #ddd;background:#f8f8f8}
 .f-tab.z-on{background:#fff}
 .f-tab.z-more ._c,.f-tab .z-combo ._c{margin-right:13px}
 
