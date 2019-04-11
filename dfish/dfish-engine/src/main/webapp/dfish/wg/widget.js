@@ -2528,12 +2528,11 @@ Button = define.widget( 'button', {
 				}
 			},
 			close: function() {
-				var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.prev() || this.next());
-				n && n.click();
 				if ( this.x.target ) {
-					for ( var i = 0, b = this.ownerView.find( this.x.target.split( ',' ) ); i < b.length; i ++ ) {
+					var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.prev() || this.next());
+					n && n.click();
+					for ( var i = 0, b = this.ownerView.find( this.x.target.split( ',' ) ); i < b.length; i ++ )
 						b[ i ].remove();
-					}
 				}
 			}
 		}
