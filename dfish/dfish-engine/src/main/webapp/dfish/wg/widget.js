@@ -586,8 +586,6 @@ W = define( 'widget', function() {
 			p.add( this, c );
 			d.length ? d.after( a.$() ) : p.insertHTML( a.$(), 'prepend' );
 			e.length ? e.after( this.$() ) : p.insertHTML( this.$(), 'prepend' );
-			//this.before( a );
-			//this.parentNode[ c ][ b < c ? 'after' : 'before' ]( this );
 		},
 		// 执行命令 /@a -> cmd id, arg1, arg2,...argN
 		cmd: function( a ) {
@@ -2471,11 +2469,6 @@ Button = define.widget( 'button', {
 		},
 		body: {
 			ready: function() {
-				/*if ( this.x.focus && this.x.focusable ) {
-					var p = this.parentNode;
-					if ( this.ROOT_TYPE === p.type && !p.x.focusmultiple && p.getFocus( this.x.name ) !== this )
-						this._focus( T );
-				}*/
 				this.x.target && this._ustag();
 				this.isFocus() && this.triggerHandler( 'focus' );
 			},
@@ -3052,8 +3045,8 @@ Toggle = define.widget( 'toggle', {
 			var x = this.x, t = this.html_icon();
 			if ( x.text != N )
 				t += ' <span class=w-toggle-text><em>' + x.text + '</em></span>';
-			return '<table class="w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
-				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table>';
+			return '<div class=f-oh><table class="f-oh w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
+				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table></div>';
 		}
 	}
 } ),
