@@ -578,6 +578,17 @@ W = define( 'widget', function() {
 		prev: function() {
 			 return this.parentNode && this.parentNode[ this.nodeIndex - 1 ];
 		},
+		// 节点交换位置
+		swap: function( a ) {
+			var b = this.nodeIndex, c = a.nodeIndex, p = this.parentNode,
+				d = Q( this.$() ).prev(), e = Q( a.$() ).prev();
+			p.add( a, b );
+			p.add( this, c );
+			d.length ? d.after( a.$() ) : p.insertHTML( a.$(), 'prepend' );
+			e.length ? e.after( this.$() ) : p.insertHTML( this.$(), 'prepend' );
+			//this.before( a );
+			//this.parentNode[ c ][ b < c ? 'after' : 'before' ]( this );
+		},
 		// 执行命令 /@a -> cmd id, arg1, arg2,...argN
 		cmd: function( a ) {
 			return this.exec( a, arguments.length > 1 ? _slice.call( arguments, 1 ) : N );
@@ -844,12 +855,6 @@ W = define( 'widget', function() {
 			p.trigger( 'resize', 'replace' );
 			return g;
 		},
-		// 节点交换位置
-		swap: function( a ) {
-			var b = this.nodeIndex, c = a.nodeIndex;
-			this.before( a );
-			this.parentNode[ c ][ b < c ? 'after' : 'before' ]( this );
-		},
 		// 清空子节点  /@a -> 是否删除离散节点
 		empty: function( a ) {
 			var i = this.length, j = i;
@@ -902,7 +907,7 @@ W = define( 'widget', function() {
 				! c && p.insertHTML( s );
 			}
 			this.triggerAll( 'ready' );
-			! this._disposed && this.parentNode.trigger( 'nodechange' );
+			! this._disposed && this.nodeIndex >= 0 && this.parentNode.trigger( 'nodechange' );
 			return this;
 		},
 		// @dao 通过js增加子节点时会调用此方法 / a -> html|widget, b -> where(prepend|append|before|after)
@@ -981,12 +986,12 @@ W = define( 'widget', function() {
 		// @a -> 设置为true，不触发删除单个节点所需的处理
 		remove: function( a ) {
 			this.removeElem();
-			var p = this.parentNode;
+			var p = this.parentNode, n = this.nodeIndex;
 			this.dispose();
 			if ( p && a !== T ) {
 				var s = p.type_horz ? 'width' : 'height';
 				p[ 0 ] && (p.type_horz || p.type_vert) && _w_size[ s ].call( p[ 0 ], p[ 0 ].x[ s ] );
-				p.trigger( 'nodechange' );
+				n >= 0 && p.trigger( 'nodechange' );
 			}
 		},
 		dispose: function( d ) {
@@ -2363,7 +2368,8 @@ Buttonbar = define.widget( 'buttonbar', {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
 				}
-				Q( this.$() ).append( Q( '.w-buttonbar-line' ), this.$() );
+				this.x.overflow && this.overflow();
+				this.fixLine();
 			}
 		}
 	},
@@ -2372,6 +2378,12 @@ Buttonbar = define.widget( 'buttonbar', {
 		childCls: '',
 		x_childtype: function( t ) {
 			return t === 'split' ? 'button/split' : (t || 'button');
+		},
+		scaleWidth: function() {
+			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
+		},
+		scaleHeight: function() {
+			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
 		},
 		draggable: function( a ) {
 			for ( var i = 0, l = this.length; i < l; i ++ )
@@ -2398,11 +2410,9 @@ Buttonbar = define.widget( 'buttonbar', {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isLocked() ) return this[ i ];
 		},
-		scaleWidth: function() {
-			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
-		},
-		scaleHeight: function() {
-			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
+		fixLine: function() {
+			this.$( 'vi' ) && Q( this.$() ).prepend( this.$( 'vi' ) );
+			Q( this.$() ).append( Q( '.w-buttonbar-line' ), this.$() );
 		},
 		overflow: function() {
 			if ( this._more ) {
@@ -2413,17 +2423,18 @@ Buttonbar = define.widget( 'buttonbar', {
 			}
 			var tw = this.$().offsetWidth, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
-				this._more = this.append( $.extend( { focusable: F }, o.button ) );
+				this._more = this.add( $.extend( { focusable: F, closeable: F, on: { click: '' } }, this.x.pub || {}, o.button ), -1 );
+				this._more.render( this.$() );
 				var w = this._more.width() + _number( this.x.space );
-				for ( var i = 0, j; i < this.length - 1; i ++ ) {
+				for ( var i = 0, j; i < this.length; i ++ ) {
 					j = this[ i ].width();
 					if ( w + j > tw ) break;
 					w += j;
 				}
-				this[ i ++ ].before( this._more );
+				$.before( this[ i ].$(), this._more.$() );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', on: { click: 'this.rootNode.parentNode.parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
+					m.add( $.extend( { cls: '', focus: this[ i ].isFocus(), on: { click: 'this.rootNode.parentNode.parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
 			}
@@ -2431,7 +2442,8 @@ Buttonbar = define.widget( 'buttonbar', {
 		overflowView: function( a ) {
 			var a = $.all[ a ], o = this.x.overflow;
 			if ( o.effect === 'swap' ) {
-				this._more.prev().swap( a );
+				var q = Q( this._more.$() ).prev( '.w-button' )[ 0 ], v = q && $.widget( q );
+				v && v.swap( a );
 			}
 			a.click();
 			this.overflow();
@@ -2752,6 +2764,7 @@ MenuButton = define.widget( 'menu/button', {
 	Extend: Button,
 	Listener: {
 		body: {
+			ready: N,
 			click: function() {
 				if ( ! this.isDisabled() ) {
 					this.x.target && this.ownerView.linkTarget( this.x.target, T );
@@ -2944,24 +2957,23 @@ Img = define.widget( 'img', {
 			this.focus( ! this.isFocus() );
 		},
 		prop_style: function() {
-			var t = this.cssText || '', v,
-				c = this.parentNode.x.space;
-			// 如果同时设置width和imgwidth，那么width作用在外框上。如果只有width没有imgwidth，那么width作用在img上
-			if ( this.x.imgwidth && (v = this.innerWidth()) != N )
+			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
+			// 在album内，不让width设置在外框
+			if ( a && (v = this.innerWidth()) != N )
 				t += 'width:' + v + 'px;';
-			if ( this.x.imgheight && (v = this.innerHeight()) != N )
+			if ( a && (v = this.innerHeight()) != N )
 				t += 'height:' + v + 'px;';
 			c && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
 			this.x.style && (t += this.x.style);
 			return t;
 		},
 		html_img: function() {
-			var x = this.x, b = this.parentNode.type === 'album', iw = this.innerWidth(), ih = this.innerHeight(), u = this.x.src,
-				w = this.x.imgwidth || iw, h = this.x.imgheight || ih;
+			var x = this.x, b = this.parentNode.type === 'album', mw = this.innerWidth(), mh = this.innerHeight(), u = this.x.src,
+				iw = this.x.imgwidth, ih = this.x.imgheight, w = iw || mw, h = ih || mh;
 			if ( u.indexOf( 'javascript:' ) === 0 )
 				u = _wg_format.call( this, u );
-			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w && !isNaN( w ) ? 'width:' + w + 'px;' : '') + (h && !isNaN( h ) ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
+			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
 			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text, w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
@@ -7804,22 +7816,25 @@ Leaf = define.widget( 'leaf', {
 		next: function( a ) {
 			if ( a == N )
 				return _proto.next.call( this );
-			if ( a && this.rootNode ) {
+			if ( a && this.offsetParent() ) {
 				if ( this.length && this.x.open )
 					return this[ 0 ];
 				if ( this.nodeIndex === this.parentNode.length - 1 ) {
 					var p = this.parentNode;
-					while ( p.rootNode && ! p.next() ) p = p.parentNode;
-					return p.rootNode && p.next();
+					while ( p.offsetParent() && ! p.next() ) p = p.parentNode;
+					return p.offsetParent() && p.next();
 				} else
 					return _proto.next.call( this );
 			}
+		},
+		offsetParent: function() {
+			return this.rootNode;
 		},
 		// @a 设为 true 时，获取视觉范围内可见的相邻的下一个节点
 		prev: function( a ) {
 			var b = _proto.prev.call( this );
 			if ( a ) {
-				if ( ! b && this.parentNode !== this.rootNode )
+				if ( ! b && this.parentNode !== this.offsetParent() )
 					return this.parentNode;
 				while ( b && b.length && b.x.open )
 					b = b[ b.length - 1 ];
@@ -8228,9 +8243,7 @@ GridRow = define.widget( 'grid/row', {
 		if ( typeof x.data !== _OBJ )
 			x = { data: x };
 		W.call( this, x, p, n );
-		if ( x.focus ) {
-			$.classAdd( this, 'z-on' );
-		}
+		x.focus && $.classAdd( this, 'z-on' );
 	},
 	Prototype: {
 		ROOT_TYPE: 'grid',
@@ -8264,6 +8277,13 @@ GridRow = define.widget( 'grid/row', {
 				n += c[ i ].colSpan;
 			}
 		},
+		offsetParent: function() {
+			var p = this.parentNode;
+			while( p.level != N )
+				p = p.parentNode;
+			return p;
+		},
+		prev: Leaf.prototype.prev,
 		// 高亮某个字段的关键字 /@ a -> colIndex, b -> key, c -> matchlength, d -> keycls
 		highlight: function( a, b, c, d ) {
 			var f = this.cellElem( a );
@@ -8275,7 +8295,7 @@ GridRow = define.widget( 'grid/row', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape, r = this.parentNode._rowspan,
+			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape, r = this.offsetParent()._rowspan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ a ] && r[ a ][ i ] ) {
