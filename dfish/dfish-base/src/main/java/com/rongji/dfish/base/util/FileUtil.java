@@ -1,29 +1,15 @@
 package com.rongji.dfish.base.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.zip.ZipOutputStream;
-import java.util.zip.ZipEntry;
-import java.io.ByteArrayOutputStream;
-import java.io.FileFilter;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.rongji.dfish.base.Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**
@@ -95,7 +81,7 @@ public final class FileUtil {
 	 *            String
 	 */
 	public static void deleteFile(String filePath) {
-		java.io.File f = new java.io.File(filePath);
+		File f = new File(filePath);
 		if (f.exists() && f.isFile()) {
 			f.delete();
 		}
@@ -103,7 +89,7 @@ public final class FileUtil {
 
 	/**
 	 * 如果有扩展名,包括点号 如 .txt .doc等.否则返回""
-	 * 
+	 *
 	 * @param fileName
 	 *            String
 	 * @return String
@@ -118,7 +104,7 @@ public final class FileUtil {
 
 	/**
 	 * 从inputStrean取得内容，注意没有关闭该inputStream
-	 * 
+	 *
 	 * @param inputStream
 	 *            InputStream
 	 * @return byte[]
@@ -145,7 +131,7 @@ public final class FileUtil {
 
 	/**
 	 * 将上传文件保存成硬盘文件
-	 * 
+	 *
 	 * @param stream
 	 *            InputStream
 	 * @param floderPath
@@ -188,7 +174,7 @@ public final class FileUtil {
 			}
 
 		} catch (Exception e) {
-			LOG.error(null,e);
+			logError("FileUtil.saveFile error", e);
 		} finally {
 			if (bos != null) {
 				try {
@@ -204,7 +190,7 @@ public final class FileUtil {
 	}
 	/**
 	 * 下载数据流
-	 * 
+	 *
 	 * @param response
 	 * @param is
 	 * @throws UnsupportedEncodingException
@@ -222,7 +208,7 @@ public final class FileUtil {
 				os.write(buff, 0, bytesRead);
 			}
 		} catch (final IOException e) {
-			LOG.error(null,e);
+			logError("FileUtil.downLoadData error", e);
 		} finally {
 			if (is != null) {
 				is.close();
@@ -235,15 +221,15 @@ public final class FileUtil {
 
 	/**
 	 * 下载方法
-	 * 
+	 *
 	 * @param response
 	 *            应答
 	 * @param attachFile
 	 *            文件全路径+全名(服务器端的URL)
 	 * @param fileName
 	 *            用户另存为的文件名
-	 * @throws java.io.IOException
-	 * @throws java.io.UnsupportedEncodingException
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
 	 */
 	public static void downLoadFile(final HttpServletResponse response,
 			String attachFile, String fileName)
@@ -277,6 +263,7 @@ public final class FileUtil {
 				bos.write(buff, 0, bytesRead);
 			}
 		} catch (final IOException e) {
+			logError("FileUtil.downLoadFile error", e);
 		} finally {
 			if (bis != null) {
 				bis.close();
@@ -290,15 +277,15 @@ public final class FileUtil {
 
 	/**
 	 * 下载方法 支持断点续传
-	 * 
+	 *
 	 * @param response
 	 *            应答
 	 * @param attachFile
 	 *            文件全路径+全名(服务器端的URL)
 	 * @param fileName
 	 *            用户另存为的文件名
-	 * @throws java.io.IOException
-	 * @throws java.io.UnsupportedEncodingException
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
 	 */
 	public static void downLoadFile(final HttpServletRequest request,
 			final HttpServletResponse response, String attachFile,
@@ -311,14 +298,14 @@ public final class FileUtil {
 
 	/**
 	 * 把byte当成文件下载的方法
-	 * 
+	 *
 	 * @param source
 	 *            byte数组
 	 * @param response -
 	 * @param fileName
 	 *            文件另存为的名字,现版本可以有中文
-	 * @throws java.io.IOException
-	 * @throws java.io.UnsupportedEncodingException
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
 	 */
 	public static void downloadByteArrAsFile(byte[] source,
 			final HttpServletResponse response, String fileName)
@@ -346,8 +333,8 @@ public final class FileUtil {
 						((source.length - (i << 13)) > 8192) ? 8192
 								: (source.length - (i << 13)));
 			}
-		} catch (Exception ex) {
-			LOG.error(null,ex);
+		} catch (Exception e) {
+			logError("FileUtil.downloadByteArrAsFile error", e);
 		} finally {
 			if (bos != null) {
 				bos.close();
@@ -397,8 +384,8 @@ public final class FileUtil {
 				;
 			}
 			return new String(content, charSet);
-		} catch (IOException ex) {
-			LOG.error(null,ex);
+		} catch (IOException e) {
+			logError("FileUtil.readFileAsText error", e);
 		} finally {
 			try {
 				if (fis != null) {
@@ -445,8 +432,8 @@ public final class FileUtil {
 			writer.write(content);
 
 			return true;
-		} catch (Exception ex) {
-			LOG.error(null,ex);
+		} catch (Exception e) {
+			logError("FileUtil.writeFile error", e);
 			return false;
 		} finally {
 			try {
@@ -489,40 +476,10 @@ public final class FileUtil {
 			try {
 				return new String (saveAs.getBytes(),"ISO8859-1");
 			} catch (UnsupportedEncodingException e1) {
-				LOG.error(null,e1);
+				LOG.error(null, e1);
 				return saveAs;
 			}
 		}
-//		int dotP = saveAs.lastIndexOf(".");
-//		String fileName = (dotP > 0) ? saveAs.substring(0, dotP) : saveAs;
-//		int cnt = 0;
-//		StringBuilder sb = new StringBuilder();
-//		char[] ch = fileName.toCharArray();
-//		for (int i = 0; i < ch.length; i++) {
-//			char asc = ch[i];
-//			cnt += ((asc > 127 || asc < 0) ? 3 : 1); // 由于用UTF-8 所以汉字为3个字节
-//			if (cnt == 50) {
-//				sb.append(asc);
-//				if (i < ch.length - 1) { // 还有其他的字符
-//					sb.append('~');
-//				}
-//				break;
-//			} else if (cnt > 50) {
-//				if (i < ch.length - 1) { // 还有其他的字符
-//					sb.append('~');
-//				}
-//				break;
-//			} else {
-//				sb.append(asc);
-//			}
-//		}
-//		saveAs = (dotP > 0) ? (sb.toString() + saveAs.substring(dotP)) : sb
-//				.toString();
-//		try {
-//			return java.net.URLEncoder.encode(saveAs, ENCODING);
-//		} catch (UnsupportedEncodingException ex) {
-//			return saveAs;
-//		}
 	}
 
 	// /**
@@ -728,7 +685,7 @@ public final class FileUtil {
 				isExist = false;
 			}
 		} catch (Exception e) {
-			LOG.error(null,e);
+			logError("FileUtil.copyFile error", e);
 		} finally {
 			if (os != null) {
 				try {
@@ -769,11 +726,33 @@ public final class FileUtil {
 //		
 //		return contentType;
 //	}
-	public static void downLoadFile(final HttpServletRequest request,
-			final HttpServletResponse response, File file,
-			String fileName,String contentType) throws UnsupportedEncodingException, IOException {
-		String range = request.getHeader("RANGE");
-		long skip = 0; 
+	public static void downLoadFile(HttpServletRequest request, HttpServletResponse response, File file,
+			String fileName,String contentType) throws IOException {
+		downLoadFile(request, response, false, contentType, new FileInputStream(file), file.length(), fileName);
+	}
+
+	private static void logError(String log, Throwable t) {
+		if (log == null) {
+			log = "";
+		}
+		boolean logError = true;
+		if (t != null) {
+			// FIXME 这里客户端异常不打算依赖包,所以通过字符判断;目前仅考虑tomcat的情况,其他web容器还需再验证测试
+			logError = !"ClientAbortException".equals(t.getClass().getSimpleName());
+			if (logError) {
+				log += "[" + t.getClass().getName() + ":" + t.getMessage() + "]";
+			}
+		}
+		if (logError) {
+			LOG.warn(log);
+		}
+	}
+
+	public static boolean downLoadFile(HttpServletRequest request, HttpServletResponse response, boolean inline, String contentType,
+									InputStream fileInput, long fileLength, String fileName) throws IOException {
+		String range = request.getHeader("Range");
+		long from = 0L;
+		long to = fileLength;
 		if (range != null && !"".equals(range)) {
 			range = range.toLowerCase();
 			if (range.startsWith("bytes")) {
@@ -782,55 +761,102 @@ public final class FileUtil {
 				if (toPos < 0 && equotPos > 0) {
 					toPos = range.length();
 				}
-				if (equotPos > 0 && toPos > 0) {
-					skip = Long.parseLong(range.substring(equotPos + 1, toPos)
-							.trim());
+				if (toPos > 0) {
+					try {
+						String fromStr;
+						if (equotPos > 0) {
+							fromStr = range.substring(equotPos + 1, toPos);
+						} else {
+							// 从bytes开始截取
+							fromStr = range.substring(5, toPos);
+						}
+						if (Utils.notEmpty(fromStr) && Utils.notEmpty(fromStr.trim())) {
+							from = Long.parseLong(fromStr.trim());
+						}
+					} catch (Exception e) {
+						logError("FileUtil.downLoadFile:getting from value error", e);
+					}
+					try {
+						// range中可能有斜杠,这个格式判断不是标准的,可能需要调整
+						int divide = range.indexOf("/");
+						String toStr;
+						if (divide > to) {
+							toStr = range.substring(toPos + 1, divide);
+						} else {
+							toStr = range.substring(toPos + 1);
+						}
+						if (Utils.notEmpty(toStr) && Utils.notEmpty(toStr.trim())) {
+							to = Long.parseLong(toStr.trim());
+						}
+					} catch (Exception e) {
+						logError("FileUtil.downLoadFile:getting to value error", e);
+					}
 				}
 			}
 		}
-//		File file = new File(attachFile);
-//		String contentType = getContentType(fileName);
-		
 
 		response.setHeader("Accept-Ranges", "bytes");
-		response.setHeader("Accept-Charset", FileUtil.DOWNLOAD_ENCODING);
+		response.setHeader("Accept-Charset", FileUtil.ENCODING);
+		if(Utils.isEmpty(contentType)){
+			contentType = "application/octet-stream";
+		}
 		response.setHeader("Content-type", contentType);
-		if (skip == 0) {
-			response.setHeader("Content-Length", String.valueOf(file.length()));
+
+		long partLength = to - from;
+//		boolean complete = to >= fileLength;
+		if (from == 0 && to >= fileLength) {
 			response.setStatus(HttpServletResponse.SC_OK);
-			fileName = safeFileName(fileName);
-			response.setHeader("Content-Disposition", "attachment; filename="
-					+ fileName);
+			response.setHeader("Content-Length", String.valueOf(fileLength));
+			response.setHeader("Content-Disposition", (inline ? "inline" : "attachment" ) + "; filename=" + URLEncoder.encode(fileName, FileUtil.ENCODING));
 		} else {
-			response.setHeader("Content-Length", String.valueOf(file.length()
-					- skip));
 			response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-			response.setHeader("Content-Range", "bytes " + skip + "-"
-					+ (file.length() - 1) + "/" + file.length());
+			String contentRange = "bytes " + from + "-" + (to - 1) + "/" + fileLength;
+			response.setHeader("Content-Range", contentRange);
 		}
 
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
-		if (!file.exists()) {
+		if (fileInput == null) {
 			response.sendError(404);
-			return;
+			return false;
 		}
 		// long totalRead = 0;
-		try {
-			bis = new BufferedInputStream(new FileInputStream(file));
+		boolean complete = false;
+        try {
+            bis = new BufferedInputStream(fileInput);
 			bos = new BufferedOutputStream(response.getOutputStream());
 
 			byte[] buff = new byte[8192];
 			int bytesRead;
-			if (skip > 0) {
-				bis.skip(skip);
-			}
+			if (from > 0) {
+                bis.skip(from);
+            }
+			// 75%节点有被加载到认定为"完成节点"
+			long completePointLeft = (long) (fileLength * 0.25);
+			long loadedLeft = fileLength - from;
+            // 剩余字节大于完成节点的剩余,有机会可被加载到"完成节点"
+            boolean canLoadedPoint = loadedLeft >= completePointLeft;
+
+			long currLeftLength = partLength;
 			// org.apache.catalina.servlets.DefaultServlet
-			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+			while (currLeftLength > 0 && -1 != (bytesRead = bis.read(buff, 0, buff.length))) {
 				bos.write(buff, 0, bytesRead);
+				long readBytes = Long.parseLong(String.valueOf(bytesRead));
+				currLeftLength -= readBytes;
+                if (canLoadedPoint) { // 有机会加载到"完成节点"
+                	// 剩余加载字节
+					loadedLeft -= readBytes;
+					// 剩余加载字节比需完成的小,说明"完成节点已被加载"
+                    if (loadedLeft <= completePointLeft) {
+                        // 达到或超过"完成节点"
+                        complete = true;
+                        // "完成节点"已被加载,无需再计算判断加载
+                        canLoadedPoint = false;
+                    }
+                }
 			}
-		} catch (final IOException e) {
-			LOG.error(null,e);
+		} catch (IOException e) {
+			logError("FileUtil.downLoadFile error", e);
 		} finally {
 			if (bis != null) {
 				bis.close();
@@ -839,6 +865,9 @@ public final class FileUtil {
 			if (bos != null) {
 				bos.close();
 			}
-		}
-	}
+        }
+//        LOG.debug("ResponseRange[" + from + "-" + to + "/" + fileLength + "(" + (((double) from * 100) / fileLength) + "%-)],complete:" + complete);
+        return complete;
+    }
+
 }

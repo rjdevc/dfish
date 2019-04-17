@@ -87,7 +87,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return
      */
     public String getUploadDir() {
-        String uploadDir = FrameworkHelper.getSystemConfig(CONFIG_UPLOAD_DIR, "../doRequest/");
+        String uploadDir = FrameworkHelper.getSystemConfig(CONFIG_UPLOAD_DIR, "../upload/");
         String dirSeparator = getDirSeparator();
         if (Utils.notEmpty(uploadDir) && !uploadDir.endsWith(dirSeparator)) {
             uploadDir += dirSeparator;

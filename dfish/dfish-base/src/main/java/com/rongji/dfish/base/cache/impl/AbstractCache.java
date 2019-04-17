@@ -81,7 +81,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	 */
 	@Override
 	public V put(K key, V value){
-		CacheItem<V> item = core.put(key, new CacheItem<V>(value));
+		CacheItem<V> item = core.put(key, new CacheItem<>(value));
 		if (item != null) {
 			return item.getValue();
 		}
@@ -110,7 +110,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	 */
 	@Override
 	public V get(K key) {
-		CacheItem<V> item=core.get(key);
+		CacheItem<V> item = core.get(key);
 		if (item == null) {
 			return getWithLock(key);
 		}
@@ -120,7 +120,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 			} else if(System.currentTimeMillis()-item.getBorn()>alive){
 				// 缓存失效的时候开始尝试获取新缓存
 				if (valueGetter != null) { // 有值获取工具类,则尝试获取值,这里先返回旧值
-					boolean add = false;
+					boolean add;
 					synchronized (GETTING_KEYS) {
 						add = GETTING_KEYS.add(key);
 					}
@@ -130,7 +130,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 							public void run() {
 								Set<K> keys = null;
 								synchronized (GETTING_KEYS) {
-									keys = new HashSet<K>(GETTING_KEYS);
+									keys = new HashSet<>(GETTING_KEYS);
 									GETTING_KEYS.clear();
 								}
 								if(keys != null) {
@@ -149,7 +149,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	}
 	
 	private V getWithLock(K key) {
-		Set<K> keys = new HashSet<K>(1);
+		Set<K> keys = new HashSet<>(1);
 		keys.add(key);
 		Map<K, V> valueMap = getsWithLock(keys);
 		if (valueMap == null) {
@@ -162,20 +162,24 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 		if (keys == null || keys.isEmpty() || valueGetter == null) {
 			return Collections.emptyMap();
 		}
-		for (K key : keys) {
+		Set<K> lockKeys = new HashSet<>(keys);
+		for (K key : lockKeys) {
 			Object lock = LOCKS.get(key);
 			if(lock == null){
 				LOCKS.put(key, new Object());
 			}
 		}
 		// FIXME 有可能线程安全问题??
-		Map<K, V> valueMap = valueGetter.gets(keys);
+		Map<K, V> valueMap = valueGetter.gets(lockKeys);
 		// 获取完成,将已获取的key移除
-		for (K key : keys) {
+		for (K key : lockKeys) {
 			LOCKS.remove(key);
 		}
-		if (valueMap != null) {
-			this.putAll(valueMap);
+		this.putAll(valueMap);
+		lockKeys.removeAll(valueMap.keySet());
+		// 获取不到的数据默认补空值,否则将穿透缓存
+		for (K key : lockKeys) {
+			this.put(key, null);
 		}
 		return valueMap;
 	}
@@ -205,7 +209,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	@SuppressWarnings("unchecked")
 	@Override
     public Map<K, V> gets(K... key) {
-	    Map<K, V> result = new HashMap<K, V>();
+	    Map<K, V> result = new HashMap<>();
 	    if (key != null) {
 	    	for (K k : key) {
 	    		result.put(k, get(k));
@@ -249,7 +253,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 
 	public Collection<V> values() {
 		Collection<CacheItem<V>> col = core.values();
-		Collection<V> result = new ArrayList<V>();
+		Collection<V> result = new ArrayList<>();
 		if (col != null) {
 			for (CacheItem<V> item : col) {
 				result.add(item.getValue());
@@ -266,7 +270,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	@Override
 	public CacheItem<V> getItem(K key) {
 		CacheItem<V> item = core.get(key);
-		CacheItem<V> result = new CacheItem<V>(item != null ? item.getValue() : null);
+		CacheItem<V> result = new CacheItem<>(item != null ? item.getValue() : null);
 		Utils.copyPropertiesExact(result, item);
 		return result;
 	}

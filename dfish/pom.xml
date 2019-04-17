@@ -5,7 +5,7 @@
   <name>dfish</name>
   <groupId>com.rongji</groupId>
   <artifactId>dfish</artifactId>
-  <version>3.1.11.1-SNAPSHOT</version>
+  <version>3.1.11.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <properties>
