@@ -3590,9 +3590,13 @@ Dialog = define.widget( 'dialog', {
 			n && Q( this.$() ).animate( n, 200 );
 			if ( this.x.prong && vs ) {
 				var m = r.mag_b ? 't' : r.mag_t ? 'b' : r.mag_l ? 'r' : 'l', x = Math.floor((r.target.left + r.target.right) / 2), y = Math.floor((r.target.top + r.target.bottom) / 2), 
-					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 );
-				$.append( this.$(), '<div class="w-dialog-prong z-' + m + '" style="' + (r.mag_b || r.mag_t ? 'left:' + l + 'px' : '') + (r.mag_l || r.mag_r ? 'top:' + t + 'px' : '') +
-					'"><i class="_out f-arw f-arw-' + m + '5"></i><i class="_in f-arw f-arw-' + m + '4"></i></div>' );
+					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 ), s = '';
+				if ( ! this.x.snaptype ) {
+					(r.mag_b || r.mag_t) && (s += 'left:' + l + 'px;');
+					(r.mag_l || r.mag_r) && (s += 'top:' + t + 'px;');
+				}
+				$.append( this.$(), '<div class="w-dialog-prong z-' + m + '"' + (s ? ' style="' + s + '"' : '') +
+					'><i class="_out f-arw f-arw-' + m + '5"></i><i class="_in f-arw f-arw-' + m + '4"></i></div>' );
 			}
 			$.classAdd( this.$(), 'z-max', !! a );
 			this._snapCls();
@@ -4285,7 +4289,7 @@ AbsForm = define.widget( 'abs/form', {
 				return this.getValidError( a );
 			},
 			error: function( e, a ) {
-				typeof a === _OBJ ? (this.valid_tip = this.exec( a )) : this.warn( a );
+				typeof a === _OBJ ? this.exec( a ) : this.warn( a );
 			}
 		}
 	},
@@ -6461,7 +6465,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', indent: 1 }, s = this.x.src;
+			var d = { ownproperty: T, cls: 'w-combobox-dialog', indent: 1 }, s = this.x.src;
 			if ( typeof u === _STR ) {
 				d.src = u;
 			}
@@ -6469,7 +6473,7 @@ Combobox = define.widget( 'combobox', {
 				$.extend( d, s );
 				s.cls && (d.cls += ' ' + s.cls);
 			}
-			var o = { pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
+			var o = { type: 'dialog', pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
 				w = 'javascript:return this.parentNode.$().offsetWidth';
 			//如果用户设置宽度为*或百分比，则设置maxwidth为不超过combobox的宽度
 			if ( u.width ) {

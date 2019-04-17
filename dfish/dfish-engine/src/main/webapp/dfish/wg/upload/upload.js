@@ -1312,7 +1312,10 @@ BaseUpload = define.widget( 'upload/base', {
 		},
 		upload_error_handler: function( file, errorCode, message ) {
 			var ldr = this.getLoaderByFile( file );
-			if ( ldr ) ldr.setError( errorCode, message );
+			if ( ldr ) {
+				ldr.setError( errorCode, message );
+				this.valid();
+			}
 		}
 	}
 } ),
@@ -1425,8 +1428,8 @@ define.widget( 'upload/file', {
 		body: {
 			error: function( e, a ) {
 				if ( typeof a === 'object' ) {
-					if ( a.type == 'tip' )
-						a.snap = this.uploadbar[ this.uploadbar.length - 1 ];
+					if ( a.type === 'tip' ) 
+						a.snap = this.getTipLoader( a.text ) || (this.uploadbar && this.uploadbar[ 0 ]) || this;
 					this.cmd( a );
 				} else
 					$.classAdd( this.$(), 'z-err', a );
@@ -1437,8 +1440,12 @@ define.widget( 'upload/file', {
 		className: 'w-upload w-uploadfile',
 		validHooks: {
 			valid: function( b, v ) {
-				if ( this.isLoading() )
-					return { name: this.x.name, wid: this.id, code: 'uploading', text: Loc.uploading };
+				var b = this.valuebar, l = b.length, d, e;
+				for ( var i = 0; i < l; i ++ ) {
+					b[ i ].error && (e = Loc.form.upload_error);
+					b[ i ].loading && (d = Loc.form.upload_loading);
+				}
+				return (e || d) && { name: this.x.name, wid: this.id, code: 'upload', text: e || d };
 			}
 		},
 		append: function( a ) {
@@ -1452,12 +1459,14 @@ define.widget( 'upload/file', {
 				this.valuebar.add( { data: a } ).render();
 			}
 		},
-		isLoading: function() {
-			for ( var i = 0, b = this.valuebar; i < b.length; i ++ ) {
-				if ( b[ i ].loading )
-					return true;
+		getTipLoader: function( t ) {
+			var b = this.valuebar, l = b.length;
+			for ( var i = 0; i < l; i ++ ) {
+				if ( b[ i ].error && t === Loc.form.upload_error )
+					return b[ i ];
+				if ( b[ i ].loading && t === Loc.form.upload_loading )
+					return b[ i ];
 			}
-			return false;
 		},
 		isLimit: function() {
 			return this.x.file_upload_limit > 0 && (this.valuebar || this._value).length >= this.x.file_upload_limit;
@@ -1695,11 +1704,11 @@ define.widget( 'upload/image/value', {
 			}
 			this.empty();
 			this.add( { type: 'html', width: w, height: h, align:'center', valign: 'middle', text: (f ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif>' :
-				'<a href="javascript:;" title="' + v.name + '"><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '></a>') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>', cls: '_name' } );
+				'<a href="javascript:;" title="' + v.name + '"><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '></a>') + this.html_cvr(), cls: '_name' } );
 			b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
 			u.x.valuebutton && u.x.valuebutton.length && b.add( { text: $.arrow( 'b2' ), cls: '_b', on: { click: 'this.parentNode.parentNode.more(this)' } } );
 			b.add( { text: '&times;', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
-			this.className = this._cls + ( f ? ' z-loading' : '' );
+			this.className = this._cls + (f ? ' z-loading' : '');
 		},
 		root: function() {
 			return this.u;
@@ -1731,7 +1740,7 @@ define.widget( 'upload/image/value', {
 			this.loaded  = true;
 			this.removeQueue();
 			if ( serverData.error ) {
-				$.alert( serverData.text );
+				//$.alert( serverData.text );
 			} else {
 				delete this.x.file;
 				this.x.data = serverData;
@@ -1743,24 +1752,20 @@ define.widget( 'upload/image/value', {
 		setError: function( errorCode, message ) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = errorCode;
+			this.error   = { code: errorCode };
 			this.removeElem( 'p' );
-			$.append( this.$(), this.errorPrefix() );
 			$.classRemove( this.$(), 'z-loading' );
 			$.classRemove( this, 'z-loading' );
 			$.classAdd( this, 'z-err' );
 			$.classAdd( this.$(), 'z-err' );
+			Q( '._loading,._g', this.$() ).remove();
 			this.removeQueue();
-			message && this.u.cmd( W.isCmd( message ) ? message : { type: 'alert', text: message } );
 		},
 		removeQueue: function() {
 			if ( this.x.file ) {
 				$.arrPop( this.u._queues, this.x.file );
 				delete this.x.file;
 			}
-		},
-		errorPrefix: function() {
-			return this.error ? '<em class=_ex error-code="' + this.error + '">上传失败<i class=f-vi></i></em>' : '';
 		},
 		moreNodes: function() {
 			var b = $.jsonClone( this.u.x.valuebutton ), v = this.x.data;
@@ -1775,8 +1780,8 @@ define.widget( 'upload/image/value', {
 		more: function( a ) {
 			this.cmd( { type: 'menu', snap: a, nodes: this.moreNodes() } );
 		},
-		html_after: function() {
-			return '' + this.errorPrefix();
+		html_cvr: function() {
+			return (this.x.file ? '<div class="_ex f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' : '') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>';
 		},
 		remove: function() {
 			var u = this.u;
@@ -1816,7 +1821,7 @@ define.widget( 'upload/file/value', {
 			this.empty();
 			this.add( { type: 'button', tip: t, text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.click()' } } );
 			var b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
-			b.add( { icon: '.f-i-trash', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
+			b.add( { icon: '.f-i-trash', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' }, beforecontent: this.html_ex() } );
 			if ( c && c.length ) {
 				if ( ! f && c && c.length )
 					b.add( { icon: '.f-i-more', cls: '_more', on: { click: 'this.parentNode.parentNode.more(this)' } } );
@@ -1826,28 +1831,26 @@ define.widget( 'upload/file/value', {
 		setProgress: function( a ) {
 			this.$( 'p' ).style.width = a + '%';
 		},
-		errorPrefix: function() {
-			return this.error ? '<em class=_ex error-code="' + this.error + '">(上传失败)</em>' : '';
-		},
 		setError: function( errorCode, message ) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = errorCode;
+			this.error   = { code: errorCode };
 			this.removeElem( 'g' );
-			this[ 0 ].text( this.errorPrefix() + this[ 0 ].x.text );
 			$.classAdd( this, 'z-err' );
 			$.classAdd( this.$(), 'z-err' );
 			$.classRemove( this, 'z-loading' );
 			this.removeQueue();
-			message && this.u.cmd( W.isCmd( message ) ? message : { type: 'alert', text: message } );
 		},
 		html_before: function() {
-			return this.x.file ? '<div class=_progress id=' + this.id + 'g><div id=' + this.id + 'p class=_percent></div></div>' : '';
+			return (this.x.file ? '<div class=_progress id=' + this.id + 'g><div id=' + this.id + 'p class=_percent></div></div>' : '') + this.html_ex();
+		},
+		html_ex: function() {
+			return '<div class=_ex></div>';
 		},
 		html: function() {
 			var u = this.u, c = u.x.valuebutton, f = this.x.file, r = u.isNormal(),
-				pw = u.width(), vw = u.scaleWidth( u.x.pub && u.x.pub.width ), nw = 120, xw = 200, tw,
-				mn = 52 + (r ? 28 : 0) + (! f && c && c.length ? 28 : 0); //52是最外层marginRight10 + 左图标宽30 + 左图标paddingRight6 + 文本区paddingRight6
+				pw = u.width(), vw = u.scaleWidth( u.x.pub && u.x.pub.width ), nw = 100, xw = 279, tw,
+				mn = 52 + (r ? 28 : 0) + (!f && !this.error && c && c.length ? 28 : 0); //52是最外层marginRight10 + 左图标宽30 + 左图标paddingRight6 + 文本区paddingRight6
 			if ( pw ) {
 				xw = Math.min( xw, pw - mn );
 				nw = Math.min( xw, nw );

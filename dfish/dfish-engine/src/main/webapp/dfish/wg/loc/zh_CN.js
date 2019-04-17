@@ -41,7 +41,6 @@ browser_upgrade : '我们发现您的IE浏览器版本过低，您的浏览体�
 loading			: '正在加载..',
 wait			: '请稍候..',
 submiting		: '数据提交中，请稍候..',
-uploading		: '正在上传，请稍侯..',
 click_preview	: '点击预览',
 toomuch_wait	: '次数过多，请稍候再试',
 toomuch_wait_countdown : '次数过多，请稍候再试(<em>{0}</em>)',
@@ -94,6 +93,8 @@ form : {
 	complete_required: '请完成必填项',
 	sliderjigsaw_drag_right: '向右拖动滑块填充拼图',
 	sliderjigsaw_required: '请完成滑块验证',
+	upload_loading: '正在上传，请稍侯..',
+	upload_error: '上传失败，请重试',
 	no_files: '<没有文件>'
 },
 
