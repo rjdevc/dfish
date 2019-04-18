@@ -3641,7 +3641,7 @@ Dialog = define.widget( 'dialog', {
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {
 				if ( ! o[ i ].getAttribute( 'data-transparent' ) ) {
 					this[ 0 ] && this[ 0 ].addClass( 'f-rel' );
-					$.prepend( this.$(), '<iframe style="height:100%;width:100%;position:absolute;top:0;left:0;" src="about:blank" frameborder=0 marginheight=0 marginwidth=0></iframe>' );
+					$.prepend( this.$(), '<iframe style="height:100%;width:100%;position:absolute;top:0;left:0;" src="about:blank" frameborder=0 marginheight=0 marginwidth=0 allowtransparency></iframe>' );
 					break;
 				}
 			}
@@ -6424,8 +6424,9 @@ Combobox = define.widget( 'combobox', {
 			this._initOptions( this.x.value, this.x.text );
 			this.queryText( '' );
 			this.save();
-			this.usa() && (this.$t().contentEditable = T);
 			$.classRemove( this.$(), 'z-loading' );
+			this.usa() && (this.$t().contentEditable = T);
+			this.$().title = this.text();
 			_listen_ime( this, this.$t() );
 			this._inited = T;
 		},
@@ -6678,6 +6679,7 @@ Combobox = define.widget( 'combobox', {
 			}
 			f && (t = this.queryText() ) && s.push( t );
 			this._val( s.join( ',' ) );
+			this.$().title = this.text();
 			if ( this.x.on && this.x.on.change && v != this._val() )
 				this.triggerHandler( 'change' );
 		},
@@ -6808,14 +6810,18 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		write: function( e ) {
 			var p = this.parentNode, t = p.$t();
-			t.parentNode.insertBefore( t, this.$() );
-			p.focus();
-			e && $.stop( e );
+			if ( p.isNormal() ) {
+				t.parentNode.insertBefore( t, this.$() );
+				p.focus();
+				e && $.stop( e );
+			}
 		},
 		fixSize: function() {
 			if ( this.$() ) {
-				var w = this.$().parentNode.offsetWidth - 5;
-				this.$().style.maxWidth = w + 'px';
+				if ( ! this.x.maxwidth ) {
+					var w = this.$().parentNode.offsetWidth - 5;
+					this.$().style.maxWidth = w + 'px';
+				}
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
 					this.$().style.width = w + 'px';
 					Q( 'table', this.$() ).css( 'table-layout', 'fixed' );
@@ -6827,7 +6833,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		html_nodes: function() {
 			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
-				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit"><i class=f-vi></i><span class="f-omit f-va">' +
+				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
 					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
 			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}
@@ -6923,6 +6929,7 @@ Linkbox = define.widget( 'linkbox', {
 			this._initOptions( this.x.value, this.x.text );
 			this.save();
 			this.usa() && (this.$t().contentEditable = T);
+			this.$().title = this.text();
 			$.classRemove( this.$(), 'z-loading' );
 			_listen_ime( this, this.$t() );
 		},
@@ -7181,10 +7188,9 @@ Linkbox = define.widget( 'linkbox', {
 				var l = $.strLen( s );
 				l > this.x.validate.maxlength && this.exec( { type: 'tip', text: Loc.ps( Loc.form.over_maxlength, [ l - this.x.validate.maxlength ] ) } );
 			}
+			this.$t().title = this.text();
 			if ( this.x.on && this.x.on.change && v != s )
 				this.triggerHandler( 'change' );
-			if ( this.x.tip === T )
-				this.$t().title = this.text();
 		},
 		drop: function() {
 			if ( this.usa() ) {
@@ -7214,7 +7220,6 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
-				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
 				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
