@@ -819,6 +819,14 @@ W = define( 'widget', function() {
 		prev: function() {
 			 return this.parentNode && this.parentNode[ this.nodeIndex - 1 ];
 		},
+		swap: function( a ) {
+			var b = this.nodeIndex, c = a.nodeIndex, p = this.parentNode,
+				d = Q( this.$() ).prev(), e = Q( a.$() ).prev();
+			p.add( a, b );
+			p.add( this, c );
+			d.length ? d.after( a.$() ) : p.insertHTML( a.$(), 'prepend' );
+			e.length ? e.after( this.$() ) : p.insertHTML( this.$(), 'prepend' );
+		},
 		// 执行命令 /@a -> cmd id, arg1, arg2,...argN
 		cmd: function( a ) {
 			return this.exec( a, arguments.length > 1 ? _slice.call( arguments, 1 ) : N );
@@ -1159,7 +1167,7 @@ W = define( 'widget', function() {
 				! c && p.insertHTML( s );
 			}
 			this.triggerAll( 'ready' );
-			! this._disposed && this.parentNode.trigger( 'nodechange' );
+			! this._disposed && this.nodeIndex >= 0 && this.parentNode.trigger( 'nodechange' );
 			return this;
 		},
 		// @dao 通过js增加子节点时会调用此方法 / a -> html|widget, b -> where(prepend|append|before|after)
@@ -1214,7 +1222,7 @@ W = define( 'widget', function() {
 		},
 		html_after: function( a ) {
 			if ( a || (a = this.x.aftercontent) ) {
-				if ( typeof a === _FUN || a.indexOf( 'javascript:' ) === 0 )
+				if ( a.indexOf( 'javascript:' ) === 0 )
 					a = this.formatJS( a );
 				if ( typeof a === _OBJ )
 					a = this.add( a, -1 ).html();
@@ -1238,12 +1246,12 @@ W = define( 'widget', function() {
 		// @a -> 设置为true，不触发删除单个节点所需的处理
 		remove: function( a ) {
 			this.removeElem();
-			var p = this.parentNode;
+			var p = this.parentNode, n = this.nodeIndex;
 			this.dispose();
 			if ( p && a !== T ) {
 				var s = p.type_horz ? 'width' : 'height';
 				p[ 0 ] && (p.type_horz || p.type_vert) && _w_size[ s ].call( p[ 0 ], p[ 0 ].x[ s ] );
-				p.trigger( 'nodechange' );
+				n >= 0 && p.trigger( 'nodechange' );
 			}
 		},
 		dispose: function( d ) {
@@ -1996,8 +2004,9 @@ Xsrc = define.widget( 'xsrc', {
 					this.x.srcdata = d;
 					x = this.x.template ? _compileTemplate( this, d ) : this._loadDataFilter( d );
 				}
-				if ( this.x.preload )
+				if ( this.x.preload ) {
 					x = _compilePreload( this.x.preload, x );
+				}
 				if ( x.type !== this.type && W.isCmd( x ) )
 					return this.exec( x );
 				this.attr( x );
@@ -2561,16 +2570,6 @@ Html = define.widget( 'html', {
 				if ( ! t && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
 					t = '&nbsp;';
-				} else if ( t ) {
-					// 解决 ie7,8 下的video标签播放问题
-					t = ('' + t).replace( /<video([^>]+)>[\s\S]+?<\/video>/ig, function( $0, $1 ) {
-						var w = $1.match( / width="(\d+)"/ )[ 1 ], h = $1.match( / height="(\d+)"/ )[ 1 ], u = $1.match( / src="([^"]+)"/ )[ 1 ];
-						return '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
-							'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
-							'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
-							'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
-							'<embed src="' + $.LIB + 'wg/upload/flvplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
-					} );
 				}
 			}
 			return t;
@@ -2708,6 +2707,8 @@ Buttonbar = define.widget( 'buttonbar', {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
 				}
+				this.x.overflow && this.overflow();
+				this.fixLine();
 			}
 		}
 	},
@@ -2716,6 +2717,12 @@ Buttonbar = define.widget( 'buttonbar', {
 		childCls: '',
 		x_childtype: function( t ) {
 			return t === 'split' ? 'button/split' : (t || 'button');
+		},
+		scaleWidth: function() {
+			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
+		},
+		scaleHeight: function() {
+			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
 		},
 		draggable: function( a ) {
 			for ( var i = 0, l = this.length; i < l; i ++ )
@@ -2742,11 +2749,9 @@ Buttonbar = define.widget( 'buttonbar', {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isLocked() ) return this[ i ];
 		},
-		scaleWidth: function() {
-			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
-		},
-		scaleHeight: function() {
-			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
+		fixLine: function() {
+			this.$( 'vi' ) && Q( this.$() ).prepend( this.$( 'vi' ) );
+			Q( this.$() ).append( Q( '.w-buttonbar-line' ), this.$() );
 		},
 		overflow: function() {
 			if ( this._more ) {
@@ -2757,17 +2762,18 @@ Buttonbar = define.widget( 'buttonbar', {
 			}
 			var tw = this.$().offsetWidth, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
-				this._more = this.append( $.extend( { focusable: F }, o.button ) );
+				this._more = this.add( $.extend( { focusable: F, closeable: F, on: { click: '' } }, this.x.pub || {}, o.button ), -1 );
+				this._more.render( this.$() );
 				var w = this._more.width() + _number( this.x.space );
-				for ( var i = 0, j; i < this.length - 1; i ++ ) {
+				for ( var i = 0, j; i < this.length; i ++ ) {
 					j = this[ i ].width();
 					if ( w + j > tw ) break;
 					w += j;
 				}
-				this[ i ++ ].before( this._more );
+				$.before( this[ i ].$(), this._more.$() );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', on: { click: 'this.rootNode.parentNode.parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
+					m.add( $.extend( { cls: '', focus: this[ i ].isFocus(), on: { click: 'this.rootNode.parentNode.parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
 			}
@@ -2775,7 +2781,8 @@ Buttonbar = define.widget( 'buttonbar', {
 		overflowView: function( a ) {
 			var a = $.all[ a ], o = this.x.overflow;
 			if ( o.effect === 'swap' ) {
-				this._more.prev().swap( a );
+				var q = Q( this._more.$() ).prev( '.w-button' )[ 0 ], v = q && $.widget( q );
+				v && v.swap( a );
 			}
 			a.click();
 			this.overflow();
@@ -3089,6 +3096,7 @@ MenuButton = define.widget( 'menu/button', {
 	Extend: Button,
 	Listener: {
 		body: {
+			ready: N,
 			click: function() {
 				if ( ! this.isDisabled() ) {
 					this.x.target && this.ownerView.linkTarget( this.x.target, T );
@@ -3221,10 +3229,6 @@ Album = define.widget( 'album', {
 /* `img` */
 Img = define.widget( 'img', {
 	Const: function( x, p ) {
-		if ( p && p.type === this.ROOT_TYPE ) {
-			var c = p.x.space || 0;
-			this.defaults( { height: -1, wmin: 22 + c } );
-		}
 		W.apply( this, arguments );
 		x.focusable && x.focus && $.classAdd( this, 'z-on' );
 		x.face && $.classAdd( this, 'z-face-' + x.face );
@@ -3245,13 +3249,14 @@ Img = define.widget( 'img', {
 			},
 			click: {
 				occupy: T,
-				block: function( e ) { return this.isEvent4Box( e ) },
-				method: function( e ) {
-					! this.isEvent4Box( e ) && this.x.focusable && this.focus( ! this.isFocus(), e );
+				block: function( e ) { return this.box && e.srcElement && e.srcElement.id === this.box.id + 't' },
+				method: function() {
+					this.x.focusable && this.focus( ! this.isFocus() );
 				}
 			}
 		}
 	},
+	Default: { width: -1, height: -1 },
 	Prototype: {
 		ROOT_TYPE: 'album',
 		className: 'w-img',
@@ -3266,9 +3271,6 @@ Img = define.widget( 'img', {
 			} else if ( a === 'text' || a === 'description' ) {
 				this.$( 't' ) && $.replace( this.$( 't' ), this.html_text() );
 			}
-		},
-		isEvent4Box: function( e ) {
-			return this.box && e && e.srcElement && e.srcElement.id == this.box.id + 't';
 		},
 		isFocus: function() {
 			return $.classAny( this.$(), 'z-on' );
@@ -3285,28 +3287,32 @@ Img = define.widget( 'img', {
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
 		},
+		prop_style: function() {
+			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
+			// 在album内，不让width设置在外框
+			if ( a && (v = this.innerWidth()) != N )
+				t += 'width:' + v + 'px;';
+			if ( a && (v = this.innerHeight()) != N )
+				t += 'height:' + v + 'px;';
+			c && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
+			this.x.style && (t += this.x.style);
+			return t;
+		},
 		html_img: function() {
-			var x = this.x, b = this.parentNode.type === 'album', w = x.imgwidth, h = x.imgheight, u = this.x.src;
+			var x = this.x, b = this.parentNode.type === 'album', mw = this.innerWidth(), mh = this.innerHeight(), u = this.x.src,
+				iw = this.x.imgwidth, ih = this.x.imgheight, w = iw || mw, h = ih || mh;
 			if ( u.indexOf( 'javascript:' ) === 0 )
 				u = _wg_format.call( this, u );
-			var g = $.image( u, { width: w, height: h }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
-			if ( ! h ) {
-				if ( x.height )
-					h = this.innerHeight() - (x.text ? 20 : 0);
-			}
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="width:' + ( w ? (isNaN( w ) ? w : w + 'px') : 'auto' ) + ';height:' + (h ? (isNaN( h ) ? h : h + 'px;') : '100%;') + '">' + g + '</div>';
-		},
-		prop_style: function() {
-			var c = this.parentNode.x.space;
-			return _proto.prop_style.call( this ) + (c ? 'margin-top:' + c + 'px;margin-left:' + c + 'px;' : '');
+			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text;
+			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text, w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
 			if ( typeof t !== _OBJ && f )
 				t = _wg_format.call( this, f, p.x.escape );
 			else if ( typeof t === _STR && p.x.escape )
 				t = $.strEscape( t );
-			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="width:' + (x.textwidth ? x.textwidth + 'px' : 'auto') + '">' +
+			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
@@ -3877,7 +3883,7 @@ Dialog = define.widget( 'dialog', {
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {
 				if ( ! o[ i ].getAttribute( 'data-transparent' ) ) {
 					this[ 0 ] && this[ 0 ].addClass( 'f-rel' );
-					$.prepend( this.$(), '<iframe style="height:100%;width:100%;position:absolute;top:0;left:0;" src="about:blank" frameborder=0 marginheight=0 marginwidth=0></iframe>' );
+					$.prepend( this.$(), '<iframe style="height:100%;width:100%;position:absolute;top:0;left:0;" src="about:blank" frameborder=0 marginheight=0 marginwidth=0 allowtransparency></iframe>' );
 					break;
 				}
 			}
@@ -4585,11 +4591,11 @@ AbsForm = define.widget( 'abs/form', {
 			},
 			resize: function() {
 				if ( this.$() ) {
-					var w = Math.max( this.formWidth(), 0 );
+					var w = this.formWidth();
 					w != N && w >= 0 && this.css( 'width', w );
-					w = Math.max( this.inputWidth(), 0 );
-					w != N && w >= 0 && this.$t() && (this.$t().style.width = w + 'px');
-					this.css( 'ph', 'width', w );
+					//w = this.inputWidth();
+					//w != N && w >= 0 && this.$t() && (this.$t().style.width = w + 'px');
+					//this.css( 'ph', 'width', w );
 				}
 			},
 			valid: function( e, a ) {
@@ -7025,7 +7031,7 @@ Combobox = define.widget( 'combobox', {
 				d && s != m && s.merge( d );
 				e && e != m && e.close();
 				a.x && m.addEvent( 'close', function() { !a._disposed && a.tabFocus( F ) } );
-				if ( u ? (c.isKeepShow() || c.getLength()) : c.filter( t ) ) {
+				if ( (u ? c.getLength() : c.filter( t )) || c.isKeepShow() ) {
 					!(u && m.$()) && m.show();
 				} else
 					m.close();
@@ -7816,7 +7822,7 @@ TreeCombo = $.createClass( {
 				(d[ b.forbid ] || e[ b.forbid ]) && (s += ' x="1"');
 				if ( f ) {
 					for ( j = 0; j < g; j ++ )
-						s += ' s' + j + '="' + $.strEscape( d[ f[ j ] ] ) + '"';
+						s += ' s' + j + '="' + $.strEscape( d[ f[ j ] ] || e[ f[ j ] ] ) + '"';
 				}
 				a[ i ].isDisabled() && (s += ' ds="1"');
 				c.push( s + '>' );
@@ -9317,7 +9323,7 @@ GridCombo = $.createClass( {
 		this.cab = a;
 		this.xml = this.node2xml( a );
 		this._keep_show = a.x.combo.keepshow;
-		for ( var i = 0, c = a.x.columns; i < c.length; i ++ ) {
+		for ( var i = 0, c = a.x.columns, l = c && c.length; i < l; i ++ ) {
 			if ( c[ i ].highlight ) {
 				this._matchlength = c[ i ].highlight.matchlength;
 				break;
