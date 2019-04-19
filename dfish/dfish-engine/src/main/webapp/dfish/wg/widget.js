@@ -7399,7 +7399,7 @@ TreeCombo = $.createClass( {
 		// 把 json 转成 xml，以便使用 xpath 查询
 		_node2xml: function( a ) {
 			for ( var i = 0, b = (a.rootNode || a).x.combo.field, c = [], d, e, f = b.search && b.search.split( ',' ), g = f && f.length, l = a.length, s; i < l; i ++ ) {
-				e = a[ i ].x, d = e.data || F, r = d[ b.remark ] || e[ b.remark ], s = d[ b.search ] || e[ b.search ];
+				e = a[ i ].x, d = e.data || e, r = d[ b.remark ] || e[ b.remark ], s = d[ b.search ] || e[ b.search ];
 				s = '<d v="' + $.strEscape( d[ b.value ] || e[ b.value ] || '' ) + '" t="' + $.strEscape(d[ b.text ] || e[ b.text ]) + '" i="' + a[ i ].id + '"';
 				r && (s += ' r="' + $.strEscape( r ) + '"');
 				(d[ b.forbid ] || e[ b.forbid ]) && (s += ' x="1"');
