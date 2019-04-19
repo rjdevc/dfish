@@ -4628,9 +4628,6 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		this.childCls = x.dir === 'v' ? 'f-bl' : 'f-va f-inbl';
 	},
 	Extend: AbsForm,
-	Default: {
-		wmin: 2, hmin: 2
-	},
 	Listener: {
 		range: 'option'
 	},
@@ -4730,7 +4727,7 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 Checkbox = define.widget( 'checkbox', {
 	Const: function( x, p ) {
 		if ( p && p.isBoxGroup ) {
-			this.defaults( { wmin: 7, width: p.x.targets ? 62 : -1 } );
+			this.defaults( { wmin: 6, width: p.x.targets ? 62 : -1 } );
 			p.x.status && $.extend( x, { status: p.x.status } );
 		}
 		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p.isBoxGroup && p.x.value && x.value && $.idsAny( p.x.value, x.value )));
@@ -4787,7 +4784,7 @@ Checkbox = define.widget( 'checkbox', {
 			}
 		}
 	},
-	Default: { width: -1, wmin: 1, hmin: 6 },
+	Default: { width: -1, hmin: 6 },
 	Prototype: {
 		ROOT_TYPE: 'checkboxgroup',
 		className: 'w-form',
@@ -6195,59 +6192,6 @@ Imgbox = define.widget( 'imgbox', {
 		}
 	}	
 }),
-/* `pickbox` */
-Pickbox = define.widget( 'pickbox', {
-	Extend: Text,
-	Listener: {
-		tag: 't',
-		body: {
-			click: {
-				occupy: T,
-				block: $.rt( T ),
-				method: function( e ) {
-					if ( this.x.on && this.x.on.click )
-						this.triggerHandler( 'click' );
-					else
-						this.pick();
-					this.focus( F );
-				}
-			}
-		}
-	},
-	Prototype: {
-		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return _boxbtn_width + _input_indent() },
-		val: function( v, t ) {
-			v != N && this.text( t || v );
-			return AbsForm.prototype.val.apply( this, arguments );
-		},
-		text: function( t ) {
-			if ( t == N )
-				return this.x.text;
-			this.x.text = t;
-			this.$() && (this.$t().innerText = t);
-		},
-		pick: function() {
-			if ( this.x.picker && this.isNormal() ) {
-				if ( this.x.picker.type === 'dialog' ) {
-					var c = $.jsonClone( this.x.picker );
-					c.src && (c.src = $.urlFormat( c.src, { value: this.val() } ));
-					this.exec( c ).addEvent( 'close', function() { ! this.$().contains( document.activeElement ) && this.focus( F ); }, this );
-				} else if ( W.isCmd( this.x.picker ) ) {
-					this.cmd( this.x.picker, this.val() );
-				}
-				this.warn( F );
-			}
-		},
-		html_btn: function() {
-			return '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
-		},
-		html_input: function() {
-			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div>';
-		}
-	}
-} ),
 /* `combobox`
  *	注1: 当有设置初始value时，text一般可以不写，程序将会从数据岛(more属性)中匹配。如果数据岛不是完整展示的(比如树)，那么text属性必须加上。
  */
@@ -6692,7 +6636,18 @@ Combobox = define.widget( 'combobox', {
 					(d || (this.dropper = this.createPop( this.x.dropsrc || this.x.node ))).show();
 			}
 		},
-		pick: Pickbox.prototype.pick,
+		pick: function() {
+			if ( this.x.picker && this.isNormal() ) {
+				if ( this.x.picker.type === 'dialog' ) {
+					var c = $.jsonClone( this.x.picker );
+					c.src && (c.src = $.urlFormat( c.src, { value: this.val() } ));
+					this.exec( c ).addEvent( 'close', function() { ! this.$().contains( document.activeElement ) && this.focus( F ); }, this );
+				} else if ( W.isCmd( this.x.picker ) ) {
+					this.cmd( this.x.picker, this.val() );
+				}
+				this.warn( F );
+			}
+		},
 		setLoading: function( a ) {
 			a = a == N || a;
 			this.loading = a;
@@ -7307,7 +7262,6 @@ Onlinebox = define.widget( 'onlinebox', {
 		complete: function( a ) {
 			var d = this.store( this.pop() ).getParam( a );
 			this.cursorText( d.text || d.value );
-			this.closePop();
 			this.focus();
 		},
 		suggest: function( t ) {
@@ -7328,19 +7282,52 @@ Onlinebox = define.widget( 'onlinebox', {
 				return typeof s === _OBJ ? s.src : s;
 		},
 		html_btn: function() {
-			var s = '';
-			if ( this.x.picker ) {
-				if ( W.isCmd( this.x.picker ) ) {
-					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
-				} else {
-					var g = this.add( this.x.picker, -1, { width: -1 } );
-					g.className += ' f-pick';
-					return g.html();
+			return Combobox.prototype.html_btn.apply( this, arguments );
+		}
+	}
+} ),
+/* `pickbox` */
+Pickbox = define.widget( 'pickbox', {
+	Extend: Onlinebox,
+	Listener: {
+		tag: 't',
+		body: {
+			click: {
+				occupy: T,
+				block: $.rt( T ),
+				method: function( e ) {
+					if ( this.x.on && this.x.on.click )
+						this.triggerHandler( 'click' );
+					else if ( this.x.dropsrc )
+						this.drop();
+					else if ( this.x.picker )
+						this.pick();
+					this.focus( F );
 				}
 			}
-			if ( this.x.dropsrc )
-				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			return s;
+		}
+	},
+	Prototype: {
+		$v: function() { return $( this.id + 'v' ) },
+		width_minus: function() { return _boxbtn_width + _input_indent() },
+		val: function( v, t ) {
+			v != N && this.text( t || v );
+			return AbsForm.prototype.val.apply( this, arguments );
+		},
+		text: function( t ) {
+			if ( t == N )
+				return this.x.text;
+			this.x.text = t;
+			this.$() && (this.$t().innerText = t);
+		},
+		complete: function( a ) {
+			var d = this.store( this.pop() ).getParam( a );
+			this.text( d.text || d.value );
+			this.focus();
+		},
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
+				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),
@@ -7787,7 +7774,7 @@ Leaf = define.widget( 'leaf', {
 						return;
 					this.box && this.box.x.sync === 'click' && ! this.isEvent4Box( e ) && this.box.click();
 					e.srcElement ? this._focus( T, e ) : this.focus( T, e );
-					if( this.rootNode && this.rootNode.x.combo ) {
+					if( this.rootNode && this.rootNode.x.combo && !(this.x.on && this.x.on.click) ) {
 						$.dialog( this ).commander.complete( this );
 						$.close( this );
 					}
