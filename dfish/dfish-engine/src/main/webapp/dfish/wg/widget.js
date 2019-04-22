@@ -2015,17 +2015,20 @@ Xsrc = define.widget( 'xsrc', {
 			}
 		},
 		reload: function( src, tpl, tar, fn ) {
-			this.reset( tar );
 			src && (this.x.src = src);
 			tpl && (this.x.template = tpl);
-			if ( this.$() ) {
-				var s = this.attr( 'src' );
-				typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
+			if ( ! this.x.src && ! this.x.template ) {
+				this.srcParent().reload( src, tpl, tar, fn );
 			} else {
-				this.show();
-				! this.loading && this.load( tar, fn, T );
+				this.reset( tar );
+				if ( this.$() ) {
+					var s = this.attr( 'src' );
+					typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
+				} else {
+					this.show();
+					! this.loading && this.load( tar, fn, T );
+				}
 			}
-			return this;
 		},
 		reset: function( tar ) {
 			this.abort();
@@ -8412,6 +8415,7 @@ Tree = define.widget( 'tree', {
 	Listener: {
 		body: {
 			ready: function() {
+				Scroll.Listener.body.ready.call( this );
 				this.length && this.trigger( 'load' );
 				_scrollIntoView( this.getFocus() );
 				if ( this.x.src && ! this.length )
