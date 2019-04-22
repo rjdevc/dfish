@@ -1615,7 +1615,8 @@ define( {
           { name: 'remark', type: 'String', remark: '备注字段名。' },
           { name: 'forbid', type: 'String', remark: '禁用字段名。' }
         ] },
-        { name: 'keepshow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' }
+        { name: 'keepshow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
+        { name: 'fullpath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' }
       ] },
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
@@ -3510,7 +3511,7 @@ define( {
             }
           }
       ] },
-      { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进微调多少个像素。' },
+      { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进多少个像素。' },
       { name: 'maxwidth', type: 'Number', remark: '最大宽度。' },
       { name: 'maxheight', type: 'Number', remark: '最大高度。' },
       { name: 'minwidth', type: 'Number', remark: '最小宽度。' },
@@ -3583,6 +3584,17 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'nodes', type: 'Array', remark: '子节点集合。子节点类型是 button 或 split。' },
+      { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进多少个像素。' },
+      { name: 'snap', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
+      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
+          function() {
+          	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
+            return~
+            { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' }
+          }
+      ] },
+      { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
+      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' }
    ],
     Properties: [
       { name: 'commander', type: 'Widget', remark: '执行 menu 命令的 widget。即以 xxx.cmd() 方式打开的 menu, 它的 commander 就是 xxx。' },

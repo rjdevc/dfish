@@ -792,11 +792,13 @@ W = define( 'widget', function() {
 				var p = this.rootNode || this.parentNode, f = p.focusNode;
 				if ( a == N || a ) {
 					f && f != this && f.tabFocus( F );
+					this.x.focus = T;
 					this.addClass( 'z-on' );
 					p.focusNode = this;
 					this.focusOwner = p;
 				} else {
 					if ( f === this ) {
+						this.x.focus = F;
 						this.removeClass( 'z-on' );
 						delete p.focusNode; delete this.focusOwner;
 					}
@@ -3591,10 +3593,8 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.prong && vs ) {
 				var m = r.mag_b ? 't' : r.mag_t ? 'b' : r.mag_l ? 'r' : 'l', x = Math.floor((r.target.left + r.target.right) / 2), y = Math.floor((r.target.top + r.target.bottom) / 2), 
 					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 ), s = '';
-				if ( ! this.x.snaptype ) {
-					(r.mag_b || r.mag_t) && (s += 'left:' + l + 'px;');
-					(r.mag_l || r.mag_r) && (s += 'top:' + t + 'px;');
-				}
+				(r.mag_b || r.mag_t) && (s += 'left:' + l + 'px;');
+				(r.mag_l || r.mag_r) && (s += 'top:' + t + 'px;');
 				$.append( this.$(), '<div class="w-dialog-prong z-' + m + '"' + (s ? ' style="' + s + '"' : '') +
 					'><i class="_out f-arw f-arw-' + m + '5"></i><i class="_in f-arw f-arw-' + m + '4"></i></div>' );
 			}
@@ -6408,16 +6408,11 @@ Combobox = define.widget( 'combobox', {
 		pop: function() {
 			return this.dropper && this.dropper.isShow() ? this.dropper : this.sugger && this.sugger.isShow() ? this.sugger : this.more;
 		},
-		// 创建选项窗口 /@ u -> url|dialogOption, r -> replace object?
+		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { ownproperty: T, cls: 'w-combobox-dialog', indent: 1 }, s = this.x.src;
-			if ( typeof u === _STR ) {
-				d.src = u;
-			}
-			if ( s && typeof s === _OBJ ) {
-				$.extend( d, s );
-				s.cls && (d.cls += ' ' + s.cls);
-			}
+			var d = { ownproperty: T, cls: 'w-combobox-dialog', indent: 1 };
+			$.extend( d, u );
+			u.cls && (d.cls += ' ' + u.cls);
 			var o = { type: 'dialog', pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
 				w = 'javascript:return this.parentNode.$().offsetWidth';
 			//如果用户设置宽度为*或百分比，则设置maxwidth为不超过combobox的宽度
@@ -7302,7 +7297,6 @@ Pickbox = define.widget( 'pickbox', {
 						this.drop();
 					else if ( this.x.picker )
 						this.pick();
-					this.focus( F );
 				}
 			}
 		}
@@ -7322,8 +7316,8 @@ Pickbox = define.widget( 'pickbox', {
 		},
 		complete: function( a ) {
 			var d = this.store( this.pop() ).getParam( a );
-			this.text( d.text || d.value );
-			this.focus();
+			this.val( d.value, d.text );
+			a.focus && a.focus( T );
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
@@ -7381,7 +7375,7 @@ Rate = define.widget( 'rate', {
 		}
 	}
 } ),
-// 树搜索过滤器
+// `treecombo` 树搜索过滤器
 TreeCombo = $.createClass( {
 	Const: function( a ) {
 		this.cab = a;
@@ -7391,6 +7385,17 @@ TreeCombo = $.createClass( {
 	},
 	Prototype: {
 		isCombo: T,
+		initDialog: function() {
+			var b = Dialog.get( this.cab ), c = b.parentNode;
+			if ( c.dropper == b ) {
+				var v = c.val();
+				if ( v ) {
+					var d = this.getXML( $.strFrom( v, '/', T ) || v, 'v' ),
+						e = d && _all[ d.getAttribute( 'i' ) ];
+					e && e != this.cab.getFocus() && e.focus();
+				}
+			}
+		},
 		node2xml: function( a ) {
 			var b = (a.rootNode || a).x.combo.field, f = b.search && b.search.split( ',' ), g = f && f.length;
 			this._sch = g;
@@ -7429,7 +7434,18 @@ TreeCombo = $.createClass( {
 		// 根据文本返回一个combobox/option参数 /@a -> text|xml|leaf
 		getParam: function( a, b ) {
 			var d = a.nodeType === 1 ? a : this.getXML( a, b );
-			return d && { value: d.getAttribute( 'v' ), text: d.getAttribute( 't' ), remark: d.getAttribute( 'r' ), forbid: d.getAttribute( 'x' ) === '1', data: (b = _all[ d.getAttribute( 'i' ) ]) && b.x.data };
+			if ( d ) {
+				var v = d.getAttribute( 'v' ), t = d.getAttribute( 't' ), g = _all[ d.getAttribute( 'i' ) ];
+				if ( this.cab.x.combo.fullpath && g ) {
+					var p = g;
+					while ( (p = p.parentNode) && p.level > -1 ) {
+						var x = this.getXML( p, b ), e = x.getAttribute( 'v' ), f = x.getAttribute( 't' );
+						e && (v = e + '/' + v);
+						f && (t = f + ' / ' + t);
+					}
+				}
+				return { value: v, text: t, remark: d.getAttribute( 'r' ), forbid: d.getAttribute( 'x' ) === '1', data: g && g.x.data };
+			}
 		},
 		// 根据文本返回一个combobox/option参数 /@a -> text
 		getParamByValue: function( a ) {
@@ -7980,9 +7996,12 @@ Tree = define.widget( 'tree', {
 	Listener: {
 		body: {
 			ready: function() {
+				Scroll.Listener.body.ready.call( this );
 				_scrollIntoView( this.getFocus() );
 				if ( this.x.src && ! this.length )
 					Leaf.prototype.request.call( this );
+				if ( this.x.combo )
+					this.ownerView.combo.initDialog();
 			}
 		}
 	},
@@ -8888,7 +8907,7 @@ GridHead = define.widget( 'grid/head', {
 		className: 'w-grid-thead'
 	}
 } ),
-// 表格搜索过滤器
+// `gridcombo` 表格搜索过滤器
 GridCombo = $.createClass( {
 	Const: function( a ) {
 		this.cab = a;
