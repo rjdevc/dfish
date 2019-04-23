@@ -6361,7 +6361,7 @@ Combobox = define.widget( 'combobox', {
 			}
 		},
 		$v: function() { return $( this.id + 'v' ) },
-		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
+		width_minus: function() { return (this.x.drop ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -6628,7 +6628,7 @@ Combobox = define.widget( 'combobox', {
 				this.closePop();
 				this.focus();
 				if ( ! b )
-					(d || (this.dropper = this.createPop( this.x.dropsrc || this.x.node ))).show();
+					(d || (this.dropper = this.createPop( this.x.drop || this.x.node ))).show();
 			}
 		},
 		pick: function() {
@@ -6680,7 +6680,7 @@ Combobox = define.widget( 'combobox', {
 					return g.html();
 				}
 			}
-			if ( this.x.dropsrc )
+			if ( this.x.drop )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			return s;
 		},
@@ -6872,7 +6872,7 @@ Linkbox = define.widget( 'linkbox', {
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
-		width_minus: function() { return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
+		width_minus: function() { return (this.x.drop ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -7147,7 +7147,7 @@ Linkbox = define.widget( 'linkbox', {
 				this.closePop();
 				this.focus();
 				this._query_text = N;
-				(this.dropper || (this.dropper = this.createPop( this.x.dropsrc || this.x.node ))).show();
+				(this.dropper || (this.dropper = this.createPop( this.x.drop || this.x.node ))).show();
 			}
 		},
 		bookmark: function() {
@@ -7164,7 +7164,7 @@ Linkbox = define.widget( 'linkbox', {
 					return g.html();
 				}
 			}
-			if ( this.x.dropsrc )
+			if ( this.x.drop )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			return s;
 		},
@@ -7228,7 +7228,7 @@ Onlinebox = define.widget( 'onlinebox', {
 		formType: 'text',
 		_csr_pos: 0,
 		width_minus: function() {
-			return (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent();
+			return (this.x.drop ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent();
 		},
 		// @a -> text /读/写光标所在的有效文本(以逗号为分隔符)
 		cursorText: function( a ) {
@@ -7293,7 +7293,7 @@ Pickbox = define.widget( 'pickbox', {
 				method: function( e ) {
 					if ( this.x.on && this.x.on.click )
 						this.triggerHandler( 'click' );
-					else if ( this.x.dropsrc )
+					else if ( this.x.drop )
 						this.drop();
 					else if ( this.x.picker )
 						this.pick();
