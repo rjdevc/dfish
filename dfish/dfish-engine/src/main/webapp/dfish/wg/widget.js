@@ -4875,20 +4875,23 @@ Checkbox = define.widget( 'checkbox', {
 		tip: function() {
 			this.exec( $.extend( {}, this.x.tip, { type: 'tip', hoverdrop: true } ) );
 		},
+		html_input: function() {
+			var p = this.parentNode;
+			return '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
+				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : p.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '' );			
+		},
 		html: function() {
-			var p = this.parentNode, c = this.className, g = p.type_horz && (!p.isBoxGroup || p.targets), w = this.innerWidth(),
-				k = this._modchk, s = this.prop_cls(), t = this.x.tip, y = '';
+			var w = this.innerWidth(), s = this.prop_cls(), t = this.x.tip, y = '';
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
-				if ( this.x.nobr && (w = p.innerWidth()) )
+				if ( this.x.nobr && (w = this.parentNode.innerWidth()) )
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
-			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
-				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)"' + (t && typeof t === _OBJ ? ' onmouseover="' + evw + '.tip()"' : '') + '>' + ((this.x.escape != N ? this.x.escape : p.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
+			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') +
+				(this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + this.html_input() + '<i class=f-vi></i></cite>';
 		}
 	}
 } ),
@@ -4949,6 +4952,13 @@ Triplebox = define.widget( 'triplebox', {
 			return '<cite id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
 				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') + (this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</cite>';
 		}
+	}
+} ),
+/* `radio` */
+Switch = define.widget( 'switch', {
+	Extend: 'checkbox',
+	Prototype: {
+
 	}
 } ),
 /* `radiogroup` */
@@ -6521,10 +6531,12 @@ Combobox = define.widget( 'combobox', {
 				f ? this.fixOpt( f, d ) : (this.queryText( '' ), this.addOpt( d.text, d ));
 			this.focus();
 		},
-		getSuggestSrc: function() {
-			var s = this.x.suggest && this.x.src;
-			if ( s )
-				return typeof s === _OBJ ? s.src : s;
+		getSuggestSrc: function( t ) {
+			var s = this.x.suggest && this.x.src && $.extend( {}, this.x.src );
+			if ( s ) {
+				t && (s.src = this.parseSrc( s.src, { text: t } ));
+				return s;
+			}
 		},
 		// @t -> query text, s -> milliseconds?
 		suggest: function( a, s ) {
@@ -6540,17 +6552,17 @@ Combobox = define.widget( 'combobox', {
 		// 弹出模糊匹配的选项窗口  /@ a -> text|comboboxOption
 		doSuggest: function( a ) {
 			this._currOpt = a;
-			var t = this._suggest_text( a ), u = this.getSuggestSrc();
-			if ( u && (u = this.parseSrc( u, { text: t } )) ) {
+			var t = this._suggest_text( a ), s = this.getSuggestSrc( t );
+			if ( s ) {
 				var self = this;
-				(this.sugger || (this.sugger = this.createPop( u ))).reload( u, function() { !self._disposed && self._suggest_end( a, this ) } );
+				(this.sugger || (this.sugger = this.createPop( s ))).reload( s.src, function() { !self._disposed && self._suggest_end( a, this ) } );
 			} else
 				this._suggest_end( a, this.more );
 		},
 		_suggest_end: function( a, m ) {
 			var c = this.store( m );
 			if ( c ) {
-				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this.getSuggestSrc();
+				var t = this._suggest_text( a ), d = c.getXML( t ), e = this.pop(), s = this.store(), u = this.x.suggest;
 				d && s != m && s.merge( d );
 				e && e != m && e.close();
 				a.x && m.addEvent( 'close', function() { !a._disposed && a.tabFocus( F ) } );
@@ -7263,18 +7275,20 @@ Onlinebox = define.widget( 'onlinebox', {
 			this.x.src && Combobox.prototype.suggest.apply( this, arguments );
 		},
 		doSuggest: function( t ) {
-			var u = this.getSuggestSrc();
-			if ( u && (u = this.parseSrc( u, { text: t } )) ) {
+			var s = this.getSuggestSrc( t );
+			if ( s ) {
 				if ( ! this.more )
-					this.more = this.createPop.call( this, u );
+					this.more = this.createPop( s );
 				this.more.show();
-				this.more.reload( u );
+				this.more.reload( s.src );
 			}
 		},
-		getSuggestSrc: function() {
-			var s = this.x.src;
-			if ( s )
-				return typeof s === _OBJ ? s.src : s;
+		getSuggestSrc: function( t ) {
+			var s = this.x.src && $.extend( {}, this.x.src );
+			if ( s ) {
+				t && (s.src = this.parseSrc( s.src, { text: t } ));
+				return s;
+			}
 		},
 		html_btn: function() {
 			return Combobox.prototype.html_btn.apply( this, arguments );
