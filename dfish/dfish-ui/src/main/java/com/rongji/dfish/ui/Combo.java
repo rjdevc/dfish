@@ -154,6 +154,7 @@ public class Combo extends AbstractJsonObject {
 
 	private Field field;
 	private Boolean keepshow;
+	private Boolean fullpath;
 
 	/**
 	 * 绑定字段
@@ -191,4 +192,21 @@ public class Combo extends AbstractJsonObject {
 		return this;
 	}
 
+	/**
+	 * 是否显示选项值完整路径
+	 * @return Boolean
+	 */
+	public Boolean getFullpath() {
+		return fullpath;
+	}
+
+	/**
+	 * 是否显示选项值完整路径
+	 * @param fullpath Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Combo setFullpath(Boolean fullpath) {
+		this.fullpath = fullpath;
+		return this;
+	}
 }
