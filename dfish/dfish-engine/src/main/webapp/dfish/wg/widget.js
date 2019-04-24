@@ -3833,8 +3833,8 @@ Alert = define.widget( 'alert', {
 		}
 		if ( this._tpl = Dialog.tpl( t ) ) {
 			$.extend( x, { template: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
-				{ type: 'html', scroll: T, height: '*', text: '<table border=0 style="margin:10px 20px 20px 5px;word-wrap:break-word;"><tr><td align=center valign=top><div style=width:65px;padding-top:5px>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</table>' },
+				{ type: 'html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
@@ -4801,6 +4801,7 @@ Checkbox = define.widget( 'checkbox', {
 	Default: { width: -1, hmin: 6 },
 	Prototype: {
 		ROOT_TYPE: 'checkboxgroup',
+		tagName: 'cite',
 		className: 'w-form',
 		formType: 'checkbox',
 		getValidError: function( a ) {
@@ -4891,7 +4892,7 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '') + '<i class=f-vi></i>';			
 		},
 		html: function() {
 			var w = this.innerWidth(), s = this.prop_cls(), t = this.x.tip, y = '';
@@ -4902,10 +4903,10 @@ Checkbox = define.widget( 'checkbox', {
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
-			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') +
+			return '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (this.parentNode.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></cite>';
+				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>';
 		}
 	}
 } ),
@@ -4963,8 +4964,9 @@ Triplebox = define.widget( 'triplebox', {
 			}			
 		},
 		html: function() {
-			return '<cite id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
-				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') + (this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</cite>';
+			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
+				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</' + this.tagName + '>';
 		}
 	}
 } ),
@@ -4975,6 +4977,7 @@ Switch = define.widget( 'switch', {
 		Checkbox.apply( this, arguments );
 	},
 	Extend: 'checkbox',
+	Default: { width: -1 },
 	Listener: {
 		body: {
 			change: {
@@ -4990,6 +4993,8 @@ Switch = define.widget( 'switch', {
 		}
 	},
 	Prototype: {
+		tagName: 'div',
+		className: 'w-form f-inbl',
 		click: function( a, e ) {
 			if ( br.css3 ) {
 				$.cancel( e );
@@ -4999,7 +5004,7 @@ Switch = define.widget( 'switch', {
 			}
 		},
 		html_text: function() {
-			return '<label class=_l for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;') + '</i></label>' +
+			return '<label class="_l" for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;') + '</i></label>' +
 				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		}		
 	}
