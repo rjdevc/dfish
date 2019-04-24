@@ -208,15 +208,24 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		public WidgetTypeAppender(){
 			super("type");
 			//加载信息type 可以省略的信息
-			String hideTypeConfig=null;
-			try{
-				ResourceBundle rb=ResourceBundle.getBundle("com.rongji.dfish.ui.json.WidgetJsonBuilder");
-				hideTypeConfig=rb.getString("hideType");
-//				J.LOG.info("hideType config = "+hideTypeConfig);
-			}catch(Exception ex){
-				J.LOG.warn("can NOT load hideType config");
-			}
-			init(hideTypeConfig);
+			init("path:pub;" +
+					"path:hiddens,*;" +
+					"path:options,*;" +
+					"type:buttonbar,path:nodes,type:button;" +
+					"type:button,path:nodes,type:button;" +
+					"type:ablum,path:nodes,type:img;" +
+					"type:tree,path:nodes,type:leaf;" +
+					"type:leaf,path:nodes,type:leaf;" +
+					"path:split;");
+//			String hideTypeConfig=null;
+//			try{
+//				ResourceBundle rb=ResourceBundle.getBundle("com.rongji.dfish.ui.json.WidgetJsonBuilder");
+//				hideTypeConfig=rb.getString("hideType");
+////				J.LOG.info("hideType config = "+hideTypeConfig);
+//			}catch(Exception ex){
+//				J.LOG.warn("can NOT load hideType config");
+//			}
+//			init(hideTypeConfig);
 		}
 		
 		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
