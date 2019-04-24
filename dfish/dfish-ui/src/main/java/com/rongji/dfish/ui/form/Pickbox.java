@@ -12,6 +12,7 @@ import com.rongji.dfish.ui.command.DialogCommand;
 public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pickbox>{
 	private static final long serialVersionUID = 7493588393931087665L;
 	private String text;
+	private DialogCommand drop;
 	/**
 	 * 显示文本
 	 * @return String
@@ -81,6 +82,35 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	@Override
 	public Pickbox setValue(Object value) {
 		this.value=toString(value);
+		return this;
+	}
+
+	/**
+	 * 获取下拉对话框,如果不存在则新建
+	 * @return DialogCommand
+	 */
+	protected DialogCommand drop() {
+		if (this.drop == null) {
+			this.drop = new DialogCommand();
+		}
+		return this.drop;
+	}
+
+	/**
+	 * 显示所有选项的下拉对话框。
+	 * @return DialogCommand
+	 */
+	public DialogCommand getDrop() {
+		return drop;
+	}
+
+	/**
+	 * 显示所有选项的下拉对话框。
+	 * @param drop DialogCommand
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Pickbox setDrop(DialogCommand drop) {
+		this.drop = drop;
 		return this;
 	}
 

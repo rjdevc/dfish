@@ -18,7 +18,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 //	private Boolean suggest;
 	private Boolean multiple;
 	private Boolean nobr;
-	private String dropsrc;//显示所有结果的 view src。;
+	private DialogCommand drop; //显示所有结果的 view src。;
 	private JsonObject picker;
 	private Long delay;
 	private String separator;
@@ -203,19 +203,55 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	/**
 	 * 显示所有结果的 view src。;
 	 * @return String
+	 * @see #getDrop()
 	 */
+	@Deprecated
 	public String getDropsrc() {
-		return dropsrc;
+		if (this.drop != null) {
+			return this.drop.getSrc();
+		}
+		return null;
 	}
 	
 	/**
 	 * 显示所有结果的 view src。;
 	 * @param dropsrc 所有结果的 view src
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setDrop(DialogCommand)
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
     public T setDropsrc(String dropsrc) {
-		this.dropsrc = dropsrc;
+		drop().setSrc(dropsrc);
+		return (T) this;
+	}
+
+	/**
+	 * 获取下拉对话框,如果不存在则新建
+	 * @return DialogCommand
+	 */
+	protected DialogCommand drop() {
+		if (this.drop == null) {
+			this.drop = new DialogCommand();
+		}
+		return this.drop;
+	}
+
+	/**
+	 * 显示所有选项的下拉对话框。
+	 * @return DialogCommand
+	 */
+	public DialogCommand getDrop() {
+		return drop;
+	}
+
+	/**
+	 * 显示所有选项的下拉对话框。
+	 * @param drop DialogCommand
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setDrop(DialogCommand drop) {
+		this.drop = drop;
 		return (T) this;
 	}
 
