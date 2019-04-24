@@ -2695,9 +2695,11 @@ Buttonbar = define.widget( 'buttonbar', {
 	Listener: {
 		body: {
 			ready: function() {
+				Horz.Listener.body.ready.apply( this, arguments );
 				this.x.overflow && this.overflow();
 			},
 			resize: function( e, f ) {
+				Horz.Listener.body.resize.apply( this, arguments );
 				! f && this.x.overflow && this.overflow();
 			},
 			nodechange: function() {
