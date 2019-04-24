@@ -2934,8 +2934,8 @@ define( {
   	deprecate: 'focus,focusEnd,placeholder,transparent,bubble,nobr,text,.w-text,.z-trans',
   	extend: 'checkbox',
     Config: [
-      { name: 'checktext', type: 'String', remark: '选中状态时的文本。' },
-      { name: 'unchecktext', type: 'Boolean', remark: '未选中状态时的文本。' }
+      { name: 'checkedtext', type: 'String', remark: '选中状态时的文本。' },
+      { name: 'uncheckedtext', type: 'String', remark: '未选中状态时的文本。' }
     ],
     Methods: [
       { name: 'check([checked])', remark: '设置选中状态。', param: [
