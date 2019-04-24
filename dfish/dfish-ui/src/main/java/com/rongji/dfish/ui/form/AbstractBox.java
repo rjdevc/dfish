@@ -17,7 +17,6 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 	private static final long serialVersionUID = -5120066286869690681L;
 	protected String target ;
 	protected String text;
-	protected Object tip;
 	protected Boolean checked;
 	protected Boolean nobr;
 	protected String sync;
@@ -121,25 +120,6 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 		return (T)this;
 	}
 
-	public Object getTip() {
-		return tip;
-	}
-
-
-	public T setTip(Boolean tip) {
-		this.tip = tip;
-		return (T)this;
-	}
-	
-	/**
-	 * 提示
-	 * @param tip String 
-	 * @return this
-	 */
-	public T setTip(String tip) {
-		this.tip = tip;
-		return (T)this;
-	}
 	/**
 	 * 选中状态跟父节点保持同步
 	 * @return String
