@@ -476,7 +476,7 @@
 
 .w-switch{height:30px}
 .w-switch ._t{display:none}
-.w-switch ._l{display:inline-block;width:100%;position:relative;height:22px;line-height:22px;margin-top:4px;background:#c0c0c0;background:rgba(0,0,0,0.25);border:1px solid #c1caca;border-radius:20px;color:#fff;vertical-align:middle;-webkit-appearance:none;}
+.w-switch ._l{display:inline-block;width:100%;position:relative;height:22px;line-height:22px;background:#c0c0c0;background:rgba(0,0,0,0.25);border:1px solid #c1caca;border-radius:20px;color:#fff;vertical-align:middle;-webkit-appearance:none;}
 .w-switch ._o{position:absolute;top:1px;left:1px;background:#fff;padding:10px;border-radius:20px;box-shadow:0 2px 4px 0 rgba(0,35,11,0.2);transition:all .12s cubic-bezier(.78, .14, .15, .86);*font-size:0;}
 .w-switch ._n{float:right;margin-left:26px;margin-right:8px;font-style:normal;*float:none;}
 .w-switch.z-checked ._l{background:#1890ff;border-color:#1890ff}
