@@ -11,7 +11,7 @@ public class Switch extends AbstractFormElement<Switch, Object> {
     private String checkedtext;
     private String sync;
     private String target;
-    private String unchecktext;
+    private String uncheckedtext;
 
     /**
      * 构造函数(默认提交值是"1")
@@ -129,17 +129,17 @@ public class Switch extends AbstractFormElement<Switch, Object> {
      * 未选中状态时的文本。
      * @return String
      */
-    public String getUnchecktext() {
-        return unchecktext;
+    public String getUncheckedtext() {
+        return uncheckedtext;
     }
 
     /**
      * 未选中状态时的文本。
-     * @param unchecktext String
+     * @param uncheckedtext String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Switch setUnchecktext(String unchecktext) {
-        this.unchecktext = unchecktext;
+    public Switch setUncheckedtext(String uncheckedtext) {
+        this.uncheckedtext = uncheckedtext;
         return this;
     }
 
