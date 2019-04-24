@@ -2928,6 +2928,21 @@ define( {
       ] }
     ]
   },
+  "switch": {
+  	title: 'switch',
+  	remark: '开关选项。',
+  	deprecate: 'focus,focusEnd,placeholder,transparent,bubble,nobr,text,.w-text,.z-trans',
+  	extend: 'checkbox',
+    Config: [
+      { name: 'checktext', type: 'String', remark: '选中状态时的文本。' },
+      { name: 'unchecktext', type: 'Boolean', remark: '未选中状态时的文本。' }
+    ],
+    Methods: [
+      { name: 'check([checked])', remark: '设置选中状态。', param: [
+        { name: 'checked', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>', optional: true }
+      ] }
+    ]
+  },
   "radiogroup": {
   	title: 'radiogroup',
   	remark: '单选表单组。',
@@ -3201,7 +3216,8 @@ define( {
   	extend: 'text',
   	deprecate: '.w-text',
     Config: [
-      { name: 'text', type: 'String', remark: '显示文本。' },
+      { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
+      { name: 'text', type: 'String', remark: '显示文本。如果有设置value而text为空，将会尝试自动从drop中匹配文本。' },
       { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
@@ -3228,7 +3244,7 @@ define( {
   	deprecate: '.w-text',
     Config: [
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
-      { name: 'dropsrc', type: 'String', remark: '显示下拉列表的 view src。' },
+      { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'multiple', type: 'Boolean', remark: '多选模式。' },
       { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'separator', type: 'String', remark: '文本选项分隔符。默认是逗号。' },
