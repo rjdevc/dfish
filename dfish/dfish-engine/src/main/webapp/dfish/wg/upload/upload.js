@@ -1407,7 +1407,7 @@ UploadSwf = define.widget( 'upload/base/swf', {
 		},
 		swfupload_load_failed_handler: function() {
 			if ( this.x.uploadbutton )
-				this.cmd( { type: 'alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'https://www.baidu.com/s?wd=Adobe%20Flash%20Player%20for%20IE') + ' target=_blank><b>点此下载>></b></a>' } );
+				this.cmd( { type: 'alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'http://flash.cn') + ' target=_blank><b>点此下载>></b></a>' } );
 		},
 		swfupload_loaded_handler: function() {
 			this.uploadStats( this._value.length );

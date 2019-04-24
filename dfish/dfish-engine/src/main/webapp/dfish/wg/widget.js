@@ -3537,7 +3537,11 @@ Dialog = define.widget( 'dialog', {
 			this.contentView.reload( a, b && $.proxy( this, b ), c );
 		},
 		preload: function( a ) {
-			this.contentView._load( a && $.proxy( this, a ), N, T );
+			var self = this;
+			this.contentView._load( function() {
+				self.isShow() && self.render();
+				a && a.call( self );
+			}, N, T );
 		},
 		//@public 移动到指定位置 /@a -> elem|widget, b -> snap option
 		snapTo: function( a, b ) {
@@ -3588,6 +3592,12 @@ Dialog = define.widget( 'dialog', {
 				r = this._dft_pos();
 			this._pos = r;
 			$.snapTo( this.$(), r );
+			if ( vs ) {
+				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
+				t && (this.height( r.height + r.top ));
+				b && (this.height( r.height + r.bottom ));
+				(t || b) && (this._ori_height = h);
+			}
 			// 八方位浮动效果
 			n && Q( this.$() ).animate( n, 200 );
 			if ( this.x.prong && vs ) {
@@ -3624,6 +3634,10 @@ Dialog = define.widget( 'dialog', {
 				return;
 			! this.parentNode && _docView.add( this );
 			this.$() && this.removeElem();
+			if ( this._ori_height ) {
+				this.height( this._ori_height );
+				delete this._ori_height;
+			}
 			var c = this.attr( 'local' );
 			c && this.ownerView.addClass( 'f-rel' );
 			if ( this.x.cover )
@@ -4875,11 +4889,9 @@ Checkbox = define.widget( 'checkbox', {
 		tip: function() {
 			this.exec( $.extend( {}, this.x.tip, { type: 'tip', hoverdrop: true } ) );
 		},
-		html_input: function() {
-			var p = this.parentNode;
-			return '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : p.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '' );			
+		html_text: function() {
+			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				( this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		},
 		html: function() {
 			var w = this.innerWidth(), s = this.prop_cls(), t = this.x.tip, y = '';
@@ -4890,8 +4902,10 @@ Checkbox = define.widget( 'checkbox', {
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
-			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') +
-				(this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + this.html_input() + '<i class=f-vi></i></cite>';
+			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') +
+				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
+				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (this.parentNode.x.name || this.x.name || '') + '"' : '') + 
+				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></cite>';
 		}
 	}
 } ),
@@ -4954,11 +4968,40 @@ Triplebox = define.widget( 'triplebox', {
 		}
 	}
 } ),
-/* `radio` */
+/* `switch` */
 Switch = define.widget( 'switch', {
+	Const: function( x, p ) {
+		x.checked && (this.className += ' z-checked');
+		Checkbox.apply( this, arguments );
+	},
 	Extend: 'checkbox',
+	Listener: {
+		body: {
+			change: {
+				method: function() {
+					if ( this.isNormal() ) {
+						var c = this.isChecked();
+						this.addClass( 'z-checked', c );
+						this.$( 'n' ).innerHTML = (c ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;';
+						Checkbox.Listener.body.change.method.apply( this, arguments );
+					}
+				}
+			}			
+		}
+	},
 	Prototype: {
-
+		click: function( a, e ) {
+			if ( br.css3 ) {
+				$.cancel( e );
+			} else {
+				this.$t().checked = !this.$t().checked;
+				this.trigger( 'change' );
+			}
+		},
+		html_text: function() {
+			return '<label class=_l for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;') + '</i></label>' +
+				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+		}		
 	}
 } ),
 /* `radiogroup` */
@@ -6487,12 +6530,6 @@ Combobox = define.widget( 'combobox', {
 				s.push( this[ i ].x.text );
 			return $.idsAdd( s.join( ',' ), this.queryText() );
 		},
-		// 根据value值返回对应的文本值
-		val2txt: function( v ) {
-			for ( var i = 0, s = [], v = (v || '').split( ',' ), o, l = v.length; i < l; i ++ )
-				v[ i ] && (o = this.store().getParamByValue( v[ i ] )) && s.push( o.text );
-			return s.join( ',' );
-		},
 		// 根据文本增加已选项, 多个用逗号或空白符隔开 /@ t -> text|replaceObject, a -> param data?
 		addOpt: function( t, a ) {
 			var v = this._val(), e = this.$t(), k = e.nextSibling ? _widget( e.nextSibling ).nodeIndex : N;
@@ -7301,6 +7338,21 @@ Pickbox = define.widget( 'pickbox', {
 	Listener: {
 		tag: 't',
 		body: {
+			ready: function() {
+				// 如果有设置value而text为空时，尝试从drop中匹配文本
+				if ( this.x.value && ! this.x.text && this.x.drop ) {
+					this.loading = T;
+					this.addClass( 'z-loading' );
+					var self = this;
+					(this.dropper = this.createPop( this.x.drop )).preload( function() {
+						var r = self.store().getParamByValue( self.x.value );
+						r ? self.val( r.value, r.text ) : self.val( '', '' );
+						self.loading = F;
+						self.removeClass( 'z-loading' );
+					} );
+					this.text( Loc.loading );
+				}
+			},
 			click: {
 				occupy: T,
 				block: $.rt( T ),
@@ -7318,6 +7370,12 @@ Pickbox = define.widget( 'pickbox', {
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
 		width_minus: function() { return _boxbtn_width + _input_indent() },
+		store: function( a ) {
+			return (a || this.dropper).contentView.combo;
+		},
+		usa: function() {
+			return ! this.loading && this.isNormal();
+		},
 		val: function( v, t ) {
 			v != N && this.text( t || v );
 			return AbsForm.prototype.val.apply( this, arguments );
@@ -7467,7 +7525,8 @@ TreeCombo = $.createClass( {
 		},
 		// /@a -> text|value|leaf, b -> attrname
 		getXML: function( a, b ) {
-			return $.xmlQuery( (a.isWidget ? a.ownerView.combo : this).xml, './/d[' + ( typeof a === _STR ? '@' + ( b || 't' ) + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
+			typeof a === _STR && this.cab.x.combo.fullpath && (a = $.strFrom( a, '/', T ) || a);
+			return $.xmlQuery( (a.isWidget ? a.ownerView.combo : this).xml, './/d[' + ( typeof a === _STR ? '@' + (b || 't') + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
 		},
 		// 合并来自另一个grid的某一行的combo xml /@a -> tr|xml|treeCombo
 		merge: function( a ) {
