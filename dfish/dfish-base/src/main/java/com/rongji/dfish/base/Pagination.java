@@ -34,14 +34,14 @@ public class Pagination implements Serializable{
 		this.autoRowCount = autoRowCount;
 	}
 	/**
-	 * 结果做多显示多少行
+	 * 结果最多显示多少行
 	 * @return Integer
 	 */
 	public Integer getLimit() {
 		return limit; 
 	}
 	/**
-	 * 结果做多显示多少行 Integer
+	 * 结果最多显示多少行 Integer
 	 * @param limit Integer
 	 */
 	public void setLimit(Integer limit) {
@@ -93,20 +93,28 @@ public class Pagination implements Serializable{
 	}
 	/**
 	 * 转化
-	 * @param page Pagination
 	 * @return Page
 	 */
-	public static Page toPage(Pagination page){
-		if(page==null){
+	public Page toPage(){
+		return toPage(this);
+	}
+
+	/**
+	 * 转化
+	 * @param pagination Pagination
+	 * @return Page
+	 */
+	public static Page toPage(Pagination pagination){
+		if(pagination==null){
 			return null;
 		}
-		Page p=new Page();
-		p.setAutoRowCount(page.isAutoRowCount());
-		p.setRowCount( page.getSize()==null?0:page.getSize());
-		p.setPageSize(page.getLimit()==null?0:page.getLimit());
-		if( page.getSize()!=null&&page.getLimit()!=null){
-			p.setCurrentPage(page.getSize()/page.getLimit()+1);
+		Page page=new Page();
+		page.setAutoRowCount(pagination.isAutoRowCount());
+		page.setRowCount( pagination.getSize()==null?0:pagination.getSize());
+		page.setPageSize(pagination.getLimit()==null?0:pagination.getLimit());
+		if( pagination.getSize()!=null&&pagination.getLimit()!=null){
+			page.setCurrentPage(pagination.getSize()/pagination.getLimit()+1);
 		}
-		return p;
+		return page;
 	}
 }
