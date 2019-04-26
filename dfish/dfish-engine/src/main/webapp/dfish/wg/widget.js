@@ -2353,9 +2353,11 @@ Buttonbar = define.widget( 'buttonbar', {
 	Listener: {
 		body: {
 			ready: function() {
+				Horz.Listener.body.ready.apply( this, arguments );
 				this.x.overflow && this.overflow();
 			},
 			resize: function( e, f ) {
+				Horz.Listener.body.resize.apply( this, arguments );
 				! f && this.x.overflow && this.overflow();
 			},
 			nodechange: function() {
@@ -3128,6 +3130,9 @@ Page = define.widget( 'page/mini', {
 		},
 		eve: function( i, b ) {
 			return b ? ' onclick=' + evw + '.go(' + i + ',this) onmouseover=' + evw + '.over(this) onmouseout=' + evw + '.out(this)' : '';
+		},
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.x.nofirstlast ? ' z-nofirstlast' : '');
 		},
 		html_nodes: function() {
 			this.x.target && this.initByTarget();
@@ -8063,8 +8068,10 @@ Leaf = define.widget( 'leaf', {
 Tree = define.widget( 'tree', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		if ( x.combo )
+		if ( x.combo ) {
+			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
 			this.ownerView.combo = new TreeCombo( this );
+		}
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'hiddens', nodes: x.hiddens }, -1 );
 		this.loaded  = this.length ? T : F;
@@ -9044,8 +9051,10 @@ Grid = define.widget( 'grid', {
 		this.list = new GridList( y, this );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
-		if ( x.combo )
+		if ( x.combo ) {
+			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
 			this.ownerView.combo = new GridCombo( this );
+		}
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		x.scroll && $.classAdd( this, 'z-scroll' );
