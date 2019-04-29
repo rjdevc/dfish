@@ -1448,11 +1448,10 @@ Scroll = define.widget( 'scroll', {
 				}
 			},
 			scroll: function( e ) {
-				if ( this._scr_rateY )
+				if ( this._scr_rateY && this.$( 'ytr' ) )
 					this.$( 'ytr' ).style.top  = Math.min( this.$( 'ovf' ).scrollTop / this._scr_rateY, this.$( 'y' ).offsetHeight - _number(this.$( 'ytr' ).style.height) ) + 'px';
-				if ( this._scr_rateX ) {
+				if ( this._scr_rateX && this.$( 'xtr' ) )
 					this.$( 'xtr' ).style.left = ( this.$( 'ovf' ).scrollLeft / this._scr_rateX ) + 'px';
-				}
 			},
 			resize: function() {
 				if ( this.attr( 'scroll' ) && ! this._scr_usable && this.innerWidth() != N && this.innerHeight() != N )
@@ -3415,7 +3414,8 @@ Dialog = define.widget( 'dialog', {
 		},
 		cleanPop: function( a ) {
 			for ( var k in Dialog.all ) {
-				Dialog.all[ k ].attr( 'pophide' ) && (! a || a.id !== k) && Dialog.all[ k ].close();
+				var d = Dialog.all[ k ];
+				d.vis && d.attr( 'pophide' ) && (! a || a.id !== k) && d.close();
 			}
 		}
 	},
@@ -3750,7 +3750,7 @@ Dialog = define.widget( 'dialog', {
 			} else {
 				var self = this;
 				setTimeout( function() { ! self._disposed && self._listenHide( a ); }, 200 ); // 延时处理，避免出现后立即消失的情况
-				//Dialog.cleanPop( this ); // 关闭除了自己之外的所有pophide窗口
+				Dialog.cleanPop( this ); // 关闭除了自己之外的所有pophide窗口
 			}
 		},
 		_listenHide: function( a ) {
@@ -7523,8 +7523,7 @@ TreeCombo = $.createClass( {
 				if ( this.cab.x.combo.fullpath && g ) {
 					var p = g;
 					while ( (p = p.parentNode) && p.level > -1 ) {
-						var x = this.getXML( p, b ), e = x.getAttribute( 'v' ), f = x.getAttribute( 't' );
-						e && (v = e + '/' + v);
+						var x = this.getXML( p, b ), f = x.getAttribute( 't' );
 						f && (t = f + ' / ' + t);
 					}
 				}
