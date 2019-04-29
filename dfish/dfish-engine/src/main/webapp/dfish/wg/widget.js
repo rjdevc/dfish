@@ -3413,9 +3413,9 @@ Dialog = define.widget( 'dialog', {
 				$.ajaxJSON( $.urlFormat( cfg.template_src, [ a ] ), function( x ) { t = _templateCache[ a ] = x; }, N, T, N, function() { t = F; } );
 			return t;
 		},
-		cleanPop: function() {
+		cleanPop: function( a ) {
 			for ( var k in Dialog.all ) {
-				Dialog.all[ k ].attr( 'pophide' ) && Dialog.all[ k ].close();
+				Dialog.all[ k ].attr( 'pophide' ) && (! a || a.id !== k) && Dialog.all[ k ].close();
 			}
 		}
 	},
@@ -3750,6 +3750,7 @@ Dialog = define.widget( 'dialog', {
 			} else {
 				var self = this;
 				setTimeout( function() { ! self._disposed && self._listenHide( a ); }, 200 ); // 延时处理，避免出现后立即消失的情况
+				//Dialog.cleanPop( this ); // 关闭除了自己之外的所有pophide窗口
 			}
 		},
 		_listenHide: function( a ) {
@@ -6687,7 +6688,7 @@ Combobox = define.widget( 'combobox', {
 				this.closePop();
 				this.focus();
 				if ( ! b )
-					(d || (this.dropper = this.createPop( this.x.drop || this.x.node ))).show();
+					(d || (this.dropper = this.createPop( this.x.drop ))).show();
 			}
 		},
 		pick: function() {
@@ -7378,6 +7379,7 @@ Pickbox = define.widget( 'pickbox', {
 		}
 	},
 	Prototype: {
+		loading: F,
 		$v: function() { return $( this.id + 'v' ) },
 		width_minus: function() { return _boxbtn_width + _input_indent() },
 		store: function( a ) {
@@ -7603,7 +7605,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 	},
 	Prototype: {
 		_pad_left: 5,
-		_pad_level: 12,
+		_pad_level: 13,
 		// @implement
 		insertHTML: function( a, b ) {
 			var c = a.isWidget && a.$(), d = c && a.$( 'c' );
