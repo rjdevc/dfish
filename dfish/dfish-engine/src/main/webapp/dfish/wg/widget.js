@@ -1448,11 +1448,10 @@ Scroll = define.widget( 'scroll', {
 				}
 			},
 			scroll: function( e ) {
-				if ( this._scr_rateY )
+				if ( this._scr_rateY && this.$( 'ytr' ) )
 					this.$( 'ytr' ).style.top  = Math.min( this.$( 'ovf' ).scrollTop / this._scr_rateY, this.$( 'y' ).offsetHeight - _number(this.$( 'ytr' ).style.height) ) + 'px';
-				if ( this._scr_rateX ) {
+				if ( this._scr_rateX && this.$( 'xtr' ) )
 					this.$( 'xtr' ).style.left = ( this.$( 'ovf' ).scrollLeft / this._scr_rateX ) + 'px';
-				}
 			},
 			resize: function() {
 				if ( this.attr( 'scroll' ) && ! this._scr_usable && this.innerWidth() != N && this.innerHeight() != N )
@@ -3413,9 +3412,10 @@ Dialog = define.widget( 'dialog', {
 				$.ajaxJSON( $.urlFormat( cfg.template_src, [ a ] ), function( x ) { t = _templateCache[ a ] = x; }, N, T, N, function() { t = F; } );
 			return t;
 		},
-		cleanPop: function() {
+		cleanPop: function( a ) {
 			for ( var k in Dialog.all ) {
-				Dialog.all[ k ].attr( 'pophide' ) && Dialog.all[ k ].close();
+				var d = Dialog.all[ k ];
+				d.vis && d.attr( 'pophide' ) && (! a || a.id !== k) && d.close();
 			}
 		}
 	},
@@ -3750,6 +3750,7 @@ Dialog = define.widget( 'dialog', {
 			} else {
 				var self = this;
 				setTimeout( function() { ! self._disposed && self._listenHide( a ); }, 200 ); // 延时处理，避免出现后立即消失的情况
+				Dialog.cleanPop( this ); // 关闭除了自己之外的所有pophide窗口
 			}
 		},
 		_listenHide: function( a ) {
@@ -6687,7 +6688,7 @@ Combobox = define.widget( 'combobox', {
 				this.closePop();
 				this.focus();
 				if ( ! b )
-					(d || (this.dropper = this.createPop( this.x.drop || this.x.node ))).show();
+					(d || (this.dropper = this.createPop( this.x.drop ))).show();
 			}
 		},
 		pick: function() {
@@ -7378,6 +7379,7 @@ Pickbox = define.widget( 'pickbox', {
 		}
 	},
 	Prototype: {
+		loading: F,
 		$v: function() { return $( this.id + 'v' ) },
 		width_minus: function() { return _boxbtn_width + _input_indent() },
 		store: function( a ) {
@@ -7521,8 +7523,7 @@ TreeCombo = $.createClass( {
 				if ( this.cab.x.combo.fullpath && g ) {
 					var p = g;
 					while ( (p = p.parentNode) && p.level > -1 ) {
-						var x = this.getXML( p, b ), e = x.getAttribute( 'v' ), f = x.getAttribute( 't' );
-						e && (v = e + '/' + v);
+						var x = this.getXML( p, b ), f = x.getAttribute( 't' );
 						f && (t = f + ' / ' + t);
 					}
 				}
@@ -7603,7 +7604,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 	},
 	Prototype: {
 		_pad_left: 5,
-		_pad_level: 12,
+		_pad_level: 13,
 		// @implement
 		insertHTML: function( a, b ) {
 			var c = a.isWidget && a.$(), d = c && a.$( 'c' );
@@ -8048,7 +8049,7 @@ Leaf = define.widget( 'leaf', {
 			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
-				( this.box ? this.box.html() : '' ) + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
+				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();
