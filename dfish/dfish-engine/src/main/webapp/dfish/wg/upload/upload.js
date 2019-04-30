@@ -1724,7 +1724,7 @@ define.widget( 'upload/image/value', {
 			this.loaded  = true;
 			this.removeQueue();
 			if ( serverData.error ) {
-				//$.alert( serverData.text );
+				$.alert( serverData.text );
 			} else {
 				delete this.x.file;
 				this.x.data = serverData;

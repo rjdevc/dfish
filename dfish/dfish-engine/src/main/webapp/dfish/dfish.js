@@ -54,7 +54,8 @@ br = $.br = (function() {
 		d = doc.documentMode,
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
 		ie = navigator.appName === 'Microsoft Internet Explorer', // ie version <= 10
-		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) ));
+		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) )),
+		chm = u.match( /\bchrome\/(\d+)/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
 	return {
@@ -63,6 +64,7 @@ br = $.br = (function() {
 		ie7		: ie && d < 8, // ie6,ie7,兼容模式
 		ie10	: ie && d === 10,
 		ms		: ie || n, // 微软的浏览器( ie所有系列 )
+		chm		: chm && parseFloat( chm[ 1 ] ),
 		mobile  : !!u.match( /\bmobile\b/ ),
 		fox		: u.indexOf( 'firefox' ) > 0,
 		css3	: !(ie && d < 9),
@@ -284,7 +286,7 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, engine: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
 },
 _loadCss = function( a ) {
 	var l = doc.createElement( 'link' );
@@ -453,6 +455,7 @@ _strSplitword = $.strSplitword = function( a, b, c ) {
 },
 // 替换带$变量的字符串，如 "a.sp?id=$0" /@a -> url, b -> array/object, c -> urlEncode?
 _strFormat = $.strFormat = function( a, b, c ) {
+	a = a == N ? '' : '' + a;
 	if ( ! b )
 		return a;
 	if ( _isArray( b ) ) {
@@ -1148,10 +1151,6 @@ _stop = $.stop = function( a ) {
 	if ( a || ( a = win.event ) )
 		a.stopPropagation ? (a.stopPropagation(), a.preventDefault()) : (a.cancelBubble = T, a.returnValue = F);
 },
-_prevent = $.cancel = function( a ) {
-	if ( a || ( a = win.event ) )
-		a.preventDefault ? a.preventDefault() : (a.returnValue = F);
-},
 _cancel = $.cancel = function( a ) {
 	if ( a || ( a = win.event ) )
 		a.stopPropagation ? a.stopPropagation() : (a.cancelBubble = T);
@@ -1503,7 +1502,8 @@ Ajax = _createClass( {
 							}
 						}
 				    } else {
-				    	! x.engine && (f = x.filter || _cfg.ajax_filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
+				    	var t = x.filter;
+				    	t && (m = _fnapply( t, c, '$value,$ajax', [ m, self ] ));
 				    	self.response = m;
 						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );

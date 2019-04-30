@@ -184,9 +184,8 @@
 .w-leaf-s{padding-left:1px}
 .w-leaf.f-nobr .w-leaf-t,.w-leaf.f-nobr .w-leaf-s{display:inline-block;vertical-align:middle}
 .w-leaf.f-omit .w-leaf-a{display:inline}
-.w-leaf ._pd{height:100%;position:relative;display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
-.w-leaf ._pd ._pl{position:absolute;top:0;bottom:1px;left:0;border-left:1px dotted #999}
-.w-leaf ._vl{position:absolute;top:0;bottom:1px;right:0;width:50%;border-left:1px dotted #999}
+.w-leaf ._pd{width:14px;height:100%;position:relative;display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
+.w-leaf ._vl,.w-leaf ._pl{position:absolute;top:0;bottom:1px;right:0;width:50%;border-left:1px dotted #999}
 .w-leaf ._hl{position:absolute;top:0;bottom:50%;right:-1px;width:50%;border-bottom:1px dotted #999}
 .w-leaf.z-root ._vl,.w-leaf.z-root ._hl{display:none}
 .w-leaf.z-last ._vl{bottom:50%}
@@ -754,7 +753,6 @@
 .w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{display:none}
 .w-upload ._nofiles{color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
-
 
 .w-uploadimage ._bbar,.w-uploadimage ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 

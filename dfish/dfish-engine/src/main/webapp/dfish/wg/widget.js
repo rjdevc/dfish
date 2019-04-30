@@ -217,7 +217,7 @@ _ajaxCmd = function( x, a, t ) {
 	if ( x.loading )
 		d = this.exec( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
-	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter, error: x.error, beforesend: x.beforesend, 
+	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter || cfg.ajax_filter, error: x.error, beforesend: x.beforesend, 
 		success: function( v, a ) {
 			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
@@ -7598,13 +7598,16 @@ AbsLeaf = define.widget( 'abs/leaf', {
 	Listener: {
 		body: {
 			dnd_sort: function( e, o ) {
-				if ( o ) o.style.left = (this.level * this._pad_level + this._pad_left + 14) + 'px';
+				if ( o ) o.style.left = (this.padLeft() + 14) + 'px';
 			}
 		}
 	},
 	Prototype: {
 		_pad_left: 5,
-		_pad_level: 13,
+		_pad_level: 14,
+		padLeft: function() {
+			return (this.x.line ? 0 : this.level * this._pad_level) + this._pad_left;
+		},
 		// @implement
 		insertHTML: function( a, b ) {
 			var c = a.isWidget && a.$(), d = c && a.$( 'c' );
@@ -7955,7 +7958,7 @@ Leaf = define.widget( 'leaf', {
 				Q( '._pd,._pdvl', this.$() ).remove();
 				$.before( this.$( 'o' ), this.html_pad() );
 			} else
-				this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
+				this.css( 'paddingLeft', this.padLeft() );
 			for ( var i = 0; i < this.length; i ++ )
 				this[ i ].indent();
 		},
@@ -8031,14 +8034,14 @@ Leaf = define.widget( 'leaf', {
 			return t;
 		},
 		html_pad: function() {
-			for ( var i = 0, b = this._pad_level / 2, e = '', p; i < this.level; i ++ ) {
+			for ( var i = 0, e = '', p; i < this.level; i ++ ) {
 				p = (p || this).parent();
-				e = '<i class=_pd style="margin-left:' + b + 'px;width:' + (b - 1) + 'px;">' + (! p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
+				e = '<i class=_pd>' + (! p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
 			}
 			return e;
 		},
 		html_self: function( a ) {
-			var x = this.x, r = this.rootNode, p = this.parent(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', f = (c ? 0 : this.level * this._pad_level) + this._pad_left, h = this.innerHeight(), s = '';
+			var x = this.x, r = this.rootNode, p = this.parent(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', h = this.innerHeight(), s = 'padding-left:' + this.padLeft() + 'px;';
 			if ( x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-leaf-b', bubble: F } );
 				this.box.type === 'triplebox' && this.box.addEvent( 'click', this._triple, this );
@@ -8047,7 +8050,7 @@ Leaf = define.widget( 'leaf', {
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
 			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
-				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() +
+				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_before() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
 				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
 		},
@@ -8168,9 +8171,9 @@ GridLeaf = define.widget( 'grid/leaf', {
 		}
 	},
 	Prototype: {
+		_pad_left: 0,
 		ROOT_TYPE: 'grid',
 		className: 'w-leaf w-grid-leaf',
-		_pad_left: 0,
 		tr: _grid_tr,
 		_focus: $.rt(),
 		isEllipsis: $.rt( T ),
@@ -8215,7 +8218,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 				Q( '._pd,._pdvl', this.$() ).remove();
 				$.before( this.$( 'o' ), this.html_pad() );
 			} else
-				this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
+				this.css( 'paddingLeft', this.padLeft() );
 			Q( this.$() ).removeClass( 'z-first z-last' );
 			this.isFirst() && $.classAdd( this.$(), 'z-first' );
 			this.isLast() && $.classAdd( this.$(), 'z-last' );
