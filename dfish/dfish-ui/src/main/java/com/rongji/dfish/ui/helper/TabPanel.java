@@ -76,7 +76,7 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
 		// 原型是垂直布局(绝大多数都是上下结构)
 		prototype = new VerticalLayout(id).addCls("x-tab");
 		// 构建标签栏
-		tabBar = new ButtonBar(null).addCls("x-tab-bar");
+		tabBar = new ButtonBar(null).addCls("x-tab-bar").setHeight(-1);
 		tabBar.getPub().setFocusable(true).addCls("x-tab-btn");
 		prototype.add(tabBar);
 		
