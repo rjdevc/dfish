@@ -47,7 +47,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	private String focusdate;
 	private String src;
 	private CalendarTd pub;
-	private Boolean padrow ;
+	private Boolean padrow;
 	/**
 	 * 构造函数
 	 * @param id 编号

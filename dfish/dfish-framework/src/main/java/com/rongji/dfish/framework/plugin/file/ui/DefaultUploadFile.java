@@ -1,16 +1,13 @@
 package com.rongji.dfish.framework.plugin.file.ui;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
-import com.rongji.dfish.misc.util.JsonUtil;
 import com.rongji.dfish.ui.form.UploadButton;
 import com.rongji.dfish.ui.form.UploadFile;
 import com.rongji.dfish.ui.form.UploadItem;
-import com.rongji.dfish.ui.form.ValueButton;
 
 /**
  * 默认附件上传组件
@@ -41,21 +38,21 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
 		this.setFiletypes(fileService.getFileTypes());
 		String sizeLimit = fileService.getSizeLimit();
-		this.setSizelimit(sizeLimit);
+		this.setMaxfilesize(sizeLimit);
 		this.addUploadbutton(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-upload-icon-local"));
 //		this.addValuebutton(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
 	}
 	
 	@Override
-    public DefaultUploadFile setSizelimit(String sizelimit) {
+    public DefaultUploadFile setMaxfilesize(String maxfilesize) {
 		if (Utils.notEmpty(getUploadbutton())) {
 			// 需要重新修改上传按钮大小名称
 			UploadButton uploadButton = getUploadbutton().get(0);
 			if (uploadButton != null) {
-				uploadButton.setText("本地上传(最大" + sizelimit + ")");
+				uploadButton.setText("本地上传(最大" + maxfilesize + ")");
 			}
 		}
-	    return super.setSizelimit(sizelimit);
+	    return super.setMaxfilesize(maxfilesize);
     }
 
 }

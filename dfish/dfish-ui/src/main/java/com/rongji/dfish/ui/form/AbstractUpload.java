@@ -2,7 +2,6 @@ package com.rongji.dfish.ui.form;
 
 import java.beans.Transient;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.rongji.dfish.base.Utils;
@@ -35,7 +34,8 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	protected String previewsrc;
 	protected String removesrc;
 	protected String filetypes;
-	protected String sizelimit;
+	protected String minfilesize;
+	protected String maxfilesize;
 	protected Integer uploadlimit;
 	protected List<ValueButton> valuebutton;
 	protected List<UploadButton> uploadbutton;
@@ -134,20 +134,38 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	}
 
 	/**
-	 * 单个附件文件大小。如 "50M"。
+	 * 单个附件文件最小大小。如 "1K"。
 	 * @return String
 	 */
-	public String getSizelimit() {
-		return sizelimit;
+	public String getMinfilesize() {
+		return minfilesize;
 	}
 
 	/**
-	 * 单个附件文件大小。如 "50M"。
-	 * @param sizelimit String
+	 * 单个附件文件最小大小。如 "1K"。
+	 * @param minfilesize String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setSizelimit(String sizelimit) {
-		this.sizelimit = sizelimit;
+	public T setMinfilesize(String minfilesize) {
+		this.minfilesize = minfilesize;
+		return (T) this;
+	}
+
+	/**
+	 * 单个附件文件最大大小。如 "50M"。
+	 * @return String
+	 */
+	public String getMaxfilesize() {
+		return maxfilesize;
+	}
+
+	/**
+	 * 单个附件文件最大大小。如 "50M"。
+	 * @param maxfilesize String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setMaxfilesize(String maxfilesize) {
+		this.maxfilesize = maxfilesize;
 		return (T) this;
 	}
 
@@ -297,22 +315,22 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
     /**
 	 * 单个附件最大体积。如 "50M"。
 	 * @return file_size_limit
-	 * @see #getSizelimit()
+	 * @see #getMaxfilesize()
 	 */
     @Deprecated
 	@Transient
 	public String getFile_size_limit() {
-		return getSizelimit();
+		return getMaxfilesize();
 	}
 	/**
 	 * 单个附件最大体积。如 "50M"。
 	 * @param file_size_limit  单个附件最大体积。如 "50M"。
 	 * @return 本身，这样可以继续设置其他属性
-	 * @see #setSizelimit(String)
+	 * @see #setMaxfilesize(String)
 	 */
 	@Deprecated
     public T setFile_size_limit(String file_size_limit) {
-		return setSizelimit(file_size_limit);
+		return setMaxfilesize(file_size_limit);
 	}
 	/**
 	 * 允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"

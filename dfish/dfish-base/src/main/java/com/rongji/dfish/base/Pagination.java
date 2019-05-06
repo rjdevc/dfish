@@ -85,10 +85,11 @@ public class Pagination implements Serializable{
 		if(page==null){
 			return null;
 		}
-		Pagination p=new Pagination();
+		Pagination p = new Pagination();
 		p.setLimit(page.getPageSize());
 		p.setOffset(page.getCurrentPage()*page.getPageSize()-page.getPageSize());
 		p.setAutoRowCount(page.getAutoRowCount()==null||page.getAutoRowCount());
+		p.setSize(page.getRowCount());
 		return p;
 	}
 	/**
@@ -110,10 +111,11 @@ public class Pagination implements Serializable{
 		}
 		Page page=new Page();
 		page.setAutoRowCount(pagination.isAutoRowCount());
-		page.setRowCount( pagination.getSize()==null?0:pagination.getSize());
-		page.setPageSize(pagination.getLimit()==null?0:pagination.getLimit());
-		if( pagination.getSize()!=null&&pagination.getLimit()!=null){
-			page.setCurrentPage(pagination.getSize()/pagination.getLimit()+1);
+		page.setRowCount(pagination.getSize() == null ? 0 : pagination.getSize());
+		page.setPageSize(pagination.getLimit() == null ? 0 : pagination.getLimit());
+		if(pagination.getLimit() != null){
+			int offset = pagination.getOffset() == null ? 0 : pagination.getOffset();
+			page.setCurrentPage(offset / pagination.getLimit() + 1);
 		}
 		return page;
 	}

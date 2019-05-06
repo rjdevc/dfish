@@ -37,7 +37,7 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		this.setThumbnailsrc("file/thumbnail?fileId=$id");
 		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
 		this.setFiletypes(Utils.isEmpty(fileService.getImageTypes()) ? defaultFileTypes() : fileService.getImageTypes());
-		this.setSizelimit(fileService.getSizeLimit());
+		this.setMaxfilesize(fileService.getSizeLimit());
 		this.addUploadbutton(new UploadButton("+"));
 		
 		this.setValue(value);
