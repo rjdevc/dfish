@@ -111,14 +111,14 @@ _vmByElem = function ( o ) {
 	}
 	return _docView;
 },
+// @a -> content|js, b -> escape?, c -> callback?
+_wg_format = function( a, b, c ) {
+	return typeof a === _FUN || a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
+},
 _repaintSelfWithBox = function() {
 	var b = this.box && this.box.isChecked();
 	Q( this.$() ).replaceWith( this.html_self() );
 	this.box && this.box.check( b );
-},
-// @a -> content|js, b -> escape?, c -> callback?
-_wg_format = function( a, b, c ) {
-	return typeof a === _FUN || a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
 },
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( s ) {
@@ -3415,7 +3415,7 @@ Dialog = define.widget( 'dialog', {
 		cleanPop: function( a ) {
 			for ( var k in Dialog.all ) {
 				var d = Dialog.all[ k ];
-				d.vis && d.attr( 'pophide' ) && (! a || a.id !== k) && d.close();
+				d.vis && d.attr( 'pophide' ) && (! a || (a.id !== k && !d.contains( a ) && !a.contains( d ))) && d.close();
 			}
 		}
 	},
@@ -3544,7 +3544,7 @@ Dialog = define.widget( 'dialog', {
 		preload: function( a ) {
 			var self = this;
 			this.contentView._load( function() {
-				self.isShow() && self.render();
+				//self.isShow() && self.render();
 				a && a.call( self );
 			}, N, T );
 		},
@@ -3568,7 +3568,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		_front: function( a ) {
 			var z = a ? 2 : 1;
-			this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
+			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
 		},
 		// 定位 /@a -> fullscreen?
 		axis: function( a ) {
@@ -3598,6 +3598,7 @@ Dialog = define.widget( 'dialog', {
 			this._pos = r;
 			$.snapTo( this.$(), r );
 			if ( vs ) {
+				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
 				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
 				t && (this.height( r.height + r.top ));
 				b && (this.height( r.height + r.bottom ));
@@ -3639,6 +3640,7 @@ Dialog = define.widget( 'dialog', {
 				return;
 			! this.parentNode && _docView.add( this );
 			this.$() && this.removeElem();
+			// _ori_height表示当前窗口曾经调整过高度，再次打开时尝试恢复
 			if ( this._ori_height ) {
 				this.height( this._ori_height );
 				delete this._ori_height;
@@ -5571,7 +5573,7 @@ _Date = define.widget( 'date', {
 		},
 		html_input: function() {
 			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;text-indent:' + _input_indent() + 'px">' + (this.x.value || '') + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
 				'<input type=text' + this.input_prop() + '>';
 		}
 	}
