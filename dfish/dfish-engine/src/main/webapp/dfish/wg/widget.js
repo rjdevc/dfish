@@ -1056,12 +1056,6 @@ _w_rsz_layout = function() {
 	for ( var i = 0, l = this.length; i < l; i ++ )
 		_w_rsz_all.call( this[ i ] );	
 },
-// @a -> size, b -> min, c -> max
-_w_size_rng = function( a, b, c ) {
-	if ( b && ! isNaN( b ) ) a = Math.max( a, b );
-	if ( c && ! isNaN( c ) ) a = Math.min( a, c );
-	return a;
-},
 // widget配置项里设置了style，又没有设置wmin和hmin，则由系统解析style，获取wmin和hmin的值
 // 如果设置了cls，而cls里有 padding margin border 等，就需要人工计算并设置wmin和hmin
 //@ _c -> cls, _1 -> style, _2 -> wmin, _3 = hmin
@@ -1233,11 +1227,16 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( b && ! isNaN( b ) )
 			b = parseFloat( b );
 		if ( typeof b === _NUM && ! m )
-			return b < 0 ? N : a.isWidget ? _w_size_rng( b, a.attr( nv ), a.attr( xv ) ) : b;
+			return b < 0 ? N : b;
 		var c = this[ iz ]();
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
-		return c == N ? N : a.isWidget ? _w_size_rng( c, a.attr( nv ), a.attr( xv ) ) : c;
+		if ( a.isWidget && m ) {
+			var d = a.attr( m + v );
+			if ( d != N )
+				return $.scale( c, [ { value: d } ] )[ 0 ];
+		}
+		return c;
 	};
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min
 	_w_scale[ v ] = function( a, m ) {
@@ -4565,7 +4564,7 @@ AbsInput = define.widget( 'abs/input', {
 	}
 } ),
 /* `formgroup` */
-Formgroup =define.widget( 'formgroup', {
+Formgroup = define.widget( 'formgroup', {
 	Extend: [ AbsForm, Horz ]
 } ),
 /* `hidden` */
@@ -4583,8 +4582,8 @@ Hidden = define.widget( 'hidden', {
 		validonly: $.rt(),
 		normal: function() { this.disable( F ) },
 		disable: function( a ) {
-			_proto.disable.call( this, a );
 			this.$().disabled = a == N || a;
+			_proto.disable.call( this, a );
 		},
 		val: function( a ) {
 			return a === U ? ($( this.id ) || this.x).value : (($( this.id ) || this.x).value = a);
@@ -4661,6 +4660,13 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		x_nodes: function() {
 			return this.x.options || [ { value: this.x.value, text: this.x.text, checked: this.x.checked, target: this.x.target } ];
 		},
+		scaleWidth: function( a ) {
+			if ( a.nodeIndex < 0 ) {
+				var i = $.arrIndex( this.targets, a ), c = $.scale( this.innerWidth(), [ this[ i ] ? this[ i ].width() : 0, a.attr( 'width' ) || '*' ] );
+				return c[ 1 ];
+			} else
+				return AbsForm.prototype.scaleWidth.call( this, a );
+		},
 		val: function( a ) {
 			if ( a == N )
 				return $.arrSelect( this.elements( T, T ), 'v.value', T ).join( ',' );
@@ -4727,13 +4733,6 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		},
 		isValidonly: function() {
 			return this[ 0 ] && this[ 0 ].isValidonly();
-		},
-		scaleWidth: function( a ) {
-			if ( a.nodeIndex < 0 ) {
-				var i = $.arrIndex( this.targets, a ), c = $.scale( this.innerWidth(), [ this[ i ] ? this[ i ].width() : 0, a.attr( 'width' ) || '*' ] );
-				return c[ 1 ];
-			} else
-				return AbsForm.prototype.scaleWidth.call( this, a );
 		},
 		html_nodes: function() {
 			if ( this.targets ) {
@@ -4833,9 +4832,9 @@ Checkbox = define.widget( 'checkbox', {
 			this.check( a == 1 || a == N || a === T ? T : F );
 		},
 		// a -> true返回所有选中项，false -> 返回所有为选项，不填写本参数，返回所有兄弟项
-		getSibling: function( a ) {
+		getSiblings: function( a ) {
 			for ( var i = 0, b = this.elements( a ), c, r = []; i < b.length; i ++ ) {
-				if ( (c = $.widget( b[ i ] )) && b[ i ].id == c.id + 't' ) r.push( c );
+				if ( (c = $.widget( b[ i ] )) && b[ i ].id === c.id + 't' && ! c.x.checkall ) r.push( c );
 			}
 			return r;
 		},
@@ -5369,7 +5368,7 @@ Calendar = define.widget( 'calendar/date', {
 			return '';
 		},
 		_padrow: function( e, n, r ) {
-			while ( n -- ) e.push( (r ? (r = ! r,'<tr>') : '') + '<td class=_pad>&nbsp;' );
+			while ( n -- ) e.push( (r ? (r = ! r, '<tr>') : '') + '<td class=_pad>&nbsp;' );
 		},
 		html_nodes: function() {
 			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
@@ -6143,7 +6142,7 @@ XBox = define.widget( 'xbox', {
 			}
 			if ( ! (this.x.on && this.x.on.beforechange && (this.x.multiple || this.$v().value != v) &&
 				this.triggerHandler( 'beforechange', [ this.x.multiple ? $[d.hasClass( 'z-on' ) ? 'idsAdd' : 'idsRemove']( this.$v().value, v ) : v ] ) === F) )
-				this.val( d );
+					this.val( d );
 			! this.x.multiple && this._dropper.close();
 		},
 		drop: function() {
@@ -6467,6 +6466,27 @@ Combobox = define.widget( 'combobox', {
 		usa: function() {
 			return ! this.loading && this.isNormal();
 		},
+		// 读/写隐藏值
+		_val: function( a ) {
+			if ( a == N )
+				return (this.$() ? this.$v() : this.x).value || '';
+			(this.$() ? this.$v() : this.x).value = a;
+		},
+		// @a -> value
+		val: function( a ) {
+			if ( a == N ) {
+				this.save();
+				return this._val();
+			}
+			if ( this.loading ) {
+				this._val( a );
+				return this.addEventOnce( 'load', function() { this.val( a ) } );
+			}
+			this.empty();
+			this._val( '' );
+			this.$t().innerHTML = '';
+			a ? this.match( { value: a } ) : this.resetEffect();
+		},
 		store: function( a ) {
 			return (a || this.more).contentView.combo;
 		},
@@ -6508,27 +6528,6 @@ Combobox = define.widget( 'combobox', {
 		// 解析变量: $value(值), $text(文本) /@ u -> url, r -> replace object
 		parseSrc: function( u, r ) {
 			return this.formatStr( u, $.extend( r || {}, { value: this.val() } ), T );
-		},
-		// 读/写隐藏值
-		_val: function( a ) {
-			if ( a == N )
-				return (this.$() ? this.$v() : this.x).value || '';
-			(this.$() ? this.$v() : this.x).value = a;
-		},
-		// @a -> value
-		val: function( a ) {
-			if ( a == N ) {
-				this.save();
-				return this._val();
-			}
-			if ( this.loading ) {
-				this._val( a );
-				return this.addEventOnce( 'load', function() { this.val( a ) } );
-			}
-			this.empty();
-			this._val( '' );
-			this.$t().innerHTML = '';
-			a ? this.match( { value: a } ) : this.resetEffect();
 		},
 		// 获取正在输入中的用于后台查询的文本
 		queryText: function( a ) {
