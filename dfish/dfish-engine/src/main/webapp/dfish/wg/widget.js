@@ -3085,7 +3085,7 @@ Page = define.widget( 'page/mini', {
 		go: function( i, a ) {
 			if ( (i = _number( i )) > 0 ) {
 				i = Math.max( Math.floor( i ), 1 );
-				this.x.sumpage && (i = Math.min( i, this.x.sumpage ));
+				//this.x.sumpage && (i = Math.min( i, this.x.sumpage ));
 				this.$( 'v' ) && (this.$( 'v' ).value = i);
 				if ( this.x.target ) {
 					var g = this.ownerView.find( this.x.target );
@@ -3155,8 +3155,6 @@ Page = define.widget( 'page/mini', {
 		},
 		html_info: function() {
 			var s = '';
-			if ( this.x.info )
-				s += '<span class="_t _inf">' + this.x.info + '</span>';
 			if ( this.x.jump ) {
 				this.jbtn = this.add( { type: 'button', cls: '_jbtn', text: 'GO', on: { click: 'this.parentNode.ego(event)' } }, -1 );
 				s += '<span class="_t _to">' + Loc.to + '</span> <input class=_jump id=' + this.id + 'j onfocus=' + evw + '.jumpFocus(event) onblur=' + evw + '.jumpFocus(event,!1) onkeyup=' + evw + '.ego(event)>' + this.jbtn.html() + ' <span class=_t>' + Loc.page + '</span>';
@@ -5368,16 +5366,6 @@ Calendar = define.widget( 'calendar/date', {
 			}
 			return '';
 		},
-		_padrow: function( e, b, n, r ) {
-			if ( n < 0 ) {
-				b.setDate( b.getDate() + n );
-				n = -n;
-			}
-			for ( var i = 0; i < n; i ++ ) {
-				e.push( (r ? (r = ! r, '<tr>') : '') + '<td class=_pad><div class=_num>' + b.getDate() + '</div>' );
-				b.setDate( b.getDate() + 1 );
-			}
-		},
 		html_nodes: function() {
 			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
@@ -5393,9 +5381,7 @@ Calendar = define.widget( 'calendar/date', {
 				b.setDate( 1 - b.getDay() );
 			if ( this.x.padrow ) {
 				g = 1 + (d.getTime() - b.getTime()) / $.DATE_DAY;
-				if ( g < 42 ) {
-					d.setDate( d.getDate() + 42 - g );
-				}
+				g < 42 && d.setDate( d.getDate() + 42 - g );
 			}
 			while ( b <= d ) {
 				var v = this._fm( b ),
@@ -5426,8 +5412,8 @@ CalendarWeek = define.widget( 'calendar/week', {
 			if ( b[ 0 ] !== y )
 				b = $.dateWeek( new Date( y, 11, 31 - 7 ), this.x.cg, this.x.start );
 			for ( var i = 1, l = b[ 1 ]; i <= l; i ++ ) {
-				var v = y + '-' + $.strPad( i ), u = o && o[ v ], g = { value: v, num: i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
-				u && $.extend( g, u );
+				var v = y + '-' + $.strPad( i ), g = { value: v, num: i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				o && o[ v ] && $.extend( g, o[ v ] );
 				e.push( ( (i - 1) % 7 === 0 ? '<tr>' : '' ) + this.add( g ).html() );
 			}
 			if ( (n = 7 - (i % 7)) > 0 && n < 7 ) {
@@ -5449,8 +5435,8 @@ CalendarMonth = define.widget( 'calendar/month', {
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + '-' + $.strPad( i + 1 ), u = o && o[ v ], g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
-				u && $.extend( g, u );
+				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				o && o[ v ] && $.extend( g, o[ v ] );
 				e.push( (i % 4 === 0 ? '<tr class=_tr>' : '') + this.add( g ).html() );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
@@ -5470,8 +5456,8 @@ CalendarYear = define.widget( 'calendar/year', {
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.yearnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + i, u = o && o[ v ], g = { value: v, num: y + i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
-				u && $.extend( g, u );
+				var v = y + i, g = { value: v, num: y + i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				o && o[ v ] && $.extend( g, o[ v ] );
 				e.push( ( i % 4 === 0 ? '<tr class=_tr>' : '' ) + this.add( g ).html() );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
@@ -7204,7 +7190,7 @@ Linkbox = define.widget( 'linkbox', {
 				if ( this.x.strict )
 					d && s.push( d );
 				else
-					s.push( d || Q( q[ i ] ).text() );
+					s.push( d || Q( q[ i ] ).text() ); // chrome下，当linkbox在隐藏状态，用innerText取不到文本。改用jQuery获取
 			}
 			this._val( s = s.join( ',' ) );
 			if ( this.x.validate && this.x.validate.maxlength ) {
@@ -7221,7 +7207,7 @@ Linkbox = define.widget( 'linkbox', {
 				this.closePop();
 				this.focus();
 				this._query_text = N;
-				(this.dropper || (this.dropper = this.createPop( this.x.drop || this.x.node ))).show();
+				(this.dropper || (this.dropper = this.createPop( this.x.drop ))).show();
 			}
 		},
 		bookmark: function() {
