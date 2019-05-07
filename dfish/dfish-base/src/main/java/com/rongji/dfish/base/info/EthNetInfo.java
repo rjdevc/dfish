@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("ALL")
 public class EthNetInfo {
 	protected static final String ERR_MAC="00:00:00:00:00:00";
 	private static String mac = null;
@@ -528,21 +529,21 @@ public class EthNetInfo {
 		stdoutStream.close();
 		return outputText;
 	}
-	public static void main(String[] args) throws ParseException {
-		String s="ens32: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n" +
-				"        inet 192.168.93.76  netmask 255.255.255.192  broadcast 192.168.93.127\n" +
-				"        inet6 fe80::250:56ff:fe9c:3632  prefixlen 64  scopeid 0x20<link>\n" +
-//				"        ether 00:50:56:9c:36:32  txqueuelen 1000  (Ethernet)\n" +
-				"        ether 00:50:56:9c:0a:ce  txqueuelen 1000  (Ethernet)\n" +
-				"        RX packets 6856286  bytes 6384398804 (5.9 GiB)\n" +
-				"        RX errors 0  dropped 1321753  overruns 0  frame 0\n" +
-				"        TX packets 3820273  bytes 2095398045 (1.9 GiB)\n" +
-				"        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0\n" +
-				"\n" +
-				"lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536";
-		EthNetInfo en=new EthNetInfo();
-		Set<String> set=en.linuxParseMacAddresses(s);
-		System.out.println(set);
-	}
+//	public static void main(String[] args) throws ParseException {
+//		String s="ens32: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n" +
+//				"        inet 192.168.93.76  netmask 255.255.255.192  broadcast 192.168.93.127\n" +
+//				"        inet6 fe80::250:56ff:fe9c:3632  prefixlen 64  scopeid 0x20<link>\n" +
+////				"        ether 00:50:56:9c:36:32  txqueuelen 1000  (Ethernet)\n" +
+//				"        ether 00:50:56:9c:0a:ce  txqueuelen 1000  (Ethernet)\n" +
+//				"        RX packets 6856286  bytes 6384398804 (5.9 GiB)\n" +
+//				"        RX errors 0  dropped 1321753  overruns 0  frame 0\n" +
+//				"        TX packets 3820273  bytes 2095398045 (1.9 GiB)\n" +
+//				"        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0\n" +
+//				"\n" +
+//				"lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536";
+//		EthNetInfo en=new EthNetInfo();
+//		Set<String> set=en.linuxParseMacAddresses(s);
+//		System.out.println(set);
+//	}
 
 }

@@ -19,7 +19,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * 并用{@link GridColumn#getField} 来说明这个内容显示在哪里。</p>
  * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
  * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
- * 
+ *
  * @see AbstractTd {@link GridColumn} {@link GridLeaf}
  * @author DFish Team
  * @param <T> 当前类型

@@ -60,7 +60,7 @@ public interface PubCommonDAO {
 	   *     page,true,typeId);
 	   * </pre>
 	   * <p>经调用后，如果需要知道一共有多少页，可以从page里面获取。当前页则直接通过list获取</p>
-	   * 
+	   *
 	   * @param strSql String
 	   * @param page Page 分页信息,是否需要统计总行数,在page.setAutoRowCount();默认为空时为获取总行数
 	   * 如果条件简单。则，SQL的form到order by之前的部分，将会自动作为count的条件，取得总的行数，从而得到页数
@@ -69,7 +69,7 @@ public interface PubCommonDAO {
 	   * @return List
 	   */
 	  List<?> getQueryList(final String strSql, final Pagination page, final Object... object);
-	  
+
 	  /**
 	   * 带分页 Where子条件的查询语句
 	   * <p>典型的用法</p>

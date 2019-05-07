@@ -48,7 +48,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	 * page/buttongroup 组合按钮风格的翻页工具条。
 	 */
 	public static final String TYPE_BUTTONGROUP ="page/buttongroup";
-	
+
 	/**
 	 * 构造函数,分页样式默认走首页配置样式
 	 * @param id String
@@ -56,7 +56,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	public PageBar(String id){
 		this(id, null);
 	}
-	
+
 	/**
 	 * 构造函数
 	 * @param id String
@@ -124,7 +124,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 	/**
 	 * 按钮样式。
-	 * @param btncls String 
+	 * @param btncls String
 	 * @return  this
 	 */
 	public PageBar setBtncls(String btncls) {

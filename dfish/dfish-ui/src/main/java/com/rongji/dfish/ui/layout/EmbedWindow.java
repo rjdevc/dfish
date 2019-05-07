@@ -22,7 +22,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	private Boolean scroll;
 	private String scrollClass;
 //	private Boolean escape;
-	
+
 	/**
 	 * 构造函数
 	 * @param id 编号

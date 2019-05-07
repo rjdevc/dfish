@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @since DFish 3.0
  */
 public interface JsonObject extends Serializable {
+
 	/**
 	 * 获取这个对象的种类名
 	 * <p>种类名称一般标明这个对象的功能。JS引擎会根据这个对象的种类为其赋予一定的功能.

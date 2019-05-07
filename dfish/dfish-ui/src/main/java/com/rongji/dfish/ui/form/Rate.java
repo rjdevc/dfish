@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.form;
  * Rate 为5个星评价输入
  * @author DFish Team
  * @version 1.1
- * @since XMLTMPL 1.0
+ * @since 3.0
  */
 public class Rate extends AbstractFormElement<Rate,Integer> {
 
@@ -51,4 +51,13 @@ public class Rate extends AbstractFormElement<Rate,Integer> {
 		setValue(value);
 	}
 	
+	@Deprecated
+	public Rate setTip(Boolean tip) {
+		return this;
+	}
+	
+	@Deprecated
+	public Rate setTip(String tip) {
+		return this;
+	}
 }

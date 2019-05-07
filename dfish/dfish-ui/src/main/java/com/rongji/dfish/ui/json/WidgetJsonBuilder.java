@@ -3,7 +3,6 @@ package com.rongji.dfish.ui.json;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Stack;
 
 import com.rongji.dfish.ui.Alignable;
@@ -204,7 +203,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		public static WidgetTypeAppender getInstance(){
 			return instance;
 		}
-		
+
 		public WidgetTypeAppender(){
 			super("type");
 			//加载信息type 可以省略的信息
@@ -227,7 +226,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 //			}
 //			init(hideTypeConfig);
 		}
-		
+
 		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
 			JsonObject w=(JsonObject)o;
 			String type=w.getType();
@@ -299,7 +298,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			}
 			return false;
 		}
-		
+
 		private boolean match(Node node, Stack<PathInfo> path, int index) {
 			PathInfo p=path.get(index);
 			if(!node.match(p)){
@@ -341,7 +340,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 						sb.append(" => hide");
 					}
 					sb.append("\r\n");
-				
+
 				if (subs == null||subs.size()==0) {
 					return;
 				}
@@ -366,7 +365,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 					}
 				}
 			}
-			
+
 			public Node(String expr){
 				this.expr=expr;
 			}

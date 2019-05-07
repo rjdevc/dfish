@@ -30,15 +30,12 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 //    private Number maxValue;
     private Number step;
 //    private String match;
-    
+
     /**
      * 数字微调按钮
      * @param name 表单元素名
      * @param label 标题
      * @param value 值
-     * @param minValue 允许填写的最小值
-     * @param maxValue 允许填写的最大值
-     * @param step 步长，每点一次加/减，变动的数字
      */
     public Spinner(String name, String label, Number value) {
     	super.setName(name);

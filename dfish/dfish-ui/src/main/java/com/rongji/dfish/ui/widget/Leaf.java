@@ -384,7 +384,9 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 	/**
 	 * 文本超出可视范围部分以省略号显示，默认为true
 	 * @return Boolean
+	 * @deprecated 在TreePanel中支持该参数，Leaf中移除
 	 */
+	@Deprecated
     public Boolean getEllipsis() {
 		return ellipsis;
 	}
@@ -392,7 +394,9 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
      * 文本超出可视范围部分以省略号显示，默认为true
      * @param ellipsis Boolean
      * @return 本身，这样可以继续设置其他属性
+     * @deprecated 在TreePanel中支持该参数，Leaf中移除
      */
+    @Deprecated
 	public Leaf setEllipsis(Boolean ellipsis) {
 		this.ellipsis = ellipsis;
 		return this;
@@ -550,7 +554,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 		this.template=template;
 		return this;
 	}
-	
+
 	/**
 	 * 是否为一个可展开的目录，如果不设置本参数，那么引擎将根据是否有src属性或leaf子节点来自动判断
 	 * @return Boolean
@@ -559,7 +563,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 	public Boolean getFolder() {
 		return folder;
 	}
-	
+
 	/**
 	 * 是否为一个可展开的目录，如果不设置本参数，那么引擎将根据是否有src属性或leaf子节点来自动判断
 	 * @param folder Boolean

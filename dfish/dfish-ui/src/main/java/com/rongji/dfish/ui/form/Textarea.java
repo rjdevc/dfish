@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.AtExpression;
 
 /**
  * Textarea 为文本区
@@ -28,12 +27,12 @@ public final class Textarea extends AbstractInput<Textarea,String> {
 	 * 构造函数
 	 * @param name 表单元素名
 	 * @param label 标题
-	 * @param value name
+	 * @param value 值
 	 */
 	public Textarea(String name, String label, String value) {
 	    this.setName(name);
-        this.setValue(value);
-        this.setLabel(label);
+	    this.setValue(value);
+	    this.setLabel(label);
 	}
 //	/**
 //	 *  构造函数
@@ -51,7 +50,7 @@ public final class Textarea extends AbstractInput<Textarea,String> {
 //	    this.setLabel(label);
 //	    at("vallue",value.expr());
 //	}
-	
+
 
 //    private int maxLength;
 //    private Integer rows;

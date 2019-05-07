@@ -69,12 +69,12 @@ public class PinyinConverter {
 					MAIN_LIB=new TrieTree<String>(true);
 					switch(mode){
 					case MODE_PERSON_NAME:
-						loadCharLib(MAIN_LIB,"/com/rongji/dfish/misc/chinese/char_chinese_name_lib.txt");
+						loadCharLib(MAIN_LIB, "/com/rongji/dfish/misc/chinese/char_chinese_name_lib.txt");
 						break;
 					default:
-						loadCharLib(MAIN_LIB,"/com/rongji/dfish/misc/chinese/char_chinese_lib.txt");
+						loadCharLib(MAIN_LIB, "/com/rongji/dfish/misc/chinese/char_chinese_lib.txt");
 					}
-					loadPairLib(MAIN_LIB,"/com/rongji/dfish/misc/chinese/word_lib.txt");//初始化词典
+					loadPairLib(MAIN_LIB, "/com/rongji/dfish/misc/chinese/word_lib.txt");//初始化词典
 				}
 			}
 		}
@@ -85,7 +85,7 @@ public class PinyinConverter {
 			synchronized (PinyinConverter.class) {
 				if(VOWEL==null){
 					VOWEL=new TrieTree<String>();
-					loadPairLib(VOWEL,"/com/rongji/dfish/misc/chinese/tone_lib.txt");//初始化韵母表
+					loadPairLib(VOWEL, "/com/rongji/dfish/misc/chinese/tone_lib.txt");//初始化韵母表
 				}
 			}
 		}

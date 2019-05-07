@@ -27,12 +27,14 @@ public abstract class AbstractCacheValueGetter<K, V> implements CacheValueGetter
 			toIndex += BATCH_SIZE;
 			toIndex = toIndex > keySize ? keySize : toIndex;
 			List<K> subList = keyList.subList(fromIndex, toIndex);
-			Map<K, V> tempMap = batchGets(subList);
-			if (tempMap != null) {
-				if (map == null) {
-					map = tempMap;
-				} else {
-					map.putAll(tempMap);
+			if (Utils.notEmpty(subList)) {
+				Map<K, V> tempMap = batchGets(subList);
+				if (tempMap != null) {
+					if (map == null) {
+						map = tempMap;
+					} else {
+						map.putAll(tempMap);
+					}
 				}
 			}
 		}

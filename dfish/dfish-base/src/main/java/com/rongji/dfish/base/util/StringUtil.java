@@ -656,7 +656,7 @@ public class StringUtil {
     	}
     	return ret-1;
     }
-    
+
     public static final String ENCODING_UTF8="UTF-8";
     public static final String ENCODING_GBK="GBK";
     //根据传进来 byte[]
@@ -666,7 +666,7 @@ public class StringUtil {
      * 如果传进来的byte[] 吻合GBK(GB18030)的格式。返回GBK
      * 如果都不满足，UnsupportedEncodingException
      * 如果byte是纯ASCII码。无法判定字符集，但都吻合UTF8/GBK的格式。则返回UTF8
-     * @param sample byte[] 
+     * @param sample byte[]
      * @return UTF8/GBK
      */
     public static String detCharset(byte[] sample) throws UnsupportedEncodingException{
@@ -747,8 +747,8 @@ public class StringUtil {
     	sb.append(Integer.toHexString(b&15));
     	return sb.toString();
     }
-    
-    
+
+
     //判定UTF8的第二个以后的字节码因为 是10XX XXXX 所以值 访问只能是[128,-64)
 	private static boolean noFollow10Char(byte[] sample, int i, int j) {
 		//因为sample是采样的，防止越界
@@ -815,6 +815,6 @@ public class StringUtil {
    			}
     	}
     	return true;
-	}	
+	}
 
 }

@@ -166,7 +166,7 @@ public class View extends AbstractView<View> implements LazyLoad<View>{
 	public Map<String,DialogTemplate> getTemplates() {
 		return templates;
 	}
-	
+
 	public String getPreload() {
 		return preload;
 	}

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.rongji.dfish.misc.util.JsonUtil;
 
-/** 1
+/**
  *  基础的用于防止DDOS攻击的过滤器
  *  <p>工作原理是 短时间内（默认为10秒）同一个IP，同一个URI的访问 可以配置一个阈值(比如说30次)。超过这个数量的访问将会被禁止访问。
  *  允许不同URI社会的阈值不一样。</p>

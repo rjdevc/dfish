@@ -54,7 +54,7 @@ public class PathInfo {
 	}
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
-		
+
 		sb.append("{\"");
 		if(propName!=null){
 			sb.append("path\":\"").append(propName).append("\", \"");

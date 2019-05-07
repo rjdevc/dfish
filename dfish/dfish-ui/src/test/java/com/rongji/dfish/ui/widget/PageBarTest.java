@@ -13,7 +13,7 @@ public class PageBarTest extends  DFishUITestCase{
 		page.setPageSize(15);
 		page.setRowCount(108);
 		pb.setPage(page);
-//		pb.setSrc(src);
+//		pb.setSuggest(src);
 		return pb;
 	}
 

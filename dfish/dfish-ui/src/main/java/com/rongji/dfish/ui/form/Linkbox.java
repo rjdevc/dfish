@@ -35,15 +35,22 @@ public class Linkbox extends LinkableSuggestionBox<Linkbox> {
 	 * @param name 表单名
 	 * @param label 标题
 	 * @param value 初始值
-	 * @param src 候选项的URL
+	 * @param suggest 候选项的URL
 	 */
-	public Linkbox(String name, String label, String value, String src) { 
-		this.setName(name);
-		this.setLabel(label);
-		this.setValue(value);
-		this.setSuggest(new DialogCommand(src));
-//		this.strict=true;
-//		this.text="loading...";
+	public Linkbox(String name, String label, String value, String suggest) {
+		super(name, label, value, suggest);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param suggest 候选项的弹窗命令
+	 */
+	public Linkbox(String name, String label, String value, DialogCommand suggest) {
+		super(name, label, value, suggest);
 	}
 
 	public String getType() {

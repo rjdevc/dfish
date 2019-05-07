@@ -38,7 +38,6 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 	public static final String FACE_TAG = "tag";
 	
 	private String face;
-
 	
 	/**
 	 * 构造函数
@@ -46,15 +45,24 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 	 * @param name 表单名
 	 * @param label 标题
 	 * @param value 初始值
-	 * @param src 候选项的URL
+	 * @param suggest 候选项的URL
 	 */
-	public Combobox(String name, String label, String value, String src) { 
-		this.setName(name);
-		this.setLabel(label);
-		this.setValue(value);
-	    this.setSuggest(new DialogCommand().setSrc(src));
+	public Combobox(String name, String label, String value, String suggest) {
+		super(name, label, value, suggest);
 	}
-	
+
+	/**
+	 * 构造函数
+	 *
+	 * @param name 表单名
+	 * @param label 标题
+	 * @param value 初始值
+	 * @param suggest 候选项的弹窗命令
+	 */
+	public Combobox(String name, String label, String value, DialogCommand suggest) {
+		super(name, label, value, suggest);
+	}
+
 	public String getType() {
 		return "combobox";
 	}
@@ -67,7 +75,7 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 		this.face = face;
 		return this;
 	}
-
+	
 	@Deprecated
 	public Combobox setTip(Boolean tip) {
 		return this;
@@ -77,5 +85,5 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 	public Combobox setTip(String tip) {
 		return this;
 	}
-
+	
 }

@@ -207,7 +207,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 提示
 	 * @param tip String 
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setTip(Boolean tip) {
 		this.tip = tip;
@@ -217,7 +217,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 提示
 	 * @param tip String 
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setTip(String tip) {
 		this.tip = tip;
@@ -271,7 +271,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 图片展现方式。可选值: "none","straight"。默认值为"none"。
 	 * @param face String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setFace(String face) {
 		this.face = face;
@@ -288,7 +288,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 图片宽度。
 	 * @param imgwidth Integer
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setImgwidth(Integer imgwidth) {
 		this.imgwidth = String.valueOf(imgwidth);
@@ -297,7 +297,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 *  图片宽度。
 	 * @param imgwidth String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setImgwidth(String imgwidth) {
 		this.imgwidth = imgwidth;
@@ -313,7 +313,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 图片高度。
 	 * @param imgheight Integer
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setImgheight(Integer imgheight) {
 		this.imgheight = String.valueOf(imgheight);
@@ -322,7 +322,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 图片高度。
 	 * @param imgheight String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setImgheight(String imgheight) {
 		this.imgheight = imgheight;
@@ -346,5 +346,4 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 		this.format = format;
 		return this;
 	}
-
 }

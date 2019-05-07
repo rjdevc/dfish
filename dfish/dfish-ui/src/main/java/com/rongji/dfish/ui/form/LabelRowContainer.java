@@ -28,6 +28,6 @@ public interface LabelRowContainer<T extends LabelRowContainer<T>>  extends Cont
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setLabelWidth(String labelWidth);
-	
-	
+
+
 }

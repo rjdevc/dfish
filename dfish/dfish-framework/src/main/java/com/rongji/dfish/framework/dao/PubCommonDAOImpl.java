@@ -63,14 +63,14 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		
 		return call(strSql,new Callable<List<?>>(){
 			@Override
-			public List<?> call() throws Exception {	
+			public List<?> call() throws Exception {
 				HibernateTemplate template = getHibernateTemplate();
 				template.setCacheQueries(true);
 				HibernateCallback<?> action = new HibernateCallback<Object>() {
 					public Object doInHibernate(Session session)
 							throws HibernateException, SQLException {
 						Query query = session.createQuery(strSql);
-						if (object != null) {  
+						if (object != null) {
 							for (int i = 0; i < object.length; i++) {
 								setArgument(query, i, object[i]);
 							}
@@ -79,7 +79,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 						return arrayList;
 					}
 				};
-		
+
 				List<?> list= (List<?>) template.execute(action);
 				return list;
 			}
@@ -225,7 +225,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				query.setFirstResult(page.getOffset());
 				query.setMaxResults(page.getLimit());
 
-		
+
 				long beginTimeMillis=System.currentTimeMillis();
 				List<?> resultList = query.list();
 				log(strSql, System.currentTimeMillis()-beginTimeMillis);
@@ -307,7 +307,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				//LinLW 2017-07-13 如果当前页号大于1 查询结果数为0，并且autoRowcount为true。很可能是最后一页被删了。要回头显示前面的页。
 				if(resultList.size()==0 && page.isAutoRowCount() && page.getOffset()>0){
 					//根据page的rowCount计算curpage的数量
-					
+
 						int offset=(page.getSize()-1)/page.getLimit()*page.getLimit();
 						if(offset<0){
 							offset=0;
@@ -418,14 +418,14 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		            }
 				});
 			}
-			
+
 		});
-		 
+
     }
-	
+
 	/**
 	 * 所有的库操作都经过call操作。为以后call操作用Executor进行监管创造条件
-	 * 
+	 *
 	 * @param sql
 	 * @param callable
 	 * @return

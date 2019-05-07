@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.FormElement;
 
 /**
@@ -40,7 +39,7 @@ public class Hidden extends AbstractWidget<Hidden> implements FormElement<Hidden
 //		this.name = name;
 //		at("vallue",value.expr());
 //	}
-	
+
     public String getType() {
 	    return "hidden";
     }

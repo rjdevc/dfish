@@ -249,7 +249,12 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	public T setHideLabel(Boolean hideLabel) {
 		this.hideLabel = hideLabel;
 		if(label!=null){
-			label.setWidth(hideLabel==null||hideLabel?"0":null);
+		    boolean isHide = hideLabel != null && hideLabel;
+		    if (isHide) {
+                label.setWidth(0);
+            } else if ("0".equals(label.getWidth())) {
+                label.setWidth(null);
+            }
 		}
 		return (T) this;
 	}

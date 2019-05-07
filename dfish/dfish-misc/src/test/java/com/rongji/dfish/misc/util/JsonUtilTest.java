@@ -1,6 +1,5 @@
 package com.rongji.dfish.misc.util;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -76,6 +75,16 @@ public class JsonUtilTest {
 		System.out.println(JSON.toJSONString(obj,SerializerFeature.WriteMapNullValue,
 				SerializerFeature.DisableCircularReferenceDetect,
 				SerializerFeature.WriteDateUseDateFormat));
+
+	}
+
+	@Test
+	public void getResoursePath() {
+		System.out.println(new JsonUtilTest().getClass().getResource(""));
+		System.out.println(new JsonUtilTest().getClass().getResource("/"));
+		System.out.println(JsonUtilTest.class.getClassLoader().getResource(""));
+		System.out.println(ClassLoader.getSystemResource(""));
+		System.out.println(JsonUtilTest.class.getName());
 	}
 
 }

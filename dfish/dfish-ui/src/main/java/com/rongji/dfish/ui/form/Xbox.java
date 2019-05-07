@@ -116,9 +116,9 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 		this.template=template;
 		return this;
 	}
-	
+
 	/**
-	 *如果设置为true 可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效，默认值为false
+	 * 如果设置为true 可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效，默认值为false
 	 * @return Boolean
 	 */
 	public Boolean getCancelable() {
@@ -127,7 +127,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 
 	/**
 	 *  如果设置为true 可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效，默认值为false
-	 * @param defaultchecked Boolean
+	 * @param cancelable Boolean
 	 * @return this
 	 */
 	public Xbox setCancelable(Boolean cancelable) {

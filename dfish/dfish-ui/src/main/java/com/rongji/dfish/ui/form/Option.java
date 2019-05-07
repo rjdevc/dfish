@@ -1,16 +1,23 @@
 package com.rongji.dfish.ui.form;
 
 
+import com.rongji.dfish.ui.Statusful;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * 选项类
  * @author DFish Team
  *
  */
-public class Option {
+public class Option implements Statusful<Option> {
 	private String text;
 	private Object value;
 	private String icon;
 	private Boolean checked;
+	private String status;
+	protected Map<String, Object> data;
 	
 	/**
 	 * 默认构造函数
@@ -104,6 +111,45 @@ public class Option {
 	 */
 	public Option setIcon(String icon) {
 		this.icon = icon;
+		return this;
+	}
+
+	@Override
+	public String getStatus() {
+		return status;
+	}
+
+	@Override
+	public Option setStatus(String status) {
+		this.status = status;
+		return this;
+	}
+
+	public Object getData(String key) {
+		if (key == null || key.equals("")) {
+			return null;
+		}
+		if(data == null) {
+			return null;
+		}
+		return data.get(key);
+	}
+
+	public Object removeData(String key) {
+		if (key == null || key.equals("")) {
+			return null;
+		}
+		if(data == null) {
+			return null;
+		}
+		return data.remove(key);
+	}
+
+	public Option setData(String key, Object value) {
+		if(data == null){
+			data = new LinkedHashMap<>();
+		}
+		data.put(key, value);
 		return this;
 	}
 

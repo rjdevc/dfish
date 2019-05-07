@@ -3,7 +3,6 @@ package com.rongji.dfish.ui.layout;
 import java.util.List;
 
 import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.MultiContainer;
@@ -100,7 +99,7 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	public T add(int index, Widget<?> w) {
 		return add(index, w,null);
  }
-	
+
 	@Override
 	public T add(Widget<?> w) {
 		if(w instanceof Hidden){
@@ -123,7 +122,7 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	 * 隐藏表单组
 	 */
 	private HiddenPart hiddens = new HiddenPart();
-    
+
 	public T addHidden(String name,String value) {
 		hiddens.addHidden(name, value);
 		return (T)this;
@@ -132,23 +131,23 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 //		hiddens.addHidden(name, value);
 //		return (T)this;
 //	}
-//	
+//
 	public T add(Hidden hidden) {
 		hiddens.add(hidden);
 		return (T)this;
 	}
-	
+
 	public List<Hidden> getHiddens() {
 		return hiddens.getHiddens();
 	}
-	
+
 	public List<String> getHiddenValue(String name) {
 		return hiddens.getHiddenValue(name);
 	}
-	
+
 	public T removeHidden(String name) {
 		hiddens.removeHidden(name);
 		return (T)this;
 	}
-	
+
 }

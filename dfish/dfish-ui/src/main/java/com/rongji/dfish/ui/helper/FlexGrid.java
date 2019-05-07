@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import com.rongji.dfish.ui.AtExpression;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
 import com.rongji.dfish.ui.Layout;
@@ -39,8 +38,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	/**
 	 * 如果设置了FULL_LINE即使columns变化了也是占满整行
 	 */
-	public static final int FULL_LINE = -1; 
-	
+	public static final int FULL_LINE = -1;
+
 	private int columns = 12;
 	private Integer rowHeight;
 	/**
@@ -52,10 +51,10 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 */
 	protected GridLayout prototype;
 	protected boolean prototypeChanged=false;
-	
+
 	private List<FlexGridAppendingMode> nodes=new ArrayList<FlexGridAppendingMode>();
 	protected String labelWidth;
-	
+
 	public void notifyChage(){
 		prototypeChanged=true;
 	}
@@ -133,7 +132,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 		}
 		return add(w, defaultOccupy);
 	}
-	
+
 	
 	/**
 	 * 添加子节点
@@ -168,7 +167,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * 如果用于添加文字说明。请使用add(Html,Integer)
 	 * @param text 文本
 	 * @param occupy 占用列数
-	 * @param required 是否显示必填标记 
+	 * @param required 是否显示必填标记
 	 * @return this
 	 * @deprecated 3.2开始label和内容是一体的，该方法没有用处了
 	 */
@@ -187,7 +186,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 ////		}
 //		Html html = (Html) new FormLabel(text, required, getEscape()).getLabelWidget(true);
 //		html.setAlign(Html.ALIGN_RIGHT);
-//		
+//
 //		return add(html, occupy);
 		return this;
 	}
@@ -310,12 +309,12 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 //		hiddens.addHidden(name, value);
 //		return this;
 //	}
-	
+
 	public FlexGrid add(Hidden hidden) {
 		hiddens.add(hidden);
 		return this;
 	}
-	
+
 	public List<Hidden> getHiddens() {
 		// FIXME 最好在初始化的时候将原型初始化好,然后直接设置在原型上
 		return hiddens.getHiddens();
@@ -455,8 +454,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 					return false;
 				}
 			} else if (item instanceof Layout) {
-               @SuppressWarnings("unchecked")
-			Layout<?,Widget<?>> cast = (Layout<?,Widget<?>>) item;
+                @SuppressWarnings("unchecked")
+			    Layout<?,Widget<?>> cast = (Layout<?,Widget<?>>) item;
 				boolean replaced = cast.replaceNodeById(w);
 				if (replaced) {
 					return true;

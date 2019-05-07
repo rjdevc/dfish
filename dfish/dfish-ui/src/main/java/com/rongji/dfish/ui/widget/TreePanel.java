@@ -124,7 +124,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 //    	hiddens.addHidden(name,value);
 //		return this;
 //    }
-    
+
     public TreePanel add(Hidden hidden) {
     	hiddens.add(hidden);
 		return this;
@@ -252,7 +252,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 		rootLeaf.add(w);
 		return this;
 	}
-	
+
 	public TreePanel add(int index,Leaf w) {
 		rootLeaf.add(index,w);
 		return this;
@@ -335,5 +335,5 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 		rootLeaf.setTemplate(template);
 		return this;
 	}
-	
+
 }

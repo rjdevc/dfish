@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.AtExpression;
+
 
 /**
  * 单行文本输入框。
@@ -54,7 +54,7 @@ public class Text extends AbstractInput<Text,String>{
 //		at("vallue",value.expr());
 //	}
 
-	
+
 //	private DialogCommand picker;
 	
     /**

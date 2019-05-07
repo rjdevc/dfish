@@ -99,7 +99,7 @@ public class TipCommand extends AbstractNode<TipCommand> implements Command<TipC
 	/**
 	 * 设置鼠标移开时tip自动关闭
 	 * @param hoverdrop Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public TipCommand setHoverdrop(Boolean hoverdrop) {
 		this.hoverdrop = hoverdrop;

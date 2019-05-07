@@ -224,16 +224,18 @@ public class ProgressManager {
 					// 开始执行
 					runnable.run();
                 } catch (Throwable e) {
-                	String message = null;
+                	String errorMsg = null;
                 	if (e instanceof ProgressException) {
-                		message = e.getMessage();
+                		errorMsg = e.getMessage();
                 	} else {
-                		FrameworkHelper.LOG.error("进度条运行异常", e);
-                		message = "进度条运行异常，请联系管理员";
+                		errorMsg = "进度条运行异常@" + System.currentTimeMillis();
+                		FrameworkHelper.LOG.error(errorMsg, e);
                 	}
                 	ProgressData progressData = getProgressData(progressKey);
                 	if (progressData != null) { // 进度条运行异常,原命令不应该执行,需要提示用户内部异常
-                		progressData.setCompleteCommand(new AlertCommand(message));
+                		progressData.setCompleteCommand(new AlertCommand(errorMsg));
+                		// 异常数据提示需要放到缓存中
+                		setProgressData(progressData);
                 	}
                 } finally {
                 	// 执行线程数减1
@@ -253,7 +255,7 @@ public class ProgressManager {
 			return new LoadingCommand(null).setId(ID_LOADING).setNode(shell).setCover(cover);
 		} else {
 			FrameworkHelper.LOG.error("添加进度条队列失败@" + progressKey);
-			return new AlertCommand("添加进度条队列失败，但后台仍在运行中，请稍后查看执行结果");
+			return new AlertCommand("进度条信息获取失败，但系统后台仍在运行中，请稍后查看执行结果");
 		}
 	}
 	
@@ -359,7 +361,7 @@ public class ProgressManager {
 		ProgressData progressData = getProgressData(progressKey);
 		if (progressData != null) {
 			if (progressData.isFinish()) {
-				throw new UnsupportedOperationException("The progress has been finished.");
+				return;
 			}
 			
 			stepPercent = stepPercent < 0.0 ? 0.0 : stepPercent;
@@ -436,10 +438,11 @@ public class ProgressManager {
 	 * 设置步骤比例
 	 * @param progressData 进度编号
 	 * @param stepScale 步骤比例组
+	 * @return boolean 是否设置成功
 	 */
 	private boolean setStepScale(ProgressData progressData, Number... stepScale) {
 		if (progressData == null) {
-			throw new UnsupportedOperationException("The progressData is illegal.");
+			return false;
 		}
 		if (progressData.getStepIndex() > 0) {
 			throw new UnsupportedOperationException("The progress has began, can not reset the stepScale.");
@@ -483,7 +486,7 @@ public class ProgressManager {
 		ProgressData progressData = getProgressData(progressKey);
 		if (progressData != null) {
 			if (progressData.isFinish()) {
-				throw new UnsupportedOperationException("The progress has been finished.");
+				return false;
 			}
 			if (progressData.getStepIndex() >= progressData.getStepScales().length) {
 				// 当前步骤已经走完

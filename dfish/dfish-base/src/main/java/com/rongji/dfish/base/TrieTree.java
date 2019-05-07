@@ -367,7 +367,7 @@ public class TrieTree<V extends Object> {
 		private static final char CHAR_L = '\u2514';//制表符└
 
 		public Node() {}
-		
+
 		/**
 		 * 是否一个词结束了。
 		 * @return boolean
@@ -793,7 +793,7 @@ public class TrieTree<V extends Object> {
 			}
 			return subWords;
 		}
-		
+
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			if(children!=null){

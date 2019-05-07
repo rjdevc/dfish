@@ -50,7 +50,9 @@ public class ProgressController extends BaseController {
 			progressManager.removeProgress(progressKey);
 			CommandGroup cg = new CommandGroup();
 			if (progressData.getCompleteCommand() != null) {
-				cg.add(progressData.getCompleteCommand());
+				CommandGroup pCg = new CommandGroup().setPath(CommandGroup.PATH_OWNER_VIEW);
+				cg.add(pCg);
+				pCg.add(progressData.getCompleteCommand());
 			}
 			cg.add(getCommand(null, true));
 			return cg;

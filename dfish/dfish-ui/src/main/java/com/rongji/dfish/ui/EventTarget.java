@@ -127,6 +127,10 @@ public interface EventTarget<T extends EventTarget<T>> {
     public static final String EVENT_BLUR= "blur";
     
     /**
+     * FORM事件-在元素值被改变前运行的脚本
+     */
+    public static final String EVENT_BEFORECHANGE= "beforechange";
+    /**
      * FORM事件-在元素值被改变时运行的脚本
      */
     public static final String EVENT_CHANGE= "change";
@@ -166,6 +170,11 @@ public interface EventTarget<T extends EventTarget<T>> {
      *  FORM事件-在提交表单时触发
      */
     public static final String EVENT_SUBMIT= "submit";
+
+    /**
+     * FORM事件-在表单控件认证完成(暂时仅有滑块组件使用)
+     */
+    public static final String EVENT_AUTH = "auth";
     
     /* 以下是KEYBOARD 事件 */
     /**
@@ -336,5 +345,5 @@ public interface EventTarget<T extends EventTarget<T>> {
      * MEDIA事件-当媒介已停止播放但打算继续播放时（比如当媒介暂停已缓冲更多数据）运行脚本
      */
     public static final String EVENT_WAITING= "waiting";
-  
+
 }

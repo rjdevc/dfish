@@ -130,10 +130,10 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 		this.tip = tip;
 		return (T)this;
 	}
-	
+
 	/**
 	 * 提示
-	 * @param tip String 
+	 * @param tip String
 	 * @return this
 	 */
 	public T setTip(String tip) {
