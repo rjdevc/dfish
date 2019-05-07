@@ -5158,6 +5158,7 @@ CalendarNum = define.widget( 'calendar/num', {
 		focus: function() { this.trigger( 'focus' ) },
 		isFocus: function() { return this.hasClass( 'z-on' ) },
 		toggleFocus: function() { this.focus( ! this.isFocus() ) },
+		prop_cls: function() { return _proto.prop_cls.call( this ) + (this.x.pad ? ' z-pad' : '') },
 		html_prop:  function() { return _proto.html_prop.call( this ) + ' w-urn="' + this.val() + '"' },
 		html_nodes: function() { return '<div class=_num>' + this.x.num + '</div>' + (this.x.text ? '<div class=_tx>' + this.x.text + '</div>' : '') }
 	}
@@ -5367,29 +5368,41 @@ Calendar = define.widget( 'calendar/date', {
 			}
 			return '';
 		},
-		_padrow: function( e, n, r ) {
-			while ( n -- ) e.push( (r ? (r = ! r, '<tr>') : '') + '<td class=_pad>&nbsp;' );
+		_padrow: function( e, b, n, r ) {
+			if ( n < 0 ) {
+				b.setDate( b.getDate() + n );
+				n = -n;
+			}
+			for ( var i = 0; i < n; i ++ ) {
+				e.push( (r ? (r = ! r, '<tr>') : '') + '<td class=_pad><div class=_num>' + b.getDate() + '</div>' );
+				b.setDate( b.getDate() + 1 );
+			}
 		},
 		html_nodes: function() {
-			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
+			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.today + '</div></div>' +
 					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
 			b.setDate( 1 );
-			b.getDay() > 0 && this._padrow( e, b.getDay(), T );
-			while ( b < d && b.getMonth() === c ) {
-				var v = this._fm( b ), t = o && o[ b.getDate() ],
-					g = { value: v, num: b.getDate(), status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
-				t && $.extend( g, t );
-				e.push( (b.getDay() === 0 ? '<tr>' : '') + this.add( g ).html() );
-				b.setDate( b.getDate() + 1 );
+			d.setDate( new Date( b.getFullYear(), c + 1, 0 ).getDate() );
+			var g = 7 - (b.getDay() + d.getDate()) % 7;
+			if ( g && g < 7 )
+				d.setDate( d.getDate() + g );
+			if ( b.getDay() > 0 )
+				b.setDate( 1 - b.getDay() );
+			if ( this.x.padrow ) {
+				g = 1 + (d.getTime() - b.getTime()) / $.DATE_DAY;
+				if ( g < 42 ) {
+					d.setDate( d.getDate() + 42 - g );
+				}
 			}
-			if ( (n = 7 - (e.length % 7)) > 0 && n < 7 )
-				this._padrow( e, n );
-			if ( this.x.padrow && e.length < 36 ) {
-				for ( var i = 0, l = 6 - (e.length / 7); i < l; i ++ )
-					this._padrow( e, 7, T );
+			while ( b <= d ) {
+				var v = this._fm( b ),
+					t = { value: v, num: b.getDate(), pad: b.getMonth() !== c, status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
+				o && o[ v ] && $.extend( t, o[ v ] );
+				e.push( (b.getDay() === 0 ? '<tr>' : '') + this.add( t ).html() );
+				b.setDate( b.getDate() + 1 );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
@@ -5413,12 +5426,12 @@ CalendarWeek = define.widget( 'calendar/week', {
 			if ( b[ 0 ] !== y )
 				b = $.dateWeek( new Date( y, 11, 31 - 7 ), this.x.cg, this.x.start );
 			for ( var i = 1, l = b[ 1 ]; i <= l; i ++ ) {
-				var v = y + '-' + $.strPad( i ), u = o && o[ i ], g = { value: v, num: i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				var v = y + '-' + $.strPad( i ), u = o && o[ v ], g = { value: v, num: i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
 				u && $.extend( g, u );
 				e.push( ( (i - 1) % 7 === 0 ? '<tr>' : '' ) + this.add( g ).html() );
 			}
 			if ( (n = 7 - (i % 7)) > 0 && n < 7 ) {
-				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
+				while ( n -- ) e.push( '<td class="_td z-pad">&nbsp;' );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
@@ -5436,7 +5449,7 @@ CalendarMonth = define.widget( 'calendar/month', {
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + '-' + $.strPad( i + 1 ), u = o && o[ i + 1 ], g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				var v = y + '-' + $.strPad( i + 1 ), u = o && o[ v ], g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
 				u && $.extend( g, u );
 				e.push( (i % 4 === 0 ? '<tr class=_tr>' : '') + this.add( g ).html() );
 			}

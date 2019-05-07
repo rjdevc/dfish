@@ -2609,13 +2609,13 @@ define( {
     Config: [
       { name: 'body', type: 'Object', optional: true, remark: '定义日期的内容和样式等。以日期数字作为key，以 calendar/td 作为值。', example: [
           function() {
-            // 给当前月的1日和5日设置样式和内容。
+            // 给1日和7日设置样式和内容。
             return~
             {
-               "type": "canlendar/date",
+               "type": "canlendar/date", "date": "2019-05-05",
                "body": {
-                 "1": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第一个日程" }, // 可以省略 "type": "calendar/td" 这部分
-                 "5": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第二个日程" }
+                 "2019-05-01": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第一个日程" }, // 可以省略 "type": "calendar/td" 这部分
+                 "2019-05-07": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第二个日程" }
                }
             }
           }
@@ -2699,7 +2699,8 @@ define( {
       { name: 'text', type: 'String', optional: true, remark: '显示内容。' }
     ],
     Classes: [
-      { name: '._td', remark: '基础样式。' }
+      { name: '._td', remark: '基础样式。' },
+      { name: '.z-pad', remark: '填充空白的状态样式。' }
     ]
   },
   "text": {

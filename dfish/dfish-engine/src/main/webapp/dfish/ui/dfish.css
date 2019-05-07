@@ -264,6 +264,7 @@
 .w-calendar ._td.z-hv{background:#def0fc}
 .w-calendar ._td.z-on{background:#cce7f9}
 .w-calendar ._td.z-ds{color:#999}
+.w-calendar ._td.z-pad ._num{color:#999}
 .w-calendar ._today,.w-calendar ._year,.w-calendar ._month{height:24px;cursor:pointer}
 .w-calendar ._month{display:inline-block;min-width:32px;text-align:center}
 .w-calendar ._today:hover,.w-calendar ._year:hover,.w-calendar ._month:hover{text-decoration:underline}
@@ -287,6 +288,8 @@
 .w-calendar-time-dlg ._o{height:26px;line-height:26px}
 .w-calendar-time-dlg ._o.z-hv{background:#def0fc}
 .w-calendar-time-dlg ._o.z-on{background:#cce7f9}
+
+
 
 /* form */
 .w-form{margin:0;padding:0;}

@@ -610,7 +610,7 @@ _jsonClone = $.jsonClone = function( a ) {
 	return typeof a === _OBJ ? _jsonParse( _jsonString( a ) ) : a;
 },
 // 一天的毫秒数
-_date_D = 86400000,
+_date_D = $.DATE_DAY = 86400000,
 // 标准格式化字符串
 _date_sf = 'yyyy-mm-dd hh:ii:ss',
 // 格式化日期
@@ -629,15 +629,15 @@ _dateParse = $.dateParse = function( s, f ) {
 		if ( g == 'm' )
 			s = '2017-' + s;
 		else if ( g == 'd' )
-			s = '2017-01-' + s;
+			s = '2017-03-' + s;
 		else if ( g == 'h' )
-			s = '2017-01-01 ' + s;
+			s = '2017-03-01 ' + s;
 		else if ( g == 'i' )
-			s = '2017-01-01 00:' + s;
+			s = '2017-03-01 00:' + s;
 	}
 	var b = s.split( '-' );
 	if ( b.length === 1 )
-		s += '-01-01';
+		s += '-03-01';
 	else if ( b.length === 2 )
 		s += '-01';
 	var a = new Date( s.replace( /-/g, '/' ) );
