@@ -105,15 +105,15 @@ _view = function( a ) {
 _vmByElem = function ( o ) {
 	var p = _widget( o );
 	if( p ) {
-		while ( p && ! p.ownerView )
+		while ( p && (! p.ownerView && ! p.type_view) )
 			p = p.parentNode;
-		return p ? p.ownerView : ((p = _widget( o ).$()) && _vmByElem( p.parentNode ));
+		return p ? (p.type_view ? p : p.ownerView) : ((p = _widget( o ).$()) && _vmByElem( p.parentNode ));
 	}
 	return _docView;
 },
 // @a -> content|js, b -> escape?, c -> callback?
 _wg_format = function( a, b, c ) {
-	return typeof a === _FUN || a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
+	return a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
 },
 _repaintSelfWithBox = function() {
 	var b = this.box && this.box.isChecked();
@@ -522,10 +522,10 @@ W = define( 'widget', function() {
 			return a == N ? _slice.call( this ) : a < 0 ? this[ this.length + a ] : this[ a ];
 		},
 		// 获取所有子孙节点
-		getAll: function() {
+		getDescendants: function() {
 			for ( var i = 0, r = [], l = this.length; i < l; i ++ ) {
 				r.push( this[ i ] );
-				this[ i ].length && r.push.apply( r, this[ i ].getAll() );
+				this[ i ].length && r.push.apply( r, this[ i ].getDescendants() );
 			}
 			return r;
 		},
@@ -540,7 +540,7 @@ W = define( 'widget', function() {
 					if ( p.type === a )
 						return p;
 				} else if ( b === _FUN ) {
-					if ( a.call( p, this ) === T )
+					if ( a.call( p, this ) )
 						return p;
 				} else if ( b === _OBJ ) {
 					var i, r = T;
@@ -680,7 +680,7 @@ W = define( 'widget', function() {
 		},
 		// 触发用户定义的事件和系统事件 / @e -> event, @a -> [data]
 		// 优先返回用户事件的返回值，其次返回系统事件的值
-		trigger: function( e, a ) { 
+		trigger: function( e, a ) {
 			if ( this._disposed )
 				return;
 			var b = this.Const.Listener,
@@ -2173,6 +2173,11 @@ Html = define.widget( 'html', {
 	Extend: 'scroll',
 	Prototype: {
 		className: 'w-html',
+		attrSetter: function( k, v ) {
+			_proto.attrSetter.apply( this, arguments );
+			if ( k === 'text' )
+				this.text( v );
+		},
 		// @a -> text
 		text: function( a ) {
 			if ( a == N )
@@ -2207,37 +2212,6 @@ Html = define.widget( 'html', {
 			if ( v )
 				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>';
 			return s;
-		}
-	}
-} ),
-_video_mime = { 'video/mp4': T, 'video/ogg': T, 'video/webm': T },
-Video = define.widget( 'video', {
-	Listener: {
-		body: {
-			resize: function() {
-				var e = this.$( 'v' );
-				e && $.css( e, { width: this.innerWidth(), height: this.innerHeight() } );
-			}
-		}
-	},
-	Prototype: {
-		isSwf: function() {
-			if ( br.ie && br.ieVer <= 9 )
-				return T;
-			var m = $.mimeType( this.x.src );
-			if ( ! m || ! _video_mime[ m ] )
-				return T;
-		},
-		html_nodes: function() {
-			var w = this.innerWidth(), h = this.innerHeight(), u = this.x.src;
-			if ( this.isSwf() ) {
-				return '<object id=' + this.id + 'v classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
-					'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
-					'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
-					'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
-					'<embed src="' + $.LIB + 'wg/upload/flvplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
-			}
-			return '<video id=' + this.id + 'v src="' + u + '" width="' + w + '" height="' + h + '" controls="controls"></video>';
 		}
 	}
 } ),
@@ -3480,6 +3454,11 @@ Dialog = define.widget( 'dialog', {
 		loaded: F,
 		className: 'w-dialog',
 		isDialogWidget: T,
+		attrSetter: function( a, b ) {
+			if ( a === 'title' ) {
+				this.templateTitle && this.templateTitle.text( b );
+			}
+		},
 		outerWidth: function() {
 			var w = this.attr( 'width' );
 			return w == N || w < 0 ? N : _docView.scaleWidth( this );
@@ -3487,11 +3466,6 @@ Dialog = define.widget( 'dialog', {
 		outerHeight: function() {
 			var h = this.attr( 'height' );
 			return h == N || h < 0 ? N : _docView.scaleHeight( this );
-		},
-		attrSetter: function( a, b ) {
-			if ( a === 'title' ) {
-				this.templateTitle && this.templateTitle.text( b );
-			}
 		},
 		getContentView: function() {
 			return this.contentView;
@@ -3524,6 +3498,7 @@ Dialog = define.widget( 'dialog', {
 			y != N && (s[ s.top ? 'top' : 'bottom' ]  = y);
 			$.classAdd( this.$(), 'z-max', ! f );
 			this.x.fullscreen = ! f;
+			return this;
 		},
 		isMax: function() {
 			return !!this.x.fullscreen;
@@ -3736,7 +3711,7 @@ Dialog = define.widget( 'dialog', {
 					var w = this.$().offsetWidth, h = this.$().offsetHeight, d = this.id, self = this,
 						n = f == 1 || f == 2 ? { top: -h } : f == 3 || f == 4 ? { right: -w } : f == 5 || f == 6 ? { bottom: -h } : { left: -w };
 					$.classAdd( this.$(), 'z-closing' ); // z-closing生成遮盖层，避免在消失过程中内容部分再被点击
-					Q( this.$() ).animate( n, 150, function() { self.removeElem(); } );
+					Q( this.$() ).animate( n, 150, function() { self.removeElem() } );
 				} else
 					this.removeElem();
 				this.vis = F;
@@ -3803,7 +3778,7 @@ Dialog = define.widget( 'dialog', {
 _operexe = function( x, g, a ) {
 	return x && (typeof x === _OBJ ? g.exec( x, a ) : typeof x === _FUN ? x.apply( g, a || [] ) : g.formatJS( x ));
 },
-/* `alert/button` */
+/* `alertbutton` */
 AlertButton = define.widget( 'alert/button', {
 	Extend: Button,
 	Listener: {
@@ -3828,7 +3803,7 @@ Alert = define.widget( 'alert', {
 	Const: function( x, p ) {
 		var a = this.type === 'alert', k, t = cfg.template_alert || cfg.template, r = x.args, s = x.btncls || 'f-button',
 			b = { type: 'alert/submitbutton', cls: s, text: '    ' + Loc.confirm + '    ' },
-			c = { type: 'alert/button', cls: s, text: '    ' + Loc.cancel + '    ' }, d;
+			c = { type: 'alert/button', cls: s, text: '    ' + Loc.cancel + '    ' };
 		if ( x.buttons ) {
 			for ( var i = 0, d = []; i < x.buttons.length; i ++ ) {
 				x.buttons[ i ].type = 'alert/' + x.buttons[ i ].type;
@@ -4411,7 +4386,6 @@ AbsForm = define.widget( 'abs/form', {
 				c = (x.validate || (x.validate = {}));
 				a ? $.merge( c, a ) : (x.validate = N);
 				this.$() && $.classAdd( this.$(), 'z-required', !!c.required );
-				this.trigger( 'validatechange' );
 			}
 			return this;
 		},
@@ -5176,7 +5150,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', ownproperty: T, snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog', ownproperty: T, snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -5371,7 +5345,7 @@ Calendar = define.widget( 'calendar/date', {
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.today + '</div></div>' +
-					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
+					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
 			b.setDate( 1 );
 			d.setDate( new Date( b.getFullYear(), c + 1, 0 ).getDate() );
 			var g = 7 - (b.getDay() + d.getDate()) % 7;
@@ -5407,7 +5381,7 @@ CalendarWeek = define.widget( 'calendar/week', {
 			var a = this.date, w = $.dateWeek( a, this.x.cg, this.x.start ), y = w[ 0 ], n = this.x.begindate, m = this.x.enddate, t = this._fm( new Date() ),
 				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
-				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.weeknow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
+				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.weeknow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			this._year = y;
 			if ( b[ 0 ] !== y )
 				b = $.dateWeek( new Date( y, 11, 31 - 7 ), this.x.cg, this.x.start );
@@ -5433,7 +5407,7 @@ CalendarMonth = define.widget( 'calendar/month', {
 			var a = this.date, e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), y = a.getFullYear(),
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
-					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
+					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
 				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
 				o && o[ v ] && $.extend( g, o[ v ] );
@@ -5454,7 +5428,7 @@ CalendarYear = define.widget( 'calendar/year', {
 			var a = this.date, e = [], f = _number( this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )) ), y = a.getFullYear() - ( a.getFullYear() % 10 ) - 1,
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
-				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.yearnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
+				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.yearnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
 				var v = y + i, g = { value: v, num: y + i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
 				o && o[ v ] && $.extend( g, o[ v ] );
@@ -5601,9 +5575,8 @@ Muldate = define.widget( 'muldate', {
 			click: {
 				occupy: T,
 				method: function() {
-					if ( this.isNormal() ) {
+					if ( this.isNormal() )
 						this.val() ? this.popList() : this.popCalendar();
-					}
 				}
 			}
 		}
@@ -6828,10 +6801,9 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		fixSize: function() {
 			if ( this.$() ) {
-				if ( ! this.x.maxwidth ) {
-					var w = this.$().parentNode.offsetWidth - 5;
-					this.$().style.maxWidth = w + 'px';
-				}
+				var w = this.$().parentNode.offsetWidth - 5, m = this.x.maxwidth || 0;
+				if ( m > w ) m = w;
+				this.$().style.maxWidth = m + 'px';
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
 					this.$().style.width = w + 'px';
 					Q( 'table', this.$() ).css( 'table-layout', 'fixed' );
@@ -7412,11 +7384,8 @@ Pickbox = define.widget( 'pickbox', {
 /* `rate` */
 Rate = define.widget( 'rate', {
 	Extend: AbsForm,
-	Default: {
-		width: -1
-	},
+	Default: { width: -1 },
 	Prototype: {
-		className: 'w-rate',
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a === U )
@@ -7649,6 +7618,10 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				case 'src':
 					this.fixFolder();
 				break;
+				case 'cls':
+					this.removeClass( c );
+					this.addClass( b );
+				break;
 			}
 		},
 		isFolder: function() {
@@ -7686,9 +7659,9 @@ AbsLeaf = define.widget( 'abs/leaf', {
 					}
 				} } );
 		},
-		render_nodes: function( x ) {
-			for ( var j = 0, l = x.length; j < l; j ++ )
-				this.add( x[ j ] );
+		render_nodes: function( n ) {
+			for ( var j = 0, l = n.length; j < l; j ++ )
+				this.add( n[ j ] );
 			this.$( 'c' ) && (this.$( 'c' ).innerHTML = _proto.html_nodes.call( this ));
 			if ( (this.rootNode || this).x.combo ) {
 				var o = new TreeCombo( this ).xml, m = this.ownerView.combo.getXML( this );
@@ -7740,9 +7713,8 @@ AbsLeaf = define.widget( 'abs/leaf', {
 					if ( _x[ e ] !== x[ e ] )
 						this.attr( e, x[ e ] || '' );
 				}
-				if ( this.x.format || (_x.text !== x.text) ) {
+				if ( this.x.format || (_x.text !== x.text) )
 					this.attr( 'text', x.text );
-				}
 			}
 			var n = x.nodes, l = n && n.length;
 			if ( l && ! this.loading ) {
@@ -7821,14 +7793,14 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				this.parentNode.openTo( this.parentNode.x.src, a, b );
 		},
 		draggable: function( a ) {
-			for ( var i = 0, b = this.getAll(), l = b.length; i < l; i ++ ) {
+			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
 				$.draggable( b[ i ], a );
 				b[ i ].x.src && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.draggable.call( this, a ) } );
 			}
 			return this;
 		},
 		droppable: function( a ) {
-			for ( var i = 0, b = this.getAll(), l = b.length; i < l; i ++ ) {
+			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
 				$.droppable( b[ i ], a );
 				b[ i ].x.src && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.droppable.call( this, a ) } );
 			}
@@ -7848,7 +7820,7 @@ Leaf = define.widget( 'leaf', {
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
-		this.x.focus && this.tabFocus();
+		x.focus && this.tabFocus();
 	},
 	Extend: AbsLeaf,
 	Default: { width: -1, height: -1 },
@@ -7941,12 +7913,12 @@ Leaf = define.widget( 'leaf', {
 			a !== F && this.scrollIntoView( 'auto' );
 		},
 		_focus: function( a, e ) {
-			a = a == N ? T : a;
+			a = a == N ? T : !!a;
 			this.tabFocus( a );
 			a !== F && this.triggerHandler( 'focus' );
 			if ( this.box && this.box.x.sync === 'focus' && ! this.isEvent4Box( e ) ) {
 				if ( a ) {
-					for ( var i = 0, r = this.rootNode.getAll(), l = r.length; i < l; i ++ )
+					for ( var i = 0, r = this.rootNode.getDescendants(), l = r.length; i < l; i ++ )
 						r[ i ] !== this && r[ i ].checkBox( F );
 				}
 				this.checkBox( a );
@@ -7961,6 +7933,9 @@ Leaf = define.widget( 'leaf', {
 				this.css( 'paddingLeft', this.padLeft() );
 			for ( var i = 0; i < this.length; i ++ )
 				this[ i ].indent();
+		},
+		toggleFocus: function() {
+			this.focus( ! this.isFocus() );
 		},
 		isFocus: function() {
 			return this.rootNode.focusNode === this;
@@ -7983,17 +7958,14 @@ Leaf = define.widget( 'leaf', {
 		isLast: function() {
 			return this.nodeIndex === this.parentNode.length - 1;
 		},
-		toggleFocus: function() {
-			this.focus( ! this.isFocus() );
+		checkBox: function( a ) {
+			this.box && this.box.click( a == N || a );
 		},
 		scrollIntoView: function( a ) {
 			var n = this;
 			while ( (n = n.parentNode) && n.type === this.type )
 				n.toggle( T );
 			_scrollIntoView( this, T, a );
-		},
-		checkBox: function( a ) {
-			this.box && this.box.click( a == N || a );
 		},
 		// triplebox 级联勾选
 		_triple: function() {
@@ -8086,6 +8058,7 @@ Tree = define.widget( 'tree', {
 		body: {
 			ready: function() {
 				Scroll.Listener.body.ready.call( this );
+				this.length && this.trigger( 'load' );
 				_scrollIntoView( this.getFocus() );
 				if ( this.x.src && ! this.length )
 					Leaf.prototype.request.call( this );
@@ -8171,9 +8144,9 @@ GridLeaf = define.widget( 'grid/leaf', {
 		}
 	},
 	Prototype: {
-		_pad_left: 0,
 		ROOT_TYPE: 'grid',
 		className: 'w-leaf w-grid-leaf',
+		_pad_left: 0,
 		tr: _grid_tr,
 		_focus: $.rt(),
 		isEllipsis: $.rt( T ),
@@ -8456,7 +8429,7 @@ GridRow = define.widget( 'grid/row', {
 			s += _html_on.call( this ) + '>' + this.html_cells() + '</tr>';
 			return this.length ? s + this.html_nodes() : s;
 		},
-		remove: function( a ) {
+		remove: function() {
 			var i = this.length;
 			while ( i -- ) this[ i ].remove( T );
 			_proto.remove.apply( this, arguments );
@@ -8726,8 +8699,8 @@ TCell = define.widget( 'tcell', {
 				(e = r.colgrps[ 0 ][ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			//if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
-			//	w -= 1;
+			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
+				w -= 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
 		},
@@ -9002,7 +8975,7 @@ GridCombo = $.createClass( {
 		this.cab = a;
 		this.xml = this.node2xml( a );
 		this._keep_show = a.x.combo.keepshow;
-		for ( var i = 0, c = a.x.columns; i < c.length; i ++ ) {
+		for ( var i = 0, c = a.x.columns, l = c && c.length; i < l; i ++ ) {
 			if ( c[ i ].highlight ) {
 				this._matchlength = c[ i ].highlight.matchlength;
 				break;

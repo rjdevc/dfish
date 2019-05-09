@@ -196,7 +196,6 @@
 .w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}
 .w-leaf.w-grid-leaf{height:auto}
 
-
 .w-html{overflow:hidden}
 .w-html.z-autosize{overflow:visible}
 
@@ -260,7 +259,7 @@
 .w-calendar-head .f-arw-r5{margin-left:20px;vertical-align:middle;cursor:pointer}
 .w-calendar-head .f-arw-l2{margin-right:15px;vertical-align:baseline;cursor:pointer}
 .w-calendar-head .f-arw-r2{margin-left:15px;vertical-align:baseline;cursor:pointer}
-.w-calendar-tbl{table-layout:fixed;border-collapse:collapse;text-align:center;cursor:default}
+.w-calendar-tbl{width:100%;table-layout:fixed;border-collapse:collapse;text-align:center;cursor:default}
 .w-calendar ._td.z-hv{background:#def0fc}
 .w-calendar ._td.z-on{background:#cce7f9}
 .w-calendar ._td.z-ds{color:#999}
@@ -288,8 +287,9 @@
 .w-calendar-time-dlg ._o{height:26px;line-height:26px}
 .w-calendar-time-dlg ._o.z-hv{background:#def0fc}
 .w-calendar-time-dlg ._o.z-on{background:#cce7f9}
-
-
+.w-calendar-dialog .w-calendar-tbl{width:auto;*table-layout:auto}
+.w-calendar-dialog .w-calendar-date ._td,.w-calendar-dialog .w-calendar-week ._td{width:23px;height:23px}
+.w-calendar-dialog .w-calendar-month ._td{width:40px}
 
 /* form */
 .w-form{margin:0;padding:0;}
@@ -316,9 +316,9 @@
 .w-textarea .w-input-placeholder{height:22px}
 
 .w-select{display:inline-block}
-.w-select select{height:100%;border:0}
+.w-select ._t{height:100%;border:0;*text-indent:0}
 .w-select.w-select-multiple{height:auto}
-.w-select.z-ds select{background:#eee}
+.w-select.z-ds ._t{background:#eee}
 .w-select ._cvr{display:none}
 .w-select.z-ds ._cvr{display:block;position:absolute;top:0;bottom:0;left:0;right:0;background:#fff;opacity:0;filter:Alpha(opacity:0)}
 
