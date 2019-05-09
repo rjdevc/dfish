@@ -21,6 +21,10 @@ _number = $.number,
 _slice  = Array.prototype.slice,
 _putin  = { append: T, prepend: T, undefined: T },
 
+// 给第三方插件使用的全局变量
+globalWindow = define( 'global/window', window ),
+globalDocument = define( 'global/document', document ),
+
 // widget实例缓存
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
@@ -28,7 +32,7 @@ _docView,
 abbr = function( a, b ) { return $.abbr + '.all["' + a.id + '"].' + b; },
 // 模板集合
 _templateCache = {},
-// 注册模板  /@ a -> id, b -> preload body
+// 注册模板  /@a -> id, b -> template body
 _regTemplate = function( a, b ) {
 	_templateCache[ a ] = b;
 },
@@ -67,7 +71,6 @@ _event_enter = {
 _event_stop = {
 	contextmenu: function( e ) { !(cfg.debug && e.ctrlKey) && $.stop( e ) }
 },
-
 // @a -> htmlElement: 返回html元素对象所在的widget
 // @a -> JSON: 参数为符合widget配置项的json对象，则创建这个widget
 _widget = function( a ) {
@@ -721,11 +724,14 @@ W = define( 'widget', function() {
 		},
 		// a -> name, b -> value, c -> old value
 		attrSetter: function( a, b, c ) {
-			if ( a === 'cls' ) {
-				c && this.removeClass( c );
-				b && this.addClass( b );
-			} else if ( a === 'style' ) {
-				this.css( b );
+			switch( a ) {
+				case 'cls':
+					c && this.removeClass( c );
+					b && this.addClass( b );
+				break;
+				case 'style':
+					this.css( b );
+				break;
 			}
 		},
 		addClass: function( a, b ) {
@@ -1051,11 +1057,13 @@ W = define( 'widget', function() {
 				var p = this.rootNode || this.parentNode, f = p.focusNode;
 				if ( a == N || a ) {
 					f && f != this && f.tabFocus( F );
+					this.x.focus = T;
 					this.addClass( 'z-on' );
 					p.focusNode = this;
 					this.focusOwner = p;
 				} else {
 					if ( f === this ) {
+						this.x.focus = F;
 						this.removeClass( 'z-on' );
 						delete p.focusNode; delete this.focusOwner;
 					}
@@ -1318,12 +1326,6 @@ _w_rsz_layout = function() {
 	for ( var i = 0, l = this.length; i < l; i ++ )
 		_w_rsz_all.call( this[ i ] );	
 },
-// @a -> size, b -> min, c -> max
-_w_size_rng = function( a, b, c ) {
-	if ( b && ! isNaN( b ) ) a = Math.max( a, b );
-	if ( c && ! isNaN( c ) ) a = Math.min( a, c );
-	return a;
-},
 // widget配置项里设置了style，又没有设置wmin和hmin，则由系统解析style，获取wmin和hmin的值
 // 如果设置了cls，而cls里有 padding margin border 等，就需要人工计算并设置wmin和hmin
 //@ _c -> cls, _1 -> style, _2 -> wmin, _3 = hmin
@@ -1495,11 +1497,16 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( b && ! isNaN( b ) )
 			b = parseFloat( b );
 		if ( typeof b === _NUM && ! m )
-			return b < 0 ? N : a.isWidget ? _w_size_rng( b, a.attr( nv ), a.attr( xv ) ) : b;
+			return b < 0 ? N : b;
 		c === U && (c = this[ iz ]());
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
-		return c == N ? N : a.isWidget ? _w_size_rng( c, a.attr( nv ), a.attr( xv ) ) : c;
+		if ( a.isWidget && m ) {
+			var d = a.attr( m + v );
+			if ( d != N )
+				return $.scale( c, [ { value: d } ] )[ 0 ];
+		}
+		return c;
 	};
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min, c -> appoint size?
 	_w_scale[ v ] = function( a, m, c ) {
@@ -1641,16 +1648,16 @@ _show_scroll = function() {
 },
 _html_scroll = function( s ) {
 	this._scr_usable = T;
-	var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll, d = br.scroll;
+	var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll;
 	if ( mbi ) {
 		return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + '<div id=' + this.id + 'ovf class=w-scroll-overflow style="' +
 			(w ? 'width:' + w + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + this.x.maxwidth + 'px;' : '') +
 			(this.x.minwidth ? 'min-width:' + this.x.minwidth + 'px;' : '') + (h ? 'height:' + h + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + this.x.maxheight + 'px;' : '') +
 			(this.x.minheight ? 'min-height:' + this.x.minheight + 'px;' : '') + '" onscroll=' + eve + '><div id=' + this.id + 'cont>' + (s || '') + '</div></div>';		
 	} else {
-		return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class=f-scroll-overflow style="margin-bottom:-' + c + 'px;' +
+		return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class=f-scroll-overflow style="margin-bottom:-' + br.scroll + 'px;' +
 			(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + (+this.x.maxwidth + c) + 'px;' : '') + (this.x.minwidth ? 'min-width:' + (+this.x.minwidth + c) + 'px;' : '') +
-			(h ? 'height:' + (h + d) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + d) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + d) + 'px;' : '') +
+			(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
 			'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
 			'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
 			this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div><div id=' +
@@ -1711,11 +1718,10 @@ Scroll = define.widget( 'scroll', {
 				}
 			},
 			scroll: function( e ) {
-				if ( this._scr_rateY )
+				if ( this._scr_rateY && this.$( 'ytr' ) )
 					this.$( 'ytr' ).style.top  = Math.min( this.$( 'ovf' ).scrollTop / this._scr_rateY, this.$( 'y' ).offsetHeight - _number(this.$( 'ytr' ).style.height) ) + 'px';
-				if ( this._scr_rateX ) {
+				if ( this._scr_rateX && this.$( 'xtr' ) )
 					this.$( 'xtr' ).style.left = ( this.$( 'ovf' ).scrollLeft / this._scr_rateX ) + 'px';
-				}
 			},
 			resize: function() {
 				if ( this.attr( 'scroll' ) && ! this._scr_usable && this.innerWidth() != N && this.innerHeight() != N )
@@ -2280,7 +2286,7 @@ View = define.widget( 'view', {
 					var o = _all[ n.wid ];
 					_scrollIntoView( o, T );
 					a && o.trigger( 'error', [{ type: 'alert', text: n.text, id: $.alert_id }] );
-					h && o.trigger( 'error', [{ type: 'tip', text: n.text }] );
+					h && o.trigger( 'error', [ o.validTip( n.text ) ] );
 				}
 			}
 			return !(this._err_ns = e); 
@@ -2815,11 +2821,6 @@ Button = define.widget( 'button', {
 		},
 		body: {
 			ready: function() {
-				/*if ( this.x.focus && this.x.focusable ) {
-					var p = this.parentNode;
-					if ( this.ROOT_TYPE === p.type && !p.x.focusmultiple && p.getFocus( this.x.name ) !== this )
-						this._focus( T );
-				}*/
 				this.x.target && this._ustag();
 				this.isFocus() && this.triggerHandler( 'focus' );
 			},
@@ -2881,6 +2882,14 @@ Button = define.widget( 'button', {
 					$.classRemove( this.$(), 'z-lock' );
 					this.removeElem( 'lock' );
 					Q( '.z-hv', this.$() ).add( this.$() ).removeClass( 'z-hv' );
+				}
+			},
+			close: function() {
+				if ( this.x.target ) {
+					var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.prev() || this.next());
+					n && n.click();
+					for ( var i = 0, b = this.ownerView.find( this.x.target.split( ',' ) ); i < b.length; i ++ )
+						b[ i ].remove();
 				}
 			}
 		}
@@ -3216,6 +3225,7 @@ Album = define.widget( 'album', {
 	Prototype: {
 		className: 'w-album',
 		x_childtype: $.rt( 'img' ),
+		scaleWidth: _proto.scaleWidth,
 		getFocus: function() {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isFocus() ) return this[ i ];
@@ -3385,10 +3395,11 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r1' : 'b1' ) + '</span>' : '');
 		},
 		html_nodes: function() {
-			var x = this.x, c = this.html_icon(), t = x.text != N && '<span class=w-toggle-text><em>' + x.text + '</em></span>';
-			return '<table class="w-toggle-table' + (x.nobr !== F ? ' z-nobr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (c ? '<td>' + c : '') +
-				(t ? '<td ' + (x.nobr === F ? '' : ' class=f-nobr') + '>' + t : '') +
-				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table>';
+			var x = this.x, t = this.html_icon();
+			if ( x.text != N )
+				t += ' <span class=w-toggle-text><em>' + x.text + '</em></span>';
+			return '<div class=f-oh><table class="f-oh w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
+				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table></div>';
 		}
 	}
 } ),
@@ -3425,7 +3436,7 @@ Page = define.widget( 'page/mini', {
 		go: function( i, a ) {
 			if ( (i = _number( i )) > 0 ) {
 				i = Math.max( Math.floor( i ), 1 );
-				this.x.sumpage && (i = Math.min( i, this.x.sumpage ));
+				//this.x.sumpage && (i = Math.min( i, this.x.sumpage ));
 				this.$( 'v' ) && (this.$( 'v' ).value = i);
 				if ( this.x.target ) {
 					var g = this.ownerView.find( this.x.target );
@@ -3469,6 +3480,9 @@ Page = define.widget( 'page/mini', {
 		eve: function( i, b ) {
 			return b ? ' onclick=' + evw + '.go(' + i + ',this) onmouseover=' + evw + '.over(this) onmouseout=' + evw + '.out(this)' : '';
 		},
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.x.nofirstlast ? ' z-nofirstlast' : '');
+		},
 		html_nodes: function() {
 			this.x.target && this.initByTarget();
 			var c = this.x.currentpage, m = _number( this.x.sumpage ), n = _number( this.x.btncount ), f = Math.max( 1, c - Math.ceil( n / 2 ) + 1 ),
@@ -3492,8 +3506,6 @@ Page = define.widget( 'page/mini', {
 		},
 		html_info: function() {
 			var s = '';
-			if ( this.x.info )
-				s += '<span class="_t _inf">' + this.x.info + '</span>';
 			if ( this.x.jump ) {
 				this.jbtn = this.add( { type: 'button', cls: '_jbtn', text: 'GO', on: { click: 'this.parentNode.ego(event)' } }, -1 );
 				s += '<span class="_t _to">' + Loc.to + '</span> <input class=_jump id=' + this.id + 'j onfocus=' + evw + '.jumpFocus(event) onblur=' + evw + '.jumpFocus(event,!1) onkeyup=' + evw + '.ego(event)>' + this.jbtn.html() + ' <span class=_t>' + Loc.page + '</span>';
@@ -3649,9 +3661,10 @@ Dialog = define.widget( 'dialog', {
 		close: function( a ) {
 			(a = Dialog.get( a )) && a.close();
 		},
-		cleanPop: function() {
+		cleanPop: function( a ) {
 			for ( var k in Dialog.all ) {
-				Dialog.all[ k ].attr( 'pophide' ) && Dialog.all[ k ].close();
+				var d = Dialog.all[ k ];
+				d.vis && d.attr( 'pophide' ) && (! a || (a.id !== k && !d.contains( a ) && !a.contains( d ))) && d.close();
 			}
 		}
 	},
@@ -3833,13 +3846,22 @@ Dialog = define.widget( 'dialog', {
 				r = this._dft_pos();
 			this._pos = r;
 			$.snapTo( this.$(), r );
+			if ( vs ) {
+				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
+				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
+				t && (this.height( r.height + r.top ));
+				b && (this.height( r.height + r.bottom ));
+				(t || b) && (this._ori_height = h);
+			}
 			// 八方位浮动效果
 			n && Q( this.$() ).animate( n, 200 );
 			if ( this.x.prong && vs ) {
 				var m = r.mag_b ? 't' : r.mag_t ? 'b' : r.mag_l ? 'r' : 'l', x = Math.floor((r.target.left + r.target.right) / 2), y = Math.floor((r.target.top + r.target.bottom) / 2), 
-					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 );
-				$.append( this.$(), '<div class="w-dialog-prong z-' + m + '" style="' + (r.mag_b || r.mag_t ? 'left:' + l + 'px' : '') + (r.mag_l || r.mag_r ? 'top:' + t + 'px' : '') +
-					'"><i class="_out f-arw f-arw-' + m + '5"></i><i class="_in f-arw f-arw-' + m + '4"></i></div>' );
+					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 ), s = '';
+				(r.mag_b || r.mag_t) && (s += 'left:' + l + 'px;');
+				(r.mag_l || r.mag_r) && (s += 'top:' + t + 'px;');
+				$.append( this.$(), '<div class="w-dialog-prong z-' + m + '"' + (s ? ' style="' + s + '"' : '') +
+					'><i class="_out f-arw f-arw-' + m + '5"></i><i class="_in f-arw f-arw-' + m + '4"></i></div>' );
 			}
 			$.classAdd( this.$(), 'z-max', !! a );
 			this._snapCls();
@@ -3871,6 +3893,11 @@ Dialog = define.widget( 'dialog', {
 				return;
 			! this.parentNode && _docView.add( this );
 			this.$() && this.removeElem();
+			// _ori_height表示当前窗口曾经调整过高度，再次打开时尝试恢复
+			if ( this._ori_height ) {
+				this.height( this._ori_height );
+				delete this._ori_height;
+			}
 			var c = this.attr( 'local' );
 			c && this.ownerView.addClass( 'f-rel' );
 			if ( this.x.cover )
@@ -3911,6 +3938,28 @@ Dialog = define.widget( 'dialog', {
 			return this.vis;
 		},
 		show: function( a ) {
+			if ( this.x.hoverdrop ) {
+				var self = this;
+				if ( ! this._show_timer ) {
+					this._show_timer = setTimeout( function() { self._show(); }, 300 );
+					var n = 'mouseover.' + self.id + ':show';
+					Q( document ).on( n, function( e ) {
+						if ( self._disposed || ! self.parentNode.contains( e.target ) ) {
+							clearTimeout( self._show_timer );
+							delete self._show_timer;
+							Q( document ).off( n );
+						}
+					} );
+				}
+			} else
+				this._show();
+			return this;
+		},
+		_show: function( a ) {
+			clearTimeout( this._show_timer );
+			delete this._show_timer;
+			if ( this._disposed )
+				return;
 			if ( this.x.cache && this.$() ) {
 				$.show( this.$() );
 				this.x.cover && $.show( this.$( 'cvr' ) );
@@ -3918,7 +3967,9 @@ Dialog = define.widget( 'dialog', {
 				this._snapCls();
 			} else
 				this.render();
-			return this;
+		},
+		keepHover: function( a ) {
+			this._keep_hover = a;
 		},
 		hide: function() {
 			if ( this._disposed )
@@ -3931,7 +3982,6 @@ Dialog = define.widget( 'dialog', {
 			else {
 				this.remove();
 			}
-			return this;
 		},
 		_hide: function() {
 			if ( this.vis ) {
@@ -3942,7 +3992,7 @@ Dialog = define.widget( 'dialog', {
 					var w = this.$().offsetWidth, h = this.$().offsetHeight, d = this.id, self = this,
 						n = f == 1 || f == 2 ? { top: -h } : f == 3 || f == 4 ? { right: -w } : f == 5 || f == 6 ? { bottom: -h } : { left: -w };
 					$.classAdd( this.$(), 'z-closing' ); // z-closing生成遮盖层，避免在消失过程中内容部分再被点击
-					Q( this.$() ).animate( n, 100, function() { self.removeElem() } );
+					Q( this.$() ).animate( n, 150, function() { self.removeElem() } );
 				} else
 					this.removeElem();
 				this.vis = F;
@@ -3955,6 +4005,7 @@ Dialog = define.widget( 'dialog', {
 			} else {
 				var self = this;
 				setTimeout( function() { ! self._disposed && self._listenHide( a ); }, 200 ); // 延时处理，避免出现后立即消失的情况
+				Dialog.cleanPop( this ); // 关闭除了自己之外的所有pophide窗口
 			}
 		},
 		_listenHide: function( a ) {
@@ -3966,7 +4017,7 @@ Dialog = define.widget( 'dialog', {
 				var o = d === T ? ($( this.x.snap ) || this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
 				Q( [ o, self.$() ] )[ f ]( 'mouseenter', self._hover_over || (self._hover_over = function() { clearTimeout( self._hover_timer ); delete self._hover_timer; }) );
 				Q( document )[ f ]( 'mousemove', self._hover_move || (self._hover_move = function( e ) {
-					if ( ! o.contains( e.target ) && ! self.contains( e.target ) ) {
+					if ( ! o.contains( e.target ) && ! self.contains( e.target ) && ! self._keep_hover ) {
 						if ( ! self._hover_timer )
 							self._hover_timer = setTimeout( function() { self.close() }, 300 );
 					} else
@@ -4044,8 +4095,8 @@ Alert = define.widget( 'alert', {
 		}
 		if ( t && (this._tpl = _getPreload( t )) ) {
 			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
-				{ type: 'html', scroll: T, height: '*', text: '<table border=0 style="margin:10px 20px 20px 5px;word-wrap:break-word;"><tr><td align=center valign=top><div style=width:65px;padding-top:5px>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask') ) + '</div><td>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</table>' },
+				{ type: 'html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
@@ -4231,15 +4282,15 @@ Menu = define.widget( 'menu', {
 		}
 	},
 	Prototype: {
-		className: 'w-menu w-dialog',  
+		className: 'w-menu w-dialog',
+		// menu的z-index固定为3，总在最前面
+		front: $.rt( F ),
+		_front: $.rt( F ),
 		init_nodes: _proto.init_nodes,
 		// menu有两种子节点: menu/split, menu/button
 		x_childtype: function( t ) {
 			return t && t.indexOf( 'menu/' ) !== 0 ? 'menu/' + t : 'menu/button';
 		},
-		// menu的z-index固定为3，总在最前面
-		front: $.rt( F ),
-		_front: $.rt( F ),
 		_dft_pos: function() {
 			var b = $.point.originalEvent, c = b && this.parentNode.contains( b.srcElement ) && $.point;
 			if ( ! c ) {
@@ -4557,16 +4608,6 @@ _listen_ime = function( a, b ) {
 	$.attach( b || a.$t(), 'compositionstart', function() { a._imeMode = T } );
 	$.attach( b || a.$t(), 'compositionend',   function() { a._imeMode = F } );
 },
-// 检测表单高度和缩进
-_input_indent_value,
-_input_indent = function() {
-	if ( ! _input_indent_value ) {
-		br.chdiv( 'w-text', '<div class=w-form><input class=_t style=width:0></div>', function() {
-			_input_indent_value = this.children[ 0 ].children[ 0 ].offsetWidth || 5;
-		} );
-	}
-	return _input_indent_value;
-},
 /* `absform` */
 AbsForm = define.widget( 'abs/form', {
 	Const: function( x, p ) {
@@ -4622,11 +4663,14 @@ AbsForm = define.widget( 'abs/form', {
 			if ( a && typeof a === _OBJ && (a.width || (!a.ownproperty && _dfopt.label && _dfopt.label.width)) )
 				 this.label = new Label( a, this, -1 );
 		},
+		validTip: function( t ) {
+			return { type: 'tip', text: t };
+		},
 		form_minus:  function() {
 			return (this.label ? this.label.outerWidth() : 0);
 		},
 		input_minus:  function() {
-			return this.form_minus() + _input_indent();
+			return this.form_minus();
 		},
 		formWidth: function() {
 			var w = this.innerWidth();
@@ -4726,7 +4770,7 @@ AbsForm = define.widget( 'abs/form', {
 			} else {
 				c = (x.validate || (x.validate = {}));
 				a ? $.merge( c, a ) : (x.validate = N);
-				this.$() && $.classAdd( this.$(), 'z-required', !! c.required );
+				this.$() && $.classAdd( this.$(), 'z-required', !!c.required );
 				this.label && this.label.setValidate( this.x.validate );
 			}
 			return this;
@@ -4871,7 +4915,7 @@ AbsInput = define.widget( 'abs/input', {
 			this.focus();
 			this.trigger( e );
 		},
-		html_placehoder: function() {
+		html_placeholder: function() {
 			var v = this.x.value;
 			return this.x.placeholder ? '<label class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
@@ -4883,12 +4927,12 @@ AbsInput = define.widget( 'abs/input', {
 			return '';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placehoder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
 /* `formgroup` */
-Formgroup =define.widget( 'formgroup', {
+Formgroup = define.widget( 'formgroup', {
 	Const: function( x ) {
 		Horz.apply( this, arguments );
 		this.init_label();
@@ -4997,9 +5041,6 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		this.childCls = x.dir === 'v' ? 'f-bl' : 'f-va f-inbl';
 	},
 	Extend: AbsForm,
-	Default: {
-		wmin: 2, hmin: 2
-	},
 	Listener: {
 		range: 'option'
 	},
@@ -5011,14 +5052,14 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		x_nodes: function() {
 			return this.x.options || [ { value: this.x.value, text: this.x.text, checked: this.x.checked, target: this.x.target } ];
 		},
-		scaleWidth: function( a ) {
+		scaleWidth: function( a, m ) {
 			if ( a.nodeIndex < 0 && a != this.label ) {
 				var i = $.arrIndex( this.targets, a ),
 					w = a.attr( 'width' ),
 					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() : 0, w == N ? '*' : w < 0 ? '*' : w ] );
 				return c[ 1 ];
 			} else {
-				return _proto.scaleWidth.call( this, a );
+				return _proto.scaleWidth.call( this, a, m, a == this.label ? U : this.formWidth() );
 			}
 		},
 		val: function( a ) {
@@ -5161,6 +5202,8 @@ Checkbox = define.widget( 'checkbox', {
 	},
 	Default: { width: -1, wmin: 1, hmin: 6 },
 	Prototype: {
+		ROOT_TYPE: 'checkboxgroup',
+		tagName: 'cite',
 		className: 'w-form',
 		formType: 'checkbox',
 		attrSetter: function( a, b ) {
@@ -5255,24 +5298,22 @@ Checkbox = define.widget( 'checkbox', {
 			this.exec( $.extend( {}, this.x.tip, { type: 'tip', hoverdrop: true } ) );
 		},
 		html_text: function() {
-			var t = this.x.text == N ? '' : this.x.text;
-			return '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)"' + (t && typeof t === _OBJ ? ' onmouseover="' + evw + '.tip()"' : '') + '>' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( t ) : t) + '</span>';
+			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		},
 		html: function() {
-			var p = this.parentNode, c = this.className, g = p.type_horz && (!p.isBoxGroup || p.targets), w = this.innerWidth(),
-				k = this._modchk, s = this.prop_cls(), t = this.x.tip, y = '';
+			var w = this.inputWidth(), s = this.prop_cls(), t = this.x.tip, y = '';
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
-				if ( this.x.nobr && (w = p.inputWidth()) )
+				if ( this.x.nobr && (w = this.parentNode.inputWidth()) )
 					y += 'max-width:' + w + 'px;';
 			}
-			this.x.checkstate == 2 && (s += ' z-half');
 			this.x.style && (y += this.x.style);
-			return '<cite id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') + (y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') +
-				'><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' + $.strQuot(this.x.value || '') + '" class=_t' + (k ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				( this.x.text ? this.html_text() : '' ) + (g ? '<i class=f-vi></i>' : '') + '</cite>';
+			return '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') +
+				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
+				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (this.parentNode.x.name || this.x.name || '') + '"' : '') + 
+				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>';
 		}
 	}
 } ),
@@ -5342,7 +5383,51 @@ Triplebox = define.widget( 'triplebox', {
 				if ( d && (c0 + c1 + c2) )
 					d.checkstate( c0 == l - 1 ? 0 : c1 == l - 1 ? 1 : 2 );
 			}			
+		},
+		html: function() {
+			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
+				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</' + this.tagName + '>';
 		}
+	}
+} ),
+/* `switch` */
+Switch = define.widget( 'switch', {
+	Const: function( x, p ) {
+		x.checked && (this.className += ' z-checked');
+		Checkbox.apply( this, arguments );
+	},
+	Extend: 'checkbox',
+	Default: { width: -1 },
+	Listener: {
+		body: {
+			change: {
+				method: function() {
+					if ( this.isNormal() ) {
+						var c = this.isChecked();
+						this.addClass( 'z-checked', c );
+						this.$( 'n' ).innerHTML = (c ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;';
+						Checkbox.Listener.body.change.method.apply( this, arguments );
+					}
+				}
+			}			
+		}
+	},
+	Prototype: {
+		tagName: 'div',
+		className: 'w-form f-nobr f-inbl',
+		click: function( a, e ) {
+			if ( br.css3 ) {
+				$.cancel( e );
+			} else {
+				this.$t().checked = !this.$t().checked;
+				this.trigger( 'change' );
+			}
+		},
+		html_text: function() {
+			return '<label class="_l" for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;') + '</i></label>' +
+				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+		}		
 	}
 } ),
 /* `radiogroup` */
@@ -5356,6 +5441,7 @@ Radiogroup = define.widget( 'radiogroup', {
 Radio = define.widget( 'radio', {
 	Extend: 'checkbox',
 	Prototype: {
+		ROOT_TYPE: 'radiogroup',
 		formType: 'radio',
 		// 为避免页面内出现相同name的radio组(如果同name，选中效果会出问题)，需要给name加上前缀
 		input_name: function() {
@@ -5486,6 +5572,7 @@ CalendarNum = define.widget( 'calendar/num', {
 		focus: function() { this.trigger( 'focus' ) },
 		isFocus: function() { return this.hasClass( 'z-on' ) },
 		toggleFocus: function() { this.focus( ! this.isFocus() ) },
+		prop_cls: function() { return _proto.prop_cls.call( this ) + (this.x.pad ? ' z-pad' : '') },
 		html_prop:  function() { return _proto.html_prop.call( this ) + ' w-urn="' + this.val() + '"' },
 		html_nodes: function() { return '<div class=_num>' + this.x.num + '</div>' + (this.x.text ? '<div class=_tx>' + this.x.text + '</div>' : '') }
 	}
@@ -5505,7 +5592,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', ownproperty: T, snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: 240, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog', ownproperty: T, snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -5695,29 +5782,29 @@ Calendar = define.widget( 'calendar/date', {
 			}
 			return '';
 		},
-		_padrow: function( e, n, r ) {
-			while ( n -- ) e.push( (r ? (r = ! r,'<tr>') : '') + '<td class=_pad>&nbsp;' );
-		},
 		html_nodes: function() {
-			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), y = b.getFullYear(), d = new Date( y, c + 1, 1 ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
+			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.today + '</div></div>' +
-					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
+					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
 			b.setDate( 1 );
-			b.getDay() > 0 && this._padrow( e, b.getDay(), T );
-			while ( b < d && b.getMonth() === c ) {
-				var v = this._fm( b ), t = o && o[ b.getDate() ],
-					g = { value: v, num: b.getDate(), status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
-				t && $.extend( g, t );
-				e.push( (b.getDay() === 0 ? '<tr>' : '') + this.add( g ).html() );
-				b.setDate( b.getDate() + 1 );
+			d.setDate( new Date( b.getFullYear(), c + 1, 0 ).getDate() );
+			var g = 7 - (b.getDay() + d.getDate()) % 7;
+			if ( g && g < 7 )
+				d.setDate( d.getDate() + g );
+			if ( b.getDay() > 0 )
+				b.setDate( 1 - b.getDay() );
+			if ( this.x.padrow ) {
+				g = 1 + (d.getTime() - b.getTime()) / $.DATE_DAY;
+				g < 42 && d.setDate( d.getDate() + 42 - g );
 			}
-			if ( (n = 7 - (e.length % 7)) > 0 && n < 7 )
-				this._padrow( e, n );
-			if ( this.x.padrow && e.length < 36 ) {
-				for ( var i = 0, l = 6 - (e.length / 7); i < l; i ++ )
-					this._padrow( e, 7, T );
+			while ( b <= d ) {
+				var v = this._fm( b ),
+					t = { value: v, num: b.getDate(), pad: b.getMonth() !== c, status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
+				o && o[ v ] && $.extend( t, o[ v ] );
+				e.push( (b.getDay() === 0 ? '<tr>' : '') + this.add( t ).html() );
+				b.setDate( b.getDate() + 1 );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
@@ -5736,17 +5823,17 @@ CalendarWeek = define.widget( 'calendar/week', {
 			var a = this.date, w = $.dateWeek( a, this.x.cg, this.x.start ), y = w[ 0 ], n = this.x.begindate, m = this.x.enddate, t = this._fm( new Date() ),
 				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
-				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.weeknow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
+				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.weeknow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			this._year = y;
 			if ( b[ 0 ] !== y )
 				b = $.dateWeek( new Date( y, 11, 31 - 7 ), this.x.cg, this.x.start );
 			for ( var i = 1, l = b[ 1 ]; i <= l; i ++ ) {
-				var v = y + '-' + $.strPad( i ), u = o && o[ i ], g = { value: v, num: i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
-				u && $.extend( g, u );
+				var v = y + '-' + $.strPad( i ), g = { value: v, num: i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				o && o[ v ] && $.extend( g, o[ v ] );
 				e.push( ( (i - 1) % 7 === 0 ? '<tr>' : '' ) + this.add( g ).html() );
 			}
 			if ( (n = 7 - (i % 7)) > 0 && n < 7 ) {
-				while ( n -- ) e.push( '<td class=_pad>&nbsp;' );
+				while ( n -- ) e.push( '<td class="_td z-pad">&nbsp;' );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		}
@@ -5762,10 +5849,10 @@ CalendarMonth = define.widget( 'calendar/month', {
 			var a = this.date, e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), y = a.getFullYear(),
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
-					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
+					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + '-' + $.strPad( i + 1 ), u = o && o[ i + 1 ], g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
-				u && $.extend( g, u );
+				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				o && o[ v ] && $.extend( g, o[ v ] );
 				e.push( (i % 4 === 0 ? '<tr class=_tr>' : '') + this.add( g ).html() );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
@@ -5783,10 +5870,10 @@ CalendarYear = define.widget( 'calendar/year', {
 			var a = this.date, e = [], f = _number( this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )) ), y = a.getFullYear() - ( a.getFullYear() % 10 ) - 1,
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
-				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.yearnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5 width=100%><tbody>';
+				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.yearnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + i, u = o && o[ v ], g = { value: v, num: y + i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
-				u && $.extend( g, u );
+				var v = y + i, g = { value: v, num: y + i, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				o && o[ v ] && $.extend( g, o[ v ] );
 				e.push( ( i % 4 === 0 ? '<tr class=_tr>' : '' ) + this.add( g ).html() );
 			}
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
@@ -5828,7 +5915,7 @@ _Date = define.widget( 'date', {
 	},
 	Prototype: {
 		dropSnapType: 'v',
-		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
+		input_minus: function() { return this.form_minus() + _boxbtn_width },
 		form_minus: function() {
 			var w = this.x.width;
 			return (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
@@ -5904,7 +5991,7 @@ _Date = define.widget( 'date', {
 		},
 		html_input: function() {
 			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;text-indent:' + _input_indent() + 'px">' + (this.x.value || '') + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
 				'<input type=text' + this.input_prop() + '>';
 		}
 	}
@@ -6047,7 +6134,7 @@ Spinner = define.widget( 'spinner', {
 	Prototype: {
 		_csr_pos: 0,
 		input_minus: function() {
-			return this.form_minus() + (mbi ? 78 : _boxbtn_width) + _input_indent();
+			return this.form_minus() + (mbi ? 78 : _boxbtn_width);
 		},
 		form_minus: function() {
 			var w = this.x.width;
@@ -6271,7 +6358,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		}
 	},
 	Prototype: {
-		className: 'w-form w-input w-slider w-sliderjigsaw',
+		className: 'w-form w-input w-sliderjigsaw',
 		validHooks: {
 			valid: function( b, v ) {
 				if ( ! this.isSuccess() )
@@ -6390,7 +6477,7 @@ XBox = define.widget( 'xbox', {
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
+		input_minus: function() { return this.form_minus() + _boxbtn_width },
 		init_nodes: function() {
 			this._sel.length = 0;
 			var x = this.x, o = x.options || (x.options = []), v = x.value == N ? '' : '' + x.value, e, g = ! this.x.multiple;
@@ -6452,7 +6539,7 @@ XBox = define.widget( 'xbox', {
 				var v = this.$v().value;
 				if ( a == N )
 					return v;
-				var b = [], o = this.x.options || [];
+				var b = [];
 				if ( a.jquery ) {
 					for ( var i = 0, q = a.parent().find( '._o.z-on' ), l = q.length; i < l; i ++ )
 						b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
@@ -6493,7 +6580,9 @@ XBox = define.widget( 'xbox', {
 				! this.x.cancelable && d.addClass( 'z-on' );
 				d.siblings().removeClass( 'z-on' );
 			}
-			this.val( d );
+			if ( ! (this.x.on && this.x.on.beforechange && (this.x.multiple || this.$v().value != v) &&
+				this.triggerHandler( 'beforechange', [ this.x.multiple ? $[d.hasClass( 'z-on' ) ? 'idsAdd' : 'idsRemove']( this.$v().value, v ) : v ] ) === F) )
+					this.val( d );
 			! this.x.multiple && this._dropper.close();
 		},
 		drop: function() {
@@ -6616,60 +6705,6 @@ Imgbox = define.widget( 'imgbox', {
 		}
 	}	
 }),
-/* `pickbox` */
-Pickbox = define.widget( 'pickbox', {
-	Extend: Text,
-	Listener: {
-		tag: 't',
-		body: {
-			click: {
-				occupy: T,
-				block: $.rt( T ),
-				method: function( e ) {
-					if ( this.x.on && this.x.on.click )
-						this.triggerHandler( 'click' );
-					else
-						this.pick();
-					this.focus( F );
-				}
-			},
-			change: N
-		}
-	},
-	Prototype: {
-		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + _boxbtn_width + _input_indent() },
-		val: function( v, t ) {
-			v != N && this.text( t || v );
-			return AbsForm.prototype.val.apply( this, arguments );
-		},
-		text: function( t ) {
-			if ( t == N )
-				return this.x.text;
-			this.x.text = t;
-			this.$() && (this.$t().innerText = t);
-		},
-		pick: function() {
-			if ( this.x.picker && this.isNormal() ) {
-				if ( this.x.picker.type === 'dialog' ) {
-					var c = $.jsonClone( this.x.picker );
-					c.src && (c.src = $.urlFormat( c.src, { value: this.val() } ));
-					this.exec( c ).addEvent( 'close', function() { ! this.$().contains( document.activeElement ) && this.focus( F ); }, this );
-				} else if ( W.isCmd( this.x.picker ) ) {
-					this.exec( this.x.picker );
-				}
-				this.warn( F );
-			}
-		},
-		html_btn: function() {
-			return '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
-		},
-		html_input: function() {
-			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div>';
-		}
-	}
-} ),
 /* `combobox`
  *	注1: 当有设置初始value时，text一般可以不写，程序将会从数据岛(more属性)中匹配。如果数据岛不是完整展示的(比如树)，那么text属性必须加上。
  *  去掉 src template node 参数。suggest改造为dialog。原本的src template node等参数转移到suggest中
@@ -6679,7 +6714,7 @@ Combobox = define.widget( 'combobox', {
 	Const: function( x ) {
 		AbsInput.apply( this, arguments );
 		$.classAdd( this, 'z-loading' );
-		x.nobr && $.classAdd( this, 'z-nobr' );
+		x.nobr === F && $.classAdd( this, 'z-br' );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
 		this._online = x.suggest && typeof x.suggest.src === _STR && /\$text\b/.test( x.suggest.src );
 		this.more = this.createPop( x.suggest || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
@@ -6826,14 +6861,6 @@ Combobox = define.widget( 'combobox', {
 					h && (h.style.display = '');
 				}
 			},
-			resize: function() {
-				if ( this.$() ) {
-					var w = Math.max( this.formWidth(), 0 );
-					w != N && w >= 0 && this.css( 'width', w );
-					w = Math.max( this.inputWidth(), 0 );
-					w != N && w >= 0 && this.css( 'c', 'width', w ).css( 'ph', 'width', w );
-				}
-			},
 			// 覆盖textarea的change事件定义，仅当已选项有变化时触发
 			change: N
 		}
@@ -6858,27 +6885,27 @@ Combobox = define.widget( 'combobox', {
 			this._initOptions( this.x.value, this.x.text );
 			this.queryText( '' );
 			this.save();
-			this.usa() && (this.$t().contentEditable = T);
 			$.classRemove( this.$(), 'z-loading' );
+			this.usa() && (this.$t().contentEditable = T);
+			this.$().title = this.text();
 			_listen_ime( this, this.$t() );
 			this._inited = T;
 		},
 		// 根据value设置已选项, 初始化时调用 /@v -> value, t -> text
 		_initOptions: function( v, t ) {
 			if ( v && (v = v.split( ',' )) ) {
-				for ( var i = 0, t = t && t.split( ',' ), o, s = '', l = v.length; i < l; i ++ ) {
+				for ( var i = 0, t = t && t.split( ',' ), o, s = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
 						if ( t ) {
 							var r = { value: v[ i ], text: t[ i ] };
-							s += this.add( r ).html();
+							this.append( r );
 							this.store().merge( r );
 						} else if ( o = this.store().getParamByValue( v[ i ] ) )
-							s += this.add( o ).html();
+							this.append( o );
 						else if ( this.x.strict === F )
-							s += this.add( { text: v[ i ], error: T } ).html();
+							this.append( { text: v[ i ], error: T } );
 					}
 				}
-				s && $.before( this.$t(), s );
 			}
 		},
 		// @implement
@@ -6890,9 +6917,6 @@ Combobox = define.widget( 'combobox', {
 		},
 		usa: function() {
 			return ! this.loading && this.isNormal();
-		},
-		store: function( a ) {
-			return (a || this.more).getContentView().combo;
 		},
 		// 读/写隐藏值
 		_val: function( a ) {
@@ -6915,21 +6939,28 @@ Combobox = define.widget( 'combobox', {
 			this.$t().innerHTML = '';
 			a ? this.match( { value: a } ) : this.resetEffect();
 		},
+		store: function( a ) {
+			return (a || this.more).getContentView().combo;
+		},
 		// 获取当前的选项对话框
 		pop: function() {
 			return this.dropper && this.dropper.isShow() ? this.dropper : this.sugger && this.sugger.isShow() ? this.sugger : this.more;
 		},
-		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?, f -> callback
+		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = $.merge( { type: 'dialog', ownproperty: T, cls: 'w-combobox-dialog', pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2, indent: 1 }, u ),
-				w = 'javascript:return this.parentNode.$().offsetWidth';
+			var d = { ownproperty: T, cls: 'w-combobox-dialog', indent: 1 };
+			$.extend( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
+			var o = { type: 'dialog', pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
+				w = 'javascript:return this.parentNode.$().offsetWidth';
 			//如果用户设置宽度为*或百分比，则设置maxwidth为不超过combobox的宽度
 			if ( u.width ) {
-				isNaN( u.width ) && (d.maxwidth = w);
+				if ( isNaN( u.width ) )
+					o.maxwidth = w;
 			} else {
-				d.width = w;
+				o.width = w;
 			}
+			$.extend( d, o );
 			d.src && (d.src = this.parseSrc( d.src, r ));
 			var self = this;
 			return this.add( d, -1 ).addEvent( 'close', function() {
@@ -6937,10 +6968,8 @@ Combobox = define.widget( 'combobox', {
 				var d = self.pop();
 				d && d.isShow() && self.focusNode && self.focusNode.tabFocus( F );
 			} ).addEvent( 'load', function() {
-				if ( this.$() ) {
-					this.css( 'width', this.$().scrollWidth );
-					this.axis();
-				}
+				this.css( 'width', this.$().scrollWidth );
+				this.axis();
 			} );
 		},
 		closePop: function() {
@@ -6965,12 +6994,6 @@ Combobox = define.widget( 'combobox', {
 				s.push( this[ i ].x.text );
 			return $.idsAdd( s.join( ',' ), this.queryText() );
 		},
-		// 根据value值返回对应的文本值
-		val2txt: function( v ) {
-			for ( var i = 0, s = [], v = (v || '').split( ',' ), o, l = v.length; i < l; i ++ )
-				v[ i ] && (o = this.store().getParamByValue( v[ i ] )) && s.push( o.text );
-			return s.join( ',' );
-		},
 		// 根据文本增加已选项, 多个用逗号或空白符隔开 /@ t -> text|replaceObject, a -> param data?
 		addOpt: function( t, a ) {
 			var v = this._val(), e = this.$t(), k = e.nextSibling ? _widget( e.nextSibling ).nodeIndex : N;
@@ -6980,14 +7003,15 @@ Combobox = define.widget( 'combobox', {
 				for ( var i = 0, c = this.store(), d, o, s = []; i < t.length; i ++ ) {
 					if ( t[ i ] ) {
 						if ( d = (a || c.getParam( t[ i ] )) )
-							! $.idsAny( v, d.value ) && ( s.push( this.add( d, k ).html() ), $.idsAdd( v, d.value ) );
+							! $.idsAny( v, d.value ) && ( s.push( this.add( d, k ) ), $.idsAdd( v, d.value ) );
 						else
-							s.push( this.add( { text: t[ i ], error: T }, k ).html() );
+							s.push( this.add( { text: t[ i ], error: T }, k ) );
 						if ( ! this.x.multiple && s.length )
 							break;
 					}
 				}
-				$.before( e, s.join( '' ) );
+				for ( var i = 0; i < s.length; i ++ )
+					s[ i ].render();
 			}
 			this.save();
 			return this[ this.length - 1 ];
@@ -7100,6 +7124,7 @@ Combobox = define.widget( 'combobox', {
 			}
 			f && (t = this.queryText() ) && s.push( t );
 			this._val( s.join( ',' ) );
+			this.$().title = this.text();
 			if ( this.x.on && this.x.on.change && v != this._val() )
 				this.triggerHandler( 'change' );
 		},
@@ -7112,11 +7137,22 @@ Combobox = define.widget( 'combobox', {
 					(d || (this.dropper = this.createPop( this.x.drop ))).show();
 			}
 		},
-		pick: Pickbox.prototype.pick,
+		pick: function() {
+			if ( this.x.picker && this.isNormal() ) {
+				if ( this.x.picker.type === 'dialog' ) {
+					var c = $.jsonClone( this.x.picker );
+					c.src && (c.src = $.urlFormat( c.src, { value: this.val() } ));
+					this.exec( c ).addEvent( 'close', function() { ! this.$().contains( document.activeElement ) && this.focus( F ); }, this );
+				} else if ( W.isCmd( this.x.picker ) ) {
+					this.cmd( this.x.picker, this.val() );
+				}
+				this.warn( F );
+			}
+		},
 		setLoading: function( a ) {
 			a = a == N || a;
 			this.loading = a;
-			this.queryText( a ? (this.x.loadingtext || 'loading..') : '' );
+			this.queryText( a ? (this.x.loadingtext || Loc.loading) : '' );
 			this.$t().contentEditable = ! a;
 		},
 		readonly: function( a ) {
@@ -7150,7 +7186,7 @@ Combobox = define.widget( 'combobox', {
 					return g.html();
 				}
 			}
-			if ( this.x.dropsrc )
+			if ( this.x.drop )
 				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			return s;
 		},
@@ -7159,7 +7195,7 @@ Combobox = define.widget( 'combobox', {
 				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placehoder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -7230,14 +7266,17 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		write: function( e ) {
 			var p = this.parentNode, t = p.$t();
-			t.parentNode.insertBefore( t, this.$() );
-			p.focus();
-			e && $.stop( e );
+			if ( p.isNormal() ) {
+				t.parentNode.insertBefore( t, this.$() );
+				p.focus();
+				e && $.stop( e );
+			}
 		},
 		fixSize: function() {
 			if ( this.$() ) {
-				var w = this.$().parentNode.offsetWidth - 5;
-				this.$().style.maxWidth = w + 'px';
+				var w = this.$().parentNode.offsetWidth - 5, m = this.x.maxwidth || 0;
+				if ( m > w ) m = w;
+				this.$().style.maxWidth = m + 'px';
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
 					this.$().style.width = w + 'px';
 					Q( 'table', this.$() ).css( 'table-layout', 'fixed' );
@@ -7249,7 +7288,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		html_nodes: function() {
 			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
-				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit"><i class=f-vi></i><span class="f-omit f-va">' +
+				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
 					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
 			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}
@@ -7339,13 +7378,14 @@ Linkbox = define.widget( 'linkbox', {
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
+		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		init: function() {
 			if ( ! this.$() )
 				return;
 			this._initOptions( this.x.value, this.x.text );
 			this.save();
 			this.usa() && (this.$t().contentEditable = T);
+			this.$().title = this.text();
 			$.classRemove( this.$(), 'z-loading' );
 			_listen_ime( this, this.$t() );
 		},
@@ -7468,6 +7508,7 @@ Linkbox = define.widget( 'linkbox', {
 					g = T; // 有更新
 				}
 			}
+			! br.ms && Q( 'u:has(br)', this.$t() ).remove();
 			t = c.innerText;
 			// match text
 			var n = [], p = this.x.separator || ',';
@@ -7601,10 +7642,9 @@ Linkbox = define.widget( 'linkbox', {
 				var l = $.strLen( s );
 				l > this.x.validate.maxlength && this.exec( { type: 'tip', text: Loc.ps( Loc.form.over_maxlength, [ l - this.x.validate.maxlength ] ) } );
 			}
+			this.$t().title = this.text();
 			if ( this.x.on && this.x.on.change && v != s )
 				this.triggerHandler( 'change' );
-			if ( this.x.tip === T )
-				this.$t().title = this.text();
 		},
 		drop: function() {
 			if ( this.usa() ) {
@@ -7628,13 +7668,12 @@ Linkbox = define.widget( 'linkbox', {
 					return g.html();
 				}
 			}
-			if ( this.x.dropsrc )
+			if ( this.x.drop )
 				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
 			return s;
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
-				(this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? this.x.text : this.x.tip) || '') + '"' : '') +
 				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
@@ -7692,7 +7731,7 @@ Onlinebox = define.widget( 'onlinebox', {
 	Prototype: {
 		formType: 'text',
 		_csr_pos: 0,
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0) + _input_indent(); },
+		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		// @a -> text /读/写光标所在的有效文本(以逗号为分隔符)
 		cursorText: function( a ) {
 			var b = this.val(),
@@ -7734,19 +7773,73 @@ Onlinebox = define.widget( 'onlinebox', {
 			}
 		},
 		html_btn: function() {
-			var s = '';
-			if ( this.x.picker ) {
-				if ( W.isCmd( this.x.picker ) ) {
-					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
-				} else {
-					var g = this.add( this.x.picker, -1, { width: -1 } );
-					g.className += ' f-pick';
-					return g.html();
+			return Combobox.prototype.html_btn.apply( this, arguments );
+		}
+	}
+} ),
+/* `pickbox` */
+Pickbox = define.widget( 'pickbox', {
+	Extend: Onlinebox,
+	Listener: {
+		tag: 't',
+		body: {
+			ready: function() {
+				// 如果有设置value而text为空时，尝试从drop中匹配文本
+				if ( this.x.value && ! this.x.text && this.x.drop ) {
+					this.loading = T;
+					this.addClass( 'z-loading' );
+					var self = this;
+					(this.dropper = this.createPop( this.x.drop )).preload( function() {
+						var r = self.store().getParamByValue( self.x.value );
+						r ? self.val( r.value, r.text ) : self.val( '', '' );
+						self.loading = F;
+						self.removeClass( 'z-loading' );
+					} );
+					this.text( Loc.loading );
+				}
+			},
+			click: {
+				occupy: T,
+				block: $.rt( T ),
+				method: function( e ) {
+					if ( this.x.on && this.x.on.click )
+						this.triggerHandler( 'click' );
+					else if ( this.x.drop )
+						this.drop();
+					else if ( this.x.picker )
+						this.pick();
 				}
 			}
-			if ( this.x.dropsrc )
-				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
-			return s;
+		}
+	},
+	Prototype: {
+		loading: F,
+		$v: function() { return $( this.id + 'v' ) },
+		input_minus: function() { return this.form_minus() + _boxbtn_width },
+		store: function( a ) {
+			return (a || this.dropper).contentView.combo;
+		},
+		usa: function() {
+			return ! this.loading && this.isNormal();
+		},
+		val: function( v, t ) {
+			v != N && this.text( t || v );
+			return AbsForm.prototype.val.apply( this, arguments );
+		},
+		text: function( t ) {
+			if ( t == N )
+				return this.x.text;
+			this.x.text = t;
+			this.$() && (this.$t().innerText = t);
+		},
+		complete: function( a ) {
+			var d = this.store( this.pop() ).getParam( a );
+			this.val( d.value, d.text );
+			a.focus && a.focus( T );
+		},
+		html_input: function() {
+			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
+				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),
@@ -7803,7 +7896,7 @@ Rate = define.widget( 'rate', {
 		}
 	}
 } ),
-// 树搜索过滤器
+// `treecombo` 树搜索过滤器
 TreeCombo = $.createClass( {
 	Const: function( a ) {
 		this.cab = a;
@@ -7813,6 +7906,17 @@ TreeCombo = $.createClass( {
 	},
 	Prototype: {
 		isCombo: T,
+		initDialog: function() {
+			var b = Dialog.get( this.cab ), c = b.parentNode;
+			if ( c.dropper == b ) {
+				var v = c.val();
+				if ( v ) {
+					var d = this.getXML( $.strFrom( v, '/', T ) || v, 'v' ),
+						e = d && _all[ d.getAttribute( 'i' ) ];
+					e && e != this.cab.getFocus() && e.focus();
+				}
+			}
+		},
 		node2xml: function( a ) {
 			var b = (a.rootNode || a).x.combo.field, f = b.search && b.search.split( ',' ), g = f && f.length;
 			this._sch = g;
@@ -7851,7 +7955,17 @@ TreeCombo = $.createClass( {
 		// 根据文本返回一个combobox/option参数 /@a -> text|xml|leaf
 		getParam: function( a, b ) {
 			var d = a.nodeType === 1 ? a : this.getXML( a, b );
-			return d && { value: d.getAttribute( 'v' ), text: d.getAttribute( 't' ), remark: d.getAttribute( 'r' ), forbid: d.getAttribute( 'x' ) === '1', data: (b = _all[ d.getAttribute( 'i' ) ]) && b.x.data };
+			if ( d ) {
+				var v = d.getAttribute( 'v' ), t = d.getAttribute( 't' ), g = _all[ d.getAttribute( 'i' ) ];
+				if ( this.cab.x.combo.fullpath && g ) {
+					var p = g;
+					while ( (p = p.parentNode) && p.level > -1 ) {
+						var x = this.getXML( p, b ), f = x.getAttribute( 't' );
+						f && (t = f + ' / ' + t);
+					}
+				}
+				return { value: v, text: t, remark: d.getAttribute( 'r' ), forbid: d.getAttribute( 'x' ) === '1', data: g && g.x.data };
+			}
 		},
 		// 根据文本返回一个combobox/option参数 /@a -> text
 		getParamByValue: function( a ) {
@@ -7859,7 +7973,8 @@ TreeCombo = $.createClass( {
 		},
 		// /@a -> text|value|leaf, b -> attrname
 		getXML: function( a, b ) {
-			return $.xmlQuery( (a.isWidget ? a.ownerView.combo : this).xml, './/d[' + ( typeof a === _STR ? '@' + ( b || 't' ) + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
+			typeof a === _STR && this.cab.x.combo.fullpath && (a = $.strFrom( a, '/', T ) || a);
+			return $.xmlQuery( (a.isWidget ? a.ownerView.combo : this).xml, './/d[' + ( typeof a === _STR ? '@' + (b || 't') + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
 		},
 		// 合并来自另一个grid的某一行的combo xml /@a -> tr|xml|treeCombo
 		merge: function( a ) {
@@ -7920,13 +8035,16 @@ AbsLeaf = define.widget( 'abs/leaf', {
 	Listener: {
 		body: {
 			dnd_sort: function( e, o ) {
-				if ( o ) o.style.left = (this.level * this._pad_level + this._pad_left + 14) + 'px';
+				if ( o ) o.style.left = (this.padLeft() + 14) + 'px';
 			}
 		}
 	},
 	Prototype: {
 		_pad_left: 5,
-		_pad_level: 12,
+		_pad_level: 14,
+		padLeft: function() {
+			return (this.x.line ? 0 : this.level * this._pad_level) + this._pad_left;
+		},
 		// @implement
 		insertHTML: function( a, b ) {
 			var c = a.isWidget && a.$(), d = c && a.$( 'c' );
@@ -7938,18 +8056,23 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		},
 		// @implement
 		append: function( a ) {
-			if ( ! this.loaded )
-				this.loaded = T;
-			_proto.append.apply( this, arguments );
+			// 尚未装载的节点不直接增加子节点
+			if ( this.x.src && !this.loaded )
+				a.isWidget && a.remove();
+			else
+				_proto.append.apply( this, arguments );
 		},
 		// @implement
 		prepend: function( a ) {
-			if ( ! this.loaded )
-				this.loaded = T;
-			_proto.prepend.apply( this, arguments );
+			// 尚未装载的节点不直接增加子节点
+			if ( this.x.src && !this.loaded )
+				a.isWidget && a.remove();
+			else
+				_proto.prepend.apply( this, arguments );
 		},
 		// @implement
 		attrSetter: function( a, b, c ) {
+			_proto.attrSetter.apply( this, arguments );
 			switch( a ) {
 				case 'text':
 					this.$( 't' ) && $.html( this.$( 't' ), this.html_text() );
@@ -7959,9 +8082,6 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				break;
 				case 'focus':
 					this.focus( b );
-				break;
-				case 'folder':
-					this.fixFolder( b );
 				break;
 				case 'src':
 					this.fixFolder();
@@ -7978,8 +8098,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		isFolder: function() {
 			return this.length || (this.x.src && !this.loaded) ? T : F;
 		},
-		// @a -> folder?
-		fixFolder: function( a ) {
+		fixFolder: function() {
 			this.addClass( 'z-folder', this.isFolder() );
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
@@ -8005,7 +8124,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				},
 				complete: function( x ) { // complete
 					this.loading = F;
-					! this.loaded && this.toggle( F );
+					!this.loaded && this.toggle( F );
 					this.fixFolder();
 					if ( this.$( 'o' ) ) {
 						$.classRemove( this.$(), 'z-loading' );
@@ -8070,9 +8189,8 @@ AbsLeaf = define.widget( 'abs/leaf', {
 					if ( _x[ e ] !== x[ e ] )
 						this.attr( e, x[ e ] || '' );
 				}
-				if ( this.x.format || (_x.text !== x.text) ) {
-					this.$( 't' ) && $.html( this.$( 't' ), this.html_text() );
-				}
+				if ( this.x.format || (_x.text !== x.text) )
+					this.attr( 'text', x.text );
 			}
 			var n = x.nodes, l = n && n.length;
 			if ( l && ! this.loading ) {
@@ -8104,7 +8222,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		openTo: function( a, b, c ) {
 			var f = (this.rootNode || this).getFocus();
 			typeof b === _FUN && (c = b, b = N);
-			this.exec( { type: 'ajax', src: a, sync: b, loading: F,
+			this.exec( { type: 'ajax', src: a, sync: b,
 				success: function( x ) {
 					if ( this.x.template ) {
 						x = _compileTemplate( this, x );
@@ -8215,7 +8333,7 @@ Leaf = define.widget( 'leaf', {
 						return;
 					this.box && this.box.x.sync === 'click' && ! this.isEvent4Box( e ) && this.box.click();
 					e.srcElement ? this._focus( T, e ) : this.focus( T, e );
-					if( this.rootNode && this.rootNode.x.combo ) {
+					if( this.rootNode && this.rootNode.x.combo && !(this.x.on && this.x.on.click) ) {
 						$.dialog( this ).commander.complete( this );
 						$.close( this );
 					}
@@ -8246,22 +8364,25 @@ Leaf = define.widget( 'leaf', {
 		next: function( a ) {
 			if ( a == N )
 				return _proto.next.call( this );
-			if ( a && this.rootNode ) {
+			if ( a && this.offsetParent() ) {
 				if ( this.length && this.x.open )
 					return this[ 0 ];
 				if ( this.nodeIndex === this.parentNode.length - 1 ) {
 					var p = this.parentNode;
-					while ( p.rootNode && ! p.next() ) p = p.parentNode;
-					return p.rootNode && p.next();
+					while ( p.offsetParent() && ! p.next() ) p = p.parentNode;
+					return p.offsetParent() && p.next();
 				} else
 					return _proto.next.call( this );
 			}
+		},
+		offsetParent: function() {
+			return this.rootNode;
 		},
 		// @a 设为 true 时，获取视觉范围内可见的相邻的下一个节点
 		prev: function( a ) {
 			var b = _proto.prev.call( this );
 			if ( a ) {
-				if ( ! b && this.parentNode !== this.rootNode )
+				if ( ! b && this.parentNode !== this.offsetParent() )
 					return this.parentNode;
 				while ( b && b.length && b.x.open )
 					b = b[ b.length - 1 ];
@@ -8276,7 +8397,7 @@ Leaf = define.widget( 'leaf', {
 			a !== F && this.scrollIntoView( 'auto' );
 		},
 		_focus: function( a, e ) {
-			a = a == N ? T : !! a;
+			a = a == N ? T : !!a;
 			this.tabFocus( a );
 			a !== F && this.triggerHandler( 'focus' );
 			if ( this.box && this.box.x.sync === 'focus' && ! this.isEvent4Box( e ) ) {
@@ -8293,7 +8414,7 @@ Leaf = define.widget( 'leaf', {
 				Q( '._pd,._pdvl', this.$() ).remove();
 				$.before( this.$( 'o' ), this.html_pad() );
 			} else
-				this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
+				this.css( 'paddingLeft', this.padLeft() );
 			for ( var i = 0; i < this.length; i ++ )
 				this[ i ].indent();
 		},
@@ -8303,20 +8424,23 @@ Leaf = define.widget( 'leaf', {
 		isFocus: function() {
 			return this.rootNode.focusNode === this;
 		},
+		isOpen: function() {
+			return this.x.open;
+		},
 		isEvent4Box: function( e ) {
-			return this.box && e && e.srcElement && e.srcElement.id == this.box.id + 't';
+			return this.box && e && e.srcElement && e.srcElement.id === this.box.id + 't';
+		},
+		isBoxChecked: function() {
+			return this.box && this.box.isChecked();
+		},
+		isEllipsis: function() {
+			return this.rootNode.x.ellipsis;
 		},
 		isFirst: function() {
 			return this.nodeIndex === 0;
 		},
 		isLast: function() {
 			return this.nodeIndex === this.parentNode.length - 1;
-		},
-		isOpen: function() {
-			return this.x.open;
-		},
-		isBoxChecked: function() {
-			return this.box && this.box.isChecked();
 		},
 		checkBox: function( a ) {
 			this.box && this.box.click( a == N || a );
@@ -8345,9 +8469,6 @@ Leaf = define.widget( 'leaf', {
 				this[ i ]._tripleAll( a );
 			}
 		},
-		isEllipsis: function() {
-			return this.rootNode.x.ellipsis;
-		},
 		html_icon: function() {
 			var c = (this.x.open && this.length && this.x.openicon) || this.x.icon;
 			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i' } ) : '';
@@ -8369,23 +8490,24 @@ Leaf = define.widget( 'leaf', {
 			return t;
 		},
 		html_pad: function() {
-			for ( var i = 0, b = this._pad_level / 2, e = '', p; i < this.level; i ++ ) {
+			for ( var i = 0, e = '', p; i < this.level; i ++ ) {
 				p = (p || this).parent();
-				e = '<i class=_pd style="margin-left:' + b + 'px;width:' + (b - 1) + 'px;">' + (!p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
+				e = '<i class=_pd>' + (! p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
 			}
 			return e;
 		},
-		html_self: function() {
-			var x = this.x, r = this.rootNode, p = this.parent(), a = this.isFolder(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', f = (c ? 0 : this.level * this._pad_level) + this._pad_left, h = this.innerHeight(), s = '';
+		html_self: function( a ) {
+			var x = this.x, r = this.rootNode, p = this.parent(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', h = this.innerHeight(), s = 'padding-left:' + this.padLeft() + 'px;';
 			if ( x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-leaf-b', bubble: F } );
 				this.box.type === 'triplebox' && this.box.addEvent( 'click', this._triple, this );
 			}
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
-			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (! p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
-				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="padding-left:' + f + 'px;' + s + '">' + this.html_before() +
-				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
+			a == N  && (a = this.length);
+			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_before() +
+				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
 				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
 		},
 		html: function() {
@@ -8406,8 +8528,10 @@ Leaf = define.widget( 'leaf', {
 Tree = define.widget( 'tree', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		if ( x.combo )
+		if ( x.combo ) {
+			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
 			this.ownerView.combo = new TreeCombo( this );
+		}
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'hiddens', nodes: x.hiddens }, -1 );
 		this.loaded  = this.length ? T : F;
@@ -8422,6 +8546,8 @@ Tree = define.widget( 'tree', {
 				_scrollIntoView( this.getFocus() );
 				if ( this.x.src && ! this.length )
 					Leaf.prototype.request.call( this );
+				if ( this.x.combo )
+					this.ownerView.combo.initDialog();
 			}
 		}
 	},
@@ -8478,13 +8604,13 @@ _grid_tr = function() {
 /* `gridleaf` */
 GridLeaf = define.widget( 'grid/leaf', {
 	Const: function( x, p ) {
-		var r = _grid_tr.call( p );
-		x.open == N && (x.open = !x.src || !!r.length);
 		Leaf.apply( this, arguments );
-		x.src && (this.loaded = !!r.length);
+		var r = this.tr();
 		this.level = r.level;
-		this.row = r;
+		x.src && (this.loaded = !!r.length);
+		x.open == N && (x.open = !x.src || !!r.length);
 		r.leaf = this;
+		this.row = r;
 	},
 	Extend: Leaf,
 	Listener: {
@@ -8520,11 +8646,8 @@ GridLeaf = define.widget( 'grid/leaf', {
 		isLast: function() {
 			return this.row.nodeIndex === this.row.parentNode.length - 1;
 		},
-		// @a -> folder?
-		fixFolder: function( a ) {
-			this.addClass( 'z-folder', this.isFolder() );
-			if ( this.$( 'o' ) && ! this.$( 'r' ) )
-				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
+		isFolder: function() {
+			return this.row.length || (this.x.src && !this.loaded) ? T : F;
 		},
 		fix_text_size: function() {
 			var t = this.textNode, a = $.bcr( this.$() ), b = $.bcr( t.$() ), c = b.left - a.left;
@@ -8539,7 +8662,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 		},
 		// leaf接口
 		render_nodes: function( x ) {
-			for ( var i = 0, l = x.length, r = this.row; i < l; i ++ )
+			for ( var i = 0, l = x.length, r = this.tr(); i < l; i ++ )
 				r.add( x[ i ] );
 			l && Q( r.$() ).after( r.html_nodes() );
 			this.loaded = T;
@@ -8552,7 +8675,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 				Q( '._pd,._pdvl', this.$() ).remove();
 				$.before( this.$( 'o' ), this.html_pad() );
 			} else
-				this.css( 'paddingLeft', this.level * this._pad_level + this._pad_left );
+				this.css( 'paddingLeft', this.padLeft() );
 			Q( this.$() ).removeClass( 'z-first z-last' );
 			this.isFirst() && $.classAdd( this.$(), 'z-first' );
 			this.isLast() && $.classAdd( this.$(), 'z-last' );
@@ -8560,7 +8683,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 				this.row[ i ].leaf && this.row[ i ].leaf.indent();
 		},
 		html: function() {
-			var s = this.html_self();
+			var r = this.tr(), s = this.html_self( r.length );
 			return this.x.hr ? '<table class=w-hr-table cellspacing=0 cellpadding=0><tr><td>' + s + '<td width=100%><hr class=w-hr-line noshade></table>' : s;
 		}
 	}
@@ -8590,7 +8713,7 @@ GridToggle = define.widget( 'grid/toggle', {
 				c = _widget( d[ i ] );
 				if ( c.tgl )
 					break;
-				c.display( this, T );
+				c.display( this );
 			}
 		}
 	}
@@ -8677,8 +8800,9 @@ GridRow = define.widget( 'grid/row', {
 		x.focus && $.classAdd( this, 'z-on' );
 	},
 	Prototype: {
-		className: 'w-tr',
 		ROOT_TYPE: 'grid',
+		className: 'w-tr',
+		// @implement
 		repaintSelf: _repaintSelfWithBox,
 		getData: function() {
 			var d = { data: this.x.data }, l = this.length;
@@ -8707,6 +8831,13 @@ GridRow = define.widget( 'grid/row', {
 				n += c[ i ].colSpan;
 			}
 		},
+		offsetParent: function() {
+			var p = this.parentNode;
+			while( p.level != N )
+				p = p.parentNode;
+			return p;
+		},
+		prev: Leaf.prototype.prev,
 		// 高亮某个字段的关键字 /@ a -> colIndex, b -> key, c -> matchlength, d -> keycls
 		highlight: function( a, b, c, d ) {
 			var f = this.cellElem( a );
@@ -8718,7 +8849,7 @@ GridRow = define.widget( 'grid/row', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape, r = this.parentNode._rowspan,
+			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape, r = this.offsetParent()._rowspan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ a ] && r[ a ][ i ] ) {
@@ -8880,6 +9011,7 @@ TR = define.widget( 'tr', {
 				if ( this.leaf ) {
 					this.leaf.fixFolder();
 					this.leaf.toggle( this.isOpen() );
+					this.leaf.indent();
 				}
 			},
 			dnd_over: function( e ) {
@@ -9046,14 +9178,13 @@ TCell = define.widget( 'tcell', {
 		ROOT_TYPE: 'grid',
 		x_childtype: $.rt( 'td' ),
 		scaleWidth: function( a ) {
-			var w = 0, r = this.rootNode, c = a.col, d = r._pad, e;
-			for ( var i = 0, l = a.x.colspan || 1; i < l; i ++ )
-				(e = r.colgrps[ 0 ][ a.col.nodeIndex + i ]) != N && (w += e.width());
+			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
+			while ( l -- )
+				(e = r.colgrps[ 0 ][ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			if ( r._face == 'cell' && e.nodeIndex < r.colgrps[ 0 ].length - 1 ) {
-				w -= ie7 ? 2 : 1; // ie7在 cell 模式下需要多减一个像素，否则可能换行，原因不明...
-			}
+			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
+				w -= 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
 		},
@@ -9293,7 +9424,6 @@ GridBody = define.widget( 'grid/body', {
 		className: 'w-grid-tbody'
 	}
 } ),
-
 /* `gridhead` */
 GridHead = define.widget( 'grid/head', {
 	Extend: GridBody,
@@ -9323,7 +9453,7 @@ GridHead = define.widget( 'grid/head', {
 		className: 'w-grid-thead'
 	}
 } ),
-// 表格搜索过滤器
+// `gridcombo` 表格搜索过滤器
 GridCombo = $.createClass( {
 	Const: function( a ) {
 		this.cab = a;
@@ -9382,8 +9512,10 @@ Grid = define.widget( 'grid', {
 		this.list = new GridList( y, this );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
-		if ( x.combo )
+		if ( x.combo ) {
+			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
 			this.ownerView.combo = new GridCombo( this );
+		}
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		x.scroll && $.classAdd( this, 'z-scroll' );

@@ -462,7 +462,7 @@ _strEscape = $.strEscape = function( s ) {
 },
 // 在 a 中查找 b 并给 b 加上标签样式 c /@ a -> str, b -> key, c -> matchLength?, d -> key cls?
 _strHighlight = $.strHighlight = function( a, b, c, d ) {
-	return (a = a + '').replace( RegExp( '(<[\\/\\!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|").*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
+	return (a = a + '').replace( RegExp( '(<[\\/!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|")?.*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
 	   	return $3 === U ? $1 : '<em class="' + (d || 'f-keyword') + '">' + $3 + '</em>';
 	} );
 },
@@ -640,7 +640,7 @@ _jsonClone = $.jsonClone = function( a ) {
 	return typeof a === _OBJ ? _jsonParse( _jsonString( a ) ) : a;
 },
 // 一天的毫秒数
-_date_D = 86400000,
+_date_D = $.DATE_DAY = 86400000,
 // 标准格式化字符串
 _date_sf = 'yyyy-mm-dd hh:ii:ss',
 // 格式化日期
@@ -659,15 +659,15 @@ _dateParse = $.dateParse = function( s, f ) {
 		if ( g == 'm' )
 			s = '2017-' + s;
 		else if ( g == 'd' )
-			s = '2017-01-' + s;
+			s = '2017-03-' + s;
 		else if ( g == 'h' )
-			s = '2017-01-01 ' + s;
+			s = '2017-03-01 ' + s;
 		else if ( g == 'i' )
-			s = '2017-01-01 00:' + s;
+			s = '2017-03-01 00:' + s;
 	}
 	var b = s.split( '-' );
 	if ( b.length === 1 )
-		s += '-01-01';
+		s += '-03-01';
 	else if ( b.length === 2 )
 		s += '-01';
 	var a = new Date( s.replace( /-/g, '/' ) );
@@ -2179,17 +2179,11 @@ _merge( $, {
 	})(),
 	// @a -> image array, b -> id
 	previewImage: function( a, b ) {
-		if ( typeof a === _STR )
-			a = _jsonParse( a );
-		for ( var i = 0, d = a[ 0 ]; i < a.length; i ++ ) {
-			if ( a[ i ].id == b ) {
-				d = a[ i ];
-				break;
-			}
-		}
-		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 ),
-			d = $.vm().cmd( { type: 'dialog', cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
-				node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + (d.url || d.thumbnail) + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px"><em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
+		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
+		$.vm().cmd( { type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
+			node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
+				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	/* ! 把range内的图片变成缩略图
 	 * @range: htmlElement

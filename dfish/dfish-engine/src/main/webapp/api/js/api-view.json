@@ -205,6 +205,7 @@
 		        { "id": "slider", "text": "slider", "icon": ".icon .icon-class" },
 		        { "id": "slider/jigsaw", "text": "slider/jigsaw", "icon": ".icon .icon-class" },
 		        { "id": "spinner", "text": "spinner", "icon": ".icon .icon-class" },
+		        { "id": "switch", "text": "switch", "icon": ".icon .icon-class" },
 		        { "id": "text", "text": "text", "icon": ".icon .icon-class" },
 		        { "id": "textarea", "text": "textarea", "icon": ".icon .icon-class" },
 		        { "id": "triplebox", "text": "triplebox", "icon": ".icon .icon-class" },

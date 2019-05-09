@@ -1615,7 +1615,8 @@ define( {
           { name: 'remark', type: 'String', remark: '备注字段名。' },
           { name: 'forbid', type: 'String', remark: '禁用字段名。' }
         ] },
-        { name: 'keepshow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' }
+        { name: 'keepshow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
+        { name: 'fullpath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' }
       ] },
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
@@ -2544,7 +2545,6 @@ define( {
       { name: 'btncount', type: 'Number', optional: true, remark: '数字页数按钮的数量。' },
       { name: 'btnsumpage', type: 'Boolean', optional: true, remark: '显示总页数按钮。' },
       { name: 'currentpage', type: 'Number', remark: '当前页数。(起始值为1)' },
-      { name: 'info', type: 'String', optional: true, remark: '显示总条数和总页数等信息。' },
       { name: 'jump', type: 'Boolean', optional: true, remark: '显示一个可填写页数的表单。' },
       { name: 'name', type: 'String', optional: true, remark: '如果设置了name，将生成一个隐藏表单项，值为当前页数。' },
       { name: 'nofirstlast', type: 'Boolean', optional: true, remark: '不显示"首页"和"尾页"两个按钮。' },
@@ -2606,15 +2606,15 @@ define( {
   	remark: '日历。',
   	extend: 'widget',
     Config: [
-      { name: 'body', type: 'Object', optional: true, remark: '定义日期的内容和样式等。以日期数字作为key，以 calendar/td 作为值。', example: [
+      { name: 'body', type: 'Object', optional: true, remark: '定义日期的内容和样式等。以日期作为key，以 calendar/td 作为值。', example: [
           function() {
-            // 给当前月的1日和5日设置样式和内容。
+            // 给1日和7日设置样式和内容。
             return~
             {
-               "type": "canlendar/date",
+               "type": "canlendar/date", "date": "2019-05-05",
                "body": {
-                 "1": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第一个日程" }, // 可以省略 "type": "calendar/td" 这部分
-                 "5": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第二个日程" }
+                 "2019-05-01": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第一个日程" }, // 可以省略 "type": "calendar/td" 这部分
+                 "2019-05-07": { "type": "calendar/td", "cls": "x-cal-yes", "text": "第二个日程" }
                }
             }
           }
@@ -2698,7 +2698,8 @@ define( {
       { name: 'text', type: 'String', optional: true, remark: '显示内容。' }
     ],
     Classes: [
-      { name: '._td', remark: '基础样式。' }
+      { name: '._td', remark: '基础样式。' },
+      { name: '.z-pad', remark: '填充空白的状态样式。' }
     ]
   },
   "text": {
@@ -2920,6 +2921,21 @@ define( {
       { name: 'checkall', type: 'Boolean', remark: '设为 true 时，点击它可以全选/全不选其他相同name的triplebox。一组同name的triplebox中只能有一个设置checkall参数。' },
       { name: 'partialsubmit', type: 'Boolean', remark: '设为 true 时，半选状态也会提交数据。' },
       { name: 'checkstate', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>' }
+    ],
+    Methods: [
+      { name: 'check([checked])', remark: '设置选中状态。', param: [
+        { name: 'checked', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>', optional: true }
+      ] }
+    ]
+  },
+  "switch": {
+  	title: 'switch',
+  	remark: '开关选项。',
+  	deprecate: 'focus,focusEnd,placeholder,transparent,bubble,nobr,text,.w-text,.z-trans',
+  	extend: 'checkbox',
+    Config: [
+      { name: 'checkedtext', type: 'String', remark: '选中状态时的文本。' },
+      { name: 'uncheckedtext', type: 'String', remark: '未选中状态时的文本。' }
     ],
     Methods: [
       { name: 'check([checked])', remark: '设置选中状态。', param: [
@@ -3200,7 +3216,8 @@ define( {
   	extend: 'text',
   	deprecate: '.w-text',
     Config: [
-      { name: 'text', type: 'String', remark: '显示文本。' },
+      { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
+      { name: 'text', type: 'String', remark: '显示文本。如果有设置value而text为空，将会尝试自动从drop中匹配文本。' },
       { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
@@ -3227,7 +3244,7 @@ define( {
   	deprecate: '.w-text',
     Config: [
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
-      { name: 'dropsrc', type: 'String', remark: '显示下拉列表的 view src。' },
+      { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'multiple', type: 'Boolean', remark: '多选模式。' },
       { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'separator', type: 'String', remark: '文本选项分隔符。默认是逗号。' },
@@ -3332,7 +3349,9 @@ define( {
       { name: 'filetypes', type: 'String', remark: '允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"' },
       { name: 'previewsrc', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'removesrc', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
-      { name: 'sizelimit', type: 'String', remark: '单个附件最大体积。如 "50M"。' },
+      { name: 'maxfilesize', type: 'String', remark: '单个附件最大的文件大小。如 "50M"。' },
+      { name: 'minfilesize', type: 'String', remark: '单个附件最小的文件大小。如 "1B"。' },
+      { name: 'thumbnailsrc', type: 'String', remark: '缩略图地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'uploadbutton', type: 'Array', remark: '上传按钮的数组。' },
       { name: 'uploadlimit', type: 'Number', remark: '最多可上传数量。' },
       { name: 'uploadsrc', type: 'String', remark: '上传地址。<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s><br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
@@ -3509,7 +3528,7 @@ define( {
             }
           }
       ] },
-      { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进微调多少个像素。' },
+      { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进多少个像素。' },
       { name: 'maxwidth', type: 'Number', remark: '最大宽度。' },
       { name: 'maxheight', type: 'Number', remark: '最大高度。' },
       { name: 'minwidth', type: 'Number', remark: '最小宽度。' },
@@ -3582,6 +3601,17 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'nodes', type: 'Array', remark: '子节点集合。子节点类型是 button 或 split。' },
+      { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进多少个像素。' },
+      { name: 'snap', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
+      { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [
+          function() {
+          	// 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。如果超出了，则继续尝试 "32", 依此类推。
+            return~
+            { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' }
+          }
+      ] },
+      { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
+      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' }
    ],
     Properties: [
       { name: 'commander', type: 'Widget', remark: '执行 menu 命令的 widget。即以 xxx.cmd() 方式打开的 menu, 它的 commander 就是 xxx。' },
