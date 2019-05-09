@@ -81,7 +81,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	
 	@Override
 	public Boolean getStar() {
-		return  this.star;
+		return this.star;
 	}
 
 	public String getName() {
