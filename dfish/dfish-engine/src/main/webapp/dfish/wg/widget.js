@@ -7817,7 +7817,7 @@ Pickbox = define.widget( 'pickbox', {
 		$v: function() { return $( this.id + 'v' ) },
 		input_minus: function() { return this.form_minus() + _boxbtn_width },
 		store: function( a ) {
-			return (a || this.dropper).contentView.combo;
+			return (a || this.dropper).getContentView().combo;
 		},
 		usa: function() {
 			return ! this.loading && this.isNormal();
