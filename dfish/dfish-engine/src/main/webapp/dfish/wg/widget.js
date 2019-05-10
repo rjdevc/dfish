@@ -4871,7 +4871,7 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		},
 		html: function() {
 			var w = this.innerWidth(), s = this.prop_cls(), t = this.x.tip, y = '';
@@ -4944,8 +4944,7 @@ Triplebox = define.widget( 'triplebox', {
 		},
 		html: function() {
 			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
-				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</' + this.tagName + '>';
+				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>';
 		}
 	}
 } ),
@@ -7377,7 +7376,7 @@ Pickbox = define.widget( 'pickbox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + '>' + $.strEscape( this.x.text ) + '</div>';
+				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + ' title="' + $.strQuot(this.x.text || '') + '">' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),
