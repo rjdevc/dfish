@@ -11,10 +11,7 @@ import com.rongji.dfish.ui.Layout;
 import com.rongji.dfish.ui.PrototypeChangeable;
 import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.form.AbstractFormElement;
-import com.rongji.dfish.ui.form.Hidden;
-import com.rongji.dfish.ui.form.LabelRow;
-import com.rongji.dfish.ui.form.LabelRowContainer;
+import com.rongji.dfish.ui.form.*;
 import com.rongji.dfish.ui.json.JsonWrapper;
 import com.rongji.dfish.ui.layout.AbstractLayout;
 import com.rongji.dfish.ui.layout.GridLayout;
@@ -250,11 +247,11 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 				}
 				int toColumn = occupied + occupy - 1;
 				prototype.add(rowIndex, occupied, rowIndex, toColumn, w);
-				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&w instanceof AbstractFormElement){
-					AbstractFormElement<?,?> cast=(AbstractFormElement<?,?>)w;
+				if(m.getMode()==FlexGridAppendingMode.MODE_LABEL_ROW&&w instanceof LabelRow){
+					LabelRow cast=(LabelRow)w;
 					if(cast.getLabel()!=null&&"0".equals(cast.getLabel().getWidth())){
 //					if("0".equals(((AbstractFormElement<?,?>)w).getLabel().getWidth())){
-						((AbstractFormElement<?,?>)w).getLabel().setWidth(labelWidth);
+						((LabelRow)w).getLabel().setWidth(labelWidth);
 					}
 				}
 				occupied += occupy;

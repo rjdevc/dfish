@@ -8,6 +8,8 @@ import com.rongji.dfish.ui.json.J;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;
 
+import java.util.Date;
+
 public class LabelTest {
 	public static void main(String[] args) {
 		LabelTest test=new LabelTest();
@@ -25,6 +27,13 @@ public class LabelTest {
 //		text2.getLabel().setWidth(100);
 		Text text3=new Text("address","地址","").setPlaceholder("请输入地址");
 		fg.add(text3, 8);
+		DatePicker begin=new DatePicker("begin","开始时间",new Date(),DatePicker.DATE);
+		DatePicker end=new DatePicker("end","结束时间",null,DatePicker.DATE);
+		Range r=new Range("时间",begin,end);
+		fg.addLabelRow(r, FlexGrid.FULL_LINE);
+
+
+
 		
 		HorizontalGroup hg1=new HorizontalGroup("加班时间");
 		fg.addLabelRow(hg1, FlexGrid.FULL_LINE);
