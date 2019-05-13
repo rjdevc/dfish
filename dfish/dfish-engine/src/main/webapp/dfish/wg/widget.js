@@ -4639,9 +4639,6 @@ AbsForm = define.widget( 'abs/form', {
 				if ( this.$() ) {
 					var w = this.formWidth();
 					w != N && w >= 0 && this.css( 'width', w );
-					//w = this.inputWidth();
-					//w != N && w >= 0 && this.$t() && (this.$t().style.width = w + 'px');
-					//this.css( 'ph', 'width', w );
 				}
 			},
 			valid: function( e, a ) {
@@ -4826,7 +4823,8 @@ AbsForm = define.widget( 'abs/form', {
 			return s + (this.x.style ? this.x.style : '');
 		},
 		input_prop: function( a ) {
-			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (this.x.tip ? ' title="' + $.strQuot((this.x.tip === T ? (this.x.text || this.x.value) : this.x.tip) || '') + '"' : '') +
+			var t = this.attr( 'tip' );
+			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + _html_on.call( this );
 		},
 		html_placeholder: $.rt( '' ),
@@ -4862,12 +4860,12 @@ AbsInput = define.widget( 'abs/input', {
 				proxy: ie ? 'paste keyup' : 'input',
 				block: $.rt( T ),
 				occupy: function() {
-					return (this.x.validate && this.x.validate.maxlength && cfg.input_detect && cfg.input_detect.maxlength) || this.x.tip === T || this.x.placeholder;
+					return (this.x.validate && this.x.validate.maxlength && cfg.input_detect && cfg.input_detect.maxlength) || this.attr( 'tip' ) === T || this.x.placeholder;
 				},
 				method: function( e ) {
 					if ( this.isDisabled() )
 						return;
-					if ( this.x.tip === T )
+					if ( this.attr( 'tip' ) === T )
 						this.$t().title = this.text();
 					var m = cfg.input_detect && cfg.input_detect.maxlength && this.x.validate && this.x.validate.maxlength, v = this.val(), u = v;
 					if ( this.lastValue === U )
@@ -5295,14 +5293,14 @@ Checkbox = define.widget( 'checkbox', {
 			}
 		},
 		tip: function() {
-			this.exec( $.extend( {}, this.x.tip, { type: 'tip', hoverdrop: true } ) );
+			this.exec( $.extend( {}, this.attr( 'tip' ), { type: 'tip', hoverdrop: true } ) );
 		},
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		},
 		html: function() {
-			var w = this.inputWidth(), s = this.prop_cls(), t = this.x.tip, y = '';
+			var w = this.inputWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
@@ -5310,7 +5308,7 @@ Checkbox = define.widget( 'checkbox', {
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
-			return '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : this.x.tip) || '' ) + '"' : '') +
+			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : t) || '' ) + '"' : '') +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (this.parentNode.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>';
@@ -5470,7 +5468,7 @@ Select = define.widget( 'select', {
 				block: N,
 				method: function() {
 					this.warn( F );
-					if ( this.x.tip === T )
+					if ( this.attr( 'tip' ) === T )
 						this.$t().title = this.text();
 				}
 			}
@@ -5505,14 +5503,14 @@ Select = define.widget( 'select', {
 			return this.getFocusOption( 1 );
 		},
 		html_nodes: function() {
-			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape;
+			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape, t = this.attr( 'tip' );
 			while ( i -- ) {
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
-					(this.x.tip ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
+					(t ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
 			}
-			var w = this.formWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : this.x.tip) || '';
+			var w = this.formWidth(), z = this.x.size, t = (t === T ? (o[ k ] && o[ k ].text) : t) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
-				(this.x.tip ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
+				(t ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
 				( z ? ' size=' + z : '' ) + '>' + s + '</select><div class=_cvr></div>';
 		}
 	}
@@ -6244,7 +6242,7 @@ Slider = define.widget( 'slider', {
 			if ( ! this.isNormal() )
 				return;
 			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
-				g = this.thumbWidth(), w = this.innerWidth() - g, self = this, t = this.x.tip === T ? '$0' : this.x.tip,
+				g = this.thumbWidth(), w = this.innerWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
 				d = t && this.exec( { type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F } ), v = self.$v().value;
 			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
@@ -6460,6 +6458,7 @@ XBox = define.widget( 'xbox', {
 
 	},
 	Extend: [ AbsInput, Xsrc ],
+	Default: { tip: T },
 	Listener: {
 		tag: N,
 		body: {
@@ -6555,7 +6554,7 @@ XBox = define.widget( 'xbox', {
 				this._sel = b;
 				this.$v().value = u = u.join();
 				this._val( s.join( ', ' ) );
-				if ( this.x.tip === T )
+				if ( this.attr( 'tip' ) === T )
 					this.$t().title = t.join().replace(/<[^>]+>/g, '');
 				if ( v != u )
 					this.trigger( 'change' );
@@ -6628,7 +6627,7 @@ XBox = define.widget( 'xbox', {
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
-				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.x.tip ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') +
+				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (this.attr( 'tip' ) ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') +
 					_event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(this,event)>' + s.join( '' ) + '</div>';
@@ -6637,9 +6636,9 @@ XBox = define.widget( 'xbox', {
 			return '<em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
 		},
 		html_input: function() {
-			var s = this._sel[ 0 ];
+			var s = this._sel[ 0 ], t = this.attr( 'tip' );
 			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-omit _t" id=' + this.id + 't ' +
-				(this.x.tip && this._sel.length === 1 ? ' title="' + $.strQuot(((this.x.tip === T ? (s && s.text) : this.x.tip) || '').replace(/<[^>]+>/g, '')) + '"' : '') + '><span id=' + this.id + 'p>' + this.html_text() + '</span></div>';
+				(t && this._sel.length === 1 ? ' title="' + $.strQuot(((t === T ? (s && s.text) : t) || '').replace(/<[^>]+>/g, '')) + '"' : '') + '><span id=' + this.id + 'p>' + this.html_text() + '</span></div>';
 		}
 	}
 }),
@@ -7681,6 +7680,7 @@ Linkbox = define.widget( 'linkbox', {
 /* `onlinebox` */
 Onlinebox = define.widget( 'onlinebox', {
 	Extend: [ Text, Combobox ],
+	Default: { tip: T },
 	Listener: {
 		body: {
 			ready: function() {
