@@ -1196,13 +1196,13 @@ W = define( 'widget', function() {
 				t += 'width:' + v + 'px;';
 			if ( ( v = this.innerHeight() ) != N )
 				t += 'height:' + v + 'px;';
-			if ( this.x.minwidth && (v = this.innerWidth( 'min' )) )
+			if ( this.x.minwidth && (v = this.minWidth()) )
 				t += 'min-width:' + v + 'px;';
-			if ( this.x.maxwidth && (v = this.innerWidth( 'max' )) )
+			if ( this.x.maxwidth && (v = this.maxWidth()) )
 				t += 'max-width:' + v + 'px;';
-			if ( this.x.minheight && (v = this.innerHeight( 'min' )) )
+			if ( this.x.minheight && (v = this.minHeight()) )
 				t += 'min-height:' + v + 'px;';
-			if ( this.x.maxheight && (v = this.innerHeight( 'max' )) )
+			if ( this.x.maxheight && (v = this.maxHeight()) )
 				t += 'max-height:' + v + 'px;';
 			if ( this.x.style )
 				t += this.x.style;
@@ -1306,6 +1306,7 @@ _w_size  = {},
 _w_css   = {},
 _w_mix   = {},
 _w_lay   = {},
+_w_size_fix = {},
 // 兄弟节点是否需要调整大小
 _w_bro   = { 'width': 'type_horz', 'height': 'type_vert' },
 _w_rsz_all = function() {
@@ -1429,6 +1430,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		sz = 'scale' + z,	// scaleWidth, scaleHeight	为子元素分配大小
 		oz = 'outer' + z,	// outerWidth, outerHeight  整体所占空间, 相当于 offset + margin
 		iz = 'inner' + z;	// innerWidth, innerHeight	内部可用空间, 并为当前元素的style.width/style.height提供值
+		xz = 'max' + z;     // maxwidth, maxheight
+		nz = 'min' + z;		// minwidth, minheight
 
 	// 实现 wg.width(), wg.height()
 	// 返回为null时，去获取元素的offsetWidth/offsetHeight
@@ -1441,52 +1444,53 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			v === 'width' ? this.resize( a ) : this.resize( N, a );
 		}
 	};
-	_proto[ oz ] = function( m ) {
+	_proto[ oz ] = function() {
 		// @fixme: 如果在构造函数Const里调用 .width() 和 .height(), 会因为兄弟节点还没实例化而计算出错，因此添加_instanced参数做控制，当兄弟节点全部实例化时才能调用.width 和 .height。
 		// 		   这是暂时的解决办法。之后的优化目标是在Const里可以获取高宽。
 		if ( ! this._instanced ) { return N; }
-		if ( y in this && ! m ) {
+		if ( y in this ) {
 			return this[ y ];
 		}
-		var r = this.parentNode[ sz ]( this, m );
-		if ( this.parentNode._instanced && ! m ) {
+		var r = this.parentNode[ sz ]( this );
+		if ( this.parentNode._instanced ) {
 			this[ y ] = r;
 		}
 		return r;
 	};
-	_w_size[ v ] = function( a ) {
-		if ( (v in this.x) || v != N )
-			this.x[ v ] = a;
-		var p = this.parentNode;
-		if ( p ) {
-			delete p._scales;
-			if ( p[ _w_bro[ v ] ] ) {
-				for ( var i = 0; i < p.length; i ++ ) {
-					p[ i ] !== this && _w_rsz_all.call( p[ i ] );
-				}
-			}
-		}
-		_w_css[ v ].call( this );
+	//.minWidth, .minHeight
+	_proto[ nz ] = function() {
+		var a = this.attr( nv );
+		if ( a == N ) return N;
+		a = this.parentNode[ sz ]( this, a );
+		return a == N ? N : _w_size_fix[ v ].call( this, a );
 	};
-	_w_css[ v ] = function() {
-		var t = this[ y ], a = this.attr( v );
-		if ( a != -1 && (t !== U || a != N) && this.$() ) {
-			delete this[ y ];
-			if ( t !== this[ oz ]() ) {
-				t = this[ iz ]();
-				if ( this.$() ) {
-					this.$().style[ v ] = t == N ? '' : Math.max( t, 0 ) + 'px';
-					this.x[ nv ] && (t = this[ iz ]( 'min' )) && $.css( this.$(), 'min-' + v, t );
-					this.x[ xv ] && (t = this[ iz ]( 'max' )) && $.css( this.$(), 'max-' + v, t );
-				}
-			}
-		}
+	//.minWidth, .minHeight
+	_proto[ xz ] = function() {
+		var a = this.attr( xv );
+		if ( a == N ) return N;
+		a = this.parentNode[ sz ]( this, a );
+		return a == N ? N : _w_size_fix[ v ].call( this, a );
 	};
 	//.innerWidth, .innerHeight
-	_proto[ iz ] = function( m ) {
-		var a = this[ oz ]( m );
+	_proto[ iz ] = function() {
+		var a = this[ oz ]();
+		return a == N ? N : _w_size_fix[ v ].call( this, a );
+	};
+	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget, b -> size, c -> appoint size?
+	_proto[ sz ] = function( a, b, c ) {
 		if ( a == N )
-			return a;
+			return N;
+		var d = b != N ? b : a.attr( v );
+		if ( $.isNumber( d ) && d > -1 )
+			d = parseFloat( d );
+		if ( typeof d === _NUM )
+			return d < 0 ? N : d;
+		c === U && (c = this[ iz ]());
+		if ( c != N && typeof d === _STR && d.indexOf( '%' ) > 0 )
+			c = Math.floor( c * parseFloat( d ) / 100 );
+		return c;
+	};
+	_w_size_fix[ v ] = function( a ) {
 		// 如果用户定义了样式且没有设置wmin和hmin，则使用系统预设的样式处理机制
 		if ( (this.x.cls || this.x.style) && this.attr( 'wmin' ) == N && this.attr( 'hmin' ) == N ) {
 			var f = _size_fix( this.x.cls, this.x.style );
@@ -1494,43 +1498,25 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				return a - (f[ iu ] || 0);
 		}
 		return a - (this.attr( iu ) || 0);
-	};
-	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget|size, m -> max, min, c -> appoint size?
-	_proto[ sz ] = function( a, m, c ) {
-		if ( a == N )
-			return N;
-		var b = a.isWidget ? a.attr( v ) : a;
-		if ( b && ! isNaN( b ) )
-			b = parseFloat( b );
-		if ( typeof b === _NUM && ! m )
-			return b < 0 ? N : b;
+	},
+	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, b -> size, c -> appoint size?
+	_w_scale[ v ] = function( a, b, c ) {
+		var d = b != N ? b : a.attr( v ), s = this._scales;
 		c === U && (c = this[ iz ]());
-		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
-			c = Math.floor( c * parseFloat( b ) / 100 );
-		return c == N ? N : a.isWidget ? _w_size_rng( c, a.attr( nv ), a.attr( xv ) ) : c;
-		/*if ( a.isWidget && m ) {
-			var d = a.attr( m + v );
-			if ( d != N )
-				return $.scale( c, [ { value: d } ] )[ 0 ];
-		}
-		return c;*/
-	};
-	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min, c -> appoint size?
-	_w_scale[ v ] = function( a, m, c ) {
-		var b = a.attr( v ), s = this._scales;
-		c === U && (c = this[ iz ]());
-		if ( $.isNumber( b ) && b > -1 && ! m )
-			return parseFloat( b );
-		if ( ! s || m ) {
+		if ( $.isNumber( d ) && d > -1 )
+			return parseFloat( d );
+		if ( ! s ) {
 			if ( ! this.length )
 				return N;
-			for ( var i = 0, d, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
-				d = this[ i ][ rv ] ? this[ i ][ v ]() : this[ i ].attr( v ), e = (d == N || d < 0) && ! this[ _w_bro[ v ] ] ? '*' : d, n = this[ i ].attr( nv ), x = this[ i ].attr( xv );
-				r.push( { value: (m && (m === 'min' ? n : x)) || e, min: n, max: x } );
+			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
+				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : this[ i ].attr( v );
+				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
+				v=='width'&&a.id=='f:'&&this[ i ][ rv ]&&alert(this[ i ][ v ]());
+				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
 			s = $.scale( c, r );
 		}
-		! m && (this._scales = s);
+		b != N && (this._scales = s);
 		r = s[ a.nodeIndex ];
 		r == N && (r = a.defaults( v ));
 		return r < 0 || r === '*' ? N : r;
@@ -1556,6 +1542,34 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			}
 		}
 		_w_rsz_layout.call( this );
+	};
+	_w_size[ v ] = function( a ) {
+		if ( (v in this.x) || v != N )
+			this.x[ v ] = a;
+		var p = this.parentNode;
+		if ( p ) {
+			delete p._scales;
+			if ( p[ _w_bro[ v ] ] ) {
+				for ( var i = 0; i < p.length; i ++ ) {
+					p[ i ] !== this && _w_rsz_all.call( p[ i ] );
+				}
+			}
+		}
+		_w_css[ v ].call( this );
+	};
+	_w_css[ v ] = function() {
+		var t = this[ y ], a = this.attr( v );
+		if ( a != -1 && (t !== U || a != N) && this.$() ) {
+			delete this[ y ];
+			if ( t !== this[ oz ]() ) {
+				t = this[ iz ]();
+				if ( this.$() ) {
+					this.$().style[ v ] = t == N ? '' : Math.max( t, 0 ) + 'px';
+					//this.x[ nv ] && (t = this[ nz ]()) && $.css( this.$(), 'min-' + v, t );
+					//this.x[ xv ] && (t = this[ xz ]()) && $.css( this.$(), 'max-' + v, t );
+				}
+			}
+		}
 	};
 } );
 // 实现方法： wg.append(), wg.prepend(), wg.before, wg.after()
@@ -2036,7 +2050,6 @@ Xsrc = define.widget( 'xsrc', {
 				this.reset( tar );
 				if ( this.$() ) {
 					var s = this.attr( 'src' );
-					delete this.x.on;
 					typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
 				} else {
 					this.show();
@@ -2155,7 +2168,12 @@ View = define.widget( 'view', {
 		},
 		reset: function( tar ) {
 			Xsrc.prototype.reset.apply( this, arguments );
-			! tar && _initView.call( this );
+			if ( ! tar ) {
+				_initView.call( this );
+				if ( this.x ) {
+					delete this.x.on; delete this.x.node;
+				}
+			}
 		},
 		closestData: function( a ) {
 			return this.data( a );
@@ -3049,13 +3067,13 @@ Button = define.widget( 'button', {
 				if ( (d = this.innerHeight()) != N )
 					s += 'height:' + d + 'px;';
 			}
-			if ( this.x.minwidth && (v = this.innerWidth( 'min' )) )
+			if ( this.x.minwidth && (v = this.minWidth()) )
 				s += 'min-width:' + v + 'px;';
-			if ( this.x.maxwidth && (v = this.innerWidth( 'max' )) )
+			if ( this.x.maxwidth && (v = this.maxWidth()) )
 				s += 'max-width:' + v + 'px;';
-			if ( this.x.minheight && (v = this.innerHeight( 'min' )) )
+			if ( this.x.minheight && (v = this.minHeight()) )
 				s += 'min-height:' + v + 'px;';
-			if ( this.x.maxheight && (v = this.innerHeight( 'max' )) )
+			if ( this.x.maxheight && (v = this.maxHeight()) )
 				s += 'max-height:' + v + 'px;';
 			if ( (d = p.x.space) != N ) {
 				if ( this !== p[ p.length - 1 ] )
@@ -3911,21 +3929,21 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.cover )
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
 			$.db( this.html(), c && this.ownerView.$() );
-			if ( (this.x.minwidth || this.x.maxwidth) ) {
-				var iw = this.innerWidth(), ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.attr( 'minwidth' ), m = this.attr( 'maxwidth' );
-				if ( iw == N || (n && n > ew) || (m && m < ew) )
-					this.width( n && n > ew ? n : m && m < ew ? m : ew );
+			if ( this.x.minwidth || this.x.maxwidth ) {
+				var iw = this.innerWidth(), ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.minWidth(), m = this.maxWidth();
+				this.width( n && n > ew ? n : m && m < ew ? m : ew );
 			}
-			if ( (this.x.minheight || this.x.maxheight) ) {
-				var ih = this.innerHeight(), eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.attr( 'minheight' ), m = this.attr( 'maxheight' );
-				if ( ih == N || (n && n > eh) || (m && m < eh) )
-					this.height( n && n > eh ? n : m && m < eh ? m : eh );
+			if ( this.x.minheight || this.x.maxheight ) {
+				var ih = this.innerHeight(), eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.minHeight(), m = this.maxHeight();
+				this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {
 				if ( ! o[ i ].getAttribute( 'data-transparent' ) ) {
-					this[ 0 ] && this[ 0 ].addClass( 'f-rel' );
-					$.prepend( this.$(), '<iframe style="height:100%;width:100%;position:absolute;top:0;left:0;" src="about:blank" frameborder=0 marginheight=0 marginwidth=0 allowtransparency></iframe>' );
+					this.addEventOnce( 'load', function() {
+						this[ 0 ] && this[ 0 ].addClass( 'f-rel' );
+						$.prepend( this.$(), '<iframe style="height:100%;width:100%;position:absolute;top:0;left:0;" src="about:blank" frameborder=0 marginheight=0 marginwidth=0 allowtransparency></iframe>' );
+					} );
 					break;
 				}
 			}
@@ -3942,6 +3960,7 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.timeout )
 				this.listenTimeout();
 			this.front();
+			//this.$().style.__defineSetter__( 'width', function(a) { debugger; } );
 			return this;
 		},
 		isShow: function() {
@@ -4104,7 +4123,7 @@ Alert = define.widget( 'alert', {
 			}
 		}
 		if ( t && (this._tpl = _getPreload( t )) ) {
-			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
+			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', height: '*', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
 				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
@@ -6369,7 +6388,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		className: 'w-form w-input w-sliderjigsaw',
 		validHooks: {
 			valid: function( b, v ) {
-				if ( ! this.isSuccess() )
+				if ( b.required && ! this.isSuccess() )
 					return _form_err.call( this, b, 'sliderjigsaw_required' );
 			}
 		},
@@ -6966,8 +6985,8 @@ Combobox = define.widget( 'combobox', {
 			if ( u.width ) {
 				if ( isNaN( u.width ) )
 					o.maxwidth = w;
-			} else {
-				o.width = w;
+			} else if ( ! o.minwidth ) {
+				o.minwidth = w;
 			}
 			$.extend( d, o );
 			d.src && (d.src = this.parseSrc( d.src, r ));
@@ -6977,7 +6996,7 @@ Combobox = define.widget( 'combobox', {
 				var d = self.pop();
 				d && d.isShow() && self.focusNode && self.focusNode.tabFocus( F );
 			} ).addEvent( 'load', function() {
-				this.css( 'width', this.$().scrollWidth );
+				//this.css( 'width', this.$().scrollWidth );
 				this.axis();
 			} );
 		},

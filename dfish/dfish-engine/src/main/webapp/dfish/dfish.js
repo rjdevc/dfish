@@ -2048,7 +2048,22 @@ _merge( $, {
 			if ( c.tip ) t += ' title="' + _strQuot( c.tip ) + '"';
 			s.push( t );
 		}
-		return '<span' + (s[ 0 ] || '') + '>' + ( e ? '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>' : (d ? '<img src="' + d + '" class="_ico f-va"' + t + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '') + '>' : '') ) + '<i class=f-vi></i></span>';
+		var r = '<span' + (s[ 0 ] || '') + '>';
+		if ( e ) {
+			r += '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>';
+		} else {
+			if ( d ) {
+				r += '<img src="' + d + '" class="_ico f-va"' + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '');
+				if ( b && (b.maxwidth || b.maxheight) ) {
+					var t = '';
+					b.maxwidth && (t += 'max-width:' + b.maxwidth + 'px;');
+					b.maxheight && (t += 'max-height:' + b.maxheight + 'px;');
+					r += ' style="' + t + '"';
+				}
+				r += '>';
+			}
+		}
+		return r + '<i class=f-vi></i></span>';
 	},
 	arrow: function( a, b ) {
 		var c = b || a;
