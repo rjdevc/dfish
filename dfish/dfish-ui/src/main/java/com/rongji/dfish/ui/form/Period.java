@@ -10,6 +10,7 @@ import com.rongji.dfish.ui.FormElement;
  * @author DFish Team
  *
  */
+@Deprecated
 public class Period extends Range {
 
 	private static final long serialVersionUID = -1213706241756141217L;
