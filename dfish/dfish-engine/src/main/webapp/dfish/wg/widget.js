@@ -1326,6 +1326,12 @@ _w_rsz_layout = function() {
 	for ( var i = 0, l = this.length; i < l; i ++ )
 		_w_rsz_all.call( this[ i ] );	
 },
+// @a -> size, b -> min, c -> max
+_w_size_rng = function( a, b, c ) {
+	if ( b && ! isNaN( b ) ) a = Math.max( a, b );
+	if ( c && ! isNaN( c ) ) a = Math.min( a, c );
+	return a;
+},
 // widget配置项里设置了style，又没有设置wmin和hmin，则由系统解析style，获取wmin和hmin的值
 // 如果设置了cls，而cls里有 padding margin border 等，就需要人工计算并设置wmin和hmin
 //@ _c -> cls, _1 -> style, _2 -> wmin, _3 = hmin
@@ -1501,12 +1507,13 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		c === U && (c = this[ iz ]());
 		if ( c != N && typeof b === _STR && b.indexOf( '%' ) > 0 )
 			c = Math.floor( c * parseFloat( b ) / 100 );
-		if ( a.isWidget && m ) {
+		return c == N ? N : a.isWidget ? _w_size_rng( c, a.attr( nv ), a.attr( xv ) ) : c;
+		/*if ( a.isWidget && m ) {
 			var d = a.attr( m + v );
 			if ( d != N )
 				return $.scale( c, [ { value: d } ] )[ 0 ];
 		}
-		return c;
+		return c;*/
 	};
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, m -> max, min, c -> appoint size?
 	_w_scale[ v ] = function( a, m, c ) {
@@ -2029,6 +2036,7 @@ Xsrc = define.widget( 'xsrc', {
 				this.reset( tar );
 				if ( this.$() ) {
 					var s = this.attr( 'src' );
+					delete this.x.on;
 					typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
 				} else {
 					this.show();
@@ -3903,13 +3911,15 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.cover )
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
 			$.db( this.html(), c && this.ownerView.$() );
-			if ( (this.x.minwidth || this.x.maxwidth) && ! this.x.width ) {
-				var w = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.attr( 'minwidth' ), m = this.attr( 'maxwidth' );
-				this.width( n && n > w ? n : m && m < w ? m : w );
+			if ( (this.x.minwidth || this.x.maxwidth) ) {
+				var iw = this.innerWidth(), ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.attr( 'minwidth' ), m = this.attr( 'maxwidth' );
+				if ( iw == N || (n && n > ew) || (m && m < ew) )
+					this.width( n && n > ew ? n : m && m < ew ? m : ew );
 			}
-			if ( (this.x.minheight || this.x.maxheight) && ! this.x.height ) {
-				var h = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.attr( 'minheight' ), m = this.attr( 'maxheight' );
-				this.height( n && n > h ? n : m && m < h ? m : h );
+			if ( (this.x.minheight || this.x.maxheight) ) {
+				var ih = this.innerHeight(), eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.attr( 'minheight' ), m = this.attr( 'maxheight' );
+				if ( ih == N || (n && n > eh) || (m && m < eh) )
+					this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {
