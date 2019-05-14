@@ -1998,12 +1998,16 @@ Xsrc = define.widget( 'xsrc', {
 			if ( this.loading )
 				return;
 			this.showLoading();
-			var f = ! force && Frame.edge( this );
+			var f = ! force && Frame.edge( this ), s = this.x.src;
 			if ( ! f || f.parentNode.getFocus() == f ) {
 				this._load( tar, function( x ) {
 					this.showLoading( F );
-					this.showLayout( tar );
-					fn && !(x instanceof Error) && fn.call( this, x );
+					if ( this.layout ) {
+						this.showLayout( tar );
+						fn && !(x instanceof Error) && fn.call( this, x );
+					} else if ( this.x.src && s != this.x.src ) {
+						this.reload( N, N, N, fn );
+					}
 				} );
 			}
 		},
@@ -4097,7 +4101,7 @@ AlertButton = define.widget( 'alert/button', {
 				block: function() {
 					var d = $.dialog( this );
 					_operexe( (this.x.on && this.x.on.click) || (this.type === 'alert/submitbutton' ? d.x.yes : d.x.no), d.commander, d.x.args );
-					d.close();
+					d.remove();
 					return T;
 				}
 			}
@@ -4129,6 +4133,9 @@ Alert = define.widget( 'alert', {
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
+		(x.yes || x.no) && this.addEventOnce( 'close', function() {
+			_operexe( a ? x.yes : x.no, this.commander, x.args );
+		} );
 		Dialog.call( this, x, a ? _docView : p );
 	},
 	Extend: Dialog,
@@ -4145,7 +4152,7 @@ Alert = define.widget( 'alert', {
 				var x = this.x;
 				if ( this.type === 'alert' ) {
 					$.winbox( x.text );
-					_operexe( x.yes, this.commander, x.args );
+					x.yes && _operexe( x.yes, this.commander, x.args );
 				} else {
 					_operexe( confirm( x.text ) ? x.yes : x.no, this.commander, x.args );
 				}

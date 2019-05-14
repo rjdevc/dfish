@@ -32,6 +32,10 @@ var
 $ = require( 'dfish' ),
 W = require( 'widget' ),
 
+/*
+ * { "type": "amap", "id": "amap", "name": "amap", "height": "*", "value": "{\"address\":[item]}" }
+ * value参数的item格式：{"lng":"118.868856","lat":"25.421089","icon":"图标地址","tip":"<div>福建省莆田市城厢区华亭镇院里 <a href=#>BBB</a></div>","focus":true}
+ */
 amap = define.widget( 'amap', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
@@ -71,12 +75,11 @@ amap = define.widget( 'amap', {
 		setMarker: function( addr ) {
 			for ( var i = 0, d; i < addr.length; i ++ ) {
 				d = addr[ i ];
-				this.addMarker( new AMap.LngLat(d.lng, d.lat), d.tip, i );
+				this.addMarker( d );
 			}
 			this.map.setFitView();
 		},
-		focus: function( n ) {
-			var m = this.markers[ n ];
+		focus: function( m ) {
 			this.map.panTo( m.getPosition() );
 			AMap.event.trigger( m, 'mouseover' );
 		},
@@ -93,7 +96,7 @@ amap = define.widget( 'amap', {
 			        MGeocoder.getLocation(addr[ i ], function(status, result) {
 			            if ( status === 'complete' && result.info === 'OK' ) {
 				            var d = result.geocodes[ 0 ];
-				        	self.addMarker( new AMap.LngLat( d.location.lng, d.location.lat ), d.formattedAddress, i );
+				        	self.addMarker( { lng: d.location.lng, lat: d.location.lat, tip: d.formattedAddress } );
 				        } else if ( status === 'no_data' ) {
 				        	self.markers.push( { error: true, address: addr[ i ] } );
 				        	self.errorCount ++;
@@ -122,21 +125,22 @@ amap = define.widget( 'amap', {
 				};
 			AMap.Geocoder ? f() : AMap.service( ["AMap.Geocoder"], f );
 		},
-		addMarker: function( lnglatXY, addr ) {
+		addMarker: function( x ) {
 		    var m = new AMap.Marker({
 			    map: this.map,
 			    //icon: 'http://webapi.amap.com/images/' + ( n == null ? 0 : n + 1 ) + '.png',
-			    icon: 'http://webapi.amap.com/images/marker_sprite.png',
-			    position: lnglatXY
+			    icon: x.icon || 'http://webapi.amap.com/images/marker_sprite.png',
+			    position: new AMap.LngLat( x.lng, x.lat )
 			});
 			m.infoWindow = new AMap.InfoWindow({  
-			    content: addr, 
+			    content: x.tip || x.address, 
 			    autoMove:true, 
 			    size:new AMap.Size(260, 0),  
-			    offset:{x:0, y:-30}
+			    offset: { x: 0, y: -30 }
 			});
 		   	m.on( 'mouseover', function( e ) { this.infoWindow.open( this.getMap(), this.getPosition() ) } );
-			this.markers.push( m );
+		   	this.markers.push( m );
+		   	x.focus && this.focus( m );
 		   	return m;
 		}
 	}
@@ -215,22 +219,22 @@ AMapPicker = define.widget( 'amap/picker', {
 		        //逆地理编码
 		        MGeocoder.getAddress(lnglatXY, function(status, result){
 		        	if(status === 'complete' && result.info === 'OK' && lnglatXY === self.lnglat) {
-	        			var m = self.addMarker( lnglatXY, result.regeocode.formattedAddress );
+	        			var m = self.addMarker( { lng: lnglatXY.lng, lat: lnglatXY.lat, tip: result.regeocode.formattedAddress } );
 		        	}
 		        });
 		    });
 		},
-		addMarker: function( lnglatXY, addr ) {
-		    this.cn_adr.val( addr );
-		    this.hd_lng.val( lnglatXY.lng );
-		    this.hd_lat.val( lnglatXY.lat );
-		    var m = this.markers[ 0 ];
+		addMarker: function( x ) {
+		    this.cn_adr.val( x.tip );
+		    this.hd_lng.val( x.lng );
+		    this.hd_lat.val( x.lat );
+		    var m = this.markers[ 0 ], n = new AMap.LngLat( x.lng, x.lat );
 		    if ( m ) {
-				 m.setPosition( lnglatXY );
-				 m.infoWindow.setContent( addr );
-				 m.infoWindow.open( this.map, lnglatXY );
+				 m.setPosition( n );
+				 m.infoWindow.setContent( x.tip || x.address );
+				 m.infoWindow.open( this.map, n );
 		    } else
-		    	m = amap.prototype.addMarker.call( this, lnglatXY, addr );
+		    	m = amap.prototype.addMarker.call( this, x );
 			AMap.event.trigger( m, 'mouseover' );
 			return m;
 		},
