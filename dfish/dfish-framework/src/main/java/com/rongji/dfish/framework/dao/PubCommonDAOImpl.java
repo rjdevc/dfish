@@ -196,18 +196,20 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	}
 
 	public List<?> getQueryList(final String strSql, final Page page, final Object... object) {
-		Pagination p=Pagination.fromPage(page);
-		List<?> ret=this.getQueryList(strSql, p, object);
-		page.setRowCount(p.getSize()==null?0:p.getSize());
-		page.setCurrentCount(ret.size());
+		Pagination pagination=Pagination.fromPage(page);
+		List<?> ret=this.getQueryList(strSql, pagination, object);
+		if (page != null && pagination != null) {
+			page.setRowCount(pagination.getSize()==null?0:pagination.getSize());
+			page.setCurrentCount(ret.size());
+		}
 		return ret;
 	}
-	public List<?> getQueryList(final String strSql, final Pagination page, final Object... object) {
-	    if (page == null||page.getLimit()==null) {
+	public List<?> getQueryList(final String strSql, final Pagination pagination, final Object... object) {
+	    if (pagination == null||pagination.getLimit()==null) {
 	        return getQueryList(strSql, object);
 	    }
-	    if(page.getOffset()==null){
-	    	page.setOffset(0);
+	    if(pagination.getOffset()==null){
+	    	pagination.setOffset(0);
 	    }
 	    
 	    final HibernateTemplate template = getHibernateTemplate();
@@ -222,20 +224,20 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 					}
 				}
 				
-				query.setFirstResult(page.getOffset());
-				query.setMaxResults(page.getLimit());
+				query.setFirstResult(pagination.getOffset());
+				query.setMaxResults(pagination.getLimit());
 
 
 				long beginTimeMillis=System.currentTimeMillis();
 				List<?> resultList = query.list();
 				log(strSql, System.currentTimeMillis()-beginTimeMillis);
 				
-				if (page.isAutoRowCount()) {
-					if(page.getLimit()>resultList.size()&&(resultList.size()>0||page.getOffset()==0)){
+				if (pagination.isAutoRowCount()) {
+					if(pagination.getLimit()>resultList.size()&&(resultList.size()>0||pagination.getOffset()==0)){
 						// 2017-12-22 LinLW
 						//如果查询结果一页都没有满，明显无需count
 						//如果翻到某一页后突然没数据了，还是要去count实际大小。
-						page.setSize(resultList.size()+page.getOffset());
+						pagination.setSize(resultList.size()+pagination.getOffset());
 					}else{
 						// 2017-12-22 LinLW
 						// 更新比较精确的截取的方式，应该用正则表达是而不是用 FROM前面加空格的做法。
@@ -296,7 +298,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 							beginTimeMillis=System.currentTimeMillis();
 							Integer inte = ((Number) arrayList.get(0)).intValue();
 							log(strHql4cout, System.currentTimeMillis()-beginTimeMillis);
-							page.setSize(inte.intValue());
+							pagination.setSize(inte.intValue());
 						}catch(Exception ex){
 							ex.printStackTrace();
 							throw new RuntimeException(new DfishException("自动计算数据行数时发生未知错误，建议设置page.setAutoRowCount(false);并自行计算数据行数。\r\n"+strHql4cout,"DFISH-01000"));
@@ -305,16 +307,16 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				}
 				
 				//LinLW 2017-07-13 如果当前页号大于1 查询结果数为0，并且autoRowcount为true。很可能是最后一页被删了。要回头显示前面的页。
-				if(resultList.size()==0 && page.isAutoRowCount() && page.getOffset()>0){
+				if(resultList.size()==0 && pagination.isAutoRowCount() && pagination.getOffset()>0){
 					//根据page的rowCount计算curpage的数量
 
-						int offset=(page.getSize()-1)/page.getLimit()*page.getLimit();
+						int offset=(pagination.getSize()-1)/pagination.getLimit()*pagination.getLimit();
 						if(offset<0){
 							offset=0;
 						}
-						page.setOffset(offset);
+						pagination.setOffset(offset);
 						query.setFirstResult(offset);
-						query.setMaxResults(page.getLimit());
+						query.setMaxResults(pagination.getLimit());
 //						query.setFirstResult((pageno - 1) * (page.getPageSize()));
 //						query.setMaxResults(page.getPageSize());
 						beginTimeMillis=System.currentTimeMillis();
