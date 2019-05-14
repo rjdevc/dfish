@@ -53,7 +53,6 @@ public class Geohash {
 	* 求与当前geohash相邻的8个格子的geohash值。
 	 * 
 	 * @param geohash
-	 * @param suffix 数据库查询中前缀匹配使用的通配符
 	 * @return string 数组，周围格子的geohash值
 	 */
 	public static String[] expand(String geohash) {

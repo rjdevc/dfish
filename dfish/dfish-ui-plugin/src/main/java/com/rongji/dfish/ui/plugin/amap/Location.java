@@ -2,13 +2,16 @@ package com.rongji.dfish.ui.plugin.amap;
 
 import com.rongji.dfish.ui.AbstractJsonObject;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * 地理位置类,主要提供经纬度和位置等信息
  *
  * @author DFish Team
  * @version 1.0
  */
-public class Location extends AbstractJsonObject {
+public class Location extends AbstractJsonObject<Location> {
 
     /**
      * 经度longitude
@@ -30,6 +33,18 @@ public class Location extends AbstractJsonObject {
      * 提示文本
      */
     private String tip;
+    /**
+     * 显示图标
+     */
+    private String icon;
+    /**
+     * 默认聚焦
+     */
+    private Boolean focus;
+    /**
+     * 数据信息
+     */
+    private Map<String, Object> data;
 
     public Location() {
 
@@ -43,6 +58,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 经度
+     *
      * @return double
      */
     public double getLng() {
@@ -51,6 +67,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 精度
+     *
      * @param lng double
      * @return 本身，这样可以继续设置其他属性
      */
@@ -61,6 +78,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 纬度
+     *
      * @return double
      */
     public double getLat() {
@@ -69,6 +87,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 纬度
+     *
      * @param lat double
      * @return 本身，这样可以继续设置其他属性
      */
@@ -79,6 +98,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 缩放比例
+     *
      * @return int
      */
     public int getZoom() {
@@ -87,6 +107,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 缩放比例
+     *
      * @param zoom int
      * @return 本身，这样可以继续设置其他属性
      */
@@ -97,6 +118,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 地址信息
+     *
      * @return String
      */
     public String getAddress() {
@@ -105,6 +127,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 地址信息
+     *
      * @param address String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -115,6 +138,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 提示文本
+     *
      * @return String
      */
     public String getTip() {
@@ -123,6 +147,7 @@ public class Location extends AbstractJsonObject {
 
     /**
      * 提示文本
+     *
      * @param tip String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -136,4 +161,71 @@ public class Location extends AbstractJsonObject {
         return null;
     }
 
+    public Object getData(String key) {
+        if (key == null || key.equals("")) {
+            return null;
+        }
+        if (data == null) {
+            return null;
+        }
+        return data.get(key);
+    }
+
+    public Object removeData(String key) {
+        if (key == null || key.equals("")) {
+            return null;
+        }
+        if (data == null) {
+            return null;
+        }
+        return data.remove(key);
+    }
+
+    public Location setData(String key, Object value) {
+        if (data == null) {
+            data = new LinkedHashMap<>();
+        }
+        data.put(key, value);
+        return this;
+    }
+
+    public Map<String, Object> getData() {
+        return data;
+    }
+
+    /**
+     * 坐标点图标
+     * @return String
+     */
+    public String getIcon() {
+        return icon;
+    }
+
+    /**
+     * 坐标点图标
+     * @param icon String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Location setIcon(String icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    /**
+     * 是否聚焦
+     * @return Booolean
+     */
+    public Boolean getFocus() {
+        return focus;
+    }
+
+    /**
+     * 是否聚焦
+     * @param focus Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Location setFocus(Boolean focus) {
+        this.focus = focus;
+        return this;
+    }
 }
