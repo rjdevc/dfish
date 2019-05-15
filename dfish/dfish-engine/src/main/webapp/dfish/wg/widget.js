@@ -4466,10 +4466,10 @@ AbsInput = define.widget( 'abs/input', {
 					return (this.x.validate && this.x.validate.maxlength && cfg.input_detect && cfg.input_detect.maxlength) || this.attr( 'tip' ) === T || this.x.placeholder;
 				},
 				method: function( e ) {
-					if ( this.isDisabled() )
-						return;
 					if ( this.attr( 'tip' ) === T )
 						this.$t().title = this.text();
+					if ( this.isDisabled() )
+						return;
 					var m = cfg.input_detect && cfg.input_detect.maxlength && this.x.validate && this.x.validate.maxlength, v = this.val(), u = v;
 					if ( this.lastValue === U )
 						this.lastValue = this.x.value;
