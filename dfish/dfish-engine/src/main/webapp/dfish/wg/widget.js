@@ -4901,7 +4901,7 @@ AbsInput = define.widget( 'abs/input', {
 				method: function( e ) {
 					if ( this.attr( 'tip' ) === T )
 						this.$t().title = this.text();
-					if ( this.isDisabled() )
+					if ( ! this.isNormal() )
 						return;
 					var m = cfg.input_detect && cfg.input_detect.maxlength && this.x.validate && this.x.validate.maxlength, v = this.val(), u = v;
 					if ( this.lastValue === U )
@@ -4924,7 +4924,7 @@ AbsInput = define.widget( 'abs/input', {
 		}
 	},
 	Default: {
-		wmin: _dft_min, hmin: _dft_min
+		tip: T, wmin: _dft_min, hmin: _dft_min
 	},
 	Prototype: {
 		className: 'w-form w-input f-inbl f-va',
@@ -5234,7 +5234,7 @@ Checkbox = define.widget( 'checkbox', {
 			}
 		}
 	},
-	Default: { width: -1, wmin: 1, hmin: 6 },
+	Default: { width: -1, wmin: 1, hmin: 6, tip: T },
 	Prototype: {
 		ROOT_TYPE: 'checkboxgroup',
 		tagName: 'cite',
