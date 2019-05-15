@@ -420,7 +420,7 @@
 .w-combobox-opt:hover{background:#f0f0f0;border-color:#e1e1e1}
 .w-combobox-opt.z-err{background:#fff;border-color:#ff7921}
 .w-combobox-opt.z-err.z-on{border-color:#3298fe}
-.w-combobox.z-ds .w-combobox-opt{border-color:#ddd;background:transparent}
+.w-combobox.z-ds .w-combobox-opt{border-color:#d0d0d0;background:transparent}
 
 .w-input.w-linkbox{height:auto;min-height:28px}
 .w-linkbox ._t{min-height:28px;vertical-align:middle;word-break:break-all;word-wrap:break-word;font-family:verdana;font-style:normal;outline:none}

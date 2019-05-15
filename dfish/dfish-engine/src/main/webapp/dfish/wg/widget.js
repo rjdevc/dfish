@@ -6494,7 +6494,6 @@ XBox = define.widget( 'xbox', {
 
 	},
 	Extend: [ AbsInput, Xsrc ],
-	Default: { tip: T },
 	Listener: {
 		tag: N,
 		body: {
@@ -7310,7 +7309,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		fixSize: function() {
 			if ( this.$() ) {
 				var w = this.$().parentNode.offsetWidth - 5, m = this.x.maxwidth || 0;
-				if ( m > w ) m = w;
+				if ( m > w || m == 0 ) m = w;
 				this.$().style.maxWidth = m + 'px';
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
 					this.$().style.width = w + 'px';
