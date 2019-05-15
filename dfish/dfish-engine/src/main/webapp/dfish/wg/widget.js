@@ -6993,7 +6993,7 @@ Combobox = define.widget( 'combobox', {
 				if ( isNaN( u.width ) )
 					o.maxwidth = w;
 			} else if ( ! o.minwidth ) {
-				o.minwidth = w;
+				o.width = w;
 			}
 			$.extend( d, o );
 			d.src && (d.src = this.parseSrc( d.src, r ));
