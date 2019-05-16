@@ -879,6 +879,9 @@ W = define( 'widget', function() {
 				return ! b && this.contains( _widget( a ) );
 			}
 		},
+		hasBubble: function( a, b ) {
+			return this.contains( a, b );
+		},
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
 			var c = a == N || (a.isWidget ? a.x.open : a), o = this.$();
@@ -4043,14 +4046,14 @@ Dialog = define.widget( 'dialog', {
 		},
 		_listenHide: function( a ) {
 			var self = this, d = this.x.hoverdrop;
-			$.attach( document, 'mousedown mousewheel', self.listenHide_ || ( self.listenHide_ = function( e ) {
-				! self._disposed && (e.srcElement.id == self.id + 'cvr' || ! ( self.contains( e.srcElement ) || ( ! self.x.independent && self.x.snap && self.x.snap.contains( e.srcElement ) ) )) && self.close();
-			} ), a );
+			$.attach( document, 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
+				! self._disposed && (e.srcElement.id == self.id + 'cvr' || ! (self.hasBubble( e.srcElement ) || ( ! self.x.independent && self.x.snap && self.x.snap.hasBubble( e.srcElement ) ))) && self.close();
+			}), a );
 			if ( d ) {
 				var o = d === T ? ($( this.x.snap ) || this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
 				Q( [ o, self.$() ] )[ f ]( 'mouseenter', self._hover_over || (self._hover_over = function() { clearTimeout( self._hover_timer ); delete self._hover_timer; }) );
 				Q( document )[ f ]( 'mousemove', self._hover_move || (self._hover_move = function( e ) {
-					if ( ! o.contains( e.target ) && ! self.contains( e.target ) && ! self._keep_hover ) {
+					if ( ! o.contains( e.target ) && ! self.hasBubble( e.target ) && ! self._keep_hover ) {
 						if ( ! self._hover_timer )
 							self._hover_timer = setTimeout( function() { self.close() }, 300 );
 					} else
@@ -4669,7 +4672,7 @@ AbsForm = define.widget( 'abs/form', {
 			},
 			blur: {
 				occupy: T,
-				method: function() { ! this.contains( document.activeElement ) && _z_on.call( this, F ) }
+				method: function() { ! this.$().contains( document.activeElement ) && _z_on.call( this, F ) }
 			},
 			resize: function() {
 				if ( this.$() ) {
@@ -4719,7 +4722,9 @@ AbsForm = define.widget( 'abs/form', {
 		inputHeight: function() {
 			return this.formHeight();
 		},
-
+		hasBubble: function( a ) {
+			return this.$().contains( a.isWidget ? a.$() : a );
+		},
 		usa: function() {
 			return this.isNormal();
 		},
@@ -6395,7 +6400,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		className: 'w-form w-input w-sliderjigsaw',
 		validHooks: {
 			valid: function( b, v ) {
-				if ( b.required && ! this.isSuccess() )
+				if ( ! this.isSuccess() )
 					return _form_err.call( this, b, 'sliderjigsaw_required' );
 			}
 		},
@@ -6441,13 +6446,13 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		reset: function() {
 			this.val( this.min() );
 			this.removeClass( 'z-on z-success z-err z-lock' );
-			Q( this.$( 'pht' ) ).html( this.info() );
+			Q( this.$( 'pht' ) ).html( this.html_info() );
 			this.normal();
 			this.reload();
 		},
 		lock: function( e ) {
 			this.addClass( 'z-err z-lock' );
-			Q( this.$( 'pht' ) ).html( this.info( e ) );
+			Q( this.$( 'pht' ) ).html( this.html_info( e ) );
 			this.readonly();
 			this.jigsaw && this.jigsaw.close();
 			var a = Math.abs( e.timeout || 0 ), self = this;
@@ -6466,7 +6471,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		dragSmall: function( a ) {
 			this.dragstart( this.$( 'thumb' ), a );
 		},
-		info: function( e ) {
+		html_info: function( e ) {
 			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
@@ -6476,7 +6481,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
-			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.info() + '</span></label>';
+			return '<label class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></label>';
 		}
 	}
 } ),
@@ -7322,7 +7327,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		html_nodes: function() {
 			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
-				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
+				s = '<i class=_b onclick=' + evw + '.write(event)></i><div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class=_xi>&times;</i></div><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
 					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
 			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}
