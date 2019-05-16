@@ -6807,7 +6807,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		fixSize: function() {
 			if ( this.$() ) {
 				var w = this.$().parentNode.offsetWidth - 5, m = this.x.maxwidth || 0;
-				if ( m > w ) m = w;
+				if ( m > w || m == 0 ) m = w;
 				this.$().style.maxWidth = m + 'px';
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
 					this.$().style.width = w + 'px';
@@ -6820,7 +6820,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		html_nodes: function() {
 			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
-				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
+				s = '<i class=_b onclick=' + evw + '.write(event)></i><div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class=_xi>&times;</i></div><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
 					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
 			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}
