@@ -5905,7 +5905,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		className: 'w-form w-input w-sliderjigsaw',
 		validHooks: {
 			valid: function( b, v ) {
-				if ( b.required && ! this.isSuccess() )
+				if ( ! this.isSuccess() )
 					return _form_err.call( this, b, 'sliderjigsaw_required' );
 			}
 		},

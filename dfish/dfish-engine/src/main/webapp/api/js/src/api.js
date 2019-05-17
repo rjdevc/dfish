@@ -113,7 +113,7 @@ function formatParam( p, c ) {
 
 function exampleContent( e ) {
 	for ( var j = 0, f, h, s = '', l = e.length; j < l; j ++ ) {
-		f = e[ j ].toString().slice( 14, -1 ).replace( /\s+$/, '' ).split( '\r\n' );
+		f = e[ j ].toString().slice( 14, -1 ).replace( /\s+$/, '' ).split( /\r?\n/ );
 		if ( f[ 0 ].indexOf( '//' ) > -1 ) {
 			s += '<div class="example-title">// ' + (f[ 0 ].indexOf( '///' ) > -1 ? '' : '') + $.strTrim( f[ 0 ] ).replace( /^\/+/g, '' ) + '</div>';
 			f.splice( 0, 1 );

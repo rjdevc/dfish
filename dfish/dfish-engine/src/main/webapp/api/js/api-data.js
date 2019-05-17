@@ -88,7 +88,6 @@ define( {
         { name: 'class', type: 'String', remark: 'CSS类名。多个用空格隔开' }
       ], example: [
           function() {
-            //
             $.classAdd( $( 'myDiv' ), 'bg-red' );
           }
       ] },
@@ -97,7 +96,6 @@ define( {
         { name: 'class', type: 'String', remark: 'CSS类名。多个用空格隔开' }
       ], example: [
           function() {
-            //
             if ( $.classAny( $( 'myDiv' ), 'bg-red' ) ) {
               alert( '包含样式' );
             }
@@ -138,7 +136,6 @@ define( {
         ] }
       ], example: [
           function() {
-            //
             dfish.config( {
               path: '/itask7_2/', //工程目录
               lib:  'dfish/',  //dfish包目录
@@ -182,7 +179,6 @@ define( {
         { name: 'path', type: 'String', remark: '指定cookie的域' }
       ], example: [
           function() {
-            //
           	$.cookie( 'name', 'John' ); // 写入cookie
           	$.cookie( 'name', 'John', 15 ); // 写入cookie，有效时间15天
           	var name = $.cookie( 'name' ); // 读取cookie
@@ -206,7 +202,6 @@ define( {
         { name: 'value', type: 'String', remark: '属性值。', optional: true }
       ], example: [
           function() {
-            //
             $.data( 'myname', '123' ); // 写入数据
             var v = $.data( 'myname' );  // 读取数据
           }
@@ -216,7 +211,6 @@ define( {
         { name: 'type', type: 'String', remark: '要增加的日期类型，可选值：<b>y</b>(年) <b>m</b>(月) <b>d</b>(日) <b>h</b>(时) <b>i</b>(分) <b>s</b>(秒)' }
       ], example: [
           function() {
-            //
             var tomorrow = $.dateAdd( new Date(), 'd', 1 ); // 给当下的时间加一天
           }
       ] },
@@ -225,7 +219,6 @@ define( {
         { name: 'format', type: 'String', remark: '时间格式，可选值：<b>y</b>(年) <b>m</b>(月) <b>d</b>(日) <b>h</b>(时) <b>i</b>(分) <b>s</b>(秒)' }
       ], example: [
           function() {
-            //
             var f = $.dateFormat( new Date(), 'yyyy-mm-dd hh:ii:ss' );
           }
       ] },
@@ -233,7 +226,6 @@ define( {
         { name: 'date', type: 'String', remark: '时间' }
       ], example: [
           function() {
-            //
             var date = $.dateParse( '2015-11-12' );
           }
       ] },
@@ -282,14 +274,12 @@ define( {
         { name: 'objN', type: 'Map', remark: '待合并到第一个对象的对象' }
       ], example: [
           function() {
-          	//
             var obj1 = $.extend( { name: 'John' }, { sex: 'male' } ); // 返回结果为 { name: 'John', sex: 'male' }
             var obj2 = $.extend( { name: 'John' }, { name: 'Bob', sex: 'male' } ); // 返回结果同上
           }
       ] },
       { name: '$.height()', remark: '获取浏览器可用的高度。', common: true, example: [
           function() {
-            //
             alert( 'document height:' + $.height() );
           }
       ] },
@@ -298,7 +288,6 @@ define( {
         { name: 'obj', type: 'All', remark: '待查的对象' }
       ], example: [
           function() {
-          	//
             if ( $.inArray( [ 'John', 'Bob' ], 'Bob' ) ) {
               alert( 'Bob已存在' );
             }
@@ -311,7 +300,6 @@ define( {
         { name: 'obj', type: 'Map', remark: '待查的对象' }
       ], example: [
           function() {
-          	//
             if ( $.isArray( [ 0, 1 ] ) ) {
               alert( '是数组' );
             }
@@ -321,7 +309,6 @@ define( {
         { name: 'obj', type: 'json', remark: '待复制的对象' }
       ], example: [
           function() {
-          	//
             var obj = $.jsonClone( { name: 'John' } ); //复制一个json
           }
       ] },
@@ -329,7 +316,6 @@ define( {
         { name: 'text', type: 'String', remark: 'json格式的字符串' }
       ], example: [
           function() {
-          	//
             var obj = $.jsonParse( '{"name":"John"}' ); //返回一个json对象
           }
       ] },
@@ -337,7 +323,6 @@ define( {
         { name: 'obj', type: 'json', remark: 'json对象' }
       ], example: [
           function() {
-          	//
             var str = $.jsonString( { name: 'John' } ); //返回字符串
           }
       ] },
@@ -368,7 +353,6 @@ define( {
         { name: 'rightward', type: 'Boolean', optional: true, remark: '从左向右的方向来分隔。默认值为 false' }
       ], example: [
           function() {
-          	//
             var n = $.numFormat( 1234 ); // 返回 "1,234"
           }
       ] },
@@ -410,7 +394,6 @@ define( {
         { name: 'context', type: 'String', remark: '作为待查找的 DOM 元素集、文档或 jQuery 对象' }
       ], example: [
           function() {
-          	//
             $.query( 'p' ).css( 'color', 'red' ); //设置所有p标签的字体色为红色
             Q( 'p' ).css( 'color', 'red' ); //和上一条语句效果相同
           }
@@ -428,7 +411,6 @@ define( {
         { name: 'elem', type: 'HTMLElement', remark: '要删除的元素' }
       ], example: [
           function() {
-          	//
             $.remove( $( 'myDiv' ) );
           }
       ] },
@@ -436,7 +418,6 @@ define( {
         { name: 'elem', type: 'String | HTMLElement', remark: '将要替换成的内容' }
       ], example: [
           function() {
-          	//
             $.replace( $( 'myDiv' ), '<p>新内容</p>' ); // 把一个DOM元素替换成标签
           }
       ] },
@@ -449,7 +430,6 @@ define( {
         { name: 'left', type: 'String', remark: '横向位置。可选值: <b>left</b>, <b>center</b>, <b>right</b>', optional: true }
       ], example: [
           function() {
-          	//
             $.replace( $( 'myDiv' ), '<p>新内容</p>' ); // 把一个DOM元素替换成标签
           }
       ] },
@@ -474,7 +454,6 @@ define( {
         { name: 'item', type: 'Object', remark: '数组中的某一项' }
       ], example: [
           function() {
-          	// 
             var ar = [ 'a', 'b' ];
             $.splice( ar, 'b' ); // 删除 'b' 这一项
             alert( ar.length ); // 显示 "1"
@@ -492,7 +471,6 @@ define( {
         { name: 'html', type: 'String', remark: 'html格式的字符串。' }
       ], example: [
           function() {
-          	//
             var s = $.strEscape( '<a href=#>链接</a>' );
           }
       ] },
@@ -502,7 +480,6 @@ define( {
         { name: 'last', type: 'Boolean', remark: '从最后一个匹配的字符开始。', optional: true }
       ], example: [
           function() {
-          	// 
             var s1 = $.strFrom( 'm/pub/test.js', '/' ); // 返回 "pub/test.js"
             var s2 = $.strFrom( 'm/pub/test.js', '/', true ); // 返回 "test.js"
           }
@@ -528,7 +505,6 @@ define( {
         { name: 'last', type: 'Boolean', remark: '是否截止最后一个匹配的字符。', optional: true }
       ], example: [
           function() {
-          	// 
             var s1 = $.strTo( 'm/pub/test.js', '/' ); // 返回 "m"
             var s2 = $.strTo( 'm/pub/test.js', '/', true ); // 返回 "m/pub"
           }
@@ -537,7 +513,6 @@ define( {
         { name: 'str', type: 'String', remark: '要处理的字符串' }
       ], example: [
           function() {
-          	// 
             var s1 = $.strTrim( ' abc ' ); // 返回 "abc"
           }
       ] },
@@ -545,7 +520,6 @@ define( {
         { name: 'str', type: 'String', remark: '要接吗的字符串' }
       ], example: [
           function() {
-          	//
             var s = $.strUnescape( '&lt;a href=#&gt;链接&lt;/a&gt;' );
           }
       ] },
@@ -554,7 +528,6 @@ define( {
         { name: 'content', type: 'Object', remark: '模板内容。' }
       ], example: [
           function() {
-          	//
             $.template( 'index_view', {
             	type: 'view',
             	node: { type: 'html', text: 'hello world' }
@@ -567,7 +540,6 @@ define( {
         { name: 'opt', type: 'String | Function | Boolean', remark: 'String: 弹出新窗的URL(支持$0,$1变量。$0是图片地址,$1是图片标题); Function: 回调函数; Boolean: 设为false，取消点击预览功能。' }
       ], example: [
           function() {
-          	//
             $.thumbnail( vm.find('img').$(), 500 );
           }
       ] },
@@ -575,7 +547,6 @@ define( {
         { name: 'url', type: 'String', remark: 'url字符串' }
       ], example: [
           function() {
-          	//
             var url = $.urlDecode( '%26' ); // 返回 "&"
           }
       ] },
@@ -583,7 +554,6 @@ define( {
         { name: 'url', type: 'String', remark: 'url字符串' }
       ], example: [
           function() {
-          	//
             var url = $.urlEncode( '&' ); // 返回 "%26"
           }
       ] },
@@ -592,7 +562,6 @@ define( {
         { name: 'data', type: 'Array | Object', remark: '用来替换的数据。如果 url 中的变量是 $0, $1...$n，那么本参数应该是 Array；如果url 中的变量是 $str，那么本参数应该是 Object。' }
       ], example: [
           function() {
-          	//
             var url = $.urlFormat( 'a.sp?id=$0&v=$1', [ 'a', 'b' ] ); // 返回 "a.sp?id=a&v=b"
             var url = $.urlFormat( 'a.sp?id=$a&v=$b', { a: 1, b: 2 } ); // 返回 "a.sp?id=1&v=2"
           }
@@ -646,7 +615,6 @@ define( {
       ] },
       { name: '$.width()', remark: '获取浏览器可用的宽度。', common: true, example: [
           function() {
-            //
             alert( 'document width:' + $.width() );
           }
       ] },
@@ -654,7 +622,6 @@ define( {
         { name: 'content', type: 'String', remark: '字符串形式的xml' }
       ], example: [
           function() {
-          	//
             var x = $.xmlParse( '<doc>123</doc>' ); // 返回一个xml节点对象
           }
       ] },
@@ -662,7 +629,6 @@ define( {
         { name: 'expr', type: 'String', remark: '符合xpath语法的查询语句' }
       ], example: [
           function() {
-          	//
             var x = $.xmlQueryAll( xml, 'name' ); // 获取第一个标签名为name的子节点
           }
       ] },
@@ -670,7 +636,6 @@ define( {
         { name: 'expr', type: 'String', remark: '符合xpath语法的查询语句' }
       ], example: [
           function() {
-          	//
             var xs = $.xmlQueryAll( xml, 'name' ); // 获取标签名为name的子节点
           }
       ] }
@@ -708,7 +673,6 @@ define( {
     Properties: [
       { name: 'exports', remark: '为了方便，CommonJS中为每个模块提供一个exports变量，指向module.exports。注意，不能直接将exports变量指向一个值。一般情况建议使用module.exports，不使用exports。', example: [
           function() {
-          	//
             // 对外提供 foo 属性
             exports.foo = 'bar';
             // 对外提供 doSomething 方法
@@ -1045,7 +1009,6 @@ define( {
       { name: 'isWidget', type: 'Boolean', remark: '是否是一个widget对象。所有widget的这个属性都为 true。可用来简单区分widget对象和JSON对象。', common: true },
       { name: 'ownerView', type: 'View', remark: 'widget 所属的 view 对象。', common: true, example: [
           function() {
-          	// 
             wg.ownerView.reload(); // 让 widget 所在的 view 刷新
           }
       ] },
@@ -1054,7 +1017,6 @@ define( {
       { name: 'length', type: 'Number', remark: '子节点的个数。', common: true },	
       { name: 'x', type: 'Object', remark: 'widget的初始配置项对象。', common: true, example: [
           function() {
-          	//
             var wg = vm.find( 'aaa' );
             alert( wg.x.type );
           }
@@ -1092,7 +1054,6 @@ define( {
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-          	//
             wg.after( { type: 'html', text: '123' } );
           }
       ] },
@@ -1100,7 +1061,6 @@ define( {
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-          	//
             wg.append( { type: 'html', text: '123' } );
           }
       ] },
@@ -1122,7 +1082,6 @@ define( {
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-          	//
             wg.before( { type: 'html', text: '123' } );
           }
       ] },
@@ -1141,7 +1100,6 @@ define( {
         { name: 'argN', type: 'String', remark: '调用 ajax 或 submit 命令时，会替换 src 中的 $0...$N', optional: true }
       ], example: [
           function() {
-          	//
             wg.cmd( { type: 'ajax', src: 'abc.sp' } );
           }
       ] },
@@ -1150,7 +1108,6 @@ define( {
         { name: 'value', type: 'String', remark: '样式属性值。数字型的值可用 += 和 -= 来做额外附加。' }
       ], example: [
           function() {
-            //
             vm.find( 'wg' ).css( { 'width': 100, 'background': 'red' } ); // 设置宽度为100px，背景色为红色
             vm.find( 'wg' ).css( 'height', '+=100' ); // 高度增加100px
           }
@@ -1201,26 +1158,22 @@ define( {
         { name: 'num', type: 'String | Number', remark: '高度值。可以是数字，*, 百分比。', optional: true, common: true }
       ], example: [
           function() {
-          	//
             var h = wg.height(); // 获取高度
             wg.height( 100 ); //设置高度
           }
       ] },
       { name: 'innerHeight()', remark: '获取或设置高度。即去除 padding border margin 后的高度。', common: true, example: [
           function() {
-          	//
             var h = wg.innerHeight();
           }
       ] },
       { name: 'innerWidth()', remark: '获取可用宽度。即去除 padding border margin 后的宽度。', common: true, example: [
           function() {
-          	//
             var w = wg.innerWidth();
           }
       ] },
       { name: 'next()', remark: '获取下一个兄弟节点。', common: true, example: [
           function() {
-          	//
             var n = wg.next();
           }
       ] },
@@ -1228,13 +1181,11 @@ define( {
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-          	//
             wg.prepend( { type: 'html', text: '123' } );
           }
       ] },
       { name: 'prev()', remark: '获取上一个兄弟节点。', common: true, example: [
           function() {
-          	//
             var n = wg.prev();
           }
       ] },
@@ -1263,7 +1214,6 @@ define( {
         { name: 'opt', type: 'object | widget', remark: 'widget 配置参数或对象。' }
       ], example: [
           function() {
-          	//
             wg.replace( { type: 'html', text: '123' } );
           }
       ] },
@@ -1273,7 +1223,6 @@ define( {
         { name: 'args', type: 'Array', remark: '给绑定方法传入的参数。', optional: true }
       ], example: [
           function() {
-          	//
             wg.trigger( 'click' );
           }
       ] },
@@ -1282,7 +1231,6 @@ define( {
         { name: 'fn', type: 'Function | String', remark: '事件函数。' }
       ], remark: '设置事件。', example: [
           function() {
-          	//
             wg.setOn( 'click', 'alert(this.type)' );
           }
       ] },
@@ -1292,7 +1240,6 @@ define( {
         { name: 'event', type: 'Event | String', remark: '事件对象或名称。' }
       ], remark: '触发自身和所有子孙节点的事件。', example: [
           function() {
-          	//
             wg.triggerAll( 'click' );
           }
       ] },
@@ -1309,7 +1256,6 @@ define( {
         { name: 'num', type: 'String | Number', remark: '宽度值。可以是数字, *, 百分比。', optional: true }
       ], example: [
           function() {
-          	//
             var w = wg.width(); // 获取宽度
             wg.width( 100 ); // 设置宽度
           }
@@ -1370,7 +1316,6 @@ define( {
         { name: 'bFocus', type: 'Boolean', remark: '默认为 true', optional: true }
       ], example: [
           function() {
-          	//
             btn.focus(); // 聚焦
             btn.focus( false ); // 失去焦点
           }
@@ -1537,7 +1482,6 @@ define( {
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ], example: [
           function() {
-          	//
             return~
             { type: 'fieldset', box: { type: 'checkbox', name: 'box', text: '选项一' } };
           }
@@ -2285,7 +2229,6 @@ define( {
         { name: 'fn', type: 'Function', optional: true, remark: '节点更新完毕后执行的回调函数。' }
       ], example: [
           function() {
-          	// 
             vm.find( 'myLeaf' ).reloadForAdd();
           }
       ] }
@@ -2358,7 +2301,6 @@ define( {
         { name: 'fn', type: 'Function', optional: true, remark: '节点更新完毕后执行的回调函数。' }
       ], example: [
           function() {
-          	// 
             vm.find( 'myLeaf' ).reloadForAdd();
           }
       ] },
@@ -2545,7 +2487,6 @@ define( {
       { name: 'btncount', type: 'Number', optional: true, remark: '数字页数按钮的数量。' },
       { name: 'btnsumpage', type: 'Boolean', optional: true, remark: '显示总页数按钮。' },
       { name: 'currentpage', type: 'Number', remark: '当前页数。(起始值为1)' },
-      { name: 'info', type: 'String', optional: true, remark: '显示总条数和总页数等信息。' },
       { name: 'jump', type: 'Boolean', optional: true, remark: '显示一个可填写页数的表单。' },
       { name: 'name', type: 'String', optional: true, remark: '如果设置了name，将生成一个隐藏表单项，值为当前页数。' },
       { name: 'nofirstlast', type: 'Boolean', optional: true, remark: '不显示"首页"和"尾页"两个按钮。' },
@@ -2553,7 +2494,6 @@ define( {
       { name: 'sumpage', type: 'Number', remark: '总页数。(起始值为1)' },
       { name: 'setting', type: 'Array', remark: 'button数组。生成一个配置按钮和下拉菜单。', example: [
           function() {
-            //
             return~
             { type: 'page/mini', setting: [
             	{ "text": "显示设置" },
@@ -2607,7 +2547,7 @@ define( {
   	remark: '日历。',
   	extend: 'widget',
     Config: [
-      { name: 'body', type: 'Object', optional: true, remark: '定义日期的内容和样式等。以日期数字作为key，以 calendar/td 作为值。', example: [
+      { name: 'body', type: 'Object', optional: true, remark: '定义日期的内容和样式等。以日期作为key，以 calendar/td 作为值。', example: [
           function() {
             // 给1日和7日设置样式和内容。
             return~
@@ -3504,7 +3444,6 @@ define( {
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },
       { name: 'id', type: 'String', remark: 'Dialog 的 id 参数有全局性。可以通过两种方式获取 dialog 的实例: <br> 1. 可通过 view.find( id ) 方法来获取 widget。<br> 2. 通过 $.dialog( id ) 获取。', example: [
           function() {
-          	//  
             vm.cmd( { type: "dialog", id: 'mydialog', width: 500, height: 400, src: 'dialog.sp' } );
             var dg1 = vm.find( 'mydialog' ); // 获取方式1
             var dg2 = $.dialog( 'mydialog' ); // 获取方式2
@@ -3512,13 +3451,11 @@ define( {
       ] },
       { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
           function() {
-          	//
             VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
           }
       ] },
       { name: 'node', type: 'Object', remark: 'Dialog的唯一子节点。', example: [
           function() {
-          	//
             return~
             {
               type: 'dialog', width: 500, height: 400,
@@ -3574,7 +3511,6 @@ define( {
         { name: 'target', type: 'Widget | HTMLElement', optional: true, remark: '可拖动的对象。如果不设置此参数，那么整个窗口都可以拖动。' }
       ], example: [
           function() {
-          	//
             $.dialog(this).draggable();
           }
       ] },
