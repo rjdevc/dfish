@@ -1460,19 +1460,19 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		}
 		return r;
 	};
-	//.minWidth, .minHeight
-	_proto[ nz ] = function() {
+	//.minWidth, .minHeight /@u -> 是否保留 wmin hmin 部分的大小
+	_proto[ nz ] = function( u ) {
 		var a = this.attr( nv );
 		if ( a == N ) return N;
 		a = this.parentNode[ sz ]( this, a );
-		return a == N ? N : _w_size_fix[ v ].call( this, a );
+		return a == N ? N : u ? a : _w_size_fix[ v ].call( this, a );
 	};
-	//.minWidth, .minHeight
-	_proto[ xz ] = function() {
+	//.maxWidth, .maxHeight
+	_proto[ xz ] = function( u ) {
 		var a = this.attr( xv );
 		if ( a == N ) return N;
 		a = this.parentNode[ sz ]( this, a );
-		return a == N ? N : _w_size_fix[ v ].call( this, a );
+		return a == N ? N : u ? a : _w_size_fix[ v ].call( this, a );
 	};
 	//.innerWidth, .innerHeight
 	_proto[ iz ] = function() {
@@ -1514,7 +1514,6 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
 				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : this[ i ].attr( v );
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
-				v=='width'&&a.id=='f:'&&this[ i ][ rv ]&&alert(this[ i ][ v ]());
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
 			s = $.scale( c, r );
@@ -3937,11 +3936,11 @@ Dialog = define.widget( 'dialog', {
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
 			$.db( this.html(), c && this.ownerView.$() );
 			if ( this.x.minwidth || this.x.maxwidth ) {
-				var iw = this.innerWidth(), ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.minWidth(), m = this.maxWidth();
+				var ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.minWidth( T ), m = this.maxWidth( T );
 				this.width( n && n > ew ? n : m && m < ew ? m : ew );
 			}
 			if ( this.x.minheight || this.x.maxheight ) {
-				var ih = this.innerHeight(), eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.minHeight(), m = this.maxHeight();
+				var eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.minHeight( T ), m = this.maxHeight( T );
 				this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
