@@ -199,7 +199,10 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		Pagination pagination=Pagination.fromPage(page);
 		List<?> ret=this.getQueryList(strSql, pagination, object);
 		if (page != null && pagination != null) {
-			page.setRowCount(pagination.getSize()==null?0:pagination.getSize());
+			Page resultPage = pagination.toPage();
+//			page.setRowCount(pagination.getSize()==null?0:pagination.getSize());
+//			page.setCurrentCount(ret.size());
+			Utils.copyPropertiesExact(page, resultPage);
 			page.setCurrentCount(ret.size());
 		}
 		return ret;
@@ -286,9 +289,9 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 							}
 						}
 						
-						String strHql4cout = "SELECT COUNT(*) "+strSql.substring(firstForm,lastOrderBy);
+						String strHql4count = "SELECT COUNT(*) "+strSql.substring(firstForm,lastOrderBy);
 						try{
-							Query query1 = session.createQuery(strHql4cout);
+							Query query1 = session.createQuery(strHql4count);
 							if (object != null) {
 								for (int k = 0; k < object.length; k++) {
 									setArgument(query1, k, object[k]);
@@ -296,12 +299,12 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 							}
 							List<?> arrayList = query1.list();
 							beginTimeMillis=System.currentTimeMillis();
-							Integer inte = ((Number) arrayList.get(0)).intValue();
-							log(strHql4cout, System.currentTimeMillis()-beginTimeMillis);
-							pagination.setSize(inte.intValue());
+							Integer count = ((Number) arrayList.get(0)).intValue();
+							log(strHql4count, System.currentTimeMillis()-beginTimeMillis);
+							pagination.setSize(count.intValue());
 						}catch(Exception ex){
 							ex.printStackTrace();
-							throw new RuntimeException(new DfishException("自动计算数据行数时发生未知错误，建议设置page.setAutoRowCount(false);并自行计算数据行数。\r\n"+strHql4cout,"DFISH-01000"));
+							throw new RuntimeException(new DfishException("自动计算数据行数时发生未知错误，建议设置page.setAutoRowCount(false);并自行计算数据行数。\r\n"+strHql4count,"DFISH-01000"));
 						}
 					}
 				}
@@ -328,7 +331,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				return resultList;
 			}
 		};
-		List<?> result = (List<?>) template.execute(action);
+		List<?> result = template.execute(action);
 //		trace(strSql, beginTimeMillis);
 		// 当前记录数
 		return result;
