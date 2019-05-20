@@ -879,6 +879,9 @@ W = define( 'widget', function() {
 				return ! b && this.contains( _widget( a ) );
 			}
 		},
+		hasBubble: function( a, b ) {
+			return this.contains( a, b );
+		},
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
 			var c = a == N || (a.isWidget ? a.x.open : a), o = this.$();
@@ -1457,19 +1460,19 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		}
 		return r;
 	};
-	//.minWidth, .minHeight
-	_proto[ nz ] = function() {
+	//.minWidth, .minHeight /@u -> 是否保留 wmin hmin 部分的大小
+	_proto[ nz ] = function( u ) {
 		var a = this.attr( nv );
 		if ( a == N ) return N;
 		a = this.parentNode[ sz ]( this, a );
-		return a == N ? N : _w_size_fix[ v ].call( this, a );
+		return a == N ? N : u ? a : _w_size_fix[ v ].call( this, a );
 	};
-	//.minWidth, .minHeight
-	_proto[ xz ] = function() {
+	//.maxWidth, .maxHeight
+	_proto[ xz ] = function( u ) {
 		var a = this.attr( xv );
 		if ( a == N ) return N;
 		a = this.parentNode[ sz ]( this, a );
-		return a == N ? N : _w_size_fix[ v ].call( this, a );
+		return a == N ? N : u ? a : _w_size_fix[ v ].call( this, a );
 	};
 	//.innerWidth, .innerHeight
 	_proto[ iz ] = function() {
@@ -1511,7 +1514,6 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
 				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : this[ i ].attr( v );
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
-				v=='width'&&a.id=='f:'&&this[ i ][ rv ]&&alert(this[ i ][ v ]());
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
 			s = $.scale( c, r );
@@ -3934,11 +3936,11 @@ Dialog = define.widget( 'dialog', {
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
 			$.db( this.html(), c && this.ownerView.$() );
 			if ( this.x.minwidth || this.x.maxwidth ) {
-				var iw = this.innerWidth(), ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.minWidth(), m = this.maxWidth();
+				var ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.minWidth( T ), m = this.maxWidth( T );
 				this.width( n && n > ew ? n : m && m < ew ? m : ew );
 			}
 			if ( this.x.minheight || this.x.maxheight ) {
-				var ih = this.innerHeight(), eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.minHeight(), m = this.maxHeight();
+				var eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.minHeight( T ), m = this.maxHeight( T );
 				this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
@@ -4043,14 +4045,14 @@ Dialog = define.widget( 'dialog', {
 		},
 		_listenHide: function( a ) {
 			var self = this, d = this.x.hoverdrop;
-			$.attach( document, 'mousedown mousewheel', self.listenHide_ || ( self.listenHide_ = function( e ) {
-				! self._disposed && (e.srcElement.id == self.id + 'cvr' || ! ( self.contains( e.srcElement ) || ( ! self.x.independent && self.x.snap && self.x.snap.contains( e.srcElement ) ) )) && self.close();
-			} ), a );
+			$.attach( document, 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
+				! self._disposed && (e.srcElement.id == self.id + 'cvr' || ! (self.hasBubble( e.srcElement ) || ( ! self.x.independent && self.x.snap && self.x.snap.hasBubble( e.srcElement ) ))) && self.close();
+			}), a );
 			if ( d ) {
 				var o = d === T ? ($( this.x.snap ) || this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
 				Q( [ o, self.$() ] )[ f ]( 'mouseenter', self._hover_over || (self._hover_over = function() { clearTimeout( self._hover_timer ); delete self._hover_timer; }) );
 				Q( document )[ f ]( 'mousemove', self._hover_move || (self._hover_move = function( e ) {
-					if ( ! o.contains( e.target ) && ! self.contains( e.target ) && ! self._keep_hover ) {
+					if ( ! o.contains( e.target ) && ! self.hasBubble( e.target ) && ! self._keep_hover ) {
 						if ( ! self._hover_timer )
 							self._hover_timer = setTimeout( function() { self.close() }, 300 );
 					} else
@@ -4669,7 +4671,7 @@ AbsForm = define.widget( 'abs/form', {
 			},
 			blur: {
 				occupy: T,
-				method: function() { ! this.contains( document.activeElement ) && _z_on.call( this, F ) }
+				method: function() { ! this.$().contains( document.activeElement ) && _z_on.call( this, F ) }
 			},
 			resize: function() {
 				if ( this.$() ) {
@@ -4719,7 +4721,9 @@ AbsForm = define.widget( 'abs/form', {
 		inputHeight: function() {
 			return this.formHeight();
 		},
-
+		hasBubble: function( a ) {
+			return this.$().contains( a.isWidget ? a.$() : a );
+		},
 		usa: function() {
 			return this.isNormal();
 		},
@@ -4901,7 +4905,7 @@ AbsInput = define.widget( 'abs/input', {
 				method: function( e ) {
 					if ( this.attr( 'tip' ) === T )
 						this.$t().title = this.text();
-					if ( this.isDisabled() )
+					if ( ! this.isNormal() )
 						return;
 					var m = cfg.input_detect && cfg.input_detect.maxlength && this.x.validate && this.x.validate.maxlength, v = this.val(), u = v;
 					if ( this.lastValue === U )
@@ -4924,7 +4928,7 @@ AbsInput = define.widget( 'abs/input', {
 		}
 	},
 	Default: {
-		wmin: _dft_min, hmin: _dft_min
+		tip: T, wmin: _dft_min, hmin: _dft_min
 	},
 	Prototype: {
 		className: 'w-form w-input f-inbl f-va',
@@ -5234,7 +5238,7 @@ Checkbox = define.widget( 'checkbox', {
 			}
 		}
 	},
-	Default: { width: -1, wmin: 1, hmin: 6 },
+	Default: { width: -1, wmin: 1, hmin: 6, tip: T },
 	Prototype: {
 		ROOT_TYPE: 'checkboxgroup',
 		tagName: 'cite',
@@ -6395,7 +6399,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		className: 'w-form w-input w-sliderjigsaw',
 		validHooks: {
 			valid: function( b, v ) {
-				if ( b.required && ! this.isSuccess() )
+				if ( ! this.isSuccess() )
 					return _form_err.call( this, b, 'sliderjigsaw_required' );
 			}
 		},
@@ -6441,13 +6445,13 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		reset: function() {
 			this.val( this.min() );
 			this.removeClass( 'z-on z-success z-err z-lock' );
-			Q( this.$( 'pht' ) ).html( this.info() );
+			Q( this.$( 'pht' ) ).html( this.html_info() );
 			this.normal();
 			this.reload();
 		},
 		lock: function( e ) {
 			this.addClass( 'z-err z-lock' );
-			Q( this.$( 'pht' ) ).html( this.info( e ) );
+			Q( this.$( 'pht' ) ).html( this.html_info( e ) );
 			this.readonly();
 			this.jigsaw && this.jigsaw.close();
 			var a = Math.abs( e.timeout || 0 ), self = this;
@@ -6466,7 +6470,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		dragSmall: function( a ) {
 			this.dragstart( this.$( 'thumb' ), a );
 		},
-		info: function( e ) {
+		html_info: function( e ) {
 			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
@@ -6476,7 +6480,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
-			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.info() + '</span></label>';
+			return '<label class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></label>';
 		}
 	}
 } ),
@@ -6494,7 +6498,6 @@ XBox = define.widget( 'xbox', {
 
 	},
 	Extend: [ AbsInput, Xsrc ],
-	Default: { tip: T },
 	Listener: {
 		tag: N,
 		body: {
@@ -7310,7 +7313,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		fixSize: function() {
 			if ( this.$() ) {
 				var w = this.$().parentNode.offsetWidth - 5, m = this.x.maxwidth || 0;
-				if ( m > w ) m = w;
+				if ( m > w || m == 0 ) m = w;
 				this.$().style.maxWidth = m + 'px';
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
 					this.$().style.width = w + 'px';
@@ -7323,7 +7326,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		html_nodes: function() {
 			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
-				s = '<i class=_b onclick=' + evw + '.write(event)></i><i class=_x onclick=' + evw + '.close(event)>&times;</i><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
+				s = '<i class=_b onclick=' + evw + '.write(event)></i><div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class=_xi>&times;</i></div><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
 					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
 			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
 		}

@@ -2,6 +2,7 @@
   "type": "view",
   "node": {
     "type": "vert",
+    "height": "*",
     "nodes": [
       { "type": "horz", "height": 55, "cls": "bg-top index-top", "nodes": [
       	{ "type": "html", "width": 220, "align": "center", "text": "<i class=f-vi></i><img src=src/img/logo-white.png align=absmiddle height=25><span class=logo-text>JS Docs</span>" },
