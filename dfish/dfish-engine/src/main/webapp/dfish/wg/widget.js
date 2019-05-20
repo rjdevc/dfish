@@ -686,7 +686,7 @@ W = define( 'widget', function() {
 		// 改变默认设置 @a -> key
 		defaults: function( a ) {
 			if ( typeof a === _STR ) {
-				var d = this.defaultHooks || this.Const.Default, e = d && d[ a ];
+				var d = this.defaultHooks || this.Const.Default, e = d ? d[ a ] : U;
 				return typeof e === _FUN ? e.call( this ) : e;
 			}
 			this.defaultHooks = $.extend( a, this.Const.Default, this.defaultHooks );
@@ -3519,8 +3519,8 @@ Page = define.widget( 'page/mini', {
 			this.x.target && this.initByTarget();
 			var c = this.x.currentpage, m = _number( this.x.sumpage ), n = _number( this.x.btncount ), f = Math.max( 1, c - Math.ceil( n / 2 ) + 1 ),
 				l = Math.min( m + 1, f + n ), d = l - f < n ? Math.max( 1, l - n ) : f, h = this.x.nofirstlast, z = this.x.btncls ? ' ' + this.x.btncls : '',
-				s = ( h ? '' : '<em class="_o _b _first' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( 1, c != 1 ) + '>' + (this.x.labelfirst || this.page_first || '') + '</em>' ) +
-					'<em class="_o _b _prev' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( c - 1, c != 1 ) + '>' + (this.x.labelprev || this.page_prev || '') + '</em>';
+				s = ( h ? '' : '<em class="_o _b _first' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( 1, c != 1 ) + '>' + (this.x.labelfirst || Loc.page_first || '') + '</em>' ) +
+					'<em class="_o _b _prev' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( c - 1, c != 1 ) + '>' + (this.x.labelprev || Loc.page_prev || '') + '</em>';
 			if ( m && this.x.btnsumpage && d > 1 ) {
 					s += '<em class="_o _num z-us z-sum' + z + '"' + this.eve( 1, T ) + '>1<i>...</i></em>';
 					s += '<em class="_o _num z-sumdot' + z + '">...</em>';
@@ -3532,8 +3532,8 @@ Page = define.widget( 'page/mini', {
 				s += '<em class="_o _num z-sumdot' + z + '">...</em>';
 				s += '<em class="_o _num z-us z-sum' + z + '"' + this.eve( m, T ) + '><i>...</i>' + m + '</em>';
 			}
-			s += '<em class="_o _b _next' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( c + 1, c != m ) + '>' + (this.x.labelnext || this.page_next || '') + '</em>' +
-				( h ? '' : '<em class="_o _b _last' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( m, c != m ) + '>' + (this.x.labellast || this.page_last || '') + '</em>' );
+			s += '<em class="_o _b _next' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( c + 1, c != m ) + '>' + (this.x.labelnext || Loc.page_next || '') + '</em>' +
+				( h ? '' : '<em class="_o _b _last' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( m, c != m ) + '>' + (this.x.labellast || Loc.page_last || '') + '</em>' );
 			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + (c || 1) + '">' : '') + s + this.html_info() + '<i class=f-vi></i>';
 		},
 		html_info: function() {
@@ -3557,11 +3557,7 @@ Page = define.widget( 'page/mini', {
 PageText = define.widget( 'page/text', {
 	Extend: 'page/mini',
 	Prototype: {
-		className: 'w-page w-page-text',
-		page_next: Loc.page_next,
-		page_prev: Loc.page_prev,
-		page_first: Loc.page_first,
-		page_last: Loc.page_last
+		className: 'w-page w-page-text'
 	}
 } ),
 PageGroup = define.widget( 'page/buttongroup', {
@@ -3586,8 +3582,8 @@ PageGroup = define.widget( 'page/buttongroup', {
 		html_nodes: function() {
 			this.x.target && this.initByTarget();
 			var c = 'w-page-button ' + (this.x.btncls != N ? this.x.btncls : 'f-button'), d = _number( this.x.currentpage ) || 1, s = _number( this.x.sumpage ) || 1,
-				b = [ { type: 'button', text: '&lt;<i class="f-arw f-arw-l4"></i>', cls: c + ' _prev', status: d == 1 ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d - 1) + ')' } },
-					  { type: 'button', text: '&gt;<i class="f-arw f-arw-r4"></i>', cls: c + ' _next', status: d == s ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
+				b = [ { type: 'button', ownproperty: T, text: '&lt;<i class="f-arw f-arw-l4"></i>', tip: (this.x.labelprev || Loc.page_prev || ''), cls: c + ' _prev', status: d == 1 ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d - 1) + ')' } },
+					  { type: 'button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.labelnext || Loc.page_next || ''), cls: c + ' _next', status: d == s ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
 			if ( this.x.btncount != 0 ) {
 				var g = this.x.dropalign;
 				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'button', text: d + '/' + s, cls: c + ' _drop', on: { click: 'this.rootNode.parentNode.drop(this)' } } );
@@ -6239,7 +6235,7 @@ Spinner = define.widget( 'spinner', {
 /* `slider` */
 /* 值的范围默认 0-100 */
 Slider = define.widget( 'slider', {
-	Extend: Spinner,
+	Extend: AbsForm,
 	Default: {
 		width: '*', wmin: 0
 	},
@@ -6320,7 +6316,7 @@ Slider = define.widget( 'slider', {
 		html_nodes: function() {
 			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
-			't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class="f-i _i"></i></div></div>' + this.html_placeholder();
+				't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -6477,10 +6473,11 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			var d = this.img;
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
-			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
+			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) +
+				' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
-			return '<label class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></label>';
+			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';
 		}
 	}
 } ),
@@ -9223,7 +9220,7 @@ TCell = define.widget( 'tcell', {
 			if ( isNaN( w ) )
 				return N;
 			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
-				w -= 1;
+				w -= ie7 ? 2 : 1; //fixme: ie7下需要多减一个像素，原因待查
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
 		},

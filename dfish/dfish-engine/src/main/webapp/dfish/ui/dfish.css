@@ -45,6 +45,7 @@
 .f-sub-horz.z-htmn{float:left;*display:normal}
 .f-sub-horz,.f-sub-vert{vertical-align:top}
 .f-sub-horz{white-space:normal;*white-space:nowrap}
+.f-sub-vert{*white-space:normal}
 
 .f-sub-frame,.f-hide{visibility:hidden;position:absolute;z-index:-1;left:-100%} 
 .f-sub-frame-on,.f-dot{}
@@ -65,6 +66,7 @@
 .f-va,.f-va-middle{vertical-align:middle}
 .f-va-top{vertical-align:top}
 .f-va-bottom{vertical-align:bottom}
+.f-va-abs{position:absolute;top:0;left:0;right:0;bottom:0;margin:auto}
 
 .f-resize-sensor{position:absolute;left:0px;top:0px;right:0px;bottom:0px;z-index:-1;visibility:hidden;*display:none}
 .f-resize-sensor-expand{position:absolute;left:0;top:0;right:0;bottom:0;overflow:scroll;border:1px solid green;}
@@ -329,7 +331,6 @@
 .w-textarea textarea._t{height:100%;line-height:1.5;overflow:auto;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
 .w-textarea .w-input-placeholder{height:22px}
 
-.w-select{display:inline-block}
 .w-select ._t{height:100%;border:0;*text-indent:0}
 .w-select.w-select-multiple{height:auto}
 .w-select.z-ds ._t{background:#eee}
@@ -367,10 +368,10 @@
 .w-sliderjigsaw var,.w-sliderjigsaw em{font-style:normal}
 .w-sliderjigsaw ._t{position:relative;height:100%;background:#f7f9fa;text-indent:0}
 .w-sliderjigsaw ._track{display:none;position:absolute;left:-1px;top:-1px;bottom:-1px;background:#d1e9ff;border:1px solid transparent}
-.w-sliderjigsaw ._thumb{position:absolute;width:30px;height:100%;background:#fff;cursor:pointer;text-align:center;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
-.w-sliderjigsaw ._thumb ._i{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;background:url(g/i.png) no-repeat -73px -204px;*top:6px;*left:6px}
+.w-sliderjigsaw ._thumb{position:absolute;width:30px;height:100%;line-height:0;background:#fff;cursor:pointer;text-align:center;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
+.w-sliderjigsaw ._thumb ._i{background:url(g/i.png) no-repeat -73px -204px}
 .w-sliderjigsaw ._s{position:absolute;top:0;left:0;bottom:0;color:#a9a9a9}
-.w-sliderjigsaw ._s,.w-sliderjigsaw ._err{left:30px;right:0;top:0;text-align:center}
+.w-sliderjigsaw ._s,.w-sliderjigsaw ._err{left:30px;right:0;top:0;height:100%;text-align:center}
 .w-sliderjigsaw.z-drag ._track{display:block;border-color:#1991fa}
 .w-sliderjigsaw.z-drag ._thumb,.w-sliderjigsaw ._thumb.z-hv{background:#1891fb}
 .w-sliderjigsaw.z-drag ._thumb ._i,.w-sliderjigsaw ._thumb.z-hv ._i{background-position:-93px -204px}
