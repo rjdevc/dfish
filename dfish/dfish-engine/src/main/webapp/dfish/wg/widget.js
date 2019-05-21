@@ -3519,8 +3519,8 @@ Page = define.widget( 'page/mini', {
 			this.x.target && this.initByTarget();
 			var c = this.x.currentpage, m = _number( this.x.sumpage ), n = _number( this.x.btncount ), f = Math.max( 1, c - Math.ceil( n / 2 ) + 1 ),
 				l = Math.min( m + 1, f + n ), d = l - f < n ? Math.max( 1, l - n ) : f, h = this.x.nofirstlast, z = this.x.btncls ? ' ' + this.x.btncls : '',
-				s = ( h ? '' : '<em class="_o _b _first' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( 1, c != 1 ) + '>' + (this.x.labelfirst || Loc.page_first || '') + '</em>' ) +
-					'<em class="_o _b _prev' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( c - 1, c != 1 ) + '>' + (this.x.labelprev || Loc.page_prev || '') + '</em>';
+				s = ( h ? '' : '<em class="_o _b _first' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( 1, c != 1 ) + '>' + (this.x.labelfirst || this.page_first || '') + '</em>' ) +
+					'<em class="_o _b _prev' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( c - 1, c != 1 ) + '>' + (this.x.labelprev || this.page_prev || '') + '</em>';
 			if ( m && this.x.btnsumpage && d > 1 ) {
 					s += '<em class="_o _num z-us z-sum' + z + '"' + this.eve( 1, T ) + '>1<i>...</i></em>';
 					s += '<em class="_o _num z-sumdot' + z + '">...</em>';
@@ -3532,8 +3532,8 @@ Page = define.widget( 'page/mini', {
 				s += '<em class="_o _num z-sumdot' + z + '">...</em>';
 				s += '<em class="_o _num z-us z-sum' + z + '"' + this.eve( m, T ) + '><i>...</i>' + m + '</em>';
 			}
-			s += '<em class="_o _b _next' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( c + 1, c != m ) + '>' + (this.x.labelnext || Loc.page_next || '') + '</em>' +
-				( h ? '' : '<em class="_o _b _last' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( m, c != m ) + '>' + (this.x.labellast || Loc.page_last || '') + '</em>' );
+			s += '<em class="_o _b _next' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( c + 1, c != m ) + '>' + (this.x.labelnext || this.page_next || '') + '</em>' +
+				( h ? '' : '<em class="_o _b _last' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( m, c != m ) + '>' + (this.x.labellast || this.page_last || '') + '</em>' );
 			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + (c || 1) + '">' : '') + s + this.html_info() + '<i class=f-vi></i>';
 		},
 		html_info: function() {
@@ -3557,7 +3557,11 @@ Page = define.widget( 'page/mini', {
 PageText = define.widget( 'page/text', {
 	Extend: 'page/mini',
 	Prototype: {
-		className: 'w-page w-page-text'
+		className: 'w-page w-page-text',
+		page_first: Loc.page_first,
+		page_prev: Loc.page_prev,
+		page_next: Loc.page_next,
+		page_last: Loc.page_last
 	}
 } ),
 PageGroup = define.widget( 'page/buttongroup', {
