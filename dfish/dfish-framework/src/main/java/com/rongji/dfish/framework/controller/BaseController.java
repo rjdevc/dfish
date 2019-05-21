@@ -200,10 +200,14 @@ public class BaseController extends MultiActionController {
 			if (type == String.class) {
 				value = str;
 			} else if (type == Integer.class || type == int.class) {
-				value = Integer.parseInt(str);
+				// 先转double再转成整型
+				Number num = Double.parseDouble(str);
+				value = num.intValue();
 			} else if (type == Long.class || type == long.class) {
-				value = Long.parseLong(str);
-			} else if (type == Double.class || type == double.class) {
+				// 先转double再转成整型
+				Number num = Double.parseDouble(str);
+				value = num.longValue();
+			} else if (type == Double.class || type == double.class) { // 其他数值型暂不处理,理论上不使用其他数值类型
 				value = Double.parseDouble(str);
 			} else if (type == Boolean.class || type == boolean.class) {
 				try {
@@ -276,7 +280,7 @@ public class BaseController extends MultiActionController {
 		if (Utils.notEmpty(alertMsg)) {
 			obj = buildWarnAlert(alertMsg);
 		} else {
-			FrameworkHelper.LOG.error("==========系统异常==========\r\n"+convert2JSON(getRequest()), e);
+			FrameworkHelper.LOG.error("==========系统异常信息==========\r\n"+convert2JSON(getRequest()), e);
 			obj = buildErrorDialog(e);
 		}
 //		saveLog(loginUser, url, methodName, beginTime, length);
@@ -327,13 +331,10 @@ public class BaseController extends MultiActionController {
 	}
 	
 	protected View buildErrorView(Throwable t) {
-		// String errNum = ""; // 错误编号
-		String errType = null; // 错误类型
-		String errName = null; // 错误信息
 
 		// errNum = ItaskException.UNKNOWN_EXCEPTION;
-		errType = "系统错误";
-		errName = "系统内部错误";
+		String errType = "系统错误";
+
 		Throwable cause = t;
 		while (cause.getCause() != null) {
 			if(cause instanceof DfishException){
@@ -342,14 +343,14 @@ public class BaseController extends MultiActionController {
 			}
 			cause = cause.getCause();
 		}
-		errName = cause.getClass().getName();
 		String errMsg = cause.getMessage();
-		
+		String errName = "系统内部错误@" + System.currentTimeMillis();
 		String stackTrace = null;
 		if (FrameworkHelper.LOG.isDebugEnabled()) {
 			StringWriter sw = null;
 			PrintWriter pw = null;
 			try {
+				errName = cause.getClass().getName();
 				sw = new StringWriter();
 				pw = new PrintWriter(sw);
 				cause.printStackTrace(pw);
@@ -360,11 +361,13 @@ public class BaseController extends MultiActionController {
 					pw.close();
 				}
 			}
+		} else {
+			FrameworkHelper.LOG.error(errName, cause);
 		}
 		
 		View view = buildDialogView();
 		
-		Html main = (Html) view.findNodeById("dlg_body");
+		Html main = (Html) view.findNodeById(ID_DIALOG_BODY);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div><b>错误类型：</b>").append(errType).append("</div>");
 		sb.append("<div><b>错误名称：</b>").append(errName).append("</div>");
@@ -386,7 +389,7 @@ public class BaseController extends MultiActionController {
 		VerticalLayout root = new VerticalLayout(null);
 		view.add(root);
 		
-		Html main = new Html(null).setId("dlg_body").setScroll(true).setStyle("padding:10px 20px;").setHmin(20).setWmin(40);
+		Html main = new Html(null).setId(ID_DIALOG_BODY).setScroll(true).setStyle("padding:10px 20px;").setHmin(20).setWmin(40);
 		root.add(main);
 		
 		return view;
