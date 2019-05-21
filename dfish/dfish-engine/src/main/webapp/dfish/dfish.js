@@ -1518,14 +1518,14 @@ Ajax = _createClass( {
 						} else
 							m = l.responseText;
 					} else
-						r = l.status;
-			        if ( r != N ) {
+						r = g;
+			        if ( r ) {
 			        	self.errorCode = l.status;
 						if ( f !== F && (_ajax_httpmode || l.status) ) {
 							typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
 							if ( f !== F ) {
 								var s = 'ajax ' + l.status + ': ' + a;
-								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? $.loc.ajax[ r ] : r + ' error') :
+								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
 								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
 							}

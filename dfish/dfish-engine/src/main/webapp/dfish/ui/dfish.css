@@ -343,16 +343,16 @@
 .w-date.z-ds .f-boxbtn,.w-muldate.z-ds .f-boxbtn{background-position:0 50%;cursor:default}
 
 .w-range{overflow:visible}
-.w-range .f-sub-horz{vertical-align:middle;}
-.w-range .f-sub-horz.z-htmn{float:none;}
+.w-range .f-sub-horz{vertical-align:middle}
+.w-range .f-sub-horz.z-htmn{float:none}
 
 .w-spinner{line-height:0}
 .w-spinner ._t{vertical-align:middle}
-.w-spinner ._b{float:right;display:inline-block;width:19px;height:100%;text-align:center;vertical-align:middle}
+.w-spinner ._b{float:right;width:19px;height:100%;text-align:center;vertical-align:middle;font-size:0}
 .w-spinner ._b em{display:block;height:50%;text-align:center;cursor:pointer}
-.w-spinner .f-arw-t2{border-bottom-color:#99a8b8;vertical-align:baseline;position:relative;top:1px;*top:-2px}
+.w-spinner .f-arw-t2{border-bottom-color:#99a8b8;position:relative;top:1px}
 .w-spinner ._b em:hover .f-arw-t2{border-bottom-color:#546272}
-.w-spinner .f-arw-b2{border-top-color:#99a8b8;vertical-align:baseline;position:relative;top:-1px;*top:-5px}
+.w-spinner .f-arw-b2{border-top-color:#99a8b8;position:relative;top:-1px}
 .w-spinner ._b em:hover .f-arw-b2{border-top-color:#546272}
 .w-spinner.z-ds ._b em{cursor:default}
 .w-spinner.z-ds ._b em:hover .f-arw-t2{border-bottom-color:#99a8b8}
