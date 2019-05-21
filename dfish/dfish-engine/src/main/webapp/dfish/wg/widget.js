@@ -1818,7 +1818,6 @@ _userPriority = { 'click': T, 'close': T, 'valid': T },
 _view_js = cfg.view_js || {},
 // `viewlayout` view的占据空间的widget，可见元素都隶属于此
 ViewLayout = define.widget( 'view/layout', {
-	Extend: VertScale,
 	Listener: {
 		body: {
 			ready: function() { this.ownerView.trigger( 'load' ); }
@@ -3119,7 +3118,7 @@ Page = define.widget( 'page/mini', {
 					s += '<em class="_o _num z-sumdot' + z + '">...</em>';
 			}
 			for ( var i = d; i < l; i ++ ) {
-				s += '<em class="_o _num' + ( i == c ? ' _cur' : ' z-us' ) + z + '"' + this.eve( i, i != c ) + '>' + i + '</em>';
+				s += '<em class="_o _num' + (i == c ? ' _cur' : ' z-us') + z + '"' + this.eve( i, i != c ) + '>' + i + '</em>';
 			}
 			if ( m && this.x.btnsumpage && m >= i ) {
 				s += '<em class="_o _num z-sumdot' + z + '">...</em>';
@@ -3151,9 +3150,9 @@ PageText = define.widget( 'page/text', {
 	Extend: 'page/mini',
 	Prototype: {
 		className: 'w-page w-page-text',
-		page_next: Loc.page_next,
-		page_prev: Loc.page_prev,
 		page_first: Loc.page_first,
+		page_prev: Loc.page_prev,
+		page_next: Loc.page_next,
 		page_last: Loc.page_last
 	}
 } ),
@@ -3179,8 +3178,8 @@ PageGroup = define.widget( 'page/buttongroup', {
 		html_nodes: function() {
 			this.x.target && this.initByTarget();
 			var c = 'w-page-button ' + (this.x.btncls != N ? this.x.btncls : 'f-button'), d = _number( this.x.currentpage ) || 1, s = _number( this.x.sumpage ) || 1,
-				b = [ { type: 'button', text: '&lt;<i class="f-arw f-arw-l4"></i>', cls: c + ' _prev', status: d == 1 ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d - 1) + ')' } },
-					  { type: 'button', text: '&gt;<i class="f-arw f-arw-r4"></i>', cls: c + ' _next', status: d == s ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
+				b = [ { type: 'button', ownproperty: T, text: '&lt;<i class="f-arw f-arw-l4"></i>', tip: (this.x.labelprev || Loc.page_prev || ''), cls: c + ' _prev', status: d == 1 ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d - 1) + ')' } },
+					  { type: 'button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.labelnext || Loc.page_next || ''), cls: c + ' _next', status: d == s ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
 			if ( this.x.btncount != 0 ) {
 				var g = this.x.dropalign;
 				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'button', text: d + '/' + s, cls: c + ' _drop', on: { click: 'this.rootNode.parentNode.drop(this)' } } );
@@ -3624,15 +3623,13 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.cover )
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
 			$.db( this.html(), c && this.ownerView.$() );
-			if ( (this.x.minwidth || this.x.maxwidth) ) {
-				var iw = this.innerWidth(), ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.attr( 'minwidth' ), m = this.attr( 'maxwidth' );
-				if ( iw == N || (n && n > ew) || (m && m < ew) )
-					this.width( n && n > ew ? n : m && m < ew ? m : ew );
+			if ( (this.x.minwidth || this.x.maxwidth) && ! this.x.width ) {
+				var w = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.attr( 'minwidth' ), m = this.attr( 'maxwidth' );
+				this.width( n && n > w ? n : m && m < w ? m : w );
 			}
-			if ( (this.x.minheight || this.x.maxheight) ) {
-				var ih = this.innerHeight(), eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.attr( 'minheight' ), m = this.attr( 'maxheight' );
-				if ( ih == N || (n && n > eh) || (m && m < eh) )
-					this.height( n && n > eh ? n : m && m < eh ? m : eh );
+			if ( (this.x.minheight || this.x.maxheight) && ! this.x.height ) {
+				var h = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.attr( 'minheight' ), m = this.attr( 'maxheight' );
+				this.height( n && n > h ? n : m && m < h ? m : h );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {
@@ -5745,7 +5742,7 @@ Spinner = define.widget( 'spinner', {
 /* `slider` */
 /* 值的范围默认 0-100 */
 Slider = define.widget( 'slider', {
-	Extend: Spinner,
+	Extend: AbsForm,
 	Default: {
 		width: '*', wmin: 0
 	},
@@ -5826,7 +5823,7 @@ Slider = define.widget( 'slider', {
 		html_nodes: function() {
 			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
-			't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class="f-i _i"></i></div></div>' + this.html_placeholder();
+				't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -5951,13 +5948,13 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		reset: function() {
 			this.val( this.min() );
 			this.removeClass( 'z-on z-success z-err z-lock' );
-			Q( this.$( 'pht' ) ).html( this.info() );
+			Q( this.$( 'pht' ) ).html( this.html_info() );
 			this.normal();
 			this.reload();
 		},
 		lock: function( e ) {
 			this.addClass( 'z-err z-lock' );
-			Q( this.$( 'pht' ) ).html( this.info( e ) );
+			Q( this.$( 'pht' ) ).html( this.html_info( e ) );
 			this.readonly();
 			this.jigsaw && this.jigsaw.close();
 			var a = Math.abs( e.timeout || 0 ), self = this;
@@ -5976,17 +5973,18 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		dragSmall: function( a ) {
 			this.dragstart( this.$( 'thumb' ), a );
 		},
-		info: function( e ) {
+		html_info: function( e ) {
 			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
 			var d = this.img;
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
-			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) + ' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
+			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) +
+				' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
-			return '<label class="w-input-placeholder f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.info() + '</span></label>';
+			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';
 		}
 	}
 } ),
@@ -8706,7 +8704,7 @@ TCell = define.widget( 'tcell', {
 			if ( isNaN( w ) )
 				return N;
 			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
-				w -= 1;
+				w -= ie7 ? 2 : 1;
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
 		},
