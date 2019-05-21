@@ -66,7 +66,6 @@
 .f-va,.f-va-middle{vertical-align:middle}
 .f-va-top{vertical-align:top}
 .f-va-bottom{vertical-align:bottom}
-.f-va-abs{position:absolute;top:0;left:0;right:0;bottom:0;margin:auto}
 
 .f-resize-sensor{position:absolute;left:0px;top:0px;right:0px;bottom:0px;z-index:-1;visibility:hidden;*display:none}
 .f-resize-sensor-expand{position:absolute;left:0;top:0;right:0;bottom:0;overflow:scroll;border:1px solid green;}

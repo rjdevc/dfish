@@ -4627,7 +4627,7 @@ _valid_err = function( b, v ) {
 	if ( b.pattern && v && ! eval( b.pattern + '.test(v)' ) )
 		return _form_err.call( this, b, 'pattern' );
 	if ( b.compare && v && (c = this.ownerView.f( b.compare )) && (d = c.val()) && ( k.compare ? k.compare.call( this, b, v, c, d ) : ! eval( '"' + $.strQuot( v ) + '"' + (b.comparemode || '==') + '"' + $.strQuot( d ) + '"' ) ) )
-			return _form_err.call( this, b, 'compare', [ b.comparemode, c.x.label ] );
+			return _form_err.call( this, b, 'compare', [ b.comparemode, c.x.label ? (c.x.label.text || c.x.label) : '' ] );
 	if ( b.method && (d = this.formatJS( b.method )) )
 		return { wid: this.id, name: this.x.name, code: 'method', text: d };
 },
