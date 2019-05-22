@@ -22,6 +22,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	private String template;
 	private String format;
 	private Boolean line;
+	private Object tip;
 	public GridLeaf() {
 	    super();
     }
@@ -126,4 +127,30 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 		this.line = line;
 		return this;
 	}
+	/**
+	 * 提示信息。设为true，提示信息将使用text参数的值。
+	 * @return tip
+	 */
+	public Object getTip() {
+		return tip;
+	}
+	/**
+	 * 提示信息。设为true，提示信息将使用text参数的值。
+	 * @param tip Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public GridLeaf setTip(Boolean tip) {
+		this.tip = tip;
+		return this;
+	}
+	/**
+	 * 提示信息。设为true，提示信息将使用text参数的值。
+	 * @param tip 提示信息
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public GridLeaf setTip(String tip) {
+		this.tip = tip;
+		return this;
+	}
+
 }
