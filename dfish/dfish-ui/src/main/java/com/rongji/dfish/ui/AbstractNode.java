@@ -170,7 +170,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 	 * @see #setAftercontent(String)
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@Deprecated
 	public T setRemark(String remark) {
 		if (Utils.notEmpty(remark)) {
 			return setAftercontent("<div class='f-remark'>" + Utils.escapeXMLword(remark) + "</div>");
