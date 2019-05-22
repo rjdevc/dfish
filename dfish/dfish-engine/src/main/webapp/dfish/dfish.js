@@ -2327,17 +2327,17 @@ _merge( $, {
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
 		$.query( ':text,textarea', d ).each( function() {
-			var h = this.outerHTML, v;
+			var h = this.outerHTML, v, r;
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					h = g.$().outerHTML; v = g.text();
+					h = g.$().outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
 				} else
 					v = this.value;
 			} else {
 				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
 			}
-			s = s.replace( h, v );
+			s = s.replace( h, v + (r || '') );
 		} );
 		$.query( ':radio,:checkbox', d ).each( function() {
 			if ( y.input2text ) {
