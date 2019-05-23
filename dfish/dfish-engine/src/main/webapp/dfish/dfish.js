@@ -2331,7 +2331,7 @@ _merge( $, {
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					h = g.$().outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					h = g.$().outerHTML; v = g.text(), r = $.query( '.f-beforecontent,.f-aftercontent', g.$() ).html();
 				} else
 					v = this.value;
 			} else {

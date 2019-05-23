@@ -1662,12 +1662,12 @@ define.widget( 'upload/file/upload/button', {
 				var self = this;
 				setTimeout( function() {
 					uploadCount ++;
-					$.append( self.$(), self.html_after() );
+					$.append( self.$(), self.html_append() );
 					self.fileID = self.id + 'u-' + uploadCount;
 				}, 0 );
 			}
 		},
-		html_after: function() {
+		html_append: function() {
 			return isSWF ? '<div class=w-upload-swf id=' + this.u.id + 'swf></div>' : '<input type=file style="visibility:hidden;position:absolute;width:0;height:0;" id=' + this.id + 'u-' + uploadCount + ' onchange=' + $.abbr + '.w(this).fileSelected(this) onclick=' + $.abbr + '.cancel(event)' +
 				( this.u.x.file_upload_limit !== 1 ? ' multiple' : '' ) + ' accept="' + this.getAccept() + '">';
 		}
@@ -1846,7 +1846,7 @@ define.widget( 'upload/file/value', {
 				'<div class="_name f-omit" title="' + t + '"><i class=f-vi></i><span class=f-va>' + t + '</span></div></div>';
 		},
 		html: function() {
-			var u = this.u, pw = u.width(), vw = u.scaleWidth( u.x.pub && u.x.pub.width ), nw = 130, xw = 330, tw;
+			var u = this.u, pw = u.formWidth(), vw = u.scaleWidth( u.x.pub && u.x.pub.width ), nw = 130, xw = 330, tw;
 			if ( pw ) {
 				xw = Math.min( xw, pw );
 				nw = Math.min( xw, nw );

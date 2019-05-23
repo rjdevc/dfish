@@ -977,8 +977,10 @@ define( {
   	title: 'widget基础类',
   	remark: '所有widget都继承此类。',
     Config: [
-      { name: 'aftercontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
-      { name: 'beforecontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'aftercontent', type: 'String', remark: '附加到之前的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'beforecontent', type: 'String', remark: '附加到之后的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'prependcontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'appendcontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'cls', type: 'String', remark: '样式类名。', common: true },
       { name: 'data', type: 'Object', remark: '扩展数据。key:value键值对。在当前widget及子孙节点范围内的事件可以用变量 $key 的来获取值。', common: true },
       { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。', common: true },
@@ -1822,9 +1824,9 @@ define( {
       { name: '.w-grid', remark: '基础样式。' }
     ]
   },
-  "horz": {
-  	title: 'horz',
-  	remark: '子节点按水平方向排列的布局widget。子节点的高度默认为100%；宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
+  "vert": {
+  	title: 'vert',
+  	remark: '子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
   	extend: 'widget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
@@ -1861,13 +1863,29 @@ define( {
       { name: '.w-horz', remark: '基础样式。' }
     ]
   },
-  "vert": {
-  	title: 'vert',
-  	remark: '子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
+  "horz": {
+  	title: 'horz',
+  	remark: '子节点按水平方向排列的布局widget。子节点的高度默认为100%；宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
+  	extend: 'vert',
+  	deprecate: '.w-vert',
+    Config: [
+      { name: 'nobr', type: 'Boolean', remark: '是否不换行。默认值为 true' },
+	],
+    Classes: [
+      { name: '.w-horz', remark: '基础样式。' }
+    ]
+  },
+  "formgroup": {
+  	title: 'formgroup',
+  	ver: "3.2*",
+  	remark: '表单容器。默认横向排列。',
   	extend: 'horz',
   	deprecate: '.w-horz',
+    Config: [
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2版本中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。' }
+	],
     Classes: [
-      { name: '.w-vert', remark: '基础样式。' }
+      { name: '.w-formgroup', remark: '基础样式。' }
     ]
   },
   "docview": {

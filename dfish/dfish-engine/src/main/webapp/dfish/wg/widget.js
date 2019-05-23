@@ -1228,18 +1228,6 @@ W = define( 'widget', function() {
 				b += this.property;
 			return b;
 		},
-		html_before: function() {
-			return this.x.beforecontent ? this.html_after( this.x.beforecontent ) : '';
-		},
-		html_after: function( a ) {
-			if ( a || (a = this.x.aftercontent) ) {
-				if ( a.indexOf( 'javascript:' ) === 0 )
-					a = this.formatJS( a );
-				if ( typeof a === _OBJ )
-					a = this.add( a, -1 ).html();
-			}
-			return a || '';
-		},
 		html_nodes: function() {
 			for ( var i = 0, l = this.length, s = []; i < l; i ++ )
 				s.push( this[ i ].html() );
@@ -1249,7 +1237,7 @@ W = define( 'widget', function() {
 			return this.html();
 		},
 		html: function() {
-			return '<' + this.tagName + this.html_prop() + '>' + this.html_before() + this.html_nodes() + this.html_after() + '</' + this.tagName + '>';
+			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
 		removeElem: function( a ) {
 			$.remove( this.$( a ) );
@@ -1609,6 +1597,18 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize', v );
 		return p[ i ];
+	};
+	// 实现 wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
+	_proto[ 'html_' + v ] = function() {
+		if ( this.x[ v + 'content' ] ) {
+			var c = this.x[ v + 'content' ];
+			if ( c.indexOf( 'javascript:' ) === 0 )
+				c = this.formatJS( c );
+			if ( typeof c === _OBJ )
+				c = this.add( c, -1 ).html();
+			return c;
+		}
+		return '';
 	}
 } );
 // scroll helper
@@ -1931,7 +1931,7 @@ Scroll = define.widget( 'scroll', {
 		},
 		html: function() {
 			this.width() == N && ! this.x.maxwidth && ! this.x.maxheight && $.classAdd( this, 'z-autosize' );
-			return '<' + this.tagName + this.html_prop() + '>' + this.html_before() + ( this.isScrollable() ? _html_scroll.call( this, this.html_nodes() ) : this.html_nodes() ) + this.html_after() + '</' + this.tagName + '>';
+			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + ( this.isScrollable() ? _html_scroll.call( this, this.html_nodes() ) : this.html_nodes() ) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
 		dispose: function() {
 			clearInterval( this._scr_timer );
@@ -3099,7 +3099,7 @@ Button = define.widget( 'button', {
 			x.id && (a += ' w-id="' + x.id + '"');
 			if ( this.property )
 				a += this.property;
-			a += ' w-type="' + this.type + '">' + this.html_before();
+			a += ' w-type="' + this.type + '">' + this.html_prepend();
 			if ( ie7 && !w )
 				a += '<table cellpadding=0 cellspacing=0 height=100%><tr><td>';
 			if ( ! x.hidetoggle && this.more )
@@ -3115,8 +3115,8 @@ Button = define.widget( 'button', {
 			if ( x.text )
 				a += this.html_text();
 			a += '</div>';
-			a += this.html_after() + (ie7 && !w ? '</table>' : '') + '</' + t + '>';
-			return a;
+			a += this.html_append() + (ie7 && !w ? '</table>' : '') + '</' + t + '>';
+			return this.html_before() + a + this.html_after();
 		}
 	}
 }),
@@ -3468,7 +3468,6 @@ Page = define.widget( 'page/mini', {
 		go: function( i, a ) {
 			if ( (i = _number( i )) > 0 ) {
 				i = Math.max( Math.floor( i ), 1 );
-				//this.x.sumpage && (i = Math.min( i, this.x.sumpage ));
 				this.$( 'v' ) && (this.$( 'v' ).value = i);
 				if ( this.x.target ) {
 					var g = this.ownerView.find( this.x.target );
@@ -3609,7 +3608,7 @@ Fieldset = define.widget( 'fieldset', {
 				this.box = Checkbox.parseOption( this, { target: this.layout } );
 		},
 		html: function() {
-			return '<fieldset' + this.html_prop() + '><legend class=w-fieldset-legend>' + ( this.box ? this.box.html() : '' ) + this.x.legend + '</legend>' + this.html_before() + this.layout.html() + this.html_after() + '</fieldset>';
+			return this.html_before() + '<fieldset' + this.html_prop() + '><legend class=w-fieldset-legend>' + ( this.box ? this.box.html() : '' ) + this.x.legend + '</legend>' + this.html_prepend() + this.layout.html() + this.html_append() + '</fieldset>' + this.html_after();
 		}
 	}
 } ),
@@ -4869,7 +4868,7 @@ AbsForm = define.widget( 'abs/form', {
 		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
-			return (this.label ? this.label.html() : '') + '<div' + this.html_prop() + '>' + this.html_before() + this.html_nodes() + this.html_after() + '</div>';
+			return (this.label ? this.label.html() : '') + this.html_before() + '<div' + this.html_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div>' + this.html_after();
 		},
 		removeElem: function() {
 			this.label && this.label.removeElem();
@@ -7313,7 +7312,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		fixSize: function() {
 			if ( this.$() ) {
-				var w = this.$().parentNode.offsetWidth - 5, m = this.x.maxwidth || 0;
+				var w = this.$().parentNode.offsetWidth - 12, m = this.x.maxwidth || 0;
 				if ( m > w || m == 0 ) m = w;
 				this.$().style.maxWidth = m + 'px';
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
@@ -7946,7 +7945,7 @@ TreeCombo = $.createClass( {
 	},
 	Prototype: {
 		isCombo: T,
-		initDialog: function() {
+		showFocus: function() {
 			var b = Dialog.get( this.cab ), c = b.parentNode;
 			if ( c.dropper == b ) {
 				var v = c.val();
@@ -8545,10 +8544,10 @@ Leaf = define.widget( 'leaf', {
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
-			return '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
-				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_before() +
+			return this.html_before() + '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
-				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_after() + '</dl>';
+				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_append() + '</dl>' + this.html_after();
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();
@@ -8587,7 +8586,7 @@ Tree = define.widget( 'tree', {
 				if ( this.x.src && ! this.length )
 					Leaf.prototype.request.call( this );
 				if ( this.x.combo )
-					this.ownerView.combo.initDialog();
+					this.ownerView.combo.showFocus();
 			}
 		}
 	},
@@ -8991,7 +8990,7 @@ TD = define.widget( 'td', {
 			this.x.style && (t += this.x.style);
 			t && (s += ' style="' + t + '"');
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
-			s += '>' + this.html_before() + this.html_nodes();
+			s += '>' + this.html_prepend() + this.html_nodes();
 			if ( ! this.x.node ) {
 				t = this.x.text || '';
 				if ( e && c.x.format ) {
@@ -9011,7 +9010,7 @@ TD = define.widget( 'td', {
 				d && (t = '<div' + d + '>' + t + '</div>');
 				s += t || (ie7 ? '&nbsp;' : '');
 			}
-			return s + this.html_after() + '</td>';
+			return s + this.html_append() + '</td>';
 		}
 	}
 } ),
@@ -9066,9 +9065,19 @@ TR = define.widget( 'tr', {
 		type_tr: T,
 		x_childtype: $.rt( 'tr' ),
 		x_nodes: function() { return this.x.rows },
+		getPageIndex: function() {
+			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.tbody() || [], this );
+			return r.x.limit ? Math.floor( a / r.x.limit ) + 1 : 1;
+		},
 		focus: function( a, e ) {
-			var a = a == N ? T : a, r = this.rootNode, b = this.getBox(), f;
+			if ( this._disposed )
+				return;
+			var r = this.rootNode;
+			if ( ! this.$() && r.x.limit ) {
+				r.page( this );
+			}
 			if ( this.x.focusable && this.$() ) {
+				var a = a == N ? T : a, b = this.getBox(), f;
 				! r.x.focusmultiple && (f = r.getFocus()) && f !== this && f.focus( F );
 				$.classAdd( this.$(), 'z-on', a );
 				if ( b && b.x.sync === 'focus' ) {
@@ -9576,6 +9585,8 @@ Grid = define.widget( 'grid', {
 							if ( (d = c[ i ].getBox()) && d.x.sync === 'focus' ) c[ i ].checkBox();
 						}
 					}
+					if ( this.x.combo )
+						this.ownerView.combo.showFocus();
 				}
 			},
 			scroll: function( e ) {
@@ -9831,10 +9842,23 @@ Grid = define.widget( 'grid', {
 				}
 			}
 		},
-		// @a -> page num
+		getPageByTarget: function() {
+			var b = Q( '.w-page', this.ownerView.$() );
+			for ( var i = 0, c; i < b.length; i ++ )
+				if ( (c = _widget(b[ i ])) && c.x.target === this.x.id )
+					return c;
+		},
+		// @a -> tr|pageIndex
 		page: function( a ) {
+			var n = a;
+			if ( a && a.type_tr ) {
+				n = a.getPageIndex();
+				var g = this.getPageByTarget();
+				if ( g )
+					return g.go( n );
+			}
 			if ( a != N ) {
-				this.x.page = a;
+				this.x.page = n;
 				this.limit();
 				this.$() && this.render();
 			}
