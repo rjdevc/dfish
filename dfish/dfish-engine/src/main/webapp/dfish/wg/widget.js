@@ -7897,6 +7897,7 @@ Rate = define.widget( 'rate', {
 		}
 	},
 	Prototype: {
+		className: 'w-form w-rate f-inbl f-va',
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a === U )
