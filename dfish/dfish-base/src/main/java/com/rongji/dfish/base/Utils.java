@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -605,5 +602,5 @@ public class Utils {
 	public static void copyPropertiesExact(Object to, Object from) {
 		BeanUtil.copyPropertiesExact(to, from);
 	}
-	
+
 }
