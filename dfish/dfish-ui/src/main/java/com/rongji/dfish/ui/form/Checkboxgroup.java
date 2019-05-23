@@ -15,7 +15,7 @@ import java.util.Set;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public final class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox,Object> {
+public class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox,Object> {
 	private static final long serialVersionUID = -7269251020373915061L;
 	/**
 	 * @param name 表单元素名

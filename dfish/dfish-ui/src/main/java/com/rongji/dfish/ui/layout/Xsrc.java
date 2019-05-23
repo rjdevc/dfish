@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.layout;
 
-import com.rongji.dfish.ui.AbstractView;
+import com.rongji.dfish.ui.AbstractSrc;
 import com.rongji.dfish.ui.LazyLoad;
 
 
@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @author DFish Team
  *
  */
-public class Xsrc extends AbstractView<Xsrc> implements LazyLoad<Xsrc>{
+public class Xsrc extends AbstractSrc<Xsrc> implements LazyLoad<Xsrc>{
 
 	private static final long serialVersionUID = 4639236345195733523L;
 

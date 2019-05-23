@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.widget;
 
-import com.rongji.dfish.ui.AbstractView;
+import com.rongji.dfish.ui.AbstractSrc;
 
 /**
  * 对话框模板视图
@@ -8,7 +8,7 @@ import com.rongji.dfish.ui.AbstractView;
  * @deprecated 3.2 模式变换后，该组件已经不存在了
  */
 @Deprecated
-public class TemplateView extends AbstractView<TemplateView> {
+public class TemplateView extends AbstractSrc<TemplateView> {
 	
 	/**
 	 * 

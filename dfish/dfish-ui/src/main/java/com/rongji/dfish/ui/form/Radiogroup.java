@@ -10,7 +10,7 @@ import java.util.List;
  * @version 1.1
  * @since XMLTMPL 1.0
  */
-public final class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio,String> {
+public class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio,String> {
 
 	private static final long serialVersionUID = 7676825772666910504L;
 	/**

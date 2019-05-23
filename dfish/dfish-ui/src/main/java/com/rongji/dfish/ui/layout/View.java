@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.layout;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.rongji.dfish.ui.AbstractView;
+import com.rongji.dfish.ui.AbstractSrc;
 import com.rongji.dfish.ui.LazyLoad;
 import com.rongji.dfish.ui.widget.DialogTemplate;
 
@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.widget.DialogTemplate;
  *
  */
 @SuppressWarnings("deprecation")
-public class View extends AbstractView<View> implements LazyLoad<View>{
+public class View extends AbstractSrc<View> implements LazyLoad<View>{
 	private static final long serialVersionUID = 8815207749140104383L;
 
 	/**

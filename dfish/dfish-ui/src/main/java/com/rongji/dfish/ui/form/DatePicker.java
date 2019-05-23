@@ -8,7 +8,7 @@ import com.rongji.dfish.base.util.DateUtil;
  * @version 2.0 
  * @since XMLTMPL 1.0
  */
-public final class DatePicker extends AbstractInput<DatePicker,Object> {
+public class DatePicker extends AbstractInput<DatePicker,Object> {
 
 	/**
 	 * 

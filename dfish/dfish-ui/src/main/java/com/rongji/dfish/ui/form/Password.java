@@ -6,7 +6,7 @@ package com.rongji.dfish.ui.form;
  * @version 1.1
  * @since XMLTMPL 1.0
  */
-public final class Password extends AbstractInput<Password,String> {
+public class Password extends AbstractInput<Password,String> {
 
 	/**
 	 * 

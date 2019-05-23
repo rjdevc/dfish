@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.widget.button;
 
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.widget.Button;
 
@@ -8,7 +9,7 @@ import com.rongji.dfish.ui.widget.Button;
  * @author DFish team
  *
  */
-public class Overflow extends AbstractWidget<Overflow>{
+public class Overflow extends AbstractNode<Overflow> {
 
 	private static final long serialVersionUID = 8592484788559422098L;
 	/**

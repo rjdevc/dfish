@@ -7,7 +7,7 @@ package com.rongji.dfish.ui.form;
  * @version 1.1
  * @since XMLTMPL 1.0
  */
-public final class Textarea extends AbstractInput<Textarea,String> {
+public class Textarea extends AbstractInput<Textarea,String> {
 
 	private static final long serialVersionUID = -8362625037919958854L;
 	/**
