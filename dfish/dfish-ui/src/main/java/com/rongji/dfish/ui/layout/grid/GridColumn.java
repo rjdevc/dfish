@@ -3,11 +3,7 @@ package com.rongji.dfish.ui.layout.grid;
 import java.beans.Transient;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.ui.AbstractJsonObject;
-import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.Highlight;
-import com.rongji.dfish.ui.JSFunction;
-import com.rongji.dfish.ui.Valignable;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.Checkbox;
 import com.rongji.dfish.ui.form.Radio;
@@ -56,7 +52,7 @@ import com.rongji.dfish.ui.json.RawJson;
  * 可以使用 text / checkbox / hidden / radio方法快捷构建一个GridColumn
  */
 
-public class GridColumn extends AbstractJsonObject<GridColumn> implements Alignable<GridColumn>,Valignable<GridColumn>{
+public class GridColumn extends AbstractNode<GridColumn> implements Alignable<GridColumn>,Valignable<GridColumn>{
 	
 	/**
 	 * 

@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.layout.GridLayout;
 import com.rongji.dfish.ui.layout.ListView;
-import com.rongji.dfish.ui.layout.grid.GridBody;
+import com.rongji.dfish.ui.layout.grid.GridPart;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Tr;
 
@@ -406,7 +406,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	 * @see #getPrototype()
 	 */
 	public Tr getHeadRow(){
-		GridBody gb=getPrototype().getThead();
+		GridPart gb=getPrototype().getThead();
 		if(gb.getRows()!=null&&gb.getRows().size()>0){
 			return gb.getRows().get(0);
 		}

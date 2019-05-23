@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.plugin.amap;
 
-import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode ;
 import com.rongji.dfish.ui.json.J;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @author DFish Team
  * @version 1.0
  */
-public class AmapValue extends AbstractJsonObject {
+public class AmapValue extends AbstractNode<AmapValue> {
 
     private List<Location> address;
 

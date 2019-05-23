@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.helper;
 
-import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.form.LabelRow;
 
 /**
@@ -19,7 +19,7 @@ import com.rongji.dfish.ui.form.LabelRow;
  * 2017-8-14	DFish Team - YuLM	1.0			1.0 Version
  */
 @Deprecated
-public class FormLabel extends AbstractJsonObject <FormLabel>{
+public class FormLabel extends AbstractNode <FormLabel>{
 	
 	/**
 	 * 

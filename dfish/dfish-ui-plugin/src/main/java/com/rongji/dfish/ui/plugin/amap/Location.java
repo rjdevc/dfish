@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.plugin.amap;
 
-import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @author DFish Team
  * @version 1.0
  */
-public class Location extends AbstractJsonObject<Location> {
+public class Location extends AbstractNode<Location> {
 
     /**
      * 经度longitude
@@ -41,10 +41,7 @@ public class Location extends AbstractJsonObject<Location> {
      * 默认聚焦
      */
     private Boolean focus;
-    /**
-     * 数据信息
-     */
-    private Map<String, Object> data;
+
 
     public Location() {
 
@@ -159,38 +156,6 @@ public class Location extends AbstractJsonObject<Location> {
     @Override
     public String getType() {
         return null;
-    }
-
-    public Object getData(String key) {
-        if (key == null || key.equals("")) {
-            return null;
-        }
-        if (data == null) {
-            return null;
-        }
-        return data.get(key);
-    }
-
-    public Object removeData(String key) {
-        if (key == null || key.equals("")) {
-            return null;
-        }
-        if (data == null) {
-            return null;
-        }
-        return data.remove(key);
-    }
-
-    public Location setData(String key, Object value) {
-        if (data == null) {
-            data = new LinkedHashMap<>();
-        }
-        data.put(key, value);
-        return this;
-    }
-
-    public Map<String, Object> getData() {
-        return data;
     }
 
     /**

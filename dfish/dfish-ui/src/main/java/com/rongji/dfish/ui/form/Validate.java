@@ -3,14 +3,14 @@ package com.rongji.dfish.ui.form;
 import java.util.Map;
 
 import com.rongji.dfish.base.util.BeanUtil;
-import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode;
 
 /**
  * 校验
  * @author DFish Team
  *
  */
-public class Validate extends AbstractJsonObject<Validate> {
+public class Validate extends AbstractNode<Validate> {
 	/**
 	 * 
 	 */

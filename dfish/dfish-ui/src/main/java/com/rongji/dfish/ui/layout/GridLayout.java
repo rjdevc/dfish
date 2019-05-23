@@ -17,7 +17,7 @@ import com.rongji.dfish.ui.PubHolder;
 import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
-import com.rongji.dfish.ui.layout.grid.GridBody;
+import com.rongji.dfish.ui.layout.grid.GridPart;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Td;
 import com.rongji.dfish.ui.layout.grid.Tr;
@@ -80,8 +80,8 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * 
 	 */
 	private static final long serialVersionUID = 6537737987499258183L;
-	private GridBody thead;
-	private GridBody tbody;
+	private GridPart thead;
+	private GridPart tbody;
 	private List<GridColumn> columns=new ArrayList<GridColumn>();
 	private Tr pub;
 	
@@ -157,8 +157,8 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 
 	public GridLayout(String id) {
 		super(id);
-		this.setThead(new GridBody());
-		this.setTbody(new GridBody());
+		this.setThead(new GridPart());
+		this.setTbody(new GridPart());
 	}
 	public String getType() {
 		return "grid";
@@ -168,7 +168,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * 表头
 	 * @return Thead
 	 */
-	public GridBody getThead() {
+	public GridPart getThead() {
 		return thead;
 	}
 	
@@ -177,7 +177,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * @param thead Thead
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLayout setThead(GridBody thead) {
+	public GridLayout setThead(GridPart thead) {
 		if (thead == null) {
 			throw new UnsupportedOperationException("Thead can not be null.");
 		}
@@ -190,7 +190,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * 表体
 	 * @return Tbody
 	 */
-	public GridBody getTbody() {
+	public GridPart getTbody() {
 		return tbody;
 	}
 	/**
@@ -198,7 +198,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * @param tbody 设置表体
 	 * @return this
 	 */
-	public GridLayout setTbody(GridBody tbody) {
+	public GridLayout setTbody(GridPart tbody) {
 		if (tbody == null) {
 			throw new UnsupportedOperationException("Tbody can not be null.");
 		}

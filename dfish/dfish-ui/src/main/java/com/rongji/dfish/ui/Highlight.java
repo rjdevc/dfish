@@ -5,7 +5,7 @@ package com.rongji.dfish.ui;
  * @author DFish Team
  * @since dfish 3.0
  */
-public class Highlight extends AbstractJsonObject<Highlight> {
+public class Highlight extends AbstractNode<Highlight> {
 
 	/**
 	 * 

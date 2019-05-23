@@ -9,7 +9,7 @@ package com.rongji.dfish.ui;
  * @author DFish Team
  * @version 1.0.20160819
  */
-public class Combo extends AbstractJsonObject<Combo> {
+public class Combo extends AbstractNode<Combo> {
 	/**
 	 * 
 	 */

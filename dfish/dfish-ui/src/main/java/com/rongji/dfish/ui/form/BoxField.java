@@ -1,13 +1,13 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode;
 
 /**
  * BoxField 当box(一般包含Checkbox和Radio)中数值需要动态绑定的时候设置该field属性，来判定如何绑定。
  * @author DFish Team
  *
  */
-public class BoxField extends AbstractJsonObject<BoxField> {
+public class BoxField extends AbstractNode<BoxField> {
 	/**
 	 * 
 	 */

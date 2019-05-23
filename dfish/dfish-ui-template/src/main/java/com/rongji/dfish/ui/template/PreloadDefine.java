@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.template;
 
-import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.JsonObject;
 
 /**
@@ -37,8 +37,8 @@ public class PreloadDefine implements DFishTemplate {
 		}else{
 			sb.append("$.preload(\"").append(uri).append("\",");
 		}
-		if(jo instanceof AbstractJsonObject){
-			sb.append(((AbstractJsonObject<?>) jo).formatString());
+		if(jo instanceof AbstractNode){
+			sb.append(((AbstractNode<?>) jo).formatString());
 		}else{
 			sb.append(jo.toString());
 		}
