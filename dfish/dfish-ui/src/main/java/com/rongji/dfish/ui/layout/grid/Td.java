@@ -93,7 +93,8 @@ public class Td extends AbstractTd<Td> implements JsonWrapper<Object>{
 				td.getAlign()!=null||td.getValign()!=null||
 				td.getColspan()!=null||td.getRowspan()!=null||
 				td.getCls()!=null||td.getStyle()!=null ||//常用的属性排在前面
-				td.getAftercontent()!=null||td.getBeforecontent()!=null||
+				td.getBeforecontent()!=null||td.getPrependcontent()!=null||
+				td.getAppendcontent()!=null||td.getAftercontent()!=null||
 				td.getGid()!=null||td.getHmin()!=null||
 				td.getMaxheight()!=null||td.getMaxwidth()!=null||
 				td.getMinheight()!=null||td.getMinwidth()!=null||
@@ -134,7 +135,7 @@ public class Td extends AbstractTd<Td> implements JsonWrapper<Object>{
 				html.getWidth()==null&&html.getEscape()==null&&
 				html.getAlign()==null&&html.getValign()==null&&
 				html.getCls()==null&&html.getStyle()==null &&//常用的属性排在前面
-				html.getAftercontent()==null&&html.getBeforecontent()==null&&
+				html.getAppendcontent()==null&&html.getPrependcontent()==null&&
 				html.getGid()==null&&html.getHmin()==null&&
 				html.getMaxheight()==null&&html.getMaxwidth()==null&&
 				html.getMinheight()==null&&html.getMinwidth()==null&&
@@ -192,14 +193,14 @@ public class Td extends AbstractTd<Td> implements JsonWrapper<Object>{
 		return super.setCls(cls);
 	}
 	@Override
-	public Td setBeforecontent(String beforecontent) {
+	public Td setPrependcontent(String prependcontent) {
 		nc();
-		return super.setBeforecontent(beforecontent);
+		return super.setPrependcontent(prependcontent);
 	}
 	@Override
-	public Td setAftercontent(String aftercontent) {
+	public Td setAppendcontent(String appendcontent) {
 		nc();
-		return super.setAftercontent(aftercontent);
+		return super.setAppendcontent(appendcontent);
 	}
 	@Override
 	public Td setId(String id) {

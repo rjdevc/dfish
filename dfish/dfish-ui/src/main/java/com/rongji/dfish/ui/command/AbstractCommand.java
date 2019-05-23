@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.Command;
 
 /**
@@ -10,19 +11,9 @@ import com.rongji.dfish.ui.Command;
  * @version 1.0
  * @since DFish 3.0
  */
-public abstract class AbstractCommand<T extends AbstractCommand<T>> extends AbstractJsonObject<T> implements Command<T>{
+public abstract class AbstractCommand<T extends AbstractCommand<T>> extends AbstractNode<T> implements Command<T>{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7974701457852829654L;
-	private String id;
-	public String getId(){
-		return id;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public T setId(String id){
-		this.id=id;
-		return (T)this;
-	}
 }

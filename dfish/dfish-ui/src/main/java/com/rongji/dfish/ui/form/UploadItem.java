@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.AbstractNode;
+import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
 
 /**
@@ -9,7 +10,7 @@ import com.rongji.dfish.ui.HasText;
  * @author DFish Team
  *
  */
-public class UploadItem extends AbstractNode<UploadItem> implements HasText<UploadItem> {
+public class UploadItem extends AbstractWidget<UploadItem> implements HasText<UploadItem> {
 	/**
 	 * 
 	 */
@@ -21,6 +22,8 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	private String thumbnail;
 	private Boolean error;
 	private String text;
+	private String width;
+	private String height;
 
 	/**
 	 * 显示的名称
@@ -33,7 +36,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 显示的名称
 	 * @param name String
-	 * @return this 
+	 * @return 本身，这样可以继续设置其他属性 
 	 */
 	public UploadItem setName(String name) {
 		this.name = name;
@@ -50,7 +53,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 文件大小，单位字节
 	 * @param size long
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setSize(Long size) {
 		this.size = size;
@@ -67,7 +70,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 下载地址
 	 * @param url String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setUrl(String url) {
 		this.url = url;
@@ -83,7 +86,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 缩略图地址
 	 * @param thumbnail String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
@@ -99,7 +102,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 如果上传过程出错，返回给JS引擎true
 	 * @param error Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setError(Boolean error) {
 		this.error = error;
@@ -115,10 +118,64 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 显示的文本
 	 * @param text String
-	 * @return this 
+	 * @return 本身，这样可以继续设置其他属性 
 	 */
 	public UploadItem setText(String text) {
 		this.text = text;
+		return this;
+	}
+
+	/**
+	 * 宽度
+	 * @return String
+	 */
+	public String getWidth() {
+		return width;
+	}
+
+	/**
+	 * 宽度
+	 * @param width String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public UploadItem setWidth(String width) {
+		this.width = width;
+		return this;
+	}
+	/**
+	 * 宽度
+	 * @param width Integer
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public UploadItem setWidth(Integer width) {
+		this.width = toString(width);
+		return this;
+	}
+
+	/**
+	 * 高度
+	 * @return String
+	 */
+	public String getHeight() {
+		return height;
+	}
+
+	/**
+	 * 高度
+	 * @param height String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public UploadItem setHeight(String height) {
+		this.height = height;
+		return this;
+	}
+	/**
+	 * 高度
+	 * @param height Integer
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public UploadItem setHeight(Integer height) {
+		this.height = toString(height);
 		return this;
 	}
 

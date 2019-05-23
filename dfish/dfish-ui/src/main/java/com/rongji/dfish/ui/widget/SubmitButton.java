@@ -6,7 +6,7 @@ package com.rongji.dfish.ui.widget;
  * @author DFish Team
  * 
  */
-public class SubmitButton extends AbstractButton<SubmitButton> {
+public class SubmitButton extends Button {
 	 /**
 	 * 
 	 */

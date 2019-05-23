@@ -2,10 +2,7 @@ package com.rongji.dfish.ui.command;
 
 import java.util.List;
 
-import com.rongji.dfish.ui.AbstractNode;
-import com.rongji.dfish.ui.Command;
-import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.Positionable;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.widget.Button;
 
 /**
@@ -15,7 +12,7 @@ import com.rongji.dfish.ui.widget.Button;
  * @version 2.0
  * @since XMLTMPL 2.0
  */
-public class AlertCommand extends AbstractNode<AlertCommand> implements Command<AlertCommand>,Positionable<AlertCommand>,HasText<AlertCommand>  {
+public class AlertCommand extends AbstractDialog<AlertCommand> implements Command<AlertCommand>,Positionable<AlertCommand>,HasText<AlertCommand>  {
 
 	/**
 	 * 
@@ -23,10 +20,10 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 	private static final long serialVersionUID = 3046146830347964521L;
 	private String btncls;
 	private String icon;
-	private Integer position;
-	private Boolean cover;
+//	private Integer position;
+//	private Boolean cover;
 	private String text;
-	private Integer timeout;
+//	private Integer timeout;
 	private List<Button> buttons;
 
 	/**
@@ -37,25 +34,25 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 		this.text = text;
 	}
 
-	/**
-	 * 设置窗口位置
-	 * 对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8 9。其中 0 为页面中心点，1-9是页面八个角落方位。
-	 * @param position DialogPosition
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public AlertCommand setPosition(Integer position) {
-		this.position = position;
-		return this;
-	}
-	
-	/**
-	 * 对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8 9。其中 0 为页面中心点，1-9是页面八个角落方位。
-	 * @return position Integer
-	 * @since XMLTMPL 2.1
-	 */
-	public Integer getPosition() {
-		return position;
-	}
+//	/**
+//	 * 设置窗口位置
+//	 * 对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8 9。其中 0 为页面中心点，1-9是页面八个角落方位。
+//	 * @param position DialogPosition
+//	 * @return 本身，这样可以继续设置其他属性
+//	 */
+//	public AlertCommand setPosition(Integer position) {
+//		this.position = position;
+//		return this;
+//	}
+//
+//	/**
+//	 * 对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8 9。其中 0 为页面中心点，1-9是页面八个角落方位。
+//	 * @return position Integer
+//	 * @since XMLTMPL 2.1
+//	 */
+//	public Integer getPosition() {
+//		return position;
+//	}
 
 	/**
 	 * 设置内容
@@ -118,27 +115,27 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 		return "alert";
 	}
 
-	@Override
-	public Boolean getCover() {
-		return cover;
-	}
-
-	@Override
-	public AlertCommand setCover(Boolean cover) {
-		this.cover=cover;
-		return this;
-	}
-
-	@Override
-	public Integer getTimeout() {
-		return timeout;
-	}
-
-	@Override
-	public AlertCommand setTimeout(Integer timeout) {
-		this.timeout=timeout;
-		return this;
-	}
+//	@Override
+//	public Boolean getCover() {
+//		return cover;
+//	}
+//
+//	@Override
+//	public AlertCommand setCover(Boolean cover) {
+//		this.cover=cover;
+//		return this;
+//	}
+//
+//	@Override
+//	public Integer getTimeout() {
+//		return timeout;
+//	}
+//
+//	@Override
+//	public AlertCommand setTimeout(Integer timeout) {
+//		this.timeout=timeout;
+//		return this;
+//	}
 
 	public List<Button> getButtons() {
 		return buttons;

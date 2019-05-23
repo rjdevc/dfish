@@ -1,11 +1,11 @@
 package com.rongji.dfish.ui.command;
 
-import java.util.List;
-
-import com.rongji.dfish.ui.AbstractNode;
+import com.rongji.dfish.ui.AbstractDialog;
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.widget.Button;
+
+import java.util.List;
 
 
 /**
@@ -17,14 +17,14 @@ import com.rongji.dfish.ui.widget.Button;
  * @author DFish Team
  * @version 1.0
  */
-public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Command<ConfirmCommand>,HasText<ConfirmCommand> {
+public class ConfirmCommand extends AbstractDialog<ConfirmCommand> implements Command<ConfirmCommand>,HasText<ConfirmCommand> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6715410304552489693L;
 	private String btncls;
 	private String text;// 显示文本。这里一般是询问的问题内容
-	private Boolean cover;// 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
+//	private Boolean cover;// 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
 	private String icon;// 图标。
 	private Command<?> yes;// 点击"确定"执行的命令。
 	private Command<?> no;// 点击"取消"执行的命令。
@@ -102,22 +102,22 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 		this.text = text;
 		return this;
 	}
-	/**
-	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
-	 * @return Boolean
-	 */
-	public Boolean getCover() {
-		return cover;
-	}
-	/**
-	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
-	 * @param cover Boolean
-	 * @return this
-	 */
-	public ConfirmCommand setCover(Boolean cover) {
-		this.cover = cover;
-		return this;
-	}
+//	/**
+//	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
+//	 * @return Boolean
+//	 */
+//	public Boolean getCover() {
+//		return cover;
+//	}
+//	/**
+//	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
+//	 * @param cover Boolean
+//	 * @return this
+//	 */
+//	public ConfirmCommand setCover(Boolean cover) {
+//		this.cover = cover;
+//		return this;
+//	}
 	/**
 	 * 图标。
 	 * @return String

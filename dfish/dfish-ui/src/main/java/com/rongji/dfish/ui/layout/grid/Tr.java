@@ -86,7 +86,8 @@ public class Tr extends AbstractTr<Tr> implements JsonWrapper<Object>{
 				tr.getHeight()!=null||tr.getSrc()!=null||
 				(tr.getRows()!=null&&tr.getRows().size()>0)||
 				tr.getCls()!=null||tr.getStyle()!=null ||//常用的属性排在前面
-				tr.getAftercontent()!=null||tr.getBeforecontent()!=null||
+				tr.getBeforecontent()!=null||tr.getPrependcontent()!=null||
+				tr.getAppendcontent()!=null||tr.getAftercontent()!=null||
 				tr.getGid()!=null||tr.getHmin()!=null||
 				tr.getMaxheight()!=null||tr.getMaxwidth()!=null||
 				tr.getMinheight()!=null||tr.getMinwidth()!=null||

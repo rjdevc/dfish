@@ -1,11 +1,13 @@
 package com.rongji.dfish.ui.command;
 
+import java.util.Map;
+
 /**
  * 插入命令。在某个 widget 之前插入一个或多个 widget。
  * @author DFish Team
  *
  */
-public class BeforeCommand extends AddCommand<BeforeCommand>{
+public class BeforeCommand extends AddCommand<BeforeCommand> {
 
 	/**
 	 * 

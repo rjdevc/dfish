@@ -35,7 +35,7 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	}
 	/**
 	 * 构造函数
-	 * @param id String
+	 * @param label String
 	 */
 	public FormGroup(String label) {
 		super(null);

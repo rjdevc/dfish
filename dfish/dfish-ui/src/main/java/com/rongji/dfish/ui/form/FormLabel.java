@@ -23,7 +23,8 @@ public class FormLabel extends AbstractFormLabel<FormLabel> implements JsonWrapp
 				getCls()!=null||getStyle()!=null ||//常用的属性排在前面
 				getId()!=null||getHeight()!=null||
 				getAlign()!=null||getEscape()!=null||
-				getAftercontent()!=null||getBeforecontent()!=null||
+                getBeforecontent()!=null|| getPrependcontent()!=null||
+				getAppendcontent()!=null|| getAftercontent()!=null||
 				getGid()!=null||getHmin()!=null||
 				getMaxheight()!=null||getMaxwidth()!=null||
 				getMinheight()!=null||getMinwidth()!=null||

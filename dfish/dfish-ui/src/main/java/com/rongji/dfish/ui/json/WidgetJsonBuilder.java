@@ -25,15 +25,25 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		super(clz);
 		for(int i=0;i<methods.size();i++){
 			JsonPropAppender jbpg=methods.get(i);
-			if("aftercontent".equals(jbpg.getPropName())){
+			if("beforecontent".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("beforecontent"){
+					protected String getValue(Object w) {
+						return ((Widget<?>)w).getBeforecontent();
+					}});
+			}else if("prependcontent".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("prependcontent"){
+					protected String getValue(Object w) {
+						return ((Widget<?>)w).getBeforecontent();
+					}});
+			}else if("appendcontent".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("appendcontent"){
+					protected String getValue(Object w) {
+						return ((Widget<?>)w).getAppendcontent();
+					}});
+			}else if("aftercontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("aftercontent"){
 					protected String getValue(Object w) {
 						return ((Widget<?>)w).getAftercontent();
-					}});
-			}else if("beforecontent".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("beforecontent"){
-					protected String getValue(Object w) {
-						return  ((Widget<?>)w).getBeforecontent();
 					}});
 			}else if("cls".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("cls"){

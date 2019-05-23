@@ -8,7 +8,7 @@ package com.rongji.dfish.ui;
  */
 public interface Widget<T extends Widget<T>> extends JsonObject, HasId<T>,EventTarget<T>,DataContainer<T>{
 
-	
+
 	/**
 	 * 高度取决于父布局高度，一般来说是是三种情况
 	 * <ol>
@@ -241,23 +241,45 @@ public interface Widget<T extends Widget<T>> extends JsonObject, HasId<T>,EventT
     String getGid();
     
 	/**
-	 * 取得原始前的HTML内容，尽在做特效时有用处，如浮动的时候，一个箭头
+	 * 附加到之前的内容(边框外前)
 	 * @return String
 	 */
 	String getBeforecontent() ;
 	/**
-	 *  原始前的HTML内容，尽在做特效时有用处，如浮动的时候，一个箭头
+	 * 附加到之前的内容(边框外前)
 	 * @param beforecontent String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T setBeforecontent(String beforecontent);
 	/**
-	 * 原始后的HTML内容，尽在做特效时有用处，
+	 * 附加到开头的内容(边框内前)
+	 * @return String
+	 */
+	String getPrependcontent();
+	/**
+	 * 附加到开头的内容(边框内前)
+	 * @param prependcontent String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	T setPrependcontent(String prependcontent);
+	/**
+	 * 附加到末尾的内容(边框内后)
+	 * @return String
+	 */
+	String getAppendcontent() ;
+	/**
+	 * 附加到末尾的内容(边框内后)
+	 * @param appendcontent String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	T setAppendcontent(String appendcontent);
+	/**
+	 * 附加到之后的内容(边框外后)
 	 * @return String
 	 */
 	String getAftercontent();
 	/**
-	 * 原始后的HTML内容，尽在做特效时有用处，
+	 * 附加到之后的内容(边框外后)
 	 * @param aftercontent String
 	 * @return 本身，这样可以继续设置其他属性
 	 */

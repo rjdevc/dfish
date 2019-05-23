@@ -28,9 +28,6 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	protected String filter;//	js语句，执行该语句而不是执行命令
 	protected Object loading;
 
-	protected Map<String,Object> data;
-
-    
 	/**
 	 * 最简构造函数
 	 * @param src String
@@ -64,7 +61,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 
 	/**
 	 * 通信地址 http 格式的路径。
-	 * @param src String
+	 * @param template String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
@@ -73,36 +70,6 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 		return (T) this;
 	}
 
-	public Object getData(String key) {
-        if (key == null || key.equals("")) {
-            return null;
-        }
-        if(data == null) {
-        	return null;
-        }
-        return data.get(key);
-    }
-	public Object removeData(String key) {
-		if (key == null || key.equals("")) {
-			return null;
-		}
-		if(data == null) {
-			return null;
-		}
-		return data.remove(key);
-	}
-    @SuppressWarnings("unchecked")
-	public T setData(String key, Object value) {
-    	if(data == null){
-    		data = new LinkedHashMap<String, Object>();
-    	}
-    	data.put(key, value);
-        return (T) this;
-    }
-
-    public Map<String, Object> getData() {
-    	return data;
-    }
     /**
      * 是否同步
      * @return Boolean
