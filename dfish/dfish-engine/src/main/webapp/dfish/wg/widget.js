@@ -2050,17 +2050,13 @@ Xsrc = define.widget( 'xsrc', {
 		reload: function( src, tpl, tar, fn ) {
 			src && (this.x.src = src);
 			tpl && (this.x.template = tpl);
-			if ( ! this.x.src && ! this.x.template ) {
-				this.srcParent().reload( src, tpl, tar, fn );
+			this.reset( tar );
+			if ( this.$() ) {
+				var s = this.attr( 'src' );
+				typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
 			} else {
-				this.reset( tar );
-				if ( this.$() ) {
-					var s = this.attr( 'src' );
-					typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
-				} else {
-					this.show();
-					! this.loading && this.load( tar, fn, T );
-				}
+				this.show();
+				! this.loading && this.load( tar, fn, T );
 			}
 		},
 		reset: function( tar ) {
@@ -2180,6 +2176,14 @@ View = define.widget( 'view', {
 					delete this.x.on; delete this.x.node;
 				}
 			}
+		},
+		reload: function( src, tpl, tar, fn ) {
+			// 兼容3.1的处理: 执行vm.reload()时，先判断一下如果是dialog的contentView，则让dialog刷新
+			var d = $.dialog( this );
+			if ( d && d.getContentView() === this ) {
+				d.reload.apply( d, arguments );
+			} else
+				Xsrc.prototype.reload.apply( this, arguments );
 		},
 		closestData: function( a ) {
 			return this.data( a );
