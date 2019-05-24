@@ -4707,22 +4707,12 @@ AbsForm = define.widget( 'abs/form', {
 		form_minus:  function() {
 			return (this.label ? this.label.outerWidth() : 0);
 		},
-		input_minus:  function() {
-			return this.form_minus();
-		},
 		formWidth: function() {
 			var w = this.innerWidth();
 			return w == N || w < 0 ? N : w - this.form_minus();
 		},
-		inputWidth: function() {
-			var w = this.innerWidth();
-			return w == N || w < 0 ? N : w - this.input_minus();
-		},
 		formHeight: function() {
 			return this.innerHeight();
-		},
-		inputHeight: function() {
-			return this.formHeight();
 		},
 		hasBubble: function( a ) {
 			return this.$().contains( a.isWidget ? a.$() : a );
@@ -4959,7 +4949,7 @@ AbsInput = define.widget( 'abs/input', {
 		html_placeholder: function() {
 			var v = this.x.value;
 			return this.x.placeholder ? '<label class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
-				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
+				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event) title="' + $.strQuot( this.x.placeholder ) + '"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
 		},
 		html_btn: function() {
 			return '';
@@ -5343,11 +5333,11 @@ Checkbox = define.widget( 'checkbox', {
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		},
 		html: function() {
-			var w = this.inputWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
+			var w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
-				if ( this.x.nobr && (w = this.parentNode.inputWidth()) )
+				if ( this.x.nobr && (w = this.parentNode.formWidth()) )
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
@@ -5518,7 +5508,6 @@ Select = define.widget( 'select', {
 		}
 	},
 	Prototype: {
-		input_minus: function() { return this.form_minus() },
 		isEmpty: function() {
 			return this.$t().selectedIndex !== -1 && (this.val() || this.text());
 		},
@@ -5956,7 +5945,6 @@ _Date = define.widget( 'date', {
 	},
 	Prototype: {
 		dropSnapType: 'v',
-		input_minus: function() { return this.form_minus() + _boxbtn_width },
 		form_minus: function() {
 			var w = this.x.width;
 			return (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
@@ -6054,9 +6042,6 @@ Range = define.widget( 'range', {
 		x_nodes: $.rt(),
 		form_minus:  function() {
 			return this.label ? this.label.outerWidth() : 0;
-		},
-		input_minus: function() {
-			return this.form_minus();
 		},
 		scaleWidth: function( a, m ) {
 			return _w_scale.width.call( this, a, m, a == this.label ? U : this.formWidth() );
@@ -6174,9 +6159,6 @@ Spinner = define.widget( 'spinner', {
 	},
 	Prototype: {
 		_csr_pos: 0,
-		input_minus: function() {
-			return this.form_minus() + (mbi ? 78 : _boxbtn_width);
-		},
 		form_minus: function() {
 			var w = this.x.width;
 			return w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0);
@@ -6519,7 +6501,6 @@ XBox = define.widget( 'xbox', {
 	},
 	Prototype: {
 		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + _boxbtn_width },
 		init_nodes: function() {
 			this._sel.length = 0;
 			var x = this.x, o = x.options || (x.options = []), v = x.value == N ? '' : '' + x.value, e, g = ! this.x.multiple;
@@ -6920,7 +6901,6 @@ Combobox = define.widget( 'combobox', {
 			}
 		},
 		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -7420,7 +7400,6 @@ Linkbox = define.widget( 'linkbox', {
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		init: function() {
 			if ( ! this.$() )
 				return;
@@ -7774,7 +7753,6 @@ Onlinebox = define.widget( 'onlinebox', {
 	Prototype: {
 		formType: 'text',
 		_csr_pos: 0,
-		input_minus: function() { return this.form_minus() + (this.x.dropsrc ? _boxbtn_width : 0) + (this.x.picker ? _boxbtn_width : 0); },
 		// @a -> text /读/写光标所在的有效文本(以逗号为分隔符)
 		cursorText: function( a ) {
 			var b = this.val(),
@@ -7858,7 +7836,6 @@ Pickbox = define.widget( 'pickbox', {
 	Prototype: {
 		loading: F,
 		$v: function() { return $( this.id + 'v' ) },
-		input_minus: function() { return this.form_minus() + _boxbtn_width },
 		store: function( a ) {
 			return (a || this.dropper).getContentView().combo;
 		},
