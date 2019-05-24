@@ -503,14 +503,17 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
     }
 
     /**
-     * 设置备注
+     * 设置备注<br/>
+     * 有默认样式,更符合经常使用习惯,高级用法直接使用{@link #setAftercontent(String)}
      *
      * @param remark String 为空时,会将aftercontent清空
      * @return 本身，这样可以继续设置其他属性
      * @see #setAftercontent(String)
      */
-    @Deprecated
     public T setRemark(String remark) {
+        if (Utils.notEmpty(remark)) {
+            remark = "<div class='f-remark'>" + Utils.escapeXMLword(remark) + "</div>";
+        }
         return setAftercontent(remark);
     }
 
