@@ -149,8 +149,53 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 						}
 						return begin;
 					}});
-			}
-			//3.2 中label为复杂属性
+			} else if("name".equals(jbpg.getPropName())){
+			    if(FormElement.class.isAssignableFrom(clz)){
+					methods.set(i, new WidgetStringPropAppender("name"){
+						protected String getValue(Object w) {
+							return ((FormElement<?,?>)w).getName();
+						}});
+				}
+				//value因为没有限定类型，不适合强制转化
+			} else if("align".equals(jbpg.getPropName())){
+			    if(Alignable.class.isAssignableFrom(clz)){
+					methods.set(i, new WidgetStringPropAppender("align"){
+						protected String getValue(Object w) {
+							return ((Alignable<?>)w).getAlign();
+						}});
+				}
+			} else if("valign".equals(jbpg.getPropName())){
+			    if(Valignable.class.isAssignableFrom(clz)){
+					methods.set(i, new WidgetStringPropAppender("valign"){
+						protected String getValue(Object w) {
+							return ((Valignable<?>)w).getValign();
+						}});
+				}
+			} else if("text".equals(jbpg.getPropName())){
+                if(HasText.class.isAssignableFrom(clz)){
+                    methods.set(i, new WidgetStringPropAppender("text"){
+                        protected String getValue(Object w) {
+                            return ((HasText<?>)w).getText();
+                        }});
+                }
+            } else if("scroll".equals(jbpg.getPropName())){
+                if(Scrollable.class.isAssignableFrom(clz)){
+                    methods.set(i, new WidgetBooleanPropAppender("scroll"){
+                        protected Boolean getValue(Object w) {
+                            return ((Scrollable<?>)w).getScroll();
+                        }});
+                }
+            }else if("scrollClass".equals(jbpg.getPropName())){
+                if(Scrollable.class.isAssignableFrom(clz)) {
+                    methods.set(i, new WidgetStringPropAppender("scrollClass") {
+                        protected String getValue(Object w) {
+                            return ((Scrollable<?>)w).getScrollClass();
+                        }
+                    });
+                }
+            }
+
+            //3.2 中label为复杂属性
 //			if(LabelRow.class.isAssignableFrom(clz)){
 //				if("label".equals(jbpg.getPropName())){
 //					methods.set(i, new WidgetStringPropAppender("label"){
@@ -159,52 +204,6 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 //						}});
 //				}
 //			}
-			if(FormElement.class.isAssignableFrom(clz)){
-				if("name".equals(jbpg.getPropName())){
-					methods.set(i, new WidgetStringPropAppender("name"){
-						protected String getValue(Object w) {
-							return ((FormElement<?,?>)w).getName();
-						}});
-				}
-				//value因为没有限定类型，不适合强制转化
-			}
-			if(Scrollable.class.isAssignableFrom(clz)){
-				if("scroll".equals(jbpg.getPropName())){
-					methods.set(i, new WidgetBooleanPropAppender("scroll"){
-						protected Boolean getValue(Object w) {
-							return ((Scrollable<?>)w).getScroll();
-						}});
-				}else if("scrollClass".equals(jbpg.getPropName())){
-					methods.set(i, new WidgetStringPropAppender("scrollClass"){
-						protected String getValue(Object w) {
-							return ((Scrollable<?>)w).getScrollClass();
-						}});
-				}
-			}
-			if(Alignable.class.isAssignableFrom(clz)){
-				if("align".equals(jbpg.getPropName())){
-					methods.set(i, new WidgetStringPropAppender("align"){
-						protected String getValue(Object w) {
-							return ((Alignable<?>)w).getAlign();
-						}});
-				}
-			}
-			if(Valignable.class.isAssignableFrom(clz)){
-				if("valign".equals(jbpg.getPropName())){
-					methods.set(i, new WidgetStringPropAppender("valign"){
-						protected String getValue(Object w) {
-							return ((Valignable<?>)w).getValign();
-						}});
-				}
-			}
-			if(HasText.class.isAssignableFrom(clz)){
-				if("text".equals(jbpg.getPropName())){
-					methods.set(i, new WidgetStringPropAppender("text"){
-						protected String getValue(Object w) {
-							return ((HasText<?>)w).getText();
-						}});
-				}
-			}
 		}
 
 	}
