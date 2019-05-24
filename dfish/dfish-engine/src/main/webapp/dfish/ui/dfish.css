@@ -58,7 +58,7 @@
 .f-abshide{position:absolute;width:1px;height:1px;top:-1px;left:-1px;overflow:hidden}
 .f-wdbr{white-space:normal;word-break:break-all;word-wrap:break-word}
 .f-unsel{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;}
-.f-remark{position:absolute;left:100%;top:-1px;padding:0 6px;line-height:30px;white-space:nowrap;word-break:keep-all;word-wrap:normal;}
+.f-remark{display:inline-block;*display:inline;*zoom:1;padding:0 6px;vertical-align:middle;white-space:nowrap;word-break:keep-all;word-wrap:normal;}
 
 .f-vi,.f-vi-middle{display:inline-block;height:100%;vertical-align:middle}
 .f-vi-top{display:inline-block;height:100%;vertical-align:top}

@@ -1562,8 +1562,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		}
 	};
 } );
-// 实现方法： wg.append(), wg.prepend(), wg.before, wg.after()
 $.each( 'prepend append before after'.split(' '), function( v, j ) {
+	// 实现: wg.append(), wg.prepend(), wg.before, wg.after()
 	_proto[ v ] = function( o ) {
 		if ( typeof o === _STR )
 			return this.insertHTML( o, v );
@@ -1598,7 +1598,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 		p.trigger( 'resize', v );
 		return p[ i ];
 	};
-	// 实现 wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
+	// 实现: wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
 	_proto[ 'html_' + v ] = function() {
 		if ( this.x[ v + 'content' ] ) {
 			var c = this.x[ v + 'content' ];
