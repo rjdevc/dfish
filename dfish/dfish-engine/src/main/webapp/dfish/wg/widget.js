@@ -1490,13 +1490,12 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		}
 		return a - (this.attr( iu ) || 0);
 	},
-	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, b -> size, c -> appoint size?
+	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, b -> widget size?, c -> self size?
 	_w_scale[ v ] = function( a, b, c ) {
 		var d = b != N ? b : a.attr( v ), s = this._scales;
-		c === U && (c = this[ iz ]());
-		if ( $.isNumber( d ) && d > -1 )
+		if ( $.isNumber( d ) && d > -1 && ! this.SCALE_COVER )
 			return parseFloat( d );
-		if ( ! s ) {
+		if ( b != N || c != N || ! s ) {
 			if ( ! this.length )
 				return N;
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
@@ -1504,9 +1503,9 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
-			s = $.scale( c, r );
+			s = $.scale( c === U ? this[ iz ]() : c, r, this.SCALE_COVER );
+			b === U && c === U && (this._scales = s);
 		}
-		b != N && (this._scales = s);
 		r = s[ a.nodeIndex ];
 		r == N && (r = a.defaults( v ));
 		return r < 0 || r === '*' ? N : r;
@@ -4971,8 +4970,8 @@ Formgroup = define.widget( 'formgroup', {
 	Extend: [ AbsForm, Horz ],
 	Prototype: {
 		className: 'w-formgroup w-horz f-inbl f-va',
-		scaleWidth: function( a, m ) {
-			return _w_scale.width.call( this, a, m, a == this.label ? U : this.formWidth() );
+		scaleWidth: function( a, b ) {
+			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
 		},
 		html_nodes: function() {
 			return Horz.prototype.html_nodes.call( this );
@@ -6043,8 +6042,8 @@ Range = define.widget( 'range', {
 		form_minus:  function() {
 			return this.label ? this.label.outerWidth() : 0;
 		},
-		scaleWidth: function( a, m ) {
-			return _w_scale.width.call( this, a, m, a == this.label ? U : this.formWidth() );
+		scaleWidth: function( a, b ) {
+			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
 		}
 	}
 } ),
@@ -9363,6 +9362,7 @@ Colgroup = define.widget( 'colgroup', {
 	Extend: 'horz/scale',
 	Prototype: {
 		ROOT_TYPE: 'grid',
+		SCALE_COVER: T,
 		x_childtype: $.rt( 'col' ),
 		insertCol: function( a, b ) {
 			 b == N || ! this[ b ] ? this.append( a ) : this[ b ].before( a );

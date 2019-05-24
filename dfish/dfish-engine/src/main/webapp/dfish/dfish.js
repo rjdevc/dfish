@@ -525,40 +525,52 @@ _scaleRange = $.scaleRange = function( a, b ) {
 	}
 	return a;
 },
-// 把数字a按照数组b切割
+// 把数字a按照数组b切割 / @a -> num, b -> array, c -> cover?(如果切割依据都是数字，那么可能会有剩余。设置此参数为true，剩余的数据平摊到结果中)
 // @example: _scale( 100, [ {value:'*',max:10}, {value:60}, {value:'*'} ] )
 //   返回: [ 10, 60, 30 ]
 // @example: _scale( null, [ '*', '60', '*' ] )
 //   返回: [ null, 60, null ]
-_scale = $.scale = function( a, b ) {
-	var l = b.length, i = 0, c = 0, p, s, v, t = 0, r = Array( l );
+_scale = $.scale = function( a, b, c ) {
+	var d = 0, e = a, l = b.length, i = 0, p, s, v, t = 0, r = Array( l );
 	for ( ; i < l; i ++ ) {
 		v = typeof b[ i ] === _OBJ ? b[ i ].value : b[ i ];
 		if ( v != N && isNaN( v ) ) {
-			a == N ? (r[ i ] = N) : v === '*' ? ( s = i, t ++ ) : p = i;
+			a == N ? (r[ i ] = N) : v === '*' ? (s = i, t ++) : p = i;
 		} else
-			c += (r[ i ] = v == N || v < 0 ? N : + v);
+			d += (r[ i ] = v == N || v < 0 ? N : + v);
 	}
 	if ( a == N ) return r;
 	if ( p !== U ) {
-		a = Math.max( 0, a - c );
+		a = Math.max( 0, a - d );
 		var z = 0;
-		for ( i = c = 0; i <= p; i ++ ) {
+		for ( i = d = 0; i <= p; i ++ ) {
 			v = typeof b[ i ] === _OBJ ? b[ i ].value : b[ i ];
 			if ( r[ i ] === U && typeof v === _STR && v.indexOf( '%' ) > 0 ) {
 				z += (v = parseFloat( v ));
-				c += (r[ i ] = _scaleRange( Math.floor( a * v / 100 ), b[ i ] ));
+				d += (r[ i ] = _scaleRange( Math.floor( a * v / 100 ), b[ i ] ));
 			}
 		}
 		if ( s === U && z == 100 )
-			r[ p ] = _scaleRange( Math.max( 0, r[ p ] + a - c ), b[ i ] );
+			r[ p ] = _scaleRange( Math.max( 0, r[ p ] + a - d ), b[ i ] );
 	}
 	if ( s !== U ) {
-		a = Math.max( 0, a - c );
-		for ( i = c = 0; i <= s; i ++ ) {
-			if ( r[ i ] === U ) c += (r[ i ] = _scaleRange( Math.floor( a / t ), b[ i ] ));
+		a = Math.max( 0, a - d );
+		for ( i = d = 0; i <= s; i ++ ) {
+			if ( r[ i ] === U ) d += (r[ i ] = _scaleRange( Math.floor( a / t ), b[ i ] ));
 		}
-		r[ s ] = _scaleRange( Math.max( 0, r[ s ] + a - c ), b[ s ] );
+		r[ s ] = _scaleRange( Math.max( 0, r[ s ] + a - d ), b[ s ] );
+	}
+	if ( c && p === U && s === U ) {
+		for ( i = 0, l = r.length, d = 0, t = 0; i < l; i ++ ) {
+			_isNumber( r[ i ] ) && (d += r[ i ], t ++);
+		}
+		if ( d < e ) {
+			var f = Math.floor( (e - d) / t );
+			for ( i = 0; i < l; i ++ )
+				_isNumber( r[ i ] ) && (r[ i ] += f);
+			for ( i = l; i >= 0; i -- )
+				if ( _isNumber( r[ i ] ) ) { (r[ i ] += e - d - (f * t)); break; }
+		}
 	}
 	return r;
 },
