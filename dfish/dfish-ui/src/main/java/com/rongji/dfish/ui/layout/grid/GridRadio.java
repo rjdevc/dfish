@@ -1,13 +1,13 @@
 package com.rongji.dfish.ui.layout.grid;
 
-import com.rongji.dfish.ui.form.Radio;
+import com.rongji.dfish.ui.form.AbstractBox;
 
 /**
  * Grid专用的单选框
  * @author YuLM - DFish Team
  *
  */
-public class GridRadio extends Radio {
+public class GridRadio extends AbstractBox<GridRadio> {
 
 	/**
 	 * 
