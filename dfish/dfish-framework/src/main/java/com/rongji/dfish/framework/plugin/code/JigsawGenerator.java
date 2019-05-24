@@ -4,7 +4,7 @@ import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.SystemData;
-import com.rongji.dfish.ui.AbstractJsonObject;
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.widget.Img;
 
 import javax.imageio.ImageIO;
@@ -423,7 +423,7 @@ public class JigsawGenerator {
     /**
      * 拼图数据
      */
-    public static class JigsawData extends AbstractJsonObject {
+    public static class JigsawData extends AbstractNode {
         /**
          * 大图片
          */
@@ -524,7 +524,7 @@ public class JigsawGenerator {
     /**
      * 拼图校验结果
      */
-    public static class JigsawCheckData extends AbstractJsonObject {
+    public static class JigsawCheckData extends AbstractNode {
         public JigsawCheckData(boolean result) {
             this.result = result;
         }
