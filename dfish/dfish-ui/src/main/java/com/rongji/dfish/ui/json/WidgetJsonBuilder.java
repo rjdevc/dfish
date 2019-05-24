@@ -33,7 +33,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			}else if("prependcontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("prependcontent"){
 					protected String getValue(Object w) {
-						return ((Widget<?>)w).getBeforecontent();
+						return ((Widget<?>)w).getPrependcontent();
 					}});
 			}else if("appendcontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("appendcontent"){

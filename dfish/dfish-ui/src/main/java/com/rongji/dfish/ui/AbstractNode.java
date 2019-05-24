@@ -1,16 +1,16 @@
 package com.rongji.dfish.ui;
 
-import java.net.URL;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.json.J;
 import com.rongji.dfish.ui.json.JsonWrapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.net.URL;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -253,12 +253,19 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         }
     }
     static{
-        URL url=AbstractNode.class.getClassLoader().getResource("com/rongji/dfish/ui/AbstractJsonObject.class");
-        Matcher m=Pattern.compile("dfish-ui-\\S+.jar").matcher(url.toString());
         String version="unspecified";
-        if(m.find()){
-            String jarName=m.group();
-            version=jarName.substring(9,jarName.length()-4);
+        try {
+            Class<?> clz = AbstractNode.class;
+            URL url=clz.getClassLoader().getResource(clz.getName().replace(".", "/") + ".class");
+            if (url != null) {
+                Matcher m=Pattern.compile("dfish-ui-\\S+.jar").matcher(url.toString());
+                if(m.find()){
+                    String jarName=m.group();
+                    version=jarName.substring(9,jarName.length()-4);
+                }
+            }
+        } catch (Throwable e) {
+            LOG.error("", e);
         }
         LOG.info("dfish-ui version : "+version);
     }
