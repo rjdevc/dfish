@@ -8201,7 +8201,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			}
 		},
 		compare: function( x ) {
-			if ( x.text ) {
+			if ( x.text || x.format ) {
 				var _x = this.x, b = [ 'icon', 'openicon', 'src', 'cls', 'focus' ];
 				this.init_x( x );
 				for ( var i = 0, l = b.length, e; i < l; i ++ ) {
