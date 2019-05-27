@@ -3,9 +3,7 @@ package com.rongji.dfish.framework.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -217,8 +215,8 @@ public class JdbcTemplateHelper {
 		return result;
 	}
 	
-    public static Object executeTransaction(JdbcTemplate jdbcTemplate, final List<String> sqls, final List<Object[]> paramsList) {
-		if (Utils.isEmpty(sqls) || Utils.isEmpty(paramsList) || sqls.size() != paramsList.size()) {
+    public static Object executeTransaction(JdbcTemplate jdbcTemplate, final LinkedHashMap<String, Object[]> executes) {
+		if (Utils.isEmpty(executes)) {
 			return null;
 		}
 		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
@@ -227,13 +225,13 @@ public class JdbcTemplateHelper {
 				boolean autoCommit = conn.getAutoCommit();
 				try {
 					conn.setAutoCommit(false);
-					for (int i=0; i < sqls.size(); i++) {
-						String sql = sqls.get(i);
-						Object[] params = paramsList.get(i);
+					for (Map.Entry<String, Object[]> entry : executes.entrySet()) {
+						String sql = entry.getKey();
+						Object[] args = entry.getValue();
 						PreparedStatement pstmt = conn.prepareStatement(sql);
-						if (Utils.notEmpty(params)) {
+						if (Utils.notEmpty(args)) {
 							int paramIndex = 1;
-							for (Object param : params) {
+							for (Object param : args) {
 								if (param instanceof Date) {
 									param = new java.sql.Date(((Date) param).getTime());
 								}
@@ -243,17 +241,60 @@ public class JdbcTemplateHelper {
 						pstmt.execute();
 					}
 					conn.commit();
-                } catch (Exception e) {
-                	LogUtil.error("jdbcTemplate执行事务异常", e);
-	                conn.rollback();
-                } finally {
-                	conn.setAutoCommit(autoCommit);
-                	conn.close();
-                }
+				} catch (Exception e) {
+					LogUtil.error("jdbcTemplate执行事务异常", e);
+					conn.rollback();
+				} finally {
+					conn.setAutoCommit(autoCommit);
+					conn.close();
+				}
 				return null;
 			}
 		});
 		return result;
+	}
+
+    public static Object executeTransaction(JdbcTemplate jdbcTemplate, List<String> sqls, List<Object[]> paramsList) {
+		if (Utils.isEmpty(sqls) || Utils.isEmpty(paramsList) || sqls.size() != paramsList.size()) {
+			return null;
+		}
+		LinkedHashMap<String, Object[]> executes = new LinkedHashMap<>();
+		for (int i = 0; i < sqls.size(); i++) {
+			executes.put(sqls.get(i), paramsList.get(i));
+		}
+//		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
+//		Object result = jdbcTemplate.execute(new ConnectionCallback<Object>() {
+//			public Object doInConnection(Connection conn) throws SQLException, DataAccessException {
+//				boolean autoCommit = conn.getAutoCommit();
+//				try {
+//					conn.setAutoCommit(false);
+//					for (int i=0; i < sqls.size(); i++) {
+//						String sql = sqls.get(i);
+//						Object[] params = paramsList.get(i);
+//						PreparedStatement pstmt = conn.prepareStatement(sql);
+//						if (Utils.notEmpty(params)) {
+//							int paramIndex = 1;
+//							for (Object param : params) {
+//								if (param instanceof Date) {
+//									param = new java.sql.Date(((Date) param).getTime());
+//								}
+//								pstmt.setObject(paramIndex++, param);
+//							}
+//						}
+//						pstmt.execute();
+//					}
+//					conn.commit();
+//                } catch (Exception e) {
+//                	LogUtil.error("jdbcTemplate执行事务异常", e);
+//	                conn.rollback();
+//                } finally {
+//                	conn.setAutoCommit(autoCommit);
+//                	conn.close();
+//                }
+//				return null;
+//			}
+//		});
+		return executeTransaction(jdbcTemplate, executes);
 	}
     
 }
