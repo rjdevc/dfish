@@ -41,6 +41,7 @@ amap = define.widget( 'amap', {
 		W.apply( this, arguments );
 		this.markers = [];
 		this.errorCount = 0;
+		this.cssText = 'z-index:0;';
 	},
 	Extend: 'vert',
 	Listener: {
@@ -57,11 +58,14 @@ amap = define.widget( 'amap', {
 			var v = $.jsonParse( this.val() ), self = this, opt = {};
 			if ( v && v.lng && v.lat ) {
 				opt.view = new AMap.View2D( {
-					center: new AMap.LngLat (v.lng, v.lat ),
-					zoom: v.zoom
+					center: new AMap.LngLat (v.lng, v.lat )
 				} );
 			}
 			var map = new AMap.Map(this.id, opt);
+			if ( this.x.city )
+				map.setCity( this.x.city );
+			if ( this.x.zoom )
+				map.setZoom( this.x.zoom );
 			//地图中添加地图操作ToolBar插件
 			map.plugin(['AMap.ToolBar'], function(){
 				//设置地位标记为自定义标记
@@ -146,6 +150,11 @@ amap = define.widget( 'amap', {
 	}
 } ),
 
+/*
+ * @city: 城市名(如：福州)
+ * @zoom: 缩放级别，默认取值范围为[3,18]
+ * @value: {"lng":"118.868856","lat":"25.421089","icon":"图标地址","tip":"提示内容","focus":true}
+ */
 AMapPicker = define.widget( 'amap/picker', {
 	Const: function( x, p ) {
 		amap.apply( this, arguments );
@@ -155,7 +164,7 @@ AMapPicker = define.widget( 'amap/picker', {
 		this.cn_map = c.add( { type: 'html', height: '*' } );
 		var d = c.add( { type: 'horz', height: 50, style: 'padding:10px', nodes: [ { type: 'html', text: '地点: &nbsp; ', width: 50, style: 'text-align:right;line-height:30px;' } ] } );
 		this.cn_adr = d.add( { type: 'text', cls: 'z-clear', width: '*', on: { keydown: function( e ) { (! e.keyCode || e.keyCode===13)&&self.markByAddress([this.val()]); } },
-			aftercontent: '<input id=' + this.id + 'v name="' + (x.name || '') + '"><div class=f-remark style="width:28px;height:30px;text-align:center;cursor:pointer;left:auto;padding:0;right:0;" onclick="' + $.abbr + '.widget(this).trigger(\'keydown\')"><i class="f-i f-i-search"></i></div>' } );
+			prependcontent: '<div style="float:right;width:28px;height:100%;text-align:center;cursor:pointer;left:auto;padding:0;right:0;" onclick="' + $.abbr + '.widget(this).trigger(\'keydown\')"><i class=f-vi></i><i class="f-i f-i-search"></i><input type=hidden id=' + this.id + 'v name="' + (x.name || '') + '"></div>' } );
 	},
 	Extend: amap,
 	Prototype: {
@@ -174,17 +183,14 @@ AMapPicker = define.widget( 'amap/picker', {
 			if ( v && v.lng && v.lat ) {
 				opt.view = new AMap.View2D( {
 					center: new AMap.LngLat(v.lng, v.lat),
-					zoom: v.zoom
-				} );
-			} else if ( this.x.view ) {
-				opt.view = new AMap.View2D( {
-					center: new AMap.LngLat(o.view.lng, o.view.lat),
-					zoom: o.view.zoom
+					zoom: this.x.zoom
 				} );
 			}
 			var map = new AMap.Map(this.cn_map.id, opt);
-			if ( ! v && this.x.city )
+			if ( this.x.city )
 				map.setCity( this.x.city );
+			if ( this.x.zoom )
+				map.setZoom( this.x.zoom );
 			//地图中添加地图操作ToolBar插件
 			map.plugin(['AMap.ToolBar'],function(){
 				//设置地位标记为自定义标记
