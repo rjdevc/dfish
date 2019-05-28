@@ -172,8 +172,8 @@
 .w-leaf-b.w-checkbox,.w-leaf-b.w-triplebox{padding-left:2px;padding-right:3px;text-align:center;line-height:0}
 .w-leaf-o{position:relative;display:inline-block;height:100%;text-align:center;width:14px;color:#9e9e9e;vertical-align:middle;overflow:hidden}
 .w-leaf-o .f-arw{position:relative;visibility:hidden;z-index:1}
-.w-leaf-o .f-arw-r1{margin-left:0;border-width:5px 6px;border-left-color:#777}
-.w-leaf-o .f-arw-b1{margin-left:-2px;border-width:6px 5px;border-top-color:#777}
+.w-leaf-o .f-arw-r1{margin-left:0;border-width:5px 6px;border-left-color:#777;*margin-left:6px}
+.w-leaf-o .f-arw-b1{margin-left:-2px;border-width:6px 5px;border-top-color:#777;*margin-left:4px;margin-top:5px}
 .w-leaf-o:hover .f-arw-r1{border-left-color:#1cc4f7}
 .w-leaf-o:hover .f-arw-b1{border-top-color:#1cc4f7}
 .w-leaf-i{position:relative;display:inline-block;height:100%;min-width:20px;margin-right:3px;text-align:center;vertical-align:middle}
@@ -193,6 +193,7 @@
 .w-leaf.z-last ._vl{bottom:50%}
 .w-leaf.z-line .w-leaf-o .f-arw{border:0;width:9px;height:9px;background:url(g/i.png) no-repeat -76px -180px;margin-left:-1px;}
 .w-leaf.z-line .w-leaf-o .f-arw-r1{background-position:-111px -180px;margin-left:0}
+.w-leaf.z-line .w-leaf-o .f-arw-b1{*margin-top:0}
 .w-leaf-cont{display:none}
 .w-leaf-cont.z-open{display:block}
 .w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}

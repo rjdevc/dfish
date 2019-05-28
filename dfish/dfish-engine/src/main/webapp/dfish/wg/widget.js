@@ -3955,6 +3955,7 @@ Dialog = define.widget( 'dialog', {
 				var eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), $.height() ), n = this.minHeight( T ), m = this.maxHeight( T );
 				this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
+			// dialog需要固定大小，以实现内部的布局效果
 			if ( this.type === 'dialog' && this.innerWidth() == N ) {
 				var ew = Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ),
 					eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), $.height() );

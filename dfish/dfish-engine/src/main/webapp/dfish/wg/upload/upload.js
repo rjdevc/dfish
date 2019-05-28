@@ -1846,7 +1846,7 @@ define.widget( 'upload/file/value', {
 				'<div class="_name f-omit" title="' + t + '"><i class=f-vi></i><span class=f-va>' + t + '</span></div></div>';
 		},
 		html: function() {
-			var u = this.u, pw = u.formWidth(), vw = u.scaleWidth( u.x.pub && u.x.pub.width ), nw = 130, xw = 330, tw;
+			var u = this.u, pw = u.formWidth(), vw = u.scaleWidth( this, u.x.pub && u.x.pub.width ), nw = 130, xw = 330, tw;
 			if ( pw ) {
 				xw = Math.min( xw, pw );
 				nw = Math.min( xw, nw );
@@ -1855,7 +1855,7 @@ define.widget( 'upload/file/value', {
 				else if ( $.br.ie7 )
 					tw = Math.min( pw, 200 );
 			}
-			this.cssText = 'min-width:' + nw + 'px;max-width:' + xw + 'px;';
+			this.cssText = 'min-width:' + nw + 'px;max-width:' + xw + 'px;' + (tw != null ? 'width:' + tw + 'px;' : '');
 			this.x.file && this.addClass( 'z-loading' );
 			return Horz.prototype.html.call( this );
 		}
