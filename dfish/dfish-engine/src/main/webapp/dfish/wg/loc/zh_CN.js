@@ -52,6 +52,7 @@ tree_movefail2	: '无法移动：目标文件夹是源文件夹的子文件夹',
 
 internet_error	: '<span{1}>[{0}] 网络连接失败，请稍候再试</span>',
 server_error	: '<span{1}>[{0}] 系统异常，请联系管理员</span>',
+preload_error   :  '获取预装载模板 "{0}" 失败',
 
 page: '页',
 page_first: '首页',

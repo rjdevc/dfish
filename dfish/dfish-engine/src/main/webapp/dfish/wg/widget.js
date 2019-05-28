@@ -600,7 +600,8 @@ _compilePreload = function( a, x ) {
 			x.on && $.extend( v.on || (v.on = {}), x.on );
 		}
 		return r;
-	}
+	} else
+		$.winbox( Loc.ps( Loc.preload_error, a ) );
 },
 _setView = function( a ) {
 	if ( a && ! this.ownerView ) {
@@ -2039,12 +2040,19 @@ Xsrc = define.widget( 'xsrc', {
 				if ( this.x.preload ) {
 					x = _compilePreload( this.x.preload, x );
 				}
-				if ( x.type !== this.type && W.isCmd( x ) )
-					return this.exec( x );
-				this.attr( x );
-				this.loaded = T;
-				this.init_nodes();
+				if ( x ) {
+					if ( x.type !== this.type && W.isCmd( x ) )
+						this.exec( x );
+					this.attr( x );
+					this.loaded = T;
+					this.init_nodes();
+				} else
+					this._loadError();
 			}
+		},
+		// 装载失败的处理
+		_loadError: function() {
+			//this.error = {};
 		},
 		reload: function( src, tpl, tar, fn ) {
 			src && (this.x.src = src);
@@ -3746,9 +3754,8 @@ Dialog = define.widget( 'dialog', {
 				}
 			},
 			beforeload: function() {
-				if ( this.$() ) {
+				if ( this.$() )
 					this.draggable();
-				}
 			},
 			load: function() {
 				this.draggable( N, F );
@@ -3789,6 +3796,9 @@ Dialog = define.widget( 'dialog', {
 		// 兼容3.1的处理：dialog src如果返回view，则套一层node
 		_loadDataFilter: function( x ) {
 			return x.type === 'view' ? { type: this.type, node: x } : x;
+		},
+		_loadError: function() {
+			this.close();
 		},
 		_dft_pos: function() {
 			var w = this.width(), h = this.height();
@@ -3938,12 +3948,18 @@ Dialog = define.widget( 'dialog', {
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
 			$.db( this.html(), c && this.ownerView.$() );
 			if ( this.x.minwidth || this.x.maxwidth ) {
-				var ew = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.minWidth( T ), m = this.maxWidth( T );
+				var ew = Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ), n = this.minWidth( T ), m = this.maxWidth( T );
 				this.width( n && n > ew ? n : m && m < ew ? m : ew );
 			}
 			if ( this.x.minheight || this.x.maxheight ) {
-				var eh = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.minHeight( T ), m = this.maxHeight( T );
+				var eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), $.height() ), n = this.minHeight( T ), m = this.maxHeight( T );
 				this.height( n && n > eh ? n : m && m < eh ? m : eh );
+			}
+			if ( this.type === 'dialog' && this.innerWidth() == N ) {
+				var ew = Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ),
+					eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), $.height() );
+				this.width( ew );
+				this.height( eh );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {

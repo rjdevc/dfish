@@ -176,7 +176,7 @@
 .w-leaf-o .f-arw-b1{margin-left:-2px;border-width:6px 5px;border-top-color:#777}
 .w-leaf-o:hover .f-arw-r1{border-left-color:#1cc4f7}
 .w-leaf-o:hover .f-arw-b1{border-top-color:#1cc4f7}
-.w-leaf-i{position:relative;display:inline-block;height:100%;min-width:20px;margin-right:3px;text-align:center;vertical-align:middle;*width:20px}
+.w-leaf-i{position:relative;display:inline-block;height:100%;min-width:20px;margin-right:3px;text-align:center;vertical-align:middle}
 .w-leaf.z-loading .w-leaf-i ._ico{opacity:.5}
 .w-leaf.z-ds{color:#999}
 .w-leaf.z-notg .w-leaf-o .f-arw{display:none}
