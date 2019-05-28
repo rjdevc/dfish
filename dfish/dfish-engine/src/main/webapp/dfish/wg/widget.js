@@ -2607,7 +2607,7 @@ Html = define.widget( 'html', {
 			this.trigger( 'resize' );
 		},
 		thumb: function() {
-			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this.x.thumbwidth ) );
+			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this, this.x.thumbwidth ) );
 		},
 		html_text: function() {
 			var t = this.x.text == N ? '' : this.x.text;
@@ -8671,8 +8671,8 @@ GridLeaf = define.widget( 'grid/leaf', {
 		tr: _grid_tr,
 		_focus: $.rt(),
 		isEllipsis: $.rt( T ),
-		scaleWidth: function( a ) {
-			return this.parentNode.scaleWidth( a );
+		scaleWidth: function() {
+			return this.parentNode.scaleWidth.apply( this.parentNode, arguments );
 		},
 		parent: function() {
 			return this.row.parentNode.leaf;
