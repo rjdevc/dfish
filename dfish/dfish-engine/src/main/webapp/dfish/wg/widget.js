@@ -1490,7 +1490,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( a == N )
 			return N;
 		var d = b != N ? b : a.attr( v );
-		if ( $.isNumber( d ) && d > -1 )
+		if ( $.isNumber( d ) )
 			d = parseFloat( d );
 		if ( typeof d === _NUM )
 			return d < 0 ? N : d;
@@ -2448,10 +2448,10 @@ Horz = define.widget( 'horz', {
 	Const: function( x ) {
 		Scroll.apply( this, arguments );
 		x.nobr === F && $.classAdd( this, 'z-br' );
-		if ( _w_lay.width.call( this ) )
-			this.addEvent( 'resize', _w_mix.width ).addEvent( 'ready', _w_mix.width );
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'hiddens', nodes: x.hiddens }, -1 );
+		if ( _w_lay.width.call( this ) )
+			this.addEvent( 'resize', _w_mix.width ).addEvent( 'ready', _w_mix.width );
 	},
 	Extend: [ 'scroll', 'horz/scale' ],
 	Listener: {
@@ -3970,15 +3970,13 @@ Dialog = define.widget( 'dialog', {
 				this.width( n && n > ew ? n : m && m < ew ? m : ew );
 			}
 			if ( this.x.minheight || this.x.maxheight ) {
-				var eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), $.height() ), n = this.minHeight( T ), m = this.maxHeight( T );
+				var eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 2 ), $.height() ), n = this.minHeight( T ), m = this.maxHeight( T );
 				this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
-			// dialog需要固定大小，以实现内部的布局效果
-			if ( this.type === 'dialog' && this.innerWidth() == N ) {
-				var ew = Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ),
-					eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), $.height() );
-				this.width( ew );
-				this.height( eh );
+			// 业务的dialog固定大小，以实现内部的布局效果
+			if ( this.type === 'dialog' && ! this.x.ownproperty ) {
+				this.x.width == N && this.width( Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ) );
+				this.x.height == N && this.height( Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 2 ), $.height() ) );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {
@@ -4734,6 +4732,12 @@ AbsForm = define.widget( 'abs/form', {
 			var a = this.x.label;
 			if ( a && typeof a === _OBJ && (a.width || (!a.ownproperty && _dfopt.label && _dfopt.label.width)) )
 				 this.label = new Label( a, this, -1 );
+			if ( this.label && this.label.x.width == -1 )
+				this.addEvent( 'ready', this.fixLabelWidth );
+		},
+		fixLabelWidth: function() {
+			this.label.width( this.label.width() + 1 );
+			this.trigger( 'resize' );
 		},
 		validTip: function( t ) {
 			return { type: 'tip', text: t };
