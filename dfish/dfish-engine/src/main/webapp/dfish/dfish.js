@@ -1843,13 +1843,6 @@ var boot = {
 		$.require = _require;
 
 		var w = _require( _wg_lib + 'widget' );
-		$.vm  = w.vm;
-		$.e   = w.e;
-		$.widget = $.w = w.w;
-		$.dialog = _require( 'dialog' ).get;
-		$.template = w.template;
-		$.preload  = w.preload;
-		$.scrollIntoView = w.scrollIntoView;
 		
 		if ( !(noGlobal || _cfg.no_conflict) ) {
 			win.Q  = win.jQuery = _jq;

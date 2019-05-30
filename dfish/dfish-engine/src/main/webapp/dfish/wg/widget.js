@@ -641,8 +641,6 @@ W = define( 'widget', function() {
 		w: _widget,
 		e: _widgetEvent,
 		isCmd: function( a ) { return a && _cmdHooks[ a.type ] },
-		preload: _regPreload,
-		template: _regTemplate,
 		scrollIntoView: _scrollIntoView
 	},
 	Extend: Node,
@@ -826,6 +824,7 @@ W = define( 'widget', function() {
 		prev: function() {
 			 return this.parentNode && this.parentNode[ this.nodeIndex - 1 ];
 		},
+		// 当前节点跟a节点交换位置
 		swap: function( a ) {
 			var b = this.nodeIndex, c = a.nodeIndex, p = this.parentNode,
 				d = Q( this.$() ).prev(), e = Q( a.$() ).prev();
@@ -833,6 +832,24 @@ W = define( 'widget', function() {
 			p.add( this, c );
 			d.length ? d.after( a.$() ) : p.insertHTML( a.$(), 'prepend' );
 			e.length ? e.after( this.$() ) : p.insertHTML( this.$(), 'prepend' );
+		},
+		// 显示节点位置，用于调试的方法
+		track: function() {
+			if ( this.$() ) {
+				var d = $.dialog( this );
+				d && d.front();
+				_scrollIntoView( this );
+				var b = $.bcr( this.$() ),
+					c = Q( '<div style="width:' + (b.width - 2) + 'px;height:' + (b.height - 2) + 'px;top:' + (b.top - 1) + 'px;left:' + (b.left - 1) + 'px;position:absolute;border:3px solid red;opacity:0"></div>' );
+				Q( document.body ).append( c ).trigger( 'click' ).on( 'click.track', function() { c.remove(); Q( this ).off( 'click.track' ) } );
+				(function( t ) { 
+					var f = arguments.callee;
+					$.ease( function( p ) {
+						c.css( 'opacity', p );
+						p == 1 && t && f(  -- t );
+					}, 300 );
+				})( 2 );
+			}
 		},
 		// 执行命令 /@a -> cmd id, arg1, arg2,...argN
 		cmd: function( a ) {
@@ -1505,7 +1522,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
 			s = $.scale( c === U ? this[ iz ]() : c, r, this.SCALE_COVER );
-			b === U && c === U && (this._scales = s);
+			if ( b === U && c === U )
+				this._scales = s;
 		}
 		r = s[ a.nodeIndex ];
 		r == N && (r = a.defaults( v ));
@@ -5637,7 +5655,7 @@ Calendar = define.widget( 'calendar/date', {
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
-					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
+					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padrow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
 			return o.exec( { type: 'dialog', ownproperty: T, snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
@@ -9935,9 +9953,17 @@ Grid = define.widget( 'grid', {
 	}
 });
 
+// 扩展全局方法
+$.scrollIntoView = _scrollIntoView;
+$.preload = _regPreload;
+$.template = _regTemplate;
+$.dialog = Dialog.get;
+$.widget = $.w = _widget;
+$.vm = _view;
+$.e = _widgetEvent;
+
 // 附件上传模块
 require( './upload/upload' );
-
 
 // 本文件的导出
 module.exports = W;
