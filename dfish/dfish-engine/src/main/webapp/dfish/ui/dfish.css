@@ -328,7 +328,7 @@
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
 
-.w-textarea textarea._t{height:100%;line-height:1.5;overflow:auto;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
+.w-textarea textarea._t{height:100%!important;line-height:1.5;overflow:auto;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
 .w-textarea .w-input-placeholder{height:22px}
 
 .w-select ._t{height:100%;border:0;*text-indent:0}
@@ -404,7 +404,7 @@
 .w-combobox ._c{min-height:28px;cursor:text}
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}
 .w-combobox ._r{color:#888;font-style:normal;font-family:verdana}
-.w-combobox ._e{display:inline-block;margin:2px 0;height:24px;padding:0 2px 0 3px;text-indent:1px;line-height:24px;border:0;vertical-align:middle;font-style:normal;outline:none}
+.w-combobox ._e{display:inline-block;padding:0 2px 0 3px;height:28px;line-height:28px;text-indent:1px;border:0;vertical-align:middle;font-style:normal;outline:none}
 .w-combobox ._pick,.w-pickbox ._pick,.w-onlinebox ._pick,.w-linkbox ._pick,.w-combobox.z-ds ._pick:hover,.w-pickbox.z-ds:hover ._pick,.w-onlinebox.z-ds ._pick:hover{background:url(g/n.png) no-repeat -99px 50%}
 .w-combobox ._pick:hover,.w-linkbox ._pick:hover,.w-onlinebox ._pick:hover,.w-pickbox ._pick:hover{background-position:-124px 50%}
 .w-combobox.z-loading{color:gray}
@@ -425,7 +425,7 @@
 .w-combobox-opt.z-err.z-on{border-color:#3298fe}
 .w-combobox.z-ds .w-combobox-opt{border-color:#d0d0d0;background:transparent}
 
-.w-input.w-linkbox{height:auto;min-height:28px}
+.w-linkbox{height:auto;min-height:28px}
 .w-linkbox ._t{min-height:28px;vertical-align:middle;word-break:break-all;word-wrap:break-word;font-family:verdana;font-style:normal;outline:none}
 .w-linkbox ._t u{padding-right:1px;color:#999;text-decoration:none}
 .w-linkbox ._t u._o{color:#333}
@@ -815,6 +815,31 @@
 .w-upload-value-image.z-err ._name,.w-upload-value-image:hover ._more,.w-upload-value-image:hover ._close,.w-upload-value-image:hover ._cvr{display:block}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-page .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
+
+.f-form-transparent .w-input{border-color:transparent}
+
+.f-form-small,.f-form-small ._t{font-size:12px}
+.f-form-small .w-input,.f-form-small .w-switch,.f-form-small .f-boxbtn{height:22px}
+.f-form-small .w-input ._t,.f-form-small .w-combobox ._e{line-height:22px;height:22px}
+.f-form-small .w-combobox ._c,.f-form-small .w-linkbox,.f-form-small .w-linkbox ._t{min-height:22px}
+.f-form-small .w-combobox-opt{height:18px}
+.f-form-small .w-switch ._l{height:20px}
+.f-form-small .w-switch ._o{padding:9px}
+.f-form-small .w-switch.z-checked ._o{margin-left:-19px}
+.f-form-small .w-label ._t{margin-right:0}
+
+.f-form-middle,.f-form-middle ._t{font-size:12px}
+.f-form-middle .w-input,.f-form-middle .w-switch,.f-form-middle .f-boxbtn{height:28px}
+.f-form-middle .w-input ._t,.f-form-middle .w-combobox ._e{line-height:28px;height:28px}
+.f-form-middle .w-combobox ._c,.f-form-middle .w-linkbox,.f-form-middle .w-linkbox ._t{min-height:28px}
+.f-form-middle .w-combobox-opt{height:22px}
+
+.f-form-big,.f-form-big ._t{font-size:16px}
+.f-form-big .w-input,.f-form-big .w-switch,.f-form-big .f-boxbtn{height:38px}
+.f-form-big .w-input ._t,.f-form-big .w-combobox ._e{line-height:38px;height:38px}
+.f-form-big .w-combobox ._c,.f-form-big .w-linkbox,.f-form-big .w-linkbox ._t{min-height:38px}
+.f-form-big .w-combobox-opt{height:32px}
+
 
 .f-opc0{opacity:0}
 .f-css2 .f-opc0{filter:Alpha(opacity=0)}

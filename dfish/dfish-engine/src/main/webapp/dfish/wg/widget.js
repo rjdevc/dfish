@@ -4584,7 +4584,7 @@ var Label = define.widget( 'label', {
 				}
 			},
 			resize: function() {
-				$( this.id + 'bg' ).style.width = Math.max( this.innerWidth(), 0 ) + 'px';
+				$( this.id + 'bg' ).style.width = Math.max( this.innerWidth() -1, 0 ) + 'px';
 				this.ie7td && this.ie7td.fireEvent( 'nodechange' );
 			}
 		}
@@ -4614,7 +4614,7 @@ var Label = define.widget( 'label', {
 			return s + (this.x.suffix || '');
 		},
 		html_bg: function() {
-			return '<div id=' + this.id + 'bg class="_bg" style="width:' + this.innerWidth() + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
+			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'valign' );
