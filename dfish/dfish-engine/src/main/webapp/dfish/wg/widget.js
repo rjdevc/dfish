@@ -3986,11 +3986,11 @@ Dialog = define.widget( 'dialog', {
 				var eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 2 ), $.height() ), n = this.minHeight( T ), m = this.maxHeight( T );
 				this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
-			// 业务的dialog固定大小，以实现内部的布局效果
+			/* // 业务的dialog固定大小，以实现内部的布局效果
 			if ( this.type === 'dialog' && ! this.x.ownproperty ) {
 				this.x.width == N && this.width( Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ) );
 				this.x.height == N && this.height( Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 2 ), $.height() ) );
-			}
+			}*/
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
 			for ( var i = 0, o = $.tags( 'object' ); i < o.length; i ++ ) {
 				if ( ! o[ i ].getAttribute( 'data-transparent' ) ) {

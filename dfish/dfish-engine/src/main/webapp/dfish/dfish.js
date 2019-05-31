@@ -1060,11 +1060,10 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 		c = _bcr( c );
 	else if ( c.isWidget )
 		c = _bcr( c.$() );
-	else if ( c.originalEvent != N ) {
-		var g = _bcr( c.originalEvent.srcElement );
-		c = { left: g.left + c.offsetX, right: g.left + c.offsetX, top: g.top + c.offsetY, bottom: g.top + c.offsetY };
-	} else if ( c.clientX != N )
+	else if ( c.originalEvent || c.clientX != N ) {
+		c = c.originalEvent || c;
 		c = { left: c.clientX, right: c.clientX, top: c.clientY, bottom: c.clientY };
+	}
 	var t = [], l = [], g, h, k = -1, f = _number( f ), ew = cvs.clientWidth, eh = cvs.clientHeight,
 		s = d ? (_snaptype[ d ] || ('' + d).split( ',' )) : _snaptype.a;
 	if ( /[1-4]/.test( s[ 0 ] ) ) { // 1-4是边角对齐 .
@@ -1200,8 +1199,9 @@ _cancel = $.cancel = function( a ) {
 // 记录鼠标事件发生的坐标
 _event_click = { click: T, dblclick: T, contextmenu: T, mousedown: T, mouseup: T },
 _point = $.point = function( e ) {
-	if( (e || (e = window.event)) && _event_click[ e.type ] )
+	if( (e || (e = window.event)) && _event_click[ e.type ] ) {
 		_point.originalEvent = e, _point.offsetX = e.offsetX, _point.offsetY = e.offsetY, _point.clientX = e.clientX, _point.clientY = e.clientY;
+	}
 },
 _rngSelection = $.rngSelection = (function() {
 	return win.getSelection ? function() { var s = win.getSelection(); return s.rangeCount && s.getRangeAt( 0 ); } : function() { return doc.selection.createRange(); };
