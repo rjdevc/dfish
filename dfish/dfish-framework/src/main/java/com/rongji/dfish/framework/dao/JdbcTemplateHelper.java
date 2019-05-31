@@ -215,7 +215,7 @@ public class JdbcTemplateHelper {
 		return result;
 	}
 	
-    public static Object executeTransaction(JdbcTemplate jdbcTemplate, final LinkedHashMap<String, Object[]> executes) {
+    public static Object executeTransaction(JdbcTemplate jdbcTemplate, final LinkedHashMap<String, List<Object[]>> executes) {
 		if (Utils.isEmpty(executes)) {
 			return null;
 		}
@@ -225,20 +225,24 @@ public class JdbcTemplateHelper {
 				boolean autoCommit = conn.getAutoCommit();
 				try {
 					conn.setAutoCommit(false);
-					for (Map.Entry<String, Object[]> entry : executes.entrySet()) {
-						String sql = entry.getKey();
-						Object[] args = entry.getValue();
-						PreparedStatement pstmt = conn.prepareStatement(sql);
-						if (Utils.notEmpty(args)) {
-							int paramIndex = 1;
-							for (Object param : args) {
-								if (param instanceof Date) {
-									param = new java.sql.Date(((Date) param).getTime());
-								}
-								pstmt.setObject(paramIndex++, param);
-							}
-						}
-						pstmt.execute();
+                    for (Map.Entry<String, List<Object[]>> entry : executes.entrySet()) {
+                        if (Utils.isEmpty(entry.getKey()) || Utils.isEmpty(entry.getValue())) {
+                            continue;
+                        }
+
+						PreparedStatement pstmt = conn.prepareStatement(entry.getKey());
+                        for (Object[] args : entry.getValue()) {
+                            if (Utils.notEmpty(args)) {
+                                int paramIndex = 1;
+                                for (Object param : args) {
+                                    if (param instanceof Date) {
+                                        param = new java.sql.Date(((Date) param).getTime());
+                                    }
+                                    pstmt.setObject(paramIndex++, param);
+                                }
+                            }
+                            pstmt.execute();
+                        }
 					}
 					conn.commit();
 				} catch (Exception e) {
@@ -254,13 +258,22 @@ public class JdbcTemplateHelper {
 		return result;
 	}
 
-    public static Object executeTransaction(JdbcTemplate jdbcTemplate, List<String> sqls, List<Object[]> paramsList) {
-		if (Utils.isEmpty(sqls) || Utils.isEmpty(paramsList) || sqls.size() != paramsList.size()) {
+    public static Object executeTransaction(JdbcTemplate jdbcTemplate, List<String> sqls, List<Object[]> argsList) {
+		if (Utils.isEmpty(sqls) || Utils.isEmpty(argsList) || sqls.size() != argsList.size()) {
 			return null;
 		}
-		LinkedHashMap<String, Object[]> executes = new LinkedHashMap<>();
+		LinkedHashMap<String, List<Object[]>> executes = new LinkedHashMap<>();
 		for (int i = 0; i < sqls.size(); i++) {
-			executes.put(sqls.get(i), paramsList.get(i));
+		    String sql = sqls.get(i);
+            if (Utils.isEmpty(sql)) {
+                continue;
+            }
+            Object[] args = argsList.get(i);
+            List<Object[]> list = new ArrayList<>();
+            if (args != null) {
+                list.add(args);
+            }
+			executes.put(sql, list);
 		}
 //		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
 //		Object result = jdbcTemplate.execute(new ConnectionCallback<Object>() {
