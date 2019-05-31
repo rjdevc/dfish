@@ -203,49 +203,55 @@ public class ProgressManager {
 		if (runnable == null) {
 			throw new UnsupportedOperationException("系统进度条创建失败,请联系管理员");
 		}
-		ProgressData progressData = new ProgressData();
-		progressData.setProgressKey(progressKey);
-		progressData.setProgressText(progressText);
-		progressData.setCompleteCommand(completeCommand);
-		stepScale = stepScale == null ? new Number[]{ 1 } : stepScale;
-		boolean sucess = setStepScale(progressData, stepScale);
+		ProgressData existProgressData = getProgressData(progressKey);
+		boolean sucess;
+		if (existProgressData == null) {
+			ProgressData progressData = new ProgressData();
+			progressData.setProgressKey(progressKey);
+			progressData.setProgressText(progressText);
+			progressData.setCompleteCommand(completeCommand);
+			stepScale = stepScale == null ? new Number[]{ 1 } : stepScale;
+			sucess = setStepScale(progressData, stepScale);
 //		boolean sucess = setProgressData(progressData);
-		
-		if (EXECUTOR_SERVICE == null) {
-			EXECUTOR_SERVICE = Executors.newFixedThreadPool(executorSize);
-		}
-		
-		EXECUTOR_SERVICE.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					// 执行线程数加1
-					executingCount.incrementAndGet();
-					// 开始执行
-					runnable.run();
-                } catch (Throwable e) {
-                	String errorMsg = null;
-                	if (e instanceof ProgressException) {
-                		errorMsg = e.getMessage();
-                	} else {
-                		errorMsg = "进度条运行异常@" + System.currentTimeMillis();
-                		FrameworkHelper.LOG.error(errorMsg, e);
-                	}
-                	ProgressData progressData = getProgressData(progressKey);
-                	if (progressData != null) { // 进度条运行异常,原命令不应该执行,需要提示用户内部异常
-                		progressData.setCompleteCommand(new AlertCommand(errorMsg));
-                		// 异常数据提示需要放到缓存中
-                		setProgressData(progressData);
-                	}
-                } finally {
-                	// 执行线程数减1
-                	executingCount.decrementAndGet();
-                	// 强制结束流程进度
-                	finishProgress(progressKey);
-                }
+
+			if (EXECUTOR_SERVICE == null) {
+				EXECUTOR_SERVICE = Executors.newFixedThreadPool(executorSize);
 			}
-		});
-		
+
+			EXECUTOR_SERVICE.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						// 执行线程数加1
+						executingCount.incrementAndGet();
+						// 开始执行
+						runnable.run();
+					} catch (Throwable e) {
+						String errorMsg = null;
+						if (e instanceof ProgressException) {
+							errorMsg = e.getMessage();
+						} else {
+							errorMsg = "进度条运行异常@" + System.currentTimeMillis();
+							FrameworkHelper.LOG.error(errorMsg, e);
+						}
+						ProgressData progressData = getProgressData(progressKey);
+						if (progressData != null) { // 进度条运行异常,原命令不应该执行,需要提示用户内部异常
+							progressData.setCompleteCommand(new AlertCommand(errorMsg));
+							// 异常数据提示需要放到缓存中
+							setProgressData(progressData);
+						}
+					} finally {
+						// 执行线程数减1
+						executingCount.decrementAndGet();
+						// 强制结束流程进度
+						finishProgress(progressKey);
+					}
+				}
+			});
+		} else { // 存在记录无需重复执行,直接将目前进度返回
+			sucess = true;
+		}
+
 		if (sucess) {
 			VerticalLayout shell = new VerticalLayout(null);
 			List<Progress> progressGroup = getProgressGroup(progressKey);
