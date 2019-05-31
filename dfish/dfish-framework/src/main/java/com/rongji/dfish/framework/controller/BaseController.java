@@ -42,7 +42,7 @@ public class BaseController extends MultiActionController {
 	public Object execute(HttpServletRequest request) {
 		return "Enter execute";
 	}
-	
+
 	/**
 	 * 获取Request,该获取方式未经验证,不推荐使用
 	 * @return HttpServletRequest
@@ -323,7 +323,7 @@ public class BaseController extends MultiActionController {
 	
 	protected DialogCommand buildErrorDialog(Throwable t) {
 		View view = buildErrorView(t);
-		DialogCommand dialog = new DialogCommand("error", "系统提示信息", null);
+		DialogCommand dialog = new DialogCommand("error", "系统提示信息", null).setWidth(DialogCommand.WIDTH_MEDIUM).setHeight(DialogCommand.HEIGHT_MEDIUM);
 //		DialogCommand error = new DialogCommand("error", null, "系统提示信息",
 //		        DialogCommand.WIDTH_MEDIUM, DialogCommand.HEIGHT_MEDIUM, DialogCommand.POSITION_MIDDLE, null);
 		dialog.setNode(view);
