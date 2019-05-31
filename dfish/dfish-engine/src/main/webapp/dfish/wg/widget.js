@@ -3443,7 +3443,10 @@ Toggle = define.widget( 'toggle', {
 			}
 			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
 			this.addClass( 'z-open', !! b );
-			a.type && $.stop( a );
+			var p = this;
+			while ( (p = p.parentNode) && ! p.type_view && p.innerHeight() == N );
+			p && p.triggerAll( 'resize' );
+			a && a.type && $.stop( a );
 		},
 		isOpen: function() {
 			return this.x.open;
@@ -4001,7 +4004,6 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.timeout )
 				this.listenTimeout();
 			this.front();
-			//this.$().style.__defineSetter__( 'width', function(a) { debugger; } );
 			return this;
 		},
 		isShow: function() {
