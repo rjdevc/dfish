@@ -1482,8 +1482,16 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	};
 	//.innerWidth, .innerHeight
 	_proto[ iz ] = function() {
-		var a = this[ oz ]();
-		return a == N ? N : _w_size_fix[ v ].call( this, a );
+		var a = this[ oz ](),
+			r = a == N ? N : _w_size_fix[ v ].call( this, a );
+		if ( r == N )
+			return N;
+		/*var m = this[ xz ](T), n = this[ nz ](T);
+		if ( m != N )
+			r = Math.min( r, m );
+		if ( n != N )
+			r = Math.max( r, n );*/
+		return r;
 	};
 	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget, b -> size, c -> appoint size?
 	_proto[ sz ] = function( a, b, c ) {
@@ -1518,7 +1526,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				return N;
 			var o = this.$();
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
-				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && !this[ i ].isDisplay() ? 0 : this[ i ].attr( v ));
+				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && this[ i ].$() && !this[ i ].isDisplay() ? 0 : this[ i ].attr( v ));
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
