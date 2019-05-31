@@ -4323,10 +4323,11 @@ Progress = define.widget( 'progress', {
 						if ( ! self._disposed && self.isHead() ) {
 							self.ownerView.ajax( { src: s, context: this, success: function( x ) {
 								// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
+								var d = self.closest( 'loading' );
 								if ( W.isCmd( x ) ) {
 									self.exec( x );
+									d && d.close();
 								} else {
-									var d = self.closest( 'loading' );
 									if( d && d.parentNode.isContentData( x ) ) {
 										d.parentNode.loadData( x );
 										d.close();
