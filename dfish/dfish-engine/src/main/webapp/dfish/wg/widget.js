@@ -1516,8 +1516,9 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( b != N || c != N || ! s ) {
 			if ( ! this.length )
 				return N;
+			var o = this.$();
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
-				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : this[ i ].attr( v );
+				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && !this[ i ].isDisplay() ? 0 : this[ i ].attr( v ));
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
@@ -3435,16 +3436,17 @@ Toggle = define.widget( 'toggle', {
 				for ( var i = 0, g; i < c.length; i ++ ) {
 					(g = this.ownerView.find( c[ i ] )) && g.display( this );
 				}
-			}
-			for ( var i = this.nodeIndex + 1, p = this.parentNode, l = p.length; i < l; i ++ ) {
-				if ( p[ i ].type === this.type )
-					break;
-				p[ i ].display( this );
+			} else {
+				for ( var i = this.nodeIndex + 1, p = this.parentNode, l = p.length; i < l; i ++ ) {
+					if ( p[ i ].type === this.type )
+						break;
+					p[ i ].display( this );
+				}
 			}
 			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
 			this.addClass( 'z-open', !! b );
 			var p = this;
-			while ( (p = p.parentNode) && ! p.type_view && p.innerHeight() == N );
+			while ( (p = p.parentNode) && p.innerHeight() == N );
 			p && p.triggerAll( 'resize' );
 			a && a.type && $.stop( a );
 		},
