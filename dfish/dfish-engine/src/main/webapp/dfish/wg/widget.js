@@ -2032,8 +2032,8 @@ Xsrc = define.widget( 'xsrc', {
 			var f = ! force && Frame.edge( this ), s = this.x.src;
 			if ( ! f || f.parentNode.getFocus() == f ) {
 				this._load( tar, function( x ) {
-					this.showLoading( F );
 					if ( this.layout ) {
+						this.showLoading( F );
 						this.showLayout( tar );
 						fn && !(x instanceof Error) && fn.call( this, x );
 					} else if ( this.x.src && s != this.x.src ) {
@@ -2066,17 +2066,19 @@ Xsrc = define.widget( 'xsrc', {
 					this.x.srcdata = d;
 					x = this.x.template ? _compileTemplate( this, d ) : this._loadDataFilter( d );
 				}
-				if ( this.x.preload ) {
-					x = _compilePreload( this.x.preload, x );
+				if ( x.type !== this.type && W.isCmd( x ) ) {
+					this.removeElem( 'loading' );
+					this.exec( x );
+				} else {
+					if ( this.x.preload ) {
+						x = _compilePreload( this.x.preload, x );
+					}
+					if ( x ) {
+						this.attr( x );
+						this.loaded = T;
+						this.init_nodes();
+					}
 				}
-				if ( x ) {
-					if ( x.type !== this.type && W.isCmd( x ) )
-						this.exec( x );
-					this.attr( x );
-					this.loaded = T;
-					this.init_nodes();
-				} else
-					this._loadError();
 			}
 		},
 		// 装载失败的处理
@@ -2089,11 +2091,18 @@ Xsrc = define.widget( 'xsrc', {
 			this.reset( tar );
 			if ( this.$() ) {
 				var s = this.attr( 'src' );
-				typeof s === _STR ? this.load( tar, fn, T ) : (this._loadEnd( s ), this.showLayout( tar ));
+				typeof s === _STR ? this.load( tar, fn, T ) : this.loadData( s, tar );
 			} else {
 				this.show();
 				! this.loading && this.load( tar, fn, T );
 			}
+		},
+		loadData: function( x, tar ) {
+			this._loadEnd( x );
+			this.showLayout( tar );
+		},
+		isContentData: function( x ) {
+			return x.type === this.type;
 		},
 		reset: function( tar ) {
 			this.abort();
@@ -3839,6 +3848,9 @@ Dialog = define.widget( 'dialog', {
 		_loadDataFilter: function( x ) {
 			return x.type === 'view' ? { type: this.type, node: x } : x;
 		},
+		isContentData: function( x ) {
+			return x.type === this.type || x.type === 'view';
+		},
 		_loadError: function() {
 			this.close();
 		},
@@ -4314,9 +4326,15 @@ Progress = define.widget( 'progress', {
 								if ( W.isCmd( x ) ) {
 									self.exec( x );
 								} else {
-									for ( var i = 0, n = x.nodes || [ x ], l = n.length, d, o; i < l; i ++ ) {
-										o = ((d = n[ i ]).id && self.ownerView.find( d.id )) || self;
-										o.replace( ! d.id || o === self ? $.extend( d, { text: self.x.text } ) : d );
+									var d = self.closest( 'loading' );
+									if( d && d.parentNode.isContentData( x ) ) {
+										d.parentNode.loadData( x );
+										d.close();
+									} else {
+										for ( var i = 0, n = x.nodes || [ x ], l = n.length, d, o; i < l; i ++ ) {
+											o = ((d = n[ i ]).id && self.ownerView.find( d.id )) || self;
+											o.replace( ! d.id || o === self ? $.extend( d, { text: self.x.text } ) : d );
+										}
 									}
 								}
 							} } );
@@ -4335,6 +4353,9 @@ Progress = define.widget( 'progress', {
 		},
 		start: function() {
 			this.triggerListener( 'ready' );
+		},
+		getLoadingParent: function() {
+			
 		},
 		isHead: function() {
 			return _progressCache[ this.x.src ][ 0 ] === this;
