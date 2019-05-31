@@ -152,7 +152,7 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
 		List<Widget<?>> nodes = tabBar.getNodes();
 		for (Widget<?> item : nodes) {
 			Button btn = (Button) item;
-			if (widgetId.equals(btn.getName())) { // 找到对应名称设置聚焦
+			if (widgetId.equals(btn.getTarget())) { // 找到对应名称设置聚焦
 				return focusButton(btn);
 			}
 		}
