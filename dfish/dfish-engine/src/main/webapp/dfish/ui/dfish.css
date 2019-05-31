@@ -816,7 +816,7 @@
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-page .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 
-.f-form-transparent .w-input{border-color:transparent}
+.f-form-transparent .w-input,.f-form-transparent .w-input.z-on{border-color:transparent}
 
 .f-form-small,.f-form-small ._t{font-size:12px}
 .f-form-small .w-input,.f-form-small .w-switch,.f-form-small .f-boxbtn{height:22px}

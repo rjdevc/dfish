@@ -582,6 +582,8 @@ _compilePreload = function( a, x ) {
 			v = _tpl_view( p );
 			v && (n = x.node);
 		}
+		if ( ! n )
+			return x;
 		var t = 'preload/body',
 			s = b ? $.jsonString( p ) : (_tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( p ))),
 			c = b ? _tpl_parse( p ) : (_tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( p ))),
@@ -2136,7 +2138,16 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		// @a -> close?
 		showLoading: function( a ) {
-			a === F ? (this.removeElem( 'loading' ),this.exec( { type: 'loading', hide: true } )) : this.layout ? this.exec( { type: 'loading' } ) : (! this.$( 'loading' ) && $.append( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' ));
+			if ( a === F ) {
+				this.removeElem( 'loading' );
+				this.exec( { type: 'loading', hide: T } );
+			} else {
+				if ( this.x.loading || this.layout ) {
+					this.exec( $.extend( this.x.loading || {}, { type: 'loading' } ) );
+				} else {
+					! this.$( 'loading' ) && $.append( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' );
+				}
+			}
 		},
 		show: function() {
 			return this.render();
@@ -2212,7 +2223,7 @@ View = define.widget( 'view', {
 			}
 		},
 		reload: function( src, tpl, tar, fn ) {
-			// 兼容3.1的处理: 执行vm.reload()时，先判断一下如果是dialog的contentView，则让dialog刷新
+			// 兼容3.1业务的处理: 执行vm.reload()时，先判断一下如果是dialog的contentView，则让dialog刷新
 			var d = $.dialog( this );
 			if ( d && d.getContentView() === this ) {
 				d.reload.apply( d, arguments );
@@ -3899,7 +3910,7 @@ Dialog = define.widget( 'dialog', {
 			var c = this.attr( 'local' ), f = _number( this.x.position ), g = a ? N : this._snapElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
 			if ( vs ) {
-				r = $.snap( w, h, g, this.x.snaptype || this._snaptype || (c && 'cc'), this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10), c && (c === T ? this.ownerView.$() : $( c )) );
+				r = $.snap( w, h, g, this.x.snaptype || this._snaptype || (c && 'cc'), this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10), c && (c === T ? this.getLocalParent().$() : $( c )) );
 			} else if ( f ) { // 八方位浮动的起始位置
 				var b = '11,22,22,33,33,44,44,11'.split( ',' );
 				r = $.snap( w, h, N, b[ f - 1 ], this._fitpos, this.x.indent );
@@ -3960,6 +3971,11 @@ Dialog = define.widget( 'dialog', {
 			delete this.contentView;
 			Xsrc.prototype.reset.call( this );
 		},
+		getLocalParent: function() {
+			var p = this;
+			while ( (p = p.parentNode) && !p.type_view && !p.isDialogWidget );
+			return p;
+		},
 		html_nodes: ie7 ? function() {
 			return '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + _proto.html_nodes.apply( this, arguments ) + '</td></tr></table>';
 		} : _proto.html_nodes,
@@ -3974,10 +3990,13 @@ Dialog = define.widget( 'dialog', {
 				delete this._ori_height;
 			}
 			var c = this.attr( 'local' );
-			c && this.ownerView.addClass( 'f-rel' );
+			if ( c ) {
+				var d = this.getLocalParent();
+				d && d.type_view && d.addClass( 'f-rel' );
+			}
 			if ( this.x.cover )
-				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
-			$.db( this.html(), c && this.ownerView.$() );
+				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.getLocalParent().$() );
+			$.db( this.html(), c && this.getLocalParent().$() );
 			if ( this.x.minwidth || this.x.maxwidth ) {
 				var ew = Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ), n = this.minWidth( T ), m = this.maxWidth( T );
 				this.width( n && n > ew ? n : m && m < ew ? m : ew );
