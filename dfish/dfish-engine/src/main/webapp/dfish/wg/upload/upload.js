@@ -1427,12 +1427,15 @@ if ( isSWF ) {
 /*! `upload/file` */
 define.widget( 'upload/file', {
 	Const: function( x ) {
-		x.label && x.label.text && $.extend( x.label, { valign: 'top' } );
+		//x.label && x.label.text && $.extend( x.label, { valign: 'top' } );
 		Upload.apply( this, arguments );
 	},
 	Extend: Upload,
 	Listener: {
 		body: {
+			ready: function() {
+				this.fixLabelVAlign();
+			},
 			error: function( e, a ) {
 				if ( typeof a === 'object' ) {
 					if ( a.type === 'tip' ) 
@@ -1444,7 +1447,7 @@ define.widget( 'upload/file', {
 		}
 	},
 	Prototype: {
-		className: 'w-upload w-uploadfile f-inbl f-va',
+		className: 'w-upload f-inbl f-va',
 		validHooks: {
 			valid: function( b, v ) {
 				var b = this.valuebar, l = b.length, d, e;
@@ -1465,6 +1468,9 @@ define.widget( 'upload/file', {
 				this.addValue( a );
 				this.valuebar.add( { data: a } ).render();
 			}
+		},
+		fixLabelVAlign: function() {
+			this.label && this.label.addClass( 'z-va', !! this.hasClass( 'z-lmt z-ds' ) );
 		},
 		getTipLoader: function( t ) {
 			var b = this.valuebar, l = b.length;
@@ -1494,7 +1500,7 @@ define.widget( 'upload/image', {
 	},
 	Extend: 'upload/file',
 	Prototype: {
-		className: 'w-upload w-uploadimage f-inbl f-va',
+		className: 'w-upload f-inbl f-va',
 		html_nodes: function() {
 			return this.valuebar.html() + this.html_input();
 		}
@@ -1545,6 +1551,7 @@ define.widget( 'upload/file/valuebar', {
 				$.classAdd( u.$(), 'z-lmt', u.isLimit() );
 				this.length && this.$( 'nf' ) && $.remove( this.$( 'nf' ) );
 				! this.length && ! this.$( 'nf' ) && Q( this.$() ).prepend( this.html_nofiles() );
+				u.fixLabelVAlign();
 			}
 		}
 	},

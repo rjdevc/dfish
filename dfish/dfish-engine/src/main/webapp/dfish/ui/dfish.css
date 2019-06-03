@@ -307,6 +307,7 @@
 .f-css2 .w-grid .f-sub-horz.z-htmn{float:none}
 
 /* form */
+.w-form-wrap{}
 .w-form{margin:0;padding:0;}
 .w-form.z-ds{color:#999}
 .w-form input,.w-form textarea{border:0;margin:0;padding:0;background:transparent;outline:none}
@@ -764,13 +765,13 @@
 .f-i-file-htm{width:30px;height:30px;background:url(g/f.png) -97px -396px}
 
 .w-upload ._bbar{overflow:hidden}
-.w-uploadimage{line-height:0}
+.w-upload-image{line-height:0}
 .w-upload.z-ds ._close,.w-upload.z-ds ._more{width:0;height:0;visibility:hidden}
 .w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{display:none}
 .w-upload ._nofiles{color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
 
-.w-uploadimage ._bbar,.w-uploadimage ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
+.w-upload-image ._bbar,.w-upload-image ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 
 .w-upload-icon-local.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -145px -49px}
 .w-upload-icon-net.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -172px -49px}
@@ -782,12 +783,12 @@
 .w-button.w-upload-button ._c{padding-left:4px}
 .w-button.w-upload-button ._t,.w-button.w-upload-button  ._i{padding-right:4px}
 
-.w-uploadfile .w-upload-button.z-hv ._t{text-decoration:underline}
+.w-upload-file .w-upload-button.z-hv ._t{text-decoration:underline}
 
-.w-uploadimage .w-upload-button{margin:2px 0 3px 0;border:2px dashed #ccc}
-.w-uploadimage .w-upload-button.z-hv{border-color:#72a9fc;color:#2678F2}
-.w-uploadimage .w-upload-button ._m{display:none}
-.w-uploadimage .w-upload-button.z-more ._c{margin-right:0}
+.w-upload-image .w-upload-button{margin:2px 0 3px 0;border:2px dashed #ccc}
+.w-upload-image .w-upload-button.z-hv{border-color:#72a9fc;color:#2678F2}
+.w-upload-image .w-upload-button ._m{display:none}
+.w-upload-image .w-upload-button.z-more ._c{margin-right:0}
 
 .w-upload-value-file{position:relative;height:30px;margin:5px 10px 5px 0px;cursor:pointer}
 .w-upload-value-file ._icon{float:left;width:30px;height:30px;border-radius:2px 0 0 2px}
@@ -813,6 +814,9 @@
 .w-upload-value-image ._g{vertical-align:middle}
 .w-upload-value-image.z-err{border-color:#f00}
 .w-upload-value-image.z-err ._name,.w-upload-value-image:hover ._more,.w-upload-value-image:hover ._close,.w-upload-value-image:hover ._cvr{display:block}
+
+.w-label.z-type-upload-file{vertical-align:top}
+.w-label.z-type-upload-file.z-va{padding-top:5px}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-page .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 

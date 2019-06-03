@@ -2861,7 +2861,8 @@ Buttonbar = define.widget( 'buttonbar', {
 				for ( var i = 0; i < this.length; i ++ )
 					this[ i ].css( { visibility: '' } );
 			}
-			var tw = this.$().offsetWidth, o = this.x.overflow;
+			// 调整页面百分比时，scrollWidth可能会比offsetWidth大一个像素。这里加一个像素容错
+			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
 				this._more = this.add( $.extend( { focusable: F, closeable: F, on: { click: '' } }, this.x.pub || {}, o.button ), -1 );
 				this._more.render( this.$() );
@@ -4209,7 +4210,7 @@ Alert = define.widget( 'alert', {
 		if ( t && (this._tpl = _getPreload( t )) ) {
 			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', height: '*', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args || [] ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
@@ -4643,7 +4644,7 @@ var Label = define.widget( 'label', {
 		}
 	},
 	Prototype: {
-		className: 'w-label f-inbl',
+		className: 'w-label f-inbl f-wdbr',
 		setValidate: function( x ) {
 			x = x || {};
 			if ( x.required ) {
@@ -4940,6 +4941,18 @@ AbsForm = define.widget( 'abs/form', {
 			if ( this.x.placeholder && this.$( 'ph' ) )
 				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
+		wrap_cls: function() {
+			var p = this.parentNode, c = 'w-form-wrap f-inbl f-va f-nobr';
+			if ( p && p.childCls )
+				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
+			return c;
+		},
+		prop_cls: function() {
+			var p = this.parentNode, c = (this.className || '') + (this.x.cls ? ' ' + this.x.cls.replace( /\./g, '' ) : '');
+			if ( ! this.isNormal() )
+				c += ' z-ds';
+			return c;
+		},
 		prop_style: function() {
 			var w = this.formWidth(), h = this.formHeight(), s = '';
 			w != N && w >= 0 && (s += 'width:' + w + 'px;');
@@ -4953,15 +4966,10 @@ AbsForm = define.widget( 'abs/form', {
 		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
-			return (this.label ? this.label.html() : '') + this.html_before() + '<div' + this.html_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div>' + this.html_after();
+			return this.html_before() + '<div id=' + this.id + 'wr class="' + this.wrap_cls() + '">' + (this.label ? this.label.html() : '') + '<div' + this.html_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div></div>' + this.html_after();
 		},
-		removeElem: function() {
-			this.label && this.label.removeElem();
-			_proto.removeElem.call( this );
-		},
-		dispose: function( a ) {
-			this.label && this.label.dispose( a );
-			_proto.dispose.call( this, a );
+		removeElem: function( a ) {
+			$.remove( this.$( a || 'wr' ) );
 		}
 	}
 } ),
@@ -5167,7 +5175,7 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		range: 'option'
 	},
 	Prototype: {
-		className: 'w-form f-oh f-inbl f-va',
+		className: 'w-form f-inbl f-va f-oh f-wdbr',
 		type_horz: T,
 		isBoxGroup: T,
 		x_childtype: $.rt( 'checkbox' ),
@@ -5419,6 +5427,7 @@ Checkbox = define.widget( 'checkbox', {
 		tip: function() {
 			this.exec( $.extend( {}, this.attr( 'tip' ), { type: 'tip', hoverdrop: true } ) );
 		},
+		prop_cls: _proto.prop_cls,
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
