@@ -23,14 +23,6 @@ public class ProgressController extends BaseController {
 	@Autowired
 	private ProgressManager progressManager;
 
-	public ProgressManager getProgressManager() {
-		return progressManager;
-	}
-
-	public void setProgressManager(ProgressManager progressManager) {
-		this.progressManager = progressManager;
-	}
-	
 	@RequestMapping("/reloadProgress")
 	@ResponseBody
 	public Object reloadProgress(HttpServletRequest request) {
@@ -48,14 +40,18 @@ public class ProgressController extends BaseController {
 		if (progressData.isFinish()) { // 进度条结束
 			// 将进度条移除记录
 			progressManager.removeProgress(progressKey);
-			CommandGroup cg = new CommandGroup();
-			if (progressData.getCompleteCommand() != null) {
-				CommandGroup pCg = new CommandGroup().setPath(CommandGroup.PATH_OWNER_VIEW);
-				cg.add(pCg);
-				pCg.add(progressData.getCompleteCommand());
+			if (progressData.getCompleteNode() != null) {
+//				if (progressData.getCompleteNode() instanceof Command) {
+//					CommandGroup pCg = new CommandGroup().setPath(CommandGroup.PATH_OWNER_VIEW);
+//					cg.add(pCg);
+//					pCg.add((Command<?>) progressData.getCompleteNode());
+//					cg.add(getCommand(null, true));
+//				} else {
+//				}
+				return progressData.getCompleteNode();
 			}
-			cg.add(getCommand(null, true));
-			return cg;
+			// 默认命令做容错
+			return new CommandGroup();
 		} else {
 			List<Progress> progressGroup = progressManager.getProgressGroup(progressKey);
 			VerticalLayout vert = new VerticalLayout(null);

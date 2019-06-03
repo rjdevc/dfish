@@ -10,6 +10,6 @@ package com.rongji.dfish.ui;
  * @param <T> 当前对象类型
  * @since XMLTMPL 2.0
  */
-public interface Command<T extends Command<T> > extends JsonObject,HasId<T> {
+public interface Command<T extends Command<T>> extends JsonNode<T> {
 
 }

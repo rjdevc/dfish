@@ -1,5 +1,17 @@
 package com.rongji.dfish.framework.plugin.progress;
 
+import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.cache.Cache;
+import com.rongji.dfish.base.crypt.CryptFactory;
+import com.rongji.dfish.base.crypt.StringCryptor;
+import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.ui.Command;
+import com.rongji.dfish.ui.JsonNode;
+import com.rongji.dfish.ui.command.AlertCommand;
+import com.rongji.dfish.ui.command.LoadingCommand;
+import com.rongji.dfish.ui.layout.VerticalLayout;
+import com.rongji.dfish.ui.widget.Progress;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -8,17 +20,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.cache.Cache;
-import com.rongji.dfish.base.crypt.CryptFactory;
-import com.rongji.dfish.base.crypt.StringCryptor;
-import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.ui.Command;
-import com.rongji.dfish.ui.command.AlertCommand;
-import com.rongji.dfish.ui.command.LoadingCommand;
-import com.rongji.dfish.ui.layout.VerticalLayout;
-import com.rongji.dfish.ui.widget.Progress;
 
 public class ProgressManager {
 	private Cache<String, ProgressData> progressCache;
@@ -90,7 +91,6 @@ public class ProgressManager {
 	 * 将进度条数据放到缓存中
 	 * @param progressData
 	 * @return
-	 * @author YuLM
 	 */
 	public boolean setProgressData(ProgressData progressData) {
 		if (progressData == null || Utils.isEmpty(progressData.getProgressKey())) {
@@ -103,22 +103,30 @@ public class ProgressManager {
 		ProgressData old = progressCache.put(progressData.getProgressKey(), progressData);
 		return progressData != old;
 	}
-	
+
 	/**
-	 * 设置完成时调用的命令
+	 * 设置完成时调用的动作
 	 * @param progressKey
-	 * @param completeCommand
-	 * @return
-	 * @author YuLM
+	 * @param completeNode
+	 * @return boolean
 	 */
-	public boolean setCompleteCommand(String progressKey, Command<?> completeCommand) {
-		if (completeCommand == null) {
-			return false;
-		}
+	public boolean setCompleteNode(String progressKey, JsonNode completeNode) {
 		ProgressData progressData = getProgressData(progressKey);
-		progressData.setCompleteCommand(completeCommand);
+		progressData.setCompleteNode(completeNode);
 		return setProgressData(progressData);
 	}
+
+    /**
+     * 设置完成时调用的命令
+     * @param progressKey
+     * @param completeCommand
+     * @return boolean
+     * @see #setCompleteNode(String, JsonNode)
+     */
+	@Deprecated
+	public boolean setCompleteCommand(String progressKey, Command<?> completeCommand) {
+	    return setCompleteNode(progressKey, completeCommand);
+    }
 	
 	private static ExecutorService EXECUTOR_SERVICE;
 	
@@ -164,11 +172,11 @@ public class ProgressManager {
 	 * @param runnable
 	 * @param progressKey
 	 * @param progressText
-	 * @param completeCommand
+	 * @param completeNode
 	 * @return
 	 */
-	public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, Command<?> completeCommand) {
-		return registerProgress(runnable, progressKey, progressText, completeCommand, 1);
+	public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, JsonNode completeNode) {
+		return registerProgress(runnable, progressKey, progressText, completeNode, 1);
 	}
 	
 	/**
@@ -176,17 +184,17 @@ public class ProgressManager {
 	 * @param runnable
 	 * @param progressKey
 	 * @param progressText
-	 * @param completeCommand
+	 * @param completeNode
 	 * @param steps
 	 * @return
 	 */
-	public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, Command<?> completeCommand, int steps) {
+	public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, int steps) {
 		steps = steps < 1 ? 1 : steps;
-		List<Integer> stepScales = new ArrayList<Integer>(steps);
+		List<Integer> stepScales = new ArrayList<>(steps);
 		for (int i=0; i<steps; i++) {
 			stepScales.add(1);
 		}
-		return registerProgress(runnable, progressKey, progressText, completeCommand, stepScales.toArray(new Number[]{}));
+		return registerProgress(runnable, progressKey, progressText, completeNode, stepScales.toArray(new Number[]{}));
 	}
 	
 	/**
@@ -194,11 +202,11 @@ public class ProgressManager {
 	 * @param runnable
 	 * @param progressKey
 	 * @param progressText
-	 * @param completeCommand
+	 * @param completeNode
 	 * @param stepScale
 	 * @return
 	 */
-	public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, Command<?> completeCommand, Number[] stepScale) {
+	public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, Number[] stepScale) {
 		// 空处理
 		if (runnable == null) {
 			throw new UnsupportedOperationException("系统进度条创建失败,请联系管理员");
@@ -209,7 +217,7 @@ public class ProgressManager {
 			ProgressData progressData = new ProgressData();
 			progressData.setProgressKey(progressKey);
 			progressData.setProgressText(progressText);
-			progressData.setCompleteCommand(completeCommand);
+			progressData.setCompleteNode(completeNode);
 			stepScale = stepScale == null ? new Number[]{ 1 } : stepScale;
 			sucess = setStepScale(progressData, stepScale);
 //		boolean sucess = setProgressData(progressData);
@@ -236,7 +244,7 @@ public class ProgressManager {
 						}
 						ProgressData progressData = getProgressData(progressKey);
 						if (progressData != null) { // 进度条运行异常,原命令不应该执行,需要提示用户内部异常
-							progressData.setCompleteCommand(new AlertCommand(errorMsg));
+							progressData.setCompleteNode(new AlertCommand(errorMsg));
 							// 异常数据提示需要放到缓存中
 							setProgressData(progressData);
 						}

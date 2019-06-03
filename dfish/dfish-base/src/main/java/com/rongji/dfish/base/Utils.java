@@ -567,6 +567,9 @@ public class Utils {
      * @return
      */
     public static <T> String toString(T[] array) {
+        if (array == null) {
+            return null;
+        }
         return toString(array, ',');
     }
 

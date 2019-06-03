@@ -6,7 +6,7 @@ package com.rongji.dfish.ui;
  *
  * @param <T> 当前对象类型
  */
-public interface Widget<T extends Widget<T>> extends JsonObject, HasId<T>,EventTarget<T>,DataContainer<T>{
+public interface Widget<T extends Widget<T>> extends JsonNode<T>,EventTarget<T> {
 
 
 	/**
