@@ -1505,8 +1505,12 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		if ( typeof d === _NUM )
 			return d < 0 ? N : d;
 		c === U && (c = this[ iz ]());
-		if ( c != N && typeof d === _STR && d.indexOf( '%' ) > 0 )
-			c = Math.floor( c * parseFloat( d ) / 100 );
+		//if ( c != N && typeof d === _STR && d.indexOf( '%' ) > 0 )
+		//	c = Math.floor( c * parseFloat( d ) / 100 );
+		if ( c != N && d != N ) {
+			var e = $.scale( c, [ { value: d, min: a.attr( nv ), max: a.attr( xv ) } ] );
+			c = e[ 0 ];
+		}
 		return c;
 	};
 	_w_size_fix[ v ] = function( a ) {
