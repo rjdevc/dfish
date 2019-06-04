@@ -1137,10 +1137,11 @@ W = define( 'widget', function() {
 				a.width == N && (a.width = this.x.width);
 				a.height == N && (a.height = this.x.height);
 			}
-			var e = this.$();
+			var e = this.$(), f = e && this.isDisplay();
 			this.dispose();
 			var g = p.add( a, i );
 			o && (g.focusOwner = o, o.focusNode = g);
+			f === F && g.addEvent( 'ready', function() { this.display( F ) } );
 			g.render( e, 'replace' );
 			this.removeElem();
 			p.trigger( 'resize', 'replace' );
@@ -5111,7 +5112,7 @@ Hidden = define.widget( 'hidden', {
 /* `textarea` */
 Textarea = define.widget( 'textarea', {
 	Extend: AbsInput,
-	Default: { height: 60 },
+	Default: { height: 60, tip: F },
 	Listener: {
 		body: {
 			resize: function() {
