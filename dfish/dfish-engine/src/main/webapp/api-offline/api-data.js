@@ -979,8 +979,8 @@ define( {
     Config: [
       { name: 'aftercontent', type: 'String', remark: '附加到之前的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'beforecontent', type: 'String', remark: '附加到之后的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
-      { name: 'prependcontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
-      { name: 'appendcontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'prependcontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'appendcontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'cls', type: 'String', remark: '样式类名。', common: true },
       { name: 'data', type: 'Object', remark: '扩展数据。key:value键值对。在当前widget及子孙节点范围内的事件可以用变量 $key 的来获取值。', common: true },
       { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。', common: true },
@@ -3067,6 +3067,7 @@ define( {
   	extend: 'text',
     Config: [
       { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
+      { name: 'showbtn', type: 'Boolean', optional: true, remark: '是否显示增减的按钮。默认值为true' },
       { name: 'format', type: 'Object', optional: true, remark: '设置分隔格式。',  param: [
         { name: 'length', type: 'Number', remark: '分隔长度。默认值为 3' },
         { name: 'separator', type: 'String', remark: '分隔符。默认值为 ","' },
@@ -3368,7 +3369,6 @@ define( {
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
       { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'headers', type: 'Object', remark: '一个额外的"{键:值}"对映射到请求一起发送。' },
-      { name: 'loading', type: 'Boolean | String | LoadingCmd', remark: '显示一个"正在加载"的提示框。' },
       { name: 'src', type: 'String', remark: '路径。' },
       { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
@@ -3467,11 +3467,7 @@ define( {
             var dg2 = $.dialog( 'mydialog' ); // 获取方式2
           }
       ] },
-      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
-          function() {
-            VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
-          }
-      ] },
+      { name: 'loading', type: 'LoadingCommand', ver: '3.2+', remark: '加载数据时显示一个等候窗口。' },
       { name: 'node', type: 'Object', remark: 'Dialog的唯一子节点。', example: [
           function() {
             return~
@@ -3482,6 +3478,11 @@ define( {
                 node: { type: 'html', text: '内容..' }
               }
             }
+          }
+      ] },
+      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
+          function() {
+            VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
           }
       ] },
       { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进多少个像素。' },

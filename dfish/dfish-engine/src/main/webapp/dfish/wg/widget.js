@@ -3167,7 +3167,7 @@ Button = define.widget( 'button', {
 			if ( ie7 && !w )
 				a += '<table cellpadding=0 cellspacing=0 height=100%><tr><td>';
 			if ( ! x.hidetoggle && this.more )
-				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><em class=f-arw></em><i class=f-vi></i></div>';
+				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><i class=f-arw></i><i class=f-vi></i></div>';
 			if ( x.closeicon )
 				a += $.image( x.closeicon, { cls: '_x', click: evw + '.close()' } );
 			else if ( x.closeable )
