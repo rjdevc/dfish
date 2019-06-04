@@ -6317,7 +6317,7 @@ Spinner = define.widget( 'spinner', {
 			}
 		},
 		html_btn: function() {
-			return mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
+			return this.x.showbtn === F ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
 				'<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
 		},
 		html_input: function() {
@@ -9508,12 +9508,14 @@ Table = define.widget( 'table', {
 				w != N && (s += ' style="width:' + w + 'px"');
 			}
 			s += '>';
-			if ( br.ms ) {
-				for ( var t = '<thead class=_ie_thead><tr>', i = 0, c = this.rootNode.colgrps[ 0 ], l = c.length; i < l; i ++ )
-					t += '<td' + (c[ i ].x.style ? ' style="' + c[ i ].x.style + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
-				s += t + '</thead>';
-			}
-			return s + this.html_nodes() + '</table>';
+			for ( var t = '<tr>', i = 0, c = this.rootNode.colgrps[ 0 ], l = c.length; i < l; i ++ )
+				t += '<td' + (c[ i ].x.style ? ' style="' + c[ i ].x.style + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
+			if ( br.ms )
+				s += '<thead class="_fix_thead">' + t + '</thead>';
+			s += this.html_nodes();
+			if ( ! br.ms && this.tbody )
+				s += '<tfoot class="_fix_tfoot">' + t + '</tfoot>';
+			return s + '</table>';
 		}
 	}
 } ),
