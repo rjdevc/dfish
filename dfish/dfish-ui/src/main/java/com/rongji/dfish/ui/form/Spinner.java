@@ -7,21 +7,6 @@ package com.rongji.dfish.ui.form;
  * @since XMLTMPL 1.0
  */
 public class Spinner extends AbstractInput<Spinner,Number> {
-    //陈明远(陈明远 ) 11:51:50
-//<i tp="number" n="size" t="分段尺寸" v="100" ntn="1" rdn="0" ds="0" mnv="30" mxv="200" step="0.5" showbtn="1" match="/^\d+\.?\d{0,2}$/" mk="(KB)" mkw="30"/>
-//
-//说明：
-//mnv: 最小值，可选
-//mxv: 最大值，可选
-//step: 步长，每次点击按钮时增加/减少的量，可选
-//showbtn: 是否显示点击按钮，可选
-//  明远(陈明远 ) 11:57:42
-//还有几个属性忘了：
-//w: 宽度 (width)
-
-//陈明远(陈明远 ) 11:57:57
-//都可选
-
 /**
 	 * 
 	 */
@@ -29,6 +14,7 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 	//    private Number minValue;
 //    private Number maxValue;
     private Number step;
+    private Boolean showbtn;
 //    private String match;
 
     /**
@@ -92,24 +78,42 @@ public class Spinner extends AbstractInput<Spinner,Number> {
         return this;
     }
 
-    /**
-     * 设置 输入值应该匹配的模式
-     * @param match String
-     * @return 本身，这样可以继续设置其他属性
-     * @deprecated 使用addPatternValidate 代替
-     */
-	@Deprecated
-    public Spinner setMatch(String match) {
-       	this.addValidate(Validate.pattern(match));
-       	return this;
-    }
-
 	/**
 	 *  步长
 	 * @return  步长
 	 */
 	public Number getStep() {
 		return step;
+	}
+
+	/**
+	 * 是否显示尾部按钮
+	 * @return Boolean
+	 */
+	public Boolean getShowbtn() {
+		return showbtn;
+	}
+
+	/**
+	 * 是否显示尾部按钮
+	 * @param showbtn Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Spinner setShowbtn(Boolean showbtn) {
+		this.showbtn = showbtn;
+		return this;
+	}
+
+	/**
+	 * 设置 输入值应该匹配的模式
+	 * @param match String
+	 * @return 本身，这样可以继续设置其他属性
+	 * @deprecated 使用addPatternValidate 代替
+	 */
+	@Deprecated
+	public Spinner setMatch(String match) {
+		this.addValidate(Validate.pattern(match));
+		return this;
 	}
 
 	public String getType() {
