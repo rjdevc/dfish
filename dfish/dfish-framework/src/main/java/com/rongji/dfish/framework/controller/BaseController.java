@@ -430,11 +430,14 @@ public class BaseController extends MultiActionController {
 	public Page getPage(String cp, int pageSize) {
 		Page page = new Page();
 		int cpValue = 1;
-		try {
-			cpValue = Integer.parseInt(cp);
-        } catch (Exception e) {
-        	cpValue = 1;
-        }
+		if (Utils.notEmpty(cp)) {
+			try {
+				cpValue = Integer.parseInt(cp);
+			} catch (Exception e) {
+				cpValue = 1;
+			}
+		}
+
 		if (cpValue < 1) {
 			cpValue = 1;
 		}
