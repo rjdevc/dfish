@@ -8835,8 +8835,8 @@ GridToggle = define.widget( 'grid/toggle', {
 			Toggle.prototype.toggle.apply( this, arguments );
 			var t = this.tr();
 			t.toggle_rows( this.x.open );
-			for ( var i = t.$().rowIndex + 1, d = t.$().parentNode.parentNode.rows, c, l = d.length; i < l; i ++ ) {
-				c = _widget( d[ i ] );
+			for ( var i = t.nodeIndex + 1, d = t.parentNode, c, l = d.length; i < l; i ++ ) {
+				c = d[ i ];
 				if ( c.tgl )
 					break;
 				c.display( this );
@@ -9510,9 +9510,12 @@ Table = define.widget( 'table', {
 			s += '>';
 			for ( var t = '<tr>', i = 0, c = this.rootNode.colgrps[ 0 ], l = c.length; i < l; i ++ )
 				t += '<td' + (c[ i ].x.style ? ' style="' + c[ i ].x.style + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
+			//IE下如果不加这个thead，当有colspan的列时，宽度可能会失调
 			if ( br.ms )
 				s += '<thead class="_fix_thead">' + t + '</thead>';
 			s += this.html_nodes();
+			// Chrome下如果不加这个tfoot，当grid没有数据时，表格不会自动撑开，无法触发滚动条
+			// 虽然用thead也能实现效果，但没有适合这种效果的原生CSS，需要JS代码里去做。用tfoot则可以用 tbody:empty + ._fix_tfoot 的原生CSS来实现，比用代码更安全
 			if ( ! br.ms && this.tbody )
 				s += '<tfoot class="_fix_tfoot">' + t + '</tfoot>';
 			return s + '</table>';
