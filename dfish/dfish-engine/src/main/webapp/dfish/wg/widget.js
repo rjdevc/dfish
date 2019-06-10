@@ -8276,12 +8276,14 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			this.trigger( 'nodechange' );
 		},
 		toggle_nodes: function( a ) {
-			this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-open', a );
-			this.addClass( 'z-open', a );
+			if ( this.isFolder() ) {
+				this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-open', a );
+				this.addClass( 'z-open', a );
+			}
 		},
 		// 展开或收拢 /@a -> T/F/event, b -> sync?, f -> fn?
 		toggle: function( a, b, f ) {
-			var c = this.isFolder() && (typeof a === _BOL ? a : !this.x.open), d = !!this.x.open;
+			var c = typeof a === _BOL ? a : !this.x.open, d = !!this.x.open;
 			this.x.open = c;
 			this.toggle_nodes( c );
 			if ( this.x.src && a !== F && !this.loaded && !this.loading ) 
@@ -8931,12 +8933,13 @@ GridRow = define.widget( 'grid/row', {
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
 		getData: function() {
-			var d = { data: this.x.data }, l = this.length;
+			var d = {}, l = this.length;
 			if ( l ) {
 				for ( var i = 0, r = []; i < l; i ++ )
 					r.push( this[ i ].getData() );
 				d.rows = r;
 			}
+			this.x.data && (d.data = this.x.data);
 			return d;
 		},
 		// x -> widget option, i -> colIndex
