@@ -3,8 +3,13 @@ package com.rongji.dfish.framework.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.rongji.dfish.base.DfishException;
+import com.rongji.dfish.base.Pagination;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.ConnectionCallback;
@@ -16,6 +21,7 @@ import com.rongji.dfish.base.info.DataBaseInfo;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.SystemData;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * Description: JdbcTemplate常用方法工具类
@@ -66,85 +72,35 @@ public class JdbcTemplateHelper {
 
 	/**
 	 * 数据库查询方法
-	 * 
+	 *
 	 * @param sql
 	 * @return
 	 */
-	public static List<?> query(JdbcTemplate jdbcTemplate, String sql) {
-		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
-		try {
-			return jdbcTemplate.queryForList(sql);
-		} catch (Exception e) {
-			LogUtil.error("", e);
-		}
+	public static List<?> queryForList(JdbcTemplate jdbcTemplate, String sql) {
+		return queryForList(jdbcTemplate, sql, null);
+	}
 
-		return null;
+	public static List<?> queryForList(JdbcTemplate jdbcTemplate, String sql, Object[] args) {
+		return queryForList(jdbcTemplate, sql, null, args);
 	}
-	
-	public static List<?> query(JdbcTemplate jdbcTemplate, String sql, Object... params) {
-		if (params == null) {
-			return Collections.emptyList();
-		}
-		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
-		List<?> dataList = jdbcTemplate.queryForList(sql, params);
-		return dataList;
-	}
-	
-	public static List<?> query(JdbcTemplate jdbcTemplate, String sql, Page page, Object... params) {
-		if (params == null) {
-			return Collections.emptyList();
-		}
-		if (page == null) {
-			return query(jdbcTemplate, sql, params);
-		}
-		
-		if (page.getCurrentPage() < 1) {
-			page.setCurrentPage(1);
-		}
-		if (page.getPageSize() < 1) {
-			// 当无分页数时默认每页20条记录
-			page.setPageSize(20);
-		}
-		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
-		int endIndex = page.getCurrentPage() * page.getPageSize();
-		int beginIndex = endIndex - page.getPageSize() + 1;
-		
-		DataBaseInfo dbInfo = SystemData.getInstance().getDataBaseInfo();
-		String sqlWithPage = "";
-		
-		Object[] args = new Object[params.length + 2];
-		int index = 0;
-		for (Object param : params) {
-			args[index++] = param;
-		}
-		
-		// FIXME 这种做法不合理,需要重新封装
-		if (DataBaseInfo.DATABASE_ORACLE == dbInfo.getDatabaseType()) {
-			sqlWithPage = getPreSqlWithPageOracle(sql);
-			
-			args[index++] = endIndex;
-			args[index++] = beginIndex;
-		} else if (DataBaseInfo.DATABASE_MYSQL == dbInfo.getDatabaseType()) {
-			sqlWithPage = getPreSqlWithPageMysql(sql);
-			
-			args[index++] = beginIndex - 1;
-			args[index++] = page.getPageSize();
-		}
-		
-		// FIXME autoRowCount暂未处理
-		List<?> dataList = jdbcTemplate.queryForList(sqlWithPage, args);
+
+	public static List<?> queryForList(JdbcTemplate jdbcTemplate, String sql, Page page, Object[] args) {
+		Pagination pagination = Pagination.fromPage(page);
+		QueryPreparation preparation = getQueryPreparation(sql, pagination, args);
+		List<?> dataList = jdbcTemplate.queryForList(preparation.getQuerySql(), preparation.getQueryArgs());
+		fillPageInfo(jdbcTemplate, preparation, page, pagination);
 		return dataList;
 	}
 
 	/**
 	 * 数据库查询片段截取方法
-	 * 
+	 *
 	 * @param sql
 	 * @param startIndex
 	 * @param endIndex
 	 * @return
 	 */
-	public static List<?> query(JdbcTemplate jdbcTemplate, String sql, int startIndex, int endIndex) {
+	public static List<?> queryForList(JdbcTemplate jdbcTemplate, String sql, int startIndex, int endIndex) {
 		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
 		try {
 			StringBuilder paginationSQL = new StringBuilder(" SELECT * FROM ( ");
@@ -154,7 +110,9 @@ public class JdbcTemplateHelper {
 			paginationSQL.append(" ) WHERE  num >= ").append(startIndex);
 			return jdbcTemplate.queryForList(paginationSQL.toString());
 		} catch (Exception e) {
-			LogUtil.error("", e);
+			if (FrameworkHelper.LOG.isErrorEnabled()) {
+				FrameworkHelper.LOG.error("", e);
+			}
 		}
 		return Collections.emptyList();
 	}
@@ -181,24 +139,201 @@ public class JdbcTemplateHelper {
 		return preSql.toString();
 	}
 
+	public static <T> List<T> query(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper) {
+		return query(jdbcTemplate, sql, null, rowMapper);
+	}
+
+	public static <T> List<T> query(JdbcTemplate jdbcTemplate, String sql, Object[] args, RowMapper<T> rowMapper) {
+		return query(jdbcTemplate, sql, null, args, rowMapper);
+	}
+
+	public static <T> List<T> query(JdbcTemplate jdbcTemplate, String sql, Page page, Object[] args, RowMapper<T> rowMapper) {
+		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
+
+		Pagination pagination = Pagination.fromPage(page);
+		QueryPreparation preparation = getQueryPreparation(sql, pagination, args);
+		List<T> dataList = jdbcTemplate.query(preparation.getQuerySql(), preparation.getQueryArgs(), rowMapper);
+		fillPageInfo(jdbcTemplate, preparation, page, pagination);
+		return dataList;
+	}
+
+	public static <T> T queryForObject(JdbcTemplate jdbcTemplate, String sql, Object[] args, RowMapper<T> rowMapper) {
+		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
+		// 这样的写法更好安全,查不出数据不会报错
+		List<T> dataList = query(jdbcTemplate, sql, args, rowMapper);
+		if (Utils.notEmpty(dataList)) {
+			return dataList.get(0);
+		}
+		return null;
+	}
+
+	public static <T> T queryForObject(JdbcTemplate jdbcTemplate, String sql, Object[] args, Class<T> clz) {
+		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
+		return jdbcTemplate.queryForObject(sql, args, clz);
+	}
+
+	private static void fillPageInfo(JdbcTemplate jdbcTemplate, QueryPreparation preparation, Page page, Pagination pagination) {
+		if (page == null || pagination == null || !pagination.isAutoRowCount()) {
+			return;
+		}
+		Number count = jdbcTemplate.queryForObject(preparation.getCountSql(), preparation.getCountArgs(), Number.class);
+		pagination.setSize(count.intValue());
+		Page p = pagination.toPage();
+		Utils.copyPropertiesExact(page, p);
+	}
+
+	private static class QueryPreparation {
+		String querySql;
+		String countSql;
+		Object[] queryArgs;
+		Object[] countArgs;
+
+		public String getQuerySql() {
+			return querySql;
+		}
+
+		public void setQuerySql(String querySql) {
+			this.querySql = querySql;
+		}
+
+		public String getCountSql() {
+			return countSql;
+		}
+
+		public void setCountSql(String countSql) {
+			this.countSql = countSql;
+		}
+
+		public Object[] getQueryArgs() {
+			return queryArgs;
+		}
+
+		public void setQueryArgs(Object[] queryArgs) {
+			this.queryArgs = queryArgs;
+		}
+
+		public Object[] getCountArgs() {
+			return countArgs;
+		}
+
+		public void setCountArgs(Object[] countArgs) {
+			this.countArgs = countArgs;
+		}
+
+	}
+
+	private static QueryPreparation getQueryPreparation(String sql, Pagination pagination, Object[] args) {
+		String querySql = sql;
+
+		List<Object> orginArgs = args == null ? new ArrayList<Object>(0) : Arrays.asList(args);
+		List<Object> queryArgs = new ArrayList<>(orginArgs);
+		QueryPreparation preparation = new QueryPreparation();
+		if (pagination != null) {
+			DataBaseInfo dbInfo = SystemData.getInstance().getDataBaseInfo();
+			if (DataBaseInfo.DATABASE_ORACLE == dbInfo.getDatabaseType()) {
+				querySql = getPreSqlWithPageOracle(sql);
+				queryArgs.add(pagination.getOffset() + pagination.getLimit());
+				queryArgs.add(pagination.getOffset());
+			} else if (DataBaseInfo.DATABASE_MYSQL == dbInfo.getDatabaseType()) {
+				querySql = getPreSqlWithPageMysql(sql);
+				queryArgs.add(pagination.getOffset());
+				queryArgs.add(pagination.getLimit());
+			}
+			if (pagination.isAutoRowCount()) {
+				List<Object> countArgs = new ArrayList<>(orginArgs);
+
+				/******************以下截取count语句来源框架*****************/
+				// 更新比较精确的截取的方式，应该用正则表达是而不是用 FROM前面加空格的做法。
+				String upperSQL = sql.toUpperCase();
+				int firstForm = -1;
+				Matcher m = Pattern.compile("\\bFROM\\b").matcher(upperSQL);
+				if (m.find()) {
+					firstForm = m.start();
+				}
+
+				if (firstForm < 0) {
+					throw new RuntimeException(new DfishException("无法对没有FROM关键字的SQL进行autoRowCount，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
+				}
+				m = Pattern.compile("\\bDISTINCT\\b").matcher(upperSQL);
+				if (m.find()) {
+					if (m.start() < firstForm) {
+						throw new RuntimeException(new DfishException("无法保证有DISTINCT关键字的SQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
+					}
+				}
+				m = Pattern.compile("\\bGROUP +BY\\b").matcher(upperSQL);
+				if (m.find()) {
+					if (m.start() < firstForm) {
+						throw new RuntimeException(new DfishException("无法保证有GROUP BY关键字的SQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
+					}
+				}
+				int cur = 0, lastOrderBy = upperSQL.length();
+				m = Pattern.compile("\\bORDER +BY\\b").matcher(upperSQL);
+				while (m.find(cur)) {
+					cur = m.end();
+					lastOrderBy = m.start();
+				}
+				//如果EXISTS子语句有ORDER BY 但主语句没有的时候，可能会发生异常。
+				if (lastOrderBy < upperSQL.length()) {
+					char[] orderSeq = sql.substring(lastOrderBy).toCharArray();
+					//如果 )比(多，我们则怀疑 这个ORDER BY 隶属于子查询。那么忽略掉这个ORDER BY 以提高正确率。
+					int left = 0, right = 0;
+					for (char c : orderSeq) {
+						if (c == '(') {
+							left++;
+						} else if (c == ')') {
+							right++;
+						}
+					}
+					if (left != right) {
+						lastOrderBy = upperSQL.length();
+					}
+				}
+				/******************以上截取count语句来源框架*****************/
+
+				String countSql = "SELECT COUNT(*) " + sql.substring(firstForm, lastOrderBy);
+				preparation.setCountSql(countSql);
+				preparation.setCountArgs(countArgs.toArray());
+			}
+		}
+
+		preparation.setQuerySql(querySql);
+		preparation.setQueryArgs(queryArgs.toArray());
+		return preparation;
+	}
+
+	/**
+	 * 数据库批量更新操作
+	 *
+	 * @param sql
+	 * @param args
+	 */
+	public static int update(JdbcTemplate jdbcTemplate, String sql, Object[] args) {
+		List<Object[]> argsList = new ArrayList<>(1);
+		if (Utils.notEmpty(args)) {
+			argsList.add(args);
+		}
+		int[] result = batchUpdate(jdbcTemplate, sql, argsList);
+		return jdbcTemplate.update(sql, args);
+	}
+
 	/**
 	 * 数据库批量更新操作
 	 * 
 	 * @param sql
-	 * @param dataList
+	 * @param argsList
 	 */
-	public static int[] batchUpdate(JdbcTemplate jdbcTemplate, String sql, final List<Object[]> dataList) {
+	public static int[] batchUpdate(JdbcTemplate jdbcTemplate, String sql, final List<Object[]> argsList) {
 		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
 		int[] result = null;
 		try {
 			result = jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 				public void setValues(PreparedStatement ps, int i) throws SQLException {
-					Object[] item = dataList.get(i);
+					Object[] item = argsList.get(i);
 					if (Utils.notEmpty(item)) {
 						for (int j = 0; j < item.length; j++) {
 							Object param = item[j];
 							if (param instanceof Date) {
-								param = new java.sql.Date(((Date) param).getTime());
+								param = new java.sql.Timestamp(((Date) param).getTime());
 							}
 							ps.setObject(j + 1, param);
 						}
@@ -206,7 +341,7 @@ public class JdbcTemplateHelper {
 				}
 
 				public int getBatchSize() {
-					return dataList.size();
+					return argsList.size();
 				}
 			});
 		} catch (Exception e) {
@@ -236,7 +371,7 @@ public class JdbcTemplateHelper {
                                 int paramIndex = 1;
                                 for (Object param : args) {
                                     if (param instanceof Date) {
-                                        param = new java.sql.Date(((Date) param).getTime());
+                                        param = new Timestamp(((Date) param).getTime());
                                     }
                                     pstmt.setObject(paramIndex++, param);
                                 }
@@ -250,7 +385,6 @@ public class JdbcTemplateHelper {
 					conn.rollback();
 				} finally {
 					conn.setAutoCommit(autoCommit);
-					conn.close();
 				}
 				return null;
 			}
@@ -289,7 +423,7 @@ public class JdbcTemplateHelper {
 //							int paramIndex = 1;
 //							for (Object param : params) {
 //								if (param instanceof Date) {
-//									param = new java.sql.Date(((Date) param).getTime());
+//									param = new Date(((Date) param).getTime());
 //								}
 //								pstmt.setObject(paramIndex++, param);
 //							}
