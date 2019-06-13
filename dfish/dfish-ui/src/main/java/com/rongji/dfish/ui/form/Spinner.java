@@ -15,6 +15,8 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 //    private Number maxValue;
     private Number step;
     private Boolean showbtn;
+    private Integer decimal;
+    private NumberFormat format;
 //    private String match;
 
     /**
@@ -101,6 +103,44 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 	 */
 	public Spinner setShowbtn(Boolean showbtn) {
 		this.showbtn = showbtn;
+		return this;
+	}
+
+    /**
+     * 小数精度
+     * 设为0时，只允许输入整数。设为正整数，则限制小数的最大位数。设为负数，则不限整数和小数。默认值为0
+     * @return Integer
+     */
+    public Integer getDecimal() {
+        return decimal;
+    }
+
+    /**
+     * 小数精度
+     * 设为0时，只允许输入整数。设为正整数，则限制小数的最大位数。设为负数，则不限整数和小数。默认值为0
+     * @param decimal Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Spinner setDecimal(Integer decimal) {
+        this.decimal = decimal;
+        return this;
+    }
+
+	/**
+	 * 设置分隔格式
+	 * @return 分隔格式
+	 */
+	public NumberFormat getFormat() {
+		return format;
+	}
+
+	/**
+	 * 设置分隔格式
+	 * @param format 分隔格式
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Spinner setFormat(NumberFormat format) {
+		this.format = format;
 		return this;
 	}
 
