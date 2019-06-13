@@ -393,12 +393,12 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 // 调整小数位数
 _numDecimal = $.numDecimal = function( a, b ) {
 	if ( ! b ) {
-		return parseInt( a, 10 );
+		return a;
 	} else if ( b < 0 ) {
 		return a;
 	} else {
 		var f = _strFrom( '' + a, '.' );
-		return f ? parseFloat( _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) ) : a;
+		return f ? _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) : a;
 	}
 },
 _strTrim = $.strTrim = function (a ) {
