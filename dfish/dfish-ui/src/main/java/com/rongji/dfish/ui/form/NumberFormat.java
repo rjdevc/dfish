@@ -11,6 +11,21 @@ public class NumberFormat extends AbstractNode {
     private String separator;
     private Boolean rightward;
 
+    public NumberFormat() {
+    }
+
+    /**
+     * 构造函数
+     * @param length 分隔长度
+     * @param separator 分隔符
+     * @param rightward 是否从右向左分隔
+     */
+    public NumberFormat(Integer length, String separator, Boolean rightward) {
+        this.length = length;
+        this.separator = separator;
+        this.rightward = rightward;
+    }
+
     /**
      * 分隔长度。默认值为 3
      * @return Integer
@@ -48,7 +63,7 @@ public class NumberFormat extends AbstractNode {
     }
 
     /**
-     * 是否从右向左方向。设置为true，从左向右的方向进行分隔。默认值为 false
+     * 是否从右向左方向分隔。设置为true，从左向右的方向进行分隔。默认值为 false
      * @return Boolean
      */
     public Boolean getRightward() {
@@ -56,7 +71,7 @@ public class NumberFormat extends AbstractNode {
     }
 
     /**
-     * 是否从右向左方向。设置为true，从左向右的方向进行分隔。默认值为 false
+     * 是否从右向左方向分隔。设置为true，从左向右的方向进行分隔。默认值为 false
      * @param rightward Boolean
      * @return 本身，这样可以继续设置其他属性
      */
