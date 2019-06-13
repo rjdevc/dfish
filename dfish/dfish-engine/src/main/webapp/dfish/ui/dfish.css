@@ -366,7 +366,8 @@
 .w-slider{position:relative;border:0}
 .w-slider ._t{position:relative;height:6px;margin:2px 0;background:#f2f2f2;border-radius:6px;box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);}
 .w-slider ._track{position:absolute;height:6px;background:#999;border-radius:6px;}
-.w-slider ._thumb{position:absolute;width:10px;height:10px;top:-2px;background:#777;border-radius:10px}
+.w-slider ._thumb{position:absolute;width:14px;height:14px;top:-4px;background:#777;border-radius:10px;cursor:pointer}
+.w-slider-tip-text{min-width:30px;text-align:center}
 
 .w-sliderjigsaw{position:relative;}
 .w-sliderjigsaw var,.w-sliderjigsaw em{font-style:normal}

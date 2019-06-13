@@ -196,6 +196,11 @@ _f_val = function( a, b, r ) {
 		case 'datetime-local':
 			v = v.replace( 'T', ' ' );
 		break;
+		case 'text':
+			var t = a.getAttribute( 'w-valuetype' );
+			if ( t === 'number' )
+				v = v.replace( /[^\d\.-]/g, '' );
+		break;
 	}
 	v && (v = $.strTrim( v ));
 	if ( b ) {
@@ -4714,9 +4719,9 @@ _valid_err = function( b, v ) {
 		return _form_err.call( this, b, 'minlength', [ b.minlength ] );
 	if ( b.maxlength && (k.maxlength ? k.maxlength.call( this, b, v ) : ((c = $.strLen( v )) > b.maxlength)) )
 		return _form_err.call( this, b, 'maxlength', [ c - b.maxlength ] );
-	if ( b.minvalue && v && (k.minvalue ? k.minvalue.call( this, b, v ) : (v < b.minvalue)) )
+	if ( b.minvalue && v && (k.minvalue ? k.minvalue.call( this, b, v ) : ($.isNumber(b.minvalue) ? (_number(v) < _number(b.minvalue)) : (v < b.minvalue))) )
 		return _form_err.call( this, b, 'minvalue', [ b.minvalue ] );		
-	if ( b.maxvalue && v && (k.maxvalue ? k.maxvalue.call( this, b, v ) : (v > b.maxvalue)) )
+	if ( b.maxvalue && v && (k.maxvalue ? k.maxvalue.call( this, b, v ) : ($.isNumber(b.maxvalue) ? (_number(v) > _number(b.maxvalue)) : (v > b.maxvalue))) )
 		return _form_err.call( this, b, 'maxvalue', [ b.maxvalue ] );
 	if ( b.minsize && v && (k.minsize ? k.minsize.call( this, b, v ) : (v.split( ',' ).length < _number( b.minsize ))) )
 		return _form_err.call( this, b, 'minsize', [ b.minsize ] );
@@ -6307,7 +6312,7 @@ Spinner = define.widget( 'spinner', {
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
 			a != N && this.x.format && this.trigger( 'format' );
-			return this.$t().value;
+			return this.$t().value.replace( /[^\d\.-]/g, '' );
 		},
 		doFormat: function() {
 			if ( ! this.x.format )
@@ -6341,7 +6346,7 @@ Spinner = define.widget( 'spinner', {
 		},
 		html_input: function() {
 			return mbi ? '<input type=number' + this.input_prop() + '><cite class="f-inbl _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
-				'<input type=text' + this.input_prop() + '>';
+				'<input type=text' + this.input_prop() + ' w-valuetype="number">';
 		}
 	}
 } ),
@@ -6390,16 +6395,16 @@ Slider = define.widget( 'slider', {
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
-			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), 
+			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), v = this.$v().value, 
 				g = this.thumbWidth(), w = this.innerWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
-				d = t && this.exec( { type: 'tip', text: this.formatStr( t, [ this.x.value ] ), snap: a, snaptype: 'tb,bt', closable: F } ), v = self.$v().value;
+				d = this.tip( v || this.min() );
 			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
 				var l = $.numRange(f + e.clientX - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
 				a.style.left = l + 'px';
 				$( self.id + 'track' ).style.width = (l + g) + 'px';
-				d && d.snapTo( a ).text( self.formatStr( t, [ v ] ) );
+				d && d.snapTo( a ).text( self.tipText( v ) );
 				$( self.id + 'v' ).value = v;
 				self.addClass( 'z-drag' );
 				self.trigger( 'drag', [ v ] );
@@ -6421,6 +6426,16 @@ Slider = define.widget( 'slider', {
 			if ( ! this._thumb_wd )
 				this._thumb_wd = this.$( 'thumb' ).offsetWidth;
 			return this._thumb_wd;
+		},
+		tip: function( v ) {
+			var t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' );
+			if ( t && ! this._tip )
+				this._tip = this.exec( { type: 'tip', text: this.tipText( v ), snap: this.$( 'thumb' ), snaptype: 'tb,bt', closable: F, on: { close: 'this.parentNode._tip=null' } } );
+			return this._tip;
+		},
+		tipText: function( v ) {
+			var t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' );
+			return '<div class=w-slider-tip-text>' + this.formatStr( t, [ v ] ) + '</div>';
 		},
 		_left: function( v ) {
 			var m = this.max(), n = this.min();
