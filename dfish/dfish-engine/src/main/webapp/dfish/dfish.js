@@ -391,7 +391,7 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
 },
 // 调整小数位数
-_numDemical = $.numDemical = function( a, b ) {
+_numDecimal = $.numDecimal = function( a, b ) {
 	if ( ! b ) {
 		return parseInt( a, 10 );
 	} else if ( b < 0 ) {

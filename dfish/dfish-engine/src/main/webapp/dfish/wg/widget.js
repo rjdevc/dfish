@@ -6291,11 +6291,11 @@ Spinner = define.widget( 'spinner', {
 				if ( v ) {
 					if ( isNaN( v ) || /\s/.test( v ) )
 						return _form_err.call( this, b, 'number_invalid' );
-					var d = this.x.demical;
+					var d = this.x.decimal;
 					if ( ! d && ~v.indexOf( '.' ) )
 						return _form_err.call( this, b, 'number_integer' );
 					if ( d && d > 0 && $.strFrom( v, '.' ).length > d )
-						return _form_err.call( this, b, 'number_demical_digit', [ d ] );
+						return _form_err.call( this, b, 'number_decimal_digit', [ d ] );
 				}
 				if ( this === this.parentNode.begin ) {
 					var c = this.parentNode.end, d = c.val();
@@ -6333,7 +6333,7 @@ Spinner = define.widget( 'spinner', {
 		},
 		input_prop_value: function() {
 			var v = $.strEscape( this.x.value == N ? '' : '' + this.x.value );
-			return v ? $.numDemical( v, this.x.demical ) : '';
+			return v ? $.numDecimal( v, this.x.decimal ) : '';
 		},
 		html_btn: function() {
 			return this.x.showbtn === F ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
