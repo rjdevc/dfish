@@ -3066,6 +3066,7 @@ define( {
   	remark: '数字输入框。',
   	extend: 'text',
     Config: [
+      { name: 'demical', type: 'Number', optional: true, remark: '设为0时，只允许输入整数。设为正整数，则限制小数的最大位数。设为负数，则不限整数和小数。默认值为0' },
       { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
       { name: 'showbtn', type: 'Boolean', optional: true, remark: '是否显示增减的按钮。默认值为true' },
       { name: 'format', type: 'Object', optional: true, remark: '设置分隔格式。',  param: [

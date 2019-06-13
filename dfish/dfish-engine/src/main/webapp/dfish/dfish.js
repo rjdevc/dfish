@@ -390,6 +390,17 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 	}
 	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
 },
+// 调整小数位数
+_numDemical = $.numDemical = function( a, b ) {
+	if ( ! b ) {
+		return parseInt( a, 10 );
+	} else if ( b < 0 ) {
+		return a;
+	} else {
+		var f = _strFrom( '' + a, '.' );
+		return f ? parseFloat( _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) ) : a;
+	}
+},
 _strTrim = $.strTrim = function (a ) {
 	return String( a ).replace( /^\s+|\s+$/g, '' );
 },

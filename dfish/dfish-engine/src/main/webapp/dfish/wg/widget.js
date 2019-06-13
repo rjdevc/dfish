@@ -4964,10 +4964,13 @@ AbsForm = define.widget( 'abs/form', {
 			h != N && h >= 0 && (s += 'height:' + h + 'px;');
 			return s + (this.x.style ? this.x.style : '');
 		},
-		input_prop: function( a ) {
-			var t = this.attr( 'tip' );
+		input_prop: function() {
+			var t = this.attr( 'tip' ), v = this.input_prop_value();
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
-				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + _html_on.call( this );
+				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call( this );
+		},
+		input_prop_value: function() {
+			return $.strEscape(this.x.value == N ? '' : '' + this.x.value);
 		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
@@ -5130,8 +5133,9 @@ Textarea = define.widget( 'textarea', {
 			v == N && (v = this.x.value || '');
 			return this.val().replace( /\r\n/g, '\n' ) != v.replace( /\r\n/g, '\n' );
 		},
+		input_prop_value: $.rt(),
 		html_input: function() {
-			return '<textarea' + this.input_prop( F ) + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
+			return '<textarea' + this.input_prop() + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
 		}
 	}
 } ),
@@ -6123,9 +6127,13 @@ _Date = define.widget( 'date', {
 		html_btn: function() {
 			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
 		},
+		input_prop_value: function() {
+			var v = $.strEscape(this.x.value == N ? '' : ('' + this.x.value));
+			return mbi ? v.replace( ' ', 'T' ) : v;
+		},
 		html_input: function() {
 			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
 				'<input type=text' + this.input_prop() + '>';
 		}
 	}
@@ -6286,7 +6294,7 @@ Spinner = define.widget( 'spinner', {
 					var d = this.x.demical;
 					if ( ! d && ~v.indexOf( '.' ) )
 						return _form_err.call( this, b, 'number_integer' );
-					if ( d && d > 0 && $.strFrom( v, '.' ).length != d )
+					if ( d && d > 0 && $.strFrom( v, '.' ).length > d )
 						return _form_err.call( this, b, 'number_demical_digit', [ d ] );
 				}
 				if ( this === this.parentNode.begin ) {
@@ -6322,6 +6330,10 @@ Spinner = define.widget( 'spinner', {
 				this.focus();
 				this.val( v );
 			}
+		},
+		input_prop_value: function() {
+			var v = $.strEscape( this.x.value == N ? '' : '' + this.x.value );
+			return v ? $.numDemical( v, this.x.demical ) : '';
 		},
 		html_btn: function() {
 			return this.x.showbtn === F ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
