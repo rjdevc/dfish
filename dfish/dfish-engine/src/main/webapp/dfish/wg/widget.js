@@ -6280,8 +6280,15 @@ Spinner = define.widget( 'spinner', {
 			},
 			valid: function( b, v ) {
 				this.x.format && (v = v.replace( RegExp( this.x.format.separator || ',', 'g' ), '' ));
-				if ( v && (isNaN( v ) || /\s/.test( v )) )
-					return _form_err.call( this, b, 'number_invalid' );
+				if ( v ) {
+					if ( isNaN( v ) || /\s/.test( v ) )
+						return _form_err.call( this, b, 'number_invalid' );
+					var d = this.x.demical;
+					if ( ! d && ~v.indexOf( '.' ) )
+						return _form_err.call( this, b, 'number_integer' );
+					if ( d && d > 0 && $.strFrom( v, '.' ).length != d )
+						return _form_err.call( this, b, 'number_demical_digit', [ d ] );
+				}
 				if ( this === this.parentNode.begin ) {
 					var c = this.parentNode.end, d = c.val();
 					if ( v && d && this.validHooks.compare.call( this, { comparemode: '<=' }, v, c, d ) )
@@ -8737,7 +8744,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 		this.level = r.level;
 		x.src && (this.loaded = !!r.length);
 		x.open == N && (x.open = !x.src || !!r.length);
-		r.leaf = this;
+		r.gridLeaf = this;
 		this.row = r;
 	},
 	Extend: Leaf,
@@ -8766,7 +8773,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 			return this.parentNode.scaleWidth.apply( this.parentNode, arguments );
 		},
 		parent: function() {
-			return this.row.parentNode.leaf;
+			return this.row.parentNode.gridLeaf;
 		},
 		isFirst: function() {
 			return this.row.nodeIndex === 0;
@@ -8808,7 +8815,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 			this.isFirst() && $.classAdd( this.$(), 'z-first' );
 			this.isLast() && $.classAdd( this.$(), 'z-last' );
 			for ( var i = 0, l = this.row.length; i < l; i ++ )
-				this.row[ i ].leaf && this.row[ i ].leaf.indent();
+				this.row[ i ].gridLeaf && this.row[ i ].gridLeaf.indent();
 		},
 		html: function() {
 			var r = this.tr(), s = this.html_self( r.length );
@@ -8820,7 +8827,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 GridToggle = define.widget( 'grid/toggle', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		this.tr().tgl = this;
+		this.tr().gridToggle = this;
 	},
 	Extend: Toggle,
 	Listener: {
@@ -8839,7 +8846,7 @@ GridToggle = define.widget( 'grid/toggle', {
 			t.toggle_rows( this.x.open );
 			for ( var i = t.nodeIndex + 1, d = t.parentNode, c, l = d.length; i < l; i ++ ) {
 				c = d[ i ];
-				if ( c.tgl )
+				if ( c.gridToggle )
 					break;
 				c.display( this );
 			}
@@ -9116,10 +9123,10 @@ TR = define.widget( 'tr', {
 		body: {
 			click: {
 				occupy: T,
-				block: function( e ) {	return this.isExpandRow || this.tgl },
+				block: function( e ) { return this.isExpandRow || this.gridToggle },
 				method: function( e ) {
 					var r = this.rootNode, b = this.getBox(), s = b && b.x.sync;
-					! this.tgl && this.focus( r.x.focusmultiple ? (!this.isFocus()) : T, e );
+					! this.gridToggle && this.focus( r.x.focusmultiple ? (!this.isFocus()) : T, e );
 					b && ! this.isEvent4Box( e ) && s === 'click' && b.click();
 					this.x.src && this.toggle();
 					if( r.x.combo && ! (this.x.on && this.x.on.click) ) {
@@ -9137,10 +9144,11 @@ TR = define.widget( 'tr', {
 				method: function() { $.classRemove( this.$(), 'z-hv' ) }
 			},
 			nodechange: function( e ) {
-				if ( this.leaf ) {
-					this.leaf.fixFolder();
-					this.leaf.toggle( this.isOpen() );
-					this.leaf.indent();
+				var l = this.gridLeaf;
+				if ( l ) {
+					l.fixFolder();
+					l.toggle( this.isOpen() );
+					l.indent();
 				}
 			},
 			dnd_over: function( e ) {
@@ -9199,7 +9207,7 @@ TR = define.widget( 'tr', {
 			return b && b.isChecked();
 		},
 		isOpen: function() {
-			var g = this.tgl || this.leaf;
+			var g = this.gridToggle || this.gridLeaf;
 			return g ? g.isOpen() : this.x.open;
 		},
 		next: function( n ) {
@@ -9243,8 +9251,8 @@ TR = define.widget( 'tr', {
 		},
 		// @a -> T/F, b -> src
 		toggle: function( a, b ) {
-			if ( this.tgl || this.leaf ) {
-				(this.tgl || this.leaf).toggle( a );
+			if ( this.gridToggle || this.gridLeaf ) {
+				(this.gridToggle || this.gridLeaf).toggle( a );
 			} else {
 				if ( this.length ) {
 					a == N && (a = ! this.x.open);

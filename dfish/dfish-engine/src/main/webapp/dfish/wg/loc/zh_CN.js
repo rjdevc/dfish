@@ -83,6 +83,8 @@ form : {
 	minsize: '{0}最少选择{1}项',
 	pattern: '{0}格式不符合规范，或包含非法字符',
 	number_invalid: '{0}不是一个有效数字',
+	number_integer: '{0}请填入一个整数',
+	number_demical_digit: '{0}请填入精确到{1}位的小数',
 	time_exceed: '{0}的年份超出有效范围。有效年份：{1}年 至 {2}年',
 	time_format: '{0}的时间格式错误。正确格式范例：{1}',
 	period_invalid: '{0}的起始时间应早于结束时间',
