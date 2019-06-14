@@ -6363,14 +6363,15 @@ Slider = define.widget( 'slider', {
 				this.fixPos();
 			},
 			resize: function() {
-				this.css( 't', 'width', this.innerWidth() );
+				AbsForm.Listener.body.resize.apply( this, arguments );
+				this.css( 't', 'width', this.formWidth() );
 				this.val( this.val() );
 			},
 			change: N
 		}
 	},
 	Prototype: {
-		className: 'w-form w-input',
+		className: 'w-form f-inbl f-va',
 		fixPos: function( v ) {
 			v == N && (v = this.x.value);
 			if ( v != N ) {
@@ -6396,7 +6397,7 @@ Slider = define.widget( 'slider', {
 			if ( ! this.isNormal() )
 				return;
 			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), v = this.$v().value, 
-				g = this.thumbWidth(), w = this.innerWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
+				g = this.thumbWidth(), w = this.formWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
 				d = this.tip( v || this.min() );
 			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
@@ -6439,10 +6440,10 @@ Slider = define.widget( 'slider', {
 		},
 		_left: function( v ) {
 			var m = this.max(), n = this.min();
-			return (this.innerWidth() - this.thumbWidth()) * (v - n) / (m - n);
+			return (this.formWidth() - this.thumbWidth()) * (v - n) / (m - n);
 		},
 		html_nodes: function() {
-			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
+			var w = this.formWidth(), v = this.x.value == N ? 0 : this.x.value;
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
 				't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
@@ -6465,6 +6466,9 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		this.load();
 	},
 	Extend: 'slider',
+	Default: {
+		wmin: 2
+	},
 	Listener: {
 		tag: '',
 		body: {
@@ -6493,7 +6497,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 				if ( this.jigsaw ) {
 					this.draging = T;
 					var a = Q( '.small', this.jigsaw.$() ), m = this.max(), n = this.min();
-					a.css( 'left', (this.jigsaw.innerWidth() - a.width()) * (v / (m - n)) );
+					a.css( 'left', (this.jigsaw.formWidth() - a.width()) * (v / (m - n)) );
 				}
 			},
 			drop: function( e, v ) {
@@ -6516,11 +6520,15 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 					this.trigger( 'auth' );
 				} } );
 				this.jigsaw.keepHover( F );
+			},
+			resize: function() {
+				AbsForm.Listener.body.resize.apply( this, arguments );
+				this.css( 't', 'width', this.formWidth() );
 			}
 		}
 	},
 	Prototype: {
-		className: 'w-form w-input w-sliderjigsaw',
+		className: 'w-form w-input f-inbl f-va',
 		validHooks: {
 			valid: function( b, v ) {
 				if ( ! this.isSuccess() )
