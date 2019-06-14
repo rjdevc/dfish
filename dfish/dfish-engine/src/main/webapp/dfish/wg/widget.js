@@ -2890,13 +2890,17 @@ Buttonbar = define.widget( 'buttonbar', {
 				}
 			}
 		},
-		overflowView: function( a ) {
-			var a = $.all[ a ], o = this.x.overflow;
+		overflowFocus: function( a ) {
+			var a = a.isWidget ? a : $.all[ a ], o = this.x.overflow;
 			if ( o.effect === 'swap' ) {
 				var q = Q( this._more.$() ).prev( '.w-button' )[ 0 ], v = q && $.widget( q );
 				v && v.swap( a );
 			}
-			a.click();
+		},
+		overflowView: function( a ) {
+			var b = a.isWidget ? a : $.all[ a ];
+			this.overflowFocus( b );
+			b.click();
 			this.overflow();
 		},
 		html_nodes: function() {
@@ -2922,8 +2926,9 @@ Button = define.widget( 'button', {
 		},
 		body: {
 			ready: function() {
-				this.x.target && this._ustag();
-				this.isFocus() && this.triggerHandler( 'focus' );
+				//this.x.target && this._ustag();
+				//this.isFocus() && this.triggerHandler( 'focus' );
+				this.isFocus() && this.focus();
 			},
 			mouseover: {
 				occupy: T,
