@@ -152,6 +152,11 @@ _f_val = function( a, b, r ) {
 	if ( ! d )
 		return N;
 	switch ( a.type ) {
+		case 'text':
+			var t = a.getAttribute( 'w-valuetype' );
+			if ( t === 'number' )
+				v = v.replace( /[^\d\.-]/g, '' );
+		break;
 		case 'checkbox':
 			if ( ! a.value  || (! a.checked && ! (a.indeterminate && a.getAttribute( 'w-partialsubmit' ))) )
 				return N;
@@ -1315,7 +1320,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize', v );
-		return p[ i ];
+		return r[ 0 ];
 	}
 } );
 // scroll helper
@@ -2343,7 +2348,11 @@ Buttonbar = define.widget( 'buttonbar', {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
 				}
-				this.x.overflow && this.overflow();
+				if ( this.x.overflow ) {
+					this.overflow();
+					var f = this.getFocus();
+					f && f.focusOver();
+				}
 				this.fixLine();
 			}
 		}
@@ -2409,19 +2418,13 @@ Buttonbar = define.widget( 'buttonbar', {
 				$.before( this[ i ].$(), this._more.$() );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', focus: this[ i ].isFocus(), on: { click: 'this.rootNode.parentNode.parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
+					m.add( $.extend( { cls: '', focus: F, on: {
+						ready: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"];this.addClass("z-on",!!o.isFocus())',
+						click: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],b=this.getCommander().parentNode;o.click();b.overflow()'
+					} , text: this[ i ].x.text, nodes: this[ i ].x.nodes } ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
 			}
-		},
-		overflowView: function( a ) {
-			var a = $.all[ a ], o = this.x.overflow;
-			if ( o.effect === 'swap' ) {
-				var q = Q( this._more.$() ).prev( '.w-button' )[ 0 ], v = q && $.widget( q );
-				v && v.swap( a );
-			}
-			a.click();
-			this.overflow();
 		},
 		html_nodes: function() {
 			for ( var i = 0, l = this.length, s = [], v = this.attr( 'valign' ); i < l; i ++ ) {
@@ -2446,8 +2449,9 @@ Button = define.widget( 'button', {
 		},
 		body: {
 			ready: function() {
-				this.x.target && this._ustag();
-				this.isFocus() && this.triggerHandler( 'focus' );
+				//this.x.target && this._ustag();
+				//this.isFocus() && this.triggerHandler( 'focus' );
+				this.isFocus() && this.focus();
 			},
 			mouseover: {
 				occupy: T,
@@ -2561,7 +2565,10 @@ Button = define.widget( 'button', {
 			if ( this._disposed )
 				return;
 			var f = !!this.x.focus;
-			if ( this._focus( a ) !== f ) this.parentNode.trigger( 'change' );
+			if ( this._focus( a ) !== f ) {
+				this.focusOver();
+				this.parentNode.trigger( 'change' );
+			}
 		},
 		_focus: function( a ) {
 			if ( this._disposed )
@@ -2578,6 +2585,18 @@ Button = define.widget( 'button', {
 				}
 			}
 			return (this.x.focus = !!a);
+		},
+		focusOver: function() {
+			if ( this.x.focus ) {
+				var p = this.parentNode, o = p.x.overflow;
+				if ( o && o.effect === 'swap' && p._more ) {
+					var q = Q( p._more.$() ).prev( '.w-button' )[ 0 ], v = q && _widget( q );
+					if ( v && v.nodeIndex < this.nodeIndex ) {
+						v.swap( this );
+						p.overflow();
+					}
+				}
+			}
 		},
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
@@ -3815,7 +3834,7 @@ Alert = define.widget( 'alert', {
 		if ( this._tpl = Dialog.tpl( t ) ) {
 			$.extend( x, { template: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args || [] ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
@@ -4434,10 +4453,13 @@ AbsForm = define.widget( 'abs/form', {
 			if ( this.x.placeholder && this.$( 'ph' ) )
 				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
-		input_prop: function( a ) {
-			var t = this.attr( 'tip' );
+		input_prop_value: function() {
+			return $.strEscape(this.x.value == N ? '' : '' + this.x.value);
+		},
+		input_prop: function() {
+			var t = this.attr( 'tip' ), v = this.input_prop_value();
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
-				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (a === F ? '' : ' value="' + $.strEscape(this.x.value == N ? '' : '' + this.x.value) + '"') + _html_on.call( this );
+				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call( this );
 		}
 	}
 } ),
@@ -4577,8 +4599,9 @@ Textarea = define.widget( 'textarea', {
 			v == N && (v = this.x.value || '');
 			return this.val().replace( /\r\n/g, '\n' ) != v.replace( /\r\n/g, '\n' );
 		},
+		input_prop_value: $.rt(),
 		html_input: function() {
-			return '<textarea' + this.input_prop( F ) + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
+			return '<textarea' + this.input_prop() + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
 		}
 	}
 } ),
@@ -5544,9 +5567,13 @@ _Date = define.widget( 'date', {
 		html_btn: function() {
 			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
 		},
+		input_prop_value: function() {
+			var v = $.strEscape(this.x.value == N ? '' : ('' + this.x.value));
+			return mbi ? v.replace( ' ', 'T' ) : v;
+		},
 		html_input: function() {
 			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop( v && v.replace( ' ', 'T' ) ) + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
 				'<input type=text' + this.input_prop() + '>';
 		}
 	}
@@ -5689,8 +5716,15 @@ Spinner = define.widget( 'spinner', {
 			},
 			valid: function( b, v ) {
 				this.x.format && (v = v.replace( RegExp( this.x.format.separator || ',', 'g' ), '' ));
-				if ( v && (isNaN( v ) || /\s/.test( v )) )
-					return _form_err.call( this, b, 'number_invalid' );
+				if ( v ) {
+					if ( isNaN( v ) || /\s/.test( v ) )
+						return _form_err.call( this, b, 'number_invalid' );
+					var d = this.x.decimal;
+					if ( ! d && ~v.indexOf( '.' ) )
+						return _form_err.call( this, b, 'number_integer' );
+					if ( d && d > 0 && $.strFrom( v, '.' ).length > d )
+						return _form_err.call( this, b, 'number_decimal_digit', [ d ] );
+				}
 				if ( this === this.parentNode.begin ) {
 					var c = this.parentNode.end, d = c.val();
 					if ( v && d && this.validHooks.compare.call( this, { comparemode: '<=' }, v, c, d ) )
@@ -5704,9 +5738,8 @@ Spinner = define.widget( 'spinner', {
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
 			a != N && this.x.format && this.trigger( 'format' );
-			return this.$t().value;
+			return this.$t().value.replace( /[^\d\.-]/g, '' );
 		},
-		
 		doFormat: function() {
 			if ( ! this.x.format )
 				return;
@@ -5722,12 +5755,16 @@ Spinner = define.widget( 'spinner', {
 		},
 		step: function( a ) {
 			if ( this.isNormal() ) {
-				var d = this.x.validate, m = d && d.maxvalue, n = d && d.minvalue, v = $.numAdd( _number( this.val().replace( /[^.\d]/g, '' ) ), a * (this.x.step || 1) );
+				var d = this.x.validate, m = d && d.maxvalue, n = d && d.minvalue, v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
 				m != N && (v = Math.min( m, v ));
 				n != N && (v = Math.max( n, v ));
 				this.focus();
 				this.val( v );
 			}
+		},
+		input_prop_value: function() {
+			var v = $.strEscape( this.x.value == N ? '' : '' + this.x.value );
+			return v ? $.numDecimal( v, this.x.decimal ) : '';
 		},
 		html_btn: function() {
 			return mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
@@ -5735,7 +5772,7 @@ Spinner = define.widget( 'spinner', {
 		},
 		html_input: function() {
 			return mbi ? '<input type=number' + this.input_prop() + '><cite class="f-inbl _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
-				'<input type=text' + this.input_prop() + '>';
+				'<input type=text' + this.input_prop() + ' w-valuetype="number">';
 		}
 	}
 } ),
@@ -5823,7 +5860,7 @@ Slider = define.widget( 'slider', {
 		html_nodes: function() {
 			var w = this.innerWidth(), v = this.x.value == N ? 0 : this.x.value;
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
-				't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
+				't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>';
 		}
 	}
 } ),
@@ -5844,6 +5881,9 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		this.load();
 	},
 	Extend: 'slider',
+	Default: {
+		wmin: 2
+	},
 	Listener: {
 		tag: '',
 		body: {
@@ -6804,7 +6844,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 		},
 		fixSize: function() {
 			if ( this.$() ) {
-				var w = this.$().parentNode.offsetWidth - 5, m = this.x.maxwidth || 0;
+				var w = this.$().parentNode.offsetWidth - 12, m = this.x.maxwidth || 0;
 				if ( m > w || m == 0 ) m = w;
 				this.$().style.maxWidth = m + 'px';
 				if ( ie7 && !this.innerWidth() && this.$().offsetWidth > w ) {
@@ -7709,7 +7749,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			}
 		},
 		compare: function( x ) {
-			if ( x.text ) {
+			if ( x.text || x.format ) {
 				var _x = this.x, b = [ 'icon', 'openicon', 'src', 'cls', 'focus' ];
 				this.init_x( x );
 				for ( var i = 0, l = b.length, e; i < l; i ++ ) {

@@ -191,6 +191,7 @@
 		        { "id": "checkboxgroup", "text": "checkboxgroup", "icon": ".icon .icon-class" },
 		        { "id": "combobox", "text": "combobox", "icon": ".icon .icon-class" },
 		        { "id": "date", "text": "date", "icon": ".icon .icon-class" },
+		        { "id": "formgroup", "text": "formgroup<sup>3.2+</sup>", "icon": ".icon .icon-class" },
 		        { "id": "hidden", "text": "hidden", "icon": ".icon .icon-class" },
 		        { "id": "imgbox", "text": "imgbox", "icon": ".icon .icon-class" },
 		        { "id": "linkbox", "text": "linkbox", "icon": ".icon .icon-class" },

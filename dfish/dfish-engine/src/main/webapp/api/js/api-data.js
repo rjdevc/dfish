@@ -977,8 +977,10 @@ define( {
   	title: 'widget基础类',
   	remark: '所有widget都继承此类。',
     Config: [
-      { name: 'aftercontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
-      { name: 'beforecontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'aftercontent', type: 'String', remark: '附加到之前的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'beforecontent', type: 'String', remark: '附加到之后的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'prependcontent', type: 'String', remark: '附加到开头的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
+      { name: 'appendcontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'cls', type: 'String', remark: '样式类名。', common: true },
       { name: 'data', type: 'Object', remark: '扩展数据。key:value键值对。在当前widget及子孙节点范围内的事件可以用变量 $key 的来获取值。', common: true },
       { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。', common: true },
@@ -1822,9 +1824,9 @@ define( {
       { name: '.w-grid', remark: '基础样式。' }
     ]
   },
-  "horz": {
-  	title: 'horz',
-  	remark: '子节点按水平方向排列的布局widget。子节点的高度默认为100%；宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
+  "vert": {
+  	title: 'vert',
+  	remark: '子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
   	extend: 'widget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
@@ -1861,13 +1863,29 @@ define( {
       { name: '.w-horz', remark: '基础样式。' }
     ]
   },
-  "vert": {
-  	title: 'vert',
-  	remark: '子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
+  "horz": {
+  	title: 'horz',
+  	remark: '子节点按水平方向排列的布局widget。子节点的高度默认为100%；宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
+  	extend: 'vert',
+  	deprecate: '.w-vert',
+    Config: [
+      { name: 'nobr', type: 'Boolean', remark: '是否不换行。默认值为 true' },
+	],
+    Classes: [
+      { name: '.w-horz', remark: '基础样式。' }
+    ]
+  },
+  "formgroup": {
+  	title: 'formgroup',
+  	ver: "3.2*",
+  	remark: '表单容器。默认横向排列。',
   	extend: 'horz',
   	deprecate: '.w-horz',
+    Config: [
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2版本中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。' }
+	],
     Classes: [
-      { name: '.w-vert', remark: '基础样式。' }
+      { name: '.w-formgroup', remark: '基础样式。' }
     ]
   },
   "docview": {
@@ -3048,7 +3066,9 @@ define( {
   	remark: '数字输入框。',
   	extend: 'text',
     Config: [
+      { name: 'decimal', type: 'Number', optional: true, remark: '设为0时，只允许输入整数。设为正整数，则限制小数的最大位数。设为负数，则不限整数和小数。默认值为0' },
       { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
+      { name: 'showbtn', type: 'Boolean', optional: true, remark: '是否显示增减的按钮。默认值为true' },
       { name: 'format', type: 'Object', optional: true, remark: '设置分隔格式。',  param: [
         { name: 'length', type: 'Number', remark: '分隔长度。默认值为 3' },
         { name: 'separator', type: 'String', remark: '分隔符。默认值为 ","' },
@@ -3350,7 +3370,6 @@ define( {
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
       { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'headers', type: 'Object', remark: '一个额外的"{键:值}"对映射到请求一起发送。' },
-      { name: 'loading', type: 'Boolean | String | LoadingCmd', remark: '显示一个"正在加载"的提示框。' },
       { name: 'src', type: 'String', remark: '路径。' },
       { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
       { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
@@ -3449,11 +3468,7 @@ define( {
             var dg2 = $.dialog( 'mydialog' ); // 获取方式2
           }
       ] },
-      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
-          function() {
-            VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
-          }
-      ] },
+      { name: 'loading', type: 'LoadingCommand', ver: '3.2+', remark: '加载数据时显示一个等候窗口。' },
       { name: 'node', type: 'Object', remark: 'Dialog的唯一子节点。', example: [
           function() {
             return~
@@ -3464,6 +3479,11 @@ define( {
                 node: { type: 'html', text: '内容..' }
               }
             }
+          }
+      ] },
+      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
+          function() {
+            VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
           }
       ] },
       { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进多少个像素。' },

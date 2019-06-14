@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.1.12',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.1.13',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -346,7 +346,7 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 	a = String( a );
 	b == N && (b = 3);
 	c == N && (c = ',');
-	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '';
+	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '', n = a.charAt(0) === '-' ? '-' : '';
 	if ( d ) {
 		do {
 			i += b;
@@ -358,7 +358,18 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 			t = (i > 0 ? c + s.substr( i, b ) : s.substr( 0, b + i )) + t;
 		} while ( i > 0 );
 	}
-	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
+	return n + t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
+},
+// 调整小数位数
+_numDecimal = $.numDecimal = function( a, b ) {
+	if ( ! b ) {
+		return a;
+	} else if ( b < 0 ) {
+		return a;
+	} else {
+		var f = _strFrom( '' + a, '.' );
+		return f ? _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) : a;
+	}
 },
 _strTrim = $.strTrim = function (a ) {
 	return String( a ).replace( /^\s+|\s+$/g, '' );
@@ -2260,11 +2271,11 @@ _merge( $, {
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
 		$.query( ':text,textarea', d ).each( function() {
-			var h = this.outerHTML, v, r;
+			var h = this.outerHTML, v, fr, fa, fb;
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					h = g.$().outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					h = g.$().outerHTML; v = g.text(), fa = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
 				} else
 					v = this.value;
 			} else {

@@ -1859,7 +1859,7 @@ define.widget( 'upload/file/value', {
 				else if ( $.br.ie7 )
 					tw = Math.min( pw, 200 );
 			}
-			this.cssText = 'min-width:' + nw + 'px;max-width:' + xw + 'px;';
+			this.cssText = 'min-width:' + nw + 'px;max-width:' + xw + 'px;' + ($.br.ie7 && vw == null ? 'width:' + tw + 'px;' : '');
 			this.x.file && this.addClass( 'z-loading' );
 			return Horz.prototype.html.call( this );
 		}
