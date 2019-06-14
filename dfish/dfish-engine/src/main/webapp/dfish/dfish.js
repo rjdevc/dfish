@@ -376,7 +376,7 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 	a = String( a );
 	b == N && (b = 3);
 	c == N && (c = ',');
-	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '';
+	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '', n = a.charAt(0) === '-' ? '-' : '';
 	if ( d ) {
 		do {
 			i += b;
@@ -388,7 +388,7 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 			t = (i > 0 ? c + s.substr( i, b ) : s.substr( 0, b + i )) + t;
 		} while ( i > 0 );
 	}
-	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
+	return n + t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
 },
 // 调整小数位数
 _numDecimal = $.numDecimal = function( a, b ) {

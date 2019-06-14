@@ -6329,7 +6329,7 @@ Spinner = define.widget( 'spinner', {
 		},
 		step: function( a ) {
 			if ( this.isNormal() ) {
-				var d = this.x.validate, m = d && d.maxvalue, n = d && d.minvalue, v = $.numAdd( _number( this.val().replace( /[^.\d]/g, '' ) ), a * (this.x.step || 1) );
+				var d = this.x.validate, m = d && d.maxvalue, n = d && d.minvalue, v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
 				m != N && (v = Math.min( m, v ));
 				n != N && (v = Math.max( n, v ));
 				this.focus();
