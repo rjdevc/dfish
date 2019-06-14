@@ -1635,7 +1635,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize', v );
-		return p[ i ];
+		return r[ 0 ];
 	};
 	// 实现: wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
 	_proto[ 'html_' + v ] = function() {
@@ -2818,7 +2818,11 @@ Buttonbar = define.widget( 'buttonbar', {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
 				}
-				this.x.overflow && this.overflow();
+				if ( this.x.overflow ) {
+					this.overflow();
+					var f = this.getFocus();
+					f && f.focusOver();
+				}
 				this.fixLine();
 			}
 		}
@@ -2885,23 +2889,13 @@ Buttonbar = define.widget( 'buttonbar', {
 				$.before( this[ i ].$(), this._more.$() );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', focus: this[ i ].isFocus(), on: { click: 'this.rootNode.parentNode.parentNode.overflowView("' + this[ i ].id + '")' } }, this[ i ].x ) );
+					m.add( $.extend( { cls: '', focus: F, on: {
+						ready: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"];this.addClass("z-on",!!o.isFocus())',
+						click: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],b=this.getCommander().parentNode;o.click();b.overflow()'
+					} , text: this[ i ].x.text, nodes: this[ i ].x.nodes } ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
 			}
-		},
-		overflowFocus: function( a ) {
-			var a = a.isWidget ? a : $.all[ a ], o = this.x.overflow;
-			if ( o.effect === 'swap' ) {
-				var q = Q( this._more.$() ).prev( '.w-button' )[ 0 ], v = q && $.widget( q );
-				v && v.swap( a );
-			}
-		},
-		overflowView: function( a ) {
-			var b = a.isWidget ? a : $.all[ a ];
-			this.overflowFocus( b );
-			b.click();
-			this.overflow();
 		},
 		html_nodes: function() {
 			for ( var i = 0, l = this.length, s = [], v = this.attr( 'valign' ); i < l; i ++ ) {
@@ -3043,7 +3037,10 @@ Button = define.widget( 'button', {
 			if ( this._disposed )
 				return;
 			var f = !!this.x.focus;
-			if ( this._focus( a ) !== f ) this.parentNode.trigger( 'change' );
+			if ( this._focus( a ) !== f ) {
+				this.focusOver();
+				this.parentNode.trigger( 'change' );
+			}
 		},
 		_focus: function( a ) {
 			if ( this._disposed )
@@ -3060,6 +3057,18 @@ Button = define.widget( 'button', {
 				}
 			}
 			return (this.x.focus = !!a);
+		},
+		focusOver: function() {
+			if ( this.x.focus ) {
+				var p = this.parentNode, o = p.x.overflow;
+				if ( o && o.effect === 'swap' && p._more ) {
+					var q = Q( p._more.$() ).prev( '.w-button' )[ 0 ], v = q && _widget( q );
+					if ( v && v.nodeIndex < this.nodeIndex ) {
+						v.swap( this );
+						p.overflow();
+					}
+				}
+			}
 		},
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
