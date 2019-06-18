@@ -3017,15 +3017,19 @@ Toggle = define.widget( 'toggle', {
 				for ( var i = 0, g; i < c.length; i ++ ) {
 					(g = this.ownerView.find( c[ i ] )) && g.display( this );
 				}
-			}
-			for ( var i = this.nodeIndex + 1, p = this.parentNode, l = p.length; i < l; i ++ ) {
-				if ( p[ i ].type === this.type )
-					break;
-				p[ i ].display( this );
+			} else {
+				for ( var i = this.nodeIndex + 1, p = this.parentNode, l = p.length; i < l; i ++ ) {
+					if ( p[ i ].type === this.type )
+						break;
+					p[ i ].display( this );
+				}
 			}
 			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
 			this.addClass( 'z-open', !! b );
-			a.type && $.stop( a );
+			var p = this;
+			while ( (p = p.parentNode) && p.innerHeight() == N );
+			p && p.triggerAll( 'resize' );
+			a && a.type && $.stop( a );
 		},
 		isOpen: function() {
 			return this.x.open;
@@ -3035,7 +3039,7 @@ Toggle = define.widget( 'toggle', {
 			var x = this.x, c = x.icon, d = x.openicon || c, t = evw + '.toggle(event)';
 			a == N && (a = x.open);
 			return d ? $.image( a === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o', click: t } ) :
-				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r1' : 'b1' ) + '</span>' : '');
+				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '</span>' : '');
 		},
 		html_nodes: function() {
 			var x = this.x, t = this.html_icon();
