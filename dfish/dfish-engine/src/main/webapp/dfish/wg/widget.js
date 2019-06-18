@@ -6466,9 +6466,9 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 	Const: function() {
 		Slider.apply( this, arguments );
 		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-slider-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
-			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, node: {
+			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
 			type: 'view', node: {
-				type: 'html', cls: 'f-rel', style: 'margin:8px 0', id: 'img', format: 'javascript:return ' + abbr( this, 'html_img()' )
+				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this, 'html_img()' )
 			}
 		} }, -1 );
 		this.load();
@@ -6553,7 +6553,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return this.$().offsetWidth;
 		},
 		popHeight: function() {
-			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) ) + 16;
+			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) );
 		},
 		success: function( a ) {
 			this.x.status = a ? 'success' : '';
