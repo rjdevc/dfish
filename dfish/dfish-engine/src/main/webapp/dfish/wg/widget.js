@@ -176,6 +176,11 @@ _f_val = function( a, b, r ) {
 	if ( ! d )
 		return N;
 	switch ( a.type ) {
+		case 'text':
+			var t = a.getAttribute( 'w-valuetype' );
+			if ( t === 'number' )
+				v = v.replace( /[^\d\.-]/g, '' );
+		break;
 		case 'checkbox':
 			if ( ! a.value  || (! a.checked && ! (a.indeterminate && a.getAttribute( 'w-partialsubmit' ))) )
 				return N;
@@ -195,11 +200,6 @@ _f_val = function( a, b, r ) {
 		break;
 		case 'datetime-local':
 			v = v.replace( 'T', ' ' );
-		break;
-		case 'text':
-			var t = a.getAttribute( 'w-valuetype' );
-			if ( t === 'number' )
-				v = v.replace( /[^\d\.-]/g, '' );
 		break;
 	}
 	v && (v = $.strTrim( v ));
@@ -1603,39 +1603,33 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 } );
 $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	// 实现: wg.append(), wg.prepend(), wg.before, wg.after()
-	_proto[ v ] = function( o ) {
-		if ( typeof o === _STR )
-			return this.insertHTML( o, v );
-		a = o.isWidget ? [ o ] : $.arrMake( o );
-		var q, i;
-		if ( a[ 0 ].isWidget ) {
-			if ( a[ 0 ] === this )
+	_proto[ v ] = function( a ) {
+		if ( typeof a === _STR )
+			return this.insertHTML( a, v );
+		var q;
+		if ( a.isWidget ) {
+			if ( a === this )
 				return this;
-			for ( q = a[ 0 ].parentNode, i = 0; i < a.length; i ++ )
-				a[ i ].removeNode( T );
+			q = a.parentNode;
+			a.removeNode( T );
 		}
 		var i = j === 3 ? this.nodeIndex + 1 : j === 2 ? this.nodeIndex : j === 1 ? this.length : 0, d = this.nodeIndex > -1,
-			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
-		for ( ; k < l; k ++ )
-			r.push( p.add( a[ k ], d || j < 2 ? i + k : -1 ) );
+			p = j > 1 ? this.parentNode : this, s = p.type_horz ? 'width' : 'height', k, r;
+		r = p.add( a, d || j < 2 ? i : -1 );
 		if ( this.$() ) {
-			if ( a[ 0 ].isWidget && a[ 0 ].$() ) {
-				for ( k = 0; k < l; k ++ )
-					this.insertHTML( a[ k ], v );
+			if ( a.isWidget && a.$() ) {
+				this.insertHTML( a, v );
 			} else {
-				for ( k = 0, o = ''; k < l; k ++ )
-					o += r[ k ].html();
-				this.insertHTML( o, v );
-				for ( k = 0; k < l; k ++ )
-					r[ k ].triggerAll( 'ready' );
+				this.insertHTML( r.html(), v );
+				r.triggerAll( 'ready' );
 			}
 		}
-		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
+		d && (((k = {})[ s ] = r.x[ s ]), r.resize( k ));
 		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
 		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize', v );
-		return r[ 0 ];
+		return r;
 	};
 	// 实现: wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
 	_proto[ 'html_' + v ] = function() {
@@ -4983,13 +4977,13 @@ AbsForm = define.widget( 'abs/form', {
 			h != N && h >= 0 && (s += 'height:' + h + 'px;');
 			return s + (this.x.style ? this.x.style : '');
 		},
+		input_prop_value: function() {
+			return $.strEscape(this.x.value == N ? '' : '' + this.x.value);
+		},
 		input_prop: function() {
 			var t = this.attr( 'tip' ), v = this.input_prop_value();
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call( this );
-		},
-		input_prop_value: function() {
-			return $.strEscape(this.x.value == N ? '' : '' + this.x.value);
 		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
@@ -6471,7 +6465,7 @@ Slider = define.widget( 'slider', {
 SliderJigsaw = define.widget( 'slider/jigsaw', {
 	Const: function() {
 		Slider.apply( this, arguments );
-		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-sliderjigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
+		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-slider-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
 			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, node: {
 			type: 'view', node: {
 				type: 'html', cls: 'f-rel', style: 'margin:8px 0', id: 'img', format: 'javascript:return ' + abbr( this, 'html_img()' )
@@ -6510,8 +6504,8 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			drag: function( e, v ) {
 				if ( this.jigsaw ) {
 					this.draging = T;
-					var a = Q( '.small', this.jigsaw.$() ), m = this.max(), n = this.min();
-					a.css( 'left', (this.jigsaw.formWidth() - a.width()) * (v / (m - n)) );
+					var a = Q( '._small', this.jigsaw.$() ), m = this.max(), n = this.min();
+					a.css( 'left', (this.jigsaw.innerWidth() - a.width()) * (v / (m - n)) );
 				}
 			},
 			drop: function( e, v ) {
@@ -6623,8 +6617,8 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			var d = this.img;
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
-			return '<img class=big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=small src=' + $.urlParam( d.small.src, d._date ) +
-				' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=ref>' + Loc.refresh + '</span>';
+			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
+				' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';
