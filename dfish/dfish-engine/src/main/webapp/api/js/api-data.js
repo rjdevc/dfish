@@ -2269,7 +2269,6 @@ define( {
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ] },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' },
-      { name: 'folder', type: 'Boolean', remark: '是否为一个可展开的目录。如果不设置本参数，那么引擎将根据是否有src参数或leaf子节点来自动判断。' },
       { name: 'hidetoggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },

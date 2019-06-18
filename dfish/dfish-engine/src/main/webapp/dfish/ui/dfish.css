@@ -452,7 +452,7 @@
 .w-img.f-pick .w-img-i{height:100%}
 
 .f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;text-indent:3px;cursor:pointer}
-.f-boxbtn .f-arw-b2{border-top-color:#99a8b8;*margin-top:3px}
+.f-boxbtn .f-arw-b2{border-width:5px;border-top-color:#99a8b8;*margin-top:3px}
 .f-boxbtn:hover .f-arw-b2{border-top-color:#546272}
 .w-form.z-ds .f-boxbtn{cursor:default}
 .w-form.z-ds .f-boxbtn:hover .f-arw-b2{border-top-color:#99a8b8}
