@@ -6,6 +6,7 @@ import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FilterParam;
 import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.framework.SystemData;
 import com.rongji.dfish.framework.controller.BaseController;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
@@ -328,7 +329,7 @@ public class FileController extends BaseController {
 		PubFileRecord fileRecord = fileService.getFileRecord(fileId);
 		boolean inline = "1".equals(request.getParameter("inline"));
 		// 目前文件下载统一默认都是原件下载
-		downloadFileData(response, inline,"application/octet-stream", fileRecord, null);
+		downloadFileData(response, inline,fileRecord, null);
 	}
 
 	private static final Map<String,String> MIME_MAP = new HashMap<>();
@@ -385,18 +386,45 @@ public class FileController extends BaseController {
 	 * @param fileRecord
 	 * @throws Exception
 	 */
-	private void downloadFileData(HttpServletResponse response, boolean inline, String contentType, PubFileRecord fileRecord, String fileAlias) throws Exception {
+	private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String fileAlias) throws Exception {
 		if (fileRecord == null) {
 			LogUtil.warn("下载的附件不存在");
 			return;
 		}
-		String encoding = "UTF-8";
 		InputStream input = null;
-		OutputStream output = null;
 		try {
 			String fileName = fileRecord.getFileName();
+			input = fileService.getFileInputStream(fileRecord, fileAlias);
+			long fileSize = 0L;
+			if (input != null) {
+				fileSize = fileService.getFileSize(fileRecord, fileAlias);
+			} else { // 当别名附件不存在时,使用原附件
+				input = fileService.getFileInputStream(fileRecord);
+				fileSize = fileService.getFileSize(fileRecord);
+			}
+			downloadFileData(response, inline, input, fileName, fileSize);
+		} catch (Exception e) {
+			String error = "下载附件异常@" + System.currentTimeMillis();
+			LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
+			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
+		} finally {
+			if (input != null) {
+				input.close();
+			}
+		}
+	}
+
+	/**
+	 * 附件下载
+	 * @param response
+	 * @throws Exception
+	 */
+	private void downloadFileData(HttpServletResponse response, boolean inline, InputStream input, String fileName, long fileSize) throws Exception {
+		String encoding = "UTF-8";
+		try {
 			response.setHeader("Accept-Ranges", "bytes");
 			response.setHeader("Accept-Charset", encoding);
+			String contentType = null;
 			if(inline){
 				String extName = FileUtil.getFileExtName(fileName);
 				if(Utils.notEmpty(extName)){
@@ -408,37 +436,22 @@ public class FileController extends BaseController {
 			}
 			response.setHeader("Content-type", contentType);
 			response.setHeader("Content-Disposition", (inline?"inline":"attachment")+"; filename=" + URLEncoder.encode(fileName, encoding));
-			input = fileService.getFileInputStream(fileRecord, fileAlias);
-			long fileSize = 0L;
-			if (input != null) {
-				fileSize = fileService.getFileSize(fileRecord, fileAlias);
-			} else { // 当别名附件不存在时,使用原附件
-				input = fileService.getFileInputStream(fileRecord);
-				fileSize = fileService.getFileSize(fileRecord);
-			}
 			response.setHeader("Content-Length", String.valueOf(fileSize));
 			response.setStatus(HttpServletResponse.SC_OK);
 			if (input != null) {
 				FileUtil.downLoadData(response, input);
-			} else {
-				String error = "该附件不存在@" + System.currentTimeMillis();
-				LogUtil.error(error + "[" + fileRecord.getFileName() + "]" + (Utils.notEmpty(fileAlias) ? "[" + fileAlias + "]" : ""));
-				response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
 			}
 		} catch (Exception e) {
 			String error = "下载附件异常@" + System.currentTimeMillis();
-			LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
+			LogUtil.error(error, e);
 			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
 		} finally {
 			if (input != null) {
 				input.close();
 			}
-			if (output != null) {
-				output.close();
-			}
 		}
 	}
-	
+
 	/**
 	 * 显示缩略图方法
 	 * @param request
@@ -452,24 +465,57 @@ public class FileController extends BaseController {
 		String enFileId = request.getParameter("fileId");
 		String fileId = fileService.decId(enFileId);
 		PubFileRecord fileRecord = fileService.getFileRecord(fileId);
-
-		if (fileRecord != null) {
-			String fileType = FileUtil.getFileExtName(fileRecord.getFileUrl());
-			// 因取文件类型方法包含.所以需要截取
-			if (Utils.notEmpty(fileType) && fileType.length() > 1) {
-				fileType = fileType.substring(1);
-			}
-			String contentType = "image/" + (fileType == null ? "png" : fileType);
+		boolean findIcon = fileRecord != null;
+		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]");
+		if (findIcon) {
 			// 获取参数
 			FilterParam param = getFileParam(request);
 			// 获取附件别名
 			String fileAlias = getFileAlias(param);
-			downloadFileData(response, true, contentType, fileRecord, fileAlias);
-		} else {
-			String error = "附件记录不存在@" + System.currentTimeMillis();
+
+			InputStream input = null;
+			try {
+				String fileName = fileRecord.getFileName();
+				input = fileService.getFileInputStream(fileRecord, fileAlias);
+				long fileSize = 0L;
+				if (input != null) {
+					fileSize = fileService.getFileSize(fileRecord, fileAlias);
+				} else if (Utils.notEmpty(fileAlias)) { // 当别名附件不存在时,使用原附件
+					input = fileService.getFileInputStream(fileRecord);
+					fileSize = fileService.getFileSize(fileRecord);
+				}
+				if (input != null) {
+					downloadFileData(response, true, input, fileName, fileSize);
+					return;
+				}
+			} catch (Exception e) {
+				String error = "下载附件异常@" + System.currentTimeMillis();
+				LogUtil.error(error, e);
+			} finally {
+				if (input != null) {
+					input.close();
+				}
+			}
+		}
+
+		String defaultIcon = request.getParameter("defaultIcon");
+
+		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]->" + defaultIcon);
+		if (Utils.notEmpty(defaultIcon)) {
+			File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
+			if (defaultImageFile.exists()) {
+				downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
+				findIcon = true;
+			}
+		}
+		String error = "附件记录不存在@" + System.currentTimeMillis();
+		if (Utils.notEmpty(enFileId)) {
 			LogUtil.warn(error + "[" + enFileId + "->" + fileId + "]");
+		}
+		if (!findIcon) {
 			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
 		}
+
 	}
 
 	private String getFileAlias(FilterParam param) {

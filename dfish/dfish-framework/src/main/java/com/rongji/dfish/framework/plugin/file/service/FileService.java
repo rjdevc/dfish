@@ -54,6 +54,9 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return 加密的文件编号
      */
     public String encId(String id) {
+        if (Utils.isEmpty(id)) {
+            return id;
+        }
         return CRY.encrypt(id);
     }
 
@@ -64,11 +67,14 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return 编号
      */
     public String decId(String encId) {
+        if (Utils.isEmpty(encId)) {
+            return encId;
+        }
         try {
             return CRY.decrypt(encId);
         } catch (Exception e) {
             FrameworkHelper.LOG.error("解密编号出错", e);
-            return "";
+            return null;
         }
     }
 
