@@ -29,7 +29,7 @@ globalDocument = define( 'global/document', document ),
 _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
-abbr = function( a, b ) { return $.abbr + '.all["' + a.id + '"].' + b; },
+abbr = function( a ) { return $.abbr + '.all["' + a.id + '"]' },
 // 模板集合
 _templateCache = {},
 // 注册模板  /@a -> id, b -> template body
@@ -2884,8 +2884,8 @@ Buttonbar = define.widget( 'buttonbar', {
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
 					m.add( $.extend( { cls: '', focus: F, on: {
-						ready: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"];this.addClass("z-on",!!o.isFocus())',
-						click: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],b=this.getCommander().parentNode;o.click();b.overflow()'
+						ready: 'this.addClass("z-on",!!' + abbr( this[ i ] ) + '.isFocus())',
+						click: 'var b=this.getCommander().parentNode;' + abbr( this[ i ] ) + '.click();b.overflow()'
 					} , text: this[ i ].x.text, nodes: this[ i ].x.nodes } ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
@@ -3505,7 +3505,7 @@ Toggle = define.widget( 'toggle', {
 			var x = this.x, c = x.icon, d = x.openicon || c, t = evw + '.toggle(event)';
 			a == N && (a = x.open);
 			return d ? $.image( a === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o', click: t } ) :
-				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r1' : 'b1' ) + '</span>' : '');
+				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '</span>' : '');
 		},
 		html_nodes: function() {
 			var x = this.x, t = this.html_icon();
@@ -6247,7 +6247,7 @@ Muldate = define.widget( 'muldate', {
 			r.length ? this.list.height( Math.min( (r.length + 1) * 30 + 2, this.mh ) ) : this.list.close();
 		},
 		li_str: function( v ) {
-			var k = $.abbr + '.all["' + this.id + '"].addValue';
+			var k = abbr( this ) + '.addValue';
 			return '<table width=100% height=30 cellspacing=0 cellpadding=0' + (v ? ' data-value="' + v + '"' : '') + '><tr><td>&nbsp; ' + (v ? '<a href=javascript: onclick=' + k + '(this,"=")>' + v + '</a>' : '') + '<td width=70 align=center>' +
 				$.image( '.f-i-minus ._i', { style: 'visibility:' + (v ? 'visible' : 'hidden'), click: k + '(this,"-")' } ) + ' &nbsp; ' + $.image( '.f-i-plus ._i', { click: k + '(this,"+")' } ) + '</table>';
 		},
@@ -6468,7 +6468,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-slider-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
 			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
 			type: 'view', node: {
-				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this, 'html_img()' )
+				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
 			}
 		} }, -1 );
 		this.load();
@@ -6618,7 +6618,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
 			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
-				' height=100% onmousedown=' + abbr( this, 'dragSmall(event)' ) + ' ondragstart=return(!1)><span onclick=' + abbr( this, 'reload(true)' ) + ' class=_ref>' + Loc.refresh + '</span>';
+				' height=100% onmousedown=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';
@@ -9715,6 +9715,7 @@ Grid = define.widget( 'grid', {
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		x.scroll && $.classAdd( this, 'z-scroll' );
+		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
 		if ( this.head && x.scroll )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 	},
@@ -9749,7 +9750,7 @@ Grid = define.widget( 'grid', {
 		className: 'w-grid',
 		x_childtype: $.rt( 'tr' ),
 		thead: function() { return this.head && this.head.table.thead },
-		tbody: function() { return this.list && this.list.body && this.list.body.table.tbody },
+		tbody: function() { return this.list.body && this.list.body.table.tbody },
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
 			return this.rows( a == N ? 0 : a, T )[ 0 ];
@@ -9977,6 +9978,7 @@ Grid = define.widget( 'grid', {
 					r[ i ].rownum && r[ i ].rownum.reset();
 				}
 			}
+			this.addClass( 'z-empty', ! this.getEchoRows().length );
 		},
 		// 高亮某个字段的关键字 /@ a -> field name, b -> key, c -> matchlength, d -> keycls
 		highlight: function( a, b, c, d ) {
