@@ -9716,7 +9716,7 @@ Grid = define.widget( 'grid', {
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		x.scroll && $.classAdd( this, 'z-scroll' );
 		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
-		if ( this.head && x.scroll )
+		if ( this.head && _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 	},
 	Extend: 'vert/scale',
