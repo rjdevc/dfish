@@ -230,6 +230,8 @@ _scrollIntoView = function( a, b, c ) {
  */// @x -> cmd object, a -> url args, t -> post data
 _ajaxCmd = function( x, a, t ) {
 	var u = x.src, d;
+	if ( u.indexOf( 'javascript:' ) === 0 )
+		u = this.formatJS( u );
 	u = this.formatStr( u, a, T );
 	if ( t && x.data ) {
 		if ( typeof x.data === _OBJ ) {
@@ -6900,7 +6902,10 @@ Combobox = define.widget( 'combobox', {
 		if ( c && c.layout )
 			this.trigger( 'load' );
 		else
-			this.more.preload( $.proxy( this, function() { this.trigger( 'load' ) } ) );
+			this.addEvent( 'ready', function() {
+				this.more.preload( $.proxy( this, function() { this.trigger( 'load' ) } ) );
+			} );
+			//this.more.preload( $.proxy( this, function() { this.trigger( 'load' ) } ) );
 		this.addEvent( 'focus', function() { this.focusNode && this.focusNode.tabFocus( F ) } );
 	},
 	Extend: AbsInput,
@@ -7156,7 +7161,10 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 解析变量: $value(值), $text(文本) /@ u -> url, r -> replace object
 		parseSrc: function( u, r ) {
-			return this.formatStr( u, $.extend( r || {}, { value: this.val() } ), T );
+			var d = $.extend( r || {}, { value: this.val() } );
+			if ( u.indexOf( 'javascript:' ) === 0 )
+				u = this.formatJS( u, N, d );
+			return this.formatStr( u, d, T );
 		},
 		// 获取正在输入中的用于后台查询的文本
 		queryText: function( a ) {
