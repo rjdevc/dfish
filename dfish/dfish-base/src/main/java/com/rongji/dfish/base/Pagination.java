@@ -85,12 +85,12 @@ public class Pagination implements Serializable{
 		if(page==null){
 			return null;
 		}
-		Pagination p = new Pagination();
-		p.setLimit(page.getPageSize());
-		p.setOffset(page.getCurrentPage()*page.getPageSize()-page.getPageSize());
-		p.setAutoRowCount(page.getAutoRowCount()==null||page.getAutoRowCount());
-		p.setSize(page.getRowCount());
-		return p;
+		Pagination pagination = new Pagination();
+		pagination.setLimit(page.getPageSize());
+		pagination.setOffset(page.getCurrentPage()*page.getPageSize()-page.getPageSize());
+		pagination.setAutoRowCount(page.isAutoRowCount());
+		pagination.setSize(page.getRowCount());
+		return pagination;
 	}
 	/**
 	 * 转化

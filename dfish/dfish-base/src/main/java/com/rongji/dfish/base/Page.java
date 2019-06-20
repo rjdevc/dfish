@@ -26,9 +26,9 @@ public class Page implements Serializable{
 
 	private int rowCount;
 	
-	private Integer currentCount;
+	private int currentCount = -1;
 	
-	private Boolean autoRowCount = true;
+	private boolean autoRowCount = true;
 
 	public Page() {
 	}
@@ -97,9 +97,10 @@ public class Page implements Serializable{
 	 */
 	public int getPageCount() {
 		if ( pageSize > 0) {//(rowCount != 0) &&
+			if (rowCount < 0) {
+				rowCount = 0;
+			}
 			int pageCount = ((rowCount + pageSize) - 1) / pageSize;
-			if (pageCount < 1)
-				pageCount = 1;
 			return pageCount;
 		}
 
@@ -108,8 +109,10 @@ public class Page implements Serializable{
 
 	/**
 	 * 是否自动统计总记录数
-	 * @return
+	 * @return Boolean
+	 * @see #isAutoRowCount()
 	 */
+	@Deprecated
 	public Boolean getAutoRowCount() {
 		return autoRowCount;
 	}
@@ -118,8 +121,29 @@ public class Page implements Serializable{
 	 * 是否自动统计总记录数
 	 * @param autoRowCount Boolean
 	 * @return
+	 * @see #setAutoRowCount(boolean)
 	 */
+	@Deprecated
 	public Page setAutoRowCount(Boolean autoRowCount) {
+		autoRowCount = autoRowCount == null ? true : autoRowCount;
+		this.autoRowCount = autoRowCount;
+		return this;
+	}
+
+	/**
+	 * 是否自动统计总记录数
+	 * @return boolean
+	 */
+	public boolean isAutoRowCount() {
+		return autoRowCount;
+	}
+
+	/**
+	 * 是否自动统计总记录数
+	 * @param autoRowCount boolean
+	 * @return
+	 */
+	public Page setAutoRowCount(boolean autoRowCount) {
 		this.autoRowCount = autoRowCount;
 		return this;
 	}
@@ -129,15 +153,18 @@ public class Page implements Serializable{
 	 * @return
 	 */
 	public int getCurrentCount() {
-		if (this.currentCount == null) {
-			int currTotalCount = this.currentPage * this.pageSize; 
-			if (currTotalCount <= this.rowCount) {
-				return this.pageSize;
-			} else {
-				return (this.rowCount - currTotalCount + this.pageSize);
+		if (currentCount < 0) {
+			int currTotalCount = currentPage * pageSize;
+			if (currTotalCount <= rowCount) { // 总数超过当前页计算出的总数,说明当前页数据是满的
+				currentCount = pageSize;
+			} else if (pageSize > 0 && getPageCount() == currentPage) { // 最后一页的情况
+				currentCount =  rowCount % pageSize;
 			}
 		}
-		return this.currentCount;
+		if (currentCount < 0) {
+			currentCount = 0;
+		}
+		return currentCount;
 	}
 
 	/**
@@ -145,7 +172,7 @@ public class Page implements Serializable{
 	 * @param currentCount 当前页记录数
 	 * @return
 	 */
-	public Page setCurrentCount(Integer currentCount) {
+	public Page setCurrentCount(int currentCount) {
 		this.currentCount = currentCount;
 		return this;
 	}

@@ -88,7 +88,16 @@ public class JdbcTemplateHelper {
 		Pagination pagination = Pagination.fromPage(page);
 		QueryPreparation preparation = getQueryPreparation(sql, pagination, args);
 		List<?> dataList = jdbcTemplate.queryForList(preparation.getQuerySql(), preparation.getQueryArgs());
-		fillPageInfo(jdbcTemplate, preparation, page, pagination);
+		if (page != null && page.isAutoRowCount()) {
+			fillPageInfo(jdbcTemplate, preparation, page);
+			if (Utils.isEmpty(dataList) && page.getCurrentPage() > page.getPageCount()) {
+				// 查出来数据为空且当前页过大时重新尝试获取
+				page.setCurrentPage(page.getPageCount());
+				pagination = Pagination.fromPage(page);
+				preparation = getQueryPreparation(sql, pagination, args);
+				dataList = jdbcTemplate.queryForList(preparation.getQuerySql(), preparation.getQueryArgs());
+			}
+		}
 		return dataList;
 	}
 
@@ -153,7 +162,17 @@ public class JdbcTemplateHelper {
 		Pagination pagination = Pagination.fromPage(page);
 		QueryPreparation preparation = getQueryPreparation(sql, pagination, args);
 		List<T> dataList = jdbcTemplate.query(preparation.getQuerySql(), preparation.getQueryArgs(), rowMapper);
-		fillPageInfo(jdbcTemplate, preparation, page, pagination);
+		if (page != null && page.isAutoRowCount()) {
+			fillPageInfo(jdbcTemplate, preparation, page);
+			if (Utils.isEmpty(dataList) && page.getCurrentPage() > page.getPageCount()) {
+				// 查出来数据为空且当前页过大时重新尝试获取
+				page.setCurrentPage(page.getPageCount());
+				pagination = Pagination.fromPage(page);
+				preparation = getQueryPreparation(sql, pagination, args);
+				dataList = jdbcTemplate.query(preparation.getQuerySql(), preparation.getQueryArgs(), rowMapper);
+			}
+			page.setCurrentCount(dataList.size());
+		}
 		return dataList;
 	}
 
@@ -172,14 +191,12 @@ public class JdbcTemplateHelper {
 		return jdbcTemplate.queryForObject(sql, args, clz);
 	}
 
-	private static void fillPageInfo(JdbcTemplate jdbcTemplate, QueryPreparation preparation, Page page, Pagination pagination) {
-		if (page == null || pagination == null || !pagination.isAutoRowCount()) {
+	private static void fillPageInfo(JdbcTemplate jdbcTemplate, QueryPreparation preparation, Page page) {
+		if (page == null || !page.isAutoRowCount()) {
 			return;
 		}
-		Number count = jdbcTemplate.queryForObject(preparation.getCountSql(), preparation.getCountArgs(), Number.class);
-		pagination.setSize(count.intValue());
-		Page p = pagination.toPage();
-		Utils.copyPropertiesExact(page, p);
+		Number rowCount = jdbcTemplate.queryForObject(preparation.getCountSql(), preparation.getCountArgs(), Number.class);
+		page.setRowCount(rowCount.intValue());
 	}
 
 	private static class QueryPreparation {

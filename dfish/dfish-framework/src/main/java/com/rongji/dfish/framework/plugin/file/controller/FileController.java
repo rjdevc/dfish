@@ -504,7 +504,7 @@ public class FileController extends BaseController {
 		if (Utils.notEmpty(defaultIcon)) {
 			File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
 			if (defaultImageFile.exists()) {
-				downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
+				downloadFileData(response,true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
 				findIcon = true;
 			}
 		}
