@@ -93,6 +93,9 @@ public class JdbcTemplateHelper {
 			if (Utils.isEmpty(dataList) && page.getCurrentPage() > page.getPageCount()) {
 				// 查出来数据为空且当前页过大时重新尝试获取
 				page.setCurrentPage(page.getPageCount());
+				if (page.getCurrentPage() < 1) {
+					page.setCurrentPage(1);
+				}
 				pagination = Pagination.fromPage(page);
 				preparation = getQueryPreparation(sql, pagination, args);
 				dataList = jdbcTemplate.queryForList(preparation.getQuerySql(), preparation.getQueryArgs());
@@ -167,6 +170,9 @@ public class JdbcTemplateHelper {
 			if (Utils.isEmpty(dataList) && page.getCurrentPage() > page.getPageCount()) {
 				// 查出来数据为空且当前页过大时重新尝试获取
 				page.setCurrentPage(page.getPageCount());
+				if (page.getCurrentPage() < 1) {
+					page.setCurrentPage(1);
+				}
 				pagination = Pagination.fromPage(page);
 				preparation = getQueryPreparation(sql, pagination, args);
 				dataList = jdbcTemplate.query(preparation.getQuerySql(), preparation.getQueryArgs(), rowMapper);
