@@ -629,8 +629,8 @@
 .w-dialog.z-snap-32 .w-menu-line{right:-1px;top:-1px}
 .w-dialog.z-snap-14 .w-menu-line{left:-1px;bottom:-1px}
 .w-dialog.z-snap-23 .w-menu-line{right:-1px;bottom:-1px}
-.w-dialog.z-mag-t{box-shadow:0 -1px 1px rgba(0,0,0,0.2)}
-.w-dialog.z-mag-b{box-shadow:0 2px 2px rgba(0,0,0,0.2)}
+/*.w-dialog.z-mag-t{box-shadow:0 -1px 1px rgba(0,0,0,0.2)}
+.w-dialog.z-mag-b{box-shadow:0 2px 2px rgba(0,0,0,0.2)}*/
 
 .w-tip{border:1px solid #f3e041;background:#faf0cd;box-shadow:0 0 4px #d9d9d9;z-index:3}
 .w-tip-text{padding:4px 10px;min-height:20px;}
