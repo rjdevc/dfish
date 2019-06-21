@@ -466,7 +466,7 @@ public class FileController extends BaseController {
 		String fileId = fileService.decId(enFileId);
 		PubFileRecord fileRecord = fileService.getFileRecord(fileId);
 		boolean findIcon = fileRecord != null;
-		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]");
+//		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]");
 		if (findIcon) {
 			// 获取参数
 			FilterParam param = getFileParam(request);
@@ -500,8 +500,18 @@ public class FileController extends BaseController {
 
 		String defaultIcon = request.getParameter("defaultIcon");
 
-		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]->" + defaultIcon);
+//		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]->" + defaultIcon);
 		if (Utils.notEmpty(defaultIcon)) {
+			String fileAlias = request.getParameter("fileAlias");
+			if (Utils.notEmpty(fileAlias)) {
+				int lastDot = defaultIcon.lastIndexOf(".");
+				if (lastDot >= 0) {
+					defaultIcon = defaultIcon.substring(0, lastDot) + "_" + fileAlias + defaultIcon.substring(lastDot);
+				} else {
+					defaultIcon += "_" + fileAlias;
+				}
+			}
+
 			File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
 			if (defaultImageFile.exists()) {
 				downloadFileData(response,true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
