@@ -1605,33 +1605,39 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 } );
 $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	// 实现: wg.append(), wg.prepend(), wg.before, wg.after()
-	_proto[ v ] = function( a ) {
-		if ( typeof a === _STR )
-			return this.insertHTML( a, v );
-		var q;
-		if ( a.isWidget ) {
-			if ( a === this )
+	_proto[ v ] = function( o ) {
+		if ( typeof o === _STR )
+			return this.insertHTML( o, v );
+		a = o.isWidget ? [ o ] : $.arrMake( o );
+		var q, i;
+		if ( a[ 0 ].isWidget ) {
+			if ( a[ 0 ] === this )
 				return this;
-			q = a.parentNode;
-			a.removeNode( T );
+			for ( q = a[ 0 ].parentNode, i = 0; i < a.length; i ++ )
+				a[ i ].removeNode( T );
 		}
 		var i = j === 3 ? this.nodeIndex + 1 : j === 2 ? this.nodeIndex : j === 1 ? this.length : 0, d = this.nodeIndex > -1,
-			p = j > 1 ? this.parentNode : this, s = p.type_horz ? 'width' : 'height', k, r;
-		r = p.add( a, d || j < 2 ? i : -1 );
+			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
+		for ( ; k < l; k ++ )
+			r.push( p.add( a[ k ], d || j < 2 ? i + k : -1 ) );
 		if ( this.$() ) {
-			if ( a.isWidget && a.$() ) {
-				this.insertHTML( a, v );
+			if ( a[ 0 ].isWidget && a[ 0 ].$() ) {
+				for ( k = 0; k < l; k ++ )
+					this.insertHTML( a[ k ], v );
 			} else {
-				this.insertHTML( r.html(), v );
-				r.triggerAll( 'ready' );
+				for ( k = 0, o = ''; k < l; k ++ )
+					o += r[ k ].html();
+				this.insertHTML( o, v );
+				for ( k = 0; k < l; k ++ )
+					r[ k ].triggerAll( 'ready' );
 			}
 		}
-		d && (((k = {})[ s ] = r.x[ s ]), r.resize( k ));
+		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
 		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
 		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
 		p.trigger( 'resize', v );
-		return r;
+		return r[ 0 ];
 	};
 	// 实现: wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
 	_proto[ 'html_' + v ] = function() {
