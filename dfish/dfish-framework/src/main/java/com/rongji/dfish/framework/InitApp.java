@@ -118,7 +118,7 @@ public class InitApp implements ServletContextAware, ApplicationContextAware {
 			SystemData.getInstance().setDataBaseInfo(new DataBaseInfo(ds.getConnection()));
 			LOG.info("====== database inited ======");
 		} catch (Throwable t) {
-			LOG.warn("====== init database fail! ======");
+			LOG.error("====== init database fail! ======", t);
 		}
 		LOG.info("====== application has been inited ======");
 		LOG.info("====  os infomation  ====");
@@ -139,8 +139,7 @@ public class InitApp implements ServletContextAware, ApplicationContextAware {
 				LOG.info(item);
 			}
 		} catch (Exception ex) {
-			LOG.info("CAN NOT FIND MACS");
-			LOG.error(null, ex);
+			LOG.error("CAN NOT FIND MACS", ex);
 		}
 
 		if (SystemData.getInstance().getDataBaseInfo() != null) {
