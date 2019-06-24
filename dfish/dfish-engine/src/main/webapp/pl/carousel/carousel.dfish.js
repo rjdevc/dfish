@@ -52,7 +52,7 @@ define.widget( 'carousel', {
 				s = '<a ' + (v[ i ].href.indexOf( 'javascript:' ) === 0 ? ' onclick=' + g + '.click(' + i + ')' : 'href=' + v[ i ].href + ' target=_blank') + '>' + s + '</a>';
 			f.push( { type: 'html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
 		}
-		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: '*', focusable: true, pub: { name: this.id + 'name', cls: 'w-carousel-btn' }, nodes: t, on: { mouseout: g + '.play()' } } );
+		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
 		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()' } } );
 	},
 	Extend: 'vert',
