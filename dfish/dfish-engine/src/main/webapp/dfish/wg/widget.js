@@ -2196,7 +2196,7 @@ _mergeLoadingProp = function( x, a ) {
 		k !== 'node' && k !== 'nodes' && (x[ k ] = a[ k ]);
 	}
 },
-_userPriority = { 'click': T, 'close': T, 'valid': T },
+_userPriority = { 'click': T, 'dblclick': T, 'close': T, 'valid': T },
 _view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
 Layout = define.widget( 'layout', {
