@@ -1438,7 +1438,8 @@ define( {
     Classes: [
       { name: '.w-buttonbar', remark: '基础样式。' },
       { name: '.z-dirv', remark: '设置了 dir:"v"(按钮垂直排列) 时的样式。' },
-      { name: '.z-dirh', remark: '设置了 dir:"v"(按钮水平排列) 时的样式。' }
+      { name: '.z-dirh', remark: '设置了 dir:"v"(按钮水平排列) 时的样式。' },
+      { name: '.z-empty', remark: '没有子节点时的样式。' }
     ]
   },
   "deck": {
@@ -1821,7 +1822,8 @@ define( {
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ],
     Classes: [
-      { name: '.w-grid', remark: '基础样式。' }
+      { name: '.w-grid', remark: '基础样式。' },
+      { name: '.z-empty', remark: '没有子节点时的样式。' }
     ]
   },
   "vert": {
@@ -2132,7 +2134,8 @@ define( {
     ],
     Classes: [
       { name: '.w-album', remark: '基础样式。' },
-      { name: '.z-face-straight', remark: '当设置参数 face:"straight" 时的样式。' }
+      { name: '.z-face-straight', remark: '当设置参数 face:"straight" 时的样式。' },
+      { name: '.z-empty', remark: '没有子节点时的样式。' }
     ]
   },
   "img": {
@@ -2252,7 +2255,8 @@ define( {
       ] }
     ],
     Classes: [
-      { name: '.w-tree', remark: '基础样式。' }
+      { name: '.w-tree', remark: '基础样式。' },
+      { name: '.z-empty', remark: '没有子节点时的样式。' }
     ]
   },
   "leaf": {
@@ -2269,7 +2273,6 @@ define( {
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ] },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' },
-      { name: 'folder', type: 'Boolean', remark: '是否为一个可展开的目录。如果不设置本参数，那么引擎将根据是否有src参数或leaf子节点来自动判断。' },
       { name: 'hidetoggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },

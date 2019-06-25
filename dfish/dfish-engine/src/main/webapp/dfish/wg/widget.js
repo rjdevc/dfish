@@ -2796,6 +2796,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		W.apply( this, arguments );
 		this.className += ' z-dir' + (x.dir || 'h');
 		x.nobr === F && (this.className += ' z-br');
+		!this.length && (this.className += ' z-empty');
 		(! x.valign && p && p.x.valign) && this.defaults( { valign: p.x.valign } );
 	},
 	Extend: 'horz',
@@ -2826,6 +2827,7 @@ Buttonbar = define.widget( 'buttonbar', {
 					f && f.focusOver();
 				}
 				this.fixLine();
+				this.addClass( 'z-empty', !this.length );
 			}
 		}
 	},
@@ -3338,7 +3340,18 @@ ButtonSplit = define.widget( 'button/split', {
 } ),
 /* `album` */
 Album = define.widget( 'album', {
+	Const: function( x ) {
+		Horz.apply( this, arguments );
+		!this.length && $.classAdd (this, 'z-empty' );
+	},
 	Extend: 'horz',
+	Listener: {
+		body: {
+			nodechange: function() {
+				this.addClass( 'z-empty', !this.length );
+			}
+		}
+	},
 	Prototype: {
 		className: 'w-album',
 		x_childtype: $.rt( 'img' ),
@@ -8726,6 +8739,7 @@ Tree = define.widget( 'tree', {
 		}
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'hiddens', nodes: x.hiddens }, -1 );
+		!this.length && (this.className += ' z-empty');
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
 	},
@@ -8740,6 +8754,9 @@ Tree = define.widget( 'tree', {
 					Leaf.prototype.request.call( this );
 				if ( this.x.combo )
 					this.ownerView.combo.showFocus();
+			},
+			nodechange: function() {
+				this.addClass( 'z-empty', !this.length );
 			}
 		}
 	},
