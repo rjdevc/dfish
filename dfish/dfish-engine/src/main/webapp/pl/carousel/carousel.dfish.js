@@ -68,7 +68,10 @@ define.widget( 'carousel', {
 			var self = this;
 			clearTimeout( this.timer );
 			this.timer = setTimeout( function() {
-				(self.tab[ self.index ++ ].next() || self.tab[ self.index = 0 ]).focus();
+				if ( self._disposed )
+					return;
+				var t = self.tab[ self.index ++ ];
+				((t && t.next()) || self.tab[ self.index = 0 ]).focus();
 				self.play();
 			}, 3000 );
 		},
@@ -77,10 +80,14 @@ define.widget( 'carousel', {
 			a != null && this.tab[ this.index = a ].focus();
 		},
 		click: function( a ) {
-			$.fncall( this.x.value[ a ].href, this );
+			this.formatJS( this.x.value[ a ].href );
 		},
 		html_nodes: function() {
 			return this.fra.html() + this.tab.html();
+		},
+		dispose: function() {
+			clearTimeout( this.timer );
+			W.prototype.dispose.call( this );
 		}
 	}
 } );
