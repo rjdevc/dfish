@@ -118,13 +118,14 @@
 .w-loading ._t,.w-view-loading ._t{vertical-align:middle;font-style:normal}
 .w-templateview{position:relative}
 
-.w-progress{width:100%;border-width:0;text-align:left;table-layout:auto;font-size:12px;}
-.w-progress ._t{min-height:30px}
-.w-progress ._bar{position:relative;height:17px;line-height:16px;margin:1px 0;background:#ddd;border-radius:9px;overflow:hidden;text-align:center}
+.w-progress{width:100%;border-width:0;text-align:left;table-layout:auto;font-size:12px}
+.w-progress ._t{min-height:28px}
+.w-progress ._bar{position:relative;height:17px;margin:1px 0;line-height:1;background:#ddd;border-radius:100px;overflow:hidden;text-align:center}
 .w-progress ._dn{position:absolute;top:0;left:0;right:0;bottom:0;color:#666}
-.w-progress ._up{position:absolute;top:0;left:0;bottom:0;background:#018beb;color:#fff;border-radius:9px;overflow:hidden}
+.w-progress ._up{position:absolute;top:0;left:0;bottom:0;background:#018beb;color:#fff;border-radius:100px;overflow:hidden}
 .w-progress ._cur{background:#018beb;}
-.w-loading .w-progress{min-height:50px}
+.w-progress ._gut{height:100%}
+.w-progress.z-hidepercent ._s{display:none}
 
 .w-vert,.w-horz,.f-oh{overflow:hidden}
 .w-vert.z-autosize,.w-horz.z-autosize{overflow:visible}

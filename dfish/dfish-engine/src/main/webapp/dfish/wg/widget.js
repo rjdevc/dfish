@@ -1233,7 +1233,7 @@ W = define( 'widget', function() {
 			return c;
 		},
 		prop_style: function() {
-			var t = this.cssText || '';
+			var t = '';
 			if ( ( v = this.innerWidth() ) != N )
 				t += 'width:' + v + 'px;';
 			if ( ( v = this.innerHeight() ) != N )
@@ -1246,6 +1246,7 @@ W = define( 'widget', function() {
 				t += 'min-height:' + v + 'px;';
 			if ( this.x.maxheight && (v = this.maxHeight()) )
 				t += 'max-height:' + v + 'px;';
+			this.cssText && (t += this.cssText);
 			if ( this.x.style )
 				t += this.x.style;
 			return t;
@@ -1658,6 +1659,8 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 				c = this.formatJS( c );
 			if ( typeof c === _OBJ )
 				c = this.add( c, -1 ).html();
+			else
+				c = _parseHTML.call( this, c );
 			return c;
 		}
 		return '';
@@ -4363,6 +4366,8 @@ Progress = define.widget( 'progress', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		x.src && $.jsonArray( this, _progressCache, x.src );
+		x.hidepercent && (this.className += ' z-hidepercent');
+		this.cssText = 'height:auto;';
 	},
 	Listener: {
 		body: {
@@ -4413,9 +4418,9 @@ Progress = define.widget( 'progress', {
 			return _progressCache[ this.x.src ][ 0 ] === this;
 		},
 		html_nodes: function() {
-			var t = this.x.text, p = this.x.percent;
+			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
 			return (t != N ? '<div class="_t f-fix">' + t + '</div>' : '') +
-				'<div class=_bar><div class=_dn>' + p + '%</div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p>' + p + '%</div></div></div>';
+				'<div class=_bar'+ (h != N ? ' style="height:' + h + 'px;"' : '') + '><div class=_dn><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div></div></div>';
 		},
 		dispose: function() {
 			this.stop();
@@ -8516,7 +8521,7 @@ Leaf = define.widget( 'leaf', {
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
-		x.focus && this.tabFocus();
+		x.focus && x.focusable !== F && this.tabFocus();
 	},
 	Extend: AbsLeaf,
 	Default: { width: -1, height: -1 },
@@ -8613,6 +8618,8 @@ Leaf = define.widget( 'leaf', {
 			a !== F && this.scrollIntoView( 'auto' );
 		},
 		_focus: function( a, e ) {
+			if ( this.x.focusable === F )
+				return;
 			a = a == N ? T : !!a;
 			this.tabFocus( a );
 			a !== F && this.triggerHandler( 'focus' );
