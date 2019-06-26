@@ -12,8 +12,6 @@ import com.rongji.dfish.ui.command.LoadingCommand;
 import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.widget.Progress;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -273,8 +271,8 @@ public class ProgressManager {
 		}
 	}
 	
-	private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
-	
+//	private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
+
 	List<Progress> getProgressGroup(String progressKey) {
 		ProgressData progressData = getProgressData(progressKey);
 		if (progressData == null) {
@@ -553,11 +551,11 @@ public class ProgressManager {
 			donePercent = progressData.getStepPercent();
 			if (donePercent >= PERCENT_FULL) {
 				donePercent = PERCENT_FULL;
-			} else {
-				try {
-					donePercent = Double.parseDouble(NUMBER_FORMAT.format(donePercent));
-				} catch (Exception e) {
-				}
+//			} else {
+//				try {
+//					donePercent = Double.parseDouble(NUMBER_FORMAT.format(donePercent));
+//				} catch (Exception e) {
+//				}
 			}
 		}
 		return donePercent;
@@ -577,10 +575,10 @@ public class ProgressManager {
 			} else {
 				if (progressData.getStepIndex() < progressData.getSteps()) {
 					donePercent += progressData.getStepScales()[progressData.getStepIndex()] * progressData.getStepPercent();
-					try {
-						donePercent = Double.parseDouble(NUMBER_FORMAT.format(donePercent));
-					} catch (Exception e) {
-					}
+//					try {
+//						donePercent = Double.parseDouble(NUMBER_FORMAT.format(donePercent));
+//					} catch (Exception e) {
+//					}
 				} else {
 					donePercent = PERCENT_FULL;
 				}

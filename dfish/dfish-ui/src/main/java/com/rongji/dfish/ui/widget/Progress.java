@@ -1,7 +1,14 @@
 package com.rongji.dfish.ui.widget;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
+
+import java.beans.Transient;
+import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 进度条
@@ -13,16 +20,17 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	 * 
 	 */
 	private static final long serialVersionUID = -5027456322715352343L;
-	private Double delay;
-	private Double percent;
+	private Number delay;
+	private Number percent;
 	private String src;
 	private String text;
+	private String dataFormat;
 	/**
 	 * 构造函数
 	 * @param id String
-	 * @param percent Double 0.0-100.0
+	 * @param percent Number 0.0-100.0
 	 */
-	public Progress(String id,Double percent){
+	public Progress(String id, Number percent){
 		super();
 		setId(id);
 		setPercent(percent);
@@ -35,33 +43,48 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	
 	/**
 	 * 延迟访问 src 。单位:秒。
-	 * @return Double
+	 * @return Number
 	 */
-	public Double getDelay() {
+	public Number getDelay() {
 		return delay;
 	}
 	/**
 	 * 延迟访问 src 。单位:秒。
-	 * @param delay Double
+	 * @param delay Number
 	 * @return this
 	 */
-	public Progress setDelay(Double delay) {
+	public Progress setDelay(Number delay) {
 		this.delay = delay;
 		return this;
 	}
+
+	private static Map<String, DecimalFormat> formatMap = Collections.synchronizedMap(new HashMap<String, DecimalFormat>());
+
 	/**
 	 * 进度值。范围从 0 到 100。
-	 * @return Double
+	 * @return Number
 	 */
-	public Double getPercent() {
+	public Number getPercent() {
+		if (percent != null && Utils.notEmpty(dataFormat)) {
+			try {
+				DecimalFormat format = formatMap.get(dataFormat);
+				if (format == null) {
+					format = new DecimalFormat(dataFormat);
+					formatMap.put(dataFormat, format);
+				}
+				format.format(percent);
+				percent = Double.parseDouble(format.format(percent));
+			} catch(Exception e) {
+			}
+		}
 		return percent;
 	}
 	/**
 	 * 进度值。范围从 0 到 100。
-	 * @param percent Double
+	 * @param percent Number
 	 * @return this
 	 */
-	public Progress setPercent(Double percent) {
+	public Progress setPercent(Number percent) {
 		this.percent = percent;
 		return this;
 	}
@@ -98,6 +121,22 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 		return this;
 	}
 
+	/**
+	 * 百分比数据格式化
+	 * @return String
+	 */
+	@Transient
+	public String getDataFormat() {
+		return dataFormat;
+	}
 
-
+	/**
+	 * 百分比数据格式化
+	 * @param dataFormat 数据格式化
+	 * @return this
+	 */
+	public Progress setDataFormat(String dataFormat) {
+		this.dataFormat = dataFormat;
+		return this;
+	}
 }

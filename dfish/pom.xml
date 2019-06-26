@@ -1,138 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <name>dfish</name>
-  <groupId>com.rongji</groupId>
-  <artifactId>dfish</artifactId>
-  <version>3.2.0.10-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <name>dfish</name>
+    <groupId>com.rongji</groupId>
+    <artifactId>dfish</artifactId>
+    <version>3.2.0.11-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.7</java.version>
-    <spring.version>3.2.13.RELEASE</spring.version>
-  </properties>
-  
-  <build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <source>${java.version}</source>
-              <target>${java.version}</target>
-            </configuration>
-        </plugin>
-        <!--<plugin>-->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.7</java.version>
+        <spring.version>3.2.13.RELEASE</spring.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <!--<plugin>-->
             <!--<groupId>org.apache.maven.plugins</groupId>-->
             <!--<artifactId>maven-javadoc-plugin</artifactId>-->
             <!--<version>3.0.1</version>-->
             <!--<configuration>-->
-                <!--<encoding>UTF-8</encoding>-->
-                <!--<charset>UTF-8</charset>-->
-                <!--<docencoding>UTF-8</docencoding>-->
+            <!--<encoding>UTF-8</encoding>-->
+            <!--<charset>UTF-8</charset>-->
+            <!--<docencoding>UTF-8</docencoding>-->
             <!--</configuration>-->
             <!--<executions>-->
-                <!--<execution>-->
-                    <!--<id>attach-javadocs</id>-->
-                    <!--<goals>-->
-                        <!--<goal>jar</goal>-->
-                    <!--</goals>-->
-                <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>attach-javadocs</id>-->
+            <!--<goals>-->
+            <!--<goal>jar</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
             <!--</executions>-->
-        <!--</plugin>-->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>3.0.1</version>
-            <executions>
-                <execution>
-                    <id>attach-sources</id>
-                    <goals>
-                        <goal>jar</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        <!-- 一键更新子模块版本号 -->
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>versions-maven-plugin</artifactId>
-            <version>2.4</version>
-            <configuration>
-                <generateBackupPoms>false</generateBackupPoms>
-            </configuration>
-        </plugin>
-    </plugins>
-  </build>
-  
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  
-  <dependencyManagement>
-      <dependencies>
-          <dependency>
-              <groupId>com.rongji</groupId>
-              <artifactId>dfish-base</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>com.rongji</groupId>
-              <artifactId>dfish-misc</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>com.rongji</groupId>
-              <artifactId>dfish-ui</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>com.rongji</groupId>
-              <artifactId>dfish-ui-plugin</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>com.rongji</groupId>
-              <artifactId>dfish-framework</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>com.rongji</groupId>
-              <artifactId>dfish-ui-template</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-      </dependencies>
-  </dependencyManagement>
-  
-  <!--使用deploy -e 上传到nexus私服上-->
-  <distributionManagement>
-  	   <!-- 
-       <repository>
-           <id>dfish-release</id>
-		   <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
-           <uniqueVersion>true</uniqueVersion>
-       </repository>
-        -->
-       <snapshotRepository>
-           <id>dfish-snapshot</id>
-           <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
-       </snapshotRepository>
-   </distributionManagement>
-  
-  <modules>
-    <module>dfish-base</module>
-    <module>dfish-misc</module>
-    <module>dfish-ui</module>
-    <module>dfish-framework</module>
-    <module>dfish-engine</module>
-    <module>dfish-ui-plugin</module>
-    <module>dfish-ui-template</module>
-  </modules>
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 一键更新子模块版本号 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.rongji</groupId>
+                <artifactId>dfish-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rongji</groupId>
+                <artifactId>dfish-misc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rongji</groupId>
+                <artifactId>dfish-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rongji</groupId>
+                <artifactId>dfish-ui-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rongji</groupId>
+                <artifactId>dfish-framework</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rongji</groupId>
+                <artifactId>dfish-ui-template</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--使用deploy -e 上传到nexus私服上-->
+    <distributionManagement>
+        <!--
+      <repository>
+          <id>dfish-release</id>
+          <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
+          <uniqueVersion>true</uniqueVersion>
+      </repository>
+       -->
+        <snapshotRepository>
+            <id>dfish-snapshot</id>
+            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <modules>
+        <module>dfish-base</module>
+        <module>dfish-misc</module>
+        <module>dfish-ui</module>
+        <module>dfish-framework</module>
+        <module>dfish-engine</module>
+        <module>dfish-ui-plugin</module>
+        <module>dfish-ui-template</module>
+    </modules>
 </project>
