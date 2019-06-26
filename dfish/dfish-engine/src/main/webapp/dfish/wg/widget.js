@@ -139,6 +139,16 @@ _vmByElem = function ( o ) {
 _wg_format = function( a, b, c ) {
 	return a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
 },
+// 解析 html 中的 <d:wg> 标签 /@a -> html
+_parseHTML = function( a ) {
+	if ( (a = a + '').indexOf( '<d:wg>' ) > -1 ) {
+		var self = this;
+		return a.replace( /<d:wg>([\s\S]+?)<\/d:wg>/gi, function( $0, $1 ) {
+			return self.add( Function( $1.indexOf( 'javascript:' ) === 0 ? $1 : 'return(' + $1 + ')' ).call( self ), -1 ).html();
+		} );
+	}
+	return a;
+},
 _repaintSelfWithBox = function() {
 	var b = this.box && this.box.isChecked();
 	Q( this.$() ).replaceWith( this.html_self() );
@@ -1061,25 +1071,26 @@ W = define( 'widget', function() {
 		},
 		// @a -> content|js, b -> args?, c -> urlEncode?, d -> callback?
 		formatStr: function( a, b, c, d ) {
-			var self = this, r = b && $.isArray( b );
-			return a.replace( /\$\{?(\w[\w.]*)\}?/gi, function( $0, $1 ) {
-				var e = $1, k = e, v, t;
-				if ( e.indexOf( '.' ) > 0 ) {
-					k = $.strTo( e, '.' );
-					t = $.strFrom( e, k );
-				}
-				if ( b && (isNaN( k ) || r) && b[ k ] !== U ) {
-					v = b[ k ];
-				} else {
-					(v = self.x.data && self.x.data[ k ]) === U && (v = self.x[ k ]) === U && (v = self.closestData( k ));
-					//v === U && (v = self.x[ k ]);
-				}
-				if ( t && v != N ) {
-					try { eval( 'v = v' + t ); } catch( ex ) { v = N; }
-				}
-				d && (v = d( v ));
-				return v && c ? $[ c === T ? 'urlEncode' : c ]( v ) : (v == N ? '' : v);
-			} );
+			var self = this, r = b && $.isArray( b ),
+				s = a.replace( /\$\{(\w[\w.]*)\}|\$(\w[\w.]*)/gi, function( $0, $1, $2 ) {
+					var e = $1 || $2, k = e, v, t;
+					if ( e.indexOf( '.' ) > 0 ) {
+						k = $.strTo( e, '.' );
+						t = $.strFrom( e, k );
+					}
+					if ( b && (isNaN( k ) || r) && b[ k ] !== U ) {
+						v = b[ k ];
+					} else {
+						(v = self.x.data && self.x.data[ k ]) === U && (v = self.x[ k ]) === U && (v = self.closestData( k ));
+						//v === U && (v = self.x[ k ]);
+					}
+					if ( t && v != N ) {
+						try { eval( 'v = v' + t ); } catch( ex ) { v = N; }
+					}
+					d && (v = d( v ));
+					return v && c ? $[ c === T ? 'urlEncode' : c ]( v ) : (v == N ? '' : v);
+				} );
+			return c ? s : _parseHTML.call( this, s );
 		},
 		// 实现兄弟节点的tab效果 /@ a -> T/F
 		tabFocus: function( a ) {
@@ -2672,11 +2683,11 @@ Html = define.widget( 'html', {
 			var t = this.x.text == N ? '' : this.x.text;
 			if ( this.x.format ) {
 				t = _wg_format.call( this, this.x.format, this.x.escape );
-			} else if ( this.x.escape && typeof t === _STR )
-				t = $.strEscape( t );
-			if ( typeof t === _OBJ ) {
-				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
 			}
+			if ( typeof t === _OBJ )
+				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
+			else
+				t = this.x.escape ? $.strEscape( t ) : _parseHTML.call( this, t );
 			if ( ! br.css3 ) {
 				if ( ! t && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格

@@ -866,15 +866,6 @@ _frag = $.frag = function( s ) {
 	try { return f } catch( e ) { return F }
 	finally { d = f = N }
 },
-// 解析 html 中的 <d:wg> 标签 /@a -> html, b -> view?
-_parseHTML = $.parseHTML = function( a, b ) {
-	if ( (a = a + '').indexOf( '<d:wg>' ) > -1 ) {
-		return a.replace( /<d:wg>([\s\S]+?)<\/d:wg>/gi, function( $0, $1 ) {
-			return (b || $.vm()).add( Function( $1.indexOf( 'javascript:' ) === 0 ? $1 : 'return(' + $1 + ')' ).call( b || $.vm() ), -1 ).html();
-		} );
-	}
-	return a;
-},
 _css_camelize = (function() {
 	var a = _div( F ), b;
 	a.style.cssText = 'float:left';
@@ -967,9 +958,8 @@ _html = $.html = function( o, s, r ) {
 			_html( o, s, 3 );
 		}
 	} else {
+		var b;
 		if ( typeof s === _STR ) {
-			if ( s.indexOf( '<d:wg>' ) > -1 )
-				s = _parseHTML( s, $.w( r % 2 ? o : o.parentNode ) );
 			try {
 				o.nodeType === 3 || ie ? $.query( o )[ _adjacent_query[ r ] ]( s ) : o.insertAdjacentHTML( _adjacent_where[ r ], s );
 			} catch ( ex ) {
