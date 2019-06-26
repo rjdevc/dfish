@@ -22,6 +22,7 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	private static final long serialVersionUID = -5027456322715352343L;
 	private Number delay;
 	private Number percent;
+	private Boolean hidepercent;
 	private String src;
 	private String text;
 	private String dataFormat;
@@ -51,7 +52,7 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	/**
 	 * 延迟访问 src 。单位:秒。
 	 * @param delay Number
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Progress setDelay(Number delay) {
 		this.delay = delay;
@@ -82,12 +83,31 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	/**
 	 * 进度值。范围从 0 到 100。
 	 * @param percent Number
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Progress setPercent(Number percent) {
 		this.percent = percent;
 		return this;
 	}
+
+	/**
+	 * 隐藏进度数字
+	 * @return Boolean
+	 */
+	public Boolean getHidepercent() {
+		return hidepercent;
+	}
+
+	/**
+	 * 隐藏进度数字
+	 * @param hidepercent Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Progress setHidepercent(Boolean hidepercent) {
+		this.hidepercent = hidepercent;
+		return this;
+	}
+
 	/**
 	 * 访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。
 	 * @return String
@@ -98,7 +118,7 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	/**
 	 * 访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。
 	 * @param src String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Progress setSrc(String src) {
 		this.src = src;
@@ -114,7 +134,7 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	/**
 	 * 显示文本。
 	 * @param text String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Progress setText(String text) {
 		this.text = text;
@@ -133,7 +153,7 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	/**
 	 * 百分比数据格式化
 	 * @param dataFormat 数据格式化
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Progress setDataFormat(String dataFormat) {
 		this.dataFormat = dataFormat;

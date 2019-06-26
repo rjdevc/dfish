@@ -41,6 +41,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
 public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Leaf,Leaf>, Statusful<Leaf>,HasSrc<Leaf> {
 	private static final long serialVersionUID = -6246121270694425393L;
 	private Boolean focus;
+	private Boolean focusable;
 	private String icon;
 	private String openicon;
 	private Boolean open;
@@ -247,6 +248,25 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 		this.focus = focus;
 		return this;
 	}
+
+	/**
+	 * 是否可聚焦
+	 * @return Boolean
+	 */
+	public Boolean getFocusable() {
+		return focusable;
+	}
+
+	/**
+	 * 是否可聚焦
+	 * @param focusable 是否可聚焦
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Leaf setFocusable(Boolean focusable) {
+		this.focusable = focusable;
+		return this;
+	}
+
 	/**
 	 * 图标。可使用图片url地址，或以 "." 开头的样式名。
 	 * @return icon
