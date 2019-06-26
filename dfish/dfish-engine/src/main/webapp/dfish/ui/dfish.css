@@ -398,7 +398,7 @@
 
 
 .w-xbox.z-ds.z-empty{color:#a9a9a9}
-.w-xbox-dialog,.w-combobox-dialog{border:1px solid #3298fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
+.w-xbox-dialog,.w-combobox-dialog,.w-imgbox-dialog{border:1px solid #3298fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
 .w-xbox-ico{margin:0 5px 0 1px}
 .w-xbox ._o,.w-xbox-dialog ._o{position:relative;padding:0 5px;height:28px;line-height:28px}
 .w-xbox-dialog ._o{padding-right:36px}
