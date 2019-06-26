@@ -2016,6 +2016,7 @@ Xsrc = define.widget( 'xsrc', {
 		}
 	},
 	Prototype: {
+		isSrcLayout: T,
 		// @implement
 		init_x: function( x ) {
 			_proto.init_x.call( this, x );
@@ -4384,7 +4385,7 @@ Progress = define.widget( 'progress', {
 									self.exec( x );
 									d && d.close();
 								} else {
-									if( d && d.parentNode.isContentData( x ) ) {
+									if( d && d.parentNode.isSrcLayout && d.parentNode.isContentData( x ) ) {
 										d.parentNode.loadData( x );
 										d.close();
 									} else {
