@@ -1447,7 +1447,7 @@ define.widget( 'upload/file', {
 		}
 	},
 	Prototype: {
-		className: 'w-upload f-inbl f-va',
+		className: 'w-upload',
 		validHooks: {
 			valid: function( b, v ) {
 				var b = this.valuebar, l = b.length, d, e;

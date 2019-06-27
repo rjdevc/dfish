@@ -4020,8 +4020,8 @@ Dialog = define.widget( 'dialog', {
 			this._snapCls();
 		},
 		_snapElem: function() {
-			var d = this.x.snap;
-			return typeof d === _STR ? ((d = this.ownerView.find( d )) && (d = d.$())) : (d ? $( d ) : (this.attr( 'local' ) && this.ownerView.$()));
+			var d = this.x.snap, e;
+			return typeof d === _STR ? ((e = this.ownerView.find( d )) ? e.$() : $( d )) : (d ? $( d ) : (this.attr( 'local' ) && this.ownerView.$()));
 		},
 		_snapCls: function( a ) {
 			var d = this._snapElem(), r = this._pos;
@@ -4179,7 +4179,7 @@ Dialog = define.widget( 'dialog', {
 		_listenHide: function( a ) {
 			var self = this, d = this.x.hoverdrop;
 			$.attach( document, 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
-				! self._disposed && (e.srcElement.id == self.id + 'cvr' || ! (self.hasBubble( e.srcElement ) || ( ! self.x.independent && self.x.snap && self.x.snap.hasBubble( e.srcElement ) ))) && self.close();
+				if(! self._disposed && (e.srcElement.id == self.id + 'cvr' || ! (self.hasBubble( e.srcElement ) || ( ! self.x.independent && self.x.snap && _widget( self.x.snap ).hasBubble( e.srcElement ) ))) ) {self.close()};
 			}), a );
 			if ( d ) {
 				var o = d === T ? ($( this.x.snap ) || this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
@@ -4663,8 +4663,6 @@ var Label = define.widget( 'label', {
 		W.apply( this, arguments );
 		this._pad = this.x.space != N ? this.x.space : 5;
 		this.defaults( { wmin: this._pad } );
-		var d = p.x.validate;
-		d && d.required && (this.className += ' z-required');
 		this.className += ' f-va' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
 		if ( ie7 ) {
 			this.ie7td = p.closest( 'td' );
@@ -4728,7 +4726,7 @@ var Label = define.widget( 'label', {
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'valign' );
-			return (br.css3 ? '<div id=' + this.id + 't class=_t>' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 't class="_t f-inbl f-va">' + s + '</div>') + this.html_bg();
+			return (br.css3 ? '<div id=' + this.id + 'lb class=_lb>' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 'lb class="_lb f-inbl f-va">' + s + '</div>') + this.html_bg();
 		}
 	}
 } );
@@ -4796,7 +4794,6 @@ AbsForm = define.widget( 'abs/form', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.init_label();
-		$.classAdd( this, 'w-' + this.type.replace( '/', '-' ) );
 	},
 	Listener: {
 		tag: 't',
@@ -4816,12 +4813,12 @@ AbsForm = define.widget( 'abs/form', {
 			},
 			blur: {
 				occupy: T,
-				method: function() { ! this.$().contains( document.activeElement ) && _z_on.call( this, F ) }
+				method: function() { ! this.$( 'f' ).contains( document.activeElement ) && _z_on.call( this, F ) }
 			},
 			resize: function() {
 				if ( this.$() ) {
 					var w = this.formWidth();
-					w != N && w >= 0 && this.css( 'width', w );
+					w != N && w >= 0 && this.css( 'f', 'width', w );
 				}
 			},
 			valid: function( e, a ) {
@@ -4835,7 +4832,6 @@ AbsForm = define.widget( 'abs/form', {
 	Default: { height: -1 },
 	Prototype: {
 		isFormWidget: T,
-		className: 'w-form',
 		_warncls: '',
 		validHooks: F,
 		init_label: function() {
@@ -4863,7 +4859,7 @@ AbsForm = define.widget( 'abs/form', {
 			return this.innerHeight();
 		},
 		hasBubble: function( a ) {
-			return this.$().contains( a.isWidget ? a.$() : a );
+			return this.$( 'f' ).contains( a.isWidget ? a.$() : a );
 		},
 		usa: function() {
 			return this.isNormal();
@@ -4997,18 +4993,6 @@ AbsForm = define.widget( 'abs/form', {
 			if ( this.x.placeholder && this.$( 'ph' ) )
 				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
-		wrap_cls: function() {
-			var p = this.parentNode, c = 'w-form-wrap f-inbl f-va f-nobr';
-			if ( p && p.childCls )
-				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
-			return c;
-		},
-		prop_cls: function() {
-			var p = this.parentNode, c = (this.className || '') + (this.x.cls ? ' ' + this.x.cls.replace( /\./g, '' ) : '');
-			if ( ! this.isNormal() )
-				c += ' z-ds';
-			return c;
-		},
 		prop_style: function() {
 			var w = this.formWidth(), h = this.formHeight(), s = '';
 			w != N && w >= 0 && (s += 'width:' + w + 'px;');
@@ -5023,12 +5007,25 @@ AbsForm = define.widget( 'abs/form', {
 			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call( this );
 		},
+		prop_cls: function() {
+			var c = _proto.prop_cls.call( this );
+			return 'w-form w-' + this.type.replace( '/', '-' ) + (c ? ' ' + c: '') + (this.x.validate && this.x.validate.required ? ' z-required' : '') + ' f-inbl f-va f-nobr';
+		},
+		prop_style: function() {
+			return this.x.style ? this.x.style : '';
+		},
+		form_prop: function() {
+			var w = this.formWidth(), h = this.formHeight(), s = '';
+			w != N && w >= 0 && (s += 'width:' + w + 'px;');
+			h != N && h >= 0 && (s += 'height:' + h + 'px;');
+			return ' id=' + this.id + 'f class="' + this.form_cls() + '"' + (s ? ' style="' + s + '"' : '');
+		},
+		form_cls: function() {
+			return 'f-inbl f-va';
+		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
-			return this.html_before() + '<div id=' + this.id + 'wr class="' + this.wrap_cls() + '">' + (this.label ? this.label.html() : '') + '<div' + this.html_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div></div>' + this.html_after();
-		},
-		removeElem: function( a ) {
-			$.remove( this.$( a || 'wr' ) );
+			return this.html_before() + '<div ' + this.html_prop() + '>' + (this.label ? this.label.html() : '') + '<div' + this.form_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div></div>' + this.html_after();
 		}
 	}
 } ),
@@ -5040,8 +5037,6 @@ AbsInput = define.widget( 'abs/input', {
 			this.defaults( _size_fix( x.cls, x.style, x.transparent ? 0 : this.Const.Default.wmin, x.transparent ? 0 : this.Const.Default.hmin ) );
 			x.transparent && $.classAdd( this, 'z-trans' );
 		}
-		if ( x.validate && x.validate.required )
-			$.classAdd( this, 'z-required' );
 	},
 	Extend: AbsForm,
 	Listener: {
@@ -5082,7 +5077,6 @@ AbsInput = define.widget( 'abs/input', {
 		tip: T, wmin: _dft_min, hmin: _dft_min
 	},
 	Prototype: {
-		className: 'w-form w-input f-inbl f-va',
 		focus: function( a ) {
 			this.$t()[ a === F ? 'blur' : 'focus' ]();
 			_z_on.call( this, a == N || a );
@@ -5103,6 +5097,9 @@ AbsInput = define.widget( 'abs/input', {
 		clkhdr: function( e ) {
 			this.focus();
 			this.trigger( e );
+		},
+		form_cls: function() {
+			return 'w-input f-inbl f-va f-rel';
 		},
 		html_placeholder: function() {
 			var v = this.x.value;
@@ -5228,14 +5225,12 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 			}
 			this.targets = t;
 		}
-		this.childCls = x.dir === 'v' ? 'f-bl' : 'f-va f-inbl';
 	},
 	Extend: AbsForm,
 	Listener: {
 		range: 'option'
 	},
 	Prototype: {
-		className: 'w-form f-inbl f-va f-oh f-wdbr',
 		type_horz: T,
 		isBoxGroup: T,
 		x_childtype: $.rt( 'checkbox' ),
@@ -5319,6 +5314,9 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		isValidonly: function() {
 			return this[ 0 ] && this[ 0 ].isValidonly();
 		},
+		form_cls: function() {
+			return 'f-inbl f-va f-oh f-wdbr';
+		},
 		html_nodes: function() {
 			if ( this.targets ) {
 				for ( var i = 0, s = '', l = Math.max( this.length, this.x.targets.length ); i < l; i ++ )
@@ -5394,7 +5392,6 @@ Checkbox = define.widget( 'checkbox', {
 	Prototype: {
 		ROOT_TYPE: 'checkboxgroup',
 		tagName: 'cite',
-		className: 'w-form',
 		formType: 'checkbox',
 		attrSetter: function( a, b ) {
 			if ( a === 'text' ) {
@@ -5487,23 +5484,24 @@ Checkbox = define.widget( 'checkbox', {
 		tip: function() {
 			this.exec( $.extend( {}, this.attr( 'tip' ), { type: 'tip', hoverdrop: true } ) );
 		},
-		prop_cls: _proto.prop_cls,
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		},
 		html: function() {
-			var w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
+			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
+			if ( p.x.dir === 'v' )
+				s.replace( /\bf-inbl\b/, 'f-bl' );
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
-				if ( this.x.nobr && (w = this.parentNode.formWidth()) )
+				if ( this.x.nobr && (w = p.formWidth()) )
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : t) || '' ) + '"' : '') +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
-				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (this.parentNode.x.name || this.x.name || '') + '"' : '') + 
+				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>';
 		}
 	}
@@ -5782,7 +5780,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padrow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', ownproperty: T, snap: a, cls: 'w-calendar-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog', ownproperty: T, snap: a.isFormWidget ? a.$( 'f' ) : a, cls: 'w-calendar-dialog w-form-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -6417,7 +6415,7 @@ Slider = define.widget( 'slider', {
 		}
 	},
 	Prototype: {
-		className: 'w-form f-inbl f-va',
+		//className: 'w-form f-inbl f-va',
 		fixPos: function( v ) {
 			v == N && (v = this.x.value);
 			if ( v != N ) {
@@ -6488,6 +6486,9 @@ Slider = define.widget( 'slider', {
 			var m = this.max(), n = this.min();
 			return (this.formWidth() - this.thumbWidth()) * (v - n) / (m - n);
 		},
+		form_cls: function() {
+			return 'f-inbl f-va';
+		},
 		html_nodes: function() {
 			var w = this.formWidth(), v = this.x.value == N ? 0 : this.x.value;
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
@@ -6504,7 +6505,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 	Const: function() {
 		Slider.apply( this, arguments );
 		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-slider-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
-			height: 'javascript:return this.parentNode.popHeight()', snap: this, snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
+			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
 			type: 'view', node: {
 				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
 			}
@@ -6574,7 +6575,6 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		}
 	},
 	Prototype: {
-		className: 'w-form w-input f-inbl f-va',
 		validHooks: {
 			valid: function( b, v ) {
 				if ( ! this.isSuccess() )
@@ -6588,7 +6588,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			! this.jigsaw.vis && (a ? this.jigsaw.show() : this.jigsaw._show());
 		},
 		popWidth: function() {
-			return this.$().offsetWidth;
+			return this.$( 'f' ).offsetWidth;
 		},
 		popHeight: function() {
 			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) );
@@ -6648,6 +6648,9 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		dragSmall: function( a ) {
 			this.dragstart( this.$( 'thumb' ), a );
 		},
+		form_cls: function() {
+			return 'w-input f-inbl f-va f-rel';
+		},
 		html_info: function( e ) {
 			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
@@ -6678,7 +6681,7 @@ XBox = define.widget( 'xbox', {
 	},
 	Extend: [ AbsInput, Xsrc ],
 	Listener: {
-		tag: N,
+		//tag: N,
 		body: {
 			ready: function() {
 				! this.x.options && this.x.src && this.load();
@@ -6812,8 +6815,8 @@ XBox = define.widget( 'xbox', {
 			} else {
 				this.focus();
 				this._dropper = this.exec( { type: 'dialog', ownproperty: T, minwidth: this.formWidth() + 2, maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), wmin: 2, hmin: 2, indent: 1, id: this.id,
-					cls: 'w-xbox-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
-					snaptype: 'v', snap: this, node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
+					cls: 'w-xbox-dialog w-form-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
+					snaptype: 'v', snap: this.$( 'f' ), node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
 					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
 			}
 		},
@@ -6823,6 +6826,10 @@ XBox = define.widget( 'xbox', {
 		},
 		showLayout: function() {
 			this.val( this.x.value );
+		},
+		form_prop: function() {
+			var s = AbsInput.prototype.form_prop.call( this );
+			return s + _html_on.call( this );
 		},
 		html_placeholder: function() {
 			return '';
@@ -6871,13 +6878,12 @@ Imgbox = define.widget( 'imgbox', {
 	Extend: XBox,
 	Default: { width: -1 },
 	Listener: {
-		tag: N,
+		//tag: N,
 		body: {
 			focus: N, blur: N, resize: N
 		}
 	},
 	Prototype: {
-		className: 'w-form w-input-border w-imgbox-c f-rel f-inbl f-va',
 		drop: function() {
 			var d = this.x.options,
 				l = d.length,
@@ -6898,9 +6904,10 @@ Imgbox = define.widget( 'imgbox', {
 				for ( var i = 0, v = this.val(); i < l; i ++ ) {
 					s.push( '<div class="w-imgbox-c f-inbl' + (d[ i ].value == v ? ' z-on' : '') + '"' + _event_zhover + ' onclick=' + evw + '.choose(' + i + ')>' + this.html_img( d[ i ] ) + '</div>' );
 				}
-				this.dg = this.add( { type: 'dialog', ownproperty: T, width: e, height: h, cls: 'w-input-border' + (this.txth ? ' z-tx': ''), snap: this, snaptype: g.type, pophide: T, indent: 1,
-					node: { type: 'html', scroll: T, text: s.join( '' ) + '</div>' }, on: { close: 'this.parentNode.removeClass("z-m-' + g.mag + '")' } } ).render();
-				$.classAdd( this.$(), 'z-m-' + g.mag );
+				this.addClass( 'z-on' );
+				this.dg = this.add( { type: 'dialog', ownproperty: T, width: e, height: h, cls: 'w-imgbox-dialog w-form-dialog' + (this.txth ? ' z-tx': ''), snap: this.$( 'f' ), snaptype: g.type, pophide: T, indent: 1,
+					node: { type: 'html', scroll: T, text: s.join( '' ) + '</div>' }, on: { close: 'this.parentNode.removeClass("z-on z-m-' + g.mag + '")' } } ).render();
+				this.addClass( 'z-m-' + g.mag );
 			}
 		},
 		choose: function( a ) {
@@ -6909,7 +6916,10 @@ Imgbox = define.widget( 'imgbox', {
 			this.dg.close();
 		},
 		_val: function( o ) {
-			this.$().innerHTML = this.html_nodes();
+			this.$( 'f' ).innerHTML = this.html_nodes();
+		},
+		form_cls: function() {
+			return 'w-input w-imgbox-c f-rel f-inbl f-va';
 		},
 		html_img: function( a ) {
 			return '<div class=_g id=' + this.id + 'p style="width:' + this.imgw + 'px;height:' + this.imgh + 'px;">' + $.image( a.icon, { width: this.imgw, height: this.imgh } ) + '</div>' +
@@ -7166,11 +7176,11 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { ownproperty: T, cls: 'w-combobox-dialog', indent: 1 };
+			var d = { ownproperty: T, cls: 'w-combobox-dialog w-form-dialog', indent: 1 };
 			$.extend( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
-			var o = { type: 'dialog', pophide: T, memory: T, snap: this, snaptype: 'v', wmin: 2, hmin: 2 },
-				w = 'javascript:return this.parentNode.$().offsetWidth';
+			var o = { type: 'dialog', pophide: T, memory: T, snap: this.$( 'f' ), snaptype: 'v', wmin: 2, hmin: 2 },
+				w = 'javascript:return this.parentNode.$("f").offsetWidth';
 			//如果用户设置宽度为*或百分比，则设置maxwidth为不超过combobox的宽度
 			if ( u.width ) {
 				if ( isNaN( u.width ) )
