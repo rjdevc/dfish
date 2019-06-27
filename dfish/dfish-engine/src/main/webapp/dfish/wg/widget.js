@@ -9754,7 +9754,7 @@ Grid = define.widget( 'grid', {
 			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
 		var y = { table: { tbody: x.tbody, columns: x.columns }, width: '*', height: '*', scroll: x.scroll, on: { scroll: 'this.parentNode.trigger(event)' } };
 		// 为适应滚动条的位置，当没有head时把grid的样式转到list上。如果有head，这样转移样式可能会出问题，暂不做
-		! this.head && $.jsonCut( y, x, 'wmin,hmin,cls,style' );
+		//! this.head && $.jsonCut( y, x, 'wmin,hmin,cls,style' );
 		this.list = new GridList( y, this );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
