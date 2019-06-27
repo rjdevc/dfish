@@ -5182,6 +5182,9 @@ Textarea = define.widget( 'textarea', {
 			return this.val().replace( /\r\n/g, '\n' ) != v.replace( /\r\n/g, '\n' );
 		},
 		input_prop_value: $.rt(),
+		form_cls: function() {
+			return 'w-input z-ah f-inbl f-va';
+		},
 		html_input: function() {
 			return '<textarea' + this.input_prop() + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
 		}
