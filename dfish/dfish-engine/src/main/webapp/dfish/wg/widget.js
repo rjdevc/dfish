@@ -4702,7 +4702,7 @@ var Label = define.widget( 'label', {
 		setValidate: function( x ) {
 			x = x || {};
 			if ( x.required ) {
-				this.$() && ! $.get( '.f-required', this.$() ) && $.prepend( this.$( 't' ), this.html_star() );
+				this.$() && ! $.get( '.f-required', this.$() ) && $.prepend( this.$( 'lb' ), this.html_star() );
 			} else {
 				this.$() && Q( '.f-required', this.$() ).remove();
 			}	
@@ -6484,7 +6484,7 @@ Slider = define.widget( 'slider', {
 		},
 		_left: function( v ) {
 			var m = this.max(), n = this.min();
-			return (this.formWidth() - this.thumbWidth()) * (v - n) / (m - n);
+			return (this.formWidth() - this.thumbWidth()) * (_number( v ) - n) / (m - n);
 		},
 		form_cls: function() {
 			return 'f-inbl f-va';
@@ -6649,7 +6649,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			this.dragstart( this.$( 'thumb' ), a );
 		},
 		form_cls: function() {
-			return 'w-input f-inbl f-va f-rel';
+			return 'w-input f-inbl f-va';
 		},
 		html_info: function( e ) {
 			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
