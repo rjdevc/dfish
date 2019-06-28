@@ -2414,8 +2414,8 @@ View = define.widget( 'view', {
 				(n = _all[ e[ k ].wid ]) && n.trigger( 'error', F );
 			_inst_hide( 'tip' );
 		},
-		// @a -> target id, b -> T/F
-		linkTarget: function( a, b ) {
+		// @a -> target id, b -> T/F, d -> fix test context?
+		linkTarget: function( a, b, d ) {
 			var c = a.isWidget ? [ a ] : this.find( a.split( ',' ) );
 			for ( var i = 0; i < c.length; i ++ ) {
 				if ( c[ i ].parentNode && c[ i ].parentNode.type_frame ) {
@@ -2423,6 +2423,8 @@ View = define.widget( 'view', {
 				} else {
 					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ )
 						r[ j ].disable( ! b );
+					// fixme：未知原因导致表单禁用，在此打印出来源供参考
+					d && r.length > 2 && window.console && console.log( this.path + ' disabled by:', d );
 				}
 			}
 		},
@@ -2885,7 +2887,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		},
 		fixLine: function() {
 			this.$( 'vi' ) && Q( this.$() ).prepend( this.$( 'vi' ) );
-			Q( this.$() ).append( Q( '.w-buttonbar-line' ), this.$() );
+			Q( this.$() ).append( Q( '.w-buttonbar-line', this.$() ) );
 		},
 		overflow: function() {
 			if ( this._more ) {
@@ -3047,7 +3049,7 @@ Button = define.widget( 'button', {
 			}
 		},
 		_ustag: function() {
-			this.ownerView.linkTarget( this.x.target, this.isFocus() );
+			this.ownerView.linkTarget( this.x.target, this.isFocus(), this );
 		},
 		isFocus: function() {
 			return ! this.isDisabled() && this.x.focusable && this.x.focus;
@@ -3072,7 +3074,7 @@ Button = define.widget( 'button', {
 						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : p; i < d.length; i ++ )
 							if ( d[ i ] !== this && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
 					}
-					this.x.target && this.ownerView.linkTarget( this.x.target, T );
+					this.x.target && this.ownerView.linkTarget( this.x.target, T, this );
 				}
 			}
 			return (this.x.focus = !!a);
@@ -3247,7 +3249,7 @@ MenuButton = define.widget( 'menu/button', {
 			ready: N,
 			click: function() {
 				if ( ! this.isDisabled() ) {
-					this.x.target && this.ownerView.linkTarget( this.x.target, T );
+					this.x.target && this.ownerView.linkTarget( this.x.target, T, this );
 					this.rootNode.hide();
 				}
 			}
@@ -5405,7 +5407,7 @@ Checkbox = define.widget( 'checkbox', {
 			return this.parentNode.isBoxGroup ? this.parentNode.getValidError( a ) : AbsForm.prototype.getValidError.call( this, a );
 		},
 		_ustag: function( a ) {
-			this.ownerView.linkTarget( this.x.target, ! this.isDisabled() && this.isChecked() );
+			this.ownerView.linkTarget( this.x.target, ! this.isDisabled() && this.isChecked(), this );
 		},
 		elements: function( a, b ) {
 			return Q( '[name="' + this.input_name() + '"]' + (b ? ':not(:disabled)' : '') + (a === T ? ':checked' : a === F ? ':not(:checked)' : (a || '')), this.ownerView.$() );
