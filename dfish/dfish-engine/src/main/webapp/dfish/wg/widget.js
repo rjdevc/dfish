@@ -8000,10 +8000,10 @@ Onlinebox = define.widget( 'onlinebox', {
 			this.focus();
 		},
 		suggest: function( t ) {
-			this.x.suggest && Combobox.prototype.suggest.apply( this, arguments );
+			this.x.suggest && this.x.suggest.src && Combobox.prototype.suggest.apply( this, arguments );
 		},
 		doSuggest: function( t ) {
-			if ( this.x.suggest ) {
+			if ( this.x.suggest && this.x.suggest.src ) {
 				if ( ! this.more )
 					this.more = this.createPop( this.x.suggest );
 				this.more.reload( this.parseSrc( this.x.suggest.src, { text: t } ) );
