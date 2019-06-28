@@ -6459,6 +6459,7 @@ Slider = define.widget( 'slider', {
 				$( self.id + 'v' ).value = v;
 				self.addClass( 'z-drag' );
 				self.trigger( 'drag', [ v ] );
+				//console.log($.bcr(a).width);
 			}, function( e ) {
 				d && d.close();
 				self.trigger( 'drop', [ v ] );
