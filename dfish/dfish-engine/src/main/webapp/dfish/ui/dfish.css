@@ -355,7 +355,7 @@
 .w-spinner{line-height:0}
 .w-spinner ._t{vertical-align:middle}
 .w-spinner ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0}
-.w-spinner ._b em{display:block;height:50%;text-indent:3px;cursor:pointer}
+.w-spinner ._b em{display:block;height:50%;text-indent:5px;cursor:pointer}
 .w-spinner .f-arw-t2{border-bottom-color:#99a8b8;position:relative;top:1px}
 .w-spinner ._b em:hover .f-arw-t2{border-bottom-color:#546272}
 .w-spinner .f-arw-b2{border-top-color:#99a8b8;position:relative;top:-1px}
@@ -466,7 +466,7 @@
 .f-pick{float:right;height:100%;min-height:28px;cursor:pointer}
 .w-img.f-pick .w-img-i{height:100%}
 
-.f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;text-indent:3px;cursor:pointer}
+.f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;text-indent:5px;cursor:pointer}
 .f-boxbtn .f-arw-b2{border-width:5px;border-top-color:#99a8b8;*margin-top:3px}
 .f-boxbtn:hover .f-arw-b2{border-top-color:#546272}
 .w-form.z-ds .f-boxbtn{cursor:default}
