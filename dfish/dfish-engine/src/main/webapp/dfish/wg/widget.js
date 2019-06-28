@@ -2396,7 +2396,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		},
 		fixLine: function() {
 			this.$( 'vi' ) && Q( this.$() ).prepend( this.$( 'vi' ) );
-			Q( this.$() ).append( Q( '.w-buttonbar-line' ), this.$() );
+			Q( this.$() ).append( Q( '.w-buttonbar-line', this.$() ) );
 		},
 		overflow: function() {
 			if ( this._more ) {
