@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.form;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.command.DialogCommand;
 
@@ -34,7 +35,9 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
-		this.setSuggest(src().setSrc(suggest));
+		if (Utils.notEmpty(suggest)) {
+			this.setSuggest(src().setSrc(suggest));
+		}
 	}
 
 	/**
