@@ -2421,10 +2421,11 @@ View = define.widget( 'view', {
 				if ( c[ i ].parentNode && c[ i ].parentNode.type_frame ) {
 					b && c[ i ].parentNode.view( c[ i ] );
 				} else {
-					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ )
+					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ ) {
 						r[ j ].disable( ! b );
-					// fixme：未知原因导致表单禁用，在此打印出来源供参考
-					d && r.length > 2 && window.console && console.log( this.path + ' disabled by:', d );
+						// fixme：未知原因导致表单禁用，在此附加来源供参考
+						r[ j ].__disable_by = d;
+					}
 				}
 			}
 		},
