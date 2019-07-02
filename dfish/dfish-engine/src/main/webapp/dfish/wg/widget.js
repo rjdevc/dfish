@@ -3030,9 +3030,31 @@ Button = define.widget( 'button', {
 		insertHTML: function( a, b ) {
 			this.$() && $[ _putin[ b ] ? 'after' : b ]( this.$(), a.isWidget ? a.$() : a );
 		},
+		// @implement
+		attrSetter: function( a, b ) {
+			if ( ! this.$() )
+				return;
+			if ( a === 'icon' ) {
+				if ( b )
+					this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon( b ) ) : $.prepend( this.$( 'c' ), this.html_icon( b ) );
+				else
+					this.removeElem( 'i' );
+			} else if ( a === 'text' ) {
+				if ( b )
+					this.$( 't' ) ? Q( 'em', this.$( 't' ) ).html( b ) : $.append( this.$( 'c' ), this.html_text( b ) );
+				else
+					this.removeElem( 't' );
+			} else if ( a === 'status' ) {
+				this.status( a, b );
+			} else if ( a === 'tip' ) {
+				this.$() && (this.$().title = $.strQuot( (b === T ? this.x.text : b) || '' ));
+			} else if ( a === 'more' ) {
+				this.setMore( b );
+			}
+		},
 		setMore: function( x ) {
 			if ( this.more ) {
-				this.more.remove();
+				this.more.close();
 				delete this.more;
 			}
 			if ( x != N ) {
@@ -3135,26 +3157,6 @@ Button = define.widget( 'button', {
 		// 新增或更换文本。如果 a == ''  / @a -> text
 		text: function( a ) {
 			this.attr( 'text', a );
-		},
-		// @implement
-		attrSetter: function( a, b ) {
-			if ( ! this.$() )
-				return;
-			if ( a === 'icon' ) {
-				if ( b )
-					this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon( b ) ) : $.prepend( this.$( 'c' ), this.html_icon( b ) );
-				else
-					this.removeElem( 'i' );
-			} else if ( a === 'text' ) {
-				if ( b )
-					this.$( 't' ) ? Q( 'em', this.$( 't' ) ).html( b ) : $.append( this.$( 'c' ), this.html_text( b ) );
-				else
-					this.removeElem( 't' );
-			} else if ( a === 'status' ) {
-				this.status( a, b );
-			} else if ( a === 'tip' ) {
-				this.$() && (this.$().title = $.strQuot( (b === T ? this.x.text : b) || '' ));
-			}
 		},
 		html_icon: function( a ) {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
