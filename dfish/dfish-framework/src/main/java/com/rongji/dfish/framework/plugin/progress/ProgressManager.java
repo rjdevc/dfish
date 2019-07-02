@@ -37,12 +37,12 @@ public class ProgressManager {
 	/**
 	 * 进度百分百
 	 */
-	private static final Double PERCENT_FULL = 100.0;
+	private static final double PERCENT_FULL = 100.0;
 	
 	/**
 	 * 进度条加载时间间隔
 	 */
-	private Double maxDelay = 3.0;
+	private double maxDelay = 3.0;
 	/**
 	 * 进度条显示文本
 	 */
@@ -52,11 +52,11 @@ public class ProgressManager {
 	 */
 	private Boolean cover;
 	
-	public Double getMaxDelay() {
+	public double getMaxDelay() {
 		return maxDelay;
 	}
 
-	public void setMaxDelay(Double maxDelay) {
+	public void setMaxDelay(double maxDelay) {
 		this.maxDelay = maxDelay;
 	}
 
@@ -284,17 +284,18 @@ public class ProgressManager {
 		String src = "progress/reloadProgress?progressKey=" + encryptKey(progressKey);
 		Progress stepProgress = new Progress("prgStep", getStepPercent(progressData)).setSrc(src).setText(progressData.getProgressText());
 		progressGroup.add(stepProgress);
-		
-		
-		double delay = progressData.getDelay();
+
+
+		Number delay = progressData.getDelay();
 		// 进度条数据改变
 		boolean dataChange = false;
-		if (delay < maxDelay) {
-			delay += 0.5; // 每次访问增加0.5秒
-			if (delay > maxDelay) {
-				delay = maxDelay;
+		double nexDelay = delay == null ? 0 : delay.doubleValue();
+		if (nexDelay < maxDelay) {
+			nexDelay *= 1.5; // 每次访问时间是上次的1.5倍
+			if (nexDelay > maxDelay) { // 最长延时
+				nexDelay = maxDelay;
 			}
-			progressData.setDelay(delay);
+			progressData.setDelay(nexDelay);
 			dataChange = true;
 		}
 		double donePercent = getDonePercent(progressData);
@@ -359,7 +360,7 @@ public class ProgressManager {
 	 * @param progressKey 进度编号
 	 * @param stepPercent 百分比
 	 */
-	public void addStepPercent(String progressKey, double stepPercent) {
+	public void addStepPercent(String progressKey, Number stepPercent) {
 		addStepPercent(progressKey, stepPercent, null);
 	}
 	
@@ -369,20 +370,24 @@ public class ProgressManager {
 	 * @param stepPercent 百分比
 	 * @param progressText 进度显示文本
 	 */
-	public void addStepPercent(String progressKey, double stepPercent, String progressText) {
+	public void addStepPercent(String progressKey, Number stepPercent, String progressText) {
+		if (stepPercent == null || stepPercent.doubleValue() <= 0) {
+			return;
+		}
 		ProgressData progressData = getProgressData(progressKey);
 		if (progressData != null) {
 			if (progressData.isFinish()) {
 				return;
 			}
-			
-			stepPercent = stepPercent < 0.0 ? 0.0 : stepPercent;
-			stepPercent += progressData.getStepPercent();
-			if (stepPercent > PERCENT_FULL) {
-				stepPercent = PERCENT_FULL;
+
+
+			double nextStepPercent = stepPercent.doubleValue();
+			nextStepPercent += progressData.getStepPercent();
+			if (nextStepPercent > PERCENT_FULL) {
+				nextStepPercent = PERCENT_FULL;
 			}
 			// 需要按照比例增加进度
-			progressData.setStepPercent(stepPercent);
+			progressData.setStepPercent(nextStepPercent);
 			if (Utils.notEmpty(progressText)) {
 				progressData.setProgressText(progressText);
 			}
@@ -461,12 +466,6 @@ public class ProgressManager {
 		}
 		if (Utils.isEmpty(stepScale)) {
 			stepScale = new Number[]{ 1 };
-		} else {
-			for (int i = 0; i < stepScale.length; i++) {
-				if (stepScale[i] == null) {
-					stepScale[i] = 1;
-				}
-			}
 		}
 		
 		double total = 0.0;
