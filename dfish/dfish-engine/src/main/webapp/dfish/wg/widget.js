@@ -3024,16 +3024,23 @@ Button = define.widget( 'button', {
 		_menu_type: 'menu',
 		// @implement
 		init_nodes: function() {
-			this.setMore();
+			this.setMore( this.x );
 		},
 		// @implement
 		insertHTML: function( a, b ) {
 			this.$() && $[ _putin[ b ] ? 'after' : b ]( this.$(), a.isWidget ? a.$() : a );
 		},
 		setMore: function( x ) {
-			var x = x || this.x;
-			if ( x.more || x.nodes ) {
-				this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, pophide: T, hoverdrop: x.hoverdrop || this.x.hoverdrop } );
+			if ( this.more ) {
+				this.more.remove();
+				delete this.more;
+			}
+			if ( x != N ) {
+				if ( x.type && _cmdHooks[ x.type ] )
+					x = { more: x };
+				if ( x.more || x.nodes ) {
+					this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, pophide: T, hoverdrop: x.hoverdrop || this.x.hoverdrop } );
+				}
 			}
 			this._combo = this.more && x.on && x.on.click;
 			return this.more;
