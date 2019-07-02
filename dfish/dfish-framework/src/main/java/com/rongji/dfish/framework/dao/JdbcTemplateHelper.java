@@ -336,7 +336,7 @@ public class JdbcTemplateHelper {
 			argsList.add(args);
 		}
 		int[] result = batchUpdate(jdbcTemplate, sql, argsList);
-		return jdbcTemplate.update(sql, args);
+		return result != null && result.length > 0 ? result[0] : 0;
 	}
 
 	/**
