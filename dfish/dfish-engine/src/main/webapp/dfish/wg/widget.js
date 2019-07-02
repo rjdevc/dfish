@@ -3073,7 +3073,7 @@ Button = define.widget( 'button', {
 				if ( a ) {
 					if ( ! p.x.focusmultiple ) {
 						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : p; i < d.length; i ++ )
-							if ( d[ i ] !== this && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
+							if ( d[ i ] !== this && d[ i ].x.name == this.x.name && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
 					}
 					this.x.target && this.ownerView.linkTarget( this.x.target, T, this );
 				}
