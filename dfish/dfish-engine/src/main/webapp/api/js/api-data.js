@@ -1139,9 +1139,6 @@ define( {
           }
       ] },
       { name: 'empty()', remark: '删除所有子节点。', common: true },
-      { name: 'find(id)', remark: '根据ID获取当前widget内部的节点。', common: true, param: [
-        { name: 'id', type: 'String', remark: 'widget ID。' }
-      ] },
       { name: 'fireEvent(name, [args])', remark: '触发由 addEvent 绑定的事件方法。', common: true, param: [
         { name: 'name', type: 'String', remark: '事件名称。' },
         { name: 'args', type: 'Array', remark: '给绑定方法传入的参数。', optional: true }
@@ -2280,6 +2277,7 @@ define( {
         { name: 'matchlength', type: 'Number', remark: '切词长度。' }
       ] },
       { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
+      { name: 'focusable', type: 'Boolean', remark: '是否可选中。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
@@ -2408,6 +2406,7 @@ define( {
       { name: 'delay', type: 'Number', remark: '延迟访问 src 。单位:秒。' },
       { name: 'percent', type: 'Number', remark: '进度值。范围从 0 到 100。' },
       { name: 'src', type: 'String', remark: '访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。' },
+      { name: 'hidepercent', type: 'Boolean', remark: '设置为true，隐藏进度数字。' },
       { name: 'text', type: 'String', remark: '显示文本。' }
     ],
     Methods: [
