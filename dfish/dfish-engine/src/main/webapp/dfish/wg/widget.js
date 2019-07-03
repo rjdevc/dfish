@@ -3051,6 +3051,8 @@ Button = define.widget( 'button', {
 				this.$() && (this.$().title = $.strQuot( (b === T ? this.x.text : b) || '' ));
 			} else if ( a === 'more' ) {
 				this.setMore( b );
+			} else if ( a === 'hoverdrop' ) {
+				this.more && this.more.attr( 'hoverdrop', b );
 			}
 		},
 		setMore: function( x ) {
@@ -3064,7 +3066,7 @@ Button = define.widget( 'button', {
 				if ( x.type && _cmdHooks[ x.type ] )
 					x = { more: x };
 				if ( x.more || x.nodes ) {
-					this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, pophide: T, hoverdrop: x.hoverdrop || this.x.hoverdrop } );
+					this.more = this.add( x.more || { type: this._menu_type, nodes: x.nodes }, -1, { snap: this, snaptype: this._menu_snaptype, indent: 1, memory: T, line: true, pophide: T, } );
 				}
 			}
 			this._combo = this.more && x.on && x.on.click;
