@@ -2624,6 +2624,7 @@ Frame = define.widget( 'frame', {
 					n.trigger( 'framefocus' );
 				}
 			}
+			return n;
 		}
 	}
 } ),
@@ -3053,7 +3054,9 @@ Button = define.widget( 'button', {
 			}
 		},
 		setMore: function( x ) {
+			var f;
 			if ( this.more ) {
+				f = this.more.isShow();
 				this.more.close();
 				delete this.more;
 			}
@@ -3065,6 +3068,10 @@ Button = define.widget( 'button', {
 				}
 			}
 			this._combo = this.more && x.on && x.on.click;
+			f && this.more && this.more.render();
+			return this.more;
+		},
+		getMore: function() {
 			return this.more;
 		},
 		usa: function() {
