@@ -3068,7 +3068,7 @@ Button = define.widget( 'button', {
 				}
 			}
 			this._combo = this.more && x.on && x.on.click;
-			f && this.more && this.more.render();
+			f && this.more && this.more.show( 0 );
 			return this.more;
 		},
 		getMore: function() {
@@ -3077,12 +3077,15 @@ Button = define.widget( 'button', {
 		usa: function() {
 			return ! this.isDisabled() && ! this._locked;
 		},
-		fixMoreCls: function() {
-			var a = this.x.cls && $.strTrim( this.x.cls );
-			if ( a ) {
-				for ( var i = 0, b = a.split( /\s+/ ), c = []; i < b.length; i ++ )
-					c.push( b[ i ] + '-' + this.more.type );
-				return c.join( ' ' );
+		// 给下拉 dialog 用的接口
+		dropperCls: function( a ) {
+			if ( a && a === this.more ) {
+				var b = this.x.cls && $.strTrim( this.x.cls );
+				if ( b ) {
+					for ( var i = 0, c = b.split( /\s+/ ), d = []; i < c.length; i ++ )
+						d.push( c[ i ] + '-' + this.more.type );
+					return d.join( ' ' );
+				}
 			}
 		},
 		_ustag: function() {
@@ -3131,12 +3134,10 @@ Button = define.widget( 'button', {
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
 		},
-		drop: function() {
-			if ( this.usa() && this.more ) {
-				var c = this.fixMoreCls();
-				c && this.more.addClass( c );
-				this.more.show();
-			}
+		// @a -> delay millisenconds?
+		drop: function( a ) {
+			if ( this.usa() && this.more )
+				this.more.show( a );
 		},
 		close: function( e ) {
 			e && $.stop( e );
@@ -4036,6 +4037,7 @@ Dialog = define.widget( 'dialog', {
 					'><i class="_out f-arw f-arw-' + m + '5"></i><i class="_in f-arw f-arw-' + m + '4"></i></div>' );
 			}
 			$.classAdd( this.$(), 'z-max', !! a );
+			(c = this.parentNode.dropperCls && this.parentNode.dropperCls( this )) && $.classAdd( this.$(), c );
 			this._snapCls();
 		},
 		_snapElem: function() {
@@ -4124,11 +4126,14 @@ Dialog = define.widget( 'dialog', {
 		isShow: function() {
 			return this.vis;
 		},
+		// @a -> show delay millisenconds?
 		show: function( a ) {
-			if ( this.x.hoverdrop ) {
+			if ( a == 0 )
+				return this._show();
+			if ( this.x.hoverdrop || a > 0 ) {
 				var self = this;
 				if ( ! this._show_timer ) {
-					this._show_timer = setTimeout( function() { self._show(); }, 300 );
+					this._show_timer = setTimeout( function() { self._show(); }, a || 300 );
 					var n = 'mouseover.' + self.id + ':show';
 					Q( document ).on( n, function( e ) {
 						if ( self._disposed || ! self.parentNode.contains( e.target ) ) {
@@ -4142,7 +4147,7 @@ Dialog = define.widget( 'dialog', {
 				this._show();
 			return this;
 		},
-		_show: function( a ) {
+		_show: function() {
 			clearTimeout( this._show_timer );
 			delete this._show_timer;
 			if ( this._disposed )
@@ -4154,6 +4159,7 @@ Dialog = define.widget( 'dialog', {
 				this._snapCls();
 			} else
 				this.render();
+			return this;
 		},
 		keepHover: function( a ) {
 			this._keep_hover = a;
