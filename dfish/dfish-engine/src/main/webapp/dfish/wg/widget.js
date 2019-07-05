@@ -2532,7 +2532,7 @@ Horz = define.widget( 'horz', {
 			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align === 'left') && (this.childCls += ' z-htmn');
 			var s = _proto.html_nodes.call( this ) + (this._hiddens ? this._hiddens.html() : ''),
 				ih = ie7 && this.x.scroll && this.innerHeight(); // ie7在有scroll和valign时，f-vi的100%会包含底部滚动条的高度，导致撑开。需要设置负值的margin-bottom来抵消
-			return v ? '<div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
+			return v ? '<div id=' + this.id + 'vln class="w-horz-vln f-inbl f-va-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
 		}
 	}
 } ),
@@ -2783,6 +2783,8 @@ Split = define.widget( 'split', {
 				n = this.isOpen();
 			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
 			$.classAdd( this.$(), 'z-open', n );
+			var m = this[ this.x.target || 'prev' ]();
+			m.addClass( 'f-hide', !n );
 		},
 		isOpen: function() {
 			return this.major() > (this.x.range || '').split( ',' )[ this.x.target === 'next' ? 1 : 0 ];
@@ -5057,7 +5059,7 @@ AbsForm = define.widget( 'abs/form', {
 		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
-			return this.html_before() + '<div ' + this.html_prop() + '>' + (this.label ? this.label.html() : '') + '<div' + this.form_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div></div>' + this.html_after();
+			return this.html_before() + '<div ' + this.html_prop() + '><i class=f-vi></i>' + (this.label ? this.label.html() : '') + '<div' + this.form_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div></div>' + this.html_after();
 		}
 	}
 } ),
@@ -8121,7 +8123,6 @@ Rate = define.widget( 'rate', {
 		}
 	},
 	Prototype: {
-		className: 'w-form w-rate f-inbl f-va',
 		$v: function() { return $( this.id + 'v' ) },
 		val: function( a ) {
 			if ( a === U )
@@ -8156,11 +8157,17 @@ Rate = define.widget( 'rate', {
 		out: function() {
 			this.usa() && this._val( this.val() );
 		},
+		form_cls: function() {
+			return '_f f-inbl f-va';
+		},
+		form_prop: function() {
+			return AbsForm.prototype.form_prop.call( this ) + ' onmouseout=' + evw + '.out()';
+		},
 		html_nodes: function() {
 			for ( var i = 2, s = '', v = _number( this.x.value ); i <= 10; i += 2 ) {
 				s += '<i id=' + this.id + i + ' class="_i' + (v >= i ? ' z-on' : v > i - 2 ? ' z-in' : '') + '" onmouseover=' + evw + '.over(' + i + ') onclick=' + evw + '.click(' + i + ')></i>';
 			}
-			return '<span onmouseout=' + evw + '.out()>' + s + '</span><input type=hidden id=' + this.id + 'v name=' + this.x.name + ' value="' + (v || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '>';
+			return s + '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name=' + this.x.name : '') + ' value="' + (v || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '>';
 		}
 	}
 } ),

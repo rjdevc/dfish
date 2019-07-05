@@ -131,6 +131,7 @@
 .w-vert.z-autosize,.w-horz.z-autosize{overflow:visible}
 .w-horz{white-space:nowrap}
 .w-horz.z-br{white-space:normal}
+.w-horz-vln{width:100%}
 
 .w-frame{position:relative;overflow:hidden}
 
@@ -256,6 +257,7 @@
 .w-split ._prev,.w-split ._next{cursor:pointer}
 .w-split ._ico{position:relative;z-index:1}
 .w-split.z-0.f-sub-horz ._next{position:relative;top:0;left:-100%}
+.f-split-hide{position:absolute!important;visibility:hidden}
 
 /* calendar */
 .w-calendar-body{padding:5px}
@@ -389,7 +391,8 @@
 .w-slider-jigsaw-dialog ._small{position:absolute;top:0;left:0}
 .w-slider-jigsaw-dialog ._ref{position:absolute;top:5px;right:5px;color:#fff;;cursor:pointer;text-shadow: 0 0 3px #000}
 
-.w-rate ._i{display:inline-block;width:20px;height:20px;background:url(g/n.png) no-repeat -169px 50%;vertical-align:middle}
+.w-rate ._f{line-height:0}
+.w-rate ._i{display:inline-block;width:20px;height:30px;background:url(g/n.png) no-repeat -169px 50%;vertical-align:middle}
 .w-rate ._i.z-on{background-position:-191px 50%}
 .w-rate ._i.z-in{background-position:-212px 50%}
 
