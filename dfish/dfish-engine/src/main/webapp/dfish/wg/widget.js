@@ -3118,6 +3118,7 @@ Button = define.widget( 'button', {
 					}
 					this.x.target && this.ownerView.linkTarget( this.x.target, T, this );
 				}
+				a !== F && this.triggerHandler( 'focus' );
 			}
 			return (this.x.focus = !!a);
 		},
