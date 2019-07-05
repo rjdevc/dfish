@@ -401,7 +401,6 @@
 .w-xbox-dialog ._o.z-on{background-color:#b0dfff}
 .w-xbox-dialog.z-cancel ._o.z-on ._box,.w-xbox-dialog.z-mul ._o.z-on ._box{position:absolute;width:16px;height:100%;top:0;right:14px;background:url(g/n.png) no-repeat -235px 50%}
 
-.w-combobox.z-br{height:auto;min-height:28px}
 .w-combobox ._c{padding-left:0;min-height:28px;cursor:text}
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}
 .w-combobox ._r{color:#888;font-style:normal;font-family:verdana}
