@@ -1986,7 +1986,9 @@ Scroll = define.widget( 'scroll', {
 		},
 		html: function() {
 			this.width() == N && ! this.x.maxwidth && ! this.x.maxheight && $.classAdd( this, 'z-autosize' );
-			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + ( this.isScrollable() ? _html_scroll.call( this, this.html_nodes() ) : this.html_nodes() ) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
+			// 执行 html_nodes 要在执行 html_prop 之前，以备html_nodes中可能要增加样式等操作
+			var s = this.html_nodes();
+			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + (this.isScrollable() ? _html_scroll.call( this, s ) : s) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
 		dispose: function() {
 			clearInterval( this._scr_timer );
@@ -6974,7 +6976,6 @@ Combobox = define.widget( 'combobox', {
 	Const: function( x ) {
 		AbsInput.apply( this, arguments );
 		$.classAdd( this, 'z-loading' );
-		x.nobr === F && $.classAdd( this, 'z-br' );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
 		this._online = x.suggest && typeof x.suggest.src === _STR && /\$text\b/.test( x.suggest.src );
 		this.more = this.createPop( x.suggest || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
@@ -7213,7 +7214,7 @@ Combobox = define.widget( 'combobox', {
 			var d = { ownproperty: T, cls: 'w-combobox-dialog w-form-dialog', indent: 1 };
 			$.extend( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
-			var o = { type: 'dialog', pophide: T, memory: T, snap: this.$( 'f' ), snaptype: 'v', wmin: 2, hmin: 2 },
+			var o = { type: 'dialog', pophide: T, memory: T, snap: this.id + 'f', snaptype: 'v', wmin: 2, hmin: 2 },
 				w = 'javascript:return this.parentNode.$("f").offsetWidth';
 			//如果用户设置宽度为*或百分比，则设置maxwidth为不超过combobox的宽度
 			if ( u.width ) {
@@ -7439,6 +7440,9 @@ Combobox = define.widget( 'combobox', {
 			AbsForm.prototype.readonly.call( this, a );
 			this.$t().contentEditable = this.isNormal();
 			return this;
+		},
+		form_cls: function() {
+			return AbsInput.prototype.form_cls.call( this ) + (this.x.nobr === F ? ' z-ah f-wdbr' : '');
 		},
 		html_btn: function() {
 			var s = '';
@@ -8802,7 +8806,7 @@ Tree = define.widget( 'tree', {
 		}
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'hiddens', nodes: x.hiddens }, -1 );
-		!this.length && (this.className += ' z-empty');
+		//!this.length && (this.className += ' z-empty');
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
 	},
@@ -8856,7 +8860,11 @@ Tree = define.widget( 'tree', {
 			$.droppable( this, $.extend( { sort: F }, a || {} ) );
 			return AbsLeaf.prototype.droppable.call( this, a );
 		},
-		html_nodes: function() { return '<div id=' + this.id + 'c class=w-tree-gut>' + _proto.html_nodes.call( this ) + '</div>' + (this._hiddens ? this._hiddens.html() : '') }
+		html_nodes: function() {
+			var s = _proto.html_nodes.call( this );
+			$.classAdd( this, 'z-empty', !s );
+			return '<div id=' + this.id + 'c class=w-tree-gut>' + s + '</div>' + (this._hiddens ? this._hiddens.html() : '')
+		}
 	}
 } ),
 Hiddens = define.widget( 'hiddens', {
