@@ -1,5 +1,5 @@
 /*!
- * dfish.js v3.2
+ * dfish.js v3
  * (c) 2015-2018 Mingyuan Chen
  * Released under the MIT License.
  */
@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _ver = '', _expando = 'dfish', version = '3.2.0',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -29,23 +29,23 @@ $ = dfish = function( a ) {
 },
 
 //获取dfish所在目录
-getPath = function(){
-	var jsPath = doc.currentScript ? doc.currentScript.src : function(){
-		var js = doc.scripts, last = js.length - 1, src;
-		for ( var i = last; i > 0; i -- ){
+getPath = function() {
+	var u = location.href.substring( 0, location.href.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	_path = u.substring( 0, u.lastIndexOf( '/' ) + 1 ) || './';
+	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
+		_path = _urlLoc( location.pathname, _path );
+	}
+	u = doc.currentScript ? doc.currentScript.src : (function() {
+		var js = doc.scripts, l = js.length - 1, src;
+		for ( var i = l; i > 0; i -- ) {
 			if( js[ i ].readyState === 'interactive' ) {
 				src = js[ i ].src;
        			break;
 			}
 		}
-		return src || js[ last ].src;
-	}();
-	jsPath = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' ).slice( 0, -1 );
-	_path  = jsPath.substring( 0, jsPath.lastIndexOf( '/' ) + 1 ) || './';
-	_lib   = jsPath.substring( jsPath.lastIndexOf( '/' ) + 1 ) + '/';
-	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
-		_path = _urlLoc( location.pathname, _path );
-	}
+		return src || js[ l ].src;
+	})();
+	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
 },
 
 // 浏览器信息
@@ -54,7 +54,8 @@ br = $.br = (function() {
 		d = doc.documentMode,
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
 		ie = navigator.appName === 'Microsoft Internet Explorer', // ie version <= 10
-		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) ));
+		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) )),
+		chm = u.match( /\bchrome\/(\d+)/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
 	return {
@@ -63,6 +64,7 @@ br = $.br = (function() {
 		ie7		: ie && d < 8, // ie6,ie7,兼容模式
 		ie10	: ie && d === 10,
 		ms		: ie || n, // 微软的浏览器( ie所有系列 )
+		chm		: chm && parseFloat( chm[ 1 ] ),
 		mobile  : !!u.match( /\bmobile\b/ ),
 		fox		: u.indexOf( 'firefox' ) > 0,
 		css3	: !(ie && d < 9),
@@ -166,7 +168,7 @@ _createClass = $.createClass = function( a, b ) {
 },
 
 /* CMD模块规范 */
-_moduleCache = {}, _cssCache = {},
+_moduleCache = {},
 //@a -> path, b -> id, f -> affix
 _mod_uri = function( a, b, f ) {
 	var c = b.charAt( 0 ) === '.' ? _urlLoc( a, b ) : b.charAt( 0 ) !== '/' ? _path + b : b;
@@ -188,8 +190,8 @@ Module = _createClass( {
 } ),
 //每个模块的运行环境下都会生成一个Require的实例 /@a -> path
 Require = function( a ) {
-	// @ b -> id, f -> fn, s -> async?
-	var r = function( b, f, s ) {
+	// @b -> js css array, f -> fn?, s -> async?
+	var	r = function( b, f, s ) {
 		if ( typeof b === _STR ) {
 			var c = _mod_uri( a, b );
 			if ( _moduleCache[ c ] ) {
@@ -199,6 +201,21 @@ Require = function( a ) {
 			b = [ b ];
 		} else
 			b = b.concat();
+		for ( var i = 0, c = [], d = [], l = b.length; i < l; i ++ )
+			(_strFrom( b[ i ], '.', T ) === 'css' ? c : d).push( b[ i ] );
+		// 同步时，由于css目前只能异步加载，所以css_ok直接设为true
+		var css_ok = ! s || ! c.length, js_ok = ! d.length,
+			g = function() { js_ok && css_ok && f && f(); };
+		c.length && r.css( c, function() { css_ok = T, g() } );
+		return d.length && r.js( d, function() { js_ok = T, g() }, s );
+	},
+	exe = function( b, f ) {
+		for ( var i = 0, g = []; i < b.length; i ++ )
+			g.push( _moduleCache[ b[ i ] ] );
+		f.apply( win, g );
+	};
+	// @ b -> js array, f -> fn, s -> async?
+	r.js = function( b, f, s ) {
 		for ( var i = 0, d = [], e = [], u; i < b.length; i ++ ) {
 			b[ i ] = _mod_uri( a, b[ i ] );
 			if ( (u = _alias[ b[ i ] ] || b[ i ]) === a ) u = b[ i ];
@@ -209,25 +226,23 @@ Require = function( a ) {
 				for ( var i = 0; i < g.length; i ++ ) {
 					! _moduleCache[ d[ i ] ] && _onModuleLoad( d[ i ], e[ i ], g[ i ] );
 				}
-				f && t( b, f );
+				f && exe( b, f );
 			}, ! s );
 		} else {
-			f && t( b, f );
+			f && exe( b, f );
 		}
 		return _moduleCache[ b[ 0 ] ];
-	}, t = function( b, f ) {
-		for ( var i = 0, g = []; i < b.length; i ++ )
-			g.push( _moduleCache[ b[ i ] ] );
-		f.apply( win, g );
 	};
-	// require.async(): 当传入第二个参数回调函数时，将异步装载js
-	r.async = function( b, f ) { return r( b, f, T ) };
-	// require.resolve(): 把相对路径解析为绝对路径
-	r.resolve = function( b ) { return _urlLoc( a, b ) };
 	// require.css(): 装载css
-	r.css = function( b ) {
-		var c = _mod_uri( a, b, 'css' );
-		return _cssCache[ c ] || _loadCss( c );
+	r.css = function( b, f ) {
+		typeof b === _STR && (b = [ b ]);
+		for ( var i = 0; c = [], d = [], i < b.length; i ++ )
+			b[ i ] = _mod_uri( a, b[ i ], 'css' );
+		_loadCss( b, N, f );
+	};
+	// require.async(): 异步装载js
+	r.async = function( b, f ) {
+		return r( b, f, T );
 	};
 	return r;
 },
@@ -263,11 +278,11 @@ Define = function( a ) {
 //@a -> id, b -> uri, c -> script text
 _onModuleLoad = function( a, b, c ) {
 	var m = new Module( b );
-	//try {
+	try {
 		Function( 'define,require,module,exports', c + '\n//@ sourceURL=' + a ).call( win, Define( b ), Require( b ), m, m.exports );
-	//} catch( e ) {
-	//	throw new Error( '"' + a + '": ' + e.message );
-	//}
+	} catch( e ) {
+		throw new Error( '"' + a + '": ' + e.message );
+	}
 	if ( ! _moduleCache[ a ] )
 		_moduleCache[ a ] = m.exports;
 },
@@ -284,18 +299,35 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, engine: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
 },
-_loadCss = function( a ) {
-	var l = doc.createElement( 'link' );
-	l.setAttribute( 'rel', 'stylesheet' );
-	l.setAttribute( 'href', a + _ver );
-	_tags( 'head' )[ 0 ].appendChild( l );
-	return _cssCache[ a ] = a;
+// @a -> src, b -> id?, c -> fn?
+_loadCss = function( a, b, c ) {
+	typeof a === _STR && (a = [ a ]);
+	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
+		e = doc.createElement( 'link' );
+		e.rel  = 'stylesheet';
+		e.href = a[ i ] + _ver;
+		b && ($.remove( b[ i ] ), e.id = b[ i ]);
+		if ( c ) {
+			if ( br.chm && br.chm < 19 ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
+			    var img = doc.createElement( 'img' );
+		        img.onerror = function(){ --n === 0 && c() };
+		        img.src = a[ i ] + _ver;
+		    } else {
+		    	c && (e.onload = function() { --n === 0 && c() });
+		    }
+	    }
+		_tags( 'head' )[ 0 ].appendChild( e );
+	}
 },
-_loadStyle = function( a ) {
+_loadStyle = function( a, b ) {
 	var c = document.createElement( 'style' );
 	c.setAttribute( 'type', 'text/css' );
+	if ( b ) {
+		$.remove( b );
+		c.id = b;
+	}
 	if( c.styleSheet ) {
 		c.styleSheet.cssText = a;
 	} else {
@@ -308,7 +340,15 @@ _loadStyle = function( a ) {
 _uidCnt = 0,
 _guid  = function() { return (_uidCnt ++).toString( 36 ) + ':' },
 _arrfn = function( a ) { return Function( 'v,i,r', 'return(' + a + ')' ) },
-_fnapply = function( a, b, c, d ) { return b && b.isWidget ? b.formatJS( a, c, d ) : (typeof a === _FUN ? a : Function( c || '', a )).apply( b, d || A ) },
+_fnapply = $.fnapply = function( a, b, c, d ) {
+	if ( typeof a === _FUN ) {
+		return a.apply( b, d || A );
+	} else {
+		for ( var i = 0, r = {}, g = c.split(','), l = (d || A).length; i < l; i ++ )
+			r[ g[ i ] ] = d[ i ];
+		return b && b.isWidget && b.formatJS( a, r );
+	}
+},
 // 获取/设置全局唯一ID
 _uid = $.uid = function( o ) {
 	if ( o )
@@ -336,7 +376,7 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 	a = String( a );
 	b == N && (b = 3);
 	c == N && (c = ',');
-	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '';
+	var e = a.replace( /[^.\d]/g, '' ).split( '.' ), s = e[ 0 ], l = s.length, i = d ? 0 : l, t = '', n = a.charAt(0) === '-' ? '-' : '';
 	if ( d ) {
 		do {
 			i += b;
@@ -348,7 +388,18 @@ _numFormat = $.numFormat = function( a, b, c, d ) {
 			t = (i > 0 ? c + s.substr( i, b ) : s.substr( 0, b + i )) + t;
 		} while ( i > 0 );
 	}
-	return t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
+	return n + t + (e.length > 1 ? '.' + _strFrom( a, '.' ).replace( RegExp( '[.' + c + ']', 'g' ), '' ) : '');
+},
+// 调整小数位数
+_numDecimal = $.numDecimal = function( a, b ) {
+	if ( ! b ) {
+		return a;
+	} else if ( b < 0 ) {
+		return a;
+	} else {
+		var f = _strFrom( '' + a, '.' );
+		return f ? _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) : a;
+	}
 },
 _strTrim = $.strTrim = function (a ) {
 	return String( a ).replace( /^\s+|\s+$/g, '' );
@@ -422,7 +473,7 @@ _strEscape = $.strEscape = function( s ) {
 },
 // 在 a 中查找 b 并给 b 加上标签样式 c /@ a -> str, b -> key, c -> matchLength?, d -> key cls?
 _strHighlight = $.strHighlight = function( a, b, c, d ) {
-	return (a = a + '').replace( RegExp( '(<[\\/\\!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|").*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
+	return (a = a + '').replace( RegExp( '(<[\\/!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|")?.*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
 	   	return $3 === U ? $1 : '<em class="' + (d || 'f-keyword') + '">' + $3 + '</em>';
 	} );
 },
@@ -445,6 +496,7 @@ _strSplitword = $.strSplitword = function( a, b, c ) {
 },
 // 替换带$变量的字符串，如 "a.sp?id=$0" /@a -> url, b -> array/object, c -> urlEncode?
 _strFormat = $.strFormat = function( a, b, c ) {
+	a = a == N ? '' : '' + a;
 	if ( ! b )
 		return a;
 	if ( _isArray( b ) ) {
@@ -484,40 +536,52 @@ _scaleRange = $.scaleRange = function( a, b ) {
 	}
 	return a;
 },
-// 把数字a按照数组b切割
+// 把数字a按照数组b切割 / @a -> num, b -> array, c -> cover?(如果切割依据都是数字，那么可能会有剩余。设置此参数为true，剩余的数据平摊到结果中)
 // @example: _scale( 100, [ {value:'*',max:10}, {value:60}, {value:'*'} ] )
 //   返回: [ 10, 60, 30 ]
 // @example: _scale( null, [ '*', '60', '*' ] )
 //   返回: [ null, 60, null ]
-_scale = $.scale = function( a, b ) {
-	var l = b.length, i = 0, c = 0, p, s, v, t = 0, r = Array( l );
+_scale = $.scale = function( a, b, c ) {
+	var d = 0, e = a, l = b.length, i = 0, p, s, v, t = 0, r = Array( l );
 	for ( ; i < l; i ++ ) {
 		v = typeof b[ i ] === _OBJ ? b[ i ].value : b[ i ];
 		if ( v != N && isNaN( v ) ) {
-			a == N ? (r[ i ] = N) : v === '*' ? ( s = i, t ++ ) : p = i;
+			a == N ? (r[ i ] = N) : v === '*' ? (s = i, t ++) : p = i;
 		} else
-			c += (r[ i ] = v == N || v < 0 ? N : + v);
+			d += (r[ i ] = v == N || v < 0 ? N : + v);
 	}
 	if ( a == N ) return r;
 	if ( p !== U ) {
-		a = Math.max( 0, a - c );
+		a = Math.max( 0, a - d );
 		var z = 0;
-		for ( i = c = 0; i <= p; i ++ ) {
+		for ( i = d = 0; i <= p; i ++ ) {
 			v = typeof b[ i ] === _OBJ ? b[ i ].value : b[ i ];
 			if ( r[ i ] === U && typeof v === _STR && v.indexOf( '%' ) > 0 ) {
 				z += (v = parseFloat( v ));
-				c += (r[ i ] = _scaleRange( Math.floor( a * v / 100 ), b[ i ] ));
+				d += (r[ i ] = _scaleRange( Math.floor( a * v / 100 ), b[ i ] ));
 			}
 		}
 		if ( s === U && z == 100 )
-			r[ p ] = _scaleRange( Math.max( 0, r[ p ] + a - c ), b[ i ] );
+			r[ p ] = _scaleRange( Math.max( 0, r[ p ] + a - d ), b[ i ] );
 	}
 	if ( s !== U ) {
-		a = Math.max( 0, a - c );
-		for ( i = c = 0; i <= s; i ++ ) {
-			if ( r[ i ] === U ) c += (r[ i ] = _scaleRange( Math.floor( a / t ), b[ i ] ));
+		a = Math.max( 0, a - d );
+		for ( i = d = 0; i <= s; i ++ ) {
+			if ( r[ i ] === U ) d += (r[ i ] = _scaleRange( Math.floor( a / t ), b[ i ] ));
 		}
-		r[ s ] = _scaleRange( Math.max( 0, r[ s ] + a - c ), b[ s ] );
+		r[ s ] = _scaleRange( Math.max( 0, r[ s ] + a - d ), b[ s ] );
+	}
+	if ( c && p === U && s === U ) {
+		for ( i = 0, l = r.length, d = 0, t = 0; i < l; i ++ ) {
+			_isNumber( r[ i ] ) && (d += r[ i ], t ++);
+		}
+		if ( d < e ) {
+			var f = Math.floor( (e - d) / t );
+			for ( i = 0; i < l; i ++ )
+				_isNumber( r[ i ] ) && (r[ i ] += f);
+			for ( i = l; i >= 0; i -- )
+				if ( _isNumber( r[ i ] ) ) { (r[ i ] += e - d - (f * t)); break; }
+		}
 	}
 	return r;
 },
@@ -586,109 +650,20 @@ _jsonCut = $.jsonCut = function( a, b, c ) {
 	return a;
 },
 
-// 把 json 转为字符串
-_jsonString = $.jsonString = (function() {
-	if ( win.JSON )
-		return function() { return JSON.stringify.apply( JSON, arguments ) };
-	var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-	    es = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-	    meta = { '\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\' },
-		gap, idn, rep;
-	function quote( s ) {
-	    es.lastIndex = 0;
-	    return es.test( s ) ? '"' + s.replace( es, function( a ) {
-	            var c = meta[a];
-	            return typeof c === _STR ? c : '\\u' + ('0000' + a.charCodeAt( 0 ).toString( 16 )).slice( -4 );
-	        }) + '"' : '"' + s + '"';
-	}
-	function str( key, h ) {
-	    var i, k, v, length, mind = gap, _partial, u = h[ key ];
-	    if ( u && typeof u === _OBJ && u instanceof Date )
-	        u = _dateFormat( u, 'yyyy-mm-ddThh:ii:ssZ', T );
-	    if ( typeof rep === _FUN )
-	        u = rep.call(h, key, u);
-	    switch ( typeof u ) {
-	    case _STR:
-	        return quote( u );
-	    case _NUM:
-	        return isFinite( u ) ? u + '' : 'null';
-	    case 'boolean':
-	    case 'null':
-	        return u + '';
-	    case _OBJ:
-	        if ( ! u )
-	            return 'null';
-	        gap += idn;
-	        _partial = [];
-	       if ( _isArray( u ) ) {
-	            length = u.length;
-	            for ( i = 0; i < length; i ++ ) {
-	                _partial[ i ] = str( i, u ) || 'null';
-	            }
-	            v = _partial.length === 0 ? '[]' : gap ? '[\n' + gap + _partial.join(',\n' + gap) + '\n' + mind + ']' : '[' + _partial.join(',') + ']';
-	            gap = mind;
-	            return v;
-	        }
-	        if ( rep && typeof rep === _OBJ ) {
-	            length = rep.length;
-	            for ( i = 0; i < length; i ++ ) {
-	                k = rep[ i ];
-	                if ( typeof k === _STR && (v = str(k, u)) ) {
-	                	_partial.push(quote( k ) + (gap ? ': ' : ':') + v);
-	                }
-	            }
-	        } else {
-	            for ( k in u ) {
-	                if ( Object.hasOwnProperty.call( u, k ) ) {
-	                    if ( v = str( k, u ) )
-	                        _partial.push( quote( k ) + ( gap ? ': ' : ':' ) + v );
-	                }
-	            }
-	        }
-	        v = _partial.length === 0 ? '{}' : gap ? '{\n' + gap + _partial.join( ',\n' + gap ) + '\n' + mind + '}' : '{' + _partial.join( ',' ) + '}';
-	        gap = mind;
-	        return v;
-	    }
-	}
-	return function( u, r, s ) {
-	    var i;
-	    gap = '', idn = '';
-	    if ( typeof s === _NUM ) {
-	        for ( i = 0; i < s; i ++ )
-	            idn += ' ';
-	    } else if ( typeof s === _STR ) {
-	        idn = s;
-	    }
-	    rep = r;
-	    if ( r && typeof r !== _FUN && (typeof r !== _OBJ || typeof r.length !== _NUM ) ) {
-	        throw new Error( 'JSON.stringify' );
-	    }
-	    return str( '', { '' : u } );
-	};
-}()),
-_jsonParse = $.jsonParse = (function() {
-	return win.JSON ? function( a ) { return ! a ? N : JSON.parse.call( JSON, a ) } : function( a ) { return a == N ? N : (Function('return ' + a))() }
-})(),
-_jsonClone = $.jsonClone = (function() {
-	return win.JSON ? function( a ) { return typeof a === _OBJ ? _jsonParse( _jsonString( a ) ) : a } :
-		function( a ) {
-		    if( typeof a === _OBJ ) {
-		        if ( _isArray( a ) ) {
-		            for( var i = 0, b = []; i < a.length; i ++ )
-		            	b.push( _jsonClone( a[ i ] ) );
-		            return b;
-		        } else {
-		            var o = {}, k;
-		            for ( k in a )
-		                o[ k ] = _jsonClone( a[ k ] );
-		            return o;
-		        }
-		    }
-		    return a;
-		}
-})(),
+// 把 json 转为字符串 /@ a -> value, b -> replacer, c -> space
+_jsonString = $.jsonString = function( a, b, c ) {
+	return JSON.stringify( a, b, c );
+},
+// 把字符串 转为 json /@ a -> str
+_jsonParse = $.jsonParse = function( a ) {
+	return ! a ? N : JSON.parse( a );
+},
+// 复制 json
+_jsonClone = $.jsonClone = function( a ) {
+	return typeof a === _OBJ ? _jsonParse( _jsonString( a ) ) : a;
+},
 // 一天的毫秒数
-_date_D = 86400000,
+_date_D = $.DATE_DAY = 86400000,
 // 标准格式化字符串
 _date_sf = 'yyyy-mm-dd hh:ii:ss',
 // 格式化日期
@@ -707,15 +682,15 @@ _dateParse = $.dateParse = function( s, f ) {
 		if ( g == 'm' )
 			s = '2017-' + s;
 		else if ( g == 'd' )
-			s = '2017-01-' + s;
+			s = '2017-03-' + s;
 		else if ( g == 'h' )
-			s = '2017-01-01 ' + s;
+			s = '2017-03-01 ' + s;
 		else if ( g == 'i' )
-			s = '2017-01-01 00:' + s;
+			s = '2017-03-01 00:' + s;
 	}
 	var b = s.split( '-' );
 	if ( b.length === 1 )
-		s += '-02-01';
+		s += '-03-01';
 	else if ( b.length === 2 )
 		s += '-01';
 	var a = new Date( s.replace( /-/g, '/' ) );
@@ -872,7 +847,10 @@ _win = function( o ) { return o && (o = (o.ownerDocument || o)) ? (o.defaultView
 // 往 document.body 内写入内容
 _db = $.db = function( a, b ) { return a ? (_append( b || doc.body, a ), doc.body.lastChild) : doc.body },
 // 简写 getElementsByTagName
-_tags = $.tags = function( a, b ) { return (b || doc).getElementsByTagName( a ) },
+_tags = $.tags = function( a ) {
+	for ( var i = 0, c = doc.getElementsByTagName( a ), r = [], l = c.length; i < l; i ++ ) r.push( c[ i ] );
+	return r;
+},
 // 创建一个div /@ s -> html
 _div = function( s ) {
 	var o = doc.createElement( 'div' );
@@ -887,15 +865,6 @@ _frag = $.frag = function( s ) {
 		f.appendChild( d.firstChild );
 	try { return f } catch( e ) { return F }
 	finally { d = f = N }
-},
-// 解析 html 中的 <d:wg> 标签 /@a -> html, b -> view?
-_parseHTML = $.parseHTML = function( a, b ) {
-	if ( (a = a + '').indexOf( '<d:wg>' ) > -1 ) {
-		return a.replace( /<d:wg>([\s\S]+?)<\/d:wg>/gi, function( $0, $1 ) {
-			return (b || $.vm()).add( Function( $1.indexOf( 'javascript:' ) === 0 ? $1 : 'return(' + $1 + ')' ).call( b || $.vm() ), -1 ).html();
-		} );
-	}
-	return a;
 },
 _css_camelize = (function() {
 	var a = _div( F ), b;
@@ -953,6 +922,34 @@ _set_style = function( o, n, v ) {
 	}
 	return o;
 },
+_wmin = $.wmin = function( o ) {
+	if ( o.isWidget ) {
+		if ( o.x.wmin )
+			return o.x.wmin;
+		o = o.$();
+	}
+	var a = o.currentStyle, b = [ a.borderLeftWidth, a.borderRightWidth, a.paddingLeft, a.paddingRight, a.marginLeft, a.marginRight ], c = 0;
+	for( var i = 0, d; i < 6; i ++ ) {
+		d = parseFloat( b[ i ] );
+		if ( !isNaN( d ) )
+			c += d;
+	}
+	return Math.ceil( c );
+},
+_hmin = $.hmin = function( o ) {
+	if ( o.isWidget ) {
+		if ( o.x.wmin )
+			return o.x.wmin;
+		o = o.$();
+	}
+	var a = o.currentStyle, b = [ a.borderTopWidth, a.borderBottomWidth, a.paddingTop, a.paddingBottom, a.marginTop, a.marginBottom ], c = 0;
+	for( var i = 0, d; i < 6; i ++ ) {
+		d = parseFloat( b[ i ] );
+		if ( !isNaN( d ) )
+			c += d;
+	}
+	return Math.ceil( c );
+},
 // 以IeBox模式计算盒模型的应有宽高 / o -> HTML element, w -> width(对象o的期望宽度)
 _boxwd = $.boxwd = function( o, w ) {
 	w = w == N ? o.offsetWidth : parseFloat( w );
@@ -989,9 +986,8 @@ _html = $.html = function( o, s, r ) {
 			_html( o, s, 3 );
 		}
 	} else {
+		var b;
 		if ( typeof s === _STR ) {
-			if ( s.indexOf( '<d:wg>' ) > -1 )
-				s = _parseHTML( s, $.w( r % 2 ? o : o.parentNode ) );
 			try {
 				o.nodeType === 3 || ie ? $.query( o )[ _adjacent_query[ r ] ]( s ) : o.insertAdjacentHTML( _adjacent_where[ r ], s );
 			} catch ( ex ) {
@@ -1093,8 +1089,10 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 		c = _bcr( c );
 	else if ( c.isWidget )
 		c = _bcr( c.$() );
-	else if ( c.clientX != N )
+	else if ( c.originalEvent || c.clientX != N ) {
+		c = c.originalEvent || c;
 		c = { left: c.clientX, right: c.clientX, top: c.clientY, bottom: c.clientY };
+	}
 	var t = [], l = [], g, h, k = -1, f = _number( f ), ew = cvs.clientWidth, eh = cvs.clientHeight,
 		s = d ? (_snaptype[ d ] || ('' + d).split( ',' )) : _snaptype.a;
 	if ( /[1-4]/.test( s[ 0 ] ) ) { // 1-4是边角对齐 .
@@ -1230,8 +1228,9 @@ _cancel = $.cancel = function( a ) {
 // 记录鼠标事件发生的坐标
 _event_click = { click: T, dblclick: T, contextmenu: T, mousedown: T, mouseup: T },
 _point = $.point = function( e ) {
-	if( (e || (e = window.event)) && _event_click[ e.type ] )
-		_point.clientX = e.clientX, _point.clientY = e.clientY;
+	if( (e || (e = window.event)) && _event_click[ e.type ] ) {
+		_point.originalEvent = e, _point.offsetX = e.offsetX, _point.offsetY = e.offsetY, _point.clientX = e.clientX, _point.clientY = e.clientY;
+	}
 },
 _rngSelection = $.rngSelection = (function() {
 	return win.getSelection ? function() { var s = win.getSelection(); return s.rangeCount && s.getRangeAt( 0 ); } : function() { return doc.selection.createRange(); };
@@ -1261,6 +1260,7 @@ _rngCursor = $.rngCursor = function( a, b ) {
 		r.collapse( b != N );
 		r.select();
 	}
+	return r;
 },
 _rngCursorOffset = $.rngCursorOffset = function() {
 	var n = _rngSelection(), c = n.startOffset;
@@ -1486,6 +1486,7 @@ _ajax_data = function( e ) {
 	}
 	return e;
 },
+_ajax_httpmode = location.protocol === 'http:' || location.protocol === 'https:',
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
 _ajax_contexts = {},
@@ -1558,23 +1559,23 @@ Ajax = _createClass( {
 						} else
 							m = l.responseText;
 					} else
-						r = l.status;
-			        if ( r != N ) {
+						r = g || 'text';
+			        if ( r ) {
 			        	self.errorCode = l.status;
-						if ( f !== F && l.status ) {
-							if ( f ) {
-								_fnapply( f, c, '$ajax', [ self ] );
-							} else {
+						if ( f !== F && (_ajax_httpmode || l.status) ) {
+							typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
+							if ( f !== F ) {
 								var s = 'ajax ' + l.status + ': ' + a;
-								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? $.loc.ajax[ r ] : r + ' error') :
+								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
 								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
 							}
 						}
 				    } else {
-				    	! x.engine && (f = x.filter || _cfg.ajax_filter) && (m = _fnapply( f, c, '$value,$ajax', [ m, self ] ));
+				    	var t = x.filter;
+				    	t && (m = _fnapply( t, c, '$value,$ajax', [ m, self ] ));
 				    	self.response = m;
-						b && b.call( c, m, self );
+						m == N ? (f && _fnapply( f, c, '$ajax', [ self ] )) : (b && b.call( c, m, self ));
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 					}
 					x.complete && x.complete.call( c, m, self );
@@ -1645,9 +1646,16 @@ $.script = function( a, b ) {
 	}, ! b );
 }
 
-// 浏览器兼容
-function _compat() {
-	br.mobile ? _compatMobile() : _compatPC();
+// 浏览器JS兼容
+function _compatJS() {
+	var u = _lib + 'cp/';
+	! win.JSON && $.script( u + 'js-json.js' );
+	'a'.split( /a/ ).length === 0 && $.script( u + 'js-split.js' );
+}
+
+// 浏览器DOM兼容
+function _compatDOM() {
+	br.mobile ? _compatDOMMobile() : _compatDOMPC();
 	var tmp;
 	if ( !('ActiveXObject' in win) ) {
 		XMLDocument.prototype.loadXML = function( a ) {
@@ -1685,7 +1693,7 @@ function _compat() {
 		win.dispatchEvent( tmp );
 	}	
 }
-function _compatPC() {
+function _compatDOMPC() {
 	var tmp;
 	if ( window.Range && ! Range.prototype.movePoint ) {
 		if ( Range.prototype.__defineGetter__ ) {
@@ -1779,7 +1787,7 @@ function _compatPC() {
 	// 检测浏览器自带滚动条的宽度
 	br.chdiv( 'f-scroll-overflow', function() { br.scroll = 50 - this.clientWidth; } );
 }
-function _compatMobile() {
+function _compatDOMMobile() {
 	// 实现tap事件
 	var n, t, tmp;
 	$.query( doc ).on( 'touchstart', function( e ) {
@@ -1801,102 +1809,138 @@ function _compatMobile() {
 	}
 }
 
-/* 初始化配置 */
-function _initEnv() {
-	if ( _cfg.path != N )
-		_path = _cfg.path;
-	else
-		_cfg.path = _path;
-	if ( _cfg.lib != N )
-		_lib = _cfg.lib;
-	_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
-	_ui_path = _urlLoc( _path, _lib ) + 'ui/';
-	if ( noGlobal || _cfg.no_conflict ) {
-		(Date.$ = $).abbr = 'Date.$';
-	}
-	var _define  = new Define( _path ),
-		_require = new Require( _path ),
-		_wg_lib  = _lib + 'wg/',
-		_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-		_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
-	if ( ! _loc )
-		return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
-	for ( var k in _cfg.alias ) {
-		for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
-			_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
-	}
-	_define( 'dfish',  function() { return $ } );
-	_define( 'jquery', function() { return _jq } );
-	_define( 'loc',    function() { return _loc } );
-	
-	$.PATH = _path;
-	$.LIB  = _lib;
-	$.IMGPATH = _ui_path + 'g/';
-	$.version = version;
-	
-	$.loc     = _loc;
-	$.query   = _jq;
-	$.define  = _define;
-	$.require = _require;
-	$.skin( _cfg.skin );
 
-	var w = _require( _wg_lib + 'widget' );
-	$.vm  = w.vm;
-	$.e   = w.e;
-	$.widget = $.w = w.w;
-	$.dialog = _require( 'dialog' ).get;
-	$.scrollIntoView = w.scrollIntoView;
-	
-	if ( !(noGlobal || _cfg.no_conflict) ) {
-		win.$  = win.dfish  = $;
-		win.Q  = win.jQuery = _jq;
-		win.VM = $.vm;
-	}
-	// ie 需要定义 xmlns:d="urn:dfish" 用以解析 <d:wg> 标签
-	doc.namespaces && doc.namespaces.add( 'd', 'urn:dfish' );
-}
-function _initDocView( $ ) {
-	$.ready( function() {
-		_compat();
-		// 生成首页view
-		if ( _cfg.view ) {
-			$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+/* 引导启动 */
+var boot = {
+	init: function( x ) {
+		x && $.config( x );
+		this.initEnv(), this.initDocView();
+	},
+	ready: function( a ) {
+		this.fn = a;
+		br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', this.domReady ) : $.query( doc ).ready( this.domReady );
+	},
+	domReady: function() {
+		boot.dom_ok = T;
+		boot.callback();
+	},
+	cssReady: function() {
+		boot.css_ok = T;
+		boot.callback();
+	},
+	callback: function() {
+		this.dom_ok && this.css_ok && this.fn();
+	},
+	initEnv: function() {
+		if ( _cfg.path != N )
+			_path = _cfg.path;
+		else
+			_cfg.path = _path;
+		if ( _cfg.lib != N )
+			_lib = _cfg.lib;
+		_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
+		_ui_path = _urlLoc( _path, _lib ) + 'ui/';
+		
+		_compatJS();
+		
+		if ( noGlobal || _cfg.no_conflict ) {
+			(Date.$ = $).abbr = 'Date.$';
+		}
+		var _define  = new Define( _path ),
+			_require = new Require( _path ),
+			_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
+			_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
+			_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
+		if ( ! _loc )
+			return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
+		for ( var k in _cfg.alias ) {
+			for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
+				_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
+		}
+		_define( 'dfish',  function() { return $ } );
+		_define( 'jquery', function() { return _jq } );
+		_define( 'loc',    function() { return _loc } );
+		
+		$.PATH = _path;
+		$.LIB  = _lib;
+		$.IMGPATH = _ui_path + 'g/';
+		$.version = version;
+		
+		$.loc     = _loc;
+		$.query   = _jq;
+		$.define  = _define;
+		$.require = _require;
+
+		var w = _require( _wg_lib + 'widget' );
+		
+		if ( !(noGlobal || _cfg.no_conflict) ) {
+			win.Q  = win.jQuery = _jq;
+			win.VM = $.vm;
 		} else {
-			// 把 <d:wg> 标签转换为 widget
-			for ( var i = 0, d = _arrMake( _tags( br.css3 ? 'd:wg' : 'wg' ) ), j, l = d.length; i < l; i ++ ) {
-				if ( eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) ) )
-					$.widget( j ).render( d[ i ], 'replace' );
+			_$ && (win.$ = _$);
+		}
+		
+		$.skin( _cfg.skin, boot.cssReady );
+	},
+	initDocView: function() {
+		$.ready( function() {
+			_compatDOM();
+			// 生成首页view
+			if ( _cfg.view ) {
+				$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+			} else {
+				// 把 <d:wg> 标签转换为 widget
+				for ( var i = 0, d = _tags( 'script' ), j, l = d.length; i < l; i ++ ) {
+					if ( d.getAttribute( 'type' ) === 'dfish/widget' && (eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) )) )
+						$.widget( j ).render( d[ i ], 'replace' );
+				}
 			}
-		}
-		// ie6及以下浏览器，弹出浮动升级提示
-		if ( ie && br.ieVer < 7 ) {
-			VM().cmd({ type: 'tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
-				$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: doc.body, snaptype: 'tt', prong: F});
-		}
-	} );
-	// 调试模式
-	if ( _cfg.debug ) {
-		$.query( doc ).contextmenu( function( e ) {
-			if ( e.ctrlKey && ! $( ':develop' ) ) {
-				var m = $.vm( e.target ), c = $.bcr( m.$() ),
-					d = $.query( doc.body ).append( '<div id=:develop style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;position:absolute;border:2px dashed red;z-index:2"></div>' ),
-					g = m.closest( 'dialog' ), s = 'path: ' + m.path,
-					t = 'path: ' + m.path + (g ? '\ndialog: ' + (g.x.id || '') : '') + '\nsrc: <span onclick=event.ctrlKey&&window.open(this.innerText)>' + (m.x.src || '') + '</span>';
-				$.vm ? $.vm().cmd( { type: 'alert', text: t, on: { close: function() { _rm( ':develop' ) } } } ) : alert( t );
-				e.preventDefault();
+			// ie6及以下浏览器，弹出浮动升级提示
+			if ( ie && br.ieVer < 7 ) {
+				VM().cmd({ type: 'tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
+					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: doc.body, snaptype: 'tt', prong: F});
 			}
 		} );
+		// 调试模式
+		if ( _cfg.debug ) {
+			$.query( doc ).contextmenu( function( e ) {
+				if ( e.ctrlKey && ! $( ':develop' ) ) {
+					var m = $.vm( e.target ), c = $.bcr( m.$() ),
+						s = '<div class="f-develop" style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;"></div>',
+						d = m.closest( 'dialog' ),
+						t = 'path: ' + m.path + (d ? '\ndialog: ' + (d.x.id || '') : '') + '\nsrc: ' + (m.x.src || '');
+					if ( m.x.template )
+						t += '\ntemplate: ' + m.x.template;
+					if ( br.css3 ) {
+						Q( e.target ).closest( '[w-type="xsrc"],[w-type="tree"]' ).each( function() {
+							var g = $.all[ this.id ], c = $.bcr( this );
+							if ( g.x.template ) {
+								s += '<div class="f-develop z-tpl" style="width:' + (c.width - 6) + 'px;height:' + (c.height - 6) + 'px;left:' + (c.left + 1) + 'px;top:' + (c.top + 1) + 'px;">' +
+									'<div class=_t><span class=_s>id: ' + (g.x.id || '') + '<br>template: ' + (g.x.template || '') + '<br>src: ' + (g.x.src || '') + '</span></div>' +
+									'<div>';
+							}
+						} );
+					}
+					$.query( doc.body ).append( s );
+					setTimeout( function() {
+						$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { Q( '.f-develop' ).remove() } } ) : (alert( t ), Q( '.f-develop' ).remove());
+					}, 50 );
+					e.preventDefault();
+				}
+			} );
+		}
+		if ( ! br.mobile ) {
+			// firefox 没有 window.event 对象，需要监听鼠标点击事件，记录每次点击的坐标
+			br.fox && doc.addEventListener( 'mousedown', _point, T );
+			// 检测回退键
+			var k8;
+			$.query( doc ).on( 'keydown', function( e ) { (k8 = e.keyCode === 8) && br.ms && e.target.readOnly && e.preventDefault(); } );
+			$.query( doc ).on( 'keyup', function( e ) { k8 = F; } );
+			$.query( win ).on( 'beforeunload', function( e ) { if ( k8 ) { k8 = F; return br.fox ? ' ' : ''; } } );
+		}
 	}
-	if ( ! br.mobile ) {
-		// firefox 没有 window.event 对象，需要监听鼠标点击事件，记录每次点击的坐标
-		br.fox && doc.addEventListener( 'mousedown', _point, T );
-		// 检测回退键
-		var k8;
-		$.query( doc ).on( 'keydown', function( e ) { (k8 = e.keyCode === 8) && br.ms && e.target.readOnly && e.preventDefault(); } );
-		$.query( doc ).on( 'keyup', function( e ) { k8 = F; } );
-		$.query( win ).on( 'beforeunload', function( e ) { if ( k8 ) { k8 = F; return br.fox ? ' ' : ''; } } );
-	}
-}
+	
+};
 
 /* 初始化应用环境 */
 _merge( $, {
@@ -1905,7 +1949,6 @@ _merge( $, {
 	_data: {},
 	all: {},
 	globals: {},
-	templates: {},
 	// 事件白名单
 	white_events: (function() {
 		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,beforepaste,beforedeactivate,' +
@@ -1926,11 +1969,10 @@ _merge( $, {
 	},
 	// 设置全局配置，并初始化环境，只调一次
 	init: function( x ) {
-		x && this.config( x );
-		_initEnv(), _initDocView( this );
+		boot.init( x );
 	},
 	ready: function( a ) {
-		return br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', a ) : $.query( doc ).ready( a );
+		boot.ready( a );
 	},
 	use: function( a ) {
 		return (new Require( _path || '' ))( a );
@@ -1941,9 +1983,6 @@ _merge( $, {
 	// 存取临时变量
 	data: function( a, b ) {
 		return b === U ? this._data[ a ] : (this._data[ a ] = b);
-	},
-	template: function( a, b ) {
-		return b === U ? this.templates[ a ] : (this.templates[ a ] = b);
 	},
 	proxy: function( a, b ) {
 		typeof b === _STR && (b = Function( b ));
@@ -2043,7 +2082,22 @@ _merge( $, {
 			if ( c.tip ) t += ' title="' + _strQuot( c.tip ) + '"';
 			s.push( t );
 		}
-		return '<span' + (s[ 0 ] || '') + '>' + ( e ? '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>' : (d ? '<img src="' + d + '" class="_ico f-va"' + t + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '') + '>' : '') ) + '<i class=f-vi></i></span>';
+		var r = '<span' + (s[ 0 ] || '') + '>';
+		if ( e ) {
+			r += '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>';
+		} else {
+			if ( d ) {
+				r += '<img src="' + d + '" class="_ico f-va"' + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '');
+				if ( b && (b.maxwidth || b.maxheight) ) {
+					var t = '';
+					b.maxwidth && (t += 'max-width:' + b.maxwidth + 'px;');
+					b.maxheight && (t += 'max-height:' + b.maxheight + 'px;');
+					r += ' style="' + t + '"';
+				}
+				r += '>';
+			}
+		}
+		return r + '<i class=f-vi></i></span>';
 	},
 	arrow: function( a, b ) {
 		var c = b || a;
@@ -2051,6 +2105,33 @@ _merge( $, {
 			a.className = 'f-arw f-arw-' + c;
 		} else
 			return '<em class="f-arw f-arw-' + (c || 'b1') + '"' + (b ? ' id=' + a : '') + '></em>';
+	},
+	colIndex: function( o ) {
+	    var td = $.query( o ).closest( 'td' )[ 0 ], m = [], r,
+	    	$table = $.query( td ).closest( 'table, thead, tbody, tfoot' );
+	    $table.children( "tr" ).each( function( y, row ) {
+	        $.query( row ).children( "td, th" ).each( function( x, cell ) {
+	            var $cell = $.query( cell ),
+	                cspan = $cell.attr( "colspan" ) | 0,
+	                rspan = $cell.attr( "rowspan" ) | 0,
+	                tx, ty;
+	            cspan = cspan ? cspan : 1;
+	            rspan = rspan ? rspan : 1;
+	            for( ; m[y] && m[y][x]; ++x );  //skip already occupied cells in current row
+	            for( tx = x; tx < x + cspan; ++tx ) {  //mark matrix elements occupied by current cell with true
+	                for( ty = y; ty < y + rspan; ++ty ) {
+	                    if( !m[ty] ) {  //fill missing rows
+	                        m[ty] = [];
+	                    }
+	                    m[ty][tx] = true;
+	                }
+	            }
+	            if ( cell === td )
+	            	return (r = x);
+	        } );
+	        return r;
+	    } );
+	    return r;
 	},
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
@@ -2105,17 +2186,31 @@ _merge( $, {
 		c.appendTo( document.body );
 		b ? f.submit() : c.find( 'iframe' ).prop( 'src', a );
 	},
+	// 根据文件后缀名获取文件类型
+	mimeType: (function() {
+		var mimes = { ".323": "text/h323", ".3gp": "video/3gpp", ".aab": "application/x-authoware-bin", ".aam": "application/x-authoware-map", ".aas": "application/x-authoware-seg", ".acx": "application/internet-property-stream", ".ai": "application/postscript", ".aif": "audio/x-aiff", ".aifc": "audio/x-aiff", ".aiff": "audio/x-aiff", ".als": "audio/X-Alpha5", ".amc": "application/x-mpeg", ".apk": "application/vnd.android.package-archive", ".asc": "text/plain", ".asd": "application/astound", ".asf": "video/x-ms-asf", ".asn": "application/astound", ".asp": "application/x-asap", ".asr": "video/x-ms-asf", ".asx": "video/x-ms-asf", ".au": "audio/basic", ".avi": "video/x-msvideo", ".awb": "audio/amr-wb", ".axs": "application/olescript", ".bas": "text/plain", ".bcpio": "application/x-bcpio", ".bld": "application/bld", ".bld2": "application/bld2", ".bmp": "image/bmp", ".bz2": "application/x-bzip2", ".c": "text/plain", ".cal": "image/x-cals", ".cat": "application/vnd.ms-pkiseccat", ".ccn": "application/x-cnc", ".cco": "application/x-cocoa", ".cdf": "application/x-cdf", ".cer": "application/x-x509-ca-cert", ".cgi": "magnus-internal/cgi", ".chat": "application/x-chat", ".clp": "application/x-msclip", ".cmx": "image/x-cmx", ".co": "application/x-cult3d-object", ".cod": "image/cis-cod", ".conf": "text/plain", ".cpio": "application/x-cpio", ".cpp": "text/plain", ".cpt": "application/mac-compactpro", ".crd": "application/x-mscardfile", ".crl": "application/pkix-crl", ".crt": "application/x-x509-ca-cert", ".csh": "application/x-csh", ".csm": "chemical/x-csml", ".csml": "chemical/x-csml", ".css": "text/css", ".dcm": "x-lml/x-evm", ".dcr": "application/x-director", ".dcx": "image/x-dcx", ".der": "application/x-x509-ca-cert", ".dhtml": "text/html", ".dir": "application/x-director", ".dll": "application/x-msdownload", ".doc": "application/msword", ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".dot": "application/msword", ".dvi": "application/x-dvi", ".dwf": "drawing/x-dwf", ".dwg": "application/x-autocad", ".dxf": "application/x-autocad", ".dxr": "application/x-director", ".ebk": "application/x-expandedbook", ".emb": "chemical/x-embl-dl-nucleotide", ".embl": "chemical/x-embl-dl-nucleotide", ".eps": "application/postscript", ".epub": "application/epub+zip", ".eri": "image/x-eri", ".es": "audio/echospeech", ".esl": "audio/echospeech", ".etc": "application/x-earthtime", ".etx": "text/x-setext", ".evm": "x-lml/x-evm", ".evy": "application/envoy", ".fh4": "image/x-freehand", ".fh5": "image/x-freehand", ".fhc": "image/x-freehand", ".fif": "application/fractals", ".flr": "x-world/x-vrml", ".flv": "flv-application/octet-stream", ".fm": "application/x-maker", ".fpx": "image/x-fpx", ".fvi": "video/isivideo", ".gau": "chemical/x-gaussian-input", ".gca": "application/x-gca-compressed", ".gdb": "x-lml/x-gdb", ".gif": "image/gif", ".gps": "application/x-gps", ".gtar": "application/x-gtar", ".gz": "application/x-gzip",
+			".h": "text/plain", ".hdf": "application/x-hdf", ".hdm": "text/x-hdml", ".hdml": "text/x-hdml", ".hlp": "application/winhlp", ".hqx": "application/mac-binhex40", ".hta": "application/hta", ".htc": "text/x-component", ".htm": "text/html", ".html": "text/html", ".hts": "text/html", ".htt": "text/webviewhtml", ".ice": "x-conference/x-cooltalk", ".ico": "image/x-icon", ".ief": "image/ief", ".ifm": "image/gif", ".ifs": "image/ifs", ".iii": "application/x-iphone", ".imy": "audio/melody", ".ins": "application/x-internet-signup", ".ips": "application/x-ipscript", ".ipx": "application/x-ipix", ".isp": "application/x-internet-signup", ".it": "audio/x-mod", ".itz": "audio/x-mod", ".ivr": "i-world/i-vrml", ".j2k": "image/j2k", ".jad": "text/vnd.sun.j2me.app-descriptor", ".jam": "application/x-jam", ".jar": "application/java-archive", ".java": "text/plain", ".jfif": "image/pipeg", ".jnlp": "application/x-java-jnlp-file", ".jpe": "image/jpeg", ".jpeg": "image/jpeg", ".jpg": "image/jpeg", ".jpz": "image/jpeg", ".js": "application/x-javascript", ".jwc": "application/jwc", ".kjx": "application/x-kjx", ".lak": "x-lml/x-lak", ".latex": "application/x-latex", ".lcc": "application/fastman", ".lcl": "application/x-digitalloca", ".lcr": "application/x-digitalloca", ".lgh": "application/lgh", ".lml": "x-lml/x-lml", ".lmlpack": "x-lml/x-lmlpack", ".log": "text/plain", ".lsf": "video/x-la-asf", ".lsx": "video/x-la-asf", ".m13": "application/x-msmediaview", ".m14": "application/x-msmediaview", ".m15": "audio/x-mod", ".m3u": "audio/x-mpegurl", ".m3url": "audio/x-mpegurl", ".m4a": "audio/mp4a-latm", ".m4b": "audio/mp4a-latm", ".m4p": "audio/mp4a-latm", ".m4u": "video/vnd.mpegurl", ".m4v": "video/x-m4v", ".ma1": "audio/ma1", ".ma2": "audio/ma2", ".ma3": "audio/ma3", ".ma5": "audio/ma5", ".man": "application/x-troff-man", ".map": "magnus-internal/imagemap", ".mbd": "application/mbedlet", ".mct": "application/x-mascot", ".mdb": "application/x-msaccess", ".mdz": "audio/x-mod", ".me": "application/x-troff-me", ".mel": "text/x-vmel", ".mht": "message/rfc822", ".mhtml": "message/rfc822", ".mi": "application/x-mif", ".mid": "audio/mid", ".midi": "audio/midi", ".mif": "application/x-mif", ".mil": "image/x-cals", ".mio": "audio/x-mio", ".mmf": "application/x-skt-lbs", ".mng": "video/x-mng", ".mny": "application/x-msmoney", ".moc": "application/x-mocha", ".mocha": "application/x-mocha", ".mod": "audio/x-mod", ".mof": "application/x-yumekara", ".mol": "chemical/x-mdl-molfile", ".mop": "chemical/x-mopac-input", ".mov": "video/quicktime", ".movie": "video/x-sgi-movie", ".mp2": "video/mpeg", ".mp3": "audio/mpeg", ".mp4": "video/mp4", ".mpa": "video/mpeg", ".mpc": "application/vnd.mpohun.certificate", ".mpe": "video/mpeg", ".mpeg": "video/mpeg", ".mpg": "video/mpeg", ".mpg4": "video/mp4", ".mpga": "audio/mpeg", ".mpn": "application/vnd.mophun.application", ".mpp": "application/vnd.ms-project", ".mps": "application/x-mapserver", ".mpv2": "video/mpeg", ".mrl": "text/x-mrml", ".mrm": "application/x-mrm", ".ms": "application/x-troff-ms", ".msg": "application/vnd.ms-outlook", ".mts": "application/metastream", ".mtx": "application/metastream", ".mtz": "application/metastream", ".mvb": "application/x-msmediaview", ".mzv": "application/metastream", ".nar": "application/zip", ".nbmp": "image/nbmp", ".nc": "application/x-netcdf", ".ndb": "x-lml/x-ndb", ".ndwn": "application/ndwn", ".nif": "application/x-nif", ".nmz": "application/x-scream", ".nokia-op-logo": "image/vnd.nok-oplogo-color", ".npx": "application/x-netfpx", ".nsnd": "audio/nsnd", ".nva": "application/x-neva1", ".nws": "message/rfc822",
+			".oda": "application/oda", ".ogg": "audio/ogg", ".oom": "application/x-AtlasMate-Plugin", ".p10": "application/pkcs10", ".p12": "application/x-pkcs12", ".p7b": "application/x-pkcs7-certificates", ".p7c": "application/x-pkcs7-mime", ".p7m": "application/x-pkcs7-mime", ".p7r": "application/x-pkcs7-certreqresp", ".p7s": "application/x-pkcs7-signature", ".pac": "audio/x-pac", ".pae": "audio/x-epac", ".pan": "application/x-pan", ".pbm": "image/x-portable-bitmap", ".pcx": "image/x-pcx", ".pda": "image/x-pda", ".pdb": "chemical/x-pdb", ".pdf": "application/pdf", ".pfr": "application/font-tdpfr", ".pfx": "application/x-pkcs12", ".pgm": "image/x-portable-graymap", ".pict": "image/x-pict", ".pko": "application/ynd.ms-pkipko", ".pm": "application/x-perl", ".pma": "application/x-perfmon", ".pmc": "application/x-perfmon", ".pmd": "application/x-pmd", ".pml": "application/x-perfmon", ".pmr": "application/x-perfmon", ".pmw": "application/x-perfmon", ".png": "image/png", ".pnm": "image/x-portable-anymap", ".pnz": "image/png", ".pot,": "application/vnd.ms-powerpoint", ".ppm": "image/x-portable-pixmap", ".pps": "application/vnd.ms-powerpoint", ".ppt": "application/vnd.ms-powerpoint", ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation", ".pqf": "application/x-cprplayer", ".pqi": "application/cprplayer", ".prc": "application/x-prc", ".prf": "application/pics-rules", ".prop": "text/plain", ".proxy": "application/x-ns-proxy-autoconfig", ".ps": "application/postscript", ".ptlk": "application/listenup", ".pub": "application/x-mspublisher", ".pvx": "video/x-pv-pvx", ".qcp": "audio/vnd.qcelp", ".qt": "video/quicktime", ".qti": "image/x-quicktime", ".qtif": "image/x-quicktime", ".r3t": "text/vnd.rn-realtext3d", ".ra": "audio/x-pn-realaudio", ".ram": "audio/x-pn-realaudio", ".ras": "image/x-cmu-raster", ".rc": "text/plain", ".rdf": "application/rdf+xml", ".rf": "image/vnd.rn-realflash", ".rgb": "image/x-rgb", ".rlf": "application/x-richlink", ".rm": "audio/x-pn-realaudio", ".rmf": "audio/x-rmf", ".rmi": "audio/mid", ".rmm": "audio/x-pn-realaudio", ".rmvb": "audio/x-pn-realaudio", ".rnx": "application/vnd.rn-realplayer", ".roff": "application/x-troff", ".rp": "image/vnd.rn-realpix", ".rpm": "audio/x-pn-realaudio-plugin", ".rt": "text/vnd.rn-realtext", ".rte": "x-lml/x-gps", ".rtf": "application/rtf", ".rtg": "application/metastream", ".rtx": "text/richtext", ".rv": "video/vnd.rn-realvideo", ".rwc": "application/x-rogerwilco", ".s3m": "audio/x-mod", ".s3z": "audio/x-mod", ".sca": "application/x-supercard", ".scd": "application/x-msschedule", ".sct": "text/scriptlet", ".sdf": "application/e-score", ".sea": "application/x-stuffit", ".setpay": "application/set-payment-initiation", ".setreg": "application/set-registration-initiation", ".sgm": "text/x-sgml", ".sgml": "text/x-sgml", ".sh": "application/x-sh", ".shar": "application/x-shar", ".shtml": "magnus-internal/parsed-html", ".shw": "application/presentations", ".si6": "image/si6", ".si7": "image/vnd.stiwap.sis", ".si9": "image/vnd.lgtwap.sis", ".sis": "application/vnd.symbian.install", ".sit": "application/x-stuffit", ".skd": "application/x-Koan", ".skm": "application/x-Koan", ".skp": "application/x-Koan", ".skt": "application/x-Koan", ".slc": "application/x-salsa", ".smd": "audio/x-smd", ".smi": "application/smil", ".smil": "application/smil", ".smp": "application/studiom", ".smz": "audio/x-smd", ".snd": "audio/basic", ".spc": "application/x-pkcs7-certificates", ".spl": "application/futuresplash", ".spr": "application/x-sprite", ".sprite": "application/x-sprite", ".sdp": "application/sdp", ".spt": "application/x-spt",
+			".src": "application/x-wais-source", ".sst": "application/vnd.ms-pkicertstore", ".stk": "application/hyperstudio", ".stl": "application/vnd.ms-pkistl", ".stm": "text/html", ".svg": "image/svg+xml", ".sv4cpio": "application/x-sv4cpio", ".sv4crc": "application/x-sv4crc", ".svf": "image/vnd", ".svg": "image/svg+xml", ".svh": "image/svh", ".svr": "x-world/x-svr", ".swf": "application/x-shockwave-flash", ".swfl": "application/x-shockwave-flash", ".t": "application/x-troff", ".talk": "text/x-speech", ".tar": "application/x-tar", ".taz": "application/x-tar", ".tbp": "application/x-timbuktu", ".tbt": "application/x-timbuktu", ".tcl": "application/x-tcl", ".tex": "application/x-tex", ".texi": "application/x-texinfo", ".texinfo": "application/x-texinfo", ".tgz": "application/x-compressed", ".thm": "application/vnd.eri.thm", ".tif": "image/tiff", ".tiff": "image/tiff", ".tki": "application/x-tkined", ".tkined": "application/x-tkined", ".toc": "application/toc", ".toy": "image/toy", ".tr": "application/x-troff", ".trk": "x-lml/x-gps", ".trm": "application/x-msterminal", ".tsi": "audio/tsplayer", ".tsp": "application/dsptype", ".tsv": "text/tab-separated-values", ".ttz": "application/t-time", ".txt": "text/plain", ".uls": "text/iuls", ".ult": "audio/x-mod", ".ustar": "application/x-ustar", ".uu": "application/x-uuencode", ".uue": "application/x-uuencode", ".vcd": "application/x-cdlink", ".vcf": "text/x-vcard", ".vdo": "video/vdo", ".vib": "audio/vib", ".viv": "video/vivo", ".vivo": "video/vivo", ".vmd": "application/vocaltec-media-desc", ".vmf": "application/vocaltec-media-file", ".vmi": "application/x-dreamcast-vms-info", ".vms": "application/x-dreamcast-vms", ".vox": "audio/voxware", ".vqe": "audio/x-twinvq-plugin", ".vqf": "audio/x-twinvq", ".vql": "audio/x-twinvq", ".vre": "x-world/x-vream", ".vrml": "x-world/x-vrml", ".vrt": "x-world/x-vrt", ".vrw": "x-world/x-vream", ".vts": "workbook/formulaone", ".wav": "audio/x-wav", ".wax": "audio/x-ms-wax", ".wbmp": "image/vnd.wap.wbmp", ".wcm": "application/vnd.ms-works", ".wdb": "application/vnd.ms-works", ".web": "application/vnd.xara", ".wi": "image/wavelet", ".wis": "application/x-InstallShield", ".wks": "application/vnd.ms-works", ".wm": "video/x-ms-wm", ".wma": "audio/x-ms-wma", ".wmd": "application/x-ms-wmd", ".wmf": "application/x-msmetafile", ".wml": "text/vnd.wap.wml", ".wmlc": "application/vnd.wap.wmlc", ".wmls": "text/vnd.wap.wmlscript", ".wmlsc": "application/vnd.wap.wmlscriptc", ".wmlscript": "text/vnd.wap.wmlscript", ".wmv": "audio/x-ms-wmv", ".wmx": "video/x-ms-wmx", ".wmz": "application/x-ms-wmz", ".wpng": "image/x-up-wpng", ".wpt": "x-lml/x-gps", ".wri": "application/x-mswrite", ".wrl": "x-world/x-vrml", ".wrz": "x-world/x-vrml", ".ws": "text/vnd.wap.wmlscript", ".wsc": "application/vnd.wap.wmlscriptc", ".wv": "video/wavelet", ".wvx": "video/x-ms-wvx", ".wxl": "application/x-wxl", ".x-gzip": "application/x-gzip", ".xaf": "x-world/x-vrml", ".xar": "application/vnd.xara", ".xbm": "image/x-xbitmap", ".xdm": "application/x-xdma", ".xdma": "application/x-xdma", ".xdw": "application/vnd.fujixerox.docuworks", ".xht": "application/xhtml+xml", ".xhtm": "application/xhtml+xml", ".xhtml": "application/xhtml+xml", ".xla": "application/vnd.ms-excel", ".xlc": "application/vnd.ms-excel", ".xll": "application/x-excel", ".xlm": "application/vnd.ms-excel", ".xls": "application/vnd.ms-excel", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlt": "application/vnd.ms-excel", ".xlw": "application/vnd.ms-excel", ".xm": "audio/x-mod",
+			".xml":"application/xml", ".xmz": "audio/x-mod", ".xof": "x-world/x-vrml", ".xpi": "application/x-xpinstall", ".xpm": "image/x-xpixmap", ".xsit": "text/xml", ".xsl": "text/xml", ".xul": "text/xul", ".xwd": "image/x-xwindowdump", ".xyz": "chemical/x-pdb", ".yz1": "application/x-yz1", ".z": "application/x-compress", ".zac": "application/x-zaurus-zac", ".json": "application/json", ".vsd":"application/vnd.visio", ".pot":"application/vnd.ms-powerpoint", ".et": "application/kset", ".wps": "application/kswps", ".dps": "application/ksdps" };
+		return function( a ) {
+			var b = _strFrom( a, '.', T );
+			return mimes[ '.' + b ];
+		}
+	})(),
 	//导入皮肤css /a -> { dir: 'css/', theme: 'classic', color: 'blue' }
 	skin: (function() {
 		var did = _uid(), gid = _uid(), tid = _uid(), cid = _uid(), y = {};
-		return function( x ) {
-			_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
+		return function( x, f ) {
+			var s = [], d = [];
 			if ( ! $( did ) ) {
-				$.query( 'head' ).append( '<link rel="stylesheet" id=' + did + ' href="' + _ui_path + 'dfish.css' + _ver + '">' );
-				br.mobile && $.query( 'head' ).append( '<link rel="stylesheet" href="' + _ui_path + 'mobile.css' + _ver + '">' );
+				_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
+				var k = location.protocol + '//' + location.host + _ui_path + 'g/';
+				_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
+				s.push( _ui_path + 'dfish.css' );
+				d.push( did );
+				br.mobile && (s.push(_ui_path + 'mobile.css'), d.push(''));
 			}
-			var k = location.protocol + '//' + location.host + _ui_path + 'g/';
-			_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
 			if ( x ) {
 				x = _extend( {}, x, y );
 				if ( x.theme != y.theme ) {
@@ -2124,28 +2219,20 @@ _merge( $, {
 					_rm( cid );
 				}
 				y = x;
-				if ( ! $( gid ) )
-					$.query( 'head' ).append( '<link id=' + gid + ' rel="stylesheet" href="' + _path + x.dir + 'global.css' + _ver + '">' );
-				if ( ! $( tid ) )
-					$.query( $( gid ) ).after( '<link id=' + tid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.theme + '.css' + _ver + '">' );
-				if ( ! $( cid ) )
-					$.query( $( tid ) ).after( '<link id=' + cid + ' rel="stylesheet" href="' + _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' + _ver + '">' );
+				! $( gid ) && (s.push( _path + x.dir + 'global.css' ), d.push( gid ));
+				! $( tid ) && (s.push( _path + x.dir + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
+				! $( cid ) && (s.push( _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
 			}
+			_loadCss( s, d, f );
 		}
 	})(),
 	// @a -> image array, b -> id
 	previewImage: function( a, b ) {
-		if ( typeof a === _STR )
-			a = _jsonParse( a );
-		for ( var i = 0, d = a[ 0 ]; i < a.length; i ++ ) {
-			if ( a[ i ].id == b ) {
-				d = a[ i ];
-				break;
-			}
-		}
-		var w = Math.max( 600, $.width() - 300 ), h = Math.max( 400, $.height() - 100 ),
-			d = $.vm().cmd( { type: 'dialog', cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
-				node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + (d.url || d.thumbnail) + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px"><em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
+		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
+		$.vm().cmd( { type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
+			node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
+				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	/* ! 把range内的图片变成缩略图
 	 * @range: htmlElement
@@ -2259,6 +2346,9 @@ _merge( $, {
 	j: function( a ) {
 		alert( $.jsonString( a ) );
 	},
+	debug: function() {
+		if ( _cfg.debug ) debugger;
+	},
 	winbox: function( a ) {
 		alert( a );
 	},
@@ -2271,17 +2361,17 @@ _merge( $, {
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
 		$.query( ':text,textarea', d ).each( function() {
-			var h = this.outerHTML, v;
+			var h = this.outerHTML, v, r;
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					h = g.$().outerHTML; v = g.text();
+					h = g.$().outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
 				} else
 					v = this.value;
 			} else {
 				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
 			}
-			s = s.replace( h, v );
+			s = s.replace( h, v + (r || '') );
 		} );
 		$.query( ':radio,:checkbox', d ).each( function() {
 			if ( y.input2text ) {
@@ -2319,9 +2409,10 @@ _merge( $, {
 	}
 } );
 
-if ( ! noGlobal )
-	win.dfish = dfish;
-
+if ( ! noGlobal ) {
+	win.dfish = win.$ = dfish;
+}
+// 获取引擎路径
 getPath();
 
 return dfish;

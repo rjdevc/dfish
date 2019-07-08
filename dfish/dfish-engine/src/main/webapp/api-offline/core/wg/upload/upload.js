@@ -58,6 +58,7 @@ SWFUpload.version = "2.5.0 2010-01-15 Beta 2";
 SWFUpload.QUEUE_ERROR = {
 	QUEUE_LIMIT_EXCEEDED            : -100,
 	FILE_EXCEEDS_SIZE_LIMIT         : -110,
+	FILE_MIN_SIZE_LIMIT         	: -111,
 	ZERO_BYTE_FILE                  : -120,
 	INVALID_FILETYPE                : -130
 };
@@ -216,10 +217,10 @@ SWFUpload.prototype.initSettings = function (userSettings) {
 
 	this.ensureDefault("custom_settings", {});
 	
-	this.ensureDefault("button_html", null);
-	this.ensureDefault("title_width", null);
-	this.ensureDefault("down_url", null);
-	this.ensureDefault("face", null);
+//	this.ensureDefault("button_html", null);
+//	this.ensureDefault("title_width", null);
+//	this.ensureDefault("down_url", null);
+//	this.ensureDefault("face", null);
 	
 
 	// Other settings
@@ -1134,6 +1135,13 @@ SWFUpload.Console.writeLine = function (message) {
 var swfobject = function(){var D="undefined",r="object",S="Shockwave Flash",W="ShockwaveFlash.ShockwaveFlash",q="application/x-shockwave-flash",R="SWFObjectExprInst",x="onreadystatechange",O=window,j=document,t=navigator,T=false,U=[h],o=[],N=[],I=[],l,Q,E,B,J=false,a=false,n,G,m=true,M=function(){var aa=typeof j.getElementById!=D&&typeof j.getElementsByTagName!=D&&typeof j.createElement!=D,ah=t.userAgent.toLowerCase(),Y=t.platform.toLowerCase(),ae=Y?/win/.test(Y):/win/.test(ah),ac=Y?/mac/.test(Y):/mac/.test(ah),af=/webkit/.test(ah)?parseFloat(ah.replace(/^.*webkit\/(\d+(\.\d+)?).*$/,"$1")):false,X=!+"\v1",ag=[0,0,0],ab=null;if(typeof t.plugins!=D&&typeof t.plugins[S]==r){ab=t.plugins[S].description;if(ab&&!(typeof t.mimeTypes!=D&&t.mimeTypes[q]&&!t.mimeTypes[q].enabledPlugin)){T=true;X=false;ab=ab.replace(/^.*\s+(\S+\s+\S+$)/,"$1");ag[0]=parseInt(ab.replace(/^(.*)\..*$/,"$1"),10);ag[1]=parseInt(ab.replace(/^.*\.(.*)\s.*$/,"$1"),10);ag[2]=/[a-zA-Z]/.test(ab)?parseInt(ab.replace(/^.*[a-zA-Z]+(.*)$/,"$1"),10):0}}else{if(typeof O.ActiveXObject!=D){try{var ad=new ActiveXObject(W);if(ad){ab=ad.GetVariable("$version");if(ab){X=true;ab=ab.split(" ")[1].split(",");ag=[parseInt(ab[0],10),parseInt(ab[1],10),parseInt(ab[2],10)]}}}catch(Z){}}}return{w3:aa,pv:ag,wk:af,ie:X,win:ae,mac:ac}}(),k=function(){if(!M.w3){return}if((typeof j.readyState!=D&&j.readyState=="complete")||(typeof j.readyState==D&&(j.getElementsByTagName("body")[0]||j.body))){f()}if(!J){if(typeof j.addEventListener!=D){j.addEventListener("DOMContentLoaded",f,false)}if(M.ie&&M.win){j.attachEvent(x,function(){if(j.readyState=="complete"){j.detachEvent(x,arguments.callee);f()}});if(O==top){(function(){if(J){return}try{j.documentElement.doScroll("left")}catch(X){setTimeout(arguments.callee,0);return}f()})()}}if(M.wk){(function(){if(J){return}if(!/loaded|complete/.test(j.readyState)){setTimeout(arguments.callee,0);return}f()})()}s(f)}}();function f(){if(J){return}try{var Z=j.getElementsByTagName("body")[0].appendChild(C("span"));Z.parentNode.removeChild(Z)}catch(aa){return}J=true;var X=U.length;for(var Y=0;Y<X;Y++){U[Y]()}}function K(X){if(J){X()}else{U[U.length]=X}}function s(Y){if(typeof O.addEventListener!=D){O.addEventListener("load",Y,false)}else{if(typeof j.addEventListener!=D){j.addEventListener("load",Y,false)}else{if(typeof O.attachEvent!=D){i(O,"onload",Y)}else{if(typeof O.onload=="function"){var X=O.onload;O.onload=function(){X();Y()}}else{O.onload=Y}}}}}function h(){if(T){V()}else{H()}}function V(){var X=j.getElementsByTagName("body")[0];var aa=C(r);aa.setAttribute("type",q);var Z=X.appendChild(aa);if(Z){var Y=0;(function(){if(typeof Z.GetVariable!=D){var ab=Z.GetVariable("$version");if(ab){ab=ab.split(" ")[1].split(",");M.pv=[parseInt(ab[0],10),parseInt(ab[1],10),parseInt(ab[2],10)]}}else{if(Y<10){Y++;setTimeout(arguments.callee,10);return}}X.removeChild(aa);Z=null;H()})()}else{H()}}function H(){var ag=o.length;if(ag>0){for(var af=0;af<ag;af++){var Y=o[af].id;var ab=o[af].callbackFn;var aa={success:false,id:Y};if(M.pv[0]>0){var ae=c(Y);if(ae){if(F(o[af].swfVersion)&&!(M.wk&&M.wk<312)){w(Y,true);if(ab){aa.success=true;aa.ref=z(Y);ab(aa)}}else{if(o[af].expressInstall&&A()){var ai={};ai.data=o[af].expressInstall;ai.width=ae.getAttribute("width")||"0";ai.height=ae.getAttribute("height")||"0";if(ae.getAttribute("class")){ai.styleclass=ae.getAttribute("class")}if(ae.getAttribute("align")){ai.align=ae.getAttribute("align")}var ah={};var X=ae.getElementsByTagName("param");var ac=X.length;for(var ad=0;ad<ac;ad++){if(X[ad].getAttribute("name").toLowerCase()!="movie"){ah[X[ad].getAttribute("name")]=X[ad].getAttribute("value")}}P(ai,ah,Y,ab)}else{p(ae);if(ab){ab(aa)}}}}}else{w(Y,true);if(ab){var Z=z(Y);if(Z&&typeof Z.SetVariable!=D){aa.success=true;aa.ref=Z}ab(aa)}}}}}function z(aa){var X=null;var Y=c(aa);if(Y&&Y.nodeName=="OBJECT"){if(typeof Y.SetVariable!=D){X=Y}else{var Z=Y.getElementsByTagName(r)[0];if(Z){X=Z}}}return X}function A(){return !a&&F("6.0.65")&&(M.win||M.mac)&&!(M.wk&&M.wk<312)}function P(aa,ab,X,Z){a=true;E=Z||null;B={success:false,id:X};var ae=c(X);if(ae){if(ae.nodeName=="OBJECT"){l=g(ae);Q=null}else{l=ae;Q=X}aa.id=R;if(typeof aa.width==D||(!/%$/.test(aa.width)&&parseInt(aa.width,10)<310)){aa.width="310"}if(typeof aa.height==D||(!/%$/.test(aa.height)&&parseInt(aa.height,10)<137)){aa.height="137"}j.title=j.title.slice(0,47)+" - Flash Player Installation";var ad=M.ie&&M.win?"ActiveX":"PlugIn",ac="MMredirectURL="+O.location.toString().replace(/&/g,"%26")+"&MMplayerType="+ad+"&MMdoctitle="+j.title;if(typeof ab.flashvars!=D){ab.flashvars+="&"+ac}else{ab.flashvars=ac}if(M.ie&&M.win&&ae.readyState!=4){var Y=C("div");X+="SWFObjectNew";Y.setAttribute("id",X);ae.parentNode.insertBefore(Y,ae);ae.style.display="none";(function(){if(ae.readyState==4){ae.parentNode.removeChild(ae)}else{setTimeout(arguments.callee,10)}})()}u(aa,ab,X)}}function p(Y){if(M.ie&&M.win&&Y.readyState!=4){var X=C("div");Y.parentNode.insertBefore(X,Y);X.parentNode.replaceChild(g(Y),X);Y.style.display="none";(function(){if(Y.readyState==4){Y.parentNode.removeChild(Y)}else{setTimeout(arguments.callee,10)}})()}else{Y.parentNode.replaceChild(g(Y),Y)}}function g(ab){var aa=C("div");if(M.win&&M.ie){aa.innerHTML=ab.innerHTML}else{var Y=ab.getElementsByTagName(r)[0];if(Y){var ad=Y.childNodes;if(ad){var X=ad.length;for(var Z=0;Z<X;Z++){if(!(ad[Z].nodeType==1&&ad[Z].nodeName=="PARAM")&&!(ad[Z].nodeType==8)){aa.appendChild(ad[Z].cloneNode(true))}}}}}return aa}function u(ai,ag,Y){var X,aa=c(Y);if(M.wk&&M.wk<312){return X}if(aa){if(typeof ai.id==D){ai.id=Y}if(M.ie&&M.win){var ah="";for(var ae in ai){if(ai[ae]!=Object.prototype[ae]){if(ae.toLowerCase()=="data"){ag.movie=ai[ae]}else{if(ae.toLowerCase()=="styleclass"){ah+=' class="'+ai[ae]+'"'}else{if(ae.toLowerCase()!="classid"){ah+=" "+ae+'="'+ai[ae]+'"'}}}}}var af="";for(var ad in ag){if(ag[ad]!=Object.prototype[ad]){af+='<param name="'+ad+'" value="'+ag[ad]+'" />'}}aa.outerHTML='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'+ah+">"+af+"</object>";N[N.length]=ai.id;X=c(ai.id)}else{var Z=C(r);Z.setAttribute("type",q);for(var ac in ai){if(ai[ac]!=Object.prototype[ac]){if(ac.toLowerCase()=="styleclass"){Z.setAttribute("class",ai[ac])}else{if(ac.toLowerCase()!="classid"){Z.setAttribute(ac,ai[ac])}}}}for(var ab in ag){if(ag[ab]!=Object.prototype[ab]&&ab.toLowerCase()!="movie"){e(Z,ab,ag[ab])}}aa.parentNode.replaceChild(Z,aa);X=Z}}return X}function e(Z,X,Y){var aa=C("param");aa.setAttribute("name",X);aa.setAttribute("value",Y);Z.appendChild(aa)}function y(Y){var X=c(Y);if(X&&X.nodeName=="OBJECT"){if(M.ie&&M.win){X.style.display="none";(function(){if(X.readyState==4){b(Y)}else{setTimeout(arguments.callee,10)}})()}else{X.parentNode.removeChild(X)}}}function b(Z){var Y=c(Z);if(Y){for(var X in Y){if(typeof Y[X]=="function"){Y[X]=null}}Y.parentNode.removeChild(Y)}}function c(Z){var X=null;try{X=j.getElementById(Z)}catch(Y){}return X}function C(X){return j.createElement(X)}function i(Z,X,Y){Z.attachEvent(X,Y);I[I.length]=[Z,X,Y]}function F(Z){var Y=M.pv,X=Z.split(".");X[0]=parseInt(X[0],10);X[1]=parseInt(X[1],10)||0;X[2]=parseInt(X[2],10)||0;return(Y[0]>X[0]||(Y[0]==X[0]&&Y[1]>X[1])||(Y[0]==X[0]&&Y[1]==X[1]&&Y[2]>=X[2]))?true:false}function v(ac,Y,ad,ab){if(M.ie&&M.mac){return}var aa=j.getElementsByTagName("head")[0];if(!aa){return}var X=(ad&&typeof ad=="string")?ad:"screen";if(ab){n=null;G=null}if(!n||G!=X){var Z=C("style");Z.setAttribute("type","text/css");Z.setAttribute("media",X);n=aa.appendChild(Z);if(M.ie&&M.win&&typeof j.styleSheets!=D&&j.styleSheets.length>0){n=j.styleSheets[j.styleSheets.length-1]}G=X}if(M.ie&&M.win){if(n&&typeof n.addRule==r){n.addRule(ac,Y)}}else{if(n&&typeof j.createTextNode!=D){n.appendChild(j.createTextNode(ac+" {"+Y+"}"))}}}function w(Z,X){if(!m){return}var Y=X?"visible":"hidden";if(J&&c(Z)){c(Z).style.visibility=Y}else{v("#"+Z,"visibility:"+Y)}}function L(Y){var Z=/[\\\"<>\.;]/;var X=Z.exec(Y)!=null;return X&&typeof encodeURIComponent!=D?encodeURIComponent(Y):Y}var d=function(){if(M.ie&&M.win){window.attachEvent("onunload",function(){var ac=I.length;for(var ab=0;ab<ac;ab++){I[ab][0].detachEvent(I[ab][1],I[ab][2])}var Z=N.length;for(var aa=0;aa<Z;aa++){y(N[aa])}for(var Y in M){M[Y]=null}M=null;for(var X in swfobject){swfobject[X]=null}swfobject=null})}}();return{registerObject:function(ab,X,aa,Z){if(M.w3&&ab&&X){var Y={};Y.id=ab;Y.swfVersion=X;Y.expressInstall=aa;Y.callbackFn=Z;o[o.length]=Y;w(ab,false)}else{if(Z){Z({success:false,id:ab})}}},getObjectById:function(X){if(M.w3){return z(X)}},embedSWF:function(ab,ah,ae,ag,Y,aa,Z,ad,af,ac){var X={success:false,id:ah};if(M.w3&&!(M.wk&&M.wk<312)&&ab&&ah&&ae&&ag&&Y){w(ah,false);K(function(){ae+="";ag+="";var aj={};if(af&&typeof af===r){for(var al in af){aj[al]=af[al]}}aj.data=ab;aj.width=ae;aj.height=ag;var am={};if(ad&&typeof ad===r){for(var ak in ad){am[ak]=ad[ak]}}if(Z&&typeof Z===r){for(var ai in Z){if(typeof am.flashvars!=D){am.flashvars+="&"+ai+"="+Z[ai]}else{am.flashvars=ai+"="+Z[ai]}}}if(F(Y)){var an=u(aj,am,ah);if(aj.id==ah){w(ah,true)}X.success=true;X.ref=an}else{if(aa&&A()){aj.data=aa;P(aj,am,ah,ac);return}else{w(ah,true)}}if(ac){ac(X)}})}else{if(ac){ac(X)}}},switchOffAutoHideShow:function(){m=false},ua:M,getFlashPlayerVersion:function(){return{major:M.pv[0],minor:M.pv[1],release:M.pv[2]}},hasFlashPlayerVersion:F,createSWF:function(Z,Y,X){if(M.w3){return u(Z,Y,X)}else{return undefined}},showExpressInstall:function(Z,aa,X,Y){if(M.w3&&A()){P(Z,aa,X,Y)}},removeSWF:function(X){if(M.w3){y(X)}},createCSS:function(aa,Z,Y,X){if(M.w3){v(aa,Z,Y,X)}},addDomLoadEvent:K,addLoadEvent:s,getQueryParamValue:function(aa){var Z=j.location.search||j.location.hash;if(Z){if(/\?/.test(Z)){Z=Z.split("?")[1]}if(aa==null){return L(Z)}var Y=Z.split("&");for(var X=0;X<Y.length;X++){if(Y[X].substring(0,Y[X].indexOf("="))==aa){return L(Y[X].substring((Y[X].indexOf("=")+1)))}}}return""},expressInstallCallback:function(){if(a){var X=c(R);if(X&&l){X.parentNode.replaceChild(l,X);if(Q){w(Q,true);if(M.ie&&M.win){l.style.display="block"}}if(E){E(B)}}a=false}}}}();
 swfobject.addDomLoadEvent(function () {if (typeof(SWFUpload.onload) === "function") {SWFUpload.onload.call(window);}});
 
+/*
+   { type: 'upload/file', downloadsrc: "xxx", previewsrc: "xxx" }
+   如果只配置了 downloadsrc，点击文件都是下载。
+   如果同时配置 downloadsrc 和 previewsrc，downloadsrc无效，previewsrc有效。
+   如果只设置 previewsrc，返回命令做处置。
+   如果需要特殊处理，比如doc文件要预览，那么设置 pub: { on: { click: "myFile.doSomething($id,$name);return false;" }
+ */
 
 /* `upload` */
 var U,
@@ -1143,10 +1151,13 @@ Loc = require( 'loc' ),
 Horz = require( 'horz' ),
 Button = require( 'button' ),
 Buttonbar = require( 'buttonbar' ),
+AbsForm = require( 'abs/form' ),
+
+evw = $.abbr + '.w(this)',
 
 BaseUpload = define.widget( 'upload/base', {
 	Const: function( x, p, n ) {
-		W.apply( this, arguments );
+		AbsForm.apply( this, arguments );
 		this.x = $.merge( {
 			file_size_limit: '2MB',
 			file_types: '*.*',
@@ -1155,7 +1166,7 @@ BaseUpload = define.widget( 'upload/base', {
 			button_disabled: !!(x.status && x.status !== 'normal'),
 			flash_url: module.path + 'swfupload.swf',
 			flash9_url: module.path + 'swfupload_fp9.swf'
-		}, x );
+		}, swfOptions( x ) );
 		var v = x.value || [];
 		if ( typeof v === 'string' )
 			v = v.charAt( 0 ) == '[' ? $.jsonParse( v ) : [];
@@ -1163,12 +1174,12 @@ BaseUpload = define.widget( 'upload/base', {
 		this.uploadbar = this.add( { type: this.type + '/buttonbar' } );
 		this.valuebar  = this.add( { type: this.type + '/valuebar', nobr: false, cls: '_vbar' } );
 		this._queues   = [];
-		if ( ! x.upload_button ) {
+		if ( ! x.uploadbutton ) {
 			this.className += ' z-lmt';
 		}
 	},
 	Default:{ height: -1 },
-	Extend: 'abs/form',
+	Extend: AbsForm,
 	Prototype: {
 		isFormWidget: true,
 		val: function( a ) {
@@ -1251,7 +1262,7 @@ BaseUpload = define.widget( 'upload/base', {
 		},
 		getNewLoaders: function() {
 			for ( var i = 0, d = this.valuebar, r = []; i < d.length; i ++ )
-				! d[ i ].vis && r.push( d[ i ] );
+				! d[ i ].$() && r.push( d[ i ] );
 			return r;
 		},
 		file_queue_error_handler: function(file, errorCode, message) {
@@ -1304,7 +1315,10 @@ BaseUpload = define.widget( 'upload/base', {
 		},
 		upload_error_handler: function( file, errorCode, message ) {
 			var ldr = this.getLoaderByFile( file );
-			if ( ldr ) ldr.setError( errorCode, message );
+			if ( ldr ) {
+				ldr.setError( errorCode, message );
+				this.valid();
+			}
 		}
 	}
 } ),
@@ -1393,8 +1407,8 @@ UploadSwf = define.widget( 'upload/base/swf', {
 			}
 		},
 		swfupload_load_failed_handler: function() {
-			if ( this.x.upload_button )
-				this.cmd( { type: 'alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'https://www.baidu.com/s?wd=Adobe%20Flash%20Player%20for%20IE') + ' target=_blank><b>点此下载>></b></a>' } );
+			if ( this.x.uploadbutton )
+				this.cmd( { type: 'alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'http://flash.cn') + ' target=_blank><b>点此下载>></b></a>' } );
 		},
 		swfupload_loaded_handler: function() {
 			this.uploadStats( this._value.length );
@@ -1412,13 +1426,20 @@ if ( isSWF ) {
 
 /*! `upload/file` */
 define.widget( 'upload/file', {
+	Const: function( x ) {
+		//x.label && x.label.text && $.extend( x.label, { valign: 'top' } );
+		Upload.apply( this, arguments );
+	},
 	Extend: Upload,
 	Listener: {
 		body: {
+			ready: function() {
+				this.fixLabelVAlign();
+			},
 			error: function( e, a ) {
 				if ( typeof a === 'object' ) {
-					if ( a.type == 'tip' )
-						a.snap = this.uploadbar[ this.uploadbar.length - 1 ];
+					if ( a.type === 'tip' ) 
+						a.snap = this.getTipLoader( a.text ) || (this.uploadbar && this.uploadbar[ 0 ]) || this;
 					this.cmd( a );
 				} else
 					$.classAdd( this.$(), 'z-err', a );
@@ -1426,11 +1447,15 @@ define.widget( 'upload/file', {
 		}
 	},
 	Prototype: {
-		className: 'w-upload w-uploadfile',
+		className: 'w-upload',
 		validHooks: {
 			valid: function( b, v ) {
-				if ( this.isLoading() )
-					return { name: this.x.name, wid: this.id, code: 'uploading', text: Loc.uploading };
+				var b = this.valuebar, l = b.length, d, e;
+				for ( var i = 0; i < l; i ++ ) {
+					b[ i ].error && (e = Loc.form.upload_error);
+					b[ i ].loading && (d = Loc.form.upload_loading);
+				}
+				return (e || d) && { name: this.x.name, wid: this.id, code: 'upload', text: e || d };
 			}
 		},
 		append: function( a ) {
@@ -1444,12 +1469,17 @@ define.widget( 'upload/file', {
 				this.valuebar.add( { data: a } ).render();
 			}
 		},
-		isLoading: function() {
-			for ( var i = 0, b = this.valuebar; i < b.length; i ++ ) {
-				if ( b[ i ].loading )
-					return true;
+		fixLabelVAlign: function() {
+			this.label && this.label.addClass( 'z-va', !! this.hasClass( 'z-lmt z-ds' ) );
+		},
+		getTipLoader: function( t ) {
+			var b = this.valuebar, l = b.length;
+			for ( var i = 0; i < l; i ++ ) {
+				if ( b[ i ].error && t === Loc.form.upload_error )
+					return b[ i ];
+				if ( b[ i ].loading && t === Loc.form.upload_loading )
+					return b[ i ];
 			}
-			return false;
 		},
 		isLimit: function() {
 			return this.x.file_upload_limit > 0 && (this.valuebar || this._value).length >= this.x.file_upload_limit;
@@ -1465,9 +1495,12 @@ define.widget( 'upload/file', {
 
 /*! upload/image */
 define.widget( 'upload/image', {
+	Const: function( x ) {
+		Upload.apply( this, arguments );
+	},
 	Extend: 'upload/file',
 	Prototype: {
-		className: 'w-upload w-uploadimage',
+		className: 'w-upload f-inbl f-va',
 		html_nodes: function() {
 			return this.valuebar.html() + this.html_input();
 		}
@@ -1484,7 +1517,7 @@ define.widget( 'upload/file/buttonbar', {
 	Prototype: {
 		className: 'w-buttonbar _bbar',
 		x_nodes: function( x ) {
-			return this.u.x.upload_button;
+			return this.u.x.uploadbutton;
 		},
 		x_childtype: function( t ) {
 			return $.strTo( this.type, '/', true ) + '/' + t;
@@ -1497,6 +1530,7 @@ define.widget( 'upload/image/buttonbar', {
 } );
 
 // 附件列表
+var UploadFileValuebar =
 define.widget( 'upload/file/valuebar', {
 	Const: function( x, p ) {
 		this.u = p;
@@ -1515,14 +1549,24 @@ define.widget( 'upload/file/valuebar', {
 			nodechange: function() {
 				var u = this.u;
 				$.classAdd( u.$(), 'z-lmt', u.isLimit() );
+				this.length && this.$( 'nf' ) && $.remove( this.$( 'nf' ) );
+				! this.length && ! this.$( 'nf' ) && Q( this.$() ).prepend( this.html_nofiles() );
+				u.fixLabelVAlign();
 			}
 		}
 	},
 	Prototype: {
-		x_childtype: $.rt( 'upload/file/value' )
+		x_childtype: $.rt( 'upload/file/value' ),
+		html_nofiles: function() {
+			return '<span id=' + this.id + 'nf class=_nofiles>' + Loc.form.no_files + '</span>';
+		},
+		html_nodes: function() {
+			return (this.length ? '' : this.html_nofiles()) + Horz.prototype.html_nodes.call( this );
+		}
 	}
 } );
 
+var UploadImageValuebar =
 define.widget( 'upload/image/valuebar', {
 	Extend: 'upload/file/valuebar',
 	Prototype: {
@@ -1535,7 +1579,7 @@ define.widget( 'upload/image/valuebar', {
 				W.prototype.insertHTML.call( this, a, b );
 		},
 		html_nodes: function() {
-			return Horz.prototype.html_nodes.call( this ) + (this.parentNode.uploadbar && this.parentNode.uploadbar.html());
+			return UploadFileValuebar.prototype.html_nodes.call( this ) + (this.parentNode.uploadbar ? this.parentNode.uploadbar.html() : '');
 		}
 	}
 } );
@@ -1625,12 +1669,12 @@ define.widget( 'upload/file/upload/button', {
 				var self = this;
 				setTimeout( function() {
 					uploadCount ++;
-					$.append( self.$(), self.html_after() );
+					$.append( self.$(), self.html_append() );
 					self.fileID = self.id + 'u-' + uploadCount;
 				}, 0 );
 			}
 		},
-		html_after: function() {
+		html_append: function() {
 			return isSWF ? '<div class=w-upload-swf id=' + this.u.id + 'swf></div>' : '<input type=file style="visibility:hidden;position:absolute;width:0;height:0;" id=' + this.id + 'u-' + uploadCount + ' onchange=' + $.abbr + '.w(this).fileSelected(this) onclick=' + $.abbr + '.cancel(event)' +
 				( this.u.x.file_upload_limit !== 1 ? ' multiple' : '' ) + ' accept="' + this.getAccept() + '">';
 		}
@@ -1649,62 +1693,42 @@ define.widget( 'upload/image/upload/button', {
 // 图片模式显示value
 define.widget( 'upload/image/value', {
 	Const: function( x, p ) {
-		this.u = p.u;
+		this.u = this.rootNode = p.u;
 		W.apply( this, arguments );
 		this.loading = false;
 		this.loaded  = !! x.data;
-		this.initButton( this.x.file );
 	},
 	Extend: Horz,
 	Listener: {
 		body: {
 			ready: function() {
 				this.x.file && readImage( this.x.file, this.$( 'g' ) );
+			},
+			click: {
+				occupy: true,
+				method: function() {
+					if ( this.x.data ) {
+						if ( this.u.x.previewsrc ) {
+							this.preview();
+						} else if ( this.u.x.downloadsrc ) {
+							this.download();
+						}
+					}
+				}
 			}
 		}
 	},
-	Default: { width: -1 },
+	Default: { width: 80, height: 80 },
 	Prototype: {
-		_cls: 'w-upload-value-image',
-		// @f -> 正在上传?
-		initButton: function( f ) {
-			var u = this.u, v = this.x.data, m = !f && (v.thumbnail || (u.x.thumbnail_url ? this.formatStr( u.x.thumbnail_url ) : v.url)), p = u.x.pub || false, w = p.width || 80, h = p.height || 80, b,
-				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
-			this.empty();
-			this.add( { type: 'html', width: w, height: h, align:'center', valign: 'middle', text: (f ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif>' :
-				'<a href="javascript:;" title="' + v.name + '"><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '></a>') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>', cls: '_name' } );
-			b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
-			u.x.value_button && u.x.value_button.length && b.add( { text: $.arrow( 'b2' ), cls: '_b', on: { click: 'this.parentNode.parentNode.more(this)' } } );
-			b.add( { text: '&times;', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
-			this.className = this._cls + ( f ? ' z-loading' : '' );
-		},
-		root: function() {
-			return this.u;
-		},
-		click: function() {
-			var u = this.u, c = u.x.pub && u.x.pub.on && u.x.pub.on.click;
-			if ( c ) {
-				this.triggerHandler( 'click', null, c );
-			} else {
-				this.download();
-			}
-		},
+		ROOT_TYPE: 'upload/image',
+		className: 'w-upload-value-image',
 		download: function() {
-			var s = this.u.x.down_url;
-			if ( s ) {
-				if ( s.indexOf( 'javascript:' ) === 0 ) {
-					this.formatJS( s );
-				} else {
-					$.download( this.formatStr( s ) );
-				}
-			}
+			var s = this.u.x.downloadsrc;
+			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
 		},
-		preview: function() {
-			for ( var i = 0, x = this.u.x, v = $.jsonClone( this.u._value ), c = this.x.data.id, d; i < v.length; i ++ ) {
-				x.down_url && $.extend( v[ i ], { url: this.formatStr( x.down_url ) } );
-				x.thumbnail_url && $.extend( v[ i ], { thumbnail: this.formatStr( x.thumbnail_url ) } );
-			}
-			$.previewImage( v, this.x.data.id );
+		preview: function() {	
+			var v = this.u.x.previewsrc;
+			v && this.cmd( { type: 'ajax', src: this.formatStr( v, null, ! /^\$\w+$/.test( v ) ) } );
 		},
 		setProgress: function( a ) {
 			this.$( 'p' ).style.left = a + '%';
@@ -1720,22 +1744,19 @@ define.widget( 'upload/image/value', {
 				delete this.x.file;
 				this.x.data = serverData;
 				this.u.addValue( serverData );
-				this.initButton();
+				this.removeClass( 'z-loading' );
 				this.render();
 			}
 		},
 		setError: function( errorCode, message ) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = errorCode;
+			this.error   = { code: errorCode };
 			this.removeElem( 'p' );
-			$.append( this.$(), this.errorPrefix() );
-			$.classRemove( this.$(), 'z-loading' );
-			$.classRemove( this, 'z-loading' );
-			$.classAdd( this, 'z-err' );
-			$.classAdd( this.$(), 'z-err' );
+			this.removeClass( 'z-loading' );
+			this.addClass( 'z-err' );
+			Q( '._loading,._g', this.$() ).remove();
 			this.removeQueue();
-			message && this.u.cmd( W.isCmd( message ) ? message : { type: 'alert', text: message } );
 		},
 		removeQueue: function() {
 			if ( this.x.file ) {
@@ -1743,11 +1764,8 @@ define.widget( 'upload/image/value', {
 				delete this.x.file;
 			}
 		},
-		errorPrefix: function() {
-			return this.error ? '<em class=_ex error-code="' + this.error + '">上传失败<i class=f-vi></i></em>' : '';
-		},
 		moreNodes: function() {
-			var b = $.jsonClone( this.u.x.value_button ), v = this.x.data;
+			var b = $.jsonClone( this.u.x.valuebutton ), v = this.x.data;
 			(function( d ) {
 				for ( var i = 0; i < d.length; i ++ ) {
 					d[ i ].data = v;
@@ -1756,16 +1774,36 @@ define.widget( 'upload/image/value', {
 			})( b );
 			return b;
 		},
-		more: function( a ) {
+		more: function( a, e ) {
 			this.cmd( { type: 'menu', snap: a, nodes: this.moreNodes() } );
+			e && $.stop( e );
 		},
-		html_after: function() {
-			return '' + this.errorPrefix();
+		close: function( a, e ) {
+			this.remove();
+			e && $.stop( e );
+		},
+		html_cvr: function() {
+			return (this.x.file ? '<div class="_ex f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' : '') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>';
+		},
+		html_nodes: function() {
+			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnailsrc,
+				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
+			if ( ! f ) {
+				m = v.thumbnail;
+				! m && (m = this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
+				! m && (m = v.url);
+			}
+			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif><div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
+				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valuebutton ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.arrow( 'b2' ) + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
+		},
+		html: function() {
+			this.x.file && this.addClass( 'z-loading' );
+			return Horz.prototype.html.call( this );
 		},
 		remove: function() {
 			var u = this.u;
-			if ( u.x.remove_url )
-				this.cmd( { type: 'ajax', src: u.x.remove_url, error: false } );
+			if ( u.x.removesrc )
+				this.cmd( { type: 'ajax', src: u.x.removesrc, error: false } );
 			if ( this.x.data )
 				u.removeValue( this.x.data );
 			if ( isSWF ) {
@@ -1792,53 +1830,40 @@ define.widget( 'upload/file/value', {
 			ready: $.rt()
 		}
 	},
+	Default: { width: -1, height: -1 },
 	Prototype: {
-		_cls: 'w-upload-value-simple',
-		// @f -> 正在上传?
-		initButton: function( f ) {
-			var u = this.u, c = u.x.value_button, t = f ? f.name : this.x.data.name;
-			this.empty();
-			this.add( { type: 'button', text: t, icon: getIco( t ), cls: '_name', on: f ? null : { click: 'this.parentNode.download()' } } );
-			var b = this.add( { type: 'upload/value/buttonbar', cls: '_btnbar' } );
-			b.add( { icon: '.f-i-trash', cls: '_close', on: { click: 'this.parentNode.parentNode.remove()' } } );
-			if ( c && c.length ) {
-				if ( ! f && c && c.length )
-					b.add( { icon: '.f-i-more', cls: '_more', on: { click: 'this.parentNode.parentNode.more(this)' } } );
-			}
-			this.className = this._cls + (f ? ' z-loading' : '') + (this.error ? ' z-err' : '');
-		},
+		ROOT_TYPE: 'upload/file',
+		className: 'w-upload-value-file',
 		setProgress: function( a ) {
 			this.$( 'p' ).style.width = a + '%';
-		},
-		errorPrefix: function() {
-			return this.error ? '<em class=_ex error-code="' + this.error + '">(上传失败)</em>' : '';
 		},
 		setError: function( errorCode, message ) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = errorCode;
+			this.error   = { code: errorCode };
 			this.removeElem( 'g' );
-			this[ 0 ].text( this.errorPrefix() + this[ 0 ].x.text );
-			$.classAdd( this, 'z-err' );
 			$.classAdd( this.$(), 'z-err' );
-			$.classRemove( this, 'z-loading' );
+			$.classRemove( this.$(), 'z-loading' );
 			this.removeQueue();
-			message && this.u.cmd( W.isCmd( message ) ? message : { type: 'alert', text: message } );
 		},
-		html_before: function() {
-			return this.x.file ? '<div class=_progress id=' + this.id + 'g><div id=' + this.id + 'p class=_percent></div></div>' : '';
+		html_nodes: function() {
+			var u = this.u, c = u.x.valuebutton, f = this.x.file, t = f ? f.name : this.x.data.name;
+			return (this.x.file ? '<div class=_progress id=' + this.id + 'g><div id=' + this.id + 'p class=_percent></div></div>' : '') +
+				'<i class="_icon f-i ' + getIco( t ) + '"></i><div class=_main>' + (c && !f ? $.image( '.f-i-more', { cls: '_more', click: evw + '.more(this,event)' } ) : '') + $.image( '.f-i-trash', { cls: '_close', click: evw + '.close(this,event)' } ) +
+				'<div class="_name f-omit" title="' + t + '"><i class=f-vi></i><span class=f-va>' + t + '</span></div></div>';
 		},
 		html: function() {
-			var u = this.u, c = u.x.value_button, f = this.x.file, r = u.isNormal(),
-				pw = u.width(), vw = u.scaleWidth( u.x.pub && u.x.pub.width ), nw = 120, xw = 200, tw,
-				mn = 52 + (r ? 28 : 0) + (! f && c && c.length ? 28 : 0); //52是最外层marginRight10 + 左图标宽30 + 左图标paddingRight6 + 文本区paddingRight6
+			var u = this.u, pw = u.formWidth(), vw = u.scaleWidth( this, u.x.pub && u.x.pub.width ), nw = 130, xw = 330, tw;
 			if ( pw ) {
-				xw = Math.min( xw, pw - mn );
+				xw = Math.min( xw, pw );
 				nw = Math.min( xw, nw );
 				if ( vw != null )
-					tw = vw - mn;
+					tw = vw;
+				else if ( $.br.ie7 )
+					tw = Math.min( pw, 200 );
 			}
-			this[ 0 ].attr( { 'textstyle': tw ? 'width:' + tw + 'px' : 'min-width:' + nw + 'px;max-width:' + xw + 'px;', tip: this[ 0 ].x.text } );
+			this.cssText = 'min-width:' + nw + 'px;max-width:' + xw + 'px;' + (tw != null ? 'width:' + tw + 'px;' : '');
+			this.x.file && this.addClass( 'z-loading' );
 			return Horz.prototype.html.call( this );
 		}
 	}
@@ -1891,11 +1916,22 @@ var suffix = (function() {
 			r[ a[ i ] ] = k == '0' ? a[ i ] : k;
 	}
 	return r;
-})();
+})(),
+swfTranslate = {
+	uploadsrc: 'upload_url', uploadlimit: 'file_upload_limit', sizelimit: 'file_size_limit', filetypes: 'file_types'
+};
+function getSuffix( url ) {
+	var a = $.strFrom( url, '.', true ).toLowerCase();
+	return suffix[ a ] || 'file';
+};
+function swfOptions( x ) {
+	var r = {}, i;
+	for ( i in x ) r[ swfTranslate[ i ] || i ] = x[ i ];
+	return r;
+};
 // 根据文件后缀名获取图标样式
 function getIco( url ) {
-	var a = $.strFrom( url, '.', true ).toLowerCase();
-	return '.f-i-file-' + (suffix[ a ] || 'file');
+	return 'f-i-file-' + getSuffix( url );
 };
 // html5支持预览本地图片
 function readImage( file, img ) {
@@ -1913,18 +1949,12 @@ function fileByte( a ) {
 	a = $.number( a.replace( /[a-z]+$/i, function( $0 ) { b = $0.charAt( 0 ).toUpperCase(); return '' } ) );
 	return a * ( b === 'K' ? 1024 : b === 'M' ? 1024 * 1024 : b === 'G' ? 1024 * 1024 * 1024 : b === 'T' ? 1024 * 1024 * 1024 * 1024 : 1 );
 }
-// Chrome下的文件类型需要转换成 mime type
-var mimes = { ".323": "text/h323", ".3gp": "video/3gpp", ".aab": "application/x-authoware-bin", ".aam": "application/x-authoware-map", ".aas": "application/x-authoware-seg", ".acx": "application/internet-property-stream", ".ai": "application/postscript", ".aif": "audio/x-aiff", ".aifc": "audio/x-aiff", ".aiff": "audio/x-aiff", ".als": "audio/X-Alpha5", ".amc": "application/x-mpeg", ".apk": "application/vnd.android.package-archive", ".asc": "text/plain", ".asd": "application/astound", ".asf": "video/x-ms-asf", ".asn": "application/astound", ".asp": "application/x-asap", ".asr": "video/x-ms-asf", ".asx": "video/x-ms-asf", ".au": "audio/basic", ".avi": "video/x-msvideo", ".awb": "audio/amr-wb", ".axs": "application/olescript", ".bas": "text/plain", ".bcpio": "application/x-bcpio", ".bld": "application/bld", ".bld2": "application/bld2", ".bmp": "image/bmp", ".bz2": "application/x-bzip2", ".c": "text/plain", ".cal": "image/x-cals", ".cat": "application/vnd.ms-pkiseccat", ".ccn": "application/x-cnc", ".cco": "application/x-cocoa", ".cdf": "application/x-cdf", ".cer": "application/x-x509-ca-cert", ".cgi": "magnus-internal/cgi", ".chat": "application/x-chat", ".clp": "application/x-msclip", ".cmx": "image/x-cmx", ".co": "application/x-cult3d-object", ".cod": "image/cis-cod", ".conf": "text/plain", ".cpio": "application/x-cpio", ".cpp": "text/plain", ".cpt": "application/mac-compactpro", ".crd": "application/x-mscardfile", ".crl": "application/pkix-crl", ".crt": "application/x-x509-ca-cert", ".csh": "application/x-csh", ".csm": "chemical/x-csml", ".csml": "chemical/x-csml", ".css": "text/css", ".dcm": "x-lml/x-evm", ".dcr": "application/x-director", ".dcx": "image/x-dcx", ".der": "application/x-x509-ca-cert", ".dhtml": "text/html", ".dir": "application/x-director", ".dll": "application/x-msdownload", ".doc": "application/msword", ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".dot": "application/msword", ".dvi": "application/x-dvi", ".dwf": "drawing/x-dwf", ".dwg": "application/x-autocad", ".dxf": "application/x-autocad", ".dxr": "application/x-director", ".ebk": "application/x-expandedbook", ".emb": "chemical/x-embl-dl-nucleotide", ".embl": "chemical/x-embl-dl-nucleotide", ".eps": "application/postscript", ".epub": "application/epub+zip", ".eri": "image/x-eri", ".es": "audio/echospeech", ".esl": "audio/echospeech", ".etc": "application/x-earthtime", ".etx": "text/x-setext", ".evm": "x-lml/x-evm", ".evy": "application/envoy", ".fh4": "image/x-freehand", ".fh5": "image/x-freehand", ".fhc": "image/x-freehand", ".fif": "application/fractals", ".flr": "x-world/x-vrml", ".flv": "flv-application/octet-stream", ".fm": "application/x-maker", ".fpx": "image/x-fpx", ".fvi": "video/isivideo", ".gau": "chemical/x-gaussian-input", ".gca": "application/x-gca-compressed", ".gdb": "x-lml/x-gdb", ".gif": "image/gif", ".gps": "application/x-gps", ".gtar": "application/x-gtar", ".gz": "application/x-gzip",
-	".h": "text/plain", ".hdf": "application/x-hdf", ".hdm": "text/x-hdml", ".hdml": "text/x-hdml", ".hlp": "application/winhlp", ".hqx": "application/mac-binhex40", ".hta": "application/hta", ".htc": "text/x-component", ".htm": "text/html", ".html": "text/html", ".hts": "text/html", ".htt": "text/webviewhtml", ".ice": "x-conference/x-cooltalk", ".ico": "image/x-icon", ".ief": "image/ief", ".ifm": "image/gif", ".ifs": "image/ifs", ".iii": "application/x-iphone", ".imy": "audio/melody", ".ins": "application/x-internet-signup", ".ips": "application/x-ipscript", ".ipx": "application/x-ipix", ".isp": "application/x-internet-signup", ".it": "audio/x-mod", ".itz": "audio/x-mod", ".ivr": "i-world/i-vrml", ".j2k": "image/j2k", ".jad": "text/vnd.sun.j2me.app-descriptor", ".jam": "application/x-jam", ".jar": "application/java-archive", ".java": "text/plain", ".jfif": "image/pipeg", ".jnlp": "application/x-java-jnlp-file", ".jpe": "image/jpeg", ".jpeg": "image/jpeg", ".jpg": "image/jpeg", ".jpz": "image/jpeg", ".js": "application/x-javascript", ".jwc": "application/jwc", ".kjx": "application/x-kjx", ".lak": "x-lml/x-lak", ".latex": "application/x-latex", ".lcc": "application/fastman", ".lcl": "application/x-digitalloca", ".lcr": "application/x-digitalloca", ".lgh": "application/lgh", ".lml": "x-lml/x-lml", ".lmlpack": "x-lml/x-lmlpack", ".log": "text/plain", ".lsf": "video/x-la-asf", ".lsx": "video/x-la-asf", ".m13": "application/x-msmediaview", ".m14": "application/x-msmediaview", ".m15": "audio/x-mod", ".m3u": "audio/x-mpegurl", ".m3url": "audio/x-mpegurl", ".m4a": "audio/mp4a-latm", ".m4b": "audio/mp4a-latm", ".m4p": "audio/mp4a-latm", ".m4u": "video/vnd.mpegurl", ".m4v": "video/x-m4v", ".ma1": "audio/ma1", ".ma2": "audio/ma2", ".ma3": "audio/ma3", ".ma5": "audio/ma5", ".man": "application/x-troff-man", ".map": "magnus-internal/imagemap", ".mbd": "application/mbedlet", ".mct": "application/x-mascot", ".mdb": "application/x-msaccess", ".mdz": "audio/x-mod", ".me": "application/x-troff-me", ".mel": "text/x-vmel", ".mht": "message/rfc822", ".mhtml": "message/rfc822", ".mi": "application/x-mif", ".mid": "audio/mid", ".midi": "audio/midi", ".mif": "application/x-mif", ".mil": "image/x-cals", ".mio": "audio/x-mio", ".mmf": "application/x-skt-lbs", ".mng": "video/x-mng", ".mny": "application/x-msmoney", ".moc": "application/x-mocha", ".mocha": "application/x-mocha", ".mod": "audio/x-mod", ".mof": "application/x-yumekara", ".mol": "chemical/x-mdl-molfile", ".mop": "chemical/x-mopac-input", ".mov": "video/quicktime", ".movie": "video/x-sgi-movie", ".mp2": "video/mpeg", ".mp3": "audio/mpeg", ".mp4": "video/mp4", ".mpa": "video/mpeg", ".mpc": "application/vnd.mpohun.certificate", ".mpe": "video/mpeg", ".mpeg": "video/mpeg", ".mpg": "video/mpeg", ".mpg4": "video/mp4", ".mpga": "audio/mpeg", ".mpn": "application/vnd.mophun.application", ".mpp": "application/vnd.ms-project", ".mps": "application/x-mapserver", ".mpv2": "video/mpeg", ".mrl": "text/x-mrml", ".mrm": "application/x-mrm", ".ms": "application/x-troff-ms", ".msg": "application/vnd.ms-outlook", ".mts": "application/metastream", ".mtx": "application/metastream", ".mtz": "application/metastream", ".mvb": "application/x-msmediaview", ".mzv": "application/metastream", ".nar": "application/zip", ".nbmp": "image/nbmp", ".nc": "application/x-netcdf", ".ndb": "x-lml/x-ndb", ".ndwn": "application/ndwn", ".nif": "application/x-nif", ".nmz": "application/x-scream", ".nokia-op-logo": "image/vnd.nok-oplogo-color", ".npx": "application/x-netfpx", ".nsnd": "audio/nsnd", ".nva": "application/x-neva1", ".nws": "message/rfc822",
-	".oda": "application/oda", ".ogg": "audio/ogg", ".oom": "application/x-AtlasMate-Plugin", ".p10": "application/pkcs10", ".p12": "application/x-pkcs12", ".p7b": "application/x-pkcs7-certificates", ".p7c": "application/x-pkcs7-mime", ".p7m": "application/x-pkcs7-mime", ".p7r": "application/x-pkcs7-certreqresp", ".p7s": "application/x-pkcs7-signature", ".pac": "audio/x-pac", ".pae": "audio/x-epac", ".pan": "application/x-pan", ".pbm": "image/x-portable-bitmap", ".pcx": "image/x-pcx", ".pda": "image/x-pda", ".pdb": "chemical/x-pdb", ".pdf": "application/pdf", ".pfr": "application/font-tdpfr", ".pfx": "application/x-pkcs12", ".pgm": "image/x-portable-graymap", ".pict": "image/x-pict", ".pko": "application/ynd.ms-pkipko", ".pm": "application/x-perl", ".pma": "application/x-perfmon", ".pmc": "application/x-perfmon", ".pmd": "application/x-pmd", ".pml": "application/x-perfmon", ".pmr": "application/x-perfmon", ".pmw": "application/x-perfmon", ".png": "image/png", ".pnm": "image/x-portable-anymap", ".pnz": "image/png", ".pot,": "application/vnd.ms-powerpoint", ".ppm": "image/x-portable-pixmap", ".pps": "application/vnd.ms-powerpoint", ".ppt": "application/vnd.ms-powerpoint", ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation", ".pqf": "application/x-cprplayer", ".pqi": "application/cprplayer", ".prc": "application/x-prc", ".prf": "application/pics-rules", ".prop": "text/plain", ".proxy": "application/x-ns-proxy-autoconfig", ".ps": "application/postscript", ".ptlk": "application/listenup", ".pub": "application/x-mspublisher", ".pvx": "video/x-pv-pvx", ".qcp": "audio/vnd.qcelp", ".qt": "video/quicktime", ".qti": "image/x-quicktime", ".qtif": "image/x-quicktime", ".r3t": "text/vnd.rn-realtext3d", ".ra": "audio/x-pn-realaudio", ".ram": "audio/x-pn-realaudio", ".ras": "image/x-cmu-raster", ".rc": "text/plain", ".rdf": "application/rdf+xml", ".rf": "image/vnd.rn-realflash", ".rgb": "image/x-rgb", ".rlf": "application/x-richlink", ".rm": "audio/x-pn-realaudio", ".rmf": "audio/x-rmf", ".rmi": "audio/mid", ".rmm": "audio/x-pn-realaudio", ".rmvb": "audio/x-pn-realaudio", ".rnx": "application/vnd.rn-realplayer", ".roff": "application/x-troff", ".rp": "image/vnd.rn-realpix", ".rpm": "audio/x-pn-realaudio-plugin", ".rt": "text/vnd.rn-realtext", ".rte": "x-lml/x-gps", ".rtf": "application/rtf", ".rtg": "application/metastream", ".rtx": "text/richtext", ".rv": "video/vnd.rn-realvideo", ".rwc": "application/x-rogerwilco", ".s3m": "audio/x-mod", ".s3z": "audio/x-mod", ".sca": "application/x-supercard", ".scd": "application/x-msschedule", ".sct": "text/scriptlet", ".sdf": "application/e-score", ".sea": "application/x-stuffit", ".setpay": "application/set-payment-initiation", ".setreg": "application/set-registration-initiation", ".sgm": "text/x-sgml", ".sgml": "text/x-sgml", ".sh": "application/x-sh", ".shar": "application/x-shar", ".shtml": "magnus-internal/parsed-html", ".shw": "application/presentations", ".si6": "image/si6", ".si7": "image/vnd.stiwap.sis", ".si9": "image/vnd.lgtwap.sis", ".sis": "application/vnd.symbian.install", ".sit": "application/x-stuffit", ".skd": "application/x-Koan", ".skm": "application/x-Koan", ".skp": "application/x-Koan", ".skt": "application/x-Koan", ".slc": "application/x-salsa", ".smd": "audio/x-smd", ".smi": "application/smil", ".smil": "application/smil", ".smp": "application/studiom", ".smz": "audio/x-smd", ".snd": "audio/basic", ".spc": "application/x-pkcs7-certificates", ".spl": "application/futuresplash", ".spr": "application/x-sprite", ".sprite": "application/x-sprite", ".sdp": "application/sdp", ".spt": "application/x-spt",
-	".src": "application/x-wais-source", ".sst": "application/vnd.ms-pkicertstore", ".stk": "application/hyperstudio", ".stl": "application/vnd.ms-pkistl", ".stm": "text/html", ".svg": "image/svg+xml", ".sv4cpio": "application/x-sv4cpio", ".sv4crc": "application/x-sv4crc", ".svf": "image/vnd", ".svg": "image/svg+xml", ".svh": "image/svh", ".svr": "x-world/x-svr", ".swf": "application/x-shockwave-flash", ".swfl": "application/x-shockwave-flash", ".t": "application/x-troff", ".talk": "text/x-speech", ".tar": "application/x-tar", ".taz": "application/x-tar", ".tbp": "application/x-timbuktu", ".tbt": "application/x-timbuktu", ".tcl": "application/x-tcl", ".tex": "application/x-tex", ".texi": "application/x-texinfo", ".texinfo": "application/x-texinfo", ".tgz": "application/x-compressed", ".thm": "application/vnd.eri.thm", ".tif": "image/tiff", ".tiff": "image/tiff", ".tki": "application/x-tkined", ".tkined": "application/x-tkined", ".toc": "application/toc", ".toy": "image/toy", ".tr": "application/x-troff", ".trk": "x-lml/x-gps", ".trm": "application/x-msterminal", ".tsi": "audio/tsplayer", ".tsp": "application/dsptype", ".tsv": "text/tab-separated-values", ".ttz": "application/t-time", ".txt": "text/plain", ".uls": "text/iuls", ".ult": "audio/x-mod", ".ustar": "application/x-ustar", ".uu": "application/x-uuencode", ".uue": "application/x-uuencode", ".vcd": "application/x-cdlink", ".vcf": "text/x-vcard", ".vdo": "video/vdo", ".vib": "audio/vib", ".viv": "video/vivo", ".vivo": "video/vivo", ".vmd": "application/vocaltec-media-desc", ".vmf": "application/vocaltec-media-file", ".vmi": "application/x-dreamcast-vms-info", ".vms": "application/x-dreamcast-vms", ".vox": "audio/voxware", ".vqe": "audio/x-twinvq-plugin", ".vqf": "audio/x-twinvq", ".vql": "audio/x-twinvq", ".vre": "x-world/x-vream", ".vrml": "x-world/x-vrml", ".vrt": "x-world/x-vrt", ".vrw": "x-world/x-vream", ".vts": "workbook/formulaone", ".wav": "audio/x-wav", ".wax": "audio/x-ms-wax", ".wbmp": "image/vnd.wap.wbmp", ".wcm": "application/vnd.ms-works", ".wdb": "application/vnd.ms-works", ".web": "application/vnd.xara", ".wi": "image/wavelet", ".wis": "application/x-InstallShield", ".wks": "application/vnd.ms-works", ".wm": "video/x-ms-wm", ".wma": "audio/x-ms-wma", ".wmd": "application/x-ms-wmd", ".wmf": "application/x-msmetafile", ".wml": "text/vnd.wap.wml", ".wmlc": "application/vnd.wap.wmlc", ".wmls": "text/vnd.wap.wmlscript", ".wmlsc": "application/vnd.wap.wmlscriptc", ".wmlscript": "text/vnd.wap.wmlscript", ".wmv": "audio/x-ms-wmv", ".wmx": "video/x-ms-wmx", ".wmz": "application/x-ms-wmz", ".wpng": "image/x-up-wpng", ".wpt": "x-lml/x-gps", ".wri": "application/x-mswrite", ".wrl": "x-world/x-vrml", ".wrz": "x-world/x-vrml", ".ws": "text/vnd.wap.wmlscript", ".wsc": "application/vnd.wap.wmlscriptc", ".wv": "video/wavelet", ".wvx": "video/x-ms-wvx", ".wxl": "application/x-wxl", ".x-gzip": "application/x-gzip", ".xaf": "x-world/x-vrml", ".xar": "application/vnd.xara", ".xbm": "image/x-xbitmap", ".xdm": "application/x-xdma", ".xdma": "application/x-xdma", ".xdw": "application/vnd.fujixerox.docuworks", ".xht": "application/xhtml+xml", ".xhtm": "application/xhtml+xml", ".xhtml": "application/xhtml+xml", ".xla": "application/vnd.ms-excel", ".xlc": "application/vnd.ms-excel", ".xll": "application/x-excel", ".xlm": "application/vnd.ms-excel", ".xls": "application/vnd.ms-excel", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlt": "application/vnd.ms-excel", ".xlw": "application/vnd.ms-excel", ".xm": "audio/x-mod",
-	".xml":"application/xml", ".xmz": "audio/x-mod", ".xof": "x-world/x-vrml", ".xpi": "application/x-xpinstall", ".xpm": "image/x-xpixmap", ".xsit": "text/xml", ".xsl": "text/xml", ".xul": "text/xul", ".xwd": "image/x-xwindowdump", ".xyz": "chemical/x-pdb", ".yz1": "application/x-yz1", ".z": "application/x-compress", ".zac": "application/x-zaurus-zac", ".json": "application/json", ".vsd":"application/vnd.visio", ".pot":"application/vnd.ms-powerpoint", ".et": "application/kset", ".wps": "application/kswps", ".dps": "application/ksdps" };
 function getFileType( a ) {
 	a = a.replace( /;/g, ',' ).replace( /\*/g, '' ).toLowerCase();
 	if ( $.br.ms )
 		return a;
 	for ( var i = 0, b = a.split( ',' ), l = b.length, c = [], d; i < l; i ++ ) {
-		b[ i ] && c.push( mimes[ b[ i ] ] || b[ i ] );
+		b[ i ] && c.push( $.mimeType( b[ i ] ) || b[ i ] );
 	}
 	return c.join( ',' );
 }

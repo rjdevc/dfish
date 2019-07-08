@@ -4471,7 +4471,7 @@ MenuSplit = define.widget( 'menu/split', {
 	Prototype: {
 		show: $.rt(), hide: $.rt(), elemht: function() { return 5 },
 		html: function() {
-			return '<div class=w-toggle-hr>&bnsp;</div>';
+			return '<div class=w-toggle-hr>&nbsp;</div>';
 		}
 	}
 } ),
@@ -9917,15 +9917,10 @@ Grid = define.widget( 'grid', {
 		},
 		// a -> data, b -> index
 		_addRow: function( a, b ) {
-			//if ( this.body ) {
 			var p = this.tbody();
 			p._rowspan = {};
 			b == N && (b = p.length);
 			p[ b ] ? p[ b ].before( a ) : p.append( a );
-			//} else {
-			//	this.list = new GridList( { table: { tbody: { rows : $.isArray( a ) ? a : [ a ] }, columns: this.x.columns }, width: '*', height: '*', scroll: this.x.scroll, on: { scroll: 'this.parentNode.trigger(event)' } }, this );
-			//	this.list.render();
-			//}
 		},
 		prepend: function( a ) {
 			this._addRow( a, 0 );
