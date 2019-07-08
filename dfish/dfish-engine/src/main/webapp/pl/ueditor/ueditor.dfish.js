@@ -61,7 +61,6 @@ define.widget( 'ueditor', {
 	},
 	Default: { wmin: 2, hmin: 2 },
 	Prototype : {
-		//className: 'w-ueditor w-input-border w-input f-oh f-inbl f-va',
 		val: function( a ) {
 			if ( a == null ) {
 				this.save();
@@ -96,6 +95,9 @@ define.widget( 'ueditor', {
 			u.addListener( 'focus', function() {
 				$.classRemove( self.$(), 'z-err' );
 				$.cleanPop();
+			} );
+			u.addListener( 'contentchange', function() {
+				self.trigger( 'change' );
 			} );
 		},
 		_resize: function() {

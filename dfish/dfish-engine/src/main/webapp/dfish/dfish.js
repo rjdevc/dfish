@@ -922,6 +922,34 @@ _set_style = function( o, n, v ) {
 	}
 	return o;
 },
+_wmin = $.wmin = function( o ) {
+	if ( o.isWidget ) {
+		if ( o.x.wmin )
+			return o.x.wmin;
+		o = o.$();
+	}
+	var a = o.currentStyle, b = [ a.borderLeftWidth, a.borderRightWidth, a.paddingLeft, a.paddingRight, a.marginLeft, a.marginRight ], c = 0;
+	for( var i = 0, d; i < 6; i ++ ) {
+		d = parseFloat( b[ i ] );
+		if ( !isNaN( d ) )
+			c += d;
+	}
+	return Math.ceil( c );
+},
+_hmin = $.hmin = function( o ) {
+	if ( o.isWidget ) {
+		if ( o.x.wmin )
+			return o.x.wmin;
+		o = o.$();
+	}
+	var a = o.currentStyle, b = [ a.borderTopWidth, a.borderBottomWidth, a.paddingTop, a.paddingBottom, a.marginTop, a.marginBottom ], c = 0;
+	for( var i = 0, d; i < 6; i ++ ) {
+		d = parseFloat( b[ i ] );
+		if ( !isNaN( d ) )
+			c += d;
+	}
+	return Math.ceil( c );
+},
 // 以IeBox模式计算盒模型的应有宽高 / o -> HTML element, w -> width(对象o的期望宽度)
 _boxwd = $.boxwd = function( o, w ) {
 	w = w == N ? o.offsetWidth : parseFloat( w );

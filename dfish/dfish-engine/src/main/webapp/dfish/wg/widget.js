@@ -1337,7 +1337,6 @@ _w_size  = {},
 _w_css   = {},
 _w_mix   = {},
 _w_lay   = {},
-_w_size_fix = {},
 // 兄弟节点是否需要调整大小
 _w_bro   = { 'width': 'type_horz', 'height': 'type_vert' },
 _w_rsz_all = function() {
@@ -1493,26 +1492,21 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		var a = this.attr( nv );
 		if ( a == N ) return N;
 		a = this.parentNode[ sz ]( this, a );
-		return a == N ? N : u ? a : _w_size_fix[ v ].call( this, a );
+		return a == N ? N : u ? a : a - this[ iu ]();
 	};
 	//.maxWidth, .maxHeight
 	_proto[ xz ] = function( u ) {
 		var a = this.attr( xv );
 		if ( a == N ) return N;
 		a = this.parentNode[ sz ]( this, a );
-		return a == N ? N : u ? a : _w_size_fix[ v ].call( this, a );
+		return a == N ? N : u ? a : a - this[ iu ]();
 	};
 	//.innerWidth, .innerHeight
 	_proto[ iz ] = function() {
 		var a = this[ oz ](),
-			r = a == N ? N : _w_size_fix[ v ].call( this, a );
+			r = a == N ? N : a - this[ iu ]();
 		if ( r == N )
 			return N;
-		/*var m = this[ xz ](T), n = this[ nz ](T);
-		if ( m != N )
-			r = Math.min( r, m );
-		if ( n != N )
-			r = Math.max( r, n );*/
 		return r;
 	};
 	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget, b -> size, c -> appoint size?
@@ -1533,15 +1527,19 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		}
 		return c;
 	};
-	_w_size_fix[ v ] = function( a ) {
+	// .wmin, .hmin
+	_proto[ iu ] = function() {
+		var b = this.attr( iu );
+		if ( b != N )
+			return b;
 		// 如果用户定义了样式且没有设置wmin和hmin，则使用系统预设的样式处理机制
-		if ( (this.x.cls || this.x.style) && this.attr( 'wmin' ) == N && this.attr( 'hmin' ) == N ) {
+		if ( this.x.cls || this.x.style ) {
 			var f = _size_fix( this.x.cls, this.x.style );
 			if ( f )
-				return a - (f[ iu ] || 0);
+				return (f[ iu ] || 0);
 		}
-		return a - (this.attr( iu ) || 0);
-	},
+		return 0;
+	};
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, b -> widget size?, c -> self size?
 	_w_scale[ v ] = function( a, b, c ) {
 		var d = b != N ? b : a.attr( v ), s = this._scales;
@@ -2763,19 +2761,20 @@ Split = define.widget( 'split', {
 							self._size = t ? k : j;
 						if ( self.$( 'i' ) && o != (j = self.isOpen()) )
 							$.replace( self.$( 'i' ), self.html_icon( j ) );
+						self.fixHide();
 					}
 				}
 			} );
 		},
 		// a -> bool/数字/百分比/*
 		toggle: function( a ) {
-			var o = this.isOpen(), n, v = a;
+			var o = this.isOpen(), n, m = this.getMajorMin(), v = a;
 			if ( a == N ) {
 				n = ! o;
-				v = o ? 0 : this._size;
+				v = o ? m : this._size;
 			} else if ( typeof a === _BOL ) {
 				n = a;
-				v = a ? this._size : 0;
+				v = a ? this._size : m;
 			}
 			this.major( v );
 			this.minor( '*' );
@@ -2783,11 +2782,17 @@ Split = define.widget( 'split', {
 				n = this.isOpen();
 			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
 			$.classAdd( this.$(), 'z-open', n );
-			var m = this[ this.x.target || 'prev' ]();
-			m.addClass( 'f-hide', !n );
+			this.fixHide();
+		},
+		fixHide: function( n ) {
+			var r = this[ this.x.target || 'prev' ]();
+			r.addClass( 'f-hide', !this.isOpen() && (this.major() <= r.wmin()) );
+		},
+		getMajorMin: function() {
+			return (this.x.range || '').split( ',' )[ this.x.target === 'next' ? 1 : 0 ];
 		},
 		isOpen: function() {
-			return this.major() > (this.x.range || '').split( ',' )[ this.x.target === 'next' ? 1 : 0 ];
+			return this.major() > this.getMajorMin();
 		},
 		major: function( a ) {
 			return _splitSize( this[ this.x.target || 'prev' ](), a );
@@ -6537,7 +6542,7 @@ Slider = define.widget( 'slider', {
 /* `SliderJigsaw`
  * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
  * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '' }
- * @authsrc: { result: true }
+ * @authsrc: { result: true, text: '' }
  */
 SliderJigsaw = define.widget( 'slider/jigsaw', {
 	Const: function() {
@@ -9685,53 +9690,14 @@ Table = define.widget( 'table', {
 		}
 	}
 } ),
-/* `gridlist` */
-GridList = define.widget( 'grid/list', {
-	Const: function( x, p ) {
-		W.apply( this, arguments );
-		this.body = new GridBody( $.extend( { table: x.table }, x.table.tbody ), this );
-	},
-	Extend: 'vert',
-	Listener: {
-		body: {
-			ready: function() {
-				Scroll.Listener.body.ready.apply( this, arguments );
-				var r = this.rootNode;
-				if ( r.x.maxheight && ! r.innerHeight() ) {
-					var h = r.x.maxheight - (r.head ? r.head.$().offsetHeight : 0);
-					this.x.maxheight = h;
-					this.css( 'maxHeight', h ).setScroll();
-				}
-			},
-			scroll: function() {
-				Scroll.Listener.body.scroll.apply( this, arguments );
-				var d = this.rootNode.head;
-				if ( d ) {
-					d.$().scrollLeft = this.scrollLeft();
-				}
-			}
-		}
-	},
-	Prototype: {
-		ROOT_TYPE: 'grid',
-		className: 'w-grid-list'
-	}
-} ),
-/* `gridbody` */
-GridBody = define.widget( 'grid/body', {
+/* `gridhead` */
+GridHead = define.widget( 'grid/head', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
+		p.x.scroll && $.classAdd( this, 'f-oh' );
 	},
 	Extend: 'vert',
-	Prototype: {
-		ROOT_TYPE: 'grid',
-		className: 'w-grid-tbody'
-	}
-} ),
-/* `gridhead` */
-GridHead = define.widget( 'grid/head', {
-	Extend: GridBody,
 	Listener: {
 		body: {
 			ready: function() {
@@ -9755,7 +9721,37 @@ GridHead = define.widget( 'grid/head', {
 		}
 	},
 	Prototype: {
+		ROOT_TYPE: 'grid',
 		className: 'w-grid-thead'
+	}
+} ),
+/* `gridbody` */
+GridBody = define.widget( 'grid/body', {
+	Const: function( x, p ) {
+		W.apply( this, arguments );
+		this.table = new Table( x.table, this );
+	},
+	Extend: GridHead,
+	Listener: {
+		body: {
+			ready: function() {
+				Scroll.Listener.body.ready.apply( this, arguments );
+				/*var r = this.rootNode;
+				if ( r.x.maxheight && ! r.innerHeight() ) {
+					var h = r.x.maxheight - (r.head ? r.head.$().offsetHeight : 0);
+					this.x.maxheight = h;
+					this.css( 'maxHeight', h ).setScroll();
+				}*/
+			},
+			scroll: function( e ) {
+				Scroll.Listener.body.scroll.apply( this, arguments );
+				this.parentNode.trigger( e );
+			}
+		}
+	},
+	Prototype: {
+		ROOT_TYPE: 'grid',
+		className: 'w-grid-tbody'
 	}
 } ),
 // `gridcombo` 表格搜索过滤器
@@ -9808,13 +9804,12 @@ Grid = define.widget( 'grid', {
 		this._face = x.face || 'none';
 		W.apply( this, arguments );
 		this.colgrps = [];
-		var r = x.thead && x.thead.rows;
-		if ( r && r.length )
+		var r = x.thead && x.thead.rows, s = x.scroll;
+		if ( r && r.length ) {
 			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
-		var y = { table: { tbody: x.tbody, columns: x.columns }, width: '*', height: '*', scroll: x.scroll, on: { scroll: 'this.parentNode.trigger(event)' } };
-		// 为适应滚动条的位置，当没有head时把grid的样式转到list上。如果有head，这样转移样式可能会出问题，暂不做
-		!this.head && $.jsonCut( y, x, 'wmin,hmin,style' );
-		this.list = new GridList( y, this );
+			delete x.scroll;
+		}
+		this.body = new GridBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: this.head ? '*' : -1, scroll: this.head && s } ), this );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
 		if ( x.combo ) {
@@ -9823,12 +9818,12 @@ Grid = define.widget( 'grid', {
 		}
 		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
-		x.scroll && $.classAdd( this, 'z-scroll' );
+		$.classAdd( this, this.head ? 'z-head' : 'z-nohead' );
 		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
 		if ( this.head && _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 	},
-	Extend: 'vert/scale',
+	Extend: 'vert',
 	Listener: {
 		body: {
 			ready: function() {
@@ -9847,8 +9842,9 @@ Grid = define.widget( 'grid', {
 				}
 			},
 			scroll: function( e ) {
-				if ( this.head && this.list )
-					this.head.$().scrollLeft = this.list.$( 'ovf' ).scrollLeft;
+				if ( this.head )
+					this.head.$().scrollLeft = this.body.$( 'ovf' ).scrollLeft;
+				Scroll.Listener.body.scroll.apply( this, arguments );
 			},
 			resize: function() {
 				this.$() && $.classAdd( this.$(), 'z-auto', this.innerWidth() == N );
@@ -9859,7 +9855,7 @@ Grid = define.widget( 'grid', {
 		className: 'w-grid',
 		x_childtype: $.rt( 'tr' ),
 		thead: function() { return this.head && this.head.table.thead },
-		tbody: function() { return this.list.body && this.list.body.table.tbody },
+		tbody: function() { return this.body.table.tbody },
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
 			return this.rows( a == N ? 0 : a, T )[ 0 ];
@@ -9921,15 +9917,15 @@ Grid = define.widget( 'grid', {
 		},
 		// a -> data, b -> index
 		_addRow: function( a, b ) {
-			if ( this.list ) {
-				var p = this.tbody();
-				p._rowspan = {};
-				b == N && (b = p.length);
-				p[ b ] ? p[ b ].before( a ) : p.append( a );
-			} else {
-				this.list = new GridList( { table: { tbody: { rows : $.isArray( a ) ? a : [ a ] }, columns: this.x.columns }, width: '*', height: '*', scroll: this.x.scroll, on: { scroll: 'this.parentNode.trigger(event)' } }, this );
-				this.list.render();
-			}
+			//if ( this.body ) {
+			var p = this.tbody();
+			p._rowspan = {};
+			b == N && (b = p.length);
+			p[ b ] ? p[ b ].before( a ) : p.append( a );
+			//} else {
+			//	this.list = new GridList( { table: { tbody: { rows : $.isArray( a ) ? a : [ a ] }, columns: this.x.columns }, width: '*', height: '*', scroll: this.x.scroll, on: { scroll: 'this.parentNode.trigger(event)' } }, this );
+			//	this.list.render();
+			//}
 		},
 		prepend: function( a ) {
 			this._addRow( a, 0 );
@@ -10043,7 +10039,7 @@ Grid = define.widget( 'grid', {
 			(j = this.thead()) && j.insertCol( a.thead.rows, b );
 			(j = this.tbody()) && j.insertCol( a.tbody.rows, b );
 			this.resize();
-			this.x.scroll && this.list && this.list.checkScroll();
+			this.x.scroll && (this.head ? this.body : this).checkScroll();
 		},
 		//@public 删除一列 / @a -> colIndex|colField
 		deleteColumn: function( a ) {
@@ -10053,7 +10049,7 @@ Grid = define.widget( 'grid', {
 			(j = this.thead()) && j.deleteCol( a );
 			(j = this.tbody()) && j.deleteCol( a );
 			this.resize();
-			this.x.scroll && this.list && this.list.checkScroll();
+			this.x.scroll && (this.head ? this.body : this).checkScroll();
 		},
 		//@public 更新一列 / @a -> 一列的数据grid json, b -> colIndex|colField
 		updateColumn: function( a, b ) {
@@ -10137,7 +10133,7 @@ Grid = define.widget( 'grid', {
 		// @a -> condition?
 		filter: function( a ) {
 			this.setFilter( this.rows( a ) );
-			this.list.render();
+			this.body.render();
 		},
 		//排序 /@a -> field, b -> [asc,desc]
 		order: function( a, b ) {
@@ -10189,7 +10185,7 @@ Grid = define.widget( 'grid', {
 			}
 		},
 		isScrollBottom: function() {
-			return this.list.isScrollBottom();
+			return (this.head ? this.body : this).isScrollBottom();
 		}
 	}
 });
