@@ -771,7 +771,7 @@
 .w-upload-image{line-height:0}
 .w-upload.z-ds ._close,.w-upload.z-ds ._more{width:0;height:0;visibility:hidden}
 .w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{display:none}
-.w-upload ._nofiles{color:#999;display:none}
+.w-upload ._nofiles{padding-top:5px;color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
 
 .w-upload-image ._bbar,.w-upload-image ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}

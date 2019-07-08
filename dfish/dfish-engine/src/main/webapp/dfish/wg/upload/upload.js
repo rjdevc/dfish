@@ -1159,7 +1159,6 @@ BaseUpload = define.widget( 'upload/base', {
 	Const: function( x, p, n ) {
 		AbsForm.apply( this, arguments );
 		this.x = $.merge( {
-			file_size_limit: '2MB',
 			file_types: '*.*',
 			file_types_description: 'All Files',
 			file_upload_limit: 0,
@@ -1213,30 +1212,28 @@ BaseUpload = define.widget( 'upload/base', {
 			this.x.status = 'normal';
 			$.classRemove( this.$(), 'z-err z-ds' );
 			this.setButtonDisabled( false );
+			W.prototype.normal.apply( this, arguments );
 			return this;
 		},
 		readonly: function( a ) {
 			a = a == null || a;
-			this.x.status = a ? 'readonly' : '';
-			$.classAdd( this.$(), 'z-ds', a );
 			$.classRemove( this.$(), 'z-err' );
 			this.setButtonDisabled( a );
+			W.prototype.readonly.apply( this, arguments );
 			return this;
 		},
 		validonly: function( a ) {
 			a = a == null || a;
-			this.x.status = a ? 'validonly' : '';
-			$.classAdd( this.$(), 'z-ds', a );
 			$.classRemove( this.$(), 'z-err' );
 			this.setButtonDisabled( a );
+			W.prototype.validonly.apply( this, arguments );
 			return this;
 		},
 		disable: function( a ) {
 			a = a == null || a;
-			this.x.status = a ? 'disabled' : '';
-			$.classAdd( this.$(), 'z-ds', a );
 			$.classRemove( this.$(), 'z-err' );
 			this.setButtonDisabled( a );
+			W.prototype.disable.apply( this, arguments );
 			return this;
 		},
 		ipt: function() {
@@ -1273,14 +1270,16 @@ BaseUpload = define.widget( 'upload/base', {
 			} else if ( errorCode == ro.INVALID_FILETYPE ) {
 				msg = '无效的文件类型';
 			} else if ( errorCode == ro.FILE_EXCEEDS_SIZE_LIMIT ) {
-				msg = '文件大小超限(最大' + this.x.file_size_limit + ')';
+				msg = '文件大小不能超过' + this.x.file_size_limit + '';
+			} else if ( errorCode == ro.FILE_MIN_SIZE_LIMIT ) {
+				msg = '文件大小不能小于' + this.x.minfilesize + '';
 			}
 			$.alert( '上传失败：' + ( file ? file.name : '' ) + '\n\n' + msg );
 		},
 		file_dialog_complete_handler: function( numFilesSelected, numFilesQueued, numFilesInQueue ) {
 			if ( numFilesInQueue > 0 ) {
-				for ( var i = numFilesInQueue - numFilesQueued; i < numFilesInQueue; i ++ ) {
-					this.valuebar.add( { file: this.getQueueFile( i ) } );
+				for ( var i = numFilesInQueue - numFilesQueued, f; i < numFilesInQueue; i ++ ) {
+					(f = this.getQueueFile( i )) && this.valuebar.add( { file: f } );
 				}
 				//this.trigger( 'fileselect' );
 				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
@@ -1406,6 +1405,13 @@ UploadSwf = define.widget( 'upload/base/swf', {
 				return stats.successful_uploads;
 			}
 		},
+		file_queued_handler: function( file ) {
+			var n = this.x.minfilesize;
+			if( n != null && file.size < fileByte( n ) ) {
+				this.cancelUpload( file.id );
+				this.fileQueueError( file, SWFUpload.QUEUE_ERROR.FILE_MIN_SIZE_LIMIT );
+			}
+		},
 		swfupload_load_failed_handler: function() {
 			if ( this.x.uploadbutton )
 				this.cmd( { type: 'alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'http://flash.cn') + ' target=_blank><b>点此下载>></b></a>' } );
@@ -1426,10 +1432,6 @@ if ( isSWF ) {
 
 /*! `upload/file` */
 define.widget( 'upload/file', {
-	Const: function( x ) {
-		//x.label && x.label.text && $.extend( x.label, { valign: 'top' } );
-		Upload.apply( this, arguments );
-	},
 	Extend: Upload,
 	Listener: {
 		body: {
@@ -1443,6 +1445,9 @@ define.widget( 'upload/file', {
 					this.cmd( a );
 				} else
 					$.classAdd( this.$(), 'z-err', a );
+			},
+			statuschange: function() {
+				this.fixLabelVAlign();
 			}
 		}
 	},
@@ -1470,7 +1475,7 @@ define.widget( 'upload/file', {
 			}
 		},
 		fixLabelVAlign: function() {
-			this.label && this.label.addClass( 'z-va', !! this.hasClass( 'z-lmt z-ds' ) );
+			this.label && this.label.addClass( 'z-va', !!(this.hasClass( 'z-lmt z-ds' ) && this._value.length) );
 		},
 		getTipLoader: function( t ) {
 			var b = this.valuebar, l = b.length;
@@ -1495,12 +1500,8 @@ define.widget( 'upload/file', {
 
 /*! upload/image */
 define.widget( 'upload/image', {
-	Const: function( x ) {
-		Upload.apply( this, arguments );
-	},
 	Extend: 'upload/file',
 	Prototype: {
-		className: 'w-upload f-inbl f-va',
 		html_nodes: function() {
 			return this.valuebar.html() + this.html_input();
 		}
@@ -1558,7 +1559,7 @@ define.widget( 'upload/file/valuebar', {
 	Prototype: {
 		x_childtype: $.rt( 'upload/file/value' ),
 		html_nofiles: function() {
-			return '<span id=' + this.id + 'nf class=_nofiles>' + Loc.form.no_files + '</span>';
+			return '<div id=' + this.id + 'nf class="_nofiles f-inbl f-va">' + Loc.form.no_files + '</div>';
 		},
 		html_nodes: function() {
 			return (this.length ? '' : this.html_nofiles()) + Horz.prototype.html_nodes.call( this );
@@ -1641,13 +1642,16 @@ define.widget( 'upload/file/upload/button', {
 			$( this.fileID ).click();
 		},
 		fileSelected: function( o ) {
-			var u = this.u, b = o.files, c = fileByte( u.x.file_size_limit || 0 ), d = b.length, t = this.getFileTypes();
+			var u = this.u, b = o.files, d = b.length, t = this.getFileTypes();
 			for ( var i = 0, k = 0; i < d; i ++ ) {
 				if ( u.x.file_upload_limit > 1 && u.valuebar.length + (i + 1) > u.x.file_upload_limit ) {
 					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED );
 					continue;
-				} else if ( b[ i ].size > c ) {
+				} else if ( u.x.file_size_limit != null && b[ i ].size > fileByte( u.x.file_size_limit ) ) {
 					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT );
+					continue;
+				} else if ( u.x.minfilesize != null && b[ i ].size < fileByte( u.x.minfilesize ) ) {
+					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.FILE_MIN_SIZE_LIMIT );
 					continue;
 				} else if ( t && ! $.idsAny( t, '.' + $.strFrom( b[ i ].name, '.', true ).toLowerCase() ) ) {
 					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.INVALID_FILETYPE );
@@ -1918,7 +1922,7 @@ var suffix = (function() {
 	return r;
 })(),
 swfTranslate = {
-	uploadsrc: 'upload_url', uploadlimit: 'file_upload_limit', sizelimit: 'file_size_limit', filetypes: 'file_types'
+	uploadsrc: 'upload_url', uploadlimit: 'file_upload_limit', maxfilesize: 'file_size_limit', filetypes: 'file_types'
 };
 function getSuffix( url ) {
 	var a = $.strFrom( url, '.', true ).toLowerCase();

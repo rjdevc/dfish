@@ -1121,6 +1121,20 @@ W = define( 'widget', function() {
 			this.disable( F );
 			return this;
 		},
+		readonly: function( a ) {
+			a = a == N || a;
+			this.x.status = a ? 'readonly' : '';
+			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
+			return this;
+		},
+		validonly: function( a ) {
+			a = a == N || a;
+			this.x.status = a ? 'validonly' : '';
+			$.classAdd( this.$(), 'z-ds', a );
+			this.trigger( 'statuschange' );
+			return this;
+		},
 		disable: function( a ) {
 			a = a == N || a;
 			this.x.status = a ? 'disabled' : '';
@@ -4931,29 +4945,24 @@ AbsForm = define.widget( 'abs/form', {
 			}
 		},
 		normal: function() {
-			this.x.status = 'normal';
 			this.$v().removeAttribute( 'readOnly' );
 			this.$v().removeAttribute( 'disabled' );
 			$.classRemove( this.$(), 'z-ds' );
-			this.trigger( 'statuschange' );
+			_proto.normal.call( this );
 			return this;
 		},
 		readonly: function( a ) {
 			a = a == N || a;
-			this.x.status = a ? 'readonly' : '';
 			this.$v().readOnly = a;
 			this.$v().removeAttribute( 'disabled' );
-			$.classAdd( this.$(), 'z-ds', a );
-			this.trigger( 'statuschange' );
+			_proto.readonly.call( this, a );
 			return this;
 		},
 		validonly: function( a ) {
 			a = a == N || a;
-			this.x.status = a ? 'validonly' : '';
 			this.$v().readOnly = a;
 			this.$v().removeAttribute( 'disabled' );
-			$.classAdd( this.$(), 'z-ds', a );
-			this.trigger( 'statuschange' );
+			_proto.validonly.call( this, a );
 			return this;
 		},
 		disable: function( a ) {
