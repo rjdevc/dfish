@@ -61,7 +61,6 @@ define.widget( 'ueditor', {
 	},
 	Default: { wmin: 2, hmin: 2 },
 	Prototype : {
-		className: 'w-ueditor w-input-border w-input f-oh f-inbl f-va',
 		val: function( a ) {
 			if ( a == null ) {
 				this.save();
@@ -96,6 +95,9 @@ define.widget( 'ueditor', {
 			u.addListener( 'focus', function() {
 				$.classRemove( self.$(), 'z-err' );
 				$.cleanPop();
+			} );
+			u.addListener( 'contentchange', function() {
+				self.trigger( 'change' );
 			} );
 		},
 		_resize: function() {
@@ -148,6 +150,9 @@ define.widget( 'ueditor', {
 			this.u[ a === false ? 'enable' : 'disable' ]();
 			$.classAdd( this.$(), 'z-ds', a );
 			$( this.id + 'v' ).disabled = a !== false;
+		},
+		form_cls: function() {
+			return 'w-input z-ah f-inbl f-va f-wdbr';
 		},
 		html_nodes: function() {
 			return '<div id=' + this.id + 'u></div><input type=hidden id=' + this.id + 'v name=' + this.x.name + (this.x.disabled ? ' disabled' : '') + '>';
