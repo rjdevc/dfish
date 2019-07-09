@@ -2,6 +2,7 @@ package com.rongji.dfish.framework.service;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.dao.BaseDao;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -34,6 +35,7 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
     }
 
     @Override
+    @Transactional
     public int update(T entity) throws Exception {
         beforeUpdate(entity);
         int result = super.update(entity);
@@ -44,6 +46,7 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
     }
 
     @Override
+    @Transactional
     public <S extends T> int deleteAll(Collection<S> entities) throws Exception {
         if (Utils.isEmpty(entities)) {
             return 0;
@@ -61,6 +64,7 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
     }
 
     @Override
+    @Transactional
     public int delete(T entity) throws Exception {
         beforeDelete(entity);
         int result = super.delete(entity);
@@ -71,6 +75,7 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
     }
 
     @Override
+    @Transactional
     public int delete(ID id) throws Exception {
         T e = get(id);
         beforeDelete(e);
@@ -82,6 +87,7 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
     }
 
     @Override
+    @Transactional
     public int save(T entity) throws Exception {
         beforeSave(entity);
         int result = super.save(entity);
