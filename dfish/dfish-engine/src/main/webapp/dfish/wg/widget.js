@@ -1736,24 +1736,6 @@ _show_scroll = function() {
 		this.trigger( 'scroll' );
 	}
 },
-_html_scroll = function( s ) {
-	this._scr_usable = T;
-	var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll;
-	if ( mbi ) {
-		return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + '<div id=' + this.id + 'ovf class=w-scroll-overflow style="' +
-			(w ? 'width:' + w + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + this.x.maxwidth + 'px;' : '') +
-			(this.x.minwidth ? 'min-width:' + this.x.minwidth + 'px;' : '') + (h ? 'height:' + h + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + this.x.maxheight + 'px;' : '') +
-			(this.x.minheight ? 'min-height:' + this.x.minheight + 'px;' : '') + '" onscroll=' + eve + '><div id=' + this.id + 'cont>' + (s || '') + '</div></div>';		
-	} else {
-		return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class=f-scroll-overflow style="margin-bottom:-' + br.scroll + 'px;' +
-			(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + (+this.x.maxwidth + c) + 'px;' : '') + (this.x.minwidth ? 'min-width:' + (+this.x.minwidth + c) + 'px;' : '') +
-			(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
-			'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
-			'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
-			this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div><div id=' +
-			this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div>';
-	}
-},
 /* `Scroll` */
 Scroll = define.widget( 'scroll', {
 	Const: function( x ) {
@@ -1910,7 +1892,7 @@ Scroll = define.widget( 'scroll', {
 		setScroll: function() {
 			if ( ! this._scr_usable && this.$() ) {
 				var a = $.frag( this.$() );
-				$.append( this.$(), _html_scroll.call( this ) );
+				$.append( this.$(), this.html_scroll() );
 				$.append( this.$( 'cont' ), a );
 			}
 		},
@@ -1996,11 +1978,32 @@ Scroll = define.widget( 'scroll', {
 	    		e.preventDefault();
 	    	});			
 		},
+		prop_cls_scroll_overflow: function() {
+			return 'f-scroll-overflow';
+		},
 		html: function() {
 			this.width() == N && ! this.x.maxwidth && ! this.x.maxheight && $.classAdd( this, 'z-autosize' );
 			// 执行 html_nodes 要在执行 html_prop 之前，以备html_nodes中可能要增加样式等操作
 			var s = this.html_nodes();
-			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + (this.isScrollable() ? _html_scroll.call( this, s ) : s) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
+			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + (this.isScrollable() ? this.html_scroll( s ) : s) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
+		},
+		html_scroll: function( s ) {
+			this._scr_usable = T;
+			var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll;
+			if ( mbi ) {
+				return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + '<div id=' + this.id + 'ovf class=w-scroll-overflow style="' +
+					(w ? 'width:' + w + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + this.x.maxwidth + 'px;' : '') +
+					(this.x.minwidth ? 'min-width:' + this.x.minwidth + 'px;' : '') + (h ? 'height:' + h + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + this.x.maxheight + 'px;' : '') +
+					(this.x.minheight ? 'min-height:' + this.x.minheight + 'px;' : '') + '" onscroll=' + eve + '><div id=' + this.id + 'cont>' + (s || '') + '</div></div>';		
+			} else {
+				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' +
+					(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + (+this.x.maxwidth + c) + 'px;' : '') + (this.x.minwidth ? 'min-width:' + (+this.x.minwidth + c) + 'px;' : '') +
+					(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
+					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
+					'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
+					this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div><div id=' +
+					this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div>';
+			}
 		},
 		dispose: function() {
 			clearInterval( this._scr_timer );
@@ -4015,7 +4018,7 @@ Dialog = define.widget( 'dialog', {
 			}
 		},
 		_front: function( a ) {
-			var z = a ? 2 : 1;
+			var z = a ? 11 : 10;
 			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
 		},
 		// 定位 /@a -> fullscreen?
@@ -6608,6 +6611,10 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 					if ( this.isSuccess() ) {
 						this.jigsaw && this.jigsaw.close();
 						this.addClass( 'z-success' );
+						Q( this.$( 'pht' ) ).html( this.html_info( r ) );
+						var t = Q( this.$( 'thumb' ) ), l = _number( t.css( 'left' ) ), w = this.jigsaw.innerWidth();
+							f = l + (t.width() / 2) < (w / 2);
+						Q( this.$( 'ph' ) ).css( { left: f ? l + t.width() : 0, right: f ? 0 : w - l } );
 					} else {
 						if ( this.isNormal() )
 							this.reload( this.jigsaw.vis );
@@ -6654,7 +6661,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		load: function( fn ) {
 			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
 				if ( d.error ) {
-					this.lock( d.error );
+					this.lock( d );
 				} else {
 					this.img = d;
 					this.loaded = T;
@@ -6679,9 +6686,9 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			this.normal();
 			this.reload();
 		},
-		lock: function( e ) {
+		lock: function( d ) {
 			this.addClass( 'z-err z-lock' );
-			Q( this.$( 'pht' ) ).html( this.html_info( e ) );
+			Q( this.$( 'pht' ) ).html( this.html_info( d ) );
 			this.readonly();
 			this.jigsaw && this.jigsaw.close();
 			var a = Math.abs( e.timeout || 0 ), self = this;
@@ -6703,8 +6710,10 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		form_cls: function() {
 			return 'w-input f-inbl f-va';
 		},
-		html_info: function( e ) {
-			return e ? '<var class=_err>' + e.msg + (e.timeout ? '(<em>' + Math.abs( e.timeout ) + '</em>)' : '') + '</var>' : (this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
+		html_info: function( d ) {
+			return d && d.error ? '<var class=_err>' + d.msg + (d.timeout ? '(<em>' + Math.abs( d.timeout ) + '</em>)' : '') + '</var>' :
+					d && d.result ? '<var class=_ok>' + (d.msg || Loc.auth_success) + '</var>' : 
+					(this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
 			var d = this.img;
@@ -9720,7 +9729,7 @@ GridHead = define.widget( 'grid/head', {
 							n = $.bcr( this.rootNode.$() ),
 							f = n.top < m.top;
 						e.style.position = f ? 'fixed' : '';
-						e.style.zIndex = f ? 1 : '';
+						e.style.zIndex = f ? 2 : '';
 						c.style.display = f ? 'block' : 'none';
 						$.classAdd( e, 'f-oh f-white f-shadow-bottom', f );
 						e.scrollLeft = f ? a.scrollLeft() : 0;
@@ -9739,6 +9748,7 @@ GridBody = define.widget( 'grid/body', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
+		(this.head || !p.x.scroll) && $.classAdd( this, 'w-grid-bg' );
 	},
 	Extend: GridHead,
 	Listener: {
@@ -10190,6 +10200,10 @@ Grid = define.widget( 'grid', {
 		},
 		isScrollBottom: function() {
 			return (this.head ? this.body : this).isScrollBottom();
+		},
+		// @implement
+		prop_cls_scroll_overflow: function() {
+			return 'f-scroll-overflow' + (!this.head && this.x.scroll ? ' w-grid-bg' : '');
 		}
 	}
 });

@@ -25543,7 +25543,7 @@ UE.ui = baidu.editor.ui = {};
                 baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = popEl.style.zIndex - 1;
                 */
                 // add by cmy
-                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 2;
+                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 11;
             }
             this.getDom().style.visibility = 'visible';
 
@@ -27306,7 +27306,7 @@ UE.ui = baidu.editor.ui = {};
                 // annot cmy 注释下面这一句
                 //baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = this.getDom().style.zIndex - 4;
                 // add by cmy
-                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 2;
+                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 11;
             }
         },
         isHidden: function (){

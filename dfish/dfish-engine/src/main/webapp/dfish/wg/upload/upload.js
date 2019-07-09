@@ -1324,6 +1324,11 @@ BaseUpload = define.widget( 'upload/base', {
 
 Upload = UploadAjax = define.widget( 'upload/base/ajax', {
 	Extend: BaseUpload,
+	Listener: {
+		body: {
+			ready: $.rt()
+		}
+	},
 	Prototype: {
 		setButtonDisabled: function() {
 			//implement
@@ -1383,14 +1388,14 @@ UploadSwf = define.widget( 'upload/base/swf', {
 				var s = this.x.file_size_limit;
 				if ( s && /[KMG]$/i.test( s ) )
 					this.x.file_size_limit = s.toUpperCase() + 'B';
-				var o = $.extend( this.x, {
+				this.settings = $.extend( this.x, {
 					button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
 					button_cursor: SWFUpload.CURSOR.HAND,
 					button_placeholder_id: this.id + 'swf'
 				} );
 				if ( $.x.ajax_data )
-					o.post_params = $.extend( o.post_params || {}, $.x.ajax_data );
-				this.initSWFUpload( o );
+					this.settings.post_params = $.extend( this.settings.post_params || {}, $.x.ajax_data );
+				this.initSWFUpload( this.settings );
 			}
 		}
 	},
@@ -1436,6 +1441,7 @@ define.widget( 'upload/file', {
 	Listener: {
 		body: {
 			ready: function() {
+				Upload.Listener.body.ready.apply( this, arguments );
 				this.fixLabelVAlign();
 			},
 			error: function( e, a ) {
