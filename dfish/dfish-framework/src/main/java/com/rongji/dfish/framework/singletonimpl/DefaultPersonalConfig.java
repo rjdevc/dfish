@@ -1,21 +1,16 @@
 package com.rongji.dfish.framework.singletonimpl;
 
-import static com.rongji.dfish.framework.FrameworkHelper.ENCODING;
+import com.rongji.dfish.framework.PersonalConfigHolder;
+import com.rongji.dfish.framework.SystemData;
+import com.rongji.dfish.misc.cache.SizeFixedCache;
 
 import java.io.File;
 import java.util.Map;
 
-import org.dom4j.DocumentException;
-
-import com.rongji.dfish.base.util.FileUtil;
-import com.rongji.dfish.framework.PersonalConfigHolder;
-import com.rongji.dfish.framework.SystemData;
-import com.rongji.dfish.misc.cache.SizeFixedCache;
-import com.rongji.dfish.misc.util.XMLUtil;
-
 public class DefaultPersonalConfig implements PersonalConfigHolder{
 	private static Map<String, String> propertiesPersonMap=new SizeFixedCache<String, String>(256);
 
+	@Override
 	public String getProperty(String userId, String argStr) {
 		String tempStr = userId + "." + argStr;
 		synchronized (propertiesPersonMap) {
@@ -45,6 +40,7 @@ public class DefaultPersonalConfig implements PersonalConfigHolder{
 		return null;
 	}
 
+	@Override
 	public void setProperty(String userId, String argStr, String value) {
 		String tempStr = userId + "." + argStr;
 		synchronized (propertiesPersonMap) {
@@ -68,6 +64,7 @@ public class DefaultPersonalConfig implements PersonalConfigHolder{
 		return;
 	}
 
+	@Override
 	public void reset() {
 		propertiesPersonMap.clear();
 	}

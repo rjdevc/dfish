@@ -242,11 +242,11 @@ public class JigsawGenerator {
         Integer realOffset = (Integer) session.getAttribute(KEY_CHECKCODE);
         // 小于误差范围内都是校验成功
         boolean match = realOffset != null && Math.abs((customOffset - realOffset) / realOffset) <= errorRange;
-        if (match) { // 匹配成功,清理数据
-            // code数据不能清理,需要二次验证
-//            session.removeAttribute(KEY_CHECKCODE);
+        if (match) {
+            // 匹配成功,清理数据
             session.removeAttribute(KEY_GENERATOR_COUNT);
             session.removeAttribute(KEY_LOCK_TIME);
+            // KEY_CHECKCODE数据不能清理,需要二次验证
         }
         return match;
     }
@@ -506,16 +506,18 @@ public class JigsawGenerator {
                 return msg;
             }
 
-            public void setMsg(String msg) {
+            public JigsawError setMsg(String msg) {
                 this.msg = msg;
+                return this;
             }
 
             public int getTimeout() {
                 return timeout;
             }
 
-            public void setTimeout(int timeout) {
+            public JigsawError setTimeout(int timeout) {
                 this.timeout = timeout;
+                return this;
             }
         }
 
@@ -529,6 +531,11 @@ public class JigsawGenerator {
             this.result = result;
         }
 
+        public JigsawCheckData(boolean result, String msg) {
+            this.result = result;
+            this.msg = msg;
+        }
+
         @Override
         public String getType() {
             return null;
@@ -538,15 +545,28 @@ public class JigsawGenerator {
          * 校验结果
          */
         private boolean result;
+        /**
+         * 校验信息
+         */
+        private String msg;
 
         public boolean isResult() {
             return result;
         }
 
-        public void setResult(boolean result) {
+        public JigsawCheckData setResult(boolean result) {
             this.result = result;
+            return this;
         }
 
+        public String getMsg() {
+            return msg;
+        }
+
+        public JigsawCheckData setMsg(String msg) {
+            this.msg = msg;
+            return this;
+        }
     }
 
 }

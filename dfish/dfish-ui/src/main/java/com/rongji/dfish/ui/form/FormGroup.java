@@ -17,14 +17,17 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	private FormLabel label;
 	private Boolean hideLabel;
 
+	@Override
 	public FormLabel getLabel() {
 		return label;
 	}
 
+	@Override
 	public FormGroup setLabel(String label) {
 		this.label=new FormLabel(label).setWidth(null);
 		return this;
 	}
+	@Override
 	public FormGroup setLabel(FormLabel label) {
 		this.label=label;
 		return this;
@@ -42,6 +45,7 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 		setLabel(label);
 	}
 
+	@Override
 	public String getType() {
 		return "formgroup";
 	}
@@ -54,6 +58,7 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	 * @param width String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
+	@Override
 	public FormGroup add(int index,Widget<?> w,String width) {
 		if(index<0){
 			nodes.add(w);

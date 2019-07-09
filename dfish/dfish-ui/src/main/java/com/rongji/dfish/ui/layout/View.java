@@ -37,6 +37,7 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 	private String preload;
 	private String src;
 	private String base;
+	@Deprecated
 	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
 
 	@Override
@@ -61,10 +62,12 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 //		return this;
 //	}
 
+	@Override
 	public String getTemplate() {
 		return template;
 	}
 
+	@Override
 	public View setTemplate(String template) {
 		this.template = template;
 		return this;
@@ -73,6 +76,7 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 	 * 加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。
 	 * @return src
 	 */
+	@Override
 	public String getSrc() {
 		return src;
 	}
@@ -81,6 +85,7 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 	 * @param src URL
 	 * @return 本身，这样可以继续设置其他属性
 	 */
+	@Override
 	public View setSrc(String src) {
 		this.src = src;
 		return this;
@@ -167,10 +172,12 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 		return templates;
 	}
 
+	@Override
 	public String getPreload() {
 		return preload;
 	}
 
+	@Override
 	public View setPreload(String preload) {
 		this.preload = preload;
 		return this;

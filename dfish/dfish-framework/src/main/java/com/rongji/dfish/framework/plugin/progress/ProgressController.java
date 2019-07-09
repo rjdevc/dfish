@@ -36,18 +36,12 @@ public class ProgressController extends BaseController {
 		if (progressData == null) {
 			return getCommand(null, true);
 		}
-		
-		if (progressData.isFinish()) { // 进度条结束
+
+		// 进度条结束
+		if (progressData.isFinish()) {
 			// 将进度条移除记录
 			progressManager.removeProgress(progressKey);
 			if (progressData.getCompleteNode() != null) {
-//				if (progressData.getCompleteNode() instanceof Command) {
-//					CommandGroup pCg = new CommandGroup().setPath(CommandGroup.PATH_OWNER_VIEW);
-//					cg.add(pCg);
-//					pCg.add((Command<?>) progressData.getCompleteNode());
-//					cg.add(getCommand(null, true));
-//				} else {
-//				}
 				return progressData.getCompleteNode();
 			}
 			// 默认命令做容错

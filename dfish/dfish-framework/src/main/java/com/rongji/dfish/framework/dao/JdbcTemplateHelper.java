@@ -350,6 +350,7 @@ public class JdbcTemplateHelper {
 		int[] result = null;
 		try {
 			result = jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+				@Override
 				public void setValues(PreparedStatement ps, int i) throws SQLException {
 					Object[] item = argsList.get(i);
 					if (Utils.notEmpty(item)) {
@@ -363,6 +364,7 @@ public class JdbcTemplateHelper {
 					}
 				}
 
+				@Override
 				public int getBatchSize() {
 					return argsList.size();
 				}

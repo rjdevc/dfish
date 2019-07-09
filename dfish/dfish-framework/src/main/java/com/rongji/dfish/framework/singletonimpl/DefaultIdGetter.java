@@ -12,6 +12,7 @@ public class DefaultIdGetter implements NewIdGetter{
 	/** 数据库编号缓存 */
 	private static Map<String, String> cachedIds=new HashMap<String, String>();
 
+	@Override
 	public String getNewId(String clzName, String idName, String initId) {
 		// FIXME 这个是本地的取法，不适合集群使用
 		clzName = clzName.intern();

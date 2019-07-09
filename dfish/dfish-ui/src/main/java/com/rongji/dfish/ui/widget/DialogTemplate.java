@@ -1,9 +1,5 @@
 package com.rongji.dfish.ui.widget;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.rongji.dfish.ui.AbstractDialog;
 import com.rongji.dfish.ui.Widget;
 
