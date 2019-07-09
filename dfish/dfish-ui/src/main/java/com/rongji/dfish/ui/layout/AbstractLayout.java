@@ -42,8 +42,9 @@ public abstract class AbstractLayout<T extends AbstractLayout<T,N>,N extends Wid
 		  if (w == null) {
             return (T) this;
         }
-        if(w==this)throw new IllegalArgumentException(
-        		"can not add widget itself as a sub widget");
+        if(w==this) {
+        	throw new IllegalArgumentException("can not add widget itself as a sub widget");
+		}
         nodes.add(w);
         return (T) this;
     }

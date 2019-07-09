@@ -461,6 +461,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * 附件排列方向。可选值: h(横向,默认), v(纵向)
 	 * @return String
 	 */
+	@Override
 	public String getDir() {
 		return dir;
 	}
@@ -470,17 +471,20 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @param dir String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
+	@Override
 	public T setDir(String dir) {
 		this.dir = dir;
 		return (T)this;
 	}
 	
 	@Deprecated
+	@Override
 	public T setTip(Boolean tip) {
 		return (T) this;
 	}
 	
 	@Deprecated
+	@Override
 	public T setTip(String tip) {
 		return (T) this;
 	}

@@ -211,23 +211,24 @@ public abstract class BaseDao<T, ID extends Serializable> {
 		final Class<?>entityClass=getEntiyType(getClass());
 		return (T)pubCommonDAO.getHibernateTemplate().get(entityClass, id);
 	}
-	public void update(T entity) {
-		pubCommonDAO.update(entity);
+	public int update(T entity) throws Exception {
+		return pubCommonDAO.update(entity);
 	}
-	public<S extends T> void deleteAll(Collection<S> entities) {
+	public<S extends T> int deleteAll(Collection<S> entities) throws Exception {
 		if(entities==null){
-			return ;
+			return 0;
 		}
 		pubCommonDAO.getHibernateTemplate().deleteAll(entities);
+		return entities.size();
 	}
-	public void delete(T entity) {
-		pubCommonDAO.delete(entity);
+	public int delete(T entity) throws Exception {
+		return pubCommonDAO.delete(entity);
 	}
-	public void delete(ID id) {
-		pubCommonDAO.delete(get(id));
+	public int delete(ID id) throws Exception {
+		return pubCommonDAO.delete(get(id));
 	}
-	public void save(T entity) {
-		pubCommonDAO.save(entity);
+	public int save(T entity) throws Exception {
+		return pubCommonDAO.save(entity);
 	}
 	
 	public static final int BATCH_SIZE = 512;

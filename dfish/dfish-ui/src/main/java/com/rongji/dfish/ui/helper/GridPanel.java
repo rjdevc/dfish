@@ -114,6 +114,7 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 	/**
      * 初始化原型结点
      */
+	@Override
     protected void buildPrototype() {
     	Tr headRow = null;
     	if(hasTableHead){

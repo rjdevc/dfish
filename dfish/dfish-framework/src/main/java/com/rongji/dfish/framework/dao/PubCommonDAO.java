@@ -105,13 +105,13 @@ public interface PubCommonDAO {
 	   * 根据对象删除数据
 	   * @param obj Object
 	   */
-	  void delete(Object obj);
+	  int delete(Object obj);
 
 	  /**
 	   * 保存对象-共享对享
 	   * @param object
 	   */
-	  void save(Object object);
+	  int save(Object object);
 
 	  /**
 	   * evictObject
@@ -123,7 +123,7 @@ public interface PubCommonDAO {
 	   * 直接更新对象
 	   * @param object
 	   */
-	  void update(Object object);
+	  int update(Object object);
 
 
 	  HibernateTemplate getHibernateTemplate();

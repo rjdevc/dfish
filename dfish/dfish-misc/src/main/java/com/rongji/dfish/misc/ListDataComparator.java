@@ -48,12 +48,18 @@ public class ListDataComparator<T> {
 			});
 		}catch(ClassCastException ex){
 			this.compare(new DataIndentifer<T>(){
+				@Override
 				public boolean isRowChanges(T row1, T row2) {
-					if(row1==null)return row2!=null;
+					if(row1==null){
+						return row2!=null;
+					}
 					return row1!=row2;
 				}
+				@Override
 				public boolean isSameRow(T row1, T row2) {
-					if(row1==null)return row2==null;
+					if(row1==null){
+						return row2==null;
+					}
 					return row1.equals(row2);
 				}
 			});

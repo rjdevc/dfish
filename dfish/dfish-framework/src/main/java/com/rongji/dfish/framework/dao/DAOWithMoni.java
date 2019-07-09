@@ -10,10 +10,10 @@ import java.util.Map;
 
 import com.rongji.dfish.framework.SystemData;
 
-public class DAOWithMoni extends  PubCommonDAOImpl{
+public class DAOWithMoni extends PubCommonDAOImpl{
 	
-
-	protected  void log(String sql,long last){
+	@Override
+	protected void log(String sql,long last){
 		record(sql, last);
 		super.log(sql, last);
 	}
@@ -91,6 +91,7 @@ public class DAOWithMoni extends  PubCommonDAOImpl{
 		sb.append("</td></tr></table>\r\n");
 		
 		Collections.sort(result,new Comparator<Record>(){
+			@Override
 			public int compare(Record r0, Record r1) {
 				long value=r1.total-r0.total;
 				return value>0?1:(value<0?-1:0);
@@ -122,6 +123,7 @@ public class DAOWithMoni extends  PubCommonDAOImpl{
 		}
 		sb.append("</table>\r\n");
 		Collections.sort(result,new Comparator<Record>(){
+			@Override
 			public int compare(Record r0, Record r1) {
 				return r1.times-r0.times;
 			}
@@ -145,6 +147,7 @@ public class DAOWithMoni extends  PubCommonDAOImpl{
 		sb.append("</table>\r\n");
 		
 		Collections.sort(result,new Comparator<Record>(){
+			@Override
 			public int compare(Record r0, Record r1) {
 				return (int)(r1.max-r0.max);
 			}

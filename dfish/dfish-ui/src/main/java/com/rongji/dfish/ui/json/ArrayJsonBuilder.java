@@ -14,7 +14,11 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 		sb.append('[');
 		int i=0;
 		for(Object item:cast){
-			if(appended)sb.append(',');else appended=true;
+			if(appended){
+				sb.append(',');
+			}else {
+				appended=true;
+			}
 			path.push(new PathInfo("["+(i++)+"]",item));
 			J.buildJson(item, sb,path);
 			path.pop();

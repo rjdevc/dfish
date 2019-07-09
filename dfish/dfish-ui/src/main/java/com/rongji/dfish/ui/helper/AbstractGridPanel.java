@@ -150,8 +150,6 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 		//FIXME 如果field重复则报异常		
 	}
 	
-    
-
     protected abstract void buildPrototype();
     
     protected String getFormattedData(GridColumn gc, Object data) {

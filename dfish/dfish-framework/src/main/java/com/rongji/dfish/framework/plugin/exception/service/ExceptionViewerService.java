@@ -109,7 +109,7 @@ public class ExceptionViewerService extends BaseService<PubExptRecord,String>{
 	private void distinct4Type() {
 		
 		List<List<PubExptType>> typeList=new ArrayList<List<PubExptType>>();
-		Map<PubExptType, List<PubExptStack>> exceptionInfoMap=new HashMap<PubExptType, List<PubExptStack>>();
+		Map<PubExptType, List<PubExptStack>> exceptionInfoMap=new HashMap<>();
 		
 		List<PubExptType> groupList=(List<PubExptType>)pubCommonDAO.getQueryList("FROM PubExptType t1 WHERE t1.typeId IN "
 				+ "(SELECT min(t2.typeId) FROM PubExptType t2 group by t2.className,t2.causeId) ORDER BY t1.typeId");

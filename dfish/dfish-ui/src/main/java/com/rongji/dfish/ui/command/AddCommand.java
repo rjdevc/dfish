@@ -21,7 +21,7 @@ MultiContainer<T, JsonObject>{
 	 * 
 	 */
 	private static final long serialVersionUID = -2417775749900268295L;
-	protected List<JsonObject> nodes = new ArrayList<JsonObject>();
+	protected List<JsonObject> nodes = new ArrayList<>();
 
 	/**
 	 * 添加需要插入元素
@@ -34,15 +34,19 @@ MultiContainer<T, JsonObject>{
 		if (w == null) {
 			return (T) this;
 		}
-		if (w == this)
+		if (w == this) {
 			throw new IllegalArgumentException("can not add widget itself as a sub widget");
+		}
 		nodes.add(w);
 		return (T) this;
 	}
-	
+
+	@Override
 	public List<JsonObject> findNodes() {
 		return nodes;
 	}
+
+	@Override
 	public List<JsonObject> getNodes() {
 		return nodes;
 	}

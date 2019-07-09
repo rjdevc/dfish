@@ -169,15 +169,16 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         }
         if (this instanceof HiddenContainer<?>) {
             HiddenContainer<?> cast = (HiddenContainer<?>) this;
-            if (cast.getHiddens() != null)
+            if (cast.getHiddens() != null) {
                 for (Hidden hidden : cast.getHiddens()) {
                     if (name.equals(hidden.getName())) {
                         result.add(hidden);
                     }
                 }
+            }
         }
         List<Widget<?>> nodes = findNodes();
-        if (nodes != null)
+        if (nodes != null) {
             for (Widget<?> item : nodes) {
                 if (item == null) {
                     continue;
@@ -195,6 +196,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
                     }
                 }
             }
+        }
     }
 
     /**

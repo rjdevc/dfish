@@ -59,6 +59,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	}
 	
 	private static final Log LOG=LogFactory.getLog(PubCommonDAOImpl.class);
+
+	@Override
 	public List<?> getQueryList(final String strSql, final Object... object) {
 		
 		return call(strSql,new Callable<List<?>>(){
@@ -109,6 +111,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		}
 	}
 
+	@Override
 	public int deleteSQL(String strSql, Object... object) {
 		final List<?> list = getQueryList(strSql, object);
 		if (list != null) {
@@ -125,40 +128,49 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		return list == null ? 0 : list.size();
 	}
 
-	public void delete(final Object object) {
+	@Override
+	public int delete(final Object object) {
 		if (object != null) {
-			call("DELETE "+object.getClass().getSimpleName(),new Callable<Object>(){
+			return call("DELETE "+object.getClass().getSimpleName(),new Callable<Integer>(){
 				@Override
-				public Object call() throws Exception {
+				public Integer call() throws Exception {
 					getHibernateTemplate().delete(object);
-					return null;
+					// 没抛异常说明执行成功
+					return 1;
 				}
 			});
 		}
+		return 0;
 	}
 
-	public void save(final Object object) {
+	@Override
+	public int save(final Object object) {
 		if (object != null) {
-			call("SAVE "+object.getClass().getSimpleName(),new Callable<Object>(){
+			return call("SAVE "+object.getClass().getSimpleName(),new Callable<Integer>(){
 				@Override
-				public Object call() throws Exception {
+				public Integer call() throws Exception {
 					getHibernateTemplate().save(object);
-					return null;
+					// 没抛异常说明执行成功
+					return 1;
 				}
 			});
 		}
+		return 0;
 	}
 
-	public void update(final Object object) {
+	@Override
+	public int update(final Object object) {
 		if (object != null) {
-			call("UPDATE "+object.getClass().getSimpleName(),new Callable<Object>(){
+			return call("UPDATE "+object.getClass().getSimpleName(),new Callable<Integer>(){
 				@Override
-				public Object call() throws Exception {
+				public Integer call() throws Exception {
 					getHibernateTemplate().update(object);
-					return null;
+					// 没抛异常说明执行成功
+					return 1;
 				}
 			});
 		}
+		return 0;
 	}
 
 	protected static final void setArgument(Query query, int index, Object o) {
@@ -189,12 +201,14 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 
 	}
 
+	@Override
 	public void evictObject(final Object object) {
 		if (object != null) {
 			getHibernateTemplate().evict(object);
 		}
 	}
 
+	@Override
 	public List<?> getQueryList(final String strSql, final Page page, final Object... object) {
 		Pagination pagination=Pagination.fromPage(page);
 		List<?> ret=this.getQueryList(strSql, pagination, object);
@@ -207,6 +221,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		}
 		return ret;
 	}
+
+	@Override
 	public List<?> getQueryList(final String strSql, final Pagination pagination, final Object... object) {
 	    if (pagination == null||pagination.getLimit()==null) {
 	        return getQueryList(strSql, object);
@@ -337,7 +353,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		return result;
 //	    return getQueryList(strSql, page, page.getAutoRowCount(), object);
 	}
-	
+
+	@Override
 	public List<?> getQueryList(final String strSql, final Page page,
 			final boolean autoGetRowCount, final Object... object) {
 		if (page != null) {
@@ -346,10 +363,12 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		return getQueryList(strSql, page, object);
 	}
 
-
+	@Override
 	public Object queryAsAnObject(final String strSql, final Object... object){
 		List<?> list=getQueryList(strSql,object);
-		if(list.size()==0)return null;
+		if(list.isEmpty()) {
+			return null;
+		}
 		return list.get(0);
 	}
 
@@ -360,6 +379,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	 * @param values
 	 * @return
 	 */
+	@Override
 	public int bulkUpdate(final String queryString, final Object... values) {
 		 return call("batchUpdate",new Callable<Integer>(){
 		    @Override
