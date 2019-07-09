@@ -468,6 +468,7 @@ public class BaseController extends MultiActionController {
 			// 取上级调用方法名
 			call = callStack.getClassName() + "." + callStack.getMethodName();
 		} catch (Throwable e) {
+			LogUtil.error("获取进度条编号-调用堆栈异常", e);
 		}
 		if (dataId == null) {
 			dataId = "";
@@ -476,6 +477,18 @@ public class BaseController extends MultiActionController {
 			dataId = dataId.substring(0, 64);
 		}
 		return call + "#" + sessionId + "#" + dataId;
+	}
+
+	protected String getDataId(String progressKey) {
+		if (Utils.isEmpty(progressKey)) {
+			return "";
+		}
+		int endIndex = progressKey.lastIndexOf("#");
+		if (endIndex < 0) {
+			endIndex = progressKey.length();
+		}
+		String dataId = progressKey.substring(endIndex + 1);
+		return dataId;
 	}
 
 }
