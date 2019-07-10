@@ -31,6 +31,7 @@ import com.rongji.dfish.framework.FrameworkHelper;
  * @param <T> 实体对象类型Entity
  * @param <ID> ID对象类型通常是String
  */
+@SuppressWarnings("unchecked")
 public abstract class BaseDao<T, ID extends Serializable> {
 	@Autowired
 	protected PubCommonDAO pubCommonDAO;
@@ -86,7 +87,6 @@ public abstract class BaseDao<T, ID extends Serializable> {
 	 * @param ids ID
 	 * @return List
 	 */
-	@SuppressWarnings("unchecked")
     public List<T> findAll(List<ID> ids) {
 		if(ids==null){
 			return null;
@@ -203,7 +203,6 @@ public abstract class BaseDao<T, ID extends Serializable> {
 	 * @param id
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public T get(ID id) {
 		if(id==null){
 			return null;

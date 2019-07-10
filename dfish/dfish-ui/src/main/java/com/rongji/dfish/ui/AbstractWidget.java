@@ -11,6 +11,7 @@ import java.util.*;
  * @param <T> 当前对象类型
  * @author DFish Team
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractWidget<T extends AbstractWidget<T>> extends AbstractNode<T> implements Widget<T>, EventTarget<T> {
 
     /**
