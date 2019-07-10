@@ -6400,7 +6400,7 @@ Spinner = define.widget( 'spinner', {
 					if ( d && d > 0 && $.strFrom( v, '.' ).length > d )
 						return _form_err.call( this, b, 'number_decimal_digit', [ d ] );
 				}
-				if ( this === this.parentNode.begin ) {
+				if ( this == this.parentNode.begin ) {
 					var c = this.parentNode.end, d = c.val();
 					if ( v && d && this.validHooks.compare.call( this, { comparemode: '<=' }, v, c, d ) )
 						return _form_err.call( this, b, 'compare', [ '<=', c.x.label ] );
