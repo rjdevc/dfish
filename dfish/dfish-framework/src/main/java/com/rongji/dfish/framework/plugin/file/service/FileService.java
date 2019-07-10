@@ -4,7 +4,6 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.crypt.CryptFactory;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.base.util.FileUtil;
-import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.BaseService;
@@ -15,9 +14,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
