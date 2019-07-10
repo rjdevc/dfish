@@ -3989,7 +3989,7 @@ MenuSplit = define.widget( 'menu/split', {
 	Prototype: {
 		show: $.rt(), hide: $.rt(), elemht: function() { return 5 },
 		html: function() {
-			return '<div class=w-toggle-hr>&bnsp;</div>';
+			return '<div class=w-toggle-hr>&nbsp;</div>';
 		}
 	}
 } ),
@@ -5742,7 +5742,7 @@ Spinner = define.widget( 'spinner', {
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
 			a != N && this.x.format && this.trigger( 'format' );
-			return this.$t().value.replace( /[^\d\.-]/g, '' );
+			return this.$t().value;
 		},
 		doFormat: function() {
 			if ( ! this.x.format )
