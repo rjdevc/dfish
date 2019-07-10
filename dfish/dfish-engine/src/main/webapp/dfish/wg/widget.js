@@ -6410,7 +6410,7 @@ Spinner = define.widget( 'spinner', {
 		val: function( a ) {
 			Text.prototype.val.call( this, a );
 			a != N && this.x.format && this.trigger( 'format' );
-			return this.$t().value.replace( /[^\d\.-]/g, '' );
+			return this.$t().value;
 		},
 		doFormat: function() {
 			if ( ! this.x.format )
@@ -6711,8 +6711,8 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return 'w-input f-inbl f-va';
 		},
 		html_info: function( d ) {
-			return d && d.error ? '<var class=_err>' + d.msg + (d.timeout ? '(<em>' + Math.abs( d.timeout ) + '</em>)' : '') + '</var>' :
-					d && d.result ? '<var class=_ok>' + (d.msg || Loc.auth_success) + '</var>' : 
+			return d && d.error ? '<var class=_err>' + (d.msg != N ? d.msg : Loc.auth_fail) + (d.timeout ? '(<em>' + Math.abs( d.timeout ) + '</em>)' : '') + '</var>' :
+					d && d.result ? '<var class=_ok>' + (d.msg != N ? d.msg : Loc.auth_success) + '</var>' : 
 					(this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
@@ -8904,6 +8904,49 @@ Hiddens = define.widget( 'hiddens', {
 		x_childtype: $.rt( 'hidden' )
 	}
 } ),
+// `gridcombo` 表格搜索过滤器
+GridCombo = $.createClass( {
+	Const: function( a ) {
+		this.cab = a;
+		this.xml = this.node2xml( a );
+		this._keep_show = a.x.combo.keepshow;
+		for ( var i = 0, c = a.x.columns, l = c && c.length; i < l; i ++ ) {
+			if ( c[ i ].highlight ) {
+				this._matchlength = c[ i ].highlight.matchlength;
+				break;
+			}
+		}
+	},
+	Extend: TreeCombo,
+	Prototype: {
+		node2xml: function( a ) {
+			for ( var i = 0, j, b = a.x.combo.field, c = [], d, t = a.tbody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
+				d = t[ i ].x.data, r = d[ b.remark ];
+				s = '<d v="' + $.strEscape( d[ b.value ] ) + '" t="' + $.strEscape( d[ b.text ] ) + '" i="' + t[ i ].id + '"';
+				r && (s += ' r="' + $.strEscape( r ) + '"');
+				d[ b.forbid ] && (s += ' x="1"');
+				if ( f ) {
+					for ( j = 0; j < f; j ++ )
+						s += ' s' + j + '="' + $.strEscape( d[ e[ j ] ] ) + '"';
+				}
+				c.push( s + '/>' );
+			}
+			this._sch = f;
+			return $.xmlParse( '<doc>' + c.join( '' ) + '</doc>' );
+		},
+		first: function() {
+			return this.cab.getEchoRows()[ 0 ];
+		},
+		filter: function( t, s ) {
+			var a = this.cab;
+			a.tbody() && a.setFilter( this._filter( t ) );
+			return a.getEchoRows().length;
+		},
+		getLength: function() {
+			return this.cab.getEchoRows().length;
+		}
+	}
+} ),
 /* grid 辅助方法和专用类 */
 _grid_f_attr = function( v ) {
 	return typeof v === _OBJ && v && (! v.type || v.type === TD.type) ? (v.text || '') : v;
@@ -9773,49 +9816,6 @@ GridBody = define.widget( 'grid/body', {
 		className: 'w-grid-tbody'
 	}
 } ),
-// `gridcombo` 表格搜索过滤器
-GridCombo = $.createClass( {
-	Const: function( a ) {
-		this.cab = a;
-		this.xml = this.node2xml( a );
-		this._keep_show = a.x.combo.keepshow;
-		for ( var i = 0, c = a.x.columns, l = c && c.length; i < l; i ++ ) {
-			if ( c[ i ].highlight ) {
-				this._matchlength = c[ i ].highlight.matchlength;
-				break;
-			}
-		}
-	},
-	Extend: TreeCombo,
-	Prototype: {
-		node2xml: function( a ) {
-			for ( var i = 0, j, b = a.x.combo.field, c = [], d, t = a.tbody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
-				d = t[ i ].x.data, r = d[ b.remark ];
-				s = '<d v="' + $.strEscape( d[ b.value ] ) + '" t="' + $.strEscape( d[ b.text ] ) + '" i="' + t[ i ].id + '"';
-				r && (s += ' r="' + $.strEscape( r ) + '"');
-				d[ b.forbid ] && (s += ' x="1"');
-				if ( f ) {
-					for ( j = 0; j < f; j ++ )
-						s += ' s' + j + '="' + $.strEscape( d[ e[ j ] ] ) + '"';
-				}
-				c.push( s + '/>' );
-			}
-			this._sch = f;
-			return $.xmlParse( '<doc>' + c.join( '' ) + '</doc>' );
-		},
-		first: function() {
-			return this.cab.getEchoRows()[ 0 ];
-		},
-		filter: function( t, s ) {
-			var a = this.cab;
-			a.tbody() && a.setFilter( this._filter( t ) );
-			return a.getEchoRows().length;
-		},
-		getLength: function() {
-			return this.cab.getEchoRows().length;
-		}
-	}
-} ),
 /* `grid` */
 Grid = define.widget( 'grid', {
 	Const: function( x, p ) {
@@ -9861,9 +9861,9 @@ Grid = define.widget( 'grid', {
 				}
 			},
 			scroll: function( e ) {
+				Vert.Listener.body.scroll.apply( this, arguments );
 				if ( this.head )
 					this.head.$().scrollLeft = this.body.$( 'ovf' ).scrollLeft;
-				Vert.Listener.body.scroll.apply( this, arguments );
 			},
 			resize: function() {
 				Vert.Listener.body.resize.apply( this, arguments );
