@@ -9748,7 +9748,7 @@ GridBody = define.widget( 'grid/body', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
-		(this.head || !p.x.scroll) && $.classAdd( this, 'w-grid-bg' );
+		!p.x.scroll && $.classAdd( this, 'w-grid-bg' );
 	},
 	Extend: GridHead,
 	Listener: {
@@ -9863,9 +9863,10 @@ Grid = define.widget( 'grid', {
 			scroll: function( e ) {
 				if ( this.head )
 					this.head.$().scrollLeft = this.body.$( 'ovf' ).scrollLeft;
-				Scroll.Listener.body.scroll.apply( this, arguments );
+				Vert.Listener.body.scroll.apply( this, arguments );
 			},
 			resize: function() {
+				Vert.Listener.body.resize.apply( this, arguments );
 				this.$() && $.classAdd( this.$(), 'z-auto', this.innerWidth() == N );
 			}
 		}
