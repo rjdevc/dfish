@@ -6694,7 +6694,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			Q( this.$( 'pht' ) ).html( this.html_info( d ) );
 			this.readonly();
 			this.jigsaw && this.jigsaw.close();
-			var a = Math.abs( e.timeout || 0 ), self = this;
+			var a = Math.abs( d.error.timeout || 0 ), self = this;
 			if ( a ) {
 				this._cntdn_inter = setInterval( function() {
 					if ( a < 2 ) {
@@ -6714,7 +6714,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return 'w-input f-inbl f-va';
 		},
 		html_info: function( d ) {
-			return d && d.error ? '<var class=_err>' + (d.msg != N ? d.msg : Loc.auth_fail) + (d.timeout ? '(<em>' + Math.abs( d.timeout ) + '</em>)' : '') + '</var>' :
+			return d && d.error ? '<var class=_err>' + (d.msg != N ? d.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs( d.error.timeout ) + '</em>)' : '') + '</var>' :
 					d && d.result ? '<var class=_ok>' + (d.msg != N ? d.msg : Loc.auth_success) + '</var>' : 
 					(this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
