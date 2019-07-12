@@ -6623,9 +6623,9 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 							this.reload( this.jigsaw.vis );
 						this.val( this.min() );
 						this.removeClass( 'z-on z-success' );
-						$.classRemove( this.$( 'thumb' ), 'z-hv' );
 					}
 					this.removeClass( 'z-drag z-on z-authing' );
+					$.classRemove( this.$( 'thumb' ), 'z-hv' );
 					this.trigger( 'auth' );
 				} } );
 				this.jigsaw.keepHover( F );
@@ -6685,6 +6685,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		reset: function() {
 			this.val( this.min() );
 			this.removeClass( 'z-on z-success z-err z-lock' );
+			Q( this.$( 'ph' ) ).css( { left: '', right: '' } );
 			Q( this.$( 'pht' ) ).html( this.html_info() );
 			this.normal();
 			this.reload();
