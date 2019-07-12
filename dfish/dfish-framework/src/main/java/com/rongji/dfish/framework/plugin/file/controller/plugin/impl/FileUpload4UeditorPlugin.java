@@ -14,6 +14,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 百度编辑器中图片上传处理
+ * @author YuLM
+ */
 @Component
 public class FileUpload4UeditorPlugin implements FileUploadPlugin {
     @Autowired

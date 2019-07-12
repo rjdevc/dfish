@@ -3,14 +3,25 @@ package com.rongji.dfish.framework.plugin.file.controller.config;
 import java.util.List;
 
 /**
- * 图片缩放支持的模块
+ * 文件处理方案,定义了上传
+ * @author YuLM
  */
 public class FileHandlingScheme {
-
+    /**
+     * 方案名称
+     */
     private String name;
-
+    /**
+     * 默认图片(图片不存在时显示默认图片,暂没想到文件有什么类似需求,暂时以这个命名)
+     */
+    private String defaultIcon;
+    /**
+     * 方案定义
+     */
     private List<String> defines;
-
+    /**
+     * 需处理的文件类型
+     */
     private String handlingTypes;
 
     public String getName() {
@@ -19,6 +30,14 @@ public class FileHandlingScheme {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDefaultIcon() {
+        return defaultIcon;
+    }
+
+    public void setDefaultIcon(String defaultIcon) {
+        this.defaultIcon = defaultIcon;
     }
 
     public List<String> getDefines() {
