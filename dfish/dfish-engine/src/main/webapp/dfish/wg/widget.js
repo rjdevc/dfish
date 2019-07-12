@@ -3496,6 +3496,9 @@ Img = define.widget( 'img', {
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
 		},
+		error: function() {
+			this.addClass( 'z-err' );
+		},
 		prop_style: function() {
 			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
 			// 在album内，不让width设置在外框
@@ -3512,7 +3515,7 @@ Img = define.widget( 'img', {
 				iw = this.x.imgwidth, ih = this.x.imgheight, w = iw || mw, h = ih || mh;
 			if ( u.indexOf( 'javascript:' ) === 0 )
 				u = _wg_format.call( this, u );
-			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
+			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh, error: evw + '.error()' }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
@@ -6813,6 +6816,9 @@ XBox = define.widget( 'xbox', {
 		},
 		isEmpty: function() {
 			return ! this.val();
+		},
+		focus: function( a ) {
+			_z_on.call( this, a == N || a );
 		},
 		val: function( a ) {
 			if ( this.$() ) {
