@@ -2405,7 +2405,7 @@ Buttonbar = define.widget( 'buttonbar', {
 				for ( var i = 0; i < this.length; i ++ )
 					this[ i ].css( { visibility: '' } );
 			}
-			var tw = this.$().offsetWidth, o = this.x.overflow;
+			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
 				this._more = this.add( $.extend( { focusable: F, closeable: F, on: { click: '' } }, this.x.pub || {}, o.button ), -1 );
 				this._more.render( this.$() );
