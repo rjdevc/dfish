@@ -3038,15 +3038,11 @@ Toggle = define.widget( 'toggle', {
 		html_icon: function( a ) {
 			var x = this.x, c = x.icon, d = x.openicon || c, t = evw + '.toggle(event)';
 			a == N && (a = x.open);
-			return d ? $.image( a === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o', click: t } ) :
-				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '</span>' : '');
+			return d ? $.image( a === F ? (c || d) : d, { cls: '_i f-inbl', id: this.id + 'o', click: t } ) :
+				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			var x = this.x, t = this.html_icon();
-			if ( x.text != N )
-				t += ' <span class=w-toggle-text><em>' + x.text + '</em></span>';
-			return '<div class=f-oh><table class="f-oh w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
-				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table></div>';
+			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.x.text + '</span><i class=f-vi></i></div>' : '') + '</div>';
 		}
 	}
 } ),
