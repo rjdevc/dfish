@@ -2547,7 +2547,7 @@ Horz = define.widget( 'horz', {
 			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align === 'left') && (this.childCls += ' z-htmn');
 			var s = _proto.html_nodes.call( this ) + (this._hiddens ? this._hiddens.html() : ''),
 				ih = ie7 && this.x.scroll && this.innerHeight(); // ie7在有scroll和valign时，f-vi的100%会包含底部滚动条的高度，导致撑开。需要设置负值的margin-bottom来抵消
-			return v ? '<div id=' + this.id + 'vln class="w-horz-vln f-inbl f-va-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
+			return v ? '<div id=' + this.id + 'vln class="w-horz-vln f-nv-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
 		}
 	}
 } ),
@@ -2724,7 +2724,7 @@ Html = define.widget( 'html', {
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'valign' );
 			if ( v )
-				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>';
+				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>';
 			return s;
 		}
 	}
@@ -2957,7 +2957,7 @@ Buttonbar = define.widget( 'buttonbar', {
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
 			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.nobr === F ? '' : '<i id=' + this.id + 'vi class=f-vi-' + v + '></i>';
-			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-inbl f-va-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-buttonbar-line></div>';
+			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-buttonbar-line></div>';
 		}
 	}
 } ),
@@ -3592,15 +3592,11 @@ Toggle = define.widget( 'toggle', {
 		html_icon: function( a ) {
 			var x = this.x, c = x.icon, d = x.openicon || c, t = evw + '.toggle(event)';
 			a == N && (a = x.open);
-			return d ? $.image( a === F ? (c || d) : d, { cls: 'w-toggle-icon', id: this.id + 'o', click: t } ) :
-				(x.open != N ? '<span class=w-toggle-icon id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '</span>' : '');
+			return d ? $.image( a === F ? (c || d) : d, { cls: '_i f-inbl', id: this.id + 'o', click: t } ) :
+				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			var x = this.x, t = this.html_icon();
-			if ( x.text != N )
-				t += ' <span class=w-toggle-text><em>' + x.text + '</em></span>';
-			return '<div class=f-oh><table class="f-oh w-toggle-table' + (x.hr ? ' z-hr' : '') + '" cellspacing=0 cellpadding=0><tr>' + (t ? '<td class=f-nobr>' + t : '') +
-				(x.hr ? '<td width=100%><hr class=w-toggle-hr noshade>' : '') + '</table></div>';
+			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.x.text + '</span><i class=f-vi></i></div>' : '') + '</div>';
 		}
 	}
 } ),
@@ -4720,7 +4716,7 @@ var Label = define.widget( 'label', {
 		W.apply( this, arguments );
 		this._pad = this.x.space != N ? this.x.space : 5;
 		this.defaults( { wmin: this._pad } );
-		this.className += ' f-va' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
+		this.className += ' f-nv' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
 		if ( ie7 ) {
 			var td = p.closest( 'td' );
 			if ( td ) {
@@ -4757,7 +4753,7 @@ var Label = define.widget( 'label', {
 		}
 	},
 	Prototype: {
-		className: 'w-label f-inbl f-wdbr',
+		className: 'w-label f-wdbr',
 		setValidate: function( x ) {
 			x = x || {};
 			if ( x.required ) {
@@ -4785,7 +4781,7 @@ var Label = define.widget( 'label', {
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'valign' );
-			return (br.css3 ? '<div id=' + this.id + 'lb class=_lb>' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 'lb class="_lb f-inbl f-va">' + s + '</div>') + this.html_bg();
+			return (br.css3 ? '<div id=' + this.id + 'lb class=_lb>' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 'lb class="_lb f-nv">' + s + '</div>') + this.html_bg();
 		}
 	}
 } );
@@ -5063,7 +5059,7 @@ AbsForm = define.widget( 'abs/form', {
 		},
 		prop_cls: function() {
 			var c = _proto.prop_cls.call( this );
-			return 'w-form w-' + this.type.replace( '/', '-' ) + (c ? ' ' + c: '') + (this.x.validate && this.x.validate.required ? ' z-required' : '') + ' f-inbl f-va f-nobr';
+			return 'w-form w-' + this.type.replace( '/', '-' ) + (c ? ' ' + c: '') + (this.x.validate && this.x.validate.required ? ' z-required' : '') + ' f-nv f-nobr';
 		},
 		prop_style: function() {
 			return this.x.style ? this.x.style : '';
@@ -5075,7 +5071,7 @@ AbsForm = define.widget( 'abs/form', {
 			return ' id=' + this.id + 'f class="' + this.form_cls() + '"' + (s ? ' style="' + s + '"' : '');
 		},
 		form_cls: function() {
-			return 'f-inbl f-va';
+			return 'f-nv';
 		},
 		html_placeholder: $.rt( '' ),
 		html: function() {
@@ -5153,7 +5149,7 @@ AbsInput = define.widget( 'abs/input', {
 			this.trigger( e );
 		},
 		form_cls: function() {
-			return 'w-input f-inbl f-va f-rel';
+			return 'w-input f-rel f-nv';
 		},
 		html_placeholder: function() {
 			var v = this.x.value;
@@ -5179,7 +5175,7 @@ Formgroup = define.widget( 'formgroup', {
 	},
 	Extend: [ AbsForm, Horz ],
 	Prototype: {
-		className: 'w-formgroup w-horz f-inbl f-va',
+		className: 'w-formgroup w-horz f-nv',
 		scaleWidth: function( a, b ) {
 			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
 		},
@@ -5237,7 +5233,7 @@ Textarea = define.widget( 'textarea', {
 		},
 		input_prop_value: $.rt(),
 		form_cls: function() {
-			return 'w-input z-ah f-inbl f-va';
+			return 'w-input z-ah f-nv';
 		},
 		html_input: function() {
 			return '<textarea' + this.input_prop() + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
@@ -5372,7 +5368,7 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 			return this[ 0 ] && this[ 0 ].isValidonly();
 		},
 		form_cls: function() {
-			return 'f-inbl f-va f-oh f-wdbr';
+			return 'f-nv f-oh f-wdbr';
 		},
 		html_nodes: function() {
 			if ( this.targets ) {
@@ -5661,7 +5657,6 @@ Switch = define.widget( 'switch', {
 	},
 	Prototype: {
 		tagName: 'div',
-		className: 'w-form f-nobr f-inbl',
 		click: function( a, e ) {
 			if ( br.css3 ) {
 				$.cancel( e );
@@ -6251,7 +6246,7 @@ Range = define.widget( 'range', {
 		this.begin = x.begin && this.add( x.begin );
 		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'html', text: x.to || Loc.to, width: 30, align: 'center' } );
 		this.end   = x.end && this.add( x.end );
-		this.className = 'w-horz w-range f-inbl f-va';
+		this.className = 'w-horz w-range f-nv';
 		if ( ! x.valign && p && p.x.valign )
 			this.defaults( { valign: p.x.valign } );
 	},
@@ -6307,7 +6302,7 @@ Muldate = define.widget( 'muldate', {
 			var h = (v.length + 1) * 30 + 2, c = this.list, d = c && c.isShow();
 			this.closePop();
 			if ( ! d ) 
-				this.list = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-dialog w-muldate-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
+				this.list = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-dialog w-muldate-dialog w-form-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
 					node: { type: 'html', text: b.join( '' ), scroll: T }, on: { close: function() { this.commander.focus(F) } } } );
 			this.focus();
 		},
@@ -6319,7 +6314,7 @@ Muldate = define.widget( 'muldate', {
 					v = $.dateFormat( v, self.x.format );
 					t.before( self.li_str( v ) );
 					self.li_ref();
-					Dialog.get( this ).close();
+					Dialog.get( a ).close();
 				} );
 			} else if ( b == '-' ) {
 				t.remove();
@@ -6345,7 +6340,7 @@ Muldate = define.widget( 'muldate', {
 				$.image( '.f-i-minus ._i', { style: 'visibility:' + (v ? 'visible' : 'hidden'), click: k + '(this,"-")' } ) + ' &nbsp; ' + $.image( '.f-i-plus ._i', { click: k + '(this,"+")' } ) + '</table>';
 		},
 		html_input: function() {
-			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-inbl f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div>';
+			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div>';
 		}
 	}
 } ),
@@ -6472,7 +6467,6 @@ Slider = define.widget( 'slider', {
 		}
 	},
 	Prototype: {
-		//className: 'w-form f-inbl f-va',
 		fixPos: function( v ) {
 			v == N && (v = this.x.value);
 			if ( v != N ) {
@@ -6545,12 +6539,12 @@ Slider = define.widget( 'slider', {
 			return (this.formWidth() - this.thumbWidth()) * (_number( v ) - n) / (m - n);
 		},
 		form_cls: function() {
-			return 'f-inbl f-va';
+			return 'f-nv';
 		},
 		html_nodes: function() {
 			var w = this.formWidth(), v = this.x.value == N ? 0 : this.x.value;
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><i class=f-vi></i><div id=' + this.id +
-				't class="f-va f-inbl _t" style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
+				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -6712,7 +6706,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			this.dragstart( this.$( 'thumb' ), a );
 		},
 		form_cls: function() {
-			return 'w-input f-inbl f-va';
+			return 'w-input f-nv';
 		},
 		html_info: function( d ) {
 			return d && d.error ? '<var class=_err>' + (d.msg != N ? d.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs( d.error.timeout ) + '</em>)' : '') + '</var>' :
@@ -6987,7 +6981,7 @@ Imgbox = define.widget( 'imgbox', {
 			this.$( 'f' ).innerHTML = this.html_nodes();
 		},
 		form_cls: function() {
-			return 'w-input w-imgbox-c f-rel f-inbl f-va';
+			return 'w-input w-imgbox-c f-rel f-nv';
 		},
 		html_img: function( a ) {
 			return '<div class=_g id=' + this.id + 'p style="width:' + this.imgw + 'px;height:' + this.imgh + 'px;">' + $.image( a.icon, { width: this.imgw, height: this.imgh } ) + '</div>' +
@@ -7549,7 +7543,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 	},
 	Prototype: {
 		ROOT_TYPE: 'combobox',
-		className: 'w-combobox-opt f-inbl',
+		className: 'w-combobox-opt f-nv',
 		val: function() {
 			return this.x.value;
 		},
@@ -7973,7 +7967,7 @@ Linkbox = define.widget( 'linkbox', {
 			return s;
 		},
 		html_input: function() {
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-inbl _t" id=' + this.id + 't' +
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-nv _t" id=' + this.id + 't' +
 				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
@@ -8138,7 +8132,7 @@ Pickbox = define.widget( 'pickbox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-inbl f-fix _t" ' + _html_on.call( this ) + ' title="' + $.strQuot(this.x.text || '') + '">' + $.strEscape( this.x.text ) + '</div>';
+				't" class="f-fix _t" ' + _html_on.call( this ) + ' title="' + $.strQuot(this.x.text || '') + '">' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),
@@ -8188,7 +8182,7 @@ Rate = define.widget( 'rate', {
 			this.usa() && this._val( this.val() );
 		},
 		form_cls: function() {
-			return '_f f-inbl f-va';
+			return '_f f-nv';
 		},
 		form_prop: function() {
 			return AbsForm.prototype.form_prop.call( this ) + ' onmouseout=' + evw + '.out()';
@@ -9691,7 +9685,7 @@ Col = define.widget( 'col', {
 			return n;
 		},
 		html_sortarrow: function( a ) {
-			return '<div class="w-th-sortwrap f-inbl f-wdbr f-va">' + $.arrow( 't1' ) +
+			return '<div class="w-th-sortwrap f-wdbr f-nv">' + $.arrow( 't1' ) +
 				$.arrow( 'b1' ) + '</div>';
 		},
 		html: function() {

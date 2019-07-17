@@ -1565,7 +1565,7 @@ define.widget( 'upload/file/valuebar', {
 	Prototype: {
 		x_childtype: $.rt( 'upload/file/value' ),
 		html_nofiles: function() {
-			return '<div id=' + this.id + 'nf class="_nofiles f-inbl f-va">' + Loc.form.no_files + '</div>';
+			return '<div id=' + this.id + 'nf class="_nofiles f-nv">' + Loc.form.no_files + '</div>';
 		},
 		html_nodes: function() {
 			return (this.length ? '' : this.html_nofiles()) + Horz.prototype.html_nodes.call( this );

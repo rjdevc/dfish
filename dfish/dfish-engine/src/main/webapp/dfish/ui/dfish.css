@@ -19,11 +19,11 @@
 .f-scroll-tank{width:100%;height:100%;overflow:hidden;*position:relative}
 .f-scroll-overflow{position:relative;overflow:scroll}
 .f-scroll-overflow::-webkit-scrollbar{width:0;height:0}
-.f-scroll-y{position:absolute;top:0;bottom:0;right:1px;display:none;visibility:hidden;border-radius:4px;z-index:1}
+.f-scroll-y{position:absolute;top:0;bottom:0;right:1px;display:none;visibility:hidden;border-radius:4px;z-index:2}
 .f-scroll-y-track{position:relative;height:100%;width:8px;top:0;background:#b2bdc8;border-radius:5px;opacity:.9}
 .f-scroll-wrap:hover > .f-scroll-y,.f-css2 .f-scroll-wrap:hover .f-scroll-y{visibility:visible}
 .f-scroll-y:hover .f-scroll-y-track{background:#99a8b8;opacity:.85}
-.f-scroll-x{position:absolute;left:0;right:0;bottom:1px;display:none;visibility:hidden;border-radius:4px;z-index:1}
+.f-scroll-x{position:absolute;left:0;right:0;bottom:1px;display:none;visibility:hidden;border-radius:4px;z-index:2}
 .f-scroll-x-track{position:relative;width:100%;height:7px;left:0;background:#b2bdc8;border-radius:4px;opacity:.9}
 .f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x{visibility:visible}
 .f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85}
@@ -31,8 +31,8 @@
 
 .f-scroll-overflow .w-vert,.f-scroll-overflow .w-grid{overflow:visible}
 
-.f-bl{display:block;}
-.f-inbl{display:inline-block;*display:inline;*zoom:1}
+.f-bl{display:block}
+.f-inbl,.f-nv,.f-nv-top,.f-nv-middle,.f-nv-bottom{display:inline-block;*display:inline;*zoom:1}
 .f-left{float:left}
 .f-right{float:right}
 .f-clear{clear:both}
@@ -62,9 +62,9 @@
 .f-vi,.f-vi-middle{display:inline-block;height:100%;vertical-align:middle}
 .f-vi-top{display:inline-block;height:100%;vertical-align:top}
 .f-vi-bottom{display:inline-block;height:100%;vertical-align:bottom}
-.f-va,.f-va-middle{vertical-align:middle}
-.f-va-top{vertical-align:top}
-.f-va-bottom{vertical-align:bottom}
+.f-va,.f-va-middle,.f-nv,.f-nv-middle{vertical-align:middle}
+.f-va-top,.f-nv-top{vertical-align:top}
+.f-va-bottom,.f-nv-bottom{vertical-align:bottom}
 
 .f-resize-sensor{position:absolute;left:0px;top:0px;right:0px;bottom:0px;z-index:-1;visibility:hidden;*display:none}
 .f-resize-sensor-expand{position:absolute;left:0;top:0;right:0;bottom:0;overflow:scroll;border:1px solid green;}
@@ -244,14 +244,10 @@
 .w-alert-table{margin-left:20px;word-wrap:break-word}
 .w-alert-text{padding-left:15px;padding-right:20px}
 
-.w-toggle{position:relative}
-.w-toggle-hr{margin:2px 0;border:1px solid #ccc;border-width:1px 0 0 0;height:0;overflow:hidden}
-.w-toggle-table{width:100%;height:100%;*height:auto}
-.w-toggle-table .w-leaf,.w-toggle-table .w-leaf ._a{padding-right:3px}
-.w-toggle-table.z-hr .w-toggle-text{padding-right:6px;white-space:nowrap;word-break:keep-all}
-.w-toggle-text{display:inline-block;padding-left:5px;}
-.w-toggle-text em{vertical-align:middle;font-style:normal}
-.w-toggle-icon{display:inline-block;min-width:10px;line-height:0;text-align:right;cursor:pointer}
+.w-toggle{position:relative;height:30px}
+.w-toggle ._c{height:100%}
+.w-toggle ._i{height:100%;float:left;padding-right:5px;cursor:pointer}
+.w-toggle ._t{height:100%;overflow:hidden;font-style:normal}
 
 .w-split ._prev,.w-split ._next{cursor:pointer}
 .w-split ._ico{position:relative;z-index:1}
@@ -416,7 +412,7 @@
 .w-combobox.z-ds ._x{display:none}
 .w-combobox .w-input-placeholder{text-indent:5px}
 
-.w-combobox-opt{position:relative;height:22px;border:1px solid #e9e9e9;background:#fbfbfb;text-indent:0;margin:1px 0 1px 2px;line-height:1;vertical-align:middle}
+.w-combobox-opt{position:relative;height:22px;border:1px solid #e9e9e9;background:#fbfbfb;text-indent:0;margin:1px 0 1px 2px;line-height:1}
 .w-combobox-opt ._s{height:100%;padding:0 8px;color:#333;overflow:hidden;vertical-align:middle;cursor:default;*padding-right:24px;*line-height:1.8}
 .w-combobox-opt ._b{position:absolute;top:0;bottom:0;left:-3px;padding-left:3px;height:100%;vertical-align:middle}
 .w-combobox-opt ._x{float:right;height:100%;margin-right:3px;*line-height:1}
@@ -430,7 +426,7 @@
 .w-combobox.z-ds .w-combobox-opt{border-color:#d0d0d0;background:transparent}
 
 .w-linkbox{height:auto;min-height:28px}
-.w-linkbox ._t{min-height:28px;vertical-align:middle;word-break:break-all;word-wrap:break-word;font-family:verdana;font-style:normal;outline:none}
+.w-linkbox ._t{min-height:28px;word-break:break-all;word-wrap:break-word;font-family:verdana;font-style:normal;outline:none}
 .w-linkbox ._t u{padding-right:1px;color:#999;text-decoration:none}
 .w-linkbox ._t u._o{color:#333}
 .w-linkbox.z-u ._t u{color:#333}
