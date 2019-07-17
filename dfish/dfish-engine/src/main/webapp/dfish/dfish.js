@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.1.13',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.1.14',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -803,7 +803,7 @@ _cookie_get = function( a ) {
 // 获取元素所在的window对象
 _win = function( o ) { return o && (o = (o.ownerDocument || o)) ? (o.defaultView || o.parentWindow || o) : win },
 // 往 document.body 内写入内容
-_db = $.db = function( a, b ) { return a ? (_append( b || doc.body, a ), doc.body.lastChild) : doc.body },
+_db = $.db = function( a, b ) { return a ? _append( b || doc.body, a ) : doc.body },
 // 简写 getElementsByTagName
 _tags = $.tags = function( a ) {
 	for ( var i = 0, c = doc.getElementsByTagName( a ), r = [], l = c.length; i < l; i ++ ) r.push( c[ i ] );
@@ -939,10 +939,10 @@ _html = $.html = function( o, s, r ) {
 	}
 	}
 },
-_append  = $.append  = function( o, s ) { _html( o, s, 3 ); return o.lastChild },	
-_prepend = $.prepend = function( o, s ) { _html( o, s, 1 ); return o.firstChild },
-_before  = $.before  = function( o, s ) { _html( o, s, 2 ); return o.previousSibling },
-_after   = $.after   = function( o, s ) { _html( o, s, 0 ); return o.nextSibling },
+_append  = $.append  = function( o, s ) { _html( o, s, 3 ); return o.lastElementChild || o.lastChild },	
+_prepend = $.prepend = function( o, s ) { _html( o, s, 1 ); return o.firstElementChild || o.firstChild },
+_before  = $.before  = function( o, s ) { _html( o, s, 2 ); return o.previousElementSibling || o.previousSibling },
+_after   = $.after   = function( o, s ) { _html( o, s, 0 ); return o.nextElementSibling || o.nextSibling },
 _replace = $.replace = function( o, s ) {
 	var a = o.nextSibling;
 	if ( a ) {
