@@ -506,9 +506,10 @@ public class FileController extends BaseController {
 
         String scheme = param.getValueAsString("scheme");
         FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
-        String defaultIcon = handlingScheme.getDefaultIcon();
-        if (Utils.notEmpty(defaultIcon)) {
+        String defaultIcon;
+        if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefaultIcon())) {
             String fileAlias = request.getParameter("fileAlias");
+            defaultIcon = handlingScheme.getDefaultIcon();
             if (Utils.notEmpty(fileAlias)) {
                 int lastDot = defaultIcon.lastIndexOf(".");
                 if (lastDot >= 0) {
