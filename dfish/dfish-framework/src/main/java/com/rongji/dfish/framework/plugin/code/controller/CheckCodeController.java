@@ -84,27 +84,7 @@ public class CheckCodeController extends BaseController {
 	public void codeImg(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String alias = request.getParameter("alias");
 		CheckCodeGenerator codeGenerator = getCheckCodeGenerator(alias, ALIAS_DEFAULT);
-		String randomCode = codeGenerator.getRandomCode();
-		// 同个session理论上不会同时出现多个验证码,所以这里名称以定死方式
-		request.getSession().setAttribute(CheckCodeGenerator.KEY_CHECKCODE, randomCode);
-		BufferedImage image = codeGenerator.generate(randomCode);
-
-		response.setHeader("Cache-Control", "no-store");
-		response.setHeader("Pragma", "no-cache");
-		response.setDateHeader("Expires", 0);
-		String imgType = "png";
-		response.setContentType("image/" + imgType);
-		OutputStream output = null;
-		try {
-			output = response.getOutputStream();
-			ImageIO.write(image, imgType, output);
-        } catch (Exception e) {
-	        LogUtil.error("=====产生验证码图片异常=====", e);
-        } finally {
-        	if (output != null) {
-        		output.close();
-        	}
-        }
+		codeGenerator.drawImage(request, response);
 	}
 
 	@RequestMapping("/jigsaw")

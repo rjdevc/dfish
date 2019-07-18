@@ -1,7 +1,14 @@
 package com.rongji.dfish.framework.plugin.code;
 
+import com.rongji.dfish.base.util.LogUtil;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Random;
 
 /**
@@ -28,6 +35,7 @@ public class CheckCodeGenerator {
 	public static final String KEY_CHECKCODE = "com.rongji.dfish.CHECKCODE";
 
 	private String alias;
+	private String imgType = "png";
 	private Color[][] colorGroup;
 	private boolean interfering;
 	private int rotateDegree;
@@ -42,6 +50,14 @@ public class CheckCodeGenerator {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	public String getImgType() {
+		return imgType;
+	}
+
+	public void setImgType(String imgType) {
+		this.imgType = imgType;
 	}
 
 	public int getHeight() {
@@ -310,6 +326,31 @@ public class CheckCodeGenerator {
 	private void fillBG(Graphics g,Color bgColor,int width,int height) {
 		g.setColor(bgColor);//设置背景色
 		g.fillRect(0, 0, width, height);
+	}
+
+
+	public String drawImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setHeader("Cache-Control", "no-store");
+		response.setHeader("Pragma", "no-cache");
+		response.setDateHeader("Expires", 0);
+		response.setContentType("image/" + imgType);
+		String randomCode = drawImage(response.getOutputStream());
+		// 同个session理论上不会同时出现多个验证码,所以这里名称以定死方式
+		request.getSession().setAttribute(CheckCodeGenerator.KEY_CHECKCODE, randomCode);
+		return randomCode;
+	}
+
+	public String drawImage(OutputStream output) throws IOException {
+		try {
+			String randomCode = getRandomCode();
+			BufferedImage image = generate(randomCode);
+			ImageIO.write(image, imgType, output);
+			return randomCode;
+		} finally {
+			if (output != null) {
+				output.close();
+			}
+		}
 	}
 
 }
