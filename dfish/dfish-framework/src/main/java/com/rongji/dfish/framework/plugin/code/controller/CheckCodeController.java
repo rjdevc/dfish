@@ -102,7 +102,7 @@ public class CheckCodeController extends BaseController {
 			output = response.getOutputStream();
 			ImageIO.write(image, imgType, output);
         } catch (Exception e) {
-	        LogUtil.error("=====产生验证码图片异常=====", e);
+	        LogUtil.error("产生验证码图片异常", e);
         } finally {
         	if (output != null) {
         		output.close();
