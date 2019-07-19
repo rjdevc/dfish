@@ -4727,7 +4727,6 @@ var Label = define.widget( 'label', {
 					}).each( function() {
 						_widget( this ).triggerListener( 'ready' );
 					} );
-					
 				} );
 			}
 		}
@@ -4740,7 +4739,7 @@ var Label = define.widget( 'label', {
 				if ( this.ie7td ) {
 					var b = $( this.id + 'bg' ), c = $.bcr( this.ie7td.$() ), d = $.bcr( b );
 					Q( b ).css( {
-						height: c.height,
+						height: c.height -1,
 						marginLeft: c.left - d.left,
 						marginTop: c.top - d.top
 					} );
