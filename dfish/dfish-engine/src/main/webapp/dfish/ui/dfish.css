@@ -804,6 +804,9 @@
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-page .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 
+.w-ueditor{border:1px solid #ccc}
+.w-ueditor.z-ds{background:#f1f1f1;color:#999}
+
 .f-opc0{opacity:0}
 .f-css2 .f-opc0{filter:Alpha(opacity=0)}
 div.f-dnd-helper{position:absolute;left:0;right:0;height:2px}
