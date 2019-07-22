@@ -2332,14 +2332,15 @@ _merge( $, {
 		$.query( 'style', w ).each( function() { c.push( this.outerHTML ) });
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
-		$.query( ':text,textarea', d ).each( function() {
+		$.query( ':text,:password,textarea,select', d ).each( function() {
 			var h = this.outerHTML, v, r;
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					h = g.$().outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					h = g.$( 'f' ).outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
 				} else
 					v = this.value;
+				v = '<span class=f-va>' + v + '</span>';
 			} else {
 				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
 			}
@@ -2349,7 +2350,7 @@ _merge( $, {
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					s = s.replace( g.$().outerHTML, g.isChecked() ? g.text() : '' );
+					s = s.replace( g.$().outerHTML, g.isChecked() ? '<span class=f-va>' + g.text() + '</span>' : '' );
 				}
 			} else {
 				var h = this.outerHTML, n = h.replace( / checked=""/, '' );
@@ -2359,10 +2360,10 @@ _merge( $, {
 			}
 		} );
 		if ( y.input2text ) {
-			$.query( ':hidden', d ).each( function() {
+			$.query( 'input[type=hidden]', d ).each( function() {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget && ! g.isHiddenWidget ) {
-					s = s.replace( g.$().outerHTML, g.text() );
+					s = s.replace( g.$('f').outerHTML, '<span class=f-va>' + g.text() + '</span>' );
 				}
 			} );
 		}

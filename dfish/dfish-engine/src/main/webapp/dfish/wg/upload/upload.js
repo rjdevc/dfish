@@ -1480,6 +1480,12 @@ define.widget( 'upload/file', {
 				this.valuebar.add( { data: a } ).render();
 			}
 		},
+		text: function() {
+			for ( var i = 0, s = []; i < this._value.length; i ++ ) {
+				s.push( this._value[ i ].name );
+			}
+			return s.join( ', ' );
+		},
 		fixLabelVAlign: function() {
 			this.label && this.label.addClass( 'z-va', !!(this.hasClass( 'z-lmt z-ds' ) && this._value.length) );
 		},
