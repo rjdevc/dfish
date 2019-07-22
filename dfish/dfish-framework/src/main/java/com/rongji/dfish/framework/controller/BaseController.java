@@ -285,7 +285,7 @@ public class BaseController extends MultiActionController {
 		if (Utils.notEmpty(alertMsg)) {
 			obj = buildWarnAlert(alertMsg);
 		} else {
-			FrameworkHelper.LOG.error("==========系统异常信息==========\r\n"+convert2JSON(getRequest()), e);
+			FrameworkHelper.LOG.error("系统异常信息\r\n"+convert2JSON(getRequest()), e);
 			obj = buildErrorDialog(e);
 		}
 //		saveLog(loginUser, url, methodName, beginTime, length);

@@ -334,18 +334,18 @@ public class CheckCodeGenerator {
 		response.setHeader("Pragma", "no-cache");
 		response.setDateHeader("Expires", 0);
 		response.setContentType("image/" + imgType);
-		String randomCode = drawImage(response.getOutputStream());
+		String randomCode = getRandomCode();
 		// 同个session理论上不会同时出现多个验证码,所以这里名称以定死方式
 		request.getSession().setAttribute(CheckCodeGenerator.KEY_CHECKCODE, randomCode);
+		drawImage(response.getOutputStream(), randomCode);
 		return randomCode;
 	}
 
-	public String drawImage(OutputStream output) throws IOException {
+	public void drawImage(OutputStream output, String randomCode) throws IOException {
 		try {
-			String randomCode = getRandomCode();
+
 			BufferedImage image = generate(randomCode);
 			ImageIO.write(image, imgType, output);
-			return randomCode;
 		} finally {
 			if (output != null) {
 				output.close();
