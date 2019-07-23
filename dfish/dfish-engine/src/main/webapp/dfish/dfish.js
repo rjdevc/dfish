@@ -473,7 +473,7 @@ _strEscape = $.strEscape = function( s ) {
 },
 // 在 a 中查找 b 并给 b 加上标签样式 c /@ a -> str, b -> key, c -> matchLength?, d -> key cls?
 _strHighlight = $.strHighlight = function( a, b, c, d ) {
-	return (a = a + '').replace( RegExp( '(<[\\/!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|")?.*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
+	return (a = a + '').replace( RegExp( '(<[\\/!]?\\w+(?::\\w+)?\\s*(?:[-\\w]+(?:=(\'|")?.*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ), function($0, $1, $2, $3) {
 	   	return $3 === U ? $1 : '<em class="' + (d || 'f-keyword') + '">' + $3 + '</em>';
 	} );
 },
