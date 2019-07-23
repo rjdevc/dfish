@@ -136,8 +136,12 @@ _vmByElem = function ( o ) {
 	return _docView;
 },
 // @a -> content|js, b -> escape?, c -> callback?
-_wg_format = function( a, b, c ) {
-	return a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
+_html_format = function( a, b, c ) {
+	var s = a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
+	return typeof s === _STR ? _parseHTML.call( this, s ) : s;
+},
+_url_format = function( a ) {
+	return a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a ) : this.formatStr( a, N, T );
 },
 // 解析 html 中的 <d:wg> 标签 /@a -> html
 _parseHTML = function( a ) {
@@ -1090,7 +1094,7 @@ W = define( 'widget', function() {
 					d && (v = d( v ));
 					return v && c ? $[ c === T ? 'urlEncode' : c ]( v ) : (v == N ? '' : v);
 				} );
-			return c ? s : _parseHTML.call( this, s );
+			return s;
 		},
 		// 实现兄弟节点的tab效果 /@ a -> T/F
 		tabFocus: function( a ) {
@@ -2707,12 +2711,11 @@ Html = define.widget( 'html', {
 		html_text: function() {
 			var t = this.x.text == N ? '' : this.x.text;
 			if ( this.x.format ) {
-				t = _wg_format.call( this, this.x.format, this.x.escape );
-			}
+				t = _html_format.call( this, this.x.format, this.x.escape );
+			} else
+				t = this.x.escape ? $.strEscape( t ) : _parseHTML.call( this, t );
 			if ( typeof t === _OBJ )
 				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
-			else
-				t = this.x.escape ? $.strEscape( t ) : _parseHTML.call( this, t );
 			if ( ! br.css3 ) {
 				if ( ! t && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
@@ -3511,17 +3514,15 @@ Img = define.widget( 'img', {
 			return t;
 		},
 		html_img: function() {
-			var x = this.x, b = this.parentNode.type === 'album', mw = this.innerWidth(), mh = this.innerHeight(), u = this.x.src,
+			var x = this.x, b = this.parentNode.type === 'album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call( this, this.x.src ),
 				iw = this.x.imgwidth, ih = this.x.imgheight, w = iw || mw, h = ih || mh;
-			if ( u.indexOf( 'javascript:' ) === 0 )
-				u = _wg_format.call( this, u );
 			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh, error: evw + '.error()' }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
 			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text, w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
 			if ( typeof t !== _OBJ && f )
-				t = _wg_format.call( this, f, p.x.escape );
+				t = _html_format.call( this, f, p.x.escape );
 			else if ( typeof t === _STR && p.x.escape )
 				t = $.strEscape( t );
 			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
@@ -8405,7 +8406,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		// @a -> sync? b -> fn?
 		request: function( a, b ) {
 			this.loading = T;
-			this.exec( { type: 'ajax', src: _wg_format.call( this, this.x.src ), sync: a, loading: F,
+			this.exec( { type: 'ajax', src: _url_format.call( this, this.x.src ), sync: a, loading: F,
 				success: function( x ) {
 					this.x.srcdata = x;
 					if ( this.x.template ) {
@@ -8779,7 +8780,7 @@ Leaf = define.widget( 'leaf', {
 		html_text: function() {
 			var r = this.rootNode, t = this.x.text, h;
 			if ( this.x.format ) {
-				t = _wg_format.call( this, this.x.format, r.x.escape );
+				t = _html_format.call( this, this.x.format, r.x.escape );
 			} else if ( r && r.x.escape && typeof t === _STR )
 				t = $.strEscape( t );
 			if ( typeof t === _STR && (h = r.x.highlight) && ! this.isDisabled() ) {
@@ -9222,7 +9223,7 @@ GridRow = define.widget( 'grid/row', {
 					t = this.addCell( v, k );
 				} else {
 					if ( e && f.format ) {
-						var m = _wg_format.call( this, f.format, h, _grid_f_attr );
+						var m = _html_format.call( this, f.format, h, _grid_f_attr );
 						if ( typeof m === _OBJ )
 							t = this.addCell( m, i );
 						else
@@ -9310,7 +9311,7 @@ TD = define.widget( 'td', {
 			if ( ! this.x.node ) {
 				t = this.x.text || '';
 				if ( e && c.x.format ) {
-					t = _wg_format.call( r, c.x.format, g.x.escape, _grid_f_attr );
+					t = _html_format.call( r, c.x.format, g.x.escape, _grid_f_attr );
 				} else {
 					g.x.escape && (t = $.strEscape( t ));
 				}
