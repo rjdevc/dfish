@@ -25543,7 +25543,7 @@ UE.ui = baidu.editor.ui = {};
                 baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = popEl.style.zIndex - 1;
                 */
                 // add by cmy
-                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 11;
+                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 1000;
             }
             this.getDom().style.visibility = 'visible';
 
@@ -27306,7 +27306,7 @@ UE.ui = baidu.editor.ui = {};
                 // annot cmy 注释下面这一句
                 //baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = this.getDom().style.zIndex - 4;
                 // add by cmy
-                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 11;
+                baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = 1000;
             }
         },
         isHidden: function (){
@@ -29172,7 +29172,7 @@ UE.ui = baidu.editor.ui = {};
         _updateFullScreen:function () {
             if (this._fullscreen) {
                 var vpRect = uiUtils.getViewportRect();
-                this.getDom().style.cssText = 'border:0;position:absolute;left:0;top:' + (this.editor.options.topOffset || 0) + 'px;width:' + vpRect.width + 'px;height:' + vpRect.height + 'px;z-index:2'; /* cmy 原文最后 (this.getDom().style.zIndex + 100)，改成 2 */
+                this.getDom().style.cssText = 'border:0;position:absolute;left:0;top:' + (this.editor.options.topOffset || 0) + 'px;width:' + vpRect.width + 'px;height:' + vpRect.height + 'px;z-index:1000;'; /* cmy 原文最后 (this.getDom().style.zIndex + 100)，改成 1000 */
                 uiUtils.setViewportOffset(this.getDom(), { left:0, top:this.editor.options.topOffset || 0 });
                 this.editor.setHeight(vpRect.height - this.getDom('toolbarbox').offsetHeight - this.getDom('bottombar').offsetHeight - (this.editor.options.topOffset || 0),true);
                 //不手动调一下，会导致全屏失效
