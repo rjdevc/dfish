@@ -506,33 +506,32 @@ public class FileController extends BaseController {
 
         String scheme = param.getValueAsString("scheme");
         FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
-        String defaultIcon;
+        String defaultIcon = null;
         if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefaultIcon())) {
-            String fileAlias = request.getParameter("fileAlias");
             defaultIcon = handlingScheme.getDefaultIcon();
-            if (Utils.notEmpty(fileAlias)) {
-                int lastDot = defaultIcon.lastIndexOf(".");
-                if (lastDot >= 0) {
-                    defaultIcon = defaultIcon.substring(0, lastDot) + "_" + fileAlias + defaultIcon.substring(lastDot);
-                } else {
-                    defaultIcon += "_" + fileAlias;
-                }
-            }
         } else {
-            // 默认图片
             defaultIcon = "default.png";
+        }
+        String fileAlias = request.getParameter("fileAlias");
+        if (Utils.notEmpty(fileAlias)) {
+            int lastDot = defaultIcon.lastIndexOf(".");
+            if (lastDot >= 0) {
+                defaultIcon = defaultIcon.substring(0, lastDot) + "_" + fileAlias + defaultIcon.substring(lastDot);
+            } else {
+                defaultIcon += "_" + fileAlias;
+            }
         }
 
         // 这里可能考虑重定向到具体文件目录去
         File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
         if (defaultImageFile.exists()) {
             downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
+            return;
         } else {
             String error = "附件记录不存在@" + System.currentTimeMillis();
             LogUtil.warn(error + "[" + enFileId + "->" + fileId + "]");
-            response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
         }
-
     }
 
     private String getFileAlias(FilterParam param) {

@@ -46,7 +46,7 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 	}
 	
 
-	private Collection<?> col;
+	private Collection<?> gridData;
 	// FIXME 多行聚焦
 	private Set<Integer> focusRowIndexs = new HashSet<Integer>();
 
@@ -94,11 +94,11 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 	
 	/**
      * 设置表格数据
-     * @param col Collection
+     * @param gridData Collection
      * @return 本身，这样可以继续设置其他属性
      */
-    public GridPanel setGridData(Collection<?> col) {
-    	this.col = col;
+    public GridPanel setGridData(Collection<?> gridData) {
+    	this.gridData = gridData;
     	this.checkConcurrentModify();
     	return this;
     }
@@ -107,7 +107,7 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
      * @return Collection
      */
     public Collection<?> getGridData(){
-    	return col;
+    	return gridData;
     }
     
     
@@ -139,13 +139,13 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 		}
     	
     	
-    	if (Utils.isEmpty(col)) {
+    	if (Utils.isEmpty(gridData)) {
     		prototype.prototypeBuilding(false);
     		return;
     	}
     	// 假定这个集合所有对象的类型是一致的
     	int index=0;
-    	for (Object data : col) {
+    	for (Object data : gridData) {
 			Tr dataRow = new Tr();
 			boolean focus=focusRowIndexs.contains(index);
 			dataRow.setFocus(focus?true:null);
