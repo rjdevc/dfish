@@ -411,7 +411,7 @@ public class FileController extends BaseController {
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
             LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
-            response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
         } finally {
             if (input != null) {
                 input.close();
@@ -450,7 +450,7 @@ public class FileController extends BaseController {
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
             LogUtil.error(error, e);
-            response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, error);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
         } finally {
             if (input != null) {
                 input.close();
