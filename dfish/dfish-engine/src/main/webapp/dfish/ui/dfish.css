@@ -428,8 +428,8 @@
 .w-linkbox ._t{min-height:28px;word-break:break-all;word-wrap:break-word;font-family:verdana;font-style:normal;outline:none}
 .w-linkbox ._t u{padding-right:1px;color:#999;text-decoration:none}
 .w-linkbox ._t u._o{color:#333}
-.w-linkbox.z-u ._t u{color:#333}
-.w-linkbox.z-u ._t u._o{color:#275696;text-decoration:underline}
+.w-linkbox.z-dc ._t u{color:#333}
+.w-linkbox.z-dc ._t u._o{color:#275696;text-decoration:underline}
 .w-linkbox ._t i{font-style:normal;padding:0 3px 0 1px;color:#999}
 .w-linkbox ._v{display:inline-block;height:22px;line-height:22px;vertical-align:middle}
 .w-linkbox.z-loading{color:gray}

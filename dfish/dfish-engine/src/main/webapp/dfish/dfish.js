@@ -1956,6 +1956,7 @@ _merge( $, {
 	data: function( a, b ) {
 		return b === U ? this._data[ a ] : (this._data[ a ] = b);
 	},
+	// @a -> context, b -> fn
 	proxy: function( a, b ) {
 		typeof b === _STR && (b = Function( b ));
 		return function() { return b.apply( a, arguments ) };

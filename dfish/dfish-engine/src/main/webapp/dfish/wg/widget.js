@@ -7600,11 +7600,26 @@ ComboboxOption = define.widget( 'combobox/option', {
 		}
 	}
 } ),
+/* `linkboxoption` */
+LinkboxOption = define.widget( 'linkbox/option', {
+	Default: { width: -1, height: -1 },
+	Extend: 'combobox/option',
+	Listener: {
+		body: {
+			ready: N,
+			touchstart: N,
+			click: N
+		}
+	},
+	Prototype: {
+		ROOT_TYPE: 'linkbox'
+	}
+} ),
 /* `linkbox` */
 Linkbox = define.widget( 'linkbox', {
 	Const: function( x ) {
 		Combobox.apply( this, arguments );
-		x.on && x.on.dblclick && $.classAdd( this, 'z-u' );
+		x.pub && x.pub.on && x.pub.on.dblclick && $.classAdd( this, 'z-dc' );
 	},
 	Extend: 'combobox',
 	Listener: {
@@ -7623,14 +7638,14 @@ Linkbox = define.widget( 'linkbox', {
 					}
 				}
 			},
-			dblclick: {
+			dblclick: N, /*{
 				occupy: T,
 				method: function( e ) {
 					var v = e.srcElement.getAttribute( 'data-value' ), d = this.x.on && this.x.on.dblclick;
 					v && d && this.cmd( { type: 'js', text: d }, v );
 					return F;
 				}
-			},
+			},*/
 			blur: {
 				occupy: T,
 				method: AbsInput.Listener.body.blur.method
@@ -7678,6 +7693,7 @@ Linkbox = define.widget( 'linkbox', {
 		}
 	},
 	Prototype: {
+		x_childtype: $.rt( 'linkbox/option' ),		
 		validHooks: {
 			valid: function( b, v ) {
 				if ( this.x.strict && Q( 'u:not([data-value]):not(:empty)', this.$() ).length )
@@ -7837,7 +7853,7 @@ Linkbox = define.widget( 'linkbox', {
 						}
 					} while ( o = o.previousSibling );
 				}
-				m.length && (m.remove(), Q( 'i + i, i:first-child', this.$t() ).remove());// 删除重复数据
+				m.length && (m.remove(), Q( 'i + i, i:first-child', this.$t() ).remove()); // 删除重复数据
 				g = T;
 				if ( (c = $.rngElement()) && c.tagName === 'U' && ! c.getAttribute( 'data-value' ) )
 					this.suggest( c );
@@ -7861,6 +7877,38 @@ Linkbox = define.widget( 'linkbox', {
 			}
 			delete this._paste_rng;
 		},
+		attachPub: function() {
+			var b = this.x.pub;
+			if ( b ) {
+				var m = Q( '._o', this.$t() ), o = b.on, self = this;
+				m.each( function() {
+					for ( var k in o )
+						this[ 'on' + k ] = function(e) { self.firePub(this, e) };
+				} );
+			}
+		},
+		firePub: function( o, e ) {
+			var v = o.getAttribute( 'data-value' );
+			if ( v ) {
+				if ( ! o.id )
+					o.id = this.add( {} ).id;
+				var n = $.all[ o.id ];
+				n.x.value = v;
+				n.x.text  = Q( o ).text();
+				$.all[ o.id ].trigger( e );
+			}
+		},
+		fixOpt: function() {
+			var self = this;
+			Q( 'u:not([data-value]):not(:empty)', this.$t() ).each( function() {
+				var g = self.store().getParam( this.innerText );
+				if ( g ) {
+					$.classAdd( this, '_o' );
+					this.setAttribute( 'data-value', g.value );
+				}
+			} );
+			this.save();
+		},
 		_suggest_text: function( a ) {
 			return a.innerText.replace( /^[\s,]+|[\s,]+$/g, '' );
 		},
@@ -7880,17 +7928,6 @@ Linkbox = define.widget( 'linkbox', {
 				this.fixOpt();
 				b && b.call( this );
 			}
-		},
-		fixOpt: function() {
-			var self = this;
-			Q( 'u:not([data-value]):not(:empty)', this.$t() ).each( function() {
-				var g = self.store().getParam( this.innerText );
-				if ( g ) {
-					$.classAdd( u, '_o' );
-					u.setAttribute( 'data-value', g.value );
-				}
-			} );
-			this.save();
 		},
 		// @r -> range, s -> text
 		_paste: function( r, s ) {
@@ -7950,6 +7987,7 @@ Linkbox = define.widget( 'linkbox', {
 			this.$t().title = this.text();
 			if ( this.x.on && this.x.on.change && v != s )
 				this.triggerHandler( 'change' );
+			this.attachPub();
 		},
 		drop: function() {
 			if ( this.usa() ) {
@@ -7979,7 +8017,7 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-nv _t" id=' + this.id + 't' +
-				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
+				( this.usa() ? ' contenteditable' : '' ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
 } ),
