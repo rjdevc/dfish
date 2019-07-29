@@ -733,7 +733,7 @@ W = define( 'widget', function() {
 			if ( b !== U ) {
 				var c = this.x[ a ];
 				this.x[ a ] = b;
-				this.attrSetter && this.attrSetter( a, b, c );
+				this.attrSetter( a, b, c );
 			} else if ( typeof a === _STR ) {
 				var c = this.x[ a ];
 				if ( c != N )
@@ -753,6 +753,12 @@ W = define( 'widget', function() {
 				break;
 				case 'style':
 					this.css( b );
+				case 'beforecontent':
+				case 'prependcontent':
+				case 'appendcontent':
+				case 'aftercontent':
+					var d = a.replace( 'content', '' ), s = this[ 'html_' + d ]();
+					this.$( d ) ? Q( this.$( d ) ).replaceWith( s ) : Q( this.$() )[ d ]( s );
 				break;
 			}
 		},
@@ -1303,6 +1309,8 @@ W = define( 'widget', function() {
 		// @a -> 设置为true，不触发删除单个节点所需的处理
 		remove: function( a ) {
 			this.removeElem();
+			this.x.beforecontent && this.removeElem( 'before' );
+			this.x.aftercontent && this.removeElem( 'after' );
 			var p = this.parentNode, n = this.nodeIndex;
 			this.dispose();
 			if ( p && a !== T ) {
@@ -1677,7 +1685,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 				c = this.add( c, -1 ).html();
 			else
 				c = _parseHTML.call( this, c );
-			return c;
+			return '<dfn id=' + this.id + v + ' class=f-addcon>' + c + '</dfn>';
 		}
 		return '';
 	}
@@ -3840,6 +3848,7 @@ Dialog = define.widget( 'dialog', {
 			this.opener = p.closest( function() { return this.isDialogWidget } );
 		}
 		(this.commander = p).addEventOnce( 'remove', this.remove, this );
+		_docView.addEvent( 'resize', function() { this.isShow() && this.axis() }, this );
 	},
 	Extend: 'xsrc',
 	Helper: {
@@ -4268,7 +4277,8 @@ Dialog = define.widget( 'dialog', {
 		dispose: function() {
 			if ( this._disposed )
 				return;
-			this.commander && this.commander.removeEvent( 'remove', this.remove, this );
+			this.commander && this.commander.removeEvent( 'remove', N, this );
+			_docView.removeEvent( 'resize', N, this );
 			delete Dialog.all[ this.id ];
 			delete this.opener;
 			delete this.commander;
@@ -6907,7 +6917,7 @@ XBox = define.widget( 'xbox', {
 				for ( var i = 0, b = this._sel, s = []; i < b.length; i ++ ) {
 					s.push( b[ i ].text );
 				}
-				s = s.join();
+				s = s.join( ', ' );
 				return this.x.escape ? $.strEscape( s ) : s;
 			} else
 				return this.html_li( this._sel[ 0 ], T );
@@ -7203,7 +7213,7 @@ Combobox = define.widget( 'combobox', {
 			! b || b === 'append' ? $.before( this.$t(), a ) : b === 'prepend' ? $.prepend( this.$( 'c' ), a ) : _proto.insertHTML.apply( this, arguments );
 		},
 		isEmpty: function() {
-			return !(this._val() || this.queryText());
+			return !(this._val() || this.queryText() || this.length);
 		},
 		usa: function() {
 			return ! this.loading && this.isNormal();

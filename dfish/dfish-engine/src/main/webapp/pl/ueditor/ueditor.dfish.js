@@ -103,8 +103,14 @@ define.widget( 'ueditor', {
 		_resize: function() {
 			if ( ! this.u.ui.isFullScreen() ) {
 				var u = this.u, w = this.formWidth(), h = this.formHeight(), t = u.ui.getDom('toolbarbox'), b = u.ui.getDom('bottombar');
-				w && (u.container.style.width = u.ui.getDom('iframeholder').style.width = w + 'px');
-				h && (u.ui.getDom('iframeholder').style.height = Math.max( 0, h - t.offsetHeight - (b && this.options.wordCount ? b.offsetHeight : 0) ) + 'px');
+				if ( w ) {
+					this.css( 'f', 'width', w );
+					u.container.style.width = u.ui.getDom('iframeholder').style.width = w + 'px';
+				}
+				if ( h ) {
+					this.css( 'f', 'height', h );
+					u.ui.getDom('iframeholder').style.height = Math.max( 0, h - t.offsetHeight - (b && this.options.wordCount ? b.offsetHeight : 0) ) + 'px';
+				}
 			}
 		},
 		setAdvanceMode: function( a ) {

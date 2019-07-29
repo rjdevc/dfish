@@ -1333,7 +1333,7 @@ _Event = $.Event = _createClass( {
 				if ( d ) {
 					var i = d.length;
 					while ( i -- )
-						if ( b ? (d[ i ].fn === b && (! c || c === d[ i ].pvdr)) : T ) _event_remove( d[ i ] );
+						if ( b ? (d[ i ].fn === b && (! c || c === d[ i ].pvdr)) : c ? c === d[ i ].pvdr : T ) _event_remove( d[ i ] );
 				}
 			} else {
 				var c = _EventUser[ _uid( this ) ], i;
