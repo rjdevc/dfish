@@ -113,4 +113,8 @@ public abstract class AbstractLayout<T extends AbstractLayout<T,N>,N extends Wid
 		to.nodes=from.nodes;
 	}
 
+	@Override
+	public void clearNodes() {
+		nodes.clear();
+	}
 }

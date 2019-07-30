@@ -301,4 +301,9 @@ Layout<FormPanel,Widget<?>>{
 		 return rows;
 	}
 
+	@Override
+	public void clearNodes() {
+		// FIXME 这里的实现跟GridLayoutFormPanel不一样,需要找时间重新梳理,保持统一
+		super.clearNodes();
+	}
 }

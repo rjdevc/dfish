@@ -388,4 +388,9 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
     	return this;
     }
 
+	@Override
+	public void clearNodes() {
+		tabBar.clearNodes();
+		main.clearNodes();
+	}
 }

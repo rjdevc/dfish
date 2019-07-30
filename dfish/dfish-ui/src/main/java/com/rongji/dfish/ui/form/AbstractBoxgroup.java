@@ -205,6 +205,10 @@ public abstract class AbstractBoxgroup <T extends AbstractBoxgroup<T,N,P>,N exte
 		 return super.replaceNodeById(w);
 	}
 
+	@Override
+	public void clearNodes() {
+		nodes.clear();
+	}
 
 	/**
 	 * boxgroup节点数组

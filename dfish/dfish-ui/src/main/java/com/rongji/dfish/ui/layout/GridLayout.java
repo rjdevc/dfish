@@ -324,6 +324,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 		}
 		return true;
 	}
+
 	
 	  
 	private HiddenPart hiddens = new HiddenPart();
@@ -535,6 +536,8 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 		this.scrollClass = scrollClass;
 		return this;
 	}
+
+	@Override
 	public void clearNodes() {
 		this.tbody.clearNodes();
 		this.thead.clearNodes();

@@ -307,11 +307,7 @@ public class GridPart extends AbstractLayout<GridPart, Tr> implements GridOper<G
 		
 		return this;
 	}
-	
 
-	public void clearNodes() {
-		this.nodes.clear();
-	}
 //	@Override
 //	public boolean onReplace(Widget<?> oldWidget, Widget<?> newWidget) {
 //		return super.onReplace(oldWidget, newWidget);

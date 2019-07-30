@@ -45,6 +45,11 @@ public interface Layout<T extends Layout<T,N>, N extends Widget<?>> extends Cont
      * <li>原先Layout中并不存在这个id的Widget。</li>
      * <li>不能替代Layout本身</li></ol>
      */
-    boolean replaceNodeById(Widget<?> w);	
+    boolean replaceNodeById(Widget<?> w);
+
+	/**
+	 * 将所有子节点清空
+	 */
+	void clearNodes();
 	
 }

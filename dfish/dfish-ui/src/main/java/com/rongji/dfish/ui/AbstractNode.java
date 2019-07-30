@@ -145,6 +145,13 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         return false;
     }
 
+    protected void clearNodes() {
+        List<Widget<?>> nodes = findNodes();
+        if (nodes != null) {
+            nodes.clear();
+        }
+    }
+
     protected boolean onReplace(Widget<?> oldWidget, Widget<?> newWidget) {
         if (!Utils.isEmpty(oldWidget.getWidth()) &&
                 Utils.isEmpty(newWidget.getWidth())) {

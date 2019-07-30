@@ -321,4 +321,9 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	public List<Tr> findNodes() {
 		 return prototype.findNodes();
 	}
+
+	@Override
+	public void clearNodes() {
+		prototype.clearNodes();
+	}
 }
