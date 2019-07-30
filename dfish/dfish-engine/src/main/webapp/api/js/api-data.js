@@ -1928,12 +1928,13 @@ define( {
         { name: 'group', type: 'String', remark: '验证组名。', optional: true },
         { name: 'range', type: 'String', remark: '验证范围(某个 widget 的 ID)。多个ID用逗号隔开。如果以 "!" 开头，则表示排除。', optional: true }
       ] },
-      { name: 'isModified([range], [original])', remark: '检测表单是否有修改，对照的值为默认值。如果有修改则返回被修改的表单widget。', param: [
+      { name: 'isModified([range], [original])', remark: '检测表单是否有修改，对照的值为当前表单值。如果有修改则返回被修改的表单widget。', param: [
         { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true },
         { name: 'original', type: 'Boolean', remark: '设置为true，检测表单是否有修改，对照的值为初始值。', optional: true }
       ] },
-      { name: 'saveModified([range])', remark: '把表单当前的值设置为默认值。', param: [
-        { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true }
+      { name: 'saveModified([range], [original])', remark: '把表单当前的值设置为默认值。', param: [
+        { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true },
+        { name: 'original', type: 'Boolean', remark: '设置为true，把表单当前值设置为初始值。', optional: true }
       ] },
       { name: 'valid([group], [range])', remark: '表单验证。验证通过返回true；验证出错将提示错误信息，并返回false。', param: [
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
@@ -2033,8 +2034,9 @@ define( {
         { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true },
         { name: 'original', type: 'Boolean', remark: '设置为true，检测表单是否有修改，对照的值为初始值。', optional: true }
       ] },
-      { name: 'saveModified([range])', remark: '把表单当前的值设置为默认值。', param: [
-        { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true }
+      { name: 'saveModified([range], [original])', remark: '把表单当前的值设置为默认值。', param: [
+        { name: 'range', type: 'String', remark: 'widget ID。多个 widget ID 用逗号隔开。', optional: true },
+        { name: 'original', type: 'Boolean', remark: '设置为true，把表单当前值设置为初始值。', optional: true }
       ] },
       { name: 'valid([group], [range])', remark: '表单验证。验证通过返回true；验证出错将提示错误信息，并返回false。', param: [
         { name: 'group', type: 'String', remark: '验证组名。默认值为 "default"。', optional: true },
@@ -2173,7 +2175,8 @@ define( {
     Classes: [
       { name: '.w-img', remark: '基础样式。' },
       { name: '.z-hv', remark: '鼠标hover样式。' },
-      { name: '.z-on', remark: '焦点高亮样式。需要设置属性 focusable:true' }
+      { name: '.z-on', remark: '焦点高亮样式。需要设置属性 focusable:true' },
+      { name: '.z-err', remark: '图片加载失败时的样式。' }
     ]
   },
   "tree": {
@@ -2766,7 +2769,9 @@ define( {
       { name: 'isModified([original])', remark: '检测表单是否有修改。', param: [
         { name: 'original', type: 'Boolean', remark: '设为true，检测表单是否有修改，对照参考的值为初始值。', optional: true }
       ] },
-      { name: 'saveModified()', remark: '把当前的表单值设置默认值。' },
+      { name: 'saveModified([original])', remark: '把当前的表单值设置默认值。', param: [
+        { name: 'original', type: 'Boolean', remark: '设为true，检测表单是否有修改，对照参考的值为初始值。', optional: true }
+      ] },
       { name: 'reset()', remark: '把表单的值重置为初始值。' },
       { name: 'val([value])', remark: '获取或设置值。', param: [
         { name: 'value', type: 'String', remark: '传入此参数是设置值。不传此参数是获取值。', optional: true }

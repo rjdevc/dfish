@@ -2364,7 +2364,7 @@ View = define.widget( 'view', {
 				_f_val( f[ i ], b, r );
 			return b ? r : r.join( '&' );
 		},
-		// 判断表单是否更改  / @a -> range, b -> original?
+		// 判断表单是否更改  / @a -> range, b -> original?(设置为true，检测表单是否有修改，对照的值为初始值)
 		isModified: function( a, b ) {
 			if ( this.$() ) {
 				for ( var i = 0, c, q = this.getFormList( a ), l = q.length; i < l; i ++ ) {
@@ -2374,11 +2374,11 @@ View = define.widget( 'view', {
 			}
 			return F;
 		},
-		// 保存表单所做的更改  / @a -> range
-		saveModified: function( a ) {
+		// 保存表单所做的更改  / @a -> range, b -> original?(设置为true，修改初始值)
+		saveModified: function( a, b ) {
 			if ( this.$() ) {
 				for ( var i = 0, c, q = this.getFormList( a ), l = q.length; i < l; i ++ ) {
-					(c = _getWidgetById( q[ i ].id )) && c.saveModified && c.saveModified();
+					(c = _getWidgetById( q[ i ].id )) && c.saveModified && c.saveModified( b );
 				}
 			}
 		},
@@ -4946,8 +4946,9 @@ AbsForm = define.widget( 'abs/form', {
 			var u = this.x.value, v = a ? u : this._modval;
 			return this.val() != (v == N ? (u == N ? '' : u) : v);
 		},
-		saveModified: function() {
+		saveModified: function( b ) {
 			this._modval = this.$v().value || '';
+			b && (this.x.value = this._modval);
 		},
 		//@implement
 		attrSetter: function( a, b ) {
@@ -5495,8 +5496,9 @@ Checkbox = define.widget( 'checkbox', {
 		isModified: function( a ) {
 			return this.isChecked() !== (a ? this._dft_modchk : this._modchk);
 		},
-		saveModified: function() {
+		saveModified: function( b ) {
 			this._modchk = this.isChecked();
+			b && (this._dft_modchk = this._modchk);
 		},
 		click: function( a ) {
 			this.check( a == N ? ! this.isChecked() : a );
@@ -6648,6 +6650,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 					return _form_err.call( this, b, 'sliderjigsaw_required' );
 			}
 		},
+		isModified: $.rt( F ),
 		validTip: function( t ) {
 			return { type: 'tip', text: t, snaptype: this.jigsaw ? 'rl,lr' : 'tb,bt' };
 		},
@@ -6837,7 +6840,7 @@ XBox = define.widget( 'xbox', {
 						b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
 				} else {
 					for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
-						if ( q[ i ].value != N && q[ i ].value != '' && $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
+						if ( a == q[ i ].value || (a && $.idsAny( a, q[ i ].value )) ) b.push( q[ i ] );
 				}
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
