@@ -3888,7 +3888,7 @@ Dialog = define.widget( 'dialog', {
 							$.moveup( function( e ) {
 								var x = e.clientX, y = e.clientY;
 								if ( ! o ) {
-									o = $.db( '<div style="position:absolute;top:' + b.top + 'px;left:' + b.left + 'px;width:' + (b.width - 6) + 'px;height:' + (b.height - 6) + 'px;border:3px solid #000;opacity:.2;z-index:1"></div>' );
+									o = $.db( '<div style="position:absolute;top:' + b.top + 'px;left:' + b.left + 'px;width:' + (b.width - 6) + 'px;height:' + (b.height - 6) + 'px;border:3px solid #000;opacity:.2;z-index:11"></div>' );
 								}
 								if ( a.indexOf( 'w' ) > -1 ) {
 									o.style.width = (b.width - 6 + ix - x) + 'px';
