@@ -3210,7 +3210,7 @@ Button = define.widget( 'button', {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class=f-omit>' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
 			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
@@ -3907,7 +3907,7 @@ Dialog = define.widget( 'dialog', {
 							}, function( e ) {
 								if ( o ) {
 									var c = $.bcr( o ), s = self.$().style, l = s.left, t = s.top;
-									self.resize( Math.max( c.width, 20), Math.max( c.height, 20) );
+									self.resize( Math.max(c.width, 20), Math.max(c.height, 20) );
 									s[ l ? 'left' : 'right' ] = (l ? c.left : c.right) + 'px';
 									s[ t ? 'top' : 'bottom' ] = (t ? c.top : c.bottom) + 'px';
 									$.remove( o );
