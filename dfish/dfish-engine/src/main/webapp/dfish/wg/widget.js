@@ -6936,9 +6936,9 @@ XBox = define.widget( 'xbox', {
 			return '<em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
 		},
 		html_input: function() {
-			var s = this._sel[ 0 ], t = this.attr( 'tip' );
+			var s = this._sel[ 0 ], t = this.attr( 'tip' ) && this.html_text();
 			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-omit _t" id=' + this.id + 't ' +
-				(t && this._sel.length === 1 ? ' title="' + $.strQuot(((t === T ? (s && s.text) : t) || '').replace(/<[^>]+>/g, '')) + '"' : '') + '><span id=' + this.id + 'p>' + this.html_text() + '</span></div>';
+				(t ? ' title="' + $.strQuot( t.replace(/<[^>]+>/g, '') ) + '"' : '') + '><span id=' + this.id + 'p>' + this.html_text() + '</span></div>';
 		}
 	}
 }),

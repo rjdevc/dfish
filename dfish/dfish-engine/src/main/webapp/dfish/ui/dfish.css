@@ -781,6 +781,7 @@
 .w-button.w-upload-button ._c{padding-left:4px}
 .w-button.w-upload-button ._t,.w-button.w-upload-button  ._i{padding-right:4px}
 
+.w-upload-file .w-upload-button{height:22px}
 .w-upload-file .w-upload-button.z-hv ._t{text-decoration:underline}
 
 .w-upload-image .w-upload-button{margin:2px 0 3px 0;border:2px dashed #ccc}
