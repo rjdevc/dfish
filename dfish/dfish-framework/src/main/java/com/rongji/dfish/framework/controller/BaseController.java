@@ -285,8 +285,13 @@ public class BaseController extends MultiActionController {
 		if (Utils.notEmpty(alertMsg)) {
 			obj = buildWarnAlert(alertMsg);
 		} else {
-			FrameworkHelper.LOG.error("系统异常信息\r\n"+convert2JSON(getRequest()), e);
-			obj = buildErrorDialog(e);
+			if (FrameworkHelper.LOG.isDebugEnabled()) {
+				obj = buildErrorDialog(e);
+			} else {
+				alertMsg = "系统内部错误@" + System.currentTimeMillis();
+				obj = buildWarnAlert(alertMsg);
+				FrameworkHelper.LOG.error(alertMsg + "\r\n" + convert2JSON(getRequest()), e);
+			}
 		}
 //		saveLog(loginUser, url, methodName, beginTime, length);
 //		saveException(time, logContent, logUser, url, methodName);
@@ -328,15 +333,12 @@ public class BaseController extends MultiActionController {
 	
 	protected DialogCommand buildErrorDialog(Throwable t) {
 		View view = buildErrorView(t);
-		DialogCommand dialog = new DialogCommand("error", "系统提示信息", null).setWidth(DialogCommand.WIDTH_MEDIUM).setHeight(DialogCommand.HEIGHT_MEDIUM);
-//		DialogCommand error = new DialogCommand("error", null, "系统提示信息",
-//		        DialogCommand.WIDTH_MEDIUM, DialogCommand.HEIGHT_MEDIUM, DialogCommand.POSITION_MIDDLE, null);
+		DialogCommand dialog = new DialogCommand("error", "系统提示信息", null).setWidth(DialogCommand.WIDTH_LARGE).setHeight(DialogCommand.HEIGHT_LARGE);
 		dialog.setNode(view);
 		return dialog;
 	}
 	
 	protected View buildErrorView(Throwable t) {
-
 		// errNum = ItaskException.UNKNOWN_EXCEPTION;
 		String errType = "系统错误";
 
@@ -351,36 +353,37 @@ public class BaseController extends MultiActionController {
 		String errMsg = cause.getMessage();
 		String errName = "系统内部错误@" + System.currentTimeMillis();
 		String stackTrace = null;
-		if (FrameworkHelper.LOG.isDebugEnabled()) {
-			StringWriter sw = null;
-			PrintWriter pw = null;
-			try {
-				errName = cause.getClass().getName();
-				sw = new StringWriter();
-				pw = new PrintWriter(sw);
-				cause.printStackTrace(pw);
-				stackTrace = sw.toString();
-			} catch (Exception e) {
-			} finally {
-				if (pw != null) {
-					pw.close();
-				}
+		StringWriter sw = null;
+		PrintWriter pw = null;
+		try {
+			errName = cause.getClass().getName();
+			sw = new StringWriter();
+			pw = new PrintWriter(sw);
+			cause.printStackTrace(pw);
+			stackTrace = sw.toString();
+		} catch (Exception e) {
+			FrameworkHelper.LOG.warn("系统异常堆栈输出异常");
+		} finally {
+			if (pw != null) {
+				pw.close();
 			}
-		} else {
-			FrameworkHelper.LOG.error(errName, cause);
 		}
-		
+		FrameworkHelper.LOG.error(errName + "\r\n" + convert2JSON(getRequest()), cause);
+
 		View view = buildDialogView();
 		
 		Html main = (Html) view.findNodeById(ID_DIALOG_BODY);
 		StringBuilder sb = new StringBuilder();
-		sb.append("<div><b>错误类型：</b>").append(errType).append("</div>");
-		sb.append("<div><b>错误名称：</b>").append(errName).append("</div>");
-		sb.append("<div><b>错误信息：</b>&nbsp;&nbsp;&nbsp;&nbsp;").append(Utils.escapeXMLword(errMsg)).append("<br/>");
+
 		if (Utils.notEmpty(stackTrace)) {
+			sb.append("<div><b>错误类型：</b>").append(errType).append("</div>");
+			sb.append("<div><b>错误名称：</b>").append(errName).append("</div>");
+			sb.append("<div><b>错误信息：</b>&nbsp;&nbsp;&nbsp;&nbsp;").append(Utils.escapeXMLword(errMsg)).append("<br/>");
 			sb.append(stackTrace.replaceAll("\r\n", "<br/>").replaceAll("\r", "<br/>").replaceAll("\n", "<br/>"));
+			sb.append("</div>");
+		} else {
+			sb.append(errName);
 		}
-		sb.append("</div>");
 		main.setText(sb.toString());
 		
 		return view;
