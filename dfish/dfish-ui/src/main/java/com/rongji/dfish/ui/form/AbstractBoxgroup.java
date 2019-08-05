@@ -1,16 +1,13 @@
 package com.rongji.dfish.ui.form;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.rongji.dfish.ui.Directional;
 import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.HtmlContentHolder;
 import com.rongji.dfish.ui.Layout;
 import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.widget.Html;
 
 /**
  * @author DFish Team
@@ -86,6 +83,31 @@ public abstract class AbstractBoxgroup <T extends AbstractBoxgroup<T,N,P>,N exte
 	public T addOption(N w) {
         return add(w);
     }
+	private static Html EMPTY_TARGET=new Html(null);
+    public T add(Option option,Widget<?>target ){
+		N w=buildOption(option);
+		while(targets.size()<nodes.size()){
+			targets.add(EMPTY_TARGET);
+		}
+		nodes.add(w);
+		if(target==null){
+			target=EMPTY_TARGET;
+		}
+		targets.add(target);
+		return (T)this;
+	}
+
+	/**
+	 * 增加选项，同时带一个target
+	 * @param value 值
+	 * @param text 文本
+	 * @param target 附带的元素
+	 * @return
+	 */
+	public T add(Object value,String text,Widget<?>target ){
+		Option option=new Option(value,text);
+		return add(option,target);
+	}
 
 	public Widget<?> findNodeById(String id) {
 		return super.findNodeById(id);
@@ -196,18 +218,74 @@ public abstract class AbstractBoxgroup <T extends AbstractBoxgroup<T,N,P>,N exte
 
 
 	public T removeNodeById(String id) {
-		//FIXME 这个需要重写
-		return super.removeNodeById(id);
+		List<Widget<?>> nodes = findNodes();
+		if (id == null || nodes == null) {
+			return (T) this;
+		}
+		for(int i=0;i<nodes.size();i++){
+			Widget<?> item = nodes.get(i);
+			if (id.equals(item.getId())) {
+				nodes.remove(i);
+				if(targets.size()>i+1){
+					targets.remove(i);
+				}
+				i--;
+			} else if (targets.size()>i&& id.equals(targets.get(i).getId())) {
+				nodes.remove(i);
+				targets.remove(i);
+				i--;
+			} else if (item instanceof Layout) {
+				Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) item;
+				cast.removeNodeById(id);
+			}else if (targets.size()>i && targets.get(i) instanceof Layout) {
+				Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) targets.get(i);
+				cast.removeNodeById(id);
+			}
+		}
+
+		return (T) this;
 	}
 
     public boolean replaceNodeById(Widget<?> w) {
-		//FIXME 这个需要重写
-		 return super.replaceNodeById(w);
+		List<Widget<?>> nodes = findNodes();
+		if (w == null || w.getId() == null || nodes == null) {
+			return false;
+		}
+		String id = w.getId();
+		for (int i = 0; i < nodes.size(); i++) {
+			Widget<?> item = nodes.get(i);
+			Widget<?> t = targets.size()>i?targets.get(i):null;
+			if (id.equals(item.getId())) {
+				// 替换该元素
+				if (onReplace(item, w)) {
+					nodes.set(i, w);
+					return true;
+				} else {
+					return false;
+				}
+			}else if (t!=null&&id.equals(t.getId())) {
+				// 替换该元素
+				if (onReplace(t, w)) {
+					targets.set(i, w);
+					return true;
+				} else {
+					return false;
+				}
+			}else if (t!=null && t instanceof Layout) {
+				Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) t;
+				boolean replaced = cast.replaceNodeById(w);
+				if (replaced) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public void clearNodes() {
 		nodes.clear();
+		targets.clear();;
 	}
 
 	/**

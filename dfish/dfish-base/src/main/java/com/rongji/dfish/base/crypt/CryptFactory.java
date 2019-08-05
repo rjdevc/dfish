@@ -49,6 +49,7 @@ public class CryptFactory {
    * 先调用压缩算法，再转成BASE_64 
    * 一般只适合大片的文本原文，密文的话，压缩算法的效率很低。
    */
+  @Deprecated
   public static final int GZIP_WITH_BASE64 = StringCryptor.GZIP_WITH_BASE64;
   /**
    * 由于加解密内码为byte[]要通过一种方法转存成字符串
