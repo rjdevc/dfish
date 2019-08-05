@@ -2672,7 +2672,9 @@ Ewin = define.widget( 'ewin', {
 			return this.$().contentWindow;
 		},
 		reload: function( a ) {
-			this.getContentWindow().location.reload( a );
+			//this.getContentWindow().location.reload( a );
+			a && (this.x.src = a);
+			Q( this.$() ).replaceWith( this.html() );
 		},
 		text: function( a ) {
 			with ( this.getContentWindow().document ){ open(), write( a ), close() };
@@ -5186,9 +5188,12 @@ Formgroup = define.widget( 'formgroup', {
 	},
 	Extend: [ AbsForm, Horz ],
 	Prototype: {
-		className: 'w-formgroup w-horz f-nv',
 		scaleWidth: function( a, b ) {
 			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
+		},
+		prop_cls: function() {
+			var c = _proto.prop_cls.call( this );
+			return 'w-horz w-form w-formgroup f-nv' + (this.x.nobr !== T ? ' z-br' : '') + (c ? ' ' + c: '');
 		},
 		html_nodes: function() {
 			return Horz.prototype.html_nodes.call( this );
@@ -9295,7 +9300,7 @@ GridRow = define.widget( 'grid/row', {
 					v = v == N ? '' : v;
 					var g = '';
 					if ( !e || u.x.nobr )
-						g += ' class="w-td-t f-fix"';
+						g += ' class="f-fix"';
 					if ( !e && c[ i ].x.sort )
 						v += c[ i ].html_sortarrow();
 					if ( f.tip )
@@ -9368,7 +9373,7 @@ TD = define.widget( 'td', {
 				}
 				var d = '';
 				if ( ! e || g.x.nobr )
-					d += ' class="w-td-t f-fix"';
+					d += ' class="f-fix"';
 				if ( ! e && c._sort )
 					t += c.html_sortarrow();
 				if ( e && c.x.tip ) {
