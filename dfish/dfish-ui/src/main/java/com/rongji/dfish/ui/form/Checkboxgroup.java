@@ -29,7 +29,6 @@ public class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox,Objec
 	}
 	@Override
 	protected Checkbox buildOption(Option o) {
-		//FIXME 确认 这样构建json会多一个"type":"checkbox",的流量
 		return new Checkbox(null,null,o.getChecked(),o.getValue()==null?null:o.getValue().toString(),o.getText());
 	}
 	public String getType() {

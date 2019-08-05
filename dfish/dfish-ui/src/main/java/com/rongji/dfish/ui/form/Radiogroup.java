@@ -26,7 +26,6 @@ public class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio,String> {
 	}
 	@Override
 	protected Radio buildOption(Option o) {
-		//FIXME 确认 这样构建json会多一个"type":"radio",的流量
 		return new Radio(null,null,o.getChecked(),o.getValue()==null?null:o.getValue().toString(),o.getText());
 	}
 	public String getType() {
