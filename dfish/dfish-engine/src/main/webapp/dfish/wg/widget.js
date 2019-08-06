@@ -8897,6 +8897,8 @@ Tree = define.widget( 'tree', {
 		//!this.length && (this.className += ' z-empty');
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
+		if ( this.x.combo )
+			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
 	},
 	Extend: [ Scroll, AbsLeaf ],
 	Listener: {
@@ -8907,8 +8909,6 @@ Tree = define.widget( 'tree', {
 				_scrollIntoView( this.getFocus() );
 				if ( this.x.src && ! this.length )
 					Leaf.prototype.request.call( this );
-				if ( this.x.combo )
-					this.ownerView.combo.showFocus();
 			},
 			nodechange: function() {
 				this.addClass( 'z-empty', !this.length );
@@ -9208,7 +9208,6 @@ GridRow = define.widget( 'grid/row', {
 		if ( typeof x.data !== _OBJ )
 			x = { data: x };
 		W.call( this, x, p, n );
-		x.focus && $.classAdd( this, 'z-on' );
 	},
 	Prototype: {
 		ROOT_TYPE: 'grid',
@@ -9314,7 +9313,7 @@ GridRow = define.widget( 'grid/row', {
 		},
 		html: function( i ) {
 			var a = '', c = this.x.cls, h = this.x.height,
-				s = '<tr id=' + this.id + ' class="' + this.className + (this.type_tr ? ' z-' + ((i == N ? this.nodeIndex : i) % 2) : '') + (c ? ' ' + c : '') + '"';
+				s = '<tr id=' + this.id + ' class="' + this.className + (this.x.focus ? ' z-on': '') + (this.type_tr ? ' z-' + ((i == N ? this.nodeIndex : i) % 2) : '') + (c ? ' ' + c : '') + '"';
 			if ( h ) {
 				ie7 && (h -= this.rootNode._pad * 2 + (this.rootNode._face === 'none' ? 0 : 1));
 				a += 'height:' + h + 'px;';
@@ -9446,22 +9445,23 @@ TR = define.widget( 'tr', {
 		focus: function( a, e ) {
 			if ( this._disposed )
 				return;
-			var r = this.rootNode;
-			if ( ! this.$() && r.x.limit ) {
+			var a = a == N ? T : a, r = this.rootNode;
+			if ( a && ! this.$() && r.x.limit ) {
 				r.page( this );
 			}
-			if ( this.x.focusable && this.$() ) {
-				var a = a == N ? T : a, b = this.getBox(), f;
-				! r.x.focusmultiple && (f = r.getFocus()) && f !== this && f.focus( F );
-				$.classAdd( this.$(), 'z-on', a );
-				if ( b && b.x.sync === 'focus' ) {
-					! this.isEvent4Box( e ) && this.checkBox( a );
+			if ( this.x.focusable ) {
+				a && ! r.x.focusmultiple && (f = r.getFocus()) && f !== this && f.focus( F );
+				this.x.focus = a;
+				if ( this.$() ) {
+					var b = this.getBox(), f, g = this.$();
+					$.classAdd( this.$(), 'z-on', a );
+					b && b.x.sync === 'focus' && !this.isEvent4Box( e ) && this.checkBox( a );
 				}
 				a && this.trigger( 'focus' );
 			}
 		},
 		isFocus: function( a ) {
-			return $.classAny( this.$(), 'z-on' );
+			return this.x.focus;
 		},
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
@@ -9488,8 +9488,8 @@ TR = define.widget( 'tr', {
 		},
 		next: function( n ) {
 			if ( this.rootNode._echo_rows ) {
-				var b = this.$().parentNode.parentNode.rows[ this.$().rowIndex + ( n === F ? -1 : 1 ) ];
-				return b && _widget( b );
+				var b = Q( this.$() )[ n === F ? 'prev' : 'next' ]();
+				return b.length && _widget( b[ 0 ] );
 			} else
 				return this.parentNode[ this.nodeIndex + ( n === F ? -1 : 1 ) ];
 		},
@@ -9899,6 +9899,8 @@ Grid = define.widget( 'grid', {
 		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
 		if ( this.head && _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
+		if ( this.x.combo )
+			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
 	},
 	Extend: 'vert',
 	Listener: {
@@ -9914,8 +9916,6 @@ Grid = define.widget( 'grid', {
 							if ( (d = c[ i ].getBox()) && d.x.sync === 'focus' ) c[ i ].checkBox();
 						}
 					}
-					if ( this.x.combo )
-						this.ownerView.combo.showFocus();
 				}
 			},
 			scroll: function( e ) {
@@ -10132,14 +10132,15 @@ Grid = define.widget( 'grid', {
 				this.insertColumn( a, b );
 			}
 		},
-		// 获取焦点行
-		getFocus: function() {
-			return this.getFocusAll()[ 0 ];
+		// 获取焦点行 / @a -> visible(是否可见)?
+		getFocus: function( a ) {
+			return this.getFocusAll( a )[ 0 ];
 		},
-		// 获取所有焦点行
-		getFocusAll: function() {
-			var b = this.tbody(), r = [];
-			b && Q( '>.z-on', b.$() ).each( function() { r.push( _widget( this ) ) } );
+		// 获取所有焦点行 / @a -> visible?
+		getFocusAll: function( a ) {
+			for ( var i = 0, b = this.tbody(), l = b.length, r = []; i < l; i ++ ) {
+				if ( b[ i ].x.focus && (!a || b[ i ].$()) ) r.push( b[ i ] );
+			}
 			return r;
 		},
 		// 获取所有选中行
@@ -10251,10 +10252,10 @@ Grid = define.widget( 'grid', {
 				return;
 			var r = this.getEchoRows(), d = k === 40, a;
 			if ( d || k === 38 ) { // key down/up
-				var a = this.getFocus(), b = a ? ( d ? a.next() : a.prev() ) : r[ d ? 0 : r.length - 1 ];
+				var a = this.getFocus( T ), b = a ? (d ? a.next() : a.prev()) : r[ d ? 0 : r.length - 1 ];
 				b ? b.focus() : (a && a.focus( F ));
 			} else if ( k === 13 ) {
-				(a = this.getFocus()) && a.click();
+				(a = this.getFocus( T )) && a.click();
 			}
 		},
 		isScrollBottom: function() {
