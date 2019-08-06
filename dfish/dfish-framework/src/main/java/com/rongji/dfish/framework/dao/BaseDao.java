@@ -233,17 +233,24 @@ public abstract class BaseDao<T, ID extends Serializable> {
 	public static final int BATCH_SIZE = 512;
 	public static final int FETCH_SIZE = 50;
 	
-	public static String getParamStr(int paramCount) {
-		StringBuilder paramStr = new StringBuilder();
+	public static void appendParamStr(StringBuilder sql, int paramCount) {
+		if (sql == null) {
+			return;
+		}
 		boolean isFirst = true;
 		for (int i = 0; i < paramCount; ++i) {
 			if (isFirst) {
 				isFirst = false;
 			} else {
-				paramStr.append(',');
+				sql.append(',');
 			}
-			paramStr.append('?');
+			sql.append('?');
 		}
-		return paramStr.toString();
+	}
+
+	public static String getParamStr(int paramCount) {
+		StringBuilder sql = new StringBuilder();
+		appendParamStr(sql, paramCount);
+		return sql.toString();
 	}
 }
