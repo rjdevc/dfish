@@ -39,6 +39,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     protected Boolean moveable;
     protected Boolean fullscreen;
     protected Boolean resizable;
+    protected Boolean independent;
 
     /**
      * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
@@ -305,4 +306,23 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         this.resizable = resizable;
         return (T) this;
     }
+
+    /**
+     * 设置为true,取消与父窗口的关联效果
+     * @return Boolean
+     */
+    public Boolean getIndependent() {
+        return independent;
+    }
+
+    /**
+     * 设置为true,取消与父窗口的关联效果
+     * @param independent Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setIndependent(Boolean independent) {
+        this.independent = independent;
+        return (T) this;
+    }
+
 }
