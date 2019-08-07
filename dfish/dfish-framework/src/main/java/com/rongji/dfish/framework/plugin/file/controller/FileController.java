@@ -264,7 +264,7 @@ public class FileController extends BaseController {
                         } else if (ImageHandlingDefine.WAY_CUT.equals(realDefine.getWay())) {
                             ImageUtil.cut(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
                         } else if (ImageHandlingDefine.WAY_RESIZE.equals(realDefine.getWay())) {
-                            ImageUtil.resize(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight(), realDefine.getBgColor());
+                            ImageUtil.resize(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
                         }
                         doneFileCount.incrementAndGet();
                     } catch (Exception e) {

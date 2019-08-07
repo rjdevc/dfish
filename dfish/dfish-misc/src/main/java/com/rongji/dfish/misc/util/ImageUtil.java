@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -15,6 +15,20 @@ import java.util.List;
  *
  */
 public class ImageUtil {
+
+    private static final List<String> ALPHA_NAMES = new ArrayList<>();
+    private static final Set<Integer> ALPHA_TYPES = new HashSet<>();
+
+    static {
+        // FIXME 把当前已知的支持透明背景的图片格式加入,这里类型归纳可能不全
+        ALPHA_NAMES.add("png");
+        ALPHA_NAMES.add("gif");
+
+        ALPHA_TYPES.add(BufferedImage.TYPE_INT_ARGB);
+        ALPHA_TYPES.add(BufferedImage.TYPE_INT_ARGB_PRE);
+        ALPHA_TYPES.add(BufferedImage.TYPE_4BYTE_ABGR);
+        ALPHA_TYPES.add(BufferedImage.TYPE_4BYTE_ABGR_PRE);
+    }
 
     /**
      * 是否图片扩展名
@@ -79,8 +93,10 @@ public class ImageUtil {
 
             destHeight = height;
         }
+        int imgType = rawImage.getType();
         // 获取目标图片
-        BufferedImage destImage = new BufferedImage(destWidth, destHeight, rawImage.getType());
+        BufferedImage destImage = new BufferedImage(destWidth, destHeight, imgType);
+
         Graphics g = destImage.getGraphics();
         g.drawImage(rawImage, 0, 0, destWidth, destHeight, null);
         // 画笔释放
@@ -99,24 +115,14 @@ public class ImageUtil {
      * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void zoom(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
-        if (width <= 0 && height <= 0) { // 按照原始尺寸输出
-            zoom(input, output, fileExtName);
-            return;
-        }
+        checkArguments(input, output, fileExtName);
 
-        if (input == null || output == null) {
-            return;
-        }
-        if (!isImageExtName(fileExtName)) {
-            throw new Exception("输出的非图片文件类型");
-        }
         try {
             // 读取原始图片
             BufferedImage rawImage = ImageIO.read(input);
             // 获取缩放的图片
             BufferedImage destImage = getZoomedImage(rawImage, width, height);
-            // 输出图片
-            ImageIO.write(destImage, fileExtName, output);
+            writeImage(destImage, fileExtName, output);
         } finally {
             if (input != null) {
                 input.close();
@@ -136,25 +142,40 @@ public class ImageUtil {
      * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void zoom(InputStream input, OutputStream output, String fileExtName) throws Exception {
+        zoom(input, output, fileExtName, -1, -1);
+    }
+
+    /**
+     * 判断参数
+     * @param input
+     * @param output
+     * @param fileExtName
+     */
+    private static void checkArguments(InputStream input, OutputStream output, String fileExtName) {
         if (input == null || output == null) {
-            return;
+            throw new IllegalArgumentException("输入流或输出流为空");
         }
         if (!isImageExtName(fileExtName)) {
-            throw new Exception("输出的非图片文件类型");
+            throw new IllegalArgumentException("输出的非图片文件类型");
         }
-        try {
-            // 读取原始图片
-            BufferedImage rawImage = ImageIO.read(input);
-            // 输出图片
-            ImageIO.write(rawImage, fileExtName, output);
-        } finally {
-            if (input != null) {
-                input.close();
-            }
-            if (output != null) {
-                output.close();
+    }
+
+    /**
+     * 输入图片
+     * @param destImage
+     * @param fileExtName
+     * @param output
+     * @throws Exception
+     */
+    private static void writeImage(BufferedImage destImage, String fileExtName, OutputStream output) throws Exception {
+        // FIXME 这里的判断是死代码且可能判断方法不够合理
+        if (ALPHA_TYPES.contains(destImage.getType())) {
+            if (!ALPHA_NAMES.contains(fileExtName)) {
+                fileExtName = ALPHA_NAMES.get(0);
             }
         }
+        // 输出图片
+        ImageIO.write(destImage, fileExtName, output);
     }
 
     /**
@@ -166,21 +187,14 @@ public class ImageUtil {
      * @param fileExtName   输出图片类型
      * @param width     输出图片的宽
      * @param height    输出图片的高
-     * @param bgColor   输出图片填充背景色(为空时,不填充,按照指定宽高缩放;不为空时,按比例缩放到最合理的大小后填充颜色)
      * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
      */
-    public static void resize(InputStream input, OutputStream output, String fileExtName, int width, int height, Color bgColor) throws Exception {
+    public static void resize(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
+        checkArguments(input, output, fileExtName);
         if (width <= 0 && height <= 0) { // 按照原始尺寸输出
             zoom(input, output, fileExtName);
             return;
         }
-        if (input == null || output == null) {
-            return;
-        }
-        if (!isImageExtName(fileExtName)) {
-            throw new Exception("输出的非图片文件类型");
-        }
-
         Graphics g = null;
         try {
             // 读取原始图片
@@ -190,23 +204,23 @@ public class ImageUtil {
             BufferedImage destImage = new BufferedImage(width, height, imageType);
             // 获取画笔工具
             g = destImage.getGraphics();
-            if (bgColor == null) { // 无填充背景色
+//            if (bgColor == null) { // 无填充背景色
                 // 按指定大小强制缩放
-                g.drawImage(rawImage, 0, 0, width, height, null);
-            } else {
-                // 设置背景色
-                g.setColor(bgColor);
-                // 必须调用这个方法将背景色填充到图片去
-                g.fillRect(0, 0, width, height);
-                // 获取按比例缩放的图片
-                BufferedImage zoomedImage = getZoomedImage(rawImage, width, height);
-                // 横纵坐标偏移量
-                int x = (width - zoomedImage.getWidth()) / 2;
-                int y = (height - zoomedImage.getHeight()) / 2;
-                g.drawImage(zoomedImage, x, y, bgColor,null);
-            }
-            // 输出图片
-            ImageIO.write(destImage, fileExtName, output);
+            g.drawImage(rawImage, 0, 0, width, height, null);
+//            } else {
+//                // 输出图片填充背景色(为空时,不填充,按照指定宽高缩放;不为空时,按比例缩放到最合理的大小后填充颜色)
+//                // 设置背景色
+//                g.setColor(bgColor);
+//                // 必须调用这个方法将背景色填充到图片去
+//                g.fillRect(0, 0, width, height);
+//                // 获取按比例缩放的图片
+//                BufferedImage zoomedImage = getZoomedImage(rawImage, width, height);
+//                // 横纵坐标偏移量
+//                int x = (width - zoomedImage.getWidth()) / 2;
+//                int y = (height - zoomedImage.getHeight()) / 2;
+//                g.drawImage(zoomedImage, x, y, bgColor,null);
+//            }
+            writeImage(destImage, fileExtName, output);
         } finally {
             if (g != null) {
                 g.dispose();
@@ -230,15 +244,11 @@ public class ImageUtil {
      * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void cut(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
+        checkArguments(input, output, fileExtName);
+
         if (width <= 0 && height <= 0) { // 按照原始尺寸输出
             zoom(input, output, fileExtName);
             return;
-        }
-        if (input == null || output == null) {
-            return;
-        }
-        if (!isImageExtName(fileExtName)) {
-            throw new Exception("输出的非图片文件类型");
         }
 
         try {
@@ -249,8 +259,9 @@ public class ImageUtil {
 
             int x = (destImage.getWidth() - width) / 2;
             int y = (destImage.getHeight() - height) / 2;
-            // 输出图片
-            ImageIO.write(destImage.getSubimage(x, y, width, height), fileExtName, output);
+//            // 输出图片
+//            ImageIO.write(destImage.getSubimage(x, y, width, height), fileExtName, output);
+            writeImage(destImage.getSubimage(x, y, width, height), fileExtName, output);
         } finally {
             if (input != null) {
                 input.close();

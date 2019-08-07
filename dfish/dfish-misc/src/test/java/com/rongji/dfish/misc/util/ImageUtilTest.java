@@ -9,8 +9,8 @@ public class ImageUtilTest {
 
     public static void main(String[] args) throws Exception {
 
-        String rawFileName = "jigsaw001";
-        String fileExtName = "png";
+        String rawFileName = "永远跟跟党走";
+        String fileExtName = "jpg";
         int width = 32;
         int height = 32;
 
@@ -26,12 +26,13 @@ public class ImageUtilTest {
 //                resize(fileName, fileName + "-test", fileExtName, 800, 400, null);
 //            }
 //        }
-        alphaComposite(zoomedFileName, rawFileName+"-big", fileExtName, x, y, width, height);
+         zoom(rawFileName, zoomedFileName, fileExtName, -1, -1);
+//        alphaComposite(zoomedFileName, rawFileName+"-big", fileExtName, x, y, width, height);
 //        subCut(zoomedFileName, rawFileName+"-small", fileExtName, x, y, width, height);
 
     }
     
-    public static final String TEST_DIR = "E:\\Pictures\\dev\\others\\test\\jigsaw-files\\";
+    public static final String TEST_DIR = "F:\\test_files\\zhdj\\edu\\";
 
     public static void test(String rawFileName, String fileExtName, String version, int width, int height) throws Exception{
         int testCount = 1;
@@ -42,8 +43,7 @@ public class ImageUtilTest {
 
         for (int i = 0; i < testCount; i++) {
             zoom(rawFileName, rawFileName + "-zoom", fileExtName, width, height);
-            resize(rawFileName, rawFileName + "-zoom", fileExtName, width, height, null);
-            resize(rawFileName, rawFileName + "-zoom", fileExtName, width, height, new Color(0, 0, 0, 0));
+            resize(rawFileName, rawFileName + "-zoom", fileExtName, width, height);
             cut(rawFileName, rawFileName + "-zoom", fileExtName, width, height);
 
         }
@@ -61,13 +61,31 @@ public class ImageUtilTest {
         ImageUtil.zoom(input, output, fileExtName, width, height);
     }
 
-    public static void resize(String rawFileName, String destFileName, String fileExtName, int width, int height, Color bgColor) throws Exception {
+    /**
+     * 重新指定图片大小
+     * @param rawFileName 原始图片名
+     * @param destFileName 目标图片名
+     * @param fileExtName 文件扩展名
+     * @param width 目标图片宽度
+     * @param height 目标图片高度
+     * @throws Exception
+     */
+    public static void resize(String rawFileName, String destFileName, String fileExtName, int width, int height) throws Exception {
         File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
         InputStream input = new FileInputStream(rawFile);
         OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
-        ImageUtil.resize(input, output, fileExtName, width, height, bgColor);
+        ImageUtil.resize(input, output, fileExtName, width, height);
     }
 
+    /**
+     * 按照指定宽高裁剪图片(等比例缩放到合适大小后按照指定宽高居中裁剪图片,无留白,原图部分元素可能消失)
+     * @param rawFileName 原始文件名
+     * @param destFileName 目标文件名
+     * @param fileExtName 文件扩展名
+     * @param width 目标图片宽度
+     * @param height 目标图片高度
+     * @throws Exception
+     */
     public static void cut(String rawFileName, String destFileName, String fileExtName, int width, int height) throws Exception {
         File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
         InputStream input = new FileInputStream(rawFile);
@@ -75,7 +93,18 @@ public class ImageUtilTest {
         ImageUtil.cut(input, output, fileExtName, width, height);
     }
 
-    public static void subCut(String rawFileName, String destFileName, String fileExtName, int x, int y, int width, int height) throws Exception {
+    /**
+     * 根据定位进行裁剪图片(理论上指定区域在图片范围内,若超出图片范围效果可能异常)
+     * @param rawFileName 原始图片名
+     * @param destFileName 目标图片名
+     * @param fileExtName 图片扩展名
+     * @param x 横坐标
+     * @param y 纵坐标
+     * @param width 图片宽度
+     * @param height 图片高度
+     * @throws Exception
+     */
+    public static void cut(String rawFileName, String destFileName, String fileExtName, int x, int y, int width, int height) throws Exception {
         File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
         FileInputStream input = new FileInputStream(rawFile);
         FileOutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
