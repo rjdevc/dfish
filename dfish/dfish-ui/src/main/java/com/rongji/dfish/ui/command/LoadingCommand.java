@@ -1,16 +1,13 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.AbstractNode;
-import com.rongji.dfish.ui.Command;
-import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 
 /**
  * 显示一个"请稍候"的信息窗
  * @author DFish Team
  *
  */
-public class LoadingCommand extends AbstractNode<LoadingCommand> implements Command<LoadingCommand>,HasText<LoadingCommand> {
+public class LoadingCommand extends AbstractDialog<LoadingCommand> implements Command<LoadingCommand>,HasText<LoadingCommand> {
 
 	/**
 	 * 
@@ -26,10 +23,9 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 	private String text;
 //	private Integer percent;
 	private Boolean hide;
-	private Boolean cover;
-//	private Progress progress;
-	private Widget<?> node;
-	
+//	private Boolean cover;
+//	private Widget<?> node;
+
 
 	/**
 	 * 构造函数
@@ -100,23 +96,23 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 		return  this;
 	}
 	
-	/**
-     * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
-     * @return 是否覆盖
-     */
-	public Boolean getCover() {
-		return cover;
-	}
-
-	/**
-     * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
-     * @param cover 是否覆盖
-     * @return 本身，这样可以继续设置其他属性
-     */
-	public LoadingCommand setCover(Boolean cover) {
-		this.cover = cover;
-		return this;
-	}
+//	/**
+//     * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
+//     * @return 是否覆盖
+//     */
+//	public Boolean getCover() {
+//		return cover;
+//	}
+//
+//	/**
+//     * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
+//     * @param cover 是否覆盖
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//	public LoadingCommand setCover(Boolean cover) {
+//		this.cover = cover;
+//		return this;
+//	}
 //	/**
 //	 * 显示一个进度条。参数是 progress widget 的配置参数。
 //	 * @return Progress
@@ -134,22 +130,22 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 //		return this;
 //	}
 
-	/**
-	 * widget节点
-	 * @return Widget
-	 */
-	public Widget<?> getNode() {
-		return node;
-	}
-
-	/**
-	 * widget节点
-	 * @param node Widget
-	 * @return this
-	 */
-	public LoadingCommand setNode(Widget<?> node) {
-		this.node = node;
-		return this;
-	}
+//	/**
+//	 * widget节点
+//	 * @return Widget
+//	 */
+//	public Widget<?> getNode() {
+//		return node;
+//	}
+//
+//	/**
+//	 * widget节点
+//	 * @param node Widget
+//	 * @return this
+//	 */
+//	public LoadingCommand setNode(Widget<?> node) {
+//		this.node = node;
+//		return this;
+//	}
 
 }
