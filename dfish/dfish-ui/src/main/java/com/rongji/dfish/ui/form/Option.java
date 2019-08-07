@@ -16,6 +16,7 @@ public class Option implements Statusful<Option> {
 	private Object value;
 	private String icon;
 	private Boolean checked;
+	private Boolean checkall;
 	private String status;
 	protected Map<String, Object> data;
 	
@@ -95,6 +96,22 @@ public class Option implements Statusful<Option> {
 	 */
 	public Option setChecked(Boolean checked) {
 		this.checked = checked;
+		return this;
+	}
+	/**
+	 * 是否全选
+	 * @return checkall
+	 */
+	public Boolean getCheckall() {
+		return checkall;
+	}
+	/**
+	 * 是否全选
+	 * @param checkall Boolean
+	 * @return this
+	 */
+	public Option setCheckall(Boolean checkall) {
+		this.checkall = checkall;
 		return this;
 	}
 	/**
