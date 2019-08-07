@@ -501,6 +501,11 @@ W = define( 'widget', function() {
 				case 'style':
 					this.css( b );
 				break;
+				case 'beforecontent':
+				case 'aftercontent':
+					var d = a.replace( 'content', '' ), s = this[ 'html_' + d ]();
+					this.$( d ) ? Q( this.$( d ) ).replaceWith( s ) : Q( this.$() )[ d ]( s );
+				break;
 			}
 		},
 		addClass: function( a, b ) {
@@ -963,16 +968,26 @@ W = define( 'widget', function() {
 			return b;
 		},
 		html_before: function() {
-			return this.x.beforecontent ? this.html_after( this.x.beforecontent ) : '';
-		},
-		html_after: function( a ) {
-			if ( a || (a = this.x.aftercontent) ) {
+			if ( this.x.beforecontent ) {
+				var a = this.x.beforecontent;
 				if ( a.indexOf( 'javascript:' ) === 0 )
 					a = this.formatJS( a );
 				if ( typeof a === _OBJ )
 					a = this.add( a, -1 ).html();
+				return '<dfn id=' + this.id + 'before class=f-addcon>' + a + '</dfn>';
 			}
-			return a || '';
+			return '';
+		},
+		html_after: function() {
+			if ( this.x.aftercontent ) {
+				var a = this.x.aftercontent;
+				if ( a.indexOf( 'javascript:' ) === 0 )
+					a = this.formatJS( a );
+				if ( typeof a === _OBJ )
+					a = this.add( a, -1 ).html();
+				return '<dfn id=' + this.id + 'after class=f-addcon>' + a + '</dfn>';
+			}
+			return '';
 		},
 		html_nodes: function() {
 			for ( var i = 0, l = this.length, s = []; i < l; i ++ )
@@ -3380,6 +3395,7 @@ Dialog = define.widget( 'dialog', {
 			this.opener = p.closest( function() { return this.type === 'dialog' } );
 		}
 		(this.commander = p).addEventOnce( 'remove', this.remove, this );
+		_docView.addEvent( 'resize', function() { this.isShow() && this.axis() }, this );
 	},
 	Helper: {
 		all: {},
@@ -3642,11 +3658,11 @@ Dialog = define.widget( 'dialog', {
 			if ( this.x.cover )
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type + '"></div>', c && this.ownerView.$() );
 			$.db( this.html(), c && this.ownerView.$() );
-			if ( (this.x.minwidth || this.x.maxwidth) && ! this.x.width ) {
+			if ( (this.x.minwidth || this.x.maxwidth) && ! this.x.width || this.x.width == -1 ) {
 				var w = Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), n = this.attr( 'minwidth' ), m = this.attr( 'maxwidth' );
 				this.width( n && n > w ? n : m && m < w ? m : w );
 			}
-			if ( (this.x.minheight || this.x.maxheight) && ! this.x.height ) {
+			if ( (this.x.minheight || this.x.maxheight) && ! this.x.height || this.x.height == -1 ) {
 				var h = Math.max( this.$().offsetHeight, this.$().scrollHeight + 1 ), n = this.attr( 'minheight' ), m = this.attr( 'maxheight' );
 				this.height( n && n > h ? n : m && m < h ? m : h );
 			}
@@ -6061,6 +6077,8 @@ XBox = define.widget( 'xbox', {
 					this._sel.push( o[ i ] );
 					if ( g ) break;
 				}
+				if ( o[ i ].checkall )
+					this._chkall = o[ i ];
 			}
 			if( o.length ) {
 				! this._sel.length && ! this.x.cancelable && ! this.x.multiple && this._sel.push( o[ 0 ] );
@@ -6146,7 +6164,7 @@ XBox = define.widget( 'xbox', {
 		text: function() {
 			return $.strTrim( this.$( 'p' ).innerText );
 		},
-		choose: function( a, e ) {
+		choose: function( e ) {
 			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.options[ d.attr( '_i' ) ].value;
 			if ( this.x.multiple || this.x.cancelable ) {
 				d.toggleClass( 'z-on' );
@@ -6155,8 +6173,16 @@ XBox = define.widget( 'xbox', {
 				! this.x.cancelable && d.addClass( 'z-on' );
 				d.siblings().removeClass( 'z-on' );
 			}
+			if ( this.x.multiple && this._chkall ) {
+				if( d.attr( '_all' ) ) {
+					d.hasClass( 'z-on' ) && d.parent().find( '._o' ).not( d ).removeClass( 'z-on' );
+				} else {
+					var a = d.parent().find( '._o[_all]' ), l = d.parent().find( '._o.z-on:not([_all])' ).length;
+					l && a.removeClass( 'z-on' );
+				}
+			}
 			if ( ! (this.x.on && this.x.on.beforechange && (this.x.multiple || this.$v().value != v) &&
-				this.triggerHandler( 'beforechange', [ this.x.multiple ? $[d.hasClass( 'z-on' ) ? 'idsAdd' : 'idsRemove']( this.$v().value, v ) : v ] ) === F) )
+				this.triggerHandler( 'beforechange', [ v ] ) === F) )
 					this.val( d );
 			! this.x.multiple && this._dropper.close();
 		},
@@ -6188,17 +6214,17 @@ XBox = define.widget( 'xbox', {
 				for ( var i = 0, b = this._sel, s = []; i < b.length; i ++ ) {
 					s.push( b[ i ].text );
 				}
-				s = s.join();
+				s = s.join( ', ' );
 				return this.x.escape ? $.strEscape( s ) : s;
 			} else
 				return this.html_li( this._sel[ 0 ], T );
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
-				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value) ? ' z-on' : '') + '" _i="' + i + '"' + (this.attr( 'tip' ) ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') +
+				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value) ? ' z-on' : '') + '" _i="' + i + '"' + (o[ i ].checkall ? ' _all=1' : '') + (this.attr( 'tip' ) ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') +
 					_event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
 			}
-			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(this,event)>' + s.join( '' ) + '</div>';
+			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(event)>' + s.join( '' ) + '</div>';
 		},
 		html_btn: function() {
 			return '<em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';

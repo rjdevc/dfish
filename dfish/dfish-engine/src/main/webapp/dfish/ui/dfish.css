@@ -52,7 +52,7 @@
 
 .f-required{color:red;font-family:tahoma;font-style:normal;margin-right:6px;vertical-align:middle}
 .f-keyword{color:red;font-style:normal}
-
+.f-addcon{font-style:normal}
 .f-nobr,.f-omit,.f-fix{white-space:nowrap;word-break:keep-all;word-wrap:normal}
 .f-omit,.f-fix{overflow:hidden;text-overflow:ellipsis}
 .f-abshide{position:absolute;width:1px;height:1px;top:-1px;left:-1px;overflow:hidden}
@@ -771,7 +771,7 @@
 
 .w-uploadfile .w-upload-button.z-hv ._t{text-decoration:underline}
 
-.w-uploadimage .w-upload-button{margin:2px 0 3px 0;border:2px dashed #ccc}
+.w-uploadimage .w-upload-button{margin:2px 0;border:2px dashed #ccc}
 .w-uploadimage .w-upload-button.z-hv{border-color:#72a9fc;color:#2678F2}
 .w-uploadimage .w-upload-button ._m{display:none}
 .w-uploadimage .w-upload-button.z-more ._c{margin-right:0}
@@ -798,6 +798,7 @@
 .w-upload-value-image ._cvr{position:absolute;display:none;top:0;left:0;right:0;bottom:0;background:#777;opacity:.6;filter:Alpha(opacity=60)}
 .w-upload-value-image ._name{display:none;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;padding:0 3px;height:20px;line-height:20px;color:#f00}
 .w-upload-value-image ._g{vertical-align:middle}
+.w-upload-value-image ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px;}
 .w-upload-value-image.z-err{border-color:#f00}
 .w-upload-value-image.z-err ._name,.w-upload-value-image:hover ._more,.w-upload-value-image:hover ._close,.w-upload-value-image:hover ._cvr{display:block}
 
