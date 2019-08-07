@@ -398,7 +398,6 @@
 .w-xbox-dialog ._o.z-hv{background-color:#e1f1ff}
 .w-xbox-dialog ._o.z-on{background-color:#b0dfff}
 .w-xbox-dialog.z-cancel ._o.z-on ._box,.w-xbox-dialog.z-mul ._o.z-on ._box{position:absolute;width:16px;height:100%;top:0;right:14px;background:url(g/n.png) no-repeat -235px 50%}
-.w-xbox-dialog.z-mul ._o.z-half ._box{position:absolute;width:14px;height:3px;top:50%;right:16px;margin-top:-2px;background:#555;}
 
 .w-combobox ._c{padding-left:0;min-height:28px;cursor:text}
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}
@@ -607,6 +606,7 @@
 .w-menu ._ar.z-us .f-arw-t2{border-bottom-color:#333}
 .w-menu.z-omit ._t{position:absolute;left:32px;right:40px;}
 .w-menu.w-submenu{z-index:12}
+.w-menu-split{height:1px;background:#ddd;margin:2px 0;}
 .w-menu-line{display:none;position:absolute;height:1px;border-left:1px solid transparent;border-right:1px solid transparent;}
 .w-menu-button{position:relative;display:block;height:30px;cursor:default}
 .w-menu-button ._c,.w-menu-button ._i,.w-menu-button ._t,.w-menu-button ._m,.w-menu-button ._x{display:inline-block;height:100%;vertical-align:top;*vertical-align:middle}
@@ -785,7 +785,7 @@
 .w-upload-file .w-upload-button{height:22px}
 .w-upload-file .w-upload-button.z-hv ._t{text-decoration:underline}
 
-.w-upload-image .w-upload-button{margin:2px 0 3px 0;border:2px dashed #ccc}
+.w-upload-image .w-upload-button{margin:2px 0;border:2px dashed #ccc}
 .w-upload-image .w-upload-button.z-hv{border-color:#72a9fc;color:#2678F2}
 .w-upload-image .w-upload-button ._m{display:none}
 .w-upload-image .w-upload-button.z-more ._c{margin-right:0}
