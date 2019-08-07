@@ -1300,8 +1300,8 @@ BaseUpload = define.widget( 'upload/base', {
 			try {
 				eval( 'r=' + serverData );
 			} catch( e ) {}
-			if ( ! r || W.isCmd( r ) ) {
-				this.uploadError( file, SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED, r || serverData );	
+			if ( ! r || W.isCmd( r ) || r.error ) {
+				this.uploadError( file, SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED, (r && r.error) || serverData );	
 			} else {
 				ldr.setSuccess( r );
 			}
@@ -1315,6 +1315,10 @@ BaseUpload = define.widget( 'upload/base', {
 		upload_error_handler: function( file, errorCode, message ) {
 			var ldr = this.getLoaderByFile( file );
 			if ( ldr ) {
+				if ( typeof message === 'string' )
+					$.alert( message );
+				else if ( W.isCmd( message ) )
+					this.cmd( message );
 				ldr.setError( errorCode, message );
 				this.valid();
 			}
@@ -1754,15 +1758,11 @@ define.widget( 'upload/image/value', {
 			this.loading = false;
 			this.loaded  = true;
 			this.removeQueue();
-			if ( serverData.error ) {
-				$.alert( serverData.text );
-			} else {
-				delete this.x.file;
-				this.x.data = serverData;
-				this.u.addValue( serverData );
-				this.removeClass( 'z-loading' );
-				this.render();
-			}
+			delete this.x.file;
+			this.x.data = serverData;
+			this.u.addValue( serverData );
+			this.removeClass( 'z-loading' );
+			this.render();
 		},
 		setError: function( errorCode, message ) {
 			this.loading = false;
