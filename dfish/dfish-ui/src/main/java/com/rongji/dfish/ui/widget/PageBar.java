@@ -315,7 +315,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	/**
 	 * 显示总条数和总页数等信息。
 	 * @param info String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setInfo(String info) {
 		this.info = info;
@@ -331,7 +331,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	/**
 	 * button数组。生成一个配置按钮和下拉菜单。
 	 * @param setting List
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public PageBar setSetting(List<Button> setting) {
 		this.setting = setting;

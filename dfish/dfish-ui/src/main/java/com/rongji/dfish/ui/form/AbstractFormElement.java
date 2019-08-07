@@ -318,7 +318,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	/**
 	 * 设置鼠标移上去是否显示提示语
 	 * @param tip Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setTip(Boolean tip) {
 		this.tip = tip;
@@ -328,7 +328,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	/**
 	 * 设置鼠标移上去显示的提示语
 	 * @param tip String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setTip(String tip) {
 		this.tip = tip;

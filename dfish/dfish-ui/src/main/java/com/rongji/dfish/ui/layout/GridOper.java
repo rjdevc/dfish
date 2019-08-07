@@ -15,7 +15,7 @@ public interface GridOper<T> {
 	 * @param row 行
 	 * @param column 列
 	 * @param o 对象
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T add(int row,int column,Object o);
 	/**
@@ -30,7 +30,7 @@ public interface GridOper<T> {
 	 * @param toRow 区块结束行
 	 * @param toColumn 区块结束列
 	 * @param o  对象
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T add(Integer fromRow,Integer fromColumn,Integer toRow, Integer toColumn,Object o);
 	/**
@@ -43,7 +43,7 @@ public interface GridOper<T> {
 	 * @param row 行
 	 * @param column 列
 	 * @param o 对象
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T put(int row,int column,Object o);
 	/**
@@ -59,7 +59,7 @@ public interface GridOper<T> {
 	 * @param toRow 区块结束行
 	 * @param toColumn 区块结束列
 	 * @param o  对象
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T put(Integer fromRow,Integer fromColumn,Integer toRow, Integer toColumn,Object o);
 	/**
@@ -69,7 +69,7 @@ public interface GridOper<T> {
 	 * <p>删除节点后可能会留下空行和空列，可以用{@link GridLayout#minimize()}来删除空行和空列。或去rows和column中手动清理</p>
 	 * @param row 行
 	 * @param column 列
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T removeNode(int row,int column);
 	/**
@@ -79,7 +79,7 @@ public interface GridOper<T> {
 	 * <p>删除节点后可能会留下空行和空列，可以用{@link GridLayout#minimize()}来删除空行和空列。或去rows和column中手动清理</p>
 	 * @param row 行
 	 * @param column 列
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	T removeNode(int fromRow,int fromColumn,int toRow, int toColumn);
 	/**

@@ -69,7 +69,7 @@ public final class Password extends AbstractInput<Password,String> {
 	/**
 	 * 是否允许自动填充保存的密码。默认值为false
 	 * @param autocomplete Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Password setAutocomplete(Boolean autocomplete) {
 		this.autocomplete = autocomplete;

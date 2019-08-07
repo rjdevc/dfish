@@ -118,7 +118,7 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>{
 	/**
 	 * 收缩图标
 	 * @param icon  String icon
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Toggle setIcon(String icon) {
 		this.icon = icon;
@@ -134,7 +134,7 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>{
 	/**
 	 * 展开图标
 	 * @param openicon String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Toggle setOpenicon(String openicon) {
 		this.openicon = openicon;

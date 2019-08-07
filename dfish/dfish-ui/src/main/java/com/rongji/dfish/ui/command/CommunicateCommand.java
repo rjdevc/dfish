@@ -96,7 +96,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	/**
 	 * 是否同步
 	 * @param sync Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
 	public T setSync(Boolean sync) {
@@ -113,7 +113,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	/**
 	 * js语句，在发送请求前调用。
 	 * @param beforesend String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
 	public T setBeforesend(String beforesend) {
@@ -130,7 +130,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	/**
 	 * js语句，在获取服务器的响应数据后调用(不论成功失败都会执行)。
 	 * @param complete String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
 	public T setComplete(String complete) {
@@ -147,7 +147,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	/**
 	 * js语句，在获取服务器的响应数据失败后调用。
 	 * @param error String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
 	public T setError(String error) {
@@ -164,7 +164,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	/**
 	 * js语句，在成功获取服务器的响应数据后调用。
 	 * @param success String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
 	public T setSuccess(String success) {
@@ -200,7 +200,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	/**
 	 * 加载时文本提示
 	 * @param loading LoadingCommand
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
     public T setLoading(LoadingCommand loading) {
@@ -211,7 +211,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	/**
 	 * 加载时提示
 	 * @param loading Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
 	public T setLoading(Boolean loading) {

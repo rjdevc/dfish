@@ -77,7 +77,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 	/**
 	 * 添加样式
 	 * @param cls 样式
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T addCls(String cls) {
 		// FIXME 这里性能可能有问题
@@ -97,7 +97,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 	/**
 	 * 移除样式
 	 * @param cls 样式
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T removeCls(String cls) {
 		if (Utils.notEmpty(cls) && Utils.notEmpty(this.cls)) {

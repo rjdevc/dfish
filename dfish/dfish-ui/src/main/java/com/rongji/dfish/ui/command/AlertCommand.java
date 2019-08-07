@@ -87,7 +87,7 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 	/**
 	 * 按钮样式名
 	 * @param btncls String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public AlertCommand setBtncls(String btncls) {
 		this.btncls = btncls;

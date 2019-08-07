@@ -125,7 +125,7 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 	/**
 	 * 设置是否可聚焦
 	 * @param focusable Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setFocusable(Boolean focusable) {
 		this.focusable = focusable;

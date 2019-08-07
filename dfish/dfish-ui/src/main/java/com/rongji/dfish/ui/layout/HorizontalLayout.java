@@ -33,7 +33,7 @@ MultiContainer<HorizontalLayout,Widget<?>>,Alignable<HorizontalLayout>, Valignab
 	/**
 	 * 当内容太多的时候不换行
 	 * @param nobr Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public HorizontalLayout setNobr(Boolean nobr) {
 		this.nobr = nobr;

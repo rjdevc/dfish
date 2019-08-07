@@ -251,7 +251,7 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
     /**
      *  是否可以拖动表头调整列宽。
      * @param resizable Boolean
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
     public T setResizable(Boolean resizable) {
 		prototype.setResizable(resizable);

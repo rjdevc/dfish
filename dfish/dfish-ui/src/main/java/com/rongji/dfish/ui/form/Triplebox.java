@@ -31,7 +31,7 @@ public class Triplebox extends AbstractBox<Triplebox> {
 	/**
 	 * 状态
 	 * @param checkstate Integer
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Triplebox setCheckstate(Integer checkstate) {
 		this.checkstate = checkstate;

@@ -23,7 +23,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	/**
 	 * 显示文本
 	 * @param text 显示文本
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Pickbox setText(String text) {
 		this.text = text;

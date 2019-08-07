@@ -142,7 +142,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * 添加子节点
 	 * @param w Widget
 	 * @param occupy 占用列数
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public FlexGrid add(Widget<?> w, Integer occupy) {
 		if (w != null && occupy != null) { // 占有列数必须大于0
@@ -172,7 +172,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * @param text 文本
 	 * @param occupy 占用列数
 	 * @param required 是否显示必填标记
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public FlexGrid add(String text, Integer occupy, boolean required) {
 //		StringBuilder realText = new StringBuilder();
@@ -196,7 +196,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 *   如果用于添加文字说明。请使用add(Html,Integer)
 	 * @param text 文本
 	 * @param occupy 占用列数
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public FlexGrid add(String text, Integer occupy) {
 		return add(text, occupy, false);

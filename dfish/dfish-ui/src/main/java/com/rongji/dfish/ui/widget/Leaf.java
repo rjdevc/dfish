@@ -445,7 +445,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 	
 	/**
 	 * 级联修复下级选择框的选中状态
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	private int fixBoxCheckStatusCascade() {
 		
@@ -538,7 +538,7 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 	/**
 	 * 是否有连线效果。
 	 * @param scroll Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Leaf setLine(Boolean line) {
 		this.line=line;

@@ -96,7 +96,7 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 	/**
 	 * 显示文本。这里一般是询问的问题内容
 	 * @param text String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public ConfirmCommand setText(String text) {
 		this.text = text;
@@ -112,7 +112,7 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 	/**
 	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
 	 * @param cover Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public ConfirmCommand setCover(Boolean cover) {
 		this.cover = cover;
@@ -128,7 +128,7 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 	/**
 	 * 图标。
 	 * @param icon String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public ConfirmCommand setIcon(String icon) {
 		this.icon = icon;
@@ -144,7 +144,7 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 	/**
 	 * 点击"确定"执行的命令。
 	 * @param yes ConfirmCommand
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public ConfirmCommand setYes(Command<?> yes) {
 		this.yes = yes;
@@ -160,7 +160,7 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 	/**
 	 * 点击"取消"执行的命令。
 	 * @param no Command
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public ConfirmCommand setNo(Command<?> no) {
 		this.no = no;

@@ -104,7 +104,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 	/**
 	 * 该box绑定字段
 	 * @param field BoxField
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 
 	public T setField(BoxField field) {
@@ -131,7 +131,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 	/**
 	 * 设置选中状态跟父节点保持同步
 	 * @param sync Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setSync(String sync) {
 		this.sync = sync;
@@ -149,7 +149,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 	/**
 	 * 设置点击事件是否冒泡
 	 * @param bubble Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setBubble(Boolean bubble) {
 		this.bubble = bubble;
@@ -172,7 +172,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 	/**
 	 * 该选项不换行
 	 * @param nobr Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setNobr(Boolean nobr) {
 		this.nobr = nobr;

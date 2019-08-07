@@ -111,7 +111,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf>{
 	/**
 	 * 是否有连线效果。
 	 * @param scroll Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridLeaf setLine(Boolean line) {
 		this.line=line;

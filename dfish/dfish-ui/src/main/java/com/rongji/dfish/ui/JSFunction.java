@@ -37,7 +37,7 @@ public class JSFunction {
 	/**
 	 * 参数
 	 * @param params 参数
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public JSFunction setParams(String params) {
 		this.params = params;
@@ -53,7 +53,7 @@ public class JSFunction {
 	/**
 	 * 函数体
 	 * @param funtionText 函数体
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public JSFunction setFuntionText(String funtionText) {
 		this.funtionText = funtionText;

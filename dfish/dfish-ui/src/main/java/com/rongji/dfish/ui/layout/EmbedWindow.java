@@ -98,7 +98,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 	/**
 	 * 是否显示滚动条。
 	 * @param scroll Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public EmbedWindow setScroll(Boolean scroll) {
 		this.scroll=scroll;

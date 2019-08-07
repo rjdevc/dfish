@@ -57,7 +57,7 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 	/**
 	 * 显示加载的文本
 	 * @param text String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public LoadingCommand setText(String text) {
 		this.text = text;
@@ -75,7 +75,7 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 //	/**
 //	 * 显示一个进度条
 //	 * @param percent Integer
-//	 * @return this
+//	 * @return 本身，这样可以继续设置其他属性
 //	 */
 //    public LoadingCommand setPercent(Integer percent) {
 //		this.percent = percent;
@@ -93,7 +93,7 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 	/**
 	 * 关闭loading提示
 	 * @param hide Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public LoadingCommand setHide(Boolean hide) {
 		this.hide = hide;
@@ -127,7 +127,7 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 //	/**
 //	 * 显示一个进度条。参数是 progress widget 的配置参数。
 //	 * @param progress Progress
-//	 * @return this
+//	 * @return 本身，这样可以继续设置其他属性
 //	 */
 //	public LoadingCommand setProgress(Progress progress) {
 //		this.progress = progress;
@@ -145,7 +145,7 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 	/**
 	 * widget节点
 	 * @param node Widget
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public LoadingCommand setNode(Widget<?> node) {
 		this.node = node;

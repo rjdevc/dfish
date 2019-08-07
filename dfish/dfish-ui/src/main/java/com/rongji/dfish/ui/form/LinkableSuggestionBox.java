@@ -119,7 +119,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	/**
 	 * 加载时显示的文本
 	 * @param loadingtext 加载时显示的文本
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setLoadingtext(String loadingtext) {
 		this.loadingtext = loadingtext;

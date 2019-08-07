@@ -119,7 +119,7 @@ public final class DatePicker extends AbstractInput<DatePicker,Object> {
 	 * 设置格式。该格式为JS的格式。如 yyyy-mm-dd hh:ii:ss
 	 * @see #DATE_TIME_FULL
 	 * @param format String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public DatePicker setFormat(String format) {
 		calFormat(format);

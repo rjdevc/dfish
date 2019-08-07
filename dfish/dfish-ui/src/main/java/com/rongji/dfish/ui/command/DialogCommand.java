@@ -104,7 +104,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     /**
      * 设置窗口使用的模板编号
      * @param template 
-     * @return  this
+     * @return 本身，这样可以继续设置其他属性
      */
     public DialogCommand setTemplate(String template) {
         this.template = template;
@@ -134,7 +134,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     /**
      * 如果设置为true，显示一个箭头，指向snap 参数对象
      * @param prong Boolean
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
 	public DialogCommand setProng(Boolean prong) {
 		this.prong = prong;

@@ -58,7 +58,7 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 	/**
 	 * 设置搜索,onlinebox的用法就是suggest=true,所以没有suggest这个参数
 	 * @param suggest 是否支持输入
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 * @deprecated 不支持此方法，该方法调用不会有效果。
 	 */
 	@Deprecated

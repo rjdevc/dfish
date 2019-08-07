@@ -48,7 +48,7 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	/**
 	 * 设置文本
 	 * @param text 显示文本
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 * @deprecated 已过时，使用 {@link #setText(String)}替代
 	 */
 	@Deprecated 
@@ -95,7 +95,7 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	/**
 	 * 单行文本输入框
 	 * @param text 显示文本
-	 * @return this html内容
+	 * @return 本身，这样可以继续设置其他属性 html内容
 	 */
 	public Html setText(String text) {
 		this.text = text;
@@ -126,7 +126,7 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	/**
 	 * 设置内容区域所有图片的最大宽度。
 	 * @param thumbwidth 图片的最大宽度。
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Html setThumbwidth(String thumbwidth) {
 		this.thumbwidth = thumbwidth;
@@ -135,7 +135,7 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	/**
 	 * 设置内容区域所有图片的最大宽度。
 	 * @param thumbwidth 图片的最大宽度。
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Html setThumbwidth(int thumbwidth) {
     	this.thumbwidth = String.valueOf(thumbwidth);

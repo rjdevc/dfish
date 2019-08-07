@@ -49,7 +49,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	/**
 	 * 当按钮过多，放不下的时候，的效果
 	 * @param overflow 设置当内容太多的时候不换行
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public ButtonBar setOverflow(Overflow overflow) {
 		this.overflow = overflow;
@@ -269,7 +269,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * 在按钮之间默认插入的split;
 	 * 设置了该属性,无需调用{@link #add(Widget)}来添加split,按钮间自动添加1个split
 	 * @param split Split
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public ButtonBar setSplit(Split split) {
 		this.split = split;

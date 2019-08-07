@@ -33,7 +33,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 显示的名称
 	 * @param name String
-	 * @return this 
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setName(String name) {
 		this.name = name;
@@ -50,7 +50,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 文件大小，单位字节
 	 * @param size long
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setSize(Long size) {
 		this.size = size;
@@ -67,7 +67,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 下载地址
 	 * @param url String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setUrl(String url) {
 		this.url = url;
@@ -83,7 +83,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 缩略图地址
 	 * @param thumbnail String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
@@ -99,7 +99,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 如果上传过程出错，返回给JS引擎true
 	 * @param error Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setError(Boolean error) {
 		this.error = error;
@@ -115,7 +115,7 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	/**
 	 * 显示的文本
 	 * @param text String
-	 * @return this 
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public UploadItem setText(String text) {
 		this.text = text;

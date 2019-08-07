@@ -196,7 +196,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	/**
 	 * 设置表体
 	 * @param tbody 设置表体
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridLayout setTbody(GridBody tbody) {
 		if (tbody == null) {
@@ -234,7 +234,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	/**
 	 * 设置列属性定义
 	 * @param columns 列属性定义
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridLayout setColumns(List<GridColumn> columns) {
 		this.columns = columns;
@@ -349,7 +349,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	/**
 	 * 点击聚焦效果,
 	 * @param focusable Boolean
-	 * @return this 
+	 * @return 本身，这样可以继续设置其他属性
 	 * @deprecated 目前通过{@link #getPub()}.{@link #setFocusable(Boolean)}来设置
 	 */
 	@Deprecated

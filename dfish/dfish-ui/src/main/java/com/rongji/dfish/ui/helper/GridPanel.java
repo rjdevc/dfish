@@ -66,7 +66,7 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
     /**
      * 高亮行
      * @param focusRowIndex Integer
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
 	public GridPanel setFocusRowIndex(Integer focusRowIndex) {
 		return setFocusRowIndexs(focusRowIndex != null ? Collections.singletonList(focusRowIndex) : null);
@@ -81,7 +81,7 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
     /**
      * 高亮行
      * @param focusRowIndexs focusRowIndexs
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
 	public GridPanel setFocusRowIndexs(Collection<Integer> focusRowIndexs) {
 		this.focusRowIndexs.clear();

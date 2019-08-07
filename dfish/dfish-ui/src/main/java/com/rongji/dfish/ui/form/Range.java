@@ -50,7 +50,7 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 	/**
 	 * 设置范围的开始表单
 	 * @param begin FormElement
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Range setBegin(FormElement<?, ?> begin) {
 		this.begin = begin;
@@ -66,7 +66,7 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 	/**
 	 * 设置范围的结束表单
 	 * @param end FormElement
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Range setEnd(FormElement<?, ?> end) {
 		this.end = end;
@@ -188,7 +188,7 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 	/**
 	 * 表单组合中间文本"至"
 	 * @param to the to to set
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Range setTo(Object to) {
 		this.to = to;

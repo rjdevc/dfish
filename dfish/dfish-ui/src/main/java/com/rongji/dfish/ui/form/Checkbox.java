@@ -31,7 +31,7 @@ public class Checkbox extends  AbstractBox<Checkbox> {
 
 //	/**
 //	 * @param value theValue
-//	 * @return this
+//	 * @return 本身，这样可以继续设置其他属性
 //	 */
 //	public Checkbox setValue(String value) {
 //		

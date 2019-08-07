@@ -381,7 +381,7 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
      * 添加隐藏域的值
      * @param name String
      * @param value String
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
     public TabPanel addHidden(String name, String value) {
     	prototype.addHidden(name, value);

@@ -101,7 +101,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> {
 	/**
 	 *  如果设置为true 可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效，默认值为false
 	 * @param defaultchecked Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Xbox setCancelable(Boolean cancelable) {
 		this.cancelable=cancelable;

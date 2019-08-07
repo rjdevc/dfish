@@ -16,6 +16,7 @@ public class Option implements Statusful<Option> {
 	private Object value;
 	private String icon;
 	private Boolean checked;
+	private Boolean checkall;
 	private String status;
 	protected Map<String, Object> data;
 	
@@ -59,7 +60,7 @@ public class Option implements Statusful<Option> {
 	/**
 	 * 显示文本
 	 * @param text 显示文本
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Option setText(String text) {
 		this.text = text;
@@ -75,7 +76,7 @@ public class Option implements Statusful<Option> {
 	/**
 	 * 值
 	 * @param value 值
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Option setValue(Object value) {
 		this.value = value;
@@ -91,12 +92,31 @@ public class Option implements Statusful<Option> {
 	/**
 	 * 是否选中
 	 * @param checked Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Option setChecked(Boolean checked) {
 		this.checked = checked;
 		return this;
 	}
+
+	/**
+	 * 选择全部
+	 * @return Boolean
+	 */
+	public Boolean getCheckall() {
+		return checkall;
+	}
+
+	/**
+	 * 选择全部
+	 * @param checkall Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Option setCheckall(Boolean checkall) {
+		this.checkall = checkall;
+		return this;
+	}
+
 	/**
 	 * 收拢图标。图片地址url，或是以点 "." 开头的样式名。
 	 * @return icon
@@ -107,7 +127,7 @@ public class Option implements Statusful<Option> {
 	/**
 	 * 收拢图标。图片地址url，或是以点 "." 开头的样式名。
 	 * @param icon String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Option setIcon(String icon) {
 		this.icon = icon;
@@ -125,6 +145,11 @@ public class Option implements Statusful<Option> {
 		return this;
 	}
 
+	/**
+	 * 获取某个属性的值
+	 * @param key 数值属性的关键字
+	 * @return
+	 */
 	public Object getData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
@@ -135,6 +160,11 @@ public class Option implements Statusful<Option> {
 		return data.get(key);
 	}
 
+	/**
+	 * 移除某个属性的值
+	 * @param key 数值属性的关键字
+	 * @return
+	 */
 	public Object removeData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
@@ -145,6 +175,12 @@ public class Option implements Statusful<Option> {
 		return data.remove(key);
 	}
 
+	/**
+	 * 设置某个属性的值
+	 * @param key 数值属性的关键字
+	 * @param value 数值属性的值
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public Option setData(String key, Object value) {
 		if(data == null){
 			data = new LinkedHashMap<>();

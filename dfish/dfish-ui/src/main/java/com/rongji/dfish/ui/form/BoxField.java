@@ -26,7 +26,7 @@ public class BoxField extends AbstractJsonObject {
 	/**
 	 * 绑定字段
 	 * @param value String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public BoxField setValue(String value) {
 		this.value = value;
@@ -43,7 +43,7 @@ public class BoxField extends AbstractJsonObject {
 	/**
 	 * 选中状态绑定字段
 	 * @param checked String
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public BoxField setChecked(String checked) {
 		this.checked = checked;
