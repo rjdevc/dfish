@@ -3494,6 +3494,7 @@ define( {
           }
       ] },
       { name: 'indent', type: 'Number', remark: '当设置了 snap 时，再设置 indent 指定相对于初始位置缩进多少个像素。' },
+      { name: 'independent', type: 'Boolean', remark: '设置为true，取消与父窗口的关联效果。' },
       { name: 'maxwidth', type: 'Number', remark: '最大宽度。' },
       { name: 'maxheight', type: 'Number', remark: '最大高度。' },
       { name: 'minwidth', type: 'Number', remark: '最小宽度。' },
