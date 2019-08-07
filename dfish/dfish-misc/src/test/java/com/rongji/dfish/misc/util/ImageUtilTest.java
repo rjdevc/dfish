@@ -9,8 +9,8 @@ public class ImageUtilTest {
 
     public static void main(String[] args) throws Exception {
 
-        String rawFileName = "永远跟跟党走";
-        String fileExtName = "jpg";
+        String rawFileName = "不忘初心";
+        String fileExtName = "gif";
         int width = 32;
         int height = 32;
 
@@ -26,7 +26,7 @@ public class ImageUtilTest {
 //                resize(fileName, fileName + "-test", fileExtName, 800, 400, null);
 //            }
 //        }
-         zoom(rawFileName, zoomedFileName, fileExtName, -1, -1);
+         zoom(rawFileName, zoomedFileName, fileExtName, 100, 100);
 //        alphaComposite(zoomedFileName, rawFileName+"-big", fileExtName, x, y, width, height);
 //        subCut(zoomedFileName, rawFileName+"-small", fileExtName, x, y, width, height);
 

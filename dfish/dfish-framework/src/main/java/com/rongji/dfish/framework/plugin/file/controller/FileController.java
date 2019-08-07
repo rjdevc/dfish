@@ -9,6 +9,7 @@ import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.SystemData;
 import com.rongji.dfish.framework.controller.BaseController;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
 import com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
@@ -42,31 +43,16 @@ public class FileController extends BaseController {
     private FileService fileService;
     @Autowired(required = false)
     private List<FileUploadPlugin> uploadPlugins;
-    @Autowired(required = false)
-    private List<FileHandlingDefine> fileHandlingDefines;
-    @Autowired(required = false)
-    private List<FileHandlingScheme> fileHandlingSchemes;
+    @Autowired
+    private FileHandlingManager fileHandlingManager;
 
     private Map<String, FileUploadPlugin> uploadPluginMap = new HashMap<>();
-    private Map<String, FileHandlingDefine> fileHandlingDefineMap = new HashMap<>();
-    private Map<String, FileHandlingScheme> fileHandlingSchemeMap = new HashMap<>();
-
 
     @PostConstruct
     private void init() {
         if (Utils.notEmpty(uploadPlugins)) {
             for (FileUploadPlugin uploadPlugin : uploadPlugins) {
                 registerUploadPlugin(uploadPlugin);
-            }
-        }
-        if (Utils.notEmpty(fileHandlingDefines)) {
-            for (FileHandlingDefine handlingDefine : fileHandlingDefines) {
-                registerFileHandlingDefine(handlingDefine);
-            }
-        }
-        if (Utils.notEmpty(fileHandlingSchemes)) {
-            for (FileHandlingScheme handlingScheme : fileHandlingSchemes) {
-                registerFileHandlingScheme(handlingScheme);
             }
         }
     }
@@ -81,32 +67,6 @@ public class FileController extends BaseController {
         FileUploadPlugin old = uploadPluginMap.put(uploadPlugin.name(), uploadPlugin);
         if (old != null) {
             LogUtil.warn("The FileUploadPlugin[" + old.getClass().getName() + "] is replaced by [" + uploadPlugin.getClass().getName() + "]");
-        }
-    }
-
-    private void registerFileHandlingDefine(FileHandlingDefine handlingDefine) {
-        if (handlingDefine == null) {
-            return;
-        }
-        if (Utils.isEmpty(handlingDefine.getAlias())) {
-            LogUtil.warn("The alias is empty.[" + handlingDefine.getClass().getName() + "]");
-        }
-        FileHandlingDefine old = fileHandlingDefineMap.put(handlingDefine.getAlias(), handlingDefine);
-        if (old != null) {
-            LogUtil.warn("The system exists same name of the FileHandlingDefine.[" + handlingDefine.getAlias() + "]");
-        }
-    }
-
-    private void registerFileHandlingScheme(FileHandlingScheme handlingScheme) {
-        if (handlingScheme == null) {
-            return;
-        }
-        if (Utils.isEmpty(handlingScheme.getName())) {
-            LogUtil.warn("The name is empty.[" + handlingScheme.getClass().getName() + "]");
-        }
-        FileHandlingScheme old = fileHandlingSchemeMap.put(handlingScheme.getName(), handlingScheme);
-        if (old != null) {
-            LogUtil.warn("The system exists same name of the FileHandlingScheme.[" + handlingScheme.getName() + "]");
         }
     }
 
@@ -182,24 +142,17 @@ public class FileController extends BaseController {
         return false;
     }
 
-
     @RequestMapping("/uploadFile")
     @ResponseBody
     public UploadItem uploadFile(HttpServletRequest request) {
         String scheme = request.getParameter("scheme");
-        FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
+        FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+        // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
         String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileService.getFileTypes();
         return saveFile(request, fileService, acceptTypes);
     }
 
     private static final ExecutorService EXECUTOR_IMAGE = Executors.newFixedThreadPool(5);
-
-    private FileHandlingScheme getFileHandlingScheme(String scheme) {
-        if (Utils.isEmpty(scheme)) {
-            return null;
-        }
-        return fileHandlingSchemeMap.get(scheme);
-    }
 
     @RequestMapping("/uploadImage")
     @ResponseBody
@@ -215,7 +168,7 @@ public class FileController extends BaseController {
 //        uploadItem.setThumbnail("file/thumbnail?fileId=" + uploadItem.getId() + param);
 
         String scheme = request.getParameter("scheme");
-        final FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
+        final FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
         if (handlingScheme == null || Utils.isEmpty(handlingScheme.getDefines())) {
             // 无需进行图片压缩
             return uploadItem;
@@ -247,7 +200,7 @@ public class FileController extends BaseController {
                     InputStream input = null;
                     OutputStream output = null;
                     try {
-                        FileHandlingDefine handlingDefine = fileHandlingDefineMap.get(defineAlias);
+                        FileHandlingDefine handlingDefine = fileHandlingManager.getDefine(defineAlias);
                         if (handlingDefine == null || !(handlingDefine instanceof ImageHandlingDefine)) {
                             continue;
                         }
@@ -505,7 +458,7 @@ public class FileController extends BaseController {
         }
 
         String scheme = param.getValueAsString("scheme");
-        FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
+        FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
         String defaultIcon = null;
         if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefaultIcon())) {
             defaultIcon = handlingScheme.getDefaultIcon();
@@ -538,7 +491,7 @@ public class FileController extends BaseController {
         String fileAlias = param.getValueAsString("fileAlias");
         if (Utils.isEmpty(fileAlias)) {
             String scheme = param.getValueAsString("scheme");
-            FileHandlingScheme handlingScheme = getFileHandlingScheme(scheme);
+            FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
             if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefines())) {
                 fileAlias = handlingScheme.getDefines().get(0);
                 // 缩略图还没生成需要处理

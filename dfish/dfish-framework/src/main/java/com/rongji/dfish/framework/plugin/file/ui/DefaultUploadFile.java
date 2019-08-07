@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.ui.form.UploadButton;
 import com.rongji.dfish.ui.form.UploadFile;
@@ -35,10 +37,19 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 		this.setUploadsrc("file/uploadFile");
 		this.setDownloadsrc("file/download?fileId=$id");
 		this.setPreviewsrc("file/preview?fileId=$id");
-		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
-		this.setFiletypes(fileService.getFileTypes());
-		String sizeLimit = fileService.getSizeLimit();
-		this.setMaxfilesize(sizeLimit);
+
+		FileHandlingManager fileHandlingManager = FrameworkHelper.getBean(FileHandlingManager.class);
+		FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+		String fileTypes = null;
+		String sizeLimit = null;
+		if (handlingScheme != null) {
+			fileTypes = handlingScheme.getHandlingTypes();
+			sizeLimit = handlingScheme.getSizeLimit();
+		}
+		FileService fileService = FrameworkHelper.getBean(FileService.class);
+		this.setFiletypes(Utils.isEmpty(fileTypes) ? fileService.getFileTypes() : fileTypes);
+		this.setMaxfilesize(Utils.isEmpty(sizeLimit) ? fileService.getSizeLimit() : sizeLimit);
+
 		this.addUploadbutton(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-upload-icon-local"));
 //		this.addValuebutton(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
 	}

@@ -2,6 +2,8 @@ package com.rongji.dfish.framework.plugin.file.ui;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.ui.form.UploadButton;
 import com.rongji.dfish.ui.form.UploadImage;
@@ -35,9 +37,22 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		this.setDownloadsrc("file/download?fileId=$id");
 		this.setPreviewsrc("file/preview?fileId=$id");
 		this.setThumbnailsrc("file/thumbnail?fileId=$id");
-		FileService fileService = (FileService) FrameworkHelper.getBean("fileService");
-		this.setFiletypes(Utils.isEmpty(fileService.getImageTypes()) ? defaultFileTypes() : fileService.getImageTypes());
-		this.setMaxfilesize(fileService.getSizeLimit());
+
+		FileHandlingManager fileHandlingManager = FrameworkHelper.getBean(FileHandlingManager.class);
+		FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+		String fileTypes = null;
+		String sizeLimit = null;
+		if (handlingScheme != null) {
+			fileTypes = handlingScheme.getHandlingTypes();
+			sizeLimit = handlingScheme.getSizeLimit();
+		}
+		FileService fileService = FrameworkHelper.getBean(FileService.class);
+		if (Utils.isEmpty(fileTypes)) {
+			fileTypes = fileService.getImageTypes();
+		}
+		this.setFiletypes(Utils.isEmpty(fileTypes) ? defaultFileTypes() : fileTypes);
+		this.setMaxfilesize(Utils.isEmpty(sizeLimit) ? fileService.getSizeLimit() : sizeLimit);
+
 		this.addUploadbutton(new UploadButton("+"));
 		
 		this.setValue(value);

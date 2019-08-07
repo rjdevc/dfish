@@ -23,6 +23,10 @@ public class FileHandlingScheme {
      * 需处理的文件类型
      */
     private String handlingTypes;
+    /**
+     * 最大允许上传的文件大小
+     */
+    private String sizeLimit;
 
     public String getName() {
         return name;
@@ -55,4 +59,13 @@ public class FileHandlingScheme {
     public void setHandlingTypes(String handlingTypes) {
         this.handlingTypes = handlingTypes;
     }
+
+    public String getSizeLimit() {
+        return sizeLimit;
+    }
+
+    public void setSizeLimit(String sizeLimit) {
+        this.sizeLimit = sizeLimit;
+    }
+
 }
