@@ -3394,7 +3394,11 @@ Dialog = define.widget( 'dialog', {
 		if ( p !== _docView ) {
 			this.opener = p.closest( function() { return this.type === 'dialog' } );
 		}
-		(this.commander = p).addEventOnce( 'remove', this.remove, this );
+		this.commander = p;
+		if ( x.independent )
+			delete p.discNodes[ this.id ];
+		else
+			p.addEventOnce( 'remove', this.remove, this );
 		_docView.addEvent( 'resize', function() { this.isShow() && this.axis() }, this );
 	},
 	Helper: {
@@ -3565,12 +3569,12 @@ Dialog = define.widget( 'dialog', {
 		front: function() {
 			if ( this._disposed )
 				return;
-			if ( this.opener ) {
+			if ( this.opener && !this.opener._disposed && !this.x.independent ) {
 				this.opener.front();
 			} else {
 				var a = Dialog.all;
 				for ( var i in a ) {
-					a[ i ]._front( a[ i ] == this || this.contains( a[ i ] ) );
+					a[ i ]._front( a[ i ] == this || (!a[ i ].x.independent && this.contains( a[ i ] )) );
 				}
 			}
 		},
