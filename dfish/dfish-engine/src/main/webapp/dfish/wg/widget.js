@@ -7832,7 +7832,7 @@ Linkbox = define.widget( 'linkbox', {
 			// 输入框内之只允许存在U和I两种标签。输入过程中浏览器可能会自动生成 <font> 标签，需要去除它
 			if ( c.tagName === 'FONT' ) {
 				if ( c.parentNode.tagName === 'U' ) {
-					var d = c.parentNode.previousSibling.nodeValue, c = c.parentNode.parentNode, t = c.innerText;
+					var d = c.previousSibling.nodeValue, c = c.parentNode, t = c.innerText;
 					this._rng_text( c, t.indexOf( d ) + d.length + 1, t );
 				} else if ( c.parentNode.id === this.id + 't' ) {
 					t = c.parentNode.innerText;
