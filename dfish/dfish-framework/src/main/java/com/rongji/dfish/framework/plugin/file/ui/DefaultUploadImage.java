@@ -47,11 +47,10 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 			sizeLimit = handlingScheme.getSizeLimit();
 		}
 		FileService fileService = FrameworkHelper.getBean(FileService.class);
-		if (Utils.isEmpty(fileTypes)) {
-			fileTypes = fileService.getImageTypes();
-		}
-		this.setFiletypes(Utils.isEmpty(fileTypes) ? defaultFileTypes() : fileTypes);
-		this.setMaxfilesize(Utils.isEmpty(sizeLimit) ? fileService.getSizeLimit() : sizeLimit);
+		fileTypes = Utils.isEmpty(fileTypes) ? (Utils.isEmpty(fileService.getImageTypes()) ? defaultFileTypes() : fileService.getImageTypes()) : fileTypes;
+		sizeLimit = Utils.isEmpty(sizeLimit) ? fileService.getSizeLimit() : sizeLimit;
+		this.setFiletypes(fileTypes);
+		this.setMaxfilesize(sizeLimit);
 
 		this.addUploadbutton(new UploadButton("+"));
 		

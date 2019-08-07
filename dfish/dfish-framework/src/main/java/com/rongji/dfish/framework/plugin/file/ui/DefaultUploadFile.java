@@ -47,10 +47,12 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 			sizeLimit = handlingScheme.getSizeLimit();
 		}
 		FileService fileService = FrameworkHelper.getBean(FileService.class);
-		this.setFiletypes(Utils.isEmpty(fileTypes) ? fileService.getFileTypes() : fileTypes);
-		this.setMaxfilesize(Utils.isEmpty(sizeLimit) ? fileService.getSizeLimit() : sizeLimit);
+		fileTypes = Utils.isEmpty(fileTypes) ? fileService.getFileTypes() : fileTypes;
+		sizeLimit = Utils.isEmpty(sizeLimit) ? fileService.getSizeLimit() : sizeLimit;
+		this.setFiletypes(fileTypes);
+		this.setMaxfilesize(sizeLimit);
 
-		this.addUploadbutton(new UploadButton("本地上传(最大" + sizeLimit + ")").setIcon(".w-upload-icon-local"));
+		this.addUploadbutton(new UploadButton("本地上传" + (Utils.notEmpty(sizeLimit) ? "(最大" + sizeLimit + ")" : "")).setIcon(".w-upload-icon-local"));
 //		this.addValuebutton(new ValueButton("下载").setOn(ValueButton.EVENT_CLICK, "$.download('file/downloadFile?fileId='+$id);"));
 	}
 	
