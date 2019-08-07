@@ -4001,7 +4001,7 @@ MenuSplit = define.widget( 'menu/split', {
 	Prototype: {
 		show: $.rt(), hide: $.rt(), elemht: function() { return 5 },
 		html: function() {
-			return '<div class=w-toggle-hr>&nbsp;</div>';
+			return '<div class=w-menu-split>&nbsp;</div>';
 		}
 	}
 } ),
