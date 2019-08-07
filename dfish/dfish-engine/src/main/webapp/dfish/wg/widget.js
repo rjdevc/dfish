@@ -3849,7 +3849,11 @@ Dialog = define.widget( 'dialog', {
 		if ( p !== _docView ) {
 			this.opener = p.closest( function() { return this.isDialogWidget } );
 		}
-		(this.commander = p).addEventOnce( 'remove', this.remove, this );
+		this.commander = p;
+		if ( x.independent )
+			delete p.discNodes[ this.id ];
+		else
+			p.addEventOnce( 'remove', this.remove, this );
 		_docView.addEvent( 'resize', function() { this.isShow() && this.axis() }, this );
 	},
 	Extend: 'xsrc',
@@ -4019,12 +4023,12 @@ Dialog = define.widget( 'dialog', {
 		front: function() {
 			if ( this._disposed )
 				return;
-			if ( this.opener ) {
+			if ( this.opener && !this.opener._disposed && !this.x.independent ) {
 				this.opener.front();
 			} else {
 				var a = Dialog.all;
 				for ( var i in a ) {
-					a[ i ]._front( a[ i ] == this || this.contains( a[ i ] ) );
+					a[ i ]._front( a[ i ] == this || (!a[ i ].x.independent && this.contains( a[ i ] )) );
 				}
 			}
 		},
@@ -4244,7 +4248,7 @@ Dialog = define.widget( 'dialog', {
 		_listenHide: function( a ) {
 			var self = this, d = this.x.hoverdrop;
 			$.attach( document, 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
-				if(! self._disposed && (e.srcElement.id == self.id + 'cvr' || ! (self.hasBubble( e.srcElement ) || ( ! self.x.independent && self.x.snap && _widget( self.x.snap ).hasBubble( e.srcElement ) ))) ) {self.close()};
+				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble( e.srcElement ) || (!self.x.independent && self.x.snap && _widget( self.x.snap ).hasBubble( e.srcElement )))) ) {self.close()};
 			}), a );
 			if ( d ) {
 				var o = d === T ? ($( this.x.snap ) || this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
