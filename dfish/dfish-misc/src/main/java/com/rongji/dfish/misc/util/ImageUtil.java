@@ -5,6 +5,7 @@ import com.rongji.dfish.base.Utils;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -119,10 +120,11 @@ public class ImageUtil {
 
         try {
             // 读取原始图片
-            BufferedImage rawImage = ImageIO.read(input);
+            ImageTypeDeligate itd=new ImageTypeDeligate(input);
+            BufferedImage rawImage = ImageIO.read(itd);
             // 获取缩放的图片
             BufferedImage destImage = getZoomedImage(rawImage, width, height);
-            writeImage(destImage, fileExtName, output);
+            writeImage(destImage, itd.getImageTypeName(), output);
         } finally {
             if (input != null) {
                 input.close();
@@ -168,12 +170,12 @@ public class ImageUtil {
      * @throws Exception
      */
     private static void writeImage(BufferedImage destImage, String fileExtName, OutputStream output) throws Exception {
-        // FIXME 这里的判断是死代码且可能判断方法不够合理
-        if (ALPHA_TYPES.contains(destImage.getType())) {
-            if (!ALPHA_NAMES.contains(fileExtName)) {
-                fileExtName = ALPHA_NAMES.get(0);
-            }
-        }
+//        // FIXME 这里的判断是死代码且可能判断方法不够合理
+//        if (ALPHA_TYPES.contains(destImage.getType())) {
+//            if (!ALPHA_NAMES.contains(fileExtName)) {
+//                fileExtName = ALPHA_NAMES.get(0);
+//            }
+//        }
         // 输出图片
         ImageIO.write(destImage, fileExtName, output);
     }
@@ -198,7 +200,8 @@ public class ImageUtil {
         Graphics g = null;
         try {
             // 读取原始图片
-            BufferedImage rawImage = ImageIO.read(input);
+            ImageTypeDeligate itd=new ImageTypeDeligate(input);
+            BufferedImage rawImage = ImageIO.read(itd);
             int imageType = rawImage.getType();
             // 目标图片创建
             BufferedImage destImage = new BufferedImage(width, height, imageType);
@@ -220,7 +223,7 @@ public class ImageUtil {
 //                int y = (height - zoomedImage.getHeight()) / 2;
 //                g.drawImage(zoomedImage, x, y, bgColor,null);
 //            }
-            writeImage(destImage, fileExtName, output);
+            writeImage(destImage, itd.getImageTypeName(), output);
         } finally {
             if (g != null) {
                 g.dispose();
@@ -253,7 +256,8 @@ public class ImageUtil {
 
         try {
             // 读取原始图片
-            BufferedImage rawImage = ImageIO.read(input);
+            ImageTypeDeligate itd=new ImageTypeDeligate(input);
+            BufferedImage rawImage = ImageIO.read(itd);
             // 获取缩放的图片
             BufferedImage destImage = getZoomedImage(rawImage, width, height, false);
 
@@ -261,7 +265,7 @@ public class ImageUtil {
             int y = (destImage.getHeight() - height) / 2;
 //            // 输出图片
 //            ImageIO.write(destImage.getSubimage(x, y, width, height), fileExtName, output);
-            writeImage(destImage.getSubimage(x, y, width, height), fileExtName, output);
+            writeImage(destImage.getSubimage(x, y, width, height), itd.getImageTypeName(), output);
         } finally {
             if (input != null) {
                 input.close();
@@ -269,6 +273,137 @@ public class ImageUtil {
             if (output != null) {
                 output.close();
             }
+        }
+    }
+
+
+    static class ImageTypeDeligate extends SampleDeligate{
+        public static final int TYPE_UNKOWN=0;
+        public static final int TYPE_BMP=1;
+        public static final int TYPE_GIF=2;
+        public static final int TYPE_JPEG=3;
+        public static final int TYPE_PNG=4;
+        private static final String[] TYPE_NAMES={"unkown","bmp","gif","jpg","png"};
+        public ImageTypeDeligate(InputStream raw){
+            super(raw,4);
+        }
+        public int getImageType(){
+            byte[] sample=getSample();
+            if(match(sample,JPEG_FEATURE)){
+                return TYPE_JPEG;
+            }
+            if(match(sample,PNG_FEATURE)){
+                return TYPE_PNG;
+            }
+            if(match(sample,GIF_FEATURE)){
+                return TYPE_GIF;
+            }
+            if(match(sample,BMP_FEATURE)){
+                return TYPE_BMP;
+            }
+            return TYPE_UNKOWN;
+        }
+        public String getImageTypeName() {
+            return TYPE_NAMES[getImageType()];
+        }
+        private boolean match(byte[] sample,byte[]feature){
+            int len=Math.min(sample.length,feature.length);
+            for(int i=0;i<len;i++){
+                if(sample[i]!=feature[i]){
+                    return false;
+                }
+            }
+            return true;
+        }
+        private static final byte[] JPEG_FEATURE=new byte[]{(byte)0xFF,(byte)0xD8,(byte)0xFF};
+        private static final byte[] PNG_FEATURE=new byte[]{(byte)0x89,(byte)'P',(byte)'N',(byte)'G'};
+        private static final byte[] GIF_FEATURE=new byte[]{(byte)'G',(byte)'I',(byte)'F'};
+        private static final byte[] BMP_FEATURE=new byte[]{(byte)'B',(byte)'M'};
+
+
+    }
+
+    /**
+     * 代理一个inputStream当他顺序读取的时候，将会留下最前方的sampleLength个byte作为标本。
+     */
+    static class SampleDeligate extends InputStream{
+        private  InputStream raw;
+        private byte[]sample;
+        private int index;
+        public SampleDeligate(InputStream raw, int sampleLength){
+            this.raw=raw;
+            sample=new byte[sampleLength];
+            index=0;
+        }
+        public SampleDeligate(InputStream raw){
+            this(raw,64);
+        }
+        @Override
+        public int read() throws IOException {
+            int readed= raw.read();
+            if(index<sample.length){
+                if(readed>=0&&readed<256){
+                    sample[index++]=(byte)readed;
+                }
+            }
+            return readed;
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException {
+            return read(b,0,b.length);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            int readed = raw.read(b, off, len);
+            if(index<sample.length){
+                int toSample=Math.min(sample.length-index,len);
+                System.arraycopy(b,off,sample,index,toSample);
+                index+=toSample;
+            }
+            return readed;
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            if(index<sample.length){
+                int toSample=(int)Math.min(sample.length-index,n);
+                byte[]temp=new byte[toSample];
+                read(temp);
+                System.arraycopy(temp,0,sample,index,toSample);
+                index+=toSample;
+                return toSample+raw.skip(n-toSample);
+            }
+            return raw.skip(n);
+        }
+
+        @Override
+        public int available() throws IOException {
+            return raw.available();
+        }
+
+        @Override
+        public void close() throws IOException {
+            raw.close();
+        }
+
+        @Override
+        public void mark(int readlimit) {
+            raw.mark(readlimit);
+        }
+
+        @Override
+        public void reset() throws IOException {
+            raw.reset();
+        }
+
+        @Override
+        public boolean markSupported() {
+            return raw.markSupported();
+        }
+        public byte[] getSample(){
+            return sample;
         }
     }
 
