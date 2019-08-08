@@ -142,6 +142,11 @@ public class Option implements Statusful<Option> {
 		return this;
 	}
 
+	/**
+	 * 获取某个属性的值
+	 * @param key 数值属性的关键字
+	 * @return Object
+	 */
 	public Object getData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
@@ -152,6 +157,11 @@ public class Option implements Statusful<Option> {
 		return data.get(key);
 	}
 
+	/**
+	 * 移除某个属性的值
+	 * @param key 数值属性的关键字
+	 * @return Object
+	 */
 	public Object removeData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
@@ -162,6 +172,12 @@ public class Option implements Statusful<Option> {
 		return data.remove(key);
 	}
 
+	/**
+	 * 设置某个属性的值
+	 * @param key 数值属性的关键字
+	 * @param value 数值属性的值
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public Option setData(String key, Object value) {
 		if(data == null){
 			data = new LinkedHashMap<>();

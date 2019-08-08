@@ -13,26 +13,12 @@ import java.util.List;
 
 /**
  * 图片处理助手
- *
  */
 public class ImageUtil {
 
-    private static final List<String> ALPHA_NAMES = new ArrayList<>();
-    private static final Set<Integer> ALPHA_TYPES = new HashSet<>();
-
-    static {
-        // FIXME 把当前已知的支持透明背景的图片格式加入,这里类型归纳可能不全
-        ALPHA_NAMES.add("png");
-        ALPHA_NAMES.add("gif");
-
-        ALPHA_TYPES.add(BufferedImage.TYPE_INT_ARGB);
-        ALPHA_TYPES.add(BufferedImage.TYPE_INT_ARGB_PRE);
-        ALPHA_TYPES.add(BufferedImage.TYPE_4BYTE_ABGR);
-        ALPHA_TYPES.add(BufferedImage.TYPE_4BYTE_ABGR_PRE);
-    }
-
     /**
      * 是否图片扩展名
+     *
      * @param fileExtName
      * @return boolean
      */
@@ -47,9 +33,10 @@ public class ImageUtil {
 
     /**
      * 根据图片按比例缩放,图片的大小比例保持不变,系统计算得到最合理大小的图片
-     * @param rawImage  原始图片
-     * @param width     缩放后的宽度
-     * @param height    缩放后的高度
+     *
+     * @param rawImage 原始图片
+     * @param width    缩放后的宽度
+     * @param height   缩放后的高度
      * @return BufferedImage
      */
     public static BufferedImage getZoomedImage(BufferedImage rawImage, int width, int height) {
@@ -58,10 +45,11 @@ public class ImageUtil {
 
     /**
      * 根据图片按比例缩放,图片的大小比例保持不变,系统计算得到最合理大小的图片
-     * @param rawImage  原始图片
-     * @param width     缩放后的宽度,<=0时采用原始图片宽度
-     * @param height    缩放后的高度,<=0时采用原始图片高度
-     * @param destInside    原图是否在指定宽高范围内
+     *
+     * @param rawImage   原始图片
+     * @param width      缩放后的宽度,<=0时采用原始图片宽度
+     * @param height     缩放后的高度,<=0时采用原始图片高度
+     * @param destInside 原图是否在指定宽高范围内
      * @return BufferedImage
      */
     public static BufferedImage getZoomedImage(BufferedImage rawImage, int width, int height, boolean destInside) {
@@ -86,7 +74,7 @@ public class ImageUtil {
         if (basedWidth) {
             destWidth = width;
 
-            destHeight = (int)(widthScale * rawImage.getHeight());
+            destHeight = (int) (widthScale * rawImage.getHeight());
             destHeight = destInside && destHeight > height ? height : destHeight;
         } else {
             destWidth = (int) (heightScale * rawImage.getWidth());
@@ -108,19 +96,20 @@ public class ImageUtil {
     /**
      * 根据图片按比例缩放,图片的大小比例保持不变,系统计算最合理的大小进行输出
      * 图片按照输出流进行输出,输出完成后将自动关闭输入流和输出流
-     * @param input     图片文件输入流
-     * @param output    图片文件输出流
-     * @param fileExtName   输出图片类型
-     * @param width     输出图片的宽,<=0时采用原始图片宽度
-     * @param height    输出图片的高,<=0时采用原始图片高度
-     * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
+     *
+     * @param input       图片文件输入流
+     * @param output      图片文件输出流
+     * @param fileExtName 输出图片类型
+     * @param width       输出图片的宽,<=0时采用原始图片宽度
+     * @param height      输出图片的高,<=0时采用原始图片高度
+     * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void zoom(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
         checkArguments(input, output, fileExtName);
 
         try {
             // 读取原始图片
-            ImageTypeDeligate itd=new ImageTypeDeligate(input);
+            ImageTypeDeligate itd = new ImageTypeDeligate(input);
             BufferedImage rawImage = ImageIO.read(itd);
             // 获取缩放的图片
             BufferedImage destImage = getZoomedImage(rawImage, width, height);
@@ -138,10 +127,11 @@ public class ImageUtil {
     /**
      * 根据图片按照原始尺寸缩放
      * 图片按照输出流进行输出,输出完成后将自动关闭输入流和输出流
-     * @param input     图片文件输入流
-     * @param output    图片文件输出流
-     * @param fileExtName   输出图片类型
-     * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
+     *
+     * @param input       图片文件输入流
+     * @param output      图片文件输出流
+     * @param fileExtName 输出图片类型
+     * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void zoom(InputStream input, OutputStream output, String fileExtName) throws Exception {
         zoom(input, output, fileExtName, -1, -1);
@@ -149,6 +139,7 @@ public class ImageUtil {
 
     /**
      * 判断参数
+     *
      * @param input
      * @param output
      * @param fileExtName
@@ -164,18 +155,13 @@ public class ImageUtil {
 
     /**
      * 输入图片
+     *
      * @param destImage
      * @param fileExtName
      * @param output
      * @throws Exception
      */
     private static void writeImage(BufferedImage destImage, String fileExtName, OutputStream output) throws Exception {
-//        // FIXME 这里的判断是死代码且可能判断方法不够合理
-//        if (ALPHA_TYPES.contains(destImage.getType())) {
-//            if (!ALPHA_NAMES.contains(fileExtName)) {
-//                fileExtName = ALPHA_NAMES.get(0);
-//            }
-//        }
         // 输出图片
         ImageIO.write(destImage, fileExtName, output);
     }
@@ -184,12 +170,12 @@ public class ImageUtil {
      * 根据图片按指定宽高强制缩放
      * 图片按照输出流进行输出,输出完成后将自动关闭输入流和输出流
      *
-     * @param input     图片文件输入流
-     * @param output    图片文件输出流
-     * @param fileExtName   输出图片类型
-     * @param width     输出图片的宽
-     * @param height    输出图片的高
-     * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
+     * @param input       图片文件输入流
+     * @param output      图片文件输出流
+     * @param fileExtName 输出图片类型
+     * @param width       输出图片的宽
+     * @param height      输出图片的高
+     * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void resize(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
         checkArguments(input, output, fileExtName);
@@ -200,7 +186,7 @@ public class ImageUtil {
         Graphics g = null;
         try {
             // 读取原始图片
-            ImageTypeDeligate itd=new ImageTypeDeligate(input);
+            ImageTypeDeligate itd = new ImageTypeDeligate(input);
             BufferedImage rawImage = ImageIO.read(itd);
             int imageType = rawImage.getType();
             // 目标图片创建
@@ -208,7 +194,7 @@ public class ImageUtil {
             // 获取画笔工具
             g = destImage.getGraphics();
 //            if (bgColor == null) { // 无填充背景色
-                // 按指定大小强制缩放
+            // 按指定大小强制缩放
             g.drawImage(rawImage, 0, 0, width, height, null);
 //            } else {
 //                // 输出图片填充背景色(为空时,不填充,按照指定宽高缩放;不为空时,按比例缩放到最合理的大小后填充颜色)
@@ -240,11 +226,11 @@ public class ImageUtil {
     /**
      * 根据图片按指定宽高切割(图片最中间部分),并按照输出流进行输出,输出完成后将自动关闭输入流和输出流
      *
-     * @param input     图片文件输入流
-     * @param output    图片文件输出流
-     * @param width     缩放图片的宽
-     * @param height    缩放图片的高
-     * @throws Exception    当输入流非图片或者图片绘制过程中可能有异常
+     * @param input  图片文件输入流
+     * @param output 图片文件输出流
+     * @param width  缩放图片的宽
+     * @param height 缩放图片的高
+     * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void cut(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
         checkArguments(input, output, fileExtName);
@@ -256,7 +242,7 @@ public class ImageUtil {
 
         try {
             // 读取原始图片
-            ImageTypeDeligate itd=new ImageTypeDeligate(input);
+            ImageTypeDeligate itd = new ImageTypeDeligate(input);
             BufferedImage rawImage = ImageIO.read(itd);
             // 获取缩放的图片
             BufferedImage destImage = getZoomedImage(rawImage, width, height, false);
@@ -277,73 +263,80 @@ public class ImageUtil {
     }
 
 
-    static class ImageTypeDeligate extends SampleDeligate{
-        public static final int TYPE_UNKOWN=0;
-        public static final int TYPE_BMP=1;
-        public static final int TYPE_GIF=2;
-        public static final int TYPE_JPEG=3;
-        public static final int TYPE_PNG=4;
-        private static final String[] TYPE_NAMES={"unkown","bmp","gif","jpg","png"};
-        public ImageTypeDeligate(InputStream raw){
-            super(raw,4);
+    static class ImageTypeDeligate extends SampleDeligate {
+        public static final int TYPE_UNKNOWN = 0;
+        public static final int TYPE_BMP = 1;
+        public static final int TYPE_GIF = 2;
+        public static final int TYPE_JPEG = 3;
+        public static final int TYPE_PNG = 4;
+        private static final String[] TYPE_NAMES = {"unknown", "bmp", "gif", "jpg", "png"};
+
+        public ImageTypeDeligate(InputStream raw) {
+            super(raw, 4);
         }
-        public int getImageType(){
-            byte[] sample=getSample();
-            if(match(sample,JPEG_FEATURE)){
+
+        public int getImageType() {
+            byte[] sample = getSample();
+            if (match(sample, JPEG_FEATURE)) {
                 return TYPE_JPEG;
             }
-            if(match(sample,PNG_FEATURE)){
+            if (match(sample, PNG_FEATURE)) {
                 return TYPE_PNG;
             }
-            if(match(sample,GIF_FEATURE)){
+            if (match(sample, GIF_FEATURE)) {
                 return TYPE_GIF;
             }
-            if(match(sample,BMP_FEATURE)){
+            if (match(sample, BMP_FEATURE)) {
                 return TYPE_BMP;
             }
-            return TYPE_UNKOWN;
+            return TYPE_UNKNOWN;
         }
+
         public String getImageTypeName() {
             return TYPE_NAMES[getImageType()];
         }
-        private boolean match(byte[] sample,byte[]feature){
-            int len=Math.min(sample.length,feature.length);
-            for(int i=0;i<len;i++){
-                if(sample[i]!=feature[i]){
+
+        private boolean match(byte[] sample, byte[] feature) {
+            int len = Math.min(sample.length, feature.length);
+            for (int i = 0; i < len; i++) {
+                if (sample[i] != feature[i]) {
                     return false;
                 }
             }
             return true;
         }
-        private static final byte[] JPEG_FEATURE=new byte[]{(byte)0xFF,(byte)0xD8,(byte)0xFF};
-        private static final byte[] PNG_FEATURE=new byte[]{(byte)0x89,(byte)'P',(byte)'N',(byte)'G'};
-        private static final byte[] GIF_FEATURE=new byte[]{(byte)'G',(byte)'I',(byte)'F'};
-        private static final byte[] BMP_FEATURE=new byte[]{(byte)'B',(byte)'M'};
 
+        private static final byte[] JPEG_FEATURE = new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+        private static final byte[] PNG_FEATURE = new byte[]{(byte) 0x89, (byte) 'P', (byte) 'N', (byte) 'G'};
+        private static final byte[] GIF_FEATURE = new byte[]{(byte) 'G', (byte) 'I', (byte) 'F'};
+        private static final byte[] BMP_FEATURE = new byte[]{(byte) 'B', (byte) 'M'};
 
     }
 
     /**
      * 代理一个inputStream当他顺序读取的时候，将会留下最前方的sampleLength个byte作为标本。
      */
-    static class SampleDeligate extends InputStream{
-        private  InputStream raw;
-        private byte[]sample;
+    static class SampleDeligate extends InputStream {
+        private InputStream raw;
+        private byte[] sample;
         private int index;
-        public SampleDeligate(InputStream raw, int sampleLength){
-            this.raw=raw;
-            sample=new byte[sampleLength];
-            index=0;
+
+        public SampleDeligate(InputStream raw, int sampleLength) {
+            this.raw = raw;
+            sample = new byte[sampleLength];
+            index = 0;
         }
-        public SampleDeligate(InputStream raw){
-            this(raw,64);
+
+        public SampleDeligate(InputStream raw) {
+            this(raw, 64);
         }
+
         @Override
         public int read() throws IOException {
-            int readed= raw.read();
-            if(index<sample.length){
-                if(readed>=0&&readed<256){
-                    sample[index++]=(byte)readed;
+            int readed = raw.read();
+            if (index < sample.length) {
+                if (readed >= 0 && readed < 256) {
+                    sample[index++] = (byte) readed;
                 }
             }
             return readed;
@@ -351,29 +344,29 @@ public class ImageUtil {
 
         @Override
         public int read(byte[] b) throws IOException {
-            return read(b,0,b.length);
+            return read(b, 0, b.length);
         }
 
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
             int readed = raw.read(b, off, len);
-            if(index<sample.length){
-                int toSample=Math.min(sample.length-index,len);
-                System.arraycopy(b,off,sample,index,toSample);
-                index+=toSample;
+            if (index < sample.length) {
+                int toSample = Math.min(sample.length - index, len);
+                System.arraycopy(b, off, sample, index, toSample);
+                index += toSample;
             }
             return readed;
         }
 
         @Override
         public long skip(long n) throws IOException {
-            if(index<sample.length){
-                int toSample=(int)Math.min(sample.length-index,n);
-                byte[]temp=new byte[toSample];
+            if (index < sample.length) {
+                int toSample = (int) Math.min(sample.length - index, n);
+                byte[] temp = new byte[toSample];
                 read(temp);
-                System.arraycopy(temp,0,sample,index,toSample);
-                index+=toSample;
-                return toSample+raw.skip(n-toSample);
+                System.arraycopy(temp, 0, sample, index, toSample);
+                index += toSample;
+                return toSample + raw.skip(n - toSample);
             }
             return raw.skip(n);
         }
@@ -402,7 +395,8 @@ public class ImageUtil {
         public boolean markSupported() {
             return raw.markSupported();
         }
-        public byte[] getSample(){
+
+        public byte[] getSample() {
             return sample;
         }
     }

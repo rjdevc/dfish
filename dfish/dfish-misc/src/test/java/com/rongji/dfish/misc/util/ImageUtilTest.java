@@ -17,7 +17,6 @@ public class ImageUtilTest {
 //        test(rawFileName, fileExtName, version, width, height);
         int x = 200;
         int y = 120;
-        String zoomedFileName = rawFileName+"-test";
 //        File dir = new File("E:\\Pictures\\dev\\others\\test\\jigsaw-files\\");
 //        for (File file : dir.listFiles()) {
 //            if (file.isFile()) {
@@ -26,7 +25,9 @@ public class ImageUtilTest {
 //                resize(fileName, fileName + "-test", fileExtName, 800, 400, null);
 //            }
 //        }
-         zoom(rawFileName, zoomedFileName, fileExtName, 100, 100);
+         zoom(rawFileName, rawFileName+"-zoom", fileExtName, 100, 100);
+         resize(rawFileName, rawFileName+"-resize", fileExtName, 100, 100);
+         cut(rawFileName, rawFileName+"-cut", fileExtName, 100, 100);
 //        alphaComposite(zoomedFileName, rawFileName+"-big", fileExtName, x, y, width, height);
 //        subCut(zoomedFileName, rawFileName+"-small", fileExtName, x, y, width, height);
 
