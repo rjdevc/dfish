@@ -1835,10 +1835,13 @@ function _initDocView( $ ) {
 		$.query( doc ).contextmenu( function( e ) {
 			if ( e.ctrlKey && ! $( ':develop' ) ) {
 				var m = $.vm( e.target ), c = $.bcr( m.$() ),
-					d = $.query( doc.body ).append( '<div id=:develop style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;position:absolute;border:2px dashed red;z-index:2"></div>' ),
+					d = $.query( doc.body ).append( '<div id=_develop style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;position:absolute;border:2px dashed red;z-index:2"></div>' ),
 					g = m.closest( 'dialog' ), s = 'path: ' + m.path,
 					t = 'path: ' + m.path + (g ? '\ndialog: ' + (g.x.id || '') : '') + '\nsrc: <span onclick=event.ctrlKey&&window.open(this.innerText)>' + (m.x.src || '') + '</span>';
-				$.vm ? $.vm().cmd( { type: 'alert', text: t, on: { close: function() { _rm( ':develop' ) } } } ) : alert( t );
+				//$.vm ? $.vm().cmd( { type: 'alert', text: t, on: { close: function() { _rm( ':develop' ) } } } ) : alert( t );
+				setTimeout( function() {
+					$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { Q( '#_develop' ).remove() } } ) : (alert( t ), Q( '#_develop' ).remove());
+				}, 50 );
 				e.preventDefault();
 			}
 		} );

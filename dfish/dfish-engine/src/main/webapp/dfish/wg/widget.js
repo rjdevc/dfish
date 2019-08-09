@@ -3858,6 +3858,9 @@ Alert = define.widget( 'alert', {
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
+		(x.yes || x.no) && this.addEventOnce( 'close', function() {
+			_operexe( a ? x.yes : x.no, this.commander, x.args );
+		} );
 		Dialog.call( this, x, a ? _docView : p );
 	},
 	Extend: Dialog,
