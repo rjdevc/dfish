@@ -364,8 +364,8 @@ public class ImageUtil {
                 int toSample = (int) Math.min(sample.length - index, n);
                 byte[] temp = new byte[toSample];
                 read(temp);
-                System.arraycopy(temp, 0, sample, index, toSample);
-                index += toSample;
+//                System.arraycopy(temp, 0, sample, index, toSample);
+//                index += toSample;
                 return toSample + raw.skip(n - toSample);
             }
             return raw.skip(n);
