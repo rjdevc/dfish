@@ -6850,8 +6850,8 @@ XBox = define.widget( 'xbox', {
 					for ( var i = 0, q = a.parent().find( '._o.z-on' ), l = q.length; i < l; i ++ )
 						b.push( this.x.options[ q[ i ].getAttribute( '_i' ) ] );
 				} else {
-					for ( var i = 0, q = this.x.options, l = q.length; i < l; i ++ )
-						if ( a == q[ i ].value || (a && $.idsAny( a, q[ i ].value )) ) b.push( q[ i ] );
+					for ( var i = 0, q = this.x.options, l = q.length, c; i < l; i ++ )
+						if ( q[ i ].value == '' ? a == '' : $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
 				}
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
