@@ -818,6 +818,7 @@
 
 .w-label.z-type-upload-file{vertical-align:top;padding-top:5px}
 .w-label.z-type-upload-file.z-va{padding-top:10px}
+.f-print .w-label.z-type-upload-file{vertical-align:middle;padding-top:0!important}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-page .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 

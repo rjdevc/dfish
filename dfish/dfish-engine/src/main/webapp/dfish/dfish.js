@@ -2371,7 +2371,7 @@ _merge( $, {
 		w = window.open();
 		d = w.document;
 		d.open( 'text/html', 'replace' );
-		d.write( '<!doctype html><html><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join( '' ) +
+		d.write( '<!doctype html><html class=f-print><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join( '' ) +
 			(y.head || '') + '</head><body>' + s +
 			(! br.ms && y.print ? '<script>window.print();window.close()</script>' : '') +
 			'</body></html>' );
