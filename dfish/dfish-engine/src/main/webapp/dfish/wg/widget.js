@@ -4884,7 +4884,7 @@ AbsForm = define.widget( 'abs/form', {
 			},
 			blur: {
 				occupy: T,
-				method: function() { ! this.$( 'f' ).contains( document.activeElement ) && _z_on.call( this, F ) }
+				method: function() { this.$( 'f' ) && !this.$( 'f' ).contains( document.activeElement ) && _z_on.call( this, F ) }
 			},
 			resize: function() {
 				if ( this.$() ) {
