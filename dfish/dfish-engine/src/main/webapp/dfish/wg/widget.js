@@ -3265,7 +3265,7 @@ Button = define.widget( 'button', {
 				a += this.property;
 			a += ' w-type="' + this.type + '">' + this.html_prepend();
 			if ( ie7 && !w )
-				a += '<table cellpadding=0 cellspacing=0 height=100%><tr><td>';
+				a += '<table cellpadding=0 cellspacing=0 height=100%><tr height=100%><td>';
 			if ( ! x.hidetoggle && this.more )
 				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><i class=f-arw></i><i class=f-vi></i></div>';
 			if ( x.closeicon )
@@ -4545,7 +4545,7 @@ Menu = define.widget( 'menu', {
 			return t && t.indexOf( 'menu/' ) !== 0 ? 'menu/' + t : 'menu/button';
 		},
 		_dft_pos: function() {
-			var b = $.point.originalEvent, c = b && this.parentNode.contains( b.srcElement ) && $.point;
+			var b = $.point.srcElement, c = b && this.parentNode.contains( b ) && $.point;
 			if ( ! c ) {
 				b = $.bcr( this.parentNode.$() );
 				c = { clientX: b.left, clientY: b.top };
