@@ -67,6 +67,7 @@ br = $.br = (function() {
 		chm		: chm && parseFloat( chm[ 1 ] ),
 		mobile  : !!u.match( /\bmobile\b/ ),
 		fox		: u.indexOf( 'firefox' ) > 0,
+		safari  : u.indexOf( 'safari' ) > 0,
 		css3	: !(ie && d < 9),
 		scroll	: 17,
 		chdiv	: function( a, b, c ) {
@@ -310,7 +311,7 @@ _loadCss = function( a, b, c ) {
 		e.href = a[ i ] + _ver;
 		b && ($.remove( b[ i ] ), e.id = b[ i ]);
 		if ( c ) {
-			if ( br.chm && br.chm < 19 ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
+			if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
 			    var img = doc.createElement( 'img' );
 		        img.onerror = function(){ --n === 0 && c() };
 		        img.src = a[ i ] + _ver;
