@@ -5528,7 +5528,7 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		htmlFor: function( a, e ) {
 			this.$t().focus(); // for ie9-
-			a.previousSibling.click();
+			a.previousSibling.click ? a.previousSibling.click() : Q( a.previousSibling.previousSibling ).click();
 			$.cancel( e );
 		},
 		readonly: function( a ) {
