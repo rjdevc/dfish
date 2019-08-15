@@ -5,6 +5,7 @@ import com.rongji.dfish.framework.dao.BaseDao;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
@@ -32,6 +33,30 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
     }
 
     protected void afterDelete(T entity) throws Exception {
+    }
+
+    public int saveOrUpdate(T entity) throws Exception {
+        if (entity == null) {
+            return 0;
+        }
+        Method idGetter = getEntityIdGetter();
+        Object result = idGetter.invoke(entity);
+        if (result == null || "".equals(result)) {
+            return save(entity);
+        } else {
+            return update(entity);
+        }
+    }
+
+    @Override
+    @Transactional
+    public int save(T entity) throws Exception {
+        beforeSave(entity);
+        int result = super.save(entity);
+        if (result > 0) {
+            afterSave(entity);
+        }
+        return result;
     }
 
     @Override
@@ -86,14 +111,4 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
         return result;
     }
 
-    @Override
-    @Transactional
-    public int save(T entity) throws Exception {
-        beforeSave(entity);
-        int result = super.save(entity);
-        if (result > 0) {
-            afterSave(entity);
-        }
-        return result;
-    }
 }

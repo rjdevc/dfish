@@ -651,9 +651,10 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @param fileLink
      * @param fileKey
      */
-    public void updateFileLink(String itemJson, String fileLink, String fileKey) {
+    public List<UploadItem> updateFileLink(String itemJson, String fileLink, String fileKey) {
         List<UploadItem> itemList = parseUploadItems(itemJson);
         updateFileLink(itemList, fileLink, fileKey);
+        return itemList;
     }
 
     /**
@@ -736,14 +737,13 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return
      */
     public static List<UploadItem> parseUploadItems(String itemJson) {
-        if (Utils.isEmpty(itemJson)) {
-            return Collections.emptyList();
-        }
-        try {
-            List<UploadItem> itemList = JsonUtil.parseArray(itemJson, UploadItem.class);
-            return itemList;
-        } catch (Exception e) {
-            FrameworkHelper.LOG.error("转换成文件数据项异常", e);
+        if (Utils.notEmpty(itemJson)) {
+            try {
+                List<UploadItem> itemList = JsonUtil.parseArray(itemJson, UploadItem.class);
+                return itemList;
+            } catch (Exception e) {
+                FrameworkHelper.LOG.error("转换成文件数据项异常", e);
+            }
         }
         return Collections.emptyList();
     }
