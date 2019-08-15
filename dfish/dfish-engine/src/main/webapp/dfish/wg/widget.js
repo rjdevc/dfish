@@ -4734,7 +4734,7 @@ var Label = define.widget( 'label', {
 		this._pad = this.x.space != N ? this.x.space : 5;
 		this.defaults( { wmin: this._pad } );
 		this.className += ' f-nv' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
-		if ( ie7 ) {
+		if ( ie7 ) { // IE7下需要根据td高度来手动调整label高度
 			var td = p.closest( 'td' );
 			if ( td ) {
 				(this.ie7td = td).addEvent( 'nodechange', function() {
@@ -7620,8 +7620,8 @@ ComboboxOption = define.widget( 'combobox/option', {
 		html_nodes: function() {
 			var p = this.parentNode, t = $.strEscape( this.x.text ), r = this.x.remark ? $.strEscape( this.x.remark ) : N,
 				s = '<i class=_b onclick=' + evw + '.write(event)></i><div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class=_xi>&times;</i></div><div class="_s f-omit" title="' + $.strQuot( t ) + '"><i class=f-vi></i><span class="f-omit f-va">' +
-					( this.x.forbid ? '<s>' : '' ) + t + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
-			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr><td>' + s + '</table>' : s;
+					( this.x.forbid ? '<s>' : '' ) + t + (ie7 && $.strLen( t, 2 ) < 3 ? '<em>' + $.strRepeat( '&nbsp;', 3 - $.strLen( t, 2 ) ) + '</em>' : '') + (r ? '<em class=_r>' + r + '</em>' : '') + ( this.x.forbid ? '</s>' : '' ) + '</span></div>';
+			return ie7 && !this.innerWidth() ? '<table cellspacing=0 cellpadding=0 height=100%><tr height=100%><td>' + s + '</table>' : s;
 		}
 	}
 } ),

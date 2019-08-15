@@ -432,6 +432,13 @@ _strPad = $.strPad = function( a, b, c ) {
 		a = c + a;
 	return a;
 },
+// a字符重复b次
+_strRepeat = $.strRepeat = function( a, b ) {
+	for ( var i = 0, r = a, l = b || 0; i < l; i ++ )
+		r += a;
+	return r;
+},
+
 // 取字符串字节数(一个汉字算双字节)  /@ s -> str, b -> 一个汉字算几个字节？默认2个
 _strLen = $.strLen = function( s, b ) {
 	if ( ! s ) return 0;
