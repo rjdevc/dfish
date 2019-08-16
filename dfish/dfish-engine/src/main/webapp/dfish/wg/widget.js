@@ -2391,7 +2391,7 @@ View = define.widget( 'view', {
 		// 表单验证。如果检测到错误，将返回一个包含错误信息的数组 /@ n -> validate name, g -> range
 		getValidError: function( n, g ) {
 			var e;
-			if ( this.$() ) {
+			if ( this.layout ) {
 				var q = this.getFormList( g ), s = this.layout._passvalid;
 				if ( s ) {
 					for ( var k in s )
