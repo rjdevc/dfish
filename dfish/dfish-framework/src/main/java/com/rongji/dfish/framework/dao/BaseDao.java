@@ -132,7 +132,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
             return null;
         }
         String idName = getEntityIdName();
-        return (T) pubCommonDAO.queryAsAnObject("FROM " + getEntityType().getName() + " t WHERE t." + idName + "=?", id);
+        return (T) pubCommonDAO.queryAsAnObject("FROM " + getEntityType().getSimpleName() + " t WHERE t." + idName + "=?", id);
     }
 
     public String getNewId() {

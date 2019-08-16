@@ -611,6 +611,25 @@ public class FileService extends BaseService<PubFileRecord, String> {
     public List<PubFileRecord> findFileRecords(String[] fileId) {
         return findAll(Arrays.asList(fileId));
     }
+
+    /**
+     * 根据获取
+     * @param fileIds
+     * @return
+     */
+    public Map<String, PubFileRecord> findFileRecords(Collection<String> fileIds) {
+        if (Utils.isEmpty(fileIds)) {
+            return Collections.emptyMap();
+        }
+        List<PubFileRecord> fileList = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(fileIds.size()) + ")", fileIds.toArray());
+        Map<String, PubFileRecord> fileMap = new HashMap<>(fileList.size());
+        for (PubFileRecord file : fileList) {
+            if (file != null) {
+                fileMap.put(file.getFileId(), file);
+            }
+        }
+        return fileMap;
+    }
 /*	public List<PubFileRecord> findFileRecords(String[] fileId) {
 		if (Utils.isEmpty(fileId)) {
 			return Collections.emptyList();
