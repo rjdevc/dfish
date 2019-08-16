@@ -47,29 +47,29 @@ public abstract class BaseDao<T, ID extends Serializable> {
     protected String entityIdName;
     protected Method entityIdGetter;
 
-    protected Class<?> getEntiyType() {
+    protected Class<?> getEntityType() {
         if (entityClass == null) {
-            entityClass = getEntiyType(getClass());
+            entityClass = getEntityType(getClass());
         }
         return entityClass;
     }
 
-    protected static Class<?> getEntiyType(Class<?> clz) {
+    protected static Class<?> getEntityType(Class<?> clz) {
 //		clz.getSuperclass();
-        Class<?> workinClz = clz;
+        Class<?> workingClz = clz;
         while (true) {
-            if (workinClz == Object.class) {
+            if (workingClz == Object.class) {
                 break;
             }
-            Type genType = workinClz.getGenericSuperclass();
+            Type genType = workingClz.getGenericSuperclass();
             if (!(genType instanceof ParameterizedType)) {
-                workinClz = workinClz.getSuperclass();
+                workingClz = workingClz.getSuperclass();
                 continue;
             }
 
             Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
             if (params == null || params.length == 0 || !(params[0] instanceof Class)) {
-                workinClz = workinClz.getSuperclass();
+                workingClz = workingClz.getSuperclass();
                 continue;
             }
             Class<?> entityClass = (Class<?>) params[0];
@@ -80,7 +80,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
 
     protected Method getEntityIdGetter() {
         if (entityIdGetter == null) {
-            entityIdGetter = getEntityIdGetter(getEntiyType());
+            entityIdGetter = getEntityIdGetter(getEntityType());
         }
         return entityIdGetter;
     }
@@ -132,7 +132,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
             return null;
         }
         String idName = getEntityIdName();
-        return (T) pubCommonDAO.queryAsAnObject("FROM " + getEntiyType().getName() + " t WHERE t." + idName + "=?", id);
+        return (T) pubCommonDAO.queryAsAnObject("FROM " + getEntityType().getName() + " t WHERE t." + idName + "=?", id);
     }
 
     public String getNewId() {
@@ -154,7 +154,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
         if (ids == null) {
             return null;
         }
-        final Class<?> entityClass = getEntiyType();
+        final Class<?> entityClass = getEntityType();
         String idName = null;
         Method getterMethod = null;
         for (Method m : entityClass.getMethods()) {
@@ -246,7 +246,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
         if (id == null) {
             return null;
         }
-        final Class<?> entityClass = getEntiyType();
+        final Class<?> entityClass = getEntityType();
         return (T) pubCommonDAO.getHibernateTemplate().get(entityClass, id);
     }
 
