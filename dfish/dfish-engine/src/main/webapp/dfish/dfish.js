@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.2',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.3',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -2116,14 +2116,14 @@ _merge( $, {
 	},
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
-		var d;
-		ie ? _attach( doc, 'selectstart', $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
+		var d, f;
+		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
 		_attach( doc, 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
 		_attach( doc, 'mouseup', function( e ) {
 			b && b( ie ? Q.event.fix( e ) : e );
 			_detach( doc, 'mousemove', d, T );
 			_detach( doc, 'mouseup', arguments.callee, T );
-			ie ? _detach( doc, 'selectstart', $.rt( F ) ) : _classRemove( cvs, 'f-unsel' );
+			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
 			c && _rm( c );
 		}, T );
 	},
