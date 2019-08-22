@@ -1268,6 +1268,7 @@ define( {
   	//deprecate: 'prepend,append',
     Config: [
       { name: 'closeable', type: 'Boolean', remark: '是否有关闭图标。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，按钮点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
       { name: 'hoverdrop', type: 'Boolean', remark: '是否当鼠标 hover 时展开下拉菜单。' },
@@ -2116,7 +2117,6 @@ define( {
   	remark: '图片集。',
   	extend: 'widget',
     Config: [
-      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。' },
       { name: 'focusmultiple', type: 'Boolean', remark: '是否可多选。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。album的子节点类型为"img"' },
@@ -2151,6 +2151,7 @@ define( {
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ] },
       { name: 'description', type: 'String', remark: '图片说明。当 album face="straight" 时会显示说明。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'face', type: 'String', remark: '图片展现方式。可选值: <b>none</b>, <b>straight</b>。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
@@ -2195,7 +2196,6 @@ define( {
         { name: 'keepshow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' }
       ] },
       { name: 'ellipsis', type: 'Boolean', remark: '设置为true，树节点文本超出可视范围部分以省略号显示。' },
-      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },
@@ -2280,6 +2280,7 @@ define( {
         { name: 'matchlength', type: 'Number', remark: '切词长度。' }
       ] },
       { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },

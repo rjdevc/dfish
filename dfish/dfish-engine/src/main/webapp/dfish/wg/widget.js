@@ -3212,7 +3212,7 @@ Button = define.widget( 'button', {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + (a || this.x.text) + '</em><i class=f-vi></i></div>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + (this.x.escape !== F ? $.strEscape( a || this.x.text ) : (a || this.x.text)) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
 			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
@@ -3530,10 +3530,10 @@ Img = define.widget( 'img', {
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, p = this.parentNode, f = this.x.format, s, t = x.text, w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
+			var x = this.x, p = this.parentNode, e = this.x.escape !== F, f = this.x.format, s, t = x.text, w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
 			if ( typeof t !== _OBJ && f )
-				t = _html_format.call( this, f, p.x.escape );
-			else if ( typeof t === _STR && p.x.escape )
+				t = _html_format.call( this, f, e );
+			else if ( typeof t === _STR && e )
 				t = $.strEscape( t );
 			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
@@ -3761,11 +3761,11 @@ PageGroup = define.widget( 'page/buttongroup', {
 		html_nodes: function() {
 			this.x.target && this.initByTarget();
 			var c = 'w-page-button ' + (this.x.btncls != N ? this.x.btncls : 'f-button'), d = _number( this.x.currentpage ) || 1, s = _number( this.x.sumpage ) || 1,
-				b = [ { type: 'button', ownproperty: T, text: '&lt;<i class="f-arw f-arw-l4"></i>', tip: (this.x.labelprev || Loc.page_prev || ''), cls: c + ' _prev', status: d == 1 ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d - 1) + ')' } },
-					  { type: 'button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.labelnext || Loc.page_next || ''), cls: c + ' _next', status: d == s ? 'disabled' : '', on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
+				b = [ { type: 'button', ownproperty: T, text: '&lt;<i class="f-arw f-arw-l4"></i>', tip: (this.x.labelprev || Loc.page_prev || ''), cls: c + ' _prev', status: d == 1 ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (d - 1) + ')' } },
+					  { type: 'button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.labelnext || Loc.page_next || ''), cls: c + ' _next', status: d == s ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
 			if ( this.x.btncount != 0 ) {
 				var g = this.x.dropalign;
-				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'button', text: d + '/' + s, cls: c + ' _drop', on: { click: 'this.rootNode.parentNode.drop(this)' } } );
+				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'button', text: d + '/' + s, cls: c + ' _drop', escape: F, on: { click: 'this.rootNode.parentNode.drop(this)' } } );
 			}
 			this.groupbar = this.add( { type: 'buttonbar', cls: 'f-groupbar', nodes: b }, -1 );
 			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + d + '">' : '') + this.groupbar.html() + Page.prototype.html_info.call( this ) + '<i class=f-vi></i>';
@@ -5560,8 +5560,9 @@ Checkbox = define.widget( 'checkbox', {
 			this.exec( $.extend( {}, this.attr( 'tip' ), { type: 'tip', hoverdrop: true } ) );
 		},
 		html_text: function() {
+			var e = (this.x.escape != N ? this.x.escape : this.parentNode.x.escape) !== F;
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + (e ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		},
 		html: function() {
 			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
@@ -5688,8 +5689,9 @@ Switch = define.widget( 'switch', {
 			}
 		},
 		html_text: function() {
+			var e = (this.x.escape != N ? this.x.escape : this.parentNode.x.escape) !== F;
 			return '<label class="_l" for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;') + '</i></label>' +
-				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + ((this.x.escape != N ? this.x.escape : this.parentNode.x.escape) ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + (e ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
 		}		
 	}
 } ),
@@ -5767,7 +5769,7 @@ Select = define.widget( 'select', {
 			return this.getFocusOption( 1 );
 		},
 		html_nodes: function() {
-			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape, t = this.attr( 'tip' );
+			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape !== F, t = this.attr( 'tip' );
 			while ( i -- ) {
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
 					(t ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
@@ -6933,7 +6935,7 @@ XBox = define.widget( 'xbox', {
 			return '';
 		},
 		html_li: function( a, b ) {
-			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape ? $.strEscape( a.text ) : a.text) + (!b ? '<i class=_box></i>' : '') : '';
+			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape !== F ? $.strEscape( a.text ) : a.text) + (!b ? '<i class=_box></i>' : '') : '';
 		},
 		html_text: function() {
 			if ( this.loading ) {
@@ -6943,7 +6945,7 @@ XBox = define.widget( 'xbox', {
 					s.push( b[ i ].text );
 				}
 				s = s.join( ', ' );
-				return this.x.escape ? $.strEscape( s ) : s;
+				return this.x.escape !== F ? $.strEscape( s ) : s;
 			} else
 				return this.html_li( this._sel[ 0 ], T );
 		},
@@ -8851,10 +8853,10 @@ Leaf = define.widget( 'leaf', {
 			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i' } ) : '';
 		},
 		html_text: function() {
-			var r = this.rootNode, t = this.x.text, h;
+			var r = this.rootNode, t = this.x.text, e = this.x.escape !== F, h;
 			if ( this.x.format ) {
-				t = _html_format.call( this, this.x.format, r.x.escape );
-			} else if ( r && r.x.escape && typeof t === _STR )
+				t = _html_format.call( this, this.x.format, e );
+			} else if ( r && e && typeof t === _STR )
 				t = $.strEscape( t );
 			if ( typeof t === _STR && (h = r.x.highlight) && ! this.isDisabled() ) {
 				var key = h.key == N ? (this.ownerView.combo && this.ownerView.combo.getKey()) : h.key;
@@ -9243,8 +9245,9 @@ GridRow = define.widget( 'grid/row', {
 		},
 		// x -> widget option, i -> colIndex
 		addCell: function( x, i ) {
-			if ( this.rootNode.x.escape != N )
-				$.extend( x, { escape: this.rootNode.x.escape } );
+			var e = this.rootNode.x.escape !== F;
+			if ( e )
+				$.extend( x, { escape: e } );
 			var n = (this.tcell || (this.tcell = new TCell( {}, this ))).add( x );
 			n.col = this.rootNode.colgrps[ 0 ][ i ];
 			return n;
@@ -9277,7 +9280,7 @@ GridRow = define.widget( 'grid/row', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape, r = this.offsetParent()._rowspan,
+			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowspan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ a ] && r[ a ][ i ] ) {
@@ -9354,7 +9357,7 @@ TD = define.widget( 'td', {
 	Const: function( x, p ) {
 		if ( x.type && x.type !== 'td' )
 			x = { node: x };
-		x.node && p.rootNode.x.escape != N && $.extend( x.node, { escape: p.rootNode.x.escape } );
+		x.node && p.rootNode.x.escape !== F && $.extend( x.node, { escape: T } );
 		W.call( this, x, p );
 	},
 	Prototype: {
@@ -9364,7 +9367,7 @@ TD = define.widget( 'td', {
 			return _td_wg[ t ] ? 'grid/' + t : t;
 		},
 		html: function( k, i, L ) {
-			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, d = g.x.escape !== F, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + '"';
 			if ( this.x.on || this.Const.Listener )
@@ -9383,9 +9386,9 @@ TD = define.widget( 'td', {
 			if ( ! this.x.node ) {
 				t = this.x.text || '';
 				if ( e && c.x.format ) {
-					t = _html_format.call( r, c.x.format, g.x.escape, _grid_f_attr );
+					t = _html_format.call( r, c.x.format, d, _grid_f_attr );
 				} else {
-					g.x.escape && (t = $.strEscape( t ));
+					d && (t = $.strEscape( t ));
 				}
 				var d = '';
 				if ( ! e || g.x.nobr )
