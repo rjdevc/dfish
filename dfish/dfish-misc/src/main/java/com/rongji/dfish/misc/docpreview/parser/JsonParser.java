@@ -20,9 +20,9 @@ public class JsonParser extends DocumentParser {
         try {
             ByteArrayOutputStream baos=new ByteArrayOutputStream();
             byte[]buff =new byte[8192];
-            int readed=-1;
-            while ((readed=is.read(buff))>=0){
-                baos.write(buff,0,readed);
+            int read=-1;
+            while ((read=is.read(buff))>=0){
+                baos.write(buff,0,read);
             }
             byte[]ret=baos.toByteArray();
             String charset=com.rongji.dfish.base.util.StringUtil.detCharset(ret);
@@ -75,7 +75,7 @@ public class JsonParser extends DocumentParser {
 
                 List<TableCell> tableCells = new ArrayList<>();
                 tableRow.setCells(tableCells);
-                JSONArray cells =(JSONArray)j.get("cells");
+                JSONArray cells =(JSONArray)row.get("cells");
                 for (Object o2:cells) {
                     JSONObject cell =(JSONObject)o2;
                     TableCell tableCell=new TableCell();

@@ -14,6 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+/**
+ * 预览构建器
+ */
 public class Builder {
     private BuilderConfig config;
     private Document doc;
@@ -24,7 +27,10 @@ public class Builder {
         this.doc=doc;
     }
 
-
+    /**
+     * 取得摘要
+     * @return
+     */
     public Builder summary(){
         Builder b= new Builder();
         SummaryBuilder sb=new SummaryBuilder();
@@ -32,9 +38,18 @@ public class Builder {
         return b;
     }
 
+    /**
+     * 转化成JSON，只有转化成JSON，才能无损转回。
+     * @return
+     */
     public String buildJson(){
         return JSON.toJSONString(doc);
     }
+
+    /**
+     * 转化成HTML 显示
+     * @return
+     */
     public String buildHtml(){
         StringBuilder sb=new StringBuilder();
         HtmlBuilder hmtlBuilder =new HtmlBuilder(getConfig());
@@ -109,6 +124,13 @@ public class Builder {
     private static class PicContext{
         Random r=new Random();
         String id;
+
+        /**
+         * 产生有一定顺序的ID。不完全保证ID不重复
+         * 某些月份可能是现有 EF开头的ID 后有0123
+         * 1.024秒内的ID。前面5位是一样的。后面3位为随机
+         * @return ID String
+         */
         public synchronized String getId() {
             if(id==null){
                 long now=System.currentTimeMillis();
@@ -132,6 +154,11 @@ public class Builder {
                 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'
         };
         int picSeq=0;
+
+        /**
+         * 取得序号
+         * @return
+         */
         public synchronized int getPicSeq() {
             return ++picSeq;
         }
