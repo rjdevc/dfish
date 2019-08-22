@@ -97,7 +97,7 @@ public class Builder {
 
         drawing.setPicPath(datePath+"/"+context.getId()+"/"+fileName);
     }
-    private static SimpleDateFormat SDF=new SimpleDateFormat("yyMM");
+    private static final SimpleDateFormat SDF=new SimpleDateFormat("yyMM");
     private PicContext picContext;
     private synchronized PicContext getPicContext(){
         if(picContext==null){
@@ -118,8 +118,8 @@ public class Builder {
                 cs[2] = ALPHABET[(int)(now>>20 &0x1F)];
                 cs[3] = ALPHABET[(int)(now>>15 &0x1F)];
                 cs[4] = ALPHABET[(int)(now>>10 &0x1F)];
-                cs[5] = ALPHABET[(int)(now>>5 &0x1F)];
-                cs[6] = ALPHABET[(int)(now>>0 &0x1F)];
+                cs[5] = ALPHABET[r.nextInt(32)];
+                cs[6] = ALPHABET[r.nextInt(32)];
                 cs[7] = ALPHABET[r.nextInt(32)];
                 id=new String(cs);
             }

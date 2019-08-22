@@ -102,7 +102,7 @@ public class ExceptionViewerController extends BaseController {
 				sb.append("&nbsp;&nbsp;&nbsp;&nbsp;at ");
 				sb.append(info.getClassName());
 				sb.append('.');
-				Utils.escapeXMLword(sb, info.getMethodName());
+				Utils.escapeXMLword( info.getMethodName(),sb);
 				if (info.getFileName() != null) {
 					sb.append('(');
 					sb.append(info.getFileName());

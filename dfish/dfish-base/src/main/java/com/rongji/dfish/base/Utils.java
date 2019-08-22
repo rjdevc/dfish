@@ -107,8 +107,20 @@ public class Utils {
      *
      * @param appendTo StringBuffer
      * @param src      String
+     * @deprecated  参数顺序调整  参数，常量，返回值
+     * @see #escapeXMLword(String, StringBuilder)
      */
+    @Deprecated
     public static void escapeXMLword(StringBuilder appendTo, String src) {
+        escapeXMLword(src,appendTo);
+    }
+    /**
+     * 提供XML转义字符
+     *
+     * @param appendTo StringBuffer
+     * @param src      String
+     */
+    public static void escapeXMLword( String src,StringBuilder appendTo) {
         // return title.replaceAll("&", "&amp;")
         // .replaceAll("<", "&lt;")
         // .replaceAll(">", "&gt;")
@@ -172,7 +184,7 @@ public class Utils {
      */
     public static String escapeXMLword(String src) {
         StringBuilder sb = new StringBuilder();
-        escapeXMLword(sb, src);
+        escapeXMLword(src,sb);
         return sb.toString();
     }
 

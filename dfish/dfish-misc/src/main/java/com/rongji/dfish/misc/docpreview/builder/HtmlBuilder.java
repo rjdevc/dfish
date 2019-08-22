@@ -1,5 +1,6 @@
 package com.rongji.dfish.misc.docpreview.builder;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.misc.docpreview.BuilderConfig;
 import com.rongji.dfish.misc.docpreview.data.*;
 
@@ -41,7 +42,7 @@ public class HtmlBuilder {
     public void build(CharacterRun cr, StringBuilder sb) {
         sb.append("<span");
         if(cr.getColor() != null||cr.getFontFamily() != null||cr.getFontSize() != null||cr.getStrikeType() != null) {
-            sb.append(" style='");
+            sb.append(" style=\"");
             if (cr.getColor() != null) {
                 sb.append("color:");
                 sb.append(cr.getColor());
@@ -74,11 +75,10 @@ public class HtmlBuilder {
                 sb.append(stikeCss);
                 sb.append(';');
             }
-            sb.append('\'');
+            sb.append('"');
         }
         sb.append('>');
-
-        sb.append( cr.getText());//FIXME escape
+        Utils.escapeXMLword(cr.getText(), sb );
         sb.append("</span>");
     }
     public void build(Drawing cr, StringBuilder sb) {
