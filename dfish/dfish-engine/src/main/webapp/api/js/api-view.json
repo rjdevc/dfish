@@ -22,6 +22,7 @@
 		  	"pub": {
 		      "icon": ".icon .icon-singleton",
 		      "cls": "navtree",
+		      "escape": false,
 		  	  "on": {
 		  	    "click": "api.treeClick(this)"
 		  	  }
