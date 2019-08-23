@@ -2,8 +2,6 @@ package com.rongji.dfish.misc.docpreview.builder;
 
 import com.rongji.dfish.misc.docpreview.data.*;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 
 public class TextBuilder {
@@ -13,42 +11,28 @@ public class TextBuilder {
         return sb.toString();
     }
 
-    private static final HashMap<Class, String> REF_MAP = new HashMap<>();
-
-    static {
-        Object[][] types = new Object[][]{
-                {Document.class, "Body"},
-                {Paragraph.class, "Body"},
-                {Table.class, "Rows"},
-                {TableRow.class, "Cells"},
-                {TableCell.class, "Body"},
-        };
-        for (Object[] row : types) {
-            REF_MAP.put((Class) row[0], (String) row[1]);
-        }
-    }
-
-    private static final Class[] NO_PARAM = new Class[0];
-
     private void build(Object from, StringBuilder sb) {
-        Class<?> clz = from.getClass();
-        String subName = REF_MAP.get(clz);
-        if (subName != null) {
-            try {
-                Method getter = clz.getMethod("get" + subName, NO_PARAM);
-                List fromSubs = (List) getter.invoke(from);
-                for (Object fromSub : fromSubs) {
-                    build(fromSub, sb);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        List subs = null;
+        if (from instanceof Document) {
+            subs = ((Document) from).getBody();
+        } else if (from instanceof Paragraph) {
+            subs = ((Paragraph) from).getBody();
+        } else if (from instanceof Table) {
+            subs = ((Table) from).getRows();
+        } else if (from instanceof TableRow) {
+            subs = ((TableRow) from).getCells();
+        } else if (from instanceof TableCell) {
+            subs = ((TableCell) from).getBody();
+        }
+        if (subs != null) {
+            for (Object sub : subs) {
+                build(sub, sb);
             }
         }
-        if (clz == CharacterRun.class) {
+        if (from instanceof CharacterRun) {
             CharacterRun cr = (CharacterRun) from;
             sb.append(cr.getText());
-        }
-        if (clz == Paragraph.class) {
+        } else if (from instanceof Paragraph) {
             sb.append("\r\n");
         }
 
