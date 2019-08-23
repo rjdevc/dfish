@@ -5431,8 +5431,8 @@ Checkbox = define.widget( 'checkbox', {
 				block: function() { return ! this.isNormal() },
 				method: function() {
 					if ( this.isNormal() ) {
-						this.parentNode.isBoxGroup && this.parentNode.triggerHandler( 'change' );
 						this.elements( '[w-target]' ).each( function() { _widget( this )._ustag() } );
+						this.parentNode.isBoxGroup && this.parentNode.triggerHandler( 'change' );
 					}
 				}
 			},
