@@ -3390,7 +3390,7 @@ define( {
   	extend: 'ajax',
     Config: [
       { name: 'range', type: 'String', remark: '指定一个 widget id，只提交这个 widget 内的表单数据。多个 id 用逗号隔开。如果以感叹号 ! 开头，则表示排除 widget 内的表单数据。' },
-      { name: 'validate', type: 'String', remark: '验证组名。' },
+      { name: 'validategroup', type: 'String', remark: '验证组名。' },
       { name: 'validateeffect', type: 'String', remark: '验证效果。可选值: <b>alert</b>, <b>red</b>, <b>none</b>', example: [
           function() {
             //把验证效果设置为弹出对话框提示，以及表单边框变成红色。

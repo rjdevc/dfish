@@ -312,7 +312,7 @@ _cmdHooks = {
 	},
 	'submit': function( x, a ) {
 		var v = _view( this ), r = x.validaterange, f = v.getFormList( r || x.range ), g = r && r != x.range ? v.getFormList( x.range ) : f;
-		if ( v.valid( x.validate, f, x.validateeffect ) ) {
+		if ( v.valid( x.validategroup, f, x.validateeffect ) ) {
 			var d = v.getPostData( g, !! x.download );
 			x.download ? $.download( x.src, d ) : _ajaxCmd.call( this, x, a, d );
 		}
@@ -2404,15 +2404,15 @@ View = define.widget( 'view', {
 			}
 			return e;
 		},
-		// 表单验证。验证通过返回true /@ n -> validate name, g -> range
+		// 表单验证。验证通过返回true /@ n -> validategroup, g -> validaterange, f -> validateeffect
 		// valid 用户事件返回值的处理: on: { valid: '***' }
 		//   false -> 表示有错，并停止执行submit命令 (跳过引擎对当前widget的验证)
 		//   "错误信息" -> 提示信息 (跳过引擎对当前widget的验证)
 		//   null -> 没有错误，(继续引擎验证)
-		valid: function( n, g ) {
-			return this._valid( this.getValidError( n, g ) ); 
+		valid: function( n, g, f ) {
+			return this._valid( this.getValidError( n, g ), f ); 
 		},
-		_valid: function( e ) {
+		_valid: function( e, f ) {
 			this._cleanValidError();
 			if ( e ) {
 				var f = f || cfg.validate_effect || 'red,tip', r = $.idsAny( f, 'red' ), a = $.idsAny( f, 'alert' ), h = $.idsAny( f, 'tip' ), m, n;
