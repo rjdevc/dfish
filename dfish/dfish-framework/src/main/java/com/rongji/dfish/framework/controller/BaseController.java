@@ -436,7 +436,6 @@ public class BaseController extends MultiActionController {
 	 * @return
 	 */
 	public Page getPage(String cp, int pageSize) {
-		Page page = new Page();
 		int cpValue = 1;
 		if (Utils.notEmpty(cp)) {
 			try {
@@ -445,14 +444,18 @@ public class BaseController extends MultiActionController {
 				cpValue = 1;
 			}
 		}
+		return getPage(cpValue, pageSize);
+	}
 
-		if (cpValue < 1) {
-			cpValue = 1;
+	public Page getPage(int cp, int pageSize) {
+		Page page = new Page();
+		if (cp < 1) {
+			cp = 1;
 		}
-		page.setCurrentPage(cpValue);
 		if (pageSize < 1) {
 			pageSize = 1;
 		}
+		page.setCurrentPage(cp);
 		page.setPageSize(pageSize);
 		return page;
 	}

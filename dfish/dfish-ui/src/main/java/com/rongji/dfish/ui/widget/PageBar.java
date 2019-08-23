@@ -1,10 +1,10 @@
 package com.rongji.dfish.ui.widget;
 
-import java.util.List;
-
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.Alignable;
+
+import java.util.List;
 
 /**
  * 翻页工具条
@@ -36,6 +36,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	private String type;
 	private String dropalign;
 	private Boolean btnsumpage;
+
 	/**
 	 * page/mini 小按钮风格的翻页工具条。
 	 */
@@ -401,4 +402,5 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 		this.btnsumpage = btnsumpage;
 		return this;
 	}
+
 }

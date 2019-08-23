@@ -40,6 +40,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	private String imgwidth;
 	private String imgheight;
 	private String format;
+	private Boolean escape;
 
 	/**
      * 构造函数
@@ -331,7 +332,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 
 	/**
 	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @return format String
+	 * @return String 格式化内容
 	 */
 	public String getFormat() {
 		return format;
@@ -339,11 +340,29 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 
 	/**
 	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @param format 格式化内容
+	 * @param format String 格式化内容
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Img setFormat(String format) {
 		this.format = format;
+		return this;
+	}
+
+	/**
+	 * 用于显示文本是否需要转义,不设置默认是true
+	 * @return Boolean
+	 */
+	public Boolean getEscape() {
+		return escape;
+	}
+
+	/**
+	 * 用于显示文本是否需要转义,不设置默认是true
+	 * @param escape Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Img setEscape(Boolean escape) {
+		this.escape = escape;
 		return this;
 	}
 }

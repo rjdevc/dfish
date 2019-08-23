@@ -287,9 +287,13 @@ public class FileController extends BaseController {
         downloadFileData(response, inline, fileRecord, null);
     }
 
-    private static final Map<String, String> MIME_MAP = new HashMap<>();
+    protected static final Map<String, String> MIME_MAP = new HashMap<>();
 
-    private String getMimeType(String extName) {
+    protected Class<?> getMimeClass() {
+        return getClass();
+    }
+
+    protected String getMimeType(String extName) {
         if (extName == null) {
             return null;
         }
@@ -299,7 +303,7 @@ public class FileController extends BaseController {
         if (MIME_MAP.size() == 0) {
             //尝试读取配置。
             try {
-                String classPath = getClass().getName();
+                String classPath = getMimeClass().getName();
                 int lastDotIndex = classPath.lastIndexOf(".");
                 if (lastDotIndex > 0) {
                     classPath = classPath.substring(0, lastDotIndex + 1).replace(".", "/");

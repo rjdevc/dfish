@@ -31,8 +31,7 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<FormGrou
 	private Boolean star;
 //	private Boolean hidden;
 	private Boolean hideLabel;
-	private Boolean escape;
-
+	private Boolean escape = true;
 
 	
 	/**

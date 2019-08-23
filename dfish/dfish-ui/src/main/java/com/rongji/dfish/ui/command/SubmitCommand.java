@@ -13,7 +13,7 @@ public class SubmitCommand extends CommunicateCommand<SubmitCommand> {
 	 */
 	private static final long serialVersionUID = 7949712536303839674L;
 	private String range;
-    private String validate;
+    private String validategroup;
     private String validateeffect;
     private String validaterange;
     /**
@@ -55,18 +55,39 @@ public class SubmitCommand extends CommunicateCommand<SubmitCommand> {
 	/**
 	 * 使用哪一种策略进行校验
 	 * @return String
+	 * @see #getValidategroup()
 	 */
+	@Deprecated
 	public String getValidate() {
-		return validate;
+		return getValidategroup();
 	}
 
 	/**
 	 * 使用哪一种策略进行校验
 	 * @param validate String
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setValidategroup(String)
 	 */
+	@Deprecated
 	public SubmitCommand setValidate(String validate) {
-		this.validate = validate;
+		return setValidategroup(validate);
+	}
+
+	/**
+	 * 指定校验组
+	 * @return String
+	 */
+	public String getValidategroup() {
+		return validategroup;
+	}
+
+	/**
+	 * 校验组
+	 * @param validategroup String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public SubmitCommand setValidategroup(String validategroup) {
+		this.validategroup = validategroup;
 		return this;
 	}
 

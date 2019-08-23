@@ -26,7 +26,7 @@ MultiContainer<AlbumLayout,Img>{
 	private Img pub;
 	private Boolean scroll;
 	private String scrollClass;
-	private Boolean escape;
+//	private Boolean escape;
 //	private Boolean format;
 	private String face;
 	private Boolean nobr;
@@ -146,18 +146,22 @@ MultiContainer<AlbumLayout,Img>{
 	/**
 	 * 是否对html内容转义
 	 * @return escape
+     * @see #getPub()
 	 */
+	@Deprecated
 	public Boolean getEscape() {
-		return escape;
+		return getPub().getEscape();
 	}
 
 	/**
 	 * 是否对html内容转义
 	 * @param escape Boolean
 	 * @return 本身，这样可以继续设置其他属性
+     * @see #getPub()
 	 */
+	@Deprecated
 	public AlbumLayout setEscape(Boolean escape) {
-		this.escape = escape;
+		getPub().setEscape(escape);
 		return this;
 	}
 

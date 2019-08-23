@@ -34,7 +34,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	private Leaf pub;
 	private Boolean scroll;
 	private String scrollClass;
-    private Boolean escape;
+//    private Boolean escape;
     private Combo combo;
     private Highlight highlight;
     private Boolean ellipsis;
@@ -142,12 +142,24 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
     	hiddens.removeHidden(name);
 	    return this;
     }
+
+	/**
+	 * 格式化内容。
+	 * @return Boolean
+	 * @see #getPub()
+	 */
+	@Deprecated
 	public Boolean getEscape() {
-		return this.escape;
+		return getPub().getEscape();
 	}
-	
+
+	/**
+	 * 格式化内容。
+	 * @return 本身，这样可以继续设置其他属性
+	 * @see #getPub()
+	 */
 	public TreePanel setEscape(Boolean escape) {
-		this.escape = escape;
+		getPub().setEscape(escape);
 		return this;
 	}
 
