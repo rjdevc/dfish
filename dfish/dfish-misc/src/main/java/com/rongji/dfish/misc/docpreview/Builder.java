@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.misc.docpreview.builder.HtmlBuilder;
 import com.rongji.dfish.misc.docpreview.builder.SummaryBuilder;
+import com.rongji.dfish.misc.docpreview.builder.TextBuilder;
 import com.rongji.dfish.misc.docpreview.data.*;
 
 import java.io.File;
@@ -53,6 +54,10 @@ public class Builder {
     public String buildHtml(){
 
         HtmlBuilder hmtlBuilder =new HtmlBuilder(getConfig());
+        return  hmtlBuilder.build(doc);
+    }
+    public String buildText(){
+        TextBuilder hmtlBuilder =new TextBuilder();
         return  hmtlBuilder.build(doc);
     }
 
