@@ -51,10 +51,9 @@ public class Builder {
      * @return
      */
     public String buildHtml(){
-        StringBuilder sb=new StringBuilder();
+
         HtmlBuilder hmtlBuilder =new HtmlBuilder(getConfig());
-        hmtlBuilder.build(doc,sb);
-        return sb.toString();
+        return  hmtlBuilder.build(doc);
     }
 
 
