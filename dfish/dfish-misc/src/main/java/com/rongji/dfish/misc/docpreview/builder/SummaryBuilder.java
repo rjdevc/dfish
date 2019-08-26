@@ -47,7 +47,10 @@ public class SummaryBuilder {
     public Document build(Document doc) {
         Document to=new Document();
         AtomicInteger score=new AtomicInteger(0);
-        build(doc,score,to);
+        AtomicInteger ignored=new AtomicInteger(0);
+        build(doc,score,ignored,to);
+        to.setTotalScore(score.get()+ignored.get());
+        to.setSummaryScore(score.get());
         return to;
     }
     private static final HashMap<Class,Object[]> REF_MAP=new HashMap<>();
@@ -66,32 +69,39 @@ public class SummaryBuilder {
         }
     }
     private static final Class[] NO_PARAM=new Class[0];
-    private void build(Object from,AtomicInteger score,Object to){
-
-        BeanUtil.copyPropertiesExact(to,from);
+    private void build(Object from,AtomicInteger score,AtomicInteger ignored,Object to){
+        if(to!=null) {
+            BeanUtil.copyPropertiesExact(to, from);
+        }
 
         Class<?>clz=from.getClass();
         Object[] ref=REF_MAP.get(clz);
+        boolean appendToSum=score.get() < summaryScore;
         if(ref!=null){
             int type=(Integer)ref[1];
             String subName=(String)ref[2];
 
-            score.getAndAdd(scores[type]);
+            int sc=scores[type];
+            if(appendToSum){score.getAndAdd(sc);}
+            else{ignored.getAndAdd(sc);}
             if(subName!=null){
                 try {
                     Method getter=clz.getMethod("get"+subName,NO_PARAM);
-                    Method setter=clz.getMethod("set"+subName,List.class);
-                    List toSubs=new ArrayList();
-                    setter.invoke(to,toSubs);
+                    List toSubs = null;
+                    if(appendToSum) {
+                        Method setter = clz.getMethod("set" + subName, List.class);
+                        toSubs = new ArrayList();
+                        setter.invoke(to, toSubs);
+                    }
                     List fromSubs=(List)getter.invoke(from);
                     for(Object fromSub: fromSubs) {
-                        if (score.get() >= summaryScore) {
-                            break;
-                        }
+                        appendToSum=score.get() < summaryScore;
                         Class subClz=fromSub.getClass();
-                        Object toSub= subClz.newInstance();
-                        build(fromSub,score,toSub);
-                        toSubs.add(toSub);
+                        Object toSub= appendToSum?subClz.newInstance():null;
+                        build(fromSub,score,ignored,toSub);
+                        if(appendToSum){
+                            toSubs.add(toSub);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -101,7 +111,9 @@ public class SummaryBuilder {
         if(clz==CharacterRun.class){
             CharacterRun cr=(CharacterRun)from;
             //越多的字符将额外计算积分。
-            score.getAndAdd(scores[TYPE_CHARACTER] * cr.getText().length());
+            int sc=scores[TYPE_CHARACTER] * cr.getText().length();
+            if(appendToSum){score.getAndAdd(sc);}
+            else{ignored.getAndAdd(sc);}
         }
     }
 }
