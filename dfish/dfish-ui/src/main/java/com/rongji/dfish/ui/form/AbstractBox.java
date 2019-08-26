@@ -24,6 +24,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 	protected Boolean bubble;
 	protected BoxField field;
 	protected Boolean escape;
+	protected String format;
 	
 	public static final String SYNC_CLICK = "click";
 	public static final String SYNC_FOCUS = "focus";
@@ -119,6 +120,24 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 	public T setEscape(Boolean escape) {
 		this.escape = escape;
 		return (T)this;
+	}
+
+	/**
+	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+	 * @return String 格式化内容
+	 */
+	public String getFormat() {
+		return format;
+	}
+
+	/**
+	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+	 * @param format String 格式化内容
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setFormat(String format) {
+		this.format = format;
+		return (T) this;
 	}
 
 	public Object getTip() {

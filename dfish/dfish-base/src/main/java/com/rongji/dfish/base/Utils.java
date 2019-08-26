@@ -196,11 +196,14 @@ public class Utils {
         String query = request.getQueryString();
         if (notEmpty(query)) {
             String[] pairs = query.split("[&]");
+
+            boolean hasFind = false;
             List<String> values = new ArrayList<>();
             for (String string : pairs) {
                 String[] pair = string.split("[=]");
                 if (pair.length == 2 && key.equals(pair[0])) {
                     try {
+                        hasFind = true;
                         String value = java.net.URLDecoder.decode(pair[1].replace("%C2%A0", "%20"), ENCODING);
                         if (notEmpty(value)) {
                             values.add(value);
@@ -210,10 +213,12 @@ public class Utils {
                     }
                 }
             }
-            return toString(values);
+            if (hasFind) {
+                return toString(values);
+            }
         }
 
-        return request.getParameter(key);
+        return toString(request.getParameterValues(key));
     }
 
     /**

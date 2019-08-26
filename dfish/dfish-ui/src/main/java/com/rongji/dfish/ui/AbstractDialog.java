@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui;
 
+import com.rongji.dfish.ui.form.Switch;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,8 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     protected Boolean fullscreen;
     protected Boolean resizable;
     protected Boolean independent;
+    protected Boolean escape;
+    protected String format;
 
     /**
      * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
@@ -280,6 +284,42 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      */
     public T setIndependent(Boolean independent) {
         this.independent = independent;
+        return (T) this;
+    }
+
+    /**
+     * 用于显示文本是否需要转义,不设置默认是true
+     * @return Boolean
+     */
+    public Boolean getEscape() {
+        return escape;
+    }
+
+    /**
+     * 用于显示文本是否需要转义,不设置默认是true
+     * @param escape Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setEscape(Boolean escape) {
+        this.escape = escape;
+        return (T) this;
+    }
+
+    /**
+     * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     * @return String 格式化内容
+     */
+    public String getFormat() {
+        return format;
+    }
+
+    /**
+     * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     * @param format String 格式化内容
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setFormat(String format) {
+        this.format = format;
         return (T) this;
     }
 
