@@ -3607,7 +3607,7 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.html_format( this.text, this.x.format, this.x.escape ) + '</span><i class=f-vi></i></div>' : '') + '</div>';
+			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span><i class=f-vi></i></div>' : '') + '</div>';
 		}
 	}
 } ),
