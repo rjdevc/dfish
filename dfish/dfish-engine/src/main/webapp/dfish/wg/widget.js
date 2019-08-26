@@ -3794,8 +3794,7 @@ DialogTitle = define.widget( 'dialog/title', {
 		var d = Dialog.get( p );
 		if ( d ) {
 			d.dialogTitle = this;
-			x.text = d.x.title;
-			x.escape == N && (x.escape = T);
+			x.text = d.html_format( d.x.title, d.x.format, d.x.escape );
 		}
 		W.apply( this, arguments );
 	},
