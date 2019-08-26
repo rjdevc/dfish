@@ -1269,6 +1269,7 @@ define( {
     Config: [
       { name: 'closeable', type: 'Boolean', remark: '是否有关闭图标。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，按钮点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
       { name: 'hoverdrop', type: 'Boolean', remark: '是否当鼠标 hover 时展开下拉菜单。' },
@@ -2376,6 +2377,8 @@ define( {
   	ver: "3.2*",
     Config: [
       { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'suffix', type: 'String', remark: '后缀。' },
       { name: 'text', type: 'String', remark: '内容。' }
     ],
@@ -2408,6 +2411,8 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'delay', type: 'Number', remark: '延迟访问 src 。单位:秒。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'percent', type: 'Number', remark: '进度值。范围从 0 到 100。' },
       { name: 'src', type: 'String', remark: '访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。' },
       { name: 'hidepercent', type: 'Boolean', remark: '设置为true，隐藏进度数字。' },
@@ -2445,6 +2450,8 @@ define( {
   	remark: '展开收拢的工具条。',
   	extend: 'widget',
     Config: [
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'icon', type: 'String', optional: true, remark: '收拢时的图标。可用 . 开头的样式名，或图片路径。' },
       { name: 'openicon', type: 'String', optional: true, remark: '展开时的图标。可用 . 开头的样式名，或图片路径。' },
       { name: 'hr', type: 'Boolean', optional: true, remark: '显示一条水平线。' },
@@ -2857,6 +2864,8 @@ define( {
     Config: [
       { name: 'bubble', type: 'Boolean', remark: '点击事件是否冒泡。用于 leaf 或 tr 的选项box。', optional: true },
       { name: 'checked', type: 'Boolean', remark: '是否选中。', optional: true },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'nobr', type: 'Boolean', remark: '设置为true，文本不换行。', optional: true },
       { name: 'sync', type: 'String', remark: '选中状态跟父节点同步，用于 leaf 或 tr 的选项box。可选值: <b>click</b><s>(点击父节点，box也触发点击)</s>, <b>focus</b><s>(父节点聚焦则box则选中，父节点失去焦点则box未选中)</s>', optional: true },
       { name: 'target', type: 'String', remark: 'widget ID。使这个 widget 和当前 option 的 disabled 状态同步。', optional: true },
@@ -2944,6 +2953,15 @@ define( {
   	remark: '下拉选择表单。',
   	deprecate: 'focusEnd,placeholder,transparent,.w-text,.z-trans',
   	extend: 'text',
+    Config: [
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'options', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
+      	{ name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' },
+      	{ name: 'text', type: 'String', remark: '文本。' },
+      	{ name: 'value', type: 'String', remark: '值。' }
+      ] }
+	],
     Methods: [
       { name: 'getFocusOption()', remark: '获取当前的option选项对象。' },
       { name: 'getPrevOption()', remark: '获取上一个option选项对象。' },
@@ -3095,6 +3113,8 @@ define( {
   	deprecate: 'focus,.w-text',
     Config: [
       { name: 'cancelable', type: 'Boolean', remark: '设置为true，可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效。默认值为false。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'src', type: 'String | Object',  ver: '3.2+', remark: '获取选项的 URL 地址。' },
       { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
@@ -3598,6 +3618,8 @@ define( {
       { name: 'btncls', type: 'String', remark: '按钮样式名。' },
       { name: 'buttons', type: 'Array', remark: '自定义的一组按钮。' },
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'id', type: 'String', remark: 'Dialog 的 id 参数有全局性。可以通过两种方式获取 dialog 的实例: <br> 1. 可通过 view.find( id ) 方法来获取 widget。<br> 2. 通过 $.dialog( id ) 获取。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'icon', type: 'String', remark: '图标。' },
@@ -3642,6 +3664,8 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'node', type: 'Widget', remark: 'widget节点。' },
       { name: 'hide', type: 'Boolean', remark: '设为true，关闭 loading 窗口。' }
@@ -3668,6 +3692,8 @@ define( {
     Config: [
       { name: 'hide', type: 'Boolean', remark: '设置为true，关闭tip。' },
       { name: 'hoverdrop', type: 'Boolean', remark: '设置为true，当鼠标移开时tip自动关闭。' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'snap', type: 'String | Element | Widget', remark: 'tip 的吸附对象。可以是 widget ID, widget 对象或 HTML 元素。' },
       { name: 'snaptype', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。', example: [

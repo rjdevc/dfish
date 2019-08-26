@@ -135,11 +135,6 @@ _vmByElem = function ( o ) {
 	}
 	return _docView;
 },
-// @a -> content|js, b -> escape?, c -> callback?
-_html_format = function( a, b, c ) {
-	var s = a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a, N, N, c ) : this.formatStr( a, N, b && 'strEscape', c );
-	return typeof s === _STR ? _parseHTML.call( this, s ) : s;
-},
 _url_format = function( a ) {
 	return a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a ) : this.formatStr( a, N, T );
 },
@@ -1051,8 +1046,8 @@ W = define( 'widget', function() {
 				this[ i ].at();
 		},
 		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({ name: value })?, c -> data?, d -> callback?
-		formatJS: function( a, b, c, d ) {
-			var n = [ '$this' ], m = [ c || this.x.data ];
+		formatJS: function( a, b, c, d, x ) {
+			var x = x || this.x, n = [ '$this' ], m = [ c || x.data ];
 			if ( b ) {
 				for ( var k in b ) { n.push( k ); m.push( b[ k ] ); }
 			}
@@ -1068,7 +1063,7 @@ W = define( 'widget', function() {
 				h = _formatCache[ a + n.join() ] = Function( g.join( ',' ), a );
 				h.dfish_format_fields = f;
 			}
-			for ( var i = 0, x = this.x, e, f = h.dfish_format_fields, l = f.length, v; i < l; i ++ ) {
+			for ( var i = 0, e, f = h.dfish_format_fields, l = f.length, v; i < l; i ++ ) {
 				//v = c ? c[ f[ i ] ] : (e = x.data && x.data[ f[ i ] ]) !== U ? e : x[ f[ i ] ];
 				if ( c ) {
 					v = c[ f[ i ] ];
@@ -1080,7 +1075,7 @@ W = define( 'widget', function() {
 			return h.apply( this, m );
 		},
 		// @a -> content|js, b -> args?, c -> urlEncode?, d -> callback?
-		formatStr: function( a, b, c, d ) {
+		formatStr: function( a, b, c, d, x ) {
 			var self = this, r = b && $.isArray( b ),
 				s = a.replace( /\$\{(\w[\w.]*)\}|\$(\w[\w.]*)/gi, function( $0, $1, $2 ) {
 					var e = $1 || $2, k = e, v, t;
@@ -1091,7 +1086,8 @@ W = define( 'widget', function() {
 					if ( b && (isNaN( k ) || r) && b[ k ] !== U ) {
 						v = b[ k ];
 					} else {
-						(v = self.x.data && self.x.data[ k ]) === U && (v = self.x[ k ]) === U && (v = self.closestData( k ));
+						x == N && (x = self.x);
+						(v = x.data && x.data[ k ]) === U && (v = x[ k ]) === U && (v = self.closestData( k ));
 						//v === U && (v = self.x[ k ]);
 					}
 					if ( t && v != N ) {
@@ -1274,6 +1270,18 @@ W = define( 'widget', function() {
 			if ( this.x.style )
 				t += this.x.style;
 			return t;
+		},
+		// @a -> text, @b -> format
+		prop_title: function( a, b ) {
+			return a && ! b ? ' title="' + $.strQuot( a, T ) + '"' : '';
+		},
+		// @a -> text, @b -> format, c -> escape?, d -> callback?, e -> x?
+		html_format: function( a, b, c, d, e ) {
+			if ( b ) {
+				var s = b.indexOf( 'javascript:' ) === 0 ? this.formatJS( b, N, N, d, e ) : this.formatStr( b, N, c !== F && 'strEscape', d, e );
+				return typeof s === _STR ? _parseHTML.call( this, s ) : s;
+			} else
+				return c !== F ? $.strEscape( a ) : (a || '');
 		},
 		html_prop: function() {
 			var b = ' w-type="' + this.type + '" id=' + this.id,
@@ -2719,13 +2727,9 @@ Html = define.widget( 'html', {
 			this.x.thumbwidth && $.thumbnail( this.$(), this.scaleWidth( this, this.x.thumbwidth ) );
 		},
 		html_text: function() {
-			var t = this.x.text == N ? '' : this.x.text;
-			if ( this.x.format ) {
-				t = _html_format.call( this, this.x.format, this.x.escape );
-			} else
-				t = this.x.escape ? $.strEscape( t ) : _parseHTML.call( this, t );
+			var t = this.html_format( this.x.text, this.x.format, this.x.escape === T );
 			if ( typeof t === _OBJ )
-				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
+				t = this.add( t, -1 ).html();
 			if ( ! br.css3 ) {
 				if ( ! t && this.parentNode && this.parentNode.type_horz && ! this.height() ) {
 					// ie7,8 没有高度的html面板如果内容为空，即使有宽度也撑不开，所以补一个空格
@@ -3212,7 +3216,7 @@ Button = define.widget( 'button', {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + (this.x.escape !== F ? $.strEscape( a || this.x.text ) : (a || this.x.text)) + '</em><i class=f-vi></i></div>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
 			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
@@ -3259,7 +3263,7 @@ Button = define.widget( 'button', {
 				a += ' w-target="' + ((x.target.x && x.target.x.id) || x.target) + '"';
 			a += c ? ' onmouseover=' + eve + ' onmouseout=' + eve : _html_on.call( this, ' onclick=' + eve );
 			if ( x.tip )
-				a += ' title="' + $.strQuot( (x.tip === T ? x.text : x.tip) || '' ) + '"';
+				a += this.prop_title( x.tip === T ? x.text : x.tip, x.format );
 			x.id && (a += ' w-id="' + x.id + '"');
 			if ( this.property )
 				a += this.property;
@@ -3530,12 +3534,8 @@ Img = define.widget( 'img', {
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, p = this.parentNode, e = this.x.escape !== F, f = this.x.format, s, t = x.text, w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
-			if ( typeof t !== _OBJ && f )
-				t = _html_format.call( this, f, e );
-			else if ( typeof t === _STR && e )
-				t = $.strEscape( t );
-			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + (x.nobr && this.x.text ? ' title="' + $.strQuot( this.x.text ) + '"' : '') + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
+			var x = this.x, t = this.html_format( x.text, x.format, this.x.escape ), w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
+			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + this.prop_title( x.text, x.format ) + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
@@ -3607,7 +3607,7 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.x.text + '</span><i class=f-vi></i></div>' : '') + '</div>';
+			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.html_format( this.text, this.x.format, this.x.escape ) + '</span><i class=f-vi></i></div>' : '') + '</div>';
 		}
 	}
 } ),
@@ -3795,6 +3795,7 @@ DialogTitle = define.widget( 'dialog/title', {
 		if ( d ) {
 			d.dialogTitle = this;
 			x.text = d.x.title;
+			x.escape == N && (x.escape = T);
 		}
 		W.apply( this, arguments );
 	},
@@ -4332,9 +4333,11 @@ Alert = define.widget( 'alert', {
 			}
 		}
 		if ( t && (this._tpl = _getPreload( t )) ) {
+			var f = this.html_format( $.strFormat( x.text == N ? '' : ('' + x.text), x.args || [] ), x.format, x.escape );
+			x.escape !== F && (f = f.replace( /\n/g, '<br>' ));
 			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', height: '*', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
-				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + $.strFormat( x.text == N ? '' : ('' + x.text), x.args || [] ).replace( /\n/g, '<br>' ) + '</div></table></div>' },
+				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + f + '</div></table></div>' },
 				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
@@ -4390,7 +4393,7 @@ _inst_del = function( a, b ) {
 Tip = define.widget( 'tip', {
 	Const: function( x, p ) {
 		$.extend( x, { prong: x.prong == N ? T : x.prong, pophide: T, independent: T, snap: p, snaptype: 'tb,rl,lr,bt,rr,ll,bb,tt,cc',
-			node: { type: 'html', text: '<div class=w-tip-text>' + (x.text && /^<\w+/g.test( x.text ) ? x.text : '<span class=f-va' + (x.closable ? ' style="padding-right:20px;"' : '') + '>' + (x.text || '') + '</span><i class=f-vi></i>') + '</div>' + (x.closable !== F ? $.image('.f-i-close',{cls: 'w-tip-x', click:$.abbr + '.close(this)'}) : '') }
+			node: { type: 'html', text: '<div class=w-tip-text><span class=f-va' + (x.closable ? ' style="padding-right:20px;"' : '') + '>' + this.html_format( x.text, x.format, x.escape ) + '</span><i class=f-vi></i></div>' + (x.closable !== F ? $.image('.f-i-close',{cls: 'w-tip-x', click:$.abbr + '.close(this)'}) : '') }
 		} );
 		Dialog.apply( this, arguments );
 		x.closable !== F && $.classAdd( this, 'z-x' );
@@ -4424,7 +4427,7 @@ Loading = define.widget( 'loading', {
 			if ( this.x.node ) {
 				return Dialog.prototype.html_nodes.apply( this, arguments );
 			} else {
-				return '<cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + (this.x.text || Loc.loading) + '</em></cite><i class=f-vi></i>';
+				return '<cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + this.html_format( this.x.text || Loc.loading, this.x.format, this.x.escape ) + '</em></cite><i class=f-vi></i>';
 			}
 		}
 	}
@@ -4490,7 +4493,7 @@ Progress = define.widget( 'progress', {
 		},
 		html_nodes: function() {
 			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
-			return (t != N ? '<div class="_t f-fix">' + t + '</div>' : '') +
+			return (t != N ? '<div class="_t f-fix">' + this.html_format( t, this.x.format, this.x.escape ) + '</div>' : '') +
 				'<div class=_bar'+ (h != N ? ' style="height:' + h + 'px;"' : '') + '><div class=_dn><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div></div></div>';
 		},
 		dispose: function() {
@@ -4788,9 +4791,11 @@ var Label = define.widget( 'label', {
 			return '<span class=f-required>*</span>';
 		},
 		html_text: function() {
-			var s = Html.prototype.html_text.call( this ), d = this.parentNode.x.validate;
-			d && d.required && (s = this.html_star() + s);
-			return s + (this.x.suffix || '');
+			var t = this.html_format( this.x.text, this.x.format, this.x.escape ), d = this.parentNode.x.validate;
+			if ( typeof t === _OBJ )
+				t = this.add( t, -1 ).html();
+			d && d.required && (t = this.html_star() + t);
+			return t + (this.x.suffix || '');
 		},
 		html_bg: function() {
 			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
@@ -5560,9 +5565,8 @@ Checkbox = define.widget( 'checkbox', {
 			this.exec( $.extend( {}, this.attr( 'tip' ), { type: 'tip', hoverdrop: true } ) );
 		},
 		html_text: function() {
-			var e = (this.x.escape != N ? this.x.escape : this.parentNode.x.escape) !== F;
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + (e ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span>' : '');			
 		},
 		html: function() {
 			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
@@ -5575,7 +5579,7 @@ Checkbox = define.widget( 'checkbox', {
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
-			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + (t && typeof t !== _OBJ ? 'title="' + $.strQuot( (t === T ? this.x.text : t) || '' ) + '"' : '') +
+			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + this.prop_title( t === T ? this.x.text : t, this.x.format ) +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>';
@@ -5652,7 +5656,7 @@ Triplebox = define.widget( 'triplebox', {
 		html: function() {
 			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
 				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.x.text + '</span>' : '') + '</' + this.tagName + '>';
+				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span>' : '') + '</' + this.tagName + '>';
 		}
 	}
 } ),
@@ -5689,9 +5693,8 @@ Switch = define.widget( 'switch', {
 			}
 		},
 		html_text: function() {
-			var e = (this.x.escape != N ? this.x.escape : this.parentNode.x.escape) !== F;
 			return '<label class="_l" for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;') + '</i></label>' +
-				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + (e ? $.strEscape( this.x.text ) : this.x.text) + '</span>' : '');			
+				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span>' : '');			
 		}		
 	}
 } ),
@@ -5771,8 +5774,11 @@ Select = define.widget( 'select', {
 		html_nodes: function() {
 			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape !== F, t = this.attr( 'tip' );
 			while ( i -- ) {
+				var f = o[ i ].text;
+				if ( this.x.format )
+					f = this.html_format( o[ i ].text, this.x.format, this.x.escape, N, o[ i ] );
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
-					(t ? ' title="' + $.strQuot( $.strEscape( o[ i ].text ) ) + '"' : '') + '>' + (e ? $.strEscape( o[ i ].text ) : o[ i ].text) + '</option>' + s;
+					(t ? this.prop_title( o[ i ].text, this.x.format ) + '"' : '') + '>' + f + '</option>' + s;
 			}
 			var w = this.formWidth(), z = this.x.size, t = (t === T ? (o[ k ] && o[ k ].text) : t) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
@@ -6931,27 +6937,33 @@ XBox = define.widget( 'xbox', {
 			var s = AbsInput.prototype.form_prop.call( this );
 			return s + _html_on.call( this );
 		},
+		option_text: function( a ) {
+			var t = a.text;
+			if ( this.x.format )
+				t = this.html_format( a.text, this.x.format, this.x.escape, N, a );
+			return t;
+		},
 		html_placeholder: function() {
 			return '';
 		},
 		html_li: function( a, b ) {
-			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + (this.x.escape !== F ? $.strEscape( a.text ) : a.text) + (!b ? '<i class=_box></i>' : '') : '';
+			return a ? (a.icon ? $.image( a.icon, { cls: 'w-xbox-ico' } ) : '') + this.option_text( a ) + (!b ? '<i class=_box></i>' : '') : '';
 		},
 		html_text: function() {
 			if ( this.loading ) {
 				return Loc.loading;
 			} else if ( this.x.multiple ) {
 				for ( var i = 0, b = this._sel, s = []; i < b.length; i ++ ) {
-					s.push( b[ i ].text );
+					s.push( this.option_text( b[ i ] ) );
 				}
 				s = s.join( ', ' );
-				return this.x.escape !== F ? $.strEscape( s ) : s;
+				return s;
 			} else
 				return this.html_li( this._sel[ 0 ], T );
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
-				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (o[ i ].checkall ? ' _all=1' : '') + (this.attr( 'tip' ) ? ' title="' + $.strQuot( o[ i ].text ).replace( /<[^>]+>/g, '' ) + '"' : '') +
+				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (o[ i ].checkall ? ' _all=1' : '') + (this.attr( 'tip' ) ? this.prop_title( o[ i ].text, this.x.format ) : '') +
 					_event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(event)>' + s.join( '' ) + '</div>';
@@ -8853,12 +8865,8 @@ Leaf = define.widget( 'leaf', {
 			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i' } ) : '';
 		},
 		html_text: function() {
-			var r = this.rootNode, t = this.x.text, e = this.x.escape !== F, h;
-			if ( this.x.format ) {
-				t = _html_format.call( this, this.x.format, e );
-			} else if ( r && e && typeof t === _STR )
-				t = $.strEscape( t );
-			if ( typeof t === _STR && (h = r.x.highlight) && ! this.isDisabled() ) {
+			var t = this.html_format( this.x.text, this.x.format, this.x.escape ), h;
+			if ( typeof t === _STR && (h = this.rootNode.x.highlight) && ! this.isDisabled() ) {
 				var key = h.key == N ? (this.ownerView.combo && this.ownerView.combo.getKey()) : h.key;
 				key && (t = $.strHighlight( t, key, h.matchlength, h.keycls ));
 			}
@@ -8885,7 +8893,7 @@ Leaf = define.widget( 'leaf', {
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
 			return this.html_before() + '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
-				'" id=' + this.id + (x.tip ? ' title="' + $.strQuot( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip ) + '"' : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
+				'" id=' + this.id + (x.tip ? this.prop_title(  x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip, x.format ) : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
 				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_append() + '</dl>' + this.html_after();
 		},
@@ -9297,8 +9305,8 @@ GridRow = define.widget( 'grid/row', {
 						i += v.colspan - 1;
 					t = this.addCell( v, k );
 				} else {
-					if ( e && f.format ) {
-						var m = _html_format.call( this, f.format, h, _grid_f_attr );
+					if ( e ) {
+						var m = this.html_format( v, f.format, h, _grid_f_attr );
 						if ( typeof m === _OBJ )
 							t = this.addCell( m, i );
 						else
@@ -9382,24 +9390,28 @@ TD = define.widget( 'td', {
 			this.x.style && (t += this.x.style);
 			t && (s += ' style="' + t + '"');
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
-			s += '>' + this.html_prepend() + this.html_nodes();
-			if ( ! this.x.node ) {
-				t = this.x.text || '';
-				if ( e && c.x.format ) {
-					t = _html_format.call( r, c.x.format, d, _grid_f_attr );
+			t = this.x.text;
+			if ( t ) {
+				if ( e ) {
+					t = this.html_format( r, c.x.format, d, _grid_f_attr );
+					if ( typeof t === _OBJ )
+						this.x.node = t;
 				} else {
 					d && (t = $.strEscape( t ));
 				}
-				var d = '';
+			}
+			s += '>' + this.html_prepend() + this.html_nodes();
+			if ( ! this.x.node ) {
+				var f = '';
 				if ( ! e || g.x.nobr )
-					d += ' class="f-fix"';
+					f += ' class="f-fix"';
 				if ( ! e && c._sort )
 					t += c.html_sortarrow();
 				if ( e && c.x.tip ) {
-					var f = r.x.data && r.x.data[ c.x.tip.field || c.x.field ];
-					d += ' title="' + $.strQuot( (typeof f === _OBJ ? f.text : f) || '' ) + '"';
+					var g = r.x.data && r.x.data[ c.x.tip.field || c.x.field ];
+					f += this.prop_title( typeof g === _OBJ ? f.text : f, c.x.format );
 				}
-				d && (t = '<div' + d + '>' + t + '</div>');
+				f && (t = '<div' + f + '>' + t + '</div>');
 				s += t || (ie7 ? '&nbsp;' : '');
 			}
 			return s + this.html_append() + '</td>';
