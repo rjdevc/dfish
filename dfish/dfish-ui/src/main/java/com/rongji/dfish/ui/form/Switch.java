@@ -12,6 +12,8 @@ public class Switch extends AbstractFormElement<Switch, Object> {
     private String sync;
     private String target;
     private String uncheckedtext;
+    private Boolean escape;
+    private String format;
 
     /**
      * 构造函数(默认提交值是"1")
@@ -143,4 +145,39 @@ public class Switch extends AbstractFormElement<Switch, Object> {
         return this;
     }
 
+    /**
+     * 用于显示文本是否需要转义,不设置默认是true
+     * @return Boolean
+     */
+    public Boolean getEscape() {
+        return escape;
+    }
+
+    /**
+     * 用于显示文本是否需要转义,不设置默认是true
+     * @param escape Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Switch setEscape(Boolean escape) {
+        this.escape = escape;
+        return this;
+    }
+
+    /**
+     * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     * @return String 格式化内容
+     */
+    public String getFormat() {
+        return format;
+    }
+
+    /**
+     * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     * @param format String 格式化内容
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Switch setFormat(String format) {
+        this.format = format;
+        return this;
+    }
 }
