@@ -4454,7 +4454,7 @@ Progress = define.widget( 'progress', {
 								// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
 								var d = self.closest( 'loading' );
 								if ( W.isCmd( x ) ) {
-									self.exec( x );
+									d.ownerView.exec( x );
 									d && d.close();
 								} else {
 									if( d && d.parentNode.isSrcLayout && d.parentNode.isContentData( x ) ) {
