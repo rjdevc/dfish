@@ -35,6 +35,7 @@ public class Builder {
     public Builder summary(){
         Builder b= new Builder();
         SummaryBuilder sb=new SummaryBuilder();
+        sb.setSummaryScore(this.config.getSummaryScore());
         b.setDocument(sb.build(doc));
         return b;
     }

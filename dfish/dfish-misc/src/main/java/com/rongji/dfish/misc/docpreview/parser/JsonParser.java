@@ -5,9 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.dfish.misc.docpreview.DocumentParser;
 import com.rongji.dfish.misc.docpreview.data.*;
-import javafx.scene.control.Tab;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
