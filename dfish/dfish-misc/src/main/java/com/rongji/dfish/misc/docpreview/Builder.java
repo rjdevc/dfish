@@ -27,7 +27,9 @@ public class Builder {
     public void setDocument(Document doc){
         this.doc=doc;
     }
-
+    public Document getDocument(){
+        return doc;
+    }
     /**
      * 取得摘要
      * @return
