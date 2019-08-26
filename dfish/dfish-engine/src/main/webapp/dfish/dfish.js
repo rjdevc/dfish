@@ -405,8 +405,11 @@ _numDecimal = $.numDecimal = function( a, b ) {
 _strTrim = $.strTrim = function (a ) {
 	return String( a ).replace( /^\s+|\s+$/g, '' );
 },
-_strQuot = $.strQuot = function( a ) {
-	return String( a ).replace( /\"/g, '&quot;' );
+// @a -> str, b -> no html entities?
+_strQuot = $.strQuot = function( a, b ) {
+	a = String( a );
+	b && (a = a.replace( /<[^>]+>/g, '' ));
+	return a.replace( /\"/g, '&quot;' );
 },
 // 在a中取以b开始的字符串(不包括b) /@ c -> last indexOf ?
 _strFrom = $.strFrom = function( a, b, c ) {
