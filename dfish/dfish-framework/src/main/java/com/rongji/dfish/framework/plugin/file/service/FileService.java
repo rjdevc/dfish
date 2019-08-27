@@ -38,11 +38,26 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     protected static final DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 
-    protected static final String SECRET_KEY = "DFISH";
+    protected String secretKey = "DFISH";
 
-    protected static StringCryptor CRY = CryptFactory.getStringCryptor(
-            CryptFactory.BLOWFISH, CryptFactory.UTF8,
-            CryptFactory.URL_SAFE_BASE64, SECRET_KEY);
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    protected static StringCryptor CRYPTOR;
+
+    protected StringCryptor getCryptor() {
+        if (CRYPTOR == null) {
+            CRYPTOR = CryptFactory.getStringCryptor(
+                    CryptFactory.BLOWFISH, CryptFactory.UTF8,
+                    CryptFactory.URL_SAFE_BASE64, getSecretKey());
+        }
+        return CRYPTOR;
+    }
 
     /**
      * 加密文件编号
@@ -54,7 +69,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (Utils.isEmpty(id)) {
             return id;
         }
-        return CRY.encrypt(id);
+        return getCryptor().encrypt(id);
     }
 
     /**
@@ -68,9 +83,9 @@ public class FileService extends BaseService<PubFileRecord, String> {
             return encId;
         }
         try {
-            return CRY.decrypt(encId);
+            return getCryptor().decrypt(encId);
         } catch (Exception e) {
-            FrameworkHelper.LOG.error("解密编号出错", e);
+            FrameworkHelper.LOG.error("解密编号出错[" + encId + "]", e);
             return null;
         }
     }
@@ -285,7 +300,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
             return null;
         }
         File file = getFile(fileRecord, fileAlias);
-        if (file == null || !file.exists()) {
+        if (file == null || !file.exists() || file.length() <= 0) {
             return null;
         }
         return new FileInputStream(file);

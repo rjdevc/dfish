@@ -22,7 +22,7 @@ public class SummaryBuilder {
     public static final int TYPE_CELL=7;
     public static final int TYPE_COLUMN=8;
 
-    private int summaryScore =6000;
+    private int summaryScore = 6000;
     private int[] scores =new int[]{10,0,200,0,500,0,0,0,0};
     public int getSummaryScore(){
         return summaryScore;
