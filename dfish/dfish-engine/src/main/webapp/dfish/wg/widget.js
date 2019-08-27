@@ -8190,7 +8190,8 @@ Pickbox = define.widget( 'pickbox', {
 					else if ( this.x.picker )
 						this.pick();
 				}
-			}
+			},
+			beforedeactivate: N
 		}
 	},
 	Prototype: {
