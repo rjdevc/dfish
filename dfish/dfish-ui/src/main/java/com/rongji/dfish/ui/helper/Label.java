@@ -64,8 +64,9 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<FormGrou
 	public FormGroup getPrototype() {
 		Html prototype = new Html(text);
 		BeanUtil.copyPropertiesExact(prototype,this);
+		prototype.setId(null);
 		prototype.ats(this.ats());
-		FormGroup hg=new FormGroup(null);
+		FormGroup hg=new FormGroup(null).setId(this.getId());
 		hg.setLabel(label);
 		hg.add(prototype);
 		return hg;
