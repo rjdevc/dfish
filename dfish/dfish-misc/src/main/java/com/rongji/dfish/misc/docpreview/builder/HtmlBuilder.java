@@ -34,12 +34,12 @@ public class HtmlBuilder {
             sb.append("<p style=\"");
             if(p.getAlignment()!=null&&!p.getAlignment().equals("LEFT")) {
                 sb.append("text-align:")
-                        .append(p.getAlignment());
+                        .append(p.getAlignment()).append(';');
             }
             if(p.getIndentation()!=null) {
                 sb.append("text-indent:")
                         .append(p.getIndentation()/15)
-                        .append("px");//twenties 转为px
+                        .append("px;");//twenties 转为px
             }
             sb.append("\">");
         }else{
