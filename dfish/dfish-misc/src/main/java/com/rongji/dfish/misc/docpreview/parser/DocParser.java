@@ -33,7 +33,7 @@ public class DocParser extends DocumentParser {
             org.apache.poi.hwpf.usermodel.Paragraph paragraph = range.getParagraph(i);
             // 段元素
             Paragraph p = new Paragraph();
-            p.setAlignment("center");//FIXME
+//            p.setAlignment("center");//FIXME
             p.setIndentation(paragraph.getFirstLineIndent()==-1?null:paragraph.getFirstLineIndent() );
 
             // 行内元素
