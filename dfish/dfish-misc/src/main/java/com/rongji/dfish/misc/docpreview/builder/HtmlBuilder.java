@@ -56,7 +56,9 @@ public class HtmlBuilder {
     }
     protected void build(CharacterRun cr, StringBuilder sb) {
         sb.append("<span");
-        if(cr.getColor() != null||cr.getFontFamily() != null||cr.getFontSize() != null||cr.getStrikeType() != null) {
+        if(cr.getColor() != null||cr.getFontFamily() != null||
+                cr.getFontSize() != null||cr.getStrikeType() != null||
+                cr.isBold()||cr.isItalic()) {
             sb.append(" style=\"");
             if (cr.getColor() != null) {
                 sb.append("color:");
@@ -72,6 +74,12 @@ public class HtmlBuilder {
                 sb.append("font-size:");
                 sb.append(cr.getFontSize());
                 sb.append("pt;");
+            }
+            if (cr.isBold()) {
+                sb.append("font-weight:bold;");
+            }
+            if (cr.isItalic()) {
+                sb.append("font-style: italic;");
             }
             if (cr.getStrikeType() != null) {
                 String stikeCss = "none";
@@ -97,9 +105,9 @@ public class HtmlBuilder {
         sb.append("</span>");
     }
     protected void build(Drawing cr, StringBuilder sb) {
-        //FIXME 相对路径 config  业务可以扩展此方法改写路径
+        // 相对路径 config  业务可以扩展此方法改写路径
         // 如果地址是动态地址如 xxx/download?id=xxx&seq=1
-        //FIXME Config中原则上要提供该参数会回调方法。
+        // Config中原则上要提供该参数会回调方法。
         // 如果地址是可访问文件地址如 docpic/datefolder/id/seq.jpg
         sb.append("<img");
         if(cr.getPicHeight()!=null){
@@ -108,7 +116,9 @@ public class HtmlBuilder {
         if(cr.getPicWidth()!=null){
             sb.append(" width='").append(cr.getPicHeight()).append("'");
         }
-        sb.append(" src='").append(cr.getPicPath()).append("'/>");
+        sb.append(" src='");
+        sb.append(this .config.getImageURLConverter().getDownloadURL(cr.getPicPath()));
+        sb.append("'/>");
     }
 
     protected void build(Table table, StringBuilder sb) {
