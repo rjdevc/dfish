@@ -2048,7 +2048,7 @@ View = define.widget( 'view', {
 		getValidError: function( n, g ) {
 			var e;
 			if ( this.$() ) {
-				var q = this.getFormList( g ), s = this.layout._passvalid;
+				var q = this.getFormList( g ), s = this.layout && this.layout._passvalid;
 				if ( s ) {
 					for ( var k in s )
 						s[ k ] && (q = q.not( '[id="' + k + '"] :input' ));
@@ -4886,7 +4886,7 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		htmlFor: function( a, e ) {
 			this.$t().focus(); // for ie9-
-			a.previousSibling.click();
+			a.previousSibling.click ? a.previousSibling.click() : Q( a.previousSibling.previousSibling ).click();
 			$.cancel( e );
 		},
 		readonly: function( a ) {
