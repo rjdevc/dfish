@@ -110,7 +110,9 @@ public class ProgressManager {
 	 */
 	public boolean setCompleteNode(String progressKey, JsonNode completeNode) {
 		ProgressData progressData = getProgressData(progressKey);
-		progressData.setCompleteNode(completeNode);
+		if (progressData != null) {
+			progressData.setCompleteNode(completeNode);
+		}
 		return setProgressData(progressData);
 	}
 
