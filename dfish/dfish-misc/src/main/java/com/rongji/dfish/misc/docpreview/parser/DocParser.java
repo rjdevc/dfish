@@ -48,7 +48,7 @@ public class DocParser extends DocumentParser {
                 cr.setText(characterRun.text());
                 cr.setBold(characterRun.isBold());
                 cr.setItalic(characterRun.isItalic());
-                cr.setFontSize(characterRun.getFontSize());
+                cr.setFontSize(characterRun.getFontSize()/2);
                 cr.setFontFamily(characterRun.getFontName());
                 cr.setColor(getHexColor(characterRun.getIco24()));
                 if(  characterRun.getUnderlineCode()==1){// 下划线代号
