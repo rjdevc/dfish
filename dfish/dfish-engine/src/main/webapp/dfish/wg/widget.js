@@ -9374,7 +9374,7 @@ TD = define.widget( 'td', {
 			return _td_wg[ t ] ? 'grid/' + t : t;
 		},
 		html: function( k, i, L ) {
-			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, d = g.x.escape !== F, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + '"';
 			if ( this.x.on || this.Const.Listener )
@@ -9391,13 +9391,9 @@ TD = define.widget( 'td', {
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
 			t = this.x.text;
 			if ( t ) {
-				if ( e ) {
-					t = this.html_format( r, c.x.format, d, _grid_f_attr );
-					if ( typeof t === _OBJ )
-						this.x.node = t;
-				} else {
-					d && (t = $.strEscape( t ));
-				}
+				t = this.html_format( t, e ? this.x.format || c.x.format : this.x.format, d, _grid_f_attr );
+				if ( typeof t === _OBJ )
+					this.x.node = t;
 			}
 			s += '>' + this.html_prepend() + this.html_nodes();
 			if ( ! this.x.node ) {
@@ -10290,7 +10286,7 @@ Grid = define.widget( 'grid', {
 			}
 		},
 		isScrollBottom: function() {
-			return (this.head ? this.body : this).isScrollBottom();
+			return this.head ? this.body.isScrollBottom() : Scroll.prototype.isScrollBottom.call( this );
 		},
 		// @implement
 		prop_cls_scroll_overflow: function() {
