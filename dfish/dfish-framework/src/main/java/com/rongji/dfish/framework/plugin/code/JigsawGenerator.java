@@ -44,7 +44,7 @@ public class JigsawGenerator {
     /**
      * 误差范围
      */
-    private double errorRange = 0.02;
+    private double errorRange = 0.05;
     /**
      * 最大错误次数
      */
