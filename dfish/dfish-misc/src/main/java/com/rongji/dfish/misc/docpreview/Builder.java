@@ -6,6 +6,7 @@ import com.rongji.dfish.misc.docpreview.builder.HtmlBuilder;
 import com.rongji.dfish.misc.docpreview.builder.SummaryBuilder;
 import com.rongji.dfish.misc.docpreview.builder.TextBuilder;
 import com.rongji.dfish.misc.docpreview.data.*;
+import com.rongji.dfish.misc.docpreview.parser.ImageInfo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -115,6 +116,11 @@ public class Builder {
                     fos.close();
                 } catch (IOException e) {}
             }
+        }
+        ImageInfo info=ImageInfo.of(data);
+        if(info!=null&&info.getType()!=null) {
+            drawing.setHintWidth(info.getWidth());
+            drawing.setHintHeight(info.getHeight());
         }
 
         drawing.setPicPath(datePath+"/"+context.getId()+"/"+fileName);
