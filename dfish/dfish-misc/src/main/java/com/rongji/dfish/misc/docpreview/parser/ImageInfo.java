@@ -72,7 +72,11 @@ public class ImageInfo {
     }
 
     private static void readBmpInfo(byte[] src,ImageInfo ii) {
-
+        ii.setHeight(readIntLh(src,22));
+        if(ii.getHeight()<0){
+            ii.setHeight(-ii.getHeight());
+        }
+        ii.setWidth(readIntLh(src,18));
     }
     private static void readGifInfo(byte[] src,ImageInfo ii) {
         ii.setHeight(readIntLh(src,8));
@@ -88,6 +92,9 @@ public class ImageInfo {
     }
     private static int readIntLh(byte[] src, int high) {
         return (src[high]&0xFF)|((src[high+1]&0xFF)<<8);
+    }
+    private static int readIntLh4(byte[] src, int high) {
+        return (src[high]&0xFF)|((src[high+1]&0xFF)<<8)|((src[high+2]&0xFF)<<16)|((src[high+3]&0xFF)<<24);
     }
 
     private static void readJpegInfo(byte[] src, ImageInfo ii) {
