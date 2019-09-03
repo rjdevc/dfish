@@ -7,6 +7,31 @@ public class Drawing implements ParagraphElement {
 
     // 图片宽度
     private Integer picWidth;
+    // 图片高度
+    private Integer picHeight;
+
+    // 图片宽度
+    private Integer hintWidth;
+
+    // 图片高度
+
+    private Integer hintHeight;
+
+    public Integer getHintWidth() {
+        return hintWidth;
+    }
+
+    public void setHintWidth(Integer hintWidth) {
+        this.hintWidth = hintWidth;
+    }
+
+    public Integer getHintHeight() {
+        return hintHeight;
+    }
+
+    public void setHintHeight(Integer hintHeight) {
+        this.hintHeight = hintHeight;
+    }
 
     public String getPicPath() {
         return picPath;
@@ -31,9 +56,6 @@ public class Drawing implements ParagraphElement {
     public void setPicHeight(Integer picHeight) {
         this.picHeight = picHeight;
     }
-
-    // 图片高度
-    private int picHeight;
 
     @Override
     public String getType() {
