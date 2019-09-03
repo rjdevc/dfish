@@ -27,6 +27,10 @@ public class FileHandlingScheme {
      * 最大允许上传的文件大小
      */
     private String sizeLimit;
+    /**
+     * 附件链接的地址
+     */
+    private String fileUrl;
 
     public String getName() {
         return name;
@@ -68,4 +72,11 @@ public class FileHandlingScheme {
         this.sizeLimit = sizeLimit;
     }
 
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
 }

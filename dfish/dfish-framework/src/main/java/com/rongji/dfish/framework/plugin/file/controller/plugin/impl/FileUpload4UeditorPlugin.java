@@ -1,8 +1,11 @@
 package com.rongji.dfish.framework.plugin.file.controller.plugin.impl;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.plugin.file.controller.FileController;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.ui.form.UploadItem;
@@ -22,6 +25,9 @@ import java.io.InputStream;
 public class FileUpload4UeditorPlugin implements FileUploadPlugin {
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private FileHandlingManager fileHandlingManager;
 
     @Override
     public String name() {
@@ -61,8 +67,14 @@ public class FileUpload4UeditorPlugin implements FileUploadPlugin {
         if (uploadItem == null || (uploadItem.getError() != null && uploadItem.getError())) {
             resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getText() + "\"}";
         } else {
+            String scheme = request.getParameter("scheme");
+            FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+            String fileUrl = handlingScheme.getFileUrl();
+            if (Utils.isEmpty(fileUrl)) {
+                fileUrl = "file/thumbnail?fileId=$fileId";
+            }
             resultJson = "{\"state\":\"SUCCESS\"," +
-                    "\"url\":\"file/thumbnail?fileId="+uploadItem.getId()+"\"," +
+                    "\"url\":\""+fileUrl.replace("$fileId", uploadItem.getId())+"\"," +
                     "\"title\":\""+uploadItem.getName()+"\"," +
                     "\"original\":\""+uploadItem.getName()+"\"," +
                     "\"type\":\""+FileUtil.getFileExtName(uploadItem.getName())+"\"," +

@@ -339,6 +339,10 @@ public class FileService extends BaseService<PubFileRecord, String> {
         }
 
         File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(fileAlias) ? ("_" + fileAlias) : "") + fileExtName);
+        if (!file.exists() && Utils.notEmpty(fileAlias)) {
+            // 别名文件不存在时使用原始文件
+            file = new File(getUploadDir() + oldFileName + fileExtName);
+        }
         return file;
     }
 
