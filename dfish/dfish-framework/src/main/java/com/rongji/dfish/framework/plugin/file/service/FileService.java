@@ -768,6 +768,13 @@ public class FileService extends BaseService<PubFileRecord, String> {
         }
     }
 
+    public void updateFileLink(String fileId, String fileLink) {
+        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
+            return;
+        }
+        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ new Date(), fileLink, fileId });
+    }
+
     /**
      * 转换成文件数据项
      *

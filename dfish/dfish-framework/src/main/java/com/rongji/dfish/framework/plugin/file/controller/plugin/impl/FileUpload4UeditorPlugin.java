@@ -31,7 +31,7 @@ public class FileUpload4UeditorPlugin implements FileUploadPlugin {
 
     @Override
     public String name() {
-        return "ueditor";
+        return "UEDITOR";
     }
 
     @Override
@@ -69,10 +69,16 @@ public class FileUpload4UeditorPlugin implements FileUploadPlugin {
         } else {
             String scheme = request.getParameter("scheme");
             FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
-            String fileUrl = handlingScheme.getFileUrl();
+            String fileUrl = null;
+            if (handlingScheme != null) {
+                fileUrl = handlingScheme.getFileUrl();
+            }
             if (Utils.isEmpty(fileUrl)) {
                 fileUrl = "file/thumbnail?fileId=$fileId";
             }
+            // FIXME 哪些附件未被启用还需进一步判断
+            fileService.updateFileLink(fileService.decId(uploadItem.getId()), name());
+
             resultJson = "{\"state\":\"SUCCESS\"," +
                     "\"url\":\""+fileUrl.replace("$fileId", uploadItem.getId())+"\"," +
                     "\"title\":\""+uploadItem.getName()+"\"," +

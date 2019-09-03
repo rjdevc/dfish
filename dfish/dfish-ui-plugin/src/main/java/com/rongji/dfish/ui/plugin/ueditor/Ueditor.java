@@ -41,7 +41,7 @@ public class Ueditor extends AbstractInput<Ueditor, String> {
         return this;
     }
 
-    public Ueditor putOption(String key, Object value) {
+    public Ueditor setOption(String key, Object value) {
         if (this.option == null) {
             this.option = new HashMap<>();
         }
