@@ -207,7 +207,7 @@ public class FileController extends BaseController {
                         ImageHandlingDefine realDefine = (ImageHandlingDefine) handlingDefine;
 
                         input = new FileInputStream(imageFile);
-                        File outputFile = fileService.getFile(fileRecord, defineAlias);
+                        File outputFile = fileService.getFile(fileRecord, defineAlias, false);
                         if (!outputFile.exists()) {
                             outputFile.createNewFile();
                         }

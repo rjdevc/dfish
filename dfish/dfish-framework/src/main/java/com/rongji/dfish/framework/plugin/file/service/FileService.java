@@ -299,7 +299,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (fileRecord == null || FileService.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
             return null;
         }
-        File file = getFile(fileRecord, fileAlias);
+        File file = getFile(fileRecord, fileAlias, true);
         if (file == null || !file.exists() || file.length() <= 0) {
             return null;
         }
@@ -313,7 +313,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return
      */
     public File getFile(PubFileRecord fileRecord) {
-        return getFile(fileRecord, "");
+        return getFile(fileRecord, "", true);
     }
 
     /**
@@ -323,7 +323,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @param fileAlias  文件别名
      * @return
      */
-    public File getFile(PubFileRecord fileRecord, String fileAlias) {
+    public File getFile(PubFileRecord fileRecord, String fileAlias, boolean fix2Raw) {
         if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
             return null;
         }
@@ -340,8 +340,10 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
         File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(fileAlias) ? ("_" + fileAlias) : "") + fileExtName);
         if (!file.exists() && Utils.notEmpty(fileAlias)) {
-            // 别名文件不存在时使用原始文件
-            file = new File(getUploadDir() + oldFileName + fileExtName);
+            if (fix2Raw) {
+                // 别名文件不存在时使用原始文件
+                file = new File(getUploadDir() + oldFileName + fileExtName);
+            }
         }
         return file;
     }
@@ -439,7 +441,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (Utils.isEmpty(fileAlias)) {
             return fileRecord.getFileSize();
         }
-        File file = getFile(fileRecord, fileAlias);
+        File file = getFile(fileRecord, fileAlias, true);
         if (file == null || !file.exists()) {
             return 0L;
         }
@@ -772,7 +774,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
             return;
         }
-        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ new Date(), fileLink, fileId });
+        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), fileId });
     }
 
     /**
