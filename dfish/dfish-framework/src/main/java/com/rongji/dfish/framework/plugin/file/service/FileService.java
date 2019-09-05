@@ -299,7 +299,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (fileRecord == null || FileService.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
             return null;
         }
-        File file = getFile(fileRecord, fileAlias, true);
+        File file = getFile(fileRecord, fileAlias);
         if (file == null || !file.exists() || file.length() <= 0) {
             return null;
         }
@@ -313,7 +313,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return
      */
     public File getFile(PubFileRecord fileRecord) {
-        return getFile(fileRecord, "", true);
+        return getFile(fileRecord, "");
     }
 
     /**
@@ -321,6 +321,18 @@ public class FileService extends BaseService<PubFileRecord, String> {
      *
      * @param fileRecord 文件记录
      * @param fileAlias  文件别名
+     * @return
+     */
+    public File getFile(PubFileRecord fileRecord, String fileAlias) {
+        return getFile(fileRecord, fileAlias, true);
+    }
+
+    /**
+     * 根据文件记录获取文件
+     *
+     * @param fileRecord 文件记录
+     * @param fileAlias  文件别名
+     * @param fix2Raw 文件找不到时使用原始文件
      * @return
      */
     public File getFile(PubFileRecord fileRecord, String fileAlias, boolean fix2Raw) {
@@ -441,7 +453,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (Utils.isEmpty(fileAlias)) {
             return fileRecord.getFileSize();
         }
-        File file = getFile(fileRecord, fileAlias, true);
+        File file = getFile(fileRecord, fileAlias);
         if (file == null || !file.exists()) {
             return 0L;
         }
