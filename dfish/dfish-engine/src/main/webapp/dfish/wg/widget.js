@@ -2308,14 +2308,13 @@ View = define.widget( 'view', {
 		},
 		// 根据ID获取wg /@a -> id
 		find: function( a ) {
-			var r;
 			if ( typeof a === _STR ) {
-				r = this.widgets[ a ] || this.views[ a ];
+				return this.widgets[ a ] || this.views[ a ];
 			} else {
 				for ( var i = 0, c, r = []; i < a.length; i ++ )
 					(c = this.widgets[ a[ i ] ] || this.views[ a[ i ] ]) && r.push( c );
+				return r;
 			}
-			return r;
 		},
 		// 获取表单 /@a -> name, b -> range?(elem|widget)
 		f: function( a, b ) {
@@ -5595,6 +5594,15 @@ Triplebox = define.widget( 'triplebox', {
 			ready: function() {
 				if ( this.x.checkstate == 2 ) 
 					this.$t().indeterminate = T;
+				if ( this.x.checkall ) {
+					if ( this.x.checkstate == 1 ) {
+						this.relate();
+					} else {
+						for ( var i = 0, b = this.ownerView.fAll( this.x.name ), l = b.length; i < l; i ++ ) {
+							if ( b[ i ] !== this ) { b[ i ].relate(); break; }
+						}
+					}
+				}
 			},
 			change: {
 				occupy: T,
@@ -7042,6 +7050,9 @@ Imgbox = define.widget( 'imgbox', {
 		}
 	}	
 }),
+_value_comma = function( a ) {
+	return a.replace( /^,+|,+$/g, '' ).replace( /,{2,}/g, ',' );
+},
 /* `combobox`
  *	注1: 当有设置初始value时，text一般可以不写，程序将会从数据岛(more属性)中匹配。如果数据岛不是完整展示的(比如树)，那么text属性必须加上。
  *  去掉 src template node 参数。suggest改造为dialog。原本的src template node等参数转移到suggest中
@@ -7052,6 +7063,7 @@ Combobox = define.widget( 'combobox', {
 		AbsInput.apply( this, arguments );
 		$.classAdd( this, 'z-loading' );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
+		x.value && (x.value = _value_comma(x.value));
 		this._online = x.suggest && typeof x.suggest.src === _STR && /\$text\b/.test( x.suggest.src );
 		this.more = this.createPop( x.suggest || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
 		var c = this.more.getContentView();
@@ -8061,6 +8073,10 @@ Linkbox = define.widget( 'linkbox', {
 } ),
 /* `onlinebox` */
 Onlinebox = define.widget( 'onlinebox', {
+	Const: function( x, p ) {
+		x.value && (x.value = _value_comma( x.value ));
+		Text.apply( this, arguments );
+	},
 	Extend: [ Text, Combobox ],
 	Default: { tip: T },
 	Listener: {
@@ -9184,11 +9200,13 @@ GridTriplebox = define.widget( 'grid/triplebox', {
 		body: {
 			ready: function() {
 				Triplebox.Listener.body.ready.apply( this, arguments );
-				this.x.checked && this.triggerListener( 'change' );
+				this.x.checkstate > 0 && this.triggerListener( 'change' );
+				//this.id=='9e:'&&alert(this.x.checkstate);
 			},
 			change: {
 				occupy: T,
 				method: function() {
+					//Triplebox.Listener.body.change.method.apply( this, arguments );
 					var r = this.tr();
 					r.type_tr && r.addClass( 'z-checked', this.isChecked() );
 				}
