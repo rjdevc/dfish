@@ -3515,6 +3515,10 @@ Img = define.widget( 'img', {
 		error: function() {
 			this.addClass( 'z-err' );
 		},
+		imgLoad: function() {
+			if ( this.width() == N || this.height() == N )
+				this.parentNode.trigger( 'resize' );
+		},
 		prop_style: function() {
 			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
 			// 在album内，不让width设置在外框
@@ -3529,7 +3533,7 @@ Img = define.widget( 'img', {
 		html_img: function() {
 			var x = this.x, b = this.parentNode.type === 'album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call( this, this.x.src ),
 				iw = this.x.imgwidth, ih = this.x.imgheight, w = iw || mw, h = ih || mh;
-			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh, error: evw + '.error()' }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
+			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh, error: evw + '.error()', load: evw + '.imgLoad()' }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
 		},
 		html_text: function() {
