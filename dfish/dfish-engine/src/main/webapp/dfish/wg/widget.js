@@ -3516,8 +3516,10 @@ Img = define.widget( 'img', {
 			this.addClass( 'z-err' );
 		},
 		imgLoad: function() {
-			if ( this.width() == N || this.height() == N )
+			var w = this.attr( 'width' );
+			if ( w < 0 || w == N ) {
 				this.parentNode.trigger( 'resize' );
+			}
 		},
 		prop_style: function() {
 			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
@@ -9205,7 +9207,6 @@ GridTriplebox = define.widget( 'grid/triplebox', {
 			ready: function() {
 				Triplebox.Listener.body.ready.apply( this, arguments );
 				this.x.checkstate > 0 && this.triggerListener( 'change' );
-				//this.id=='9e:'&&alert(this.x.checkstate);
 			},
 			change: {
 				occupy: T,
