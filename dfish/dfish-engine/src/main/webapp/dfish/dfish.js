@@ -2071,7 +2071,8 @@ _merge( $, {
 			r += '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>';
 		} else {
 			if ( d ) {
-				r += '<img src="' + d + '" class="_ico f-va"' + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '') + (b && b.error ? ' onerror="' + b.error + '"' : '');
+				r += '<img src="' + d + '" class="_ico f-va"' + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '') +
+					(b && b.error ? ' onerror="' + b.error + '"' : '') + (b && b.load ? ' onload="' + b.load + '"' : '');
 				if ( b && (b.maxwidth || b.maxheight) ) {
 					var t = '';
 					b.maxwidth && (t += 'max-width:' + b.maxwidth + 'px;');
