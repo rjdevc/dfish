@@ -38,58 +38,6 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     protected static final DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 
-    protected String secretKey = "DFISH";
-
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
-
-    protected static StringCryptor CRYPTOR;
-
-    protected StringCryptor getCryptor() {
-        if (CRYPTOR == null) {
-            CRYPTOR = CryptFactory.getStringCryptor(
-                    CryptFactory.BLOWFISH, CryptFactory.UTF8,
-                    CryptFactory.URL_SAFE_BASE64, getSecretKey());
-        }
-        return CRYPTOR;
-    }
-
-    /**
-     * 加密文件编号
-     *
-     * @param id 文件编号
-     * @return 加密的文件编号
-     */
-    public String encId(String id) {
-        if (Utils.isEmpty(id)) {
-            return id;
-        }
-        return getCryptor().encrypt(id);
-    }
-
-    /**
-     * 解密编号
-     *
-     * @param encId 加密的编号
-     * @return 编号
-     */
-    public String decId(String encId) {
-        if (Utils.isEmpty(encId)) {
-            return encId;
-        }
-        try {
-            return getCryptor().decrypt(encId);
-        } catch (Exception e) {
-            FrameworkHelper.LOG.error("解密编号出错[" + encId + "]", e);
-            return null;
-        }
-    }
-
     /**
      * 路径分隔符
      *

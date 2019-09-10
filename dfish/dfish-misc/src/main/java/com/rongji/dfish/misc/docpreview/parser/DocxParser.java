@@ -103,11 +103,13 @@ public class DocxParser extends DocumentParser {
             List <XWPFPicture>  pics=run .getEmbeddedPictures();
             if(pics!=null&&pics.size()>0){
                 for(XWPFPicture pic:pics){
-                   byte[] data=pic.getPictureData().getData();
-                    String ext=pic.getPictureData().suggestFileExtension();
-                    Drawing drawing=new Drawing();
-                    savePic(data,ext,drawing);
-                    p.getBody().add(drawing);
+                    if (pic.getPictureData() != null) {
+                        byte[] data=pic.getPictureData().getData();
+                        String ext=pic.getPictureData().suggestFileExtension();
+                        Drawing drawing=new Drawing();
+                        savePic(data,ext,drawing);
+                        p.getBody().add(drawing);
+                    }
                 }
                 if(cr.getText() !=null&&!cr.getText().trim().equals("")){
                     p.getBody().add(cr);

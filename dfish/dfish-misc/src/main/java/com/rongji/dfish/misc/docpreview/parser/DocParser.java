@@ -61,11 +61,13 @@ public class DocParser extends DocumentParser {
 
                 if(pics.hasPicture(characterRun)){
                     Picture pic=pics.extractPicture(characterRun, false);
-                    String ext=pic.suggestFileExtension();
-                    byte[] data= pic.getRawContent();
-                    Drawing drawing=new Drawing();
-                    savePic(data,ext,drawing);
-                    p.getBody().add(drawing);
+                    if (pic != null && pic.getRawContent() != null) {
+                        String ext=pic.suggestFileExtension();
+                        byte[] data= pic.getRawContent();
+                        Drawing drawing=new Drawing();
+                        savePic(data,ext,drawing);
+                        p.getBody().add(drawing);
+                    }
                 }
                 if(cr.getText()!=null&&!cr.getText().trim().equals("")){
                     p.getBody().add(cr);

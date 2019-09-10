@@ -1,6 +1,9 @@
 package com.rongji.dfish.framework.service;
 
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.crypt.CryptFactory;
+import com.rongji.dfish.base.crypt.StringCryptor;
+import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.BaseDao;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,57 @@ import java.util.Collection;
  * @param <ID> ID对象类型通常是String
  */
 public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T, ID> {
+
+    protected String secretKey = "DFISH";
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    protected static StringCryptor CRYPTOR;
+
+    protected StringCryptor getCryptor() {
+        if (CRYPTOR == null) {
+            CRYPTOR = CryptFactory.getStringCryptor(CryptFactory.BLOWFISH, CryptFactory.UTF8, CryptFactory.BASE32, getSecretKey());
+        }
+        return CRYPTOR;
+    }
+
+    /**
+     * 加密文件编号
+     *
+     * @param id 文件编号
+     * @return 加密的文件编号
+     */
+    public String encId(String id) {
+        if (Utils.isEmpty(id)) {
+            return id;
+        }
+        return getCryptor().encrypt(id);
+    }
+
+    /**
+     * 解密编号
+     *
+     * @param encId 加密的编号
+     * @return 编号
+     */
+    public String decId(String encId) {
+        if (Utils.isEmpty(encId)) {
+            return encId;
+        }
+        try {
+            return getCryptor().decrypt(encId);
+        } catch (Exception e) {
+            FrameworkHelper.LOG.error("解密编号出错[" + encId + "]", e);
+            return null;
+        }
+    }
+
 
     protected void beforeSave(T entity) throws Exception {
     }

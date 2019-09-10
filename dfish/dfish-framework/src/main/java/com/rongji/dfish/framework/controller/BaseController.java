@@ -249,9 +249,15 @@ public class BaseController extends MultiActionController {
 		Object obj = null;
 		String alertMsg = "";
 		if (e != null ) {
+			HttpServletRequest request = getRequest();
+			if (request != null) {
+				request.setAttribute("EXCEPTION_HANDLED", true);
+			}
+
 			if (e instanceof SocketException || (e.getCause() != null && e.getCause() instanceof SocketException)) {
-				FrameworkHelper.LOG.error("======[Network]" + e.getClass().getName() + ":["+e.getMessage() + "]");
-				return null;
+				alertMsg = "网络异常@" + System.currentTimeMillis();
+				FrameworkHelper.LOG.error(alertMsg + "=====[Network]=====" + e.getClass().getName() + ":["+e.getMessage() + "]");
+				return buildWarnAlert(alertMsg);
 			}
 			DfishException cast = null;
 			if (e instanceof DfishException) {
