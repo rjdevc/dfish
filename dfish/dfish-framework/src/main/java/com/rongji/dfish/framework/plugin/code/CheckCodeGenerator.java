@@ -1,5 +1,7 @@
 package com.rongji.dfish.framework.plugin.code;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.rongji.dfish.base.util.LogUtil;
 
 import javax.imageio.ImageIO;
@@ -9,6 +11,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -131,12 +135,93 @@ public class CheckCodeGenerator {
 				{new Color(0xC33E00),Color.LIGHT_GRAY},
 				{new Color(0x5A7712),Color.LIGHT_GRAY}
 		});
+		setSetting(SETTING_READABLE);
 	}
-	private static final char[] CHARS={'0','1','2','3','4','5','6','7','8','9',
-		'A','B','C','D','E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W','X','Y','Z'};//因为I O容易混淆
-	
-	private static final Random RANDOM = new Random(); 
-	
+//	private static final char[] CHARS={'0','1','2','3','4','5','6','7','8','9',
+//		'A','B','C','D','E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W','X','Y','Z'};//因为I O容易混淆
+	private static final String SETTING_MUMBER="[\"0\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\"]";
+	private static final String SETTING_UPPER_CASE=
+			"[\"Aa\",\"Bb\",\"Cc\",\"Dd\",\"Ee\"," +
+			"\"Ff\",\"Gg\",\"Hh\",\"Ii\",\"Jj\"," +
+			"\"Kk\",\"Ll\",\"Mm\",\"Nn\",\"Oo\"," +
+			"\"Pp\",\"Qq\",\"Rr\",\"Ss\",\"Tt\"," +
+			"\"Uu\",\"Vv\",\"Ww\",\"Xx\",\"Yy\",\"Zz\"]";
+	private static final String SETTING_NUMBER_AND_UPPER_CASE=
+			"[\"0\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\"," +
+			"\"Aa\",\"Bb\",\"Cc\",\"Dd\",\"Ee\"," +
+			"\"Ff\",\"Gg\",\"Hh\",\"Ii\",\"Jj\"," +
+			"\"Kk\",\"Ll\",\"Mm\",\"Nn\",\"Oo\"," +
+			"\"Pp\",\"Qq\",\"Rr\",\"Ss\",\"Tt\"," +
+			"\"Uu\",\"Vv\",\"Ww\",\"Xx\",\"Yy\",\"Zz\"]";
+	private static final String SETTING_READABLE=
+			"[\"0Oo\",\"1IiLl\",\"2Zz\",\"3\",\"4\",\"5Ss\",\"6\",\"7\",\"8\",\"9\"," +
+			"\"Aa\",\"Bb\",\"Cc\",\"Dd\",\"Ee\",\"Ff\",\"Gg\",\"Hh\",\"Jj\"," +
+			"\"Kk\",\"Mm\",\"Nn\",\"Pp\",\"Qq\",\"Rr\",\"Tt\"," +
+			"\"Uu\",\"Vv\",\"Ww\",\"Xx\",\"Yy\"]";
+	private char[] chars;
+	private Map<Character,Integer> charsMap;
+	private static final Random RANDOM = new Random();
+	public void setSettingScheme(int scheme){
+		switch (scheme){
+			case 1:
+				setSetting(SETTING_MUMBER);
+				break;
+			case 2:
+				setSetting(SETTING_UPPER_CASE);
+				break;
+			case 3:
+				setSetting(SETTING_NUMBER_AND_UPPER_CASE);
+				break;
+			default:
+				setSetting(SETTING_READABLE);
+		}
+	}
+
+	public void setSetting(String setting) {
+		try{
+			JSONArray arr= (JSONArray)JSON.parse(setting);
+			int i=0;
+			chars=new char[arr.size()];
+			charsMap=new HashMap<Character,Integer>();
+			for(Object o:arr){
+				String s=(String)o;
+				char[] cs=s.toCharArray();
+				chars[i]=cs[0];
+				for(char c:cs){
+					if(charsMap.put(c,i)!=null){
+						LogUtil.warn("REPEAT CHAR : "+c);
+						if(setting!=SETTING_READABLE) {
+							setSetting(SETTING_READABLE);
+						}
+						return;
+					}
+				}
+				i++;
+			}
+		}catch (Exception ex){
+			LogUtil.warn("UNKOWN SETTING : "+setting);
+			if(setting!=SETTING_READABLE) {
+				setSetting(SETTING_READABLE);
+			}
+		}
+	}
+	public boolean checkCodeEquals(String str1,String str2){
+		if(str1==null||str2==null||str1.length()!=str2.length()){
+			return false;
+		}
+		char[] cs1=str1.toCharArray();
+		char[] cs2=str2.toCharArray();
+		for(int i=0;i<cs1.length;i++){
+			Integer i1=charsMap.get(cs1[i]);
+			Integer i2=charsMap.get(cs2[i]);
+			if(i1==null||i2==null||i1.intValue()!=i2.intValue()){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 * 生成length长度的校验码，去除一些容易混淆的字符，如I(1混淆) O(0混淆) 
 	 * @return
@@ -144,10 +229,11 @@ public class CheckCodeGenerator {
 	public String getRandomCode(){
 		StringBuilder sb = new StringBuilder();
 		for(int i=0;i<this.codeLength;i++){
-			sb.append(CHARS[RANDOM.nextInt(CHARS.length)]);
+			sb.append(chars[RANDOM.nextInt(chars.length)]);
 		}
 		return sb.toString();
 	}
+
 	/**
 	 * 生成校验码图形
 	 * @param code 校验码文本。可以使用getRandomString(int)方法预先获得。
