@@ -3516,9 +3516,12 @@ Img = define.widget( 'img', {
 			this.addClass( 'z-err' );
 		},
 		imgLoad: function() {
-			var w = this.attr( 'width' );
-			if ( w < 0 || w == N ) {
-				this.parentNode.trigger( 'resize' );
+			// @fixme: 父节点也是-1的情况
+			if ( this.parentNode.type != this.ROOT_TYPE ) {
+				var w = this.attr( 'width' );
+				if ( w < 0 || w == N ) {
+					this.parentNode.trigger( 'resize' );
+				}
 			}
 		},
 		prop_style: function() {
@@ -7038,6 +7041,7 @@ Imgbox = define.widget( 'imgbox', {
 		choose: function( a ) {
 			this._sel = [ this.x.options[ a ] ];
 			this._val();
+			this.trigger( 'change' );
 			this.dg.close();
 		},
 		_val: function( o ) {
@@ -7048,7 +7052,7 @@ Imgbox = define.widget( 'imgbox', {
 		},
 		html_img: function( a ) {
 			return '<div class=_g id=' + this.id + 'p style="width:' + this.imgw + 'px;height:' + this.imgh + 'px;">' + $.image( a.icon, { width: this.imgw, height: this.imgh } ) + '</div>' +
-				(this.txth ? '<div class="_s f-fix" style=width:' + this.imgw + 'px;>' + (a.text || '') + '</div>' : '');
+				(this.txth ? '<div class="_s f-fix" style="width:' + this.imgw + 'px;"' + this.prop_title( a.text, this.x.format ) + '>' + (a.text || '') + '</div>' : '');
 		},
 		html_nodes: function() {
 			var a = this._sel[ 0 ] || {icon:'.f-dot'};
