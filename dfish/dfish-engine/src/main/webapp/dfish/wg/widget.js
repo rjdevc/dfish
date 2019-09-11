@@ -38,12 +38,9 @@ _regTemplate = function( a, b ) {
 },
 // 获取模板  /@a -> template id, b -> fn?
 _getTemplate = function( a, b ) {
-	var t = typeof a === _OBJ ? a : _templateCache[ a ];
-	if ( t ) {
-		b && b();
-		return t;
-	}
-	return ($.require( (cfg.template_dir || '') + a, b ), _templateCache[ a ]);
+	var t = typeof a === _OBJ ? a : $.require( (cfg.template_dir || '') + a, b );
+	t && b && b();
+	return t;
 },
 // 预装模板集合
 _preloadCache = {},
@@ -53,12 +50,9 @@ _regPreload = function( a, b ) {
 },
 // 获取预装模板  /@a -> template id, b -> fn?
 _getPreload = function( a, b ) {
-	var t = typeof a === _OBJ ? a : _preloadCache[ a ];
-	if ( t ) {
-		b && b();
-		return t;
-	}
-	return ($.require( (cfg.preload_dir || '') + a, b ), _preloadCache[ a ]);
+	var t = typeof a === _OBJ ? a : $.require( (cfg.preload_dir || '') + a, b );
+	t && b && b();
+	return t;
 },
 // 事件白名单
 _white_events = $.white_events,

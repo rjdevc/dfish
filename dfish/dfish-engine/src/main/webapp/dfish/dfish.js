@@ -170,6 +170,8 @@ _createClass = $.createClass = function( a, b ) {
 
 /* CMD模块规范 */
 _moduleCache = {},
+_templateCache = {},
+_preloadCache = {},
 //@a -> path, b -> id, f -> affix
 _mod_uri = function( a, b, f ) {
 	var c = b.charAt( 0 ) === '.' ? _urlLoc( a, b ) : b.charAt( 0 ) !== '/' ? _path + b : b;
@@ -273,6 +275,14 @@ Define = function( a ) {
 		if ( ! d.Const )
 			d.Const = function() { e[ 0 ].apply( this, arguments ) };
 		return _moduleCache[ _mod_uri( a, c ) ] = _createClass( c, d );
+	}
+	b.template = function( c, d ) {
+		d == N && (d = c, c = N);
+		_moduleCache[ c ? _mod_uri( a, (_cfg.template_dir || '') + c ) : a ] = d;
+	}
+	b.preload = function( c, d ) {
+		d == N && (d = c, c = N);
+		_moduleCache[ c ? _mod_uri( a, (_cfg.preload_dir || '') + c ) : a ] = d;
 	}
 	return b;
 },
