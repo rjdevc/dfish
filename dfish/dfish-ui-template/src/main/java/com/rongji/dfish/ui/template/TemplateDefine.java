@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.template;
 
+import com.rongji.dfish.base.Utils;
+
 /**
  * TemplateDefine是模范 nodeJS 定义一个模板
  * <p>define("t/cmd/indx",{"type":"text","name":"xxx","@value":"$data.xxx" });</p>
@@ -28,11 +30,10 @@ public class TemplateDefine implements DFishTemplate{
 	}
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
-		
-		if(uri==null||uri.equals("")){
-			sb.append("$.template(");
-		}else{
-			sb.append("$.template(\"").append(uri).append("\",");
+
+		sb.append("define.template(");
+		if(Utils.notEmpty(uri)){
+			sb.append("\"").append(uri).append("\",");
 		}
 		sb.append(template);
 		sb.append(");");

@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.template;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.JsonObject;
 
@@ -31,11 +32,10 @@ public class PreloadDefine implements DFishTemplate {
 	}
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
-		
-		if(uri==null||uri.equals("")){
-			sb.append("$.preload(");
-		}else{
-			sb.append("$.preload(\"").append(uri).append("\",");
+
+		sb.append("define.preload(");
+		if(Utils.notEmpty(uri)){
+			sb.append("\"").append(uri).append("\",");
 		}
 		if(jo instanceof AbstractNode){
 			sb.append(((AbstractNode<?>) jo).formatString());

@@ -43,7 +43,7 @@ public class TemplateArray extends AbstractTemplate {
 	}
 	/**
 	 * 删除子节点 
-	 * @param key String
+	 * @param index String
 	 * @return this
 	 */
 	public void removeSubTemp(int index){

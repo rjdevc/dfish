@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework;
 
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
@@ -34,12 +35,13 @@ public class InitApp implements ServletContextAware, ApplicationContextAware {
 
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		this.applicationContext = context;
-
 	}
 
 	@SuppressWarnings("deprecation")
 	public void init() {
 		FileUtil.LOG = new WrappedLog(FileUtil.LOG);// 记录日志错误
+
+		Locale.setDefault(Locale.SIMPLIFIED_CHINESE);
 
 		LOG.info("====== initing ServletContext ======");
 		SystemData.getInstance().setServletInfo(new ServletInfo(servletContext));

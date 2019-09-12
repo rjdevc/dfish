@@ -20,32 +20,43 @@ public class DefaultPropertyCryptor implements PropertyCryptor {
 	/**
 	 * 密钥
 	 */
-	private static final String SECRET_KEY = "DFISH";
+	private String secretKey = "DFISH";
 	/**
 	 * 加密器
 	 */
-	private static final StringCryptor SC = CryptFactory.getStringCryptor(CryptFactory.BLOWFISH, CryptFactory.UTF8,
-			CryptFactory.URL_SAFE_BASE64, SECRET_KEY);
-	
+	private StringCryptor cryptor;
+
+	public String getSecretKey() {
+		return secretKey;
+	}
+
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
+
 	/**
 	 * 获取加密器
 	 * @return StringCryptor
 	 * @author YuLM
 	 */
 	protected StringCryptor getCryptor() {
-		return SC;
+		if (cryptor == null) {
+			cryptor = CryptFactory.getStringCryptor(CryptFactory.BLOWFISH, CryptFactory.UTF8,
+					CryptFactory.BASE32, secretKey);
+		}
+		return cryptor;
 	}
 	
 	@Override
     public String decrypt(String str) {
-		StringCryptor sc = getCryptor();
-		return sc.decrypt(str);
+		StringCryptor cryptor = getCryptor();
+		return cryptor.decrypt(str);
     }
 
 	@Override
     public String encrypt(String str) {
-		StringCryptor sc = getCryptor();
-	    return sc.encrypt(str);
+		StringCryptor cryptor = getCryptor();
+	    return cryptor.encrypt(str);
     }
 
 }
