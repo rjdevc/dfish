@@ -6011,17 +6011,55 @@ Calendar = define.widget( 'calendar/date', {
 				a && (a.innerHTML = Loc.calendar.picktime);
 			} else {
 				var b = Dialog.get( this.$() ), c = [], d = this.date, f = this.x.format, h = [], self = this,
-					y = { set: { h: 'setHours', i: 'setMinutes', s: 'setSeconds' }, get: { h: 'getHours', i: 'getMinutes', s: 'getSeconds' } };
+					y = { set: { h: 'setHours', i: 'setMinutes', s: 'setSeconds' }, get: { h: 'getHours', i: 'getMinutes', s: 'getSeconds' } },
+					bd = self.x.begindate && self._ps( self.x.begindate ), bh = bd && bd.getHours(), bi = bd && bd.getMinutes(), bs = bd && bd.getSeconds(),
+					ed = self.x.enddate && self._ps( self.x.enddate ),     eh = ed && ed.getHours(), ei = ed && ed.getMinutes(), es = ed && ed.getSeconds(),
+					ld = $.dateFormat( d, 'yyyy-mm-dd' );
+					sameBeginDay = bd && $.dateFormat( bd, 'yyyy-mm-dd' ) == ld;
+					sameEndDay   = ed && $.dateFormat( ed, 'yyyy-mm-dd' ) == ld;
 				function list( t, m ) {
-					for ( var i = 0, s = ''; i < m; i ++ )
-						s += '<div class="_o" data-v="' + i + '" ' + _event_zhover + '>' + $.strPad( i ) + '</div>';
-					c.push( { type: 'html', cls: c.length ? ' _bl' : '', width: '*', wmin: c.length ? 1 : 0, scroll: T, text: s, data: { part: t, max: m } } );
+					var sameBeginHour = sameBeginDay && bh == d.getHours(),
+						sameEndHour   = sameEndDay && eh == d.getHours(),
+						sameBeginMin = sameBeginHour && bi == d.getMinutes(),
+						sameEndMin   = sameEndHour && ei == d.getMinutes();
+					for ( var i = 0, s = '', ds; i < m; i ++ ) {
+						ds = t === 'h' ? ((sameBeginDay && bh > i) || (sameEndDay && eh < i)) :
+							 t === 'i' ? ((sameBeginHour && bi > i) || (sameEndHour && ei < i)) :
+							 ((sameBeginMin && bs > i) || (sameEndMin && es < i));
+						s += '<div class="_o' + (ds ? ' z-ds' : '') + '" data-v="' + i + '" ' + _event_zhover + '>' + $.strPad( i ) + '</div>';
+					}
+					c.push( { type: 'html', id: t, cls: c.length ? ' _bl' : '', width: '*', wmin: c.length ? 1 : 0, scroll: T, text: s, data: { max: m } } );
 					h.push( { type: 'html', width: '*', cls: '_th' + (h.length ? ' _bl' : ''), wmin: c.length ? 1 : 0, hmin: 1, text: Loc.calendar[ t ] } );
+				}
+				function recls( g ) {
+					if ( !g || !(sameBeginDay || sameEndDay) ) return;
+					var t = g.x.id,
+						sameBeginHour = sameBeginDay && bh == d.getHours(),
+						sameEndHour   = sameEndDay && eh == d.getHours(),
+						sameBeginMin = sameBeginHour && bi == d.getMinutes(),
+						sameEndMin   = sameEndHour && ei == d.getMinutes();
+					Q( '.z-ds', g.$() ).removeClass( 'z-ds' );
+					if ( (t === 'i' && (sameBeginHour || sameEndHour)) || (t === 's' && (sameBeginMin || sameEndMin)) ) {
+						for ( var i = 0, c = Q( '._o', g.$() ); i < 60; i ++ ) {
+							if ( t === 'i' ? ((sameBeginHour && bi > i) || (sameEndHour && ei < i)) : ((sameBeginMin && bs > i) || (sameEndMin && es < i)) )
+								c.eq( i ).addClass( 'z-ds' );
+						}
+						if ( Q( '.z-on', g.$() ).hasClass( 'z-ds' ) ) {
+							Q( '.z-on', g.$() ).removeClass( 'z-on' );
+							var o = Q( '._o:not(.z-ds)', g.$() ).first();
+							if ( o.length ) {
+								o.addClass( 'z-on' );
+								d[ y.set[ g.x.id ] ]( o.attr( 'data-v' ) );
+								_scrollIntoView( o[ 0 ] );
+							}
+						}
+					}
 				}
 				~f.indexOf( 'h' ) && list( 'h', 24 );
 				~f.indexOf( 'i' ) && list( 'i', 60 );
 				~f.indexOf( 's' ) && list( 's', 60 );
 				this._dlg_time = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
+					 type: 'view', node: {
 					 type: 'vert', nodes: [
 					 	{ type: 'horz', height: 29, nodes: h },
 					 	{ type: 'horz', height: '*', nodes: c,
@@ -6030,7 +6068,7 @@ Calendar = define.widget( 'calendar/date', {
 					 			ready: function() {
 						 			var r = [], k = 0, i = 0, v, n = 60, t;
 						 			for ( ; i < this.length; i ++ ) {
-						 				v = d[ y.get[ this[ i ].x.data.part ] ]();
+						 				v = d[ y.get[ this[ i ].x.id ] ]();
 						 				r.push( $.get( '._o[data-v="' + v + '"]', this[ i ].$() ) );
 						 				t = Math.min( v, this[ i ].x.data.max - v );
 						 				if ( n > t ) { n = t; k = i; }
@@ -6042,16 +6080,19 @@ Calendar = define.widget( 'calendar/date', {
 						 			}
 						 		},
 								click: function( e ) {
-									var o = e.srcElement, g = $.widget( o );
-									if ( $.classAny( o, '_o' ) ) {
+									var o = e.srcElement, g = $.widget( o ), m = g.ownerView;
+									if ( $.classAny( o, '_o' ) && !$.classAny( o, 'z-ds' ) ) {
 										Q( '._o', g.$() ).removeClass( 'z-on' );
 										$.classAdd( o, 'z-on' );
-										d[ y.set[ g.x.data.part ] ]( o.getAttribute( 'data-v' ) );
+										var p = g.x.id;
+										d[ y.set[ p ] ]( o.getAttribute( 'data-v' ) );
+										p === 'h' && (recls( m.find( 'i' ) ), recls( m.find( 's' ) ));
+										p === 'i' && recls( m.find( 's' ) );
 									}
 								}
 					 		}
 					 	}
-					 ]
+					 ] }
 				} } );
 				a && (a.innerHTML = Loc.calendar.backdate);
 			}
@@ -6590,7 +6631,7 @@ Slider = define.widget( 'slider', {
 } ),
 /* `SliderJigsaw`
  * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
- * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '' }
+ * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '', error: { timeout } }
  * @authsrc: { result: true, text: '' }
  */
 SliderJigsaw = define.widget( 'slider/jigsaw', {
@@ -6688,7 +6729,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return this.$( 'f' ).offsetWidth;
 		},
 		popHeight: function() {
-			return Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) );
+			return this.img ? Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) ) : N;
 		},
 		success: function( a ) {
 			this.x.status = a ? 'success' : '';
@@ -6708,6 +6749,8 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 					this.trigger( 'load' );
 					fn && fn.call( this );
 				}
+			}, error: function() {
+				this.lock( { msg: Loc.ps( Loc.server_error, 'error' ), error: T } );
 			} } );
 		},
 		reload: function( a ) {

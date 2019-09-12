@@ -303,6 +303,8 @@
 .w-calendar-time-dlg ._o{height:26px;line-height:26px}
 .w-calendar-time-dlg ._o.z-hv{background:#def0fc}
 .w-calendar-time-dlg ._o.z-on{background:#cce7f9}
+.w-calendar-time-dlg ._o.z-ds{color:gray}
+.w-calendar-time-dlg ._o.z-ds.z-hv{background:transparent}
 .w-calendar-dialog{background:#fff}
 .w-calendar-dialog .w-calendar-tbl{width:auto;*table-layout:auto}
 .w-calendar-dialog .w-calendar-date ._td,.w-calendar-dialog .w-calendar-week ._td{width:23px;height:23px}
