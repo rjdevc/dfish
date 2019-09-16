@@ -233,6 +233,24 @@ public class JigsawGenerator {
     /**
      * 校验拼图是否正确
      * @param request
+     * @param offsetStr
+     * @return boolean
+     */
+    public boolean checkJigsawOffset(HttpServletRequest request, String offsetStr) {
+        if (Utils.isEmpty(offsetStr)) {
+            return false;
+        }
+        try {
+            Double offset = Double.parseDouble(offsetStr);
+            return checkJigsawOffset(request, offset);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 校验拼图是否正确
+     * @param request
      * @param offset
      * @return boolean
      */
