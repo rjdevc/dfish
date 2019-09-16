@@ -258,7 +258,7 @@ _ajaxCmd = function( x, a, t ) {
 			if ( ! this._disposed ) {
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				if ( x.success )
-					$.fnapply( x.success, this, '$value,$ajax', [ v, a ] );
+					$.fnapply( x.success, this, '$response,$ajax', [ v, a ] );
 				else
 					(v && this.exec( v, N, x.transfer, r ));
 			}
@@ -267,7 +267,7 @@ _ajaxCmd = function( x, a, t ) {
 			var v = r;
 			if ( ! this._disposed && x.complete ) {
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
-				$.fnapply( x.complete, this, '$value,$ajax', [ v, a ] );
+				$.fnapply( x.complete, this, '$response,$ajax', [ v, a ] );
 			}
 			if ( ! this._disposed )
 				this.trigger( 'unlock' );
@@ -4549,9 +4549,9 @@ Menu = define.widget( 'menu', {
 			return t && t.indexOf( 'menu/' ) !== 0 ? 'menu/' + t : 'menu/button';
 		},
 		_dft_pos: function() {
-			var b = $.point.srcElement, c = b && this.parentNode.contains( b ) && $.point;
-			if ( ! c ) {
-				b = $.bcr( this.parentNode.$() );
+			var c = $.point;
+			if ( ! c.srcElement ) {
+				var b = $.bcr( this.parentNode.$() );
 				c = { clientX: b.left, clientY: b.top };
 			}
 			return $.snap( this.width(), this.height(), c, '21,12', this._fitpos );
