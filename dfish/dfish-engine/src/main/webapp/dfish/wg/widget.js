@@ -455,7 +455,7 @@ TemplateMark = $.createClass( {
 Template = $.createClass( {
 	// @ t -> template, d -> data, g -> widget, r -> target
 	Const: function( t, d, g ) {
-		this.data = d;
+		this.data = g.x.data ? $.extend( {}, d, g.x.data ) : d;
 		this.wg   = g;
 		this.template = _getTemplate( t );
 	},
@@ -479,7 +479,7 @@ Template = $.createClass( {
 			var x = x || this.template, r = {}, b, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( ! x )
 				return;
-			if ( b = x[ '@w-include' ] ) {
+			if ( (b = x[ '@w-include' ]) ) {
 				var d = _getTemplate( b );
 				return d && this.compile( d, y );
 			}
@@ -2110,7 +2110,7 @@ Xsrc = define.widget( 'xsrc', {
 				};
 			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); } ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			u && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
+			u  && (u = _url_format.call( this, u )) && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> data json
@@ -10359,6 +10359,13 @@ Grid = define.widget( 'grid', {
 		}
 	}
 });
+/* `flex` */
+Flex = define.widget( 'flex', {
+	Const: function( x, p ) {
+		//var 
+	},
+	Extend: 'grid'
+} );
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
