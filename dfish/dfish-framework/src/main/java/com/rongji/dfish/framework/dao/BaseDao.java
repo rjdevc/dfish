@@ -6,17 +6,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Id;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.IdGenerator;
+import com.rongji.dfish.framework.constant.FrameworkConstants;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -26,12 +23,12 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import com.rongji.dfish.framework.FrameworkHelper;
 
 /**
- * @param <T>  实体对象类型Entity
+ * @param <P>  实体对象类型Entity
  * @param <ID> ID对象类型通常是String
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class BaseDao<T, ID extends Serializable> {
+public abstract class BaseDao<P, ID extends Serializable> {
     @Autowired
     protected PubCommonDAO pubCommonDAO;
 
@@ -127,12 +124,12 @@ public abstract class BaseDao<T, ID extends Serializable> {
     }
     @SuppressWarnings("unchecked")
     @Deprecated
-    public T find(ID id) {
+    public P find(ID id) {
         if (id == null) {
             return null;
         }
         String idName = getEntityIdName();
-        return (T) pubCommonDAO.queryAsAnObject("FROM " + getEntityType().getSimpleName() + " t WHERE t." + idName + "=?", id);
+        return (P) pubCommonDAO.queryAsAnObject("FROM " + getEntityType().getSimpleName() + " t WHERE t." + idName + "=?", id);
     }
 
     public String getNewId() {
@@ -150,7 +147,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
      * @param ids ID
      * @return List
      */
-    public List<T> findAll(List<ID> ids) {
+    public List<P> findAll(List<ID> ids) {
         if (ids == null) {
             return null;
         }
@@ -196,11 +193,11 @@ public abstract class BaseDao<T, ID extends Serializable> {
         Set<ID> idSet = new HashSet<ID>(ids);
         idSet.remove(null);
         final List<ID> norepeat = new ArrayList<ID>(idSet);
-        List<T> dbrs = (List<T>) pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<List<T>>() {
+        List<P> dbrs = (List<P>) pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<List<P>>() {
             @Override
-            public List<T> doInHibernate(Session session) throws HibernateException, SQLException {
+            public List<P> doInHibernate(Session session) throws HibernateException, SQLException {
                 List<ID> tofetch = norepeat;
-                List<T> result = new ArrayList<T>();
+                List<P> result = new ArrayList<P>();
                 while (tofetch.size() > 0) {
                     if (tofetch.size() > FETCH_SIZE) {
                         List<ID> cur = tofetch.subList(0, FETCH_SIZE);
@@ -215,8 +212,8 @@ public abstract class BaseDao<T, ID extends Serializable> {
             }
         });
         //重新排序并且,补充没查到的数据
-        HashMap<ID, T> map = new HashMap<ID, T>();
-        for (T item : dbrs) {
+        HashMap<ID, P> map = new HashMap<ID, P>();
+        for (P item : dbrs) {
             try {
                 ID i = (ID) getterMethod.invoke(item, NO_ARGS);
                 map.put(i, item);
@@ -224,7 +221,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
                 FrameworkHelper.LOG.error("", e);
             }
         }
-        List<T> result = new ArrayList<T>();
+        List<P> result = new ArrayList<P>();
         for (ID i : ids) {
             result.add(map.get(i));
         }
@@ -242,19 +239,15 @@ public abstract class BaseDao<T, ID extends Serializable> {
      * @param id
      * @return
      */
-    public T get(ID id) {
+    public P get(ID id) {
         if (id == null) {
             return null;
         }
         final Class<?> entityClass = getEntityType();
-        return (T) pubCommonDAO.getHibernateTemplate().get(entityClass, id);
+        return (P) pubCommonDAO.getHibernateTemplate().get(entityClass, id);
     }
 
-    public int update(T entity) throws Exception {
-        return pubCommonDAO.update(entity);
-    }
-
-    public <S extends T> int deleteAll(Collection<S> entities) throws Exception {
+    public <S extends P> int deleteAll(Collection<S> entities) throws Exception {
         if (entities == null) {
             return 0;
         }
@@ -262,7 +255,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
         return entities.size();
     }
 
-    public int delete(T entity) throws Exception {
+    public int delete(P entity) throws Exception {
         return pubCommonDAO.delete(entity);
     }
 
@@ -270,8 +263,24 @@ public abstract class BaseDao<T, ID extends Serializable> {
         return pubCommonDAO.delete(get(id));
     }
 
-    public int save(T entity) throws Exception {
+    public int save(P entity) throws Exception {
         return pubCommonDAO.save(entity);
+    }
+
+    public int update(P entity) throws Exception {
+        return pubCommonDAO.update(entity);
+    }
+
+    public int saveOrUpdate(P entity) throws Exception {
+        return pubCommonDAO.saveOrUpdate(entity);
+    }
+
+    public int saveOrUpdateAll(final List<P> entities) {
+        if (entities == null) {
+            return 0;
+        }
+        pubCommonDAO.getHibernateTemplate().saveOrUpdateAll(entities);
+        return entities.size();
     }
 
     public static final int BATCH_SIZE = 512;
@@ -296,6 +305,71 @@ public abstract class BaseDao<T, ID extends Serializable> {
         StringBuilder sql = new StringBuilder();
         appendParamStr(sql, paramCount);
         return sql.toString();
+    }
+
+    private Map<String, String> fieldMap = new HashMap<>();
+
+    @PostConstruct
+    protected void init() {
+        registerSortField(FrameworkConstants.SORT_FIELD_TIME, "updateTime");
+
+        registerSortField4Suffix(FrameworkConstants.SORT_FIELD_ID, "Id");
+        registerSortField4Suffix(FrameworkConstants.SORT_FIELD_ORDER, "Order");
+        registerSortField4Suffix(FrameworkConstants.SORT_FIELD_NAME, "Name");
+    }
+
+    protected void registerSortField(String sortField, String sortFieldName) {
+        if (Utils.isEmpty(sortField) || Utils.isEmpty(sortFieldName)) {
+            return;
+        }
+        String oldName = fieldMap.get(sortField);
+        if (oldName != null) {
+            FrameworkHelper.LOG.warn("The field[" + sortField + "] has been registered.");
+        } else {
+            fieldMap.put(sortField, sortFieldName);
+        }
+    }
+
+    protected void registerSortField4Suffix(String sortField, String sortSuffixFieldName) {
+        if (Utils.isEmpty(sortField) || Utils.isEmpty(sortSuffixFieldName) || Utils.isEmpty(sortPreFieldName())) {
+            return;
+        }
+        registerSortField(sortField, sortPreFieldName() + sortSuffixFieldName);
+    }
+
+    protected String sortPreFieldName() {
+        return "";
+    }
+
+    protected String getSortFieldName(String sortField) {
+        return fieldMap.get(sortField);
+    }
+
+    protected String getSortSql(List<SortDefine> sortList, String tableAlias) {
+        StringBuilder sortSql = new StringBuilder();
+        if (Utils.notEmpty(sortList)) {
+            boolean isFirst = true;
+            tableAlias = tableAlias == null ? "" : tableAlias;
+            for (SortDefine sort : sortList) {
+                String fieldName = getSortFieldName(sort.getField());
+                if (Utils.notEmpty(fieldName)) {
+                    if (isFirst) {
+                        isFirst = false;
+                    } else {
+                        sortSql.append(',');
+                    }
+                    sortSql.append(tableAlias).append('.').append(fieldName);
+                    if (Utils.notEmpty(sort.getDirection())) {
+                        sortSql.append(' ').append(sort.getDirection());
+                    }
+                }
+            }
+        }
+        return sortSql.toString();
+    }
+
+    protected String getSortFields(List<SortDefine> sortList) {
+        return getSortSql(sortList, "t");
     }
 
 }

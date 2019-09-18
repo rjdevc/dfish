@@ -178,7 +178,7 @@ public class FileController extends BaseController {
             @Override
             public void run() {
                 // 本应该先提前判断再进行获取压缩,暂时不考虑这些个别情况(多损耗性能)
-                String fileId = fileService.decId(uploadItem.getId());
+                String fileId = fileService.decrypt(uploadItem.getId());
                 PubFileRecord fileRecord = fileService.get(fileId);
                 if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
                     LogUtil.warn("生成缩略图出现异常:原记录文件存储记录丢失[" + fileId + "]");
@@ -280,7 +280,7 @@ public class FileController extends BaseController {
     @ResponseBody
     public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String enFileId = request.getParameter("fileId");
-        String fileId = fileService.decId(enFileId);
+        String fileId = fileService.decrypt(enFileId);
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
         boolean inline = "1".equals(request.getParameter("inline"));
         // 目前文件下载统一默认都是原件下载
@@ -427,7 +427,7 @@ public class FileController extends BaseController {
     @ResponseBody
     public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String enFileId = request.getParameter("fileId");
-        String fileId = fileService.decId(enFileId);
+        String fileId = fileService.decrypt(enFileId);
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
 //		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]");
         // 获取参数
@@ -516,7 +516,7 @@ public class FileController extends BaseController {
     public Object preview(HttpServletRequest request) throws Exception {
         // FIXME 目前仅图片预览方法,如果是文件预览需做处理,不支持预览可能直接下载
         String enFileId = request.getParameter("fileId");
-        String fileId = fileService.decId(enFileId);
+        String fileId = fileService.decrypt(enFileId);
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
 
         if (fileRecord != null) {

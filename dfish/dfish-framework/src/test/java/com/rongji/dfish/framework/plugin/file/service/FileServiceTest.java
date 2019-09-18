@@ -16,46 +16,9 @@ public class FileServiceTest {
 		System.out.println(items.size());
 
 		String enFileId = "rV3URGH9fc6XT1tVI2bMUImVNXT_pdOo1uVnBN2oSiP-ykKUzf3e3w..";
-
-		System.out.println(decId(enFileId));
+		FileService fileService = new FileService();
+		System.out.println(fileService.decrypt(enFileId));
 		
 	}
 
-	protected static final String SECRET_KEY = "DFISH";
-
-	protected static StringCryptor CRY = CryptFactory.getStringCryptor(
-			CryptFactory.BLOWFISH, CryptFactory.UTF8,
-			CryptFactory.URL_SAFE_BASE64, SECRET_KEY);
-
-	/**
-	 * 加密文件编号
-	 *
-	 * @param id 文件编号
-	 * @return 加密的文件编号
-	 */
-	public static String encId(String id) {
-		if (Utils.isEmpty(id)) {
-			return id;
-		}
-		return CRY.encrypt(id);
-	}
-
-	/**
-	 * 解密编号
-	 *
-	 * @param encId 加密的编号
-	 * @return 编号
-	 */
-	public static String decId(String encId) {
-		if (Utils.isEmpty(encId)) {
-			return encId;
-		}
-		try {
-			return CRY.decrypt(encId);
-		} catch (Exception e) {
-			FrameworkHelper.LOG.error("解密编号出错", e);
-			return null;
-		}
-	}
-	
 }

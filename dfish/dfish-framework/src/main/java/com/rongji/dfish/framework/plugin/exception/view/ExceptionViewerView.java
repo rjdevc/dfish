@@ -24,7 +24,7 @@ import com.rongji.dfish.ui.widget.PageBar;
 import com.rongji.dfish.ui.widget.Toggle;
 @Component
 public class ExceptionViewerView {
-	public View buildListView(List<PubExptRecord> recs, Page page, String typeId) {
+	public View buildListView(List<PubExptRecord> recs, Page page, Long typeId) {
 		VerticalLayout root=new VerticalLayout("f_root");
 		View view=new View().setNode(root);
 		String titleText="<a href='javascript:;' onclick=\"VM(this).reload('exceptionViewer/changeLock')\" style=\"float:right\">"+(ExceptionManager.getInstance().isEnabled()?"[关闭]":"[打开]")+"</a>"+
@@ -32,8 +32,8 @@ public class ExceptionViewerView {
 				+"<p style=\"float:right\">&nbsp;&nbsp;&nbsp;&nbsp;</p><a href='javascript:;' onclick=\"VM(this).reload('exceptionViewer/removeRepit')\" style=\"float:right\">[去重2]</a>"
 				+"<p style=\"float:right\">&nbsp;&nbsp;&nbsp;&nbsp;</p><a href='javascript:;' onclick=\"VM(this).reload('exceptionViewer/distinct')\" style=\"float:right\">[去重]</a>";
 		ExceptionManager ep=ExceptionManager.getInstance();
-		if(Utils.notEmpty(typeId)){
-			ExceptionTypeInfo eti=ep.getExceptionType(new Long(typeId));
+		if(typeId != null){
+			ExceptionTypeInfo eti=ep.getExceptionType(typeId);
 			titleText="查询l类型为 <b>("+typeId+")"+eti.getClassName()+"</b> 的异常记录, [<a href='javascript:;' onclick=\"VM(this).reload('exceptionViewer/showAsLog')\">清空条件</a>]";
 		}
 		root.add(new Html(titleText).setStyle("margin:0 6px;border :1px dashed #CCC;background-color:#EEE;padding:8px 12px;"),"40");
@@ -46,7 +46,7 @@ public class ExceptionViewerView {
 		
 		return view;
 	}
-	public PageBar buildPageBar(Page page, String typeId) {
+	public PageBar buildPageBar(Page page, Long typeId) {
 		PageBar pageBar= new PageBar("f_page",PageBar.TYPE_BUTTONGROUP);
 		pageBar.setSrc("exceptionViewer/logTurnPage?cp=$0"+(typeId==null?"":"&typeId="+typeId));
 		pageBar.setBtncount(5);

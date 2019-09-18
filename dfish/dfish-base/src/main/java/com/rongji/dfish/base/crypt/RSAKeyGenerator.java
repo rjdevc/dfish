@@ -70,7 +70,7 @@ public final class RSAKeyGenerator {
       calculate();
       //now test vailable
       StringCryptor tool = CryptFactory.getStringCryptor(
-          CryptFactory.RSA, CryptFactory.UTF8, CryptFactory.BASE32,
+          CryptFactory.ALGORITHMS_RSA, CryptFactory.ENCODING_UTF8, CryptFactory.PRESENT_STYLE_BASE32,
           new BigInteger[] {publicKey, privateKey, modulus});
       //here we swap the publicKey and privateKey
 

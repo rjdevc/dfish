@@ -42,7 +42,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	/**
 	 * 默认添加的组件所占的列数(当组件没有设定列数时,将使用该值)
 	 */
-	private int defaultOccupy = 1;
+	private int defaultOccupy = 4;
 	/**
 	 * 是否需要重构GridLayout中的表单元素
 	 */
@@ -357,7 +357,7 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * @return 本身,这样以便更好地设置参数
 	 */
 	public FlexGrid addLabelRow(LabelRow<?> labelRow) {
-		return addLabelRow(labelRow, 4);
+		return addLabelRow(labelRow, defaultOccupy);
 	}
 	/**
 	 * 添加带有标题的行组件

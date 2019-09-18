@@ -48,12 +48,20 @@ public class ExceptionViewerController extends BaseController {
 		// FIXME
 		// 临时补一个方法,作为入口地址,以免其他系统已经调用了还要改入口地址,此方法与showAsLog相同,下次做改造的时候需要验证测试,并将showAsLog方法去除
 		Page page = getPage(request);
-		String typeId = request.getParameter("typeId");
 
-		List<PubExptRecord> recs = exceptionViewerService.findRecords(typeId, page);
+		Long typeId = parseTypeIdValue(request.getParameter("typeId"));
+
+		List<PubExptRecord> recs = exceptionViewerService.findRecords(page, typeId);
 		View view = exceptionViewerView.buildListView(recs, page, typeId);
 
 		return view;
+	}
+
+	private Long parseTypeIdValue(String typeId) {
+		if (Utils.isEmpty(typeId)) {
+			return null;
+		}
+		return new Long(typeId);
 	}
 
 	@RequestMapping("/showAsLog")
@@ -61,9 +69,9 @@ public class ExceptionViewerController extends BaseController {
 	public Object showAsLog(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Page page = getPage(request);
-		String typeId = request.getParameter("typeId");
+		Long typeId = parseTypeIdValue(request.getParameter("typeId"));
 
-		List<PubExptRecord> recs = exceptionViewerService.findRecords(typeId, page);
+		List<PubExptRecord> recs = exceptionViewerService.findRecords(page, typeId);
 		View view = exceptionViewerView.buildListView(recs, page, typeId);
 
 		return view;
@@ -74,9 +82,9 @@ public class ExceptionViewerController extends BaseController {
 	public Object logTurnPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Page page = getPage(request);
-		String typeId = request.getParameter("typeId");
+		Long typeId = parseTypeIdValue(request.getParameter("typeId"));
 
-		List<PubExptRecord> recs = exceptionViewerService.findRecords(typeId, page);
+		List<PubExptRecord> recs = exceptionViewerService.findRecords(page, typeId);
 		CommandGroup cg = new CommandGroup();
 		cg.add(new ReplaceCommand().setNode(exceptionViewerView.buildGrid(recs)));
 		cg.add(new ReplaceCommand().setNode(exceptionViewerView.buildPageBar(page, typeId)));

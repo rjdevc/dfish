@@ -2,11 +2,13 @@ package com.rongji.dfish.framework.plugin.file.service;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.crypt.CryptFactory;
+import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.BaseService;
+import com.rongji.dfish.framework.service.BaseService4Simple;
 import com.rongji.dfish.misc.util.JsonUtil;
 import com.rongji.dfish.ui.form.UploadItem;
 import org.hibernate.HibernateException;
@@ -24,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class FileService extends BaseService<PubFileRecord, String> {
+public class FileService extends BaseService4Simple<PubFileRecord> {
 
     public static final String STATUS_NORMAL = "0";
     public static final String STATUS_DELETE = "1";
@@ -352,7 +354,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         List<UploadItem> itemList = parseUploadItems(itemJson);
         List<String> fileIds = new ArrayList<>();
         for (UploadItem item : itemList) {
-            String fileId = decId(item.getId());
+            String fileId = decrypt(item.getId());
             if (Utils.isEmpty(fileId)) {
                 continue;
             }
@@ -672,7 +674,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         List<String> newFileIds = new ArrayList<>();
         if (Utils.notEmpty(itemList)) {
             for (UploadItem item : itemList) {
-                newFileIds.add(decId(item.getId()));
+                newFileIds.add(decrypt(item.getId()));
             }
         }
         if (itemList.size() > BATCH_SIZE) {
@@ -774,7 +776,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         List<String> fileIds = new ArrayList<String>(itemList.size());
         for (UploadItem item : itemList) {
             try {
-                String fileId = decId(item.getId());
+                String fileId = decrypt(item.getId());
                 if (Utils.isEmpty(fileId)) {
                     continue;
                 }
@@ -825,7 +827,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
             return null;
         }
         UploadItem item = new UploadItem();
-        String encId = encId(fileRecord.getFileId());
+        String encId = encrypt(fileRecord.getFileId());
         item.setId(encId);
         item.setName(fileRecord.getFileName());
         item.setSize(fileRecord.getFileSize());

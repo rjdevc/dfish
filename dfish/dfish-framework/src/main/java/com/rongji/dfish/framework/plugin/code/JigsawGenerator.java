@@ -62,7 +62,7 @@ public class JigsawGenerator {
     /**
      * 大拼图缺口背景色
      */
-    private Color gapsColor;
+    private Color gapColor = new Color(255, 255, 255, 220);
 
     public int getBigWidth() {
         return bigWidth;
@@ -96,15 +96,12 @@ public class JigsawGenerator {
         this.imageFolder = imageFolder;
     }
 
-    public Color getGapsColor() {
-        if (gapsColor == null) {
-            gapsColor = new Color(255, 255, 255, 100);
-        }
-        return gapsColor;
+    public Color getGapColor() {
+        return gapColor;
     }
 
-    public void setGapsColor(Color gapsColor) {
-        this.gapsColor = gapsColor;
+    public void setGapColor(Color gapColor) {
+        this.gapColor = gapColor;
     }
 
     public double getErrorRange() {
@@ -312,7 +309,7 @@ public class JigsawGenerator {
 //        Graphics2D g = rawImage.createGraphics();
 //        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 1.0f));
 
-            g.setColor(getGapsColor());
+            g.setColor(getGapColor());
             // 必须调用这个方法将背景色填充到图片去
             g.fillRect(x, y, width, height);
 
@@ -368,7 +365,7 @@ public class JigsawGenerator {
 //            g2.fillRect(0, 0, destImage.getWidth(), destImage.getHeight());
             g.drawImage(subImage, 0, y, width, height, null);
             // 小图片周边虚化
-            g.setColor(getGapsColor());
+            g.setColor(getGapColor());
             // 虚化大小
             int blurSize = 1;
             // 上

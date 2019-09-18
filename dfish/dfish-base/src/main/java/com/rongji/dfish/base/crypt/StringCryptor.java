@@ -27,24 +27,24 @@ public abstract class StringCryptor {
    * 内码转化成字符串所用的方法
    * 这里用十六进制字符表达
    */
-  public static final int HEX_STRING = 1;
+  public static final int PRESENT_STYLE_HEX_STRING = 1;
 
   /**
    * 内码转化成字符串所用的方法
    * 这里用BASE64算法转化
    */
-  public static final int BASE64 = 2;
+  public static final int PRESENT_STYLE_BASE64 = 2;
 
   /**
    * 内码转化成字符串所用的方法
    * 这里用BASE64算法转化然後把BASE64的+/=符號替換成網絡傳輸中不失真的字符-_.
    */
-  public static final int URL_SAFE_BASE64 = 3;
+  public static final int PRESENT_STYLE_URL_SAFE_BASE64 = 3;
   /**
    * 内码转化成字符串所用的方法
    * 这里用BASE32算法转化
    */
-  public static final int BASE32 = 4;
+  public static final int PRESENT_STYLE_BASE32 = 4;
   
   /**
    * 先调用压缩算法，再转成BASE_64 
@@ -52,7 +52,7 @@ public abstract class StringCryptor {
    * @deprecated 一般是UTF8_GZIP 配合BASE64来使用。很少使用GZIP_WITH_BASE64 按一般情况估计，原文GZIP会有较好的压缩率，而密文GZIP的压缩率一般较低
    */
   @Deprecated
-  public static final int GZIP_WITH_BASE64 = 5;
+  public static final int PRESENT_STYLE_GZIP_WITH_BASE64 = 5;
   
   /**
    * 字符集只支持GBK和UTF-8两种
@@ -61,19 +61,19 @@ public abstract class StringCryptor {
   /**
    * 字符集用GBK
    */
-  public static final String GBK = "GBK";
+  public static final String ENCODING_GBK = "GBK";
   /**
    * 字符集用UTF-8
    */
-  public static final String UTF8 = "UTF-8";
+  public static final String ENCODING_UTF8 = "UTF-8";
   /**
    * 字符集用UTF-8,并对产生的byte数组进行一次GZIP压缩
    */
-  public static final String UTF8_GZIP = "UTF8_GZIP";
+  public static final String ENCODING_UTF8_GZIP = "UTF8_GZIP";
   /**
    * 字符集用UNICODE
    */
-  public static final String UNICODE = "UNICODE";
+  public static final String ENCODING_UNICODE = "UNICODE";
 
 //  private static final BASE64Decoder B64DE = new BASE64Decoder();
 //
@@ -106,19 +106,19 @@ public abstract class StringCryptor {
     }
     byte[] b = null;
     switch (presentStyle) {
-      case HEX_STRING: {
+      case PRESENT_STYLE_HEX_STRING: {
         b = hex2byte(str);
         break;
       }
-      case BASE64: {
+      case PRESENT_STYLE_BASE64: {
         b = Base64.decode(str.replace("\n", "").replace("\r", "").getBytes());
         break;
       }
-      case BASE32: {
+      case PRESENT_STYLE_BASE32: {
           b = Base32.decode(str.getBytes());
           break;
       }
-      case GZIP_WITH_BASE64: {
+      case PRESENT_STYLE_GZIP_WITH_BASE64: {
     	  b = Base64.decode(str.replace("\n", "").replace("\r", "").getBytes());
     	  int i=0;
     	  byte[] buff=new byte[8192];
@@ -136,7 +136,7 @@ public abstract class StringCryptor {
 			}
           break;
       }
-      case URL_SAFE_BASE64: {
+      case PRESENT_STYLE_URL_SAFE_BASE64: {
         b = UrlSafeBase64.decode(str);
         break;
       }
@@ -154,7 +154,7 @@ public abstract class StringCryptor {
     }
 
     try {
-    	if(UTF8_GZIP.equals(encoding)){
+    	if(ENCODING_UTF8_GZIP.equals(encoding)){
     		ByteArrayOutputStream baos=new ByteArrayOutputStream();
     		  int i=0;
         	  byte[] buff=new byte[8192];
@@ -165,7 +165,7 @@ public abstract class StringCryptor {
 				}
 				zis.close();
 				de=baos.toByteArray();
-				return new String(de, UTF8);
+				return new String(de, ENCODING_UTF8);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -196,8 +196,8 @@ public abstract class StringCryptor {
     }
     byte[] b = null;
     try {
-    	if(UTF8_GZIP.equals(encoding)){
-    		b = str.getBytes(UTF8);
+    	if(ENCODING_UTF8_GZIP.equals(encoding)){
+    		b = str.getBytes(ENCODING_UTF8);
     		ByteArrayOutputStream baos=new ByteArrayOutputStream();
     		try {
 	    		GZIPOutputStream zos=new GZIPOutputStream(baos);
@@ -228,11 +228,11 @@ public abstract class StringCryptor {
       throw new RuntimeException("Can not encrypt the code!\r\nsrc=" + str);
     }
     switch (presentStyle) {
-      case HEX_STRING:
+      case PRESENT_STYLE_HEX_STRING:
         return byte2hex(en);
-      case BASE64:
+      case PRESENT_STYLE_BASE64:
         return new String(Base64.encode(en)).replace("\n", "").replace("\r", "");
-      case GZIP_WITH_BASE64:
+      case PRESENT_STYLE_GZIP_WITH_BASE64:
 //    	  en=LZ77.encode(en);
     	ByteArrayOutputStream baos=new ByteArrayOutputStream();
   		try {
@@ -244,9 +244,9 @@ public abstract class StringCryptor {
 			e.printStackTrace();
 		}
   		return null;
-      case BASE32:
+      case PRESENT_STYLE_BASE32:
           return  new String(Base32.encode(en));
-      case URL_SAFE_BASE64:
+      case PRESENT_STYLE_URL_SAFE_BASE64:
        return UrlSafeBase64.encode(en);
     }
     return null;
@@ -327,8 +327,8 @@ public abstract class StringCryptor {
   }
 	protected byte[] getKeyFromString(String arg) {
 		String encoding=this.encoding;
-		if(UTF8_GZIP.equals(encoding)){
-			encoding=UTF8;
+		if(ENCODING_UTF8_GZIP.equals(encoding)){
+			encoding=ENCODING_UTF8;
 		}
 		if(arg.length()==32){
 			try {

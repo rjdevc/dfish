@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.config;
 
+import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.CryptFactory;
 import com.rongji.dfish.base.crypt.StringCryptor;
 
@@ -17,21 +18,14 @@ import com.rongji.dfish.base.crypt.StringCryptor;
  */
 public class DefaultPropertyCryptor implements PropertyCryptor {
 
-	/**
-	 * 密钥
-	 */
-	private String secretKey = "DFISH";
-	/**
-	 * 加密器
-	 */
-	private StringCryptor cryptor;
+	private CryptProvider cryptProvider;
 
-	public String getSecretKey() {
-		return secretKey;
+	public CryptProvider getCryptProvider() {
+		return cryptProvider;
 	}
 
-	public void setSecretKey(String secretKey) {
-		this.secretKey = secretKey;
+	public void setCryptProvider(CryptProvider cryptProvider) {
+		this.cryptProvider = cryptProvider;
 	}
 
 	/**
@@ -40,11 +34,10 @@ public class DefaultPropertyCryptor implements PropertyCryptor {
 	 * @author YuLM
 	 */
 	protected StringCryptor getCryptor() {
-		if (cryptor == null) {
-			cryptor = CryptFactory.getStringCryptor(CryptFactory.BLOWFISH, CryptFactory.UTF8,
-					CryptFactory.BASE32, secretKey);
+		if (cryptProvider == null) {
+			cryptProvider = new CryptProvider();
 		}
-		return cryptor;
+		return cryptProvider.getCryptor();
 	}
 	
 	@Override

@@ -601,11 +601,11 @@ public class ProgressManager {
 //	}
 	
 	private StringCryptor getCryptor() {
-		String algorithms = CryptFactory.BLOWFISH;
+		String algorithms = CryptFactory.ALGORITHMS_BLOWFISH;
 		String secretKey = "DFISH";
 //		String encoding = "UTF-8";
-		int presentStyle = CryptFactory.BASE32;
-		StringCryptor sc = CryptFactory.getStringCryptor(algorithms, StringCryptor.UTF8 , presentStyle, secretKey);// 密钥
+		int presentStyle = CryptFactory.PRESENT_STYLE_BASE32;
+		StringCryptor sc = CryptFactory.getStringCryptor(algorithms, StringCryptor.ENCODING_UTF8 , presentStyle, secretKey);// 密钥
 		return sc;
 	}
 	

@@ -77,7 +77,7 @@ public class FileUpload4UeditorPlugin implements FileUploadPlugin {
                 fileUrl = "file/thumbnail?fileId=$fileId";
             }
             // FIXME 哪些附件未被启用还需进一步判断
-            fileService.updateFileLink(fileService.decId(uploadItem.getId()), name());
+            fileService.updateFileLink(fileService.decrypt(uploadItem.getId()), name());
 
             resultJson = "{\"state\":\"SUCCESS\"," +
                     "\"url\":\""+fileUrl.replace("$fileId", uploadItem.getId())+"\"," +

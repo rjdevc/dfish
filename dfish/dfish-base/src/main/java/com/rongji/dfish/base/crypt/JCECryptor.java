@@ -72,7 +72,7 @@ public final class JCECryptor extends StringCryptor {
                 key = (byte[]) arg;
             } else if (arg instanceof String) {
                 try {
-                    key = ((String) arg).getBytes(UTF8_GZIP.equals(encoding)?UTF8:encoding);
+                    key = ((String) arg).getBytes(ENCODING_UTF8_GZIP.equals(encoding)?ENCODING_UTF8:encoding);
                 } catch (UnsupportedEncodingException e) {
                     throw new IllegalArgumentException("The encoding setting ("
                             + encoding + ") is unavilable!");
