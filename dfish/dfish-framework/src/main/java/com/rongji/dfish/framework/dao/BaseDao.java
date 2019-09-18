@@ -247,7 +247,7 @@ public abstract class BaseDao<P, ID extends Serializable> {
         return (P) pubCommonDAO.getHibernateTemplate().get(entityClass, id);
     }
 
-    public <S extends P> int deleteAll(Collection<S> entities) throws Exception {
+    public int deleteAll(Collection<P> entities) throws Exception {
         if (entities == null) {
             return 0;
         }

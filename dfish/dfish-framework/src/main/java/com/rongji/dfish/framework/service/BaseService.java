@@ -143,6 +143,10 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return vos;
     }
 
+    public String getNewId() {
+        return getDao().getNewId();
+    }
+
     protected void beforeSave(V vo) throws Exception {
     }
 
