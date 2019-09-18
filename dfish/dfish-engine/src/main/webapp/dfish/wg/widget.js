@@ -416,13 +416,17 @@ _compileTemplate = function( g, d, s ) { return new Template( s || g.x.template,
 TemplateWidget = $.createClass( {
 	Const: function( x, t ) {
 		this.x = x;
+		this.id = t.wg.id + '__template';
 		this.parentNode = t.wg;
 	},
 	Prototype: {
 		isWidget: T,
 		data: function() {
 			return _proto.data.apply( this, arguments );
-		}
+		},
+		closest: function( a ) {
+			return this.parentNode.closest( a );
+		},
 	}
 } ),
 _regAt = function( x, k, v ) {
@@ -9129,7 +9133,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		className: 'w-leaf w-grid-leaf',
 		_pad_left: 0,
 		tr: _grid_tr,
@@ -9301,7 +9305,7 @@ GridRow = define.widget( 'grid/row', {
 		W.call( this, x, p, n );
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -9433,7 +9437,7 @@ TD = define.widget( 'td', {
 		W.call( this, x, p );
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		// @implement
 		x_childtype: function( t ) {
 			return _td_wg[ t ] ? 'grid/' + t : t;
@@ -9690,7 +9694,7 @@ TCell = define.widget( 'tcell', {
 		W.call( this, x, p, -1 );
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		x_childtype: $.rt( 'td' ),
 		scaleWidth: function( a ) {
 			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
@@ -9721,7 +9725,7 @@ TBody = define.widget( 'tbody', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		// @implement
 		x_childtype: $.rt( 'tr' ),
 		// @implement
@@ -9820,7 +9824,7 @@ Col = define.widget( 'col', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		th: function() {
 			var t = this.rootNode.thead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
@@ -9846,7 +9850,7 @@ Col = define.widget( 'col', {
 Colgroup = define.widget( 'colgroup', {
 	Extend: 'horz/scale',
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		SCALE_COVER: T,
 		x_childtype: $.rt( 'col' ),
 		insertCol: function( a, b ) {
@@ -9879,7 +9883,7 @@ Table = define.widget( 'table', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		html: function() {
 			var s = '<table id=' + this.id + ' class="w-grid-table w-grid-face-' + this.rootNode._face + '" cellspacing=0 cellpadding=' + this.rootNode._pad;
 			if ( br.ms ) {
@@ -9932,7 +9936,7 @@ GridHead = define.widget( 'grid/head', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		className: 'w-grid-thead'
 	}
 } ),
@@ -9962,7 +9966,7 @@ GridBody = define.widget( 'grid/body', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		className: 'w-grid-tbody'
 	}
 } ),
@@ -10359,10 +10363,30 @@ Grid = define.widget( 'grid', {
 		}
 	}
 });
-/* `flex` */
-Flex = define.widget( 'flex', {
+/* `form` */
+Form = define.widget( 'form', {
 	Const: function( x, p ) {
-		//var 
+		var c = [], rows = [], cols = x.cols || 12;
+		for ( var i = 0; i < cols; i ++ ) {
+			c.push( { field: '' + i, width: '*' } );
+		}
+		for ( var i = 0, j = 0, n = x.nodes, l = n.length, tr = {}; i < l; i ++ ) {
+			j == 0 && rows.push( tr );
+			var e = n[ i ],
+				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
+			x.pub && $.extend( td, x.pub );
+			!td.colspan && (td.colspan = 4);
+			tr[ j ] = td;
+			j += td.colspan;
+			if ( j >= cols ) {
+				td.colspan -= cols - j;
+				j = 0;
+				tr = {};
+			}
+		}
+		var y = $.extend( {}, x, { columns: c, tbody: { rows: rows } } );
+		delete y.pub;
+		Grid.call( this, y, p );
 	},
 	Extend: 'grid'
 } );

@@ -152,6 +152,7 @@
 		          { "id": "td", "text": "td", "icon": ".icon .icon-class" },
 		          { "id": "tr", "text": "tr", "icon": ".icon .icon-class" }
 		        ] },
+		        { "id": "form", "text": "form", "icon": ".icon .icon-class" },
 		        { "id": "horz", "text": "horz", "icon": ".icon .icon-class" },
 		        { "id": "vert", "text": "vert", "icon": ".icon .icon-class" },
 		        { "id": "view", "text": "view", "icon": ".icon .icon-class" },

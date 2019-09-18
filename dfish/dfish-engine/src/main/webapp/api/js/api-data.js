@@ -1825,6 +1825,23 @@ define( {
       { name: '.z-empty', remark: '没有子节点时的样式。' }
     ]
   },
+  "form": {
+  	title: 'form',
+  	remark: '布局表格。',
+  	extend: 'widget',
+    Config: [
+      { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
+      { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
+      { name: 'nobr', type: 'Boolean', remark: '内容不换行。' },
+      { name: 'pub', type: 'Object', remark: '为每一个单元格设置默认属性' },
+      { name: 'cols', type: 'Number', remark: '列数。默认值为12。' },
+      { name: 'nodes', type: 'Array', remark: '子节点集合。' },
+      { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' }
+    ],
+    Methods: [
+      { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
+    ]
+  },
   "vert": {
   	title: 'vert',
   	remark: '子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
@@ -2130,7 +2147,8 @@ define( {
         { name: 'bFocus', type: 'Boolean', optional: true, remark: '是否全选。' }
       ] },
       { name: 'getFocus()', remark: '获取焦点图widget。' },
-      { name: 'getFocusAll()', remark: '获取所有焦点图widget，返回一个数组。' }
+      { name: 'getFocusAll()', remark: '获取所有焦点图widget，返回一个数组。' },
+      { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ],
     Classes: [
       { name: '.w-album', remark: '基础样式。' },
@@ -2253,7 +2271,8 @@ define( {
           function() {
             vm.find( 'myLeaf' ).reloadForAdd();
           }
-      ] }
+      ] },
+      { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ],
     Classes: [
       { name: '.w-tree', remark: '基础样式。' },
@@ -2364,7 +2383,8 @@ define( {
     Methods: [
       { name: 'text(content)', remark: '更新内容。', param: [
         { name: 'content', type: 'String', remark: 'HTML内容。支持 &lt;d:wg&gt; 标签。' }
-      ] }
+      ] },
+      { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ],
     Classes: [
       { name: '.w-html', remark: '基础样式。' }
