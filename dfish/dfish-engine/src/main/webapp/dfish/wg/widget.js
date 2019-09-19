@@ -10373,12 +10373,18 @@ Form = define.widget( 'form', {
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
 			x.pub && $.extend( td, x.pub );
 			!td.colspan && (td.colspan = 4);
-			tr[ j ] = td;
-			j += td.colspan;
-			if ( j >= cols ) {
-				td.colspan -= cols - j;
-				j = 0;
+			if ( j + td.colspan > cols ) {
 				tr = {};
+				tr[ 0 ] = td;
+				j = td.colspan;
+				rows.push( tr );
+			} else {
+				tr[ j ] = td;
+				j += td.colspan;
+				if ( j == cols ) {
+					j = 0;
+					tr = {};
+				}
 			}
 		}
 		var y = $.extend( {}, x, { columns: c, tbody: { rows: rows } } );
