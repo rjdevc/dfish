@@ -894,27 +894,6 @@ define( {
             ] }
           }
 	  ] },
-	  { name: '@w-switch(expr)', remark: '条件选择表达式。', example: [
-          function() {
-          	/// 数据源
-          	return~
-            { data: { flag: 1, name: "张三" } }
-          },
-          function() {
-          	/// 模板
-          	return~
-            {
-              "@w-switch($data.flag==1)": { "type": "text", "name": "name", "@value": "$data.name" },
-              "@w-switch-default": { "type": "html", "@text": "@data.name" }
-            }
-          },
-          function() {
-          	/// 上述数据源+模板输出结果为：
-          	return~
-            { "type": "text", "name": "name", "value": "张三" }
-          }
-	  ] },
-	  { name: '@w-switch-default', remark: '条件选择表达式。' },
 	  { name: '@w-if', remark: '条件表达式。', example: [
           function() {
           	/// 数据源
@@ -922,7 +901,7 @@ define( {
             { data: { flag: 1, name: "张三" } }
           },
           function() {
-          	/// 模板
+          	/// 范例1: 兄弟节点判断输出
           	return~
             {
               "type": "buttonbar", "nodes": [
@@ -932,14 +911,27 @@ define( {
             }
           },
           function() {
-          	/// 上述数据源+模板输出结果为：
+          	/// 范例1: 上述数据源+模板输出结果为：
           	return~
             {
               "type": "buttonbar", "nodes": [
                 { "type": "button", "@text": "张三" }
               ]
             }
-          }
+          },
+          function() {
+          	/// 范例2: 单个节点判断输出
+          	return~
+            {
+              "@w-if($data.flag==1)": { "type": "text", "name": "name", "@value": "$data.name" },
+              "@w-else": { "type": "html", "text": "welcome" }
+            }
+          },
+          function() {
+          	/// 范例2: 上述数据源+模板输出结果为：
+          	return~
+            { "type": "text", "name": "name", "value": "张三" }
+          }          
 	  ] },
 	  { name: '@w-elseif', remark: '条件表达式。必须搭配 @w-if 使用。' },
 	  { name: '@w-else', remark: '条件表达式。必须搭配 @w-if 使用。' },
@@ -1828,6 +1820,7 @@ define( {
   "form": {
   	title: 'form',
   	remark: '布局表格。',
+  	ver: "3.2*",
   	extend: 'widget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
