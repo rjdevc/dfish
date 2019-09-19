@@ -26,7 +26,7 @@ public class CryptFactory {
      * 一个比较早期的加解密方法。一个字节改变可以改变8个字节的密文。安全性不是是很高。
      * 后面一般用多次加密的方法。多重DES。如Triple DES
      *
-     * @see #TRIPLE_DES
+     * @see #ALGORITHMS_TRIPLE_DES
      */
     public static final String ALGORITHMS_DES = "DES";
     /**
@@ -111,7 +111,7 @@ public class CryptFactory {
      *
      * @see #ALGORITHMS_DES
      */
-    public static final String TRIPLE_DES = "DESede";
+    public static final String ALGORITHMS_TRIPLE_DES = "DESede";
 
     /**
      * 字符集GBK
