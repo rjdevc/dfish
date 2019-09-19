@@ -3454,6 +3454,7 @@ Img = define.widget( 'img', {
 		W.apply( this, arguments );
 		x.focusable && x.focus && $.classAdd( this, 'z-on' );
 		x.face && $.classAdd( this, 'z-face-' + x.face );
+		p.type === this.ROOT_TYPE && this.defaults( { width: -1, height: -1 } );
 	},
 	Listener: {
 		body: {
@@ -3478,7 +3479,6 @@ Img = define.widget( 'img', {
 			}
 		}
 	},
-	Default: { width: -1, height: -1 },
 	Prototype: {
 		ROOT_TYPE: 'album',
 		className: 'w-img',
