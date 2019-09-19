@@ -10367,21 +10367,33 @@ Form = define.widget( 'form', {
 		for ( var i = 0; i < cols; i ++ ) {
 			c.push( { field: '' + i, width: '*' } );
 		}
-		for ( var i = 0, j = 0, n = x.nodes, l = n.length, tr = {}; i < l; i ++ ) {
+		for ( var i = 0, j = 0, n = x.nodes, l = n.length, tr = {}, rp = {}; i < l; i ++ ) {
 			j == 0 && rows.push( tr );
 			var e = n[ i ],
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
 			x.pub && $.extend( td, x.pub );
 			!td.colspan && (td.colspan = 4);
-			if ( j + td.colspan > cols ) {
+			(td.colspan > cols) && (td.colspan = cols);
+			if ( td.rowspan ) {
+				for ( var k = 0; k < td.rowspan - 1; k ++ ) {
+					rp[ i + k + 1 ] = {};
+					rp[ i + k + 1 ][ j ] = td.colspan;
+				}
+			}
+			var rv = 0;
+			if ( rp[ i ] ) {
+				for ( var k = j; k < cols; k ++ )
+					if ( rp[ i ][ k ] ) rv += rp[ i ][ k ];
+			}
+			if ( j + td.colspan + rv > cols ) {
 				tr = {};
 				tr[ 0 ] = td;
-				j = td.colspan;
+				j = td.colspan + rv;
 				rows.push( tr );
 			} else {
 				tr[ j ] = td;
-				j += td.colspan;
-				if ( j == cols ) {
+				j += td.colspan + rv;
+				if ( j >= cols ) {
 					j = 0;
 					tr = {};
 				}
