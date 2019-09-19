@@ -487,18 +487,15 @@ Template = $.createClass( {
 				var d = _getTemplate( b );
 				return d && this.compile( d, y );
 			}
-			if ( b = x[ '@w-if' ] ) {
-				if ( ! this.format( b, g, y ) )
-					return;
-			}
 			for ( var k in x ) {
 				var b = x[ k ];
 				if ( k.charAt( 0 ) === '@' ) {  //以@开头的是JS表达式
-					if ( k.indexOf( 'w-switch' ) === 1 ) {
-						if ( k === '@w-switch-default' )
-							f._switchdefault = b;
-						else
+					if ( k.indexOf( '@w-' ) === 0 ) {
+						if ( k.indexOf( '@w-if' ) === 0 || k.indexOf( '@w-elseif' ) === 0 ) {
 							$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
+						} else if ( k === '@w-else' ) {
+							f._switchdefault = b;
+						}
 					} else {
 						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );
 						d != N && (r[ k.substr( 1 ) ] = d);

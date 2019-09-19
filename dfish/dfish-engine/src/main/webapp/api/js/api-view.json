@@ -8,7 +8,7 @@
       	{ "type": "html", "width": 220, "align": "center", "text": "<i class=f-vi></i><img src=src/img/logo-white.png align=absmiddle height=25><span class=logo-text>JS Docs</span>" },
         {
           "type": "buttonbar", "id": "index-tabbar", "focusable": true, "cls": "bg-top index-tabbar", "style": "padding-top:23px", "hmin": 23,
-            "pub": { "cls": "index-tab", "closeable": true, "focusable": true, "on": { "click": "api.tabClick(this)" } },
+            "pub": { "cls": "index-tab", "closeable": true, "focusable": true, "escape": false, "on": { "click": "api.tabClick(this)" } },
           "nodes": [
             { "type": "button", "text": "简介", "focus": true, "id": "upgrade-btn", "target": "upgrade-con", "closeable": false }
           ]
@@ -118,8 +118,6 @@
 		  	    { "text": "@w-elseif", "id": "@w-elseif", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-else", "id": "@w-else", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-include", "id": "@w-include", "icon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@w-switch", "id": "@w-switch", "icon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@w-switch-default", "id": "@w-switch-default", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "$dataKey", "id": "$dataKey", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "$this", "id": "$this", "icon": ".icon .icon-component", "datasrc": "@" }
 		  	  ] },
@@ -152,7 +150,7 @@
 		          { "id": "td", "text": "td", "icon": ".icon .icon-class" },
 		          { "id": "tr", "text": "tr", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "form", "text": "form", "icon": ".icon .icon-class" },
+		        { "id": "form", "text": "form<sup>3.3+</sup>", "icon": ".icon .icon-class" },
 		        { "id": "horz", "text": "horz", "icon": ".icon .icon-class" },
 		        { "id": "vert", "text": "vert", "icon": ".icon .icon-class" },
 		        { "id": "view", "text": "view", "icon": ".icon .icon-class" },
