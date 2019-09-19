@@ -2133,6 +2133,8 @@ Xsrc = define.widget( 'xsrc', {
 						x = _compilePreload( this.x.preload, x );
 					}
 					if ( x ) {
+						if ( x.type && x.type !== this.type )
+							x = { type: this.type, node: x };
 						this.attr( x );
 						this.loaded = T;
 						this.init_nodes();
@@ -10376,8 +10378,7 @@ Form = define.widget( 'form', {
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {
 				for ( var k = 0; k < td.rowspan - 1; k ++ ) {
-					rp[ i + k + 1 ] = {};
-					rp[ i + k + 1 ][ j ] = td.colspan;
+					(rp[ i + k + 1 ] || (rp[ i + k + 1 ] = {}))[ j ] = td.colspan;
 				}
 			}
 			var rv = 0;
