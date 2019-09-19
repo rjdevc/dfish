@@ -525,7 +525,7 @@ Template = $.createClass( {
 								if ( ! (IF = this.format( m[ '@w-if' ], g, y )) ) continue;
 							} else if ( '@w-elseif' in m ) {
 								if ( IF || EIF || ! (EIF = this.format( m[ '@w-elseif' ], g, y )) ) continue;
-							} else if ( d = ('@w-else' in m) )
+							} else if ( d = (typeof m['@w-else'] === _STR) )
 								if ( IF || EIF ) continue;
 							if ( d ) {
 								m = $.extend( {}, m );
