@@ -829,7 +829,7 @@ W = define( 'widget', function() {
 		},
 		// 存取临时变量
 		data: function( a, b ) {
-			return b === U ? (this.x.data && this.x.data[ a ]) : ((this.x.data || (this.x.data = {}))[ a ] = b);
+			return arguments.length === 1 ? (this.x.data && this.x.data[ a ]) : ((this.x.data || (this.x.data = {}))[ a ] = b);
 		},
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
