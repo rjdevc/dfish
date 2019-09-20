@@ -39,7 +39,7 @@ _regTemplate = function( a, b ) {
 // 获取模板  /@a -> template id, b -> fn?
 _getTemplate = function( a, b ) {
 	var t = typeof a === _OBJ ? a : $.require( (cfg.template_dir || '') + a, b );
-	t && b && b();
+	t && b && b( t );
 	return t;
 },
 // 预装模板集合
@@ -2054,8 +2054,13 @@ Xsrc = define.widget( 'xsrc', {
 			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
 				var s = x.src;
-				if ( ! s && x.template )
-					s = {};
+				if ( ! s && x.template ) {
+					var t = _getTemplate( x.template );
+					if ( t && t.src ) {
+						x.src = s = t.src;
+					} else
+						s = {};
+				}
 				if ( s && typeof s === _OBJ ) {
 					this.type_view && _view_resources[ this.path ] && $.require( _view_resources[ this.path ] );
 					this._loadEnd( s );
@@ -2083,19 +2088,31 @@ Xsrc = define.widget( 'xsrc', {
 			}
 			return this.x.srcdata;
 		},
+		getSrc: function() {
+			var u = this._runtime_src;
+			if ( ! u ) {
+				var t = this.x.template;
+				if ( t ) {
+					typeof t === _STR && (t = _getTemplate( t ));
+					t && this.isContentData( t ) && t.src && (u = t.src);
+				}
+				!u && (u = this.attr( 'src' ));
+			}
+			return u && _url_format.call( this, u );
+		},
 		// @force: 强制刷新，不论是否在frame内
 		load: function( tar, fn, force ) {
 			if ( this.loading )
 				return;
 			this.showLoading();
-			var f = ! force && Frame.edge( this ), s = this.x.src;
+			var f = ! force && Frame.edge( this ), s = this.getSrc();
 			if ( ! f || f.parentNode.getFocus() == f ) {
 				this._load( tar, function( x ) {
 					if ( this.layout ) {
 						this.showLoading( F );
 						this.showLayout( tar );
 						fn && !(x instanceof Error) && fn.call( this, x );
-					} else if ( this.x.src && s != this.x.src ) {
+					} else if ( this.getSrc() && s != this.getSrc() ) {
 						this.reload( N, N, N, fn );
 					}
 				} );
@@ -2104,14 +2121,14 @@ Xsrc = define.widget( 'xsrc', {
 		_load: function( tar, fn, cache ) {
 			this.abort();
 			this.loading = T;
-			var u = this.attr( 'src' ), m, n, o, t = this.x.template, self = this,
+			var u, m, n, o, t = this.x.template, self = this,
 				d = this.type_view && _view_resources[ this.path ],
 				e = function() {
 					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
 				};
 			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); } ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			u  && (u = _url_format.call( this, u )) && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
+			(u = this.getSrc()) && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> data json
@@ -2147,7 +2164,7 @@ Xsrc = define.widget( 'xsrc', {
 			//this.error = {};
 		},
 		reload: function( src, tpl, tar, fn ) {
-			src && (this.x.src = src);
+			src && (this._runtime_src = src);
 			tpl && (this.x.template = tpl);
 			this.reset( tar );
 			if ( this.$() ) {
@@ -8510,7 +8527,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		// @implement
 		append: function( a ) {
 			// 尚未装载的节点不直接增加子节点
-			if ( this.x.src && !this.loaded )
+			if ( this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.append.apply( this, arguments );
@@ -8518,7 +8535,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		// @implement
 		prepend: function( a ) {
 			// 尚未装载的节点不直接增加子节点
-			if ( this.x.src && !this.loaded )
+			if ( this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.prepend.apply( this, arguments );
@@ -8549,17 +8566,27 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			return this.x.srcdata;
 		},
 		isFolder: function() {
-			return this.length || (this.x.src && !this.loaded) ? T : F;
+			//return this.length || (this.x.src && !this.loaded) ? T : F;
+			return this.length || this.x.folder ? T : F;
 		},
 		fixFolder: function() {
 			this.addClass( 'z-folder', this.isFolder() );
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
 		},
+		getSrc: function() {
+			var u = this.x.src;
+			if ( !u && this.x.template ) {
+				var t = _getTemplate( this.x.template );
+				if ( t && t.src )
+					this.x.src = u = t.src;
+			}
+			return u && _url_format.call( this, u );
+		},
 		// @a -> sync? b -> fn?
 		request: function( a, b ) {
 			this.loading = T;
-			this.exec( { type: 'ajax', src: _url_format.call( this, this.x.src ), sync: a, loading: F,
+			this.exec( { type: 'ajax', src: this.getSrc(), sync: a, loading: F,
 				success: function( x ) {
 					this.x.srcdata = x;
 					if ( this.x.template ) {
@@ -8613,7 +8640,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			var c = typeof a === _BOL ? a : !this.x.open, d = !!this.x.open;
 			this.x.open = c;
 			this.toggle_nodes( c );
-			if ( this.x.src && a !== F && !this.loaded && !this.loading ) 
+			if ( this.isFolder() && this.getSrc() && a !== F && !this.loaded && !this.loading ) 
 				this.request( b, f );
 			if ( this.$( 'r' ) )
 				$.arrow( this.$( 'r' ), c ? 'b1' : 'r1' );
@@ -8697,7 +8724,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		},
 		// @a -> sync?
 		reload: function( a ) {
-			if ( ! this.loading && this.x.src ) {
+			if ( ! this.loading && this.getSrc() ) {
 				this.toggle( F );
 				$.ajaxAbort( this );
 				var d = this.focusNode && this.focusNode.id, i = this.length;
@@ -8712,10 +8739,11 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		reloadForAdd: function( a, b ) {
 			if ( this._disposed || this.loading )
 				return;
-			if ( this.x.src ) {
-				this.openTo( this.x.src, a, b );
+			var u = this.getSrc();
+			if ( u ) {
+				this.openTo( u, a, b );
 			} else {
-				this.reloadForModify( a, function() { this.x.src && this.toggle( T, b ) } );
+				this.reloadForModify( a, function() { u && this.toggle( T, b ) } );
 			}
 		},
 		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync?, b -> fn?
@@ -8724,20 +8752,21 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				return;
 			if ( this.loading )
 				$.ajaxAbort( this );
-			if ( this.parentNode.x.src && ! this.parentNode.loading )
-				this.parentNode.openTo( this.parentNode.x.src, a, b );
+			var u = this.parentNode.getSrc();
+			if ( u && ! this.parentNode.loading )
+				this.parentNode.openTo( u, a, b );
 		},
 		draggable: function( a ) {
 			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
 				$.draggable( b[ i ], a );
-				b[ i ].x.src && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.draggable.call( this, a ) } );
+				b[ i ].getSrc() && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.draggable.call( this, a ) } );
 			}
 			return this;
 		},
 		droppable: function( a ) {
 			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
 				$.droppable( b[ i ], a );
-				b[ i ].x.src && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.droppable.call( this, a ) } );
+				b[ i ].getSrc() && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.droppable.call( this, a ) } );
 			}
 			return this;
 		},
@@ -8763,7 +8792,7 @@ Leaf = define.widget( 'leaf', {
 		body: {
 			ready: function() {
 				this.length && this.trigger( 'load' );
-				this.x.src && this.x.open && ! this.loaded && this.toggle( T );
+				this.x.open && !this.loaded && this.getSrc() && this.toggle( T );
 				this.x.focus && this.focus();
 			},
 			mouseover: {
@@ -8958,9 +8987,9 @@ Leaf = define.widget( 'leaf', {
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
-			return this.html_before() + '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (x.src || a ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+			return this.html_before() + '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? this.prop_title(  x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip, x.format ) : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
-				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (x.src || a ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
+				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (this.isFolder() ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
 				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_append() + '</dl>' + this.html_after();
 		},
 		html: function() {
@@ -9000,7 +9029,7 @@ Tree = define.widget( 'tree', {
 				Scroll.Listener.body.ready.call( this );
 				this.length && this.trigger( 'load' );
 				_scrollIntoView( this.getFocus() );
-				if ( this.x.src && ! this.length )
+				if ( !this.length && this.getSrc() )
 					Leaf.prototype.request.call( this );
 			},
 			nodechange: function() {
