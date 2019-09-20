@@ -256,11 +256,14 @@ public abstract class BaseDao<P, ID extends Serializable> {
     }
 
     public int delete(P entity) throws Exception {
+        if (entity == null) {
+            return 0;
+        }
         return pubCommonDAO.delete(entity);
     }
 
     public int delete(ID id) throws Exception {
-        return pubCommonDAO.delete(get(id));
+        return delete(get(id));
     }
 
     public int save(P entity) throws Exception {

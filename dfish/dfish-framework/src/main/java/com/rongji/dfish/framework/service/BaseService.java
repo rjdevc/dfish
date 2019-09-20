@@ -26,6 +26,11 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     
     protected BaseDao<P, ID> dao;
 
+//    /**
+//     * 自动检查,设置该参数后,增删改前后将有检查方法锚点
+//     */
+//    protected boolean autoCheck;
+
     protected CryptProvider cryptProvider;
 
     public BaseDao<P, ID> getDao() {
@@ -35,6 +40,14 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     public void setDao(BaseDao<P, ID> dao) {
         this.dao = dao;
     }
+
+//    public boolean isAutoCheck() {
+//        return autoCheck;
+//    }
+//
+//    public void setAutoCheck(boolean autoCheck) {
+//        this.autoCheck = autoCheck;
+//    }
 
     public CryptProvider getCryptProvider() {
         return cryptProvider;
@@ -72,73 +85,57 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     }
 
     protected P newInstance4Po() throws Exception {
+        // PO在第2个泛型参数
         @SuppressWarnings("unchecked")
         Class<P> entityClass = (Class<P>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
         P entity = entityClass.newInstance();
         return entity;
     }
 
-    protected P parsePo(V vo) {
+    protected P parsePo(V vo) throws Exception {
         if (vo == null) {
             return null;
         }
-        P entity = null;
-        try {
-            entity = newInstance4Po();
-            Utils.copyPropertiesExact(entity, vo);
-        } catch (Exception e) {
-            FrameworkHelper.LOG.error("对象解析异常", e);
-        }
+        P entity = newInstance4Po();
+        Utils.copyPropertiesExact(entity, vo);
         return entity;
     }
 
-    protected List<P> parsePos(Collection<V> vos) {
+    protected List<P> parsePos(Collection<V> vos) throws Exception {
         if (Utils.isEmpty(vos)) {
             return new ArrayList<>(0);
         }
         List<P> pos = new ArrayList<>(vos.size());
         for (V vo : vos) {
-            try {
-                pos.add(parsePo(vo));
-            } catch (Exception e) {
-                FrameworkHelper.LOG.error("对象解析异常", e);
-            }
+            pos.add(parsePo(vo));
         }
         return pos;
     }
 
     protected V newInstance4Vo() throws Exception {
+        // VO在第1个泛型参数
         @SuppressWarnings("unchecked")
         Class<V> voClass = (Class<V>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         V vo = voClass.newInstance();
         return vo;
     }
 
-    protected V parseVo(P po) {
+    protected V parseVo(P po) throws Exception {
         if (po == null) {
             return null;
         }
-        V vo = null;
-        try {
-            vo = newInstance4Vo();
-            Utils.copyPropertiesExact(vo, po);
-        } catch (Exception e) {
-            FrameworkHelper.LOG.error("对象解析异常", e);
-        }
+        V vo = newInstance4Vo();
+        Utils.copyPropertiesExact(vo, po);
         return vo;
     }
 
-    protected List<V> parseVos(Collection<P> pos) {
+    protected List<V> parseVos(Collection<P> pos) throws Exception {
         if (Utils.isEmpty(pos)) {
             return new ArrayList<>(0);
         }
         List<V> vos = new ArrayList<>(pos.size());
         for (P po : pos) {
-            try {
-                vos.add(parseVo(po));
-            } catch (Exception e) {
-                FrameworkHelper.LOG.error("对象解析异常", e);
-            }
+            vos.add(parseVo(po));
         }
         return vos;
     }
@@ -148,15 +145,19 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     }
 
     protected void beforeSave(V vo) throws Exception {
+        this.beforeSaveOrUpdate(vo, null);
     }
 
     protected void afterSave(V vo) throws Exception {
+        this.afterSaveOrUpdate(vo, null);
     }
 
-    protected void beforeUpdate(V vo) throws Exception {
+    protected void beforeUpdate(V newVo, V oldVo) throws Exception {
+        this.beforeSaveOrUpdate(newVo, oldVo);
     }
 
-    protected void afterUpdate(V vo) throws Exception {
+    protected void afterUpdate(V newVo, V oldVo) throws Exception {
+        this.afterSaveOrUpdate(newVo, oldVo);
     }
 
     protected void beforeDelete(V vo)  throws Exception {
@@ -165,14 +166,41 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     protected void afterDelete(V vo) throws Exception {
     }
 
+    protected void beforeSaveOrUpdate(V newVo, V oldVo) throws Exception {
+    }
+
+    protected void afterSaveOrUpdate(V newVo, V oldVo) throws Exception {
+    }
+
     public int saveOrUpdate(V vo) throws Exception {
-        return getDao().saveOrUpdate(parsePo(vo));
+        return saveOrUpdate(vo, null);
+    }
+
+    public int saveOrUpdate(V newVo, V oldVo) throws Exception {
+        if (newVo == null) {
+            return 0;
+        }
+
+        beforeSaveOrUpdate(newVo, oldVo);
+        P po = parsePo(newVo);
+        int result = getDao().saveOrUpdate(po);
+        if (result > 0) {
+            afterSaveOrUpdate(newVo, oldVo);
+        }
+        return result;
     }
 
     @Transactional
     public int save(V vo) throws Exception {
+        if (vo == null) {
+            return 0;
+        }
         beforeSave(vo);
-        int result = getDao().save(parsePo(vo));
+        P po = parsePo(vo);
+        if (po != null) {
+
+        }
+        int result = getDao().save(po);
         if (result > 0) {
             afterSave(vo);
         }
@@ -180,11 +208,20 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     }
 
     @Transactional
-    public int update(V vo) throws Exception {
-        beforeUpdate(vo);
-        int result = getDao().update(parsePo(vo));
+    public int update(V newVo) throws Exception {
+        return update(newVo, null);
+    }
+
+    @Transactional
+    public int update(V newVo, V oldVo) throws Exception {
+        if (newVo == null) {
+            return 0;
+        }
+        beforeUpdate(newVo, oldVo);
+        P po = parsePo(newVo);
+        int result = getDao().update(po);
         if (result > 0) {
-            afterUpdate(vo);
+            afterUpdate(newVo, oldVo);
         }
         return result;
     }
@@ -218,22 +255,15 @@ public abstract class BaseService<V, P, ID extends Serializable> {
 
     @Transactional
     public int delete(ID id) throws Exception {
-        P po = getDao().get(id);
-        V vo = parseVo(po);
-        beforeDelete(vo);
-        int result = getDao().delete(po);
-        if (result > 0) {
-            afterDelete(vo);
-        }
-        return result;
+       return delete(get(id));
     }
 
-    public V get(ID id) {
+    public V get(ID id) throws Exception {
         P po = getDao().get(id);
         return parseVo(po);
     }
 
-    public List<V> findAll(List<ID> ids) {
+    public List<V> findAll(List<ID> ids) throws Exception {
         List<P> pos = getDao().findAll(ids);
         return parseVos(pos);
     }
