@@ -278,7 +278,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
        return delete(get(id));
     }
 
-    public V get(ID id) throws Exception {
+    public V get(ID id) {
         P po = getDao().get(id);
         return parseVo(po);
     }
