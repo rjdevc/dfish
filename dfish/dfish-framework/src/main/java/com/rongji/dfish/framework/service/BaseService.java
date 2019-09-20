@@ -84,15 +84,22 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return getCryptor().decrypt(str);
     }
 
-    protected P newInstance4Po() throws Exception {
-        // PO在第2个泛型参数
-        @SuppressWarnings("unchecked")
-        Class<P> entityClass = (Class<P>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
-        P entity = entityClass.newInstance();
-        return entity;
+    protected Class<P> poClass;
+
+    protected P newInstance4Po() {
+        try {
+            if (poClass == null) {
+                // PO在第2个泛型参数
+                poClass = (Class<P>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+            }
+            return poClass.newInstance();
+        } catch (Exception e) {
+            FrameworkHelper.LOG.error("对象创建异常", e);
+        }
+        return null;
     }
 
-    protected P parsePo(V vo) throws Exception {
+    protected P parsePo(V vo) {
         if (vo == null) {
             return null;
         }
@@ -101,26 +108,36 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return entity;
     }
 
-    protected List<P> parsePos(Collection<V> vos) throws Exception {
+    protected List<P> parsePos(Collection<V> vos) {
         if (Utils.isEmpty(vos)) {
             return new ArrayList<>(0);
         }
         List<P> pos = new ArrayList<>(vos.size());
         for (V vo : vos) {
-            pos.add(parsePo(vo));
+            P po = parsePo(vo);
+            if (po != null) {
+                pos.add(po);
+            }
         }
         return pos;
     }
 
-    protected V newInstance4Vo() throws Exception {
-        // VO在第1个泛型参数
-        @SuppressWarnings("unchecked")
-        Class<V> voClass = (Class<V>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        V vo = voClass.newInstance();
-        return vo;
+    protected Class<V> voClass;
+
+    protected V newInstance4Vo() {
+        try {
+            if (voClass == null) {
+                // VO在第1个泛型参数
+                voClass = (Class<V>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+            }
+            return voClass.newInstance();
+        } catch (Exception e) {
+            FrameworkHelper.LOG.error("对象创建异常", e);
+        }
+        return null;
     }
 
-    protected V parseVo(P po) throws Exception {
+    protected V parseVo(P po) {
         if (po == null) {
             return null;
         }
@@ -129,13 +146,16 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return vo;
     }
 
-    protected List<V> parseVos(Collection<P> pos) throws Exception {
+    protected List<V> parseVos(Collection<P> pos) {
         if (Utils.isEmpty(pos)) {
             return new ArrayList<>(0);
         }
         List<V> vos = new ArrayList<>(pos.size());
         for (P po : pos) {
-            vos.add(parseVo(po));
+            V vo = parseVo(po);
+            if (vo != null) {
+                vos.add(vo);
+            }
         }
         return vos;
     }
@@ -263,7 +283,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return parseVo(po);
     }
 
-    public List<V> findAll(List<ID> ids) throws Exception {
+    public List<V> findAll(List<ID> ids) {
         List<P> pos = getDao().findAll(ids);
         return parseVos(pos);
     }
