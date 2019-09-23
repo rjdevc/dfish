@@ -760,6 +760,7 @@ public final class FileUtil {
                     + URLEncoder.encode(fileName, FileUtil.ENCODING));
         } else {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            response.setHeader("Content-Length", String.valueOf(partLength));
             String contentRange = "bytes " + from + "-" + (to - 1) + "/" + fileLength;
             response.setHeader("Content-Range", contentRange);
         }
@@ -767,7 +768,7 @@ public final class FileUtil {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         if (fileInput == null) {
-            response.sendError(404);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return false;
         }
         // long totalRead = 0;
