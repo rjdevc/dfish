@@ -2196,6 +2196,9 @@ Xsrc = define.widget( 'xsrc', {
 				! this.loading && this.load( tar, fn, T );
 			}
 		},
+		template: function( tpl, tar, fn ) {
+			this.reload( N, tpl, tar, fn );
+		},
 		loadData: function( x, tar ) {
 			this._loadEnd( x );
 			this.showLayout( tar );
