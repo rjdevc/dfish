@@ -251,7 +251,8 @@ _ajaxCmd = function( x, a, t ) {
 	if ( x.loading )
 		d = this.exec( typeof x.loading === _OBJ ? $.extend( { type: 'loading' }, x.loading ) : { type: 'loading', text: x.loading === T ? N : x.loading } );
 	this.trigger( 'lock' );
-	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter || cfg.src_filter, error: x.error, beforesend: x.beforesend, 
+	// @fixme: view base
+	$.ajaxJSON( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter != N ? x.filter : cfg.src_filter, error: x.error, beforesend: x.beforesend, 
 		success: function( r, a ) {
 			d && (d.close(), d = N);
 			var v = r;
@@ -455,6 +456,14 @@ TemplateMark = $.createClass( {
 		}
 	}
 } ),
+_mergeAtPropHooks = {
+	'cls': function( a, b ) {
+		return a + ' ' + b;
+	},
+	'style': function( a, b ) {
+		return (a + ';' + b).replace( /;{2,}/g, ';' );
+	}
+}
 /* `Template` */
 Template = $.createClass( {
 	// @ t -> template, d -> data, g -> widget, r -> target
@@ -538,8 +547,9 @@ Template = $.createClass( {
 				} else if ( typeof b === _OBJ ) {
 					var d = this.compile( b, y );
 					d && (r[ k ] = d);
-				} else
+				} else {
 					r[ k ] = b;
+				}
 			}
 			if ( f._switch ) {
 				for ( var i = 0; i < f._switch.length; i ++ )
@@ -2098,7 +2108,18 @@ Xsrc = define.widget( 'xsrc', {
 				}
 				!u && (u = this.attr( 'src' ));
 			}
-			return u && _url_format.call( this, u );
+			return u;
+		},
+		getSrcFilter: function() {
+			var f = this.x.on && this.x.on.filter;
+			if ( f == N ) {
+				var t = this.x.template;
+				if ( t ) {
+					typeof t === _STR && (t = _getTemplate( t ));
+					t && this.isContentData( t ) && t.on && t.on.filter && (f = t.on.filter);
+				}
+			}
+			return f;
 		},
 		// @force: 强制刷新，不论是否在frame内
 		load: function( tar, fn, force ) {
@@ -2128,7 +2149,7 @@ Xsrc = define.widget( 'xsrc', {
 				};
 			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); } ) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			(u = this.getSrc()) && this.ajax( { src: u, context: this, cache: cache, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
+			(u = this.getSrc()) && this.exec( { type: 'ajax', src: u, filter: this.getSrcFilter(), cache: cache, loading: F, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		// @x -> data json
@@ -2168,7 +2189,7 @@ Xsrc = define.widget( 'xsrc', {
 			tpl && (this.x.template = tpl);
 			this.reset( tar );
 			if ( this.$() ) {
-				var s = this.attr( 'src' );
+				var s = this.getSrc();
 				typeof s === _STR ? this.load( tar, fn, T ) : this.loadData( s, tar );
 			} else {
 				this.show();
@@ -2206,11 +2227,6 @@ Xsrc = define.widget( 'xsrc', {
 					this._getTargets( x.nodes[ i ], tar, r );
 			}
 			return r;
-		},
-		ajax: function( a ) {
-			! a.type && (a.type = 'ajax');
-			a.loading = F;
-			this.exec( a );
 		},
 		abort: function() {
 			$.ajaxAbort( this );
@@ -2292,13 +2308,6 @@ View = define.widget( 'view', {
 		init_x: function( x ) {
 			Xsrc.prototype.init_x.call( this, x );
 			delete this.__width; delete this.__height;
-		},
-		// a -> ajax settings
-		ajax: function( a ) {
-			this.x.base && (a.base = this.x.base);
-			! a.context && (a.context = this);
-			! a.filter && cfg.src_filter && (a.filter = cfg.src_filter);
-			return $.ajaxJSON( a );
 		},
 		reset: function( tar ) {
 			Xsrc.prototype.reset.apply( this, arguments );
@@ -4472,7 +4481,7 @@ Progress = define.widget( 'progress', {
 					this._timer = setTimeout( function() {
 						// 相同 src 的实例，只让第一个去请求ajax
 						if ( ! self._disposed && self.isHead() ) {
-							self.ownerView.ajax( { src: s, context: this, success: function( x ) {
+							self.ownerView.exec( { type: 'ajax', src: s, context: this, success: function( x ) {
 								// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
 								var d = self.closest( 'loading' );
 								if ( W.isCmd( x ) ) {
@@ -8565,6 +8574,15 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		srcData: function() {
 			return this.x.srcdata;
 		},
+		getSrc: function() {
+			return Xsrc.prototype.getSrc.call( this );
+		},
+		getSrcFilter: function() {
+			return Xsrc.prototype.getSrcFilter.call( this );
+		},
+		isContentData: function() {
+			return T;
+		},
 		isFolder: function() {
 			//return this.length || (this.x.src && !this.loaded) ? T : F;
 			return this.length || this.x.folder ? T : F;
@@ -8574,19 +8592,10 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
 		},
-		getSrc: function() {
-			var u = this.x.src;
-			if ( !u && this.x.template ) {
-				var t = _getTemplate( this.x.template );
-				if ( t && t.src )
-					this.x.src = u = t.src;
-			}
-			return u && _url_format.call( this, u );
-		},
 		// @a -> sync? b -> fn?
 		request: function( a, b ) {
 			this.loading = T;
-			this.exec( { type: 'ajax', src: this.getSrc(), sync: a, loading: F,
+			this.exec( { type: 'ajax', src: this.getSrc(), filter: this.getSrcFilter(), sync: a, loading: F,
 				success: function( x ) {
 					this.x.srcdata = x;
 					if ( this.x.template ) {
