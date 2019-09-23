@@ -6,6 +6,10 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
+import com.rongji.dfish.framework.config.PersonalConfigHolder;
+import com.rongji.dfish.framework.config.SystemConfigHolder;
+import com.rongji.dfish.framework.context.SystemData;
+import com.rongji.dfish.framework.service.NewIdGetter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -19,9 +23,9 @@ import com.rongji.dfish.base.info.ServletInfo;
 import com.rongji.dfish.base.info.SystemInfo;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.plugin.exception.service.WrappedLog;
-import com.rongji.dfish.framework.singletonimpl.DefaultIdGetter;
-import com.rongji.dfish.framework.singletonimpl.DefaultPersonalConfig;
-import com.rongji.dfish.framework.singletonimpl.DefaultSystemConfig;
+import com.rongji.dfish.framework.service.impl.DefaultIdGetter;
+import com.rongji.dfish.framework.config.impl.DefaultPersonalConfig;
+import com.rongji.dfish.framework.config.impl.DefaultSystemConfig;
 
 public class InitApp implements ServletContextAware, ApplicationContextAware {
 	private static final Log LOG = LogFactory.getLog(InitApp.class);

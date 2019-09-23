@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +34,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.rongji.dfish.base.util.StringUtil;
+import com.rongji.dfish.framework.config.PersonalConfigHolder;
+import com.rongji.dfish.framework.config.SystemConfigHolder;
+import com.rongji.dfish.framework.context.SystemData;
+import com.rongji.dfish.framework.service.NewIdGetter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;

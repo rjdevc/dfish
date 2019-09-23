@@ -20,7 +20,7 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.info.DataBaseInfo;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.SystemData;
+import com.rongji.dfish.framework.context.SystemData;
 import org.springframework.jdbc.core.RowMapper;
 
 /**

@@ -43,4 +43,8 @@ public class BaseService4Simple<P> extends BaseDao<P, String> {
         return getCryptor().decrypt(str);
     }
 
+    public String getNewId() {
+        return IdGenerator.getSortedId32();
+    }
+
 }

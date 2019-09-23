@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.Id;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.framework.IdGenerator;
 import com.rongji.dfish.framework.constant.FrameworkConstants;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -130,10 +129,6 @@ public abstract class BaseDao<P, ID extends Serializable> {
         }
         String idName = getEntityIdName();
         return (P) pubCommonDAO.queryAsAnObject("FROM " + getEntityType().getSimpleName() + " t WHERE t." + idName + "=?", id);
-    }
-
-    public String getNewId() {
-        return IdGenerator.getSortedId32();
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.rongji.dfish.framework.service;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.crypt.CryptFactory;
 import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.FrameworkHelper;
@@ -161,7 +160,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     }
 
     public String getNewId() {
-        return getDao().getNewId();
+        return IdGenerator.getSortedId32();
     }
 
     protected void beforeSave(V vo) throws Exception {

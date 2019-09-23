@@ -537,13 +537,13 @@ public final class FileUtil {
         if (l < 1048576L) { // 10K上显示KB
             return (l >> 10) + " KB";
         }
-        if (l < 10485760L) { // 10M显示2位有效数字
+        if (l < 10485760L) { // 10M内显示2位有效数字
             return String.valueOf(((double) l / 1048576L)).substring(0, 3) + " MB";
         }
         if (l < 1073741824L) { // 10M上显示MB
             return (l >> 20) + " MB";
         }
-        if (l < 10737418240L) { // 10M上显示MB
+        if (l < 10737418240L) { // 10G内显示2位有效数字
             return String.valueOf(((double) l / 1073741824L)).substring(0, 3) + " GB";
         }
         return (l >> 30) + " GB";
@@ -760,6 +760,7 @@ public final class FileUtil {
                     + URLEncoder.encode(fileName, FileUtil.ENCODING));
         } else {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            response.setHeader("Content-Length", String.valueOf(partLength));
             String contentRange = "bytes " + from + "-" + (to - 1) + "/" + fileLength;
             response.setHeader("Content-Range", contentRange);
         }
@@ -767,7 +768,7 @@ public final class FileUtil {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         if (fileInput == null) {
-            response.sendError(404);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return false;
         }
         // long totalRead = 0;

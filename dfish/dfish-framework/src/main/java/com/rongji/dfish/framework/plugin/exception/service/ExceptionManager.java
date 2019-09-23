@@ -16,7 +16,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.IdGenerator;
+import com.rongji.dfish.framework.service.IdGenerator;
 import com.rongji.dfish.framework.dao.PubCommonDAO;
 import com.rongji.dfish.framework.plugin.exception.entity.PubExptConstant;
 import com.rongji.dfish.framework.plugin.exception.entity.PubExptRecord;

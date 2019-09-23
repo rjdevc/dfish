@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.rongji.dfish.framework.SystemData;
+import com.rongji.dfish.framework.context.SystemData;
 
 public class DAOWithMoni extends PubCommonDAOImpl{
 	
