@@ -6906,8 +6906,11 @@ XBox = define.widget( 'xbox', {
 			} else
 				this.x.options = a;
 			this._dropper && this._dropper.close();
-			this.initOptions( this.x );
+			this.init_nodes();
 			this.val( v );
+			if ( v && !this.x.multiple && !this._sel.length ) {
+				a && a[ 0 ] && this.val( a[ 0 ].value );
+			}
 		},
 		addOption: function( a, i ) {
 			this.x.options.splice( i == N ? this.x.options.length : i, 0, a );
