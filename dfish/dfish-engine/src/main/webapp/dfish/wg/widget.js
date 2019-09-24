@@ -315,6 +315,8 @@ _cmdHooks = {
 		b && (x.srcdata = b);
 		if ( typeof x.src === _STR )
 			x.src = this.formatStr( x.src, a, T );
+		else if ( a )
+			x.args = a;
 		x.title && (x.title = $.strFormat( x.title, a ));
 		return new Dialog( x, this ).show();
 	},
@@ -2099,7 +2101,7 @@ Xsrc = define.widget( 'xsrc', {
 			return this.x.srcdata;
 		},
 		getSrc: function() {
-			var u = this._runtime_src;
+			var u = this._runtime_src; 
 			if ( ! u ) {
 				var t = this.x.template;
 				if ( t ) {
@@ -2108,6 +2110,7 @@ Xsrc = define.widget( 'xsrc', {
 				}
 				!u && (u = this.attr( 'src' ));
 			}
+			u && this.x.args && (u = this.formatStr( u, this.x.args, T ));
 			return u;
 		},
 		getSrcFilter: function() {
@@ -10414,7 +10417,7 @@ Form = define.widget( 'form', {
 			j == 0 && rows.push( tr );
 			var e = n[ i ],
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
-			x.pub && $.extend( td, x.pub );
+			$.extend( td, x.pub, _dfopt.form && _dfopt.form.pub );
 			!td.colspan && (td.colspan = 4);
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {
@@ -10428,8 +10431,7 @@ Form = define.widget( 'form', {
 					if ( rp[ i ][ k ] ) rv += rp[ i ][ k ];
 			}
 			if ( j + td.colspan + rv > cols ) {
-				tr = {};
-				tr[ 0 ] = td;
+				(tr = {})[ 0 ] = td;
 				j = td.colspan + rv;
 				rows.push( tr );
 			} else {
