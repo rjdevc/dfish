@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.Id;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.framework.constant.FrameworkConstants;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -28,6 +27,31 @@ import com.rongji.dfish.framework.FrameworkHelper;
  */
 @SuppressWarnings("unchecked")
 public abstract class BaseDao<P, ID extends Serializable> {
+    /**
+     * 排序字段-序号
+     */
+    public static final String SORT_FIELD_ORDER = "ORDER";
+    /**
+     * 排序字段-名称
+     */
+    public static final String SORT_FIELD_NAME = "NAME";
+    /**
+     * 排序字段-修改时间
+     */
+    public static final String SORT_FIELD_TIME = "TIME";
+    /**
+     * 排序字段-主键编号
+     */
+    public static final String SORT_FIELD_ID = "ID";
+
+    /**
+     * 排序方向-正序
+     */
+    public static final String SORT_DIRECTION_ASC = "ASC";
+    /**
+     * 排序方向-倒序
+     */
+    public static final String SORT_DIRECTION_DESC = "DESC";
     @Autowired
     protected PubCommonDAO pubCommonDAO;
 
@@ -309,11 +333,11 @@ public abstract class BaseDao<P, ID extends Serializable> {
 
     @PostConstruct
     protected void init() {
-        registerSortField(FrameworkConstants.SORT_FIELD_TIME, "updateTime");
+        registerSortField(SORT_FIELD_TIME, "updateTime");
 
-        registerSortField4Suffix(FrameworkConstants.SORT_FIELD_ID, "Id");
-        registerSortField4Suffix(FrameworkConstants.SORT_FIELD_ORDER, "Order");
-        registerSortField4Suffix(FrameworkConstants.SORT_FIELD_NAME, "Name");
+        registerSortField4Suffix(SORT_FIELD_ID, "Id");
+        registerSortField4Suffix(SORT_FIELD_ORDER, "Order");
+        registerSortField4Suffix(SORT_FIELD_NAME, "Name");
     }
 
     protected void registerSortField(String sortField, String sortFieldName) {
