@@ -8,6 +8,7 @@ import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.response.JsonResponse;
 import com.rongji.dfish.ui.JsonObject;
+import com.rongji.dfish.ui.json.J;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,12 +22,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BaseActionController extends MultiActionController {
+    /**
+     * 允许用户自定义分页数设置
+     */
+    protected boolean customPageSize;
+
+    public boolean isCustomPageSize() {
+        return customPageSize;
+    }
+
+    public void setCustomPageSize(boolean customPageSize) {
+        this.customPageSize = customPageSize;
+    }
+
     public Object execute(HttpServletRequest request) {
         return "Enter execute";
     }
@@ -234,24 +245,43 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 默认分页大小
+     *
      * @return int
      */
     protected int getPageSize() {
-        return 15;
+        return 30;
     }
 
     /**
      * 获取分页信息对象
+     *
      * @param request http请求
      * @return Page
      */
     public Page getPage(HttpServletRequest request) {
-        return getPage(request, getPageSize());
+        if (isCustomPageSize()) {
+            int pageSize = 0;
+            String pageSizeStr = request.getParameter("pageSize");
+            if (Utils.notEmpty(pageSizeStr)) {
+                try {
+                    pageSize = Integer.parseInt(pageSizeStr);
+                } catch (Exception e) {
+                    LogUtil.warn("分页信息传递异常:" + convert2JSON(request));
+                }
+            }
+            if (pageSize <= 0) {
+                pageSize = getPageSize();
+            }
+            return getPage(request, pageSize);
+        } else {
+            return getPage(request, getPageSize());
+        }
     }
 
     /**
      * 获取分页信息对象
-     * @param request http请求
+     *
+     * @param request  http请求
      * @param pageSize 分页大小
      * @return Page
      */
@@ -261,7 +291,8 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 获取分页信息对象
-     * @param cp 当前页
+     *
+     * @param cp       当前页
      * @param pageSize 分页大小
      * @return
      */
@@ -292,6 +323,7 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 获取进度条编号,由[调用方法#sessionId#dataId]构成
+     *
      * @param sessionId
      * @param dataId
      * @return
@@ -345,27 +377,62 @@ public class BaseActionController extends MultiActionController {
                 cause = cause.getCause();
             }
         }
-        if (cause instanceof DfishException) {
-            DfishException cast = (DfishException) cause;
-            jsonResponse.setErrCode(cast.getExceptionCode());
-            jsonResponse.setErrMsg(cast.getMessage());
-        } else {
-            String errMsg = null;
-            if (cause instanceof SocketException) {
-                errMsg = "网络异常@" + System.currentTimeMillis();
-                FrameworkHelper.LOG.error(errMsg + "=====\r\n" + e.getClass().getName() + ":["+e.getMessage() + "]");
-            } else {
-                errMsg = "系统内部错误@" + System.currentTimeMillis();
-                FrameworkHelper.LOG.error(errMsg, e);
-            }
-            jsonResponse.setErrMsg(errMsg);
-        }
+
         HttpServletRequest request = getRequest();
         if (request != null) {
             request.setAttribute("EXCEPTION_HANDLED", true);
         }
 
+        if (cause instanceof DfishException) {
+            DfishException cast = (DfishException) cause;
+            jsonResponse.setErrCode(cast.getExceptionCode());
+            jsonResponse.setErrMsg(cast.getMessage());
+        } else {
+            String requestJson = convert2JSON(request);
+            String errMsg = null;
+            if (cause instanceof SocketException) {
+                errMsg = "网络异常@" + System.currentTimeMillis();
+                FrameworkHelper.LOG.error(requestJson + "\r\n" + errMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
+            } else {
+                errMsg = "系统内部错误@" + System.currentTimeMillis();
+                FrameworkHelper.LOG.error(requestJson + "\r\n" + errMsg, e);
+            }
+            jsonResponse.setErrMsg(errMsg);
+        }
+
         return jsonResponse;
+    }
+
+    protected String convert2JSON(HttpServletRequest request) {
+        if (request == null) {
+            return "";
+        }
+        Map<String, Object> json = new LinkedHashMap<>();
+        Map<String, Object> headMap = new LinkedHashMap<>();
+        Map<String, String[]> paramMap = request.getParameterMap();
+        Map<String, Object> sessionMap = new LinkedHashMap<>();
+        json.put("requestURI", request.getRequestURI());
+        json.put("head", headMap);
+        json.put("parameter", paramMap);
+        json.put("session", sessionMap);
+        sessionMap.put(FrameworkHelper.LOGIN_USER_KEY, FrameworkHelper.getLoginUser(request));
+        if (request.getHeaderNames() != null) {
+            java.util.Enumeration<String> headNames = request.getHeaderNames();
+            while (headNames.hasMoreElements()) {
+                String n = headNames.nextElement();
+                List<String> headers = new ArrayList<>();
+                if (request.getHeaders(n) != null) {
+                    headMap.put(n, headers);
+                    java.util.Enumeration<String> headContent = request.getHeaders(n);
+                    while (headContent.hasMoreElements()) {
+                        String v = headContent.nextElement();
+                        headers.add(v);
+                    }
+                }
+            }
+        }
+
+        return J.toJson(json);
     }
 
 }

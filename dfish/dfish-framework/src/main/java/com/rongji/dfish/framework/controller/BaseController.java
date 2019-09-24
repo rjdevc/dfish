@@ -87,35 +87,6 @@ public class BaseController extends BaseActionController {
 		return obj;
 	}
 	
-	protected String convert2JSON(HttpServletRequest request){
-		Map<String,Object> json=new LinkedHashMap<String,Object>();
-		Map<String,Object> headMap=new LinkedHashMap<String,Object>();
-		Map<String,String[]> paramMap=request.getParameterMap();
-		Map<String,Object> sessionMap=new LinkedHashMap<String,Object>();
-		json.put("requestURI", request.getRequestURI());
-		json.put("head", headMap);
-		json.put("parameter", paramMap);
-		json.put("session", sessionMap);
-		sessionMap.put(FrameworkHelper.LOGIN_USER_KEY, FrameworkHelper.getLoginUser(request));
-		if(request.getHeaderNames()!=null){
-			java.util.Enumeration<String> headNames=request.getHeaderNames();
-			while(headNames.hasMoreElements()){
-				String n=headNames.nextElement();
-				List<String> headers=new ArrayList<String>();
-				if(request.getHeaders(n)!=null){
-					headMap.put(n, headers);
-					java.util.Enumeration<String> headContent=request.getHeaders(n);
-					while(headContent.hasMoreElements()){
-						String v=headContent.nextElement();
-						headers.add(v);
-					}
-				}
-			}
-		}
-		
-		return J.toJson(json);
-	}
-	
 	protected AlertCommand buildWarnAlert(String alertMsg){
 		return new AlertCommand(alertMsg);
 	}

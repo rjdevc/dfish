@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -278,12 +279,23 @@ public abstract class BaseService<V, P, ID extends Serializable> {
 
     public V get(ID id) {
         P po = getDao().get(id);
-        return parseVo(po);
+        V vo = parseVo(po);
+        if (vo != null) {
+            afterGets(Arrays.asList(vo));
+        }
+        return vo;
+    }
+
+    protected void afterGets(List<V> vos) {
     }
 
     public List<V> findAll(List<ID> ids) {
         List<P> pos = getDao().findAll(ids);
-        return parseVos(pos);
+        List<V> vos = parseVos(pos);
+        if (vos != null) {
+            afterGets(vos);
+        }
+        return vos;
     }
 
 }
