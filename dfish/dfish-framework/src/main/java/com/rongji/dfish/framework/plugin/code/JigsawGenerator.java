@@ -36,7 +36,7 @@ public class JigsawGenerator {
     /**
      * 小图大小(正方形)
      */
-    private int smallSize = 48;
+    private int smallSize = 64;
     /**
      * 验证图片目录
      */
