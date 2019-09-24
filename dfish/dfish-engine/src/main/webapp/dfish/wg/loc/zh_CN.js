@@ -64,6 +64,9 @@ page_prev : '上页',
 
 print_preview : '打印预览',
 
+placeholder_input: '请输入{0}',
+placeholder_select: '请选择{0}',
+
 debug: {
 	sorry : '很抱歉，系统发生了错误',
 	view_more : '点击“确定”，可在新窗口查看详细错误信息',

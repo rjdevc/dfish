@@ -1844,8 +1844,11 @@ var boot = {
 			_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
 			_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
 			_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
-		if ( ! _loc )
+		if ( _loc ) {
+			_cfg.loc && $.mergeDeep( _loc, _cfg.loc );
+		} else {
 			return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
+		}
 		for ( var k in _cfg.alias ) {
 			for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
 				_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];

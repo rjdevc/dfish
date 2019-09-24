@@ -934,14 +934,7 @@ W = define( 'widget', function() {
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
 			var c = a == N || (a.isWidget ? a.x.open : a), o = this.$();
-			if ( o.tagName === 'TR' ) {
-				$.classAdd( o, 'f-none', ! c );
-			} else {
-				if ( this.__disp_none == N ) {
-					this.__disp_none = o.currentStyle.display === 'none' ? T : F;
-				}
-				o.style.display = c ? (this.__disp_none === T ? 'block' : '') : 'none';
-			}
+			$.classAdd( o, 'f-none', ! c );
 			a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
 			if ( ! b ) {
 				(this.ownerView.layout._passvalid || (this.ownerView.layout._passvalid = {}))[ o.id ] = !c;
@@ -1255,6 +1248,8 @@ W = define( 'widget', function() {
 			var p = this.parentNode, c = (this.className || '') + (this.x.cls ? ' ' + this.x.cls.replace( /\./g, '' ) : '');
 			if ( ! this.isNormal() )
 				c += ' z-ds';
+			if ( this.x.display === F )
+				c += ' f-none';
 			if ( p && p.childCls )
 				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
 			return c;
@@ -4851,7 +4846,8 @@ _z_on = function( a ) {
 		$.classAdd( this.$(), 'z-on', a );
 		a !== F && this.warn( F );
 		var c = this.isEmpty();
-		this.x.placeholder && this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', a !== F || ! c );
+		if(this.id=='dz:'&&a===F)debugger;
+		//this.getPlaceholder() && this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', a !== F || ! c );
 	}
 },
 // /@ a -> valid object, b -> valid code, c -> args
@@ -5098,7 +5094,7 @@ AbsForm = define.widget( 'abs/form', {
 			this.val( a || this.x.value == N ? '' : this.x.value );
 		},
 		resetEffect: function() {
-			if ( this.x.placeholder && this.$( 'ph' ) )
+			if ( this.getPlaceholder() && this.$( 'ph' ) )
 				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
 		prop_style: function() {
@@ -5154,7 +5150,7 @@ AbsInput = define.widget( 'abs/input', {
 				proxy: ie ? 'paste keyup' : 'input',
 				block: $.rt( T ),
 				occupy: function() {
-					return (this.x.validate && this.x.validate.maxlength && cfg.input_detect && cfg.input_detect.maxlength) || this.attr( 'tip' ) === T || this.x.placeholder;
+					return (this.x.validate && this.x.validate.maxlength && cfg.input_detect && cfg.input_detect.maxlength) || this.attr( 'tip' ) === T || this.getPlaceholder();
 				},
 				method: function( e ) {
 					if ( this.attr( 'tip' ) === T )
@@ -5173,7 +5169,7 @@ AbsInput = define.widget( 'abs/input', {
 							clearTimeout( this._change_timer );
 							this._change_timer = setTimeout( function() { self.triggerHandler( e ) }, 300 );
 						}
-						v && this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none' );
+						this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!v );
 						Dialog.close( this.id + 'mxltip' );
 						f && this.exec( { type: 'tip', id: this.id + 'mxltip', text: Loc.form.reach_maxlength } );
 					}
@@ -5209,10 +5205,15 @@ AbsInput = define.widget( 'abs/input', {
 		form_cls: function() {
 			return 'w-input f-rel f-nv';
 		},
+		getPlaceholder: function() {
+			var s = this.x.placeholder;
+			s == N && cfg.auto_placeholder && (s = Loc.ps( Loc[ this.placeholder_type || 'placeholder_input' ], this.label ? this.label.x.text : this.x.label ));
+			return s;
+		},
 		html_placeholder: function() {
-			var v = this.x.value;
-			return this.x.placeholder ? '<label class="w-input-placeholder f-fix' + ( v != N && v !== '' ? ' f-none' : '' ) +
-				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event) title="' + $.strQuot( this.x.placeholder ) + '"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.x.placeholder + '</span></label>' : '';
+			var v = this.x.value, s = this.getPlaceholder();
+			return s ? '<label class="w-input-placeholder f-fix' + (v != N && v !== '' ? ' f-none' : '') +
+				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event) title="' + $.strQuot( s ) + '"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + s + '</span></label>' : '';
 		},
 		html_btn: function() {
 			return '';
@@ -6271,6 +6272,7 @@ _Date = define.widget( 'date', {
 	},
 	Prototype: {
 		dropSnapType: 'v',
+		placeholder_type: 'placeholder_select',
 		form_minus: function() {
 			var w = this.x.width;
 			return (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
@@ -7256,10 +7258,10 @@ Combobox = define.widget( 'combobox', {
 				method: function( e ) {
 					//clearTimeout( this._sug_timer );
 					if ( this.usa() && ! this._imeMode ) {
-						var k = e.keyCode;
+						var k = e.keyCode, t;
 						if ( k === 13 || k === 38 || k === 40 ) { // 13:enter, 38:up, 40:down
 							$.stop( e );
-							var d = this.pop(), t;
+							var d = this.pop();
 							if ( k === 13 && (t = this.queryText()) != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
 								this.suggest( t );
 							} else if ( d.isShow() && d.getContentView().combo ) {
@@ -7267,7 +7269,8 @@ Combobox = define.widget( 'combobox', {
 							} else
 								_enter_submit( k, this );
 						} else if ( !(e.ctrlKey && k === 86) && !(k === 17) ) { //86: ctrl+v, 17: Ctrl, 37: left, 39: right
-							var t = this.$t().innerText, s = String.fromCharCode( 160 ) + ' '; // 160: chrome的空格
+							t = this.$t().innerText;
+							var s = String.fromCharCode( 160 ) + ' '; // 160: chrome的空格
 							if ( k === 32 && s.indexOf( t.charAt( t.length - 1 ) ) > -1 && (t = $.strTrim( t.slice( 0, -1 ) )) ) { // 最后一个字符是分隔符，则生成一个已选项
 								this.queryText( '' );
 								var o = this.addOpt( t );
@@ -7278,6 +7281,7 @@ Combobox = define.widget( 'combobox', {
 								this.suggest( t );
 							}
 						}
+						this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(this._val() || this.queryText()) );
 					}
 				}
 			},
@@ -7630,10 +7634,10 @@ Combobox = define.widget( 'combobox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') +
-				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
+				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' ' + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placeholder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" onclick=' + eve + '>' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -7818,6 +7822,7 @@ Linkbox = define.widget( 'linkbox', {
 						if ( this.x.validate && this.x.validate.maxlength ) {
 							this.save();
 						}
+						this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(this._val() || this.text()) );
 					}
 				}
 			},
@@ -8148,8 +8153,8 @@ Linkbox = define.widget( 'linkbox', {
 			return s;
 		},
 		html_input: function() {
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-nv _t" id=' + this.id + 't' +
-				( this.usa() ? ' contenteditable' : '' ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') +
+				'><var class="f-nv _t" id=' + this.id + 't' + (this.usa() ? ' contenteditable' : '') + ' ' + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
 } ),
