@@ -3656,6 +3656,7 @@ Page = define.widget( 'page/mini', {
 	Const: function( x ) {
 		W.apply( this, arguments );
 		x.transparent && $.classAdd( this, 'z-trans' );
+		x.sumpage && (x.sumpage = Math.ceil( x.sumpage ));
 	},
 	Extend: 'html',
 	Listener: {
