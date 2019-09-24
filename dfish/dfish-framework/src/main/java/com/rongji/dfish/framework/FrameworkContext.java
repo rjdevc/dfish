@@ -1,10 +1,10 @@
-package com.rongji.dfish.framework.context;
+package com.rongji.dfish.framework;
 
 import java.io.OutputStreamWriter;
 
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
-import com.rongji.dfish.framework.service.NewIdGetter;
+//import com.rongji.dfish.framework.service.NewIdGetter;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
 import org.springframework.beans.factory.BeanFactory;
@@ -20,7 +20,7 @@ import com.rongji.dfish.base.info.SystemInfo;
  * @author DFish Team
  * 
  */
-public class SystemData {
+public class FrameworkContext {
 	private BeanFactory factory;
 
 	private SystemInfo sysinfo = new SystemInfo();
@@ -38,7 +38,7 @@ public class SystemData {
 	 * 取得spring的bean工厂
 	 * 比如取得某个Bean 可以使用
 	 * <pre>
-	 * BeanFactory bf = SystemData.getInstance().getBeanFactory();
+	 * BeanFactory bf = FrameworkContext.getInstance().getBeanFactory();
 	 * MyClass bean = (MyClass) bf.getBean("idDefinedInSpringConfig");
 	 * </pre>
 	 * @return
@@ -69,25 +69,25 @@ public class SystemData {
 		}
 		return logger;
 	}
-	public static org.apache.log4j.Logger LOGGER=getLogger(SystemData.class);
+	public static org.apache.log4j.Logger LOGGER=getLogger(FrameworkContext.class);
 
 	private SystemConfigHolder systemConfig;
 	private PersonalConfigHolder PersonalConfig;
 //	private Cache<?, ?> cache;
-	private NewIdGetter newIdGetter;
+//	private NewIdGetter newIdGetter;
 	
-	private SystemData() {}
+	private FrameworkContext() {}
 
-	private static SystemData instance;
+	private static FrameworkContext instance;
 	/**
 	 * 取得实例
 	 * @return
 	 */
-	public static SystemData getInstance() {
+	public static FrameworkContext getInstance() {
 		if (instance == null)
-			synchronized (SystemData.class) {
+			synchronized (FrameworkContext.class) {
 				if (instance == null)
-					instance = new SystemData();
+					instance = new FrameworkContext();
 			}
 		return instance;
 	}
@@ -162,12 +162,12 @@ public class SystemData {
 //		this.cache = cache;
 //	}
 
-	public NewIdGetter getNewIdGetter() {
-		return newIdGetter;
-	}
-
-	public void setNewIdGetter(NewIdGetter newIdGetter) {
-		this.newIdGetter = newIdGetter;
-	}
+//	public NewIdGetter getNewIdGetter() {
+//		return newIdGetter;
+//	}
+//
+//	public void setNewIdGetter(NewIdGetter newIdGetter) {
+//		this.newIdGetter = newIdGetter;
+//	}
 	
 }

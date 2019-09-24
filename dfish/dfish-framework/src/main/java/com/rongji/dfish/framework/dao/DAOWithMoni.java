@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.rongji.dfish.framework.context.SystemData;
+import com.rongji.dfish.framework.FrameworkContext;
 
 public class DAOWithMoni extends PubCommonDAOImpl{
 	
@@ -77,9 +77,9 @@ public class DAOWithMoni extends PubCommonDAOImpl{
 			executions+=r.times;
 		}
 		sb.append("<table><tr class='tr0'><td>DB URL</td><td>");
-		sb.append(SystemData.getInstance().getDataBaseInfo().getDatabaseUrl());
+		sb.append(FrameworkContext.getInstance().getDataBaseInfo().getDatabaseUrl());
 		sb.append("</td></tr><tr class='tr1'><td>DB USER</td><td>");
-		sb.append(SystemData.getInstance().getDataBaseInfo().getDatabaseUsername());
+		sb.append(FrameworkContext.getInstance().getDataBaseInfo().getDatabaseUsername());
 		sb.append("</td></tr><tr class='tr0'><td>Begin Monitor</td><td>");
 		sb.append(new Date(recordBegin));
 		sb.append("</td></tr><tr class='tr1'><td>End Monitor</td><td>");

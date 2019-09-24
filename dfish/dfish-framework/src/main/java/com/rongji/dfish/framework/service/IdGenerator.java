@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.info.EthNetInfo;
-import com.rongji.dfish.framework.context.SystemData;
+import com.rongji.dfish.framework.FrameworkContext;
 import com.rongji.dfish.misc.util.XMLUtil;
 
 /**
@@ -129,7 +129,7 @@ public class IdGenerator {
             try {
                 // Web工程获取方式
                 @SuppressWarnings("deprecation")
-                String appRealPath = SystemData.getInstance().getServletInfo().getServletRealPath();
+                String appRealPath = FrameworkContext.getInstance().getServletInfo().getServletRealPath();
                 xmlFilePath = appRealPath + "WEB-INF/config/";
             } catch (Exception e) {
                 // 获取不到时,默认系统临时文件夹产生

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.framework.controller.BaseController;
+import com.rongji.dfish.framework.mvc.controller.BaseController;
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.command.CommandGroup;
 import com.rongji.dfish.ui.command.JSCommand;

@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.plugin.exception.controller;
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.controller.BaseController;
+import com.rongji.dfish.framework.mvc.controller.BaseController;
 import com.rongji.dfish.framework.plugin.exception.entity.PubExptRecord;
 import com.rongji.dfish.framework.plugin.exception.service.ExceptionManager;
 import com.rongji.dfish.framework.plugin.exception.service.ExceptionTypeInfo;

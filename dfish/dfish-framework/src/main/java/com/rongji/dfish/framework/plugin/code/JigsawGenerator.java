@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.plugin.code;
 import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
-import com.rongji.dfish.framework.context.SystemData;
+import com.rongji.dfish.framework.FrameworkContext;
 import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.widget.Img;
 
@@ -271,7 +271,7 @@ public class JigsawGenerator {
      * @return
      */
     private String getImageRawDir() {
-        String realServletPath = SystemData.getInstance().getServletInfo().getServletRealPath();
+        String realServletPath = FrameworkContext.getInstance().getServletInfo().getServletRealPath();
         if (!realServletPath.endsWith("/")) {
             realServletPath += "/";
         }

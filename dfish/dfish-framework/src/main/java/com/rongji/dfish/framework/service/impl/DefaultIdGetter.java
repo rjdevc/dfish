@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rongji.dfish.framework.FrameworkContext;
 import com.rongji.dfish.framework.service.NewIdGetter;
-import com.rongji.dfish.framework.context.SystemData;
 import com.rongji.dfish.framework.dao.PubCommonDAO;
 
+@Deprecated
 public class DefaultIdGetter implements NewIdGetter{
 	/** 数据库编号缓存 */
 	private static Map<String, String> cachedIds=new HashMap<String, String>();
@@ -37,7 +38,7 @@ public class DefaultIdGetter implements NewIdGetter{
 	}
 
 	private static String getMaxIdFromDataBase(String clzName,String idName){
-		PubCommonDAO dao = (PubCommonDAO) SystemData.getInstance().getBeanFactory().getBean(
+		PubCommonDAO dao = (PubCommonDAO) FrameworkContext.getInstance().getBeanFactory().getBean(
 				"PubCommonDAO");
 		List<?> list = dao.getQueryList("select max(t." + idName + ") from " + clzName + " t");
 		if (list != null && list.size() > 0 && list.get(0) != null) {

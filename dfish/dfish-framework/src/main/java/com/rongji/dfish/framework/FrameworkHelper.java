@@ -15,14 +15,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -36,19 +30,16 @@ import javax.servlet.http.HttpServletResponse;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
-import com.rongji.dfish.framework.context.SystemData;
-import com.rongji.dfish.framework.service.NewIdGetter;
+//import com.rongji.dfish.framework.service.NewIdGetter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.dao.PubCommonDAO;
 import com.rongji.dfish.framework.plugin.exception.service.WrappedLog;
 import com.rongji.dfish.ui.JsonObject;
@@ -68,8 +59,7 @@ public class FrameworkHelper{
 	/**
 	 * @see
 	 */
-	@Deprecated
-	public static final int INT_ENCODING_UNKOWN=0;
+
 	public static final int INT_ENCODING_UNKNOWN=0;
 	public static final int INT_ENCODING_UTF_8=1;
 	public static final int INT_ENCODING_GBK=2;
@@ -110,7 +100,7 @@ public class FrameworkHelper{
 	
 
 //	FrameworkCache frameworkCache;
-	NewIdGetter newIdGetter;
+//	NewIdGetter newIdGetter;
 	PersonalConfigHolder personnalConfig;
 	SystemConfigHolder systemConfig;
 	
@@ -131,7 +121,7 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static Locale getLocale(){
-		String value = SystemData.getInstance().getSystemConfig().getProperty(
+		String value = FrameworkContext.getInstance().getSystemConfig().getProperty(
 				"framework.pub.sysdefaultlocale");
 		if (value != null) {
 			Locale[] locs = Locale.getAvailableLocales();
@@ -257,107 +247,107 @@ public class FrameworkHelper{
 		return new ModelAndView("/webapp/pub/pub_jump.jsp");
 	}
 
-	/**
-	 * 对SPRING MVC WEB的支持 由于底层的问题。所以我们在前端如果有批量文件上传的时候， 如果名字为file1
-	 * 实际上在web页面中由多个文件上传的控件。 他们的名字分别是file1-1 file-2这样子后面的序号有可能不连续。 因为前端本身可以取消上传。
-	 * 这个方法。就是为了透明的取得file1名字的文件。并以数组的形式存在 类似于request.getParameterValues(String);
-	 * 
-	 * @param request
-	 * @param attachFileName
-	 * @return
-	 */
-	public static MultipartFile[] getFiles(MultipartHttpServletRequest request,String attachFileName){
-		Iterator<?> iter = request.getFileNames();
-		final int nameLen = attachFileName.length() + 1;
-		List<MultipartFile> list = new ArrayList<MultipartFile>();
-		while (iter.hasNext()) {
-			MultipartFile file = request.getFile((String) iter.next());
-			if (file.getName().startsWith(attachFileName) && file.getOriginalFilename() != null
-					&& !file.getOriginalFilename().equals("")) {
-				list.add(file);
-			}
-		}
-		Collections.sort(list, new Comparator<MultipartFile>() {
-			public int compare(MultipartFile o1, MultipartFile o2) {
-				String s1 = o1.getName().substring(nameLen);
-				String s2 = o1.getName().substring(nameLen);
-	
-				return Integer.parseInt(s1, 32) - Integer.parseInt(s2, 32);
-			}
-		});
-	
-		return list.toArray(new MultipartFile[list.size()]);
-	}
-
-	/**
-	 * 上传一个文件。该文件将存放于系统的上传路径下。默认是
-	 * ${web-root}/upload文件夹
-	 * @param urlPattern 比如说mydir/yyyyMM/ATTACH_ID.EXT其中有特殊含义的字符解释如下
-	 * <ul>
-	 * <li>yyyy 表示当前日期的年份</li>
-	 * <li>MM 表示当前日期的月份</li>
-	 * <li>dd 表示当前日期的日期</li>
-	 * <li>HH 表示当前时间的小时数</li>
-	 * <li>mm 表示当前时间的分钟数</li>
-	 * <li>ss 表示当前时间的秒数</li>
-	 * <li>ATTACH_ID 表示使用这个文件在数据库中对应的编号</li>
-	 * <li>.EXT 表示使用这个文件的扩展名，由于安全性考虑.jsp的文件扩展名会自动扩充成.jsp.txt</li>
-	 * </ul>
-	 * @param file 需要上传的附件
-	 * @param userId 操作人员编号 用于标识这个文件是哪个人上传的。
-	 * @return
-	 * @throws IOException
-	 * @deprecated 在过程资源库没完成前，这个暂时不推荐使用
-	 */
-	@Deprecated
-	public static String[] uploadFile(String urlPattern,MultipartFile file,String userId) throws IOException{
-	
-		String attachId = getNewId("PubAttach", "attachId", "00000001");// GetUniqueId.getPubAttachId();
-		String fileName = file.getName();
-		int j = fileName.lastIndexOf(".");
-		String ext = "";
-		if (j >= 0) {
-			ext = fileName.substring(j);
-			if (ext.equalsIgnoreCase(".jsp")) {
-				ext += ".txt";
-			}
-		}
-//		long fileSize = file.getSize();
-		String relaPath = "";
-		String relaFile = attachId + ext;
-		String realFileName = attachId + ext;
-		if (urlPattern != null && !urlPattern.equals("") && !urlPattern.equals("/")) {
-			String now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-			String year = now.substring(0, 4);
-			String month = now.substring(4, 6);
-			String date = now.substring(6, 8);
-			String hour = now.substring(8, 10);
-			String minute = now.substring(10, 12);
-			String second = now.substring(12, 14);
-			relaFile = urlPattern.replace("yyyy", year).replace("MM", month).replace("dd", date)
-					.replace("HH", hour).replace("mm", minute).replace("ss", second).replace(
-							"ATTACH_ID", attachId).replace(".EXT", ext);
-			if (relaFile.lastIndexOf("/") > 0) {
-				relaPath = relaFile.substring(0, relaFile.lastIndexOf("/") + 1);
-				realFileName = relaFile.substring(relaFile.lastIndexOf("/") + 1);
-			}
-		}
-	
-//		String attachUrl = SystemData.getInstance().getServletInfo().getServletRealPath()
-//				+ "upload/" + relaFile; // 直接存变化的url
-		String saveToPath = SystemData.getInstance().getServletInfo().getServletRealPath()
-				+ "upload/";
-		FileUtil.saveFile(file.getInputStream(), saveToPath + relaPath, realFileName);
-//		PubAttach att = new PubAttach();
-//		att.setAttachId(attachId);
-//		att.setAttachName(fileName);
-//		att.setAttachSize(fileSize);
-//		att.setAttachUrl(attachUrl);
-//		att.setUpTime(new Date());
-//		att.setUpAuthor(userId);
-//		getDAO().saveObject(att);
-		return new String[] { attachId, relaFile };
-	}
+//	/**
+//	 * 对SPRING MVC WEB的支持 由于底层的问题。所以我们在前端如果有批量文件上传的时候， 如果名字为file1
+//	 * 实际上在web页面中由多个文件上传的控件。 他们的名字分别是file1-1 file-2这样子后面的序号有可能不连续。 因为前端本身可以取消上传。
+//	 * 这个方法。就是为了透明的取得file1名字的文件。并以数组的形式存在 类似于request.getParameterValues(String);
+//	 *
+//	 * @param request
+//	 * @param attachFileName
+//	 * @return
+//	 */
+//	public static MultipartFile[] getFiles(MultipartHttpServletRequest request,String attachFileName){
+//		Iterator<?> iter = request.getFileNames();
+//		final int nameLen = attachFileName.length() + 1;
+//		List<MultipartFile> list = new ArrayList<MultipartFile>();
+//		while (iter.hasNext()) {
+//			MultipartFile file = request.getFile((String) iter.next());
+//			if (file.getName().startsWith(attachFileName) && file.getOriginalFilename() != null
+//					&& !file.getOriginalFilename().equals("")) {
+//				list.add(file);
+//			}
+//		}
+//		Collections.sort(list, new Comparator<MultipartFile>() {
+//			public int compare(MultipartFile o1, MultipartFile o2) {
+//				String s1 = o1.getName().substring(nameLen);
+//				String s2 = o1.getName().substring(nameLen);
+//
+//				return Integer.parseInt(s1, 32) - Integer.parseInt(s2, 32);
+//			}
+//		});
+//
+//		return list.toArray(new MultipartFile[list.size()]);
+//	}
+//
+//	/**
+//	 * 上传一个文件。该文件将存放于系统的上传路径下。默认是
+//	 * ${web-root}/upload文件夹
+//	 * @param urlPattern 比如说mydir/yyyyMM/ATTACH_ID.EXT其中有特殊含义的字符解释如下
+//	 * <ul>
+//	 * <li>yyyy 表示当前日期的年份</li>
+//	 * <li>MM 表示当前日期的月份</li>
+//	 * <li>dd 表示当前日期的日期</li>
+//	 * <li>HH 表示当前时间的小时数</li>
+//	 * <li>mm 表示当前时间的分钟数</li>
+//	 * <li>ss 表示当前时间的秒数</li>
+//	 * <li>ATTACH_ID 表示使用这个文件在数据库中对应的编号</li>
+//	 * <li>.EXT 表示使用这个文件的扩展名，由于安全性考虑.jsp的文件扩展名会自动扩充成.jsp.txt</li>
+//	 * </ul>
+//	 * @param file 需要上传的附件
+//	 * @param userId 操作人员编号 用于标识这个文件是哪个人上传的。
+//	 * @return
+//	 * @throws IOException
+//	 * @deprecated 在过程资源库没完成前，这个暂时不推荐使用
+//	 */
+//	@Deprecated
+//	public static String[] uploadFile(String urlPattern,MultipartFile file,String userId) throws IOException{
+//
+//		String attachId = getNewId("PubAttach", "attachId", "00000001");// GetUniqueId.getPubAttachId();
+//		String fileName = file.getName();
+//		int j = fileName.lastIndexOf(".");
+//		String ext = "";
+//		if (j >= 0) {
+//			ext = fileName.substring(j);
+//			if (ext.equalsIgnoreCase(".jsp")) {
+//				ext += ".txt";
+//			}
+//		}
+////		long fileSize = file.getSize();
+//		String relaPath = "";
+//		String relaFile = attachId + ext;
+//		String realFileName = attachId + ext;
+//		if (urlPattern != null && !urlPattern.equals("") && !urlPattern.equals("/")) {
+//			String now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+//			String year = now.substring(0, 4);
+//			String month = now.substring(4, 6);
+//			String date = now.substring(6, 8);
+//			String hour = now.substring(8, 10);
+//			String minute = now.substring(10, 12);
+//			String second = now.substring(12, 14);
+//			relaFile = urlPattern.replace("yyyy", year).replace("MM", month).replace("dd", date)
+//					.replace("HH", hour).replace("mm", minute).replace("ss", second).replace(
+//							"ATTACH_ID", attachId).replace(".EXT", ext);
+//			if (relaFile.lastIndexOf("/") > 0) {
+//				relaPath = relaFile.substring(0, relaFile.lastIndexOf("/") + 1);
+//				realFileName = relaFile.substring(relaFile.lastIndexOf("/") + 1);
+//			}
+//		}
+//
+////		String attachUrl = FrameworkContext.getInstance().getServletInfo().getServletRealPath()
+////				+ "upload/" + relaFile; // 直接存变化的url
+//		String saveToPath = FrameworkContext.getInstance().getServletInfo().getServletRealPath()
+//				+ "upload/";
+//		FileUtil.saveFile(file.getInputStream(), saveToPath + relaPath, realFileName);
+////		PubAttach att = new PubAttach();
+////		att.setAttachId(attachId);
+////		att.setAttachName(fileName);
+////		att.setAttachSize(fileSize);
+////		att.setAttachUrl(attachUrl);
+////		att.setUpTime(new Date());
+////		att.setUpAuthor(userId);
+////		getDAO().saveObject(att);
+//		return new String[] { attachId, relaFile };
+//	}
 	
 	/**
 	 * 取得这个登录人员使用的皮肤的配色，具体配色代码含义要根据皮肤本身的定义。
@@ -375,7 +365,7 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static PubCommonDAO getDAO(){
-		return (PubCommonDAO) SystemData.getInstance().getBeanFactory().getBean("pubCommonDAO");
+		return (PubCommonDAO) FrameworkContext.getInstance().getBeanFactory().getBean("pubCommonDAO");
 	}
 
 	/**
@@ -384,7 +374,7 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static Object getDAO(String daoName){
-		return  SystemData.getInstance().getBeanFactory().getBean(daoName);
+		return  FrameworkContext.getInstance().getBeanFactory().getBean(daoName);
 	}
 
 	/**
@@ -392,7 +382,7 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static BeanFactory getBeanFactory() {
-		BeanFactory factory = SystemData.getInstance().getBeanFactory();
+		BeanFactory factory = FrameworkContext.getInstance().getBeanFactory();
 		if(factory==null){
 			throw new NullPointerException("Bean factory is not initialized. Please check your environment. (applicationContext.xml) ");
 		}
@@ -470,7 +460,7 @@ public class FrameworkHelper{
 //	 */
 //	@SuppressWarnings("unchecked")
 //    public static <T> T getBean(Class<T> beanClass) {
-//		BeanFactory bf = SystemData.getInstance().getBeanFactory();
+//		BeanFactory bf = FrameworkContext.getInstance().getBeanFactory();
 //		T bean = null;
 //		try {
 //			bean = (T) BEAN_MAP.get(beanClass);
@@ -499,7 +489,7 @@ public class FrameworkHelper{
 //	 * @return
 //	 */
 //	public static Object getBean(String beanId) {
-//		return SystemData.getInstance().getBeanFactory().getBean(beanId);
+//		return FrameworkContext.getInstance().getBeanFactory().getBean(beanId);
 //	}
 //	
 //	/**
@@ -509,7 +499,7 @@ public class FrameworkHelper{
 //	 * @return
 //	 */
 //	public static <T> T getBean(String beanId, Class<T> beanClass) {
-//		return SystemData.getInstance().getBeanFactory().getBean(beanId, beanClass);
+//		return FrameworkContext.getInstance().getBeanFactory().getBean(beanId, beanClass);
 //	}
 
 	/**
@@ -584,21 +574,21 @@ public class FrameworkHelper{
 //		Cache<String, String> cache = getConfigCache();
 //		String value = cache.get(key);
 //		if (Utils.isEmpty(value)) { // 缓存中获取不到或者缓存已过期
-//			value = SystemData.getInstance().getSystemConfig().getProperty(key);// properties.getProperty(key);
+//			value = FrameworkContext.getInstance().getSystemConfig().getProperty(key);// properties.getProperty(key);
 //		}
 //		if (Utils.notEmpty(value)) {
 //			// 需要加到缓存中
 //			cache.put(key, value);
 //			return value;
 //		}
-		String value = SystemData.getInstance().getSystemConfig().getProperty(key);
+		String value = FrameworkContext.getInstance().getSystemConfig().getProperty(key);
 		return Utils.isEmpty(value) ? defaultValue : value;
 	}
 	public static Integer getSystemConfigAsInteger(String key,Integer defaultValue){
 //		Cache<String, String> cache = getConfigCache();
 //		String strValue = cache.get(key);
 //		if (Utils.isEmpty(strValue)) {
-//			strValue = SystemData.getInstance().getSystemConfig().getProperty(key);// properties.getProperty(key);
+//			strValue = FrameworkContext.getInstance().getSystemConfig().getProperty(key);// properties.getProperty(key);
 //		}
 		String strValue = getSystemConfig(key, null);
 		if (Utils.notEmpty(strValue)) {
@@ -620,7 +610,7 @@ public class FrameworkHelper{
 	 * @param value
 	 */
 	public static void setSystemConfig(String key,String value){
-		SystemData.getInstance().getSystemConfig().setProperty(key, value);
+		FrameworkContext.getInstance().getSystemConfig().setProperty(key, value);
 //		Cache<String, String> cache = getConfigCache();
 //		// 配置设置成功后加入缓存中去
 //		cache.put(key, value);
@@ -631,10 +621,10 @@ public class FrameworkHelper{
 	 *
 	 */
 	public static void resetSystemConfig(){
-//	    String realPath=SystemData.getInstance().getServletInfo().getServletRealPath();
+//	    String realPath=FrameworkContext.getInstance().getServletInfo().getServletRealPath();
 //	    
 //		String configPath =realPath+"WEB-INF/config/dfish-config.xml";
-		SystemData.getInstance().getSystemConfig().reset();
+		FrameworkContext.getInstance().getSystemConfig().reset();
 //		Cache<String, String> cache = getConfigCache();
 //		cache.clear();
 	}
@@ -721,17 +711,17 @@ public class FrameworkHelper{
 	 * @return String
 	 */
 	public static String getPersonalConfig(String userId,String argStr){
-		return SystemData.getInstance().getPersonalConfig().getProperty(userId,argStr);
+		return FrameworkContext.getInstance().getPersonalConfig().getProperty(userId,argStr);
 		
 	}
 	public static Integer getPersonalConfigAsInteger(String userId,String argStr){
-		String strValue= SystemData.getInstance().getPersonalConfig().getProperty(userId,argStr);
+		String strValue= FrameworkContext.getInstance().getPersonalConfig().getProperty(userId,argStr);
 		if(strValue==null)return null;
 		try{
 			return new Integer(strValue);
 		}catch(Exception ex){
 			if(!userId.equals("default")){
-				strValue=SystemData.getInstance().getPersonalConfig().getProperty("default",argStr);
+				strValue=FrameworkContext.getInstance().getPersonalConfig().getProperty("default",argStr);
 				if(strValue==null)return null;
 				try{
 					return new Integer(strValue);
@@ -753,7 +743,7 @@ public class FrameworkHelper{
 	 * @return String
 	 */
 	public static void setPersonalConfig(String userId,String argStr,String value){
-		SystemData.getInstance().getPersonalConfig().setProperty(userId,argStr,value);
+		FrameworkContext.getInstance().getPersonalConfig().setProperty(userId,argStr,value);
 	}
 
 
@@ -795,22 +785,22 @@ public class FrameworkHelper{
 		return o;
 	}
 
-	/**
-	 * 向数据库中插入一条新数据时，该数据的主键不可重复，可通过此方法获取该编号。 ID是一个十进制数，位数是一定的。如果前面没有数字，会自动补0。
-	 * 这适用于只需确保在一个表中ID唯一的的情况，不适合新建人员时人员编号的生成。
-	 * 
-	 * @param clzName
-	 *            持久化对象名字
-	 * @param idName
-	 *            ID字段字
-	 * @param initId
-	 *            如果这个表里面并没有内容，那么将使用这个ID。否则用表里面最大的ID加+1。注意，长度与原先表最大的ID一致。
-	 *            当initId>1时,表示该编号是从设定的初始值开始递增,小于初始值的编号是预留的.//ZHL
-	 * @return
-	 */
-	public static String getNewId(String clzName,String idName,String initId){
-		return SystemData.getInstance().getNewIdGetter().getNewId(clzName,idName,initId);
-	}
+//	/**
+//	 * 向数据库中插入一条新数据时，该数据的主键不可重复，可通过此方法获取该编号。 ID是一个十进制数，位数是一定的。如果前面没有数字，会自动补0。
+//	 * 这适用于只需确保在一个表中ID唯一的的情况，不适合新建人员时人员编号的生成。
+//	 *
+//	 * @param clzName
+//	 *            持久化对象名字
+//	 * @param idName
+//	 *            ID字段字
+//	 * @param initId
+//	 *            如果这个表里面并没有内容，那么将使用这个ID。否则用表里面最大的ID加+1。注意，长度与原先表最大的ID一致。
+//	 *            当initId>1时,表示该编号是从设定的初始值开始递增,小于初始值的编号是预留的.//ZHL
+//	 * @return
+//	 */
+//	public static String getNewId(String clzName,String idName,String initId){
+//		return FrameworkContext.getInstance().getNewIdGetter().getNewId(clzName,idName,initId);
+//	}
 	
 	/**
 	 * 获取IP
@@ -890,7 +880,7 @@ public class FrameworkHelper{
 	 */
 	public static String getFileText(String path){
 		@SuppressWarnings("deprecation")
-		String rootPath=SystemData.getInstance().getServletInfo().getServletRealPath();
+		String rootPath=FrameworkContext.getInstance().getServletInfo().getServletRealPath();
 		if(path.startsWith("/")||path.startsWith("\\")){
 			path=path.substring(1);
 		}

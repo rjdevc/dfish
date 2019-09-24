@@ -1,0 +1,20 @@
+<div class='document_prew'><p><span style="font-size:26pt;font-weight:bold;">我是标题（宋体</span><span style="font-size:26pt;font-weight:bold;">1</span><span style="font-size:26pt;font-weight:bold;">号加粗居中</span><span style="font-size:26pt;font-weight:bold;">）</span></p>
+<p></p>
+<p style="text-indent:48px;"><span style="font-family:仿宋;font-size:18pt;font-weight:bold;">我是</span><span style="font-family:仿宋;font-size:18pt;font-weight:bold;">正文</span><span style="font-family:仿宋;font-size:18pt;font-weight:bold;">1缩进加粗仿宋小二</span></p>
+<p style="text-indent:40px;"><span style="font-family:黑体;font-size:15pt;font-weight:bold;">我是</span><span style="font-family:黑体;font-size:15pt;font-weight:bold;">正文</span><span style="font-family:黑体;font-size:15pt;font-weight:bold;">2缩进加粗黑体小三</span></p>
+<p style="text-indent:32px;"><span style="font-family:微软雅黑;font-size:12pt;font-weight:bold;">我是</span><span style="font-family:微软雅黑;font-size:12pt;font-weight:bold;">正文</span><span style="font-family:微软雅黑;font-size:12pt;font-weight:bold;">3缩进加粗微软雅黑小四</span></p>
+<p><span style="font-size:12pt;font-weight:bold;">我是</span><span style="font-size:12pt;font-weight:bold;">正文</span><span style="font-size:12pt;font-weight:bold;">1，宋体小四</span></p>
+<p><span style="font-size:12pt;font-weight:bold;">我是</span><span style="font-size:12pt;font-weight:bold;">正文</span><span style="font-size:12pt;font-weight:bold;">1</span><span style="font-size:12pt;font-weight:bold;">，有符号</span></p>
+<p><span style="font-size:12pt;font-weight:bold;">我是</span><span style="font-size:12pt;font-weight:bold;">正文</span><span style="font-size:12pt;font-weight:bold;">1</span><span style="font-size:12pt;font-weight:bold;">，有符号</span></p>
+<p><span style="font-size:12pt;font-weight:bold;">我是</span><span style="font-size:12pt;font-weight:bold;">正文</span><span style="font-size:12pt;font-weight:bold;">1</span><span style="font-size:12pt;font-weight:bold;">，有符号</span></p>
+<p><span style="font-size:12pt;">=========================我是分割线=====================</span></p>
+<p style="text-indent:48px;"><span style="font-family:仿宋;font-size:18pt;">我是</span><span style="font-family:仿宋;font-size:18pt;">正文</span><span style="font-family:仿宋;font-size:18pt;">1缩进加粗仿宋小二</span></p>
+<p style="text-indent:40px;"><span style="font-family:黑体;font-size:15pt;">我是</span><span style="font-family:黑体;font-size:15pt;">正文</span><span style="font-family:黑体;font-size:15pt;">2缩进加粗黑体小三</span></p>
+<p style="text-indent:32px;"><span style="font-family:微软雅黑;font-size:12pt;">我是</span><span style="font-family:微软雅黑;font-size:12pt;">正文</span><span style="font-family:微软雅黑;font-size:12pt;">3缩进加粗微软雅黑小四</span></p>
+<p><span style="font-size:12pt;">我是</span><span style="font-size:12pt;">正文</span><span style="font-size:12pt;">1，宋体小四</span></p>
+<p><span style="font-size:12pt;">我是</span><span style="font-size:12pt;">正文</span><span style="font-size:12pt;">1，有符号</span></p>
+<p><span style="font-size:12pt;">我是</span><span style="font-size:12pt;">正文</span><span style="font-size:12pt;">1，有符号</span></p>
+<p><span style="font-size:12pt;">我是</span><span style="font-size:12pt;">正文</span><span style="font-size:12pt;">1，有符号</span></p>
+<p></p>
+<p></p>
+</div>

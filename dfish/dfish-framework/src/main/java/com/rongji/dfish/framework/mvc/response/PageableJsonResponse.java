@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.response;
+package com.rongji.dfish.framework.mvc.response;
 
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Pagination;

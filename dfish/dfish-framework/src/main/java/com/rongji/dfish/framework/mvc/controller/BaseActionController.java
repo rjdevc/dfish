@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.controller;
+package com.rongji.dfish.framework.mvc.controller;
 
 import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Page;
@@ -6,7 +6,7 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.DateUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.response.JsonResponse;
+import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.json.J;
 import org.springframework.util.Assert;

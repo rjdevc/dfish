@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.filter;
+package com.rongji.dfish.framework.mvc.filter;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -28,7 +28,7 @@ import com.rongji.dfish.misc.util.JsonUtil;
  *  <pre>
  *  &lt;filter&gt;
  *    &lt;filter-name&gt;ddosFilter&lt;/filter-name&gt;
- *    &lt;filter-class&gt;com.rongji.dfish.framework.filter.DdosFilter&lt;/filter-class&gt;
+ *    &lt;filter-class&gt;com.rongji.dfish.framework.mvc.filter.DdosFilter&lt;/filter-class&gt;
  *    &lt;init-param&gt;
  *      &lt;param-name&gt;interval&lt;/param-name&gt;
  *      &lt;param-value&gt;10000&lt;/param-value&gt;

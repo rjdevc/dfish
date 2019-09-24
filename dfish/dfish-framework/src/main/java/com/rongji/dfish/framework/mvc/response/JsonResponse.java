@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.response;
+package com.rongji.dfish.framework.mvc.response;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

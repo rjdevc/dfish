@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.controller;
+package com.rongji.dfish.framework.mvc.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

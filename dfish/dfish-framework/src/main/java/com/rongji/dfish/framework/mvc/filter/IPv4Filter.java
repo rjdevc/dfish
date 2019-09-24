@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.filter;
+package com.rongji.dfish.framework.mvc.filter;
 
 import java.util.ArrayList;
 import java.util.Collections;

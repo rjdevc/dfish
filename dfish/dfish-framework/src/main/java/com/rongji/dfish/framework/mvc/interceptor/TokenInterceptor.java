@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.interceptor;
+package com.rongji.dfish.framework.mvc.interceptor;
 
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

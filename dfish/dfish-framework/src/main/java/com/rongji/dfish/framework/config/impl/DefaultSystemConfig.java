@@ -5,9 +5,9 @@ import java.io.File;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.impl.MemoryCache;
+import com.rongji.dfish.framework.FrameworkContext;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
-import com.rongji.dfish.framework.context.SystemData;
 
 public class DefaultSystemConfig implements SystemConfigHolder{
 	private String configFile;
@@ -28,7 +28,7 @@ public class DefaultSystemConfig implements SystemConfigHolder{
 	@Override
 	public void reset() {
 		@SuppressWarnings("deprecation")
-        String configPath=SystemData.getInstance().getServletInfo().getServletRealPath()+"WEB-INF/config/"+configFile;
+        String configPath=FrameworkContext.getInstance().getServletInfo().getServletRealPath()+"WEB-INF/config/"+configFile;
 		FrameworkHelper.LOG.info("load file : "+configPath);
 			xmltool=new JsonConfigHelper(new File(configPath));
 			propertyCache.clear();

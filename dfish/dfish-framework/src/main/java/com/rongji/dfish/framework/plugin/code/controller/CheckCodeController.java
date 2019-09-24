@@ -2,7 +2,7 @@ package com.rongji.dfish.framework.plugin.code.controller;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.framework.controller.BaseController;
+import com.rongji.dfish.framework.mvc.controller.BaseController;
 import com.rongji.dfish.framework.plugin.code.CheckCodeGenerator;
 import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

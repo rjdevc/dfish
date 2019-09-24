@@ -4,10 +4,10 @@ import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.framework.controller.FilterParam;
+import com.rongji.dfish.framework.mvc.controller.FilterParam;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.context.SystemData;
-import com.rongji.dfish.framework.controller.BaseController;
+import com.rongji.dfish.framework.FrameworkContext;
+import com.rongji.dfish.framework.mvc.controller.BaseController;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
@@ -480,7 +480,7 @@ public class FileController extends BaseController {
         }
 
         // 这里可能考虑重定向到具体文件目录去
-        File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
+        File defaultImageFile = new File(FrameworkContext.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
         if (defaultImageFile.exists()) {
             downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
             return;

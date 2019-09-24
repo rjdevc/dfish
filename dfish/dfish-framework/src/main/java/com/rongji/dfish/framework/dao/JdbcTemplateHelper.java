@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Pagination;
+import com.rongji.dfish.framework.FrameworkContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.ConnectionCallback;
@@ -20,7 +21,6 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.info.DataBaseInfo;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.context.SystemData;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
@@ -252,7 +252,7 @@ public class JdbcTemplateHelper {
 		List<Object> queryArgs = new ArrayList<>(orginArgs);
 		QueryPreparation preparation = new QueryPreparation();
 		if (pagination != null) {
-			DataBaseInfo dbInfo = SystemData.getInstance().getDataBaseInfo();
+			DataBaseInfo dbInfo = FrameworkContext.getInstance().getDataBaseInfo();
 			if (DataBaseInfo.DATABASE_ORACLE == dbInfo.getDatabaseType()) {
 				querySql = getPreSqlWithPageOracle(sql);
 				queryArgs.add(pagination.getOffset() + pagination.getLimit());
