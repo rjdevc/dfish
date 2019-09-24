@@ -3,9 +3,10 @@ package com.rongji.dfish.framework.service;
 import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.dao.BaseDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class BaseService4Simple<P> extends BaseDao<P, String> {
-
+    @Autowired(required = false)
     protected CryptProvider cryptProvider;
 
     public CryptProvider getCryptProvider() {

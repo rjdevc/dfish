@@ -5,6 +5,7 @@ import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.BaseDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -14,15 +15,12 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 
- * @author DFish Team
- *
- * @param <V> 数据接口对象
- * @param <P> 实体对象Entity
+ * @param <V>  数据接口对象
+ * @param <P>  实体对象Entity
  * @param <ID> ID对象类型通常是String
+ * @author DFish Team
  */
 public abstract class BaseService<V, P, ID extends Serializable> {
-    
     protected BaseDao<P, ID> dao;
 
 //    /**
@@ -30,6 +28,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
 //     */
 //    protected boolean autoCheck;
 
+    @Autowired(required = false)
     protected CryptProvider cryptProvider;
 
     public BaseDao<P, ID> getDao() {
@@ -179,7 +178,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         this.afterSaveOrUpdate(newVo, oldVo);
     }
 
-    protected void beforeDelete(V vo)  throws Exception {
+    protected void beforeDelete(V vo) throws Exception {
     }
 
     protected void afterDelete(V vo) throws Exception {
@@ -274,7 +273,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
 
     @Transactional
     public int delete(ID id) throws Exception {
-       return delete(get(id));
+        return delete(get(id));
     }
 
     public V get(ID id) {
