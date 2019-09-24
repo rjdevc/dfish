@@ -25,15 +25,15 @@ import com.rongji.dfish.ui.template.DFishTemplate;
  * @author LinLW
  *
  */
-public class JsonHttpMessageConverter extends AbstractHttpMessageConverter<Object>{
+public class DFishUIConverter extends AbstractHttpMessageConverter<Object>{
 	/**
 	 * 日志器
 	 */
-	public static final Log LOG = LogFactory.getLog(JsonHttpMessageConverter.class);
+	public static final Log LOG = LogFactory.getLog(DFishUIConverter.class);
 	/**
 	 * 构造函数
 	 */
-	public JsonHttpMessageConverter(){
+	public DFishUIConverter(){
 		super(new MediaType[] { new MediaType("text", "json", CHARSET), MediaType.ALL });
 	}
 	

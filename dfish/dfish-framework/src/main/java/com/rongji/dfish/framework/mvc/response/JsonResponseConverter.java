@@ -2,7 +2,7 @@ package com.rongji.dfish.framework.mvc.response;
 
 import com.rongji.dfish.ui.json.J;
 
-public class JsonResponseHttpMessageConverter extends JsonHttpMessageConverter {
+public class JsonResponseConverter extends DFishUIConverter {
 
 	@Override
 	protected String getObjectJson(Object obj) {
