@@ -549,6 +549,18 @@ _idsAny = $.idsAny = function( s, n, p ) {
 	} else
 		return (p + s + p).indexOf( p + n + p ) > -1;
 },
+// s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
+_idsAll = $.idsAll = function( s, n, p ) {
+	if ( ! s ) return F;
+	if ( ! n || s == n ) return T;
+	if ( ! p ) p = ',';
+	if ( (n = String( n )).indexOf( p ) > -1 ) {
+		for ( var i = 0, b = n.split( p ), l = b.length; i < l; i ++ )
+			if ( (p + s + p).indexOf( p + b[ i ] + p ) === -1 ) return F;
+		return T;
+	} else
+		return (p + s + p).indexOf( p + n + p ) > -1;
+},
 // $.scale的辅助方法
 _scaleRange = $.scaleRange = function( a, b ) {
 	if ( b != N ) {

@@ -30,6 +30,18 @@ _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
 abbr = function( a ) { return $.abbr + '.all["' + a.id + '"]' },
+// 存放有样式的default_option
+_dfcls = (function() {
+	var r = {};
+	for ( var k in _dfopt ) {
+		if ( k.indexOf( '.' ) > 0 ) {
+			var b = {};
+			b[ $.strFrom( k, '.' ).replace( /\./g, ' ' ) ] = _dfopt[ k ];
+			r[ $.strTo( k, '.' ) ] = b;
+		}
+	}
+	return r;
+})(),
 // 模板集合
 _templateCache = {},
 // 注册模板  /@a -> id, b -> template body
@@ -696,7 +708,15 @@ W = define( 'widget', function() {
 			this.x = x;
 			var r = this.rootNode;
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
-			_dfopt[ this.type ] && ! x.ownproperty && $.extendDeep( x, _dfopt[ this.type ] );
+			if ( !x.ownproperty ) {
+				_dfopt[ this.type ] && $.extendDeep( x, _dfopt[ this.type ] );
+				if ( _dfcls[ this.type ] ) {
+					var c = _dfcls[ this.type ], d = this.prop_cls();
+					for ( var k in c ) {
+						$.idsAll( d, k, ' ' ) && $.extendDeep( x, c[ k ] );
+					}
+				}
+			}
 		},
 		// @private: 初始化子节点
 		init_nodes: function() {
@@ -6909,7 +6929,7 @@ XBox = define.widget( 'xbox', {
 			this.init_nodes();
 			this.val( v );
 			if ( v && !this.x.multiple && !this._sel.length ) {
-				a && a[ 0 ] && this.val( a[ 0 ].value );
+				a && a[ 0 ] && this.val( a[ 0 ].value || '' );
 			}
 		},
 		addOption: function( a, i ) {
@@ -9852,8 +9872,8 @@ THead = define.widget( 'thead', {
 		html_nodes: _proto.html_nodes
 	}
 } ),
-/* `col` */
-Col = define.widget( 'col', {
+/* `column` */
+Column = define.widget( 'column', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		if ( x.sort )
@@ -9904,7 +9924,7 @@ Colgroup = define.widget( 'colgroup', {
 	Prototype: {
 		ROOT_TYPE: 'grid,form',
 		SCALE_COVER: T,
-		x_childtype: $.rt( 'col' ),
+		x_childtype: $.rt( 'column' ),
 		insertCol: function( a, b ) {
 			 b == N || ! this[ b ] ? this.append( a ) : this[ b ].before( a );
 		},
