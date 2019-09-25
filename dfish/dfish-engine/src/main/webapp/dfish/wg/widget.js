@@ -35,9 +35,8 @@ _dfcls = (function() {
 	var r = {};
 	for ( var k in _dfopt ) {
 		if ( k.indexOf( '.' ) > 0 ) {
-			var b = {};
-			b[ $.strFrom( k, '.' ).replace( /\./g, ' ' ) ] = _dfopt[ k ];
-			r[ $.strTo( k, '.' ) ] = b;
+			var a = $.strFrom( k, '.' ), b = $.strTo( k, '.' );
+			(r[ b ] || (r[ b ] = {}))[ a ] = _dfopt[ k ]
 		}
 	}
 	return r;
@@ -709,11 +708,12 @@ W = define( 'widget', function() {
 			var r = this.rootNode;
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
 			if ( !x.ownproperty ) {
-				_dfopt[ this.type ] && $.extendDeep( x, _dfopt[ this.type ] );
+				var y = _dfopt[ this.type ];
+				y && $.extendDeep( x, y );
 				if ( _dfcls[ this.type ] ) {
 					var c = _dfcls[ this.type ], d = this.prop_cls();
 					for ( var k in c ) {
-						$.idsAll( d, k, ' ' ) && $.extendDeep( x, c[ k ] );
+						$.idsAll( d, k, ' ' ) && $.mergeDeep( x, c[ k ] );
 					}
 				}
 			}
