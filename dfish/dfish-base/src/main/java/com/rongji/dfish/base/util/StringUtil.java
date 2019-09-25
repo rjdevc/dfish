@@ -6,15 +6,9 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.rongji.dfish.base.Utils;
 
@@ -815,6 +809,147 @@ public class StringUtil {
    			}
     	}
     	return true;
+	}
+	/**
+	 * 按提供的字符串分隔字符串(带分隔符转换).
+	 *
+	 * @param str
+	 * @param regex
+	 * @return
+	 */
+	public static String[] split(String str, String regex) {
+		String[] sa = null;
+		if (str != null && regex!=null&&!regex.equals("")) {
+			sa = str.split(rex4Str(regex));
+		}
+
+		return sa;
+	}
+
+	/**
+	 * 正则转义字符和特殊字符串处理
+	 *
+	 * @param regex
+	 * @return
+	 */
+	private static String rex4Str(String regex) {
+		String rexc = "";
+
+		if (".".equals(regex)) {
+			rexc = "\\.";
+		} else if ("^".equals(regex)) {
+			rexc = "\\^";
+		} else if ("$".equals(regex)) {
+			rexc = "\\$";
+		} else if ("*".equals(regex)) {
+			rexc = "\\*";
+		} else if ("+".equals(regex)) {
+			rexc = "\\+";
+		} else if ("|".equals(regex)) {
+			rexc = "\\|";
+		} else {
+			rexc = regex;
+		}
+
+		return rexc;
+	}
+
+
+
+	/**
+	 * 判断字符串是否仅有数字组成,null或""均是非数字
+	 *
+	 * @param str
+	 * @return
+	 *
+	 * @deprecated 应该使用
+	 */
+	public static boolean isNumber(String str) {
+		if (Utils.isEmpty(str)) {
+			return false;
+		}
+		Pattern p = Pattern.compile("\\d*");
+		Matcher m = p.matcher(str);
+		return m.matches();
+	}
+
+	/**
+	 * 拼接字符串,等同于+操作
+	 *
+	 * @param obj
+	 * @return
+	 */
+	public static String joinString(Object... obj) {
+		StringBuilder sb = new StringBuilder();
+		if (obj != null) {
+			for (Object o : obj) {
+				sb.append(o);
+			}
+		}
+		return sb.toString();
+	}
+
+
+
+	/**
+	 * 把一个集合转化成可显示的字符串
+	 *
+	 * @param coll
+	 * @param split
+	 * @return
+	 */
+	public static String toString(Collection<?> coll, char split) {
+		if (coll == null) {
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+		boolean begin = true;
+		for (Object o : coll) {
+			if (o == null) {
+				continue;
+			}
+			if (begin) {
+				begin = false;
+			} else {
+				sb.append(split);
+			}
+			sb.append(o);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * 把一个集合转化成用逗号隔开的的字符串
+	 *
+	 * @param coll
+	 * @return
+	 */
+	public static String toString(Collection<?> coll) {
+		return toString(coll, ',');
+	}
+
+	/**
+	 * 把一个数组转化成可显示的字符串
+	 *
+	 * @param array
+	 * @return
+	 */
+	public static <T> String toString(T[] array) {
+		if (array == null) {
+			return null;
+		}
+		return toString(array, ',');
+	}
+
+	/**
+	 * 把一个数组转化成可显示的字符串
+	 *
+	 * @param array
+	 * @param split
+	 * @return
+	 */
+	public static <T> String toString(T[] array, char split) {
+		return toString(Arrays.asList(array), split);
 	}
 
 }

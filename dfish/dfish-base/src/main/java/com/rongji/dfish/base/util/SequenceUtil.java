@@ -1,6 +1,9 @@
 package com.rongji.dfish.base.util;
 
+import com.rongji.dfish.base.crypt.StringCryptor;
+
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * SequenceUtil 用于做有序的序列化文本
@@ -281,38 +284,59 @@ public class SequenceUtil {
 			}
 		}
 	}
-	
-	
 
 
-
-	public static void main(String[] args) {
-		SequenceUtil s=SequenceUtil.DECIMAL;
-		System.out.println(s.next("19E"));
-		System.out.println(s.next("19E",2));
-		System.out.println(s.plus("199"));
-		System.out.println(s.plus("1"));
-		System.out.println(s.plus("109"));
-		System.out.println(s.plus("009"));
-		System.out.println(s.plus("109",91));
-//		System.out.println(s.plus("999"));
-		SequenceUtil s2=SequenceUtil.HEX;
-		System.out.println(s2.plus("199"));
-		System.out.println(s2.plus("1FF"));
-		System.out.println(s2.plus("1ff"));
-		System.out.println(s2.plus("1ee"));
-		System.out.println(s2.plus("1ef"));
-		System.out.println(s2.plus("1"));
-		System.out.println(s2.plus("10F"));
-		System.out.println(s2.plus("00F"));
-		System.out.println(s2.plus("10F",0xF1));
-		
-		SequenceUtil s3=SequenceUtil.ALPHABET_AND_NUMBER;
-		System.out.println(s3.plus("1zz"));
-		
-		SequenceUtil s4=SequenceUtil.HUMAN_READABLE;
-		System.out.println(s4.plus("899"));
-		System.out.println(s4.plus("999"));
+	/**
+	 * 取得唯一的值
+	 *
+	 * @return String
+	 */
+	public static String getUID() {
+		return getUID(8);
 	}
-	
+
+	private static Random random = new Random(87860988L);
+
+	/**
+	 * 取得唯一的值
+	 *
+	 * @param byteLength 相当于多少个字节。由于是16进制数表示。结果是byteLength的2倍
+	 * @return String
+	 */
+	public static String getUID(int byteLength) {
+		byte[] temp = new byte[byteLength];
+		random.nextBytes(temp);
+		return StringCryptor.byte2hex(temp);
+	}
+
+
+//	public static void main(String[] args) {
+//		SequenceUtil s=SequenceUtil.DECIMAL;
+//		System.out.println(s.next("19E"));
+//		System.out.println(s.next("19E",2));
+//		System.out.println(s.plus("199"));
+//		System.out.println(s.plus("1"));
+//		System.out.println(s.plus("109"));
+//		System.out.println(s.plus("009"));
+//		System.out.println(s.plus("109",91));
+////		System.out.println(s.plus("999"));
+//		SequenceUtil s2=SequenceUtil.HEX;
+//		System.out.println(s2.plus("199"));
+//		System.out.println(s2.plus("1FF"));
+//		System.out.println(s2.plus("1ff"));
+//		System.out.println(s2.plus("1ee"));
+//		System.out.println(s2.plus("1ef"));
+//		System.out.println(s2.plus("1"));
+//		System.out.println(s2.plus("10F"));
+//		System.out.println(s2.plus("00F"));
+//		System.out.println(s2.plus("10F",0xF1));
+//
+//		SequenceUtil s3=SequenceUtil.ALPHABET_AND_NUMBER;
+//		System.out.println(s3.plus("1zz"));
+//
+//		SequenceUtil s4=SequenceUtil.HUMAN_READABLE;
+//		System.out.println(s4.plus("899"));
+//		System.out.println(s4.plus("999"));
+//	}
+//
 }

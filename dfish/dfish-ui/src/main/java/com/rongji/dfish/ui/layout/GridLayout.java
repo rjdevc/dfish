@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.base.util.MathUtil;
 import com.rongji.dfish.ui.Combo;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
@@ -611,7 +612,7 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 			row++;
 		}
 		
-		retain(this.getColumns(),Utils.max(columnSize,bodyColumns,headColumns));
+		retain(this.getColumns(),MathUtil.max(columnSize,bodyColumns,headColumns));
 		retain(tbody.getRows(),bodyRows);
 		retain(thead.getRows(),headRows);
 		return this;

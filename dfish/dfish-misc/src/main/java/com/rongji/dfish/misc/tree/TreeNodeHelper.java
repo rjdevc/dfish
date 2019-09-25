@@ -8,8 +8,9 @@ import java.util.List;
 /**
  * 构建树节点帮助类
  * @author DFish team
- *
+ * @deprecated 该包如果用JAVA8改写效果将会更好。现在价值不明。 不建议使用。
  */
+@Deprecated
 public class TreeNodeHelper {
 	
 

@@ -10,7 +10,9 @@ import java.util.List;
  *
  * @param <ID> 编号多为String Integer 或Long等基础类型
  * @param <T> 元素类型
+ * @deprecated 该包如果用JAVA8改写效果将会更好。现在价值不明。 不建议使用。
  */
+@Deprecated
 public class TreeNode<ID extends java.io.Serializable,T> implements Cloneable {
 	private T item;
 	private ID id;

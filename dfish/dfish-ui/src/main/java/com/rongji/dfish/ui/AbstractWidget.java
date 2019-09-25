@@ -2,6 +2,7 @@ package com.rongji.dfish.ui;
 
 
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.StringUtil;
 
 import java.util.*;
 
@@ -375,7 +376,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
             } else {
                 Set<String> clsSet = parseClsSet(this.cls);
                 if (clsSet.add(cls)) {
-                    this.setCls(Utils.toString(clsSet, ' '));
+                    this.setCls(StringUtil.toString(clsSet, ' '));
                 }
             }
         }
@@ -393,7 +394,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
             cls = cls.trim();
             Set<String> clsSet = parseClsSet(this.cls);
             if (clsSet.remove(cls)) {
-                this.setCls(Utils.toString(clsSet, ' '));
+                this.setCls(StringUtil.toString(clsSet, ' '));
             }
         }
         return (T) this;

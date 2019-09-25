@@ -18,10 +18,12 @@ import com.rongji.dfish.base.DfishException;
  * 业务介绍：如果当前为工作状态，将要发送的数据添加到队列中等待<br>
  * 如果为空闲状态，将数据添加到队列，然后发给服务器<br>
  * 如果队列已经等待最大量，抛出异常<br>
- * 
  * @author 研发中心 - IMeng
+ * @deprecated 使用BatchManager
+ * @see com.rongji.dfish.misc.batch.BatchManager
  *
  */
+@Deprecated
 public abstract class BatchAdaptor {
 	
 //	//单次批量处理最大数
