@@ -145,15 +145,6 @@ public abstract class BaseDao<P, ID extends Serializable> {
     protected static String getEntityIdName(Class<?> entityClass) {
         return getFieldName(getEntityIdGetter(entityClass));
     }
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public P find(ID id) {
-        if (id == null) {
-            return null;
-        }
-        String idName = getEntityIdName();
-        return (P) pubCommonDAO.queryAsAnObject("FROM " + getEntityType().getSimpleName() + " t WHERE t." + idName + "=?", id);
-    }
 
     /**
      * 根据给定的ID列表 返回指定该ID指定的列表
@@ -166,7 +157,7 @@ public abstract class BaseDao<P, ID extends Serializable> {
      * @param ids ID
      * @return List
      */
-    public List<P> findAll(List<ID> ids) {
+    public List<P> gets(List<ID> ids) {
         if (ids == null) {
             return null;
         }

@@ -273,7 +273,10 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	@Override
 	public CacheItem<V> getItem(K key) {
 		CacheItem<V> item = core.get(key);
-		CacheItem<V> result = new CacheItem<>(item != null ? item.getValue() : null);
+		if (item == null) {
+			return null;
+		}
+		CacheItem<V> result = new CacheItem<>(item.getValue());
 		Utils.copyPropertiesExact(result, item);
 		return result;
 	}

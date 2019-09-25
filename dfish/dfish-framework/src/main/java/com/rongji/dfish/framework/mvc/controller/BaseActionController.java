@@ -43,11 +43,10 @@ public class BaseActionController extends MultiActionController {
     }
 
     /**
-     * 获取Request,该获取方式未经验证,不推荐使用
+     * 获取Request,该获取方式未完全在所有容器验证清楚,可能会有问题,慎用
      *
      * @return HttpServletRequest
      */
-    @Deprecated
     protected HttpServletRequest getRequest() {
         RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
         Assert.isInstanceOf(ServletRequestAttributes.class, attrs);

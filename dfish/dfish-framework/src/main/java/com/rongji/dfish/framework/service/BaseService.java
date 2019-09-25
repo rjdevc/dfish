@@ -140,6 +140,8 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         if (po == null) {
             return null;
         }
+        // 将Po关联的缓存断掉
+        getDao().getPubCommonDAO().evictObject(po);
         V vo = newInstance4Vo();
         Utils.copyPropertiesExact(vo, po);
         return vo;
@@ -274,7 +276,17 @@ public abstract class BaseService<V, P, ID extends Serializable> {
 
     @Transactional
     public int delete(ID id) throws Exception {
-        return delete(get(id));
+        P po = getDao().get(id);
+        if (po == null) {
+            return 0;
+        }
+        V vo = parseVo(po);
+        beforeDelete(vo);
+        int result = getDao().delete(po);
+        if (result > 0) {
+            afterDelete(vo);
+        }
+        return result;
     }
 
     public V get(ID id) {
@@ -289,8 +301,8 @@ public abstract class BaseService<V, P, ID extends Serializable> {
     protected void afterGets(List<V> vos) {
     }
 
-    public List<V> findAll(List<ID> ids) {
-        List<P> pos = getDao().findAll(ids);
+    public List<V> gets(List<ID> ids) {
+        List<P> pos = getDao().gets(ids);
         List<V> vos = parseVos(pos);
         if (vos != null) {
             afterGets(vos);

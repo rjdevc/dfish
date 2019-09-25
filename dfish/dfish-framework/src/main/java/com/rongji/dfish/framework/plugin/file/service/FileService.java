@@ -1,13 +1,9 @@
 package com.rongji.dfish.framework.plugin.file.service;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.crypt.CryptFactory;
-import com.rongji.dfish.base.crypt.CryptProvider;
-import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
-import com.rongji.dfish.framework.service.BaseService;
 import com.rongji.dfish.framework.service.BaseService4Simple;
 import com.rongji.dfish.misc.util.JsonUtil;
 import com.rongji.dfish.ui.form.UploadItem;
@@ -592,7 +588,7 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
      * @return
      */
     public List<PubFileRecord> findFileRecords(String[] fileId) {
-        return findAll(Arrays.asList(fileId));
+        return gets(Arrays.asList(fileId));
     }
 
     /**
