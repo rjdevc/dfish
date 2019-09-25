@@ -709,13 +709,14 @@ W = define( 'widget', function() {
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
 			if ( !x.ownproperty ) {
 				var y = _dfopt[ this.type ];
-				y && $.extendDeep( x, y );
 				if ( _dfcls[ this.type ] ) {
-					var c = _dfcls[ this.type ], d = this.prop_cls();
+					var c = _dfcls[ this.type ], d = this.prop_cls(), z;
 					for ( var k in c ) {
-						$.idsAll( d, k, ' ' ) && $.mergeDeep( x, c[ k ] );
+						$.idsAll( d, k, ' ' ) && $.mergeDeep( z || (z = {}), c[ k ] );
 					}
+					z && y && (y = $.extendDeep( z, y ));
 				}
+				y && $.extendDeep( x, y );
 			}
 		},
 		// @private: 初始化子节点
