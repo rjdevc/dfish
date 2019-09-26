@@ -91,9 +91,9 @@ public abstract class BaseService<V, P, ID extends Serializable> {
             }
             return poClass.newInstance();
         } catch (Exception e) {
-            FrameworkHelper.LOG.error("对象创建异常", e);
+//            FrameworkHelper.LOG.error("create PO failed", e);
+            throw new UnsupportedOperationException("Unable to create PO automatically, please implement method "+getClass().getSimpleName()+"#newInstance4Po by yourself",e);
         }
-        return null;
     }
 
     protected P parsePo(V vo) {
@@ -129,9 +129,8 @@ public abstract class BaseService<V, P, ID extends Serializable> {
             }
             return voClass.newInstance();
         } catch (Exception e) {
-            FrameworkHelper.LOG.error("对象创建异常", e);
+            throw new UnsupportedOperationException("Unable to create VO automatically, please implement method "+getClass().getSimpleName()+"#newInstance4Vo by yourself",e);
         }
-        return null;
     }
 
     protected V parseVo(P po) {
