@@ -4859,7 +4859,6 @@ _z_on = function( a ) {
 		$.classAdd( this.$(), 'z-on', a );
 		a !== F && this.warn( F );
 		var c = this.isEmpty();
-		if(this.id=='dz:'&&a===F)debugger;
 		//this.getPlaceholder() && this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', a !== F || ! c );
 	}
 },
@@ -4956,7 +4955,7 @@ AbsForm = define.widget( 'abs/form', {
 		_warncls: '',
 		validHooks: F,
 		init_label: function() {
-			var a = this.x.label, b = _getDefaultOption( this.type, this.x.cls );
+			var a = this.x.label, b = _getDefaultOption( 'label', this.x.cls );
 			if ( a && typeof a === _OBJ && (a.width || (!a.ownproperty && b && b.width)) )
 				 this.label = new Label( a, this, -1 );
 			if ( this.label && this.label.x.width == -1 )

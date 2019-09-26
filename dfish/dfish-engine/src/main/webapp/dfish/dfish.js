@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.4',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.3.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
