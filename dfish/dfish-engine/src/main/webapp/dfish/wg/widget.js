@@ -36,7 +36,7 @@ _dfcls = (function() {
 	for ( var k in _dfopt ) {
 		if ( k.indexOf( '.' ) > 0 ) {
 			var a = $.strFrom( k, '.' ), b = $.strTo( k, '.' );
-			(r[ b ] || (r[ b ] = {}))[ a ] = _dfopt[ k ]
+			(r[ b ] || (r[ b ] = {}))[ a ] = _dfopt[ k ];
 		}
 	}
 	return r;
@@ -3438,7 +3438,7 @@ ButtonSplit = define.widget( 'button/split', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		var p = this.parentNode,
-			w = p.x.space || (_dfopt.buttonbar && _dfopt.buttonbar.space);
+			w = p.x.space;
 		w && ! x.ownproperty && this.defaults( { width: w } );
 		if ( p.x.nobr === F ) {
 			this.defaults( { height: -1 } );
@@ -4367,7 +4367,8 @@ Alert = define.widget( 'alert', {
 		var a = this.type === 'alert', r = x.args, s = x.btncls || 'f-button',
 			b = { type: 'alert/submitbutton', cls: s, text: '    ' + Loc.confirm + '    ' },
 			c = { type: 'alert/button', cls: s, text: '    ' + Loc.cancel + '    ' },
-			t = x.preload || (! x.ownproperty && (_dfopt.alert && _dfopt.alert.preload) || (_dfopt.dialog && _dfopt.dialog.preload));
+			d = _getDefaultOption( this.type, x.cls ),
+			t = x.preload || (!x.ownproperty && d && d.preload);
 		if ( x.buttons ) {
 			for ( var i = 0, d = []; i < x.buttons.length; i ++ ) {
 				x.buttons[ i ].type = 'alert/' + x.buttons[ i ].type;
@@ -4955,8 +4956,8 @@ AbsForm = define.widget( 'abs/form', {
 		_warncls: '',
 		validHooks: F,
 		init_label: function() {
-			var a = this.x.label;
-			if ( a && typeof a === _OBJ && (a.width || (!a.ownproperty && _dfopt.label && _dfopt.label.width)) )
+			var a = this.x.label, b = _getDefaultOption( this.type, this.x.cls );
+			if ( a && typeof a === _OBJ && (a.width || (!a.ownproperty && b && b.width)) )
 				 this.label = new Label( a, this, -1 );
 			if ( this.label && this.label.x.width == -1 )
 				this.addEvent( 'ready', this.fixLabelWidth );
@@ -10429,7 +10430,7 @@ Grid = define.widget( 'grid', {
 /* `form` */
 Form = define.widget( 'form', {
 	Const: function( x, p ) {
-		var c = [], rows = [], cols = x.cols || 12;
+		var c = [], d = _getDefaultOption( 'form', x.cls ), rows = [], cols = x.cols || 12;
 		for ( var i = 0; i < cols; i ++ ) {
 			c.push( { field: '' + i, width: '*' } );
 		}
@@ -10437,7 +10438,7 @@ Form = define.widget( 'form', {
 			j == 0 && rows.push( tr );
 			var e = n[ i ],
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
-			$.extend( td, x.pub, _getDefaultOption( 'form', x.cls ) );
+			$.extend( td, x.pub, d && d.pub );
 			!td.colspan && (td.colspan = 4);
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {
