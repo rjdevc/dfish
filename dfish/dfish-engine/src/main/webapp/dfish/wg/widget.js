@@ -2115,7 +2115,14 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		getSrc: function() {
 			var u = this._runtime_src; 
-			!u && (u = this.attr( 'src' ));
+			if ( ! u ) {
+				var t = this.x.template;
+				if ( t ) {
+					typeof t === _STR && (t = _getTemplate( t ));
+					t && t.src && (u = t.src);
+				}
+				!u && (u = this.attr( 'src' ));
+			}
 			u && this.x.args && (u = this.formatStr( u, this.x.args, T ));
 			return u;
 		},
@@ -2125,7 +2132,7 @@ Xsrc = define.widget( 'xsrc', {
 				var t = this.x.template;
 				if ( t ) {
 					typeof t === _STR && (t = _getTemplate( t ));
-					t && t.on && t.on.filter && (f = t.on.filter);
+					t && this.isContentData( t ) && t.on && t.on.filter && (f = t.on.filter);
 				}
 			}
 			return f;
@@ -4587,6 +4594,7 @@ Menu = define.widget( 'menu', {
 		// menu的z-index固定为3，总在最前面
 		front: $.rt( F ),
 		_front: $.rt( F ),
+		init_x: _proto.init_x,
 		init_nodes: _proto.init_nodes,
 		// menu有两种子节点: menu/split, menu/button
 		x_childtype: function( t ) {
