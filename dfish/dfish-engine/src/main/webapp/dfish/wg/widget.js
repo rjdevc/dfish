@@ -712,7 +712,7 @@ W = define( 'widget', function() {
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
 			if ( this.x.template ) {
 				var t = _getTemplate( this.x.template );
-				if ( t ) {
+				if ( t && t.type === this.type ) {
 					t.src && (x.src = t.src);
 					t.cls && (x.cls = $.idsAdd( x.cls, t.cls, ' ' ));
 				}
