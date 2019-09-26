@@ -41,23 +41,23 @@ _dfcls = (function() {
 	}
 	return r;
 })(),
-// 模板集合
-_templateCache = {},
-// 注册模板  /@a -> id, b -> template body
-_regTemplate = function( a, b ) {
-	_templateCache[ a ] = b;
+// 获取widget的默认配置项 /@a -> type, b -> cls
+_getDefaultOption = function( a, b ) {
+	var y = _dfopt[ a ];
+	if ( _dfcls[ a ] ) {
+		var d = _dfcls[ a ], z;
+		for ( var k in d ) {
+			$.idsAll( b, k, ' ' ) && $.mergeDeep( z || (z = {}), d[ k ] );
+		}
+		z && (y = $.extendDeep( z, y ));
+	}
+	return y;
 },
 // 获取模板  /@a -> template id, b -> fn?
 _getTemplate = function( a, b ) {
 	var t = typeof a === _OBJ ? a : $.require( (cfg.template_dir || '') + a, b );
 	t && b && b( t );
 	return t;
-},
-// 预装模板集合
-_preloadCache = {},
-// 注册预装模板  /@ a -> id, b -> preload body
-_regPreload = function( a, b ) {
-	_preloadCache[ a ] = b;
 },
 // 获取预装模板  /@a -> template id, b -> fn?
 _getPreload = function( a, b ) {
@@ -707,17 +707,7 @@ W = define( 'widget', function() {
 			this.x = x;
 			var r = this.rootNode;
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
-			if ( !x.ownproperty ) {
-				var y = _dfopt[ this.type ];
-				if ( _dfcls[ this.type ] ) {
-					var c = _dfcls[ this.type ], d = this.prop_cls(), z;
-					for ( var k in c ) {
-						$.idsAll( d, k, ' ' ) && $.mergeDeep( z || (z = {}), c[ k ] );
-					}
-					z && y && (y = $.extendDeep( z, y ));
-				}
-				y && $.extendDeep( x, y );
-			}
+			!x.ownproperty && $.extendDeep( x, _getDefaultOption( this.type, x.cls ) );
 		},
 		// @private: 初始化子节点
 		init_nodes: function() {
@@ -10447,7 +10437,7 @@ Form = define.widget( 'form', {
 			j == 0 && rows.push( tr );
 			var e = n[ i ],
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
-			$.extend( td, x.pub, _dfopt.form && _dfopt.form.pub );
+			$.extend( td, x.pub, _getDefaultOption( 'form', x.cls ) );
 			!td.colspan && (td.colspan = 4);
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {
@@ -10482,8 +10472,6 @@ Form = define.widget( 'form', {
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
-$.preload = _regPreload;
-$.template = _regTemplate;
 $.dialog = Dialog.get;
 $.widget = $.w = _widget;
 $.vm = _view;

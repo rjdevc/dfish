@@ -97,8 +97,7 @@ _extend = $.extend = function ( a ) {
 },
 // 递归继承
 _extendDeep = $.extendDeep = function ( a ) {
-	for ( var j = 1, l = arguments.length, c, i; j < l; j ++ ) {
-		c = arguments[ j ];
+	for ( var j = 1, l = arguments.length, c, i; j < l; j ++ ) if ( c = arguments[ j ] ) {
 		for ( i in c )
 			if ( ! ( i in a ) ) {
 				if ( c[ i ] != N && c[ i ].constructor === Object ) {
