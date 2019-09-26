@@ -70,9 +70,9 @@ placeholder_select: '请选择{0}',
 debug: {
 	sorry : '很抱歉，系统发生了错误',
 	view_more : '点击“确定”，可在新窗口查看详细错误信息',
-	no_command : '[debug] 视图中没有定义此命令: {0}\nview path: {1}',
-	no_template: '[debug] 没有配置对话框模板: "{0}"',
-	no_combo: '[debug] 选项列表(或树)没有设置combo参数\nname: {0}'
+	no_command : '视图中没有定义此命令: {0}\nview path: {1}',
+	no_combo: '选项列表(或树)没有设置combo参数\nname: {0}',
+	error_template_type: '{0}\n请把此模板类型改为 "{1}"'
 },
 
 form : {

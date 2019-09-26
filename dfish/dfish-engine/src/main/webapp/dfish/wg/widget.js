@@ -712,9 +712,13 @@ W = define( 'widget', function() {
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
 			if ( this.x.template ) {
 				var t = _getTemplate( this.x.template );
-				if ( t && t.type === this.type ) {
-					t.src && (x.src = t.src);
-					t.cls && (x.cls = $.idsAdd( x.cls, t.cls, ' ' ));
+				if ( t ) {
+					if ( t.type === this.type ) {
+						t.src && (x.src = t.src);
+						t.cls && (x.cls = $.idsAdd( x.cls, t.cls, ' ' ));
+					} else {
+						$.alert( Loc.ps( Loc.debug.error_template_type, this.x.template, this.type ) );
+					}
 				}
 			}
 			!x.ownproperty && $.extendDeep( x, _getDefaultOption( this.type, x.cls ) );
@@ -2111,14 +2115,7 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		getSrc: function() {
 			var u = this._runtime_src; 
-			if ( ! u ) {
-				var t = this.x.template;
-				if ( t ) {
-					typeof t === _STR && (t = _getTemplate( t ));
-					t && this.isContentData( t ) && t.src && (u = t.src);
-				}
-				!u && (u = this.attr( 'src' ));
-			}
+			!u && (u = this.attr( 'src' ));
 			u && this.x.args && (u = this.formatStr( u, this.x.args, T ));
 			return u;
 		},
@@ -2128,7 +2125,7 @@ Xsrc = define.widget( 'xsrc', {
 				var t = this.x.template;
 				if ( t ) {
 					typeof t === _STR && (t = _getTemplate( t ));
-					t && this.isContentData( t ) && t.on && t.on.filter && (f = t.on.filter);
+					t && t.on && t.on.filter && (f = t.on.filter);
 				}
 			}
 			return f;
@@ -4370,8 +4367,9 @@ Alert = define.widget( 'alert', {
 		var a = this.type === 'alert', r = x.args, s = x.btncls || 'f-button',
 			b = { type: 'alert/submitbutton', cls: s, text: '    ' + Loc.confirm + '    ' },
 			c = { type: 'alert/button', cls: s, text: '    ' + Loc.cancel + '    ' },
-			d = _getDefaultOption( this.type, x.cls ),
-			t = x.preload || (!x.ownproperty && d && d.preload);
+			d,
+			o = _getDefaultOption( this.type, x.cls ),
+			t = x.preload || (!x.ownproperty && o && o.preload);
 		if ( x.buttons ) {
 			for ( var i = 0, d = []; i < x.buttons.length; i ++ ) {
 				x.buttons[ i ].type = 'alert/' + x.buttons[ i ].type;
@@ -4385,7 +4383,7 @@ Alert = define.widget( 'alert', {
 			$.extend( x, { preload: t, minwidth: 260, maxwidth: 700, maxheight: 600, title: Loc.opertip, node: { type: 'vert', height: '*', nodes: [
 				{ type: 'html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
 				$.image( x.icon ? x.icon : '.f-i-alert' + (a ? 'warn' : 'ask'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + f + '</div></table></div>' },
-				{ type: 'buttonbar', align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
+				{ type: 'buttonbar', cls: 'z-sub-' + this.type, align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
 			] } } );
 		}
 		(x.yes || x.no) && this.addEventOnce( 'close', function() {
