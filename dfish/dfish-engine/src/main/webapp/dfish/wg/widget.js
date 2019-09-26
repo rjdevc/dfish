@@ -318,10 +318,6 @@ _cmdHooks = {
 			x.download ? $.download( x.src, d ) : _ajaxCmd.call( this, x, a, d );
 		}
 	},
-	'menu': function( x, a, b ) {
-		b && (x.srcdata = b);
-		return new Menu( x, this ).show();
-	},
 	'dialog': function( x, a, b ) {
 		b && (x.srcdata = b);
 		if ( typeof x.src === _STR )
@@ -348,18 +344,9 @@ _cmdHooks = {
 		} else {
 			return new Loading( x, this ).show();
 		}
-	},
-	'alert': function( x, a, b ) {
-		b && (x.srcdata = b);
-		x.args = a;
-		return new Alert( x, this ).show();
-	},
-	'confirm':  function( x, a, b ) {
-		b && (x.srcdata = b);
-		x.args = a;
-		return new Confirm( x, this ).show();
 	}
-};
+},
+_cmdWidgets = {};
 $.each( 'before after prepend append replace remove'.split(' '), function( v, i ) {
 	_cmdHooks[ v ] = function( x, a, b ) {
 		var d = x.target || (i > 3 && x.node && x.node.id), e;
@@ -371,6 +358,16 @@ $.each( 'before after prepend append replace remove'.split(' '), function( v, i 
 			}
 		}
 	}
+} );
+$.each( 'menu dialog tip loading alert confirm'.split(' '), function( v, i ) {
+	_cmdWidgets[ v ] = T;
+	if ( ! _cmdHooks[ v ] ) {
+		_cmdHooks[ v ] = function( x, a, b ) {
+			b && (x.srcdata = b);
+			x.args = a;
+			return new (require( v ))( x, this ).show();
+		}
+	}	
 } );
 var
 /* `node` */
@@ -609,8 +606,9 @@ _tpl_view = function( a ) {
 			if ( v = _tpl_view( a.nodes[ i ] ) ) return v;
 	}
 },
+//
 _compilePreload = function( a, x ) {
-	var b = typeof a === _OBJ, p = b ? a : _getPreload( a ), x = x.type === 'dialog' ? x.node : x, n = x, v;
+	var b = typeof a === _OBJ, p = b ? a : _getPreload( a ), y = x, x = x.type === 'dialog' ? x.node : x, n = x, v;
 	if ( p ) {
 		if ( x.type === 'view' ) {
 			v = _tpl_view( p );
@@ -634,6 +632,10 @@ _compilePreload = function( a, x ) {
 		if ( v && (v = _tpl_view( r )) ) {
 			x.commands && $.extend( v.commands || (v.commands = {}), x.commands );
 			x.on && $.extend( v.on || (v.on = {}), x.on );
+		}
+		if ( r.type === y.type ) {
+			for ( var k in y )
+				if ( k !== 'node' && k !== 'nodes' ) r[ k ] = y[ k ];
 		}
 		return r;
 	} else
@@ -677,6 +679,7 @@ W = define( 'widget', function() {
 		w: _widget,
 		e: _widgetEvent,
 		isCmd: function( a ) { return a && _cmdHooks[ a.type ] },
+		isWidget: function( a ) {  },
 		scrollIntoView: _scrollIntoView
 	},
 	Extend: Node,
@@ -707,6 +710,13 @@ W = define( 'widget', function() {
 			this.x = x;
 			var r = this.rootNode;
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
+			if ( this.x.template ) {
+				var t = _getTemplate( this.x.template );
+				if ( t ) {
+					t.src && (x.src = t.src);
+					t.cls && (x.cls = $.idsAdd( x.cls, t.cls, ' ' ));
+				}
+			}
 			!x.ownproperty && $.extendDeep( x, _getDefaultOption( this.type, x.cls ) );
 		},
 		// @private: 初始化子节点
@@ -917,7 +927,7 @@ W = define( 'widget', function() {
 				if ( c )
 					a = $.merge( {}, a, c );
 				if ( _cmdHooks[ a.type ] ) {
-					_dfopt[ a.type ] && ! a.ownproperty && $.extendDeep( a, _dfopt[ a.type ] );
+					!_cmdWidgets[ a.type ] && _dfopt[ a.type ] && !a.ownproperty && $.extendDeep( a, _dfopt[ a.type ] );
 					$.point();
 					return _cmdHooks[ a.type ].call( self, a, b, d );
 				}
@@ -2071,14 +2081,7 @@ Xsrc = define.widget( 'xsrc', {
 		init_x: function( x ) {
 			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
-				var s = x.src;
-				if ( ! s && x.template ) {
-					var t = _getTemplate( x.template );
-					if ( t && t.src ) {
-						x.src = s = t.src;
-					} else
-						s = {};
-				}
+				var s = x.src || {};
 				if ( s && typeof s === _OBJ ) {
 					this.type_view && _view_resources[ this.path ] && $.require( _view_resources[ this.path ] );
 					this._loadEnd( s );
