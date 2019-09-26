@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.mvc.controller;
 
 import com.rongji.dfish.base.DfishException;
-import com.rongji.dfish.base.Page;
+import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.DateUtil;
 import com.rongji.dfish.base.util.LogUtil;
@@ -28,14 +28,14 @@ public class BaseActionController extends MultiActionController {
     /**
      * 允许用户自定义分页数设置
      */
-    protected boolean customPageSize;
+    protected boolean customPaginationLimit;
 
-    public boolean isCustomPageSize() {
-        return customPageSize;
+    public boolean isCustomPaginationLimit() {
+        return customPaginationLimit;
     }
 
-    public void setCustomPageSize(boolean customPageSize) {
-        this.customPageSize = customPageSize;
+    public void setCustomPaginationLimit(boolean customPaginationLimit) {
+        this.customPaginationLimit = customPaginationLimit;
     }
 
     public Object execute(HttpServletRequest request) {
@@ -242,82 +242,42 @@ public class BaseActionController extends MultiActionController {
         FrameworkHelper.outputJson(response, jsonObject);
     }
 
-    /**
-     * 默认分页大小
-     *
-     * @return int
-     */
-    protected int getPageSize() {
+    protected int getPaginationLimit() {
         return 30;
     }
 
-    /**
-     * 获取分页信息对象
-     *
-     * @param request http请求
-     * @return Page
-     */
-    public Page getPage(HttpServletRequest request) {
-        if (isCustomPageSize()) {
-            int pageSize = 0;
-            String pageSizeStr = request.getParameter("pageSize");
-            if (Utils.notEmpty(pageSizeStr)) {
-                try {
-                    pageSize = Integer.parseInt(pageSizeStr);
-                } catch (Exception e) {
-                    LogUtil.warn("分页信息传递异常:" + convert2JSON(request));
-                }
+    public Pagination getPagination(HttpServletRequest request) {
+        int limit = 0;
+        if (customPaginationLimit) {
+            String limitStr = request.getParameter("limit");
+            if (Utils.notEmpty(limitStr)) {
+                limit = Integer.parseInt(limitStr);
             }
-            if (pageSize <= 0) {
-                pageSize = getPageSize();
+            if (limit <= 0) {
+                limit = getPaginationLimit();
             }
-            return getPage(request, pageSize);
         } else {
-            return getPage(request, getPageSize());
+            limit = getPaginationLimit();
         }
-    }
-
-    /**
-     * 获取分页信息对象
-     *
-     * @param request  http请求
-     * @param pageSize 分页大小
-     * @return Page
-     */
-    public Page getPage(HttpServletRequest request, int pageSize) {
-        return getPage(request.getParameter("cp"), pageSize);
-    }
-
-    /**
-     * 获取分页信息对象
-     *
-     * @param cp       当前页
-     * @param pageSize 分页大小
-     * @return
-     */
-    public Page getPage(String cp, int pageSize) {
-        int cpValue = 1;
-        if (Utils.notEmpty(cp)) {
-            try {
-                cpValue = Integer.parseInt(cp);
-            } catch (Exception e) {
-                cpValue = 1;
+        String offsetStr = request.getParameter("offset");
+        int offset = -1;
+        if (Utils.isEmpty(offsetStr)) {
+            String cp = request.getParameter("cp");
+            if (Utils.notEmpty(cp)) {
+                int currentPage = Integer.parseInt(cp);
+                offset = (currentPage - 1) * limit;
             }
+        } else {
+            offset = Integer.parseInt(offsetStr);
         }
-        return getPage(cpValue, pageSize);
+        return getPagination(offset, limit);
     }
 
-    public Page getPage(int cp, int pageSize) {
-        Page page = new Page();
-        if (cp < 1) {
-            cp = 1;
-        }
-        if (pageSize < 1) {
-            pageSize = 1;
-        }
-        page.setCurrentPage(cp);
-        page.setPageSize(pageSize);
-        return page;
+    public Pagination getPagination(int offset, int limit) {
+        Pagination pagination = new Pagination();
+        pagination.setOffset(offset);
+        pagination.setLimit(limit);
+        return pagination;
     }
 
     /**

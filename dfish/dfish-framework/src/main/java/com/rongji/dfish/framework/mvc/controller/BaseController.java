@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.mvc.controller;
 
 import com.rongji.dfish.base.DfishException;
+import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.ui.command.AlertCommand;
@@ -17,6 +18,49 @@ import java.io.StringWriter;
 import java.net.SocketException;
 
 public class BaseController extends BaseActionController {
+
+	/**
+	 * 获取分页信息对象
+	 *
+	 * @param request http请求
+	 * @return Page
+	 */
+	public Page getPage(HttpServletRequest request) {
+		int pageSize = 0;
+		int cp = 1;
+		String cpStr = request.getParameter("cp");
+		if (Utils.notEmpty(cpStr)) {
+			cp = Integer.parseInt(cpStr);
+		}
+		if (isCustomPaginationLimit()) {
+			String limit = request.getParameter("limit");
+			if (Utils.notEmpty(limit)) {
+				pageSize = Integer.parseInt(limit);
+			}
+			if (pageSize <= 0) {
+				pageSize = getPageSize();
+			}
+		} else {
+			pageSize = getPageSize();
+		}
+		return getPage(cp, pageSize);
+	}
+
+	/**
+	 * 默认分页大小
+	 *
+	 * @return int
+	 */
+	protected int getPageSize() {
+		return super.getPaginationLimit();
+	}
+
+	public Page getPage(int cp, int pageSize) {
+		Page page = new Page();
+		page.setCurrentPage(cp);
+		page.setPageSize(pageSize);
+		return page;
+	}
 
 	@ExceptionHandler
 	@ResponseBody
