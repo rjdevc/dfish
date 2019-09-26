@@ -6,12 +6,10 @@ import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -165,148 +163,66 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return IdGenerator.getSortedId32();
     }
 
-    protected void beforeSave(V vo) throws Exception {
-        this.beforeSaveOrUpdate(vo, null);
-    }
-
-    protected void afterSave(V vo) throws Exception {
-        this.afterSaveOrUpdate(vo, null);
-    }
-
-    protected void beforeUpdate(V newVo, V oldVo) throws Exception {
-        this.beforeSaveOrUpdate(newVo, oldVo);
-    }
-
-    protected void afterUpdate(V newVo, V oldVo) throws Exception {
-        this.afterSaveOrUpdate(newVo, oldVo);
-    }
-
-    protected void beforeDelete(V vo) throws Exception {
-    }
-
-    protected void afterDelete(V vo) throws Exception {
-    }
-
-    protected void beforeSaveOrUpdate(V newVo, V oldVo) throws Exception {
-    }
-
-    protected void afterSaveOrUpdate(V newVo, V oldVo) throws Exception {
-    }
-
     public int saveOrUpdate(V vo) throws Exception {
-        return saveOrUpdate(vo, null);
-    }
-
-    public int saveOrUpdate(V newVo, V oldVo) throws Exception {
-        if (newVo == null) {
+        if (vo == null) {
             return 0;
         }
 
-        beforeSaveOrUpdate(newVo, oldVo);
-        P po = parsePo(newVo);
+        P po = parsePo(vo);
         int result = getDao().saveOrUpdate(po);
-        if (result > 0) {
-            afterSaveOrUpdate(newVo, oldVo);
-        }
         return result;
     }
 
-    @Transactional
     public int save(V vo) throws Exception {
         if (vo == null) {
             return 0;
         }
-        beforeSave(vo);
         P po = parsePo(vo);
-        if (po != null) {
-
-        }
         int result = getDao().save(po);
-        if (result > 0) {
-            afterSave(vo);
-        }
         return result;
     }
 
-    @Transactional
-    public int update(V newVo) throws Exception {
-        return update(newVo, null);
-    }
-
-    @Transactional
-    public int update(V newVo, V oldVo) throws Exception {
-        if (newVo == null) {
+    public int update(V vo) throws Exception {
+        if (vo == null) {
             return 0;
         }
-        beforeUpdate(newVo, oldVo);
-        P po = parsePo(newVo);
+        P po = parsePo(vo);
         int result = getDao().update(po);
-        if (result > 0) {
-            afterUpdate(newVo, oldVo);
-        }
         return result;
     }
 
-    @Transactional
     public int deleteAll(Collection<V> voList) throws Exception {
         if (Utils.isEmpty(voList)) {
             return 0;
         }
-        for (V vo : voList) {
-            beforeDelete(vo);
-        }
         int result = getDao().deleteAll(parsePos(voList));
-        if (result > 0) {
-            for (V vo : voList) {
-                afterDelete(vo);
-            }
-        }
         return result;
     }
 
-    @Transactional
     public int delete(V vo) throws Exception {
-        beforeDelete(vo);
         int result = getDao().delete(parsePo(vo));
-        if (result > 0) {
-            afterDelete(vo);
-        }
         return result;
     }
 
-    @Transactional
     public int delete(ID id) throws Exception {
         P po = getDao().get(id);
         if (po == null) {
             return 0;
         }
         V vo = parseVo(po);
-        beforeDelete(vo);
         int result = getDao().delete(po);
-        if (result > 0) {
-            afterDelete(vo);
-        }
         return result;
     }
 
     public V get(ID id) {
         P po = getDao().get(id);
         V vo = parseVo(po);
-        if (vo != null) {
-            afterGets(Arrays.asList(vo));
-        }
         return vo;
-    }
-
-    protected void afterGets(List<V> vos) {
     }
 
     public List<V> gets(List<ID> ids) {
         List<P> pos = getDao().gets(ids);
         List<V> vos = parseVos(pos);
-        if (vos != null) {
-            afterGets(vos);
-        }
         return vos;
     }
 
