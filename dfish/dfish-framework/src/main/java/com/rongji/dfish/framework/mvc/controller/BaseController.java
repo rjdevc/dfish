@@ -32,6 +32,9 @@ public class BaseController extends BaseActionController {
 		if (Utils.notEmpty(cpStr)) {
 			cp = Integer.parseInt(cpStr);
 		}
+		if (cp < 1) {
+            cp = 0;
+        }
 		if (isCustomPaginationLimit()) {
 			String limit = request.getParameter("limit");
 			if (Utils.notEmpty(limit)) {
@@ -43,7 +46,7 @@ public class BaseController extends BaseActionController {
 		} else {
 			pageSize = getPageSize();
 		}
-		return getPage(cp, pageSize);
+		return new Page(cp, pageSize);
 	}
 
 	/**
@@ -53,13 +56,6 @@ public class BaseController extends BaseActionController {
 	 */
 	protected int getPageSize() {
 		return super.getPaginationLimit();
-	}
-
-	public Page getPage(int cp, int pageSize) {
-		Page page = new Page();
-		page.setCurrentPage(cp);
-		page.setPageSize(pageSize);
-		return page;
 	}
 
 	@ExceptionHandler

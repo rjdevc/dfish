@@ -270,15 +270,12 @@ public class BaseActionController extends MultiActionController {
         } else {
             offset = Integer.parseInt(offsetStr);
         }
-        return getPagination(offset, limit);
+        if (offset < 0) {
+            offset = 0;
+        }
+        return new Pagination(offset, limit);
     }
 
-    public Pagination getPagination(int offset, int limit) {
-        Pagination pagination = new Pagination();
-        pagination.setOffset(offset);
-        pagination.setLimit(limit);
-        return pagination;
-    }
 
     /**
      * 获取进度条编号,由[调用方法#sessionId#dataId]构成
