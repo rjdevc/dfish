@@ -679,7 +679,6 @@ W = define( 'widget', function() {
 		w: _widget,
 		e: _widgetEvent,
 		isCmd: function( a ) { return a && _cmdHooks[ a.type ] },
-		isWidget: function( a ) {  },
 		scrollIntoView: _scrollIntoView
 	},
 	Extend: Node,
@@ -716,7 +715,7 @@ W = define( 'widget', function() {
 					if ( t.type === this.type ) {
 						t.src && (x.src = t.src);
 						t.cls && (x.cls = $.idsAdd( x.cls, t.cls, ' ' ));
-					} else {
+					} else if ( t.type && !W.isCmd( t ) ) {
 						$.alert( Loc.ps( Loc.debug.error_template_type, this.x.template, this.type ) );
 					}
 				}
@@ -4491,20 +4490,25 @@ _progressCache = {},
 Progress = define.widget( 'progress', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		x.src && $.jsonArray( this, _progressCache, x.src );
+		var s = this.getSrc();
+		s && $.jsonArray( this, _progressCache, s );
 		x.hidepercent && (this.className += ' z-hidepercent');
 		this.cssText = 'height:auto;';
 	},
+	Extend: 'xsrc',
 	Listener: {
 		body: {
 			ready: function() {
-				var x = this.x, s = x.src, self = this;
+				var x = this.x, s = this.getSrc(), self = this;
 				if ( s ) {
 					this._timer = setTimeout( function() {
 						// 相同 src 的实例，只让第一个去请求ajax
 						if ( ! self._disposed && self.isHead() ) {
-							self.ownerView.exec( { type: 'ajax', src: s, context: this, success: function( x ) {
+							self.exec( { type: 'ajax', src: s, context: this, success: function( x ) {
 								// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
+								if ( self.x.template ) {
+									x = _compileTemplate( self, x );
+								}
 								var d = self.closest( 'loading' );
 								if ( W.isCmd( x ) ) {
 									d ? d.ownerView.exec( x ) : self.exec( x );
@@ -4541,7 +4545,7 @@ Progress = define.widget( 'progress', {
 			
 		},
 		isHead: function() {
-			return _progressCache[ this.x.src ][ 0 ] === this;
+			return _progressCache[ this.getSrc() ][ 0 ] === this;
 		},
 		html_nodes: function() {
 			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
@@ -4550,7 +4554,7 @@ Progress = define.widget( 'progress', {
 		},
 		dispose: function() {
 			this.stop();
-			$.arrPop( _progressCache[ this.x.src ], this );
+			$.arrPop( _progressCache[ this.getSrc() ], this );
 			_proto.dispose.call( this );
 		}
 	}
