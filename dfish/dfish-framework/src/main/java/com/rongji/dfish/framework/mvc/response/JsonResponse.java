@@ -1,5 +1,7 @@
 package com.rongji.dfish.framework.mvc.response;
 
+import com.rongji.dfish.base.Pagination;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,6 +16,11 @@ public class JsonResponse<T> {
 
     public JsonResponse(T data) {
         setData(data);
+    }
+
+    public JsonResponse(T data, Pagination pagination) {
+        setData(data);
+        setPagination(pagination);
     }
 
     public Header getHeader() {
@@ -54,6 +61,16 @@ public class JsonResponse<T> {
         error.setCode(code);
     }
 
+    public JsonResponse<T> setPagination(Pagination pagination) {
+        if (pagination != null) {
+            Header header = getHeader();
+            header.setLimit(pagination.getLimit());
+            header.setOffset(pagination.getOffset());
+            header.setSize(pagination.getSize());
+        }
+        return this;
+    }
+
     public static class Header {
 
         private String timestamp;
@@ -68,7 +85,6 @@ public class JsonResponse<T> {
                 this.setTimestamp(DF.format(new Date()));
             }
         }
-
 
         public String getTimestamp() {
             return timestamp;
