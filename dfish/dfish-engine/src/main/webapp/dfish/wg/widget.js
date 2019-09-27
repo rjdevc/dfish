@@ -2200,7 +2200,8 @@ Xsrc = define.widget( 'xsrc', {
 			//this.error = {};
 		},
 		reload: function( src, tpl, tar, fn ) {
-			src && (this._runtime_src = src);
+			this._runtime_src = src;
+			src && (this.x.src = src);
 			tpl && (this.x.template = tpl);
 			this.reset( tar );
 			if ( this.$() ) {
@@ -4872,7 +4873,6 @@ _z_on = function( a ) {
 		$.classAdd( this.$(), 'z-on', a );
 		a !== F && this.warn( F );
 		var c = this.isEmpty();
-		//this.getPlaceholder() && this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', a !== F || ! c );
 	}
 },
 // /@ a -> valid object, b -> valid code, c -> args
@@ -5194,7 +5194,7 @@ AbsInput = define.widget( 'abs/input', {
 							clearTimeout( this._change_timer );
 							this._change_timer = setTimeout( function() { self.triggerHandler( e ) }, 300 );
 						}
-						this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!v );
+						this.checkPlaceholder( v );
 						Dialog.close( this.id + 'mxltip' );
 						f && this.exec( { type: 'tip', id: this.id + 'mxltip', text: Loc.form.reach_maxlength } );
 					}
@@ -5234,6 +5234,9 @@ AbsInput = define.widget( 'abs/input', {
 			var s = this.x.placeholder;
 			s == N && cfg.auto_placeholder && (s = Loc.ps( Loc[ this.placeholder_type || 'placeholder_input' ], this.label ? this.label.x.text : this.x.label ));
 			return s;
+		},
+		checkPlaceholder: function( v ) {
+			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!v );
 		},
 		html_placeholder: function() {
 			var v = this.x.value, s = this.getPlaceholder();
@@ -7173,20 +7176,11 @@ _value_comma = function( a ) {
 Combobox = define.widget( 'combobox', {
 	Const: function( x ) {
 		AbsInput.apply( this, arguments );
-		$.classAdd( this, 'z-loading' );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
 		x.value && (x.value = _value_comma(x.value));
 		this._online = x.suggest && typeof x.suggest.src === _STR && /\$text\b/.test( x.suggest.src );
-		this.more = this.createPop( x.suggest || {type:'dialog',node:{type:'grid',combo:{field:{}}}}, { value: x.value } );
-		var c = this.more.getContentView();
-		if ( c && c.layout )
-			this.trigger( 'load' );
-		else
-			this.addEvent( 'ready', function() {
-				this.more.preload( $.proxy( this, function() { this.trigger( 'load' ) } ) );
-			} );
-			//this.more.preload( $.proxy( this, function() { this.trigger( 'load' ) } ) );
 		this.addEvent( 'focus', function() { this.focusNode && this.focusNode.tabFocus( F ) } );
+		this._init_more();
 	},
 	Extend: AbsInput,
 	Listener: {
@@ -7195,13 +7189,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		body: {
 			ready: function() {
-				this.domready = T;
-				! this.loading && this.init();
-			},
-			load: function() {
-				this.loading = F;
-				$.classRemove( this, 'z-loading' );
-				this.domready && this.init();
+				this._init_ready();
 			},
 			blur: {
 				occupy: T,
@@ -7309,7 +7297,7 @@ Combobox = define.widget( 'combobox', {
 								this.suggest( t );
 							}
 						}
-						this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(this._val() || this.queryText()) );
+						this.checkPlaceholder( this._val() || this.queryText() );
 					}
 				}
 			},
@@ -7331,7 +7319,6 @@ Combobox = define.widget( 'combobox', {
 		}
 	},
 	Prototype: {
-		loading: T,
 		domready: F,
 		_query_text: '',
 		x_node: $.rt(),
@@ -7343,10 +7330,31 @@ Combobox = define.widget( 'combobox', {
 			}
 		},
 		$v: function() { return $( this.id + 'v' ) },
-		init: function() {
+		_init_more: function() {
+			$.classAdd( this, 'z-loading' );
+			this.loading = T;
+			this.more && this.more.dispose();
+			this.sugger && (this.sugger.dispose(), this.sugger = N);
+			this.dropper && (this.dropper.dispose(), this.dropper = N);
+			this.more = this.createPop( this.x.suggest || { type: 'dialog',node: { type: 'grid', combo:{ field: {} } } }, { value: this._val() } );
+			var c = this.more.getContentView();
+			c && c.layout && this._init_load( v );
+		},
+		_init_ready: function() {
+			this.domready = T;
+			var c = this.more.getContentView();
+			!(c && c.layout) && this.more.preload( $.proxy( this, this._init_load ) );
+			!this.loading && this.init();
+		},
+		_init_load: function() {
+			this.loading = F;
+			$.classRemove( this, 'z-loading' );
+			this.domready && this.init();
+		},
+		init: function( v ) {
 			if ( ! this.$() )
 				return;
-			this._initOptions( this.x.value, this.x.text );
+			this._initOptions( this._val() );
 			this.queryText( '' );
 			this.save();
 			$.classRemove( this.$(), 'z-loading' );
@@ -7355,22 +7363,23 @@ Combobox = define.widget( 'combobox', {
 			_listen_ime( this, this.$t() );
 			this._inited = T;
 		},
-		// 根据value设置已选项, 初始化时调用 /@v -> value, t -> text
-		_initOptions: function( v, t ) {
+		// 根据value设置已选项, 初始化时调用 /@v -> value
+		_initOptions: function( v ) {
+			this.val( '' );
 			if ( v && (v = v.split( ',' )) ) {
 				for ( var i = 0, t = t && t.split( ',' ), o, s = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
-						if ( t ) {
-							var r = { value: v[ i ], text: t[ i ] };
-							this.append( r );
-							this.store().merge( r );
-						} else if ( o = this.store().getParamByValue( v[ i ] ) )
+						if ( o = this.store().getParamByValue( v[ i ] ) )
 							this.append( o );
 						else if ( this.x.strict === F )
 							this.append( { text: v[ i ], error: T } );
 					}
 				}
 			}
+		},
+		resetOptions: function() {
+			this._init_more();
+			this._init_ready();
 		},
 		// @implement
 		insertHTML: function( a, b ) {
@@ -7385,7 +7394,7 @@ Combobox = define.widget( 'combobox', {
 		// 读/写隐藏值
 		_val: function( a ) {
 			if ( a == N )
-				return (this.$() ? this.$v() : this.x).value || '';
+				return (this.domready ? this.$v() : this.x).value || '';
 			(this.$() ? this.$v() : this.x).value = a;
 		},
 		// @a -> value
@@ -7850,7 +7859,7 @@ Linkbox = define.widget( 'linkbox', {
 						if ( this.x.validate && this.x.validate.maxlength ) {
 							this.save();
 						}
-						this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(this._val() || this.text()) );
+						this.checkPlaceholder( this._val() || this.text() );
 					}
 				}
 			},
@@ -7868,7 +7877,7 @@ Linkbox = define.widget( 'linkbox', {
 		init: function() {
 			if ( ! this.$() )
 				return;
-			this._initOptions( this.x.value, this.x.text );
+			this._initOptions( this._val() );
 			this.save();
 			this.usa() && (this.$t().contentEditable = T);
 			this.$().title = this.text();
@@ -7876,16 +7885,13 @@ Linkbox = define.widget( 'linkbox', {
 			_listen_ime( this, this.$t() );
 		},
 		// 根据value设置已选项, 初始化时调用 /@v -> value, t -> text
-		_initOptions: function( v, t ) {
+		_initOptions: function( v ) {
 			var p = this.x.separator || ',', s = '';
+			this.val( '' );
 			if ( v && (v = v.split( ',' )) ) {
 				for ( var i = 0, t = t && t.split( p ), o, b = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
-						if ( t ) {
-							var r = { value: v[ i ], text: t[ i ] };
-							b.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( t[ i ] ) + '</u>' );
-							this.store().merge( r );
-						} else if ( o = this.store().getParamByValue( v[ i ] ) )
+						if ( o = this.store().getParamByValue( v[ i ] ) )
 							b.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( o.text ) + '</u>' );
 						else if ( ! this.x.strict )
 							b.push( '<u>' + $.strEscape( (t && t[ i ]) || v[ i ] ) + '</u>' );
@@ -7894,6 +7900,7 @@ Linkbox = define.widget( 'linkbox', {
 				b.length && (s = b.join( '<i>' + p + '</i>' ) + (this.x.multiple ? '<i>' + p + '</i>' : ''));
 			}
 			this.$t().innerHTML = s;
+			this.checkPlaceholder( v );
 		},
 		// @a -> value
 		val: function( a ) {
@@ -8296,19 +8303,7 @@ Pickbox = define.widget( 'pickbox', {
 		tag: 't',
 		body: {
 			ready: function() {
-				// 如果有设置value而text为空时，尝试从drop中匹配文本
-				if ( this.x.value && ! this.x.text && this.x.drop ) {
-					this.loading = T;
-					this.addClass( 'z-loading' );
-					var self = this;
-					(this.dropper = this.createPop( this.x.drop )).preload( function() {
-						var r = self.store().getParamByValue( self.x.value );
-						r ? self.val( r.value, r.text ) : self.val( '', '' );
-						self.loading = F;
-						self.removeClass( 'z-loading' );
-					} );
-					this.text( Loc.loading );
-				}
+				this._init_ready();
 			},
 			click: {
 				occupy: T,
@@ -8328,6 +8323,26 @@ Pickbox = define.widget( 'pickbox', {
 	Prototype: {
 		loading: F,
 		$v: function() { return $( this.id + 'v' ) },
+		_init_ready: function() {
+			// 如果有设置value而text为空时，尝试从drop中匹配文本
+			var v = this._val();
+			if ( v && ! this.x.text && this.x.drop ) {
+				this.loading = T;
+				this.addClass( 'z-loading' );
+				var self = this;
+				(this.dropper = this.createPop( this.x.drop )).preload( function() {
+					var r = self.store().getParamByValue( v );
+					r ? self.val( r.value, r.text ) : self.val( '', '' );
+					self.loading = F;
+					self.removeClass( 'z-loading' );
+				} );
+				this.text( Loc.loading );
+			}
+		},
+		resetOptions: function() {
+			this.x.text = '';
+			this._init_ready();
+		},
 		store: function( a ) {
 			return (a || this.dropper).getContentView().combo;
 		},
