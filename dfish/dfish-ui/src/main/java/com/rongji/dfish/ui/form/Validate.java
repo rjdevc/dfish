@@ -294,7 +294,7 @@ public class Validate extends AbstractNode<Validate> {
 	/**
 	 * 设置为true，键入文本时将会即时检测是否超出最大长度。设置为false则在提交时检测。
 	 * @return Boolean
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	public Boolean getMaxlengthcheck() {
 		return maxlengthcheck;
@@ -304,7 +304,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * 设置为true，键入文本时将会即时检测是否超出最大长度。设置为false则在提交时检测。
 	 * @param maxlengthcheck Boolean
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	public Validate setMaxlengthcheck(Boolean maxlengthcheck) {
 		this.maxlengthcheck = maxlengthcheck;

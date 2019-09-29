@@ -4,7 +4,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
 
 /**
  * Grid专用的单选框
- * @author YuLM - DFish Team
+ * @author lamontYu - DFish Team
  *
  */
 public class GridRadio extends AbstractBox<GridRadio> {

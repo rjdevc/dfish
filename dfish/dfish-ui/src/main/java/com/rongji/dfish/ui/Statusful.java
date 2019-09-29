@@ -34,7 +34,7 @@ public interface Statusful<T extends Statusful<T>> {
 	/**
 	 * 状态
 	 * @return String
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	String getStatus();
 	
@@ -42,7 +42,7 @@ public interface Statusful<T extends Statusful<T>> {
 	 * 设置状态
 	 * @param status String
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	T setStatus(String status);
 	

@@ -32,7 +32,7 @@ public class DefaultPropertyCryptor implements PropertyCryptor {
 	/**
 	 * 获取加密器
 	 * @return StringCryptor
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	protected StringCryptor getCryptor() {
 		if (cryptProvider == null) {

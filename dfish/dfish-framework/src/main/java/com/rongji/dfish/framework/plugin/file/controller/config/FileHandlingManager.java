@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * 文件处理管理类,主要管理注册的文件处理方案和文件处理定义
- * @author YuLM
+ * @author lamontYu
  */
 @Component
 public class FileHandlingManager {

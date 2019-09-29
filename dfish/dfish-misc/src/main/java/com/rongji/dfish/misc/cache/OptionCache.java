@@ -4,7 +4,7 @@ import java.util.Map;
 /**
  * 选项缓存,用于缓存系统有使用到的选项缓存数据
  * 
- * @author YuLM
+ * @author lamontYu
  * @version 1.0
  *
  * @param <K> 键

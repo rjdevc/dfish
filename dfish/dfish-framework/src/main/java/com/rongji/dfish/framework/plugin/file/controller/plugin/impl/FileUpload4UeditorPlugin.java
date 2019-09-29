@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 /**
  * 百度编辑器中图片上传处理
- * @author YuLM
+ * @author lamontYu
  */
 @Component
 public class FileUpload4UeditorPlugin implements FileUploadPlugin {

@@ -94,7 +94,7 @@ public class BaseController extends BaseActionController {
 			}
 			if (cast != null) { // 有DFish异常,基本上是业务的异常,所以提示相对友好些用alert
 				if (Utils.notEmpty(cast.getExceptionCode())) {
-//					if (cast.getExceptionCode().startsWith("DFISH")) {
+//					if (cast.getCode().startsWith("DFISH")) {
 //						FrameworkHelper.LOG.error("==========系统异常==========", e);
 //					}
 					alertMsg += "(" + cast.getExceptionCode() + ")";

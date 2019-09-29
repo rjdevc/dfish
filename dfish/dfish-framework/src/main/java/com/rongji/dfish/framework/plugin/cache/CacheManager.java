@@ -17,7 +17,7 @@ import java.util.*;
 
 /**
  * 缓存管理类
- * @author YuLM
+ * @author lamontYu
  */
 @Component
 @Lazy(false)

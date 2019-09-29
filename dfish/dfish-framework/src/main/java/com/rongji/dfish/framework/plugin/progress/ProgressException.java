@@ -4,14 +4,14 @@ public class ProgressException extends RuntimeException {
 
 	private static final long serialVersionUID = -5010323366896210348L;
 	
-	private String exceptionCode;
+	private String code;
 
-	public String getExceptionCode() {
-		return exceptionCode;
+	public String getCode() {
+		return code;
 	}
 
-	public void setExceptionCode(String exceptionCode) {
-		this.exceptionCode = exceptionCode;
+	public void setCode(String code) {
+		this.code = code;
 	}
 	public ProgressException(){
 		super();
@@ -28,9 +28,9 @@ public class ProgressException extends RuntimeException {
         super(message, cause);
     }
 	
-	public ProgressException(String message, String exceptionCode){
+	public ProgressException(String message, String code){
 		super(message);
-		this.exceptionCode = exceptionCode;
+		this.code = code;
 	}
 
 }

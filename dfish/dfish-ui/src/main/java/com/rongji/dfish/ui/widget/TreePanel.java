@@ -296,7 +296,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	/**
 	 * 高亮关键词配置
 	 * @return Highlight
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	public Highlight getHighlight() {
 		return highlight;
@@ -306,7 +306,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * 高亮关键词配置
 	 * @param highlight Highlight
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	public TreePanel setHighlight(Highlight highlight) {
 		this.highlight = highlight;

@@ -147,7 +147,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 //	/**
 //	 * 选项节点的View
 //	 * @return View
-//	 * @author YuLM
+//	 * @author lamontYu
 //	 */
 //	public View getNode() {
 //		return node;
@@ -157,7 +157,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 //	 * 选项节点的View
 //	 * @param node 视图
 //	 * @return 本身，这样可以继续设置其他属性
-//	 * @author YuLM
+//	 * @author lamontYu
 //	 */
 //	public T setNode(View node) {
 //		this.node = node;

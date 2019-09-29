@@ -78,7 +78,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	/**
 	 * 是否支持多值
 	 * @return Boolean
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	public Boolean getMultiple() {
 		return multiple;
@@ -88,7 +88,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	 * 是否支持多值
 	 * @param multiple 多值
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	public Xbox setMultiple(Boolean multiple) {
 		this.multiple = multiple;

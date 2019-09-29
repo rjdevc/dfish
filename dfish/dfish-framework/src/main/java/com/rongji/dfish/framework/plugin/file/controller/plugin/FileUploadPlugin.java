@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 附件上传插件，用于引入外部插件需要用到附件上传的处理方式
- * @author YuLM
+ * @author lamontYu
  */
 public interface FileUploadPlugin {
 

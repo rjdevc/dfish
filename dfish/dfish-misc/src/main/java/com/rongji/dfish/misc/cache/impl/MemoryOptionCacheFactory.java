@@ -9,7 +9,7 @@ import com.rongji.dfish.misc.cache.OptionCacheFactory;
 
 /**
  * 内存缓存工厂,将缓存数据存放在内存中,通过缓存名称来获取或删除对应的缓存
- * @author YuLM
+ * @author lamontYu
  *
  * @param <K> 键
  * @param <V> 值

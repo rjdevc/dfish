@@ -20,7 +20,7 @@ public interface CacheValueGetter<K, V> {
 	/**
 	 * 缓存名称
 	 * @return {@link String}
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	String cacheName();
 	
@@ -28,7 +28,7 @@ public interface CacheValueGetter<K, V> {
 	 * 根据Key批量获取对应的值
 	 * @param keys 关键字
 	 * @return {@link Map}&lt;K, V&gt;
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	Map<K, V> gets(Set<K> keys);
 	

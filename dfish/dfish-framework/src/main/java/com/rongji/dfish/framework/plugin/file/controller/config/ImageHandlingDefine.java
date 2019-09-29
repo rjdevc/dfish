@@ -6,7 +6,7 @@ import java.awt.*;
 
 /**
  * 图片处理定义
- * @author YuLM
+ * @author lamontYu
  */
 public class ImageHandlingDefine extends FileHandlingDefine {
     /**

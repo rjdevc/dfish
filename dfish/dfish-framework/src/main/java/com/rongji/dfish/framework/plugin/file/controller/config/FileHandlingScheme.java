@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 文件处理方案,定义了上传
- * @author YuLM
+ * @author lamontYu
  */
 public class FileHandlingScheme {
     /**

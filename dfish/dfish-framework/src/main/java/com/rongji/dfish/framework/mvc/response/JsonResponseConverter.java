@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.mvc.response;
 
-import com.rongji.dfish.ui.json.J;
+import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.misc.util.json.JsonBuilder;
 
 public class JsonResponseConverter extends DFishUIConverter {
 
@@ -9,7 +10,8 @@ public class JsonResponseConverter extends DFishUIConverter {
 		if (obj == null) {
 			return "";
 		}
-		return J.toJson(obj);
+		JsonBuilder jsonBuilder = FrameworkHelper.getBean(JsonBuilder.class);
+		return jsonBuilder.toJson(obj);
 	}
 
 	@Override

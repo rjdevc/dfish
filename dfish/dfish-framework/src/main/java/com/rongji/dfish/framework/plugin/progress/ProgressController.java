@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.rongji.dfish.framework.mvc.response.JsonResponse;
+import com.rongji.dfish.ui.command.AlertCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,25 @@ public class ProgressController extends BaseController {
 	@Autowired
 	private ProgressManager progressManager;
 
+	@RequestMapping("/reload")
+	@ResponseBody
+	public Object reload(HttpServletRequest request) {
+		String enProgressKey = request.getParameter("progressKey");
+		String progressKey = progressManager.decrypt(enProgressKey);
+		ProgressData progressData = progressManager.reloadProgressData(progressKey);
+		JsonResponse jsonReponse = new JsonResponse<>(progressData);
+		if (progressData != null) {
+			if(progressData.getError() != null) {
+				jsonReponse.setData(null);
+				jsonReponse.setErrCode(progressData.getError().getCode());
+				jsonReponse.setErrMsg(progressData.getError().getMsg());
+			} else if (progressData.isFinish()) {
+				progressManager.removeProgress(progressKey);
+			}
+		}
+		return jsonReponse;
+	}
+
 	@RequestMapping("/reloadProgress")
 	@ResponseBody
 	public Object reloadProgress(HttpServletRequest request) {
@@ -30,31 +51,31 @@ public class ProgressController extends BaseController {
 		if (Utils.isEmpty(enProgressKey)) {
 			return getCommand("进度编号为空,无法刷新进度条", false);
 		}
-		String progressKey = progressManager.decryptKey(enProgressKey);
-		ProgressData progressData = progressManager.getProgressData(progressKey);
+		String progressKey = progressManager.decrypt(enProgressKey);
+		ProgressData progressData = progressManager.reloadProgressData(progressKey);
 		
 		if (progressData == null) {
 			return getCommand(null, true);
 		}
 
-		// 进度条结束
-		if (progressData.isFinish()) {
-			// 将进度条移除记录
+		if (progressData.getError() != null) {
+			String alertMsg = "";
+			if (Utils.notEmpty(progressData.getError().getCode())) {
+				alertMsg = "[" + progressData.getError().getCode() + "]";
+			}
+			alertMsg += progressData.getError().getMsg();
+			return new AlertCommand(alertMsg);
+		} else if (progressData.isFinish()) {
+			// 进度条结束,将进度条移除记录
 			progressManager.removeProgress(progressKey);
-			if (progressData.getCompleteNode() != null) {
-				return progressData.getCompleteNode();
+			if (progressData.getCompleteResult() != null) {
+				return progressData.getCompleteResult();
 			}
 			// 默认命令做容错
 			return new CommandGroup();
 		} else {
-			List<Progress> progressGroup = progressManager.getProgressGroup(progressKey);
-			VerticalLayout vert = new VerticalLayout(null);
-			for (Progress progress : progressGroup) {
-				vert.add(progress);
-			}
-			return vert;
+			return progressManager.getProgressGroup(progressData);
 		}
-		
 	}
 	
 	private Command<?> getCommand(String errorMsg, boolean closeLoading) {

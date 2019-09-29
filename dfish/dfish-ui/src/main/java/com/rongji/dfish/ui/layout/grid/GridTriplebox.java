@@ -7,7 +7,7 @@ import java.beans.Transient;
 /**
  * Grid专用的复选框
  *
- * @author YuLM - DFish Team
+ * @author lamontYu - DFish Team
  */
 public class GridTriplebox extends AbstractBox<GridTriplebox> {
 

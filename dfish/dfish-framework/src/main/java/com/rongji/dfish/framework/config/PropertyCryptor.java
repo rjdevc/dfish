@@ -18,7 +18,7 @@ public interface PropertyCryptor {
 	 * 解密密文
 	 * @param str String 需要被解密的字符
 	 * @return String
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	String decrypt(String str);
 	
@@ -26,7 +26,7 @@ public interface PropertyCryptor {
 	 * 加密字符
 	 * @param str String 需要加密的字符
 	 * @return String
-	 * @author YuLM
+	 * @author lamontYu
 	 */
 	String encrypt(String str);
 	
