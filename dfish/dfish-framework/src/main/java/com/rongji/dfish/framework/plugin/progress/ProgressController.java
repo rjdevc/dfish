@@ -8,6 +8,7 @@ import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.ui.command.AlertCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,11 +26,11 @@ public class ProgressController extends BaseController {
 	@Autowired
 	private ProgressManager progressManager;
 
-	@RequestMapping("/reload")
+	@RequestMapping("/reload/{progressKey}")
 	@ResponseBody
-	public Object reload(HttpServletRequest request) {
-		String enProgressKey = request.getParameter("progressKey");
-		String progressKey = progressManager.decrypt(enProgressKey);
+	public Object reload(@PathVariable String progressKey) {
+		progressKey = progressManager.decrypt(progressKey);
+
 		ProgressData progressData = progressManager.reloadProgressData(progressKey);
 		JsonResponse jsonReponse = new JsonResponse<>(progressData);
 		if (progressData != null) {
@@ -37,6 +38,7 @@ public class ProgressController extends BaseController {
 				jsonReponse.setData(null);
 				jsonReponse.setErrCode(progressData.getError().getCode());
 				jsonReponse.setErrMsg(progressData.getError().getMsg());
+				progressManager.removeProgress(progressKey);
 			} else if (progressData.isFinish()) {
 				progressManager.removeProgress(progressKey);
 			}
@@ -64,12 +66,14 @@ public class ProgressController extends BaseController {
 				alertMsg = "[" + progressData.getError().getCode() + "]";
 			}
 			alertMsg += progressData.getError().getMsg();
+			// 进度条异常,将进度条移除记录
+			progressManager.removeProgress(progressKey);
 			return new AlertCommand(alertMsg);
 		} else if (progressData.isFinish()) {
 			// 进度条结束,将进度条移除记录
 			progressManager.removeProgress(progressKey);
-			if (progressData.getCompleteResult() != null) {
-				return progressData.getCompleteResult();
+			if (progressData.getComplete() != null) {
+				return progressData.getComplete();
 			}
 			// 默认命令做容错
 			return new CommandGroup();

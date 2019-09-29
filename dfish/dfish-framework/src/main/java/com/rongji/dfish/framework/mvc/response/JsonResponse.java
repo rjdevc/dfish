@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class JsonResponse<T> {
     private Header header = new Header();
-    private Error error = new Error();
+    private Error error;
     T data;
 
     public JsonResponse() {
@@ -39,6 +39,13 @@ public class JsonResponse<T> {
         this.error = error;
     }
 
+    public Error error() {
+        if (error == null) {
+            error = new Error();
+        }
+        return error;
+    }
+
     public T getData() {
         return data;
     }
@@ -48,17 +55,11 @@ public class JsonResponse<T> {
     }
 
     public void setErrMsg(String msg) {
-        if (error == null) {
-            error = new Error();
-        }
-        error.setMsg(msg);
+        error().setMsg(msg);
     }
 
     public void setErrCode(String code) {
-        if (error == null) {
-            error = new Error();
-        }
-        error.setCode(code);
+        error().setCode(code);
     }
 
     public JsonResponse<T> setPagination(Pagination pagination) {

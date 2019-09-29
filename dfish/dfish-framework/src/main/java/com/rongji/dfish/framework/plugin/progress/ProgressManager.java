@@ -2,7 +2,6 @@ package com.rongji.dfish.framework.plugin.progress;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
-import com.rongji.dfish.base.crypt.CryptFactory;
 import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.FrameworkHelper;
@@ -14,9 +13,7 @@ import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.widget.Progress;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,23 +45,19 @@ public class ProgressManager {
     public static final String ID_LOADING = "progressLoading";
 
     /**
-     * 进度条加载时间间隔
+     * 进度条加载时间间隔, FIXME 前端应该会改成毫秒,这里先按照秒来返回
      */
-    private double maxDelay = 3.0;
+    private long maxDelay = 3L;
     /**
      * 进度条显示文本
      */
     private String loadingText = "loading..";
-    /**
-     * 进度条存在时背景是否置灰禁用
-     */
-    private Boolean cover;
 
-    public double getMaxDelay() {
+    public long getMaxDelay() {
         return maxDelay;
     }
 
-    public void setMaxDelay(double maxDelay) {
+    public void setMaxDelay(long maxDelay) {
         this.maxDelay = maxDelay;
     }
 
@@ -74,14 +67,6 @@ public class ProgressManager {
 
     public void setLoadingText(String loadingText) {
         this.loadingText = loadingText;
-    }
-
-    public Boolean getCover() {
-        return cover;
-    }
-
-    public void setCover(Boolean cover) {
-        this.cover = cover;
     }
 
     /**
@@ -96,14 +81,43 @@ public class ProgressManager {
 
     public ProgressData reloadProgressData(String progressKey) {
         ProgressData progressData = getProgressData(progressKey);
-        double nexDelay = progressData.getDelay();
-        nexDelay *= 1.5; // 每次访问时间是上次的1.5倍
-        if (nexDelay > maxDelay) { // 最长延时
-            nexDelay = maxDelay;
+        if (progressData != null) {
+            long nextDelay = progressData.getDelay();
+            if (nextDelay < maxDelay) {
+                // 下次访问时间是上次的1.5倍
+                nextDelay += nextDelay >> 1;
+                if (nextDelay > maxDelay) {
+                    nextDelay = maxDelay;
+                }
+            } else if (nextDelay > maxDelay) {
+                nextDelay = maxDelay;
+            }
+
+            progressData.setDelay(nextDelay);
+            setProgressData(progressData);
         }
-        progressData.setDelay(nexDelay);
-        setProgressData(progressData);
-        return progressData;
+
+        return getResponseProgressData(progressData);
+    }
+
+    private ProgressData getResponseProgressData(ProgressData progressData) {
+        if (progressData == null) {
+            return null;
+        }
+        ProgressData responseData = null;
+        try {
+            responseData = (ProgressData) progressData.clone();
+            // 返回的结果编号需要加密
+            responseData.setProgressKey(encrypt(responseData.getProgressKey()));
+            // 进度比例无需显示
+            responseData.setStepScales(null);
+        } catch (Exception e) {
+            String errorMsg = "进度数据异常@" + System.currentTimeMillis();
+            // 正常情况一般不会报错
+            FrameworkHelper.LOG.error(errorMsg, e);
+            throw new ProgressException(errorMsg);
+        }
+        return responseData;
     }
 
     /**
@@ -130,7 +144,7 @@ public class ProgressManager {
     public boolean setCompleteNode(String progressKey, JsonNode completeNode) {
         ProgressData progressData = getProgressData(progressKey);
         if (progressData != null) {
-            progressData.setCompleteResult(completeNode);
+            progressData.setComplete(completeNode);
         }
         return setProgressData(progressData);
     }
@@ -243,7 +257,7 @@ public class ProgressManager {
         ProgressData progressData = register(runnable, progressKey, progressText, completeNode, stepScale);
         VerticalLayout progressGroup = getProgressGroup(progressData);
         if (progressGroup != null) {
-            return new LoadingCommand(null).setId(ID_LOADING).setNode(progressGroup).setCover(cover);
+            return new LoadingCommand(null).setId(ID_LOADING).setNode(progressGroup);
         } else {
             String errorMsg = "添加进度条队列失败@" + System.currentTimeMillis();
             FrameworkHelper.LOG.warn(errorMsg + "[" + progressKey + "]");
@@ -294,11 +308,11 @@ public class ProgressManager {
      * @param runnable
      * @param progressKey
      * @param progressText
-     * @param completeResult
+     * @param complete
      * @return
      */
-    public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable completeResult) {
-        return register(runnable, progressKey, progressText, completeResult, 1);
+    public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable complete) {
+        return register(runnable, progressKey, progressText, complete, 1);
     }
 
     /**
@@ -307,12 +321,12 @@ public class ProgressManager {
      * @param runnable
      * @param progressKey
      * @param progressText
-     * @param completeResult
+     * @param complete
      * @param steps
      * @return
      */
-    public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable completeResult, int steps) {
-        return register(runnable, progressKey, progressText, completeResult, getStepScales(steps));
+    public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable complete, int steps) {
+        return register(runnable, progressKey, progressText, complete, getStepScales(steps));
     }
 
     private Number[] getStepScales(int steps) {
@@ -332,11 +346,11 @@ public class ProgressManager {
      * @param runnable
      * @param progressKey
      * @param progressText
-     * @param completeResult
+     * @param complete
      * @param stepScale
      * @return
      */
-    public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable completeResult, Number[] stepScale) {
+    public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable complete, Number[] stepScale) {
         // 空处理
         if (runnable == null) {
             throw new UnsupportedOperationException("The progress register failed, the Runnable can not be null.");
@@ -346,7 +360,7 @@ public class ProgressManager {
             progressData = new ProgressData();
             progressData.setProgressKey(progressKey);
             progressData.setProgressText(progressText);
-            progressData.setCompleteResult(completeResult);
+            progressData.setComplete(complete);
             stepScale = stepScale == null ? new Number[]{1} : stepScale;
             boolean success = resetStepScale(progressData, stepScale);
             if (success) {
@@ -390,7 +404,7 @@ public class ProgressManager {
                 });
             }
         }
-        return progressData;
+        return getResponseProgressData(progressData);
     }
 
 //	private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
@@ -402,7 +416,7 @@ public class ProgressManager {
         VerticalLayout progressGroup = new VerticalLayout(null);
 
         // 参数需要加密,担心key被猜测出来获取高权限的数据信息
-        String src = "progress/reloadProgress?progressKey=" + encrypt(progressData.getProgressKey());
+        String src = "progress/reloadProgress?progressKey=" + progressData.getProgressKey();
         Progress stepProgress = new Progress("prgStep", progressData.getStepPercent()).setSrc(src).setText(progressData.getProgressText());
         progressGroup.add(stepProgress);
         stepProgress.setDelay(progressData.getDelay());
@@ -472,13 +486,17 @@ public class ProgressManager {
             return;
         }
         ProgressData progressData = getProgressData(progressKey);
-        if (progressData == null || progressData.isFinish()) {
+        if (progressData == null || progressData.isFinish() || progressData.getStepIndex() >= progressData.getSteps()) {
             return;
         }
-        double nextStepPercent = stepPercent.doubleValue();
-        nextStepPercent += progressData.getStepPercent();
+        double addStepPercent = stepPercent.doubleValue();
         // 需要按照比例增加进度
-        progressData.setStepPercent(nextStepPercent);
+        progressData.setStepPercent(formatNumber(progressData.getStepPercent() + addStepPercent));
+        if (progressData.getSteps() > 1) {
+            progressData.setDonePercent(formatNumber(progressData.getDonePercent() + addStepPercent * progressData.getStepScales()[progressData.getStepIndex()]));
+        } else {
+            progressData.setDonePercent(progressData.getStepPercent());
+        }
         if (progressText != null) {
             progressData.setProgressText(progressText);
         }
@@ -508,7 +526,7 @@ public class ProgressManager {
             progressData.setFinish(true);
             progressData.setStepIndex(progressData.getSteps());
             progressData.setStepPercent(ProgressData.PERCENT_FULL);
-            progressData.setOffsetPercent(ProgressData.PERCENT_FULL);
+            progressData.setDonePercent(ProgressData.PERCENT_FULL);
             // 将进度条数据放到缓存中
             setProgressData(progressData);
         }
@@ -543,22 +561,25 @@ public class ProgressManager {
             stepScale = new Number[]{1};
         }
 
-        double total = 0.0;
-        for (Number num : stepScale) {
-            if (num != null) {
-                total += num.doubleValue();
+        if (stepScale.length > 1) {
+            double total = 0.0;
+            for (Number num : stepScale) {
+                if (num != null) {
+                    total += num.doubleValue();
+                }
             }
+            if (total <= 0.0) {
+                throw new UnsupportedOperationException("The sum of the scales must be greater than the zero.");
+            }
+            double[] stepScales = new double[stepScale.length];
+            for (int i = 0; i < stepScales.length; i++) {
+                Number num = stepScale[i];
+                double value = num == null ? 0.0 : num.doubleValue();
+                stepScales[i] = value / total;
+            }
+            progressData.setStepScales(stepScales);
         }
-        if (total <= 0.0) {
-            throw new UnsupportedOperationException("The sum of the scales must be greater than the zero.");
-        }
-        double[] stepScales = new double[stepScale.length];
-        for (int i = 0; i < stepScales.length; i++) {
-            Number num = stepScale[i];
-            double value = num == null ? 0.0 : num.doubleValue();
-            stepScales[i] = value / total;
-        }
-        progressData.setStepScales(stepScales);
+        progressData.setSteps(stepScale.length);
         // 将进度条数据放到缓存中
         return setProgressData(progressData);
     }
@@ -570,8 +591,16 @@ public class ProgressManager {
      * @param steps
      */
     public boolean resetSteps(String progressKey, int steps) {
-        Number[] stepScale = getStepScales(steps);
+        if (steps < 1) {
+            throw new UnsupportedOperationException("The steps must greater than one.");
+        }
         ProgressData progressData = getProgressData(progressKey);
+        if (steps == 1) {
+            progressData.setSteps(1);
+            progressData.setStepScales(null);
+            return true;
+        }
+        Number[] stepScale = getStepScales(steps);
         return resetStepScale(progressData, stepScale);
     }
 
@@ -590,15 +619,34 @@ public class ProgressManager {
         if (progressData.getStepIndex() >= progressData.getSteps()) {
             return false;
         }
-        // 总偏移量增加
-        double offsetPercent = progressData.getOffsetPercent() + progressData.getStepScales()[progressData.getStepIndex()] * ProgressData.PERCENT_FULL;
-        progressData.setOffsetPercent(offsetPercent);
-        progressData.setStepPercent(0.0);
+
+        if (progressData.getSteps() > 1) {
+            // 总偏移量增加
+            double doneScale = 0.0;
+            for (int i = 0; i <= progressData.getStepIndex(); i++) {
+                doneScale += progressData.getStepScales()[i];
+            }
+            progressData.setDonePercent(formatNumber(doneScale * ProgressData.PERCENT_FULL));
+            progressData.setStepPercent(0.0);
+        } else {
+            progressData.setStepPercent(ProgressData.PERCENT_FULL);
+            progressData.setDonePercent(ProgressData.PERCENT_FULL);
+        }
         progressData.setStepIndex(progressData.getStepIndex() + 1);
         // 已达到最后一步,暂且不设置结束,等界面刷新到100%再结束
         // 将进度条数据放到缓存中
         setProgressData(progressData);
         return hasNext(progressData);
+    }
+
+    DecimalFormat DF = new DecimalFormat("#.##");
+
+    private double formatNumber(Number num) {
+        if (num == null) {
+            return 0.0;
+        }
+        String numStr = DF.format(num);
+        return Double.parseDouble(numStr);
     }
 
     /**

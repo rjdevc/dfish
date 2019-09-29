@@ -2,147 +2,144 @@ package com.rongji.dfish.framework.plugin.progress;
 
 import java.io.Serializable;
 
-public class ProgressData implements Serializable {
+public class ProgressData implements Serializable, Cloneable {
 	private static final long serialVersionUID = -727048341094069751L;
 
 	/**
 	 * 进度百分百
 	 */
 	public static final double PERCENT_FULL = 100.0;
-
+	/**
+	 * 进度编号
+	 */
 	private String progressKey;
+	/**
+	 * 进度显示文本
+	 */
 	private String progressText;
-
+	/**
+	 * 总步骤数,默认只有1个步骤
+	 */
+	private int steps = 1;
+	/**
+	 * 步骤比例
+	 */
 	private double[] stepScales;
+	/**
+	 * 当前步骤
+	 */
 	private int stepIndex;
-	private double offsetPercent = 0.0;
+	/**
+	 * 当前步骤完成情况
+	 */
 	private double stepPercent = 0.0;
+	/**
+	 * 所有步骤总完成情况,单步骤时等于{@link #stepPercent}
+	 */
 	private double donePercent = 0.0;
-
-	private double delay = 0.2;
+	/**
+	 * 下次加载时间 FIXME 这里暂时按照秒,前端应该会改成毫秒
+	 */
+	private long delay = 1L;
+	/**
+	 * 是否进度完成,就算进度已经100%,该属性如果还是false,进度条还是不会关闭
+	 */
 	private boolean finish;
-	private Serializable completeResult;
+	/**
+	 * 完成之后的结果
+	 */
+	private Serializable complete;
+	/**
+	 *
+	 */
 	private Error error;
 
 	public String getProgressKey() {
 		return progressKey;
 	}
 
-	public ProgressData setProgressKey(String progressKey) {
+	public void setProgressKey(String progressKey) {
 		this.progressKey = progressKey;
-		return this;
 	}
 
 	public String getProgressText() {
 		return progressText;
 	}
 
-	public ProgressData setProgressText(String progressText) {
+	public void setProgressText(String progressText) {
 		this.progressText = progressText;
-		return this;
+	}
+
+	public int getSteps() {
+		return steps;
+	}
+
+	public void setSteps(int steps) {
+		this.steps = steps;
 	}
 
 	public double[] getStepScales() {
 		return stepScales;
 	}
 
-	public ProgressData setStepScales(double[] stepScales) {
+	public void setStepScales(double[] stepScales) {
 		this.stepScales = stepScales;
-		return this;
 	}
 
 	public int getStepIndex() {
 		return stepIndex;
 	}
 
-	public ProgressData setStepIndex(int stepIndex) {
+	public void setStepIndex(int stepIndex) {
 		this.stepIndex = stepIndex;
-		return this;
-	}
-
-	public double getOffsetPercent() {
-		return offsetPercent;
-	}
-
-	public ProgressData setOffsetPercent(double offsetPercent) {
-		this.offsetPercent = offsetPercent;
-		// FIXME 本来这个代码应该在外面,这个类只做纯数据存储,现在先放在这里代码调用更简便,下同
-		if (this.offsetPercent > PERCENT_FULL) {
-			this.offsetPercent = PERCENT_FULL;
-		}
-		return recalculate();
 	}
 
 	public double getStepPercent() {
 		return stepPercent;
 	}
 
-	public ProgressData setStepPercent(double stepPercent) {
+	public void setStepPercent(double stepPercent) {
 		this.stepPercent = stepPercent;
-		if (this.stepPercent > PERCENT_FULL) {
-			this.stepPercent = PERCENT_FULL;
-		}
-		return recalculate();
-	}
-
-	private ProgressData recalculate() {
-		if (donePercent >= PERCENT_FULL) {
-			donePercent = PERCENT_FULL;
-		} else {
-			if (stepIndex < getSteps()) {
-				donePercent += stepScales[stepIndex] * stepPercent;
-				if (donePercent > PERCENT_FULL) {
-					donePercent = PERCENT_FULL;
-				}
-			} else {
-				donePercent = PERCENT_FULL;
-			}
-		}
-		return this;
 	}
 
 	public double getDonePercent() {
 		return donePercent;
 	}
 
-	public double getDelay() {
+	public void setDonePercent(double donePercent) {
+		this.donePercent = donePercent;
+	}
+
+	public long getDelay() {
 		return delay;
 	}
 
-	public ProgressData setDelay(double delay) {
+	public void setDelay(long delay) {
 		this.delay = delay;
-		return this;
 	}
-	
+
 	public boolean isFinish() {
-		return this.finish;
+		return finish;
 	}
 
-	public ProgressData setFinish(boolean finish) {
+	public void setFinish(boolean finish) {
 		this.finish = finish;
-		return this;
 	}
 
-	public Serializable getCompleteResult() {
-		return completeResult;
+	public Serializable getComplete() {
+		return complete;
 	}
 
-	public ProgressData setCompleteResult(Serializable completeResult) {
-		this.completeResult = completeResult;
-		return this;
-	}
-
-	public int getSteps() {
-		return this.stepScales.length;
+	public void setComplete(Serializable complete) {
+		this.complete = complete;
 	}
 
 	public Error getError() {
 		return error;
 	}
 
-	public ProgressData setError(Error error) {
+	public void setError(Error error) {
 		this.error = error;
-		return this;
 	}
 
 	public Error error() {
@@ -185,5 +182,9 @@ public class ProgressData implements Serializable {
 		}
 
 	}
-	
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 }
