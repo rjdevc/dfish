@@ -1,40 +1,17 @@
 package com.rongji.dfish.misc.senswords;
 
+import com.rongji.dfish.base.TrieTree;
+import com.rongji.dfish.base.TrieTree.SearchResult;
+import com.rongji.dfish.base.util.CharUtil;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
-
-import com.rongji.dfish.base.TrieTree;
-import com.rongji.dfish.base.TrieTree.SearchResult;
-import com.rongji.dfish.base.util.CharUtil;
 //import com.rongji.dfish.misc.senswords.andy.WordFilter;
 
 public class SensitiveWordFilter {
-    public static void main(String[] args) {
-//		System.out.println(SensitiveTrieTree.isStopChar('，'));
-
-        SensitiveWordFilter.getInstance();
-        String s = "avjava你是逗比吗？fuck，avFuCk！ｆｕｃｋ全角半角，口，交换，f!!!u&c ###k 停顿词ff fuuuucccckkk 重复词，法@#轮！@#功over16口交换机";
-//		String s="java,路口交通，8口交换机";
-        System.out.println("原语句：" + s);
-        System.out.println("长度：" + s.length());
-        String re = null;
-        long nano = System.nanoTime();
-        boolean b = SensitiveWordFilter.getInstance().match(s);
-        boolean w = true;
-        while (w) {
-            re = SensitiveWordFilter.getInstance().replace(s);
-        }
-        nano = (System.nanoTime() - nano);
-        System.out.println("是否包含: " + b);
-        System.out.println("解析时间 : " + nano + "ns");
-        System.out.println("解析时间 : " + nano / 1000000 + "ms");
-        System.out.println(re);
-        System.out.println(re.length() == s.length());
-    }
-
 
     private static SensitiveWordFilter instance = new SensitiveWordFilter();
 
@@ -179,7 +156,29 @@ public class SensitiveWordFilter {
         }
 
         fillWhite(chs, 0, filled, result);
-        return result.reverse().toString();
+        //JDK的reverse在遇到表情符号的时候，会有奇怪的表现。所以重新拼凑
+        char[]chars= new char[result.length()];
+        result.getChars(0,chars.length,chars,0);
+        return new String(reverse(chars));
+    }
+
+    public static char[] reverse(char[] chars) {
+        if (chars == null) {
+            return null;
+        } else {
+            char var1 = 0;
+            int var2 = chars.length;
+            char[] var3 = new char[var2];
+
+            while(true) {
+                --var2;
+                if (var2 < 0) {
+                    return var3;
+                }
+
+                var3[var2] = chars[var1++];
+            }
+        }
     }
 
     private void fillBlack(int begin, int end, StringBuilder result) {
