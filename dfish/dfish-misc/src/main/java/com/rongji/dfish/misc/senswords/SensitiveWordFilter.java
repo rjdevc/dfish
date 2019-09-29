@@ -3,12 +3,14 @@ package com.rongji.dfish.misc.senswords;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import com.rongji.dfish.base.TrieTree;
 import com.rongji.dfish.base.TrieTree.SearchResult;
 import com.rongji.dfish.base.util.CharUtil;
+import org.bouncycastle.util.Arrays;
 //import com.rongji.dfish.misc.senswords.andy.WordFilter;
 
 public class SensitiveWordFilter {
@@ -179,7 +181,29 @@ public class SensitiveWordFilter {
         }
 
         fillWhite(chs, 0, filled, result);
-        return result.reverse().toString();
+        //JDK的reverse在遇到表情符号的时候，会有奇怪的表现。所以重新拼凑
+        char[]chars= new char[result.length()];
+        result.getChars(0,chars.length,chars,0);
+        return new String(reverse(chars));
+    }
+
+    public static char[] reverse(char[] chars) {
+        if (chars == null) {
+            return null;
+        } else {
+            char var1 = 0;
+            int var2 = chars.length;
+            char[] var3 = new char[var2];
+
+            while(true) {
+                --var2;
+                if (var2 < 0) {
+                    return var3;
+                }
+
+                var3[var2] = chars[var1++];
+            }
+        }
     }
 
     private void fillBlack(int begin, int end, StringBuilder result) {

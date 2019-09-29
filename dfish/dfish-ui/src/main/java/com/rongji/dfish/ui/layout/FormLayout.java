@@ -1,9 +1,6 @@
 package com.rongji.dfish.ui.layout;
 
-import com.rongji.dfish.ui.HiddenPart;
-import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.Layout;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
 import com.rongji.dfish.ui.helper.FormPanel;
@@ -12,7 +9,7 @@ import com.rongji.dfish.ui.layout.grid.Td;
 import java.util.Iterator;
 import java.util.List;
 
-public class FormLayout extends AbstractLayout<FormLayout,Widget<?>> implements HtmlContentHolder<FormLayout> {
+public class FormLayout extends AbstractLayout<FormLayout,Widget<?>> implements HtmlContentHolder<FormLayout> ,MultiContainer<FormLayout,Widget<?>> {
     /**
      * 无格式
      */
@@ -78,13 +75,28 @@ public class FormLayout extends AbstractLayout<FormLayout,Widget<?>> implements 
         if(w instanceof Hidden){
             return add((Hidden)w);
         }
+        if (w instanceof LabelRow) {
+            if("0".equals(((LabelRow<?>) w).getLabel().getWidth())){
+                ((LabelRow<?>) w).getLabel().setWidth(null);
+            }
+        }
         nodes.add(w);
         return this;
     }
     public FormLayout add(Widget<?>w ,int colspan){
+        if (w instanceof LabelRow) {
+            if("0".equals(((LabelRow<?>) w).getLabel().getWidth())){
+                ((LabelRow<?>) w).getLabel().setWidth(null);
+            }
+        }
         return add (new Td().setColspan(colspan).setNode(w));
     }
     public FormLayout add(Widget<?>w ,int colspan,int rowspan){
+        if (w instanceof LabelRow) {
+            if("0".equals(((LabelRow<?>) w).getLabel().getWidth())){
+                ((LabelRow<?>) w).getLabel().setWidth(null);
+            }
+        }
         return add (new Td().setColspan(colspan).setRowspan(rowspan).setNode(w));
     }
 //    public FormLayout addLabelRow(LabelRow<?> w){
@@ -194,6 +206,12 @@ public class FormLayout extends AbstractLayout<FormLayout,Widget<?>> implements 
             }
         }
 
+
         return this;
+    }
+
+    @Override
+    public List<Widget<?>> getNodes() {
+        return nodes;
     }
 }
