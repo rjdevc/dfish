@@ -7299,7 +7299,8 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 根据value设置已选项, 初始化时调用 /@v -> value
 		_initOptions: function( v ) {
-			this.val( '' );
+			var i = this.length;
+			while ( i -- ) this[ i ].remove();
 			if ( v && (v = v.split( ',' )) ) {
 				for ( var i = 0, t = t && t.split( ',' ), o, s = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {

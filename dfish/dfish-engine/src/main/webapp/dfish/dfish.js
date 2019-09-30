@@ -2358,12 +2358,14 @@ _merge( $, {
 		$.query( ':text,:password,textarea,select', d ).each( function() {
 			var h = this.outerHTML, v, r;
 			if ( y.input2text ) {
-				var g = $.widget( this );
+				var g = $.widget( this ), w = 'auto';
 				if ( g && g.isFormWidget ) {
 					h = g.$( 'f' ).outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					if ( g.type !== 'date' && g.type !== 'spinner' )
+						w = g.$( 'f' ).style.width;
 				} else
 					v = this.value;
-				v = '<span class=f-va>' + v + '</span>';
+				v = '<div class="f-inbl f-va f-wdbr" style="width:' + w + '">' + v + '</div>';
 			} else {
 				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
 			}
@@ -2373,7 +2375,7 @@ _merge( $, {
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					s = s.replace( g.$().outerHTML, g.isChecked() ? '<span class=f-va>' + g.text() + '</span>' : '' );
+					s = s.replace( g.$().outerHTML, g.isChecked() ? '<div class="f-inbl f-va f-wdbr">' + g.text() + '</div>' : '' );
 				}
 			} else {
 				var h = this.outerHTML, n = h.replace( / checked=""/, '' );
@@ -2386,7 +2388,7 @@ _merge( $, {
 			$.query( 'input[type=hidden]', d ).each( function() {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget && ! g.isHiddenWidget ) {
-					s = s.replace( g.$('f').outerHTML, '<span class=f-va>' + g.text() + '</span>' );
+					s = s.replace( g.$('f').outerHTML, '<div class="f-inbl f-va f-wdbr" style="width:' + g.$( 'f' ).style.width + '">' + g.text() + '</div>' );
 				}
 			} );
 		}
