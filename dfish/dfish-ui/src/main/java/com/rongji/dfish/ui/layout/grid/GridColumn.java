@@ -80,6 +80,7 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	Integer maxwidth;
 	Highlight highlight;
 	RawJson rawFormat;
+
 	
 	public RawJson rawFormat() {
 		return rawFormat;

@@ -36,7 +36,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     protected String snap;
     protected String snaptype;
     protected Integer indent;
-    protected Integer timeout;
+    protected Long timeout;
     protected Widget<?> node;
     protected Boolean moveable;
     protected Boolean fullscreen;
@@ -115,11 +115,11 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return (T) this;
     }
 
-    public Integer getTimeout() {
+    public Long getTimeout() {
         return timeout;
     }
 
-    public T setTimeout(Integer timeout) {
+    public T setTimeout(Long timeout) {
         this.timeout = timeout;
         return (T) this;
     }

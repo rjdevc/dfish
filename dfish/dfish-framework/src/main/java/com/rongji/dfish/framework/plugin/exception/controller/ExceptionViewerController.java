@@ -187,7 +187,7 @@ public class ExceptionViewerController extends BaseController {
 	public Object changeLock(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		boolean lock = ExceptionManager.getInstance().toggleEnable();
 		return new AlertCommand("异常记录开关" + (lock ? "已开启" : "已关闭")).setPosition(AlertCommand.POSITION_SOUTHEAST)
-		        .setTimeout(5);
+		        .setTimeout(5000L);
 		// return showAsLog(request, response);
 	}
 

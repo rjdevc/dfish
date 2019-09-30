@@ -9,8 +9,8 @@ import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.JsonNode;
 import com.rongji.dfish.ui.command.AlertCommand;
 import com.rongji.dfish.ui.command.LoadingCommand;
-import com.rongji.dfish.ui.layout.VerticalLayout;
 import com.rongji.dfish.ui.widget.Progress;
+import com.rongji.dfish.ui.widget.ProgressItem;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -45,13 +45,9 @@ public class ProgressManager {
     public static final String ID_LOADING = "progressLoading";
 
     /**
-     * 进度条加载时间间隔, FIXME 前端应该会改成毫秒,这里先按照秒来返回
+     * 进度条加载时间间隔,单位:毫秒
      */
-    private long maxDelay = 3L;
-    /**
-     * 进度条显示文本
-     */
-    private String loadingText = "loading..";
+    private long maxDelay = 3000L;
 
     public long getMaxDelay() {
         return maxDelay;
@@ -59,14 +55,6 @@ public class ProgressManager {
 
     public void setMaxDelay(long maxDelay) {
         this.maxDelay = maxDelay;
-    }
-
-    public String getLoadingText() {
-        return loadingText;
-    }
-
-    public void setLoadingText(String loadingText) {
-        this.loadingText = loadingText;
     }
 
     /**
@@ -255,9 +243,9 @@ public class ProgressManager {
      */
     public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, Number[] stepScale) {
         ProgressData progressData = register(runnable, progressKey, progressText, completeNode, stepScale);
-        VerticalLayout progressGroup = getProgressGroup(progressData);
-        if (progressGroup != null) {
-            return new LoadingCommand(null).setId(ID_LOADING).setNode(progressGroup);
+        Progress progress = getProgress(progressData);
+        if (progress != null) {
+            return new LoadingCommand(null).setId(ID_LOADING).setNode(progress);
         } else {
             String errorMsg = "添加进度条队列失败@" + System.currentTimeMillis();
             FrameworkHelper.LOG.warn(errorMsg + "[" + progressKey + "]");
@@ -409,28 +397,35 @@ public class ProgressManager {
 
 //	private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
 
-    VerticalLayout getProgressGroup(ProgressData progressData) {
+    Progress getProgress(ProgressData progressData) {
         if (progressData == null) {
             return null;
         }
-        VerticalLayout progressGroup = new VerticalLayout(null);
 
         // 参数需要加密,担心key被猜测出来获取高权限的数据信息
         String src = "progress/reloadProgress?progressKey=" + progressData.getProgressKey();
-        Progress stepProgress = new Progress("prgStep", progressData.getStepPercent()).setSrc(src).setText(progressData.getProgressText());
-        progressGroup.add(stepProgress);
-        stepProgress.setDelay(progressData.getDelay());
+        Progress progress = new Progress("progress").setSrc(src).setText(progressData.getProgressText());
+        progress.setDelay(progressData.getDelay());
 
         int steps = progressData.getSteps();
         if (steps > 1) {
-            String stepText = Utils.isEmpty(stepProgress.getText()) ? this.loadingText : stepProgress.getText();
+//            String stepText = Utils.isEmpty(stepProgress.getText()) ? this.loadingText : stepProgress.getText();
             int currStep = progressData.getStepIndex() + 1;
-            stepProgress.setText("(" + (currStep > steps ? steps : currStep) + "/" + steps + ") " + stepText);
-
-            Progress doneProgress = new Progress("prgDone", progressData.getDonePercent()).setSrc(src).setText("总进度");
-            progressGroup.add(doneProgress);
+//            stepProgress.setText();
+//
+//            Progress doneProgress = new Progress("prgDone", progressData.getDonePercent()).setSrc(src).setText("总进度");
+//            progressGroup.add(doneProgress);
+            // "(" + (currStep > steps ? steps : currStep) + "/" + steps + ") " + stepText
+            String stepText = "(" + (currStep > steps ? steps : currStep) + "/" + steps + ")";
+            if (Utils.notEmpty(progressData.getProgressText())) {
+                stepText += " " + progressData.getProgressText();
+            }
+            progress.add(new ProgressItem(null, progressData.getStepPercent()).setText(stepText));
+            progress.add(new ProgressItem(null, progressData.getDonePercent()).setText("总进度"));
+        } else {
+            progress.add(new ProgressItem(null, progressData.getDonePercent()).setText(progressData.getProgressText()));
         }
-        return progressGroup;
+        return progress;
     }
 
 //    /**

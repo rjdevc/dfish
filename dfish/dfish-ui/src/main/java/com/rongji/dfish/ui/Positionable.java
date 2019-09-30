@@ -31,16 +31,16 @@ public interface Positionable<T extends Positionable<T>> {
 	 */
 	T setCover(Boolean cover);
 	/**
-	 * 定时关闭，单位:秒。-1则不关闭
+	 * 定时关闭，单位:毫秒。-1则不关闭
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	Integer getTimeout();
+	Long getTimeout();
 	/**
-	 * 定时关闭，单位:秒。-1则不关闭
+	 * 定时关闭，单位:毫秒。-1则不关闭
 	 * @param timeout Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	T setTimeout(Integer timeout);
+	T setTimeout(Long timeout);
 	
 	/**
 	 * 位置正中

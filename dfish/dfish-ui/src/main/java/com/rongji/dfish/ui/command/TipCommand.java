@@ -14,9 +14,6 @@ public class TipCommand extends AbstractDialog<TipCommand> implements Command<Ti
 	 */
 	private static final long serialVersionUID = -3534531697064109684L;
 	private String text;
-//	private String  snap;
-//	private String  snaptype;
-//	private Integer timeout;
 	private Boolean hoverdrop;
 	
 	/**
@@ -31,43 +28,7 @@ public class TipCommand extends AbstractDialog<TipCommand> implements Command<Ti
 	public String getType() {
 		return "tip";
 	}
-	
 
-//	public String getSnaptype() {
-//		return snaptype;
-//	}
-//
-//	public TipCommand setSnaptype(String snaptype) {
-//		this.snaptype = snaptype;
-//		return this;
-//	}
-//
-//	public String getSnap() {
-//		return snap;
-//	}
-//
-//	public TipCommand setSnap(String snap) {
-//		this.snap = snap;
-//		return this;
-//	}
-//
-//    /**
-//     * 定时关闭，单位:秒。
-//     * @return Integer
-//     */
-//	public Integer getTimeout() {
-//		return timeout;
-//	}
-//    /**
-//     * 定时关闭，单位:秒。
-//     * @param timeout Integer
-//     * @return 本身，这样可以继续设置其他属性
-//     */
-//    public TipCommand setTimeout(Integer timeout) {
-//        this.timeout = timeout;
-//        return this;
-//    }
-    
     /**
      * 内容
      * @return String

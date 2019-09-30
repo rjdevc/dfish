@@ -54,9 +54,9 @@ public class JigsawGenerator {
      */
     private String errorMsg = "次数过多,请稍后再试";
     /**
-     * 锁定时间(单位:秒)
+     * 锁定时间(单位:毫秒)
      */
-    private int timeout = 60;
+    private long timeout = 60000L;
 
 
     /**
@@ -68,48 +68,54 @@ public class JigsawGenerator {
         return bigWidth;
     }
 
-    public void setBigWidth(int bigWidth) {
+    public JigsawGenerator setBigWidth(int bigWidth) {
         this.bigWidth = bigWidth;
+        return this;
     }
 
     public int getBigHeight() {
         return bigHeight;
     }
 
-    public void setBigHeight(int bigHeight) {
+    public JigsawGenerator setBigHeight(int bigHeight) {
         this.bigHeight = bigHeight;
+        return this;
     }
 
     public int getSmallSize() {
         return smallSize;
     }
 
-    public void setSmallSize(int smallSize) {
+    public JigsawGenerator setSmallSize(int smallSize) {
         this.smallSize = smallSize;
+        return this;
     }
 
     public String getImageFolder() {
         return imageFolder;
     }
 
-    public void setImageFolder(String imageFolder) {
+    public JigsawGenerator setImageFolder(String imageFolder) {
         this.imageFolder = imageFolder;
+        return this;
     }
 
     public Color getGapColor() {
         return gapColor;
     }
 
-    public void setGapColor(Color gapColor) {
+    public JigsawGenerator setGapColor(Color gapColor) {
         this.gapColor = gapColor;
+        return this;
     }
 
     public double getErrorRange() {
         return errorRange;
     }
 
-    public void setErrorRange(double errorRange) {
+    public JigsawGenerator setErrorRange(double errorRange) {
         this.errorRange = errorRange;
+        return this;
     }
 
     public int getMaxErrorCount() {
@@ -120,26 +126,30 @@ public class JigsawGenerator {
         return errorMsg;
     }
 
-    public void setErrorMsg(String errorMsg) {
+    public JigsawGenerator setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+        return this;
     }
 
-    public void setMaxErrorCount(int maxErrorCount) {
+    public JigsawGenerator setMaxErrorCount(int maxErrorCount) {
         this.maxErrorCount = maxErrorCount;
+        return this;
     }
 
-    public int getTimeout() {
+    public long getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(int timeout) {
+    public JigsawGenerator setTimeout(long timeout) {
         this.timeout = timeout;
+        return this;
     }
 
     private static final Random RANDOM = new Random();
 
     /**
      * 生成拼图
+     *
      * @param request
      * @return
      * @throws Exception
@@ -161,13 +171,13 @@ public class JigsawGenerator {
             // FIXME 暂不做控制,需要和前端配合
             Long lastLockTime = (Long) session.getAttribute(KEY_LOCK_TIME);
 
-            int leftTimeout = 0;
+            long leftTimeout = 0;
             if (lastLockTime == null) {
                 session.setAttribute(KEY_LOCK_TIME, System.currentTimeMillis());
                 leftTimeout = timeout;
             } else {
                 // 剩余时间
-                leftTimeout = (int) (timeout - (System.currentTimeMillis() - lastLockTime) / 1000);
+                leftTimeout = timeout - (System.currentTimeMillis() - lastLockTime);
                 if (leftTimeout <= 0) {
                     generatorCount = 0;
                     session.removeAttribute(KEY_GENERATOR_COUNT);
@@ -229,6 +239,7 @@ public class JigsawGenerator {
 
     /**
      * 校验拼图是否正确
+     *
      * @param request
      * @param offsetStr
      * @return boolean
@@ -247,6 +258,7 @@ public class JigsawGenerator {
 
     /**
      * 校验拼图是否正确
+     *
      * @param request
      * @param offset
      * @return boolean
@@ -268,6 +280,7 @@ public class JigsawGenerator {
 
     /**
      * 获取原始图片目录
+     *
      * @return
      */
     private String getImageRawDir() {
@@ -284,12 +297,13 @@ public class JigsawGenerator {
 
     /**
      * 生成大拼图
+     *
      * @param jigsawFileName 会话编号
-     * @param rawFile 原始文件
-     * @param x 切块开始的横坐标
-     * @param y 切块开始的纵坐标
-     * @param width 切块宽度
-     * @param height 切块高度
+     * @param rawFile        原始文件
+     * @param x              切块开始的横坐标
+     * @param y              切块开始的纵坐标
+     * @param width          切块宽度
+     * @param height         切块高度
      * @return 大图片组件
      * @throws Exception
      */
@@ -329,12 +343,13 @@ public class JigsawGenerator {
 
     /**
      * 生成小拼图
+     *
      * @param jigsawFileName 会话编号
-     * @param rawFile 原始文件
-     * @param x 切块开始的横坐标
-     * @param y 切块开始的纵坐标
-     * @param width 切块宽度
-     * @param height 切块高度
+     * @param rawFile        原始文件
+     * @param x              切块开始的横坐标
+     * @param y              切块开始的纵坐标
+     * @param width          切块宽度
+     * @param height         切块高度
      * @return 小图片组件
      * @throws Exception
      */
@@ -357,7 +372,7 @@ public class JigsawGenerator {
             g.dispose();
 
 //            Graphics g2 = destImage.createGraphics();
-            g = (Graphics2D)destImage.getGraphics();
+            g = (Graphics2D) destImage.getGraphics();
             g.setColor(new Color(255, 255, 255, 0));
             // 必须调用这个方法将背景色填充到图片去
             g.fillRect(0, 0, destImage.getWidth(), destImage.getHeight());
@@ -371,9 +386,9 @@ public class JigsawGenerator {
             // 上
             g.fillRect(0, y, width, blurSize);
             // 右
-            g.fillRect(width-blurSize, y, blurSize, height);
+            g.fillRect(width - blurSize, y, blurSize, height);
             // 下
-            g.fillRect(0, y+width-blurSize, width, blurSize);
+            g.fillRect(0, y + width - blurSize, width, blurSize);
             // 左
             g.fillRect(0, y, blurSize, height);
 
@@ -394,6 +409,7 @@ public class JigsawGenerator {
 
     /**
      * 获取真实的扩展名,不含.
+     *
      * @param fileExtName 真实的扩展名
      * @return String
      */
@@ -411,12 +427,13 @@ public class JigsawGenerator {
 
     /**
      * 获取临时目标文件
+     *
      * @param destFileName 临时目标文件名
      * @return 临时目标文件
      * @throws Exception
      */
     private File getTempDestFile(String destFileName) throws Exception {
-        String destDirPath = getImageRawDir()  + FOLDER_TEMP + "/";
+        String destDirPath = getImageRawDir() + FOLDER_TEMP + "/";
         File destDir = new File(destDirPath);
         if (!destDir.exists()) {
             destDir.mkdirs();
@@ -477,45 +494,50 @@ public class JigsawGenerator {
             return big;
         }
 
-        public void setBig(Img big) {
+        public JigsawData setBig(Img big) {
             this.big = big;
+            return this;
         }
 
         public Img getSmall() {
             return small;
         }
 
-        public void setSmall(Img small) {
+        public JigsawData setSmall(Img small) {
             this.small = small;
+            return this;
         }
 
         public Number getMinvalue() {
             return minvalue;
         }
 
-        public void setMinvalue(Number minvalue) {
+        public JigsawData setMinvalue(Number minvalue) {
             this.minvalue = minvalue;
+            return this;
         }
 
         public Number getMaxvalue() {
             return maxvalue;
         }
 
-        public void setMaxvalue(Number maxvalue) {
+        public JigsawData setMaxvalue(Number maxvalue) {
             this.maxvalue = maxvalue;
+            return this;
         }
 
         public JigsawError getError() {
             return error;
         }
 
-        public void setError(JigsawError error) {
+        public JigsawData setError(JigsawError error) {
             this.error = error;
+            return this;
         }
 
         public static class JigsawError {
             private String msg;
-            private int timeout;
+            private long timeout;
 
             public String getMsg() {
                 return msg;
@@ -526,11 +548,11 @@ public class JigsawGenerator {
                 return this;
             }
 
-            public int getTimeout() {
+            public long getTimeout() {
                 return timeout;
             }
 
-            public JigsawError setTimeout(int timeout) {
+            public JigsawError setTimeout(long timeout) {
                 this.timeout = timeout;
                 return this;
             }

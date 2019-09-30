@@ -108,18 +108,6 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		return multiple;
 	}
 
-
-//	/**
-//	 * 在线匹配关键词的 view suggest。支持 $value 和 $text 变量。
-//	 * @return the suggestsrc
-//	 */
-//	@Deprecated
-//	public String getSuggestsrc() {
-//		return suggest;
-//	}
-
-
-
     /**
      * 设置当内容太多的时候不换行
 	 * @return the nobr
@@ -184,25 +172,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		this.suggest = suggest;
 		return (T) this;
 	}
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @return Boolean
-//	 */
-//	public Boolean getSuggest() {
-//		return suggest;
-//	}
-//
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @param suggest Boolean
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	@SuppressWarnings({  "unchecked" })
-//	public T setSuggest(Boolean suggest) {
-//		this.suggest = suggest;
-//		return (T) this;
-//	}
-	
+
 	/**
 	 * 显示所有结果的 view suggest。;
 	 * @return String
@@ -259,7 +229,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	}
 
 	/**
-	 * 输入字符延时时间
+	 * 输入字符延时时间,单位:毫秒
 	 * @return Long
 	 */
 	public Long getDelay() {
@@ -267,7 +237,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	}
 
 	/**
-	 * 输入字符延时时间
+	 * 输入字符延时时间,单位:毫秒
 	 * @param delay Long
 	 * @return 本身，这样可以继续设置其他属性
 	 */

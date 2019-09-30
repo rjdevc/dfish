@@ -1,7 +1,5 @@
 package com.rongji.dfish.framework.plugin.progress;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
@@ -17,8 +15,6 @@ import com.rongji.dfish.framework.mvc.controller.BaseController;
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.command.CommandGroup;
 import com.rongji.dfish.ui.command.JSCommand;
-import com.rongji.dfish.ui.layout.VerticalLayout;
-import com.rongji.dfish.ui.widget.Progress;
 
 @Controller
 @RequestMapping("/progress")
@@ -78,7 +74,7 @@ public class ProgressController extends BaseController {
 			// 默认命令做容错
 			return new CommandGroup();
 		} else {
-			return progressManager.getProgressGroup(progressData);
+			return progressManager.getProgress(progressData);
 		}
 	}
 	

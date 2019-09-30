@@ -38,6 +38,7 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	protected Widget<?> node;
 	protected Boolean escape;
 	protected String format;
+	protected Integer labelwidth;
 
 	public String getType() {
 		return null;
@@ -257,4 +258,23 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 		return (T) this;
 	}
 
+	/**
+	 * 表单标题宽度。
+	 * @return Integer
+	 * @since 3.3
+	 */
+	public Integer getLabelwidth() {
+		return labelwidth;
+	}
+
+	/**
+	 * 表单标题宽度。
+	 * @param labelwidth Integer
+	 * @return 本身，这样可以继续设置其他属性
+	 * @since 3.3
+	 */
+	public T setLabelwidth(Integer labelwidth) {
+		this.labelwidth = labelwidth;
+		return (T) this;
+	}
 }

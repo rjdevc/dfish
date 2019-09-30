@@ -38,9 +38,9 @@ public class ProgressData implements Serializable, Cloneable {
 	 */
 	private double donePercent = 0.0;
 	/**
-	 * 下次加载时间 FIXME 这里暂时按照秒,前端应该会改成毫秒
+	 * 下次加载时间
 	 */
-	private long delay = 1L;
+	private long delay = 200L;
 	/**
 	 * 是否进度完成,就算进度已经100%,该属性如果还是false,进度条还是不会关闭
 	 */

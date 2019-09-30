@@ -38,8 +38,7 @@ public class CommandGroup extends AbstractCommand<CommandGroup> implements Comma
     protected ArrayList<Command<?>> nodes;
     protected String path;
     protected String target;
-	private Double delay;
-//	private Integer repeatInterval;
+	private Long delay;
 
     /**
      * 执行路径，如果不设置为当前view
@@ -78,10 +77,8 @@ public class CommandGroup extends AbstractCommand<CommandGroup> implements Comma
      * 默认构造函数
      */
     public CommandGroup() {
-    	nodes = new ArrayList<Command<?>>();
+    	nodes = new ArrayList<>();
     }
-   
-
    
 
     public CommandGroup add(Command<?> cmd) {
@@ -89,46 +86,24 @@ public class CommandGroup extends AbstractCommand<CommandGroup> implements Comma
         return this;
     }
 
-//    public Command<?> getCommandById(String id) {
-//        if (id == null) {
-//            return null;
-//        }
-//        if (id.equals(this.id)) {
-//            return this;
-//        }
-//        for (Command<?> elem : nodes) {
-//            if (id.equals(elem.getId())) {
-//                return elem;
-//            }
-//            if (elem instanceof CommandContainer) {
-//                CommandContainer<?> cc = (CommandContainer<?>) elem;
-//                Command<?> cmd = cc.getCommandById(id);
-//                if (cc != null) {
-//                    return cmd;
-//                }
-//            }
-//        }
-//        return null;
-//    }
+	/**
+	 * 延迟执行，单位:毫秒
+	 * @return delay
+	 */
+	public Long getDelay() {
+		return delay;
+	}
+
     /**
      * 设置该组里面包含的动作在多长时间后执行。
      * 单位秒
-     * @param delay 延迟的秒数
+     * @param delay 延迟执行时间,单位:毫秒
      * @return 本身，这样可以继续设置其他属性
      */
-	public CommandGroup setDelay(Double delay) {
+	public CommandGroup setDelay(Long delay) {
 		this.delay = delay;
 		return this;
 	}
-//	/**
-//	 * 设置该组里面包含的动作每隔多长时间执行。
-//	 * @param repeatInterval 时间间隔毫秒数
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public CommandGroup setRepeatInterval(Integer repeatInterval) {
-//		this.repeatInterval = repeatInterval;
-//		return this;
-//	}
 	@SuppressWarnings("unchecked")
 	public List<Command<?>> findNodes() {
 		return nodes;
@@ -140,18 +115,5 @@ public class CommandGroup extends AbstractCommand<CommandGroup> implements Comma
 	public String getType() {
 		return "cmd";
 	}
-	/**
-	 * 延迟执行，单位秒
-	 * @return delay
-	 */
-	public Double getDelay() {
-		return delay;
-	}
-//	/**
-//	 * 
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public Integer getRepeatInterval() {
-//		return repeatInterval;
-//	}
+
 }
