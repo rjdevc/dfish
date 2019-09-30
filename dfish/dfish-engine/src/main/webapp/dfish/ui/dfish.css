@@ -118,7 +118,8 @@
 .w-templateview{position:relative}
 
 .w-progress{width:100%;border-width:0;text-align:left;table-layout:auto;font-size:12px}
-.w-progress ._t{min-height:28px}
+.w-progress .w-progress{padding-top:12px}
+.w-progress ._t{min-height:22px}
 .w-progress ._bar{position:relative;height:17px;margin:1px 0;line-height:1;background:#ddd;border-radius:100px;overflow:hidden;text-align:center}
 .w-progress ._dn{position:absolute;top:0;left:0;right:0;bottom:0;color:#666}
 .w-progress ._up{position:absolute;top:0;left:0;bottom:0;background:#018beb;color:#fff;border-radius:100px;overflow:hidden}
@@ -824,8 +825,6 @@
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-page .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 
-.f-form-transparent .w-input,.f-form-transparent .w-form.z-on .w-input{border-color:transparent}
-
 .f-form-small,.f-form-small ._t{font-size:12px}
 .f-form-small .w-input,.f-form-small .w-switch,.f-form-small .f-boxbtn{height:22px}
 .f-form-small .w-input ._t,.f-form-small .w-combobox ._e{line-height:22px;height:22px}
@@ -854,6 +853,8 @@
 .f-form-big .w-switch.z-checked ._o{margin-left:-29px}
 .f-form-big .w-switch.z-checked ._n{margin-left:12px;margin-right:40px}
 
+.f-form-transparent .w-input,.f-form-transparent .w-form.z-on .w-input{border-color:transparent}
+.f-form-transparent .w-input ._c,.f-form-transparent{padding-left:0}
 
 .f-opc0{opacity:0}
 .f-css2 .f-opc0{filter:Alpha(opacity=0)}

@@ -295,7 +295,7 @@ _cmdHooks = {
 	'cmd': function( x, a, b ) {
 		if ( x.delay != N ) {
 			var self = this;
-			setTimeout( function() { _cmd.call( self, x ) }, x.delay * 1000 );
+			setTimeout( function() { _cmd.call( self, x ) }, x.delay );
 		} else
 			_cmd.call( this, x, b );
 	},
@@ -437,7 +437,7 @@ TemplateWidget = $.createClass( {
 		},
 		closest: function( a ) {
 			return this.parentNode.closest( a );
-		},
+		}
 	}
 } ),
 _regAt = function( x, k, v ) {
@@ -504,6 +504,10 @@ Template = $.createClass( {
 				return;
 			if ( (b = x[ '@w-include' ]) ) {
 				var d = _getTemplate( b );
+				if ( d ) {
+					for ( var k in x )
+						if ( k.indexOf( '@w-' ) < 0 ) d[ k ] = x[ k ];
+				}
 				return d && this.compile( d, y );
 			}
 			for ( var k in x ) {
@@ -2162,10 +2166,37 @@ Xsrc = define.widget( 'xsrc', {
 				e = function() {
 					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
 				};
-			t && typeof t === _STR ? _getTemplate( t, function() { o = T; e(); } ) : (o = T);
+			t && typeof t === _STR ? (t = _getTemplate( t, function() { o = T; e(); } )) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			(u = this.getSrc()) && this.exec( { type: 'ajax', src: u, filter: this.getSrcFilter(), cache: cache, loading: F, success: function( x ) { n = x; e(); }, error: function( a ) { n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } ); e(); } } );
+			(u = this.getSrc()) && this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, success: function( x ) {
+				if ( this._success( x ) ) {
+					n = x; e();
+				}
+			}, error: function( a ) {
+				if ( this._error( a ) ) {
+					n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } );
+					e();
+				}
+			} } );
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
+		},
+		_success: function( x ) {
+			var t = this.x.template && _getTemplate( this.x.template ), s = this.x.success || (t && t.success);
+			s && this.formatJS( s, { '$response': x } );
+			if ( this._disposed ) return F;
+			s = this.x.complete || (t && t.complete);
+			s && this.formatJS( s, { '$response': x } );
+			if ( this._disposed ) return F;
+			return T;
+		},
+		_error: function( x ) {
+			var t = this.x.template && _getTemplate( t ), s = this.x.success || (t && t.success);
+			s && this.formatJS( s, { '$response': N } );
+			if ( this._disposed ) return F;
+			s = this.x.complete || (t && t.complete);
+			s && this.formatJS( s, { '$response': N } );
+			if ( this._disposed ) return F;
+			return T;
 		},
 		// @x -> data json
 		_loadEnd: function( d ) {
@@ -4314,7 +4345,7 @@ Dialog = define.widget( 'dialog', {
 			}
 		},
 		listenTimeout: function() {
-			setTimeout( $.proxy( this, this.close ), this.x.timeout * 1000 );
+			setTimeout( $.proxy( this, this.close ), this.x.timeout );
 		},
 		close: function() {
 			if ( ! this._disposed && F !== this.trigger( 'close' ) )
@@ -4494,9 +4525,10 @@ Progress = define.widget( 'progress', {
 		var s = this.getSrc();
 		s && $.jsonArray( this, _progressCache, s );
 		x.hidepercent && (this.className += ' z-hidepercent');
+		!x.percent && (x.percent = 0);
 		this.cssText = 'height:auto;';
 	},
-	Extend: 'xsrc',
+	Extend: [ W, Xsrc ],
 	Listener: {
 		body: {
 			ready: function() {
@@ -4506,28 +4538,30 @@ Progress = define.widget( 'progress', {
 						// 相同 src 的实例，只让第一个去请求ajax
 						if ( ! self._disposed && self.isHead() ) {
 							self.exec( { type: 'ajax', src: s, context: this, success: function( x ) {
+								if ( ! this._success( x ) )
+									return;
 								// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
-								if ( self.x.template ) {
-									x = _compileTemplate( self, x );
+								if ( this.x.template ) {
+									x = _compileTemplate( this, x );
 								}
-								var d = self.closest( 'loading' );
+								var d = this.closest( 'loading' );
 								if ( W.isCmd( x ) ) {
-									d ? d.ownerView.exec( x ) : self.exec( x );
+									d ? d.ownerView.exec( x ) : this.exec( x );
 									d && d.close();
 								} else {
 									if( d && d.parentNode.isSrcLayout && d.parentNode.isContentData( x ) ) {
 										d.parentNode.loadData( x );
 										d.close();
 									} else {
-										for ( var i = 0, n = x.nodes || [ x ], l = n.length, d, o; i < l; i ++ ) {
-											o = ((d = n[ i ]).id && self.ownerView.find( d.id )) || self;
-											o.replace( ! d.id || o === self ? $.extend( d, { text: self.x.text } ) : d );
-										}
+										o = ((d = x).id && this.ownerView.find( d.id )) || this;
+										o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
 									}
 								}
+							}, error: function( a ) {
+								this._error( a );
 							} } );
 						}
-					}, x.delay * 1000 );
+					}, x.delay );
 				}
 				var p = this.$( 'p' );
 				p.style.width = (this.width() || p.parentNode.parentNode.offsetWidth) + 'px';
@@ -4536,22 +4570,23 @@ Progress = define.widget( 'progress', {
 	},
 	Prototype: {
 		className: 'w-progress',
+		x_childtype: $.rt( 'progress' ),
 		stop: function() {
 			clearTimeout( this._timer );
 		},
 		start: function() {
 			this.triggerListener( 'ready' );
 		},
-		getLoadingParent: function() {
-			
-		},
 		isHead: function() {
 			return _progressCache[ this.getSrc() ][ 0 ] === this;
 		},
-		html_nodes: function() {
+		html_self: function() {
 			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
 			return (t != N ? '<div class="_t f-fix">' + this.html_format( t, this.x.format, this.x.escape ) + '</div>' : '') +
 				'<div class=_bar'+ (h != N ? ' style="height:' + h + 'px;"' : '') + '><div class=_dn><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div></div></div>';
+		},
+		html_nodes: function() {
+			return this.html_self() + _proto.html_nodes.call( this );
 		},
 		dispose: function() {
 			this.stop();
@@ -5095,7 +5130,7 @@ AbsForm = define.widget( 'abs/form', {
 				return this.$v() ? this.$v().value : this.x.value;
 			if ( this.$() ) {
 				this.$v().value = a;
-				this.$v() && this.resetEffect();
+				this.$v() && this.checkPlaceholder();
 				this.trigger( 'change' );
 			} else
 				this.x.value = a;
@@ -5117,10 +5152,6 @@ AbsForm = define.widget( 'abs/form', {
 		},
 		reset: function( a ) {
 			this.val( a || this.x.value == N ? '' : this.x.value );
-		},
-		resetEffect: function() {
-			if ( this.getPlaceholder() && this.$( 'ph' ) )
-				$.classAdd( this.$( 'ph' ), 'f-none', ! this.isEmpty() || this.$().contains( document.activeElement ) );
 		},
 		prop_style: function() {
 			var w = this.formWidth(), h = this.formHeight(), s = '';
@@ -6345,7 +6376,7 @@ _Date = define.widget( 'date', {
 				return this.$v() ? this.$v().value.replace( 'T', ' ' ) : this.x.value;
 			if ( this.$() ) {
 				this.$v().value = $.strTrim( a ).replace( ' ', 'T' );
-				this.$v() && this.resetEffect();
+				this.$v() && this.checkPlaceholder();
 				this.trigger( 'change' );
 			} else
 				this.x.value = a;
@@ -7325,7 +7356,7 @@ Combobox = define.widget( 'combobox', {
 		x_childtype: $.rt( 'combobox/option' ),		
 		validHooks: {
 			valid: function( b, v ) {
-				if ( this.x.strict !== F && this._inited && (Q( '._o.z-err', this.$() ).length || this.queryText()) )
+				if ( this.x.strict !== F && this.$() && (Q( '._o.z-err', this.$() ).length || this.queryText()) )
 					return _form_err.call( this, b, 'invalid_option' );
 			}
 		},
@@ -7336,7 +7367,7 @@ Combobox = define.widget( 'combobox', {
 			this.more && this.more.dispose();
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
-			this.more = this.createPop( this.x.suggest || { type: 'dialog',node: { type: 'grid', combo:{ field: {} } } }, { value: this._val() } );
+			this.more = this.createPop( this.x.suggest || { type: 'dialog', node: { type: 'grid', combo: { field: {} } } }, { value: this._val() } );
 			var c = this.more.getContentView();
 			c && c.layout && this._init_load( v );
 		},
@@ -7361,7 +7392,7 @@ Combobox = define.widget( 'combobox', {
 			this.usa() && (this.$t().contentEditable = T);
 			this.$().title = this.text();
 			_listen_ime( this, this.$t() );
-			this._inited = T;
+			this.trigger( 'load' );
 		},
 		// 根据value设置已选项, 初始化时调用 /@v -> value
 		_initOptions: function( v ) {
@@ -7405,12 +7436,13 @@ Combobox = define.widget( 'combobox', {
 			}
 			if ( this.loading ) {
 				this._val( a );
-				return this.addEventOnce( 'load', function() { this.val( a ) } );
+				this.addEventOnce( 'load', function() { this.val( a ) } );
+			} else {
+				this.empty();
+				this._val( '' );
+				this.$t().innerHTML = '';
+				a ? this.match( { value: a } ) : this.checkPlaceholder();
 			}
-			this.empty();
-			this._val( '' );
-			this.$t().innerHTML = '';
-			a ? this.match( { value: a } ) : this.resetEffect();
 		},
 		store: function( a ) {
 			return (a || this.more).getContentView().combo;
@@ -7560,13 +7592,13 @@ Combobox = define.widget( 'combobox', {
 							self.store().merge( o );
 							a.x ? self.fixOpt( a ) : self.addOpt( a );
 						}
-						self.resetEffect();
+						self.checkPlaceholder();
 					}
 					this.remove();
 				} );
 			} else {
 				a.x ? this.fixOpt( a ) : this.addOpt( a );
-				this.resetEffect();
+				this.checkPlaceholder();
 			}
 		},
 		// @r -> range, s -> text
@@ -7739,7 +7771,7 @@ ComboboxOption = define.widget( 'combobox/option', {
 			if ( ! this.isDisabled() && F !== this.triggerHandler( 'close' ) ) {
 				this.remove();
 				p.save();
-				p.resetEffect();
+				p.checkPlaceholder();
 				e && $.stop( e );
 			}
 		},
@@ -7917,8 +7949,8 @@ Linkbox = define.widget( 'linkbox', {
 			a ? this.match( { value: a }, function() {
 				this._initOptions( a );
 				this.save();
-				this.resetEffect();
-			} ) : this.resetEffect();;
+				this.checkPlaceholder();
+			} ) : this.checkPlaceholder();
 		},
 		text: function() {
 			return this.$t().innerText;
@@ -8636,9 +8668,6 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		getSrc: function() {
 			return Xsrc.prototype.getSrc.call( this );
 		},
-		getSrcFilter: function() {
-			return Xsrc.prototype.getSrcFilter.call( this );
-		},
 		isContentData: function() {
 			return T;
 		},
@@ -8651,13 +8680,23 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
 		},
+		_success: function() {
+			return Xsrc.prototype._success.apply( this, arguments );
+		},
+		_error: function() {
+			return Xsrc.prototype._error.apply( this, arguments );
+		},
 		// @a -> sync? b -> fn?
 		request: function( a, b ) {
 			this.loading = T;
-			this.exec( { type: 'ajax', src: this.getSrc(), filter: this.getSrcFilter(), sync: a, loading: F,
+			var f = this.x.filter, t = this.x.template;
+			t && (t = _getTemplate( t ));
+			this.exec( { type: 'ajax', src: this.getSrc(), filter: this.x.filter || (t && t.filter), sync: a, loading: F,
 				success: function( x ) {
+					if ( ! this._success( x ) )
+						return;
 					this.x.srcdata = x;
-					if ( this.x.template ) {
+					if ( t ) {
 						x = _compileTemplate( this, x );
 						x.pub && $.merge( (this.x.pub || (this.x.pub = {})), x.pub );
 					}
@@ -8669,6 +8708,9 @@ AbsLeaf = define.widget( 'abs/leaf', {
 						this.trigger( 'load' );
 					}
 					b && b.call( this );
+				},
+				error: function( a ) {
+					this._error( a );
 				},
 				complete: function( x ) { // complete
 					this.loading = F;
