@@ -10543,22 +10543,31 @@ Form = define.widget( 'form', {
 		for ( var i = 0; i < cols; i ++ ) {
 			c.push( { field: '' + i, width: '*' } );
 		}
-		for ( var i = 0, j = 0, n = x.nodes, l = n.length, tr = {}, rp = {}; i < l; i ++ ) {
+		I: for ( var i = 0, j = 0, n = x.nodes.concat(), tr = {}, rp = {}; i < n.length; i ++ ) {
 			j == 0 && rows.push( tr );
-			var e = n[ i ],
+			var e = n[ i ], h = rows.length - 1,
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
 			$.extend( td, x.pub, d && d.pub );
 			!td.colspan && (td.colspan = 4);
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {
 				for ( var k = 0; k < td.rowspan - 1; k ++ ) {
-					(rp[ i + k + 1 ] || (rp[ i + k + 1 ] = {}))[ j ] = td.colspan;
+					(rp[ h + k + 1 ] || (rp[ h + k + 1 ] = {}))[ j ] = td.colspan;
 				}
 			}
 			var rv = 0;
-			if ( rp[ i ] ) {
+			if ( rp[ h ] ) {
+				for ( var k = j, l = Math.min( cols, j + td.colspan ); k < l; k ++ ) {
+					if ( rp[ h ][ k ] ) {
+						tr[ j ] = { colspan: k };
+						n.splice( i, 0, {} );
+						j = 0;
+						tr = {};
+						continue I;
+					}
+				}
 				for ( var k = j; k < cols; k ++ )
-					if ( rp[ i ][ k ] ) rv += rp[ i ][ k ];
+					if ( rp[ h ][ k ] ) rv += rp[ h ][ k ];
 			}
 			if ( j + td.colspan + rv > cols ) {
 				(tr = {})[ 0 ] = td;
