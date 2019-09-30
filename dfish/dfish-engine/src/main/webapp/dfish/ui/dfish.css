@@ -118,9 +118,8 @@
 .w-templateview{position:relative}
 
 .w-progress{width:100%;border-width:0;text-align:left;table-layout:auto;font-size:12px}
-.w-progress .w-progress{padding-top:12px}
-.w-progress ._t{min-height:22px}
-.w-progress ._bar{position:relative;height:17px;margin:1px 0;line-height:1;background:#ddd;border-radius:100px;overflow:hidden;text-align:center}
+.w-progress ._t{padding:10px 0 5px 0;}
+.w-progress ._bar{position:relative;height:17px;margin-bottom:5px;line-height:1;background:#ddd;border-radius:100px;overflow:hidden;text-align:center}
 .w-progress ._dn{position:absolute;top:0;left:0;right:0;bottom:0;color:#666}
 .w-progress ._up{position:absolute;top:0;left:0;bottom:0;background:#018beb;color:#fff;border-radius:100px;overflow:hidden}
 .w-progress ._cur{background:#018beb;}

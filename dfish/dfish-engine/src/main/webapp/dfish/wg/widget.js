@@ -4532,66 +4532,93 @@ Progress = define.widget( 'progress', {
 	Listener: {
 		body: {
 			ready: function() {
-				var x = this.x, s = this.getSrc(), self = this;
-				if ( s ) {
-					this._timer = setTimeout( function() {
-						// 相同 src 的实例，只让第一个去请求ajax
-						if ( ! self._disposed && self.isHead() ) {
-							self.exec( { type: 'ajax', src: s, context: this, success: function( x ) {
-								if ( ! this._success( x ) )
-									return;
-								// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
-								if ( this.x.template ) {
-									x = _compileTemplate( this, x );
-								}
-								var d = this.closest( 'loading' );
-								if ( W.isCmd( x ) ) {
-									d ? d.ownerView.exec( x ) : this.exec( x );
-									d && d.close();
-								} else {
-									if( d && d.parentNode.isSrcLayout && d.parentNode.isContentData( x ) ) {
-										d.parentNode.loadData( x );
-										d.close();
-									} else {
-										o = ((d = x).id && this.ownerView.find( d.id )) || this;
-										o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
-									}
-								}
-							}, error: function( a ) {
-								this._error( a );
-							} } );
-						}
-					}, x.delay );
-				}
-				var p = this.$( 'p' );
-				p.style.width = (this.width() || p.parentNode.parentNode.offsetWidth) + 'px';
+				this.request();
 			}
 		}
 	},
 	Prototype: {
 		className: 'w-progress',
-		x_childtype: $.rt( 'progress' ),
+		x_childtype: $.rt( 'progress/item' ),
 		stop: function() {
 			clearTimeout( this._timer );
 		},
 		start: function() {
-			this.triggerListener( 'ready' );
+			this.request();
+		},
+		// @s -> src, t -> template
+		reload: function( s, t ) {
+			this.stop();
+			s != N && (this.x.src = src);
+			t != N && (this.x.template = t);
+			this.request();
+		},
+		// @t -> template
+		template: function( t ) {
+			this.stop();
+			this.reload( N, t );
+		},
+		request: function() {
+			var x = this.x, s = this.getSrc(), self = this;
+			s && (this._timer = setTimeout( function() {
+				// 相同 src 的实例，只让第一个去请求ajax
+				if ( ! self._disposed && self.isHead() ) {
+					self.exec( { type: 'ajax', src: s, context: this, success: function( x ) {
+						if ( ! this._success( x ) )
+							return;
+						// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
+						if ( this.x.template ) {
+							x = _compileTemplate( this, x );
+						}
+						var d = this.closest( 'loading' );
+						if ( W.isCmd( x ) ) {
+							d ? d.ownerView.exec( x ) : this.exec( x );
+							d && d.close();
+						} else {
+							if( d && d.parentNode.isSrcLayout && d.parentNode.isContentData( x ) ) {
+								d.parentNode.loadData( x );
+								d.close();
+							} else {
+								o = ((d = x).id && this.ownerView.find( d.id )) || this;
+								o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
+							}
+						}
+					}, error: function( a ) {
+						this._error( a );
+					} } );
+				}
+			}, x.delay ));
 		},
 		isHead: function() {
 			return _progressCache[ this.getSrc() ][ 0 ] === this;
-		},
-		html_self: function() {
-			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
-			return (t != N ? '<div class="_t f-fix">' + this.html_format( t, this.x.format, this.x.escape ) + '</div>' : '') +
-				'<div class=_bar'+ (h != N ? ' style="height:' + h + 'px;"' : '') + '><div class=_dn><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div></div></div>';
-		},
-		html_nodes: function() {
-			return this.html_self() + _proto.html_nodes.call( this );
 		},
 		dispose: function() {
 			this.stop();
 			$.arrPop( _progressCache[ this.getSrc() ], this );
 			_proto.dispose.call( this );
+		}
+	}
+} ),
+ProgressItem = define.widget( 'progress/item', {
+	Const: function( x, p ) {
+		W.apply( this, arguments );
+		x.hidepercent && (this.className += ' z-hidepercent');
+		!x.percent && (x.percent = 0);
+		this.cssText = 'height:auto;';
+	},
+	Listener: {
+		body: {
+			ready: function() {
+				var p = this.$( 'p' );
+				p.style.width = (this.width() || p.parentNode.parentNode.parentNode.offsetWidth) + 'px';
+			}
+		}
+	},
+	Prototype: {
+		ROOT_TYPE: 'progress',
+		html_nodes: function() {
+			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
+			return (t != N ? '<div class="_t f-fix">' + this.html_format( t, this.x.format, this.x.escape ) + '</div>' : '') +
+				'<div class=_bar'+ (h != N ? ' style="height:' + h + 'px;"' : '') + '><div class=_dn><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div></div></div>';
 		}
 	}
 } ),
@@ -4826,10 +4853,14 @@ define.widget( 'deck', {
 /* `label` */
 var Label = define.widget( 'label', {
 	Const: function( x, p ) {
-		W.apply( this, arguments );
-		this._pad = this.x.space != N ? this.x.space : 5;
-		this.defaults( { wmin: this._pad } );
+		this._pad = x.space != N ? x.space : 5;
 		this.className += ' f-nv' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
+		var td = p.parentNode, w = td.x.labelwidth;
+		if ( w == N && td.col )
+			w = td.col.x.labelwidth;
+		w != N && x.width == N && (x.width = w);
+		this.defaults( { wmin: this._pad } );
+		W.apply( this, arguments );
 		if ( ie7 ) { // IE7下需要根据td高度来手动调整label高度
 			var td = p.closest( 'td' );
 			if ( td ) {
@@ -5003,11 +5034,14 @@ AbsForm = define.widget( 'abs/form', {
 		_warncls: '',
 		validHooks: F,
 		init_label: function() {
-			var a = this.x.label, b = _getDefaultOption( 'label', this.x.cls );
-			if ( a && typeof a === _OBJ && (a.width || (!a.ownproperty && b && b.width)) )
-				 this.label = new Label( a, this, -1 );
-			if ( this.label && this.label.x.width == -1 )
-				this.addEvent( 'ready', this.fixLabelWidth );
+			var a = this.x.label;
+			if ( a && typeof a === _OBJ ) {
+				var c = new Label( a, this, -1 ), w = c.attr( 'width' );
+				if ( w != N && w != 0 )
+					this.label = c;
+				if ( c && w == -1 )
+					this.addEvent( 'ready', this.fixLabelWidth );
+			}
 		},
 		fixLabelWidth: function() {
 			this.label.width( this.label.width() + 1 );
@@ -7396,7 +7430,8 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 根据value设置已选项, 初始化时调用 /@v -> value
 		_initOptions: function( v ) {
-			this.val( '' );
+			var i = this.length;
+			while ( i -- ) this[ i ].remove();
 			if ( v && (v = v.split( ',' )) ) {
 				for ( var i = 0, t = t && t.split( ',' ), o, s = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
