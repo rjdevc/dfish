@@ -16,6 +16,7 @@ import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.Triplebox;
 import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.grid.GridLeaf;
 
 /**
  * TreePanel 树的面板 这个面板里面可以防止树节点Leaf
@@ -345,6 +346,39 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	@Override
 	public TreePanel setTemplate(String template) {
 		rootLeaf.setTemplate(template);
+		return this;
+	}
+
+	public String getSuccess() {
+		return rootLeaf.getSuccess();
+	}
+
+	public TreePanel setSuccess(String success) {
+		rootLeaf.setSuccess(success);
+		return this;
+	}
+	public String getError() {
+		return rootLeaf.getError();
+	}
+
+	public TreePanel setError(String error) {
+		rootLeaf.setError(error);
+		return this;
+	}
+	public String getComplete() {
+		return rootLeaf.getComplete();
+	}
+
+	public TreePanel setComplete(String complete) {
+		rootLeaf.setComplete(complete);
+		return this;
+	}
+	public String getFilter() {
+		return rootLeaf.getFilter();
+	}
+
+	public TreePanel setFilter(String filter) {
+		rootLeaf.setFilter(filter);
 		return this;
 	}
 

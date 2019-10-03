@@ -19,6 +19,10 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	private static final long serialVersionUID = -7465823398383091843L;
 	private String text;
 	private String src;
+	private String success;
+	private String error;
+	private String complete;
+	private String filter;
 	private String template;
 	private String format;
 	private Boolean line;
@@ -152,5 +156,36 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 		this.tip = tip;
 		return this;
 	}
+	public String getSuccess() {
+		return success;
+	}
 
+	public GridLeaf setSuccess(String success) {
+		this.success = success;
+		return this;
+	}
+	public String getError() {
+		return error;
+	}
+
+	public GridLeaf setError(String error) {
+		this.error = error;
+		return this;
+	}
+	public String getComplete() {
+		return complete;
+	}
+
+	public GridLeaf setComplete(String complete) {
+		this.complete = complete;
+		return this;
+	}
+	public String getFilter() {
+		return filter;
+	}
+
+	public GridLeaf setFilter(String filter) {
+		this.filter = filter;
+		return this;
+	}
 }

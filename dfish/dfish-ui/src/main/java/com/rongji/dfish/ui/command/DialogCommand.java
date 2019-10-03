@@ -19,6 +19,10 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     private String template;
     private String preload;
     private String src;
+	private String success;
+	private String error;
+	private String complete;
+	private String filter;
     private Boolean prong;
 	public String getType() {
 		return "dialog";
@@ -150,6 +154,38 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 
 	public DialogCommand setPreload(String preload) {
 		this.preload = preload;
+		return this;
+	}
+	public String getSuccess() {
+		return success;
+	}
+
+	public DialogCommand setSuccess(String success) {
+		this.success = success;
+		return this;
+	}
+	public String getError() {
+		return error;
+	}
+
+	public DialogCommand setError(String error) {
+		this.error = error;
+		return this;
+	}
+	public String getComplete() {
+		return complete;
+	}
+
+	public DialogCommand setComplete(String complete) {
+		this.complete = complete;
+		return this;
+	}
+	public String getFilter() {
+		return filter;
+	}
+
+	public DialogCommand setFilter(String filter) {
+		this.filter = filter;
 		return this;
 	}
 	

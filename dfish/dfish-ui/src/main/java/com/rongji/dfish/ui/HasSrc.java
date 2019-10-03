@@ -34,4 +34,56 @@ public interface HasSrc<T extends HasSrc<T>> {
 	 * @return this
 	 */
 	T setTemplate(String template);
+
+
+	/**
+	 * 在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)
+	 * @param error javascript
+	 * @return this
+	 */
+	T setError(String error);
+
+	/**
+	 * 在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)
+	 * @return String
+	 */
+	String getError();
+
+	/**
+	 * 在得到服务器的响应后调用的函数(不论成功失败都会执行)。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)
+	 * @param complete javascript
+	 * @return this
+	 */
+	T setComplete(String complete);
+
+	/**
+	 * 在得到服务器的响应后调用的函数(不论成功失败都会执行)。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)
+	 * @return String
+	 */
+	String getComplete();
+	/**
+	 * 在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)
+	 * @param success  javascript
+	 * @return this
+	 */
+	T setSuccess(String success);
+
+	/**
+	 * 在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)
+	 * @return String
+	 */
+	String getSuccess();
+
+	/**
+	 * 在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例
+	 * @param filter javascript
+	 * @return this
+	 */
+	T setFilter(String filter);
+
+	/**
+	 * 在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例
+	 * @return String
+	 */
+	String getFilter();
 }

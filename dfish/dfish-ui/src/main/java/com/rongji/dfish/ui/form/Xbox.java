@@ -18,6 +18,10 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	 */
 	private static final long serialVersionUID = -953562902873398616L;
 	private String src;
+	private String success;
+	private String error;
+	private String complete;
+	private String filter;
 	private String template;
 	private Boolean transparent;
 	private String placeholder;
@@ -132,6 +136,38 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	 */
 	public Xbox setCancelable(Boolean cancelable) {
 		this.cancelable=cancelable;
+		return this;
+	}
+	public String getSuccess() {
+		return success;
+	}
+
+	public Xbox setSuccess(String success) {
+		this.success = success;
+		return this;
+	}
+	public String getError() {
+		return error;
+	}
+
+	public Xbox setError(String error) {
+		this.error = error;
+		return this;
+	}
+	public String getComplete() {
+		return complete;
+	}
+
+	public Xbox setComplete(String complete) {
+		this.complete = complete;
+		return this;
+	}
+	public String getFilter() {
+		return filter;
+	}
+
+	public Xbox setFilter(String filter) {
+		this.filter = filter;
 		return this;
 	}
 }

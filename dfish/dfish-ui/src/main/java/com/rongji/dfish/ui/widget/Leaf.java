@@ -58,6 +58,10 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     private String status;
     private Boolean folder;
     private Boolean escape;
+    private String success;
+    private String error;
+    private String complete;
+    private String filter;
 
     /**
      * 默认构造函数,因为树经常没有下级,但一般有属性,所默认创建属性的list
@@ -695,6 +699,38 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      */
     public Leaf setEscape(Boolean escape) {
         this.escape = escape;
+        return this;
+    }
+    public String getSuccess() {
+        return success;
+    }
+
+    public Leaf setSuccess(String success) {
+        this.success = success;
+        return this;
+    }
+    public String getError() {
+        return error;
+    }
+
+    public Leaf setError(String error) {
+        this.error = error;
+        return this;
+    }
+    public String getComplete() {
+        return complete;
+    }
+
+    public Leaf setComplete(String complete) {
+        this.complete = complete;
+        return this;
+    }
+    public String getFilter() {
+        return filter;
+    }
+
+    public Leaf setFilter(String filter) {
+        this.filter = filter;
         return this;
     }
 }

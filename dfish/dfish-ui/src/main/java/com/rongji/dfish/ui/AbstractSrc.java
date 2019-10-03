@@ -13,8 +13,14 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  *
  * @param <T> 类型
  */
-public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayout<T, Widget<?>> implements SingleContainer<T, Widget<?>> {
-
+public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayout<T, Widget<?>> implements SingleContainer<T, Widget<?>> ,LazyLoad<T>{
+	private String preload;
+	private String template;
+	private String src;
+	private String success;
+	private String error;
+	private String complete;
+	private String filter;
 	/**
 	 * 默认构造函数
 	 */
@@ -114,5 +120,63 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayo
 	@Override
 	public T add(Widget<?> widget) {
 		return setNode(widget);
+	}
+
+	public String getPreload() {
+		return preload;
+	}
+
+	public T setPreload(String preload) {
+		this.preload = preload;
+		return (T) this;
+	}
+	public String getTemplate() {
+		return template;
+	}
+
+	public T setTemplate(String template) {
+		this.template = template;
+		return (T) this;
+	}
+
+	public String getSrc() {
+		return src;
+	}
+
+	public T setSrc(String src) {
+		this.src = src;
+		return (T) this;
+	}
+	public String getSuccess() {
+		return success;
+	}
+
+	public T setSuccess(String success) {
+		this.success = success;
+		return (T) this;
+	}
+	public String getError() {
+		return error;
+	}
+
+	public T setError(String error) {
+		this.error = error;
+		return (T) this;
+	}
+	public String getComplete() {
+		return complete;
+	}
+
+	public T setComplete(String complete) {
+		this.complete = complete;
+		return (T) this;
+	}
+	public String getFilter() {
+		return filter;
+	}
+
+	public T setFilter(String filter) {
+		this.filter = filter;
+		return (T) this;
 	}
 }
