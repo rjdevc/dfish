@@ -10566,7 +10566,7 @@ Form = define.widget( 'form', {
 						continue I;
 					}
 				}
-				for ( var k = j; k < cols; k ++ )
+				for ( var k = j; k < j + td.colspan; k ++ )
 					if ( rp[ h ][ k ] ) rv += rp[ h ][ k ];
 			}
 			if ( j + td.colspan + rv > cols ) {

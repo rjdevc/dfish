@@ -1523,7 +1523,7 @@ Ajax = _createClass( {
 		},
 		send: function() {
 			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = _ajax_data( _cfg.ajax_data ), e = _ajax_data( x.data ),
-				f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
+				f = x.error != N ? x.error : _cfg.src_error, g = x.dataType || 'text', u = a, l, i, self = this;
 			d && e ? (e = d + '&' + e) : (d && (e = d));
 			// get url超过长度则转为post
 			if ( ( a.length > 2000 && a.indexOf( '?' ) > 0 ) ) {
@@ -1563,7 +1563,7 @@ Ajax = _createClass( {
 						} else
 							m = l.responseText;
 					} else
-						r = g || 'text';
+						r = g;
 			        if ( r ) {
 			        	self.errorCode = l.status;
 						if ( f !== F && (_ajax_httpmode || l.status) ) {
@@ -1579,7 +1579,7 @@ Ajax = _createClass( {
 				    	var t = x.filter;
 				    	t && (m = _fnapply( t, c, '$response,$ajax', [ m, self ] ));
 				    	self.response = m;
-						m == N ? (f && _fnapply( f, c, '$ajax', [ self ] )) : (b && b.call( c, m, self ));
+						(m || (g === 'text' && m == '')) && b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 					}
 					x.complete && x.complete.call( c, m, self );
