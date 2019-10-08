@@ -964,12 +964,18 @@ W = define( 'widget', function() {
 			var c = a == N || (a.isWidget ? a.x.open : a), o = this.$();
 			$.classAdd( o, 'f-none', ! c );
 			a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
+			this.x.display = !!c;
+			!!c && this.trigger( 'show' );
 			if ( ! b ) {
-				(this.ownerView.layout._passvalid || (this.ownerView.layout._passvalid = {}))[ o.id ] = !c;
+				var v = this.ownerView;
+				v && v.layout && ((v.layout._passvalid || (v.layout._passvalid = {}))[ o.id ] = !c);
 			}
 		},
 		isDisplay: function() {
 			return this.$().currentStyle.display != 'none';
+		},
+		isShow: function() {
+			return this.parentNode.type_frame ? this.parentNode.getFocus() == this : this.x.display !== F;
 		},
 		toggleDisplay: function() {
 			this.display( ! this.isDisplay() );
@@ -2079,7 +2085,7 @@ Xsrc = define.widget( 'xsrc', {
 	Listener: {
 		body: {
 			ready: function() { ! this.layout && this.x.src && this.load() },
-			framefocus: function() { ! this.layout && this.x.src && this.load() }
+			show: function() { ! this.layout && this.x.src && this.load() }
 		}
 	},
 	Prototype: {
@@ -2145,8 +2151,8 @@ Xsrc = define.widget( 'xsrc', {
 			if ( this.loading )
 				return;
 			this.showLoading();
-			var f = ! force && Frame.edge( this ), s = this.getSrc();
-			if ( ! f || f.parentNode.getFocus() == f ) {
+			var s = this.getSrc();
+			if ( force || this.isShow() ) {
 				this._load( tar, function( x ) {
 					if ( this.layout ) {
 						this.showLoading( F );
@@ -2730,7 +2736,7 @@ Frame = define.widget( 'frame', {
 						delete o.focusOwner;
 					this.focusNode = n;
 					n.focusOwner = this;
-					n.trigger( 'framefocus' );
+					n.trigger( 'show' );
 				}
 			}
 			return n;
@@ -5700,8 +5706,6 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		html: function() {
 			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
-			if ( p.x.dir === 'v' )
-				s.replace( /\bf-inbl\b/, 'f-bl' );
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
@@ -5712,7 +5716,8 @@ Checkbox = define.widget( 'checkbox', {
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + this.prop_title( t === T ? this.x.text : t, this.x.format ) +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>';
+				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>' +
+				(p.x.dir === 'v' && p[ p.length - 1 ] != this ? '<br>' : '');
 		}
 	}
 } ),
