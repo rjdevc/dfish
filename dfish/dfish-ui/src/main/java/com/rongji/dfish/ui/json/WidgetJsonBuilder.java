@@ -171,13 +171,18 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 							return ((Valignable<?>)w).getValign();
 						}});
 				}
-			} else if("text".equals(jbpg.getPropName())){
-                if(HasText.class.isAssignableFrom(clz)){
-                    methods.set(i, new WidgetStringPropAppender("text"){
-                        protected String getValue(Object w) {
-                            return ((HasText<?>)w).getText();
-                        }});
-                }
+//			} else if("text".equals(jbpg.getPropName())){
+//                if(HasText.class.isAssignableFrom(clz)){
+//                    methods.set(i, new WidgetStringPropAppender("text"){
+//                        protected String getValue(Object w) {
+//                        	Object o=((HasText<?>)w).getText();
+//                        	if(o instanceof String) {
+//								return (String)o;
+//							}else{
+//                        		return J.toJson(o);
+//							}
+//                        }});
+//                }
             } else if("scroll".equals(jbpg.getPropName())){
                 if(Scrollable.class.isAssignableFrom(clz)){
                     methods.set(i, new WidgetBooleanPropAppender("scroll"){

@@ -1,6 +1,9 @@
 package com.rongji.dfish.ui.widget;
 
+import com.rongji.dfish.ui.HasFormat;
 import com.rongji.dfish.ui.HasSrc;
+import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.PubHolder;
 import com.rongji.dfish.ui.layout.AbstractLayout;
 
 /**
@@ -8,7 +11,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @author DFish team
  *
  */
-public class Progress extends AbstractLayout<Progress, ProgressItem> implements HasSrc<Progress> {
+public class Progress extends AbstractLayout<Progress, ProgressItem> implements HasText<Progress>, HasSrc<Progress>,HasFormat<Progress>, PubHolder<Progress,ProgressItem> {
 	/**
 	 * 
 	 */
@@ -174,19 +177,10 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 //		return this;
 //	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @return String 格式化内容
-	 */
 	public String getFormat() {
 		return format;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @param format String 格式化内容
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public Progress setFormat(String format) {
 		this.format = format;
 		return this;

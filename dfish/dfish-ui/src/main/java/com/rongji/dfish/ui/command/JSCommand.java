@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.HasText;
  * @version 1.0
  * @since XMLTMPL 2.0
  */
-public class JSCommand extends AbstractCommand<JSCommand> implements HasText<JSCommand>{
+public class JSCommand extends AbstractCommand<JSCommand> {
 	/**
 	 * 
 	 */

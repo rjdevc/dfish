@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.widget;
 
 import java.util.List;
 
+import com.rongji.dfish.ui.HasFormat;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
@@ -16,7 +17,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractLayout<T, Widget<?>> implements MultiContainer<T, Widget<?>>,HasText<T>{
+public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractLayout<T, Widget<?>> implements MultiContainer<T, Widget<?>>,HasFormat<T> {
 
 	/**
 	 * 
@@ -399,19 +400,10 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 		return (T) this;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @return String 格式化内容
-	 */
 	public String getFormat() {
 		return format;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @param format String 格式化内容
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public T setFormat(String format) {
 		this.format = format;
 		return (T) this;
