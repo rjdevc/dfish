@@ -5571,8 +5571,6 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		html: function() {
 			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
-			if ( p.x.dir === 'v' )
-				s.replace( /\bf-inbl\b/, 'f-bl' );
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
@@ -5583,7 +5581,8 @@ Checkbox = define.widget( 'checkbox', {
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + this.prop_title( t === T ? this.x.text : t, this.x.format ) +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>';
+				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '<i class=f-vi></i></' + this.tagName + '>' +
+				(p.x.dir === 'v' && p[ p.length - 1 ] != this ? '<br>' : '');
 		}
 	}
 } ),
