@@ -10556,9 +10556,11 @@ Form = define.widget( 'form', {
 				}
 			}
 			if ( rp[ h ] ) {
-				for ( var k = j, m = j, l = Math.min( cols, j + td.colspan ); k < l; k ++ ) {
-					if ( rp[ h ][ k ] )
-						j += rp[ h ][ k ];
+				for ( var k = j, l = Math.min( cols, j + td.colspan ); k < l; k ++ ) {
+					if ( rp[ h ][ k ] ) {
+						j = k + rp[ h ][ k ];
+						k = j;
+					}
 				}
 			}
 			if ( j + td.colspan > cols ) {

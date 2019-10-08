@@ -60,10 +60,10 @@ define( {
         { name: 'elem', type: 'HTMLElement', remark: 'html元素对象' },
         { name: 'content', type: 'String', remark: 'html内容' }
       ] },
-      { name: '$.alert(text, [pos], [time], [id])', remark: '弹出一个信息窗口。', common: true, param: [
+      { name: '$.alert(text, [pos], [timeout], [id])', remark: '弹出一个信息窗口。', common: true, param: [
         { name: 'text', type: 'String', remark: '信息内容。' },
         { name: 'pos', type: 'String', remark: '弹出位置。可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
-        { name: 'time', type: 'Number', remark: '定时关闭，单位:秒。' },
+        { name: 'timeout', type: 'Number', remark: '定时关闭，单位:毫秒。' },
         { name: 'id', type: 'String', remark: '弹窗的ID。' }
       ] },
       { name: '$.confirm(text, yes, [no])', remark: '弹出一个确认提示窗口。', common: true, param: [
@@ -109,7 +109,7 @@ define( {
         { name: 'settings', type: 'Object', remark: '配置参数', param: [
           { name: 'alias', type: 'Object', remark: '新增的模块可在此注册别名' },
           { name: 'ajax_data', type: 'Function', remark: '以POST方式发送到服务器的数据。格式为 key:value。' },
-          { name: 'ajax_error', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
+          { name: 'auto_placeholder', type: 'Boolean', remark: '如果设为true，表单将自动填充placeholder。' },
           { name: 'cn_bytes', type: 'Number', remark: '一个汉字算几个字节。默认值为2。' },
           { name: 'debug', type: 'Boolean', remark: '开启调试模式。调试模式下按"Ctrl+鼠标右键"可查看view的信息' },
           { name: 'default_option', type: 'Object', remark: '每个 widget 类都可以定义默认样式，以 widget type 作为 key' },
@@ -127,6 +127,7 @@ define( {
             { name: 'theme', type: 'String', remark: '主题名。在皮肤目录下应有一个和主题名相同的目录，该目录里面有一个 "主题名.css"' },
             { name: 'color', type: 'String', remark: '颜色名。在主题目录下应有一个和颜色名相同的目录，该目录里面有一个 "颜色名.css"' }
           ] },
+          { name: 'src_error', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
           { name: 'src_filter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'validate_effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
           { name: 'validate_handler', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' },
@@ -975,6 +976,7 @@ define( {
       { name: 'appendcontent', type: 'String', remark: '附加到末尾的内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget的json对象)。', common: true },
       { name: 'cls', type: 'String', remark: '样式类名。', common: true },
       { name: 'data', type: 'Object', remark: '扩展数据。key:value键值对。在当前widget及子孙节点范围内的事件可以用变量 $key 的来获取值。', common: true },
+      { name: 'display', type: 'Boolean', remark: '是否显示。', common: true },
       { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。', common: true },
       { name: 'height', type: 'Number | String', remark: '高度。可以用数字, *, 百分比。如果设置为 -1, 就是自适应高度。', common: true },
       { name: 'hmin', type: 'Number', remark: '如果设置了 cls 参数，并且 cls 里定义了 padding border margin 这三种样式中的至少一种 ，那么就需要手工设置 hmin 以减去因这些样式额外增加的高度。<br>注: 如果在 style 参数里设置了这三种样式，系统会自动分析，一般不需要额外设置 hmin。', common: true },
@@ -1520,6 +1522,7 @@ define( {
           { name: 'keycls', type: 'String', remark: '关键词样式名。' },
           { name: 'matchlength', type: 'Number', remark: '切词长度。' }
         ] },
+        { name: 'labelwidth', type: 'Number', remark: '表单标题宽度。' },
         { name: 'minwidth', type: 'Number', remark: '列的最小宽度。只能用整数。' },
         { name: 'maxwidth', type: 'Number', remark: '列的最大宽度。只能用整数。' },
         { name: 'style', type: 'String', remark: '样式。' },
@@ -1974,8 +1977,27 @@ define( {
         { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。', optional: true },
         { name: 'target', type: 'String', remark: 'widget ID。重新装载数据后，只更新指定的节点。多个ID以逗号隔开。', optional: true },
         { name: 'fn', type: 'String', remark: '重载后执行的回调函数。', optional: true }
+      ] },
+      { name: 'template(template)', remark: '重新装载模板。', param: [
+        { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' }
       ] }
-	]
+	],
+    Event: [
+      { name: 'filter', remark: '数据下载后触发。支持 $response 变量作为返回数据对象。需返回(return)操作。', example: [
+          function() {
+          	// view加载完毕后显示path
+            return~
+            { type: 'view', id: 'myview', src: 'abc.sp', on: { filter: "return $response;" } };
+          }
+      ] },
+      { name: 'load', remark: '数据加载完毕并展示后触发。', example: [
+          function() {
+          	// view加载完毕后显示path
+            return~
+            { type: 'view', id: 'myview', src: 'abc.sp', on: { load: "alert(this.path)" } };
+          }
+      ] }
+    ]	
   },
   "view": {
   	title: 'view',
@@ -1985,15 +2007,6 @@ define( {
     Config: [
       { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
       { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。' }
-    ],
-    Event: [
-      { name: 'load', remark: '数据加载完毕并展示后触发。', example: [
-          function() {
-          	// view加载完毕后显示path
-            return~
-            { type: 'view', id: 'myview', src: 'abc.sp', on: { load: "alert(this.path)" } };
-          }
-      ] }
     ],
     Properties: [
       { name: 'path', type: 'String', remark: '路径。' },
@@ -2120,7 +2133,8 @@ define( {
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
       { name: 'valign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'node', type: 'Object', remark: '子节点。' },
-      { name: 'text', type: 'String', remark: '显示文本。' }
+      { name: 'text', type: 'String', remark: '显示文本。' },
+      { name: 'labelwidth', type: 'Number', remark: '表单标题宽度。' }
     ]
   },
   "album": {
@@ -2420,14 +2434,31 @@ define( {
   },
   "progress": {
   	title: 'progress',
+  	remark: '进度条集合。',
+  	extend: 'widget',
+    Config: [
+      { name: 'delay', type: 'Number', remark: '延迟访问 src 。单位:毫秒。' },
+      { name: 'src', type: 'String', remark: '访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。' },
+      { name: 'text', type: 'String', remark: '显示文本。' },
+      { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
+      { name: 'nodes', type: 'Array', remark: '子节点数组。' }
+    ],
+    Methods: [
+      { name: 'stop()', remark: '停止由 delay 参数引起的延迟。' },
+      { name: 'start()', remark: '继续 delay 参数的延迟执行。' }
+    ],
+    Classes: [
+      { name: '.w-progress', remark: '基础样式。' }
+    ]
+  },
+  "progress/item": {
+  	title: 'progress/item',
   	remark: '进度条。',
   	extend: 'widget',
     Config: [
-      { name: 'delay', type: 'Number', remark: '延迟访问 src 。单位:秒。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'percent', type: 'Number', remark: '进度值。范围从 0 到 100。' },
-      { name: 'src', type: 'String', remark: '访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。' },
       { name: 'hidepercent', type: 'Boolean', remark: '设置为true，隐藏进度数字。' },
       { name: 'text', type: 'String', remark: '显示文本。' }
     ],
@@ -3076,7 +3107,7 @@ define( {
             }
           }
       ] },
-      { name: 'authsrc', type: 'String', remark: '验证拼图是否正确的地址。支持变量 <b>$value</b><s>(值)</s> 和 <b>$token</b><s>(imgsrc返回的token)</s>。', example: [
+      { name: 'authsrc', type: 'String', remark: '验证拼图是否正确的地址。支持变量 <b>$response</b><s>(值)</s> 和 <b>$token</b><s>(imgsrc返回的token)</s>。', example: [
           function() {
             // authsrc 返回的数据格式
             return~
@@ -3220,7 +3251,7 @@ define( {
     Config: [
       { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'text', type: 'String', remark: '显示文本。如果有设置value而text为空，将会尝试自动从drop中匹配文本。' },
-      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
+      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
       { name: 'pick()', remark: '弹出对话框选择器。' },
@@ -3248,9 +3279,9 @@ define( {
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
       { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'multiple', type: 'Boolean', remark: '多选模式。' },
-      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'separator', type: 'String', remark: '文本选项分隔符。默认是逗号。' },
-      { name: 'src', type: 'String', remark: '在线匹配关键词的 view src。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
+      { name: 'src', type: 'String', remark: '在线匹配关键词的 view src。支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
       { name: 'search(text)', remark: '根据关键词弹出对话框选择器。' },
@@ -3279,10 +3310,10 @@ define( {
       { name: 'face', type: 'String', remark: '设置已选项的外观效果。可选值: <b>default</b>, <b>tag</b>' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'loadingtext', type: 'String', remark: '加载数据时显示的文本。' },
-      { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
-      { name: 'src', type: 'String | Dialog', ver: '3.1-', remark: '获取候选项的URL地址。可以是一个DialogWidget。支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'src', type: 'String | Dialog', ver: '3.1-', remark: '获取候选项的URL地址。可以是一个DialogWidget。支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'nobr', type: 'Boolean', remark: '设为 true，已选项不换行。' },
-      { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
           function() {
             // 设置每个已选项的宽度为 100，并绑定点击事件，显示选项的值
@@ -3305,6 +3336,7 @@ define( {
             { type: 'grid', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
           }
       ] },
+      { name: 'resetOptions()', remark: '重置选项。' },
       { name: 'text()', remark: '获取文本。' },
       { name: 'queryText()', remark: '获取正在输入的文本。' }
     ],
@@ -3375,7 +3407,7 @@ define( {
   	title: 'cmd',
   	remark: '命令集合。',
     Config: [
-      { name: 'delay', type: 'Number', remark: '延迟执行。单位:秒。' },
+      { name: 'delay', type: 'Number', remark: '延迟执行。单位:毫秒。' },
       { name: 'nodes', type: 'Array', remark: '命令集合的数组。' },
       { name: 'path', type: 'String', remark: '指定一个 view path，当前的命令集由这个 view 作为执行主体。' },
       { name: 'target', type: 'String', remark: '指定一个 widget id，当前的命令集由这个 widget 作为执行主体。path 和 target 同时指定时，相当于 VM( path ).find( target ).cmd( args ); ' }
@@ -3393,7 +3425,7 @@ define( {
   	remark: '发送一个 http 请求到服务器。服务端应当返回一个命令格式JSON。',
     Config: [
       { name: 'beforesend', type: 'String | Function', remark: '在发送请求之前调用的函数。如果返回false可以取消本次ajax请求。支持一个变量，<b>$ajax</b>(Ajax实例)' },
-      { name: 'complete', type: 'String | Function', remark: '在得到服务器的响应后调用的函数(不论成功失败都会执行)。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'complete', type: 'String | Function', remark: '在得到服务器的响应后调用的函数(不论成功失败都会执行)。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'data', type: 'String | Object', remark: 'post 数据。', example: [
           function() {
             // 对象类型的数据，不需要url编码
@@ -3409,11 +3441,11 @@ define( {
       { name: 'datatype', type: 'String', remark: '指定后台返回的数据格式。可选值: <b>json</b>(默认), <b>xml</b>, <b>text</b>' },
       { name: 'download', type: 'Boolean', remark: '设置为true，转为下载模式。' },
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
-      { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'headers', type: 'Object', remark: '一个额外的"{键:值}"对映射到请求一起发送。' },
       { name: 'src', type: 'String', remark: '路径。' },
       { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
-      { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$value</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'sync', type: 'Boolean', remark: '是否同步。' }
    ]
   },
@@ -3551,7 +3583,7 @@ define( {
       { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
       { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
       { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。' },
-      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' },
+      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:毫秒。' },
       { name: 'title', type: 'String', remark: '标题。如果有设置 template, 标题将显示在 template/title 中。' }
     ],
     Event: [
@@ -3612,7 +3644,7 @@ define( {
           }
       ] },
       { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
-      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' }
+      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:毫秒。' }
    ],
     Properties: [
       { name: 'commander', type: 'Widget', remark: '执行 menu 命令的 widget。即以 xxx.cmd() 方式打开的 menu, 它的 commander 就是 xxx。' },
@@ -3639,7 +3671,7 @@ define( {
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'icon', type: 'String', remark: '图标。' },
       { name: 'position', type: 'Number', remark: '对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
-      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' },
+      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:毫秒。' },
       { name: 'title', type: 'String', remark: '标题。' },
       { name: 'yes', type: 'CommandJSON | Function', remark: '点击"确定"执行的命令或函数。' }
     ],
@@ -3718,7 +3750,7 @@ define( {
             { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' }
           }
       ] },
-      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:秒。' },
+      { name: 'timeout', type: 'Number', remark: '定时关闭，单位:毫秒。' },
       { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。' },
       { name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }
