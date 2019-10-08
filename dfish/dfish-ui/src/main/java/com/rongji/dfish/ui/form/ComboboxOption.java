@@ -14,22 +14,21 @@ public class ComboboxOption extends AbstractWidget<ComboboxOption> implements Ha
 	 */
 	private static final long serialVersionUID = -8723811310007986652L;
 	private String text;
+	private Boolean escape;
 	private String value;
-	/**
-	 * 显示文本
-	 * @return text
-	 */
 	public String getText() {
 		return text;
 	}
-	/**
-	 * 显示文本
-	 * @param text 显示文本
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public ComboboxOption setText(String text) {
 		this.text = text;
 		return this;
+	}
+	public ComboboxOption setEscape(Boolean escape){
+		this.escape=escape;
+		return this;
+	}
+	public Boolean getEscape(){
+		return escape;
 	}
 	/**
 	 * 值

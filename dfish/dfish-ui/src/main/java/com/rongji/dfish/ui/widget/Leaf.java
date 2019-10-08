@@ -35,7 +35,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @version 2.0
  * @since XMLTMPL 1.0
  */
-public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>, HasSrc<Leaf>, HasFormat<Leaf> {
+public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>,HtmlContentHolder<Leaf>, HasSrc<Leaf>, HasFormat<Leaf> {
     private static final long serialVersionUID = -6246121270694425393L;
     private Boolean focus;
     private Boolean focusable;
@@ -644,19 +644,9 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
         return this;
     }
 
-    /**
-     * 用于显示文本是否需要转义,不设置默认是true
-     * @return Boolean
-     */
     public Boolean getEscape() {
         return escape;
     }
-
-    /**
-     * 用于显示文本是否需要转义,不设置默认是true
-     * @param escape Boolean
-     * @return 本身，这样可以继续设置其他属性
-     */
     public Leaf setEscape(Boolean escape) {
         this.escape = escape;
         return this;

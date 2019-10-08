@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.PubHolder;
 import com.rongji.dfish.ui.command.DialogCommand;
 import com.rongji.dfish.ui.layout.View;
 
@@ -11,13 +12,14 @@ import com.rongji.dfish.ui.layout.View;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>{
+public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>,PubHolder<T,ComboboxOption> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1444093499873660133L;
 	private String text;
+	private Boolean escape;
 	private Boolean strict;
 	private ComboboxOption pub;
 //	private String src;//在线匹配关键词的 view src。支持 $value 和 $text 变量。
@@ -49,22 +51,21 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 		super(name, label, value, suggest);
 	}
 
-	/**
-	 * 设置初始显示文本， 提示: 如果strict值为为真，而且value不为空，那么建议设置为 loading... 可以收到较好的效果
-	 * 
-	 * @param text String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public T setText(String text) {
 		this.text = text;
 		return (T) this;
 	}
-	
-	/**
-	 * @return the text
-	 */
+
 	public String getText() {
 		return text;
+	}
+
+	public T setEscape(Boolean escape) {
+		this.escape = escape;
+		return (T) this;
+	}
+	public Boolean getEscape(){
+		return escape;
 	}
 	
 	/**
@@ -86,10 +87,6 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 		return strict;
 	}
 
-	/**
-	 * Combobox的默认参数。
-	 * @return pub
-	 */
 	public ComboboxOption getPub() {
 		if (pub == null) {
 			pub = new ComboboxOption();
@@ -98,11 +95,6 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	}
 
 
-	/**
-	 * Combobox的默认参数。
-	 * @param pub ComboboxOption
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public T setPub(ComboboxOption pub) {
 		this.pub = pub;
 		return (T) this;

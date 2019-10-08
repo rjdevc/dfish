@@ -22,6 +22,7 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	private String thumbnail;
 	private Boolean error;
 	private String text;
+	private Boolean escape;
 	private String width;
 	private String height;
 
@@ -183,5 +184,13 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
     public String getType() {
 	    return null;
     }
+
+	public UploadItem setEscape(Boolean escape){
+		this.escape=escape;
+		return this;
+	}
+	public Boolean getEscape(){
+		return escape;
+	}
 
 }

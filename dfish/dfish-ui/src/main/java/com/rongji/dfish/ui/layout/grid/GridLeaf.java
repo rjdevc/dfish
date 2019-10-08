@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.layout.grid;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasFormat;
 import com.rongji.dfish.ui.HasSrc;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
  * GridTreeItem 是可折叠表格中的折叠项
@@ -19,6 +20,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	 */
 	private static final long serialVersionUID = -7465823398383091843L;
 	private String text;
+	private Boolean escape;
 	private String src;
 	private String success;
 	private String error;
@@ -164,5 +166,12 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	public GridLeaf setFilter(String filter) {
 		this.filter = filter;
 		return this;
+	}
+	public GridLeaf setEscape(Boolean escape){
+		this.escape=escape;
+		return this;
+	}
+	public Boolean getEscape(){
+		return escape;
 	}
 }

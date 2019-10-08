@@ -7,7 +7,7 @@ package com.rongji.dfish.ui;
  * @param <T> 当前对象类型
  * @since XMLTMPL 2.0
  */
-public interface HasText<T extends HasText<T>> {
+public interface HasText<T extends HasText<T>> extends HtmlContentHolder<T>{
     /**
      * 设置 显示文本text
      * @param text String

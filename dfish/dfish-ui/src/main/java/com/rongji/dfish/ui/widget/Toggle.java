@@ -3,13 +3,14 @@ package com.rongji.dfish.ui.widget;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasFormat;
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.HtmlContentHolder;
 
 /**
  * 展开收拢的工具条
  * @author DFish Team
  *
  */
-public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle> {
+public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle>,HtmlContentHolder<Toggle> {
 	/**
 	 * 
 	 */
@@ -144,19 +145,10 @@ public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle> 
 		return this;
 	}
 
-	/**
-	 * 用于显示文本是否需要转义,不设置默认是true
-	 * @return Boolean
-	 */
 	public Boolean getEscape() {
 		return escape;
 	}
 
-	/**
-	 * 用于显示文本是否需要转义,不设置默认是true
-	 * @param escape Boolean
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public Toggle setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
