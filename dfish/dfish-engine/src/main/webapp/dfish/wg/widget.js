@@ -10552,30 +10552,22 @@ Form = define.widget( 'form', {
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {
 				for ( var k = 0; k < td.rowspan - 1; k ++ ) {
-					(rp[ h + k + 1 ] || (rp[ h + k + 1 ] = {}))[ j ] = td.colspan;
+					(rp[ h + k + 1 ] || (rp[ h + k + 1 ] = {}))[ j ] = Math.min( cols, td.colspan );
 				}
 			}
-			var rv = 0;
 			if ( rp[ h ] ) {
-				for ( var k = j, l = Math.min( cols, j + td.colspan ); k < l; k ++ ) {
-					if ( rp[ h ][ k ] ) {
-						tr[ j ] = { colspan: k };
-						n.splice( i, 0, {} );
-						j = 0;
-						tr = {};
-						continue I;
-					}
+				for ( var k = j, m = j, l = Math.min( cols, j + td.colspan ); k < l; k ++ ) {
+					if ( rp[ h ][ k ] )
+						j += rp[ h ][ k ];
 				}
-				for ( var k = j; k < j + td.colspan; k ++ )
-					if ( rp[ h ][ k ] ) rv += rp[ h ][ k ];
 			}
-			if ( j + td.colspan + rv > cols ) {
+			if ( j + td.colspan > cols ) {
 				(tr = {})[ 0 ] = td;
-				j = td.colspan + rv;
+				j = td.colspan;
 				rows.push( tr );
 			} else {
 				tr[ j ] = td;
-				j += td.colspan + rv;
+				j += td.colspan;
 				if ( j >= cols ) {
 					j = 0;
 					tr = {};
