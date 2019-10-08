@@ -769,7 +769,7 @@
 .w-upload ._bbar{overflow:hidden}
 .w-upload.z-ds ._close,.w-upload.z-ds ._more{width:0;height:0;visibility:hidden}
 .w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{display:none}
-.w-upload ._nofiles{padding-top:5px;color:#999;display:none}
+.w-upload ._nofiles{color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
 
 .w-upload-image ._bbar,.w-upload-image ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
@@ -786,11 +786,13 @@
 
 .w-upload-file .w-upload-button{height:22px}
 .w-upload-file .w-upload-button.z-hv ._t{text-decoration:underline}
+.w-upload-file ._nofiles{padding-top:5px}
 
 .w-upload-image .w-upload-button{margin:2px 0;border:2px dashed #ccc}
 .w-upload-image .w-upload-button.z-hv{border-color:#72a9fc;color:#2678F2}
 .w-upload-image .w-upload-button ._m{display:none}
 .w-upload-image .w-upload-button.z-more ._c{margin-right:0}
+.w-upload-image ._nofiles{padding-bottom:1px}
 
 .w-upload-value-file{position:relative;height:30px;margin:5px 10px 5px 0px;cursor:pointer}
 .w-upload-value-file ._icon{float:left;width:30px;height:30px;border-radius:2px 0 0 2px}
