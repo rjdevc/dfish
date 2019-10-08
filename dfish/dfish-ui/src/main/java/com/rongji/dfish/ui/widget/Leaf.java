@@ -11,10 +11,7 @@ import java.util.Set;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.BeanUtil;
-import com.rongji.dfish.ui.HasSrc;
-import com.rongji.dfish.ui.MultiContainer;
-import com.rongji.dfish.ui.Statusful;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.Triplebox;
 import com.rongji.dfish.ui.layout.AbstractLayout;
@@ -38,14 +35,14 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @version 2.0
  * @since XMLTMPL 1.0
  */
-public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>, HasSrc<Leaf> {
+public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>, HasSrc<Leaf>, HasFormat<Leaf> {
     private static final long serialVersionUID = -6246121270694425393L;
     private Boolean focus;
     private Boolean focusable;
     private String icon;
     private String openicon;
     private Boolean open;
-    private Object text;
+    private String text;
     private Object tip;
     private String src;
     private String template;
@@ -81,16 +78,6 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
         this.setText(text);
     }
 
-    /**
-     * 构造函数,
-     *
-     * @param id   String
-     * @param text 显示文本，可以是控件
-     */
-    public Leaf(String id, Widget<?> text) {
-        super(id);
-        this.setText(text);
-    }
 
     /**
      * 在这棵树下找到第一个id为指定id的节点
@@ -354,7 +341,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      *
      * @return text
      */
-    public Object getText() {
+    public String getText() {
         return text;
     }
 
@@ -369,16 +356,6 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
         return this;
     }
 
-    /**
-     * 显示文本。
-     *
-     * @param text 显示文本可以控件
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Leaf setText(Widget<?> text) {
-        this.text = text;
-        return this;
-    }
 
     /**
      * 提示信息。设为true，提示信息将使用text参数的值。
@@ -507,26 +484,9 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      *
      * @return String
      */
-    @Transient
+    @Deprecated
     public String getTextAsString() {
-        if (text == null) {
-            return null;
-        }
-        if (text instanceof String) {
-            return (String) text;
-        } else if (text instanceof Widget) {
-            Widget<?> w = (Widget<?>) text;
-            try {
-                for (String propName : TEXT_PROP_NAMES) {
-                    Object o = BeanUtil.getProperty(w, propName);
-                    if (o != null) {
-                        return o.toString();
-                    }
-                }
-            } catch (Exception e) {
-            }
-        }
-        return null;
+       return getText();
     }
 
     /**

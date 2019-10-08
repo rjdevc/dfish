@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.HasFormat;
 
 /**
  * 进度项,用于展示进度情况
@@ -9,7 +10,7 @@ import com.rongji.dfish.ui.AbstractWidget;
  * @create 2019-09-30 14:31
  * @since 3.3
  */
-public class ProgressItem extends AbstractWidget<ProgressItem> {
+public class ProgressItem extends AbstractWidget<ProgressItem> implements HasFormat<ProgressItem> {
 
     private Number percent;
     private Boolean hidepercent;
@@ -102,20 +103,10 @@ public class ProgressItem extends AbstractWidget<ProgressItem> {
         this.escape = escape;
         return this;
     }
-
-    /**
-     * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-     * @return String
-     */
     public String getFormat() {
         return format;
     }
 
-    /**
-     * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-     * @param format String
-     * @return 本身，这样可以继续设置其他属性
-     */
     public ProgressItem setFormat(String format) {
         this.format = format;
         return this;

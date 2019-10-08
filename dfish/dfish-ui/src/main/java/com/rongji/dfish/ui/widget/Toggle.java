@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.HasFormat;
 import com.rongji.dfish.ui.HasText;
 
 /**
@@ -8,7 +9,7 @@ import com.rongji.dfish.ui.HasText;
  * @author DFish Team
  *
  */
-public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>{
+public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle> {
 	/**
 	 * 
 	 */
@@ -161,19 +162,10 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>{
 		return this;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @return String 格式化内容
-	 */
 	public String getFormat() {
 		return format;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @param format String 格式化内容
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public Toggle setFormat(String format) {
 		this.format = format;
 		return this;

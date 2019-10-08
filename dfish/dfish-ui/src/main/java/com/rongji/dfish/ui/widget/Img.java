@@ -1,9 +1,6 @@
 package com.rongji.dfish.ui.widget;
 
-import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.Valignable;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
 
 /**
@@ -11,7 +8,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  * @author DFish Team
  *
  */
-public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignable<Img> ,HasText<Img>{
+public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignable<Img> ,HasFormat<Img> {
 	/**
 	 * 
 	 */
@@ -330,19 +327,10 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 		return this;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @return String 格式化内容
-	 */
 	public String getFormat() {
 		return format;
 	}
 
-	/**
-	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-	 * @param format String 格式化内容
-	 * @return 本身，这样可以继续设置其他属性
-	 */
 	public Img setFormat(String format) {
 		this.format = format;
 		return this;
