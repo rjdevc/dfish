@@ -1,33 +1,29 @@
 package com.rongji.dfish.ui.widget;
 
-import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.layout.AbstractLayout;
-
-import java.beans.Transient;
-import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 进度条
  * @author DFish team
  *
  */
-public class Progress extends AbstractLayout<Progress, ProgressItem> {
+public class Progress extends AbstractLayout<Progress, ProgressItem> implements HasSrc<Progress> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5027456322715352343L;
 	private Long delay;
-	private String src;
 	private String text;
-//	private String dataFormat;
+	//	private String dataFormat;
 	private String format;
 	private ProgressItem pub;
+	private String src;
+	private String template;//http 格式的路径。
+	private String complete;//js语句，在获取服务器的响应数据后调用(不论成功失败都会执行)。
+	private String error;//	js语句，在获取服务器的响应数据失败后调用。
+	private String success;//	js语句，在成功获取服务器的响应数据后调用。
+	private String filter;//	js语句，执行该语句而不是执行命令
 
 	/**
 	 * 构造函数
@@ -205,6 +201,43 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> {
 
 	public Progress setPub(ProgressItem pub) {
 		this.pub = pub;
+		return this;
+	}
+
+
+	public String getTemplate() {
+		return template;
+	}
+	public Progress setTemplate(String template) {
+		this.template = template;
+		return this;
+	}
+	public String getComplete() {
+		return complete;
+	}
+	public Progress setComplete(String complete) {
+		this.complete = complete;
+		return this;
+	}
+	public String getError() {
+		return error;
+	}
+	public Progress setError(String error) {
+		this.error = error;
+		return this;
+	}
+	public String getSuccess() {
+		return success;
+	}
+	public Progress setSuccess(String success) {
+		this.success = success;
+		return this;
+	}
+	public String getFilter() {
+		return filter;
+	}
+	public Progress setFilter(String filter) {
+		this.filter = filter;
 		return this;
 	}
 }
