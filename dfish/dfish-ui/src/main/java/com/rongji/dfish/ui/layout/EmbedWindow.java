@@ -18,6 +18,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	//	private String align;
 //	private String valign;
 	private String text;
+	private Boolean escape;
 	private String src;
 	private Boolean scroll;
 	private String scrollClass;
@@ -97,5 +98,12 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	public EmbedWindow setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
+	}
+	public EmbedWindow setEscape(Boolean escape){
+		this.escape=escape;
+		return this;
+	}
+	public Boolean getEscape(){
+		return escape;
 	}
 }

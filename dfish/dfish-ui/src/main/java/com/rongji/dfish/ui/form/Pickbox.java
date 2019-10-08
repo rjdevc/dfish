@@ -12,6 +12,7 @@ import com.rongji.dfish.ui.command.DialogCommand;
 public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pickbox>{
 	private static final long serialVersionUID = 7493588393931087665L;
 	private String text;
+	private Boolean escape;
 	private DialogCommand drop;
 	/**
 	 * 显示文本
@@ -113,5 +114,11 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 		this.drop = drop;
 		return this;
 	}
-
+	public Pickbox setEscape(Boolean escape){
+		this.escape=escape;
+		return this;
+	}
+	public Boolean getEscape(){
+		return escape;
+	}
 }

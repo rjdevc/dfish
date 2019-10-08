@@ -23,6 +23,7 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	public static final String TARGET_NEXT = "next";
 	
 	private String text;
+	private Boolean escape;
 	private String icon;
 	private String openicon;
 	private String range;
@@ -136,5 +137,13 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	@Override
 	public String getType() {
 		return "split";
+	}
+
+	public Split setEscape(Boolean escape){
+		this.escape=escape;
+		return this;
+	}
+	public Boolean getEscape(){
+		return escape;
 	}
 }

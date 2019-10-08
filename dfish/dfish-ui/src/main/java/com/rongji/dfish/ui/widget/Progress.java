@@ -18,6 +18,7 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 	private static final long serialVersionUID = -5027456322715352343L;
 	private Long delay;
 	private String text;
+	private Boolean escape;
 	//	private String dataFormat;
 	private String format;
 	private ProgressItem pub;
@@ -234,4 +235,11 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 		this.filter = filter;
 		return this;
 	}
+    public Progress setEscape(Boolean escape){
+        this.escape=escape;
+        return this;
+    }
+    public Boolean getEscape(){
+        return escape;
+    }
 }
