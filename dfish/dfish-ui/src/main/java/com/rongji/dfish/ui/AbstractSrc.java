@@ -17,7 +17,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayo
 	private String preload;
 	private String template;
 	private String src;
-	private boolean sync;
+	private Boolean sync;
 	private String success;
 	private String error;
 	private String complete;
