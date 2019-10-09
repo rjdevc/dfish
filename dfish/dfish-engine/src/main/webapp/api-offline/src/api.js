@@ -86,7 +86,7 @@ function memberWidget( id, a, k, n, m ) {
 			}
 		}
 		return [ { type: 'html', text: '<div id=' + id + '-' + k + ' class="members-title" onclick="api.expand(this)"><h3>' + $.arrow( 'b2' ) + ' &nbsp;' + n + '</h3>' + (m ? '<div style="float:right;font-size:12px;color:#888;line-height:40px"><font color=#ff7921>*</font> 注: 蓝色字体是当前widget专有的属性事件方法，黑色字体是所有widget共有的属性事件方法。用法无区别，只是为了方便查阅而加以颜色区分。</div>' : '') + '</div>' },
-			{ type: 'grid', id: id + '-' + k + '-grid', face: 'cell', cls: 'detail-grid', "columns":[ {"field":"name", "width":"*", "format":"javascript:return api.format(this)"} ], tbody: { rows: b } } ];
+			{ type: 'grid', id: id + '-' + k + '-grid', face: 'cell', cls: 'detail-grid', escape: false, "columns":[ {"field":"name", "width":"*", "format":"javascript:return api.format(this)"} ], tbody: { rows: b } } ];
 	}
 }
 
