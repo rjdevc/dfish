@@ -126,13 +126,13 @@
 .w-progress ._gut{height:100%}
 .w-progress.z-hidepercent ._s{display:none}
 
-.w-vert,.w-horz,.f-oh{overflow:hidden}
+.f-oh{overflow:hidden}
 .w-vert.z-autosize,.w-horz.z-autosize{overflow:visible}
 .w-horz{white-space:nowrap}
 .w-horz.z-br{white-space:normal}
 .w-horz-vln{width:100%}
 
-.w-frame{position:relative;overflow:hidden}
+.w-frame{position:relative}
 
 /* grid */
 .w-grid{text-align:left;overflow:hidden}
