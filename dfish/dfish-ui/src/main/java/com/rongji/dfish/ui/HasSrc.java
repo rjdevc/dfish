@@ -23,6 +23,18 @@ public interface HasSrc<T extends HasSrc<T>> {
 	 * @return this
 	 */
 	T setSrc(String src);
+
+	/**
+	 * 加载 url 的时候使用同步模式，所属父节点(可能是xsrc/view/leaf等)动作将会等待 src内容装载完毕后再触发。
+	 * @return String
+	 */
+	Boolean getSync();
+	/**
+	 * 加载 url 的时候使用同步模式，所属父节点(可能是xsrc/view/leaf等)动作将会等待 src内容装载完毕后再触发。
+	 * @param sync Boolean
+	 * @return this
+	 */
+	T setSync(Boolean sync);
 	/**
 	 * 指定用这个编号所对应的模板 将src返回的内容解析成dfish的格式。
 	 * @return String

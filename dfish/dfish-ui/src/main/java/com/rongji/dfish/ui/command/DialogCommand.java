@@ -19,6 +19,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     private String template;
     private String preload;
     private String src;
+    private Boolean sync;
 	private String success;
 	private String error;
 	private String complete;
@@ -186,6 +187,15 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 
 	public DialogCommand setFilter(String filter) {
 		this.filter = filter;
+		return this;
+	}
+
+	public Boolean getSync() {
+		return sync;
+	}
+
+	public DialogCommand setSync(Boolean sync) {
+		this.sync = sync;
 		return this;
 	}
 	

@@ -17,6 +17,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayo
 	private String preload;
 	private String template;
 	private String src;
+	private boolean sync;
 	private String success;
 	private String error;
 	private String complete;
@@ -177,6 +178,14 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayo
 
 	public T setFilter(String filter) {
 		this.filter = filter;
+		return (T) this;
+	}
+	public Boolean getSync() {
+		return sync;
+	}
+
+	public T setSync(Boolean sync) {
+		this.sync = sync;
 		return (T) this;
 	}
 }

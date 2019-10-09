@@ -22,6 +22,7 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	private String text;
 	private Boolean escape;
 	private String src;
+	private Boolean sync;
 	private String success;
 	private String error;
 	private String complete;
@@ -173,5 +174,12 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	}
 	public Boolean getEscape(){
 		return escape;
+	}
+	public GridLeaf setSync(Boolean sync){
+		this.sync=sync;
+		return this;
+	}
+	public Boolean getSync(){
+		return sync;
 	}
 }

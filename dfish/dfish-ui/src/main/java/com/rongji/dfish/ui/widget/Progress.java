@@ -23,6 +23,7 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 	private String format;
 	private ProgressItem pub;
 	private String src;
+    private Boolean sync;
 	private String template;//http 格式的路径。
 	private String complete;//js语句，在获取服务器的响应数据后调用(不论成功失败都会执行)。
 	private String error;//	js语句，在获取服务器的响应数据失败后调用。
@@ -241,5 +242,13 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
     }
     public Boolean getEscape(){
         return escape;
+    }
+
+    public Progress setSync(Boolean sync){
+        this.sync=sync;
+        return this;
+    }
+    public Boolean getSync(){
+        return sync;
     }
 }

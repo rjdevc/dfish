@@ -19,6 +19,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	private static final long serialVersionUID = -953562902873398616L;
 	private String src;
 	private String success;
+	private Boolean sync;
 	private String error;
 	private String complete;
 	private String filter;
@@ -168,6 +169,15 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 
 	public Xbox setFilter(String filter) {
 		this.filter = filter;
+		return this;
+	}
+
+	public Boolean getSync() {
+		return sync;
+	}
+
+	public Xbox setSync(Boolean sync) {
+		this.sync = sync;
 		return this;
 	}
 }

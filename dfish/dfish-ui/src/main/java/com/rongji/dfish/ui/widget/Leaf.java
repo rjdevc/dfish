@@ -45,6 +45,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     private String text;
     private Object tip;
     private String src;
+    private Boolean sync;
     private String template;
     //    private Leaf pub;
     private Boolean hidetoggle;
@@ -681,6 +682,15 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
 
     public Leaf setFilter(String filter) {
         this.filter = filter;
+        return this;
+    }
+
+    public Boolean getSync() {
+        return sync;
+    }
+
+    public Leaf setSync(Boolean sync) {
+        this.sync = sync;
         return this;
     }
 }

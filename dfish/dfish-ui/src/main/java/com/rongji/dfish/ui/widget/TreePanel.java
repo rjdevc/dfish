@@ -382,4 +382,13 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 		return this;
 	}
 
+	public Boolean getSync() {
+		return rootLeaf.getSync();
+	}
+
+	public TreePanel setSync(Boolean sync) {
+		rootLeaf.setSync(sync);
+		return this;
+	}
+
 }
