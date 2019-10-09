@@ -35,7 +35,7 @@ _dfcls = (function() {
 	var r = {};
 	for ( var k in _dfopt ) {
 		if ( k.indexOf( '.' ) > 0 ) {
-			var a = $.strFrom( k, '.' ), b = $.strTo( k, '.' );
+			var a = $.strFrom( k, '.' ).replace( /\./g, ' ' ), b = $.strTo( k, '.' );
 			(r[ b ] || (r[ b ] = {}))[ a ] = _dfopt[ k ];
 		}
 	}
@@ -10587,7 +10587,10 @@ Form = define.widget( 'form', {
 		delete y.pub;
 		Grid.call( this, y, p );
 	},
-	Extend: 'grid'
+	Extend: 'grid',
+	Prototype: {
+		className: 'w-grid w-form'
+	}
 } );
 
 // 扩展全局方法
