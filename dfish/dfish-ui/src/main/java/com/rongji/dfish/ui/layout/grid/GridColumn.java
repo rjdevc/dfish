@@ -66,6 +66,7 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	String field;
 	String label;
 	String width;
+	Integer labelwidth;
 	Object format;
 //	String sortsrc;
 //	String sort;
@@ -711,6 +712,25 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 		return this;
 	}
 
+	/**
+	 * 表单标题宽度。
+	 * @return Integer
+	 * @since 3.3
+	 */
+	public Integer getLabelwidth() {
+		return labelwidth;
+	}
+
+	/**
+	 * 表单标题宽度。
+	 * @param labelwidth Integer
+	 * @return 本身，这样可以继续设置其他属性
+	 * @since 3.3
+	 */
+	public GridColumn setLabelwidth(Integer labelwidth) {
+		this.labelwidth = labelwidth;
+		return this;
+	}
 
 	/**
 	 * 格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值)。
