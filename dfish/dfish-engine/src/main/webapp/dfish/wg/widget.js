@@ -227,14 +227,12 @@ _f_val = function( a, b, r ) {
 	} else
 		r.push( d + '=' + $.urlEncode( v ) );
 },
-// @a -> widget|el, b -> frame focus?, c -> pos?
-_scrollIntoView = function( a, b, c ) {
+// @a -> widget|el, b -> top?, c -> left?, d -> frame focus?
+_scrollIntoView = function( a, b, c, d ) {
 	if ( a && (!a.isWidget || a.$()) ) {
-		b && (Frame.focus( a ), Toggle.focus( a ));
+		d && (Frame.focus( a ), Toggle.focus( a ));
 		var s = Scroll.get( a );
-		if ( s ) {
-			s.scrollTo( a, c === U ? 'auto' : c, 'auto' );
-		}
+		s && s.scrollTo( a, b || 'auto', c || 'auto' );
 	}
 },
 /*	beforesend 发送请求之前调用
@@ -682,8 +680,7 @@ W = define( 'widget', function() {
 		vm:  _view,
 		w: _widget,
 		e: _widgetEvent,
-		isCmd: function( a ) { return a && _cmdHooks[ a.type ] },
-		scrollIntoView: _scrollIntoView
+		isCmd: function( a ) { return a && _cmdHooks[ a.type ] }
 	},
 	Extend: Node,
 	Prototype: {
@@ -2174,7 +2171,7 @@ Xsrc = define.widget( 'xsrc', {
 				};
 			t && typeof t === _STR ? (t = _getTemplate( t, function() { o = T; e(); } )) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			(u = this.getSrc()) && this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, success: function( x ) {
+			(u = this.getSrc()) && this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
 				if ( this._success( x ) ) {
 					n = x; e();
 				}
@@ -2516,7 +2513,7 @@ View = define.widget( 'view', {
 							if ( (g = q[ i ].id) && e[ g ] ) { n = e[ g ]; break; }
 					}
 					var o = _all[ n.wid ];
-					_scrollIntoView( o, T );
+					_scrollIntoView( o, N, N, T );
 					a && o.trigger( 'error', [{ type: 'alert', text: n.text, id: $.alert_id }] );
 					h && o.trigger( 'error', [ o.validTip( n.text ) ] );
 				}
@@ -3694,7 +3691,11 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span><i class=f-vi></i></div>' : '') + '</div>';
+			var t = (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span><i class=f-vi></i></div>' : '');
+			if ( this.x.hr ) {
+				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
+			}
+			return this.html_icon() + '<div class="_c f-oh f-nobr">' + t + '</div>';
 		}
 	}
 } ),
@@ -4950,7 +4951,7 @@ _z_on = function( a ) {
 // /@ a -> valid object, b -> valid code, c -> args
 _form_err = function( a, b, c ) {
 	var t = this.x.label;
-	t && t.text && (t = t.text);
+	typeof t === _OBJ && (t = t.text || '');
 	return { wid: this.id, name: this.x.name, code: b, label: t, text: ( a && a[ b + 'text' ] ) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! t ? 'complete_required' : b ], t || Loc.field ].concat( c || [] ) ) || '' };
 },
 _valid_err = function( b, v ) {
@@ -6210,7 +6211,7 @@ Calendar = define.widget( 'calendar/date', {
 						 			_scrollIntoView( r[ k ] );
 						 			for ( i = 0, t = $.bcr( r[ k ] ).top - $.bcr( this[ k ].$() ).top; i < r.length; i ++ ) {
 						 				$.classAdd( r[ i ], 'z-on' );
-						 				i !== k && _scrollIntoView( r[ i ], N, 'top+' + t );
+						 				i !== k && _scrollIntoView( r[ i ], 'top+' + t );
 						 			}
 						 		},
 								click: function( e ) {
@@ -9085,7 +9086,7 @@ Leaf = define.widget( 'leaf', {
 			var n = this;
 			while ( (n = n.parentNode) && n.type === this.type )
 				n.toggle( T );
-			_scrollIntoView( this, T, a );
+			_scrollIntoView( this, a, N, T );
 		},
 		// triplebox 级联勾选
 		_triple: function() {
@@ -10553,7 +10554,8 @@ Form = define.widget( 'form', {
 			var e = n[ i ], h = rows.length - 1,
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
 			$.extend( td, x.pub, d && d.pub );
-			!td.colspan && (td.colspan = 4);
+			!td.colspan && (td.colspan = 1);
+			td.colspan < 0 && (td.colspan = cols + 1 + td.colspan);
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {
 				for ( var k = 0; k < td.rowspan - 1; k ++ ) {
