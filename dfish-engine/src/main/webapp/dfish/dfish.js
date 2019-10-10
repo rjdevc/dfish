@@ -1898,7 +1898,7 @@ var boot = {
 			} else {
 				// 把 <d:wg> 标签转换为 widget
 				for ( var i = 0, d = _tags( 'script' ), j, l = d.length; i < l; i ++ ) {
-					if ( d.getAttribute( 'type' ) === 'dfish/widget' && (eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) )) )
+					if ( d[ i ].getAttribute( 'type' ) === 'dfish/widget' && (eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) )) )
 						$.widget( j ).render( d[ i ], 'replace' );
 				}
 			}
