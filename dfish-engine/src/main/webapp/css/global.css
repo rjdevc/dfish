@@ -1,0 +1,122 @@
+/**
+ *  global.css
+ *	author	cmy
+ *  date	2013-4-2
+ *  
+ *  建议存放样式种类: 全局的字体、链接; 不同风格下变化不大的控件样式。变化可能比较大的控件样式应该放入 $theme.css
+ *  样式名不要以 w- 和 f- 开头，这两个是dfish引擎使用的样式头
+ *
+ */
+
+html,body{scrollbar-face-color:#efefe7;scrollbar-highlight-color:#fff;scrollbar-3dlight-color:#a5a5a5;scrollbar-darkshadow-color:#a5a5a5;scrollbar-shadow-color:#d6d6ce;scrollbar-arrow-color:#003184;scrollbar-track-color:#f3f2f1}
+.f-body,.w-input input,.w-input textarea,.w-input select{font:12px/1.5 "Microsoft yahei","Microsoft jhenghei","Segoe UI",tahoma,simsun;color:#000}
+img{border:0}
+a{color:#3169b5;text-decoration:none;cursor:pointer}
+a:hover{color:#0088e4;text-decoration:underline}
+.hand{cursor:pointer}
+.bold{font-weight:bold}
+
+.bg-white{background:#fff}
+.bg-form{background:#f7f8f9}
+.bg-top{background:#49a2de;}
+.bg-menu{background:#edf4f7}
+.bg-mod{background:#99a8b8}
+.bg-low{background:#f1f5f9}
+.bg-logo{background:#3498db}
+.bg-thead{background:#edf4f7}
+
+.bd-notop{border-top:0!important}
+.bd-noright{border-right:0!important}
+.bd-nobottom{border-bottom:0!important}
+.bd-noleft{border-left:0!important}
+
+.bd-onlytop{border-width:1px 0 0 0!important}
+.bd-onlyright{border-width:0 1px 0 0!important}
+.bd-onlybottom{border-width:0 0 1px 0!important}
+.bd-onlyleft{border-width:0 0 0 1px!important}
+
+.bd-title{border:1px solid #ddd}
+.bd-mod{border:1px solid #99a8b8}
+.bd-mod-hover:hover{border-color:#99a8b8}
+
+.wstab{width:110px;font-size:16px;color:white}
+.wstab.z-hv{background:#87c0e6}
+.wstab.z-on{background:#b0daf6}
+
+.maintabbar{background:#99a8b8}
+.maintab{background:#99a8b8;color:#fff;padding:0 15px;border-right:1px solid #fff}
+.maintab.z-on{background:#fff;color:#333}
+
+.modtabbar{background:#edf4f7}
+.modtabbar .w-buttonbar-line{display:block}
+.modtab{border-right:1px solid #d9e7f0}
+.modtab.z-on{background:#fff}
+.modtab.z-more ._c,.modtab .z-combo ._c{margin-right:13px}
+
+.linkbtn{margin-right:4px;cursor:pointer}
+.linkbtn ._c{padding-left:4px}
+.linkbtn ._t,.linkbtn ._i{padding-right:4px}
+.linkbtn.z-hv ._t{text-decoration:underline}
+
+.simplebtn{height:30px;border:1px solid #ccc;border-radius:2px}
+.simplebtn.z-hv{border-color:#3e89fa}
+.z-err .simplebtn{border-color:#f00}
+
+.td-coverline{height:1px;background:#fff;position:absolute;top:-1px;left:0;right:0;}
+
+.dlg-std{background:#fff;box-shadow:0 0 10px rgba(114, 182, 227, .7)}
+.f-css2 .dlg-std{border:1px solid #72b6e3}
+.dlg-std-head{background:#72b6e3;color:#fff}
+.dlg-std-title{font:normal 14px/40px "Microsoft yahei";padding-left:10px}
+.dlg-close:hover{background:#d00;cursor:pointer}
+.dlg-max:hover{background:#0093FF;cursor:pointer}
+.dlg-foot{position:relative;background:#f7fafc;border-top:1px solid #ebf1f5}
+.dlg-foot:before{content:" ";position:absolute;top:0;left:0;right:0;height:1px;background:#fff}
+
+.ico-folder,.ico-folder-open,.ico-file,.ico-dlg-close,.ico-dlg-max,.ico-logo{display:inline-block;width:16px;height:16px;background:url(g/g.png) no-repeat center center;vertical-align:middle}
+.ico-folder{background-position:-7px -7px}
+.ico-folder-open{background-position:-37px -7px}
+.ico-file{background-position:-67px -7px}
+.ico-dlg-close{background-position:-97px -7px}
+.ico-dlg-max{background-position:-127px -7px}
+.w-dialog.z-max .ico-dlg-max{background-position:-157px -7px}
+.ico-logo{width:130px;height:30px;background-image:url(g/logo-white.png)}
+
+.main-menu{border-color:#0baae4}
+.main-menu .w-menu-button.z-hv{background:#0baae4;color:#fff}
+
+/* <!--  CSS3 checkbox  
+.w-checkbox ._t,.w-triplebox ._t,.w-radio ._t{display:none}
+.f-css2 .w-checkbox ._t,.f-css2 .w-triplebox ._t,.f-css2 .w-radio ._t{display:inline-block}
+.w-checkbox ._t + label,.w-triplebox ._t + label,.w-radio ._t + label{background-color:#fff;border:1px solid #c1caca;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05);padding:8px;border-radius:5px;display:inline-block;position:relative;margin-right:3px;vertical-align:middle;-webkit-appearance:none;}
+.w-checkbox ._t:active + label,.w-triplebox ._t:active + label{box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
+.w-checkbox ._t:checked + label:after,.w-triplebox ._t:checked + label:after,.w-triplebox.z-half ._t + label:before{content:'\2714';position:absolute;top:0;left:0;color:#758794;width:100%;text-align:center;font-size:16px;vertical-align:text-top;line-height:1;}
+.w-triplebox.z-half ._t + label:before{content:'';}
+.w-triplebox.z-half ._t + label:after{content:'';position:absolute;background:#758794;top:50%;left:1px;right:1px;height:3px;margin-top:-1px;text-align:center;vertical-align:text-top;line-height:1;}
+.w-radio ._t + label{border-radius:50px}
+.w-radio ._t:checked + label{border:1px solid #adb8c0;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05),inset 15px 10px -12px rgba(255,255,255,0.1),inset 0px 0px 10px rgba(0,0,0,0.1);}
+.w-radio ._t:checked + label:after{content:' ';background:#758794;width:10px;height:10px;border-radius: 50px;position:absolute;top:3px;box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);text-shadow:0;left:3px;font-size:32px;}
+.w-radio ._t + label:active,.w-radio ._t:checked + label:active{box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px 1px 3px rgba(0,0,0,0.1);}
+  CSS3 checkbox  -->   */
+
+
+/* IOS的checkbox效果 */
+.box-switch ._t{display:none}
+.f-css2 .w-checkbox ._t{display:inline-block}
+.box-switch ._t + label{background-color:#fafbfa;border:1px solid #c1caca;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05);padding:12px 20px;border-radius:20px;display:inline-block;position:relative;margin-right:3px;vertical-align:middle;-webkit-appearance:none;}
+.box-switch ._t + label:after{content:'';position:absolute;top:0;left:0;border:1px solid #c1caca;background:#fff;width:0;padding:11px;border-radius:20px;transition: left .08s ease-in;}
+.box-switch ._t:checked + label{background:#4cda60;border-color:#4cda60}
+.box-switch ._t:checked + label:after{content:'';left:17px;width:0;border-color:#4cda60}
+
+
+/* 简单翻页 */
+.simplepage._prev em,.simplepage._next em{font-size:0}
+.simplepage._prev .f-arw,.simplepage._next .f-arw{display:inline-block}
+
+
+/* <!--  调整所有表单高度
+.w-input,.f-boxbtn{height:32px}
+.w-input ._t{line-height:32px}
+.w-combobox ._o{height:28px}
+   调整所有表单高度   -->  */
+
