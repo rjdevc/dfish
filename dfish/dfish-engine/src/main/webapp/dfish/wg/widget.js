@@ -2531,7 +2531,7 @@ View = define.widget( 'view', {
 			var c = a.isWidget ? [ a ] : this.find( a.split( ',' ) );
 			for ( var i = 0; i < c.length; i ++ ) {
 				if ( c[ i ].parentNode && c[ i ].parentNode.type_frame ) {
-					b && c[ i ].parentNode.view( c[ i ] );
+					b && c[ i ].parentNode.focus( c[ i ] );
 				} else {
 					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ ) {
 						r[ j ].disable( ! b );
@@ -2709,11 +2709,11 @@ Frame = define.widget( 'frame', {
 			return 'f-sub-frame' + ( a === this.focusNode ? '-on' : '' );
 		},
 		getFocus: function() {
-			return this.focusNode || (this.x.dft && this.ownerView.find( this.x.dft ));
+			return this.focusNode || (this.x.dft && this.ownerView.find( this.x.dft )) || this[ 0 ];
 		},
 		// @a -> wgid
 		// animate: scrollX(横向滚动),scrollY(纵向滚动),
-		view: function( a ) {
+		focus: function( a ) {
 			if ( this.$() ) {
 				var o = this.getFocus(), c = 'f-sub-frame', d = c + '-on',
 					n = a.isWidget ? a : this.ownerView.find( a );
