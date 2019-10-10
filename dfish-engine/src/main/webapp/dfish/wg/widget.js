@@ -2706,7 +2706,7 @@ Frame = define.widget( 'frame', {
 		type_frame: T,
 		className: 'w-frame',
 		childCls: function( a ) {
-			return 'f-sub-frame' + ( a === this.focusNode ? '-on' : '' );
+			return 'f-sub-frame' + (a === this.focusNode ? '-on' : '');
 		},
 		getFocus: function() {
 			return this.focusNode || (this.x.dft && this.ownerView.find( this.x.dft )) || this[ 0 ];
@@ -2755,7 +2755,6 @@ Ewin = define.widget( 'ewin', {
 			return this.$().contentWindow;
 		},
 		reload: function( a ) {
-			//this.getContentWindow().location.reload( a );
 			a && (this.x.src = a);
 			Q( this.$() ).replaceWith( this.html() );
 		},
@@ -5210,7 +5209,7 @@ AbsForm = define.widget( 'abs/form', {
 		},
 		prop_cls: function() {
 			var c = _proto.prop_cls.call( this );
-			return 'w-form w-' + this.type.replace( '/', '-' ) + (c ? ' ' + c: '') + (this.x.validate && this.x.validate.required ? ' z-required' : '') + ' f-nv f-nobr';
+			return 'w-f w-' + this.type.replace( '/', '-' ) + (c ? ' ' + c: '') + (this.x.validate && this.x.validate.required ? ' z-required' : '') + ' f-nv f-nobr';
 		},
 		prop_style: function() {
 			return this.x.style ? this.x.style : '';
@@ -5339,7 +5338,7 @@ Formgroup = define.widget( 'formgroup', {
 		},
 		prop_cls: function() {
 			var c = _proto.prop_cls.call( this );
-			return 'w-horz w-form w-formgroup f-nv' + (this.x.nobr !== T ? ' z-br' : '') + (c ? ' ' + c: '');
+			return 'w-horz w-f w-formgroup f-nv' + (this.x.nobr !== T ? ' z-br' : '') + (c ? ' ' + c: '');
 		},
 		html_nodes: function() {
 			return Horz.prototype.html_nodes.call( this );
@@ -5767,7 +5766,7 @@ Triplebox = define.widget( 'triplebox', {
 		}
 	},
 	Prototype: {
-		className: 'w-form w-checkbox',
+		className: 'w-f w-checkbox',
 		checkstate: function( a ) {
 			var b = this.$t().checked ? 1 : this.$t().indeterminate ? 2 : 0;
 			if ( a == N )
@@ -6007,7 +6006,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padrow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', ownproperty: T, snap: a.isFormWidget ? a.$( 'f' ) : a, cls: 'w-calendar-dialog w-form-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog', ownproperty: T, snap: a.isFormWidget ? a.$( 'f' ) : a, cls: 'w-calendar-dialog w-f-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -6519,7 +6518,7 @@ Muldate = define.widget( 'muldate', {
 			var h = (v.length + 1) * 30 + 2, c = this.list, d = c && c.isShow();
 			this.closePop();
 			if ( ! d ) 
-				this.list = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-dialog w-muldate-dialog w-form-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
+				this.list = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-dialog w-muldate-dialog w-f-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
 					node: { type: 'html', text: b.join( '' ), scroll: T }, on: { close: function() { this.commander.focus(F) } } } );
 			this.focus();
 		},
@@ -7113,7 +7112,7 @@ XBox = define.widget( 'xbox', {
 			} else {
 				this.focus();
 				this._dropper = this.exec( { type: 'dialog', ownproperty: T, minwidth: this.formWidth() + 2, maxwidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxheight: Math.max( $.height() - a.bottom, a.top ), wmin: 2, hmin: 2, indent: 1, id: this.id,
-					cls: 'w-xbox-dialog w-form-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
+					cls: 'w-xbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), pophide: T,
 					snaptype: 'v', snap: this.$( 'f' ), node: { type: 'html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
 					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
 			}
@@ -7209,7 +7208,7 @@ Imgbox = define.widget( 'imgbox', {
 					s.push( '<div class="w-imgbox-c f-inbl' + (d[ i ].value == v ? ' z-on' : '') + '"' + _event_zhover + ' onclick=' + evw + '.choose(' + i + ')>' + this.html_img( d[ i ] ) + '</div>' );
 				}
 				this.addClass( 'z-on' );
-				this.dg = this.add( { type: 'dialog', ownproperty: T, width: e, height: h, cls: 'w-imgbox-dialog w-form-dialog' + (this.txth ? ' z-tx': ''), snap: this.$( 'f' ), snaptype: g.type, pophide: T, indent: 1,
+				this.dg = this.add( { type: 'dialog', ownproperty: T, width: e, height: h, cls: 'w-imgbox-dialog w-f-dialog' + (this.txth ? ' z-tx': ''), snap: this.$( 'f' ), snaptype: g.type, pophide: T, indent: 1,
 					node: { type: 'html', scroll: T, text: s.join( '' ) + '</div>' }, on: { close: 'this.parentNode.removeClass("z-on z-m-' + g.mag + '")' } } ).render();
 				this.addClass( 'z-m-' + g.mag );
 			}
@@ -7494,7 +7493,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { ownproperty: T, cls: 'w-combobox-dialog w-form-dialog', indent: 1 };
+			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', indent: 1 };
 			$.extend( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
 			var o = { type: 'dialog', pophide: T, memory: T, snap: this.id + 'f', snaptype: 'v', wmin: 2, hmin: 2 },
@@ -9471,7 +9470,7 @@ GridRadio = define.widget( 'grid/radio', {
 		}
 	},
 	Prototype: {
-		className: 'w-form w-radio',
+		className: 'w-f w-radio',
 		tr: _grid_tr
 	}
 } ),

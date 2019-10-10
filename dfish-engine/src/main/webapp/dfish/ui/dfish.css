@@ -12,6 +12,8 @@
 .f-22{font-size:22px!important}
 .f-24{font-size:24px!important}
 
+.f-body{margin:0;overflow:hidden}
+
 .f-clearfix{zoom:1}
 .f-clearfix:after{content:" ";height:0;visibility:hidden;display:block;clear:both}
 
@@ -312,22 +314,22 @@
 .w-calendar-dialog .w-calendar-month ._td{width:40px}
 
 /* form */
-.w-form.z-ds ._t{color:#999}
-.w-form input,.w-form textarea{border:0;margin:0;padding:0;background:transparent;outline:none}
-.f-css2 .w-form input,.f-css2 .w-form textarea{background:url(g/space.gif)}
-.w-form textarea{vertical-align:middle}
+.w-f.z-ds ._t{color:#999}
+.w-f input,.w-f textarea{border:0;margin:0;padding:0;background:transparent;outline:none}
+.f-css2 .w-f input,.f-css2 .w-f textarea{background:url(g/space.gif)}
+.w-f textarea{vertical-align:middle}
 .w-formgroup .w-html{vertical-align:middle}
 
 .w-input{border:1px solid #ccc;background:#fff;position:relative;height:28px;text-align:left;}
 .w-input.z-ah,.w-input.z-ah ._t{height:auto}
 .w-input ._c{position:relative;padding-left:5px;height:100%;overflow:hidden;}
 .w-input ._t{width:100%;height:100%;line-height:28px;*height:28px}
-.w-form.z-on .w-input{border-color:#3298fe;box-shadow:none}
-.w-form.z-ds .w-input{background:#f1f1f1;box-shadow:none}
-.w-form.z-err .w-input{border-color:red;box-shadow:inset 0 0 2px #fbb}
-.w-form.z-trans .w-input,.w-form.z-trans.z-err .w-input{border-width:0;border-radius:0;box-shadow:none}
+.w-f.z-on .w-input{border-color:#3298fe;box-shadow:none}
+.w-f.z-ds .w-input{background:#f1f1f1;box-shadow:none}
+.w-f.z-err .w-input{border-color:red;box-shadow:inset 0 0 2px #fbb}
+.w-f.z-trans .w-input,.w-f.z-trans.z-err .w-input{border-width:0;border-radius:0;box-shadow:none}
 
-.w-form-dialog{border:1px solid #3298fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
+.w-f-dialog{border:1px solid #3298fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
 
 .w-input-placeholder{position:absolute;width:100%;height:100%;color:#a9a9a9;cursor:text}
 
@@ -469,8 +471,8 @@
 .f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;text-indent:5px;cursor:pointer}
 .f-boxbtn .f-arw-b2{border-width:5px;border-top-color:#99a8b8;*margin-top:3px}
 .f-boxbtn:hover .f-arw-b2{border-top-color:#546272}
-.w-form.z-ds .f-boxbtn{cursor:default}
-.w-form.z-ds .f-boxbtn:hover .f-arw-b2{border-top-color:#99a8b8}
+.w-f.z-ds .f-boxbtn{cursor:default}
+.w-f.z-ds .f-boxbtn:hover .f-arw-b2{border-top-color:#99a8b8}
 
 .w-checkboxgroup-align{vertical-align:middle}
 .w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding:5px 6px 5px 0;}
@@ -854,7 +856,7 @@
 .f-form-big .w-switch.z-checked ._o{margin-left:-29px}
 .f-form-big .w-switch.z-checked ._n{margin-left:12px;margin-right:40px}
 
-.f-form-transparent .w-input,.f-form-transparent .w-form.z-on .w-input{border-color:transparent}
+.f-form-transparent .w-input,.f-form-transparent .w-f.z-on .w-input{border-color:transparent}
 .f-form-transparent .w-input ._c,.f-form-transparent{padding-left:0}
 
 .f-opc0{opacity:0}
