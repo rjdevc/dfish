@@ -4834,7 +4834,7 @@ define.widget( 'deck/item', {
 	},
 	Extend: 'vert',
 	Prototype: {
-		className: 'w-vert f-rel',
+		className: 'w-vert f-rel f-oh',
 		x_childtype: function( t ) {
 			return t === 'button' ? 'deck/' + t : t;
 		}
