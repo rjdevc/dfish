@@ -38,39 +38,47 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	}
 
 
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 
-	public T setAlign(String align) {
+	@Override
+    public T setAlign(String align) {
 		this.align = align;
 		return (T)this;
 	}
 
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 
-	public T setValign(String valign) {
+	@Override
+    public T setValign(String valign) {
 		this.valign = valign;
 		return (T)this;
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return scroll;
 	}
 
-	public T setScroll(Boolean scroll) {
+	@Override
+    public T setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return (T)this;
 	}
 
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return scrollClass;
 	}
 
 
-	public T setScrollClass(String scrollClass) {
+	@Override
+    public T setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return (T)this;
 	}
@@ -123,7 +131,8 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	 */
 	private HiddenPart hiddens = new HiddenPart();
 
-	public T addHidden(String name,String value) {
+	@Override
+    public T addHidden(String name, String value) {
 		hiddens.addHidden(name, value);
 		return (T)this;
 	}
@@ -132,20 +141,24 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 //		return (T)this;
 //	}
 //
-	public T add(Hidden hidden) {
+	@Override
+    public T add(Hidden hidden) {
 		hiddens.add(hidden);
 		return (T)this;
 	}
 
-	public List<Hidden> getHiddens() {
+	@Override
+    public List<Hidden> getHiddens() {
 		return hiddens.getHiddens();
 	}
 
-	public List<String> getHiddenValue(String name) {
+	@Override
+    public List<String> getHiddenValue(String name) {
 		return hiddens.getHiddenValue(name);
 	}
 
-	public T removeHidden(String name) {
+	@Override
+    public T removeHidden(String name) {
 		hiddens.removeHidden(name);
 		return (T)this;
 	}

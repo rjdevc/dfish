@@ -126,7 +126,8 @@ public class DatePicker extends AbstractInput<DatePicker,Object> {
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "date";
 	}
 	@Override

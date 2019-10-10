@@ -4,9 +4,9 @@ import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.ui.command.AlertCommand;
-import com.rongji.dfish.ui.command.DialogCommand;
-import com.rongji.dfish.ui.layout.VerticalLayout;
+import com.rongji.dfish.ui.command.Alert;
+import com.rongji.dfish.ui.command.Dialog;
+import com.rongji.dfish.ui.layout.Vertical;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -120,13 +120,13 @@ public class BaseController extends BaseActionController {
 		return obj;
 	}
 	
-	protected AlertCommand buildWarnAlert(String alertMsg){
-		return new AlertCommand(alertMsg);
+	protected Alert buildWarnAlert(String alertMsg){
+		return new Alert(alertMsg);
 	}
 	
-	protected DialogCommand buildErrorDialog(Throwable t) {
+	protected Dialog buildErrorDialog(Throwable t) {
 		View view = buildErrorView(t);
-		DialogCommand dialog = new DialogCommand("error", "系统提示信息", null).setWidth(DialogCommand.WIDTH_LARGE).setHeight(DialogCommand.HEIGHT_LARGE);
+		Dialog dialog = new Dialog("error", "系统提示信息", null).setWidth(Dialog.WIDTH_LARGE).setHeight(Dialog.HEIGHT_LARGE);
 		dialog.setNode(view);
 		return dialog;
 	}
@@ -187,7 +187,7 @@ public class BaseController extends BaseActionController {
 	protected View buildDialogView() {
 		View view = new View();
 		
-		VerticalLayout root = new VerticalLayout(null);
+		Vertical root = new Vertical(null);
 		view.add(root);
 		
 		Html main = new Html(null).setId(ID_DIALOG_BODY).setScroll(true).setStyle("padding:10px 20px;").setHmin(20).setWmin(40);

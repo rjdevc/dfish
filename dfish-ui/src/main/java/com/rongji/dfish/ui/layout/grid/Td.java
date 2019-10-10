@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.layout.grid;
 
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.json.JsonWrapper;
-import com.rongji.dfish.ui.layout.GridLayout;
+import com.rongji.dfish.ui.layout.Grid;
 import com.rongji.dfish.ui.widget.Html;
 /**
  *  Td 表示一个Grid的单元格
@@ -46,13 +46,13 @@ public class Td extends AbstractTd<Td> implements JsonWrapper<Object>{
 		super();
 		copyProperties(this,td);
 	}
-	protected GridLayout owner;
+	protected Grid owner;
 
-	public GridLayout owner() {
+	public Grid owner() {
 		return owner;
 	}
 
-	public Td owner(GridLayout owner) {
+	public Td owner(Grid owner) {
 		this.owner = owner;
 		return this;
 	}

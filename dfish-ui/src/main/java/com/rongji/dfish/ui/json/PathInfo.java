@@ -52,7 +52,8 @@ public class PathInfo {
 	public void setPropValue(Object propValue) {
 		this.propValue = propValue;
 	}
-	public String toString(){
+	@Override
+    public String toString(){
 		StringBuilder sb=new StringBuilder();
 
 		sb.append("{\"");
@@ -77,7 +78,7 @@ public class PathInfo {
 			if(!showed){
 				if(propValue instanceof HasId){
 					String id=((HasId<?>) propValue).getId();
-					if(id!=null&&!id.equals("")){
+					if(id!=null&&!"".equals(id)){
 						showed=true;
 						sb.append(",id=");
 						sb.append(id);
@@ -87,7 +88,7 @@ public class PathInfo {
 			if(!showed){
 				if(propValue instanceof FormElement){
 					String name=((FormElement<?, ?>) propValue).getName();
-					if(name!=null&&!name.equals("")){
+					if(name!=null&&!"".equals(name)){
 						showed=true;
 						sb.append(",name=");
 						sb.append(name);
@@ -97,7 +98,7 @@ public class PathInfo {
 			if(!showed){
 				if(propValue instanceof HasText){
 					String text=((HasText<?>) propValue).getText();
-					if(text!=null&&!text.equals("")){
+					if(text!=null&&!"".equals(text)){
 						showed=true;
 						sb.append(",text=");
 						sb.append(text);

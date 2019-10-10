@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.rongji.dfish.ui.widget.GridWrapper;
 import org.junit.Test;
 
-import com.rongji.dfish.ui.Combo;
+import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.DFishUITestCase;
-import com.rongji.dfish.ui.Highlight;
-import com.rongji.dfish.ui.json.J;
-import com.rongji.dfish.ui.layout.GridLayout;
+import com.rongji.dfish.ui.widget.Highlight;
+import com.rongji.dfish.ui.layout.Grid;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Td;
 import com.rongji.dfish.ui.widget.Html;
@@ -19,10 +19,10 @@ import com.rongji.dfish.ui.widget.Html;
 public class GridPanelTest extends DFishUITestCase {
 
 	
-	protected GridPanel getWidget(){
-		GridPanel gp=new GridPanel("f");
+	protected GridWrapper getWidget(){
+		GridWrapper gp=new GridWrapper("f");
 		gp.setStyle("margin:10px;margin-bottom:0;");
-		gp.getPub().setHeight(40).setOn(GridPanel.EVENT_DBLCLICK, "dblclick();");
+		gp.getPub().setHeight(40).setOn(GridWrapper.EVENT_DBLCLICK, "dblclick();");
 		gp.addColumn(GridColumn.hidden(0, "id"));
 		gp.addColumn(GridColumn.gridTriplebox("id", "40"));
 		gp.addColumn(GridColumn.text(1, "C1","消息","*"));
@@ -40,7 +40,7 @@ public class GridPanelTest extends DFishUITestCase {
 	}
 	@Test
 	public void comboTest(){
-		GridPanel grid = new GridPanel("my");
+		GridWrapper grid = new GridWrapper("my");
 		grid.setCls("x-grid-odd");
 		grid.setCombo(new Combo().setField(new Combo.Field("uid", "un").setSearch("py,jp")).setKeepshow(false));
 		grid.setGridData(Arrays.asList(new String[][]{
@@ -58,8 +58,8 @@ public class GridPanelTest extends DFishUITestCase {
 	
 	@Test
 	public void getPrototypeTest(){
-		GridPanel gp=getWidget();
-		GridLayout gl=gp.getPrototype();
+		GridWrapper gp=getWidget();
+		Grid gl=gp.getPrototype();
 		gl.getTbody().getRows().get(0).setCls("tr-0");
 		Td  td=new Td();
 		gl.getTbody().getRows().get(0).setData("C1",td );
@@ -71,7 +71,7 @@ public class GridPanelTest extends DFishUITestCase {
 	
 	@Test
 	public void testGridColumn() {
-		GridPanel grid = new GridPanel(null);
+		GridWrapper grid = new GridWrapper(null);
 		
 		
 		int dataColumnIndex = 0;

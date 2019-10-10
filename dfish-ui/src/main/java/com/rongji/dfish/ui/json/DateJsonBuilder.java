@@ -11,7 +11,8 @@ import java.util.Stack;
 public class DateJsonBuilder extends  AbstractJsonBuilder {
 	private static final SimpleDateFormat SDF=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+    public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		sb.append('"');
 		synchronized (SDF) {
 			sb.append(SDF.format((java.util.Date)o));

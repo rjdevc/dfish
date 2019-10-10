@@ -8,7 +8,7 @@ import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.MultiContainer;
 /**
  * AddCommand为增加一个元素的命令的基础格式，一般增加元素分为
- * {@link AppendCommand},{@link PrependCommand},{@link AfterCommand}和{@link BeforeCommand}
+ * {@link Append},{@link Prepend},{@link After}和{@link Before}
  * @author DFish Team
  * @version 1.0
  * @param <T> 当前对象类型

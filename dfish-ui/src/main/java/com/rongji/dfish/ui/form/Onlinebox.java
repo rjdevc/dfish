@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 
-import com.rongji.dfish.ui.command.DialogCommand;
+import com.rongji.dfish.ui.command.Dialog;
 
 /**
  * <p>
@@ -47,11 +47,12 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 	 * @param value 初始值
 	 * @param suggest 候选项的弹窗命令
 	 */
-	public Onlinebox(String name, String label, String value, DialogCommand suggest) {
+	public Onlinebox(String name, String label, String value, Dialog suggest) {
 		super(name, label, value, suggest);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "onlinebox";
 	}
 

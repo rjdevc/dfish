@@ -2,12 +2,10 @@ package com.rongji.dfish.ui.widget;
 
 import java.util.List;
 
-import com.rongji.dfish.ui.AtExpression;
-import com.rongji.dfish.ui.Combo;
+import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.HiddenContainer;
 import com.rongji.dfish.ui.HiddenPart;
-import com.rongji.dfish.ui.Highlight;
 import com.rongji.dfish.ui.HtmlContentHolder;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.PubHolder;
@@ -16,7 +14,6 @@ import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.Triplebox;
 import com.rongji.dfish.ui.layout.AbstractLayout;
-import com.rongji.dfish.ui.layout.grid.GridLeaf;
 
 /**
  * TreePanel 树的面板 这个面板里面可以防止树节点Leaf
@@ -82,42 +79,50 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "tree";
 	}
 
-	public Leaf getPub() {
+	@Override
+    public Leaf getPub() {
 		if(pub==null){
 			pub=new Leaf();
 		}
 		return pub;
 	}
 
-	public TreePanel setPub(Leaf pub) {
+	@Override
+    public TreePanel setPub(Leaf pub) {
 		this.pub = pub;
 		return this;
 	}
 
+    @Override
     public TreePanel setScroll(Boolean scroll) {
     	this.scroll = scroll;
 	    return this;
     }
 
+    @Override
     public Boolean getScroll() {
 	    return this.scroll;
     }
 
+    @Override
     public TreePanel setScrollClass(String scrollClass) {
     	this.scrollClass = scrollClass;
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return this.scrollClass;
     }
 	
     HiddenPart hiddens = new HiddenPart();
-    public TreePanel addHidden(String name,String value) {
+    @Override
+    public TreePanel addHidden(String name, String value) {
     	hiddens.addHidden(name,value);
 		return this;
     }
@@ -126,19 +131,23 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 //		return this;
 //    }
 
+    @Override
     public TreePanel add(Hidden hidden) {
     	hiddens.add(hidden);
 		return this;
     }
 
+    @Override
     public List<Hidden> getHiddens() {
 	    return hiddens.getHiddens();
     }
 
+    @Override
     public List<String> getHiddenValue(String name) {
 	    return hiddens.getHiddenValue(name);
     }
 
+    @Override
     public TreePanel removeHidden(String name) {
     	hiddens.removeHidden(name);
 	    return this;
@@ -149,7 +158,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @return Boolean
 	 * @see #getPub()
 	 */
-	@Deprecated
+	@Override
+    @Deprecated
 	public Boolean getEscape() {
 		return getPub().getEscape();
 	}
@@ -159,7 +169,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @return 本身，这样可以继续设置其他属性
 	 * @see #getPub()
 	 */
-	public TreePanel setEscape(Boolean escape) {
+	@Override
+    public TreePanel setEscape(Boolean escape) {
 		getPub().setEscape(escape);
 		return this;
 	}
@@ -224,7 +235,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * 设置树的src
 	 * @return String
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return rootLeaf.getSrc();
 	}
 
@@ -233,7 +245,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TreePanel setSrc(String src) {
+	@Override
+    public TreePanel setSrc(String src) {
 		rootLeaf.setSrc(src);
 		return this;
 	}
@@ -349,44 +362,54 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 		return this;
 	}
 
-	public String getSuccess() {
+	@Override
+    public String getSuccess() {
 		return rootLeaf.getSuccess();
 	}
 
-	public TreePanel setSuccess(String success) {
+	@Override
+    public TreePanel setSuccess(String success) {
 		rootLeaf.setSuccess(success);
 		return this;
 	}
-	public String getError() {
+	@Override
+    public String getError() {
 		return rootLeaf.getError();
 	}
 
-	public TreePanel setError(String error) {
+	@Override
+    public TreePanel setError(String error) {
 		rootLeaf.setError(error);
 		return this;
 	}
-	public String getComplete() {
+	@Override
+    public String getComplete() {
 		return rootLeaf.getComplete();
 	}
 
-	public TreePanel setComplete(String complete) {
+	@Override
+    public TreePanel setComplete(String complete) {
 		rootLeaf.setComplete(complete);
 		return this;
 	}
-	public String getFilter() {
+	@Override
+    public String getFilter() {
 		return rootLeaf.getFilter();
 	}
 
-	public TreePanel setFilter(String filter) {
+	@Override
+    public TreePanel setFilter(String filter) {
 		rootLeaf.setFilter(filter);
 		return this;
 	}
 
-	public Boolean getSync() {
+	@Override
+    public Boolean getSync() {
 		return rootLeaf.getSync();
 	}
 
-	public TreePanel setSync(Boolean sync) {
+	@Override
+    public TreePanel setSync(Boolean sync) {
 		rootLeaf.setSync(sync);
 		return this;
 	}

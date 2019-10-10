@@ -7,13 +7,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.rongji.dfish.base.Page;
-import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.DateUtil;
 import com.rongji.dfish.framework.plugin.exception.entity.PubExptRecord;
 import com.rongji.dfish.framework.plugin.exception.service.ExceptionManager;
 import com.rongji.dfish.framework.plugin.exception.service.ExceptionTypeInfo;
-import com.rongji.dfish.ui.layout.GridLayout;
-import com.rongji.dfish.ui.layout.VerticalLayout;
+import com.rongji.dfish.ui.layout.Grid;
+import com.rongji.dfish.ui.layout.Vertical;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.GridLeaf;
@@ -25,7 +24,7 @@ import com.rongji.dfish.ui.widget.Toggle;
 @Component
 public class ExceptionViewerView {
 	public View buildListView(List<PubExptRecord> recs, Page page, Long typeId) {
-		VerticalLayout root=new VerticalLayout("f_root");
+		Vertical root=new Vertical("f_root");
 		View view=new View().setNode(root);
 		String titleText="<a href='javascript:;' onclick=\"VM(this).reload('exceptionViewer/changeLock')\" style=\"float:right\">"+(ExceptionManager.getInstance().isEnabled()?"[关闭]":"[打开]")+"</a>"+
 				"查询所有的异常记录<p style=\"float:right\">&nbsp;&nbsp;&nbsp;&nbsp;</p><a href='javascript:;' onclick=\"VM(this).reload('exceptionViewer/deleteAllExpt')\"  style=\"float:right\">[清除所有记录]</a>"
@@ -38,7 +37,7 @@ public class ExceptionViewerView {
 		}
 		root.add(new Html(titleText).setStyle("margin:0 6px;border :1px dashed #CCC;background-color:#EEE;padding:8px 12px;"),"40");
 		
-		GridLayout grid=buildGrid(recs);
+		Grid grid=buildGrid(recs);
 		root.add(grid,"*");
 		
 		PageBar pageBar=buildPageBar(page,typeId);
@@ -53,10 +52,10 @@ public class ExceptionViewerView {
 		pageBar.setPage(page);
 		return pageBar;
 	}
-	public GridLayout buildGrid(List<PubExptRecord>recs) {
+	public Grid buildGrid(List<PubExptRecord>recs) {
 		ExceptionManager ep=ExceptionManager.getInstance();
-		GridLayout grid=new GridLayout("f_grid");
-		grid.setFace(GridLayout.FACE_DOT);
+		Grid grid=new Grid("f_grid");
+		grid.setFace(Grid.FACE_DOT);
 		Tr thead=new Tr();
 		grid.getThead().add(thead);
 		thead.setData("C1", "时间");

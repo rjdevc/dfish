@@ -148,7 +148,7 @@ public class Option implements Statusful<Option> {
 	 * @return Object
 	 */
 	public Object getData(String key) {
-		if (key == null || key.equals("")) {
+		if (key == null || "".equals(key)) {
 			return null;
 		}
 		if(data == null) {
@@ -163,7 +163,7 @@ public class Option implements Statusful<Option> {
 	 * @return Object
 	 */
 	public Object removeData(String key) {
-		if (key == null || key.equals("")) {
+		if (key == null || "".equals(key)) {
 			return null;
 		}
 		if(data == null) {

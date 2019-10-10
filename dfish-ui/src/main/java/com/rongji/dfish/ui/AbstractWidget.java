@@ -44,6 +44,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getGid() {
         return gid;
     }
@@ -54,6 +55,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param gid String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setGid(String gid) {
         this.gid = gid;
         return (T) this;
@@ -64,6 +66,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getWidth() {
         return width;
     }
@@ -74,6 +77,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param width String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setWidth(String width) {
         this.width = width;
         return (T) this;
@@ -84,6 +88,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getHeight() {
         return height;
     }
@@ -94,6 +99,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param height String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setHeight(String height) {
         this.height = height;
         return (T) this;
@@ -105,6 +111,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param width String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setWidth(int width) {
         this.width = String.valueOf(width);
         return (T) this;
@@ -116,6 +123,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param height String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setHeight(int height) {
         this.height = String.valueOf(height);
         return (T) this;
@@ -126,6 +134,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public Integer getWmin() {
         return wmin;
     }
@@ -138,6 +147,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param wmin Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setWmin(Integer wmin) {
         this.wmin = wmin;
         return (T) this;
@@ -148,6 +158,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public Integer getHmin() {
         return hmin;
     }
@@ -160,13 +171,15 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param hmin int
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setHmin(Integer hmin) {
         this.hmin = hmin;
         return (T) this;
     }
 
+    @Override
     public Object getData(String key) {
-        if (key == null || key.equals("")) {
+        if (key == null || "".equals(key)) {
             return null;
         }
         if (data == null) {
@@ -175,8 +188,9 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return data.get(key);
     }
 
+    @Override
     public Object removeData(String key) {
-        if (key == null || key.equals("")) {
+        if (key == null || "".equals(key)) {
             return null;
         }
         if (data == null) {
@@ -185,6 +199,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return data.remove(key);
     }
 
+    @Override
     public T setData(String key, Object value) {
         if (data == null) {
             data = new LinkedHashMap<String, Object>();
@@ -193,6 +208,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return (T) this;
     }
 
+    @Override
     public Map<String, Object> getData() {
         return data;
     }
@@ -202,6 +218,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMaxwidth() {
         return maxwidth;
     }
@@ -212,6 +229,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxwidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxwidth(int maxwidth) {
         this.maxwidth = String.valueOf(maxwidth);
         return (T) this;
@@ -223,6 +241,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxwidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxwidth(String maxwidth) {
         this.maxwidth = maxwidth;
         return (T) this;
@@ -233,6 +252,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMaxheight() {
         return maxheight;
     }
@@ -243,6 +263,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxheight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxheight(String maxheight) {
         this.maxheight = maxheight;
         return (T) this;
@@ -254,6 +275,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxheight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxheight(int maxheight) {
         this.maxheight = String.valueOf(maxheight);
         return (T) this;
@@ -264,6 +286,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMinwidth() {
         return minwidth;
     }
@@ -274,6 +297,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minwidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinwidth(int minwidth) {
         this.minwidth = String.valueOf(minwidth);
         return (T) this;
@@ -285,6 +309,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minwidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinwidth(String minwidth) {
         this.minwidth = minwidth;
         return (T) this;
@@ -295,6 +320,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMinheight() {
         return minheight;
     }
@@ -305,6 +331,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minheight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinheight(String minheight) {
         this.minheight = minheight;
         return (T) this;
@@ -316,6 +343,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minheight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinheight(int minheight) {
         this.minheight = String.valueOf(minheight);
         return (T) this;
@@ -326,6 +354,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getStyle() {
         return style;
     }
@@ -336,6 +365,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param style String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setStyle(String style) {
         this.style = style;
         return (T) this;
@@ -346,6 +376,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getCls() {
         return cls;
     }
@@ -356,6 +387,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param cls String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setCls(String cls) {
         this.cls = cls;
         return (T) this;
@@ -367,6 +399,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param cls 样式
      * @return this
      */
+    @Override
     public T addCls(String cls) {
         // FIXME 这里性能可能有问题
         if (Utils.notEmpty(cls)) {
@@ -389,6 +422,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param cls 样式
      * @return this
      */
+    @Override
     public T removeCls(String cls) {
         if (Utils.notEmpty(cls) && Utils.notEmpty(this.cls)) {
             cls = cls.trim();
@@ -429,6 +463,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getBeforecontent() {
         return beforecontent;
     }
@@ -439,6 +474,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param beforecontent String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setBeforecontent(String beforecontent) {
         this.beforecontent = beforecontent;
         return (T) this;
@@ -449,6 +485,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getPrependcontent() {
         return prependcontent;
     }
@@ -459,6 +496,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param prependcontent String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setPrependcontent(String prependcontent) {
         this.prependcontent = prependcontent;
         return (T) this;
@@ -469,6 +507,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getAppendcontent() {
         return appendcontent;
     }
@@ -479,6 +518,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param appendcontent String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setAppendcontent(String appendcontent) {
         this.appendcontent = appendcontent;
         return (T) this;
@@ -489,6 +529,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return String
      */
+    @Override
     public String getAftercontent() {
         return aftercontent;
     }
@@ -499,6 +540,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param aftercontent String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setAftercontent(String aftercontent) {
         this.aftercontent = aftercontent;
         return (T) this;
@@ -519,10 +561,12 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return setAftercontent(remark);
     }
 
+    @Override
     public Map<String, String> getOn() {
         return events;
     }
 
+    @Override
     public T setOn(String eventName, String script) {
         if (eventName == null) {
             return (T) this;
@@ -531,7 +575,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
             events = new TreeMap<>();
         }
 
-        if (script == null || script.equals("")) {
+        if (script == null || "".equals(script)) {
             events.remove(eventName);
         } else {
             events.put(eventName, script);

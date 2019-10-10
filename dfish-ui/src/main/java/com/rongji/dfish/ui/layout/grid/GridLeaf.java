@@ -40,14 +40,16 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	    this.text = text;
     }
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "grid/leaf";
 	}
 	/**
 	 * 标题
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -55,7 +57,8 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLeaf setText(String text) {
+	@Override
+    public GridLeaf setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -63,7 +66,8 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	 * 如果展开的内容是延迟加载的。将在这个URL所指定的资源中获取内容
 	 * @return String
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return src;
 	}
 	/**
@@ -71,16 +75,19 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLeaf setSrc(String src) {
+	@Override
+    public GridLeaf setSrc(String src) {
 		this.src = src;
 		return this;
 	}
 
-	public String getFormat() {
+	@Override
+    public String getFormat() {
 		return format;
 	}
 
-	public GridLeaf setFormat(String format) {
+	@Override
+    public GridLeaf setFormat(String format) {
 		this.format = format;
 		return this;
 	}
@@ -136,50 +143,62 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 		this.tip = tip;
 		return this;
 	}
-	public String getSuccess() {
+	@Override
+    public String getSuccess() {
 		return success;
 	}
 
-	public GridLeaf setSuccess(String success) {
+	@Override
+    public GridLeaf setSuccess(String success) {
 		this.success = success;
 		return this;
 	}
-	public String getError() {
+	@Override
+    public String getError() {
 		return error;
 	}
 
-	public GridLeaf setError(String error) {
+	@Override
+    public GridLeaf setError(String error) {
 		this.error = error;
 		return this;
 	}
-	public String getComplete() {
+	@Override
+    public String getComplete() {
 		return complete;
 	}
 
-	public GridLeaf setComplete(String complete) {
+	@Override
+    public GridLeaf setComplete(String complete) {
 		this.complete = complete;
 		return this;
 	}
-	public String getFilter() {
+	@Override
+    public String getFilter() {
 		return filter;
 	}
 
-	public GridLeaf setFilter(String filter) {
+	@Override
+    public GridLeaf setFilter(String filter) {
 		this.filter = filter;
 		return this;
 	}
-	public GridLeaf setEscape(Boolean escape){
+	@Override
+    public GridLeaf setEscape(Boolean escape){
 		this.escape=escape;
 		return this;
 	}
-	public Boolean getEscape(){
+	@Override
+    public Boolean getEscape(){
 		return escape;
 	}
-	public GridLeaf setSync(Boolean sync){
+	@Override
+    public GridLeaf setSync(Boolean sync){
 		this.sync=sync;
 		return this;
 	}
-	public Boolean getSync(){
+	@Override
+    public Boolean getSync(){
 		return sync;
 	}
 }

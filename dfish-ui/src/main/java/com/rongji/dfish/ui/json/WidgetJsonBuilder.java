@@ -27,94 +27,112 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			JsonPropAppender jbpg=methods.get(i);
 			if("beforecontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("beforecontent"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return ((Widget<?>)w).getBeforecontent();
 					}});
 			}else if("prependcontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("prependcontent"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return ((Widget<?>)w).getPrependcontent();
 					}});
 			}else if("appendcontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("appendcontent"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return ((Widget<?>)w).getAppendcontent();
 					}});
 			}else if("aftercontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("aftercontent"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return ((Widget<?>)w).getAftercontent();
 					}});
 			}else if("cls".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("cls"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getCls();
 					}});
 			}else if("style".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("style"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getStyle();
 					}});
 			}else if("gid".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("gid"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getGid();
 					}});
 			}else if("id".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("id"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getId();
 					}});
 			}else if("height".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("height"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getHeight();
 					}});
 			}else if("width".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("width"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getWidth();
 					}});
 			}else if("maxheight".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("maxheight"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMaxheight();
 					}});
 			}else if("maxwidth".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("maxwidth"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMaxwidth();
 					}});
 			}else if("minheight".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("minheight"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMinheight();
 					}});
 			}else if("minwidth".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("minwidth"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMinwidth();
 					}});
 			}else if("minwidth".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("minwidth"){
-					protected String getValue(Object w) {
+					@Override
+                    protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMinwidth();
 					}});
 			}else if("hmin".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetIntegerPropAppender("hmin"){
-					protected Integer getValue(Object w) {
+					@Override
+                    protected Integer getValue(Object w) {
 						return  ((Widget<?>)w).getHmin();
 					}});
 			}else if("wmin".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetIntegerPropAppender("wmin"){
-					protected Integer getValue(Object w) {
+					@Override
+                    protected Integer getValue(Object w) {
 						return ((Widget<?>)w).getWmin();
 					}});
 			}else if("type".equals(jbpg.getPropName())){
 				methods.set(i, WidgetTypeAppender.getInstance());
 			}else if("on".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetPropAppender("on"){
-					public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
+					@Override
+                    public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
 						Widget<?>w=(Widget<?>)o;
 						Map<String,String> on=w.getOn();
 						if(on!=null&&on.size()>0){
@@ -123,7 +141,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 							boolean mapBegin=true;
 							sb.append('{');
 							for(Map.Entry<String,String> item:on.entrySet()){
-								if(item.getValue()==null||item.getValue().equals("")){
+								if(item.getValue()==null|| "".equals(item.getValue())){
 									continue;
 								}
 								if(mapBegin){mapBegin=false;}else{sb.append(',');}
@@ -137,7 +155,8 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 					}});
 			}else if("data".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetPropAppender("data"){
-					public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
+					@Override
+                    public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
 						Widget<?>w=(Widget<?>)o;
 						Map<String,Object> data=w.getData();
 						if(data!=null&&data.size()>0){
@@ -152,7 +171,8 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			} else if("name".equals(jbpg.getPropName())){
 			    if(FormElement.class.isAssignableFrom(clz)){
 					methods.set(i, new WidgetStringPropAppender("name"){
-						protected String getValue(Object w) {
+						@Override
+                        protected String getValue(Object w) {
 							return ((FormElement<?,?>)w).getName();
 						}});
 				}
@@ -160,14 +180,16 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			} else if("align".equals(jbpg.getPropName())){
 			    if(Alignable.class.isAssignableFrom(clz)){
 					methods.set(i, new WidgetStringPropAppender("align"){
-						protected String getValue(Object w) {
+						@Override
+                        protected String getValue(Object w) {
 							return ((Alignable<?>)w).getAlign();
 						}});
 				}
 			} else if("valign".equals(jbpg.getPropName())){
 			    if(Valignable.class.isAssignableFrom(clz)){
 					methods.set(i, new WidgetStringPropAppender("valign"){
-						protected String getValue(Object w) {
+						@Override
+                        protected String getValue(Object w) {
 							return ((Valignable<?>)w).getValign();
 						}});
 				}
@@ -186,6 +208,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
             } else if("scroll".equals(jbpg.getPropName())){
                 if(Scrollable.class.isAssignableFrom(clz)){
                     methods.set(i, new WidgetBooleanPropAppender("scroll"){
+                        @Override
                         protected Boolean getValue(Object w) {
                             return ((Scrollable<?>)w).getScroll();
                         }});
@@ -193,6 +216,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
             }else if("scrollClass".equals(jbpg.getPropName())){
                 if(Scrollable.class.isAssignableFrom(clz)) {
                     methods.set(i, new WidgetStringPropAppender("scrollClass") {
+                        @Override
                         protected String getValue(Object w) {
                             return ((Scrollable<?>)w).getScrollClass();
                         }
@@ -241,10 +265,11 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 //			init(hideTypeConfig);
 		}
 
-		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
+		@Override
+        public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
 			JsonObject w=(JsonObject)o;
 			String type=w.getType();
-			if(type!=null&&!type.equals("")){
+			if(type!=null&&!"".equals(type)){
 				if(!match(path)){
 					if(begin){begin=false;}else{sb.append(',');}
 					sb.append("\"type\":\"");
@@ -270,7 +295,7 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 				String[] exprs=line.split("[,]");
 				for(int index=exprs.length-1;index>=0;index--){
 					String expr=exprs[index];
-					if(expr==null||expr.equals("")){
+					if(expr==null|| "".equals(expr)){
 						continue;
 					}
 					Node node=null;
@@ -390,12 +415,14 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 				subs.add(sub);
 			}
 
-			public String toString(){
+			@Override
+            public String toString(){
 				return expr;
 			}
 		}
 		public static class AllMatchNode extends Node{
-			public boolean match(PathInfo pathInfo){
+			@Override
+            public boolean match(PathInfo pathInfo){
 				return true;
 			}
 			public AllMatchNode(String expr){
@@ -404,7 +431,8 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		}
 		public static class TypeMatchNode extends Node{
 			private String type;
-			public boolean match(PathInfo pathInfo){
+			@Override
+            public boolean match(PathInfo pathInfo){
 				if(pathInfo.getPropValue() instanceof JsonObject){
 					String pType=((JsonObject)pathInfo.getPropValue()).getType();
 					return type.equals(pType);
@@ -418,7 +446,8 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		}
 		public static class PathMatchNode extends Node{
 			private String path;
-			public boolean match(PathInfo pathInfo){
+			@Override
+            public boolean match(PathInfo pathInfo){
 				String pPath=pathInfo.getPropName();
 				return path.equals(pPath);
 			}
@@ -476,9 +505,10 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		public WidgetStringPropAppender(String propName) {
 			super(propName);
 		}
-		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
+		@Override
+        public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
 			String v=getValue(o);
-			if(v!=null&&!v.equals("")){
+			if(v!=null&&!"".equals(v)){
 				if(begin){begin=false;}else{sb.append(',');}
 				sb.append('"');
 				sb.append(propName);
@@ -495,7 +525,8 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		public WidgetIntegerPropAppender(String propName) {
 			super(propName);
 		}
-		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
+		@Override
+        public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
 			Integer v=getValue(o);
 			if(v!=null){
 				if(begin){begin=false;}else{sb.append(',');}
@@ -513,7 +544,8 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 		public WidgetBooleanPropAppender(String propName) {
 			super(propName);
 		}
-		public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
+		@Override
+        public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
 			Boolean v=getValue(o);
 			if(v!=null){
 				if(begin){begin=false;}else{sb.append(',');}

@@ -2,8 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.PubHolder;
-import com.rongji.dfish.ui.command.DialogCommand;
-import com.rongji.dfish.ui.layout.View;
+import com.rongji.dfish.ui.command.Dialog;
 
 /**
  * LinkableSuggestionBox 默认可以通过填写出现输入提示的输入框，且所选择的选项可支持链接，主要有{@link Combobox}和{@link Linkbox}
@@ -47,24 +46,28 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	 * @param value 初始值
 	 * @param suggest 候选项的弹窗命令
 	 */
-	public LinkableSuggestionBox(String name, String label, String value, DialogCommand suggest) {
+	public LinkableSuggestionBox(String name, String label, String value, Dialog suggest) {
 		super(name, label, value, suggest);
 	}
 
-	public T setText(String text) {
+	@Override
+    public T setText(String text) {
 		this.text = text;
 		return (T) this;
 	}
 
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
-	public T setEscape(Boolean escape) {
+	@Override
+    public T setEscape(Boolean escape) {
 		this.escape = escape;
 		return (T) this;
 	}
-	public Boolean getEscape(){
+	@Override
+    public Boolean getEscape(){
 		return escape;
 	}
 	
@@ -87,7 +90,8 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 		return strict;
 	}
 
-	public ComboboxOption getPub() {
+	@Override
+    public ComboboxOption getPub() {
 		if (pub == null) {
 			pub = new ComboboxOption();
 		}
@@ -95,7 +99,8 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	}
 
 
-	public T setPub(ComboboxOption pub) {
+	@Override
+    public T setPub(ComboboxOption pub) {
 		this.pub = pub;
 		return (T) this;
 	}

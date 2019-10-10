@@ -3,9 +3,7 @@ package com.rongji.dfish.ui.layout;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.rongji.dfish.ui.AbstractSrc;
 import com.rongji.dfish.ui.LazyLoad;
-import com.rongji.dfish.ui.widget.DialogTemplate;
 
 
 /**
@@ -34,8 +32,8 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 	
 //	private Boolean load;
 	private String base;
-	@Deprecated
-	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
+//	@Deprecated
+//	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
 
 	@Override
 	public String getType() {
@@ -106,39 +104,6 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 	public View setBase(String base) {
 		this.base = base;
 		return this;
-	}
-	/**
-	 * 增加一个弹出窗口的模板。
-	 * @param id String
-	 * @param template 模板
-	 * @return 本身，这样可以继续设置其他属性
-	 * @see com.rongji.dfish.ui.widget.DialogTemplate
-	 * @deprecated 现在template和preload统一模式不再由首页附带。
-	 */
-	@Deprecated
-	public View addTemplate(String id,DialogTemplate template) {
-		templates.put(id, template);
-	     return this;
-	}
-	/**
-	 * 取得模板
-	 * @param id String 模板ID
-	 * @return DialogTemplate
-	 * @deprecated 现在template和preload统一模式不再由首页附带。
-	 */
-	@Deprecated
-	public DialogTemplate getTemplateById(String id) {
-		return templates.get(id);
-	}
-	
-	/**
-	 * 取得所有模板
-	 * @return templates
-	 * @deprecated 现在template和preload统一模式不再由首页附带。
-	 */
-	@Deprecated
-	public Map<String,DialogTemplate> getTemplates() {
-		return templates;
 	}
 
 }

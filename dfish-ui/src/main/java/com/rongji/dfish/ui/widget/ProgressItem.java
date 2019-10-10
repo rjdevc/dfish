@@ -72,6 +72,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasFor
      * 显示文本。
      * @return String
      */
+    @Override
     public String getText() {
         return text;
     }
@@ -81,6 +82,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasFor
      * @param text String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public ProgressItem setText(String text) {
         this.text = text;
         return this;
@@ -90,6 +92,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasFor
      * 是否对html内容转义。默认值为true。
      * @return Boolean
      */
+    @Override
     public Boolean getEscape() {
         return escape;
     }
@@ -99,14 +102,17 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasFor
      * @param escape Boolean
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public ProgressItem setEscape(Boolean escape) {
         this.escape = escape;
         return this;
     }
+    @Override
     public String getFormat() {
         return format;
     }
 
+    @Override
     public ProgressItem setFormat(String format) {
         this.format = format;
         return this;
