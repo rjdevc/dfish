@@ -344,11 +344,11 @@
 .w-select.z-ds ._t{background:#eee}
 .w-select.z-ds ._cvr{display:block;position:absolute;top:0;bottom:0;left:0;right:0;background:#fff;opacity:0;filter:Alpha(opacity:0)}
 
-.w-date ._b,.w-muldate ._b{display:inline-block;width:19px;text-align:center;color:#666;cursor:default}
-.w-date ._b:hover,.w-muldate ._b:hover{color:#333}
-.w-date .f-boxbtn,.w-muldate .f-boxbtn{background:url(g/n.png) no-repeat 0 50%}
-.w-date .f-boxbtn:hover,.w-muldate .f-boxbtn:hover{background-position:-25px 50%}
-.w-date.z-ds .f-boxbtn,.w-muldate.z-ds .f-boxbtn{background-position:0 50%;cursor:default}
+.w-datepicker ._b{display:inline-block;width:19px;text-align:center;color:#666;cursor:default}
+.w-datepicker ._b:hover{color:#333}
+.w-datepicker .f-boxbtn{background:url(g/n.png) no-repeat 0 50%}
+.w-datepicker .f-boxbtn:hover{background-position:-25px 50%}
+.w-datepicker.z-ds .f-boxbtn{background-position:0 50%;cursor:default}
 
 .w-range{overflow:visible}
 .w-range .f-sub-horz{vertical-align:middle}

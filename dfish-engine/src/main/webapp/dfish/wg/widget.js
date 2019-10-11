@@ -5345,6 +5345,29 @@ Formgroup = define.widget( 'formgroup', {
 		}
 	}
 } ),
+/* `range` */
+Range = define.widget( 'range', {
+	Const: function( x, p ) {
+		AbsForm.apply( this, arguments );
+		this.begin = x.begin && this.add( x.begin );
+		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'html', text: x.to || Loc.to, width: 30, align: 'center' } );
+		this.end   = x.end && this.add( x.end );
+		this.className = 'w-horz w-range f-nv';
+		if ( ! x.valign && p && p.x.valign )
+			this.defaults( { valign: p.x.valign } );
+	},
+	Extend: [ AbsForm, Horz ],
+	Default: { width: -1 },
+	Prototype: {
+		x_nodes: $.rt(),
+		form_minus:  function() {
+			return this.label ? this.label.outerWidth() : 0;
+		},
+		scaleWidth: function( a, b ) {
+			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
+		}
+	}
+} ),
 /* `hidden` */
 Hidden = define.widget( 'hidden', {
 	Const: function( x ) {
@@ -6343,7 +6366,7 @@ _date_formtype = {
 	'hh:ii': 'time'
 },
 /* `date` */
-_Date = define.widget( 'date', {
+Datepicker = define.widget( 'datepicker', {
 	Const: function( x, p ) {
 		Text.apply( this, arguments );
 		if ( ! x.format )
@@ -6356,7 +6379,8 @@ _Date = define.widget( 'date', {
 			click: {
 				occupy: T,
 				method: function() {
-					! mbi && this.isNormal() && this.popCalendar();
+					if ( ! mbi && this.isNormal() )
+						!this.x.multiple || !this.val() ? this.popCalendar() : this.popList();
 				}
 			},
 			input: mbi && {
@@ -6391,6 +6415,8 @@ _Date = define.widget( 'date', {
 				return ! eval( '"' + $.strQuot( v ) + '"' + (b.comparemode || '==') + '"' + $.strQuot( d ) + '"' );
 			},
 			valid: function( b, v ) {
+				if ( this.x.multiple )
+					return;
 				if ( v ) {
 					var c = v.replace( /\b(\d)\b/g, '0$1' ), d = $.dateParse( c, this.x.format ), y = d.getFullYear(), m = cfg.max_year || 3000, n = cfg.min_year || 1000;
 					if ( y >= m || y <= n )
@@ -6410,19 +6436,43 @@ _Date = define.widget( 'date', {
 				}
 			}
 		},
-		val: mbi ? function( a ) {
+		$v: function() { return $( this.id + (this.x.multiple ? 'v' : 't') ) },
+		val: function( a ) {
 			if ( a == N )
 				return this.$v() ? this.$v().value.replace( 'T', ' ' ) : this.x.value;
 			if ( this.$() ) {
-				this.$v().value = $.strTrim( a ).replace( ' ', 'T' );
+				a = $.strTrim( a );
+				mbi && (a = a.replace( ' ', 'T' ));
+				this.$v().value = a;
 				this.$v() && this.checkPlaceholder();
+				this.x.multiple && this.text( this.v2t( a ) );
 				this.trigger( 'change' );
 			} else
 				this.x.value = a;
-		} : Text.prototype.val,
+		},
+		text: function( t ) {
+			return this.x.multiple ? (t != N ? (this.$t().innerText = t) : this.$t().innerText) : Text.prototype.text.call( this, t );
+		},
+		v2t: function( v ) {
+			for ( var i = 0, b = v.split( ',' ), s = []; v && i < b.length; i ++ )
+				s.push( '"' + b[ i ] + '"' );
+			return s.join( ' ' );
+		},
 		clkhdr: mbi ? function( e ) {
 			this.$t().click();
 		} : Text.prototype.clkhdr,
+		popList: function() {
+			for ( var i = 0, v = this.val().split( ',' ), b = []; i < v.length; i ++ )
+				b.push( this.li_str( v[ i ] ) );
+			b.push( this.li_str() );
+			this.mh = Math.floor(($.height() - this.height()) / 60) * 30 + 2;
+			var h = (v.length + 1) * 30 + 2, c = this.list, d = c && c.isShow();
+			this.closePop();
+			if ( ! d ) 
+				this.list = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-dialog w-muldate-dialog w-f-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
+					node: { type: 'html', text: b.join( '' ), scroll: T }, on: { close: function() { this.commander.focus(F) } } } );
+			this.focus();
+		},
 		popCalendar: function() {
 			var b = $.dateFormat( new Date, this.x.format ), c = this.cal, d = this.x.validate, e = c && c.isShow(), f = d && d.compare, g = f && d.comparemode,
 				m = d && (d.maxvalue || (d.beforenow && b)), n = d && (d.minvalue || (d.afternow && b)), p = this.parentNode, t, v = this.val() || b;
@@ -6435,91 +6485,6 @@ _Date = define.widget( 'date', {
 				var self = this;
 				this.cal = Calendar.pop( this, this.x.format, v, v, n, m, function( d ) { d && self.val( $.dateFormat( d, self.x.format ) ); self.focus(); self.cal.close(); } );
 			}
-			this.focus();
-		},
-		closePop: function() {
-			this.cal && this.cal.close();
-			this.list && this.list.close();
-		},
-		html_btn: function() {
-			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
-		},
-		input_prop_value: function() {
-			var v = $.strEscape(this.x.value == N ? '' : ('' + this.x.value));
-			return mbi ? v.replace( ' ', 'T' ) : v;
-		},
-		html_input: function() {
-			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
-				'<input type=text' + this.input_prop() + '>';
-		}
-	}
-} ),
-/* `range` */
-Range = define.widget( 'range', {
-	Const: function( x, p ) {
-		AbsForm.apply( this, arguments );
-		this.begin = x.begin && this.add( x.begin );
-		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'html', text: x.to || Loc.to, width: 30, align: 'center' } );
-		this.end   = x.end && this.add( x.end );
-		this.className = 'w-horz w-range f-nv';
-		if ( ! x.valign && p && p.x.valign )
-			this.defaults( { valign: p.x.valign } );
-	},
-	Extend: [ AbsForm, Horz ],
-	Default: { width: -1 },
-	Prototype: {
-		x_nodes: $.rt(),
-		form_minus:  function() {
-			return this.label ? this.label.outerWidth() : 0;
-		},
-		scaleWidth: function( a, b ) {
-			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
-		}
-	}
-} ),
-/* `muldate` */
-Muldate = define.widget( 'muldate', {
-	Extend: 'date',
-	Listener: {
-		body: {
-			click: {
-				occupy: T,
-				method: function() {
-					if ( this.isNormal() )
-						this.val() ? this.popList() : this.popCalendar();
-				}
-			}
-		}
-	},
-	Prototype: {
-		validHooks: N,
-		$v: function() { return $( this.id + 'v' ) },
-		v2t: function( v ) {
-			for ( var i = 0, b = v.split( ',' ), s = []; v && i < b.length; i ++ )
-				s.push( '"' + b[ i ] + '"' );
-			return s.join( ' ' );
-		},
-		val: function( a ) {
-			if ( a == N )
-				return this.$v().value;
-			this.$v().value = a;
-			this.text( this.v2t( a ) );
-			this.trigger( 'change' );
-		},
-		text: function( t ) {
-			return t != N ? (this.$t().innerText = t) : this.$t().innerText;
-		},
-		popList: function() {
-			for ( var i = 0, v = this.val().split( ',' ), b = []; i < v.length; i ++ )
-				b.push( this.li_str( v[ i ] ) );
-			b.push( this.li_str() );
-			this.mh = Math.floor(($.height() - this.height()) / 60) * 30 + 2;
-			var h = (v.length + 1) * 30 + 2, c = this.list, d = c && c.isShow();
-			this.closePop();
-			if ( ! d ) 
-				this.list = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-dialog w-muldate-dialog w-f-dialog f-shadow-snap', width: 200, height: Math.min( this.mh, h ), hmin: 2, wmin: 2, pophide: T, snap: this, indent: 1,
-					node: { type: 'html', text: b.join( '' ), scroll: T }, on: { close: function() { this.commander.focus(F) } } } );
 			this.focus();
 		},
 		// @a -> el, b -> act
@@ -6555,8 +6520,21 @@ Muldate = define.widget( 'muldate', {
 			return '<table width=100% height=30 cellspacing=0 cellpadding=0' + (v ? ' data-value="' + v + '"' : '') + '><tr><td>&nbsp; ' + (v ? '<a href=javascript: onclick=' + k + '(this,"=")>' + v + '</a>' : '') + '<td width=70 align=center>' +
 				$.image( '.f-i-minus ._i', { style: 'visibility:' + (v ? 'visible' : 'hidden'), click: k + '(this,"-")' } ) + ' &nbsp; ' + $.image( '.f-i-plus ._i', { click: k + '(this,"+")' } ) + '</table>';
 		},
+		closePop: function() {
+			this.cal && this.cal.close();
+			this.list && this.list.close();
+		},
+		html_btn: function() {
+			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
+		},
+		input_prop_value: function() {
+			var v = $.strEscape(this.x.value == N ? '' : ('' + this.x.value));
+			return mbi ? v.replace( ' ', 'T' ) : v;
+		},
 		html_input: function() {
-			return '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div>';
+			var v = this.x.value || '';
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
+				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),

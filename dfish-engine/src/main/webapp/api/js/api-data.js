@@ -1498,7 +1498,7 @@ define( {
     ],
     Methods: [
       { name: 'getFocus()', remark: '获取当前显示的 widget。' },
-      { name: 'view(id)', remark: '显示某个子元素。', param: [
+      { name: 'focus(id)', remark: '显示某个子元素。', param: [
         { name: 'id', type: 'String | widget', remark: 'widget ID 或对象。' }
       ] }
    ],
@@ -1969,7 +1969,12 @@ define( {
       { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
       { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
       { name: 'template', type: 'String | Object', ver: '3.2+', remark: '模板地址，或模板内容。' },
-      { name: 'node', type: 'Object', remark: '直接展示的内容节点。' }
+      { name: 'node', type: 'Object', remark: '直接展示的内容节点。' },
+      { name: 'complete', type: 'String | Function', remark: '在得到服务器的响应后调用的函数(不论成功失败都会执行)。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
+      { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'sync', type: 'Boolean', remark: '加载src是否同步模式。' }
     ],
     Methods: [
       { name: 'reload([src], [template], [target], [fn])', remark: '重新装载。', param: [
@@ -3015,16 +3020,17 @@ define( {
       { name: '.w-select', remark: '基础样式。' }
     ]
   },
-  "date": {
+  "datepicker": {
   	title: 'date',
   	remark: '日期选择表单。',
   	extend: 'text',
   	deprecate: '.w-text',
     Config: [
-      { name: 'format', type: 'String', remark: '日期格式: yyyy-mm-dd hh:ii:ss' }
+      { name: 'format', type: 'String', remark: '日期格式: yyyy-mm-dd hh:ii:ss' },
+      { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' }
     ],
     Classes: [
-      { name: '.w-date', remark: '基础样式。' }
+      { name: '.w-datepicker', remark: '基础样式。' }
     ]
   },
   "hidden": {
