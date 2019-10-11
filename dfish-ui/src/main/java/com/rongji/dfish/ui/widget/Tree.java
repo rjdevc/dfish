@@ -22,9 +22,9 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @version 1.0
  * @since XMLTMPL 2.0
  */
-public class TreePanel extends AbstractLayout<TreePanel, Leaf> 
-	implements Scrollable<TreePanel>,HiddenContainer<TreePanel>,  HtmlContentHolder<TreePanel>,
-	 PubHolder<TreePanel,Leaf>,MultiContainer<TreePanel, Leaf>,HasSrc<TreePanel> {
+public class Tree extends AbstractLayout<Tree, Leaf>
+	implements Scrollable<Tree>,HiddenContainer<Tree>,  HtmlContentHolder<Tree>,
+	 PubHolder<Tree,Leaf>,MultiContainer<Tree, Leaf>,HasSrc<Tree> {
 	/**
 	 * 
 	 */
@@ -32,7 +32,6 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	private Leaf pub;
 	private Boolean scroll;
 	private String scrollClass;
-//    private Boolean escape;
     private Combo combo;
     private Highlight highlight;
     private Boolean ellipsis;
@@ -43,40 +42,9 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @param id
 	 *            String
 	 */
-	public TreePanel(String id) {
+	public Tree(String id) {
 		super(id);
 	}
-
-
-	/**
-	 * 添加一个树节点
-	 * 
-	 * @param tree
-	 *            Leaf
-	 * @return TreePanel
-	 * @deprecated 不再支持和2.x的写法
-	 */
-	@Deprecated
-	public TreePanel addTreeItem(Leaf tree) {
-		return add(tree);
-	}
-
-
-	/**
-	 * 设置默认高亮的节点PK
-	 * 
-	 * @param pkid
-	 *            高亮的节点PK
-	 * @return 本身，这样可以继续设置其他属性
-	 * @deprecated 必须找到指定的节点，并设置setFocus(true);
-	 */
-	@Deprecated
-	public TreePanel setFocus(String pkid) {
-		// pub.setFocus(pkid);
-		return this;
-	}
-
-
 
 
 	@Override
@@ -93,13 +61,13 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	}
 
 	@Override
-    public TreePanel setPub(Leaf pub) {
+    public Tree setPub(Leaf pub) {
 		this.pub = pub;
 		return this;
 	}
 
     @Override
-    public TreePanel setScroll(Boolean scroll) {
+    public Tree setScroll(Boolean scroll) {
     	this.scroll = scroll;
 	    return this;
     }
@@ -110,7 +78,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
     }
 
     @Override
-    public TreePanel setScrollClass(String scrollClass) {
+    public Tree setScrollClass(String scrollClass) {
     	this.scrollClass = scrollClass;
 	    return this;
     }
@@ -122,7 +90,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	
     HiddenPart hiddens = new HiddenPart();
     @Override
-    public TreePanel addHidden(String name, String value) {
+    public Tree addHidden(String name, String value) {
     	hiddens.addHidden(name,value);
 		return this;
     }
@@ -132,7 +100,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 //    }
 
     @Override
-    public TreePanel add(Hidden hidden) {
+    public Tree add(Hidden hidden) {
     	hiddens.add(hidden);
 		return this;
     }
@@ -148,7 +116,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
     }
 
     @Override
-    public TreePanel removeHidden(String name) {
+    public Tree removeHidden(String name) {
     	hiddens.removeHidden(name);
 	    return this;
     }
@@ -170,7 +138,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @see #getPub()
 	 */
 	@Override
-    public TreePanel setEscape(Boolean escape) {
+    public Tree setEscape(Boolean escape) {
 		getPub().setEscape(escape);
 		return this;
 	}
@@ -184,7 +152,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @param hidetoggle Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TreePanel setHidetoggle(Boolean hidetoggle) {
+	public Tree setHidetoggle(Boolean hidetoggle) {
 		getPub().setHidetoggle(hidetoggle);
 		return this;
 	}
@@ -208,7 +176,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @param format String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TreePanel setFormat(String format) {
+	public Tree setFormat(String format) {
 		getPub().setFormat(format);
 		return this;
 	}
@@ -226,7 +194,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @param combo Combo
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TreePanel setCombo(Combo combo) {
+	public Tree setCombo(Combo combo) {
 		this.combo = combo;
 		return this;
 	}
@@ -246,7 +214,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public TreePanel setSrc(String src) {
+    public Tree setSrc(String src) {
 		rootLeaf.setSrc(src);
 		return this;
 	}
@@ -274,19 +242,19 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 
 
 	@Override
-	public TreePanel add(Leaf w) {
+	public Tree add(Leaf w) {
 		rootLeaf.add(w);
 		return this;
 	}
 
-	public TreePanel add(int index,Leaf w) {
+	public Tree add(int index, Leaf w) {
 		rootLeaf.add(index,w);
 		return this;
 	}
 
 
 	@Override
-	public TreePanel removeNodeById(String id) {
+	public Tree removeNodeById(String id) {
 		rootLeaf.removeNodeById(id);
 		return this;
 	}
@@ -300,7 +268,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * 修复叶节点的选中状态
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TreePanel fixBoxCheckStatus() {
+	public Tree fixBoxCheckStatus() {
 		// FIXME 根节点必须补box
 		rootLeaf.setBox(new Triplebox(null, null, null, null, null));
 		rootLeaf.fixBoxCheckStatus();
@@ -322,7 +290,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author lamontYu
 	 */
-	public TreePanel setHighlight(Highlight highlight) {
+	public Tree setHighlight(Highlight highlight) {
 		this.highlight = highlight;
 		return this;
 	}
@@ -344,7 +312,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
      * @see #getPub()
      */
     @Deprecated
-	public TreePanel setEllipsis(Boolean ellipsis) {
+	public Tree setEllipsis(Boolean ellipsis) {
 		this.ellipsis = ellipsis;
 		return this;
 	}
@@ -357,7 +325,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 
 
 	@Override
-	public TreePanel setTemplate(String template) {
+	public Tree setTemplate(String template) {
 		rootLeaf.setTemplate(template);
 		return this;
 	}
@@ -368,7 +336,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	}
 
 	@Override
-    public TreePanel setSuccess(String success) {
+    public Tree setSuccess(String success) {
 		rootLeaf.setSuccess(success);
 		return this;
 	}
@@ -378,7 +346,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	}
 
 	@Override
-    public TreePanel setError(String error) {
+    public Tree setError(String error) {
 		rootLeaf.setError(error);
 		return this;
 	}
@@ -388,7 +356,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	}
 
 	@Override
-    public TreePanel setComplete(String complete) {
+    public Tree setComplete(String complete) {
 		rootLeaf.setComplete(complete);
 		return this;
 	}
@@ -398,7 +366,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	}
 
 	@Override
-    public TreePanel setFilter(String filter) {
+    public Tree setFilter(String filter) {
 		rootLeaf.setFilter(filter);
 		return this;
 	}
@@ -409,7 +377,7 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	}
 
 	@Override
-    public TreePanel setSync(Boolean sync) {
+    public Tree setSync(Boolean sync) {
 		rootLeaf.setSync(sync);
 		return this;
 	}

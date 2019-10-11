@@ -193,18 +193,15 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 							return ((Valignable<?>)w).getValign();
 						}});
 				}
-//			} else if("text".equals(jbpg.getPropName())){
-//                if(HasText.class.isAssignableFrom(clz)){
-//                    methods.set(i, new WidgetStringPropAppender("text"){
-//                        protected String getValue(Object w) {
-//                        	Object o=((HasText<?>)w).getText();
-//                        	if(o instanceof String) {
-//								return (String)o;
-//							}else{
-//                        		return J.toJson(o);
-//							}
-//                        }});
-//                }
+			} else if("text".equals(jbpg.getPropName())){
+                if(HasText.class.isAssignableFrom(clz)){
+                    methods.set(i, new WidgetStringPropAppender("text"){
+						@Override
+                        protected String getValue(Object w) {
+                        	return ((HasText<?>)w).getText();
+                        }
+                    });
+                }
             } else if("scroll".equals(jbpg.getPropName())){
                 if(Scrollable.class.isAssignableFrom(clz)){
                     methods.set(i, new WidgetBooleanPropAppender("scroll"){
@@ -362,6 +359,12 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			protected String expr;
 			protected List<Node> subs;
 			protected boolean end;
+
+			/**
+			 * 判断路径是否符合规则，如果符合规则，将不显示type属性
+			 * @param pathInfo 路径
+			 * @return boolean
+			 */
 			public abstract boolean match(PathInfo pathInfo);
 			public String show() {
 				StringBuilder sb = new StringBuilder();
@@ -497,8 +500,6 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			this. propName=propName;
 		}
 
-		@Override
-		public abstract boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception ;
 //		protected abstract  T getValue(Widget<?> w);
 	}
 	public static  abstract class WidgetStringPropAppender extends WidgetPropAppender{
@@ -519,6 +520,11 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			return begin;
 		}
 
+		/**
+		 * 取得用于显示的文本
+		 * @param w Object
+		 * @return String
+		 */
 		protected abstract  String getValue(Object w);
 	}
 	public static  abstract class WidgetIntegerPropAppender extends WidgetPropAppender{
@@ -538,6 +544,11 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			return begin;
 		}
 
+		/**
+		 * 取得用于显示的属性。
+		 * @param w Object
+		 * @return Integer
+		 */
 		protected abstract  Integer getValue(Object w);
 	}
 	public static  abstract class WidgetBooleanPropAppender extends WidgetPropAppender{
@@ -556,7 +567,11 @@ public class WidgetJsonBuilder extends TemplateJsonBuilder {
 			}
 			return begin;
 		}
-
+		/**
+		 * 取得用于显示的属性。
+		 * @param w Object
+		 * @return Boolean
+		 */
 		protected abstract  Boolean getValue(Object w);
 	}
 }

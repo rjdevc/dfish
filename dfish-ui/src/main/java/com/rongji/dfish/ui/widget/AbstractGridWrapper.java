@@ -149,7 +149,10 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
 		}
 		//FIXME 如果field重复则报异常		
 	}
-	
+
+	/**
+	 * 构建自己的原型。
+	 */
     protected abstract void buildPrototype();
     
     protected String getFormattedData(GridColumn gc, Object data) {

@@ -44,6 +44,11 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N, P>, N ex
 //    	escape=true;
     }
 
+    /**
+     * 将统一的Option转化为当前对象专有的选项对象N，如RadioGroup中是Radio
+     * @param o Option
+     * @return N
+     */
     protected abstract N buildOption(Option o);
 
     /**

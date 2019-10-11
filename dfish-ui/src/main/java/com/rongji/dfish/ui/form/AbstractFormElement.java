@@ -41,14 +41,9 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	 * 是否检查非空
 	 */
 	protected Boolean star;
-//	/**
-//	 * 是否只读
-//	 */
-//	protected Boolean readonly;
-//	/**
-//	 * 是否无效
-//	 */
-//	protected Boolean disabled;
+	/**
+	 * 状态
+	 */
 	protected String status;
 	
 	// /**
@@ -78,9 +73,6 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		return (T) this;
 	}
 
-	@Override
-    public abstract T setValue(Object value);
-	
 	@Override
 	public Boolean getStar() {
 		return  this.star;
@@ -270,20 +262,6 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		}
 		return (T) this;
 	}
-
-	// @SuppressWarnings("unchecked")
-	// @Override
-	// public Object getJsonType() {
-	// Map<String,Object> jsonType=(Map<String,Object>)super.getJsonType();
-	// jsonType.remove("mxl");
-	// jsonType.remove("maxSize");
-	// jsonType.remove("maxValue");
-	// jsonType.remove("minSize");
-	// jsonType.remove("minValue");
-	// jsonType.remove("match");
-	// jsonType.remove("patternMsg");
-	// return jsonType;
-	// }
 	
 	@Override
 	public Validate getValidate() {

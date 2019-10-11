@@ -20,14 +20,10 @@ MultiContainer<Album,Img>{
 	 */
 	private static final long serialVersionUID = 7141941441960631331L;
 	private Integer space;
-//	private Boolean focusable;
 	private Boolean focusmultiple;
-//	private Boolean hoverable;
 	private Img pub;
 	private Boolean scroll;
 	private String scrollClass;
-//	private Boolean escape;
-//	private Boolean format;
 	private String face;
 	private Boolean nobr;
 
@@ -97,7 +93,6 @@ MultiContainer<Album,Img>{
 
 	@Deprecated
 	public Album setFocusable(Boolean focusable) {
-//		this.focusable = focusable;
 		getPub().setFocusable(focusable);
 		return this;
 	}
@@ -172,24 +167,6 @@ MultiContainer<Album,Img>{
 		getPub().setEscape(escape);
 		return this;
 	}
-
-//	/**
-//	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-//	 * @return format
-//	 */
-//	public Boolean getFormat() {
-//		return format;
-//	}
-//
-//	/**
-//	 * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
-//	 * @param format 格式化内容
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public AlbumLayout setFormat(Boolean format) {
-//		this.format = format;
-//		return this;
-//	}
 
 	@Override
 	public List<Img> getNodes() {

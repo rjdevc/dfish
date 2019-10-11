@@ -26,9 +26,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	private static final long serialVersionUID = 5193505708325695202L;
 
 	private String dir;
-//	private Boolean focusable;
 	private Boolean focusmultiple;
-	// private Boolean group ;
 	private Button pub;
 	private Integer space;
 	private String align;
@@ -103,7 +101,6 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 */
 	@Deprecated
 	public ButtonBar setFocusable(Boolean focusable) {
-//		this.focusable = focusable;
 		getPub().setFocusable(true);
 		return this;
 	}
@@ -127,24 +124,6 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		this.focusmultiple = focusmultiple;
 		return this;
 	}
-
-	// /**
-	// *
-	// * @return group
-	// */
-	// public Boolean getGroup() {
-	// return group;
-	// }
-	//
-	// /**
-	// *
-	// * @param group
-	// * @return 本身，这样可以继续设置其他属性
-	// */
-	// public ButtonBar setGroup(Boolean group) {
-	// this.group = group;
-	// return this;
-	// }
 
 	/**
 	 * 按钮之间的间隔。
@@ -171,15 +150,6 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		this.pub = pub;
 		return this;
 	}
-
-	// /**
-	// *
-	// */
-	// public final static String CLZ_GROUP = "f-buttongroup";
-	// /**
-	// *
-	// */
-	// public final static String CLZ_PATH = "f-button-path";
 
 	/**
 	 * 构造函数

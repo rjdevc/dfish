@@ -88,7 +88,6 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                             break;
                         }
                     }
-//					Class<?> fromClass=methods.get(index);
                     J.LOG.debug("find a new property {name:'" + propName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
                 }
             }
@@ -183,13 +182,6 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
         /*
          * 转化元素属性成json属性
          */
-
-        /*
-         * 标识这部分的属性要按照子节点来转化
-         */
-//		PROP_NAME_MAP.put("rootWidget", "node");
-//		PROP_NAME_MAP.put("buttons", "nodes");
-
 
         /*
          * 标识不要关心这部分属性

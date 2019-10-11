@@ -19,7 +19,7 @@ import com.rongji.dfish.ui.PubHolder;
  * @version 2.0
  * @since xmltmpl 2.0
  */
-public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHolder<CalendarPanel,CalendarTd> {
+public class Calendar extends AbstractWidget<Calendar>implements PubHolder<Calendar,CalendarTd> {
 	/**
 	 * 
 	 */
@@ -57,7 +57,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @see #TYPE_WEEK
 	 * @see #TYPE_YEAR
 	 */
-	public CalendarPanel(String id,String type){
+	public Calendar(String id, String type){
 		this.id=id;
 		this.type=type;
 	}
@@ -82,7 +82,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @param date String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public CalendarPanel setDate(String date) {
+	public Calendar setDate(String date) {
 		this.date = date;
 		return this;
 	}
@@ -106,7 +106,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @param focusdate String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public CalendarPanel setFocusdate(String focusdate) {
+	public Calendar setFocusdate(String focusdate) {
 		this.focusdate = focusdate;
 		return this;
 	}
@@ -122,7 +122,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public CalendarPanel setSrc(String src) {
+	public Calendar setSrc(String src) {
 		this.src = src;
 		return this;
 	}
@@ -185,7 +185,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public CalendarPanel setPub(CalendarTd pub) {
+    public Calendar setPub(CalendarTd pub) {
 		this.pub = pub;
 		return this;
 	}
@@ -199,19 +199,19 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 		return body;
 	}
 
-	public CalendarPanel setBody(Map<String, CalendarTd> body) {
+	public Calendar setBody(Map<String, CalendarTd> body) {
 		this.body = body;
 		return this;
 	}
 	
-	public CalendarPanel add(String name, CalendarTd td) {
+	public Calendar add(String name, CalendarTd td) {
 		if(body==null){
 			body=new LinkedHashMap<String, CalendarTd>();
 		}
 		body.put(name, td);
 		return this;
 	}
-	public CalendarPanel add(int name, CalendarTd td) {
+	public Calendar add(int name, CalendarTd td) {
 		return add(String.valueOf(name),td);
 	}
 	/**
@@ -226,7 +226,7 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @param padrow Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public CalendarPanel setPadrow(Boolean padrow) {
+	public Calendar setPadrow(Boolean padrow) {
 		this.padrow = padrow;
 		return this;
 	}

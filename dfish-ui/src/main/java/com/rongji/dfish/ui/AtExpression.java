@@ -8,5 +8,9 @@ package com.rongji.dfish.ui;
  *
  */
 public interface AtExpression {
+	/**
+	 * 表达式内容
+	 * @return String
+	 */
 	String expr();
 }

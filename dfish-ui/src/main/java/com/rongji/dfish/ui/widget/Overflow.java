@@ -18,7 +18,6 @@ public class Overflow extends AbstractNode<Overflow> {
 	public static final String EFFECT_SWAP="swap";
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
 		return "overflow";
 	}
 	
