@@ -1,8 +1,5 @@
 package com.rongji.dfish.ui.command;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.rongji.dfish.ui.DataContainer;
 import com.rongji.dfish.ui.HasSrc;
 
@@ -40,7 +37,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * http 格式的路径。
 	 * @return src
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return src;
 	}
 
@@ -49,13 +47,15 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setSrc(String src) {
 		this.src = src;
 		return (T) this;
 	}
 	
-	public String getTemplate() {
+	@Override
+    public String getTemplate() {
 		return template;
 	}
 
@@ -64,7 +64,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param template String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setTemplate(String template) {
 		this.template = template;
 		return (T) this;
@@ -74,7 +75,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
      * 是否同步
      * @return Boolean
      */
-	public Boolean getSync() {
+	@Override
+    public Boolean getSync() {
 		return sync;
 	}
 	/**
@@ -82,7 +84,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param sync Boolean
 	 * @return this
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setSync(Boolean sync) {
 		this.sync = sync;
 		return (T)this;
@@ -108,7 +111,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * js语句，在获取服务器的响应数据后调用(不论成功失败都会执行)。
 	 * @return String
 	 */
-	public String getComplete() {
+	@Override
+    public String getComplete() {
 		return complete;
 	}
 	/**
@@ -116,7 +120,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param complete String
 	 * @return this
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setComplete(String complete) {
 		this.complete = complete;
 		return (T)this;
@@ -125,7 +130,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * js语句，在获取服务器的响应数据失败后调用。
 	 * @return String
 	 */
-	public String getError() {
+	@Override
+    public String getError() {
 		return error;
 	}
 	/**
@@ -133,7 +139,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param error String
 	 * @return this
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setError(String error) {
 		this.error = error;
 		return (T)this;
@@ -142,7 +149,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * js语句，在成功获取服务器的响应数据后调用。
 	 * @return String
 	 */
-	public String getSuccess() {
+	@Override
+    public String getSuccess() {
 		return success;
 	}
 	/**
@@ -150,7 +158,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param success String
 	 * @return this
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setSuccess(String success) {
 		this.success = success;
 		return (T)this;
@@ -187,7 +196,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @return this
 	 */
 	@SuppressWarnings("unchecked")
-    public T setLoading(LoadingCommand loading) {
+    public T setLoading(Loading loading) {
 		this.loading = loading;
 		return (T) this;
 	}
@@ -203,11 +212,13 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 		return (T) this;
 	}
 	
-	public String getFilter() {
+	@Override
+    public String getFilter() {
 		return filter;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setFilter(String filter) {
 		this.filter = filter;
 		return (T) this;

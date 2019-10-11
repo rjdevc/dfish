@@ -113,7 +113,8 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 	 * 访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。
 	 * @return String
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return src;
 	}
 	/**
@@ -121,7 +122,8 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Progress setSrc(String src) {
+	@Override
+    public Progress setSrc(String src) {
 		this.src = src;
 		return this;
 	}
@@ -129,7 +131,8 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 	 * 显示文本。
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -137,7 +140,8 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Progress setText(String text) {
+	@Override
+    public Progress setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -179,75 +183,93 @@ public class Progress extends AbstractLayout<Progress, ProgressItem> implements 
 //		return this;
 //	}
 
-	public String getFormat() {
+	@Override
+    public String getFormat() {
 		return format;
 	}
 
-	public Progress setFormat(String format) {
+	@Override
+    public Progress setFormat(String format) {
 		this.format = format;
 		return this;
 	}
 
-	public ProgressItem getPub() {
+	@Override
+    public ProgressItem getPub() {
 		if (pub == null) {
 			pub = new ProgressItem(null);
 		}
 		return pub;
 	}
 
-	public Progress setPub(ProgressItem pub) {
+	@Override
+    public Progress setPub(ProgressItem pub) {
 		this.pub = pub;
 		return this;
 	}
 
 
-	public String getTemplate() {
+	@Override
+    public String getTemplate() {
 		return template;
 	}
-	public Progress setTemplate(String template) {
+	@Override
+    public Progress setTemplate(String template) {
 		this.template = template;
 		return this;
 	}
-	public String getComplete() {
+	@Override
+    public String getComplete() {
 		return complete;
 	}
-	public Progress setComplete(String complete) {
+	@Override
+    public Progress setComplete(String complete) {
 		this.complete = complete;
 		return this;
 	}
-	public String getError() {
+	@Override
+    public String getError() {
 		return error;
 	}
-	public Progress setError(String error) {
+	@Override
+    public Progress setError(String error) {
 		this.error = error;
 		return this;
 	}
-	public String getSuccess() {
+	@Override
+    public String getSuccess() {
 		return success;
 	}
-	public Progress setSuccess(String success) {
+	@Override
+    public Progress setSuccess(String success) {
 		this.success = success;
 		return this;
 	}
-	public String getFilter() {
+	@Override
+    public String getFilter() {
 		return filter;
 	}
-	public Progress setFilter(String filter) {
+	@Override
+    public Progress setFilter(String filter) {
 		this.filter = filter;
 		return this;
 	}
+    @Override
     public Progress setEscape(Boolean escape){
         this.escape=escape;
         return this;
     }
+    @Override
     public Boolean getEscape(){
         return escape;
     }
 
+    @Override
     public Progress setSync(Boolean sync){
         this.sync=sync;
         return this;
     }
+    @Override
     public Boolean getSync(){
         return sync;
     }

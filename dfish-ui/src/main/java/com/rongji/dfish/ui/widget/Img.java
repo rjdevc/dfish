@@ -98,7 +98,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * 是否有滚动条。
 	 * @return text 显示文本
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -106,7 +107,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Img setText(String text) {
+	@Override
+    public Img setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -165,7 +167,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * 水平对齐方式
 	 * @return String
 	 */
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 
@@ -174,7 +177,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * @param align String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Img setAlign(String align) {
+	@Override
+    public Img setAlign(String align) {
 		this.align = align;
 		return this;
 	}
@@ -182,14 +186,16 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 垂直对齐方式
 	 */
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 
 	/**
 	 * 垂直对齐方式
 	 */
-	public Img setValign(String valign) {
+	@Override
+    public Img setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}
@@ -327,11 +333,13 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 		return this;
 	}
 
-	public String getFormat() {
+	@Override
+    public String getFormat() {
 		return format;
 	}
 
-	public Img setFormat(String format) {
+	@Override
+    public Img setFormat(String format) {
 		this.format = format;
 		return this;
 	}
@@ -340,7 +348,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * 用于显示文本是否需要转义,不设置默认是true
 	 * @return Boolean
 	 */
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return escape;
 	}
 
@@ -349,7 +358,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * @param escape Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Img setEscape(Boolean escape) {
+	@Override
+    public Img setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}

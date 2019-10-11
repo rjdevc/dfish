@@ -51,12 +51,14 @@ public class Rate extends AbstractFormElement<Rate,Integer> {
 		setValue(value);
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Rate setTip(Boolean tip) {
 		return this;
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Rate setTip(String tip) {
 		return this;
 	}

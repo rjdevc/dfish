@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 
-import com.rongji.dfish.ui.command.DialogCommand;
+import com.rongji.dfish.ui.command.Dialog;
 
 /**
  * <p>
@@ -49,11 +49,12 @@ public class Linkbox extends LinkableSuggestionBox<Linkbox> {
 	 * @param value 初始值
 	 * @param suggest 候选项的弹窗命令
 	 */
-	public Linkbox(String name, String label, String value, DialogCommand suggest) {
+	public Linkbox(String name, String label, String value, Dialog suggest) {
 		super(name, label, value, suggest);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "linkbox";
 	}
 	

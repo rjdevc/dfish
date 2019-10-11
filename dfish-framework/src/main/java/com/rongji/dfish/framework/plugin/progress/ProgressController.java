@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.plugin.progress;
 import javax.servlet.http.HttpServletRequest;
 
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
-import com.rongji.dfish.ui.command.AlertCommand;
+import com.rongji.dfish.ui.command.Alert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.mvc.controller.BaseController;
 import com.rongji.dfish.ui.Command;
-import com.rongji.dfish.ui.command.CommandGroup;
-import com.rongji.dfish.ui.command.JSCommand;
+import com.rongji.dfish.ui.command.Cmd;
+import com.rongji.dfish.ui.command.JS;
 
 @Controller
 @RequestMapping("/progress")
@@ -64,7 +64,7 @@ public class ProgressController extends BaseController {
 			alertMsg += progressData.getError().getMsg();
 			// 进度条异常,将进度条移除记录
 			progressManager.removeProgress(progressKey);
-			return new AlertCommand(alertMsg);
+			return new Alert(alertMsg);
 		} else if (progressData.isFinish()) {
 			// 进度条结束,将进度条移除记录
 			progressManager.removeProgress(progressKey);
@@ -72,7 +72,7 @@ public class ProgressController extends BaseController {
 				return progressData.getComplete();
 			}
 			// 默认命令做容错
-			return new CommandGroup();
+			return new Cmd();
 		} else {
 			return progressManager.getProgress(progressData);
 		}
@@ -86,7 +86,7 @@ public class ProgressController extends BaseController {
 		if (closeLoading) {
 			js.append("$.close('").append(ProgressManager.ID_LOADING).append("');");
 		}
-		return new JSCommand(js.toString());
+		return new JS(js.toString());
 	}
 	
 }

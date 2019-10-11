@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.Valignable;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.Button;
 import com.rongji.dfish.ui.widget.Split;
-import com.rongji.dfish.ui.widget.button.Overflow;
+import com.rongji.dfish.ui.widget.Overflow;
 
 /**
  * button 的父类。 Alignable
@@ -77,7 +77,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * 
 	 * @return dir
 	 */
-	public String getDir() {
+	@Override
+    public String getDir() {
 		return dir;
 	}
 
@@ -87,7 +88,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param dir h/v
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ButtonBar setDir(String dir) {
+	@Override
+    public ButtonBar setDir(String dir) {
 		this.dir = dir;
 		return this;
 	}
@@ -164,7 +166,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		return this;
 	}
 
-	public ButtonBar setPub(Button pub) {
+	@Override
+    public ButtonBar setPub(Button pub) {
 		this.pub = pub;
 		return this;
 	}
@@ -186,7 +189,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		super(id);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "buttonbar";
 	}
 
@@ -202,7 +206,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		return this;
 	}
 
-	public Button getPub() {
+	@Override
+    public Button getPub() {
 		if (pub == null) {
 			pub = new Button(null);
 		}
@@ -329,8 +334,10 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	     if (w == null) {
 	         return  this;
 	     }
-	     if(w==this)throw new IllegalArgumentException(
-	     		"can not add widget itself as a sub widget");
+	     if(w==this) {
+             throw new IllegalArgumentException(
+                     "can not add widget itself as a sub widget");
+         }
 	     if(index<0){
 	     	nodes.add(w);
 	     }else{

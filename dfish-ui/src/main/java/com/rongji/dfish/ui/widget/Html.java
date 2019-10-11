@@ -37,7 +37,8 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "html";
 	}
 
@@ -53,29 +54,35 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 		return this;
 	}
 
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 	
-	public Html setEscape(Boolean escape) {
+	@Override
+    public Html setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}
 
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return scroll;
 	}
 
-	public Html setScroll(Boolean scroll) {
+	@Override
+    public Html setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return this;
 	}
 
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return scrollClass;
 	}
 	
-	public Html setScrollClass(String scrollClass) {
+	@Override
+    public Html setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
 	}
@@ -84,7 +91,8 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	 * 单行文本输入框
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -93,21 +101,26 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	 * @param text 显示文本
 	 * @return this html内容
 	 */
-	public Html setText(String text) {
+	@Override
+    public Html setText(String text) {
 		this.text = text;
 		return this;
 	}
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
-	public Html setAlign(String align) {
+	@Override
+    public Html setAlign(String align) {
 		this.align = align;
 		return this;
 	}
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
-	public Html setValign(String valign) {
+	@Override
+    public Html setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}
@@ -137,11 +150,13 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
     	this.thumbwidth = String.valueOf(thumbwidth);
 	    return   this;
     }
-	public String getFormat() {
+	@Override
+    public String getFormat() {
 		return format;
 	}
 
-	public Html setFormat(String format) {
+	@Override
+    public Html setFormat(String format) {
 		this.format = format;
 		return this;
 	}

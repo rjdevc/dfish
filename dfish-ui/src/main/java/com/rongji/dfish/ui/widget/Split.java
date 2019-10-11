@@ -48,7 +48,8 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	 * 显示文本
 	 * @return text
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -57,7 +58,8 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Split setText(String text) {
+	@Override
+    public Split setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -139,11 +141,13 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 		return "split";
 	}
 
-	public Split setEscape(Boolean escape){
+	@Override
+    public Split setEscape(Boolean escape){
 		this.escape=escape;
 		return this;
 	}
-	public Boolean getEscape(){
+	@Override
+    public Boolean getEscape(){
 		return escape;
 	}
 }

@@ -170,7 +170,8 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * var opt = { type: 'canlendar/date', pub: { on: { click: 'alert(this.val())' } } }
 	 * @return CalendarItem
 	 */
-	public CalendarTd getPub() {
+	@Override
+    public CalendarTd getPub() {
 		if (pub == null) {
 			pub = new CalendarTd();
 		}
@@ -183,13 +184,15 @@ public class CalendarPanel extends AbstractWidget<CalendarPanel>implements PubHo
 	 * @param pub CalendarItem
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public CalendarPanel setPub(CalendarTd pub) {
+	@Override
+    public CalendarPanel setPub(CalendarTd pub) {
 		this.pub = pub;
 		return this;
 	}
 
 //	"type": "calendar/date", "date": "2015-01-01", "focusdate": "2015-01-15", "src": "webapp/test/demo.json.php?act=calendar&date=$0", "css": { "value": "NNNNNNNNNYNNNNNNNNYYYYYYYNNNNNN", "Y" : "color:green;font-weight:bold" }, "defaults": { "on": { "click": "alert(this.val())" } }
-	public String getType() {
+	@Override
+    public String getType() {
 		return type;
 	}
 	public Map<String, CalendarTd> getBody() {

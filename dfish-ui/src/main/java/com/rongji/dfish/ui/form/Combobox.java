@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 
-import com.rongji.dfish.ui.command.DialogCommand;
+import com.rongji.dfish.ui.command.Dialog;
 
 /**
  * <p>
@@ -59,11 +59,12 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 	 * @param value 初始值
 	 * @param suggest 候选项的弹窗命令
 	 */
-	public Combobox(String name, String label, String value, DialogCommand suggest) {
+	public Combobox(String name, String label, String value, Dialog suggest) {
 		super(name, label, value, suggest);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "combobox";
 	}
 
@@ -76,12 +77,14 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 		return this;
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Combobox setTip(Boolean tip) {
 		return this;
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Combobox setTip(String tip) {
 		return this;
 	}

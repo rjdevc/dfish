@@ -16,7 +16,7 @@ import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.misc.util.ImageUtil;
-import com.rongji.dfish.ui.command.JSCommand;
+import com.rongji.dfish.ui.command.JS;
 import com.rongji.dfish.ui.form.UploadItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -526,13 +526,13 @@ public class FileController extends BaseController {
             String fileParamUrl = "?fileId=" + enFileId + param;
             if (isImage) {
                 // 图片形式使用框架的预览方式
-                return new JSCommand("$.previewImage('file/thumbnail" + fileParamUrl + "');");
+                return new JS("$.previewImage('file/thumbnail" + fileParamUrl + "');");
             } else {
                 String mimeType = getMimeType(fileType);
                 if (Utils.notEmpty(mimeType)) { // 如果是浏览器支持可查看的内联类型,新窗口打开
-                    return new JSCommand("window.open('file/download" + fileParamUrl + "&inline=1');");
+                    return new JS("window.open('file/download" + fileParamUrl + "&inline=1');");
                 } else { // 其他情况都是直接下载
-                    return new JSCommand("$.download('file/download" + fileParamUrl + "');");
+                    return new JS("$.download('file/download" + fileParamUrl + "');");
                 }
             }
         } else {

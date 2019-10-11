@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.json.JsonWrapper;
-import com.rongji.dfish.ui.layout.GridLayout;
+import com.rongji.dfish.ui.layout.Grid;
 
 /**
  * Tr 表示 表格的行
@@ -34,13 +34,13 @@ public class Tr extends AbstractTr<Tr> implements JsonWrapper<Object>{
 	public Tr(){
 		super();
 	}
-	protected GridLayout owner;
+	protected Grid owner;
 
-	public GridLayout owner() {
+	public Grid owner() {
 		return owner;
 	}
 
-	public Tr owner(GridLayout owner) {
+	public Tr owner(Grid owner) {
 		this.owner = owner;
 		return this;
 	}

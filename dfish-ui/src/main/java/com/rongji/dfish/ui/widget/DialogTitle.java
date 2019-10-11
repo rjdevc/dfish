@@ -40,33 +40,40 @@ public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollab
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "dialog/title";
 	}
 
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 	
-	public DialogTitle setEscape(Boolean escape) {
+	@Override
+    public DialogTitle setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}
 
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return scroll;
 	}
 
-	public DialogTitle setScroll(Boolean scroll) {
+	@Override
+    public DialogTitle setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return this;
 	}
 
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return scrollClass;
 	}
 	
-	public DialogTitle setScrollClass(String scrollClass) {
+	@Override
+    public DialogTitle setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
 	}
@@ -75,7 +82,8 @@ public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollab
 	 * 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -84,7 +92,8 @@ public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollab
 	 * @param text 标题的文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public DialogTitle setText(String text) {
+	@Override
+    public DialogTitle setText(String text) {
 		this.text = text;
 		return this;
 	}

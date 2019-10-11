@@ -63,18 +63,11 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 		this.target = target;
 		return (T)this;
 	}
-	/**
-	 * 显示文本。
-	 * @return text
-	 */
+	@Override
 	public String getText() {
 		return text;
 	}
-	/**
-	 * 显示文本。
-	 * @param text String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
+	@Override
 	public T setText(String text) {
 		this.text = text;
 		return (T)this;
@@ -114,39 +107,36 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 		this.field = field;
 		return (T)this;
 	}
+	@Override
 	public Boolean getEscape() {
 		return this.escape;
 	}
-	
+	@Override
 	public T setEscape(Boolean escape) {
 		this.escape = escape;
 		return (T)this;
 	}
-
+	@Override
 	public String getFormat() {
 		return format;
 	}
-
+	@Override
 	public T setFormat(String format) {
 		this.format = format;
 		return (T) this;
 	}
-
+	@Override
 	public Object getTip() {
 		return tip;
 	}
 
-
+	@Override
 	public T setTip(Boolean tip) {
 		this.tip = tip;
 		return (T)this;
 	}
 
-	/**
-	 * 提示
-	 * @param tip String
-	 * @return this
-	 */
+	@Override
 	public T setTip(String tip) {
 		this.tip = tip;
 		return (T)this;
@@ -187,7 +177,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 		return (T) this;
 	}
 
-
+	@Override
 	public T setValue(Object value) {
 		this.value = value;
 		return (T) this;

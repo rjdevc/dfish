@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.command.DialogCommand;
+import com.rongji.dfish.ui.command.Dialog;
 
 
 /**
@@ -13,12 +13,13 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	private static final long serialVersionUID = 7493588393931087665L;
 	private String text;
 	private Boolean escape;
-	private DialogCommand drop;
+	private Dialog drop;
 	/**
 	 * 显示文本
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -26,7 +27,8 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param text 显示文本
 	 * @return this
 	 */
-	public Pickbox setText(String text) {
+	@Override
+    public Pickbox setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -56,9 +58,10 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 		this.setLabel(label);
 	}
 
-	private DialogCommand picker;
+	private Dialog picker;
 	
-	public String getType() {
+	@Override
+    public String getType() {
 		return "pickbox";
 	}
 
@@ -67,7 +70,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * dialog 参数。其中 dialog 的 src 支持 $value 和 $text 变量。
 	 * @return picker
 	 */
-	public DialogCommand getPicker() {
+	public Dialog getPicker() {
 		return picker;
 	}
 	/**
@@ -75,7 +78,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param picker dialog 参数
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Pickbox setPicker(DialogCommand picker) {
+	public Pickbox setPicker(Dialog picker) {
 		this.picker = picker;
 		return this;
 	}
@@ -90,9 +93,9 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * 获取下拉对话框,如果不存在则新建
 	 * @return DialogCommand
 	 */
-	protected DialogCommand drop() {
+	protected Dialog drop() {
 		if (this.drop == null) {
-			this.drop = new DialogCommand();
+			this.drop = new Dialog();
 		}
 		return this.drop;
 	}
@@ -101,7 +104,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * 显示所有选项的下拉对话框。
 	 * @return DialogCommand
 	 */
-	public DialogCommand getDrop() {
+	public Dialog getDrop() {
 		return drop;
 	}
 
@@ -110,15 +113,17 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param drop DialogCommand
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Pickbox setDrop(DialogCommand drop) {
+	public Pickbox setDrop(Dialog drop) {
 		this.drop = drop;
 		return this;
 	}
-	public Pickbox setEscape(Boolean escape){
+	@Override
+    public Pickbox setEscape(Boolean escape){
 		this.escape=escape;
 		return this;
 	}
-	public Boolean getEscape(){
+	@Override
+    public Boolean getEscape(){
 		return escape;
 	}
 }

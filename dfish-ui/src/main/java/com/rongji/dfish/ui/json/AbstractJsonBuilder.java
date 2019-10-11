@@ -6,10 +6,12 @@ package com.rongji.dfish.ui.json;
  *
  */
 public abstract class AbstractJsonBuilder implements JsonBuilder {
-	public void removeProperty(String propName){
+	@Override
+    public void removeProperty(String propName){
 		throw new java.lang.UnsupportedOperationException();
 	}
-	public void replaceProperty(String propName,String newName){
+	@Override
+    public void replaceProperty(String propName, String newName){
 		throw new java.lang.UnsupportedOperationException();
 	}
 

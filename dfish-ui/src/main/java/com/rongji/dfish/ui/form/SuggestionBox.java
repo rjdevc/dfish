@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.JsonObject;
-import com.rongji.dfish.ui.command.DialogCommand;
+import com.rongji.dfish.ui.command.Dialog;
 
 /**
  * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link Combobox} {@link Linkbox}和{@link Onlinebox}
@@ -15,11 +15,11 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 
 	 */
 	private static final long serialVersionUID = -3727695759981575245L;
-	private DialogCommand suggest;
+	private Dialog suggest;
 //	private Boolean suggest;
 	private Boolean multiple;
 	private Boolean nobr;
-	private DialogCommand drop; //显示所有结果的 view suggest。;
+	private Dialog drop; //显示所有结果的 view suggest。;
 	private JsonObject picker;
 	private Long delay;
 	private String separator;
@@ -47,7 +47,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * @param value 初始值
 	 * @param suggest 在线匹配关键词的 view suggest。支持 $value 和 $text 变量。
 	 */
-	public SuggestionBox(String name, String label, String value, DialogCommand suggest) {
+	public SuggestionBox(String name, String label, String value, Dialog suggest) {
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
@@ -136,7 +136,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 在线匹配关键词的动作。支持 $value 和 $text 变量。
 	 * @return  String
 	 */
-	public DialogCommand getSuggest() {
+	public Dialog getSuggest() {
 		return suggest;
 	}
 
@@ -144,9 +144,9 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 获取在线匹配关键词的命令,当不存在时,将创建新的对话框
 	 * @return
 	 */
-	protected DialogCommand src() {
+	protected Dialog src() {
 		if (this.suggest == null) {
-			this.suggest = new DialogCommand();
+			this.suggest = new Dialog();
 		}
 		return this.suggest;
 	}
@@ -158,7 +158,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 */
 	@SuppressWarnings("unchecked")
     public T setSuggest(String suggest) {
-		DialogCommand thisSrc = src().setSrc(suggest);
+		Dialog thisSrc = src().setSrc(suggest);
 		thisSrc.setSrc(suggest);
 		return (T) this;
 	}
@@ -168,7 +168,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * @param suggest 在线匹配关键词的对话框命令
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setSuggest(DialogCommand suggest) {
+	public T setSuggest(Dialog suggest) {
 		this.suggest = suggest;
 		return (T) this;
 	}
@@ -190,7 +190,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 显示所有结果的 view suggest。;
 	 * @param dropsrc 所有结果的 view suggest
 	 * @return 本身，这样可以继续设置其他属性
-	 * @see #setDrop(DialogCommand)
+	 * @see #setDrop(Dialog)
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
@@ -203,9 +203,9 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 获取下拉对话框,如果不存在则新建
 	 * @return DialogCommand
 	 */
-	protected DialogCommand drop() {
+	protected Dialog drop() {
 		if (this.drop == null) {
-			this.drop = new DialogCommand();
+			this.drop = new Dialog();
 		}
 		return this.drop;
 	}
@@ -214,7 +214,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * 显示所有选项的下拉对话框。
 	 * @return DialogCommand
 	 */
-	public DialogCommand getDrop() {
+	public Dialog getDrop() {
 		return drop;
 	}
 
@@ -223,7 +223,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * @param drop DialogCommand
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setDrop(DialogCommand drop) {
+	public T setDrop(Dialog drop) {
 		this.drop = drop;
 		return (T) this;
 	}

@@ -10,9 +10,9 @@ import com.rongji.dfish.framework.plugin.exception.service.ExceptionTypeInfo;
 import com.rongji.dfish.framework.plugin.exception.service.ExceptionViewerService;
 import com.rongji.dfish.framework.plugin.exception.service.StackInfo;
 import com.rongji.dfish.framework.plugin.exception.view.ExceptionViewerView;
-import com.rongji.dfish.ui.command.AlertCommand;
-import com.rongji.dfish.ui.command.CommandGroup;
-import com.rongji.dfish.ui.command.ReplaceCommand;
+import com.rongji.dfish.ui.command.Alert;
+import com.rongji.dfish.ui.command.Cmd;
+import com.rongji.dfish.ui.command.Replace;
 import com.rongji.dfish.ui.json.J;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.layout.grid.Td;
@@ -85,9 +85,9 @@ public class ExceptionViewerController extends BaseController {
 		Long typeId = parseTypeIdValue(request.getParameter("typeId"));
 
 		List<PubExptRecord> recs = exceptionViewerService.findRecords(page, typeId);
-		CommandGroup cg = new CommandGroup();
-		cg.add(new ReplaceCommand().setNode(exceptionViewerView.buildGrid(recs)));
-		cg.add(new ReplaceCommand().setNode(exceptionViewerView.buildPageBar(page, typeId)));
+		Cmd cg = new Cmd();
+		cg.add(new Replace().setNode(exceptionViewerView.buildGrid(recs)));
+		cg.add(new Replace().setNode(exceptionViewerView.buildPageBar(page, typeId)));
 		return cg;
 	}
 
@@ -186,7 +186,7 @@ public class ExceptionViewerController extends BaseController {
 	@ResponseBody
 	public Object changeLock(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		boolean lock = ExceptionManager.getInstance().toggleEnable();
-		return new AlertCommand("异常记录开关" + (lock ? "已开启" : "已关闭")).setPosition(AlertCommand.POSITION_SOUTHEAST)
+		return new Alert("异常记录开关" + (lock ? "已开启" : "已关闭")).setPosition(Alert.POSITION_SOUTHEAST)
 		        .setTimeout(5000L);
 		// return showAsLog(request, response);
 	}

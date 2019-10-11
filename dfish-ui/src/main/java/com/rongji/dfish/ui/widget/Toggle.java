@@ -100,7 +100,8 @@ public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle>,
 	 * 显示文本
 	 * @return texts
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -108,7 +109,8 @@ public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle>,
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Toggle setText(String text) {
+	@Override
+    public Toggle setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -145,20 +147,24 @@ public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle>,
 		return this;
 	}
 
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return escape;
 	}
 
-	public Toggle setEscape(Boolean escape) {
+	@Override
+    public Toggle setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}
 
-	public String getFormat() {
+	@Override
+    public String getFormat() {
 		return format;
 	}
 
-	public Toggle setFormat(String format) {
+	@Override
+    public Toggle setFormat(String format) {
 		this.format = format;
 		return this;
 	}

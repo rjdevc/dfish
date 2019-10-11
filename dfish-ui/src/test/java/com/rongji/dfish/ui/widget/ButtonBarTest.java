@@ -1,15 +1,14 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.DFishUITestCase;
-import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.layout.ButtonBar;
-import com.rongji.dfish.ui.layout.VerticalLayout;
+import com.rongji.dfish.ui.layout.Vertical;
 
 public class ButtonBarTest extends DFishUITestCase{
 
 	@Override
 	protected Object getWidget() {
-		VerticalLayout vl=new VerticalLayout("");
+		Vertical vl=new Vertical("");
 		ButtonBar bar=new ButtonBar("bbp");
 		vl.add(bar);
 		bar.getPub().setCls("f-buton");

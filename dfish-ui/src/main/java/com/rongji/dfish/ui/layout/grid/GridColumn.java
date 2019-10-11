@@ -10,6 +10,7 @@ import com.rongji.dfish.ui.form.Radio;
 import com.rongji.dfish.ui.form.Triplebox;
 import com.rongji.dfish.ui.form.Validate;
 import com.rongji.dfish.ui.json.RawJson;
+import com.rongji.dfish.ui.widget.Highlight;
 
 
 /**
@@ -67,7 +68,7 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	String label;
 	String width;
 	Integer labelwidth;
-	Object format;
+	String format;
 //	String sortsrc;
 //	String sort;
 	String style;
@@ -653,9 +654,9 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 
 	/**
 	 * 设置 该列在JSON中的属性名
+	 * 一般来说grid名称指定以后，相关的操作如tr里面会按这个名字放置内容，所以，一般不会在运行期改变这个值。
 	 * @param field 该列在JSON中的属性名
 	 * @return 本身，这样可以继续设置其他属性
-	 * @deprecated 一般来说grid名称指定以后，相关的操作如tr里面会按这个名字放置内容，所以，一般不会在运行期改变这个值。
 	 */
 	public GridColumn setField(String field) {
 		this.field = field;
@@ -764,24 +765,6 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 		this.format = format;
 		return this;
 	}
-	
-	/**
-	 * 格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值)。
-	 * 如果列表有多行，并且这个字段显示的时候，需要一个复杂HTML，而每行中需要的变化的仅仅是少量的数据，可以使用format来减少传输量。
-	 * 典型的有两种写法
-	 * <pre>
-	 * javascript:var d= this.x.data.s;if('1'==d){return \"&lt;span style='color:gray'&gt;唯一&lt;/span&gt;\"};return '';
-	 * </pre>或<pre>
-	 * [&lt;a href='javascript:;' onclick=\"demo.enterView(this,'$vId');\"&gt;查看&lt;/a&gt;]&amp;nbsp;
-	 * </pre>
-	 * @param format String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public GridColumn setFormat(JSFunction format) {
-		this.format = format;
-		return this;
-	}
-
 
 
 	/**
@@ -830,7 +813,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 
@@ -873,7 +857,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 	/**
@@ -884,7 +869,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public GridColumn setAlign(String align) {
+	@Override
+    public GridColumn setAlign(String align) {
 		this.align = align;
 		return this;
 	}
@@ -896,7 +882,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #VALIGN_BOTTOM
 	 * 
 	 */
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 	/**
@@ -907,7 +894,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #VALIGN_MIDDLE
 	 * @see #VALIGN_BOTTOM
 	 */
-	public GridColumn setValign(String valign) {
+	@Override
+    public GridColumn setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}
@@ -934,7 +922,7 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 */
 	@Transient
 	public boolean isVisable() {
-		return this.width!=null&&!this.width.equals("");
+		return this.width!=null&&!"".equals(this.width);
 	}
 	/**
 	 * 选项表单，类型是 checkbox 或 radio。

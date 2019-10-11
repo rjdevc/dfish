@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({GridLayoutTest.class})
+@SuiteClasses({GridTest.class})
 public class DfishUILayoutTest {
 
 }

@@ -8,7 +8,8 @@ import java.util.Stack;
  *
  */
 public  class ArrayJsonBuilder extends AbstractJsonBuilder {
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+    public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		Object[] cast=(Object[])o;
 		boolean appended=false;
 		sb.append('[');
@@ -31,12 +32,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * byte[]无法转化成Object[]
 	 */
 	public  static class ByteArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			byte[] cast=(byte[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(byte item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');
@@ -47,12 +53,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * char[]无法转化成Object[]
 	 */
 	public  static class CharArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			char[] cast=(char[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(char item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');
@@ -63,12 +74,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * double[]无法转化成Object[]
 	 */	
 	public  static class DoubleArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			double[] cast=(double[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(double item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');
@@ -79,12 +95,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * float[]无法转化成Object[]
 	 */	
 	public  static class FloatArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			float[] cast=(float[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(float item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');
@@ -95,12 +116,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * int[]无法转化成Object[]
 	 */		
 	public  static class IntArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			int[] cast=(int[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(int item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');
@@ -111,12 +137,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * long[]无法转化成Object[]
 	 */	
 	public  static class LongArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			long[] cast=(long[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(long item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');
@@ -127,12 +158,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * short[]无法转化成Object[]
 	 */	
 	public  static class ShortArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			short[] cast=(short[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(short item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');
@@ -143,12 +179,17 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 	 * boolean[]无法转化成Object[]
 	 */	
 	public  static class BooleanArrayJsonBuilder extends AbstractJsonBuilder{
-		public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+		@Override
+        public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 			boolean[] cast=(boolean[])o;
 			boolean appended=false;
 			sb.append('[');
 			for(boolean item:cast){
-				if(appended)sb.append(',');else appended=true;
+				if(appended) {
+                    sb.append(',');
+                } else {
+                    appended=true;
+                }
 				sb.append(item);
 			}
 			sb.append(']');

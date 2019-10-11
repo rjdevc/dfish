@@ -7,8 +7,8 @@ import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.JsonNode;
-import com.rongji.dfish.ui.command.AlertCommand;
-import com.rongji.dfish.ui.command.LoadingCommand;
+import com.rongji.dfish.ui.command.Alert;
+import com.rongji.dfish.ui.command.Loading;
 import com.rongji.dfish.ui.widget.Progress;
 import com.rongji.dfish.ui.widget.ProgressItem;
 
@@ -245,11 +245,11 @@ public class ProgressManager {
         ProgressData progressData = register(runnable, progressKey, progressText, completeNode, stepScale);
         Progress progress = getProgress(progressData);
         if (progress != null) {
-            return new LoadingCommand(null).setId(ID_LOADING).setNode(progress);
+            return new Loading(null).setId(ID_LOADING).setNode(progress);
         } else {
             String errorMsg = "添加进度条队列失败@" + System.currentTimeMillis();
             FrameworkHelper.LOG.warn(errorMsg + "[" + progressKey + "]");
-            return new AlertCommand(errorMsg);
+            return new Alert(errorMsg);
         }
     }
 

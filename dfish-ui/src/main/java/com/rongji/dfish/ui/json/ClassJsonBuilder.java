@@ -61,10 +61,10 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                     continue;
                 }
                 String fieldName = getFiledNameByGetterName(m.getName());
-                if (banNames.contains(fieldName)) {
+                if (BAN_NAMES.contains(fieldName)) {
                     continue;
                 }
-                String propName = propNameMap.get(fieldName);
+                String propName = PROP_NAME_MAP.get(fieldName);
                 if (propName == null) {
                     propName = fieldName;
                 }
@@ -147,8 +147,8 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
         return methods;
     }
 
-    private static final HashMap<String, String> propNameMap = new HashMap<String, String>();
-    private static final HashSet<String> banNames = new HashSet<String>();
+    private static final HashMap<String, String> PROP_NAME_MAP = new HashMap<String, String>();
+    private static final HashSet<String> BAN_NAMES = new HashSet<String>();
     /**
      * 指定以下属性在JSON中按指定的顺序排列，而其他未考虑到的属性，排在json背后，并按字母表顺序排列
      */
@@ -187,20 +187,20 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
         /*
          * 标识这部分的属性要按照子节点来转化
          */
-//		propNameMap.put("rootWidget", "node"); 
-//		propNameMap.put("buttons", "nodes"); 
+//		PROP_NAME_MAP.put("rootWidget", "node");
+//		PROP_NAME_MAP.put("buttons", "nodes");
 
 
         /*
          * 标识不要关心这部分属性
          */
-        banNames.add("");
-        banNames.add("class");
-        banNames.add("declaringClass");
+        BAN_NAMES.add("");
+        BAN_NAMES.add("class");
+        BAN_NAMES.add("declaringClass");
 
-        banNames.add("hideTitle");
-        banNames.add("autoEscape");
-        banNames.add("star");
+        BAN_NAMES.add("hideTitle");
+        BAN_NAMES.add("autoEscape");
+        BAN_NAMES.add("star");
     }
 
     private static String getFiledNameByGetterName(String name) {
@@ -279,7 +279,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
             }
             //这里不能简单的使用J.buildJson. 因为很多属性是要去除的。如disabled为false的时候不需要显示。
             if (v instanceof String) {
-                if (v.equals("")) {
+                if ("".equals(v)) {
                     return begin;
                 }
             } else if (v instanceof Collection<?>) {//&&((Number)v).intValue()==0

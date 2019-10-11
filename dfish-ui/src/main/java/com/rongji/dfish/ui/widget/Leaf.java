@@ -210,6 +210,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     }
 
 
+    @Override
     public String getType() {
         return "leaf";//"widget/tree";
     }
@@ -342,6 +343,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      *
      * @return text
      */
+    @Override
     public String getText() {
         return text;
     }
@@ -352,6 +354,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      * @param text 显示文本
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public Leaf setText(String text) {
         this.text = text;
         return this;
@@ -394,6 +397,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      *
      * @return src
      */
+    @Override
     public String getSrc() {
         return src;
     }
@@ -404,6 +408,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      * @param src URL地址
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public Leaf setSrc(String src) {
         this.src = src;
         return this;
@@ -561,6 +566,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      *
      * @return String
      */
+    @Override
     public String getFormat() {
         return format;
     }
@@ -578,15 +584,18 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      * @param format String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public Leaf setFormat(String format) {
         this.format = format;
         return this;
     }
 
+    @Override
     public String getStatus() {
         return status;
     }
 
+    @Override
     public Leaf setStatus(String status) {
         this.status = status;
         return this;
@@ -635,8 +644,9 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
         if (w == null) {
             return this;
         }
-        if (w == this) throw new IllegalArgumentException(
-                "can not add widget itself as a sub widget");
+        if (w == this) {
+            throw new IllegalArgumentException("can not add widget itself as a sub widget");
+        }
         if (index < 0) {
             nodes.add(w);
         } else {
@@ -645,50 +655,62 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
         return this;
     }
 
+    @Override
     public Boolean getEscape() {
         return escape;
     }
+    @Override
     public Leaf setEscape(Boolean escape) {
         this.escape = escape;
         return this;
     }
+    @Override
     public String getSuccess() {
         return success;
     }
 
+    @Override
     public Leaf setSuccess(String success) {
         this.success = success;
         return this;
     }
+    @Override
     public String getError() {
         return error;
     }
 
+    @Override
     public Leaf setError(String error) {
         this.error = error;
         return this;
     }
+    @Override
     public String getComplete() {
         return complete;
     }
 
+    @Override
     public Leaf setComplete(String complete) {
         this.complete = complete;
         return this;
     }
+    @Override
     public String getFilter() {
         return filter;
     }
 
+    @Override
     public Leaf setFilter(String filter) {
         this.filter = filter;
         return this;
     }
 
+    @Override
     public Boolean getSync() {
         return sync;
     }
 
+    @Override
     public Leaf setSync(Boolean sync) {
         this.sync = sync;
         return this;

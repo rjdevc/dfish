@@ -28,7 +28,8 @@ public class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio,String> {
 	protected Radio buildOption(Option o) {
 		return new Radio(null,null,o.getChecked(),o.getValue()==null?null:o.getValue().toString(),o.getText());
 	}
-	public String getType() {
+	@Override
+    public String getType() {
 		return "radiogroup";
 	}
 

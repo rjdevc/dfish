@@ -66,7 +66,7 @@ public interface GridOper<T> {
 	 * <p>删除某个单元格内容</p>
 	 * <p>行和列的初始坐标为0</p>
 	 * <p>删除可能是失败，比如说要删除的位置实际上是个合并单元格，而指定位置不足以包含它全部内容</p>
-	 * <p>删除节点后可能会留下空行和空列，可以用{@link GridLayout#minimize()}来删除空行和空列。或去rows和column中手动清理</p>
+	 * <p>删除节点后可能会留下空行和空列，可以用{@link Grid#minimize()}来删除空行和空列。或去rows和column中手动清理</p>
 	 * @param row 行
 	 * @param column 列
 	 * @return this
@@ -76,7 +76,7 @@ public interface GridOper<T> {
 	 * <p>删除某个区块内的所有内容</p>
 	 * <p>行和列的初始坐标为0</p>
 	 * <p>删除可能是失败，比如说要删除的区块原本可能已经有一个或多个合并单元格，而当前区块不足以包含它全部内容</p>
-	 * <p>删除节点后可能会留下空行和空列，可以用{@link GridLayout#minimize()}来删除空行和空列。或去rows和column中手动清理</p>
+	 * <p>删除节点后可能会留下空行和空列，可以用{@link Grid#minimize()}来删除空行和空列。或去rows和column中手动清理</p>
 	 * @param fromRow 区块起始行
 	 * @param fromColumn 区块起始列
 	 * @param toRow 区块结束行

@@ -59,7 +59,8 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "xbox";
 	}
 
@@ -139,44 +140,54 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 		this.cancelable=cancelable;
 		return this;
 	}
-	public String getSuccess() {
+	@Override
+    public String getSuccess() {
 		return success;
 	}
 
-	public Xbox setSuccess(String success) {
+	@Override
+    public Xbox setSuccess(String success) {
 		this.success = success;
 		return this;
 	}
-	public String getError() {
+	@Override
+    public String getError() {
 		return error;
 	}
 
-	public Xbox setError(String error) {
+	@Override
+    public Xbox setError(String error) {
 		this.error = error;
 		return this;
 	}
-	public String getComplete() {
+	@Override
+    public String getComplete() {
 		return complete;
 	}
 
-	public Xbox setComplete(String complete) {
+	@Override
+    public Xbox setComplete(String complete) {
 		this.complete = complete;
 		return this;
 	}
-	public String getFilter() {
+	@Override
+    public String getFilter() {
 		return filter;
 	}
 
-	public Xbox setFilter(String filter) {
+	@Override
+    public Xbox setFilter(String filter) {
 		this.filter = filter;
 		return this;
 	}
 
-	public Boolean getSync() {
+	@Override
+    public Boolean getSync() {
 		return sync;
 	}
 
-	public Xbox setSync(Boolean sync) {
+	@Override
+    public Xbox setSync(Boolean sync) {
 		this.sync = sync;
 		return this;
 	}

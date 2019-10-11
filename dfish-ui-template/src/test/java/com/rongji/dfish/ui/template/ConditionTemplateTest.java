@@ -1,16 +1,10 @@
 package com.rongji.dfish.ui.template;
 
-import org.junit.Test;
-
-import com.rongji.dfish.ui.command.JSCommand;
-import com.rongji.dfish.ui.form.DatePicker;
-import com.rongji.dfish.ui.form.FormGroup;
-import com.rongji.dfish.ui.form.Spinner;
+import com.rongji.dfish.ui.command.JS;
 import com.rongji.dfish.ui.form.Text;
-import com.rongji.dfish.ui.helper.FlexGrid;
-import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;
 import com.rongji.dfish.ui.widget.Leaf;
+import org.junit.Test;
 
 public class ConditionTemplateTest {
 	
@@ -18,13 +12,13 @@ public class ConditionTemplateTest {
 	public void getDefine() {
 		String uri="t/cms/test";
 		JudgeTemplate jt=new JudgeTemplate();
-		jt.addIf("@w-if($error)", new WidgetTemplate(new JSCommand(null)).at("text","app.error($error);"));
-		jt.addElse(getWidgetTemplate());
+		jt.addIf("@w-if($error)", new WidgetTemplate(new JS(null)).at("text","app.error($error);"));
+//		jt.addElse(getWidgetTemplate());
 		TemplateDefine ret= new TemplateDefine(uri,jt);
 		System.out.println(ret);
 	}
 	
-	private WidgetTemplate getWidgetTemplate() {
+	/*private WidgetTemplate getWidgetTemplate() {
 		View view =new View();
 		FlexGrid fg=new FlexGrid("你猜");
 		view.add(fg);
@@ -48,7 +42,7 @@ public class ConditionTemplateTest {
 		hg1.add(new Html("小时"),"-1");
 
 		return new WidgetTemplate(view);
-	}
+	}*/
 	
 	@Test
 	public void getFor() {

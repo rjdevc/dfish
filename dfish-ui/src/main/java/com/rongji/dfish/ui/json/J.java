@@ -1,16 +1,14 @@
 package com.rongji.dfish.ui.json;
 
+import com.rongji.dfish.ui.TemplateSupport;
+import com.rongji.dfish.ui.Widget;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.rongji.dfish.ui.JSFunction;
-import com.rongji.dfish.ui.TemplateSupport;
-import com.rongji.dfish.ui.Widget;
 /**
  * <p>JSON构建器工具类入口</p>，该构建器不是通用的，它是为DFish3定制的。
  * 它功能不完整，但吻合DFish3的要求，构建出来的JSON效果较好(排序吻合DFish3的逻辑)
@@ -108,7 +106,7 @@ public class J {
 		djbs.put(long[].class, new ArrayJsonBuilder.LongArrayJsonBuilder());
 		djbs.put(short[].class, new ArrayJsonBuilder.ShortArrayJsonBuilder());
 		djbs.put(boolean[].class, new ArrayJsonBuilder.BooleanArrayJsonBuilder());
-		djbs.put(JSFunction.class, new FunctionJsonBuilder());
+//		djbs.put(JSFunction.class, new FunctionJsonBuilder());
 		djbs.put(RawJson.class, new RawJsonBuilder());
 	}
 	

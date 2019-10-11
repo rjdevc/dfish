@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.layout.AbstractLayout;
-import com.rongji.dfish.ui.layout.GridLayout;
+import com.rongji.dfish.ui.layout.Grid;
 import com.rongji.dfish.ui.layout.GridOper;
 
 /**
@@ -38,13 +38,13 @@ public class GridPart extends AbstractLayout<GridPart, Tr> implements GridOper<G
 		super(null);
 	}
 	
-	protected GridLayout owner;
+	protected Grid owner;
 
-	public GridLayout owner() {
+	public Grid owner() {
 		return owner;
 	}
 
-	public GridPart owner(GridLayout owner) {
+	public GridPart owner(Grid owner) {
 		this.owner = owner;
 		return  this;
 	}
@@ -64,7 +64,8 @@ public class GridPart extends AbstractLayout<GridPart, Tr> implements GridOper<G
 		return super.add(w);
 	}
 
-	public GridPart add(int row, int column, Object o){
+	@Override
+    public GridPart add(int row, int column, Object o){
 		put(row,column,o,false);
 		return this;
 	}
@@ -185,7 +186,8 @@ public class GridPart extends AbstractLayout<GridPart, Tr> implements GridOper<G
 	    owner.notifyChange();  
 	}
 	
-	public GridPart add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value){
+	@Override
+    public GridPart add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value){
 		if(toRow==null){
 			toRow=fromRow;
 		}
@@ -196,12 +198,14 @@ public class GridPart extends AbstractLayout<GridPart, Tr> implements GridOper<G
 		return this;
 	}
 	
-	public GridPart put(int row, int column, Object o){
+	@Override
+    public GridPart put(int row, int column, Object o){
 		put(row,column,o,true);
 		return this;
 	}
 	
-	public GridPart put(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value){
+	@Override
+    public GridPart put(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value){
 		if(toRow==null){
 			toRow=fromRow;
 		}
@@ -212,11 +216,13 @@ public class GridPart extends AbstractLayout<GridPart, Tr> implements GridOper<G
 		return this;
 	}
 	
-	public GridPart removeNode(int row, int column){
+	@Override
+    public GridPart removeNode(int row, int column){
 		removeNode(row,column ,row,column);
 		return this;
 	}
-	public boolean containsNode(int fromRow,int fromColumn,int toRow, int toColumn){
+	@Override
+    public boolean containsNode(int fromRow, int fromColumn, int toRow, int toColumn){
 		if(owner==null){
 			throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in GridLayout.");
 		}
@@ -255,7 +261,8 @@ public class GridPart extends AbstractLayout<GridPart, Tr> implements GridOper<G
 		}
 		return false;
 	}
-	public GridPart removeNode(int fromRow, int fromColumn, int toRow, int toColumn){
+	@Override
+    public GridPart removeNode(int fromRow, int fromColumn, int toRow, int toColumn){
 		if(owner==null){
 			throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in GridLayout.");
 		}

@@ -149,7 +149,8 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * 
 	 * @return 标签
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -159,7 +160,8 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setText(String text) {
+	@Override
+    public T setText(String text) {
 		this.text = text;
 		return (T) this;
 	}
@@ -383,7 +385,8 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * 用于显示文本是否需要转义,不设置默认是true
 	 * @return Boolean
 	 */
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return escape;
 	}
 
@@ -392,16 +395,19 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * @param escape Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setEscape(Boolean escape) {
+	@Override
+    public T setEscape(Boolean escape) {
 		this.escape = escape;
 		return (T) this;
 	}
 
-	public String getFormat() {
+	@Override
+    public String getFormat() {
 		return format;
 	}
 
-	public T setFormat(String format) {
+	@Override
+    public T setFormat(String format) {
 		this.format = format;
 		return (T) this;
 	}

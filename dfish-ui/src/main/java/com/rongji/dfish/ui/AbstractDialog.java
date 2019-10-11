@@ -50,6 +50,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      *
      * @return 是否覆盖
      */
+    @Override
     public Boolean getCover() {
         return cover;
     }
@@ -60,6 +61,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      * @param cover 是否覆盖
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setCover(Boolean cover) {
         this.cover = cover;
         return (T) this;
@@ -106,19 +108,23 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return title;
     }
 
+    @Override
     public Integer getPosition() {
         return position;
     }
 
+    @Override
     public T setPosition(Integer position) {
         this.position = position;
         return (T) this;
     }
 
+    @Override
     public Long getTimeout() {
         return timeout;
     }
 
+    @Override
     public T setTimeout(Long timeout) {
         this.timeout = timeout;
         return (T) this;
@@ -144,19 +150,23 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return (T) this;
     }
 
+    @Override
     public String getSnaptype() {
         return snaptype;
     }
 
+    @Override
     public T setSnaptype(String snaptype) {
         this.snaptype = snaptype;
         return (T) this;
     }
 
+    @Override
     public String getSnap() {
         return snap;
     }
 
+    @Override
     public T setSnap(String snap) {
         this.snap = snap;
         return (T) this;
@@ -187,6 +197,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      *
      * @return Widget
      */
+    @Override
     public Widget<?> getNode() {
         return node;
     }
@@ -204,6 +215,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      * @param node Widget
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setNode(Widget<?> node) {
         this.node = node;
         return (T) this;

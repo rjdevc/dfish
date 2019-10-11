@@ -1,28 +1,27 @@
 package com.rongji.dfish.ui.template;
 
-import com.rongji.dfish.ui.Combo;
-import com.rongji.dfish.ui.Combo.Field;
-import com.rongji.dfish.ui.Highlight;
-import com.rongji.dfish.ui.helper.GridPanel;
-import com.rongji.dfish.ui.layout.VerticalLayout;
+import com.rongji.dfish.ui.form.Combo;
+import com.rongji.dfish.ui.form.Combo.Field;
+import com.rongji.dfish.ui.widget.Highlight;
+import com.rongji.dfish.ui.widget.GridWrapper;
+import com.rongji.dfish.ui.layout.Vertical;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
 import com.rongji.dfish.ui.layout.grid.Tr;
 import com.rongji.dfish.ui.widget.PageBar;
-import com.rongji.dfish.ui.template.WidgetTemplate;
 
 public class TemplateFactoryTest {
 	public static void main(String[] args) {
-		VerticalLayout vert=new VerticalLayout(null);
-		GridPanel grid =new GridPanel("f_grid");
+		Vertical vert=new Vertical(null);
+		GridWrapper grid =new GridWrapper("f_grid");
 		vert.add(grid);
-		grid.setFace(GridPanel.FACE_LINE).setLimit(10);
+		grid.setFace(GridWrapper.FACE_LINE).setLimit(10);
 		Combo combo=new Combo();
 		grid.setCombo(combo);
 		combo.setField(new Field("cateId","cateName"));
 		grid.getPub().setHeight(36).setFocusable(true)
 			.setOn(Tr.EVENT_CLICK, "$.dialog(this).commander.complete(this);$.close(this)");
 		
-		grid.addColumn(GridColumn.text("cateName", GridPanel.WIDTH_REMAIN).setLabel("sha")
+		grid.addColumn(GridColumn.text("cateName", GridWrapper.WIDTH_REMAIN).setLabel("sha")
 				.setHighlight(new Highlight().setKeycls("f-keyword").setMatchlength(2)));//FIXME nobr
 		grid.addColumn(GridColumn.text("cateOrder", "80").setLabel("sha")
 				.setAlign(GridColumn.ALIGN_RIGHT));

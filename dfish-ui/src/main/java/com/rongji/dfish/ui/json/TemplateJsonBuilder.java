@@ -28,7 +28,7 @@ public class TemplateJsonBuilder extends ClassJsonBuilder {
 				for(Map.Entry<String,String>entry:ats.entrySet()){
 					String propName=entry.getKey();
 					String v=entry.getValue();
-					if(v!=null&&!v.equals("")){
+					if(v!=null&&!"".equals(v)){
 						if(begin){begin=false;}else{sb.append(',');}
 						sb.append('"');
 						sb.append('@');

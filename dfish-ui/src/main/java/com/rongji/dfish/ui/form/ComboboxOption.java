@@ -16,18 +16,22 @@ public class ComboboxOption extends AbstractWidget<ComboboxOption> implements Ha
 	private String text;
 	private Boolean escape;
 	private String value;
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
-	public ComboboxOption setText(String text) {
+	@Override
+    public ComboboxOption setText(String text) {
 		this.text = text;
 		return this;
 	}
-	public ComboboxOption setEscape(Boolean escape){
+	@Override
+    public ComboboxOption setEscape(Boolean escape){
 		this.escape=escape;
 		return this;
 	}
-	public Boolean getEscape(){
+	@Override
+    public Boolean getEscape(){
 		return escape;
 	}
 	/**
