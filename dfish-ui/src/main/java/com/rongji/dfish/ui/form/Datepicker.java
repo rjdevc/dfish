@@ -1,5 +1,8 @@
 package com.rongji.dfish.ui.form;
 import com.rongji.dfish.base.util.DateUtil;
+import com.rongji.dfish.base.util.StringUtil;
+
+import java.util.Collection;
 
 /**
  * DateTag 相对应前端的时间选择按钮，格式yyyy-MM-dd
@@ -8,7 +11,7 @@ import com.rongji.dfish.base.util.DateUtil;
  * @version 2.0 
  * @since XMLTMPL 1.0
  */
-public class DatePicker extends AbstractInput<DatePicker,Object> {
+public class Datepicker extends AbstractInput<Datepicker,String> {
 
 	/**
 	 * 
@@ -41,7 +44,7 @@ public class DatePicker extends AbstractInput<DatePicker,Object> {
      * 日期，仅精确到年
      */
     public static final String YEAR = "yyyy";
-   /**
+    /**
      * 时间，仅小时和分钟
      */
     public static final String TIME = "hh:ii";
@@ -60,7 +63,7 @@ public class DatePicker extends AbstractInput<DatePicker,Object> {
      * @param label String
      * @param value Object
      */
-    public DatePicker(String name, String label, Object value) {
+    public Datepicker(String name, String label, Object value) {
     	this.setName(name);
     	this.setLabel(label);
     	this.setValue(value);
@@ -74,7 +77,7 @@ public class DatePicker extends AbstractInput<DatePicker,Object> {
      * @param value Object
      * @param format String
      */
-    public DatePicker(String name, String label, Object value, String format) {
+    public Datepicker(String name, String label, Object value, String format) {
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
@@ -95,17 +98,7 @@ public class DatePicker extends AbstractInput<DatePicker,Object> {
 			this.javaFormat=row[1];
 		}
 	}
-	@Override
-	public Object getValue() {
-		if(value==null){
-			return null;
-		}
-		if(value instanceof java.util.Date){
-			java.util.Date cast=(java.util.Date) value;
-			return DateUtil.format(cast, javaFormat);
-		}
-		return super.getValue();
-	}
+
 
 	/**
 	 * 设置格式。该格式为JS的格式。如 yyyy-mm-dd hh:ii:ss
@@ -121,18 +114,76 @@ public class DatePicker extends AbstractInput<DatePicker,Object> {
 	 * @param format String
 	 * @return this
 	 */
-	public DatePicker setFormat(String format) {
+	public Datepicker setFormat(String format) {
 		calFormat(format);
 		return this;
 	}
 
 	@Override
     public String getType() {
-		return "date";
+		return "datepicker";
 	}
 	@Override
-	public DatePicker setValue(Object value) {
-		this.value=value;
+	public Datepicker setValue(Object value) {
+		if(value ==null){
+			this.value=null;
+		}else if(value instanceof java.util.Date){
+			this.value=DateUtil.format((java.util.Date)value,javaFormat);
+		}else if(value.getClass().isArray()){
+			Object[] arr=(Object[])value;
+			this.value=toString(arr);
+		}else if(value instanceof Collection){
+			Collection coll=(Collection)value;
+			this.value=toString(coll);
+		}else{
+			this.value=value.toString();
+		}
 		return this;
 	}
+
+	protected String toString(Iterable<?> iter){
+
+		StringBuilder sb=new StringBuilder();
+		boolean begin=true;
+		for(Object o:iter){
+			if(o ==null){
+				continue;
+			}else {
+				if(begin){
+					begin=false;
+				}else{
+					sb.append(',');
+				}
+				if (o instanceof java.util.Date) {
+					sb.append(DateUtil.format((java.util.Date) o, javaFormat));
+				} else {
+					sb.append(o);
+				}
+			}
+		}
+		return sb.toString();
+	}
+    protected String toString(Object[] iter){
+        StringBuilder sb=new StringBuilder();
+        boolean begin=true;
+        for(Object o:iter){
+            if(o ==null){
+                continue;
+            }else {
+                if(begin){
+                    begin=false;
+                }else{
+                    sb.append(',');
+                }
+                if (o instanceof java.util.Date) {
+                    sb.append(DateUtil.format((java.util.Date) o, javaFormat));
+                } else {
+                    sb.append(o);
+                }
+            }
+        }
+        return sb.toString();
+	}
+
+
 }
