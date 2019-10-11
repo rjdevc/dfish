@@ -2089,11 +2089,12 @@ Xsrc = define.widget( 'xsrc', {
 		isSrcLayout: T,
 		// @implement
 		init_x: function( x ) {
+			if ( this.type_view && _view_resources[ this.path ] )
+				$.require( _view_resources[ this.path ] );
 			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
 				var s = x.src || {};
 				if ( s && typeof s === _OBJ ) {
-					this.type_view && _view_resources[ this.path ] && $.require( _view_resources[ this.path ] );
 					this._loadEnd( s );
 				} else
 					this.className += ' z-loading';
