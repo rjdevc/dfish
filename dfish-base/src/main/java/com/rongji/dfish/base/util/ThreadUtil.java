@@ -13,7 +13,7 @@ import java.util.concurrent.*;
 public class ThreadUtil {
     private static final int MAX_THREAD_POOL_SIZE=200;
     private static final int MAX_QUEUE_SIZE=1024;
-    private static final long KEEP_ALIVE=60;
+    private static final long KEEP_ALIVE=0;
 	/**
 	 * 线程池实例
 	 */
@@ -85,8 +85,8 @@ public class ThreadUtil {
 	 * @return ExecutorService
 	 */
 	public static ExecutorService newFixedThreadPool(int nTheads) {
-		return new ThreadPoolExecutor(nTheads, nTheads,
-				0L, TimeUnit.MILLISECONDS,
+		return new ThreadPoolExecutor(0, nTheads,
+                KEEP_ALIVE, TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<Runnable>(MAX_QUEUE_SIZE));
 	}
 
