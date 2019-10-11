@@ -18,6 +18,7 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.CacheItem;
 import com.rongji.dfish.base.cache.CacheValueGetter;
+import com.rongji.dfish.base.util.ThreadUtil;
 
 public class AbstractCache<K, V> implements Cache<K, V> {
 	private int maxSize;
@@ -104,7 +105,7 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	//正在加载的cache 防止本部分内容，在过期时，好几个线程同时加载。
 	private final Set<K> GETTING_KEYS = Collections.synchronizedSet(new HashSet<K>());
 	//执行加载动作的加载器
-	protected ExecutorService EXEC=Executors.newCachedThreadPool();
+	protected ExecutorService EXEC=ThreadUtil.getCachedThreadPool();
 	//第一次加载的时候的锁。防止，第一次加载某个cache的饿时候，好几个线程同时加载。
 	private Map<K,Object> LOCKS=Collections.synchronizedMap(new WeakHashMap<K,Object>());
 	/**
@@ -282,9 +283,4 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 		return result;
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		EXEC.shutdown();
-		super.finalize();
-	}
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.rongji.dfish.base.util.ThreadUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.classic.Session;
 import org.hibernate.exception.ConstraintViolationException;
@@ -25,7 +26,7 @@ import com.rongji.dfish.framework.plugin.exception.entity.PubExptType;
 
 public class ExceptionManager {
 	private static ExceptionManager instance;
-	private final static Executor SNGL_EXEC = Executors.newSingleThreadExecutor();
+	private final static Executor SNGL_EXEC = ThreadUtil.newSingleThreadExecutor();
 	private PubCommonDAO dao;
 	
 	public boolean isEnabled() {
@@ -528,5 +529,4 @@ public class ExceptionManager {
 			}
 		}
 	}
-	
 }

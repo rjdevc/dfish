@@ -16,6 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.impl.MemoryCache;
+import com.rongji.dfish.base.util.ThreadUtil;
 
 /**
  * <p>可以限定访问的最大线程数，通过缓存和合并请求来提高查询的效率。</p>
@@ -67,7 +68,7 @@ public class BatchManager<K,V> {
 	 * @param alive 数据将缓存多长时间，比如300000Lms=5分钟
 	 */
 	public BatchManager(int maxThread,int batchSize,long alive) {
-		exec=java.util.concurrent.Executors.newFixedThreadPool(this.maxThread=maxThread);
+		exec=ThreadUtil.newFixedThreadPool(this.maxThread=maxThread);
 		waitingQueue=new LinkedBlockingQueue<K>(this.batchSize=batchSize);
 		cache=new MemoryCache<K,V>(8192,alive);
 	}

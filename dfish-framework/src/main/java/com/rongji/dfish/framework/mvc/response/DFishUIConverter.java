@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.rongji.dfish.base.util.LogUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpInputMessage;
@@ -51,7 +52,7 @@ public class DFishUIConverter extends AbstractHttpMessageConverter<Object>{
 	
 	private static Charset CHARSET=Charset.forName("UTF-8");
 	private static List<Charset> ACCEPT_CHARSETS= Collections.singletonList(CHARSET);
-	private static final Executor SINGLE_EXECUTOR=Executors.newSingleThreadExecutor();
+//	private static final Executor SINGLE_EXECUTOR=Executors.newSingleThreadExecutor();
 	@Override
 	protected void writeInternal(final Object obj, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException {
@@ -64,14 +65,7 @@ public class DFishUIConverter extends AbstractHttpMessageConverter<Object>{
 		outputMessage.getHeaders().setContentLength(ba.length);
 		outputMessage.getBody().write(ba);
 		outputMessage.getBody().close();
-		if(LOG.isDebugEnabled()){
-			SINGLE_EXECUTOR.execute(new Runnable(){
-				@Override
-				public void run(){
-					LOG.debug((obj instanceof DFishTemplate) ? objJson : J.formatJson(objJson));
-				}
-			});
-		}
+		LogUtil.lazyDebug(LOG,()-> (obj instanceof DFishTemplate) ? objJson : J.formatJson(objJson));
 	}
 	
 	protected String getObjectJson(Object obj) {

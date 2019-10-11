@@ -3,9 +3,7 @@ package com.rongji.dfish.base.util;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 多线程工具类
@@ -16,14 +14,13 @@ public class ThreadUtil {
 	/**
 	 * 线程池实例
 	 */
-	public static final java.util.concurrent.ExecutorService THREAD_POOL_EXECUTOR_SERVICE =java.util.concurrent.Executors.newCachedThreadPool();
 	/**
 	 * 使用另一个线程运行这个runable的内容。
 	 * 这样当前线程不需要等待它运行结束。
 	 * @param runable 可运行的内容
 	 */
 	public static void execute(Runnable runable){
-		THREAD_POOL_EXECUTOR_SERVICE.execute(runable);
+		getCachedThreadPool().execute(runable);
 	}
 	/**
 	 * 使用另一个线程运行这个runable的内容。
@@ -32,7 +29,7 @@ public class ThreadUtil {
 	 * @param runable 可运行的内容
 	 */
 	public static void execute(Runnable runable,long maxWait){
-		Future<Object> f=THREAD_POOL_EXECUTOR_SERVICE.submit(()->{
+		Future<Object> f=getCachedThreadPool().submit(()->{
 				runable.run();
 				return null;
 		});
@@ -52,7 +49,49 @@ public class ThreadUtil {
 			return null;
 		});
 		try {
-			THREAD_POOL_EXECUTOR_SERVICE.invokeAny(cs, maxWait, TimeUnit.MILLISECONDS);
+			getCachedThreadPool().invokeAny(cs, maxWait, TimeUnit.MILLISECONDS);
 		} catch (Exception e) {}
+	}
+
+	private static final ExecutorService SHARED_THREAD_POOL=newCachedThreadPool();
+
+	/**
+	 * 取得到公用的线程池执行服务。
+	 * @return
+	 */
+	public static ExecutorService getCachedThreadPool() {
+		return SHARED_THREAD_POOL;
+	}
+
+	/**
+	 * 新建一个线程池执行服务。
+	 * 因为这个线程池没有上线设定，一般来说可以直接使用公用的线程池服务。
+	 * 慎用此方法。
+	 * @see #getCachedThreadPool()
+	 * @return ExecutorService
+	 */
+	public static ExecutorService newCachedThreadPool() {
+		return new ThreadPoolExecutor(0, 200,
+				60L, TimeUnit.SECONDS,
+				new SynchronousQueue<Runnable>());
+	}
+
+	/**
+	 * 新建一个设定上限的 线程池执行服务。
+	 * @param nTheads 最大线程数
+	 * @return ExecutorService
+	 */
+	public static ExecutorService newFixedThreadPool(int nTheads) {
+		return new ThreadPoolExecutor(nTheads, nTheads,
+				0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>(1024));
+	}
+
+	/**
+	 * 新建一个单线程池执行服务。
+	 * @return
+	 */
+	public static ExecutorService newSingleThreadExecutor() {
+		return newFixedThreadPool(1);
 	}
 }

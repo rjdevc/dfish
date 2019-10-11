@@ -14,6 +14,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.rongji.dfish.base.util.ThreadUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -207,7 +208,7 @@ public class SizeAndTimeLimitCache<K,V> implements Cache<K, V>{
 	//正在加载的cache 防止本部分内容，在过期时，好几个线程同时加载。
 	private final Set<K> GETTING_KEYS=Collections.synchronizedSet(new HashSet<K>());
 	//执行加载动作的加载器
-	private ExecutorService EXEC=Executors.newCachedThreadPool();
+	private ExecutorService EXEC=ThreadUtil.getCachedThreadPool();
 	//第一次加载的时候的锁。防止，第一次加载某个cache的饿时候，好几个线程同时加载。
 	private Map<K,Object> LOCKS=Collections.synchronizedMap(new WeakHashMap<K,Object>());
 	/**
@@ -289,9 +290,4 @@ public class SizeAndTimeLimitCache<K,V> implements Cache<K, V>{
 		public V get(K key);
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		EXEC.shutdown();
-		super.finalize();
-	}
 }

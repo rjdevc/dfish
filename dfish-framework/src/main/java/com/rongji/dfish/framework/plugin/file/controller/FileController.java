@@ -4,6 +4,7 @@ import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.mvc.controller.FilterParam;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.FrameworkContext;
@@ -152,7 +153,7 @@ public class FileController extends BaseController {
         return saveFile(request, fileService, acceptTypes);
     }
 
-    private static final ExecutorService EXECUTOR_IMAGE = Executors.newFixedThreadPool(5);
+    private static final ExecutorService EXECUTOR_IMAGE = ThreadUtil.getCachedThreadPool();
 
     @RequestMapping("/uploadImage")
     @ResponseBody
@@ -550,4 +551,5 @@ public class FileController extends BaseController {
         param.bindRequest(request);
         return param;
     }
+
 }

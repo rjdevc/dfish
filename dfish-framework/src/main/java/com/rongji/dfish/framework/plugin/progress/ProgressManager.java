@@ -4,6 +4,7 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
+import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.JsonNode;
@@ -353,7 +354,7 @@ public class ProgressManager {
             boolean success = resetStepScale(progressData, stepScale);
             if (success) {
                 if (EXECUTOR_SERVICE == null) {
-                    EXECUTOR_SERVICE = Executors.newFixedThreadPool(executorSize);
+                    EXECUTOR_SERVICE = ThreadUtil.newFixedThreadPool(executorSize);
                 }
 
                 EXECUTOR_SERVICE.execute(new Runnable() {

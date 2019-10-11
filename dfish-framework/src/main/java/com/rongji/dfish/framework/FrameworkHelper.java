@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
@@ -103,8 +104,6 @@ public class FrameworkHelper{
 //	NewIdGetter newIdGetter;
 	PersonalConfigHolder personnalConfig;
 	SystemConfigHolder systemConfig;
-	
-	private static Executor SINGLE_EXECUTOR=Executors.newSingleThreadExecutor();
 	
 	/**
 	 * 
@@ -191,15 +190,7 @@ public class FrameworkHelper{
 	
 	public static void outputJson(HttpServletResponse response, final String content) {
 		outputContent(response, content, "text/json");
-		SINGLE_EXECUTOR.execute(new Runnable(){
-			@Override
-			public void run(){
-				if(LOG.isDebugEnabled()){
-					// debug级别的字符输出需要格式化
-					LOG.debug("\r\n" + J.formatJson(content));
-				}
-			}
-		});
+		LogUtil.lazyDebug(LOG,()->"\r\n" + J.formatJson(content));
 	}
 	
 	private static void outputContent(HttpServletResponse response, final String content, String contentType) {

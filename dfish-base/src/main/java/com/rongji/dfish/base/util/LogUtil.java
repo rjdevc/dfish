@@ -3,6 +3,10 @@ package com.rongji.dfish.base.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+
 /**
  * Description: 
  * Copyright:   Copyright © 2018
@@ -57,6 +61,31 @@ public class LogUtil {
 	public static void error(Object log, Throwable t) {
 		if (LOG.isErrorEnabled()) {
 			LOG.error(log, t);
+		}
+	}
+	private static final ExecutorService SINGLE_EXECUTOR=ThreadUtil.newSingleThreadExecutor();
+	public static void lazyDebug(Log log,Callable<Object> callable){
+		if(log.isDebugEnabled()){
+			SINGLE_EXECUTOR.execute(()->{
+				try {
+					Object o=callable.call();
+					log.debug(o);
+				} catch (Exception e) {
+					LOG.error(null,e);
+				}
+			});
+		}
+	}
+	public static void lazyInfo(Log log,Callable<Object> callable){
+		if(log.isInfoEnabled()){
+			SINGLE_EXECUTOR.execute(()->{
+				try {
+					Object o=callable.call();
+					log.info(o);
+				} catch (Exception e) {
+					LOG.error(null,e);
+				}
+			});
 		}
 	}
 	
