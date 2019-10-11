@@ -972,7 +972,7 @@ W = define( 'widget', function() {
 			return this.$().currentStyle.display != 'none';
 		},
 		isShow: function() {
-			return this.parentNode.type_frame ? this.parentNode.getFocus() == this : this.x.display !== F;
+			return this.parentNode && this.parentNode.type_frame ? this.parentNode.getFocus() == this : this.x.display !== F;
 		},
 		toggleDisplay: function() {
 			this.display( ! this.isDisplay() );
@@ -2082,13 +2082,21 @@ Xsrc = define.widget( 'xsrc', {
 	Listener: {
 		body: {
 			ready: function() { ! this.layout && this.x.src && this.load() },
-			show: function() { ! this.layout && this.x.src && this.load() }
+			show: function() {
+				! this._x_ini && (this.init_x( this.x ), this.repaint());
+				! this.layout && this.x.src && this.load();
+			}
 		}
 	},
 	Prototype: {
 		isSrcLayout: T,
+		_x_ini: F,
 		// @implement
 		init_x: function( x ) {
+			this.x = x;
+			if ( ! this.isShow() && ! x.node )
+				return;
+			this._x_ini = T;
 			if ( this.type_view && _view_resources[ this.path ] )
 				$.require( _view_resources[ this.path ] );
 			_proto.init_x.call( this, x );
@@ -2112,6 +2120,20 @@ Xsrc = define.widget( 'xsrc', {
 		init_nodes: function() {
 			if ( this.x.node && ! this.layout )
 				this.layout = new Layout( { node: this.x.node }, this );
+		},
+		isShow: function() {
+			if ( this.x.display === F )
+				return F;
+			if ( ! this.parentNode )
+				return T;
+			if ( this.parentNode.type_frame )
+				return this.parentNode.getFocus() == this;
+			if ( this.nodeIndex >= 0 && _toggle_hide_parents[ this.parentNode.id ] ) {
+				var n = this.nodeIndex;
+				while ( n -- )
+					if ( this.parentNode[ n ].type === 'toggle' && this.parentNode[ n ].x.open === F ) { return F; }
+			}
+			return T;
 		},
 		srcData: function( a ) {
 			if ( a ) {
@@ -3634,6 +3656,7 @@ Img = define.widget( 'img', {
 		}
 	}
 } ),
+_toggle_hide_parents = {},
 /* `toggle` 可展开收拢的工具条。可显示单行文本与(或)分割线。
  *  /@text: 文本; @hr(Bool) 显示横线; /@open(Bool): 设置初始展开收拢效果并产生一个toggle图标; /@target: 指定展开收拢的widget ID, 多个用逗号隔开
  */
@@ -3659,6 +3682,12 @@ Toggle = define.widget( 'toggle', {
 	},
 	Prototype: {
 		className: 'w-toggle',
+		init_nodes: function() {
+			if ( this.x.open === F ) {
+				_toggle_hide_parents[ this.parentNode.id ] = T;
+			}
+			_proto.init_nodes.call( this );
+		},
 		toggle: function( a ) {
 			var b = a == N || a.type ? ! (this.x.open == N ? T : this.x.open) : a, c = this.x.target, d = this.x.icon, e = this.x.openicon || d;
 			this.x.open = b;
@@ -9630,7 +9659,7 @@ TD = define.widget( 'td', {
 					t += c.html_sortarrow();
 				if ( e && c.x.tip ) {
 					var g = r.x.data && r.x.data[ c.x.tip.field || c.x.field ];
-					f += this.prop_title( typeof g === _OBJ ? f.text : f, c.x.format );
+					f += this.prop_title( typeof g === _OBJ ? g.text : f, c.x.format );
 				}
 				f && (t = '<div' + f + '>' + t + '</div>');
 				s += t || (ie7 ? '&nbsp;' : '');
