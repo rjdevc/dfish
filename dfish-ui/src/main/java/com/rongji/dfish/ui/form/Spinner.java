@@ -16,7 +16,7 @@ public class Spinner extends AbstractInput<Spinner,Number> {
     private Number step;
     private Boolean showbtn;
     private Integer decimal;
-    private NumberFormat format;
+    private SpinnerFormat format;
 //    private String match;
 
     /**
@@ -130,7 +130,7 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 	 * 设置分隔格式
 	 * @return 分隔格式
 	 */
-	public NumberFormat getFormat() {
+	public SpinnerFormat getFormat() {
 		return format;
 	}
 
@@ -139,7 +139,7 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 	 * @param format 分隔格式
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Spinner setFormat(NumberFormat format) {
+	public Spinner setFormat(SpinnerFormat format) {
 		this.format = format;
 		return this;
 	}
