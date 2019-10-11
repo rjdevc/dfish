@@ -26,7 +26,7 @@ public class DefaultPersonalConfig implements PersonalConfigHolder{
 					.getServletRealPath()
 					+ "WEB-INF/config/person" + java.io.File.separator + userId + ".json"));
 			String result = tool.getProperty(argStr);
-			if (result != null && !result.equals("")) {
+			if (result != null && !"".equals(result)) {
 				synchronized (propertiesPersonMap) {
 					propertiesPersonMap.put(tempStr, result);
 				}

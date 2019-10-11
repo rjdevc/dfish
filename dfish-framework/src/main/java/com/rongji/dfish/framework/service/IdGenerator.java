@@ -217,7 +217,8 @@ public class IdGenerator {
     	public String getId(){
     		return id;
     	}
-    	public String toString(){
+    	@Override
+        public String toString(){
     		SimpleDateFormat SDF=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
     		return id+"={\"time\"=\""+SDF.format(getTime())+"\",\"systemKey\"="+value[1]+",\"sequence\"="+value[2]+"}";
     	}

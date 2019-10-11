@@ -68,6 +68,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements PubCommonDA
                 HibernateTemplate template = getHibernateTemplate();
                 template.setCacheQueries(true);
                 HibernateCallback<?> action = new HibernateCallback<Object>() {
+                    @Override
                     public Object doInHibernate(Session session)
                             throws HibernateException, SQLException {
                         Query query = session.createQuery(strSql);
@@ -236,6 +237,10 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements PubCommonDA
         }
         return ret;
     }
+    private static final Pattern PATTERN_FROM=Pattern.compile("\\bFROM\\b");
+    private static final Pattern PATTERN_DISTINCT=Pattern.compile("\\bDISTINCT\\b");
+    private static final Pattern PATTERN_GROUP_BY=Pattern.compile("\\bGROUP +BY\\b");
+    private static final Pattern PATTERN_ORDER_BY=Pattern.compile("\\bORDER +BY\\b");
 
     @Override
     public List<?> getQueryList(final String strSql, final Pagination pagination, final Object... object) {
@@ -249,6 +254,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements PubCommonDA
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         HibernateCallback<List<?>> action = new HibernateCallback<List<?>>() {
+            @Override
             public List<?> doInHibernate(Session session)
                     throws HibernateException, SQLException {
                 Query query = session.createQuery(strSql);
@@ -277,7 +283,7 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements PubCommonDA
                         // 更新比较精确的截取的方式，应该用正则表达是而不是用 FROM前面加空格的做法。
                         String upperSQL = strSql.toUpperCase();
                         int firstForm = -1;
-                        Matcher m = Pattern.compile("\\bFROM\\b").matcher(upperSQL);
+                        Matcher m = PATTERN_FROM.matcher(upperSQL);
                         if (m.find()) {
                             firstForm = m.start();
                         }
@@ -285,20 +291,20 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements PubCommonDA
                         if (firstForm < 0) {
                             throw new RuntimeException(new DfishException("无法对没有FROM关键字的HQL进行autoRowCount，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
                         }
-                        m = Pattern.compile("\\bDISTINCT\\b").matcher(upperSQL);
+                        m =PATTERN_DISTINCT.matcher(upperSQL);
                         if (m.find()) {
                             if (m.start() < firstForm) {
                                 throw new RuntimeException(new DfishException("无法保证有DISTINCT关键字的HQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
                             }
                         }
-                        m = Pattern.compile("\\bGROUP +BY\\b").matcher(upperSQL);
+                        m = PATTERN_GROUP_BY.matcher(upperSQL);
                         if (m.find()) {
                             if (m.start() < firstForm) {
                                 throw new RuntimeException(new DfishException("无法保证有GROUP BY关键字的HQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
                             }
                         }
                         int cur = 0, lastOrderBy = upperSQL.length();
-                        m = Pattern.compile("\\bORDER +BY\\b").matcher(upperSQL);
+                        m = PATTERN_ORDER_BY.matcher(upperSQL);
                         while (m.find(cur)) {
                             cur = m.end();
                             lastOrderBy = m.start();

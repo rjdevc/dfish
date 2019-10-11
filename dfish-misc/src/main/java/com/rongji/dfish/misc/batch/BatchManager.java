@@ -252,9 +252,6 @@ public class BatchManager<K,V> {
 //		System.out.println("["+(System.currentTimeMillis()-begin)+"ms]"+v);
 //	}
 
-	public void destroy(){
-		exec.shutdown();
-	}
 	private static class ResultGetter<K,V>{
 		Set<K> unfetched=new HashSet<K>();
 		Map<K,V> result=new HashMap<K,V>();
@@ -288,5 +285,11 @@ public class BatchManager<K,V> {
 			}
 			return result;
 		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		exec.shutdown();
+		super.finalize();
 	}
 }

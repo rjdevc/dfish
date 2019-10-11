@@ -533,7 +533,7 @@ public class DateUtil {
      */
     public static Date parse(String str, int level)
             throws ParseException {
-        if (str == null || str.equals("")) {
+        if (str == null || "".equals(str)) {
             return null;
         }
         switch (level) {

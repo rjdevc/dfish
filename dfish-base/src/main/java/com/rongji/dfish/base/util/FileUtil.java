@@ -561,7 +561,7 @@ public final class FileUtil {
      * @throws IOException
      */
     public static void addDirectoyToZip(File path, ZipOutputStream zos, String pathInZip, FileFilter fileNameFilter) throws IOException {
-        if (pathInZip == null || pathInZip.equals("/") || pathInZip.equals("\\")) {
+        if (pathInZip == null || "/".equals(pathInZip) || "\\".equals(pathInZip)) {
             pathInZip = "";
         }
         if (fileNameFilter != null && !fileNameFilter.accept(path)) {

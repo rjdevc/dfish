@@ -31,12 +31,10 @@ public class ThreadUtil {
 	 * 如果超过时间，将不再等待。和invoke 不一样如果等待超时，只是当前线程离开，执行的内容还会继续。
 	 * @param runable 可运行的内容
 	 */
-	public static void execute(final Runnable runable,long maxWait){
-		Future<Object> f=THREAD_POOL_EXECUTOR_SERVICE.submit(new Callable<Object>(){
-			public Object call() {
+	public static void execute(Runnable runable,long maxWait){
+		Future<Object> f=THREAD_POOL_EXECUTOR_SERVICE.submit(()->{
 				runable.run();
 				return null;
-			}
 		});
 		try {
 			f.get(maxWait, TimeUnit.MILLISECONDS);
@@ -48,14 +46,11 @@ public class ThreadUtil {
 	 * 如果超过时间，将不再等待。和execute 不一样如果等待超时，执行的内容将会被取消。
 	 * @param runable 可运行的内容
 	 */
-	public static void invoke(final Runnable runable,long maxWait){
-		Callable<Object> o= new Callable<Object>(){
-			public Object call() {
-				runable.run();
-				return null;
-			}
-		};
-		List<Callable<Object>> cs= Collections.singletonList(o);
+	public static void invoke(Runnable runable,long maxWait){
+		List<Callable<Object>> cs= Collections.singletonList((Callable)()->{
+			runable.run();
+			return null;
+		});
 		try {
 			THREAD_POOL_EXECUTOR_SERVICE.invokeAny(cs, maxWait, TimeUnit.MILLISECONDS);
 		} catch (Exception e) {}

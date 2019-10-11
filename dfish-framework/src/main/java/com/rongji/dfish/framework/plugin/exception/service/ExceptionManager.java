@@ -96,16 +96,16 @@ public class ExceptionManager {
 	 *
 	 */
 	private class ExceptionTypeInfoPrototype{
-		int _hash;
+		transient volatile int hashCodeValue;
 		long cause;
 		int name;
 		List<StackInfoPrototype> stack;
 		@Override
 		public int hashCode(){
-			if(_hash==0){
-				_hash= (int)(cause ^ (cause >>> 32))^name^stack.hashCode();
+			if(hashCodeValue ==0){
+				hashCodeValue = (int)(cause ^ (cause >>> 32))^name^stack.hashCode();
 			}
-			return _hash;
+			return hashCodeValue;
 		}
 		@Override
 		public boolean equals(Object o){

@@ -86,7 +86,8 @@ public class TemplateArray extends AbstractTemplate {
 		return  o;
 	}
 	
-	public String toString(){
+	@Override
+    public String toString(){
 		if(json==null){
 			return "[]";
 		}

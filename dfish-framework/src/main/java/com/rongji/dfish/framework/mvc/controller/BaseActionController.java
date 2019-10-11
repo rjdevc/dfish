@@ -186,12 +186,12 @@ public class BaseActionController extends MultiActionController {
         public void bind(HttpServletRequest request, Object obj) throws Exception {
             Object value = null;
             String str = Utils.getParameter(request, name);
-            if (str == null || str.equals("")) {
+            if (str == null || "".equals(str)) {
                 if (name.length() > 1 && name.charAt(0) > 'Z' && name.charAt(1) <= 'Z') {
                     // 第1个字母是小写且第2个字母是大写,尝试修正首字母变大写后获取值;
                     String newName = (char) (name.charAt(0) - 32) + name.substring(1);
                     str = Utils.getParameter(request, newName);
-                    if (str == null || str.equals("")) {
+                    if (str == null || "".equals(str)) {
                         return;
                     }
                 } else {

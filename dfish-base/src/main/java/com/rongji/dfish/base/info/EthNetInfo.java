@@ -261,11 +261,10 @@ public class EthNetInfo {
 		ex.printStackTrace();
 		throw ex;
 	}
-
+	private static final Pattern LINUX_MAC_PATTERN=Pattern
+			.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
 	private boolean linuxIsMacAddress(String macAddressCandidate) {
-		Pattern macPattern = Pattern
-				.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
-		Matcher m = macPattern.matcher(macAddressCandidate);
+		Matcher m = LINUX_MAC_PATTERN.matcher(macAddressCandidate);
 		return m.matches();
 	}
 
@@ -382,10 +381,10 @@ public class EthNetInfo {
 		return s.substring(0, 17);
 	}
 
+	private static final Pattern AIX_MAC_PATTERN = Pattern
+			.compile("[0-9a-fA-F]+[.][0-9a-fA-F]+[.][0-9a-fA-F]+[.][0-9a-fA-F]+[.][0 -9a-fA-F]+[.][0-9a-fA-F]+");
 	private boolean aixIsMacAddress(String macAddressCandidate) {
-		Pattern macPattern = Pattern
-				.compile("[0-9a-fA-F]+[.][0-9a-fA-F]+[.][0-9a-fA-F]+[.][0-9a-fA-F]+[.][0 -9a-fA-F]+[.][0-9a-fA-F]+");
-		Matcher m = macPattern.matcher(macAddressCandidate);
+		Matcher m = AIX_MAC_PATTERN.matcher(macAddressCandidate);
 		return m.matches();
 	}
 
@@ -449,10 +448,10 @@ public class EthNetInfo {
 		throw ex;
 	}
 
+	private static final Pattern WIN_MAC_PATTERN = Pattern
+			.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
 	private boolean windowsIsMacAddress(String macAddressCandidate) {
-		Pattern macPattern = Pattern
-				.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
-		Matcher m = macPattern.matcher(macAddressCandidate);
+		Matcher m = WIN_MAC_PATTERN.matcher(macAddressCandidate);
 		return m.matches();
 	}
 
@@ -507,10 +506,10 @@ public class EthNetInfo {
 		throw ex;
 	}
 
+	private static final Pattern OSX_MAC_PATTERN = Pattern
+			.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
 	private boolean osxIsMacAddress(String macAddressCandidate) {
-		Pattern macPattern = Pattern
-				.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
-		Matcher m = macPattern.matcher(macAddressCandidate);
+		Matcher m = OSX_MAC_PATTERN.matcher(macAddressCandidate);
 		return m.matches();
 	}
 

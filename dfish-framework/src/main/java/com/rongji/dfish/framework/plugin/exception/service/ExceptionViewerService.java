@@ -36,6 +36,7 @@ public class ExceptionViewerService extends BaseService4Simple<PubExptRecord> {
      */
     public void deleteAllExpt() {
         pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<Object>() {
+            @Override
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
                 session.createSQLQuery("truncate pub_expt_record").executeUpdate();
                 session.createSQLQuery("truncate pub_expt_stack").executeUpdate();

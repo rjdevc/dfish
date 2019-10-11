@@ -53,14 +53,15 @@ public class FilterParam {
 		return context.get(key);
 	}
 	
-	public String toString(){
+	@Override
+    public String toString(){
 		StringBuilder sb=new StringBuilder();
 
 		for(Map.Entry<String,String[]>entry:context.entrySet()){
 			String key=entry.getKey();
 			if(entry.getValue()!=null){
 				for(String str:entry.getValue()){
-					if(str!=null&&!str.equals("")){
+					if(str!=null&&!"".equals(str)){
 						sb.append('&');
 						sb.append(key);
 						sb.append('=');

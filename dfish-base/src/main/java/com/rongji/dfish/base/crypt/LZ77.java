@@ -144,6 +144,7 @@ public class LZ77 {
 			length++;
 			hashcode=0;//重算hashcode
 		}
+		@Override
 		public String toString(){
 			// 这个只能用英文字符串调试，中文的话，多为乱码。
 			return new String(ba,0,length);
@@ -151,8 +152,12 @@ public class LZ77 {
 
 		@Override
 		public boolean equals(Object o){
-			if(o==null)return false;
-			if(o==this)return true;
+			if(o==null) {
+                return false;
+            }
+			if(o==this) {
+                return true;
+            }
 			ByteArray other=(ByteArray)o;
 			if(other.length!=length){
 				return false;

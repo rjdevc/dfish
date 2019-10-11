@@ -58,6 +58,7 @@ public class MemoryCacheFactory<K extends Serializable, V> implements CacheFacto
 	    }
     }
 
+    @Override
     public Set<String> cacheNames() {
 	    return caches.keySet();
     }

@@ -104,7 +104,7 @@ public class StringUtil {
 	 */
 	public static String shortenString(String content, int limitSize, int chineseCharSize,
 			String replacePostfix) {
-		if (content == null || content.equals("") || limitSize == 0) {
+		if (content == null || "".equals(content) || limitSize == 0) {
 			return "";
 		}
 		if (content.getBytes().length <= limitSize) {
@@ -150,7 +150,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String shortenStringUTF8(String content, int limitSize, String replacePostfix) {
-		if (content == null || content.equals("") || limitSize <= 0) {
+		if (content == null || "".equals(content) || limitSize <= 0) {
 			return "";
 		}
 		byte[] ba;
@@ -218,7 +218,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String shortenStringGB(String content, int limitSize, String replacePostfix) {
-		if (content == null || content.equals("") || limitSize <= 0) {
+		if (content == null || "".equals(content) || limitSize <= 0) {
 			return "";
 		}
 		String curEncode="GB18030";
@@ -331,8 +331,8 @@ public class StringUtil {
 	 * @return
 	 */
 	public static boolean nullAbleEquals(String str1, String str2) {
-		if (str1 == null || str1.equals("")) {
-			return (str1 == null || str1.equals(""));
+		if (str1 == null || "".equals(str1)) {
+			return (str1 == null || "".equals(str1));
 		} else {
 			return str1.equals(str2);
 		}
@@ -344,8 +344,9 @@ public class StringUtil {
 	 */
 	public static String RMBtoCHINESE(String dblNum) {
 		try {
-			if (dblNum.equals(""))
-				return null;
+			if ("".equals(dblNum)) {
+                return null;
+            }
 			String sNum = "零壹贰叁肆伍陆柒捌玖负";
 			String sUni = "整分角元拾佰仟万拾佰仟亿拾佰仟万拾佰仟亿拾佰仟万拾佰仟";
 			int L = dblNum.length();
@@ -360,36 +361,43 @@ public class StringUtil {
 				}
 			}
 			L = dblNum.length();
-			if (L > 27)
-				return "数值溢出"; // 包括小数点和2位小数
+			if (L > 27) {
+                return "数值溢出"; // 包括小数点和2位小数
+            }
 			StringBuffer sN = new StringBuffer(); // 转换前的字符串
 			sN.append(dblNum);
 			sN.deleteCharAt(L - 3); // 删除小数点
 			--L;
 			StringBuffer sT = new StringBuffer(); // 转换后的字符串
-			if (sN.charAt(L - 1) == '0' && sN.charAt(L - 2)== '0')
-				sT.insert(0, '整'); // 分位为零则尾部加'整'
+			if (sN.charAt(L - 1) == '0' && sN.charAt(L - 2)== '0') {
+                sT.insert(0, '整'); // 分位为零则尾部加'整'
+            }
 			boolean Ziro = false, a = false, b = false;
 			int n = 0;
 			for (int i = 1; i <= L; i = i + 1) {
 				n = sN.charAt(L - i) - '0'; // 数值
-				if (i == 7 || i == 15)
-					b = n == 0; // 万位、万亿位是零
-				if ((i > 7) & (i < 11) || (i > 15) & (i < 19))
-					b = (n == 0) & b; // 万-亿位、或亿-亿位之间全是零
+				if (i == 7 || i == 15) {
+                    b = n == 0; // 万位、万亿位是零
+                }
+				if ((i > 7) & (i < 11) || (i > 15) & (i < 19)) {
+                    b = (n == 0) & b; // 万-亿位、或亿-亿位之间全是零
+                }
 				a = (i == 1 || i == 3 || i == 7 || i == 11 || i == 15 || i == 19 || i == 23); // 万亿、亿、万、元、分位为0时不写'零'
 				if (n > 0 || (i > 1 & a)) {
-					if ((i == 11 || i == 19) & b)
-						sT.setCharAt(0, '亿'); // 用'亿'覆盖'万'
-					else
-						sT.insert(0, sUni.charAt(i)); // 插入单位
+					if ((i == 11 || i == 19) & b) {
+                        sT.setCharAt(0, '亿'); // 用'亿'覆盖'万'
+                    } else {
+                        sT.insert(0, sUni.charAt(i)); // 插入单位
+                    }
 				}
-				if (!(n == 0 & (Ziro || a)))
-					sT.insert(0, sNum.charAt(n)); // 插入数值
+				if (!(n == 0 & (Ziro || a))) {
+                    sT.insert(0, sNum.charAt(n)); // 插入数值
+                }
 				Ziro = n == 0;
 			}
-			if (n == 0)
-				sT.insert(0, '零');
+			if (n == 0) {
+                sT.insert(0, '零');
+            }
 			return sT.toString();
 		} catch (Exception e) {
 			return "格式不正确";
@@ -403,7 +411,9 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String relaceELTag(String elStr,ELcontentGetter getter){
-		if(elStr==null)return elStr;
+		if(elStr==null) {
+            return elStr;
+        }
 		char[] cs=elStr.toCharArray();
 		//找到所有的${...}然后把内容用getter替换
 		List<Integer[]> matchs=new ArrayList<Integer[]>();
@@ -510,7 +520,7 @@ public class StringUtil {
 	 * @return String 高亮的字符串
 	 */
 	public static String highlight(String source,String key,HighlightParam param){
-		if(source==null||source.equals("")||key==null||key.equals("")){
+		if(source==null|| "".equals(source) ||key==null|| "".equals(key)){
 			return source;
 		}
 		boolean[] matchs=new boolean[source.length()];
@@ -630,7 +640,7 @@ public class StringUtil {
      * @throws ParseException 
      */
     public static int fromExcelLabel(String label) throws ParseException{
-    	if(label==null||label.equals("")){
+    	if(label==null|| "".equals(label)){
     		return 0;
     	}
     	char[] cs=label.toCharArray();
@@ -819,7 +829,7 @@ public class StringUtil {
 	 */
 	public static String[] split(String str, String regex) {
 		String[] sa = null;
-		if (str != null && regex!=null&&!regex.equals("")) {
+		if (str != null && regex!=null&&!"".equals(regex)) {
 			sa = str.split(rex4Str(regex));
 		}
 
@@ -855,7 +865,7 @@ public class StringUtil {
 	}
 
 
-
+	private static final Pattern PATTERN_DECIMAL= Pattern.compile("\\d*");
 	/**
 	 * 判断字符串是否仅有数字组成,null或""均是非数字
 	 *
@@ -868,9 +878,7 @@ public class StringUtil {
 		if (Utils.isEmpty(str)) {
 			return false;
 		}
-		Pattern p = Pattern.compile("\\d*");
-		Matcher m = p.matcher(str);
-		return m.matches();
+		return PATTERN_DECIMAL.matcher(str).matches();
 	}
 
 	/**

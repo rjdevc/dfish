@@ -91,12 +91,14 @@ public class SequenceUtil {
 	 * @throws ArithmeticException 如果数字越界 IllegalArgumentException 如果sequence里面包含当前进制不支持的字符
 	 */
 	public String plus(String sequence){
-		if(sequence==null||sequence.equals("")){
+		if(sequence==null|| "".equals(sequence)){
 			throw new IllegalArgumentException(sequence);
 		}
 		char[] cs=sequence.toCharArray();
 		int pos=cs.length-1;
-		while(plus(cs,pos--,1,sequence));
+		while(plus(cs,pos--,1,sequence)) {
+            ;
+        }
 		return new String(cs);
 	}
 	/**
@@ -109,13 +111,15 @@ public class SequenceUtil {
 	 * @throws ArithmeticException 如果数字越界
 	 */
 	public String next(String sequence){
-		if(sequence==null||sequence.equals("")){
+		if(sequence==null|| "".equals(sequence)){
 			throw new IllegalArgumentException(sequence);
 		}
 		char[] cs=sequence.toCharArray();
 		int pos=cs.length-1;
 		try{
-			while(plus(cs,pos--,1,sequence));
+			while(plus(cs,pos--,1,sequence)) {
+                ;
+            }
 		}catch(IllegalArgumentException ex){
 			//如果有不可识别的字符，尝试发现第几位开始数字是可识别的。
 			int unreg=-1;
@@ -129,7 +133,9 @@ public class SequenceUtil {
 				throw new ArithmeticException(sequence);
 			}
 			pos=unreg-1;
-			while(plus(cs,pos--,1,sequence));
+			while(plus(cs,pos--,1,sequence)) {
+                ;
+            }
 			for(int i=unreg;i<cs.length;i++){
 				cs[i]=ALPHABET[0];
 			}
@@ -178,7 +184,7 @@ public class SequenceUtil {
 	 * @throws ArithmeticException 如果数字越界 IllegalArgumentException 如果sequence里面包含当前进制不支持的字符
 	 */
 	public String plus(String sequence,long value){
-		if(sequence==null||sequence.equals("")){
+		if(sequence==null|| "".equals(sequence)){
 			throw new IllegalArgumentException(sequence);
 		}
 		if(value<=0){
@@ -210,7 +216,7 @@ public class SequenceUtil {
 	 * @throws ArithmeticException 如果数字越界
 	 */
 	public String next(String sequence,long value){
-		if(sequence==null||sequence.equals("")){
+		if(sequence==null|| "".equals(sequence)){
 			throw new IllegalArgumentException(sequence);
 		}
 		try{
@@ -228,7 +234,9 @@ public class SequenceUtil {
 				throw new ArithmeticException(sequence);
 			}
 			int pos=unreg-1;
-			while(plus(cs,pos--,1,sequence));
+			while(plus(cs,pos--,1,sequence)) {
+                ;
+            }
 			for(int i=unreg;i<cs.length;i++){
 				cs[i]=ALPHABET[0];
 			}

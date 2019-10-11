@@ -81,9 +81,7 @@ public final class ServletInfo {
 	 * 取得servlet运行期的真实路径。比如说 E:\tomcat5.5\webapps\myapp\
 	 * 这个方式不适合war包部署的情况，含websphere上部署的情况，慎用
 	 * @return String
-	 * @deprecated 这个方式不适合war包部署的情况，含websphere上部署的情况，慎用
 	 */
-	@java.lang.Deprecated
 	public String getServletRealPath() {
 		return servletRealPath;
 	}

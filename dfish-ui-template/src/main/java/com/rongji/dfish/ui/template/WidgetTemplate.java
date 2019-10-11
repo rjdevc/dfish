@@ -185,7 +185,7 @@ public class WidgetTemplate extends AbstractTemplate{
 	
 	public WidgetTemplate setFor(String dataExpr,String itemName,String indexName){
 		String propValue;
-		if(indexName==null||indexName.equals("")){
+		if(indexName==null|| "".equals(indexName)){
 			propValue= "$"+itemName+" in ("+dataExpr+")";
 		}else{
 			propValue= "($"+itemName+",$"+indexName+") in ("+dataExpr+")";

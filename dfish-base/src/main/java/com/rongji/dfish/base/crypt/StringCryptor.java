@@ -101,7 +101,7 @@ public abstract class StringCryptor {
    * @throws RuntimeException
    */
   public final String decrypt(String str) {
-    if (str == null || str.equals("")) {
+    if (str == null || "".equals(str)) {
       return str;
     }
     byte[] b = null;
@@ -191,7 +191,7 @@ public abstract class StringCryptor {
    * @throws RuntimeException
    */
   public final String encrypt(String str) {
-    if (str == null || str.equals("")) {
+    if (str == null || "".equals(str)) {
       return str;
     }
     byte[] b = null;
@@ -292,7 +292,7 @@ public abstract class StringCryptor {
    * @throws IllegalArgumentException
    */
   public final static byte[] hex2byte(String hex) {
-    if ( (hex == null) || hex.equals("")) {
+    if ( (hex == null) || "".equals(hex)) {
       return null;
     }
     if ( (hex.length() & 1) == 1) {

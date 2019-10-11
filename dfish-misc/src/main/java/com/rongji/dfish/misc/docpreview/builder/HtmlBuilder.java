@@ -30,9 +30,9 @@ public class HtmlBuilder {
         sb.append("</div>");
     }
     protected void build(Paragraph p, StringBuilder sb) {
-        if((p.getAlignment()!=null&&!p.getAlignment().equals("LEFT"))||p.getIndentation()!=null){
+        if((p.getAlignment()!=null&&!"LEFT".equals(p.getAlignment()))||p.getIndentation()!=null){
             sb.append("<p style=\"");
-            if(p.getAlignment()!=null&&!p.getAlignment().equals("LEFT")) {
+            if(p.getAlignment()!=null&&!"LEFT".equals(p.getAlignment())) {
                 sb.append("text-align:")
                         .append(p.getAlignment()).append(';');
             }
@@ -93,6 +93,8 @@ public class HtmlBuilder {
                     case CharacterRun.STRIKE_UNDERLINE:
                         stikeCss = "underline";
                         break;
+                    default:
+                        stikeCss = "line-through";
                 }
                 sb.append("text-decoration:");
                 sb.append(stikeCss);

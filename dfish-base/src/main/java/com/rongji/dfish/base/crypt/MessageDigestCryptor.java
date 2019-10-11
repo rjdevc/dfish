@@ -30,6 +30,7 @@ public class MessageDigestCryptor
    * @return byte[]
    * @throws Exception
    */
+  @Override
   protected synchronized byte[] encrypt(byte[] src) throws Exception {
     MessageDigest d = null;
     d = MessageDigest.getInstance(algorithms); // MD5 SHA-1
@@ -44,6 +45,7 @@ public class MessageDigestCryptor
    * @return byte[]
    * @throws Exception UnsupportedOperationException
    */
+  @Override
   protected byte[] decrypt(byte[] src) throws Exception {
     throw new UnsupportedOperationException("This cryptor (" + algorithms
                                             + ") do not support decrypt !");

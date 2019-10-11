@@ -344,10 +344,10 @@ public class XMLUtil {
 		Element root = doc.getRootElement();
 		Element element = root;
 		for (int i = 0; i < propName.length; i++) {
-			if (propName[i] == null || propName[i].equals("")
+			if (propName[i] == null || "".equals(propName[i])
 					|| (i == 0 && propName[i].equals(root.getQName().getName()))
 					|| (i == 1 && propName[i].equals(root.getQName().getName()))
-							&& (propName[0] == null || propName[0].equals(""))) {
+							&& (propName[0] == null || "".equals(propName[0]))) {
 				// 如果XPath形式，不管是/root 还是 root 都要忽略掉
 				element = root;
 			} else if (propName[i].startsWith("@")) { // 加入对属性的支持
@@ -408,7 +408,7 @@ public class XMLUtil {
 	 */
 	public void setProperty(String name, String value) {
 		name = name.replace('.', '/');
-		if (value == null || value.equals("")) {
+		if (value == null || "".equals(value)) {
 			this.deleteProperty(name);
 			return;
 		}
@@ -418,10 +418,10 @@ public class XMLUtil {
 		Element element = root;
 		Node target = null;
 		for (int i = 0; i < propName.length; i++) {
-			if (propName[i] == null || propName[i].equals("")
+			if (propName[i] == null || "".equals(propName[i])
 					|| (i == 0 && propName[i].equals(root.getQName().getName()))
 					|| (i == 1 && propName[i].equals(root.getQName().getName()))
-							&& (propName[0] == null || propName[0].equals(""))) {
+							&& (propName[0] == null || "".equals(propName[0]))) {
 				// 如果XPath形式，不管是/root 还是 root 都要忽略掉
 				element = root;
 			} else if (propName[i].startsWith("@")) { // 加入对属性的支持
@@ -456,10 +456,10 @@ public class XMLUtil {
 		Element element = root;
 
 		for (int i = 0; i < (propName.length - 1); i++) {
-			if (propName[i] == null || propName[i].equals("")
+			if (propName[i] == null || "".equals(propName[i])
 					|| (i == 0 && propName[i].equals(root.getQName().getName()))
 					|| (i == 1 && propName[i].equals(root.getQName().getName()))
-							&& (propName[0] == null || propName[0].equals(""))) {
+							&& (propName[0] == null || "".equals(propName[0]))) {
 				// 如果XPath形式，不管是/root 还是 root 都要忽略掉
 				element = root;
 			} else {

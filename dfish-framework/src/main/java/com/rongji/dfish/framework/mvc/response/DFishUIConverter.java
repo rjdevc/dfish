@@ -66,6 +66,7 @@ public class DFishUIConverter extends AbstractHttpMessageConverter<Object>{
 		outputMessage.getBody().close();
 		if(LOG.isDebugEnabled()){
 			SINGLE_EXECUTOR.execute(new Runnable(){
+				@Override
 				public void run(){
 					LOG.debug((obj instanceof DFishTemplate) ? objJson : J.formatJson(objJson));
 				}

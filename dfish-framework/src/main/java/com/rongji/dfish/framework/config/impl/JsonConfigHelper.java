@@ -107,7 +107,7 @@ public class JsonConfigHelper {
 			String seg=path[i];
 			boolean isLeaf=i==path.length-1;
 			if(isLeaf){
-				if(value==null||value.equals("")){
+				if(value==null|| "".equals(value)){
 					cur.remove(seg);
 				}else{
 					cur.put(seg, value);

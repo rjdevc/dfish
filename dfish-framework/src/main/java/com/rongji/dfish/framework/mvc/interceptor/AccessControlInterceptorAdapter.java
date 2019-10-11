@@ -2,12 +2,12 @@ package com.rongji.dfish.framework.mvc.interceptor;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.rongji.dfish.framework.mvc.interceptor.AccessControl;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -42,7 +42,8 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 		this.cacheExpired = cacheExpired;
 	}
 
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {  
+	@Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         
 		if(!(handler instanceof HandlerMethod)){
 			//对于访问 图片和css等静态资源的请求直接放过
@@ -79,6 +80,7 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 		if(cacheExpired<=0){
 			return hasPermission(loginUser, keys);
 		}
+		Locale l;
 		PermKey pk=new PermKey(loginUser,keys);
 		PermResult cacheRet=permMap.get(pk);
 		if(cacheRet==null||cacheRet.getBorn()+cacheExpired<System.currentTimeMillis()){
@@ -98,7 +100,7 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 	
 	static class PermKey{
 		static char PAD='$';
-		int _hash;
+		transient volatile int hashCodeValue;
 		String core=null;
 		public PermKey(String loginUser, String[] keys){
 			StringBuilder sb=new StringBuilder(loginUser);
@@ -108,13 +110,15 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 			}
 			core=sb.toString();
 		}
-		public int hashCode(){
-			if(_hash==0){
-				_hash=core.hashCode();
+		@Override
+        public int hashCode(){
+			if(hashCodeValue ==0){
+				hashCodeValue =core.hashCode();
 			}
-			return _hash;
+			return hashCodeValue;
 		}
-		public boolean equals(Object o){
+		@Override
+        public boolean equals(Object o){
 			if(o==this){
 				return true;
 			}

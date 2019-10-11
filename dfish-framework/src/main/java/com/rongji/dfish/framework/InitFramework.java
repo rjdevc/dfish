@@ -29,12 +29,14 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 	private ServletContext servletContext;
 	private ApplicationContext applicationContext;
 
-	public void setServletContext(ServletContext context) {
+	@Override
+    public void setServletContext(ServletContext context) {
 		this.servletContext = context;
 
 	}
 
-	public void setApplicationContext(ApplicationContext context) throws BeansException {
+	@Override
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
 		this.applicationContext = context;
 	}
 

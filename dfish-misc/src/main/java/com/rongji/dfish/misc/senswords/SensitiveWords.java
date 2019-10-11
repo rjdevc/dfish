@@ -50,7 +50,9 @@ public class SensitiveWords {
 	 * @return boolean
 	 */
 	public boolean match(String source){
-		if(source==null)return false;
+		if(source==null) {
+            return false;
+        }
 		List<SearchResult<String>> matches=  core.search(source);
 		return matches!=null&&matches.size()>0;
 	}
@@ -61,8 +63,12 @@ public class SensitiveWords {
 	 * @return String
 	 */
 	public String replace (String source,String replaceTo){
-		if(source==null)return null;
-		if(replaceTo==null)replaceTo="**";
+		if(source==null) {
+            return null;
+        }
+		if(replaceTo==null) {
+            replaceTo="**";
+        }
 		StringBuilder result=new StringBuilder();
 		List<SearchResult<String>> matches=  core.search(source);
 		int lastMatchEnd=0;

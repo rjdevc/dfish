@@ -73,12 +73,13 @@ public class RSACryptor4BC extends StringCryptor {
 			byte[] raw = new byte[outputSize * blocksSize];
 			int i = 0;
 			while (src.length - i * blockSize > 0) {
-				if (src.length - i * blockSize > blockSize)
-					cipher.doFinal(src, i * blockSize, blockSize, raw, i
-							* outputSize);
-				else
-					cipher.doFinal(src, i * blockSize, src.length - i
-							* blockSize, raw, i * outputSize);
+				if (src.length - i * blockSize > blockSize) {
+                    cipher.doFinal(src, i * blockSize, blockSize, raw, i
+                            * outputSize);
+                } else {
+                    cipher.doFinal(src, i * blockSize, src.length - i
+                            * blockSize, raw, i * outputSize);
+                }
 				// 这里面doUpdate方法不可用，查看源代码后发现每次doUpdate后并没有什么实际动作除了把byte[]放到ByteArrayOutputStream中，而最后doFinal的时候才将所有的byte[]进行加密，可是到了此时加密块大小很可能已经超出了OutputSize所以只好用dofinal方法。
 
 				i++;
@@ -117,22 +118,27 @@ public class RSACryptor4BC extends StringCryptor {
 			this.publicExponent = publicExponent;
 		}
 
+		@Override
 		public BigInteger getModulus() {
 			return modulus;
 		}
 
+		@Override
 		public BigInteger getPublicExponent() {
 			return publicExponent;
 		}
 
+		@Override
 		public String getAlgorithm() {
 			return "RSA";
 		}
 
+		@Override
 		public String getFormat() {
 			return "X.509";
 		}
 
+		@Override
 		public byte[] getEncoded() {
 			byte []b = null;
 			SubjectPublicKeyInfo subjectpublickeyinfo;
@@ -150,13 +156,16 @@ public class RSACryptor4BC extends StringCryptor {
 			return b;
 		}
 
+		@Override
 		public int hashCode() {
 			return getModulus().hashCode() ^ getPublicExponent().hashCode();
 		}
 
+		@Override
 		public boolean equals(Object obj) {
-			if (obj == this)
-				return true;
+			if (obj == this) {
+                return true;
+            }
 			if (!(obj instanceof RSAPublicKey)) {
 				return false;
 			} else {
@@ -167,6 +176,7 @@ public class RSACryptor4BC extends StringCryptor {
 			}
 		}
 
+		@Override
 		public String toString() {
 			StringBuffer sb = new StringBuffer();
 			String s = System.getProperty("line.separator");
@@ -190,22 +200,27 @@ public class RSACryptor4BC extends StringCryptor {
 			this.privateExponent = privateExponent;
 		}
 
+		@Override
 		public BigInteger getModulus() {
 			return modulus;
 		}
 
+		@Override
 		public BigInteger getPrivateExponent() {
 			return privateExponent;
 		}
 
+		@Override
 		public String getAlgorithm() {
 			return "RSA";
 		}
 
+		@Override
 		public String getFormat() {
 			return "PKCS#8";
 		}
 
+		@Override
 		public byte[] getEncoded() {
 			byte []b = null;
 			PrivateKeyInfo privatekeyinfo;
@@ -224,9 +239,11 @@ public class RSACryptor4BC extends StringCryptor {
 			return b;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
-			if (!(obj instanceof RSAPrivateKey))
-				return false;
+			if (!(obj instanceof RSAPrivateKey)) {
+                return false;
+            }
 			if (obj == this) {
 				return true;
 			} else {
@@ -237,6 +254,7 @@ public class RSACryptor4BC extends StringCryptor {
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			return getModulus().hashCode() ^ getPrivateExponent().hashCode();
 		}

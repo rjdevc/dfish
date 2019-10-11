@@ -84,11 +84,13 @@ public class FrameworkContext {
 	 * @return
 	 */
 	public static FrameworkContext getInstance() {
-		if (instance == null)
-			synchronized (FrameworkContext.class) {
-				if (instance == null)
-					instance = new FrameworkContext();
-			}
+		if (instance == null) {
+            synchronized (FrameworkContext.class) {
+                if (instance == null) {
+                    instance = new FrameworkContext();
+                }
+            }
+        }
 		return instance;
 	}
 

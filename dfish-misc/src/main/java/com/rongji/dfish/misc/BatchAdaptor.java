@@ -71,7 +71,8 @@ public abstract class BatchAdaptor {
 		if(!working){
 			working = true;
 			new Thread(){
-				public void run() {
+				@Override
+                public void run() {
 					while(!workingQueue.isEmpty()) {
 						try {
 							executeBatch(findSendData());

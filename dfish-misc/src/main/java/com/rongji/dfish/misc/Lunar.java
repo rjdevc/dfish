@@ -36,7 +36,7 @@ public class Lunar {
     private final static String[] BRANCH_NAMES = { "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥" };
     private final static String[] ANIMAL_NAMES = { "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪" };
     static SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-    final static long[] lunarInfo = new long[] { 0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554,
+    private final static long[] LUNAR_INFO = new long[] { 0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554,
             0x056a0, 0x09ad0, 0x055d2, 0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0,
             0x14977, 0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970, 0x06566,
             0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950, 0x0d4a0, 0x1d8a6, 0x0b550,
@@ -201,7 +201,7 @@ public class Lunar {
         int sum = 348;
 
         for (i = 0x8000; i > 0x8; i >>= 1) {
-            if ((lunarInfo[y - 1900] & i) != 0) {
+            if ((LUNAR_INFO[y - 1900] & i) != 0) {
                 sum += 1;
             }
         }
@@ -217,7 +217,7 @@ public class Lunar {
      */
     private static int leapDays(int y) {
         if (leapMonth(y) != 0) {
-            if ((lunarInfo[y - 1900] & 0x10000) != 0) {
+            if ((LUNAR_INFO[y - 1900] & 0x10000) != 0) {
                 return 30;
             } else {
                 return 29;
@@ -234,7 +234,7 @@ public class Lunar {
      * @return
      */
     private static int leapMonth(int y) {
-        return (int) (lunarInfo[y - 1900] & 0xf);
+        return (int) (LUNAR_INFO[y - 1900] & 0xf);
     }
 
     /**
@@ -245,7 +245,7 @@ public class Lunar {
      * @return
      */
     private static int monthDays(int y, int m) {
-        if ((lunarInfo[y - 1900] & (0x10000 >> m)) == 0) {
+        if ((LUNAR_INFO[y - 1900] & (0x10000 >> m)) == 0) {
             return 29;
         } else {
             return 30;
@@ -285,6 +285,7 @@ public class Lunar {
      * 
      * @return
      */
+    @Override
     public String toString() {
         // return // year + "年" +
         // (isLeapMonth ? "闰" : "") + (month == 1 ? "正" : chineseNumber[month - 1]) + "月" + getChinaDayString(day);

@@ -106,7 +106,9 @@ public final class LibrayInfo {
             }
             jarName = basePath.substring(lastFileSep + 1, basePath.length() - 2);
             String libPathStr = basePath.substring(0, lastFileSep + 1); //去除前面的file:
-            if(!libPathStr.startsWith(File.separator))libPathStr=File.separator+libPathStr;
+            if(!libPathStr.startsWith(File.separator)) {
+                libPathStr=File.separator+libPathStr;
+            }
            	LOG.info("==============================================" +
            			"\r\nurl.getProtocol() = "+ url.getProtocol()+
            			"\r\nurl.getFile() = "+ url.getFile()+

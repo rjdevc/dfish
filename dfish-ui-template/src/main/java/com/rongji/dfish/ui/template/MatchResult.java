@@ -121,7 +121,7 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 			outter:for(Object o:curResult){
 				Object cur=o;
 				for(String token:path.split("[/]")){
-					if(token==null||token.equals("")){
+					if(token==null|| "".equals(token)){
 						continue;
 					}
 					if(isNumeric(token)){
@@ -292,10 +292,12 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 		public ResultIterator(List<Object> curResult){
 			if(curResult==null){
 				real=new Iterator<Object>() {
-					public boolean hasNext() {
+					@Override
+                    public boolean hasNext() {
 						return false;
 					}
-					public Object next() {
+					@Override
+                    public Object next() {
 						return null;
 					}
 					@Override

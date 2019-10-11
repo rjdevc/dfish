@@ -371,7 +371,9 @@ public class CheckCodeGenerator {
 	}
 	private void drawInterfering(Graphics g, Color fontColor,Color bgColor, int width,
 			int height,boolean horizontal) {
-		if(!(g instanceof Graphics2D))return;
+		if(!(g instanceof Graphics2D)) {
+            return;
+        }
 		Color interferingColor=new Color((fontColor.getRed()+bgColor.getRed()*3)/4,(fontColor.getGreen()+bgColor.getGreen()*3)/4,(fontColor.getBlue()+bgColor.getBlue()*3)/4);
 		g.setColor(interferingColor);
 		if(!horizontal){
@@ -383,7 +385,9 @@ public class CheckCodeGenerator {
 		g2d.setStroke(new BasicStroke(2));
 //		Location center = new Location(width, height,ys);
 		int radius = 0;
-		if(width<7) return;//宽度不能小于7,否则返回
+		if(width<7) {
+            return;//宽度不能小于7,否则返回
+        }
 		while(radius<width/2){
 			radius = RANDOM.nextInt(width-3);
 		}

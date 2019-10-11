@@ -88,8 +88,9 @@ public class SM2Cryptor extends StringCryptor{
  
 	private boolean allZero(byte[] buffer) {
 		for (int i = 0; i < buffer.length; i++) {
-			if (buffer[i] != 0)
-			return false;
+			if (buffer[i] != 0) {
+                return false;
+            }
 		}
 		return true;
 	}

@@ -94,7 +94,7 @@ public class Builder {
         PicContext context=getPicContext();
         String folderPath=rootPath+"/"+datePath+"/"+context.getId();
         String fileName=String.valueOf(context.getPicSeq());
-        if(ext!=null&&!ext.equals("")){
+        if(ext!=null&&!"".equals(ext)){
             if(ext.startsWith(".")){
                 fileName+=ext;
             }else{

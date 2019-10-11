@@ -111,7 +111,7 @@ public class DocxParser extends DocumentParser {
                         p.getBody().add(drawing);
                     }
                 }
-                if(cr.getText() !=null&&!cr.getText().trim().equals("")){
+                if(cr.getText() !=null&&!"".equals(cr.getText().trim())){
                     p.getBody().add(cr);
                 }
             }else{

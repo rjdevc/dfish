@@ -112,7 +112,7 @@ public class FileController extends BaseController {
      * @return
      */
     static boolean accept(String extName, String acceptTypes) {
-        if (acceptTypes == null || acceptTypes.equals("")) {
+        if (acceptTypes == null || "".equals(acceptTypes)) {
             return true;
         }
         if (Utils.isEmpty(extName)) {

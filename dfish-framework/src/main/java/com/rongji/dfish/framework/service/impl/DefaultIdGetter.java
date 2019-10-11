@@ -26,7 +26,7 @@ public class DefaultIdGetter implements NewIdGetter{
 				return newId;
 			}
 			String dataBaseMaxId = getMaxIdFromDataBase(clzName, idName);
-			if (dataBaseMaxId != null && !dataBaseMaxId.equals("")) {
+			if (dataBaseMaxId != null && !"".equals(dataBaseMaxId)) {
 				String newId=getNextId(dataBaseMaxId,initId,10);// getNextId(dataBaseMaxId, 10);//ZHL
 				cachedIds.put(clzName, newId);
 				return newId;
