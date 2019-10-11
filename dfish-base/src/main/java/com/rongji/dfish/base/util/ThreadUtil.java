@@ -1,5 +1,7 @@
 package com.rongji.dfish.base.util;
 
+import sun.rmi.runtime.Log;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,10 +15,8 @@ import java.util.concurrent.*;
 public class ThreadUtil {
     private static final int MAX_THREAD_POOL_SIZE=200;
     private static final int MAX_QUEUE_SIZE=1024;
-    private static final long KEEP_ALIVE=0;
-	/**
-	 * 线程池实例
-	 */
+    private static final long KEEP_ALIVE=60;
+
 	/**
 	 * 使用另一个线程运行这个runable的内容。
 	 * 这样当前线程不需要等待它运行结束。
@@ -25,36 +25,58 @@ public class ThreadUtil {
 	public static void execute(Runnable runable){
 		getCachedThreadPool().execute(runable);
 	}
-	/**
-	 * 使用另一个线程运行这个runable的内容。
-	 * 当前线程会等待它运行，但最多不超过maxWait毫秒。
-	 * 如果超过时间，将不再等待。和invoke 不一样如果等待超时，只是当前线程离开，执行的内容还会继续。
-	 * @param runable 可运行的内容
-	 */
-	public static void execute(Runnable runable,long maxWait){
-		Future<Object> f=getCachedThreadPool().submit(()->{
-				runable.run();
-				return null;
-		});
-		try {
-			f.get(maxWait, TimeUnit.MILLISECONDS);
-		} catch (Exception e) {}
-	}
-	/**
-	 * 使用另一个线程运行这个runable的内容。
-	 * 当前线程会等待它运行，但最多不超过maxWait毫秒。
-	 * 如果超过时间，将不再等待。和execute 不一样如果等待超时，执行的内容将会被取消。
-	 * @param runable 可运行的内容
-	 */
-	public static void invoke(Runnable runable,long maxWait){
-		List<Callable<Object>> cs= Collections.singletonList((Callable)()->{
-			runable.run();
-			return null;
-		});
-		try {
-			getCachedThreadPool().invokeAny(cs, maxWait, TimeUnit.MILLISECONDS);
-		} catch (Exception e) {}
-	}
+
+    /**
+     * 在timeout时间内执行runable
+     * 如果执行成功并且没超时，则结束。继续执行下一个语句。
+     * 如果超时，则在超时后，抛出TimeoutException
+     *
+     * 超时的时候，如果forceStop==true，则会强制杀死正在执行的runable
+     * 可能会有风险，详情参看 {@link Thread#stop()}
+     * 超时的时候，如果forceStop==false,则尝试杀死正在执行的Runnable.这种情况下
+     * Runnable的run方法中需要要自己埋结束点 如在每个可打断的点加：
+     * if(Thread.currentThread().isInterrupted()){return;}
+     * @param timeout 超时时间
+     * @param forceStop 是否强制结束
+     * @param r Runnable
+     * @throws CancellationException if the computation was cancelled
+     * @throws ExecutionException if the computation threw an exception
+     * @throws InterruptedException if the current thread was interrupted while waiting
+     * @throws TimeoutException if the wait timed out
+     */
+    public static void invoke(long timeout,boolean forceStop,Runnable r) throws InterruptedException, ExecutionException, TimeoutException{
+        DelegateCallable dc=new DelegateCallable(r);
+        Future<Object> f= getCachedThreadPool().submit(dc);
+        try {
+            f.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            if(forceStop){
+                if(dc.t!=null) {
+                    dc.t.stop();
+                }
+            }else {
+                f.cancel(true);
+            }
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private static class DelegateCallable implements Callable<Object>{
+        Runnable r;
+        Thread t;
+        public DelegateCallable(Runnable r){
+            this.r=r;
+        }
+        @Override
+        public Object call(){
+            t=Thread.currentThread();
+            r.run();
+            return null;
+        }
+    }
+
 
 	private static final ExecutorService SHARED_THREAD_POOL=newCachedThreadPool();
 
@@ -86,7 +108,7 @@ public class ThreadUtil {
 	 */
 	public static ExecutorService newFixedThreadPool(int nTheads) {
 		return new ThreadPoolExecutor(0, nTheads,
-                KEEP_ALIVE, TimeUnit.MILLISECONDS,
+                KEEP_ALIVE, TimeUnit.SECONDS,
 				new LinkedBlockingQueue<Runnable>(MAX_QUEUE_SIZE));
 	}
 
