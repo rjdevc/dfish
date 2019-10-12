@@ -28,6 +28,7 @@ public class Datepicker extends AbstractInput<Datepicker,String> {
 			};
 	private String format;
 	private String javaFormat;
+    private Boolean multiple;
     /**
      * 仅日期类型(年月日)
      */
@@ -118,6 +119,23 @@ public class Datepicker extends AbstractInput<Datepicker,String> {
 		calFormat(format);
 		return this;
 	}
+
+    /**
+     * 是否多选模式
+     * @return Boolean
+     */
+    public Boolean getMultiple() {
+        return multiple;
+    }
+    /**
+     * 是否多选模式
+     * @param multiple Boolean
+     * @return this
+     */
+    public Datepicker setMultiple(Boolean multiple) {
+        this.multiple=multiple;
+        return this;
+    }
 
 	@Override
     public String getType() {
