@@ -4582,10 +4582,6 @@ AbsInput = define.widget( 'abs/input', {
 		}
 	}
 } ),
-/* `formgroup` */
-Formgroup = define.widget( 'formgroup', {
-	Extend: [ AbsForm, Horz ]
-} ),
 /* `hidden` */
 Hidden = define.widget( 'hidden', {
 	Const: function( x ) {
@@ -9465,6 +9461,10 @@ Grid = define.widget( 'grid', {
 		}
 	}
 });
+
+/* `formgroup` */
+var Formgroup = define.widget( 'formgroup', {} );
+var Datepicker = define.widget( 'datepicker', {} );
 
 // 附件上传模块
 require( './upload/upload' );

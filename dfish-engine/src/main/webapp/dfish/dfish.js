@@ -2274,13 +2274,16 @@ _merge( $, {
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
 		$.query( ':text,textarea', d ).each( function() {
-			var h = this.outerHTML, v, fr, fa, fb;
+			var h = this.outerHTML, v, r;
 			if ( y.input2text ) {
-				var g = $.widget( this );
+				var g = $.widget( this ), w = 'auto';
 				if ( g && g.isFormWidget ) {
-					h = g.$().outerHTML; v = g.text(), fa = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					h = g.$( 'f' ).outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					if ( g.type !== 'date' && g.type !== 'spinner' )
+						w = g.$( 'f' ).style.width;
 				} else
 					v = this.value;
+				v = '<div class="f-inbl f-va f-wdbr" style="width:' + w + '">' + v + '</div>';
 			} else {
 				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
 			}
