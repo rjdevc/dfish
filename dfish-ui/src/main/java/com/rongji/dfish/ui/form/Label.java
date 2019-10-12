@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.layout;
+package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.ui.AbstractWidget;
