@@ -1793,7 +1793,7 @@ _show_scroll = function() {
 Scroll = define.widget( 'scroll', {
 	Const: function( x ) {
 		W.apply( this, arguments );
-		x.scroll && $.classAdd( this, 'w-scroll' );
+		this.attr( 'scroll' ) && $.classAdd( this, 'w-scroll' );
 	},
 	Helper: {
 		// 获取某个 widget 所在的有 scroll 的面板 / a -> widget|elem
@@ -1866,7 +1866,7 @@ Scroll = define.widget( 'scroll', {
 	},
 	Prototype: {
 		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.x.scroll ? ' f-scroll-wrap' : '');
+			return _proto.prop_cls.call( this ) + (this.attr( 'scroll' ) ? ' f-scroll-wrap' : '');
 		},
 		// 让元素滚动到可见区域。支持下面两种调用方式 /e -> el|wg, y -> (top,bottom,middle,auto,top+n,bottom+n,n), x -> (left,right,center,auto), p -> ease?, q -> divide(整除数字，让滚动的距离是这个数字的整数倍), r -> callback
 		scrollTo: function( e, y, x, p, q, r ) {
@@ -2081,10 +2081,11 @@ Error = $.createClass( {
 Xsrc = define.widget( 'xsrc', {
 	Listener: {
 		body: {
-			ready: function() { ! this.layout && this.x.src && this.load() },
+			ready: function() {
+				this.init();
+			},
 			show: function() {
-				! this._x_ini && (this.init_x( this.x ), this.repaint());
-				! this.layout && this.x.src && this.load();
+				this.init();
 			}
 		}
 	},
@@ -2121,6 +2122,10 @@ Xsrc = define.widget( 'xsrc', {
 			if ( this.x.node && ! this.layout )
 				this.layout = new Layout( { node: this.x.node }, this );
 		},
+		init: function() {
+			! this._x_ini && (this.init_x( this.x ), this.repaint());
+			! this.layout && this.x.src && this.load();
+		},
 		isShow: function() {
 			if ( this.x.display === F )
 				return F;
@@ -2133,6 +2138,12 @@ Xsrc = define.widget( 'xsrc', {
 				while ( n -- )
 					if ( this.parentNode[ n ].type === 'toggle' && this.parentNode[ n ].x.open === F ) { return F; }
 			}
+			if ( this.x.id ) {
+				var t = _toggle_hide_targets[ this.parent ? this.parent.id : this.ownerView.id ];
+				if ( t && t[ this.x.id ] )
+					return F;
+			}
+			
 			return T;
 		},
 		srcData: function( a ) {
@@ -2194,7 +2205,7 @@ Xsrc = define.widget( 'xsrc', {
 				};
 			t && typeof t === _STR ? (t = _getTemplate( t, function() { o = T; e(); } )) : (o = T);
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			(u = this.getSrc()) && this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
+			(u = this.getSrc()) ? this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
 				if ( this._success( x ) ) {
 					n = x; e();
 				}
@@ -2203,7 +2214,7 @@ Xsrc = define.widget( 'xsrc', {
 					n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } );
 					e();
 				}
-			} } );
+			} } ) : (n = {}, e());
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		_success: function( x ) {
@@ -2346,8 +2357,7 @@ _setPath = function( p, x ) {
 _setParent = function( a ) {
 	this.parent && _setPath.call( this, a );
 	this.parent = a;
-	_regIdName.call( this, a );
-	
+	this.x && _regIdName.call( this, a );
 },
 _mergeLoadingProp = function( x, a ) {
 	for ( var k in a ) {
@@ -2370,8 +2380,9 @@ View = define.widget( 'view', {
 		var r = (p && _view( p )) || _docView;
 		_initView.call( this );
 		_setPath.call( this, r, x );
-		_regWidget.apply( this, arguments );
 		_setParent.call( this, r );
+		_regWidget.apply( this, arguments );
+		_regIdName.call( this, r );
 		this.init_nodes();
 		this._instanced = T;
 
@@ -2957,6 +2968,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		x.nobr === F && (this.className += ' z-br');
 		!this.length && (this.className += ' z-empty');
 		(! x.valign && p && p.x.valign) && this.defaults( { valign: p.x.valign } );
+		(x.nobr === F || x.dir === 'v') && this.defaults( { scroll: T } );
 	},
 	Extend: 'horz',
 	Default: { valign: 'middle'	},
@@ -3523,6 +3535,7 @@ Album = define.widget( 'album', {
 		!this.length && $.classAdd (this, 'z-empty' );
 	},
 	Extend: 'horz',
+	Default: { scroll: T },
 	Listener: {
 		body: {
 			nodechange: function() {
@@ -3656,6 +3669,7 @@ Img = define.widget( 'img', {
 		}
 	}
 } ),
+_toggle_hide_targets = {},
 _toggle_hide_parents = {},
 /* `toggle` 可展开收拢的工具条。可显示单行文本与(或)分割线。
  *  /@text: 文本; @hr(Bool) 显示横线; /@open(Bool): 设置初始展开收拢效果并产生一个toggle图标; /@target: 指定展开收拢的widget ID, 多个用逗号隔开
@@ -3684,7 +3698,11 @@ Toggle = define.widget( 'toggle', {
 		className: 'w-toggle',
 		init_nodes: function() {
 			if ( this.x.open === F ) {
-				_toggle_hide_parents[ this.parentNode.id ] = T;
+				if ( this.x.target ) {
+					for ( var i = 0, b = this.x.target.split( ',' ); i < b.length; i ++ )
+						$.jsonChain( T, _toggle_hide_targets, this.ownerView.id, b[ i ] );
+				} else
+					_toggle_hide_parents[ this.parentNode.id ] = (_toggle_hide_parents[ this.parentNode.id ] || 0) + 1;
 			}
 			_proto.init_nodes.call( this );
 		},
@@ -3725,6 +3743,17 @@ Toggle = define.widget( 'toggle', {
 				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
 			}
 			return this.html_icon() + '<div class="_c f-oh f-nobr">' + t + '</div>';
+		},
+		dispose: function() {
+			if ( !this._disposed && this.parentNode ) {
+				if ( this.x.target ) {
+					for ( var i = 0, b = this.x.target.split( ',' ); i < b.length; i ++ )
+						if ( _toggle_hide_targets[ this.ownerView.id ] )
+							delete _toggle_hide_targets[ this.ownerView.id ][ b[ i ] ];
+				} else if ( _toggle_hide_parents[ this.parentNode.id ] )
+					_toggle_hide_parents[ this.parentNode.id ] --;
+			}
+			_proto.dispose.apply( this, arguments );
 		}
 	}
 } ),
@@ -3858,7 +3887,7 @@ PageText = define.widget( 'page/text', {
 	}
 } ),
 PageGroup = define.widget( 'page/buttongroup', {
-	Extend: 'horz',
+	Extend: [ Horz, Page ],
 	Listener: {
 		body: {
 			click: { block: $.rt( T ) }
@@ -3867,8 +3896,6 @@ PageGroup = define.widget( 'page/buttongroup', {
 	Prototype: {
 		className: 'w-page w-page-buttongroup',
 		isModified: $.rt( F ),
-		val: Page.prototype.val,
-		go: Page.prototype.go,
 		drop: function( a ) {
 			var i = 1, c = _number( this.x.currentpage ) || 1, s = _number( this.x.sumpage ) || 1, n = [];
 			for ( ; i <= s; i ++ ) {
@@ -3972,7 +3999,7 @@ Dialog = define.widget( 'dialog', {
 			delete p.discNodes[ this.id ];
 		else
 			p.addEventOnce( 'remove', this.remove, this );
-		_docView.addEvent( 'resize', function() { this.isShow() && this.axis() }, this );
+		_docView.addEvent( 'resize', function() { this.vis && this.axis() }, this );
 	},
 	Extend: 'xsrc',
 	Helper: {
@@ -4001,7 +4028,7 @@ Dialog = define.widget( 'dialog', {
 	Listener: {
 		body: {
 			ready: function() {
-				! this.layout && this.x.src && this.load();
+				this.init();
 				if ( this.x.resizable ) {
 					var self = this;
 					Q( '<div class="w-dialog-rsz z-w"></div><div class="w-dialog-rsz z-n"></div><div class="w-dialog-rsz z-e"></div><div class="w-dialog-rsz z-s"></div><div class="w-dialog-rsz z-nw"></div><div class="w-dialog-rsz z-ne"></div><div class="w-dialog-rsz z-sw"></div><div class="w-dialog-rsz z-se"></div>' )
@@ -4286,7 +4313,7 @@ Dialog = define.widget( 'dialog', {
 			return this;
 		},
 		isShow: function() {
-			return this.vis;
+			return T;
 		},
 		// @a -> show delay millisenconds?
 		show: function( a ) {
@@ -7289,7 +7316,7 @@ Combobox = define.widget( 'combobox', {
 							$.rngCursor( this.$t() );
 						}
 						var t = this.queryText();
-						t && ((t != this._query_text) || !(this.sugger && this.sugger.isShow())) && this.suggest( t, 10 );
+						t && ((t != this._query_text) || !(this.sugger && this.sugger.vis)) && this.suggest( t, 10 );
 					}
 				}
 			},
@@ -7358,7 +7385,7 @@ Combobox = define.widget( 'combobox', {
 							var d = this.pop();
 							if ( k === 13 && (t = this.queryText()) != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
 								this.suggest( t );
-							} else if ( d.isShow() && d.getContentView().combo ) {
+							} else if ( d.vis && d.getContentView().combo ) {
 								k === 13 && ! d.getContentView().combo.getFocus() ? _enter_submit( k, this ) : d.getContentView().combo.keyup( k );
 							} else
 								_enter_submit( k, this );
@@ -7497,7 +7524,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 获取当前的选项对话框
 		pop: function() {
-			return this.dropper && this.dropper.isShow() ? this.dropper : this.sugger && this.sugger.isShow() ? this.sugger : this.more;
+			return this.dropper && this.dropper.vis ? this.dropper : this.sugger && this.sugger.vis ? this.sugger : this.more;
 		},
 		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
@@ -7519,7 +7546,7 @@ Combobox = define.widget( 'combobox', {
 			return this.add( d, -1 ).addEvent( 'close', function() {
 				! self.$().contains( document.activeElement ) && self.focus( F );
 				var d = self.pop();
-				d && d.isShow() && self.focusNode && self.focusNode.tabFocus( F );
+				d && d.vis && self.focusNode && self.focusNode.tabFocus( F );
 			} ).addEvent( 'load', function() {
 				//this.css( 'width', this.$().scrollWidth );
 				this.axis();
@@ -7686,7 +7713,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		drop: function() {
 			if ( this.usa() ) {
-				var d = this.dropper, b = d && d.isShow();
+				var d = this.dropper, b = d && d.vis;
 				this.closePop();
 				this.focus();
 				if ( ! b )
@@ -7927,7 +7954,7 @@ Linkbox = define.widget( 'linkbox', {
 						if ( k === 13 || k === 38 || k === 40 || k === 17 ) { // 38:up, 40:down, 17:ctrl
 							$.stop( e );
 							var d = this.pop();
-							if ( d.isShow() )
+							if ( d.vis )
 								d.getContentView().combo && d.getContentView().combo.keyup( k );
 							else if ( k === 13 )
 								this.fixStyle();
@@ -8304,7 +8331,7 @@ Onlinebox = define.widget( 'onlinebox', {
 							var d = this.pop(), t;
 							if ( k === 13 && (t = this.cursorText()) != this._query_text ) {
 								this.suggest( t );
-							} else if ( d.isShow() && d.getContentView().combo ) {
+							} else if ( d.vis && d.getContentView().combo ) {
 								k === 13 && ! d.getContentView().combo.getFocus() ? _enter_submit( k, this ) : d.getContentView().combo.keyup( k );
 							} else
 								_enter_submit( k, this );
@@ -8410,13 +8437,13 @@ Pickbox = define.widget( 'pickbox', {
 				this.loading = T;
 				this.addClass( 'z-loading' );
 				var self = this;
+				this.text( Loc.loading );
 				(this.dropper = this.createPop( this.x.drop )).preload( function() {
 					var r = self.store().getParamByValue( v );
 					r ? self.val( r.value, r.text ) : self.val( '', '' );
 					self.loading = F;
 					self.removeClass( 'z-loading' );
 				} );
-				this.text( Loc.loading );
 			}
 		},
 		resetOptions: function() {
@@ -8431,7 +8458,9 @@ Pickbox = define.widget( 'pickbox', {
 		},
 		val: function( v, t ) {
 			v != N && this.text( t || v );
-			return AbsForm.prototype.val.apply( this, arguments );
+			var v = AbsForm.prototype.val.apply( this, arguments );
+			v != N && this.checkPlaceholder( v );
+			return v;
 		},
 		text: function( t ) {
 			if ( t == N )
@@ -9181,6 +9210,7 @@ Tree = define.widget( 'tree', {
 			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
 	},
 	Extend: [ Scroll, AbsLeaf ],
+	Default: { scroll: T },
 	Listener: {
 		body: {
 			ready: function() {
@@ -9545,15 +9575,15 @@ GridRow = define.widget( 'grid/row', {
 			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowspan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
-				if ( r && r[ a ] && r[ a ][ i ] ) {
-					i += r[ a ][ i ] - 1;
+				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
+					i += r[ this.level ][ a ][ i ] - 1;
 					continue;
 				}
 				var k = i, s = t = '', f = c[ i ].x, v = d && d[ f.field ];
 				if ( v != N && typeof v === _OBJ ) {
 					if ( v.rowspan > 1 ) {
 						for ( var j = 1; j < v.rowspan; j ++ )
-							$.jsonChain( v.colspan || 1, r, a + j, i );
+							$.jsonChain( v.colspan || 1, r, this.level, a + j, i );
 					}
 					if ( v.colspan > 1 )
 						i += v.colspan - 1;
@@ -10096,7 +10126,7 @@ GridHead = define.widget( 'grid/head', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
-		p.x.scroll && $.classAdd( this, 'f-oh' );
+		p.attr( 'scroll' ) && $.classAdd( this, 'f-oh' );
 	},
 	Extend: 'vert',
 	Listener: {
@@ -10131,7 +10161,7 @@ GridBody = define.widget( 'grid/body', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
-		!p.x.scroll && $.classAdd( this, 'w-grid-bg' );
+		!p.attr( 'scroll' ) && $.classAdd( this, 'w-grid-bg' );
 	},
 	Extend: GridHead,
 	Listener: {
@@ -10162,8 +10192,9 @@ Grid = define.widget( 'grid', {
 		this._pad  = x.cellpadding != N ? x.cellpadding : 5;
 		this._face = x.face || 'none';
 		W.apply( this, arguments );
+		x.scroll == N && (x.scroll = T);
 		this.colgrps = [];
-		var r = x.thead && x.thead.rows, s = x.scroll;
+		var r = x.thead && x.thead.rows, s = this.attr( 'scroll' );
 		if ( r && r.length ) {
 			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
 			delete x.scroll;
@@ -10185,6 +10216,7 @@ Grid = define.widget( 'grid', {
 			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
 	},
 	Extend: 'vert',
+	//Default1: { scroll: T },
 	Listener: {
 		body: {
 			ready: function() {
@@ -10394,7 +10426,7 @@ Grid = define.widget( 'grid', {
 			(j = this.thead()) && j.insertCol( a.thead.rows, b );
 			(j = this.tbody()) && j.insertCol( a.tbody.rows, b );
 			this.resize();
-			this.x.scroll && (this.head ? this.body : this).checkScroll();
+			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
 		//@public 删除一列 / @a -> colIndex|colField
 		deleteColumn: function( a ) {
@@ -10404,7 +10436,7 @@ Grid = define.widget( 'grid', {
 			(j = this.thead()) && j.deleteCol( a );
 			(j = this.tbody()) && j.deleteCol( a );
 			this.resize();
-			this.x.scroll && (this.head ? this.body : this).checkScroll();
+			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
 		//@public 更新一列 / @a -> 一列的数据grid json, b -> colIndex|colField
 		updateColumn: function( a, b ) {
@@ -10545,7 +10577,7 @@ Grid = define.widget( 'grid', {
 		},
 		// @implement
 		prop_cls_scroll_overflow: function() {
-			return 'f-scroll-overflow' + (!this.head && this.x.scroll ? ' w-grid-bg' : '');
+			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-grid-bg' : '');
 		}
 	}
 });
@@ -10561,7 +10593,7 @@ Form = define.widget( 'form', {
 			var e = n[ i ], h = rows.length - 1,
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
 			$.extend( td, x.pub, d && d.pub );
-			!td.colspan && (td.colspan = 1);
+			!td.colspan && (td.colspan = -1);
 			td.colspan < 0 && (td.colspan = cols + 1 + td.colspan);
 			(td.colspan > cols) && (td.colspan = cols);
 			if ( td.rowspan ) {

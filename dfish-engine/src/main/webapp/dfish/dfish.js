@@ -45,7 +45,8 @@ getPath = function() {
 		}
 		return src || js[ l ].src;
 	})();
-	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
+	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	!_cfg.ver && (_cfg.ver = _urlParam( u, 'ver' ));
 },
 
 // 浏览器信息
