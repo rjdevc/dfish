@@ -2275,7 +2275,7 @@ Xsrc = define.widget( 'xsrc', {
 			this.reset( tar );
 			if ( this.$() ) {
 				var s = this.getSrc();
-				typeof s === _STR ? this.load( tar, fn, T ) : this.loadData( s, tar );
+				typeof s === _STR ? this.load( tar, fn, T ) : this.loadData( s || {}, tar );
 			} else {
 				this.show();
 				! this.loading && this.load( tar, fn, T );
