@@ -670,6 +670,7 @@ W = define( 'widget', function() {
 	return $.createClass( {
 	// @x -> 配置参数, p -> parentNode, n -> number/name
 	Const: function( x, p, n ) {
+		this.ownerView = _view( p );
 		_regWidget.call( this, x, p, n );
 		p && _setView.call( this, _view( p ) );
 		this.init_nodes();
