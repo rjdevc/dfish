@@ -7401,7 +7401,11 @@ Combobox = define.widget( 'combobox', {
 			input: br.ms ? N : {
 				occupy: T,
 				method: function( e ) {
-					this._imeMode && this.suggest( this.queryText() );
+					if ( this._imeMode ) {
+						var t = this.queryText();
+						this.suggest( t );
+						this.checkPlaceholder( t );
+					}
 				}
 			},
 			keyup: {
