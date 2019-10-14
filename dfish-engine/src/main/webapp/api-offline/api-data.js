@@ -1838,8 +1838,8 @@ define( {
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ]
   },
-  "vert": {
-  	title: 'vert',
+  "vertical": {
+  	title: 'vertical',
   	remark: '子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
   	extend: 'widget',
     Config: [
@@ -1874,19 +1874,19 @@ define( {
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ],
     Classes: [
-      { name: '.w-horz', remark: '基础样式。' }
+      { name: '.w-vertical', remark: '基础样式。' }
     ]
   },
-  "horz": {
-  	title: 'horz',
+  "horizontal": {
+  	title: 'horizontal',
   	remark: '子节点按水平方向排列的布局widget。子节点的高度默认为100%；宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
-  	extend: 'vert',
-  	deprecate: '.w-vert',
+  	extend: 'vertical',
+  	deprecate: '.w-vertical',
     Config: [
       { name: 'nobr', type: 'Boolean', remark: '是否不换行。默认值为 true' },
 	],
     Classes: [
-      { name: '.w-horz', remark: '基础样式。' }
+      { name: '.w-horizontal', remark: '基础样式。' }
     ]
   },
   "formgroup": {
@@ -2011,7 +2011,8 @@ define( {
   	deprecate: 'ownerView',
     Config: [
       { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
-      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。' }
+      { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。' },
+      { name: 'commands', type: 'Object', remark: '命令集。' }
     ],
     Properties: [
       { name: 'path', type: 'String', remark: '路径。' },
@@ -2640,8 +2641,8 @@ define( {
             }
           }
       ] },
-      { name: 'date', type: 'Number', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
-      { name: 'focusdate', type: 'Number', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
+      { name: 'date', type: 'String', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
+      { name: 'focusdate', type: 'String', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
       { name: 'padrow', type: 'Boolean', optional: true, remark: '设置为true，当日历不满6行时填补一行空白行。' },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。', example: [

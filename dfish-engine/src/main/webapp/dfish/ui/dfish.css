@@ -31,8 +31,6 @@
 .f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85}
 .f-scroll-wrap.z-ovis{overflow:visible}
 
-.f-scroll-overflow .w-vert,.f-scroll-overflow .w-grid{overflow:visible}
-
 .f-bl{display:block}
 .f-inbl,.f-nv,.f-nv-top,.f-nv-middle,.f-nv-bottom{display:inline-block;*display:inline;*zoom:1}
 .f-left{float:left}
@@ -129,10 +127,9 @@
 .w-progress.z-hidepercent ._s{display:none}
 
 .f-oh{overflow:hidden}
-.w-vert.z-autosize,.w-horz.z-autosize{overflow:visible}
-.w-horz{white-space:nowrap}
-.w-horz.z-br{white-space:normal}
-.w-horz-vln{width:100%}
+.w-horz,.w-horizontal{white-space:nowrap}
+.w-horz.z-br,.w-horizontal.z-br{white-space:normal}
+.w-horizontal-vln{width:100%}
 
 .w-frame{position:relative}
 

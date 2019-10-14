@@ -2676,8 +2676,14 @@ Horz = define.widget( 'horz', {
 			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align === 'left') && (this.childCls += ' z-htmn');
 			var s = _proto.html_nodes.call( this ) + (this._hiddens ? this._hiddens.html() : ''),
 				ih = ie7 && this.x.scroll && this.innerHeight(); // ie7在有scroll和valign时，f-vi的100%会包含底部滚动条的高度，导致撑开。需要设置负值的margin-bottom来抵消
-			return v ? '<div id=' + this.id + 'vln class="w-horz-vln f-nv-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
+			return v ? '<div id=' + this.id + 'vln class="w-horizontal-vln f-nv-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
 		}
+	}
+} ),
+Horizontal = define.widget( 'horizontal', {
+	Extend: 'horz',
+	Prototype: {
+		className: 'w-horizontal'
 	}
 } ),
 // vert/scale: 子元素被约束为：纵向排列，宽度占满，高度按子元素设置的height属性分配
@@ -2707,6 +2713,12 @@ Vert = define.widget( 'vert', {
 		childCls: 'f-sub-vert',
 		scaleHeight: _w_scale.height,
 		html_nodes: Horz.prototype.html_nodes
+	}
+} ),
+Vertical = define.widget( 'vertical', {
+	Extend: 'vert',
+	Prototype: {
+		className: 'w-vertical'
 	}
 } ),
 /* `Frame`  子元素被约束为：高度宽度占满，只有一个可见  */
@@ -6074,6 +6086,7 @@ CalendarNum = define.widget( 'calendar/num', {
 /* `calendar` */
 Calendar = define.widget( 'calendar/date', {
 	Const: function( x ) {
+		!x.date && x.focusdate && (x.date = x.focusdate);
 		var d = x.date ? this._ps( x.date ) : new Date(),
 			b = x.begindate && this._ps( x.begindate ), e = x.enddate && this._ps( x.enddate );
 		this.date = $.numRange( d, b, e );
@@ -6351,12 +6364,13 @@ CalendarWeek = define.widget( 'calendar/week', {
 		className: 'w-calendar w-calendar-week',
 		_nav_unit: 'y',
 		_fm: function( a ) {
+			typeof a === _STR && (a = $.dateParse( a ));
 			var b = $.dateWeek( a, this.x.cg, this.x.start );
 			return b[ 0 ] + '-' + $.strPad( b[ 1 ] );
 		},
 		html_nodes: function() {
 			var a = this.date, w = $.dateWeek( a, this.x.cg, this.x.start ), y = w[ 0 ], n = this.x.begindate, m = this.x.enddate, t = this._fm( new Date() ),
-				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), o = this.x.body,
+				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate && this._fm( this.x.focusdate ), o = this.x.body,
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.weeknow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			this._year = y;

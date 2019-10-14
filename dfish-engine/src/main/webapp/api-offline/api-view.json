@@ -151,8 +151,8 @@
 		          { "id": "tr", "text": "tr", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "form", "text": "form<sup>3.3+</sup>", "icon": ".icon .icon-class" },
-		        { "id": "horz", "text": "horz", "icon": ".icon .icon-class" },
-		        { "id": "vert", "text": "vert", "icon": ".icon .icon-class" },
+		        { "id": "horizontal", "text": "horizontal", "icon": ".icon .icon-class" },
+		        { "id": "vertical", "text": "vertical", "icon": ".icon .icon-class" },
 		        { "id": "view", "text": "view", "icon": ".icon .icon-class" },
 		        { "id": "xsrc", "text": "xsrc<sup>3.2+</sup>", "icon": ".icon .icon-class" }
 		      ] },
