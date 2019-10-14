@@ -10135,7 +10135,7 @@ Table = define.widget( 'table', {
 	Prototype: {
 		ROOT_TYPE: 'grid,form',
 		html: function() {
-			var s = '<table id=' + this.id + ' class="w-grid-table w-grid-face-' + this.rootNode._face + '" cellspacing=0 cellpadding=' + this.rootNode._pad;
+			var s = '<table id=' + this.id + ' class="w-' + this.rootNode.type + '-table w-' + this.rootNode.type + '-face-' + this.rootNode._face + '" cellspacing=0 cellpadding=' + this.rootNode._pad;
 			if ( br.ms ) {
 				var w = this.innerWidth();
 				w != N && (s += ' style="width:' + w + 'px"');
@@ -10161,6 +10161,7 @@ GridHead = define.widget( 'grid/head', {
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
 		p.attr( 'scroll' ) && $.classAdd( this, 'f-oh' );
+		this.className = 'w-' + this.rootNode.type + '-thead';
 	},
 	Extend: 'vert',
 	Listener: {
@@ -10186,8 +10187,7 @@ GridHead = define.widget( 'grid/head', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid,form',
-		className: 'w-grid-thead'
+		ROOT_TYPE: 'grid,form'
 	}
 } ),
 /* `gridbody` */
@@ -10195,7 +10195,8 @@ GridBody = define.widget( 'grid/body', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.table = new Table( x.table, this );
-		!p.attr( 'scroll' ) && $.classAdd( this, 'w-grid-bg' );
+		!p.attr( 'scroll' ) && $.classAdd( this, 'w-' + this.rootNode.type + '-bg' );
+		this.className = 'w-' + this.rootNode.type + '-tbody';
 	},
 	Extend: GridHead,
 	Listener: {
@@ -10214,10 +10215,6 @@ GridBody = define.widget( 'grid/body', {
 				this.parentNode.trigger( e );
 			}
 		}
-	},
-	Prototype: {
-		ROOT_TYPE: 'grid,form',
-		className: 'w-grid-tbody'
 	}
 } ),
 /* `grid` */
@@ -10611,7 +10608,7 @@ Grid = define.widget( 'grid', {
 		},
 		// @implement
 		prop_cls_scroll_overflow: function() {
-			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-grid-bg' : '');
+			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.type + '-bg' : '');
 		}
 	}
 });
@@ -10622,7 +10619,7 @@ Form = define.widget( 'form', {
 		for ( var i = 0; i < cols; i ++ ) {
 			c.push( { field: '' + i, width: '*' } );
 		}
-		I: for ( var i = 0, j = 0, n = x.nodes.concat(), tr = {}, rp = {}; i < n.length; i ++ ) {
+		I: for ( var i = 0, j = 0, n = x.nodes ? x.nodes.concat() : [], tr = {}, rp = {}; i < n.length; i ++ ) {
 			j == 0 && rows.push( tr );
 			var e = n[ i ], h = rows.length - 1,
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
@@ -10657,12 +10654,12 @@ Form = define.widget( 'form', {
 			}
 		}
 		var y = $.extend( {}, x, { columns: c, tbody: { rows: rows } } );
-		delete y.pub;
+		delete y.pub; delete y.nodes;
 		Grid.call( this, y, p );
 	},
 	Extend: 'grid',
 	Prototype: {
-		className: 'w-grid w-form'
+		className: 'w-form'
 	}
 } );
 
