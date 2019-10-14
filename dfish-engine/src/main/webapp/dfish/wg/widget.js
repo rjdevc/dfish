@@ -2082,10 +2082,10 @@ Xsrc = define.widget( 'xsrc', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.init();
+				this.start();
 			},
 			show: function() {
-				this.init();
+				this.start();
 			}
 		}
 	},
@@ -2102,7 +2102,7 @@ Xsrc = define.widget( 'xsrc', {
 				$.require( _view_resources[ this.path ] );
 			_proto.init_x.call( this, x );
 			if ( ! x.node ) {
-				var s = x.src || {};
+				var s = x.src;
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
 				} else
@@ -2122,9 +2122,9 @@ Xsrc = define.widget( 'xsrc', {
 			if ( this.x.node && ! this.layout )
 				this.layout = new Layout( { node: this.x.node }, this );
 		},
-		init: function() {
+		start: function() {
 			! this._x_ini && (this.init_x( this.x ), this.repaint());
-			! this.layout && this.x.src && this.load();
+			! this.layout && this.isShow() && this.load();
 		},
 		isShow: function() {
 			if ( this.x.display === F )
@@ -3540,6 +3540,16 @@ ButtonSplit = define.widget( 'button/split', {
 		}
 	}
 } ),
+/* `tabs` */
+Tabs = define.widget( 'tabs', {
+	Const: function( x ) {
+		//Horz.apply( this, arguments );
+	},
+	Extend: 'vert',
+	Prototype: {
+		className: 'w-tabs'
+	}
+} ),
 /* `album` */
 Album = define.widget( 'album', {
 	Const: function( x ) {
@@ -3899,6 +3909,11 @@ PageText = define.widget( 'page/text', {
 	}
 } ),
 PageGroup = define.widget( 'page/buttongroup', {
+	Const: function( x, p ) {
+		Horz.apply( this, arguments );
+		x.transparent && $.classAdd( this, 'z-trans' );
+		x.sumpage && (x.sumpage = Math.ceil( x.sumpage ));
+	},
 	Extend: [ Horz, Page ],
 	Listener: {
 		body: {
