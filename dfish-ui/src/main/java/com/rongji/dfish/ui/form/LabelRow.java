@@ -30,13 +30,13 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      * @return 本身，这样可以继续设置其他属性
      * @since 3.2.0
      */
-    T setLabel(FormLabel label);
+    T setLabel(Label label);
     /**
      * 取得标题
      * @return label
      * @since 3.2.0
      */
-    FormLabel getLabel();
+    Label getLabel();
 
     /**
      * 这个元素，是否以藏标题。如果是，则不显示标题；否则显示标题。

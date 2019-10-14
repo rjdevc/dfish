@@ -32,7 +32,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	/**
 	 * 标题
 	 */
-	protected FormLabel label;
+	protected Label label;
 	/**
 	 * 值
 	 */
@@ -89,18 +89,18 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	}
 
 	@Override
-    public FormLabel getLabel() {
+    public Label getLabel() {
 		return label;
 	}
 
 	@Override
-    public T setLabel(FormLabel label) {
+    public T setLabel(Label label) {
 		this.label = label;
 		return (T) this;
 	}
 	@Override
     public T setLabel(String label) {
-		this.label = new FormLabel(label);
+		this.label = new Label(label);
 		return (T) this;
 	}
 	

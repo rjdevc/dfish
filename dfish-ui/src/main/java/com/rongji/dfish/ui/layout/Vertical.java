@@ -24,7 +24,7 @@ public class Vertical extends LinearLayout<Vertical> {
 
 	@Override
     public String getType() {
-		return "vert";
+		return "vertical";
 	}
 
 	/**

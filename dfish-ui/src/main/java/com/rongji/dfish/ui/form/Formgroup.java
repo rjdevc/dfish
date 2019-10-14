@@ -11,37 +11,37 @@ import com.rongji.dfish.ui.layout.LinearLayout;
  * 与HorzontalPanel用法一样，多了setLabel，可以添加标题，可能有些属性不全，后期补上
  */
 @SuppressWarnings("unchecked")
-public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGroup>,Scrollable<FormGroup>,Alignable<FormGroup>,Valignable<FormGroup>,MultiContainer<FormGroup,Widget<?>>{
+public class Formgroup extends LinearLayout<Formgroup>implements LabelRow<Formgroup>,Scrollable<Formgroup>,Alignable<Formgroup>,Valignable<Formgroup>,MultiContainer<Formgroup,Widget<?>>{
 	
 	private static final long serialVersionUID = 6045136733949121294L;
 	private Boolean star;
-	private FormLabel label;
+	private Label label;
 	private Boolean hideLabel;
 
 	@Override
-	public FormLabel getLabel() {
+	public Label getLabel() {
 		return label;
 	}
 
 	@Override
-	public FormGroup setLabel(String label) {
-		this.label=new FormLabel(label).setWidth(null);
+	public Formgroup setLabel(String label) {
+		this.label=new Label(label).setWidth(null);
 		return this;
 	}
 	@Override
-	public FormGroup setLabel(FormLabel label) {
+	public Formgroup setLabel(Label label) {
 		this.label=label;
 		return this;
 	}
 	@Deprecated
-	public FormGroup setTitle(String label) {
+	public Formgroup setTitle(String label) {
 		return setLabel(label);
 	}
 	/**
 	 * 构造函数
 	 * @param label String
 	 */
-	public FormGroup(String label) {
+	public Formgroup(String label) {
 		super(null);
 		setLabel(label);
 	}
@@ -60,7 +60,7 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-	public FormGroup add(int index,Widget<?> w,String width) {
+	public Formgroup add(int index, Widget<?> w, String width) {
 		if(index<0){
 			nodes.add(w);
 		}else{
@@ -77,7 +77,7 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	}
 
 	@Override
-	public FormGroup setHideLabel(Boolean hideLabel) {
+	public Formgroup setHideLabel(Boolean hideLabel) {
 		this.hideLabel=hideLabel;
 		if(hideLabel!=null&&label!=null){
 			label.setWidth(hideLabel?"0":null);
@@ -100,13 +100,13 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
      * @deprecated notnull 属性已经被 required替代
      */
 	@Deprecated
-	public FormGroup setNotnull(Boolean star) {
+	public Formgroup setNotnull(Boolean star) {
 		this.star=star;
 		return this;
 	}
 
 	@Override
-	public FormGroup setStar(Boolean star) {
+	public Formgroup setStar(Boolean star) {
 		this.star=star;
 		return this;
 	}

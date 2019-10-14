@@ -41,7 +41,7 @@ public class Horizontal extends LinearLayout<Horizontal>{
 
 	@Override
     public String getType() {
-		return "horz";
+		return "horizontal";
 	}
 
 	/**

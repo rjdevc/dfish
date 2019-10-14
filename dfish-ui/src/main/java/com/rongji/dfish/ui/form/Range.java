@@ -21,7 +21,7 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 	 * 
 	 */
 	private static final long serialVersionUID = -4525721180514710555L;
-	private FormLabel label;
+	private Label label;
 	private FormElement<?, ?> begin;
 	private FormElement<?, ?> end;
 	private Boolean hideLabel;
@@ -80,11 +80,11 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 
 	@Override
 	public Range setLabel(String label) {
-		this.label=new FormLabel(label);
+		this.label=new Label(label);
 		return this;
 	}
 	@Override
-	public Range setLabel(FormLabel label) {
+	public Range setLabel(Label label) {
 		this.label=label;
 		return this;
 	}
@@ -95,7 +95,7 @@ public class Range extends AbstractLayout<Range,FormElement<?, ?>> implements La
 	}
 
 	@Override
-	public FormLabel getLabel() {
+	public Label getLabel() {
 		return label;
 	}
 

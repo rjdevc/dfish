@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.Scrollable;
  * @author DFish Team
  *
  */
-public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollable<EmbedWindow>, HasText<EmbedWindow>{
+public class Ewin extends AbstractWidget<Ewin> implements Scrollable<Ewin>, HasText<Ewin>{
 
 /**
 	 * 
@@ -29,7 +29,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	 * @param id 编号
 	 * @param src 地址
 	 */
-	public EmbedWindow(String id,String src){
+	public Ewin(String id, String src){
 		super();
 		this.id=id;
 		this.src=src;
@@ -38,7 +38,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	 * 构造函数
 	 * @param src 地址
 	 */
-	public EmbedWindow(String src){
+	public Ewin(String src){
 		this(null, src);
 	}
 
@@ -66,7 +66,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public EmbedWindow setText(String text) {
+    public Ewin setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -84,7 +84,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	 * @param src 地址
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public EmbedWindow setSrc(String src) {
+	public Ewin setSrc(String src) {
 		this.src = src;
 		return this;
 	}
@@ -93,7 +93,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 		return scroll;
 	}
 	@Override
-    public EmbedWindow setScroll(Boolean scroll) {
+    public Ewin setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return this;
 	}
@@ -102,12 +102,12 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 		return scrollClass;
 	}
 	@Override
-    public EmbedWindow setScrollClass(String scrollClass) {
+    public Ewin setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
 	}
 	@Override
-    public EmbedWindow setEscape(Boolean escape){
+    public Ewin setEscape(Boolean escape){
 		this.escape=escape;
 		return this;
 	}

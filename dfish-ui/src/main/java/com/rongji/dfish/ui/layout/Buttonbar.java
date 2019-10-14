@@ -18,8 +18,8 @@ import com.rongji.dfish.ui.widget.Overflow;
  * 
  */
 // FIXME ButtonBar的实现是HorizonalLayout,java端概念是否和js端统一大
-public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements PubHolder<ButtonBar, Button>,
-        Alignable<ButtonBar>, Valignable<ButtonBar>, MultiContainer<ButtonBar, Widget<?>>, Directional<ButtonBar> {
+public class Buttonbar extends AbstractLayout<Buttonbar, Widget<?>> implements PubHolder<Buttonbar, Button>,
+        Alignable<Buttonbar>, Valignable<Buttonbar>, MultiContainer<Buttonbar, Widget<?>>, Directional<Buttonbar> {
 	/**
 	 * 
 	 */
@@ -49,7 +49,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param overflow 设置当内容太多的时候不换行
 	 * @return this
 	 */
-	public ButtonBar setOverflow(Overflow overflow) {
+	public Buttonbar setOverflow(Overflow overflow) {
 		this.overflow = overflow;
 		return this;
 	}
@@ -65,7 +65,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param nobr 设置当内容太多的时候不换行
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ButtonBar setNobr(Boolean nobr) {
+	public Buttonbar setNobr(Boolean nobr) {
 		this.nobr = nobr;
 		return this;
 	}
@@ -87,7 +87,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public ButtonBar setDir(String dir) {
+    public Buttonbar setDir(String dir) {
 		this.dir = dir;
 		return this;
 	}
@@ -100,7 +100,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Deprecated
-	public ButtonBar setFocusable(Boolean focusable) {
+	public Buttonbar setFocusable(Boolean focusable) {
 		getPub().setFocusable(true);
 		return this;
 	}
@@ -120,7 +120,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param focusmultiple Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ButtonBar setFocusmultiple(Boolean focusmultiple) {
+	public Buttonbar setFocusmultiple(Boolean focusmultiple) {
 		this.focusmultiple = focusmultiple;
 		return this;
 	}
@@ -140,13 +140,13 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param space 间距 (像素)
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ButtonBar setSpace(Integer space) {
+	public Buttonbar setSpace(Integer space) {
 		this.space = space;
 		return this;
 	}
 
 	@Override
-    public ButtonBar setPub(Button pub) {
+    public Buttonbar setPub(Button pub) {
 		this.pub = pub;
 		return this;
 	}
@@ -155,7 +155,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * 构造函数
 	 * @param id String
 	 */
-	public ButtonBar(String id) {
+	public Buttonbar(String id) {
 		super(id);
 	}
 
@@ -171,7 +171,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @deprecated 使用 {@link #add(Widget)}
 	 */
 	@Deprecated
-	public ButtonBar addSplit() {
+	public Buttonbar addSplit() {
 		nodes.add(new Split().setWidth("2"));
 		return this;
 	}
@@ -193,7 +193,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @deprecated 现在一般是setPub(new Button(null).setCls("xxx"));
 	 */
 	@Deprecated
-	public ButtonBar setFace(String face) {
+	public Buttonbar setFace(String face) {
 		// FIXME 这里face和styleClass冲了,该如何定义? 是否将这个方法去除
 		if (Utils.isEmpty(face)) {
 			return this;
@@ -211,7 +211,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	}
 
 	@Override
-	public ButtonBar setValign(String valign) {
+	public Buttonbar setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}
@@ -222,7 +222,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	}
 
 	@Override
-	public ButtonBar setAlign(String align) {
+	public Buttonbar setAlign(String align) {
 		this.align = align;
 		return this;
 	}
@@ -249,7 +249,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param split Split
 	 * @return this
 	 */
-	public ButtonBar setSplit(Split split) {
+	public Buttonbar setSplit(Split split) {
 		this.split = split;
 		return this;
 	}
@@ -269,7 +269,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param scroll Boolean
 	 * @return 本身，以便继续设置属性
 	 */
-	public ButtonBar setScroll(Boolean scroll) {
+	public Buttonbar setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return this;
 	}
@@ -289,7 +289,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param scrollClass String
 	 * @return 本身，以便继续设置属性
 	 */
-	public ButtonBar setScrollClass(String scrollClass) {
+	public Buttonbar setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
 	}
@@ -300,7 +300,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	  * @param w  N
 	  * @return 本身，这样可以继续设置其他属性
 	  */
-		public ButtonBar add(int index, Widget<?> w) {
+		public Buttonbar add(int index, Widget<?> w) {
 	     if (w == null) {
 	         return  this;
 	     }

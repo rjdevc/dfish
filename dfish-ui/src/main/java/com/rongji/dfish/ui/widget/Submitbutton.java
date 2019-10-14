@@ -6,7 +6,7 @@ package com.rongji.dfish.ui.widget;
  * @author DFish Team
  * 
  */
-public class SubmitButton extends AbstractButton<SubmitButton> {
+public class Submitbutton extends AbstractButton<Submitbutton> {
 	 /**
 	 * 
 	 */
@@ -19,7 +19,7 @@ public class SubmitButton extends AbstractButton<SubmitButton> {
      * @param onclick String 所触发的动作(JS)
      */
 	@Deprecated
-    public SubmitButton(String icon, String text, String onclick) {
+    public Submitbutton(String icon, String text, String onclick) {
     	this.setIcon(icon);
     	this.setText(text);
     	this.setOn(Button.EVENT_CLICK, onclick);
@@ -30,7 +30,7 @@ public class SubmitButton extends AbstractButton<SubmitButton> {
      * @param icon String 图标
      * @param text String 标题
      */
-    public SubmitButton(String icon, String text) {
+    public Submitbutton(String icon, String text) {
     	this.setIcon(icon);
     	this.setText(text);
     }
@@ -39,7 +39,7 @@ public class SubmitButton extends AbstractButton<SubmitButton> {
      * 构造函数
      * @param text String 标题
      */
-    public SubmitButton(String text) {
+    public Submitbutton(String text) {
     	this.setText(text);
     }
 

@@ -1,19 +1,19 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.DFishUITestCase;
-import com.rongji.dfish.ui.layout.ButtonBar;
+import com.rongji.dfish.ui.layout.Buttonbar;
 import com.rongji.dfish.ui.layout.Vertical;
 
-public class ButtonBarTest extends DFishUITestCase{
+public class ButtonbarTest extends DFishUITestCase{
 
 	@Override
 	protected Object getWidget() {
 		Vertical vl=new Vertical("");
-		ButtonBar bar=new ButtonBar("bbp");
+		Buttonbar bar=new Buttonbar("bbp");
 		vl.add(bar);
 		bar.getPub().setCls("f-buton");
 		bar.add(new Button("新增"));
-		bar.add(new SubmitButton("保存"));
+		bar.add(new Submitbutton("保存"));
 		return vl;
 	}
 	
