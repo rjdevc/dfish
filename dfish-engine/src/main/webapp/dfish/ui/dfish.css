@@ -528,37 +528,37 @@
 .w-img-box{display:none;position:absolute;top:3px;left:3px}
 .w-img-box.w-checkbox{padding:0}
 
-.w-buttonbar{position:relative;overflow:hidden}
-.w-buttonbar.z-br{overflow:visible}
-.w-buttonbar.z-dirh{white-space:nowrap;word-break:keep-all}
-.w-buttonbar.z-dirh.z-br{white-space:normal;word-break:break-all}
-.w-buttonbar.z-dirv .w-button{display:block}
-.w-buttonbar.z-autosize{overflow:visible}
-.w-buttonbar-line{display:none;position:absolute;right:0;left:0;bottom:0;height:1px;background:#ddd}
+.w-buttonbar,.w-tabbar{position:relative;overflow:hidden}
+.w-buttonbar.z-br,.w-tabbar.z-br{overflow:visible}
+.w-buttonbar.z-dirh,.w-tabbar.z-dirh{white-space:nowrap;word-break:keep-all}
+.w-buttonbar.z-dirh.z-br,.w-tabbar.z-dirh.z-br{white-space:normal;word-break:break-all}
+.w-buttonbar.z-dirv .w-button,.w-tabbar.z-dirv .w-tab{display:block}
+.w-buttonbar.z-autosize,.w-tabbar.z-autosize{overflow:visible}
+.w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;right:0;left:0;bottom:0;height:1px;background:#ddd}
 
 /*! button
  *	c: content, i: icon, t: text, m: more, x: close
  */
-.w-button{position:relative;display:inline-block;height:100%;text-align:center;vertical-align:middle;overflow:hidden;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
-.w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x{height:100%;vertical-align:top;*vertical-align:middle;}
-.w-button ._c{padding-left:8px;overflow:hidden}
-.w-button ._t,.w-button ._i{padding-right:8px}
-.w-button ._i{float:left;line-height:1;text-align:center}
-.w-button ._t{overflow:hidden;white-space:pre;line-height:1}
-.w-button ._m{float:right;width:20px;text-align:center}
-.w-button ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
-.w-button ._xi{display:inline-block;margin-top:-2px;font:normal 18px verdana;vertical-align:middle}
-.w-button ._xi:hover{color:#f00}
-.w-button em,.w-menu-button em{font-style:normal;vertical-align:middle}
-.w-button img,.w-menu-button img{vertical-align:middle}
-.w-button ._m .f-arw{border-top-color:#555;border-bottom:0}
-.w-button ._ld{position:absolute;left:0;right:8px;height:100%;background:url(g/loading-cir.gif) no-repeat 50% 50%}
-.w-button.z-lock ._ico{opacity:.5}
-.w-button.z-on{z-index:1}
-.w-button.z-ds{color:#aaa}
-.w-button.z-more ._t{padding-right:4px;*padding-right:22px}
-.w-button.z-combo ._t{*padding-right:30px}
-.w-button.z-x ._t{*padding-right:24px}
+.w-button,.w-tab{position:relative;display:inline-block;height:100%;text-align:center;vertical-align:middle;overflow:hidden;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
+.w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x,.w-tab ._c,.w-tab ._i,.w-tab ._t,.w-tab ._m,.w-tab ._x{height:100%;vertical-align:top;*vertical-align:middle;}
+.w-button ._c,.w-tab ._c{padding-left:8px;overflow:hidden}
+.w-button ._t,.w-button ._i,.w-tab ._t,.w-tab ._i{padding-right:8px}
+.w-button ._i,.w-tab ._i{float:left;line-height:1;text-align:center}
+.w-button ._t,.w-tab ._t{overflow:hidden;white-space:pre;line-height:1}
+.w-button ._m,.w-tab ._m{float:right;width:20px;text-align:center}
+.w-button ._x,.w-tab ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
+.w-button ._xi,.w-tab ._xi{display:inline-block;margin-top:-2px;font:normal 18px verdana;vertical-align:middle}
+.w-button ._xi:hover,.w-tab ._xi:hover{color:#f00}
+.w-button em,.w-tab em,.w-menu-button em{font-style:normal;vertical-align:middle}
+.w-button img,.w-tab img,.w-menu-button img{vertical-align:middle}
+.w-button ._m .f-arw,.w-tab ._m .f-arw{border-top-color:#555;border-bottom:0}
+.w-button ._ld,.w-tab ._ld{position:absolute;left:0;right:8px;height:100%;background:url(g/loading-cir.gif) no-repeat 50% 50%}
+.w-button.z-lock ._ico,.w-tab.z-lock ._ico{opacity:.5}
+.w-button.z-on,.w-tab.z-on{z-index:1}
+.w-button.z-ds,.w-tab.z-ds{color:#aaa}
+.w-button.z-more ._t,.w-tab.z-more ._t{padding-right:4px;*padding-right:22px}
+.w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
+.w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
 
 .w-button-split{vertical-align:middle;text-align:center}
 

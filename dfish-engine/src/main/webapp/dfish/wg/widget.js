@@ -1162,21 +1162,21 @@ W = define( 'widget', function() {
 		readonly: function( a ) {
 			a = a == N || a;
 			this.x.status = a ? 'readonly' : '';
-			$.classAdd( this.$(), 'z-ds', a );
+			this.addClass( 'z-ds', a );
 			this.trigger( 'statuschange' );
 			return this;
 		},
 		validonly: function( a ) {
 			a = a == N || a;
 			this.x.status = a ? 'validonly' : '';
-			$.classAdd( this.$(), 'z-ds', a );
+			this.addClass( 'z-ds', a );
 			this.trigger( 'statuschange' );
 			return this;
 		},
 		disable: function( a ) {
 			a = a == N || a;
 			this.x.status = a ? 'disabled' : '';
-			$.classAdd( this.$(), 'z-ds', a );
+			this.addClass( 'z-ds', a );
 			this.trigger( 'statuschange' );
 			return this;
 		},
@@ -3054,7 +3054,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		},
 		fixLine: function() {
 			this.$( 'vi' ) && Q( this.$() ).prepend( this.$( 'vi' ) );
-			Q( this.$() ).append( Q( '.w-buttonbar-line', this.$() ) );
+			Q( this.$() ).append( Q( '.w-' + this.type + '-line', this.$() ) );
 		},
 		overflow: function() {
 			if ( this._more ) {
@@ -3096,7 +3096,7 @@ Buttonbar = define.widget( 'buttonbar', {
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
 			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.nobr === F ? '' : '<i id=' + this.id + 'vi class=f-vi-' + v + '></i>';
-			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-buttonbar-line></div>';
+			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-' + this.type + '-line></div>';
 		}
 	}
 } ),
@@ -3547,19 +3547,41 @@ Tabs = define.widget( 'tabs', {
 		this.id = $.uid( this );
 		var y = $.extend( { type: 'vert' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
 		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
-			b.push( $.extend( { type: 'button', focusable: T }, n[ i ], x.pub, e && e.pub ) );
-			c.push( n[ i ].target );
-			b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'page' + i);
-			!d && (d = b[ i ].focus && b[ i ]);
+			if ( n[ i ].type === 'split' ) {
+				b.push( n[ i ] );
+			} else {
+				b.push( $.extend( { focusable: T }, n[ i ], x.pub, e && e.pub ) );
+				c.push( n[ i ].target );
+				b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'page' + i);
+				!d && (d = b[ i ].focus && b[ i ]);
+			}
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
-		y.nodes = [ { type: 'buttonbar', cls: 'w-tabs-buttonbar', nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
+		y.nodes = [ { type: 'tabbar', cls: 'w-tabs-buttonbar', align: x.align, split: x.split, space: x.space, nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
 		delete y.pub;
 		Vert.call( this, y, p );
 	},
 	Extend: 'vert',
 	Prototype: {
-		className: 'w-tabs w-vert'
+		className: 'w-tabs'
+	}
+} ),
+/* `tabs` */
+Tabbar = define.widget( 'tabbar', {
+	Extend: 'buttonbar',
+	Prototype: {
+		className: 'w-tabbar',
+		x_childtype: function( t ) {
+			return t === 'split' ? 'button/split' : (t || 'tab');
+		}		
+	}
+} ),
+/* `tabs` */
+Tab = define.widget( 'tab', {
+	Extend: 'button',
+	Prototype: {
+		className: 'w-tab',
+		ROOT_TYPE: 'tabs'
 	}
 } ),
 /* `album` */
