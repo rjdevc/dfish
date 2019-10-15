@@ -7194,9 +7194,9 @@ XBox = define.widget( 'xbox', {
 			return s + _html_on.call( this );
 		},
 		option_text: function( a ) {
-			var t = a.text;
+			var t = a.text || a.value;
 			if ( this.x.format )
-				t = this.html_format( a.text, this.x.format, this.x.escape, N, a );
+				t = this.html_format( t, this.x.format, this.x.escape, N, a );
 			return t;
 		},
 		html_placeholder: function() {

@@ -46,7 +46,7 @@
 .f-sub-horz{white-space:normal;*white-space:nowrap}
 .f-sub-vert{*white-space:normal}
 
-.f-sub-frame,.f-hide{visibility:hidden;position:absolute!important;z-index:-1;left:-100%} 
+.f-sub-frame,.f-hide{visibility:hidden;position:absolute!important;z-index:-1;left:-100%;top:-100%} 
 .f-sub-frame-on,.f-dot{}
 
 .f-required{color:red;font-family:tahoma;font-style:normal;margin-right:6px;vertical-align:middle}
