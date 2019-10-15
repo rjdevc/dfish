@@ -3543,12 +3543,23 @@ ButtonSplit = define.widget( 'button/split', {
 } ),
 /* `tabs` */
 Tabs = define.widget( 'tabs', {
-	Const: function( x ) {
-		//Horz.apply( this, arguments );
+	Const: function( x, p ) {
+		this.id = $.uid( this );
+		var y = $.extend( { type: 'vert' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
+			b.push( $.extend( { type: 'button', focusable: T }, n[ i ], x.pub, e && e.pub ) );
+			c.push( n[ i ].target );
+			b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'page' + i);
+			!d && (d = b[ i ].focus && b[ i ]);
+		}
+		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
+		y.nodes = [ { type: 'buttonbar', cls: 'w-tabs-buttonbar', nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
+		delete y.pub;
+		Vert.call( this, y, p );
 	},
 	Extend: 'vert',
 	Prototype: {
-		className: 'w-tabs'
+		className: 'w-tabs w-vert'
 	}
 } ),
 /* `album` */
@@ -3824,7 +3835,14 @@ Page = define.widget( 'page/mini', {
 					}
 				} else if ( this.x.src ) {
 					var s = this.x.src;
-					this.exec( s.indexOf( 'javascript:' ) === 0 ? { type: 'js', text: s } : { type: 'ajax', src: s }, [ i ] );
+					if ( s.indexOf( 'javascript:' ) === 0 )
+						this.exec( { type: 'js', text: s } );
+					else {
+						this.exec( { type: 'ajax', src: s, filter: this.x.filter, complete: this.x.complete,
+							success: this.x.success || function( x ) {
+								W.isCmd( x ) ? this.cmd( x ) : this.srcParent().reload( x );
+							}, error: this.x.error }, [ i ] );
+					}
 				}
 				// 为业务 click 事件之中的 $0 提供值
 				this.triggerHandler( 'click', [ i ] );
