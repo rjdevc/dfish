@@ -714,9 +714,10 @@ W = define( 'widget', function() {
 			if ( this.x.template ) {
 				var t = _getTemplate( this.x.template );
 				if ( t ) {
-					if ( t.type === this.type ) {
-						t.src && (x.src = t.src);
-						t.cls && (x.cls = $.idsAdd( x.cls, t.cls, ' ' ));
+					if ( !t.type || t.type === this.type ) {
+						for ( var k in t ) {
+							if ( k !== 'node' && k !== 'nodes' ) x[ k ] = t[ k ];
+						}
 					} else if ( t.type && !W.isCmd( t ) ) {
 						$.alert( Loc.ps( Loc.debug.error_template_type, this.x.template, this.type ) );
 					}
@@ -781,6 +782,7 @@ W = define( 'widget', function() {
 				break;
 				case 'style':
 					this.css( b );
+				break;
 				case 'beforecontent':
 				case 'prependcontent':
 				case 'appendcontent':
@@ -2083,6 +2085,7 @@ Xsrc = define.widget( 'xsrc', {
 	Listener: {
 		body: {
 			ready: function() {
+				this.domready = T;
 				this.start();
 			},
 			show: function() {
@@ -2093,17 +2096,17 @@ Xsrc = define.widget( 'xsrc', {
 	Prototype: {
 		isSrcLayout: T,
 		_x_ini: F,
+		_ini_template: F,
 		// @implement
 		init_x: function( x ) {
 			this.x = x;
-			if ( ! this.isShow() && ! x.node )
+			if ( ! this.isShow() )
 				return;
-			this._x_ini = T;
 			if ( this.type_view && _view_resources[ this.path ] )
 				$.require( _view_resources[ this.path ] );
 			_proto.init_x.call( this, x );
-			if ( ! x.node ) {
-				var s = x.src;
+			if ( ! x.node && ! this.domready ) {
+				var s = x.src || (this.x.template && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
 				} else
@@ -2117,6 +2120,7 @@ Xsrc = define.widget( 'xsrc', {
 					n && $.merge( x, n );
 				}
 			}
+			this._x_ini = T;
 		},
 		// @implement
 		init_nodes: function() {
@@ -4096,7 +4100,7 @@ Dialog = define.widget( 'dialog', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.start();
+				Xsrc.Listener.body.ready.apply( this, arguments );
 				if ( this.x.resizable ) {
 					var self = this;
 					Q( '<div class="w-dialog-rsz z-w"></div><div class="w-dialog-rsz z-n"></div><div class="w-dialog-rsz z-e"></div><div class="w-dialog-rsz z-s"></div><div class="w-dialog-rsz z-nw"></div><div class="w-dialog-rsz z-ne"></div><div class="w-dialog-rsz z-sw"></div><div class="w-dialog-rsz z-se"></div>' )
