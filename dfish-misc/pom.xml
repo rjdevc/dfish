@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.rongji</groupId>
         <artifactId>dfish</artifactId>
-        <version>3.3.0.9-SNAPSHOT</version>
+        <version>3.3.0.10-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-misc</artifactId>
     <name>dfish-misc</name>
-    <url>http://maven.apache.org</url>
+    <url>http://dfish.rongji.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

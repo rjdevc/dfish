@@ -9,6 +9,8 @@
     <version>3.3.0.10-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <url>http://dfish.rongji.com</url>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
@@ -78,6 +80,20 @@
         </dependency>
     </dependencies>
 
+    <!--使用deploy -e 上传到nexus私服上-->
+    <distributionManagement>
+<!--        <repository>-->
+<!--            <id>dfish-release</id>-->
+<!--            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>-->
+<!--            <uniqueVersion>true</uniqueVersion>-->
+<!--        </repository>-->
+
+        <snapshotRepository>
+            <id>dfish-snapshot</id>
+            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -112,21 +128,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <!--使用deploy -e 上传到nexus私服上-->
-    <distributionManagement>
-<!--        <repository>-->
-<!--            <id>dfish-release</id>-->
-<!--            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>-->
-<!--            <uniqueVersion>true</uniqueVersion>-->
-<!--        </repository>-->
-
-        <snapshotRepository>
-            <id>dfish-snapshot</id>
-            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
-        </snapshotRepository>
-
-    </distributionManagement>
 
     <modules>
         <module>dfish-base</module>
