@@ -3,11 +3,11 @@
 <html xmlns:d>
     <head>
         <meta charset="text/html;utf-8">
-        <link rel="shortcut icon" href="./css/g/favicon.ico">
+        <link rel="shortcut icon" href="./skin/g/favicon.ico">
         <title>DFish开发框架</title>
 
         <script src="./dfish/dfish.js?ver=20170315"></script>
-        <script src="./skin/config/dfish.config.js?ver=20170315"></script>
+        <script src="./skin/dfish.config.js?ver=20170315"></script>
         <script>
             dfish.use( 'm/app' );
             dfish.init({

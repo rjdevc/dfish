@@ -76,7 +76,7 @@ dfish.config({
             hmin: 1
         }
     },
-    // 自定义widget
+    // 插件或自定义widget
     alias: {
         'amap': 'pl/amap/amap.dfish.js',
         'amap/picker': 'pl/amap/amap.dfish.js',
