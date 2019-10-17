@@ -559,9 +559,8 @@
 .w-button.z-more ._t,.w-tab.z-more ._t{padding-right:4px;*padding-right:22px}
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
 .w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
-
 .w-button-split{vertical-align:middle;text-align:center}
-
+.w-tab{height:100%}
 
 .f-button{height:28px;border:1px solid #d3d3d3;border-radius:2px;background:#fafafa;color:#333}
 .f-button.z-on{background:#fff}
