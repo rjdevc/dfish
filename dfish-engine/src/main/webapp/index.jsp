@@ -7,7 +7,7 @@
         <title>DFish开发框架</title>
 
         <script src="./dfish/dfish.js?ver=20170315"></script>
-        <script src="./config.js?ver=20170315"></script>
+        <script src="./skin/config/dfish.config.js?ver=20170315"></script>
         <script>
             dfish.use( 'm/app' );
             dfish.init({

@@ -1,0 +1,93 @@
+@CHARSET "UTF-8";
+/*默认按钮*/
+.w-button {
+    border-radius: 0;
+}
+
+/**滚动条**/
+.f-scroll-x .f-scroll-x-track {
+    border-radius: 0;
+}
+
+.f-scroll-y .f-scroll-y-track {
+    border-radius: 0;
+}
+
+/**根外框**/
+.x-root {
+    background-color: #edf0f2;
+}
+
+/**主体样式**/
+.x-body {
+    background-color: #edf0f2;
+}
+
+.x-main {
+    background-color: #fff;
+}
+
+.x-main-head {
+    border-bottom: 1px solid #ddd;
+}
+
+.x-head-oper .w-button ._i {
+    padding-right: 12px;
+}
+
+.x-main-title {
+    font-size: 16px;
+    color: #333;
+    padding:0 20px;
+}
+
+.x-main-oper {
+    padding: 0 20px;
+}
+
+.x-main-nav {
+    border-right: 1px solid #ddd;
+}
+
+.x-welcome {
+    padding: 10px 20px;
+    background-color: #fff;
+}
+
+.x-main-display {
+
+}
+
+.x-main-search {
+
+}
+
+.x-main-grid {
+    padding: 10px 20px;
+}
+
+.x-main-page {
+    padding: 0 20px;
+}
+
+.x-main-form {
+    padding: 10px 20px;
+}
+
+.x-split-side {
+    padding: 10px 20px 10px 10px;
+}
+
+.x-grid-oper i {
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.x-grid-oper i:first-child {
+    margin-left: 0;
+}
+
+.x-grid-oper i.z-ds {
+    cursor: default;
+}

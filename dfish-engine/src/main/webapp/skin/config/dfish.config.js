@@ -1,13 +1,14 @@
 dfish.config({
+    // 调试模式
+    debug: true,
     // 模板目录
     template_dir: 't/',
     // 预装载目录
     preload_dir: 'p/',
     // 皮肤
     skin: {
-        dir: 'css/',
-        theme: 'classic',
-        color: 'blue'
+        // 皮肤根目录
+        dir: 'skin/'
     },
     //表单验证效果 可选值: red,tip,alert
     validate_effect: 'red,tip',
@@ -30,7 +31,11 @@ dfish.config({
         'tree': {scroll: true, ellipsis: true},
         'leaf': {tip: true, style: 'padding-right:10px;', wmin: 10},
 
-        'grid': {scroll: true, nobr: true, pub: {focusable: true}},
+        'buttonbar': {wmin: 40, space: 10, align: 'right', pub: {tip: true, height: 30}},
+        'tabs': {wmin: 40},
+        'tabbar': {wmin: 20},
+
+        'grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "line"},
         'column': {tip: true},
         // 小分页模式暂时定于全数据关联的分页栏使用,所以不设置src
         'page/mini': {align: 'right', btncount: 5, wmin: 40},
@@ -38,29 +43,47 @@ dfish.config({
             align: 'right',
             btncount: 5,
             wmin: 40,
-            src: 'javascript:this.cmd("search",$0);',
             name: 'currentPage'
         },
         'page/text': {
             align: 'right',
             btncount: 5,
             wmin: 40,
-            src: 'javascript:this.cmd("search",$0);',
             name: 'currentPage',
             jump: true
         },
 
         'form': {scroll: true, pub: {colspan: -1}},
+        'form.x-form1': {pub: {colspan: -1}},
+        'form.x-form2': {pub: {colspan: 6}},
+        'form.x-form3': {pub: {colspan: 4}},
+        'form.x-form4': {pub: {colspan: 3}},
 
         'label': {width: 120},
         'textarea': {height: 100},
         'date': {format: 'yyyy-mm-dd'},
         'spinner': {step: 10, decimal: 0, validate: {minvalue: 1, maxvalue: 99999999}},
         'combo': {keepshow: true},
-        'switch': {checkedtext: '是', uncheckedtext: '否'},
         'slider': {tip: true},
         'upload/file': {minfilesize: '1B'},
-        'upload/image': {minfilesize: '1B', scheme: 'DEFAULT'}
+        'upload/image': {minfilesize: '1B', scheme: 'DEFAULT'},
+
+        'toggle': {
+            height: 40,
+            icon: '.i-toggle-icon',
+            openicon: '.i-toggle-openicon',
+            cls: 'bd-split bd-onlybottom',
+            hmin: 1
+        }
+    },
+    // 自定义widget
+    alias: {
+        'amap': 'pl/amap/amap.dfish.js',
+        'amap/picker': 'pl/amap/amap.dfish.js',
+        'echarts': 'pl/echarts/echarts.dfish.js',
+        'ueditor': 'pl/ueditor/ueditor.dfish.js',
+        'flowplayer': 'pl/flowplayer/flowplayer.dfish.js',
+        'carousel': 'pl/carousel/carousel.dfish.js'
     },
     src_filter: function (response) {
         if (response.error) {
