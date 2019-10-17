@@ -2111,6 +2111,9 @@ Xsrc = define.widget( 'xsrc', {
 				} else
 					this.className += ' z-loading';
 			}
+			if ( this.domready && this.x.id ) {
+				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
+			}
 			var t = x.preload && _getPreload( x.preload );
 			if ( t ) {
 				_mergeLoadingProp( x, t );
