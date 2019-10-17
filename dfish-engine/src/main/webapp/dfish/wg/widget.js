@@ -2096,7 +2096,6 @@ Xsrc = define.widget( 'xsrc', {
 	Prototype: {
 		isSrcLayout: T,
 		_x_ini: F,
-		_ini_template: F,
 		// @implement
 		init_x: function( x ) {
 			this.x = x;
@@ -3186,7 +3185,7 @@ Button = define.widget( 'button', {
 			}
 		}
 	},
-	Default: { width: -1 },
+	Default: { width: -1, height: -1 },
 	Prototype: {
 		ROOT_TYPE: 'buttonbar',
 		className: 'w-button',
