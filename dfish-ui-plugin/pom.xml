@@ -21,6 +21,11 @@
             <artifactId>dfish-ui</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.rongji</groupId>
+            <artifactId>dfish-misc</artifactId>
+        </dependency>
+
         <!-- echarts -->
         <dependency>
             <groupId>com.github.abel533</groupId>
