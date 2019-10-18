@@ -99,7 +99,8 @@ public class Td extends AbstractTd<Td> implements JsonWrapper<Object>{
 				td.getMaxheight()!=null||td.getMaxwidth()!=null||
 				td.getMinheight()!=null||td.getMinwidth()!=null||
 				(td.getOn()!=null&&td.getOn().size()>0)||
-				td.getWidth()!=null||td.getWmin()!=null;
+				td.getWidth()!=null||td.getWmin()!=null
+				||td.getLabelwidth()!=null;
     }
 	/**
 	 * 取得html的内容。为了效率这个方法不再进行判断，所以只能跟在isTextWidget 后使用。

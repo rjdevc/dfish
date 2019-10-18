@@ -228,6 +228,7 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 		to.colspan=from.colspan;
 		to.rowspan=from.rowspan;
 		to.valign=from.valign;
+		to.labelwidth=from.labelwidth;
 	}
 
 	/**
