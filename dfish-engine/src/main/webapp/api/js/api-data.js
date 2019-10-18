@@ -1267,7 +1267,6 @@ define( {
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，按钮点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
       { name: 'hoverdrop', type: 'Boolean', remark: '是否当鼠标 hover 时展开下拉菜单。' },
-      { name: 'hidetoggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
       { name: 'icon', type: 'String', remark: '图标的url。支持以 "." 开头的样式名。', example: [
           function() {
           	// 使用图片路径
@@ -1299,7 +1298,7 @@ define( {
       { name: 'name', type: 'String', remark: '在一个 view 中设置了相同 name 的 button 将成为一组，focus 只会作用于其中一个。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。点击下拉显示右键菜单。nodes 和 more 不应同时使用。' },
       { name: 'status', type: 'String', remark: '按钮状态。可选值：<b>normal</b>, <b>disabled</b>。' },
-      { name: 'target', type: 'String', remark: '指定一个 frame 内的 widget ID，使 button 的 focus 效果和绑定 widget 的显示隐藏效果。' },
+      { name: 'target', type: 'Widget', remark: '标签对应的内容widget。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'String', remark: '浮动显示的提示文本。' }
     ],
@@ -1431,11 +1430,43 @@ define( {
     Classes: [
       { name: '.w-buttonbar', remark: '基础样式。' },
       { name: '.z-dirv', remark: '设置了 dir:"v"(按钮垂直排列) 时的样式。' },
-      { name: '.z-dirh', remark: '设置了 dir:"v"(按钮水平排列) 时的样式。' },
-      { name: '.z-empty', remark: '没有子节点时的样式。' }
+      { name: '.z-dirh', remark: '设置了 dir:"v"(按钮水平排列) 时的样式。' }
     ]
   },
-  "deck": {
+  "tabs": {
+  	title: 'tabs',
+  	remark: '可切换标签容器。',
+  	extend: 'buttonbar',
+  	deprecate: 'dir,focusmultiple,nobr,scroll,valign,.w-buttonbar,.z-dirh,.z-dirv',
+	Examples: [
+	  { example: [
+          function() {
+          	// 有两个tab标签和对应内容的范例
+            return~
+            {
+              type: "tabs",
+              pub: { cls: "f-tab", height: 30 }, // 设置标签按钮的默认参数
+              nodes: [
+                { type: "tab", text: "首页", target: { type: "html", text: "内容1" } }, // 这里的 type 属性定义可以省略
+                { type: "tab", text: "文档", target: { type: "html", text: "内容2" } }
+              ]
+            }
+          }
+      ] }
+    ],  	
+    Classes: [
+      { name: '.w-tabs', remark: '基础样式。' }
+    ]
+  },
+  "tab": {
+  	title: 'tab',
+  	remark: '标签按钮。',
+  	extend: 'button',
+  	deprecate: 'focusable,name',
+    Classes: [
+      { name: '.w-tab', remark: '基础样式。' }
+    ]
+  },  "deck": {
   	title: 'deck',
   	remark: 'deck 功能面板。',
   	extend: 'widget',

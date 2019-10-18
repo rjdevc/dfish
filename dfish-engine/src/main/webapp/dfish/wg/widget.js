@@ -3556,14 +3556,14 @@ Tabs = define.widget( 'tabs', {
 			if ( n[ i ].type === 'split' ) {
 				b.push( n[ i ] );
 			} else {
-				b.push( $.extend( { focusable: T }, n[ i ], x.pub, e && e.pub ) );
+				b.push( $.extend( { type: 'tab', focusable: T }, n[ i ], x.pub, e && e.pub ) );
 				c.push( n[ i ].target );
 				b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'page' + i);
 				!d && (d = b[ i ].focus && b[ i ]);
 			}
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
-		y.nodes = [ { type: 'tabbar', cls: 'w-tabs-buttonbar', align: x.align, split: x.split, space: x.space, nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
+		y.nodes = [ { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
 		delete y.pub;
 		Vert.call( this, y, p );
 	},
@@ -3572,22 +3572,11 @@ Tabs = define.widget( 'tabs', {
 		className: 'w-tabs'
 	}
 } ),
-/* `tabs` */
-Tabbar = define.widget( 'tabbar', {
-	Extend: 'buttonbar',
-	Prototype: {
-		className: 'w-tabbar',
-		x_childtype: function( t ) {
-			return t === 'split' ? 'button/split' : (t || 'tab');
-		}		
-	}
-} ),
-/* `tabs` */
+/* `tab` */
 Tab = define.widget( 'tab', {
 	Extend: 'button',
 	Prototype: {
-		className: 'w-tab',
-		ROOT_TYPE: 'tabs'
+		className: 'w-tab'
 	}
 } ),
 /* `album` */
@@ -4327,9 +4316,14 @@ Dialog = define.widget( 'dialog', {
 			while ( (p = p.parentNode) && !p.type_view && !p.isDialogWidget );
 			return p;
 		},
-		html_nodes: ie7 ? function() {
-			return '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + _proto.html_nodes.apply( this, arguments ) + '</td></tr></table>';
-		} : _proto.html_nodes,
+		html_nodes: function() {
+			var s = _proto.html_nodes.apply( this, arguments );
+			if ( ie7 )
+				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
+			if ( this.type === 'dialog' )
+				s += '<div class=w-dialog-loadinghead><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
+			return s;
+		},
 		render: function() {
 			if ( this._disposed )
 				return;

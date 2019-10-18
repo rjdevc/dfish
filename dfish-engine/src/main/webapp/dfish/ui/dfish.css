@@ -332,7 +332,7 @@
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
 
-.w-textarea ._t{height:100%!important;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
+.w-textarea ._t{height:100%!important;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word;white-space:normal;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
 .w-textarea .w-input-placeholder{height:22px}
 
 .w-select ._t{height:100%;border:0;*text-indent:0}
@@ -624,8 +624,10 @@
 .w-dialog.z-snap-32 .w-menu-line{right:-1px;top:-1px}
 .w-dialog.z-snap-14 .w-menu-line{left:-1px;bottom:-1px}
 .w-dialog.z-snap-23 .w-menu-line{right:-1px;bottom:-1px}
-/*.w-dialog.z-mag-t{box-shadow:0 -1px 1px rgba(0,0,0,0.2)}
-.w-dialog.z-mag-b{box-shadow:0 2px 2px rgba(0,0,0,0.2)}*/
+.w-dialog-loadinghead{position:absolute;top:0;left:0;right:0;height:40px;text-align:right}
+.w-dialog-loadinghead ._x{height:100%;width:40px;cursor:pointer}
+.w-dialog .w-dialog-loadinghead{display:none}
+.w-dialog.z-loading .w-dialog-loadinghead{display:block}
 
 .w-tip{border:1px solid #f3e041;background:#faf0cd;box-shadow:0 0 4px #d9d9d9;z-index:11}
 .w-tip-text{padding:4px 10px;min-height:20px;}
