@@ -10378,6 +10378,9 @@ Grid = define.widget( 'grid', {
 	}
 });
 
+// 向上兼容
+define.widget( 'datepicker', { Extend: 'date' } );
+
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
 $.preload = _regPreload;

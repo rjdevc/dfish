@@ -333,7 +333,7 @@
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
 
-.w-textarea ._t{height:100%!important;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
+.w-textarea ._t{height:100%!important;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word;white-space:normal;*position:absolute;*top:0;*left:0;*right:0;*bottom:0}
 .w-textarea .w-input-placeholder{height:22px}
 
 .w-select ._t{height:100%;border:0;*text-indent:0}
