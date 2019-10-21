@@ -31,14 +31,17 @@ public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P
 		}
 	}
 	
-	public P getPrototype() {
+	@Override
+    public P getPrototype() {
 	    return prototype;
     }
 	
-	public String getType() {
+	@Override
+    public String getType() {
 	    return prototype.getType();
     }
 
+    @Override
     public String asJson() {
 	    return prototype.asJson();
     }

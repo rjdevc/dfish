@@ -38,7 +38,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	protected String valign;
 	protected Widget<?> node;
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 
@@ -114,7 +115,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	 * 部件(Widget)模式时， 取得单元格内部部件
 	 * @return Widget
 	 */
-	public Widget<?> getNode() {
+	@Override
+    public Widget<?> getNode() {
 		return node;
 	}
 	/**
@@ -122,7 +124,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	 * @param node Widget
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setNode(Widget<?> node) {
+	@Override
+    public T setNode(Widget<?> node) {
 		this.node = node;
 		return (T)this;
 	}
@@ -133,7 +136,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	 * @return 本身，这样可以继续设置其他属性
 	 * @see #setNode(Widget)
 	 */
-	public T add(Widget<?> node) {
+	@Override
+    public T add(Widget<?> node) {
 		this.node = node;
 		return (T)this;
 	}
@@ -145,7 +149,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 			throw new UnsupportedOperationException("Use add(Widget);");
 		}
 	}
-	public Widget<?> findNodeById(String id) {
+	@Override
+    public Widget<?> findNodeById(String id) {
 		if (id == null || node==null) {
 			return null;
 		}
@@ -158,12 +163,14 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 		return null;
 	}
 
-	public List<Widget<?>> findNodes() {
+	@Override
+    public List<Widget<?>> findNodes() {
 		return Arrays.asList(new Widget<?>[]{node});
 	}
 
 
-	public T removeNodeById(String id) {
+	@Override
+    public T removeNodeById(String id) {
 		if (id == null || node==null) {
 			return (T)this;
 		}
@@ -176,7 +183,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 		}
 		return (T)this;
 	}
-	public boolean replaceNodeById(Widget<?> w) {
+	@Override
+    public boolean replaceNodeById(Widget<?> w) {
 		if (w == null || w.getId() == null || node==null) {
 			return false;
 		}

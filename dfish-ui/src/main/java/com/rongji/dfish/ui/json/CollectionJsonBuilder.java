@@ -10,12 +10,17 @@ import java.util.Stack;
  */
 public class CollectionJsonBuilder extends AbstractJsonBuilder {
 
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+	public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		Collection<?> cast=(Collection<?>)o;
 		boolean begin2=true;
 		sb.append('[');
 		for(Object item:cast){
-			if(begin2)begin2=false;else sb.append(',');
+			if(begin2) {
+                begin2=false;
+            } else {
+                sb.append(',');
+            }
 			J.buildJson(item, sb,path);
 		}
 		sb.append(']');

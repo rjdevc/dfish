@@ -75,7 +75,8 @@ public class CalendarTd extends AbstractWidget<CalendarTd>{
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "calendar/td";
 	}
 }

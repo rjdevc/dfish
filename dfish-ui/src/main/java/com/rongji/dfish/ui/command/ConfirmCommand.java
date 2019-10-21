@@ -90,7 +90,8 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 	 * 显示文本。这里一般是询问的问题内容
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -98,7 +99,8 @@ public class ConfirmCommand extends AbstractNode<ConfirmCommand> implements Comm
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ConfirmCommand setText(String text) {
+	@Override
+    public ConfirmCommand setText(String text) {
 		this.text = text;
 		return this;
 	}

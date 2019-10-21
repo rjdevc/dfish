@@ -243,7 +243,8 @@ public class TreeNode<ID extends java.io.Serializable,T> implements Cloneable {
 	 * 克隆的对象不再有parent会自动断开关联。层级也会变成0级。
 	 * @return 克隆的对象。 
 	 */
-	public TreeNode<ID,T> clone(){
+	@Override
+    public TreeNode<ID,T> clone(){
 		return clone(null,0);
 	}
 	private TreeNode<ID,T> clone(TreeNode<ID,T> parent,int level){

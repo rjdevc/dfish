@@ -24,10 +24,12 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	private String label;
 	private Boolean hideLabel;
 
+	@Override
 	public String getLabel() {
 		return label;
 	}
 
+	@Override
 	public HorizontalGroup setLabel(String label) {
 		this.label=label;
 		return this;
@@ -44,6 +46,7 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 		super(id);
 	}
 
+	@Override
 	public String getType() {
 		return "horz";
 	}
@@ -56,7 +59,8 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	 * @param width String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public HorizontalGroup add(int index,Widget<?> w,String width) {
+	@Override
+	public HorizontalGroup add(int index, Widget<?> w, String width) {
 		if(index<0){
 			nodes.add(w);
 		}else{
@@ -113,18 +117,21 @@ public class HorizontalGroup extends LinearLayout<HorizontalGroup>implements Jso
 	public HorizontalLayout getPrototype() {
 		HorizontalLayout propotype=new HorizontalLayout(null);
 		BeanUtil.copyPropertiesExact(propotype,this);
-		if(getData()!=null)
-		for(Map.Entry<String, Object>entry:getData().entrySet()){
-			propotype.setData(entry.getKey(), entry.getValue());
-		}
-		if(getOn()!=null)
-		for(Map.Entry<String, String>entry:getOn().entrySet()){
-			propotype.setOn(entry.getKey(), entry.getValue());
-		}
-		if(findNodes()!=null)
-		for(Widget<?>node:findNodes()){
-			propotype.add(node);
-		}
+		if(getData()!=null) {
+            for(Map.Entry<String, Object>entry:getData().entrySet()){
+                propotype.setData(entry.getKey(), entry.getValue());
+            }
+        }
+		if(getOn()!=null) {
+            for(Map.Entry<String, String>entry:getOn().entrySet()){
+                propotype.setOn(entry.getKey(), entry.getValue());
+            }
+        }
+		if(findNodes()!=null) {
+            for(Widget<?>node:findNodes()){
+                propotype.add(node);
+            }
+        }
 		return propotype;
 	}
 

@@ -134,8 +134,9 @@ public class FrameworkHelper{
 		if (value != null) {
 			Locale[] locs = Locale.getAvailableLocales();
 			for (Locale locale : locs) {
-				if (value.equals(locale.toString()))
-					return locale;
+				if (value.equals(locale.toString())) {
+                    return locale;
+                }
 			}
 		}
 		return Locale.getDefault();
@@ -199,7 +200,8 @@ public class FrameworkHelper{
 	public static void outputJson(HttpServletResponse response, final String content) {
 		outputContent(response, content, "text/json");
 		SINGLE_EXECUTOR.execute(new Runnable(){
-			public void run(){
+			@Override
+            public void run(){
 				if(LOG.isDebugEnabled()){
 					// debug级别的字符输出需要格式化
 					LOG.debug("\r\n" + J.formatJson(content));
@@ -276,7 +278,8 @@ public class FrameworkHelper{
 			}
 		}
 		Collections.sort(list, new Comparator<MultipartFile>() {
-			public int compare(MultipartFile o1, MultipartFile o2) {
+			@Override
+            public int compare(MultipartFile o1, MultipartFile o2) {
 				String s1 = o1.getName().substring(nameLen);
 				String s2 = o1.getName().substring(nameLen);
 	
@@ -723,13 +726,17 @@ public class FrameworkHelper{
 	}
 	public static Integer getPersonalConfigAsInteger(String userId,String argStr){
 		String strValue= SystemData.getInstance().getPersonalConfig().getProperty(userId,argStr);
-		if(strValue==null)return null;
+		if(strValue==null) {
+            return null;
+        }
 		try{
 			return new Integer(strValue);
 		}catch(Exception ex){
 			if(!userId.equals("default")){
 				strValue=SystemData.getInstance().getPersonalConfig().getProperty("default",argStr);
-				if(strValue==null)return null;
+				if(strValue==null) {
+                    return null;
+                }
 				try{
 					return new Integer(strValue);
 				}catch(Exception ex2){}
@@ -854,7 +861,9 @@ public class FrameworkHelper{
 				sb.append(key);
 				sb.append(" : [");
 				for(int i=0;i<values.length;i++){
-					if(i>0)sb.append(", ");
+					if(i>0) {
+                        sb.append(", ");
+                    }
 					sb.append(values[i]);
 				}
 				sb.append("]\r\n");
@@ -934,7 +943,8 @@ public class FrameworkHelper{
 		final StreamContent content = new StreamContent();
 		nsDetector det = new nsDetector(nsDetector.CHINESE);
 		det.Init(new nsICharsetDetectionObserver() {
-			public void Notify(String s) {
+			@Override
+            public void Notify(String s) {
 				content.findCharset = s;
 			}
 		});
@@ -944,10 +954,12 @@ public class FrameworkHelper{
 		int j;
 		while ((j = is.read(buff, 0, buff.length)) >= 0) {
 			content.baos.write(buff, 0, j);
-			if (isAscii)
-				isAscii = det.isAscii(buff, j);
-			if (!isAscii && !done)
-				done = det.DoIt(buff, j, false);// 模糊匹配的话，可以第一次找到就跳出
+			if (isAscii) {
+                isAscii = det.isAscii(buff, j);
+            }
+			if (!isAscii && !done) {
+                done = det.DoIt(buff, j, false);// 模糊匹配的话，可以第一次找到就跳出
+            }
 		}
 		det.DataEnd();
 		if (isAscii) {
@@ -987,7 +999,9 @@ public class FrameworkHelper{
 	 */
 	public static boolean isFromMobile(HttpServletRequest request) {
 	     String userAgent = request.getHeader("user-agent");
-	     if(userAgent==null)return false;
+	     if(userAgent==null) {
+             return false;
+         }
 	     for (String mobile: MOBILE_SPECIFIC_SUBSTRING){
 	           if (userAgent.contains(mobile)||
 	        		   userAgent.contains(mobile.toLowerCase())||

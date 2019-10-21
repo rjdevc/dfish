@@ -348,11 +348,13 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
 		return main.findNodes();
 	}
 
-	public Widget<?> findNodeById(String id) {
+	@Override
+    public Widget<?> findNodeById(String id) {
 		return super.findNodeById(id);
 	}
 	
-	public List<FormElement<?,?>> findFormElementsByName(String name) {
+	@Override
+    public List<FormElement<?,?>> findFormElementsByName(String name) {
 		return super.findFormElementsByName(name);
 	}
 	
@@ -360,7 +362,8 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
 	 * 根据编号移除组件
 	 * @param id
 	 */
-	public TabPanel removeNodeById(String id) {
+	@Override
+    public TabPanel removeNodeById(String id) {
 		if (Utils.isEmpty(id)) {
 			return this;
 		}
@@ -373,6 +376,7 @@ public class TabPanel extends AbstractWidgetWrapper<TabPanel, VerticalLayout> im
 	 * 根据组件编号替换组件
 	 * @param w widget to replace
 	 */
+    @Override
     public boolean replaceNodeById(Widget<?> w) {
 		return super.replaceNodeById(w);
 	}

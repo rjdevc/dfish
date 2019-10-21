@@ -48,13 +48,15 @@ public class Text extends AbstractInput<Text,String>{
      * @param value Object
      * @return 本身，这样可以继续设置其他属性
      */
-	public Text setValue(Object value) {
+	@Override
+    public Text setValue(Object value) {
 		this.value=toString(value);
 		return this;
 	}
 	
 	
-	public String getType() {
+	@Override
+    public String getType() {
 		return "text";
 	}
 

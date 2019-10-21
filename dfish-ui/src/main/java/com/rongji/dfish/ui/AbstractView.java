@@ -69,14 +69,16 @@ public abstract class AbstractView<T extends AbstractView<T>> extends AbstractLa
 	 * 取得可以展示的根widget
 	 * @return Widget
 	 */
-	public Widget<?> getNode() {
+	@Override
+    public Widget<?> getNode() {
 		if(nodes!=null&&nodes.size()>0){
 			return nodes.get(0);
 		}
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public List<Widget<?>> findNodes() {
 		return nodes;
 	}
@@ -91,7 +93,8 @@ public abstract class AbstractView<T extends AbstractView<T>> extends AbstractLa
 		return setNode(rootWidget);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setNode(Widget<?> rootWidget) {
 		if(rootWidget!=null){
 			if(nodes.size()>0){

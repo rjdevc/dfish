@@ -811,7 +811,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 
@@ -854,7 +855,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 	/**
@@ -865,7 +867,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public GridColumn setAlign(String align) {
+	@Override
+    public GridColumn setAlign(String align) {
 		this.align = align;
 		return this;
 	}
@@ -877,7 +880,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #VALIGN_BOTTOM
 	 * 
 	 */
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 	/**
@@ -888,7 +892,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #VALIGN_MIDDLE
 	 * @see #VALIGN_BOTTOM
 	 */
-	public GridColumn setValign(String valign) {
+	@Override
+    public GridColumn setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}

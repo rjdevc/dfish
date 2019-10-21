@@ -32,7 +32,8 @@ public class DAOWithMoni implements PubCommonDAO{
 	@Override
 	public List<?> getQueryList(final String strSql, final Object... object) {
 		return (List<?>) execute(strSql,new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				return core.getQueryList(strSql, object);
 			}
 		});
@@ -82,7 +83,8 @@ public class DAOWithMoni implements PubCommonDAO{
 	@Override
 	public Object queryAsAnObject(final String strSql, final Object... object) {
 		return  execute(strSql,new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				return core.queryAsAnObject(strSql, object);
 			}
 		});
@@ -105,7 +107,8 @@ public class DAOWithMoni implements PubCommonDAO{
 		final HibernateTemplate template = getHibernateTemplate();
 		template.setCacheQueries(true);
 		HibernateCallback<List<?>> action = new HibernateCallback<List<?>>() {
-			public List<?> doInHibernate(Session session)
+			@Override
+            public List<?> doInHibernate(Session session)
 					throws HibernateException, SQLException {
 				Query query = session.createQuery(strSql);
 				if (object != null) {
@@ -222,7 +225,8 @@ public class DAOWithMoni implements PubCommonDAO{
 	@Override
 	public int deleteSQL(final String strSql, final Object... object) {
 		return  (Integer) execute(strSql,new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				return core.deleteSQL(strSql, object);
 			}
 		});
@@ -234,7 +238,8 @@ public class DAOWithMoni implements PubCommonDAO{
 			return ;
 		}
 		execute("DELETE "+obj.getClass().getSimpleName(),new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				core.delete(obj);
 				return null;
 			}
@@ -247,7 +252,8 @@ public class DAOWithMoni implements PubCommonDAO{
 			return ;
 		}
 		execute("SAVE "+object.getClass().getSimpleName(),new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				core.save(object);
 				return null;
 			}
@@ -265,7 +271,8 @@ public class DAOWithMoni implements PubCommonDAO{
 			return ;
 		}
 		execute("UPDATE "+object.getClass().getSimpleName(),new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				core.update(object);
 				return null;
 			}
@@ -281,7 +288,8 @@ public class DAOWithMoni implements PubCommonDAO{
 	@Override
 	public int bulkUpdate(final String queryString, final Object... values) {
 		return  (Integer) execute(queryString,new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				return core.bulkUpdate(queryString, values);
 			}
 		});
@@ -293,7 +301,8 @@ public class DAOWithMoni implements PubCommonDAO{
 			return new int[0];
 		}
 		return  (int[]) execute(hql[0],new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				return core.batchUpdate(hql);
 			}
 		});
@@ -302,7 +311,8 @@ public class DAOWithMoni implements PubCommonDAO{
 	@Override
 	public int[] batchUpdate(final String hql, final List<Object[]> args) {
 		return  (int[]) execute(hql,new Work(){
-			public Object run() {
+			@Override
+            public Object run() {
 				return core.batchUpdate(hql,args);
 			}
 		});
@@ -346,7 +356,8 @@ public class DAOWithMoni implements PubCommonDAO{
 		sb.append("</td></tr></table>\r\n");
 		
 		Collections.sort(result,new Comparator<Record>(){
-			public int compare(Record r0, Record r1) {
+			@Override
+            public int compare(Record r0, Record r1) {
 				long value=r1.total-r0.total;
 				return value>0?1:(value<0?-1:0);
 			}
@@ -377,7 +388,8 @@ public class DAOWithMoni implements PubCommonDAO{
 		}
 		sb.append("</table>\r\n");
 		Collections.sort(result,new Comparator<Record>(){
-			public int compare(Record r0, Record r1) {
+			@Override
+            public int compare(Record r0, Record r1) {
 				return r1.times-r0.times;
 			}
 		});
@@ -400,7 +412,8 @@ public class DAOWithMoni implements PubCommonDAO{
 		sb.append("</table>\r\n");
 		
 		Collections.sort(result,new Comparator<Record>(){
-			public int compare(Record r0, Record r1) {
+			@Override
+            public int compare(Record r0, Record r1) {
 				return (int)(r1.max-r0.max);
 			}
 		});

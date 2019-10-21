@@ -100,15 +100,21 @@ public class ExceptionManager {
 		long cause;
 		int name;
 		List<StackInfoPrototype> stack;
+		@Override
 		public int hashCode(){
 			if(_hash==0){
 				_hash= (int)(cause ^ (cause >>> 32))^name^stack.hashCode();
 			}
 			return _hash;
 		}
+		@Override
 		public boolean equals(Object o){
-			if(o==this)return true;
-			if(o==null)return false;
+			if(o==this) {
+                return true;
+            }
+			if(o==null) {
+                return false;
+            }
 			if(!(o instanceof ExceptionTypeInfoPrototype)){
 				return false;
 			}
@@ -126,12 +132,18 @@ public class ExceptionManager {
 		int file;
 		int clz;
 		int method;
+		@Override
 		public int hashCode(){
 			return line ^ file ^ clz ^method;
 		}
+		@Override
 		public boolean equals(Object o){
-			if(o==this)return true;
-			if(o==null)return false;
+			if(o==this) {
+                return true;
+            }
+			if(o==null) {
+                return false;
+            }
 			if(!(o instanceof StackInfoPrototype)){
 				return false;
 			}

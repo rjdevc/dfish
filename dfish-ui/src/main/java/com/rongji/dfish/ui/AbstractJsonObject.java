@@ -171,7 +171,8 @@ public abstract class AbstractJsonObject implements JsonObject{
 		return result;
 	}
 
-	public String asJson() {
+	@Override
+    public String asJson() {
 		return toString();
 	}
 

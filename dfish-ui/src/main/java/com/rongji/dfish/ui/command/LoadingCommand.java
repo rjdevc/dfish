@@ -50,7 +50,8 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 	 * 显示加载的文本
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -59,7 +60,8 @@ public class LoadingCommand extends AbstractNode<LoadingCommand> implements Comm
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public LoadingCommand setText(String text) {
+	@Override
+    public LoadingCommand setText(String text) {
 		this.text = text;
 		return this;
 	}

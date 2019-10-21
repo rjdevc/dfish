@@ -57,7 +57,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	}
 	
 	private static final Log LOG=LogFactory.getLog(PubCommonDAOImpl.class);
-	public List<?> getQueryList(final String strSql, final Object... object) {
+	@Override
+    public List<?> getQueryList(final String strSql, final Object... object) {
 		long beginTimeMillis = getCurrentTimeMillis();
 		
 		final HibernateTemplate template = getHibernateTemplate();
@@ -65,7 +66,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		// return template.find(strSql,object);
 		// ?????timeStamp???????????????????find
 		HibernateCallback<?> action = new HibernateCallback<Object>() {
-			public Object doInHibernate(Session session)
+			@Override
+            public Object doInHibernate(Session session)
 					throws HibernateException, SQLException {
 				Query query = session.createQuery(strSql);
 				if (object != null) {  
@@ -111,7 +113,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		}
 	}
 
-	public int deleteSQL(String strSql, Object... object) {
+	@Override
+    public int deleteSQL(String strSql, Object... object) {
 		long beginTimeMillis = getCurrentTimeMillis();
 		List<?> list = getQueryList(strSql, object);
 		if (list != null) {
@@ -121,19 +124,22 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		return list == null ? 0 : list.size();
 	}
 
-	public void delete(Object obj) {
+	@Override
+    public void delete(Object obj) {
 		if (obj != null) {
 			getHibernateTemplate().delete(obj);
 		}
 	}
 
-	public void save(final Object object) {
+	@Override
+    public void save(final Object object) {
 		if (object != null) {
 			getHibernateTemplate().save(object);
 		}
 	}
 
-	public void update(final Object object) {
+	@Override
+    public void update(final Object object) {
 		if (object != null) {
 			getHibernateTemplate().update(object);
 		}
@@ -167,13 +173,15 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 
 	}
 
-	public void evictObject(final Object object) {
+	@Override
+    public void evictObject(final Object object) {
 		if (object != null) {
 			getHibernateTemplate().evict(object);
 		}
 	}
 
-	public List<?> getQueryList(final String strSql, final Page page, final Object... object) {
+	@Override
+    public List<?> getQueryList(final String strSql, final Page page, final Object... object) {
 	    if (page == null) {
 	        return getQueryList(strSql, object);
 	    }
@@ -184,7 +192,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 		template.setCacheQueries(true);
 		long beginTimeMillis = getCurrentTimeMillis();
 		HibernateCallback<List<?>> action = new HibernateCallback<List<?>>() {
-			public List<?> doInHibernate(Session session)
+			@Override
+            public List<?> doInHibernate(Session session)
 					throws HibernateException, SQLException {
 				Query query = session.createQuery(strSql);
 				if (object != null) {
@@ -303,8 +312,9 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 //	    return getQueryList(strSql, page, page.getAutoRowCount(), object);
 	}
 	
-	public List<?> getQueryList(final String strSql, final Page page,
-			final boolean autoGetRowCount, final Object... object) {
+	@Override
+    public List<?> getQueryList(final String strSql, final Page page,
+                                final boolean autoGetRowCount, final Object... object) {
 		if (page != null) {
 			page.setAutoRowCount(autoGetRowCount);
 		}
@@ -312,9 +322,12 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	}
 
 
-	public Object queryAsAnObject(final String strSql, final Object... object){
+	@Override
+    public Object queryAsAnObject(final String strSql, final Object... object){
 		List<?> list=getQueryList(strSql,object);
-		if(list.size()==0)return null;
+		if(list.size()==0) {
+            return null;
+        }
 		return list.get(0);
 	}
 
@@ -325,7 +338,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	 * @param values
 	 * @return
 	 */
-	public int bulkUpdate(String queryString, Object... values) {
+	@Override
+    public int bulkUpdate(String queryString, Object... values) {
 		long beginTimeMillis = getCurrentTimeMillis();
 		int result = getHibernateTemplate().bulkUpdate(queryString, values);
 		showExecuteResult(queryString, beginTimeMillis);

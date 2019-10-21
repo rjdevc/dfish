@@ -295,7 +295,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "tree";
 	}
 
@@ -307,59 +308,71 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	// return defaultValues;
 	// }
 
-	public Leaf getPub() {
+	@Override
+    public Leaf getPub() {
 		if(pub==null){
 			pub=new Leaf();
 		}
 		return pub;
 	}
 
-	public TreePanel setPub(Leaf pub) {
+	@Override
+    public TreePanel setPub(Leaf pub) {
 		this.pub = pub;
 		return this;
 	}
 
+    @Override
     public TreePanel setScroll(Boolean scroll) {
     	this.scroll = scroll;
 	    return this;
     }
 
+    @Override
     public Boolean getScroll() {
 	    return this.scroll;
     }
 
+    @Override
     public TreePanel setScrollClass(String scrollClass) {
     	this.scrollClass = scrollClass;
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return this.scrollClass;
     }
 	
     HiddenPart hiddens = new HiddenPart();
-    public TreePanel addHidden(String name,String value) {
+    @Override
+    public TreePanel addHidden(String name, String value) {
     	hiddens.addHidden(name,value);
 		return this;
     }
 
+    @Override
     public List<Hidden> getHiddens() {
 	    return hiddens.getHiddens();
     }
 
+    @Override
     public List<String> getHiddenValue(String name) {
 	    return hiddens.getHiddenValue(name);
     }
 
+    @Override
     public TreePanel removeHidden(String name) {
     	hiddens.removeHidden(name);
 	    return this;
     }
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 	
-	public TreePanel setEscape(Boolean escape) {
+	@Override
+    public TreePanel setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}

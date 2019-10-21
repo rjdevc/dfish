@@ -102,7 +102,8 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 		return step;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "spinner";
 	}
 

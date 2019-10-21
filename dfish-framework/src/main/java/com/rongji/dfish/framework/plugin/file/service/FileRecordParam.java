@@ -45,23 +45,30 @@ public class FileRecordParam implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		FileRecordParam other = (FileRecordParam) obj;
 		if (fileKey == null) {
-			if (other.fileKey != null)
-				return false;
-		} else if (!fileKey.equals(other.fileKey))
-			return false;
+			if (other.fileKey != null) {
+                return false;
+            }
+		} else if (!fileKey.equals(other.fileKey)) {
+            return false;
+        }
 		if (fileLink == null) {
-			if (other.fileLink != null)
-				return false;
-		} else if (!fileLink.equals(other.fileLink))
-			return false;
+			if (other.fileLink != null) {
+                return false;
+            }
+		} else if (!fileLink.equals(other.fileLink)) {
+            return false;
+        }
 		return true;
 	}
 	

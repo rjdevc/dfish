@@ -146,7 +146,9 @@ public class PinyinConverter {
 	 * @return
 	 */
 	public static String getPinyin(String str, boolean hasToneNumber) {
-		if(str==null)return null;
+		if(str==null) {
+            return null;
+        }
 		StringBuilder sb=new StringBuilder();
 		for(char c:str.toCharArray()){
 			if(c>=32 && c<=127){
@@ -179,7 +181,9 @@ public class PinyinConverter {
 	 * @return
 	 */
 	public static String[] getPinyinFullShortFormat(String str, boolean hasToneNumber) {
-		if(str==null)return null;
+		if(str==null) {
+            return null;
+        }
 		StringBuilder sb=new StringBuilder();
 		StringBuilder shortSB=new StringBuilder();
 		for(char c:str.toCharArray()){

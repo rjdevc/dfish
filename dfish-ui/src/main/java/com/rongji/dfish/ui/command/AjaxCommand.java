@@ -28,7 +28,8 @@ public class AjaxCommand extends CommunicateCommand<AjaxCommand> {
     }
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "ajax";
 	}
 

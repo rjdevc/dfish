@@ -28,7 +28,9 @@ public class HtmlScriptRemover {
 		int cur=0;
 		while (begin>=0){
 			int end=text.indexOf('>', begin);
-			if(end<0)break;
+			if(end<0) {
+                break;
+            }
 			sb.append(text,cur,begin);
 			//处理
 			String htmlBlock=text.substring(begin,end);

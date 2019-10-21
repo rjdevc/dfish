@@ -40,7 +40,8 @@ public class ExceptionViewerController extends BaseController {
 	@Autowired
 	private ExceptionViewerView exceptionViewerView;
 
-	protected int getPageSize() {
+	@Override
+    protected int getPageSize() {
 		return 50;
 	}
 

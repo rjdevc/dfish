@@ -51,7 +51,8 @@ public class FieldsetLayout extends AbstractLayout<FieldsetLayout,Widget<?>> imp
 		super(id);
 		this.legend=legend;
 	}
-	public String getType() {
+	@Override
+    public String getType() {
 		return "fieldset";
 	}
 	/**

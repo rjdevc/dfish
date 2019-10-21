@@ -23,7 +23,8 @@ public class JsonTd extends AbstractTd<JsonTd> implements HasText<JsonTd>{
 	 * 文本模式时， 取得单元格内部文本的值
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -31,7 +32,8 @@ public class JsonTd extends AbstractTd<JsonTd> implements HasText<JsonTd>{
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public JsonTd setText(String text) {
+	@Override
+    public JsonTd setText(String text) {
 		this.text = text;
 		return this;
 	}

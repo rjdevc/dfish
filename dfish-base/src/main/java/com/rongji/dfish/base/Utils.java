@@ -193,12 +193,13 @@ public class Utils {
 			String[] pairs = query.split("[&]");
 			for (String string : pairs) {
 				String[] pair = string.split("[=]");
-				if (pair.length == 2 && key.equals(pair[0]))
-					try {
-						return java.net.URLDecoder.decode(pair[1].replace("%C2%A0", "%20"), ENCODING);
-					} catch (UnsupportedEncodingException e) {
-						LogUtil.error("获取参数异常", e);
-					}
+				if (pair.length == 2 && key.equals(pair[0])) {
+                    try {
+                        return java.net.URLDecoder.decode(pair[1].replace("%C2%A0", "%20"), ENCODING);
+                    } catch (UnsupportedEncodingException e) {
+                        LogUtil.error("获取参数异常", e);
+                    }
+                }
 			}
 		}
 
@@ -214,12 +215,13 @@ public class Utils {
 	 */
 	public static String getCookieValue(HttpServletRequest request, String name) {
 		Cookie[] cookies = request.getCookies();
-		if (cookies != null)
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals(name)) {
-					return cookie.getValue();
-				}
-			}
+		if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(name)) {
+                    return cookie.getValue();
+                }
+            }
+        }
 		return null;
 	}
 
@@ -552,7 +554,9 @@ public class Utils {
 	 * @return
 	 */
 	public static String toString(Collection<?> coll, char split) {
-		if(coll==null)return null;
+		if(coll==null) {
+            return null;
+        }
 		StringBuilder sb=new StringBuilder();
 		boolean begin=true;
 		for(Object o:coll){

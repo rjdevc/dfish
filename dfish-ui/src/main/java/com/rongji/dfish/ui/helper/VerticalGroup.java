@@ -24,10 +24,12 @@ MultiContainer<VerticalGroup,Widget<?>>{
 	private String label;
 	private Boolean hideLabel;
 
+	@Override
 	public String getLabel() {
 		return label;
 	}
 
+	@Override
 	public VerticalGroup setLabel(String label) {
 		this.label=label;
 		return this;
@@ -44,6 +46,7 @@ MultiContainer<VerticalGroup,Widget<?>>{
 		super(id);
 	}
 
+	@Override
 	public String getType() {
 		return "vert";
 	}
@@ -57,7 +60,8 @@ MultiContainer<VerticalGroup,Widget<?>>{
 	 * @param height String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public VerticalGroup add(int index,Widget<?> w,String height) {
+	@Override
+	public VerticalGroup add(int index, Widget<?> w, String height) {
 		if(index<0){
 			nodes.add(w);
 		}else{
@@ -115,18 +119,21 @@ MultiContainer<VerticalGroup,Widget<?>>{
 	
 		VerticalLayout propotype=new VerticalLayout(null);
 		BeanUtil.copyPropertiesExact(propotype,this);
-		if(getData()!=null)
-		for(Map.Entry<String, Object>entry:getData().entrySet()){
-			propotype.setData(entry.getKey(), entry.getValue());
-		}
-		if(getOn()!=null)
-		for(Map.Entry<String, String>entry:getOn().entrySet()){
-			propotype.setOn(entry.getKey(), entry.getValue());
-		}
-		if(findNodes()!=null)
-		for(Widget<?>node:findNodes()){
-			propotype.add(node);
-		}
+		if(getData()!=null) {
+            for(Map.Entry<String, Object>entry:getData().entrySet()){
+                propotype.setData(entry.getKey(), entry.getValue());
+            }
+        }
+		if(getOn()!=null) {
+            for(Map.Entry<String, String>entry:getOn().entrySet()){
+                propotype.setOn(entry.getKey(), entry.getValue());
+            }
+        }
+		if(findNodes()!=null) {
+            for(Widget<?>node:findNodes()){
+                propotype.add(node);
+            }
+        }
 		return propotype;
 	}
 

@@ -16,7 +16,8 @@ import com.rongji.dfish.misc.util.XMLUtil;
 public class DefaultPersonalConfig implements PersonalConfigHolder{
 	private static Map<String, String> propertiesPersonMap=new SizeFixedCache<String, String>(256);
 
-	public String getProperty(String userId, String argStr) {
+	@Override
+    public String getProperty(String userId, String argStr) {
 		String tempStr = userId + "." + argStr;
 		synchronized (propertiesPersonMap) {
 	
@@ -45,7 +46,8 @@ public class DefaultPersonalConfig implements PersonalConfigHolder{
 		return null;
 	}
 
-	public void setProperty(String userId, String argStr, String value) {
+	@Override
+    public void setProperty(String userId, String argStr, String value) {
 		String tempStr = userId + "." + argStr;
 		synchronized (propertiesPersonMap) {
 	
@@ -68,7 +70,8 @@ public class DefaultPersonalConfig implements PersonalConfigHolder{
 		return;
 	}
 
-	public void reset() {
+	@Override
+    public void reset() {
 		propertiesPersonMap.clear();
 	}
 

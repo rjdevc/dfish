@@ -99,7 +99,8 @@ public final class MuldatePicker extends AbstractInput<MuldatePicker,Object> {
 		return format;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "muldate";
 	}
 	@Override

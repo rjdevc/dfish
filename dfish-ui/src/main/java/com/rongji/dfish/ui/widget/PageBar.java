@@ -101,13 +101,16 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 	}
 
 	
-	public String getType() {
+	@Override
+    public String getType() {
 		return type;
 	}
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
-	public PageBar setAlign(String align) {
+	@Override
+    public PageBar setAlign(String align) {
 		this.align = align;
 		return this;
 	}

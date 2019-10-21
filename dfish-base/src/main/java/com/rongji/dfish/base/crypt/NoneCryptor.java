@@ -18,6 +18,7 @@ public final class NoneCryptor extends StringCryptor {
      * @return byte[]
      * @throws Exception
      */
+    @Override
     protected byte[] encrypt(byte[] src) throws Exception {
 		return src;
 	}
@@ -27,6 +28,7 @@ public final class NoneCryptor extends StringCryptor {
      * @return byte[]
      * @throws Exception
      */
+    @Override
     protected byte[] decrypt(byte[] src) throws Exception {
 		return src;
 	}

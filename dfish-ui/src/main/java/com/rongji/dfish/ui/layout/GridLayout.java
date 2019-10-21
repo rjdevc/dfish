@@ -160,7 +160,8 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 		this.setThead(new GridBody());
 		this.setTbody(new GridBody());
 	}
-	public String getType() {
+	@Override
+    public String getType() {
 		return "grid";
 	}
 	
@@ -278,13 +279,15 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
  		return sb.reverse().toString();
  	}
 	
-	public Tr getPub() {
+	@Override
+    public Tr getPub() {
 		if (pub == null) {
 			setPub(new Tr());
 		}
 		return pub;
 	}
-	public GridLayout setPub(Tr pub) {
+	@Override
+    public GridLayout setPub(Tr pub) {
 		this.pub = pub;
 		return this;
 	}
@@ -328,20 +331,24 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	  
 	private HiddenPart hiddens = new HiddenPart();
     
-	public GridLayout addHidden(String name,String value) {
+	@Override
+    public GridLayout addHidden(String name, String value) {
 		hiddens.addHidden(name, value);
 		return this;
 	}
 	
-	public List<Hidden> getHiddens() {
+	@Override
+    public List<Hidden> getHiddens() {
 		return hiddens.getHiddens();
 	}
 	
-	public List<String> getHiddenValue(String name) {
+	@Override
+    public List<String> getHiddenValue(String name) {
 		return hiddens.getHiddenValue(name);
 	}
 	
-	public GridLayout removeHidden(String name) {
+	@Override
+    public GridLayout removeHidden(String name) {
 		hiddens.removeHidden(name);
 		return this;
 	}
@@ -359,11 +366,13 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 		return this;
 	}
 
-	public Boolean getFocusmultiple() {
+	@Override
+    public Boolean getFocusmultiple() {
 		return focusmultiple;
 	}
 
-	public GridLayout setFocusmultiple(Boolean focusmultiple) {
+	@Override
+    public GridLayout setFocusmultiple(Boolean focusmultiple) {
 		this.focusmultiple = focusmultiple;
 		return this;
 	}
@@ -373,7 +382,8 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * @return Boolean
 	 * @deprecated 目前不支持
 	 */
-	@Deprecated
+	@Override
+    @Deprecated
 	public Boolean getHoverable() {
 		return null;
 	}
@@ -384,7 +394,8 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * @return 本身，这样可以继续设置其他属性
 	 * @deprecated  目前不支持
 	 */
-	@Deprecated
+	@Override
+    @Deprecated
 	public GridLayout setHoverable(Boolean hoverable) {
 //		this.hoverable = hoverable;
 		return this;
@@ -485,7 +496,8 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * 内容不换行。
 	 * @return nobr
 	 */
-	public Boolean getNobr() {
+	@Override
+    public Boolean getNobr() {
 		return nobr;
 	}
 
@@ -494,15 +506,18 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 	 * @param nobr Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLayout setNobr(Boolean nobr) {
+	@Override
+    public GridLayout setNobr(Boolean nobr) {
 		this.nobr = nobr;
 		return this;
 	}
 
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return escape;
 	}
-	public GridLayout setEscape(Boolean escape) {
+	@Override
+    public GridLayout setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}
@@ -512,21 +527,26 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 //			throw new UnsupportedOperationException("not support this method");
 //	    }
 
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return scroll;
 	}
-	public GridLayout setScroll(Boolean scroll) {
+	@Override
+    public GridLayout setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return this;
 	}
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return scrollClass;
 	}
-	public GridLayout setScrollClass(String scrollClass) {
+	@Override
+    public GridLayout setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
 	}
-	public void clearNodes() {
+	@Override
+    public void clearNodes() {
 		this.tbody.clearNodes();
 		this.thead.clearNodes();
 		if(this.columns!=null){
@@ -615,29 +635,36 @@ public class GridLayout extends AbstractLayout<GridLayout, Tr> implements ListVi
 		tbody.add(w);
 	    return this;
     }
+    @Override
     public GridLayout add(int row, int column, Object o) {
 		tbody.add(row, column, o);
 	    return this;
     }
+    @Override
     public GridLayout add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
 		tbody.add(fromRow, fromColumn, toRow, toColumn, value);
 	    return this;
     }
+    @Override
     public GridLayout put(int row, int column, Object o) {
 		tbody.put(row, column, o);
 	    return this;
     }
+    @Override
     public GridLayout put(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
 		tbody.put(fromRow, fromColumn, toRow, toColumn, value);
 	    return this;
     }
+    @Override
     public GridLayout removeNode(int row, int column) {
 		tbody.removeNode(row, column);
 	    return this;
     }
+    @Override
     public boolean containsNode(int fromRow, int fromColumn, int toRow, int toColumn) {
 	    return tbody.containsNode(fromRow, fromColumn, toRow, toColumn);
     }
+    @Override
     public GridLayout removeNode(int fromRow, int fromColumn, int toRow, int toColumn) {
 		tbody.removeNode(fromRow, fromColumn, toRow, toColumn);
 	    return this;

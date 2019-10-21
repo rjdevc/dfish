@@ -31,7 +31,8 @@ MultiContainer<VerticalLayout,Widget<?>>,Alignable<VerticalLayout>, Valignable<V
 		super(id);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "vert";
 	}
 
@@ -43,7 +44,8 @@ MultiContainer<VerticalLayout,Widget<?>>,Alignable<VerticalLayout>, Valignable<V
 	 * @param height String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public VerticalLayout add(int index, Widget<?> w, String height) {
+	@Override
+    public VerticalLayout add(int index, Widget<?> w, String height) {
 		if (w == null) {
 			throw new UnsupportedOperationException("The added widget can not be null.");
 		}
@@ -71,20 +73,24 @@ MultiContainer<VerticalLayout,Widget<?>>,Alignable<VerticalLayout>, Valignable<V
 	 */
 	private HiddenPart hiddens = new HiddenPart();
     
-	public VerticalLayout addHidden(String name,String value) {
+	@Override
+    public VerticalLayout addHidden(String name, String value) {
 		hiddens.addHidden(name, value);
 		return this;
 	}
 	
-	public List<Hidden> getHiddens() {
+	@Override
+    public List<Hidden> getHiddens() {
 		return hiddens.getHiddens();
 	}
 	
-	public List<String> getHiddenValue(String name) {
+	@Override
+    public List<String> getHiddenValue(String name) {
 		return hiddens.getHiddenValue(name);
 	}
 	
-	public VerticalLayout removeHidden(String name) {
+	@Override
+    public VerticalLayout removeHidden(String name) {
 		hiddens.removeHidden(name);
 		return this;
 	}

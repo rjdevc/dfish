@@ -8,7 +8,8 @@ import java.util.Stack;
  * @author DFish Team
  */
 public class EnumJsonBuilder extends  AbstractJsonBuilder {
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+    public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		sb.append('"');
 		sb.append(o);
 		sb.append('"');

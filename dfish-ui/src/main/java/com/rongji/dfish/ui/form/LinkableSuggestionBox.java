@@ -55,7 +55,8 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setText(String text) {
+	@Override
+    public T setText(String text) {
 		this.text = text;
 		return (T) this;
 	}
@@ -63,7 +64,8 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
 	/**
 	 * @return the text
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	

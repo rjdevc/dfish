@@ -31,11 +31,13 @@ public class AmapPicker extends AbstractFormElement<AmapPicker, String> {
 		this.setValue(value);
 	}
 
-	public String getValue() {
+	@Override
+    public String getValue() {
 		return value;
 	}
 
-	public AmapPicker setValue(Object value) {
+	@Override
+    public AmapPicker setValue(Object value) {
 		this.value = toString(value);
 		return this;
 	}

@@ -87,15 +87,18 @@ public abstract class AbstractBoxgroup <T extends AbstractBoxgroup<T,N,P>,N exte
         return add(w);
     }
 
-	public Widget<?> findNodeById(String id) {
+	@Override
+    public Widget<?> findNodeById(String id) {
 		return super.findNodeById(id);
 	}
 	
-	public List<FormElement<?,?>> findFormElementsByName(String name) {
+	@Override
+    public List<FormElement<?,?>> findFormElementsByName(String name) {
 		return super.findFormElementsByName(name);
 	}
 
-	public List<Widget<?>> findNodes() {
+	@Override
+    public List<Widget<?>> findNodes() {
 		List<Widget<?>> result=new ArrayList<Widget<?>>();
 		if(nodes!=null){
 			result.addAll(nodes);
@@ -195,11 +198,13 @@ public abstract class AbstractBoxgroup <T extends AbstractBoxgroup<T,N,P>,N exte
 	}
 
 
-	public T removeNodeById(String id) {
+	@Override
+    public T removeNodeById(String id) {
 		//FIXME 这个需要重写
 		return super.removeNodeById(id);
 	}
 
+    @Override
     public boolean replaceNodeById(Widget<?> w) {
 		//FIXME 这个需要重写
 		 return super.replaceNodeById(w);
@@ -210,7 +215,8 @@ public abstract class AbstractBoxgroup <T extends AbstractBoxgroup<T,N,P>,N exte
 	 * boxgroup节点数组
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public List<? extends N> getOptions() {
+	@Override
+    public List<? extends N> getOptions() {
 		return nodes;
 	}
 
@@ -264,20 +270,24 @@ public abstract class AbstractBoxgroup <T extends AbstractBoxgroup<T,N,P>,N exte
 		targets.add(w);
 		return (T)this;
 	}
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 	
-	public T setEscape(Boolean escape) {
+	@Override
+    public T setEscape(Boolean escape) {
 		this.escape = escape;
 		return (T)this;
 	}
 	
-	public String getDir() {
+	@Override
+    public String getDir() {
 		return dir;
 	}
 	
-	public T setDir(String dir) {
+	@Override
+    public T setDir(String dir) {
 		this.dir = dir;
 		return (T) this;
 	}

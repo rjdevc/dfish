@@ -84,6 +84,7 @@ public class CommandGroup extends AbstractCommand<CommandGroup> implements Comma
 
    
 
+    @Override
     public CommandGroup add(Command<?> cmd) {
     	nodes.add(cmd);
         return this;
@@ -129,15 +130,18 @@ public class CommandGroup extends AbstractCommand<CommandGroup> implements Comma
 //		this.repeatInterval = repeatInterval;
 //		return this;
 //	}
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public List<Command<?>> findNodes() {
 		return nodes;
 	}
 	
-	public List<Command<?>> getNodes() {
+	@Override
+    public List<Command<?>> getNodes() {
 		return nodes;
 	}
-	public String getType() {
+	@Override
+    public String getType() {
 		return "cmd";
 	}
 	/**

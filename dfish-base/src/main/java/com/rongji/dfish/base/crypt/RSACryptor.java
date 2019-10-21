@@ -58,6 +58,7 @@ public class RSACryptor
     }
   }
 
+  @Override
   protected byte[] encrypt(byte[] src) throws Exception {
     int blocks = (src.length - 1) / supportByteLen + 1;
     ByteArrayOutputStream ba = new ByteArrayOutputStream();
@@ -95,6 +96,7 @@ public class RSACryptor
     return ba.toByteArray();
   }
 
+  @Override
   protected byte[] decrypt(byte[] src) throws Exception {
     ByteArrayOutputStream ba = new ByteArrayOutputStream();
     int blocks = src.length / modulusByteLength;

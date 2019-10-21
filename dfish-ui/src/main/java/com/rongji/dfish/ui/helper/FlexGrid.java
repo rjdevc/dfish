@@ -58,7 +58,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	public static final int FULL_LINE = -1; 
 	
 	protected boolean prototypeChanged=false;
-	public void notifyChage(){
+	@Override
+    public void notifyChage(){
 		prototypeChanged=true;
 	}
 	protected void checkConcurrentModify(){
@@ -315,21 +316,25 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 //	private String scrollClass;
 //	private Boolean escape;
 	
-	public FlexGrid addHidden(String name,String value) {
+	@Override
+    public FlexGrid addHidden(String name, String value) {
 		hiddens.addHidden(name, value);
 		return this;
 	}
 	
-	public List<Hidden> getHiddens() {
+	@Override
+    public List<Hidden> getHiddens() {
 		// FIXME 最好在初始化的时候将原型初始化好,然后直接设置在原型上
 		return hiddens.getHiddens();
 	}
 	
-	public List<String> getHiddenValue(String name) {
+	@Override
+    public List<String> getHiddenValue(String name) {
 		return hiddens.getHiddenValue(name);
 	}
 	
-	public FlexGrid removeHidden(String name) {
+	@Override
+    public FlexGrid removeHidden(String name) {
 		hiddens.removeHidden(name);
 		return this;
 	}

@@ -184,7 +184,9 @@ public class WordSplitter {
 		 * @param end
 		 */
 		void setKey(char[] charArray,int begin,int end) {
-			if(end-begin<=0)return;
+			if(end-begin<=0) {
+                return;
+            }
 			if(children==null){
 				children=new HashMap<Character , TrieNodeReverse>();
 			}
@@ -204,6 +206,7 @@ public class WordSplitter {
 		/**
 		 * 为了调试方便，有的时候需要把该节点转成JSON。来检查是否有误。
 		 */
+		@Override
 		public String toString(){
 			StringBuilder sb=new StringBuilder();
 			toString(sb);

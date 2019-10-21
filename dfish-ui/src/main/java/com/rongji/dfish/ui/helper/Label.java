@@ -50,15 +50,18 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 		return prototype;
 	}
 
-	public String getLabel() {
+	@Override
+    public String getLabel() {
 		return label;
 	}
 
-	public Boolean getHideLabel() {
+	@Override
+    public Boolean getHideLabel() {
 		return hideLabel;
 	}
 
-	public Label setHideLabel(Boolean hideLabel) {
+	@Override
+    public Label setHideLabel(Boolean hideLabel) {
 		this.hideLabel=hideLabel;
 		return this;
 	}
@@ -77,7 +80,8 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 		return this;
 	}
 
-	public Label setLabel(String label) {
+	@Override
+    public Label setLabel(String label) {
 		this.label=label;
 		return this;
 	}
@@ -88,7 +92,8 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 
@@ -96,7 +101,8 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 	 * 显示文本
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -105,26 +111,31 @@ public class Label extends AbstractWidget<Label> implements JsonWrapper<Html>,La
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Label setText(String text) {
+	@Override
+    public Label setText(String text) {
 		this.text = text;
 		return this;
 	}
 
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 	
-	public Label setEscape(Boolean escape) {
+	@Override
+    public Label setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}
 	
-	public Label setStar(Boolean star) {
+	@Override
+    public Label setStar(Boolean star) {
 		this.star=star;
 		return this;
 	}
 	
-	public Boolean getStar() {
+	@Override
+    public Boolean getStar() {
 		return star;
 	}
 	

@@ -178,10 +178,12 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 		return setAftercontent(null);
 	}
 	
-	public String getId() {
+	@Override
+    public String getId() {
 		return id;
 	}
-	public T setId(String id) {
+	@Override
+    public T setId(String id) {
 		this.id = id;
 		return (T)this;
 	}
@@ -253,10 +255,12 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
     	return (T) this;
     }
 	
-	public Map<String, String> getOn() {
+	@Override
+    public Map<String, String> getOn() {
 		return events;
 	}
-	public T setOn(String eventName, String script) {
+	@Override
+    public T setOn(String eventName, String script) {
 		if(eventName==null){
 			return  (T)this;
 		}
@@ -307,7 +311,8 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 		this.hmin = hmin;
 		return (T)this;
 	}
-	public Object getData(String key) {
+	@Override
+    public Object getData(String key) {
         if (key == null || key.equals("")) {
             return null;
         }
@@ -316,7 +321,8 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
         }
         return data.get(key);
     }
-	public Object removeData(String key) {
+	@Override
+    public Object removeData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
 		}
@@ -325,6 +331,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 		}
 		return data.remove(key);
 	}
+    @Override
     public T setData(String key, Object value) {
     	if(data == null){
     		data = new LinkedHashMap<String, Object>();
@@ -333,6 +340,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
         return (T) this;
     }
 
+    @Override
     public Map<String, Object> getData() {
     	return data;
     }
@@ -526,32 +534,34 @@ public abstract class AbstractNode<T extends AbstractNode<T>> extends AbstractJs
 		}
 		if(this instanceof HiddenContainer<?>){
 			HiddenContainer<?> cast=(HiddenContainer<?>)this;
-			if(cast.getHiddens()!=null)
-			for(Hidden hidden:cast.getHiddens()){
-				if(name.equals(hidden.getName())){
-					result.add(hidden);
-				}
-			}
+			if(cast.getHiddens()!=null) {
+                for(Hidden hidden:cast.getHiddens()){
+                    if(name.equals(hidden.getName())){
+                        result.add(hidden);
+                    }
+                }
+            }
 		}
 		List<Widget<?> > nodes=findNodes();
-		if(nodes!=null)
-		for (Widget<?> item :nodes) {
-			if(item==null){
-				continue;
-			}
-			if (item instanceof FormElement<?,?>) {
-				FormElement<?,?> cast=(FormElement<?,?>)item;
-				if(name.equals(cast.getName())){
-					result.add(cast);
-				}
-			}else if(item instanceof Layout){
-				if(item instanceof AbstractNode){
-					((AbstractNode<?>) item).findFormElementsByName(name,result);
-				}else{
-					result.addAll(((Layout<?,?>)item).findFormElementsByName(name));
-				}
-			}
-		}
+		if(nodes!=null) {
+            for (Widget<?> item :nodes) {
+                if(item==null){
+                    continue;
+                }
+                if (item instanceof FormElement<?,?>) {
+                    FormElement<?,?> cast=(FormElement<?,?>)item;
+                    if(name.equals(cast.getName())){
+                        result.add(cast);
+                    }
+                }else if(item instanceof Layout){
+                    if(item instanceof AbstractNode){
+                        ((AbstractNode<?>) item).findFormElementsByName(name,result);
+                    }else{
+                        result.addAll(((Layout<?,?>)item).findFormElementsByName(name));
+                    }
+                }
+            }
+        }
 	}
 
 	/**

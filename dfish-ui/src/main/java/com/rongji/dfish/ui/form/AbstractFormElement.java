@@ -72,31 +72,37 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 //	public static final String[] DEFAULT_GROUP = new String[] { "default" };
 
 
-	public T setName(String name) {
+	@Override
+    public T setName(String name) {
 		this.name = name;
 		return (T) this;
 	}
 
-	public abstract T setValue(Object value);
+	@Override
+    public abstract T setValue(Object value);
 	
 	@Override
 	public Boolean getStar() {
 		return this.star;
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return name;
 	}
 
-	public N getValue() {
+	@Override
+    public N getValue() {
 		return value;
 	}
 
-	public String getLabel() {
+	@Override
+    public String getLabel() {
 		return label;
 	}
 
-	public T setLabel(String label) {
+	@Override
+    public T setLabel(String label) {
 		this.label = label;
 		return (T) this;
 	}
@@ -141,7 +147,8 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	 * 状态。
 	 * @return  String
 	 */
-	public String getStatus() {
+	@Override
+    public String getStatus() {
 		return status;
 	}
 	
@@ -150,7 +157,8 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 	 * @param status String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setStatus(String status) {
+	@Override
+    public T setStatus(String status) {
 		this.status = status;
 		return (T) this;
 	}
@@ -221,7 +229,8 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		}
 		return (T) this;
 	}
-	public T setStar(Boolean star) {
+	@Override
+    public T setStar(Boolean star) {
 		this.star = star;
 		return (T) this;
 	}
@@ -239,11 +248,13 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		return (T) this;
 	}
 
-	public Boolean getHideLabel() {
+	@Override
+    public Boolean getHideLabel() {
 		return hideLabel;
 	}
 
-	public T setHideLabel(Boolean hideLabel) {
+	@Override
+    public T setHideLabel(Boolean hideLabel) {
 		this.hideLabel = hideLabel;
 		return (T) this;
 	}
@@ -267,7 +278,8 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		return valids.get(Validatable.DEFAULT_VALIDATE_NAME);
 	}
 
-	public Validate getValidate(String name) {
+	@Override
+    public Validate getValidate(String name) {
 		return valids.get(name);
 	}
 	@Override
@@ -279,10 +291,12 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		return result;
 	}
 	
-	public T addValidate(Validate validate){
+	@Override
+    public T addValidate(Validate validate){
 		return addValidate(Validatable.DEFAULT_VALIDATE_NAME, validate);
 	}
-	public T addValidate(String name,Validate validate){
+	@Override
+    public T addValidate(String name, Validate validate){
 		if(validate==null){
 			return (T)this;
 		}
@@ -294,15 +308,18 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T,N>,N> 
 		}
 		return (T)this;
 	}
-	public T setValidate(Validate validate){
+	@Override
+    public T setValidate(Validate validate){
 		valids.put(Validatable.DEFAULT_VALIDATE_NAME, validate);
 		return (T)this;
 	}
-	public T setValidate(String name,Validate validate){
+	@Override
+    public T setValidate(String name, Validate validate){
 		valids.put(name,validate);
 		return (T)this;
 	}
-	public T removeValidate(String name){
+	@Override
+    public T removeValidate(String name){
 		valids.remove(name);
 		return (T)this;
 	}

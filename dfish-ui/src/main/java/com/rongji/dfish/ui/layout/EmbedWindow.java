@@ -43,7 +43,8 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "ewin";//ewin
 	}
 
@@ -54,7 +55,8 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 	 * 显示文本
 	 * @return text
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -63,7 +65,8 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements HasText<
 	 * @param text 文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public EmbedWindow setText(String text) {
+	@Override
+    public EmbedWindow setText(String text) {
 		this.text = text;
 		return this;
 	}

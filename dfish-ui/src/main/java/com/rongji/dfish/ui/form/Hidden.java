@@ -26,20 +26,24 @@ public class Hidden extends AbstractWidget<Hidden> implements FormElement<Hidden
 		this.value = value;
 	}
 	
+    @Override
     public String getType() {
 	    return "hidden";
     }
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return name;
 	}
 
-	public Hidden setName(String name) {
+	@Override
+    public Hidden setName(String name) {
 		this.name = name;
 		return this;
 	}
 
-	public String getValue() {
+	@Override
+    public String getValue() {
 		return value;
 	}
 

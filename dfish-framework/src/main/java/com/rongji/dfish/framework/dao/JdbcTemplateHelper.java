@@ -194,7 +194,8 @@ public class JdbcTemplateHelper {
 		int[] result = null;
 		try {
 			result = jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-				public void setValues(PreparedStatement ps, int i) throws SQLException {
+				@Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
 					Object[] item = dataList.get(i);
 					if (Utils.notEmpty(item)) {
 						for (int j = 0; j < item.length; j++) {
@@ -207,7 +208,8 @@ public class JdbcTemplateHelper {
 					}
 				}
 
-				public int getBatchSize() {
+				@Override
+                public int getBatchSize() {
 					return dataList.size();
 				}
 			});
@@ -223,7 +225,8 @@ public class JdbcTemplateHelper {
 		}
 		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
 		Object result = jdbcTemplate.execute(new ConnectionCallback<Object>() {
-			public Object doInConnection(Connection conn) throws SQLException, DataAccessException {
+			@Override
+            public Object doInConnection(Connection conn) throws SQLException, DataAccessException {
 				boolean autoCommit = conn.getAutoCommit();
 				try {
 					conn.setAutoCommit(false);

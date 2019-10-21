@@ -100,7 +100,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * 是否有滚动条。
 	 * @return text
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -108,7 +109,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * @param text
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Img setText(String text) {
+	@Override
+    public Img setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -167,7 +169,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * 水平对齐方式
 	 * @return String
 	 */
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 
@@ -176,7 +179,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * @param align String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Img setAlign(String align) {
+	@Override
+    public Img setAlign(String align) {
 		this.align = align;
 		return this;
 	}
@@ -184,14 +188,16 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	/**
 	 * 垂直对齐方式
 	 */
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 
 	/**
 	 * 垂直对齐方式
 	 */
-	public Img setValign(String valign) {
+	@Override
+    public Img setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}

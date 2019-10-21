@@ -202,7 +202,8 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
     }
 
 	
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;//"widget/tree";
 	}
 
@@ -518,11 +519,13 @@ public class Leaf extends AbstractLayout<Leaf,Leaf> implements MultiContainer<Le
 		return this;
 	}
 	
-	public String getStatus() {
+	@Override
+    public String getStatus() {
 		return status;
 	}
 	
-	public Leaf setStatus(String status) {
+	@Override
+    public Leaf setStatus(String status) {
 		this.status = status;
 		return this;
 	}
