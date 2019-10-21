@@ -7,7 +7,7 @@ dfish.config({
     preload_dir: 'p/',
     // 皮肤
     skin: {
-        // 皮肤根目录
+        // 样式目录
         dir: 'skin/'
     },
     //表单验证效果 可选值: red,tip,alert
@@ -31,7 +31,9 @@ dfish.config({
         'tree': {scroll: true, ellipsis: true},
         'leaf': {tip: true, style: 'padding-right:10px;', wmin: 10},
 
-        'buttonbar': {wmin: 40, space: 10, align: 'right', pub: {tip: true, height: 30}},
+        'buttonbar': {space: 10, pub: {tip: true, height: 30}},
+        'buttonbar.w-tabbar': {space: 0, pub: { height: "*"}},
+        'buttonbar.x-breadcrumb': {space: 0},
         'tabs': {wmin: 40},
         'tabbar': {wmin: 20},
 
@@ -76,7 +78,7 @@ dfish.config({
             hmin: 1
         }
     },
-    // 插件或自定义widget
+    // 自定义widget
     alias: {
         'amap': 'pl/amap/amap.dfish.js',
         'amap/picker': 'pl/amap/amap.dfish.js',
