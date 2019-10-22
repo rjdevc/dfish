@@ -32,12 +32,11 @@ dfish.config({
         'leaf': {tip: true, style: 'padding-right:10px;', wmin: 10},
 
         'buttonbar': {space: 10, pub: {tip: true, height: 30}},
-        'buttonbar.w-tabbar': {space: 0, pub: { height: "*"}},
         'buttonbar.x-breadcrumb': {space: 0},
         'tabs': {wmin: 40},
-        'tabbar': {wmin: 20},
+        'buttonbar.w-tabbar': {space: 0, pub: { height: "*"}, wmin: 20},
 
-        'grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "line"},
+        'grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "cell"},
         'column': {tip: true},
         // 小分页模式暂时定于全数据关联的分页栏使用,所以不设置src
         'page/mini': {align: 'right', btncount: 5, wmin: 40},

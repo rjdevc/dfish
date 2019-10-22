@@ -357,18 +357,18 @@ i {
     padding: 0 20px 0 10px;
 }
 
-.w-tabs .w-tabbar {
+.w-buttonbar.w-tabbar {
     height: 40px;
     padding: 0 10px;
 }
 
-.w-tabs .w-tabbar .w-tabbar-line {
+.w-buttonbar.w-tabbar .w-buttonbar-line {
     display: block;
     height: 2px;
     background: #2498fd;
 }
 
-.w-tabs .w-tabbar .w-tab {
+.w-buttonbar.w-tabbar .w-tab {
     background: #eee;
     margin-right: 8px;
     margin-top: 2px;
@@ -376,12 +376,12 @@ i {
     font-weight: bold;
 }
 
-.w-tabs .w-tabbar .w-tab.z-on {
+.w-buttonbar.w-tabbar .w-tab.z-on {
     background: #2498fd;
     color: #fff;
 }
 
-.w-tabs .w-tabbar .w-tab.z-hv {
+.w-buttonbar.w-tabbar .w-tab.z-hv {
     background: #1588d4;
     color: #fff;
 }
