@@ -689,7 +689,7 @@ _jsonString = $.jsonString = function( a, b, c ) {
 },
 // 把字符串 转为 json /@ a -> str
 _jsonParse = $.jsonParse = function( a ) {
-	return ! a ? N : JSON.parse( a );
+	return ! a ? a : Function( 'return ' + a )();
 },
 // 复制 json
 _jsonClone = $.jsonClone = function( a ) {

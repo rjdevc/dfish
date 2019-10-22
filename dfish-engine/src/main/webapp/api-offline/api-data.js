@@ -320,11 +320,14 @@ define( {
             var obj = $.jsonParse( '{"name":"John"}' ); //返回一个json对象
           }
       ] },
-      { name: '$.jsonString(obj)', remark: '把一个json对象转为字符串。', common: true, param: [
-        { name: 'obj', type: 'json', remark: 'json对象' }
+      { name: '$.jsonString(value, [replacer], [space])', remark: '把一个json对象转为字符串。', common: true, param: [
+        { name: 'value', type: 'Object', remark: 'json对象。' },
+        { name: 'replacer', type: 'Function | Array', remark: '用于转换结果的函数或数组。<br>如果 replacer 为函数，则 JSON.stringify 将调用该函数，并传入每个成员的键和值。使用返回值而不是原始值。如果此函数返回 undefined，则排除成员。根对象的键是一个空字符串：""。<br>如果 replacer 是一个数组，则仅转换该数组中具有键值的成员。成员的转换顺序与键在数组中的顺序一样。当 value 参数也为数组时，将忽略 replacer 数组。', optional: true },
+        { name: 'space', type: 'Number | String', remark: '文本添加缩进、空格和换行符，如果 space 是一个数字，则返回值文本在每个级别缩进指定数目的空格，如果 space 大于 10，则文本缩进 10 个空格。space 也可以使用非数字，如：\\t。', optional: true }
       ], example: [
           function() {
-            var str = $.jsonString( { name: 'John' } ); //返回字符串
+          	//
+            var str = $.jsonString( { name: 'John' } );
           }
       ] },
       { name: '$.loadCss(url)', remark: '装载CSS文件。', common: true, param: [
@@ -2343,10 +2346,11 @@ define( {
         { name: 'keycls', type: 'String', remark: '关键词样式名。' },
         { name: 'matchlength', type: 'Number', remark: '切词长度。' }
       ] },
-      { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。默认值为true。' },
+      { name: 'folder', type: 'Boolean', remark: '是否有子节点。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'open', type: 'Boolean', remark: '是否展开状态。' },
