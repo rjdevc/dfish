@@ -513,7 +513,12 @@ Template = $.createClass( {
 				if ( k.charAt( 0 ) === '@' ) {  //以@开头的是JS表达式
 					if ( k.indexOf( '@w-' ) === 0 ) {
 						if ( k.indexOf( '@w-if' ) === 0 || k.indexOf( '@w-elseif' ) === 0 ) {
-							$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
+							if ( typeof b === _OBJ ) {
+								$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
+							} else if ( ! this.format( b, g, y ) ) {
+								r = N;
+								break;
+							}
 						} else if ( k === '@w-else' ) {
 							f._switchdefault = b;
 						}
@@ -716,7 +721,9 @@ W = define( 'widget', function() {
 				if ( t ) {
 					if ( !t.type || t.type === this.type ) {
 						for ( var k in t ) {
-							if ( k !== 'node' && k !== 'nodes' ) x[ k ] = t[ k ];
+							if ( k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
+								x[ k ] = t[ k ];
+							}
 						}
 					} else if ( t.type && !W.isCmd( t ) ) {
 						$.alert( Loc.ps( Loc.debug.error_template_type, this.x.template, this.type ) );
@@ -3353,6 +3360,8 @@ Button = define.widget( 'button', {
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
+			if ( ! x.text )
+				b += ' z-i';
 			if ( w != N ) {
 				s += 'width:' + w + 'px;';
 			}

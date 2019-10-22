@@ -544,6 +544,7 @@
 .w-button ._c,.w-tab ._c{padding-left:8px;overflow:hidden}
 .w-button ._t,.w-button ._i,.w-tab ._t,.w-tab ._i{padding-right:8px}
 .w-button ._i,.w-tab ._i{float:left;line-height:1;text-align:center}
+.w-button.z-i ._i,.w-tab.z-i ._i{float:none}
 .w-button ._t,.w-tab ._t{overflow:hidden;white-space:pre}
 .w-button ._m,.w-tab ._m{float:right;width:20px;text-align:center}
 .w-button ._x,.w-tab ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
