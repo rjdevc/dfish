@@ -2146,7 +2146,7 @@ Xsrc = define.widget( 'xsrc', {
 			if ( ! this.parentNode )
 				return T;
 			if ( this.parentNode.type_frame )
-				return this.parentNode.getFocus() == this;
+				return this.parentNode.getFocus(this) == this;
 			if ( this.nodeIndex >= 0 && _toggle_hide_parents[ this.parentNode.id ] ) {
 				var n = this.nodeIndex;
 				while ( n -- )
@@ -2735,9 +2735,19 @@ Vertical = define.widget( 'vertical', {
 		className: 'w-vertical'
 	}
 } ),
+_frame_focus = {},
 /* `Frame`  子元素被约束为：高度宽度占满，只有一个可见  */
 Frame = define.widget( 'frame', {
 	Const: function( x, p ) {
+		var f = _frame_focus[ p.ownerView.id ];
+		if ( f ) {
+			for ( var i = 0, n = x.nodes; i < n.length; i ++ ) {
+				if ( n[ i ].id && f[ n[ i ].id ] ) {
+					 x.dft = n[ i ].id;
+					 break;
+				}
+			}
+		}
 		W.apply( this, arguments );
 		(this.focusNode = this.getFocus()) && (this.focusNode.focusOwner = this);
 	},
@@ -2769,7 +2779,7 @@ Frame = define.widget( 'frame', {
 			return 'f-sub-frame' + (a === this.focusNode ? '-on' : '');
 		},
 		getFocus: function() {
-			return this.focusNode || (this.x.dft && this.ownerView.find( this.x.dft )) || this[ 0 ];
+			return this.focusNode || (this.x.dft ? this.ownerView.find( this.x.dft ) : this[ 0 ]);
 		},
 		// @a -> wgid
 		// animate: scrollX(横向滚动),scrollY(纵向滚动),
@@ -3203,6 +3213,10 @@ Button = define.widget( 'button', {
 		_menu_type: 'menu',
 		// @implement
 		init_nodes: function() {
+			if ( this.x.target && this.x.focus ) {
+				for ( var i = 0, b = this.x.target.split( ',' ); i < b.length; i ++ )
+					$.jsonChain( T, _frame_focus, this.ownerView.id, b[ i ] );
+			}
 			this.setMore( this.x );
 		},
 		// @implement
