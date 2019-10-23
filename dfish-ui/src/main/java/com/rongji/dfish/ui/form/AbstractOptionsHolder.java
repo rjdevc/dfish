@@ -199,11 +199,13 @@ public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, P
 //		this.valign = valign;
 //		return (T)this;
 //	}
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 	
-	public T setEscape(Boolean escape) {
+	@Override
+    public T setEscape(Boolean escape) {
 		this.escape = escape;
 		return (T)this;
 	}

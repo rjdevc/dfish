@@ -35,15 +35,18 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
     protected boolean prototypeLock;
     protected boolean rebuild = true;
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public T setId(String id) {
         this.id = id;
         return (T) this;
     }
 
+    @Override
     public Object getData(String key) {
         if (key == null || key.equals("")) {
             return null;
@@ -54,6 +57,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         return data.get(key);
     }
 
+    @Override
     public Object removeData(String key) {
         if (key == null || key.equals("")) {
             return null;
@@ -64,6 +68,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         return data.remove(key);
     }
 
+    @Override
     public T setData(String key, Object value) {
         if (data == null) {
             data = new LinkedHashMap<String, Object>();
@@ -72,6 +77,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         return (T) this;
     }
 
+    @Override
     public Map<String, Object> getData() {
         return data;
     }
@@ -288,6 +294,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
     }
 
     private Map<String,String> atProps;
+    @Override
     @SuppressWarnings("unchecked")
     public T at(String prop,String expr){
         if(atProps==null){
@@ -296,12 +303,14 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         atProps.put(prop,expr);
         return(T)this;
     }
+    @Override
     public T setFor(String expr){
         return setFor(expr,null,null);
     }
 
 
-    public T setFor(String dataExpr,String itemName,String indexName){
+    @Override
+    public T setFor(String dataExpr, String itemName, String indexName){
         itemName = Utils.isEmpty(itemName) ? "item" : itemName;
 //		if(indexName==null||indexName.equals("")){
 //			at("w-for","$"+itemName+" in ("+dataExpr+")");
@@ -310,14 +319,17 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         at("w-for","$" + itemName + (Utils.notEmpty(indexName) ? ",$" + indexName : "") + " in ("+dataExpr+")");
         return (T)this;
     }
+    @Override
     public Map<String,String> ats(){
         return atProps;
     }
+    @Override
     public void ats(Map<String,String> ats){
         this.atProps=ats;
 //		return atProps;
     }
 
+    @Override
     public String asJson() {
         return toString();
     }

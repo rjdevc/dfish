@@ -10,7 +10,8 @@ import java.util.Stack;
  */
 public class StringJsonBuilder extends AbstractJsonBuilder {
 
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+    public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		sb.append('"');
 		escapeJson((String)o,sb);
 		sb.append('"');

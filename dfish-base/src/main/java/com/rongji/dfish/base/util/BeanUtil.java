@@ -224,16 +224,18 @@ public class BeanUtil {
 		Method[] mths = targetClz.getMethods();
 		// ArrayList<Method> candidate=new ArrayList<Method>();
 		outter: for (Method method : mths) {
-			if (!methodName.equals(method.getName()))
-				continue;
+			if (!methodName.equals(method.getName())) {
+                continue;
+            }
 			// 参数个数应该匹配
 			if (method.getParameterTypes().length != params.length) {
 				continue;
 			}
 			Class<?>[] paramClzs = method.getParameterTypes();
 			for (int i = 0; i < paramClzs.length; i++) {
-				if (params[i] == null)
-					continue;
+				if (params[i] == null) {
+                    continue;
+                }
 				if (!paramClzs[i].isAssignableFrom(params[i].getClass())) {
 					continue outter;
 				}
@@ -423,11 +425,14 @@ public class BeanUtil {
 			this.clz2 = clz2;
 		}
 
+		@Override
 		public boolean equals(Object key) {
-			if (key == null)
-				return false;
-			if (key == this)
-				return true;
+			if (key == null) {
+                return false;
+            }
+			if (key == this) {
+                return true;
+            }
 			if (!(key instanceof CopyPropertiesTemplateKey)) {
 				return false;
 			}
@@ -435,6 +440,7 @@ public class BeanUtil {
 			return cast.clz1 == clz1 && cast.clz2 == clz2;
 		}
 
+		@Override
 		public int hashCode() {
 			return clz1.hashCode() ^ clz2.hashCode();
 		}

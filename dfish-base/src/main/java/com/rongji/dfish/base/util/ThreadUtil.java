@@ -33,7 +33,8 @@ public class ThreadUtil {
 	 */
 	public static void execute(final Runnable runable,long maxWait){
 		Future<Object> f=THREAD_POOL_EXECUTOR_SERVICE.submit(new Callable<Object>(){
-			public Object call() {
+			@Override
+            public Object call() {
 				runable.run();
 				return null;
 			}
@@ -50,7 +51,8 @@ public class ThreadUtil {
 	 */
 	public static void invoke(final Runnable runable,long maxWait){
 		Callable<Object> o= new Callable<Object>(){
-			public Object call() {
+			@Override
+            public Object call() {
 				runable.run();
 				return null;
 			}

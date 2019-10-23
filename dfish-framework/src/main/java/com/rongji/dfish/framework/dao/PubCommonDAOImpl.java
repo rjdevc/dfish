@@ -69,7 +69,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 				HibernateTemplate template = getHibernateTemplate();
 				template.setCacheQueries(true);
 				HibernateCallback<?> action = new HibernateCallback<Object>() {
-					public Object doInHibernate(Session session)
+					@Override
+                    public Object doInHibernate(Session session)
 							throws HibernateException, SQLException {
 						Query query = session.createQuery(strSql);
 						if (object != null) {
@@ -234,7 +235,8 @@ public class PubCommonDAOImpl extends HibernateDaoSupport implements
 	    final HibernateTemplate template = getHibernateTemplate();
 		template.setCacheQueries(true);
 		HibernateCallback<List<?>> action = new HibernateCallback<List<?>>() {
-			public List<?> doInHibernate(Session session)
+			@Override
+            public List<?> doInHibernate(Session session)
 					throws HibernateException, SQLException {
 				Query query = session.createQuery(strSql);
 				if (object != null) {

@@ -98,7 +98,8 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>{
 	 * 显示文本
 	 * @return texts
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -106,7 +107,8 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>{
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Toggle setText(String text) {
+	@Override
+    public Toggle setText(String text) {
 		this.text = text;
 		return this;
 	}

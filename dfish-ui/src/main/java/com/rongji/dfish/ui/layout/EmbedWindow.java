@@ -42,7 +42,8 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "ewin";//ewin
 	}
 
@@ -53,7 +54,8 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	 * 显示文本
 	 * @return text
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -62,7 +64,8 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	 * @param text 文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public EmbedWindow setText(String text) {
+	@Override
+    public EmbedWindow setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -84,17 +87,21 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 		this.src = src;
 		return this;
 	}
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return scroll;
 	}
-	public EmbedWindow setScroll(Boolean scroll) {
+	@Override
+    public EmbedWindow setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return this;
 	}
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return scrollClass;
 	}
-	public EmbedWindow setScrollClass(String scrollClass) {
+	@Override
+    public EmbedWindow setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
 	}

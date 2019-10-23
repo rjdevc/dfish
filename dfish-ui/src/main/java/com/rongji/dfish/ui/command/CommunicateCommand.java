@@ -40,7 +40,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * http 格式的路径。
 	 * @return src
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return src;
 	}
 
@@ -49,13 +50,15 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setSrc(String src) {
 		this.src = src;
 		return (T) this;
 	}
 	
-	public String getTemplate() {
+	@Override
+    public String getTemplate() {
 		return template;
 	}
 
@@ -64,7 +67,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 	 * @param template String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setTemplate(String template) {
 		this.template = template;
 		return (T) this;

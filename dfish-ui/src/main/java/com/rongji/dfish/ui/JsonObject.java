@@ -29,6 +29,7 @@ public interface JsonObject extends Serializable {
 	 * JsonObject的toString就是转成JSON字符串。
 	 * @return String
 	 */
-	String toString();
+    @Override
+    String toString();
 
 }

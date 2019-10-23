@@ -809,7 +809,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 
@@ -852,7 +853,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 	/**
@@ -863,7 +865,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public GridColumn setAlign(String align) {
+	@Override
+    public GridColumn setAlign(String align) {
 		this.align = align;
 		return this;
 	}
@@ -875,7 +878,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #VALIGN_BOTTOM
 	 * 
 	 */
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 	/**
@@ -886,7 +890,8 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	 * @see #VALIGN_MIDDLE
 	 * @see #VALIGN_BOTTOM
 	 */
-	public GridColumn setValign(String valign) {
+	@Override
+    public GridColumn setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}

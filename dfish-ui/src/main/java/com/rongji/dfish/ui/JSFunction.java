@@ -59,7 +59,8 @@ public class JSFunction {
 		this.funtionText = funtionText;
 		return this;
 	}
-	public String toString(){
+	@Override
+    public String toString(){
 		return J.toJson(this);
 	}
 }

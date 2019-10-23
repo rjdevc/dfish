@@ -28,7 +28,8 @@ public class TemplateDefine implements DFishTemplate{
 	public String asJson() {
 		return toString();
 	}
-	public String toString(){
+	@Override
+    public String toString(){
 		StringBuilder sb=new StringBuilder();
 
 		sb.append("define.template(");

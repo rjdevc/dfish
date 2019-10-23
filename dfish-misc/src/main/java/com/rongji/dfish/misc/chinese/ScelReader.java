@@ -62,7 +62,8 @@ public class ScelReader {
 		public LinkedHashMap<String,LinkedHashMap<String,Integer>> getWords(){
 			return words;
 		}
-		public String toString(){
+		@Override
+        public String toString(){
 			StringBuilder sb=new StringBuilder();
 			sb.append("{\r\n");
 			int wordsSize=words.size();

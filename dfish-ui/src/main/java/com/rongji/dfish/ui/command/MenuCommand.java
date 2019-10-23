@@ -28,7 +28,8 @@ MultiContainer<MenuCommand, Widget<?>>{
 	public MenuCommand(){
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "menu";
 	}
 	private List<Widget<?>>nodes;
@@ -63,7 +64,8 @@ MultiContainer<MenuCommand, Widget<?>>{
 		return this;
 	}
 
-	public List<Widget<?>> getNodes() {
+	@Override
+    public List<Widget<?>> getNodes() {
 		return nodes;
 	}
 

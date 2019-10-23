@@ -81,42 +81,50 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "tree";
 	}
 
-	public Leaf getPub() {
+	@Override
+    public Leaf getPub() {
 		if(pub==null){
 			pub=new Leaf();
 		}
 		return pub;
 	}
 
-	public TreePanel setPub(Leaf pub) {
+	@Override
+    public TreePanel setPub(Leaf pub) {
 		this.pub = pub;
 		return this;
 	}
 
+    @Override
     public TreePanel setScroll(Boolean scroll) {
     	this.scroll = scroll;
 	    return this;
     }
 
+    @Override
     public Boolean getScroll() {
 	    return this.scroll;
     }
 
+    @Override
     public TreePanel setScrollClass(String scrollClass) {
     	this.scrollClass = scrollClass;
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return this.scrollClass;
     }
 	
     HiddenPart hiddens = new HiddenPart();
-    public TreePanel addHidden(String name,String value) {
+    @Override
+    public TreePanel addHidden(String name, String value) {
     	hiddens.addHidden(name,value);
 		return this;
     }
@@ -125,19 +133,23 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 //		return this;
 //    }
 
+    @Override
     public TreePanel add(Hidden hidden) {
     	hiddens.add(hidden);
 		return this;
     }
 
+    @Override
     public List<Hidden> getHiddens() {
 	    return hiddens.getHiddens();
     }
 
+    @Override
     public List<String> getHiddenValue(String name) {
 	    return hiddens.getHiddenValue(name);
     }
 
+    @Override
     public TreePanel removeHidden(String name) {
     	hiddens.removeHidden(name);
 	    return this;
@@ -148,7 +160,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @return Boolean
 	 * @see #getPub()
 	 */
-	@Deprecated
+	@Override
+    @Deprecated
 	public Boolean getEscape() {
 		return getPub().getEscape();
 	}
@@ -158,7 +171,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @return 本身，这样可以继续设置其他属性
 	 * @see #getPub()
 	 */
-	public TreePanel setEscape(Boolean escape) {
+	@Override
+    public TreePanel setEscape(Boolean escape) {
 		getPub().setEscape(escape);
 		return this;
 	}
@@ -223,7 +237,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * 设置树的src
 	 * @return String
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return rootLeaf.getSrc();
 	}
 
@@ -232,7 +247,8 @@ public class TreePanel extends AbstractLayout<TreePanel, Leaf>
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TreePanel setSrc(String src) {
+	@Override
+    public TreePanel setSrc(String src) {
 		rootLeaf.setSrc(src);
 		return this;
 	}

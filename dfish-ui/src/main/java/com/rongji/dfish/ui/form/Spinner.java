@@ -156,7 +156,8 @@ public class Spinner extends AbstractInput<Spinner,Number> {
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "spinner";
 	}
 

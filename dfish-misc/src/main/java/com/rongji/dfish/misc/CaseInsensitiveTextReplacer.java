@@ -92,7 +92,9 @@ public class CaseInsensitiveTextReplacer {
 			setKeyValue(keyWord.toCharArray(),0,keyWord.length(),replaceTo);
 		}
 		void setKeyValue(char[] charArray,int begin,int end, String replaceTo) {
-			if(end-begin<=0)return;
+			if(end-begin<=0) {
+                return;
+            }
 			if(children==null){
 				children=new CaseInsensitiveMap();
 			}

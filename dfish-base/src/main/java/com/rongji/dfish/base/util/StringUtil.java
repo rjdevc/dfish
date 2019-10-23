@@ -350,8 +350,9 @@ public class StringUtil {
 	 */
 	public static String RMBtoCHINESE(String dblNum) {
 		try {
-			if (dblNum.equals(""))
-				return null;
+			if (dblNum.equals("")) {
+                return null;
+            }
 			String sNum = "零壹贰叁肆伍陆柒捌玖负";
 			String sUni = "整分角元拾佰仟万拾佰仟亿拾佰仟万拾佰仟亿拾佰仟万拾佰仟";
 			int L = dblNum.length();
@@ -366,36 +367,43 @@ public class StringUtil {
 				}
 			}
 			L = dblNum.length();
-			if (L > 27)
-				return "数值溢出"; // 包括小数点和2位小数
+			if (L > 27) {
+                return "数值溢出"; // 包括小数点和2位小数
+            }
 			StringBuffer sN = new StringBuffer(); // 转换前的字符串
 			sN.append(dblNum);
 			sN.deleteCharAt(L - 3); // 删除小数点
 			--L;
 			StringBuffer sT = new StringBuffer(); // 转换后的字符串
-			if (sN.charAt(L - 1) == '0' && sN.charAt(L - 2)== '0')
-				sT.insert(0, '整'); // 分位为零则尾部加'整'
+			if (sN.charAt(L - 1) == '0' && sN.charAt(L - 2)== '0') {
+                sT.insert(0, '整'); // 分位为零则尾部加'整'
+            }
 			boolean Ziro = false, a = false, b = false;
 			int n = 0;
 			for (int i = 1; i <= L; i = i + 1) {
 				n = sN.charAt(L - i) - '0'; // 数值
-				if (i == 7 || i == 15)
-					b = n == 0; // 万位、万亿位是零
-				if ((i > 7) & (i < 11) || (i > 15) & (i < 19))
-					b = (n == 0) & b; // 万-亿位、或亿-亿位之间全是零
+				if (i == 7 || i == 15) {
+                    b = n == 0; // 万位、万亿位是零
+                }
+				if ((i > 7) & (i < 11) || (i > 15) & (i < 19)) {
+                    b = (n == 0) & b; // 万-亿位、或亿-亿位之间全是零
+                }
 				a = (i == 1 || i == 3 || i == 7 || i == 11 || i == 15 || i == 19 || i == 23); // 万亿、亿、万、元、分位为0时不写'零'
 				if (n > 0 || (i > 1 & a)) {
-					if ((i == 11 || i == 19) & b)
-						sT.setCharAt(0, '亿'); // 用'亿'覆盖'万'
-					else
-						sT.insert(0, sUni.charAt(i)); // 插入单位
+					if ((i == 11 || i == 19) & b) {
+                        sT.setCharAt(0, '亿'); // 用'亿'覆盖'万'
+                    } else {
+                        sT.insert(0, sUni.charAt(i)); // 插入单位
+                    }
 				}
-				if (!(n == 0 & (Ziro || a)))
-					sT.insert(0, sNum.charAt(n)); // 插入数值
+				if (!(n == 0 & (Ziro || a))) {
+                    sT.insert(0, sNum.charAt(n)); // 插入数值
+                }
 				Ziro = n == 0;
 			}
-			if (n == 0)
-				sT.insert(0, '零');
+			if (n == 0) {
+                sT.insert(0, '零');
+            }
 			return sT.toString();
 		} catch (Exception e) {
 			return "格式不正确";
@@ -409,7 +417,9 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String relaceELTag(String elStr,ELcontentGetter getter){
-		if(elStr==null)return elStr;
+		if(elStr==null) {
+            return elStr;
+        }
 		char[] cs=elStr.toCharArray();
 		//找到所有的${...}然后把内容用getter替换
 		List<Integer[]> matchs=new ArrayList<Integer[]>();

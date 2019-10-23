@@ -14,24 +14,29 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
 	protected Boolean escape;
 	protected String format;
 	
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 	
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
-	public T setText(String text) {
+	@Override
+    public T setText(String text) {
 		this.text = text;
 		return (T)this;
 	}
 
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 
-	public T setAlign(String align) {
+	@Override
+    public T setAlign(String align) {
 		this.align = align;
 		return (T)this;
 	}
@@ -46,7 +51,8 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
 	 * 用于显示文本是否需要转义,不设置默认是true
 	 * @return Boolean
 	 */
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 
@@ -55,7 +61,8 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
 	 * @param escape Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setEscape(Boolean escape) {
+	@Override
+    public T setEscape(Boolean escape) {
 		this.escape = escape;
 		return (T)this;
 	}

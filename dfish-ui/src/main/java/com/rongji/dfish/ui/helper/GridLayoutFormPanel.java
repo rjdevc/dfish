@@ -45,7 +45,8 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	 * 标签宽度
 	 * @return String
 	 */
-	public String getLabelWidth() {
+	@Override
+    public String getLabelWidth() {
 		return labelWidth;
 	}
 
@@ -54,7 +55,8 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 	 * @param labelWidth String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLayoutFormPanel setLabelWidth(String labelWidth) {
+	@Override
+    public GridLayoutFormPanel setLabelWidth(String labelWidth) {
 		this.labelWidth = labelWidth;
 		return this;
 	}
@@ -193,30 +195,36 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 		return this;
 	}
 	
-	 public GridLayoutFormPanel add(Hidden hidden) {
+	 @Override
+     public GridLayoutFormPanel add(Hidden hidden) {
 	    	prototype.add(hidden);
 		    return this;
 	    }
-    public GridLayoutFormPanel addHidden(String name,String value) {
+    @Override
+    public GridLayoutFormPanel addHidden(String name, String value) {
     	prototype.addHidden(name,value);
 	    return this;
     }
 	
 
-	public GridLayoutFormPanel setScroll(Boolean scroll) {
+	@Override
+    public GridLayoutFormPanel setScroll(Boolean scroll) {
 		prototype.setScroll(scroll);
 		return this;
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return prototype.getScroll();
 	}
 
+    @Override
     public GridLayoutFormPanel setScrollClass(String scrollClass) {
     	prototype.setScrollClass(scrollClass);
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return prototype.getScrollClass();
     }
@@ -289,7 +297,8 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 //		return prototype.replaceNodeById(w);//FIXME 如果LabelRow标签不会被替换需要调用addLabelRow方法
 //	}
 	
-	public boolean replaceNodeById(Widget<?> value) {
+	@Override
+    public boolean replaceNodeById(Widget<?> value) {
 		//存在标签且不隐藏
 //		if (value instanceof LabelRow && (((LabelRow<?>) value).getHideLabel()==null||!((LabelRow<?>) value).getHideLabel())) {
 //			if(prototype.replaceNodeById(value)){
@@ -305,7 +314,8 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
 //		}
 	}
 	
-	public GridLayoutFormPanel removeNodeById(String id) {
+	@Override
+    public GridLayoutFormPanel removeNodeById(String id) {
 		prototype.removeNodeById(id);
 //		prototype.removeNodeById("lbl_"+id);
 		return this;

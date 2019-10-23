@@ -72,7 +72,8 @@ public class TipCommand extends AbstractDialog<TipCommand> implements Command<Ti
      * 内容
      * @return String
      */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -80,7 +81,8 @@ public class TipCommand extends AbstractDialog<TipCommand> implements Command<Ti
 	 * @param text 内容
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TipCommand setText(String text) {
+	@Override
+    public TipCommand setText(String text) {
 		this.text = text;
 		return this;
 	}

@@ -381,7 +381,8 @@ public class JdbcTemplateHelper {
 		}
 		jdbcTemplate = getJdbcTemplate(jdbcTemplate);
 		Object result = jdbcTemplate.execute(new ConnectionCallback<Object>() {
-			public Object doInConnection(Connection conn) throws SQLException, DataAccessException {
+			@Override
+            public Object doInConnection(Connection conn) throws SQLException, DataAccessException {
 				boolean autoCommit = conn.getAutoCommit();
 				try {
 					conn.setAutoCommit(false);

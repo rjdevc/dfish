@@ -39,7 +39,8 @@ public class JSCommand extends AbstractCommand<JSCommand> implements HasText<JSC
 	 *            String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public JSCommand setText(String text) {
+	@Override
+    public JSCommand setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -49,11 +50,13 @@ public class JSCommand extends AbstractCommand<JSCommand> implements HasText<JSC
 	 * 
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "js";
 	}
 

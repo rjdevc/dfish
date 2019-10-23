@@ -96,7 +96,8 @@ public class Triplebox extends AbstractBox<Triplebox> {
 	}
 	
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "triplebox";
 	}
 //	@Override

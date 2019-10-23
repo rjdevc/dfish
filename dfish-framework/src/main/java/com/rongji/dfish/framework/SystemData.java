@@ -81,11 +81,13 @@ public class SystemData {
 	 * @return
 	 */
 	public static SystemData getInstance() {
-		if (instance == null)
-			synchronized (SystemData.class) {
-				if (instance == null)
-					instance = new SystemData();
-			}
+		if (instance == null) {
+            synchronized (SystemData.class) {
+                if (instance == null) {
+                    instance = new SystemData();
+                }
+            }
+        }
 		return instance;
 	}
 

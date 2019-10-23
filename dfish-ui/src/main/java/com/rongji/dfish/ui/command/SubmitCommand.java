@@ -91,7 +91,8 @@ public class SubmitCommand extends CommunicateCommand<SubmitCommand> {
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "submit";
 	}
 	

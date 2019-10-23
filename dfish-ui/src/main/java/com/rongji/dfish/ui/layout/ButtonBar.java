@@ -77,6 +77,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * 
 	 * @return dir
 	 */
+	@Override
 	public String getDir() {
 		return dir;
 	}
@@ -87,6 +88,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param dir h/v
 	 * @return 本身，这样可以继续设置其他属性
 	 */
+	@Override
 	public ButtonBar setDir(String dir) {
 		this.dir = dir;
 		return this;
@@ -164,6 +166,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		return this;
 	}
 
+	@Override
 	public ButtonBar setPub(Button pub) {
 		this.pub = pub;
 		return this;
@@ -186,6 +189,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		super(id);
 	}
 
+	@Override
 	public String getType() {
 		return "buttonbar";
 	}
@@ -202,6 +206,7 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		return this;
 	}
 
+	@Override
 	public Button getPub() {
 		if (pub == null) {
 			pub = new Button(null);
@@ -329,8 +334,10 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	     if (w == null) {
 	         return  this;
 	     }
-	     if(w==this)throw new IllegalArgumentException(
-	     		"can not add widget itself as a sub widget");
+	     if(w==this) {
+             throw new IllegalArgumentException(
+                     "can not add widget itself as a sub widget");
+         }
 	     if(index<0){
 	     	nodes.add(w);
 	     }else{

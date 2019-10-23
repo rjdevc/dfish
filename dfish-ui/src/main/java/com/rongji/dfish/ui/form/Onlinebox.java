@@ -51,7 +51,8 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 		super(name, label, value, suggest);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "onlinebox";
 	}
 

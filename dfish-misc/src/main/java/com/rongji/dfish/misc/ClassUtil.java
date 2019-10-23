@@ -56,7 +56,9 @@ public class ClassUtil {
 		String[] all = classpath.split(";");
 		Set<String> paths = new HashSet<String>();
 		for (String path : all) {
-			if(path==null||path.length()==0)continue;
+			if(path==null||path.length()==0) {
+                continue;
+            }
 			if (path.endsWith("/")||path.endsWith("\\")){
 				path=path.substring(0,path.length()-1);
 			}
@@ -64,7 +66,9 @@ public class ClassUtil {
 		}
 		if (extPaths != null) {
 			for (String path : extPaths) {
-				if(path==null||path.length()==0)continue;
+				if(path==null||path.length()==0) {
+                    continue;
+                }
 				if (path.endsWith("/")||path.endsWith("\\")){
 					path=path.substring(0,path.length()-1);
 				}

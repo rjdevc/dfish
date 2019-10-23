@@ -119,7 +119,8 @@ Layout<FormPanel,Widget<?>>{
 	 * 标签宽度
 	 * @return String
 	 */
-	public String getLabelWidth() {
+	@Override
+    public String getLabelWidth() {
 		return labelWidth;
 	}
 
@@ -128,7 +129,8 @@ Layout<FormPanel,Widget<?>>{
 	 * @param labelWidth String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public FormPanel setLabelWidth(String labelWidth) {
+	@Override
+    public FormPanel setLabelWidth(String labelWidth) {
 		this.labelWidth = labelWidth;
 		return this;
 	}
@@ -229,7 +231,8 @@ Layout<FormPanel,Widget<?>>{
 	    return this.prototype;
     }
 
-	public FormPanel setScroll(Boolean scroll) {
+	@Override
+    public FormPanel setScroll(Boolean scroll) {
 		prototype.setScroll(scroll);
 		return this;
 	}
@@ -238,15 +241,18 @@ Layout<FormPanel,Widget<?>>{
 		return this;
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return prototype.getScroll();
 	}
 
+    @Override
     public FormPanel setScrollClass(String scrollClass) {
     	prototype.setScrollClass(scrollClass);
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return prototype.getScrollClass();
     }

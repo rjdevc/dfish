@@ -29,6 +29,7 @@ public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 		v= (b[0]<<24)|(b[1]<<16)|(b[2]<<8)|b[3];
 	}
 
+	@Override
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		sb.append((v>>24)&0xFF).append('.').append((v>>16)&0xFF)
@@ -37,6 +38,7 @@ public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 		return sb.toString();
 	}
 
+	@Override
 	public int hashCode(){
 		return v;
 	}
@@ -48,9 +50,14 @@ public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 		return (long)v&0xFFFFFFFFL;
 	}
 	
+	@Override
 	public boolean equals(Object o){
-		if(o==null)return false;
-		if(o==this)return true;
+		if(o==null) {
+            return false;
+        }
+		if(o==this) {
+            return true;
+        }
 		if(o instanceof IPv4){
 			IPv4 ins=(IPv4)o;
 			return ins.v==v;
@@ -61,6 +68,7 @@ public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 	
 
 
+	@Override
 	public int compareTo(Object o) {
 		IPv4 ip=(IPv4)o;
 		long l= ((long)v&0xFFFFFFFFL) - ((long)ip.v&0xFFFFFFFFL);

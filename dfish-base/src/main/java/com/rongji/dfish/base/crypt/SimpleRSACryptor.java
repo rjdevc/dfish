@@ -52,6 +52,7 @@ public final class SimpleRSACryptor
    * @return byte[]
    * @throws Exception
    */
+  @Override
   protected byte[] encrypt(byte[] src) throws Exception {
     BigInteger bi = new BigInteger(src);
     if (bi.signum() == -1) {
@@ -68,6 +69,7 @@ public final class SimpleRSACryptor
    * @return byte[]
    * @throws Exception
    */
+  @Override
   protected byte[] decrypt(byte[] src) throws Exception {
     BigInteger bi = new BigInteger(src);
     if (bi.signum() == -1) {

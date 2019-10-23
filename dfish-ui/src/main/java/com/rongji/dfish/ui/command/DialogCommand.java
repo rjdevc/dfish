@@ -20,7 +20,8 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     private String preload;
     private String src;
     private Boolean prong;
-	public String getType() {
+	@Override
+    public String getType() {
 		return "dialog";
 	}
     /**
@@ -99,6 +100,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
      * @param src String
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public DialogCommand setSrc(String src) {
         this.src = src;
         return this;
@@ -109,6 +111,7 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
      * @param template 模板
      * @return  this
      */
+    @Override
     public DialogCommand setTemplate(String template) {
         this.template = template;
         return this;
@@ -117,14 +120,16 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 	 * 加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。
 	 * @return src
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return src;
 	}
 	/**
 	 * 模板ID。
 	 * @return template
 	 */
-	public String getTemplate() {
+	@Override
+    public String getTemplate() {
 		return template;
 	}
 	/**
@@ -144,11 +149,13 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
 		 return this;
 	}
 
-	public String getPreload() {
+	@Override
+    public String getPreload() {
 		return preload;
 	}
 
-	public DialogCommand setPreload(String preload) {
+	@Override
+    public DialogCommand setPreload(String preload) {
 		this.preload = preload;
 		return this;
 	}

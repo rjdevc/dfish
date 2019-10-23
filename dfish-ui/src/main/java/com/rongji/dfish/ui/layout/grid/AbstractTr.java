@@ -54,7 +54,8 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 
 	
 
-	@Deprecated
+	@Override
+    @Deprecated
 	public T add(Widget<?> w) {
 		throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
 	}
@@ -74,7 +75,8 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 		this.rows = rows;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 	/**
@@ -127,7 +129,8 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 		return (T) this;
 	}
 
-	public T removeNodeById(String id) {
+	@Override
+    public T removeNodeById(String id) {
 
 		if (id == null||(rows==null&&data==null)) {
 			return (T)this;
@@ -188,7 +191,8 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 		}
 		return result;
 	}
-	public boolean replaceNodeById(Widget<?> panel) {
+	@Override
+    public boolean replaceNodeById(Widget<?> panel) {
 
 		if (panel == null || panel.getId() == null) {
 			return false;
@@ -230,7 +234,8 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 		}
 		return false;
 	}
-	public T setData(String key, Object value) {
+	@Override
+    public T setData(String key, Object value) {
 		if(value==null){
 			return (T)this;
 		}

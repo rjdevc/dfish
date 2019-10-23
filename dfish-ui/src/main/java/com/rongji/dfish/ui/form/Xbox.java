@@ -54,7 +54,8 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "xbox";
 	}
 

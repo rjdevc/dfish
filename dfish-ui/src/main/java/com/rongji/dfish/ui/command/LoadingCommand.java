@@ -46,7 +46,8 @@ public class LoadingCommand extends AbstractDialog<LoadingCommand> implements Co
 	 * 显示加载的文本
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -55,7 +56,8 @@ public class LoadingCommand extends AbstractDialog<LoadingCommand> implements Co
 	 * @param text String
 	 * @return this
 	 */
-	public LoadingCommand setText(String text) {
+	@Override
+    public LoadingCommand setText(String text) {
 		this.text = text;
 		return this;
 	}

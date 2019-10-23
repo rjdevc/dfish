@@ -38,28 +38,34 @@ public class Xsrc extends AbstractSrc<Xsrc> implements LazyLoad<Xsrc>{
 	}
 
 
-	public String getPreload() {
+	@Override
+    public String getPreload() {
 		return preload;
 	}
 
-	public Xsrc setPreload(String preload) {
+	@Override
+    public Xsrc setPreload(String preload) {
 		this.preload = preload;
 		return this;
 	}
-	public String getTemplate() {
+	@Override
+    public String getTemplate() {
 		return template;
 	}
 
-	public Xsrc setTemplate(String template) {
+	@Override
+    public Xsrc setTemplate(String template) {
 		this.template = template;
 		return this;
 	}
 
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return src;
 	}
 
-	public Xsrc setSrc(String src) {
+	@Override
+    public Xsrc setSrc(String src) {
 		this.src = src;
 		return this;
 	}

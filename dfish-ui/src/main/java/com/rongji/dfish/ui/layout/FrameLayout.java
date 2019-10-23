@@ -28,6 +28,7 @@ public class FrameLayout extends AbstractLayout<FrameLayout, Widget<?>> implemen
         super(id);
     }
 
+    @Override
     public String getType() {
         return "frame";//
     }
@@ -68,8 +69,10 @@ public class FrameLayout extends AbstractLayout<FrameLayout, Widget<?>> implemen
         if (w == null) {
             return this;
         }
-        if (w == this) throw new IllegalArgumentException(
-                "can not add widget itself as a sub widget");
+        if (w == this) {
+            throw new IllegalArgumentException(
+                    "can not add widget itself as a sub widget");
+        }
         if (index < 0) {
             nodes.add(w);
         } else {

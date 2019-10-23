@@ -124,10 +124,11 @@ public class Geohash {
 	        double mid = 0;  
 	        for (int i=0; i<bs.length; i++) {  
 	            mid = (floor + ceiling) / 2;  
-	            if (bs[i])  
-	                floor = mid;  
-	            else  
-	                ceiling = mid;  
+	            if (bs[i]) {
+                    floor = mid;
+                } else {
+                    ceiling = mid;
+                }
 	        }  
 	        return mid;  
 	    }  
@@ -191,16 +192,18 @@ public class Geohash {
 	        char[] buf = new char[65];  
 	        int charPos = 64;  
 	        boolean negative = (i < 0);  
-	        if (!negative)  
-	            i = -i;  
+	        if (!negative) {
+                i = -i;
+            }
 	        while (i <= -32) {  
 	            buf[charPos--] = digits[(int) (-(i % 32))];  
 	            i /= 32;  
 	        }  
 	        buf[charPos] = digits[(int) (-i)];  
 	  
-	        if (negative)  
-	            buf[--charPos] = '-';  
+	        if (negative) {
+                buf[--charPos] = '-';
+            }
 	        return new String(buf, charPos, (65 - charPos));  
 	    }  
 	
@@ -213,7 +216,9 @@ public class Geohash {
 	 */
 	private static String calculate(String geohash, int direction) {
 	    if ("".equals(geohash))      //如果递归到第一个字符仍然处于边界，则不存在这一方向的相邻格子
-	        return "";
+        {
+            return "";
+        }
 	    int length = geohash.length();
 	    char lastChar = geohash.charAt(length - 1);
 	    int charType = (geohash.length() % 2) == 1 ? ODD : EVEN;  //最后一位是奇数还是偶数

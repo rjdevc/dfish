@@ -118,20 +118,24 @@ public class StackPanel extends AbstractWidgetWrapper<StackPanel, VerticalLayout
 		return this;
 	}
 
-	public StackPanel setScroll(Boolean scroll) {
+	@Override
+    public StackPanel setScroll(Boolean scroll) {
 		prototype.setScroll(scroll);
 		return this;
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return prototype.getScroll();
 	}
 
+    @Override
     public StackPanel setScrollClass(String scrollClass) {
 		prototype.setScrollClass(scrollClass);
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return prototype.getScrollClass();
     }

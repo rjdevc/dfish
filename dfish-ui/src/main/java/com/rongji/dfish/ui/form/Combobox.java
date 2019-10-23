@@ -63,7 +63,8 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 		super(name, label, value, suggest);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "combobox";
 	}
 
@@ -76,12 +77,14 @@ public class Combobox extends LinkableSuggestionBox<Combobox> {
 		return this;
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Combobox setTip(Boolean tip) {
 		return this;
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Combobox setTip(String tip) {
 		return this;
 	}

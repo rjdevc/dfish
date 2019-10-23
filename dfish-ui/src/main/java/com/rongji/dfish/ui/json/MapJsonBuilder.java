@@ -14,17 +14,24 @@ import java.util.Stack;
 public class MapJsonBuilder extends AbstractJsonBuilder{
 
 
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+	public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		boolean hasContent =false;
 		sb.append('{');
 		Map<?,?> cast=(Map<?,?>)o;
 		for(Map.Entry<?,?> item:cast.entrySet()){
 			String key=(String) item.getKey();
 			Object value=item.getValue();
-			if(value==null)continue;
+			if(value==null) {
+                continue;
+            }
 			int sbLen=sb.length();
 			boolean hasContentOld=hasContent;
-			if(hasContent)sb.append(',');else hasContent=true;
+			if(hasContent) {
+                sb.append(',');
+            } else {
+                hasContent=true;
+            }
 			sb.append('"');
 			sb.append(key);
 			sb.append('"');

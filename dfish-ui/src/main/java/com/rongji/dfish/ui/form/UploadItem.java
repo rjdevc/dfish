@@ -112,7 +112,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * 显示的文本
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -120,7 +121,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性 
 	 */
-	public UploadItem setText(String text) {
+	@Override
+    public UploadItem setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -129,7 +131,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * 宽度
 	 * @return String
 	 */
-	public String getWidth() {
+	@Override
+    public String getWidth() {
 		return width;
 	}
 
@@ -138,7 +141,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * @param width String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public UploadItem setWidth(String width) {
+	@Override
+    public UploadItem setWidth(String width) {
 		this.width = width;
 		return this;
 	}
@@ -156,7 +160,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * 高度
 	 * @return String
 	 */
-	public String getHeight() {
+	@Override
+    public String getHeight() {
 		return height;
 	}
 
@@ -165,7 +170,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * @param height String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public UploadItem setHeight(String height) {
+	@Override
+    public UploadItem setHeight(String height) {
 		this.height = height;
 		return this;
 	}

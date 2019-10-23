@@ -93,7 +93,9 @@ public class SequenceUtil {
 		}
 		char[] cs=sequence.toCharArray();
 		int pos=cs.length-1;
-		while(plus(cs,pos--,1,sequence));
+		while(plus(cs,pos--,1,sequence)) {
+            ;
+        }
 		return new String(cs);
 	}
 	/**
@@ -112,7 +114,9 @@ public class SequenceUtil {
 		char[] cs=sequence.toCharArray();
 		int pos=cs.length-1;
 		try{
-			while(plus(cs,pos--,1,sequence));
+			while(plus(cs,pos--,1,sequence)) {
+                ;
+            }
 		}catch(IllegalArgumentException ex){
 			//如果有不可识别的字符，尝试发现第几位开始数字是可识别的。
 			int unreg=-1;
@@ -126,7 +130,9 @@ public class SequenceUtil {
 				throw new ArithmeticException(sequence);
 			}
 			pos=unreg-1;
-			while(plus(cs,pos--,1,sequence));
+			while(plus(cs,pos--,1,sequence)) {
+                ;
+            }
 			for(int i=unreg;i<cs.length;i++){
 				cs[i]=ALPHABET[0];
 			}
@@ -225,7 +231,9 @@ public class SequenceUtil {
 				throw new ArithmeticException(sequence);
 			}
 			int pos=unreg-1;
-			while(plus(cs,pos--,1,sequence));
+			while(plus(cs,pos--,1,sequence)) {
+                ;
+            }
 			for(int i=unreg;i<cs.length;i++){
 				cs[i]=ALPHABET[0];
 			}

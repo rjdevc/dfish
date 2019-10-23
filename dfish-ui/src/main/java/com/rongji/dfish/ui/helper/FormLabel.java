@@ -57,11 +57,13 @@ public class FormLabel extends AbstractNode <FormLabel>{
 		return this;
 	}
 
-	public String getId() {
+	@Override
+    public String getId() {
 		return id;
 	}
 
-	public FormLabel setId(String id) {
+	@Override
+    public FormLabel setId(String id) {
 		this.id = id;
 		return this;
 	}

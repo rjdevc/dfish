@@ -90,7 +90,8 @@ public class ConfirmCommand extends AbstractDialog<ConfirmCommand> implements Co
 	 * 显示文本。这里一般是询问的问题内容
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -98,7 +99,8 @@ public class ConfirmCommand extends AbstractDialog<ConfirmCommand> implements Co
 	 * @param text String
 	 * @return this
 	 */
-	public ConfirmCommand setText(String text) {
+	@Override
+    public ConfirmCommand setText(String text) {
 		this.text = text;
 		return this;
 	}

@@ -26,6 +26,7 @@ public class BuilderConfig {
         this.summaryScore = summaryScore;
     }
 
+    @Override
     public BuilderConfig clone(){
         BuilderConfig cloned=new BuilderConfig();
         Utils.copyPropertiesExact(cloned,this);

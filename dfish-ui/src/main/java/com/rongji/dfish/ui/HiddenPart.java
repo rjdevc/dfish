@@ -26,6 +26,7 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
      * @param value String
      * @return
      */
+    @Override
     public HiddenPart addHidden(String name, String value) {
         if (Utils.isEmpty(name)) {
             return this;
@@ -53,6 +54,7 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
      * @param hidden Hidden
      * @return
      */
+    @Override
     public HiddenPart add(Hidden hidden) {
         // 名称为空不允许添加,没意义
         if (hidden == null || Utils.isEmpty(hidden.getName())) {
@@ -65,10 +67,12 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
         return this;
     }
 
+    @Override
     public List<Hidden> getHiddens() {
         return hiddens;
     }
 
+    @Override
     public List<String> getHiddenValue(String name) {
         if (hiddens == null) {
             return null;
@@ -82,6 +86,7 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
         return result;
     }
 
+    @Override
     public HiddenPart removeHidden(String name) {
         if (hiddens == null || Utils.isEmpty(name)) {
             return this;

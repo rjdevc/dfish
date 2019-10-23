@@ -32,7 +32,8 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	    this.text = text;
     }
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "grid/leaf";
 	}
 	/**
@@ -55,7 +56,8 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	 * 如果展开的内容是延迟加载的。将在这个URL所指定的资源中获取内容
 	 * @return String
 	 */
-	public String getSrc() {
+	@Override
+    public String getSrc() {
 		return src;
 	}
 	/**
@@ -63,7 +65,8 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridLeaf setSrc(String src) {
+	@Override
+    public GridLeaf setSrc(String src) {
 		this.src = src;
 		return this;
 	}

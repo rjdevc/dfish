@@ -33,7 +33,8 @@ public class ReplaceCommand extends NodeControlCommand<ReplaceCommand> implement
 	public String getType() {
 		return "replace";
 	}
-	public HasId<?> getNode() {
+	@Override
+    public HasId<?> getNode() {
 		return node;
 	}
 	@SuppressWarnings("unchecked")
@@ -43,7 +44,8 @@ public class ReplaceCommand extends NodeControlCommand<ReplaceCommand> implement
 		result.add(node);
 		return result;
 	}
-	public ReplaceCommand setNode(HasId<?> node) {
+	@Override
+    public ReplaceCommand setNode(HasId<?> node) {
 		if(node==null){
 			if(LOG.isWarnEnabled()){
 				LOG.warn("node should not be null",new NullPointerException());

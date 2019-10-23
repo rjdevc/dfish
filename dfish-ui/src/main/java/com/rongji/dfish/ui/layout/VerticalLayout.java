@@ -22,7 +22,8 @@ public class VerticalLayout extends LinearLayout<VerticalLayout> {
 		super(id);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "vert";
 	}
 
@@ -34,7 +35,8 @@ public class VerticalLayout extends LinearLayout<VerticalLayout> {
 	 * @param height String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public VerticalLayout add(int index, Widget<?> w, String height) {
+	@Override
+    public VerticalLayout add(int index, Widget<?> w, String height) {
 		if (w == null) {
 			throw new UnsupportedOperationException("The added widget can not be null.");
 		}

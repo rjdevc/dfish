@@ -292,10 +292,12 @@ public class MatchResult  implements Iterable<DFishTemplate>{
 		public ResultIterator(List<Object> curResult){
 			if(curResult==null){
 				real=new Iterator<Object>() {
-					public boolean hasNext() {
+					@Override
+                    public boolean hasNext() {
 						return false;
 					}
-					public Object next() {
+					@Override
+                    public Object next() {
 						return null;
 					}
 					@Override

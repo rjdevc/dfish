@@ -244,7 +244,9 @@ public class Week implements Cloneable, java.lang.Comparable<Week> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('W').append(year).append('-');
-        if (weekIndex < 10) sb.append('0');
+        if (weekIndex < 10) {
+            sb.append('0');
+        }
         sb.append(weekIndex);
         sb.append('[');
         sb.append(SHORT_FORMAT.format(beginDate));
@@ -256,9 +258,15 @@ public class Week implements Cloneable, java.lang.Comparable<Week> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (!(obj instanceof Week)) return false;
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Week)) {
+            return false;
+        }
         Week cast = (Week) obj;
         return cast.firstDayOfWeek == firstDayOfWeek
                 && cast.minimalDaysInFirstWeek == minimalDaysInFirstWeek
@@ -373,6 +381,7 @@ public class Week implements Cloneable, java.lang.Comparable<Week> {
         }
     }
 
+    @Override
     public int compareTo(Week o) {
         return beginDate.compareTo(o.beginDate);
     }

@@ -26,7 +26,8 @@ public abstract class AbstractTemplate implements DFishTemplate{
 
 	private static final long serialVersionUID = -4474810267412968779L;
 	protected Object json;
-	public boolean equals(Object o){
+	@Override
+    public boolean equals(Object o){
 		if (o==null) {return false;}
 		if (o==this){return true;}
 		if(!(o instanceof AbstractTemplate)){
@@ -35,13 +36,15 @@ public abstract class AbstractTemplate implements DFishTemplate{
 		Object ojson=((AbstractTemplate)o).json;
 		return ojson!=null&&json!=null&&json.equals(ojson);
 	}
-	public int hashCode(){
+	@Override
+    public int hashCode(){
 		if (json==null){
 			return super.hashCode();
 		}
 		return json.hashCode();
 	}
-	public String toString(){
+	@Override
+    public String toString(){
 		if(json==null){
 			return "{}";
 		}

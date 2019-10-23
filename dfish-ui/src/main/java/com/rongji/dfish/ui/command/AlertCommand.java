@@ -59,7 +59,8 @@ public class AlertCommand extends AbstractDialog<AlertCommand> implements Comman
 	 * @param text 内容
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public AlertCommand setText(String text) {
+	@Override
+    public AlertCommand setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -69,7 +70,8 @@ public class AlertCommand extends AbstractDialog<AlertCommand> implements Comman
 	 * @return the content
 	 * @since XMLTMPL 2.1
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -111,7 +113,8 @@ public class AlertCommand extends AbstractDialog<AlertCommand> implements Comman
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "alert";
 	}
 

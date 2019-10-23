@@ -66,7 +66,8 @@ public class JsonHttpMessageConverter extends AbstractHttpMessageConverter<Objec
 		outputMessage.getBody().close();
 		if(LOG.isDebugEnabled()){
 			SINGLE_EXECUTOR.execute(new Runnable(){
-				public void run(){
+				@Override
+                public void run(){
 					LOG.debug((obj instanceof DFishTemplate) ? objJson : J.formatJson(objJson));
 				}
 			});

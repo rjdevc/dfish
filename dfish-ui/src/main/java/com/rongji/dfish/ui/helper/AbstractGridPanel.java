@@ -164,7 +164,8 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
      * 获取表格行格式
      * @return 本身，这样可以继续设置其他属性
      */
-	public Tr getPub() {
+	@Override
+    public Tr getPub() {
 //		Tr pub = prototype.getPub();
 //		if (pub == null) {
 //			pub = new Tr();
@@ -181,7 +182,8 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	 * @param pub Tr
      * @return 本身，这样可以继续设置其他属性
      */
-	public T setPub(Tr pub) {
+	@Override
+    public T setPub(Tr pub) {
 		prototype.setPub(pub);
 		return (T)this;
 	}
@@ -226,14 +228,17 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	 * 内容不换行。
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Boolean getNobr() {
+	@Override
+    public Boolean getNobr() {
 		return prototype.getNobr();
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return prototype.getScroll();
 	}
 	
+    @Override
     public T setScroll(Boolean scroll) {
 		prototype.setScroll(scroll);
 		return (T) this;
@@ -256,32 +261,39 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 	    return (T) this;
     }
 	
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return prototype.getScrollClass();
 	}
 	
-	public T setScrollClass(String scrollClass) {
+	@Override
+    public T setScrollClass(String scrollClass) {
 		prototype.setScrollClass(scrollClass);
 		return (T) this;
 	}
 	
-	public T add(Hidden hidden) {
+	@Override
+    public T add(Hidden hidden) {
 		prototype.add(hidden);
 		return (T) this;
 	}
+    @Override
     public T addHidden(String name, String value) {
 		prototype.addHidden(name, value);
 		return (T) this;
 	}
 		
-	public List<Hidden> getHiddens() {
+	@Override
+    public List<Hidden> getHiddens() {
 		return prototype.getHiddens();
 	}
 	
-	public List<String> getHiddenValue(String name) {
+	@Override
+    public List<String> getHiddenValue(String name) {
 		return prototype.getHiddenValue(name);
 	}
 	
+    @Override
     public T removeHidden(String name) {
 		prototype.removeHidden(name);
 		return (T) this;
@@ -384,7 +396,8 @@ public abstract class AbstractGridPanel<T extends AbstractGridPanel<T>> extends 
 		}
 	
 	}
-	public GridLayout getPrototype() {
+	@Override
+    public GridLayout getPrototype() {
 		if(!this.prototypeChanged){
 			prototype.prototypeBuilding(true);
 			prototype.clearNodes();

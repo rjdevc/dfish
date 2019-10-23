@@ -103,6 +103,7 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      */
     public static final int CHECKSTATE_PARTIALCHECKED = 2;
 
+    @Override
     public String getType() {
         return "grid/triplebox";
     }

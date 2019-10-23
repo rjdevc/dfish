@@ -52,7 +52,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	private List<FlexGridAppendingMode> nodes=new ArrayList<FlexGridAppendingMode>();
 	protected String labelWidth;
 
-	public void notifyChage(){
+	@Override
+    public void notifyChage(){
 		prototypeChanged=true;
 	}
 	protected void checkConcurrentModify(){
@@ -298,7 +299,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 //	private String scrollClass;
 //	private Boolean escape;
 	
-	public FlexGrid addHidden(String name,String value) {
+	@Override
+    public FlexGrid addHidden(String name, String value) {
 		hiddens.addHidden(name, value);
 		return this;
 	}
@@ -307,21 +309,25 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 //		return this;
 //	}
 
-	public FlexGrid add(Hidden hidden) {
+	@Override
+    public FlexGrid add(Hidden hidden) {
 		hiddens.add(hidden);
 		return this;
 	}
 
-	public List<Hidden> getHiddens() {
+	@Override
+    public List<Hidden> getHiddens() {
 		// FIXME 最好在初始化的时候将原型初始化好,然后直接设置在原型上
 		return hiddens.getHiddens();
 	}
 	
-	public List<String> getHiddenValue(String name) {
+	@Override
+    public List<String> getHiddenValue(String name) {
 		return hiddens.getHiddenValue(name);
 	}
 	
-	public FlexGrid removeHidden(String name) {
+	@Override
+    public FlexGrid removeHidden(String name) {
 		hiddens.removeHidden(name);
 		return this;
 	}
@@ -465,7 +471,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * 标签宽度
 	 * @return String
 	 */
-	public String getLabelWidth() {
+	@Override
+    public String getLabelWidth() {
 		return labelWidth;
 	}
 
@@ -474,7 +481,8 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 	 * @param labelWidth String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public FlexGrid setLabelWidth(String labelWidth) {
+	@Override
+    public FlexGrid setLabelWidth(String labelWidth) {
 		this.labelWidth = labelWidth;
 		return this;
 	}
