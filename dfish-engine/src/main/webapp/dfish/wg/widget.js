@@ -4329,7 +4329,7 @@ Dialog = define.widget( 'dialog', {
 			var s = _proto.html_nodes.apply( this, arguments );
 			if ( ie7 )
 				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
-			if ( this.type === 'dialog' )
+			if ( this.type === 'dialog' && this.x.loadinghead !== F )
 				s += '<div class=w-dialog-loadinghead><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
 			return s;
 		},
@@ -4743,6 +4743,14 @@ ProgressItem = define.widget( 'progress/item', {
 		W.apply( this, arguments );
 		x.hidepercent && (this.className += ' z-hidepercent');
 		!x.percent && (x.percent = 0);
+		if ( x.range ) {
+			for ( var i = 0, r = x.range.split( ',' ).sort(); i < r.length; i ++ ) {
+				if ( x.percent < r[ i ] ) {
+					this.className += ' z-' + r[ i ];
+					break;
+				}
+			}
+		}
 		this.cssText = 'height:auto;';
 	},
 	Listener: {
@@ -4755,6 +4763,7 @@ ProgressItem = define.widget( 'progress/item', {
 	},
 	Prototype: {
 		ROOT_TYPE: 'progress',
+		className: 'w-progress-item',
 		html_nodes: function() {
 			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
 			return (t != N ? '<div class="_t f-fix">' + this.html_format( t, this.x.format, this.x.escape ) + '</div>' : '') +
@@ -7611,7 +7620,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', indent: 1 };
+			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', indent: 1, loadinghead: F };
 			$.extend( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
 			var o = { type: 'dialog', pophide: T, memory: T, snap: this.id + 'f', snaptype: 'v', wmin: 2, hmin: 2 },

@@ -122,7 +122,7 @@
 .w-progress ._bar{position:relative;height:17px;margin-bottom:5px;line-height:1;background:#ddd;border-radius:100px;overflow:hidden;text-align:center}
 .w-progress ._dn{position:absolute;top:0;left:0;right:0;bottom:0;color:#666}
 .w-progress ._up{position:absolute;top:0;left:0;bottom:0;background:#018beb;color:#fff;border-radius:100px;overflow:hidden}
-.w-progress ._cur{background:#018beb;}
+/*.w-progress ._cur{background:#018beb;}*/
 .w-progress ._gut{height:100%}
 .w-progress.z-hidepercent ._s{display:none}
 

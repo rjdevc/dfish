@@ -322,11 +322,11 @@ define( {
       ] },
       { name: '$.jsonString(value, [replacer], [space])', remark: '把一个json对象转为字符串。', common: true, param: [
         { name: 'value', type: 'Object', remark: 'json对象。' },
-        { name: 'replacer', type: 'Function | Array', remark: '用于转换结果的函数或数组。<br>如果 replacer 为函数，则 JSON.stringify 将调用该函数，并传入每个成员的键和值。使用返回值而不是原始值。如果此函数返回 undefined，则排除成员。根对象的键是一个空字符串：""。<br>如果 replacer 是一个数组，则仅转换该数组中具有键值的成员。成员的转换顺序与键在数组中的顺序一样。当 value 参数也为数组时，将忽略 replacer 数组。', optional: true },
+        { name: 'replacer', type: 'Function | Array', remark: '用于转换结果的函数或数组。<br>如果 replacer 为函数，则 $.jsonString 将调用该函数，并传入每个成员的键和值。使用返回值而不是原始值。如果此函数返回 undefined，则排除成员。根对象的键是一个空字符串：""。<br>如果 replacer 是一个数组，则仅转换该数组中具有键值的成员。成员的转换顺序与键在数组中的顺序一样。当 value 参数也为数组时，将忽略 replacer 数组。', optional: true },
         { name: 'space', type: 'Number | String', remark: '文本添加缩进、空格和换行符，如果 space 是一个数字，则返回值文本在每个级别缩进指定数目的空格，如果 space 大于 10，则文本缩进 10 个空格。space 也可以使用非数字，如：\\t。', optional: true }
       ], example: [
           function() {
-          	//
+          	// 把JSON对象转为字符串
             var str = $.jsonString( { name: 'John' } );
           }
       ] },
@@ -2500,6 +2500,7 @@ define( {
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'percent', type: 'Number', remark: '进度值。范围从 0 到 100。' },
+      { name: 'range', type: 'String', remark: '划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。<br>例如设置 range: "60,100"，那么进度在 0-60 范围内会存在样式 "z-60"，进度在 60-100 范围内会存在样式 "z-100"。' },
       { name: 'hidepercent', type: 'Boolean', remark: '设置为true，隐藏进度数字。' },
       { name: 'text', type: 'String', remark: '显示文本。' }
     ],
