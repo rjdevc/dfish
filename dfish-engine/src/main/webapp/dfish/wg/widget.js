@@ -2100,7 +2100,7 @@ Xsrc = define.widget( 'xsrc', {
 				this.start();
 			},
 			show: function() {
-				this.start();
+				this.domready && this.start();
 			}
 		}
 	},
@@ -2115,15 +2115,15 @@ Xsrc = define.widget( 'xsrc', {
 			if ( this.type_view && _view_resources[ this.path ] )
 				$.require( _view_resources[ this.path ] );
 			_proto.init_x.call( this, x );
-			if ( ! x.node && ! this.domready ) {
+			if ( this.domready && this.x.id ) {
+				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
+			}
+			if ( ! x.node ) {
 				var s = x.src || (this.x.template && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
 				} else
 					this.className += ' z-loading';
-			}
-			if ( this.domready && this.x.id ) {
-				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
 			}
 			var t = x.preload && _getPreload( x.preload );
 			if ( t ) {
@@ -2141,7 +2141,11 @@ Xsrc = define.widget( 'xsrc', {
 				this.layout = new Layout( { node: this.x.node }, this );
 		},
 		start: function() {
-			! this._x_ini && (this.init_x( this.x ), this.repaint());
+			if ( ! this._x_ini ) {
+				this.init_x( this.x );
+				this.repaint();
+				this.layout && this.showLayout();
+			}
 			! this.layout && this.isShow() && this.load();
 		},
 		isShow: function() {
