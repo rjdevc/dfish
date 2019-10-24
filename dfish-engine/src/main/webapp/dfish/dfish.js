@@ -2001,9 +2001,9 @@ _merge( $, {
 	height: function() {
 		return cvs.clientHeight;
 	},
-	// a -> text, b -> pos, c -> time, d -> id
-	alert: function( a, b, c, d ) {
-		return $.vm ? $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.alert_id } ) : alert( a );
+	// a -> text, b -> pos, c -> time, d -> id, e -> escape?
+	alert: function( a, b, c, d, e ) {
+		return $.vm ? $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.alert_id, escape: e !== F } ) : alert( a );
 	},
 	// a -> text, b -> yes, c -> no
 	confirm: function( a, b, c ) {
@@ -2352,7 +2352,7 @@ _merge( $, {
 	})(),
 	// 调试用的方法
 	j: function( a ) {
-		alert( $.jsonString( a ) );
+		$.alert( '<pre>' + $.jsonString( a, N, 2 ) + '</pre>', N, N, N, F );
 	},
 	debug: function() {
 		if ( _cfg.debug ) debugger;

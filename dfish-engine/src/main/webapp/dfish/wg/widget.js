@@ -421,7 +421,11 @@ Node = $.createClass( {
 	}
 } ),
 
-_compileTemplate = function( g, d, s ) { return new Template( s || g.x.template, d, g ).compile() },
+_compileTemplate = function( g, d, s ) {
+	var r = new Template( s || g.x.template, d, g ).compile();
+	!r.type && (r.type = g.type);
+	return r;
+},
 TemplateWidget = $.createClass( {
 	Const: function( x, t ) {
 		this.x = x;
@@ -617,12 +621,12 @@ _tpl_view = function( a ) {
 _compilePreload = function( a, x ) {
 	var b = typeof a === _OBJ, p = b ? a : _getPreload( a ), y = x, x = x.type === 'dialog' ? x.node : x, n = x, v;
 	if ( p ) {
-		if ( x.type === 'view' ) {
+		if ( x.type === 'view' && x.node ) {
 			v = _tpl_view( p );
 			v && (n = x.node);
 		}
 		if ( ! n )
-			return x;
+			return y;
 		var t = 'preload/body',
 			s = b ? $.jsonString( p ) : (_tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( p ))),
 			c = b ? _tpl_parse( p ) : (_tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( p ))),
@@ -2739,17 +2743,27 @@ _frame_focus = {},
 /* `Frame`  子元素被约束为：高度宽度占满，只有一个可见  */
 Frame = define.widget( 'frame', {
 	Const: function( x, p ) {
-		var f = _frame_focus[ p.ownerView.id ];
-		if ( f ) {
-			for ( var i = 0, n = x.nodes; i < n.length; i ++ ) {
-				if ( n[ i ].id && f[ n[ i ].id ] ) {
-					 x.dft = n[ i ].id;
-					 break;
+		W.apply( this, arguments );
+		//(this.focusNode = this.getFocus()) && (this.focusNode.focusOwner = this);
+	},
+	Listener: {
+		body: {
+			ready: function() {
+				if ( this.length ) {
+					var f = _frame_focus[ this.ownerView.id ], d;
+					if ( f ) {
+						for ( var i = 0; i < this.length; i ++ ) {
+							if ( this[ i ].x.id && f[ this[ i ].x.id ] ) {
+								 d = this[ i ];
+								 break;
+							}
+						}
+					}
+					!d && this.x.dft && (d = this.ownerView.find( this.x.dft ));
+					d && this.focus( d );
 				}
 			}
 		}
-		W.apply( this, arguments );
-		(this.focusNode = this.getFocus()) && (this.focusNode.focusOwner = this);
 	},
 	Helper: {
 		// 获取a节点最接近 frame 的祖先元素
@@ -2779,9 +2793,9 @@ Frame = define.widget( 'frame', {
 			return 'f-sub-frame' + (a === this.focusNode ? '-on' : '');
 		},
 		getFocus: function() {
-			return this.focusNode || (this.x.dft ? this.ownerView.find( this.x.dft ) : this[ 0 ]);
+			return this.focusNode;
 		},
-		// @a -> wgid
+		// @a -> wg,id
 		// animate: scrollX(横向滚动),scrollY(纵向滚动),
 		focus: function( a ) {
 			if ( this.$() ) {
