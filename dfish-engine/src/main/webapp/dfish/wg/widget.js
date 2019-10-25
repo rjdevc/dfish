@@ -7829,9 +7829,12 @@ Combobox = define.widget( 'combobox', {
 				else
 					this[ i ].x.value && s.push( this[ i ].x.value );
 			}
-			f && (t = this.queryText() ) && s.push( t );
-			this._val( s.join( ',' ) );
+			t = this.queryText();
+			f && t && s.push( t );
+			s = s.join( ',' );
+			this._val( s );
 			this.$().title = this.text();
+			this.checkPlaceholder( s || t );
 			if ( this.x.on && this.x.on.change && v != this._val() )
 				this.triggerHandler( 'change' );
 		},
