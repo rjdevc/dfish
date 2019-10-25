@@ -3392,7 +3392,7 @@ Button = define.widget( 'button', {
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
-			if ( ! x.text )
+			if ( x.text === '' || x.text == N )
 				b += ' z-i';
 			if ( w != N ) {
 				s += 'width:' + w + 'px;';
@@ -3449,7 +3449,7 @@ Button = define.widget( 'button', {
 			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
 			if ( x.icon )
 				a += this.html_icon();
-			if ( x.text )
+			if ( x.text !== '' && x.text != N )
 				a += this.html_text();
 			a += '</div>';
 			a += this.html_append() + (ie7 && !w ? '</table>' : '') + '</' + t + '>';
