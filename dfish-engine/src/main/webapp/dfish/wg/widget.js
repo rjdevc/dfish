@@ -1328,7 +1328,7 @@ W = define( 'widget', function() {
 				var s = b.indexOf( 'javascript:' ) === 0 ? this.formatJS( b, N, N, d, e ) : this.formatStr( b, N, c !== F && 'strEscape', d, e );
 				return typeof s === _STR ? _parseHTML.call( this, s ) : s;
 			} else
-				return c !== F ? $.strEscape( a ) : (a || '');
+				return c !== F ? $.strEscape( a ) : (a == N ? '' : '' + a);
 		},
 		html_prop: function() {
 			var b = ' w-type="' + this.type + '" id=' + this.id,
@@ -3386,13 +3386,13 @@ Button = define.widget( 'button', {
 			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
-			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
-				a = '<' + t + ' id=' + this.id + ' class="',
-				b = this.prop_cls(), c = this._combo, d, s = '';
+			var x = this.x, p = this.parentNode, g = this.tagName || 'div', w = this.innerWidth(),
+				a = '<' + g + ' id=' + this.id + ' class="',
+				b = this.prop_cls(), c = this._combo, d, s = '', t = x.text == N ? '' : ('' + x.text);
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
-			if ( x.text === '' || x.text == N )
+			if ( t )
 				b += ' z-i';
 			if ( w != N ) {
 				s += 'width:' + w + 'px;';
@@ -3449,10 +3449,10 @@ Button = define.widget( 'button', {
 			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
 			if ( x.icon )
 				a += this.html_icon();
-			if ( x.text !== '' && x.text != N )
+			if ( t )
 				a += this.html_text();
 			a += '</div>';
-			a += this.html_append() + (ie7 && !w ? '</table>' : '') + '</' + t + '>';
+			a += this.html_append() + (ie7 && !w ? '</table>' : '') + '</' + g + '>';
 			return this.html_before() + a + this.html_after();
 		}
 	}
