@@ -174,7 +174,8 @@ public class OriginMatcher {
 			
 			//关键步骤，numberList按照confidence值从大到小排好，同confidence值根据level大小排好
 			Collections.sort(codeList,new Comparator<Candidate>(){
-				public int compare(Candidate arg0, Candidate arg1){
+				@Override
+                public int compare(Candidate arg0, Candidate arg1){
 					if(arg0.getConfidence()==arg1.getConfidence()){
 						return arg1.getLevel()-arg0.getLevel();
 					}

@@ -10,7 +10,8 @@ import java.util.Stack;
  */
 public class BaseJsonBuilder extends AbstractJsonBuilder{
 
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+    public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		sb.append(o);
 	}
 

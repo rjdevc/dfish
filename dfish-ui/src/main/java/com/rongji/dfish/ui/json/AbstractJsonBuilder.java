@@ -6,10 +6,12 @@ package com.rongji.dfish.ui.json;
  *
  */
 public abstract class AbstractJsonBuilder implements JsonBuilder {
+	@Override
 	public void removeProperty(String propName){
 		throw new java.lang.UnsupportedOperationException();
 	}
-	public void replaceProperty(String propName,String newName){
+	@Override
+	public void replaceProperty(String propName, String newName){
 		throw new java.lang.UnsupportedOperationException();
 	}
 
@@ -20,7 +22,9 @@ public abstract class AbstractJsonBuilder implements JsonBuilder {
 	 * @param sb StringBuilder
 	 */
 	public static void escapeJson(String s,StringBuilder sb){
-		if(s==null)return;
+		if(s==null) {
+            return;
+        }
 		for(char c:s.toCharArray()){
 			switch(c){
 			case '\\':sb.append("\\\\");break;
@@ -30,7 +34,9 @@ public abstract class AbstractJsonBuilder implements JsonBuilder {
 			case '\b':sb.append("\\b");break;
 			case '\f':sb.append("\\f");break;
 			case '\t':sb.append("\\t");break;
-			default :if(c<0||c>31)sb.append(c);
+			default :if(c<0||c>31) {
+                sb.append(c);
+            }
 			}
 		}
 	}

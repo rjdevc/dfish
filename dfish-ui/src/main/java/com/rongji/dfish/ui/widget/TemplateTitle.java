@@ -38,33 +38,40 @@ public class TemplateTitle extends AbstractWidget<TemplateTitle> implements Scro
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "template/title";
 	}
 
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return this.escape;
 	}
 	
-	public TemplateTitle setEscape(Boolean escape) {
+	@Override
+    public TemplateTitle setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}
 
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return scroll;
 	}
 
-	public TemplateTitle setScroll(Boolean scroll) {
+	@Override
+    public TemplateTitle setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return this;
 	}
 
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return scrollClass;
 	}
 	
-	public TemplateTitle setScrollClass(String scrollClass) {
+	@Override
+    public TemplateTitle setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return this;
 	}
@@ -73,7 +80,8 @@ public class TemplateTitle extends AbstractWidget<TemplateTitle> implements Scro
 	 * 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -82,7 +90,8 @@ public class TemplateTitle extends AbstractWidget<TemplateTitle> implements Scro
 	 * @param text
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TemplateTitle setText(String text) {
+	@Override
+    public TemplateTitle setText(String text) {
 		this.text = text;
 		return this;
 	}

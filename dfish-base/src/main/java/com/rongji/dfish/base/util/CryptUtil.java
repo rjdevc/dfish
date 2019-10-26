@@ -145,7 +145,8 @@ public class CryptUtil {
 			super(algorithm,key);
 		}
 
-		public void encrypt() {
+		@Override
+        public void encrypt() {
 			try {
 				if (in == null || out == null) {
 					throw new NullPointerException("in or out must be setl");
@@ -187,7 +188,8 @@ public class CryptUtil {
 				throw new RuntimeException(e);
 			}
 		}
-		public void decrypt() {
+		@Override
+        public void decrypt() {
 			try {
 				if (in == null || out == null) {
 					throw new NullPointerException("in or out must be setl");

@@ -115,7 +115,8 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 //	}
 	
 	
-	public T add(int index,Widget<?> oper) {
+	@Override
+    public T add(int index, Widget<?> oper) {
 		if(oper instanceof AbstractButton || oper instanceof Split){
 			return super.add(index,oper);
 		}else{
@@ -149,7 +150,8 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * 
 	 * @return 标签
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -159,7 +161,8 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setText(String text) {
+	@Override
+    public T setText(String text) {
 		this.text = text;
 		return (T) this;
 	}

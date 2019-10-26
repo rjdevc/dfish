@@ -16,11 +16,13 @@ public abstract class AbstractCommand<T extends AbstractCommand<T>> extends Abst
 	 */
 	private static final long serialVersionUID = -7974701457852829654L;
 	private String id;
-	public String getId(){
+	@Override
+    public String getId(){
 		return id;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public T setId(String id){
 		this.id=id;
 		return (T)this;

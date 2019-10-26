@@ -73,7 +73,8 @@ public class ChineseOrder implements java.util.Comparator<Object>{
 		LOADED_MODES.put(mode, this);
 	}
 	
-	public int compare(Object o1, Object o2) {
+	@Override
+    public int compare(Object o1, Object o2) {
 		if(o1==null){
 			return o2==null?0:-1;
 		}else if(o2==null){

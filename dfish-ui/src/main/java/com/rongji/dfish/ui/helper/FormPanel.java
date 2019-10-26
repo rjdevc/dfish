@@ -208,7 +208,8 @@ Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout
 	    return this.prototype;
     }
 
-	public FormPanel setScroll(Boolean scroll) {
+	@Override
+    public FormPanel setScroll(Boolean scroll) {
 		prototype.setScroll(scroll);
 		return this;
 	}
@@ -217,15 +218,18 @@ Scrollable<FormPanel>,HiddenContainer<FormPanel>, PrototypeChangeable<GridLayout
 		return this;
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return prototype.getScroll();
 	}
 
+    @Override
     public FormPanel setScrollClass(String scrollClass) {
     	prototype.setScrollClass(scrollClass);
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return prototype.getScrollClass();
     }

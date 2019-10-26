@@ -71,7 +71,8 @@ public final class Textarea extends AbstractInput<Textarea,String> {
     
     
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "textarea";
 	}
 	@Override

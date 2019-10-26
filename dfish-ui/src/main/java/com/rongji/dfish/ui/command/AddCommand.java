@@ -34,15 +34,18 @@ MultiContainer<T, JsonObject>{
 		if (w == null) {
 			return (T) this;
 		}
-		if (w == this)
-			throw new IllegalArgumentException("can not add widget itself as a sub widget");
+		if (w == this) {
+            throw new IllegalArgumentException("can not add widget itself as a sub widget");
+        }
 		nodes.add(w);
 		return (T) this;
 	}
 	
+	@Override
 	public List<JsonObject> findNodes() {
 		return nodes;
 	}
+	@Override
 	public List<JsonObject> getNodes() {
 		return nodes;
 	}

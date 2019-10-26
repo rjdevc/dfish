@@ -31,7 +31,8 @@ public class GridLeaf extends AbstractWidget<GridLeaf>{
 	    this.text = text;
     }
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "grid/leaf";
 	}
 	/**

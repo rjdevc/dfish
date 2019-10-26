@@ -25,7 +25,8 @@ public class TemplateView extends AbstractView<TemplateView> {
 		super(id);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "template/view";
 	}
 	

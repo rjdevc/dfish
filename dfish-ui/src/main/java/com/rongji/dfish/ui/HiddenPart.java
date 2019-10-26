@@ -19,7 +19,8 @@ import com.rongji.dfish.ui.form.Hidden;
 public class HiddenPart implements HiddenContainer<HiddenPart>{
 	private static final long serialVersionUID = 683550505780264834L;
 	Map<String, List<String>> map=null;
-	public HiddenPart addHidden(String name,String value) {
+	@Override
+    public HiddenPart addHidden(String name, String value) {
 		if(Utils.isEmpty(name)) {
 			return this;
 		}
@@ -35,7 +36,8 @@ public class HiddenPart implements HiddenContainer<HiddenPart>{
 		return this;
 	}
 
-	public List<Hidden> getHiddens() {
+	@Override
+    public List<Hidden> getHiddens() {
 		if (Utils.isEmpty(map)) {
 			return Collections.emptyList();
 		}
@@ -48,6 +50,7 @@ public class HiddenPart implements HiddenContainer<HiddenPart>{
 		return result;
 	}
 
+    @Override
     public List<String> getHiddenValue(String name) {
     	if (Utils.isEmpty(name)) {
     		return Collections.emptyList();
@@ -62,6 +65,7 @@ public class HiddenPart implements HiddenContainer<HiddenPart>{
 	    return result;
     }
 
+    @Override
     public HiddenPart removeHidden(String name) {
     	if (Utils.notEmpty(name) && map != null) {
     		map.remove(name);

@@ -76,18 +76,20 @@ public class BaseController extends MultiActionController {
 			String[] pairs = query.split("[&]");
 			for (String string : pairs) {
 				String[] pair = string.split("[=]");
-				if (pair.length == 2 && key.equals(pair[0]))
-					try {
-						return java.net.URLDecoder.decode(pair[1].replace("%C2%A0", "%20"), "UTF-8");
-					} catch (UnsupportedEncodingException e) {
-						LogUtil.error("获取参数异常", e);
-					}
+				if (pair.length == 2 && key.equals(pair[0])) {
+                    try {
+                        return java.net.URLDecoder.decode(pair[1].replace("%C2%A0", "%20"), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        LogUtil.error("获取参数异常", e);
+                    }
+                }
 			}
 		}
 
 		return request.getParameter(key);
 	}
 
+	@Override
 	protected void bind(HttpServletRequest request, Object obj) throws Exception {
 		if (obj == null) {
 			return;

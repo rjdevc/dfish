@@ -66,7 +66,9 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 					continue;
 				}
 				String propName=propNameMap.get(fieldName);
-				if(propName==null)propName=fieldName;
+				if(propName==null) {
+                    propName=fieldName;
+                }
 				if(propNames.add(propName)){
 					methods.add(new ReflectAppender(propName,m));
 				}else{
@@ -92,8 +94,9 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 				}
 			}
 			Collections.sort( methods,new java.util.Comparator<JsonPropAppender>(){
+				@Override
 				public int compare(JsonPropAppender o1,
-						JsonPropAppender o2) {
+								   JsonPropAppender o2) {
 					String name1=o1.getPropName();
 					String name2=o2.getPropName();
 					int pos1=ORDERED_PORPS.indexOf(name1);
@@ -111,6 +114,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 			});
 		}
 	}
+	@Override
 	public void removeProperty(String propName){
 		for(Iterator<JsonPropAppender> iter=methods.iterator();iter.hasNext();){
 			JsonPropAppender g=iter.next();
@@ -120,7 +124,8 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 			}
 		}
 	}
-	public void replaceProperty(String propName,String newName){
+	@Override
+	public void replaceProperty(String propName, String newName){
 		for(Iterator<JsonPropAppender> iter=methods.iterator();iter.hasNext();){
 			JsonPropAppender g=iter.next();
 			if(propName.equals(g.getPropName())){
@@ -195,11 +200,15 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 	private static String getFiledNameByGetterName(String name) {
 		String part=null;
 		if(name.startsWith("get")){
-			if(name.length()==3)return "";
+			if(name.length()==3) {
+                return "";
+            }
 			part=name.substring(3);
 		}
 		if(name.startsWith("is")){
-			if(name.length()==2)return "";
+			if(name.length()==2) {
+                return "";
+            }
 			part=name.substring(2);
 		}
 		char first=part.charAt(0);
@@ -209,7 +218,8 @@ public class ClassJsonBuilder extends AbstractJsonBuilder{
 			return part;
 		}
 	}
-	public void buildJson(Object o, StringBuilder sb,Stack<PathInfo> path) {
+	@Override
+	public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		sb.append('{');
 		boolean begin =true;
 		for(JsonPropAppender entry:methods){

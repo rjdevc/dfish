@@ -49,7 +49,8 @@ public final class Password extends AbstractInput<Password,String> {
 	    this.setLabel(label);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "password";
 	}
 	@Override

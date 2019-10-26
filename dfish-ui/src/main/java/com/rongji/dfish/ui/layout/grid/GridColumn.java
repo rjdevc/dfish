@@ -303,7 +303,20 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	public static GridColumn gridTriplebox(String beanProp, String field, String width) {
 		return new GridColumn(beanProp, field, null, width).setGridTriplebox(BOX_NAME, field, null, null);
 	}
-	
+
+	/**
+	 * 构建一个GridTriplebox类型的GridColumn
+	 * @param beanProp String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
+	 * @param field String 返回前端的属性名
+	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
+	 * @param sync String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_CLICK}
+	 * @param
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public static GridColumn gridTriplebox(String beanProp, String field, String width, String sync) {
+		return new GridColumn(beanProp, field, null, width).setGridTriplebox(BOX_NAME, field, sync);
+	}
+
 	/**
 	 * 构建一个GridTriplebox类型的GridColumn
 	 * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
@@ -368,6 +381,19 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * 将此列设置为表格复选框
 	 * @param boxName String 复选框名称
 	 * @param checkedField String 所选值指向的列名
+	 * @param sync String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_CLICK}
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public GridColumn setGridTriplebox(String boxName, String checkedField, String sync) {
+		GridTriplebox triplebox = new GridTriplebox(boxName, null, null, null, null);
+		triplebox.setSync(sync);
+		return setGridTriplebox(triplebox, checkedField);
+	}
+
+	/**
+	 * 将此列设置为表格复选框
+	 * @param boxName String 复选框名称
+	 * @param checkedField String 所选值指向的列名
 	 * @param required Boolean 是否必填
 	 * @param sync String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_CLICK}
 	 * @return 本身，这样可以继续设置其他属性
@@ -377,7 +403,7 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 		triplebox.setSync(sync).addValidate(new Validate().setRequired(required));
 		return setGridTriplebox(triplebox, checkedField);
 	}
-	
+
 	/**
 	 * 设置公共的复选框
 	 * @param triplebox 复选框
@@ -386,10 +412,10 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	public GridColumn setGridTriplebox(GridTriplebox triplebox) {
 		return setGridTriplebox(triplebox, null);
 	}
+
 	/**
 	 * 设置公共的复选框
 	 * @param triplebox 复选框
-	 * @param checkedField String 所选值指向的列名
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public GridColumn setGridTriplebox(GridTriplebox triplebox, String checkedField) {
@@ -811,7 +837,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return null;
 	}
 
@@ -854,7 +881,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 	/**
@@ -865,7 +893,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #ALIGN_RIGHT
 	 * @see #ALIGN_CENTER
 	 */
-	public GridColumn setAlign(String align) {
+	@Override
+    public GridColumn setAlign(String align) {
 		this.align = align;
 		return this;
 	}
@@ -877,7 +906,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #VALIGN_BOTTOM
 	 * 
 	 */
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 	/**
@@ -888,7 +918,8 @@ public class GridColumn extends AbstractJsonObject implements Alignable<GridColu
 	 * @see #VALIGN_MIDDLE
 	 * @see #VALIGN_BOTTOM
 	 */
-	public GridColumn setValign(String valign) {
+	@Override
+    public GridColumn setValign(String valign) {
 		this.valign = valign;
 		return this;
 	}

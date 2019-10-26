@@ -41,7 +41,8 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 		this.cacheExpired = cacheExpired;
 	}
 
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {  
+	@Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         
 		if(!(handler instanceof HandlerMethod)){
 			//对于访问 图片和css等静态资源的请求直接放过
@@ -107,13 +108,15 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 			}
 			core=sb.toString();
 		}
-		public int hashCode(){
+		@Override
+        public int hashCode(){
 			if(_hash==0){
 				_hash=core.hashCode();
 			}
 			return _hash;
 		}
-		public boolean equals(Object o){
+		@Override
+        public boolean equals(Object o){
 			if(o==this){
 				return true;
 			}

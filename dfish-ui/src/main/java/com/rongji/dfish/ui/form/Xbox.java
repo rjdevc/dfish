@@ -50,7 +50,8 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> {
 	}
 
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "xbox";
 	}
 

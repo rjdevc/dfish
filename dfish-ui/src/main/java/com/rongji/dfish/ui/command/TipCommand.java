@@ -36,20 +36,24 @@ public class TipCommand extends AbstractNode<TipCommand> implements Command<TipC
 	}
 	
 
-	public String getSnaptype() {
+	@Override
+    public String getSnaptype() {
 		return snaptype;
 	}
 
-	public TipCommand setSnaptype(String snaptype) {
+	@Override
+    public TipCommand setSnaptype(String snaptype) {
 		this.snaptype = snaptype;
 		return this;
 	}
 
-	public String getSnap() {
+	@Override
+    public String getSnap() {
 		return snap;
 	}
 
-	public TipCommand setSnap(String snap) {
+	@Override
+    public TipCommand setSnap(String snap) {
 		this.snap = snap;
 		return this;
 	}
@@ -75,7 +79,8 @@ public class TipCommand extends AbstractNode<TipCommand> implements Command<TipC
      * 内容
      * @return String
      */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -83,7 +88,8 @@ public class TipCommand extends AbstractNode<TipCommand> implements Command<TipC
 	 * @param text 内容
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public TipCommand setText(String text) {
+	@Override
+    public TipCommand setText(String text) {
 		this.text = text;
 		return this;
 	}

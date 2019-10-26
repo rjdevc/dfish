@@ -25,7 +25,8 @@ public class Select extends AbstractOptionsHolder<Select, Object> {
 		super(name, label, value, options);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "select";
 	}
 

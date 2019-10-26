@@ -102,21 +102,25 @@ MultiContainer<AlbumLayout,Img>{
 		return this;
 	}
 
-	public Boolean getFocusmultiple() {
+	@Override
+    public Boolean getFocusmultiple() {
 		return focusmultiple;
 	}
 
-	public AlbumLayout setFocusmultiple(Boolean focusmultiple) {
+	@Override
+    public AlbumLayout setFocusmultiple(Boolean focusmultiple) {
 		this.focusmultiple = focusmultiple;
 		return this;
 	}
 
-	@Deprecated
+	@Override
+    @Deprecated
 	public Boolean getHoverable() {
 		return null;
 	}
 
-	@Deprecated
+	@Override
+    @Deprecated
 	public AlbumLayout setHoverable(Boolean hoverable) {
 //		this.hoverable = hoverable;
 		return this;
@@ -126,7 +130,8 @@ MultiContainer<AlbumLayout,Img>{
 	 * 子节点的默认配置项
 	 * @return pub
 	 */
-	public Img getPub() {
+	@Override
+    public Img getPub() {
 		if (pub == null) {
 			pub = new Img(null);
 		}
@@ -138,7 +143,8 @@ MultiContainer<AlbumLayout,Img>{
 	 * @param pub 默认配置项
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public AlbumLayout setPub(Img pub) {
+	@Override
+    public AlbumLayout setPub(Img pub) {
 		this.pub = pub;
 		return this;
 	}
@@ -147,7 +153,8 @@ MultiContainer<AlbumLayout,Img>{
 	 * 是否对html内容转义
 	 * @return escape
 	 */
-	public Boolean getEscape() {
+	@Override
+    public Boolean getEscape() {
 		return escape;
 	}
 
@@ -156,7 +163,8 @@ MultiContainer<AlbumLayout,Img>{
 	 * @param escape Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public AlbumLayout setEscape(Boolean escape) {
+	@Override
+    public AlbumLayout setEscape(Boolean escape) {
 		this.escape = escape;
 		return this;
 	}

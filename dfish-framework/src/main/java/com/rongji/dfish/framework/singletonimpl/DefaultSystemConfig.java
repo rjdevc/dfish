@@ -17,7 +17,8 @@ public class DefaultSystemConfig implements SystemConfigHolder{
 	private JsonConfigHelper xmltool;
 	
 	private Cache<String, String> propertyCache = new MemoryCache<String, String>();
-	public String getProperty(String name) {
+	@Override
+    public String getProperty(String name) {
 		
 		String propValue = propertyCache.get(name);
 		if (Utils.isEmpty(propValue)) {
@@ -27,7 +28,8 @@ public class DefaultSystemConfig implements SystemConfigHolder{
 		return propValue;
 	}
 
-	public void reset() {
+	@Override
+    public void reset() {
 		@SuppressWarnings("deprecation")
         String configPath=SystemData.getInstance().getServletInfo().getServletRealPath()+"WEB-INF/config/"+configFile;
 		FrameworkHelper.LOG.info("load file : "+configPath);
@@ -35,7 +37,8 @@ public class DefaultSystemConfig implements SystemConfigHolder{
 			propertyCache.clear();
 	}
 
-	public void setProperty(String key, String value) {
+	@Override
+    public void setProperty(String key, String value) {
 		xmltool.setProperty(key, value);
 		// 设置缓存
 		propertyCache.put(key, value);

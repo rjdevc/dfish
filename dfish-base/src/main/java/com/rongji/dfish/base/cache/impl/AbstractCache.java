@@ -25,16 +25,20 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 	
 	private CacheValueGetter<K, V> valueGetter;
 	
-	public int getMaxSize() {
+	@Override
+    public int getMaxSize() {
 		return maxSize;
 	}
-	public void setMaxSize(int maxSize) {
+	@Override
+    public void setMaxSize(int maxSize) {
 		this.maxSize = maxSize;
 	}
-	public long getAlive() {
+	@Override
+    public long getAlive() {
 		return alive;
 	}
-	public void setAlive(long alive) {
+	@Override
+    public void setAlive(long alive) {
 		this.alive = alive;
 	}
 	protected Map<K, CacheItem<V>> getCore() {

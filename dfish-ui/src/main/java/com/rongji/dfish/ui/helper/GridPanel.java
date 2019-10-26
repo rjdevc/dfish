@@ -114,6 +114,7 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 	/**
      * 初始化原型结点
      */
+    @Override
     protected void buildPrototype() {
     	Tr headRow = null;
     	if(hasTableHead){
@@ -201,7 +202,8 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 	 * @param nobr Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridPanel setNobr(Boolean nobr) {
+	@Override
+    public GridPanel setNobr(Boolean nobr) {
 		prototype.setNobr(nobr);
 		return this;
 	}
@@ -209,7 +211,8 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 	/**
 	 * 鼠标可移上去效果,目前无该方法
 	 */
-	@Deprecated
+	@Override
+    @Deprecated
 	public Boolean getHoverable(){
 		return prototype.getHoverable();
 	}
@@ -217,13 +220,15 @@ public class GridPanel extends AbstractGridPanel<GridPanel>  {
 	/**
 	 * 鼠标可移上去效果,目前无该方法
 	 */
-	@Deprecated
+	@Override
+    @Deprecated
 	public GridPanel setHoverable(Boolean hoverable){
 		prototype.setHoverable(hoverable);
 		return this;
 	}
 
-	public GridPanel setFocusmultiple(Boolean focusmultiple) {
+	@Override
+    public GridPanel setFocusmultiple(Boolean focusmultiple) {
 		prototype.setFocusmultiple(focusmultiple);
 		return this;
 	}

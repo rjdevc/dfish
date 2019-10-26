@@ -25,8 +25,9 @@ public class Geohash {
     final static HashMap<Character, Integer> lookup = new HashMap<Character, Integer>();  
     static {  
         int i = 0;  
-        for (char c : digits)  
-            lookup.put(c, i++);  
+        for (char c : digits) {
+            lookup.put(c, i++);
+        }
     }  
     /**
      * 把hash字符串转为纬度，经度
@@ -48,8 +49,9 @@ public class Geohash {
         int j =0;  
         for (int i=0; i< numbits*2;i+=2) {  
             boolean isSet = false;  
-            if ( i < buffer.length() )  
-              isSet = buffer.charAt(i) == '1';  
+            if ( i < buffer.length() ) {
+                isSet = buffer.charAt(i) == '1';
+            }
             lonset.set(j++, isSet);  
         }  
           
@@ -57,8 +59,9 @@ public class Geohash {
         j=0;  
         for (int i=1; i< numbits*2;i+=2) {  
             boolean isSet = false;  
-            if ( i < buffer.length() )  
-              isSet = buffer.charAt(i) == '1';  
+            if ( i < buffer.length() ) {
+                isSet = buffer.charAt(i) == '1';
+            }
             latset.set(j++, isSet);  
         }  
           
@@ -72,10 +75,11 @@ public class Geohash {
         double mid = 0;  
         for (int i=0; i<bs.length(); i++) {  
             mid = (floor + ceiling) / 2;  
-            if (bs.get(i))  
-                floor = mid;  
-            else  
-                ceiling = mid;  
+            if (bs.get(i)) {
+                floor = mid;
+            } else {
+                ceiling = mid;
+            }
         }  
         return mid;  
     }  
@@ -115,16 +119,18 @@ public class Geohash {
         char[] buf = new char[65];  
         int charPos = 64;  
         boolean negative = (i < 0);  
-        if (!negative)  
-            i = -i;  
+        if (!negative) {
+            i = -i;
+        }
         while (i <= -32) {  
             buf[charPos--] = digits[(int) (-(i % 32))];  
             i /= 32;  
         }  
         buf[charPos] = digits[(int) (-i)];  
   
-        if (negative)  
-            buf[--charPos] = '-';  
+        if (negative) {
+            buf[--charPos] = '-';
+        }
         return new String(buf, charPos, (65 - charPos));  
     }  
   

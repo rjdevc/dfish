@@ -52,7 +52,8 @@ public class Button extends AbstractButton<Button> {
     public Button() {
     }
     
-	public String getType() {
+	@Override
+    public String getType() {
 		return "button";
 	}
 

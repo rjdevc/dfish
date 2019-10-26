@@ -137,7 +137,8 @@ public class IPv4Filter {
 		public long[] toArray() {
 			return new long[]{startIP,endIP};
 		}
-		public String toString(){
+		@Override
+        public String toString(){
 			return transform(startIP)+"-"+transform(endIP);
 		}
 	}
@@ -195,9 +196,13 @@ public class IPv4Filter {
 	private static long[][] combineIPs(List<IpSection> IPConfig) {		
 		// 排序
 		Collections.sort(IPConfig,new java.util.Comparator<IpSection>(){
-			public int compare(IpSection o1, IpSection o2) {
-				if(o1.startIP>o2.startIP)return 1;
-				else if(o1.startIP<o2.startIP)return -1;
+			@Override
+            public int compare(IpSection o1, IpSection o2) {
+				if(o1.startIP>o2.startIP) {
+					return 1;
+				} else if(o1.startIP<o2.startIP) {
+					return -1;
+				}
 				return 0;
 			}
 		});
@@ -232,7 +237,9 @@ public class IPv4Filter {
 		long ipL = transform(ip);
 		if (ipScope.length <= 3) {
 			for (int i = 0; i < ipScope.length; i++) {
-				if(ipL > ipScope[i][1])continue;
+				if(ipL > ipScope[i][1]) {
+					continue;
+				}
 				return ipL >= ipScope[i][0];
 			}
 			return false;

@@ -77,7 +77,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * 
 	 * @return dir
 	 */
-	public String getDir() {
+	@Override
+    public String getDir() {
 		return dir;
 	}
 
@@ -87,7 +88,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 	 * @param dir h/v
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ButtonBar setDir(String dir) {
+	@Override
+    public ButtonBar setDir(String dir) {
 		this.dir = dir;
 		return this;
 	}
@@ -164,7 +166,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		return this;
 	}
 
-	public ButtonBar setPub(Button pub) {
+	@Override
+    public ButtonBar setPub(Button pub) {
 		this.pub = pub;
 		return this;
 	}
@@ -186,7 +189,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		super(id);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "buttonbar";
 	}
 
@@ -202,7 +206,8 @@ public class ButtonBar extends AbstractLayout<ButtonBar, Widget<?>> implements P
 		return this;
 	}
 
-	public Button getPub() {
+	@Override
+    public Button getPub() {
 		if (pub == null) {
 			pub = new Button(null);
 		}

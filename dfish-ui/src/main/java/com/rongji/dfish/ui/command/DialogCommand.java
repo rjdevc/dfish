@@ -18,7 +18,8 @@ public class DialogCommand extends AbstractDialog<DialogCommand> implements Comm
     private String template;
     private String src;
     private Boolean prong;
-	public String getType() {
+	@Override
+    public String getType() {
 		return "dialog";
 	}
     /**

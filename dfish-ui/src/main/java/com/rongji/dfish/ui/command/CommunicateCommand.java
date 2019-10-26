@@ -56,7 +56,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 		return (T) this;
 	}
 
-	public Object getData(String key) {
+	@Override
+    public Object getData(String key) {
         if (key == null || key.equals("")) {
             return null;
         }
@@ -65,7 +66,8 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
         }
         return data.get(key);
     }
-	public Object removeData(String key) {
+	@Override
+    public Object removeData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
 		}
@@ -74,6 +76,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
 		}
 		return data.remove(key);
 	}
+    @Override
     @SuppressWarnings("unchecked")
 	public T setData(String key, Object value) {
     	if(data == null){
@@ -83,6 +86,7 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
         return (T) this;
     }
 
+    @Override
     public Map<String, Object> getData() {
     	return data;
     }

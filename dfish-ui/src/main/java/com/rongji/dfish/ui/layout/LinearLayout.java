@@ -35,39 +35,47 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	}
 
 
-	public String getAlign() {
+	@Override
+    public String getAlign() {
 		return align;
 	}
 
-	public T setAlign(String align) {
+	@Override
+    public T setAlign(String align) {
 		this.align = align;
 		return (T)this;
 	}
 
-	public String getValign() {
+	@Override
+    public String getValign() {
 		return valign;
 	}
 
-	public T setValign(String valign) {
+	@Override
+    public T setValign(String valign) {
 		this.valign = valign;
 		return (T)this;
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return scroll;
 	}
 
-	public T setScroll(Boolean scroll) {
+	@Override
+    public T setScroll(Boolean scroll) {
 		this.scroll = scroll;
 		return (T)this;
 	}
 
-	public String getScrollClass() {
+	@Override
+    public String getScrollClass() {
 		return scrollClass;
 	}
 
 
-	public T setScrollClass(String scrollClass) {
+	@Override
+    public T setScrollClass(String scrollClass) {
 		this.scrollClass = scrollClass;
 		return (T)this;
 	}

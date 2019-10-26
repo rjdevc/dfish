@@ -423,9 +423,9 @@ public class TrieTree<V extends Object> {
 	            tab[i] = new HashNode<V>(key,child);
 	        }else {
 	        	HashNode<V> e; 
-	            if (p.key == key )
-	                e = p;
-	            else {
+	            if (p.key == key ) {
+					e = p;
+				} else {
 	                while (true) {
 	                    if ((e = p.next) == null) {
 	                        p.next = new HashNode<V>(key,child);
@@ -483,16 +483,18 @@ public class TrieTree<V extends Object> {
 	                        do {
 	                            next = e.next;
 	                            if ((e.key & oldCap) == 0) {
-	                                if (loTail == null)
-	                                    loHead = e;
-	                                else
-	                                    loTail.next = e;
+	                                if (loTail == null) {
+										loHead = e;
+									} else {
+										loTail.next = e;
+									}
 	                                loTail = e;
 	                            } else {
-	                                if (hiTail == null)
-	                                    hiHead = e;
-	                                else
-	                                    hiTail.next = e;
+	                                if (hiTail == null) {
+										hiHead = e;
+									} else {
+										hiTail.next = e;
+									}
 	                                hiTail = e;
 	                            }
 	                        } while ((e = next) != null);
@@ -761,7 +763,8 @@ public class TrieTree<V extends Object> {
 		}
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if(root.children!=null){
 			for(HashNode<V> first:root.children){
@@ -820,7 +823,8 @@ public class TrieTree<V extends Object> {
 			return value;
 		}
 	
-		public String toString(){
+		@Override
+        public String toString(){
 			return key+"="+value;
 		}
 	}

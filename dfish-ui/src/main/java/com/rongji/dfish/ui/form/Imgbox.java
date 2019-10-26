@@ -29,7 +29,8 @@ public class Imgbox extends AbstractOptionsHolder<Imgbox, Object> {
 		super(name, label, value, options);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "imgbox";
 	}
 
@@ -69,12 +70,14 @@ public class Imgbox extends AbstractOptionsHolder<Imgbox, Object> {
 		return this;
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Imgbox setTip(Boolean tip) {
 		return super.setTip(tip);
 	}
 	
-	@Deprecated
+	@Override
+    @Deprecated
 	public Imgbox setTip(String tip) {
 		return super.setTip(tip);
 	}

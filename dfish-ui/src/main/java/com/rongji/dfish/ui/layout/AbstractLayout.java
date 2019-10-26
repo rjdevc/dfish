@@ -51,8 +51,10 @@ public abstract class AbstractLayout<T extends AbstractLayout<T,N>,N extends Wid
         if (w == null) {
             return (T) this;
         }
-        if(w==this)throw new IllegalArgumentException(
-        		"can not add widget itself as a sub widget");
+        if(w==this) {
+            throw new IllegalArgumentException(
+                    "can not add widget itself as a sub widget");
+        }
         if(index<0){
         	nodes.add(w);
         }else{
@@ -61,19 +63,23 @@ public abstract class AbstractLayout<T extends AbstractLayout<T,N>,N extends Wid
         return (T) this;
     }
 
+	@Override
 	public Widget<?> findNodeById(String id) {
 		return super.findNodeById(id);
 	}
 	
+	@Override
 	public List<FormElement<?,?>> findFormElementsByName(String name) {
 		return super.findFormElementsByName(name);
 	}
 
+	@Override
 	public T removeNodeById(String id) {
 		return super.removeNodeById(id);
 	}
 
-    public boolean replaceNodeById(Widget<?> w) {
+    @Override
+	public boolean replaceNodeById(Widget<?> w) {
 		return super.replaceNodeById(w);
 	}
 	

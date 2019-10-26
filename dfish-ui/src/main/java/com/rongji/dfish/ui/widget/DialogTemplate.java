@@ -36,57 +36,69 @@ public class DialogTemplate extends AbstractDialog<DialogTemplate> implements Wi
 
 	protected Map<String, Object> data;
 
-	public String getStyle() {
+	@Override
+    public String getStyle() {
 		return style;
 	}
 
-	public DialogTemplate setStyle(String style) {
+	@Override
+    public DialogTemplate setStyle(String style) {
 		this.style = style;
 		return this;
 	}
 
-	public String getCls() {
+	@Override
+    public String getCls() {
 		return cls;
 	}
 
-	public DialogTemplate setCls(String cls) {
+	@Override
+    public DialogTemplate setCls(String cls) {
 		this.cls = cls;
 		return this;
 	}
 
-	public String getBeforecontent() {
+	@Override
+    public String getBeforecontent() {
 		return beforecontent;
 	}
 
-	public DialogTemplate setBeforecontent(String beforecontent) {
+	@Override
+    public DialogTemplate setBeforecontent(String beforecontent) {
 		this.beforecontent = beforecontent;
 		return this;
 	}
 
-	public String getAftercontent() {
+	@Override
+    public String getAftercontent() {
 		return aftercontent;
 	}
 
-	public DialogTemplate setAftercontent(String aftercontent) {
+	@Override
+    public DialogTemplate setAftercontent(String aftercontent) {
 		this.aftercontent = aftercontent;
 		return this;
 	}
 
 
-	public String getGid() {
+	@Override
+    public String getGid() {
 		return gid;
 	}
 
-	public DialogTemplate setGid(String gid) {
+	@Override
+    public DialogTemplate setGid(String gid) {
 		this.gid = gid;
 		return this;
 	}
 
-	public Map<String, String> getOn() {
+	@Override
+    public Map<String, String> getOn() {
 		return events;
 	}
 
-	public DialogTemplate setOn(String eventName, String script) {
+	@Override
+    public DialogTemplate setOn(String eventName, String script) {
 		if (eventName == null) {
 			return this;
 		}
@@ -102,25 +114,30 @@ public class DialogTemplate extends AbstractDialog<DialogTemplate> implements Wi
 		return this;
 	}
 
-	public Integer getWmin() {
+	@Override
+    public Integer getWmin() {
 		return wmin;
 	}
 
-	public DialogTemplate setWmin(Integer wmin) {
+	@Override
+    public DialogTemplate setWmin(Integer wmin) {
 		this.wmin = wmin;
 		return this;
 	}
 
-	public Integer getHmin() {
+	@Override
+    public Integer getHmin() {
 		return hmin;
 	}
 
-	public DialogTemplate setHmin(Integer hmin) {
+	@Override
+    public DialogTemplate setHmin(Integer hmin) {
 		this.hmin = hmin;
 		return this;
 	}
 
-	public Object getData(String key) {
+	@Override
+    public Object getData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
 		}
@@ -130,7 +147,8 @@ public class DialogTemplate extends AbstractDialog<DialogTemplate> implements Wi
 		return data.get(key);
 	}
 
-	public Object removeData(String key) {
+	@Override
+    public Object removeData(String key) {
 		if (key == null || key.equals("")) {
 			return null;
 		}
@@ -140,7 +158,8 @@ public class DialogTemplate extends AbstractDialog<DialogTemplate> implements Wi
 		return data.remove(key);
 	}
 
-	public DialogTemplate setData(String key, Object value) {
+	@Override
+    public DialogTemplate setData(String key, Object value) {
 		if (data == null) {
 			data = new LinkedHashMap<String, Object>();
 		}
@@ -148,7 +167,8 @@ public class DialogTemplate extends AbstractDialog<DialogTemplate> implements Wi
 		return this;
 	}
 
-	public Map<String, Object> getData() {
+	@Override
+    public Map<String, Object> getData() {
 		return data;
 	}
 

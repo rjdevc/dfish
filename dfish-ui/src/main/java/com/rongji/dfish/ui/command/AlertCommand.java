@@ -43,7 +43,8 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 	 * @param position DialogPosition
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public AlertCommand setPosition(Integer position) {
+	@Override
+    public AlertCommand setPosition(Integer position) {
 		this.position = position;
 		return this;
 	}
@@ -53,7 +54,8 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 	 * @return position Integer
 	 * @since XMLTMPL 2.1
 	 */
-	public Integer getPosition() {
+	@Override
+    public Integer getPosition() {
 		return position;
 	}
 
@@ -62,7 +64,8 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 	 * @param text 内容
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public AlertCommand setText(String text) {
+	@Override
+    public AlertCommand setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -72,7 +75,8 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 	 * @return the content
 	 * @since XMLTMPL 2.1
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 
@@ -114,7 +118,8 @@ public class AlertCommand extends AbstractNode<AlertCommand> implements Command<
 		return this;
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "alert";
 	}
 

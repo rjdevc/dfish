@@ -17,7 +17,8 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * 显示文本
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -25,7 +26,8 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Pickbox setText(String text) {
+	@Override
+    public Pickbox setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -57,7 +59,8 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 
 	private DialogCommand picker;
 	
-	public String getType() {
+	@Override
+    public String getType() {
 		return "pickbox";
 	}
 

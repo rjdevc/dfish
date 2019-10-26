@@ -285,6 +285,7 @@ public class Lunar {
      * 
      * @return
      */
+    @Override
     public String toString() {
         // return // year + "年" +
         // (isLeapMonth ? "闰" : "") + (month == 1 ? "正" : chineseNumber[month - 1]) + "月" + getChinaDayString(day);

@@ -30,17 +30,26 @@ public class ListDataComparator<T> {
 		//尝试用有序的方式来比对
 		try{
 			this.compare(new OrderedDataIndentifer<T>(){
+				@Override
 				public boolean isRowChanges(T row1, T row2) {
-					if(row1==null)return row2!=null;
+					if(row1==null) {
+                        return row2!=null;
+                    }
 					return row1!=row2;
 				}
+				@Override
 				public boolean isSameRow(T row1, T row2) {
 					return compareRow(row1,row2)==0;
 				}
+				@Override
 				@SuppressWarnings("unchecked")
 				public int compareRow(T row1, T row2) {
-					if(row1==null)return row2==null?0:-1;
-					if(row2==null)return 1;
+					if(row1==null) {
+                        return row2==null?0:-1;
+                    }
+					if(row2==null) {
+                        return 1;
+                    }
 					Comparable<T> c1=(Comparable<T>)row1;
 //					Comparable<T> c2=(Comparable<T>)row2;
 					return c1.compareTo(row2);
@@ -48,12 +57,18 @@ public class ListDataComparator<T> {
 			});
 		}catch(ClassCastException ex){
 			this.compare(new DataIndentifer<T>(){
+				@Override
 				public boolean isRowChanges(T row1, T row2) {
-					if(row1==null)return row2!=null;
+					if(row1==null) {
+                        return row2!=null;
+                    }
 					return row1!=row2;
 				}
+				@Override
 				public boolean isSameRow(T row1, T row2) {
-					if(row1==null)return row2==null;
+					if(row1==null) {
+                        return row2==null;
+                    }
 					return row1.equals(row2);
 				}
 			});
@@ -74,11 +89,13 @@ public class ListDataComparator<T> {
 		List<T> sortedNewList=new ArrayList<T>(newList);
 		List<T> sortedOldList=new ArrayList<T>(oldList);
 		Collections.sort(sortedNewList,new Comparator<T>(){
+			@Override
 			public int compare(T row1, T row2) {
 				return oind.compareRow(row1, row2);
 			}
 		});
 		Collections.sort(sortedOldList,new Comparator<T>(){
+			@Override
 			public int compare(T row1, T row2) {
 				return oind.compareRow(row1, row2);
 			}
@@ -95,16 +112,22 @@ public class ListDataComparator<T> {
 
 			//判断两个值是否相等
 			if(compareResult==0){
-				if(!oldIter.hasNext()||!newIter.hasNext())break;
+				if(!oldIter.hasNext()||!newIter.hasNext()) {
+                    break;
+                }
 				workingOldItem=oldIter.next();
 				workingNewItem=newIter.next();
 //				System.out.println("old="+workingOldItem+"\t new="+workingNewItem);
 			}else if(compareResult<0){
-				if(!oldIter.hasNext())break;
+				if(!oldIter.hasNext()) {
+                    break;
+                }
 				workingOldItem=oldIter.next();
 //				System.out.println("old="+workingOldItem);
 			}else{
-				if(!newIter.hasNext())break;
+				if(!newIter.hasNext()) {
+                    break;
+                }
 				workingNewItem=newIter.next();
 //				System.out.println("new="+workingNewItem);
 			}

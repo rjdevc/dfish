@@ -45,6 +45,7 @@ public class GroupingGridPanel extends AbstractGridPanel<GroupingGridPanel> {
 	/**
      * 初始化原型结点
      */
+    @Override
     protected void buildPrototype() {
        	// 将原型中body下的所有数据结点清空
        	//  需要填充thead

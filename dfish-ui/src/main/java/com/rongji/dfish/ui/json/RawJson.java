@@ -17,7 +17,8 @@ public class RawJson {
 	public RawJson(String text){
 		this.text=text;
 	}
-	public String toString(){
+	@Override
+    public String toString(){
 		return text;
 	}
 }

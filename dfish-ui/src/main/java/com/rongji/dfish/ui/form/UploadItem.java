@@ -109,7 +109,8 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	 * 显示的文本
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -117,7 +118,8 @@ public class UploadItem extends AbstractNode<UploadItem> implements HasText<Uplo
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public UploadItem setText(String text) {
+	@Override
+    public UploadItem setText(String text) {
 		this.text = text;
 		return this;
 	}

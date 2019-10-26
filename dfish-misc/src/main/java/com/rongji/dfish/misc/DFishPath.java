@@ -22,7 +22,9 @@ public class DFishPath {
 	 * @param path
 	 */
 	public DFishPath(String path){
-		if(path==null)return;
+		if(path==null) {
+            return;
+        }
 		String[] nds=path.split("/");
 		for(String n:nds){
 			if(!n.equals("")){
@@ -36,7 +38,9 @@ public class DFishPath {
 	 * @param seperator
 	 */
 	public DFishPath(String path,char seperator){
-		if(path==null)return;
+		if(path==null) {
+            return;
+        }
 		String s=null;//String.valueOf(seperator);
 		switch(seperator){
 		case '$':
@@ -63,7 +67,9 @@ public class DFishPath {
 	 * @param nodes
 	 */
 	public DFishPath(List<String> nodes){
-		if(nodes==null)return;
+		if(nodes==null) {
+            return;
+        }
 		for(String n:nodes){
 			if(!n.equals("")){
 				this.nodes.add(n);
@@ -75,7 +81,9 @@ public class DFishPath {
 	 * @param nodes
 	 */
 	public DFishPath(String[] nodes){
-		if(nodes==null)return;
+		if(nodes==null) {
+            return;
+        }
 		for(String n:nodes){
 			if(!n.equals("")){
 				this.nodes.add(n);
@@ -136,8 +144,12 @@ public class DFishPath {
 
 	@Override
 	public boolean equals(Object o){
-		if(o==null)return false;
-		if(o==this)return true;
+		if(o==null) {
+            return false;
+        }
+		if(o==this) {
+            return true;
+        }
 		if(o instanceof DFishPath){
 			DFishPath cast=(DFishPath)o;
 			return this.nodes.equals(cast.nodes);

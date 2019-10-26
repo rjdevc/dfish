@@ -25,7 +25,8 @@ public class FrameLayout extends AbstractLayout<FrameLayout,Widget<?>>implements
 		super(id);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "frame";//
 	}
 

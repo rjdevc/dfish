@@ -432,7 +432,8 @@ public class Path{
 	 * toString();
 	 * 
 	 */
-	public String toString(){
+	@Override
+    public String toString(){
 		format();
 		
 		return this.path;
@@ -442,7 +443,8 @@ public class Path{
 	 * equals();
 	 * 
 	 */
-	public boolean equals(Object o){
+	@Override
+    public boolean equals(Object o){
 		boolean equal=false;
 		if(o!=null && o!=this && o instanceof Path){
 			equal=this.pathNodes.equals(((Path)o).pathNodes);
@@ -455,7 +457,8 @@ public class Path{
 	 * hashCode();
 	 * 
 	 */
-	public int hashCode(){
+	@Override
+    public int hashCode(){
 		int hashCode=0;
 		
 		if(level>0){

@@ -19,7 +19,8 @@ public class ComboboxOption extends AbstractWidget<ComboboxOption> implements Ha
 	 * 显示文本
 	 * @return text
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -27,7 +28,8 @@ public class ComboboxOption extends AbstractWidget<ComboboxOption> implements Ha
 	 * @param text 显示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ComboboxOption setText(String text) {
+	@Override
+    public ComboboxOption setText(String text) {
 		this.text = text;
 		return this;
 	}

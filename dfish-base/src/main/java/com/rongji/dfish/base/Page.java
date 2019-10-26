@@ -98,8 +98,9 @@ public class Page implements Serializable{
 	public int getPageCount() {
 		if ( pageSize > 0) {//(rowCount != 0) &&
 			int pageCount = ((rowCount + pageSize) - 1) / pageSize;
-			if (pageCount < 1)
-				pageCount = 1;
+			if (pageCount < 1) {
+                pageCount = 1;
+            }
 			return pageCount;
 		}
 

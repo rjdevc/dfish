@@ -233,26 +233,31 @@ public class GridLayoutFormPanel extends AbstractWidgetWrapper<GridLayoutFormPan
      * @param value
      * @return 本身，这样可以继续设置其他属性
      */
-    public GridLayoutFormPanel addHidden(String name,String value) {
+    @Override
+    public GridLayoutFormPanel addHidden(String name, String value) {
     	prototype.addHidden(name,value);
 	    return this;
     }
 	
 
-	public GridLayoutFormPanel setScroll(Boolean scroll) {
+	@Override
+    public GridLayoutFormPanel setScroll(Boolean scroll) {
 		prototype.setScroll(scroll);
 		return this;
 	}
 	
-	public Boolean getScroll() {
+	@Override
+    public Boolean getScroll() {
 		return prototype.getScroll();
 	}
 
+    @Override
     public GridLayoutFormPanel setScrollClass(String scrollClass) {
     	prototype.setScrollClass(scrollClass);
 	    return this;
     }
 
+    @Override
     public String getScrollClass() {
 	    return prototype.getScrollClass();
     }

@@ -12,6 +12,8 @@
 .f-22{font-size:22px!important}
 .f-24{font-size:24px!important}
 
+.f-body{margin:0;overflow:hidden}
+
 .f-clearfix{zoom:1}
 .f-clearfix:after{content:" ";height:0;visibility:hidden;display:block;clear:both}
 

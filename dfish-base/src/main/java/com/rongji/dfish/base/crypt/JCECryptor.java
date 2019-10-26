@@ -130,6 +130,7 @@ public final class JCECryptor extends StringCryptor {
      * @return byte[]
      * @throws Exception
      */
+    @Override
     protected synchronized byte[] encrypt(byte[] src) throws Exception {
         return cipherE.doFinal(src);
     }
@@ -140,6 +141,7 @@ public final class JCECryptor extends StringCryptor {
      * @return byte[]
      * @throws Exception
      */
+    @Override
     protected synchronized byte[] decrypt(byte[] src) throws Exception {
         return cipherD.doFinal(src);
     }

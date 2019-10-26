@@ -85,7 +85,8 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	 * 显示文本。
 	 * @return String
 	 */
-	public String getText() {
+	@Override
+    public String getText() {
 		return text;
 	}
 	/**
@@ -93,7 +94,8 @@ public class Progress extends AbstractWidget<Progress> implements HasText<Progre
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Progress setText(String text) {
+	@Override
+    public Progress setText(String text) {
 		this.text = text;
 		return this;
 	}

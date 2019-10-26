@@ -48,7 +48,8 @@ MultiContainer<HorizontalLayout,Widget<?>>,Alignable<HorizontalLayout>, Valignab
 		super(id);
 	}
 
-	public String getType() {
+	@Override
+    public String getType() {
 		return "horz";
 	}
 
@@ -60,7 +61,8 @@ MultiContainer<HorizontalLayout,Widget<?>>,Alignable<HorizontalLayout>, Valignab
 	 * @param width String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public HorizontalLayout add(int index,Widget<?> w,String width) {
+	@Override
+    public HorizontalLayout add(int index, Widget<?> w, String width) {
 		if (w == null) {
 			throw new UnsupportedOperationException("The added widget can not be null.");
 		}
