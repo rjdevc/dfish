@@ -292,6 +292,9 @@ public class FlexGrid extends AbstractLayout<FlexGrid, Widget<?>>
 		copyProperties(prototype, this);
 		
 		if(getHiddens()!=null){
+			if(prototype.getHiddens()!=null){
+				prototype.getHiddens().clear();
+			}
 			for(Hidden h:getHiddens()){
 				prototype.addHidden(h.getName(),h.getValue());
 			}
