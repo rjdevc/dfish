@@ -8390,7 +8390,9 @@ Linkbox = define.widget( 'linkbox', {
 				var l = $.strLen( s );
 				l > this.x.validate.maxlength && this.exec( { type: 'tip', text: Loc.ps( Loc.form.over_maxlength, [ l - this.x.validate.maxlength ] ) } );
 			}
-			this.$t().title = this.text();
+			var t = this.text();
+			this.$t().title = t;
+			this.checkPlaceholder( s || t );
 			if ( this.x.on && this.x.on.change && v != s )
 				this.triggerHandler( 'change' );
 			this.attachPub();
