@@ -1,5 +1,6 @@
 package com.rongji.dfish.base.cache;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -7,7 +8,7 @@ import java.util.Set;
  * DFish 中用到的键值对缓存。
  * 注意缓存中的值不保证都不会丢失，可能会根据缓存的大小，
  * 数据的新旧部分数据会被清理，具体缓存的实现将会指定是清理最旧的数据还是清理不经常使用的数据，或是其他规范。
- * @author LinLW v1.0 YuLM v1.1
+ * @author LinLW v1.0 lamontYu v1.1
  * @version 1.1
  */
 public interface Cache<K, V> {
@@ -19,11 +20,18 @@ public interface Cache<K, V> {
 	V get(K key);
 	/**
 	 * 取得多个值，一次性取得多个值，可以触发批量，提高性能
-	 * @param key K[]
+	 * @param keys key数组
 	 * @return List&lt;V&gt;
 	 */
 	@SuppressWarnings("unchecked")
-	Map<K, V> gets(K... key);
+	Map<K, V> gets(K... keys);
+
+	/**
+	 * 取得多个值，一次性取得多个值，可以触发批量，提高性能
+	 * @param keys key的集合
+	 * @return List&lt;V&gt;
+	 */
+	Map<K, V> gets(Collection<K> keys);
 	/**
 	 * 设置一个值。
 	 * 设置这个值的时候，<strong>有可能</strong>把旧的值置放出来。
