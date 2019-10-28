@@ -2315,7 +2315,7 @@ View = define.widget( 'view', {
 		// 读/写表单值 /@a -> name, b -> value, c -> text
 		fv: function( a, b, c ) {
 			if ( a = this.f( a ) )
-				b === U ? (b = a.val()) : a.val( b, c );
+				b === U ? (b = a.groupVal ? a.groupVal() : a.val()) : a.groupVal ? a.groupVal( b, c ) : a.val( b, c );
 			return b;
 		},
 		// 获取范围内的所有表单 /@a -> name, b -> range?(elem|widget)
@@ -5526,11 +5526,11 @@ Checkbox = define.widget( 'checkbox', {
 				return this.$t().checked ? 1 : 0;
 			this.check( a == 1 ? T : F );
 		},
-		val: CheckboxGroup.prototype.val,
 		text: function() {
 			return this.x.text;
 		},
-		selfVal: function() {
+		groupVal: CheckboxGroup.prototype.val,
+		val: function() {
 			var t = this.$t();
 			return t.disabled || ! t.checked ? '' : t.value;
 		},
