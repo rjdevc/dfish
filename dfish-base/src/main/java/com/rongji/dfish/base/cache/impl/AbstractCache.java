@@ -176,8 +176,12 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 		for (K key : lockKeys) {
 			LOCKS.remove(key);
 		}
-		this.putAll(valueMap);
-		lockKeys.removeAll(valueMap.keySet());
+		if (valueMap != null) {
+			this.putAll(valueMap);
+			lockKeys.removeAll(valueMap.keySet());
+		} else {
+			valueMap = new HashMap<>(0);
+		}
 		// 获取不到的数据默认补空值,否则将穿透缓存
 		for (K key : lockKeys) {
 			this.put(key, null);
