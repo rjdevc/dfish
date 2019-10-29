@@ -300,6 +300,14 @@ i {
     background: #1989e0;
 }
 
+.x-btn-text.w-button ._t, .x-btn-text.w-button ._i {
+    padding-right: 5px;
+}
+
+.x-btn-text.w-button ._c {
+    padding-left: 5px;
+}
+
 .x-btn-text.w-button.z-normal {
     border-color: transparent;
     background-color: transparent;
