@@ -2743,7 +2743,6 @@ Vertical = define.widget( 'vertical', {
 		className: 'w-vertical'
 	}
 } ),
-_frame_focus = {},
 /* `Frame`  子元素被约束为：高度宽度占满，只有一个可见  */
 Frame = define.widget( 'frame', {
 	Const: function( x, p ) {
@@ -2754,17 +2753,8 @@ Frame = define.widget( 'frame', {
 		body: {
 			ready: function() {
 				if ( this.length ) {
-					var f = _frame_focus[ this.ownerView.id ], d;
-					if ( f ) {
-						for ( var i = 0; i < this.length; i ++ ) {
-							if ( this[ i ].x.id && f[ this[ i ].x.id ] ) {
-								 d = this[ i ];
-								 break;
-							}
-						}
-					}
-					!d && this.x.dft && (d = this.ownerView.find( this.x.dft ));
-					d && this.focus( d );
+					var d = this.focusNode;
+					!d && this.x.dft && (d = this.ownerView.find( this.x.dft )) && this.focus( d );
 				}
 			}
 		}
@@ -3231,10 +3221,6 @@ Button = define.widget( 'button', {
 		_menu_type: 'menu',
 		// @implement
 		init_nodes: function() {
-			if ( this.x.target && this.x.focus ) {
-				for ( var i = 0, b = this.x.target.split( ',' ); i < b.length; i ++ )
-					$.jsonChain( T, _frame_focus, this.ownerView.id, b[ i ] );
-			}
 			this.setMore( this.x );
 		},
 		// @implement
@@ -3383,7 +3369,7 @@ Button = define.widget( 'button', {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) + '</em><i class=f-vi></i></div>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
 			var x = this.x, p = this.parentNode, g = this.tagName || 'div', w = this.innerWidth(),
