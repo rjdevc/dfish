@@ -305,16 +305,6 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N, P>, N ex
     }
 
     /**
-     * boxgroup节点数组
-     *
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    public List<? extends N> getOptions() {
-        return nodes;
-    }
-
-    /**
      * boxgroup的默认参数
      *
      * @return pub
