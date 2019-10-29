@@ -3880,7 +3880,7 @@ Page = define.widget( 'page/mini', {
 				} else if ( this.x.src ) {
 					var s = this.x.src;
 					if ( s.indexOf( 'javascript:' ) === 0 )
-						this.exec( { type: 'js', text: s } );
+						this.exec( { type: 'js', text: s }, [ i ] );
 					else {
 						this.exec( { type: 'ajax', src: s, filter: this.x.filter, complete: this.x.complete,
 							success: this.x.success || function( x ) {
