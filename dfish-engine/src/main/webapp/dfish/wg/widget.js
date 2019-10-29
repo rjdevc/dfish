@@ -3392,7 +3392,7 @@ Button = define.widget( 'button', {
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
-			if ( t )
+			if ( ! t && x.icon )
 				b += ' z-i';
 			if ( w != N ) {
 				s += 'width:' + w + 'px;';
