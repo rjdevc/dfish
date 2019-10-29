@@ -14,7 +14,15 @@ public class LobDao extends BaseDao<PubLob, String> {
         if (Utils.isEmpty(lobId)) {
             return 0;
         }
-        return pubCommonDAO.bulkUpdate("UPDATE PubLob t SET t.lobContent=? WHERE t.lobId=?", lobContent, lobId);
+        return pubCommonDAO.bulkUpdate("UPDATE PubLob t SET t.lobContent=?,t.operTime=? WHERE t.lobId=?", new Object[]{lobContent, new Date(), lobId});
+    }
+
+    public int archiveLob(String lobId) {
+        if (Utils.isEmpty(lobId)) {
+            return 0;
+        }
+        return pubCommonDAO.bulkUpdate("UPDATE PubLob t SET t.archiveFlag=?,t.archiveTime=? WHERE t.lobId=?",
+                new Object[]{"1", new Date(), lobId});
     }
 
     public Map<String, String> findLobContentBatch(Collection<String> lobIds) {
@@ -22,7 +30,7 @@ public class LobDao extends BaseDao<PubLob, String> {
             return Collections.emptyMap();
         }
         Set<String> idSet = new HashSet<>(lobIds);
-        for (Iterator<String> iter = idSet.iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = idSet.iterator(); iter.hasNext(); ) {
             String key = iter.next();
             if (Utils.isEmpty(key)) {
                 iter.remove();

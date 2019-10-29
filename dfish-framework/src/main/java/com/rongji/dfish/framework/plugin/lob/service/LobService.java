@@ -7,10 +7,7 @@ import com.rongji.dfish.framework.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class LobService extends BaseService<PubLob, PubLob, String> {
@@ -31,6 +28,8 @@ public class LobService extends BaseService<PubLob, PubLob, String> {
 		PubLob pubLob = new PubLob();
 		pubLob.setLobId(lobId);
 		pubLob.setLobContent(lobContent);
+		pubLob.setOperTime(new Date());
+		pubLob.setArchiveFlag("0");
 		getDao().save(pubLob);
 		return lobId;
 	}
@@ -38,20 +37,10 @@ public class LobService extends BaseService<PubLob, PubLob, String> {
 	public int updateLob(String lobId, String lobContent) {
 		return getDao().updateLob(lobId, lobContent);
 	}
-	
-//	public int[] updateLobBatch(List<PubLob> lobs) {
-//		// FIXME 批量方法需要验证完善
-//		if (Utils.isEmpty(lobs)) {
-//			return new int[0];
-//		}
-//		
-//		List<Object[]> batchArgs = new ArrayList<Object[]>();
-//		for (PubLob lob : lobs) {
-//			// 这里还需要非空判断
-//			batchArgs.add(new Object[]{ lob.getLobContent(), lob.getLobId() });
-//		}
-//		return pubCommonDAO.batchUpdate("UPDATE PubLob t SET t.lobContent=? WHERE t.lobId=?", batchArgs);
-//	}
+
+	public int archiveLob(String lobId) {
+		return getDao().archiveLob(lobId);
+	}
 	
 	public String getLobContent(String lobId) {
 		Map<String, String> lobMap = findLobContentBatch(lobId);

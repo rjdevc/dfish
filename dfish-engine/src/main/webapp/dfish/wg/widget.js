@@ -421,7 +421,11 @@ Node = $.createClass( {
 	}
 } ),
 
-_compileTemplate = function( g, d, s ) { return new Template( s || g.x.template, d, g ).compile() },
+_compileTemplate = function( g, d, s ) {
+	var r = new Template( s || g.x.template, d, g ).compile();
+	!r.type && (r.type = g.type);
+	return r;
+},
 TemplateWidget = $.createClass( {
 	Const: function( x, t ) {
 		this.x = x;
@@ -513,7 +517,12 @@ Template = $.createClass( {
 				if ( k.charAt( 0 ) === '@' ) {  //以@开头的是JS表达式
 					if ( k.indexOf( '@w-' ) === 0 ) {
 						if ( k.indexOf( '@w-if' ) === 0 || k.indexOf( '@w-elseif' ) === 0 ) {
-							$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
+							if ( typeof b === _OBJ ) {
+								$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
+							} else if ( ! this.format( b, g, y ) ) {
+								r = N;
+								break;
+							}
 						} else if ( k === '@w-else' ) {
 							f._switchdefault = b;
 						}
@@ -612,12 +621,12 @@ _tpl_view = function( a ) {
 _compilePreload = function( a, x ) {
 	var b = typeof a === _OBJ, p = b ? a : _getPreload( a ), y = x, x = x.type === 'dialog' ? x.node : x, n = x, v;
 	if ( p ) {
-		if ( x.type === 'view' ) {
+		if ( x.type === 'view' && x.node ) {
 			v = _tpl_view( p );
 			v && (n = x.node);
 		}
 		if ( ! n )
-			return x;
+			return y;
 		var t = 'preload/body',
 			s = b ? $.jsonString( p ) : (_tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( p ))),
 			c = b ? _tpl_parse( p ) : (_tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( p ))),
@@ -716,7 +725,9 @@ W = define( 'widget', function() {
 				if ( t ) {
 					if ( !t.type || t.type === this.type ) {
 						for ( var k in t ) {
-							if ( k !== 'node' && k !== 'nodes' ) x[ k ] = t[ k ];
+							if ( k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
+								x[ k ] = t[ k ];
+							}
 						}
 					} else if ( t.type && !W.isCmd( t ) ) {
 						$.alert( Loc.ps( Loc.debug.error_template_type, this.x.template, this.type ) );
@@ -1317,7 +1328,7 @@ W = define( 'widget', function() {
 				var s = b.indexOf( 'javascript:' ) === 0 ? this.formatJS( b, N, N, d, e ) : this.formatStr( b, N, c !== F && 'strEscape', d, e );
 				return typeof s === _STR ? _parseHTML.call( this, s ) : s;
 			} else
-				return c !== F ? $.strEscape( a ) : (a || '');
+				return c !== F ? $.strEscape( a ) : (a == N ? '' : '' + a);
 		},
 		html_prop: function() {
 			var b = ' w-type="' + this.type + '" id=' + this.id,
@@ -2089,7 +2100,7 @@ Xsrc = define.widget( 'xsrc', {
 				this.start();
 			},
 			show: function() {
-				this.start();
+				this.domready && this.start();
 			}
 		}
 	},
@@ -2104,15 +2115,15 @@ Xsrc = define.widget( 'xsrc', {
 			if ( this.type_view && _view_resources[ this.path ] )
 				$.require( _view_resources[ this.path ] );
 			_proto.init_x.call( this, x );
-			if ( ! x.node && ! this.domready ) {
+			if ( this.domready && this.x.id ) {
+				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
+			}
+			if ( ! x.node ) {
 				var s = x.src || (this.x.template && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
 				} else
 					this.className += ' z-loading';
-			}
-			if ( this.domready && this.x.id ) {
-				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
 			}
 			var t = x.preload && _getPreload( x.preload );
 			if ( t ) {
@@ -2130,7 +2141,11 @@ Xsrc = define.widget( 'xsrc', {
 				this.layout = new Layout( { node: this.x.node }, this );
 		},
 		start: function() {
-			! this._x_ini && (this.init_x( this.x ), this.repaint());
+			if ( ! this._x_ini ) {
+				this.init_x( this.x );
+				this.repaint();
+				this.layout && this.showLayout();
+			}
 			! this.layout && this.isShow() && this.load();
 		},
 		isShow: function() {
@@ -2139,7 +2154,7 @@ Xsrc = define.widget( 'xsrc', {
 			if ( ! this.parentNode )
 				return T;
 			if ( this.parentNode.type_frame )
-				return this.parentNode.getFocus() == this;
+				return this.parentNode.getFocus(this) == this;
 			if ( this.nodeIndex >= 0 && _toggle_hide_parents[ this.parentNode.id ] ) {
 				var n = this.nodeIndex;
 				while ( n -- )
@@ -2440,7 +2455,7 @@ View = define.widget( 'view', {
 		// 读/写表单值 /@a -> name, b -> value, c -> text
 		fv: function( a, b, c ) {
 			if ( a = this.f( a ) )
-				b === U ? (b = a.val()) : a.val( b, c );
+				b === U ? (b = a.groupVal ? a.groupVal() : a.val()) : a.groupVal ? a.groupVal( b, c ) : a.val( b, c );
 			return b;
 		},
 		// 获取范围内的所有表单 /@a -> name, b -> range?(elem|widget)
@@ -2732,7 +2747,17 @@ Vertical = define.widget( 'vertical', {
 Frame = define.widget( 'frame', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		(this.focusNode = this.getFocus()) && (this.focusNode.focusOwner = this);
+		//(this.focusNode = this.getFocus()) && (this.focusNode.focusOwner = this);
+	},
+	Listener: {
+		body: {
+			ready: function() {
+				if ( this.length ) {
+					var d = this.focusNode;
+					!d && this.x.dft && (d = this.ownerView.find( this.x.dft )) && this.focus( d );
+				}
+			}
+		}
 	},
 	Helper: {
 		// 获取a节点最接近 frame 的祖先元素
@@ -2762,9 +2787,9 @@ Frame = define.widget( 'frame', {
 			return 'f-sub-frame' + (a === this.focusNode ? '-on' : '');
 		},
 		getFocus: function() {
-			return this.focusNode || (this.x.dft && this.ownerView.find( this.x.dft )) || this[ 0 ];
+			return this.focusNode;
 		},
-		// @a -> wgid
+		// @a -> wg,id
 		// animate: scrollX(横向滚动),scrollY(纵向滚动),
 		focus: function( a ) {
 			if ( this.$() ) {
@@ -3344,15 +3369,17 @@ Button = define.widget( 'button', {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + ( this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '' ) + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) + '</em><i class=f-vi></i></div>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) + '</em><i class=f-vi></i></div>';
 		},
 		html: function() {
-			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
-				a = '<' + t + ' id=' + this.id + ' class="',
-				b = this.prop_cls(), c = this._combo, d, s = '';
+			var x = this.x, p = this.parentNode, g = this.tagName || 'div', w = this.innerWidth(),
+				a = '<' + g + ' id=' + this.id + ' class="',
+				b = this.prop_cls(), c = this._combo, d, s = '', t = x.text == N ? '' : ('' + x.text);
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
+			if ( ! t && x.icon )
+				b += ' z-i';
 			if ( w != N ) {
 				s += 'width:' + w + 'px;';
 			}
@@ -3408,10 +3435,10 @@ Button = define.widget( 'button', {
 			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
 			if ( x.icon )
 				a += this.html_icon();
-			if ( x.text )
+			if ( t )
 				a += this.html_text();
 			a += '</div>';
-			a += this.html_append() + (ie7 && !w ? '</table>' : '') + '</' + t + '>';
+			a += this.html_append() + (ie7 && !w ? '</table>' : '') + '</' + g + '>';
 			return this.html_before() + a + this.html_after();
 		}
 	}
@@ -3556,14 +3583,14 @@ Tabs = define.widget( 'tabs', {
 			if ( n[ i ].type === 'split' ) {
 				b.push( n[ i ] );
 			} else {
-				b.push( $.extend( { focusable: T }, n[ i ], x.pub, e && e.pub ) );
+				b.push( $.extend( { type: 'tab', focusable: T }, n[ i ], x.pub, e && e.pub ) );
 				c.push( n[ i ].target );
 				b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'page' + i);
 				!d && (d = b[ i ].focus && b[ i ]);
 			}
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
-		y.nodes = [ { type: 'tabbar', cls: 'w-tabs-buttonbar', align: x.align, split: x.split, space: x.space, nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
+		y.nodes = [ { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
 		delete y.pub;
 		Vert.call( this, y, p );
 	},
@@ -3572,22 +3599,11 @@ Tabs = define.widget( 'tabs', {
 		className: 'w-tabs'
 	}
 } ),
-/* `tabs` */
-Tabbar = define.widget( 'tabbar', {
-	Extend: 'buttonbar',
-	Prototype: {
-		className: 'w-tabbar',
-		x_childtype: function( t ) {
-			return t === 'split' ? 'button/split' : (t || 'tab');
-		}		
-	}
-} ),
-/* `tabs` */
+/* `tab` */
 Tab = define.widget( 'tab', {
 	Extend: 'button',
 	Prototype: {
-		className: 'w-tab',
-		ROOT_TYPE: 'tabs'
+		className: 'w-tab'
 	}
 } ),
 /* `album` */
@@ -4327,9 +4343,14 @@ Dialog = define.widget( 'dialog', {
 			while ( (p = p.parentNode) && !p.type_view && !p.isDialogWidget );
 			return p;
 		},
-		html_nodes: ie7 ? function() {
-			return '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + _proto.html_nodes.apply( this, arguments ) + '</td></tr></table>';
-		} : _proto.html_nodes,
+		html_nodes: function() {
+			var s = _proto.html_nodes.apply( this, arguments );
+			if ( ie7 )
+				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
+			if ( this.type === 'dialog' && this.x.loadinghead !== F )
+				s += '<div class=w-dialog-loadinghead><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
+			return s;
+		},
 		render: function() {
 			if ( this._disposed )
 				return;
@@ -4740,6 +4761,14 @@ ProgressItem = define.widget( 'progress/item', {
 		W.apply( this, arguments );
 		x.hidepercent && (this.className += ' z-hidepercent');
 		!x.percent && (x.percent = 0);
+		if ( x.range ) {
+			for ( var i = 0, r = x.range.split( ',' ).sort(); i < r.length; i ++ ) {
+				if ( x.percent < r[ i ] ) {
+					this.className += ' z-' + r[ i ];
+					break;
+				}
+			}
+		}
 		this.cssText = 'height:auto;';
 	},
 	Listener: {
@@ -4752,6 +4781,7 @@ ProgressItem = define.widget( 'progress/item', {
 	},
 	Prototype: {
 		ROOT_TYPE: 'progress',
+		className: 'w-progress-item',
 		html_nodes: function() {
 			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
 			return (t != N ? '<div class="_t f-fix">' + this.html_format( t, this.x.format, this.x.escape ) + '</div>' : '') +
@@ -5813,11 +5843,11 @@ Checkbox = define.widget( 'checkbox', {
 				return this.$t().checked ? 1 : 0;
 			this.check( a == 1 ? T : F );
 		},
-		val: CheckboxGroup.prototype.val,
 		text: function() {
 			return this.x.text;
 		},
-		selfVal: function() {
+		groupVal: CheckboxGroup.prototype.val,
+		val: function() {
 			var t = this.$t();
 			return t.disabled || ! t.checked ? '' : t.value;
 		},
@@ -7608,7 +7638,7 @@ Combobox = define.widget( 'combobox', {
 		},
 		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', indent: 1 };
+			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', indent: 1, loadinghead: F };
 			$.extend( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
 			var o = { type: 'dialog', pophide: T, memory: T, snap: this.id + 'f', snaptype: 'v', wmin: 2, hmin: 2 },
@@ -7785,9 +7815,12 @@ Combobox = define.widget( 'combobox', {
 				else
 					this[ i ].x.value && s.push( this[ i ].x.value );
 			}
-			f && (t = this.queryText() ) && s.push( t );
-			this._val( s.join( ',' ) );
+			t = this.queryText();
+			f && t && s.push( t );
+			s = s.join( ',' );
+			this._val( s );
 			this.$().title = this.text();
+			this.checkPlaceholder( s || t );
 			if ( this.x.on && this.x.on.change && v != this._val() )
 				this.triggerHandler( 'change' );
 		},
@@ -8343,7 +8376,9 @@ Linkbox = define.widget( 'linkbox', {
 				var l = $.strLen( s );
 				l > this.x.validate.maxlength && this.exec( { type: 'tip', text: Loc.ps( Loc.form.over_maxlength, [ l - this.x.validate.maxlength ] ) } );
 			}
-			this.$t().title = this.text();
+			var t = this.text();
+			this.$t().title = t;
+			this.checkPlaceholder( s || t );
 			if ( this.x.on && this.x.on.change && v != s )
 				this.triggerHandler( 'change' );
 			this.attachPub();

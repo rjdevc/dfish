@@ -1,25 +1,21 @@
 package com.rongji.dfish.base.cache.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.CacheItem;
 import com.rongji.dfish.base.cache.CacheValueGetter;
 import com.rongji.dfish.base.util.ThreadUtil;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+
+/**
+ * 缓存抽象类,该类实现缓存获取等通用的方法
+ * @param <K> 缓存Key
+ * @param <V> 缓存Value
+ * @author lamontYu
+ */
 public class AbstractCache<K, V> implements Cache<K, V> {
 	private int maxSize;
 	private long alive;
@@ -180,8 +176,12 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 		for (K key : lockKeys) {
 			LOCKS.remove(key);
 		}
-		this.putAll(valueMap);
-		lockKeys.removeAll(valueMap.keySet());
+		if (valueMap != null) {
+			this.putAll(valueMap);
+			lockKeys.removeAll(valueMap.keySet());
+		} else {
+			valueMap = new HashMap<>(0);
+		}
 		// 获取不到的数据默认补空值,否则将穿透缓存
 		for (K key : lockKeys) {
 			this.put(key, null);
@@ -211,17 +211,29 @@ public class AbstractCache<K, V> implements Cache<K, V> {
 		core.clear();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-    public Map<K, V> gets(K... key) {
-	    Map<K, V> result = new HashMap<>();
-	    if (key != null) {
-	    	for (K k : key) {
-	    		result.put(k, get(k));
-	    	}
-	    }
-	    return result;
-    }
+    public Map<K, V> gets(K... keys) {
+	    if (keys == null) {
+	    	return Collections.emptyMap();
+		}
+		Map<K, V> result = new HashMap<>(keys.length);
+		for (K key : keys) {
+			result.put(key, get(key));
+		}
+		return result;
+	}
+
+    @Override
+	public Map<K, V> gets(Collection<K> keys) {
+		if (keys == null) {
+			return Collections.emptyMap();
+		}
+		Map<K, V> result = new HashMap<>(keys.size());
+		for (K key : keys) {
+			result.put(key, get(key));
+		}
+		return result;
+	}
 
 	@Override
 	public boolean containsKey(K key) {

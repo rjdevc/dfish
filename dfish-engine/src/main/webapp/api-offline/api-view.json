@@ -176,13 +176,16 @@
 		        { "id": "img", "text": "img", "icon": ".icon .icon-class" },
 		        { "id": "label", "text": "label<sup>3.2+</sup>", "icon": ".icon .icon-class" },
 		        { "id": "menu/button", "text": "menu/button", "icon": ".icon .icon-class" },
-		        { "id": "progress", "text": "progress", "icon": ".icon .icon-class", "open": true, "nodes": [
+		        { "id": "progress", "text": "progress", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "progress/item", "text": "progress/item", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "split", "text": "split", "icon": ".icon .icon-class" },
 		        { "id": "submitbutton", "text": "submitbutton", "icon": ".icon .icon-class" },
+		        { "id": "tabs", "text": "tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "tab", "text": "tab", "icon": ".icon .icon-class" }
+		        ]  },
 		        { "id": "toggle", "text": "toggle", "icon": ".icon .icon-class" },
-		        { "id": "tree", "text": "tree", "icon": ".icon .icon-class", "open": true, "nodes": [
+		        { "id": "tree", "text": "tree", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "leaf", "text": "leaf", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "page/buttongroup", "text": "page/buttongroup", "icon": ".icon .icon-class" },

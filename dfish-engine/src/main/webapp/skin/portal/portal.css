@@ -56,10 +56,6 @@
     border-bottom: 1px solid #ddd;
 }
 
-.x-head-oper .w-button ._i {
-    padding-right: 12px;
-}
-
 .x-main-title {
     font-size: 16px;
     color: #333;
@@ -101,18 +97,4 @@
 
 .x-split-side {
     padding: 10px 20px 10px 10px;
-}
-
-.x-grid-oper i {
-    cursor: pointer;
-    display: inline-block;
-    margin-left: 5px;
-}
-
-.x-grid-oper i:first-child {
-    margin-left: 0;
-}
-
-.x-grid-oper i.z-ds {
-    cursor: default;
 }

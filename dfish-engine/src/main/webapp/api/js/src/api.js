@@ -16,8 +16,8 @@ require.css( './api.css' );
 
 var data = require( '../' + mod + '-data' ),
 	path = module.path,
-	pk = 'Config,Event,Properties,Methods,Classes'.split( ',' ),
-	pn = '配置,事件,属性,方法,样式'.split( ',' );
+	pk = 'Config,Event,Properties,Methods,Classes,Examples'.split( ',' ),
+	pn = '配置,事件,属性,方法,样式,范例'.split( ',' );
 
 //helper
 function vm() {
@@ -81,7 +81,7 @@ function memberWidget( id, a, k, n, m ) {
 			while ( i -- ) {
 				j = b.length;
 				while ( j -- ) {
-					if ( c[ i ] === b[ j ].name || b[ j ].name.indexOf( c[ i ] + '(' ) === 0 ) { b.splice( j, 1 ); break; }
+					if ( b[ j ].name && (c[ i ] === b[ j ].name || b[ j ].name.indexOf( c[ i ] + '(' ) === 0) ) { b.splice( j, 1 ); break; }
 				}
 			}
 		}
@@ -91,11 +91,11 @@ function memberWidget( id, a, k, n, m ) {
 }
 
 function format( row ) {
-	var d = row.x.data, e,
-		s = '<h4 id="' + ( d.id || $.strTo( d.name, '(' ) || d.name ) + '"><span class="name' + (d.common ? '' : ' ownprop') + '">' + d.name + '</span>' + (d.ver ? '<sup>' + d.ver + '</sup>&nbsp;' : '') + (d.type ? ' <span class=typeof>: ' + d.type + '</span>' : '') + (d.mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i> ': '') + '</h4><p class=remark>' + d.remark + '</p>';
-	if ( d.param ) {
+	var d = row.x.data, e, s = '';
+	if ( d.name )
+		s += '<h4 id="' + ( d.id || $.strTo( d.name, '(' ) || d.name ) + '"><span class="name' + (d.common ? '' : ' ownprop') + '">' + d.name + '</span>' + (d.ver ? '<sup>' + d.ver + '</sup>&nbsp;' : '') + (d.type ? ' <span class=typeof>: ' + d.type + '</span>' : '') + (d.mobile ? ' <i class="f-i icon icon-mobile" title="移动端专用"></i> ': '') + '</h4><p class=remark>' + d.remark + '</p>';
+	if ( d.param )
 		s += formatParam( d.param, d.common );
-	}
 	if ( e = d.example )
 		s += exampleContent( e );
 	return { type: 'html', text: s, cls: 'title' };

@@ -320,11 +320,14 @@ define( {
             var obj = $.jsonParse( '{"name":"John"}' ); //返回一个json对象
           }
       ] },
-      { name: '$.jsonString(obj)', remark: '把一个json对象转为字符串。', common: true, param: [
-        { name: 'obj', type: 'json', remark: 'json对象' }
+      { name: '$.jsonString(value, [replacer], [space])', remark: '把一个json对象转为字符串。', common: true, param: [
+        { name: 'value', type: 'Object', remark: 'json对象。' },
+        { name: 'replacer', type: 'Function | Array', remark: '用于转换结果的函数或数组。<br>如果 replacer 为函数，则 $.jsonString 将调用该函数，并传入每个成员的键和值。使用返回值而不是原始值。如果此函数返回 undefined，则排除成员。根对象的键是一个空字符串：""。<br>如果 replacer 是一个数组，则仅转换该数组中具有键值的成员。成员的转换顺序与键在数组中的顺序一样。当 value 参数也为数组时，将忽略 replacer 数组。', optional: true },
+        { name: 'space', type: 'Number | String', remark: '文本添加缩进、空格和换行符，如果 space 是一个数字，则返回值文本在每个级别缩进指定数目的空格，如果 space 大于 10，则文本缩进 10 个空格。space 也可以使用非数字，如：\\t。', optional: true }
       ], example: [
           function() {
-            var str = $.jsonString( { name: 'John' } ); //返回字符串
+          	// 把JSON对象转为字符串
+            var str = $.jsonString( { name: 'John' } );
           }
       ] },
       { name: '$.loadCss(url)', remark: '装载CSS文件。', common: true, param: [
@@ -1267,7 +1270,6 @@ define( {
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，按钮点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
       { name: 'hoverdrop', type: 'Boolean', remark: '是否当鼠标 hover 时展开下拉菜单。' },
-      { name: 'hidetoggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
       { name: 'icon', type: 'String', remark: '图标的url。支持以 "." 开头的样式名。', example: [
           function() {
           	// 使用图片路径
@@ -1299,7 +1301,7 @@ define( {
       { name: 'name', type: 'String', remark: '在一个 view 中设置了相同 name 的 button 将成为一组，focus 只会作用于其中一个。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。点击下拉显示右键菜单。nodes 和 more 不应同时使用。' },
       { name: 'status', type: 'String', remark: '按钮状态。可选值：<b>normal</b>, <b>disabled</b>。' },
-      { name: 'target', type: 'String', remark: '指定一个 frame 内的 widget ID，使 button 的 focus 效果和绑定 widget 的显示隐藏效果。' },
+      { name: 'target', type: 'Widget', remark: '标签对应的内容widget。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'tip', type: 'String', remark: '浮动显示的提示文本。' }
     ],
@@ -1431,11 +1433,43 @@ define( {
     Classes: [
       { name: '.w-buttonbar', remark: '基础样式。' },
       { name: '.z-dirv', remark: '设置了 dir:"v"(按钮垂直排列) 时的样式。' },
-      { name: '.z-dirh', remark: '设置了 dir:"v"(按钮水平排列) 时的样式。' },
-      { name: '.z-empty', remark: '没有子节点时的样式。' }
+      { name: '.z-dirh', remark: '设置了 dir:"v"(按钮水平排列) 时的样式。' }
     ]
   },
-  "deck": {
+  "tabs": {
+  	title: 'tabs',
+  	remark: '可切换标签容器。',
+  	extend: 'buttonbar',
+  	deprecate: 'dir,focusmultiple,nobr,scroll,valign,.w-buttonbar,.z-dirh,.z-dirv',
+	Examples: [
+	  { example: [
+          function() {
+          	// 有两个tab标签和对应内容的范例
+            return~
+            {
+              type: "tabs",
+              pub: { cls: "f-tab", height: 30 }, // 设置标签按钮的默认参数
+              nodes: [
+                { type: "tab", text: "首页", target: { type: "html", text: "内容1" } }, // 这里的 type 属性定义可以省略
+                { type: "tab", text: "文档", target: { type: "html", text: "内容2" } }
+              ]
+            }
+          }
+      ] }
+    ],  	
+    Classes: [
+      { name: '.w-tabs', remark: '基础样式。' }
+    ]
+  },
+  "tab": {
+  	title: 'tab',
+  	remark: '标签按钮。',
+  	extend: 'button',
+  	deprecate: 'focusable,name',
+    Classes: [
+      { name: '.w-tab', remark: '基础样式。' }
+    ]
+  },  "deck": {
   	title: 'deck',
   	remark: 'deck 功能面板。',
   	extend: 'widget',
@@ -2312,10 +2346,11 @@ define( {
         { name: 'keycls', type: 'String', remark: '关键词样式名。' },
         { name: 'matchlength', type: 'Number', remark: '切词长度。' }
       ] },
-      { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。默认值为true。' },
+      { name: 'folder', type: 'Boolean', remark: '是否有子节点。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'open', type: 'Boolean', remark: '是否展开状态。' },
@@ -2465,6 +2500,7 @@ define( {
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'percent', type: 'Number', remark: '进度值。范围从 0 到 100。' },
+      { name: 'range', type: 'String', remark: '划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。<br>例如设置 range: "60,100"，那么进度在 0-60 范围内会存在样式 "z-60"，进度在 60-100 范围内会存在样式 "z-100"。' },
       { name: 'hidepercent', type: 'Boolean', remark: '设置为true，隐藏进度数字。' },
       { name: 'text', type: 'String', remark: '显示文本。' }
     ],

@@ -99,14 +99,12 @@ i {
     border-width: 0 0 0 1px !important;
 }
 
-
 /**↓组件状态↓**/
 .z-ds {
     cursor: default !important;
 }
 
 /**↑组件状态↑**/
-
 
 /**↓表格↓**/
 .w-grid .w-grid-thead {
@@ -146,7 +144,6 @@ i {
 /*.w-grid .w-tr td.z-last {*/
 /*    padding-right: 10px;*/
 /*}*/
-
 .w-form .w-grid-tbody .w-tr.z-hv {
     background-color: transparent;
 }
@@ -230,7 +227,6 @@ i {
 
 /**↑树节点↑**/
 
-
 /**↓按钮↓**/
 
 /* 按钮默认样式 */
@@ -304,12 +300,29 @@ i {
     background: #1989e0;
 }
 
+.x-btn-text.w-button ._t, .x-btn-text.w-button ._i {
+    padding-right: 5px;
+}
+
+.x-btn-text.w-button ._c {
+    padding-left: 5px;
+}
+
 .x-btn-text.w-button.z-normal {
     border-color: transparent;
     background-color: transparent;
 }
 
 .x-btn-text.w-button.z-normal.z-hv, .x-btn-text.w-button.z-normal.z-on, .x-btn-text.w-button.z-normal.z-dn, .x-btn-text.w-button.z-normal.z-ds {
+    background-color: transparent;
+}
+
+.x-breadcrumb .w-button.z-normal {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.x-breadcrumb .w-button.z-normal.z-hv, .x-breadcrumb .w-button.z-normal.z-on, .x-breadcrumb .w-button.z-normal.z-dn, .x-breadcrumb .w-button.z-normal.z-ds {
     background-color: transparent;
 }
 
@@ -352,18 +365,18 @@ i {
     padding: 0 20px 0 10px;
 }
 
-.w-tabbar {
+.w-buttonbar.w-tabbar {
     height: 40px;
     padding: 0 10px;
 }
 
-.w-tabbar .w-tabbar-line {
+.w-buttonbar.w-tabbar .w-buttonbar-line {
     display: block;
     height: 2px;
     background: #2498fd;
 }
 
-.w-tabbar .w-tab {
+.w-buttonbar.w-tabbar .w-tab {
     background: #eee;
     margin-right: 8px;
     margin-top: 2px;
@@ -371,12 +384,12 @@ i {
     font-weight: bold;
 }
 
-.w-tabbar .w-tab.z-on {
+.w-buttonbar.w-tabbar .w-tab.z-on {
     background: #2498fd;
     color: #fff;
 }
 
-.w-tabbar .w-tab.z-hv {
+.w-buttonbar.w-tabbar .w-tab.z-hv {
     background: #1588d4;
     color: #fff;
 }
@@ -444,11 +457,11 @@ img {
 }
 
 .dlg-head-oper .w-button ._c {
-    padding-left: 12px;
+    padding-left: 10px;
 }
 
-.dlg-head-oper .w-button ._t {
-    padding-right: 12px;
+.dlg-head-oper .w-button ._i {
+    padding-right: 10px;
 }
 
 .dlg-head-oper .w-button.z-hv {
@@ -471,19 +484,20 @@ img {
     background-color: #fdf1f1;
 }
 
-.w-dialog.z-loading .dlg-std-before {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    text-align: right;
-    z-index: 1;
+.w-dialog-loadinghead {
+    background: #009bdb
 }
 
-.w-dialog .dlg-std-before {
-    display: none;
+.w-dialog-loadinghead ._x {
+    background: url(g/g.png) no-repeat -85px 4px
+}
+
+.w-dialog-loadinghead ._x.z-hv {
+    background-color: red
+}
+
+.w-dialog.z-loading .w-dialog-loadinghead {
+    display: block
 }
 
 /**↑对话框↑**/
@@ -1104,7 +1118,6 @@ img {
 }
 
 /**↑常用操作图标↑**/
-
 .i-toggle-icon {
     background: url("g/btn-icon.png") -27px -266px;
     width: 16px;
@@ -1118,4 +1131,3 @@ img {
 }
 
 /**↑图标↑**/
-

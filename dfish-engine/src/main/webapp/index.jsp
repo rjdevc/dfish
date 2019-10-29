@@ -4,18 +4,16 @@
     <head>
         <meta charset="text/html;utf-8">
         <link rel="shortcut icon" href="./skin/g/favicon.ico">
-        <title>DFish开发框架</title>
+        <title>DFish</title>
 
-        <script src="./dfish/dfish.js?ver=20170315"></script>
-        <script src="./skin/dfish.config.js?ver=20170315"></script>
+        <script src="./dfish/dfish.js?ver=20191014"></script>
+        <script src="./skin/dfish.config.js?ver=20191014"></script>
         <script>
             dfish.use( 'm/app' );
             dfish.init({
                 view : {
-                    // 首页视图路径
                     id: 'index',
-                    // 首页模板
-                    template: 'index/index'
+                    node: 'index/index'
                 }
             });
         </script>

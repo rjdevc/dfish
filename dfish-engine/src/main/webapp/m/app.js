@@ -1,4 +1,5 @@
-var app = {
+window.app = {
+    idRoot: "00000000000000000000000000000000",
     error: function (error) {
         var errorMsg = '';
         if (error.code) {
@@ -33,11 +34,7 @@ var app = {
         max: function (target) {
             var d = dfish.dialog(target);
             var isMax = d.isMax();
-            if (isMax) {
-                target.attr('tip', '最大化');
-            } else {
-                target.attr('tip', '还原');
-            }
+            target.attr('tip', isMax ? '最大化' : "还原");
             // 最大化/还原
             d.max();
         }
@@ -91,4 +88,3 @@ var app = {
         boolean: [{"value": "1", "text": "是"}, {"value": "0", "text": "否"}]
     }
 };
-module.exports = window.app = app;

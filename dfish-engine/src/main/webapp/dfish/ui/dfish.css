@@ -122,7 +122,7 @@
 .w-progress ._bar{position:relative;height:17px;margin-bottom:5px;line-height:1;background:#ddd;border-radius:100px;overflow:hidden;text-align:center}
 .w-progress ._dn{position:absolute;top:0;left:0;right:0;bottom:0;color:#666}
 .w-progress ._up{position:absolute;top:0;left:0;bottom:0;background:#018beb;color:#fff;border-radius:100px;overflow:hidden}
-.w-progress ._cur{background:#018beb;}
+/*.w-progress ._cur{background:#018beb;}*/
 .w-progress ._gut{height:100%}
 .w-progress.z-hidepercent ._s{display:none}
 
@@ -544,6 +544,7 @@
 .w-button ._c,.w-tab ._c{padding-left:8px;overflow:hidden}
 .w-button ._t,.w-button ._i,.w-tab ._t,.w-tab ._i{padding-right:8px}
 .w-button ._i,.w-tab ._i{float:left;line-height:1;text-align:center}
+.w-button.z-i ._i,.w-tab.z-i ._i{float:none}
 .w-button ._t,.w-tab ._t{overflow:hidden;white-space:pre}
 .w-button ._m,.w-tab ._m{float:right;width:20px;text-align:center}
 .w-button ._x,.w-tab ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
@@ -624,8 +625,10 @@
 .w-dialog.z-snap-32 .w-menu-line{right:-1px;top:-1px}
 .w-dialog.z-snap-14 .w-menu-line{left:-1px;bottom:-1px}
 .w-dialog.z-snap-23 .w-menu-line{right:-1px;bottom:-1px}
-/*.w-dialog.z-mag-t{box-shadow:0 -1px 1px rgba(0,0,0,0.2)}
-.w-dialog.z-mag-b{box-shadow:0 2px 2px rgba(0,0,0,0.2)}*/
+.w-dialog-loadinghead{position:absolute;top:0;left:0;right:0;height:40px;text-align:right}
+.w-dialog-loadinghead ._x{height:100%;width:40px;cursor:pointer}
+.w-dialog .w-dialog-loadinghead{display:none}
+.w-dialog.z-loading .w-dialog-loadinghead{display:block}
 
 .w-tip{border:1px solid #f3e041;background:#faf0cd;box-shadow:0 0 4px #d9d9d9;z-index:11}
 .w-tip-text{padding:4px 10px;min-height:20px;}
