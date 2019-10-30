@@ -2344,8 +2344,10 @@ Xsrc = define.widget( 'xsrc', {
 			if ( tar ) {
 				for ( var i = 0, b = this._getTargets( this.x.node, tar ); i < b.length; i ++ )
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
-			} else
-				this.layout && this.layout.render();
+			} else if ( this.layout ) {
+				this.layout.render();
+				this.trigger( 'load' );
+			}
 			this.removeClass( 'z-loading' );
 		},
 		// @a -> close?
@@ -2389,13 +2391,7 @@ _mergeLoadingProp = function( x, a ) {
 _userPriority = { 'click': T, 'dblclick': T, 'close': T, 'valid': T },
 _view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
-Layout = define.widget( 'layout', {
-	Listener: {
-		body: {
-			ready: function() { this.parentNode.trigger( 'load' ); }
-		}
-	}
-} ),
+Layout = define.widget( 'layout', {} ),
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {
@@ -3181,8 +3177,6 @@ Button = define.widget( 'button', {
 			},
 			lock: function() {
 				if ( ! this._locked ) {
-					if ( this._dft_icon === U )
-						this._dft_icon = this.x.icon || '';
 					if ( this.$() ) {
 						if ( this.x.icon )
 							$.append( this.$( 'i' ), '<i class=_ld></i>' );
@@ -3196,7 +3190,10 @@ Button = define.widget( 'button', {
 			},
 			unlock: function() {
 				this._locked = F;
-				this.attr( 'icon', this._dft_icon );
+				if ( this.x.icon )
+					Q( '._ld', this.$() ).remove();
+				else
+					this.attr( 'icon', '' );
 				if ( this.$() ) {
 					$.classRemove( this.$(), 'z-lock' );
 					this.removeElem( 'lock' );
@@ -3237,7 +3234,7 @@ Button = define.widget( 'button', {
 				else
 					this.removeElem( 'i' );
 			} else if ( a === 'text' ) {
-				if ( b )
+				if ( b != '' && b != N )
 					this.$( 't' ) ? Q( 'em', this.$( 't' ) ).html( b ) : $.append( this.$( 'c' ), this.html_text( b ) );
 				else
 					this.removeElem( 't' );
@@ -3803,6 +3800,7 @@ Toggle = define.widget( 'toggle', {
 			var p = this;
 			while ( (p = p.parentNode) && p.innerHeight() == N );
 			p && p.triggerAll( 'resize' );
+			this.trigger( 'toggle' );
 			a && a.type && $.stop( a );
 		},
 		isOpen: function() {
