@@ -1,17 +1,17 @@
 package com.rongji.dfish.framework.config;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
+import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.config.impl.DefaultPropertyCryptor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
-import com.rongji.dfish.framework.FrameworkHelper;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * Description: 属性配置器，配置参数加载的工具
@@ -81,6 +81,14 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 
 	public static String getProperty(String key, String defaultValue) {
 		return props.getProperty(key, defaultValue);
+	}
+
+	public static Integer getPropertyAsInteger(String key, Integer defaultValue) {
+		String value = getProperty(key, defaultValue == null ? null : defaultValue.toString());
+		if (Utils.notEmpty(value)) {
+			return Integer.valueOf(value);
+		}
+		return null;
 	}
 	
 }

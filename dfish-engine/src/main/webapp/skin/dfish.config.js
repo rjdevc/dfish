@@ -32,7 +32,9 @@ dfish.config({
         'leaf': {tip: true, style: 'padding-right:10px;', wmin: 10},
 
         'buttonbar': {space: 10, pub: {tip: true, height: 30}},
+        'buttonbar.dlg-head-oper': {space: 0},
         'buttonbar.x-breadcrumb': {space: 0},
+        'buttonbar.face-text': {space: 0},
         'tabs': {wmin: 40},
         'buttonbar.w-tabbar': {space: 0, pub: { height: "*"}, wmin: 20},
 

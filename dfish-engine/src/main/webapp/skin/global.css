@@ -238,6 +238,10 @@ i {
     border-radius: 4px;
 }
 
+.w-button ._t {
+    width: auto;
+}
+
 /*按钮样式默认和文字左右间隔15px  */
 .w-button ._t, .w-button ._i {
     padding-right: 15px;
@@ -300,20 +304,21 @@ i {
     background: #1989e0;
 }
 
-.x-btn-text.w-button ._t, .x-btn-text.w-button ._i {
+.face-text.w-button ._t, .face-text.w-button ._i, .face-text .w-button ._t, .face-text .w-button ._i {
     padding-right: 5px;
 }
 
-.x-btn-text.w-button ._c {
+.face-text.w-button ._c, .face-text .w-button ._c {
     padding-left: 5px;
 }
 
-.x-btn-text.w-button.z-normal {
+.face-text.w-button.z-normal, .face-text .w-button.z-normal {
     border-color: transparent;
     background-color: transparent;
 }
 
-.x-btn-text.w-button.z-normal.z-hv, .x-btn-text.w-button.z-normal.z-on, .x-btn-text.w-button.z-normal.z-dn, .x-btn-text.w-button.z-normal.z-ds {
+.face-text.w-button.z-normal.z-hv, .face-text.w-button.z-normal.z-on, .face-text.w-button.z-normal.z-dn, .face-text.w-button.z-normal.z-ds,
+.face-text .w-button.z-normal.z-hv, .face-text .w-button.z-normal.z-on, .face-text .w-button.z-normal.z-dn, .face-text .w-button.z-normal.z-ds {
     background-color: transparent;
 }
 
@@ -1128,6 +1133,42 @@ img {
     background: url("g/btn-icon.png") -27px -247px;
     width: 16px;
     height: 16px;
+}
+
+.i-face-person {
+    background-image: url("g/face_person.png");
+    width: 60px;
+    height: 60px;
+}
+
+.i-face-person.size-xs {
+    background-image: url("g/face_person_20x20.png");
+    width: 20px;
+    height: 20px;
+}
+
+.i-face-person.size-s {
+    background-image: url("g/face_person_40x40.png");
+    width: 40px;
+    height: 40px;
+}
+
+.i-face-person.size-m {
+    background-image: url("g/face_person_60x60.png");
+    width: 60px;
+    height: 60px;
+}
+
+.i-face-person.size-l {
+    background-image: url("g/face_person_80x80.png");
+    width: 80px;
+    height: 80px;
+}
+
+.i-face-person.size-xl {
+    background-image: url("g/face_person_100x100.png");
+    width: 100px;
+    height: 100px;
 }
 
 /**↑图标↑**/
