@@ -511,8 +511,6 @@
 .w-switch.z-checked.z-ds ._l{background:#a2d2ff;border-color:#a2d2ff}
 .w-switch.z-checked.z-ds ._o{border-color:#a2d2ff}
 
-.f-locker{background:#fff;position:absolute;top:0;left:0;bottom:0;right:0;filter:alpha(opacity=20);opacity:.2;}
-
 .w-album{white-space:normal;text-align:justify}
 .w-img{position:relative;text-align:center}
 .w-album .w-img{position:relative;padding:10px;border:1px solid transparent;border-radius:2px;}
@@ -554,8 +552,9 @@
 .w-button em,.w-tab em,.w-menu-button em{font-style:normal;vertical-align:middle}
 .w-button img,.w-tab img,.w-menu-button img{vertical-align:middle}
 .w-button ._m .f-arw,.w-tab ._m .f-arw{border-top-color:#555;border-bottom:0}
-.w-button ._ld,.w-tab ._ld{position:absolute;left:0;right:8px;height:100%;background:url(g/loading-cir.gif) no-repeat 50% 50%}
-.w-button.z-lock ._ico,.w-tab.z-lock ._ico{opacity:.5}
+.w-button ._ld,.w-tab ._ld{position:absolute;top:0;left:0;bottom:0;right:0;background:url(g/loading.gif) no-repeat 50% 50%}
+.w-button.z-lock ._t,.w-button.z-lock ._i,.w-tab.z-lock ._t,.w-tab.z-lock ._i{opacity:.4}
+.w-button.z-lock ._c,.w-tab.z-lock ._c{position:relative}
 .w-button.z-on,.w-tab.z-on{z-index:1}
 .w-button.z-ds,.w-tab.z-ds{color:#aaa}
 .w-button.z-more ._t,.w-tab.z-more ._t{padding-right:4px;*padding-right:22px}

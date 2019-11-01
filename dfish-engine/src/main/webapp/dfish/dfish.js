@@ -310,7 +310,7 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, cdn: T } );
 },
 // @a -> src, b -> id?, c -> fn?
 _loadCss = function( a, b, c ) {
@@ -1523,7 +1523,7 @@ Ajax = _createClass( {
 			}
 		},
 		send: function() {
-			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = _ajax_data( _cfg.ajax_data ), e = _ajax_data( x.data ),
+			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = !x.cdn && _ajax_data( _cfg.ajax_data ), e = _ajax_data( x.data ),
 				f = x.error != N ? x.error : _cfg.src_error, g = x.dataType || 'text', u = a, l, i, self = this;
 			d && e ? (e = d + '&' + e) : (d && (e = d));
 			// get url超过长度则转为post

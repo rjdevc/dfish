@@ -972,21 +972,18 @@ W = define( 'widget', function() {
 		},
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
-			var c = a == N || (a.isWidget ? a.x.open : a), o = this.$();
-			$.classAdd( o, 'f-none', ! c );
-			a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
+			var c = a == N || (a.isWidget ? a.x.open : a), p = this.parentNode, d = p && p.type_frame ? 'f-hide' : 'f-none', o = this.$();
+			$.classAdd( o, d, ! c );
+			a != N && a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
 			this.x.display = !!c;
-			!!c && this.trigger( 'show' );
 			if ( ! b ) {
 				var v = this.ownerView;
 				v && v.layout && ((v.layout._passvalid || (v.layout._passvalid = {}))[ o.id ] = !c);
 			}
+			!!c && this.trigger( 'display' );
 		},
 		isDisplay: function() {
-			return this.$().currentStyle.display != 'none';
-		},
-		isShow: function() {
-			return this.parentNode && this.parentNode.type_frame ? this.parentNode.getFocus() == this : this.x.display !== F;
+			return this.x.display != N ? this.x.display : !(this.parentNode && this.parentNode.type_frame);
 		},
 		toggleDisplay: function() {
 			this.display( ! this.isDisplay() );
@@ -2099,7 +2096,7 @@ Xsrc = define.widget( 'xsrc', {
 				this.domready = T;
 				this.start();
 			},
-			show: function() {
+			display: function() {
 				this.domready && this.start();
 			}
 		}
@@ -2110,7 +2107,7 @@ Xsrc = define.widget( 'xsrc', {
 		// @implement
 		init_x: function( x ) {
 			this.x = x;
-			if ( ! this.isShow() )
+			if ( ! this.isDisplay() )
 				return;
 			if ( this.type_view && _view_resources[ this.path ] )
 				$.require( _view_resources[ this.path ] );
@@ -2146,27 +2143,7 @@ Xsrc = define.widget( 'xsrc', {
 				this.repaint();
 				this.layout && this.showLayout();
 			}
-			! this.layout && this.isShow() && this.load();
-		},
-		isShow: function() {
-			if ( this.x.display === F )
-				return F;
-			if ( ! this.parentNode )
-				return T;
-			if ( this.parentNode.type_frame )
-				return this.parentNode.getFocus(this) == this;
-			if ( this.nodeIndex >= 0 && _toggle_hide_parents[ this.parentNode.id ] ) {
-				var n = this.nodeIndex;
-				while ( n -- )
-					if ( this.parentNode[ n ].type === 'toggle' && this.parentNode[ n ].x.open === F ) { return F; }
-			}
-			if ( this.x.id ) {
-				var t = _toggle_hide_targets[ this.parent ? this.parent.id : this.ownerView.id ];
-				if ( t && t[ this.x.id ] )
-					return F;
-			}
-			
-			return T;
+			! this.layout && this.isDisplay() && this.load();
 		},
 		srcData: function( a ) {
 			if ( a ) {
@@ -2205,7 +2182,7 @@ Xsrc = define.widget( 'xsrc', {
 				return;
 			this.showLoading();
 			var s = this.getSrc();
-			if ( force || this.isShow() ) {
+			if ( force || this.isDisplay() ) {
 				this._load( tar, function( x ) {
 					if ( this.layout ) {
 						this.showLoading( F );
@@ -2780,7 +2757,7 @@ Frame = define.widget( 'frame', {
 		type_frame: T,
 		className: 'w-frame',
 		childCls: function( a ) {
-			return 'f-sub-frame' + (a === this.focusNode ? '-on' : '');
+			return a.x.display === T ? '' : 'f-hide';
 		},
 		getFocus: function() {
 			return this.focusNode;
@@ -2789,25 +2766,22 @@ Frame = define.widget( 'frame', {
 		// animate: scrollX(横向滚动),scrollY(纵向滚动),
 		focus: function( a ) {
 			if ( this.$() ) {
-				var o = this.getFocus(), c = 'f-sub-frame', d = c + '-on',
+				var o = this.getFocus(),
 					n = a.isWidget ? a : this.ownerView.find( a );
 				if ( n && n !== o ) {
-					if ( this.x.animate && o ) {
-						var d = n.nodeIndex > o.nodeIndex ? 'Left' : 'Right';
-						$.classReplace( n.$(), c, d );
-						$.animate( o.$(), 'fadeOut' + d, 100 );
-						$.animate( n.$(), 'fadeIn' + d, 100, function() {
-							o.$() && $.classReplace( o.$(), d, c );
-						} );
-					} else {
-						o && $.classReplace( o.$(), d, c );
-						$.classReplace( n.$(), c, d );
-					}
 					if ( o )
 						delete o.focusOwner;
 					this.focusNode = n;
 					n.focusOwner = this;
-					n.trigger( 'show' );
+					if ( this.x.animate && o ) {
+						var d = n.nodeIndex > o.nodeIndex ? 'Left' : 'Right';
+						n.display( T );
+						$.animate( o.$(), 'fadeOut' + d, 100 );
+						$.animate( n.$(), 'fadeIn' + d, 100, function() { o.display( F ); } );
+					} else {
+						o && o.display( F );
+						n.display( T );
+					}
 				}
 			}
 			return n;
@@ -3178,25 +3152,17 @@ Button = define.widget( 'button', {
 			lock: function() {
 				if ( ! this._locked ) {
 					if ( this.$() ) {
-						if ( this.x.icon )
-							$.append( this.$( 'i' ), '<i class=_ld></i>' );
-						else
-							this.attr( 'icon', '%img%/loading-dot.gif' );
 						$.classAdd( this.$(), 'z-lock' );
-						$.append( this.$(), '<div class=f-locker id=' + this.id + 'lock></div>' );
+						$.append( this.$( 'c' ), '<i class=_ld></i>' );
 					}
 				}
 				this._locked = T;
 			},
 			unlock: function() {
 				this._locked = F;
-				if ( this.x.icon )
-					Q( '._ld', this.$() ).remove();
-				else
-					this.attr( 'icon', '' );
 				if ( this.$() ) {
+					Q( '._ld', this.$() ).remove();
 					$.classRemove( this.$(), 'z-lock' );
-					this.removeElem( 'lock' );
 					Q( '.z-hv', this.$() ).add( this.$() ).removeClass( 'z-hv' );
 				}
 			},
@@ -3744,8 +3710,6 @@ Img = define.widget( 'img', {
 		}
 	}
 } ),
-_toggle_hide_targets = {},
-_toggle_hide_parents = {},
 /* `toggle` 可展开收拢的工具条。可显示单行文本与(或)分割线。
  *  /@text: 文本; @hr(Bool) 显示横线; /@open(Bool): 设置初始展开收拢效果并产生一个toggle图标; /@target: 指定展开收拢的widget ID, 多个用逗号隔开
  */
@@ -3771,16 +3735,6 @@ Toggle = define.widget( 'toggle', {
 	},
 	Prototype: {
 		className: 'w-toggle',
-		init_nodes: function() {
-			if ( this.x.open === F ) {
-				if ( this.x.target ) {
-					for ( var i = 0, b = this.x.target.split( ',' ); i < b.length; i ++ )
-						$.jsonChain( T, _toggle_hide_targets, this.ownerView.id, b[ i ] );
-				} else
-					_toggle_hide_parents[ this.parentNode.id ] = (_toggle_hide_parents[ this.parentNode.id ] || 0) + 1;
-			}
-			_proto.init_nodes.call( this );
-		},
 		toggle: function( a ) {
 			var b = a == N || a.type ? ! (this.x.open == N ? T : this.x.open) : a, c = this.x.target, d = this.x.icon, e = this.x.openicon || d;
 			this.x.open = b;
@@ -3819,17 +3773,6 @@ Toggle = define.widget( 'toggle', {
 				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
 			}
 			return this.html_icon() + '<div class="_c f-oh f-nobr">' + t + '</div>';
-		},
-		dispose: function() {
-			if ( !this._disposed && this.parentNode ) {
-				if ( this.x.target ) {
-					for ( var i = 0, b = this.x.target.split( ',' ); i < b.length; i ++ )
-						if ( _toggle_hide_targets[ this.ownerView.id ] )
-							delete _toggle_hide_targets[ this.ownerView.id ][ b[ i ] ];
-				} else if ( _toggle_hide_parents[ this.parentNode.id ] )
-					_toggle_hide_parents[ this.parentNode.id ] --;
-			}
-			_proto.dispose.apply( this, arguments );
 		}
 	}
 } ),
@@ -4406,7 +4349,7 @@ Dialog = define.widget( 'dialog', {
 			return this;
 		},
 		isShow: function() {
-			return T;
+			return this.vis;
 		},
 		// @a -> show delay millisenconds?
 		show: function( a ) {
@@ -6689,13 +6632,18 @@ Datepicker = define.widget( 'datepicker', {
 			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
 		},
 		input_prop_value: function() {
-			var v = $.strEscape(this.x.value == N ? '' : ('' + this.x.value));
-			return mbi ? v.replace( ' ', 'T' ) : v;
+			var a = $.strEscape(this.x.value == N ? '' : ('' + this.x.value)), r = '';
+			if ( a ) {
+				for ( var i = 0, a = a.split( ',' ), l = a.length, r = []; i < l; i ++ )
+					r.push( $.dateFormat( $.dateParse( a[ i ] ), this.x.format ));
+				r = r.join( ',' );
+			}
+			return mbi ? r.replace( ' ', 'T' ) : r;
 		},
 		html_input: function() {
-			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
-				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + (this.x.value || '') + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( this.x.value || '' ) + '</div>' : '<input type=text' + this.input_prop() + '>';
+			var v = (mbi || this.x.multiple) && this.input_prop_value();
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + v + '</label>' :
+				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),
