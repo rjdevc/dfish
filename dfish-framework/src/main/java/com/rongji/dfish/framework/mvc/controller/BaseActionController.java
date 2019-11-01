@@ -289,15 +289,16 @@ public class BaseActionController extends MultiActionController {
         try {
             // 获取调用方法,这里有可能因为不同容器导致调用堆栈不同,未一一验证测试
             StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
+            // callStack.getClassName() + "." +
             // 取上级调用方法名
-            call = callStack.getClassName() + "." + callStack.getMethodName();
+            call = callStack.getMethodName();
         } catch (Throwable e) {
             LogUtil.error("获取进度条编号-调用堆栈异常", e);
         }
         if (dataId == null) {
             dataId = "";
         } else if (dataId.length() > 64) {
-            // 名称太长时强制截取字符,这里给的100是相对比较安全的数字
+            // 名称太长时强制截取字符,这里给的相对比较安全的数字
             dataId = dataId.substring(0, 64);
         }
         return call + "#" + sessionId + "#" + dataId;

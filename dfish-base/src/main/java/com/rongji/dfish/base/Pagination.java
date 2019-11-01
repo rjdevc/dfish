@@ -2,8 +2,6 @@ package com.rongji.dfish.base;
 
 import java.io.Serializable;
 
-import com.rongji.dfish.base.Page;
-
 /**
  * Pagination 与Page 作用相当，就是当数据量太大的时候分页。
  * Pagination 使用offset/limit 模式，和网络上大多数接口相似。
@@ -29,6 +27,18 @@ public class Pagination implements Serializable {
     public Pagination(int offset, int limit) {
         this.offset = offset;
         this.limit = limit;
+    }
+
+    public static Pagination of() {
+        return new Pagination();
+    }
+
+    public static Pagination of(int offset) {
+        return new Pagination(offset);
+    }
+
+    public static Pagination of(int offset, int limit) {
+        return new Pagination(offset, limit);
     }
 
     /**

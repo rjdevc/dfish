@@ -208,7 +208,6 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         if (po == null) {
             return 0;
         }
-        V vo = parseVo(po);
         int result = getDao().delete(po);
         return result;
     }
