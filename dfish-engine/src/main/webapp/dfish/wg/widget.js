@@ -653,7 +653,7 @@ _compilePreload = function( a, x ) {
 		$.winbox( Loc.ps( Loc.preload_error, a ) );
 },
 _setView = function( a ) {
-	if ( a ) {
+	if ( a && !this.type_view ) {
 		this.ownerView = a;
 		_regIdName.call( this, a );
 		var i = this.length;
@@ -3328,11 +3328,17 @@ Button = define.widget( 'button', {
 		text: function( a ) {
 			this.attr( 'text', a );
 		},
+		html_badge: function() {
+			var t = typeof this.x.badge === _STR ? this.x.badge : '';
+			return (this.x.badge ? '<i class="w-badge' + (t ? ' z-t' : '') + '" id=' + this.id + 'b>' + t + '</i>' : '');
+		},
 		html_icon: function( a ) {
+			var t = this.x.text;
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) + '</em><i class=f-vi></i></div>';
+			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) +
+				'</em><i class=f-vi></i></div>';
 		},
 		html: function() {
 			var x = this.x, p = this.parentNode, g = this.tagName || 'div', w = this.innerWidth(),
@@ -3401,7 +3407,7 @@ Button = define.widget( 'button', {
 			if ( t )
 				a += this.html_text();
 			a += '</div>';
-			a += this.html_append() + (ie7 && !w ? '</table>' : '') + '</' + g + '>';
+			a += this.html_append() + (ie7 && !w ? '</table>' : '') + this.html_badge() + '</' + g + '>';
 			return this.html_before() + a + this.html_after();
 		}
 	}

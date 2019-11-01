@@ -2105,7 +2105,7 @@ _merge( $, {
 				r += '>';
 			}
 		}
-		return r + '<i class=f-vi></i></span>';
+		return r + '<i class=f-vi></i>' + ((b && b.append) || '') + '</span>';
 	},
 	arrow: function( a, b ) {
 		var c = b || a;

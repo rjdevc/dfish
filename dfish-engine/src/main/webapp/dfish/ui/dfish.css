@@ -538,12 +538,13 @@
 /*! button
  *	c: content, i: icon, t: text, m: more, x: close
  */
-.w-button,.w-tab{position:relative;display:inline-block;text-align:center;vertical-align:middle;overflow:hidden;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
+.w-button,.w-tab{position:relative;display:inline-block;text-align:center;vertical-align:middle;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
 .w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x,.w-tab ._c,.w-tab ._i,.w-tab ._t,.w-tab ._m,.w-tab ._x{height:100%;vertical-align:top;*vertical-align:middle;}
 .w-button ._c,.w-tab ._c{padding-left:8px;overflow:hidden}
 .w-button ._t,.w-button ._i,.w-tab ._t,.w-tab ._i{padding-right:8px}
+.w-button ._s,.w-tab ._s{position:relative}
 .w-button ._i,.w-tab ._i{float:left;line-height:1;text-align:center}
-.w-button.z-i ._i,.w-tab.z-i ._i{float:none}
+.w-button.z-i ._i,.w-tab.z-i ._i{float:none}	
 .w-button ._t,.w-tab ._t{overflow:hidden;white-space:pre}
 .w-button ._m,.w-tab ._m{float:right;width:20px;text-align:center}
 .w-button ._x,.w-tab ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
@@ -562,6 +563,9 @@
 .w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
 .w-button-split{vertical-align:middle;text-align:center}
 .w-tab{height:100%}
+
+.w-badge{position:absolute;top:-10px;right:-5px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
+.w-badge.z-t{top:-7px;right:0;margin-left:50%;padding:1px 3px;width:auto;height:auto;}
 
 .f-button{height:28px;border:1px solid #d3d3d3;border-radius:2px;background:#fafafa;color:#333}
 .f-button.z-on{background:#fff}
