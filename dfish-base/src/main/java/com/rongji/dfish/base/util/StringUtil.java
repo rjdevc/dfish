@@ -477,8 +477,9 @@ public class StringUtil {
 			if (data instanceof String) {
 				return (String) data;
 			} else {
+				return String.valueOf(data);
 				// 这里是否返回data.toString();
-				throw new IllegalArgumentException(data.getClass().getName() + " can not be formatted by the empty pattern." );
+//				throw new IllegalArgumentException(data.getClass().getName() + " can not be formatted by the empty pattern." );
 			}
 		}
 		Format f = null;
@@ -495,11 +496,18 @@ public class StringUtil {
 				numberPatterns.put(pattern, f);
 			}
 		} else {
-			throw new IllegalArgumentException(data.getClass().getName() + " can not be formatted by the pattern(" + pattern + ")." );
+			return String.valueOf(data);
+//			throw new IllegalArgumentException(data.getClass().getName() + " can not be formatted by the pattern(" + pattern + ")." );
 		}
-		synchronized(f){
-			return f.format(data);
+		try {
+			synchronized(f){
+				return f.format(data);
+			}
+		}catch (Exception ex){
+			LogUtil.error(null,ex);
+			return String.valueOf(data);
 		}
+
 	}
 	
 	/**
