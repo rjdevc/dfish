@@ -4,6 +4,8 @@ import com.rongji.dfish.base.Pagination;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class JsonResponse<T> {
@@ -78,6 +80,7 @@ public class JsonResponse<T> {
         private Integer size;
         private Integer offset;
         private Integer limit;
+        private Map<String, Object> context;
 
         public static final SimpleDateFormat DF = new SimpleDateFormat("yyyyMMddHHmmssZ");
 
@@ -91,32 +94,53 @@ public class JsonResponse<T> {
             return timestamp;
         }
 
-        public void setTimestamp(String timestamp) {
+        public Header setTimestamp(String timestamp) {
             this.timestamp = timestamp;
+            return this;
         }
 
         public Integer getSize() {
             return size;
         }
 
-        public void setSize(Integer size) {
+        public Header setSize(Integer size) {
             this.size = size;
+            return this;
         }
 
         public Integer getOffset() {
             return offset;
         }
 
-        public void setOffset(Integer offset) {
+        public Header setOffset(Integer offset) {
             this.offset = offset;
+            return this;
         }
 
         public Integer getLimit() {
             return limit;
         }
 
-        public void setLimit(Integer limit) {
+        public Header setLimit(Integer limit) {
             this.limit = limit;
+            return this;
+        }
+
+        public Map<String, Object> getContext() {
+            return context;
+        }
+
+        public Header setContext(Map<String, Object> context) {
+            this.context = context;
+            return this;
+        }
+
+        public Header addContext(String key, Object value) {
+            if (this.context == null) {
+                this.context = new HashMap<>();
+            }
+            this.context.put(key, value);
+            return this;
         }
 
     }
@@ -129,16 +153,18 @@ public class JsonResponse<T> {
             return code;
         }
 
-        public void setCode(String code) {
+        public Error setCode(String code) {
             this.code = code;
+            return this;
         }
 
         public String getMsg() {
             return msg;
         }
 
-        public void setMsg(String msg) {
+        public Error setMsg(String msg) {
             this.msg = msg;
+            return this;
         }
 
     }
