@@ -666,11 +666,11 @@ _setView = function( a ) {
 },
 _regIdName = function( a ) {
 	if ( this.x.id )   a.widgets[ this.x.id ] = this;
+	if ( this.x.gid ) _globals[ this.x.gid ] = this;
 	if ( this.x.name ) $.jsonArray( this, a.names, this.x.name );
 },
 _regWidget = function( x, p, n ) {
 	p && p.addNode( this, n );
-	x.gid && (_globals[ x.gid ] = this);
 	_all[ $.uid( this ) ] = this;
 	this.init_x( x );
 },
@@ -725,7 +725,7 @@ W = define( 'widget', function() {
 				if ( t ) {
 					if ( !t.type || t.type === this.type ) {
 						for ( var k in t ) {
-							if ( k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
+							if ( !(k in x) && k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
 								x[ k ] = t[ k ];
 							}
 						}
@@ -2138,6 +2138,8 @@ Xsrc = define.widget( 'xsrc', {
 				this.layout = new Layout( { node: this.x.node }, this );
 		},
 		start: function() {
+			if ( !this.x.src && !this.x.template )
+				return;
 			if ( ! this._x_ini ) {
 				this.init_x( this.x );
 				this.repaint();
@@ -2226,7 +2228,7 @@ Xsrc = define.widget( 'xsrc', {
 			return T;
 		},
 		_error: function( x ) {
-			var t = this.x.template && _getTemplate( t ), s = this.x.success || (t && t.success);
+			var t = this.x.template && _getTemplate( t ), s = this.x.error || (t && t.error);
 			s && this.formatJS( s, { '$response': N } );
 			if ( this._disposed ) return F;
 			s = this.x.complete || (t && t.complete);
@@ -2322,6 +2324,7 @@ Xsrc = define.widget( 'xsrc', {
 				for ( var i = 0, b = this._getTargets( this.x.node, tar ); i < b.length; i ++ )
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
 			} else if ( this.layout ) {
+				this.showLoading( F );
 				this.layout.render();
 				this.trigger( 'load' );
 			}
@@ -3322,11 +3325,11 @@ Button = define.widget( 'button', {
 		},
 		// 新增或更换图标。如果 a == '', 则删除图标  / @a -> image src
 		icon: function( a ) {
-			this.attr( 'icon', a );
+			return this.attr( 'icon', a );
 		},
 		// 新增或更换文本。如果 a == ''  / @a -> text
 		text: function( a ) {
-			this.attr( 'text', a );
+			return this.attr( 'text', a );
 		},
 		html_badge: function() {
 			var t = typeof this.x.badge === _STR ? this.x.badge : '';
@@ -8824,10 +8827,14 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
 		},
-		_success: function() {
+		_success: function( x ) {
 			return Xsrc.prototype._success.apply( this, arguments );
 		},
 		_error: function() {
+			if ( this.x.folder && !this.length ) {
+				this.x.folder = F;
+				this.fixFolder();
+			}
 			return Xsrc.prototype._error.apply( this, arguments );
 		},
 		// @a -> sync? b -> fn?
