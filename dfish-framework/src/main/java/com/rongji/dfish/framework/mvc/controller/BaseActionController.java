@@ -273,7 +273,12 @@ public class BaseActionController extends MultiActionController {
         if (offset < 0) {
             offset = 0;
         }
-        return new Pagination(offset, limit);
+        Pagination pagination = Pagination.of(offset, limit);
+        String autoRowCount = request.getParameter("autoRowCount");
+        if (Utils.notEmpty(autoRowCount)) {
+            pagination.setAutoRowCount(Boolean.parseBoolean(autoRowCount));
+        }
+        return pagination;
     }
 
 

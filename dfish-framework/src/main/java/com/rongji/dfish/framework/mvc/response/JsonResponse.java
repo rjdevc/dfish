@@ -29,16 +29,18 @@ public class JsonResponse<T> {
         return header;
     }
 
-    public void setHeader(Header header) {
+    public JsonResponse<T> setHeader(Header header) {
         this.header = header;
+        return this;
     }
 
     public Error getError() {
         return error;
     }
 
-    public void setError(Error error) {
+    public JsonResponse<T> setError(Error error) {
         this.error = error;
+        return this;
     }
 
     public Error error() {
@@ -52,16 +54,19 @@ public class JsonResponse<T> {
         return data;
     }
 
-    public void setData(T data) {
+    public JsonResponse<T> setData(T data) {
         this.data = data;
+        return this;
     }
 
-    public void setErrMsg(String msg) {
+    public JsonResponse<T> setErrMsg(String msg) {
         error().setMsg(msg);
+        return this;
     }
 
-    public void setErrCode(String code) {
+    public JsonResponse<T> setErrCode(String code) {
         error().setCode(code);
+        return this;
     }
 
     public JsonResponse<T> setPagination(Pagination pagination) {
@@ -74,13 +79,18 @@ public class JsonResponse<T> {
         return this;
     }
 
+    public JsonResponse<T> setPrincipal(HeaderPrincipal principal) {
+        getHeader().setPrincipal(principal);
+        return this;
+    }
+
     public static class Header {
 
         private String timestamp;
         private Integer size;
         private Integer offset;
         private Integer limit;
-        private Map<String, Object> context;
+        private HeaderPrincipal principal;
 
         public static final SimpleDateFormat DF = new SimpleDateFormat("yyyyMMddHHmmssZ");
 
@@ -126,23 +136,59 @@ public class JsonResponse<T> {
             return this;
         }
 
-        public Map<String, Object> getContext() {
-            return context;
+        public HeaderPrincipal getPrincipal() {
+            return principal;
         }
 
-        public Header setContext(Map<String, Object> context) {
-            this.context = context;
+        public Header setPrincipal(HeaderPrincipal principal) {
+            this.principal = principal;
+            return this;
+        }
+    }
+
+    public static class HeaderPrincipal implements ResponsePrincipal {
+        private String name;
+        private String natureName;
+        private String fullName;
+
+        public HeaderPrincipal(String name) {
+            this.name = name;
+        }
+
+        public HeaderPrincipal(String name, String natureName) {
+            this.name = name;
+            this.natureName = natureName;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public HeaderPrincipal setName(String name) {
+            this.name = name;
             return this;
         }
 
-        public Header addContext(String key, Object value) {
-            if (this.context == null) {
-                this.context = new HashMap<>();
-            }
-            this.context.put(key, value);
+        @Override
+        public String getNatureName() {
+            return natureName;
+        }
+
+        public HeaderPrincipal setNatureName(String natureName) {
+            this.natureName = natureName;
             return this;
         }
 
+        @Override
+        public String getFullName() {
+            return fullName;
+        }
+
+        public HeaderPrincipal setFullName(String fullName) {
+            this.fullName = fullName;
+            return this;
+        }
     }
 
     public static class Error {
