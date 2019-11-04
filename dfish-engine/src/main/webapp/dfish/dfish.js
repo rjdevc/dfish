@@ -1563,13 +1563,15 @@ Ajax = _createClass( {
 								r = g;
 						} else
 							m = l.responseText;
+						if ( m != N && x.filter && (m = _fnapply( x.filter, c, '$response,$ajax', [ m, self ] )) == N )
+							r = 'filter';
 					} else
 						r = g;
 			        if ( r ) {
 			        	self.errorCode = l.status;
 						if ( f !== F && (_ajax_httpmode || l.status) ) {
 							typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
-							if ( f !== F ) {
+							if ( f !== F && r !== 'filter' ) {
 								var s = 'ajax ' + l.status + ': ' + a;
 								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
@@ -1577,10 +1579,8 @@ Ajax = _createClass( {
 							}
 						}
 				    } else {
-				    	var t = x.filter;
-				    	t && (m = _fnapply( t, c, '$response,$ajax', [ m, self ] ));
 				    	self.response = m;
-						(m || (g === 'text' && m == '')) && b && b.call( c, m, self );
+						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 					}
 					x.complete && x.complete.call( c, m, self );

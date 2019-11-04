@@ -2228,7 +2228,7 @@ Xsrc = define.widget( 'xsrc', {
 			return T;
 		},
 		_error: function( x ) {
-			var t = this.x.template && _getTemplate( t ), s = this.x.error || (t && t.error);
+			var t = this.x.template && _getTemplate( this.x.template ), s = this.x.error || (t && t.error);
 			s && this.formatJS( s, { '$response': N } );
 			if ( this._disposed ) return F;
 			s = this.x.complete || (t && t.complete);
@@ -2723,14 +2723,13 @@ Vertical = define.widget( 'vertical', {
 Frame = define.widget( 'frame', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		//(this.focusNode = this.getFocus()) && (this.focusNode.focusOwner = this);
 	},
 	Listener: {
 		body: {
 			ready: function() {
 				if ( this.length ) {
 					var d = this.focusNode;
-					!d && this.x.dft && (d = this.ownerView.find( this.x.dft )) && this.focus( d );
+					!d && (d = this.x.dft ? this.ownerView.find( this.x.dft ) : this[ 0 ]) && this.focus( d );
 				}
 			}
 		}
