@@ -2094,7 +2094,8 @@ Xsrc = define.widget( 'xsrc', {
 		body: {
 			ready: function() {
 				this.domready = T;
-				this.layout ? this.trigger( 'load' ) : this.start();
+				var self = this;
+				this.layout ? setTimeout(function(){self.trigger( 'load' )}) : this.start();
 			},
 			display: function() {
 				this.domready && this.start();
