@@ -1927,8 +1927,8 @@ define( {
   	title: 'formgroup',
   	ver: "3.2*",
   	remark: '表单容器。默认横向排列。',
-  	extend: 'horz',
-  	deprecate: '.w-horz',
+  	extend: 'horizontal',
+  	deprecate: '.w-horz,hiddens,align,valign,nobr,scroll,swipedown',
     Config: [
       { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2版本中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。' }
 	],
@@ -3058,7 +3058,7 @@ define( {
     ]
   },
   "datepicker": {
-  	title: 'date',
+  	title: 'datepicker',
   	remark: '日期选择表单。',
   	extend: 'text',
   	deprecate: '.w-text',
@@ -3090,9 +3090,22 @@ define( {
   	remark: '指定范围的表单组合。',
   	extend: 'widget',
     Config: [
-      { name: 'title', type: 'String', optional: true, remark: '字段描述。' },
-      { name: 'begin', type: 'Object', remark: '开始值的表单。' },
-      { name: 'end', type: 'Object', remark: '结束值的表单。' }
+      { name: 'label', type: 'String | LabelWidget', ver: "3.2*", optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2版本中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
+      	 example: [
+          function() {
+            // 显示标签的表单
+            return~
+            { type: 'text', label: { text: '姓名', width: 100 } }
+          },
+          function() {
+            // 在css中设置标签背景色
+            return''
+            '.w-label ._bg{background:#ddd}'
+          }
+      ] },
+      { name: 'begin', type: 'Widget', remark: '开始值的表单。' },
+      { name: 'end', type: 'Widget', remark: '结束值的表单。' },
+      { name: 'to', type: 'Widget', remark: '中间的连接显示。一般是一个html widget。' }
     ]
   },
   "muldate": {

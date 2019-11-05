@@ -176,6 +176,9 @@
 		        { "id": "img", "text": "img", "icon": ".icon .icon-class" },
 		        { "id": "label", "text": "label<sup>3.2+</sup>", "icon": ".icon .icon-class" },
 		        { "id": "menu/button", "text": "menu/button", "icon": ".icon .icon-class" },
+		        { "id": "page/buttongroup", "text": "page/buttongroup", "icon": ".icon .icon-class" },
+		        { "id": "page/mini", "text": "page/mini", "icon": ".icon .icon-class" },
+		        { "id": "page/text", "text": "page/text", "icon": ".icon .icon-class" },
 		        { "id": "progress", "text": "progress", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "progress/item", "text": "progress/item", "icon": ".icon .icon-class" }
 		        ] },
@@ -187,10 +190,7 @@
 		        { "id": "toggle", "text": "toggle", "icon": ".icon .icon-class" },
 		        { "id": "tree", "text": "tree", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "leaf", "text": "leaf", "icon": ".icon .icon-class" }
-		        ] },
-		        { "id": "page/buttongroup", "text": "page/buttongroup", "icon": ".icon .icon-class" },
-		        { "id": "page/mini", "text": "page/mini", "icon": ".icon .icon-class" },
-		        { "id": "page/text", "text": "page/text", "icon": ".icon .icon-class" }
+		        ] }
 		      ] },
 		  	  { "text": "表单类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "checkbox", "text": "checkbox", "icon": ".icon .icon-class" },
@@ -204,10 +204,10 @@
 		        { "id": "muldate", "text": "muldate", "icon": ".icon .icon-class" },
 		        { "id": "onlinebox", "text": "onlinebox", "icon": ".icon .icon-class" },
 		        { "id": "password", "text": "password", "icon": ".icon .icon-class" },
-		        { "id": "range", "text": "range", "icon": ".icon .icon-class" },
 		        { "id": "pickbox", "text": "pickbox", "icon": ".icon .icon-class" },
 		        { "id": "radio", "text": "radio", "icon": ".icon .icon-class" },
 		        { "id": "radiogroup", "text": "radiogroup", "icon": ".icon .icon-class" },
+		        { "id": "range", "text": "range", "icon": ".icon .icon-class" },
 		        { "id": "rate", "text": "rate", "icon": ".icon .icon-class" },
 		        { "id": "select", "text": "select", "icon": ".icon .icon-class" },
 		        { "id": "slider", "text": "slider", "icon": ".icon .icon-class" },
