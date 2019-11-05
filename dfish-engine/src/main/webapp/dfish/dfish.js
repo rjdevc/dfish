@@ -315,22 +315,28 @@ _loadJs = function( a, b, c ) {
 // @a -> src, b -> id?, c -> fn?
 _loadCss = function( a, b, c ) {
 	typeof a === _STR && (a = [ a ]);
+	var d = doc.readyState === 'loading';
 	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
-		e = doc.createElement( 'link' );
-		e.rel  = 'stylesheet';
-		e.href = a[ i ] + _ver;
-		b && ($.remove( b[ i ] ), e.id = b[ i ]);
-		if ( c ) {
-			if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
-			    var img = doc.createElement( 'img' );
-		        img.onerror = function(){ --n === 0 && c() };
-		        img.src = a[ i ] + _ver;
-		    } else {
-		    	c && (e.onload = function() { --n === 0 && c() });
+		if ( d ) {
+			doc.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '">' );
+		} else {
+			e = doc.createElement( 'link' );
+			e.rel  = 'stylesheet';
+			e.href = a[ i ] + _ver;
+			b && ($.remove( b[ i ] ), e.id = b[ i ]);
+			if ( c ) {
+				if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
+				    var img = doc.createElement( 'img' );
+			        img.onerror = function(){ --n === 0 && c() };
+			        img.src = a[ i ] + _ver;
+			    } else {
+			    	c && (e.onload = function() { --n === 0 && c() });
+			    }
 		    }
-	    }
-		_tags( 'head' )[ 0 ].appendChild( e );
+			_tags( 'head' )[ 0 ].appendChild( e );
+		}
 	}
+	d && c && c();
 },
 _loadStyle = function( a, b ) {
 	var c = document.createElement( 'style' );
