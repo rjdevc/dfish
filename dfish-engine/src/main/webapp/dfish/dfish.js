@@ -418,6 +418,9 @@ _numDecimal = $.numDecimal = function( a, b ) {
 		return f ? _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) : a;
 	}
 },
+_string = $.string = function( a ) {
+	return a == N ? '' : '' + a;
+},
 _strTrim = $.strTrim = function (a ) {
 	return String( a ).replace( /^\s+|\s+$/g, '' );
 },
