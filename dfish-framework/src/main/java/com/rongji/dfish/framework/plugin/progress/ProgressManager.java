@@ -48,7 +48,7 @@ public class ProgressManager {
     /**
      * 进度条加载时间间隔,单位:毫秒
      */
-    private long maxDelay = 3000L;
+    private long maxDelay = 5000L;
 
     public long getMaxDelay() {
         return maxDelay;

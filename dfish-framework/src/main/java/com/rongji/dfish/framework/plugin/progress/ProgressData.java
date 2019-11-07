@@ -40,7 +40,7 @@ public class ProgressData implements Serializable, Cloneable {
 	/**
 	 * 下次加载时间
 	 */
-	private long delay = 200L;
+	private long delay = 1000L;
 	/**
 	 * 是否进度完成,就算进度已经100%,该属性如果还是false,进度条还是不会关闭
 	 */
