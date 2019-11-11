@@ -3555,7 +3555,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		preload: function( a ) {
 			var self = this;
-			this.contentView._load( function() {
+			this.contentView && this.contentView._load( function() {
 				//self.isShow() && self.render();
 				a && a.call( self );
 			}, N, T );
@@ -3827,7 +3827,7 @@ AlertButton = define.widget( 'alert/button', {
 				block: function() {
 					var d = $.dialog( this );
 					_operexe( (this.x.on && this.x.on.click) || (this.type === 'alert/submitbutton' ? d.x.yes : d.x.no), d.commander, d.x.args );
-					d.close();
+					d.remove();
 					return T;
 				}
 			}
@@ -9462,9 +9462,10 @@ Grid = define.widget( 'grid', {
 	}
 });
 
-/* `formgroup` */
-var Formgroup = define.widget( 'formgroup', {} );
-var Datepicker = define.widget( 'datepicker', {} );
+/* `compatible` */
+define.widget( 'form', {} );
+define.widget( 'formgroup', {} );
+define.widget( 'datepicker', {} );
 
 // 附件上传模块
 require( './upload/upload' );
