@@ -703,7 +703,7 @@ public class StringUtil {
 //        CharUtil.dbc2sbcl()
     }
 
-    private static Map<Map<String,String>,TrieTree<String>> tries=Collections.synchronizedMap(new HashMap<>()) ;
+    private static Map<Map<String,String>,TrieTree<String>> tries=Collections.synchronizedMap(new HashMap<Map<String,String>,TrieTree<String>>()) ;
     /**
      * 替换字符串，同时提换多个字符串，如果几个字符串有包含关系，更长的优先。
      * 该方法是从右向做匹配。
