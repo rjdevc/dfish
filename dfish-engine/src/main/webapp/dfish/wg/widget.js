@@ -1099,7 +1099,7 @@ W = define( 'widget', function() {
 				if ( a.indexOf( '$' ) > -1 ) {
 					var r = /\$(\w+)/ig, k;
 					while ( k = r.exec( a ) ) {
-						if( ! $.inArray( g, k[ 0 ] ) ) { g.push( k[ 0 ] ); f.push( k[ 1 ] ); };
+						if( ! $.inArray( g, k[ 0 ] ) ) { g.push( k[ 0 ] ); f.push( k[ 1 ] ); }
 					}
 				}
 				h = _formatCache[ a + n.join() ] = Function( g.join( ',' ), a );
@@ -3106,13 +3106,14 @@ Buttonbar = define.widget( 'buttonbar', {
 /* `button` */
 Button = define.widget( 'button', {
 	Listener: {
+		// 在触发事件之前做判断，如果返回true，则停止执行事件(包括系统事件和用户事件)
 		block: function( e ) {
-			return e !== 'unlock' && e !== 'remove' && e !== 'focus' && e !== 'blur' && ! this.usa();
+			var t = e.type || e;
+			t === 'click' && this.x.badge != N && this.x.badge !== F && this.badge( F );
+			return t !== 'unlock' && t !== 'remove' && t !== 'focus' && t !== 'blur' && ! this.usa();
 		},
 		body: {
 			ready: function() {
-				//this.x.target && this._ustag();
-				//this.isFocus() && this.triggerHandler( 'focus' );
 				this.isFocus() && this.focus();
 			},
 			mouseover: {
@@ -3648,7 +3649,11 @@ Img = define.widget( 'img', {
 			},
 			click: {
 				occupy: T,
-				block: function( e ) { return this.box && e.srcElement && e.srcElement.id === this.box.id + 't' },
+				block: function( e ) {
+					var t = e.type || e;
+					t === 'click' && this.x.badge != N && this.x.badge !== F && this.badge( F );
+					return this.box && e.srcElement && e.srcElement.id === this.box.id + 't'
+				},
 				method: function() {
 					this.x.focusable && this.focus( ! this.isFocus() );
 				}
@@ -3797,11 +3802,11 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			var t = (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span><i class=f-vi></i></div>' : '');
+			var t = (this.x.text ? '<span class="f-omit f-va" title="' + $.strQuot( this.x.text ) + '">' + this.x.text + '</span><i class=f-vi></i>' : '');
 			if ( this.x.hr ) {
 				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
 			}
-			return this.html_icon() + '<div class="_c f-oh f-nobr">' + t + '</div>';
+			return this.html_icon() + '<div class="_c f-oh f-fix">' + t + '</div>';
 		}
 	}
 } ),
@@ -9049,7 +9054,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		},
 		// @implement
 		removeElem: function( a ) {
-			$.remove( this.$( 'c' ) );
+			a == N && $.remove( this.$( 'c' ) );
 			_proto.removeElem.call( this, a );
 		}
 	}
@@ -9087,6 +9092,8 @@ Leaf = define.widget( 'leaf', {
 				occupy: T,
 				// 点击box不触发业务设置的click事件
 				block: function( e ) {
+					var t = e.type || e;
+					t === 'click' && this.x.badge != N && this.x.badge !== F && this.badge( F );
 					return this.isDisabled();
 				},
 				method: function( e ) {
