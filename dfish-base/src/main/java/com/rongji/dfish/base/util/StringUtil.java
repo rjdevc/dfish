@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
+import com.rongji.dfish.base.TrieTree;
 import com.rongji.dfish.base.Utils;
 
 /**
@@ -58,21 +59,6 @@ public class StringUtil {
 	 * 字库合并了简体与繁体中文。
 	 */
 	public static java.util.Comparator<Object> CHINESE_ORDER=null;
-	static{
-		// FIXME 这里先不让他报错,但是这个调用关系应该是有问题的
-		String[] chineseOrderProviders={"com.rongji.dfish.misc.chinese.ChineseOrder"};
-		for(String prov:chineseOrderProviders){
-			try{
-				Class<?> c=Class.forName(prov);
-				CHINESE_ORDER=(Comparator<Object>) c.newInstance();
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-		}
-		if(CHINESE_ORDER==null){
-			CHINESE_ORDER=java.text.Collator.getInstance(Locale.SIMPLIFIED_CHINESE);
-		}
-	}
 
 	/**
 	 * 截取字符串content前面size个字节的内容 汉字相当于2个英文,数字相当于1个英文，每个英文字母占一个字节空间 要保证汉字不被错误分割 by
@@ -664,5 +650,94 @@ public class StringUtil {
     		index++;
     	}
     	return ret-1;
+    }
+    /**
+     * 将XSS内容移除。
+     * 这个常量通常作为replace方法的一个常量
+     * @see #replace(String, Map)
+     */
+    public static final Map<String,String> XSS_REMOVE;
+
+    /**；
+     * 将XSS内容替换成空格。
+     * 这个常量通常作为replace方法的一个常量
+     * @see #replace(String, Map)
+     */
+    public static final Map<String,String> XSS_TO_BLANK;
+    /**
+     * 将XSS内容替换成全角。
+     * 这个常量通常作为replace方法的一个常量
+     * @see #replace(String, Map)
+     */
+    public static final Map<String,String> XSS_TO_SBC;
+    static{
+        // FIXME 这里先不让他报错,但是这个调用关系应该是有问题的
+        String[] chineseOrderProviders={"com.rongji.dfish.misc.chinese.ChineseOrder"};
+        for(String prov:chineseOrderProviders){
+            try{
+                Class<?> c=Class.forName(prov);
+                CHINESE_ORDER=(Comparator<Object>) c.newInstance();
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        if(CHINESE_ORDER==null){
+            CHINESE_ORDER=java.text.Collator.getInstance(Locale.SIMPLIFIED_CHINESE);
+        }
+        String[] XSS_KEYS={"|","&",";","$","%","@","'","\"","\\'","\\\\\"","<",">","(",")","+",
+                "\r","\n",",","\\"};
+        String[] XSS_KEYS_SBC={"｜","＆","；","＄","％","＠","＇","＂","＼＇","＼＼＂","＜","＞","（","）","＋",
+                "","","，","＼"};
+        HashMap<String,String>xssRemove=new HashMap<>();
+        HashMap<String,String>xssToBlank=new HashMap<>();
+        HashMap<String,String>xssToSbc=new HashMap<>();
+        for(int i=0;i<XSS_KEYS.length;i++){
+            String x=XSS_KEYS[i];
+            xssRemove.put(x,"");
+            xssToBlank.put(x," ");
+            xssToSbc.put(x,XSS_KEYS_SBC[i]);
+        }
+        XSS_TO_BLANK = Collections.unmodifiableMap(xssToBlank);
+        XSS_REMOVE = Collections.unmodifiableMap(xssRemove);
+        XSS_TO_SBC = Collections.unmodifiableMap(xssToSbc);
+//        CharUtil.dbc2sbcl()
+    }
+
+    private static Map<Map<String,String>,TrieTree<String>> tries=Collections.synchronizedMap(new HashMap<>()) ;
+    /**
+     * 替换字符串，同时提换多个字符串，如果几个字符串有包含关系，更长的优先。
+     * 该方法是从右向做匹配。
+     * @param src 原文
+     * @param replaceTo 替换的文本。如果替换的内容比较多，尽量使用常量
+     * @return 结果
+     */
+    public static String replace(String src, Map<String,String> replaceTo){
+        TrieTree<String> trie=tries.get(replaceTo);
+        if (trie==null) {
+            trie=new TrieTree<>(true);
+            for(Map.Entry<String,String> entry:replaceTo.entrySet()){
+                trie.put(entry.getKey(),entry.getValue());
+            }
+            tries.put(replaceTo,trie);
+        }
+        List<TrieTree.SearchResult<String>> sr=trie.search(src);
+        if(sr==null||sr.isEmpty()){
+            return src;
+        }
+        char[] chars=src.toCharArray();
+        StringBuilder sb=new StringBuilder();
+        int lastEnd=0;
+        for(TrieTree.SearchResult<String> item:sr){
+            if(item.getBegin()>lastEnd){
+                sb.append(chars,lastEnd,item.getBegin()-lastEnd);
+            }
+            sb.append(item.getValue());
+            lastEnd=item.getEnd();
+        }
+        if(lastEnd<chars.length){
+            sb.append(chars,lastEnd,chars.length-lastEnd);
+        }
+
+        return sb.toString();
     }
 }
