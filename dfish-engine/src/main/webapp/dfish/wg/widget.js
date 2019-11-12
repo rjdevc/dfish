@@ -3057,7 +3057,11 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			return this.html_icon() + '<div class="_c f-oh f-nobr">' + (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.x.text + '</span><i class=f-vi></i></div>' : '') + '</div>';
+			var t = (this.x.text ? '<span class="f-omit f-va" title="' + $.strQuot( this.x.text ) + '">' + this.x.text + '</span><i class=f-vi></i>' : '');
+			if ( this.x.hr ) {
+				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
+			}
+			return this.html_icon() + '<div class="_c f-oh f-fix">' + t + '</div>';
 		}
 	}
 } ),

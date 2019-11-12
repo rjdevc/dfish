@@ -242,8 +242,9 @@
 
 .w-toggle{position:relative;height:30px}
 .w-toggle ._c{height:100%}
-.w-toggle ._i{height:100%;float:left;padding-right:5px;cursor:pointer}
+.w-toggle ._i{height:100%;float:left;padding-right:6px;cursor:pointer}
 .w-toggle ._t{height:100%;overflow:hidden;font-style:normal}
+.w-toggle ._hr{height:1px;margin-left:10px;border:0;background:#ddd}
 
 .w-split ._prev,.w-split ._next{cursor:pointer}
 .w-split ._ico{position:relative;z-index:1}
