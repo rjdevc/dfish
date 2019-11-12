@@ -2700,6 +2700,7 @@ Html = define.widget( 'html', {
 	Extend: 'scroll',
 	Prototype: {
 		className: 'w-html',
+		x_nodes: $.rt(),
 		attrSetter: function( k, v ) {
 			_proto.attrSetter.apply( this, arguments );
 			if ( k === 'text' )
@@ -10380,6 +10381,9 @@ Grid = define.widget( 'grid', {
 
 // 向上兼容
 define.widget( 'datepicker', { Extend: 'date' } );
+define.widget( 'form', { Extend: 'html' } );
+define.widget( 'vertical', { Extend: 'vert' } );
+define.widget( 'horizontal', { Extend: 'horz' } );
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
