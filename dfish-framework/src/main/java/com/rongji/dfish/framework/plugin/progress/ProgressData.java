@@ -16,7 +16,7 @@ public class ProgressData implements Serializable {
 	private String progressText;
 	private Command<?> completeCommand;
 	
-	private double delay;
+	private double delay = 1.0;
 
 	public String getProgressKey() {
 		return progressKey;
