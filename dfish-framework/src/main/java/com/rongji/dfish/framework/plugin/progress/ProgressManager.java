@@ -42,7 +42,7 @@ public class ProgressManager {
 	/**
 	 * 进度条加载时间间隔
 	 */
-	private double maxDelay = 3.0;
+	private double maxDelay = 5.0;
 	/**
 	 * 进度条显示文本
 	 */

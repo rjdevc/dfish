@@ -15,7 +15,7 @@ public class ProgressData implements Serializable {
 	private boolean finish;
 	private String progressText;
 	private JsonNode completeNode;
-	private double delay;
+	private double delay = 1.0;
 
 	public String getProgressKey() {
 		return progressKey;
