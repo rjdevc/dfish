@@ -1864,7 +1864,7 @@ var boot = {
 			_require = new Require( _path ),
 			_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
 			_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-			_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
+			_jq      = _loc && _require( _wg_lib + 'jquery/jquery' + (br.mobile ? '-mobile' : '') );
 		if ( _loc ) {
 			_cfg.loc && $.mergeDeep( _loc, _cfg.loc );
 		} else {

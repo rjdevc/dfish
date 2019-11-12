@@ -3147,7 +3147,7 @@ Button = define.widget( 'button', {
 				}
 			},
 			click: function( e ) {
-				this.x.focusable && (this.parentNode.x.focusmultiple ? this.toggleFocus() : this.focus());
+				this.parentNode.x.focusmultiple ? this.toggleFocus() : this.focus();
 				if ( !(this.x.on && this.x.on.click) )
 					this.drop();
 			},
@@ -3285,6 +3285,7 @@ Button = define.widget( 'button', {
 				}
 				a !== F && this.triggerHandler( 'focus' );
 			}
+			//a && this.x.badge && this.badge( F );
 			return (this.x.focus = !!a);
 		},
 		focusOver: function() {
