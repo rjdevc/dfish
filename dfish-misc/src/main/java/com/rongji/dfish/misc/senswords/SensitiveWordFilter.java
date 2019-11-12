@@ -210,7 +210,7 @@ public class SensitiveWordFilter {
             char[] ASCII_STOP_WORDS = " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~".toCharArray();
             for (char c : ASCII_STOP_WORDS) {
                 stopChar.add(c);
-                stopChar.add(CharUtil.dbc2sbcl(c));
+                stopChar.add(CharUtil.dbc2sbc(c));
             }
             char[] CHINESE_STOP_WORDS = "，。￥“”‘’【】—…《》".toCharArray();
             for (char c : CHINESE_STOP_WORDS) {

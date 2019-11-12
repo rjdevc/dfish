@@ -48,7 +48,7 @@ public class CharUtil {
 	 * @param src
 	 * @return
 	 */
-	public static char dbc2sbcl(char src) {
+	public static char dbc2sbc(char src) {
 		char r = src;
 		if (src == DBC_SPACE) { // 如果是半角空格，直接用全角空格替代
 			src = SBC_SPACE;
