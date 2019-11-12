@@ -666,11 +666,11 @@ _setView = function( a ) {
 },
 _regIdName = function( a ) {
 	if ( this.x.id )   a.widgets[ this.x.id ] = this;
+	if ( this.x.gid ) _globals[ this.x.gid ] = this;
 	if ( this.x.name ) $.jsonArray( this, a.names, this.x.name );
 },
 _regWidget = function( x, p, n ) {
 	p && p.addNode( this, n );
-	x.gid && (_globals[ x.gid ] = this);
 	_all[ $.uid( this ) ] = this;
 	this.init_x( x );
 },
@@ -725,7 +725,7 @@ W = define( 'widget', function() {
 				if ( t ) {
 					if ( !t.type || t.type === this.type ) {
 						for ( var k in t ) {
-							if ( k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
+							if ( !(k in x) && k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
 								x[ k ] = t[ k ];
 							}
 						}
@@ -2094,7 +2094,7 @@ Xsrc = define.widget( 'xsrc', {
 		body: {
 			ready: function() {
 				this.domready = T;
-				this.start();
+				this.layout ? setTimeout( $.proxy( this, 'this.trigger("load")' ) ) : this.start();
 			},
 			display: function() {
 				this.domready && this.start();
@@ -2134,10 +2134,12 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		// @implement
 		init_nodes: function() {
-			if ( this.x.node && ! this.layout )
+			if ( this.x.node && !this.layout )
 				this.layout = new Layout( { node: this.x.node }, this );
 		},
 		start: function() {
+			if ( !this.x.src && !this.x.template )
+				return;
 			if ( ! this._x_ini ) {
 				this.init_x( this.x );
 				this.repaint();
@@ -2226,7 +2228,7 @@ Xsrc = define.widget( 'xsrc', {
 			return T;
 		},
 		_error: function( x ) {
-			var t = this.x.template && _getTemplate( t ), s = this.x.success || (t && t.success);
+			var t = this.x.template && _getTemplate( this.x.template ), s = this.x.error || (t && t.error);
 			s && this.formatJS( s, { '$response': N } );
 			if ( this._disposed ) return F;
 			s = this.x.complete || (t && t.complete);
@@ -2322,6 +2324,7 @@ Xsrc = define.widget( 'xsrc', {
 				for ( var i = 0, b = this._getTargets( this.x.node, tar ); i < b.length; i ++ )
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
 			} else if ( this.layout ) {
+				this.showLoading( F );
 				this.layout.render();
 				this.trigger( 'load' );
 			}
@@ -2720,14 +2723,13 @@ Vertical = define.widget( 'vertical', {
 Frame = define.widget( 'frame', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		//(this.focusNode = this.getFocus()) && (this.focusNode.focusOwner = this);
 	},
 	Listener: {
 		body: {
 			ready: function() {
 				if ( this.length ) {
 					var d = this.focusNode;
-					!d && this.x.dft && (d = this.ownerView.find( this.x.dft )) && this.focus( d );
+					!d && (d = this.x.dft ? this.ownerView.find( this.x.dft ) : this[ 0 ]) && this.focus( d );
 				}
 			}
 		}
@@ -3153,7 +3155,9 @@ Button = define.widget( 'button', {
 				if ( ! this._locked ) {
 					if ( this.$() ) {
 						$.classAdd( this.$(), 'z-lock' );
-						$.append( this.$( 'c' ), '<i class=_ld></i>' );
+						var c = Q( this.$( 'c' ) ), d = c.find( '._i' ),
+							e = Q( '<i class=_ld></i>' ).appendTo( d.length ? d : c );
+						d.length && e.css( 'right', d.css( 'padding-right' ) );
 					}
 				}
 				this._locked = T;
@@ -3212,6 +3216,8 @@ Button = define.widget( 'button', {
 				this.setMore( b );
 			} else if ( a === 'hoverdrop' ) {
 				this.more && this.more.attr( 'hoverdrop', b );
+			} else if ( a === 'badge' ) {
+				b === F ? this.removeElem( 'b' ) : this.$( 'b' ) ? Q( this.$( 'b' ) ).replaceWith( this.html_badge() ) : Q( this.$() ).append( this.html_badge() );
 			}
 		},
 		setMore: function( x ) {
@@ -3296,16 +3302,6 @@ Button = define.widget( 'button', {
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
 		},
-		// @a -> delay millisenconds?
-		drop: function( a ) {
-			if ( this.usa() && this.more )
-				this.more.show( a );
-		},
-		close: function( e ) {
-			e && $.stop( e );
-			if ( ! this._disposed && F !== this.trigger( 'close' ) )
-				this.remove();
-		},
 		lock: function( a ) {
 			this.trigger( a === F ? 'unlock' : 'lock' );
 		},
@@ -3322,15 +3318,33 @@ Button = define.widget( 'button', {
 		},
 		// 新增或更换图标。如果 a == '', 则删除图标  / @a -> image src
 		icon: function( a ) {
-			this.attr( 'icon', a );
+			return this.attr( 'icon', a );
 		},
-		// 新增或更换文本。如果 a == ''  / @a -> text
+		// 文本
 		text: function( a ) {
-			this.attr( 'text', a );
+			return this.attr( 'text', a );
+		},
+		// 徽标
+		badge: function( a ) {
+			return this.attr( 'badge', a );
+		},
+		// @a -> delay millisenconds?
+		drop: function( a ) {
+			if ( this.usa() && this.more )
+				this.more.show( a );
+		},
+		close: function( e ) {
+			e && $.stop( e );
+			if ( ! this._disposed && F !== this.trigger( 'close' ) )
+				this.remove();
 		},
 		html_badge: function() {
-			var t = typeof this.x.badge === _STR ? this.x.badge : '';
-			return (this.x.badge ? '<i class="w-badge' + (t ? ' z-t' : '') + '" id=' + this.id + 'b>' + t + '</i>' : '');
+			var t = this.x.badge;
+			if ( t != N && t !== F ) {
+				t = t === T ? '' : '' + t;
+				return '<i class="w-badge' + (t ? ' z-t' : '') + '" id=' + this.id + 'b>' + t + '</i>';
+			}
+			return '';
 		},
 		html_icon: function( a ) {
 			var t = this.x.text;
@@ -3653,6 +3667,8 @@ Img = define.widget( 'img', {
 				this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_img() );
 			} else if ( a === 'text' || a === 'description' ) {
 				this.$( 't' ) && $.replace( this.$( 't' ), this.html_text() );
+			} else if ( a === 'badge' ) {
+				b === F ? this.removeElem( 'b' ) : this.$( 'b' ) ? Q( this.$( 'b' ) ).replaceWith( this.html_badge() ) : Q( this.$( 'i' ) ).append( this.html_badge() );
 			}
 		},
 		isFocus: function() {
@@ -3669,6 +3685,9 @@ Img = define.widget( 'img', {
 		},
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
+		},
+		badge: function( a ) {
+			return this.attr( 'badge', a );
 		},
 		error: function() {
 			this.addClass( 'z-err' );
@@ -3693,11 +3712,14 @@ Img = define.widget( 'img', {
 			this.x.style && (t += this.x.style);
 			return t;
 		},
+		html_badge: function() {
+			return Button.prototype.html_badge.call( this );
+		},
 		html_img: function() {
 			var x = this.x, b = this.parentNode.type === 'album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call( this, this.x.src ),
 				iw = this.x.imgwidth, ih = this.x.imgheight, w = iw || mw, h = ih || mh;
 			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh, error: evw + '.error()', load: evw + '.imgLoad()' }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
 		},
 		html_text: function() {
 			var x = this.x, t = this.html_format( x.text, x.format, this.x.escape ), w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
@@ -8782,28 +8804,24 @@ AbsLeaf = define.widget( 'abs/leaf', {
 		// @implement
 		attrSetter: function( a, b, c ) {
 			_proto.attrSetter.apply( this, arguments );
-			switch( a ) {
-				case 'text':
-					if ( this.$( 't' ) ) {
-						$.html( this.$( 't' ), this.html_text() );
-						if ( this.x.tip === T ) {
-							this.$().title = $.strQuot( this.x.text, T );
-						}
+			if ( a === 'text' ) {
+				if ( this.$( 't' ) ) {
+					$.html( this.$( 't' ), this.html_text() );
+					if ( this.x.tip === T ) {
+						this.$().title = $.strQuot( this.x.text, T );
 					}
-				break;
-				case 'icon': case 'openicon':
-					this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon() ) : (this.$( 't' ) && $.before( this.$( 't' ), this.html_icon() ));
-				break;
-				case 'focus':
-					this.focus( b );
-				break;
-				case 'src':
-					this.fixFolder();
-				break;
-				case 'cls':
-					this.removeClass( c );
-					this.addClass( b );
-				break;
+				}
+			} else if ( a === 'icon' || a === 'openicon' ) {
+				this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon() ) : (this.$( 't' ) && $.before( this.$( 't' ), this.html_icon() ));
+			} else if ( a === 'focus' ) {
+				this.focus( b );
+			} else if ( a === 'src' ) {
+				this.fixFolder();
+			} else if ( a === 'cls' ) {
+				this.removeClass( c );
+				this.addClass( b );
+			} else if ( a === 'badge' ) {
+				b === F ? this.removeElem( 'b' ) : this.$( 'b' ) ? Q( this.$( 'b' ) ).replaceWith( this.html_badge() ) : Q( this.$() ).append( this.html_badge() );
 			}
 		},
 		srcData: function() {
@@ -8824,10 +8842,14 @@ AbsLeaf = define.widget( 'abs/leaf', {
 			if ( this.$( 'o' ) && ! this.$( 'r' ) )
 				$.prepend( this.$( 'o' ), $.arrow( this.id + 'r', this.isOpen() ? 'b1' : 'r1' ) );
 		},
-		_success: function() {
+		_success: function( x ) {
 			return Xsrc.prototype._success.apply( this, arguments );
 		},
 		_error: function() {
+			if ( this.x.folder && !this.length ) {
+				this.x.folder = F;
+				this.fixFolder();
+			}
 			return Xsrc.prototype._error.apply( this, arguments );
 		},
 		// @a -> sync? b -> fn?
@@ -9182,6 +9204,9 @@ Leaf = define.widget( 'leaf', {
 		isLast: function() {
 			return this.nodeIndex === this.parentNode.length - 1;
 		},
+		badge: function( a ) {
+			return this.attr( 'badge', a );
+		},
 		checkBox: function( a ) {
 			this.box && this.box.click( a == N || a );
 		},
@@ -9208,6 +9233,9 @@ Leaf = define.widget( 'leaf', {
 				(b = this[ i ].box) && b.check( a );
 				this[ i ]._tripleAll( a );
 			}
+		},
+		html_badge: function() {
+			return Button.prototype.html_badge.call( this );
 		},
 		html_icon: function() {
 			var c = (this.x.open && this.length && this.x.openicon) || this.x.icon;
@@ -9244,7 +9272,7 @@ Leaf = define.widget( 'leaf', {
 			return this.html_before() + '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? this.prop_title( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip, x.format ) : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (this.isFolder() ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
-				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_append() + '</dl>' + this.html_after();
+				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();

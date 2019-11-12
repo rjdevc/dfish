@@ -171,9 +171,9 @@
 .w-label ._lb{margin-right:6px}
 .w-label ._bg{position:absolute;top:0;left:0}
 
-.w-grid .w-label{position:static;*position:relative}
-.w-grid .w-label ._lb{position:relative;z-index:1}
-.w-grid .w-label ._bg{bottom:0;bottom:-1000px\0}
+.w-grid .w-label,.w-form .w-label{position:static;*position:relative}
+.w-grid .w-label ._lb,.w-form .w-label ._lb{position:relative;z-index:1}
+.w-grid .w-label ._bg,.w-form .w-label ._bg{bottom:0;bottom:-1000px\0}
 .w-td-cell .w-label ._bg{border-right:1px solid #e9e9e9}
 
 .f-css2 .w-grid .f-sub-horz.z-htmn{float:none}
@@ -181,7 +181,7 @@
 /* tree */
 .w-tree{text-align:left;overflow:hidden}
 .w-tree-gut{padding-top:5px}
-.w-leaf{margin:0;padding:0;height:30px;cursor:default}
+.w-leaf{position:relative;margin:0;padding:0;height:30px;cursor:default}
 .w-leaf.z-hv,.w-leaf.z-hv .w-leaf-t{background:#d5ecff}
 .w-leaf.z-on,.w-leaf.z-on .w-leaf-t{background:#bce0ff}
 .w-leaf-a{height:100%;text-decoration:none}
@@ -519,8 +519,8 @@
 .w-album .w-img.z-hv .w-img-box,.w-album .w-img.z-on .w-img-box{display:inline-block}
 .w-album .w-img .w-img-i img{width:100%}
 .w-img .w-img-t{text-align:center;margin-top:10px}
-.w-img .w-img-d{color:gray;line-height:2;}
-.w-img .w-img-i{text-align:center;vertical-align:middle}
+.w-img .w-img-d{color:gray;line-height:2}
+.w-img .w-img-i{position:relative;text-align:center;vertical-align:middle}
 .w-img.z-face-straight{text-align:left}
 .w-img.z-face-straight .w-img-t{padding-left:10px;margin-top:0;display:inline-block;text-align:left;vertical-align:middle;*display:inline;*zoom:1}
 .w-img.z-face-straight .w-img-s{font-size:14px;line-height:2}
@@ -553,9 +553,9 @@
 .w-button em,.w-tab em,.w-menu-button em{font-style:normal;vertical-align:middle}
 .w-button img,.w-tab img,.w-menu-button img{vertical-align:middle}
 .w-button ._m .f-arw,.w-tab ._m .f-arw{border-top-color:#555;border-bottom:0}
-.w-button ._ld,.w-tab ._ld{position:absolute;top:0;left:0;bottom:0;right:0;background:url(g/loading.gif) no-repeat 50% 50%}
-.w-button.z-lock ._t,.w-button.z-lock ._i,.w-tab.z-lock ._t,.w-tab.z-lock ._i{opacity:.4}
-.w-button.z-lock ._c,.w-tab.z-lock ._c{position:relative}
+.w-button ._ld,.w-tab ._ld{position:absolute;top:0;bottom:0;left:0;right:0;background:url(g/loading-cir.gif) no-repeat 50% 50%}
+.w-button.z-lock ._t,.w-button.z-lock ._ico,.w-tab.z-lock ._t,.w-tab.z-lock ._ico{opacity:.4}
+.w-button.z-lock ._c,.w-tab.z-lock ._c,.w-button.z-lock ._i,.w-tab.z-lock ._i{position:relative}
 .w-button.z-on,.w-tab.z-on{z-index:1}
 .w-button.z-ds,.w-tab.z-ds{color:#aaa}
 .w-button.z-more ._t,.w-tab.z-more ._t{padding-right:4px;*padding-right:22px}
@@ -564,8 +564,10 @@
 .w-button-split{vertical-align:middle;text-align:center}
 .w-tab{height:100%}
 
-.w-badge{position:absolute;top:-10px;right:-5px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
-.w-badge.z-t{top:-7px;right:0;margin-left:50%;padding:1px 3px;width:auto;height:auto;}
+.w-badge{position:absolute;top:-3px;right:-3px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
+.w-badge.z-t{top:-7px;right:0;padding:1px 3px;width:auto;height:auto;transform:translateX(50%)}
+.w-leaf .w-badge{top:0;bottom:0;right:8px;margin:auto 8px}
+.w-leaf .w-badge.z-t{height:12px}
 
 .f-button{height:28px;border:1px solid #d3d3d3;border-radius:2px;background:#fafafa;color:#333}
 .f-button.z-on{background:#fff}

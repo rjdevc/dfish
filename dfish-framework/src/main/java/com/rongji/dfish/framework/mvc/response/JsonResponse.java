@@ -4,6 +4,8 @@ import com.rongji.dfish.base.Pagination;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class JsonResponse<T> {
@@ -27,16 +29,18 @@ public class JsonResponse<T> {
         return header;
     }
 
-    public void setHeader(Header header) {
+    public JsonResponse<T> setHeader(Header header) {
         this.header = header;
+        return this;
     }
 
     public Error getError() {
         return error;
     }
 
-    public void setError(Error error) {
+    public JsonResponse<T> setError(Error error) {
         this.error = error;
+        return this;
     }
 
     public Error error() {
@@ -50,16 +54,19 @@ public class JsonResponse<T> {
         return data;
     }
 
-    public void setData(T data) {
+    public JsonResponse<T> setData(T data) {
         this.data = data;
+        return this;
     }
 
-    public void setErrMsg(String msg) {
+    public JsonResponse<T> setErrMsg(String msg) {
         error().setMsg(msg);
+        return this;
     }
 
-    public void setErrCode(String code) {
+    public JsonResponse<T> setErrCode(String code) {
         error().setCode(code);
+        return this;
     }
 
     public JsonResponse<T> setPagination(Pagination pagination) {
@@ -72,12 +79,18 @@ public class JsonResponse<T> {
         return this;
     }
 
+    public JsonResponse<T> setPrincipal(HeaderPrincipal principal) {
+        getHeader().setPrincipal(principal);
+        return this;
+    }
+
     public static class Header {
 
         private String timestamp;
         private Integer size;
         private Integer offset;
         private Integer limit;
+        private HeaderPrincipal principal;
 
         public static final SimpleDateFormat DF = new SimpleDateFormat("yyyyMMddHHmmssZ");
 
@@ -91,34 +104,91 @@ public class JsonResponse<T> {
             return timestamp;
         }
 
-        public void setTimestamp(String timestamp) {
+        public Header setTimestamp(String timestamp) {
             this.timestamp = timestamp;
+            return this;
         }
 
         public Integer getSize() {
             return size;
         }
 
-        public void setSize(Integer size) {
+        public Header setSize(Integer size) {
             this.size = size;
+            return this;
         }
 
         public Integer getOffset() {
             return offset;
         }
 
-        public void setOffset(Integer offset) {
+        public Header setOffset(Integer offset) {
             this.offset = offset;
+            return this;
         }
 
         public Integer getLimit() {
             return limit;
         }
 
-        public void setLimit(Integer limit) {
+        public Header setLimit(Integer limit) {
             this.limit = limit;
+            return this;
         }
 
+        public HeaderPrincipal getPrincipal() {
+            return principal;
+        }
+
+        public Header setPrincipal(HeaderPrincipal principal) {
+            this.principal = principal;
+            return this;
+        }
+    }
+
+    public static class HeaderPrincipal implements ResponsePrincipal {
+        private String name;
+        private String natureName;
+        private String fullName;
+
+        public HeaderPrincipal(String name) {
+            this.name = name;
+        }
+
+        public HeaderPrincipal(String name, String natureName) {
+            this.name = name;
+            this.natureName = natureName;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public HeaderPrincipal setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public String getNatureName() {
+            return natureName;
+        }
+
+        public HeaderPrincipal setNatureName(String natureName) {
+            this.natureName = natureName;
+            return this;
+        }
+
+        @Override
+        public String getFullName() {
+            return fullName;
+        }
+
+        public HeaderPrincipal setFullName(String fullName) {
+            this.fullName = fullName;
+            return this;
+        }
     }
 
     public static class Error {
@@ -129,16 +199,18 @@ public class JsonResponse<T> {
             return code;
         }
 
-        public void setCode(String code) {
+        public Error setCode(String code) {
             this.code = code;
+            return this;
         }
 
         public String getMsg() {
             return msg;
         }
 
-        public void setMsg(String msg) {
+        public Error setMsg(String msg) {
             this.msg = msg;
+            return this;
         }
 
     }

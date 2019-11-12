@@ -315,22 +315,28 @@ _loadJs = function( a, b, c ) {
 // @a -> src, b -> id?, c -> fn?
 _loadCss = function( a, b, c ) {
 	typeof a === _STR && (a = [ a ]);
+	var d = doc.readyState === 'loading';
 	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
-		e = doc.createElement( 'link' );
-		e.rel  = 'stylesheet';
-		e.href = a[ i ] + _ver;
-		b && ($.remove( b[ i ] ), e.id = b[ i ]);
-		if ( c ) {
-			if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
-			    var img = doc.createElement( 'img' );
-		        img.onerror = function(){ --n === 0 && c() };
-		        img.src = a[ i ] + _ver;
-		    } else {
-		    	c && (e.onload = function() { --n === 0 && c() });
+		if ( d ) {
+			doc.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '">' );
+		} else {
+			e = doc.createElement( 'link' );
+			e.rel  = 'stylesheet';
+			e.href = a[ i ] + _ver;
+			b && ($.remove( b[ i ] ), e.id = b[ i ]);
+			if ( c ) {
+				if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
+				    var img = doc.createElement( 'img' );
+			        img.onerror = function(){ --n === 0 && c() };
+			        img.src = a[ i ] + _ver;
+			    } else {
+			    	c && (e.onload = function() { --n === 0 && c() });
+			    }
 		    }
-	    }
-		_tags( 'head' )[ 0 ].appendChild( e );
+			_tags( 'head' )[ 0 ].appendChild( e );
+		}
 	}
+	d && c && c();
 },
 _loadStyle = function( a, b ) {
 	var c = document.createElement( 'style' );
@@ -411,6 +417,9 @@ _numDecimal = $.numDecimal = function( a, b ) {
 		var f = _strFrom( '' + a, '.' );
 		return f ? _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) : a;
 	}
+},
+_string = $.string = function( a ) {
+	return a == N ? '' : '' + a;
 },
 _strTrim = $.strTrim = function (a ) {
 	return String( a ).replace( /^\s+|\s+$/g, '' );
@@ -1563,13 +1572,15 @@ Ajax = _createClass( {
 								r = g;
 						} else
 							m = l.responseText;
+						if ( m != N && x.filter && (m = _fnapply( x.filter, c, '$response,$ajax', [ m, self ] )) == N )
+							r = 'filter';
 					} else
 						r = g;
 			        if ( r ) {
 			        	self.errorCode = l.status;
 						if ( f !== F && (_ajax_httpmode || l.status) ) {
 							typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
-							if ( f !== F ) {
+							if ( f !== F && r !== 'filter' ) {
 								var s = 'ajax ' + l.status + ': ' + a;
 								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
 									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
@@ -1577,10 +1588,8 @@ Ajax = _createClass( {
 							}
 						}
 				    } else {
-				    	var t = x.filter;
-				    	t && (m = _fnapply( t, c, '$response,$ajax', [ m, self ] ));
 				    	self.response = m;
-						(m || (g === 'text' && m == '')) && b && b.call( c, m, self );
+						b && b.call( c, m, self );
 						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 					}
 					x.complete && x.complete.call( c, m, self );

@@ -185,7 +185,7 @@ var api = {
 		for ( var i = 0, b = a.x.id.replace( '-scr', '' ), c = $.bcr( a.$() ), l = pk.length; i < l; i ++ ) {
 			var d = $( b + '-' + pk[ i ] );
 			if ( d && (d = $.bcr( d )) && (d.top > c.top || i === l - 1) ) {
-				find( b + '-btn-' + pk[ d.top > (c.top + c.bottom / 2) ? i - 1 : i ] ).focus();
+				find( b + '-btn-' + pk[ d.top > ((c.top + c.bottom) / 2) ? i - 1 : i ] ).focus();
 				break;
 			}
 		}
