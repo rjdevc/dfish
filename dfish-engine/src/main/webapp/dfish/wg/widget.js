@@ -2194,6 +2194,7 @@ Html = define.widget( 'html', {
 	Extend: 'scroll',
 	Prototype: {
 		className: 'w-html',
+		x_nodes: $.rt(),
 		attrSetter: function( k, v ) {
 			_proto.attrSetter.apply( this, arguments );
 			if ( k === 'text' )
@@ -9244,19 +9245,23 @@ Grid = define.widget( 'grid', {
 		},
 		// @a -> col index, b -> width?
 		colWidth: function( a, b ) {
-			var g = this.colgrps, i = g.length, v = g[ 0 ][ a ].x.width;
+			var g = this.colgrps, v = g[ 0 ][ a ].x.width;
 			if ( b == N )
-				return i && g[ 0 ][ a ] && g[ 0 ][ a ].width();
-			while ( i -- ) {
+				return g[ 0 ] && g[ 0 ][ a ] && g[ 0 ][ a ].width();
+			for ( var i = 0; i < g.length; i ++ ) {
+				for ( var j = 0; j < g[ i ].length; j ++ ) {
+					g[ i ][ j ].x.width = g[ i ][ j ].innerWidth();
+				}
+			}
+			for ( var i = 0; i < g.length; i ++ ) {
 				g[ i ][ a ] && g[ i ][ a ].width( b );
 			}
 			_w_rsz_all.call( this );
 			for ( var i = 0, w = 0, v, l = g[ 0 ].length; i < l; i ++ ) {
 				w += g[ 0 ][ i ].width();
 			}
-			i = g.length;
-			while ( i -- ) {
-				! isNaN( w ) && g[ i ].parentNode.css( 'width', w );
+			for ( var i = 0; i < g.length; i ++ ) {
+				! isNaN( w ) && (g[ i ].parentNode.$().style.width = w + 'px');
 				g[ i ][ a ].x.width = v;
 			}
 		},
@@ -9470,6 +9475,7 @@ Grid = define.widget( 'grid', {
 define.widget( 'form', {} );
 define.widget( 'formgroup', {} );
 define.widget( 'datepicker', {} );
+define.widget( 'timeline', { Extend: 'html' } );
 
 // 附件上传模块
 require( './upload/upload' );
