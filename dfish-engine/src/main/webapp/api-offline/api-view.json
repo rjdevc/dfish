@@ -187,6 +187,9 @@
 		        { "id": "tabs", "text": "tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "tab", "text": "tab", "icon": ".icon .icon-class" }
 		        ]  },
+		        { "id": "timeline", "text": "timeline", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "timeline/item", "text": "timeline/item", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "toggle", "text": "toggle", "icon": ".icon .icon-class" },
 		        { "id": "tree", "text": "tree", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "leaf", "text": "leaf", "icon": ".icon .icon-class" }

@@ -1621,7 +1621,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, b -> widget size?, c -> self size?
 	_w_scale[ v ] = function( a, b, c ) {
 		var d = b != N ? b : a.attr( v ), s = this._scales;
-		if ( $.isNumber( d ) && d > -1 && ! this.SCALE_COVER )
+		if ( $.isNumber( d ) && d > -1 && ! this.isScaleCover )
 			return parseFloat( d );
 		if ( b != N || c != N || ! s ) {
 			if ( ! this.length )
@@ -1632,7 +1632,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
-			s = $.scale( c === U ? this[ iz ]() : c, r, this.SCALE_COVER );
+			s = $.scale( c === U ? this[ iz ]() : c, r, this.isScaleCover );
 			if ( b === U && c === U )
 				this._scales = s;
 		}
@@ -2867,6 +2867,32 @@ Html = define.widget( 'html', {
 			if ( v )
 				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>';
 			return s;
+		}
+	}
+} ),
+/* `timeline` 时间轴 */
+Timeline = define.widget( 'timeline', {
+	Prototype: {
+		className: 'w-timeline',
+		tagName: 'ul',
+		x_childtype: $.rt( 'timeline/item' )
+	}
+} ),
+/* `timeline` 时间轴 */
+TimelineItem = define.widget( 'timeline/item', {
+	Default: { width: -1 },
+	Prototype: {
+		className: 'w-timeline-item',
+		tagName: 'li',
+		ROOT_TYPE: 'timeline',
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === this.parentNode.length - 1 ? ' z-last' : '');
+		},
+		html_icon: function() {
+			return '<div class=_i>' + (this.x.icon ? $.image( this.x.icon ) : '<div class="_cir f-inbl"></div>') + '<i class=f-vi></i></div>';
+		},
+		html_nodes: function() {
+			return '<div class=_line></div>' + this.html_icon() + '<div class=_t>' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</div>';
 		}
 	}
 } ),
@@ -10170,7 +10196,7 @@ Colgroup = define.widget( 'colgroup', {
 	Extend: 'horz/scale',
 	Prototype: {
 		ROOT_TYPE: 'grid,form',
-		SCALE_COVER: T,
+		isScaleCover: T,
 		x_childtype: $.rt( 'column' ),
 		insertCol: function( a, b ) {
 			 b == N || ! this[ b ] ? this.append( a ) : this[ b ].before( a );
@@ -10441,20 +10467,24 @@ Grid = define.widget( 'grid', {
 		},
 		// @a -> col index, b -> width?
 		colWidth: function( a, b ) {
-			var g = this.colgrps, i = g.length, v = g[ 0 ][ a ].x.width;
+			var g = this.colgrps;
 			if ( b == N )
-				return i && g[ 0 ][ a ] && g[ 0 ][ a ].width();
-			while ( i -- ) {
+				return g[ 0 ] && g[ 0 ][ a ] && g[ 0 ][ a ].width();
+			for ( var i = 0; i < g.length; i ++ ) {
+				for ( var j = 0; j < g[ i ].length; j ++ ) {
+					g[ i ][ j ].x.width = g[ i ][ j ].innerWidth();
+				}
+				g[ i ].isScaleCover = F;
+			}
+			for ( var i = 0; i < g.length; i ++ ) {
 				g[ i ][ a ] && g[ i ][ a ].width( b );
 			}
 			_w_rsz_all.call( this );
 			for ( var i = 0, w = 0, v, l = g[ 0 ].length; i < l; i ++ ) {
 				w += g[ 0 ][ i ].width();
 			}
-			i = g.length;
-			while ( i -- ) {
-				! isNaN( w ) && g[ i ].parentNode.css( 'width', w );
-				g[ i ][ a ].x.width = v;
+			for ( var i = 0; i < g.length; i ++ ) {
+				! isNaN( w ) && (g[ i ].parentNode.$().style.width = w + 'px');
 			}
 		},
 		// a -> data, b -> data|index

@@ -1264,6 +1264,7 @@ define( {
   	extend: 'widget',
   	//deprecate: 'prepend,append',
     Config: [
+      { name: 'badge', type: 'Boolean | String | Number', remark: '显示徽标。' },
       { name: 'closeable', type: 'Boolean', remark: '是否有关闭图标。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
@@ -1306,6 +1307,18 @@ define( {
       { name: 'tip', type: 'String', remark: '浮动显示的提示文本。' }
     ],
     Methods: [
+      { name: 'badge([value])', remark: '设置徽标。', param: [
+        { name: 'value', type: 'Boolean | String | Number', remark: '读取/设置徽标。', optional: true }
+      ], example: [
+          function() {
+          	// 设置徽标
+            this.badge( 5 );
+            this.badge( '99+' );
+            // 取消徽标
+            this.badge( false );
+          }
+      ] },
+      { name: 'click()', remark: '模拟一次点击。' },
       { name: 'disable([bDisabled])', remark: '设置按钮状态为可用/禁用。', param: [
         { name: 'bDisabled', type: 'Boolean', remark: '是否禁用。', optional: true }
       ] },
@@ -1317,7 +1330,6 @@ define( {
             btn.focus( false ); // 失去焦点
           }
       ] },
-      { name: 'click()', remark: '模拟一次点击。' },
       { name: 'drop()', remark: '如果有设置 more 参数，执行此方法可以展示下拉菜单。'},
       { name: 'icon(src)', remark: '更换图标。', param: [
         { name: 'src', type: 'String', remark: '图标地址。可以是 url 地址或以"."开头的图标样式名。' }
@@ -1456,7 +1468,7 @@ define( {
             }
           }
       ] }
-    ],  	
+    ],
     Classes: [
       { name: '.w-tabs', remark: '基础样式。' }
     ]
@@ -2416,6 +2428,7 @@ define( {
       { name: '.z-last', remark: '在兄弟节点中排行最后时的样式。' }
     ]
   },
+  
   "html": {
   	title: 'html',
   	remark: '展示html内容。',
@@ -2510,6 +2523,50 @@ define( {
     ],
     Classes: [
       { name: '.w-progress', remark: '基础样式。' }
+    ]
+  },
+  "timeline": {
+  	title: 'timeline',
+  	remark: '时间轴。',
+  	extend: 'widget',
+    Config: [
+      { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
+      { name: 'nodes', type: 'Array', remark: '子节点数组。' }
+    ],
+    Classes: [
+      { name: '.w-timeline', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: "timeline",
+              nodes: [
+                { text: "商品已经下单 2019-09-01" },
+                { text: "卖家已发货 2019-09-01" },
+                { text: "包裹正在等待揽收 2019-09-01", icon: ".f-i-search" },
+                { text: "正在为您派件 2019-09-01" }
+              ]
+            }
+          }
+      ] }
+    ],  	
+  },
+  "timeline/item": {
+  	title: 'timeline/item',
+  	remark: '时间轴条目。',
+  	extend: 'widget',
+    Config: [
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'icon', type: 'String', optional: true, remark: '图标。可用 "." 开头的样式名，或图片路径。' },
+      { name: 'text', type: 'String', remark: '显示文本。' }
+    ],
+    Classes: [
+      { name: '.w-timeline-item', remark: '基础样式。' },
+      { name: '.z-first', remark: '当前节点是兄弟节点中的首个节点时的样式。' },
+      { name: '.z-last', remark: '当前节点是兄弟节点中的末尾节点时的样式。' }
     ]
   },
   "ewin": {
