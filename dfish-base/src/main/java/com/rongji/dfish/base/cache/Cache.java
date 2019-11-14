@@ -34,7 +34,7 @@ public interface Cache<K, V> {
 	V put(K key, V value);
 	/**
 	 * 批量设置值
-	 * @param m
+	 * @param m 值
 	 */
 	void putAll(Map<K, V> m);
 	/**
