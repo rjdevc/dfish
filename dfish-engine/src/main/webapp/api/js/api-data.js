@@ -2530,6 +2530,7 @@ define( {
   	remark: '时间轴。',
   	extend: 'widget',
     Config: [
+      { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
       { name: 'nodes', type: 'Array', remark: '子节点数组。' }
     ],
@@ -2539,6 +2540,7 @@ define( {
 	Examples: [
 	  { example: [
           function() {
+	  	    // 靠左
             return~
             {
               type: "timeline",
@@ -2549,6 +2551,26 @@ define( {
                 { text: "正在为您派件 2019-09-01" }
               ]
             }
+          },
+          function() {
+	  	    // 靠右
+            return~
+              { type: 'timeline', align: 'right', nodes: [
+                { text: "商品已经下单" },
+                { text: "卖家已发货" },
+                { text: "包裹正在等待揽收" },
+                { text: "在为您派件" }
+              ] }
+          },
+          function() {
+	  	    // 居中
+            return~
+              { type: 'timeline', align: 'center', nodes: [
+                { text: "商品已经下单" },
+                { text: "卖家已发货", align: 'left' },
+                { text: "包裹正在等待揽收" },
+                { text: "在为您派件", align: 'left' }
+              ] }
           }
       ] }
     ],  	
@@ -2558,6 +2580,7 @@ define( {
   	remark: '时间轴条目。',
   	extend: 'widget',
     Config: [
+      { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。当父节点设置align:"center"时本参数有效。可选值: <b>left</b>, <b>right</b>' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'icon', type: 'String', optional: true, remark: '图标。可用 "." 开头的样式名，或图片路径。' },
@@ -2656,7 +2679,7 @@ define( {
   	remark: '小按钮风格的翻页工具条。',
   	extend: 'widget',
     Config: [
-      { name: 'align', type: 'String', optional: true, remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+      { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'btncls', type: 'String', optional: true, remark: '按钮样式。' },
       { name: 'btncount', type: 'Number', optional: true, remark: '数字页数按钮的数量。' },
       { name: 'btnsumpage', type: 'Boolean', optional: true, remark: '显示总页数按钮。' },

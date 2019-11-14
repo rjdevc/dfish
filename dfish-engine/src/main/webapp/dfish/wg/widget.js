@@ -2875,10 +2875,13 @@ Timeline = define.widget( 'timeline', {
 	Prototype: {
 		className: 'w-timeline',
 		tagName: 'ul',
-		x_childtype: $.rt( 'timeline/item' )
+		x_childtype: $.rt( 'timeline/item' ),
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.x.align ? ' z-' + this.x.align : '');
+		}
 	}
 } ),
-/* `timeline` 时间轴 */
+/* `timelineitem` */
 TimelineItem = define.widget( 'timeline/item', {
 	Default: { width: -1 },
 	Prototype: {
@@ -2886,7 +2889,9 @@ TimelineItem = define.widget( 'timeline/item', {
 		tagName: 'li',
 		ROOT_TYPE: 'timeline',
 		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === this.parentNode.length - 1 ? ' z-last' : '');
+			var p = this.parentNode;
+			return _proto.prop_cls.call( this ) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.length - 1 ? ' z-last' : '') +
+				(p.x.align === 'center' ? ' z-' + (this.x.align || 'right') : '');
 		},
 		html_icon: function() {
 			return '<div class=_i>' + (this.x.icon ? $.image( this.x.icon ) : '<div class="_cir f-inbl"></div>') + '<i class=f-vi></i></div>';
