@@ -1,13 +1,9 @@
 package com.rongji.dfish.base.cache.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.CacheValueGetter;
+
+import java.util.*;
 
 public abstract class AbstractCacheValueGetter<K, V> implements CacheValueGetter<K, V> {
 
@@ -40,7 +36,12 @@ public abstract class AbstractCacheValueGetter<K, V> implements CacheValueGetter
 		}
 		return map;
 	}
-	
+
+	/**
+	 * 批量获取数据
+	 * @param keys
+	 * @return
+	 */
 	protected abstract Map<K, V> batchGets(List<K> keys);
 
 }
