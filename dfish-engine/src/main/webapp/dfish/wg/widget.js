@@ -5449,7 +5449,7 @@ Checkbox = define.widget( 'checkbox', {
 				occupy: T,
 				block: function() { return ! this.isNormal() },
 				method: function( e ) {
-					if ( this.isReadonly() || this.isValidonly() ) {
+					if ( ! this.isNormal() ) {
 						this.elements().each( function() { this.checked = this.defaultChecked } );
 						return F;
 					}
@@ -5536,6 +5536,8 @@ Checkbox = define.widget( 'checkbox', {
 			return t.disabled || ! t.checked ? '' : t.value;
 		},
 		htmlFor: function( a, e ) {
+			if ( ! this.isNormal() )
+				return;
 			this.$t().focus(); // for ie9-
 			a.previousSibling.click ? a.previousSibling.click() : Q( a.previousSibling.previousSibling ).click();
 			$.cancel( e );
