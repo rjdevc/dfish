@@ -880,7 +880,12 @@ W = define( 'widget', function() {
 		},
 		// 存取临时变量
 		data: function( a, b ) {
-			return arguments.length === 1 ? (this.x.data && this.x.data[ a ]) : ((this.x.data || (this.x.data = {}))[ a ] = b);
+			if ( typeof a === _OBJ )
+				this.x.data = $.extend( a, this.x.data );
+			else if ( arguments.length === 1 )
+				return (this.x.data && this.x.data[ a ]);
+			else
+				(this.x.data || (this.x.data = {}))[ a ] = b;
 		},
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
@@ -5474,7 +5479,7 @@ AbsInput = define.widget( 'abs/input', {
 			return s;
 		},
 		checkPlaceholder: function( v ) {
-			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!v );
+			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? this.val() : v) );
 		},
 		html_placeholder: function() {
 			var v = this.x.value, s = this.getPlaceholder();
@@ -7492,7 +7497,7 @@ Combobox = define.widget( 'combobox', {
 					if ( this._imeMode ) {
 						var t = this.queryText();
 						this.suggest( t );
-						this.checkPlaceholder( t );
+						this.checkPlaceholder();
 					}
 				}
 			},
@@ -7524,7 +7529,7 @@ Combobox = define.widget( 'combobox', {
 								this.suggest( t );
 							}
 						}
-						this.checkPlaceholder( this._val() || this.queryText() );
+						this.checkPlaceholder();
 					}
 				}
 			},
@@ -7564,7 +7569,7 @@ Combobox = define.widget( 'combobox', {
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
 			this.more = this.createPop( this.x.suggest || { type: 'dialog', node: { type: 'grid', combo: { field: {} } } }, { value: this._val() } );
-			if ( this.more.x.src ) {
+			if ( this.x.suggest ) {
 				this._online = typeof this.more.x.src === _STR && /\$text\b/.test( this.more.x.src );
 			}
 			var c = this.more.getContentView();
@@ -7647,6 +7652,9 @@ Combobox = define.widget( 'combobox', {
 		store: function( a ) {
 			return (a || this.more).getContentView().combo;
 		},
+		checkPlaceholder: function( v ) {
+			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? (this._val() || this.queryText()) : v) );
+		},
 		// 获取当前的选项对话框
 		pop: function() {
 			return this.dropper && this.dropper.vis ? this.dropper : this.sugger && this.sugger.vis ? this.sugger : this.more;
@@ -7666,8 +7674,7 @@ Combobox = define.widget( 'combobox', {
 				o.width = w;
 			}
 			$.extend( d, o );
-			d.src && (d.src = this.parseSrc( d.src, r ));
-			r && d.template && (d.data = r);
+			d.data = $.extend( d.data || {}, r );
 			var self = this;
 			return this.add( d, -1 ).addEvent( 'close', function() {
 				! self.$().contains( document.activeElement ) && self.focus( F );
@@ -7682,13 +7689,6 @@ Combobox = define.widget( 'combobox', {
 			clearTimeout( this._sug_timer );
 			var d = this.pop();
 			d && d.close();
-		},
-		// 解析变量: $value(值), $text(文本) /@ u -> url, r -> replace object
-		parseSrc: function( u, r ) {
-			var d = $.extend( r || {}, { value: this.val() } );
-			if ( u.indexOf( 'javascript:' ) === 0 )
-				u = this.formatJS( u, N, d );
-			return this.formatStr( u, d, T );
 		},
 		// 获取正在输入中的用于后台查询的文本
 		queryText: function( a ) {
@@ -7725,7 +7725,7 @@ Combobox = define.widget( 'combobox', {
 			this.save();
 			return this[ this.length - 1 ];
 		},
-		// 完成一个尚未匹配成功的项 /@o -> comboboxOption, a -> param data?
+		// 完成一个尚未匹配成功的项 /@o -> combobox/option, a -> param data?
 		fixOpt: function( o, a ) {
 			var d = a || this.store().getParam( o.x.text );
 			if ( d && o.x.error ) {
@@ -7752,13 +7752,16 @@ Combobox = define.widget( 'combobox', {
 				this.closePop();
 			this._query_text = t;
 		},
-		// 弹出模糊匹配的选项窗口  /@ a -> text|comboboxOption
+		// 弹出模糊匹配的选项窗口  /@ a -> text|combobox/option
 		doSuggest: function( a ) {
 			this._currOpt = a;
 			var t = this._suggest_text( a );
 			if ( this._online ) {
 				var self = this;
-				(this.sugger || (this.sugger = this.createPop( this.x.suggest ))).reload( this.parseSrc( this.sugger.x.src, { text: t } ), N, N, function() { ! self._disposed && self._suggest_end( a, this ) } );
+				if ( ! this.sugger )
+					this.sugger = this.createPop( this.x.suggest );
+				this.sugger.data( { value: this.val(), text: t } );
+				this.sugger.reload( N, N, N, function() { ! self._disposed && self._suggest_end( a, this ) } );
 			} else
 				this._suggest_end( a, this.more );
 		},
@@ -7778,7 +7781,7 @@ Combobox = define.widget( 'combobox', {
 		_suggest_text: function( a ) {
 			return $.strTrim( a.x ? a.x.text : a );
 		},
-		// 精确匹配，在隐藏状态下进行 /@ a -> replaceObject|comboboxOption
+		// 精确匹配，在隐藏状态下进行 /@ a -> replaceObject|combobox/option
 		// 多个立即匹配成功; 单个显示下拉选项
 		match: function( a ) {
 			var c = a.x ? a : this;
@@ -8095,7 +8098,7 @@ Linkbox = define.widget( 'linkbox', {
 						if ( this.x.validate && this.x.validate.maxlength ) {
 							this.save();
 						}
-						this.checkPlaceholder( this._val() || this.text() );
+						this.checkPlaceholder();
 					}
 				}
 			},
@@ -8165,6 +8168,9 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		isEmpty: function() {
 			return !(this.val() || this.text());
+		},
+		checkPlaceholder: function( v ) {
+			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? (this._val() || this.text()) : v) );
 		},
 		cursorEnd: function() {
 			this._rng_text( this.$t() );
@@ -8526,7 +8532,8 @@ Onlinebox = define.widget( 'onlinebox', {
 			if ( this.x.suggest ) {
 				if ( ! this.more )
 					this.more = this.createPop( this.x.suggest );
-				this.more.reload( this.parseSrc( this.more.x.src, { text: t } ) );
+				this.more.data( { value: this.val(), text: t } );
+				this.more.reload();
 			}
 		},
 		html_btn: function() {
