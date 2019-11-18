@@ -20,8 +20,8 @@ import com.rongji.dfish.framework.FrameworkHelper;
  * <mvc:interceptors>    
         <!-- 多个拦截器,顺序执行 -->    
         <mvc:interceptor>    
-          <!-- 如果不配置或/**,将拦截所有的Controller -->  
-           <mvc:mapping path="/**" />   
+           <!-- 如果不配置或/**,将拦截所有的Controller -->
+           <mvc:mapping path="/**" />
            <!-- 界面展示之前做一些通用处理   -->  
            <bean class="com.rongji.fzwp.common.controller.YourInterceptorAdapter">
             	<property name="cacheExpired" value="300000"/>

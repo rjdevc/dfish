@@ -10,7 +10,7 @@ public class FileHandlingDefine {
     /**
      * 方案别名
      */
-    private String alias;
+    protected String alias;
 
     public String getAlias() {
         return alias;

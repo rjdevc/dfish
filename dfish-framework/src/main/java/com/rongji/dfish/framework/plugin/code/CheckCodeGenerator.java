@@ -44,9 +44,9 @@ public class CheckCodeGenerator {
 	private boolean interfering;
 	private int rotateDegree;
 	private Font font;
-	private int height;
-	private int width;
-	private int codeLength;
+	private int height = 80;
+	private int width = 40;
+	private int codeLength = 4;
 
 	public String getAlias() {
 		return alias;

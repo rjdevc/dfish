@@ -25,19 +25,27 @@ public class ImageHandlingDefine extends FileHandlingDefine {
     /**
      * 文件处理方式
      */
-    private String way;
+    private String way = WAY_ZOOM;
     /**
      * 图片处理后的宽度
      */
-    private int width;
+    private int width = 60;
     /**
      * 图片处理后的高度
      */
-    private int height;
+    private int height = 60;
     /**
      * 图片处理后的背景颜色
      */
     private Color bgColor;
+
+    @Override
+    public String getAlias() {
+        if (this.alias == null) {
+            return this.getWidth() + "x" + this.getHeight();
+        }
+        return super.getAlias();
+    }
 
     public String getWay() {
         return way;

@@ -1,6 +1,7 @@
 window.app = {
     idRoot: "00000000000000000000000000000000",
-    error: function (error) {
+    error: function (response) {
+        var error = response.error;
         var errorMsg = '';
         if (error.code) {
             errorMsg = '[' + error.code + ']';

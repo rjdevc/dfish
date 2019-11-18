@@ -257,34 +257,34 @@ public abstract class BaseDao<P, ID extends Serializable> {
         return (P) pubCommonDAO.getHibernateTemplate().get(entityClass, id);
     }
 
-    public int deleteAll(Collection<P> entities) throws Exception {
-        if (entities == null) {
+    public int deleteAll(Collection<P> entities) {
+        if (Utils.isEmpty(entities)) {
             return 0;
         }
         pubCommonDAO.getHibernateTemplate().deleteAll(entities);
         return entities.size();
     }
 
-    public int delete(P entity) throws Exception {
+    public int delete(P entity) {
         if (entity == null) {
             return 0;
         }
         return pubCommonDAO.delete(entity);
     }
 
-    public int delete(ID id) throws Exception {
+    public int delete(ID id) {
         return delete(get(id));
     }
 
-    public int save(P entity) throws Exception {
+    public int save(P entity) {
         return pubCommonDAO.save(entity);
     }
 
-    public int update(P entity) throws Exception {
+    public int update(P entity) {
         return pubCommonDAO.update(entity);
     }
 
-    public int saveOrUpdate(P entity) throws Exception {
+    public int saveOrUpdate(P entity) {
         return pubCommonDAO.saveOrUpdate(entity);
     }
 
@@ -383,6 +383,10 @@ public abstract class BaseDao<P, ID extends Serializable> {
 
     protected String getSortFields(List<SortDefine> sortList) {
         return getSortSql(sortList, "t");
+    }
+
+    public void evictObject(Object obj) {
+        getPubCommonDAO().evictObject(obj);
     }
 
 }

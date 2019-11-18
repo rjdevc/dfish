@@ -25,7 +25,8 @@ import java.util.Map.Entry;
 public class FileService extends BaseService4Simple<PubFileRecord> {
 
     public static final String STATUS_NORMAL = "0";
-    public static final String STATUS_DELETE = "1";
+    public static final String STATUS_LINKED = "1";
+    public static final String STATUS_DELETE = "9";
 
     public static final String CONFIG_UPLOAD_DIR = "file.uploadDir";
     public static final String CONFIG_SIZE_LIMIT = "file.sizeLimit";
@@ -706,8 +707,9 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
                 params.add(fileLink);
                 params.add(fileKey);
                 params.add(new Date());
+                params.add(STATUS_LINKED);
                 params.addAll(updateIds);
-                pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(updateIds.size()) + ")", params.toArray());
+                pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=?,t.fileStatus=? WHERE t.fileId IN(" + getParamStr(updateIds.size()) + ")", params.toArray());
             }
             pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<Object>() {
                 @Override
@@ -719,8 +721,9 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
                 }
             });
         }
-        if (Utils.notEmpty(deleteIds)) { // 这里的delete 相当于把附件状态标志为删除
-            List<Object> params = new ArrayList<Object>();
+        if (Utils.notEmpty(deleteIds)) {
+            // 这里的delete 相当于把附件状态标志为删除
+            List<Object> params = new ArrayList<>();
             params.add(STATUS_DELETE);
             params.add(new Date());
             params.addAll(deleteIds);
@@ -732,7 +735,7 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
             return;
         }
-        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), fileId });
+        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=?,t.fileStatus=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), STATUS_LINKED, fileId });
     }
 
     /**

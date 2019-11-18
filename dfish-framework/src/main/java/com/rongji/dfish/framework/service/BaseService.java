@@ -3,13 +3,13 @@ package com.rongji.dfish.framework.service;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -137,21 +137,24 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         if (po == null) {
             return null;
         }
-        // 将Po关联的缓存断掉
-        getDao().getPubCommonDAO().evictObject(po);
-        V vo = newInstance4Vo();
-        Utils.copyPropertiesExact(vo, po);
-        return vo;
+        List<V> voList = parseVos(Arrays.asList(po));
+        if (Utils.notEmpty(voList)) {
+            return voList.get(0);
+        }
+        return null;
     }
 
-    protected List<V> parseVos(Collection<P> pos) {
+    protected List<V> parseVos(List<P> pos) {
         if (Utils.isEmpty(pos)) {
             return new ArrayList<>(0);
         }
         List<V> vos = new ArrayList<>(pos.size());
         for (P po : pos) {
-            V vo = parseVo(po);
+            V vo = newInstance4Vo();
             if (vo != null) {
+                // 将Po关联的缓存断掉
+                getDao().evictObject(po);
+                Utils.copyPropertiesExact(vo, po);
                 vos.add(vo);
             }
         }
@@ -162,7 +165,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return IdGenerator.getSortedId32();
     }
 
-    public int saveOrUpdate(V vo) throws Exception {
+    public int saveOrUpdate(V vo) {
         if (vo == null) {
             return 0;
         }
@@ -172,7 +175,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return result;
     }
 
-    public int save(V vo) throws Exception {
+    public int save(V vo) {
         if (vo == null) {
             return 0;
         }
@@ -181,7 +184,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return result;
     }
 
-    public int update(V vo) throws Exception {
+    public int update(V vo) {
         if (vo == null) {
             return 0;
         }
@@ -190,26 +193,33 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return result;
     }
 
-    public int deleteAll(Collection<V> voList) throws Exception {
+    public int delete(V vo) {
+        if (vo == null) {
+            return 0;
+        }
+        return deleteAll(Arrays.asList(vo));
+    }
+
+    public int deleteAll(Collection<V> voList) {
         if (Utils.isEmpty(voList)) {
             return 0;
         }
-        int result = getDao().deleteAll(parsePos(voList));
+        return doDelete(parsePos(voList));
+    }
+
+    protected int doDelete(List<P> poList) {
+        int result = getDao().deleteAll(poList);
         return result;
     }
 
-    public int delete(V vo) throws Exception {
-        int result = getDao().delete(parsePo(vo));
-        return result;
-    }
-
-    public int delete(ID id) throws Exception {
-        P po = getDao().get(id);
-        if (po == null) {
-            return 0;
-        }
-        int result = getDao().delete(po);
-        return result;
+    public int delete(ID id) {
+//        P po = getDao().get(id);
+//        if (po == null) {
+//            return 0;
+//        }
+//        return doDelete(Arrays.asList(po));
+        V vo = get(id);
+        return delete(vo);
     }
 
     public V get(ID id) {

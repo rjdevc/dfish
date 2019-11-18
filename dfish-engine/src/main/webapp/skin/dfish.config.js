@@ -90,7 +90,7 @@ dfish.config({
     },
     src_filter: function (response) {
         if (response.error) {
-            app.error(response.error);
+            app.error(response);
         } else {
             if (!response.data) {
                 response.data = {};
