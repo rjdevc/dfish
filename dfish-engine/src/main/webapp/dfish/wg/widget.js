@@ -5771,7 +5771,7 @@ Checkbox = define.widget( 'checkbox', {
 				occupy: T,
 				block: function() { return ! this.isNormal() },
 				method: function( e ) {
-					if ( this.isReadonly() || this.isValidonly() ) {
+					if ( ! this.isNormal() ) {
 						this.elements().each( function() { this.checked = this.defaultChecked } );
 						return F;
 					}
@@ -5858,6 +5858,8 @@ Checkbox = define.widget( 'checkbox', {
 			return t.disabled || ! t.checked ? '' : t.value;
 		},
 		htmlFor: function( a, e ) {
+			if ( ! this.isNormal() )
+				return;
 			this.$t().focus(); // for ie9-
 			a.previousSibling.click ? a.previousSibling.click() : Q( a.previousSibling.previousSibling ).click();
 			$.cancel( e );
@@ -7400,7 +7402,6 @@ Combobox = define.widget( 'combobox', {
 		AbsInput.apply( this, arguments );
 		x.face && $.classAdd( this, ' z-face-' + x.face );
 		x.value && (x.value = _value_comma(x.value));
-		this._online = x.suggest && typeof x.suggest.src === _STR && /\$text\b/.test( x.suggest.src );
 		this.addEvent( 'focus', function() { this.focusNode && this.focusNode.tabFocus( F ) } );
 		this._init_more();
 	},
@@ -7563,6 +7564,9 @@ Combobox = define.widget( 'combobox', {
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
 			this.more = this.createPop( this.x.suggest || { type: 'dialog', node: { type: 'grid', combo: { field: {} } } }, { value: this._val() } );
+			if ( this.more.x.src ) {
+				this._online = typeof this.more.x.src === _STR && /\$text\b/.test( this.more.x.src );
+			}
 			var c = this.more.getContentView();
 			c && c.layout && this._init_load( v );
 		},
@@ -7663,6 +7667,7 @@ Combobox = define.widget( 'combobox', {
 			}
 			$.extend( d, o );
 			d.src && (d.src = this.parseSrc( d.src, r ));
+			r && d.template && (d.data = r);
 			var self = this;
 			return this.add( d, -1 ).addEvent( 'close', function() {
 				! self.$().contains( document.activeElement ) && self.focus( F );
@@ -7753,7 +7758,7 @@ Combobox = define.widget( 'combobox', {
 			var t = this._suggest_text( a );
 			if ( this._online ) {
 				var self = this;
-				(this.sugger || (this.sugger = this.createPop( this.x.suggest ))).reload( this.parseSrc( this.x.suggest.src, { text: t } ), N, N, function() { ! self._disposed && self._suggest_end( a, this ) } );
+				(this.sugger || (this.sugger = this.createPop( this.x.suggest ))).reload( this.parseSrc( this.sugger.x.src, { text: t } ), N, N, function() { ! self._disposed && self._suggest_end( a, this ) } );
 			} else
 				this._suggest_end( a, this.more );
 		},
@@ -8515,13 +8520,13 @@ Onlinebox = define.widget( 'onlinebox', {
 			this.focus();
 		},
 		suggest: function( t ) {
-			this.x.suggest && this.x.suggest.src && Combobox.prototype.suggest.apply( this, arguments );
+			this.x.suggest && Combobox.prototype.suggest.apply( this, arguments );
 		},
 		doSuggest: function( t ) {
-			if ( this.x.suggest && this.x.suggest.src ) {
+			if ( this.x.suggest ) {
 				if ( ! this.more )
 					this.more = this.createPop( this.x.suggest );
-				this.more.reload( this.parseSrc( this.x.suggest.src, { text: t } ) );
+				this.more.reload( this.parseSrc( this.more.x.src, { text: t } ) );
 			}
 		},
 		html_btn: function() {
