@@ -165,7 +165,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return IdGenerator.getSortedId32();
     }
 
-    public int saveOrUpdate(V vo) {
+    public int saveOrUpdate(V vo) throws Exception {
         if (vo == null) {
             return 0;
         }
@@ -175,7 +175,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return result;
     }
 
-    public int save(V vo) {
+    public int save(V vo) throws Exception {
         if (vo == null) {
             return 0;
         }
@@ -184,7 +184,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return result;
     }
 
-    public int update(V vo) {
+    public int update(V vo) throws Exception {
         if (vo == null) {
             return 0;
         }
@@ -193,14 +193,14 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return result;
     }
 
-    public int delete(V vo) {
+    public int delete(V vo) throws Exception {
         if (vo == null) {
             return 0;
         }
         return deleteAll(Arrays.asList(vo));
     }
 
-    public int deleteAll(Collection<V> voList) {
+    public int deleteAll(Collection<V> voList) throws Exception {
         if (Utils.isEmpty(voList)) {
             return 0;
         }
@@ -212,7 +212,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return result;
     }
 
-    public int delete(ID id) {
+    public int delete(ID id) throws Exception {
 //        P po = getDao().get(id);
 //        if (po == null) {
 //            return 0;
