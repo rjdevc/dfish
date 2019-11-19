@@ -1521,6 +1521,8 @@ Ajax = _createClass( {
 			}
 			if ( x.base || _path )
 				u = _urlLoc( x.base || _path, u );
+			if ( x.cdn && _cfg.ver )
+				u = _urlParam( u, { _v: _cfg.ver } );
 			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
 			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
@@ -1833,7 +1835,7 @@ var boot = {
 			_cfg.path = _path;
 		if ( _cfg.lib != N )
 			_lib = _cfg.lib;
-		_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
+		_ver = _cfg.ver ? '?_v=' + _cfg.ver : '',
 		_ui_path = _urlLoc( _path, _lib ) + 'ui/';
 		
 		_compatJS();
