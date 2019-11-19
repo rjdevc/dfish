@@ -3838,7 +3838,7 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			var t = (this.x.text ? '<span class="f-omit f-va" title="' + $.strQuot( this.x.text ) + '">' + this.x.text + '</span><i class=f-vi></i>' : '');
+			var t = (this.x.text ? '<span class="f-omit f-va"' + this.prop_title( this.x.tip === T ? this.x.text : this.x.tip ) + '>' + this.x.text + '</span><i class=f-vi></i>' : '');
 			if ( this.x.hr ) {
 				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
 			}
@@ -6547,6 +6547,13 @@ Datepicker = define.widget( 'datepicker', {
 		Text.apply( this, arguments );
 		if ( ! x.format )
 			x.format = 'yyyy-mm-dd';
+		var a = $.strEscape( x.value == N ? '' : ('' + x.value) ), r = '';
+		if ( a ) {
+			for ( var i = 0, a = a.split( ',' ), l = a.length, r = []; i < l; i ++ )
+				r.push( $.dateFormat( $.dateParse( a[ i ] ), this.x.format ));
+			r = r.join( ',' );
+		}
+		x.value = r;
 		this.defaults( { width: 67 + this.x.format.length * 6 } );
 	},
 	Extend: Text,
@@ -6704,13 +6711,8 @@ Datepicker = define.widget( 'datepicker', {
 			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
 		},
 		input_prop_value: function() {
-			var a = $.strEscape(this.x.value == N ? '' : ('' + this.x.value)), r = '';
-			if ( a ) {
-				for ( var i = 0, a = a.split( ',' ), l = a.length, r = []; i < l; i ++ )
-					r.push( $.dateFormat( $.dateParse( a[ i ] ), this.x.format ));
-				r = r.join( ',' );
-			}
-			return mbi ? r.replace( ' ', 'T' ) : r;
+			var v = this.x.value;
+			return mbi ? v.replace( ' ', 'T' ) : v;
 		},
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
