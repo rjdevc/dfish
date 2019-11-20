@@ -8923,6 +8923,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				success: function( x ) {
 					if ( ! this._success( x ) )
 						return;
+					this.loaded = T;
 					this.x.srcdata = x;
 					if ( t ) {
 						x = _compileTemplate( this, x );
@@ -8942,7 +8943,11 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				},
 				complete: function( x ) { // complete
 					this.loading = F;
-					!this.loaded && this.toggle( F );
+					this.loaded = T;
+					if ( !this.length ) {
+						this.x.folder = F;
+						this.toggle( F );
+					}
 					this.fixFolder();
 					if ( this.$( 'o' ) ) {
 						$.classRemove( this.$(), 'z-loading' );
@@ -8962,7 +8967,6 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				while ( o.firstChild )
 					m.appendChild( o.firstChild );
 			}
-			this.loaded = T;
 			for ( j = 0; j < l; j ++ )
 				this[ j ].triggerAll( 'ready' );
 			this.trigger( 'nodechange' );
