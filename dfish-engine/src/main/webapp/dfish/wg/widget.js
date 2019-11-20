@@ -538,15 +538,26 @@ Template = $.createClass( {
 							var e = m[ '@w-for' ].split( / in / ),
 								v = e[ 0 ].replace( /[^\$\w,]/g, '' ).split( ',' ), // $item,$index
 								h = this.format( e[ 1 ], g, y ); // array
-							if ( h && h.length ) {
+							if ( h && typeof h === _OBJ ) {
 								m = $.extend( {}, m );
 								delete m[ '@w-for' ];
-								for ( var j = 0, n; j < h.length; j ++ ) {
-									n = {};
-									n[ v[ 0 ] ] = h[ j ];
-									v[ 1 ] && (n[ v[ 1 ] ] = j);
-									y && $.extend( n, y );
-									(d = this.compile( m, n )) && c.push( d );
+								if ( $.isArray( h ) ) {
+									for ( var j = 0, n; j < h.length; j ++ ) {
+										n = {};
+										n[ v[ 0 ] ] = h[ j ];
+										v[ 1 ] && (n[ v[ 1 ] ] = j);
+										y && $.extend( n, y );
+										(d = this.compile( m, n )) && c.push( d );
+									}
+								} else {
+									var n, j;
+									for ( j in h ) {
+										n = {};
+										n[ v[ 0 ] ] = h[ j ];
+										v[ 1 ] && (n[ v[ 1 ] ] = j);
+										y && $.extend( n, y );
+										(d = this.compile( m, n )) && c.push( d );
+									}
 								}
 							}
 						} else {
