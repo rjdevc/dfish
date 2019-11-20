@@ -7869,7 +7869,7 @@ Combobox = define.widget( 'combobox', {
 			if ( this.x.picker && this.isNormal() ) {
 				if ( this.x.picker.type === 'dialog' ) {
 					var c = $.jsonClone( this.x.picker );
-					c.src && (c.src = $.urlFormat( c.src, { value: this.val() } ));
+					c.data = $.extend( c.data || {}, { value: this.val() } );
 					this.exec( c ).addEvent( 'close', function() { ! this.$().contains( document.activeElement ) && this.focus( F ); }, this );
 				} else if ( W.isCmd( this.x.picker ) ) {
 					this.cmd( this.x.picker, this.val() );
@@ -9355,18 +9355,20 @@ Leaf = define.widget( 'leaf', {
 /* `tree` */
 Tree = define.widget( 'tree', {
 	Const: function( x, p ) {
+		if ( x.root ) {
+			x.nodes = [ $.extend( x.root, { nodes: x.nodes, src: x.src } ) ];
+			delete x.src;
+		}
 		W.apply( this, arguments );
 		if ( x.combo ) {
 			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
 			this.ownerView.combo = new TreeCombo( this );
+			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
 		}
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'hiddens', nodes: x.hiddens }, -1 );
-		//!this.length && (this.className += ' z-empty');
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
-		if ( this.x.combo )
-			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
 	},
 	Extend: [ Scroll, AbsLeaf ],
 	Default: { scroll: T },
@@ -9392,6 +9394,7 @@ Tree = define.widget( 'tree', {
 		reloadForModify: $.rt(),
 		focus: function() {	this[ 0 ] && this[ 0 ].focus() },
 		getFocus: function() { return this.focusNode },
+		getRoot: function() { return this.x.root && this[ 0 ] },
 		// @f -> filter leaves(经过筛选的行)
 		setFilter: function( f ) { this._filter_leaves = f },
 		//@implement  /@ a -> html|widget, b -> method(prepend,append,after,before)

@@ -1550,10 +1550,9 @@ Ajax = _createClass( {
 				return x.complete && x.complete.call( c, N, self );
 			if ( g === 'xml' && br.ie10 )
 				l.responseType = 'msxml-document';
-			if ( _cfg.debug || ! x.cdn ) {
+			if ( _cfg.debug || ! x.cdn )
 				l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
-				l.setRequestHeader( 'x-requested-with',  _expando );
-			}
+			l.setRequestHeader( 'x-requested-with',  _expando );
 			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
