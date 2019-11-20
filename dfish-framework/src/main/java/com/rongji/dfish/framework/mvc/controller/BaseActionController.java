@@ -148,8 +148,15 @@ public class BaseActionController extends MultiActionController {
         }
 
         public void bind(HttpServletRequest request, Object obj) throws Exception {
-            for (Format f : formats) {
-                f.bind(request, obj);
+            for (Iterator<Format> iter = formats.iterator(); iter.hasNext();) {
+                Format format = iter.next();
+                try {
+                    format.bind(request, obj);
+                } catch (UnsupportedOperationException e) {
+                    FrameworkHelper.LOG.warn("数据绑定异常@" + format.type.getName() + "." + format.name, e);
+                    // 将不支持的绑定属性移除
+                    iter.remove();
+                }
             }
         }
     }
@@ -211,7 +218,8 @@ public class BaseActionController extends MultiActionController {
                 // 先转double再转成整型
                 Number num = Double.parseDouble(str);
                 value = num.longValue();
-            } else if (type == Double.class || type == double.class) { // 其他数值型暂不处理,理论上不使用其他数值类型
+            } else if (type == Double.class || type == double.class) {
+                // 其他数值型暂不处理,理论上不使用其他数值类型
                 value = Double.parseDouble(str);
             } else if (type == Boolean.class || type == boolean.class) {
                 try {
@@ -230,6 +238,10 @@ public class BaseActionController extends MultiActionController {
                 } else {
                     value = DateUtil.parse(str, "yyyy-MM-dd HH:mm:ss");
                 }
+            } else if (type == List.class) {
+                value = new ArrayList<>(Arrays.asList(str.split(",")));
+            } else if (type == String[].class) {
+                value = str.split(",");
             } else {
                 throw new java.lang.UnsupportedOperationException("Can not bind value for " + name + " ("
                         + type.getName() + ")");

@@ -1,7 +1,10 @@
 define.preload({
     type: "dialog", cls: "dlg", node: {
         type: "view", commands: {
-            "close": {type: "js", text: "dfish.close(this);"}
+            "close": {
+                type: "js",
+                text: "$.close(this);"
+            }
         },
         node: {
             type: "vert", id: "dlg_frame", height: "*", width: "*", nodes: [
@@ -13,7 +16,7 @@ define.preload({
                             cls: "dlg-head-title",
                             width: "*",
                             wmin: 10,
-                            on: {dblclick: "$.dialog(this).max();"}
+                            on: {"dblclick": "$.dialog(this).max();"}
                         },
                         {
                             type: "buttonbar",
@@ -29,8 +32,7 @@ define.preload({
                                     cls: "x-dlg-max",
                                     on: {click: "app.dialog.max(this);"},
                                     icon: ".i-dlg-max"
-                                },
-                                {
+                                }, {
                                     tip: "关闭",
                                     cls: "dlg-oper-close",
                                     on: {click: "this.cmd('close');"},
@@ -39,7 +41,8 @@ define.preload({
                             ]
                         }
                     ]
-                }, {
+                },
+                {
                     type: "vert", id: "dlg_trunk", height: "*", nodes: [
                         {
                             type: "vert", height: "*", nodes: [
@@ -63,13 +66,16 @@ define.preload({
                                 {
                                     type: "buttonbar",
                                     id: "dlg_foot_oper",
-                                    width: -1,
+                                    width: "*",
                                     align: "right",
                                     space: 10,
                                     pub: {height: 30},
                                     nodes: [
                                         {
-                                            text: "关闭", on: {click: "this.cmd('close');"}
+                                            type: "submitbutton", text: "确定", on: {click: "this.cmd('submit');"}
+                                        },
+                                        {
+                                            text: "取消", on: {click: "this.cmd('close');"}
                                         }
                                     ]
                                 }
