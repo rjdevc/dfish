@@ -507,6 +507,7 @@ Template = $.createClass( {
 			if ( (b = x[ '@w-include' ]) ) {
 				var d = _getTemplate( b );
 				if ( d ) {
+					d = $.extend( {}, d );
 					for ( var k in x )
 						if ( k.indexOf( '@w-' ) < 0 ) d[ k ] = x[ k ];
 				}
