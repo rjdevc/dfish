@@ -1,11 +1,12 @@
-define.preload("g/form", {
+define.preload({
     type: "dialog", cls: "dlg", node: {
         type: "view", commands: {
             "close": {
                 type: "js",
                 text: "if(VM(this).isModified()){this.cmd({type:'confirm',text:'您有内容尚未保存，确认关闭窗口吗？',yes:function(){$.close(this);}});}else{$.close(this);}"
             }
-        }, node: {
+        },
+        node: {
             type: "vert", id: "dlg_frame", height: "*", width: "*", nodes: [
                 {
                     type: "horz", id: "dlg_head", cls: "dlg-head", height: "40", valign: "middle", nodes: [
@@ -71,7 +72,7 @@ define.preload("g/form", {
                                     pub: {height: 30},
                                     nodes: [
                                         {
-                                            type: "submitbutton", text: "保存", on: {click: "this.cmd('save');"}
+                                            type: "submitbutton", text: "保存", on: {click: "this.cmd('submit');"}
                                         },
                                         {
                                             text: "关闭", on: {click: "this.cmd('close');"}

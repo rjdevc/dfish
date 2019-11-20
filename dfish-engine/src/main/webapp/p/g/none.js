@@ -1,8 +1,9 @@
-define.preload("g/none", {
+define.preload({
     type: "dialog", cls: "dlg", node: {
         type: "view", commands: {
             "close": {type: "js", text: "dfish.close(this);"}
-        }, node: {
+        },
+        node: {
             type: "vert", id: "dlg_frame", height: "*", width: "*", nodes: [
                 {
                     type: "vert", id: "dlg_trunk", height: "*", nodes: [

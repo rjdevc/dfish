@@ -1,8 +1,9 @@
-define.preload("g/alert", {
+define.preload({
     type: "dialog", cls: "dlg", node: {
         type: "view", commands: {
             "close": {type: "js", text: "dfish.close(this);"}
-        }, node: {
+        },
+        node: {
             type: "vert", id: "dlg_frame", height: "*", width: "*", nodes: [
                 {
                     type: "horz", id: "dlg_head", cls: "dlg-head", height: "40", valign: "middle", nodes: [
@@ -12,7 +13,8 @@ define.preload("g/alert", {
                             cls: "dlg-head-title",
                             width: "*",
                             wmin: 10
-                        }, {
+                        },
+                        {
                             type: "buttonbar",
                             id: "dlg_head_oper",
                             cls: "dlg-head-oper",
