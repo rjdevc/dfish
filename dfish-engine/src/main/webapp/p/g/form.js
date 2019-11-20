@@ -16,7 +16,8 @@ define.preload("g/form", {
                             width: "*",
                             wmin: 10,
                             on: {"dblclick": "$.dialog(this).max();"}
-                        }, {
+                        },
+                        {
                             type: "buttonbar",
                             id: "dlg_head_oper",
                             cls: "dlg-head-oper",
@@ -39,13 +40,15 @@ define.preload("g/form", {
                             ]
                         }
                     ]
-                }, {
+                },
+                {
                     type: "vert", id: "dlg_trunk", height: "*", nodes: [
                         {
                             type: "vert", height: "*", nodes: [
                                 {type: "preload/body", id: "dlg_body", height: "*"}
                             ]
-                        }, {
+                        },
+                        {
                             type: "horz",
                             id: "dlg_foot",
                             cls: "dlg-foot",
@@ -54,6 +57,11 @@ define.preload("g/form", {
                             hmin: 1,
                             wmin: 40,
                             nodes: [
+                                {
+                                    type: "html",
+                                    id: "dlg_foot_info",
+                                    width: "*"
+                                },
                                 {
                                     type: "buttonbar",
                                     id: "dlg_foot_oper",
@@ -64,7 +72,8 @@ define.preload("g/form", {
                                     nodes: [
                                         {
                                             type: "submitbutton", text: "保存", on: {click: "this.cmd('save');"}
-                                        }, {
+                                        },
+                                        {
                                             text: "关闭", on: {click: "this.cmd('close');"}
                                         }
                                     ]

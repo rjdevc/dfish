@@ -35,7 +35,8 @@ define.preload("g/alert", {
                             ]
                         }
                     ]
-                }, {
+                },
+                {
                     type: "vert", id: "dlg_trunk", height: "*", nodes: [
                         {
                             type: "vert", height: "*", nodes: [

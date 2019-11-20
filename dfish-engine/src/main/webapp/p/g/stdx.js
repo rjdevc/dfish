@@ -13,7 +13,8 @@ define.preload("g/stdx", {
                             width: "*",
                             wmin: 10,
                             on: {dblclick: "$.dialog(this).max();"}
-                        }, {
+                        },
+                        {
                             type: "buttonbar",
                             id: "dlg_head_oper",
                             cls: "dlg-head-oper",
@@ -31,7 +32,8 @@ define.preload("g/stdx", {
                             ]
                         }
                     ]
-                }, {
+                },
+                {
                     type: "vert", id: "dlg_trunk", height: "*", nodes: [
                         {
                             type: "vert", height: "*", nodes: [
@@ -46,6 +48,11 @@ define.preload("g/stdx", {
                             hmin: 1,
                             wmin: 40,
                             nodes: [
+                                {
+                                    type: "html",
+                                    id: "dlg_foot_info",
+                                    width: "*"
+                                },
                                 {
                                     type: "buttonbar",
                                     id: "dlg_foot_oper",

@@ -13,7 +13,8 @@ define.preload("g/std", {
                             width: "*",
                             wmin: 10,
                             on: {dblclick: "$.dialog(this).max();"}
-                        }, {
+                        },
+                        {
                             type: "buttonbar",
                             id: "dlg_head_oper",
                             cls: "dlg-head-oper",
@@ -27,7 +28,8 @@ define.preload("g/std", {
                                     cls: "x-dlg-max",
                                     on: {click: "app.dialog.max(this);"},
                                     icon: ".i-dlg-max"
-                                }, {
+                                },
+                                {
                                     tip: "关闭",
                                     cls: "dlg-oper-close",
                                     on: {click: "this.cmd('close');"},
@@ -42,7 +44,8 @@ define.preload("g/std", {
                             type: "vert", height: "*", nodes: [
                                 {type: "preload/body", id: "dlg_body", height: "*"}
                             ]
-                        }, {
+                        },
+                        {
                             type: "horz",
                             id: "dlg_foot",
                             cls: "dlg-foot",
@@ -52,9 +55,14 @@ define.preload("g/std", {
                             wmin: 40,
                             nodes: [
                                 {
+                                    type: "html",
+                                    id: "dlg_foot_info",
+                                    width: "*"
+                                },
+                                {
                                     type: "buttonbar",
                                     id: "dlg_foot_oper",
-                                    width: "*",
+                                    width: -1,
                                     align: "right",
                                     space: 10,
                                     pub: {height: 30},
