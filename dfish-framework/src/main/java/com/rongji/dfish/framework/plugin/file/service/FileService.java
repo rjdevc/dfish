@@ -186,6 +186,16 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
     }
 
     /**
+     * 根据附件编号获取上传项
+     * @param fileId
+     * @return
+     */
+    public UploadItem getUploadItem(String fileId) {
+        PubFileRecord fileRecord = getFileRecord(fileId);
+        return parseUploadItem(fileRecord);
+    }
+
+    /**
      * 更新文件记录状态
      *
      * @param fileId
