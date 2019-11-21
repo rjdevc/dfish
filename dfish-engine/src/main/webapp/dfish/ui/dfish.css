@@ -623,8 +623,7 @@
 
 .w-menu{padding:3px 0;background:#fff;border:1px solid #99a8b8;box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:11}
 .w-menu.z-scroll{padding:0;}
-.w-menu.z-mag-t{box-shadow:0 -1px 1px rgba(0,0,0,0.2)}
-.w-menu.z-mag-b{box-shadow:0 2px 2px rgba(0,0,0,0.2)}
+.w-menu.z-mag-t,.w-menu.z-mag-b{box-shadow:none}
 .w-menu ._g{position:relative;overflow:hidden}
 .w-menu ._ar{position:relative;height:12px;line-height:0;text-align:center;overflow:hidden}
 .w-menu ._ar .f-arw-b2{border-top-color:#aaa}

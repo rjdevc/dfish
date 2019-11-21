@@ -53,17 +53,15 @@ _getDefaultOption = function( a, b ) {
 	}
 	return y;
 },
-// 获取模板  /@a -> template id, b -> fn?
+// 获取模板  /@a -> template id, b -> clone?
 _getTemplate = function( a, b ) {
-	var t = typeof a === _OBJ ? a : $.require( (cfg.template_dir || '') + a, b );
-	t && b && b( t );
-	return t;
+	var t = typeof a === _OBJ ? a : $.require( (cfg.template_dir || '') + a );
+	return b && t ? $.jsonClone( t ) : t;
 },
-// 获取预装模板  /@a -> template id, b -> fn?
+// 获取预装模板  /@a -> template id, b -> clone?
 _getPreload = function( a, b ) {
-	var t = typeof a === _OBJ ? a : $.require( (cfg.preload_dir || '') + a, b );
-	t && b && b();
-	return t;
+	var t = typeof a === _OBJ ? a : $.require( (cfg.preload_dir || '') + a );
+	return b && t ? $.jsonClone( t ) : t;
 },
 // 事件白名单
 _white_events = $.white_events,
@@ -505,7 +503,7 @@ Template = $.createClass( {
 			if ( ! x )
 				return;
 			if ( (b = x[ '@w-include' ]) ) {
-				var d = _getTemplate( b );
+				var d = _getTemplate( b, T );
 				if ( d ) {
 					d = $.extend( {}, d );
 					for ( var k in x )
@@ -733,7 +731,7 @@ W = define( 'widget', function() {
 			var r = this.rootNode;
 			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
 			if ( this.x.template ) {
-				var t = _getTemplate( this.x.template );
+				var t = _getTemplate( this.x.template, T );
 				if ( t ) {
 					if ( !t.type || t.type === this.type ) {
 						for ( var k in t ) {
@@ -767,7 +765,10 @@ W = define( 'widget', function() {
 		},
 		// @private: 解析并生成子节点
 		parse: function( x, n ) {
-			return new (require( n === -1 ? x.type : this.x_childtype( x.type ) ))( x, this, n );
+			var g = require( n === -1 ? x.type : this.x_childtype( x.type ) );
+			if ( g )
+				return new g( x, this, n );
+			 $.alert( Loc.ps( Loc.debug.error_type, $.jsonString( x, N, 2 ) ), N, N, N, F );
 		},
 		// 增加一个子节点 /@ a -> widget option, n -> nodeIndex?, g -> default widget option(附加的默认选项)?
 		add: function( a, n, g ) {
@@ -2221,7 +2222,11 @@ Xsrc = define.widget( 'xsrc', {
 				e = function() {
 					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
 				};
-			t && typeof t === _STR ? (t = _getTemplate( t, function() { o = T; e(); } )) : (o = T);
+			if ( t && typeof t === _STR ) {
+				t = _getTemplate( t );
+				o = T; e();
+			} else
+				o = T;
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
 			(u = this.getSrc()) ? this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
 				if ( this._success( x ) ) {
@@ -10354,9 +10359,9 @@ GridBody = define.widget( 'grid/body', {
 Grid = define.widget( 'grid', {
 	Const: function( x, p ) {
 		this._pad  = x.cellpadding != N ? x.cellpadding : 5;
-		this._face = x.face || 'none';
 		W.apply( this, arguments );
 		x.scroll == N && (x.scroll = T);
+		this._face = x.face || 'none';
 		this.colgrps = [];
 		var r = x.thead && x.thead.rows, s = this.attr( 'scroll' );
 		if ( r && r.length ) {

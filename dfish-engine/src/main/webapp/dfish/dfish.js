@@ -202,8 +202,10 @@ Require = function( a ) {
 				return _moduleCache[ c ];
 			}
 			b = [ b ];
-		} else
+		} else if ( _isArray( b ) )
 			b = b.concat();
+		else
+			return;
 		for ( var i = 0, c = [], d = [], l = b.length; i < l; i ++ )
 			(_strFrom( b[ i ], '.', T ) === 'css' ? c : d).push( b[ i ] );
 		// 同步时，由于css目前只能异步加载，所以css_ok直接设为true
@@ -2421,7 +2423,7 @@ _merge( $, {
 		d = w.document;
 		d.open( 'text/html', 'replace' );
 		d.write( '<!doctype html><html class=f-print><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join( '' ) +
-			(y.head || '') + '</head><body>' + s +
+			(y.head || '') + '</head><body><div class=x-print>' + s + '</div>' +
 			(! br.ms && y.print ? '<script>window.print();window.close()</script>' : '') +
 			'</body></html>' );
 		d.close();
