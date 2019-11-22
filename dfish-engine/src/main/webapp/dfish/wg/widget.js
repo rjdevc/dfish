@@ -2434,9 +2434,10 @@ Buttonbar = define.widget( 'buttonbar', {
 				$.before( this[ i ].$(), this._more.$() );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', focus: F, on: {
+					m.add( $.extend( { cls: '', focus: F, closeable: this[ i ].x.closeable, on: {
 						ready: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"];this.addClass("z-on",!!o.isFocus())',
-						click: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],b=this.getCommander().parentNode;o.click();b.overflow()'
+						click: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],b=this.getCommander().parentNode;o.click();b.overflow()',
+						close: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],p=o.parentNode;o.close();p._more&&p._more.drop()'
 					} , text: this[ i ].x.text, nodes: this[ i ].x.nodes } ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
@@ -2531,7 +2532,7 @@ Button = define.widget( 'button', {
 			},
 			close: function() {
 				if ( this.x.target ) {
-					var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.prev() || this.next());
+					var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.next() || this.prev());
 					n && n.click();
 					for ( var i = 0, b = this.ownerView.find( this.x.target.split( ',' ) ); i < b.length; i ++ )
 						b[ i ].remove();
@@ -2806,6 +2807,14 @@ MenuButton = define.widget( 'menu/button', {
 		hide: function() {
 			this.more && this.more.hide();
 		},
+		close: function( e ) {
+			e && $.stop( e );
+			var p = this.parentNode;
+			this.more && this.more.hide();
+			this.trigger( 'close' );
+			this.remove();
+			//p.length ? p.render() : p.hide();
+		},
 		dispose: function() {
 			this.more && ( this.more.dispose(), this.more = N );
 			_proto.dispose.call( this );
@@ -2839,7 +2848,7 @@ MenuButton = define.widget( 'menu/button', {
 			a += '</div>';
 			a += '<div class=_m>' + ( this.more ? $.arrow( 'r1' ) : '' ) + '<i class=f-vi></i></div>';
 			if ( x.closeable )
-				a += '<div class=_x></div>';
+				a += '<div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class=_xi>&times;</i></div>';
 			return a + '</div>';
 		}
 	}
