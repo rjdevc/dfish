@@ -4,6 +4,10 @@ define.preload({
             "close": {
                 type: "js",
                 text: "if(VM(this).isModified()){this.cmd({type:'confirm',text:'您有内容尚未保存，确认关闭窗口吗？',yes:function(){$.close(this);}});}else{$.close(this);}"
+            },
+            "no": {
+                type: "js",
+                text: "this.cmd('close');"
             }
         },
         node: {
@@ -72,10 +76,10 @@ define.preload({
                                     pub: {height: 30},
                                     nodes: [
                                         {
-                                            type: "submitbutton", text: "保存", on: {click: "this.cmd('submit');"}
+                                            type: "submitbutton", text: "保存", on: {click: "this.cmd('yes');"}
                                         },
                                         {
-                                            text: "关闭", on: {click: "this.cmd('close');"}
+                                            text: "关闭", on: {click: "this.cmd('no');"}
                                         }
                                     ]
                                 }

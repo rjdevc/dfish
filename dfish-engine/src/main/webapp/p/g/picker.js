@@ -4,6 +4,10 @@ define.preload({
             "close": {
                 type: "js",
                 text: "$.close(this);"
+            },
+            "no": {
+                type: "js",
+                text: "this.cmd('close');"
             }
         },
         node: {
@@ -72,10 +76,10 @@ define.preload({
                                     pub: {height: 30},
                                     nodes: [
                                         {
-                                            type: "submitbutton", text: "确定", on: {click: "this.cmd('submit');"}
+                                            type: "submitbutton", text: "确定", on: {click: "this.cmd('yes');"}
                                         },
                                         {
-                                            text: "取消", on: {click: "this.cmd('close');"}
+                                            text: "取消", on: {click: "this.cmd('no');"}
                                         }
                                     ]
                                 }

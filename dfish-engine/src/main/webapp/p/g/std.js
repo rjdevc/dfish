@@ -1,7 +1,8 @@
 define.preload({
     type: "dialog", cls: "dlg", node: {
         type: "view", commands: {
-            "close": {type: "js", text: "dfish.close(this);"}
+            "close": {type: "js", text: "$.close(this);"},
+            "no": {type: "js", text: "this.cmd('close');"}
         },
         node: {
             type: "vert", id: "dlg_frame", height: "*", width: "*", nodes: [
@@ -69,7 +70,7 @@ define.preload({
                                     pub: {height: 30},
                                     nodes: [
                                         {
-                                            text: "关闭", on: {click: "this.cmd('close');"}
+                                            text: "关闭", on: {click: "this.cmd('no');"}
                                         }
                                     ]
                                 }
