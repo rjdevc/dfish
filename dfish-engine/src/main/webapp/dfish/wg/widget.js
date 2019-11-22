@@ -3778,6 +3778,7 @@ Img = define.widget( 'img', {
 					this.parentNode.trigger( 'resize' );
 				}
 			}
+			this.addClass( 'z-success' );
 		},
 		prop_style: function() {
 			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
