@@ -157,7 +157,7 @@ public class FileController extends BaseController {
 
     @RequestMapping("/uploadImage")
     @ResponseBody
-    public Object uploadImage(HttpServletRequest request) {
+    public UploadItem uploadImage(HttpServletRequest request) {
         final UploadItem uploadItem = uploadFile(request);
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
             // 这样异常结果返回可能导致前端显示异常
@@ -244,7 +244,8 @@ public class FileController extends BaseController {
         });
         int waitCount = 0;
         // 至少保证第1个缩略图生成才返回结果
-        while (doneFileCount.get() < 1 && waitCount++ < 30) { // 最多等待3秒
+        while (doneFileCount.get() < 1 && waitCount++ < 30) {
+            // 最多等待3秒
             try {
                 // 缩略图未生成休眠等待
                 Thread.sleep(100);
@@ -350,29 +351,37 @@ public class FileController extends BaseController {
      * @throws Exception
      */
     private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String fileAlias) throws Exception {
-        if (fileRecord == null) {
-            LogUtil.warn("下载的附件不存在");
-            return;
-        }
         InputStream input = null;
+        String errorMsg = null;
         try {
-            String fileName = fileRecord.getFileName();
-            input = fileService.getFileInputStream(fileRecord, fileAlias);
-            long fileSize = 0L;
-            if (input != null) {
-                fileSize = fileService.getFileSize(fileRecord, fileAlias);
-            } else { // 当别名附件不存在时,使用原附件
-                input = fileService.getFileInputStream(fileRecord);
-                fileSize = fileService.getFileSize(fileRecord);
+            if (fileRecord != null) {
+                String fileName = fileRecord.getFileName();
+                input = fileService.getFileInputStream(fileRecord, fileAlias);
+                long fileSize = 0L;
+                if (input != null) {
+                    fileSize = fileService.getFileSize(fileRecord, fileAlias);
+                } else { // 当别名附件不存在时,使用原附件
+                    input = fileService.getFileInputStream(fileRecord);
+                    fileSize = fileService.getFileSize(fileRecord);
+                }
+                if (input != null) {
+                    downloadFileData(response, inline, input, fileName, fileSize);
+                } else {
+                    errorMsg = "下载的附件不存在";
+                }
+            } else {
+                errorMsg = "下载的附件不存在";
             }
-            downloadFileData(response, inline, input, fileName, fileSize);
+
         } catch (Exception e) {
-            String error = "下载附件异常@" + System.currentTimeMillis();
-            LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
+            errorMsg = "下载附件异常@" + System.currentTimeMillis();
+            LogUtil.error(errorMsg + "[" + fileRecord.getFileId() + "]", e);
         } finally {
             if (input != null) {
                 input.close();
+            }
+            if (Utils.notEmpty(errorMsg)) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, errorMsg);
             }
         }
     }
