@@ -1377,7 +1377,7 @@ Upload = UploadAjax = define.widget( 'upload/base/ajax', {
 				}, false );
 				ldr.loading = true;
 				ldr.xhr     = xhr;
-				xhr.open( 'post', this.x.upload_url );
+				xhr.open( 'post', this.formatStr( this.x.upload_url , null, ! /^\$\w+$/.test( this.x.upload_url ) ) );
 				xhr.send( d );
 			}
 		}

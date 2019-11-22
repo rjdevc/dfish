@@ -1232,6 +1232,7 @@ W = define( 'widget', function() {
 				return;
 			var p = this.parentNode, i = this.nodeIndex, o = this.focusOwner;
 			if ( ! a.isWidget ) {
+				a.type == N && (a.type = this.type);
 				a.width == N && (a.width = this.x.width);
 				a.height == N && (a.height = this.x.height);
 			}
@@ -3029,6 +3030,24 @@ Split = define.widget( 'split', {
 		}
 	}
 } ),
+/* `badge`  红点 */
+Badge = define.widget( 'badge', {
+	Default: { width: -1, height: -1 },
+	Prototype: {
+		className: 'w-badge',
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.x.text != N ? ' z-t' : '');
+		},
+		html_nodes: function() {
+			return this.x.text != N ? this.x.text : '';
+		},
+		dispose: function() {
+			if ( this.parentNode._badge == this )
+				delete this.parentNode._badge;
+			_proto.dispose.apply( this, arguments );
+		}
+	}
+} ),
 /* `buttonbar` */
 Buttonbar = define.widget( 'buttonbar', {
 	Const: function( x, p ) {
@@ -3162,7 +3181,6 @@ Button = define.widget( 'button', {
 		// 在触发事件之前做判断，如果返回true，则停止执行事件(包括系统事件和用户事件)
 		block: function( e ) {
 			var t = e.type || e;
-			t === 'click' && this.x.badge != N && this.x.badge !== F && this.badge( F );
 			return t !== 'unlock' && t !== 'remove' && t !== 'focus' && t !== 'blur' && ! this.usa();
 		},
 		body: {
@@ -3271,7 +3289,12 @@ Button = define.widget( 'button', {
 			} else if ( a === 'hoverdrop' ) {
 				this.more && this.more.attr( 'hoverdrop', b );
 			} else if ( a === 'badge' ) {
-				b === F ? this.removeElem( 'b' ) : this.$( 'b' ) ? Q( this.$( 'b' ) ).replaceWith( this.html_badge() ) : Q( this.$() ).append( this.html_badge() );
+				if ( b === F ) {
+					this._badge && this._badge.remove();
+				} else if ( this._badge ) {
+					this._badge = this._badge.replace( b === T ? {} : typeof b === _OBJ ? b : { text: b } );
+				} else
+					Q( this.$() ).append( this.html_badge() );
 			}
 		},
 		setMore: function( x ) {
@@ -3339,7 +3362,6 @@ Button = define.widget( 'button', {
 				}
 				a !== F && this.triggerHandler( 'focus' );
 			}
-			//a && this.x.badge && this.badge( F );
 			return (this.x.focus = !!a);
 		},
 		focusOver: function() {
@@ -3394,12 +3416,8 @@ Button = define.widget( 'button', {
 				this.remove();
 		},
 		html_badge: function() {
-			var t = this.x.badge;
-			if ( t != N && t !== F ) {
-				t = t === T ? '' : '' + t;
-				return '<i class="w-badge' + (t ? ' z-t' : '') + '" id=' + this.id + 'b>' + t + '</i>';
-			}
-			return '';
+			this._badge && this._badge.dispose();
+			return this.x.badge ? (this._badge = new Badge( this.x.badge === T ? {} : typeof this.x.badge === _OBJ ? this.x.badge : { text: this.x.badge }, this, -1 )).html() : '';
 		},
 		html_icon: function( a ) {
 			var t = this.x.text;
@@ -3684,6 +3702,7 @@ Img = define.widget( 'img', {
 		W.apply( this, arguments );
 		x.focusable && x.focus && $.classAdd( this, 'z-on' );
 		x.face && $.classAdd( this, 'z-face-' + x.face );
+		x.badge && (this._badge = new Badge( x.badge, this, -1 ));
 		p.type === this.ROOT_TYPE && this.defaults( { width: -1, height: -1 } );
 	},
 	Listener: {
@@ -9133,6 +9152,7 @@ Leaf = define.widget( 'leaf', {
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
 		x.focus && x.focusable !== F && this.tabFocus();
+		x.badge && (this._badge = new Badge( x.badge, this, -1 ));
 	},
 	Extend: AbsLeaf,
 	Default: { width: -1, height: -1 },
