@@ -500,7 +500,7 @@ Template = $.createClass( {
 		// @y -> { key: value }, z -> x.parentObject
 		compile: function( x, y ) {
 			if ( ! x )
-				return;
+				return x;
 			var r = {}, b, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( (b = x[ '@w-include' ]) ) {
 				var d = _getTemplate( b, T );
@@ -576,8 +576,7 @@ Template = $.createClass( {
 					}
 					r[ k ] = c;
 				} else if ( typeof b === _OBJ ) {
-					var d = this.compile( b, y );
-					d && (r[ k ] = d);
+					r[ k ] = this.compile( b, y );
 				} else {
 					r[ k ] = b;
 				}
