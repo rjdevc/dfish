@@ -420,7 +420,7 @@ Node = $.createClass( {
 } ),
 
 _compileTemplate = function( g, d, s ) {
-	var r = new Template( s || g.x.template, d, g ).compile();
+	var t = new Template( s || g.x.template, d, g ), r = t.compile( t.template );
 	!r.type && (r.type = g.type);
 	return r;
 },
@@ -499,9 +499,9 @@ Template = $.createClass( {
 		},
 		// @y -> { key: value }, z -> x.parentObject
 		compile: function( x, y ) {
-			var x = x || this.template, r = {}, b, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( ! x )
 				return;
+			var r = {}, b, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( (b = x[ '@w-include' ]) ) {
 				var d = _getTemplate( b, T );
 				if ( d ) {
