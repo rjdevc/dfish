@@ -10552,9 +10552,7 @@ Grid = define.widget( 'grid', {
 		},
 		// a -> data, b -> data|index
 		insertRow: function( a, b ) {
-			if ( b == N )
-				return this.append( a );
-			(b = this.row( b )) && b.before( a );
+			(b != N && (b = this.row( b ))) ? b.before( a ) : this.append( a );
 			this.resetRowCls();
 		},
 		// a -> data, b -> data|index
