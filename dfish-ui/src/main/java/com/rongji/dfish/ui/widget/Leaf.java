@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.widget;
 
-import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.Triplebox;
@@ -491,61 +490,63 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     /**
      * 级联修复选择框的状态，仅支持Triplebox的状态修复，且根据{@link Triplebox#getChecked()} 来判断，true代表该节点被选中
      *
+     * @deprecated 该方法无需调用,前端引擎已实现自动计算
      * @return 本身，这样可以继续设置其他属性
      */
+    @Deprecated
     public Leaf fixBoxCheckStatus() {
         if (this.getBox() == null || !(this.getBox() instanceof Triplebox)) {
             // 无选择框或者选择框不是Triplebox 直接返回无需修复
             return this;
         }
 
-        fixBoxCheckStatusCascade();
+//        fixBoxCheckStatusCascade();
 
         return this;
     }
 
-    /**
-     * 级联修复下级选择框的选中状态
-     *
-     * @return this
-     */
-    private int fixBoxCheckStatusCascade() {
-
-        Triplebox triplebox = (Triplebox) this.getBox();
-
-        List<Leaf> sugList = getNodes();
-        // 默认未选中
-        int status = Triplebox.CHECKSTATE_UNCHECKED;
-        if (Utils.notEmpty(sugList)) { // 下级节点不为空的情况
-            // 子节点的选中状态
-            Set<Integer> subStatusSet = new HashSet<Integer>(3);
-            for (Leaf sub : sugList) {
-                int subStatus = sub.fixBoxCheckStatusCascade();
-                subStatusSet.add(subStatus);
-            }
-            if (subStatusSet.size() > 1) {
-                // 至少2种状态说明肯定是,当前级肯定是半选状态
-                status = Triplebox.CHECKSTATE_PARTIALCHECKED;
-            } else {
-                // 理论上不可能出现为空的情况,故不进行判断
-                for (Integer subStatus : subStatusSet) {
-                    // 其他情况下级存什么状态,他的上级也是什么状态
-                    status = subStatus;
-                }
-            }
-        } else { // 没有下级节点
-            // 使用这个方法必须设置checked
-            Integer boxStatus = triplebox.getCheckstate();
-            if (boxStatus != null && boxStatus == Triplebox.CHECKSTATE_CHECKED) {
-                // 选中
-                status = Triplebox.CHECKSTATE_CHECKED;
-            }
-        }
-        // 设置选中状态
-        triplebox.setCheckstate(status);
-
-        return status;
-    }
+//    /**
+//     * 级联修复下级选择框的选中状态
+//     *
+//     * @return this
+//     */
+//    private int fixBoxCheckStatusCascade() {
+//
+//        Triplebox triplebox = (Triplebox) this.getBox();
+//
+//        List<Leaf> sugList = getNodes();
+//        // 默认未选中
+//        int status = Triplebox.CHECKSTATE_UNCHECKED;
+//        if (Utils.notEmpty(sugList)) { // 下级节点不为空的情况
+//            // 子节点的选中状态
+//            Set<Integer> subStatusSet = new HashSet<Integer>(3);
+//            for (Leaf sub : sugList) {
+//                int subStatus = sub.fixBoxCheckStatusCascade();
+//                subStatusSet.add(subStatus);
+//            }
+//            if (subStatusSet.size() > 1) {
+//                // 至少2种状态说明肯定是,当前级肯定是半选状态
+//                status = Triplebox.CHECKSTATE_PARTIALCHECKED;
+//            } else {
+//                // 理论上不可能出现为空的情况,故不进行判断
+//                for (Integer subStatus : subStatusSet) {
+//                    // 其他情况下级存什么状态,他的上级也是什么状态
+//                    status = subStatus;
+//                }
+//            }
+//        } else { // 没有下级节点
+//            // 使用这个方法必须设置checked
+//            Integer boxStatus = triplebox.getCheckstate();
+//            if (boxStatus != null && boxStatus == Triplebox.CHECKSTATE_CHECKED) {
+//                // 选中
+//                status = Triplebox.CHECKSTATE_CHECKED;
+//            }
+//        }
+//        // 设置选中状态
+//        triplebox.setCheckstate(status);
+//
+//        return status;
+//    }
 
     /**
      * 格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值)。

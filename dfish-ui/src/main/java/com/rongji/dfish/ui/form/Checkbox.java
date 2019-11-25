@@ -28,7 +28,6 @@ public class Checkbox extends  AbstractBox<Checkbox> {
 		return "checkbox";
 	}
 
-
 //	/**
 //	 * @param value theValue
 //	 * @return this

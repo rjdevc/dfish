@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.HasFormat;
-import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
 
 /**
@@ -88,7 +87,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 		this.checked = checked;
 		return (T)this;
 	}
-	
+
 	/**
 	 * 设定该box绑定字段
 	 * @return BoxField
