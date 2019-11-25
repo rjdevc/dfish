@@ -208,7 +208,6 @@ Require = function( a ) {
 			return;
 		for ( var i = 0, c = [], d = [], l = b.length; i < l; i ++ )
 			(_strFrom( b[ i ], '.', T ) === 'css' ? c : d).push( b[ i ] );
-		// 同步时，由于css目前只能异步加载，所以css_ok直接设为true
 		var css_ok = ! s || ! c.length, js_ok = ! d.length,
 			g = function() { js_ok && css_ok && f && f(); };
 		c.length && r.css( c, function() { css_ok = T, g() } );
@@ -1910,7 +1909,8 @@ var boot = {
 			_compatDOM();
 			// 生成首页view
 			if ( _cfg.view ) {
-				$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+				var g = $.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+				Q( win ).on( 'beforeunload', function() { g.dispose() } );
 			} else {
 				// 把 <d:wg> 标签转换为 widget
 				for ( var i = 0, d = _tags( 'script' ), j, l = d.length; i < l; i ++ ) {
