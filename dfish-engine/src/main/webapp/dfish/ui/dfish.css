@@ -638,7 +638,9 @@
 .w-menu-button ._c{padding-right:36px}
 .w-menu-button ._i{width:32px;text-align:center}
 .w-menu-button ._t{white-space:pre}
-.w-menu-button ._m{position:absolute;right:0;top:0;padding:0 10px 0 26px}
+.w-menu-button ._m,.w-menu-button ._x{position:absolute;right:0;top:0;padding:0 10px 0 26px}
+.w-menu-button ._xi{display:inline-block;margin-top:-2px;font:normal 18px verdana;vertical-align:middle;color:#99a8b8;cursor:pointer}
+.w-menu-button ._xi:hover{color:#f00}
 .w-menu-button.z-on{background:#ddebf0}
 .w-menu-button.z-ds{color:#aaa}
 .w-menu-button.z-ds .f-arw-r1{border-left-color:#aaa}

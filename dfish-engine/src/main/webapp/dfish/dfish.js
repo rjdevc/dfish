@@ -291,11 +291,11 @@ Define = function( a ) {
 //@a -> id, b -> uri, c -> script text
 _onModuleLoad = function( a, b, c ) {
 	var m = new Module( b );
-	try {
+	//try {
 		Function( 'define,require,module,exports', c + '\n//@ sourceURL=' + a ).call( win, Define( b ), Require( b ), m, m.exports );
-	} catch( e ) {
-		throw new Error( '"' + a + '": ' + e.message );
-	}
+	//} catch( e ) {
+	//	throw new Error( '"' + a + '": ' + e.message );
+	//}
 	if ( ! _moduleCache[ a ] )
 		_moduleCache[ a ] = m.exports;
 },
@@ -320,25 +320,26 @@ _loadCss = function( a, b, c ) {
 	var d = doc.readyState === 'loading';
 	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
 		if ( d ) {
-			doc.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '">' );
+			var u = b ? b[ i ] : _uid();
+			doc.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">' );
+			e = $( u );
 		} else {
 			e = doc.createElement( 'link' );
 			e.rel  = 'stylesheet';
 			e.href = a[ i ] + _ver;
 			b && ($.remove( b[ i ] ), e.id = b[ i ]);
-			if ( c ) {
-				if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
-				    var img = doc.createElement( 'img' );
-			        img.onerror = function(){ --n === 0 && c() };
-			        img.src = a[ i ] + _ver;
-			    } else {
-			    	c && (e.onload = function() { --n === 0 && c() });
-			    }
-		    }
 			_tags( 'head' )[ 0 ].appendChild( e );
 		}
+		if ( c ) {
+			if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
+			    var img = doc.createElement( 'img' );
+		        img.onerror = function(){ --n === 0 && c() };
+		        img.src = a[ i ] + _ver;
+		    } else {
+		    	c && (e.onload = function() { --n === 0 && c() });
+		    }
+		}
 	}
-	d && c && c();
 },
 _loadStyle = function( a, b ) {
 	var c = document.createElement( 'style' );
@@ -2231,7 +2232,7 @@ _merge( $, {
 				_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
 				s.push( _ui_path + 'dfish.css' );
 				d.push( did );
-				br.mobile && (s.push(_ui_path + 'mobile.css'), d.push(''));
+				br.mobile && (s.push( _ui_path + 'mobile.css' ), d.push( '' ));
 			}
 			if ( x ) {
 				x = _extend( {}, x, y );

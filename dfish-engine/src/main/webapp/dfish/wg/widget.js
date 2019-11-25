@@ -3151,9 +3151,10 @@ Buttonbar = define.widget( 'buttonbar', {
 				$.before( this[ i ].$(), this._more.$() );
 				var m = this._more.setMore( { nodes: [] } ), self = this;
 				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', focus: F, on: {
+					m.add( $.extend( { cls: '', focus: F, closeable: this[ i ].x.closeable, on: {
 						ready: 'this.addClass("z-on",!!' + abbr( this[ i ] ) + '.isFocus())',
-						click: 'var b=this.getCommander().parentNode;' + abbr( this[ i ] ) + '.click();b.overflow()'
+						click: 'var b=this.getCommander().parentNode;' + abbr( this[ i ] ) + '.click();b.overflow()',
+						close: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],p=o.parentNode;o.close();p._more&&p._more.drop()'
 					} , text: this[ i ].x.text, nodes: this[ i ].x.nodes } ) );
 					this[ i ].css( { visibility: 'hidden' } );
 				}
@@ -3243,7 +3244,7 @@ Button = define.widget( 'button', {
 			},
 			close: function() {
 				if ( this.x.target ) {
-					var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.prev() || this.next());
+					var p = this.parentNode, f = p.type === this.ROOT_TYPE && p.getFocus(), n = f && f == this && (this.next() || this.prev());
 					n && n.click();
 					for ( var i = 0, b = this.ownerView.find( this.x.target.split( ',' ) ); i < b.length; i ++ )
 						b[ i ].remove();
@@ -3557,6 +3558,14 @@ MenuButton = define.widget( 'menu/button', {
 		hide: function() {
 			this.more && this.more.hide();
 		},
+		close: function( e ) {
+			e && $.stop( e );
+			var p = this.parentNode;
+			this.more && this.more.hide();
+			this.trigger( 'close' );
+			this.remove();
+			//p.length ? p.render() : p.hide();
+		},
 		dispose: function() {
 			this.more && ( this.more.dispose(), this.more = N );
 			_proto.dispose.call( this );
@@ -3590,7 +3599,7 @@ MenuButton = define.widget( 'menu/button', {
 			a += '</div>';
 			a += '<div class=_m>' + ( this.more ? $.arrow( 'r1' ) : '' ) + '<i class=f-vi></i></div>';
 			if ( x.closeable )
-				a += '<div class=_x></div>';
+				a += '<div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class=_xi>&times;</i></div>';
 			return a + '</div>';
 		}
 	}
@@ -5773,6 +5782,10 @@ CheckboxGroup = define.widget( 'checkboxgroup', {
 		}
 	}
 } ),
+_checked_states_hooks = { 'false': '0', 'true': '1', unchecked: '0', checked: '1', partial: '2', '0': '0', '1': '1', '2': '2' },
+_checked_states = function( a ) {
+	return _checked_states_hooks[ a ] || 0;
+},
 /* `checkbox` */
 Checkbox = define.widget( 'checkbox', {
 	Const: function( x, p ) {
@@ -5962,10 +5975,9 @@ Triplebox = define.widget( 'triplebox', {
 	Listener: {
 		body: {
 			ready: function() {
-				if ( this.x.checkstate == 2 ) 
-					this.$t().indeterminate = T;
+				var c = this.checkstate();
 				if ( this.x.checkall ) {
-					if ( this.x.checkstate == 1 ) {
+					if ( c == 1 ) {
 						this.relate();
 					} else {
 						for ( var i = 0, b = this.ownerView.fAll( this.x.name ), l = b.length; i < l; i ++ ) {
@@ -5987,7 +5999,7 @@ Triplebox = define.widget( 'triplebox', {
 			click: {
 				occupy: T,
 				method: function( e ) {
-					var s = this.x.checkstate;
+					var s = this.checkstate();
 					Checkbox.Listener.body.click.method.apply( this, arguments );
 					$.classAdd( this.$(), 'z-half', this.checkstate() == 2 );
 					if ( e.srcElement ) {
@@ -6001,19 +6013,22 @@ Triplebox = define.widget( 'triplebox', {
 	Prototype: {
 		className: 'w-f w-checkbox',
 		checkstate: function( a ) {
-			var b = this.$t().checked ? 1 : this.$t().indeterminate ? 2 : 0;
+			var b = _checked_states( this.x.checked );
 			if ( a == N )
 				return b;
 			this.$t().checked = a == 1;
 			this.$t().indeterminate = a == 2;
 			$.classAdd( this.$(), 'z-half', a == 2 );
-			this.x.checkstate = a;
-			if ( a != b || this.x.checkall )
+			this.x.checked = a;
+			if ( _checked_states( a ) != b || this.x.checkall )
 				this.trigger( 'change' );
 		},
 		check: function( a ) {
-			this.checkstate( a === F ? 0 : (a === T || a == N) ? 1 : a );
+			this.checkstate( a );
 			this.relate();
+		},
+		isPartial: function() {
+			return this.checkstate() == 2;
 		},
 		relate: function() {
 			if ( this.x.name ) {
@@ -6031,8 +6046,9 @@ Triplebox = define.widget( 'triplebox', {
 			}			
 		},
 		html: function() {
-			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (this.x.checkstate == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
-				(this.x.checkstate == 1 ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+			var c = this.checkstate();
+			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (c == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
+				(c == 1 ? ' checked' : '') + (c == 2 ? ' indeterminate' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span>' : '') + '</' + this.tagName + '>';
 		}
 	}
@@ -9659,7 +9675,7 @@ GridTriplebox = define.widget( 'grid/triplebox', {
 		body: {
 			ready: function() {
 				Triplebox.Listener.body.ready.apply( this, arguments );
-				this.x.checkstate > 0 && this.triggerListener( 'change' );
+				this.checkstate() > 0 && this.triggerListener( 'change' );
 			},
 			change: {
 				occupy: T,
