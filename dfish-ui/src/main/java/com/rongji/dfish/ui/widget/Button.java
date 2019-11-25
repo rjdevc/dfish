@@ -16,6 +16,8 @@ public class Button extends AbstractButton<Button> {
 	 */
 	private static final long serialVersionUID = -3521425601089259935L;
 
+	private String target;
+
 	/**
      * 构造函数
      * @param icon String 图标
@@ -53,7 +55,28 @@ public class Button extends AbstractButton<Button> {
     @Deprecated
     public Button() {
     }
-    
+
+    /**
+     * 指定一个 frame 内的 widget ID，使 button 的 focus 效果和绑定 widget 的显示隐藏效果。
+     *
+     * @return String
+     */
+    public String getTarget() {
+        return target;
+    }
+
+    /**
+     * 指定一个 frame 内的 widget ID，使 button 的 focus 效果和绑定 widget 的显示隐藏效果。
+     *
+     * @param target
+     *            String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Button setTarget(String target) {
+        this.target = target;
+        return this;
+    }
+
 	@Override
     public String getType() {
 		return "button";

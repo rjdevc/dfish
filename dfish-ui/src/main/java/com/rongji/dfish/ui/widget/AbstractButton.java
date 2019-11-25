@@ -45,7 +45,6 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	protected String status;
 	protected Boolean focus;
 	protected Boolean focusable;
-	protected String target;
 	protected Boolean hoverdrop;
 	protected Boolean hidetoggle;
 	protected Boolean escape;
@@ -321,26 +320,6 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 		return (T) this;
 	}
 
-	/**
-	 * 指定一个 film 内的 widget ID，使 button 的 focus 效果和绑定 widget 的显示隐藏效果。
-	 * 
-	 * @return String
-	 */
-	public String getTarget() {
-		return target;
-	}
-
-	/**
-	 * 指定一个 film 内的 widget ID，使 button 的 focus 效果和绑定 widget 的显示隐藏效果。
-	 * 
-	 * @param target
-	 *            String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public T setTarget(String target) {
-		this.target = target;
-		return (T) this;
-	}
 	@Override
 	public List<Widget<?>> getNodes() {
 		return nodes;

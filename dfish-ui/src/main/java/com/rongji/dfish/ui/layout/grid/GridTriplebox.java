@@ -26,7 +26,7 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      * @param name       名称
      * @param label      标题
      * @param checked    选中状态
-     * @param value      值，这里的值只有3中状态 选中,未选中,部分选中
+     * @param value      值
      * @param text       显示文本
      */
     public GridTriplebox(String name, String label, Boolean checked, Object value, String text) {
@@ -57,11 +57,6 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
     public String getType() {
         return "grid/triplebox";
     }
-//	@Override
-//	public GridTriplebox setValue(Object value) {
-//		this.value=value;
-//		return this;
-//	}
 
     /**
      * 选中所有
