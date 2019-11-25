@@ -304,13 +304,18 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N, P>, N ex
         ;
     }
 
+    protected abstract N newPub();
+
     /**
      * boxgroup的默认参数
      *
      * @return pub
      */
     public N getPub() {
-        return pub;
+        if (this.pub == null) {
+            this.pub = newPub();
+        }
+        return this.pub;
     }
 
     /**

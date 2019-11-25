@@ -3,10 +3,8 @@ package com.rongji.dfish.ui.layout;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.FormElement;
-import com.rongji.dfish.ui.Layout;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
+
 /**
  * 抽象布局类，默认的布局同时还是一个Widget
  * @author DFish Team
@@ -31,7 +29,7 @@ public abstract class AbstractLayout<T extends AbstractLayout<T,N>,N extends Wid
 	public AbstractLayout(String id){
 		this.id=id;
 	}
-	protected List<N> nodes = new ArrayList<N>();
+	protected List<N> nodes = new ArrayList<>();
 
 	/**
      * 添加子面板

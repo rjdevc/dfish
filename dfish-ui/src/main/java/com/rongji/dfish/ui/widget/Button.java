@@ -1,6 +1,8 @@
 package com.rongji.dfish.ui.widget;
 
 
+import com.rongji.dfish.ui.Widget;
+
 /**
  * ExpandableButton 可展开的按钮
  * <p>该按钮本身如果没有绑定命令的话，那么点该按钮就是展开动作。否则要点按钮后的箭头展开</p>
@@ -44,7 +46,7 @@ public class Button extends AbstractButton<Button> {
     public Button(String text) {
     	this.setText(text);
     }
-    
+
     /**
      * 构造函数
      */

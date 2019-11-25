@@ -1,19 +1,12 @@
 package com.rongji.dfish.ui.widget;
 
-import java.util.List;
-
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Combo;
-import com.rongji.dfish.ui.HasSrc;
-import com.rongji.dfish.ui.HiddenContainer;
-import com.rongji.dfish.ui.HiddenPart;
-import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.MultiContainer;
-import com.rongji.dfish.ui.PubHolder;
-import com.rongji.dfish.ui.Scrollable;
-import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.Triplebox;
 import com.rongji.dfish.ui.layout.AbstractLayout;
+
+import java.util.List;
 
 /**
  * TreePanel 树的面板 这个面板里面可以防止树节点Leaf
@@ -35,10 +28,10 @@ public class Tree extends AbstractLayout<Tree, Leaf>
     private Combo combo;
     private Highlight highlight;
     private Boolean ellipsis;
-    
+
 	/**
 	 * 构造函数
-	 * 
+	 *
 	 * @param id
 	 *            String
 	 */
@@ -52,12 +45,16 @@ public class Tree extends AbstractLayout<Tree, Leaf>
 		return "tree";
 	}
 
+	private Leaf pub() {
+	    if (this.pub == null) {
+	        this.pub = new Leaf();
+        }
+	    return this.pub;
+    }
+
 	@Override
     public Leaf getPub() {
-		if(pub==null){
-			pub=new Leaf();
-		}
-		return pub;
+		return pub();
 	}
 
 	@Override
@@ -66,7 +63,7 @@ public class Tree extends AbstractLayout<Tree, Leaf>
 		return this;
 	}
 
-    @Override
+	@Override
     public Tree setScroll(Boolean scroll) {
     	this.scroll = scroll;
 	    return this;

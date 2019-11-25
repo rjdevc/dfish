@@ -38,6 +38,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	private String imgheight;
 	private String format;
 	private Boolean escape;
+	private Object badge;
 
 	/**
      * 构造函数
@@ -363,4 +364,33 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 		this.escape = escape;
 		return this;
 	}
+
+	/**
+	 * 显示徽标
+	 * @return Object
+	 */
+	public Object getBadge() {
+		return badge;
+	}
+
+	/**
+	 * 显示徽标
+	 * @param badge 为true时显示圆点
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Img setBadge(Boolean badge) {
+		this.badge = badge;
+		return this;
+	}
+
+	/**
+	 * 显示徽标
+	 * @param badge 要显示的徽标对象
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Img setBadge(Badge badge) {
+		this.badge = badge;
+		return this;
+	}
+
 }

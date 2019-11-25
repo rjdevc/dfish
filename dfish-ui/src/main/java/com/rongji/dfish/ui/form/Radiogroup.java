@@ -44,11 +44,10 @@ public class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio,String> {
 		}
 		return this;
 	}
+
 	@Override
-    public Radio getPub() {
-		if (pub == null) {
-			pub = new Radio(null, null, null, null, null);
-		}
-	    return pub;
+    public Radio newPub() {
+	    return new Radio(null, null, null, null, null);
     }
+
 }

@@ -1,20 +1,12 @@
 package com.rongji.dfish.ui.widget;
 
-import java.beans.Transient;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.Triplebox;
 import com.rongji.dfish.ui.layout.AbstractLayout;
+
+import java.util.*;
 
 
 /**
@@ -60,6 +52,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     private String error;
     private String complete;
     private String filter;
+    private Object badge;
 
     /**
      * 默认构造函数,因为树经常没有下级,但一般有属性,所默认创建属性的list
@@ -713,6 +706,34 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     @Override
     public Leaf setSync(Boolean sync) {
         this.sync = sync;
+        return this;
+    }
+
+    /**
+     * 显示徽标
+     * @return Object
+     */
+    public Object getBadge() {
+        return badge;
+    }
+
+    /**
+     * 显示徽标
+     * @param badge 为true时显示圆点
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Leaf setBadge(Boolean badge) {
+        this.badge = badge;
+        return this;
+    }
+
+    /**
+     * 显示徽标
+     * @param badge 要显示的徽标对象
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Leaf setBadge(Badge badge) {
+        this.badge = badge;
         return this;
     }
 }

@@ -90,11 +90,8 @@ public class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox,Objec
 		return this;
 	}
 	@Override
-    public Checkbox getPub() {
-		if (pub == null) {
-			pub = new Checkbox(null, null, null, null, null);
-		}
-	    return pub;
+    public Checkbox newPub() {
+	    return new Checkbox(null, null, null, null, null);
     }
 	
 }

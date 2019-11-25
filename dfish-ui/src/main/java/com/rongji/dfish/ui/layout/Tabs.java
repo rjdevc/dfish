@@ -8,13 +8,13 @@ import com.rongji.dfish.ui.widget.Split;
 import java.util.List;
 
 /**
- *  可切换标签容器
+ * 可切换标签容器
  */
-public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tabs,Tab>,PubHolder<Tabs,Tab>,
-        Alignable<Tabs>,Valignable<Tabs> ,HiddenContainer<Tabs>{
+public class Tabs extends AbstractLayout<Tabs, Tab> implements MultiContainer<Tabs, Tab>, PubHolder<Tabs, Tab>,
+        Alignable<Tabs>, Valignable<Tabs>, HiddenContainer<Tabs> {
     private String align;
     private String valign;
-    private  Integer space;
+    private Integer space;
     private Split split;
     private Overflow overflow;
     private Tab pub;
@@ -28,6 +28,20 @@ public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tab
     }
 
     @Override
+    public Tab getPub() {
+        if (pub == null) {
+            pub = new Tab(null);
+        }
+        return pub;
+    }
+
+    @Override
+    public Tabs setPub(Tab pub) {
+        this.pub = pub;
+        return this;
+    }
+
+    @Override
     public String getType() {
         return "tabs";
     }
@@ -37,21 +51,10 @@ public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tab
         return nodes;
     }
 
-    @Override
-    public Tab getPub() {
-        return pub;
-    }
-
-    @Override
-    public Tabs setPub(Tab pub) {
-        this.pub=pub;
-        return this;
-    }
-
 
     /**
      * 在按钮之间默认插入的split;
-     * 设置了该属性,无需调用{@link #add(Widget)}来添加split,按钮间自动添加1个split
+     *
      * @param split Split
      * @return this
      */
@@ -59,8 +62,10 @@ public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tab
         this.split = split;
         return this;
     }
+
     /**
      * 在按钮之间默认插入的split
+     *
      * @return Split
      */
     public Split getSplit() {
@@ -90,15 +95,19 @@ public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tab
         this.space = space;
         return this;
     }
+
     /**
      * 当按钮过多，放不下的时候的效果
+     *
      * @return Overflow
      */
     public Overflow getOverflow() {
         return overflow;
     }
+
     /**
      * 当按钮过多，放不下的时候，的效果
+     *
      * @param overflow 设置当内容太多的时候不换行
      * @return this
      */
@@ -106,6 +115,7 @@ public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tab
         this.overflow = overflow;
         return this;
     }
+
     @Override
     public String getValign() {
         return valign;
@@ -127,6 +137,7 @@ public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tab
         this.align = align;
         return this;
     }
+
     /**
      * 隐藏表单组
      */
@@ -137,6 +148,7 @@ public class Tabs extends AbstractLayout<Tabs,Tab> implements MultiContainer<Tab
         hiddens.addHidden(name, value);
         return this;
     }
+
     //	public T addHidden(String name,AtExpression value) {
 //		hiddens.addHidden(name, value);
 //		return (T)this;

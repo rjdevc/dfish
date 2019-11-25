@@ -39,7 +39,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	protected String name;
 	protected String icon;
 	protected String text;
-	protected Object tip;// tip
+	protected Object tip;
 	protected Boolean closeable;
 //	protected Boolean disabled;
 	protected String status;
@@ -50,6 +50,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	protected Boolean hidetoggle;
 	protected Boolean escape;
 	protected String format;
+	protected Object badge;
 
 	/**
 	 * 是否有关闭图标。
@@ -409,6 +410,34 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	@Override
     public T setFormat(String format) {
 		this.format = format;
+		return (T) this;
+	}
+
+	/**
+	 * 显示徽标
+	 * @return Object
+	 */
+	public Object getBadge() {
+		return badge;
+	}
+
+	/**
+	 * 显示徽标
+	 * @param badge 为true时显示圆点
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setBadge(Boolean badge) {
+		this.badge = badge;
+		return (T) this;
+	}
+
+	/**
+	 * 显示徽标
+	 * @param badge 要显示的徽标对象
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setBadge(Badge badge) {
+		this.badge = badge;
 		return (T) this;
 	}
 }

@@ -44,6 +44,7 @@ public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle>,
 	private String openicon;
 	private Boolean escape;
 	private String format;
+	private Object tip;
 
 	/**
 	 * 是否显示一条水平线
@@ -166,6 +167,36 @@ public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle>,
 	@Override
     public Toggle setFormat(String format) {
 		this.format = format;
+		return this;
+	}
+
+	/**
+	 * 提示信息。设为true，提示信息将使用 text 参数的值。
+	 * @return Object
+	 */
+	public Object getTip() {
+		return tip;
+	}
+
+	/**
+	 * 提示信息。设为true，提示信息将使用 text 参数的值。
+	 *
+	 * @param tip 提示信息
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Toggle setTip(String tip) {
+		this.tip = tip;
+		return this;
+	}
+
+	/**
+	 * 提示信息。设为true，提示信息将使用 text 参数的值。
+	 *
+	 * @param tip 设为true，提示信息将使用 text 参数的值。
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Toggle setTip(Boolean tip) {
+		this.tip = tip;
 		return this;
 	}
 }
