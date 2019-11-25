@@ -310,7 +310,7 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, cdn: T } );
 },
 // @a -> src, b -> id?, c -> fn?
 _loadCss = function( a, b, c ) {
@@ -1521,15 +1521,19 @@ Ajax = _createClass( {
 			}
 			if ( x.base || _path )
 				u = _urlLoc( x.base || _path, u );
+			if ( x.cdn && _cfg.ver )
+				u = _urlParam( u, { _v: _cfg.ver } );
 			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
 			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
 				return x.complete && x.complete.call( c, N, self );
 			if ( g === 'xml' && br.ie10 )
 				l.responseType = 'msxml-document';
-			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
-			l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
-			l.setRequestHeader( 'x-requested-with',  _expando );
+			if ( ! x.cdn ) {
+				e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
+				l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
+				l.setRequestHeader( 'x-requested-with',  _expando );
+			}
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
@@ -1831,7 +1835,7 @@ var boot = {
 			_cfg.path = _path;
 		if ( _cfg.lib != N )
 			_lib = _cfg.lib;
-		_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
+		_ver = _cfg.ver ? '?_v=' + _cfg.ver : '',
 		_ui_path = _urlLoc( _path, _lib ) + 'ui/';
 		
 		_compatJS();

@@ -1569,7 +1569,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	// 根据子元素各自设置的比例，统一计算后进行高宽分配 /@a -> widget, b -> widget size?, c -> self size?
 	_w_scale[ v ] = function( a, b, c ) {
 		var d = b != N ? b : a.attr( v ), s = this._scales;
-		if ( $.isNumber( d ) && d > -1 && ! this.SCALE_COVER )
+		if ( $.isNumber( d ) && d > -1 && ! this.isScaleCover )
 			return parseFloat( d );
 		if ( b != N || c != N || ! s ) {
 			if ( ! this.length )
@@ -1580,7 +1580,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
-			s = $.scale( c === U ? this[ iz ]() : c, r, this.SCALE_COVER );
+			s = $.scale( c === U ? this[ iz ]() : c, r, this.isScaleCover );
 			if ( b === U && c === U )
 				this._scales = s;
 		}
@@ -3608,11 +3608,11 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			var t = (this.x.text ? '<div class=_t><span class="f-omit f-va">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span><i class=f-vi></i></div>' : '');
+			var t = (this.x.text ? '<span class="f-omit f-va"' + this.prop_title( this.x.tip === T ? this.x.text : this.x.tip ) + '>' + this.x.text + '</span><i class=f-vi></i>' : '');
 			if ( this.x.hr ) {
 				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
 			}
-			return this.html_icon() + '<div class="_c f-oh f-nobr">' + t + '</div>';
+			return this.html_icon() + '<div class="_c f-oh f-fix">' + t + '</div>';
 		}
 	}
 } ),
@@ -5449,7 +5449,7 @@ Checkbox = define.widget( 'checkbox', {
 				occupy: T,
 				block: function() { return ! this.isNormal() },
 				method: function( e ) {
-					if ( this.isReadonly() || this.isValidonly() ) {
+					if ( ! this.isNormal() ) {
 						this.elements().each( function() { this.checked = this.defaultChecked } );
 						return F;
 					}
@@ -5536,6 +5536,8 @@ Checkbox = define.widget( 'checkbox', {
 			return t.disabled || ! t.checked ? '' : t.value;
 		},
 		htmlFor: function( a, e ) {
+			if ( ! this.isNormal() )
+				return;
 			this.$t().focus(); // for ie9-
 			a.previousSibling.click ? a.previousSibling.click() : Q( a.previousSibling.previousSibling ).click();
 			$.cancel( e );
@@ -9866,7 +9868,7 @@ Colgroup = define.widget( 'colgroup', {
 	Extend: 'horz/scale',
 	Prototype: {
 		ROOT_TYPE: 'grid',
-		SCALE_COVER: T,
+		isScaleCover: T,
 		x_childtype: $.rt( 'col' ),
 		insertCol: function( a, b ) {
 			 b == N || ! this[ b ] ? this.append( a ) : this[ b ].before( a );
@@ -10138,20 +10140,24 @@ Grid = define.widget( 'grid', {
 		},
 		// @a -> col index, b -> width?
 		colWidth: function( a, b ) {
-			var g = this.colgrps, i = g.length, v = g[ 0 ][ a ].x.width;
+			var g = this.colgrps;
 			if ( b == N )
-				return i && g[ 0 ][ a ] && g[ 0 ][ a ].width();
-			while ( i -- ) {
+				return g[ 0 ] && g[ 0 ][ a ] && g[ 0 ][ a ].width();
+			for ( var i = 0; i < g.length; i ++ ) {
+				for ( var j = 0; j < g[ i ].length; j ++ ) {
+					g[ i ][ j ].x.width = g[ i ][ j ].innerWidth();
+				}
+				g[ i ].isScaleCover = F;
+			}
+			for ( var i = 0; i < g.length; i ++ ) {
 				g[ i ][ a ] && g[ i ][ a ].width( b );
 			}
 			_w_rsz_all.call( this );
 			for ( var i = 0, w = 0, v, l = g[ 0 ].length; i < l; i ++ ) {
 				w += g[ 0 ][ i ].width();
 			}
-			i = g.length;
-			while ( i -- ) {
-				! isNaN( w ) && g[ i ].parentNode.css( 'width', w );
-				g[ i ][ a ].x.width = v;
+			for ( var i = 0; i < g.length; i ++ ) {
+				! isNaN( w ) && (g[ i ].parentNode.$().style.width = w + 'px');
 			}
 		},
 		// a -> data, b -> data|index
@@ -10384,6 +10390,7 @@ define.widget( 'datepicker', { Extend: 'date' } );
 define.widget( 'form', { Extend: 'html' } );
 define.widget( 'vertical', { Extend: 'vert' } );
 define.widget( 'horizontal', { Extend: 'horz' } );
+define.widget( 'timeline', { Extend: 'html' } );
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
