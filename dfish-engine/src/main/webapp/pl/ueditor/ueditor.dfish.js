@@ -117,7 +117,7 @@ define.widget( 'ueditor', {
 		},
 		getContent: function() {
 			if ( this.u && this.u.isReady ) {
-				this.u.queryCommandState( 'source' ) && this.u.execCommand( 'source' );
+				//this.u.queryCommandState( 'source' ) && this.u.execCommand( 'source' );
 				return this.u.getContent();
 			}
 			return this.options.initialContent;
