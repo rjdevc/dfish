@@ -208,7 +208,7 @@ Require = function( a ) {
 			return;
 		for ( var i = 0, c = [], d = [], l = b.length; i < l; i ++ )
 			(_strFrom( b[ i ], '.', T ) === 'css' ? c : d).push( b[ i ] );
-		var css_ok = ! s || ! c.length, js_ok = ! d.length,
+		var css_ok = ! c.length, js_ok = ! d.length,
 			g = function() { js_ok && css_ok && f && f(); };
 		c.length && r.css( c, function() { css_ok = T, g() } );
 		return d.length && r.js( d, function() { js_ok = T, g() }, s );
@@ -1829,7 +1829,7 @@ function _compatDOMMobile() {
 }
 
 
-/* 引导启动 */
+/* `boot` 引导启动 */
 var boot = {
 	init: function( x ) {
 		x && $.config( x );

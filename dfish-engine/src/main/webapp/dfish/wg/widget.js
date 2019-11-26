@@ -2127,19 +2127,17 @@ Xsrc = define.widget( 'xsrc', {
 			this.x = x;
 			if ( ! this.isDisplay() )
 				return;
-			if ( this.type_view && _view_resources[ this.path ] )
-				$.require( _view_resources[ this.path ] );
 			_proto.init_x.call( this, x );
 			if ( this.domready && this.x.id ) {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
 			}
 			if ( ! x.node ) {
-				var s = x.src || (this.x.template && {});
+				var s = x.src || (this.x.template && ! this.hasCssRes() && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
 				} else
 					this.className += ' z-loading';
-			}
+			} //@fixme 当有node也有css res时的处理
 			var t = x.preload && _getPreload( x.preload );
 			if ( t ) {
 				_mergeLoadingProp( x, t );
@@ -2154,6 +2152,16 @@ Xsrc = define.widget( 'xsrc', {
 		init_nodes: function() {
 			if ( this.x.node && !this.layout )
 				this.layout = new Layout( { node: this.x.node }, this );
+		},
+		hasCssRes: function() {
+			var a = this.type_view && _view_resources[ this.path ];
+			if ( a ) {
+				for ( var i = 0; i < a.length; i ++ ) {
+					if ( 'css' === $.strFrom( $.strTo( a[ i ], '?' ) || a[ i ], '.', T ) )
+						return T;
+				}
+			}
+			return F;
 		},
 		start: function() {
 			if ( !this.x.src && !this.x.template )
