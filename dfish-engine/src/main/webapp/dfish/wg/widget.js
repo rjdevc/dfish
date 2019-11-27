@@ -9174,7 +9174,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 /* `leaf` */
 Leaf = define.widget( 'leaf', {
 	Const: function( x, p ) {
-		this.level = p.level + (p.x.hideroot ? 0 : 1);
+		this.level = p.level + (p.x.rootinvisible ? 0 : 1);
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
@@ -9472,9 +9472,6 @@ Tree = define.widget( 'tree', {
 		droppable: function( a ) {
 			$.droppable( this, $.extend( { sort: F }, a || {} ) );
 			return AbsLeaf.prototype.droppable.call( this, a );
-		},
-		prop_cls: function() {
-			return Scroll.prototype.prop_cls.call( this ) + (this.x.hideroot ? ' z-hideroot' : '');
 		},
 		html_nodes: function() {
 			var s = _proto.html_nodes.call( this );

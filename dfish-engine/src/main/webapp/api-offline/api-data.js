@@ -2276,7 +2276,7 @@ define( {
       ] },
       { name: 'ellipsis', type: 'Boolean', remark: '设置为true，树节点文本超出可视范围部分以省略号显示。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
-      { name: 'hideroot', type: 'Boolean', remark: '设为true，隐藏根节点，根节点的子节点缩进一层。' },
+      { name: 'rootinvisible', type: 'Boolean', remark: '设为true，隐藏根节点，根节点的子节点缩进一层。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },
         { name: 'keycls', type: 'String', remark: '关键词样式名。' },
