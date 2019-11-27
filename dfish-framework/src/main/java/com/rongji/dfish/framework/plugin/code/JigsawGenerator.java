@@ -225,11 +225,11 @@ public class JigsawGenerator {
         int fileIndex = RANDOM.nextInt(imageFiles.size());
         File rawFile = imageFiles.get(fileIndex);
 
-        String jigsawFileName = request.getSession().getId() + "-" + System.currentTimeMillis();
+        String jigsawFileName = session.getId() + "-" + System.currentTimeMillis();
         Img bigImg = generatorBigImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
         Img smallImg = generatorSmallImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
         // 将验证码放到session中
-        request.getSession().setAttribute(KEY_CHECKCODE, x);
+        session.setAttribute(KEY_CHECKCODE, x);
 
         jigsaw.setBig(bigImg);
         jigsaw.setSmall(smallImg);
@@ -264,6 +264,9 @@ public class JigsawGenerator {
      * @return boolean
      */
     public boolean checkJigsawOffset(HttpServletRequest request, Number offset) {
+        if (offset == null) {
+            return false;
+        }
         double customOffset = offset.doubleValue() * (bigWidth - smallSize) / bigWidth;
         HttpSession session = request.getSession();
         Integer realOffset = (Integer) session.getAttribute(KEY_CHECKCODE);
