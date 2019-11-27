@@ -18,7 +18,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.4',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.5',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -67,7 +67,7 @@ br = $.br = (function() {
 		chm		: chm && parseFloat( chm[ 1 ] ),
 		mobile  : !!u.match( /\bmobile\b/ ),
 		fox		: u.indexOf( 'firefox' ) > 0,
-		safari  : u.indexOf( 'safari' ) > 0,
+		safari  : !chm && u.indexOf( 'safari' ) > 0,
 		css3	: !(ie && d < 9),
 		scroll	: 17,
 		chdiv	: function( a, b, c ) {
