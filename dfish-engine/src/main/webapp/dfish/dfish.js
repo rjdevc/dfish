@@ -68,7 +68,7 @@ br = $.br = (function() {
 		chm		: chm && parseFloat( chm[ 1 ] ),
 		mobile  : !!u.match( /\bmobile\b/ ),
 		fox		: u.indexOf( 'firefox' ) > 0,
-		safari  : u.indexOf( 'safari' ) > 0,
+		safari  : !chm && u.indexOf( 'safari' ) > 0,
 		css3	: !(ie && d < 9),
 		scroll	: 17,
 		chdiv	: function( a, b, c ) {
@@ -320,7 +320,7 @@ _loadCss = function( a, b, c ) {
 	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
 		if ( d ) {
 			var u = b ? b[ i ] : _uid();
-			doc.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">' );
+			document.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">' );
 			e = $( u );
 		} else {
 			e = doc.createElement( 'link' );
@@ -332,10 +332,10 @@ _loadCss = function( a, b, c ) {
 		if ( c ) {
 			if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
 			    var img = doc.createElement( 'img' );
-		        img.onerror = function(){ --n === 0 && c() };
+		        img.onerror = function() { --n === 0 && c() };
 		        img.src = a[ i ] + _ver;
 		    } else {
-		    	c && (e.onload = function() { --n === 0 && c() });
+		    	e.onload = function() { --n === 0 && c() };
 		    }
 		}
 	}
@@ -1833,7 +1833,8 @@ function _compatDOMMobile() {
 var boot = {
 	init: function( x ) {
 		x && $.config( x );
-		this.initEnv(), this.initDocView();
+		this.initEnv();
+		this.initDocView();
 	},
 	ready: function( a ) {
 		this.fn = a;

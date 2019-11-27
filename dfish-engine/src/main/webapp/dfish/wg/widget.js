@@ -9171,7 +9171,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 /* `leaf` */
 Leaf = define.widget( 'leaf', {
 	Const: function( x, p ) {
-		this.level = p.level + 1;
+		this.level = p.level + (p.hideroot ? 0 : 1);
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
