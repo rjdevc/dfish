@@ -754,6 +754,9 @@ W = define( 'widget', function() {
 			} else if ( c = this.x_node() )
 				this.parse( c );
 		},
+		getLength: function() {
+			return this.length;
+		},
 		// 改变默认设置 @a -> key
 		defaults: function( a ) {
 			if ( typeof a === _STR ) {
@@ -8993,7 +8996,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 				complete: function( x ) { // complete
 					this.loading = F;
 					this.loaded = T;
-					if ( !this.length ) {
+					if ( ! this.getLength() ) {
 						this.x.folder = F;
 						this.toggle( F );
 					}
@@ -9171,7 +9174,7 @@ AbsLeaf = define.widget( 'abs/leaf', {
 /* `leaf` */
 Leaf = define.widget( 'leaf', {
 	Const: function( x, p ) {
-		this.level = p.level + (p.hideroot ? 0 : 1);
+		this.level = p.level + (p.x.hideroot ? 0 : 1);
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
@@ -9267,6 +9270,7 @@ Leaf = define.widget( 'leaf', {
 			}
 			return b;
 		},
+		// 获取类型为leaf的父节点
 		parent: function() {
 			return this.parentNode !== this.rootNode && this.parentNode;
 		},
@@ -9292,7 +9296,7 @@ Leaf = define.widget( 'leaf', {
 			this.level = this.parentNode.level + 1;
 			if ( this.x.line ) {
 				Q( '._pd,._pdvl', this.$() ).remove();
-				$.before( this.$( 'o' ), this.html_pad() );
+				$.before( this.$( 'o' ), this.html_linepad() );
 			} else
 				this.css( 'paddingLeft', this.padLeft() );
 			for ( var i = 0; i < this.length; i ++ )
@@ -9371,15 +9375,15 @@ Leaf = define.widget( 'leaf', {
 				t = '<span class=w-leaf-s>' + t + '</span><i class=f-vi></i>';
 			return t;
 		},
-		html_pad: function() {
+		html_linepad: function() {
 			for ( var i = 0, e = '', p; i < this.level; i ++ ) {
 				p = (p || this).parent();
-				e = '<i class=_pd>' + (! p.parent() || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
+				e = '<i class=_pd>' + (p.level == 0 || p.isLast() ? '' : '<u class=_pl></u>') + '</i>' + e;
 			}
 			return e;
 		},
 		html_self: function( a ) {
-			var x = this.x, r = this.rootNode, p = this.parent(), c = this.x.line, d = x.data, e = c ? this.html_pad() : '', h = this.innerHeight(), s = 'padding-left:' + this.padLeft() + 'px;';
+			var x = this.x, r = this.rootNode, p = this.parent(), c = this.x.line, d = x.data, e = c ? this.html_linepad() : '', h = this.innerHeight(), s = 'padding-left:' + this.padLeft() + 'px;';
 			if ( x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-leaf-b', bubble: F } );
 				this.box.type === 'triplebox' && this.box.addEvent( 'click', this._triple, this );
@@ -9387,7 +9391,7 @@ Leaf = define.widget( 'leaf', {
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
-			return this.html_before() + '<dl class="' + this.className + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (!p ? ' z-root' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+			return this.html_before() + '<dl class="' + this.className + ' z-level' + this.level + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? this.prop_title( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip, x.format ) : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (this.isFolder() ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
 				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
@@ -9409,10 +9413,6 @@ Leaf = define.widget( 'leaf', {
 /* `tree` */
 Tree = define.widget( 'tree', {
 	Const: function( x, p ) {
-		if ( x.root ) {
-			x.nodes = [ $.extend( x.root, { nodes: x.nodes, src: x.src } ) ];
-			delete x.src;
-		}
 		W.apply( this, arguments );
 		if ( x.combo ) {
 			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
@@ -9448,7 +9448,6 @@ Tree = define.widget( 'tree', {
 		reloadForModify: $.rt(),
 		focus: function() {	this[ 0 ] && this[ 0 ].focus() },
 		getFocus: function() { return this.focusNode },
-		getRoot: function() { return this.x.root && this[ 0 ] },
 		// @f -> filter leaves(经过筛选的行)
 		setFilter: function( f ) { this._filter_leaves = f },
 		//@implement  /@ a -> html|widget, b -> method(prepend,append,after,before)
@@ -9473,6 +9472,9 @@ Tree = define.widget( 'tree', {
 		droppable: function( a ) {
 			$.droppable( this, $.extend( { sort: F }, a || {} ) );
 			return AbsLeaf.prototype.droppable.call( this, a );
+		},
+		prop_cls: function() {
+			return Scroll.prototype.prop_cls.call( this ) + (this.x.hideroot ? ' z-hideroot' : '');
 		},
 		html_nodes: function() {
 			var s = _proto.html_nodes.call( this );
@@ -9574,6 +9576,9 @@ GridLeaf = define.widget( 'grid/leaf', {
 		scaleWidth: function() {
 			return this.parentNode.scaleWidth.apply( this.parentNode, arguments );
 		},
+		getLength: function() {
+			return this.row.length;
+		},
 		parent: function() {
 			return this.row.parentNode.gridLeaf;
 		},
@@ -9610,7 +9615,7 @@ GridLeaf = define.widget( 'grid/leaf', {
 			this.level = p ? p.level + 1 : 0;
 			if ( this.x.line ) {
 				Q( '._pd,._pdvl', this.$() ).remove();
-				$.before( this.$( 'o' ), this.html_pad() );
+				$.before( this.$( 'o' ), this.html_linepad() );
 			} else
 				this.css( 'paddingLeft', this.padLeft() );
 			Q( this.$() ).removeClass( 'z-first z-last' );

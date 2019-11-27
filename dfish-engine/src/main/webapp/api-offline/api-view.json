@@ -158,6 +158,7 @@
 		      ] },
 		  	  { "text": "功能类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "album", "text": "album", "icon": ".icon .icon-class" },
+		        { "id": "badge", "text": "badge", "icon": ".icon .icon-class" },
 		        { "id": "button", "text": "button", "icon": ".icon .icon-class" },
 		        { "id": "buttonbar", "text": "buttonbar", "icon": ".icon .icon-class" },
 		        { "id": "calendar/date", "text": "calendar/date", "icon": ".icon .icon-class", "nodes": [

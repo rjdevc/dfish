@@ -207,7 +207,7 @@
 .w-leaf ._pd{width:14px;height:100%;position:relative;display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 .w-leaf ._vl,.w-leaf ._pl{position:absolute;top:0;bottom:1px;right:0;width:50%;border-left:1px dotted #999}
 .w-leaf ._hl{position:absolute;top:0;bottom:50%;right:-1px;width:50%;border-bottom:1px dotted #999}
-.w-leaf.z-root ._vl,.w-leaf.z-root ._hl{display:none}
+.w-leaf.z-level-1,.w-leaf.z-level0 ._vl,.w-leaf.z-level0 ._hl{display:none}
 .w-leaf.z-last ._vl{bottom:50%}
 .w-leaf.z-line .w-leaf-o .f-arw{border:0;width:9px;height:9px;background:url(g/i.png) no-repeat -76px -180px;margin-left:-1px;}
 .w-leaf.z-line .w-leaf-o .f-arw-r1{background-position:-111px -180px;margin-left:0}

@@ -866,7 +866,7 @@ define( {
             '</script>'
           }
 	  ] },
-	  { name: '@w-for', remark: '循环输出一组节点。expr 语句使用 in 语法，如 <b>$item in $data</b>，或 <b>$item,$index in $data</b>', example: [
+	  { name: '@w-for', remark: '循环输出一组节点。expr 语句使用 in 语法，如 <b>$item in $data</b>，或 <b>$item,$index in $data</b>。$data 可以是 Array 或 Object 类型。', example: [
           function() {
           	/// 使用模板的树
           	return~
@@ -1264,7 +1264,7 @@ define( {
   	extend: 'widget',
   	//deprecate: 'prepend,append',
     Config: [
-      { name: 'badge', type: 'Boolean | String | Number', remark: '显示徽标。' },
+      { name: 'badge', type: 'Boolean | String | Badge', remark: '显示徽标。' },
       { name: 'closeable', type: 'Boolean', remark: '是否有关闭图标。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
@@ -2220,6 +2220,7 @@ define( {
   	remark: '图片。img 是 album 的专属子节点类型。',
   	extend: 'widget',
     Config: [
+      { name: 'badge', type: 'Boolean | String | Badge', remark: '显示徽标。' },
       { name: 'box', type: 'Object', remark: '选项表单，类型是 checkbox 或 radio。取消或勾选这个box，将同步fieldset内部所有表单的状态。', param: [
         { name: 'type',    type: 'String',  remark: '类型。可选值: <b>checkbox</b>, <b>radio</b>' },
         { name: 'name',    type: 'String',  remark: '表单名。' },
@@ -2275,6 +2276,7 @@ define( {
       ] },
       { name: 'ellipsis', type: 'Boolean', remark: '设置为true，树节点文本超出可视范围部分以省略号显示。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
+      { name: 'hideroot', type: 'Boolean', remark: '设为true，隐藏根节点，根节点的子节点缩进一层。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },
         { name: 'keycls', type: 'String', remark: '关键词样式名。' },
@@ -2343,6 +2345,7 @@ define( {
   	remark: '树节点。',
   	extend: 'widget',
     Config: [
+      { name: 'badge', type: 'Boolean | String | Badge', remark: '显示徽标。' },
       { name: 'box', type: 'Object', remark: '选项表单，类型是 checkbox 或 radio。取消或勾选这个 box，将同步 fieldset 内部所有表单的状态。', param: [
         { name: 'type',    type: 'String',  remark: '类型。可选值: <b>checkbox</b>, <b>radio</b>, <b>triplebox</b>' },
         { name: 'name',    type: 'String',  remark: '表单名。' },
@@ -2455,7 +2458,6 @@ define( {
   	title: 'label',
   	remark: '表单标签。',
   	extend: 'widget',
-  	ver: "3.2*",
     Config: [
       { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
@@ -2465,6 +2467,19 @@ define( {
     ],
     Classes: [
       { name: '.w-label', remark: '基础样式。' }
+    ]
+  },
+  "badge": {
+  	title: 'badge',
+  	remark: '徽标。',
+  	extend: 'widget',
+    Config: [
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
+      { name: 'text', type: 'String', remark: '徽标内容。如果不设置本参数，将显示一个圆点。' }
+    ],
+    Classes: [
+      { name: '.w-widget', remark: '基础样式。' }
     ]
   },
   "grid/leaf": {
@@ -2559,7 +2574,7 @@ define( {
                 { text: "商品已经下单" },
                 { text: "卖家已发货" },
                 { text: "包裹正在等待揽收" },
-                { text: "在为您派件" }
+                { text: "正在为您派件" }
               ] }
           },
           function() {
@@ -2569,7 +2584,7 @@ define( {
                 { text: "商品已经下单" },
                 { text: "卖家已发货", align: 'left' },
                 { text: "包裹正在等待揽收" },
-                { text: "在为您派件", align: 'left' }
+                { text: "正在为您派件", align: 'left' }
               ] }
           }
       ] }
@@ -2623,7 +2638,8 @@ define( {
       { name: 'hr', type: 'Boolean', optional: true, remark: '显示一条水平线。' },
       { name: 'open', type: 'Boolean', optional: true, remark: '设置初始状态为展开或收拢。如果设置了此参数，会产生一个toggle图标' },
       { name: 'target', type: 'String', remark: '绑定要展开收拢的 widget ID。多个用逗号隔开。' },
-      { name: 'text', type: 'String', remark: '显示文本。' }
+      { name: 'text', type: 'String', remark: '显示文本。' },
+      { name: 'tip', type: 'Boolean | String', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
     ],
     Event: [
       { name: 'collapse', remark: '收起时触发。' },
@@ -3057,17 +3073,18 @@ define( {
   "triplebox": {
   	title: 'triplebox',
   	remark: '有三种状态的复选项。',
-  	deprecate: 'focus,focusEnd,placeholder,transparent,checked,.w-text,.z-trans',
+  	deprecate: 'focus,focusEnd,placeholder,transparent,.w-text,.z-trans',
   	extend: 'checkbox',
     Config: [
       { name: 'checkall', type: 'Boolean', remark: '设为 true 时，点击它可以全选/全不选其他相同name的triplebox。一组同name的triplebox中只能有一个设置checkall参数。' },
-      { name: 'partialsubmit', type: 'Boolean', remark: '设为 true 时，半选状态也会提交数据。' },
-      { name: 'checkstate', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>' }
+      { name: 'checked', type: 'Boolean | String', remark: '选中状态。可选值: <b>true</b><s>(选中)</s>, <b>false</b><s>(未选)</s>, <b>checked</b><s>(选中)</s>, <b>unchecked</b><s>(未选)</s>, <b>partial</b><s>(半选)</s>。默认值为false' },
+      { name: 'partialsubmit', type: 'Boolean', remark: '设为 true 时，半选状态也会提交数据。' }
     ],
     Methods: [
       { name: 'check([checked])', remark: '设置选中状态。', param: [
-        { name: 'checked', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>', optional: true }
-      ] }
+        { name: 'checked', type: 'Boolean | String', remark: '选中状态。可选值: <b>true</b><s>(选中)</s>, <b>false</b><s>(未选)</s>, <b>checked</b><s>(选中)</s>, <b>unchecked</b><s>(未选)</s>, <b>partial</b><s>(半选)</s>', optional: true }
+      ] },
+      { name: 'isPartial()', remark: '是否半选中状态。' }
     ]
   },
   "switch": {

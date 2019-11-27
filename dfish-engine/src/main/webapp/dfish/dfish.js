@@ -320,7 +320,7 @@ _loadCss = function( a, b, c ) {
 	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
 		if ( d ) {
 			var u = b ? b[ i ] : _uid();
-			document.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">' );
+			doc.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">' );
 			e = $( u );
 		} else {
 			e = doc.createElement( 'link' );
