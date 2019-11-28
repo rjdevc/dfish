@@ -22,6 +22,7 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>,Posit
 	private String icon;
 	private String text;
 	private List<Button> buttons;
+	private Command<?> yes;// 点击"确定"执行的命令。
 
 	/**
 	 * 构造函数
@@ -91,6 +92,22 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>,Posit
 
 	public Alert setButtons(List<Button> buttons) {
 		this.buttons = buttons;
+		return this;
+	}
+	/**
+	 * 点击"确定"执行的命令。
+	 * @return Command
+	 */
+	public Command<?> getYes() {
+		return yes;
+	}
+	/**
+	 * 点击"确定"执行的命令。
+	 * @param yes ConfirmCommand
+	 * @return this
+	 */
+	public Alert setYes(Command<?> yes) {
+		this.yes = yes;
 		return this;
 	}
 

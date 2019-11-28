@@ -1,5 +1,7 @@
 package com.rongji.dfish.base.cache.impl;
 
+import com.rongji.dfish.base.BatchAction;
+
 /**
  * 内存缓存，如果数量达到了上限或者里面的内容已经操作期限那么返回空。
  * 
@@ -7,14 +9,14 @@ package com.rongji.dfish.base.cache.impl;
  * @version 1.0
  *
  */
-public class MemoryCache<K, V> extends AbstractCache<K, V> {
+public class MemoryCache<K, V> extends BaseCache<K, V> {
 
 	public MemoryCache() {
-		super();
+		super(null);
 	}
 
-	public MemoryCache(int maxSize, long alive) {
-		super(maxSize, alive);
+	public MemoryCache(int maxSize, long alive,BatchAction<K,V> valueGetter) {
+		super(valueGetter,maxSize, alive/2);
 	}
 	
 	

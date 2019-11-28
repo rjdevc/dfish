@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 import com.rongji.dfish.base.DfishException;
+import com.rongji.dfish.misc.batch.QueuedBatchAction;
 
 /**
  * <p>单个处理，转批量处理的适配器</p>
@@ -20,7 +21,7 @@ import com.rongji.dfish.base.DfishException;
  * 如果队列已经等待最大量，抛出异常<br>
  * @author 研发中心 - IMeng
  * @deprecated 使用BatchManager
- * @see com.rongji.dfish.misc.batch.BatchManager
+ * @see QueuedBatchAction
  *
  */
 @Deprecated

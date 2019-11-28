@@ -114,4 +114,12 @@ public interface Cache<K, V> {
 	
 	Map<K, CacheItem<V>> getItems();
 
+
+	/**
+	 * 缓存名称
+	 * @return {@link String}
+	 * @author lamontYu
+	 */
+	String getName();
+
 }

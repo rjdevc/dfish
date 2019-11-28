@@ -1,16 +1,18 @@
 package com.rongji.dfish.base.cache.impl;
 
+import com.rongji.dfish.base.BatchAction;
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.cache.CacheValueGetter;
 
 import java.util.*;
 
-public abstract class AbstractCacheValueGetter<K, V> implements CacheValueGetter<K, V> {
+// 原则上要使用桥接模式。另外因为功能是自动分组。名字应该是分组的获取器
+@Deprecated
+public abstract class AbstractCacheValueGetter<K, V> implements BatchAction<K, V> {
 
 	public static final int BATCH_SIZE = 512;
 	
 	@Override
-	public Map<K, V> gets(Set<K> keys) {
+	public Map<K, V> act(Set<K> keys) {
 		if (Utils.isEmpty(keys)) {
 			return Collections.emptyMap();
 		}

@@ -3,6 +3,9 @@ package com.rongji.dfish.misc.docpreview.parser;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
+/**
+ * 这个ImageInfo 只适用于已知byte[]的 情况。
+ */
 public class ImageInfo {
 
 
@@ -87,14 +90,17 @@ public class ImageInfo {
         ii.setHeight(readIntHl4(src,20));
         ii.setWidth(readIntHl4(src,16));
     }
-    private static int readIntHl4(byte[] src, int high) {
-        return ((src[high]&0xFF)<<24)|((src[high+1]&0xFF)<<16)|((src[high+2]&0xFF)<<8)|(src[high+3]&0xFF);
+    private static int readIntHl4(byte[] src, int pos) {
+        return ((src[pos]&0xFF)<<24)|((src[pos+1]&0xFF)<<16)|((src[pos+2]&0xFF)<<8)|(src[pos+3]&0xFF);
     }
-    private static int readIntLh(byte[] src, int high) {
-        return (src[high]&0xFF)|((src[high+1]&0xFF)<<8);
+    private static int readIntLh(byte[] src, int pos) {
+        return (src[pos]&0xFF)|((src[pos+1]&0xFF)<<8);
     }
-    private static int readIntLh4(byte[] src, int high) {
-        return (src[high]&0xFF)|((src[high+1]&0xFF)<<8)|((src[high+2]&0xFF)<<16)|((src[high+3]&0xFF)<<24);
+    private static int readIntLh4(byte[] src, int pos) {
+        return (src[pos]&0xFF)|((src[pos+1]&0xFF)<<8)|((src[pos+2]&0xFF)<<16)|((src[pos+3]&0xFF)<<24);
+    }
+    private static int readIntHl(byte[] src, int pos) {
+        return ((src[pos]&0xFF)<<8)|(src[pos+1]&0xFF);
     }
 
     private static void readJpegInfo(byte[] src, ImageInfo ii) {
@@ -102,13 +108,16 @@ public class ImageInfo {
         while(jb!=null&&!jb.isEnd()){
             jb= JpegChunk.readNext(src,jb);
             if(jb.type==(byte)0xC0){
-                ii.setHeight(JpegChunk.readIntHl(src,jb.start+5));
-                ii.setWidth(JpegChunk.readIntHl(src,jb.start+7));
+                ii.setHeight(readIntHl(src,jb.start+5));
+                ii.setWidth(readIntHl(src,jb.start+7));
                 break;
             }
         }
     }
 
+    /**
+     * JPEG的一个数据块(chunk)
+     */
     private static class JpegChunk {
         byte[]src;
         int start,end;
@@ -138,10 +147,6 @@ public class ImageInfo {
                jb.end=jb.start+2+length;
             }
             return jb;
-        }
-
-        private static int readIntHl(byte[] src, int high) {
-            return ((src[high]&0xFF)<<8)|(src[high+1]&0xFF);
         }
     }
 

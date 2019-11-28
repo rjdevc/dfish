@@ -2,7 +2,6 @@ package com.rongji.dfish.misc.batch
 ;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +13,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.rongji.dfish.base.BatchAction;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.impl.MemoryCache;
 import com.rongji.dfish.base.util.ThreadUtil;
@@ -23,14 +23,14 @@ import com.rongji.dfish.base.util.ThreadUtil;
  * <p>一般来说，如果需要控制某些资源不要被过于频繁的使用，会想办法让请求排队，并分组进行批量请求。
  * 可以用以下代码，进行封装</p>
  * <pre>
- * BatchManager<String,Object> m=new BatchManager<String,Object>(3,15,30000L);
- * m.setFetcher(new BatchFetcher<String,Object>(){
- * 	public Map<String,Object> fetch(List<String> keys) {
+ * QueuedBatchAction<String,Object> m=new QueuedBatchAction<String,Object>(3,15,30000L,
+ * new BatchAction<String,Object>(){
+ * 	public Map<String,Object> act(Set<String> input) {
  * 		return null; // 实际批量获取的代码。
  * 	}
  * });
- * m.get("something");
- * m.get(Arrays.asList("str2","str3"));
+ * Object o=m.act("something");
+ * Map<String,Object> map.=m.get( new HashSet<String>(Arrays.asList("str2","str3")));
  * </pre>
  * 如果调用这个方法超过3个以上的线程，或某些查询批量超过15的时候，
  * 在不同线程中的单个查询或小批量查询，有可能产生排队，并重新编程每组不超过15个的批量查询。
@@ -39,12 +39,12 @@ import com.rongji.dfish.base.util.ThreadUtil;
  * 实际使用的时候，有很大可能加大这些参数。
  * 
  * @author DFish Team
- * @see #BatchManager(int, int, long)
+ * @see #QueuedBatchAction(BatchAction,int,int)
  * @param <K>
  * @param <V>
  */
-public class BatchManager<K,V> {
-	private BatchFetcher<K,V> bf;//注册进来的实际的批量获取实现
+public class QueuedBatchAction<K,V> implements  BatchAction<K,V>{
+	private BatchAction<K,V> act;//注册进来的实际的批量获取实现
 	private BlockingQueue<K> waitingQueue;//等待被排队
 //	private Object lock=new Object(); //用这个锁，让同一批的请求先先进队列
 	
@@ -56,7 +56,7 @@ public class BatchManager<K,V> {
 //	private Future<Map<K, V>> waitingFuture;
 
 	private ExecutorService exec;
-	MemoryCache<K,V> cache;//缓存
+//	MemoryCache<K,V> cache;//缓存
 
 	int maxThread;
 	int batchSize;
@@ -65,12 +65,16 @@ public class BatchManager<K,V> {
 	 * 构造函数
 	 * @param maxThread 一般批量排队的，3-5比较合适，如果目标主机性能很好可以开大一些。
 	 * @param batchSize 每次批量的大小，根据业务，20-50可能会比较合适。结果越简单，建议批量越大
-	 * @param alive 数据将缓存多长时间，比如300000Lms=5分钟
+	 * @param act 实际计算结果的方法。
 	 */
-	public BatchManager(int maxThread,int batchSize,long alive) {
+	public QueuedBatchAction( BatchAction<K,V> act,int maxThread, int batchSize) {
 		exec=ThreadUtil.newFixedThreadPool(this.maxThread=maxThread);
 		waitingQueue=new LinkedBlockingQueue<K>(this.batchSize=batchSize);
-		cache=new MemoryCache<K,V>(8192,alive);
+//		cache=new MemoryCache<K,V>(8192,alive,null);
+		this.act =act;
+	}
+	public QueuedBatchAction( BatchAction<K,V> act) {
+		this(act,3,15);
 	}
 
 	/**
@@ -78,15 +82,21 @@ public class BatchManager<K,V> {
 	 * @param key
 	 * @return
 	 */
-	public V get(K key){
+	public V act(K key){
 		if (key == null) {
 			return null;
 		}
-		List<V>vs=get(Collections.singletonList(key));
+		HashSet<K> set=new HashSet<>(1);
+		set.add(key);
+		Map<K,V> vs=act(set);
 		if (Utils.notEmpty(vs)) {
-			return vs.get(0);
+			return vs.get(key);
 		}
 		return null;
+	}
+	@Deprecated
+	public V get(K key){
+		return act(key);
 	}
 	/**
 	 * 批量获取值的信息。这里的批量只是业务本省的批量
@@ -94,11 +104,12 @@ public class BatchManager<K,V> {
 	 * @param keys
 	 * @return
 	 */
+	@Deprecated
 	public List<V> get(List<K> keys){
 		if (Utils.isEmpty(keys)) {
 			return Collections.emptyList();
 		}
-		Map<K, V> fetchResult = getAsMap(keys);
+		Map<K, V> fetchResult = act(new HashSet<K>(keys));
 		List<V>result=new ArrayList<V>(keys.size());
 		for(K k : keys){
 			V v=fetchResult.get(k);
@@ -107,27 +118,27 @@ public class BatchManager<K,V> {
 			
 		return result;
 	}
-
-	public Map<K, V> getAsMap(List<K> keys) {
+	@Override
+	public Map<K, V> act(Set<K> keys) {
 		if (Utils.isEmpty(keys)) {
 			return Collections.emptyMap();
 		}
 		//已经存在的先获取，防止fetch期间部分元素还过期。
 //		List<V>result=new ArrayList<V>(keys.size());
 		Map<K, V> result=new HashMap<K,V>(keys.size());
-		List<K>fetchKeys=new ArrayList<K>();
-		for(K key:keys){
-			V v=cache.get(key);
-			if(v!=null){
-				result.put(key,v);
-			}else{
-//				result.put(key,null);
-				fetchKeys.add(key);
-			}
-		}
-		if(fetchKeys.size()>0){
-			ResultGetter<K, V> rg=registerResultGetter(fetchKeys);
-			for(K k : fetchKeys){
+//		List<K>fetchKeys=new ArrayList<K>(keys.size());
+//		for(K key:keys){
+//			V v=cache.get(key);
+//			if(v!=null){
+//				result.put(key,v);
+//			}else{
+////				result.put(key,null);
+//				fetchKeys.add(key);
+//			}
+//		}
+		if(keys.size()>0){
+			ResultGetter<K, V> rg=registerResultGetter(keys);
+			for(K k : keys){
 				try {
 					waitingQueue.put(k);
 					if(waitingQueue.remainingCapacity()<=0){
@@ -135,15 +146,20 @@ public class BatchManager<K,V> {
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}					
+				}
 			}
 			tryStartBatch();
 			result.putAll(rg.get()) ;
-		}	
+		}
 		return result;
 	}
 
-	private ResultGetter<K, V> registerResultGetter(List<K> keys) {
+	@Deprecated
+	public Map<K, V> getAsMap(List<K> keys) {
+		return act(new HashSet<K>(keys));
+	}
+
+	private ResultGetter<K, V> registerResultGetter(Set<K> keys) {
 		ResultGetter<K, V> r=new ResultGetter<K,V>(keys);
 		synchronized (resultGetters) {
 			if(keys!=null&&keys.size()>0){resultGetters.add(r);}
@@ -156,25 +172,25 @@ public class BatchManager<K,V> {
 			@Override
 			public void run() {
 				//把所有队列内容全部放置到真正的查询线程中去当做参数。
-				List<K> keys=new ArrayList<K>();
+				Set<K> keys=new HashSet<K>();
 				waitingQueue.drainTo(keys, batchSize);
 				if(keys.size()==0){
 					return;
 				}
 
 				try {
-					Map<K, V> vs= bf.fetch(keys);
+					Map<K, V> vs= act.act(keys);
 					for(K k:keys){ // 获取的结果会有缺失,所以以获取的结果来判断
 						V v = vs.get(k);
-						if (v != null) {
-							cache.put(k, v);
-						}
+//						if (v != null) {
+//							cache.put(k, v);
+//						}
 						setResultToResultGetter(k, v);
 					}
 				} catch (Throwable e) {
 					//失败了也要通知结果。
-					for(int i=0;i<keys.size();i++){
-						setResultToResultGetter(keys.get(i), null);
+					for(K key:keys){
+						setResultToResultGetter(key, null);
 					}
 					e.printStackTrace();
 				}//可能消耗较多时间。
@@ -201,15 +217,17 @@ public class BatchManager<K,V> {
 		}
 	}
 	
-	/**
-	 * 需要注册这个接口来实现批量的获取数据。
-	 * manager将请求合并后通过该获取器获取。
-	 * @param batchFetcher
-	 */
-	public void setFetcher(BatchFetcher<K, V> batchFetcher) {
-		this.bf=batchFetcher;
-	}
-	
+//	/**
+//	 * 需要注册这个接口来实现批量的获取数据。
+//	 * manager将请求合并后通过该获取器获取。
+//	 * @param batchFetcher
+//	 */
+//	public void setFetcher(BatchAction<K, V> batchFetcher) {
+//		this.act=batchFetcher;
+//	}
+
+
+
 //	public static void main(String[] args) {
 //		
 //		final long begin=System.currentTimeMillis();
@@ -256,7 +274,7 @@ public class BatchManager<K,V> {
 	private static class ResultGetter<K,V>{
 		Set<K> unfetched=new HashSet<K>();
 		Map<K,V> result=new HashMap<K,V>();
-		ResultGetter(List<K> keys){
+		ResultGetter(Set<K> keys){
 			if(keys==null||keys.size()==0){
 				
 			}else{
