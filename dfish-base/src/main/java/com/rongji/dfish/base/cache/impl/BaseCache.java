@@ -1,14 +1,13 @@
 package com.rongji.dfish.base.cache.impl;
 
-import com.rongji.dfish.base.BatchAction;
+import com.rongji.dfish.base.batch.BatchAction;
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.batch.CachedBatchAction;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.CacheItem;
-import com.rongji.dfish.base.util.ThreadUtil;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
 
 /**
  * 缓存抽象类,该类实现缓存获取等通用的方法

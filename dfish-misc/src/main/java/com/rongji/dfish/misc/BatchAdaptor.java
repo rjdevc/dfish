@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 import com.rongji.dfish.base.DfishException;
-import com.rongji.dfish.misc.batch.QueuedBatchAction;
+import com.rongji.dfish.base.batch.QueuedBatchAction;
 
 /**
  * <p>单个处理，转批量处理的适配器</p>

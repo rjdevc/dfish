@@ -1,4 +1,4 @@
-package com.rongji.dfish.base;
+package com.rongji.dfish.base.batch;
 
 import java.util.Map;
 import java.util.Set;

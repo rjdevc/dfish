@@ -1,6 +1,6 @@
 package com.rongji.dfish.base.cache.impl;
 
-import com.rongji.dfish.base.BatchAction;
+import com.rongji.dfish.base.batch.BatchAction;
 import com.rongji.dfish.base.Utils;
 
 import java.util.*;

@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.plugin.cache;
 
-import com.rongji.dfish.base.BatchAction;
+import com.rongji.dfish.base.batch.BatchAction;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.impl.BaseCache;
