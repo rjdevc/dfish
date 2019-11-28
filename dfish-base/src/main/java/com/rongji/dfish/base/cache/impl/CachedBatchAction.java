@@ -22,6 +22,10 @@ public class CachedBatchAction<I, O> implements BatchAction<I, O> {
         this.core = core;
     }
 
+    public CachedBatchAction() {
+        throw new UnsupportedOperationException("use this(BatchAction) instead");
+    }
+
     public CachedBatchAction(BatchAction<I, O> act) {
         this( act,8192, 300000L);
     }

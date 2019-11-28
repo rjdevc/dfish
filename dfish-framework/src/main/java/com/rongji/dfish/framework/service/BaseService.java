@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @param <V>  数据接口对象
@@ -91,18 +88,25 @@ public abstract class BaseService<V, P, ID extends Serializable> {
             }
             return poClass.newInstance();
         } catch (Exception e) {
-//            FrameworkHelper.LOG.error("create PO failed", e);
-            throw new UnsupportedOperationException("Unable to create PO automatically, please implement method "+getClass().getSimpleName()+"#newInstance4Po by yourself",e);
+            throw new UnsupportedOperationException("Unable to create PO automatically, please implement method " + getClass().getSimpleName() + "#newInstance4Po by yourself", e);
         }
+    }
+
+    protected P newInstance4Po(V vo) {
+        if (vo == null) {
+            return null;
+        }
+        P po = newInstance4Po();
+        Utils.copyPropertiesExact(po, vo);
+        return po;
     }
 
     protected P parsePo(V vo) {
         if (vo == null) {
             return null;
         }
-        P entity = newInstance4Po();
-        Utils.copyPropertiesExact(entity, vo);
-        return entity;
+        List<P> pos = parsePos(Arrays.asList(vo));
+        return pos.get(0);
     }
 
     protected List<P> parsePos(Collection<V> vos) {
@@ -111,10 +115,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         }
         List<P> pos = new ArrayList<>(vos.size());
         for (V vo : vos) {
-            P po = parsePo(vo);
-            if (po != null) {
-                pos.add(po);
-            }
+            pos.add(newInstance4Po(vo));
         }
         return pos;
     }
@@ -129,8 +130,17 @@ public abstract class BaseService<V, P, ID extends Serializable> {
             }
             return voClass.newInstance();
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Unable to create VO automatically, please implement method "+getClass().getSimpleName()+"#newInstance4Vo by yourself",e);
+            throw new UnsupportedOperationException("Unable to create VO automatically, please implement method " + getClass().getSimpleName() + "#newInstance4Vo by yourself", e);
         }
+    }
+
+    protected V newInstance4Vo(P po) {
+        if (po == null) {
+            return null;
+        }
+        V vo = newInstance4Vo();
+        Utils.copyPropertiesExact(vo, po);
+        return vo;
     }
 
     protected V parseVo(P po) {
@@ -150,13 +160,9 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         }
         List<V> vos = new ArrayList<>(pos.size());
         for (P po : pos) {
-            V vo = newInstance4Vo();
-            if (vo != null) {
-                // 将Po关联的缓存断掉
-                getDao().evictObject(po);
-                Utils.copyPropertiesExact(vo, po);
-                vos.add(vo);
-            }
+            // 将Po关联的缓存断掉
+            getDao().evictObject(po);
+            vos.add(newInstance4Vo(po));
         }
         return vos;
     }
@@ -204,7 +210,8 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         if (Utils.isEmpty(voList)) {
             return 0;
         }
-        return doDelete(parsePos(voList));
+        List<P> pos = parsePos(voList);
+        return doDelete(pos);
     }
 
     protected int doDelete(List<P> poList) {
@@ -228,9 +235,12 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         return vo;
     }
 
-    public List<V> gets(List<ID> ids) {
-        List<P> pos = getDao().gets(ids);
-        List<V> vos = parseVos(pos);
+    public Map<ID, V> gets(Collection<ID> ids) {
+        Map<ID, P> pos = getDao().gets(ids);
+        Map<ID, V> vos = new HashMap<>(pos.size());
+        for (Map.Entry<ID, P> entry : pos.entrySet()) {
+            vos.put(entry.getKey(), newInstance4Vo(entry.getValue()));
+        }
         return vos;
     }
 

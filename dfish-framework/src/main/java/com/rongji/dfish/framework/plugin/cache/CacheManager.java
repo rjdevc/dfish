@@ -16,76 +16,80 @@ import java.util.*;
 
 /**
  * 缓存管理类
+ *
  * @author lamontYu
  */
 @Component
 @Lazy(false)
 public class CacheManager {
-	/**
+    /**
      * 缓存值获取接口
-	 */
+     */
 //	@Autowired(required = false)
 //	private List<BatchAction<String, ?>> valueGetters;
 
-	@Autowired(required = false)
-	private List<Cache<String,?>>caches;
-	/**
-	 * 缓存定义
-	 */
-	@Autowired(required = false)
+    @Autowired(required = false)
+    private List<Cache<String, ?>> caches;
+    /**
+     * 缓存定义
+     */
+//	@Autowired(required = false)
 //	private List<CacheDefine<?>> cacheDefines;
 //	private Map<String, Cache<String, ?>> getterMap = Collections.synchronizedMap(new HashMap<>());
-	/**
-	 * 默认缓存定义
-	 */
+    /**
+     * 默认缓存定义
+     */
 //	private CacheDefine<?> defaultCacheDefine;
-	private Map<String, Cache<String, ?>> cacheMap = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, Cache<String, ?>> cacheMap = Collections.synchronizedMap(new HashMap<>());
 
-	@PostConstruct
-	private void init() {
-		// 注册缓存值获取接口
-		if ( caches!= null) {
-			for (Cache<String, ?> cache : caches) {
-				registerCache(cache);
-			}
-		}
-		// 注册缓存定义
+    @PostConstruct
+    private void init() {
+        // 注册缓存值获取接口
+        if (caches != null) {
+            for (Cache<String, ?> cache : caches) {
+                registerCache(cache);
+            }
+        }
+        // 注册缓存定义
 //		if (cacheDefines != null) {
 //			for (CacheDefine<?> define : cacheDefines) {
 //				registerDefine(define);
 //			}
 //		}
-	}
-	public void  registerCache(Cache cache) {
-		if (cache == null) {
-			return;
-		}
-		if (Utils.isEmpty(cache.getName())) {
-			LogUtil.warn("The name of BatchAction is empty @" + cache.getClass().getName());
-			return;
-		}
-		Cache oldGetter = cacheMap.put(cache.getName(), cache);
-		if (oldGetter != null) {
-			LogUtil.warn(oldGetter.getClass().getName() + " is replaced by " + cache.getClass().getName() + ", because of the same name.");
-		}
-	}
-	/**
-	 * 注册缓存值获取接口,用于当缓存值获取不到或过期时重新获取最新值
-	 * @param valueGetter 缓存值获取器
-	 */
-	 public void  registerValueGetter(BatchAction<String, ?> valueGetter,String name) {
-		if (valueGetter == null) {
-			return;
-		}
-		if (Utils.isEmpty(name)) {
-			LogUtil.warn("The name of BatchAction is empty @" + valueGetter.getClass().getName());
-			return;
-		}
-		Cache oldGetter = cacheMap.put(name, new BaseCache(valueGetter));
-		if (oldGetter != null) {
-			LogUtil.warn(oldGetter.getClass().getName() + " is replaced by " + valueGetter.getClass().getName() + ", because of the same name.");
-		}
-	}
+    }
+
+    public void registerCache(Cache cache) {
+        if (cache == null) {
+            return;
+        }
+        if (Utils.isEmpty(cache.getName())) {
+            LogUtil.warn("The name of BatchAction is empty @" + cache.getClass().getName());
+            return;
+        }
+        Cache oldGetter = cacheMap.put(cache.getName(), cache);
+        if (oldGetter != null) {
+            LogUtil.warn(oldGetter.getClass().getName() + " is replaced by " + cache.getClass().getName() + ", because of the same name.");
+        }
+    }
+
+    /**
+     * 注册缓存值获取接口,用于当缓存值获取不到或过期时重新获取最新值
+     *
+     * @param valueGetter 缓存值获取器
+     */
+    public void registerValueGetter(BatchAction<String, ?> valueGetter, String name) {
+        if (valueGetter == null) {
+            return;
+        }
+        if (Utils.isEmpty(name)) {
+            LogUtil.warn("The name of BatchAction is empty @" + valueGetter.getClass().getName());
+            return;
+        }
+        Cache oldGetter = cacheMap.put(name, new BaseCache(valueGetter));
+        if (oldGetter != null) {
+            LogUtil.warn(oldGetter.getClass().getName() + " is replaced by " + valueGetter.getClass().getName() + ", because of the same name.");
+        }
+    }
 
 //	/**
 //     * 注册缓存定义
@@ -146,15 +150,16 @@ public class CacheManager {
 //		return cache;
 //	}
 
-	/**
+    /**
      * 根据婚车名称获取缓存组
-	 * @param cacheName 缓存名称
-	 * @param <T> 缓存值泛型
+     *
+     * @param cacheName 缓存名称
+     * @param <T>       缓存值泛型
      * @return 获取的缓存组
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> Cache<String, T> getCache(String cacheName) {
-		Cache<String, T> cache = (Cache<String, T>) cacheMap.get(cacheName);
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Cache<String, T> getCache(String cacheName) {
+        Cache<String, T> cache = (Cache<String, T>) cacheMap.get(cacheName);
 //		if (cache == null) {
 //			cache = (Cache<String, T>) createCache(defaultCacheDefine, cacheName);
 //			if (cache == null) {
@@ -164,34 +169,36 @@ public class CacheManager {
 //			}
 //			cacheMap.put(cacheName, cache);
 //		}
-		return cache;
-	}
+        return cache;
+    }
 
-	/**
+    /**
      * 获取系统所有缓存名称
-	 * @return
+     *
+     * @return
      */
-	public Collection<String> cacheNames() {
-		return Collections.unmodifiableSet(cacheMap.keySet());
-	}
+    public Collection<String> cacheNames() {
+        return Collections.unmodifiableSet(cacheMap.keySet());
+    }
 
-	/**
+    /**
      * 用于清理过期的缓存,一般是用来清理超过2倍存活时间的缓存,目前未实现
-	 * 调用这个方法不需要过于频繁,影响系统性能,一般情况资源没有过于紧张情况下在非繁忙期清理一次即可
-	 */
-	public void clearExpiredCaches() {
-		// FIXME 这里是清理超过2倍存活时间的缓存
-	}
+     * 调用这个方法不需要过于频繁,影响系统性能,一般情况资源没有过于紧张情况下在非繁忙期清理一次即可
+     */
+    public void clearExpiredCaches() {
+        // FIXME 这里是清理超过2倍存活时间的缓存
+    }
 
-	/**
+    /**
      * 根据缓存名称移除缓存组
-	 * @param cacheName 缓存名称
-	 * @param <T> 缓存值泛型
+     *
+     * @param cacheName 缓存名称
+     * @param <T>       缓存值泛型
      * @return 移除的缓存组
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> Cache<String, T> removeCache(String cacheName) {
-		return (Cache<String, T>) cacheMap.remove(cacheName);
-	}
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Cache<String, T> removeCache(String cacheName) {
+        return (Cache<String, T>) cacheMap.remove(cacheName);
+    }
 
 }

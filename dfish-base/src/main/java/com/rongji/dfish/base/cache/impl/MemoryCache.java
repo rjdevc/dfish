@@ -14,7 +14,7 @@ public class MemoryCache<K, V> extends BaseCache<K, V> {
         super(null);
     }
 
-    public MemoryCache(int maxSize, long alive, BatchAction<K, V> valueGetter) {
+    public MemoryCache(BatchAction<K, V> valueGetter, int maxSize, long alive) {
         super(valueGetter, maxSize, alive);
     }
 

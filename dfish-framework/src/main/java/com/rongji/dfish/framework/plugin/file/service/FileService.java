@@ -370,7 +370,7 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
                 break;
             }
         }
-        List<PubFileRecord> fileRecords = findFileRecords(fileIds.toArray(new String[]{}));
+        List<PubFileRecord> fileRecords = findDbRecords(fileIds);
         return getFiles(fileRecords);
     }
 
@@ -591,15 +591,12 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
         return itemMap;
     }
 
-
-    /**
-     * 根据fileId 查询文件记录
-     *
-     * @param fileId 如果fileId有重复，返回结果也是有重复，如果某个文件id查询结果为空 对应返回null
-     * @return
-     */
-    public List<PubFileRecord> findFileRecords(String[] fileId) {
-        return gets(Arrays.asList(fileId));
+    protected List<PubFileRecord> findDbRecords(Collection<String> fileIds) {
+        if (Utils.isEmpty(fileIds)) {
+            return Collections.emptyList();
+        }
+        List<PubFileRecord> fileList = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(fileIds.size()) + ")", fileIds.toArray());
+        return fileList;
     }
 
     /**
@@ -608,10 +605,7 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
      * @return
      */
     public Map<String, PubFileRecord> findFileRecords(Collection<String> fileIds) {
-        if (Utils.isEmpty(fileIds)) {
-            return Collections.emptyMap();
-        }
-        List<PubFileRecord> fileList = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(fileIds.size()) + ")", fileIds.toArray());
+        List<PubFileRecord> fileList = findDbRecords(fileIds);
         Map<String, PubFileRecord> fileMap = new HashMap<>(fileList.size());
         for (PubFileRecord file : fileList) {
             if (file != null) {
@@ -649,7 +643,7 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
      * @return
      */
     public List<UploadItem> findUploadItems(String... fileId) {
-        List<PubFileRecord> fileRecords = findFileRecords(fileId);
+        List<PubFileRecord> fileRecords = findDbRecords(Arrays.asList(fileId));
         return parseUploadItems(fileRecords);
     }
 

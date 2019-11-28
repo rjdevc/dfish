@@ -157,7 +157,7 @@ public abstract class BaseDao<P, ID extends Serializable> {
      * @param ids ID
      * @return List
      */
-    public List<P> gets(List<ID> ids) {
+    public Map<ID, P> gets(Collection<ID> ids) {
         if (ids == null) {
             return null;
         }
@@ -202,11 +202,11 @@ public abstract class BaseDao<P, ID extends Serializable> {
         final String idName2 = idName;
         Set<ID> idSet = new HashSet<ID>(ids);
         idSet.remove(null);
-        final List<ID> norepeat = new ArrayList<ID>(idSet);
-        List<P> dbrs = (List<P>) pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<List<P>>() {
+        final List<ID> noRepeat = new ArrayList<ID>(idSet);
+        List<P> dbList = (List<P>) pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<List<P>>() {
             @Override
             public List<P> doInHibernate(Session session) throws HibernateException, SQLException {
-                List<ID> tofetch = norepeat;
+                List<ID> tofetch = noRepeat;
                 List<P> result = new ArrayList<P>();
                 while (tofetch.size() > 0) {
                     if (tofetch.size() > FETCH_SIZE) {
@@ -221,9 +221,8 @@ public abstract class BaseDao<P, ID extends Serializable> {
                 return result;
             }
         });
-        //重新排序并且,补充没查到的数据
-        HashMap<ID, P> map = new HashMap<ID, P>();
-        for (P item : dbrs) {
+        Map<ID, P> map = new HashMap<>();
+        for (P item : dbList) {
             try {
                 ID i = (ID) getterMethod.invoke(item, NO_ARGS);
                 map.put(i, item);
@@ -231,11 +230,7 @@ public abstract class BaseDao<P, ID extends Serializable> {
                 FrameworkHelper.LOG.error("", e);
             }
         }
-        List<P> result = new ArrayList<P>();
-        for (ID i : ids) {
-            result.add(map.get(i));
-        }
-        return result;
+        return map;
     }
 
     private static final Object[] NO_ARGS = new Object[0];
@@ -261,8 +256,14 @@ public abstract class BaseDao<P, ID extends Serializable> {
         if (Utils.isEmpty(entities)) {
             return 0;
         }
-        pubCommonDAO.getHibernateTemplate().deleteAll(entities);
-        return entities.size();
+        Set<P> set = new HashSet<>(entities.size());
+        for (P p : entities) {
+            if (p != null) {
+                set.add(p);
+            }
+        }
+        pubCommonDAO.getHibernateTemplate().deleteAll(set);
+        return set.size();
     }
 
     public int delete(P entity) {
