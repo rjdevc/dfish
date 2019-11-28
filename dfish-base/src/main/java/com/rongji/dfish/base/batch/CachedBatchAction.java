@@ -22,7 +22,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     }
 
     public CachedBatchAction() {
-//        throw new UnsupportedOperationException("use new CachedBatchAction(BatchAction) instead");
+        this(null);
     }
 
     /**
@@ -72,8 +72,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
             CacheItem<O> item = core.get(key);
             if (item == null) {
                 doActSet.add(key);
-            }
-            if (alive > 0) {
+            } else if (alive > 0) {
                 if (System.currentTimeMillis() - item.getBorn() > 2 * alive) {
                     doActSet.add(key);
                 } else if (System.currentTimeMillis() - item.getBorn() > alive) {
