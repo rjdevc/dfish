@@ -92,7 +92,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         }
     }
 
-    protected P newInstance4Po(V vo) {
+    protected P getInstance4Po(V vo) {
         if (vo == null) {
             return null;
         }
@@ -115,7 +115,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         }
         List<P> pos = new ArrayList<>(vos.size());
         for (V vo : vos) {
-            pos.add(newInstance4Po(vo));
+            pos.add(getInstance4Po(vo));
         }
         return pos;
     }
@@ -134,7 +134,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         }
     }
 
-    protected V newInstance4Vo(P po) {
+    protected V getInstance4Vo(P po) {
         if (po == null) {
             return null;
         }
@@ -162,7 +162,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         for (P po : pos) {
             // 将Po关联的缓存断掉
             getDao().evictObject(po);
-            vos.add(newInstance4Vo(po));
+            vos.add(getInstance4Vo(po));
         }
         return vos;
     }
@@ -239,7 +239,7 @@ public abstract class BaseService<V, P, ID extends Serializable> {
         Map<ID, P> pos = getDao().gets(ids);
         Map<ID, V> vos = new HashMap<>(pos.size());
         for (Map.Entry<ID, P> entry : pos.entrySet()) {
-            vos.put(entry.getKey(), newInstance4Vo(entry.getValue()));
+            vos.put(entry.getKey(), getInstance4Vo(entry.getValue()));
         }
         return vos;
     }

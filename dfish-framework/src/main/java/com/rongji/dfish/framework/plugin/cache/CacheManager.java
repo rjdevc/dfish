@@ -18,24 +18,8 @@ import java.util.*;
 @Component
 @Lazy(false)
 public class CacheManager {
-    /**
-     * 缓存值获取接口
-     */
-//	@Autowired(required = false)
-//	private List<BatchAction<String, ?>> valueGetters;
-
     @Autowired(required = false)
     private List<Cache<?, ?>> caches;
-    /**
-     * 缓存定义
-     */
-//	@Autowired(required = false)
-//	private List<CacheDefine<?>> cacheDefines;
-//	private Map<String, Cache<String, ?>> getterMap = Collections.synchronizedMap(new HashMap<>());
-    /**
-     * 默认缓存定义
-     */
-//	private CacheDefine<?> defaultCacheDefine;
     /**
      * 定义过的缓存
      */
@@ -43,18 +27,12 @@ public class CacheManager {
 
     @PostConstruct
     private void init() {
-        // 注册缓存值获取接口
+        // 注册缓存获取接口
         if (caches != null) {
             for (Cache<?, ?> cache : caches) {
                 registerCache(cache);
             }
         }
-        // 注册缓存定义
-//		if (cacheDefines != null) {
-//			for (CacheDefine<?> define : cacheDefines) {
-//				registerDefine(define);
-//			}
-//		}
     }
 
     public void registerCache(Cache cache) {
