@@ -244,6 +244,12 @@ public class ListDataComparator<T> {
          */
         int compareRow(T row1, T row2);
 
+        /**
+         * 判断是否同一行数据
+         * @param row1
+         * @param row2
+         * @return
+         */
         @Override
         default boolean isSameRow(T row1, T row2) {
             return compareRow(row1, row2) == 0;

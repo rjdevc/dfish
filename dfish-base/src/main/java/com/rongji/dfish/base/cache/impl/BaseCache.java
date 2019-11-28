@@ -48,6 +48,9 @@ public class BaseCache<K, V> extends CachedBatchAction<K,V> implements Cache<K, 
 	public BatchAction<K, V> getValueGetter() {
 		return act;
 	}
+	public void setValueGetter(BatchAction<K,V> valueGetter) {
+		this.act = valueGetter;
+	}
 	public BaseCache(BatchAction<K,V> valueGetter) {
 		super(valueGetter);
 	}
