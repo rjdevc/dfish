@@ -71,10 +71,25 @@ public interface Cache<K, V> {
 	 * @return int
 	 */
 	int size();
+
+	/**
+	 * 缓存是否可被清理
+	 *
+	 * @return
+	 */
+	default boolean clearable() {
+		return true;
+	}
+
 	/**
 	 * 清空缓存
 	 */
 	void clear();
+
+	/**
+	 * 清理超期缓存数据(超过2倍存活时间)
+	 */
+	void clearExpiredData();
 	/**
 	 * 键的集合
 	 * @return Set&lt;K&gt;

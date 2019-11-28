@@ -126,6 +126,20 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
     }
 
     @Override
+    public void clearExpiredData() {
+        // 2倍存活时间
+        long limitBorn = System.currentTimeMillis() - getAlive() << 1;
+        for (Iterator<Entry<K, CacheItem<V>>> iter = core.entrySet().iterator(); iter.hasNext();) {
+            Entry<K, CacheItem<V>> entry = iter.next();
+            CacheItem<V> item = entry.getValue();
+            if (item == null || item.getBorn() < limitBorn) {
+                // 存活时间超过限制时间,移除
+                iter.remove();
+            }
+        }
+    }
+
+    @Override
     public V get(K key) {
         return super.act(key);
     }
