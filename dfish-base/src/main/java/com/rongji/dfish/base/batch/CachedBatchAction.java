@@ -11,7 +11,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     protected int maxSize;
     protected long alive;
     protected Map<I, CacheItem<O>> core;
-    protected BatchAction<I, O> act;
+    protected BatchAction<I, O> action;
 
     protected Map<I, CacheItem<O>> getCore() {
         return core;
@@ -22,7 +22,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     }
 
     public CachedBatchAction() {
-        throw new UnsupportedOperationException("use new CachedBatchAction(BatchAction) instead");
+//        throw new UnsupportedOperationException("use new CachedBatchAction(BatchAction) instead");
     }
 
     /**
@@ -39,7 +39,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
      * @param maxSize 最大缓存数量
      * @param alive   最大生存时间 -毫秒
      */
-    public CachedBatchAction( BatchAction<I, O> act,int maxSize, long alive) {
+    public CachedBatchAction( BatchAction<I, O> action,int maxSize, long alive) {
         this.maxSize = maxSize;
         this.alive = alive;
         core = Collections.synchronizedMap(new LinkedHashMap<I, CacheItem<O>>() {
@@ -49,7 +49,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
                 return thisMaxSize > 0 && size() > thisMaxSize;
             }
         });
-        this.act = act;
+        this.action = action;
     }
 
     //正在加载的cache 防止本部分内容，在过期时，好几个线程同时加载。
@@ -96,12 +96,12 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     }
 
     private Map<I, O> doAct(Set<I> keys) {
-        if (keys == null || keys.isEmpty() || act == null) {
+        if (keys == null || keys.isEmpty() || action == null) {
             return Collections.emptyMap();
         }
         //过程中部影响原始keys
         Set<I> tmpKeys = new HashSet<>(keys);
-        Map<I, O> valueMap = act.act(tmpKeys);
+        Map<I, O> valueMap = action.act(tmpKeys);
         if (valueMap != null) {
             for (Map.Entry<? extends I, ? extends O> entry : valueMap.entrySet()) {
                 core.put(entry.getKey(), new CacheItem<>(entry.getValue()));

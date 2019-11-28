@@ -41,7 +41,7 @@ import com.rongji.dfish.base.util.ThreadUtil;
  * @param <O>
  */
 public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
-	private BatchAction<I, O> act;//注册进来的实际的批量获取实现
+	private BatchAction<I, O> action;//注册进来的实际的批量获取实现
 	private BlockingQueue<I> waitingQueue;//等待被排队
 
 	List<OutputHook<I, O>> outputHooks = new ArrayList<OutputHook<I, O>> ();
@@ -52,12 +52,12 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 	 * 构造函数
 	 * @param maxThread 一般批量排队的，3-5比较合适，如果目标主机性能很好可以开大一些。
 	 * @param batchSize 每次批量的大小，根据业务，20-50可能会比较合适。结果越简单，建议批量越大
-	 * @param act 实际计算结果的方法。
+	 * @param action 实际计算结果的方法。
 	 */
-	public QueuedBatchAction(BatchAction<I, O> act, int maxThread, int batchSize) {
+	public QueuedBatchAction(BatchAction<I, O> action, int maxThread, int batchSize) {
 		exec=ThreadUtil.newFixedThreadPool(maxThread);
 		waitingQueue=new LinkedBlockingQueue<I>(batchSize);
-		this.act =act;
+		this.action =action;
 	}
 	public QueuedBatchAction( BatchAction<I, O> act) {
 		this(act,3,15);
@@ -111,7 +111,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 				}
 
 				try {
-					Map<I, O> vs= act.act(input);
+					Map<I, O> vs= action.act(input);
 					for(I k:input){ // 获取的结果会有缺失,所以以获取的结果来判断
 						O v = vs.get(k);
 						notifyHook(k, v);

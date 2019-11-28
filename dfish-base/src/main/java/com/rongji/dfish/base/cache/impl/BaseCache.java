@@ -50,11 +50,11 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
     }
 
     public BatchAction<K, V> getValueGetter() {
-        return act;
+        return action;
     }
 
     public void setValueGetter(BatchAction<K, V> valueGetter) {
-        this.act = valueGetter;
+        this.action = valueGetter;
     }
 
     public BaseCache() {
@@ -135,11 +135,8 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         if (keys == null) {
             return Collections.emptyMap();
         }
-        Map<K, V> result = new HashMap<>(keys.length);
-        for (K key : keys) {
-            result.put(key, get(key));
-        }
-        return result;
+
+        return act(new HashSet<K>(Arrays.asList(keys)));
     }
 
     @Override
@@ -147,11 +144,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         if (keys == null) {
             return Collections.emptyMap();
         }
-        Map<K, V> result = new HashMap<>(keys.size());
-        for (K key : keys) {
-            result.put(key, get(key));
-        }
-        return result;
+        return act(new HashSet<K>(keys));
     }
 
     @Override
@@ -161,14 +154,12 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
 
     public boolean containsValue(V value) {
         Collection<CacheItem<V>> col = core.values();
-        if (value == null) {
-            for (CacheItem<V> item : col) {
+        for (CacheItem<V> item : col) {
+            if (value == null) {
                 if (item.getValue() == null) {
                     return true;
                 }
-            }
-        } else {
-            for (CacheItem<V> item : col) {
+            } else {
                 if (value.equals(item.getValue())) {
                     return true;
                 }
