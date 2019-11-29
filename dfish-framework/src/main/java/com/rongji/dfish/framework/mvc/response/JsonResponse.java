@@ -29,6 +29,13 @@ public class JsonResponse<T> {
         return header;
     }
 
+    private Header header() {
+        if (header == null) {
+            header = new Header();
+        }
+        return header;
+    }
+
     public JsonResponse<T> setHeader(Header header) {
         this.header = header;
         return this;
@@ -71,7 +78,7 @@ public class JsonResponse<T> {
 
     public JsonResponse<T> setPagination(Pagination pagination) {
         if (pagination != null) {
-            Header header = getHeader();
+            Header header = header();
             header.setLimit(pagination.getLimit());
             header.setOffset(pagination.getOffset());
             header.setSize(pagination.getSize());
@@ -80,7 +87,12 @@ public class JsonResponse<T> {
     }
 
     public JsonResponse<T> setPrincipal(HeaderPrincipal principal) {
-        getHeader().setPrincipal(principal);
+        header().setPrincipal(principal);
+        return this;
+    }
+
+    public JsonResponse<T> setPrincipalName(String principalName) {
+        setPrincipal(new HeaderPrincipal(principalName));
         return this;
     }
 
@@ -144,6 +156,7 @@ public class JsonResponse<T> {
             this.principal = principal;
             return this;
         }
+
     }
 
     public static class HeaderPrincipal implements ResponsePrincipal {

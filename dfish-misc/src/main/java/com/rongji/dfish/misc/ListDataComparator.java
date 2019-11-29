@@ -81,12 +81,12 @@ public class ListDataComparator<T> {
         }
     }
 
-    private DataIdentifier<T> indent;
+    private DataIdentifier<T> identifier;
 
-    public void compare(DataIdentifier<T> indent) {
-        this.indent = indent;
+    public void compare(DataIdentifier<T> identifier) {
+        this.identifier = identifier;
         // 对比两个队列不同;
-        if (indent instanceof ListDataComparator.OrderedDataIdentifier) {
+        if (identifier instanceof ListDataComparator.OrderedDataIdentifier) {
             compareWithOrder();
         } else {
             compareWithoutOrder();
@@ -94,7 +94,7 @@ public class ListDataComparator<T> {
     }
 
     private void compareWithOrder() {
-        final OrderedDataIdentifier<T> oind = (OrderedDataIdentifier<T>) this.indent;
+        final OrderedDataIdentifier<T> oind = (OrderedDataIdentifier<T>) this.identifier;
         List<T> sortedNewList = newList == null ? new ArrayList<>(0) : new ArrayList<T>(newList);
         List<T> sortedOldList = oldList == null ? new ArrayList<>(0) : new ArrayList<T>(oldList);
         Collections.sort(sortedNewList, new Comparator<T>() {
@@ -142,7 +142,7 @@ public class ListDataComparator<T> {
             }
             compareResult = oind.compareRow(workingOldItem, workingNewItem);
             if (compareResult == 0) {
-                if (indent.isRowChanges(workingOldItem, workingNewItem)) {
+                if (identifier.isRowChanges(workingOldItem, workingNewItem)) {
                     // 不变的数据
                     updateList.add(workingNewItem);
                 } else {// 改变的数据
@@ -184,9 +184,9 @@ public class ListDataComparator<T> {
             T tn = newIter.next();
             for (Iterator<T> oldIter = deleteList.iterator(); oldIter.hasNext(); ) {
                 T to = oldIter.next();
-                if (indent.isSameRow(to, tn)) {
+                if (identifier.isSameRow(to, tn)) {
                     // 两条数据在同一行
-                    if (indent.isRowChanges(to, tn)) {
+                    if (identifier.isRowChanges(to, tn)) {
                         // 不变的数据
                         updateList.add(tn);
                     } else {// 改变的数据

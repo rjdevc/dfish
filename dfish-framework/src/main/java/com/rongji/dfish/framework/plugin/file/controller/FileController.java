@@ -459,7 +459,7 @@ public class FileController extends BaseController {
         String decFileId = fileService.decrypt(fileId);
         PubFileRecord fileRecord = fileService.getFileRecord(decFileId);
         // 获取附件别名
-        String realAlias = getFileAlias(scheme, alias);
+        String realAlias = getFileAlias(alias, scheme);
         if (fileRecord != null) {
             InputStream input = null;
             try {
