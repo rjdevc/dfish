@@ -3800,11 +3800,10 @@ Img = define.widget( 'img', {
 			this.addClass( 'z-success' );
 		},
 		prop_style: function() {
-			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
-			// 在album内，不让width设置在外框
-			if ( a && (v = this.innerWidth()) != N )
+			var t = this.cssText || '', v, c = this.parentNode.x.space;
+			if ( (v = this.innerWidth()) != N )
 				t += 'width:' + v + 'px;';
-			if ( a && (v = this.innerHeight()) != N )
+			if ( (v = this.innerHeight()) != N )
 				t += 'height:' + v + 'px;';
 			c && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
 			this.x.style && (t += this.x.style);
@@ -3829,7 +3828,7 @@ Img = define.widget( 'img', {
 			if ( this.x.box ) {
 				this.box = Checkbox.parseOption( this, { cls: 'w-img-box', checked: this.x.focus } );
 				this.box.type === 'triplebox' && this.box.addEvent( 'change', function() { this._focus( this.box.isChecked() ) }, this );
-				s = this.box.html() + s;
+				s += this.box.html();
 			}
 			s += this.html_text();
 			return s;
