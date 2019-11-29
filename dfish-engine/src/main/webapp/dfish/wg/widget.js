@@ -3819,7 +3819,7 @@ Img = define.widget( 'img', {
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, t = this.html_format( x.text, x.format, this.x.escape ), w = x.textwidth || (x.face !== 'straight' && (this.x.imgwidth || this.innerWidth()));
+			var x = this.x, t = this.html_format( x.text, x.format, this.x.escape ), w = x.textwidth;
 			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + this.prop_title( x.text, x.format ) + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
