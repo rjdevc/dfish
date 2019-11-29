@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,6 +49,11 @@ public class FileController extends BaseController {
     private FileHandlingManager fileHandlingManager;
 
     private Map<String, FileUploadPlugin> uploadPluginMap = new HashMap<>();
+
+    private static final DateFormat DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
+    static {
+        DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     @PostConstruct
     private void init() {
@@ -342,47 +349,58 @@ public class FileController extends BaseController {
         download(request, response);
     }
 
-    /**
-     * 附件下载
-     *
-     * @param response
-     * @param fileRecord
-     * @throws Exception
-     */
-    private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String alias) throws Exception {
-        InputStream input = null;
-        String errorMsg = null;
-        try {
-            if (fileRecord != null) {
-                String fileName = fileRecord.getFileName();
-                input = fileService.getFileInputStream(fileRecord, alias);
-                long fileSize = 0L;
-                if (input != null) {
-                    fileSize = fileService.getFileSize(fileRecord, alias);
-                } else { // 当别名附件不存在时,使用原附件
-                    input = fileService.getFileInputStream(fileRecord);
-                    fileSize = fileService.getFileSize(fileRecord);
-                }
-                if (input != null) {
-                    downloadFileData(response, inline, input, fileName, fileSize);
-                } else {
-                    errorMsg = "下载的附件不存在";
-                }
-            } else {
-                errorMsg = "下载的附件不存在";
-            }
+//    /**
+//     * 附件下载
+//     *
+//     * @param response
+//     * @param fileRecord
+//     * @throws Exception
+//     */
+//    private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String alias) throws Exception {
+//        InputStream input = null;
+//        String errorMsg = null;
+//        try {
+//            if (fileRecord != null) {
+//                String fileName = fileRecord.getFileName();
+//                input = fileService.getFileInputStream(fileRecord, alias);
+//                long fileSize = 0L;
+//                if (input != null) {
+//                    fileSize = fileService.getFileSize(fileRecord, alias);
+//                } else { // 当别名附件不存在时,使用原附件
+//                    input = fileService.getFileInputStream(fileRecord);
+//                    fileSize = fileService.getFileSize(fileRecord);
+//                }
+//                if (input != null) {
+//                    downloadFileData(response, inline, input, fileName, fileSize);
+//                } else {
+//                    errorMsg = "下载的附件不存在";
+//                }
+//            } else {
+//                errorMsg = "下载的附件不存在";
+//            }
+//
+//        } catch (Exception e) {
+//            errorMsg = "下载附件异常@" + System.currentTimeMillis();
+//            LogUtil.error(errorMsg + "[" + fileRecord.getFileId() + "]", e);
+//        } finally {
+//            if (input != null) {
+//                input.close();
+//            }
+//            if (Utils.notEmpty(errorMsg)) {
+//                response.sendError(HttpServletResponse.SC_NOT_FOUND, errorMsg);
+//            }
+//        }
+//    }
 
-        } catch (Exception e) {
-            errorMsg = "下载附件异常@" + System.currentTimeMillis();
-            LogUtil.error(errorMsg + "[" + fileRecord.getFileId() + "]", e);
-        } finally {
-            if (input != null) {
-                input.close();
-            }
-            if (Utils.notEmpty(errorMsg)) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, errorMsg);
-            }
+    private boolean downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String alias) throws Exception {
+        if (fileRecord == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return false;
         }
+        String fileName = fileRecord.getFileName();
+        long fileSize = fileService.getFileSize(fileRecord, alias);
+        InputStream input = fileService.getFileInputStream(fileRecord, alias);
+        return downloadFileData(response, inline, input, fileName, fileSize, fileRecord.getUpdateTime());
     }
 
     /**
@@ -391,12 +409,17 @@ public class FileController extends BaseController {
      * @param response
      * @throws Exception
      */
-    private void downloadFileData(HttpServletResponse response, boolean inline, InputStream input, String fileName, long fileSize) throws Exception {
+    private boolean downloadFileData(HttpServletResponse response, boolean inline, InputStream input, String fileName, long fileSize, Date fileUpdateTime) throws Exception {
+        if (input == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return false;
+        }
         String encoding = "UTF-8";
         try {
             response.setHeader("Accept-Ranges", "bytes");
             response.setHeader("Accept-Charset", encoding);
             String contentType = null;
+
             if (inline) {
                 String extName = FileUtil.getFileExtName(fileName);
                 if (Utils.notEmpty(extName)) {
@@ -406,17 +429,24 @@ public class FileController extends BaseController {
             if (Utils.isEmpty(contentType)) {
                 contentType = "application/octet-stream";
             }
+
             response.setHeader("Content-type", contentType);
             response.setHeader("Content-Disposition", (inline ? "inline" : "attachment") + "; filename=" + URLEncoder.encode(fileName, encoding));
             response.setHeader("Content-Length", String.valueOf(fileSize));
-            response.setStatus(HttpServletResponse.SC_OK);
-            if (input != null) {
-                FileUtil.downLoadData(response, input);
+            if (fileUpdateTime != null) {
+                synchronized (DF_GMT) {
+                    response.setHeader("Last-Modified", DF_GMT.format(fileUpdateTime));
+                }
             }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            FileUtil.downLoadData(response, input);
+            return true;
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
             LogUtil.error(error, e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
+            return false;
         } finally {
             if (input != null) {
                 input.close();
@@ -460,59 +490,63 @@ public class FileController extends BaseController {
         PubFileRecord fileRecord = fileService.getFileRecord(decFileId);
         // 获取附件别名
         String realAlias = getFileAlias(alias, scheme);
-        if (fileRecord != null) {
-            InputStream input = null;
-            try {
-                String fileName = fileRecord.getFileName();
-                input = fileService.getFileInputStream(fileRecord, realAlias);
-                long fileSize = 0L;
-                if (input != null) {
-                    fileSize = fileService.getFileSize(fileRecord, realAlias);
-                } else if (Utils.notEmpty(realAlias)) {
-                    // 当别名附件不存在时,使用原附件
-                    input = fileService.getFileInputStream(fileRecord);
-                    fileSize = fileService.getFileSize(fileRecord);
-                }
-                if (input != null) {
-                    downloadFileData(response, true, input, fileName, fileSize);
-                    return;
-                }
-            } catch (Exception e) {
-                String error = "下载附件异常@" + System.currentTimeMillis();
-                LogUtil.error(error, e);
-            } finally {
-                if (input != null) {
-                    input.close();
-                }
-            }
-        }
+        boolean success = downloadFileData(response, true, fileRecord, realAlias);
 
-        FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
-        String defaultIcon = null;
-        if (handlingScheme != null) {
-            if (Utils.notEmpty(handlingScheme.getDefaultIcon())) {
-                defaultIcon = handlingScheme.getDefaultIcon();
+//        if (fileRecord != null) {
+//            InputStream input = null;
+//            try {
+//                String fileName = fileRecord.getFileName();
+//                input = fileService.getFileInputStream(fileRecord, realAlias);
+//                long fileSize = 0L;
+//                if (input != null) {
+//                    fileSize = fileService.getFileSize(fileRecord, realAlias);
+//                } else if (Utils.notEmpty(realAlias)) {
+//                    // 当别名附件不存在时,使用原附件
+//                    input = fileService.getFileInputStream(fileRecord);
+//                    fileSize = fileService.getFileSize(fileRecord);
+//                }
+//                if (input != null) {
+//                    downloadFileData(response, true, input, fileName, fileSize);
+//                    return;
+//                }
+//            } catch (Exception e) {
+//                String error = "下载附件异常@" + System.currentTimeMillis();
+//                LogUtil.error(error, e);
+//            } finally {
+//                if (input != null) {
+//                    input.close();
+//                }
+//            }
+//        }
+
+        if (!success) {
+            FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+            String defaultIcon = null;
+            if (handlingScheme != null) {
+                if (Utils.notEmpty(handlingScheme.getDefaultIcon())) {
+                    defaultIcon = handlingScheme.getDefaultIcon();
+                }
             }
-        }
-        defaultIcon = Utils.isEmpty(defaultIcon) ? "default.png" : defaultIcon;
-        if (Utils.notEmpty(realAlias)) {
-            int lastDot = defaultIcon.lastIndexOf(".");
-            if (lastDot >= 0) {
-                defaultIcon = defaultIcon.substring(0, lastDot) + "_" + realAlias + defaultIcon.substring(lastDot);
+            defaultIcon = Utils.isEmpty(defaultIcon) ? "default.png" : defaultIcon;
+            if (Utils.notEmpty(realAlias)) {
+                int lastDot = defaultIcon.lastIndexOf(".");
+                if (lastDot >= 0) {
+                    defaultIcon = defaultIcon.substring(0, lastDot) + "_" + realAlias + defaultIcon.substring(lastDot);
+                } else {
+                    defaultIcon += "_" + realAlias;
+                }
+            }
+
+            // 这里可能考虑重定向到具体文件目录去
+            File defaultImageFile = new File(FrameworkContext.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
+            if (defaultImageFile.exists()) {
+                downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length(), new Date(defaultImageFile.lastModified()));
+                return;
             } else {
-                defaultIcon += "_" + realAlias;
+                String error = "附件记录不存在@" + System.currentTimeMillis();
+                LogUtil.warn(error + "[" + fileId + "->" + decFileId + "]");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
             }
-        }
-
-        // 这里可能考虑重定向到具体文件目录去
-        File defaultImageFile = new File(FrameworkContext.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
-        if (defaultImageFile.exists()) {
-            downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
-            return;
-        } else {
-            String error = "附件记录不存在@" + System.currentTimeMillis();
-            LogUtil.warn(error + "[" + fileId + "->" + decFileId + "]");
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
         }
     }
 
