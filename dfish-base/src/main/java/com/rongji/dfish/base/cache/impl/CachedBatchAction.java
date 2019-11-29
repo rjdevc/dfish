@@ -1,12 +1,33 @@
-package com.rongji.dfish.base.batch;
+package com.rongji.dfish.base.cache.impl;
 
 
+import com.rongji.dfish.base.batch.AbstractBaseAction;
+import com.rongji.dfish.base.batch.BatchAction;
 import com.rongji.dfish.base.cache.CacheItem;
 import com.rongji.dfish.base.util.ThreadUtil;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * 带缓存的执行器。它可以通过缓存。减少执行的次数，或每次执行的输入大小。
+ * 如果有一个BatchAction 套用的这个类即可获得缓存效果。
+ * <pre>
+ * CachedBatchAction<String,Object> m=new CachedBatchAction<String,Object>(
+ * new BatchAction<String,Object>(){
+ * 	public Map<String,Object> act(Set<String> input) {
+ * 		return null; // 实际批量获取的代码。
+ * 	}
+ * });
+ * Object o=m.act("something");
+ * Map<String,Object> map.=m.get( new HashSet<String>(Arrays.asList("str2","str3")));
+ * </pre>
+ *  调用的时候，即可生效。
+ *  通常这个类是单例的。
+ *
+ * @param <I> 输入参数类型
+ * @param <O> 输出参数类型
+ */
 public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     protected int maxSize;
     protected long alive;
@@ -148,5 +169,21 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
                 }
             }
         });
+    }
+
+    /**
+     * 清理缓存，防止不繁忙的时候，还是过期数据还是常驻内存。
+     */
+    public void clearExpiredData() {
+        // 2倍存活时间
+        long limitBorn = System.currentTimeMillis() - alive << 1;
+        for (Iterator<Map.Entry<I, CacheItem<O>>> iter = core.entrySet().iterator(); iter.hasNext();) {
+            Map.Entry<I, CacheItem<O>> entry = iter.next();
+            CacheItem<O> item = entry.getValue();
+            if (item == null || item.getBorn() < limitBorn) {
+                // 存活时间超过限制时间,移除
+                iter.remove();
+            }
+        }
     }
 }

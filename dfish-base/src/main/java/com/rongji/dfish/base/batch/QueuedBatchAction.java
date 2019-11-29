@@ -17,7 +17,7 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.ThreadUtil;
 
 /**
- * <p>可以限定访问的最大线程数，通过缓存和合并请求来提高查询的效率。</p>
+ * <p>可以限定访问的最大线程数，通过合并请求来提高运算的效率。</p>
  * <p>一般来说，如果需要控制某些资源不要被过于频繁的使用，会想办法让请求排队，并分组进行批量请求。
  * 可以用以下代码，进行封装</p>
  * <pre>
@@ -34,6 +34,7 @@ import com.rongji.dfish.base.util.ThreadUtil;
  * 在不同线程中的单个查询或小批量查询，有可能产生排队，并重新编程每组不超过15个的批量查询。
  * 转而调用act方法。
  * 实际使用的时候，有很大可能加大这些参数。
+ * 通常这个类是单例的。
  * 
  * @author DFish Team
  * @see #QueuedBatchAction(BatchAction,int,int)
@@ -59,11 +60,14 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 		waitingQueue=new LinkedBlockingQueue<I>(batchSize);
 		this.action =action;
 	}
+
+	/**
+	 * 构造函数 相当于 new QueuedBatchAction(act,3,15);
+	 * @param act
+	 */
 	public QueuedBatchAction( BatchAction<I, O> act) {
 		this(act,3,15);
 	}
-
-
 
 	@Override
 	public Map<I, O> act(Set<I> input) {
@@ -99,6 +103,11 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 		return hook;
 	}
 
+	/**
+	 * 实际执行的动作。
+	 * 用一个独立线程，把阻断队列里面的内容提取出来。
+	 * 分组请求。取得(或者失败)以后，通知取得的结果。
+	 */
 	private void doAct() {
 		 this.exec.execute(new Runnable(){
 			@Override
@@ -134,7 +143,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 					if(oh.waiting.remove(k)){
 						oh.output.put(k, v);
 					}
-					if(oh.waiting.size()==0){
+					if(oh.waiting.isEmpty()){
 						iter.remove();
 					}
 				}

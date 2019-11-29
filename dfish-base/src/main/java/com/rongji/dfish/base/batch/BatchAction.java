@@ -12,6 +12,7 @@ import java.util.Set;
 public interface BatchAction<I,O> {
     /**
      * 执行动作
+     * 这里是允许某个输入没有计算结果的。即结果数量比输入少。
      * @param input Set
      * @return Map
      */
