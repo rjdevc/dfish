@@ -33,10 +33,10 @@ public class DefaultUploadImage extends UploadImage<DefaultUploadImage> {
 		super(name, label);
 		this.setScheme(scheme);
 
-		this.setUploadsrc("file/uploadImage");
-		this.setDownloadsrc("file/download?fileId=$id");
-		this.setPreviewsrc("file/preview?fileId=$id");
-		this.setThumbnailsrc("file/thumbnail?fileId=$id");
+		this.setUploadsrc("file/uploadImage?scheme=$scheme");
+		this.setDownloadsrc("file/download?fileId=$id&scheme=$scheme");
+		this.setPreviewsrc("file/preview?fileId=$id&scheme=$scheme");
+		this.setThumbnailsrc("file/thumbnail?fileId=$id&scheme=$scheme");
 
 		FileHandlingManager fileHandlingManager = FrameworkHelper.getBean(FileHandlingManager.class);
 		FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);

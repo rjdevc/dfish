@@ -34,9 +34,9 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 		this.setScheme(scheme);
 		this.setValue(value);
 
-		this.setUploadsrc("file/uploadFile");
-		this.setDownloadsrc("file/download?fileId=$id");
-		this.setPreviewsrc("file/preview?fileId=$id");
+		this.setUploadsrc("file/uploadFile?scheme=$scheme");
+		this.setDownloadsrc("file/download?fileId=$id&scheme=$scheme");
+		this.setPreviewsrc("file/preview?fileId=$id&scheme=$scheme");
 
 		FileHandlingManager fileHandlingManager = FrameworkHelper.getBean(FileHandlingManager.class);
 		FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);

@@ -23,6 +23,7 @@ public class PubFileRecord implements java.io.Serializable {
     private static final long serialVersionUID = 3466920245217817895L;
 	private String fileId;
 	private String fileName;
+	private String fileType;
 	private String fileUrl;
 	private Long fileSize;
 	private String fileCreator;
@@ -43,20 +44,6 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileId = fileId;
 	}
 
-	/** full constructor */
-	public PubFileRecord(String fileId, String fileName, String fileUrl, Long fileSize, String fileCreator,
-	        Date createTime, Date updateTime, String fileLink, String fileKey) {
-		this.fileId = fileId;
-		this.fileName = fileName;
-		this.fileUrl = fileUrl;
-		this.fileSize = fileSize;
-		this.fileCreator = fileCreator;
-		this.createTime = createTime;
-		this.updateTime = updateTime;
-		this.fileLink = fileLink;
-		this.fileKey = fileKey;
-	}
-
 	// Property accessors
 	@Id
 	@Column(name = "FILE_ID", unique = true, nullable = false, length = 16)
@@ -75,6 +62,15 @@ public class PubFileRecord implements java.io.Serializable {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	@Column(name = "FILE_TYPE")
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
 	@Column(name = "FILE_URL")

@@ -145,6 +145,7 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
         PubFileRecord fileRecord = new PubFileRecord();
         fileRecord.setFileId(fileId);
         fileRecord.setFileName(fileName);
+        fileRecord.setFileType(Utils.notEmpty(extName) ? extName.substring(1).toLowerCase() : null);
         fileRecord.setFileSize(fileSize);
         fileRecord.setFileCreator(loginUserId);
         fileRecord.setCreateTime(now);
@@ -252,11 +253,11 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
      * @return
      * @throws Exception
      */
-    public InputStream getFileInputStream(PubFileRecord fileRecord, String fileAlias) throws Exception {
+    public InputStream getFileInputStream(PubFileRecord fileRecord, String alias) throws Exception {
         if (fileRecord == null || FileService.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
             return null;
         }
-        File file = getFile(fileRecord, fileAlias);
+        File file = getFile(fileRecord, alias);
         if (file == null || !file.exists() || file.length() <= 0) {
             return null;
         }
@@ -277,22 +278,22 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
      * 根据文件记录获取文件
      *
      * @param fileRecord 文件记录
-     * @param fileAlias  文件别名
+     * @param alias  文件别名
      * @return
      */
-    public File getFile(PubFileRecord fileRecord, String fileAlias) {
-        return getFile(fileRecord, fileAlias, true);
+    public File getFile(PubFileRecord fileRecord, String alias) {
+        return getFile(fileRecord, alias, true);
     }
 
     /**
      * 根据文件记录获取文件
      *
      * @param fileRecord 文件记录
-     * @param fileAlias  文件别名
-     * @param fix2Raw 文件找不到时使用原始文件
+     * @param alias  文件别名
+     * @param fix2Original 文件找不到时使用原始文件
      * @return
      */
-    public File getFile(PubFileRecord fileRecord, String fileAlias, boolean fix2Raw) {
+    public File getFile(PubFileRecord fileRecord, String alias, boolean fix2Original) {
         if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
             return null;
         }
@@ -307,9 +308,9 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
             fileExtName = "";
         }
 
-        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(fileAlias) ? ("_" + fileAlias) : "") + fileExtName);
-        if (!file.exists() && Utils.notEmpty(fileAlias)) {
-            if (fix2Raw) {
+        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(alias) ? ("_" + alias) : "") + fileExtName);
+        if (!file.exists() && Utils.notEmpty(alias)) {
+            if (fix2Original) {
                 // 别名文件不存在时使用原始文件
                 file = new File(getUploadDir() + oldFileName + fileExtName);
             }
@@ -403,14 +404,14 @@ public class FileService extends BaseService4Simple<PubFileRecord> {
      * @param fileRecord
      * @return
      */
-    public long getFileSize(PubFileRecord fileRecord, String fileAlias) {
+    public long getFileSize(PubFileRecord fileRecord, String alias) {
         if (fileRecord == null) {
             return 0L;
         }
-        if (Utils.isEmpty(fileAlias)) {
+        if (Utils.isEmpty(alias)) {
             return fileRecord.getFileSize();
         }
-        File file = getFile(fileRecord, fileAlias);
+        File file = getFile(fileRecord, alias);
         if (file == null || !file.exists()) {
             return 0L;
         }

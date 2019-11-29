@@ -5,9 +5,8 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
-import com.rongji.dfish.framework.mvc.controller.FilterParam;
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.FrameworkContext;
+import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.mvc.controller.BaseController;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
@@ -21,6 +20,7 @@ import com.rongji.dfish.ui.command.JS;
 import com.rongji.dfish.ui.form.UploadItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +33,6 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RequestMapping("/file")
@@ -350,16 +349,16 @@ public class FileController extends BaseController {
      * @param fileRecord
      * @throws Exception
      */
-    private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String fileAlias) throws Exception {
+    private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String alias) throws Exception {
         InputStream input = null;
         String errorMsg = null;
         try {
             if (fileRecord != null) {
                 String fileName = fileRecord.getFileName();
-                input = fileService.getFileInputStream(fileRecord, fileAlias);
+                input = fileService.getFileInputStream(fileRecord, alias);
                 long fileSize = 0L;
                 if (input != null) {
-                    fileSize = fileService.getFileSize(fileRecord, fileAlias);
+                    fileSize = fileService.getFileSize(fileRecord, alias);
                 } else { // 当别名附件不存在时,使用原附件
                     input = fileService.getFileInputStream(fileRecord);
                     fileSize = fileService.getFileSize(fileRecord);
@@ -425,35 +424,52 @@ public class FileController extends BaseController {
         }
     }
 
+    private static final String FILE_SCHEME_AUTO = "AUTO";
+    private static final String FILE_ALIAS_AUTO = "AUTO";
+
     /**
      * 显示缩略图方法
      *
      * @param request
      * @param response
-     * @return
      * @throws Exception
      */
     @RequestMapping("/thumbnail")
     @ResponseBody
     public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String enFileId = request.getParameter("fileId");
-        String fileId = fileService.decrypt(enFileId);
-        PubFileRecord fileRecord = fileService.getFileRecord(fileId);
-//		FrameworkHelper.LOG.debug("file.thumbnail[" + enFileId + "->" + fileId + "]");
-        // 获取参数
-        FilterParam param = getFileParam(request);
-        if (fileRecord != null) {
-            // 获取附件别名
-            String fileAlias = getFileAlias(param);
+        String scheme = request.getParameter("scheme");
+        String alias = request.getParameter("alias");
+        String fileId = request.getParameter("fileId");
+        thumbnail(response, scheme, alias, fileId);
+    }
 
+    /**
+     * 显示缩略图方法
+     *
+     * @param response
+     * @param scheme
+     * @param alias
+     * @param fileId
+     * @throws Exception
+     */
+    @RequestMapping("/thumbnail/{scheme}/{alias}/{fileId}")
+    @ResponseBody
+    public void thumbnail(HttpServletResponse response, @PathVariable String scheme,
+                          @PathVariable String alias, @PathVariable String fileId) throws Exception {
+        String decFileId = fileService.decrypt(fileId);
+        PubFileRecord fileRecord = fileService.getFileRecord(decFileId);
+        // 获取附件别名
+        String realAlias = getFileAlias(scheme, alias);
+        if (fileRecord != null) {
             InputStream input = null;
             try {
                 String fileName = fileRecord.getFileName();
-                input = fileService.getFileInputStream(fileRecord, fileAlias);
+                input = fileService.getFileInputStream(fileRecord, realAlias);
                 long fileSize = 0L;
                 if (input != null) {
-                    fileSize = fileService.getFileSize(fileRecord, fileAlias);
-                } else if (Utils.notEmpty(fileAlias)) { // 当别名附件不存在时,使用原附件
+                    fileSize = fileService.getFileSize(fileRecord, realAlias);
+                } else if (Utils.notEmpty(realAlias)) {
+                    // 当别名附件不存在时,使用原附件
                     input = fileService.getFileInputStream(fileRecord);
                     fileSize = fileService.getFileSize(fileRecord);
                 }
@@ -471,21 +487,20 @@ public class FileController extends BaseController {
             }
         }
 
-        String scheme = param.getValueAsString("scheme");
         FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
         String defaultIcon = null;
-        if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefaultIcon())) {
-            defaultIcon = handlingScheme.getDefaultIcon();
-        } else {
-            defaultIcon = "default.png";
+        if (handlingScheme != null) {
+            if (Utils.notEmpty(handlingScheme.getDefaultIcon())) {
+                defaultIcon = handlingScheme.getDefaultIcon();
+            }
         }
-        String fileAlias = request.getParameter("fileAlias");
-        if (Utils.notEmpty(fileAlias)) {
+        defaultIcon = Utils.isEmpty(defaultIcon) ? "default.png" : defaultIcon;
+        if (Utils.notEmpty(realAlias)) {
             int lastDot = defaultIcon.lastIndexOf(".");
             if (lastDot >= 0) {
-                defaultIcon = defaultIcon.substring(0, lastDot) + "_" + fileAlias + defaultIcon.substring(lastDot);
+                defaultIcon = defaultIcon.substring(0, lastDot) + "_" + realAlias + defaultIcon.substring(lastDot);
             } else {
-                defaultIcon += "_" + fileAlias;
+                defaultIcon += "_" + realAlias;
             }
         }
 
@@ -496,22 +511,21 @@ public class FileController extends BaseController {
             return;
         } else {
             String error = "附件记录不存在@" + System.currentTimeMillis();
-            LogUtil.warn(error + "[" + enFileId + "->" + fileId + "]");
+            LogUtil.warn(error + "[" + fileId + "->" + decFileId + "]");
             response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
         }
     }
 
-    private String getFileAlias(FilterParam param) {
-        String fileAlias = param.getValueAsString("fileAlias");
-        if (Utils.isEmpty(fileAlias)) {
-            String scheme = param.getValueAsString("scheme");
+    private String getFileAlias(String alias, String scheme) {
+        if (Utils.isEmpty(alias) || FILE_ALIAS_AUTO.equals(alias)) {
             FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
             if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefines())) {
-                fileAlias = handlingScheme.getDefines().get(0);
-                // 缩略图还没生成需要处理
+                alias = handlingScheme.getDefines().get(0);
+            } else {
+                alias = "";
             }
         }
-        return fileAlias;
+        return alias;
     }
 
     /**
@@ -532,14 +546,20 @@ public class FileController extends BaseController {
         if (fileRecord != null) {
             String fileType = FileUtil.getFileExtName(fileRecord.getFileUrl());
             boolean isImage = accept(fileType, fileService.getImageTypes());
-            FilterParam param = getFileParam(request);
-            String fileParamUrl = "?fileId=" + enFileId + param;
+            String scheme = request.getParameter("scheme");
+            scheme = scheme == null ? "" : scheme;
+            String alias = request.getParameter("alias");
+            alias = alias == null ? "" : alias;
+
             if (isImage) {
                 // 图片形式使用框架的预览方式
-                return new JS("$.previewImage('file/thumbnail" + fileParamUrl + "');");
+                return new JS("$.previewImage('file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
+                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileType + "');");
             } else {
                 String mimeType = getMimeType(fileType);
-                if (Utils.notEmpty(mimeType)) { // 如果是浏览器支持可查看的内联类型,新窗口打开
+                String fileParamUrl = "?fileId=" + enFileId + "&scheme=" + scheme + "&alias=" + alias;
+                if (Utils.notEmpty(mimeType)) {
+                    // 如果是浏览器支持可查看的内联类型,新窗口打开
                     return new JS("window.open('file/download" + fileParamUrl + "&inline=1');");
                 } else { // 其他情况都是直接下载
                     return new JS("$.download('file/download" + fileParamUrl + "');");
@@ -550,15 +570,6 @@ public class FileController extends BaseController {
             LogUtil.warn(error + "[" + fileRecord.getFileId() + "]");
             throw new DfishException(error);
         }
-    }
-
-    private FilterParam getFileParam(HttpServletRequest request) {
-        FilterParam param = new FilterParam();
-        param.registerKey("fileAlias");
-        param.registerKey("scheme");
-
-        param.bindRequest(request);
-        return param;
     }
 
 }

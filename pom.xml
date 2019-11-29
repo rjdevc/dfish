@@ -6,7 +6,7 @@
     <name>dfish</name>
     <groupId>com.rongji</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.3.0.16-SNAPSHOT</version>
+    <version>3.3.0.17-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://dfish.rongji.com</url>

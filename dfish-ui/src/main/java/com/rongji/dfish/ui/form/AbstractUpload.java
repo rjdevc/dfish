@@ -40,7 +40,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	protected List<ValueButton> valuebutton;
 	protected List<UploadButton> uploadbutton;
 	protected String dir;
-	protected String scheme;
 	protected UploadItem pub;
 
 	/**
@@ -48,7 +47,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return String
 	 */
 	public String getUploadsrc() {
-		return joinScheme(this.uploadsrc);
+		return this.uploadsrc;
 	}
 
 	/**
@@ -66,7 +65,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return String
 	 */
 	public String getDownloadsrc() {
-		return joinScheme(this.downloadsrc);
+		return this.downloadsrc;
 	}
 
 	/**
@@ -84,7 +83,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return String
 	 */
 	public String getPreviewsrc() {
-		return joinScheme(this.previewsrc);
+		return this.previewsrc;
 	}
 
 	/**
@@ -102,7 +101,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return String
 	 */
 	public String getRemovesrc() {
-		return joinScheme(this.removesrc);
+		return this.removesrc;
 	}
 
 	/**
@@ -471,7 +470,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return String
 	 */
 	public String getScheme() {
-		return scheme;
+		return (String) this.getData("scheme");
 	}
 
 	/**
@@ -480,19 +479,8 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setScheme(String scheme) {
-		this.scheme = scheme;
+		this.setData("scheme", scheme);
 		return (T) this;
-	}
-
-	protected String joinScheme(String url) {
-		if (Utils.isEmpty(url)) {
-			return url;
-		}
-		if (Utils.notEmpty(scheme)) {
-			url += (url.indexOf("?") >= 0) ? "&" : "?";
-			url += "scheme=" + scheme;
-		}
-		return url;
 	}
 
 	@Override
