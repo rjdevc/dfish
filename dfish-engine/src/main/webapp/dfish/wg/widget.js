@@ -10448,8 +10448,10 @@ Grid = define.widget( 'grid', {
 			},
 			scroll: function( e ) {
 				Vert.Listener.body.scroll.apply( this, arguments );
-				if ( this.head )
+				if ( this.head ) {
+					this.head.$().style.overflow = 'hidden';
 					this.head.$().scrollLeft = this.body.$( 'ovf' ).scrollLeft;
+				}
 			},
 			resize: function() {
 				Vert.Listener.body.resize.apply( this, arguments );
@@ -10578,7 +10580,6 @@ Grid = define.widget( 'grid', {
 		// a -> data, b -> data|index
 		insertRow: function( a, b ) {
 			(b != N && (b = this.row( b ))) ? b.before( a ) : this.append( a );
-			this.resetRowCls();
 		},
 		// a -> data, b -> data|index
 		updateRow: function( a, b ) {
@@ -10591,7 +10592,6 @@ Grid = define.widget( 'grid', {
 				var i = a.length;
 				while ( i -- ) a[ i ].remove();
 			}
-			this.resetRowCls();
 		},
 		deleteAllRows: function() {
 			var a = this.rows(), i = a.length;
@@ -10683,7 +10683,9 @@ Grid = define.widget( 'grid', {
 			if ( this.tbody() ) {
 				for ( var i = 0, r = this.getEchoRows(), l = r.length; i < l; i ++ ) {
 					$.classRemove( r[ i ].$(), 'z-0 z-1 z-first z-last' );
-					$.classAdd( r[ i ].$(), 'z-' + (i % 2) + ( i === 0 ? ' z-first' : i === l - 1 ? ' z-last' : '' ) );
+					$.classAdd( r[ i ].$(), 'z-' + (i % 2) );
+					i === 0 && $.classAdd( r[ i ].$(), 'z-first' );
+					i === l - 1 && $.classAdd( r[ i ].$(), 'z-last' );
 					r[ i ].rownum && r[ i ].rownum.reset();
 				}
 			}
