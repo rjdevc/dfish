@@ -292,7 +292,38 @@ public class FileController extends BaseController {
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
         boolean inline = "1".equals(request.getParameter("inline"));
         // 目前文件下载统一默认都是原件下载
+        if(!checkIfModifiedSince(request,response,fileRecord)){
+            return;
+        }
         downloadFileData(response, inline, fileRecord, null);
+    }
+    protected boolean checkIfModifiedSince(HttpServletRequest request,
+                                           HttpServletResponse response,
+                                           PubFileRecord file)
+            throws IOException {
+        try {
+            long headerValue = request.getDateHeader("If-Modified-Since");
+            Date updateTime=file.getUpdateTime();
+            long lastModified = updateTime==null?0:updateTime.getTime();
+            if (headerValue != -1) {
+
+                // If an If-None-Match header has been specified, if modified since
+                // is ignored.
+                if ((request.getHeader("If-None-Match") == null)
+                        && (lastModified < headerValue + 1000)) {
+                    // The entity has not been modified since the date
+                    // specified by the client. This is not an error case.
+                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    response.setHeader("ETag", getEtag(file.getFileName(),file.getFileSize(),file.getUpdateTime()));
+
+                    return false;
+                }
+            }
+        } catch (IllegalArgumentException illegalArgument) {
+            return true;
+        }
+        return true;
+
     }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
@@ -437,8 +468,9 @@ public class FileController extends BaseController {
                 synchronized (DF_GMT) {
                     response.setHeader("Last-Modified", DF_GMT.format(fileUpdateTime));
                 }
+                response.setHeader("ETag", getEtag(fileName,fileSize,fileUpdateTime));
             }
-
+//            response.setHeader("Last-Modified", DF_GMT.format(fileUpdateTime));
             response.setStatus(HttpServletResponse.SC_OK);
             FileUtil.downLoadData(response, input);
             return true;
@@ -452,6 +484,16 @@ public class FileController extends BaseController {
                 input.close();
             }
         }
+    }
+
+    private static String getEtag(String fileName, long fileSize, Date fileUpdateTime) {
+        return getIntHex(fileSize)+getIntHex(fileUpdateTime.getTime());
+    }
+
+    private static String getIntHex(long l) {
+        l=(l&0xFFFFFFFFL)|0x100000000L;
+        String s=Long.toHexString(l);
+        return s.substring(1);
     }
 
     private static final String FILE_SCHEME_AUTO = "AUTO";
