@@ -6026,13 +6026,14 @@ Triplebox = define.widget( 'triplebox', {
 	Prototype: {
 		className: 'w-f w-checkbox',
 		checkstate: function( a ) {
-			var b = _checked_states( this.x.checked );
-			if ( a == N )
+			var b = this.$() ? (this.$t().indeterminate ? 2 : this.$t().checked ? 1 : 0) : _checked_states( this.x.checked );
+			if ( a == N ) {
 				return b;
+			}
 			this.$t().checked = a == 1;
 			this.$t().indeterminate = a == 2;
 			$.classAdd( this.$(), 'z-half', a == 2 );
-			this.x.checked = a;
+			//this.x.checked = a;
 			if ( _checked_states( a ) != b || this.x.checkall )
 				this.trigger( 'change' );
 		},
@@ -9191,7 +9192,7 @@ Leaf = define.widget( 'leaf', {
 				this.length && this.trigger( 'load' );
 				this.x.open && !this.loaded && this.getSrc() && this.toggle( T );
 				this.x.focus && this.focus();
-				if ( this.box && ! this.isFolder() && this.nodeIndex === 0 ) {
+				if ( this.box && ! this.isFolder() && this.nodeIndex === this.parentNode.length -1 ) {
 					this._triple();
 				}
 			},
@@ -9348,9 +9349,10 @@ Leaf = define.widget( 'leaf', {
 			var p = this;
 			while ( (p = p.parentNode) && p.rootNode === this.rootNode ) {
 				if ( p.box ) {
-					for ( var i = 0, b, m = [ 0, 0, 0 ], l = p.length; i < l; i ++ )
+					for ( var i = 0, b, m = [ 0, 0, 0 ], l = p.length; i < l; i ++ ) {
 						(b = p[ i ].box) && m[ b.checkstate() ] ++;
-					p.box.checkstate( m[ 0 ] === l ? 0 : m[ 1 ] === l ? 1 : 2 );
+					}
+					p.box.check( m[ 0 ] === l ? 0 : m[ 1 ] === l ? 1 : 2 );
 				}
 			}
 			this._tripleAll( this.box.checkstate() == 1 );

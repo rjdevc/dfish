@@ -14,7 +14,7 @@
 		factory( global );
 	}
 } )( this, function( win, noGlobal ) {
-'use strict';
+//'use strict';
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
