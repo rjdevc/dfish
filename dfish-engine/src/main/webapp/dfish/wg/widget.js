@@ -3,7 +3,8 @@
  * (c) 2015-2018 Mingyuan Chen
  * Released under the MIT License.
  */
-
+// firefox下需要调用arguments.callee，因此无法使用'use strict'
+//'use strict';
 var U, N = null, F = false, T = true, O = {}, _STR = 'string', _FUN = 'function', _OBJ = 'object', _NUM = 'number', _BOL = 'boolean',
 $   = require( 'dfish' ),
 Q   = require( 'jquery' ),
@@ -401,8 +402,8 @@ Node = $.createClass( {
 		// a -> 设为true, 只解除当前节点的关系
 		removeNode: function( a ) {
 			if ( a !== T ) {
-				for ( var i = this.length - 1; i >= 0; i -- )
-					arguments.callee.call( this[ i ] );
+				for ( var i = this.length - 1, r = Node.prototype.removeNode; i >= 0; i -- )
+					r.call( this[ i ] );
 			}
 			var p = this.parentNode;
 			if ( p ) {
@@ -473,7 +474,7 @@ _mergeAtPropHooks = {
 	'style': function( a, b ) {
 		return (a + ';' + b).replace( /;{2,}/g, ';' );
 	}
-}
+},
 /* `Template` */
 Template = $.createClass( {
 	// @ t -> template, d -> data, g -> widget, r -> target
@@ -1318,7 +1319,7 @@ W = define( 'widget', function() {
 			return c;
 		},
 		prop_style: function() {
-			var t = '';
+			var t = '', v;
 			if ( ( v = this.innerWidth() ) != N )
 				t += 'width:' + v + 'px;';
 			if ( ( v = this.innerHeight() ) != N )
@@ -1558,8 +1559,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		rv = '__runtime_' + v,
 		sz = 'scale' + z,	// scaleWidth, scaleHeight	为子元素分配大小
 		oz = 'outer' + z,	// outerWidth, outerHeight  整体所占空间, 相当于 offset + margin
-		iz = 'inner' + z;	// innerWidth, innerHeight	内部可用空间, 并为当前元素的style.width/style.height提供值
-		xz = 'max' + z;     // maxwidth, maxheight
+		iz = 'inner' + z,	// innerWidth, innerHeight	内部可用空间, 并为当前元素的style.width/style.height提供值
+		xz = 'max' + z,     // maxwidth, maxheight
 		nz = 'min' + z;		// minwidth, minheight
 
 	// 实现 wg.width(), wg.height()
@@ -1717,8 +1718,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	_proto[ v ] = function( o ) {
 		if ( typeof o === _STR )
 			return this.insertHTML( o, v );
-		a = o.isWidget ? [ o ] : $.arrMake( o );
-		var q, i;
+		var a = o.isWidget ? [ o ] : $.arrMake( o ), q, i;
 		if ( a[ 0 ].isWidget ) {
 			if ( a[ 0 ] === this )
 				return this;
@@ -2842,7 +2842,10 @@ Ewin = define.widget( 'ewin', {
 			Q( this.$() ).replaceWith( this.html() );
 		},
 		text: function( a ) {
-			with ( this.getContentWindow().document ){ open(), write( a ), close() };
+			var d = this.getContentWindow().document;
+			d.open();
+			d.write( a );
+			d.close();
 		},
 		html: function() {
 			return '<iframe' + this.html_prop() + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + ' w-abbr="' + $.abbr + '" src="' + (this.attr( 'src' ) || 'about:blank') + '" scrolling=' + (this.x.scroll ? 'auto' : 'no') + ' marginwidth=0 marginheight=0 frameborder=0 allowtransparency></iframe>';
@@ -5420,7 +5423,7 @@ AbsForm = define.widget( 'abs/form', {
 		reset: function( a ) {
 			this.val( a || this.x.value == N ? '' : this.x.value );
 		},
-		prop_style: function() {
+		prop_style1: function() {
 			var w = this.formWidth(), h = this.formHeight(), s = '';
 			w != N && w >= 0 && (s += 'width:' + w + 'px;');
 			h != N && h >= 0 && (s += 'height:' + h + 'px;');
@@ -8768,18 +8771,18 @@ TreeCombo = $.createClass( {
 		},
 		// 把 json 转成 xml，以便使用 xpath 查询
 		_node2xml: function( a ) {
-			for ( var i = 0, b = (a.rootNode || a).x.combo.field, c = [], d, e, f = b.search && b.search.split( ',' ), g = f && f.length, l = a.length, s; i < l; i ++ ) {
+			for ( var i = 0, b = (a.rootNode || a).x.combo.field, c = [], d, e, f = b.search && b.search.split( ',' ), g = f && f.length, l = a.length, r, s; i < l; i ++ ) {
 				e = a[ i ].x, d = e.data || F, r = d[ b.remark ] || e[ b.remark ], s = d[ b.search ] || e[ b.search ];
 				s = '<d v="' + $.strEscape( d[ b.value ] || e[ b.value ] || '' ) + '" t="' + $.strEscape(d[ b.text ] || e[ b.text ]) + '" i="' + a[ i ].id + '"';
 				r && (s += ' r="' + $.strEscape( r ) + '"');
 				(d[ b.forbid ] || e[ b.forbid ]) && (s += ' x="1"');
 				if ( f ) {
-					for ( j = 0; j < g; j ++ )
+					for ( var j = 0; j < g; j ++ )
 						s += ' s' + j + '="' + $.strEscape( d[ f[ j ] ] || e[ f[ j ] ] ) + '"';
 				}
 				a[ i ].isDisabled() && (s += ' ds="1"');
 				c.push( s + '>' );
-				a[ i ].length && c.push( arguments.callee( a[ i ] ) );
+				a[ i ].length && c.push( this._node2xml( a[ i ] ) );
 				c.push( '</d>' );
 			}
 			return '<doc>' + c.join( '' ) + '</doc>';
@@ -9331,11 +9334,11 @@ Leaf = define.widget( 'leaf', {
 		checkBox: function( a ) {
 			this.box && this.box.click( a == N || a );
 		},
-		scrollIntoView: function( a ) {
+		scrollIntoView: function( a, b ) {
 			var n = this;
 			while ( (n = n.parentNode) && n.type === this.type )
 				n.toggle( T );
-			_scrollIntoView( this, a, N, T );
+			_scrollIntoView( this, a, N, b );
 		},
 		// triplebox 级联勾选
 		_triple: function() {
@@ -9430,7 +9433,6 @@ Tree = define.widget( 'tree', {
 			ready: function() {
 				Scroll.Listener.body.ready.call( this );
 				this.length && this.trigger( 'load' );
-				_scrollIntoView( this.getFocus() );
 				if ( !this.length && this.getSrc() )
 					Leaf.prototype.request.call( this );
 			},
@@ -9480,10 +9482,10 @@ Tree = define.widget( 'tree', {
 	}
 } ),
 Hiddens = define.widget( 'hiddens', {
-	Prototype: { html: _proto.html_nodes },
 	Default: { width: 0, height: 0 },
 	Prototype: {
-		x_childtype: $.rt( 'hidden' )
+		x_childtype: $.rt( 'hidden' ),
+		html: _proto.html_nodes
 	}
 } ),
 // `gridcombo` 表格搜索过滤器
@@ -10620,7 +10622,7 @@ Grid = define.widget( 'grid', {
 			while ( i -- ) {
 				b[ i ].checkBox( a );
 				if ( b[ i ].length )
-					arguments.callee.call( this, a, b[ i ] );
+					this.checkAllRows( a, b[ i ] );
 			}
 		},
 		// a -> data|index
@@ -10798,7 +10800,7 @@ Grid = define.widget( 'grid', {
 			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.type + '-bg' : '');
 		}
 	}
-});
+}),
 /* `form` */
 Form = define.widget( 'form', {
 	Const: function( x, p ) {
@@ -10806,7 +10808,7 @@ Form = define.widget( 'form', {
 		for ( var i = 0; i < cols; i ++ ) {
 			c.push( { field: '' + i, width: '*' } );
 		}
-		I: for ( var i = 0, j = 0, n = x.nodes ? x.nodes.concat() : [], tr = {}, rp = {}; i < n.length; i ++ ) {
+		for ( var i = 0, j = 0, n = x.nodes ? x.nodes.concat() : [], tr = {}, rp = {}; i < n.length; i ++ ) {
 			j == 0 && rows.push( tr );
 			var e = n[ i ], h = rows.length - 1,
 				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
