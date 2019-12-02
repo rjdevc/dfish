@@ -9191,6 +9191,9 @@ Leaf = define.widget( 'leaf', {
 				this.length && this.trigger( 'load' );
 				this.x.open && !this.loaded && this.getSrc() && this.toggle( T );
 				this.x.focus && this.focus();
+				if ( this.box && ! this.isFolder() && this.nodeIndex === 0 ) {
+					this._triple();
+				}
 			},
 			mouseover: {
 				occupy: T,
