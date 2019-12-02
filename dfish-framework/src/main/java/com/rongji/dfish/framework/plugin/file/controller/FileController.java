@@ -51,6 +51,7 @@ public class FileController extends BaseController {
     private Map<String, FileUploadPlugin> uploadPluginMap = new HashMap<>();
 
     private static final DateFormat DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
+
     static {
         DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
@@ -170,10 +171,6 @@ public class FileController extends BaseController {
             return uploadItem;
         }
 
-        // 这里先统一补thumbnail缩略图地址
-//		FilterParam param = getFileParam(request);
-//        uploadItem.setThumbnail("file/thumbnail?fileId=" + uploadItem.getId() + param);
-
         String scheme = request.getParameter("scheme");
         final FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
         if (handlingScheme == null || Utils.isEmpty(handlingScheme.getDefines())) {
@@ -290,40 +287,14 @@ public class FileController extends BaseController {
         String enFileId = request.getParameter("fileId");
         String fileId = fileService.decrypt(enFileId);
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
-        boolean inline = "1".equals(request.getParameter("inline"));
-        // 目前文件下载统一默认都是原件下载
-        if(!checkIfModifiedSince(request,response,fileRecord)){
+        if (fileRecord == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        downloadFileData(response, inline, fileRecord, null);
-    }
-    protected boolean checkIfModifiedSince(HttpServletRequest request,
-                                           HttpServletResponse response,
-                                           PubFileRecord file)
-            throws IOException {
-        try {
-            long headerValue = request.getDateHeader("If-Modified-Since");
-            Date updateTime=file.getUpdateTime();
-            long lastModified = updateTime==null?0:updateTime.getTime();
-            if (headerValue != -1) {
-
-                // If an If-None-Match header has been specified, if modified since
-                // is ignored.
-                if ((request.getHeader("If-None-Match") == null)
-                        && (lastModified < headerValue + 1000)) {
-                    // The entity has not been modified since the date
-                    // specified by the client. This is not an error case.
-                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    response.setHeader("ETag", getEtag(file.getFileName(),file.getFileSize(),file.getUpdateTime()));
-
-                    return false;
-                }
-            }
-        } catch (IllegalArgumentException illegalArgument) {
-            return true;
-        }
-        return true;
-
+        boolean inline = "1".equals(request.getParameter("inline"));
+        DownloadParam downloadParam = getDownloadParam(fileRecord, null);
+        downloadParam.setInline(inline);
+        downloadFileData(response, fileService.getFileInputStream(fileRecord), downloadParam);
     }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
@@ -380,58 +351,57 @@ public class FileController extends BaseController {
         download(request, response);
     }
 
-//    /**
-//     * 附件下载
-//     *
-//     * @param response
-//     * @param fileRecord
-//     * @throws Exception
-//     */
-//    private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String alias) throws Exception {
-//        InputStream input = null;
-//        String errorMsg = null;
-//        try {
-//            if (fileRecord != null) {
-//                String fileName = fileRecord.getFileName();
-//                input = fileService.getFileInputStream(fileRecord, alias);
-//                long fileSize = 0L;
-//                if (input != null) {
-//                    fileSize = fileService.getFileSize(fileRecord, alias);
-//                } else { // 当别名附件不存在时,使用原附件
-//                    input = fileService.getFileInputStream(fileRecord);
-//                    fileSize = fileService.getFileSize(fileRecord);
-//                }
-//                if (input != null) {
-//                    downloadFileData(response, inline, input, fileName, fileSize);
-//                } else {
-//                    errorMsg = "下载的附件不存在";
-//                }
-//            } else {
-//                errorMsg = "下载的附件不存在";
-//            }
-//
-//        } catch (Exception e) {
-//            errorMsg = "下载附件异常@" + System.currentTimeMillis();
-//            LogUtil.error(errorMsg + "[" + fileRecord.getFileId() + "]", e);
-//        } finally {
-//            if (input != null) {
-//                input.close();
-//            }
-//            if (Utils.notEmpty(errorMsg)) {
-//                response.sendError(HttpServletResponse.SC_NOT_FOUND, errorMsg);
-//            }
-//        }
-//    }
+    private static class DownloadParam {
+        boolean inline;
+        String fileName;
+        long fileSize;
+        Date lastModified;
+        String alias;
 
-    private boolean downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String alias) throws Exception {
-        if (fileRecord == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return false;
+        public boolean isInline() {
+            return inline;
         }
-        String fileName = fileRecord.getFileName();
-        long fileSize = fileService.getFileSize(fileRecord, alias);
-        InputStream input = fileService.getFileInputStream(fileRecord, alias);
-        return downloadFileData(response, inline, input, fileName, fileSize, fileRecord.getUpdateTime());
+
+        public DownloadParam setInline(boolean inline) {
+            this.inline = inline;
+            return this;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public DownloadParam setFileName(String fileName) {
+            this.fileName = fileName;
+            return this;
+        }
+
+        public long getFileSize() {
+            return fileSize;
+        }
+
+        public DownloadParam setFileSize(long fileSize) {
+            this.fileSize = fileSize;
+            return this;
+        }
+
+        public Date getLastModified() {
+            return lastModified;
+        }
+
+        public DownloadParam setLastModified(Date lastModified) {
+            this.lastModified = lastModified;
+            return this;
+        }
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public DownloadParam setAlias(String alias) {
+            this.alias = alias;
+            return this;
+        }
     }
 
     /**
@@ -440,7 +410,7 @@ public class FileController extends BaseController {
      * @param response
      * @throws Exception
      */
-    private boolean downloadFileData(HttpServletResponse response, boolean inline, InputStream input, String fileName, long fileSize, Date fileUpdateTime) throws Exception {
+    private boolean downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
         if (input == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return false;
@@ -451,8 +421,8 @@ public class FileController extends BaseController {
             response.setHeader("Accept-Charset", encoding);
             String contentType = null;
 
-            if (inline) {
-                String extName = FileUtil.getFileExtName(fileName);
+            if (downloadParam.isInline()) {
+                String extName = FileUtil.getFileExtName(downloadParam.getFileName());
                 if (Utils.notEmpty(extName)) {
                     contentType = getMimeType(extName);
                 }
@@ -462,15 +432,14 @@ public class FileController extends BaseController {
             }
 
             response.setHeader("Content-type", contentType);
-            response.setHeader("Content-Disposition", (inline ? "inline" : "attachment") + "; filename=" + URLEncoder.encode(fileName, encoding));
-            response.setHeader("Content-Length", String.valueOf(fileSize));
-            if (fileUpdateTime != null) {
+            response.setHeader("Content-Disposition", (downloadParam.isInline() ? "inline" : "attachment") + "; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding));
+            response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
+            if (downloadParam.getLastModified() != null) {
                 synchronized (DF_GMT) {
-                    response.setHeader("Last-Modified", DF_GMT.format(fileUpdateTime));
+                    response.setHeader("Last-Modified", DF_GMT.format(downloadParam.getLastModified()));
                 }
-                response.setHeader("ETag", getEtag(fileName,fileSize,fileUpdateTime));
+                response.setHeader("ETag", getEtag(downloadParam));
             }
-//            response.setHeader("Last-Modified", DF_GMT.format(fileUpdateTime));
             response.setStatus(HttpServletResponse.SC_OK);
             FileUtil.downLoadData(response, input);
             return true;
@@ -486,18 +455,56 @@ public class FileController extends BaseController {
         }
     }
 
-    private static String getEtag(String fileName, long fileSize, Date fileUpdateTime) {
-        return getIntHex(fileSize)+getIntHex(fileUpdateTime.getTime());
+    private static String getEtag(DownloadParam downloadParam) {
+        long lastModified = downloadParam.getLastModified() == null ? 0 : downloadParam.getLastModified().getTime();
+        String etag = getIntHex(downloadParam.getFileSize()) + getIntHex(lastModified);
+        return etag;
     }
 
     private static String getIntHex(long l) {
-        l=(l&0xFFFFFFFFL)|0x100000000L;
-        String s=Long.toHexString(l);
+        l = (l & 0xFFFFFFFFL) | 0x100000000L;
+        String s = Long.toHexString(l);
         return s.substring(1);
     }
 
     private static final String FILE_SCHEME_AUTO = "AUTO";
     private static final String FILE_ALIAS_AUTO = "AUTO";
+
+    protected boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, DownloadParam downloadParam) {
+        try {
+            long headerValue = request.getDateHeader("If-Modified-Since");
+            long lastModified = downloadParam.getLastModified() == null ? 0 : downloadParam.getLastModified().getTime();
+            if (headerValue != -1) {
+
+                // If an If-None-Match header has been specified, if modified since
+                // is ignored.
+                if ((request.getHeader("If-None-Match") == null) && (lastModified < headerValue + 1000L)) {
+                    // The entity has not been modified since the date
+                    // specified by the client. This is not an error case.
+                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    response.setHeader("ETag", getEtag(downloadParam));
+
+                    return false;
+                }
+            }
+        } catch (IllegalArgumentException illegalArgument) {
+            return true;
+        }
+        return true;
+
+    }
+
+    private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) throws Exception {
+        DownloadParam downloadParam = new DownloadParam();
+        String fileName = fileRecord.getFileName();
+        long fileSize = fileService.getFileSize(fileRecord, alias);
+//        downloadParam.setFileInput(fileService.getFileInputStream(fileRecord, alias));
+        downloadParam.setFileName(fileName);
+        downloadParam.setFileSize(fileSize);
+        downloadParam.setLastModified(fileRecord.getUpdateTime());
+        downloadParam.setAlias(alias);
+        return downloadParam;
+    }
 
     /**
      * 显示缩略图方法
@@ -512,7 +519,7 @@ public class FileController extends BaseController {
         String scheme = request.getParameter("scheme");
         String alias = request.getParameter("alias");
         String fileId = request.getParameter("fileId");
-        thumbnail(response, scheme, alias, fileId);
+        thumbnail(request, response, scheme, alias, fileId);
     }
 
     /**
@@ -526,41 +533,27 @@ public class FileController extends BaseController {
      */
     @RequestMapping("/thumbnail/{scheme}/{alias}/{fileId}")
     @ResponseBody
-    public void thumbnail(HttpServletResponse response, @PathVariable String scheme,
+    public void thumbnail(HttpServletRequest request, HttpServletResponse response, @PathVariable String scheme,
                           @PathVariable String alias, @PathVariable String fileId) throws Exception {
         String decFileId = fileService.decrypt(fileId);
         PubFileRecord fileRecord = fileService.getFileRecord(decFileId);
+
+        if (fileRecord == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         // 获取附件别名
         String realAlias = getFileAlias(alias, scheme);
-        boolean success = downloadFileData(response, true, fileRecord, realAlias);
 
-//        if (fileRecord != null) {
-//            InputStream input = null;
-//            try {
-//                String fileName = fileRecord.getFileName();
-//                input = fileService.getFileInputStream(fileRecord, realAlias);
-//                long fileSize = 0L;
-//                if (input != null) {
-//                    fileSize = fileService.getFileSize(fileRecord, realAlias);
-//                } else if (Utils.notEmpty(realAlias)) {
-//                    // 当别名附件不存在时,使用原附件
-//                    input = fileService.getFileInputStream(fileRecord);
-//                    fileSize = fileService.getFileSize(fileRecord);
-//                }
-//                if (input != null) {
-//                    downloadFileData(response, true, input, fileName, fileSize);
-//                    return;
-//                }
-//            } catch (Exception e) {
-//                String error = "下载附件异常@" + System.currentTimeMillis();
-//                LogUtil.error(error, e);
-//            } finally {
-//                if (input != null) {
-//                    input.close();
-//                }
-//            }
-//        }
+        DownloadParam downloadParam = getDownloadParam(fileRecord, alias);
+        // 目前文件下载统一默认都是原件下载
+        if (!checkIfModifiedSince(request, response, downloadParam)) {
+            return;
+        }
 
+        downloadParam.setInline(true);
+        boolean success = downloadFileData(response, fileService.getFileInputStream(fileRecord, alias), downloadParam);
+        // 下载不成功,用默认图片代替
         if (!success) {
             FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
             String defaultIcon = null;
@@ -582,10 +575,13 @@ public class FileController extends BaseController {
             // 这里可能考虑重定向到具体文件目录去
             File defaultImageFile = new File(FrameworkContext.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
             if (defaultImageFile.exists()) {
-                downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length(), new Date(defaultImageFile.lastModified()));
+                downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length())
+                        .setLastModified(new Date(defaultImageFile.lastModified()));
+
+                downloadFileData(response, new FileInputStream(defaultImageFile), downloadParam);
                 return;
             } else {
-                String error = "附件记录不存在@" + System.currentTimeMillis();
+                String error = "附件不存在@" + System.currentTimeMillis();
                 LogUtil.warn(error + "[" + fileId + "->" + decFileId + "]");
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
             }

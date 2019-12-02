@@ -286,11 +286,19 @@ public class BaseActionController extends MultiActionController {
             offset = 0;
         }
         Pagination pagination = Pagination.of(offset, limit);
-        String autoRowCount = request.getParameter("autoRowCount");
-        if (Utils.notEmpty(autoRowCount)) {
-            pagination.setAutoRowCount(Boolean.parseBoolean(autoRowCount));
+        Boolean autoRowCount = getPaginationAutoRowCount(request);
+        if (autoRowCount != null) {
+            pagination.setAutoRowCount(autoRowCount);
         }
         return pagination;
+    }
+
+    protected Boolean getPaginationAutoRowCount(HttpServletRequest request) {
+        String autoRowCount = request.getParameter("autoRowCount");
+        if (Utils.notEmpty(autoRowCount)) {
+            return Boolean.parseBoolean(autoRowCount);
+        }
+        return null;
     }
 
 
