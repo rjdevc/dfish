@@ -602,7 +602,7 @@
 .w-menu-line{display:none;position:absolute;height:1px;border-left:1px solid transparent;border-right:1px solid transparent;}
 .w-menu-button{position:relative;display:block;height:30px;cursor:default}
 .w-menu-button ._c,.w-menu-button ._i,.w-menu-button ._t,.w-menu-button ._m,.w-menu-button ._x{display:inline-block;height:100%;vertical-align:top;*vertical-align:middle}
-.w-menu-button ._c{padding-right:36px;overflow:hidden}
+.w-menu-button ._c{padding-right:36px}
 .w-menu-button ._i{width:32px;text-align:center}
 .w-menu-button ._t{white-space:pre}
 .w-menu-button ._m,.w-menu-button ._x{position:absolute;right:0;top:0;padding:0 10px 0 26px}

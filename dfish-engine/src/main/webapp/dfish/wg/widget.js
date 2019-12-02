@@ -8052,11 +8052,11 @@ Leaf = define.widget( 'leaf', {
 		checkBox: function( a ) {
 			this.box && this.box.click( a == N || a );
 		},
-		scrollIntoView: function( a ) {
+		scrollIntoView: function( a, b ) {
 			var n = this;
 			while ( (n = n.parentNode) && n.type === this.type )
 				n.toggle( T );
-			_scrollIntoView( this, T, a );
+			_scrollIntoView( this, b, a );
 		},
 		// triplebox 级联勾选
 		_triple: function() {
@@ -9386,7 +9386,9 @@ Grid = define.widget( 'grid', {
 			if ( this.tbody() ) {
 				for ( var i = 0, r = this.getEchoRows(), l = r.length; i < l; i ++ ) {
 					$.classRemove( r[ i ].$(), 'z-0 z-1 z-first z-last' );
-					$.classAdd( r[ i ].$(), 'z-' + (i % 2) + ( i === 0 ? ' z-first' : i === l - 1 ? ' z-last' : '' ) );
+					$.classAdd( r[ i ].$(), 'z-' + (i % 2) );
+					i === 0 && $.classAdd( r[ i ].$(), 'z-first' );
+					i === l - 1 && $.classAdd( r[ i ].$(), 'z-last' );
 					r[ i ].rownum && r[ i ].rownum.reset();
 				}
 			}
