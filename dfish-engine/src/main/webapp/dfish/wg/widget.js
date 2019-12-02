@@ -8929,11 +8929,11 @@ Leaf = define.widget( 'leaf', {
 		checkBox: function( a ) {
 			this.box && this.box.click( a == N || a );
 		},
-		scrollIntoView: function( a ) {
+		scrollIntoView: function( a, b ) {
 			var n = this;
 			while ( (n = n.parentNode) && n.type === this.type )
 				n.toggle( T );
-			_scrollIntoView( this, a, N, T );
+			_scrollIntoView( this, a, N, b );
 		},
 		// triplebox 级联勾选
 		_triple: function() {
