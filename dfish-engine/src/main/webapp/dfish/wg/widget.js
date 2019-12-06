@@ -1095,7 +1095,7 @@ W = define( 'widget', function() {
 				if ( b = a.children ) { // [ { before: '', at: '' } ]
 					var r = b.data;
 				}
-				this.attr( a.props );
+				this.attr( a.props ); 
 			}
 			if ( a = this.x.on && this.x.on.at && _atCache[ this.x.on.at ] ) {
 				for ( var k in a.props )
@@ -1127,7 +1127,7 @@ W = define( 'widget', function() {
 				if ( c ) {
 					v = c[ f[ i ] ];
 				} else {
-					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] ));
+					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] )) === U && (v = this.rootNode && this.rootNode.x[ k ]);
 				}
 				m.push( d ? d( v ) : v );
 			}
@@ -1146,8 +1146,7 @@ W = define( 'widget', function() {
 						v = b[ k ];
 					} else {
 						x == N && (x = self.x);
-						(v = x.data && x.data[ k ]) === U && (v = x[ k ]) === U && (v = self.closestData( k ));
-						//v === U && (v = self.x[ k ]);
+						(v = x.data && x.data[ k ]) === U && (v = x[ k ]) === U && (v = self.closestData( k )) === U && (v = self.rootNode && self.rootNode.x[ k ]);
 					}
 					if ( t && v != N ) {
 						try { eval( 'v = v' + t ); } catch( ex ) { v = N; }
@@ -1337,7 +1336,7 @@ W = define( 'widget', function() {
 		prop_title: function( a, b ) {
 			return a && ! b ? ' title="' + $.strQuot( a, T ) + '"' : '';
 		},
-		// @a -> text, @b -> format, c -> escape?, d -> callback?, e -> x?
+		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function( a, b, c, d, e ) {
 			if ( b ) {
 				var s = b.indexOf( 'javascript:' ) === 0 ? this.formatJS( b, N, N, d, e ) : this.formatStr( b, N, c !== F && 'strEscape', d, e );
@@ -3449,7 +3448,7 @@ Button = define.widget( 'button', {
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
-			if ( ! t && x.icon )
+			if ( ! t && ! this.x.format && x.icon )
 				b += ' z-i';
 			if ( w != N ) {
 				s += 'width:' + w + 'px;';
@@ -3506,7 +3505,7 @@ Button = define.widget( 'button', {
 			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
 			if ( x.icon )
 				a += this.html_icon();
-			if ( t )
+			if ( t || this.x.format )
 				a += this.html_text();
 			a += '</div>';
 			a += this.html_append() + (ie7 && !w ? '</table>' : '') + this.html_badge() + '</' + g + '>';

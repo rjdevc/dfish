@@ -1603,7 +1603,7 @@ define.widget( 'upload/image/valuebar', {
 
 define.widget( 'upload/file/button', {
 	Const: function( x, p ) {
-		this.u = p.parentNode;
+		this.u = this.rootNode = p.parentNode;
 		Button.apply( this, arguments );
 	},
 	Extend: Button,
@@ -1615,7 +1615,7 @@ define.widget( 'upload/file/button', {
 var UploadImageButton =
 define.widget( 'upload/image/button', {
 	Const: function( x, p ) {
-		this.u = p.parentNode;
+		this.u = this.rootNode = p.parentNode;
 		Button.apply( this, arguments );
 		var b = this.u.x.pub || false, w = b.width || 80, h = b.height || 80, t = this.x.style || '';
 		if ( w || h ) {
@@ -1630,7 +1630,7 @@ define.widget( 'upload/image/button', {
 // 选择本地文件的按钮
 define.widget( 'upload/file/upload/button', {
 	Const: function( x, p ) {
-		this.u = p.parentNode;
+		this.u = this.rootNode = p.parentNode;
 		Button.apply( this, arguments );
 		this.fileID = this.id + 'u-' + uploadCount;
 	},
@@ -1941,9 +1941,10 @@ function getSuffix( url ) {
 	return suffix[ a ] || 'file';
 };
 function swfOptions( x ) {
-	var r = {}, i;
-	for ( i in x ) r[ swfTranslate[ i ] || i ] = x[ i ];
-	return r;
+	for ( var i in swfTranslate ) {
+		x[ swfTranslate[ i ] ] = x[ i ];
+	}
+	return x;
 };
 // 根据文件后缀名获取图标样式
 function getIco( url ) {
