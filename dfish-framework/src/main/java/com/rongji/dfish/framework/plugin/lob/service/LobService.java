@@ -1,61 +1,61 @@
 package com.rongji.dfish.framework.plugin.lob.service;
 
-import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
-import com.rongji.dfish.framework.service.BaseService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.rongji.dfish.framework.service.FrameworkService;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
-@Service
-public class LobService extends BaseService<PubLob, PubLob, String> {
-	@Autowired
-	private LobDao dao;
+/**
+ * lob数据服务层接口
+ * @author lamontYu
+ * @create 2019-12-05
+ * @since 3.2
+ * @version 1.1 改造成接口模式,并调整方法名 lamontYu 2019-12-05
+ */
+public interface LobService extends FrameworkService<PubLob, PubLob, String> {
 
-	@Override
-	public LobDao getDao() {
-		return dao;
-	}
+    /**
+     * 保存lob内容记录
+     * @param lobContent 内容
+     * @return String 保存的编号
+     */
+    String saveLob(String lobContent);
 
-	public void setDao(LobDao dao) {
-		this.dao = dao;
-	}
+    /**
+     * 更新lob内容
+     * @param lobId 编号
+     * @param lobContent 内容
+     * @return int 更新记录数
+     */
+    int updateContent(String lobId, String lobContent);
 
-	public String saveLob(String lobContent) throws Exception {
-		String lobId = getNewId();
-		PubLob pubLob = new PubLob();
-		pubLob.setLobId(lobId);
-		pubLob.setLobContent(lobContent);
-		pubLob.setOperTime(new Date());
-		pubLob.setArchiveFlag("0");
-		getDao().save(pubLob);
-		return lobId;
-	}
-	
-	public int updateLob(String lobId, String lobContent) {
-		return getDao().updateLob(lobId, lobContent);
-	}
+    /**
+     * 归档lob记录
+     * @param lobId 编号
+     * @return int 更新记录数
+     */
+    int archive(String lobId);
 
-	public int archiveLob(String lobId) {
-		return getDao().archiveLob(lobId);
-	}
-	
-	public String getLobContent(String lobId) {
-		Map<String, String> lobMap = findLobContentBatch(lobId);
-		return lobMap.get(lobId);
-	}
-	
-	public Map<String, String> findLobContentBatch(String... lobIds) {
-		if (Utils.isEmpty(lobIds)) {
-			return Collections.emptyMap();
-		}
-		return findLobContentBatch(Arrays.asList(lobIds));
-	}
-	
-	public Map<String, String> findLobContentBatch(Collection<String> lobIds) {
-		return getDao().findLobContentBatch(lobIds);
-	}
-	
+    /**
+     * 获取lob内容
+     * @param lobId 编号
+     * @return String lob内容值
+     */
+    String getContent(String lobId);
+
+    /**
+     * 批量获取lob内容
+     * @param lobIds 编号数组
+     * @return Map&lt;String, String&gt; 编号-内容的键值对集合
+     */
+    Map<String, String> getContents(String... lobIds);
+
+    /**
+     * 批量获取lob内容
+     * @param lobIds 编号集合
+     * @return Map&lt;String, String&gt; 编号-内容的键值对集合
+     */
+    Map<String, String> getContents(Collection<String> lobIds);
+
 }

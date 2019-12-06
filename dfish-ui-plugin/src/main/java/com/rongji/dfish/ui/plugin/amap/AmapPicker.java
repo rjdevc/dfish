@@ -7,14 +7,14 @@ import com.rongji.dfish.ui.form.AbstractFormElement;
  * Description: 地图选择组件
  * Copyright:   Copyright (c)2017
  * Company:     rongji
- * @author:     DFish Team - YuLM
+ * @author:     DFish Team - lamontYu
  * @version:    1.0
  * Create at:   2017-8-16 下午2:36:11
  * 
  * Modification History:
  * Date			Author				Version		Description
  * ------------------------------------------------------------------
- * 2017-8-16	DFish Team - YuLM	1.0			1.0 Version
+ * 2017-8-16	DFish Team - lamontYu	1.0			1.0 Version
  */
 public class AmapPicker extends AbstractFormElement<AmapPicker, String> {
 

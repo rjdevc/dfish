@@ -1,12 +1,12 @@
 package com.rongji.dfish.framework.plugin.file.controller.config;
 
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
-
 import java.awt.*;
 
 /**
  * 图片处理定义
  * @author lamontYu
+ * @create 2019-08-07
+ * @since 3.2
  */
 public class ImageHandlingDefine extends FileHandlingDefine {
     /**
@@ -41,6 +41,7 @@ public class ImageHandlingDefine extends FileHandlingDefine {
 
     @Override
     public String getAlias() {
+        // 若处理方案别名未定义,采用width+x+height的模式
         if (this.alias == null) {
             return this.getWidth() + "x" + this.getHeight();
         }

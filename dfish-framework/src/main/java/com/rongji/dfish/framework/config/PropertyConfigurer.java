@@ -17,13 +17,13 @@ import java.util.Properties;
  * Description: 属性配置器，配置参数加载的工具
  * Copyright:   Copyright © 2018
  * Company:     rongji
- * @author		YuLM
+ * @author		lamontYu
  * @version		1.0
  *
  * Modification History:
  * Date						Author			Version			Description
  * ------------------------------------------------------------------
- * 2018-3-16 下午1:37:35		YuLM			1.0				1.0 Version
+ * 2018-3-16 下午1:37:35		lamontYu			1.0				1.0 Version
  */
 public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 

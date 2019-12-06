@@ -8,30 +8,15 @@
  */
 package com.rongji.dfish.framework;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.rongji.dfish.base.Page;
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
-//import com.rongji.dfish.framework.service.NewIdGetter;
+import com.rongji.dfish.framework.util.WrappedLog;
+import com.rongji.dfish.ui.JsonObject;
+import com.rongji.dfish.ui.json.J;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -39,12 +24,12 @@ import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.rongji.dfish.base.Page;
-import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.framework.dao.PubCommonDAO;
-import com.rongji.dfish.framework.plugin.exception.service.WrappedLog;
-import com.rongji.dfish.ui.JsonObject;
-import com.rongji.dfish.ui.json.J;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
+
+//import com.rongji.dfish.framework.service.NewIdGetter;
 
 /**
  *  框架帮助类
@@ -352,14 +337,14 @@ public class FrameworkHelper{
 		return skinColor == null ? 1 : skinColor.intValue();
 	}
 
-	/**
-	 * 获取数据库操作通用接口（PubCommonDAO）对象实例
-	 * 
-	 * @return
-	 */
-	public static PubCommonDAO getDAO(){
-		return (PubCommonDAO) FrameworkContext.getInstance().getBeanFactory().getBean("pubCommonDAO");
-	}
+//	/**
+//	 * 获取数据库操作通用接口（PubCommonDAO）对象实例
+//	 *
+//	 * @return
+//	 */
+//	public static PubCommonDAO getDAO(){
+//		return (PubCommonDAO) FrameworkContext.getInstance().getBeanFactory().getBean("pubCommonDAO");
+//	}
 
 	/**
 	 * 获取数据库操作通用接口对象实例
@@ -744,43 +729,43 @@ public class FrameworkHelper{
 	}
 
 
-	/**
-	 * 查询数据库，获取满足条件对象的数量,如果结果集中有多条,也只取第1条
-	 * 调用时需明确查询的结果是否结果集可能为空比如 select max(t.xxx)...当数据库中都没有记录是返回的是空集,此时调用时要判断空值,否则会抛出异常.
-	 * 
-	 * @param strSql
-	 *            类似：SELECT COUNT(*) FROM PubUser...
-	 * @param args
-	 * @return
-	 */
-	public static Integer getIntegerFromDataBase(final String strSql,final Object... args){
-		Integer intRes=null;
-		List<?> list = getDAO().getQueryList(strSql, args);
-//		assert (list.size() == 1);
-		if(Utils.notEmpty(list)){
-			Object o=list.get(0);
-			if(o!=null){
-				intRes=((Number) o).intValue();
-			}
-		}
-		return intRes;
-	}
+//	/**
+//	 * 查询数据库，获取满足条件对象的数量,如果结果集中有多条,也只取第1条
+//	 * 调用时需明确查询的结果是否结果集可能为空比如 select max(t.xxx)...当数据库中都没有记录是返回的是空集,此时调用时要判断空值,否则会抛出异常.
+//	 *
+//	 * @param strSql
+//	 *            类似：SELECT COUNT(*) FROM PubUser...
+//	 * @param args
+//	 * @return
+//	 */
+//	public static Integer getIntegerFromDataBase(final String strSql,final Object... args){
+//		Integer intRes=null;
+//		List<?> list = getDAO().getQueryList(strSql, args);
+////		assert (list.size() == 1);
+//		if(Utils.notEmpty(list)){
+//			Object o=list.get(0);
+//			if(o!=null){
+//				intRes=((Number) o).intValue();
+//			}
+//		}
+//		return intRes;
+//	}
 
-	/**
-	 * 查询数据库当结果集中只有一条记录或只想取结果集中的第一条记录时,返回该记录的实体对象,
-	 * 
-	 * @param strSql
-	 * @param args
-	 * @return
-	 */
-	public static Object getSingleObjectFromDataBase(String strSql,Object... args){
-		Object o=null;
-		List<?> list = getDAO().getQueryList(strSql, args);
-		if(Utils.notEmpty(list)){
-			o=list.get(0);
-		}
-		return o;
-	}
+//	/**
+//	 * 查询数据库当结果集中只有一条记录或只想取结果集中的第一条记录时,返回该记录的实体对象,
+//	 *
+//	 * @param strSql
+//	 * @param args
+//	 * @return
+//	 */
+//	public static Object getSingleObjectFromDataBase(String strSql,Object... args){
+//		Object o=null;
+//		List<?> list = getDAO().getQueryList(strSql, args);
+//		if(Utils.notEmpty(list)){
+//			o=list.get(0);
+//		}
+//		return o;
+//	}
 
 //	/**
 //	 * 向数据库中插入一条新数据时，该数据的主键不可重复，可通过此方法获取该编号。 ID是一个十进制数，位数是一定的。如果前面没有数字，会自动补0。

@@ -4,19 +4,17 @@ import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.Valignable;
 
 /**
- * 上传图片。
+ * 上传图片组件
  *
- * @param <T> 类型
  * @author DFish Team
+ * @create 2018-08-03 before
+ * @version 1.1 去掉泛型设置,同时将Alignable, Valignable的接口下移到抽象类 lamontYu 2019-12-05
  */
-@SuppressWarnings("unchecked")
-public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> implements Alignable<T>, Valignable<T> {
+public class UploadImage extends AbstractUpload<UploadImage> {
     /**
      *
      */
     private static final long serialVersionUID = -2689106571559435242L;
-    private String align;
-    private String valign;
     private String thumbnailsrc;
 
     /**
@@ -31,28 +29,6 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
     @Override
     public String getType() {
         return "upload/image";
-    }
-
-    @Override
-    public String getAlign() {
-        return align;
-    }
-
-    @Override
-    public T setAlign(String align) {
-        this.align = align;
-        return (T) this;
-    }
-
-    @Override
-    public String getValign() {
-        return valign;
-    }
-
-    @Override
-    public T setValign(String valign) {
-        this.valign = valign;
-        return (T) this;
     }
 
     /**
@@ -70,8 +46,8 @@ public class UploadImage<T extends UploadImage<T>> extends AbstractUpload<T> imp
      * @param thumbnailsrc 缩略图地址
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setThumbnailsrc(String thumbnailsrc) {
+    public UploadImage setThumbnailsrc(String thumbnailsrc) {
         this.thumbnailsrc = thumbnailsrc;
-        return (T) this;
+        return this;
     }
 }

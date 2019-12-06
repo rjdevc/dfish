@@ -7,6 +7,7 @@ import com.rongji.dfish.base.util.DateUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
+import com.rongji.dfish.framework.util.ServletUtil;
 import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.json.J;
 import org.springframework.util.Assert;
@@ -28,22 +29,18 @@ public class BaseActionController extends MultiActionController {
     /**
      * 允许用户自定义分页数设置
      */
-    protected boolean customPaginationLimit;
+    protected boolean customizedLimit;
 
-    public boolean isCustomPaginationLimit() {
-        return customPaginationLimit;
+    public boolean isCustomizedLimit() {
+        return customizedLimit;
     }
 
-    public void setCustomPaginationLimit(boolean customPaginationLimit) {
-        this.customPaginationLimit = customPaginationLimit;
-    }
-
-    public Object execute(HttpServletRequest request) {
-        return "Enter execute";
+    public void setCustomizedLimit(boolean customizedLimit) {
+        this.customizedLimit = customizedLimit;
     }
 
     /**
-     * 获取Request,该获取方式未完全在所有容器验证清楚,可能会有问题,慎用
+     * 获取Request
      *
      * @return HttpServletRequest
      */
@@ -192,12 +189,12 @@ public class BaseActionController extends MultiActionController {
 
         public void bind(HttpServletRequest request, Object obj) throws Exception {
             Object value = null;
-            String str = Utils.getParameter(request, name);
+            String str = ServletUtil.getParameter(request, name);
             if (str == null || "".equals(str)) {
                 if (name.length() > 1 && name.charAt(0) > 'Z' && name.charAt(1) <= 'Z') {
                     // 第1个字母是小写且第2个字母是大写,尝试修正首字母变大写后获取值;
                     String newName = (char) (name.charAt(0) - 32) + name.substring(1);
-                    str = Utils.getParameter(request, newName);
+                    str = ServletUtil.getParameter(request, newName);
                     if (str == null || "".equals(str)) {
                         return;
                     }
@@ -260,7 +257,7 @@ public class BaseActionController extends MultiActionController {
 
     public Pagination getPagination(HttpServletRequest request) {
         int limit = 0;
-        if (customPaginationLimit) {
+        if (isCustomizedLimit()) {
             String limitStr = request.getParameter("limit");
             if (Utils.notEmpty(limitStr)) {
                 limit = Integer.parseInt(limitStr);

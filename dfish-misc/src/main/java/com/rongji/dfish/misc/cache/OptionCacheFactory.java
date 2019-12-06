@@ -1,7 +1,7 @@
 package com.rongji.dfish.misc.cache;
 /**
  * 缓存工厂,存放系统中有使用到的缓存数据
- * @author LinLW v1.0 YuLM v1.1
+ * @author LinLW v1.0 lamontYu v1.1
  * @version 1.1
  *
  * @param <K> 键

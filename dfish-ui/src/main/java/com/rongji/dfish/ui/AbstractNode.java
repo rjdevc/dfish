@@ -287,7 +287,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
     /**
      * 绑定默认属性
      *
-     * @author DFish Team - YuLM
+     * @author DFish Team - lamontYu
      */
     protected void bundleProperties() {
         ObjectTemplate.get(getClass()).bundleProperties(this);

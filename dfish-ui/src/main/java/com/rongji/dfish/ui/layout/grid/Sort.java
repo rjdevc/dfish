@@ -4,14 +4,14 @@ package com.rongji.dfish.ui.layout.grid;
  * Description: 
  * Copyright:   Copyright (c)2017
  * Company:     rongji
- * @author     DFish Team - YuLM
+ * @author     DFish Team - lamontYu
  * @version    1.0
  * Create at:   2017-7-31 上午11:51:01
  * 
  * Modification History:
  * Date			Author				Version		Description
  * ------------------------------------------------------------------
- * 2017-7-31	DFish Team - YuLM	1.0			1.0 Version
+ * 2017-7-31	DFish Team - lamontYu	1.0			1.0 Version
  */
 public class Sort {
 

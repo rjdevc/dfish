@@ -10,7 +10,7 @@ import org.apache.log4j.PatternLayout;
 import org.springframework.beans.factory.BeanFactory;
 
 import com.rongji.dfish.base.info.DataBaseInfo;
-import com.rongji.dfish.base.info.ServletInfo;
+import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.base.info.SystemInfo;
 
 

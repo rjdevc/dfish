@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0 Modification History:
  * Date						Author			Version			Description
  * ------------------------------------------------------------------
- * 2018年4月20日 下午5:32:01		YuLM			1.0				1.0 Version
+ * 2018年4月20日 下午5:32:01		lamontYu			1.0				1.0 Version
  */
 public class JsonUtil {
 

@@ -4,14 +4,14 @@ package com.rongji.dfish.ui.plugin.carousel;
  * Description: 幻灯片选项
  * Copyright:   Copyright (c)2017
  * Company:     rongji
- * @author:     DFish Team - YuLM
+ * @author:     DFish Team - lamontYu
  * @version:    1.0
  * Create at:   2017-5-12 上午10:38:14
  * 
  * Modification History:
  * Date			Author				Version		Description
  * ------------------------------------------------------------------
- * 2017-5-12	DFish Team - YuLM	1.0			1.0 Version
+ * 2017-5-12	DFish Team - lamontYu	1.0			1.0 Version
  */
 public class CarouselOption {
 
@@ -24,7 +24,7 @@ public class CarouselOption {
 	 * 
 	 * <p>描述:图片链接</p>
 	 * @return String
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public String getUrl() {
 		return url;
@@ -35,7 +35,7 @@ public class CarouselOption {
 	 * <p>描述:设置图片链接</p>
 	 * @param url
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public CarouselOption setUrl(String url) {
 		this.url = url;
@@ -46,7 +46,7 @@ public class CarouselOption {
 	 * 
 	 * <p>描述:缩略图</p>
 	 * @return String
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public String getThumbnail() {
 		return thumbnail;
@@ -57,7 +57,7 @@ public class CarouselOption {
 	 * <p>描述:</p>
 	 * @param thumbnail
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public CarouselOption setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
@@ -68,7 +68,7 @@ public class CarouselOption {
 	 * 
 	 * <p>描述:图片文本</p>
 	 * @return String
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public String getText() {
 		return text;
@@ -79,7 +79,7 @@ public class CarouselOption {
 	 * <p>描述:设置图片文本</p>
 	 * @param text
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public CarouselOption setText(String text) {
 		this.text = text;
@@ -90,7 +90,7 @@ public class CarouselOption {
 	 * 
 	 * <p>描述:图片链接动作</p>
 	 * @return String
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public String getHref() {
 		return href;
@@ -101,7 +101,7 @@ public class CarouselOption {
 	 * <p>描述:图片链接动作</p>
 	 * @param href
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author DFish Team - YuLM
+	 * @author DFish Team - lamontYu
 	 */
 	public CarouselOption setHref(String href) {
 		this.href = href;

@@ -6,7 +6,7 @@ package com.rongji.dfish.ui.form;
  * @param <T> 类型
  *
  */
-public class UploadFile<T extends UploadFile<T>> extends AbstractUpload<T> {
+public class UploadFile extends AbstractUpload<UploadFile> {
 
 	/**
 	 * 

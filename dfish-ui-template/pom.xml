@@ -4,9 +4,9 @@
         xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.rongji</groupId>
+        <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>3.3.0.17-SNAPSHOT</version>
+        <version>3.3.0.20-SNAPSHOT</version>
     </parent>
     <artifactId>dfish-ui-template</artifactId>
     <name>dfish-ui-template</name>
@@ -17,7 +17,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.rongji</groupId>
+            <groupId>com.rongji.dfish</groupId>
             <artifactId>dfish-ui-plugin</artifactId>
         </dependency>
     </dependencies>

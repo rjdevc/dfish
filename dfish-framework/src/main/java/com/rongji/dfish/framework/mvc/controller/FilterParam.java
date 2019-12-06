@@ -7,13 +7,15 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.framework.dto.RequestParam;
+import com.rongji.dfish.framework.util.ServletUtil;
 
 /**
  * 过滤参数
  * @author DFish Team
- *
+ * @see RequestParam
  */
+@Deprecated
 public class FilterParam {
 	HashMap<String ,String[]> context=new HashMap<String ,String[]>();
 	public FilterParam(){}
@@ -30,7 +32,8 @@ public class FilterParam {
 		for(String key:keys){
 			String[] s=request.getParameterValues(key);
 			if(s!=null&&s.length==1){
-				String value=Utils.getParameter(request, key);//处理tomcat的BUG
+				String value= ServletUtil.getParameter(request, key);
+				//处理tomcat的BUG
 				setValueAsString(key,value);
 			}else{
 				setValue(key,s);
@@ -52,7 +55,7 @@ public class FilterParam {
 	public String[] getValue(String key){
 		return context.get(key);
 	}
-	
+
 	@Override
     public String toString(){
 		StringBuilder sb=new StringBuilder();
