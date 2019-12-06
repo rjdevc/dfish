@@ -10287,7 +10287,7 @@ THead = define.widget( 'thead', {
 						Q( '.w-th-sort', this.$() ).each( function() {
 							Q( this ).click( function( e ) {
 								var o = Q( e.target );
-								g.order( c[ Column.index( this ) ].x.field, o.hasClass( 'f-arw-t1' ) ? 'asc' : o.hasClass( 'f-arw-b1' ) ? 'desc' : N );
+								r.order( c[ Column.index( this ) ].x.field, o.hasClass( 'f-arw-t1' ) ? 'asc' : o.hasClass( 'f-arw-b1' ) ? 'desc' : N );
 							} );
 						} );
 						break;
@@ -10818,6 +10818,30 @@ AbsGrid = define.widget( 'abs/grid', {
 			this.setFilter( this.rows( a ) );
 			this.body.render();
 		},
+		// a -> column
+		_sortrow: function( a ) {
+			var b = a._sort, c = a.x.sort, d = c.field || a.x.field, r = $.arrMake( this.getEchoRows() );
+			r.sort( function( m, n ) {
+				var e = m.x.data[ d ], f = n.x.data[ d ];
+				if ( c.isnumber ) { e = _number( e ); f = _number( f ); }
+				return b === 'asc' ? (e < f ? -1 : e == f ? 0 : 1) : (e < f ? 1 : e == f ? 0 : -1);
+			} );
+			for ( var i = 0, l = r.length, o = this.tbody().$().rows; i < l; i ++ ) {
+				if ( o[ i ].id != r[ i ].id ) {
+					r[ i ].parentNode.addNode( r[ i ], i );
+					Q( o[ i ] ).before( r[ i ].$() );
+				}
+			}
+		},
+		resetTHCls: function( a, b ) {
+			Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' );
+			for ( var k = 0, e = this.getColgroup(), l = e.length; k < l; k ++ ) {
+				if ( e[ k ].x.field == a ) {
+					Q( e[ k ].th() ).addClass( 'z-' + b );
+					break;
+				}
+			}
+		},
 		//排序 /@a -> field, b -> [asc,desc]
 		order: function( a, b ) {
 			for ( var k = 0, e = this.getColgroup(), l = e.length; k < l; k ++ ) {
@@ -10838,19 +10862,8 @@ AbsGrid = define.widget( 'abs/grid', {
 					}
 				} else {
 					e[ k ]._sort = b;
-					Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' );
-					Q( e[ k ].th() ).addClass( 'z-' + b );
-					r.sort( function( m, n ) {
-						var e = m.x.data[ d ], f = n.x.data[ d ];
-						if ( c.isnumber ) { e = _number( e ); f = _number( f ); }
-						return b === 'asc' ? (e < f ? -1 : e == f ? 0 : 1) : (e < f ? 1 : e == f ? 0 : -1);
-					} );
-					for ( var i = 0, l = r.length, o = this.tbody().$().rows; i < l; i ++ ) {
-						if ( o[ i ].id != r[ i ].id ) {
-							r[ i ].parentNode.addNode( r[ i ], i );
-							Q( o[ i ] ).before( r[ i ].$() );
-						}
-					}
+					this._sortrow( e[ k ] );
+					this.resetTHCls( a, b );
 					this.resetRowCls();
 				}
 			}
@@ -10876,7 +10889,7 @@ AbsGrid = define.widget( 'abs/grid', {
 		}
 	}
 } );
-_parallel_methods( AbsGrid, 'resetRowCls order' );
+_parallel_methods( AbsGrid, 'resetRowCls resetTHCls _sortrow' );
 var
 /* `grid` */
 Grid = define.widget( 'grid', {
