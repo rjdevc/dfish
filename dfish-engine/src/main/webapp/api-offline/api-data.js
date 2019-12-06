@@ -1561,6 +1561,7 @@ define( {
         { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
         { name: 'cls', type: 'String', remark: '样式名。' },
         { name: 'field', type: 'String', remark: '字段名。' },
+        { name: 'fixed', type: 'String', remark: '固定列。可选值：<b>left</b>, <b>right</b>' },
         { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget格式的json对象)。' },
         { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
         { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
@@ -1864,6 +1865,32 @@ define( {
     Classes: [
       { name: '.w-grid', remark: '基础样式。' },
       { name: '.z-empty', remark: '没有子节点时的样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+	  	    // 简单表格
+            return~
+            {
+              type: 'grid',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'B', width: '*' }
+              ],
+              thead: {
+              	rows: [
+                  { A: 'ID', B: '内容' }
+                ]
+              },
+              tbody: {
+              	rows: [
+                  { A: '001', B: 'content 1' },
+                  { A: '001', B: 'content 2' }
+                ]
+              }
+            }
+          }
+      ] }
     ]
   },
   "form": {
@@ -2588,7 +2615,7 @@ define( {
               ] }
           }
       ] }
-    ],  	
+    ],
   },
   "timeline/item": {
   	title: 'timeline/item',

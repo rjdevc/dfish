@@ -993,14 +993,10 @@ W = define( 'widget', function() {
 		},
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
-			var c = a == N || (a.isWidget ? a.x.open : a), p = this.parentNode, d = p && p.type_frame ? 'f-hide' : 'f-none', o = this.$();
+			var c = a == N || (a.isWidget ? a.x.open : a), p = this.parentNode, d = p && p.type_frame ? 'f-hide' + (b ? '' : ' f-form-hide') : 'f-none', o = this.$();
 			$.classAdd( o, d, ! c );
 			a != N && a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
 			this.x.display = !!c;
-			if ( ! b ) {
-				var v = this.ownerView;
-				v && v.layout && ((v.layout._passvalid || (v.layout._passvalid = {}))[ o.id ] = !c);
-			}
 			!!c && this.trigger( 'display' );
 		},
 		isDisplay: function() {
@@ -1080,7 +1076,7 @@ W = define( 'widget', function() {
 			for ( var i = 0, l = this.length; i < l; i ++ )
 				this[ i ].triggerAll( e );
 			for ( i in this.discNodes )
-				! this.discNodes[ i ].isDialogWidget && this.discNodes[ i ].triggerAll( e ); // 弹窗不触发来自父节点的递归事件
+				!this.discNodes[ i ].isDialogWidget && this.discNodes[ i ].triggerAll( e ); // 弹窗不触发来自父节点的递归事件
 		},
 		// 设置事件  /@a -> event type, b -> fn
 		setOn: function( a, b ) {
@@ -1718,30 +1714,33 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	_proto[ v ] = function( o ) {
 		if ( typeof o === _STR )
 			return this.insertHTML( o, v );
-		var a = o.isWidget ? [ o ] : $.arrMake( o ), q, i;
+		var a = o.isWidget ? [ o ] : $.arrMake( o ), b, q, i;
 		if ( a[ 0 ].isWidget ) {
 			if ( a[ 0 ] === this )
 				return this;
 			for ( q = a[ 0 ].parentNode, i = 0; i < a.length; i ++ )
 				a[ i ].removeNode( T );
+			b = a[ 0 ].$();
 		}
 		var i = j === 3 ? this.nodeIndex + 1 : j === 2 ? this.nodeIndex : j === 1 ? this.length : 0, d = this.nodeIndex > -1,
 			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
 		for ( ; k < l; k ++ )
 			r.push( p.add( a[ k ], d || j < 2 ? i + k : -1 ) );
 		if ( this.$() ) {
-			if ( a[ 0 ].isWidget && a[ 0 ].$() ) {
+			if ( b ) {
 				for ( k = 0; k < l; k ++ )
 					this.insertHTML( a[ k ], v );
 			} else {
 				for ( k = 0, o = ''; k < l; k ++ )
 					o += r[ k ].html();
 				this.insertHTML( o, v );
-				for ( k = 0; k < l; k ++ )
-					r[ k ].triggerAll( 'ready' );
 			}
 		}
 		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
+		if ( ! b && this.$() ) {
+			for ( k = 0; k < l; k ++ )
+				r[ k ].triggerAll( 'ready' );
+		}
 		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
 		q && q.trigger( 'nodechange' );
 		p.trigger( 'nodechange' );
@@ -1862,6 +1861,7 @@ Scroll = define.widget( 'scroll', {
 						}
 						if ( ! this._scr_timer )
 							this._scr_timer = setInterval( this._scr_check, 777 );
+						$.classAdd( this.$(), 'z-hv' );
 					}
 				}
 			},
@@ -1872,6 +1872,7 @@ Scroll = define.widget( 'scroll', {
 						clearInterval( this._scr_timer );
 						delete this._scr_timer;
 					}
+					$.classRemove( this.$(), 'z-hv' );
 				}
 			},
 			scroll: function( e ) {
@@ -1897,9 +1898,6 @@ Scroll = define.widget( 'scroll', {
 		}
 	},
 	Prototype: {
-		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.attr( 'scroll' ) ? ' f-scroll-wrap' : '');
-		},
 		// 让元素滚动到可见区域。支持下面两种调用方式 /e -> el|wg, y -> (top,bottom,middle,auto,top+n,bottom+n,n), x -> (left,right,center,auto), p -> ease?, q -> divide(整除数字，让滚动的距离是这个数字的整数倍), r -> callback
 		scrollTo: function( e, y, x, p, q, r ) {
 			var a = this.$( 'ovf' ), b = this.$( 'gut' ) || this.$( 'cont' ), c = $.bcr( a ), d = $.bcr( b ), f = e ? $.bcr( e ) : d, t, l;
@@ -1990,6 +1988,9 @@ Scroll = define.widget( 'scroll', {
 		isScrollBottom: function() {
 			return this.$( 'ovf' ).scrollTop == this.$( 'ovf' ).scrollHeight - this.$( 'ovf' ).clientHeight;
 		},
+		isScrollRight: function() {
+			return this.$( 'ovf' ).scrollLeft == this.$( 'ovf' ).scrollWidth - this.$( 'ovf' ).clientWidth;
+		},
 		scrollDragY: function( a, e ) {
 			var b = this.id,
 				t = $( b + 'ovf' ).scrollTop,
@@ -2062,6 +2063,9 @@ Scroll = define.widget( 'scroll', {
 	    			cmp();
 	    		e.preventDefault();
 	    	});			
+		},
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.attr( 'scroll' ) ? ' f-scroll-wrap' : '');
 		},
 		prop_cls_scroll_overflow: function() {
 			return 'f-scroll-overflow';
@@ -2503,6 +2507,7 @@ View = define.widget( 'view', {
 			} else {
 				r = Q( (a && $( a )) || this.$() ).find( f );
 			}
+			r && r.not( '.f-form-hide :input' );
 			return r || [];
 		},
 		// 获取提交数据 { name: value, ... } /@ a -> range [widgetID, 可选，如果 range 以 ! 开头，表示排除], b -> json mode?
@@ -2540,11 +2545,7 @@ View = define.widget( 'view', {
 		getValidError: function( n, g ) {
 			var e;
 			if ( this.layout ) {
-				var q = this.getFormList( g ), s = this.layout._passvalid;
-				if ( s ) {
-					for ( var k in s )
-						s[ k ] && (q = q.not( '[id="' + k + '"] :input' ));
-				}
+				var q = this.getFormList( g );
 				for ( var i = 0, l = q.length, c, v; i < l; i ++ ) {
 					if ( (c = _getWidgetById( q[ i ].id )) && (v = c.trigger( 'valid', [ n ] )) )
 						(e || (e = {}))[ v.wid ] = v;
@@ -5911,11 +5912,6 @@ Checkbox = define.widget( 'checkbox', {
 			this.check( a == N ? ! this.isChecked() : a );
 			this.trigger( 'click' );
 		},
-		mode: function( a ) {
-			if ( a == N )
-				return this.$t().checked ? 1 : 0;
-			this.check( a == 1 ? T : F );
-		},
 		text: function() {
 			return this.x.text;
 		},
@@ -5993,7 +5989,7 @@ Triplebox = define.widget( 'triplebox', {
 					if ( c == 1 ) {
 						this.relate();
 					} else {
-						for ( var i = 0, b = this.ownerView.fAll( this.x.name ), l = b.length; i < l; i ++ ) {
+						for ( var i = 0, b = this.getRelates(), l = b.length; i < l; i ++ ) {
 							if ( b[ i ] !== this ) { b[ i ].relate(); break; }
 						}
 					}
@@ -6044,9 +6040,12 @@ Triplebox = define.widget( 'triplebox', {
 		isPartial: function() {
 			return this.checkstate() == 2;
 		},
+		getRelates: function() {
+			return this.ownerView.fAll( this.x.name );
+		},
 		relate: function() {
 			if ( this.x.name ) {
-				for ( var i = 0, b = this.ownerView.fAll( this.x.name ), l = b.length, c0 = 0, c1 = 0, c2 = 0, d; i < l; i ++ ) {
+				for ( var i = 0, b = this.getRelates(), l = b.length, c0 = 0, c1 = 0, c2 = 0, d; i < l; i ++ ) {
 					if ( this.x.checkall ) {
 						this != b[ i ] && b[ i ].checkstate( this.isChecked() );
 					} else if ( b[ i ].x.checkall ) {
@@ -9398,10 +9397,11 @@ Leaf = define.widget( 'leaf', {
 			h != N  && (s += 'height:' + h + 'px;');
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
-			return this.html_before() + '<dl class="' + this.className + ' z-level' + this.level + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() ? ' f-omit' : ' f-nobr') +
+			var t = this.html_text();
+			return this.html_before() + '<dl class="' + this.className + ' z-level' + this.level + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() && !this.textNode ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + (x.tip ? this.prop_title( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip, x.format ) : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (this.isFolder() ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
-				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + this.html_text() + '</cite></dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
+				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + t + '</cite></dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();
@@ -9536,6 +9536,18 @@ GridCombo = $.createClass( {
 		}
 	}
 } ),
+_parallel_methods = function( a, b ) {
+	$.each( b.split( ' ' ), function( v ) {
+		var f = a.prototype[ v ];
+		a.prototype[ v ] = function() {
+			var u = this.rootNode || this;
+			if ( u.fixed.length ) {
+				for ( var j = 0, c = this.getParallel(); j < c.length; j ++ )
+					f.apply( c[ j ], arguments );
+			}
+		}
+	} );
+},
 /* grid 辅助方法和专用类 */
 _grid_f_attr = function( v ) {
 	return typeof v === _OBJ && v && (! v.type || v.type === TD.type) ? (v.text || '') : v;
@@ -9607,9 +9619,10 @@ GridLeaf = define.widget( 'grid/leaf', {
 		},
 		// leaf接口
 		render_nodes: function( x ) {
-			for ( var i = 0, l = x.length, r = this.tr(); i < l; i ++ )
-				r.add( x[ i ] );
-			l && Q( r.$() ).after( r.html_nodes() );
+			this.tr().append( x );
+			//for ( var i = 0, l = x.length, r = this.tr(); i < l; i ++ )
+			//	r.add( x[ i ] );
+			//l && Q( r.$() ).after( r.html_nodes() );
 			this.loaded = T;
 		},
 		// leaf接口
@@ -9705,7 +9718,12 @@ GridTriplebox = define.widget( 'grid/triplebox', {
 	},
 	Prototype: {
 		className: 'w-checkbox w-triplebox',
-		tr: _grid_tr
+		tr: _grid_tr,
+		getRelates: function() {
+			var r = [], g = this.tr().grid;
+			g.head && r.push.apply( r, this.ownerView.fAll( this.x.name, g.head ) );
+			return r.concat( this.ownerView.fAll( this.x.name, g.body ) );
+		}
 	}
 } ),
 /* `gridradio` */
@@ -9742,6 +9760,7 @@ GridRow = define.widget( 'grid/row', {
 		this.level = p.level == N ? 0 : p.level + 1;
 		if ( typeof x.data !== _OBJ )
 			x = { data: x };
+		this.grid = p.grid;
 		W.call( this, x, p, n );
 	},
 	Prototype: {
@@ -9759,18 +9778,28 @@ GridRow = define.widget( 'grid/row', {
 			this.x.data && (d.data = this.x.data);
 			return d;
 		},
+		// 获取平行的行 /@a -> get root row?
+		getParallel: function( a ) {
+			var b = this.type_tr ? 'body' : 'head', i = this.$().rowIndex, u = this.rootNode, r = this.grid === this.rootNode ? this : _widget( u[ b ].table.$().rows[ i ] );
+			if ( a )
+				return r;
+			for ( var j = 0, r = [ r ], t; j < u.fixed.length; j ++ ) {
+				(t = u.fixed[ j ][ b ].table.$().rows[ i ]) && r.push( _widget( t ) );
+			}
+			return r;
+		},
 		// x -> widget option, i -> colIndex
 		addCell: function( x, i ) {
 			var e = this.rootNode.x.escape !== F;
 			if ( e )
 				$.extend( x, { escape: e } );
 			var n = (this.tcell || (this.tcell = new TCell( {}, this ))).add( x );
-			n.col = this.rootNode.colgrps[ 0 ][ i ];
+			n.col = this.grid.getColgroup()[ i ];
 			return n;
 		},
 		cellElem: function( i ) {
 			var c = this.$().cells;
-			if ( c.length === this.rootNode.colgrps[ 0 ].length )
+			if ( c.length === this.grid.getColgroup().length )
 				return c[ i ];
 			for ( var i = 0, l = c.length, n = 0; i < l; i ++ ) {
 				if ( n == i )
@@ -9785,6 +9814,36 @@ GridRow = define.widget( 'grid/row', {
 			return p;
 		},
 		prev: Leaf.prototype.prev,
+		// @a -> T/F, b -> src
+		toggle: function( a, b ) {
+			if ( this.gridToggle || this.gridLeaf ) {
+				(this.gridToggle || this.gridLeaf).toggle( a );
+			} else {
+				if ( this.length ) {
+					a == N && (a = ! this.x.open);
+					this.toggle_rows( a );
+				} else if ( this.x.src ) {
+					var c = this.grid.getColgroup(), d = {}, r;
+					d[ c[ 0 ].x.field ] = { colspan: c.length, node: { type: 'view', src: this.x.src } };
+					this.append( d ).isExpandRow = T;
+					this.x.open = T;
+				}
+				if ( this.length ) {
+					this.trigger( this.isOpen() ? 'expand' : 'collapse' );
+				}
+			}
+		},
+		toggle_rows: function( a ) {
+			var i = 0, l = this.length;
+			if ( l ) {
+				for ( ; i < l; i ++ ) {
+					//this[ i ].css( 'display', a ? '' : 'none' )
+					this[ i ].display( a );
+					this[ i ].toggle_rows( a ? this[ i ].isOpen() : a );
+				}
+				this.x.open = a;
+			}
+		},
 		// 高亮某个字段的关键字 /@ a -> colIndex, b -> key, c -> matchlength, d -> keycls
 		highlight: function( a, b, c, d ) {
 			var f = this.cellElem( a );
@@ -9796,7 +9855,7 @@ GridRow = define.widget( 'grid/row', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.rootNode, c = u.colgrps[ 0 ], d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowspan,
+			var a = this.nodeIndex, b = [], u = this.grid, c = u.getColgroup(), d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowspan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
@@ -9836,13 +9895,13 @@ GridRow = define.widget( 'grid/row', {
 					var g = '';
 					if ( !e || u.x.nobr )
 						g += ' class="f-fix"';
-					if ( !e && c[ i ].x.sort )
+					if ( !e && f.sort )
 						v += c[ i ].html_sortarrow();
 					if ( f.tip )
 						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push( '<td class="w-td w-td-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
-						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
+						(f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
 				}
 			}
 			return b.join( '' );
@@ -9851,7 +9910,7 @@ GridRow = define.widget( 'grid/row', {
 			var a = '', c = this.x.cls, h = this.x.height,
 				s = '<tr id=' + this.id + ' class="' + this.className + (this.x.focus ? ' z-on': '') + (this.type_tr ? ' z-' + ((i == N ? this.nodeIndex : i) % 2) : '') + (c ? ' ' + c : '') + '"';
 			if ( h ) {
-				ie7 && (h -= this.rootNode._pad * 2 + (this.rootNode._face === 'none' ? 0 : 1));
+				ie7 && (h -= this.grid._pad * 2 + (this.grid._face === 'none' ? 0 : 1));
 				a += 'height:' + h + 'px;';
 			}
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
@@ -9866,14 +9925,17 @@ GridRow = define.widget( 'grid/row', {
 			_proto.remove.apply( this, arguments );
 		}
 	}
-} ),
+} );
+_parallel_methods( GridRow, 'addClass removeClass display before after append prepend replace remove' );
+var
 _td_wg = { leaf: T, toggle: T },
 /* `td` tcell 的子节点。当字段是一个 widget 时会先产生一个 TD 实例，包裹这个 widget 子节点。 */
 TD = define.widget( 'td', {
 	Const: function( x, p ) {
 		if ( x.type && x.type !== 'td' )
 			x = { node: x };
-		x.node && p.rootNode.x.escape !== F && $.extend( x.node, { escape: T } );
+		x.node && p.grid.x.escape !== F && $.extend( x.node, { escape: T } );
+		this.grid = p.grid;
 		W.call( this, x, p );
 	},
 	Prototype: {
@@ -9883,9 +9945,9 @@ TD = define.widget( 'td', {
 			return _td_wg[ t ] ? 'grid/' + t : t;
 		},
 		html: function( k, i, L ) {
-			var r = this.parentNode.parentNode, g = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.grid, u = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td w-td-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
-			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + '"';
+			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (c.x.fixed ? ' f-form-hide' : '') + '"';
 			if ( this.x.on || this.Const.Listener )
 				s += _html_on.call( this );
 			if ( c.x.align || this.x.align )
@@ -9932,6 +9994,11 @@ TR = define.widget( 'tr', {
 	},
 	Listener: {
 		body: {
+			ready: function() {
+				if ( this.grid != this.rootNode ) {
+					Q( this.$() ).height( Q( this.getParallel( T ).$() ).height() );
+				}
+			},
 			click: {
 				occupy: T,
 				block: function( e ) { return this.isExpandRow || this.gridToggle },
@@ -9961,6 +10028,9 @@ TR = define.widget( 'tr', {
 					l.toggle( this.isOpen() );
 					l.indent();
 				}
+				if ( this.rootNode != this.grid ) {
+					this.grid.body.fixHeight();
+				}
 			},
 			dnd_over: function( e ) {
 				$.classAdd( this.$(), 'z-dnd-over' );
@@ -9987,10 +10057,10 @@ TR = define.widget( 'tr', {
 			}
 			if ( this.x.focusable ) {
 				a && ! r.x.focusmultiple && (f = r.getFocus()) && f !== this && f.focus( F );
-				this.x.focus = a;
+				this.getParallel( T ).x.focus = a;
 				if ( this.$() ) {
 					var b = this.getBox(), f, g = this.$();
-					$.classAdd( this.$(), 'z-on', a );
+					this.addClass( 'z-on', a );
 					b && b.x.sync === 'focus' && !this.isEvent4Box( e ) && this.checkBox( a );
 				}
 				a && this.trigger( 'focus' );
@@ -10060,35 +10130,6 @@ TR = define.widget( 'tr', {
 				Q( this.$() )[ b ]( s );
 			else
 				Q( b === 'prepend' ? this.$() : this.$().parentNode.parentNode.rows[ this.$().rowIndex + this._childLen() ] ).after( s );
-		},
-		// @a -> T/F, b -> src
-		toggle: function( a, b ) {
-			if ( this.gridToggle || this.gridLeaf ) {
-				(this.gridToggle || this.gridLeaf).toggle( a );
-			} else {
-				if ( this.length ) {
-					a == N && (a = ! this.x.open);
-					this.toggle_rows( a );
-				} else if ( this.x.src ) {
-					var c = this.rootNode.colgrps[ 0 ], d = {}, r;
-					d[ c[ 0 ].x.field ] = { colspan: c.length, node: { type: 'view', src: this.x.src } };
-					this.append( d ).isExpandRow = T;
-					this.x.open = T;
-				}
-				if ( this.length ) {
-					this.trigger( this.isOpen() ? 'expand' : 'collapse' );
-				}
-			}
-		},
-		toggle_rows: function( a ) {
-			var i = 0, l = this.length;
-			if ( l ) {
-				for ( ; i < l; i ++ ) {
-					this[ i ].css( 'display', a ? '' : 'none' )
-						.toggle_rows( a ? this[ i ].isOpen() : a );
-				}
-				this.x.open = a;
-			}
 		}
 	}
 } ),
@@ -10104,6 +10145,7 @@ THR = define.widget( 'thead/tr', {
 	Default: TR.Default,
 	Listener: {
 		body: {
+			ready: TR.Listener.body.ready,
 			click: {
 				occupy: T,
 				method: function( e ) {
@@ -10131,18 +10173,19 @@ THR = define.widget( 'thead/tr', {
 // `TCell` 是 tr 的离散节点。当 tr 添加 td 时，先创建一个 tcell ，然后 tcell 添加这个 td
 TCell = define.widget( 'tcell', {
 	Const: function( x, p ) {
+		this.grid = p.grid;
 		W.call( this, x, p, -1 );
 	},
 	Prototype: {
 		ROOT_TYPE: 'grid,form',
 		x_childtype: $.rt( 'td' ),
 		scaleWidth: function( a ) {
-			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
+			var w = 0, l = a.x.colspan || 1, r = this.grid, g = this.grid.getColgroup(), c = a.col, d = r._pad, e;
 			while ( l -- )
-				(e = r.colgrps[ 0 ][ a.col.nodeIndex + l ]) != N && (w += e.width());
+				(e = g[ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
 				return N;
-			if ( r._face == 'cell' && a.col.nodeIndex < r.colgrps[ 0 ].length - 1 )
+			if ( r._face == 'cell' && a.col.nodeIndex < g.length - 1 )
 				w -= ie7 ? 2 : 1; //fixme: ie7下需要多减一个像素，原因待查
 			w -= c.x.wmin != N ? c.x.wmin : c.x.style ? _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style ).wmin : d * 2;
 			return w;
@@ -10154,6 +10197,7 @@ TCell = define.widget( 'tcell', {
 /* `tbody` */
 TBody = define.widget( 'tbody', {
 	Const: function( x, p ) {
+		this.grid = p.grid;
 		W.apply( this, arguments );
 		this._rowspan = {};
 	},
@@ -10161,6 +10205,8 @@ TBody = define.widget( 'tbody', {
 		body: {
 			nodechange: function() {
 				this.rootNode.resetRowCls();
+				if ( this.rootNode != this.grid )
+					this.grid.body.fixHeight();
 			}
 		}
 	},
@@ -10172,9 +10218,18 @@ TBody = define.widget( 'tbody', {
 		insertHTML: function( a, b ) {
 			this.$() && Q( this.$() )[ b || 'append' ]( a.isWidget ? a.$() : a );
 		},
+		// 获取平行的tbody/thead /@a -> get root row?
+		getParallel: function( a ) {
+			var u = this.rootNode, r = this.grid === this.rootNode ? this : u[ this.type ]();
+			if ( a )
+				return r;
+			for ( var j = 0, r = [ r ]; j < u.fixed.length; j ++ )
+				r.push( u.fixed[ j ][ this.type ]() );
+			return r;
+		},
 		// @a -> rows json, b -> index
 		insertCol: function( a, b ) {
-			var r = this.rootNode, g = r.colgrps[ 0 ];
+			var r = this.rootNode, g = this.parentNode.colgroup;
 			b = b == N || ! g[ b ] ? g.length - 1 : b;
 			for( var i = 0, l = Math.min( a.length, this.length ); i < l; i ++ ) {
 				$.extendDeep( this[ i ].x, typeof a[ i ].data !== _OBJ ? { data: a[ i ] } : a[ i ] );
@@ -10193,13 +10248,15 @@ TBody = define.widget( 'tbody', {
 		},
 		x_nodes: TR.prototype.x_nodes,
 		html_nodes: function() {
-			for ( var i = 0, r = this.rootNode.getEchoRows(), l = r.length, s = []; i < l; i ++ )
+			for ( var i = 0, r = this.grid.getEchoRows(), l = r.length, s = []; i < l; i ++ )
 				s.push( r[ i ].html( i ) );
 			return s.join( '' );
 		},
 		html: function() { return '<tbody id=' + this.id + '>' + this.html_nodes() + '</tbody>' }
 	}
-} ),
+} );
+_parallel_methods( TBody, 'prepend append before after' );
+var
 /* `thead` */
 THead = define.widget( 'thead', {
 	Extend: TBody,
@@ -10207,26 +10264,30 @@ THead = define.widget( 'thead', {
 		body: {
 			ready: function() {
 				// 拖动表头调整大小
-				var r = this.rootNode;
+				var r = this.rootNode, g = this.grid, c = this.parentNode.colgroup;
 				if ( r.x.resizable ) {
 					Q( 'td', this.$() ).append( '<div class=w-th-rsz></div>' );
 					Q( '.w-th-rsz', this.$() ).height( this.height() ).on( 'mousedown', function( e ) {
-						var c = this, d = c.parentNode, x = e.pageX,
-							o = $.db( '<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr( c ).top + 'px;background:#aaa;"></div>' );
+						var b = this.parentNode, n = Column.index( b ), x = e.pageX,
+							o = $.db( '<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr( this ).top + 'px;background:#aaa;"></div>' );
 						$.moveup( function( e ) {
 							o.style.left = e.pageX + 'px';
 						}, function( e ) {
-							r.colWidth( d.cellIndex, r.colWidth( d.cellIndex ) + e.pageX - x );
+							g.colWidth( n, g.colWidth( n ) + e.pageX - x );
+							if ( r != g ) {
+								var d = c[ n ].x.fixedIndex;
+								r.colWidth( d, r.colWidth( d ) + e.pageX - x );
+							}
 						}, o );
 					} );
 				}
 				// 排序
-				for ( var i = 0, c = r.colgrps[ 0 ], d = F; i < c.length; i ++ ) {
+				for ( var i = 0, d = F; i < c.length; i ++ ) {
 					if ( c[ i ].x.sort ) {
 						Q( '.w-th-sort', this.$() ).each( function() {
 							Q( this ).click( function( e ) {
 								var o = Q( e.target );
-								r.order( c[ Col.index( this ) ].x.field, o.hasClass( 'f-arw-t1' ) ? 'asc' : o.hasClass( 'f-arw-b1' ) ? 'desc' : N );
+								g.order( c[ Column.index( this ) ].x.field, o.hasClass( 'f-arw-t1' ) ? 'asc' : o.hasClass( 'f-arw-b1' ) ? 'desc' : N );
 							} );
 						} );
 						break;
@@ -10243,6 +10304,7 @@ THead = define.widget( 'thead', {
 /* `column` */
 Column = define.widget( 'column', {
 	Const: function( x, p ) {
+		this.grid = p.grid;
 		W.apply( this, arguments );
 		if ( x.sort )
 			this._sort = x.sort.status;
@@ -10266,20 +10328,22 @@ Column = define.widget( 'column', {
 	Prototype: {
 		ROOT_TYPE: 'grid,form',
 		th: function() {
-			var t = this.rootNode.thead();
+			var t = this.grid.thead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		width_minus: function() {
-			var n = 0;
+			var n = 0, r = this.rootNode;
 			if ( ie7 ) {
-				var r = this.rootNode, d = r._pad,
+				var d = r._pad,
 					n = _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + (r._face === 'cell' && this.nodeIndex < this.parentNode.length - 1 ? 'border-right:1px solid #eee;' : '') + this.x.style ).wmin;
+			}
+			if ( this.grid != r && r._face === 'cell' && this.nodeIndex === 0 ) {
+				n -= 1;
 			}
 			return n;
 		},
 		html_sortarrow: function( a ) {
-			return '<div class="w-th-sortwrap f-wdbr f-nv">' + $.arrow( 't1' ) +
-				$.arrow( 'b1' ) + '</div>';
+			return '<div class="w-th-sortwrap f-wdbr f-nv">' + $.arrow( 't1' ) + $.arrow( 'b1' ) + '</div>';
 		},
 		html: function() {
 			return '<col id=' + this.id + ' style=width:' + (this.innerWidth() - this.width_minus()) + 'px>';
@@ -10288,6 +10352,10 @@ Column = define.widget( 'column', {
 } ),
 /* `colgroup` */
 Colgroup = define.widget( 'colgroup', {
+	Const: function( x, p ) {
+		this.grid = p.grid;
+		W.apply( this, arguments );
+	},
 	Extend: 'horz/scale',
 	Prototype: {
 		ROOT_TYPE: 'grid,form',
@@ -10306,7 +10374,8 @@ Colgroup = define.widget( 'colgroup', {
 Table = define.widget( 'table', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		p.rootNode.colgrps.push( new Colgroup( { nodes: x.columns }, this ) );
+		this.grid = p.grid;
+		this.colgroup = new Colgroup( { nodes: x.columns }, this );
 		if ( x.thead )
 			this.thead = new THead( x.thead || {}, this );
 		else
@@ -10317,7 +10386,7 @@ Table = define.widget( 'table', {
 			resize: function() {
 				if ( br.ms && this.$() ) {
 					var w = this.innerWidth();
-					this.css( 'width', w == N ? 'auto' : w );
+					this.css( 'width', w == N ? '' : w );
 				}
 			}
 		}
@@ -10325,13 +10394,14 @@ Table = define.widget( 'table', {
 	Prototype: {
 		ROOT_TYPE: 'grid,form',
 		html: function() {
-			var s = '<table id=' + this.id + ' class="w-' + this.rootNode.type + '-table w-' + this.rootNode.type + '-face-' + this.rootNode._face + '" cellspacing=0 cellpadding=' + this.rootNode._pad;
+			var t =this.grid.type.split( '/' )[ 0 ],
+				s = '<table id=' + this.id + ' class="w-' + t + '-table w-' + t + '-face-' + this.grid._face + '" cellspacing=0 cellpadding=' + this.grid._pad;
 			if ( br.ms ) {
 				var w = this.innerWidth();
 				w != N && (s += ' style="width:' + w + 'px"');
 			}
 			s += '>';
-			for ( var t = '<tr>', i = 0, c = this.rootNode.colgrps[ 0 ], l = c.length; i < l; i ++ )
+			for ( var t = '<tr>', i = 0, c = this.colgroup, l = c.length; i < l; i ++ )
 				t += '<td' + (c[ i ].x.style ? ' style="' + c[ i ].x.style + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
 			//IE下如果不加这个thead，当有colspan的列时，宽度可能会失调
 			if ( br.ms )
@@ -10349,6 +10419,7 @@ Table = define.widget( 'table', {
 GridHead = define.widget( 'grid/head', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
+		this.grid = p;
 		this.table = new Table( x.table, this );
 		p.attr( 'scroll' ) && $.classAdd( this, 'f-oh' );
 		this.className = 'w-' + this.rootNode.type + '-thead';
@@ -10384,6 +10455,7 @@ GridHead = define.widget( 'grid/head', {
 GridBody = define.widget( 'grid/body', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
+		this.grid = p;
 		this.table = new Table( x.table, this );
 		!p.attr( 'scroll' ) && $.classAdd( this, 'w-' + this.rootNode.type + '-bg' );
 		this.className = 'w-' + this.rootNode.type + '-tbody';
@@ -10393,81 +10465,65 @@ GridBody = define.widget( 'grid/body', {
 		body: {
 			ready: function() {
 				Scroll.Listener.body.ready.apply( this, arguments );
-				/*var r = this.rootNode;
-				if ( r.x.maxheight && ! r.innerHeight() ) {
-					var h = r.x.maxheight - (r.head ? r.head.$().offsetHeight : 0);
-					this.x.maxheight = h;
-					this.css( 'maxHeight', h ).setScroll();
-				}*/
 			},
 			scroll: function( e ) {
 				Scroll.Listener.body.scroll.apply( this, arguments );
-				this.parentNode.trigger( e );
+				var r = this.rootNode;
+				if ( r.head ) {
+					r.head.$().style.overflow = 'hidden';
+					r.head.$().scrollLeft = this.$( 'ovf' ).scrollLeft;
+				}
+				r.fixedScroll( this );
+				r.triggerHandler( e );
 			}
 		}
 	}
 } ),
-/* `grid` */
-Grid = define.widget( 'grid', {
-	Const: function( x, p ) {
-		this._pad  = x.cellpadding != N ? x.cellpadding : 5;
-		W.apply( this, arguments );
-		x.scroll == N && (x.scroll = T);
-		this._face = x.face || 'none';
-		this.colgrps = [];
-		var r = x.thead && x.thead.rows, s = this.attr( 'scroll' );
-		if ( r && r.length ) {
-			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
-			delete x.scroll;
-		}
-		this.body = new GridBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: this.head ? '*' : -1, scroll: this.head && s } ), this );
-		if ( x.hiddens )
-			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
-		if ( x.combo ) {
-			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
-			this.ownerView.combo = new GridCombo( this );
-		}
-		x.limit && this.limit();
-		x.width === -1 && $.classAdd( this, 'z-auto' );
-		$.classAdd( this, this.head ? 'z-head' : 'z-nohead' );
-		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
-		if ( this.head && _w_lay.height.call( this ) )
-			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
-		if ( this.x.combo )
-			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
-	},
-	Extend: 'vert',
-	//Default1: { scroll: T },
+/* `gridfixedbody` */
+GridFixedBody = define.widget( 'grid/fixed/body', {
+	Extend: GridBody,
 	Listener: {
 		body: {
 			ready: function() {
-				var a = this.tbody();
-				if ( a ) {
-					var b = a.$().rows, c = this.getFocusAll();
-					b.length && ($.classAdd( b[ 0 ], 'z-first' ), $.classAdd( b[ b.length - 1 ], 'z-last' ));
-					if ( c.length ) {
-						_scrollIntoView( c[ 0 ] );
-						for ( var i = 0, d; i < c.length; i ++ ) {
-							if ( (d = c[ i ].getBox()) && d.x.sync === 'focus' ) c[ i ].checkBox();
-						}
+				this.fixHeight();
+			},
+			mouseover: {
+				occupy: T,
+				method: function( e ) {
+					this.rootNode.body.trigger( e );
+				}
+			},
+			mouseout: {
+				occupy: T,
+				method: function( e ) {
+					this.rootNode.body.trigger( e );
+				}
+			},
+			mousewheel: {
+				occupy: T,
+				method: function( e ) {
+					if ( this.rootNode.isScrollable() ) {
+						var t = this.rootNode.scrollTop();
+						this.rootNode.scrollTop( t + (e.wheelDelta > 0 ? -20 : 20) );
+					} else if ( this.rootNode.body.isScrollable() ) {
+						var t = this.rootNode.body.scrollTop();
+						this.rootNode.body.scrollTop( t + (e.wheelDelta > 0 ? -20 : 20) );
 					}
 				}
 			},
-			scroll: function( e ) {
-				Vert.Listener.body.scroll.apply( this, arguments );
-				if ( this.head ) {
-					this.head.$().style.overflow = 'hidden';
-					this.head.$().scrollLeft = this.body.$( 'ovf' ).scrollLeft;
-				}
-			},
-			resize: function() {
-				Vert.Listener.body.resize.apply( this, arguments );
-				this.$() && $.classAdd( this.$(), 'z-auto', this.innerWidth() == N );
-			}
+			scroll: N
 		}
 	},
 	Prototype: {
-		className: 'w-grid',
+		fixHeight: function() {
+			this.$().style.maxHeight = (this.rootNode.head ? this.rootNode.body.height() : this.rootNode.height()) + 'px';
+		}
+	}
+} ),
+/* `absgrid` */
+AbsGrid = define.widget( 'abs/grid', {
+	Extend: 'vert',
+	Prototype: {
 		x_childtype: $.rt( 'tr' ),
 		thead: function() { return this.head && this.head.table.thead },
 		tbody: function() { return this.body.table.tbody },
@@ -10555,6 +10611,11 @@ Grid = define.widget( 'grid', {
 			}
 			return this;
 		},
+		// 获取平行的grid /@a -> get root row?
+		getParallel: function( a ) {
+			var r = this.rootNode || this;
+			return a ? r : [ r ].concat( r.fixed );
+		},
 		// @a -> elem
 		getCellAxis: function( a ) {
 			var b = this.tbody(), c = Q( a ).closest( 'td' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'tr' );
@@ -10562,9 +10623,13 @@ Grid = define.widget( 'grid', {
 				return { rowIndex: r.$().rowIndex - 1, cellIndex: c[ 0 ].cellIndex };
 			}
 		},
+		getColgroup: function( i ) {
+			return this.body.table.colgroup;
+		},
 		// @a -> col index, b -> width?
 		colWidth: function( a, b ) {
-			var g = this.colgrps;
+			var g = [ this.getColgroup() ];
+			this.head && g.push( this.head.table.colgroup );
 			if ( b == N )
 				return g[ 0 ] && g[ 0 ][ a ] && g[ 0 ][ a ].width();
 			for ( var i = 0; i < g.length; i ++ ) {
@@ -10636,7 +10701,7 @@ Grid = define.widget( 'grid', {
 		},
 		_col_parse: function( a ) {
 			if ( a != N && isNaN( a ) ) {
-				for ( var j = 0, g = this.colgrps[ 0 ]; j < g.length; j ++ )
+				for ( var j = 0, g = this.getColgroup(); j < g.length; j ++ )
 					if ( g[ j ].x.field === a ) { a = j; break; }
 			}
 			return a;
@@ -10644,27 +10709,32 @@ Grid = define.widget( 'grid', {
 		//@public 插入一列 / @a -> 一列的数据grid json, b -> colIndex|colField
 		insertColumn: function( a, b ) {
 			b = this._col_parse( b );
-			for ( var j = 0; j < this.colgrps.length; j ++ )
-				this.colgrps[ j ].insertCol( a.columns[ 0 ], b );
-			(j = this.thead()) && j.insertCol( a.thead.rows, b );
-			(j = this.tbody()) && j.insertCol( a.tbody.rows, b );
+			var g = this.getColgroup();
+			g.insertCol( a.columns[ 0 ], b );
+			if ( g = this.head && this.head.table.colgroup )
+				g.insertCol( a.columns[ 0 ], b );
+			(g = this.thead()) && g.insertCol( a.thead.rows, b );
+			(g = this.tbody()) && g.insertCol( a.tbody.rows, b );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
 		//@public 删除一列 / @a -> colIndex|colField
 		deleteColumn: function( a ) {
 			a = this._col_parse( a );
-			for ( var j = 0; j < this.colgrps.length; j ++ )
-				this.colgrps[ j ].deleteCol( a );
-			(j = this.thead()) && j.deleteCol( a );
-			(j = this.tbody()) && j.deleteCol( a );
+			var g = this.getColgroup();
+			g.deleteCol( a );
+			if ( g = this.head && this.head.table.colgroup )
+				g.deleteCol( a );
+			(g = this.thead()) && g.deleteCol( a );
+			(g = this.tbody()) && g.deleteCol( a );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
 		//@public 更新一列 / @a -> 一列的数据grid json, b -> colIndex|colField
 		updateColumn: function( a, b ) {
 			b = this._col_parse( b );
-			if ( this.colgrps[ 0 ][ b ] ) {
+			var g = this.getColgroup();
+			if ( g[ b ] ) {
 				this.deleteColumn( b );
 				this.insertColumn( a, b );
 			}
@@ -10700,7 +10770,7 @@ Grid = define.widget( 'grid', {
 		},
 		// 高亮某个字段的关键字 /@ a -> field name, b -> key, c -> matchlength, d -> keycls
 		highlight: function( a, b, c, d ) {
-			for ( var k = 0, e = this.colgrps[ 0 ], l = e.length; k < l; k ++ ) {
+			for ( var k = 0, e = this.getColgroup(), l = e.length; k < l; k ++ ) {
 				if ( e[ k ].x.field == a ) break;
 			}
 			if ( k < l ) {
@@ -10750,7 +10820,7 @@ Grid = define.widget( 'grid', {
 		},
 		//排序 /@a -> field, b -> [asc,desc]
 		order: function( a, b ) {
-			for ( var k = 0, e = this.colgrps[ 0 ], l = e.length; k < l; k ++ ) {
+			for ( var k = 0, e = this.getColgroup(), l = e.length; k < l; k ++ ) {
 				if ( e[ k ].x.field == a ) break;
 			}
 			if ( k < l ) {
@@ -10768,7 +10838,7 @@ Grid = define.widget( 'grid', {
 					}
 				} else {
 					e[ k ]._sort = b;
-					Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' )
+					Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' );
 					Q( e[ k ].th() ).addClass( 'z-' + b );
 					r.sort( function( m, n ) {
 						var e = m.x.data[ d ], f = n.x.data[ d ];
@@ -10805,7 +10875,132 @@ Grid = define.widget( 'grid', {
 			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.type + '-bg' : '');
 		}
 	}
+} );
+_parallel_methods( AbsGrid, 'resetRowCls order' );
+var
+/* `grid` */
+Grid = define.widget( 'grid', {
+	Const: function( x, p ) {
+		this._pad  = x.cellpadding != N ? x.cellpadding : 5;
+		W.apply( this, arguments );
+		x.scroll == N && (x.scroll = T);
+		this._face = x.face || 'none';
+		var r = x.thead && x.thead.rows, s = this.attr( 'scroll' );
+		if ( r && r.length ) {
+			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
+			delete x.scroll;
+		}
+		this.body = new GridBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: this.head ? '*' : -1, scroll: this.head && s } ), this );
+		if ( x.hiddens )
+			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
+		if ( x.combo ) {
+			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
+			this.ownerView.combo = new GridCombo( this );
+		}
+		this.fixed = [];
+		if ( ! ie7 ) { //@fixme: 暂不支持ie7
+			var xl = [], xr = [];
+			for ( var i = 0, f, c; i < x.columns.length; i ++ ) {
+				(f = x.columns[ i ].fixed) && (f === 'left' ? xl : xr).push( $.extend( { fixed: N, fixedIndex: i }, x.columns[ i ] ) );
+			}
+			if ( xl.length ) {
+				this.left = new GridLeft( { columns: xl, thead: x.thead, tbody: x.tbody }, this, -1 );
+				this.fixed.push( this.left );
+			}
+			if ( xr.length ) {
+				this.right = new GridRight( { columns: xr, thead: x.thead, tbody: x.tbody }, this, -1 );
+				this.fixed.push( this.right );
+			}
+		}
+		x.limit && this.limit();
+		x.width === -1 && $.classAdd( this, 'z-auto' );
+		$.classAdd( this, this.head ? 'z-head' : 'z-nohead' );
+		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
+		if ( this.head && _w_lay.height.call( this ) )
+			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
+		if ( this.x.combo )
+			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
+	},
+	Extend: AbsGrid,
+	Listener: {
+		body: {
+			ready: function() {
+				var a = this.tbody();
+				if ( a ) {
+					var b = a.$().rows, c = this.getFocusAll();
+					b.length && ($.classAdd( b[ 0 ], 'z-first' ), $.classAdd( b[ b.length - 1 ], 'z-last' ));
+					if ( c.length ) {
+						_scrollIntoView( c[ 0 ] );
+						for ( var i = 0, d; i < c.length; i ++ ) {
+							if ( (d = c[ i ].getBox()) && d.x.sync === 'focus' ) c[ i ].checkBox();
+						}
+					}
+				}
+			},
+			scroll: function( e ) {
+				Vert.Listener.body.scroll.apply( this, arguments );
+				this.fixedScroll();
+			},
+			resize: function() {
+				Vert.Listener.body.resize.apply( this, arguments );
+				this.$() && $.classAdd( this.$(), 'z-auto', this.innerWidth() == N );
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-grid',
+		fixedScroll: function( a ) {
+			for ( var i = 0, r = this.fixed, a = a || this; i < r.length; i ++ ) {
+				r[ i ].body.$().scrollTop = a.$( 'ovf' ).scrollTop;
+				r[ i ].addClass( 'z-cover', r[ i ].type === 'grid/left' ? a.$( 'ovf' ).scrollLeft > 0 : !a.isScrollRight() );
+			}
+		},
+		html_append: function() {
+			for ( var i = 0, s = ''; i < this.fixed.length; i ++ )
+				s += this.fixed[ i ].html();
+			return _proto.html_append.apply( this, arguments ) + s;
+		}
+	}
 }),
+/* `gridleft` */
+GridLeft = define.widget( 'grid/left', {
+	Const: function( x, p ) {
+		W.apply( this, arguments );
+		this._pad  = p._pad;
+		this._face = p._face;
+		var r = x.thead && x.thead.rows;
+		if ( r && r.length ) {
+			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
+		}
+		this.body = new GridFixedBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: -1 } ), this );
+		x.limit && this.limit();
+	},
+	Extend: AbsGrid,
+	Default: { width: -1 },
+	Listener: {
+		body: {
+			ready: function() {
+				var p = this.parentNode;
+				if ( p.head ) {
+					for ( var i = 0, h = this.head.table.thead, ph = p.head.table.thead; i < h.length; i ++ ) {
+						h[ i ].height( ph[ i ].height() );
+					}
+				}
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-grid-left w-grid-fixed',
+		ROOT_TYPE: 'grid,form'
+	}
+} ),
+/* `gridright` */
+GridRight = define.widget( 'grid/right', {
+	Extend: GridLeft,
+	Prototype: {
+		className: 'w-grid-right w-grid-fixed'
+	}
+} ),
 /* `form` */
 Form = define.widget( 'form', {
 	Const: function( x, p ) {

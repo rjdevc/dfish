@@ -961,7 +961,7 @@ _set_style = function( o, n, v ) {
 	} else {
 		n = _css_camelize( n );
 		if ( n === 'width' || n === 'height' )
-			v = Math.max( _number( v ), 0 );
+			v && v !== 'auto' && (v = Math.max( _number( v ), 0 ));
 		if ( v && !isNaN( v ) && n !== 'zIndex' )
 			v += 'px';
 		o.style[ n ] = v;

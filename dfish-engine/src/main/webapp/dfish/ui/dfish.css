@@ -23,11 +23,11 @@
 .f-scroll-overflow::-webkit-scrollbar{width:0;height:0}
 .f-scroll-y{position:absolute;top:0;bottom:0;right:1px;display:none;visibility:hidden;border-radius:4px;z-index:2}
 .f-scroll-y-track{position:relative;height:100%;width:8px;top:0;background:#b2bdc8;border-radius:5px;opacity:.9}
-.f-scroll-wrap:hover > .f-scroll-y,.f-css2 .f-scroll-wrap:hover .f-scroll-y{visibility:visible}
+.f-scroll-wrap:hover > .f-scroll-y,.f-css2 .f-scroll-wrap:hover .f-scroll-y,.f-scroll-wrap.z-hv > .f-scroll-y,.f-css2 .f-scroll-wrap.z-hv .f-scroll-y{visibility:visible}
+.f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x,.f-scroll-wrap.z-hv > .f-scroll-x,.f-css2 .f-scroll-wrap.z-hv .f-scroll-x{visibility:visible}
 .f-scroll-y:hover .f-scroll-y-track{background:#99a8b8;opacity:.85}
 .f-scroll-x{position:absolute;left:0;right:0;bottom:1px;display:none;visibility:hidden;border-radius:4px;z-index:2}
 .f-scroll-x-track{position:relative;width:100%;height:7px;left:0;background:#b2bdc8;border-radius:4px;opacity:.9}
-.f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x{visibility:visible}
 .f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85}
 .f-scroll-wrap.z-ovis{overflow:visible}
 
@@ -137,7 +137,7 @@
 .w-frame{position:relative}
 
 /* grid */
-.w-grid,.w-form{text-align:left}
+.w-grid,.w-form{text-align:left;position:relative;overflow:hidden}
 .w-grid.z-auto .w-grid-table,.w-form.z-auto .w-form-table{width:auto}
 .w-grid-table ._fix_thead,.w-form-table ._fix_thead{*display:none}
 .w-grid-table ._fix_thead td,.w-form-table ._fix_thead td{padding-top:0;padding-bottom:0}
@@ -148,8 +148,8 @@
 .w-td-none{position:relative;overflow:hidden;*position:static;}
 .w-td-line{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;*position:static}
 .w-td-dot{position:relative;overflow:hidden;border-bottom:1px dashed #e3e3e3;*position:static}
-.w-td-cell{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;border-right:1px solid #e9e9e9;*position:static}
-.w-td-cell.z-last{border-right:0}
+.w-td-cell{position:relative;overflow:hidden;border-color:#e9e9e9;border-style:solid;border-width:0 1px 1px 0;*position:static}
+.w-td-cell.z-last{border-right-width:0}
 .w-th{position:relative}
 .w-th-rsz{position:absolute;width:4px;top:0;right:-2px;cursor:col-resize}
 .w-th.z-last .w-th-rsz{right:0}
@@ -169,6 +169,15 @@
 .w-grid-head{overflow:hidden}
 .w-grid-head td{position:relative}
 
+.w-grid-fixed{position:absolute;top:0;background:#fff;z-index:1}
+.w-grid-fixed .w-grid-tbody{overflow:hidden}
+.w-grid-fixed .w-grid-table{width:auto;*table-layout:auto;*width:auto}
+.w-grid-left{left:0}
+.w-grid-right{right:0}
+.w-grid-left.z-cover{box-shadow:6px 0 6px -4px rgba(0,0,0,0.15)}
+.w-grid-right.z-cover{box-shadow:-6px 0 6px -4px rgba(0,0,0,0.15)}
+.w-grid-left .w-td-cell.z-last{border-right-width:1px}
+.w-grid-right .w-td-cell.z-first{border-left-width:1px}
 
 .w-label{position:relative}
 .w-label ._lb{margin-right:6px}
