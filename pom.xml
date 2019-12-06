@@ -4,9 +4,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <name>dfish</name>
-    <groupId>com.rongji</groupId>
+    <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.3.0.17-SNAPSHOT</version>
+    <version>3.3.0.20-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://dfish.rongji.com</url>
@@ -96,33 +96,43 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-misc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-ui-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
+                <artifactId>dfish-ui-template</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-framework</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
-                <artifactId>dfish-ui-template</artifactId>
+                <groupId>com.rongji.dfish</groupId>
+                <artifactId>dfish-framework-hibernate</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rongji.dfish</groupId>
+                <artifactId>dfish-framework-mybatis</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
@@ -132,9 +142,11 @@
         <module>dfish-base</module>
         <module>dfish-misc</module>
         <module>dfish-ui</module>
-        <module>dfish-framework</module>
         <module>dfish-engine</module>
         <module>dfish-ui-plugin</module>
         <module>dfish-ui-template</module>
+        <module>dfish-framework</module>
+        <module>dfish-framework-hibernate</module>
+        <module>dfish-framework-mybatis</module>
     </modules>
 </project>

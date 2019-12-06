@@ -7,14 +7,14 @@ import com.rongji.dfish.ui.AbstractWidget;
  * Description: 用于grid的自增序号列
  * Copyright:   Copyright (c)2017
  * Company:     rongji
- * @author     DFish Team - YuLM
+ * @author     DFish Team - lamontYu
  * @version    1.0
  * Create at:   2017-8-10 上午10:17:30
  * 
  * Modification History:
  * Date			Author				Version		Description
  * ------------------------------------------------------------------
- * 2017-8-10	DFish Team - YuLM	1.0			1.0 Version
+ * 2017-8-10	DFish Team - lamontYu	1.0			1.0 Version
  */
 public class GridRownum extends AbstractWidget<GridRownum> {
 

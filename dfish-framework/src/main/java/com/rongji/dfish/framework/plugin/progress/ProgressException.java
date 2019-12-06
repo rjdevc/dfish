@@ -1,5 +1,11 @@
 package com.rongji.dfish.framework.plugin.progress;
 
+/**
+ * 进度条运行异常
+ * @author lamontYu
+ * @create 2019-12-05
+ * @since 3.0
+ */
 public class ProgressException extends RuntimeException {
 
 	private static final long serialVersionUID = -5010323366896210348L;

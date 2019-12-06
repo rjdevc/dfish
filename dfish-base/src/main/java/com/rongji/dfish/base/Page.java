@@ -10,9 +10,10 @@ import java.io.Serializable;
  * 人们一般把这种情况称做每页十条，第二页。
  * 注意这里是从1开始而不是0开始
  *
- * @author v1.0 王志亮 v1.1 LinLW将该类移动到dfish.base
+ * @author v1.0 王志亮
+ * v1.1 LinLW将该类移动到dfish.base
  * v1.2 LinLW 增加autoRowCount字段。以便远程方法中如果用到此类信息不需要额外封装。
- * v1.3 YuLM 增加currentCount字段。
+ * v1.3 lamontYu 增加currentCount字段。
  * @version 1.3
  */
 public class Page implements Serializable {
@@ -105,7 +106,8 @@ public class Page implements Serializable {
      * @return
      */
     public int getPageCount() {
-        if (pageSize > 0) {//(rowCount != 0) &&
+        if (pageSize > 0) {
+            //(rowCount != 0) &&
             if (rowCount < 0) {
                 rowCount = 0;
             }

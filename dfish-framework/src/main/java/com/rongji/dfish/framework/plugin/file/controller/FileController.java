@@ -7,7 +7,7 @@ import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.FrameworkContext;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.mvc.controller.BaseController;
+import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
@@ -15,11 +15,11 @@ import com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDef
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
+import com.rongji.dfish.framework.util.ServletUtil;
 import com.rongji.dfish.misc.util.ImageUtil;
 import com.rongji.dfish.ui.command.JS;
 import com.rongji.dfish.ui.form.UploadItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -37,11 +38,17 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@RequestMapping("/file")
-@Controller
-public class FileController extends BaseController {
+/**
+ * 附件相关控制层
+ *
+ * @author lamontYu
+ * @version 1.3 去掉类注解,采用配置加载模式,有利于项目自定义配置 lamontYu 2019-12-5
+ * @create 2018-08-03 before
+ * @since 3.0
+ */
+public class FileController extends BaseActionController {
 
-    @Autowired
+    @Resource(name = "fileService")
     private FileService fileService;
     @Autowired(required = false)
     private List<FileUploadPlugin> uploadPlugins;
@@ -78,6 +85,14 @@ public class FileController extends BaseController {
         }
     }
 
+    /**
+     * 附件保存方法,根据定义情况对上传附件类型进行限制
+     *
+     * @param request
+     * @param fileService
+     * @param acceptTypes
+     * @return
+     */
     public static UploadItem saveFile(HttpServletRequest request, FileService fileService, String acceptTypes) {
         UploadItem uploadItem = null;
 
@@ -150,6 +165,12 @@ public class FileController extends BaseController {
         return false;
     }
 
+    /**
+     * 上传附件
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping("/uploadFile")
     @ResponseBody
     public UploadItem uploadFile(HttpServletRequest request) {
@@ -162,6 +183,12 @@ public class FileController extends BaseController {
 
     private static final ExecutorService EXECUTOR_IMAGE = ThreadUtil.getCachedThreadPool();
 
+    /**
+     * 上传图片
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping("/uploadImage")
     @ResponseBody
     public UploadItem uploadImage(HttpServletRequest request) {
@@ -259,6 +286,14 @@ public class FileController extends BaseController {
         return uploadItem;
     }
 
+    /**
+     * 第三方插件附件上传
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/upload4Plugin")
     @ResponseBody
     public Object upload4Plugin(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -271,7 +306,6 @@ public class FileController extends BaseController {
         Object result = uploadPlugin.doRequest(request);
         return result;
     }
-
 
     /**
      * 下载附件方法
@@ -286,7 +320,7 @@ public class FileController extends BaseController {
     public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String enFileId = request.getParameter("fileId");
         String fileId = fileService.decrypt(enFileId);
-        PubFileRecord fileRecord = fileService.getFileRecord(fileId);
+        PubFileRecord fileRecord = fileService.get(fileId);
         if (fileRecord == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -303,6 +337,12 @@ public class FileController extends BaseController {
         return getClass();
     }
 
+    /**
+     * 根据文件拓展名获取内联类型
+     *
+     * @param extName
+     * @return
+     */
     protected String getMimeType(String extName) {
         if (extName == null) {
             return null;
@@ -404,12 +444,6 @@ public class FileController extends BaseController {
         }
     }
 
-    /**
-     * 附件下载
-     *
-     * @param response
-     * @throws Exception
-     */
     private boolean downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
         if (input == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -441,7 +475,7 @@ public class FileController extends BaseController {
                 response.setHeader("ETag", getEtag(downloadParam));
             }
             response.setStatus(HttpServletResponse.SC_OK);
-            FileUtil.downLoadData(response, input);
+            ServletUtil.downLoadData(response, input);
             return true;
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
@@ -536,7 +570,7 @@ public class FileController extends BaseController {
     public void thumbnail(HttpServletRequest request, HttpServletResponse response, @PathVariable String scheme,
                           @PathVariable String alias, @PathVariable String fileId) throws Exception {
         String decFileId = fileService.decrypt(fileId);
-        PubFileRecord fileRecord = fileService.getFileRecord(decFileId);
+        PubFileRecord fileRecord = fileService.get(decFileId);
 
         if (fileRecord == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -613,7 +647,7 @@ public class FileController extends BaseController {
         // FIXME 目前仅图片预览方法,如果是文件预览需做处理,不支持预览可能直接下载
         String enFileId = request.getParameter("fileId");
         String fileId = fileService.decrypt(enFileId);
-        PubFileRecord fileRecord = fileService.getFileRecord(fileId);
+        PubFileRecord fileRecord = fileService.get(fileId);
 
         if (fileRecord != null) {
             String fileType = FileUtil.getFileExtName(fileRecord.getFileUrl());

@@ -11,13 +11,13 @@ import java.util.concurrent.ExecutorService;
  * Description: 
  * Copyright:   Copyright © 2018
  * Company:     rongji
- * @author		YuLM
+ * @author		lamontYu
  * @version		1.0
  *
  * Modification History:
  * Date						Author			Version			Description
  * ------------------------------------------------------------------
- * 2018年4月20日 下午4:43:40		YuLM			1.0				1.0 Version
+ * 2018年4月20日 下午4:43:40		lamontYu			1.0				1.0 Version
  */
 public class LogUtil {
 

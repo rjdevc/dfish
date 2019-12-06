@@ -6,7 +6,7 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
-import com.rongji.dfish.framework.plugin.file.service.FileService;
+import com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl;
 import com.rongji.dfish.ui.form.UploadButton;
 import com.rongji.dfish.ui.form.UploadFile;
 import com.rongji.dfish.ui.form.UploadItem;
@@ -15,9 +15,12 @@ import com.rongji.dfish.ui.form.UploadItem;
  * 默认附件上传组件
  * 
  * @author DFish Team
- *
+ * @create 2018-08-03 before
+ * @since 3.0
+ * @deprecated 直接使用UploadFile类,至于默认的配置,在首页配置项中设置,无需在默认类提供
  */
-public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
+@Deprecated
+public class DefaultUploadFile extends UploadFile {
 
     private static final long serialVersionUID = 7489001330729080679L;
 
@@ -46,7 +49,7 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 			fileTypes = handlingScheme.getHandlingTypes();
 			sizeLimit = handlingScheme.getSizeLimit();
 		}
-		FileService fileService = FrameworkHelper.getBean(FileService.class);
+		FileServiceImpl fileService = FrameworkHelper.getBean(FileServiceImpl.class);
 		fileTypes = Utils.isEmpty(fileTypes) ? fileService.getFileTypes() : fileTypes;
 		sizeLimit = Utils.isEmpty(sizeLimit) ? fileService.getSizeLimit() : sizeLimit;
 		this.setFiletypes(fileTypes);
@@ -65,7 +68,8 @@ public class DefaultUploadFile extends UploadFile<DefaultUploadFile> {
 				uploadButton.setText("本地上传(最大" + maxfilesize + ")");
 			}
 		}
-	    return super.setMaxfilesize(maxfilesize);
+		super.setMaxfilesize(maxfilesize);
+	    return this;
     }
 
 }

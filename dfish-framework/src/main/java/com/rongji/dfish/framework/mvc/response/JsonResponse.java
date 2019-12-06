@@ -25,6 +25,14 @@ public class JsonResponse<T> {
         setPagination(pagination);
     }
 
+    public static <T> JsonResponse<T> of(T data) {
+        return of(data, null);
+    }
+    public static <T> JsonResponse<T> of(T data, Pagination pagination) {
+        JsonResponse<T> response = new JsonResponse<>(data, pagination);
+        return response;
+    }
+
     public Header getHeader() {
         return header;
     }

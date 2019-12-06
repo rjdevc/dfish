@@ -6,13 +6,13 @@ import com.rongji.dfish.ui.AbstractWidget;
  * Description: 对话框预装载模板主体
  * Copyright:   Copyright © 2018
  * Company:     rongji
- * @author		YuLM
+ * @author		lamontYu
  * @version		1.0
  *
  * Modification History:
  * Date						Author			Version			Description
  * ------------------------------------------------------------------
- * 2018年5月4日 下午6:06:23		YuLM			1.0				1.0 Version
+ * 2018年5月4日 下午6:06:23		lamontYu			1.0				1.0 Version
  */
 public class PreloadBody extends AbstractWidget<PreloadBody>{
 	

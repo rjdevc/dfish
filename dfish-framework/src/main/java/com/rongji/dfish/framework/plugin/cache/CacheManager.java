@@ -14,9 +14,12 @@ import java.util.*;
  * 缓存管理类
  *
  * @author lamontYu
+ * @create 2019-09-23
+ * @since 3.2
+ * @version 1.1 去除缓存定义类,采用缓存实现 LinLW 2019-11-28
+ * @version 1.2 支持清理缓存超期数据 lamontYu 2019-12-05
  */
 @Component
-@Lazy(false)
 public class CacheManager {
     @Autowired(required = false)
     private List<Cache<?, ?>> caches;
@@ -92,7 +95,6 @@ public class CacheManager {
      * @param <K, V>       缓存值泛型
      * @return 移除的缓存组
      */
-    @SuppressWarnings("unchecked")
     public <K, V> Cache<K, V> removeCache(String cacheName) {
         return (Cache<K, V>) cacheMap.remove(cacheName);
     }

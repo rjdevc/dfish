@@ -4,13 +4,13 @@ package com.rongji.dfish.ui;
  * Description: 有状态的
  * Copyright:   Copyright © 2018
  * Company:     rongji
- * @author		YuLM
+ * @author		lamontYu
  * @version		1.0
  *
  * Modification History:
  * Date						Author			Version			Description
  * ------------------------------------------------------------------
- * 2018年6月28日 下午5:36:17		YuLM			1.0				1.0 Version
+ * 2018年6月28日 下午5:36:17		lamontYu			1.0				1.0 Version
  */
 public interface Statusful<T extends Statusful<T>> {
 

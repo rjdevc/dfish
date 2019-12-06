@@ -19,6 +19,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 进度条数据管理器
+ * @author lamontYu
+ * @create 2018-08-03 before
+ * @since 3.0
+ */
 public class ProgressManager {
     private Cache<String, ProgressData> progressCache;
 

@@ -9,7 +9,7 @@ import com.rongji.dfish.misc.cache.OptionCache;
 
 /**
  * 选项缓存,带有顺序的缓存
- * @author		YuLM
+ * @author		lamontYu
  * @version		1.0
  * @deprecated 该缓存方法不推荐使用,建议使用base包的相关缓存方法
  */

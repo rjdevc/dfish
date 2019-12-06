@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.Directional;
+import com.rongji.dfish.ui.Valignable;
 
 /**
  * AbstractUpload为抽象的上传组件，上传组件在dfish3中默认有两种，提供文件上传和图片上传
@@ -15,7 +17,7 @@ import com.rongji.dfish.ui.Directional;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractUpload<T extends AbstractUpload<T>> extends AbstractFormElement<T, List<UploadItem>> implements Directional<T> {
+public abstract class AbstractUpload<T extends AbstractUpload<T>> extends AbstractFormElement<T, List<UploadItem>> implements Directional<T>, Alignable<T>, Valignable<T> {
 
 	/**
 	 * 方向:横向
@@ -40,6 +42,8 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	protected List<ValueButton> valuebutton;
 	protected List<UploadButton> uploadbutton;
 	protected String dir;
+	protected String align;
+	protected String valign;
 	protected UploadItem pub;
 
 	/**
@@ -507,6 +511,28 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 */
 	public T setValue(List<UploadItem> value) {
 		this.value = value;
+		return (T) this;
+	}
+
+	@Override
+	public String getAlign() {
+		return align;
+	}
+
+	@Override
+	public T setAlign(String align) {
+		this.align = align;
+		return (T) this;
+	}
+
+	@Override
+	public String getValign() {
+		return valign;
+	}
+
+	@Override
+	public T setValign(String valign) {
+		this.valign = valign;
 		return (T) this;
 	}
 

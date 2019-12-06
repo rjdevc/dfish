@@ -12,8 +12,8 @@ public class Pagination implements Serializable {
 
     private static final long serialVersionUID = 8563611090473067679L;
 
-    private Integer limit;
-    private Integer offset;
+    private int limit = -1;
+    private int offset;
     private Integer size;
     private boolean autoRowCount = true;
 
@@ -65,7 +65,7 @@ public class Pagination implements Serializable {
      *
      * @return Integer
      */
-    public Integer getLimit() {
+    public int getLimit() {
         return limit;
     }
 
@@ -74,7 +74,7 @@ public class Pagination implements Serializable {
      *
      * @param limit Integer
      */
-    public Pagination setLimit(Integer limit) {
+    public Pagination setLimit(int limit) {
         this.limit = limit;
         return this;
     }
@@ -82,18 +82,18 @@ public class Pagination implements Serializable {
     /**
      * 偏移量，结果从第几条开始显示，初始是0条
      *
-     * @return Integer
+     * @return int
      */
-    public Integer getOffset() {
+    public int getOffset() {
         return offset;
     }
 
     /**
      * 偏移量，结果从第几条开始显示，初始是0条
      *
-     * @param offset Integer
+     * @param offset int
      */
-    public Pagination setOffset(Integer offset) {
+    public Pagination setOffset(int offset) {
         this.offset = offset;
         return this;
     }
@@ -115,6 +115,11 @@ public class Pagination implements Serializable {
     public Pagination setSize(Integer size) {
         this.size = size;
         return this;
+    }
+
+    public static int calculateOffset(int size, int limit) {
+        int offset = (size - 1) / limit * limit;
+        return offset < 0 ? 0 : offset;
     }
 
     /**
@@ -144,9 +149,9 @@ public class Pagination implements Serializable {
         Page page = new Page();
         page.setAutoRowCount(this.isAutoRowCount());
         page.setRowCount(this.getSize() == null ? 0 : this.getSize());
-        page.setPageSize(this.getLimit() == null ? 0 : this.getLimit());
-        if (this.getLimit() != null) {
-            int offset = this.getOffset() == null ? 0 : this.getOffset();
+        page.setPageSize(this.getLimit());
+        if (this.getLimit() > 0) {
+            int offset = this.getOffset();
             page.setCurrentPage(offset / this.getLimit() + 1);
         }
         return page;

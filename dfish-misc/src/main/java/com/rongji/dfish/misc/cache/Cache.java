@@ -8,7 +8,7 @@ import java.util.Set;
  * DFish 中用到的键值对缓存。
  * 注意缓存中的值不保证都不会丢失，可能会根据缓存的大小，
  * 数据的新旧部分数据会被清理，具体缓存的实现将会指定是清理最旧的数据还是清理不经常使用的数据，或是其他规范。
- * @author LinLW v1.0 YuLM v1.1
+ * @author LinLW v1.0 lamontYu v1.1
  * @version 1.1
  * @deprecated 该缓存方法不推荐使用,建议使用base包的相关缓存方法
  */

@@ -20,6 +20,7 @@ import com.rongji.dfish.base.Utils;
  */
 @SuppressWarnings("unchecked")
 public class StringUtil {
+
 	/**
 	 * 对比汉字字符串 拼音顺序
 	 * 
@@ -908,7 +909,7 @@ public class StringUtil {
 		StringBuilder sb = new StringBuilder();
 		boolean begin = true;
 		for (Object o : coll) {
-			if (o == null) {
+			if (o == null || "".equals(o)) {
 				continue;
 			}
 			if (begin) {
