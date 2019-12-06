@@ -15,18 +15,15 @@ import java.util.List;
  */
 public interface FrameworkDao4Mybatis<P, ID extends Serializable> extends FrameworkDao<P, ID> {
 
-
-
     @Override
     default List<P> list(Pagination pagination, QueryParam queryParam) {
-        return list(new RowBounds(pagination.getOffset(), pagination.getLimit()), queryParam != null ? queryParam.toRequestParam() : null);
+        return listByRowBounds(new RowBounds(pagination.getOffset(), pagination.getLimit()), queryParam != null ? queryParam.toRequestParam() : null);
     }
 
     /**
      *
      * @param rowBounds
-     * @param requestParam
      * @return
      */
-    List<P> list(RowBounds rowBounds, RequestParam requestParam);
+    List<P> listByRowBounds(RowBounds rowBounds, RequestParam requestParam);
 }

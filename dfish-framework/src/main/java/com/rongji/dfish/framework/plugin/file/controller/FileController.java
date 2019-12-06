@@ -46,6 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @create 2018-08-03 before
  * @since 3.0
  */
+@RequestMapping("/file")
 public class FileController extends BaseActionController {
 
     @Resource(name = "fileService")
@@ -171,7 +172,7 @@ public class FileController extends BaseActionController {
      * @param request
      * @return
      */
-    @RequestMapping("/uploadFile")
+    @RequestMapping("/upload/file")
     @ResponseBody
     public UploadItem uploadFile(HttpServletRequest request) {
         String scheme = request.getParameter("scheme");
@@ -189,7 +190,7 @@ public class FileController extends BaseActionController {
      * @param request
      * @return
      */
-    @RequestMapping("/uploadImage")
+    @RequestMapping("/upload/image")
     @ResponseBody
     public UploadItem uploadImage(HttpServletRequest request) {
         final UploadItem uploadItem = uploadFile(request);
@@ -294,9 +295,9 @@ public class FileController extends BaseActionController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/upload4Plugin")
+    @RequestMapping("/upload/plugin")
     @ResponseBody
-    public Object upload4Plugin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Object uploadPlugin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String plugin = request.getParameter("plugin");
         // 取得附件上传插件,根据插件对应的上传方法进行附件上传处理
         FileUploadPlugin uploadPlugin = uploadPluginMap.get(plugin);
@@ -383,7 +384,7 @@ public class FileController extends BaseActionController {
      * @throws Exception
      * @deprecated 下载附件方法统一使用download
      */
-    @RequestMapping("/downloadFile")
+    @RequestMapping("/download/file")
     @ResponseBody
     @Deprecated
     public void downloadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {

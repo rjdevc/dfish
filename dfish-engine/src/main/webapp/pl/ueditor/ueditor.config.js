@@ -33,7 +33,7 @@
         UEDITOR_HOME_URL: URL
 
         // 服务器统一请求接口路径
-        , serverUrl: path + 'file/upload4Plugin?plugin=UEDITOR' // "jsp/controller.jsp"
+        , serverUrl: path + 'file/upload/plugin?plugin=UEDITOR' // "jsp/controller.jsp"
 
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
         /*, toolbars: [[

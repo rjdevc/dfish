@@ -37,7 +37,7 @@ public class DefaultUploadFile extends UploadFile {
 		this.setScheme(scheme);
 		this.setValue(value);
 
-		this.setUploadsrc("file/uploadFile?scheme=$scheme");
+		this.setUploadsrc("file/upload/file?scheme=$scheme");
 		this.setDownloadsrc("file/download?fileId=$id&scheme=$scheme");
 		this.setPreviewsrc("file/preview?fileId=$id&scheme=$scheme");
 

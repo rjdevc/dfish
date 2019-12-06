@@ -1,6 +1,7 @@
 @CHARSET "UTF-8";
 /*默认按钮*/
-.w-button {
+.w-buttonbar .w-button,
+.w-button.x-btn {
     border-radius: 0;
 }
 

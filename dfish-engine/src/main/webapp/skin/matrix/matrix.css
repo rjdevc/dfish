@@ -1,6 +1,7 @@
 @CHARSET "UTF-8";
 /*默认按钮*/
-.w-button {
+.w-buttonbar .w-button,
+.w-button.x-btn {
     border-radius: 0;
 }
 
@@ -63,7 +64,7 @@
 .x-main-title {
     font-size: 16px;
     color: #333;
-    padding:0 20px;
+    padding: 0 20px;
 }
 
 .x-main-oper {
@@ -84,7 +85,6 @@
 }
 
 .x-main-search {
-
 }
 
 .x-main-grid {
@@ -103,16 +103,43 @@
     padding: 10px 20px 10px 10px;
 }
 
-.x-grid-oper i {
-    cursor: pointer;
-    display: inline-block;
-    margin-left: 5px;
+.w-buttonbar .w-button.x-btn-option {
+    background-color: #fff;
+    border-color: #ddd;
+    height: 30px;
 }
 
-.x-grid-oper i:first-child {
-    margin-left: 0;
+.w-buttonbar .w-button.x-btn-option.z-hv {
+    background-color: #d5ecff;
+    border-color: #1e92df;
 }
 
-.x-grid-oper i.z-ds {
-    cursor: default;
+.w-buttonbar .w-button.x-btn-option.z-on {
+    background-color: #bce0ff;
+    border-color: #1e92df;
+}
+
+.w-buttonbar .w-button.x-btn-option ._c {
+    padding-left: 5px;
+}
+
+.w-buttonbar .w-button.x-btn-option ._t {
+    text-align: left;
+    padding-right: 0;
+}
+
+.w-buttonbar .w-button.x-btn-option ._i {
+    float: right;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.i-option-btn {
+    background: url("../g/ico_16_16.png") 0px -80px;
+    width: 16px;
+    height: 16px;
+}
+
+.z-on .i-option-btn, .z-hv .i-option-btn {
+    background-position: -16px -80px;
 }

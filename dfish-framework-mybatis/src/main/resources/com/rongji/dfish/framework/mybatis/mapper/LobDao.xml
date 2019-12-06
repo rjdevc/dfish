@@ -3,14 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace：命名空间，用于隔离sql -->
-<mapper namespace="com.rongji.dfish.framework.plugin.lob.dao.LobDao">
+<mapper namespace="com.rongji.dfish.framework.mybatis.plugin.lob.dao.impl.LobDao4Mybatis">
     <resultMap id="lobMapper" type="com.rongji.dfish.framework.plugin.lob.entity.PubLob"></resultMap>
 
     <select id="get" parameterType="String" resultMap="lobMapper">
         SELECT t.* FROM PUB_LOB t WHERE t.LOB_ID = #{lobId}
     </select>
 
-    <select id="list" resultMap="lobMapper">
+    <select id="listByRowBounds" resultMap="lobMapper">
         SELECT t.* FROM PUB_LOB t
     </select>
 

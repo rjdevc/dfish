@@ -204,7 +204,7 @@ i {
     border-color: #19a3fb;
 }
 
-.w-page-text .w-button._jbtn.z-hv, .w-page-text .w-button._jbtn.z-on {
+.w-page-text .w-buttonbar .w-button._jbtn.z-hv, .w-page-text .w-buttonbar .w-button._jbtn.z-on {
     background-color: #19a3fb;
     color: #fff;
 }
@@ -230,108 +230,120 @@ i {
 /**↓按钮↓**/
 
 /* 按钮默认样式 */
-.w-button {
+.w-buttonbar .w-button,
+.w-button.x-btn {
     font-size: 14px;
-    border: 1px solid transparent;
+    border: 1px solid #ccc;
     background-color: #fff;
     color: #333;
     border-radius: 4px;
 }
 
-.w-button ._t {
+.w-buttonbar .w-button ._t,
+.w-button.x-btn ._t {
     width: auto;
 }
 
 /*按钮样式默认和文字左右间隔15px  */
-.w-button ._t, .w-button ._i {
+.w-buttonbar .w-button ._t, .w-buttonbar .w-button ._i,
+.w-button.x-btn ._t, .w-button.x-btn ._i {
     padding-right: 15px;
 }
 
-.w-button ._c {
+.w-buttonbar .w-button ._c,
+.w-button.x-btn ._c {
     padding-left: 15px;
 }
 
-.w-button {
-    border-color: #ccc;
-}
-
 /* 按钮-禁用 */
-.w-button.z-ds {
+.w-buttonbar .w-button.z-ds,
+.w-button.x-btn.z-ds {
     cursor: default;
     background-color: #eee;
 }
 
-.w-button.z-ds ._m .f-arw {
+.w-buttonbar .w-button.z-ds ._m .f-arw,
+.w-button.x-btn.z-ds ._m .f-arw {
     border-top-color: #aaa;
 }
 
 /* 按钮-鼠标经过 */
-.w-button.z-normal.z-hv, .w-button.z-more.z-hv, .w-button.z-combo ._c.z-hv, .w-button.z-combo ._m.z-hv {
+.w-buttonbar .w-button.z-normal.z-hv, .w-buttonbar .w-button.z-more.z-hv, .w-buttonbar .w-button.z-combo ._c.z-hv, .w-buttonbar .w-button.z-combo ._m.z-hv,
+.w-button.x-btn.z-normal.z-hv, .w-button.x-btn.z-more.z-hv, .w-button.x-btn.z-combo ._c.z-hv, .w-button.x-btn.z-combo ._m.z-hv {
     background-color: #f8f8f8;
 }
 
 /* 按钮-鼠标点击 */
-.w-button.z-normal.z-dn, .w-button.z-more.z-dn, .w-button.z-combo ._c.z-dn, .w-button.z-combo ._m.z-dn, .w-button.z-more.z-snap, .w-button.z-combo.z-snap ._m {
+.w-buttonbar .w-button.z-normal.z-dn, .w-buttonbar .w-button.z-more.z-dn, .w-buttonbar .w-button.z-combo ._c.z-dn, .w-buttonbar .w-button.z-combo ._m.z-dn, .w-buttonbar .w-button.z-more.z-snap, .w-buttonbar .w-button.z-combo.z-snap ._m,
+.w-button.x-btn.z-normal.z-dn, .w-button.x-btn.z-more.z-dn, .w-button.x-btn.z-combo ._c.z-dn, .w-button.x-btn.z-combo ._m.z-dn, .w-button.x-btn.z-more.z-snap, .w-button.x-btn.z-combo.z-snap ._m {
     background-color: #eaeaea;
 }
 
 /* 选项按钮 */
-.w-button.z-combo ._m {
+.w-buttonbar .w-button.z-combo ._m,
+.w-button.x-btn.z-combo ._m {
     border-left: 1px solid #ccc;
 }
 
 /* 主按钮 */
-.w-button.w-submit {
+.w-buttonbar .w-button.w-submit,
+.w-button.x-btn.w-submit {
     background-color: #1e92df;
     border-color: #1e92df;
     color: #fff;
 }
 
 /* 主按钮-禁用 */
-.w-button.w-submit.z-ds {
+.w-buttonbar .w-button.w-submit.z-ds,
+.w-button.x-btn.w-submit.z-ds {
     background-color: #def0fe;
     border-color: #def0fe;
     color: #999;
 }
 
 /* 主按钮-鼠标经过 */
-.w-button.z-normal.w-submit.z-hv, .w-button.z-more.w-submit.z-hv, .w-button.z-combo.w-submit ._c.z-hv, .w-button.z-combo.w-submit ._m.z-hv {
+.w-buttonbar .w-button.z-normal.w-submit.z-hv, .w-buttonbar .w-button.z-more.w-submit.z-hv, .w-buttonbar .w-button.z-combo.w-submit ._c.z-hv, .w-buttonbar .w-button.z-combo.w-submit ._m.z-hv,
+.w-button.x-btn.z-normal.w-submit.z-hv, .w-button.x-btn.z-more.w-submit.z-hv, .w-button.x-btn.z-combo.w-submit ._c.z-hv, .w-button.x-btn.z-combo.w-submit ._m.z-hv {
     background: #19a3fb;
 }
 
 /* 主按钮-鼠标点击 */
-.w-button.z-normal.w-submit.z-dn, .w-button.z-more.w-submit.z-dn, .w-button.z-combo.w-submit ._c.z-dn, .w-button.z-combo.w-submit ._m.z-dn, .w-button.z-more.w-submit.z-snap, .w-button.z-combo.w-submit.z-snap ._m {
+.w-buttonbar .w-button.z-normal.w-submit.z-dn, .w-buttonbar .w-button.z-more.w-submit.z-dn, .w-buttonbar .w-button.z-combo.w-submit ._c.z-dn, .w-buttonbar .w-button.z-combo.w-submit ._m.z-dn, .w-buttonbar .w-button.z-more.w-submit.z-snap, .w-buttonbar .w-button.z-combo.w-submit.z-snap ._m,
+.w-button.x-btn.z-normal.w-submit.z-dn, .w-button.x-btn.z-more.w-submit.z-dn, .w-button.x-btn.z-combo.w-submit ._c.z-dn, .w-button.x-btn.z-combo.w-submit ._m.z-dn, .w-button.x-btn.z-more.w-submit.z-snap, .w-button.x-btn.z-combo.w-submit.z-snap ._m {
     background: #1989e0;
 }
 
-.face-text.w-button ._t, .face-text.w-button ._i, .face-text .w-button ._t, .face-text .w-button ._i {
+.w-buttonbar.face-text .w-button ._t, .w-buttonbar.face-text .w-button ._i, .w-buttonbar.face-text .w-button ._t, .w-buttonbar.face-text .w-button ._i {
     padding-right: 5px;
 }
 
-.face-text.w-button ._c, .face-text .w-button ._c {
+.w-buttonbar.face-text .w-button ._c, .w-buttonbar.face-text .w-button ._c {
     padding-left: 5px;
 }
 
-.face-text.w-button.z-normal, .face-text .w-button.z-normal {
+.w-buttonbar.face-text .w-button.z-normal, .w-buttonbar.face-text .w-button.z-normal {
     border-color: transparent;
     background-color: transparent;
 }
 
-.face-text.w-button.z-normal.z-hv, .face-text.w-button.z-normal.z-on, .face-text.w-button.z-normal.z-dn, .face-text.w-button.z-normal.z-ds,
-.face-text .w-button.z-normal.z-hv, .face-text .w-button.z-normal.z-on, .face-text .w-button.z-normal.z-dn, .face-text .w-button.z-normal.z-ds {
+.w-buttonbar.face-text .w-button.z-normal.z-hv, .w-buttonbar.face-text .w-button.z-normal.z-on, .w-buttonbar.face-text .w-button.z-normal.z-dn, .w-buttonbar.face-text .w-button.z-normal.z-ds {
     background-color: transparent;
 }
 
-.x-breadcrumb .w-button.z-normal {
+.w-buttonbar.x-breadcrumb .w-button.z-normal {
     border-color: transparent;
     background-color: transparent;
 }
 
-.x-breadcrumb .w-button.z-normal.z-hv, .x-breadcrumb .w-button.z-normal.z-on, .x-breadcrumb .w-button.z-normal.z-dn, .x-breadcrumb .w-button.z-normal.z-ds {
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-hv, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-on, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-dn, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
     background-color: transparent;
 }
 
-.dlg-head-oper .w-button {
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
+    color: #aaa;
+}
+
+.w-buttonbar.dlg-head-oper .w-button {
     background: transparent;
 }
 
@@ -419,12 +431,62 @@ img {
     border: 0;
 }
 
-.x-lazy.w-img {
+.w-img.x-lazy {
     border: 0;
 }
 
-.x-lazy.w-img.z-err .w-img-i img {
+.w-img.x-lazy.z-err .w-img-i img {
     display: none;
+}
+
+.w-img.x-lazy .w-img-i {
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.w-img.x-lazy.x-size-xs .w-img-i {
+    background-image: url("g/icon_default_20x20.png");
+}
+
+.w-img.x-lazy.x-size-s .w-img-i {
+    background-image: url("g/icon_default_40x40.png");
+}
+
+.w-img.x-lazy.x-size-m .w-img-i, .w-img.x-lazy .w-img-i {
+    background-image: url("g/icon_default_60x60.png");
+}
+
+.w-img.x-lazy.x-size-l .w-img-i {
+    background-image: url("g/icon_default_80x80.png");
+}
+
+.w-img.x-lazy.x-size-xl .w-img-i {
+    background-image: url("g/icon_default_100x100.png");
+}
+
+.w-img.x-lazy.x-size-xs.x-user .w-img-i {
+    background-image: url("g/icon_user_20x20.png");
+}
+
+.w-img.x-lazy.x-size-s.x-user .w-img-i {
+    background-image: url("g/icon_user_40x40.png");
+}
+
+.w-img.x-lazy.x-size-m.x-user .w-img-i, .w-img.x-lazy.x-user .w-img-i {
+    background-image: url("g/icon_user_60x60.png");
+}
+
+.w-img.x-lazy.x-size-l.x-user .w-img-i {
+    background-image: url("g/icon_user_80x80.png");
+}
+
+.w-img.x-lazy.x-size-xl.x-user .w-img-i {
+    background-image: url("g/icon_user_100x100.png");
+}
+
+/*图片加载成功,不显示背景图*/
+.w-img.x-lazy.z-success .w-img-i {
+    background-image: none !important;
 }
 
 /**↑图片↑**/
@@ -457,31 +519,31 @@ img {
 
 }
 
-.dlg-head-oper .w-button {
+.w-buttonbar.dlg-head-oper .w-button {
     border-color: transparent;
 }
 
-.dlg-head-oper .w-button ._c {
+.w-buttonbar.dlg-head-oper .w-button ._c {
     padding-left: 10px;
 }
 
-.dlg-head-oper .w-button ._i {
+.w-buttonbar.dlg-head-oper .w-button ._i {
     padding-right: 10px;
 }
 
-.dlg-head-oper .w-button.z-hv {
+.w-buttonbar.dlg-head-oper .w-button.z-hv {
     background-color: #1588d4;
 }
 
-.dlg-head-oper .w-button.dlg-oper-close.z-hv {
+.w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-hv {
     background-color: #d00;
 }
 
-.dlg-head-oper .w-button.z-dn {
+.w-buttonbar.dlg-head-oper .w-button.z-dn {
     background-color: #0e80cb;
 }
 
-.dlg-head-oper .w-button.dlg-oper-close.z-dn {
+.w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-dn {
     background-color: #e81414;
 }
 
@@ -551,6 +613,16 @@ img {
     background-position: -16px -64px;
 }
 
+.i-close {
+    background: url("g/ico_16_16.png") 0 -96px;
+    width: 16px;
+    height: 16px;
+}
+
+.z-hv .i-close {
+    background-position: -16px -96px;
+}
+
 .i-logo {
     background-image: url("g/logo.png");
     background-repeat: no-repeat;
@@ -597,6 +669,20 @@ img {
 }
 
 /**↓常用操作图标↓**/
+.x-grid-oper i {
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.x-grid-oper i:first-child {
+    margin-left: 0;
+}
+
+.x-grid-oper i.z-ds {
+    cursor: default;
+}
+
 /*编辑*/
 .i-oper-edit {
     background: url("g/icon_operation_16.png") 0 0;
@@ -1135,38 +1221,38 @@ img {
     height: 16px;
 }
 
-.i-face-person {
-    background-image: url("g/face_person.png");
+.i-user {
+    background-image: url("g/icon_user.png");
     width: 60px;
     height: 60px;
 }
 
-.i-face-person.size-xs {
-    background-image: url("g/face_person_20x20.png");
+.i-user.x-size-xs {
+    background-image: url("g/icon_user_20x20.png");
     width: 20px;
     height: 20px;
 }
 
-.i-face-person.size-s {
-    background-image: url("g/face_person_40x40.png");
+.i-user.x-size-s {
+    background-image: url("g/icon_user_40x40.png");
     width: 40px;
     height: 40px;
 }
 
-.i-face-person.size-m {
-    background-image: url("g/face_person_60x60.png");
+.i-user.x-size-m {
+    background-image: url("g/icon_user_60x60.png");
     width: 60px;
     height: 60px;
 }
 
-.i-face-person.size-l {
-    background-image: url("g/face_person_80x80.png");
+.i-user.x-size-l {
+    background-image: url("g/icon_user_80x80.png");
     width: 80px;
     height: 80px;
 }
 
-.i-face-person.size-xl {
-    background-image: url("g/face_person_100x100.png");
+.i-user.x-size-xl {
+    background-image: url("g/icon_user_100x100.png");
     width: 100px;
     height: 100px;
 }

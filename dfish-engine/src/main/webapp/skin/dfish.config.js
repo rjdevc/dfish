@@ -18,7 +18,7 @@ dfish.config({
     default_option: {
         'alert': {preload: 'g/alert'},
         'confirm': {preload: 'g/alert'},
-        'dialog': {preload: 'g/std', resizable: true, width: 980, height: 550},
+        'dialog': {preload: 'g/std', resizable: true, width: 980, height: 550, error: "this.close();"},
         'dialog.dlg-large': {width: 980, height: 550},
         'dialog.dlg-medium': {width: 680, height: 410},
         'dialog.dlg-small': {width: 440, height: 250},
@@ -26,6 +26,7 @@ dfish.config({
         'dialog.dlg-std': {preload: 'g/std'},
         'dialog.dlg-stdx': {preload: 'g/stdx'},
         'dialog.dlg-form': {preload: 'g/form'},
+        'dialog.dlg-picker': {preload: 'g/picker'},
         'dialog.dlg-none': {preload: 'g/none'},
 
         'tree': {scroll: true, ellipsis: true},
@@ -35,8 +36,10 @@ dfish.config({
         'buttonbar.dlg-head-oper': {space: 0},
         'buttonbar.x-breadcrumb': {space: 0},
         'buttonbar.face-text': {space: 0},
+        'button': {tip: true},
+        'submitbutton': {tip: true},
         'tabs': {wmin: 40},
-        'buttonbar.w-tabbar': {space: 0, pub: { height: "*"}, wmin: 20},
+        'buttonbar.w-tabbar': {space: 0, pub: {height: "*"}, wmin: 20},
 
         'grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "cell"},
         'column': {tip: true},
@@ -68,10 +71,45 @@ dfish.config({
         'spinner': {step: 10, decimal: 0, validate: {minvalue: 1, maxvalue: 99999999}},
         'combo': {keepshow: true},
         'slider': {tip: true},
-        'upload/file': {minfilesize: '1B'},
-        'upload/image': {minfilesize: '1B', scheme: 'DEFAULT'},
+        'upload/file': {
+            minfilesize: '1B',
+            maxfilesize: '10M',
+            data: {'scheme': 'DEFAULT'},
+            uploadsrc: 'file/upload/file?scheme=$scheme',
+            downloadsrc: 'file/download?fileId=$id&scheme=$scheme',
+            previewsrc: 'file/preview?fileId=$id&scheme=$scheme',
+            filetypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
+            uploadbutton: [
+                {
+                    type: 'upload/button',
+                    text: '选择文件'
+                }
+            ]
+        },
+        'upload/image': {
+            minfilesize: '1B',
+            maxfilesize: '10M',
+            data: {'scheme': 'DEFAULT'},
+            downloadsrc: 'file/download?fileId=$id&scheme=$scheme',
+            thumbnailsrc: 'file/thumbnail?fileId=$id&scheme=$scheme',
+            uploadsrc: 'file/upload/image?scheme=$scheme',
+            filetypes: '*.png;*.jpg;*.jpeg;',
+            uploadbutton: [
+                {
+                    type: 'upload/button',
+                    text: '+'
+                }
+            ]
+        },
 
         'toggle': {
+            height: 40,
+            icon: '.i-toggle-icon',
+            openicon: '.i-toggle-openicon',
+            cls: 'bd-split bd-onlybottom',
+            hmin: 1
+        },
+        'grid/toggle': {
             height: 40,
             icon: '.i-toggle-icon',
             openicon: '.i-toggle-openicon',

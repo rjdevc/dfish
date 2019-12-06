@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.*;
 
@@ -18,7 +19,7 @@ import java.util.*;
  * @create 2019-12-04 17:50
  */
 public abstract class AbstractFrameworkDao<P, ID extends Serializable> implements FrameworkDao<P, ID> {
-    @Autowired
+    @Resource(name = "jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
     public JdbcTemplate getJdbcTemplate() {
