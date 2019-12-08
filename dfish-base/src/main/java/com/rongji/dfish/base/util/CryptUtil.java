@@ -1,10 +1,10 @@
 package com.rongji.dfish.base.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import com.rongji.dfish.base.crypt.AbstractCryptor;
+import com.rongji.dfish.base.crypt.Cryptor;
+import com.rongji.dfish.base.crypt.Digester;
+
+import java.io.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -41,231 +41,54 @@ public class CryptUtil {
 	 * @see #DES
 	 */
 	public static final String TRIPLE_DES = "DESede";
-	/**
-	 * JCECryptTool 用来加解密内容，JCECryptTool 它用于加解密较大的数据量，或文件。所以他的接口是按流设计的。
-	 * <pre>
-	 * CryptUtil.JCECryptTool tool=new CryptUtil.JCECryptTool(CryptUtil.BLOWFISH,"THIS.IS.PASSWORD".getBytes("UTF-8"));
-	 * tool.setIn(fis1);
-	 * tool.setOut(fos1);
-	 * tool.encrypt();
-	 * fis1.close();
-	 * fos1.close();
-	 * </pre>
-	 * 因为设计用途，所以他实际上更多时刻只适用于使用分组秘钥算法。所以一般只用以下几种算法。
-	 * {@link CryptUtil#AES} {@link CryptUtil#DES} {@link CryptUtil#TRIPLE_DES} {@link CryptUtil#BLOWFISH}
-	 * 注意各种算法秘钥长度不尽相同。
-	 * 现在的版本暂时不支持SM4。
-	 * @author DFishTeam
-	 *
-	 */
-	public static class JCECryptTool {
-		protected Cipher cipher;
-		protected SecretKeySpec sks;
-		protected OutputStream out;
-		protected InputStream in;
-		/**
-		 * 构造函数
-		 * @param algorithm 算法
-		 * @param key 秘钥 byte[]
-		 */
-		public JCECryptTool(String algorithm, byte[] key) {
-			try {
-				sks = new SecretKeySpec(key, algorithm);
-				cipher = Cipher.getInstance(algorithm);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 
-		public OutputStream getOut() {
-			return out;
-		}
-
-		public void setOut(OutputStream out) {
-			this.out = out;
-		}
-
-		public InputStream getIn() {
-			return in;
-		}
-
-		public void setIn(InputStream in) {
-			this.in = in;
-		}
-		/**
-		 * 开始执行加密操作
-		 */
-		public void encrypt() {
-			try {
-				cipher.init(Cipher.ENCRYPT_MODE, sks);
-				doCrypt();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		protected void doCrypt() throws IOException, IllegalBlockSizeException, BadPaddingException {
-			if (in == null || out == null) {
-				throw new NullPointerException("in or out must be setl");
-			}
-			byte[] buff = new byte[8192];
-			int readed = 0;
-			while ((readed = in.read(buff)) > 0) {
-				byte[] b = cipher.update(buff, 0, readed);
-				if (b != null && b.length > 0) {
-					out.write(b);
-				}
-			}
-			byte[] b = cipher.doFinal();
-			if (b != null && b.length > 0) {
-				out.write(b);
-			}
-		}
-		/**
-		 * 开始执行解密操作
-		 */
-		public void decrypt() {
-			try {
-				cipher.init(Cipher.DECRYPT_MODE, sks);
-				doCrypt();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
+	public static Cryptor.CryptorBuilder prepareCryptor(String algorithm, Object key){
+		return Cryptor.CryptorBuilder.create(algorithm,key);
 	}
-	
-	/**
-	 * 因为 一般文本信息熵较低，直接压塑会有较好的效果。如果先加密在zip的话，压缩率就会很小。
-	 * 所以一般都是先GZIP再加密。形成一个固定用法，所以，封装一个固定用法。
-	 * <pre>
-	 * CryptUtil.GzipAndCryptTool tool=new CryptUtil.GzipAndCryptTool(CryptUtil.BLOWFISH,"THIS.IS.PASSWORD".getBytes("UTF-8"));
-	 * tool.setIn(fis1);
-	 * tool.setOut(fos1);
-	 * tool.encrypt();
-	 * fis1.close();
-	 * fos1.close();
-	 * </pre>
-	 */
-	public static class GzipAndCryptTool extends JCECryptTool{
-
-		public GzipAndCryptTool(String algorithm, byte[] key) {
-			super(algorithm,key);
-		}
-
-		@Override
-        public void encrypt() {
-			try {
-				if (in == null || out == null) {
-					throw new NullPointerException("in or out must be setl");
-				}
-				cipher.init(Cipher.ENCRYPT_MODE, sks);
-				GZIPOutputStream gos=new GZIPOutputStream(new OutputStream(){
-					@Override
-					public void write(int b) throws IOException {
-						throw new java.lang.UnsupportedOperationException();
-					}
-
-					@Override
-					public void write(byte[] buff) throws IOException {
-						byte[] b = cipher.update(buff, 0, buff.length);
-						if (b != null && b.length > 0) {
-							out.write(b);
-						}
-					}
-
-					@Override
-					public void write(byte[] buff, int off, int len) throws IOException {
-						byte[] b = cipher.update(buff, off, len);
-						if (b != null && b.length > 0) {
-							out.write(b);
-						}
-					}
-				});
-				byte[] buff = new byte[8192];
-				int readed =0;
-				while ((readed = in.read(buff)) > 0) {
-					gos.write(buff, 0, readed);
-				}
-				gos.close();
-				byte[] b = cipher.doFinal();
-				if (b != null && b.length > 0) {
-					out.write(b);
-				}
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-		@Override
-        public void decrypt() {
-			try {
-				if (in == null || out == null) {
-					throw new NullPointerException("in or out must be setl");
-				}
-				cipher.init(Cipher.DECRYPT_MODE, sks);
-				GZIPInputStream gis=new GZIPInputStream(new InputStream(){
-					private byte[] lastBytes;
-					private int off;
-					private int len;
-					
-					@Override
-					public int read() throws IOException {
-						byte[] buff=new byte[1];
-						if(read(buff,0,1)<1){
-							return -1;
-						}
-						return buff[0]&0xFF;
-					}
-					@Override
-					public int read(byte[] buff,int off, int len) throws IOException {
-						//1.从遗留的buff中读取内容，如果超过buff长度。则直接返回
-						if(this.len>=len){
-							System.arraycopy(lastBytes, this.off, buff, off, len);
-							this.off+=len;
-							this.len-=len;
-							return len;
-						}
-						//2.如果不够长度，则尝试从in 中读取一次内容。并把遗留的内容，外加新内容的前面一部分返回
-						int readed=0;
-						if(this.len>0){
-							System.arraycopy(lastBytes, this.off, buff, off, this.len);
-							readed+=this.len;
-							this.off=0;
-							this.len=0;
-						}
-						
-						byte[] inBuff=new byte[8192];
-						int inReaded=in.read(inBuff);
-						byte[] b=null;
-						if(inReaded>0){
-							b = cipher.update(inBuff, 0, inReaded);
-						}else{
-							//3.如果已经读不到内容，则doFinal
-							try {
-								b = cipher.doFinal();
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-						if(b!=null&&b.length>0){
-							int copyBytes=Math.min(len-readed,b.length);
-							System.arraycopy(b, 0, buff, off+readed, copyBytes);
-							readed+=copyBytes;
-							lastBytes=b;
-							this.off=copyBytes;
-							this.len=b.length-copyBytes;
-						}
-						return readed;
-					}
-				});
-				byte[] buff = new byte[8192];
-				int readed = 0;
-				while ((readed = gis.read(buff)) > 0) {
-					out.write(buff,0,readed);
-				}
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
+	public static Digester.DigesterBuilder prepareDigester(String algorithm){
+		return Digester.DigesterBuilder.create(algorithm);
 	}
-	
+	public static void main (String[] args) throws IOException {
+		Cryptor c=CryptUtil.prepareCryptor(DES,"THIS_IS_".getBytes())
+				.gzip(true).encoding("UTF-8").present(1).build();
+		String src="君不见，黄河之水天上来⑵，奔流到海不复回。\n" +
+				"君不见，高堂明镜悲白发，朝如青丝暮成雪⑶。\n" +
+				"人生得意须尽欢⑷，莫使金樽空对月。\n" +
+				"天生我材必有用，千金散尽还复来。\n" +
+				"烹羊宰牛且为乐，会须一饮三百杯⑸。\n" +
+				"岑夫子，丹丘生⑹，将进酒，杯莫停⑺。\n" +
+				"与君歌一曲⑻，请君为我倾耳听⑼。\n" +
+				"钟鼓馔玉不足贵⑽，但愿长醉不复醒⑾。\n" +
+				"古来圣贤皆寂寞，惟有饮者留其名。\n" +
+				"陈王昔时宴平乐，斗酒十千恣欢谑⑿。\n" +
+				"主人何为言少钱⒀，径须沽取对君酌⒁。\n" +
+				"五花马⒂，千金裘，呼儿将出换美酒，与尔同销万古愁⒃。 [1] ";
+		src="dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+		String en=c.encode(src);
+		System.out.println(en);
+		System.out.println("长度由"+src.getBytes("UTF8").length+"变为"+en.length());
+		String de=c.decode(en);
+		System.out.println(de);
+
+		Digester d=CryptUtil.prepareDigester("SHA-1")
+				.encoding("UTF-8").present(1).build();
+		String di=d.digest(src);
+		System.out.println(di);
+
+
+//		ByteArrayOutputStream baos1=new ByteArrayOutputStream();
+//		AbstractCryptor.HexOutputStream hos =new AbstractCryptor.HexOutputStream(baos1);
+//		hos.write("haha".getBytes());
+//		String hex=new String(baos1.toByteArray());
+//		System.out.println(hex);
+//		baos1.reset();
+//
+//		ByteArrayInputStream bais=new ByteArrayInputStream(hex.getBytes());
+//		AbstractCryptor.HexInputStream his =new AbstractCryptor.HexInputStream(bais);
+//		byte[] buff=new byte[8192];
+//		int r=his.read(buff);
+//		String res=new String(buff,0,r,"UTF-8");
+//		System.out.println(res);
+
+	}
 }
