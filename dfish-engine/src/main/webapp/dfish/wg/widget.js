@@ -2407,7 +2407,20 @@ _mergeLoadingProp = function( x, a ) {
 _userPriority = { 'click': T, 'dblclick': T, 'close': T, 'valid': T },
 _view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
-Layout = define.widget( 'layout', {} ),
+Layout = define.widget( 'layout', {
+	Prototype: {
+		// 限制ready只触发一次
+		// 原因：在frame中的view，layout调用render方法时会再次触发ready。理论上应该在_proto上做此限制，但出于性能考虑，目前做在这里
+		triggerAll: function( e ) {
+			if ( e === 'ready' ) {
+				if ( this.domready )
+					return;
+				this.domready = T;
+			}
+			_proto.triggerAll.apply( this, arguments );
+		}
+	}
+} ),
 /* `view` */
 View = define.widget( 'view', {
 	Const: function( x, p ) {

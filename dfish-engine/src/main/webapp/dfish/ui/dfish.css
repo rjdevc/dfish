@@ -46,8 +46,9 @@
 .f-sub-horz{white-space:normal;*white-space:nowrap}
 .f-sub-vert{*white-space:normal}
 
-.f-sub-frame,.f-hide{visibility:hidden;position:absolute!important;z-index:-1;left:-100%;top:-100%} 
-.f-sub-frame-on,.f-dot{}
+.f-dot{}
+.f-hide{visibility:hidden;position:absolute!important;z-index:-1;left:-100%;top:-100%} 
+.f-form-hide{visibility:hidden}
 
 
 .f-required{color:red;font-family:tahoma;font-style:normal;margin-right:6px;vertical-align:middle}
@@ -145,6 +146,23 @@
 .w-grid-table ._fix_tfoot td,.w-form-table ._fix_tfoot td{padding-top:0;padding-bottom:1px}
 .w-grid-table tbody:empty + ._fix_tfoot,.w-form-table tbody:empty + ._fix_tfoot{display:table-footer-group}
 .w-grid-table,.w-form-table{table-layout:fixed;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:100%;width:100%}
+.w-grid.z-nohead .w-grid-tbody.w-grid-bg,.w-form.z-nohead .w-form-tbody.w-grid-bg{height:100%}
+.w-grid-thead{position:relative;line-height:1}
+.w-grid-thead .w-grid-table{height:100%}
+.w-grid-thead:hover .w-th-rsz{border-left:1px solid #ddd}
+.w-grid-thead:hover .w-grid-face-cell .w-th-rsz{border-left:0}
+.w-grid-head{overflow:hidden}
+.w-grid-head td{position:relative}
+.w-grid-fixed{position:absolute;top:0;background:#fff;z-index:1}
+.w-grid-fixed .w-grid-tbody{overflow:hidden}
+.w-grid-fixed .w-grid-table{width:auto;*table-layout:auto;*width:auto}
+.w-grid-left{left:0}
+.w-grid-right{right:0}
+.w-grid-left.z-cover{box-shadow:6px 0 6px -4px rgba(0,0,0,0.15)}
+.w-grid-right.z-cover{box-shadow:-6px 0 6px -4px rgba(0,0,0,0.15)}
+.w-grid-left .w-td-cell.z-last{border-right-width:1px}
+.w-grid-right .w-td-cell.z-first{border-left-width:1px}
+
 .w-td-none{position:relative;overflow:hidden;*position:static;}
 .w-td-line{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;*position:static}
 .w-td-dot{position:relative;overflow:hidden;border-bottom:1px dashed #e3e3e3;*position:static}
@@ -161,23 +179,6 @@
 .w-th-sort.z-desc .f-arw-b1,.w-th-sort .f-arw-b1:hover{border-top-color:#777}
 .w-th-sort.z-asc .f-arw-t1,.w-th-sort .f-arw-t1:hover{border-bottom-color:#777}
 .w-th-sortwrap{width:12px;margin-left:2px}
-.w-grid.z-nohead .w-grid-tbody.w-grid-bg,.w-form.z-nohead .w-form-tbody.w-grid-bg{height:100%}
-.w-grid-thead{position:relative;line-height:1}
-.w-grid-thead .w-grid-table{height:100%}
-.w-grid-thead:hover .w-th-rsz{border-left:1px solid #ddd}
-.w-grid-thead:hover .w-grid-face-cell .w-th-rsz{border-left:0}
-.w-grid-head{overflow:hidden}
-.w-grid-head td{position:relative}
-
-.w-grid-fixed{position:absolute;top:0;background:#fff;z-index:1}
-.w-grid-fixed .w-grid-tbody{overflow:hidden}
-.w-grid-fixed .w-grid-table{width:auto;*table-layout:auto;*width:auto}
-.w-grid-left{left:0}
-.w-grid-right{right:0}
-.w-grid-left.z-cover{box-shadow:6px 0 6px -4px rgba(0,0,0,0.15)}
-.w-grid-right.z-cover{box-shadow:-6px 0 6px -4px rgba(0,0,0,0.15)}
-.w-grid-left .w-td-cell.z-last{border-right-width:1px}
-.w-grid-right .w-td-cell.z-first{border-left-width:1px}
 
 .w-label{position:relative}
 .w-label ._lb{margin-right:6px}
