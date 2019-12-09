@@ -9,7 +9,7 @@ public class CryptUtilTest {
 	
 	public void testJCECryptTool() throws Exception {
 		
-		CryptUtil.JCECryptTool tool=new CryptUtil.JCECryptTool(CryptUtil.BLOWFISH,"我就是密码1".getBytes("UTF-8"));
+		CryptUtil2.JCECryptTool tool=new CryptUtil2.JCECryptTool(CryptUtil.BLOWFISH,"我就是密码1".getBytes("UTF-8"));
 		FileInputStream fis1=new FileInputStream("D:/4_行政/培训/2018/加解密基础知识普及.pptx");
 		FileOutputStream fos1=new FileOutputStream("D:/4_行政/培训/2018/加解密基础知识普及.myfile");
 		tool.setIn(fis1);
@@ -30,7 +30,7 @@ public class CryptUtilTest {
 	@Test
 	public void testGzipAndCryptTool() throws Exception {
 		
-		CryptUtil.GzipAndCryptTool tool=new CryptUtil.GzipAndCryptTool(CryptUtil.BLOWFISH,"我就是密码1".getBytes("UTF-8"));
+		CryptUtil2.GzipAndCryptTool tool=new CryptUtil2.GzipAndCryptTool(CryptUtil.BLOWFISH,"我就是密码1".getBytes("UTF-8"));
 		FileInputStream fis1=new FileInputStream("D:/cvs/rjitask/rjitask/itask7beta/WebRoot/WEB-INF/applicationContext.xml");
 		FileOutputStream fos1=new FileOutputStream("D:/cvs/rjitask/rjitask/itask7beta/WebRoot/WEB-INF/applicationContext.myfile");
 		tool.setIn(fis1);
