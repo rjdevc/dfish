@@ -117,11 +117,6 @@
             </dependency>
             <dependency>
                 <groupId>com.rongji.dfish</groupId>
-                <artifactId>dfish-ui-template</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-framework</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -149,7 +144,6 @@
         <module>dfish-ui</module>
         <module>dfish-engine</module>
         <module>dfish-ui-plugin</module>
-        <module>dfish-ui-template</module>
         <module>dfish-framework</module>
         <module>dfish-framework-hibernate</module>
         <module>dfish-framework-mybatis</module>

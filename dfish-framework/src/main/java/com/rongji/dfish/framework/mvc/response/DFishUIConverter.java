@@ -1,13 +1,8 @@
 package com.rongji.dfish.framework.mvc.response;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.ui.JsonObject;
+import com.rongji.dfish.ui.json.J;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpInputMessage;
@@ -17,9 +12,10 @@ import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
-import com.rongji.dfish.ui.JsonObject;
-import com.rongji.dfish.ui.json.J;
-import com.rongji.dfish.ui.template.DFishTemplate;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 用于转化JSON 并输出
@@ -65,7 +61,7 @@ public class DFishUIConverter extends AbstractHttpMessageConverter<Object>{
 		outputMessage.getHeaders().setContentLength(ba.length);
 		outputMessage.getBody().write(ba);
 		outputMessage.getBody().close();
-		LogUtil.lazyDebug(LOG,()-> (obj instanceof DFishTemplate) ? objJson : J.formatJson(objJson));
+		LogUtil.lazyDebug(LOG,()-> J.formatJson(objJson));
 	}
 	
 	protected String getObjectJson(Object obj) {

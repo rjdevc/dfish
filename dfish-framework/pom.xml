@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>com.rongji.dfish</groupId>
-            <artifactId>dfish-ui-template</artifactId>
+            <artifactId>dfish-ui-plugin</artifactId>
         </dependency>
 
         <dependency>
