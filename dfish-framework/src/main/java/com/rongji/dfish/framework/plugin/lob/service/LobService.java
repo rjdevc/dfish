@@ -20,7 +20,7 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
      * @param lobContent 内容
      * @return String 保存的编号
      */
-    String saveLob(String lobContent);
+    String saveLob(String lobContent) throws Exception;
 
     /**
      * 更新lob内容

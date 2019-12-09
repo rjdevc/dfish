@@ -3,7 +3,6 @@ package com.rongji.dfish.framework.plugin.file.service.impl;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
@@ -164,15 +163,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         return get(fileId);
     }
 
-    /**
-     * 更新文件记录状态
-     *
-     * @param fileId
-     * @param fileStatus
-     */
     @Override
-    public int updateFileStatus(String fileId, String fileStatus) {
-        return getDao().updateFileStatus(fileId, fileStatus);
+    public int updateFileStatus(Collection<String> fileIds, String fileStatus) {
+        return getDao().updateFileStatus(fileIds, fileStatus, new Date());
 //        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileStatus)) {
 //            return;
 //        }
@@ -188,7 +181,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      */
     @Override
     public int updateFileStatus(String fileLink, String fileKey, String fileStatus) {
-        return getDao().updateFileStatus(fileLink, fileKey, fileStatus);
+        return getDao().updateFileStatusByLink(fileLink, fileKey, fileStatus, new Date());
 //        if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey) || Utils.isEmpty(fileStatus)) {
 //            return;
 //        }
@@ -484,12 +477,12 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
 
     @Override
     public int updateFileLink(String fileId, String fileLink) {
-        return getDao().updateFileLink(fileId, fileLink);
+        return getDao().updateFileLink(fileId, fileLink, new Date());
     }
 
     @Override
     public int updateFileLink(List<String> fileIds, String fileLink, String fileKey) {
-        return getDao().updateFileLink(fileIds, fileLink, fileKey);
+        return getDao().updateFileLinks(fileIds, fileLink, fileKey, new Date());
 //        if (Utils.isEmpty(itemList) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
 //            return 0;
 //        }

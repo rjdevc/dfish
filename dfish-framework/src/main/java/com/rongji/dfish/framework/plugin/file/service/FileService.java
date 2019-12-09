@@ -23,17 +23,44 @@ import java.util.*;
  */
 public interface FileService extends FrameworkService<PubFileRecord, PubFileRecord, String> {
 
+    /**
+     * 附件状态-初始状态
+     */
     String STATUS_NORMAL = "0";
+    /**
+     * 附件状态-已关联
+     */
     String STATUS_LINKED = "1";
+    /**
+     * 附件状态-已删除
+     */
     String STATUS_DELETE = "9";
 
+    /**
+     * 附件配置-上传目录
+     */
     String CONFIG_UPLOAD_DIR = "file.uploadDir";
+    /**
+     * 附件配置-大小限制
+     */
     String CONFIG_SIZE_LIMIT = "file.sizeLimit";
+    /**
+     * 附件配置-文件类型
+     */
     String CONFIG_TYPES_FILE = "file.types.file";
+    /**
+     * 附件配置-图片类型
+     */
     String CONFIG_TYPES_IMAGE = "file.types.image";
 
+    /**
+     * 附件关联
+     */
     String LINK_FILE = "FILE";
 
+    /**
+     * 附件存储路径
+     */
     DateFormat DF_DIR = new SimpleDateFormat("yyyy/MM/dd");
 
     /**
@@ -92,14 +119,22 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      */
     default int updateFileLink(String itemJson, String fileLink, String fileKey) {
         List<UploadItem> itemList = parseUploadItems(itemJson);
-        if (Utils.isEmpty(itemList)) {
-            return 0;
-        }
-        List<String> fileIds = new ArrayList<>(itemList.size());
+        List<PubFileRecord> oldList = getRecords(fileLink, fileKey);
+        List<String> newIds = new ArrayList<>(itemList.size());
         for (UploadItem item : itemList) {
-            fileIds.add(decrypt(item.getId()));
+            newIds.add(decrypt(item.getId()));
         }
-        return updateFileLink(fileIds, fileLink, fileKey);
+        List<String> oldIds = new ArrayList<>(oldList.size());
+        for (PubFileRecord data : oldList) {
+            oldIds.add(data.getFileId());
+        }
+        List<String> insertList = new ArrayList<>(newIds);
+        insertList.removeAll(oldIds);
+        List<String> deleteList = new ArrayList<>(oldIds);
+        deleteList.removeAll(newIds);
+        int count = updateFileLink(insertList, fileLink, fileKey);
+        count += updateFileStatus(deleteList, STATUS_DELETE);
+        return count + deleteList.size();
     }
 
     /**
@@ -119,7 +154,21 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileStatus 附件状态
      * @return int 更新记录数
      */
-    int updateFileStatus(String fileId, String fileStatus);
+    default int updateFileStatus(String fileId, String fileStatus) {
+        if (Utils.isEmpty(fileId)) {
+            return 0;
+        }
+        return updateFileStatus(Arrays.asList(fileId), fileStatus);
+    }
+
+    /**
+     * 更新文件记录状态
+     *
+     * @param fileIds     附件编号集合
+     * @param fileStatus 附件状态
+     * @return int 更新记录数
+     */
+    int updateFileStatus(Collection<String> fileIds, String fileStatus);
 
     /**
      * 更新文件记录状态

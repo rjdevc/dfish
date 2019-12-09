@@ -10,10 +10,7 @@
         <version>3.3.0.20-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish-framework-hibernate</artifactId>
-    <version>3.3.0.20-SNAPSHOT</version>
-
     <name>dfish-framework-hibernate</name>
     <url>http://dfish.rongji.com</url>
 

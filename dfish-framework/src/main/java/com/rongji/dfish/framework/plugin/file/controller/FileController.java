@@ -206,44 +206,39 @@ public class FileController extends BaseActionController {
             return uploadItem;
         }
         final AtomicInteger doneFileCount = new AtomicInteger(0);
-        EXECUTOR_IMAGE.execute(new Runnable() {
-            @Override
-            public void run() {
-                // 本应该先提前判断再进行获取压缩,暂时不考虑这些个别情况(多损耗性能)
-                String fileId = fileService.decrypt(uploadItem.getId());
-                PubFileRecord fileRecord = fileService.get(fileId);
-                if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
-                    LogUtil.warn("生成缩略图出现异常:原记录文件存储记录丢失[" + fileId + "]");
-                    return;
-                }
-                int dotIndex = fileRecord.getFileUrl().lastIndexOf(".");
-                if (dotIndex < 0) {
-                    LogUtil.warn("生成缩略图出现异常:原记录文件存储记录异常[" + fileId + "]");
-                    return;
-                }
+        EXECUTOR_IMAGE.execute(() -> {
+            // 本应该先提前判断再进行获取压缩,暂时不考虑这些个别情况(多损耗性能)
+            String fileId = fileService.decrypt(uploadItem.getId());
+            PubFileRecord fileRecord = fileService.get(fileId);
+            if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
+                LogUtil.warn("生成缩略图出现异常:原记录文件存储记录丢失[" + fileId + "]");
+                return;
+            }
+            int dotIndex = fileRecord.getFileUrl().lastIndexOf(".");
+            if (dotIndex < 0) {
+                LogUtil.warn("生成缩略图出现异常:原记录文件存储记录异常[" + fileId + "]");
+                return;
+            }
 
-                String fileExtName = fileRecord.getFileUrl().substring(dotIndex + 1);
-                File imageFile = fileService.getFile(fileRecord);
-                if (imageFile == null || !imageFile.exists()) {
-                    LogUtil.warn("生成缩略图出现异常:原图丢失[" + fileId + "]");
-                    return;
-                }
-                for (String defineAlias : handlingScheme.getDefines()) {
-                    InputStream input = null;
-                    OutputStream output = null;
-                    try {
+            String fileExtName = fileRecord.getFileUrl().substring(dotIndex + 1);
+            File imageFile = fileService.getFile(fileRecord);
+            if (imageFile == null || !imageFile.exists()) {
+                LogUtil.warn("生成缩略图出现异常:原图丢失[" + fileId + "]");
+                return;
+            }
+            for (String defineAlias : handlingScheme.getDefines()) {
+                try {
+                    File outputFile = fileService.getFile(fileRecord, defineAlias, false);
+                    if (!outputFile.exists()) {
+                        outputFile.createNewFile();
+                    }
+                    try (InputStream input = new FileInputStream(imageFile);
+                         OutputStream output = new FileOutputStream(outputFile)) {
                         FileHandlingDefine handlingDefine = fileHandlingManager.getDefine(defineAlias);
                         if (handlingDefine == null || !(handlingDefine instanceof ImageHandlingDefine)) {
                             continue;
                         }
                         ImageHandlingDefine realDefine = (ImageHandlingDefine) handlingDefine;
-
-                        input = new FileInputStream(imageFile);
-                        File outputFile = fileService.getFile(fileRecord, defineAlias, false);
-                        if (!outputFile.exists()) {
-                            outputFile.createNewFile();
-                        }
-                        output = new FileOutputStream(outputFile);
                         if (ImageHandlingDefine.WAY_ZOOM.equals(realDefine.getWay())) {
                             ImageUtil.zoom(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
                         } else if (ImageHandlingDefine.WAY_CUT.equals(realDefine.getWay())) {
@@ -253,32 +248,18 @@ public class FileController extends BaseActionController {
                         }
                         doneFileCount.incrementAndGet();
                     } catch (Exception e) {
-                        LogUtil.error("生成缩略图出现异常:详见信息", e);
-                    } finally {
-                        if (input != null) {
-                            try {
-                                input.close();
-                            } catch (IOException e) {
-                                LogUtil.error("生成缩略图出现异常:输入流关闭异常", e);
-                            }
-                        }
-                        if (output != null) {
-                            try {
-                                output.close();
-                            } catch (IOException e) {
-                                LogUtil.error("生成缩略图出现异常:输出流关闭异常", e);
-                            }
-                        }
+                        LogUtil.error("生成缩略图出现异常", e);
                     }
+                } catch (Exception e) {
+                    LogUtil.error("生成缩略图出现异常", e);
                 }
+
             }
         });
         int waitCount = 0;
-        // 至少保证第1个缩略图生成才返回结果
+        // 至少保证第1个缩略图生成才返回结果;最多等待3秒
         while (doneFileCount.get() < 1 && waitCount++ < 30) {
-            // 最多等待3秒
             try {
-                // 缩略图未生成休眠等待
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 LogUtil.error("生成缩略图等待异常", e);

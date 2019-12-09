@@ -7,26 +7,17 @@ import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;
-import com.rongji.dfish.framework.dto.RequestParam;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author lamontYu
@@ -193,55 +184,24 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
     }
 
     @Override
-    public Map<ID, P> gets(Collection<ID> ids) {
-        if (Utils.isEmpty(ids)) {
-            return Collections.emptyMap();
+    public ID getEntityId(P entity) {
+        Method getter = getEntityIdGetter();
+        ID id = null;
+        try {
+            id = (ID) getter.invoke(entity);
+        } catch (Exception e) {
+            FrameworkHelper.LOG.error("", e);
         }
-        if (ids == null) {
-            return null;
-        }
-        final Class<?> entityClass = getEntityClass();
-        String idName = null;
-        Method getterMethod = null;
-        for (Method m : entityClass.getMethods()) {
-            if (m.getAnnotation(Id.class) != null) {
-                String methodsName = m.getName();
-                if (methodsName.startsWith("get") || methodsName.startsWith("set")) {
-                    idName = methodsName.substring(3);
-                    char c = idName.charAt(0);
-                    if (c >= 'A' && c <= 'Z') {
-                        idName = ((char) (c + 32)) + idName.substring(1);
-                    }
-                    if (methodsName.startsWith("get")) {
-                        getterMethod = m;
-                    }
-                }
-                break;
-            }
-        }
-        if (idName == null) {
-            for (Field f : entityClass.getFields()) {
-                if (f.getAnnotation(Id.class) != null) {
-                    idName = f.getName();
-                    break;
-                }
-            }
-        }
-        if (getterMethod == null) {
-            char c = idName.charAt(0);
-            if (c >= 'a' && c <= 'z') {
-                String getterName = "get" + ((char) (c - 32)) + idName.substring(1);
-                try {
-                    getterMethod = entityClass.getMethod(getterName);
-                } catch (Exception e) {
-                    FrameworkHelper.LOG.error("", e);
-                }
-            }
-        }
-        final String idName2 = idName;
-        Set<ID> idSet = new HashSet<ID>(ids);
+        return id;
+    }
+
+    @Override
+    public List<P> listByIds(Collection<ID> ids) {
+        Set<ID> idSet = new HashSet<>(ids);
         idSet.remove(null);
-        final List<ID> noRepeat = new ArrayList<ID>(idSet);
+        idSet.remove("");
+        final List<ID> noRepeat = new ArrayList<>(idSet);
+        final String idFieldName = getEntityIdName();
         List<P> dbList = getHibernateTemplate().execute((session) -> {
             List<ID> tofetch = noRepeat;
             List<P> result = new ArrayList<P>();
@@ -249,24 +209,15 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
                 if (tofetch.size() > FrameworkDao.BATCH_SIZE) {
                     List<ID> cur = tofetch.subList(0, FrameworkDao.BATCH_SIZE);
                     tofetch = tofetch.subList(FrameworkDao.BATCH_SIZE, tofetch.size());
-                    result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idName2, cur)).list());
+                    result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idFieldName, cur)).list());
                 } else {
-                    result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idName2, tofetch)).list());
+                    result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idFieldName, tofetch)).list());
                     tofetch = tofetch.subList(tofetch.size(), tofetch.size());
                 }
             }
             return result;
         });
-        Map<ID, P> map = new HashMap<>(dbList.size());
-        for (P item : dbList) {
-            try {
-                ID i = (ID) getterMethod.invoke(item);
-                map.put(i, item);
-            } catch (Exception e) {
-                FrameworkHelper.LOG.error("", e);
-            }
-        }
-        return map;
+        return dbList;
     }
 
     @Override

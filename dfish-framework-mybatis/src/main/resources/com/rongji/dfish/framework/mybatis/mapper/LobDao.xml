@@ -10,8 +10,40 @@
         SELECT t.* FROM PUB_LOB t WHERE t.LOB_ID = #{lobId}
     </select>
 
+    <select id="listByIds" resultMap="lobMapper">
+        SELECT t.* FROM PUB_LOB t WHERE t.LOB_ID IN
+        <foreach collection="ids" item="lobId" open="(" separator="," close=")">
+            #{lobId}
+        </foreach>
+    </select>
+
     <select id="listByRowBounds" resultMap="lobMapper">
         SELECT t.* FROM PUB_LOB t
     </select>
+
+    <insert id="save">
+        INSERT INTO PUB_LOB(LOB_ID,LOB_CONTENT,OPER_TIME,ARCHIVE_FLAG,ARCHIVE_TIME)
+        VALUES(#{lobId},#{lobContent},#{operTime},#{archiveFlag},#{archiveTime})
+    </insert>
+
+    <update id="update">
+        UPDATE PUB_LOB t SET t.LOB_CONTENT=#{lobContent},t.OPER_TIME=#{operTime},t.ARCHIVE_FLAG=#{archiveFlag},t.ARCHIVE_TIME=#{archiveTime}
+        WHERE t.LOB_ID=#{lobId}
+    </update>
+
+    <delete id="deleteByIds">
+        DELETE FROM PUB_LOB t WHERE t.LOB_ID IN
+        <foreach collection="ids" item="lobId" open="(" separator="," close=")">
+            #{lobId}
+        </foreach>
+    </delete>
+
+    <update id="archive">
+        UPDATE PUB_LOB t SET t.ARCHIVE_FLAG=#{archiveFlag},t.ARCHIVE_TIME=#{archiveTime} WHERE t.LOB_ID=#{lobId}
+    </update>
+
+    <update id="updateContent">
+        UPDATE PUB_LOB t SET t.LOB_CONTENT=#{lobContent},t.OPER_TIME=#{operTime} WHERE t.LOB_ID=#{lobId}
+    </update>
 
 </mapper>

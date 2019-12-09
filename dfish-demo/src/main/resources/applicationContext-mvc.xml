@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd"
+       default-lazy-init="true">
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
+
+    <!-- Controller层扫描 -->
+    <context:component-scan base-package="com.rongji.dfish.demo.*;" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 开启多值传输功能 -->
+    <mvc:annotation-driven enableMatrixVariables="true">
+        <mvc:message-converters>
+            <!-- 字符转换 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="${system.encoding}"/>
+            </bean>
+			<!-- 接口开发模式的JsonResponse转换 -->
+			<bean class="com.rongji.dfish.framework.mvc.response.JsonResponseConverter"></bean>
+			<!-- 视图开发模式的ui对象转换 -->
+			<bean class="com.rongji.dfish.framework.mvc.response.DFishUIConverter"></bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- 附件上传参数  -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 最大上传附件大小,单位B -->
+        <property name="maxUploadSize" value="${file.maxUploadSize}"/>
+        <property name="defaultEncoding" value="${system.encoding}"/>
+    </bean>
+
+    <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+    <mvc:default-servlet-handler/>
+
+	<!-- 附件模块 -->
+	<bean class="com.rongji.dfish.framework.plugin.file.controller.FileController"></bean>
+
+</beans>

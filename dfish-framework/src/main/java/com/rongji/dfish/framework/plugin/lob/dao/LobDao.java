@@ -3,8 +3,7 @@ package com.rongji.dfish.framework.plugin.lob.dao;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * lob的数据访问层
@@ -21,9 +20,10 @@ public interface LobDao extends FrameworkDao<PubLob, String> {
      *
      * @param lobId      编号
      * @param lobContent 内容
+     * @param operTime 操作时间
      * @return int 更新条数,0代表未更新
      */
-    int updateContent(String lobId, String lobContent);
+    int updateContent(String lobId, String lobContent, Date operTime);
 
     /**
      if (Utils.isEmpty(lobId)) {
@@ -64,9 +64,11 @@ public interface LobDao extends FrameworkDao<PubLob, String> {
      * 归档Lob数据
      *
      * @param lobId 编号
+     * @param archiveFlag 归档状态
+     * @param archiveTime 归档时间
      * @return int 更新条数,0代表未更新
      */
-    int archive(String lobId);
+    int archive(String lobId, String archiveFlag, Date archiveTime);
 
     /**
      * 批量获取Lob内容
@@ -74,6 +76,13 @@ public interface LobDao extends FrameworkDao<PubLob, String> {
      * @param lobIds 编号
      * @return Map&lt;String, String&gt;
      */
-    Map<String, String> getContents(Collection<String> lobIds);
+    default Map<String, String> getContents(Collection<String> lobIds) {
+        List<PubLob> lobs = listByIds(lobIds);
+        Map<String, String> contents = new HashMap<>(lobs.size());
+        for (PubLob lob : lobs) {
+            contents.put(lob.getLobId(), lob.getLobContent());
+        }
+        return contents;
+    }
 
 }

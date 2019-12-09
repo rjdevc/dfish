@@ -6,6 +6,7 @@ import com.rongji.dfish.framework.dto.QueryParam;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -17,6 +18,9 @@ import java.util.regex.Pattern;
  */
 public interface FrameworkDao<P, ID extends Serializable> {
 
+    /**
+     * 批量大小
+     */
     int BATCH_SIZE = 512;
 
     /**
@@ -31,7 +35,30 @@ public interface FrameworkDao<P, ID extends Serializable> {
      * @param ids 编号集合
      * @return Map&lt;ID, P&gt; 实体对象集合
      */
-    Map<ID, P> gets(Collection<ID> ids);
+    default Map<ID, P> gets(Collection<ID> ids) {
+        List<P> dataList = listByIds(ids);
+        Map<ID, P> dataMap = new HashMap<>(dataList.size());
+        for (P data : dataList) {
+            if (data != null) {
+                dataMap.put(getEntityId(data), data);
+            }
+        }
+        return dataMap;
+    }
+
+    /**
+     * 根据实体对象获取主键编号
+     * @param entity 实体对象
+     * @return 主键编号
+     */
+    ID getEntityId(P entity);
+
+    /**
+     * 根据编号集合批量获取实体对象
+     * @param ids 编号集合
+     * @return List&lt;P&gt; 实体对象集合
+     */
+    List<P> listByIds(Collection<ID> ids);
 
     /**
      * 根据分页信息和参数获取列表
@@ -42,14 +69,24 @@ public interface FrameworkDao<P, ID extends Serializable> {
     List<P> list(Pagination pagination, QueryParam<?> queryParam);
 
     /**
-     * 保存方法
-     * @param entity
-     * @return
+     * 保存
+     * @param entity 实体对象
+     * @return int 更新记录数
      */
     int save(P entity);
 
+    /**
+     * 修改
+     * @param entity 实体对象
+     * @return int 更新记录数
+     */
     int update(P entity);
 
+    /**
+     * 保存或更新
+     * @param entity 实体对象
+     * @return int 更新记录数
+     */
     default int saveOrUpdate(P entity) {
         if (entity == null) {
             return 0;
@@ -61,12 +98,32 @@ public interface FrameworkDao<P, ID extends Serializable> {
         return count;
     }
 
+    /**
+     * 删除
+     * @param entity 实体对象
+     * @return int 更新记录数
+     */
     int delete(P entity);
 
+    /**
+     * 删除
+     * @param id 编号
+     * @return int 更新记录数
+     */
     int delete(ID id);
 
+    /**
+     * 批量删除
+     * @param entities 实体对象集合
+     * @return int 更新记录数
+     */
     int deleteAll(Collection<P> entities);
 
+    /**
+     * 预编译多参数拼接语句
+     * @param sql 拼接的sql
+     * @param paramCount 参数个数
+     */
     default void appendParamStr(StringBuilder sql, int paramCount) {
         if (sql == null) {
             return;
@@ -82,17 +139,39 @@ public interface FrameworkDao<P, ID extends Serializable> {
         }
     }
 
+    /**
+     * 预编译多参数拼接语句
+     * @param paramCount 参数个数
+     * @return 拼接的sql
+     */
     default String getParamStr(int paramCount) {
         StringBuilder sql = new StringBuilder();
         appendParamStr(sql, paramCount);
         return sql.toString();
     }
 
+    /**
+     * 带有FROM
+     */
     Pattern PATTERN_FROM = Pattern.compile("\\bFROM\\b");
+    /**
+     * 带有DISTINCT
+     */
     Pattern PATTERN_DISTINCT = Pattern.compile("\\bDISTINCT\\b");
+    /**
+     * 带有GROUP BY
+     */
     Pattern PATTERN_GROUP_BY = Pattern.compile("\\bGROUP +BY\\b");
+    /**
+     * 带有ORDER BY
+     */
     Pattern PATTERN_ORDER_BY = Pattern.compile("\\bORDER +BY\\b");
 
+    /**
+     * 获取计数统计语句
+     * @param sql 原始查询语句
+     * @return String 统计sql
+     */
     static String getCountSql(String sql) {
         // 更新比较精确的截取的方式，应该用正则表达是而不是用 FROM前面加空格的做法。
         String upperSQL = sql.toUpperCase();

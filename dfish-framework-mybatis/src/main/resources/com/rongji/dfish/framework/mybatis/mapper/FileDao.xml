@@ -10,8 +10,67 @@
         SELECT t.* FROM PUB_FILE_RECORD t WHERE t.FILE_ID = #{fileId}
     </select>
 
+    <select id="listByIds" resultMap="fileMapper">
+        SELECT t.* FROM PUB_FILE_RECORD t WHERE t.FILE_ID IN
+        <foreach collection="collection" item="fileId" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </select>
+
     <select id="listByRowBounds" resultMap="fileMapper">
         SELECT t.* FROM PUB_FILE_RECORD t
     </select>
+
+    <select id="listByLink" resultMap="fileMapper">
+        SELECT t.* FROM PUB_FILE_RECORD t WHERE t.FILE_LINK=#{fileLink}
+        <foreach collection="fileKeys" item="fileKey" open=" AND t.FILE_KEY IN (" separator="," close=")">
+            #{fileKey}
+        </foreach>
+        <if test="fileStatus != null and fileStatus.length > 0">
+            <foreach collection="fileStatus" item="status" open=" AND t.FILE_STATUS IN (" separator="," close=")">
+                #{status}
+            </foreach>
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.rongji.dfish.framework.plugin.file.entity.PubFileRecord">
+        INSERT INTO PUB_FILE_RECORD(FILE_ID,FILE_NAME,FILE_TYPE,FILE_URL,FILE_SIZE,FILE_CREATOR,CREATE_TIME,UPDATE_TIME,FILE_LINK,FILE_KEY,FILE_STATUS)
+        VALUES (#{fileId},#{fileName},#{fileType},#{fileUrl},#{fileSize},#{fileCreator},#{createTime},#{updateTime},#{fileLink},#{fileKey},#{fileStatus})
+    </insert>
+
+    <update id="update" parameterType="com.rongji.dfish.framework.plugin.file.entity.PubFileRecord">
+        UPDATE PUB_FILE_RECORD t SET t.FILE_NAME=#{fileName},t.FILE_TYPE=#{fileType},t.FILE_URL=#{fileUrl},t.FILE_SIZE=#{fileSize},t.FILE_CREATOR=#{fileCreator},t.CREATE_TIME=#{createTime},t.UPDATE_TIME=#{updateTime},t.FILE_LINK=#{fileLink},t.FILE_KEY=#{fileKey},t.FILE_STATUS=#{fileStatus}
+        WHERE t.FILE_ID=#{fileId}
+    </update>
+
+    <update id="updateFileLink">
+        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink},t.UPDATE_TIME=#{updateTime} WHERE t.FILE_ID=#{fileId}
+    </update>
+
+    <update id="updateFileLinks">
+        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink},t.FILE_KEY=#{fileKey},t.UPDATE_TIME=#{updateTime} WHERE
+        t.FILE_ID IN
+        <foreach collection="fileIds" item="fileId" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </update>
+
+    <update id="updateFileStatus">
+        UPDATE PUB_FILE_RECORD t SET t.FILE_STATUS=#{fileStatus},t.UPDATE_TIME=#{updateTime} WHERE t.FILE_ID IN
+        <foreach collection="fileIds" item="fileId" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </update>
+
+    <update id="updateFileStatusByLink">
+        UPDATE PUB_FILE_RECORD t SET t.FILE_STATUS=#{fileStatus},t.UPDATE_TIME=#{updateTime} WHERE t.FILE_LINK=#{fileLink} AND t.FILE_KEY=#{fileKey}
+    </update>
+
+    <delete id="deleteByIds">
+        DELETE FROM PUB_FILE_RECORD t WHERE t.FILE_ID IN
+        <foreach collection="ids" item="fileId" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </delete>
 
 </mapper>

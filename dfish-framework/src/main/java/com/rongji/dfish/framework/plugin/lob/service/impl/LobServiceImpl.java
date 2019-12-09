@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.lob.service.impl;
 
+import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
@@ -31,7 +32,10 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     }
 
     @Override
-    public String saveLob(String lobContent) {
+    public String saveLob(String lobContent) throws Exception {
+        if (Utils.isEmpty(lobContent)) {
+            throw new DfishException("文本内容不能为空");
+        }
         String lobId = getNewId();
         PubLob pubLob = new PubLob();
         pubLob.setLobId(lobId);
@@ -44,12 +48,12 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 
     @Override
     public int updateContent(String lobId, String lobContent) {
-        return getDao().updateContent(lobId, lobContent);
+        return getDao().updateContent(lobId, lobContent, new Date());
     }
 
     @Override
     public int archive(String lobId) {
-        return getDao().archive(lobId);
+        return getDao().archive(lobId, "1", new Date());
     }
 
     @Override

@@ -5,7 +5,10 @@ import com.rongji.dfish.framework.hibernate.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * lob的hibernate实现dao层
@@ -15,32 +18,19 @@ import java.util.*;
  */
 public class LobDao4Hibernate extends FrameworkDao4Hibernate<PubLob, String> implements LobDao {
     @Override
-    public int updateContent(String lobId, String lobContent) {
+    public int updateContent(String lobId, String lobContent, Date operTime) {
         if (Utils.isEmpty(lobId)) {
             return 0;
         }
-        return bulkUpdate("UPDATE PubLob t SET t.lobContent=? WHERE t.lobId=?", new Object[]{lobContent, lobId});
+        return bulkUpdate("UPDATE PubLob t SET t.lobContent=?,t.operTime=? WHERE t.lobId=?", new Object[]{lobContent, operTime, lobId});
     }
 
     @Override
-    public int archive(String lobId) {
+    public int archive(String lobId, String archiveFlag, Date archiveTime) {
         if (Utils.isEmpty(lobId)) {
             return 0;
         }
-        return bulkUpdate("UPDATE PubLob t SET t.archiveFlag=? WHERE t.lobId=?", new Object[]{"1", lobId});
+        return bulkUpdate("UPDATE PubLob t SET t.archiveFlag=?,t.archiveTime=? WHERE t.lobId=?", new Object[]{archiveFlag, archiveTime, lobId});
     }
 
-    @Override
-    public Map<String, String> getContents(Collection<String> lobIds) {
-        if (Utils.isEmpty(lobIds)) {
-            return Collections.emptyMap();
-        }
-        List<Object[]> list = (List<Object[]>) list("SELECT t.lobId,t.lobContent FROM PubLob t WHERE t.lobId IN(" + getParamStr(lobIds.size()) + ")",
-                lobIds.toArray());
-        Map<String, String> dataMap = new HashMap<>(list.size());
-        for (Object[] data : list) {
-            dataMap.put((String) data[0], (String) data[1]);
-        }
-        return dataMap;
-    }
 }
