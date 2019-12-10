@@ -2,6 +2,7 @@ package com.rongji.dfish.base.crypt;
 
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -276,6 +277,7 @@ public abstract class AbstractCryptor {
                         }
                     }
                 }
+                blockSize=0;
                 out.write(chars);
             }
         }
@@ -336,6 +338,7 @@ public abstract class AbstractCryptor {
                     chars[2] = ALPHABET[(block[1] & 0x0F) << 4 | ((block[2] & 0x03) >> 6)];
                     chars[3] = ALPHABET[(block[2] & 0x3F)];
                 }
+                blockSize=0;
                 out.write(chars);
             }
         }
@@ -394,6 +397,7 @@ public abstract class AbstractCryptor {
                     chars[2] = ALPHABET[(block[1] & 0x0F) << 4 | ((block[2] & 0x03) >> 6)];
                     chars[3] = ALPHABET[(block[2] & 0x3F)];
                 }
+                blockSize=0;
                 out.write(chars);
             }
         }
@@ -428,8 +432,14 @@ public abstract class AbstractCryptor {
             //如果chunkSize不为0，则需要把上一轮的内容加入到这轮中进行计算。
             if (blockSize > 0) {
                 consum = DATA_SIZE - blockSize;
+                if(len<consum){
+                    System.arraycopy(b, 0, block, blockSize, len);
+                    blockSize+=len;
+                    return;
+                }
                 System.arraycopy(b, 0, block, blockSize, consum);
                 doFillBlock(block, 0, res, filled);
+                blockSize=0;//使用了。
                 filled += EN_SIZE;
             }
             int i = off + consum;
@@ -439,10 +449,24 @@ public abstract class AbstractCryptor {
             }
             if (i > len - DATA_SIZE) {
                 blockSize = len - i;
-                System.arraycopy(b, i, block, 0, blockSize);
+                if(blockSize>0) {
+                    System.arraycopy(b, i, block, 0, blockSize);
+                }
             }
             out.write(res, 0, filled);
         }
+
+        void show(byte[] res, int off, int len) {
+            StringBuilder sb=new StringBuilder();
+            sb.append('[');
+            for(int i=off;i<off+len;i++){
+                sb.append(Integer.toHexString(0x200|res[i]).toUpperCase().substring(1));
+                sb.append(' ');
+            }
+            sb.append(']');
+            System.out.println(sb);
+        }
+
 
         protected abstract void doFillBlock(byte[] block, int i, byte[] res, int filled);
     }
@@ -466,7 +490,7 @@ public abstract class AbstractCryptor {
         }
 
 
-        //        public int read(byte[] b,int off,int len)throws IOException{
+//        public int read(byte[] b,int off,int len)throws IOException{
 //            int res=read2(b,off,len);
 //            System.out.println("b.len="+b.length+" off="+off+" len="+len+" readlen="+res);
 //            ArrayList l=new ArrayList();
@@ -508,7 +532,9 @@ public abstract class AbstractCryptor {
             }
             if (i > rread - EN_SIZE) {
                 blockSize = rread - i;
-                System.arraycopy(res, i, block, 0, blockSize);
+                if(blockSize>0) {
+                    System.arraycopy(res, i, block, 0, blockSize);
+                }
             }
             if (read <= len - DATA_SIZE && blockSize > 0) {//如果有足够的空间，尝试，直接把结果压到最后一组中去
                 return read + readTail(b, off + read);
@@ -548,12 +574,12 @@ public abstract class AbstractCryptor {
                 decryptedBlock = out;
             }
             int realRead = doFillBlock(out, outPos, in, inPos);
-            int readed = Math.min(realRead, outCap);
-            decryptedBlockSize = DATA_SIZE - readed;
+            int read = Math.min(realRead, outCap);
+            decryptedBlockSize = DATA_SIZE - read;
             if (toLastBlock) {
-                System.arraycopy(out, 0, realOut, realOutPos, readed);
+                System.arraycopy(out, 0, realOut, realOutPos, read);
             }
-            return readed;
+            return read;
         }
 
         protected abstract int doFillBlock(byte[] out, int outPos, byte[] in, int inPos);
