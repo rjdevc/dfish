@@ -2,8 +2,7 @@ package com.rongji.dfish.framework.plugin.progress;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
-import com.rongji.dfish.base.crypt.CryptProvider;
-import com.rongji.dfish.base.crypt.StringCryptor;
+import com.rongji.dfish.base.crypt.Cryptor;
 import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 
@@ -21,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ProgressManager {
     private Cache<String, ProgressData> progressCache;
 
-    private CryptProvider cryptProvider;
+    private Cryptor cryptor;
 
     public Cache<String, ProgressData> getProgressCache() {
         return progressCache;
@@ -31,12 +30,12 @@ public class ProgressManager {
         this.progressCache = progressCache;
     }
 
-    public CryptProvider getCryptProvider() {
-        return cryptProvider;
+    public Cryptor getCryptor() {
+        return cryptor;
     }
 
-    public void setCryptProvider(CryptProvider cryptProvider) {
-        this.cryptProvider = cryptProvider;
+    public void setCryptor(Cryptor cryptor) {
+        this.cryptor = cryptor;
     }
 
     /**
@@ -665,13 +664,6 @@ public class ProgressManager {
         return progressData != null && !progressData.isFinish() && progressData.getStepIndex() < progressData.getSteps();
     }
 
-    private StringCryptor getCryptor() {
-        if (cryptProvider == null) {
-            cryptProvider = new CryptProvider();
-        }
-        return cryptProvider.getCryptor();
-    }
-
     /**
      * 加密
      *
@@ -680,7 +672,8 @@ public class ProgressManager {
      */
     public String encrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {
-            return getCryptor().encrypt(progressKey);
+            Cryptor cryptor = getCryptor();
+            return cryptor != null ? cryptor.encrypt(progressKey) : progressKey;
         }
         return progressKey;
     }
@@ -693,7 +686,8 @@ public class ProgressManager {
      */
     public String decrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {
-            return getCryptor().decrypt(progressKey);
+            Cryptor cryptor = getCryptor();
+            return cryptor != null ? cryptor.decrypt(progressKey) : progressKey;
         }
         return progressKey;
     }

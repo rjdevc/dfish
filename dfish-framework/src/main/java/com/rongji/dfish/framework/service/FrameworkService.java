@@ -2,7 +2,7 @@ package com.rongji.dfish.framework.service;
 
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.crypt.StringCryptor;
+import com.rongji.dfish.base.crypt.Cryptor;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;
 
@@ -93,7 +93,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * 获取加密器
      * @return StringCryptor
      */
-    StringCryptor getCryptor();
+    Cryptor getCryptor();
 
     /**
      * 加密字符

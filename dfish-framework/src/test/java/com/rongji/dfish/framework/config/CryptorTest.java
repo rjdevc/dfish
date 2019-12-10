@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.config;
 
-import com.rongji.dfish.base.crypt.CryptFactory;
-import com.rongji.dfish.base.crypt.CryptProvider;
+import com.rongji.dfish.base.crypt.Cryptor;
+import com.rongji.dfish.base.util.CryptUtil;
 import org.junit.Test;
 
 public class CryptorTest {
@@ -10,28 +10,26 @@ public class CryptorTest {
     public void encrypt() {
         String[] strArray = new String[]{"test", "RJtest"};
 
-        CryptProvider cryptProvider = new CryptProvider();
-
-        String[] algorithmsArray = new String[]{
-                CryptFactory.ALGORITHMS_BLOWFISH,
-                CryptFactory.ALGORITHMS_SHA1,
-                CryptFactory.ALGORITHMS_SHA256,
-                CryptFactory.ALGORITHMS_SHA512
+        String[] algorithmArray = new String[]{
+                CryptUtil.ALGORITHM_BLOWFISH,
+                CryptUtil.ALGORITHM_SHA1,
+                CryptUtil.ALGORITHM_SHA256,
+                CryptUtil.ALGORITHM_SHA512
         };
-        for (String algorithms : algorithmsArray) {
-            cryptProvider.setAlgorithms(algorithms);
+        for (String algorithm : algorithmArray) {
+            Cryptor cryptor = CryptUtil.prepareCryptor(algorithm, "DFish@RJ002474").build();
             for (String str : strArray) {
-                System.out.println("[" + algorithms + "]" + str + "->(" + cryptProvider.getCryptor().encrypt(str) + ")");
+                System.out.println("[" + algorithm + "]" + str + "->(" + cryptor.encrypt(str) + ")");
             }
         }
     }
 
     @Test
     public void decrypt() {
-        CryptProvider cryptProvider = new CryptProvider();
+        Cryptor cryptor = CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH, "DFish@RJ002474").build();
 
         String enStr = "5F73FHNBVVQWDZPA8AACVZEYVW";
-        System.out.println(enStr + "->" + cryptProvider.getCryptor().decrypt(enStr));
+        System.out.println(enStr + "->" + cryptor.decrypt(enStr));
     }
 
 }
