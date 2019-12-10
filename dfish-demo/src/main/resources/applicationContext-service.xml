@@ -26,11 +26,6 @@
     <!-- json构建器 -->
     <bean id="jsonBuilder" class="com.rongji.dfish.misc.util.json.impl.JsonBuilder4Fastjson"></bean>
 
-    <!-- 加密提供 -->
-    <bean id="cryptProvider" class="com.rongji.dfish.base.crypt.CryptProvider">
-        <property name="secretKey" value="DFish@v5"></property>
-    </bean>
-
     <!-- lob模块 -->
     <bean id="lobService" class="com.rongji.dfish.framework.plugin.lob.service.impl.LobServiceImpl"></bean>
 
