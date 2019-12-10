@@ -2,16 +2,11 @@ package com.rongji.dfish.base.crypt;
 
 import com.rongji.dfish.base.util.LogUtil;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.DigestOutputStream;
 import java.security.MessageDigest;
-import java.util.zip.GZIPOutputStream;
 
 public class Digester  extends  AbstractCryptor{
     @Override
@@ -56,10 +51,37 @@ public class Digester  extends  AbstractCryptor{
     }
 
     public static class DigesterBuilder extends AbstractCryptBuilder<DigesterBuilder>{
+        /**
+         * MD5数字摘要方法
+         * 注意不可解密
+         */
+        public static final String ALGORITHM_MD5 = "MD5";
+        /**
+         * 不加密。仅转化内码和字符串
+         */
+        public static final String ALGORITHM_NONE = null;
+        /**
+         * SHA-1数字摘要方法，精度为160位。安全性比MD5高
+         * 注意不可解密
+         */
+        public static final String ALGORITHM_SHA1 = "SHA-1";
+        /**
+         * SHA数字摘要方法，精度为256位。
+         * 注意不可解密
+         */
+        public static final String ALGORITHM_SHA256 = "SHA-256";
+
+        /**
+         * SHA数字摘要方法，精度为512位。
+         * 注意不可解密
+         */
+        public static final String ALGORITHM_SHA512 = "SHA-512";
         private DigesterBuilder(){}
         public static DigesterBuilder create(String algorithm){
             DigesterBuilder cb=new DigesterBuilder();
             cb.algorithm=algorithm;
+            cb.encoding=ENCODING_UTF8;
+            cb.present=PRESENT_HEX;
             return cb;
         }
         public Digester build(){
@@ -71,11 +93,11 @@ public class Digester  extends  AbstractCryptor{
         super(db);
     }
     public String digest(String src){
-        return super.encode(src);
+        return super.encrypt(src);
     }
     public byte[] digest(InputStream is){
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        super.encode(is, baos);
+        super.encrypt(is, baos);
         return baos.toByteArray();
     }
 }

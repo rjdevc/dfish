@@ -12,14 +12,34 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.CyclicBarrier;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipOutputStream;
 
 public class Cryptor extends  AbstractCryptor{
     public static class CryptorBuilder extends AbstractCryptBuilder<CryptorBuilder> {
         public static final String ALGORITHM_NONE=null;
+        /**
+         * BLOWFISH加解密方法,由于相同源可以得到不同结果,而且破解就像当于得到加密密钥的过程所以有相当的安全性,效率还可以.
+         * BLOWFISH 使用的秘钥 可以是1-16byte
+         */
+        public static final String ALGORITHM_BLOWFISH = "Blowfish";
+        /**
+         * 一个比较早期的加解密方法。一个字节改变可以改变8个字节的密文。安全性不是是很高。 后面一般用多次加密的方法。多重DES。如Triple DES
+         * DES 使用的秘钥 是8byte
+         * @see #ALGORITHM_TRIPLE_DES
+         */
+        public static final String ALGORITHM_DES = "DES";
+        /**
+         * AES算法，改算法由DES和RSA融合而成，曾在美国军方使用，现已退役，但对于民用安全性还行
+         * DES 使用的秘钥 是 8byte
+         */
+        public static final String ALGORITHM_AES = "AES";
+        /**
+         * 三重DES算法。
+         * TRIPLE_DES 使用的秘钥 是8byte
+         * @see #ALGORITHM_DES
+         */
+        public static final String ALGORITHM_TRIPLE_DES = "DESede";
 
         private Object key;
         private Object param;
@@ -39,6 +59,8 @@ public class Cryptor extends  AbstractCryptor{
             CryptorBuilder cb = new CryptorBuilder();
             cb.algorithm = algorithm;
             cb.key = key;
+            cb.encoding=ENCODING_UTF8;
+            cb.present=PRESENT_BASE64;
             return cb;
         }
         public CryptorBuilder param(Object param) {
@@ -59,19 +81,19 @@ public class Cryptor extends  AbstractCryptor{
     }
 
     @Override
-    public String encode(String src){
+    public String encrypt(String src){
         //只是把protected改为 public
-        return super.encode(src);
+        return super.encrypt(src);
     }
     @Override
-    public String decode(String src){
+    public String decrypt(String src){
         //只是把protected改为 public
-        return super.decode(src);
+        return super.decrypt(src);
     }
     @Override
-    public void encode(InputStream is, OutputStream os){
+    public void encrypt(InputStream is, OutputStream os){
         //只是把protected改为 public
-        super.encode(is,os);
+        super.encrypt(is,os);
     }
 
     @Override
@@ -84,7 +106,6 @@ public class Cryptor extends  AbstractCryptor{
             }else{
                 cos=os;
             }
-
             if (builder.gzip) {
                 cos = new GZIPOutputStream(cos);
             }
@@ -110,7 +131,7 @@ public class Cryptor extends  AbstractCryptor{
             }
             run(cis, os);
         }catch (Exception ex){
-            LogUtil.error(null,ex);
+           throw new RuntimeException(ex);
         }
     }
 
@@ -125,13 +146,13 @@ public class Cryptor extends  AbstractCryptor{
 
 
     @Override
-    public void decode(InputStream is, OutputStream os){
+    public void decrypt(InputStream is, OutputStream os){
         //只是把protected改为 public
-        super.decode(is,os);
+        super.decrypt(is,os);
     }
 
     protected void run(InputStream is, OutputStream os) {
-        byte[] b = new byte[1024 * 8];
+        byte[] b = new byte[8192];
         int len = 0;
         try{
             while ((len = is.read(b)) != -1) {
