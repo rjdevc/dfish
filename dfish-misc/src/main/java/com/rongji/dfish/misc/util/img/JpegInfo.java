@@ -91,7 +91,7 @@ public class JpegInfo extends ImgInfo {
 //        return jb;
     }
     /**
-     * JPEG的一个数据块(chunk)
+     * JPEG的一个数据块(block)
      */
     public static class JpegChunk {
         static final byte MAGIC =(byte)0xFF;

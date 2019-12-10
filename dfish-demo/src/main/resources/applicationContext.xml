@@ -8,13 +8,13 @@
        default-lazy-init="true">
 
     <!-- 加密提供 -->
-    <bean id="cryptProvider" class="com.rongji.dfish.base.crypt.CryptProvider">
+    <bean id="cryptor" class="com.rongji.dfish.base.crypt.CryptProvider">
         <property name="secretKey" value="DFish@v5"></property>
     </bean>
 
     <!-- 默认属性加密器 -->
     <bean id="propertyCryptor" class="com.rongji.dfish.framework.config.impl.DefaultPropertyCryptor">
-        <property name="cryptProvider" ref="cryptProvider"></property>
+        <property name="cryptProvider" ref="cryptor"></property>
     </bean>
     <!-- 属性配置器 -->
     <bean id="propertyConfigurer" class="com.rongji.dfish.framework.config.PropertyConfigurer">

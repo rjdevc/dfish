@@ -54,8 +54,8 @@ public class CryptUtilTest {
 	}
 
 	public static void main (String[] args) throws IOException {
-		Cryptor c=CryptUtil.prepareCryptor(null,"THIS_IS_".getBytes())
-				.gzip(true).encoding("UTF-8").present(CryptUtil.PRESENT_BASE32).build();
+		Cryptor c=CryptUtil.prepareCryptor("RSA","THIS_IS_".getBytes())
+				.gzip(true).encoding("UTF-8").present(CryptUtil.PRESENT_BASE64).build();
 		String src="君不见，黄河之水天上来⑵，奔流到海不复回。\n" +
 				"君不见，高堂明镜悲白发，朝如青丝暮成雪⑶。\n" +
 				"人生得意须尽欢⑷，莫使金樽空对月。\n" +
@@ -77,6 +77,7 @@ public class CryptUtilTest {
 		StringCryptor sc=CryptFactory.getStringCryptor(null,CryptFactory.ENCODING_UTF8_GZIP,CryptFactory.PRESENT_STYLE_BASE64,null);
 		String oldValue=sc.encrypt(src);
 		String en=c.encrypt(src);
+
 		System.out.println(" OLD equals="+en.equals(oldValue));
 //		if(!en.equals(oldValue)){
 //			System.out.println("oldVaue.length="+oldValue.length()+" value.length"+en.length());

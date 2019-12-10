@@ -116,7 +116,7 @@ public class ImageInfo {
     }
 
     /**
-     * JPEG的一个数据块(chunk)
+     * JPEG的一个数据块(block)
      */
     private static class JpegChunk {
         byte[]src;

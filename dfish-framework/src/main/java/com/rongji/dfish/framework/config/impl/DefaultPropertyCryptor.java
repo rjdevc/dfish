@@ -2,6 +2,7 @@ package com.rongji.dfish.framework.config.impl;
 
 import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.CryptFactory;
+import com.rongji.dfish.base.crypt.Cryptor;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.config.PropertyCryptor;
 
@@ -19,37 +20,27 @@ import com.rongji.dfish.framework.config.PropertyCryptor;
  */
 public class DefaultPropertyCryptor implements PropertyCryptor {
 
-	private CryptProvider cryptProvider;
+	private Cryptor cryptor;
 
-	public CryptProvider getCryptProvider() {
-		return cryptProvider;
+	public Cryptor getCryptor() {
+		return cryptor;
 	}
 
-	public void setCryptProvider(CryptProvider cryptProvider) {
-		this.cryptProvider = cryptProvider;
+	public void setCryptor(Cryptor cryptProvider) {
+		this.cryptor = cryptor;
 	}
 
-	/**
-	 * 获取加密器
-	 * @return StringCryptor
-	 * @author lamontYu
-	 */
-	protected StringCryptor getCryptor() {
-		if (cryptProvider == null) {
-			cryptProvider = new CryptProvider();
-		}
-		return cryptProvider.getCryptor();
-	}
+
 	
 	@Override
     public String decrypt(String str) {
-		StringCryptor cryptor = getCryptor();
+//		StringCryptor cryptor = getCryptor();
 		return cryptor.decrypt(str);
     }
 
 	@Override
     public String encrypt(String str) {
-		StringCryptor cryptor = getCryptor();
+//		StringCryptor cryptor = getCryptor();
 	    return cryptor.encrypt(str);
     }
 
