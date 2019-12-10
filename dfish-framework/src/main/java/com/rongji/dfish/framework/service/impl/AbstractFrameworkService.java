@@ -1,10 +1,7 @@
 package com.rongji.dfish.framework.service.impl;
 
-import com.rongji.dfish.base.crypt.CryptProvider;
-import com.rongji.dfish.base.crypt.StringCryptor;
-import com.rongji.dfish.framework.dao.FrameworkDao;
+import com.rongji.dfish.base.crypt.Cryptor;
 import com.rongji.dfish.framework.service.FrameworkService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -16,27 +13,19 @@ import java.lang.reflect.ParameterizedType;
  * @create 2019-12-04
  */
 public abstract class AbstractFrameworkService<V, P, ID extends Serializable> implements FrameworkService<V, P, ID> {
-    @Resource(name = "cryptProvider")
-    protected CryptProvider cryptProvider;
-
-    public CryptProvider getCryptProvider() {
-        return cryptProvider;
-    }
-
-    public void setCryptProvider(CryptProvider cryptProvider) {
-        this.cryptProvider = cryptProvider;
-    }
-
-    @Override
-    public StringCryptor getCryptor() {
-        if (cryptProvider == null) {
-            cryptProvider = new CryptProvider();
-        }
-        return cryptProvider.getCryptor();
-    }
-
+    @Resource(name = "cryptor")
+    protected Cryptor cryptor;
     protected Class<P> poClass;
     protected Class<V> voClass;
+
+    @Override
+    public Cryptor getCryptor() {
+        return cryptor;
+    }
+
+    public void setCryptor(Cryptor cryptor) {
+        this.cryptor = cryptor;
+    }
 
     @Override
     public P newInstance4Po() {
