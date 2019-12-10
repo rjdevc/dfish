@@ -24,4 +24,5 @@ public interface FileUploadPlugin {
      * @throws Exception
      */
     Object doRequest(HttpServletRequest request) throws Exception;
+
 }

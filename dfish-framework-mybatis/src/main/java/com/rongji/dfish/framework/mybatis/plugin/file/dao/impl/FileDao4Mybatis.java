@@ -21,7 +21,7 @@ public interface FileDao4Mybatis extends FrameworkDao4Mybatis<PubFileRecord, Str
     int updateFileStatusByLink(@Param("fileLink") String fileLink, @Param("fileKey") String fileKey, @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
 
     @Override
-    int updateFileLink(@Param("fileId") String fileId, @Param("fileLink") String fileLink, @Param("updateTime") Date updateTime);
+    int updateFileLink(@Param("fileId") String fileId, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey, @Param("updateTime") Date updateTime);
 
     @Override
     int updateFileStatus(@Param("fileIds") Collection<String> fileIds, @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);

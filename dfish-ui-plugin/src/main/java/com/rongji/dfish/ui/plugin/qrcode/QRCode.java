@@ -1,10 +1,9 @@
-package com.rongji.dfish.framework.plugin.qrcode.ui;
+package com.rongji.dfish.ui.plugin.qrcode;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.misc.qrcode.MatrixToImageConfig;
 import com.rongji.dfish.ui.AbstractWidgetWrapper;
 import com.rongji.dfish.ui.widget.Img;
 
@@ -19,11 +18,12 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	private static final long serialVersionUID = 4326337757852569803L;
 
-	private String url = "qrCode/image";
+	private String url = "./qrCode/image";
 	private String content;
-	private int size;
+	private int size = 100;
 	private String format;
-	private MatrixToImageConfig config;
+	private Integer onColor;
+	private Integer offColor;
 
 	public String getContent() {
 		return content;
@@ -52,15 +52,24 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 		return rebuildPrototype();
 	}
 
-	public MatrixToImageConfig getConfig() {
-		return config;
+	public Integer getOnColor() {
+		return onColor;
 	}
 
-	public QRCode setConfig(MatrixToImageConfig config) {
-		this.config = config;
-		return rebuildPrototype();
+	public QRCode setOnColor(Integer onColor) {
+		this.onColor = onColor;
+		return this;
 	}
-	
+
+	public Integer getOffColor() {
+		return offColor;
+	}
+
+	public QRCode setOffColor(Integer offColor) {
+		this.offColor = offColor;
+		return this;
+	}
+
 	private QRCode rebuildPrototype() {
 		prototype.setSrc(getImageUrl()).setHeight(size).setWidth(size);
 		return this;
@@ -90,36 +99,42 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 	 * @param format 二维码图片格式
 	 */
 	public QRCode(String content, int size, String format) {
-		this(content, size, format, null);
+		this(content, size, format, null, null);
 	}
 	/**
 	 * 构造方法
 	 * @param content 转码内容
 	 * @param size 二维码大小
-	 * @param config 二维码配置
+	 * @param onColor 二维码颜色(黑色部分)
+	 * @param offColor 二维码颜色(白色部分)
 	 */
-	private QRCode(String content, int size, String format, MatrixToImageConfig config) {
-		// FIXME 这个方法预留后续可能进行调整二维码颜色,所以暂时先是私有方法
+	private QRCode(String content, int size, String format, Integer onColor, Integer offColor) {
 		this.content = content;
 		this.size = size;
 		this.format = format;
-		this.config = config;
+		this.setOnColor(onColor);
+		this.setOffColor(offColor);
 		
 		prototype = new Img(null);
 		rebuildPrototype();
 	}
 	
 	private String getImageUrl() {
-		String imageUrl = null;
 		try {
-			imageUrl = url + "?content=" + URLEncoder.encode(content, "UTF-8") + "&size=" + size;
+			String imageUrl = url + "?content=" + URLEncoder.encode(content, "UTF-8") + "&size=" + size;
 			if (Utils.notEmpty(format)) {
 				imageUrl += "&format=" + format;
 			}
+			if (onColor != null) {
+				imageUrl += "&onColor=" + onColor;
+			}
+			if (offColor != null) {
+				imageUrl += "&offColor=" + offColor;
+			}
+			return imageUrl;
 		} catch (UnsupportedEncodingException e) {
 			throw new UnsupportedOperationException("The content can not be encoded.");
 		}
-		return imageUrl;
 	}
 
 	@Override

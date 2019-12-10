@@ -3,9 +3,12 @@ package com.rongji.dfish.framework.mvc.controller;
 import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.command.Alert;
 import com.rongji.dfish.ui.command.Dialog;
+import com.rongji.dfish.ui.json.J;
 import com.rongji.dfish.ui.layout.Vertical;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.SocketException;
@@ -72,7 +76,7 @@ public class BaseUIController extends BaseActionController {
 
 			if (e instanceof SocketException || (e.getCause() != null && e.getCause() instanceof SocketException)) {
 				alertMsg = "网络异常@" + System.currentTimeMillis();
-				FrameworkHelper.LOG.error(alertMsg + "=====[Network]=====" + e.getClass().getName() + ":["+e.getMessage() + "]");
+				LogUtil.error(alertMsg + "=====[Network]=====" + e.getClass().getName() + ":["+e.getMessage() + "]");
 				return buildWarnAlert(alertMsg);
 			}
 			DfishException cast = null;
@@ -107,12 +111,12 @@ public class BaseUIController extends BaseActionController {
 		if (Utils.notEmpty(alertMsg)) {
 			obj = buildWarnAlert(alertMsg);
 		} else {
-			if (FrameworkHelper.LOG.isDebugEnabled()) {
+			if (LogUtil.getLog(this.getClass()).isDebugEnabled()) {
 				obj = buildErrorDialog(e);
 			} else {
 				alertMsg = "系统内部错误@" + System.currentTimeMillis();
 				obj = buildWarnAlert(alertMsg);
-				FrameworkHelper.LOG.error(alertMsg + "\r\n" + convert2JSON(getRequest()), e);
+				LogUtil.error(alertMsg + "\r\n" + convert2JSON(getRequest()), e);
 			}
 		}
 //		saveLog(loginUser, url, methodName, beginTime, length);
@@ -155,13 +159,13 @@ public class BaseUIController extends BaseActionController {
 			cause.printStackTrace(pw);
 			stackTrace = sw.toString();
 		} catch (Exception e) {
-			FrameworkHelper.LOG.warn("系统异常堆栈输出异常");
+			LogUtil.warn("系统异常堆栈输出异常");
 		} finally {
 			if (pw != null) {
 				pw.close();
 			}
 		}
-		FrameworkHelper.LOG.error(errName + "\r\n" + convert2JSON(getRequest()), cause);
+		LogUtil.error(errName + "\r\n" + convert2JSON(getRequest()), cause);
 
 		View view = buildDialogView();
 		
@@ -194,6 +198,15 @@ public class BaseUIController extends BaseActionController {
 		root.add(main);
 		
 		return view;
+	}
+
+	protected void outputJson(HttpServletResponse response, JsonObject jsonObject) {
+		outputJson(response, jsonObject.asJson());
+	}
+
+	public static void outputJson(HttpServletResponse response, final String content) {
+		FrameworkHelper.outputContent(response, content, "text/json");
+		LogUtil.lazyDebug(()->"\r\n" + J.formatJson(content));
 	}
 
 }

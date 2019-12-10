@@ -6,17 +6,10 @@ import com.rongji.dfish.base.crypt.CryptProvider;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.ui.Command;
-import com.rongji.dfish.ui.JsonNode;
-import com.rongji.dfish.ui.command.Alert;
-import com.rongji.dfish.ui.command.Loading;
-import com.rongji.dfish.ui.widget.Progress;
-import com.rongji.dfish.ui.widget.ProgressItem;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -129,34 +122,6 @@ public class ProgressManager {
         return progressData != old;
     }
 
-    /**
-     * 设置完成时调用的动作
-     *
-     * @param progressKey
-     * @param completeNode
-     * @return boolean
-     */
-    public boolean setCompleteNode(String progressKey, JsonNode completeNode) {
-        ProgressData progressData = getProgressData(progressKey);
-        if (progressData != null) {
-            progressData.setComplete(completeNode);
-        }
-        return setProgressData(progressData);
-    }
-
-    /**
-     * 设置完成时调用的命令
-     *
-     * @param progressKey
-     * @param completeCommand
-     * @return boolean
-     * @see #setCompleteNode(String, JsonNode)
-     */
-    @Deprecated
-    public boolean setCompleteCommand(String progressKey, Command<?> completeCommand) {
-        return setCompleteNode(progressKey, completeCommand);
-    }
-
     private static ExecutorService EXECUTOR_SERVICE;
 
     private int executorSize = 50;
@@ -175,90 +140,118 @@ public class ProgressManager {
         return executingCount.intValue();
     }
 
-    /**
-     * 注册进度条,业务方法调用
-     *
-     * @param runnable
-     * @param progressKey
-     * @return
-     */
-    public Command<?> registerProgress(final Runnable runnable, String progressKey) {
-        return registerProgress(runnable, progressKey, null);
-    }
-
-    /**
-     * 注册进度条,业务方法调用
-     *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @return
-     */
-    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText) {
-        return registerProgress(runnable, progressKey, progressText, null);
-    }
-
-    /**
-     * 注册进度条,业务方法调用
-     *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param completeNode
-     * @return
-     */
-    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, JsonNode completeNode) {
-        return registerProgress(runnable, progressKey, progressText, completeNode, 1);
-    }
-
-    /**
-     * 注册进度条,业务方法调用
-     *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param steps
-     * @return
-     */
-    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, int steps) {
-        return registerProgress(runnable, progressKey, progressText, null, 1);
-    }
-
-    /**
-     * 注册进度条,业务方法调用
-     *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param completeNode
-     * @param steps
-     * @return
-     */
-    public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, int steps) {
-        return registerProgress(runnable, progressKey, progressText, completeNode, getStepScales(steps));
-    }
-
-    /**
-     * 注册进度条,业务方法调用
-     *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param completeNode
-     * @param stepScale
-     * @return
-     */
-    public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, Number[] stepScale) {
-        ProgressData progressData = register(runnable, progressKey, progressText, completeNode, stepScale);
-        Progress progress = getProgress(progressData);
-        if (progress != null) {
-            return new Loading(null).setId(ID_LOADING).setNode(progress);
-        } else {
-            String errorMsg = "添加进度条队列失败@" + System.currentTimeMillis();
-            FrameworkHelper.LOG.warn(errorMsg + "[" + progressKey + "]");
-            return new Alert(errorMsg);
-        }
-    }
+//    /**
+//     * 设置完成时调用的动作
+//     *
+//     * @param progressKey
+//     * @param completeNode
+//     * @return boolean
+//     */
+//    public boolean setCompleteNode(String progressKey, JsonNode completeNode) {
+//        ProgressData progressData = getProgressData(progressKey);
+//        if (progressData != null) {
+//            progressData.setComplete(completeNode);
+//        }
+//        return setProgressData(progressData);
+//    }
+//
+//    /**
+//     * 设置完成时调用的命令
+//     *
+//     * @param progressKey
+//     * @param completeCommand
+//     * @return boolean
+//     * @see #setCompleteNode(String, JsonNode)
+//     */
+//    @Deprecated
+//    public boolean setCompleteCommand(String progressKey, Command<?> completeCommand) {
+//        return setCompleteNode(progressKey, completeCommand);
+//    }
+//
+//    /**
+//     * 注册进度条,业务方法调用
+//     *
+//     * @param runnable
+//     * @param progressKey
+//     * @return
+//     */
+//    public Command<?> registerProgress(final Runnable runnable, String progressKey) {
+//        return registerProgress(runnable, progressKey, null);
+//    }
+//
+//    /**
+//     * 注册进度条,业务方法调用
+//     *
+//     * @param runnable
+//     * @param progressKey
+//     * @param progressText
+//     * @return
+//     */
+//    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText) {
+//        return registerProgress(runnable, progressKey, progressText, null);
+//    }
+//
+//    /**
+//     * 注册进度条,业务方法调用
+//     *
+//     * @param runnable
+//     * @param progressKey
+//     * @param progressText
+//     * @param completeNode
+//     * @return
+//     */
+//    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, JsonNode completeNode) {
+//        return registerProgress(runnable, progressKey, progressText, completeNode, 1);
+//    }
+//
+//    /**
+//     * 注册进度条,业务方法调用
+//     *
+//     * @param runnable
+//     * @param progressKey
+//     * @param progressText
+//     * @param steps
+//     * @return
+//     */
+//    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, int steps) {
+//        return registerProgress(runnable, progressKey, progressText, null, 1);
+//    }
+//
+//    /**
+//     * 注册进度条,业务方法调用
+//     *
+//     * @param runnable
+//     * @param progressKey
+//     * @param progressText
+//     * @param completeNode
+//     * @param steps
+//     * @return
+//     */
+//    public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, int steps) {
+//        return registerProgress(runnable, progressKey, progressText, completeNode, getStepScales(steps));
+//    }
+//
+//    /**
+//     * 注册进度条,业务方法调用
+//     *
+//     * @param runnable
+//     * @param progressKey
+//     * @param progressText
+//     * @param completeNode
+//     * @param stepScale
+//     * @return
+//     */
+//    public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, Number[] stepScale) {
+//        ProgressData progressData = register(runnable, progressKey, progressText, completeNode, stepScale);
+//        Progress progress = getProgress(progressData);
+//        if (progress != null) {
+//            return new Loading(null).setId(ID_LOADING).setNode(progress);
+//        } else {
+//            String errorMsg = "添加进度条队列失败@" + System.currentTimeMillis();
+//            FrameworkHelper.LOG.warn(errorMsg + "[" + progressKey + "]");
+//            return new Alert(errorMsg);
+//        }
+//    }
 
     /**
      * 注册进度条,业务方法调用
@@ -404,36 +397,36 @@ public class ProgressManager {
 
 //	private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
 
-    Progress getProgress(ProgressData progressData) {
-        if (progressData == null) {
-            return null;
-        }
-
-        // 参数需要加密,担心key被猜测出来获取高权限的数据信息
-        String src = "progress/reloadProgress?progressKey=" + progressData.getProgressKey();
-        Progress progress = new Progress("progress").setSrc(src).setText(progressData.getProgressText());
-        progress.setDelay(progressData.getDelay());
-
-        int steps = progressData.getSteps();
-        if (steps > 1) {
-//            String stepText = Utils.isEmpty(stepProgress.getText()) ? this.loadingText : stepProgress.getText();
-            int currStep = progressData.getStepIndex() + 1;
-//            stepProgress.setText();
+//    Progress getProgress(ProgressData progressData) {
+//        if (progressData == null) {
+//            return null;
+//        }
 //
-//            Progress doneProgress = new Progress("prgDone", progressData.getDonePercent()).setSrc(src).setText("总进度");
-//            progressGroup.add(doneProgress);
-            // "(" + (currStep > steps ? steps : currStep) + "/" + steps + ") " + stepText
-            String stepText = "(" + (currStep > steps ? steps : currStep) + "/" + steps + ")";
-            if (Utils.notEmpty(progressData.getProgressText())) {
-                stepText += " " + progressData.getProgressText();
-            }
-            progress.add(new ProgressItem(null, progressData.getStepPercent()).setText(stepText));
-            progress.add(new ProgressItem(null, progressData.getDonePercent()).setText("总进度"));
-        } else {
-            progress.add(new ProgressItem(null, progressData.getDonePercent()).setText(progressData.getProgressText()));
-        }
-        return progress;
-    }
+//        // 参数需要加密,担心key被猜测出来获取高权限的数据信息
+//        String src = "progress/reloadProgress?progressKey=" + progressData.getProgressKey();
+//        Progress progress = new Progress("progress").setSrc(src).setText(progressData.getProgressText());
+//        progress.setDelay(progressData.getDelay());
+//
+//        int steps = progressData.getSteps();
+//        if (steps > 1) {
+////            String stepText = Utils.isEmpty(stepProgress.getText()) ? this.loadingText : stepProgress.getText();
+//            int currStep = progressData.getStepIndex() + 1;
+////            stepProgress.setText();
+////
+////            Progress doneProgress = new Progress("prgDone", progressData.getDonePercent()).setSrc(src).setText("总进度");
+////            progressGroup.add(doneProgress);
+//            // "(" + (currStep > steps ? steps : currStep) + "/" + steps + ") " + stepText
+//            String stepText = "(" + (currStep > steps ? steps : currStep) + "/" + steps + ")";
+//            if (Utils.notEmpty(progressData.getProgressText())) {
+//                stepText += " " + progressData.getProgressText();
+//            }
+//            progress.add(new ProgressItem(null, progressData.getStepPercent()).setText(stepText));
+//            progress.add(new ProgressItem(null, progressData.getDonePercent()).setText("总进度"));
+//        } else {
+//            progress.add(new ProgressItem(null, progressData.getDonePercent()).setText(progressData.getProgressText()));
+//        }
+//        return progress;
+//    }
 
 //    /**
 //     * 设置进度

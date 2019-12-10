@@ -4,7 +4,7 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.plugin.file.dto.FileQueryParam;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
-import com.rongji.dfish.ui.form.UploadItem;
+import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 
 import java.util.*;
 
@@ -32,6 +32,7 @@ public interface FileDao extends FrameworkDao<PubFileRecord, String> {
      * @param fileLink   附件链接名
      * @param fileKey    链接关键字
      * @param fileStatus 附件状态
+     * @param updateTime 更新时间
      * @return int 更新记录数
      */
     int updateFileStatusByLink(String fileLink, String fileKey, String fileStatus, Date updateTime);
@@ -41,9 +42,11 @@ public interface FileDao extends FrameworkDao<PubFileRecord, String> {
      *
      * @param fileId 附件编号
      * @param fileLink 链接名
+     * @param fileKey    链接关键字
+     * @param updateTime 更新时间
      * @return int 更新数量
      */
-    int updateFileLink(String fileId, String fileLink, Date updateTime);
+    int updateFileLink(String fileId, String fileLink, String fileKey, Date updateTime);
 
     /**
      * 更新文件链接
@@ -51,6 +54,7 @@ public interface FileDao extends FrameworkDao<PubFileRecord, String> {
      * @param fileIds 附件编号集合
      * @param fileLink 附件链接名
      * @param fileKey  链接关键字
+     * @param updateTime 更新时间
      * @return int 更新记录数
      */
     int updateFileLinks(List<String> fileIds, String fileLink, String fileKey, Date updateTime);

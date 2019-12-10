@@ -3,15 +3,18 @@ package com.rongji.dfish.framework.plugin.file.controller.plugin.impl;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.controller.FileController;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl;
-import com.rongji.dfish.ui.form.UploadItem;
+import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
@@ -23,12 +26,7 @@ import java.io.InputStream;
  * @author lamontYu
  */
 @Component
-public class FileUpload4UeditorPlugin implements FileUploadPlugin {
-    @Autowired
-    private FileService fileService;
-
-    @Autowired
-    private FileHandlingManager fileHandlingManager;
+public class FileUpload4UeditorPlugin extends AbstractFileUploadPlugin {
 
     @Override
     public String name() {
@@ -63,9 +61,9 @@ public class FileUpload4UeditorPlugin implements FileUploadPlugin {
             return readJson;
         }
         // 百度编辑器的附件上传应该来说只有图片
-        UploadItem uploadItem = FileController.saveFile(request, fileService, fileService.getImageTypes());
+        UploadItem uploadItem = saveFile(request);
         String resultJson;
-        if (uploadItem == null || (uploadItem.getError() != null && uploadItem.getError())) {
+        if (uploadItem.getError() != null && uploadItem.getError()) {
             resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getText() + "\"}";
         } else {
             String scheme = request.getParameter("scheme");
@@ -77,9 +75,6 @@ public class FileUpload4UeditorPlugin implements FileUploadPlugin {
             if (Utils.isEmpty(fileUrl)) {
                 fileUrl = "file/thumbnail?fileId=$fileId";
             }
-            // FIXME 哪些附件未被启用还需进一步判断
-            fileService.updateFileLink(fileService.decrypt(uploadItem.getId()), name());
-
             resultJson = "{\"state\":\"SUCCESS\"," +
                     "\"url\":\""+fileUrl.replace("$fileId", uploadItem.getId())+"\"," +
                     "\"title\":\""+uploadItem.getName()+"\"," +

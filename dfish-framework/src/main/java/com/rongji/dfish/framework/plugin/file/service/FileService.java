@@ -2,12 +2,10 @@ package com.rongji.dfish.framework.plugin.file.service;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.plugin.file.dto.FileQueryParam;
+import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.FrameworkService;
-import com.rongji.dfish.misc.util.JsonUtil;
-import com.rongji.dfish.ui.form.UploadItem;
-import org.springframework.web.multipart.MultipartFile;
+import com.rongji.dfish.framework.util.JsonUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -66,11 +64,14 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
     /**
      * 保存文件以及文件记录
      *
-     * @param fileData
-     * @param loginUserId
+     * @param input            文件输入流
+     * @param originalFileName 原始文件名
+     * @param fileSize         文件大小
+     * @param loginUserId      登录人员
+     * @return UploadItem
      * @throws Exception
      */
-    UploadItem saveFile(MultipartFile fileData, String loginUserId) throws Exception;
+    UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception;
 
     /**
      * 文件存放目录
@@ -105,9 +106,10 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      *
      * @param fileId   附件编号
      * @param fileLink 链接名
+     * @param fileKey  关联数据
      * @return int 更新数量
      */
-    int updateFileLink(String fileId, String fileLink);
+    int updateFileLink(String fileId, String fileLink, String fileKey);
 
     /**
      * 更新文件链接
@@ -117,7 +119,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileKey  链接关键字
      * @return int 更新数量
      */
-    default int updateFileLink(String itemJson, String fileLink, String fileKey) {
+    default int updateFileLinks(String itemJson, String fileLink, String fileKey) {
         List<UploadItem> itemList = parseUploadItems(itemJson);
         List<PubFileRecord> oldList = getRecords(fileLink, fileKey);
         List<String> newIds = new ArrayList<>(itemList.size());
@@ -132,7 +134,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         insertList.removeAll(oldIds);
         List<String> deleteList = new ArrayList<>(oldIds);
         deleteList.removeAll(newIds);
-        int count = updateFileLink(insertList, fileLink, fileKey);
+        int count = updateFileLinks(insertList, fileLink, fileKey);
         count += updateFileStatus(deleteList, STATUS_DELETE);
         return count + deleteList.size();
     }
@@ -140,12 +142,12 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
     /**
      * 更新文件链接
      *
-     * @param fileIds 附件编号集合
+     * @param fileIds  附件编号集合
      * @param fileLink 附件链接名
      * @param fileKey  链接关键字
      * @return int 更新记录数
      */
-    int updateFileLink(List<String> fileIds, String fileLink, String fileKey);
+    int updateFileLinks(List<String> fileIds, String fileLink, String fileKey);
 
     /**
      * 更新文件记录状态
@@ -164,7 +166,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
     /**
      * 更新文件记录状态
      *
-     * @param fileIds     附件编号集合
+     * @param fileIds    附件编号集合
      * @param fileStatus 附件状态
      * @return int 更新记录数
      */
@@ -267,15 +269,16 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * 查询可用的文件记录
      *
      * @param fileLink 附件链接名
-     * @param fileKey 链接关键字
+     * @param fileKey  链接关键字
      * @return List&lt;PubFileRecord&gt; 附件记录集合
      */
     List<PubFileRecord> getRecords(String fileLink, String fileKey);
+
     /**
      * 查询可用的文件记录
      *
      * @param fileLink 附件链接名
-     * @param fileKey 链接关键字
+     * @param fileKey  链接关键字
      * @return List&lt;PubFileRecord&gt; 附件记录集合
      * @see #getRecords(String, String)
      */
@@ -310,7 +313,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * 根据链接查询文件数据项
      *
      * @param fileLink 附件链接名
-     * @param fileKey 链接关键字
+     * @param fileKey  链接关键字
      * @return List&lt;UploadItem&gt; 附件项集合
      */
     default List<UploadItem> getUploadItems(String fileLink, String fileKey) {
@@ -326,7 +329,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * 根据链接查询文件数据项
      *
      * @param fileLink 附件链接名
-     * @param fileKey 链接关键字
+     * @param fileKey  链接关键字
      * @return List&lt;UploadItem&gt; 附件项集合
      * @see #getUploadItems(String, String)
      */
@@ -492,5 +495,42 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         item.setName(fileRecord.getFileName());
         item.setSize(fileRecord.getFileSize());
         return item;
+    }
+
+    /**
+     * 判断扩展名是否支持
+     *
+     * @param extName     拓展名(不管有没.都支持;即doc和.doc)
+     * @param acceptTypes 可接受的类型;格式如:*.doc;*.png;*.jpg;
+     * @return
+     */
+    default boolean accept(String extName, String acceptTypes) {
+        if (acceptTypes == null || "".equals(acceptTypes)) {
+            return true;
+        }
+        if (Utils.isEmpty(extName)) {
+            return false;
+        }
+        // 这里的extName是包含.
+        String[] accepts = acceptTypes.split("[,;]");
+//		extName=extName.toLowerCase();
+        // 类型是否含.
+        int extDot = extName.lastIndexOf(".");
+        // 统一去掉.
+        String realExtName = (extDot >= 0) ? extName.substring(extDot + 1) : extName;
+        for (String s : accepts) {
+            if (Utils.isEmpty(s)) {
+                continue;
+            }
+            int dotIndex = s.lastIndexOf(".");
+            if (dotIndex < 0) {
+                continue;
+            }
+            String acc = s.substring(dotIndex + 1);
+            if (acc.equalsIgnoreCase(realExtName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

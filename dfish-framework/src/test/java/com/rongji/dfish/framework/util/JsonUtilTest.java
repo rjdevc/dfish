@@ -1,14 +1,13 @@
-package com.rongji.dfish.misc.util;
+package com.rongji.dfish.framework.util;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import org.junit.Test;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class JsonUtilTest {
 

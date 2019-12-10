@@ -1,25 +1,12 @@
 package com.rongji.dfish.misc.cache.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import com.rongji.dfish.base.util.ThreadUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.misc.cache.Cache;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 缓存，如果数量达到了上限或者里面的内容已经操作期限那么返回空。
@@ -29,7 +16,6 @@ import com.rongji.dfish.misc.cache.Cache;
  * @deprecated 该缓存方法不推荐使用,建议使用base包的相关缓存方法
  */
 public class SizeAndTimeLimitCache<K,V> implements Cache<K, V>{
-	Log LOG=LogFactory.getLog(SizeAndTimeLimitCache.class);
 	private int maxSize;
 	private long alive;
 	private Map<K,Item<V>> core;
@@ -244,7 +230,7 @@ public class SizeAndTimeLimitCache<K,V> implements Cache<K, V>{
 							V v=vg.get(key);
 							SizeAndTimeLimitCache.this.put(key, v);
 						}catch(Throwable t){
-							LogUtil.LOG.error(null,t);
+							LogUtil.error(null,t);
 						}
 						GETTING_KEYS.remove(key);
 					}
@@ -266,7 +252,7 @@ public class SizeAndTimeLimitCache<K,V> implements Cache<K, V>{
 					this.put(key, v);
 					return core.get(key);
 				}catch(Throwable t){
-					LogUtil.LOG.error(null,t);
+					LogUtil.error(null,t);
 				}
 			}else{
 				return item;

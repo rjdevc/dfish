@@ -40,8 +40,6 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 
 	@SuppressWarnings("deprecation")
 	public void init() {
-		FileUtil.LOG = new WrappedLog(FileUtil.LOG);// 记录日志错误
-
 		Locale.setDefault(Locale.SIMPLIFIED_CHINESE);
 
 		LOG.info("====== initing ServletContext ======");

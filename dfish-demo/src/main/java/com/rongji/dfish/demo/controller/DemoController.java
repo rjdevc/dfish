@@ -2,7 +2,6 @@ package com.rongji.dfish.demo.controller;
 
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
-import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.plugin.lob.service.LobService;
 import com.rongji.dfish.framework.util.ServletUtil;
@@ -35,8 +34,9 @@ public class DemoController extends BaseActionController {
     @ResponseBody
     public Object submit(HttpServletRequest request) throws Exception {
         String fileJson = ServletUtil.getParameter(request, "fileJson");
-
-        fileService.updateFileLink(fileJson, "DEMO_TEST", "TEST01");
+        fileService.updateFileLinks(fileJson, "FILE_TEST", "FILE01");
+        String imageJson = ServletUtil.getParameter(request, "imageJson");
+        fileService.updateFileLinks(fileJson, "IMAGE_TEST", "IMAGE01");
         String lobContent = ServletUtil.getParameter(request, "lobContent");
         lobService.saveLob(lobContent);
         return new JsonResponse<>(true);

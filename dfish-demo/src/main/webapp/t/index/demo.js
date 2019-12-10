@@ -30,6 +30,11 @@ define.template({
                                 label: {text: '附件上传'}
                             },
                             {
+                                type: 'upload/image',
+                                name: 'imageJson',
+                                label: {text: '图片上传'}
+                            },
+                            {
                                 type: 'ueditor',
                                 name: 'lobContent',
                                 label: {text: '测试文本'}

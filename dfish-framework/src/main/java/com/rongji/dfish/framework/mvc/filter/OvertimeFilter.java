@@ -1,24 +1,17 @@
 package com.rongji.dfish.framework.mvc.filter;
 
+import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.framework.util.JsonUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import com.rongji.dfish.framework.FrameworkHelper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.rongji.dfish.ui.json.J;
 public class OvertimeFilter implements Filter {
 	private Log LOG=LogFactory.getLog(OvertimeFilter.class);
 	private long time=1500;
@@ -91,6 +84,6 @@ public class OvertimeFilter implements Filter {
 			}
 		}
 		
-		return J.toJson(json);
+		return JsonUtil.toJson(json);
 	}
 }

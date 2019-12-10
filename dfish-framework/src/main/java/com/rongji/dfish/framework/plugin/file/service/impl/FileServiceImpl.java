@@ -7,7 +7,7 @@ import com.rongji.dfish.framework.plugin.file.dao.FileDao;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
-import com.rongji.dfish.ui.form.UploadItem;
+import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -90,24 +90,21 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 保存文件以及文件记录
      *
-     * @param fileData
+     * @param input
+     * @param originalFileName
+     * @param fileSize
      * @param loginUserId
      * @throws Exception
      */
     @Override
-    public UploadItem saveFile(MultipartFile fileData, String loginUserId) throws Exception {
-        if (fileData == null) {
-            return null;
-        }
-
-        String extName = FileUtil.getFileExtName(fileData.getOriginalFilename());
+    public UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception {
+        String extName = FileUtil.getFileExtName(originalFileName);
 
         if (".JSP".equalsIgnoreCase(extName)) {
             extName = ".jsp.txt";
         }//安全加固，正规途径下载仍旧是.jsp 落盘是.jsp.txt
 
-        String fileName = fileData.getOriginalFilename().replace(" ", "");
-        long fileSize = fileData.getSize();
+        String fixedFileName = originalFileName.replace(" ", "");
         String fileId = getNewId();
 
         // 直接用文件编号作为文件名
@@ -121,7 +118,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
 
         PubFileRecord fileRecord = new PubFileRecord();
         fileRecord.setFileId(fileId);
-        fileRecord.setFileName(fileName);
+        fileRecord.setFileName(fixedFileName);
         fileRecord.setFileType(Utils.notEmpty(extName) ? extName.substring(1).toLowerCase() : null);
         fileRecord.setFileSize(fileSize);
         fileRecord.setFileCreator(loginUserId);
@@ -133,7 +130,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         fileRecord.setFileStatus(STATUS_NORMAL);
         save(fileRecord);
 
-        doSaveFile(fileData.getInputStream(), fileRecord);
+        doSaveFile(input, fileRecord);
 
         return parseUploadItem(fileRecord);
     }
@@ -476,12 +473,12 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     }
 
     @Override
-    public int updateFileLink(String fileId, String fileLink) {
-        return getDao().updateFileLink(fileId, fileLink, new Date());
+    public int updateFileLink(String fileId, String fileLink, String fileKey) {
+        return getDao().updateFileLink(fileId, fileLink, fileKey, new Date());
     }
 
     @Override
-    public int updateFileLink(List<String> fileIds, String fileLink, String fileKey) {
+    public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey) {
         return getDao().updateFileLinks(fileIds, fileLink, fileKey, new Date());
 //        if (Utils.isEmpty(itemList) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
 //            return 0;

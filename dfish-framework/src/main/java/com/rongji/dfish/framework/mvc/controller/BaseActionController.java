@@ -7,9 +7,8 @@ import com.rongji.dfish.base.util.DateUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
+import com.rongji.dfish.framework.util.JsonUtil;
 import com.rongji.dfish.framework.util.ServletUtil;
-import com.rongji.dfish.ui.JsonObject;
-import com.rongji.dfish.ui.json.J;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +18,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.SocketException;
@@ -247,10 +245,6 @@ public class BaseActionController extends MultiActionController {
         }
     }
 
-    protected void outputJson(HttpServletResponse response, JsonObject jsonObject) {
-        FrameworkHelper.outputJson(response, jsonObject);
-    }
-
     protected int getPaginationLimit() {
         return 30;
     }
@@ -411,7 +405,7 @@ public class BaseActionController extends MultiActionController {
             }
         }
 
-        return J.toJson(json);
+        return JsonUtil.toJson(json);
     }
 
 }

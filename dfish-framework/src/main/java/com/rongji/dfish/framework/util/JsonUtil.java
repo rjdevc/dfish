@@ -1,0 +1,57 @@
+package com.rongji.dfish.framework.util;
+
+import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.misc.util.json.JsonBuilder;
+import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Fastjson;
+
+import java.util.List;
+
+/**
+ * @author lamontYu
+ * @create 2019-12-10
+ */
+public class JsonUtil {
+
+    private static JsonBuilder jsonBuilder;
+    static {
+        JsonBuilder jb = (JsonBuilder) FrameworkHelper.getBean("jsonBuilder");
+        if (jb != null) {
+            jsonBuilder = jb;
+        }
+        if (jsonBuilder == null) {
+            jsonBuilder = new JsonBuilder4Fastjson();
+        }
+    }
+
+    /**
+     * 对象转json方法
+     * @param obj 待解析对象
+     * @return String
+     */
+    public static String toJson(Object obj) {
+        return jsonBuilder.toJson(obj);
+    }
+
+    /**
+     * json字符转对象方法
+     * @param json json字符
+     * @param objClass 对象类
+     * @param <T> 泛型类
+     * @return T,解析对象
+     */
+    public static <T> T parseObject(String json, Class<T> objClass) {
+        return jsonBuilder.parseObject(json, objClass);
+    }
+
+    /**
+     * json字符转对象集合方法
+     * @param json json字符
+     * @param objClass 对象类
+     * @param <T> 泛型类
+     * @return List&lt;T&gt;解析对象集合
+     */
+    public static <T> List<T> parseArray(String json, Class<T> objClass) {
+        return jsonBuilder.parseArray(json, objClass);
+    }
+
+}

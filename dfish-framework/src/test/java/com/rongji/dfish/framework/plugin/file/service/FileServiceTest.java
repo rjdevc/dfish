@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.plugin.file.service;
 import java.util.List;
 
 import com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl;
-import com.rongji.dfish.ui.form.UploadItem;
+import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 
 public class FileServiceTest {
 

@@ -33,11 +33,22 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
     }
 
     @Override
-    public int updateFileLink(String fileId, String fileLink, Date updateTime) {
+    public int updateFileLink(String fileId, String fileLink, String fileKey, Date updateTime) {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
             return 0;
         }
-        return bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{fileLink, updateTime, fileId});
+        StringBuilder hql = new StringBuilder();
+        List<Object> args = new ArrayList<>(4);
+        hql.append("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=?");
+        args.add(fileLink);
+        args.add(updateTime);
+        if (Utils.notEmpty(fileKey)) {
+            hql.append(",t.fileKey=?");
+            args.add(fileKey);
+        }
+        hql.append(" WHERE t.fileId=?");
+        args.add(fileId);
+        return bulkUpdate(hql.toString(), args.toArray());
     }
 
     @Override

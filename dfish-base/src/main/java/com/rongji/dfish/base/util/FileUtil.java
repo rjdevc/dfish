@@ -31,7 +31,6 @@ import java.util.zip.ZipOutputStream;
  * @version 2.1
  */
 public final class FileUtil {
-    public static Log LOG = LogFactory.getLog(FileUtil.class);
     public static final String ENCODING = "UTF-8";
     public static final String CLIENT_ENCODING = "GBK";
 
@@ -317,7 +316,7 @@ public final class FileUtil {
             try {
                 return new String(saveAs.getBytes(), "ISO8859-1");
             } catch (UnsupportedEncodingException e1) {
-                LOG.error(null, e1);
+                LogUtil.error(null, e1);
                 return saveAs;
             }
         }

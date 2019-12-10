@@ -8,15 +8,11 @@
  */
 package com.rongji.dfish.framework;
 
-import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
 import com.rongji.dfish.framework.util.WrappedLog;
-import com.rongji.dfish.ui.JsonObject;
-import com.rongji.dfish.ui.json.J;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -33,7 +29,7 @@ import java.util.*;
 
 /**
  *  框架帮助类
- * 
+ *
  * @author	I-Task Team
  * @version	1.0.0
  * @since	1.0.0	ZHL		2009-9-8
@@ -169,191 +165,41 @@ public class FrameworkHelper{
 		}
 	}
 	
-	public static void outputJson(HttpServletResponse response, JsonObject jsonObject) {
-		outputJson(response, jsonObject.asJson());
-	}
-	
-	public static void outputJson(HttpServletResponse response, final String content) {
-		outputContent(response, content, "text/json");
-		LogUtil.lazyDebug(LOG,()->"\r\n" + J.formatJson(content));
-	}
-	
-	private static void outputContent(HttpServletResponse response, final String content, String contentType) {
-		BufferedOutputStream bos = null;
-		try {
-			response.setHeader("Cache-Control", "no-store");
-			response.setHeader("Pragma", "no-cache");
-			response.setDateHeader("Expires", 0);
-			response.setHeader("Content-Type", contentType + "; charset=" + ENCODING);
-			bos = new BufferedOutputStream(response.getOutputStream());
+	public static void outputContent(HttpServletResponse response, final String content, String contentType) {
+		response.setHeader("Cache-Control", "no-store");
+		response.setHeader("Pragma", "no-cache");
+		response.setDateHeader("Expires", 0);
+		response.setHeader("Content-Type", contentType + "; charset=" + ENCODING);
+		try (BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream())){
 			// 调试用语句
 			bos.write(content.getBytes(ENCODING));
-			
 		} catch (IOException ex) {
 			ex.printStackTrace();
-		} finally {
-			try {
-				if (bos != null) {
-					bos.close();
-				}
-			} catch (Exception ex1) {
-				ex1.printStackTrace();
-			}
 		}
 	}
 
-	/**
-	 * 如果提交的数据有附件等mutipart的部分，不可以用AJAX提交
-	 * 这时候用的是传统HTTP提交方式。
-	 * 所以返回的时候需要利用一个页面进行引导跳转。
-	 * 这时候，不能调用outPutXML 方法，调用这个方法返回既可以
-	 *
-	 * @param request
-	 * @param response
-	 * @param xml
-	 * @return
-	 */
-	public static ModelAndView setViewFeedbkForMultiDataForm(MultipartHttpServletRequest request,HttpServletResponse response,String xml){
-		request.setAttribute("type", "view");
-		request.setAttribute("fbk", xml);
-		return new ModelAndView("/webapp/pub/pub_jump.jsp");
-	}
-
-	public static ModelAndView setJspFeedbkForMultiDataForm(MultipartHttpServletRequest request,HttpServletResponse response,String xml){
-		request.setAttribute("type", "jsp");
-		request.setAttribute("fbk", xml);
-		return new ModelAndView("/webapp/pub/pub_jump.jsp");
-	}
-
 //	/**
-//	 * 对SPRING MVC WEB的支持 由于底层的问题。所以我们在前端如果有批量文件上传的时候， 如果名字为file1
-//	 * 实际上在web页面中由多个文件上传的控件。 他们的名字分别是file1-1 file-2这样子后面的序号有可能不连续。 因为前端本身可以取消上传。
-//	 * 这个方法。就是为了透明的取得file1名字的文件。并以数组的形式存在 类似于request.getParameterValues(String);
+//	 * 如果提交的数据有附件等mutipart的部分，不可以用AJAX提交
+//	 * 这时候用的是传统HTTP提交方式。
+//	 * 所以返回的时候需要利用一个页面进行引导跳转。
+//	 * 这时候，不能调用outPutXML 方法，调用这个方法返回既可以
 //	 *
 //	 * @param request
-//	 * @param attachFileName
+//	 * @param response
+//	 * @param xml
 //	 * @return
 //	 */
-//	public static MultipartFile[] getFiles(MultipartHttpServletRequest request,String attachFileName){
-//		Iterator<?> iter = request.getFileNames();
-//		final int nameLen = attachFileName.length() + 1;
-//		List<MultipartFile> list = new ArrayList<MultipartFile>();
-//		while (iter.hasNext()) {
-//			MultipartFile file = request.getFile((String) iter.next());
-//			if (file.getName().startsWith(attachFileName) && file.getOriginalFilename() != null
-//					&& !file.getOriginalFilename().equals("")) {
-//				list.add(file);
-//			}
-//		}
-//		Collections.sort(list, new Comparator<MultipartFile>() {
-//			public int compare(MultipartFile o1, MultipartFile o2) {
-//				String s1 = o1.getName().substring(nameLen);
-//				String s2 = o1.getName().substring(nameLen);
-//
-//				return Integer.parseInt(s1, 32) - Integer.parseInt(s2, 32);
-//			}
-//		});
-//
-//		return list.toArray(new MultipartFile[list.size()]);
+//	public static ModelAndView setViewFeedbkForMultiDataForm(MultipartHttpServletRequest request,HttpServletResponse response,String xml){
+//		request.setAttribute("type", "view");
+//		request.setAttribute("fbk", xml);
+//		return new ModelAndView("/webapp/pub/pub_jump.jsp");
 //	}
 //
-//	/**
-//	 * 上传一个文件。该文件将存放于系统的上传路径下。默认是
-//	 * ${web-root}/upload文件夹
-//	 * @param urlPattern 比如说mydir/yyyyMM/ATTACH_ID.EXT其中有特殊含义的字符解释如下
-//	 * <ul>
-//	 * <li>yyyy 表示当前日期的年份</li>
-//	 * <li>MM 表示当前日期的月份</li>
-//	 * <li>dd 表示当前日期的日期</li>
-//	 * <li>HH 表示当前时间的小时数</li>
-//	 * <li>mm 表示当前时间的分钟数</li>
-//	 * <li>ss 表示当前时间的秒数</li>
-//	 * <li>ATTACH_ID 表示使用这个文件在数据库中对应的编号</li>
-//	 * <li>.EXT 表示使用这个文件的扩展名，由于安全性考虑.jsp的文件扩展名会自动扩充成.jsp.txt</li>
-//	 * </ul>
-//	 * @param file 需要上传的附件
-//	 * @param userId 操作人员编号 用于标识这个文件是哪个人上传的。
-//	 * @return
-//	 * @throws IOException
-//	 * @deprecated 在过程资源库没完成前，这个暂时不推荐使用
-//	 */
-//	@Deprecated
-//	public static String[] uploadFile(String urlPattern,MultipartFile file,String userId) throws IOException{
-//
-//		String attachId = getNewId("PubAttach", "attachId", "00000001");// GetUniqueId.getPubAttachId();
-//		String fileName = file.getName();
-//		int j = fileName.lastIndexOf(".");
-//		String ext = "";
-//		if (j >= 0) {
-//			ext = fileName.substring(j);
-//			if (ext.equalsIgnoreCase(".jsp")) {
-//				ext += ".txt";
-//			}
-//		}
-////		long fileSize = file.getSize();
-//		String relaPath = "";
-//		String relaFile = attachId + ext;
-//		String realFileName = attachId + ext;
-//		if (urlPattern != null && !urlPattern.equals("") && !urlPattern.equals("/")) {
-//			String now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-//			String year = now.substring(0, 4);
-//			String month = now.substring(4, 6);
-//			String date = now.substring(6, 8);
-//			String hour = now.substring(8, 10);
-//			String minute = now.substring(10, 12);
-//			String second = now.substring(12, 14);
-//			relaFile = urlPattern.replace("yyyy", year).replace("MM", month).replace("dd", date)
-//					.replace("HH", hour).replace("mm", minute).replace("ss", second).replace(
-//							"ATTACH_ID", attachId).replace(".EXT", ext);
-//			if (relaFile.lastIndexOf("/") > 0) {
-//				relaPath = relaFile.substring(0, relaFile.lastIndexOf("/") + 1);
-//				realFileName = relaFile.substring(relaFile.lastIndexOf("/") + 1);
-//			}
-//		}
-//
-////		String attachUrl = FrameworkContext.getInstance().getServletInfo().getServletRealPath()
-////				+ "upload/" + relaFile; // 直接存变化的url
-//		String saveToPath = FrameworkContext.getInstance().getServletInfo().getServletRealPath()
-//				+ "upload/";
-//		FileUtil.saveFile(file.getInputStream(), saveToPath + relaPath, realFileName);
-////		PubAttach att = new PubAttach();
-////		att.setAttachId(attachId);
-////		att.setAttachName(fileName);
-////		att.setAttachSize(fileSize);
-////		att.setAttachUrl(attachUrl);
-////		att.setUpTime(new Date());
-////		att.setUpAuthor(userId);
-////		getDAO().saveObject(att);
-//		return new String[] { attachId, relaFile };
+//	public static ModelAndView setJspFeedbkForMultiDataForm(MultipartHttpServletRequest request,HttpServletResponse response,String xml){
+//		request.setAttribute("type", "jsp");
+//		request.setAttribute("fbk", xml);
+//		return new ModelAndView("/webapp/pub/pub_jump.jsp");
 //	}
-	
-	/**
-	 * 取得这个登录人员使用的皮肤的配色，具体配色代码含义要根据皮肤本身的定义。
-	 * @param request
-	 * @return
-	 */
-	public static int getSkinColor(HttpServletRequest request){
-		Integer skinColor = (Integer) request.getSession().getAttribute("com.rongji.dfish.SKIN_COLOR");
-		return skinColor == null ? 1 : skinColor.intValue();
-	}
-
-//	/**
-//	 * 获取数据库操作通用接口（PubCommonDAO）对象实例
-//	 *
-//	 * @return
-//	 */
-//	public static PubCommonDAO getDAO(){
-//		return (PubCommonDAO) FrameworkContext.getInstance().getBeanFactory().getBean("pubCommonDAO");
-//	}
-
-	/**
-	 * 获取数据库操作通用接口对象实例
-	 * @param daoName DAO的名字
-	 * @return
-	 */
-	public static Object getDAO(String daoName){
-		return  FrameworkContext.getInstance().getBeanFactory().getBean(daoName);
-	}
 
 	/**
 	 * 获取bean工厂
@@ -431,71 +277,6 @@ public class FrameworkHelper{
 		return bean;
 	}
 	
-//	/**
-//	 * 根据类获取bean对象,若该类有多个实现类,会再尝试根据该类的默认id再获取bean对象
-//	 * @param beanClass bean对象对应的类
-//	 * @return
-//	 */
-//	@SuppressWarnings("unchecked")
-//    public static <T> T getBean(Class<T> beanClass) {
-//		BeanFactory bf = FrameworkContext.getInstance().getBeanFactory();
-//		T bean = null;
-//		try {
-//			bean = (T) BEAN_MAP.get(beanClass);
-//			if (bean == null) {
-//				bean = bf.getBean(beanClass);
-//			}
-//        } catch (NoUniqueBeanDefinitionException e) {
-//        	String beanId = beanClass.getSimpleName();
-//        	if (Utils.notEmpty(beanId)) {
-//        		beanId = beanId.substring(0, 1).toLowerCase() + beanId.substring(1);
-//    			bean = getBean(beanId, beanClass);
-//        	} else {
-//        		throw e;
-//        	}
-//        }
-//		if (bean != null) {
-//			BEAN_MAP.put(beanClass, bean);
-//		}
-//		
-//		return bean;
-//	}
-//	
-//	/**
-//	 * 根据声明的类bean的id获取bean对象
-//	 * @param beanId
-//	 * @return
-//	 */
-//	public static Object getBean(String beanId) {
-//		return FrameworkContext.getInstance().getBeanFactory().getBean(beanId);
-//	}
-//	
-//	/**
-//	 * 根据声明的类bean的id和该类获取bean对象
-//	 * @param beanId 
-//	 * @param beanClass
-//	 * @return
-//	 */
-//	public static <T> T getBean(String beanId, Class<T> beanClass) {
-//		return FrameworkContext.getInstance().getBeanFactory().getBean(beanId, beanClass);
-//	}
-
-	/**
-	 * 是否调试模式
-	 * 
-	 * @author ZHL V1.0.0;
-	 * @return
-	 * @deprecated 现在分级别，不再使用这个参数
-	 */
-	@Deprecated
-	public static boolean isDebugOn(){
-		boolean isDebugOn = false;
-		if ("1".equals(getSystemConfig("framework.pub.debugOn", "1"))) {
-			isDebugOn = true;
-		}
-		return isDebugOn;
-	}
-	
 	/**
 	 * 获取当前登录用户
 	 * @param request
@@ -513,32 +294,6 @@ public class FrameworkHelper{
 		request.getSession().removeAttribute(LOGIN_USER_KEY);
 	}
 	
-//	/**
-//	 * 缓存名称-配置
-//	 */
-//	private static final String CACHE_CONFIG = "SYSTEM_CONFIG";
-//	/**
-//	 * 配置缓存
-//	 */
-//	private static Cache<String, String> configCache;
-//	
-//	@SuppressWarnings("unchecked")
-//    private static Cache<String, String> getConfigCache() {
-//		// FIXME 有可能将缓存方法放在这里还是实现中取待考虑
-//		// 获取缓存
-//		if (configCache == null) {
-//			try {
-//				configCache = getBean(Cache.class);
-//            } catch (Exception e) {
-//            }
-//		}
-//		if (configCache == null) {
-//			// 默认缓存,容错处理
-//			configCache = new SizeAndTimeLimitCache<String, String>();
-//		}
-//		return configCache;
-//	}
-	
 	/**
 	 * 取得系统配置，
 	 * 
@@ -549,31 +304,14 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static String getSystemConfig(String key,String defaultValue){
-//		Cache<String, String> cache = getConfigCache();
-//		String value = cache.get(key);
-//		if (Utils.isEmpty(value)) { // 缓存中获取不到或者缓存已过期
-//			value = FrameworkContext.getInstance().getSystemConfig().getProperty(key);// properties.getProperty(key);
-//		}
-//		if (Utils.notEmpty(value)) {
-//			// 需要加到缓存中
-//			cache.put(key, value);
-//			return value;
-//		}
 		String value = FrameworkContext.getInstance().getSystemConfig().getProperty(key);
 		return Utils.isEmpty(value) ? defaultValue : value;
 	}
 	public static Integer getSystemConfigAsInteger(String key,Integer defaultValue){
-//		Cache<String, String> cache = getConfigCache();
-//		String strValue = cache.get(key);
-//		if (Utils.isEmpty(strValue)) {
-//			strValue = FrameworkContext.getInstance().getSystemConfig().getProperty(key);// properties.getProperty(key);
-//		}
 		String strValue = getSystemConfig(key, null);
 		if (Utils.notEmpty(strValue)) {
 			try{
 				Integer intValue = new Integer(strValue);
-				// 需要加到缓存中
-//			cache.put(key, strValue);
 				return intValue;
 			}catch(Exception ex){}
 		}
@@ -589,9 +327,6 @@ public class FrameworkHelper{
 	 */
 	public static void setSystemConfig(String key,String value){
 		FrameworkContext.getInstance().getSystemConfig().setProperty(key, value);
-//		Cache<String, String> cache = getConfigCache();
-//		// 配置设置成功后加入缓存中去
-//		cache.put(key, value);
 	}
 
 	/**
@@ -599,84 +334,7 @@ public class FrameworkHelper{
 	 *
 	 */
 	public static void resetSystemConfig(){
-//	    String realPath=FrameworkContext.getInstance().getServletInfo().getServletRealPath();
-//	    
-//		String configPath =realPath+"WEB-INF/config/dfish-config.xml";
 		FrameworkContext.getInstance().getSystemConfig().reset();
-//		Cache<String, String> cache = getConfigCache();
-//		cache.clear();
-	}
-
-	/**
-	 * 取得人员个人配置中，每页显示多少条数据的配置值
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public static int getPersonalPageSize(String userId){
-		String pageSize = getPersonalConfig(userId, "person.rows_per_page");
-		try {
-			return Integer.parseInt(pageSize);
-		} catch (Exception ex) {
-			return 10;
-		}
-	}
-
-	/**
-	 * 创建一个Page实体,总行数和总页数会在数据库查询的时候填充.
-	 * 
-	 * @param userId
-	 * @param currentPage
-	 * @return
-	 */
-	public static Page createPersonalPage(String userId,String currentPage){
-		Page page=new Page();
-		
-		int curPage = 1;
-		if (Utils.notEmpty(currentPage)) {
-			curPage = Integer.parseInt(currentPage);
-		}
-		page.setCurrentPage(curPage);
-		page.setPageSize(getPersonalPageSize(userId));
-		
-		return page;
-	}
-
-	/**
-	 * 根据个人用户的每页行数,计算当前高亮行
-	 * 
-	 * @param sum
-	 * 			总行数
-	 * @param userId
-	 * @return
-	 */
-	public static int getCurrentHightLight(int sum,String userId){
-		int current=0;
-	
-		int pageSize=getPersonalPageSize(userId);
-		
-		if(sum>0){//确保删除第一个时是在第一上
-			current=(sum-1) % pageSize;
-		}
-		
-		return current;
-	}
-
-	/**
-	 * 根据个人用户的每页行数,计算当前页
-	 * 
-	 * @param sum
-	 * @param userId
-	 * @return
-	 */
-	public static int getCurrentPage(int sum,String userId){
-		int current=0;
-		
-		int pageSize=getPersonalPageSize(userId);
-		
-		current=(sum-1)/pageSize+1;
-		
-		return current;
 	}
 
 	/**
@@ -728,62 +386,6 @@ public class FrameworkHelper{
 		FrameworkContext.getInstance().getPersonalConfig().setProperty(userId,argStr,value);
 	}
 
-
-//	/**
-//	 * 查询数据库，获取满足条件对象的数量,如果结果集中有多条,也只取第1条
-//	 * 调用时需明确查询的结果是否结果集可能为空比如 select max(t.xxx)...当数据库中都没有记录是返回的是空集,此时调用时要判断空值,否则会抛出异常.
-//	 *
-//	 * @param strSql
-//	 *            类似：SELECT COUNT(*) FROM PubUser...
-//	 * @param args
-//	 * @return
-//	 */
-//	public static Integer getIntegerFromDataBase(final String strSql,final Object... args){
-//		Integer intRes=null;
-//		List<?> list = getDAO().getQueryList(strSql, args);
-////		assert (list.size() == 1);
-//		if(Utils.notEmpty(list)){
-//			Object o=list.get(0);
-//			if(o!=null){
-//				intRes=((Number) o).intValue();
-//			}
-//		}
-//		return intRes;
-//	}
-
-//	/**
-//	 * 查询数据库当结果集中只有一条记录或只想取结果集中的第一条记录时,返回该记录的实体对象,
-//	 *
-//	 * @param strSql
-//	 * @param args
-//	 * @return
-//	 */
-//	public static Object getSingleObjectFromDataBase(String strSql,Object... args){
-//		Object o=null;
-//		List<?> list = getDAO().getQueryList(strSql, args);
-//		if(Utils.notEmpty(list)){
-//			o=list.get(0);
-//		}
-//		return o;
-//	}
-
-//	/**
-//	 * 向数据库中插入一条新数据时，该数据的主键不可重复，可通过此方法获取该编号。 ID是一个十进制数，位数是一定的。如果前面没有数字，会自动补0。
-//	 * 这适用于只需确保在一个表中ID唯一的的情况，不适合新建人员时人员编号的生成。
-//	 *
-//	 * @param clzName
-//	 *            持久化对象名字
-//	 * @param idName
-//	 *            ID字段字
-//	 * @param initId
-//	 *            如果这个表里面并没有内容，那么将使用这个ID。否则用表里面最大的ID加+1。注意，长度与原先表最大的ID一致。
-//	 *            当initId>1时,表示该编号是从设定的初始值开始递增,小于初始值的编号是预留的.//ZHL
-//	 * @return
-//	 */
-//	public static String getNewId(String clzName,String idName,String initId){
-//		return FrameworkContext.getInstance().getNewIdGetter().getNewId(clzName,idName,initId);
-//	}
-	
 	/**
 	 * 获取IP
 	 * 
@@ -791,19 +393,54 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static String getIpAddr(HttpServletRequest request){
-		String ip=request.getHeader("X-Forwarded-For");
-		if(Utils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)){
-			ip=request.getHeader("Proxy-Client-IP");
+		String ipStr = request.getHeader("X-Forwarded-For");
+		if (isIpUnknown(ipStr)) {
+			ipStr = request.getHeader("X-Real-IP");
 		}
-		if(Utils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)){
-			ip=request.getHeader("WL-Proxy-Client-IP");
+		if (isIpUnknown(ipStr)) {
+			ipStr = request.getHeader("Proxy-Client-IP");
 		}
-		if(Utils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)){
-			ip=request.getRemoteAddr();
+		if (isIpUnknown(ipStr)) {
+			ipStr = request.getHeader("WL-Proxy-Client-IP");
 		}
-		
-		return ip;   
-	}  
+
+		String remoteAddr = request.getRemoteAddr();
+		if (!isIpUnknown(remoteAddr)) {
+			if (Utils.isEmpty(ipStr)) {
+				ipStr = remoteAddr;
+			} else if (!ipStr.contains(remoteAddr)) {
+				ipStr += ";" + remoteAddr;
+			}
+		}
+
+		return ipStr;
+	}
+
+	private static final String STR_UNKNOWN = "UNKNOWN";
+
+	/**
+	 * 获取到远程请求地址清单(按照从用户真实客户端的IP顺序排列)
+	 *
+	 * @param request
+	 * @return
+	 */
+	public static List<String> getRemoteAddresses(HttpServletRequest request) {
+		List<String> ipList = new ArrayList<>();
+		String ipStr = getIpAddr(request);
+		if (Utils.notEmpty(ipStr)) {
+			String[] ipArray = ipStr.split("[,;]");
+			for (String ip : ipArray) {
+				if (ip != null && Utils.notEmpty(ip.trim())) {
+					ipList.add(ip);
+				}
+			}
+		}
+		return ipList;
+	}
+
+	private static boolean isIpUnknown(String ip) {
+		return ip == null || Utils.isEmpty(ip.trim()) || STR_UNKNOWN.equalsIgnoreCase(ip.trim());
+	}
 
 	public static void traceHttpParameters(HttpServletRequest request){
 		StringBuilder sb=new StringBuilder();
@@ -984,6 +621,5 @@ public class FrameworkHelper{
 		String req = request.getHeader("x-requested-with");
 		return "dfish".equals(req);
 	}
-
 
 }

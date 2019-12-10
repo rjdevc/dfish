@@ -4,8 +4,9 @@ import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.FrameworkContext;
-import com.rongji.dfish.ui.AbstractNode;
-import com.rongji.dfish.ui.widget.Img;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImg;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawResponse;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawResponseError;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -154,7 +155,7 @@ public class JigsawGenerator {
      * @return
      * @throws Exception
      */
-    public JigsawData generatorJigsaw(HttpServletRequest request) throws Exception {
+    public JigsawResponse generatorJigsaw(HttpServletRequest request) throws Exception {
 //        // 大图宽高都必须是小图的4倍
 //        int bigMinSize = smallSize << 2;
 //        if (smallSize <= 0 || bigWidth < bigMinSize || bigHeight < bigMinSize) {
@@ -163,7 +164,7 @@ public class JigsawGenerator {
         HttpSession session = request.getSession();
         // 目前反暴力刷图策略暂时以session来判断,以后完善可以增加ip判断
         Integer generatorCount = (Integer) session.getAttribute(KEY_GENERATOR_COUNT);
-        JigsawData jigsaw = new JigsawData();
+        JigsawResponse jigsaw = new JigsawResponse();
 
         if (generatorCount == null) {
             generatorCount = 0;
@@ -185,10 +186,8 @@ public class JigsawGenerator {
                 }
             }
             if (leftTimeout > 0) {
-                JigsawData.JigsawError error = new JigsawData.JigsawError();
+                JigsawResponseError error = new JigsawResponseError(errorMsg, leftTimeout);
                 jigsaw.setError(error);
-                error.setMsg(errorMsg);
-                error.setTimeout(leftTimeout);
                 return jigsaw;
             }
         }
@@ -226,8 +225,8 @@ public class JigsawGenerator {
         File rawFile = imageFiles.get(fileIndex);
 
         String jigsawFileName = session.getId() + "-" + System.currentTimeMillis();
-        Img bigImg = generatorBigImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
-        Img smallImg = generatorSmallImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
+        JigsawImg bigImg = generatorBigImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
+        JigsawImg smallImg = generatorSmallImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
         // 将验证码放到session中
         session.setAttribute(KEY_CHECKCODE, x);
 
@@ -310,7 +309,7 @@ public class JigsawGenerator {
      * @return 大图片组件
      * @throws Exception
      */
-    private Img generatorBigImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
+    private JigsawImg generatorBigImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
         FileInputStream input = null;
         FileOutputStream output = null;
         try {
@@ -333,7 +332,7 @@ public class JigsawGenerator {
             ImageIO.write(rawImage, getRealExtName(fileExtName), output);
             g.dispose();
 
-            return parseImg(output, destFileName, rawImage.getWidth(), rawImage.getHeight());
+            return parseImg(destFileName, rawImage.getWidth(), rawImage.getHeight());
         } finally {
             if (input != null) {
                 input.close();
@@ -356,7 +355,7 @@ public class JigsawGenerator {
      * @return 小图片组件
      * @throws Exception
      */
-    private Img generatorSmallImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
+    private JigsawImg generatorSmallImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
         FileInputStream input = null;
         FileOutputStream output = null;
         try {
@@ -399,7 +398,7 @@ public class JigsawGenerator {
             // 输出图片
             ImageIO.write(destImage, getRealExtName(fileExtName), output);
 
-            return parseImg(output, destFileName, width, height);
+            return parseImg(destFileName, width, height);
         } finally {
             if (input != null) {
                 input.close();
@@ -448,165 +447,8 @@ public class JigsawGenerator {
         return destFile;
     }
 
-    private Img parseImg(FileOutputStream output, String destFileName, int width, int height) {
-        Img img = new Img(imageFolder + FOLDER_TEMP + "/" + destFileName);
-        img.setWidth(width);
-        img.setHeight(height);
-        return img;
-    }
-
-    /**
-     * 拼图数据
-     */
-    public static class JigsawData extends AbstractNode {
-        /**
-         * 大图片
-         */
-        private Img big;
-        /**
-         * 小图片
-         */
-        private Img small;
-        /**
-         * 最小值
-         */
-        private Number minvalue;
-        /**
-         * 最大值
-         */
-        private Number maxvalue;
-
-        private JigsawError error;
-
-        public JigsawData() {
-        }
-
-        public JigsawData(Img big, Img small, Number minvalue, Number maxvalue) {
-            this.big = big;
-            this.small = small;
-            this.minvalue = minvalue;
-            this.maxvalue = maxvalue;
-        }
-
-        @Override
-        public String getType() {
-            return null;
-        }
-
-        public Img getBig() {
-            return big;
-        }
-
-        public JigsawData setBig(Img big) {
-            this.big = big;
-            return this;
-        }
-
-        public Img getSmall() {
-            return small;
-        }
-
-        public JigsawData setSmall(Img small) {
-            this.small = small;
-            return this;
-        }
-
-        public Number getMinvalue() {
-            return minvalue;
-        }
-
-        public JigsawData setMinvalue(Number minvalue) {
-            this.minvalue = minvalue;
-            return this;
-        }
-
-        public Number getMaxvalue() {
-            return maxvalue;
-        }
-
-        public JigsawData setMaxvalue(Number maxvalue) {
-            this.maxvalue = maxvalue;
-            return this;
-        }
-
-        public JigsawError getError() {
-            return error;
-        }
-
-        public JigsawData setError(JigsawError error) {
-            this.error = error;
-            return this;
-        }
-
-        public static class JigsawError {
-            private String msg;
-            private long timeout;
-
-            public String getMsg() {
-                return msg;
-            }
-
-            public JigsawError setMsg(String msg) {
-                this.msg = msg;
-                return this;
-            }
-
-            public long getTimeout() {
-                return timeout;
-            }
-
-            public JigsawError setTimeout(long timeout) {
-                this.timeout = timeout;
-                return this;
-            }
-        }
-
-    }
-
-    /**
-     * 拼图校验结果
-     */
-    public static class JigsawCheckData extends AbstractNode {
-        public JigsawCheckData(boolean result) {
-            this.result = result;
-        }
-
-        public JigsawCheckData(boolean result, String msg) {
-            this.result = result;
-            this.msg = msg;
-        }
-
-        @Override
-        public String getType() {
-            return null;
-        }
-
-        /**
-         * 校验结果
-         */
-        private boolean result;
-        /**
-         * 校验信息
-         */
-        private String msg;
-
-        public boolean isResult() {
-            return result;
-        }
-
-        public JigsawCheckData setResult(boolean result) {
-            this.result = result;
-            return this;
-        }
-
-        public String getMsg() {
-            return msg;
-        }
-
-        public JigsawCheckData setMsg(String msg) {
-            this.msg = msg;
-            return this;
-        }
+    private JigsawImg parseImg(String destFileName, int width, int height) {
+        return new JigsawImg(imageFolder + FOLDER_TEMP + "/" + destFileName, width, height);
     }
 
 }

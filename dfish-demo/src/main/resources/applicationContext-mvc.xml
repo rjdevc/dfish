@@ -27,9 +27,7 @@
                 <constructor-arg value="${system.encoding}"/>
             </bean>
 			<!-- 接口开发模式的JsonResponse转换 -->
-			<bean class="com.rongji.dfish.framework.mvc.response.JsonResponseConverter"></bean>
-			<!-- 视图开发模式的ui对象转换 -->
-			<bean class="com.rongji.dfish.framework.mvc.response.DFishUIConverter"></bean>
+			<bean class="com.rongji.dfish.framework.mvc.response.ObjectToJsonConverter"></bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
 

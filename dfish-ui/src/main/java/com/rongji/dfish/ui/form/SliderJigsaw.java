@@ -2,8 +2,8 @@ package com.rongji.dfish.ui.form;
 
 public class SliderJigsaw extends AbstractFormElement<SliderJigsaw, String> {
 
-    private String imgsrc = "./checkCode/jigsaw";
-    private String authsrc = "./checkCode/jigsawCheck?offset=$value";
+    private String imgsrc = "./jigsaw/img";
+    private String authsrc = "./jigsaw/auth?offset=$value";
 
     public SliderJigsaw(String name, String label) {
         this.setName(name);

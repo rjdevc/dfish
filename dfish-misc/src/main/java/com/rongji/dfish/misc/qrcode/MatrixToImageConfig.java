@@ -16,6 +16,8 @@
 
 package com.rongji.dfish.misc.qrcode;
 
+import com.rongji.dfish.base.Utils;
+
 import java.awt.image.BufferedImage;
 
 /**
@@ -29,6 +31,28 @@ public final class MatrixToImageConfig {
 
 	private final int onColor;
 	private final int offColor;
+
+	public static MatrixToImageConfig of(int onColor, int offColor) {
+		return new MatrixToImageConfig(onColor, offColor);
+	}
+
+	public static MatrixToImageConfig of(String onColor, String offColor) {
+		int realOnColor = BLACK;
+		if (Utils.notEmpty(onColor)) {
+			try {
+				realOnColor = Integer.parseInt(onColor);
+			} catch (Exception e) {
+			}
+		}
+		int realOffColor = WHITE;
+		if (Utils.notEmpty(offColor)) {
+			try {
+				realOffColor = Integer.parseInt(offColor);
+			} catch (Exception e) {
+			}
+		}
+		return of(realOnColor, realOffColor);
+	}
 
 	/**
 	 * Creates a default config with on color {@link #BLACK} and off color
@@ -49,11 +73,11 @@ public final class MatrixToImageConfig {
 		this.offColor = offColor;
 	}
 
-	public int getPixelOnColor() {
+	public int getOnColor() {
 		return onColor;
 	}
 
-	public int getPixelOffColor() {
+	public int getOffColor() {
 		return offColor;
 	}
 

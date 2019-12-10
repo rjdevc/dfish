@@ -77,7 +77,6 @@ dfish.config({
             data: {'scheme': 'DEFAULT'},
             uploadsrc: 'file/upload/file?scheme=$scheme',
             downloadsrc: 'file/download?fileId=$id&scheme=$scheme',
-            previewsrc: 'file/preview?fileId=$id&scheme=$scheme',
             filetypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
             uploadbutton: [
                 {
@@ -90,9 +89,10 @@ dfish.config({
             minfilesize: '1B',
             maxfilesize: '10M',
             data: {'scheme': 'DEFAULT'},
+            uploadsrc: 'file/upload/image?scheme=$scheme',
             downloadsrc: 'file/download?fileId=$id&scheme=$scheme',
             thumbnailsrc: 'file/thumbnail?fileId=$id&scheme=$scheme',
-            uploadsrc: 'file/upload/image?scheme=$scheme',
+            previewsrc: 'file/preview?fileId=$id&scheme=$scheme',
             filetypes: '*.png;*.jpg;*.jpeg;',
             uploadbutton: [
                 {

@@ -4,13 +4,11 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.plugin.code.CheckCodeGenerator;
-import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -23,17 +21,6 @@ import java.util.Map;
 public class CheckCodeController extends BaseActionController {
     @Autowired(required = false)
     private List<CheckCodeGenerator> generators;
-    @Resource(name = "jigsawGenerator")
-    private JigsawGenerator jigsawGenerator = new JigsawGenerator();
-
-    public JigsawGenerator getJigsawGenerator() {
-        return jigsawGenerator;
-    }
-
-    public void setJigsawGenerator(JigsawGenerator jigsawGenerator) {
-        this.jigsawGenerator = jigsawGenerator;
-    }
-
     private Map<String, CheckCodeGenerator> generatorMap = new HashMap<>();
 
     private static final String ALIAS_DEFAULT = "DEFAULT";
@@ -80,19 +67,6 @@ public class CheckCodeController extends BaseActionController {
         alias = alias == null ? ALIAS_DEFAULT : alias;
         CheckCodeGenerator codeGenerator = getCheckCodeGenerator(alias);
         codeGenerator.drawImage(request, response);
-    }
-
-    @RequestMapping("/jigsaw")
-    @ResponseBody
-    public Object jigsaw(HttpServletRequest request) throws Exception {
-        return getJigsawGenerator().generatorJigsaw(request);
-    }
-
-    @RequestMapping("/jigsawCheck")
-    @ResponseBody
-    public Object jigsawCheck(HttpServletRequest request) {
-        boolean result = getJigsawGenerator().checkJigsawOffset(request, request.getParameter("offset"));
-        return new JigsawGenerator.JigsawCheckData(result);
     }
 
 }

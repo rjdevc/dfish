@@ -74,8 +74,8 @@ public final class MatrixToImageWriter {
 		int width = matrix.getWidth();
 		int height = matrix.getHeight();
 		BufferedImage image = new BufferedImage(width, height, config.getBufferedImageColorModel());
-		int onColor = config.getPixelOnColor();
-		int offColor = config.getPixelOffColor();
+		int onColor = config.getOnColor();
+		int offColor = config.getOffColor();
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				image.setRGB(x, y, matrix.get(x, y) ? onColor : offColor);
@@ -84,7 +84,7 @@ public final class MatrixToImageWriter {
 		return image;
 	}
 
-	private static BitMatrix toBitMatrix(String content, int size) {
+	public static BitMatrix toBitMatrix(String content, int size) {
 		MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 		Map<EncodeHintType, String> hints = new HashMap<EncodeHintType, String>();
 		hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
