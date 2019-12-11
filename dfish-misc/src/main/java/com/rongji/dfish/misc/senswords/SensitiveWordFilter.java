@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import com.rongji.dfish.base.TrieTree;
-import com.rongji.dfish.base.TrieTree.SearchResult;
+import com.rongji.dfish.base.text.TrieTree;
+import com.rongji.dfish.base.text.TrieTree.SearchResult;
 import com.rongji.dfish.base.util.CharUtil;
 import org.bouncycastle.util.Arrays;
 //import com.rongji.dfish.misc.senswords.andy.WordFilter;

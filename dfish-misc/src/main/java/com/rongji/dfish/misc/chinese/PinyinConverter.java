@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import com.rongji.dfish.base.TrieTree;
+import com.rongji.dfish.base.text.TrieTree;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 

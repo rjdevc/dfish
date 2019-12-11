@@ -1,10 +1,8 @@
-package com.rongji.dfish.base;
+package com.rongji.dfish.base.text;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.rongji.dfish.base.TrieTree.Node;
 
 /**
  * 字典树类

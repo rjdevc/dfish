@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.rongji.dfish.base.TrieTree;
+import com.rongji.dfish.base.text.TrieTree;
 import com.rongji.dfish.base.Utils;
 
 /**

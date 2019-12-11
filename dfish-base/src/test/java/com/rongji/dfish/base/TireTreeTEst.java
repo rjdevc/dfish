@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.rongji.dfish.base.TrieTree.SearchResult;
+import com.rongji.dfish.base.text.TrieTree;
 
 public class TireTreeTEst {
 	@Test
@@ -21,8 +21,8 @@ public class TireTreeTEst {
 		
 		System.out.println(t);
 		String text="榕基软件副总裁，技术总监陈明平同志对此发表了他的看法（编辑：陈超）";
-		List<SearchResult<Boolean>> ret= t.search(text);
-		for(SearchResult<Boolean> hit:ret){
+		List<TrieTree.SearchResult<Boolean>> ret= t.search(text);
+		for(TrieTree.SearchResult<Boolean> hit:ret){
 			System.out.println(hit.getValue()+":"+text.substring(hit.getBegin(),hit.getEnd()));
 		}
 	}

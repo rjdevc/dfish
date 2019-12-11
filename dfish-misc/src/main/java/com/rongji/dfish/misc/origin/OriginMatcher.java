@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.dfish.base.TrieTree;
+import com.rongji.dfish.base.text.TrieTree;
 
 import com.rongji.dfish.misc.origin.entity.Detail;
 import com.rongji.dfish.misc.origin.entity.Region;

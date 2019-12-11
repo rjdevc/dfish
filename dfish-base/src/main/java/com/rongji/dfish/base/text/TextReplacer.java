@@ -1,9 +1,8 @@
-package com.rongji.dfish.misc;
+package com.rongji.dfish.base.text;
 
 import java.util.List;
 
-import com.rongji.dfish.base.TrieTree;
-import com.rongji.dfish.base.TrieTree.SearchResult;
+import com.rongji.dfish.base.text.TrieTree;
 
 /**
  * <p>TextReplacer 为字符串替换工具，用于高效地替换多个关键词。</p>
@@ -48,14 +47,14 @@ public class TextReplacer {
 	 * @return 替换后内容
 	 */
 	public String replaceText(String src){
-		List<SearchResult<String>> sr=core.search(src);
+		List<TrieTree.SearchResult<String>> sr=core.search(src);
 		if(sr==null||sr.isEmpty()){
 			return src;
 		}
 		char[] chars=src.toCharArray();
 		StringBuilder sb=new StringBuilder();
 		int lastEnd=0;
-		for(SearchResult<String> item:sr){
+		for(TrieTree.SearchResult<String> item:sr){
 			if(item.getBegin()>lastEnd){
 				sb.append(chars,lastEnd,item.getBegin()-lastEnd);
 			}
