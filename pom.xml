@@ -6,7 +6,7 @@
     <name>dfish</name>
     <groupId>com.rongji</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.2.6.0-SNAPSHOT</version>
+    <version>3.2.6.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -105,11 +105,6 @@
                 <artifactId>dfish-framework</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.rongji</groupId>
-                <artifactId>dfish-ui-template</artifactId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -135,6 +130,5 @@
         <module>dfish-framework</module>
         <module>dfish-engine</module>
         <module>dfish-ui-plugin</module>
-        <module>dfish-ui-template</module>
     </modules>
 </project>
