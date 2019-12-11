@@ -19,7 +19,7 @@ import com.rongji.dfish.ui.Widget;
  * @author LinLW
  *
  */
-public class WidgetJsonBuilder extends TemplateJsonBuilder {
+public class WidgetJsonBuilder extends ClassJsonBuilder {
 
 	public WidgetJsonBuilder(Class<?> clz) {
 		super(clz);

@@ -95,7 +95,6 @@ public class GridTest extends DFishUITestCase {
 		tBodyRow.setData("@C4","$item.required");
 		tBodyRow.setData("@C5","$item.defaultValue");
 		tBodyRow.setData("@C6","$item.tip");
-        tBodyRow.setFor("$data.props");
         System.out.print(props.formatString());
 	}
 }

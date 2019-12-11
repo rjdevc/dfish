@@ -30,26 +30,7 @@ public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P
 			throw new java.util.ConcurrentModificationException("can NOT change wrapper when prototype is changed");
 		}
 	}
-	@Override
-    public T at(String prop, String expr){
-		if(prototype instanceof TemplateSupport){
-			((TemplateSupport<T>) prototype).at(prop, expr);
-		}
-		return (T) this;
-	}
-	@Override
-    public void ats(Map<String,String>ats){
-		if(prototype instanceof TemplateSupport){
-			((TemplateSupport<T>) prototype).ats(ats);
-		}
-	}
-	@Override
-    public Map<String,String> ats(){
-		if(prototype instanceof TemplateSupport){
-			return ((TemplateSupport<T>) prototype).ats();
-		}
-		return null;
-	}
+
 	@Override
     public P getPrototype() {
 	    return prototype;
