@@ -9,9 +9,11 @@
 package com.rongji.dfish.framework;
 
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
+import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.util.WrappedLog;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -101,7 +103,7 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static Locale getLocale(){
-		String value = FrameworkContext.getInstance().getSystemConfig().getProperty(
+		String value = SystemContext.getInstance().get(SystemConfigHolder.class).getProperty(
 				"framework.pub.sysdefaultlocale");
 		if (value != null) {
 			Locale[] locs = Locale.getAvailableLocales();
@@ -206,7 +208,7 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static BeanFactory getBeanFactory() {
-		BeanFactory factory = FrameworkContext.getInstance().getBeanFactory();
+		BeanFactory factory = SystemContext.getInstance().get(BeanFactory.class);
 		if(factory==null){
 			throw new NullPointerException("Bean factory is not initialized. Please check your environment. (applicationContext.xml) ");
 		}
@@ -304,7 +306,7 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static String getSystemConfig(String key,String defaultValue){
-		String value = FrameworkContext.getInstance().getSystemConfig().getProperty(key);
+		String value = SystemContext.getInstance().get(SystemConfigHolder.class).getProperty(key);
 		return Utils.isEmpty(value) ? defaultValue : value;
 	}
 	public static Integer getSystemConfigAsInteger(String key,Integer defaultValue){
@@ -326,7 +328,7 @@ public class FrameworkHelper{
 	 * @param value
 	 */
 	public static void setSystemConfig(String key,String value){
-		FrameworkContext.getInstance().getSystemConfig().setProperty(key, value);
+		SystemContext.getInstance().get(SystemConfigHolder.class).setProperty(key, value);
 	}
 
 	/**
@@ -334,7 +336,7 @@ public class FrameworkHelper{
 	 *
 	 */
 	public static void resetSystemConfig(){
-		FrameworkContext.getInstance().getSystemConfig().reset();
+		SystemContext.getInstance().get(SystemConfigHolder.class).reset();
 	}
 
 	/**
@@ -347,11 +349,11 @@ public class FrameworkHelper{
 	 * @return String
 	 */
 	public static String getPersonalConfig(String userId,String argStr){
-		return FrameworkContext.getInstance().getPersonalConfig().getProperty(userId,argStr);
+		return SystemContext.getInstance().get(PersonalConfigHolder.class).getProperty(userId,argStr);
 		
 	}
 	public static Integer getPersonalConfigAsInteger(String userId,String argStr){
-		String strValue= FrameworkContext.getInstance().getPersonalConfig().getProperty(userId,argStr);
+		String strValue= SystemContext.getInstance().get(PersonalConfigHolder.class).getProperty(userId,argStr);
 		if(strValue==null) {
             return null;
         }
@@ -359,7 +361,7 @@ public class FrameworkHelper{
 			return new Integer(strValue);
 		}catch(Exception ex){
 			if(!"default".equals(userId)){
-				strValue=FrameworkContext.getInstance().getPersonalConfig().getProperty("default",argStr);
+				strValue=SystemContext.getInstance().get(PersonalConfigHolder.class).getProperty("default",argStr);
 				if(strValue==null) {
                     return null;
                 }
@@ -383,7 +385,7 @@ public class FrameworkHelper{
 	 * @return String
 	 */
 	public static void setPersonalConfig(String userId,String argStr,String value){
-		FrameworkContext.getInstance().getPersonalConfig().setProperty(userId,argStr,value);
+		SystemContext.getInstance().get(PersonalConfigHolder.class).setProperty(userId,argStr,value);
 	}
 
 	/**
@@ -501,7 +503,7 @@ public class FrameworkHelper{
 	 */
 	public static String getFileText(String path){
 		@SuppressWarnings("deprecation")
-		String rootPath=FrameworkContext.getInstance().getServletInfo().getServletRealPath();
+		String rootPath=SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
 		if(path.startsWith("/")||path.startsWith("\\")){
 			path=path.substring(1);
 		}

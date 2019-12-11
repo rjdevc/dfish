@@ -10,12 +10,15 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class Cryptor extends  AbstractCryptor{
+
     public static class CryptorBuilder extends AbstractCryptBuilder<CryptorBuilder> {
         public static final String ALGORITHM_NONE=null;
         /**
@@ -134,13 +137,55 @@ public class Cryptor extends  AbstractCryptor{
            throw new RuntimeException(ex);
         }
     }
+    private static boolean inited=false;
+    private void init(){
+        if(inited){
+            return;
+        }
+        String[] providers = {"com.sun.crypto.provider.SunJCE",
+                "com.ibm.crypto.provider.IBMJCE",
+                "com.ibm.crypto.hdwrCCA.provider.IBMJCE4758",
+                "org.bouncycastle.jce.provider.BouncyCastleProvider"};
+        Provider p =null;
+        for (int i = 0; i < providers.length; i++) {
+            try {
+                p= (Provider) Class.forName(providers[i]).
+                        newInstance();
+                Security.addProvider(p);
+                break;
+            } catch (Exception ex) {
+            }
+        }
+        inited=true;
+    }
 
     private Cipher initCipher(int encryptMode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        init();
         Cipher cipher = Cipher.getInstance(builder.getAlgorithm());
         CryptorBuilder cb=(CryptorBuilder) builder;
-        byte[] key=(byte[]) cb.key;
-        SecretKeySpec keySpec = new SecretKeySpec(key, builder.algorithm);
-        cipher.init(encryptMode, keySpec);//FIXME CBC 需要设置iv
+        if(builder.algorithm.toUpperCase().equals("RSA")) {
+            KeyPair keyPair =null;
+            if (cb.key instanceof KeyPair) {
+                keyPair = (KeyPair) cb.key;
+            } else if (cb.key != null && cb.key instanceof BigInteger[]) {
+                final BigInteger[] cast = (BigInteger[]) cb.key;
+                RSAPrivateKey prikey = new RSACryptor4BC.DFishRSAPrivateKey(cast[2], cast[1]);
+                RSAPublicKey pubkey = new RSACryptor4BC.DFishRSAPublicKey(cast[2], cast[0]);
+                keyPair = new KeyPair(pubkey, prikey);
+            }
+            //FIXME 为空默认给一个秘钥();
+            if(encryptMode==Cipher.ENCRYPT_MODE){
+                cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
+            }else{
+                cipher.init(Cipher.DECRYPT_MODE, keyPair.getPublic());
+            }
+        }else {
+            byte[] key=(byte[]) cb.key;
+            //
+            //FIXME 为空默认给一个秘钥();
+            SecretKeySpec keySpec = new SecretKeySpec(key, builder.algorithm);
+            cipher.init(encryptMode, keySpec);//FIXME CBC 需要设置iv
+        }
         return cipher;
     }
 

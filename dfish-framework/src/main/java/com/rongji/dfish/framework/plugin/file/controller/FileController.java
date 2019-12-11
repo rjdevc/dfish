@@ -1,12 +1,13 @@
 package com.rongji.dfish.framework.plugin.file.controller;
 
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
-import com.rongji.dfish.framework.FrameworkContext;
 import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
@@ -544,7 +545,7 @@ public class FileController extends BaseActionController {
             }
 
             // 这里可能考虑重定向到具体文件目录去
-            File defaultImageFile = new File(FrameworkContext.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
+            File defaultImageFile = new File(SystemContext.getInstance().get(ServletInfo.class).getServletRealPath() + "m/default/img/" + defaultIcon);
             if (defaultImageFile.exists()) {
                 downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length())
                         .setLastModified(new Date(defaultImageFile.lastModified()));

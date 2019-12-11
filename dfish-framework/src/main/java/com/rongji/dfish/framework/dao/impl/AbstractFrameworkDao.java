@@ -2,8 +2,8 @@ package com.rongji.dfish.framework.dao.impl;
 
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.info.DataBaseInfo;
-import com.rongji.dfish.framework.FrameworkContext;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dto.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +75,7 @@ public abstract class AbstractFrameworkDao<P, ID extends Serializable> implement
             QueryPreparation preparation = new QueryPreparation();
             String querySql = sql;
             if (pagination != null) {
-                DataBaseInfo dbInfo = FrameworkContext.getInstance().getDataBaseInfo();
+                DataBaseInfo dbInfo = SystemContext.getInstance().get(DataBaseInfo.class);
                 if (DataBaseInfo.DATABASE_ORACLE == dbInfo.getDatabaseType()) {
                     querySql = getPreSqlWithPageOracle(sql);
                     queryArgs.add(pagination.getOffset() + pagination.getLimit());

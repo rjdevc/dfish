@@ -54,8 +54,8 @@ public class CryptUtilTest {
 	}
 
 	public static void main (String[] args) throws IOException {
-		Cryptor c=CryptUtil.prepareCryptor("RSA","THIS_IS_".getBytes())
-				.gzip(true).encoding("UTF-8").present(CryptUtil.PRESENT_BASE64).build();
+		Cryptor c=CryptUtil.prepareCryptor("Blowfish","THIS_IS_".getBytes())
+				.gzip(true).encoding("UTF-8").present(CryptUtil.PRESENT_BASE64_URLSAFE).build();
 		String src="君不见，黄河之水天上来⑵，奔流到海不复回。\n" +
 				"君不见，高堂明镜悲白发，朝如青丝暮成雪⑶。\n" +
 				"人生得意须尽欢⑷，莫使金樽空对月。\n" +
@@ -74,11 +74,15 @@ public class CryptUtilTest {
 		src=src+src;
 //		src="123456789";
 //		//凑到64K。
-		StringCryptor sc=CryptFactory.getStringCryptor(null,CryptFactory.ENCODING_UTF8_GZIP,CryptFactory.PRESENT_STYLE_BASE64,null);
+		StringCryptor sc=CryptFactory.getStringCryptor("Blowfish",CryptFactory.ENCODING_UTF8_GZIP,CryptFactory.PRESENT_STYLE_BASE64,"THIS_IS_".getBytes());
 		String oldValue=sc.encrypt(src);
 		String en=c.encrypt(src);
 
 		System.out.println(" OLD equals="+en.equals(oldValue));
+		if(!en.equals(oldValue)){
+		    System.out.println(en);
+            System.out.println(oldValue);
+        }
 //		if(!en.equals(oldValue)){
 //			System.out.println("oldVaue.length="+oldValue.length()+" value.length"+en.length());
 //			for(int i=0;i<oldValue.length();i++){
@@ -87,7 +91,7 @@ public class CryptUtilTest {
 //				}
 //			}
 //		}
-		System.out.println(en);
+//		System.out.println(en);
 		System.out.println("长度由"+src.getBytes("UTF8").length+"变为"+en.length());
 		String de=c.decrypt(en);
 ////		System.out.println(de);

@@ -61,7 +61,6 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 		Html prototype = new Html(text);
 		BeanUtil.copyPropertiesExact(prototype,this);
 		prototype.setId(null);
-		prototype.ats(this.ats());
 		Formgroup hg=new Formgroup(null).setId(this.getId());
 		hg.setLabel(label);
 		hg.add(prototype);

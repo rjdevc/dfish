@@ -5,5 +5,5 @@ package com.rongji.dfish.ui;
  * @param <T>
  */
 public interface JsonNode<T extends JsonNode<T>> extends JsonObject,HasId<T>,
-        DataContainer<T>,TemplateSupport<T>  {
+        DataContainer<T> {
 }

@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.json;
 
-import com.rongji.dfish.ui.TemplateSupport;
 import com.rongji.dfish.ui.Widget;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,8 +51,8 @@ public class J {
 				jt = ENUM_JSON_BUILDER;
 			}else if(Widget.class.isAssignableFrom(clz)) {
 				jt = new WidgetJsonBuilder(clz);
-			}else if(TemplateSupport.class.isAssignableFrom(clz)) {
-				jt = new TemplateJsonBuilder(clz);
+//			}else if(TemplateSupport.class.isAssignableFrom(clz)) {
+//				jt = new TemplateJsonBuilder(clz);
 			}else{
 				jt = new ClassJsonBuilder(clz);
 			}

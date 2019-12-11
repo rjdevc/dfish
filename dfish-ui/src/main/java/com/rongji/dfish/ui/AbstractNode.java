@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T>,
-        DataContainer<T>,TemplateSupport<T> ,JsonObject{
+        DataContainer<T>,JsonObject{
 
     /**
      *
@@ -235,7 +235,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         //浅拷贝
         to.id = from.id;
         to.data = from.data;
-        to.ats(from.ats());
     }
 
     protected String toString(Object value) {
@@ -293,41 +292,41 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         ObjectTemplate.get(getClass()).bundleProperties(this);
     }
 
-    private Map<String,String> atProps;
-    @Override
-    @SuppressWarnings("unchecked")
-    public T at(String prop,String expr){
-        if(atProps==null){
-            atProps=new LinkedHashMap<String,String>();
-        }
-        atProps.put(prop,expr);
-        return(T)this;
-    }
-    @Override
-    public T setFor(String expr){
-        return setFor(expr,null,null);
-    }
-
-
-    @Override
-    public T setFor(String dataExpr, String itemName, String indexName){
-        itemName = Utils.isEmpty(itemName) ? "item" : itemName;
-//		if(indexName==null||indexName.equals("")){
-//			at("w-for","$"+itemName+" in ("+dataExpr+")");
-//		}else{
-//		}
-        at("w-for","$" + itemName + (Utils.notEmpty(indexName) ? ",$" + indexName : "") + " in ("+dataExpr+")");
-        return (T)this;
-    }
-    @Override
-    public Map<String,String> ats(){
-        return atProps;
-    }
-    @Override
-    public void ats(Map<String,String> ats){
-        this.atProps=ats;
-//		return atProps;
-    }
+//    private Map<String,String> atProps;
+//    @Override
+//    @SuppressWarnings("unchecked")
+//    public T at(String prop,String expr){
+//        if(atProps==null){
+//            atProps=new LinkedHashMap<String,String>();
+//        }
+//        atProps.put(prop,expr);
+//        return(T)this;
+//    }
+//    @Override
+//    public T setFor(String expr){
+//        return setFor(expr,null,null);
+//    }
+//
+//
+//    @Override
+//    public T setFor(String dataExpr, String itemName, String indexName){
+//        itemName = Utils.isEmpty(itemName) ? "item" : itemName;
+////		if(indexName==null||indexName.equals("")){
+////			at("w-for","$"+itemName+" in ("+dataExpr+")");
+////		}else{
+////		}
+//        at("w-for","$" + itemName + (Utils.notEmpty(indexName) ? ",$" + indexName : "") + " in ("+dataExpr+")");
+//        return (T)this;
+//    }
+//    @Override
+//    public Map<String,String> ats(){
+//        return atProps;
+//    }
+//    @Override
+//    public void ats(Map<String,String> ats){
+//        this.atProps=ats;
+////		return atProps;
+//    }
 
     @Override
     public String asJson() {

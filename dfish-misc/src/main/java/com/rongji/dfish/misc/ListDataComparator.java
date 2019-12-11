@@ -97,17 +97,11 @@ public class ListDataComparator<T> {
         final OrderedDataIdentifier<T> oind = (OrderedDataIdentifier<T>) this.identifier;
         List<T> sortedNewList = newList == null ? new ArrayList<>(0) : new ArrayList<T>(newList);
         List<T> sortedOldList = oldList == null ? new ArrayList<>(0) : new ArrayList<T>(oldList);
-        Collections.sort(sortedNewList, new Comparator<T>() {
-            @Override
-            public int compare(T row1, T row2) {
-                return oind.compareRow(row1, row2);
-            }
+        Collections.sort(sortedNewList, (row1,row2)-> {
+            return oind.compareRow(row1, row2);
         });
-        Collections.sort(sortedOldList, new Comparator<T>() {
-            @Override
-            public int compare(T row1, T row2) {
-                return oind.compareRow(row1, row2);
-            }
+        Collections.sort(sortedOldList, (row1,row2) ->{
+            return oind.compareRow(row1, row2);
         });
         Iterator<T> oldIter = sortedOldList.iterator();
         Iterator<T> newIter = sortedNewList.iterator();
@@ -118,7 +112,6 @@ public class ListDataComparator<T> {
             //如果上次对比结果为0则两边都下翻
             //如果上次对比结果为小于0的数，那么oldIter下翻
             //否则newList 下翻。
-
             //判断两个值是否相等
             if (compareResult == 0) {
                 if (!oldIter.hasNext() || !newIter.hasNext()) {
@@ -126,19 +119,16 @@ public class ListDataComparator<T> {
                 }
                 workingOldItem = oldIter.next();
                 workingNewItem = newIter.next();
-//				System.out.println("old="+workingOldItem+"\t new="+workingNewItem);
             } else if (compareResult < 0) {
                 if (!oldIter.hasNext()) {
                     break;
                 }
                 workingOldItem = oldIter.next();
-//				System.out.println("old="+workingOldItem);
             } else {
                 if (!newIter.hasNext()) {
                     break;
                 }
                 workingNewItem = newIter.next();
-//				System.out.println("new="+workingNewItem);
             }
             compareResult = oind.compareRow(workingOldItem, workingNewItem);
             if (compareResult == 0) {
