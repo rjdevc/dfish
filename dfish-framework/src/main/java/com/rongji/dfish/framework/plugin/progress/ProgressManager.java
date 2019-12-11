@@ -3,6 +3,8 @@ package com.rongji.dfish.framework.plugin.progress;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.crypt.Cryptor;
+import com.rongji.dfish.base.exception.Marked;
+import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 
@@ -102,7 +104,7 @@ public class ProgressManager {
             String errorMsg = "进度数据异常@" + System.currentTimeMillis();
             // 正常情况一般不会报错
             FrameworkHelper.LOG.error(errorMsg, e);
-            throw new ProgressException(errorMsg);
+            throw new MarkedRuntimeException(errorMsg);
         }
         return responseData;
     }
@@ -366,9 +368,9 @@ public class ProgressManager {
                         } catch (Throwable e) {
                             String errorMsg = null;
                             String errorCode = null;
-                            if (e instanceof ProgressException) {
+                            if (e instanceof Marked) {
                                 errorMsg = e.getMessage();
-                                errorCode = ((ProgressException) e).getCode();
+                                errorCode = ((Marked) e).getCode();
                             } else {
                                 errorMsg = "进度条运行异常@" + System.currentTimeMillis();
                                 FrameworkHelper.LOG.error(errorMsg, e);

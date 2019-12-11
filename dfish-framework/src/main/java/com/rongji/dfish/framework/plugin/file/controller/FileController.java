@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.plugin.file.controller;
 
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
@@ -570,48 +571,50 @@ public class FileController extends BaseActionController {
         return alias;
     }
 
-//    /**
-//     * 预览文件方法
-//     *
-//     * @param request
-//     * @return
-//     * @throws Exception
-//     */
-//    @RequestMapping("/preview")
-//    @ResponseBody
-//    public Object preview(HttpServletRequest request) throws Exception {
-//        // FIXME 目前仅图片预览方法,如果是文件预览需做处理,不支持预览可能直接下载
-//        String enFileId = request.getParameter("fileId");
-//        String fileId = fileService.decrypt(enFileId);
-//        PubFileRecord fileRecord = fileService.get(fileId);
-//
-//        if (fileRecord != null) {
-//            String fileType = FileUtil.getFileExtName(fileRecord.getFileUrl());
-//            boolean isImage = accept(fileType, fileService.getImageTypes());
-//            String scheme = request.getParameter("scheme");
-//            scheme = scheme == null ? "" : scheme;
-//            String alias = request.getParameter("alias");
-//            alias = alias == null ? "" : alias;
-//
-//            if (isImage) {
-//                // 图片形式使用框架的预览方式
-//                return new JS("$.previewImage('file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
-//                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileType + "');");
-//            } else {
-//                String mimeType = getMimeType(fileType);
-//                String fileParamUrl = "?fileId=" + enFileId + "&scheme=" + scheme + "&alias=" + alias;
-//                if (Utils.notEmpty(mimeType)) {
-//                    // 如果是浏览器支持可查看的内联类型,新窗口打开
-//                    return new JS("window.open('file/download" + fileParamUrl + "&inline=1');");
-//                } else { // 其他情况都是直接下载
-//                    return new JS("$.download('file/download" + fileParamUrl + "');");
-//                }
-//            }
-//        } else {
-//            String error = "附件获取异常@" + System.currentTimeMillis();
-//            LogUtil.warn(error + "[" + fileRecord.getFileId() + "]");
-//            throw new DfishException(error);
-//        }
-//    }
+    /**
+     * 预览文件方法(目前仅图片预览方法,如果是文件预览需做处理,不支持预览可能直接下载)
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/preview")
+    @ResponseBody
+    public Object preview(HttpServletRequest request) throws Exception {
+        String enFileId = request.getParameter("fileId");
+        String fileId = fileService.decrypt(enFileId);
+        PubFileRecord fileRecord = fileService.get(fileId);
+
+        if (fileRecord != null) {
+            String fileType = FileUtil.getFileExtName(fileRecord.getFileUrl());
+            boolean isImage = fileService.accept(fileType, fileService.getImageTypes());
+            String scheme = request.getParameter("scheme");
+            scheme = scheme == null ? "" : scheme;
+            String alias = request.getParameter("alias");
+            alias = alias == null ? "" : alias;
+
+            String jsText;
+            if (isImage) {
+                // 图片形式使用框架的预览方式
+                jsText = "$.previewImage('file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
+                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileType + "');";
+            } else {
+                String mimeType = getMimeType(fileType);
+                String fileParamUrl = "?fileId=" + enFileId + "&scheme=" + scheme + "&alias=" + alias;
+                if (Utils.notEmpty(mimeType)) {
+                    // 如果是浏览器支持可查看的内联类型,新窗口打开
+                    jsText = "window.open('file/download" + fileParamUrl + "&inline=1');";
+                } else { // 其他情况都是直接下载
+                    jsText = "$.download('file/download" + fileParamUrl + "');";
+                }
+            }
+            // FIXME 因前端引擎未给解决方案,这里先这么实现
+            return "{\"type\":\"js\",\"text\":\"" + jsText + "\"}";
+        } else {
+            String error = "附件获取异常@" + System.currentTimeMillis();
+            LogUtil.warn(error + "[" + enFileId + "]");
+            throw new MarkedException(error);
+        }
+    }
 
 }

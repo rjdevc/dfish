@@ -1,12 +1,12 @@
 package com.rongji.dfish.misc;
 
+import com.rongji.dfish.base.batch.QueuedBatchAction;
+import com.rongji.dfish.base.exception.MarkedException;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-
-import com.rongji.dfish.base.DfishException;
-import com.rongji.dfish.base.batch.QueuedBatchAction;
 
 /**
  * <p>单个处理，转批量处理的适配器</p>
@@ -63,7 +63,7 @@ public abstract class BatchAdaptor {
 		//使用阻塞数组中的add方法 - 满了会自己抛出异常
 		synchronized(workingQueue){
 			if(workingQueue.size()>=maxPooled){
-				throw new DfishException("THE BATCH ADAPTOR IS BUSY",DfishException.UNKNOWN_EXCEPTION);
+				throw new MarkedException("THE BATCH ADAPTOR IS BUSY");
 			}
 			workingQueue.add(object);
 		}

@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.dao;
 
-import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Pagination;
+import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.framework.dto.QueryParam;
 
 import java.io.Serializable;
@@ -175,25 +175,25 @@ public interface FrameworkDao<P, ID extends Serializable> {
     static String getCountSql(String sql) {
         // 更新比较精确的截取的方式，应该用正则表达是而不是用 FROM前面加空格的做法。
         String upperSQL = sql.toUpperCase();
-        int firstForm = -1;
+        int firstFrom = -1;
         Matcher m = PATTERN_FROM.matcher(upperSQL);
         if (m.find()) {
-            firstForm = m.start();
+            firstFrom = m.start();
         }
 
-        if (firstForm < 0) {
-            throw new RuntimeException(new DfishException("无法对没有FROM关键字的SQL进行autoRowCount，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
+        if (firstFrom < 0) {
+            throw new MarkedRuntimeException("无法对没有FROM关键字的SQL进行autoRowCount，建议设置page.setAutoRowCount(false);并自行计算数据行数");
         }
         m = PATTERN_DISTINCT.matcher(upperSQL);
         if (m.find()) {
-            if (m.start() < firstForm) {
-                throw new RuntimeException(new DfishException("无法保证有DISTINCT关键字的SQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
+            if (m.start() < firstFrom) {
+                throw new MarkedRuntimeException("无法保证有DISTINCT关键字的SQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数");
             }
         }
         m = PATTERN_GROUP_BY.matcher(upperSQL);
         if (m.find()) {
-            if (m.start() < firstForm) {
-                throw new RuntimeException(new DfishException("无法保证有GROUP BY关键字的SQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数", "DFISH-01000"));
+            if (m.start() < firstFrom) {
+                throw new MarkedRuntimeException("无法保证有GROUP BY关键字的SQL进行autoRowCount的结果正确性，建议设置page.setAutoRowCount(false);并自行计算数据行数");
             }
         }
         int cur = 0, lastOrderBy = upperSQL.length();
@@ -218,7 +218,7 @@ public interface FrameworkDao<P, ID extends Serializable> {
                 lastOrderBy = upperSQL.length();
             }
         }
-        String countSql = "SELECT COUNT(*) " + sql.substring(firstForm, lastOrderBy);
+        String countSql = "SELECT COUNT(*) " + sql.substring(firstFrom, lastOrderBy);
         return countSql;
     }
 

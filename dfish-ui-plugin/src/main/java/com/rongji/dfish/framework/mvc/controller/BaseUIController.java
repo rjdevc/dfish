@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.mvc.controller;
 
-import com.rongji.dfish.base.DfishException;
+import com.rongji.dfish.base.exception.Marked;
+import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.LogUtil;
@@ -79,32 +80,18 @@ public class BaseUIController extends BaseActionController {
 				LogUtil.error(alertMsg + "=====[Network]=====" + e.getClass().getName() + ":["+e.getMessage() + "]");
 				return buildWarnAlert(alertMsg);
 			}
-			DfishException cast = null;
-			if (e instanceof DfishException) {
-				cast = (DfishException) e;
-			} else {
-				Throwable t = e;
-				// 防止套路深,而往下寻找DfishException 
-				while (t.getCause() != null) {
-					if (t == t.getCause()) {
-						break;
-					}
-					if (t.getCause() instanceof DfishException) {
-						cast = (DfishException) t.getCause();
-						break;
-					}
-					t = t.getCause();
-				}
-			}
-			if (cast != null) { // 有DFish异常,基本上是业务的异常,所以提示相对友好些用alert
-				if (Utils.notEmpty(cast.getExceptionCode())) {
+			Throwable cause = getCause(e);
+			if (cause instanceof Marked) {
+				// 有DFish异常,基本上是业务的异常,所以提示相对友好些用alert
+				String code = ((Marked) cause).getCode();
+				if (Utils.notEmpty(code)) {
 //					if (cast.getCode().startsWith("DFISH")) {
 //						FrameworkHelper.LOG.error("==========系统异常==========", e);
 //					}
-					alertMsg += "(" + cast.getExceptionCode() + ")";
+					alertMsg += "(" + code + ")";
 				}
-				if (Utils.notEmpty(cast.getMessage())) {
-					alertMsg += cast.getMessage();
+				if (Utils.notEmpty(cause.getMessage())) {
+					alertMsg += cause.getMessage();
 				}
 			}
 		}
@@ -141,9 +128,9 @@ public class BaseUIController extends BaseActionController {
 
 		Throwable cause = t;
 		while (cause.getCause() != null) {
-			if(cause instanceof DfishException){
-				DfishException d=(DfishException)cause;
-				errType=d.getExceptionCode();
+			if(cause instanceof MarkedException){
+				MarkedException d=(MarkedException)cause;
+				errType=d.getCode();
 			}
 			cause = cause.getCause();
 		}

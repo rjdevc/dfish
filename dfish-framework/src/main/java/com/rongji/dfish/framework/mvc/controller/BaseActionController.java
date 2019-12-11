@@ -1,8 +1,8 @@
 package com.rongji.dfish.framework.mvc.controller;
 
-import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.exception.Marked;
 import com.rongji.dfish.base.util.DateUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
@@ -143,7 +143,7 @@ public class BaseActionController extends MultiActionController {
         }
 
         public void bind(HttpServletRequest request, Object obj) throws Exception {
-            for (Iterator<Format> iter = formats.iterator(); iter.hasNext();) {
+            for (Iterator<Format> iter = formats.iterator(); iter.hasNext(); ) {
                 Format format = iter.next();
                 try {
                     format.bind(request, obj);
@@ -336,30 +336,17 @@ public class BaseActionController extends MultiActionController {
     @ResponseBody
     public Object exception(Throwable e) {
         JsonResponse<?> jsonResponse = new JsonResponse<>();
-        Throwable cause = e;
-        if (!(cause instanceof DfishException)) {
-            // 防止套路深,而往下寻找DfishException
-            while (cause.getCause() != null) {
-                if (cause == cause.getCause()) {
-                    break;
-                }
-                if (cause.getCause() instanceof DfishException) {
-                    cause = cause.getCause();
-                    break;
-                }
-                cause = cause.getCause();
-            }
-        }
 
         HttpServletRequest request = getRequest();
         if (request != null) {
             request.setAttribute("EXCEPTION_HANDLED", true);
         }
 
-        if (cause instanceof DfishException) {
-            DfishException cast = (DfishException) cause;
-            jsonResponse.setErrCode(cast.getExceptionCode());
-            jsonResponse.setErrMsg(cast.getMessage());
+        Throwable cause= getCause(e);
+
+        if (cause instanceof Marked) {
+            jsonResponse.setErrCode(((Marked) cause).getCode());
+            jsonResponse.setErrMsg(cause.getMessage());
         } else {
             String requestJson = convert2JSON(request);
             String errMsg = null;
@@ -374,6 +361,24 @@ public class BaseActionController extends MultiActionController {
         }
 
         return jsonResponse;
+    }
+
+    protected Throwable getCause(Throwable e) {
+        Throwable cause = e;
+        if (!(cause instanceof Marked)) {
+            // 防止套路深,而往下寻找MarkedException
+            while (cause.getCause() != null) {
+                if (cause == cause.getCause()) {
+                    break;
+                }
+                if (cause.getCause() instanceof Marked) {
+                    cause = cause.getCause();
+                    break;
+                }
+                cause = cause.getCause();
+            }
+        }
+        return cause;
     }
 
     protected String convert2JSON(HttpServletRequest request) {

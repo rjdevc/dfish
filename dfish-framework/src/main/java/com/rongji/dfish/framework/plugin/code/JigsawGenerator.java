@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.plugin.code;
 
-import com.rongji.dfish.base.DfishException;
+import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.FrameworkContext;
@@ -209,7 +209,7 @@ public class JigsawGenerator {
         }
 
         if (!imageDir.isDirectory()) {
-            throw new DfishException("验证码拼图路径非目录");
+            throw new MarkedException("验证码拼图路径非目录");
         }
         File[] subFiles = imageDir.listFiles();
         List<File> imageFiles = new ArrayList<>();
@@ -219,7 +219,7 @@ public class JigsawGenerator {
             }
         }
         if (Utils.isEmpty(imageFiles)) {
-            throw new DfishException("验证码拼图缺少范例图片");
+            throw new MarkedException("验证码拼图缺少范例图片");
         }
         int fileIndex = RANDOM.nextInt(imageFiles.size());
         File rawFile = imageFiles.get(fileIndex);

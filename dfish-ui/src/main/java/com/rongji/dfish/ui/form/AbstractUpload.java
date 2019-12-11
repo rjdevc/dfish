@@ -258,7 +258,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getUploadsrc()
 	 */
 	@Deprecated
-	@Transient
 	public String getUpload_url() {
 		return getUploadsrc();
 	}
@@ -278,7 +277,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getDown_url()
 	 */
 	@Deprecated
-	@Transient
 	public String getDown_url() {
 		return getDownloadsrc();
 	}
@@ -299,7 +297,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getPreviewsrc()
      */
     @Deprecated
-	@Transient
     public String getPreview_url() {
         return getPreviewsrc();
     }
@@ -321,7 +318,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getMaxfilesize()
 	 */
     @Deprecated
-	@Transient
 	public String getFile_size_limit() {
 		return getMaxfilesize();
 	}
@@ -341,7 +337,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getFiletypes()
 	 */
 	@Deprecated
-	@Transient
 	public String getFile_types() {
 		return getFiletypes();
 	}
@@ -361,7 +356,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getUploadlimit()
 	 */
 	@Deprecated
-	@Transient
 	public Integer getFile_upload_limit() {
 		return getUploadlimit();
 	}
@@ -381,7 +375,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getValuebutton()
 	 */
 	@Deprecated
-	@Transient
 	public List<ValueButton> getValue_button() {
 		return getValuebutton();
 	}
@@ -401,7 +394,6 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @see #getUploadbutton()
 	 */
 	@Deprecated
-	@Transient
 	public List<UploadButton> getUpload_button() {
 		return getUploadbutton();
 	}

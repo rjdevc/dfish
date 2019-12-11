@@ -1,8 +1,8 @@
 package com.rongji.dfish.framework.hibernate.dao.impl;
 
-import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.FrameworkDao;
@@ -155,7 +155,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
                         pagination.setSize(count);
                     } catch (Exception ex) {
                         LogUtil.error("自动计算数据行数时发生未知错误", ex);
-                        throw new RuntimeException(new DfishException("自动计算数据行数时发生未知错误，建议设置page.setAutoRowCount(false);并自行计算数据行数。\r\n" + countSql, "DFISH-01000"));
+                        throw new MarkedRuntimeException("自动计算数据行数时发生未知错误，建议设置page.setAutoRowCount(false);并自行计算数据行数。\r\n" + countSql, "DFISH-01000");
                     }
                 }
             }
