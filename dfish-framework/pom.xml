@@ -26,11 +26,7 @@
 	    <groupId>com.rongji</groupId>
 	    <artifactId>dfish-ui-plugin</artifactId>
 	</dependency>
-  	<dependency>
-	    <groupId>com.rongji</groupId>
-	    <artifactId>dfish-ui-template</artifactId>
-	</dependency>
-	
+
 	<!-- servlet -->
     <dependency>
       <groupId>javax</groupId>
