@@ -17,18 +17,18 @@
 .f-clearfix{zoom:1}
 .f-clearfix:after{content:" ";height:0;visibility:hidden;display:block;clear:both}
 
-.f-scroll-wrap{position:relative;overflow:hidden}
+.f-scroll-wrap{position:relative}
 .f-scroll-tank{width:100%;height:100%;overflow:hidden;*position:relative}
 .f-scroll-overflow{position:relative;overflow:scroll}
 .f-scroll-overflow::-webkit-scrollbar{width:0;height:0}
-.f-scroll-y{position:absolute;top:0;bottom:0;right:1px;display:none;visibility:hidden;border-radius:4px;z-index:2}
-.f-scroll-y-track{position:relative;height:100%;width:8px;top:0;background:#b2bdc8;border-radius:5px;opacity:.9}
-.f-scroll-wrap:hover > .f-scroll-y,.f-css2 .f-scroll-wrap:hover .f-scroll-y{visibility:visible}
-.f-scroll-y:hover .f-scroll-y-track{background:#99a8b8;opacity:.85}
-.f-scroll-x{position:absolute;left:0;right:0;bottom:1px;display:none;visibility:hidden;border-radius:4px;z-index:2}
-.f-scroll-x-track{position:relative;width:100%;height:7px;left:0;background:#b2bdc8;border-radius:4px;opacity:.9}
-.f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x{visibility:visible}
-.f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85}
+.f-scroll-y{position:absolute;top:0;bottom:0;right:1px;width:14px;display:none;visibility:hidden;z-index:2}
+.f-scroll-y-track{position:absolute;height:100%;width:8px;top:0;right:0;background:#b2bdc8;border-radius:10px;opacity:.9;transition:width .07s cubic-bezier(.78, .14, .15, .86)}
+.f-scroll-wrap:hover > .f-scroll-y,.f-css2 .f-scroll-wrap:hover .f-scroll-y,.f-scroll-wrap.z-hv > .f-scroll-y,.f-css2 .f-scroll-wrap.z-hv .f-scroll-y{visibility:visible}
+.f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x,.f-scroll-wrap.z-hv > .f-scroll-x,.f-css2 .f-scroll-wrap.z-hv .f-scroll-x{visibility:visible}
+.f-scroll-y:hover .f-scroll-y-track{background:#99a8b8;opacity:.85;width:100%}
+.f-scroll-x{position:absolute;left:0;right:0;bottom:1px;height:14px;display:none;visibility:hidden;z-index:2}
+.f-scroll-x-track{position:absolute;width:100%;height:7px;left:0;bottom:0;background:#b2bdc8;border-radius:10px;opacity:.9;transition:height .07s cubic-bezier(.78, .14, .15, .86)}
+.f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85;height:100%}
 .f-scroll-wrap.z-ovis{overflow:visible}
 
 .f-scroll-overflow .w-vert,.f-scroll-overflow .w-grid{overflow:visible}

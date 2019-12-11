@@ -10401,6 +10401,7 @@ define.widget( 'form', { Extend: 'html' } );
 define.widget( 'vertical', { Extend: 'vert' } );
 define.widget( 'horizontal', { Extend: 'horz' } );
 define.widget( 'timeline', { Extend: 'html' } );
+define.widget( 'jigsaw', { Extend: 'html' } );
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
