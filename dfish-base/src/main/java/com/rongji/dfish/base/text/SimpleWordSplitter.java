@@ -145,11 +145,5 @@ public class SimpleWordSplitter implements WordSplitter{
             this.end=end;
         }
     }
-    public static void main(String[] args){
-        SimpleWordSplitter sws=SimpleWordSplitter.getInstance();
-        String text= "C中国2025计划(CWAP)，将以一带一路与工业4.0为核心。";
-        System.out.println(sws.split(text));
 
-
-    }
 }

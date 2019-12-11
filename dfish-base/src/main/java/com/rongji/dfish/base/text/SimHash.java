@@ -1,7 +1,19 @@
 package com.rongji.dfish.base.text;
 import java.math.BigInteger;
 
-
+/**
+ * SimHash 用于判断两个文章的相似程度
+ * <p> 我们把一个长的文本。计算SimHash后将会得到一个 短的hash值。 我们通过 getDist(hash1,hash2)
+ * 来判断两个文章相似程度。这样性能将会大大提高。一般来说distance 为32或以上的时候，表名两个文章基本上没有相似度。
+ * 我们通常使用3-5来标识比较接近的文章。
+ * 因为和语义有关，如果有比较准确的切词器。这个SimHash将会更加准确。注意换切词器通常意味着SimHash的值变化了。</p>
+ * SimHash simHash=new SimHash();
+ * String hash =simHash.getSimHash();
+ * //获得hash
+ * int dis=SimHash.getDistance(hash1,hash2)
+ * //判定差别大小。
+ * //hash1和hash2 要同一个SimHash 计算方法产生的。换了切词器则无法比较。
+ */
 public class SimHash {
     private static final WordSplitter DEFAULT_SPLITER=SimpleWordSplitter.getInstance();
     public WordSplitter getSplitter() {
@@ -23,19 +35,21 @@ public class SimHash {
     private static final char[] HEX_CHARS=new char[]{
             '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
     };
+    private static final int[] HEX_DE_INT = { // 用于加速解密的cache
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, // 48
+            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, //64
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
+            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0 // 96
+    };
+
     public String getSimHash(String tokens, int hashbits) throws Exception {
         // 定义特征向量/数组
         int[] v = new int[hashbits];
-        // 英文分词
-        // StringTokenizer stringTokens = new StringTokenizer(this.tokens);
-        // while (stringTokens.hasMoreTokens()) {
-        // String temp = stringTokens.nextToken();
-        // }
-        // 1、中文分词，分词器采用 IKAnalyzer3.2.8 ，仅供演示使用，新版 API 已变化。
-
         for(String word:splitter.split(tokens)){
             // 注意停用词会被干掉
-            // System.out.println(word);
             // 2、将每一个分词hash为一组固定长度的数列.比如 64bit 的一个整数.
             BigInteger t = hash(word, hashbits);
             for (int i = 0; i < hashbits; i++) {
@@ -53,7 +67,6 @@ public class SimHash {
             }
         }
 
-//		BigInteger fingerprint = new BigInteger("0");
         StringBuilder simHashBuffer = new StringBuilder(16);
         for (int i = 0; i < hashbits; i+=4) {
             // 4、最后对数组进行判断,大于0的记为1,小于等于0的记为0,得到一个 64bit 的数字指纹/签名.
@@ -102,8 +115,8 @@ public class SimHash {
         } else {
             distance = 0;
             for (int i = 0; i < hash1.length(); i++) {
-                int v1=getHexValue(hash1.charAt(i));
-                int v2=getHexValue(hash2.charAt(i));
+                int v1=HEX_DE_INT[hash1.charAt(i)];
+                int v2=HEX_DE_INT[hash2.charAt(i)];
                 int dis=v1 ^ v2;
                 switch(dis){
                     case 0:
@@ -135,19 +148,6 @@ public class SimHash {
             }
         }
         return distance;
-    }
-
-    private static int getHexValue(char c) {
-        if(c<='9'){
-            return c-'0';
-        }
-        if(c<='F'){
-            return c-'A'+10;
-        }
-        if(c<='f'){
-            return c-'a'+10;
-        }
-        return 0;
     }
 
 }

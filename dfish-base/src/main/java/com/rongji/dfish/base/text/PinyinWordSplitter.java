@@ -108,11 +108,4 @@ public class PinyinWordSplitter implements WordSplitter{
 	}
 	
 
-	
-
-	public static void main(String[] args){
-		PinyinWordSplitter ws=new PinyinWordSplitter();
-		List<String> splited= ws.split("中共龙岩市委员会zhonggonglongyanshiweiyuanhui123sangangxianxi'an");
-		System.out.println(splited);
-	}
 }
