@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.mvc.filter;
 
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.util.JsonUtil;
+import com.rongji.dfish.misc.util.JsonUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

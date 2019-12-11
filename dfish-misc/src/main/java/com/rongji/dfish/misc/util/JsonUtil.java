@@ -1,6 +1,6 @@
-package com.rongji.dfish.framework.util;
+package com.rongji.dfish.misc.util;
 
-import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.misc.util.json.JsonBuilder;
 import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Fastjson;
 
@@ -14,7 +14,7 @@ public class JsonUtil {
 
     private static JsonBuilder jsonBuilder;
     static {
-        JsonBuilder jb = (JsonBuilder) FrameworkHelper.getBean("jsonBuilder");
+        JsonBuilder jb = (JsonBuilder) SystemContext.getInstance().get("jsonBuilder");
         if (jb != null) {
             jsonBuilder = jb;
         }
