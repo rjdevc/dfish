@@ -1,21 +1,20 @@
 package com.rongji.dfish.framework.config.impl;
 
+import com.rongji.dfish.base.cache.impl.MemoryCache;
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.info.ServletInfo;
-import com.rongji.dfish.misc.cache.SizeFixedCache;
 
 import java.io.File;
-import java.util.Map;
 
 public class DefaultPersonalConfig implements PersonalConfigHolder {
-    private static Map<String, String> propertiesPersonMap = new SizeFixedCache<String, String>(256);
+    private static MemoryCache<String, String> propsCache = new MemoryCache<String, String>();
 
     @Override
     public String getProperty(String userId, String argStr) {
         String tempStr = userId + "." + argStr;
-        synchronized (propertiesPersonMap) {
-            String value = propertiesPersonMap.get(tempStr);
+        synchronized (propsCache) {
+            String value = propsCache.get(tempStr);
             if (value != null) {
                 return value;
             }
@@ -27,8 +26,8 @@ public class DefaultPersonalConfig implements PersonalConfigHolder {
                     + "WEB-INF/config/person" + java.io.File.separator + userId + ".json"));
             String result = tool.getProperty(argStr);
             if (result != null && !"".equals(result)) {
-                synchronized (propertiesPersonMap) {
-                    propertiesPersonMap.put(tempStr, result);
+                synchronized (propsCache) {
+                    propsCache.put(tempStr, result);
                 }
                 return result;
             }
@@ -44,15 +43,15 @@ public class DefaultPersonalConfig implements PersonalConfigHolder {
     @Override
     public void setProperty(String userId, String argStr, String value) {
         String tempStr = userId + "." + argStr;
-        synchronized (propertiesPersonMap) {
+        synchronized (propsCache) {
 
-            if (propertiesPersonMap.containsKey(tempStr)) {
-                if ((value == null && propertiesPersonMap.get(tempStr) == null)
-                        || (value != null && value.equals(propertiesPersonMap.get(tempStr)))) {
+            if (propsCache.containsKey(tempStr)) {
+                if ((value == null && propsCache.get(tempStr) == null)
+                        || (value != null && value.equals(propsCache.get(tempStr)))) {
                     return;
                 }
             } // 如果相同就不要存了.
-            propertiesPersonMap.put(tempStr, value);
+            propsCache.put(tempStr, value);
         }
         // 如果文件不存在,则新建文件.
         @SuppressWarnings("deprecation")
@@ -67,7 +66,7 @@ public class DefaultPersonalConfig implements PersonalConfigHolder {
 
     @Override
     public void reset() {
-        propertiesPersonMap.clear();
+        propsCache.clear();
     }
 
 }
