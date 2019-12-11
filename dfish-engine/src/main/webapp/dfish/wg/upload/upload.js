@@ -1155,16 +1155,22 @@ AbsForm = require( 'abs/form' ),
 
 evw = $.abbr + '.w(this)',
 
+UploadPost = define.widget( 'upload/post', {
+	Extend: 'abs/src'
+}),
+
 BaseUpload = define.widget( 'upload/base', {
-	Const: function( x, p, n ) {
+	Const: function( x ) {
 		AbsForm.apply( this, arguments );
+		this.post = new UploadPost( x.post, this, -1 );
 		this.x = $.merge( {
 			file_types: '*.*',
 			file_types_description: 'All Files',
 			file_upload_limit: 0,
 			button_disabled: !!(x.status && x.status !== 'normal'),
 			flash_url: module.path + 'swfupload.swf',
-			flash9_url: module.path + 'swfupload_fp9.swf'
+			flash9_url: module.path + 'swfupload_fp9.swf',
+			upload_url: this.post.x.src
 		}, swfOptions( x ) );
 		var v = x.value || [];
 		if ( typeof v === 'string' )
@@ -1303,7 +1309,8 @@ BaseUpload = define.widget( 'upload/base', {
 			if ( ! r || W.isCmd( r ) || r.error ) {
 				this.uploadError( file, SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED, (r && r.error) || serverData );	
 			} else {
-				ldr.setSuccess( r );
+				this.post.srcData( r );
+				ldr.setSuccess( this.post.getResult() );
 			}
 		},
 		upload_complete_handler: function( file ) {
@@ -1728,7 +1735,7 @@ define.widget( 'upload/image/value', {
 				occupy: true,
 				method: function() {
 					if ( this.x.data ) {
-						if ( this.u.x.previewsrc ) {
+						if ( this.u.x.preview ) {
 							this.preview();
 						} else if ( this.u.x.downloadsrc ) {
 							this.download();
@@ -1747,8 +1754,10 @@ define.widget( 'upload/image/value', {
 			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
 		},
 		preview: function() {	
-			var v = this.u.x.previewsrc;
-			v && this.cmd( { type: 'ajax', src: this.formatStr( v, null, ! /^\$\w+$/.test( v ) ) } );
+			var c = this.u.x.preview;
+			if ( typeof c === 'string' )
+				c = { type: 'ajax', src: c };
+			c && (c.src = this.formatStr( c.src, null, ! /^\$\w+$/.test( c.src ) )) && this.cmd( c );
 		},
 		setProgress: function( a ) {
 			this.$( 'p' ).style.left = a + '%';
@@ -1934,7 +1943,7 @@ var suffix = (function() {
 	return r;
 })(),
 swfTranslate = {
-	uploadsrc: 'upload_url', uploadlimit: 'file_upload_limit', maxfilesize: 'file_size_limit', filetypes: 'file_types'
+	uploadlimit: 'file_upload_limit', maxfilesize: 'file_size_limit', filetypes: 'file_types'
 };
 function getSuffix( url ) {
 	var a = $.strFrom( url, '.', true ).toLowerCase();

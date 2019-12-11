@@ -419,6 +419,9 @@ Node = $.createClass( {
 		}
 	}
 } ),
+Error = $.createClass( {
+	Const: function( x ) { this.x = x }
+} ),
 
 _compileTemplate = function( g, d, s ) {
 	var t = new Template( s || g.x.template, d, g ), r = t.compile( t.template );
@@ -2089,8 +2092,8 @@ Scroll = define.widget( 'scroll', {
 					(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
 					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
 					'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
-					this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div><div id=' +
-					this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div>';
+					this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
+					this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
 			}
 		},
 		dispose: function() {
@@ -2099,8 +2102,182 @@ Scroll = define.widget( 'scroll', {
 		}
 	}
 } ),
-Error = $.createClass( {
-	Const: function( x ) { this.x = x }
+/* `abssrc` */
+AbsSrc = define.widget( 'abs/src', {
+	Const: function( x, p, n ) {
+		typeof x === _STR && (x = { src: x });
+		W.call( this, x, p, n );
+	},
+	Prototype: {
+		showLoading: $.rt(),
+		showLayout: $.rt(),
+		getSrc: function() {
+			var u = this._runtime_src; 
+			if ( ! u ) {
+				var t = this.x.template;
+				if ( t ) {
+					typeof t === _STR && (t = _getTemplate( t ));
+					t && t.src && (u = t.src);
+				}
+				!u && (u = this.attr( 'src' ));
+			}
+			u && this.x.args && (u = this.formatStr( u, this.x.args, T ));
+			return u;
+		},
+		getSrcFilter: function() {
+			var f = this.x.on && this.x.on.filter;
+			if ( f == N ) {
+				var t = this.x.template;
+				if ( t ) {
+					typeof t === _STR && (t = _getTemplate( t ));
+					t && this.isContentData( t ) && t.on && t.on.filter && (f = t.on.filter);
+				}
+			}
+			return f;
+		},
+		getResult: function() {
+			return this.x.template ? this.x.result : this.x.srcdata;
+		},
+		// @force: 强制刷新，不论是否在frame内
+		load: function( tar, fn, force ) {
+			if ( this.loading )
+				return;
+			this.showLoading();
+			var s = this.getSrc();
+			if ( force || this.isDisplay() ) {
+				this.loadData( tar, function( x ) {
+					if ( this.layout ) {
+						this.showLoading( F );
+						this.showLayout( tar );
+						fn && !(x instanceof Error) && fn.call( this, x );
+					} else if ( this.getSrc() && s != this.getSrc() ) {
+						this.reload( N, N, N, fn );
+					}
+				} );
+			}
+		},
+		loadData: function( tar, fn, cache ) {
+			this.abort();
+			this.loading = T;
+			var u, m, n, o, t = this.x.template, self = this,
+				d = this.type_view && _view_resources[ this.path ],
+				e = function() {
+					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
+				};
+			if ( t && typeof t === _STR ) {
+				t = _getTemplate( t );
+				o = T; e();
+			} else
+				o = T;
+			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
+			(u = this.getSrc()) ? this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
+				if ( this._success( x ) ) {
+					n = x; e();
+				}
+			}, error: function( a ) {
+				if ( this._error( a ) ) {
+					n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } );
+					e();
+				}
+			} } ) : (n = {}, e());
+			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
+		},
+		_success: function( x ) {
+			var t = this.x.template && _getTemplate( this.x.template ), s = this.x.success || (t && t.success);
+			s && this.formatJS( s, { '$response': x } );
+			if ( this._disposed ) return F;
+			s = this.x.complete || (t && t.complete);
+			s && this.formatJS( s, { '$response': x } );
+			if ( this._disposed ) return F;
+			return T;
+		},
+		_error: function( x ) {
+			var t = this.x.template && _getTemplate( this.x.template ), s = this.x.error || (t && t.error);
+			s && this.formatJS( s, { '$response': N } );
+			if ( this._disposed ) return F;
+			s = this.x.complete || (t && t.complete);
+			s && this.formatJS( s, { '$response': N } );
+			if ( this._disposed ) return F;
+			return T;
+		},
+		// @x -> data json
+		_loadEnd: function( d ) {
+			this.loading = F;
+			this.loaded = T;
+			if ( d ) {
+				var x;
+				if ( d instanceof Error ) {
+					x = this._loadError( d );
+				} else {
+					this.x.srcdata = d;
+					x = this.x.template ? _compileTemplate( this, d ) : this._loadFilter( d );
+				}
+				if ( x ) {
+					if ( x.type !== this.type && W.isCmd( x ) ) {
+						this.removeElem( 'loading' );
+						this.exec( x );
+					} else {
+						if ( this.x.preload ) {
+							x = _compilePreload( this.x.preload, x );
+						}
+						if ( x ) {
+							if ( x.type && x.type !== this.type )
+								x = { type: this.type, node: x };
+							this.attr( x );
+							this.init_nodes();
+						}
+					}
+				}
+			}
+		},
+		// 装载失败的处理
+		_loadError: function( d ) {
+			return { type: 'html', text: d.x.text };
+		},
+		// @x -> data json
+		_loadFilter: function( x ) {
+			return x;
+		},
+		srcData: function( x, tar ) {
+			if ( x ) {
+				this._loadEnd( x );
+				this.showLayout( tar );
+			}
+			return this.x.srcdata;
+		},
+		isContentData: function( x ) {
+			return x.type === this.type;
+		},
+		reload: function( src, tpl, tar, fn ) {
+			this._runtime_src = src;
+			src && (this.x.src = src);
+			tpl && (this.x.template = tpl);
+			this.reset( tar );
+			if ( this.$() ) {
+				var s = this.getSrc();
+				typeof s === _STR ? this.load( tar, fn, T ) : this.srcData( s || {}, tar );
+			} else {
+				this.show();
+				! this.loading && this.load( tar, fn, T );
+			}
+		},
+		template: function( tpl, tar, fn ) {
+			this.reload( N, tpl, tar, fn );
+		},
+		abort: function() {
+			$.ajaxAbort( this );
+		},
+		reset: function( tar ) {
+			this.abort();
+			this.loaded = this.loading = F;
+			if ( ! tar ) {
+				this.trigger( 'unload' );
+				this.empty();
+				this.layout = N;
+			}
+		}
+		
+	}
 } ),
 /* `xsrc`
  * 支持模板的widget实现顺序
@@ -2114,6 +2291,7 @@ Error = $.createClass( {
  * template 的JSON格式，即模板内容。
  */
 Xsrc = define.widget( 'xsrc', {
+	Extend: AbsSrc,
 	Listener: {
 		body: {
 			ready: function() {
@@ -2179,167 +2357,6 @@ Xsrc = define.widget( 'xsrc', {
 			}
 			! this.layout && this.isDisplay() && this.load();
 		},
-		srcData: function( a ) {
-			if ( a ) {
-				var b = _compileTemplate( this, a );
-				this.at();
-			}
-			return this.x.srcdata;
-		},
-		getSrc: function() {
-			var u = this._runtime_src; 
-			if ( ! u ) {
-				var t = this.x.template;
-				if ( t ) {
-					typeof t === _STR && (t = _getTemplate( t ));
-					t && t.src && (u = t.src);
-				}
-				!u && (u = this.attr( 'src' ));
-			}
-			u && this.x.args && (u = this.formatStr( u, this.x.args, T ));
-			return u;
-		},
-		getSrcFilter: function() {
-			var f = this.x.on && this.x.on.filter;
-			if ( f == N ) {
-				var t = this.x.template;
-				if ( t ) {
-					typeof t === _STR && (t = _getTemplate( t ));
-					t && this.isContentData( t ) && t.on && t.on.filter && (f = t.on.filter);
-				}
-			}
-			return f;
-		},
-		// @force: 强制刷新，不论是否在frame内
-		load: function( tar, fn, force ) {
-			if ( this.loading )
-				return;
-			this.showLoading();
-			var s = this.getSrc();
-			if ( force || this.isDisplay() ) {
-				this._load( tar, function( x ) {
-					if ( this.layout ) {
-						this.showLoading( F );
-						this.showLayout( tar );
-						fn && !(x instanceof Error) && fn.call( this, x );
-					} else if ( this.getSrc() && s != this.getSrc() ) {
-						this.reload( N, N, N, fn );
-					}
-				} );
-			}
-		},
-		_load: function( tar, fn, cache ) {
-			this.abort();
-			this.loading = T;
-			var u, m, n, o, t = this.x.template, self = this,
-				d = this.type_view && _view_resources[ this.path ],
-				e = function() {
-					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
-				};
-			if ( t && typeof t === _STR ) {
-				t = _getTemplate( t );
-				o = T; e();
-			} else
-				o = T;
-			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			(u = this.getSrc()) ? this.exec( { type: 'ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
-				if ( this._success( x ) ) {
-					n = x; e();
-				}
-			}, error: function( a ) {
-				if ( this._error( a ) ) {
-					n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } );
-					e();
-				}
-			} } ) : (n = {}, e());
-			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
-		},
-		_success: function( x ) {
-			var t = this.x.template && _getTemplate( this.x.template ), s = this.x.success || (t && t.success);
-			s && this.formatJS( s, { '$response': x } );
-			if ( this._disposed ) return F;
-			s = this.x.complete || (t && t.complete);
-			s && this.formatJS( s, { '$response': x } );
-			if ( this._disposed ) return F;
-			return T;
-		},
-		_error: function( x ) {
-			var t = this.x.template && _getTemplate( this.x.template ), s = this.x.error || (t && t.error);
-			s && this.formatJS( s, { '$response': N } );
-			if ( this._disposed ) return F;
-			s = this.x.complete || (t && t.complete);
-			s && this.formatJS( s, { '$response': N } );
-			if ( this._disposed ) return F;
-			return T;
-		},
-		// @x -> data json
-		_loadEnd: function( d ) {
-			this.loading = F;
-			if ( d ) {
-				var x;
-				if ( d instanceof Error ) {
-					x = { type: 'html', text: d.x.text };
-				} else {
-					this.x.srcdata = d;
-					x = this.x.template ? _compileTemplate( this, d ) : this._loadDataFilter( d );
-				}
-				if ( x.type !== this.type && W.isCmd( x ) ) {
-					this.removeElem( 'loading' );
-					this.exec( x );
-				} else {
-					if ( this.x.preload ) {
-						x = _compilePreload( this.x.preload, x );
-					}
-					if ( x ) {
-						if ( x.type && x.type !== this.type )
-							x = { type: this.type, node: x };
-						this.attr( x );
-						this.loaded = T;
-						this.init_nodes();
-					}
-				}
-			}
-		},
-		// 装载失败的处理
-		_loadError: function() {
-			//this.error = {};
-		},
-		reload: function( src, tpl, tar, fn ) {
-			this._runtime_src = src;
-			src && (this.x.src = src);
-			tpl && (this.x.template = tpl);
-			this.reset( tar );
-			if ( this.$() ) {
-				var s = this.getSrc();
-				typeof s === _STR ? this.load( tar, fn, T ) : this.loadData( s || {}, tar );
-			} else {
-				this.show();
-				! this.loading && this.load( tar, fn, T );
-			}
-		},
-		template: function( tpl, tar, fn ) {
-			this.reload( N, tpl, tar, fn );
-		},
-		loadData: function( x, tar ) {
-			this._loadEnd( x );
-			this.showLayout( tar );
-		},
-		isContentData: function( x ) {
-			return x.type === this.type;
-		},
-		reset: function( tar ) {
-			this.abort();
-			this.loaded = this.loading = F;
-			if ( ! tar ) {
-				this.trigger( 'unload' );
-				this.empty();
-				this.layout = N;
-			}
-		},
-		// @x -> data json
-		_loadDataFilter: function( x ) {
-			return x;
-		},
 		_getTargets: function( x, tar, r ) {
 			! r && (r = []);
 			if ( x.id && $.idsAny( tar, x.id ) )
@@ -2351,9 +2368,6 @@ Xsrc = define.widget( 'xsrc', {
 					this._getTargets( x.nodes[ i ], tar, r );
 			}
 			return r;
-		},
-		abort: function() {
-			$.ajaxAbort( this );
 		},
 		showLayout: function( tar ) {
 			if ( tar ) {
@@ -4281,14 +4295,11 @@ Dialog = define.widget( 'dialog', {
 			return $.dialog( this.ownerView );
 		},
 		// 兼容3.1的处理：dialog src如果返回view，则套一层node
-		_loadDataFilter: function( x ) {
+		_loadFilter: function( x ) {
 			return x.type === 'view' ? { type: this.type, node: x } : x;
 		},
 		isContentData: function( x ) {
 			return x.type === this.type || x.type === 'view';
-		},
-		_loadError: function() {
-			this.close();
 		},
 		_dft_pos: function() {
 			var w = this.width(), h = this.height();
@@ -4329,7 +4340,7 @@ Dialog = define.widget( 'dialog', {
 			return this;
 		},
 		preload: function( a ) {
-			this._load( F, a && $.proxy( this, a ), T );
+			this.loadData( F, a && $.proxy( this, a ), T );
 		},
 		//@public 移动到指定位置 /@a -> elem|widget, b -> snap option
 		snapTo: function( a, b ) {
@@ -4815,7 +4826,7 @@ Progress = define.widget( 'progress', {
 							d && d.close();
 						} else {
 							if( d && d.parentNode.isSrcLayout && d.parentNode.isContentData( x ) ) {
-								d.parentNode.loadData( x );
+								d.parentNode.srcData( x );
 								d.close();
 							} else {
 								o = ((d = x).id && this.ownerView.find( d.id )) || this;
@@ -7002,21 +7013,76 @@ Slider = define.widget( 'slider', {
 		}
 	}
 } ),
-/* `SliderJigsaw`
- * { type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
+/* `Jigsawimg` */
+JigsawImg = define.widget( 'jigsaw/img', {
+	Extend: AbsSrc,
+	Prototype: {
+		load: function( fn ) {
+			this.loadData( N, function( d ) {
+				var r = this.getResult(), p = this.parentNode;
+				p.loaded = T;
+				if ( d instanceof Error )
+					return;
+				if ( r.error ) {
+					p.lock( r );
+				} else {
+					r.minvalue != N && p.setValidate( { minvalue: r.minvalue } );
+					r.maxvalue != N && p.setValidate( { maxvalue: r.maxvalue } );
+					p.trigger( 'load' );
+					fn && fn.call( this );
+				}
+			} );
+		},
+		_loadError: function() {
+			this.parentNode.lock( { error: { msg: Loc.ps( Loc.server_error, 'error' ) } } );
+		}
+	}
+} ),
+/* `Jigsawauth` */
+JigsawAuth = define.widget( 'jigsaw/auth', {
+	Extend: AbsSrc,
+	Prototype: {
+		load: function( fn ) {
+			this.loadData( N, function() {
+				var x = this.getResult(), p = this.parentNode;
+				p.success( x && x.success );
+				p.valid();
+				if ( p.isSuccess() ) {
+					p.more && p.more.close();
+					p.addClass( 'z-success' );
+					Q( p.$( 'pht' ) ).html( p.html_info( x ) );
+					var t = Q( p.$( 'thumb' ) ), l = _number( t.css( 'left' ) ), w = p.more.innerWidth(),
+						f = l + (t.width() / 2) < (w / 2);
+					Q( p.$( 'ph' ) ).css( { left: f ? l + t.width() : 0, right: f ? 0 : w - l } );
+				} else {
+					if ( p.isNormal() )
+						p.reload( p.more.vis );
+					p.val( p.min() );
+					p.removeClass( 'z-on z-success' );
+				}
+				p.removeClass( 'z-drag z-on z-authing' );
+				$.classRemove( p.$( 'thumb' ), 'z-hv' );
+				p.trigger( 'auth' );
+			} );
+		}
+	}
+} ),
+/* `Jigsaw`
+ * { type: 'jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
  * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '', error: { timeout } }
  * @authsrc: { result: true, text: '' }
  */
-SliderJigsaw = define.widget( 'slider/jigsaw', {
-	Const: function() {
+Jigsaw = define.widget( 'jigsaw', {
+	Const: function( x ) {
 		Slider.apply( this, arguments );
-		this.jigsaw = this.add( { type: 'dialog', ownproperty: T, cls: 'w-slider-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
+		this.more = this.add( { type: 'dialog', ownproperty: T, cls: '.w-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
 			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
 			type: 'view', node: {
 				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
 			}
 		} }, -1 );
-		this.load();
+		(this.img = new JigsawImg( x.img, this, -1 )).load();
+		this.auth = new JigsawAuth( x.auth, this, -1 );
 	},
 	Extend: 'slider',
 	Default: {
@@ -7044,39 +7110,21 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			},
 			dragstart: function( e ) {
 				this.pop();
-				this.jigsaw.keepHover( T );
+				this.more.keepHover( T );
 			},
 			drag: function( e, v ) {
-				if ( this.jigsaw ) {
+				if ( this.more ) {
 					this.draging = T;
-					var a = Q( '._small', this.jigsaw.$() ), m = this.max(), n = this.min();
-					a.css( 'left', (this.jigsaw.innerWidth() - a.width()) * (v / (m - n)) );
+					var a = Q( '._small', this.more.$() ), m = this.max(), n = this.min();
+					a.css( 'left', (this.more.innerWidth() - a.width()) * (v / (m - n)) );
 				}
 			},
 			drop: function( e, v ) {
 				this.draging = F;
 				this.addClass( 'z-authing' );
-				this.cmd( { type: 'ajax', src: $.urlFormat( this.x.authsrc, { value: v, token: this.img.token } ), complete: function( r ) {
-					this.success( r && r.result );
-					this.valid();
-					if ( this.isSuccess() ) {
-						this.jigsaw && this.jigsaw.close();
-						this.addClass( 'z-success' );
-						Q( this.$( 'pht' ) ).html( this.html_info( r ) );
-						var t = Q( this.$( 'thumb' ) ), l = _number( t.css( 'left' ) ), w = this.jigsaw.innerWidth();
-							f = l + (t.width() / 2) < (w / 2);
-						Q( this.$( 'ph' ) ).css( { left: f ? l + t.width() : 0, right: f ? 0 : w - l } );
-					} else {
-						if ( this.isNormal() )
-							this.reload( this.jigsaw.vis );
-						this.val( this.min() );
-						this.removeClass( 'z-on z-success' );
-					}
-					this.removeClass( 'z-drag z-on z-authing' );
-					$.classRemove( this.$( 'thumb' ), 'z-hv' );
-					this.trigger( 'auth' );
-				} } );
-				this.jigsaw.keepHover( F );
+				this.auth.data( { value: v, token: this.img.getResult().token } );
+				this.auth.load();
+				this.more.keepHover( F );
 			},
 			resize: function() {
 				AbsForm.Listener.body.resize.apply( this, arguments );
@@ -7093,16 +7141,17 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		},
 		isModified: $.rt( F ),
 		validTip: function( t ) {
-			return { type: 'tip', text: t, snaptype: this.jigsaw ? 'rl,lr' : 'tb,bt' };
+			return { type: 'tip', text: t, snaptype: this.more ? 'rl,lr' : 'tb,bt' };
 		},
 		pop: function( a ) {
-			! this.jigsaw.vis && (a ? this.jigsaw.show() : this.jigsaw._show());
+			! this.more.vis && (a ? this.more.show() : this.more._show());
 		},
 		popWidth: function() {
 			return this.$( 'f' ).offsetWidth;
 		},
 		popHeight: function() {
-			return this.img ? Math.ceil( this.popWidth() * (this.img.big.height / this.img.big.width) ) : N;
+			var r = this.img && this.img.getResult();
+			return r ? Math.ceil( this.popWidth() * (r.big.height / r.big.width) ) : N;
 		},
 		success: function( a ) {
 			this.x.status = a ? 'success' : '';
@@ -7110,27 +7159,11 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		isSuccess: function( a ) {
 			return this.x.status === 'success';
 		},
-		load: function( fn ) {
-			this.cmd( { type: 'ajax', src: this.x.imgsrc, success: function( d ) {
-				if ( d.error ) {
-					this.lock( d );
-				} else {
-					this.img = d;
-					this.loaded = T;
-					d.minvalue != N && this.setValidate( { minvalue: d.minvalue } );
-					d.maxvalue != N && this.setValidate( { maxvalue: d.maxvalue } );
-					this.trigger( 'load' );
-					fn && fn.call( this );
-				}
-			}, error: function() {
-				this.lock( { msg: Loc.ps( Loc.server_error, 'error' ), error: T } );
-			} } );
-		},
 		reload: function( a ) {
 			this.loaded = F;
-			this.load( function() {
-				a && this.pop();
-				this.jigsaw.getContentView().find( 'img' ).repaint( T );
+			this.img.load( function() {
+				a && this.parentNode.pop();
+				this.parentNode.more.getContentView().find( 'img' ).repaint( T );
 			} );
 		},
 		reset: function() {
@@ -7145,7 +7178,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			this.addClass( 'z-err z-lock' );
 			Q( this.$( 'pht' ) ).html( this.html_info( d ) );
 			this.readonly();
-			this.jigsaw && this.jigsaw.close();
+			this.more && this.more.close();
 			var a = Math.abs( d.error.timeout || 0 ), self = this;
 			if ( a ) {
 				this._cntdn_inter = setInterval( function() {
@@ -7166,12 +7199,12 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			return 'w-input f-nv';
 		},
 		html_info: function( d ) {
-			return d && d.error ? '<var class=_err>' + (d.msg != N ? d.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs( d.error.timeout ) + '</em>)' : '') + '</var>' :
-					d && d.result ? '<var class=_ok>' + (d.msg != N ? d.msg : Loc.auth_success) + '</var>' : 
+			return d && d.error ? '<var class=_err>' + (d.error.msg != N ? d.error.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs( d.error.timeout ) + '</em>)' : '') + '</var>' :
+					d && d.success ? '<var class=_ok>' + (d.msg != N ? d.msg : Loc.auth_success) + '</var>' : 
 					(this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
-			var d = this.img;
+			var d = this.img.getResult();
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
 			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
