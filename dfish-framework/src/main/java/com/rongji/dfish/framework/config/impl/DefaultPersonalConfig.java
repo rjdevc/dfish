@@ -1,7 +1,8 @@
 package com.rongji.dfish.framework.config.impl;
 
-import com.rongji.dfish.framework.FrameworkContext;
+import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
+import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.misc.cache.SizeFixedCache;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class DefaultPersonalConfig implements PersonalConfigHolder {
         }
         try {
             @SuppressWarnings("deprecation")
-            JsonConfigHelper tool = new JsonConfigHelper(new File(FrameworkContext.getInstance().getServletInfo()
+            JsonConfigHelper tool = new JsonConfigHelper(new File(SystemContext.getInstance().get(ServletInfo.class)
                     .getServletRealPath()
                     + "WEB-INF/config/person" + java.io.File.separator + userId + ".json"));
             String result = tool.getProperty(argStr);
@@ -55,7 +56,7 @@ public class DefaultPersonalConfig implements PersonalConfigHolder {
         }
         // 如果文件不存在,则新建文件.
         @SuppressWarnings("deprecation")
-        String fileFullName = FrameworkContext.getInstance().getServletInfo().getServletRealPath()
+        String fileFullName = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath()
                 + "WEB-INF/config/person" + java.io.File.separator + userId + ".json";
         File f = new File(fileFullName);
         JsonConfigHelper tool;

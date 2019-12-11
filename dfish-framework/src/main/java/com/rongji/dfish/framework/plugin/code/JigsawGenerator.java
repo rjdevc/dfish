@@ -2,8 +2,9 @@ package com.rongji.dfish.framework.plugin.code;
 
 import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.util.FileUtil;
-import com.rongji.dfish.framework.FrameworkContext;
+import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawImg;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawResponse;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawResponseError;
@@ -286,7 +287,7 @@ public class JigsawGenerator {
      * @return
      */
     private String getImageRawDir() {
-        String realServletPath = FrameworkContext.getInstance().getServletInfo().getServletRealPath();
+        String realServletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
         if (!realServletPath.endsWith("/")) {
             realServletPath += "/";
         }
