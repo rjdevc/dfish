@@ -1136,10 +1136,10 @@ var swfobject = function(){var D="undefined",r="object",S="Shockwave Flash",W="S
 swfobject.addDomLoadEvent(function () {if (typeof(SWFUpload.onload) === "function") {SWFUpload.onload.call(window);}});
 
 /*
-   { type: 'upload/file', downloadsrc: "xxx", previewsrc: "xxx" }
-   如果只配置了 downloadsrc，点击文件都是下载。
-   如果同时配置 downloadsrc 和 previewsrc，downloadsrc无效，previewsrc有效。
-   如果只设置 previewsrc，返回命令做处置。
+   { type: 'upload/file', download: "xxx", preview: "xxx" }
+   如果只配置了 download，点击文件都是下载。
+   如果同时配置 download 和 preview，download 无效，preview 有效。
+   如果只设置 preview，返回命令做处置。
    如果需要特殊处理，比如doc文件要预览，那么设置 pub: { on: { click: "myFile.doSomething($id,$name);return false;" }
  */
 
@@ -1737,7 +1737,7 @@ define.widget( 'upload/image/value', {
 					if ( this.x.data ) {
 						if ( this.u.x.preview ) {
 							this.preview();
-						} else if ( this.u.x.downloadsrc ) {
+						} else if ( this.u.x.download ) {
 							this.download();
 						}
 					}
@@ -1750,14 +1750,15 @@ define.widget( 'upload/image/value', {
 		ROOT_TYPE: 'upload/image',
 		className: 'w-upload-value-image',
 		download: function() {
-			var s = this.u.x.downloadsrc;
+			var s = this.u.x.download;
 			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
 		},
 		preview: function() {	
 			var c = this.u.x.preview;
 			if ( typeof c === 'string' )
 				c = { type: 'ajax', src: c };
-			c && (c.src = this.formatStr( c.src, null, ! /^\$\w+$/.test( c.src ) )) && this.cmd( c );
+			c.src && (c.src = this.formatStr( c.src, null, ! /^\$\w+$/.test( c.src ) ));
+			this.cmd( c );
 		},
 		setProgress: function( a ) {
 			this.$( 'p' ).style.left = a + '%';
@@ -1811,7 +1812,7 @@ define.widget( 'upload/image/value', {
 			return (this.x.file ? '<div class="_ex f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' : '') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>';
 		},
 		html_nodes: function() {
-			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnailsrc,
+			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnail,
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
 			if ( ! f ) {
 				m = v.thumbnail;
