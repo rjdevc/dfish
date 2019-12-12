@@ -17,7 +17,10 @@ import java.util.zip.GZIPOutputStream;
  *
  * @author LInLW
  * @version 1.0
+ * @deprecated 现在主推流模式
+ * @see Cryptor
  */
+@Deprecated
 public abstract class StringCryptor {
   /**
    * 内码转化成字符串所用的方法

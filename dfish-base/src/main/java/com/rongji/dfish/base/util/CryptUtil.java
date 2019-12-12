@@ -7,6 +7,12 @@ import java.util.ArrayList;
 
 /**
  * 加解密常用的方法
+ * <p><strong>usage</strong><br/>
+ * Cryptor c= CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH,"password".getBytes())
+ * .present(CryptUtil.PRESENT_BASE32).build();
+ * String s=c.decrypt(src);
+ * </p>
+ *
  * @author DFish team
  *
  */

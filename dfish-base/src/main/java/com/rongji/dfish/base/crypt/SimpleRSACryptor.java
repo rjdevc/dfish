@@ -7,7 +7,9 @@ import java.math.BigInteger;
  *
  * @author LinLW
  * @version 1.0
+ * @deprecated 已过时。
  */
+@Deprecated
 public final class SimpleRSACryptor
     extends StringCryptor {
   private BigInteger modulus;

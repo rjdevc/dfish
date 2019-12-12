@@ -160,8 +160,11 @@ package com.rongji.dfish.base.crypt;
 </tr>
 </table>
  * @author LinLW
- *
+ * @deprecated 现在推荐流模式
+ * @see AbstractCryptor.Base32OutputStream
+ * @see AbstractCryptor.Base32InputStream
  */
+@Deprecated
 public class Base32 {
 	/* Crockford's Base32 */
 	

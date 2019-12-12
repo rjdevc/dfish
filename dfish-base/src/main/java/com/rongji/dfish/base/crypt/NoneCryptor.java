@@ -5,7 +5,9 @@ package com.rongji.dfish.base.crypt;
  *
  * @author LinLW
  * @version 5.0
+ * @deprecated 现在推荐流模式
  */
+@Deprecated
 public final class NoneCryptor extends StringCryptor {
 	 NoneCryptor(String encoding, int presentStyle){
 		super.encoding = encoding;

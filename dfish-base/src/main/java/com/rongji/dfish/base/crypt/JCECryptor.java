@@ -18,7 +18,9 @@ import java.security.Provider;
  *
  * @author 小邱提供
  * @version 1.1
+ * @deprecated 现在推荐流模式
  */
+@Deprecated
 public final class JCECryptor extends StringCryptor {
     private Cipher cipherE;
     private Cipher cipherD;

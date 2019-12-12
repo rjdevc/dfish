@@ -1,4 +1,4 @@
-package com.rongji.dfish.misc;
+package com.rongji.dfish.base;
 
 import java.util.HashMap;
 

@@ -16,8 +16,9 @@ import java.math.BigInteger;
  * 
  * @author xiaoyusong mail: xiaoyusong@etang.com msn:xiao_yu_song@hotmail.com
  * @since 2004-5-20
- * 
+ * @deprecated  已过时
  */
+@Deprecated
 public class RSACryptor2 {
 
 	/**

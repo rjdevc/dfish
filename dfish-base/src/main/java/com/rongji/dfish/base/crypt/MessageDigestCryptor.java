@@ -7,7 +7,9 @@ import java.security.MessageDigest;
  *
  * @author LinLW 参照itask原有加密做法
  * @version 5.0
+ * @deprecated 现在推荐流模式
  */
+@Deprecated
 public class MessageDigestCryptor
     extends StringCryptor {
   private String algorithms;

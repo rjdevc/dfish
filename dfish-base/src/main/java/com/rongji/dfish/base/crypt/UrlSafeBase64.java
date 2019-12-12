@@ -11,7 +11,11 @@ package com.rongji.dfish.base.crypt;
  *
  * @author LinLW
  * @version 1.0
+ * @deprecated 现在使用流模式
+ * @see AbstractCryptor.Base64UrlsafeOutputStream
+ * @see AbstractCryptor.Base64InputStream
  */
+@Deprecated
 public final class UrlSafeBase64 {
   static private byte[] decode = new byte[256];
   static private byte[] encode = new byte[64];

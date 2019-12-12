@@ -8,6 +8,9 @@ import com.rongji.dfish.base.crypt.sm.SM4_ECB_PKCS7_Cryptor;
  *
  * @author LinLW
  * @version 1.1
+ * @deprecated 现在推荐流模式
+ * @see com.rongji.dfish.base.util.CryptUtil
+ * @see AbstractCryptor
  */
 public class CryptFactory {
     /**

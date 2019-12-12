@@ -106,7 +106,11 @@ package com.rongji.dfish.base.crypt;
  *
  * @author Jeffrey Rodriguez
  * @version $Id: Base64.java,v 1.1 2014/05/03 08:20:33 009 Exp $
+ * @deprecated  现在推荐流模式
+ * @see AbstractCryptor.Base64InputStream
+ * @see AbstractCryptor.Base64OutputStream
  */
+@Deprecated
 public final class Base64 {
 	
   static private final int BASELENGTH = 255;

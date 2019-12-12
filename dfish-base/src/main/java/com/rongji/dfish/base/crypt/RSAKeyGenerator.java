@@ -13,7 +13,9 @@ import java.util.Random;
  *
  * @author not attributable
  * @version 1.0
+ * @deprecated 建议使用Provider 自带的KeyGenerator 这样更好控制位数
  */
+@Deprecated
 public final class RSAKeyGenerator {
   /**
    * 首先, 找出三个数, p, q, r,

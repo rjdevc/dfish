@@ -27,7 +27,9 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
  *
  * @author LinLW
  * @version 1.0
+ * @deprecated 现在都并入统一的JCE体系处理。因为这个BouncyCastleProvider 也是可以注册到JCE体系中去的。
  */
+@Deprecated
 public class RSACryptor4BC extends StringCryptor {
 	Provider PROVIDER = new org.bouncycastle.jce.provider.BouncyCastleProvider();
 
