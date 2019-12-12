@@ -3,7 +3,17 @@ define.template({
     commands: {
         'submit': {
             type: 'submit',
-            src: 'demo/submit'
+            src: 'demo/submit',
+            success: '$.alert("提交成功");'
+        },
+        'loading': {
+            type: 'loading',
+            node: {
+                type: 'progress',
+                src: 'demo/loading',
+                template: 'progress/multiple',
+                success: 'if($response.data.finish){$.close(this);$.alert("完成了!");}'
+            }
         }
     },
     node: {
@@ -21,7 +31,8 @@ define.template({
                             {
                                 type: 'buttonbar',
                                 nodes: [
-                                    {type: 'submitbutton', text: '提交', on: {click: 'this.cmd("submit")'}}
+                                    {type: 'submitbutton', text: '提交', on: {click: 'this.cmd("submit")'}},
+                                    {text: '进度条', on: {click: 'this.cmd("loading");'}}
                                 ]
                             },
                             {
@@ -38,6 +49,12 @@ define.template({
                                 type: 'ueditor',
                                 name: 'lobContent',
                                 label: {text: '测试文本'}
+                            },
+                            {
+                                colspan: 4, node: {
+                                    type: 'jigsaw',
+                                    label: {text: '验证码'}
+                                }
                             }
                         ]
                     },

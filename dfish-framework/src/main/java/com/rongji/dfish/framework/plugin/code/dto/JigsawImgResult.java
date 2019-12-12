@@ -6,17 +6,17 @@ import java.io.Serializable;
  * @author lamontYu
  * @create 2019-12-10
  */
-public class JigsawResponse implements Serializable {
+public class JigsawImgResult implements Serializable {
     private static final long serialVersionUID = -2076497536245307557L;
 
     /**
      * 大图片
      */
-    private JigsawImg big;
+    private JigsawImgItem big;
     /**
      * 小图片
      */
-    private JigsawImg small;
+    private JigsawImgItem small;
     /**
      * 最小值
      */
@@ -26,22 +26,22 @@ public class JigsawResponse implements Serializable {
      */
     private Number maxvalue;
 
-    private JigsawResponseError error;
+    private JigsawImgResultError error;
 
-    public JigsawImg getBig() {
+    public JigsawImgItem getBig() {
         return big;
     }
 
-    public JigsawResponse setBig(JigsawImg big) {
+    public JigsawImgResult setBig(JigsawImgItem big) {
         this.big = big;
         return this;
     }
 
-    public JigsawImg getSmall() {
+    public JigsawImgItem getSmall() {
         return small;
     }
 
-    public JigsawResponse setSmall(JigsawImg small) {
+    public JigsawImgResult setSmall(JigsawImgItem small) {
         this.small = small;
         return this;
     }
@@ -50,7 +50,7 @@ public class JigsawResponse implements Serializable {
         return minvalue;
     }
 
-    public JigsawResponse setMinvalue(Number minvalue) {
+    public JigsawImgResult setMinvalue(Number minvalue) {
         this.minvalue = minvalue;
         return this;
     }
@@ -59,16 +59,16 @@ public class JigsawResponse implements Serializable {
         return maxvalue;
     }
 
-    public JigsawResponse setMaxvalue(Number maxvalue) {
+    public JigsawImgResult setMaxvalue(Number maxvalue) {
         this.maxvalue = maxvalue;
         return this;
     }
 
-    public JigsawResponseError getError() {
+    public JigsawImgResultError getError() {
         return error;
     }
 
-    public JigsawResponse setError(JigsawResponseError error) {
+    public JigsawImgResult setError(JigsawImgResultError error) {
         this.error = error;
         return this;
     }

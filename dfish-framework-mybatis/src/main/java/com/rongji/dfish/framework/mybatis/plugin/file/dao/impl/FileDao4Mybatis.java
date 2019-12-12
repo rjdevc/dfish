@@ -15,16 +15,18 @@ import java.util.*;
 public interface FileDao4Mybatis extends FrameworkDao4Mybatis<PubFileRecord, String>, FileDao {
 
     @Override
-    int updateFileLinks(@Param("fileIds") List<String> fileIds, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey, @Param("updateTime") Date updateTime);
+    int updateFileLink(@Param("fileId") String fileId, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey,
+                       @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
 
     @Override
-    int updateFileStatusByLink(@Param("fileLink") String fileLink, @Param("fileKey") String fileKey, @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
-
-    @Override
-    int updateFileLink(@Param("fileId") String fileId, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey, @Param("updateTime") Date updateTime);
+    int updateFileLinks(@Param("fileIds") List<String> fileIds, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey,
+                        @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
 
     @Override
     int updateFileStatus(@Param("fileIds") Collection<String> fileIds, @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
+
+    @Override
+    int updateFileStatusByLink(@Param("fileLink") String fileLink, @Param("fileKey") String fileKey, @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
 
     @Override
     List<PubFileRecord> listByLink(@Param("fileLink") String fileLink, @Param("fileKeys") Collection<String> fileKeys, @Param("fileStatus") String[] fileStatus);

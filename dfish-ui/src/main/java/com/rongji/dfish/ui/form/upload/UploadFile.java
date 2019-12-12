@@ -1,10 +1,9 @@
-package com.rongji.dfish.ui.form;
+package com.rongji.dfish.ui.form.upload;
 
 /**
  * 上传附件。
  * @author DFish Team
- * @param <T> 类型
- *
+ * @create 2018-08-03 before
  */
 public class UploadFile extends AbstractUpload<UploadFile> {
 

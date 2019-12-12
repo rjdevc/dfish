@@ -6,33 +6,33 @@ import java.io.Serializable;
  * @author lamontYu
  * @create 2019-12-10
  */
-public class JigsawCheckResult implements Serializable {
+public class JigsawAuthResult implements Serializable {
     private static final long serialVersionUID = -2543015857399605124L;
 
     /**
      * 校验结果
      */
-    private boolean result;
+    private boolean success;
     /**
      * 校验信息
      */
     private String msg;
 
-    public JigsawCheckResult(boolean result) {
-        this.result = result;
+    public JigsawAuthResult(boolean success) {
+        this.success = success;
     }
 
-    public JigsawCheckResult(boolean result, String msg) {
-        this.result = result;
+    public JigsawAuthResult(boolean success, String msg) {
+        this.success = success;
         this.msg = msg;
     }
 
-    public boolean isResult() {
-        return result;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public JigsawCheckResult setResult(boolean result) {
-        this.result = result;
+    public JigsawAuthResult setSuccess(boolean success) {
+        this.success = success;
         return this;
     }
 
@@ -40,7 +40,7 @@ public class JigsawCheckResult implements Serializable {
         return msg;
     }
 
-    public JigsawCheckResult setMsg(String msg) {
+    public JigsawAuthResult setMsg(String msg) {
         this.msg = msg;
         return this;
     }

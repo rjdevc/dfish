@@ -474,12 +474,12 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
 
     @Override
     public int updateFileLink(String fileId, String fileLink, String fileKey) {
-        return getDao().updateFileLink(fileId, fileLink, fileKey, new Date());
+        return getDao().updateFileLink(fileId, fileLink, fileKey, STATUS_LINKED, new Date());
     }
 
     @Override
     public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey) {
-        return getDao().updateFileLinks(fileIds, fileLink, fileKey, new Date());
+        return getDao().updateFileLinks(fileIds, fileLink, fileKey, STATUS_LINKED, new Date());
 //        if (Utils.isEmpty(itemList) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
 //            return 0;
 //        }

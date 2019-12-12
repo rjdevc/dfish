@@ -89,8 +89,8 @@ public class BaseActionController extends MultiActionController {
             return;
         }
         // 时间类型特殊处理
-        Convertor adptor = getConvertor(obj.getClass());
-        adptor.bind(request, obj);
+        Convertor convertor = getConvertor(obj.getClass());
+        convertor.bind(request, obj);
     }
 
     protected Convertor getConvertor(Class<?> clz) {

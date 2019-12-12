@@ -1162,7 +1162,7 @@ UploadPost = define.widget( 'upload/post', {
 BaseUpload = define.widget( 'upload/base', {
 	Const: function( x ) {
 		AbsForm.apply( this, arguments );
-		this.post = new UploadPost( x.post, this, -1 );
+		x.post && (this.post = new UploadPost( x.post, this, -1 ));
 		this.x = $.merge( {
 			file_types: '*.*',
 			file_types_description: 'All Files',
@@ -1170,7 +1170,7 @@ BaseUpload = define.widget( 'upload/base', {
 			button_disabled: !!(x.status && x.status !== 'normal'),
 			flash_url: module.path + 'swfupload.swf',
 			flash9_url: module.path + 'swfupload_fp9.swf',
-			upload_url: this.post.x.src
+			upload_url: this.post && this.post.x.src
 		}, swfOptions( x ) );
 		var v = x.value || [];
 		if ( typeof v === 'string' )

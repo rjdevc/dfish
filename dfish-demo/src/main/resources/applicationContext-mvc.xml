@@ -41,7 +41,14 @@
     <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
     <mvc:default-servlet-handler/>
 
-	<!-- 附件模块 -->
+	<!-- 附件 -->
 	<bean class="com.rongji.dfish.framework.plugin.file.controller.FileController"></bean>
+    <!-- 拖动验证码 -->
+    <bean class="com.rongji.dfish.framework.plugin.code.controller.JigsawController"></bean>
+    <!-- 进度条 -->
+    <bean class="com.rongji.dfish.framework.plugin.progress.ProgressController"></bean>
+    <bean id="progressManager" class="com.rongji.dfish.framework.plugin.progress.ProgressManager">
+        <property name="cryptor" ref="cryptor"></property>
+    </bean>
 
 </beans>

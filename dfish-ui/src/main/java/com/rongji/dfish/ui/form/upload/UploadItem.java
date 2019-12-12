@@ -1,6 +1,5 @@
-package com.rongji.dfish.ui.form;
+package com.rongji.dfish.ui.form.upload;
 
-import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
 

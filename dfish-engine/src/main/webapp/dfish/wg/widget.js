@@ -1,9 +1,9 @@
 /*!
- * widget.js v3.2
- * (c) 2015-2018 Mingyuan Chen
+ * widget.js v3.3
+ * (c) 2017-2019 Mingyuan Chen
  * Released under the MIT License.
  */
-// firefox下需要调用arguments.callee，因此无法使用'use strict'
+// firefox调用arguments.callee会报错，因此目前还无法使用'use strict'
 //'use strict';
 var U, N = null, F = false, T = true, O = {}, _STR = 'string', _FUN = 'function', _OBJ = 'object', _NUM = 'number', _BOL = 'boolean',
 $   = require( 'dfish' ),
@@ -4809,7 +4809,7 @@ Progress = define.widget( 'progress', {
 			this.reload( N, t );
 		},
 		request: function() {
-			var x = this.x, s = this.getSrc(), self = this;
+			var _x = this.x._x || $.extend( {}, this.x ), s = this.getSrc(), self = this;
 			s && (this._timer = setTimeout( function() {
 				// 相同 src 的实例，只让第一个去请求ajax
 				if ( ! self._disposed && self.isHead() ) {
@@ -4829,15 +4829,19 @@ Progress = define.widget( 'progress', {
 								d.parentNode.srcData( x );
 								d.close();
 							} else {
+								for ( var k in _x ) {
+									if ( k !== 'nodes' && k !== 'data' ) x[ k ] = _x[ k ];
+								}
 								o = ((d = x).id && this.ownerView.find( d.id )) || this;
-								o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
+								d._x = _x;
+								var e = o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
 							}
 						}
 					}, error: function( a ) {
 						this._error( a );
 					} } );
 				}
-			}, x.delay ));
+			}, self.x.delay ));
 		},
 		isHead: function() {
 			return _progressCache[ this.getSrc() ][ 0 ] === this;
@@ -6953,8 +6957,11 @@ Slider = define.widget( 'slider', {
 		hout: function( a, b ) {
 			this.isNormal() && ! a.contains( b.toElement ) && $.classRemove( a, 'z-hv' );
 		},
+		usa: function() {
+			return this.isNormal();
+		},
 		dragstart: function( a, b ) {
-			if ( ! this.isNormal() )
+			if ( ! this.usa() )
 				return;
 			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), v = this.$v().value, 
 				g = this.thumbWidth(), w = this.formWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
@@ -7080,9 +7087,9 @@ Jigsaw = define.widget( 'jigsaw', {
 			type: 'view', node: {
 				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
 			}
-		} }, -1 );
-		(this.img = new JigsawImg( x.img, this, -1 )).load();
-		this.auth = new JigsawAuth( x.auth, this, -1 );
+		}, on: { resize: 'this.parentNode.fixImg()' } }, -1 );
+		x.img && (this.img = new JigsawImg( x.img, this, -1 )).load();
+		x.auth && (this.auth = new JigsawAuth( x.auth, this, -1 ));
 	},
 	Extend: 'slider',
 	Default: {
@@ -7094,7 +7101,7 @@ Jigsaw = define.widget( 'jigsaw', {
 			mouseover: {
 				occupy: T,
 				method: function() {
-					if ( ! this.isNormal() ) return;
+					if ( ! this.usa() ) return;
 					if ( this.loaded ) {
 						this.pop( T );
 					} else
@@ -7104,7 +7111,7 @@ Jigsaw = define.widget( 'jigsaw', {
 			mouseout: {
 				occupy: T,
 				method: function() {
-					if ( ! this.isNormal() ) return;
+					if ( ! this.usa() ) return;
 					this.removeEvent( 'load.mouseover' );
 				}
 			},
@@ -7120,6 +7127,8 @@ Jigsaw = define.widget( 'jigsaw', {
 				}
 			},
 			drop: function( e, v ) {
+				if ( ! this.usa() ) return;
+				if ( ! this.auth ) { this.reset(); return; }
 				this.draging = F;
 				this.addClass( 'z-authing' );
 				this.auth.data( { value: v, token: this.img.getResult().token } );
@@ -7143,6 +7152,9 @@ Jigsaw = define.widget( 'jigsaw', {
 		validTip: function( t ) {
 			return { type: 'tip', text: t, snaptype: this.more ? 'rl,lr' : 'tb,bt' };
 		},
+		usa: function() {
+			return this.img && this.isNormal();
+		},
 		pop: function( a ) {
 			! this.more.vis && (a ? this.more.show() : this.more._show());
 		},
@@ -7152,6 +7164,14 @@ Jigsaw = define.widget( 'jigsaw', {
 		popHeight: function() {
 			var r = this.img && this.img.getResult();
 			return r ? Math.ceil( this.popWidth() * (r.big.height / r.big.width) ) : N;
+		},
+		fixImg: function() {
+			if ( this.more && this.more.$() ) {
+				var r = this.img && this.img.getResult(),
+					h = this.popHeight(),
+					w = h * (r.small.width / r.small.height);
+				Q( '._small', this.more.$() ).width( w );
+			}
 		},
 		success: function( a ) {
 			this.x.status = a ? 'success' : '';
@@ -7164,6 +7184,7 @@ Jigsaw = define.widget( 'jigsaw', {
 			this.img.load( function() {
 				a && this.parentNode.pop();
 				this.parentNode.more.getContentView().find( 'img' ).repaint( T );
+				this.parentNode.fixImg();
 			} );
 		},
 		reset: function() {
@@ -7207,7 +7228,7 @@ Jigsaw = define.widget( 'jigsaw', {
 			var d = this.img.getResult();
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
-			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
+			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% height=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
 				' height=100% onmousedown=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {

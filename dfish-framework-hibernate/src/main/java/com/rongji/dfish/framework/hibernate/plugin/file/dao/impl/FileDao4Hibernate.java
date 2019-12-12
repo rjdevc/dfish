@@ -33,7 +33,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
     }
 
     @Override
-    public int updateFileLink(String fileId, String fileLink, String fileKey, Date updateTime) {
+    public int updateFileLink(String fileId, String fileLink, String fileKey, String fileStatus, Date updateTime) {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
             return 0;
         }
@@ -46,22 +46,37 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
             hql.append(",t.fileKey=?");
             args.add(fileKey);
         }
+        if (Utils.notEmpty(fileStatus)) {
+            hql.append(",t.fileStatus=?");
+            args.add(fileStatus);
+        }
         hql.append(" WHERE t.fileId=?");
         args.add(fileId);
         return bulkUpdate(hql.toString(), args.toArray());
     }
 
     @Override
-    public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey, Date updateTime) {
+    public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey, String fileStatus, Date updateTime) {
         if (Utils.isEmpty(fileIds) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             return 0;
         }
+        StringBuilder hql = new StringBuilder();
         List<Object> args = new ArrayList<>();
+
+        hql.append("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=?");
         args.add(fileLink);
         args.add(fileKey);
         args.add(updateTime);
+
+        if (Utils.notEmpty(fileStatus)) {
+            hql.append(",t.fileStatus=?");
+            args.add(fileStatus);
+        }
+        hql.append(" WHERE t.fileId IN(");
+        appendParamStr(hql, fileIds.size());
+        hql.append(')');
         args.addAll(fileIds);
-        return bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(fileIds.size()) + ")", args.toArray());
+        return bulkUpdate(hql.toString(), args.toArray());
     }
 
     @Override

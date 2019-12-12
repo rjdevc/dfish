@@ -1,9 +1,10 @@
 package com.rongji.dfish.framework.plugin.code.controller;
 
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
+import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawCheckResult;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawResponse;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawAuthResult;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,15 +29,15 @@ public class JigsawController extends BaseActionController {
     @RequestMapping("/img")
     @ResponseBody
     public Object img(HttpServletRequest request) throws Exception {
-        JigsawResponse response = getJigsawGenerator().generatorJigsaw(request);
-        return response;
+        JigsawImgResult response = getJigsawGenerator().generatorJigsaw(request);
+        return new JsonResponse<>(response);
     }
 
     @RequestMapping("/auth")
     @ResponseBody
     public Object auth(HttpServletRequest request) {
         boolean result = getJigsawGenerator().checkJigsawOffset(request, request.getParameter("offset"));
-        return new JigsawCheckResult(result);
+        return new JsonResponse<>(new JigsawAuthResult(result));
     }
 
 }
