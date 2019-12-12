@@ -4809,7 +4809,7 @@ Progress = define.widget( 'progress', {
 			this.reload( N, t );
 		},
 		request: function() {
-			var _x = this.x._x || $.extend( {}, this.x ), s = this.getSrc(), self = this;
+			var x = this.x, s = this.getSrc(), self = this;
 			s && (this._timer = setTimeout( function() {
 				// 相同 src 的实例，只让第一个去请求ajax
 				if ( ! self._disposed && self.isHead() ) {
@@ -4829,19 +4829,15 @@ Progress = define.widget( 'progress', {
 								d.parentNode.srcData( x );
 								d.close();
 							} else {
-								for ( var k in _x ) {
-									if ( k !== 'nodes' && k !== 'data' ) x[ k ] = _x[ k ];
-								}
 								o = ((d = x).id && this.ownerView.find( d.id )) || this;
-								d._x = _x;
-								var e = o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
+								o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
 							}
 						}
 					}, error: function( a ) {
 						this._error( a );
 					} } );
 				}
-			}, self.x.delay ));
+			}, x.delay ));
 		},
 		isHead: function() {
 			return _progressCache[ this.getSrc() ][ 0 ] === this;
