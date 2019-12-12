@@ -1,6 +1,6 @@
 /*!
- * dfish.js v3
- * (c) 2015-2018 Mingyuan Chen
+ * dfish.js v3.3
+ * (c) 2017-2019 Mingyuan Chen
  * Released under the MIT License.
  */
 
