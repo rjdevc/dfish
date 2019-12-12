@@ -3,9 +3,8 @@ package com.rongji.dfish.base.util;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -398,5 +397,134 @@ public class ImageUtil {
             return sample;
         }
     }
+
+    public static class ImageOperation {
+        //FIXME 等比例缩放后，补白(透明)
+        //FIXME 文字水印 //图片水印
+        //FIXME 剪切
+        //FIXME 快速获得图片的大小（不启动BufferedImage）
+        private InputStream source;
+        private List<ImageCallBack> works;
+        private boolean sourceRead=false;
+        private String realType;
+
+        public ImageOperation(InputStream source){
+            this.source=source;
+            works=new ArrayList<>();
+        }
+
+        /**
+         * 缩放到
+         * @param width
+         * @param height
+         * @return
+         */
+        public ImageOperation resize(int width, int height)  {
+           return executeWorks(new ResizeCallBack(width,height));
+        }
+
+        /**
+         * 等比例缩放到不大于指定高宽
+         * @param width
+         * @param height
+         * @return
+         */
+        public ImageOperation zoomNotBiggerThan(int width, int height)  {
+            return executeWorks((image, oper)->{
+                double widthScale = new Double(width) / image.getWidth();
+                double heightScale = new Double(height) / image.getHeight();
+                if(widthScale>=1.0 && heightScale>=1.0){
+                    return image; //无需缩放
+                }
+                double rate=Math.min(widthScale,heightScale);
+                int fixedWidth=(int)(image.getWidth() *rate+0.5);
+                int fixedHeight=(int)(image.getHeight() *rate+0.5);
+                return new ResizeCallBack(fixedWidth,fixedHeight).execute(image,oper);
+            });
+        }
+
+        /**
+         * 等比例缩放到不小于高宽
+         * @param width
+         * @param height
+         * @return
+         */
+        public ImageOperation zoomNotSmallThan(int width, int height)  {
+            return executeWorks((image, oper)->{
+                double widthScale = new Double(width) / image.getWidth();
+                double heightScale = new Double(height) / image.getHeight();
+                if(widthScale<=1.0 && heightScale<=1.0){
+                    return image; //无需缩放
+                }
+                double rate=Math.max(widthScale,heightScale);
+                int fixedWidth=(int)(image.getWidth() *rate+0.5);
+                int fixedHeight=(int)(image.getHeight() *rate+0.5);
+                return new ResizeCallBack(fixedWidth,fixedHeight).execute(image,oper);
+            });
+        }
+
+        public ImageOperation executeWorks(ImageCallBack callBack)  {
+            works.add(callBack);
+            return this;
+        }
+        public void saveAs(OutputStream target) throws Exception {
+            saveAs(target,this.realType);
+        }
+        public void saveAs(OutputStream target,String imageType) throws Exception {
+            works.add((image, oper)->{
+                ImageIO.write(image, imageType, target);
+                return image;
+            });
+            executeWorks();
+        }
+        protected void executeWorks()throws Exception{
+            if(sourceRead&&!source.markSupported()){
+                throw new UnsupportedOperationException(
+                        "同一个ImputStream只能执行一次操作。如果需要重复执行，需要InputStream 可以被重置(markSupported=true)。" +
+                        "ByteArrayInputStream 就是一种。或者你可以重新创建一个操作。");
+            }
+            //read imag
+            ImageTypeDeligate itd = new ImageTypeDeligate(source);
+            BufferedImage image = ImageIO.read(itd);
+            sourceRead=true;
+            this.realType=itd.getImageTypeName();
+            for(ImageCallBack callBack:works){
+                image =callBack.execute(image,this);
+            }
+        }
+    }
+    public static class ResizeCallBack implements ImageCallBack{
+        int width;
+        int height;
+        public ResizeCallBack(int width, int height){
+            this .width=width;
+            this.height=height;
+        }
+        @Override
+        public BufferedImage execute(BufferedImage image, ImageOperation operation) throws Exception {
+            BufferedImage destImage = new BufferedImage(width, height, image.getType());
+            // 获取画笔工具
+            Graphics g = destImage.getGraphics();
+            g.drawImage(image, 0, 0, width, height, null);
+            g.dispose();
+            return destImage;
+        }
+    }
+    public interface ImageCallBack{
+        BufferedImage execute(BufferedImage image,ImageOperation operation) throws Exception;
+    }
+//    public static void main(String[] args) throws IOException {
+//        long begin=System.currentTimeMillis();
+//        BufferedImage rawImage = ImageIO.read(new FileInputStream("E:\\王芳照片\\北大毕业_20191119123107.jpg"));
+//        showTime("after readImage",begin);
+//        Graphics g=rawImage.getGraphics();
+//        showTime("after getGraphics",begin);
+//
+//    }
+//
+//    private static void showTime(String msg,long begin) {
+//        long cost=System.currentTimeMillis()-begin;
+//        System.out.println(cost+"ms: "+msg);
+//    }
 
 }
