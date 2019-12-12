@@ -1,5 +1,7 @@
 package com.rongji.dfish.misc.util;
 
+import com.rongji.dfish.base.util.ImageUtil;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;

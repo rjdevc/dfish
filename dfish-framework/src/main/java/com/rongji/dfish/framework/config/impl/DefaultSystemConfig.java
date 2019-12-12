@@ -2,7 +2,7 @@ package com.rongji.dfish.framework.config.impl;
 
 import java.io.File;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.impl.MemoryCache;
 import com.rongji.dfish.base.context.SystemContext;

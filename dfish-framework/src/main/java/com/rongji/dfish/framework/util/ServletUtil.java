@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.util;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;

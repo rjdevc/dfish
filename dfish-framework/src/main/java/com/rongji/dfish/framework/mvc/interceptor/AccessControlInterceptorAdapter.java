@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.mvc.interceptor;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

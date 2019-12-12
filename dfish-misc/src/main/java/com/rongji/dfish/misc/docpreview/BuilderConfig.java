@@ -1,6 +1,6 @@
 package com.rongji.dfish.misc.docpreview;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 
 public class BuilderConfig {
     private String fileRootPath="./";

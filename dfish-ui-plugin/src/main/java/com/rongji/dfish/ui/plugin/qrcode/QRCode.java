@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.plugin.qrcode;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.AbstractWidgetWrapper;
 import com.rongji.dfish.ui.widget.Img;
 

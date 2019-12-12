@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.plugin.file.service.impl;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
@@ -8,7 +8,6 @@ import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;

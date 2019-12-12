@@ -1,12 +1,10 @@
 package com.rongji.dfish.framework.dao.impl;
 
 import com.rongji.dfish.base.Pagination;
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.info.DataBaseInfo;
 import com.rongji.dfish.framework.dao.FrameworkDao;
-import com.rongji.dfish.framework.dto.RequestParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 

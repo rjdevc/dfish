@@ -6,7 +6,7 @@
     <name>dfish</name>
     <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.3.0.20-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://dfish.rongji.com</url>
@@ -95,6 +95,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.rongji.dfish</groupId>
+                <artifactId>dfish-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-base</artifactId>

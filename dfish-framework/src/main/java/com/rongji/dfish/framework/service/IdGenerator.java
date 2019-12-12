@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.info.EthNetInfo;
 import com.rongji.dfish.framework.info.ServletInfo;

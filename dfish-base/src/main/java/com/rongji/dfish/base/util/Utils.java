@@ -1,4 +1,4 @@
-package com.rongji.dfish.base;
+package com.rongji.dfish.base.util;
 
 import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.base.util.StringUtil;

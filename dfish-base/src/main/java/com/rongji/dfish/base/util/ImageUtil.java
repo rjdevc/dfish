@@ -1,6 +1,4 @@
-package com.rongji.dfish.misc.util;
-
-import com.rongji.dfish.base.Utils;
+package com.rongji.dfish.base.util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -8,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**

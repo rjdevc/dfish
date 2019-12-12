@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.plugin.lob.service.impl;
 
 import com.rongji.dfish.base.exception.MarkedException;
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 import com.rongji.dfish.framework.plugin.lob.service.LobService;

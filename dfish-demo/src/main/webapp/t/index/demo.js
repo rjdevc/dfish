@@ -51,7 +51,7 @@ define.template({
                                 label: {text: '测试文本'}
                             },
                             {
-                                colspan: 4, node: {
+                                colspan: -1, node: {
                                     type: 'jigsaw',
                                     label: {text: '验证码'}
                                 }

@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.layout.grid;
 
 import java.beans.Transient;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.Checkbox;

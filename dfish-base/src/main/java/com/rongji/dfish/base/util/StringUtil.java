@@ -1,17 +1,14 @@
 package com.rongji.dfish.base.util;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.rongji.dfish.base.text.TrieTree;
-import com.rongji.dfish.base.Utils;
 
 /**
  * 字符串的一些通用方法。

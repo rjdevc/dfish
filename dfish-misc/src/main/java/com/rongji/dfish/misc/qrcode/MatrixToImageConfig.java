@@ -16,7 +16,7 @@
 
 package com.rongji.dfish.misc.qrcode;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 
 import java.awt.image.BufferedImage;
 

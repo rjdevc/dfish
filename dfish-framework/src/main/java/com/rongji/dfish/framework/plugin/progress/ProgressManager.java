@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.plugin.progress;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.impl.MemoryCache;
 import com.rongji.dfish.base.crypt.Cryptor;

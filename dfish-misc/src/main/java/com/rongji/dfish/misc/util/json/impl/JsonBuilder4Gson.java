@@ -1,7 +1,7 @@
 package com.rongji.dfish.misc.util.json.impl;
 
 import com.google.gson.*;
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

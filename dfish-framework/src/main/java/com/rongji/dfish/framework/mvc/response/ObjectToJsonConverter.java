@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.mvc.response;
 
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.misc.util.JsonUtil;
+import com.rongji.dfish.base.util.JsonUtil;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;

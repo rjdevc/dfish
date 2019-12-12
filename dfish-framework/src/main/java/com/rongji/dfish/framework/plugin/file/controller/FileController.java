@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.plugin.file.controller;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.util.FileUtil;
@@ -20,7 +20,7 @@ import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.util.ServletUtil;
-import com.rongji.dfish.misc.util.ImageUtil;
+import com.rongji.dfish.base.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

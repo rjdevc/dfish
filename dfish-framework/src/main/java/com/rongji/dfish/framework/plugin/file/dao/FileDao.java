@@ -1,10 +1,8 @@
 package com.rongji.dfish.framework.plugin.file.dao;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.dao.FrameworkDao;
-import com.rongji.dfish.framework.plugin.file.dto.FileQueryParam;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
-import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 
 import java.util.*;
 

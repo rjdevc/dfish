@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.config;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.config.impl.DefaultPropertyCryptor;
 import org.springframework.beans.BeansException;

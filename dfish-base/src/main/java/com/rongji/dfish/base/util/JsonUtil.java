@@ -1,8 +1,8 @@
-package com.rongji.dfish.misc.util;
+package com.rongji.dfish.base.util;
 
 import com.rongji.dfish.base.context.SystemContext;
-import com.rongji.dfish.misc.util.json.JsonBuilder;
-import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Fastjson;
+import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.base.util.json.JsonBuilder;
 
 import java.util.List;
 
@@ -14,12 +14,12 @@ public class JsonUtil {
 
     private static JsonBuilder jsonBuilder;
     static {
-        JsonBuilder jb = (JsonBuilder) SystemContext.getInstance().get("jsonBuilder");
-        if (jb != null) {
-            jsonBuilder = jb;
-        }
+        jsonBuilder = (JsonBuilder) SystemContext.getInstance().get("jsonBuilder");
         if (jsonBuilder == null) {
-            jsonBuilder = new JsonBuilder4Fastjson();
+            String className = "com.rongji.dfish.misc.util.json.impl.JsonBuilder4Fastjson";
+            if (BeanUtil.exists(className)) {
+                jsonBuilder = (JsonBuilder) BeanUtil.newInstance(className);
+            }
         }
     }
 

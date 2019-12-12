@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.mvc.controller;
 import com.rongji.dfish.base.exception.Marked;
 import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.Page;
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.ui.JsonObject;

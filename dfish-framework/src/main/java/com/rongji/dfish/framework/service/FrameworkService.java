@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.service;
 
 import com.rongji.dfish.base.Pagination;
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.crypt.Cryptor;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;

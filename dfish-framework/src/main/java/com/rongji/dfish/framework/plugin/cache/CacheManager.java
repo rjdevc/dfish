@@ -1,10 +1,9 @@
 package com.rongji.dfish.framework.plugin.cache;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.util.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

@@ -1,20 +1,12 @@
 package com.rongji.dfish.framework.plugin.file.controller.plugin.impl;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.controller.FileController;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
-import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
-import com.rongji.dfish.framework.plugin.file.service.FileService;
-import com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;

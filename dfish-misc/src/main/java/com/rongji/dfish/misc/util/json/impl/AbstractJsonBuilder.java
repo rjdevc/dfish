@@ -1,6 +1,6 @@
 package com.rongji.dfish.misc.util.json.impl;
 
-import com.rongji.dfish.misc.util.json.JsonBuilder;
+import com.rongji.dfish.base.util.json.JsonBuilder;
 
 /**
  * Json对象构建器的默认实现类,具体实现类可继承该方法

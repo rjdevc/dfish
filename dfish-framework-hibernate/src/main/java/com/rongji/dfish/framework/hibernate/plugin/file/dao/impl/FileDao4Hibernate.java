@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.hibernate.plugin.file.dao.impl;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.hibernate.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;

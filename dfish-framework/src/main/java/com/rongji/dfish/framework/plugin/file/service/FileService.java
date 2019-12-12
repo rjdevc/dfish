@@ -1,11 +1,11 @@
 package com.rongji.dfish.framework.plugin.file.service;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.FrameworkService;
-import com.rongji.dfish.misc.util.JsonUtil;
+import com.rongji.dfish.base.util.JsonUtil;
 
 import java.io.File;
 import java.io.InputStream;

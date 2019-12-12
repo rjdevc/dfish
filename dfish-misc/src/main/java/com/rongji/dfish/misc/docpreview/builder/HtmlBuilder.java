@@ -1,6 +1,6 @@
 package com.rongji.dfish.misc.docpreview.builder;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.misc.docpreview.BuilderConfig;
 import com.rongji.dfish.misc.docpreview.data.*;
 

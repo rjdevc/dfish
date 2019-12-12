@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.mvc.filter;
 
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.misc.util.JsonUtil;
+import com.rongji.dfish.base.util.JsonUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

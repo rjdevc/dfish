@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.ui.AbstractWidgetWrapper;

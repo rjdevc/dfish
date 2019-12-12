@@ -1,9 +1,5 @@
 package com.rongji.dfish.base.util;
 
-import com.rongji.dfish.base.Utils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;

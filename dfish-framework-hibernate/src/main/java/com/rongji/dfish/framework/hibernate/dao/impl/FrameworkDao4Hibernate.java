@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.hibernate.dao.impl;
 
 import com.rongji.dfish.base.Pagination;
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;

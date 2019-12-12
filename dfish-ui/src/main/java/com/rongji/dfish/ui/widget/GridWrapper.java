@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.widget;
 
 import java.util.*;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.layout.grid.GridColumn;

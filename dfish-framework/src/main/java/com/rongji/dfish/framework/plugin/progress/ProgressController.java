@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.plugin.progress;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import org.springframework.web.bind.annotation.PathVariable;

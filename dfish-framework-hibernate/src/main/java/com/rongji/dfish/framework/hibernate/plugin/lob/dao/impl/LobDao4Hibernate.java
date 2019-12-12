@@ -1,14 +1,11 @@
 package com.rongji.dfish.framework.hibernate.plugin.lob.dao.impl;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.hibernate.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
  * lob的hibernate实现dao层

@@ -1,4 +1,4 @@
-package com.rongji.dfish.misc.util.json;
+package com.rongji.dfish.base.util.json;
 
 import java.util.List;
 

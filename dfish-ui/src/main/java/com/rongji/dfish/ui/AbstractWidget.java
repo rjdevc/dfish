@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui;
 
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.StringUtil;
 
 import java.util.*;

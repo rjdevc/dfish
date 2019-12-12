@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.plugin.qrcode.controller;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.util.ServletUtil;
 import com.rongji.dfish.misc.qrcode.MatrixToImageConfig;

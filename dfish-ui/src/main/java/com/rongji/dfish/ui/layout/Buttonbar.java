@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.layout;
 
 import java.util.List;
 
-import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.Directional;
 import com.rongji.dfish.ui.MultiContainer;
