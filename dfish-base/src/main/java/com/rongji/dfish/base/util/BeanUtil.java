@@ -1,11 +1,6 @@
 package com.rongji.dfish.base.util;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -18,6 +13,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class BeanUtil {
+
+
 	/**
 	 * 用于标记一个方法。
 	 * 
@@ -215,7 +212,7 @@ public class BeanUtil {
 		if (!hasNullParam) {
 			// 尝试找到方法
 			try {
-				Method m = targetClz.getMethod(methodName, NO_CLZ);
+				Method m = targetClz.getMethod(methodName, clzs);
 				return m;
 			} catch (NoSuchMethodException nsme) {
 			}
@@ -236,13 +233,86 @@ public class BeanUtil {
 				if (params[i] == null) {
                     continue;
                 }
-				if (!paramClzs[i].isAssignableFrom(params[i].getClass())) {
+				if (!isAssignableFrom(paramClzs[i],params[i].getClass())) {
 					continue outter;
 				}
 			}
 			return method;
 		}
 		throw new NoSuchMethodException(methodName);
+	}
+	private static Constructor findBestConstructor(Class<?> targetClz,
+										 Object... params) throws NoSuchMethodException {
+		// 首先如果PARAM为空，那么可以精确查找
+		if (params == null || params.length == 0) {
+			Constructor m = targetClz.getConstructor(NO_CLZ);
+			return m;
+		}
+		// 否则看PARAM的类型取得方法
+		boolean hasNullParam = false;
+		Class<?>[] clzs = new Class[params.length];
+		for (int i = 0; i < params.length; i++) {
+			Object obj = params[i];
+			if (obj == null) {
+				hasNullParam = true;
+				break;
+			}
+			clzs[i] = obj.getClass();
+		}
+		if (!hasNullParam) {
+			// 尝试找到方法
+			try {
+				Constructor m = targetClz.getConstructor(clzs);
+				return m;
+			} catch (NoSuchMethodException nsme) {
+			}
+		}
+		// 如果方法仍旧找不到，尝试查找
+		Constructor[] mths = targetClz.getConstructors();
+		// ArrayList<Method> candidate=new ArrayList<Method>();
+		outter: for (Constructor method : mths) {
+			// 参数个数应该匹配
+			if (method.getParameterTypes().length != params.length) {
+				continue;
+			}
+			Class<?>[] paramClzs = method.getParameterTypes();
+
+			for (int i = 0; i < paramClzs.length; i++) {
+				if (params[i] == null) {
+					continue;
+				}
+				if (!isAssignableFrom(paramClzs[i],params[i].getClass())) {
+					continue outter;
+				}
+			}
+			return method;
+		}
+		throw new NoSuchMethodException(targetClz.getSimpleName()+"<init>");
+	}
+	private static boolean isAssignableFrom(Class<?> type,Class<?>target){
+		if(type.isPrimitive()){
+			Class realClz=null;
+			if(type==Boolean.TYPE){
+				realClz=Boolean.class;
+			}else if(type==Character.TYPE) {
+				realClz = Character.class;
+			}else if(type==Byte.TYPE) {
+				realClz = Byte.class;
+			}else if(type==Short.TYPE) {
+				realClz = Short.class;
+			}else if(type==Integer.TYPE) {
+				realClz = Integer.class;
+			}else if(type==Long.TYPE) {
+				realClz = Long.class;
+			}else if(type==Float.TYPE) {
+				realClz = Long.class;
+			}else if(type==Double.TYPE) {
+				realClz = Long.class;
+			}
+			return realClz.isAssignableFrom(target);
+		}else{
+			return type.isAssignableFrom(target);
+		}
 	}
 	
 	public static Method getMethod(Class<?> targetClass,String name,Class<?> ... paramTypes) throws NoSuchMethodException{
@@ -656,4 +726,36 @@ public class BeanUtil {
 		}
 		return m.getReturnType();
 	}
+	private static Map<String,Boolean> existsMap=new HashMap<String,Boolean>();
+	public static boolean exists(String className) {
+		Boolean cachedRet=existsMap.get(className);
+		if(cachedRet!=null){
+			return cachedRet;
+		}
+		try {
+			Class<?> c=Class.forName(className);
+			existsMap.put(className,true);
+			return true;
+		} catch (ClassNotFoundException e) {
+			existsMap.put(className,false);
+			LogUtil.warn("Class "+className+" does not exists.");
+			return false;
+		}
+	}
+
+	public static Object newInstance(String className, Object... params) {
+		try {
+			Class<?> c=Class.forName(className);
+			if(params==null||params.length==0){
+				return c.newInstance();
+			}else{
+				Constructor m=findBestConstructor(c,params);
+				return m.newInstance(params);
+			}
+		} catch (Exception e) {
+			LogUtil.error("newInstance for "+className +" failed.",e);
+		}
+		return null;
+	}
+
 }

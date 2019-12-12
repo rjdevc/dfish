@@ -21,10 +21,8 @@ import java.util.concurrent.ExecutorService;
  * 2018年4月20日 下午4:43:40		lamontYu			1.0				1.0 Version
  */
 public class LogUtil {
-
-    private static final Log LOG = LogFactory.getLog(LogUtil.class);
-
     private static final Map<Class<?>, Log> LOGS = Collections.synchronizedMap(new HashMap<>());
+    private static final Log LOG = getLog(LogUtil.class);
 
     /**
      * 获取Log对象
@@ -42,72 +40,72 @@ public class LogUtil {
     }
 
     /**********提供几种常用日志方式**********/
-    public static void debug(Object logMessage) {
-        debug(logMessage, null);
+    public static void debug(Object message) {
+        debug(message, null);
     }
 
-    public static void debug(Object logMessage, Throwable t) {
-        debug(LOG, logMessage, t);
+    public static void debug(Object message, Throwable t) {
+        debug(LOG, message, t);
     }
 
-    public static void debug(Class<?> clz, Object logMessage, Throwable t) {
-        debug(getLog(clz), logMessage, t);
+    public static void debug(Class<?> clz, Object message, Throwable t) {
+        debug(getLog(clz), message, t);
     }
 
-    public static void debug(Log log, Object logMessage, Throwable t) {
-        log.debug(logMessage, t);
+    public static void debug(Log log, Object message, Throwable t) {
+        log.debug(message, t);
     }
 
-    public static void info(Object logMessage) {
-        info(logMessage, null);
+    public static void info(Object message) {
+        info(message, null);
     }
 
-    public static void info(Object logMessage, Throwable t) {
-        info(LOG, logMessage, t);
+    public static void info(Object message, Throwable t) {
+        info(LOG, message, t);
     }
 
-    public static void info(Class<?> clz, Object logMessage, Throwable t) {
-        info(getLog(clz), logMessage, t);
+    public static void info(Class<?> clz, Object message, Throwable t) {
+        info(getLog(clz), message, t);
     }
 
-    public static void info(Log log, Object logMessage, Throwable t) {
-        log.info(logMessage, t);
+    public static void info(Log log, Object message, Throwable t) {
+        log.info(message, t);
     }
 
-    public static void warn(Object logMessage) {
-        warn(logMessage, null);
+    public static void warn(Object message) {
+        warn(message, null);
     }
 
-    public static void warn(Object logMessage, Throwable t) {
-        warn(LOG, logMessage, t);
+    public static void warn(Object message, Throwable t) {
+        warn(LOG, message, t);
     }
 
-    public static void warn(Class<?> clz, Object logMessage, Throwable t) {
-        warn(getLog(clz), logMessage, t);
+    public static void warn(Class<?> clz, Object message, Throwable t) {
+        warn(getLog(clz), message, t);
     }
 
-    public static void warn(Log log, Object logMessage, Throwable t) {
-        log.warn(logMessage, t);
+    public static void warn(Log log, Object message, Throwable t) {
+        log.warn(message, t);
     }
 
-    public static void error(Object logMessage) {
-        if (logMessage instanceof Throwable) {
-            error(null, (Throwable) logMessage);
+    public static void error(Object message) {
+        if (message instanceof Throwable) {
+            error(null, (Throwable) message);
         } else {
-            error(logMessage, null);
+            error(message, null);
         }
     }
 
-    public static void error(Object logMessage, Throwable t) {
-        error(LOG, logMessage, t);
+    public static void error(Object message, Throwable t) {
+        error(LOG, message, t);
     }
 
-    public static void error(Class<?> clz, Object logMessage, Throwable t) {
-        error(getLog(clz), logMessage, t);
+    public static void error(Class<?> clz, Object message, Throwable t) {
+        error(getLog(clz), message, t);
     }
 
-    public static void error(Log log, Object logMessage, Throwable t) {
-        log.error(logMessage, t);
+    public static void error(Log log, Object message, Throwable t) {
+        log.error(message, t);
     }
 
     private static final ExecutorService SINGLE_EXECUTOR = ThreadUtil.newSingleThreadExecutor();

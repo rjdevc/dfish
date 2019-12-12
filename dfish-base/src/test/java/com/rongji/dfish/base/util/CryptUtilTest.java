@@ -7,6 +7,8 @@ import com.rongji.dfish.base.crypt.AbstractCryptor;
 import com.rongji.dfish.base.crypt.CryptFactory;
 import com.rongji.dfish.base.crypt.Cryptor;
 import com.rongji.dfish.base.crypt.StringCryptor;
+import com.rongji.dfish.base.crypt.stream.Base64InputStream;
+import com.rongji.dfish.base.crypt.stream.Base64UrlsafeOutputStream;
 import org.junit.Test;
 
 public class CryptUtilTest {
@@ -130,14 +132,14 @@ public class CryptUtilTest {
 //		System.out.println(di);
 
 		ByteArrayOutputStream baos=new ByteArrayOutputStream();
-		AbstractCryptor.Base64UrlsafeOutputStream os=new AbstractCryptor.Base64UrlsafeOutputStream(baos);
+		Base64UrlsafeOutputStream os=new Base64UrlsafeOutputStream(baos);
 		os.write("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZa".getBytes("UTF-8"));
 		os.close();
 		String result=new String(baos.toByteArray());
 		System.out.println(result);
 //
 		ByteArrayOutputStream baos2=new ByteArrayOutputStream();
-		AbstractCryptor.Base64InputStream is=new AbstractCryptor.Base64InputStream(new ByteArrayInputStream(result.getBytes()));
+		Base64InputStream is=new Base64InputStream(new ByteArrayInputStream(result.getBytes()));
 		byte[] buff=new byte[8192];
 		int r=0;
 		int i=is.read();
