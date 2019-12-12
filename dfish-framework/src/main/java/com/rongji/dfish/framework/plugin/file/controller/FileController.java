@@ -9,11 +9,13 @@ import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
+import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
 import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
 import com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
+import com.rongji.dfish.framework.plugin.file.dto.PreviewResponse;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
@@ -130,12 +132,13 @@ public class FileController extends BaseActionController {
      */
     @RequestMapping("/upload/file")
     @ResponseBody
-    public UploadItem uploadFile(HttpServletRequest request) {
+    public JsonResponse<?> uploadFile(HttpServletRequest request) {
         String scheme = request.getParameter("scheme");
         FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
         // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
         String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileService.getFileTypes();
-        return saveFile(request, acceptTypes);
+        UploadItem uploadItem = saveFile(request, acceptTypes);
+        return new JsonResponse<>(uploadItem);
     }
 
 
@@ -149,18 +152,19 @@ public class FileController extends BaseActionController {
      */
     @RequestMapping("/upload/image")
     @ResponseBody
-    public UploadItem uploadImage(HttpServletRequest request) {
-        final UploadItem uploadItem = uploadFile(request);
+    public JsonResponse<?> uploadImage(HttpServletRequest request) {
+        final JsonResponse<?> jsonResponse = uploadFile(request);
+        UploadItem uploadItem = (UploadItem) jsonResponse.getData();
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
             // 这样异常结果返回可能导致前端显示异常
-            return uploadItem;
+            return jsonResponse;
         }
 
         String scheme = request.getParameter("scheme");
         final FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
         if (handlingScheme == null || Utils.isEmpty(handlingScheme.getDefines())) {
             // 无需进行图片压缩
-            return uploadItem;
+            return jsonResponse;
         }
         final AtomicInteger doneFileCount = new AtomicInteger(0);
         EXECUTOR_IMAGE.execute(() -> {
@@ -222,7 +226,7 @@ public class FileController extends BaseActionController {
                 LogUtil.error("生成缩略图等待异常", e);
             }
         }
-        return uploadItem;
+        return jsonResponse;
     }
 
     /**
@@ -517,14 +521,14 @@ public class FileController extends BaseActionController {
         // 获取附件别名
         String realAlias = getFileAlias(alias, scheme);
 
-        DownloadParam downloadParam = getDownloadParam(fileRecord, alias);
+        DownloadParam downloadParam = getDownloadParam(fileRecord, realAlias);
         // 目前文件下载统一默认都是原件下载
         if (!checkIfModifiedSince(request, response, downloadParam)) {
             return;
         }
 
         downloadParam.setInline(true);
-        boolean success = downloadFileData(response, fileService.getFileInputStream(fileRecord, alias), downloadParam);
+        boolean success = downloadFileData(response, fileService.getFileInputStream(fileRecord, realAlias), downloadParam);
         // 下载不成功,用默认图片代替
         if (!success) {
             FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
@@ -566,7 +570,7 @@ public class FileController extends BaseActionController {
             if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefines())) {
                 alias = handlingScheme.getDefines().get(0);
             } else {
-                alias = "";
+                alias = null;
             }
         }
         return alias;
@@ -587,30 +591,30 @@ public class FileController extends BaseActionController {
         PubFileRecord fileRecord = fileService.get(fileId);
 
         if (fileRecord != null) {
-            String fileType = FileUtil.getFileExtName(fileRecord.getFileUrl());
+            String fileType = fileRecord.getFileType();
             boolean isImage = fileService.accept(fileType, fileService.getImageTypes());
             String scheme = request.getParameter("scheme");
             scheme = scheme == null ? "" : scheme;
             String alias = request.getParameter("alias");
             alias = alias == null ? "" : alias;
 
-            String jsText;
+            PreviewResponse response = new PreviewResponse();
             if (isImage) {
                 // 图片形式使用框架的预览方式
-                jsText = "$.previewImage('file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
-                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileType + "');";
+//                previewJs = "$.previewImage('file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
+//                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileType + "');";
+                response.setWay(PreviewResponse.WAY_PREVIEW_IMAGE);
+                response.setUrl("file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
+                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileType);
             } else {
                 String mimeType = getMimeType(fileType);
-                String fileParamUrl = "?fileId=" + enFileId + "&scheme=" + scheme + "&alias=" + alias;
+                String fileParamUrl = "file/download?fileId=" + enFileId + "&scheme=" + scheme + "&alias=" + alias;
                 if (Utils.notEmpty(mimeType)) {
-                    // 如果是浏览器支持可查看的内联类型,新窗口打开
-                    jsText = "window.open('file/download" + fileParamUrl + "&inline=1');";
-                } else { // 其他情况都是直接下载
-                    jsText = "$.download('file/download" + fileParamUrl + "');";
+                    fileParamUrl += "&inline=1";
+                    response.setWay(PreviewResponse.WAY_INLINE);
                 }
             }
-            // FIXME 因前端引擎未给解决方案,这里先这么实现
-            return "{\"type\":\"js\",\"text\":\"" + jsText + "\"}";
+            return new JsonResponse<>(response);
         } else {
             String error = "附件获取异常@" + System.currentTimeMillis();
             LogUtil.warn(error + "[" + enFileId + "]");

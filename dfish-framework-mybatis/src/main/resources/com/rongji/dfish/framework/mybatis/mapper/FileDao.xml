@@ -44,12 +44,22 @@
     </update>
 
     <update id="updateFileLink">
-        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink},t.UPDATE_TIME=#{updateTime} WHERE t.FILE_ID=#{fileId}
+        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink}
+        <if test="fileKey != null">
+            ,t.FILE_KEY=#{fileKey}
+        </if>
+        <if test="fileStatus != null">
+            ,t.FILE_STATUS=#{fileStatus}
+        </if>
+        ,t.UPDATE_TIME=#{updateTime} WHERE t.FILE_ID=#{fileId}
     </update>
 
     <update id="updateFileLinks">
-        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink},t.FILE_KEY=#{fileKey},t.UPDATE_TIME=#{updateTime} WHERE
-        t.FILE_ID IN
+        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink},t.FILE_KEY=#{fileKey}
+        <if test="fileStatus != null">
+            ,t.FILE_STATUS=#{fileStatus}
+        </if>
+        ,t.UPDATE_TIME=#{updateTime} WHERE t.FILE_ID IN
         <foreach collection="fileIds" item="fileId" open="(" separator="," close=")">
             #{fileId}
         </foreach>

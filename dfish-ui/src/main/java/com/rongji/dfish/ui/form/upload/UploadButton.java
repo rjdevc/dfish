@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.form;
+package com.rongji.dfish.ui.form.upload;
 
 import com.rongji.dfish.ui.widget.AbstractButton;
 

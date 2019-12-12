@@ -43,10 +43,11 @@ public interface FileDao extends FrameworkDao<PubFileRecord, String> {
      * @param fileId 附件编号
      * @param fileLink 链接名
      * @param fileKey    链接关键字
+     * @param fileStatus 附件状态
      * @param updateTime 更新时间
      * @return int 更新数量
      */
-    int updateFileLink(String fileId, String fileLink, String fileKey, Date updateTime);
+    int updateFileLink(String fileId, String fileLink, String fileKey, String fileStatus, Date updateTime);
 
     /**
      * 更新文件链接
@@ -54,10 +55,11 @@ public interface FileDao extends FrameworkDao<PubFileRecord, String> {
      * @param fileIds 附件编号集合
      * @param fileLink 附件链接名
      * @param fileKey  链接关键字
+     * @param fileStatus 附件状态
      * @param updateTime 更新时间
      * @return int 更新记录数
      */
-    int updateFileLinks(List<String> fileIds, String fileLink, String fileKey, Date updateTime);
+    int updateFileLinks(List<String> fileIds, String fileLink, String fileKey, String fileStatus, Date updateTime);
 
     /**
      * 获取同一个模块下多个数据的附件

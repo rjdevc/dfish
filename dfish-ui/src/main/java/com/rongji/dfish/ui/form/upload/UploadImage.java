@@ -1,21 +1,18 @@
-package com.rongji.dfish.ui.form;
-
-import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.Valignable;
+package com.rongji.dfish.ui.form.upload;
 
 /**
  * 上传图片组件
  *
  * @author DFish Team
  * @create 2018-08-03 before
- * @version 1.1 去掉泛型设置,同时将Alignable, Valignable的接口下移到抽象类 lamontYu 2019-12-05
+ * @version 1.1 将Alignable, Valignable的接口下移到抽象类 lamontYu 2019-12-05
  */
 public class UploadImage extends AbstractUpload<UploadImage> {
     /**
      *
      */
     private static final long serialVersionUID = -2689106571559435242L;
-    private String thumbnailsrc;
+    private String thumbnail;
 
     /**
      * @param name
@@ -36,8 +33,30 @@ public class UploadImage extends AbstractUpload<UploadImage> {
      *
      * @return String
      */
+    public String getThumbnail() {
+        return this.thumbnail;
+    }
+
+    /**
+     * 缩略图地址
+     *
+     * @param thumbnail 缩略图地址
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public UploadImage setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+        return this;
+    }
+
+    /**
+     * 缩略图地址
+     *
+     * @return String
+     * @see #getThumbnail()
+     */
+    @Deprecated
     public String getThumbnailsrc() {
-        return this.thumbnailsrc;
+        return getThumbnail();
     }
 
     /**
@@ -47,7 +66,6 @@ public class UploadImage extends AbstractUpload<UploadImage> {
      * @return 本身，这样可以继续设置其他属性
      */
     public UploadImage setThumbnailsrc(String thumbnailsrc) {
-        this.thumbnailsrc = thumbnailsrc;
-        return this;
+        return setThumbnail(thumbnailsrc);
     }
 }

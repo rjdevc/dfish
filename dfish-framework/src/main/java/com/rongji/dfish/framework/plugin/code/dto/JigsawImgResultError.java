@@ -6,13 +6,13 @@ import java.io.Serializable;
  * @author lamontYu
  * @create 2019-12-10
  */
-public class JigsawResponseError implements Serializable {
+public class JigsawImgResultError implements Serializable {
     private static final long serialVersionUID = -9063472952742234038L;
 
     private String msg;
     private long timeout;
 
-    public JigsawResponseError(String msg, long timeout) {
+    public JigsawImgResultError(String msg, long timeout) {
         this.msg = msg;
         this.timeout = timeout;
     }
@@ -21,7 +21,7 @@ public class JigsawResponseError implements Serializable {
         return msg;
     }
 
-    public JigsawResponseError setMsg(String msg) {
+    public JigsawImgResultError setMsg(String msg) {
         this.msg = msg;
         return this;
     }
@@ -30,7 +30,7 @@ public class JigsawResponseError implements Serializable {
         return timeout;
     }
 
-    public JigsawResponseError setTimeout(long timeout) {
+    public JigsawImgResultError setTimeout(long timeout) {
         this.timeout = timeout;
         return this;
     }

@@ -71,12 +71,16 @@ dfish.config({
         'spinner': {step: 10, decimal: 0, validate: {minvalue: 1, maxvalue: 99999999}},
         'combo': {keepshow: true},
         'slider': {tip: true},
+        'jigsaw': {
+            img: {type: 'jigsaw/img', template: 'jigsaw/img'},
+            auth: {type: 'jigsaw/auth', template: 'jigsaw/auth'}
+        },
         'upload/file': {
             minfilesize: '1B',
             maxfilesize: '10M',
             data: {'scheme': 'DEFAULT'},
-            uploadsrc: 'file/upload/file?scheme=$scheme',
-            downloadsrc: 'file/download?fileId=$id&scheme=$scheme',
+            post: {type: 'upload/post', template: 'upload/post'},
+            download: 'file/download?fileId=$id&scheme=$scheme',
             filetypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
             uploadbutton: [
                 {
@@ -89,10 +93,13 @@ dfish.config({
             minfilesize: '1B',
             maxfilesize: '10M',
             data: {'scheme': 'DEFAULT'},
-            uploadsrc: 'file/upload/image?scheme=$scheme',
-            downloadsrc: 'file/download?fileId=$id&scheme=$scheme',
-            thumbnailsrc: 'file/thumbnail?fileId=$id&scheme=$scheme',
-            previewsrc: 'file/preview?fileId=$id&scheme=$scheme',
+            post: {type: 'upload/post', src: 'file/upload/image?scheme=$scheme', template: 'upload/post'},
+            download: 'file/download?fileId=$id&scheme=$scheme',
+            thumbnail: 'file/thumbnail?fileId=$id&scheme=$scheme',
+            preview: {
+                type: 'js',
+                text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'
+            },
             filetypes: '*.png;*.jpg;*.jpeg;',
             uploadbutton: [
                 {

@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.progress;
 
+import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
  * @create 2018-08-03 before
  * @since 3.0
  */
+@RequestMapping("/progress")
 public class ProgressController extends BaseActionController {
     @Resource(name = "progressManager")
     private ProgressManager progressManager;
@@ -31,20 +33,30 @@ public class ProgressController extends BaseActionController {
     @RequestMapping("/reload/{progressKey}")
     @ResponseBody
     public Object reload(@PathVariable String progressKey) {
-        progressKey = progressManager.decrypt(progressKey);
-
-        ProgressData progressData = progressManager.reloadProgressData(progressKey);
-        JsonResponse jsonReponse = new JsonResponse<>(progressData);
-        if (progressData != null) {
-            if (progressData.getError() != null) {
-                jsonReponse.setData(null);
-                jsonReponse.setErrCode(progressData.getError().getCode());
-                jsonReponse.setErrMsg(progressData.getError().getMsg());
-                progressManager.removeProgress(progressKey);
-            } else if (progressData.isFinish()) {
-                progressManager.removeProgress(progressKey);
+        JsonResponse jsonReponse = new JsonResponse<>();
+        ProgressData progressData = null;
+        if (Utils.notEmpty(progressKey)) {
+            progressKey = progressManager.decrypt(progressKey);
+            progressData = progressManager.reloadProgressData(progressKey);
+            if (progressData != null) {
+                if (progressData.isFinish() || progressData.getError() != null) {
+                    progressManager.removeProgress(progressKey);
+                }
             }
         }
+        if (progressData != null) {
+            if (progressData.getError() != null) {
+                jsonReponse.setErrCode(progressData.getError().getCode());
+                jsonReponse.setErrMsg(progressData.getError().getMsg());
+            } else {
+                jsonReponse.setData(progressData);
+            }
+        } else {
+            ProgressData finishData = new ProgressData();
+            finishData.setFinish(true);
+            jsonReponse.setData(finishData);
+        }
+
         return jsonReponse;
     }
 

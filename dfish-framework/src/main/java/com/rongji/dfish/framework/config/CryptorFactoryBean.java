@@ -5,6 +5,12 @@ import com.rongji.dfish.base.util.CryptUtil;
 import org.springframework.beans.factory.FactoryBean;
 
 public class CryptorFactoryBean implements FactoryBean<Cryptor> {
+
+    public static final String ALGORITHM_DEFAULT = CryptUtil.ALGORITHM_BLOWFISH;
+    public static final String ENCODING_DEFAULT = CryptUtil.ENCODING_UTF8;
+    public static final int PRESENT_DEFAULT = CryptUtil.PRESENT_BASE32;
+    public static final String SECRET_KEY_DEFAULT = "DFish@RJ002474";
+
     @Override
     public Cryptor getObject() throws Exception {
         return CryptUtil.prepareCryptor(algorithm,secretKey.getBytes("UTF-8"))
@@ -22,11 +28,10 @@ public class CryptorFactoryBean implements FactoryBean<Cryptor> {
         return true;
     }
 
-    private String algorithm = CryptUtil.ALGORITHM_BLOWFISH;
-    private String encoding = CryptUtil.ENCODING_UTF8;
-    private int present = CryptUtil.PRESENT_BASE32;
-    private String secretKey = "DFish@RJ002474";
-
+    private String algorithm = ALGORITHM_DEFAULT;
+    private String encoding = ENCODING_DEFAULT;
+    private int present = PRESENT_DEFAULT;
+    private String secretKey = SECRET_KEY_DEFAULT;
 
     public String getAlgorithm() {
         return algorithm;

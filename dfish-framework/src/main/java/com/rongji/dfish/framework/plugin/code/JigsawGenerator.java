@@ -5,9 +5,9 @@ import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.info.ServletInfo;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImg;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawResponse;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawResponseError;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImgItem;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResultError;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -156,7 +156,7 @@ public class JigsawGenerator {
      * @return
      * @throws Exception
      */
-    public JigsawResponse generatorJigsaw(HttpServletRequest request) throws Exception {
+    public JigsawImgResult generatorJigsaw(HttpServletRequest request) throws Exception {
 //        // 大图宽高都必须是小图的4倍
 //        int bigMinSize = smallSize << 2;
 //        if (smallSize <= 0 || bigWidth < bigMinSize || bigHeight < bigMinSize) {
@@ -165,7 +165,7 @@ public class JigsawGenerator {
         HttpSession session = request.getSession();
         // 目前反暴力刷图策略暂时以session来判断,以后完善可以增加ip判断
         Integer generatorCount = (Integer) session.getAttribute(KEY_GENERATOR_COUNT);
-        JigsawResponse jigsaw = new JigsawResponse();
+        JigsawImgResult jigsaw = new JigsawImgResult();
 
         if (generatorCount == null) {
             generatorCount = 0;
@@ -187,7 +187,7 @@ public class JigsawGenerator {
                 }
             }
             if (leftTimeout > 0) {
-                JigsawResponseError error = new JigsawResponseError(errorMsg, leftTimeout);
+                JigsawImgResultError error = new JigsawImgResultError(errorMsg, leftTimeout);
                 jigsaw.setError(error);
                 return jigsaw;
             }
@@ -226,8 +226,8 @@ public class JigsawGenerator {
         File rawFile = imageFiles.get(fileIndex);
 
         String jigsawFileName = session.getId() + "-" + System.currentTimeMillis();
-        JigsawImg bigImg = generatorBigImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
-        JigsawImg smallImg = generatorSmallImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
+        JigsawImgItem bigImg = generatorBigImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
+        JigsawImgItem smallImg = generatorSmallImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
         // 将验证码放到session中
         session.setAttribute(KEY_CHECKCODE, x);
 
@@ -310,7 +310,7 @@ public class JigsawGenerator {
      * @return 大图片组件
      * @throws Exception
      */
-    private JigsawImg generatorBigImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
+    private JigsawImgItem generatorBigImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
         FileInputStream input = null;
         FileOutputStream output = null;
         try {
@@ -356,7 +356,7 @@ public class JigsawGenerator {
      * @return 小图片组件
      * @throws Exception
      */
-    private JigsawImg generatorSmallImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
+    private JigsawImgItem generatorSmallImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
         FileInputStream input = null;
         FileOutputStream output = null;
         try {
@@ -448,8 +448,8 @@ public class JigsawGenerator {
         return destFile;
     }
 
-    private JigsawImg parseImg(String destFileName, int width, int height) {
-        return new JigsawImg(imageFolder + FOLDER_TEMP + "/" + destFileName, width, height);
+    private JigsawImgItem parseImg(String destFileName, int width, int height) {
+        return new JigsawImgItem(imageFolder + FOLDER_TEMP + "/" + destFileName, width, height);
     }
 
 }

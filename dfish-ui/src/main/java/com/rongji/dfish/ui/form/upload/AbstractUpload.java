@@ -1,13 +1,13 @@
-package com.rongji.dfish.ui.form;
+package com.rongji.dfish.ui.form.upload;
 
-import java.beans.Transient;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.Directional;
 import com.rongji.dfish.ui.Valignable;
+import com.rongji.dfish.ui.command.Ajax;
+import com.rongji.dfish.ui.form.AbstractFormElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AbstractUpload为抽象的上传组件，上传组件在dfish3中默认有两种，提供文件上传和图片上传
@@ -16,7 +16,6 @@ import com.rongji.dfish.ui.Valignable;
  *
  * @param <T> 当前对象类型
  */
-@SuppressWarnings("unchecked")
 public abstract class AbstractUpload<T extends AbstractUpload<T>> extends AbstractFormElement<T, List<UploadItem>> implements Directional<T>, Alignable<T>, Valignable<T> {
 
 	/**
@@ -31,10 +30,10 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * 
 	 */
 	private static final long serialVersionUID = 4779985030349561966L;
-	protected String uploadsrc;
-	protected String downloadsrc;
-	protected String previewsrc;
-	protected String removesrc;
+	protected UploadPost post;
+	protected String download;
+	protected Ajax preview;
+	protected String remove;
 	protected String filetypes;
 	protected String minfilesize;
 	protected String maxfilesize;
@@ -47,65 +46,164 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	protected UploadItem pub;
 
 	/**
-	 * 上传地址,最终返回结果会拼上scheme的参数值
+	 * 上传地址
 	 * @return String
 	 */
+	public UploadPost getPost() {
+		return this.post;
+	}
+
+	private UploadPost post() {
+		if (this.post == null) {
+			this.post = new UploadPost();
+		}
+		return this.post;
+	}
+
+	/**
+	 * 上传地址
+	 * @param post UploadPost
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setPost(UploadPost post) {
+		this.post = post;
+		return (T) this;
+	}
+
+	/**
+	 * 下载地址
+	 * @return String
+	 */
+	public String getDownload() {
+		return this.download;
+	}
+
+	/**
+	 * 下载地址
+	 * @param download String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setDownload(String download) {
+		this.download = download;
+		return (T) this;
+	}
+
+	/**
+	 * 预览地址
+	 * @return String
+	 */
+	public Ajax getPreview() {
+		return this.preview;
+	}
+
+	protected Ajax preview() {
+		if (this.preview == null) {
+			this.preview = new Ajax(null);
+		}
+		return this.preview;
+	}
+
+	/**
+	 * 预览地址
+	 * @param preview Ajax
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setPreview(Ajax preview) {
+		this.preview = preview;
+		return (T) this;
+	}
+
+	/**
+	 * 移除地址
+	 * @return String
+	 */
+	public String getRemove() {
+		return this.remove;
+	}
+
+	/**
+	 * 移除地址,默认无需设置该属性
+	 * @param remove String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setRemove(String remove) {
+		this.remove = remove;
+		return (T) this;
+	}
+
+	/**
+	 * 上传地址
+	 * @return String
+	 * @see #getPost()
+	 */
+	@Deprecated
 	public String getUploadsrc() {
-		return this.uploadsrc;
+		return this.post != null ? this.post.getSrc() : null;
 	}
 
 	/**
 	 * 上传地址
 	 * @param uploadsrc String
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setPost(UploadPost) 
 	 */
+	@Deprecated
 	public T setUploadsrc(String uploadsrc) {
-		this.uploadsrc = uploadsrc;
+		post().setSrc(uploadsrc);
 		return (T) this;
 	}
 
 	/**
-	 * 下载地址,最终返回结果会拼上scheme的参数值
+	 * 下载地址
 	 * @return String
+	 * @see #getDownload()
 	 */
+	@Deprecated
 	public String getDownloadsrc() {
-		return this.downloadsrc;
+		return getDownload();
 	}
 
 	/**
 	 * 下载地址
 	 * @param downloadsrc String
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setDownload(String)
 	 */
+	@Deprecated
 	public T setDownloadsrc(String downloadsrc) {
-		this.downloadsrc = downloadsrc;
-		return (T) this;
+		return setDownload(downloadsrc);
 	}
 
 	/**
-	 * 预览地址,最终返回结果会拼上scheme的参数值
+	 * 预览地址
 	 * @return String
+	 * @see #getPreview()
 	 */
+	@Deprecated
 	public String getPreviewsrc() {
-		return this.previewsrc;
+		return this.preview != null ? this.preview.getSrc() : null;
 	}
 
 	/**
 	 * 预览地址
 	 * @param previewsrc String
 	 * @return 本身，这样可以继续设置其他属性
+	 * @see #setPreview(Ajax)
 	 */
+	@Deprecated
 	public T setPreviewsrc(String previewsrc) {
-		this.previewsrc = previewsrc;
+		preview().setSrc(previewsrc);
 		return (T) this;
 	}
 
 	/**
-	 * 移除地址,最终返回结果会拼上scheme的参数值
+	 * 移除地址
 	 * @return String
+	 * @see #getRemove()
 	 */
+	@Deprecated
 	public String getRemovesrc() {
-		return this.removesrc;
+		return getRemove();
 	}
 
 	/**
@@ -114,8 +212,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public T setRemovesrc(String removesrc) {
-		this.removesrc = removesrc;
-		return (T) this;
+		return setRemove(removesrc);
 	}
 
 	/**
@@ -274,7 +371,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 	/**
 	 * 下载地址。支持以 "javascript:" 的语句模式。支持 $xxx 变量
 	 * @return down_url
-	 * @see #getDown_url()
+	 * @see #getDownloadsrc()
 	 */
 	@Deprecated
 	public String getDown_url() {

@@ -2,11 +2,14 @@ package com.rongji.dfish.framework.plugin.progress;
 
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.cache.Cache;
+import com.rongji.dfish.base.cache.impl.MemoryCache;
 import com.rongji.dfish.base.crypt.Cryptor;
 import com.rongji.dfish.base.exception.Marked;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.framework.config.CryptorFactoryBean;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -20,8 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 3.0
  */
 public class ProgressManager {
-    private Cache<String, ProgressData> progressCache;
-
+    private Cache<String, ProgressData> progressCache = new MemoryCache<>();
     private Cryptor cryptor;
 
     public Cache<String, ProgressData> getProgressCache() {
@@ -320,7 +322,7 @@ public class ProgressManager {
 
     private Number[] getStepScales(int steps) {
         if (steps < 1) {
-            throw new UnsupportedOperationException("The steps must greater than one.");
+            throw new UnsupportedOperationException("The steps must not less than one.");
         }
         Number[] stepScales = new Number[steps];
         for (int i = 0; i < steps; i++) {
@@ -666,6 +668,20 @@ public class ProgressManager {
         return progressData != null && !progressData.isFinish() && progressData.getStepIndex() < progressData.getSteps();
     }
 
+    private boolean getDefaultCryptor = false;
+
+    private Cryptor cryptor() {
+        if (this.cryptor == null && !getDefaultCryptor) {
+            try {
+                this.cryptor = new CryptorFactoryBean().getObject();
+            } catch (Exception e) {
+                LogUtil.error(getClass(), "default cryptor can not be created.", e);
+            }
+            getDefaultCryptor = true;
+        }
+        return this.cryptor;
+    }
+
     /**
      * 加密
      *
@@ -674,7 +690,8 @@ public class ProgressManager {
      */
     public String encrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {
-            Cryptor cryptor = getCryptor();
+            Cryptor cryptor = cryptor();
+            // 若加密器为空,将以明文形式展示进度编号
             return cryptor != null ? cryptor.encrypt(progressKey) : progressKey;
         }
         return progressKey;
@@ -688,7 +705,8 @@ public class ProgressManager {
      */
     public String decrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {
-            Cryptor cryptor = getCryptor();
+            Cryptor cryptor = cryptor();
+            // 若加密器为空,将以明文形式展示进度编号
             return cryptor != null ? cryptor.decrypt(progressKey) : progressKey;
         }
         return progressKey;
