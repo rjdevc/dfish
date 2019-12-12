@@ -313,46 +313,40 @@ public class ImageUtil {
     /**
      * 代理一个inputStream当他顺序读取的时候，将会留下最前方的sampleLength个byte作为标本。
      */
-    static class SampleDeligate extends InputStream {
-        private InputStream raw;
+    static class SampleDeligate extends FilterInputStream {
         private byte[] sample;
         private int index;
 
-        public SampleDeligate(InputStream raw, int sampleLength) {
-            this.raw = raw;
+        public SampleDeligate(InputStream in, int sampleLength) {
+            super(in);
             sample = new byte[sampleLength];
             index = 0;
         }
 
-        public SampleDeligate(InputStream raw) {
-            this(raw, 64);
+        public SampleDeligate(InputStream in) {
+            this(in, 64);
         }
 
         @Override
         public int read() throws IOException {
-            int readed = raw.read();
+            int read = in.read();
             if (index < sample.length) {
-                if (readed >= 0 && readed < 256) {
-                    sample[index++] = (byte) readed;
+                if (read >= 0 && read < 256) {
+                    sample[index++] = (byte) read;
                 }
             }
-            return readed;
-        }
-
-        @Override
-        public int read(byte[] b) throws IOException {
-            return read(b, 0, b.length);
+            return read;
         }
 
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
-            int readed = raw.read(b, off, len);
+            int read = in.read(b, off, len);
             if (index < sample.length) {
                 int toSample = Math.min(sample.length - index, len);
                 System.arraycopy(b, off, sample, index, toSample);
                 index += toSample;
             }
-            return readed;
+            return read;
         }
 
         @Override
@@ -361,36 +355,9 @@ public class ImageUtil {
                 int toSample = (int) Math.min(sample.length - index, n);
                 byte[] temp = new byte[toSample];
                 read(temp);
-//                System.arraycopy(temp, 0, sample, index, toSample);
-//                index += toSample;
-                return toSample + raw.skip(n - toSample);
+                return toSample + in.skip(n - toSample);
             }
-            return raw.skip(n);
-        }
-
-        @Override
-        public int available() throws IOException {
-            return raw.available();
-        }
-
-        @Override
-        public void close() throws IOException {
-            raw.close();
-        }
-
-        @Override
-        public void mark(int readlimit) {
-            raw.mark(readlimit);
-        }
-
-        @Override
-        public void reset() throws IOException {
-            raw.reset();
-        }
-
-        @Override
-        public boolean markSupported() {
-            return raw.markSupported();
+            return in.skip(n);
         }
 
         public byte[] getSample() {
