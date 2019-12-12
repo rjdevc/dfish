@@ -53,7 +53,7 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
     public int read(byte[] b, int off, int len) throws IOException {
         //尝试从已处理的数据中读取数据。
         int readFromOutBlock = Math.min(b.length - off, len);
-        readFromOutBlock = Math.min(readFromOutBlock - off, outBlockLen);
+        readFromOutBlock = Math.min(readFromOutBlock, outBlockLen);
         if (readFromOutBlock > 0) {
             System.arraycopy(outBlock, outBlock.length - outBlockLen, b, off, readFromOutBlock);
         }
@@ -70,7 +70,7 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
             if (inBlockLen == 0) {
                 return -1;
             } else {
-                int ret=tryRead(b,off+readBin,len,(realOut,realOutPos)->{return readTail(realOut,realOutPos);});
+                int ret=tryRead(b,off+readBin,len,true,(realOut,realOutPos)->{return readTail(realOut,realOutPos);});
                 inBlockLen=0;
                 return  ret;
             }
@@ -81,13 +81,13 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
         if (inBlockLen > 0) {
             readFromInBlock = TEXT_SIZE - inBlockLen;
             System.arraycopy(res, 0, inBlock, inBlockLen, readFromInBlock);
-            readBin += tryRead(b,off+readBin,len,(realOut,realOutPos)->{return readBlock(res,0,realOut,realOutPos);});
+            readBin += tryRead(b,off+readBin,len,false,(realOut,realOutPos)->{return readBlock(res,0,realOut,realOutPos);});
         }
         int i = readFromInBlock;
         for (; i <= readText - TEXT_SIZE; i += TEXT_SIZE) {
             int copyI=i;
             // 因为lambda中这个必须是final的，所以只能定一个变量。这个变量在过程中是没有变化的。
-            readBin += tryRead(b,off+readBin,len,(realOut,realOutPos)->{return readBlock(res,copyI,realOut,realOutPos);});
+            readBin += tryRead(b,off+readBin,len,false,(realOut,realOutPos)->{return readBlock(res,copyI,realOut,realOutPos);});
         }
         if (i > readText - TEXT_SIZE) {
             inBlockLen = readText - i;
@@ -98,7 +98,7 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
         if (readBin <= len - BIN_SIZE && inBlockLen > 0) {
             //如果有足够的空间，尝试，直接把结果压到最后一组中去
             //因为还有足够空间，这时候是不需要考虑outBlock的影响的。
-            int ret= readBin + tryRead(b,off+readBin,len,(realOut,realOutPos)->{return readTail(realOut,realOutPos);});//tryReadTail(b, off + readBin,len);
+            int ret= readBin + tryRead(b,off+readBin,len,true,(realOut,realOutPos)->{return readTail(realOut,realOutPos);});//tryReadTail(b, off + readBin,len);
             inBlockLen=0;
             return ret;
         }
@@ -114,7 +114,7 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
      * @param call
      * @return
      */
-    private int tryRead(byte[] out, int outPos, int len, ReadTask call) {
+    private int tryRead(byte[] out, int outPos, int len, boolean tail,ReadTask call) {
         byte[] realOut = out;
         int realOutPos = outPos;
         int outCap = Math.min(out.length, len) - outPos;
@@ -128,7 +128,7 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
         }
         int realRead = call.read(out,outPos);//readBlock( in, inPos,out, outPos);
         int read = Math.min(realRead, outCap);
-        outBlockLen = BIN_SIZE - read;
+        outBlockLen = (tail?realRead:BIN_SIZE) - read;
         if (toOutBlock) {
             System.arraycopy(out, 0, realOut, realOutPos, read);
         }

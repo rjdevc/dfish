@@ -56,6 +56,13 @@ public class CryptUtilTest {
 //	}
 
 	public static void main (String[] args) throws IOException {
+		Cryptor c2=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH,"DFish@RJ002474".getBytes())
+				.present(CryptUtil.PRESENT_BASE32).encoding(CryptUtil.ENCODING_UTF8).build();
+		String en2=c2.encrypt("uguess");
+		String de2=c2.decrypt(en2);
+
+
+
 		Cryptor c=CryptUtil.prepareCryptor("Blowfish","THIS_IS_".getBytes())
 				.gzip(true).encoding("UTF-8").present(CryptUtil.PRESENT_BASE64_URLSAFE).build();
 		String src="君不见，黄河之水天上来⑵，奔流到海不复回。\n" +
@@ -74,6 +81,8 @@ public class CryptUtilTest {
 		src=src+src+src+src+src+src+src+src;
 		src=src+src+src+src+src+src+src+src;
 		src=src+src;
+
+
 //		src="123456789";
 //		//凑到64K。
 		StringCryptor sc=CryptFactory.getStringCryptor("Blowfish",CryptFactory.ENCODING_UTF8_GZIP,CryptFactory.PRESENT_STYLE_BASE64,"THIS_IS_".getBytes());
