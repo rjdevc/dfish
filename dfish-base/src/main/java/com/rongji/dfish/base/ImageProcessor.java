@@ -89,8 +89,8 @@ public class ImageProcessor {
     public ImageProcessor oraginalThumbnail() throws IOException {
         tryReset();
         ExtendableBytes eb=new ExtendableBytes(new byte[0],0,source);
-        eb.ensureLenth(64);
-        if(eb.getSrc()[0]!=-1||eb.getSrc()[1]!=(byte) 0xD8||eb.getSrc()[2]!=-1){
+        eb.ensureLen(64);
+        if(indexOf(JPEG_BEGIN,eb.getSrc(),0,64)!=0){
             //不是JPEG 不再处理缩略图。
             sourceRead=true;
             return null;
@@ -105,10 +105,22 @@ public class ImageProcessor {
                 break;
             }
             start=jb.end;
-            System.out.println(JpegChunk.getTypeName(jb.type) +" size="+(jb.end-jb.start));
-            if(jb.type==JpegChunk.EXIF){
+            if(jb.type>=JpegChunk.APP0&&jb.type<=JpegChunk.APP15){
                 //EXIF 帧 中有很大几率有缩略图
-
+                int MAX_OFF=8;
+                int endPos=indexOf(JPEG_END,jb.src,jb.end-MAX_OFF,MAX_OFF);
+                if(endPos<0){
+                    //在最后8位里面找图片结束符号,如果没找到则忽略
+                    //有的时候结束符号会以 FF D9 00 00 来结束的而不是总是最后一个。
+                    continue;
+                }
+                int boi= indexOf(JPEG_BEGIN,jb.src,jb.start,jb.end-jb.start);
+                if(boi> 0){
+                    thumbData=jb.src;
+                    thumbOff=jb.start+boi;
+                    thumbLen=jb.end-MAX_OFF+JPEG_END.length+endPos-thumbOff;
+                    break;
+                }
             }else if(jb.type==JpegChunk.SOS){
                 //找到扫描帧还没找到缩略图，这个图片很可能没有缩略图。
                 break;
@@ -121,6 +133,29 @@ public class ImageProcessor {
         }
         return null;
     }
+
+    private static int indexOf(byte[] feature, byte[] bytes, int off, int len) {
+
+            byte first = feature[0];
+            int max = off + len - feature.length;
+            for (int i = off ; i <= max; i++) {
+                if (bytes[i] != first) {
+                    while (++i <= max && bytes[i] != first);
+                }
+                if (i <= max) {
+                    int j = i + 1;
+                    int end = j + feature.length - 1;
+                    for (int k = 1; j < end && bytes[j] == feature[k]; j++, k++);
+                    if (j == end) {
+                        return i - off;
+                    }
+                }
+            }
+            return -1;
+        }
+
+    private static final byte[] JPEG_BEGIN=new byte[]{-1,JpegChunk.SOI,-1};
+    private static final byte[] JPEG_END=new byte[]{-1,JpegChunk.EOI};
     /**
      * mark 将会记住当前image状态，并产生一个新的实例。
      * @return
@@ -808,7 +843,7 @@ public class ImageProcessor {
         static final byte APP2 =(byte)0xE2;// 各种参数
         static final byte APP13 =(byte)0xED;// 各种参数 //也可能包含有缩略图
         static final byte APP14 =(byte)0xEE;// 版权
-        static final byte APP15 =(byte)0xEE;// APP结束
+        static final byte APP15 =(byte)0xEF;// APP结束
         public static final byte COM =(byte)0xFE;// 注释
         public static String getTypeName(byte type) {
             switch (type){
@@ -850,14 +885,14 @@ public class ImageProcessor {
         public static final JpegChunk HEAD=new JpegChunk(null,0,0);
 
         public static JpegChunk readNextJpegChunk(ExtendableBytes eb, int start)throws IOException{
-//            js.ensureLenth(start+2);//至少两个字节才够读取下一个chunk的标题。
+//            js.ensureLen(start+2);//至少两个字节才够读取下一个chunk的标题。
 //            byte[] src=js.src;
-            eb.ensureLenth(start+2);
+            eb.ensureLen(start+2);
             JpegChunk jb=  new JpegChunk(eb.getSrc(),start,0);
             //首位固定是FF
             jb.type=eb.getSrc()[jb.start+1];
             while(jb.type== JpegChunk.MAGIC){ //跳过连续的0xFF
-                eb.ensureLenth(jb.start+2);
+                eb.ensureLen(jb.start+2);
                 jb.type=eb.getSrc()[++jb.start+1];
             }
             int length;
@@ -865,12 +900,11 @@ public class ImageProcessor {
                 case JpegChunk.EOI:
                 case JpegChunk.SOI:
                     jb.end=jb.start+2;//结束节点
-                    jb.src=eb.getSrc();
                     return jb;
                 default:
-                    length= readShortBigEndian(eb.getSrc(),jb.start+2); ;
+                    length= readShortBigEndian(eb.getSrc(),jb.start+2);
                     jb.end=jb.start+2+length;
-                    eb.ensureLenth(jb.end);
+                    eb.ensureLen(jb.end);
                     jb.src=eb.getSrc();
                     return jb;
             }
@@ -879,7 +913,7 @@ public class ImageProcessor {
             return ((src[pos]&0xFF)<<8)|(src[pos+1]&0xFF);
         }
     }
-    public static class ExtendableBytes {
+    protected static class ExtendableBytes {
         byte[] src;
         int read;
         InputStream source;
@@ -891,21 +925,21 @@ public class ImageProcessor {
             this.read=read;
             this.source=source;
         }
-        public void ensureLenth(int len)throws IOException{
+        public void ensureLen(int len)throws IOException{
             if(read>=len){
                 return;
             }
             byte[]buff=new byte[8192];
             ByteArrayOutputStream baos=new ByteArrayOutputStream();
-            int woring=read;
-            while(woring<len){
+            int working=read;
+            while(working<len){
                 int r=source.read(buff);
                 if(r==-1){
                     source.close();
                     throw new RuntimeException("jpeg file broken");
                 }
                 baos.write(buff,0,r);
-                woring+=r;
+                working+=r;
             }
             byte[] newBytes= baos.toByteArray();
             byte[] newSrc=new byte[read+newBytes.length];

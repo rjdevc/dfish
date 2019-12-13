@@ -33,10 +33,10 @@ public class ImageProcessorTest {
 //        }else {
 //            //FileUtil.copyFile()
 //        }
-        ImageProcessor oper2=ImageProcessor.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000313.JPG"));
+        ImageProcessor oper2=ImageProcessor.of(new FileInputStream("E:\\王芳照片\\北大毕业_20191119123107.jpg"));
         ImageProcessor jpegThumb=oper2.oraginalThumbnail();
         if(jpegThumb!=null){
-            jpegThumb.saveAs(new FileOutputStream("C:\\Users\\LinLW\\Desktop\\originalThumbnail.jpg"));
+            jpegThumb.saveAs(new FileOutputStream("C:\\Users\\Administrator\\Desktop\\originalThumbnail.jpg"));
         }
 
 
