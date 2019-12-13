@@ -366,18 +366,28 @@ public class ImageUtil {
     }
 
     public static class ImageOperation {
-        //FIXME 等比例缩放后，补白(透明)
-        //FIXME 文字水印 //图片水印
+        //FIXME 文字水印 图片水印
         //FIXME 剪切
         //FIXME 快速获得图片的大小（不启动BufferedImage）
+        //FIXME 尝试获得JPG原始缩略图（不启动BufferedImage）
         private InputStream source;
+        private BufferedImage image;
         private List<ImageCallBack> works;
-        private boolean sourceRead=false;
         private String realType;
 
         public ImageOperation(InputStream source){
             this.source=source;
             works=new ArrayList<>();
+        }
+        public ImageOperation(BufferedImage image){
+            this.image=image;
+            works=new ArrayList<>();
+        }
+        public static ImageOperation of(InputStream source){
+            return new ImageOperation(source);
+        }
+        public static ImageOperation of(BufferedImage image){
+            return new ImageOperation(image);
         }
 
         /**
@@ -387,111 +397,318 @@ public class ImageUtil {
          * @return
          */
         public ImageOperation resize(int width, int height)  {
-           return executeWorks(new ResizeCallBack(width,height));
+           return schedule((image,oper)->{
+               BufferedImage destImage = new BufferedImage(width, height, image.getType());
+               // 获取画笔工具
+               Graphics g = destImage.getGraphics();
+               g.drawImage(image, 0, 0, width, height, null);
+               g.dispose();
+               return destImage;
+           });
         }
 
         /**
          * 等比例缩放到不大于指定高宽
-         * @param width
-         * @param height
+         * @param maxWidth
+         * @param maxHeight
          * @return
          */
-        public ImageOperation zoomNotBiggerThan(int width, int height)  {
-            return executeWorks((image, oper)->{
-                double widthScale = new Double(width) / image.getWidth();
-                double heightScale = new Double(height) / image.getHeight();
-                if(widthScale>=1.0 && heightScale>=1.0){
-                    return image; //无需缩放
-                }
-                double rate=Math.min(widthScale,heightScale);
-                int fixedWidth=(int)(image.getWidth() *rate+0.5);
-                int fixedHeight=(int)(image.getHeight() *rate+0.5);
-                return new ResizeCallBack(fixedWidth,fixedHeight).execute(image,oper);
-            });
+        public ImageOperation zoomNotBiggerThan(int maxWidth, int maxHeight)  {
+            ZoomCallBack zcb=new ZoomCallBack();
+            zcb.setMaxHeight(maxHeight);
+            zcb.setMaxWidth(maxWidth);
+            return schedule(zcb);
         }
 
         /**
          * 等比例缩放到不小于高宽
-         * @param width
-         * @param height
+         * @param minWidth
+         * @param minHeight
          * @return
          */
-        public ImageOperation zoomNotSmallThan(int width, int height)  {
-            return executeWorks((image, oper)->{
-                double widthScale = new Double(width) / image.getWidth();
-                double heightScale = new Double(height) / image.getHeight();
-                if(widthScale<=1.0 && heightScale<=1.0){
-                    return image; //无需缩放
-                }
-                double rate=Math.max(widthScale,heightScale);
-                int fixedWidth=(int)(image.getWidth() *rate+0.5);
-                int fixedHeight=(int)(image.getHeight() *rate+0.5);
-                return new ResizeCallBack(fixedWidth,fixedHeight).execute(image,oper);
-            });
+        public ImageOperation zoomNotSmallThan(int minWidth, int minHeight)  {
+            ZoomCallBack zcb=new ZoomCallBack();
+            zcb.setMinHeight(minHeight);
+            zcb.setMinWidth(minWidth);
+            return schedule(zcb);
+
         }
 
-        public ImageOperation executeWorks(ImageCallBack callBack)  {
+        public ImageOperation schedule(ImageCallBack callBack)  {
             works.add(callBack);
             return this;
         }
         public void saveAs(OutputStream target) throws Exception {
-            saveAs(target,this.realType);
+            saveAs(target,null);
         }
         public void saveAs(OutputStream target,String imageType) throws Exception {
             works.add((image, oper)->{
-                ImageIO.write(image, imageType, target);
+                String realType=imageType==null?this.realType:imageType;
+                ImageIO.write(image, realType, target);
+                target.close();//FIXME 安全关闭。
                 return image;
             });
             executeWorks();
         }
-        protected void executeWorks()throws Exception{
-            if(sourceRead&&!source.markSupported()){
-                throw new UnsupportedOperationException(
-                        "同一个ImputStream只能执行一次操作。如果需要重复执行，需要InputStream 可以被重置(markSupported=true)。" +
-                        "ByteArrayInputStream 就是一种。或者你可以重新创建一个操作。");
-            }
-            //read imag
-            ImageTypeDeligate itd = new ImageTypeDeligate(source);
-            BufferedImage image = ImageIO.read(itd);
-            sourceRead=true;
-            this.realType=itd.getImageTypeName();
+        public ImageOperation mark()throws Exception{
+            readImageFromIn();
+            BufferedImage working=image;
             for(ImageCallBack callBack:works){
-                image =callBack.execute(image,this);
+                working =callBack.execute(working,this);
+            }
+            return ImageOperation.of(working);
+        }
+        private void readImageFromIn()throws IOException{
+            if(image==null) {
+                //read imag
+                ImageTypeDeligate itd = new ImageTypeDeligate(source);
+                image = ImageIO.read(itd);
+                itd.close();//FIXME 安全关闭。
+                this.realType = itd.getImageTypeName();
+            }
+        }
+        protected void executeWorks()throws Exception{
+            readImageFromIn();
+            BufferedImage working=image;
+            for(ImageCallBack callBack:works){
+                working =callBack.execute(working,this);
             }
         }
     }
-    public static class ResizeCallBack implements ImageCallBack{
-        int width;
-        int height;
-        public ResizeCallBack(int width, int height){
-            this .width=width;
-            this.height=height;
+
+    /**
+     * 等比例缩放
+     */
+    public static class ZoomCallBack implements ImageCallBack{
+        Integer maxWidth;
+        Integer maxHeight;
+        Integer minWidth;
+        Integer minHeight;
+        boolean zoomOutIfTooSmall=false;
+        Double maxRate;
+        Double fixRate;
+        Color padColor;
+
+        public Integer getMaxWidth() {
+            return maxWidth;
+        }
+
+        public void setMaxWidth(Integer maxWidth) {
+            this.maxWidth = maxWidth;
+        }
+
+        public Integer getMaxHeight() {
+            return maxHeight;
+        }
+
+        public void setMaxHeight(Integer maxHeight) {
+            this.maxHeight = maxHeight;
+        }
+
+        public Integer getMinWidth() {
+            return minWidth;
+        }
+
+        public void setMinWidth(Integer minWidth) {
+            this.minWidth = minWidth;
+        }
+
+        public Integer getMinHeight() {
+            return minHeight;
+        }
+
+        public void setMinHeight(Integer minHeight) {
+            this.minHeight = minHeight;
+        }
+        public boolean isZoomOutIfTooSmall() {
+            return zoomOutIfTooSmall;
+        }
+
+        public void setZoomOutIfTooSmall(boolean zoomOutIfTooSmall) {
+            this.zoomOutIfTooSmall = zoomOutIfTooSmall;
+        }
+
+        /**
+         * 最大比例
+         * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
+         * 这个比例设置为2 和设置为0.5是等价的。
+         * @return
+         */
+        public Double getMaxRate() {
+            return maxRate;
+        }
+
+        /**
+         * 最大比例
+         * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
+         * 这个比例设置为2 和设置为0.5是等价的。
+         * @param maxRate
+         */
+        public void setMaxRate(Double maxRate) {
+            this.maxRate = maxRate;
+        }
+
+        /**
+         * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
+         * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留4.0/3.0
+         * 可见范围也更多一些。
+         * @return
+         */
+        public Double getFixRate() {
+            return fixRate;
+        }
+
+        /**
+         * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
+         * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留1.2
+         * 可见范围也更多一些。
+         * @param fixRate
+         */
+        public void setFixRate(Double fixRate) {
+            this.fixRate = fixRate;
+        }
+
+        /**
+         * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
+         * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
+         * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
+         * @return
+         */
+        public Color getPadColor() {
+            return padColor;
+        }
+
+        /**
+         * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
+         * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
+         * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
+         * @param padColor
+         */
+        public void setPadColor(Color padColor) {
+            this.padColor = padColor;
         }
         @Override
         public BufferedImage execute(BufferedImage image, ImageOperation operation) throws Exception {
-            BufferedImage destImage = new BufferedImage(width, height, image.getType());
+            int fixedWidth=0,canvasWidth=0;
+            int fixedHeight=0,canvasHeight=0;
+            boolean needCut=false;
+            int cutX=0,cutY=0,cutW=0,cutH=0;
+            int imageWidth=image.getWidth();
+            int imageHeight=image.getHeight();
+            if(maxRate !=null){
+                double maxRateTmp= maxRate <1.0 ? 1.0/ maxRate : maxRate;
+                double nowRate =imageWidth/imageHeight;
+                nowRate = nowRate<1.0 ? 1.0/nowRate: nowRate;
+                if(nowRate>maxRateTmp){
+                    //需要剪切
+                    needCut=true;
+                    double realCutScale=maxRateTmp;
+                    if(fixRate !=null){
+                        double fixRateTemp= fixRate <1.0 ? 1.0/ fixRate : fixRate;
+                        if(fixRate <realCutScale){
+                            realCutScale=fixRateTemp;
+                        }
+                    }
+                    if(imageWidth>imageHeight){
+                        cutW=(int)(imageHeight*realCutScale+0.5);
+                        cutH=imageHeight;
+                        cutX=(imageWidth-cutW)/2;
+                        cutY=0;
+                        imageWidth=cutW;
+                    }else{
+                        cutH=(int)(imageWidth*realCutScale+0.5);
+                        cutW=imageWidth;
+                        cutY=(imageHeight-cutH)/2;
+                        cutX=0;
+                        imageHeight=cutH;
+                    }
+                }
+            }
+            if(minHeight!=null&&minWidth!=null) {
+
+                double widthScale = new Double(minWidth) / imageWidth;
+                double heightScale = new Double(minHeight) / imageHeight;
+                if (widthScale <= 1.0 && heightScale <= 1.0) {
+                    if(!needCut) {
+                        return image; //无需缩放
+                    }
+                }
+                double scale = Math.max(widthScale, heightScale);
+                canvasWidth=fixedWidth = (int) (imageWidth * scale + 0.5);
+                canvasHeight = fixedHeight=(int) (imageHeight * scale + 0.5);
+            }else if(maxHeight!=null&&maxWidth!=null){
+                double widthScale = new Double(maxWidth) / imageWidth;
+                double heightScale = new Double(maxHeight) / imageHeight;
+
+                double scale=1.0;
+                if (widthScale >= 1.0 && heightScale >= 1.0) {
+                    if(!zoomOutIfTooSmall) {
+                        if(padColor==null&&!needCut) {
+                            //无需缩放
+                            return image;
+                        }
+                        //scale=1.0;
+                    }else {
+                        scale=Math.max(widthScale, heightScale);
+                    }
+                }else {
+                    scale = Math.min(widthScale, heightScale);
+                }
+                fixedWidth = (int) (imageWidth * scale + 0.5);
+                fixedHeight = (int) (imageHeight * scale + 0.5);
+                if(padColor==null){
+                    canvasWidth=fixedWidth;
+                    canvasHeight=fixedHeight;
+                }else{
+                    canvasWidth=minWidth;
+                    canvasHeight=minHeight;
+                }
+            }
+//            System.out.println(
+//                    "调试信息，预计画布 width= "+canvasWidth+" height="+canvasWidth+
+//                            "\r\n预计需要切图 need=未完成 切图x=未完成 切图y=未完成 切图width=未完成 切图height=未完成" +
+//                            "\r\n预计图像大小为 width="+fixedWidth+" height="+minHeight);
+
+            BufferedImage destImage = new BufferedImage(canvasWidth, canvasHeight, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
-            g.drawImage(image, 0, 0, width, height, null);
+            if(padColor!=null){
+                g.setColor(padColor);
+                g.fillRect(0,0,canvasWidth,canvasHeight);
+            }
+            if(needCut){
+                image=image.getSubimage(cutX,cutY,cutW,cutH);
+            }
+            g.drawImage(image, (canvasWidth-fixedWidth)/2, (canvasHeight-fixedHeight)/2,
+                    fixedWidth, fixedHeight, null);
             g.dispose();
             return destImage;
         }
+
     }
+
     public interface ImageCallBack{
         BufferedImage execute(BufferedImage image,ImageOperation operation) throws Exception;
     }
-//    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 //        long begin=System.currentTimeMillis();
-//        BufferedImage rawImage = ImageIO.read(new FileInputStream("E:\\王芳照片\\北大毕业_20191119123107.jpg"));
+//        BufferedImage rawImage = ImageIO.read(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
 //        showTime("after readImage",begin);
 //        Graphics g=rawImage.getGraphics();
 //        showTime("after getGraphics",begin);
-//
-//    }
-//
-//    private static void showTime(String msg,long begin) {
-//        long cost=System.currentTimeMillis()-begin;
-//        System.out.println(cost+"ms: "+msg);
-//    }
+        ImageUtil.ImageOperation oper=ImageUtil.ImageOperation.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
+//        ZoomCallBack zoomCallBack=new ZoomCallBack();
+//        zoomCallBack.setMaxWidth(200);
+//        zoomCallBack.setMaxHeight(200);
+//        oper.schedule(zoomCallBack);
+        oper.zoomNotBiggerThan(200,200);
+        oper.saveAs(new FileOutputStream("C:\\Users\\LinLW\\Desktop\\test.jpg"));
+
+    }
+
+    private static void showTime(String msg,long begin) {
+        long cost=System.currentTimeMillis()-begin;
+        System.out.println(cost+"ms: "+msg);
+    }
 
 }
