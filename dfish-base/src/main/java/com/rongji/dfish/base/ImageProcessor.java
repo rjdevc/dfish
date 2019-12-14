@@ -1,5 +1,6 @@
 package com.rongji.dfish.base;
 
+import com.rongji.dfish.base.util.ByteArrayUtil;
 import com.rongji.dfish.base.util.LogUtil;
 
 import javax.imageio.ImageIO;
@@ -88,9 +89,9 @@ public class ImageProcessor {
      */
     public ImageProcessor oraginalThumbnail() throws IOException {
         tryReset();
-        ExtendableBytes eb=new ExtendableBytes(new byte[0],0,source);
+        ExtendableBytes eb=new ExtendableBytes(null,0,source);
         eb.ensureLen(64);
-        if(indexOf(JPEG_BEGIN,eb.getSrc(),0,64)!=0){
+        if(ByteArrayUtil.indexOf(eb.getBytes(),0,64,JPEG_BEGIN)!=0){
             //不是JPEG 不再处理缩略图。
             sourceRead=true;
             return null;
@@ -108,13 +109,13 @@ public class ImageProcessor {
             if(jb.type>=JpegChunk.APP0&&jb.type<=JpegChunk.APP15){
                 //EXIF 帧 中有很大几率有缩略图
                 int MAX_OFF=8;
-                int endPos=indexOf(JPEG_END,jb.src,jb.end-MAX_OFF,MAX_OFF);
+                int endPos=ByteArrayUtil.indexOf(jb.src,jb.end-MAX_OFF,MAX_OFF,JPEG_END);
                 if(endPos<0){
                     //在最后8位里面找图片结束符号,如果没找到则忽略
                     //有的时候结束符号会以 FF D9 00 00 来结束的而不是总是最后一个。
                     continue;
                 }
-                int boi= indexOf(JPEG_BEGIN,jb.src,jb.start,jb.end-jb.start);
+                int boi= ByteArrayUtil.indexOf(jb.src,jb.start,jb.end-jb.start,JPEG_BEGIN);
                 if(boi> 0){
                     thumbData=jb.src;
                     thumbOff=jb.start+boi;
@@ -134,25 +135,7 @@ public class ImageProcessor {
         return null;
     }
 
-    private static int indexOf(byte[] feature, byte[] bytes, int off, int len) {
 
-            byte first = feature[0];
-            int max = off + len - feature.length;
-            for (int i = off ; i <= max; i++) {
-                if (bytes[i] != first) {
-                    while (++i <= max && bytes[i] != first);
-                }
-                if (i <= max) {
-                    int j = i + 1;
-                    int end = j + feature.length - 1;
-                    for (int k = 1; j < end && bytes[j] == feature[k]; j++, k++);
-                    if (j == end) {
-                        return i - off;
-                    }
-                }
-            }
-            return -1;
-        }
 
     private static final byte[] JPEG_BEGIN=new byte[]{-1,JpegChunk.SOI,-1};
     private static final byte[] JPEG_END=new byte[]{-1,JpegChunk.EOI};
@@ -355,16 +338,16 @@ public class ImageProcessor {
 
         public int getImageType() {
             byte[] sample = getSample();
-            if (match(sample, ImageInfo.JPEG_FEATURE)) {
+            if (ByteArrayUtil.startsWith(sample, ImageInfo.HEAD_JPEG)) {
                 return ImageInfo.TYPE_JPEG;
             }
-            if (match(sample, ImageInfo.PNG_FEATURE)) {
+            if (ByteArrayUtil.startsWith(sample, ImageInfo.HEAD_PNG)) {
                 return ImageInfo.TYPE_PNG;
             }
-            if (match(sample, ImageInfo.GIF_FEATURE)) {
+            if (ByteArrayUtil.startsWith(sample, ImageInfo.HEAD_GIF)) {
                 return ImageInfo.TYPE_GIF;
             }
-            if (match(sample, ImageInfo.BMP_FEATURE)) {
+            if (ByteArrayUtil.startsWith(sample, ImageInfo.HEAD_BMP)) {
                 return ImageInfo.TYPE_BMP;
             }
             return ImageInfo.TYPE_UNKNOWN;
@@ -373,18 +356,6 @@ public class ImageProcessor {
         public String getImageTypeName() {
             return ImageInfo.TYPE_NAMES[getImageType()];
         }
-
-        private boolean match(byte[] sample, byte[] feature) {
-            int len = Math.min(sample.length, feature.length);
-            for (int i = 0; i < len; i++) {
-                if (sample[i] != feature[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
     }
 
     /**
@@ -670,18 +641,18 @@ public class ImageProcessor {
         public static final int TYPE_JPEG = 3;
         public static final int TYPE_PNG = 4;
         private static final String[] TYPE_NAMES = {"unknown", "bmp", "gif", "jpg", "png"};
-        private static final byte[] JPEG_FEATURE = new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
-        private static final byte[] PNG_FEATURE = new byte[]{(byte) 0x89, (byte) 'P', (byte) 'N', (byte) 'G'};
-        private static final byte[] GIF_FEATURE = new byte[]{(byte) 'G', (byte) 'I', (byte) 'F'};
-        private static final byte[] BMP_FEATURE = new byte[]{(byte) 'B', (byte) 'M'};
-
+        public static final byte[] HEAD_JPEG = new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+        public static final byte[] HEAD_PNG = new byte[]{(byte) 0x89, (byte) 'P', (byte) 'N', (byte) 'G'};
+        public static final byte[] HEAD_GIF = new byte[]{(byte) 'G', (byte) 'I', (byte) 'F'};
+        public static final byte[] HEAD_BMP = new byte[]{(byte) 'B', (byte) 'M'};
+        public static final ImageInfo UNKNOWN=new ImageInfo();
 
         private int width;
         private int height;
         private int type;
 
         public static ImageInfo of(InputStream source) throws IOException {
-            ImageInfo ii=new ImageInfo();
+
             //尝试读取8K字节。 判断是什么数据类型，
             //如果是PNG/BMP/GIF 则直接读取信息。
             //如果是JPG
@@ -691,14 +662,14 @@ public class ImageProcessor {
             byte[] buff=new byte[8192];
             try {
                 int read = source.read(buff);
-                if (startsWith(buff, JPEG_FEATURE)) {
-                    readJpegInfo(buff,read,source, ii);
-                } else if (startsWith(buff, PNG_FEATURE)) {
-                    readPngInfo(buff,read, ii);
-                } else if (startsWith(buff, GIF_FEATURE)) {
-                    readGifInfo(buff ,read, ii);
-                } else if (startsWith(buff, BMP_FEATURE)) {
-                    readBmpInfo(buff,read, ii);
+                if (ByteArrayUtil.startsWith(buff, HEAD_JPEG)) {
+                    return readJpegInfo(buff,read,source);
+                } else if (ByteArrayUtil.startsWith(buff, HEAD_PNG)) {
+                    return readPngInfo(buff,read);
+                } else if (ByteArrayUtil.startsWith(buff, HEAD_GIF)) {
+                    return readGifInfo(buff ,read);
+                } else if (ByteArrayUtil.startsWith(buff, HEAD_BMP)) {
+                    return readBmpInfo(buff,read);
                 }
             }catch(IOException ex){
                 throw ex;
@@ -707,7 +678,7 @@ public class ImageProcessor {
                     source.close();
                 }catch (IOException ex){ }
             }
-            return ii;
+            return ImageInfo.UNKNOWN;
         }
 
         public int getWidth() {
@@ -740,53 +711,49 @@ public class ImageProcessor {
             return TYPE_NAMES[type];
         }
 
-        private static boolean startsWith(byte[] sample, byte[] feature) {
-            return startsWith(sample,0,feature);
-        }
-        protected static boolean startsWith(byte[] sample,int offset, byte[] feature) {
-            int len = Math.min(sample.length-offset, feature.length);
-            for (int i = 0; i < len; i++) {
-                if (sample[i+offset] != feature[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
 
-        private static void readBmpInfo(byte[] src,int read,ImageInfo ii) {
+
+        private static ImageInfo readBmpInfo(byte[] src,int read) {
             if (read < 30) {
-                ii.setType(TYPE_UNKNOWN);
+                return  ImageInfo.UNKNOWN;
             }else {
+                ImageInfo ii=new ImageInfo();
                 ii.setType(TYPE_BMP);
-                ii.setWidth(readShortLittleEndian(src, 18));
-                int height = readShortLittleEndian(src, 22);
+                ii.setWidth(ByteArrayUtil.readShortLittleEndian(src, 18));
+                int height = ByteArrayUtil.readShortLittleEndian(src, 22);
                 if (height < 0) {
                     height = -height;
                 }
                 ii.setHeight(height);
+                return ii;
             }
         }
-        private static void readGifInfo(byte[] src,int read,ImageInfo ii) {
+        private static ImageInfo readGifInfo(byte[] src,int read) {
             if (read < 10) {
-                ii.setType(TYPE_UNKNOWN);
+                return ImageInfo.UNKNOWN;
             }else {
+                ImageInfo ii=new ImageInfo();
                 ii.setType(TYPE_GIF);
-                ii.setHeight(readShortLittleEndian(src, 8));
-                ii.setWidth(readShortLittleEndian(src, 6));
+                ii.setHeight(ByteArrayUtil.readShortLittleEndian(src, 8));
+                ii.setWidth(ByteArrayUtil.readShortLittleEndian(src, 6));
+                return ii;
             }
         }
 
-        private static void readPngInfo(byte[] src,int read, ImageInfo ii) {
+        private static ImageInfo readPngInfo(byte[] src,int read) {
             if (read < 24) {
-                ii.setType(TYPE_UNKNOWN);
+                return ImageInfo.UNKNOWN;
             }else {
+                ImageInfo ii=new ImageInfo();
                 ii.setType(TYPE_PNG);
-                ii.setWidth(readIntBigEndian(src, 16));
-                ii.setHeight(readIntBigEndian(src, 20));
+                ii.setWidth(ByteArrayUtil.readIntBigEndian(src, 16));
+                ii.setHeight(ByteArrayUtil.readIntBigEndian(src, 20));
+                return null;
             }
         }
 
-        private static void readJpegInfo(byte[] src, int read, InputStream source, ImageInfo ii) throws IOException {
+        private static ImageInfo readJpegInfo(byte[] src, int read, InputStream source) throws IOException {
+            ImageInfo ii=new ImageInfo();
             ii.setType(TYPE_JPEG);
             int start=0;
             ExtendableBytes eb=new ExtendableBytes(src,read,source);
@@ -797,31 +764,17 @@ public class ImageProcessor {
                 }
                 start=jb.end;
                 if(jb.type==JpegChunk.SOF0){// 图片基本信息
-                    ii.setHeight(readShortBigEndian(eb.getSrc(),jb.start+5));
-                    ii.setWidth(readShortBigEndian(eb.getSrc(),jb.start+7));
+                    ii.setHeight(ByteArrayUtil.readShortBigEndian(eb.getBytes(),jb.start+5));
+                    ii.setWidth(ByteArrayUtil.readShortBigEndian(eb.getBytes(),jb.start+7));
                     break;//简单的时候就够了。
                 }
             }
             source.close();
+            return ii;
         }
 
 
-        protected static int readShortBigEndian(byte[] src, int pos) {
-            return ((src[pos]&0xFF)<<8)|(src[pos+1]&0xFF);
-        }
-        protected static int readIntBigEndian(byte[] src, int pos) {
-            return ((src[pos]&0xFF)<<24)|((src[pos+1]&0xFF)<<16)|((src[pos+2]&0xFF)<<8)|(src[pos+3]&0xFF);
-        }
-        protected static int readShortLittleEndian(byte[] src, int pos) {
-            return (src[pos]&0xFF)|((src[pos+1]&0xFF)<<8);
-        }
 
-        protected static int readIntLittleEndian(byte[] src, int pos) {
-            return (src[pos]&0xFF)|((src[pos+1]&0xFF)<<8)|((src[pos+2]&0xFF)<<16)|((src[pos+3]&0xFF)<<24);
-        }
-        protected static int readByte(byte[] src, int pos) {
-            return src[pos]&0xFF;
-        }
     }
 
     public static class JpegChunk {
@@ -874,26 +827,22 @@ public class ImageProcessor {
             this.end=end;
         }
         public boolean isEnd(){
-            if(this==HEAD){
-                return false;
-            }
             if(end-start==2&src!=null){
                 return src[end-2]==-1&& src[end-1]== SOF0;
             }
             return false;
         }
-        public static final JpegChunk HEAD=new JpegChunk(null,0,0);
 
         public static JpegChunk readNextJpegChunk(ExtendableBytes eb, int start)throws IOException{
 //            js.ensureLen(start+2);//至少两个字节才够读取下一个chunk的标题。
-//            byte[] src=js.src;
+//            byte[] bytes=js.bytes;
             eb.ensureLen(start+2);
-            JpegChunk jb=  new JpegChunk(eb.getSrc(),start,0);
+            JpegChunk jb=  new JpegChunk(eb.getBytes(),start,0);
             //首位固定是FF
-            jb.type=eb.getSrc()[jb.start+1];
+            jb.type=eb.getBytes()[jb.start+1];
             while(jb.type== JpegChunk.MAGIC){ //跳过连续的0xFF
                 eb.ensureLen(jb.start+2);
-                jb.type=eb.getSrc()[++jb.start+1];
+                jb.type=eb.getBytes()[++jb.start+1];
             }
             int length;
             switch (jb.type){
@@ -902,26 +851,23 @@ public class ImageProcessor {
                     jb.end=jb.start+2;//结束节点
                     return jb;
                 default:
-                    length= readShortBigEndian(eb.getSrc(),jb.start+2);
+                    length= ByteArrayUtil.readShortBigEndian(eb.getBytes(),jb.start+2);
                     jb.end=jb.start+2+length;
                     eb.ensureLen(jb.end);
-                    jb.src=eb.getSrc();
+                    jb.src=eb.getBytes();
                     return jb;
             }
         }
-        protected static int readShortBigEndian(byte[] src, int pos) {
-            return ((src[pos]&0xFF)<<8)|(src[pos+1]&0xFF);
-        }
     }
     protected static class ExtendableBytes {
-        byte[] src;
-        int read;
-        InputStream source;
-        public byte[] getSrc(){
-            return src;
+        private byte[] bytes;
+        private int read;
+        private InputStream source;
+        public byte[] getBytes(){
+            return bytes;
         }
-        ExtendableBytes(byte[] src, int read, InputStream source){
-            this.src =src;
+        ExtendableBytes(byte[] bytes, int read, InputStream source){
+            this.bytes = bytes;
             this.read=read;
             this.source=source;
         }
@@ -936,16 +882,18 @@ public class ImageProcessor {
                 int r=source.read(buff);
                 if(r==-1){
                     source.close();
-                    throw new RuntimeException("jpeg file broken");
+                    throw new RuntimeException("can not read enough bytes");
                 }
                 baos.write(buff,0,r);
                 working+=r;
             }
             byte[] newBytes= baos.toByteArray();
             byte[] newSrc=new byte[read+newBytes.length];
-            System.arraycopy(src,0,newSrc,0,read);
+            if(read>0) {
+                System.arraycopy(bytes, 0, newSrc, 0, read);
+            }
             System.arraycopy(newBytes,0,newSrc,read,newBytes.length);
-            this.src =newSrc;
+            this.bytes =newSrc;
             read=newSrc.length;
         }
     }
