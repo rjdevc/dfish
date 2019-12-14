@@ -2,6 +2,8 @@ package com.rongji.dfish.base;
 
 import com.rongji.dfish.base.util.ByteArrayUtil;
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.img.ImageInfo;
+import com.rongji.dfish.base.util.img.JpegInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -73,6 +75,10 @@ public class ImageProcessor {
 
     /**
      * 快速获取图形信息。这个操作一般会消耗掉InputStream
+     * 一般来说，小于2MB 的图片这个性能提升的不明显。
+     * 但如果是大于2MB的JPEG，提升就相当明显，并且有很大几率找到硬件(相机/手机)已经预设的缩略图。
+     * 在一些场景可能大大提高性能。注意，这个缩略图通常只有160*120像素上下。
+     * 如果需要更大的缩略图。也不适合使用这个方法。
      * @return ImageInfo
      */
     public ImageInfo getImageInfo() throws IOException {
@@ -84,61 +90,22 @@ public class ImageProcessor {
     }
 
     /**
-     * 尝试读取JPEG 自带的缩略图，如果没读到，将会返回空。
+     * 尝试从ImageInfo中获取缩略图的
+     * 如果没找到，可能会放回空。
+     * @param ii
      * @return
      */
-    public ImageProcessor oraginalThumbnail() throws IOException {
-        tryReset();
-        ExtendableBytes eb=new ExtendableBytes(null,0,source);
-        eb.ensureLen(64);
-        if(ByteArrayUtil.indexOf(eb.getBytes(),0,64,JPEG_BEGIN)!=0){
-            //不是JPEG 不再处理缩略图。
-            sourceRead=true;
-            return null;
-        }
-        int start=0;
-        byte[] thumbData=null;
-        int thumbOff=0,thumbLen=0;
-
-        while(true){
-            JpegChunk jb= JpegChunk.readNextJpegChunk(eb,start);
-            if(jb.isEnd()){
-                break;
+    public static ImageProcessor getThumbnail(ImageInfo ii){
+        if(ii instanceof JpegInfo){
+            JpegInfo cast=( JpegInfo)ii;
+            ByteArrayInputStream bais=cast.getThumbnail();
+            if(bais!=null){
+                return ImageProcessor.of(bais);
             }
-            start=jb.end;
-            if(jb.type>=JpegChunk.APP0&&jb.type<=JpegChunk.APP15){
-                //EXIF 帧 中有很大几率有缩略图
-                int MAX_OFF=8;
-                int endPos=ByteArrayUtil.indexOf(jb.src,jb.end-MAX_OFF,MAX_OFF,JPEG_END);
-                if(endPos<0){
-                    //在最后8位里面找图片结束符号,如果没找到则忽略
-                    //有的时候结束符号会以 FF D9 00 00 来结束的而不是总是最后一个。
-                    continue;
-                }
-                int boi= ByteArrayUtil.indexOf(jb.src,jb.start,jb.end-jb.start,JPEG_BEGIN);
-                if(boi> 0){
-                    thumbData=jb.src;
-                    thumbOff=jb.start+boi;
-                    thumbLen=jb.end-MAX_OFF+JPEG_END.length+endPos-thumbOff;
-                    break;
-                }
-            }else if(jb.type==JpegChunk.SOS){
-                //找到扫描帧还没找到缩略图，这个图片很可能没有缩略图。
-                break;
-            }
-        }
-        source.close();
-        sourceRead=true;
-        if(thumbData!=null){
-            return ImageProcessor.of(new ByteArrayInputStream(thumbData,thumbOff,thumbLen));
         }
         return null;
     }
 
-
-
-    private static final byte[] JPEG_BEGIN=new byte[]{-1,JpegChunk.SOI,-1};
-    private static final byte[] JPEG_END=new byte[]{-1,JpegChunk.EOI};
     /**
      * mark 将会记住当前image状态，并产生一个新的实例。
      * @return
@@ -634,268 +601,8 @@ public class ImageProcessor {
         BufferedImage execute(BufferedImage image,ImageProcessor processor) throws Exception;
     }
 
-    public static class ImageInfo{
-        public static final int TYPE_UNKNOWN = 0;
-        public static final int TYPE_BMP = 1;
-        public static final int TYPE_GIF = 2;
-        public static final int TYPE_JPEG = 3;
-        public static final int TYPE_PNG = 4;
-        private static final String[] TYPE_NAMES = {"unknown", "bmp", "gif", "jpg", "png"};
-        public static final byte[] HEAD_JPEG = new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
-        public static final byte[] HEAD_PNG = new byte[]{(byte) 0x89, (byte) 'P', (byte) 'N', (byte) 'G'};
-        public static final byte[] HEAD_GIF = new byte[]{(byte) 'G', (byte) 'I', (byte) 'F'};
-        public static final byte[] HEAD_BMP = new byte[]{(byte) 'B', (byte) 'M'};
-        public static final ImageInfo UNKNOWN=new ImageInfo();
-
-        private int width;
-        private int height;
-        private int type;
-
-        public static ImageInfo of(InputStream source) throws IOException {
-
-            //尝试读取8K字节。 判断是什么数据类型，
-            //如果是PNG/BMP/GIF 则直接读取信息。
-            //如果是JPG
-            // 如果是quick 模式 只返回 ImgInfo 则尝试从8K中读取需要的信息，如果读取不到，则往后读取到信息为止。
-            // 如果不是quick模式，需要返回 JpegInfo 里面应该包含ISO等扩展信息。和缩略图的信息，做图片压缩的时候可能用到上。
-            // 这时，应该先读取完整的图片字节。并取得除了图片主体信息外所有EXIF信息和缩略图的EXIF信息。
-            byte[] buff=new byte[8192];
-            try {
-                int read = source.read(buff);
-                if (ByteArrayUtil.startsWith(buff, HEAD_JPEG)) {
-                    return readJpegInfo(buff,read,source);
-                } else if (ByteArrayUtil.startsWith(buff, HEAD_PNG)) {
-                    return readPngInfo(buff,read);
-                } else if (ByteArrayUtil.startsWith(buff, HEAD_GIF)) {
-                    return readGifInfo(buff ,read);
-                } else if (ByteArrayUtil.startsWith(buff, HEAD_BMP)) {
-                    return readBmpInfo(buff,read);
-                }
-            }catch(IOException ex){
-                throw ex;
-            }finally {
-                try {
-                    source.close();
-                }catch (IOException ex){ }
-            }
-            return ImageInfo.UNKNOWN;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public void setType(int type) {
-            this.type = type;
-        }
-        public String getTypeName() {
-            if(getType()<0||getType()>=TYPE_NAMES.length){
-                setType(0);
-            }
-            return TYPE_NAMES[type];
-        }
 
 
 
-        private static ImageInfo readBmpInfo(byte[] src,int read) {
-            if (read < 30) {
-                return  ImageInfo.UNKNOWN;
-            }else {
-                ImageInfo ii=new ImageInfo();
-                ii.setType(TYPE_BMP);
-                ii.setWidth(ByteArrayUtil.readShortLittleEndian(src, 18));
-                int height = ByteArrayUtil.readShortLittleEndian(src, 22);
-                if (height < 0) {
-                    height = -height;
-                }
-                ii.setHeight(height);
-                return ii;
-            }
-        }
-        private static ImageInfo readGifInfo(byte[] src,int read) {
-            if (read < 10) {
-                return ImageInfo.UNKNOWN;
-            }else {
-                ImageInfo ii=new ImageInfo();
-                ii.setType(TYPE_GIF);
-                ii.setHeight(ByteArrayUtil.readShortLittleEndian(src, 8));
-                ii.setWidth(ByteArrayUtil.readShortLittleEndian(src, 6));
-                return ii;
-            }
-        }
-
-        private static ImageInfo readPngInfo(byte[] src,int read) {
-            if (read < 24) {
-                return ImageInfo.UNKNOWN;
-            }else {
-                ImageInfo ii=new ImageInfo();
-                ii.setType(TYPE_PNG);
-                ii.setWidth(ByteArrayUtil.readIntBigEndian(src, 16));
-                ii.setHeight(ByteArrayUtil.readIntBigEndian(src, 20));
-                return null;
-            }
-        }
-
-        private static ImageInfo readJpegInfo(byte[] src, int read, InputStream source) throws IOException {
-            ImageInfo ii=new ImageInfo();
-            ii.setType(TYPE_JPEG);
-            int start=0;
-            ExtendableBytes eb=new ExtendableBytes(src,read,source);
-            while(true){
-                JpegChunk jb= JpegChunk.readNextJpegChunk(eb,start);
-                if(jb.isEnd()){
-                    break;
-                }
-                start=jb.end;
-                if(jb.type==JpegChunk.SOF0){// 图片基本信息
-                    ii.setHeight(ByteArrayUtil.readShortBigEndian(eb.getBytes(),jb.start+5));
-                    ii.setWidth(ByteArrayUtil.readShortBigEndian(eb.getBytes(),jb.start+7));
-                    break;//简单的时候就够了。
-                }
-            }
-            source.close();
-            return ii;
-        }
-
-
-
-    }
-
-    public static class JpegChunk {
-        static final byte MAGIC =(byte)0xFF;
-        public static final byte SOI =(byte)0xD8;//文件头
-        public static final byte EOI =(byte)0xD9;//文件尾
-        public static final byte SOS =(byte)0xDA;// 扫描行开始
-        public static final byte DQT =(byte)0xDB;// 定义量化表
-        public static final byte DRI =(byte)0xDD;// 定义重新开始间隔//99
-
-        public static final byte SOF0 =(byte)0xC0;//帧开始（标准 JPEG）
-        public static final byte SOF1 =(byte)0xC1;//帧开始（标准 JPEG）
-        public static final byte DHT =(byte)0xC4;//定义 Huffman 表（霍夫曼表）
-
-        public static final byte APP0 =(byte)0xE0;// 定义交换格式和图像识别信息
-        // E1-EF 相当于 APP 1-15 各种扩展应用 APP1 通常为EXIF 信息
-        public static final byte EXIF =(byte)0xE1;// EXIF 信息 可能包含有缩略图
-        static final byte APP1 =(byte)0xE1;// EXIF 信息 可能包含有缩略图 同EXIF
-        static final byte APP2 =(byte)0xE2;// 各种参数
-        static final byte APP13 =(byte)0xED;// 各种参数 //也可能包含有缩略图
-        static final byte APP14 =(byte)0xEE;// 版权
-        static final byte APP15 =(byte)0xEF;// APP结束
-        public static final byte COM =(byte)0xFE;// 注释
-        public static String getTypeName(byte type) {
-            switch (type){
-                case SOI: return "SOI";
-                case EOI: return "EOI";
-                case SOS: return "SOS";
-                case DQT: return "DQT";
-                case DRI: return "DRI";
-                case SOF0: return "SOF0";
-                case SOF1: return "SOF1";
-                case DHT: return "DHT";
-                case EXIF: return "EXIF";
-                case COM: return "COM";
-                default:
-                    if(type>=APP0&type<=APP15){
-                        return "APP"+(type-APP0);
-                    }
-                    return Integer.toHexString(type&0xFF).toUpperCase();
-            }
-        }
-        // 原文链接：https://blog.csdn.net/yun_hen/article/details/78135122
-        public byte[]src;
-        public int start,end;
-        public byte type;
-        public JpegChunk(byte[] src, int start, int end){
-            this.src=src;
-            this.start=start;
-            this.end=end;
-        }
-        public boolean isEnd(){
-            if(end-start==2&src!=null){
-                return src[end-2]==-1&& src[end-1]== SOF0;
-            }
-            return false;
-        }
-
-        public static JpegChunk readNextJpegChunk(ExtendableBytes eb, int start)throws IOException{
-//            js.ensureLen(start+2);//至少两个字节才够读取下一个chunk的标题。
-//            byte[] bytes=js.bytes;
-            eb.ensureLen(start+2);
-            JpegChunk jb=  new JpegChunk(eb.getBytes(),start,0);
-            //首位固定是FF
-            jb.type=eb.getBytes()[jb.start+1];
-            while(jb.type== JpegChunk.MAGIC){ //跳过连续的0xFF
-                eb.ensureLen(jb.start+2);
-                jb.type=eb.getBytes()[++jb.start+1];
-            }
-            int length;
-            switch (jb.type){
-                case JpegChunk.EOI:
-                case JpegChunk.SOI:
-                    jb.end=jb.start+2;//结束节点
-                    return jb;
-                default:
-                    length= ByteArrayUtil.readShortBigEndian(eb.getBytes(),jb.start+2);
-                    jb.end=jb.start+2+length;
-                    eb.ensureLen(jb.end);
-                    jb.src=eb.getBytes();
-                    return jb;
-            }
-        }
-    }
-    protected static class ExtendableBytes {
-        private byte[] bytes;
-        private int read;
-        private InputStream source;
-        public byte[] getBytes(){
-            return bytes;
-        }
-        ExtendableBytes(byte[] bytes, int read, InputStream source){
-            this.bytes = bytes;
-            this.read=read;
-            this.source=source;
-        }
-        public void ensureLen(int len)throws IOException{
-            if(read>=len){
-                return;
-            }
-            byte[]buff=new byte[8192];
-            ByteArrayOutputStream baos=new ByteArrayOutputStream();
-            int working=read;
-            while(working<len){
-                int r=source.read(buff);
-                if(r==-1){
-                    source.close();
-                    throw new RuntimeException("can not read enough bytes");
-                }
-                baos.write(buff,0,r);
-                working+=r;
-            }
-            byte[] newBytes= baos.toByteArray();
-            byte[] newSrc=new byte[read+newBytes.length];
-            if(read>0) {
-                System.arraycopy(bytes, 0, newSrc, 0, read);
-            }
-            System.arraycopy(newBytes,0,newSrc,read,newBytes.length);
-            this.bytes =newSrc;
-            read=newSrc.length;
-        }
-    }
 
 }

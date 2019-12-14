@@ -1,6 +1,7 @@
 package com.rongji.dfish.base;
 
 import com.rongji.dfish.base.util.FileUtil;
+import com.rongji.dfish.base.util.img.ImageInfo;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,8 +34,9 @@ public class ImageProcessorTest {
 //        }else {
 //            //FileUtil.copyFile()
 //        }
-        ImageProcessor oper2=ImageProcessor.of(new FileInputStream("E:\\王芳照片\\北大毕业_20191119123107.jpg"));
-        ImageProcessor jpegThumb=oper2.oraginalThumbnail();
+        ImageProcessor oper2=ImageProcessor.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
+        ImageInfo ii=oper2.getImageInfo();
+        ImageProcessor jpegThumb=ImageProcessor.getThumbnail(ii);
         if(jpegThumb!=null){
             jpegThumb.saveAs(new FileOutputStream("C:\\Users\\Administrator\\Desktop\\originalThumbnail.jpg"));
         }
