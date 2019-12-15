@@ -35,6 +35,7 @@ public class JpegInfo extends ImageInfo {
                 ji.setWidth(ByteArrayUtil.readShortBigEndian(eb.getBytes(),jb.start+7));
             }else if(jb.type==JpegChunk.EXIF){
                 //EXIF 帧 中有很大几率有缩略图
+                // 这种做法有较大的几率出问题。
                 int MAX_OFF=8;
                 int endPos=ByteArrayUtil.indexOf(jb.src,jb.end-MAX_OFF,MAX_OFF,JPEG_END);
                 if(endPos<0){
@@ -196,9 +197,6 @@ public class JpegInfo extends ImageInfo {
             this.len =newSrc.length;
         }
     }
-
-
-
 
     private static final byte[] JPEG_BEGIN=new byte[]{-1,JpegChunk.SOI,-1};
     private static final byte[] JPEG_END=new byte[]{-1,JpegChunk.EOI};

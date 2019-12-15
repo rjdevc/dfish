@@ -5,6 +5,9 @@ import com.rongji.dfish.base.util.ByteArrayUtil;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 图片的基本信息，主要是图片的真实类型，高度和宽度
+ */
 public class ImageInfo{
     public static final int TYPE_UNKNOWN = 0;
     public static final int TYPE_BMP = 1;
@@ -22,6 +25,12 @@ public class ImageInfo{
     private int height;
     private int type;
 
+    /**
+     * 从 InputString 中读取图片基本信息
+     * @param source InputStream
+     * @return ImageInfo
+     * @throws IOException
+     */
     public static ImageInfo of(InputStream source) throws IOException {
 
         //尝试读取8K字节。 判断是什么数据类型，
@@ -81,7 +90,6 @@ public class ImageInfo{
         }
         return TYPE_NAMES[type];
     }
-
 
 
     private static ImageInfo readBmpInfo(byte[] src,int read) {

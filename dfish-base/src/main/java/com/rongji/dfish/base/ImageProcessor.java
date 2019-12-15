@@ -34,6 +34,7 @@ public class ImageProcessor {
         this.image=image;
         works=new ArrayList<>();
     }
+
     public static ImageProcessor of(InputStream source){
         return new ImageProcessor(source);
     }
@@ -53,18 +54,36 @@ public class ImageProcessor {
         }
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
         byte[] buff=new byte[8192];
-        int read=0;
-        while ((read=source.read(buff))>=0){
-            baos.write(buff,0,read);
+        int read;
+        try {
+            while ((read = source.read(buff)) >= 0) {
+                baos.write(buff, 0, read);
+            }
+        }catch (IOException iex){
+            throw iex;
+        }finally {
+            if(source!=null) {
+                source.close();
+            }
         }
-        source.close();
         source=new ByteArrayInputStream(baos.toByteArray());
         return this;
     }
+
+    /**
+     * 安排一个Callback动作，动作将在准备好前后文后执行。
+     * @param callback 动作
+     * @return 本身
+     */
     public ImageProcessor schedule(ImageCallback callback)  {
         works.add(callback);
         return this;
     }
+
+    /**
+     *  执行所有安排好的callback动作。
+     * @throws Exception
+     */
     protected void executeWorks()throws Exception{
         readImageFromIn();
         BufferedImage working=image;
@@ -91,7 +110,7 @@ public class ImageProcessor {
 
     /**
      * 尝试从ImageInfo中获取缩略图的
-     * 如果没找到，可能会放回空。
+     * 如果没找到，可能会返回空。
      * @param ii
      * @return
      */
@@ -193,11 +212,19 @@ public class ImageProcessor {
         if(image==null) {
             tryReset();
             //read imag
-            ImageTypeDeligate itd = new ImageTypeDeligate(source);
-            image = ImageIO.read(itd);
-            itd.close();//FIXME 安全关闭。
-            sourceRead=true;
-            this.realType = itd.getImageTypeName();
+            try {
+                ImageTypeDeligate itd = new ImageTypeDeligate(source);
+                image = ImageIO.read(itd);
+//                itd.close();
+                sourceRead=true;
+                this.realType = itd.getImageTypeName();
+            }catch (IOException iex){
+                throw iex;
+            }finally {
+                if(source!=null){
+                    source.close();
+                }
+            }
         }
     }
     private void tryReset() throws IOException {
@@ -286,21 +313,28 @@ public class ImageProcessor {
     public void saveAs(OutputStream target,String imageType) throws Exception {
         works.add((image, oper)->{
             String realType=imageType==null?this.realType:imageType;
-            ImageIO.write(image, realType, target);
-            target.close();//FIXME 安全关闭。
-            return image;
+            try {
+                ImageIO.write(image, realType, target);
+                return image;
+            }catch (IOException iex){
+                throw iex;
+            }finally {
+                if(target!=null) {
+                    target.close();
+                }
+            }
         });
         executeWorks();
     }
 
-
-
-
-
+    /**
+     * 代理类，这个代理类类读取图片的时候，将留下4个字节做为样本。
+     * 并根据这个前面的4个字节得到图片的类型。
+     */
     static class ImageTypeDeligate extends SampleDeligate {
 
-        public ImageTypeDeligate(InputStream raw) {
-            super(raw, 4);
+        public ImageTypeDeligate(InputStream in) {
+            super(in, 4);
         }
 
         public int getImageType() {
@@ -396,41 +430,82 @@ public class ImageProcessor {
         Double fixRate;
         Color padColor;
 
+        /**
+         * 最大宽度
+         * @return Integer
+         */
         public Integer getMaxWidth() {
             return maxWidth;
         }
 
+        /**
+         * 最大宽度
+         * @param maxWidth Integer
+         */
         public void setMaxWidth(Integer maxWidth) {
             this.maxWidth = maxWidth;
         }
 
+        /**
+         * 最大高度
+         * @return Integer
+         */
         public Integer getMaxHeight() {
             return maxHeight;
         }
 
+        /**
+         * 最大高度
+         * @param maxHeight Integer
+         */
         public void setMaxHeight(Integer maxHeight) {
             this.maxHeight = maxHeight;
         }
 
+        /**
+         * 最小宽度
+         * @return Integer
+         */
         public Integer getMinWidth() {
             return minWidth;
         }
 
+        /**
+         * 最小宽度
+         * @param minWidth Integer
+         */
         public void setMinWidth(Integer minWidth) {
             this.minWidth = minWidth;
         }
 
+        /**
+         * 最小高度
+         * @return Integer
+         */
         public Integer getMinHeight() {
             return minHeight;
         }
 
+        /**
+         * 最小高度
+         * @param minHeight Integer
+         */
         public void setMinHeight(Integer minHeight) {
             this.minHeight = minHeight;
         }
+
+        /**
+         * 缩放的时候，如果太小是否进行放大。
+         * @return boolean
+         */
         public boolean isZoomOutIfTooSmall() {
             return zoomOutIfTooSmall;
         }
 
+        /**
+         * 缩放的时候，如果太小是否进行放大。
+         * @param zoomOutIfTooSmall boolean
+         */
         public void setZoomOutIfTooSmall(boolean zoomOutIfTooSmall) {
             this.zoomOutIfTooSmall = zoomOutIfTooSmall;
         }
@@ -556,7 +631,7 @@ public class ImageProcessor {
                         }
                         //scale=1.0;
                     }else {
-                        scale=Math.max(widthScale, heightScale);
+                        scale=Math.min(widthScale, heightScale);
                     }
                 }else {
                     scale = Math.min(widthScale, heightScale);
@@ -567,8 +642,8 @@ public class ImageProcessor {
                     canvasWidth=fixedWidth;
                     canvasHeight=fixedHeight;
                 }else{
-                    canvasWidth=minWidth;
-                    canvasHeight=minHeight;
+                    canvasWidth=maxWidth;
+                    canvasHeight=maxHeight;
                 }
             }
 //            System.out.println(
