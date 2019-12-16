@@ -87,9 +87,8 @@ public class ImageOperation {
         for(ImageCallback callback: callbacks){
             working =callback.execute(working,this);
         }
-        ImageOperation ret=ImageOperation.of(working);
-        ret.realType=this.realType;
-        return ret;
+        image=working;
+        return this;
     }
 
     /**
@@ -254,7 +253,7 @@ public class ImageOperation {
      * @return
      */
     public ImageOperation zoom(int maxWidth, int maxHeight)  {
-        AdvanceZoomCallback zcb=new AdvanceZoomCallback();
+        AdvancedZoomCallback zcb=new AdvancedZoomCallback();
         zcb.setMaxHeight(maxHeight);
         zcb.setMaxWidth(maxWidth);
         zcb.setZoomOutIfTooSmall(true);
@@ -414,7 +413,7 @@ public class ImageOperation {
     /**
      * 等比例缩放
      */
-    public static class AdvanceZoomCallback implements ImageCallback {
+    public static class AdvancedZoomCallback implements ImageCallback {
         Integer maxWidth;
         Integer maxHeight;
         Integer minWidth;
@@ -573,7 +572,7 @@ public class ImageOperation {
             int imageHeight=image.getHeight();
             if(maxAspectRatio !=null){
                 double maxRateTmp= maxAspectRatio <1.0 ? 1.0/ maxAspectRatio : maxAspectRatio;
-                double nowRate =imageWidth/imageHeight;
+                double nowRate =1.0*imageWidth/imageHeight;
                 nowRate = nowRate<1.0 ? 1.0/nowRate: nowRate;
                 if(nowRate>maxRateTmp){
                     //需要剪切
