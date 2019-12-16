@@ -1,13 +1,29 @@
 package com.rongji.dfish.base;
 
-import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.img.ImageInfo;
+import com.rongji.dfish.base.util.img.ImageOperation;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-public class ImageProcessorTest {
+public class ImageOperationTest {
     public static void main(String[] args) throws Exception {
+        ImageOperation narked= ImageOperation.of(new FileInputStream(""))
+                .zoom(800,800)
+                .mark();
+//        ZoomCallBack zoomCallBack=new ZoomCallBack();
+//        zoomCallBack.setMaxWidth(200);
+//        zoomCallBack.setMaxHeight(200);
+//        oper.schedule(zoomCallBack);
+//        oper.output("");
+
+        narked.watermark("",16,null,0,0).saveAs(null);
+
+        narked.zoom(400,400)
+                .watermark("",16,null,0,0)
+                .saveAs(null);
+
+
 //        long begin=System.currentTimeMillis();
 //        BufferedImage rawImage = ImageIO.read(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
 //        showTime("after readImage",begin);
@@ -34,9 +50,9 @@ public class ImageProcessorTest {
 //        }else {
 //            //FileUtil.copyFile()
 //        }
-        ImageProcessor oper2=ImageProcessor.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
+        ImageOperation oper2=ImageOperation.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
         ImageInfo ii=oper2.getImageInfo();
-        ImageProcessor jpegThumb=ImageProcessor.getThumbnail(ii);
+        ImageOperation jpegThumb=ImageOperation.getThumbnail(ii);
         if(jpegThumb!=null){
             jpegThumb.saveAs(new FileOutputStream("C:\\Users\\Administrator\\Desktop\\originalThumbnail.jpg"));
         }

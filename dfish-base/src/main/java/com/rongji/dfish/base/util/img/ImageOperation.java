@@ -1,73 +1,40 @@
-package com.rongji.dfish.base;
+package com.rongji.dfish.base.util.img;
 
 import com.rongji.dfish.base.util.ByteArrayUtil;
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.base.util.img.ImageInfo;
-import com.rongji.dfish.base.util.img.JpegInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageProcessor {
-    //FIXME 尝试获得JPG原始缩略图（不启动BufferedImage）
-    private InputStream source;
-    private boolean sourceRead=false;
+public class ImageOperation {
+    private InputStream input;
     private BufferedImage image;
-    private List<ImageCallback> works;
+    private List<ImageCallback> callbacks;
     private String realType;
 
-    private static final String READ_MESSAGE=
-            "同一个ImputStream只能执行一次操作。当你快速获得文件 高宽，或尝试获得JPG里面原生缩略图，将会消耗掉这个InputStream。" +
-            "如果需要执行其他动作，需要InputStream 可以被重置(markSupported=true / ByteArrayInputStream 就是一种)。" +
-            "或者可以在动作前用reuse方法，将OutputStream 转成ByteArrayInputStream。" +
-            "注意这个操作将会根据图片文件大小占用一定量内存。" ;
-
-    public ImageProcessor(InputStream source){
-        this.source=source;
-        works=new ArrayList<>();
+    public ImageOperation(InputStream input){
+        this.input = input;
+        callbacks =new ArrayList<>();
     }
-    public ImageProcessor(BufferedImage image){
+    public ImageOperation(BufferedImage image){
         this.image=image;
-        works=new ArrayList<>();
+        callbacks =new ArrayList<>();
     }
 
-    public static ImageProcessor of(InputStream source){
-        return new ImageProcessor(source);
+    public static ImageOperation of(InputStream input){
+        return new ImageOperation(input);
     }
-    public static ImageProcessor of(BufferedImage image){
-        return new ImageProcessor(image);
-    }
-    /**
-     * 同一个ImputStream只能执行一次操作。当你快速获得文件 高宽，或尝试获得JPG里面原生缩略图，将会消耗掉这个InputStream。
-     * 如果需要执行其他动作，需要InputStream 可以被重置(markSupported=true / ByteArrayInputStream 就是一种)。
-     * 或者可以在动作前用reuse方法，将OutputStream 转成ByteArrayInputStream。
-     * 注意这个操作将会根据图片文件大小占用一定量内存。
-     * @throws IOException
-     */
-    public ImageProcessor reuse() throws IOException{
-        if(image!=null||source==null||source.markSupported()){
-            return this;
-        }
-        ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        byte[] buff=new byte[8192];
-        int read;
-        try {
-            while ((read = source.read(buff)) >= 0) {
-                baos.write(buff, 0, read);
-            }
-        }catch (IOException iex){
-            throw iex;
-        }finally {
-            if(source!=null) {
-                source.close();
-            }
-        }
-        source=new ByteArrayInputStream(baos.toByteArray());
-        return this;
+    public static ImageOperation of(BufferedImage image){
+        return new ImageOperation(image);
     }
 
     /**
@@ -75,8 +42,8 @@ public class ImageProcessor {
      * @param callback 动作
      * @return 本身
      */
-    public ImageProcessor schedule(ImageCallback callback)  {
-        works.add(callback);
+    public ImageOperation schedule(ImageCallback callback)  {
+        callbacks.add(callback);
         return this;
     }
 
@@ -84,59 +51,27 @@ public class ImageProcessor {
      *  执行所有安排好的callback动作。
      * @throws Exception
      */
-    protected void executeWorks()throws Exception{
+    protected void execute()throws Exception{
         readImageFromIn();
         BufferedImage working=image;
-        for(ImageCallback callback:works){
+        for(ImageCallback callback: callbacks){
             working =callback.execute(working,this);
         }
     }
 
-    /**
-     * 快速获取图形信息。这个操作一般会消耗掉InputStream
-     * 一般来说，小于2MB 的图片这个性能提升的不明显。
-     * 但如果是大于2MB的JPEG，提升就相当明显，并且有很大几率找到硬件(相机/手机)已经预设的缩略图。
-     * 在一些场景可能大大提高性能。注意，这个缩略图通常只有160*120像素上下。
-     * 如果需要更大的缩略图。也不适合使用这个方法。
-     * @return ImageInfo
-     */
-    public ImageInfo getImageInfo() throws IOException {
-        tryReset();
-        ImageInfo ii=ImageInfo.of(source);
-        this.realType=ii.getTypeName();
-        this.sourceRead=true;
-        return ii;
-    }
-
-    /**
-     * 尝试从ImageInfo中获取缩略图的
-     * 如果没找到，可能会返回空。
-     * @param ii
-     * @return
-     */
-    public static ImageProcessor getThumbnail(ImageInfo ii){
-        if(ii instanceof JpegInfo){
-            JpegInfo cast=( JpegInfo)ii;
-            ByteArrayInputStream bais=cast.getThumbnail();
-            if(bais!=null){
-                return ImageProcessor.of(bais);
-            }
-        }
-        return null;
-    }
 
     /**
      * mark 将会记住当前image状态，并产生一个新的实例。
      * @return
      * @throws Exception
      */
-    public ImageProcessor mark()throws Exception{
+    public ImageOperation mark()throws Exception{
         readImageFromIn();
         BufferedImage working=image;
-        for(ImageCallback callback:works){
+        for(ImageCallback callback: callbacks){
             working =callback.execute(working,this);
         }
-        return ImageProcessor.of(working);
+        return ImageOperation.of(working);
     }
 
     /**
@@ -148,7 +83,10 @@ public class ImageProcessor {
      * @param y 像素。如果y为负数，表示从下面算起。需要自行估计文本高度
      * @return
      */
-    public ImageProcessor textWatermark(String text,int fontSize,Color color, int x,int y){
+    public ImageOperation watermark(String text, int fontSize, Color color, int x, int y){
+       return watermark(text,new Font(Font.DIALOG,Font.PLAIN,fontSize),color,x,y);
+    }
+    public ImageOperation watermark(String text, Font font, Color color, int x, int y){
         schedule((image,processor)->{
             int width = image.getWidth(); // 得到源图宽
             int height = image.getHeight(); // 得到源图长
@@ -160,9 +98,17 @@ public class ImageProcessor {
             if(realy<0){
                 realy=height-realy;
             }
+            /*
+            复制一个图片制作水印，不破坏原有的image
+             */
+            ColorModel cm = image.getColorModel();
+            boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+            WritableRaster raster = image.copyData(null);
+            image= new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+
             Graphics2D g = (Graphics2D)image.getGraphics();
             g.setColor(color);
-            Font font=new Font(Font.DIALOG,Font.PLAIN,fontSize);
+//            Font font=new Font(Font.DIALOG,Font.PLAIN,fontSize);
             g.setFont(font);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, (float)(color.getAlpha()/255.0)));
             // 在指定坐标绘制水印文字
@@ -180,7 +126,7 @@ public class ImageProcessor {
      * @param y 像素。如果y为负数，表示从下面算起。需要自行估计文本高度
      * @return
      */
-    public ImageProcessor imgWatermark(BufferedImage img,float alpha, int x,int y){
+    public ImageOperation watermark(BufferedImage img, float alpha, int x, int y){
         schedule((image,processor)->{
             int width = image.getWidth(); // 得到源图宽
             int height = image.getHeight(); // 得到源图长
@@ -192,57 +138,52 @@ public class ImageProcessor {
             if(realy<0){
                 realy=height-realy;
             }
+             /*
+            复制一个图片制作水印，不破坏原有的image
+             */
+            ColorModel cm = image.getColorModel();
+            boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+            WritableRaster raster = image.copyData(null);
+            image= new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+
             Graphics2D g = (Graphics2D)image.getGraphics();
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
             // 在指定坐标绘制水印文字
             g.drawImage(img, realx, realy, img.getWidth(), img.getHeight(), null);
-
             g.dispose();
             return image;
         });
         return this;
     }
-    public ImageProcessor imgWatermark(ImageProcessor another,float alpha, int x,int y) throws IOException {
+    public ImageOperation watermark(ImageOperation another, float alpha, int x, int y) throws IOException {
         if(another.image==null){
             another.readImageFromIn();
         }
-        return imgWatermark(another.image,alpha,x,y);
+        return watermark(another.image,alpha,x,y);
     }
     private void readImageFromIn()throws IOException{
         if(image==null) {
-            tryReset();
-            //read imag
             try {
-                ImageTypeDeligate itd = new ImageTypeDeligate(source);
+                ImageTypeDecorator itd = new ImageTypeDecorator(input);
                 image = ImageIO.read(itd);
-//                itd.close();
-                sourceRead=true;
-                this.realType = itd.getImageTypeName();
+                this.realType = itd.getTypeName();
             }catch (IOException iex){
                 throw iex;
             }finally {
-                if(source!=null){
-                    source.close();
+                if(input !=null){
+                    input.close();
                 }
             }
         }
     }
-    private void tryReset() throws IOException {
-        if(sourceRead){
-            if(!source.markSupported()) {
-                throw new UnsupportedOperationException(READ_MESSAGE );
-            }else{
-                source.reset();
-            }
-        }
-    }
+    
     /**
      * 缩放到
      * @param width
      * @param height
      * @return
      */
-    public ImageProcessor resize(int width, int height)  {
+    public ImageOperation resize(int width, int height)  {
         return schedule((image,oper)->{
             BufferedImage destImage = new BufferedImage(width, height, image.getType());
             // 获取画笔工具
@@ -253,17 +194,36 @@ public class ImageProcessor {
         });
     }
 
-    public ImageProcessor cut(int top, int right,int bottom ,int left)  {
-        if(top<0||right<0||bottom<0||left<0){
-            throw  new IllegalArgumentException("top, right, bottom, left should not lses than 0");
+    public ImageOperation cut(int x, int y, int width , int height)  {
+        if(x<0||y<0||width<0||height<0){
+            throw  new IllegalArgumentException("X, Y, width, height should not lses than 0");
         }
         return schedule((image,oper)->{
-            int destW=image.getWidth()-left-right;
-            int destH=image.getHeight()-top-bottom;
-            BufferedImage destImage = new BufferedImage(destW, destH, image.getType());
+            BufferedImage destImage = new BufferedImage(width, height, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
-            g.drawImage(image, left, top, destW, destH, null);
+            g.drawImage(image, x, y, width, height, null);
+            g.dispose();
+            return destImage;
+        });
+    }
+    public ImageOperation cut(int width, int height)  {
+        if(width<0||height<0){
+            throw  new IllegalArgumentException("width, height should not lses than 0");
+        }
+        return schedule((image,oper)->{
+            int realWidth=width;
+            int realHeight=height;
+            if(image.getWidth()<realWidth){
+                realWidth=image.getWidth();
+            }
+            if(image.getHeight()<realHeight){
+                realHeight=image.getHeight();
+            }
+            BufferedImage destImage = new BufferedImage(realWidth, realHeight, image.getType());
+            // 获取画笔工具
+            Graphics g = destImage.getGraphics();
+            g.drawImage(image, (image.getWidth()-realWidth)/2, (image.getHeight()-realHeight)/2, width, height, null);
             g.dispose();
             return destImage;
         });
@@ -275,65 +235,76 @@ public class ImageProcessor {
      * @param maxHeight
      * @return
      */
-    public ImageProcessor zoom(int maxWidth, int maxHeight)  {
-        ZoomCallback zcb=new ZoomCallback();
+    public ImageOperation zoom(int maxWidth, int maxHeight)  {
+        AdvanceZoomCallback zcb=new AdvanceZoomCallback();
         zcb.setMaxHeight(maxHeight);
         zcb.setMaxWidth(maxWidth);
         zcb.setZoomOutIfTooSmall(true);
         return schedule(zcb);
     }
 
+    public ImageOperation zoom(double scale)  {
+        return schedule((image,oper)->{
+            int width=(int)(image.getWidth()*scale+0.5);
+            int height=(int)(image.getHeight()*scale+0.5);
+            BufferedImage destImage = new BufferedImage(width, height, image.getType());
+            // 获取画笔工具
+            Graphics g = destImage.getGraphics();
+            g.drawImage(image, 0, 0, width, height, null);
+            g.dispose();
+            return destImage;
+        });
+    }
 
-    public void saveAs(OutputStream target) throws Exception {
-        if(works.size()==0){
+
+    public void output(OutputStream output) throws Exception {
+        if(callbacks.size()==0){
             //什么都没做，而且也没有指定文件名变化的。
             // 直接文件流拷贝
-            tryReset();
             byte[] buff=new byte[8192];
             int read=0;
             try {
-                while ((read = source.read(buff)) >= 0) {
-                    target.write(buff, 0, read);
+                while ((read = input.read(buff)) >= 0) {
+                    output.write(buff, 0, read);
                 }
             }catch (IOException iex){
                 LogUtil.error(null,iex);
             }finally {
                 try{
-                    source.close();
+                    input.close();
                 }catch (IOException iex2){}
                 try{
-                    target.close();
+                    output.close();
                 }catch (IOException iex2){}
             }
-            sourceRead=true;
         }else {
-            saveAs(target, null);
+            output(output, null);
         }
     }
-    public void saveAs(OutputStream target,String imageType) throws Exception {
-        works.add((image, oper)->{
+    public void output(OutputStream output,String imageType) throws Exception {
+        callbacks.add((image, oper)->{
             String realType=imageType==null?this.realType:imageType;
             try {
-                ImageIO.write(image, realType, target);
+                ImageIO.write(image, realType, output);
                 return image;
             }catch (IOException iex){
                 throw iex;
             }finally {
-                if(target!=null) {
-                    target.close();
+                if(output!=null) {
+                    output.close();
                 }
             }
         });
-        executeWorks();
+        execute();
     }
 
     /**
      * 代理类，这个代理类类读取图片的时候，将留下4个字节做为样本。
      * 并根据这个前面的4个字节得到图片的类型。
      */
-    static class ImageTypeDeligate extends SampleDeligate {
+    static class ImageTypeDecorator extends SampleDecorator {
 
-        public ImageTypeDeligate(InputStream in) {
+        public ImageTypeDecorator(InputStream in) {
             super(in, 4);
         }
 
@@ -354,7 +325,7 @@ public class ImageProcessor {
             return ImageInfo.TYPE_UNKNOWN;
         }
 
-        public String getImageTypeName() {
+        public String getTypeName() {
             return ImageInfo.TYPE_NAMES[getImageType()];
         }
     }
@@ -362,17 +333,17 @@ public class ImageProcessor {
     /**
      * 代理一个inputStream当他顺序读取的时候，将会留下最前方的sampleLength个byte作为标本。
      */
-    static class SampleDeligate extends FilterInputStream {
+    static class SampleDecorator extends FilterInputStream {
         private byte[] sample;
         private int index;
 
-        public SampleDeligate(InputStream in, int sampleLength) {
+        public SampleDecorator(InputStream in, int sampleLength) {
             super(in);
             sample = new byte[sampleLength];
             index = 0;
         }
 
-        public SampleDeligate(InputStream in) {
+        public SampleDecorator(InputStream in) {
             this(in, 64);
         }
 
@@ -420,15 +391,15 @@ public class ImageProcessor {
     /**
      * 等比例缩放
      */
-    public static class ZoomCallback implements ImageCallback {
+    public static class AdvanceZoomCallback implements ImageCallback {
         Integer maxWidth;
         Integer maxHeight;
         Integer minWidth;
         Integer minHeight;
         boolean zoomOutIfTooSmall=false;
-        Double maxRate;
-        Double fixRate;
-        Color padColor;
+        Double maxAspectRatio;
+        Double fixAspectRatio;
+        Color paddingColor;
 
         /**
          * 最大宽度
@@ -516,18 +487,18 @@ public class ImageProcessor {
          * 这个比例设置为2 和设置为0.5是等价的。
          * @return
          */
-        public Double getMaxRate() {
-            return maxRate;
+        public Double getMaxAspectRatio() {
+            return maxAspectRatio;
         }
 
         /**
          * 最大比例
          * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
          * 这个比例设置为2 和设置为0.5是等价的。
-         * @param maxRate
+         * @param maxAspectRatio
          */
-        public void setMaxRate(Double maxRate) {
-            this.maxRate = maxRate;
+        public void setMaxAspectRatio(Double maxAspectRatio) {
+            this.maxAspectRatio = maxAspectRatio;
         }
 
         /**
@@ -536,18 +507,18 @@ public class ImageProcessor {
          * 可见范围也更多一些。
          * @return
          */
-        public Double getFixRate() {
-            return fixRate;
+        public Double getFixAspectRatio() {
+            return fixAspectRatio;
         }
 
         /**
          * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
          * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留1.2
          * 可见范围也更多一些。
-         * @param fixRate
+         * @param fixAspectRatio
          */
-        public void setFixRate(Double fixRate) {
-            this.fixRate = fixRate;
+        public void setFixAspectRatio(Double fixAspectRatio) {
+            this.fixAspectRatio = fixAspectRatio;
         }
 
         /**
@@ -556,38 +527,38 @@ public class ImageProcessor {
          * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
          * @return
          */
-        public Color getPadColor() {
-            return padColor;
+        public Color getPaddingColor() {
+            return paddingColor;
         }
 
         /**
          * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
          * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
          * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
-         * @param padColor
+         * @param paddingColor
          */
-        public void setPadColor(Color padColor) {
-            this.padColor = padColor;
+        public void setPaddingColor(Color paddingColor) {
+            this.paddingColor = paddingColor;
         }
         @Override
-        public BufferedImage execute(BufferedImage image, ImageProcessor operation) throws Exception {
+        public BufferedImage execute(BufferedImage image, ImageOperation operation) throws Exception {
             int fixedWidth=0,canvasWidth=0;
             int fixedHeight=0,canvasHeight=0;
             boolean needCut=false;
             int cutX=0,cutY=0,cutW=0,cutH=0;
             int imageWidth=image.getWidth();
             int imageHeight=image.getHeight();
-            if(maxRate !=null){
-                double maxRateTmp= maxRate <1.0 ? 1.0/ maxRate : maxRate;
+            if(maxAspectRatio !=null){
+                double maxRateTmp= maxAspectRatio <1.0 ? 1.0/ maxAspectRatio : maxAspectRatio;
                 double nowRate =imageWidth/imageHeight;
                 nowRate = nowRate<1.0 ? 1.0/nowRate: nowRate;
                 if(nowRate>maxRateTmp){
                     //需要剪切
                     needCut=true;
                     double realCutScale=maxRateTmp;
-                    if(fixRate !=null){
-                        double fixRateTemp= fixRate <1.0 ? 1.0/ fixRate : fixRate;
-                        if(fixRate <realCutScale){
+                    if(fixAspectRatio !=null){
+                        double fixRateTemp= fixAspectRatio <1.0 ? 1.0/ fixAspectRatio : fixAspectRatio;
+                        if(fixAspectRatio <realCutScale){
                             realCutScale=fixRateTemp;
                         }
                     }
@@ -625,7 +596,7 @@ public class ImageProcessor {
                 double scale=1.0;
                 if (widthScale >= 1.0 && heightScale >= 1.0) {
                     if(!zoomOutIfTooSmall) {
-                        if(padColor==null&&!needCut) {
+                        if(paddingColor ==null&&!needCut) {
                             //无需缩放
                             return image;
                         }
@@ -638,7 +609,7 @@ public class ImageProcessor {
                 }
                 fixedWidth = (int) (imageWidth * scale + 0.5);
                 fixedHeight = (int) (imageHeight * scale + 0.5);
-                if(padColor==null){
+                if(paddingColor ==null){
                     canvasWidth=fixedWidth;
                     canvasHeight=fixedHeight;
                 }else{
@@ -654,8 +625,8 @@ public class ImageProcessor {
             BufferedImage destImage = new BufferedImage(canvasWidth, canvasHeight, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
-            if(padColor!=null){
-                g.setColor(padColor);
+            if(paddingColor !=null){
+                g.setColor(paddingColor);
                 g.fillRect(0,0,canvasWidth,canvasHeight);
             }
             if(needCut){
@@ -673,7 +644,7 @@ public class ImageProcessor {
      * 具体的操作动作，操作动作可以通过回调来减少具体操作的损耗。
      */
     public interface ImageCallback {
-        BufferedImage execute(BufferedImage image,ImageProcessor processor) throws Exception;
+        BufferedImage execute(BufferedImage image,ImageOperation processor) throws Exception;
     }
 
 

@@ -27,11 +27,19 @@ public class ImageInfo{
 
     /**
      * 从 InputString 中读取图片基本信息
-     * @param source InputStream
+     *
+     * 快速获取图形信息。这个操作一般会消耗掉InputStream
+     *一般来说，小于2MB 的图片这个性能提升的不明显。
+     * 但如果是大于2MB的JPEG，提升就相当明显，并且有很大几率找到硬件(相机/手机)已经预设的缩略图。
+     * 在一些场景可能大大提高性能。注意，这个缩略图通常只有160*120像素上下。
+     * 如果需要更大的缩略图。也不适合使用这个方法。
+     * @return ImageInfo
+     *
+     * @param input InputStream
      * @return ImageInfo
      * @throws IOException
      */
-    public static ImageInfo of(InputStream source) throws IOException {
+    public static ImageInfo of(InputStream input) throws IOException {
 
         //尝试读取8K字节。 判断是什么数据类型，
         //如果是PNG/BMP/GIF 则直接读取信息。
@@ -41,9 +49,9 @@ public class ImageInfo{
         // 这时，应该先读取完整的图片字节。并取得除了图片主体信息外所有EXIF信息和缩略图的EXIF信息。
         byte[] buff=new byte[8192];
         try {
-            int read = source.read(buff);
+            int read = input.read(buff);
             if (ByteArrayUtil.startsWith(buff, HEAD_JPEG)) {
-                return JpegInfo.readJpegInfo(buff,read,source);
+                return JpegInfo.readJpegInfo(buff,read,input);
             } else if (ByteArrayUtil.startsWith(buff, HEAD_PNG)) {
                 return readPngInfo(buff,read);
             } else if (ByteArrayUtil.startsWith(buff, HEAD_GIF)) {
@@ -55,7 +63,7 @@ public class ImageInfo{
             throw ex;
         }finally {
             try {
-                source.close();
+                input.close();
             }catch (IOException ex){ }
         }
         return ImageInfo.UNKNOWN;
