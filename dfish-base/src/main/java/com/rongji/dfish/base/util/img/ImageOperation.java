@@ -21,6 +21,22 @@ public class ImageOperation {
     private List<ImageCallback> callbacks;
     private String realType;
 
+
+    public InputStream getInput() {
+        return input;
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public List<ImageCallback> getCallbacks() {
+        return callbacks;
+    }
+    public String getRealType() {
+        return realType;
+    }
+
     public ImageOperation(InputStream input){
         this.input = input;
         callbacks =new ArrayList<>();
