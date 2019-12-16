@@ -36,7 +36,7 @@ define.widget( 'ueditor', {
 			//"initialFrameHeight": 120, "maximumWords": 0
 			ready: function() {
 				var self = this;
-				require.async( ['./ueditor.config', './ueditor.all.min'], function() {
+				require.async( ['./ueditor.config', './ueditor.all'], function() {
 					_patch();
 					var h = self.innerHeight();
 					$.extend( self.options, { initialFrameHeight: (h ? Math.max( 0, h - 31 ) : 100), toolbars: UEDITOR_CONFIG[ self.options.advance ? 'toolbars' : 'simpleToolbars' ] } );
@@ -123,7 +123,7 @@ define.widget( 'ueditor', {
 		},
 		getContent: function() {
 			if ( this.u && this.u.isReady ) {
-				this.u.queryCommandState( 'source' ) && this.u.execCommand( 'source' );
+				//this.u.queryCommandState( 'source' ) && this.u.execCommand( 'source' );
 				return this.u.getContent();
 			}
 			return this.options.initialContent;
@@ -136,7 +136,9 @@ define.widget( 'ueditor', {
 			this.$( 'v' ).value = this.getContent();
 		},
 		isModified: function() {
-			return this.u.isReady && this.options.initialContent != this.getContent();
+			var c = this.getContent();
+			c == '<p></p>' && (c = '');
+			return this.u.isReady && this.options.initialContent != c;
 		},
 		saveModified: function() {
 			this.options.initialContent = this.getContent();

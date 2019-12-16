@@ -737,6 +737,8 @@ W = define( 'widget', function() {
 				var t = _getTemplate( this.x.template, T );
 				if ( t ) {
 					if ( !t.type || t.type === this.type ) {
+						// prior_x 是优先的，不可被template重写的属性
+						this.prior_x = $.extend( {}, x );
 						for ( var k in t ) {
 							if ( !(k in x) && k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
 								x[ k ] = t[ k ];
@@ -2223,7 +2225,10 @@ AbsSrc = define.widget( 'abs/src', {
 						if ( x ) {
 							if ( x.type && x.type !== this.type )
 								x = { type: this.type, node: x };
-							this.attr( x );
+							var k, _x = this.prior_x || {};
+							for ( k in x ) {
+								if ( !(k in _x) ) this.attr( k, x[ k ] );
+							}
 							this.init_nodes();
 						}
 					}
@@ -2271,7 +2276,6 @@ AbsSrc = define.widget( 'abs/src', {
 			this.abort();
 			this.loaded = this.loading = F;
 			if ( ! tar ) {
-				this.trigger( 'unload' );
 				this.empty();
 				this.layout = N;
 			}
@@ -2316,7 +2320,7 @@ Xsrc = define.widget( 'xsrc', {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
 			}
 			if ( ! x.node ) {
-				var s = x.src || (this.x.template && ! this.hasCssRes() && {});
+				var s = this.getSrc() || (this.x.template && ! this.hasCssRes() && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
 				} else
@@ -2334,8 +2338,8 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		// @implement
 		init_nodes: function() {
-			if ( this.x.node && !this.layout )
-				this.layout = new Layout( { node: this.x.node }, this );
+			if ( (this.x.node || this.x.nodes) && !this.layout )
+				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
 		},
 		hasCssRes: function() {
 			var a = this.type_view && _view_resources[ this.path ];
@@ -2389,12 +2393,15 @@ Xsrc = define.widget( 'xsrc', {
 				if ( this.x.loading || this.layout ) {
 					this.exec( $.extend( this.x.loading || {}, { type: 'loading' } ) );
 				} else {
-					! this.$( 'loading' ) && $.append( this.$(), '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>' );
+					! this.$( 'loading' ) && $.append( this.$(), this.html_loading() );
 				}
 			}
 		},
 		show: function() {
 			return this.render();
+		},
+		html_loading: function() {
+			return '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>';
 		}
 	}
 } ),
@@ -2423,6 +2430,9 @@ _view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
 Layout = define.widget( 'layout', {
 	Prototype: {
+		x_childtype: function( t ) {
+			return this.parentNode.x_childtype ? this.parentNode.x_childtype( t ) : t;
+		},
 		// 限制ready只触发一次
 		// 原因：在frame中的view，layout调用render方法时会再次触发ready。理论上应该在_proto上做此限制，但出于性能考虑，目前做在这里
 		triggerAll: function( e ) {
@@ -4769,78 +4779,74 @@ Loading = define.widget( 'loading', {
 // 以 src 为 key 存储 progress 实例。相同 src 的实例进程将被合并。
 _progressCache = {},
 /*  `progress`  */
-/*  { type: 'progress', percent: 10, delay: 5, src: '' }   */
 Progress = define.widget( 'progress', {
 	Const: function( x, p ) {
+		x.guide && (this._guide = x.guide);
 		W.apply( this, arguments );
-		var s = this.getSrc();
-		s && $.jsonArray( this, _progressCache, s );
+		//var s = this.getSrc();
+		//s && $.jsonArray( this, _progressCache, s );
 		x.hidepercent && (this.className += ' z-hidepercent');
 		!x.percent && (x.percent = 0);
 		this.cssText = 'height:auto;';
 	},
-	Extend: [ W, Xsrc ],
-	Listener: {
-		body: {
-			ready: function() {
-				this.request();
-			}
-		}
-	},
+	Extend: Xsrc,
 	Prototype: {
 		className: 'w-progress',
 		x_childtype: $.rt( 'progress/item' ),
-		stop: function() {
-			clearTimeout( this._timer );
+		init_nodes: function() {
+			this.layout && this.reset();
+			Xsrc.prototype.init_nodes.call( this );
 		},
-		start: function() {
-			this.request();
+		// @a -> close?
+		showLoading: function( a ) {
+			a === F && this.removeElem( 'loading' );
+		},
+		showLayout: function() {
+			Xsrc.prototype.showLayout.call( this );
+			var d = $.dialog( this );
+			d && d.type === 'loading' && d.axis();
+		},
+		stop: function() {
+			this._stopped = T;
+			clearTimeout( this._timer );
 		},
 		// @s -> src, t -> template
 		reload: function( s, t ) {
 			this.stop();
-			s != N && (this.x.src = src);
-			t != N && (this.x.template = t);
-			this.request();
+			Xsrc.prototype.reload.apply( this, arguments );
 		},
 		// @t -> template
 		template: function( t ) {
 			this.stop();
 			this.reload( N, t );
 		},
-		request: function() {
-			var x = this.x, s = this.getSrc(), self = this;
-			s && (this._timer = setTimeout( function() {
-				// 相同 src 的实例，只让第一个去请求ajax
-				if ( ! self._disposed && self.isHead() ) {
-					self.exec( { type: 'ajax', src: s, context: this, success: function( x ) {
-						if ( ! this._success( x ) )
-							return;
-						// 返回数据可以是 command | {type:'progress'} | {nodes:[{type:'progress'}]}
-						if ( this.x.template ) {
-							x = _compileTemplate( this, x );
-						}
-						var d = this.closest( 'loading' );
-						if ( W.isCmd( x ) ) {
-							d ? d.ownerView.exec( x ) : this.exec( x );
-							d && d.close();
-						} else {
-							if( d && d.parentNode.isSrcLayout && d.parentNode.isContentData( x ) ) {
-								d.parentNode.srcData( x );
-								d.close();
-							} else {
-								o = ((d = x).id && this.ownerView.find( d.id )) || this;
-								o.replace( ! d.id || o === this ? $.extend( d, { text: this.x.text } ) : d );
-							}
-						}
-					}, error: function( a ) {
-						this._error( a );
-					} } );
-				}
-			}, x.delay ));
+		getSrc: function() {
+			return this._guide ? this.formatStr( this._guide, this.x.args, T ) : Xsrc.prototype.getSrc.call( this );
+		},
+		start: function() {
+			if ( !this.x.src && !this.x.template )
+				return;
+			if ( ! this._x_ini ) {
+				this.init_x( this.x );
+				this.repaint();
+				this.layout && this.showLayout();
+			}
+			! this.layout && this.isDisplay() && this.load( N, function() { delete this._guide; this._load() } );
+		},
+		_load: function() {
+			if ( this._stopped )
+				return;
+			var self = this;
+			clearTimeout( this._timer );
+			this._timer = setTimeout( function() {
+				self.load( N, function() { this._load() } );
+			}, this.x.delay );
 		},
 		isHead: function() {
 			return _progressCache[ this.getSrc() ][ 0 ] === this;
+		},
+		html_nodes: function() {
+			return this.layout ? this.layout.html() : this.html_loading();
 		},
 		dispose: function() {
 			this.stop();
@@ -4873,7 +4879,7 @@ ProgressItem = define.widget( 'progress/item', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'progress',
+		ROOT_TYPE: 'progress,progress/guide',
 		className: 'w-progress-item',
 		html_nodes: function() {
 			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
