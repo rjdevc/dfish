@@ -888,6 +888,9 @@ W = define( 'widget', function() {
 					return;
 			}
 		},
+		snapElem: function() {
+			return this.$();
+		},
 		srcData: function() {
 			var c = this.srcParent();
 			return c && c.x.srcdata;
@@ -4424,7 +4427,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		_snapElem: function() {
 			var d = this.x.snap, e;
-			return typeof d === _STR ? ((e = this.ownerView.find( d )) ? e.$() : $( d )) : (d ? $( d ) : (this.attr( 'local' ) && this.ownerView.$()));
+			return typeof d === _STR ? ((e = this.ownerView.find( d )) ? e.snapElem() : $( d )) : (d ? (d.isWidget ? d.snapElem() : $( d )) : (this.attr( 'local' ) && this.ownerView.$()));
 		},
 		_snapCls: function( a ) {
 			var d = this._snapElem(), r = this._pos;
@@ -4546,6 +4549,7 @@ Dialog = define.widget( 'dialog', {
 				this._snapCls();
 			} else
 				this.render();
+			this.trigger( 'show' );
 			return this;
 		},
 		keepHover: function( a ) {
@@ -5449,6 +5453,9 @@ AbsForm = define.widget( 'abs/form', {
 			} else
 				$.classAdd( this.$(), 'z-err', a );
 			return this;
+		},
+		snapElem: function() {
+			return this.$( 'f' );
 		},
 		reset: function( a ) {
 			this.val( a || this.x.value == N ? '' : this.x.value );
@@ -7086,10 +7093,11 @@ Jigsaw = define.widget( 'jigsaw', {
 		Slider.apply( this, arguments );
 		this.more = this.add( { type: 'dialog', ownproperty: T, cls: '.w-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
 			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
-			type: 'view', node: {
+			type: 'view',
+			node: {
 				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
 			}
-		}, on: { resize: 'this.parentNode.fixImg()' } }, -1 );
+		}, on: { resize: 'this.parentNode.fixImg()', show: 'this.parentNode.fixImg()' } }, -1 );
 		x.img && (this.img = new JigsawImg( x.img, this, -1 )).load();
 		x.auth && (this.auth = new JigsawAuth( x.auth, this, -1 ));
 	},
@@ -7170,9 +7178,9 @@ Jigsaw = define.widget( 'jigsaw', {
 		fixImg: function() {
 			if ( this.more && this.more.$() ) {
 				var r = this.img && this.img.getResult(),
-					h = this.popHeight(),
-					w = h * (r.small.width / r.small.height);
-				Q( '._small', this.more.$() ).width( w );
+					w = this.popWidth() * (r.small.width / r.big.width),
+					s = Q( '._small', this.more.$() );
+				s.width( w );
 			}
 		},
 		success: function( a ) {

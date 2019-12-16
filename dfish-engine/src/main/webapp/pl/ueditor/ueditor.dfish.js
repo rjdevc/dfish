@@ -137,7 +137,7 @@ define.widget( 'ueditor', {
 		},
 		isModified: function() {
 			var c = this.getContent();
-			c == '<p></p>' && (c = '');
+			(c == '<p></p>' || c == '<p><br/></p>') && (c = '');
 			return this.u.isReady && this.options.initialContent != c;
 		},
 		saveModified: function() {
