@@ -2,6 +2,7 @@ package com.rongji.dfish.base;
 
 import com.rongji.dfish.base.util.img.ImageInfo;
 import com.rongji.dfish.base.util.img.ImageOperation;
+import com.rongji.dfish.base.util.img.JpegInfo;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,11 +18,11 @@ public class ImageOperationTest {
 //        oper.schedule(zoomCallBack);
 //        oper.output("");
 
-        narked.watermark("",16,null,0,0).saveAs(null);
+        narked.watermark("",16,null,0,0).output(null);
 
         narked.zoom(400,400)
                 .watermark("",16,null,0,0)
-                .saveAs(null);
+                .output(null);
 
 
 //        long begin=System.currentTimeMillis();
@@ -50,13 +51,14 @@ public class ImageOperationTest {
 //        }else {
 //            //FileUtil.copyFile()
 //        }
-        ImageOperation oper2=ImageOperation.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
-        ImageInfo ii=oper2.getImageInfo();
-        ImageOperation jpegThumb=ImageOperation.getThumbnail(ii);
-        if(jpegThumb!=null){
-            jpegThumb.saveAs(new FileOutputStream("C:\\Users\\Administrator\\Desktop\\originalThumbnail.jpg"));
+        ImageInfo ii=ImageInfo.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
+        if(ii instanceof JpegInfo){
+            JpegInfo cast=(JpegInfo)ii;
+            if(cast.getThumbnail()!=null){
+                ImageOperation jpegThumb=ImageOperation.of(cast.getThumbnail());
+                jpegThumb.output(new FileOutputStream("C:\\Users\\Administrator\\Desktop\\originalThumbnail.jpg"));
+            }
         }
-
 
     }
 
