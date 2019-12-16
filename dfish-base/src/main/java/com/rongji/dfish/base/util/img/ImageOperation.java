@@ -87,7 +87,9 @@ public class ImageOperation {
         for(ImageCallback callback: callbacks){
             working =callback.execute(working,this);
         }
-        return ImageOperation.of(working);
+        ImageOperation ret=ImageOperation.of(working);
+        ret.realType=this.realType;
+        return ret;
     }
 
     /**
@@ -96,7 +98,7 @@ public class ImageOperation {
      * @param fontSize 像素
      * @param color 颜色 需要半透明请颜色设置alpha值.注意这里取值范围是0-255
      * @param x 像素。如果x为负数，表示从右边算起。需要自行估计文本宽度
-     * @param y 像素。如果y为负数，表示从下面算起。需要自行估计文本高度
+     * @param y 像素。如果y为负数，表示从下面算起。如果是正数需要自行估计文本高度
      * @return
      */
     public ImageOperation watermark(String text, int fontSize, Color color, int x, int y){
@@ -109,10 +111,10 @@ public class ImageOperation {
             int realx=x;
             int realy=y;
             if(realx<0){
-                realx=width-realx;
+                realx=width+realx;
             }
             if(realy<0){
-                realy=height-realy;
+                realy=height+realy;
             }
             /*
             复制一个图片制作水印，不破坏原有的image
@@ -139,7 +141,7 @@ public class ImageOperation {
      * @param img 内容
      * @param alpha 半透明请颜色设置alpha值 范围0.0 - 1.0
      * @param x 像素。如果x为负数，表示从右边算起。需要自行估计文本宽度
-     * @param y 像素。如果y为负数，表示从下面算起。需要自行估计文本高度
+     * @param y 像素。如果y为负数，表示从下面算起。如果是正数需要自行估计文本高度
      * @return
      */
     public ImageOperation watermark(BufferedImage img, float alpha, int x, int y){
@@ -149,10 +151,10 @@ public class ImageOperation {
             int realx=x;
             int realy=y;
             if(realx<0){
-                realx=width-realx;
+                realx=width+realx;
             }
             if(realy<0){
-                realy=height-realy;
+                realy=height+realy;
             }
              /*
             复制一个图片制作水印，不破坏原有的image
@@ -239,7 +241,7 @@ public class ImageOperation {
             BufferedImage destImage = new BufferedImage(realWidth, realHeight, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
-            g.drawImage(image, (image.getWidth()-realWidth)/2, (image.getHeight()-realHeight)/2, width, height, null);
+            g.drawImage(image, (realWidth-image.getWidth())/2, (realHeight-image.getHeight())/2, image.getWidth(), image.getHeight(), null);
             g.dispose();
             return destImage;
         });
@@ -274,7 +276,7 @@ public class ImageOperation {
 
 
     public void output(OutputStream output) throws Exception {
-        if(callbacks.size()==0){
+        if(callbacks.size()==0&&image==null){
             //什么都没做，而且也没有指定文件名变化的。
             // 直接文件流拷贝
             byte[] buff=new byte[8192];
@@ -299,7 +301,7 @@ public class ImageOperation {
     }
     public void output(OutputStream output,String imageType) throws Exception {
         callbacks.add((image, oper)->{
-            String realType=imageType==null?this.realType:imageType;
+            String realType=imageType==null?oper.realType:imageType;
             try {
                 ImageIO.write(image, realType, output);
                 return image;
@@ -312,6 +314,11 @@ public class ImageOperation {
             }
         });
         execute();
+    }
+
+    public ImageOperation reset() {
+        this.callbacks.clear();;
+        return this;
     }
 
     /**

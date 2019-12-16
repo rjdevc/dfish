@@ -3,26 +3,27 @@ package com.rongji.dfish.base;
 import com.rongji.dfish.base.util.img.ImageInfo;
 import com.rongji.dfish.base.util.img.ImageOperation;
 import com.rongji.dfish.base.util.img.JpegInfo;
+import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.awt.*;
+import java.io.*;
 
 public class ImageOperationTest {
     public static void main(String[] args) throws Exception {
-        ImageOperation narked= ImageOperation.of(new FileInputStream(""))
-                .zoom(800,800)
-                .mark();
+//        ImageOperation narked= ImageOperation.of(new FileInputStream(""))
+//                .zoom(800,800)
+//                .mark();
 //        ZoomCallBack zoomCallBack=new ZoomCallBack();
 //        zoomCallBack.setMaxWidth(200);
 //        zoomCallBack.setMaxHeight(200);
 //        oper.schedule(zoomCallBack);
 //        oper.output("");
-
-        narked.watermark("",16,null,0,0).output(null);
-
-        narked.zoom(400,400)
-                .watermark("",16,null,0,0)
-                .output(null);
+//
+//        narked.watermark("",16,null,0,0).output(null);
+//
+//        narked.zoom(400,400)
+//                .watermark("",16,null,0,0)
+//                .output(null);
 
 
 //        long begin=System.currentTimeMillis();
@@ -51,19 +52,45 @@ public class ImageOperationTest {
 //        }else {
 //            //FileUtil.copyFile()
 //        }
-        ImageInfo ii=ImageInfo.of(new FileInputStream("D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg"));
+
+
+    }
+    private static final String SOURCE_FILE="D:\\3_项目\\公司ITASK\\新闻附件\\000000000271.jpg";
+    private static final String OUTPUT_PATH="C:\\Users\\LinLW\\Desktop\\imgtest\\";
+    @Test
+    public void testMark()throws Exception{
+        ImageOperation marked= ImageOperation.of(new FileInputStream(SOURCE_FILE))
+                .zoom(800,800)
+                .mark();
+
+        marked.watermark("榕基软件",16,new Color(255,255,255,255),-84,-36)
+            .output(new FileOutputStream(OUTPUT_PATH + "f_800.jpg"));
+
+        marked.reset().zoom(400,400)
+                .watermark("榕基软件",12,new Color(153,204,255,255),18,-27)
+                .output(new FileOutputStream(OUTPUT_PATH + "f_400.jpg"));
+    }
+
+    @Test
+    public void testCut()throws Exception{
+        ImageOperation.of(new FileInputStream(SOURCE_FILE))
+                .zoom(800,800)
+                .cut(600,600)
+                .output(new FileOutputStream(OUTPUT_PATH + "f_CUT600.jpg"));
+    }
+
+
+    @Test
+    public void testOriginalThumb() throws Exception {
+        ImageInfo ii=ImageInfo.of(new FileInputStream(SOURCE_FILE));
         if(ii instanceof JpegInfo){
             JpegInfo cast=(JpegInfo)ii;
             if(cast.getThumbnail()!=null){
                 ImageOperation jpegThumb=ImageOperation.of(cast.getThumbnail());
-                jpegThumb.output(new FileOutputStream("C:\\Users\\Administrator\\Desktop\\originalThumbnail.jpg"));
+                jpegThumb.output(new FileOutputStream(OUTPUT_PATH+"originalThumbnail.jpg"));
             }
         }
-
     }
 
-    private static void showTime(String msg,long begin) {
-        long cost=System.currentTimeMillis()-begin;
-        System.out.println(cost+"ms: "+msg);
-    }
+
 }
