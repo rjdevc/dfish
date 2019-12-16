@@ -3,9 +3,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.rongji</groupId>
+    <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.2.6.2-SNAPSHOT</version>
+    <version>3.2.6.3-SNAPSHOT</version>
   </parent>
   
   <artifactId>dfish-base</artifactId>

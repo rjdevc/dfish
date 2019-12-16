@@ -4,9 +4,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <name>dfish</name>
-    <groupId>com.rongji</groupId>
+    <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.2.6.2-SNAPSHOT</version>
+    <version>3.2.6.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -81,27 +81,27 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-misc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-ui-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.rongji</groupId>
+                <groupId>com.rongji.dfish</groupId>
                 <artifactId>dfish-framework</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -115,11 +115,22 @@
             <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
             <uniqueVersion>true</uniqueVersion>
         </repository>
-
         <snapshotRepository>
             <id>dfish-snapshot</id>
             <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
+            <uniqueVersion>true</uniqueVersion>
         </snapshotRepository>
+
+<!--        <repository>-->
+<!--            <id>releases</id>-->
+<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>-->
+<!--            <uniqueVersion>true</uniqueVersion>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>snapshots</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--            <uniqueVersion>true</uniqueVersion>-->
+<!--        </snapshotRepository>-->
 
     </distributionManagement>
 
