@@ -110,26 +110,27 @@
 
     <!--使用deploy -e 上传到nexus私服上-->
     <distributionManagement>
-<!--        <repository>-->
-<!--            <id>dfish-release</id>-->
-<!--            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>-->
-<!--            <uniqueVersion>true</uniqueVersion>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>dfish-snapshot</id>-->
-<!--            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>-->
-<!--        </snapshotRepository>-->
-
         <repository>
-            <id>releases</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>dfish-release</id>
+            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
             <uniqueVersion>true</uniqueVersion>
         </repository>
         <snapshotRepository>
-            <id>snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>dfish-snapshot</id>
+            <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
             <uniqueVersion>true</uniqueVersion>
         </snapshotRepository>
+
+<!--        <repository>-->
+<!--            <id>releases</id>-->
+<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>-->
+<!--            <uniqueVersion>true</uniqueVersion>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>snapshots</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--            <uniqueVersion>true</uniqueVersion>-->
+<!--        </snapshotRepository>-->
 
     </distributionManagement>
 
