@@ -4,9 +4,9 @@
   
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.rongji</groupId>
+    <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>3.2.6.2-SNAPSHOT</version>
+    <version>3.2.6.3-SNAPSHOT</version>
   </parent>
   
   <artifactId>dfish-framework</artifactId>
@@ -19,11 +19,11 @@
   
   <dependencies>
 	<dependency>
-	    <groupId>com.rongji</groupId>
+	    <groupId>com.rongji.dfish</groupId>
 	    <artifactId>dfish-misc</artifactId>
 	</dependency>
   	<dependency>
-	    <groupId>com.rongji</groupId>
+	    <groupId>com.rongji.dfish</groupId>
 	    <artifactId>dfish-ui-plugin</artifactId>
 	</dependency>
 
