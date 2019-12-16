@@ -98,7 +98,11 @@ public abstract class BaseService<T, ID extends Serializable> extends BaseDao<T,
         if (result == null || "".equals(result)) {
             return save(entity);
         } else {
-            return update(entity);
+            int count = update(entity);
+            if (count < 1) {
+                count = save(entity);
+            }
+            return count;
         }
     }
 
