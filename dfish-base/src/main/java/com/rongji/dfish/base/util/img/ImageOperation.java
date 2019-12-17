@@ -15,7 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageOperation {
+public class ImageOperation implements Cloneable{
     private InputStream input;
     private BufferedImage image;
     private List<ImageCallback> callbacks;
@@ -32,7 +32,7 @@ public class ImageOperation {
 
     /**
      * 待处理的图片，在没有动作之前，可能还未能从Input中读取，有可能是空的。
-     * @return
+     * @return BufferedImage
      */
     public BufferedImage getImage() {
         return image;
@@ -103,7 +103,7 @@ public class ImageOperation {
 
     /**
      *  执行所有安排好的callback动作。
-     * @throws Exception
+     * @throws Exception exception
      */
     protected void execute()throws Exception{
         readImageFromIn();
@@ -116,8 +116,8 @@ public class ImageOperation {
 
     /**
      * mark 将会记住当前image状态，后续使用reset将回到这个状态。
-     * @return
-     * @throws Exception
+     * @return this
+     * @throws Exception exception
      */
     public ImageOperation mark()throws Exception{
         readImageFromIn();
@@ -130,6 +130,20 @@ public class ImageOperation {
         return this;
     }
 
+    @Override
+    public ImageOperation clone(){
+        try {
+            readImageFromIn();
+            ColorModel cm = image.getColorModel();
+            boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+            WritableRaster raster = image.copyData(null);
+            BufferedImage clonedImage= new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+            return new ImageOperation(clonedImage);
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
     /**
      * 文字水印。
      * @param text 内容
@@ -137,7 +151,7 @@ public class ImageOperation {
      * @param color 颜色 需要半透明请颜色设置alpha值.注意这里取值范围是0-255
      * @param x 像素。如果x为负数，表示从右边算起。需要自行估计文本宽度
      * @param y 像素。如果y为负数，表示从下面算起。如果是正数需要自行估计文本高度
-     * @return
+     * @return this
      */
     public ImageOperation watermark(String text, int fontSize, Color color, int x, int y){
        return watermark(text,new Font(Font.DIALOG,Font.PLAIN,fontSize),color,x,y);
@@ -150,7 +164,7 @@ public class ImageOperation {
      * @param color 颜色 需要半透明请颜色设置alpha值.注意这里取值范围是0-255
      * @param x 像素。如果x为负数，表示从右边算起。需要自行估计文本宽度
      * @param y 像素。如果y为负数，表示从下面算起。如果是正数需要自行估计文本高度
-     * @return
+     * @return this
      */
     public ImageOperation watermark(String text, Font font, Color color, int x, int y){
         schedule((image,processor)->{
@@ -254,9 +268,9 @@ public class ImageOperation {
     
     /**
      * 缩放到
-     * @param width
-     * @param height
-     * @return
+     * @param width int
+     * @param height int
+     * @return ImageOperation
      */
     public ImageOperation resize(int width, int height)  {
         return schedule((image,oper)->{
@@ -295,7 +309,7 @@ public class ImageOperation {
      * 剪切到大小，取图片中心内容。
      * @param width 剪切完图片宽度
      * @param height 剪切完图片高度
-     * @return
+     * @return this
      */
     public ImageOperation cut(int width, int height)  {
         if(width<0||height<0){
@@ -321,9 +335,9 @@ public class ImageOperation {
 
     /**
      * 等比例缩放到不大于指定高宽
-     * @param maxWidth
-     * @param maxHeight
-     * @return
+     * @param maxWidth int
+     * @param maxHeight int
+     * @return this
      */
     public ImageOperation zoom(int maxWidth, int maxHeight)  {
         AdvancedZoomCallback zcb=new AdvancedZoomCallback();
@@ -335,8 +349,8 @@ public class ImageOperation {
 
     /**
      * 等比例缩放
-     * @param scale
-     * @return
+     * @param scale double
+     * @return this
      */
     public ImageOperation zoom(double scale)  {
         return schedule((image,oper)->{
@@ -391,7 +405,7 @@ public class ImageOperation {
      * GIF和PNG都支持透明。一般只有在做动画的时候才需要用GIF
      * @param output 输出地址
      * @param imageType 可改变图片类型。jpg(jpeg) png gif
-     * @throws Exception
+     * @throws Exception exception
      */
     public void output(OutputStream output,String imageType) throws Exception {
         callbacks.add((image, oper)->{
@@ -755,7 +769,7 @@ public class ImageOperation {
                 image=image.getSubimage(cutX,cutY,cutW,cutH);
             }
             Image smooth=
-                    image.getScaledInstance(fixedWidth, fixedWidth, java.awt.Image.SCALE_SMOOTH);
+                    image.getScaledInstance(fixedWidth, fixedHeight, java.awt.Image.SCALE_SMOOTH);
             g.drawImage(smooth, (canvasWidth-fixedWidth)/2, (canvasHeight-fixedHeight)/2,
                     fixedWidth, fixedHeight, null);
             g.dispose();
