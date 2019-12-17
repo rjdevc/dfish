@@ -134,11 +134,7 @@ public class ImageOperation implements Cloneable{
     public ImageOperation clone(){
         try {
             readImageFromIn();
-            ColorModel cm = image.getColorModel();
-            boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-            WritableRaster raster = image.copyData(null);
-            BufferedImage clonedImage= new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-            return new ImageOperation(clonedImage);
+            return new ImageOperation(clone(image));
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }
@@ -181,10 +177,8 @@ public class ImageOperation implements Cloneable{
             /*
             复制一个图片制作水印，不破坏原有的image
              */
-            ColorModel cm = image.getColorModel();
-            boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-            WritableRaster raster = image.copyData(null);
-            image= new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+
+            image= clone(image);
 
             Graphics2D g = (Graphics2D)image.getGraphics();
             g.setColor(color);
@@ -220,10 +214,7 @@ public class ImageOperation implements Cloneable{
              /*
             复制一个图片制作水印，不破坏原有的image
              */
-            ColorModel cm = image.getColorModel();
-            boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-            WritableRaster raster = image.copyData(null);
-            image= new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+            image=clone(image);
 
             Graphics2D g = (Graphics2D)image.getGraphics();
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
@@ -265,6 +256,10 @@ public class ImageOperation implements Cloneable{
             }
         }
     }
+    private static BufferedImage clone(BufferedImage image){
+        ColorModel cm = image.getColorModel();
+        return new BufferedImage(cm, image.copyData(null), cm.isAlphaPremultiplied(), null);
+    }
     
     /**
      * 缩放到
@@ -277,7 +272,9 @@ public class ImageOperation implements Cloneable{
             BufferedImage destImage = new BufferedImage(width, height, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
-            g.drawImage(image, 0, 0, width, height, null);
+            Image smooth=
+                    image.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+            g.drawImage(smooth, 0, 0, width, height, null);
             g.dispose();
             return destImage;
         });
@@ -285,8 +282,8 @@ public class ImageOperation implements Cloneable{
 
     /**
      * 剪切，一般x或y可能是负数。
-     * @param x 图片绘制位置，如果是负数，则左边会被切出x个像素
-     * @param y 图片绘制位置，如果是负数，则上边会被切出x个像素
+     * @param x 图片绘制位置，如果是负数，左边-x个像素会在画布外，相当于左边会被切出-x个像素
+     * @param y 图片绘制位置，如果是负数，上方-y个像素会在画布外，相当于上方会被切出-y个像素
      * @param width 剪切完图片宽度
      * @param height 剪切完图片高度
      * @return this
