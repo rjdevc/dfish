@@ -1,11 +1,9 @@
-package com.rongji.dfish.framework.plugin.file.controller.config.impl;
+package com.rongji.dfish.framework.plugin.file.config.impl;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.img.ImageHandleWay;
 import com.rongji.dfish.base.util.img.ImageHandler;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleDefine;
-
-import java.awt.*;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleDefine;
 
 /**
  * 图片处理定义

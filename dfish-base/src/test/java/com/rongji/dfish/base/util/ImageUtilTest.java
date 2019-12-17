@@ -1,6 +1,5 @@
-package com.rongji.dfish.misc.util;
+package com.rongji.dfish.base.util;
 
-import com.rongji.dfish.base.util.ImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -61,7 +60,7 @@ public class ImageUtilTest {
         File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
         InputStream input = new FileInputStream(rawFile);
         OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
-        ImageUtil.zoom(input, output, fileExtName, width, height);
+        ImageUtil.zoom(input, output, width, height);
     }
 
     /**
@@ -77,7 +76,7 @@ public class ImageUtilTest {
         File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
         InputStream input = new FileInputStream(rawFile);
         OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
-        ImageUtil.resize(input, output, fileExtName, width, height);
+        ImageUtil.resize(input, output, width, height);
     }
 
     /**
@@ -93,7 +92,7 @@ public class ImageUtilTest {
         File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
         InputStream input = new FileInputStream(rawFile);
         OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
-        ImageUtil.cut(input, output, fileExtName, width, height);
+        ImageUtil.cut(input, output, width, height);
     }
 
     /**

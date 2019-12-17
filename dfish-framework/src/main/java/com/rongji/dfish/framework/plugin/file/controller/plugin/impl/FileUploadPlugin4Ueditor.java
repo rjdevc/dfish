@@ -4,7 +4,7 @@ import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.plugin.file.controller.FileController;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleScheme;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleScheme;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import java.io.InputStream;
  * @author lamontYu
  */
 @Component
-public class FileUpload4UeditorPlugin extends AbstractFileUploadPlugin {
+public class FileUploadPlugin4Ueditor extends AbstractFileUploadPlugin {
 
     @Override
     public String name() {
@@ -29,10 +29,9 @@ public class FileUpload4UeditorPlugin extends AbstractFileUploadPlugin {
     public Object doRequest(HttpServletRequest request) {
         String action = request.getParameter("action");
         if ("config".equals(action)) {
-            InputStream is = FileController.class.getClassLoader().getResourceAsStream("com/rongji/dfish/framework/plugin/file/controller/ueditor_config.json");
             byte[] buff = new byte[8192];
             String readJson = "";
-            try {
+            try(InputStream is = FileController.class.getClassLoader().getResourceAsStream("com/rongji/dfish/framework/plugin/file/config/ueditor_config.json")) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 int readLength = -1;
                 while ((readLength = is.read(buff)) > 0) {
@@ -41,14 +40,6 @@ public class FileUpload4UeditorPlugin extends AbstractFileUploadPlugin {
                 readJson = new String(baos.toByteArray(), "UTF-8");
             } catch (IOException e1) {
                 LogUtil.error("上传过程出现异常", e1);
-            } finally {
-                try {
-                    if (is != null) {
-                        is.close();
-                    }
-                } catch (IOException e) {
-                    LogUtil.error("文件流关闭异常", e);
-                }
             }
             return readJson;
         }

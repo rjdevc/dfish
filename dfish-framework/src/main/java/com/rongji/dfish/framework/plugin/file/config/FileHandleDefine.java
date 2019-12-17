@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.plugin.file.controller.config;
+package com.rongji.dfish.framework.plugin.file.config;
 
 /**
  * 文件处理定义

@@ -4,17 +4,16 @@ import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.img.ImageProcessor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleDefine;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleManager;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleScheme;
-import com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleDefine;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleManager;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleScheme;
+import com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.dto.PreviewResponse;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
@@ -39,7 +38,6 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 /**
  * 附件相关控制层
@@ -158,9 +156,6 @@ public class FileController extends BaseActionController {
         return new JsonResponse<>(uploadItem);
     }
 
-
-    private static final ExecutorService EXECUTOR_IMAGE = ThreadUtil.getCachedThreadPool();
-
     /**
      * 上传图片
      *
@@ -205,50 +200,8 @@ public class FileController extends BaseActionController {
                 imageProcessor.handle(cast);
             }
         }
-        int done = imageProcessor.execute();
-        LogUtil.debug("done:" + done);
+        imageProcessor.execute();
 
-//        EXECUTOR_IMAGE.execute(() -> {
-            // 本应该先提前判断再进行获取压缩,暂时不考虑这些个别情况(多损耗性能)
-//            for (String defineAlias : handlingScheme.getDefines()) {
-//                try {
-//                    File outputFile = fileService.getFile(fileRecord, defineAlias, false);
-//                    if (!outputFile.exists()) {
-//                        outputFile.createNewFile();
-//                    }
-//                    try (InputStream input = new FileInputStream(imageFile);
-//                         OutputStream output = new FileOutputStream(outputFile)) {
-//                        FileHandlingDefine handlingDefine = fileHandlingManager.getDefine(defineAlias);
-//                        if (handlingDefine == null || !(handlingDefine instanceof ImageHandlingDefine)) {
-//                            continue;
-//                        }
-//                        ImageHandlingDefine realDefine = (ImageHandlingDefine) handlingDefine;
-//                        if (ImageHandlingDefine.WAY_ZOOM.equals(realDefine.getWay())) {
-//                            ImageUtil.zoom(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
-//                        } else if (ImageHandlingDefine.WAY_CUT.equals(realDefine.getWay())) {
-//                            ImageUtil.cut(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
-//                        } else if (ImageHandlingDefine.WAY_RESIZE.equals(realDefine.getWay())) {
-//                            ImageUtil.resize(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
-//                        }
-//                        doneFileCount.incrementAndGet();
-//                    } catch (Exception e) {
-//                        LogUtil.error("生成缩略图出现异常", e);
-//                    }
-//                } catch (Exception e) {
-//                    LogUtil.error("生成缩略图出现异常", e);
-//                }
-//
-//            }
-//        });
-//        int waitCount = 0;
-//        // 至少保证第1个缩略图生成才返回结果;最多等待3秒
-//        while (doneFileCount.get() < 1 && waitCount++ < 30) {
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException e) {
-//                LogUtil.error("生成缩略图等待异常", e);
-//            }
-//        }
         return jsonResponse;
     }
 

@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.plugin.file.controller.config;
+package com.rongji.dfish.framework.plugin.file.config;
 
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;

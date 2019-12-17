@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.plugin.file.controller.config;
+package com.rongji.dfish.framework.plugin.file.config;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.plugin.file.controller.plugin.impl;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleManager;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleManager;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
