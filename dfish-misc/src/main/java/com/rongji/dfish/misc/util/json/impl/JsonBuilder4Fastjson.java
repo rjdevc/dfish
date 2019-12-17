@@ -2,6 +2,7 @@ package com.rongji.dfish.misc.util.json.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.rongji.dfish.base.util.json.impl.AbstractJsonBuilder;
 import com.rongji.dfish.base.util.Utils;
 
 import java.util.ArrayList;

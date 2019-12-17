@@ -1,4 +1,4 @@
-package com.rongji.dfish.misc.util.json.impl;
+package com.rongji.dfish.base.util.json.impl;
 
 import com.rongji.dfish.base.util.json.JsonBuilder;
 

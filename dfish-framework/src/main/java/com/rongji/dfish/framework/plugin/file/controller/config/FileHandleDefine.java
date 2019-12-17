@@ -7,18 +7,12 @@ package com.rongji.dfish.framework.plugin.file.controller.config;
  * @create 2019-08-07
  * @since 3.2
  */
-public class FileHandlingDefine {
+public interface FileHandleDefine {
 
     /**
      * 方案别名
+     * @return String
      */
-    protected String alias;
+    String getAlias();
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
 }
