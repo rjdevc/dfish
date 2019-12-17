@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.plugin.file.controller.plugin.impl;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleManager;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
@@ -23,7 +23,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
     @Resource(name = "fileService")
     protected FileService fileService;
     @Autowired
-    protected FileHandlingManager fileHandlingManager;
+    protected FileHandleManager fileHandleManager;
 
     public FileService getFileService() {
         return fileService;
@@ -33,12 +33,12 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
         this.fileService = fileService;
     }
 
-    public FileHandlingManager getFileHandlingManager() {
-        return fileHandlingManager;
+    public FileHandleManager getFileHandleManager() {
+        return fileHandleManager;
     }
 
-    public void setFileHandlingManager(FileHandlingManager fileHandlingManager) {
-        this.fileHandlingManager = fileHandlingManager;
+    public void setFileHandleManager(FileHandleManager fileHandleManager) {
+        this.fileHandleManager = fileHandleManager;
     }
 
     /**

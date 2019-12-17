@@ -8,7 +8,7 @@ import java.util.List;
  * @create 2019-08-07
  * @since 3.2
  */
-public class FileHandlingScheme {
+public class FileHandleScheme {
     /**
      * 方案名称
      */
@@ -20,7 +20,7 @@ public class FileHandlingScheme {
     /**
      * 方案定义
      */
-    private List<String> defines;
+    private List<FileHandleDefine> defines;
     /**
      * 需处理的文件类型
      */
@@ -50,11 +50,11 @@ public class FileHandlingScheme {
         this.defaultIcon = defaultIcon;
     }
 
-    public List<String> getDefines() {
+    public List<FileHandleDefine> getDefines() {
         return defines;
     }
 
-    public void setDefines(List<String> defines) {
+    public void setDefines(List<FileHandleDefine> defines) {
         this.defines = defines;
     }
 

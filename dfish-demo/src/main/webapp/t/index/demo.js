@@ -10,7 +10,7 @@ define.template({
             type: 'loading',
             node: {
                 type: 'progress',
-                src: 'demo/loading',
+                guide: 'demo/loading',
                 template: 'progress/multiple',
                 success: 'if($response.data.finish){$.close(this);$.alert("完成了!");}'
             }
@@ -43,6 +43,7 @@ define.template({
                             {
                                 type: 'upload/image',
                                 name: 'imageJson',
+                                data: {'scheme': 'USER_ICON'},
                                 label: {text: '图片上传'}
                             },
                             {

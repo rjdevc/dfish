@@ -20,10 +20,10 @@ public class ThreadUtil {
 	/**
 	 * 使用另一个线程运行这个runable的内容。
 	 * 这样当前线程不需要等待它运行结束。
-	 * @param runable 可运行的内容
+	 * @param runnable 可运行的内容
 	 */
-	public static void execute(Runnable runable){
-		getCachedThreadPool().execute(runable);
+	public static void execute(Runnable runnable){
+		getCachedThreadPool().execute(runnable);
 	}
 
     /**

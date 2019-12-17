@@ -4,7 +4,7 @@ import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.plugin.file.controller.FileController;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleScheme;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +59,7 @@ public class FileUpload4UeditorPlugin extends AbstractFileUploadPlugin {
             resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getText() + "\"}";
         } else {
             String scheme = request.getParameter("scheme");
-            FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+            FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
             String fileUrl = null;
             if (handlingScheme != null) {
                 fileUrl = handlingScheme.getFileUrl();

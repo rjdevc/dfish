@@ -1,26 +1,26 @@
 package com.rongji.dfish.framework.plugin.file.controller;
 
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
+import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.base.util.img.ImageProcessor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingDefine;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingManager;
-import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme;
-import com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleDefine;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleManager;
+import com.rongji.dfish.framework.plugin.file.controller.config.FileHandleScheme;
+import com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.dto.PreviewResponse;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.util.ServletUtil;
-import com.rongji.dfish.base.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,13 +32,14 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 附件相关控制层
@@ -55,8 +56,24 @@ public class FileController extends BaseActionController {
     private FileService fileService;
     @Autowired(required = false)
     private List<FileUploadPlugin> uploadPlugins;
-    @Autowired
-    private FileHandlingManager fileHandlingManager;
+    @Resource(name = "fileHandleManager")
+    private FileHandleManager fileHandleManager;
+
+    public FileService getFileService() {
+        return fileService;
+    }
+
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
+    }
+
+    public FileHandleManager getFileHandleManager() {
+        return fileHandleManager;
+    }
+
+    public void setFileHandleManager(FileHandleManager fileHandleManager) {
+        this.fileHandleManager = fileHandleManager;
+    }
 
     private Map<String, FileUploadPlugin> uploadPluginMap = new HashMap<>();
 
@@ -134,7 +151,7 @@ public class FileController extends BaseActionController {
     @ResponseBody
     public JsonResponse<?> uploadFile(HttpServletRequest request) {
         String scheme = request.getParameter("scheme");
-        FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+        FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
         // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
         String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileService.getFileTypes();
         UploadItem uploadItem = saveFile(request, acceptTypes);
@@ -152,7 +169,7 @@ public class FileController extends BaseActionController {
      */
     @RequestMapping("/upload/image")
     @ResponseBody
-    public JsonResponse<?> uploadImage(HttpServletRequest request) {
+    public JsonResponse<?> uploadImage(HttpServletRequest request) throws Exception {
         final JsonResponse<?> jsonResponse = uploadFile(request);
         UploadItem uploadItem = (UploadItem) jsonResponse.getData();
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
@@ -161,71 +178,77 @@ public class FileController extends BaseActionController {
         }
 
         String scheme = request.getParameter("scheme");
-        final FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
-        if (handlingScheme == null || Utils.isEmpty(handlingScheme.getDefines())) {
+        final FileHandleScheme handleScheme = fileHandleManager.getScheme(scheme);
+        if (handleScheme == null || Utils.isEmpty(handleScheme.getDefines())) {
             // 无需进行图片压缩
             return jsonResponse;
         }
-        final AtomicInteger doneFileCount = new AtomicInteger(0);
-        EXECUTOR_IMAGE.execute(() -> {
-            // 本应该先提前判断再进行获取压缩,暂时不考虑这些个别情况(多损耗性能)
-            String fileId = fileService.decrypt(uploadItem.getId());
-            PubFileRecord fileRecord = fileService.get(fileId);
-            if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
-                LogUtil.warn("生成缩略图出现异常:原记录文件存储记录丢失[" + fileId + "]");
-                return;
-            }
-            int dotIndex = fileRecord.getFileUrl().lastIndexOf(".");
-            if (dotIndex < 0) {
-                LogUtil.warn("生成缩略图出现异常:原记录文件存储记录异常[" + fileId + "]");
-                return;
-            }
+        String fileId = fileService.decrypt(uploadItem.getId());
+        PubFileRecord fileRecord = fileService.get(fileId);
+        if (fileRecord == null) {
+            String errorMsg = "生成缩略图出现异常@" + System.currentTimeMillis();
+            LogUtil.warn(errorMsg + ":原记录文件存储记录丢失[" + fileId + "]");
+            return jsonResponse.setErrMsg(errorMsg);
+        }
 
-            String fileExtName = fileRecord.getFileUrl().substring(dotIndex + 1);
-            File imageFile = fileService.getFile(fileRecord);
-            if (imageFile == null || !imageFile.exists()) {
-                LogUtil.warn("生成缩略图出现异常:原图丢失[" + fileId + "]");
-                return;
-            }
-            for (String defineAlias : handlingScheme.getDefines()) {
-                try {
-                    File outputFile = fileService.getFile(fileRecord, defineAlias, false);
-                    if (!outputFile.exists()) {
-                        outputFile.createNewFile();
-                    }
-                    try (InputStream input = new FileInputStream(imageFile);
-                         OutputStream output = new FileOutputStream(outputFile)) {
-                        FileHandlingDefine handlingDefine = fileHandlingManager.getDefine(defineAlias);
-                        if (handlingDefine == null || !(handlingDefine instanceof ImageHandlingDefine)) {
-                            continue;
-                        }
-                        ImageHandlingDefine realDefine = (ImageHandlingDefine) handlingDefine;
-                        if (ImageHandlingDefine.WAY_ZOOM.equals(realDefine.getWay())) {
-                            ImageUtil.zoom(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
-                        } else if (ImageHandlingDefine.WAY_CUT.equals(realDefine.getWay())) {
-                            ImageUtil.cut(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
-                        } else if (ImageHandlingDefine.WAY_RESIZE.equals(realDefine.getWay())) {
-                            ImageUtil.resize(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
-                        }
-                        doneFileCount.incrementAndGet();
-                    } catch (Exception e) {
-                        LogUtil.error("生成缩略图出现异常", e);
-                    }
-                } catch (Exception e) {
-                    LogUtil.error("生成缩略图出现异常", e);
-                }
-
-            }
-        });
-        int waitCount = 0;
-        // 至少保证第1个缩略图生成才返回结果;最多等待3秒
-        while (doneFileCount.get() < 1 && waitCount++ < 30) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                LogUtil.error("生成缩略图等待异常", e);
+        File imageFile = fileService.getFile(fileRecord);
+        if (imageFile == null || !imageFile.exists()) {
+            String errorMsg = "生成缩略图出现异常@" + System.currentTimeMillis();
+            LogUtil.warn(errorMsg + ":原图丢失[" + fileId + "]");
+            return jsonResponse.setErrMsg(errorMsg);
+        }
+        ImageProcessor imageProcessor = ImageProcessor.of(imageFile).setDest(imageFile.getParentFile().getAbsolutePath())
+                .setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}");
+        for (FileHandleDefine handleDefine : handleScheme.getDefines()) {
+            if (handleDefine instanceof ImageHandleDefine) {
+                ImageHandleDefine cast = (ImageHandleDefine) handleDefine;
+                imageProcessor.handle(cast);
             }
         }
+        int done = imageProcessor.execute();
+        LogUtil.debug("done:" + done);
+
+//        EXECUTOR_IMAGE.execute(() -> {
+            // 本应该先提前判断再进行获取压缩,暂时不考虑这些个别情况(多损耗性能)
+//            for (String defineAlias : handlingScheme.getDefines()) {
+//                try {
+//                    File outputFile = fileService.getFile(fileRecord, defineAlias, false);
+//                    if (!outputFile.exists()) {
+//                        outputFile.createNewFile();
+//                    }
+//                    try (InputStream input = new FileInputStream(imageFile);
+//                         OutputStream output = new FileOutputStream(outputFile)) {
+//                        FileHandlingDefine handlingDefine = fileHandlingManager.getDefine(defineAlias);
+//                        if (handlingDefine == null || !(handlingDefine instanceof ImageHandlingDefine)) {
+//                            continue;
+//                        }
+//                        ImageHandlingDefine realDefine = (ImageHandlingDefine) handlingDefine;
+//                        if (ImageHandlingDefine.WAY_ZOOM.equals(realDefine.getWay())) {
+//                            ImageUtil.zoom(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
+//                        } else if (ImageHandlingDefine.WAY_CUT.equals(realDefine.getWay())) {
+//                            ImageUtil.cut(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
+//                        } else if (ImageHandlingDefine.WAY_RESIZE.equals(realDefine.getWay())) {
+//                            ImageUtil.resize(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
+//                        }
+//                        doneFileCount.incrementAndGet();
+//                    } catch (Exception e) {
+//                        LogUtil.error("生成缩略图出现异常", e);
+//                    }
+//                } catch (Exception e) {
+//                    LogUtil.error("生成缩略图出现异常", e);
+//                }
+//
+//            }
+//        });
+//        int waitCount = 0;
+//        // 至少保证第1个缩略图生成才返回结果;最多等待3秒
+//        while (doneFileCount.get() < 1 && waitCount++ < 30) {
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                LogUtil.error("生成缩略图等待异常", e);
+//            }
+//        }
         return jsonResponse;
     }
 
@@ -531,7 +554,7 @@ public class FileController extends BaseActionController {
         boolean success = downloadFileData(response, fileService.getFileInputStream(fileRecord, realAlias), downloadParam);
         // 下载不成功,用默认图片代替
         if (!success) {
-            FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+            FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
             String defaultIcon = null;
             if (handlingScheme != null) {
                 if (Utils.notEmpty(handlingScheme.getDefaultIcon())) {
@@ -566,9 +589,9 @@ public class FileController extends BaseActionController {
 
     private String getFileAlias(String alias, String scheme) {
         if (Utils.isEmpty(alias) || FILE_ALIAS_AUTO.equals(alias)) {
-            FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+            FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
             if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefines())) {
-                alias = handlingScheme.getDefines().get(0);
+                alias = handlingScheme.getDefines().get(0).getAlias();
             } else {
                 alias = null;
             }

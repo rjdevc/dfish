@@ -726,6 +726,13 @@ public class ImageOperation implements Cloneable{
                 canvasWidth=fixedWidth = (int) (imageWidth * scale + 0.5);
                 canvasHeight = fixedHeight=(int) (imageHeight * scale + 0.5);
             }else if(maxHeight!=null&&maxWidth!=null){
+                if (maxHeight < 0) {
+                    maxHeight = image.getHeight();
+                }
+                if (maxWidth < 0) {
+                    maxWidth = image.getWidth();
+                }
+
                 double widthScale = new Double(maxWidth) / imageWidth;
                 double heightScale = new Double(maxHeight) / imageHeight;
 

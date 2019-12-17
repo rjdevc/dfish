@@ -31,55 +31,70 @@
 
     <!-- 附件模块 -->
     <bean id="fileService" class="com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl"></bean>
+    <bean id="fileHandleManager" class="com.rongji.dfish.framework.plugin.file.controller.config.FileHandleManager"></bean>
+
+    <!-- 图片处理方式-缩放 -->
+    <bean id="handleZoom" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="com.rongji.dfish.base.util.img.ImageHandleWay.ZOOM"></property>
+    </bean>
+    <!-- 图片处理方式-裁剪 -->
+    <bean id="handleCut" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="com.rongji.dfish.base.util.img.ImageHandleWay.CUT"></property>
+    </bean>
+    <!-- 图片处理方式-强制改变大小 -->
+    <bean id="handleResize" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="com.rongji.dfish.base.util.img.ImageHandleWay.RESIZE"></property>
+    </bean>
 
     <!-- 默认原图尺寸缩放定义 -->
-    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine">
+    <bean id="imageDefault" class="com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine">
         <property name="alias" value="DEFAULT"></property>
-        <property name="way" value="zoom"></property>
+        <property name="way" ref="handleZoom"></property>
         <property name="width" value="-1"></property>
         <property name="height" value="-1"></property>
+        <property name="lazy" value="false"></property>
     </bean>
 
     <!-- 通用头像图片缩放定义 -->
-    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine">
-        <property name="way" value="cut"></property>
+    <bean id="image100x100" class="com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine">
+        <property name="way" ref="handleCut"></property>
         <property name="width" value="100"></property>
         <property name="height" value="100"></property>
     </bean>
-    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine">
-        <property name="way" value="cut"></property>
+    <bean id="image80x80" class="com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine">
+        <property name="way" ref="handleCut"></property>
         <property name="width" value="80"></property>
         <property name="height" value="80"></property>
     </bean>
-    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine">
-        <property name="way" value="cut"></property>
+    <bean id="image60x60" class="com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine">
+        <property name="way" ref="handleCut"></property>
         <property name="width" value="60"></property>
         <property name="height" value="60"></property>
     </bean>
-    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine">
-        <property name="way" value="cut"></property>
+    <bean id="image40x40" class="com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine">
+        <property name="way" ref="handleCut"></property>
         <property name="width" value="40"></property>
         <property name="height" value="40"></property>
     </bean>
-    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine">
-        <property name="way" value="cut"></property>
+    <bean id="image20x20" class="com.rongji.dfish.framework.plugin.file.controller.config.impl.ImageHandleDefine">
+        <property name="way" ref="handleCut"></property>
         <property name="width" value="20"></property>
         <property name="height" value="20"></property>
     </bean>
 
     <!-- 人员头像缩放方案 -->
-    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingScheme">
+    <bean class="com.rongji.dfish.framework.plugin.file.controller.config.FileHandleScheme">
         <property name="name" value="USER_ICON"></property>
         <property name="defaultIcon" value="icon_user.png"></property>
         <property name="handlingTypes" value="${icon.types}"></property>
         <property name="defines">
             <list>
-                <value>DEFAULT</value>
-                <value>100x100</value>
-                <value>80x80</value>
-                <value>60x60</value>
-                <value>40x40</value>
-                <value>20x20</value>
+                <ref bean="imageDefault"></ref>
+                <ref bean="image100x100"></ref>
+                <ref bean="image80x80"></ref>
+                <ref bean="image60x60"></ref>
+                <ref bean="image40x40"></ref>
+                <ref bean="image20x20"></ref>
             </list>
         </property>
     </bean>
