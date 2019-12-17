@@ -22,33 +22,71 @@ public class ImageOperation {
     private String realType;
 
 
+    /**
+     * 原始图片输入流
+     * @return InputStream
+     */
     public InputStream getInput() {
         return input;
     }
 
+    /**
+     * 待处理的图片，在没有动作之前，可能还未能从Input中读取，有可能是空的。
+     * @return
+     */
     public BufferedImage getImage() {
         return image;
     }
 
+    /**
+     * 待处理的动作。
+     * @return List
+     */
     public List<ImageCallback> getCallbacks() {
         return callbacks;
     }
+
+    /**
+     * 尝试充输入流中发现真正的类型。而不是根据文件名后缀判断。
+     * 有点时候后缀是错误的。
+     * @return String
+     */
     public String getRealType() {
         return realType;
     }
 
+    /**
+     * 构造函数
+     * @param input InputStream
+     */
     public ImageOperation(InputStream input){
         this.input = input;
         callbacks =new ArrayList<>();
     }
+
+    /**
+     * 构造函数
+     * @param image BufferedImage
+     */
     public ImageOperation(BufferedImage image){
         this.image=image;
         callbacks =new ArrayList<>();
     }
 
+    /**
+     * 快速调用方式。
+     * @param input InputStream
+     * @return ImageOperation
+     */
     public static ImageOperation of(InputStream input){
         return new ImageOperation(input);
     }
+
+    /**
+     * 快速调用方式。
+     * @param image BufferedImage
+     * @return ImageOperation
+     */
     public static ImageOperation of(BufferedImage image){
         return new ImageOperation(image);
     }
@@ -77,7 +115,7 @@ public class ImageOperation {
 
 
     /**
-     * mark 将会记住当前image状态，并产生一个新的实例。
+     * mark 将会记住当前image状态，后续使用reset将回到这个状态。
      * @return
      * @throws Exception
      */
@@ -88,6 +126,7 @@ public class ImageOperation {
             working =callback.execute(working,this);
         }
         image=working;
+        callbacks.clear();
         return this;
     }
 
@@ -103,6 +142,16 @@ public class ImageOperation {
     public ImageOperation watermark(String text, int fontSize, Color color, int x, int y){
        return watermark(text,new Font(Font.DIALOG,Font.PLAIN,fontSize),color,x,y);
     }
+
+    /**
+     * 文字水印
+     * @param text 内容
+     * @param font 字体
+     * @param color 颜色 需要半透明请颜色设置alpha值.注意这里取值范围是0-255
+     * @param x 像素。如果x为负数，表示从右边算起。需要自行估计文本宽度
+     * @param y 像素。如果y为负数，表示从下面算起。如果是正数需要自行估计文本高度
+     * @return
+     */
     public ImageOperation watermark(String text, Font font, Color color, int x, int y){
         schedule((image,processor)->{
             int width = image.getWidth(); // 得到源图宽
@@ -125,7 +174,6 @@ public class ImageOperation {
 
             Graphics2D g = (Graphics2D)image.getGraphics();
             g.setColor(color);
-//            Font font=new Font(Font.DIALOG,Font.PLAIN,fontSize);
             g.setFont(font);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, (float)(color.getAlpha()/255.0)));
             // 在指定坐标绘制水印文字
@@ -136,12 +184,12 @@ public class ImageOperation {
         return this;
     }
     /**
-     * 文字水印。
+     * 图片水印。
      * @param img 内容
      * @param alpha 半透明请颜色设置alpha值 范围0.0 - 1.0
-     * @param x 像素。如果x为负数，表示从右边算起。需要自行估计文本宽度
-     * @param y 像素。如果y为负数，表示从下面算起。如果是正数需要自行估计文本高度
-     * @return
+     * @param x 像素。如果x为负数，表示从右边算起。需要自行估计图片宽度
+     * @param y 像素。如果y为负数，表示从下面算起。需要自行估计图片高度
+     * @return this
      */
     public ImageOperation watermark(BufferedImage img, float alpha, int x, int y){
         schedule((image,processor)->{
@@ -172,6 +220,16 @@ public class ImageOperation {
         });
         return this;
     }
+
+    /**
+     * 图片水印
+     * @param another 内容
+     * @param alpha 半透明请颜色设置alpha值 范围0.0 - 1.0
+     * @param x 像素。如果x为负数，表示从右边算起。需要自行估计图片宽度
+     * @param y 像素。如果y为负数，表示从下面算起。需要自行估计图片高度
+     * @return this
+     * @throws IOException 读取another里面的内容可能会发生 IOException
+     */
     public ImageOperation watermark(ImageOperation another, float alpha, int x, int y) throws IOException {
         if(another.image==null){
             another.readImageFromIn();
@@ -211,6 +269,14 @@ public class ImageOperation {
         });
     }
 
+    /**
+     * 剪切，一般x或y可能是负数。
+     * @param x 图片绘制位置，如果是负数，则左边会被切出x个像素
+     * @param y 图片绘制位置，如果是负数，则上边会被切出x个像素
+     * @param width 剪切完图片宽度
+     * @param height 剪切完图片高度
+     * @return this
+     */
     public ImageOperation cut(int x, int y, int width , int height)  {
         if(x<0||y<0||width<0||height<0){
             throw  new IllegalArgumentException("X, Y, width, height should not lses than 0");
@@ -224,6 +290,13 @@ public class ImageOperation {
             return destImage;
         });
     }
+
+    /**
+     * 剪切到大小，取图片中心内容。
+     * @param width 剪切完图片宽度
+     * @param height 剪切完图片高度
+     * @return
+     */
     public ImageOperation cut(int width, int height)  {
         if(width<0||height<0){
             throw  new IllegalArgumentException("width, height should not lses than 0");
@@ -260,6 +333,11 @@ public class ImageOperation {
         return schedule(zcb);
     }
 
+    /**
+     * 等比例缩放
+     * @param scale
+     * @return
+     */
     public ImageOperation zoom(double scale)  {
         return schedule((image,oper)->{
             int width=(int)(image.getWidth()*scale+0.5);
@@ -267,13 +345,20 @@ public class ImageOperation {
             BufferedImage destImage = new BufferedImage(width, height, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
-            g.drawImage(image, 0, 0, width, height, null);
+            Image smooth=
+                    image.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+            g.drawImage(smooth, 0, 0, width, height, null);
             g.dispose();
             return destImage;
         });
     }
 
 
+    /**
+     * 图片完成并输出
+     * @param output 输出地址
+     * @throws Exception
+     */
     public void output(OutputStream output) throws Exception {
         if(callbacks.size()==0&&image==null){
             //什么都没做，而且也没有指定文件名变化的。
@@ -298,6 +383,16 @@ public class ImageOperation {
             output(output, null);
         }
     }
+
+    /**
+     * 图片完成并输出,可同时改变图片类型
+     * 对于照片等，全图有各种信息的用JPEG效果更好。
+     * 对于图标等，图片中只有8-16种颜色的。用GIF或PNG会有较好的效果。
+     * GIF和PNG都支持透明。一般只有在做动画的时候才需要用GIF
+     * @param output 输出地址
+     * @param imageType 可改变图片类型。jpg(jpeg) png gif
+     * @throws Exception
+     */
     public void output(OutputStream output,String imageType) throws Exception {
         callbacks.add((image, oper)->{
             String realType=imageType==null?oper.realType:imageType;
@@ -315,6 +410,11 @@ public class ImageOperation {
         execute();
     }
 
+    /**
+     * 将状态重置到 上次mark 标记后的状态。
+     * 如果都没有reset过则是返回初始状态(读取的原始图片)
+     * @return this
+     */
     public ImageOperation reset() {
         this.callbacks.clear();;
         return this;
@@ -507,7 +607,7 @@ public class ImageOperation {
          * 最大比例
          * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
          * 这个比例设置为2 和设置为0.5是等价的。
-         * @return
+         * @return Double
          */
         public Double getMaxAspectRatio() {
             return maxAspectRatio;
@@ -517,7 +617,7 @@ public class ImageOperation {
          * 最大比例
          * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
          * 这个比例设置为2 和设置为0.5是等价的。
-         * @param maxAspectRatio
+         * @param maxAspectRatio Double
          */
         public void setMaxAspectRatio(Double maxAspectRatio) {
             this.maxAspectRatio = maxAspectRatio;
@@ -527,7 +627,7 @@ public class ImageOperation {
          * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
          * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留4.0/3.0
          * 可见范围也更多一些。
-         * @return
+         * @return Double
          */
         public Double getFixAspectRatio() {
             return fixAspectRatio;
@@ -537,7 +637,7 @@ public class ImageOperation {
          * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
          * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留1.2
          * 可见范围也更多一些。
-         * @param fixAspectRatio
+         * @param fixAspectRatio Double
          */
         public void setFixAspectRatio(Double fixAspectRatio) {
             this.fixAspectRatio = fixAspectRatio;
@@ -547,7 +647,7 @@ public class ImageOperation {
          * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
          * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
          * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
-         * @return
+         * @return Color
          */
         public Color getPaddingColor() {
             return paddingColor;
@@ -557,7 +657,7 @@ public class ImageOperation {
          * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
          * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
          * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
-         * @param paddingColor
+         * @param paddingColor Color
          */
         public void setPaddingColor(Color paddingColor) {
             this.paddingColor = paddingColor;
@@ -654,7 +754,9 @@ public class ImageOperation {
             if(needCut){
                 image=image.getSubimage(cutX,cutY,cutW,cutH);
             }
-            g.drawImage(image, (canvasWidth-fixedWidth)/2, (canvasHeight-fixedHeight)/2,
+            Image smooth=
+                    image.getScaledInstance(fixedWidth, fixedWidth, java.awt.Image.SCALE_SMOOTH);
+            g.drawImage(smooth, (canvasWidth-fixedWidth)/2, (canvasHeight-fixedHeight)/2,
                     fixedWidth, fixedHeight, null);
             g.dispose();
             return destImage;
@@ -666,7 +768,15 @@ public class ImageOperation {
      * 具体的操作动作，操作动作可以通过回调来减少具体操作的损耗。
      */
     public interface ImageCallback {
-        BufferedImage execute(BufferedImage image,ImageOperation processor) throws Exception;
+        /**
+         * 执行动作
+         * @param image 上一步处理完以后的image对象。
+         * @param operation 操作本身句柄，可获得上下文
+         * @return 这步处理完以后的image对象。如果这步对image有任何改变，建议不要在原image上改变，
+         *   而应该新建一个image或复制image。防止mark和reset出现异常。
+         * @throws Exception exception
+         */
+        BufferedImage execute(BufferedImage image,ImageOperation operation) throws Exception;
     }
 
 
