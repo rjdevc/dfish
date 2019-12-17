@@ -134,7 +134,9 @@ public class ImageOperation implements Cloneable{
     public ImageOperation clone(){
         try {
             readImageFromIn();
-            return new ImageOperation(clone(image));
+            ImageOperation io= new ImageOperation(clone(image));
+            io.realType=this.realType;
+            return io;
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }

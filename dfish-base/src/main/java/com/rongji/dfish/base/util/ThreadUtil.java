@@ -2,9 +2,7 @@ package com.rongji.dfish.base.util;
 
 import sun.rmi.runtime.Log;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -119,4 +117,42 @@ public class ThreadUtil {
 	public static ExecutorService newSingleThreadExecutor() {
 		return newFixedThreadPool(1);
 	}
+
+	/**
+	 * 执行所有的run 这些动作将同时被执行，全部执行完毕，或碰到异常终止后，
+	 * 主线程将继续往下执行。
+	 * @param runnables
+	 */
+	public static void execute(Collection<Runnable> runnables) throws ExecutionException, InterruptedException {
+		List<Future<?>> futures=new ArrayList<>();
+		for(Runnable run:runnables){
+			Future<?> f= SHARED_THREAD_POOL.submit(run);
+			futures.add(f);
+		}
+		for(Future<?> f:futures){
+			f.get();
+		}
+	}
+
+//	public static void main(String[] args) throws ExecutionException, InterruptedException {
+//		List<Runnable> rs=new ArrayList<>();
+//		rs.add(()->{
+//			try {
+//				Thread.sleep(2000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println("2000");
+//		});
+//		rs.add(()->{
+//			try {
+//				Thread.sleep(3000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println("3000");
+//		});
+//		execute(rs);
+//		System.out.println("end");
+//	}
 }
