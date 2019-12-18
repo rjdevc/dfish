@@ -19,14 +19,14 @@
     </context:component-scan>
 
     <!--启动spring事务注解功能-->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+<!--    <tx:annotation-driven/>-->
 
-    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:advice id="txAdvice">
         <tx:attributes>
-            <tx:method name="delete*" propagation="REQUIRED"/>
-            <tx:method name="update*" propagation="REQUIRED"/>
-            <tx:method name="save*" propagation="REQUIRED"/>
-            <tx:method name="*" read-only="true"/>
+            <tx:method name="delete*"/>
+            <tx:method name="update*"/>
+            <tx:method name="save*"/>
+            <tx:method name="*" propagation="NEVER" read-only="true"/>
         </tx:attributes>
     </tx:advice>
     <aop:config>
