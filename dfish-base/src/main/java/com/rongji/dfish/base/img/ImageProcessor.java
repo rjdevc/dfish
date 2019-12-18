@@ -1,4 +1,4 @@
-package com.rongji.dfish.base.util.img;
+package com.rongji.dfish.base.img;
 
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
@@ -77,9 +77,8 @@ public class ImageProcessor {
      *
      * @param file 原始文件
      * @return this
-     * @throws FileNotFoundException
      */
-    public static ImageProcessor of(File file) throws FileNotFoundException {
+    public static ImageProcessor of(File file) {
         return new ImageProcessor(file);
     }
 
@@ -147,7 +146,7 @@ public class ImageProcessor {
     /**
      * 开始执行处理方案
      * @return int 已处理完成数量
-     * @throws Exception
+     * @throws Exception 处理过程可能抛出异常
      */
     public int execute() throws Exception {
         if (handlers.isEmpty()) {
@@ -188,7 +187,7 @@ public class ImageProcessor {
             } else {
                 queue.add(()->{
                     try {
-                        execute(imageOperation, handler, handleResult);
+                        execute(imageOperation.clone(), handler, handleResult);
                     } catch (Exception e) {
                         LogUtil.error(null, e);
                     }
@@ -210,12 +209,17 @@ public class ImageProcessor {
     private void execute(ImageOperation imageOperation, ImageHandler handler, AtomicInteger handleResult) throws Exception {
         String filePath = this.dest + (this.dest.endsWith("/") ? "" : "/") + handler.getAlias();
         try(OutputStream output = new FileOutputStream(new File(filePath))) {
-            if (ImageHandleWay.ZOOM.equals(handler.getWay())) {
-                imageOperation.zoom(handler.getWidth(), handler.getHeight());
-            } else if (ImageHandleWay.CUT.equals(handler.getWay())) {
-                imageOperation.cut(handler.getWidth(), handler.getHeight());
-            } else if (ImageHandleWay.RESIZE.equals(handler.getWay())) {
-                imageOperation.resize(handler.getWidth(), handler.getHeight());
+            switch (handler.getWay()){
+                case CUT:
+                    imageOperation.cut(handler.getWidth(), handler.getHeight());
+                    break;
+                case RESIZE:
+                    imageOperation.resize(handler.getWidth(), handler.getHeight());
+                    break;
+                case ZOOM:
+                    imageOperation.zoom(handler.getWidth(), handler.getHeight());
+                    break;
+                default:
             }
             imageOperation.output(output);
             handleResult.incrementAndGet();

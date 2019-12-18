@@ -1,9 +1,8 @@
 package com.rongji.dfish.base;
 
-import com.rongji.dfish.base.util.img.ImageInfo;
-import com.rongji.dfish.base.util.img.ImageOperation;
-import com.rongji.dfish.base.util.img.JpegInfo;
-import jdk.internal.org.objectweb.asm.commons.AdviceAdapter;
+import com.rongji.dfish.base.img.ImageInfo;
+import com.rongji.dfish.base.img.ImageOperation;
+import com.rongji.dfish.base.img.JpegInfo;
 import org.junit.Test;
 
 import java.awt.*;
@@ -71,6 +70,18 @@ public class ImageOperationTest {
                 .watermark("榕基软件",12,new Color(153,204,255,255),18,-27)
                 .output(new FileOutputStream(OUTPUT_PATH + "f_400.jpg"));
     }
+    @Test
+    public void testAnotherPhoto()throws Exception{
+        String file="D:\\7_app\\tencent\\qq\\receive_files\\MobileFile\\IMG_20191217_100441.jpg";
+        ImageInfo ii=ImageInfo.of(new FileInputStream(file));
+        if(ii instanceof JpegInfo){
+            JpegInfo cast=(JpegInfo)ii;
+            if(cast.getThumbnail()!=null){
+                ImageOperation jpegThumb=ImageOperation.of(cast.getThumbnail());
+                jpegThumb.output(new FileOutputStream(OUTPUT_PATH+"huaweiThumb.jpg"));
+            }
+        }
+    }
 
     @Test
     public void testAdvZoom()throws Exception{
@@ -115,7 +126,7 @@ public class ImageOperationTest {
         zoom5.setMaxHeight(400);
         zoom5.setMaxAspectRatio(1.0);
         marked.reset().schedule(zoom5)
-                .output(new FileOutputStream(OUTPUT_PATH + "f_aspect1.0.jpg"));;
+                .output(new FileOutputStream(OUTPUT_PATH + "f_aspect1.0.jpg"));
 
 
     }

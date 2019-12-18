@@ -5,7 +5,7 @@ import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.base.util.img.ImageProcessor;
+import com.rongji.dfish.base.img.ImageProcessor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;

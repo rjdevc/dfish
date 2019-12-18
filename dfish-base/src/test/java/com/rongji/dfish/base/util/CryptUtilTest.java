@@ -82,6 +82,30 @@ public class CryptUtilTest {
 		src=src+src+src+src+src+src+src+src;
 		src=src+src;
 
+		/*
+		Cryptor zipLobCrypotr=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_NONE,null)
+				.present(CryptUtil.PRESENT_RAW).gzip(true)
+				.build();
+		Cryptor lobCryptor=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_NONE,null)
+				.present(CryptUtil.PRESENT_RAW).gzip(false)
+				.build();
+		InputStream in=null;//inti
+		OutputStream lobOut=null;//init
+		lobOut.write('Z');
+		zipLobCrypotr.encrypt(in,lobOut);
+		//无需压缩时
+		lobOut.write('T');
+		lobCryptor.encrypt(in,lobOut);
+
+		InputStream lobIn=null;//inti
+		OutputStream out=null;//init
+		int feature= lobIn.read();
+		if('Z'==feature){
+			zipLobCrypotr.decrypt(lobIn,out);
+		}else if('T'==feature){
+			lobCryptor.decrypt(lobIn,out);
+		}
+		*/
 
 //		src="123456789";
 //		//凑到64K。

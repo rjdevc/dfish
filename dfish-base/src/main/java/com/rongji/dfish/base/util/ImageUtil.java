@@ -1,6 +1,6 @@
 package com.rongji.dfish.base.util;
 
-import com.rongji.dfish.base.util.img.ImageOperation;
+import com.rongji.dfish.base.img.ImageOperation;
 
 import java.io.InputStream;
 import java.io.OutputStream;

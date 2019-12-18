@@ -1,4 +1,4 @@
-package com.rongji.dfish.base.util.img;
+package com.rongji.dfish.base.img;
 
 /**
  * 图片处理方式

@@ -1,4 +1,4 @@
-package com.rongji.dfish.base.util.img;
+package com.rongji.dfish.base.img;
 
 import com.rongji.dfish.base.util.ByteArrayUtil;
 import com.rongji.dfish.base.util.LogUtil;
@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
