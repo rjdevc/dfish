@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * @author lamontYu
- * @create 2019-12-10
+ * @date 2019-12-10
  */
 public class JigsawImgResult implements Serializable {
     private static final long serialVersionUID = -2076497536245307557L;

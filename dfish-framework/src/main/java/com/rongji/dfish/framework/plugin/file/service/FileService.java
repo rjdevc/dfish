@@ -17,7 +17,7 @@ import java.util.*;
  * 附件数据服务层接口定义
  *
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  */
 public interface FileService extends FrameworkService<PubFileRecord, PubFileRecord, String> {
 

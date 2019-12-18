@@ -14,7 +14,7 @@ import java.util.*;
  * lob数据服务层默认实现
  *
  * @author lamontYu
- * @create 2019-09-23
+ * @date 2019-09-23
  * @since 5.0
  */
 public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, String> implements LobService {

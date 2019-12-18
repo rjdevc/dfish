@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-lazy-init="true">
+
+    <bean id="transactionManager" class="org.mybatis.spring.transaction.SpringManagedTransaction">
+        <constructor-arg name="dataSource" ref="dataSource"></constructor-arg>
+    </bean>
 
     <!-- 使用Mybatis -->
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -32,7 +36,8 @@
     <!-- 附件模块 -->
     <bean id="fileDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="sqlSessionFactory" ref="sessionFactory"/>
-        <property name="mapperInterface" value="com.rongji.dfish.framework.mybatis.plugin.file.dao.impl.FileDao4Mybatis"/>
+        <property name="mapperInterface"
+                  value="com.rongji.dfish.framework.mybatis.plugin.file.dao.impl.FileDao4Mybatis"/>
     </bean>
 
 </beans>

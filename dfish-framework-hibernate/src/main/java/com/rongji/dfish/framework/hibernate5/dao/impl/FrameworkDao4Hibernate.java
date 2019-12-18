@@ -1,16 +1,17 @@
-package com.rongji.dfish.framework.hibernate.dao.impl;
+package com.rongji.dfish.framework.hibernate5.dao.impl;
 
 import com.rongji.dfish.base.Pagination;
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -21,10 +22,10 @@ import java.util.*;
 
 /**
  * @author lamontYu
- * @create 2019-12-04 16:02
+ * @date 2019-12-18
+ * @since
  */
 public class FrameworkDao4Hibernate<P, ID extends Serializable> extends HibernateDaoSupport implements FrameworkDao<P, ID> {
-
     protected Class<P> entityClass;
     protected String entityIdName;
     protected Method entityIdGetter;
@@ -252,7 +253,6 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         getHibernateTemplate().saveOrUpdate(entity);
         return 1;
     }
-
     @Override
     public int delete(P entity) {
         if (entity == null) {
@@ -261,7 +261,6 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         getHibernateTemplate().delete(entity);
         return 1;
     }
-
     @Override
     public int delete(ID id) {
         return delete(get(id));

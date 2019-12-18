@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * 框架默认service的接口,定义基本增删查改等接口
  * @author lamontYu
- * @create 2019-12-04
+ * @date 2019-12-04
  */
 public interface FrameworkService<V, P, ID extends Serializable> {
 

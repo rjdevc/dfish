@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author lamontYu
- * @create 2019-12-09
+ * @date 2019-12-09
  */
 @RequestMapping("/index")
 @Controller

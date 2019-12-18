@@ -3,7 +3,7 @@ package com.rongji.dfish.base.exception;
 /**
  * 带有异常标识码的异常
  * @author lamontYu
- * @create 2019-12-11
+ * @date 2019-12-11
  * @since 5.0
  */
 public class MarkedException extends Exception implements Marked {

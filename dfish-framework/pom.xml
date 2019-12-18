@@ -49,6 +49,12 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.1</version>
+        </dependency>
+
         <!-- org.apache.log4j.Logger -->
         <dependency>
             <groupId>org.slf4j</groupId>

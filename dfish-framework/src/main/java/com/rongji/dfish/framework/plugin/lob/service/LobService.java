@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * lob数据服务层接口
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  * @since 3.2
  * @version 1.1 改造成接口模式,并调整方法名 lamontYu 2019-12-05
  */

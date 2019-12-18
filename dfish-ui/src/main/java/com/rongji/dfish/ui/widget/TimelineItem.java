@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.Alignable;
  * 时间轴条目
  *
  * @author lamontYu
- * @create 2019-11-25 11:54
+ * @date 2019-11-25 11:54
  */
 public class TimelineItem extends AbstractWidget<TimelineItem> implements Alignable<TimelineItem> {
 

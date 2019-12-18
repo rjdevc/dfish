@@ -8,6 +8,7 @@ import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -95,6 +96,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @param loginUserId
      * @throws Exception
      */
+    @Transactional
     @Override
     public UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception {
         String extName = FileUtil.getFileExtName(originalFileName);

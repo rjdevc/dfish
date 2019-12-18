@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-lazy-init="true">
 
+
+
+
+    <!-- 开启事务 -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
     <!-- 使用hibernate -->
-    <bean name="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"></property>
+        <property name="annotatedClasses" value="org.hibernate.cfg.AnnotatedClassType"></property>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
@@ -25,17 +33,17 @@
             </list>
         </property>
     </bean>
-    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <!-- lob模块 -->
-    <bean id="lobDao" class="com.rongji.dfish.framework.hibernate.plugin.lob.dao.impl.LobDao4Hibernate">
+    <bean id="lobDao" class="com.rongji.dfish.framework.hibernate5.plugin.lob.dao.impl.LobDao4Hibernate">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
     <!-- 附件模块 -->
-    <bean id="fileDao" class="com.rongji.dfish.framework.hibernate.plugin.file.dao.impl.FileDao4Hibernate">
+    <bean id="fileDao" class="com.rongji.dfish.framework.hibernate5.plugin.file.dao.impl.FileDao4Hibernate">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 

@@ -12,7 +12,7 @@ import java.util.Map;
  * 请求参数集合,用于数据传输过程参数调用
  * @author lamontYu
  * @since 5.0
- * @create 2019-12-04 13:19
+ * @date 2019-12-04 13:19
  */
 public class RequestParam extends HashMap<String, String[]> {
 

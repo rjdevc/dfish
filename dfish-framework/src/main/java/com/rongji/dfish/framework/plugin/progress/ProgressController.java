@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  *
  * @author lamontYu
  * @version 1.2 去掉注解,项目中可自定义加载 lamontYu 2019-12-05
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  * @since 3.0
  */
 @RequestMapping("/progress")

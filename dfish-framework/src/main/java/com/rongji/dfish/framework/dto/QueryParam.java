@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * 查询参数类,用于数据传输过程中查询参数封装对象
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  * @since 5.0
  */
 public class QueryParam<T> implements Serializable {

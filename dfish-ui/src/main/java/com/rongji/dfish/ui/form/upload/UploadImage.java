@@ -4,7 +4,7 @@ package com.rongji.dfish.ui.form.upload;
  * 上传图片组件
  *
  * @author DFish Team
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  * @version 1.1 将Alignable, Valignable的接口下移到抽象类 lamontYu 2019-12-05
  */
 public class UploadImage extends AbstractUpload<UploadImage> {

@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * @author lamontYu
- * @create 2019-12-04 13:27
+ * @date 2019-12-04 13:27
  */
 public class ServletUtil {
 
@@ -123,16 +123,13 @@ public class ServletUtil {
 
     /**
      * 下载数据流
-     *
+     * 经过实测证明，部分浏览器/应用可能在没有content-length 属性的时候，直接停止下载。请慎用该方法
      * @param response
      * @param is
      * @throws UnsupportedEncodingException
      * @throws IOException
-     * @deprecated 经过实测证明，部分浏览器/应用可能在没有content-length 属性的时候，直接停止下载。
-     * 请慎用该方法
      */
-    public static void downLoadData(final HttpServletResponse response,
-                                    InputStream is) throws UnsupportedEncodingException, IOException {
+    public static void downLoadData(final HttpServletResponse response, InputStream is) throws UnsupportedEncodingException, IOException {
         OutputStream os = response.getOutputStream();
         try {
 

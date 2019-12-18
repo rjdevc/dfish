@@ -13,7 +13,7 @@ import java.util.*;
  * 缓存管理类
  *
  * @author lamontYu
- * @create 2019-09-23
+ * @date 2019-09-23
  * @since 3.2
  * @version 1.1 去除缓存定义类,采用缓存实现 LinLW 2019-11-28
  * @version 1.2 支持清理缓存超期数据 lamontYu 2019-12-05

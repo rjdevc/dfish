@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * 附件数据访问层
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  */
 public interface FileDao extends FrameworkDao<PubFileRecord, String> {
 

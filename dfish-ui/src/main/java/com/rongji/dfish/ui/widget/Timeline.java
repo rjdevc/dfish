@@ -8,7 +8,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
 /**
  * 时间轴
  * @author lamontYu
- * @create 2019-11-25 11:52
+ * @date 2019-11-25 11:52
  */
 public class Timeline extends AbstractLayout<Timeline, TimelineItem> implements Alignable<Timeline>, PubHolder<Timeline, TimelineItem> {
 

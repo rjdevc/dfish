@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.HasFormat;
  * 进度项,用于展示进度情况
  *
  * @author lamontYu
- * @create 2019-09-30 14:31
+ * @date 2019-09-30 14:31
  * @since 3.3
  */
 public class ProgressItem extends AbstractWidget<ProgressItem> implements HasFormat<ProgressItem> {

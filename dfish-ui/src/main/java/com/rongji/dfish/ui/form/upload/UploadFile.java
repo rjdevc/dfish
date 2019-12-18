@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.form.upload;
 /**
  * 上传附件。
  * @author DFish Team
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  */
 public class UploadFile extends AbstractUpload<UploadFile> {
 

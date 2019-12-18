@@ -4,7 +4,7 @@ import com.rongji.dfish.ui.AbstractResultfulNode;
 
 /**
  * @author lamontYu
- * @create 2019-12-11
+ * @date 2019-12-11
  * @since
  */
 public class UploadPost extends AbstractResultfulNode<UploadPost> {

@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 图片处理工具类
  * @author lamontYu
- * @create 2019-12-16
+ * @date 2019-12-16
  * @since
  */
 public class ImageProcessor {
@@ -108,7 +108,7 @@ public class ImageProcessor {
      * @param alias 别名
      * @return this
      */
-    public ImageProcessor handle(int width, int height, ImageHandleWay way, String alias) {
+    public ImageProcessor handle(int width, int height, String way, String alias) {
         return handle(new ImageHandler(width, height, way, alias));
     }
 
@@ -121,7 +121,7 @@ public class ImageProcessor {
      * @param lazy 延迟处理
      * @return this
      */
-    public ImageProcessor handle(int width, int height, ImageHandleWay way, String alias, boolean lazy) {
+    public ImageProcessor handle(int width, int height, String way, String alias, boolean lazy) {
         return handle(new ImageHandler(width, height, way, alias, lazy));
     }
 
@@ -210,14 +210,14 @@ public class ImageProcessor {
         String filePath = this.dest + (this.dest.endsWith("/") ? "" : "/") + handler.getAlias();
         try(OutputStream output = new FileOutputStream(new File(filePath))) {
             switch (handler.getWay()){
-                case CUT:
+                case ImageHandler.WAY_CUT:
                     imageOperation.cut(handler.getWidth(), handler.getHeight());
                     break;
-                case RESIZE:
-                    imageOperation.resize(handler.getWidth(), handler.getHeight());
-                    break;
-                case ZOOM:
+                case ImageHandler.WAY_ZOOM:
                     imageOperation.zoom(handler.getWidth(), handler.getHeight());
+                    break;
+                case ImageHandler.WAY_RESIZE:
+                    imageOperation.resize(handler.getWidth(), handler.getHeight());
                     break;
                 default:
             }

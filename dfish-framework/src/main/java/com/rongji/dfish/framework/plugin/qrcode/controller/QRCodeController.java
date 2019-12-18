@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  * 二维码图标图片生成
  *
  * @author lamontYu
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  * @since 3.0
  */
 @RequestMapping("/qrCode")

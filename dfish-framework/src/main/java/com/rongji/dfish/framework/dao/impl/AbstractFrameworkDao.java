@@ -14,7 +14,7 @@ import java.util.*;
 
 /**
  * @author lamontYu
- * @create 2019-12-04 17:50
+ * @date 2019-12-04 17:50
  */
 public abstract class AbstractFrameworkDao<P, ID extends Serializable> implements FrameworkDao<P, ID> {
     @Resource(name = "jdbcTemplate")

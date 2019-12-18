@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.widget.Img;
 /**
  * 二维码组件
  * @author lamontYu
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  * @since 3.1
  * @version 调整包层 lamontYu 2019-12-05
  */

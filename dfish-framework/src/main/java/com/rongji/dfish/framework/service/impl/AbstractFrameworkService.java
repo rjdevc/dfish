@@ -10,7 +10,7 @@ import java.lang.reflect.ParameterizedType;
 /**
  * service默认实现基类
  * @author lamontYu
- * @create 2019-12-04
+ * @date 2019-12-04
  */
 public abstract class AbstractFrameworkService<V, P, ID extends Serializable> implements FrameworkService<V, P, ID> {
     @Resource(name = "cryptor")

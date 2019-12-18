@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 简易模式的service实现类,VO和PO是同一个类
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  */
 public abstract class AbstractFrameworkService4Simple<V, ID extends Serializable> extends AbstractFrameworkService<V, V, ID> {
 

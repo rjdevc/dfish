@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.form.AbstractFormElement;
 /**
  * 拼图(滑动验证码)
  * @author lamontYu
- * @create 2019-12-11
+ * @date 2019-12-11
  * @since 5.0
  */
 public class Jigsaw extends AbstractFormElement<Jigsaw, String> {

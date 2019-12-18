@@ -4,7 +4,7 @@ package com.rongji.dfish.base.exception;
  * 带有异常编码的运行时异常
  *
  * @author lamontYu
- * @create 2019-12-11
+ * @date 2019-12-11
  * @since 5.0
  */
 public class MarkedRuntimeException extends RuntimeException implements Marked {

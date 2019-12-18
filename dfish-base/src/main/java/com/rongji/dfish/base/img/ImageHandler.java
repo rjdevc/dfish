@@ -5,10 +5,14 @@ import java.awt.*;
 /**
  * 图片处理定义
  * @author lamontYu
- * @create 2019-12-16
+ * @date 2019-12-16
  * @since 5.0
  */
 public class ImageHandler {
+
+    public static final String WAY_ZOOM = "zoom";
+    public static final String WAY_CUT = "cut";
+    public static final String WAY_RESIZE = "resize";
     /**
      * 图片宽度
      */
@@ -20,7 +24,7 @@ public class ImageHandler {
     /**
      * 图片处理方式
      */
-    protected ImageHandleWay way = ImageHandleWay.ZOOM;
+    protected String way = WAY_ZOOM;
     /**
      * 文件别名(有name时可以不需要alias,但推荐别名方式,按照一定规则命名)
      */
@@ -46,20 +50,20 @@ public class ImageHandler {
         this.height = height;
     }
 
-    public ImageHandler(int width, int height, ImageHandleWay way) {
+    public ImageHandler(int width, int height, String way) {
         this.width = width;
         this.height = height;
         this.way = way;
     }
 
-    public ImageHandler(int width, int height, ImageHandleWay way, String alias) {
+    public ImageHandler(int width, int height, String way, String alias) {
         this.width = width;
         this.height = height;
         this.way = way;
         this.alias = alias;
     }
 
-    public ImageHandler(int width, int height, ImageHandleWay way, String alias, boolean lazy) {
+    public ImageHandler(int width, int height, String way, String alias, boolean lazy) {
         this.width = width;
         this.height = height;
         this.way = way;
@@ -67,11 +71,11 @@ public class ImageHandler {
         this.lazy = lazy;
     }
 
-    public ImageHandleWay getWay() {
+    public String getWay() {
         return way;
     }
 
-    public ImageHandler setWay(ImageHandleWay way) {
+    public ImageHandler setWay(String way) {
         this.way = way;
         return this;
     }

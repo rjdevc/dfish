@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * @author lamontYu
- * @create 2019-12-04 17:54
+ * @date 2019-12-04 17:54
  */
 public interface FrameworkDao4Mybatis<P, ID extends Serializable> extends FrameworkDao<P, ID> {
 

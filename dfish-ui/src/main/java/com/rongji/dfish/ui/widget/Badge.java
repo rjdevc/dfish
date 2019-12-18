@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.AbstractWidget;
 /**
  * 徽标数
  * @author lamontYu
- * @create 2019-11-25 12:36
+ * @date 2019-11-25 12:36
  */
 public class Badge extends AbstractWidget<Badge> {
 

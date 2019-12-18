@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.AbstractResultfulNode;
 /**
  * 拼图图片
  * @author lamontYu
- * @create 2019-12-11
+ * @date 2019-12-11
  * @since 5.0
  */
 public class JigsawImg extends AbstractResultfulNode<JigsawImg> {

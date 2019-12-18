@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  */
 public interface FileDao4Mybatis extends FrameworkDao4Mybatis<PubFileRecord, String>, FileDao {
 

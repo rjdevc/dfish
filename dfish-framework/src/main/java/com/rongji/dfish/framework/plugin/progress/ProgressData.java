@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 进度条数据对象
  * @author lamontYu
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  * @since 3.0
  */
 public class ProgressData implements Serializable, Cloneable {

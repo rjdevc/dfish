@@ -5,7 +5,7 @@ import com.rongji.dfish.base.util.json.JsonBuilder;
 /**
  * Json对象构建器的默认实现类,具体实现类可继承该方法
  * @author lamontYu
- * @create 2019-09-29
+ * @date 2019-09-29
  */
 public abstract class AbstractJsonBuilder implements JsonBuilder {
 

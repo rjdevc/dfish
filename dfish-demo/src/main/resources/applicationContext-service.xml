@@ -3,10 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
-            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
-            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
        default-lazy-init="true">
 
     <!-- Service层扫描 -->
@@ -17,11 +19,20 @@
     </context:component-scan>
 
     <!--启动spring事务注解功能-->
-    <tx:annotation-driven/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
-<!--    <bean id="transactionManager" class="org.mybatis.spring.transaction.SpringManagedTransaction">-->
-<!--        <constructor-arg name="dataSource" ref="dataSource"></constructor-arg>-->
-<!--    </bean>-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="serviceMethods" expression="execution(* com.rongji.dfish.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+    </aop:config>
 
     <!-- json构建器 -->
     <bean id="jsonBuilder" class="com.rongji.dfish.misc.util.json.impl.JsonBuilder4Fastjson"></bean>
@@ -33,23 +44,10 @@
     <bean id="fileService" class="com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl"></bean>
     <bean id="fileHandleManager" class="com.rongji.dfish.framework.plugin.file.config.FileHandleManager"></bean>
 
-    <!-- 图片处理方式-缩放 -->
-    <bean id="handleZoom" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-        <property name="staticField" value="com.rongji.dfish.base.util.img.ImageHandleWay.ZOOM"></property>
-    </bean>
-    <!-- 图片处理方式-裁剪 -->
-    <bean id="handleCut" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-        <property name="staticField" value="com.rongji.dfish.base.util.img.ImageHandleWay.CUT"></property>
-    </bean>
-    <!-- 图片处理方式-强制改变大小 -->
-    <bean id="handleResize" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-        <property name="staticField" value="com.rongji.dfish.base.util.img.ImageHandleWay.RESIZE"></property>
-    </bean>
-
     <!-- 默认原图尺寸缩放定义 -->
     <bean id="imageDefault" class="com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine">
         <property name="alias" value="DEFAULT"></property>
-        <property name="way" ref="handleZoom"></property>
+        <property name="way" value="zoom"></property>
         <property name="width" value="-1"></property>
         <property name="height" value="-1"></property>
         <property name="lazy" value="false"></property>
@@ -57,27 +55,27 @@
 
     <!-- 通用头像图片缩放定义 -->
     <bean id="image100x100" class="com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine">
-        <property name="way" ref="handleCut"></property>
+        <property name="way" value="cut"></property>
         <property name="width" value="100"></property>
         <property name="height" value="100"></property>
     </bean>
     <bean id="image80x80" class="com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine">
-        <property name="way" ref="handleCut"></property>
+        <property name="way" value="cut"></property>
         <property name="width" value="80"></property>
         <property name="height" value="80"></property>
     </bean>
     <bean id="image60x60" class="com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine">
-        <property name="way" ref="handleCut"></property>
+        <property name="way" value="cut"></property>
         <property name="width" value="60"></property>
         <property name="height" value="60"></property>
     </bean>
     <bean id="image40x40" class="com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine">
-        <property name="way" ref="handleCut"></property>
+        <property name="way" value="cut"></property>
         <property name="width" value="40"></property>
         <property name="height" value="40"></property>
     </bean>
     <bean id="image20x20" class="com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine">
-        <property name="way" ref="handleCut"></property>
+        <property name="way" value="cut"></property>
         <property name="width" value="20"></property>
         <property name="height" value="20"></property>
     </bean>

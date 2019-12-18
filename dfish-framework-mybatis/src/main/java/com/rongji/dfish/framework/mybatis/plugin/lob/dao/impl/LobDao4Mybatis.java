@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  */
 public interface LobDao4Mybatis extends FrameworkDao4Mybatis<PubLob, String>, LobDao {
 

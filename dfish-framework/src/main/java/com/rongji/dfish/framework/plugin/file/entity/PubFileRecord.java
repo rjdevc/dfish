@@ -9,10 +9,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * PubFileRecord entity. @author MyEclipse Persistence Tools
+ * 
  */
-@Entity
-@Table(name = "PUB_FILE_RECORD")
 public class PubFileRecord implements java.io.Serializable {
 
 	// Fields

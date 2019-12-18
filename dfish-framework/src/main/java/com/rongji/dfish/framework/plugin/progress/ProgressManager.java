@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 进度条数据管理器
  * @author lamontYu
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  * @since 3.0
  */
 public class ProgressManager {

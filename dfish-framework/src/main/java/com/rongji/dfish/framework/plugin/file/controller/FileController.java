@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author lamontYu
  * @version 1.3 去掉类注解,采用配置加载模式,有利于项目自定义配置 lamontYu 2019-12-5
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  * @since 3.0
  */
 @RequestMapping("/file")
@@ -589,6 +589,7 @@ public class FileController extends BaseActionController {
                     fileParamUrl += "&inline=1";
                     response.setWay(PreviewResponse.WAY_INLINE);
                 }
+                response.setUrl(fileParamUrl);
             }
             return new JsonResponse<>(response);
         } else {

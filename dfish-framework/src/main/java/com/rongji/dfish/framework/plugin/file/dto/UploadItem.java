@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * @author lamontYu
- * @create 2019-12-09
+ * @date 2019-12-09
  */
 public class UploadItem implements Serializable {
 

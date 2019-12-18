@@ -7,7 +7,7 @@ import com.rongji.dfish.framework.dto.QueryParam;
  *
  * @author lamontYu
  * @version 1.1 继承通用查询参数基类
- * @create 2018-08-03 before
+ * @date 2018-08-03 before
  */
 public class FileQueryParam extends QueryParam<FileQueryParam> {
 

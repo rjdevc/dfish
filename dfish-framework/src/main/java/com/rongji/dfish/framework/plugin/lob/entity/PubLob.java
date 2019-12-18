@@ -5,9 +5,9 @@ import java.util.Date;
 /**
  * lob实体类
  * @author lamontYu
- * @create 2019-09-23
+ * @date 2019-09-23
  * @since 3.2
- * @version 1.1 去除hibernate注解,框架默认采用配置加载模式 lamontYu 2019-12-05
+ * @version 1.1 去除注解,框架默认采用配置加载模式 lamontYu 2019-12-05
  */
 public class PubLob implements java.io.Serializable {
 

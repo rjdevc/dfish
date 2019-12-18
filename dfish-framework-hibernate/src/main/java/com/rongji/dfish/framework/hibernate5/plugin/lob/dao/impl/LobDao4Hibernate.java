@@ -1,7 +1,7 @@
-package com.rongji.dfish.framework.hibernate.plugin.lob.dao.impl;
+package com.rongji.dfish.framework.hibernate5.plugin.lob.dao.impl;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.hibernate.dao.impl.FrameworkDao4Hibernate;
+import com.rongji.dfish.framework.hibernate5.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 
@@ -11,7 +11,7 @@ import java.util.Date;
  * lob的hibernate实现dao层
  *
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  */
 public class LobDao4Hibernate extends FrameworkDao4Hibernate<PubLob, String> implements LobDao {
     @Override

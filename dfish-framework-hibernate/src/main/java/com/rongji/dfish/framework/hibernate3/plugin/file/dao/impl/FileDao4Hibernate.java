@@ -1,7 +1,7 @@
-package com.rongji.dfish.framework.hibernate.plugin.file.dao.impl;
+package com.rongji.dfish.framework.hibernate3.plugin.file.dao.impl;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.hibernate.dao.impl.FrameworkDao4Hibernate;
+import com.rongji.dfish.framework.hibernate3.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 
@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * @author lamontYu
- * @create 2019-12-05
+ * @date 2019-12-05
  */
 public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, String> implements FileDao {
     @Override

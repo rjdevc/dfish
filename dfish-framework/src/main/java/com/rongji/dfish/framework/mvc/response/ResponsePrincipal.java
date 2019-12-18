@@ -4,7 +4,7 @@ import java.security.Principal;
 
 /**
  * @author lamontYu
- * @create 2019-11-04 15:32
+ * @date 2019-11-04 15:32
  */
 public interface ResponsePrincipal extends Principal {
 

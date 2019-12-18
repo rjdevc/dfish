@@ -107,7 +107,7 @@ public class EChartHelper {
 	/**   
 	 *@Description: 力导向图中心点位置
 	 *@Author: chenwei
-	 *@CreateDate: 2015-7-7
+	 *@dateDate: 2015-7-7
 	 *@return
 	 */
 	public static Integer[] getCenterNodePosition(){
@@ -118,7 +118,7 @@ public class EChartHelper {
 	/**   
 	 *@Description: 力导向图中心点大小
 	 *@Author: chenwei
-	 *@CreateDate: 2015-7-7
+	 *@dateDate: 2015-7-7
 	 *@return
 	 */
 	public static Integer[] getCenterNodeSize(){
@@ -129,7 +129,7 @@ public class EChartHelper {
 	/**   
 	 *@Description:力导向图其余节点大小
 	 *@Author: chenwei
-	 *@CreateDate: 2015-7-7
+	 *@dateDate: 2015-7-7
 	 *@return
 	 */
 	public static Integer[] getOtherNodeSize(){
@@ -140,7 +140,7 @@ public class EChartHelper {
 	/**   
 	 *@Description: 根据节点个数获得节点位置
 	 *@Author: chenwei
-	 *@CreateDate: 2015-7-7
+	 *@dateDate: 2015-7-7
 	 *@param nodesNum
 	 *@return
 	 */
@@ -152,7 +152,7 @@ public class EChartHelper {
 	/**   
 	 *@Description: 获得文本字体样式
 	 *@Author: chenwei
-	 *@CreateDate: 2015-7-10
+	 *@dateDate: 2015-7-10
 	 *@return
 	 */
 	public static TextStyle getTextStyle(Integer fontSize,String baseline){
@@ -176,7 +176,7 @@ public class EChartHelper {
 	/**   
 	 *@Description: 获得颜色
 	 *@Author: chenwei
-	 *@CreateDate: 2015-7-10
+	 *@dateDate: 2015-7-10
 	 *@return
 	 */
 	public static String[] getColor(){

@@ -2,13 +2,15 @@ package com.rongji.dfish.base.util;
 
 import com.rongji.dfish.base.img.ImageOperation;
 
+import java.awt.*;
+import java.awt.image.ImageObserver;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
  * 图片处理工具类
  * @author lamontYu
- * @create 2019-05-07
+ * @date 2019-05-07
  * @since 3.2
  */
 public class ImageUtil {
@@ -71,8 +73,8 @@ public class ImageUtil {
      *
      * @param input  图片文件输入流
      * @param output 图片文件输出流
-     * @param x  图片绘制位置，如果是负数，则左边会被切出x个像素
-     * @param y  图片绘制位置，如果是负数，则上边会被切出x个像素
+     * @param x  图片左上角横坐标位置{@link Graphics#drawImage(Image, int, int, int, int, ImageObserver)}
+     * @param y  图片左上角纵坐标位置{@link Graphics#drawImage(Image, int, int, int, int, ImageObserver)}
      * @param width  缩放图片的宽
      * @param height 缩放图片的高
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
