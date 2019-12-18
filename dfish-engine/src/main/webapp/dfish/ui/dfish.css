@@ -147,8 +147,8 @@
 .w-grid-table tbody:empty + ._fix_tfoot,.w-form-table tbody:empty + ._fix_tfoot{display:table-footer-group}
 .w-grid-table,.w-form-table{table-layout:fixed;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:100%;width:100%}
 .w-grid.z-nohead .w-grid-tbody.w-grid-bg,.w-form.z-nohead .w-form-tbody.w-grid-bg{height:100%}
-.w-grid-thead{position:relative;line-height:1}
-.w-grid-thead .w-grid-table{height:100%}
+.w-grid-thead,.w-grid-tfoot{position:relative;line-height:1}
+.w-grid-thead .w-grid-table,.w-grid-tfoot.w-grid-table{height:100%}
 .w-grid-thead:hover .w-th-rsz{border-left:1px solid #ddd}
 .w-grid-thead:hover .w-grid-face-cell .w-th-rsz{border-left:0}
 .w-grid-head{overflow:hidden}
@@ -162,10 +162,11 @@
 .w-grid-right.z-cover{box-shadow:-6px 0 6px -4px rgba(0,0,0,0.15)}
 .w-grid-left .w-td-cell.z-last{border-right-width:1px}
 .w-grid-right .w-td-cell.z-first{border-left-width:1px}
+.w-grid-left .w-grid-tfoot1{position:absolute;bottom:0;left:0}
 
 .w-td-none{position:relative;overflow:hidden;*position:static;}
-.w-td-line{position:relative;overflow:hidden;border-bottom:1px solid #e9e9e9;*position:static}
-.w-td-dot{position:relative;overflow:hidden;border-bottom:1px dashed #e3e3e3;*position:static}
+.w-td-line{position:relative;overflow:hidden;border-width:0 0 1px 0;border-style:solid;border-color:#e9e9e9;*position:static}
+.w-td-dot{position:relative;overflow:hidden;border-width:0 0 1px 0;border-style:dashed;border-color:#e3e3e3;*position:static}
 .w-td-cell{position:relative;overflow:hidden;border-color:#e9e9e9;border-style:solid;border-width:0 1px 1px 0;*position:static}
 .w-td-cell.z-last{border-right-width:0}
 .w-th{position:relative}
@@ -179,6 +180,7 @@
 .w-th-sort.z-desc .f-arw-b1,.w-th-sort .f-arw-b1:hover{border-top-color:#777}
 .w-th-sort.z-asc .f-arw-t1,.w-th-sort .f-arw-t1:hover{border-bottom-color:#777}
 .w-th-sortwrap{width:12px;margin-left:2px}
+.w-grid-tfoot .w-td-line,.w-grid-tfoot .w-td-cell{border-top-width:1px;border-bottom-width:0}
 
 .w-label{position:relative}
 .w-label ._lb{margin-right:6px}
