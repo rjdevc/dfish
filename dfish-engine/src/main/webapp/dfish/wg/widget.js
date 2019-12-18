@@ -1657,6 +1657,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
+			//this.id=='1q:'&&this.$()&&alert(this[1].$().outerHTML);
 			s = $.scale( c === U ? this[ iz ]() : c, r, this.isScaleCover );
 			if ( b === U && c === U )
 				this._scales = s;
@@ -2432,6 +2433,10 @@ _userPriority = { 'click': T, 'dblclick': T, 'close': T, 'valid': T },
 _view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
 Layout = define.widget( 'layout', {
+	Const: function( x, p ) {
+		this.rootNode = p;
+		W.apply( this, arguments );
+	},
 	Prototype: {
 		x_childtype: function( t ) {
 			return this.parentNode.x_childtype ? this.parentNode.x_childtype( t ) : t;
@@ -3711,6 +3716,8 @@ Tabs = define.widget( 'tabs', {
 		y.nodes = [ { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
 		delete y.pub;
 		Vert.call( this, y, p );
+		this.buttonbar = this[ 0 ];
+		this.frame = this[ 1 ];
 	},
 	Extend: 'vert',
 	Prototype: {
@@ -4866,7 +4873,7 @@ ProgressItem = define.widget( 'progress/item', {
 		!x.percent && (x.percent = 0);
 		if ( x.range ) {
 			for ( var i = 0, r = x.range.split( ',' ).sort(); i < r.length; i ++ ) {
-				if ( x.percent < r[ i ] ) {
+				if ( _number( x.percent ) < _number( r[ i ] ) ) {
 					this.className += ' z-' + r[ i ];
 					break;
 				}
@@ -4883,7 +4890,7 @@ ProgressItem = define.widget( 'progress/item', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'progress,progress/guide',
+		ROOT_TYPE: 'progress',
 		className: 'w-progress-item',
 		html_nodes: function() {
 			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
@@ -6985,7 +6992,6 @@ Slider = define.widget( 'slider', {
 				$( self.id + 'v' ).value = v;
 				self.addClass( 'z-drag' );
 				self.trigger( 'drag', [ v ] );
-				//console.log($.bcr(a).width);
 			}, function( e ) {
 				d && d.close();
 				self.trigger( 'drop', [ v ] );
@@ -7091,13 +7097,13 @@ JigsawAuth = define.widget( 'jigsaw/auth', {
 Jigsaw = define.widget( 'jigsaw', {
 	Const: function( x ) {
 		Slider.apply( this, arguments );
-		this.more = this.add( { type: 'dialog', ownproperty: T, cls: '.w-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
+		this.more = this.add( { type: 'dialog', ownproperty: T, cls: 'w-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
 			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
 			type: 'view',
 			node: {
 				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
 			}
-		}, on: { resize: 'this.parentNode.fixImg()', show: 'this.parentNode.fixImg()' } }, -1 );
+		}, on: { resize: 'this.parentNode.fixImg()' } }, -1 );
 		x.img && (this.img = new JigsawImg( x.img, this, -1 )).load();
 		x.auth && (this.auth = new JigsawAuth( x.auth, this, -1 ));
 	},
@@ -7176,12 +7182,11 @@ Jigsaw = define.widget( 'jigsaw', {
 			return r ? Math.ceil( this.popWidth() * (r.big.height / r.big.width) ) : N;
 		},
 		fixImg: function() {
-			if ( this.more && this.more.$() ) {
-				var r = this.img && this.img.getResult(),
-					w = this.popWidth() * (r.small.width / r.big.width),
-					s = Q( '._small', this.more.$() );
-				s.width( w );
-			}
+			this.more && this.more.$() && Q( '._small', this.more.$() ).width( this.smallWidth() );
+		},
+		smallWidth: function() {
+			var r = this.img && this.img.getResult();
+			return this.width() * (r.small.width / r.big.width);
 		},
 		success: function( a ) {
 			this.x.status = a ? 'success' : '';
@@ -7239,7 +7244,7 @@ Jigsaw = define.widget( 'jigsaw', {
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
 			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% height=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
-				' height=100% onmousedown=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
+				' width=' + this.smallWidth() + ' height=100% onmousedown=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';
@@ -9629,7 +9634,7 @@ _grid_f_attr = function( v ) {
 	return typeof v === _OBJ && v && (! v.type || v.type === TD.type) ? (v.text || '') : v;
 },
 _grid_tr = function() {
-	return this.closest( function() { return this.type_tr || this.type_hr } );
+	return this.closest( function() { return this.type_tr || this.type_thr || this.type_tfr } );
 },
 /* `gridleaf` */
 GridLeaf = define.widget( 'grid/leaf', {
@@ -9856,7 +9861,7 @@ GridRow = define.widget( 'grid/row', {
 		},
 		// 获取平行的行 /@a -> get root row?
 		getParallel: function( a ) {
-			var b = this.type_tr ? 'body' : 'head', i = this.$().rowIndex, u = this.rootNode, r = this.grid === this.rootNode ? this : _widget( u[ b ].table.$().rows[ i ] );
+			var b = this.type_tr ? 'body' : this.type_thr ? 'head' : 'foot', i = this.$().rowIndex, u = this.rootNode, r = this.grid === this.rootNode ? this : _widget( u[ b ].table.$().rows[ i ] );
 			if ( a )
 				return r;
 			for ( var j = 0, r = [ r ], t; j < u.fixed.length; j ++ ) {
@@ -9971,19 +9976,19 @@ GridRow = define.widget( 'grid/row', {
 					var g = '';
 					if ( !e || u.x.nobr )
 						g += ' class="f-fix"';
-					if ( !e && f.sort )
+					if ( this.type_thr && f.sort )
 						v += c[ i ].html_sortarrow();
 					if ( f.tip )
 						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
-					b.push( '<td class="w-td w-td-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
+					b.push( '<td class="w-td w-td-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
 						(f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
 				}
 			}
 			return b.join( '' );
 		},
 		html: function( i ) {
-			var a = '', c = this.x.cls, h = this.x.height,
+			var a = '', c = this.x.cls, h = this.attr( 'height' ),
 				s = '<tr id=' + this.id + ' class="' + this.className + (this.x.focus ? ' z-on': '') + (this.type_tr ? ' z-' + ((i == N ? this.nodeIndex : i) % 2) : '') + (c ? ' ' + c : '') + '"';
 			if ( h ) {
 				ie7 && (h -= this.grid._pad * 2 + (this.grid._face === 'none' ? 0 : 1));
@@ -10022,7 +10027,7 @@ TD = define.widget( 'td', {
 		},
 		html: function( k, i, L ) {
 			var r = this.parentNode.parentNode, g = this.grid, u = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
-			this.className = 'w-td w-td-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_hr ? ' w-th' + (c.x.sort ? ' w-th-sort' : '') : '');
+			this.className = 'w-td w-td-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_tr ? '' : ' w-th' + (r.type_thr && c.x.sort ? ' w-th-sort' : ''));
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (c.x.fixed ? ' f-form-hide' : '') + '"';
 			if ( this.x.on || this.Const.Listener )
 				s += _html_on.call( this );
@@ -10071,9 +10076,8 @@ TR = define.widget( 'tr', {
 	Listener: {
 		body: {
 			ready: function() {
-				if ( this.grid != this.rootNode ) {
+				if ( this.grid != this.rootNode )
 					Q( this.$() ).height( Q( this.getParallel( T ).$() ).height() );
-				}
 			},
 			click: {
 				occupy: T,
@@ -10210,29 +10214,23 @@ TR = define.widget( 'tr', {
 	}
 } ),
 /* `thr`  thead 的子节点 */
-THR = define.widget( 'thead/tr', {
+THR = define.widget( 'thr', {
 	Const: function( x, p, n ) {
 		GridRow.apply( this, arguments );
 		var u = this.rootNode.x.pub;
 		if ( u && u.height )
 			this.defaults( { height: u.height } );
+		this.className += ' w-' + this.type;
 	},
 	Extend: GridRow,
 	Default: TR.Default,
 	Listener: {
 		body: {
-			ready: TR.Listener.body.ready,
-			click: {
-				occupy: T,
-				method: function( e ) {
-					var b = this.getBox();
-					b && this.isEvent4Box( e ) && this.checkBox( b.isChecked() );
-				}
-			}
+			ready: TR.Listener.body.ready
 		}
 	},
 	Prototype: {
-		type_hr: T,
+		type_thr: T,
 		getBox: TR.prototype.getBox,
 		isEvent4Box: TR.prototype.isEvent4Box,
 		// a -> T/F|event
@@ -10244,6 +10242,14 @@ THR = define.widget( 'thead/tr', {
 				}
 			}
 		}
+	}
+} ),
+/* `tfr`  tfoot 的子节点 */
+TFR = define.widget( 'tfr', {
+	Extend: THR,
+	Prototype: {
+		type_thr: F,
+		type_tfr: T
 	}
 } ),
 // `TCell` 是 tr 的离散节点。当 tr 添加 td 时，先创建一个 tcell ，然后 tcell 添加这个 td
@@ -10373,8 +10379,20 @@ THead = define.widget( 'thead', {
 		}
 	},
 	Prototype: {
-		x_childtype: $.rt( 'thead/tr' ),
+		x_childtype: $.rt( 'thr' ),
 		html_nodes: _proto.html_nodes
+	}
+} ),
+/* `thead` */
+TFoot = define.widget( 'tfoot', {
+	Extend: THead,
+	Listener: {
+		body: {
+			ready: N
+		}
+	},
+	Prototype: {
+		x_childtype: $.rt( 'tfr' )
 	}
 } ),
 /* `column` */
@@ -10453,7 +10471,9 @@ Table = define.widget( 'table', {
 		this.grid = p.grid;
 		this.colgroup = new Colgroup( { nodes: x.columns }, this );
 		if ( x.thead )
-			this.thead = new THead( x.thead || {}, this );
+			this.thead = new THead( x.thead, this );
+		else if ( x.tfoot )
+			this.tfoot = new TFoot( x.tfoot, this );
 		else
 			this.tbody = new TBody( x.tbody || {}, this );
 	},
@@ -10504,27 +10524,43 @@ GridHead = define.widget( 'grid/head', {
 	Listener: {
 		body: {
 			ready: function() {
-				// 表头固定
-				if ( this.x.table.thead.fix ) {
-					var a = Scroll.get( this.rootNode ), b, f;
-					a && a.addEvent( 'scroll', function() {
-						var e = this.$(),
-							c = b || (b = $.after( e, '<div style=height:' + e.offsetHeight + ';display:none>&nbsp;</div>' )),
-							m = $.bcr( a.$( 'ovf' ) ),
-							n = $.bcr( this.rootNode.$() ),
-							f = n.top < m.top;
-						e.style.position = f ? 'fixed' : '';
-						e.style.zIndex = f ? 2 : '';
-						c.style.display = f ? 'block' : 'none';
-						$.classAdd( e, 'f-oh f-white f-shadow-bottom', f );
-						e.scrollLeft = f ? a.scrollLeft() : 0;
-					}, this );
-				}
+				this.x.table.thead.fix && this.fixScroll();
 			}
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid,form'
+		ROOT_TYPE: 'grid,form',
+		// 表头固定
+		fixScroll: function() {
+			var a = Scroll.get( this.rootNode ), b, f;
+			a && a.addEvent( 'scroll', function() {
+				var e = this.$(),
+					c = b || (b = $.after( e, '<div style=height:' + e.offsetHeight + ';display:none>&nbsp;</div>' )),
+					m = $.bcr( a.$( 'ovf' ) ),
+					n = $.bcr( this.rootNode.$() ),
+					f = n.top < m.top;
+				e.style.position = f ? 'fixed' : '';
+				e.style.zIndex = f ? 2 : '';
+				c.style.display = f ? 'block' : 'none';
+				$.classAdd( e, 'f-oh f-white f-shadow-bottom', f );
+				e.scrollLeft = f ? a.scrollLeft() : 0;
+			}, this );
+		}
+	}
+} ),
+/* `gridfoot` */
+GridFoot = define.widget( 'grid/foot', {
+	Const: function( x, p ) {
+		GridHead.apply( this, arguments );
+		this.className = 'w-' + this.rootNode.type + '-tfoot';
+	},
+	Extend: GridHead,
+	Listener: {
+		body: {
+			ready: function() {
+				this.x.table.tfoot.fix && this.fixScroll();
+			}
+		}
 	}
 } ),
 /* `gridbody` */
@@ -10549,6 +10585,10 @@ GridBody = define.widget( 'grid/body', {
 					r.head.$().style.overflow = 'hidden';
 					r.head.$().scrollLeft = this.$( 'ovf' ).scrollLeft;
 				}
+				if ( r.foot ) {
+					r.foot.$().style.overflow = 'hidden';
+					r.foot.$().scrollLeft = this.$( 'ovf' ).scrollLeft;
+				}
 				r.fixedScroll( this );
 				r.triggerHandler( e );
 			}
@@ -10560,9 +10600,6 @@ GridFixedBody = define.widget( 'grid/fixed/body', {
 	Extend: GridBody,
 	Listener: {
 		body: {
-			ready: function() {
-				this.fixHeight();
-			},
 			mouseover: {
 				occupy: T,
 				method: function( e ) {
@@ -10592,7 +10629,9 @@ GridFixedBody = define.widget( 'grid/fixed/body', {
 	},
 	Prototype: {
 		fixHeight: function() {
-			this.$().style.maxHeight = (this.rootNode.head ? this.rootNode.body.height() : this.rootNode.height()) + 'px';
+			var r = this.rootNode;
+			this.height( r.head || r.foot ? r.body.height() : r.height() );
+			//this.$().style.height = (this.rootNode.head || this.rootNode.foot ? this.rootNode.body.height() : this.rootNode.height()) + 'px';
 		}
 	}
 } ),
@@ -10603,6 +10642,7 @@ AbsGrid = define.widget( 'abs/grid', {
 		x_childtype: $.rt( 'tr' ),
 		thead: function() { return this.head && this.head.table.thead },
 		tbody: function() { return this.body.table.tbody },
+		tfoot: function() { return this.foot && this.foot.table.tfoot },
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
 			return this.rows( a == N ? 0 : a, T )[ 0 ];
@@ -10979,7 +11019,12 @@ Grid = define.widget( 'grid', {
 			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
 			delete x.scroll;
 		}
-		this.body = new GridBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: this.head ? '*' : -1, scroll: this.head && s } ), this );
+		r = x.tfoot && x.tfoot.rows;
+		if ( r && r.length ) {
+			this.foot = new GridFoot( $.extend( { table: { tfoot: x.tfoot, columns: x.columns } }, x.tfoot, { width: '*' } ), this );
+			delete x.scroll;
+		}
+		this.body = new GridBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: this.length ? '*' : -1, scroll: this.length && s } ), this, this.head ? 1 : 0 );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
 		if ( x.combo ) {
@@ -10993,11 +11038,11 @@ Grid = define.widget( 'grid', {
 				(f = x.columns[ i ].fixed) && (f === 'left' ? xl : xr).push( $.extend( { fixed: N, fixedIndex: i }, x.columns[ i ] ) );
 			}
 			if ( xl.length ) {
-				this.left = new GridLeft( { columns: xl, thead: x.thead, tbody: x.tbody }, this, -1 );
+				this.left = new GridLeft( { columns: xl, thead: x.thead, tbody: x.tbody, tfoot: x.tfoot }, this, -1 );
 				this.fixed.push( this.left );
 			}
 			if ( xr.length ) {
-				this.right = new GridRight( { columns: xr, thead: x.thead, tbody: x.tbody }, this, -1 );
+				this.right = new GridRight( { columns: xr, thead: x.thead, tbody: x.tbody, tfoot: x.tfoot }, this, -1 );
 				this.fixed.push( this.right );
 			}
 		}
@@ -11005,7 +11050,7 @@ Grid = define.widget( 'grid', {
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		$.classAdd( this, this.head ? 'z-head' : 'z-nohead' );
 		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
-		if ( this.head && _w_lay.height.call( this ) )
+		if ( this.length > 1 && _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 		if ( this.x.combo )
 			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
@@ -11032,6 +11077,9 @@ Grid = define.widget( 'grid', {
 			},
 			resize: function() {
 				Vert.Listener.body.resize.apply( this, arguments );
+				for ( var i = 0; i < this.fixed.length; i ++ ) {
+					this.fixed[ i ].trigger( 'resize' );
+				}
 				this.$() && $.classAdd( this.$(), 'z-auto', this.innerWidth() == N );
 			}
 		}
@@ -11058,10 +11106,12 @@ GridLeft = define.widget( 'grid/left', {
 		this._pad  = p._pad;
 		this._face = p._face;
 		var r = x.thead && x.thead.rows;
-		if ( r && r.length ) {
+		if ( r && r.length )
 			this.head = new GridHead( $.extend( { table: { thead: x.thead, columns: x.columns } }, x.thead, { width: '*' } ), this );
-		}
-		this.body = new GridFixedBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: -1 } ), this );
+		r = x.tfoot && x.tfoot.rows;
+		if ( r && r.length )
+			this.foot = new GridFoot( $.extend( { table: { tfoot: x.tfoot, columns: x.columns } }, x.tfoot, { width: '*' } ), this );
+		this.body = new GridFixedBody( $.extend( { table: { tbody: x.tbody, columns: x.columns } }, x.tbody, { width: '*', height: -1 } ), this, this.head ? 1 : 0 );
 		x.limit && this.limit();
 	},
 	Extend: AbsGrid,
@@ -11071,10 +11121,13 @@ GridLeft = define.widget( 'grid/left', {
 			ready: function() {
 				var p = this.parentNode;
 				if ( p.head ) {
-					for ( var i = 0, h = this.head.table.thead, ph = p.head.table.thead; i < h.length; i ++ ) {
+					for ( var i = 0, h = this.head.table.thead, ph = p.head.table.thead; i < h.length; i ++ )
 						h[ i ].height( ph[ i ].height() );
-					}
 				}
+				this.body.fixHeight();
+			},
+			resize: function() {
+				this.body.fixHeight();
 			}
 		}
 	},
