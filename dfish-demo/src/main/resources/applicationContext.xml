@@ -61,6 +61,7 @@
     </bean>
 
     <!-- 引入dao配置 -->
+    <!-- 根据dao层实现修改配置,-mybatis代表使用mybatis,-hibernate代表使用hibernate -->
     <import resource="applicationContext-dao-hibernate.xml"/>
     <!-- 引入service配置 -->
     <import resource="applicationContext-service.xml"/>

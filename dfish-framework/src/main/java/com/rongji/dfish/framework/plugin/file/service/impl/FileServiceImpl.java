@@ -1,13 +1,13 @@
 package com.rongji.dfish.framework.plugin.file.service.impl;
 
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
+import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
-import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -96,7 +96,6 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @param loginUserId
      * @throws Exception
      */
-    @Transactional
     @Override
     public UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception {
         String extName = FileUtil.getFileExtName(originalFileName);
@@ -163,6 +162,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
 
     @Override
     public int updateFileStatus(Collection<String> fileIds, String fileStatus) {
+        if (Utils.isEmpty(fileIds)) {
+            return 0;
+        }
         return getDao().updateFileStatus(fileIds, fileStatus, new Date());
 //        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileStatus)) {
 //            return;
@@ -399,7 +401,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @return
      */
     @Override
-    public List<UploadItem> getUploadItems(String fileLink, String fileKey) {
+    public List<UploadItem> listUploadItems(String fileLink, String fileKey) {
         List<PubFileRecord> fileRecords = getRecords(fileLink, fileKey);
         return parseUploadItems(fileRecords);
     }
@@ -458,7 +460,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @return
      */
     @Override
-    public List<UploadItem> getUploadItems(String... fileIds) {
+    public List<UploadItem> listUploadItems(String... fileIds) {
         if (Utils.isEmpty(fileIds)) {
             return Collections.emptyList();
         }
@@ -480,80 +482,10 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
 
     @Override
     public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey) {
+        if (Utils.isEmpty(fileIds)) {
+            return 0;
+        }
         return getDao().updateFileLinks(fileIds, fileLink, fileKey, STATUS_LINKED, new Date());
-//        if (Utils.isEmpty(itemList) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
-//            return 0;
-//        }
-//
-//        List<String> newFileIds = new ArrayList<>();
-//        if (Utils.notEmpty(itemList)) {
-//            for (UploadItem item : itemList) {
-//                newFileIds.add(decrypt(item.getId()));
-//            }
-//        }
-//        if (itemList.size() > BATCH_SIZE) {
-//            // FIXME 待分批处理,理论上应该不会出现这么多的附件
-//        }
-//        // 这里需要将旧文件标为删除,否则之前的文件无法删除
-//        @SuppressWarnings("unchecked")
-//        List<String> oldFileIds = (List<String>) pubCommonDAO.getQueryList("SELECT t.fileId FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey=? AND t.fileStatus=?", fileLink, fileKey, STATUS_NORMAL);
-//
-//        List<String> insertIds = new ArrayList<>(newFileIds);
-//        List<String> deleteIds = new ArrayList<>(oldFileIds);
-//        insertIds.removeAll(oldFileIds);
-//        deleteIds.removeAll(newFileIds);
-//        if (Utils.notEmpty(insertIds)) { // 这边的insert相当于更新附件链接和状态
-//            @SuppressWarnings("unchecked")
-//            List<PubFileRecord> fileList = (List<PubFileRecord>) pubCommonDAO.getQueryList("FROM PubFileRecord t WHERE t.fileId IN(" + getParamStr(insertIds.size()) + ")", insertIds.toArray());
-//            final List<PubFileRecord> insertList = new ArrayList<>();
-//            List<String> updateIds = new ArrayList<>(fileList.size());
-//            for (PubFileRecord file : fileList) {
-//                if (LINK_FILE.equals(file.getFileLink())) { // 临时文件可直接修改模块
-//                    updateIds.add(file.getFileId());
-//                } else { // 非临时文件将产生新的记录
-//                    file.setFileId(getNewId());
-//                    file.setFileLink(fileLink);
-//                    file.setFileKey(fileKey);
-//                    file.setUpdateTime(new Date());
-//                    insertList.add(file);
-//                }
-//            }
-//
-//            if (Utils.notEmpty(updateIds)) {
-//                List<Object> params = new ArrayList<>();
-//                params.add(fileLink);
-//                params.add(fileKey);
-//                params.add(new Date());
-//                params.add(STATUS_LINKED);
-//                params.addAll(updateIds);
-//                pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?,t.updateTime=?,t.fileStatus=? WHERE t.fileId IN(" + getParamStr(updateIds.size()) + ")", params.toArray());
-//            }
-//            pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<Object>() {
-//                @Override
-//                public Object doInHibernate(Session session) throws HibernateException, SQLException {
-//                    for (PubFileRecord file : insertList) {
-//                        session.save(file);
-//                    }
-//                    return null;
-//                }
-//            });
-//        }
-//        if (Utils.notEmpty(deleteIds)) {
-//            // 这里的delete 相当于把附件状态标志为删除
-//            List<Object> params = new ArrayList<>();
-//            params.add(STATUS_DELETE);
-//            params.add(new Date());
-//            params.addAll(deleteIds);
-//            pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(deleteIds.size()) + ")", params.toArray());
-//        }
-//        return itemList.size();
     }
-
-//    public void updateFileLink(String fileId, String fileLink) {
-//        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
-//            return;
-//        }
-//        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=?,t.fileStatus=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), STATUS_LINKED, fileId });
-//    }
 
 }

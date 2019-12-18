@@ -1,7 +1,7 @@
-package com.rongji.dfish.framework.hibernate5.plugin.file.dao.impl;
+package com.rongji.dfish.framework.hibernate4.plugin.file.dao.impl;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.hibernate5.dao.impl.FrameworkDao4Hibernate;
+import com.rongji.dfish.framework.hibernate4.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 
@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * @author lamontYu
- * @date 2019-12-18
+ * @date 2019-12-05
  * @since 5.0
  */
 public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, String> implements FileDao {
@@ -22,7 +22,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
         args.add(fileStatus);
         args.add(updateTime);
         args.addAll(fileIds);
-        return bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileId IN (" + getParamStr(fileIds.size()) + ")", args.toArray());
+        return bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileId=?", args.toArray());
     }
 
     @Override

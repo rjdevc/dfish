@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-lazy-init="true">
 
-    <!-- 开启事务 -->
+    <!-- 事务管理器 -->
     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"></property>
     </bean>
@@ -12,7 +12,7 @@
     <!-- 使用hibernate -->
     <bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="annotatedClasses" value="org.hibernate.cfg.AnnotatedClassType"></property>
+<!--        <property name="annotatedClasses" value="org.hibernate.cfg.AnnotatedClassType"></property>-->
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>

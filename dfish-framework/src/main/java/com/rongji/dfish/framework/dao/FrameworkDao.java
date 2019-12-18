@@ -2,13 +2,11 @@ package com.rongji.dfish.framework.dao;
 
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.dto.QueryParam;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +34,9 @@ public interface FrameworkDao<P, ID extends Serializable> {
      * @return Map&lt;ID, P&gt; 实体对象集合
      */
     default Map<ID, P> gets(Collection<ID> ids) {
+        if (Utils.isEmpty(ids)) {
+            return Collections.emptyMap();
+        }
         List<P> dataList = listByIds(ids);
         Map<ID, P> dataMap = new HashMap<>(dataList.size());
         for (P data : dataList) {

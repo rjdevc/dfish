@@ -12,7 +12,7 @@
 
     <select id="listByIds" resultMap="fileMapper">
         SELECT t.* FROM PUB_FILE_RECORD t WHERE t.FILE_ID IN
-        <foreach collection="collection" item="fileId" open="(" separator="," close=")">
+        <foreach collection="ids" item="fileId" open="(" separator="," close=")">
             #{fileId}
         </foreach>
     </select>

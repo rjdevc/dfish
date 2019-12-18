@@ -10,6 +10,7 @@ import java.util.*;
 /**
  * @author lamontYu
  * @date 2019-12-05
+ * @since 5.0
  */
 public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, String> implements FileDao {
     @Override

@@ -7,12 +7,13 @@ import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;
+import com.rongji.dfish.framework.hibernate.support.EntitySupport;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -23,89 +24,15 @@ import java.util.*;
 /**
  * @author lamontYu
  * @date 2019-12-18
- * @since
+ * @since 5.0
  */
 public class FrameworkDao4Hibernate<P, ID extends Serializable> extends HibernateDaoSupport implements FrameworkDao<P, ID> {
-    protected Class<P> entityClass;
-    protected String entityIdName;
-    protected Method entityIdGetter;
 
-    protected Class<P> getEntityClass() {
-        if (entityClass == null) {
-            entityClass = getEntityClass(getClass());
-        }
-        return entityClass;
-    }
+    private EntitySupport<P> entitySupport;
 
-    protected static <P> Class<P> getEntityClass(Class<?> clz) {
-        Class<?> workingClz = clz;
-        while (true) {
-            if (workingClz == Object.class) {
-                break;
-            }
-            Type genType = workingClz.getGenericSuperclass();
-            if (!(genType instanceof ParameterizedType)) {
-                workingClz = workingClz.getSuperclass();
-                continue;
-            }
-
-            Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
-            if (params == null || params.length == 0 || !(params[0] instanceof Class)) {
-                workingClz = workingClz.getSuperclass();
-                continue;
-            }
-            Class<P> entityClass = (Class<P>) params[0];
-            return entityClass;
-        }
-        throw new UnsupportedOperationException("can not recognize the entity type.[" + clz.getName() + "]");
-    }
-
-    protected Method getEntityIdGetter() {
-        if (entityIdGetter == null) {
-            entityIdGetter = getEntityIdGetter(getEntityClass());
-        }
-        return entityIdGetter;
-    }
-
-    protected static Method getEntityIdGetter(Class<?> entityClass) {
-        if (entityClass != null) {
-            for (Method method : entityClass.getMethods()) {
-                if (method.getAnnotation(Id.class) != null) {
-                    String methodsName = method.getName();
-                    if (methodsName.startsWith("get")) {
-                        return method;
-                    }
-                    break;
-                }
-            }
-        }
-        return null;
-    }
-
-    protected String getEntityIdName() {
-        if (Utils.isEmpty(entityIdName)) {
-            entityIdName = getFieldName(getEntityIdGetter());
-        }
-        return entityIdName;
-    }
-
-    private static String getFieldName(Method method) {
-        if (method == null) {
-            return null;
-        }
-        String fieldName = null;
-        if (method != null) {
-            fieldName = method.getName().substring(3);
-            char c = fieldName.charAt(0);
-            if (c >= 'A' && c <= 'Z') {
-                fieldName = ((char) (c + 32)) + fieldName.substring(1);
-            }
-        }
-        return fieldName;
-    }
-
-    protected static String getEntityIdName(Class<?> entityClass) {
-        return getFieldName(getEntityIdGetter(entityClass));
+    @PostConstruct
+    protected void init() {
+        entitySupport = new EntitySupport<>(getClass());
     }
 
     protected List<?> list(final String hql, final Object... args) {
@@ -180,13 +107,13 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         if (id == null) {
             return null;
         }
-        Class<P> entityClass = getEntityClass();
+        Class<P> entityClass = entitySupport.getEntityClass();
         return getHibernateTemplate().get(entityClass, id);
     }
 
     @Override
     public ID getEntityId(P entity) {
-        Method getter = getEntityIdGetter();
+        Method getter = entitySupport.getIdGetter();
         ID id = null;
         try {
             id = (ID) getter.invoke(entity);
@@ -202,10 +129,11 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         idSet.remove(null);
         idSet.remove("");
         final List<ID> noRepeat = new ArrayList<>(idSet);
-        final String idFieldName = getEntityIdName();
         List<P> dbList = getHibernateTemplate().execute((session) -> {
             List<ID> tofetch = noRepeat;
-            List<P> result = new ArrayList<P>();
+            List<P> result = new ArrayList<>();
+            String idFieldName = entitySupport.getIdName();
+            Class<P> entityClass = entitySupport.getEntityClass();
             while (tofetch.size() > 0) {
                 if (tofetch.size() > FrameworkDao.BATCH_SIZE) {
                     List<ID> cur = tofetch.subList(0, FrameworkDao.BATCH_SIZE);
@@ -223,7 +151,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
 
     @Override
     public List<P> list(Pagination pagination, QueryParam queryParam) {
-        String hql = "FROM " + getEntityClass().getName();
+        String hql = "FROM " + entitySupport.getEntityName();
         return list(hql, pagination);
     }
 
@@ -253,6 +181,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         getHibernateTemplate().saveOrUpdate(entity);
         return 1;
     }
+
     @Override
     public int delete(P entity) {
         if (entity == null) {
@@ -261,6 +190,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         getHibernateTemplate().delete(entity);
         return 1;
     }
+
     @Override
     public int delete(ID id) {
         return delete(get(id));

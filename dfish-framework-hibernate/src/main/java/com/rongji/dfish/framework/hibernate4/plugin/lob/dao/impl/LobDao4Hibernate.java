@@ -1,7 +1,7 @@
-package com.rongji.dfish.framework.hibernate5.plugin.lob.dao.impl;
+package com.rongji.dfish.framework.hibernate4.plugin.lob.dao.impl;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.hibernate5.dao.impl.FrameworkDao4Hibernate;
+import com.rongji.dfish.framework.hibernate4.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 

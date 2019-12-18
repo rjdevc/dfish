@@ -1,4 +1,4 @@
-package com.rongji.dfish.framework.hibernate3.dao.impl;
+package com.rongji.dfish.framework.hibernate4.dao.impl;
 
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
@@ -10,7 +10,7 @@ import com.rongji.dfish.framework.hibernate.support.EntitySupport;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -19,7 +19,7 @@ import java.util.*;
 
 /**
  * @author lamontYu
- * @date 2019-12-04
+ * @date 2019-12-18
  * @since 5.0
  */
 public class FrameworkDao4Hibernate<P, ID extends Serializable> extends HibernateDaoSupport implements FrameworkDao<P, ID> {

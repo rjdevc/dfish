@@ -6,6 +6,7 @@ import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.FrameworkService;
 import com.rongji.dfish.base.util.JsonUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.InputStream;
@@ -316,7 +317,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileKey  链接关键字
      * @return List&lt;UploadItem&gt; 附件项集合
      */
-    default List<UploadItem> getUploadItems(String fileLink, String fileKey) {
+    default List<UploadItem> listUploadItems(String fileLink, String fileKey) {
         if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             return Collections.emptyList();
         }
@@ -331,11 +332,11 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileLink 附件链接名
      * @param fileKey  链接关键字
      * @return List&lt;UploadItem&gt; 附件项集合
-     * @see #getUploadItems(String, String)
+     * @see #listUploadItems(String, String)
      */
     @Deprecated
     default List<UploadItem> findUploadItems(String fileLink, String fileKey) {
-        return getUploadItems(fileLink, fileKey);
+        return listUploadItems(fileLink, fileKey);
     }
 
     /**
@@ -366,18 +367,18 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileIds 附件编号集合
      * @return List&lt;UploadItem&gt;
      */
-    List<UploadItem> getUploadItems(String... fileIds);
+    List<UploadItem> listUploadItems(String... fileIds);
 
     /**
      * 批量获取文件数据项
      *
      * @param fileIds 附件编号集合
      * @return List&lt;UploadItem&gt;
-     * @see #getUploadItems(String...)
+     * @see #listUploadItems(String...)
      */
     @Deprecated
     default List<UploadItem> findUploadItems(String... fileIds) {
-        return getUploadItems(fileIds);
+        return listUploadItems(fileIds);
     }
 
     /**

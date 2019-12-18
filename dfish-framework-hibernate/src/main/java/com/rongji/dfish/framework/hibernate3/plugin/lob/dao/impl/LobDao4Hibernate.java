@@ -12,6 +12,7 @@ import java.util.Date;
  *
  * @author lamontYu
  * @date 2019-12-05
+ * @since 5.0
  */
 public class LobDao4Hibernate extends FrameworkDao4Hibernate<PubLob, String> implements LobDao {
     @Override

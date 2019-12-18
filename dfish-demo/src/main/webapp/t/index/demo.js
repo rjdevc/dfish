@@ -4,7 +4,7 @@ define.template({
         'submit': {
             type: 'submit',
             src: 'demo/submit',
-            success: '$.alert("提交成功");'
+            success: '$.alert("提交成功",null,5000);'
         },
         'loading': {
             type: 'loading',
@@ -12,7 +12,7 @@ define.template({
                 type: 'progress',
                 guide: 'demo/loading',
                 template: 'progress/multiple',
-                success: 'if($response.data.finish){$.close(this);$.alert("完成了!");}'
+                success: 'if($response.data.finish){$.close(this);$.alert("完成了!",null,5000);}'
             }
         }
     },
@@ -50,13 +50,13 @@ define.template({
                                 type: 'ueditor',
                                 name: 'lobContent',
                                 label: {text: '测试文本'}
-                            },
-                            {
-                                colspan: -1, node: {
-                                    type: 'jigsaw',
-                                    label: {text: '验证码'}
-                                }
                             }
+                            // {
+                            //     colspan: -1, node: {
+                            //         type: 'jigsaw',
+                            //         label: {text: '验证码'}
+                            //     }
+                            // }
                         ]
                     },
                     {type: 'html', width: '*'}

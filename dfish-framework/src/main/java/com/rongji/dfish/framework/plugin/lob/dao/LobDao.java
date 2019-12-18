@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.lob.dao;
 
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 
@@ -77,6 +78,9 @@ public interface LobDao extends FrameworkDao<PubLob, String> {
      * @return Map&lt;String, String&gt;
      */
     default Map<String, String> getContents(Collection<String> lobIds) {
+        if (Utils.isEmpty(lobIds)) {
+            return Collections.emptyMap();
+        }
         List<PubLob> lobs = listByIds(lobIds);
         Map<String, String> contents = new HashMap<>(lobs.size());
         for (PubLob lob : lobs) {
