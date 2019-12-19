@@ -364,7 +364,7 @@ public class ImageProcessor implements Cloneable {
         AdvancedZoomCallback zcb = new AdvancedZoomCallback();
         zcb.setMaxHeight(maxHeight);
         zcb.setMaxWidth(maxWidth);
-        zcb.setZoomOutIfTooSmall(true);
+        zcb.setSuitForScope(true);
         return schedule(zcb);
     }
 
@@ -558,7 +558,7 @@ public class ImageProcessor implements Cloneable {
         Integer maxHeight;
         Integer minWidth;
         Integer minHeight;
-        boolean zoomOutIfTooSmall = true;
+        boolean suitForScope = true;
         Double maxAspectRatio;
         Double fixAspectRatio;
         Color paddingColor;
@@ -636,21 +636,23 @@ public class ImageProcessor implements Cloneable {
         }
 
         /**
-         * 缩放的时候，如果太小是否进行放大。
+         * 缩放的时候，如果太小是否进行放大到其中一边到达maxWidth或maxHeight，
+         * 如果太大就就缩小到minWidth或者minHeight
          *
          * @return boolean
          */
-        public boolean isZoomOutIfTooSmall() {
-            return zoomOutIfTooSmall;
+        public boolean isSuitForScope() {
+            return suitForScope;
         }
 
         /**
-         * 缩放的时候，如果太小是否进行放大。
+         * 缩放的时候，如果太小是否进行放大到其中一边到达maxWidth或maxHeight，
+         * 如果太大就就缩小到minWidth或者minHeight
          *
-         * @param zoomOutIfTooSmall boolean
+         * @param suitForScope boolean
          */
-        public void setZoomOutIfTooSmall(boolean zoomOutIfTooSmall) {
-            this.zoomOutIfTooSmall = zoomOutIfTooSmall;
+        public void setSuitForScope(boolean suitForScope) {
+            this.suitForScope = suitForScope;
         }
 
         /**
@@ -761,7 +763,7 @@ public class ImageProcessor implements Cloneable {
                 double widthScale = new Double(minWidth) / imageWidth;
                 double heightScale = new Double(minHeight) / imageHeight;
                 if (widthScale <= 1.0 && heightScale <= 1.0) {
-                    if (!needCut) {
+                    if (!needCut&&!suitForScope) {
                         return image; //无需缩放
                     }
                 }
@@ -781,7 +783,7 @@ public class ImageProcessor implements Cloneable {
 
                 double scale = 1.0;
                 if (widthScale >= 1.0 && heightScale >= 1.0) {
-                    if (!zoomOutIfTooSmall) {
+                    if (!suitForScope) {
                         if (paddingColor == null && !needCut) {
                             //无需缩放
                             return image;

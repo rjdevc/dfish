@@ -106,7 +106,7 @@ public class ImageProcessorTest {
         ImageProcessor.AdvancedZoomCallback zoom3=new ImageProcessor.AdvancedZoomCallback();
         zoom3.setMaxWidth(600);
         zoom3.setMaxHeight(600);
-        zoom3.setZoomOutIfTooSmall(true);
+        zoom3.setSuitForScope(true);
         marked.reset();
         marked.schedule(zoom3)
                 .output(new FileOutputStream(OUTPUT_PATH + "f_suit_for_600.jpg"));
@@ -115,7 +115,7 @@ public class ImageProcessorTest {
         zoom4.setMaxWidth(400);
         zoom4.setMaxHeight(400);
         zoom4.setPaddingColor(new Color(153,204,255,255));
-        zoom4.setZoomOutIfTooSmall(true);
+        zoom4.setSuitForScope(true);
         marked.reset();
         marked.schedule(zoom4)
                 .output(new FileOutputStream(OUTPUT_PATH + "f_paddingcolor.jpg"));

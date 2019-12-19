@@ -208,7 +208,7 @@ public class ImageProcessorGroup {
                     ImageProcessor.AdvancedZoomCallback advancedZoom = new ImageProcessor.AdvancedZoomCallback();
                     advancedZoom.setMinHeight(processConfig.getHeight());
                     advancedZoom.setMinWidth(processConfig.getWidth());
-                    advancedZoom.setZoomOutIfTooSmall(true);
+                    advancedZoom.setSuitForScope(true);
                     imageProcessor.schedule(advancedZoom);
                     imageProcessor.cut(processConfig.getWidth(), processConfig.getHeight());
                     break;
