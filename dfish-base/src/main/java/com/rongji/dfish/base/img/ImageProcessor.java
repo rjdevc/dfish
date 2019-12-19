@@ -356,17 +356,89 @@ public class ImageProcessor implements Cloneable {
     /**
      * 等比例缩放到不大于指定高宽
      *
-     * @param maxWidth  int
-     * @param maxHeight int
+     * @param width  int
+     * @param height int
      * @return this
      */
-    public ImageProcessor zoom(int maxWidth, int maxHeight) {
-        AdvancedZoomCallback zcb = new AdvancedZoomCallback();
-        zcb.setMaxHeight(maxHeight);
-        zcb.setMaxWidth(maxWidth);
-        zcb.setSuitForScope(true);
-        return schedule(zcb);
+    public ImageProcessor zoom(int width, int height) {
+        return zoom(width,height,true);
     }
+    /**
+     * 等比例缩放到不大于指定高宽
+     *
+     * @param width  int
+     * @param height int
+     * @param contains 最终输出图是否包含在这个范围内。如果为true则在内部。否则，可以有部分超出。
+     *                 如果true，后续动作可能会通过补背景色让输出的图片吻合实际大小。
+     *                 如果false，后续动作可能会通过cut 让输出的图片吻合实际大小。
+     *
+     * @return this
+     */
+    public ImageProcessor zoom(int width, int height,boolean contains) {
+        return schedule((image, processor) -> {
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+            double scaleWidth=1.0*width/imageWidth;
+            double scaleHeight=1.0*height/imageHeight;
+            double scale=contains?Math.min(scaleWidth,scaleHeight):Math.max(scaleWidth,scaleHeight);
+            int canvasWidth =(int)(imageWidth*scale+0.5);
+            int canvasHeight =(int)(imageHeight*scale+0.5);
+            BufferedImage destImage = new BufferedImage(canvasWidth, canvasHeight, image.getType());
+            // 获取画笔工具
+            Graphics g = destImage.getGraphics();
+            Image smooth =
+                    image.getScaledInstance(canvasWidth, canvasHeight, java.awt.Image.SCALE_SMOOTH);
+            g.drawImage(smooth, 0, 0, canvasWidth, canvasHeight, null);
+            g.dispose();
+            return destImage;
+        });
+    }
+
+    public ImageProcessor zoomAndPad(int width, int height,Color color) {
+        return schedule((image, processor) -> {
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+            double scaleWidth=1.0*width/imageWidth;
+            double scaleHeight=1.0*height/imageHeight;
+            double scale=Math.min(scaleWidth,scaleHeight);
+            int canvasWidth =(int)(imageWidth*scale+0.5);
+            int canvasHeight =(int)(imageHeight*scale+0.5);
+            BufferedImage destImage = new BufferedImage(width, height, image.getType());
+
+            // 获取画笔工具
+            Graphics g = destImage.getGraphics();
+            g.setColor(color);
+            g.fillRect(0,0,width,height);
+            Image smooth =
+                    image.getScaledInstance(canvasWidth, canvasHeight, java.awt.Image.SCALE_SMOOTH);
+            g.drawImage(smooth, (width-canvasWidth)/2, (height-canvasHeight)/2,
+                    canvasWidth, canvasHeight, null);
+            g.dispose();
+            return destImage;
+        });
+    }
+
+    public ImageProcessor zoomAndCut(int width, int height) {
+        return schedule((image, processor) -> {
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+            double scaleWidth=1.0*width/imageWidth;
+            double scaleHeight=1.0*height/imageHeight;
+            double scale=Math.max(scaleWidth,scaleHeight);
+            int canvasWidth =(int)(imageWidth*scale+0.5);
+            int canvasHeight =(int)(imageHeight*scale+0.5);
+            BufferedImage destImage = new BufferedImage(width, height, image.getType());
+            // 获取画笔工具
+            Graphics g = destImage.getGraphics();
+            Image smooth =
+                    image.getScaledInstance(canvasWidth, canvasHeight, java.awt.Image.SCALE_SMOOTH);
+            g.drawImage(smooth, (width-canvasWidth)/2, (height-canvasHeight)/2, width, height, null);
+            g.dispose();
+            return destImage;
+        });
+    }
+
+
 
     /**
      * 等比例缩放
@@ -550,285 +622,285 @@ public class ImageProcessor implements Cloneable {
     }
 
 
-    /**
-     * 等比例缩放
-     */
-    public static class AdvancedZoomCallback implements ImageCallback {
-        Integer maxWidth;
-        Integer maxHeight;
-        Integer minWidth;
-        Integer minHeight;
-        boolean suitForScope = true;
-        Double maxAspectRatio;
-        Double fixAspectRatio;
-        Color paddingColor;
-
-        /**
-         * 最大宽度
-         *
-         * @return Integer
-         */
-        public Integer getMaxWidth() {
-            return maxWidth;
-        }
-
-        /**
-         * 最大宽度
-         *
-         * @param maxWidth Integer
-         */
-        public void setMaxWidth(Integer maxWidth) {
-            this.maxWidth = maxWidth;
-        }
-
-        /**
-         * 最大高度
-         *
-         * @return Integer
-         */
-        public Integer getMaxHeight() {
-            return maxHeight;
-        }
-
-        /**
-         * 最大高度
-         *
-         * @param maxHeight Integer
-         */
-        public void setMaxHeight(Integer maxHeight) {
-            this.maxHeight = maxHeight;
-        }
-
-        /**
-         * 最小宽度
-         *
-         * @return Integer
-         */
-        public Integer getMinWidth() {
-            return minWidth;
-        }
-
-        /**
-         * 最小宽度
-         *
-         * @param minWidth Integer
-         */
-        public void setMinWidth(Integer minWidth) {
-            this.minWidth = minWidth;
-        }
-
-        /**
-         * 最小高度
-         *
-         * @return Integer
-         */
-        public Integer getMinHeight() {
-            return minHeight;
-        }
-
-        /**
-         * 最小高度
-         *
-         * @param minHeight Integer
-         */
-        public void setMinHeight(Integer minHeight) {
-            this.minHeight = minHeight;
-        }
-
-        /**
-         * 缩放的时候，如果太小是否进行放大到其中一边到达maxWidth或maxHeight，
-         * 如果太大就就缩小到minWidth或者minHeight
-         *
-         * @return boolean
-         */
-        public boolean isSuitForScope() {
-            return suitForScope;
-        }
-
-        /**
-         * 缩放的时候，如果太小是否进行放大到其中一边到达maxWidth或maxHeight，
-         * 如果太大就就缩小到minWidth或者minHeight
-         *
-         * @param suitForScope boolean
-         */
-        public void setSuitForScope(boolean suitForScope) {
-            this.suitForScope = suitForScope;
-        }
-
-        /**
-         * 最大比例
-         * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
-         * 这个比例设置为2 和设置为0.5是等价的。
-         *
-         * @return Double
-         */
-        public Double getMaxAspectRatio() {
-            return maxAspectRatio;
-        }
-
-        /**
-         * 最大比例
-         * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
-         * 这个比例设置为2 和设置为0.5是等价的。
-         *
-         * @param maxAspectRatio Double
-         */
-        public void setMaxAspectRatio(Double maxAspectRatio) {
-            this.maxAspectRatio = maxAspectRatio;
-        }
-
-        /**
-         * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
-         * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留4.0/3.0
-         * 可见范围也更多一些。
-         *
-         * @return Double
-         */
-        public Double getFixAspectRatio() {
-            return fixAspectRatio;
-        }
-
-        /**
-         * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
-         * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留1.2
-         * 可见范围也更多一些。
-         *
-         * @param fixAspectRatio Double
-         */
-        public void setFixAspectRatio(Double fixAspectRatio) {
-            this.fixAspectRatio = fixAspectRatio;
-        }
-
-        /**
-         * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
-         * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
-         * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
-         *
-         * @return Color
-         */
-        public Color getPaddingColor() {
-            return paddingColor;
-        }
-
-        /**
-         * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
-         * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
-         * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
-         *
-         * @param paddingColor Color
-         */
-        public void setPaddingColor(Color paddingColor) {
-            this.paddingColor = paddingColor;
-        }
-
-        @Override
-        public BufferedImage execute(BufferedImage image, ImageProcessor processor) throws Exception {
-            int fixedWidth = 0, canvasWidth = 0;
-            int fixedHeight = 0, canvasHeight = 0;
-            boolean needCut = false;
-            int cutX = 0, cutY = 0, cutW = 0, cutH = 0;
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-            if (maxAspectRatio != null) {
-                double maxRateTmp = maxAspectRatio < 1.0 ? 1.0 / maxAspectRatio : maxAspectRatio;
-                double nowRate = 1.0 * imageWidth / imageHeight;
-                nowRate = nowRate < 1.0 ? 1.0 / nowRate : nowRate;
-                if (nowRate > maxRateTmp) {
-                    //需要剪切
-                    needCut = true;
-                    double realCutScale = maxRateTmp;
-                    if (fixAspectRatio != null) {
-                        double fixRateTemp = fixAspectRatio < 1.0 ? 1.0 / fixAspectRatio : fixAspectRatio;
-                        if (fixAspectRatio < realCutScale) {
-                            realCutScale = fixRateTemp;
-                        }
-                    }
-                    if (imageWidth > imageHeight) {
-                        cutW = (int) (imageHeight * realCutScale + 0.5);
-                        cutH = imageHeight;
-                        cutX = (imageWidth - cutW) / 2;
-                        cutY = 0;
-                        imageWidth = cutW;
-                    } else {
-                        cutH = (int) (imageWidth * realCutScale + 0.5);
-                        cutW = imageWidth;
-                        cutY = (imageHeight - cutH) / 2;
-                        cutX = 0;
-                        imageHeight = cutH;
-                    }
-                }
-            }
-            if (minHeight != null && minWidth != null) {
-
-                double widthScale = new Double(minWidth) / imageWidth;
-                double heightScale = new Double(minHeight) / imageHeight;
-                if (widthScale <= 1.0 && heightScale <= 1.0) {
-                    if (!needCut&&!suitForScope) {
-                        return image; //无需缩放
-                    }
-                }
-                double scale = Math.max(widthScale, heightScale);
-                canvasWidth = fixedWidth = (int) (imageWidth * scale + 0.5);
-                canvasHeight = fixedHeight = (int) (imageHeight * scale + 0.5);
-            } else if (maxHeight != null && maxWidth != null) {
-                if (maxHeight < 0) {
-                    maxHeight = image.getHeight();
-                }
-                if (maxWidth < 0) {
-                    maxWidth = image.getWidth();
-                }
-
-                double widthScale = new Double(maxWidth) / imageWidth;
-                double heightScale = new Double(maxHeight) / imageHeight;
-
-                double scale = 1.0;
-                if (widthScale >= 1.0 && heightScale >= 1.0) {
-                    if (!suitForScope) {
-                        if (paddingColor == null && !needCut) {
-                            //无需缩放
-                            return image;
-                        }
-                        //scale=1.0;
-                    } else {
-                        scale = Math.min(widthScale, heightScale);
-                    }
-                } else {
-                    scale = Math.min(widthScale, heightScale);
-                }
-                fixedWidth = (int) (imageWidth * scale + 0.5);
-                fixedHeight = (int) (imageHeight * scale + 0.5);
-                if (paddingColor == null) {
-                    canvasWidth = fixedWidth;
-                    canvasHeight = fixedHeight;
-                } else {
-                    canvasWidth = maxWidth;
-                    canvasHeight = maxHeight;
-                }
-            }
-//            System.out.println(
-//                    "调试信息，预计画布 width= "+canvasWidth+" height="+canvasWidth+
-//                            "\r\n预计需要切图 need=未完成 切图x=未完成 切图y=未完成 切图width=未完成 切图height=未完成" +
-//                            "\r\n预计图像大小为 width="+fixedWidth+" height="+minHeight);
-
-            BufferedImage destImage = new BufferedImage(canvasWidth, canvasHeight, image.getType());
-            // 获取画笔工具
-            Graphics g = destImage.getGraphics();
-            if (paddingColor != null) {
-                g.setColor(paddingColor);
-                g.fillRect(0, 0, canvasWidth, canvasHeight);
-            }
-            if (needCut) {
-                image = image.getSubimage(cutX, cutY, cutW, cutH);
-            }
-            Image smooth =
-                    image.getScaledInstance(fixedWidth, fixedHeight, java.awt.Image.SCALE_SMOOTH);
-            g.drawImage(smooth, (canvasWidth - fixedWidth) / 2, (canvasHeight - fixedHeight) / 2,
-                    fixedWidth, fixedHeight, null);
-            g.dispose();
-            return destImage;
-        }
-
-    }
+//    /**
+//     * 等比例缩放
+//     */
+//    public static class AdvancedZoomCallback implements ImageCallback {
+//        Integer maxWidth;
+//        Integer maxHeight;
+//        Integer minWidth;
+//        Integer minHeight;
+//        boolean suitForScope = true;
+//        Double maxAspectRatio;
+//        Double fixAspectRatio;
+//        Color paddingColor;
+//
+//        /**
+//         * 最大宽度
+//         *
+//         * @return Integer
+//         */
+//        public Integer getMaxWidth() {
+//            return maxWidth;
+//        }
+//
+//        /**
+//         * 最大宽度
+//         *
+//         * @param maxWidth Integer
+//         */
+//        public void setMaxWidth(Integer maxWidth) {
+//            this.maxWidth = maxWidth;
+//        }
+//
+//        /**
+//         * 最大高度
+//         *
+//         * @return Integer
+//         */
+//        public Integer getMaxHeight() {
+//            return maxHeight;
+//        }
+//
+//        /**
+//         * 最大高度
+//         *
+//         * @param maxHeight Integer
+//         */
+//        public void setMaxHeight(Integer maxHeight) {
+//            this.maxHeight = maxHeight;
+//        }
+//
+//        /**
+//         * 最小宽度
+//         *
+//         * @return Integer
+//         */
+//        public Integer getMinWidth() {
+//            return minWidth;
+//        }
+//
+//        /**
+//         * 最小宽度
+//         *
+//         * @param minWidth Integer
+//         */
+//        public void setMinWidth(Integer minWidth) {
+//            this.minWidth = minWidth;
+//        }
+//
+//        /**
+//         * 最小高度
+//         *
+//         * @return Integer
+//         */
+//        public Integer getMinHeight() {
+//            return minHeight;
+//        }
+//
+//        /**
+//         * 最小高度
+//         *
+//         * @param minHeight Integer
+//         */
+//        public void setMinHeight(Integer minHeight) {
+//            this.minHeight = minHeight;
+//        }
+//
+//        /**
+//         * 缩放的时候，如果太小是否进行放大到其中一边到达maxWidth或maxHeight，
+//         * 如果太大就就缩小到minWidth或者minHeight
+//         *
+//         * @return boolean
+//         */
+//        public boolean isSuitForScope() {
+//            return suitForScope;
+//        }
+//
+//        /**
+//         * 缩放的时候，如果太小是否进行放大到其中一边到达maxWidth或maxHeight，
+//         * 如果太大就就缩小到minWidth或者minHeight
+//         *
+//         * @param suitForScope boolean
+//         */
+//        public void setSuitForScope(boolean suitForScope) {
+//            this.suitForScope = suitForScope;
+//        }
+//
+//        /**
+//         * 最大比例
+//         * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
+//         * 这个比例设置为2 和设置为0.5是等价的。
+//         *
+//         * @return Double
+//         */
+//        public Double getMaxAspectRatio() {
+//            return maxAspectRatio;
+//        }
+//
+//        /**
+//         * 最大比例
+//         * 如果长宽比超出最大比例，将会切掉超宽或超大的部分。保留中间的部分
+//         * 这个比例设置为2 和设置为0.5是等价的。
+//         *
+//         * @param maxAspectRatio Double
+//         */
+//        public void setMaxAspectRatio(Double maxAspectRatio) {
+//            this.maxAspectRatio = maxAspectRatio;
+//        }
+//
+//        /**
+//         * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
+//         * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留4.0/3.0
+//         * 可见范围也更多一些。
+//         *
+//         * @return Double
+//         */
+//        public Double getFixAspectRatio() {
+//            return fixAspectRatio;
+//        }
+//
+//        /**
+//         * 如果超出最大比例的时候，并设置了fixScale 则不再用最大比例计算长宽比。而用该比例计算。
+//         * 比如说，可能maxScale设置了2.0.反正这时候都要切图了。有可能干脆多切一点，保留1.2
+//         * 可见范围也更多一些。
+//         *
+//         * @param fixAspectRatio Double
+//         */
+//        public void setFixAspectRatio(Double fixAspectRatio) {
+//            this.fixAspectRatio = fixAspectRatio;
+//        }
+//
+//        /**
+//         * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
+//         * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
+//         * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
+//         *
+//         * @return Color
+//         */
+//        public Color getPaddingColor() {
+//            return paddingColor;
+//        }
+//
+//        /**
+//         * padColor为填充颜色，如果要透明填充，可以设置alpha值为最大。
+//         * 填充仅发生在设置了maxWidth和maxHeight，并且等比例缩放后,原图的比例和画布比例不一致。
+//         * 出现图片和边框中间有空白的，这些空白将会填充这些颜色。
+//         *
+//         * @param paddingColor Color
+//         */
+//        public void setPaddingColor(Color paddingColor) {
+//            this.paddingColor = paddingColor;
+//        }
+//
+//        @Override
+//        public BufferedImage execute(BufferedImage image, ImageProcessor processor) throws Exception {
+//            int fixedWidth = 0, canvasWidth = 0;
+//            int fixedHeight = 0, canvasHeight = 0;
+//            boolean needCut = false;
+//            int cutX = 0, cutY = 0, cutW = 0, cutH = 0;
+//            int imageWidth = image.getWidth();
+//            int imageHeight = image.getHeight();
+//            if (maxAspectRatio != null) {
+//                double maxRateTmp = maxAspectRatio < 1.0 ? 1.0 / maxAspectRatio : maxAspectRatio;
+//                double nowRate = 1.0 * imageWidth / imageHeight;
+//                nowRate = nowRate < 1.0 ? 1.0 / nowRate : nowRate;
+//                if (nowRate > maxRateTmp) {
+//                    //需要剪切
+//                    needCut = true;
+//                    double realCutScale = maxRateTmp;
+//                    if (fixAspectRatio != null) {
+//                        double fixRateTemp = fixAspectRatio < 1.0 ? 1.0 / fixAspectRatio : fixAspectRatio;
+//                        if (fixAspectRatio < realCutScale) {
+//                            realCutScale = fixRateTemp;
+//                        }
+//                    }
+//                    if (imageWidth > imageHeight) {
+//                        cutW = (int) (imageHeight * realCutScale + 0.5);
+//                        cutH = imageHeight;
+//                        cutX = (imageWidth - cutW) / 2;
+//                        cutY = 0;
+//                        imageWidth = cutW;
+//                    } else {
+//                        cutH = (int) (imageWidth * realCutScale + 0.5);
+//                        cutW = imageWidth;
+//                        cutY = (imageHeight - cutH) / 2;
+//                        cutX = 0;
+//                        imageHeight = cutH;
+//                    }
+//                }
+//            }
+//            if (minHeight != null && minWidth != null) {
+//
+//                double widthScale = new Double(minWidth) / imageWidth;
+//                double heightScale = new Double(minHeight) / imageHeight;
+//                if (widthScale <= 1.0 && heightScale <= 1.0) {
+//                    if (!needCut&&!suitForScope) {
+//                        return image; //无需缩放
+//                    }
+//                }
+//                double scale = Math.max(widthScale, heightScale);
+//                canvasWidth = fixedWidth = (int) (imageWidth * scale + 0.5);
+//                canvasHeight = fixedHeight = (int) (imageHeight * scale + 0.5);
+//            } else if (maxHeight != null && maxWidth != null) {
+//                if (maxHeight < 0) {
+//                    maxHeight = image.getHeight();
+//                }
+//                if (maxWidth < 0) {
+//                    maxWidth = image.getWidth();
+//                }
+//
+//                double widthScale = new Double(maxWidth) / imageWidth;
+//                double heightScale = new Double(maxHeight) / imageHeight;
+//
+//                double scale = 1.0;
+//                if (widthScale >= 1.0 && heightScale >= 1.0) {
+//                    if (!suitForScope) {
+//                        if (paddingColor == null && !needCut) {
+//                            //无需缩放
+//                            return image;
+//                        }
+//                        //scale=1.0;
+//                    } else {
+//                        scale = Math.min(widthScale, heightScale);
+//                    }
+//                } else {
+//                    scale = Math.min(widthScale, heightScale);
+//                }
+//                fixedWidth = (int) (imageWidth * scale + 0.5);
+//                fixedHeight = (int) (imageHeight * scale + 0.5);
+//                if (paddingColor == null) {
+//                    canvasWidth = fixedWidth;
+//                    canvasHeight = fixedHeight;
+//                } else {
+//                    canvasWidth = maxWidth;
+//                    canvasHeight = maxHeight;
+//                }
+//            }
+////            System.out.println(
+////                    "调试信息，预计画布 width= "+canvasWidth+" height="+canvasWidth+
+////                            "\r\n预计需要切图 need=未完成 切图x=未完成 切图y=未完成 切图width=未完成 切图height=未完成" +
+////                            "\r\n预计图像大小为 width="+fixedWidth+" height="+minHeight);
+//
+//            BufferedImage destImage = new BufferedImage(canvasWidth, canvasHeight, image.getType());
+//            // 获取画笔工具
+//            Graphics g = destImage.getGraphics();
+//            if (paddingColor != null) {
+//                g.setColor(paddingColor);
+//                g.fillRect(0, 0, canvasWidth, canvasHeight);
+//            }
+//            if (needCut) {
+//                image = image.getSubimage(cutX, cutY, cutW, cutH);
+//            }
+//            Image smooth =
+//                    image.getScaledInstance(fixedWidth, fixedHeight, java.awt.Image.SCALE_SMOOTH);
+//            g.drawImage(smooth, (canvasWidth - fixedWidth) / 2, (canvasHeight - fixedHeight) / 2,
+//                    fixedWidth, fixedHeight, null);
+//            g.dispose();
+//            return destImage;
+//        }
+//
+//    }
 
     /**
      * 具体的操作动作，操作动作可以通过回调来减少具体操作的损耗。
