@@ -45,6 +45,10 @@ public class ImageProcessConfig {
      * 水印设置
      */
     private ImageWatermarkConfig watermark;
+    /**
+     * 标记基准点
+     */
+    private boolean markPoint;
 
     public ImageProcessConfig() {
     }
@@ -107,11 +111,11 @@ public class ImageProcessConfig {
         this.alias = alias;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -137,5 +141,13 @@ public class ImageProcessConfig {
 
     public void setWatermark(ImageWatermarkConfig watermark) {
         this.watermark = watermark;
+    }
+
+    public boolean isMarkPoint() {
+        return markPoint;
+    }
+
+    public void setMarkPoint(boolean markPoint) {
+        this.markPoint = markPoint;
     }
 }

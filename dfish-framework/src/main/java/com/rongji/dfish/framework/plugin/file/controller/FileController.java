@@ -2,6 +2,7 @@ package com.rongji.dfish.framework.plugin.file.controller;
 
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.exception.MarkedException;
+import com.rongji.dfish.base.img.ImageProcessConfig;
 import com.rongji.dfish.base.img.ImageProcessorGroup;
 import com.rongji.dfish.base.img.ImageWatermarkConfig;
 import com.rongji.dfish.base.util.FileUtil;
@@ -196,14 +197,12 @@ public class FileController extends BaseActionController {
         ImageProcessorGroup imageProcessorGroup = ImageProcessorGroup.of(imageFile).setDest(imageFile.getParentFile().getAbsolutePath())
                 .setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}");
 
-        if (handleScheme.getWatermark() != null) {
-            fixWatermark(handleScheme.getWatermark());
+        // FIXME 默认图片和需要标记点图片放在位置不合理时,导致部分图片未能按标记点图片处理
+        if (handleScheme.isHandleZoomDefault()) {
+            imageProcessorGroup.process(-1, -1, ImageProcessConfig.WAY_ZOOM, ALIAS_DEFAULT, false);
         }
-
         for (ImageHandleConfig handleConfig : handleScheme.getHandleConfigs()) {
-            if (handleScheme.getWatermark() != null) {
-                handleConfig.setWatermark(handleScheme.getWatermark());
-            } else if (handleConfig.getWatermark() != null) {
+            if (handleConfig.getWatermark() != null) {
                 fixWatermark(handleConfig.getWatermark());
             }
             imageProcessorGroup.process(handleConfig);
@@ -213,8 +212,11 @@ public class FileController extends BaseActionController {
         return jsonResponse;
     }
 
+    private static final String ALIAS_DEFAULT = "DEFAULT";
+
     private void fixWatermark(ImageWatermarkConfig watermark) {
         if (Utils.notEmpty(watermark.getImagePath())) {
+            // FIXME 根据水印名称可能做缓存处理
             String servletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
             watermark.setImageFile(new File(servletPath + watermark.getImagePath()));
         }
@@ -308,23 +310,6 @@ public class FileController extends BaseActionController {
         return MIME_MAP.get(extName);
     }
 
-    /**
-     * 下载附件方法
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws Exception
-     * @deprecated 下载附件方法统一使用download
-     */
-    @RequestMapping("/download/file")
-    @ResponseBody
-    @Deprecated
-    public void downloadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 下载附件方法统一使用download
-        download(request, response);
-    }
-
     private static class DownloadParam {
         boolean inline;
         String fileName;
@@ -378,6 +363,14 @@ public class FileController extends BaseActionController {
         }
     }
 
+    /**
+     * 下载附件数据方法
+     * @param response
+     * @param input
+     * @param downloadParam
+     * @return
+     * @throws Exception
+     */
     private boolean downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
         if (input == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -557,9 +550,9 @@ public class FileController extends BaseActionController {
 
     private String getFileAlias(String alias, String scheme) {
         if (Utils.isEmpty(alias) || FILE_ALIAS_AUTO.equals(alias)) {
-            ImageHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
-            if (handlingScheme != null && Utils.notEmpty(handlingScheme.getHandleConfigs())) {
-                alias = handlingScheme.getHandleConfigs().get(0).getAlias();
+            ImageHandleScheme handleScheme = fileHandleManager.getScheme(scheme);
+            if (handleScheme != null && handleScheme.isHandleZoomDefault()) {
+                alias = ALIAS_DEFAULT;
             } else {
                 alias = null;
             }

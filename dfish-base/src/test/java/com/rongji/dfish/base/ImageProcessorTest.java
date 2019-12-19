@@ -85,48 +85,48 @@ public class ImageProcessorTest {
 
     @Test
     public void testAdvZoom()throws Exception{
-        ImageProcessor marked= ImageProcessor.of(new FileInputStream(SOURCE_FILE))
-                .mark();
-        ImageProcessor.AdvancedZoomCallback zoom1=new ImageProcessor.AdvancedZoomCallback();
-        zoom1.setMaxWidth(800);
-        zoom1.setMaxHeight(800);
-        marked.schedule(zoom1)
-                .output(new FileOutputStream(OUTPUT_PATH + "f_adv800.jpg"));
-
-        marked.reset();
-        marked.zoom(400,400)
-                .mark();
-
-        ImageProcessor.AdvancedZoomCallback zoom2=new ImageProcessor.AdvancedZoomCallback();
-        zoom2.setMaxWidth(600);
-        zoom2.setMaxHeight(600);
-        marked.schedule(zoom2)
-                .output(new FileOutputStream(OUTPUT_PATH + "f_nomore_600.jpg"));
-
-        ImageProcessor.AdvancedZoomCallback zoom3=new ImageProcessor.AdvancedZoomCallback();
-        zoom3.setMaxWidth(600);
-        zoom3.setMaxHeight(600);
-        zoom3.setSuitForScope(true);
-        marked.reset();
-        marked.schedule(zoom3)
-                .output(new FileOutputStream(OUTPUT_PATH + "f_suit_for_600.jpg"));
-
-        ImageProcessor.AdvancedZoomCallback zoom4=new ImageProcessor.AdvancedZoomCallback();
-        zoom4.setMaxWidth(400);
-        zoom4.setMaxHeight(400);
-        zoom4.setPaddingColor(new Color(153,204,255,255));
-        zoom4.setSuitForScope(true);
-        marked.reset();
-        marked.schedule(zoom4)
-                .output(new FileOutputStream(OUTPUT_PATH + "f_paddingcolor.jpg"));
-
-
-        ImageProcessor.AdvancedZoomCallback zoom5=new ImageProcessor.AdvancedZoomCallback();
-        zoom5.setMaxWidth(400);
-        zoom5.setMaxHeight(400);
-        zoom5.setMaxAspectRatio(1.0);
-        marked.reset().schedule(zoom5)
-                .output(new FileOutputStream(OUTPUT_PATH + "f_aspect1.0.jpg"));
+//        ImageProcessor marked= ImageProcessor.of(new FileInputStream(SOURCE_FILE))
+//                .mark();
+//        ImageProcessor.AdvancedZoomCallback zoom1=new ImageProcessor.AdvancedZoomCallback();
+//        zoom1.setMaxWidth(800);
+//        zoom1.setMaxHeight(800);
+//        marked.schedule(zoom1)
+//                .output(new FileOutputStream(OUTPUT_PATH + "f_adv800.jpg"));
+//
+//        marked.reset();
+//        marked.zoom(400,400)
+//                .mark();
+//
+//        ImageProcessor.AdvancedZoomCallback zoom2=new ImageProcessor.AdvancedZoomCallback();
+//        zoom2.setMaxWidth(600);
+//        zoom2.setMaxHeight(600);
+//        marked.schedule(zoom2)
+//                .output(new FileOutputStream(OUTPUT_PATH + "f_nomore_600.jpg"));
+//
+//        ImageProcessor.AdvancedZoomCallback zoom3=new ImageProcessor.AdvancedZoomCallback();
+//        zoom3.setMaxWidth(600);
+//        zoom3.setMaxHeight(600);
+//        zoom3.setSuitForScope(true);
+//        marked.reset();
+//        marked.schedule(zoom3)
+//                .output(new FileOutputStream(OUTPUT_PATH + "f_suit_for_600.jpg"));
+//
+//        ImageProcessor.AdvancedZoomCallback zoom4=new ImageProcessor.AdvancedZoomCallback();
+//        zoom4.setMaxWidth(400);
+//        zoom4.setMaxHeight(400);
+//        zoom4.setPaddingColor(new Color(153,204,255,255));
+//        zoom4.setSuitForScope(true);
+//        marked.reset();
+//        marked.schedule(zoom4)
+//                .output(new FileOutputStream(OUTPUT_PATH + "f_paddingcolor.jpg"));
+//
+//
+//        ImageProcessor.AdvancedZoomCallback zoom5=new ImageProcessor.AdvancedZoomCallback();
+//        zoom5.setMaxWidth(400);
+//        zoom5.setMaxHeight(400);
+//        zoom5.setMaxAspectRatio(1.0);
+//        marked.reset().schedule(zoom5)
+//                .output(new FileOutputStream(OUTPUT_PATH + "f_aspect1.0.jpg"));
 
 
     }

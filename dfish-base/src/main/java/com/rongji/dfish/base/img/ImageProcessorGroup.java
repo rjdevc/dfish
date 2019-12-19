@@ -56,7 +56,7 @@ public class ImageProcessorGroup {
      *
      * @param file 原始文件
      */
-    public ImageProcessorGroup(@NotNull File file) {
+    public ImageProcessorGroup(File file) {
         this.file = file;
         String originalFileName = file.getName();
         if (Utils.notEmpty(originalFileName)) {
@@ -173,17 +173,18 @@ public class ImageProcessorGroup {
             }
         }
         AtomicInteger processResult = new AtomicInteger(0);
-        ImageProcessor imageProcessor = ImageProcessor.of(new FileInputStream(file)).zoom(1.0).mark();
+        ImageProcessor imageProcessor = ImageProcessor.of(new FileInputStream(file)).mark();
         List<Runnable> queue = new ArrayList<>(processConfigs.size());
         List<Runnable> lazyQueue = new ArrayList<>(processConfigs.size());
         for (ImageProcessConfig processConfig : processConfigs) {
-            if (processConfig.isLazy()) {
-                lazyQueue.add(() -> execute(imageProcessor.clone(), processConfig, processResult));
+            if (processConfig.isLazy() && !processConfig.isMarkPoint()) {
+                lazyQueue.add(() -> execute(imageProcessor, processConfig, processResult));
             } else {
-                queue.add(() -> execute(imageProcessor.clone(), processConfig, processResult));
+                queue.add(() -> execute(imageProcessor, processConfig, processResult));
             }
         }
         // 执行需要结果的线程
+        // FIXME 标记点一般设置在最前面,否则将影响其他图片的处理
         ThreadUtil.execute(queue);
         // 后台线程执行
         for (Runnable runnable : lazyQueue) {
@@ -201,16 +202,14 @@ public class ImageProcessorGroup {
      * @throws Exception
      */
     private void execute(ImageProcessor imageProcessor, ImageProcessConfig processConfig, AtomicInteger processResult) {
+        if (!processConfig.isMarkPoint()) {
+            imageProcessor = imageProcessor.clone();
+        }
         String filePath = this.dest + (this.dest.endsWith("/") ? "" : "/") + processConfig.getName();
         try (OutputStream output = new FileOutputStream(new File(filePath))) {
             switch (processConfig.getWay()) {
                 case ImageProcessConfig.WAY_CUT:
-                    ImageProcessor.AdvancedZoomCallback advancedZoom = new ImageProcessor.AdvancedZoomCallback();
-                    advancedZoom.setMinHeight(processConfig.getHeight());
-                    advancedZoom.setMinWidth(processConfig.getWidth());
-                    advancedZoom.setSuitForScope(true);
-                    imageProcessor.schedule(advancedZoom);
-                    imageProcessor.cut(processConfig.getWidth(), processConfig.getHeight());
+                    imageProcessor.zoomAndCut(processConfig.getWidth(), processConfig.getHeight());
                     break;
                 case ImageProcessConfig.WAY_ZOOM:
                     imageProcessor.zoom(processConfig.getWidth(), processConfig.getHeight());
@@ -231,12 +230,13 @@ public class ImageProcessorGroup {
                     imageProcessor.watermark(watermark.getText(), watermark.getTextFont(), watermark.getTextColor(), watermark.getX(), watermark.getY());
                 }
             }
+            if (processConfig.isMarkPoint()) {
+                imageProcessor.mark();
+            }
             imageProcessor.output(output);
             processResult.incrementAndGet();
         } catch (Exception e) {
-            LogUtil.error(null, e);
-        } finally {
-            imageProcessor.reset();
+            LogUtil.error("图片处理异常", e);
         }
     }
 

@@ -2,6 +2,7 @@ package com.rongji.dfish.base.img;
 
 import com.rongji.dfish.base.util.ByteArrayUtil;
 import com.rongji.dfish.base.util.LogUtil;
+import com.sun.istack.internal.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -119,6 +120,7 @@ public class ImageProcessor implements Cloneable {
         for (ImageCallback callback : callbacks) {
             working = callback.execute(working, this);
         }
+        reset();
     }
 
 
@@ -217,6 +219,9 @@ public class ImageProcessor implements Cloneable {
      * @return this
      */
     public ImageProcessor watermark(BufferedImage img, float alpha, int x, int y) {
+        if (img == null) {
+            throw new IllegalArgumentException("img == null!");
+        }
         schedule((image, processor) -> {
             int width = image.getWidth(); // 得到源图宽
             int height = image.getHeight(); // 得到源图长
@@ -265,6 +270,9 @@ public class ImageProcessor implements Cloneable {
             try {
                 ImageTypeDecorator itd = new ImageTypeDecorator(input);
                 image = ImageIO.read(itd);
+                if (image == null) {
+                    throw new IllegalArgumentException("unsupported image type!");
+                }
                 this.realType = itd.getTypeName();
             } catch (IOException iex) {
                 throw iex;
@@ -361,28 +369,30 @@ public class ImageProcessor implements Cloneable {
      * @return this
      */
     public ImageProcessor zoom(int width, int height) {
-        return zoom(width,height,true);
+        return zoom(width, height, true);
     }
+
     /**
      * 等比例缩放到不大于指定高宽
      *
-     * @param width  int
-     * @param height int
+     * @param width    int
+     * @param height   int
      * @param contains 最终输出图是否包含在这个范围内。如果为true则在内部。否则，可以有部分超出。
      *                 如果true，后续动作可能会通过补背景色让输出的图片吻合实际大小。
      *                 如果false，后续动作可能会通过cut 让输出的图片吻合实际大小。
-     *
      * @return this
      */
-    public ImageProcessor zoom(int width, int height,boolean contains) {
+    public ImageProcessor zoom(int width, int height, boolean contains) {
         return schedule((image, processor) -> {
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
-            double scaleWidth=1.0*width/imageWidth;
-            double scaleHeight=1.0*height/imageHeight;
-            double scale=contains?Math.min(scaleWidth,scaleHeight):Math.max(scaleWidth,scaleHeight);
-            int canvasWidth =(int)(imageWidth*scale+0.5);
-            int canvasHeight =(int)(imageHeight*scale+0.5);
+            int destWidth = width < 0 ? imageWidth : width;
+            int destHeight = height < 0 ? imageHeight : height;
+            double scaleWidth = 1.0 * destWidth / imageWidth;
+            double scaleHeight = 1.0 * destHeight / imageHeight;
+            double scale = contains ? Math.min(scaleWidth, scaleHeight) : Math.max(scaleWidth, scaleHeight);
+            int canvasWidth = (int) (imageWidth * scale + 0.5);
+            int canvasHeight = (int) (imageHeight * scale + 0.5);
             BufferedImage destImage = new BufferedImage(canvasWidth, canvasHeight, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
@@ -394,24 +404,24 @@ public class ImageProcessor implements Cloneable {
         });
     }
 
-    public ImageProcessor zoomAndPad(int width, int height,Color color) {
+    public ImageProcessor zoomAndPad(int width, int height, Color color) {
         return schedule((image, processor) -> {
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
-            double scaleWidth=1.0*width/imageWidth;
-            double scaleHeight=1.0*height/imageHeight;
-            double scale=Math.min(scaleWidth,scaleHeight);
-            int canvasWidth =(int)(imageWidth*scale+0.5);
-            int canvasHeight =(int)(imageHeight*scale+0.5);
+            double scaleWidth = 1.0 * width / imageWidth;
+            double scaleHeight = 1.0 * height / imageHeight;
+            double scale = Math.min(scaleWidth, scaleHeight);
+            int canvasWidth = (int) (imageWidth * scale + 0.5);
+            int canvasHeight = (int) (imageHeight * scale + 0.5);
             BufferedImage destImage = new BufferedImage(width, height, image.getType());
 
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
             g.setColor(color);
-            g.fillRect(0,0,width,height);
+            g.fillRect(0, 0, width, height);
             Image smooth =
                     image.getScaledInstance(canvasWidth, canvasHeight, java.awt.Image.SCALE_SMOOTH);
-            g.drawImage(smooth, (width-canvasWidth)/2, (height-canvasHeight)/2,
+            g.drawImage(smooth, (width - canvasWidth) / 2, (height - canvasHeight) / 2,
                     canvasWidth, canvasHeight, null);
             g.dispose();
             return destImage;
@@ -422,22 +432,21 @@ public class ImageProcessor implements Cloneable {
         return schedule((image, processor) -> {
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
-            double scaleWidth=1.0*width/imageWidth;
-            double scaleHeight=1.0*height/imageHeight;
-            double scale=Math.max(scaleWidth,scaleHeight);
-            int canvasWidth =(int)(imageWidth*scale+0.5);
-            int canvasHeight =(int)(imageHeight*scale+0.5);
+            double scaleWidth = 1.0 * width / imageWidth;
+            double scaleHeight = 1.0 * height / imageHeight;
+            double scale = Math.max(scaleWidth, scaleHeight);
+            int canvasWidth = (int) (imageWidth * scale + 0.5);
+            int canvasHeight = (int) (imageHeight * scale + 0.5);
             BufferedImage destImage = new BufferedImage(width, height, image.getType());
             // 获取画笔工具
             Graphics g = destImage.getGraphics();
             Image smooth =
                     image.getScaledInstance(canvasWidth, canvasHeight, java.awt.Image.SCALE_SMOOTH);
-            g.drawImage(smooth, (width-canvasWidth)/2, (height-canvasHeight)/2, width, height, null);
+            g.drawImage(smooth, (width - canvasWidth) / 2, (height - canvasHeight) / 2, width, height, null);
             g.dispose();
             return destImage;
         });
     }
-
 
 
     /**
@@ -530,7 +539,6 @@ public class ImageProcessor implements Cloneable {
      */
     public ImageProcessor reset() {
         this.callbacks.clear();
-        ;
         return this;
     }
 

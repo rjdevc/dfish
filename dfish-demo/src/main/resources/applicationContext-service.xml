@@ -45,13 +45,13 @@
     <bean id="fileService" class="com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl"></bean>
     <bean id="fileHandleManager" class="com.rongji.dfish.framework.plugin.file.config.FileHandleManager"></bean>
 
-    <!-- 默认原图尺寸缩放定义 -->
-    <bean id="imageDefault" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleConfig">
-        <property name="alias" value="DEFAULT"></property>
-        <property name="way" value="zoom"></property>
-        <property name="width" value="-1"></property>
-        <property name="height" value="-1"></property>
-        <property name="lazy" value="false"></property>
+    <!-- 图片水印 -->
+    <bean id="watermark" class="com.rongji.dfish.base.img.ImageWatermarkConfig">
+        <property name="text" value="DFish"></property>
+<!--        <property name="imagePath" value="skin/g/favicon.ico"></property>-->
+<!--        <property name="imageAlpha" value="1.0"></property>-->
+        <property name="x" value="-30"></property>
+        <property name="y" value="-30"></property>
     </bean>
 
     <!-- 通用头像图片缩放定义 -->
@@ -59,6 +59,8 @@
         <property name="way" value="cut"></property>
         <property name="width" value="100"></property>
         <property name="height" value="100"></property>
+        <property name="markPoint" value="true"></property>
+        <property name="watermark" ref="watermark"></property>
     </bean>
     <bean id="image80x80" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleConfig">
         <property name="way" value="cut"></property>
@@ -81,25 +83,17 @@
         <property name="height" value="20"></property>
     </bean>
 
-    <bean id="watermark" class="com.rongji.dfish.base.img.ImageWatermarkConfig">
-        <property name="text" value="DFish"></property>
-        <property name="x" value="-40"></property>
-        <property name="y" value="-2"></property>
-    </bean>
-
     <bean id="abstractScheme" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleScheme">
         <property name="handleTypes" value="${icon.types}"></property>
-        <property name="watermark" ref="watermark"></property>
+        <property name="handleZoomDefault" value="true"></property>
     </bean>
 
     <!-- 人员头像缩放方案 -->
     <bean parent="abstractScheme">
         <property name="name" value="USER_ICON"></property>
         <property name="defaultIcon" value="icon_user.png"></property>
-
         <property name="handleConfigs">
             <list>
-                <ref bean="imageDefault"></ref>
                 <ref bean="image100x100"></ref>
                 <ref bean="image80x80"></ref>
                 <ref bean="image60x60"></ref>
