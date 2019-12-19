@@ -10,6 +10,7 @@ import java.util.List;
 import com.rongji.dfish.base.text.TrieTree;
 import com.rongji.dfish.base.text.TrieTree.SearchResult;
 import com.rongji.dfish.base.util.CharUtil;
+import com.rongji.dfish.base.util.LogUtil;
 import org.bouncycastle.util.Arrays;
 //import com.rongji.dfish.misc.senswords.andy.WordFilter;
 
@@ -33,32 +34,24 @@ public class SensitiveWordFilter {
     }
 
     private void loadDic() {
-        try {
-            InputStream is = getClass().getResourceAsStream("/com/rongji/dfish/misc/senswords/main_dic.txt");
-            BufferedReader bis = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        try (InputStream input = getClass().getResourceAsStream("/com/rongji/dfish/misc/senswords/main_dic.txt")){
+            BufferedReader bis = new BufferedReader(new InputStreamReader(input, "UTF-8"));
             String line = "";
             while ((line = bis.readLine()) != null) {
                 core.put(line, true);
             }
-            if (bis != null) {
-                bis.close();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.error("load dictionary error", e);
         }
-        // 白名单用fasle;
-        try {
-            InputStream is = getClass().getResourceAsStream("/com/rongji/dfish/misc/senswords/white_words.txt");
-            BufferedReader bis = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        // 白名单用false;
+        try (InputStream input = getClass().getResourceAsStream("/com/rongji/dfish/misc/senswords/white_words.txt")){
+            BufferedReader bis = new BufferedReader(new InputStreamReader(input, "UTF-8"));
             String line = "";
             while ((line = bis.readLine()) != null) {
                 core.put(line, false);
             }
-            if (bis != null) {
-                bis.close();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.error("load dictionary error", e);
         }
     }
 

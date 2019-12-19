@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * @date 2019-12-17
  * @since
  */
-public class ImageProcessorTest {
+public class ImageProcessorGroupTest {
 
     private static final Pattern PATTERN_ALIAS = Pattern.compile("\\{ALIAS\\}");
 

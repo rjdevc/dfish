@@ -5,9 +5,9 @@ package com.rongji.dfish.framework.plugin.file.config;
  * 初步规划为对上传的文件进行格式转换等功能（因默认文件如何转换未定方案，这里接口未定出来）
  * @author lamontYu
  * @date 2019-08-07
- * @since 3.2
+ * @since 5.0
  */
-public interface FileHandleDefine {
+public interface FileHandleConfig {
 
     /**
      * 方案别名

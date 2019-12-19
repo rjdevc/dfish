@@ -1,14 +1,14 @@
 package com.rongji.dfish.base;
 
 import com.rongji.dfish.base.img.ImageInfo;
-import com.rongji.dfish.base.img.ImageOperation;
+import com.rongji.dfish.base.img.ImageProcessor;
 import com.rongji.dfish.base.img.JpegInfo;
 import org.junit.Test;
 
 import java.awt.*;
 import java.io.*;
 
-public class ImageOperationTest {
+public class ImageProcessorTest {
     public static void main(String[] args) throws Exception {
 //        ImageOperation narked= ImageOperation.of(new FileInputStream(""))
 //                .zoom(800,800)
@@ -59,7 +59,7 @@ public class ImageOperationTest {
     private static final String OUTPUT_PATH="C:\\Users\\LinLW\\Desktop\\imgtest\\";
     @Test
     public void testMark()throws Exception{
-        ImageOperation marked= ImageOperation.of(new FileInputStream(SOURCE_FILE))
+        ImageProcessor marked= ImageProcessor.of(new FileInputStream(SOURCE_FILE))
                 .zoom(800,800)
                 .mark();
 
@@ -77,7 +77,7 @@ public class ImageOperationTest {
         if(ii instanceof JpegInfo){
             JpegInfo cast=(JpegInfo)ii;
             if(cast.getThumbnail()!=null){
-                ImageOperation jpegThumb=ImageOperation.of(cast.getThumbnail());
+                ImageProcessor jpegThumb= ImageProcessor.of(cast.getThumbnail());
                 jpegThumb.output(new FileOutputStream(OUTPUT_PATH+"huaweiThumb.jpg"));
             }
         }
@@ -85,9 +85,9 @@ public class ImageOperationTest {
 
     @Test
     public void testAdvZoom()throws Exception{
-        ImageOperation marked= ImageOperation.of(new FileInputStream(SOURCE_FILE))
+        ImageProcessor marked= ImageProcessor.of(new FileInputStream(SOURCE_FILE))
                 .mark();
-        ImageOperation.AdvancedZoomCallback zoom1=new ImageOperation.AdvancedZoomCallback();
+        ImageProcessor.AdvancedZoomCallback zoom1=new ImageProcessor.AdvancedZoomCallback();
         zoom1.setMaxWidth(800);
         zoom1.setMaxHeight(800);
         marked.schedule(zoom1)
@@ -97,13 +97,13 @@ public class ImageOperationTest {
         marked.zoom(400,400)
                 .mark();
 
-        ImageOperation.AdvancedZoomCallback zoom2=new ImageOperation.AdvancedZoomCallback();
+        ImageProcessor.AdvancedZoomCallback zoom2=new ImageProcessor.AdvancedZoomCallback();
         zoom2.setMaxWidth(600);
         zoom2.setMaxHeight(600);
         marked.schedule(zoom2)
                 .output(new FileOutputStream(OUTPUT_PATH + "f_nomore_600.jpg"));
 
-        ImageOperation.AdvancedZoomCallback zoom3=new ImageOperation.AdvancedZoomCallback();
+        ImageProcessor.AdvancedZoomCallback zoom3=new ImageProcessor.AdvancedZoomCallback();
         zoom3.setMaxWidth(600);
         zoom3.setMaxHeight(600);
         zoom3.setZoomOutIfTooSmall(true);
@@ -111,7 +111,7 @@ public class ImageOperationTest {
         marked.schedule(zoom3)
                 .output(new FileOutputStream(OUTPUT_PATH + "f_suit_for_600.jpg"));
 
-        ImageOperation.AdvancedZoomCallback zoom4=new ImageOperation.AdvancedZoomCallback();
+        ImageProcessor.AdvancedZoomCallback zoom4=new ImageProcessor.AdvancedZoomCallback();
         zoom4.setMaxWidth(400);
         zoom4.setMaxHeight(400);
         zoom4.setPaddingColor(new Color(153,204,255,255));
@@ -121,7 +121,7 @@ public class ImageOperationTest {
                 .output(new FileOutputStream(OUTPUT_PATH + "f_paddingcolor.jpg"));
 
 
-        ImageOperation.AdvancedZoomCallback zoom5=new ImageOperation.AdvancedZoomCallback();
+        ImageProcessor.AdvancedZoomCallback zoom5=new ImageProcessor.AdvancedZoomCallback();
         zoom5.setMaxWidth(400);
         zoom5.setMaxHeight(400);
         zoom5.setMaxAspectRatio(1.0);
@@ -133,7 +133,7 @@ public class ImageOperationTest {
 
     @Test
     public void testZoom()throws Exception{
-        ImageOperation.of(
+        ImageProcessor.of(
                 new FileInputStream("C:\\Users\\LinLW\\Pictures\\u3411.png"))
                 .zoom(400,400)
                 .output(new FileOutputStream(OUTPUT_PATH + "f_shouZoomOut400.png") );
@@ -141,7 +141,7 @@ public class ImageOperationTest {
 
     @Test
     public void testCut()throws Exception{
-        ImageOperation.of(new FileInputStream(SOURCE_FILE))
+        ImageProcessor.of(new FileInputStream(SOURCE_FILE))
                 .zoom(800,800)
                 .cut(600,600)
                 .output(new FileOutputStream(OUTPUT_PATH + "f_CUT600.jpg"));
@@ -154,7 +154,7 @@ public class ImageOperationTest {
         if(ii instanceof JpegInfo){
             JpegInfo cast=(JpegInfo)ii;
             if(cast.getThumbnail()!=null){
-                ImageOperation jpegThumb=ImageOperation.of(cast.getThumbnail());
+                ImageProcessor jpegThumb= ImageProcessor.of(cast.getThumbnail());
                 jpegThumb.output(new FileOutputStream(OUTPUT_PATH+"originalThumbnail.jpg"));
             }
         }

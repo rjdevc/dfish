@@ -13,7 +13,7 @@ import java.util.Map;
  * 文件处理管理类,主要管理注册的文件处理方案和文件处理定义
  * @author lamontYu
  * @date 2019-08-07
- * @since 3.2
+ * @since 5.0
  */
 public class FileHandleManager {
     @Autowired(required = false)
@@ -48,11 +48,11 @@ public class FileHandleManager {
      * @param scheme 方案名称
      * @return FileHandlingDefine
      */
-    public FileHandleScheme getScheme(String scheme) {
+    public <T> T getScheme(String scheme) {
         if (Utils.isEmpty(scheme)) {
             return null;
         }
-        return fileHandleSchemeMap.get(scheme);
+        return (T) fileHandleSchemeMap.get(scheme);
     }
 
 }

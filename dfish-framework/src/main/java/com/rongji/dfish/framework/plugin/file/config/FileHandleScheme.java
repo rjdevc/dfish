@@ -6,33 +6,29 @@ import java.util.List;
  * 文件处理方案,定义了上传
  * @author lamontYu
  * @date 2019-08-07
- * @since 3.2
+ * @since 5.0
  */
 public class FileHandleScheme {
     /**
      * 方案名称
      */
-    private String name;
-    /**
-     * 默认图片(图片不存在时显示默认图片,暂没想到文件有什么类似需求,暂时以这个命名)
-     */
-    private String defaultIcon;
+    protected String name;
     /**
      * 方案定义
      */
-    private List<FileHandleDefine> defines;
+    protected List<? extends FileHandleConfig> handleConfigs;
     /**
      * 需处理的文件类型
      */
-    private String handlingTypes;
+    protected String handleTypes;
     /**
      * 最大允许上传的文件大小
      */
-    private String sizeLimit;
+    protected String sizeLimit;
     /**
      * 附件链接的地址
      */
-    private String fileUrl;
+    protected String fileUrl;
 
     public String getName() {
         return name;
@@ -42,28 +38,20 @@ public class FileHandleScheme {
         this.name = name;
     }
 
-    public String getDefaultIcon() {
-        return defaultIcon;
+    public List<? extends FileHandleConfig> getHandleConfigs() {
+        return handleConfigs;
     }
 
-    public void setDefaultIcon(String defaultIcon) {
-        this.defaultIcon = defaultIcon;
+    public void setDefines(List<? extends FileHandleConfig> handleConfigs) {
+        this.handleConfigs = handleConfigs;
     }
 
-    public List<FileHandleDefine> getDefines() {
-        return defines;
+    public String getHandleTypes() {
+        return handleTypes;
     }
 
-    public void setDefines(List<FileHandleDefine> defines) {
-        this.defines = defines;
-    }
-
-    public String getHandlingTypes() {
-        return handlingTypes;
-    }
-
-    public void setHandlingTypes(String handlingTypes) {
-        this.handlingTypes = handlingTypes;
+    public void setHandleTypes(String handleTypes) {
+        this.handleTypes = handleTypes;
     }
 
     public String getSizeLimit() {

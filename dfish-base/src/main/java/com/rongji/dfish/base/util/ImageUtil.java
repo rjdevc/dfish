@@ -1,6 +1,6 @@
 package com.rongji.dfish.base.util;
 
-import com.rongji.dfish.base.img.ImageOperation;
+import com.rongji.dfish.base.img.ImageProcessor;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -26,7 +26,7 @@ public class ImageUtil {
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void zoom(InputStream input, OutputStream output, int width, int height) throws Exception {
-        ImageOperation.of(input).zoom(width, height).output(output);
+        ImageProcessor.of(input).zoom(width, height).output(output);
     }
 
     /**
@@ -52,7 +52,7 @@ public class ImageUtil {
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void resize(InputStream input, OutputStream output, int width, int height) throws Exception {
-        ImageOperation.of(input).resize(width, height).output(output);
+        ImageProcessor.of(input).resize(width, height).output(output);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ImageUtil {
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void cut(InputStream input, OutputStream output, int width, int height) throws Exception {
-        ImageOperation.of(input).cut(width, height).output(output);
+        ImageProcessor.of(input).cut(width, height).output(output);
     }
 
     /**
@@ -80,6 +80,6 @@ public class ImageUtil {
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void cut(InputStream input, OutputStream output, int x, int y, int width, int height) throws Exception {
-        ImageOperation.of(input).cut(x, y, width, height).output(output);
+        ImageProcessor.of(input).cut(x, y, width, height).output(output);
     }
 }

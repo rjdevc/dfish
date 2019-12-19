@@ -1,11 +1,11 @@
 package com.rongji.dfish.framework.dto;
 
-import com.rongji.dfish.base.util.StringUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.util.ServletUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Map;
  * @since 5.0
  * @date 2019-12-04 13:19
  */
-public class RequestParam extends HashMap<String, String[]> {
+public class RequestParam extends LinkedHashMap<String, String[]> {
 
     private static final long serialVersionUID = 2528247676699322059L;
 
@@ -46,8 +46,9 @@ public class RequestParam extends HashMap<String, String[]> {
      * @param key 参数名称
      * @return String 参数值
      */
-    public String getStringValue(String key) {
-        return StringUtil.toString(get(key));
+    public String getParameter(String key) {
+        String[] value = get(key);
+        return Utils.notEmpty(value) ? value[0] : null;
     }
 
     /**
@@ -56,8 +57,8 @@ public class RequestParam extends HashMap<String, String[]> {
      * @param str 参数值
      * @return this
      */
-    public RequestParam putStringValue(String key, String str) {
-        this.put(key, str == null ? null : str.split(","));
+    public RequestParam putParameter(String key, String str) {
+        this.put(key, str == null ? null : new String[]{ str });
         return this;
     }
 

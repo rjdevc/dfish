@@ -2,18 +2,19 @@ package com.rongji.dfish.framework.plugin.file.controller;
 
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.exception.MarkedException;
+import com.rongji.dfish.base.img.ImageProcessorGroup;
+import com.rongji.dfish.base.img.ImageWatermarkConfig;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.base.img.ImageProcessor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
-import com.rongji.dfish.framework.plugin.file.config.FileHandleDefine;
 import com.rongji.dfish.framework.plugin.file.config.FileHandleManager;
 import com.rongji.dfish.framework.plugin.file.config.FileHandleScheme;
-import com.rongji.dfish.framework.plugin.file.config.impl.ImageHandleDefine;
+import com.rongji.dfish.framework.plugin.file.config.img.ImageHandleConfig;
+import com.rongji.dfish.framework.plugin.file.config.img.ImageHandleScheme;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.dto.PreviewResponse;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
@@ -151,7 +152,7 @@ public class FileController extends BaseActionController {
         String scheme = request.getParameter("scheme");
         FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
         // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
-        String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileService.getFileTypes();
+        String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandleTypes()) ? handlingScheme.getHandleTypes() : fileService.getFileTypes();
         UploadItem uploadItem = saveFile(request, acceptTypes);
         return new JsonResponse<>(uploadItem);
     }
@@ -173,8 +174,8 @@ public class FileController extends BaseActionController {
         }
 
         String scheme = request.getParameter("scheme");
-        final FileHandleScheme handleScheme = fileHandleManager.getScheme(scheme);
-        if (handleScheme == null || Utils.isEmpty(handleScheme.getDefines())) {
+        ImageHandleScheme handleScheme = fileHandleManager.getScheme(scheme);
+        if (handleScheme == null || Utils.isEmpty(handleScheme.getHandleConfigs())) {
             // 无需进行图片压缩
             return jsonResponse;
         }
@@ -192,17 +193,31 @@ public class FileController extends BaseActionController {
             LogUtil.warn(errorMsg + ":原图丢失[" + fileId + "]");
             return jsonResponse.setErrMsg(errorMsg);
         }
-        ImageProcessor imageProcessor = ImageProcessor.of(imageFile).setDest(imageFile.getParentFile().getAbsolutePath())
+        ImageProcessorGroup imageProcessorGroup = ImageProcessorGroup.of(imageFile).setDest(imageFile.getParentFile().getAbsolutePath())
                 .setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}");
-        for (FileHandleDefine handleDefine : handleScheme.getDefines()) {
-            if (handleDefine instanceof ImageHandleDefine) {
-                ImageHandleDefine cast = (ImageHandleDefine) handleDefine;
-                imageProcessor.handle(cast);
-            }
+
+        if (handleScheme.getWatermark() != null) {
+            fixWatermark(handleScheme.getWatermark());
         }
-        imageProcessor.execute();
+
+        for (ImageHandleConfig handleConfig : handleScheme.getHandleConfigs()) {
+            if (handleScheme.getWatermark() != null) {
+                handleConfig.setWatermark(handleScheme.getWatermark());
+            } else if (handleConfig.getWatermark() != null) {
+                fixWatermark(handleConfig.getWatermark());
+            }
+            imageProcessorGroup.process(handleConfig);
+        }
+        imageProcessorGroup.execute();
 
         return jsonResponse;
+    }
+
+    private void fixWatermark(ImageWatermarkConfig watermark) {
+        if (Utils.notEmpty(watermark.getImagePath())) {
+            String servletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
+            watermark.setImageFile(new File(servletPath + watermark.getImagePath()));
+        }
     }
 
     /**
@@ -507,7 +522,7 @@ public class FileController extends BaseActionController {
         boolean success = downloadFileData(response, fileService.getFileInputStream(fileRecord, realAlias), downloadParam);
         // 下载不成功,用默认图片代替
         if (!success) {
-            FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
+            ImageHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
             String defaultIcon = null;
             if (handlingScheme != null) {
                 if (Utils.notEmpty(handlingScheme.getDefaultIcon())) {
@@ -542,9 +557,9 @@ public class FileController extends BaseActionController {
 
     private String getFileAlias(String alias, String scheme) {
         if (Utils.isEmpty(alias) || FILE_ALIAS_AUTO.equals(alias)) {
-            FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
-            if (handlingScheme != null && Utils.notEmpty(handlingScheme.getDefines())) {
-                alias = handlingScheme.getDefines().get(0).getAlias();
+            ImageHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
+            if (handlingScheme != null && Utils.notEmpty(handlingScheme.getHandleConfigs())) {
+                alias = handlingScheme.getHandleConfigs().get(0).getAlias();
             } else {
                 alias = null;
             }

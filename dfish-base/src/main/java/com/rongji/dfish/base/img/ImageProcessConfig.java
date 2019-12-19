@@ -8,7 +8,7 @@ import java.awt.*;
  * @date 2019-12-16
  * @since 5.0
  */
-public class ImageHandler {
+public class ImageProcessConfig {
 
     public static final String WAY_ZOOM = "zoom";
     public static final String WAY_CUT = "cut";
@@ -16,54 +16,58 @@ public class ImageHandler {
     /**
      * 图片宽度
      */
-    protected int width;
+    private int width;
     /**
      * 图片高度
      */
-    protected int height;
+    private int height;
     /**
      * 图片处理方式
      */
-    protected String way = WAY_ZOOM;
+    private String way = WAY_ZOOM;
     /**
      * 文件别名(有name时可以不需要alias,但推荐别名方式,按照一定规则命名)
      */
-    protected String alias;
+    private String alias;
     /**
      * 文件名称(有name时可以不需要alias,但推荐别名方式,按照一定规则命名)
      */
-    protected String name;
+    private String name;
     /**
      * 是否可延迟执行
      */
-    protected boolean lazy = true;
+    private boolean lazy = true;
     /**
      * 边距填充颜色
      */
-    protected Color paddingColor;
+    private Color paddingColor;
+    /**
+     * 水印设置
+     */
+    private ImageWatermarkConfig watermark;
 
-    public ImageHandler() {
+    public ImageProcessConfig() {
     }
 
-    public ImageHandler(int width, int height) {
+    public ImageProcessConfig(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
-    public ImageHandler(int width, int height, String way) {
+    public ImageProcessConfig(int width, int height, String way) {
         this.width = width;
         this.height = height;
         this.way = way;
     }
 
-    public ImageHandler(int width, int height, String way, String alias) {
+    public ImageProcessConfig(int width, int height, String way, String alias) {
         this.width = width;
         this.height = height;
         this.way = way;
         this.alias = alias;
     }
 
-    public ImageHandler(int width, int height, String way, String alias, boolean lazy) {
+    public ImageProcessConfig(int width, int height, String way, String alias, boolean lazy) {
         this.width = width;
         this.height = height;
         this.way = way;
@@ -75,62 +79,63 @@ public class ImageHandler {
         return way;
     }
 
-    public ImageHandler setWay(String way) {
+    public void setWay(String way) {
         this.way = way;
-        return this;
     }
 
     public int getWidth() {
         return width;
     }
 
-    public ImageHandler setWidth(int width) {
+    public void setWidth(int width) {
         this.width = width;
-        return this;
     }
 
     public int getHeight() {
         return height;
     }
 
-    public ImageHandler setHeight(int height) {
+    public void setHeight(int height) {
         this.height = height;
-        return this;
     }
 
     public String getAlias() {
         return alias;
     }
 
-    public ImageHandler setAlias(String alias) {
+    public void setAlias(String alias) {
         this.alias = alias;
-        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public ImageHandler setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
     public boolean isLazy() {
         return lazy;
     }
 
-    public ImageHandler setLazy(boolean lazy) {
+    public void setLazy(boolean lazy) {
         this.lazy = lazy;
-        return this;
     }
 
     public Color getPaddingColor() {
         return paddingColor;
     }
 
-    public ImageHandler setPaddingColor(Color paddingColor) {
+    public void setPaddingColor(Color paddingColor) {
         this.paddingColor = paddingColor;
-        return this;
+    }
+
+    public ImageWatermarkConfig getWatermark() {
+        return watermark;
+    }
+
+    public void setWatermark(ImageWatermarkConfig watermark) {
+        this.watermark = watermark;
     }
 }
