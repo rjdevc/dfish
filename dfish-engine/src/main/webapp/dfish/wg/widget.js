@@ -1275,7 +1275,7 @@ W = define( 'widget', function() {
 				b = this.x.format;
 			if ( c === U )
 				c = this.x.escape;
-			return a && ! b ? ' title="' + $.strQuot( a, !c ) + '"' : '';
+			return a && typeof a === _STR && ! b ? ' title="' + $.strQuot( a, !c ) + '"' : '';
 		},
 		// @a -> text, @b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function( a, b, c, d, e ) {
@@ -3875,7 +3875,7 @@ Dialog = define.widget( 'dialog', {
 		if ( x.independent )
 			delete p.discNodes[ this.id ];
 		else {
-			p.addEventOnce( 'remove', this.remove(), this );
+			p.addEventOnce( 'remove', this.remove, this );
 		}
 		_docView.addEvent( 'resize', function() { this.isShow() && this.axis() }, this );
 	},
@@ -4436,7 +4436,7 @@ Tip = define.widget( 'tip', {
 /*  `loading`  */
 Loading = define.widget( 'loading', {
 	Const: function( x, p ) {
-		$.extend( x, { width: x.node ? 200 : -1, independent: T } );
+		$.extend( x, { width: x.node ? 200 : -1 } );
 		Dialog.apply( this, arguments );
 		_inst_add( this, this.ownerView );
 	},
