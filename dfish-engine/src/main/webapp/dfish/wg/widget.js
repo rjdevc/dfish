@@ -264,9 +264,9 @@ _ajaxCmd = function( x, a, t ) {
 	// @fixme: view base
 	$.ajaxJSON( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter != N ? x.filter : cfg.src_filter, error: x.error, beforesend: x.beforesend, 
 		success: function( r, a ) {
-			d && (d = _inst_get( 'loading', this )) && (d.close(), d = N);
-			var v = r;
+			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
+				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				if ( x.success )
 					$.fnapply( x.success, this, '$response,$ajax', [ v, a ] );
@@ -274,9 +274,9 @@ _ajaxCmd = function( x, a, t ) {
 					(v && this.exec( v, N, x.transfer, r ));
 			}
 		}, complete: function( r, a ) {
-			d && (d = _inst_get( 'loading', this )) && d.close();
-			var v = r;
+			d && d.close();
 			if ( ! this._disposed && x.complete ) {
+				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				$.fnapply( x.complete, this, '$response,$ajax', [ v, a ] );
 			}
@@ -1771,7 +1771,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	_proto[ 'html_' + v ] = function() {
 		if ( this.x[ v + 'content' ] ) {
 			var c = this.x[ v + 'content' ];
-			if ( c.indexOf( 'javascript:' ) === 0 )
+			if ( typeof c === _STR && c.indexOf( 'javascript:' ) === 0 )
 				c = this.formatJS( c );
 			if ( typeof c === _OBJ )
 				c = this.add( c, -1 ).html();
