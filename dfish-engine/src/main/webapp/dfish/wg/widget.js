@@ -253,9 +253,9 @@ _ajaxCmd = function( x, a, t ) {
 	this.trigger( 'lock' );
 	_view( this ).ajax( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter || cfg.src_filter, error: x.error, beforesend: x.beforesend, 
 		success: function( r, a ) {
-			d && (d = _inst_get( 'loading', this )) && (d.close(), d = N);
-			var v = r;
+			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
+				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				if ( x.success )
 					$.fnapply( x.success, this, '$response,$ajax', [ v, a ] );
@@ -263,9 +263,9 @@ _ajaxCmd = function( x, a, t ) {
 					(v && this.exec( v, N, x.transfer, r ));
 			}
 		}, complete: function( r, a ) {
-			d && (d = _inst_get( 'loading', this)) && d.close();
-			var v = r;
+			d && d.close();
 			if ( ! this._disposed && x.complete ) {
+				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				$.fnapply( x.complete, this, '$response,$ajax', [ v, a ] );
 			}

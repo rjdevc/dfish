@@ -1542,8 +1542,6 @@ Ajax = _createClass( {
 				    if ( c ) {
 				    	//delete self.request;
 				    	_arrPop( _ajax_contexts[ _uid( c ) ], self );
-				    	if ( c._disposed )
-				    		return;
 				    }
 				    if ( l.status < 400 ) {
 				    	if ( g === 'json' ) {
@@ -1557,23 +1555,26 @@ Ajax = _createClass( {
 							m = l.responseText;
 					} else
 						r = g || 'text';
-			        if ( r ) {
-			        	self.errorCode = l.status;
-						if ( f !== F && (_ajax_httpmode || l.status) ) {
-							typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
-							if ( f !== F ) {
-								var s = 'ajax ' + l.status + ': ' + a;
-								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
-									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
-								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
+					// 如果有context且context失效，则不执行error也不执行succcess，只执行complete
+					if ( ! c || ! c._disposed ) {
+				        if ( r ) {
+				        	self.errorCode = l.status;
+							if ( f !== F && (_ajax_httpmode || l.status) ) {
+								typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
+								if ( f !== F ) {
+									var s = 'ajax ' + l.status + ': ' + a;
+									$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
+										$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
+									win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
+								}
 							}
+					    } else {
+					    	var t = x.filter;
+					    	t && (m = _fnapply( t, c, '$response,$ajax', [ m, self ] ));
+					    	self.response = m;
+							m == N ? (f && _fnapply( f, c, '$ajax', [ self ] )) : (b && b.call( c, m, self ));
+							_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 						}
-				    } else {
-				    	var t = x.filter;
-				    	t && (m = _fnapply( t, c, '$response,$ajax', [ m, self ] ));
-				    	self.response = m;
-						m == N ? (f && _fnapply( f, c, '$ajax', [ self ] )) : (b && b.call( c, m, self ));
-						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 					}
 					x.complete && x.complete.call( c, m, self );
 				}
