@@ -75,6 +75,8 @@ _event_enter = {
 _event_stop = {
 	contextmenu: function( e ) { !(cfg.debug && e.ctrlKey) && $.stop( e ) }
 },
+// 这些事件先触发用户事件，然后触发系统事件。用户事件可以 return false 来禁止系统事件
+_event_priority = { click: T, dblclick: T, keydown: T, keyup: T, close: T, valid: T },
 // @a -> htmlElement: 返回html元素对象所在的widget
 // @a -> JSON: 参数为符合widget配置项的json对象，则创建这个widget
 _widget = function( a ) {
@@ -263,8 +265,8 @@ _ajaxCmd = function( x, a, t ) {
 	$.ajaxJSON( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter != N ? x.filter : cfg.src_filter, error: x.error, beforesend: x.beforesend, 
 		success: function( r, a ) {
 			d && (d.close(), d = N);
-			var v = r;
 			if ( ! this._disposed ) {
+				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				if ( x.success )
 					$.fnapply( x.success, this, '$response,$ajax', [ v, a ] );
@@ -273,8 +275,8 @@ _ajaxCmd = function( x, a, t ) {
 			}
 		}, complete: function( r, a ) {
 			d && d.close();
-			var v = r;
 			if ( ! this._disposed && x.complete ) {
+				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				$.fnapply( x.complete, this, '$response,$ajax', [ v, a ] );
 			}
@@ -1057,7 +1059,7 @@ W = define( 'widget', function() {
 					this.trigger( n, a );
 				}
 			}
-			if ( _userPriority[ t ] ) { // 用户事件优先执行
+			if ( _event_priority[ t ] ) { // 用户事件优先执行
 				if ( ! (h && h.block && h.block.call( this, e )) && (r = this.triggerHandler( e, a )) === F )
 					return F;
 				if ( this._disposed )
@@ -1340,12 +1342,23 @@ W = define( 'widget', function() {
 				t += this.x.style;
 			return t;
 		},
-		// @a -> text, @b -> format
-		prop_title: function( a, b ) {
-			return a && ! b ? ' title="' + $.strQuot( a, T ) + '"' : '';
+		// @a -> text, @b -> format, @c -> escape
+		prop_title: function( a, b, c ) {
+			var l = arguments.length;
+			if ( l < 1 ) {
+				var t = this.attr( 'tip' );
+				a = t === T ? this.x.text : t;
+			}
+			l < 2 && (b = this.x.format);
+			l < 3 && (c = this.x.escape);
+			return a && typeof a === _STR && ! b ? ' title="' + $.strQuot( a, !c ) + '"' : '';
 		},
 		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function( a, b, c, d, e ) {
+			var l = arguments.length;
+			l < 1 && (a = this.x.text);
+			l < 2 && (b = this.x.format);
+			l < 3 && (c = this.x.escape);
 			if ( b ) {
 				var s = b.indexOf( 'javascript:' ) === 0 ? this.formatJS( b, N, N, d, e ) : this.formatStr( b, N, c !== F && 'strEscape', d, e );
 				return typeof s === _STR ? _parseHTML.call( this, s ) : s;
@@ -1657,7 +1670,6 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
-			//this.id=='1q:'&&this.$()&&alert(this[1].$().outerHTML);
 			s = $.scale( c === U ? this[ iz ]() : c, r, this.isScaleCover );
 			if ( b === U && c === U )
 				this._scales = s;
@@ -1759,7 +1771,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	_proto[ 'html_' + v ] = function() {
 		if ( this.x[ v + 'content' ] ) {
 			var c = this.x[ v + 'content' ];
-			if ( c.indexOf( 'javascript:' ) === 0 )
+			if ( typeof c === _STR && c.indexOf( 'javascript:' ) === 0 )
 				c = this.formatJS( c );
 			if ( typeof c === _OBJ )
 				c = this.add( c, -1 ).html();
@@ -2429,7 +2441,6 @@ _mergeLoadingProp = function( x, a ) {
 		k !== 'node' && k !== 'nodes' && (x[ k ] = a[ k ]);
 	}
 },
-_userPriority = { 'click': T, 'dblclick': T, 'close': T, 'valid': T },
 _view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
 Layout = define.widget( 'layout', {
@@ -2978,7 +2989,7 @@ TimelineItem = define.widget( 'timeline/item', {
 			return '<div class=_i>' + (this.x.icon ? $.image( this.x.icon ) : '<div class="_cir f-inbl"></div>') + '<i class=f-vi></i></div>';
 		},
 		html_nodes: function() {
-			return '<div class=_line></div>' + this.html_icon() + '<div class=_t>' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</div>';
+			return '<div class=_line></div>' + this.html_icon() + '<div class=_t>' + this.html_format() + '</div>';
 		}
 	}
 } ),
@@ -3483,7 +3494,7 @@ Button = define.widget( 'button', {
 			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
 		},
 		html_text: function( a ) {
-			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text, this.x.format, this.x.escape ) +
+			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text ) +
 				'</em><i class=f-vi></i></div>';
 		},
 		html: function() {
@@ -3533,7 +3544,7 @@ Button = define.widget( 'button', {
 				a += ' w-target="' + ((x.target.x && x.target.x.id) || x.target) + '"';
 			a += c ? ' onmouseover=' + eve + ' onmouseout=' + eve : _html_on.call( this, ' onclick=' + eve );
 			if ( x.tip )
-				a += this.prop_title( x.tip === T ? x.text : x.tip, x.format );
+				a += this.prop_title();
 			x.id && (a += ' w-id="' + x.id + '"');
 			if ( this.property )
 				a += this.property;
@@ -3869,8 +3880,8 @@ Img = define.widget( 'img', {
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + h + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, t = this.html_format( x.text, x.format, this.x.escape ), w = x.textwidth;
-			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + this.prop_title( x.text, x.format ) + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
+			var x = this.x, t = this.html_format(), w = x.textwidth;
+			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.nobr ? 'fix' : 'wdbr') + '"' + this.prop_title() + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
@@ -3943,7 +3954,7 @@ Toggle = define.widget( 'toggle', {
 				(x.open != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
-			var t = (this.x.text ? '<span class="f-omit f-va"' + this.prop_title( this.x.tip === T ? this.x.text : this.x.tip ) + '>' + this.x.text + '</span><i class=f-vi></i>' : '');
+			var t = (this.x.text ? '<span class="f-omit f-va"' + this.prop_title() + '>' + this.x.text + '</span><i class=f-vi></i>' : '');
 			if ( this.x.hr ) {
 				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
 			}
@@ -4769,7 +4780,7 @@ Tip = define.widget( 'tip', {
 /*  `loading`  */
 Loading = define.widget( 'loading', {
 	Const: function( x, p ) {
-		$.extend( x, { width: x.node ? 200 : -1, independent: T } );
+		$.extend( x, { width: x.node ? 200 : -1 } );
 		Dialog.apply( this, arguments );
 		_inst_add( this, this.ownerView );
 	},
@@ -4782,7 +4793,7 @@ Loading = define.widget( 'loading', {
 			if ( this.x.node ) {
 				return Dialog.prototype.html_nodes.apply( this, arguments );
 			} else {
-				return '<cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + this.html_format( this.x.text || Loc.loading, this.x.format, this.x.escape ) + '</em></cite><i class=f-vi></i>';
+				return '<cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + this.html_format( this.x.text || Loc.loading ) + '</em></cite><i class=f-vi></i>';
 			}
 		}
 	}
@@ -4857,7 +4868,7 @@ Progress = define.widget( 'progress', {
 			return _progressCache[ this.getSrc() ][ 0 ] === this;
 		},
 		html_nodes: function() {
-			return this.layout ? this.layout.html() : this.html_loading();
+			return this.layout ? this.layout.html() : this.x.src || this.x.guide ? this.html_loading() : '';
 		},
 		dispose: function() {
 			this.stop();
@@ -4893,8 +4904,8 @@ ProgressItem = define.widget( 'progress/item', {
 		ROOT_TYPE: 'progress',
 		className: 'w-progress-item',
 		html_nodes: function() {
-			var t = this.x.text, p = this.x.percent, h = this.innerHeight();
-			return (t != N ? '<div class="_t f-fix">' + this.html_format( t, this.x.format, this.x.escape ) + '</div>' : '') +
+			var p = this.x.percent, h = this.innerHeight();
+			return (this.x.text != N ? '<div class="_t f-fix">' + this.html_format() + '</div>' : '') +
 				'<div class=_bar'+ (h != N ? ' style="height:' + h + 'px;"' : '') + '><div class=_dn><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div><div class=_up style="width:' + p + '%"><div class=_gut id=' + this.id + 'p><i class=f-vi></i><span class="_s f-va">' + p + '%</span></div></div></div>';
 		}
 	}
@@ -5192,7 +5203,7 @@ var Label = define.widget( 'label', {
 			return '<span class=f-required>*</span>';
 		},
 		html_text: function() {
-			var t = this.html_format( this.x.text, this.x.format, this.x.escape ), d = this.parentNode.x.validate;
+			var t = this.html_format(), d = this.parentNode.x.validate;
 			if ( typeof t === _OBJ )
 				t = this.add( t, -1 ).html();
 			d && d.required && (t = this.html_star() + t);
@@ -6000,10 +6011,10 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<div class="_tit f-oh ' + (this.x.nobr === F ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</div>' : '');			
+				(this.x.text ? '<div class="_tit f-oh ' + (this.x.nobr === F ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</div>' : '');			
 		},
 		html: function() {
-			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), t = this.attr( 'tip' ), y = '';
+			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), y = '';
 			if ( w ) {
 				y += 'width:' + w + 'px;';
 			} else {
@@ -6011,7 +6022,7 @@ Checkbox = define.widget( 'checkbox', {
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
-			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + this.prop_title( t === T ? this.x.text : t, this.x.format ) +
+			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.nobr ? ' f-fix' : '') + '"' + this.prop_title() +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>' +
@@ -6105,7 +6116,7 @@ Triplebox = define.widget( 'triplebox', {
 			var c = this.checkstate();
 			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (c == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
 				(c == 1 ? ' checked' : '') + (c == 2 ? ' indeterminate' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span>' : '') + '</' + this.tagName + '>';
+				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '') + '</' + this.tagName + '>';
 		}
 	}
 } ),
@@ -6143,7 +6154,7 @@ Switch = define.widget( 'switch', {
 		},
 		html_text: function() {
 			return '<label class="_l" for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedtext : this.x.uncheckedtext) || '&nbsp;') + '</i></label>' +
-				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span>' : '');			
+				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '');			
 		}		
 	}
 } ),
@@ -6221,18 +6232,16 @@ Select = define.widget( 'select', {
 			return this.getFocusOption( 1 );
 		},
 		html_nodes: function() {
-			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape !== F, t = this.attr( 'tip' );
+			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape !== F;
 			while ( i -- ) {
 				var f = o[ i ].text;
 				if ( this.x.format )
 					f = this.html_format( o[ i ].text, this.x.format, this.x.escape, N, o[ i ] );
-				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') +
-					(t ? this.prop_title( o[ i ].text, this.x.format ) + '"' : '') + '>' + f + '</option>' + s;
+				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') + this.prop_title( o[ i ].text ) + '>' + f + '</option>' + s;
 			}
 			var w = this.formWidth(), z = this.x.size, t = (t === T ? (o[ k ] && o[ k ].text) : t) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
-				(t ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') +
-				( z ? ' size=' + z : '' ) + '>' + s + '</select><div class=_cvr></div>';
+				(t ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') + (z ? ' size=' + z : '') + '>' + s + '</select><div class=_cvr></div>';
 		}
 	}
 } ),
@@ -7461,8 +7470,8 @@ XBox = define.widget( 'xbox', {
 		},
 		html_options: function() {
 			for ( var i = 0, s = [], v = this.$v().value, o = this.x.options || [], b, l = o.length, t; i < l; i ++ ) {
-				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (o[ i ].checkall ? ' _all=1' : '') + (this.attr( 'tip' ) ? this.prop_title( o[ i ].text, this.x.format ) : '') +
-					_event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
+				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (o[ i ].checkall ? ' _all=1' : '') +
+				(this.attr( 'tip' ) ? this.prop_title( o[ i ].text ) : '') + _event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
 			}
 			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(event)>' + s.join( '' ) + '</div>';
 		},
@@ -7534,7 +7543,7 @@ Imgbox = define.widget( 'imgbox', {
 		},
 		html_img: function( a ) {
 			return '<div class=_g id=' + this.id + 'p style="width:' + this.imgw + 'px;height:' + this.imgh + 'px;">' + $.image( a.icon, { width: this.imgw, height: this.imgh } ) + '</div>' +
-				(this.txth ? '<div class="_s f-fix" style="width:' + this.imgw + 'px;"' + this.prop_title( a.text, this.x.format ) + '>' + (a.text || '') + '</div>' : '');
+				(this.txth ? '<div class="_s f-fix" style="width:' + this.imgw + 'px;"' + this.prop_title( a.text ) + '>' + (a.text || '') + '</div>' : '');
 		},
 		html_nodes: function() {
 			var a = this._sel[ 0 ] || {icon:'.f-dot'};
@@ -9451,7 +9460,7 @@ Leaf = define.widget( 'leaf', {
 			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i' } ) : '';
 		},
 		html_text: function() {
-			var t = this.html_format( this.x.text, this.x.format, this.x.escape ), h;
+			var t = this.html_format(), h;
 			if ( typeof t === _STR && (h = this.rootNode.x.highlight) && ! this.isDisabled() ) {
 				var key = h.key == N ? (this.ownerView.combo && this.ownerView.combo.getKey()) : h.key;
 				key && (t = $.strHighlight( t, key, h.matchlength, h.keycls ));
@@ -9480,7 +9489,7 @@ Leaf = define.widget( 'leaf', {
 			a == N  && (a = this.length);
 			var t = this.html_text();
 			return this.html_before() + '<dl class="' + this.className + ' z-level' + this.level + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.open ? ' z-open' : '') + (this.isEllipsis() && !this.textNode ? ' f-omit' : ' f-nobr') +
-				'" id=' + this.id + (x.tip ? this.prop_title( x.tip === T ? (typeof x.text === _OBJ ? '' : x.text) : x.tip, x.format ) : '') + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
+				'" id=' + this.id + this.prop_title() + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.hidetoggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (this.isFolder() ? $.arrow( this.id + 'r', x.open ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
 				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + t + '</cite></dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
 		},
