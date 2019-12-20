@@ -742,7 +742,7 @@ W = define( 'widget', function() {
 						// prior_x 是优先的，不可被template重写的属性
 						this.prior_x = $.extend( {}, x );
 						for ( var k in t ) {
-							if ( !(k in x) && k !== 'node' && k !== 'nodes' && k.charAt( 0 ) !== '@' ) {
+							if ( !(k in x) && k !== 'node' && k !== 'nodes' && k !== 'result' && k.charAt( 0 ) !== '@' ) {
 								x[ k ] = t[ k ];
 							}
 						}
@@ -7098,11 +7098,7 @@ JigsawAuth = define.widget( 'jigsaw/auth', {
 		}
 	}
 } ),
-/* `Jigsaw`
- * { type: 'jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token' }
- * @imgsrc: { big: { src: 'xxx', width: xx, height: xx }, small: {}, token: '', error: { timeout } }
- * @authsrc: { result: true, text: '' }
- */
+/* `jigsaw` */
 Jigsaw = define.widget( 'jigsaw', {
 	Const: function( x ) {
 		Slider.apply( this, arguments );
@@ -7195,7 +7191,7 @@ Jigsaw = define.widget( 'jigsaw', {
 		},
 		smallWidth: function() {
 			var r = this.img && this.img.getResult();
-			return this.width() * (r.small.width / r.big.width);
+			return r ? this.width() * (r.small.width / r.big.width) : N;
 		},
 		success: function( a ) {
 			this.x.status = a ? 'success' : '';
