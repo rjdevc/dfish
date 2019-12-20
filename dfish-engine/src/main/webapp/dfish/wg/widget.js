@@ -689,6 +689,8 @@ _regWidget = function( x, p, n ) {
 	_all[ $.uid( this ) ] = this;
 	this.init_x( x );
 },
+// 有模板的widget在初始化时会读取模板属性，但下列属性例外
+_init_ignore = { 'node': T, 'nodes': T, 'result': T },
 /* `widget`  最基础的widget类，所有widget都继承它 */
 W = define( 'widget', function() {
 	return $.createClass( {
@@ -742,7 +744,7 @@ W = define( 'widget', function() {
 						// prior_x 是优先的，不可被template重写的属性
 						this.prior_x = $.extend( {}, x );
 						for ( var k in t ) {
-							if ( !(k in x) && k !== 'node' && k !== 'nodes' && k !== 'result' && k.charAt( 0 ) !== '@' ) {
+							if ( k.charAt( 0 ) !== '@' && !(k in x) && !_init_ignore[ k ] ) {
 								x[ k ] = t[ k ];
 							}
 						}
@@ -7191,7 +7193,7 @@ Jigsaw = define.widget( 'jigsaw', {
 		},
 		smallWidth: function() {
 			var r = this.img && this.img.getResult();
-			return r ? this.width() * (r.small.width / r.big.width) : N;
+			return r ? this.popHeight() * (r.small.width / r.small.height) : N;
 		},
 		success: function( a ) {
 			this.x.status = a ? 'success' : '';
