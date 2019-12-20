@@ -16,7 +16,7 @@ public class ImageWatermarkConfig {
     private Color textColor;
     private File imageFile;
     private String imagePath;
-    private float imageAlpha;
+    private float imageAlpha = 1.0f;
     private int x;
     private int y;
 

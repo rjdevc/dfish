@@ -60,7 +60,7 @@
         <property name="width" value="100"></property>
         <property name="height" value="100"></property>
         <property name="markPoint" value="true"></property>
-        <property name="watermark" ref="watermark"></property>
+<!--        <property name="watermark" ref="watermark"></property>-->
     </bean>
     <bean id="image80x80" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleConfig">
         <property name="way" value="cut"></property>

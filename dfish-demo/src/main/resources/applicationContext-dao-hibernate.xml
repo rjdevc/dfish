@@ -36,12 +36,10 @@
 
     <!-- lob模块 -->
     <bean id="lobDao" class="com.rongji.dfish.framework.hibernate5.plugin.lob.dao.impl.LobDao4Hibernate">
-        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
     <!-- 附件模块 -->
     <bean id="fileDao" class="com.rongji.dfish.framework.hibernate5.plugin.file.dao.impl.FileDao4Hibernate">
-        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
 </beans>

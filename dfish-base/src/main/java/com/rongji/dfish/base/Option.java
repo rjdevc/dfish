@@ -1,7 +1,5 @@
-package com.rongji.dfish.ui.form;
+package com.rongji.dfish.base;
 
-
-import com.rongji.dfish.ui.Statusful;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +9,7 @@ import java.util.Map;
  * @author DFish Team
  *
  */
-public class Option implements Statusful<Option> {
+public class Option {
 	private String text;
 	private Object value;
 	private String icon;
@@ -131,12 +129,10 @@ public class Option implements Statusful<Option> {
 		return this;
 	}
 
-	@Override
 	public String getStatus() {
 		return status;
 	}
 
-	@Override
 	public Option setStatus(String status) {
 		this.status = status;
 		return this;

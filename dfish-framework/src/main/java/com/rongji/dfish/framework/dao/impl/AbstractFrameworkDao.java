@@ -29,7 +29,6 @@ public abstract class AbstractFrameworkDao<P, ID extends Serializable> implement
     }
 
     private static class QueryPreparation {
-
         String querySql;
         String countSql;
         Object[] queryArgs;

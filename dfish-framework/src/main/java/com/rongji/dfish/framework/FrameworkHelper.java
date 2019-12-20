@@ -8,6 +8,7 @@
  */
 package com.rongji.dfish.framework;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.util.StringUtil;
@@ -164,7 +165,11 @@ public class FrameworkHelper{
 			throw ex;
 		}
 	}
-	
+
+	public static void outputJson(HttpServletResponse response, final String content) {
+		outputContent(response, content, "text/json");
+	}
+
 	public static void outputContent(HttpServletResponse response, final String content, String contentType) {
 		response.setHeader("Cache-Control", "no-store");
 		response.setHeader("Pragma", "no-cache");

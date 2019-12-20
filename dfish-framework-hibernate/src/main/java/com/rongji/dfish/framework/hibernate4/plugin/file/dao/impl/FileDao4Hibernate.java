@@ -98,7 +98,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
             hql.append(')');
             args.addAll(Arrays.asList(fileStatus));
         }
-        List<PubFileRecord> dataList = (List<PubFileRecord>) list(hql.toString(), args.toArray());
+        List<PubFileRecord> dataList = queryForList(hql.toString(), args.toArray());
         return dataList;
     }
 

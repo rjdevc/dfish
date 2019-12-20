@@ -3,16 +3,19 @@ package com.rongji.dfish.framework.hibernate3.dao.impl;
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.FrameworkDao;
+import com.rongji.dfish.framework.dao.impl.AbstractFrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;
 import com.rongji.dfish.framework.hibernate.support.EntitySupport;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -22,7 +25,17 @@ import java.util.*;
  * @date 2019-12-04
  * @since 5.0
  */
-public class FrameworkDao4Hibernate<P, ID extends Serializable> extends HibernateDaoSupport implements FrameworkDao<P, ID> {
+public class FrameworkDao4Hibernate<P, ID extends Serializable> extends AbstractFrameworkDao<P, ID> {
+    @Resource(name = "hibernateTemplate")
+    private HibernateTemplate hibernateTemplate;
+
+    public HibernateTemplate getHibernateTemplate() {
+        return hibernateTemplate;
+    }
+
+    public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
+        this.hibernateTemplate = hibernateTemplate;
+    }
 
     private EntitySupport<P> entitySupport;
 
@@ -31,11 +44,19 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         entitySupport = new EntitySupport<>(getClass());
     }
 
-    protected List<?> list(final String hql, final Object... args) {
-        return getHibernateTemplate().execute((session) -> list(session, hql, args));
+    public <T> T queryForObject(final String hql, final Object... args) {
+        List<T> list = queryForList(hql, args);
+        if (Utils.notEmpty(list)) {
+            return list.get(0);
+        }
+        return null;
     }
 
-    private List<?> list(Session session, String hql, Object... args) {
+    public <T> List<T> queryForList(final String hql, final Object... args) {
+        return getHibernateTemplate().execute((session) -> queryForList(session, hql, args));
+    }
+
+    private <T> List<T> queryForList(Session session, String hql, Object... args) {
         Query query = session.createQuery(hql);
         if (args != null) {
             int i = 0;
@@ -43,15 +64,15 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
                 query.setParameter(i++, arg);
             }
         }
-        List<?> list = query.list();
+        List<T> list = query.list();
         return list;
     }
 
-    protected List<P> list(final String hql, final Pagination pagination, final Object... args) {
+    public <T> List<T> queryForList(final String hql, final Pagination pagination, final Object... args) {
         if (pagination == null || pagination.getLimit() < 0) {
-            return (List<P>) list(hql, args);
+            return queryForList(hql, args);
         }
-        List<P> result = getHibernateTemplate().execute((session) -> {
+        List<T> result = getHibernateTemplate().execute((session) -> {
             Query query = session.createQuery(hql);
             if (args != null) {
                 int i = 0;
@@ -63,7 +84,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
             query.setFirstResult(pagination.getOffset());
             query.setMaxResults(pagination.getLimit());
 
-            List<P> resultList = query.list();
+            List<T> resultList = query.list();
             if (pagination.isAutoRowCount()) {
                 // 2017-12-22 LinLW
                 // 查询结果页未满,无需count
@@ -74,7 +95,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
                 } else {
                     String countSql = FrameworkDao.getCountSql(hql);
                     try {
-                        List<?> countResult = list(session, countSql, args);
+                        List<?> countResult = queryForList(session, countSql, args);
                         int count = ((Number) countResult.get(0)).intValue();
                         pagination.setSize(count);
                     } catch (Exception ex) {
@@ -96,6 +117,37 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
             return resultList;
         });
         return result;
+    }
+
+    public void evict(P entity) {
+        if (entity != null) {
+            getHibernateTemplate().evict(entity);
+        }
+    }
+
+    public int bulkUpdate(String hql, Object... args) {
+        return getHibernateTemplate().bulkUpdate(hql, args);
+    }
+
+    public int[] batchUpdate(String hql, List<Object[]> argList) {
+        if (Utils.isEmpty(argList)) {
+            return new int[0];
+        }
+        return getHibernateTemplate().execute((session) -> {
+            Query query = session.createQuery(hql);
+            int[] result = new int[argList.size()];
+            int index = 0;
+            for (Object[] args : argList) {
+                if (Utils.notEmpty(args)) {
+                    int i = 0;
+                    for (Object arg : args) {
+                        query.setParameter(i++, arg);
+                    }
+                }
+                result[index++] = query.executeUpdate();
+            }
+            return result;
+        });
     }
 
     @Override
@@ -148,7 +200,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
     @Override
     public List<P> list(Pagination pagination, QueryParam queryParam) {
         String hql = "FROM " + entitySupport.getEntityName();
-        return list(hql, pagination);
+        return queryForList(hql, pagination);
     }
 
     @Override
@@ -199,16 +251,6 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Hibernat
         }
         getHibernateTemplate().deleteAll(entities);
         return entities.size();
-    }
-
-    public void evict(P entity) {
-        if (entity != null) {
-            getHibernateTemplate().evict(entity);
-        }
-    }
-
-    public int bulkUpdate(String hql, Object... args) {
-        return getHibernateTemplate().bulkUpdate(hql, args);
     }
 
 }

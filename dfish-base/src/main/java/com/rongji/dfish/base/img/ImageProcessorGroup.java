@@ -3,9 +3,11 @@ package com.rongji.dfish.base.img;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.sun.istack.internal.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -132,7 +134,10 @@ public class ImageProcessorGroup {
      * @param config 处理方案定义
      * @return this
      */
-    public ImageProcessorGroup process(@NotNull ImageProcessConfig config) {
+    public ImageProcessorGroup process(ImageProcessConfig config) {
+        if (config == null) {
+            throw new IllegalArgumentException("config == null");
+        }
         if (config.getWay() == null) {
             throw new IllegalArgumentException("config.way == null");
         }

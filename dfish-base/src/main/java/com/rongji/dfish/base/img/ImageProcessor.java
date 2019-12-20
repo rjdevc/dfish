@@ -2,7 +2,6 @@ package com.rongji.dfish.base.img;
 
 import com.rongji.dfish.base.util.ByteArrayUtil;
 import com.rongji.dfish.base.util.LogUtil;
-import com.sun.istack.internal.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
