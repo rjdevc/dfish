@@ -33,7 +33,7 @@ public class EntitySupport<P> {
                         if (methodName.startsWith("get")) {
                             idGetter = method;
                             idName = methodName.substring(3);
-                            idName = idName.substring(0, 1) + idName.substring(1);
+                            idName = idName.substring(0, 1).toLowerCase() + idName.substring(1);
                         }
                         break;
                     }

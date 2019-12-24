@@ -33,7 +33,7 @@ public class Builder {
     }
     /**
      * 取得摘要
-     * @return
+     * @return this
      */
     public Builder summary(){
         Builder b= new Builder();
@@ -45,7 +45,7 @@ public class Builder {
 
     /**
      * 转化成JSON，只有转化成JSON，才能无损转回。
-     * @return
+     * @return String
      */
     public String buildJson(){
         return JSON.toJSONString(doc);
@@ -53,7 +53,7 @@ public class Builder {
 
     /**
      * 转化成HTML 显示
-     * @return
+     * @return String
      */
     public String buildHtml(){
 
@@ -170,7 +170,7 @@ public class Builder {
 
         /**
          * 取得序号
-         * @return
+         * @return int
          */
         public synchronized int getPicSeq() {
             return ++picSeq;

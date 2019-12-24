@@ -143,7 +143,7 @@ public class PinyinConverter {
 	 * 取得拼音
 	 * @param str
 	 * @param hasToneNumber 是否包含音调。音调以0(轻声)1(阴平)2(阳平)3(上声)4(去声)
-	 * @return
+	 * @return String
 	 */
 	public static String getPinyin(String str, boolean hasToneNumber) {
 		if(str==null) {
@@ -178,7 +178,7 @@ public class PinyinConverter {
 	 * 同时取得全拼和简拼的字符串
 	 * @param str
 	 * @param hasToneNumber
-	 * @return
+	 * @return String[]
 	 */
 	public static String[] getPinyinFullShortFormat(String str, boolean hasToneNumber) {
 		if(str==null) {

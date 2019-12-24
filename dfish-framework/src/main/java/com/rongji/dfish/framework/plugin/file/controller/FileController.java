@@ -97,7 +97,7 @@ public class FileController extends BaseActionController {
             return;
         }
         if (Utils.isEmpty(uploadPlugin.name())) {
-            LogUtil.warn("The name is empty.[" + uploadPlugin.getClass().getName() + "]");
+            LogUtil.warn("The plugin name is empty.[" + uploadPlugin.getClass().getName() + "]");
         }
         FileUploadPlugin old = uploadPluginMap.put(uploadPlugin.name(), uploadPlugin);
         if (old != null) {

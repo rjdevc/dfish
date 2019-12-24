@@ -87,7 +87,7 @@ public abstract class BatchAdaptor {
 	
 	/**
 	 * 获取当前要发送给服务器的最多数据
-	 * @return
+	 * @return List
 	 */
 	private List<Object> findSendData(){
 		//获取要发送的数据条数

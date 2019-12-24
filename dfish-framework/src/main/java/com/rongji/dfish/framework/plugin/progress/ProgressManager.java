@@ -668,6 +668,14 @@ public class ProgressManager {
         return progressData != null && !progressData.isFinish() && progressData.getStepIndex() < progressData.getSteps();
     }
 
+    public ProgressManager setComplete(String progressKey, Serializable complete) {
+        ProgressData progressData = getProgressData(progressKey);
+        if (progressData != null) {
+            progressData.setComplete(complete);
+        }
+        return this;
+    }
+
     private boolean getDefaultCryptor = false;
 
     private Cryptor cryptor() {

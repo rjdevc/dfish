@@ -183,6 +183,7 @@ public class XMLUtil {
 	 * @param encoding
 	 * @return
 	 * @throws IOException
+	 * @return String
 	 */
 	public static String formatXML(Document doc, String encoding)
 			throws IOException {
@@ -216,7 +217,7 @@ public class XMLUtil {
 	/**
 	 * 获取根节点下的所有子节点名称
 	 * 
-	 * @return
+	 * @return List
 	 */
 	public List<String> getTopElementNames() {
 		return getChildElementNames(doc.getRootElement());

@@ -42,7 +42,7 @@ public class CacheManager {
             return;
         }
         if (Utils.isEmpty(cache.getName())) {
-            LogUtil.warn("The name of Cache is empty.[" + cache.getClass().getName() + "]");
+            LogUtil.warn("The cache name is empty.[" + cache.getClass().getName() + "]");
             return;
         }
         Cache oldGetter = cacheMap.put(cache.getName(), cache);

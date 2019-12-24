@@ -10,7 +10,7 @@
        default-lazy-init="true">
 
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
-	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
     <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
     <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
 
@@ -26,8 +26,8 @@
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <constructor-arg value="${system.encoding}"/>
             </bean>
-			<!-- 接口开发模式的JsonResponse转换 -->
-			<bean class="com.rongji.dfish.framework.mvc.response.ObjectToJsonConverter"></bean>
+            <!-- 接口开发模式的JsonResponse转换 -->
+            <bean class="com.rongji.dfish.framework.mvc.response.ObjectToJsonConverter"></bean>
 
         </mvc:message-converters>
     </mvc:annotation-driven>
@@ -42,8 +42,8 @@
     <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
     <mvc:default-servlet-handler/>
 
-	<!-- 附件 -->
-	<bean class="com.rongji.dfish.framework.plugin.file.controller.FileController"></bean>
+    <!-- 附件 -->
+    <bean class="com.rongji.dfish.framework.plugin.file.controller.FileController"></bean>
     <!-- 拖动验证码 -->
     <bean class="com.rongji.dfish.framework.plugin.code.controller.JigsawController"></bean>
     <!-- 进度条 -->

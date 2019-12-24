@@ -12,6 +12,7 @@ import java.util.Map;
  * Json对象构建器采用gson实现
  * @author lamontYu
  * @date 2019-09-29
+ * @since 5.0
  */
 public class JsonBuilder4Gson extends AbstractJsonBuilder {
 

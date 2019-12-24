@@ -1,12 +1,8 @@
 package com.rongji.dfish.framework.plugin.file.entity;
 
-import java.util.Date;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.util.Date;
 
 /**
  * 
@@ -44,7 +40,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "FILE_ID", unique = true, nullable = false, length = 16)
+	@Column(name = "FILE_ID")
 	public String getFileId() {
 		return this.fileId;
 	}
@@ -80,7 +76,7 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileUrl = fileUrl;
 	}
 
-	@Column(name = "FILE_SIZE", scale = 0)
+	@Column(name = "FILE_SIZE")
 	public Long getFileSize() {
 		return this.fileSize;
 	}
@@ -89,7 +85,7 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileSize = fileSize;
 	}
 
-	@Column(name = "FILE_CREATOR", length = 32)
+	@Column(name = "FILE_CREATOR")
 	public String getFileCreator() {
 		return this.fileCreator;
 	}
@@ -98,8 +94,7 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileCreator = fileCreator;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATE_TIME", length = 7)
+	@Column(name = "CREATE_TIME")
 	public Date getCreateTime() {
 		return this.createTime;
 	}
@@ -108,8 +103,7 @@ public class PubFileRecord implements java.io.Serializable {
 		this.createTime = createTime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "UPDATE_TIME", length = 7)
+	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}
@@ -118,7 +112,7 @@ public class PubFileRecord implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	@Column(name = "FILE_LINK", length = 64)
+	@Column(name = "FILE_LINK")
 	public String getFileLink() {
 		return this.fileLink;
 	}
@@ -127,7 +121,7 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileLink = fileLink;
 	}
 
-	@Column(name = "FILE_KEY", length = 64)
+	@Column(name = "FILE_KEY")
 	public String getFileKey() {
 		return this.fileKey;
 	}
@@ -136,7 +130,7 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileKey = fileKey;
 	}
 
-	@Column(name = "FILE_STATUS", length = 1)
+	@Column(name = "FILE_STATUS")
 	public String getFileStatus() {
 		return fileStatus;
 	}

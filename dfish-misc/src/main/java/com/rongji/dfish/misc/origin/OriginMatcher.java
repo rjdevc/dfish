@@ -255,7 +255,7 @@ public class OriginMatcher {
 	 * 将输入内容的关键词逐个对比，看是否存在匹配关系，若关键词A对应的区号集合中的a与关键词B对应的b匹配,
 	 * 则使b在关键词C对应的区号集合中寻找匹配关系，如此寻找到最小的匹配关系为止，并返回。
 	 * @param text 输入的地区
-	 * @return 
+	 * @return {@link MatchResult}
 	 */
 	public MatchResult match(String text) {
 //		System.out.print(text+":   ");
