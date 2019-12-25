@@ -652,7 +652,7 @@ _compilePreload = function( a, x ) {
 		}
 		// 如果之前的替换处理后， preload/body 没被替换掉，那么它将替换整个node
 		if ( c[ t ] ) {
-			s = s.replace( $.jsonString( c[ t ] ), function() { return $.jsonString( n ) } );
+			s = s.replace( $.jsonString( c[ t ] ), function() { return $.jsonString( $.extend( {}, n, c[ t ] ) ) } );
 		}
 		var r = $.jsonParse( s );
 		if ( v && (v = _tpl_view( r )) ) {
