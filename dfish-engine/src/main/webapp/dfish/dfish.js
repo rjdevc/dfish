@@ -2164,7 +2164,7 @@ _merge( $, {
 	},
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
-		var d, f;
+		var d, f, m = function ( e ) { e.preventDefault(); };
 		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
 		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
 		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
@@ -2172,8 +2172,10 @@ _merge( $, {
 			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', d, T );
 			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
 			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
+			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
 			c && _rm( c );
 		}, T );
+		br.mobile && doc.addEventListener('touchmove', m, { passive: F } );
 	},
 	// @a -> el, b -> type, c -> fast|normal|slow (.2s|.5s|1s), d -> fn 结束后执行的函数
 	animate: function( a, b, c, d ) {

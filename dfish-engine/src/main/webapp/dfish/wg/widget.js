@@ -6828,7 +6828,7 @@ Datepicker = define.widget( 'datepicker', {
 			this.list && this.list.close();
 		},
 		html_btn: function() {
-			return '<em class="f-boxbtn _pick" onclick=' + eve + '><i class="f-i _pick_i"></i><i class=f-vi></i></em>';
+			return '<label for="' + this.id + 't" class="f-boxbtn _pick" onclick=' + eve + '><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
 		},
 		input_prop_value: function() {
 			var v = this.x.value;
@@ -6849,7 +6849,7 @@ Spinner = define.widget( 'spinner', {
 	},
 	Extend: Text,
 	Default: {
-		width: mbi ? 125 : 100
+		width: mbi ? 160 : 100
 	},
 	Listener: {
 		body: {
@@ -7107,7 +7107,7 @@ Jigsaw = define.widget( 'jigsaw', {
 	Const: function( x ) {
 		Slider.apply( this, arguments );
 		this.more = this.add( { type: 'dialog', ownproperty: T, cls: 'w-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
-			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -6, node: {
+			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: 0, node: {
 			type: 'view',
 			node: {
 				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
@@ -11216,3 +11216,4 @@ require( './upload/upload' );
 
 // 本文件的导出
 module.exports = W;
+
