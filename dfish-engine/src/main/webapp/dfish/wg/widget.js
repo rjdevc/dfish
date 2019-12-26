@@ -1,7 +1,7 @@
 /*!
  * widget.js v3.3
  * (c) 2017-2019 Mingyuan Chen
- * Released under the MIT License.
+ * Released under the Apache License.
  */
 // firefox调用arguments.callee会报错，因此目前还无法使用'use strict'
 //'use strict';
@@ -7123,6 +7123,7 @@ Jigsaw = define.widget( 'jigsaw', {
 		body: {
 			mouseover: {
 				occupy: T,
+				proxy: br.mobile ? 'touchstart' : N,
 				method: function() {
 					if ( ! this.usa() ) return;
 					if ( this.loaded ) {
@@ -7251,7 +7252,7 @@ Jigsaw = define.widget( 'jigsaw', {
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
 			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% height=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
-				' width=' + this.smallWidth() + ' height=100% onmousedown=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
+				' width=' + this.smallWidth() + ' height=100% ontouchstart=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';

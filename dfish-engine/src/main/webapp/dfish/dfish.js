@@ -1,9 +1,8 @@
 /*!
  * dfish.js v3.3
  * (c) 2017-2019 Mingyuan Chen
- * Released under the MIT License.
+ * Released under the Apache License.
  */
-
 ( function( global, factory ) {
 	/* 在 CommonJS 环境下返回 dfish，不创建全局变量。 */
 	if ( typeof module === 'object' && typeof module.exports === 'object' ) {
@@ -322,7 +321,8 @@ _loadCss = function( a, b, c ) {
 	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
 		if ( d ) {
 			var u = b ? b[ i ] : _uid();
-			doc.write( '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">' );
+			var s = '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">';
+			doc.write( s );
 			e = $( u );
 		} else {
 			e = doc.createElement( 'link' );
@@ -2238,7 +2238,7 @@ _merge( $, {
 				_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
 				s.push( _ui_path + 'dfish.css' );
 				d.push( did );
-				br.mobile && (s.push( _ui_path + 'mobile.css' ), d.push( '' ));
+				br.mobile && (s.push( _ui_path + 'mobile.css' ), d.push( _uid() ));
 			}
 			if ( x ) {
 				x = _extend( {}, x, y );
