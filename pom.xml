@@ -6,7 +6,7 @@
     <name>dfish</name>
     <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>5.0.0.RC1</version>
+    <version>5.0.0.25-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://dfish.rongji.com</url>
@@ -78,14 +78,14 @@
             <id>local</id>
             <distributionManagement>
                 <repository>
-                    <id>dfish-release</id>
-                    <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-release</url>
+                    <id>local</id>
+                    <url>http://192.168.0.143:8081/nexus/content/repositories/releases</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
 
                 <snapshotRepository>
-                    <id>dfish-snapshot</id>
-                    <url>http://192.168.0.126:8081/nexus/content/repositories/dfish-snapshot</url>
+                    <id>local</id>
+                    <url>http://192.168.0.143:8081/nexus/content/repositories/snapshots</url>
                     <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>
@@ -93,17 +93,16 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
-
         <profile>
             <id>central</id>
             <distributionManagement>
                 <repository>
-                    <id>releases</id>
+                    <id>central</id>
                     <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
                 <snapshotRepository>
-                    <id>snapshots</id>
+                    <id>central</id>
                     <url>https://oss.sonatype.org/content/repositories/snapshots</url>
                     <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
@@ -155,10 +154,42 @@
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>DFish</name>
+            <email>dfish@rongji.com</email>
+            <organization>rongji</organization>
+            <organizationUrl>http://www.rongji.com</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <url>https://github.com/rjdevc/dfish.git</url>
+    </scm>
 
     <dependencyManagement>
         <dependencies>
@@ -202,11 +233,6 @@
                 <artifactId>dfish-framework-mybatis</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!--            <dependency>-->
-            <!--                <groupId>com.rongji.dfish</groupId>-->
-            <!--                <artifactId>dfish-demo</artifactId>-->
-            <!--                <version>${project.version}</version>-->
-            <!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -219,6 +245,5 @@
         <module>dfish-framework</module>
         <module>dfish-framework-hibernate</module>
         <module>dfish-framework-mybatis</module>
-        <module>dfish-demo</module>
     </modules>
 </project>
