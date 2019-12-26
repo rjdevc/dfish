@@ -1715,6 +1715,9 @@ function _compatDOM() {
 		} );
 		(tmp = doc.createEvent( 'HTMLEvents' )).initEvent( 'eventemu', T, T );
 		win.dispatchEvent( tmp );
+	}
+	if ( ! tmp.currentStyle ) {
+		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
 	}	
 }
 function _compatDOMPC() {
@@ -1803,9 +1806,6 @@ function _compatDOMPC() {
 				return str + ">";
 			return str + ">" + this.innerHTML + "</" + this.tagName + ">";
 		});
-	}
-	if ( ! tmp.currentStyle ) {
-		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
 	}
 	_rm( tmp );
 	// 检测浏览器自带滚动条的宽度
@@ -2166,11 +2166,11 @@ _merge( $, {
 	moveup: function( a, b, c ) {
 		var d, f;
 		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
-		_attach( doc, 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
-		_attach( doc, 'mouseup', function( e ) {
+		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
+		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
 			b && b( ie ? Q.event.fix( e ) : e );
-			_detach( doc, 'mousemove', d, T );
-			_detach( doc, 'mouseup', arguments.callee, T );
+			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', d, T );
+			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
 			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
 			c && _rm( c );
 		}, T );

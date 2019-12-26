@@ -377,9 +377,9 @@
 
 .w-datepicker ._b{display:inline-block;width:19px;text-align:center;color:#666;cursor:default}
 .w-datepicker ._b:hover{color:#333}
-.w-datepicker .f-boxbtn{background:url(g/n.png) no-repeat 0 50%}
-.w-datepicker .f-boxbtn:hover{background-position:-25px 50%}
-.w-datepicker.z-ds .f-boxbtn{background-position:0 50%;cursor:default}
+.w-datepicker ._pick_i{background:url(g/n.png) no-repeat 0 50%}
+.w-datepicker ._pick:hover ._pick_i{background-position:-25px 50%}
+.w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
 
 .w-range{overflow:visible}
 .w-range .f-sub-horz{vertical-align:middle}
@@ -439,8 +439,8 @@
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}
 .w-combobox ._r{color:#888;font-style:normal;font-family:verdana}
 .w-combobox ._e{display:inline-block;padding:0 2px 0 3px;height:28px;line-height:28px;text-indent:1px;border:0;vertical-align:middle;font-style:normal;outline:none}
-.w-combobox ._pick,.w-pickbox ._pick,.w-onlinebox ._pick,.w-linkbox ._pick,.w-combobox.z-ds ._pick:hover,.w-pickbox.z-ds:hover ._pick,.w-onlinebox.z-ds ._pick:hover{background:url(g/n.png) no-repeat -99px 50%}
-.w-combobox ._pick:hover,.w-linkbox ._pick:hover,.w-onlinebox ._pick:hover,.w-pickbox ._pick:hover{background-position:-124px 50%}
+.w-combobox ._pick_i,.w-pickbox ._pick_i,.w-onlinebox ._pick_i,.w-linkbox ._pick_i,.w-combobox.z-ds ._pick:hover ._pick_i,.w-pickbox.z-ds:hover ._pick ._pick_i,.w-onlinebox.z-ds ._pick:hover ._pick_i{background:url(g/n.png) no-repeat -99px 50%}
+.w-combobox ._pick:hover ._pick_i,.w-linkbox ._pick:hover ._pick_i,.w-onlinebox ._pick:hover ._pick_i,.w-pickbox ._pick:hover ._pick_i{background-position:-124px 50%}
 .w-combobox.z-loading ._t{color:gray}
 .w-combobox.z-loading .w-input-placeholder{display:none}
 .w-combobox.z-ds ._o{background:#ddd}
@@ -499,11 +499,12 @@
 .f-pick{float:right;height:100%;min-height:28px;cursor:pointer}
 .w-img.f-pick .w-img-i{height:100%}
 
-.f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;text-indent:5px;cursor:pointer}
+.f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;text-align:left;cursor:pointer}
 .f-boxbtn .f-arw-b2{border-width:5px;border-top-color:#99a8b8;*margin-top:3px}
 .f-boxbtn:hover .f-arw-b2{border-top-color:#546272}
 .w-f.z-ds .f-boxbtn{cursor:default}
 .w-f.z-ds .f-boxbtn:hover .f-arw-b2{border-top-color:#99a8b8}
+.f-boxbtn ._pick_i{width:16px;height:16px;vertical-align:middle;}
 
 .w-checkboxgroup-align{vertical-align:middle}
 .w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding:5px 6px 5px 0;}

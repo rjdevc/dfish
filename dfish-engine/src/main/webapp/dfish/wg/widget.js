@@ -16,6 +16,7 @@ mbi = br.mobile,
 cfg = $.x,
 eve = $.abbr + '.e(this)',
 evw = $.abbr + '.w(this)',
+ev_down = mbi ? 'ontouchstart=' : 'onmousedown=',
 plus = window.plus,
 _dfopt	= cfg.default_option || {},
 _number = $.number,
@@ -6660,7 +6661,7 @@ _date_formtype = {
 	'yyyy': 'month',
 	'hh:ii': 'time'
 },
-/* `date` */
+/* `datepicker` */
 Datepicker = define.widget( 'datepicker', {
 	Const: function( x, p ) {
 		Text.apply( this, arguments );
@@ -6827,7 +6828,7 @@ Datepicker = define.widget( 'datepicker', {
 			this.list && this.list.close();
 		},
 		html_btn: function() {
-			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
+			return '<em class="f-boxbtn _pick" onclick=' + eve + '><i class="f-i _pick_i"></i><i class=f-vi></i></em>';
 		},
 		input_prop_value: function() {
 			var v = this.x.value;
@@ -6835,7 +6836,7 @@ Datepicker = define.widget( 'datepicker', {
 		},
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + v + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix _a">' + v.replace( 'T', ' ' ) + '</label>' :
 				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
@@ -6933,11 +6934,11 @@ Spinner = define.widget( 'spinner', {
 			return v ? $.numDecimal( v, this.x.decimal ) : '';
 		},
 		html_btn: function() {
-			return this.x.showbtn === F ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
+			return this.x.showbtn === F ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)>&minus;</cite><cite class="f-inbl _r" onclick=' + evw + '.step(1)>&plus;</cite>' :
 				'<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
 		},
 		html_input: function() {
-			return mbi ? '<input type=number' + this.input_prop() + '><cite class="f-inbl _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
+			return mbi ? '<input type=number' + this.input_prop() + '>' :
 				'<input type=text' + this.input_prop() + ' w-valuetype="number">';
 		}
 	}
@@ -6990,12 +6991,13 @@ Slider = define.widget( 'slider', {
 		dragstart: function( a, b ) {
 			if ( ! this.usa() )
 				return;
-			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), v = this.$v().value, 
+			var x = b.targetTouches ? b.targetTouches[ 0 ].clientX : b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), v = this.$v().value, 
 				g = this.thumbWidth(), w = this.formWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
 				d = this.tip( v || this.min() );
 			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
-				var l = $.numRange(f + e.clientX - x, 0, w);
+				var c = e.targetTouches ? e.targetTouches[ 0 ].clientX : e.clientX,
+					l = $.numRange(f + c - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
 				a.style.left = l + 'px';
 				$( self.id + 'track' ).style.width = (l + g) + 'px';
@@ -7042,7 +7044,7 @@ Slider = define.widget( 'slider', {
 		html_nodes: function() {
 			var w = this.formWidth(), v = this.x.value == N ? 0 : this.x.value;
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
-				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
+				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -7252,7 +7254,7 @@ Jigsaw = define.widget( 'jigsaw', {
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
 			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% height=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
-				' width=' + this.smallWidth() + ' height=100% ontouchstart=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
+				' width=' + this.smallWidth() + ' height=100% ' + ev_down + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';
@@ -8053,7 +8055,7 @@ Combobox = define.widget( 'combobox', {
 			var s = '';
 			if ( this.x.picker ) {
 				if ( W.isCmd( this.x.picker ) ) {
-					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class="f-i _pick_i"></i><i class=f-vi></i></em>';
 				} else {
 					var g = this.add( this.x.picker, -1, { width: -1 } );
 					g.className += ' f-pick';
@@ -8061,7 +8063,7 @@ Combobox = define.widget( 'combobox', {
 				}
 			}
 			if ( this.x.drop )
-				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
+				s += '<em class="f-boxbtn _drop" onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
 			return s;
 		},
 		html_input: function() {
@@ -8576,7 +8578,7 @@ Linkbox = define.widget( 'linkbox', {
 			var s = '';
 			if ( this.x.picker ) {
 				if ( W.isCmd( this.x.picker ) ) {
-					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class="f-i _pick_i"></i><i class=f-vi></i></em>';
 				} else {
 					var g = this.add( this.x.picker, -1, { width: -1 } );
 					g.className += ' f-pick';
@@ -8584,7 +8586,7 @@ Linkbox = define.widget( 'linkbox', {
 				}
 			}
 			if ( this.x.drop )
-				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( 'b2' ) + '</em>';
+				s += '<em class="f-boxbtn _drop" onmousedown=' + evw + '.bookmark() onclick=' + evw + '.drop()><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
 			return s;
 		},
 		html_input: function() {

@@ -4,7 +4,7 @@
 
 @font-face {font-family:'icomoon';src:url('f/icomoon.ttf') format('truetype');font-weight:normal;font-style:normal;}
 @font-face {font-family:'muiicons';src:url('f/mui.ttf') format('truetype');font-weight:normal;font-style:normal;}
-.f-i,.f-icon{display:inline-block;font-family:'muiicons';width:auto;height:auto;font-size:24px;font-style:normal;font-weight:400;text-decoration:none;-webkit-font-smoothing:antialiased}
+.f-icon{display:inline-block;font-family:'muiicons';width:auto;height:auto;font-size:24px;font-style:normal;font-weight:400;text-decoration:none;-webkit-font-smoothing:antialiased}
 
 .w-scroll{position:relative}
 .w-scroll-overflow{background:inherit;position:relative;overflow:auto}
@@ -34,28 +34,26 @@
 .w-input{height:38px;}
 .w-input ._t{line-height:38px}
 
-.w-date ._t{position:absolute;width:0;visibility:hidden;}
-.w-date .f-boxbtn{text-align:left;background:none}
+.w-datepicker ._t{position:absolute;width:0;visibility:hidden;}
+.w-datepicker ._a{display:block;height:100%;line-height:38px;overflow:hidden}
 
 .w-spinner.w-input.z-on,.w-date.w-input.z-on{border-color:rgba(0,0,0,.2)}
-.w-spinner .f-boxbtn{width:38px;text-align:center;color:#666}
+.w-spinner .f-boxbtn{width:30px;text-align:center;color:#666}
 .w-spinner.z-ds .f-boxbtn{color:#aaa}
-.w-spinner .w-input-placeholder{left:38px}
 .w-spinner ._t{vertical-align:middle}
-.w-spinner ._l{border-right:1px solid  rgba(0,0,0,.2);font-size:28px;}
-.w-spinner ._r{border-left:1px solid  rgba(0,0,0,.2);font-size:22px;}
+.w-spinner ._l{float:left;width:38px;height:100%;border-right:1px solid  rgba(0,0,0,.2);color:rgba(0,0,0,.5);text-align:center;font-size:32px;line-height:1.1;font-style:normal}
+.w-spinner ._r{float:right;width:38px;height:100%;border-left:1px solid  rgba(0,0,0,.2);color:rgba(0,0,0,.5);text-align:center;font-size:32px;line-height:1.1;font-style:normal}
 
 .w-combobox ._c{min-height:38px}
-.w-combobox ._o{height:34px}
 .w-combobox ._plus,.w-pickbox ._plus,.w-onlinebox ._plus,.w-linkbox ._plus,.w-combobox.z-ds ._plus:hover,.w-pickbox.z-ds:hover ._plus,.w-onlinebox.z-ds ._plus:hover{background:none}
 .w-combobox ._plus .f-i:before,.w-pickbox ._plus .f-i:before,.w-linkbox ._plus .f-i:before,.w-onlinebox ._plus .f-i:before{content:'\e409'}
+.w-combobox-opt{height:34px}
 
-.f-boxbtn{width:36px;height:38px;line-height:38px;text-align:center;text-indent:0;font-style:normal}
+.w-jigsaw ._i{width:16px;height:16px;}
+
+.f-boxbtn{width:30px;height:38px;line-height:38px;text-align:center;text-indent:0;font-style:normal}
 .f-boxbtn .f-arw-b3{border-top-color:#99a8b8;*margin-top:3px}
-.f-boxbtn .f-i{vertical-align:baseline;line-height:none;color:#777}
 
-.w-button ._c{padding-left:0}
-.w-button ._t,.w-button ._i{padding-right:0}
 
 .w-upload-value-simple{height:36px}
 
@@ -85,19 +83,3 @@
 .f-i-file-js{width:36px;height:36px;background:url(g/f.png) -526px -393px #018beb}
 .f-i-file-file{width:36px;height:36px;background:url(g/f.png) -670px -393px #f2bd2f}
 .f-i-file-htm{width:36px;height:36px;background:url(g/f.png) -94px -393px #478de4}
-
-/*  <!--  CSS3 checkbox  */
-.w-checkbox ._t,.w-triplebox ._t,.w-radio ._t{display:none}
-.f-css2 .w-checkbox ._t,.f-css2 .w-triplebox ._t,.f-css2 .w-radio ._t{display:inline-block}
-.w-checkbox ._t + label,.w-triplebox ._t + label,.w-radio ._t + label{background-color:#fff;border:1px solid #c1caca;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05);padding:10px;border-radius:5px;display:inline-block;position:relative;margin-right:3px;vertical-align:middle;-webkit-appearance:none;}
-.w-checkbox.z-ds ._t + label,.w-triplebox.z-ds ._t + label,.w-radio.z-ds ._t + label{background-color:#ddd;}
-.w-checkbox ._t:active + label,.w-triplebox ._t:active + label{box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
-.w-checkbox ._t:checked + label,.w-triplebox ._t:checked + label{background:dodgerblue;border-color:dodgerblue;color:white;}
-.w-checkbox ._t:checked + label:after,.w-triplebox ._t:checked + label:after,.w-triplebox.z-half ._t + label:before{content:'\2714';position:absolute;top:0;left:0;width:100%;text-align:center;font-size:18px;vertical-align:text-top;line-height:1;}
-.w-triplebox.z-half ._t + label:before{content:'';}
-.w-triplebox.z-half ._t + label:after{content:'';position:absolute;background:#758794;top:50%;left:1px;right:1px;height:3px;margin-top:-1px;text-align:center;vertical-align:text-top;line-height:1;}
-.w-radio ._t + label{border-radius:50px;}
-.w-radio ._t:checked + label{border:1px solid dodgerblue;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05),inset 15px 10px -12px rgba(255,255,255,0.1),inset 0px 0px 10px rgba(0,0,0,0.1);}
-.w-radio ._t:checked + label:after{content:' ';background:dodgerblue;width:12px;height:12px;border-radius:50px;position:absolute;top:4px;left:4px;box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);text-shadow:0;font-size:32px;}
-.w-radio ._t + label:active,.w-radio ._t:checked + label:active{box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px 1px 3px rgba(0,0,0,0.1);}
-/*  CSS3 checkbox  -->   */
