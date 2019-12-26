@@ -6,7 +6,7 @@
     <name>dfish</name>
     <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>5.0.0.25-SNAPSHOT</version>
+    <version>5.0.0.26-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://dfish.rongji.com</url>
@@ -79,13 +79,13 @@
             <distributionManagement>
                 <repository>
                     <id>local</id>
-                    <url>http://192.168.0.143:8081/nexus/content/repositories/releases</url>
+                    <url>${local.repo.release.url}</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
 
                 <snapshotRepository>
                     <id>local</id>
-                    <url>http://192.168.0.143:8081/nexus/content/repositories/snapshots</url>
+                    <url>${local.repo.snapshot.url}</url>
                     <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>
@@ -98,12 +98,12 @@
             <distributionManagement>
                 <repository>
                     <id>central</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+                    <url>${central.repo.release.url}</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
                 <snapshotRepository>
                     <id>central</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <url>${central.repo.snapshot.url}</url>
                     <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>
@@ -149,8 +149,8 @@
                         <version>1.6.3</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>releases</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <serverId>central</serverId>
+                            <nexusUrl>${central.repo.nexus.url}</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
