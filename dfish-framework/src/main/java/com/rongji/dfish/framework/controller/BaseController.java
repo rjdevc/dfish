@@ -296,7 +296,11 @@ public class BaseController extends MultiActionController {
 			} else {
 				alertMsg = "系统内部错误@" + System.currentTimeMillis();
 				obj = buildWarnAlert(alertMsg);
-				FrameworkHelper.LOG.error(alertMsg + "\r\n" + convert2JSON(getRequest()), e);
+				String json="[UNKNOWN REQUEST CONTENT]";
+				try{
+					json=convert2JSON(getRequest());
+				}catch (Throwable t){}
+				FrameworkHelper.LOG.error(alertMsg + "\r\n" + json, e);
 			}
 		}
 //		saveLog(loginUser, url, methodName, beginTime, length);

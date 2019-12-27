@@ -253,8 +253,8 @@ public class ExceptionManager {
 					knownMaxTypeId=o;
 					fail=false;
 				}catch(ConstraintViolationException e){
-					knownMaxTypeId=null;
-				}catch(Exception e){
+					o=knownMaxTypeId=null;
+				}catch(Throwable e){
 					e.printStackTrace();
 					break;
 					//可能有多机执行，引起主键冲突。
@@ -298,8 +298,8 @@ public class ExceptionManager {
 						knownMaxStackId=i+ei.stack.size();
 						fail=false;
 					}catch(ConstraintViolationException e){
-						knownMaxStackId=null;
-					}catch(Exception e){
+						stackId=knownMaxStackId=null;
+					}catch(Throwable e){
 						e.printStackTrace();
 						break;
 						//可能有多机执行，引起主键冲突。
@@ -333,7 +333,7 @@ public class ExceptionManager {
 				}catch(ConstraintViolationException e){
 					o=(Number)dao.queryAsAnObject("SELECT MAX(t.conId) FROM PubExptConstant t ");
 					maxConstIdHint=o==null?0:o.intValue();
-				}catch(Exception e){
+				}catch(Throwable e){
 					e.printStackTrace();
 					break;
 					//可能有多机执行，引起主键冲突。
