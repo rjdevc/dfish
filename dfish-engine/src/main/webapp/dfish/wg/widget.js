@@ -1354,7 +1354,7 @@ W = define( 'widget', function() {
 			}
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
-			return a && typeof a === _STR && ! b ? ' title="' + $.strQuot( a, !c ) + '"' : '';
+			return a && typeof a === _STR && ! b ? ' title="' + $.strQuot( c ? a.replace( /&/g, '&amp;' ) : a, !c ) + '"' : '';
 		},
 		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function( a, b, c, d, e ) {
@@ -7107,7 +7107,7 @@ Jigsaw = define.widget( 'jigsaw', {
 	Const: function( x ) {
 		Slider.apply( this, arguments );
 		this.more = this.add( { type: 'dialog', ownproperty: T, cls: 'w-jigsaw-dialog', width: 'javascript:return this.parentNode.popWidth()',
-			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: 0, node: {
+			height: 'javascript:return this.parentNode.popHeight()', snap: this.id + 'f', snaptype: 'tb,bt', memory: T, pophide: T, hoverdrop: T, indent: -1, node: {
 			type: 'view',
 			node: {
 				type: 'html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
@@ -9306,6 +9306,7 @@ Leaf = define.widget( 'leaf', {
 					return this.isDisabled();
 				},
 				method: function( e ) {
+					mbi && this.toggle();
 					if ( this.isDisabled() )
 						return;
 					this.box && this.box.x.sync === 'click' && ! this.isEvent4Box( e ) && this.box.click();
@@ -9989,7 +9990,7 @@ GridRow = define.widget( 'grid/row', {
 					if ( this.type_thr && f.sort )
 						v += c[ i ].html_sortarrow();
 					if ( f.tip )
-						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
+						g += this.prop_title( (d && d[ f.tip.field || f.field ]) || '', f.format, h );
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push( '<td class="w-td w-td-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
 						(f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
@@ -10490,7 +10491,7 @@ Table = define.widget( 'table', {
 	Listener: {
 		body: {
 			resize: function() {
-				if ( br.ms && this.$() ) {
+				if ( (br.ms || mbi) && this.$() ) {
 					var w = this.innerWidth();
 					this.css( 'width', w == N ? '' : w );
 				}
@@ -10502,7 +10503,7 @@ Table = define.widget( 'table', {
 		html: function() {
 			var t =this.grid.type.split( '/' )[ 0 ],
 				s = '<table id=' + this.id + ' class="w-' + t + '-table w-' + t + '-face-' + this.grid._face + '" cellspacing=0 cellpadding=' + this.grid._pad;
-			if ( br.ms ) {
+			if ( br.ms || mbi ) {
 				var w = this.innerWidth();
 				w != N && (s += ' style="width:' + w + 'px"');
 			}

@@ -57,7 +57,8 @@ br = $.br = (function() {
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
 		ie = navigator.appName === 'Microsoft Internet Explorer', // ie version <= 10
 		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) )),
-		chm = u.match( /\bchrome\/(\d+)/ );
+		chm = u.match( /\bchrome\/(\d+)/ ),
+		mbi = !!u.match( /\bmobile\b/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
 	return {
@@ -67,11 +68,11 @@ br = $.br = (function() {
 		ie10	: ie && d === 10,
 		ms		: ie || n, // 微软的浏览器( ie所有系列 )
 		chm		: chm && parseFloat( chm[ 1 ] ),
-		mobile  : !!u.match( /\bmobile\b/ ),
+		mobile  : mbi,
 		fox		: u.indexOf( 'firefox' ) > 0,
 		safari  : !chm && u.indexOf( 'safari' ) > 0,
 		css3	: !(ie && d < 9),
-		scroll	: 17,
+		scroll	: mbi ? 0 : 17,
 		chdiv	: function( a, b, c ) {
 			if ( typeof b === _FUN ) {
 				c = b, b = '1';
@@ -2175,6 +2176,7 @@ _merge( $, {
 			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
 			c && _rm( c );
 		}, T );
+		// 业务拖动时禁用浏览器默认的拖动效果
 		br.mobile && doc.addEventListener('touchmove', m, { passive: F } );
 	},
 	// @a -> el, b -> type, c -> fast|normal|slow (.2s|.5s|1s), d -> fn 结束后执行的函数
