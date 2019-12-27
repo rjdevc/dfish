@@ -1717,6 +1717,7 @@ function _compatDOM() {
 		(tmp = doc.createEvent( 'HTMLEvents' )).initEvent( 'eventemu', T, T );
 		win.dispatchEvent( tmp );
 	}
+	(tmp = doc.createElement( 'div' )).innerHTML = '1';
 	if ( ! tmp.currentStyle ) {
 		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
 	}	

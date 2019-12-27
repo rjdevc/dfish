@@ -1006,7 +1006,7 @@ W = define( 'widget', function() {
 		},
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
-			var c = a == N || (a.isWidget ? a.x.open : a), p = this.parentNode, d = p && p.type_frame ? 'f-hide' + (b ? '' : ' f-form-hide') : 'f-none', o = this.$();
+			var c = a == N || (a.isWidget ? a.x.open : a), p = this.parentNode, d = 'f-hide' + (b ? '' : ' f-form-hide'), o = this.$();
 			$.classAdd( o, d, ! c );
 			a != N && a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
 			this.x.display = !!c;
@@ -9636,7 +9636,8 @@ _parallel_methods = function( a, b ) {
 			if ( u.fixed.length ) {
 				for ( var j = 0, c = this.getParallel(); j < c.length; j ++ )
 					f.apply( c[ j ], arguments );
-			}
+			} else
+				f.apply( this, arguments );
 		}
 	} );
 },
@@ -9993,7 +9994,7 @@ GridRow = define.widget( 'grid/row', {
 						g += this.prop_title( (d && d[ f.tip.field || f.field ]) || '', f.format, h );
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push( '<td class="w-td w-td-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
-						(f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
+						(!ie7 && f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
 				}
 			}
 			return b.join( '' );
@@ -10039,7 +10040,7 @@ TD = define.widget( 'td', {
 		html: function( k, i, L ) {
 			var r = this.parentNode.parentNode, g = this.grid, u = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td w-td-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_tr ? '' : ' w-th' + (r.type_thr && c.x.sort ? ' w-th-sort' : ''));
-			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (c.x.fixed ? ' f-form-hide' : '') + '"';
+			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (!ie7 && c.x.fixed ? ' f-form-hide' : '') + '"';
 			if ( this.x.on || this.Const.Listener )
 				s += _html_on.call( this );
 			if ( c.x.align || this.x.align )
