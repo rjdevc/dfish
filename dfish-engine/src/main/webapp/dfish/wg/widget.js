@@ -1321,7 +1321,7 @@ W = define( 'widget', function() {
 			if ( ! this.isNormal() )
 				c += ' z-ds';
 			if ( this.x.display === F )
-				c += ' f-none';
+				c += ' f-hide';
 			if ( p && p.childCls )
 				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
 			return c;
