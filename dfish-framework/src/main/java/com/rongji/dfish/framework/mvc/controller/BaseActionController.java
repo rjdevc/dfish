@@ -348,7 +348,10 @@ public class BaseActionController extends MultiActionController {
             jsonResponse.setErrCode(((Marked) cause).getCode());
             jsonResponse.setErrMsg(cause.getMessage());
         } else {
-            String requestJson = convert2JSON(request);
+            String requestJson = "[UNKNOWN REQUEST CONTENT]";
+            try {
+                requestJson=convert2JSON(request);
+            }catch (Throwable t){}
             String errMsg = null;
             if (cause instanceof SocketException) {
                 errMsg = "网络异常@" + System.currentTimeMillis();
