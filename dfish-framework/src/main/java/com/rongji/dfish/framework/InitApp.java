@@ -24,7 +24,7 @@ import com.rongji.dfish.framework.singletonimpl.DefaultPersonalConfig;
 import com.rongji.dfish.framework.singletonimpl.DefaultSystemConfig;
 
 public class InitApp implements ServletContextAware, ApplicationContextAware {
-	private static final Log LOG = LogFactory.getLog(InitApp.class);
+//	private static final Log LOG = LogFactory.getLog(InitApp.class);
 	private ServletContext servletContext;
 	private ApplicationContext applicationContext;
 
@@ -41,8 +41,8 @@ public class InitApp implements ServletContextAware, ApplicationContextAware {
 
 	@SuppressWarnings("deprecation")
 	public void init() {
-		FileUtil.LOG = new WrappedLog(FileUtil.LOG);// 记录日志错误
-
+		FrameworkHelper.LOG = new WrappedLog(LogFactory.getLog(FrameworkHelper.class));// 记录日志错误
+		Log LOG=FrameworkHelper.LOG;
 		Locale.setDefault(Locale.SIMPLIFIED_CHINESE);
 
 		LOG.info("====== initing ServletContext ======");

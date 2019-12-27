@@ -81,7 +81,7 @@ public class FrameworkHelper{
 	 */
 	public static final String ENCODING = ENCODINGS[INT_ENCODING_UTF_8];
 	
-	public static final Log LOG = new WrappedLog(LogFactory.getLog(FrameworkHelper.class));
+	public static Log LOG = LogFactory.getLog(FrameworkHelper.class);
 	
 	/**
 	 * 登录人员信息在session中的名字
