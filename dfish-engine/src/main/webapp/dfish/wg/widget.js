@@ -1275,7 +1275,7 @@ W = define( 'widget', function() {
 				b = this.x.format;
 			if ( c === U )
 				c = this.x.escape;
-			return a && typeof a === _STR && ! b ? ' title="' + $.strQuot( a, !c ) + '"' : '';
+			return a && typeof a === _STR && ! b ? ' title="' + $.strQuot( c ? a.replace( /&/g, '&amp;' ) : a, !c ) + '"' : '';
 		},
 		// @a -> text, @b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function( a, b, c, d, e ) {
@@ -9435,7 +9435,7 @@ GridRow = define.widget( 'grid/row', {
 					if ( !e && c[ i ].x.sort )
 						v += c[ i ].html_sortarrow();
 					if ( f.tip )
-						g += ' title="' + $.strQuot( (d && d[ f.tip.field || f.field ]) || '' ) + '"';
+						g += this.prop_title( (d && d[ f.tip.field || f.field ]) || '', f.format, h );
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push( '<td class="w-td-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (!e ? ' w-th' + (f.sort ? ' w-th-sort' + (c[ i ]._sort ? ' z-' + c[ i ]._sort : '') : '') : '') +
 						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>' );
@@ -9509,7 +9509,7 @@ TD = define.widget( 'td', {
 					t += c.html_sortarrow();
 				if ( e && c.x.tip ) {
 					var g = r.x.data && r.x.data[ c.x.tip.field || c.x.field ];
-					f += this.prop_title( typeof g === _OBJ ? f.text : f, c.x.format );
+					f += this.prop_title( typeof g === _OBJ ? g.text : f, c.x.format );
 				}
 				f && (t = '<div' + f + '>' + t + '</div>');
 				s += t || (ie7 ? '&nbsp;' : '');
