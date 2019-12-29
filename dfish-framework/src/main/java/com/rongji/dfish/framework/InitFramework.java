@@ -7,17 +7,13 @@ import com.rongji.dfish.base.context.SystemContext;
 import com.rongji.dfish.base.info.DataBaseInfo;
 import com.rongji.dfish.base.info.EthNetInfo;
 import com.rongji.dfish.base.info.SystemInfo;
-import com.rongji.dfish.base.util.FileUtil;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
 import com.rongji.dfish.framework.config.impl.DefaultPersonalConfig;
 import com.rongji.dfish.framework.config.impl.DefaultSystemConfig;
 import com.rongji.dfish.framework.info.ServletInfo;
-import com.rongji.dfish.framework.util.WrappedLog;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ServletContextAware;
@@ -30,7 +26,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class InitFramework implements ServletContextAware, ApplicationContextAware {
-	private static final Log LOG = LogFactory.getLog(InitFramework.class);
 	private ServletContext servletContext;
 	private ApplicationContext applicationContext;
 
@@ -67,7 +62,7 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 		systemInfoProps.put("runtimeVersion",si.getRuntimeVersion());
 		SystemContext.getInstance().register(new PropertiesContextHolder("systemInfo",systemInfoProps));
 
-		LOG.info("====== initing ServletContext ======");
+		LogUtil.info("====== initing ServletContext ======");
 		ServletInfo servi=new ServletInfo(servletContext);
 		frameworkContext.add(servi);
 		Map<String,String> servletInfoProps=new TreeMap<String,String>();
@@ -75,13 +70,13 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 		servletInfoProps.put("servletRealPath",servi.getServletRealPath());
 		servletInfoProps.put("servletVersion",servi.getServletVersion());
 		SystemContext.getInstance().register(new PropertiesContextHolder("servletInfo",servletInfoProps));
-		LOG.info("====== ServletContext inited ======");
-		LOG.info("====== initing ApplicationContext ======");
+		LogUtil.info("====== ServletContext inited ======");
+		LogUtil.info("====== initing ApplicationContext ======");
 		frameworkContext.add(applicationContext);
 		frameworkContext.add(servletContext);
-		LOG.info("====== ApplicationContext inited ======");
+		LogUtil.info("====== ApplicationContext inited ======");
 		// FIXME personalConfig systemConfig cache newIdGetter
-		LOG.info("====== initing configs ======");
+		LogUtil.info("====== initing configs ======");
 //		FrameworkCache<?, ?> cache = null;
 //		try {
 //			cache = (FrameworkCache<?, ?>) FrameworkContext.getInstance().getBeanFactory().getBean("frameworkCacheImpl");
@@ -89,9 +84,9 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 //		}
 //		if (cache == null) {
 //			cache = new DefaultCache();
-//			LOG.info("'frameworkCacheImpl' not define. use default cache");
+//			LogUtil.info("'frameworkCacheImpl' not define. use default cache");
 //		}
-//		LOG.info("load cache: " + cache.getClass().getName());
+//		LogUtil.info("load cache: " + cache.getClass().getName());
 //		FrameworkContext.getInstance().setCache(cache);
 		BeanContextHolder beanFactory=new BeanContextHolder(){
 			@Override
@@ -119,9 +114,9 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 			DefaultSystemConfig dConfig = new DefaultSystemConfig();
 			systemConfig = dConfig;
 			dConfig.setConfigFile("dfish-config.json");
-			LOG.info("'systemConfigImpl' not define. use default config");
+			LogUtil.info("'systemConfigImpl' not define. use default config");
 		}
-		LOG.info("load system config: " + systemConfig.getClass().getName());
+		LogUtil.info("load system config: " + systemConfig.getClass().getName());
 		frameworkContext.add(systemConfig);
 
 		PersonalConfigHolder personalConfig = null;
@@ -132,9 +127,9 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 		}
 		if (personalConfig == null) {
 			personalConfig = new DefaultPersonalConfig();
-			LOG.info("'personalConfigImpl' not define. use default config");
+			LogUtil.info("'personalConfigImpl' not define. use default config");
 		}
-		LOG.info("load personal config: " + personalConfig.getClass().getName());
+		LogUtil.info("load personal config: " + personalConfig.getClass().getName());
 		frameworkContext.add(personalConfig);
 
 //		NewIdGetter newIdGetter = null;
@@ -144,13 +139,13 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 //		}
 //		if (newIdGetter == null) {
 //			newIdGetter = new DefaultIdGetter();
-//			LOG.info("'newIdGetterImpl' not define. use default getter");
+//			LogUtil.info("'newIdGetterImpl' not define. use default getter");
 //		}
-//		LOG.info("load new id getter: " + newIdGetter.getClass().getName());
+//		LogUtil.info("load new id getter: " + newIdGetter.getClass().getName());
 //		FrameworkContext.getInstance().setNewIdGetter(newIdGetter);
 
 		try {
-			LOG.info("====== initing database ======");
+			LogUtil.info("====== initing database ======");
 			// PubCommonDAO dao = (PubCommonDAO)
 			// FrameworkContext.getInstance().getBeanFactory().getBean("PubCommonDAO");
 			// SessionFactory sf =
@@ -175,41 +170,41 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 			dataBaseInfoProps.put("driverVersion",dataBaseInfo.getDriverVersion());
 			dataBaseInfoProps.put("databaseType",String.valueOf(dataBaseInfo.getDatabaseType()));
 			SystemContext.getInstance().register(new PropertiesContextHolder("dataBaseInfo",dataBaseInfoProps));
-			LOG.info("====== database inited ======");
+			LogUtil.info("====== database inited ======");
 		} catch (Throwable t) {
-			LOG.error("====== init database fail! ======", t);
+			LogUtil.error("====== init database fail! ======", t);
 		}
-		LOG.info("====== application has been inited ======");
-		LOG.info("====  os infomation  ====");
-		LOG.info("os name       = " + si.getOperationSystem());
-		LOG.info("file encoding = " + si.getFileEncoding());
-		LOG.info("vm name       = " + si.getVmName());
-		LOG.info("vm version    = " + si.getVmVersion());
-		LOG.info("vm vendor     = " + si.getVmVendor());
+		LogUtil.info("====== application has been inited ======");
+		LogUtil.info("====  os infomation  ====");
+		LogUtil.info("os name       = " + si.getOperationSystem());
+		LogUtil.info("file encoding = " + si.getFileEncoding());
+		LogUtil.info("vm name       = " + si.getVmName());
+		LogUtil.info("vm version    = " + si.getVmVersion());
+		LogUtil.info("vm vendor     = " + si.getVmVendor());
 
-		LOG.info("====  servlet infomation  ====");
-		LOG.info("version   = " + servi.getServletVersion());
-		LOG.info("real path = " + servi.getServletRealPath());
-		LOG.info("====  local mac(s)  ====");
+		LogUtil.info("====  servlet infomation  ====");
+		LogUtil.info("version   = " + servi.getServletVersion());
+		LogUtil.info("real path = " + servi.getServletRealPath());
+		LogUtil.info("====  local mac(s)  ====");
 
 		try {
 			systemInfoProps.put("macAddress",EthNetInfo.getMacAddress());
 			for (Iterator<?> iter = EthNetInfo.getAllMacAddress().iterator(); iter.hasNext();) {
 				String item = (String) iter.next();
-				LOG.info(item);
+				LogUtil.info(item);
 			}
 		} catch (Exception ex) {
-			LOG.error("CAN NOT FIND MACS", ex);
+			LogUtil.error("CAN NOT FIND MACS", ex);
 		}
 
 		DataBaseInfo dbInfo=SystemContext.getInstance().get(DataBaseInfo.class);
 		if (dbInfo != null) {
-			LOG.info("====  database infomation  ====");
-			LOG.info("db product name = " + dbInfo .getDatabaseProductName() + " ("
+			LogUtil.info("====  database infomation  ====");
+			LogUtil.info("db product name = " + dbInfo .getDatabaseProductName() + " ("
 			        + dbInfo .getDatabaseProductVersion() + ")");
-			LOG.info("db connect url = " + dbInfo.getDatabaseUrl());
-			LOG.info("db connect user = " + dbInfo.getDatabaseUsername());
-			LOG.info("db driver name = " + dbInfo.getDriverName() + " ("
+			LogUtil.info("db connect url = " + dbInfo.getDatabaseUrl());
+			LogUtil.info("db connect user = " + dbInfo.getDatabaseUsername());
+			LogUtil.info("db driver name = " + dbInfo.getDriverName() + " ("
 			        + dbInfo.getDriverVersion() + ")");
 		}
 	}

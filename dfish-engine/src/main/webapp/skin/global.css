@@ -125,7 +125,7 @@ i {
 }
 
 .w-grid.z-empty .w-grid-bg, .w-album.z-empty, .w-tree.z-empty {
-    background: url("./g/nodata_160.png") no-repeat center;
+    background: url("./img/nodata_160.png") no-repeat center;
     min-height: 160px;
 }
 
@@ -426,71 +426,6 @@ i {
 
 /**↑表单↑**/
 
-/**↓图片↓**/
-img {
-    border: 0;
-}
-
-.w-img.x-lazy {
-    border: 0;
-}
-
-.w-img.x-lazy.z-err .w-img-i img {
-    display: none;
-}
-
-.w-img.x-lazy .w-img-i {
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.w-img.x-lazy.x-size-xs .w-img-i {
-    background-image: url("g/icon_default_20x20.png");
-}
-
-.w-img.x-lazy.x-size-s .w-img-i {
-    background-image: url("g/icon_default_40x40.png");
-}
-
-.w-img.x-lazy.x-size-m .w-img-i, .w-img.x-lazy .w-img-i {
-    background-image: url("g/icon_default_60x60.png");
-}
-
-.w-img.x-lazy.x-size-l .w-img-i {
-    background-image: url("g/icon_default_80x80.png");
-}
-
-.w-img.x-lazy.x-size-xl .w-img-i {
-    background-image: url("g/icon_default_100x100.png");
-}
-
-.w-img.x-lazy.x-size-xs.x-user .w-img-i {
-    background-image: url("g/icon_user_20x20.png");
-}
-
-.w-img.x-lazy.x-size-s.x-user .w-img-i {
-    background-image: url("g/icon_user_40x40.png");
-}
-
-.w-img.x-lazy.x-size-m.x-user .w-img-i, .w-img.x-lazy.x-user .w-img-i {
-    background-image: url("g/icon_user_60x60.png");
-}
-
-.w-img.x-lazy.x-size-l.x-user .w-img-i {
-    background-image: url("g/icon_user_80x80.png");
-}
-
-.w-img.x-lazy.x-size-xl.x-user .w-img-i {
-    background-image: url("g/icon_user_100x100.png");
-}
-
-/*图片加载成功,不显示背景图*/
-.w-img.x-lazy.z-success .w-img-i {
-    background-image: none !important;
-}
-
-/**↑图片↑**/
-
 /**↓对话框↓**/
 .dlg {
     background-color: #fff;
@@ -556,7 +491,7 @@ img {
 }
 
 .w-dialog-loadinghead ._x {
-    background: url(g/g.png) no-repeat -85px 4px
+    background: url(img/g.png) no-repeat -85px 4px
 }
 
 .w-dialog-loadinghead ._x.z-hv {
@@ -569,28 +504,93 @@ img {
 
 /**↑对话框↑**/
 
+/**↓图片↓**/
+img {
+    border: 0;
+}
+
+.w-img.x-lazy {
+    border: 0;
+}
+
+.w-img.x-lazy.z-err .w-img-i img {
+    display: none;
+}
+
+.w-img.x-lazy .w-img-i {
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.w-img.x-lazy.x-size-xs .w-img-i {
+    background-image: url("img/icon_default_20x20.png");
+}
+
+.w-img.x-lazy.x-size-s .w-img-i {
+    background-image: url("img/icon_default_40x40.png");
+}
+
+.w-img.x-lazy.x-size-m .w-img-i, .w-img.x-lazy .w-img-i {
+    background-image: url("img/icon_default_60x60.png");
+}
+
+.w-img.x-lazy.x-size-l .w-img-i {
+    background-image: url("img/icon_default_80x80.png");
+}
+
+.w-img.x-lazy.x-size-xl .w-img-i {
+    background-image: url("img/icon_default_100x100.png");
+}
+
+.w-img.x-lazy.x-size-xs.x-user .w-img-i {
+    background-image: url("img/icon_user_20x20.png");
+}
+
+.w-img.x-lazy.x-size-s.x-user .w-img-i {
+    background-image: url("img/icon_user_40x40.png");
+}
+
+.w-img.x-lazy.x-size-m.x-user .w-img-i, .w-img.x-lazy.x-user .w-img-i {
+    background-image: url("img/icon_user_60x60.png");
+}
+
+.w-img.x-lazy.x-size-l.x-user .w-img-i {
+    background-image: url("img/icon_user_80x80.png");
+}
+
+.w-img.x-lazy.x-size-xl.x-user .w-img-i {
+    background-image: url("img/icon_user_100x100.png");
+}
+
+/*图片加载成功,不显示背景图*/
+.w-img.x-lazy.z-success .w-img-i {
+    background-image: none !important;
+}
+
+/**↑图片↑**/
+
 /**↓图标↓**/
 .i-file {
-    background: url("g/file.png");
+    background: url("img/file.png");
     width: 16px;
     height: 16px;
 }
 
 .i-folder {
-    background: url("g/folder.png");
+    background: url("img/folder.png");
     width: 16px;
     height: 16px;
 }
 
 .i-dlg-close {
-    background-image: url("g/g.png");
+    background-image: url("img/g.png");
     background-position: -97px -7px;
     width: 16px;
     height: 16px;
 }
 
 .i-dlg-max {
-    background: url("g/g.png") -127px -7px;
+    background: url("img/g.png") -127px -7px;
     width: 16px;
     height: 16px;
 }
@@ -600,7 +600,7 @@ img {
 }
 
 .i-leaf {
-    background: url("g/ico_16_16.png") -16px -32px;
+    background: url("img/ico_16_16.png") -16px -32px;
     width: 16px;
     height: 16px;
 }
@@ -614,7 +614,7 @@ img {
 }
 
 .i-close {
-    background: url("g/ico_16_16.png") 0 -96px;
+    background: url("img/ico_16_16.png") 0 -96px;
     width: 16px;
     height: 16px;
 }
@@ -624,46 +624,46 @@ img {
 }
 
 .i-logo {
-    background-image: url("g/logo.png");
+    background-image: url("img/logo.png");
     background-repeat: no-repeat;
     width: 130px;
     height: 30px;
 }
 
 .i-index-person {
-    background: url("g/icon-16.png") 0 -60px;
+    background: url("img/icon-16.png") 0 -60px;
     width: 16px;
     height: 16px;
 }
 
 .i-index-config {
-    background: url("g/icon-16.png") 0 -120px;
+    background: url("img/icon-16.png") 0 -120px;
     width: 16px;
     height: 16px;
 }
 
 .i-split {
-    background: url("g/ico_split.png") 0 0;
+    background: url("img/ico_split.png") 0 0;
     width: 10px;
     height: 30px;
     position: relative;
 }
 
 .i-split:hover {
-    background: url("g/ico_split.png") 0 -30px;
+    background: url("img/ico_split.png") 0 -30px;
     width: 10px;
     height: 30px;
 }
 
 .i-split-col {
-    background: url("g/ico_split.png") -30px 0;
+    background: url("img/ico_split.png") -30px 0;
     width: 10px;
     height: 30px;
     position: relative;
 }
 
 .i-split-col:hover {
-    background: url("g/ico_split.png") -30px -30px;
+    background: url("img/ico_split.png") -30px -30px;
     width: 10px;
     height: 30px;
 }
@@ -685,576 +685,591 @@ img {
 
 /*编辑*/
 .i-oper-edit {
-    background: url("g/icon_operation_16.png") 0 0;
+    background: url("img/icon_operation_16.png") 0 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-edit.z-hv, .z-hv .i-oper-edit {
-    background: url("g/icon_operation_16.png") 0 -20px;
+    background: url("img/icon_operation_16.png") 0 -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-edit.z-dn, .z-dn .i-oper-edit {
-    background: url("g/icon_operation_16.png") 0 -40px;
+    background: url("img/icon_operation_16.png") 0 -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-edit.z-ds, .z-ds .i-oper-edit {
-    background: url("g/icon_operation_16.png") 0 -60px;
+    background: url("img/icon_operation_16.png") 0 -60px;
     width: 16px;
     height: 16px;
 }
 
 /*删除*/
 .i-oper-del {
-    background: url("g/icon_operation_16.png") -20px 0;
+    background: url("img/icon_operation_16.png") -20px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-del.z-hv, .z-hv .i-oper-del {
-    background: url("g/icon_operation_16.png") -20px -20px;
+    background: url("img/icon_operation_16.png") -20px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-del.z-dn, .z-dn .i-oper-del {
-    background: url("g/icon_operation_16.png") -20px -40px;
+    background: url("img/icon_operation_16.png") -20px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-del.z-ds, .z-ds .i-oper-del {
-    background: url("g/icon_operation_16.png") -20px -60px;
+    background: url("img/icon_operation_16.png") -20px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*更多*/
 .i-oper-more {
-    background: url("g/icon_operation_16.png") -40px 0;
+    background: url("img/icon_operation_16.png") -40px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-more.z-hv, .z-hv .i-oper-more {
-    background: url("g/icon_operation_16.png") -40px -20px;
+    background: url("img/icon_operation_16.png") -40px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-more.z-dn, .z-dn .i-oper-more {
-    background: url("g/icon_operation_16.png") -40px -40px;
+    background: url("img/icon_operation_16.png") -40px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-more.z-ds, .z-ds .i-oper-more {
-    background: url("g/icon_operation_16.png") -40px -60px;
+    background: url("img/icon_operation_16.png") -40px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*置顶*/
 .i-oper-top {
-    background: url("g/icon_operation_16.png") -60px 0;
+    background: url("img/icon_operation_16.png") -60px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-top.z-hv, .z-hv .i-oper-top {
-    background: url("g/icon_operation_16.png") -60px -20px;
+    background: url("img/icon_operation_16.png") -60px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-top.z-dn, .z-dn .i-oper-top {
-    background: url("g/icon_operation_16.png") -60px -40px;
+    background: url("img/icon_operation_16.png") -60px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-top.z-ds, .z-ds .i-oper-top {
-    background: url("g/icon_operation_16.png") -60px -60px;
+    background: url("img/icon_operation_16.png") -60px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*置底*/
 .i-oper-bottom {
-    background: url("g/icon_operation_16.png") -80px 0;
+    background: url("img/icon_operation_16.png") -80px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-bottom.z-hv, .z-hv .i-oper-bottom {
-    background: url("g/icon_operation_16.png") -80px -20px;
+    background: url("img/icon_operation_16.png") -80px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-bottom.z-dn, .z-dn .i-oper-bottom {
-    background: url("g/icon_operation_16.png") -80px -40px;
+    background: url("img/icon_operation_16.png") -80px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-bottom.z-ds, .z-ds .i-oper-bottom {
-    background: url("g/icon_operation_16.png") -80px -60px;
+    background: url("img/icon_operation_16.png") -80px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*上移*/
 .i-oper-up {
-    background: url("g/icon_operation_16.png") -100px 0;
+    background: url("img/icon_operation_16.png") -100px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-up.z-hv, .z-hv .i-oper-up {
-    background: url("g/icon_operation_16.png") -100px -20px;
+    background: url("img/icon_operation_16.png") -100px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-up.z-dn, .z-dn .i-oper-up {
-    background: url("g/icon_operation_16.png") -100px -40px;
+    background: url("img/icon_operation_16.png") -100px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-up.z-ds, .z-ds .i-oper-up {
-    background: url("g/icon_operation_16.png") -100px -60px;
+    background: url("img/icon_operation_16.png") -100px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*下移*/
 .i-oper-down {
-    background: url("g/icon_operation_16.png") -120px 0;
+    background: url("img/icon_operation_16.png") -120px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-down.z-hv, .z-hv .i-oper-down {
-    background: url("g/icon_operation_16.png") -120px -20px;
+    background: url("img/icon_operation_16.png") -120px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-down.z-dn, .z-dn .i-oper-down {
-    background: url("g/icon_operation_16.png") -120px -40px;
+    background: url("img/icon_operation_16.png") -120px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-down.z-ds, .z-ds .i-oper-down {
-    background: url("g/icon_operation_16.png") -120px -60px;
+    background: url("img/icon_operation_16.png") -120px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*回退*/
 .i-oper-back {
-    background: url("g/icon_operation_16.png") -140px 0;
+    background: url("img/icon_operation_16.png") -140px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-back.z-hv, .z-hv .i-oper-back {
-    background: url("g/icon_operation_16.png") -140px -20px;
+    background: url("img/icon_operation_16.png") -140px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-back.z-dn, .z-dn .i-oper-back {
-    background: url("g/icon_operation_16.png") -140px -40px;
+    background: url("img/icon_operation_16.png") -140px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-back.z-ds, .z-ds .i-oper-back {
-    background: url("g/icon_operation_16.png") -140px -60px;
+    background: url("img/icon_operation_16.png") -140px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*查询*/
 .i-oper-search {
-    background: url("g/icon_operation_16.png") -160px 0;
+    background: url("img/icon_operation_16.png") -160px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-search.z-hv, .z-hv .i-oper-search {
-    background: url("g/icon_operation_16.png") -160px -20px;
+    background: url("img/icon_operation_16.png") -160px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-search.z-dn, .z-dn .i-oper-search {
-    background: url("g/icon_operation_16.png") -160px -40px;
+    background: url("img/icon_operation_16.png") -160px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-search.z-ds, .z-ds .i-oper-search {
-    background: url("g/icon_operation_16.png") -160px -60px;
+    background: url("img/icon_operation_16.png") -160px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*费用*/
 .i-oper-money {
-    background: url("g/icon_operation_16.png") -180px 0;
+    background: url("img/icon_operation_16.png") -180px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-money.z-hv, .z-hv .i-oper-money {
-    background: url("g/icon_operation_16.png") -180px -20px;
+    background: url("img/icon_operation_16.png") -180px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-money.z-dn, .z-dn .i-oper-money {
-    background: url("g/icon_operation_16.png") -180px -40px;
+    background: url("img/icon_operation_16.png") -180px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-money.z-ds, .z-ds .i-oper-money {
-    background: url("g/icon_operation_16.png") -180px -60px;
+    background: url("img/icon_operation_16.png") -180px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*收藏*/
 .i-oper-favorite {
-    background: url("g/icon_operation_16.png") -200px 0;
+    background: url("img/icon_operation_16.png") -200px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-favorite.z-hv, .z-hv .i-oper-favorite {
-    background: url("g/icon_operation_16.png") -200px -20px;
+    background: url("img/icon_operation_16.png") -200px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-favorite.z-dn, .z-dn .i-oper-favorite {
-    background: url("g/icon_operation_16.png") -200px -40px;
+    background: url("img/icon_operation_16.png") -200px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-favorite.z-ds, .z-ds .i-oper-favorite {
-    background: url("g/icon_operation_16.png") -200px -60px;
+    background: url("img/icon_operation_16.png") -200px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*设置*/
 .i-oper-setup {
-    background: url("g/icon_operation_16.png") -220px 0;
+    background: url("img/icon_operation_16.png") -220px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-setup.z-hv, .z-hv .i-oper-setup {
-    background: url("g/icon_operation_16.png") -220px -20px;
+    background: url("img/icon_operation_16.png") -220px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-setup.z-dn, .z-dn .i-oper-setup {
-    background: url("g/icon_operation_16.png") -220px -40px;
+    background: url("img/icon_operation_16.png") -220px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-setup.z-ds, .z-ds .i-oper-setup {
-    background: url("g/icon_operation_16.png") -220px -60px;
+    background: url("img/icon_operation_16.png") -220px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*历史*/
 .i-oper-history {
-    background: url("g/icon_operation_16.png") -240px 0;
+    background: url("img/icon_operation_16.png") -240px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-history.z-hv, .z-hv .i-oper-history {
-    background: url("g/icon_operation_16.png") -240px -20px;
+    background: url("img/icon_operation_16.png") -240px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-history.z-dn, .z-dn .i-oper-history {
-    background: url("g/icon_operation_16.png") -240px -40px;
+    background: url("img/icon_operation_16.png") -240px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-history.z-ds, .z-ds .i-oper-history {
-    background: url("g/icon_operation_16.png") -240px -60px;
+    background: url("img/icon_operation_16.png") -240px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*提示*/
 .i-oper-tip {
-    background: url("g/icon_operation_16.png") -260px 0;
+    background: url("img/icon_operation_16.png") -260px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-tip.z-hv, .z-hv .i-oper-tip {
-    background: url("g/icon_operation_16.png") -260px -20px;
+    background: url("img/icon_operation_16.png") -260px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-tip.z-dn, .z-dn .i-oper-tip {
-    background: url("g/icon_operation_16.png") -260px -40px;
+    background: url("img/icon_operation_16.png") -260px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-tip.z-ds, .z-ds .i-oper-tip {
-    background: url("g/icon_operation_16.png") -260px -60px;
+    background: url("img/icon_operation_16.png") -260px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*刷新*/
 .i-oper-refresh {
-    background: url("g/icon_operation_16.png") -320px 0;
+    background: url("img/icon_operation_16.png") -320px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-refresh.z-hv, .z-hv .i-oper-refresh {
-    background: url("g/icon_operation_16.png") -320px -20px;
+    background: url("img/icon_operation_16.png") -320px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-refresh.z-dn, .z-dn .i-oper-refresh {
-    background: url("g/icon_operation_16.png") -320px -40px;
+    background: url("img/icon_operation_16.png") -320px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-refresh.z-ds, .z-ds .i-oper-refresh {
-    background: url("g/icon_operation_16.png") -320px -60px;
+    background: url("img/icon_operation_16.png") -320px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*二维码*/
 .i-oper-qrcode {
-    background: url("g/icon_operation_16.png") -340px 0;
+    background: url("img/icon_operation_16.png") -340px 0;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-qrcode.z-hv, .z-hv .i-oper-qrcode {
-    background: url("g/icon_operation_16.png") -340px -20px;
+    background: url("img/icon_operation_16.png") -340px -20px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-qrcode.z-dn, .z-dn .i-oper-qrcode {
-    background: url("g/icon_operation_16.png") -340px -40px;
+    background: url("img/icon_operation_16.png") -340px -40px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-qrcode.z-ds, .z-ds .i-oper-qrcode {
-    background: url("g/icon_operation_16.png") -340px -60px;
+    background: url("img/icon_operation_16.png") -340px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*签到*/
 .i-oper-sign {
-    background: url("g/icon_operation_16.png") 0 -80px;
+    background: url("img/icon_operation_16.png") 0 -80px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-sign.z-hv, .z-hv .i-oper-sign {
-    background: url("g/icon_operation_16.png") 0 -100px;
+    background: url("img/icon_operation_16.png") 0 -100px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-sign.z-dn, .z-dn .i-oper-sign {
-    background: url("g/icon_operation_16.png") 0 -120px;
+    background: url("img/icon_operation_16.png") 0 -120px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-sign.z-ds, .z-ds .i-oper-sign {
-    background: url("g/icon_operation_16.png") 0 -140px;
+    background: url("img/icon_operation_16.png") 0 -140px;
     width: 16px;
     height: 16px;
 }
 
 /*查看*/
 .i-oper-view {
-    background: url("g/icon_operation_16.png") -60px -80px;
+    background: url("img/icon_operation_16.png") -60px -80px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-view.z-hv, .z-hv .i-oper-view {
-    background: url("g/icon_operation_16.png") -60px -100px;
+    background: url("img/icon_operation_16.png") -60px -100px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-view.z-dn, .z-dn .i-oper-view {
-    background: url("g/icon_operation_16.png") -60px -120px;
+    background: url("img/icon_operation_16.png") -60px -120px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-view.z-ds, .z-ds .i-oper-view {
-    background: url("g/icon_operation_16.png") -60px -140px;
+    background: url("img/icon_operation_16.png") -60px -140px;
     width: 16px;
     height: 16px;
 }
 
 /*同意*/
 .i-oper-pass {
-    background: url("g/icon_operation_16.png") -80px -80px;
+    background: url("img/icon_operation_16.png") -80px -80px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-pass.z-hv, .z-hv .i-oper-pass {
-    background: url("g/icon_operation_16.png") -80px -100px;
+    background: url("img/icon_operation_16.png") -80px -100px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-pass.z-dn, .z-dn .i-oper-pass {
-    background: url("g/icon_operation_16.png") -80px -120px;
+    background: url("img/icon_operation_16.png") -80px -120px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-pass.z-ds, .z-ds .i-oper-pass {
-    background: url("g/icon_operation_16.png") -80px -140px;
+    background: url("img/icon_operation_16.png") -80px -140px;
     width: 16px;
     height: 16px;
 }
 
 /*驳回*/
 .i-oper-reject {
-    background: url("g/icon_operation_16.png") -100px -80px;
+    background: url("img/icon_operation_16.png") -100px -80px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-reject.z-hv, .z-hv .i-oper-reject {
-    background: url("g/icon_operation_16.png") -100px -100px;
+    background: url("img/icon_operation_16.png") -100px -100px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-reject.z-dn, .z-dn .i-oper-reject {
-    background: url("g/icon_operation_16.png") -100px -120px;
+    background: url("img/icon_operation_16.png") -100px -120px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-reject.z-ds, .z-ds .i-oper-reject {
-    background: url("g/icon_operation_16.png") -100px -140px;
+    background: url("img/icon_operation_16.png") -100px -140px;
     width: 16px;
     height: 16px;
 }
 
 /*取消*/
 .i-oper-cancel {
-    background: url("g/icon_operation_16.png") -120px -80px;
+    background: url("img/icon_operation_16.png") -120px -80px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-cancel.z-hv, .z-hv .i-oper-cancel {
-    background: url("g/icon_operation_16.png") -120px -100px;
+    background: url("img/icon_operation_16.png") -120px -100px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-cancel.z-dn, .z-dn .i-oper-cancel {
-    background: url("g/icon_operation_16.png") -120px -120px;
+    background: url("img/icon_operation_16.png") -120px -120px;
     width: 16px;
     height: 16px;
 }
 
 .i-oper-cancel.z-ds, .z-ds .i-oper-cancel {
-    background: url("g/icon_operation_16.png") -120px -140px;
+    background: url("img/icon_operation_16.png") -120px -140px;
     width: 16px;
     height: 16px;
 }
 
 /**↑常用操作图标↑**/
 .i-toggle-icon {
-    background: url("g/btn-icon.png") -27px -266px;
+    background: url("img/btn-icon.png") -27px -266px;
     width: 16px;
     height: 16px;
 }
 
 .i-toggle-openicon {
-    background: url("g/btn-icon.png") -27px -247px;
+    background: url("img/btn-icon.png") -27px -247px;
     width: 16px;
     height: 16px;
 }
 
 .i-user {
-    background-image: url("g/icon_user.png");
+    background-image: url("img/icon_user.png");
     width: 60px;
     height: 60px;
 }
 
 .i-user.x-size-xs {
-    background-image: url("g/icon_user_20x20.png");
+    background-image: url("img/icon_user_20x20.png");
     width: 20px;
     height: 20px;
 }
 
 .i-user.x-size-s {
-    background-image: url("g/icon_user_40x40.png");
+    background-image: url("img/icon_user_40x40.png");
     width: 40px;
     height: 40px;
 }
 
 .i-user.x-size-m {
-    background-image: url("g/icon_user_60x60.png");
+    background-image: url("img/icon_user_60x60.png");
     width: 60px;
     height: 60px;
 }
 
 .i-user.x-size-l {
-    background-image: url("g/icon_user_80x80.png");
+    background-image: url("img/icon_user_80x80.png");
     width: 80px;
     height: 80px;
 }
 
 .i-user.x-size-xl {
-    background-image: url("g/icon_user_100x100.png");
+    background-image: url("img/icon_user_100x100.png");
     width: 100px;
     height: 100px;
 }
 
 /**↑图标↑**/
+
+/**↓进度条↓**/
+.w-progress .w-progress-item.z-25 ._up {
+    background-color: #fff000;
+}
+.w-progress .w-progress-item.z-50 ._up {
+    background-color: #ffb527;
+}
+.w-progress .w-progress-item.z-75 ._up {
+    background-color: #fc942d;
+}
+.w-progress .w-progress-item.z-100 ._up {
+    background-color: #72b636;
+}
+/**↑进度条↑**/

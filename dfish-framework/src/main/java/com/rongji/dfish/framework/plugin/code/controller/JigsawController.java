@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * 滑动验证码
  * @author lamontYu
  * @date 2019-12-09
+ * @since 3.2
  */
 @RequestMapping("/jigsaw")
 public class JigsawController extends BaseActionController {

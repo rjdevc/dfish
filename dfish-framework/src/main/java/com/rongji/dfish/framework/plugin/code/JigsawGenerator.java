@@ -23,9 +23,11 @@ import java.util.Random;
 
 public class JigsawGenerator {
 
-    public static final String KEY_CHECKCODE = "com.rongji.dfish.CHECKCODE.JIGSAW";
-    public static final String KEY_GENERATOR_COUNT = "com.rongji.dfish.CHECKCODE.COUNT";
-    public static final String KEY_LOCK_TIME = "com.rongji.dfish.CHECKCODE.LOCK";
+    public static final String KEY_CAPTCHA = "com.rongji.dfish.CAPTCHA.JIGSAW";
+    @Deprecated
+    public static final String KEY_CHECKCODE = KEY_CAPTCHA;
+    private static final String KEY_CAPTCHA_COUNT = "com.rongji.dfish.CAPTCHA.COUNT";
+    private static final String KEY_CAPTCHA_LOCK = "com.rongji.dfish.CAPTCHA.LOCK";
 
     /**
      * 大图宽度
@@ -42,7 +44,7 @@ public class JigsawGenerator {
     /**
      * 验证图片目录
      */
-    private String imageFolder = "m/jigsaw/";
+    private String imageFolder = "x/jigsaw/";
     /**
      * 误差范围
      */
@@ -164,26 +166,26 @@ public class JigsawGenerator {
 //        }
         HttpSession session = request.getSession();
         // 目前反暴力刷图策略暂时以session来判断,以后完善可以增加ip判断
-        Integer generatorCount = (Integer) session.getAttribute(KEY_GENERATOR_COUNT);
+        Integer generatorCount = (Integer) session.getAttribute(KEY_CAPTCHA_COUNT);
         JigsawImgResult jigsaw = new JigsawImgResult();
 
         if (generatorCount == null) {
             generatorCount = 0;
         } else if (generatorCount >= maxErrorCount) {
             // FIXME 暂不做控制,需要和前端配合
-            Long lastLockTime = (Long) session.getAttribute(KEY_LOCK_TIME);
+            Long lastLockTime = (Long) session.getAttribute(KEY_CAPTCHA_LOCK);
 
             long leftTimeout = 0;
             if (lastLockTime == null) {
-                session.setAttribute(KEY_LOCK_TIME, System.currentTimeMillis());
+                session.setAttribute(KEY_CAPTCHA_LOCK, System.currentTimeMillis());
                 leftTimeout = timeout;
             } else {
                 // 剩余时间
                 leftTimeout = timeout - (System.currentTimeMillis() - lastLockTime);
                 if (leftTimeout <= 0) {
                     generatorCount = 0;
-                    session.removeAttribute(KEY_GENERATOR_COUNT);
-                    session.removeAttribute(KEY_LOCK_TIME);
+                    session.removeAttribute(KEY_CAPTCHA_COUNT);
+                    session.removeAttribute(KEY_CAPTCHA_LOCK);
                 }
             }
             if (leftTimeout > 0) {
@@ -192,7 +194,7 @@ public class JigsawGenerator {
                 return jigsaw;
             }
         }
-        session.setAttribute(KEY_GENERATOR_COUNT, ++generatorCount);
+        session.setAttribute(KEY_CAPTCHA_COUNT, ++generatorCount);
 
         // 图片周边预留1/8的位置
         int minWidthPosition = bigWidth >> 3;
@@ -220,7 +222,7 @@ public class JigsawGenerator {
             }
         }
         if (Utils.isEmpty(imageFiles)) {
-            throw new MarkedException("验证码拼图缺少范例图片");
+            throw new MarkedException("验证码拼图缺少图片，请在该路径下补充图片[" + getImageRawDir() + "]");
         }
         int fileIndex = RANDOM.nextInt(imageFiles.size());
         File rawFile = imageFiles.get(fileIndex);
@@ -229,7 +231,7 @@ public class JigsawGenerator {
         JigsawImgItem bigImg = generatorBigImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
         JigsawImgItem smallImg = generatorSmallImage(jigsawFileName, rawFile, x, y, smallSize, smallSize);
         // 将验证码放到session中
-        session.setAttribute(KEY_CHECKCODE, x);
+        session.setAttribute(KEY_CAPTCHA, x);
 
         jigsaw.setBig(bigImg);
         jigsaw.setSmall(smallImg);
@@ -269,13 +271,13 @@ public class JigsawGenerator {
         }
         double customOffset = offset.doubleValue() * (bigWidth - smallSize) / bigWidth;
         HttpSession session = request.getSession();
-        Integer realOffset = (Integer) session.getAttribute(KEY_CHECKCODE);
+        Integer realOffset = (Integer) session.getAttribute(KEY_CAPTCHA);
         // 小于误差范围内都是校验成功
         boolean match = realOffset != null && Math.abs((customOffset - realOffset) / realOffset) <= errorRange;
         if (match) {
             // 匹配成功,清理数据
-            session.removeAttribute(KEY_GENERATOR_COUNT);
-            session.removeAttribute(KEY_LOCK_TIME);
+            session.removeAttribute(KEY_CAPTCHA_COUNT);
+            session.removeAttribute(KEY_CAPTCHA_LOCK);
             // KEY_CHECKCODE数据不能清理,需要二次验证
         }
         return match;
@@ -311,10 +313,8 @@ public class JigsawGenerator {
      * @throws Exception
      */
     private JigsawImgItem generatorBigImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
-        FileInputStream input = null;
         FileOutputStream output = null;
-        try {
-            input = new FileInputStream(rawFile);
+        try (FileInputStream input = new FileInputStream(rawFile)){
             String fileExtName = FileUtil.getFileExtName(rawFile.getName());
             String destFileName = jigsawFileName + "-B" + fileExtName;
             File tempDestFile = getTempDestFile(destFileName);
@@ -335,9 +335,6 @@ public class JigsawGenerator {
 
             return parseImg(destFileName, rawImage.getWidth(), rawImage.getHeight());
         } finally {
-            if (input != null) {
-                input.close();
-            }
             if (output != null) {
                 output.close();
             }
@@ -357,10 +354,8 @@ public class JigsawGenerator {
      * @throws Exception
      */
     private JigsawImgItem generatorSmallImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
-        FileInputStream input = null;
         FileOutputStream output = null;
-        try {
-            input = new FileInputStream(rawFile);
+        try (FileInputStream input = new FileInputStream(rawFile)){
             String fileExtName = FileUtil.getFileExtName(rawFile.getName());
             String destFileName = jigsawFileName + "-S" + fileExtName;
             File tempDestFile = getTempDestFile(destFileName);
@@ -399,11 +394,8 @@ public class JigsawGenerator {
             // 输出图片
             ImageIO.write(destImage, getRealExtName(fileExtName), output);
 
-            return parseImg(destFileName, width, height);
+            return parseImg(destFileName, destImage.getWidth(), destImage.getHeight());
         } finally {
-            if (input != null) {
-                input.close();
-            }
             if (output != null) {
                 output.close();
             }

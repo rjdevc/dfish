@@ -1,12 +1,11 @@
 package com.rongji.dfish.framework.plugin.file.service;
 
+import com.rongji.dfish.base.util.JsonUtil;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.FrameworkService;
-import com.rongji.dfish.base.util.JsonUtil;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.InputStream;
@@ -403,7 +402,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
                 List<UploadItem> itemList = JsonUtil.parseArray(itemJson, UploadItem.class);
                 return itemList;
             } catch (Exception e) {
-                FrameworkHelper.LOG.error("转换成文件数据项异常", e);
+                LogUtil.error("转换成文件数据项异常", e);
             }
         }
         return Collections.emptyList();
@@ -440,7 +439,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
                 }
                 fileIds.add(fileId);
             } catch (Exception e) {
-                FrameworkHelper.LOG.error("文件编号解析异常", e);
+                LogUtil.error("文件编号解析异常", e);
             }
         }
         return fileIds;

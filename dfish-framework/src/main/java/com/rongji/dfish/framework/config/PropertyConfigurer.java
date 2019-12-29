@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.config;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.config.impl.DefaultPropertyCryptor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -63,7 +63,7 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 				try {
 	                value = propertyCryptor.decrypt(value); // 解密密文
                 } catch (Exception e) {
-	                FrameworkHelper.LOG.error("配置解密失败[" + key + "]", e);
+	                LogUtil.error("配置解密失败[" + key + "]", e);
                 }
 				// 解密完成后,将配置名称的密文标识去除,设置加进去
 				encryptProps.put(key.substring(0, key.length() - suffixLength), value);

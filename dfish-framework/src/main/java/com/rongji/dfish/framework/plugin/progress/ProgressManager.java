@@ -105,7 +105,7 @@ public class ProgressManager {
         } catch (Exception e) {
             String errorMsg = "进度数据异常@" + System.currentTimeMillis();
             // 正常情况一般不会报错
-            FrameworkHelper.LOG.error(errorMsg, e);
+            LogUtil.error(errorMsg, e);
             throw new MarkedRuntimeException(errorMsg);
         }
         return responseData;
@@ -251,7 +251,7 @@ public class ProgressManager {
 //            return new Loading(null).setId(ID_LOADING).setNode(progress);
 //        } else {
 //            String errorMsg = "添加进度条队列失败@" + System.currentTimeMillis();
-//            FrameworkHelper.LOG.warn(errorMsg + "[" + progressKey + "]");
+//            LogUtil.warn(errorMsg + "[" + progressKey + "]");
 //            return new Alert(errorMsg);
 //        }
 //    }
@@ -375,7 +375,7 @@ public class ProgressManager {
                                 errorCode = ((Marked) e).getCode();
                             } else {
                                 errorMsg = "进度条运行异常@" + System.currentTimeMillis();
-                                FrameworkHelper.LOG.error(errorMsg, e);
+                                LogUtil.error(errorMsg, e);
                             }
                             ProgressData progressData = getProgressData(progressKey);
                             if (progressData != null) {

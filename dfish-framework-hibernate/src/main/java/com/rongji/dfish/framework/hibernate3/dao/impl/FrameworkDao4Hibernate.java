@@ -4,7 +4,6 @@ import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dao.impl.AbstractFrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;
@@ -166,7 +165,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         try {
             id = (ID) getter.invoke(entity);
         } catch (Exception e) {
-            FrameworkHelper.LOG.error("", e);
+            LogUtil.error("", e);
         }
         return id;
     }

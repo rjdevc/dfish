@@ -122,7 +122,7 @@ public class BaseActionController extends MultiActionController {
 //						f.name = fieldName;
 //					}
 //				} catch (Exception e) {
-//					FrameworkHelper.LOG.warn("获取属性(" + f.name + ")异常,将采用(" + fieldName + ")来获取页面参数值@" + clz.getName());
+//					LogUtil.warn("获取属性(" + f.name + ")异常,将采用(" + fieldName + ")来获取页面参数值@" + clz.getName());
 //					f.name = fieldName;
 //				}
                 c.formats.add(f);
@@ -148,7 +148,7 @@ public class BaseActionController extends MultiActionController {
                 try {
                     format.bind(request, obj);
                 } catch (UnsupportedOperationException e) {
-                    FrameworkHelper.LOG.warn("数据绑定异常@" + format.type.getName() + "." + format.name, e);
+                    LogUtil.warn("数据绑定异常@" + format.type.getName() + "." + format.name, e);
                     // 将不支持的绑定属性移除
                     iter.remove();
                 }
@@ -355,10 +355,10 @@ public class BaseActionController extends MultiActionController {
             String errMsg = null;
             if (cause instanceof SocketException) {
                 errMsg = "网络异常@" + System.currentTimeMillis();
-                FrameworkHelper.LOG.error(requestJson + "\r\n" + errMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
+                LogUtil.error(requestJson + "\r\n" + errMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
             } else {
                 errMsg = "系统内部错误@" + System.currentTimeMillis();
-                FrameworkHelper.LOG.error(requestJson + "\r\n" + errMsg, e);
+                LogUtil.error(requestJson + "\r\n" + errMsg, e);
             }
             jsonResponse.setErrMsg(errMsg);
         }

@@ -1,12 +1,11 @@
 package com.rongji.dfish.base.info;
 
-import java.awt.Graphics2D;
+import com.rongji.dfish.base.util.LogUtil;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * 类信息
@@ -15,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
  * @version 1.0
  */
 public final class LibrayInfo {
-	private static final Log LOG=LogFactory.getLog(LibrayInfo.class);
 //    /**
 //     * 类路径
 //     */
@@ -109,7 +107,7 @@ public final class LibrayInfo {
             if(!libPathStr.startsWith(File.separator)) {
                 libPathStr=File.separator+libPathStr;
             }
-           	LOG.info("==============================================" +
+           	LogUtil.info("==============================================" +
            			"\r\nurl.getProtocol() = "+ url.getProtocol()+
            			"\r\nurl.getFile() = "+ url.getFile()+
            			"\r\nbasePath = "+ basePath+
@@ -132,7 +130,7 @@ public final class LibrayInfo {
                 }
                 libPathStr=basePath.substring(0,lastFileSep);
             }
-            LOG.info("=============================================="+
+            LogUtil.info("=============================================="+
            			"\r\nurl.getProtocol() = "+ url.getProtocol()+
            			"\r\nurl.getFile() = "+ url.getFile()+
            			"\r\nbasePath = "+ basePath+

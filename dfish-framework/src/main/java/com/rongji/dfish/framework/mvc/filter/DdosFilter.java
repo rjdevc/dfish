@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.mvc.filter;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.base.util.JsonUtil;
 
@@ -120,13 +121,13 @@ public class DdosFilter implements Filter{
 				uriConfigs.put(c.getUri(), c.getTimes());
 			}
 		}catch(Exception ex){
-			FrameworkHelper.LOG.error("init DdosFilter uris fails", ex);
+			LogUtil.error("init DdosFilter uris fails", ex);
 		}
 		try{
 			String strInterval=config.getInitParameter("interval");
 			interval=Long.parseLong(strInterval);
 		}catch(Exception ex){
-			FrameworkHelper.LOG.error("init DdosFilter interval fails", ex);
+			LogUtil.error("init DdosFilter interval fails", ex);
 		}
 	}
 

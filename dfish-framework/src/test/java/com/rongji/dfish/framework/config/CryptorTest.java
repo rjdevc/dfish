@@ -28,7 +28,7 @@ public class CryptorTest {
     public void decrypt() {
         Cryptor cryptor = CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH, "DFish@RJ002474").build();
 
-        String enStr = "5F73FHNBVVQWDZPA8AACVZEYVW";
+        String enStr = "42EAHECSTJZQV0ZMH7Z5TY55AR";
         System.out.println(enStr + "->" + cryptor.decrypt(enStr));
     }
 

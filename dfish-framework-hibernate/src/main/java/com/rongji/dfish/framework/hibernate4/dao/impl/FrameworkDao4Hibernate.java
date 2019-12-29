@@ -166,7 +166,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         try {
             id = (ID) getter.invoke(entity);
         } catch (Exception e) {
-            FrameworkHelper.LOG.error("", e);
+            LogUtil.error("", e);
         }
         return id;
     }

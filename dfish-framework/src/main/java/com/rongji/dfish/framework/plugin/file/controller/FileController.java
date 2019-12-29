@@ -59,6 +59,8 @@ public class FileController extends BaseActionController {
     @Resource(name = "fileHandleManager")
     private FileHandleManager fileHandleManager;
 
+    private String defaultImageFolder = "x/default/img/";
+
     public FileService getFileService() {
         return fileService;
     }
@@ -73,6 +75,17 @@ public class FileController extends BaseActionController {
 
     public void setFileHandleManager(FileHandleManager fileHandleManager) {
         this.fileHandleManager = fileHandleManager;
+    }
+
+    public String getDefaultImageFolder() {
+        return defaultImageFolder;
+    }
+
+    public void setDefaultImageFolder(String defaultImageFolder) {
+        if (defaultImageFolder != null && !defaultImageFolder.endsWith("/")) {
+            defaultImageFolder += "/";
+        }
+        this.defaultImageFolder = defaultImageFolder;
     }
 
     private Map<String, FileUploadPlugin> uploadPluginMap = new HashMap<>();
@@ -533,7 +546,7 @@ public class FileController extends BaseActionController {
             }
 
             // 这里可能考虑重定向到具体文件目录去
-            File defaultImageFile = new File(SystemContext.getInstance().get(ServletInfo.class).getServletRealPath() + "m/default/img/" + defaultIcon);
+            File defaultImageFile = new File(SystemContext.getInstance().get(ServletInfo.class).getServletRealPath() + defaultImageFolder + defaultIcon);
             if (defaultImageFile.exists()) {
                 downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length())
                         .setLastModified(new Date(defaultImageFile.lastModified()));

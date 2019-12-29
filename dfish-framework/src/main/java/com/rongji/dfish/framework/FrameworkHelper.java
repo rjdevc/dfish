@@ -8,16 +8,13 @@
  */
 package com.rongji.dfish.framework;
 
-import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.context.SystemContext;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.config.PersonalConfigHolder;
 import com.rongji.dfish.framework.config.SystemConfigHolder;
 import com.rongji.dfish.framework.info.ServletInfo;
-import com.rongji.dfish.framework.util.WrappedLog;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 
@@ -56,8 +53,6 @@ public class FrameworkHelper{
 	 * 默认字符集
 	 */
 	public static final String ENCODING = ENCODINGS[INT_ENCODING_UTF_8];
-	
-	public static final Log LOG = new WrappedLog(LogFactory.getLog(FrameworkHelper.class));
 	
 	/**
 	 * 登录人员信息在session中的名字
@@ -161,7 +156,7 @@ public class FrameworkHelper{
 			}
 			return rb;
 		} catch (MissingResourceException ex) {
-			LOG.error("can not find language resource file: " + ex.getClassName(), ex);
+			LogUtil.error("can not find language resource file: " + ex.getClassName(), ex);
 			throw ex;
 		}
 	}
@@ -479,7 +474,7 @@ public class FrameworkHelper{
 				sb.append("]\r\n");
 			}
 		}
-		LOG.info(sb);
+		LogUtil.info(sb);
 	}
 	/**
 	 * <p>取得某个路径下的文本文档的内容</p>

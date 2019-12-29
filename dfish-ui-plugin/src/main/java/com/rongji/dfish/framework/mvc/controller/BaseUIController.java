@@ -86,7 +86,7 @@ public class BaseUIController extends BaseActionController {
 				String code = ((Marked) cause).getCode();
 				if (Utils.notEmpty(code)) {
 //					if (cast.getCode().startsWith("DFISH")) {
-//						FrameworkHelper.LOG.error("==========系统异常==========", e);
+//						LogUtil.error("==========系统异常==========", e);
 //					}
 					alertMsg += "(" + code + ")";
 				}
