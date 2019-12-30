@@ -55,7 +55,8 @@ br = $.br = (function() {
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
 		ie = navigator.appName === 'Microsoft Internet Explorer', // ie version <= 10
 		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) )),
-		chm = u.match( /\bchrome\/(\d+)/ );
+		chm = u.match( /\bchrome\/(\d+)/ ),
+		mbi = !!u.match( /\bmobile\b/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
 	return {
@@ -65,11 +66,11 @@ br = $.br = (function() {
 		ie10	: ie && d === 10,
 		ms		: ie || n, // 微软的浏览器( ie所有系列 )
 		chm		: chm && parseFloat( chm[ 1 ] ),
-		mobile  : !!u.match( /\bmobile\b/ ),
+		mobile  : mbi,
 		fox		: u.indexOf( 'firefox' ) > 0,
 		safari  : !chm && u.indexOf( 'safari' ) > 0,
 		css3	: !(ie && d < 9),
-		scroll	: 17,
+		scroll	: mbi ? 0 : 17,
 		chdiv	: function( a, b, c ) {
 			if ( typeof b === _FUN ) {
 				c = b, b = '1';
@@ -546,6 +547,18 @@ _idsAny = $.idsAny = function( s, n, p ) {
 	if ( (n = String( n )).indexOf( p ) > -1 ) {
 		for ( var i = 0, b = n.split( p ), l = b.length; i < l; i ++ )
 			if ( (p + s + p).indexOf( p + b[ i ] + p ) > -1 ) return T;
+	} else
+		return (p + s + p).indexOf( p + n + p ) > -1;
+},
+// s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
+_idsAll = $.idsAll = function( s, n, p ) {
+	if ( ! s ) return F;
+	if ( ! n || s == n ) return T;
+	if ( ! p ) p = ',';
+	if ( (n = String( n )).indexOf( p ) > -1 ) {
+		for ( var i = 0, b = n.split( p ), l = b.length; i < l; i ++ )
+			if ( (p + s + p).indexOf( p + b[ i ] + p ) === -1 ) return F;
+		return T;
 	} else
 		return (p + s + p).indexOf( p + n + p ) > -1;
 },
@@ -1690,6 +1703,10 @@ function _compatDOM() {
 		(tmp = doc.createEvent( 'HTMLEvents' )).initEvent( 'eventemu', T, T );
 		win.dispatchEvent( tmp );
 	}	
+	(tmp = doc.createElement( 'div' )).innerHTML = '1';
+	if ( ! tmp.currentStyle ) {
+		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
+	}	
 }
 function _compatDOMPC() {
 	var tmp;
@@ -1778,10 +1795,7 @@ function _compatDOMPC() {
 			return str + ">" + this.innerHTML + "</" + this.tagName + ">";
 		});
 	}
-	if ( ! tmp.currentStyle ) {
-		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
-	}
-	_rm( tmp );
+	//_rm( tmp );
 	// 检测浏览器自带滚动条的宽度
 	br.chdiv( 'f-scroll-overflow', function() { br.scroll = 50 - this.clientWidth; } );
 }
@@ -2135,16 +2149,19 @@ _merge( $, {
 	},
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
-		var d, f;
+		var d, f, m = function ( e ) { e.preventDefault(); };
 		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
-		_attach( doc, 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
-		_attach( doc, 'mouseup', function( e ) {
+		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
+		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
 			b && b( ie ? Q.event.fix( e ) : e );
-			_detach( doc, 'mousemove', d, T );
-			_detach( doc, 'mouseup', arguments.callee, T );
+			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', d, T );
+			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
 			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
+			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
 			c && _rm( c );
 		}, T );
+		// 业务拖动时禁用浏览器默认的拖动效果
+		br.mobile && doc.addEventListener( 'touchmove', m, { passive: F } );
 	},
 	// @a -> el, b -> type, c -> fast|normal|slow (.2s|.5s|1s), d -> fn 结束后执行的函数
 	animate: function( a, b, c, d ) {
@@ -2204,7 +2221,7 @@ _merge( $, {
 		return function( x, f ) {
 			var s = [], d = [];
 			if ( ! $( did ) ) {
-				_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
+				_classAdd( cvs, (br.css3 ? 'f-css3' : 'f-css2') + (br.mobile ? ' f-mobile' : '') );
 				var k = location.protocol + '//' + location.host + _ui_path + 'g/';
 				_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
 				s.push( _ui_path + 'dfish.css' );

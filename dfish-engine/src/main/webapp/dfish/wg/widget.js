@@ -15,6 +15,7 @@ mbi = br.mobile,
 cfg = $.x,
 eve = $.abbr + '.e(this)',
 evw = $.abbr + '.w(this)',
+ev_down = mbi ? 'ontouchstart=' : 'onmousedown=',
 plus = window.plus,
 _dfopt	= cfg.default_option || {},
 _number = $.number,
@@ -30,6 +31,29 @@ _all = $.all, _globals = $.globals, _viewCache = {}, _formatCache = {},
 // 引入dfish后会产生一个不可见的原始view，所有widget从这个view起始。调用 VM() 会返回这个view
 _docView,
 abbr = function( a ) { return $.abbr + '.all["' + a.id + '"]' },
+// 存放有样式的default_option
+_dfcls = (function() {
+	var r = {};
+	for ( var k in _dfopt ) {
+		if ( k.indexOf( '.' ) > 0 ) {
+			var a = $.strFrom( k, '.' ).replace( /\./g, ' ' ), b = $.strTo( k, '.' );
+			(r[ b ] || (r[ b ] = {}))[ a ] = _dfopt[ k ];
+		}
+	}
+	return r;
+})(),
+// 获取widget的默认配置项 /@a -> type, b -> cls
+_getDefaultOption = function( a, b ) {
+	var y = _dfopt[ a ];
+	if ( _dfcls[ a ] ) {
+		var d = _dfcls[ a ], z;
+		for ( var k in d ) {
+			$.idsAll( b, k, ' ' ) && $.mergeDeep( z || (z = {}), d[ k ] );
+		}
+		z && (y = $.extendDeep( z, y ));
+	}
+	return y;
+},
 // 模板集合
 _templateCache = {},
 // 注册模板  /@a -> id, b -> template body
@@ -3428,6 +3452,42 @@ ButtonSplit = define.widget( 'button/split', {
 		}
 	}
 } ),
+/* `tabs` */
+Tabs = define.widget( 'tabs', {
+	Const: function( x, p ) {
+		this.id = $.uid( this );
+		var s = x.position, t = s === 'bottom' || s === 'right', y = $.extend( { type: t ? 'vert' : 'horz' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
+			if ( n[ i ].type === 'split' ) {
+				b.push( n[ i ] );
+			} else {
+				b.push( $.extend( { type: 'tab', focusable: T }, n[ i ], x.pub, e && e.pub ) );
+				c.push( n[ i ].target );
+				b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'page' + i);
+				!d && (d = b[ i ].focus && b[ i ]);
+			}
+		}
+		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
+		var r = { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b };
+		y.nodes = [ { type: 'frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
+		y.nodes[ t ? 'push' : 'shift' ]( r );
+		delete y.pub;
+		Vert.call( this, y, p );
+		this.buttonbar = this[ 0 ];
+		this.frame = this[ 1 ];
+	},
+	Extend: 'vert',
+	Prototype: {
+		className: 'w-tabs'
+	}
+} ),
+/* `tab` */
+Tab = define.widget( 'tab', {
+	Extend: 'button',
+	Prototype: {
+		className: 'w-tab'
+	}
+} ),
 /* `album` */
 Album = define.widget( 'album', {
 	Const: function( x ) {
@@ -5894,7 +5954,7 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padrow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', ownproperty: T, snap: a.isFormWidget ? a.$( 'f' ) : a, cls: 'w-calendar-dialog w-form-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, cover: mbi, node: x,
+			return o.exec( { type: 'dialog', ownproperty: T, snap: a.isFormWidget ? a.$( 'f' ) : a, cls: 'w-calendar-dialog w-form-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
@@ -6244,7 +6304,7 @@ _Date = define.widget( 'date', {
 			click: {
 				occupy: T,
 				method: function() {
-					! mbi && this.isNormal() && this.popCalendar();
+					! F && this.isNormal() && this.popCalendar();
 				}
 			},
 			input: mbi && {
@@ -6307,6 +6367,11 @@ _Date = define.widget( 'date', {
 			} else
 				this.x.value = a;
 		} : Text.prototype.val,
+		v2t: function( v ) {
+			for ( var i = 0, b = v.split( ',' ), s = []; v && i < b.length; i ++ )
+				s.push( '"' + b[ i ] + '"' );
+			return s.join( ' ' );
+		},
 		clkhdr: mbi ? function( e ) {
 			this.$t().click();
 		} : Text.prototype.clkhdr,
@@ -6322,23 +6387,23 @@ _Date = define.widget( 'date', {
 				var self = this;
 				this.cal = Calendar.pop( this, this.x.format, v, v, n, m, function( d ) { d && self.val( $.dateFormat( d, self.x.format ) ); self.focus(); self.cal.close(); } );
 			}
-			this.focus();
+			!mbi && this.focus();
 		},
 		closePop: function() {
 			this.cal && this.cal.close();
 			this.list && this.list.close();
 		},
 		html_btn: function() {
-			return '<em class="f-boxbtn" onclick=' + eve + '></em>';
+			return '<label ' + (F ? 'for="' + this.id + 't"' : 'onclick=' + eve) + ' class="f-boxbtn _pick"><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
 		},
 		input_prop_value: function() {
 			var v = $.strEscape(this.x.value == N ? '' : ('' + this.x.value));
-			return mbi ? v.replace( ' ', 'T' ) : v;
+			return F ? v.replace( ' ', 'T' ) : v;
 		},
 		html_input: function() {
-			var v = this.x.value || '';
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-boxbtn f-fix _a" style="width:' + this.innerWidth() + 'px;">' + (this.x.value || '') + '</label>' :
-				'<input type=text' + this.input_prop() + '>';
+			var v = (F || this.x.multiple) && this.input_prop_value();
+			return F ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix _a">' + v.replace( 'T', ' ' ) + '</label>' :
+				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),
@@ -6455,7 +6520,7 @@ Spinner = define.widget( 'spinner', {
 	},
 	Extend: Text,
 	Default: {
-		width: mbi ? 125 : 100
+		width: mbi ? 160 : 100
 	},
 	Listener: {
 		body: {
@@ -6540,11 +6605,11 @@ Spinner = define.widget( 'spinner', {
 			return v ? $.numDecimal( v, this.x.decimal ) : '';
 		},
 		html_btn: function() {
-			return this.x.showbtn === F ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)><i class=f-vi></i>-</cite>' :
+			return this.x.showbtn === F ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)>&minus;</cite><cite class="f-inbl _r" onclick=' + evw + '.step(1)>&plus;</cite>' :
 				'<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
 		},
 		html_input: function() {
-			return mbi ? '<input type=number' + this.input_prop() + '><cite class="f-inbl _r" onclick=' + evw + '.step(1)><i class=f-vi></i>+</cite>' :
+			return mbi ? '<input type=number' + this.input_prop() + '>' :
 				'<input type=text' + this.input_prop() + ' w-valuetype="number">';
 		}
 	}
@@ -6594,12 +6659,13 @@ Slider = define.widget( 'slider', {
 		dragstart: function( a, b ) {
 			if ( ! this.isNormal() )
 				return;
-			var x = b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), v = this.$v().value, 
+			var x = b.targetTouches ? b.targetTouches[ 0 ].clientX : b.clientX, m = this.max(), n = this.min(), f = _number( a.style.left ), v = this.$v().value, 
 				g = this.thumbWidth(), w = this.formWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
 				d = this.tip( v || this.min() );
 			self.trigger( 'dragstart' );
 			$.moveup( function( e ) {
-				var l = $.numRange(f + e.clientX - x, 0, w);
+				var c = e.targetTouches ? e.targetTouches[ 0 ].clientX : e.clientX,
+					l = $.numRange(f + c - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
 				a.style.left = l + 'px';
 				$( self.id + 'track' ).style.width = (l + g) + 'px';
@@ -6607,7 +6673,6 @@ Slider = define.widget( 'slider', {
 				$( self.id + 'v' ).value = v;
 				self.addClass( 'z-drag' );
 				self.trigger( 'drag', [ v ] );
-				//console.log($.bcr(a).width);
 			}, function( e ) {
 				d && d.close();
 				self.trigger( 'drop', [ v ] );
@@ -6647,7 +6712,7 @@ Slider = define.widget( 'slider', {
 		html_nodes: function() {
 			var w = this.formWidth(), v = this.x.value == N ? 0 : this.x.value;
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
-				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb onmousedown=' + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
+				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + '.dragstart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
 } ),
@@ -6676,6 +6741,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 		body: {
 			mouseover: {
 				occupy: T,
+				proxy: br.mobile ? 'touchstart' : N,
 				method: function() {
 					if ( ! this.isNormal() ) return;
 					if ( this.loaded ) {
@@ -6824,7 +6890,7 @@ SliderJigsaw = define.widget( 'slider/jigsaw', {
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
 			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
-				' height=100% onmousedown=' + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
+				' height=100% ' + ev_down + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {
 			return '<div class="_s f-fix" id="' + this.id + 'ph"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + this.html_info() + '</span></div>';
@@ -7615,7 +7681,7 @@ Combobox = define.widget( 'combobox', {
 			var s = '';
 			if ( this.x.picker ) {
 				if ( W.isCmd( this.x.picker ) ) {
-					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class="f-i _pick_i"></i><i class=f-vi></i></em>';
 				} else {
 					var g = this.add( this.x.picker, -1, { width: -1 } );
 					g.className += ' f-pick';
@@ -7628,10 +7694,10 @@ Combobox = define.widget( 'combobox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') +
-				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' onfocus=' + eve + ' onblur=' + eve + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
+				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' ' + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" ' + _html_on.call( this ) + '>' + this.html_placeholder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class="_c' + (this.x.nobr === F ? '' : ' f-nobr') + '" id="' + this.id + 'c" onclick=' + eve + '>' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -8132,7 +8198,7 @@ Linkbox = define.widget( 'linkbox', {
 			var s = '';
 			if ( this.x.picker ) {
 				if ( W.isCmd( this.x.picker ) ) {
-					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class=f-i></i></em>';
+					s += '<em class="f-boxbtn _pick" onclick=' + evw + '.pick()><i class="f-i _pick_i"></i><i class=f-vi></i></em>';
 				} else {
 					var g = this.add( this.x.picker, -1, { width: -1 } );
 					g.className += ' f-pick';
@@ -9341,7 +9407,7 @@ GridRow = define.widget( 'grid/row', {
 		W.call( this, x, p, n );
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -9473,7 +9539,7 @@ TD = define.widget( 'td', {
 		W.call( this, x, p );
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		// @implement
 		x_childtype: function( t ) {
 			return _td_wg[ t ] ? 'grid/' + t : t;
@@ -9730,7 +9796,7 @@ TCell = define.widget( 'tcell', {
 		W.call( this, x, p, -1 );
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		x_childtype: $.rt( 'td' ),
 		scaleWidth: function( a ) {
 			var w = 0, l = a.x.colspan || 1, r = this.rootNode, c = a.col, d = r._pad, e;
@@ -9761,7 +9827,7 @@ TBody = define.widget( 'tbody', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		// @implement
 		x_childtype: $.rt( 'tr' ),
 		// @implement
@@ -9860,7 +9926,7 @@ Col = define.widget( 'col', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		th: function() {
 			var t = this.rootNode.thead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
@@ -9886,7 +9952,7 @@ Col = define.widget( 'col', {
 Colgroup = define.widget( 'colgroup', {
 	Extend: 'horz/scale',
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		isScaleCover: T,
 		x_childtype: $.rt( 'col' ),
 		insertCol: function( a, b ) {
@@ -9911,7 +9977,7 @@ Table = define.widget( 'table', {
 	Listener: {
 		body: {
 			resize: function() {
-				if ( br.ms && this.$() ) {
+				if ( (br.ms || mbi) && this.$() ) {
 					var w = this.innerWidth();
 					this.css( 'width', w == N ? 'auto' : w );
 				}
@@ -9919,10 +9985,10 @@ Table = define.widget( 'table', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		html: function() {
 			var s = '<table id=' + this.id + ' class="w-grid-table w-grid-face-' + this.rootNode._face + '" cellspacing=0 cellpadding=' + this.rootNode._pad;
-			if ( br.ms ) {
+			if ( br.ms || mbi ) {
 				var w = this.innerWidth();
 				w != N && (s += ' style="width:' + w + 'px"');
 			}
@@ -9972,7 +10038,7 @@ GridHead = define.widget( 'grid/head', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		className: 'w-grid-thead'
 	}
 } ),
@@ -10002,7 +10068,7 @@ GridBody = define.widget( 'grid/body', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'grid',
+		ROOT_TYPE: 'grid,form',
 		className: 'w-grid-tbody'
 	}
 } ),
@@ -10403,14 +10469,63 @@ Grid = define.widget( 'grid', {
 		}
 	}
 });
+/* `form` */
+Form = define.widget( 'form', {
+	Const: function( x, p ) {
+		var c = [], d = _getDefaultOption( 'form', x.cls ), rows = [], cols = x.cols || 12;
+		for ( var i = 0; i < cols; i ++ ) {
+			c.push( { field: '' + i, width: '*' } );
+		}
+		for ( var i = 0, j = 0, n = x.nodes ? x.nodes.concat() : [], tr = {}, rp = {}; i < n.length; i ++ ) {
+			j == 0 && rows.push( tr );
+			var e = n[ i ], h = rows.length - 1,
+				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
+			$.extend( td, x.pub, d && d.pub );
+			!td.colspan && (td.colspan = -1);
+			td.colspan < 0 && (td.colspan = cols + 1 + td.colspan);
+			(td.colspan > cols) && (td.colspan = cols);
+			if ( td.rowspan ) {
+				for ( var k = 0; k < td.rowspan - 1; k ++ ) {
+					(rp[ h + k + 1 ] || (rp[ h + k + 1 ] = {}))[ j ] = Math.min( cols, td.colspan );
+				}
+			}
+			if ( rp[ h ] ) {
+				for ( var k = j, l = Math.min( cols, j + td.colspan ); k < l; k ++ ) {
+					if ( rp[ h ][ k ] ) {
+						j = k + rp[ h ][ k ];
+						k = j;
+					}
+				}
+			}
+			if ( j + td.colspan > cols ) {
+				(tr = {})[ 0 ] = td;
+				j = td.colspan;
+				rows.push( tr );
+			} else {
+				tr[ j ] = td;
+				j += td.colspan;
+				if ( j >= cols ) {
+					j = 0;
+					tr = {};
+				}
+			}
+		}
+		var y = $.extend( {}, x, { columns: c, tbody: { rows: rows } } );
+		delete y.pub; delete y.nodes;
+		Grid.call( this, y, p );
+	},
+	Extend: 'grid',
+	Prototype: {
+		className: 'w-form'
+	}
+} );
 
 // 向上兼容
 define.widget( 'datepicker', { Extend: 'date' } );
-define.widget( 'form', { Extend: 'html' } );
 define.widget( 'vertical', { Extend: 'vert' } );
 define.widget( 'horizontal', { Extend: 'horz' } );
 define.widget( 'timeline', { Extend: 'html' } );
-define.widget( 'jigsaw', { Extend: 'html' } );
+define.widget( 'jigsaw', { Extend: 'slider/jigsaw', Prototype: { className: 'w-slider-jigsaw' } } );
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;

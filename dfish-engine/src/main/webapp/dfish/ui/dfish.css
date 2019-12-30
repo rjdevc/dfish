@@ -347,9 +347,9 @@
 
 .w-date ._b,.w-muldate ._b{display:inline-block;width:19px;text-align:center;color:#666;cursor:default}
 .w-date ._b:hover,.w-muldate ._b:hover{color:#333}
-.w-date .f-boxbtn,.w-muldate .f-boxbtn{background:url(g/n.png) no-repeat 0 50%}
-.w-date .f-boxbtn:hover,.w-muldate .f-boxbtn:hover{background-position:-25px 50%}
-.w-date.z-ds .f-boxbtn,.w-muldate.z-ds .f-boxbtn{background-position:0 50%;cursor:default}
+.w-datepicker ._pick_i{background:url(g/n.png) no-repeat 0 50%}
+.w-datepicker ._pick:hover ._pick_i{background-position:-25px 50%}
+.w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
 
 .w-range{overflow:visible}
 .w-range .f-sub-horz{vertical-align:middle}
@@ -409,8 +409,8 @@
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}
 .w-combobox ._r{color:#888;font-style:normal;font-family:verdana}
 .w-combobox ._e{display:inline-block;padding:0 2px 0 3px;height:28px;line-height:28px;text-indent:1px;border:0;vertical-align:middle;font-style:normal;outline:none}
-.w-combobox ._pick,.w-pickbox ._pick,.w-onlinebox ._pick,.w-linkbox ._pick,.w-combobox.z-ds ._pick:hover,.w-pickbox.z-ds:hover ._pick,.w-onlinebox.z-ds ._pick:hover{background:url(g/n.png) no-repeat -99px 50%}
-.w-combobox ._pick:hover,.w-linkbox ._pick:hover,.w-onlinebox ._pick:hover,.w-pickbox ._pick:hover{background-position:-124px 50%}
+.w-combobox ._pick_i,.w-pickbox ._pick_i,.w-onlinebox ._pick_i,.w-linkbox ._pick_i,.w-combobox.z-ds ._pick:hover ._pick_i,.w-pickbox.z-ds:hover ._pick ._pick_i,.w-onlinebox.z-ds ._pick:hover ._pick_i{background:url(g/n.png) no-repeat -99px 50%}
+.w-combobox ._pick:hover ._pick_i,.w-linkbox ._pick:hover ._pick_i,.w-onlinebox ._pick:hover ._pick_i,.w-pickbox ._pick:hover ._pick_i{background-position:-124px 50%}
 .w-combobox.z-loading ._t{color:gray}
 .w-combobox.z-loading .w-input-placeholder{display:none}
 .w-combobox.z-ds ._o{background:#ddd}
@@ -469,7 +469,7 @@
 .f-pick{float:right;height:100%;min-height:28px;cursor:pointer}
 .w-img.f-pick .w-img-i{height:100%}
 
-.f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;text-indent:5px;cursor:pointer}
+.f-boxbtn{float:right;width:20px;height:28px;vertical-align:top;cursor:pointer}
 .f-boxbtn .f-arw-b2{border-width:5px;border-top-color:#99a8b8;*margin-top:3px}
 .f-boxbtn:hover .f-arw-b2{border-top-color:#546272}
 .w-form.z-ds .f-boxbtn{cursor:default}
@@ -502,11 +502,11 @@
 .w-checkboxgroup.z-err .w-checkbox ._t + label,.w-radiogroup.z-err .w-radio ._t + label{border-color:#f00}
 /*  CSS3 checkbox  -->   */
 
-.w-switch{height:30px}
+.w-switch{}
 .w-switch ._t{display:none}
 .w-switch ._l{display:inline-block;width:100%;position:relative;height:22px;background:#c0c0c0;background:rgba(0,0,0,0.25);border:1px solid #c1caca;border-radius:20px;color:#fff;vertical-align:middle;cursor:pointer;-webkit-appearance:none;}
 .w-switch ._o{position:absolute;top:1px;left:1px;background:#fff;padding:10px;border-radius:20px;box-shadow:0 2px 4px 0 rgba(0,35,11,0.2);transition:all .12s cubic-bezier(.78, .14, .15, .86);*font-size:0;}
-.w-switch ._n{float:right;margin-left:26px;margin-right:8px;line-height:21px;font-style:normal;*float:none;}
+.w-switch ._n{float:right;margin-left:26px;margin-right:8px;line-height:22px;font-style:normal;*float:none;}
 .w-switch.z-checked ._l{background:#1890ff;border-color:#1890ff}
 .w-switch.z-checked ._o{left:100%;border-color:#1890ff;margin-left:-21px;}
 .w-switch.z-checked ._n{float:left;margin-left:8px;margin-right:26px;*float:none}
@@ -533,13 +533,13 @@
 .w-img-box{display:none;position:absolute;top:3px;left:3px}
 .w-img-box.w-checkbox{padding:0}
 
-.w-buttonbar{position:relative;overflow:hidden}
-.w-buttonbar.z-br{overflow:visible}
-.w-buttonbar.z-dirh{white-space:nowrap;word-break:keep-all}
-.w-buttonbar.z-dirh.z-br{white-space:normal;word-break:break-all}
-.w-buttonbar.z-dirv .w-button{display:block}
-.w-buttonbar.z-autosize{overflow:visible}
-.w-buttonbar-line{display:none;position:absolute;right:0;left:0;bottom:0;height:1px;background:#ddd}
+.w-buttonbar,.w-tabbar{position:relative;overflow:hidden}
+.w-buttonbar.z-br,.w-tabbar.z-br{overflow:visible}
+.w-buttonbar.z-dirh,.w-tabbar.z-dirh{white-space:nowrap;word-break:keep-all}
+.w-buttonbar.z-dirh.z-br,.w-tabbar.z-dirh.z-br{white-space:normal;word-break:break-all}
+.w-buttonbar.z-dirv .w-button,.w-tabbar.z-dirv .w-tab{display:block}
+.w-buttonbar.z-autosize,.w-tabbar.z-autosize{overflow:visible}
+.w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;right:0;left:0;bottom:0;height:1px;background:#ddd}
 
 /*! button
  *	c: content, i: icon, t: text, m: more, x: close
