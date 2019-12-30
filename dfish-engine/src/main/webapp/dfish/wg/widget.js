@@ -6829,7 +6829,7 @@ Datepicker = define.widget( 'datepicker', {
 			this.list && this.list.close();
 		},
 		html_btn: function() {
-			return '<label for="' + this.id + 't" class="f-boxbtn _pick" onclick=' + eve + '><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
+			return '<label ' + (mbi ? 'for="' + this.id + 't"' : 'onclick=' + eve) + ' class="f-boxbtn _pick"><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
 		},
 		input_prop_value: function() {
 			var v = this.x.value;
