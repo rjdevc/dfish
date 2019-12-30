@@ -2253,9 +2253,11 @@ _merge( $, {
 					_rm( cid );
 				}
 				y = x;
-				! $( gid ) && (s.push( _path + x.dir + 'global.css' ), d.push( gid ));
-				! $( tid ) && (s.push( _path + x.dir + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
-				! $( cid ) && (s.push( _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
+				var g = x.dir.replace( /\/+$/, '' ),
+					h = _strFrom( g, '/', T ) || g;
+				! $( gid ) && (s.push( _path + g + '/' + h + '.css' ), d.push( gid ));
+				! $( tid ) && (s.push( _path + g + '/' + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
+				! $( cid ) && (s.push( _path + g + '/' + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
 			}
 			_loadCss( s, d, f );
 		}

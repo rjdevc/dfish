@@ -1317,13 +1317,15 @@ W = define( 'widget', function() {
 			this.$() && $[ b || 'append' ]( this.$(), a.isWidget ? a.$() : a );
 		},
 		prop_cls: function() {
-			var p = this.parentNode, c = (this.className || '') + (this.x.cls ? ' ' + this.x.cls.replace( /\./g, '' ) : '');
+			var c = this.className || '';
+			if ( this.x.cls )
+				c = $.idsAdd( c, this.x.cls.replace( /\./g, '' ), ' ' );
 			if ( ! this.isNormal() )
 				c += ' z-ds';
 			if ( this.x.display === F )
 				c += ' f-hide';
-			if ( p && p.childCls )
-				c += ' ' + (typeof p.childCls === _FUN ? p.childCls( this ) : p.childCls);
+			if ( this.parentNode && this.parentNode.childCls )
+				c += ' ' + (typeof this.parentNode.childCls === _FUN ? this.parentNode.childCls( this ) : this.parentNode.childCls);
 			return c;
 		},
 		prop_style: function() {
@@ -2335,6 +2337,16 @@ Xsrc = define.widget( 'xsrc', {
 			if ( ! this.isDisplay() )
 				return;
 			_proto.init_x.call( this, x );
+			var t = x.preload && _getPreload( x.preload );
+			if ( t ) {
+				for ( var k in t ) {
+					!(k in x) && k !== 'node' && k !== 'nodes' && (x[ k ] = t[ k ]);
+				}
+				if ( x.node ) {
+					var n = _compilePreload( x.preload, x.node );
+					n && $.merge( x, n );
+				}
+			}
 			if ( this.domready && this.x.id ) {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
 			}
@@ -2344,14 +2356,6 @@ Xsrc = define.widget( 'xsrc', {
 					this._loadEnd( s );
 				} else
 					this.className += ' z-loading';
-			} //@fixme 当有node也有css res时的处理
-			var t = x.preload && _getPreload( x.preload );
-			if ( t ) {
-				_mergeLoadingProp( x, t );
-				if ( x.node ) {
-					var n = _compilePreload( x.preload, x.node );
-					n && $.merge( x, n );
-				}
 			}
 			this._x_ini = T;
 		},
@@ -2438,11 +2442,6 @@ _setParent = function( a ) {
 	this.parent && _setPath.call( this, a );
 	this.parent = a;
 	this.x && _regIdName.call( this, a );
-},
-_mergeLoadingProp = function( x, a ) {
-	for ( var k in a ) {
-		k !== 'node' && k !== 'nodes' && (x[ k ] = a[ k ]);
-	}
 },
 _view_resources = cfg.view_resources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
@@ -3715,7 +3714,7 @@ ButtonSplit = define.widget( 'button/split', {
 Tabs = define.widget( 'tabs', {
 	Const: function( x, p ) {
 		this.id = $.uid( this );
-		var y = $.extend( { type: 'vert' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		var s = x.position, t = s === 'bottom' || s === 'right', y = $.extend( { type: t ? 'vert' : 'horz' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
 		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
 			if ( n[ i ].type === 'split' ) {
 				b.push( n[ i ] );
@@ -3727,7 +3726,9 @@ Tabs = define.widget( 'tabs', {
 			}
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
-		y.nodes = [ { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b }, { type: 'frame', cls: 'w-tabs-frame', height: '*', dft: d && d.id, nodes: c } ];
+		var r = { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b };
+		y.nodes = [ { type: 'frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
+		y.nodes[ t ? 'push' : 'shift' ]( r );
 		delete y.pub;
 		Vert.call( this, y, p );
 		this.buttonbar = this[ 0 ];
@@ -6014,7 +6015,7 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<div class="_tit f-oh ' + (this.x.nobr === F ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</div>' : '');			
+				(this.x.text ? '<span class="_tit f-oh ' + (this.x.nobr === F ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '');			
 		},
 		html: function() {
 			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), y = '';
