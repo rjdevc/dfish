@@ -1,15 +1,13 @@
 define.preload({
-    type: "dialog", cls: "dlg", node: {
-        type: "view", commands: {
-            "close": {type: "js", text: "$.close(this);"}
-        },
+    type: 'dialog', node: {
+        type: 'view',
         node: {
-            type: "vert", id: "dlg_frame", height: "*", width: "*", nodes: [
+            type: 'vert', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
                 {
-                    type: "vert", id: "dlg_trunk", height: "*", nodes: [
+                    type: 'vert', id: 'dlg_trunk', cls: 'dlg-trunk', height: '*', width: '*', nodes: [
                         {
-                            type: "vert", height: "*", nodes: [
-                                {type: "preload/body", id: "dlg_body", height: "*"}
+                            type: 'vert', height: '*', width: '*', nodes: [
+                                {type: 'preload/body', id: 'dlg_body', cls: 'dlg-body', height: '*', width: '*'}
                             ]
                         }
                     ]

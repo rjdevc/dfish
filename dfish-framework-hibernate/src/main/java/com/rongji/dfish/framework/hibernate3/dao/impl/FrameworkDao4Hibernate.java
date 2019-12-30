@@ -118,7 +118,8 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         return result;
     }
 
-    public void evict(P entity) {
+    @Override
+    public void evict(Object entity) {
         if (entity != null) {
             getHibernateTemplate().evict(entity);
         }
