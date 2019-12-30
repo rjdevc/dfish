@@ -157,7 +157,7 @@ public class CryptFactory {
         }
         if (ALGORITHMS_MD5.equals(algorithms) || ALGORITHMS_SHA1.equals(algorithms)
                 || ALGORITHMS_SHA512.equals(algorithms) || ALGORITHMS_SHA256.equals(algorithms)) {
-            return new MessageDigestCryptor(algorithms, encoding, presentStyle);
+            return new MessageDigestCryptor2007(algorithms, encoding, presentStyle);
         }
         if (algorithms.equals(ALGORITHMS_SIMPLE_RSA)) {
             return new SimpleRSACryptor(encoding, presentStyle, arg);

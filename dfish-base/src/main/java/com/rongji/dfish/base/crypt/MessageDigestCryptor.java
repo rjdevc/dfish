@@ -1,56 +1,64 @@
 package com.rongji.dfish.base.crypt;
 
+import com.rongji.dfish.base.util.LogUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 
-/**
- * MessageDigestCryptor 数字摘要 加密
- *
- * @author LinLW 参照itask原有加密做法
- * @version 5.0
- * @deprecated 现在推荐流模式
- */
-@Deprecated
-public class MessageDigestCryptor
-    extends StringCryptor {
-  private String algorithms;
-  /**
-   * 创建一个数字摘要的的加密类
-   * @param algorithms String
-   * @param encoding String
-   * @param presentStyle int
-   */
-  protected MessageDigestCryptor(String algorithms, String encoding,
-                                 int presentStyle) {
-    super.encoding = encoding;
-    super.presentStyle = presentStyle;
-    this.algorithms = algorithms;
-  }
+public class MessageDigestCryptor extends  AbstractCryptor{
+    @Override
+    protected void doEncrypt(InputStream is, OutputStream os) {
+        try {
 
-  /**
-   * 把数据摘要的byte数组加密
-   * @param src byte[]
-   * @return byte[]
-   * @throws Exception
-   */
-  @Override
-  protected synchronized byte[] encrypt(byte[] src) throws Exception {
-    MessageDigest d = null;
-    d = MessageDigest.getInstance(algorithms); // MD5 SHA-1
-    d.reset();
-    d.update(src);
-    return d.digest();
-  }
+            MessageDigest md=MessageDigest.getInstance(builder.algorithm);
+            md.reset();
+            byte[] b = new byte[1024 * 8];
+            int len = 0;
+            try{
+                while ((len = is.read(b)) != -1) {
+                    md.update(b,0,len);
+                }
+                os.write(md.digest());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }catch (Exception ex){
+            LogUtil.error(null,ex);
+        }
+    }
 
-  /**
-   * 数据摘要不可以解密，肯定会出异常。
-   * @param src byte[]
-   * @return byte[]
-   * @throws Exception UnsupportedOperationException
-   */
-  @Override
-  protected byte[] decrypt(byte[] src) throws Exception {
-    throw new UnsupportedOperationException("This cryptor (" + algorithms
-                                            + ") do not support decrypt !");
-  }
+    @Override
+    protected void doDecrypt(InputStream is, OutputStream os) {
+        throw new UnsupportedOperationException("can not decrypt message digest");
+    }
+    @Override
+    public void decrypt(InputStream is, OutputStream os){
+        throw new UnsupportedOperationException("can not decrypt message digest");
+    }
+    @Override
+    public String decrypt(String src){
+        throw new UnsupportedOperationException("can not decrypt message digest");
+    }
 
+
+    public MessageDigestCryptor(CryptorBuilder db){
+        super(db);
+    }
 }
