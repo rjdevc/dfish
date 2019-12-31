@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.0.28-SNAPSHOT</version>
+        <version>5.0.0.RC1</version>
     </parent>
 
     <artifactId>dfish-framework-mybatis</artifactId>
