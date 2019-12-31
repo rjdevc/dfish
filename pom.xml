@@ -99,12 +99,12 @@
             <distributionManagement>
                 <repository>
                     <id>central</id>
-                    <url>${central.repo.release.url}</url>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
                 <snapshotRepository>
                     <id>central</id>
-                    <url>${central.repo.snapshot.url}</url>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
                     <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>
@@ -151,8 +151,7 @@
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>central</serverId>
-                            <nexusUrl>${central.repo.nexus.url}</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                         </configuration>
                     </plugin>
                     <plugin>
