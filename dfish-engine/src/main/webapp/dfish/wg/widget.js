@@ -9307,7 +9307,7 @@ Leaf = define.widget( 'leaf', {
 					return this.isDisabled();
 				},
 				method: function( e ) {
-					mbi && this.toggle();
+					//mbi && this.toggle();
 					if ( this.isDisabled() )
 						return;
 					this.box && this.box.x.sync === 'click' && ! this.isEvent4Box( e ) && this.box.click();
