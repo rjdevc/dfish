@@ -11,10 +11,9 @@
   <artifactId>dfish-engine</artifactId>
   <packaging>war</packaging>
   <name>dfish-engine</name>
-  <url>http://maven.apache.org</url>
+  <url>http://dfish.rongji.com</url>
   
   <dependencies>
-  
   	<!-- servlet -->
     <dependency>
       <groupId>javax</groupId>
