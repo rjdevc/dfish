@@ -7,13 +7,13 @@ import java.io.OutputStream;
 public abstract class AbstractPresentOutputStream extends FilterOutputStream {
     protected int TEXT_SIZE = 2;
     protected int BIN_SIZE = 1;
-    protected byte[] block;
-    protected int blockLen;
+    protected byte[] buff;
+    protected int buffLen;
     private final byte[] singleByte = new byte[1];
 
     public AbstractPresentOutputStream(OutputStream out) {
         super(out);
-        blockLen = 0;
+        buffLen = 0;
     }
 
     @Override
@@ -24,39 +24,39 @@ public abstract class AbstractPresentOutputStream extends FilterOutputStream {
 
     @Override
     public void flush() throws IOException{
-        if (blockLen > 0) {
-            writeTail();
-            blockLen=0;
+        if (buffLen > 0) {
+            flushBuff();
+            buffLen =0;
         }
     }
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        byte[] res = new byte[(blockLen + len) * TEXT_SIZE / BIN_SIZE];
+        byte[] res = new byte[(buffLen + len) * TEXT_SIZE / BIN_SIZE];
         int filled = 0;
         int consum = 0;
         //如果chunkSize不为0，则需要把上一轮的内容加入到这轮中进行计算。
-        if (blockLen > 0) {
-            consum = BIN_SIZE - blockLen;
+        if (buffLen > 0) {
+            consum = BIN_SIZE - buffLen;
             if(len<consum){
-                System.arraycopy(b, 0, block, blockLen, len);
-                blockLen +=len;
+                System.arraycopy(b, 0, buff, buffLen, len);
+                buffLen +=len;
                 return;
             }
-            System.arraycopy(b, 0, block, blockLen, consum);
-            writeBlock(block, 0, res, filled);
-            blockLen =0;//使用了。
+            System.arraycopy(b, 0, buff, buffLen, consum);
+            doChunk(buff, 0, res, filled);
+            buffLen =0;//使用了。
             filled += TEXT_SIZE;
         }
         int i = off + consum;
         for (; i <= len - BIN_SIZE; i += BIN_SIZE) {
-            writeBlock(b, i, res, filled);
+            doChunk(b, i, res, filled);
             filled += TEXT_SIZE;
         }
         if (i > len - BIN_SIZE) {
-            blockLen = len - i;
-            if(blockLen >0) {
-                System.arraycopy(b, i, block, 0, blockLen);
+            buffLen = len - i;
+            if(buffLen >0) {
+                System.arraycopy(b, i, buff, 0, buffLen);
             }
         }
         out.write(res, 0, filled);
@@ -69,7 +69,11 @@ public abstract class AbstractPresentOutputStream extends FilterOutputStream {
      * @param out 文本流写入块
      * @param outPos 文本流开始写入位置
      */
-    protected abstract void writeBlock(byte[] in, int inPos, byte[] out, int outPos);
+    protected abstract void doChunk(byte[] in, int inPos, byte[] out, int outPos);
 
-    public abstract void writeTail()throws IOException;
+    /**
+     * 输出一半在buff里面的内容。
+     * @throws IOException
+     */
+    public abstract void flushBuff()throws IOException;
 }
