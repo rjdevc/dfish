@@ -8,7 +8,8 @@ public class Base64InputStream extends AbstractPresentInputStream {
         super(in);
         TEXT_SIZE = 4;
         BIN_SIZE = 3;
-        inBlock = new byte[TEXT_SIZE];
+        inBuff = new byte[TEXT_SIZE];
+        outBuff =new byte[BIN_SIZE];
     }
 
     private static final byte[] DECODE_TABLE = {
@@ -35,39 +36,22 @@ public class Base64InputStream extends AbstractPresentInputStream {
     };
 
     @Override
-    protected int readBlock( byte[] in, int inPos,byte[] out, int outPos) {
-        if (in[inPos + 2] == '=' || in[inPos + 2] == '.') {
-            out[outPos] = (byte) (((DECODE_TABLE[in[inPos]] & 0x3F) << 2) | ((DECODE_TABLE[in[inPos + 1]] & 0x30) >> 4));
-            return 1;
-        } else if (in[inPos + 3] == '=' || in[inPos + 3] == '.') {
-            out[outPos] = (byte) (((DECODE_TABLE[in[inPos]] & 0x3F) << 2) | ((DECODE_TABLE[in[inPos + 1]] & 0x30) >> 4));
-            out[outPos + 1] = (byte) (((DECODE_TABLE[in[inPos + 1]] & 0x0F) << 4) | ((DECODE_TABLE[in[inPos + 2]] & 0x3C) >> 2));
-            return 2;
+    protected void doChunk( ) {
+        if (inBuffLen==0) {
+            outBuffLen=0;
+        }else if (inBuffLen==2 || inBuff[2] == '=' || inBuff[2] == '.') {
+            outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x3F) << 2) | ((DECODE_TABLE[inBuff[ 1]] & 0x30) >> 4));
+            outBuffLen=1;
+        } else if (inBuffLen==3 ||inBuff[ 3] == '=' || inBuff[ 3] == '.') {
+            outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x3F) << 2) | ((DECODE_TABLE[inBuff[ 1]] & 0x30) >> 4));
+            outBuff[1] = (byte) (((DECODE_TABLE[inBuff[ 1]] & 0x0F) << 4) | ((DECODE_TABLE[inBuff[ 2]] & 0x3C) >> 2));
+            outBuffLen=2;
         } else {
-            out[outPos] = (byte) (((DECODE_TABLE[in[inPos]] & 0x3F) << 2) | ((DECODE_TABLE[in[inPos + 1]] & 0x30) >> 4));
-            out[outPos + 1] = (byte) (((DECODE_TABLE[in[inPos + 1]] & 0x0F) << 4) | ((DECODE_TABLE[in[inPos + 2]] & 0x3C) >> 2));
-            out[outPos + 2] = (byte) (((DECODE_TABLE[in[inPos + 2]] & 0x03) << 6) | ((DECODE_TABLE[in[inPos + 3]] & 0x3F)));
-            return 3;
+            outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x3F) << 2) | ((DECODE_TABLE[inBuff[ 1]] & 0x30) >> 4));
+            outBuff[1] = (byte) (((DECODE_TABLE[inBuff[ 1]] & 0x0F) << 4) | ((DECODE_TABLE[inBuff[2]] & 0x3C) >> 2));
+            outBuff[2] = (byte) (((DECODE_TABLE[inBuff[ 2]] & 0x03) << 6) | ((DECODE_TABLE[inBuff[ 3]] & 0x3F)));
+            outBuffLen=3;
         }
-    }
-
-    @Override
-    protected int readTail(byte[] b, int off) {
-        if (inBlockLen == 0) {
-            return -1;
-        }
-        if (inBlockLen == 2) {
-            b[0 + off] = (byte) (((DECODE_TABLE[inBlock[0]] & 0x3F) << 2) | ((DECODE_TABLE[inBlock[1]] & 0x30) >> 4));
-            inBlockLen = 0;
-            return 1;
-        } else if (inBlockLen == 3) {
-            b[0 + off] = (byte) (((DECODE_TABLE[inBlock[0]] & 0x3F) << 2) | ((DECODE_TABLE[inBlock[1]] & 0x30) >> 4));
-            b[1 + off] = (byte) (((DECODE_TABLE[inBlock[0 + 1]] & 0x0F) << 4) | ((DECODE_TABLE[inBlock[2]] & 0x3C) >> 2));
-            inBlockLen = 0;
-            return 2;
-        } else {
-            inBlockLen = 0;
-            return 0;
-        }
+        outBuffOff =0;
     }
 }

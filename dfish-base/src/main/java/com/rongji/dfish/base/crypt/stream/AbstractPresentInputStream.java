@@ -14,12 +14,14 @@ import java.io.InputStream;
  * 用outBlock来记录上次处理完，输出字节中还有没处理的半块。等待下次输出时一并输出。
  */
 public abstract class AbstractPresentInputStream extends FilterInputStream {
-    protected int TEXT_SIZE = 2;
-    protected int BIN_SIZE = 1;
-    protected byte[] inBlock;
-    protected int inBlockLen;
-    protected int outBlockLen = 0;
-    protected byte[] outBlock;
+    protected int TEXT_SIZE = 2;//文本流每单元长度
+    protected int BIN_SIZE = 1;//2进制流每单元长度
+    protected byte[] inBuff;
+    protected int inBuffLen;
+    protected int outBuffLen;
+    protected byte[] outBuff;
+    protected int outBuffOff;
+    protected boolean end;
 
 
 
@@ -27,7 +29,10 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
 
     public AbstractPresentInputStream(InputStream in) {
         super(in);
-        inBlockLen = 0;
+        inBuffLen = 0;
+        outBuffLen=0;
+        outBuffOff =0;
+        end=false;
     }
 
     @Override
@@ -38,122 +43,63 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
         }
         return 0xFF & SINGLE_BYTE[0];
     }
-    //        public int read(byte[] b,int off,int len)throws IOException{
 
-//            int res=read2(b,off,len);
-//            System.out.println("b.len="+b.length+" off="+off+" len="+len+" readlen="+res);
-//            ArrayList l=new ArrayList();
-//            for(int i=off;i<off+res;i++){
-//                l.add(Integer.toHexString(b[i]&0xFF));
-//            }
-//            System.out.println(l);
-//            return res;
-//        }
+    @Override
+    public synchronized void reset() throws IOException {
+        this.inBuffLen=0;
+        this.outBuffLen=0;
+        super.reset();
+    }
+
+    //JUST FOR DEBUG
+//    public int read(byte[] b, int off, int len) throws IOException {
+//            int i=read2(b,off,len);
+//            System.out.println("try to read "+len+" bytes,read "+i+" bytes;");
+//            return i;
+//    }
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         //尝试从已处理的数据中读取数据。
-        int readFromOutBlock = Math.min(b.length - off, len);
-        readFromOutBlock = Math.min(readFromOutBlock, outBlockLen);
-        if (readFromOutBlock > 0) {
-            System.arraycopy(outBlock, outBlock.length - outBlockLen, b, off, readFromOutBlock);
-        }
-        outBlockLen -= readFromOutBlock;
-        int readBin = readFromOutBlock;
-
-        if (off >= b.length) {
-            return off;
-        }
-
-        byte[] res = new byte[(len - readFromOutBlock + BIN_SIZE - 1) / BIN_SIZE * TEXT_SIZE - inBlockLen];//确保需要这么多的内容。
-        int readText = in.read(res);
-        if (readText == -1) {
-            if (inBlockLen == 0) {
-                return -1;
-            } else {
-                int ret=tryRead(b,off+readBin,len,true,(realOut,realOutPos)->{return readTail(realOut,realOutPos);});
-                inBlockLen=0;
-                return  ret;
+        int trunkRead=0;
+        int totalRead=0;
+        for(;;) {
+            if (outBuffLen > 0) {
+                int r = len < outBuffLen ? len : outBuffLen;
+                System.arraycopy(outBuff, outBuffOff, b, off, r);
+                outBuffOff += r;
+                outBuffLen -= r;
+                off+=r;
+                len -= r;
+                totalRead += r;
+            }else if(end){
+                return totalRead==0?-1:totalRead;
             }
-        }
-
-        int readFromInBlock = 0;
-        //如果chunkSize不为0，则需要把上一轮的内容加入到这轮中进行计算。
-        if (inBlockLen > 0) {
-            readFromInBlock = TEXT_SIZE - inBlockLen;
-            System.arraycopy(res, 0, inBlock, inBlockLen, readFromInBlock);
-            readBin += tryRead(b,off+readBin,len,false,(realOut,realOutPos)->{return readBlock(res,0,realOut,realOutPos);});
-        }
-        int i = readFromInBlock;
-        for (; i <= readText - TEXT_SIZE; i += TEXT_SIZE) {
-            int copyI=i;
-            // 因为lambda中这个必须是final的，所以只能定一个变量。这个变量在过程中是没有变化的。
-            readBin += tryRead(b,off+readBin,len,false,(realOut,realOutPos)->{return readBlock(res,copyI,realOut,realOutPos);});
-        }
-        if (i > readText - TEXT_SIZE) {
-            inBlockLen = readText - i;
-            if(inBlockLen >0) {
-                System.arraycopy(res, i, inBlock, 0, inBlockLen);
+            if(end||len<=0){
+                break;
             }
-        }
-        if (readBin <= len - BIN_SIZE && inBlockLen > 0) {
-            //如果有足够的空间，尝试，直接把结果压到最后一组中去
-            //因为还有足够空间，这时候是不需要考虑outBlock的影响的。
-            int ret= readBin + tryRead(b,off+readBin,len,true,(realOut,realOutPos)->{return readTail(realOut,realOutPos);});//tryReadTail(b, off + readBin,len);
-            inBlockLen=0;
-            return ret;
-        }
-        return readBin;
-    }
 
-    /**
-     * 防止out并不够长。比如说zip经常只读取一个字节。这时候就要使用outBlock来接收信息。
-     * 并把其中一部分拷贝给out
-     * @param out
-     * @param outPos
-     * @param len
-     * @param call
-     * @return
-     */
-    private int tryRead(byte[] out, int outPos, int len, boolean tail,ReadTask call) {
-        byte[] realOut = out;
-        int realOutPos = outPos;
-        int outCap = Math.min(out.length, len) - outPos;
-        boolean toOutBlock = false;
-        if (outCap < BIN_SIZE) {
-            toOutBlock = true;
-            outBlockLen = BIN_SIZE - out.length + outPos;
-            out = new byte[BIN_SIZE];
-            outPos = 0;
-            outBlock = out;
+            trunkRead = 0;
+            loop:
+            while (trunkRead < TEXT_SIZE) {
+                int read = in.read();
+                //因为用read 如果in没有缓冲会很慢。
+                switch (read) {
+                    case -1:
+                        end = true;
+                        break loop;
+                    case '\r':
+                    case '\n':
+                    case '\t':
+                    case ' ':
+                        break;
+                    default:
+                        inBuff[trunkRead++] = (byte) read;
+                }
+            }
+            inBuffLen = trunkRead ;
+            doChunk();
         }
-        int realRead = call.read(out,outPos);//readBlock( in, inPos,out, outPos);
-        int read = Math.min(realRead, outCap);
-        outBlockLen = (tail?realRead:BIN_SIZE) - read;
-        if (toOutBlock) {
-            System.arraycopy(out, 0, realOut, realOutPos, read);
-        }
-        return read;
+        return totalRead;
     }
-    private static interface ReadTask{
-        int read(byte[] out,int outPos);
-    }
-
-    /**
-     * 从一整段中读取内容
-     * @param out 二进制流写入块
-     * @param outPos 二进制流开始写入位置
-     * @param in 文本读取块
-     * @param inPos 文本开始读取位置
-     * @return 成功读取数量
-     */
-    protected abstract int readBlock( byte[] in, int inPos,byte[] out, int outPos);
-
-    /**
-     * 从结尾处读取内容，结尾可能有PAD或者不完整。
-     * 结尾 内容在inBlock里存着
-     * @param out 二进制流写入块
-     * @param outPos 二进制流开始写入位置
-     * @return 成功读取数量
-     */
-    protected abstract int readTail(byte[] out, int outPos);
+    protected abstract void doChunk();
 }

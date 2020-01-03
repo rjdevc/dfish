@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.0.RC1</version>
+        <version>5.0.0.31-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-framework-hibernate</artifactId>
@@ -32,12 +32,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.0.12.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mozilla.intl</groupId>
-            <artifactId>chardet</artifactId>
-            <version>1.0</version>
         </dependency>
 
     </dependencies>

@@ -8,7 +8,7 @@ public class Base64OutputStream extends AbstractPresentOutputStream {
         super(out);
         TEXT_SIZE = 4;
         BIN_SIZE = 3;
-        block = new byte[TEXT_SIZE];
+        buff = new byte[TEXT_SIZE];
     }
 
     private static final byte[] ALPHABET = {
@@ -29,7 +29,7 @@ public class Base64OutputStream extends AbstractPresentOutputStream {
      * @param outPos
      */
     @Override
-    protected void writeBlock(byte[] in, int inPos, byte[] out, int outPos) {
+    protected void doChunk(byte[] in, int inPos, byte[] out, int outPos) {
         out[outPos] = ALPHABET[(in[inPos] & 0xFC) >> 2];
         out[outPos + 1] = ALPHABET[(in[inPos] & 0x03) << 4 | ((in[inPos + 1] & 0xF0) >> 4)];
         out[outPos + 2] = ALPHABET[(in[inPos + 1] & 0x0F) << 2 | ((in[inPos + 2] & 0xC0) >> 6)];
@@ -37,25 +37,25 @@ public class Base64OutputStream extends AbstractPresentOutputStream {
     }
 
     @Override
-    public void writeTail() throws IOException {
+    public void flushBuff() throws IOException {
             //不管已存在的chunk是否成组，直接产生结果。
             byte[] chars = new byte[4];
-            if (blockLen == 2) {
-                chars[0] = ALPHABET[(block[0] & 0xFC) >> 2];
-                chars[1] = ALPHABET[(block[0] & 0x03) << 4 | ((block[1] & 0xF0) >> 4)];
-                chars[2] = ALPHABET[(block[1] & 0x0F) << 4];
+            if (buffLen == 2) {
+                chars[0] = ALPHABET[(buff[0] & 0xFC) >> 2];
+                chars[1] = ALPHABET[(buff[0] & 0x03) << 4 | ((buff[1] & 0xF0) >> 4)];
+                chars[2] = ALPHABET[(buff[1] & 0x0F) << 2];
                 chars[3] = PAD;
             }
-            if (blockLen == 1) {
-                chars[0] = ALPHABET[(block[0] & 0xFC) >> 2];
-                chars[1] = ALPHABET[(block[0] & 0x03) << 4];
+            if (buffLen == 1) {
+                chars[0] = ALPHABET[(buff[0] & 0xFC) >> 2];
+                chars[1] = ALPHABET[(buff[0] & 0x03) << 4];
                 chars[2] = PAD;
                 chars[3] = PAD;
-            } else if (blockLen == 3) {//仅仅为了容错;
-                chars[0] = ALPHABET[(block[0] & 0xFC) >> 2];
-                chars[1] = ALPHABET[(block[0] & 0x03) << 4 | ((block[1] & 0xF0) >> 4)];
-                chars[2] = ALPHABET[(block[1] & 0x0F) << 4 | ((block[2] & 0x03) >> 6)];
-                chars[3] = ALPHABET[(block[2] & 0x3F)];
+            } else if (buffLen == 3) {//仅仅为了容错;
+                chars[0] = ALPHABET[(buff[0] & 0xFC) >> 2];
+                chars[1] = ALPHABET[(buff[0] & 0x03) << 4 | ((buff[1] & 0xF0) >> 4)];
+                chars[2] = ALPHABET[(buff[1] & 0x0F) << 2 | ((buff[2] & 0x03) >> 6)];
+                chars[3] = ALPHABET[(buff[2] & 0x3F)];
             }
             out.write(chars);
     }

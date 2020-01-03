@@ -24,9 +24,9 @@ public class HexOutputStream extends AbstractPresentOutputStream {
     }
 
     @Override
-    protected void writeBlock(byte[] block, int i, byte[] res, int filled) {
+    protected void doChunk(byte[] block, int i, byte[] res, int filled) {
     }
 
     @Override
-    public void writeTail() throws IOException {}
+    public void flushBuff() throws IOException {}
 }

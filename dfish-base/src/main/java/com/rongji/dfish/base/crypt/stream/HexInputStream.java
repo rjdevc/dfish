@@ -15,7 +15,7 @@ public class HexInputStream extends AbstractPresentInputStream {
 
     public HexInputStream(InputStream in) {
         super(in);
-        inBlock = new byte[2];
+        inBuff = new byte[2];
     }
 
     @Override
@@ -33,24 +33,19 @@ public class HexInputStream extends AbstractPresentInputStream {
             if (by < '0') { //空格 \r \n \t
                 continue;
             }
-            if (inBlockLen++ == 0) {
-                inBlock[0] = HEX_DE[by];
+            if (inBuffLen++ == 0) {
+                inBuff[0] = HEX_DE[by];
             } else {
-                byte v = (byte) (inBlock[0] << 4 | HEX_DE[by]);
+                byte v = (byte) (inBuff[0] << 4 | HEX_DE[by]);
                 b[off + read++] = v;
-                inBlockLen = 0;
+                inBuffLen = 0;
             }
         }
         return read;
     }
 
-    @Override
-    protected int readBlock( byte[] in, int inPos,byte[] out, int outPos) {
-        return -1;
-    }
 
     @Override
-    protected int readTail(byte[] b, int i) {
-        return -1;
-    }
+    protected void doChunk(){}
+
 }

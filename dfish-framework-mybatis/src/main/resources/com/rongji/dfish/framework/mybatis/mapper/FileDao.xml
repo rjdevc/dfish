@@ -55,7 +55,10 @@
     </update>
 
     <update id="updateFileLinks">
-        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink},t.FILE_KEY=#{fileKey}
+        UPDATE PUB_FILE_RECORD t SET t.FILE_LINK=#{fileLink}
+        <if test="fileKey != null">
+            ,t.FILE_KEY=#{fileKey}
+        </if>
         <if test="fileStatus != null">
             ,t.FILE_STATUS=#{fileStatus}
         </if>

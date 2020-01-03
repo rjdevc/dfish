@@ -8,7 +8,7 @@ public class Base32OutputStream extends AbstractPresentOutputStream {
         super(out);
         TEXT_SIZE = 8;
         BIN_SIZE = 5;
-        block = new byte[TEXT_SIZE];
+        buff = new byte[TEXT_SIZE];
     }
 
     private static final byte[] ALPHABET = {
@@ -27,7 +27,7 @@ public class Base32OutputStream extends AbstractPresentOutputStream {
      * @param outPos
      */
     @Override
-    protected void writeBlock(byte[] in, int inPos, byte[] out, int outPos) {
+    protected void doChunk(byte[] in, int inPos, byte[] out, int outPos) {
         out[outPos] = ALPHABET[(in[inPos] & 0xF8) >> 3];
         out[outPos + 1] = ALPHABET[((in[inPos] & 0x07) << 2) | ((in[inPos + 1] & 0xC0) >> 6)];
         out[outPos + 2] = ALPHABET[(in[inPos + 1] & 0x3E) >> 1];
@@ -39,23 +39,23 @@ public class Base32OutputStream extends AbstractPresentOutputStream {
     }
 
     @Override
-    public void writeTail() throws IOException {
+    public void flushBuff() throws IOException {
             //不管已存在的chunk是否成组，直接产生结果。
             //Crockford's Base32 不产生PAD
-            byte[] chars = new byte[((blockLen * 8) / 5) + ((blockLen % 5) != 0 ? 1 : 0)];
+            byte[] chars = new byte[((buffLen * 8) / 5) + ((buffLen % 5) != 0 ? 1 : 0)];
 
             for (int i = 0, j = 0, index = 0; i < chars.length; i++) {
                 if (index > 3) {
-                    int b = block[j] & (0xFF >> index);
+                    int b = buff[j] & (0xFF >> index);
                     index = (index + 5) % 8;
                     b <<= index;
-                    if (j < blockLen - 1) {
-                        b |= (block[j + 1] & 0xFF) >> (8 - index);
+                    if (j < buffLen - 1) {
+                        b |= (buff[j + 1] & 0xFF) >> (8 - index);
                     }
                     chars[i] = ALPHABET[b];
                     j++;
                 } else {
-                    chars[i] = ALPHABET[((block[j] >> (8 - (index + 5))) & 0x1F)];
+                    chars[i] = ALPHABET[((buff[j] >> (8 - (index + 5))) & 0x1F)];
                     index = (index + 5) % 8;
                     if (index == 0) {
                         j++;

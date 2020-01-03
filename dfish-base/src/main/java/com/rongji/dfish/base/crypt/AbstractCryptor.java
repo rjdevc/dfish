@@ -17,6 +17,8 @@ public abstract class AbstractCryptor implements Cryptor{
      */
     @Override
     public void encrypt(InputStream is, OutputStream os) {
+
+        is=decorate(is);
         OutputStream pos;
         switch (builder.present) {
             case CryptorBuilder.PRESENT_HEX:
@@ -38,12 +40,20 @@ public abstract class AbstractCryptor implements Cryptor{
 
     }
 
+    private InputStream decorate(InputStream is) {
+        if(is instanceof ByteArrayInputStream ||is instanceof BufferedInputStream){
+            return is;
+        }
+        return new BufferedInputStream(is);
+    }
+
     protected abstract void doEncrypt(InputStream is, OutputStream os);
 
     protected abstract void doDecrypt(InputStream is, OutputStream os);
 
     @Override
     public void decrypt(InputStream is, OutputStream os) {
+        is=decorate(is);
         InputStream pis;
         switch (builder.present) {
             case CryptorBuilder.PRESENT_HEX:

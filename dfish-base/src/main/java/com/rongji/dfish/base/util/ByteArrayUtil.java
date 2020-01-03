@@ -52,4 +52,20 @@ public class ByteArrayUtil {
     public static int readByte(byte[] src, int pos) {
         return src[pos]&0xFF;
     }
+
+    public static String toHexString(byte[] src){
+        if(src==null){
+            return "null";
+        }
+        StringBuilder sb=new StringBuilder(src.length<<1);
+        sb.append('[');
+        for(byte b:src){
+            sb.append(HEX_CHARS[(b&0xF0)>>4]);
+            sb.append(HEX_CHARS[b&0xF]);
+            sb.append(' ');
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    private static final char[] HEX_CHARS={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 }

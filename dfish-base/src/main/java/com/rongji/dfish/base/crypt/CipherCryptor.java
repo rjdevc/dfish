@@ -1,16 +1,18 @@
 package com.rongji.dfish.base.crypt;
 
+import com.rongji.dfish.base.util.ByteArrayUtil;
+import com.rongji.dfish.base.util.CryptUtil;
 import com.rongji.dfish.base.util.LogUtil;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.security.*;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -82,10 +84,10 @@ public class CipherCryptor extends  AbstractCryptor{
         inited=true;
     }
 
-    private Cipher initCipher(int encryptMode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    private Cipher initCipher(int encryptMode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException {
         init();
         Cipher cipher = Cipher.getInstance(builder.getAlgorithm());
-        CryptorBuilder cb=(CryptorBuilder) builder;
+
 //        if(builder.algorithm.toUpperCase().equals("RSA")) {
 //            checkSupportRSA();
 //            KeyPair keyPair =null;
@@ -119,12 +121,141 @@ public class CipherCryptor extends  AbstractCryptor{
 //        }else {
         // bouncycastle 对chiper的流模式支持的也不是很好，如果要用它，要引包，要自己写PublicKey/PrivateKey
         // 以及可能需要进行ChiperOutputStream ChiperInputStream的改写。所以，暂时不做支持。 .
-            byte[] key=(byte[]) cb.getKey();
-            SecretKeySpec keySpec = new SecretKeySpec(key, builder.algorithm);
-            cipher.init(encryptMode, keySpec);//FIXME CBC 需要设置iv
+
+            parseKey();
+            if(parameter!=null){
+                cipher.init(encryptMode, secretkey,parameter);
+            }else {
+                cipher.init(encryptMode, secretkey);//FIXME CBC 需要设置iv
+            }
+
 //        }
         return cipher;
     }
+    private Key secretkey;
+    private AlgorithmParameterSpec parameter;
+    private Key parseKey() {
+        if(secretkey != null){
+            return secretkey;
+        }
+        CryptorBuilder cb=builder;
+        Object key=cb.getKey();
+        if(key == null){
+            return null;
+        }
+        if(key instanceof Key){
+            this.secretkey=(Key)key;
+            return (Key) key;
+        }
+        if(key.getClass().isArray()){
+            if( key.getClass().getName().equals("[B")) {
+                SecretKeySpec keySpec = new SecretKeySpec((byte[]) key, builder.algorithm);
+                this.secretkey = keySpec;
+                return keySpec;
+            }
+        }else if(key instanceof String){
+            String strKey=(String) key;
+            if(strKey.trim().equals("")){
+                return null;
+            }
+            // 如果包含逗号，第一段才是密码。
+            String paramKey=null;
+            if(strKey.indexOf(",")>=0){
+                String[] strs=strKey.split(",");
+                strKey=strs[0];
+                paramKey =strs[1];
+            }
+            byte[] bytes=null;
+            strKey=strKey.trim();
+            switch (builder.algorithm) {
+                case CryptorBuilder.ALGORITHM_BLOWFISH:
+                    bytes=getKeyBytes(strKey,1,16,builder.algorithm);
+                    break;
+                case CryptorBuilder.ALGORITHM_DES:
+                case CryptorBuilder.ALGORITHM_TRIPLE_DES:
+                    bytes = getKeyBytes(strKey, 8, 8,builder.algorithm);
+                    break;
+                case CryptorBuilder.ALGORITHM_AES:
+                    bytes = getKeyBytes(strKey, 16, 16,builder.algorithm);
+                    break;
+                default:
+
+            }
+            //第二段当做IV处理
+            SecretKeySpec keySpec = new SecretKeySpec(bytes, builder.algorithm);
+            this.secretkey=keySpec;
+            if(paramKey!=null) {
+                paramKey = paramKey.trim();
+                switch (builder.algorithm) {
+                    case CryptorBuilder.ALGORITHM_BLOWFISH:
+                        bytes=getKeyBytes(paramKey,1,16,builder.algorithm);
+                        break;
+                    case CryptorBuilder.ALGORITHM_DES:
+                    case CryptorBuilder.ALGORITHM_TRIPLE_DES:
+                        bytes = getKeyBytes(paramKey, 8, 8,builder.algorithm);
+                        break;
+                    case CryptorBuilder.ALGORITHM_AES:
+                        bytes = getKeyBytes(paramKey, 16, 16,builder.algorithm);
+                        break;
+                    default:
+
+                }
+
+                IvParameterSpec parameter = new IvParameterSpec(bytes);
+                this.parameter = parameter;
+            }
+            return keySpec;
+        }
+        throw new IllegalArgumentException("can not parse key "+key+" ("+key.getClass()+")");
+    }
+    private static byte[] getKeyBytes(String key,int minLen,int maxLen,String algorithm){
+        if(isHex(key)&& key.length()/2>=minLen&&key.length()/2>=maxLen){
+            return parseHex(key);
+        }else {
+            try {
+                byte[] toBytes=key.getBytes("UTF-8");
+                if(toBytes.length>=minLen&&toBytes.length<=maxLen){
+                    return toBytes;
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            throw new IllegalArgumentException("key "+key+" is not suit for algorithm "+algorithm+" (maxLen="+maxLen+",minLen="+minLen+")");
+        }
+    }
+
+    private static boolean isHex(String key) {
+        if(key.length()%2==1){
+            return false;
+        }
+        char[] chs=key.toCharArray();
+        for(char c:chs){
+            if(c<'0'||(c>'9'&& c<'A')||(c>'F'&& c<'a')||c>'f'){
+                return false;
+            }
+        }
+        return true;
+    }
+    private static byte[] parseHex(String key){
+        byte[] bytes=new byte[key.length()/2];
+        char[] chs=key.toCharArray();
+        for(int i=0;i<chs.length;i+=2){
+            int hi=HEX_DE[chs[i]];
+            int low=HEX_DE[chs[i+1]];
+            bytes[i/2]=(byte)((hi<<4)|low);
+        }
+        return bytes;
+    }
+    private static final byte[] HEX_DE = { // 用于加速解密的cache
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, // 48
+            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, //64
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
+            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 96
+
+
 //    public static void main(String[]args){
 //        KeyPairGenerator keyPairGen=null;
 //        try {
@@ -175,5 +306,39 @@ public class CipherCryptor extends  AbstractCryptor{
                 }
             }
         }
+    }
+
+    public static void main(String [] args) throws UnsupportedEncodingException {
+        //BLOWFISH 2
+        Cryptor c=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH,"RJ002474")
+                .gzip(true)
+                .build();
+        String en=c.encrypt("犯我中华者 虽远必诛   ");
+        System.out.println(en);
+        String s=c.decrypt(en);
+        System.out.println(s);
+
+        Cryptor c2=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_DES,"0123456789abcdef")
+                .gzip(true)
+                .build();
+        String en2=c2.encrypt("犯我中华者 虽远必诛");
+        System.out.println(en2);
+        String s2=c2.decrypt(en2);
+        System.out.println(s2);
+
+        Cryptor c3=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_AES,"RJ002474RJ002474")
+                .gzip(true)
+                .build();
+        String en3=c3.encrypt("犯我中华者 虽远必诛");
+        System.out.println(en3);
+        String s3=c3.decrypt(en3);
+        System.out.println(s3);
+
+//        byte[] bytes="犯我强汉者 虽远必诛   ".getBytes("UTF-8");
+//        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+//        c.decrypt(new ByteArrayInputStream(en.getBytes()),baos);
+//        System.out.println( ByteArrayUtil.toHexString(bytes));
+//        System.out.println( ByteArrayUtil.toHexString(baos.toByteArray()));
+       ;
     }
 }
