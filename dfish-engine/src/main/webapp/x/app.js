@@ -2,24 +2,28 @@ window.app = {
     id: {
         root: '00000000000000000000000000000000'
     },
-    error: function (response) {
-        var error = response.error;
-        var errorMsg = '';
-        if (error.code) {
-            errorMsg = '[' + error.code + ']';
+    response: {
+        error: function (response) {
+            var error = response.error;
+            var errorMsg = '';
+            if (error.code) {
+                errorMsg = '[' + error.code + ']';
+            }
+            if (error.msg) {
+                errorMsg += error.msg;
+            } else {
+                errorMsg += '操作失败';
+            }
+            app.alert.warn(errorMsg);
         }
-        if (error.msg) {
-            errorMsg += error.msg;
-        } else {
-            errorMsg += '操作失败';
+    },
+    alert: {
+        info: function (msg) {
+            $.alert(msg, 5, 5000);
+        },
+        warn: function (msg) {
+            $.alert(msg);
         }
-        this.alertWarn(errorMsg);
-    },
-    alertWarn: function (msg) {
-        $.alert(msg);
-    },
-    alertInfo: function (msg) {
-        $.alert(msg, 5, 5000);
     },
     dialog: {
         width: {
