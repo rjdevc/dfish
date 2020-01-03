@@ -60,9 +60,14 @@ define( {
         { name: 'elem', type: 'HTMLElement', remark: 'html元素对象' },
         { name: 'content', type: 'String', remark: 'html内容' }
       ] },
-      { name: '$.alert(text, [pos], [timeout], [id])', remark: '弹出一个信息窗口。', common: true, param: [
+      { name: '$.alert(text, [position], [timeout], [id])', remark: '弹出一个信息窗口。', common: true, param: [
         { name: 'text', type: 'String', remark: '信息内容。' },
-        { name: 'pos', type: 'String', remark: '弹出位置。可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
+        { name: 'position', type: 'String', remark: '弹出位置。可选值: <b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>' +
+           '<br>备注：t:top, r:right, b:bottom, l:left, c:center'
+       	},
+        /*{ name: 'position', type: 'String', remark: '弹出位置。可选值: <b>topleft</b> <b>topright</b> <b>righttop</b> <b>rightbottom</b> <b>bottomright</b> <b>bottomleft</b> <b>leftbottom</b> <b>lefttop</b> <b>top</b> <b>right</b> <b>bottom</b> <b>left</b> <b>center</b>' +
+           '<br>备注：以上参数可以分别简写为 <b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>'
+       	},*/
         { name: 'timeout', type: 'Number', remark: '定时关闭，单位:毫秒。' },
         { name: 'id', type: 'String', remark: '弹窗的ID。' }
       ] },
@@ -1452,7 +1457,7 @@ define( {
   	title: 'tabs',
   	remark: '可切换标签容器。',
   	extend: 'buttonbar',
-  	deprecate: 'dir,focusmultiple,nobr,scroll,valign,.w-buttonbar,.z-dirh,.z-dirv',
+  	deprecate: 'dir,focusmultiple,nobr,scroll,.w-buttonbar,.z-dirh,.z-dirv',
 	Examples: [
 	  { example: [
           function() {
@@ -1468,6 +1473,9 @@ define( {
             }
           }
       ] }
+    ],
+    Config: [
+      { name: 'position', type: 'String', remark: 'tab位置。可选值: <b>top</b> <b>right</b> <b>bottom</b> <b>left</b>' }
     ],
     Properties: [
       { name: 'buttonbar', type: 'Buttonbar', remark: '按钮栏对象。' },
@@ -3763,7 +3771,9 @@ define( {
             { type: 'dialog', width: 500, height: 400, snap: $( 'mydiv' ), snaptype: '41,32,14,23' }
           }
       ] },
-      { name: 'position', type: 'Number', remark: '对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
+      { name: 'position', type: 'String', remark: '弹出位置。可选值: <b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>' +
+         '<br>备注：t:top, r:right, b:bottom, l:left, c:center'
+      },
       { name: 'pophide', type: 'Boolean', remark: '设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。' },
       { name: 'prong', type: 'Boolean', remark: '设为 true，显示一个箭头，指向 snap 参数对象。' },
       { name: 'preload', type: 'String | Object', ver: '3.2+', remark: '预装载模板地址，或预装载模板内容。' },
@@ -3855,7 +3865,9 @@ define( {
       { name: 'id', type: 'String', remark: 'Dialog 的 id 参数有全局性。可以通过两种方式获取 dialog 的实例: <br> 1. 可通过 view.find( id ) 方法来获取 widget。<br> 2. 通过 $.dialog( id ) 获取。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'icon', type: 'String', remark: '图标。' },
-      { name: 'position', type: 'Number', remark: '对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8。其中 0 为页面中心点，1-8是页面八个角落方位。' },
+      { name: 'position', type: 'String', remark: '弹出位置。可选值: <b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>' +
+         '<br>备注：t:top, r:right, b:bottom, l:left, c:center'
+      },
       { name: 'timeout', type: 'Number', remark: '定时关闭，单位:毫秒。' },
       { name: 'title', type: 'String', remark: '标题。' },
       { name: 'yes', type: 'CommandJSON | Function', remark: '点击"确定"执行的命令或函数。' }

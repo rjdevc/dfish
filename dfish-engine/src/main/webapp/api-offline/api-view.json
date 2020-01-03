@@ -152,6 +152,9 @@
 		        ] },
 		        { "id": "form", "text": "form<sup>3.3+</sup>", "icon": ".icon .icon-class" },
 		        { "id": "horizontal", "text": "horizontal", "icon": ".icon .icon-class" },
+		        { "id": "tabs", "text": "tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "tab", "text": "tab", "icon": ".icon .icon-class" }
+		        ]  },
 		        { "id": "vertical", "text": "vertical", "icon": ".icon .icon-class" },
 		        { "id": "view", "text": "view", "icon": ".icon .icon-class" },
 		        { "id": "xsrc", "text": "xsrc<sup>3.2+</sup>", "icon": ".icon .icon-class" }
@@ -185,9 +188,6 @@
 		        ] },
 		        { "id": "split", "text": "split", "icon": ".icon .icon-class" },
 		        { "id": "submitbutton", "text": "submitbutton", "icon": ".icon .icon-class" },
-		        { "id": "tabs", "text": "tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
-		          { "id": "tab", "text": "tab", "icon": ".icon .icon-class" }
-		        ]  },
 		        { "id": "timeline", "text": "timeline", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "timeline/item", "text": "timeline/item", "icon": ".icon .icon-class" }
 		        ] },
