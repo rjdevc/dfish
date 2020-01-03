@@ -1,6 +1,6 @@
 package com.rongji.dfish.base.crypt;
 
-public class CryptorBuilder<T extends CryptorBuilder> {
+public class CryptorBuilder {
     public static final int PRESENT_RAW = 0;
     public static final int PRESENT_HEX = 1;
     public static final int PRESENT_BASE64 = 2;
@@ -37,6 +37,11 @@ public class CryptorBuilder<T extends CryptorBuilder> {
      * DES 使用的秘钥 是 8byte
      */
     public static final String ALGORITHM_AES = "AES";
+    /**
+     * AES算法，改算法由DES和RSA融合而成，曾在美国军方使用，现已退役，但对于民用安全性还行
+     * DES 使用的秘钥 是 8byte
+     */
+    public static final String ALGORITHM_SM4 = "SM4";
     /**
      * 三重DES算法。
      * TRIPLE_DES 使用的秘钥 是8byte
@@ -99,13 +104,13 @@ public class CryptorBuilder<T extends CryptorBuilder> {
         return present;
     }
 
-    public T encoding(String encoding) {
+    public CryptorBuilder encoding(String encoding) {
         this.encoding = encoding;
-        return (T) this;
+        return this;
     }
-    public T present(int present) {
+    public CryptorBuilder present(int present) {
         this.present = present;
-        return (T) this;
+        return this;
     }
 
 
@@ -138,8 +143,11 @@ public class CryptorBuilder<T extends CryptorBuilder> {
     }
 
     public Cryptor build() {
-        if(isDigest(this.algorithm)){
+        if(isDigest(algorithm)){
             return new MessageDigestCryptor(this);
+        }
+        if(ALGORITHM_SM4.equals(algorithm)){
+            return new SM4Cryptor(this);
         }
         // MD5 SHA
         return new CipherCryptor(this);

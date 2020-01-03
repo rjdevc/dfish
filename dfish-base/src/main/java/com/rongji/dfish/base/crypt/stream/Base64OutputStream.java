@@ -45,13 +45,13 @@ public class Base64OutputStream extends AbstractPresentOutputStream {
                 chars[1] = ALPHABET[(buff[0] & 0x03) << 4 | ((buff[1] & 0xF0) >> 4)];
                 chars[2] = ALPHABET[(buff[1] & 0x0F) << 2];
                 chars[3] = PAD;
-            }
-            if (buffLen == 1) {
+            }else if (buffLen == 1) {
                 chars[0] = ALPHABET[(buff[0] & 0xFC) >> 2];
                 chars[1] = ALPHABET[(buff[0] & 0x03) << 4];
                 chars[2] = PAD;
                 chars[3] = PAD;
-            } else if (buffLen == 3) {//仅仅为了容错;
+            }else if (buffLen == 3) {
+                //仅仅为了容错;
                 chars[0] = ALPHABET[(buff[0] & 0xFC) >> 2];
                 chars[1] = ALPHABET[(buff[0] & 0x03) << 4 | ((buff[1] & 0xF0) >> 4)];
                 chars[2] = ALPHABET[(buff[1] & 0x0F) << 2 | ((buff[2] & 0x03) >> 6)];

@@ -19,6 +19,7 @@ public abstract class AbstractCryptor implements Cryptor{
     public void encrypt(InputStream is, OutputStream os) {
 
         is=decorate(is);
+        os=decorate(os);
         OutputStream pos;
         switch (builder.present) {
             case CryptorBuilder.PRESENT_HEX:
@@ -46,6 +47,12 @@ public abstract class AbstractCryptor implements Cryptor{
         }
         return new BufferedInputStream(is);
     }
+    private OutputStream decorate(OutputStream out) {
+        if(out instanceof ByteArrayOutputStream ||out instanceof BufferedOutputStream){
+            return out;
+        }
+        return new BufferedOutputStream(out);
+    }
 
     protected abstract void doEncrypt(InputStream is, OutputStream os);
 
@@ -54,6 +61,7 @@ public abstract class AbstractCryptor implements Cryptor{
     @Override
     public void decrypt(InputStream is, OutputStream os) {
         is=decorate(is);
+        os=decorate(os);
         InputStream pis;
         switch (builder.present) {
             case CryptorBuilder.PRESENT_HEX:
@@ -103,4 +111,77 @@ public abstract class AbstractCryptor implements Cryptor{
 
     protected CryptorBuilder builder;
 
+    protected static byte[] getKeyBytes(String key,int minLen,int maxLen,String algorithm){
+        if(isHex(key)&& key.length()/2>=minLen&&key.length()/2>=maxLen){
+            return parseHex(key);
+        }else {
+            try {
+                byte[] toBytes=key.getBytes("UTF-8");
+                if(toBytes.length>=minLen&&toBytes.length<=maxLen){
+                    return toBytes;
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            throw new IllegalArgumentException("key "+key+" is not suit for algorithm "+algorithm+" (maxLen="+maxLen+",minLen="+minLen+")");
+        }
+    }
+
+    private static boolean isHex(String key) {
+        if(key.length()%2==1){
+            return false;
+        }
+        char[] chs=key.toCharArray();
+        for(char c:chs){
+            if(c<'0'||(c>'9'&& c<'A')||(c>'F'&& c<'a')||c>'f'){
+                return false;
+            }
+        }
+        return true;
+    }
+    private static byte[] parseHex(String key){
+        byte[] bytes=new byte[key.length()/2];
+        char[] chs=key.toCharArray();
+        for(int i=0;i<chs.length;i+=2){
+            int hi=HEX_DE[chs[i]];
+            int low=HEX_DE[chs[i+1]];
+            bytes[i/2]=(byte)((hi<<4)|low);
+        }
+        return bytes;
+    }
+    private static final byte[] HEX_DE = { // 用于加速解密的cache
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, // 48
+            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, //64
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
+            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 96
+
+    protected void run(InputStream is, OutputStream os) {
+        byte[] b = new byte[8192];
+        int len = 0;
+        try{
+            while ((len = is.read(b)) != -1) {
+                os.write(b, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

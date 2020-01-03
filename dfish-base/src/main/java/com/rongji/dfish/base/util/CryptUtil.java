@@ -38,12 +38,17 @@ public class CryptUtil {
 	 */
 	public static final String ALGORITHM_TRIPLE_DES =  CryptorBuilder.ALGORITHM_TRIPLE_DES;
 
+	/**
+	 * 国密算法
+	 */
+	public static final String ALGORITHM_SM4 = CryptorBuilder.ALGORITHM_SM4;
 
 	/**
 	 * MD5数字摘要方法
 	 * 注意不可解密
 	 */
 	public static final String ALGORITHM_MD5 = CryptorBuilder.ALGORITHM_MD5;
+
 	/**
 	 * SHA-1数字摘要方法，精度为160位。安全性比MD5高
 	 * 注意不可解密
