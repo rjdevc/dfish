@@ -10165,6 +10165,19 @@ TR = define.widget( 'tr', {
 		toggleFocus: function() {
 			this.focus( ! this.isFocus() );
 		},
+		// 获取所有焦点行 / @a -> visible?
+		getFocusAll: function( a ) {
+			var r;
+			if ( this.x.focus && (!a || this.$()) )
+				r = [ this ];
+			if ( this.length ) {
+				var i = this.length, c;
+				while ( i -- ) {
+					(c = this[ i ].getFocusAll( a )) && c.length && (r = (r || (r = [])).concat( c ));
+				}
+			}
+			return r;
+		},
 		isEvent4Box: function( e ) {
 			var b = this.getBox();
 			return b && e && e.srcElement && e.srcElement.id == b.id + 't';
@@ -10874,8 +10887,8 @@ AbsGrid = define.widget( 'abs/grid', {
 		},
 		// 获取所有焦点行 / @a -> visible?
 		getFocusAll: function( a ) {
-			for ( var i = 0, b = this.tbody(), l = b.length, r = []; i < l; i ++ ) {
-				if ( b[ i ].x.focus && (!a || b[ i ].$()) ) r.push( b[ i ] );
+			for ( var i = 0, b = this.tbody(), c, l = b.length, r = []; i < l; i ++ ) {
+				(c = b[ i ].getFocusAll( a )) && c.length && (r = r.concat( c ));
 			}
 			return r;
 		},

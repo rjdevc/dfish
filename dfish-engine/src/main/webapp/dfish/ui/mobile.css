@@ -18,6 +18,7 @@
 
 .w-scroll-overflow .w-grid{overflow:visible}
 
+/*
 .w-leaf{position:relative;margin:0;padding:0;height:40px;cursor:default}
 .w-leaf:after{position:absolute;right:0;bottom:0;left:15px;height:1px;content:'';-webkit-transform:scaleY(.5);transform:scaleY(.5);background-color:#c8c7cc;}
 .w-leaf.z-on,.w-leaf.z-on .w-leaf-t{background:#fafafa}
@@ -27,15 +28,16 @@
 .w-leaf-b.w-checkbox,.w-leaf-b.w-triplebox{padding:0 3px;text-align:center;line-height:0}
 .w-leaf-o .f-arw{display:none}
 
+.w-datepicker ._t{position:absolute;width:0;visibility:hidden;}
+.w-datepicker ._a{display:block;height:100%;line-height:38px;overflow:hidden}
+*/
+
 .w-calendar-dialog{font-size:20px}
 .w-calendar-head{height:40px;line-height:40px}
 .w-calendar ._t,.w-calendar ._y,.w-calendar ._m{height:100%;vertical-align:middle;cursor:pointer}
 
 .w-input{height:38px;}
 .w-input ._t{line-height:38px}
-
-.w-datepicker ._t{position:absolute;width:0;visibility:hidden;}
-.w-datepicker ._a{display:block;height:100%;line-height:38px;overflow:hidden}
 
 .w-spinner.w-input.z-on,.w-date.w-input.z-on{border-color:rgba(0,0,0,.2)}
 .w-spinner .f-boxbtn{width:30px;text-align:center;color:#666}
@@ -56,29 +58,31 @@
 .f-boxbtn{width:30px;height:38px;line-height:38px;text-align:center;text-indent:0;font-style:normal}
 .f-boxbtn .f-arw-b3{border-top-color:#99a8b8;*margin-top:3px}
 
+/*
 .f-i-back,.f-i-upload,.f-i-trash,.f-i-plus{background:none}
 .f-i-back:before{content:'\e471';}
 .f-i-upload:before{content:'\e402';}
 .f-i-trash:before{content:'\e401';}
 .f-i-plus:before{content:'\e409';}
+*/
 
-.f-i-file-vid{width:36px;height:36px;background:url(g/f.png) -94px -84px #8183e1}
-.f-i-file-ppt{width:36px;height:36px;background:url(g/f.png) -238px -84px #f2bd2f}
-.f-i-file-xls{width:36px;height:36px;background:url(g/f.png) -382px -84px #5ab04d}
-.f-i-file-fla{width:36px;height:36px;background:url(g/f.png) -526px -84px #f04d58}
-.f-i-file-fon{width:36px;height:36px;background:url(g/f.png) -94px -187px #5eb284}
-.f-i-file-zip{width:36px;height:36px;background:url(g/f.png) -238px -187px #478de4}
-.f-i-file-eps{width:36px;height:36px;background:url(g/f.png) -382px -187px #fd852d}
-.f-i-file-txt{width:36px;height:36px;background:url(g/f.png) -526px -187px #f2bd2f}
-.f-i-file-aud{width:36px;height:36px;background:url(g/f.png) -670px -187px #8183e1}
-.f-i-file-chm{width:36px;height:36px;background:url(g/f.png) -94px -290px #f2bd2f}
-.f-i-file-pdf{width:36px;height:36px;background:url(g/f.png) -238px -290px #f04d58}
-.f-i-file-ai{width:36px;height:36px;background:url(g/f.png) -382px -290px #fd852d}
-.f-i-file-psd{width:36px;height:36px;background:url(g/f.png) -526px -290px #018beb}
-.f-i-file-img{width:36px;height:36px;background:url(g/f.png) -670px -290px #5ab04d}
-.f-i-file-css{width:36px;height:36px;background:url(g/f.png) -94px -393px #fd852d}
-.f-i-file-doc{width:36px;height:36px;background:url(g/f.png) -238px -393px #478de4}
-.f-i-file-iso{width:36px;height:36px;background:url(g/f.png) -382px -393px #018beb}
-.f-i-file-js{width:36px;height:36px;background:url(g/f.png) -526px -393px #018beb}
-.f-i-file-file{width:36px;height:36px;background:url(g/f.png) -670px -393px #f2bd2f}
-.f-i-file-htm{width:36px;height:36px;background:url(g/f.png) -94px -393px #478de4}
+.f-i-file-vid{width:36px;height:36px;background:url(g/f.png) -97px -87px #8183e1}
+.f-i-file-ppt{width:36px;height:36px;background:url(g/f.png) -241px -87px #f2bd2f}
+.f-i-file-xls{width:36px;height:36px;background:url(g/f.png) -385px -87px #5ab04d}
+.f-i-file-fla{width:36px;height:36px;background:url(g/f.png) -529px -87px #f04d58}
+.f-i-file-fon{width:36px;height:36px;background:url(g/f.png) -97px -190px #5eb284}
+.f-i-file-zip{width:36px;height:36px;background:url(g/f.png) -241px -190px #478de4}
+.f-i-file-eps{width:36px;height:36px;background:url(g/f.png) -385px -190px #fd852d}
+.f-i-file-txt{width:36px;height:36px;background:url(g/f.png) -529px -190px #f2bd2f}
+.f-i-file-aud{width:36px;height:36px;background:url(g/f.png) -673px -190px #8183e1}
+.f-i-file-chm{width:36px;height:36px;background:url(g/f.png) -97px -293px #f2bd2f}
+.f-i-file-pdf{width:36px;height:36px;background:url(g/f.png) -241px -293px #f04d58}
+.f-i-file-ai{width:36px;height:36px;background:url(g/f.png) -385px -293px #fd852d}
+.f-i-file-psd{width:36px;height:36px;background:url(g/f.png) -529px -293px #018beb}
+.f-i-file-img{width:36px;height:36px;background:url(g/f.png) -673px -293px #5ab04d}
+.f-i-file-css{width:36px;height:36px;background:url(g/f.png) -97px -396px #fd852d}
+.f-i-file-doc{width:36px;height:36px;background:url(g/f.png) -241px -396px #478de4}
+.f-i-file-iso{width:36px;height:36px;background:url(g/f.png) -385px -396px #018beb}
+.f-i-file-js{width:36px;height:36px;background:url(g/f.png) -529px -396px #018beb}
+.f-i-file-file{width:36px;height:36px;background:url(g/f.png) -673px -396px #f2bd2f}
+.f-i-file-htm{width:36px;height:36px;background:url(g/f.png) -97px -396px #478de4}
