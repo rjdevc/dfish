@@ -3714,7 +3714,7 @@ ButtonSplit = define.widget( 'button/split', {
 Tabs = define.widget( 'tabs', {
 	Const: function( x, p ) {
 		this.id = $.uid( this );
-		var s = x.position, t = s === 'bottom' || s === 'right', y = $.extend( { type: t ? 'vert' : 'horz' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		var s = x.position, y = $.extend( { type: s === 'right' || s === 'left' ? 'horz' : 'vert' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
 		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
 			if ( n[ i ].type === 'split' ) {
 				b.push( n[ i ] );
@@ -3728,7 +3728,7 @@ Tabs = define.widget( 'tabs', {
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
 		var r = { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b };
 		y.nodes = [ { type: 'frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
-		y.nodes[ t ? 'push' : 'shift' ]( r );
+		y.nodes[ s === 'bottom' || s === 'right' ? 'push' : 'unshift' ]( r );
 		delete y.pub;
 		Vert.call( this, y, p );
 		this.buttonbar = this[ 0 ];
