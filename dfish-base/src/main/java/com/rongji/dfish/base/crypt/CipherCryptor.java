@@ -1,7 +1,5 @@
 package com.rongji.dfish.base.crypt;
 
-import com.rongji.dfish.base.util.ByteArrayUtil;
-import com.rongji.dfish.base.util.CryptUtil;
 import com.rongji.dfish.base.util.LogUtil;
 
 import javax.crypto.Cipher;
@@ -10,14 +8,16 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class CipherCryptor extends  AbstractCryptor{
-
 
     public CipherCryptor(CryptorBuilder cb){
         super(cb);
@@ -57,6 +57,8 @@ public class CipherCryptor extends  AbstractCryptor{
                 cis = new GZIPInputStream(cis);
             }
             run(cis, os);
+        }catch (RuntimeException ex){
+            throw ex;
         }catch (Exception ex){
            throw new RuntimeException(ex);
         }
@@ -124,9 +126,10 @@ public class CipherCryptor extends  AbstractCryptor{
 
             parseKey();
             if(parameter!=null){
+                // CBC 需要设置iv
                 cipher.init(encryptMode, secretkey,parameter);
             }else {
-                cipher.init(encryptMode, secretkey);//FIXME CBC 需要设置iv
+                cipher.init(encryptMode, secretkey);
             }
 
 //        }
@@ -165,48 +168,31 @@ public class CipherCryptor extends  AbstractCryptor{
                 strKey=strs[0];
                 paramKey =strs[1];
             }
-            byte[] bytes=null;
-            strKey=strKey.trim();
-            switch (builder.algorithm) {
-                case CryptorBuilder.ALGORITHM_BLOWFISH:
-                    bytes=getKeyBytes(strKey,1,16,builder.algorithm);
-                    break;
-                case CryptorBuilder.ALGORITHM_DES:
-                case CryptorBuilder.ALGORITHM_TRIPLE_DES:
-                    bytes = getKeyBytes(strKey, 8, 8,builder.algorithm);
-                    break;
-                case CryptorBuilder.ALGORITHM_AES:
-                    bytes = getKeyBytes(strKey, 16, 16,builder.algorithm);
-                    break;
-                default:
-
-            }
             //第二段当做IV处理
-            SecretKeySpec keySpec = new SecretKeySpec(bytes, builder.algorithm);
+            SecretKeySpec keySpec = new SecretKeySpec(getKeyBytes(strKey,builder.algorithm), builder.algorithm);
             this.secretkey=keySpec;
             if(paramKey!=null) {
-                paramKey = paramKey.trim();
-                switch (builder.algorithm) {
-                    case CryptorBuilder.ALGORITHM_BLOWFISH:
-                        bytes=getKeyBytes(paramKey,1,16,builder.algorithm);
-                        break;
-                    case CryptorBuilder.ALGORITHM_DES:
-                    case CryptorBuilder.ALGORITHM_TRIPLE_DES:
-                        bytes = getKeyBytes(paramKey, 8, 8,builder.algorithm);
-                        break;
-                    case CryptorBuilder.ALGORITHM_AES:
-                        bytes = getKeyBytes(paramKey, 16, 16,builder.algorithm);
-                        break;
-                    default:
-
-                }
-
-                IvParameterSpec parameter = new IvParameterSpec(bytes);
+                IvParameterSpec parameter = new IvParameterSpec(getKeyBytes(paramKey,builder.algorithm));
                 this.parameter = parameter;
             }
             return keySpec;
         }
         throw new IllegalArgumentException("can not parse key "+key+" ("+key.getClass()+")");
+    }
+
+    private static byte[] getKeyBytes(String key,String algorithm){
+        key = key.trim();
+        switch (algorithm) {
+            case CryptorBuilder.ALGORITHM_BLOWFISH:
+                return getKeyBytes(key,1,16,algorithm);
+            case CryptorBuilder.ALGORITHM_DES:
+            case CryptorBuilder.ALGORITHM_TRIPLE_DES:
+                return getKeyBytes(key, 8, 8,algorithm);
+            case CryptorBuilder.ALGORITHM_AES:
+                return getKeyBytes(key, 16, 16,algorithm);
+            default:
+                throw new IllegalArgumentException("can not parse key "+key+" using algorithm "+algorithm);
+        }
     }
     private static byte[] getKeyBytes(String key,int minLen,int maxLen,String algorithm){
         if(isHex(key)&& key.length()/2>=minLen&&key.length()/2>=maxLen){
@@ -255,32 +241,6 @@ public class CipherCryptor extends  AbstractCryptor{
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
             0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 96
 
-
-//    public static void main(String[]args){
-//        KeyPairGenerator keyPairGen=null;
-//        try {
-//            keyPairGen = KeyPairGenerator.getInstance("RSA", new org.bouncycastle.jce.provider.BouncyCastleProvider());
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        }
-//        final int KEY_SIZE = 1024;// 没什么好说的了，这个值关系到块加密的大小，可以更改，但是不要太大，否则效率会低
-//        keyPairGen.initialize(KEY_SIZE, new SecureRandom());
-//        KeyPair keyPair = keyPairGen.genKeyPair();
-//        System.out.println(keyPair);
-//    }
-
-//    private void checkSupportRSA() {
-//        String[] classes={"org.bouncycastle.jce.provider.BouncyCastleProvider",
-//        "com.rongji.dfish.misc.crypt.SimpleRSAPrivateKey"};
-//        for(String clzName:classes){
-//            if(!BeanUtil.exists(clzName)){
-//                throw new UnsupportedOperationException("Can NOT support RSA. Please install bouncycastle-xxx.jar & dfish-misc-xxx.jar");
-//            }
-//        }
-//    }
-
-
-
     protected void run(InputStream is, OutputStream os) {
         byte[] b = new byte[8192];
         int len = 0;
@@ -308,37 +268,4 @@ public class CipherCryptor extends  AbstractCryptor{
         }
     }
 
-    public static void main(String [] args) throws UnsupportedEncodingException {
-        //BLOWFISH 2
-        Cryptor c=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH,"RJ002474")
-                .gzip(true)
-                .build();
-        String en=c.encrypt("犯我中华者 虽远必诛   ");
-        System.out.println(en);
-        String s=c.decrypt(en);
-        System.out.println(s);
-
-        Cryptor c2=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_DES,"0123456789abcdef")
-                .gzip(true)
-                .build();
-        String en2=c2.encrypt("犯我中华者 虽远必诛");
-        System.out.println(en2);
-        String s2=c2.decrypt(en2);
-        System.out.println(s2);
-
-        Cryptor c3=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_AES,"RJ002474RJ002474")
-                .gzip(true)
-                .build();
-        String en3=c3.encrypt("犯我中华者 虽远必诛");
-        System.out.println(en3);
-        String s3=c3.decrypt(en3);
-        System.out.println(s3);
-
-//        byte[] bytes="犯我强汉者 虽远必诛   ".getBytes("UTF-8");
-//        ByteArrayOutputStream baos=new ByteArrayOutputStream();
-//        c.decrypt(new ByteArrayInputStream(en.getBytes()),baos);
-//        System.out.println( ByteArrayUtil.toHexString(bytes));
-//        System.out.println( ByteArrayUtil.toHexString(baos.toByteArray()));
-       ;
-    }
 }
