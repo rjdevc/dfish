@@ -1,5 +1,7 @@
 window.app = {
-    idRoot: "00000000000000000000000000000000",
+    id: {
+        root: '00000000000000000000000000000000'
+    },
     error: function (response) {
         var error = response.error;
         var errorMsg = '';
@@ -9,7 +11,7 @@ window.app = {
         if (error.msg) {
             errorMsg += error.msg;
         } else {
-            errorMsg += "操作失败";
+            errorMsg += '操作失败';
         }
         this.alertWarn(errorMsg);
     },
@@ -21,21 +23,21 @@ window.app = {
     },
     dialog: {
         width: {
-            "max": "*",
-            "large": 980,
-            "medium": 680,
-            "small": 440
+            'max': '*',
+            'large': 980,
+            'medium': 680,
+            'small': 440
         },
         height: {
-            "max": "*",
-            "large": 550,
-            "medium": 410,
-            "small": 250
+            'max': '*',
+            'large': 550,
+            'medium': 410,
+            'small': 250
         },
         max: function (target) {
             var d = dfish.dialog(target);
             var isMax = d.isMax();
-            target.attr('tip', isMax ? '最大化' : "还原");
+            target.attr('tip', isMax ? '最大化' : '还原');
             // 最大化/还原
             d.max();
         }
@@ -85,7 +87,7 @@ window.app = {
         }
     },
     options: {
-        status: [{"value": "1", "text": "启用"}, {"value": "0", "text": "禁用"}],
-        boolean: [{"value": "1", "text": "是"}, {"value": "0", "text": "否"}]
+        status: [{'value': '1', 'text': '启用'}, {'value': '0', 'text': '禁用'}],
+        boolean: [{'value': '1', 'text': '是'}, {'value': '0', 'text': '否'}]
     }
 };
