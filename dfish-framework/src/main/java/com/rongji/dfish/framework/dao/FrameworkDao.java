@@ -223,4 +223,10 @@ public interface FrameworkDao<P, ID extends Serializable> {
         return countSql;
     }
 
+    /**
+     * 从缓存中驱逐
+     * @param entity 实体类
+     */
+    void evict(Object entity);
+
 }

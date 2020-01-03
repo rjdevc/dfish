@@ -2178,7 +2178,7 @@ _merge( $, {
 			c && _rm( c );
 		}, T );
 		// 业务拖动时禁用浏览器默认的拖动效果
-		br.mobile && doc.addEventListener('touchmove', m, { passive: F } );
+		br.mobile && doc.addEventListener( 'touchmove', m, { passive: F } );
 	},
 	// @a -> el, b -> type, c -> fast|normal|slow (.2s|.5s|1s), d -> fn 结束后执行的函数
 	animate: function( a, b, c, d ) {
@@ -2253,9 +2253,11 @@ _merge( $, {
 					_rm( cid );
 				}
 				y = x;
-				! $( gid ) && (s.push( _path + x.dir + 'global.css' ), d.push( gid ));
-				! $( tid ) && (s.push( _path + x.dir + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
-				! $( cid ) && (s.push( _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
+				var g = x.dir && x.dir.replace( /\/+$/, '' ),
+					h = g && _strFrom( g, '/', T ) || g;
+				g && !$( gid ) && (s.push( _path + g + '/' + h + '.css' ), d.push( gid ));
+				g && x.theme && !$( tid ) && (s.push( _path + g + '/' + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
+				g && x.theme && x.color && !$( cid ) && (s.push( _path + g + '/' + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
 			}
 			_loadCss( s, d, f );
 		}

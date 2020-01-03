@@ -135,7 +135,7 @@ dfish.config({
     },
     src_filter: function (response) {
         if (response.error) {
-            app.error(response);
+            app.response.error(response);
         } else {
             if (!response.data) {
                 response.data = {};

@@ -427,74 +427,68 @@ i {
 /**↑表单↑**/
 
 /**↓对话框↓**/
-.dlg {
+.w-dialog {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(114, 182, 227, 0.7);
     border: 1px solid #90b5d5;
 }
 
-.dlg-template {
+.w-dialog .dlg-frame {
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(114, 182, 227, 0.7);
-    border: 1px solid #90b5d5;
 }
 
-.dlg-head {
+.w-dialog .dlg-head {
     background-color: #009bdb;
 }
 
-.dlg-head-title {
+.w-dialog .dlg-head .dlg-head-title {
     color: #fff;
     font-size: 14px;
     padding-left: 10px;
     line-height: 40px;
 }
 
-.dlg_head_oper {
-
-}
-
-.w-buttonbar.dlg-head-oper .w-button {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button {
     border-color: transparent;
 }
 
-.w-buttonbar.dlg-head-oper .w-button ._c {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button ._c {
     padding-left: 10px;
 }
 
-.w-buttonbar.dlg-head-oper .w-button ._i {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button ._i {
     padding-right: 10px;
 }
 
-.w-buttonbar.dlg-head-oper .w-button.z-hv {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.z-hv {
     background-color: #1588d4;
 }
 
-.w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-hv {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-hv {
     background-color: #d00;
 }
 
-.w-buttonbar.dlg-head-oper .w-button.z-dn {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.z-dn {
     background-color: #0e80cb;
 }
 
-.w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-dn {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-dn {
     background-color: #e81414;
 }
 
-.dlg-foot {
+.w-dialog .dlg-foot {
     background-color: #edf0f2;
 }
 
-.w-dialog-loadinghead {
+.w-dialog .w-dialog-loadinghead {
     background: #009bdb
 }
 
-.w-dialog-loadinghead ._x {
+.w-dialog .w-dialog-loadinghead ._x {
     background: url(img/g.png) no-repeat -85px 4px
 }
 
-.w-dialog-loadinghead ._x.z-hv {
+.w-dialog .w-dialog-loadinghead ._x.z-hv {
     background-color: red
 }
 
