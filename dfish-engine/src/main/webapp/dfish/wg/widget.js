@@ -506,8 +506,13 @@ Template = $.createClass( {
 		},
 		// @y -> { key: value }, z -> x.parentObject
 		compile: function( x, y ) {
-			if ( ! x )
+			if ( ! x || typeof x !== _OBJ )
 				return x;
+			if ( $.isArray( x ) ) {
+				for ( var i = 0, l = x.length, r = []; i < l; i ++ )
+					r.push( this.compile( x[ i ], y ) );
+				return r;
+			}
 			var r = {}, b, f = {}, g = x && (new TemplateWidget( x, this ));
 			if ( (b = x[ '@w-include' ]) ) {
 				var d = _getTemplate( b, T );
@@ -567,10 +572,10 @@ Template = $.createClass( {
 								}
 							}
 						} else {
-							if ( '@w-if' in m ) {
+							if ( m['@w-if'] !== U ) {
 								EIF = F;
 								if ( ! (IF = this.format( m[ '@w-if' ], g, y )) ) continue;
-							} else if ( '@w-elseif' in m ) {
+							} else if ( m['@w-elseif'] !== U ) {
 								if ( IF || EIF || ! (EIF = this.format( m[ '@w-elseif' ], g, y )) ) continue;
 							} else if ( d = (typeof m['@w-else'] === _STR) )
 								if ( IF || EIF ) continue;
@@ -2110,7 +2115,7 @@ Scroll = define.widget( 'scroll', {
 					(this.x.minwidth ? 'min-width:' + this.x.minwidth + 'px;' : '') + (h ? 'height:' + h + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + this.x.maxheight + 'px;' : '') +
 					(this.x.minheight ? 'min-height:' + this.x.minheight + 'px;' : '') + '" onscroll=' + eve + '><div id=' + this.id + 'cont>' + (s || '') + '</div></div>';		
 			} else {
-				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' +
+				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
 					(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxwidth ? 'max-width:' + (+this.x.maxwidth + c) + 'px;' : '') + (this.x.minwidth ? 'min-width:' + (+this.x.minwidth + c) + 'px;' : '') +
 					(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxheight ? 'max-height:' + (+this.x.maxheight + c) + 'px;' : '') + (this.x.minheight ? 'min-height:' + (+this.x.minheight + c) + 'px;' : '') +
 					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
@@ -3127,7 +3132,7 @@ Buttonbar = define.widget( 'buttonbar', {
 		x.nobr === F && (this.className += ' z-br');
 		!this.length && (this.className += ' z-empty');
 		(! x.valign && p && p.x.valign) && this.defaults( { valign: p.x.valign } );
-		(x.nobr === F || x.dir === 'v') && this.defaults( { scroll: T } );
+		//(x.nobr === F || x.dir === 'v') && this.defaults( { scroll: T } );
 	},
 	Extend: 'horz',
 	Default: { valign: 'middle'	},
@@ -3710,11 +3715,12 @@ ButtonSplit = define.widget( 'button/split', {
 		}
 	}
 } ),
+_tab_position = { top: 't', right: 'r', bottom: 'b', left: 'l' },
 /* `tabs` */
 Tabs = define.widget( 'tabs', {
 	Const: function( x, p ) {
 		this.id = $.uid( this );
-		var s = x.position, y = $.extend( { type: s === 'right' || s === 'left' ? 'horz' : 'vert' }, x ), b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		var s = this.getTabPosition( x.position ), y = { type: s === 'r' || s === 'l' ? 'horz' : 'vert', width: '*', height: '*' }, b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
 		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
 			if ( n[ i ].type === 'split' ) {
 				b.push( n[ i ] );
@@ -3726,17 +3732,19 @@ Tabs = define.widget( 'tabs', {
 			}
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
-		var r = { type: 'buttonbar', cls: 'w-tabbar', align: x.align, split: x.split, space: x.space, nodes: b };
+		var r = { type: 'buttonbar', cls: 'w-tabbar', align: x.align, valign: x.valign || (y.type === 'horz' ? 'top' : N), split: x.split, dir: y.type === 'horz' ? 'v' : 'h', space: x.space, nodes: b };
 		y.nodes = [ { type: 'frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
-		y.nodes[ s === 'bottom' || s === 'right' ? 'push' : 'unshift' ]( r );
-		delete y.pub;
-		Vert.call( this, y, p );
+		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
+		VertScale.call( this, $.extend( { type: 'vert', nodes:[ y ] }, x ), p );
 		this.buttonbar = this[ 0 ];
 		this.frame = this[ 1 ];
 	},
-	Extend: 'vert',
+	Extend: 'vert/scale',
 	Prototype: {
-		className: 'w-tabs'
+		className: 'w-tabs',
+		getTabPosition: function( s ) {
+			return s && (_tab_position[ s ] || s);
+		}
 	}
 } ),
 /* `tab` */
@@ -4195,6 +4203,7 @@ _getContentView = function( a ) {
 	for ( var i = 0, b; i < a.length; i ++ )
 		if ( b = _getContentView( a[ i ] ) ) return b;
 },
+_dialog_position = { topleft: 'tl', topright: 'tr', righttop: 'rt', rightbottom: 'rb', bottomright: 'br', bottomleft: 'bl', lefttop: 'lt', center: F, centercenter: F, c: F, cc: F, '0': F },
 /* `dialog`
  *  id 用于全局存取 ( dfish.dialog(id) ) 并保持唯一，以及用于里面的view的 path */
 Dialog = define.widget( 'dialog', {
@@ -4399,25 +4408,29 @@ Dialog = define.widget( 'dialog', {
 			var z = a ? 11 : 10;
 			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
 		},
+		getAxisType: function() {
+			var a = this.x.position;
+			return a && (_dialog_position[ a ] === F ? N : '' + (_dialog_position[ a ] || a));
+		},
 		// 定位 /@a -> fullscreen?
 		axis: function( a ) {
-			var c = this.attr( 'local' ), f = _number( this.x.position ), g = a ? N : this._snapElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
+			var c = this.attr( 'local' ), f = this.getAxisType(), g = a ? N : this._snapElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
 			if ( vs ) {
 				r = $.snap( w, h, g, this.x.snaptype || this._snaptype || (c && 'cc'), this._fitpos, this.x.indent != N ? this.x.indent : (this.x.prong && -10), c && (c === T ? this.getLocalParent().$() : $( c )) );
 			} else if ( f ) { // 八方位浮动的起始位置
-				var b = '11,22,22,33,33,44,44,11'.split( ',' );
-				r = $.snap( w, h, N, b[ f - 1 ], this._fitpos, this.x.indent );
-				if ( f == 1 || f == 2 ) {
+				r = $.snap( w, h, N, f, this._fitpos, this.x.indent );
+				var d = f.charAt( 0 );
+				if ( d == 1 || d == 2 || d === 't' ) {
 					n = { top: 0 };
 					r.top = -h;
-				} else if ( f == 3 || f == 4 ) {
+				} else if ( d == 3 || d == 4 || d === 'r' ) {
 					n = { right: 0 };
 					r.right = -w;
-				} else if ( f == 5 || f == 6 ) {
+				} else if ( d == 5 || d == 6 || d === 'b' ) {
 					n = { bottom: 0 };
 					r.bottom = -h;
-				} else if ( f == 7 || f == 8 ) {
+				} else if ( d == 7 || d == 8 || d === 'l' ) {
 					n = { left: 0 };
 					r.left = -w;
 				}
@@ -4593,12 +4606,13 @@ Dialog = define.widget( 'dialog', {
 			if ( this.vis ) {
 				this.getContentView() && this.getContentView().abort();
 				this.listenHide( F );
-				var f = this.x.position;
+				var f = this.getAxisType();
 				if ( f && br.css3 ) {
-					var w = this.$().offsetWidth, h = this.$().offsetHeight, d = this.id, self = this,
-						n = f == 1 || f == 2 ? { top: -h } : f == 3 || f == 4 ? { right: -w } : f == 5 || f == 6 ? { bottom: -h } : { left: -w };
+					var w = this.$().offsetWidth, h = this.$().offsetHeight, self = this,
+						d = f.charAt( 0 ),
+						n = d == 1 || d == 2 || d === 't' ? { top: -h } : d == 3 || d == 4 || d === 'r' ? { right: -w } : d == 5 || d == 6 || d === 'b' ? { bottom: -h } : d == 7 || d == 8 || d === 'l' ? { left: -w } : N;
 					$.classAdd( this.$(), 'z-closing' ); // z-closing生成遮盖层，避免在消失过程中内容部分再被点击
-					Q( this.$() ).animate( n, 150, function() { self.removeElem() } );
+					n ? Q( this.$() ).animate( n, 150, function() { self.removeElem() } ) : this.removeElem();
 				} else
 					this.removeElem();
 				this.vis = F;
