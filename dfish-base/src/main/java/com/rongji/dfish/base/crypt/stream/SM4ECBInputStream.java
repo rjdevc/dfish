@@ -13,7 +13,7 @@ public class SM4ECBInputStream extends AbstractPresentInputStream {
         inBuff = new byte[TEXT_SIZE];
         outBuff =new byte[BIN_SIZE];
         this.key=new long[32];
-        SM4.sm4_setkey_dec(this.key,key);
+        SM4.setDecryptKey(this.key,key);
     }
 
     @Override
@@ -22,9 +22,9 @@ public class SM4ECBInputStream extends AbstractPresentInputStream {
             outBuffLen=0;
             return;
         }
-        SM4.sm4_one_round(key,inBuff,0,outBuff,0);
+        SM4.oneRound(key,inBuff,0,outBuff,0);
         if(end){
-            outBuffLen = 16-outBuff[15];
+            outBuffLen = 16-outBuff[15];//把PADDING去除
         }else {
             outBuffLen = 16;
         }
@@ -61,6 +61,7 @@ public class SM4ECBInputStream extends AbstractPresentInputStream {
                 int read = in.read();
                 //因为用read 如果in没有缓冲会很慢。
                 if(read<0) {
+                    //几乎不会发生
                     end = true;
                     break ;
                 }else{
@@ -69,6 +70,7 @@ public class SM4ECBInputStream extends AbstractPresentInputStream {
             }
             preread=in.read();
             if(preread==-1){
+                //因为有padding的关系。如果不预读，永远不知道ending到了。
                 end=true;
             }//先读一个数字出来，如果已经结束，最后一块，直接去除。
             inBuffLen = trunkRead ;
@@ -76,4 +78,5 @@ public class SM4ECBInputStream extends AbstractPresentInputStream {
         }
         return totalRead;
     }
+
 }

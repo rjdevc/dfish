@@ -1,6 +1,5 @@
 package com.rongji.dfish.base.crypt;
 
-import com.rongji.dfish.base.crypt.sm.SM2Cryptor;
 import com.rongji.dfish.base.crypt.sm.SM4_ECB_PKCS7_Cryptor;
 
 /**
@@ -166,13 +165,15 @@ public class CryptFactory {
             return new RSACryptor(encoding, presentStyle, arg);
         }
         if (algorithms.equals(ALGORITHMS_RSA)) {
-            return new RSACryptor4BC(encoding, presentStyle, arg);
+            throw new UnsupportedOperationException("DFish 5.0 do not support RSA.");
+//            return new RSACryptor4BC(encoding, presentStyle, arg);
         }
         if (algorithms.equals(ALGORITHMS_SM4_ECB_PKCS7)) {
             return new SM4_ECB_PKCS7_Cryptor(encoding, presentStyle, arg);
         }
         if (algorithms.equals(ALGORITHMS_SM2)) {
-            return new SM2Cryptor(encoding, presentStyle, arg);
+            throw new UnsupportedOperationException("DFish 5.0 do not support SM2.");
+//            return new SM2Cryptor(encoding, presentStyle, arg);
         }
 
         return new JCECryptor(algorithms, encoding, presentStyle, arg);

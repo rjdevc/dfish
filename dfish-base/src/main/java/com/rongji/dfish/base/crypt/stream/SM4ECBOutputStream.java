@@ -12,18 +12,19 @@ public class SM4ECBOutputStream extends AbstractPresentOutputStream {
         super.BIN_SIZE=16;
         buff = new byte[TEXT_SIZE];
         this.key=new long[32];
-        SM4.sm4_setkey_enc(this.key,key);
+        SM4.setEncryptKey(this.key,key);
         flushed=false;
     }
 
     @Override
     protected void doChunk(byte[] in, int inPos, byte[] out, int outPos) {
-        SM4.sm4_one_round(key,in,inPos,out,outPos);
+        SM4.oneRound(key,in,inPos,out,outPos);
     }
 
 
     @Override
     public void flushBuff() throws IOException {
+        //PADDING.
         int p = 16 - buffLen;
         byte[]padded = new byte[16];
         byte[]ret = new byte[16];
