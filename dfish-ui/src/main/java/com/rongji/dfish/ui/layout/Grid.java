@@ -83,6 +83,7 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 	private static final long serialVersionUID = 6537737987499258183L;
 	private GridPart thead;
 	private GridPart tbody;
+	private GridPart tfoot;
 	private List<GridColumn> columns=new ArrayList<GridColumn>();
 	private Tr pub;
 	
@@ -160,6 +161,7 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 		super(id);
 		this.setThead(new GridPart());
 		this.setTbody(new GridPart());
+		this.setTfoot(new GridPart());
 	}
 	@Override
     public String getType() {
@@ -171,6 +173,14 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 	 * @return Thead
 	 */
 	public GridPart getThead() {
+		return thead;
+	}
+
+	/**
+	 * 表尾
+	 * @return tfoot
+	 */
+	public GridPart getTfoot() {
 		return thead;
 	}
 	
@@ -185,6 +195,19 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 		}
 		thead.owner(this);
 		this.thead = thead;
+		return this;
+	}
+	/**
+	 * 设置表尾
+	 * @param tfoot Thead
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Grid setTfoot(GridPart tfoot) {
+		if (tfoot == null) {
+			throw new UnsupportedOperationException("tfoot can not be null.");
+		}
+		tfoot.owner(this);
+		this.tfoot = tfoot;
 		return this;
 	}
 	
@@ -302,6 +325,9 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 		if(thead.findNodes()!=null){
 			resultList.addAll(thead.findNodes());
 		}
+		if(tfoot.findNodes()!=null){
+			resultList.addAll(thead.findNodes());
+		}
 		return resultList;
 	}
 	@Override
@@ -310,13 +336,18 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 		if(w!=null){
 			return w;
 		}
-		return thead.findNodeById(id);
+		w= thead.findNodeById(id);
+		if(w!=null){
+			return w;
+		}
+		return tfoot.findNodeById(id);
 	}
 
 	@Override
 	public Grid removeNodeById(String id) {
 		tbody.removeNodeById(id);
 		thead.removeNodeById(id);
+		tfoot.removeNodeById(id);
 		return this;
 	}
 
@@ -324,7 +355,9 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 	@Override
 	public boolean replaceNodeById(Widget<?> w) {
 		if(!tbody.replaceNodeById(w)){
-			return thead.replaceNodeById(w);
+			if(!thead.replaceNodeById(w)){
+				return tfoot.replaceNodeById(w);
+			}
 		}
 		return true;
 	}
@@ -562,6 +595,7 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 	public void clearNodes() {
 		this.tbody.clearNodes();
 		this.thead.clearNodes();
+		this.tfoot.clearNodes();
 		if(this.columns!=null){
 			this.columns.clear();
 		}
@@ -615,6 +649,21 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 			}}
 			row++;
 		}
+		int footRows=0,footColumns=0;
+		row=0;
+		for(Tr tr: tfoot.getRows()){
+			if(tr.getData()!=null){
+				for(Map.Entry<String,Object>entry:tr.getData().entrySet()){
+					String key=entry.getKey();
+					Td td=(Td) entry.getValue();
+					int rows=row+(td.getRowspan()==null?1:td.getRowspan());
+					int formColumn=columnMap.get(key);
+					int columns=formColumn+(td.getColspan()==null?1:td.getColspan());
+					if(rows>footRows){footRows=rows;}
+					if(columns>footColumns){footColumns=columns;}
+				}}
+			row++;
+		}
 		int bodyRows=0,bodyColumns=0;
 		row=0;
 		for(Tr tr: tbody.getRows()){
@@ -632,9 +681,10 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 			row++;
 		}
 		
-		retain(this.getColumns(),MathUtil.max(columnSize,bodyColumns,headColumns));
+		retain(this.getColumns(),MathUtil.max(columnSize,bodyColumns,headColumns,footColumns));
 		retain(tbody.getRows(),bodyRows);
 		retain(thead.getRows(),headRows);
+		retain(tfoot.getRows(),footRows);
 		return this;
 	}
 	private void retain(List<?> list, int retainLength) {
