@@ -1,6 +1,6 @@
 /*!
- * dfish.js v3.3
- * (c) 2017-2019 Mingyuan Chen
+ * dfish.js v5
+ * (c) 2017-2020 Mingyuan Chen
  * Released under the Apache License.
  */
 ( function( global, factory ) {
@@ -17,7 +17,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.3.0',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 

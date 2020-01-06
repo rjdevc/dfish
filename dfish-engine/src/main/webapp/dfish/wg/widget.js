@@ -1,6 +1,6 @@
 /*!
- * widget.js v3.3
- * (c) 2017-2019 Mingyuan Chen
+ * widget.js v5
+ * (c) 2017-2020 Mingyuan Chen
  * Released under the Apache License.
  */
 // firefox调用arguments.callee会报错，因此目前还无法使用'use strict'
@@ -8020,7 +8020,7 @@ Combobox = define.widget( 'combobox', {
 			if ( this.usa() ) {
 				var d = this.dropper, b = d && d.vis;
 				this.closePop();
-				this.focus();
+				//this.focus();
 				if ( ! b )
 					(d || (this.dropper = this.createPop( this.x.drop ))).show();
 			}
