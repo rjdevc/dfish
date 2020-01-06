@@ -28,9 +28,10 @@
 .w-leaf-b.w-checkbox,.w-leaf-b.w-triplebox{padding:0 3px;text-align:center;line-height:0}
 .w-leaf-o .f-arw{display:none}
 
-.w-datepicker ._t{position:absolute;width:0;visibility:hidden;}
-.w-datepicker ._a{display:block;height:100%;line-height:38px;overflow:hidden}
 */
+
+.w-datepicker ._t{position:absolute;width:1px;visibility:hidden;}
+.w-datepicker ._a{display:block;height:100%;line-height:38px;overflow:hidden}
 
 .w-calendar-dialog{font-size:20px}
 .w-calendar-head{height:40px;line-height:40px}
@@ -50,6 +51,7 @@
 .w-combobox ._plus,.w-pickbox ._plus,.w-onlinebox ._plus,.w-linkbox ._plus,.w-combobox.z-ds ._plus:hover,.w-pickbox.z-ds:hover ._plus,.w-onlinebox.z-ds ._plus:hover{background:none}
 .w-combobox ._plus .f-i:before,.w-pickbox ._plus .f-i:before,.w-linkbox ._plus .f-i:before,.w-onlinebox ._plus .f-i:before{content:'\e409'}
 .w-combobox-opt{height:34px}
+.w-combobox-opt ._xi{display:none}
 
 .w-jigsaw ._i{width:16px;height:16px}
 
