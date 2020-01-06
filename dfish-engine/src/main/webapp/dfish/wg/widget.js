@@ -8849,7 +8849,7 @@ Rate = define.widget( 'rate', {
 		},
 		html_nodes: function() {
 			for ( var i = 2, s = '', v = _number( this.x.value ); i <= 10; i += 2 ) {
-				s += '<i id=' + this.id + i + ' class="_i' + (v >= i ? ' z-on' : v > i - 2 ? ' z-in' : '') + '" onmouseover=' + evw + '.over(' + i + ') onclick=' + evw + '.click(' + i + ')></i>';
+				s += '<i id=' + this.id + i + ' class="f-inbl _i' + (v >= i ? ' z-on' : v > i - 2 ? ' z-in' : '') + '"><a class=f-inbl onmouseover=' + evw + '.over(' + (i -1) + ') onclick=' + evw + '.click(' + (i -1) + ')></a><a class=f-inbl onmouseover=' + evw + '.over(' + i + ') onclick=' + evw + '.click(' + i + ')></a></i>';
 			}
 			return s + '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name=' + this.x.name : '') + ' value="' + (v || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '>';
 		}

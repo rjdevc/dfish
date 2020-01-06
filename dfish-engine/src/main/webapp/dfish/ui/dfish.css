@@ -423,9 +423,10 @@
 .w-jigsaw-dialog ._ref{position:absolute;top:5px;right:5px;color:#fff;;cursor:pointer;text-shadow: 0 0 3px #000}
 
 .w-rate ._f{line-height:0}
-.w-rate ._i{display:inline-block;width:20px;height:30px;background:url(g/n.png) no-repeat -169px 50%;vertical-align:middle}
+.w-rate ._i{width:20px;height:30px;background:url(g/n.png) no-repeat -169px 50%;vertical-align:middle;font-size:0}
 .w-rate ._i.z-on{background-position:-191px 50%}
 .w-rate ._i.z-in{background-position:-212px 50%}
+.w-rate ._i a{width:50%;height:100%}
 
 .w-xbox.z-ds.z-empty{color:#a9a9a9}
 .w-xbox-ico{margin:0 5px 0 1px}
