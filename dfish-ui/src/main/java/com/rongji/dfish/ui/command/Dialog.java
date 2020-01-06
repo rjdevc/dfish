@@ -41,7 +41,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>,La
      */
     @Deprecated
     public Dialog(String id, String preload, String title,
-                  int width, int height, Integer pos,
+                  int width, int height, String pos,
                   String src) {
 		this.id=id;
 		this.preload = preload;
@@ -63,7 +63,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>,La
      * @param src String 窗口数据的URL
      */
     public Dialog(String id, String preload, String title,
-                  String width, String height, Integer pos,
+                  String width, String height, String pos,
                   String src) {
 		this.id=id;
 		this.preload = preload;

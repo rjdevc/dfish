@@ -13,12 +13,12 @@ public interface Positionable<T extends Positionable<T>> {
 	 * @param position 位置
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	T setPosition(Integer position);
+	T setPosition(String position);
 	/**
 	 * 对话框弹出位置，可选值: 0(默认) 1 2 3 4 5 6 7 8 9。其中 0 为页面中心点，1-9是页面八个角落方位。
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	Integer getPosition();
+	String getPosition();
 	/**
 	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
 	 * @return 本身，这样可以继续设置其他属性
@@ -45,46 +45,80 @@ public interface Positionable<T extends Positionable<T>> {
 	/**
 	 * 位置正中
 	 */
-	public static int POSITION_MIDDLE=0;
+	public static String POSITION_CENTER="c";
+	/**
+	 * 位置正中
+	 */
+	@Deprecated
+	public static String POSITION_MIDDLE=POSITION_CENTER;
 	/**
 	 * 位置右上(东北)
 	 */
-	public static int POSITION_NORTHEAST=2;
+	public static String POSITION_TOP_RIGHT="tr";
 	/**
 	 * 位置右上(东北)
 	 */
-	public static int POSITION_TOPRIGHT=2;
+	@Deprecated
+	public static String POSITION_TOPRIGHT=POSITION_TOP_RIGHT;
+
+	/**
+	 * 位置右上(东北)
+	 */
+	public static String POSITION_RIGHT_TOP="rt";
+
 	/**
 	 * 位置左上(西北)
 	 */
-	public static int POSITION_NORTHWEST=1;
+	public static String POSITION_TOPLEFT="tl";
 	/**
 	 * 位置左上(西北)
 	 */
-	public static int POSITION_TOPLEFT=1;
+	public static String POSITION_LEFT_TOP="lt";
+
 	/**
 	 * 位置右下(东南)
 	 */
-	public static int POSITION_SOUTHEAST=5;
+	public static String POSITION_BOTTOM_RIGHT="br";
+	/**
+	 * 位置左下(西南)
+	 */
+	@Deprecated
+	public static String POSITION_BOTTOMRIGHT=POSITION_BOTTOM_RIGHT;
+	/**
+	 * 位置左下(西南)
+	 */
+	@Deprecated
+	public static String POSITION_SOUTHWEST=POSITION_BOTTOMRIGHT;
 	/**
 	 * 位置右下(东南)
 	 */
-	public static int POSITION_BOTTOMRIGHT=5;
+	public static String POSITION_RIGHT_BOTTOM="rb";
 	/**
 	 * 位置左下(西南)
 	 */
-	public static int POSITION_SOUTHWEST=6;
+	public static String POSITION_BOTTOM_LEFT="bl";
+
 	/**
 	 * 位置左下(西南)
 	 */
-	public static int POSITION_BOTTOMLEFT=6;
-	
+	public static String POSITION_LEFT_BOTTOM="lb";
+
 	/**
-	 * 位置右上(东北)，并且弹出窗口是从右上角上从右向左滑出
+	 * 位置左
 	 */
-	public static int POSITION_NORTHEAST_POPFROM_EAST=3;
+	public static String POSITION_LEFT="l";
 	/**
-	 * 位置右上(东北)，并且弹出窗口是从右上角上从右向左滑出
+	 * 位置右
 	 */
-	public static int POSITION_TOPRIGHT_POPFROM_RIGHT=3;
+	public static String POSITION_RIGHT="r";
+	/**
+	 * 位置上
+	 */
+	public static String POSITION_TOP="t";
+	/**
+	 * 位置下
+	 */
+	public static String POSITION_BOTTOM="b";
+
+
 }

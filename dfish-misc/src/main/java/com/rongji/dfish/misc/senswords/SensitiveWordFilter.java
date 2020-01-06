@@ -11,7 +11,6 @@ import com.rongji.dfish.base.text.TrieTree;
 import com.rongji.dfish.base.text.TrieTree.SearchResult;
 import com.rongji.dfish.base.util.CharUtil;
 import com.rongji.dfish.base.util.LogUtil;
-import org.bouncycastle.util.Arrays;
 //import com.rongji.dfish.misc.senswords.andy.WordFilter;
 
 public class SensitiveWordFilter {
