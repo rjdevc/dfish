@@ -3716,11 +3716,12 @@ ButtonSplit = define.widget( 'button/split', {
 	}
 } ),
 _tab_position = { top: 't', right: 'r', bottom: 'b', left: 'l' },
+_tab_position_name = { t: 'top', r: 'right', b: 'bottom', left: 'left' },
 /* `tabs` */
 Tabs = define.widget( 'tabs', {
 	Const: function( x, p ) {
 		this.id = $.uid( this );
-		var s = this.getTabPosition( x.position ), y = { type: s === 'r' || s === 'l' ? 'horz' : 'vert', width: '*', height: '*' }, b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		var s = this.getTabPositionCode( x.position ), y = { type: s === 'r' || s === 'l' ? 'horz' : 'vert', width: '*', height: '*' }, b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
 		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
 			if ( n[ i ].type === 'split' ) {
 				b.push( n[ i ] );
@@ -3735,6 +3736,7 @@ Tabs = define.widget( 'tabs', {
 		var r = { type: 'buttonbar', cls: 'w-tabbar', align: x.align, valign: x.valign || (y.type === 'horz' ? 'top' : N), split: x.split, dir: y.type === 'horz' ? 'v' : 'h', space: x.space, nodes: b };
 		y.nodes = [ { type: 'frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
+		this.className += ' z-' + this.getTabPositionName( x.position );
 		VertScale.call( this, $.extend( { type: 'vert', nodes:[ y ] }, x ), p );
 		this.buttonbar = this[ 0 ];
 		this.frame = this[ 1 ];
@@ -3742,8 +3744,11 @@ Tabs = define.widget( 'tabs', {
 	Extend: 'vert/scale',
 	Prototype: {
 		className: 'w-tabs',
-		getTabPosition: function( s ) {
+		getTabPositionCode: function( s ) {
 			return s && (_tab_position[ s ] || s);
+		},
+		getTabPositionName: function( s ) {
+			return s && (_tab_position_name[ s ] || s);
 		}
 	}
 } ),
@@ -8241,6 +8246,7 @@ Linkbox = define.widget( 'linkbox', {
 				occupy: T,
 				method: function( e ) {
 					//this._imeMode && this.fixStyle();
+					this.checkPlaceholder();
 				}
 			},
 			keydown: {
@@ -10122,11 +10128,11 @@ TR = define.widget( 'tr', {
 			},
 			mouseover: {
 				occupy: T,
-				method: function() { $.classAdd( this.$(), 'z-hv' ) }
+				method: function() { this.addClass( 'z-hv' ) }
 			},
 			mouseout: {
 				occupy: T,
-				method: function() { $.classRemove( this.$(), 'z-hv' ) }
+				method: function() { this.removeClass( 'z-hv' ) }
 			},
 			nodechange: function( e ) {
 				var l = this.gridLeaf;
@@ -10454,8 +10460,12 @@ Column = define.widget( 'column', {
 	},
 	Listener: {
 		body: {
+			ready: function() {
+				this.fixWidth();
+			},
 			resize: function() {
 				this.css( 'width', Math.max( this.innerWidth() - this.width_minus(), 0 ) );
+				this.fixWidth();
 			}
 		}
 	},
@@ -10475,6 +10485,12 @@ Column = define.widget( 'column', {
 				n -= 1;
 			}
 			return n;
+		},
+		fixWidth: function() {
+			if ( this.grid !== this.rootNode ) {
+				var w = this.rootNode.getColgroup()[ this.x.fixedIndex ].width();
+				this.width() !== w && this.width( w );
+			}
 		},
 		html_sortarrow: function( a ) {
 			return '<div class="w-th-sortwrap f-wdbr f-nv">' + $.arrow( 't1' ) + $.arrow( 'b1' ) + '</div>';
