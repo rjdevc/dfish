@@ -1,27 +1,22 @@
 package com.rongji.dfish.ui.layout;
 
+import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.MathUtil;
+import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.form.Combo;
+import com.rongji.dfish.ui.form.Hidden;
+import com.rongji.dfish.ui.layout.grid.GridColumn;
+import com.rongji.dfish.ui.layout.grid.GridPart;
+import com.rongji.dfish.ui.layout.grid.Td;
+import com.rongji.dfish.ui.layout.grid.Tr;
+
 import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.base.util.BeanUtil;
-import com.rongji.dfish.base.util.MathUtil;
-import com.rongji.dfish.ui.form.Combo;
-import com.rongji.dfish.ui.HiddenContainer;
-import com.rongji.dfish.ui.HiddenPart;
-import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.PrototypeChangeable;
-import com.rongji.dfish.ui.PubHolder;
-import com.rongji.dfish.ui.Scrollable;
-import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.form.Hidden;
-import com.rongji.dfish.ui.layout.grid.GridPart;
-import com.rongji.dfish.ui.layout.grid.GridColumn;
-import com.rongji.dfish.ui.layout.grid.Td;
-import com.rongji.dfish.ui.layout.grid.Tr;
 
 /**
  * GridLayout 为表格。
@@ -630,7 +625,7 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 						columnSize=column;
 					}
 				} catch (Exception e) {
-					LOG.error(null,e);
+					LogUtil.error(getClass(), null,e);
 				} 
 			}
 		}

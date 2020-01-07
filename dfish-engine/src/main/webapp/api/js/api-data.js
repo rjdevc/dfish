@@ -2567,7 +2567,7 @@ define( {
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'percent', type: 'Number', remark: '进度值。范围从 0 到 100。' },
-      { name: 'range', type: 'String', remark: '划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。<br>例如设置 range: "60,100"，那么进度在 0-60 范围内会存在样式 "z-60"，进度在 60-100 范围内会存在样式 "z-100"。' },
+      { name: 'range', type: 'String', remark: '划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。<br>例如设置 range: "60,100"，那么进度在 (>=60 && <100) 范围内会存在样式 "z-60"，进度在 100 时会存在样式 "z-100"。' },
       { name: 'hidepercent', type: 'Boolean', remark: '设置为true，隐藏进度数字。' },
       { name: 'text', type: 'String', remark: '显示文本。' }
     ],
@@ -3066,7 +3066,8 @@ define( {
             { type: 'checkbox', name: 'box', pub: { width: '50%' }, options: [ { text: '选项1' }, { text: '选项2' } ] }
           }
       ] },
-      { name: 'space', type: 'Number', optional: true, remark: '当设置了 targets，再设置 space 可调整行间距。' }
+      { name: 'space', type: 'Number', optional: true, remark: '当设置了 targets，再设置 space 可调整行间距。' },
+      { name: 'value', type: 'String', optional: true, remark: '选中的值，用逗号隔开。' }
     ],
     Methods: [
       { name: 'checkAll([checked])', remark: '设置全选/不选。', param: [

@@ -1,18 +1,11 @@
 package com.rongji.dfish.ui.json;
 
+import com.rongji.dfish.base.util.LogUtil;
+
 import java.beans.Transient;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 
 /**
@@ -88,7 +81,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                             break;
                         }
                     }
-                    J.LOG.debug("find a new property {name:'" + propName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
+                    LogUtil.debug(getClass(), "find a new property {name:'" + propName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
                 }
             }
             Collections.sort(methods, new java.util.Comparator<JsonPropAppender>() {
@@ -225,7 +218,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
             try {
                 begin = entry.appendProperty(o, sb, path, begin);
             } catch (Exception e) {
-                J.LOG.debug(null, e);
+                LogUtil.error(getClass(), null, e);
             }
         }
         sb.append('}');
@@ -369,7 +362,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
             try {
                 J.get(v.getClass()).buildJson(v, sb, path);
             } catch (Exception ex) {
-                J.LOG.error(v.getClass().getName(), ex);
+                LogUtil.error(getClass(), v.getClass().getName(), ex);
             }
             path.pop();
             if (equals(sb, propValueBegin, "{}")) {

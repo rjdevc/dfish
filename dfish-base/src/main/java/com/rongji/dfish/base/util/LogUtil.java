@@ -48,6 +48,10 @@ public class LogUtil {
         debug(LOG, message, t);
     }
 
+    public static void debug(Class<?> clz, Object message) {
+        debug(clz, message, null);
+    }
+
     public static void debug(Class<?> clz, Object message, Throwable t) {
         debug(getLog(clz), message, t);
     }
@@ -64,6 +68,10 @@ public class LogUtil {
         info(LOG, message, t);
     }
 
+    public static void info(Class<?> clz, Object message) {
+        info(clz, message, null);
+    }
+
     public static void info(Class<?> clz, Object message, Throwable t) {
         info(getLog(clz), message, t);
     }
@@ -78,6 +86,10 @@ public class LogUtil {
 
     public static void warn(Object message, Throwable t) {
         warn(LOG, message, t);
+    }
+
+    public static void warn(Class<?> clz, Object message) {
+        warn(clz, message, null);
     }
 
     public static void warn(Class<?> clz, Object message, Throwable t) {

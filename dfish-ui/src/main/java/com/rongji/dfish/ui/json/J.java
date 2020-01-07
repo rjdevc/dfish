@@ -1,8 +1,7 @@
 package com.rongji.dfish.ui.json;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.Widget;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import java.util.Stack;
  *
  */
 public class J {
-	protected static final Log LOG=LogFactory.getLog(J.class);
 	private static Map<Class<?>,JsonBuilder> djbs=new HashMap<Class<?>,JsonBuilder>();
 	/**
 	 * 取得这个Class对应的Builder.
@@ -142,7 +140,7 @@ public class J {
 		try{
 			get(clz).buildJson(o, sb,path);
 		}catch(Exception ex){
-			LOG.error(clz.getName(),ex);
+			LogUtil.error(J.class, clz.getName(),ex);
 		}
 	}
 	/**

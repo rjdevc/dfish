@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.Option;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.widget.Html;
 
@@ -213,7 +214,7 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N, P>, N ex
                         value = item;
                         text = String.valueOf(item);
                     } else {
-                        LOG.error("invalide options item " + item + " ,should be Object[] ");
+                        LogUtil.error(getClass(), "invalid options item " + item + " ,should be Object[] ", null);
                         break;
                     }
                     o = new Option(value, text);

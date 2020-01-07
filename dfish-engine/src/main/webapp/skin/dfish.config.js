@@ -38,26 +38,21 @@ dfish.config({
         'buttonbar.face-text': {space: 0},
         'button': {tip: true},
         'submitbutton': {tip: true},
-        'tabs': {wmin: 40},
-        'buttonbar.w-tabbar': {space: 0, pub: {height: "*"}, wmin: 20},
+        'tabs': {pub: {height: 40}},
+        'tabbar': {wmin: 20},
+        'tabbar.z-position-left': {wmin: 0, hmin: 20},
+        'tabbar.z-position-right': {wmin: 0, hmin: 20},
+
+        'buttonbar.w-tabbar': {space: 0, wmin: 20},
+        'buttonbar.w-tabbar.z-position-left': {wmin: 0, hmin: 20},
+        'buttonbar.w-tabbar.z-position-right': {wmin: 0, hmin: 20},
 
         'grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "cell"},
         'column': {tip: true},
         // 小分页模式暂时定于全数据关联的分页栏使用,所以不设置src
         'page/mini': {align: 'right', btncount: 5, wmin: 40},
-        'page/buttongroup': {
-            align: 'right',
-            btncount: 5,
-            wmin: 40,
-            name: 'currentPage'
-        },
-        'page/text': {
-            align: 'right',
-            btncount: 5,
-            wmin: 40,
-            name: 'currentPage',
-            jump: true
-        },
+        'page/buttongroup': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage'},
+        'page/text': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage', jump: true},
 
         'form': {scroll: true, pub: {colspan: -1}},
         'form.x-form1': {pub: {colspan: -1}},
@@ -82,12 +77,7 @@ dfish.config({
             post: {type: 'upload/post', template: 'upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             filetypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
-            uploadbutton: [
-                {
-                    type: 'upload/button',
-                    text: '选择文件'
-                }
-            ]
+            uploadbutton: [{type: 'upload/button', text: '选择文件'}]
         },
         'upload/image': {
             minfilesize: '1B',
@@ -96,17 +86,9 @@ dfish.config({
             post: {type: 'upload/post', src: 'file/upload/image?scheme=$scheme', template: 'upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             thumbnail: 'file/thumbnail?fileId=$id&scheme=$scheme',
-            preview: {
-                type: 'js',
-                text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'
-            },
+            preview: {type: 'js', text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'},
             filetypes: '*.png;*.jpg;*.jpeg;',
-            uploadbutton: [
-                {
-                    type: 'upload/button',
-                    text: '+'
-                }
-            ]
+            uploadbutton: [{type: 'upload/button', text: '+'}]
         },
 
         'toggle': {

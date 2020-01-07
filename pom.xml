@@ -6,7 +6,7 @@
     <name>dfish</name>
     <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>5.0.0.32-SNAPSHOT</version>
+    <version>5.0.0.33-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://dfish.rongji.com</url>
@@ -16,7 +16,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
         <spring.version>4.3.25.RELEASE</spring.version>
     </properties>
     <dependencies>
@@ -71,13 +70,13 @@
             <distributionManagement>
                 <repository>
                     <id>local</id>
-                    <url>${local.repo.release.url}</url>
+                    <url>http://192.168.0.143:8081/nexus/repository/releases</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
 
                 <snapshotRepository>
                     <id>local</id>
-                    <url>${local.repo.snapshot.url}</url>
+                    <url>http://192.168.0.143:8081/nexus/repository/snapshots</url>
                     <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>

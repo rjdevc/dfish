@@ -375,40 +375,69 @@ i {
 
 /**↓tabs↓**/
 .w-tabs {
-    padding: 0 20px;
 }
 
-.w-tabs.x-split-side {
-    padding: 0 20px 0 10px;
-}
-
-.w-buttonbar.w-tabbar {
-    height: 40px;
+.w-tabs .w-tabbar {
     padding: 0 10px;
 }
 
-.w-buttonbar.w-tabbar .w-buttonbar-line {
+.w-tabs .w-tabbar .w-tabbar-line {
     display: block;
     height: 2px;
     background: #2498fd;
 }
 
-.w-buttonbar.w-tabbar .w-tab {
+.w-tabs .w-tabbar .w-tab {
     background: #eee;
-    margin-right: 8px;
-    margin-top: 2px;
     color: #333;
     font-weight: bold;
+    margin-right: 8px;
+    margin-top: 2px;
 }
 
-.w-buttonbar.w-tabbar .w-tab.z-on {
+.w-tabs .w-tabbar .w-tab.z-on {
     background: #2498fd;
     color: #fff;
 }
 
-.w-buttonbar.w-tabbar .w-tab.z-hv {
+.w-tabs .w-tabbar .w-tab.z-hv {
     background: #1588d4;
     color: #fff;
+}
+
+.w-tabs.z-bottom .w-tabbar .w-tab {
+    margin-top: 0;
+    margin-bottom: 2px;
+}
+
+.w-tabs.z-bottom .w-tabbar .w-tabbar-line {
+    top: 0;
+}
+
+.w-tabs.z-position-left .w-tabbar, .w-tabs.z-position-right .w-tabbar {
+    padding: 10px 0;
+}
+
+.w-tabs.z-position-left .w-tabbar .w-tab {
+    margin-top: 8px;
+    margin-left: 2px;
+    margin-right: 0;
+}
+
+.w-tabs.z-position-right .w-tabbar .w-tab {
+    margin-top: 8px;
+    margin-left: 0;
+    margin-right: 2px;
+}
+
+.w-tabs.z-position-left .w-tabbar .w-tabbar-line {
+    width: 2px;
+    height: auto;
+}
+
+.w-tabs.z-position-right .w-tabbar .w-tabbar-line {
+    width: 2px;
+    height: auto;
 }
 
 /**↑tabs↑**/
@@ -1254,16 +1283,20 @@ img {
 /**↑图标↑**/
 
 /**↓进度条↓**/
-.w-progress .w-progress-item.z-25 ._up {
+.w-progress .w-progress-item.z-0 ._up {
     background-color: #fff000;
 }
-.w-progress .w-progress-item.z-50 ._up {
+
+.w-progress .w-progress-item.z-25 ._up {
     background-color: #ffb527;
 }
-.w-progress .w-progress-item.z-75 ._up {
+
+.w-progress .w-progress-item.z-50 ._up {
     background-color: #fc942d;
 }
-.w-progress .w-progress-item.z-100 ._up {
+
+.w-progress .w-progress-item.z-75 ._up {
     background-color: #72b636;
 }
+
 /**↑进度条↑**/

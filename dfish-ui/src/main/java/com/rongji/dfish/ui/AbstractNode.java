@@ -1,11 +1,10 @@
 package com.rongji.dfish.ui;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.json.J;
 import com.rongji.dfish.ui.json.JsonWrapper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.net.URL;
 import java.util.*;
@@ -27,7 +26,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
      *
      */
     private static final long serialVersionUID = 3228228457257982847L;
-    protected static final Log LOG=LogFactory.getLog(AbstractNode.class);
     protected String id;
 
     protected Map<String, Object> data;
@@ -279,9 +277,9 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
                 }
             }
         } catch (Throwable e) {
-            LOG.error("", e);
+            LogUtil.error(AbstractNode.class, "", e);
         }
-        LOG.info("dfish-ui version : "+version);
+        LogUtil.info("dfish-ui version : "+version);
     }
     /**
      * 绑定默认属性
