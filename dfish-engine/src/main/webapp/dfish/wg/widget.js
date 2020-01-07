@@ -4906,7 +4906,7 @@ ProgressItem = define.widget( 'progress/item', {
 		x.hidepercent && (this.className += ' z-hidepercent');
 		!x.percent && (x.percent = 0);
 		if ( x.range ) {
-			for ( var i = 0, r = x.range.split( ',' ).sort(); i < r.length; i ++ ) {
+			for ( var i = 0, r = x.range.split( ',' ); i < r.length; i ++ ) {
 				if ( _number( x.percent ) < _number( r[ i ] ) ) {
 					this.className += ' z-' + r[ i ];
 					break;
