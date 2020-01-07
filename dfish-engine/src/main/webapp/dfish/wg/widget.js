@@ -3175,9 +3175,9 @@ Buttonbar = define.widget( 'buttonbar', {
 		scaleWidth: function() {
 			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
 		},
-		scaleHeight: function() {
+		/*scaleHeight: function() {
 			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
-		},
+		},*/
 		draggable: function( a ) {
 			for ( var i = 0, l = this.length; i < l; i ++ )
 				$.draggable( this[ i ], a );
@@ -3716,7 +3716,7 @@ ButtonSplit = define.widget( 'button/split', {
 	}
 } ),
 _tab_position = { top: 't', right: 'r', bottom: 'b', left: 'l' },
-_tab_position_name = { t: 'top', r: 'right', b: 'bottom', left: 'left' },
+_tab_position_name = { t: 'top', r: 'right', b: 'bottom', l: 'left' },
 /* `tabs` */
 Tabs = define.widget( 'tabs', {
 	Const: function( x, p ) {
@@ -3748,7 +3748,7 @@ Tabs = define.widget( 'tabs', {
 			return s && (_tab_position[ s ] || s);
 		},
 		getTabPositionName: function( s ) {
-			return (s && (_tab_position_name[ s ] || s)) || 'left';
+			return (s && (_tab_position_name[ s ] || s)) || 'top';
 		}
 	}
 } ),
@@ -4907,7 +4907,7 @@ ProgressItem = define.widget( 'progress/item', {
 		!x.percent && (x.percent = 0);
 		if ( x.range ) {
 			for ( var i = 0, r = x.range.split( ',' ); i < r.length; i ++ ) {
-				if ( _number( x.percent ) < _number( r[ i ] ) ) {
+				if ( _number( x.percent ) <= _number( r[ i ] ) ) {
 					this.className += ' z-' + r[ i ];
 					break;
 				}
@@ -5149,6 +5149,21 @@ define.widget( 'deck', {
 	Extend: 'vert',
 	Prototype: {
 		x_childtype: $.rt( 'deck/item' ),
+		x_nodes: function() {
+			for ( var i = 0, d = this.x.nodes, l = d.length, r = []; i < l; i += 2 )
+				r.push( { button: d[ i ], content: d[ i + 1 ] } );
+			return r;
+		},
+		getFocus: function() {
+			for ( var i = 0; i < this.length; i ++ )
+				if ( this[ i ].button.isFocus() ) return this[ i ].button;
+		}
+	}
+} );
+/* `collapse` */
+define.widget( 'collapse', {
+	Extend: 'vert/scale',
+	Prototype: {
 		x_nodes: function() {
 			for ( var i = 0, d = this.x.nodes, l = d.length, r = []; i < l; i += 2 )
 				r.push( { button: d[ i ], content: d[ i + 1 ] } );

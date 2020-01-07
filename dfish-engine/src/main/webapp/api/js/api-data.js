@@ -2546,7 +2546,6 @@ define( {
   	extend: 'widget',
     Config: [
       { name: 'delay', type: 'Number', remark: '延迟访问 src 。单位:毫秒。' },
-      { name: 'text', type: 'String', remark: '显示文本。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
       { name: 'src', type: 'String', remark: '访问这个地址返回一个命令json。如果返回的是 progress json，当前实例将被替换。' },
       { name: 'progress', type: 'String', remark: '首次访问的地址。比src优先，且只访问一次。' },
