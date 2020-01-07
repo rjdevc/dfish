@@ -3716,7 +3716,7 @@ ButtonSplit = define.widget( 'button/split', {
 	}
 } ),
 _tab_position = { top: 't', right: 'r', bottom: 'b', left: 'l' },
-_tab_position_name = { t: 'top', r: 'right', b: 'bottom', l: 'left' },
+_tab_position_name = { t: 'top', r: 'right', b: 'bottom', l: 'left', c: 'center', m: 'middle' },
 /* `tabs` */
 Tabs = define.widget( 'tabs', {
 	Const: function( x, p ) {
@@ -3733,10 +3733,11 @@ Tabs = define.widget( 'tabs', {
 			}
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
-		var r = { type: 'buttonbar', cls: 'w-tabbar', align: x.align, valign: x.valign || (y.type === 'horz' ? 'top' : N), split: x.split, dir: y.type === 'horz' ? 'v' : 'h', space: x.space, nodes: b };
+		var n = this.getTabPositionName( x.position ),
+			r = { type: 'tabbar', cls: 'z-position-' + n, align: x.align, valign: x.valign || (y.type === 'horz' ? 'top' : N), split: x.split, dir: y.type === 'horz' ? 'v' : 'h', space: x.space, nodes: b };
 		y.nodes = [ { type: 'frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
-		this.className += ' z-' + this.getTabPositionName( x.position );
+		this.className += ' z-position-' + this.getTabPositionName( x.position );
 		VertScale.call( this, $.extend( { type: 'vert', nodes:[ y ] }, x ), p );
 		this.buttonbar = this[ 0 ];
 		this.frame = this[ 1 ];
@@ -3750,6 +3751,14 @@ Tabs = define.widget( 'tabs', {
 		getTabPositionName: function( s ) {
 			return (s && (_tab_position_name[ s ] || s)) || 'top';
 		}
+	}
+} ),
+/* `tab` */
+Tabbar = define.widget( 'tabbar', {
+	Extend: 'buttonbar',
+	Prototype: {
+		className: 'w-tabbar',
+		x_childtype: $.rt( 'tab' )
 	}
 } ),
 /* `tab` */
