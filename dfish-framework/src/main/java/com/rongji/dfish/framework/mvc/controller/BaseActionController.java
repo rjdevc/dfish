@@ -28,6 +28,7 @@ public class BaseActionController extends MultiActionController {
      * 允许用户自定义分页数设置
      */
     protected boolean customizedLimit;
+    protected int progressKeyLength = 128;
 
     public boolean isCustomizedLimit() {
         return customizedLimit;
@@ -35,6 +36,14 @@ public class BaseActionController extends MultiActionController {
 
     public void setCustomizedLimit(boolean customizedLimit) {
         this.customizedLimit = customizedLimit;
+    }
+
+    public int getProgressKeyLength() {
+        return progressKeyLength;
+    }
+
+    public void setProgressKeyLength(int progressKeyLength) {
+        this.progressKeyLength = progressKeyLength;
     }
 
     /**
@@ -297,27 +306,31 @@ public class BaseActionController extends MultiActionController {
      * 获取进度条编号,由[调用方法#sessionId#dataId]构成
      *
      * @param sessionId
-     * @param dataId
+     * @param dataId 数据编号
      * @return
      */
     protected String getProgressKey(String sessionId, String dataId) {
-        String call = "";
-        try {
-            // 获取调用方法,这里有可能因为不同容器导致调用堆栈不同,未一一验证测试
-            StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
-            // callStack.getClassName() + "." +
-            // 取上级调用方法名
-            call = callStack.getMethodName();
-        } catch (Throwable e) {
-            LogUtil.error("获取进度条编号-调用堆栈异常", e);
+        if (Utils.isEmpty(dataId)) {
+            throw new IllegalArgumentException("dataId == null");
         }
-        if (dataId == null) {
-            dataId = "";
-        } else if (dataId.length() > 64) {
-            // 名称太长时强制截取字符,这里给的相对比较安全的数字
-            dataId = dataId.substring(0, 64);
+        String progressKey = sessionId + "#" + dataId;
+        // 名称太长时强制截取字符,这里给的相对比较安全的数字
+        if (progressKey.length() > progressKeyLength) {
+            final String callDataId = dataId;
+            final int leftLength = progressKeyLength - sessionId.length() - 1;
+            LogUtil.lazyWarn(getClass(), () -> {
+                try {
+                    StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
+                    String call = "进度条编号过长[" + callDataId + "]最大支持长度为[" + leftLength + "]@" + callStack.getClassName() + "." + callStack.getMethodName();
+                    return call;
+                } catch (Throwable e) {
+                    LogUtil.error("获取进度条编号-调用堆栈异常", e);
+                }
+                return "进度条编号过长[" + callDataId + "]最大支持长度为" + leftLength;
+            });
+            progressKey = progressKey.substring(0, progressKeyLength);
         }
-        return call + "#" + sessionId + "#" + dataId;
+        return progressKey;
     }
 
     protected String getDataId(String progressKey) {

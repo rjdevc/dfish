@@ -152,4 +152,25 @@ public class LogUtil {
         }
     }
 
+    public static void lazyWarn(Callable<Object> callable) {
+        lazyWarn(LOG, callable);
+    }
+
+    public static void lazyWarn(Class<?> clz, Callable<Object> callable) {
+        lazyWarn(getLog(clz), callable);
+    }
+
+    public static void lazyWarn(Log log, Callable<Object> callable) {
+        if (log.isWarnEnabled()) {
+            SINGLE_EXECUTOR.execute(() -> {
+                try {
+                    Object o = callable.call();
+                    log.warn(o);
+                } catch (Exception e) {
+                    log.error(null, e);
+                }
+            });
+        }
+    }
+
 }
