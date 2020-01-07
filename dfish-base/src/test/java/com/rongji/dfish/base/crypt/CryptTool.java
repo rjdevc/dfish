@@ -54,13 +54,18 @@ public class CryptTool extends Application {
 //        middle.setPadding(new Insets(10));
         middle.setPadding(new Insets(10,0,5,0));
         middle.setSpacing(5);
-        middle.setMaxWidth(200);
-        middle.setMinWidth(200);
+        middle.setMaxWidth(150);
+        middle.setMinWidth(150);
         rootLayout.getChildren().add(middle);
         middle.getChildren().add(new Label("算法"));
         ComboBox alg=new ComboBox();
         middle.getChildren().add(alg);
-        alg.setItems(FXCollections.observableArrayList("DES","TripleDES","AES","Blowfish","SM4"));
+        alg.setItems(FXCollections.observableArrayList(
+                CryptUtil.ALGORITHM_BLOWFISH,CryptUtil.ALGORITHM_AES,CryptUtil.ALGORITHM_DES,
+                CryptUtil.ALGORITHM_TRIPLE_DES,CryptUtil.ALGORITHM_SM4,
+                CryptUtil.ALGORITHM_MD5,CryptUtil.ALGORITHM_SHA1,CryptUtil.ALGORITHM_SHA256,
+                CryptUtil.ALGORITHM_SHA256,
+                "不加密"));
         alg.setValue("Blowfish");
 
         middle.getChildren().add(new Label("字符集"));
@@ -72,7 +77,7 @@ public class CryptTool extends Application {
         middle.getChildren().add(new Label("表示方式"));
         ComboBox present=new ComboBox();
         middle.getChildren().add(present);
-        present.setItems(FXCollections.observableArrayList("HEX","BASE64","BASE32","BASE64_URLSAFE"));
+        present.setItems(FXCollections.observableArrayList("HEX","BASE64","BASE32","BASE64_URLSAFE","RAW"));
         present.setValue("BASE32");
 
         middle.getChildren().add(new Label("压缩"));
@@ -107,25 +112,42 @@ public class CryptTool extends Application {
 
         TextArea textAreaEncrypted=new TextArea();
         right.getChildren().add(textAreaEncrypted);
+        textAreaEncrypted.setWrapText(true);
 
         VBox.setVgrow( textAreaOriginal,Priority.ALWAYS);
         VBox.setVgrow( textAreaEncrypted,Priority.ALWAYS);
 
         //动作
         encryptBtn.setOnMouseClicked((EventHandler<MouseEvent>)(event)->{
-            Cryptor cryptor=getCryptor((String)alg.getValue(),(String)encoding.getValue(),(String)present.getValue(), gzip.isSelected(),
-                    key.getText());
-            textAreaEncrypted.setText(cryptor.encrypt(textAreaOriginal.getText()));
+            try {
+                Cryptor cryptor=getCryptor((String)alg.getValue(),(String)encoding.getValue(),(String)present.getValue(), gzip.isSelected(),
+                        key.getText());
+                textAreaEncrypted.setText(cryptor.encrypt(textAreaOriginal.getText()));
+            }catch (Throwable t){
+                alert(t);
+            }
         });
         decryptBtn.setOnMouseClicked((EventHandler<MouseEvent>)(event)->{
-            Cryptor cryptor=getCryptor((String)alg.getValue(),(String)encoding.getValue(),(String)present.getValue(), gzip.isSelected(),
-                    key.getText());
-            textAreaOriginal.setText(cryptor.decrypt(textAreaEncrypted.getText()));
+            try{
+                Cryptor cryptor=getCryptor((String)alg.getValue(),(String)encoding.getValue(),(String)present.getValue(), gzip.isSelected(),
+                        key.getText());
+                textAreaOriginal.setText(cryptor.decrypt(textAreaEncrypted.getText()));
+            }catch (Throwable t){
+                alert(t);
+            }
         });
 
         primaryStage.setScene(new Scene(rootLayout, 800, 600));
         primaryStage.show();
     }
+
+    private void alert(Throwable t){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.titleProperty().set("错误");
+        alert.headerTextProperty().set(t.getClass().getName()+" : "+ t.getMessage());
+        alert.showAndWait();
+    }
+
 
     private Cryptor getCryptor(String alg, String encoding, String present, boolean gzip, String key){
         int intPresent=0;
@@ -142,7 +164,13 @@ public class CryptTool extends Application {
             case "BASE64_URLSAFE":
                 intPresent=CryptUtil.PRESENT_BASE64_URLSAFE;
                 break;
+            case "RAW":
+                intPresent=CryptUtil.PRESENT_RAW;
+                break;
             default:
+        }
+        if("不加密".equals(alg)){
+            alg=CryptUtil.ALGORITHM_NONE;
         }
         return CryptUtil.prepareCryptor(alg,key).present(intPresent).encoding(encoding).gzip(gzip).build();
     }

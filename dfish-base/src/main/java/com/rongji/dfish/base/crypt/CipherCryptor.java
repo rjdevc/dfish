@@ -38,8 +38,10 @@ public class CipherCryptor extends  AbstractCryptor{
                 cos = new GZIPOutputStream(cos);
             }
             run(is, cos);
+        }catch (RuntimeException ex){
+            throw ex;
         }catch (Exception ex){
-            LogUtil.error(null,ex);
+            throw new RuntimeException(ex);
         }
     }
 
