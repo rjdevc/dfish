@@ -8828,10 +8828,13 @@ Rate = define.widget( 'rate', {
 				this.x.value = a;
 		},
 		star: function( a ) {
-			var a = _number( a ), b = Math.floor( a / 2 ), c = this.$( b * 2 );
-			(c = c && Q( c )) && c.prevAll().addBack().addClass( 'z-on' ).removeClass( 'z-in' );
-			(c ? c.nextAll() : Q( 'i', this.$() )).removeClass( 'z-on z-in' );
-			(c && (a % 2)) && c.next().addClass( 'z-in' );
+			var a = _number( a ), b = a + (a % 2), c = Q( this.$( b ) );
+			c.prevAll().addBack().addClass( 'z-on' ).removeClass( 'z-in' );
+			c.nextAll().removeClass( 'z-on z-in' );
+			(a % 2) && c.addClass( 'z-in' );
+			//(c = c && Q( c )) && c.prevAll().addBack().addClass( 'z-on' ).removeClass( 'z-in' );
+			//(c ? c.nextAll() : Q( 'i', this.$() )).removeClass( 'z-on z-in' );
+			//(c && (a % 2)) && c.next().addClass( 'z-in' );
 		},
 		click: function( a ) {
 			this.usa() && this.val( a );
@@ -8850,7 +8853,7 @@ Rate = define.widget( 'rate', {
 		},
 		html_nodes: function() {
 			for ( var i = 2, s = '', v = _number( this.x.value ); i <= 10; i += 2 ) {
-				s += '<i id=' + this.id + i + ' class="f-inbl _i' + (v >= i ? ' z-on' : v > i - 2 ? ' z-in' : '') + '"><a class=f-inbl onmouseover=' + evw + '.over(' + (i -1) + ') onclick=' + evw + '.click(' + (i -1) + ')></a><a class=f-inbl onmouseover=' + evw + '.over(' + i + ') onclick=' + evw + '.click(' + i + ')></a></i>';
+				s += '<em id=' + this.id + i + ' class="f-inbl _b' + (v >= i ? ' z-on' : v > i - 2 ? ' z-in' : '') + '"><i class=f-inbl onmouseover=' + evw + '.over(' + (i -1) + ') onclick=' + evw + '.click(' + (i -1) + ')></i><i class=f-inbl onmouseover=' + evw + '.over(' + i + ') onclick=' + evw + '.click(' + i + ')></i></em>';
 			}
 			return s + '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name=' + this.x.name : '') + ' value="' + (v || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '>';
 		}
