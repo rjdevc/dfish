@@ -3748,7 +3748,7 @@ Tabs = define.widget( 'tabs', {
 			return s && (_tab_position[ s ] || s);
 		},
 		getTabPositionName: function( s ) {
-			return s && (_tab_position_name[ s ] || s);
+			return (s && (_tab_position_name[ s ] || s)) || 'left';
 		}
 	}
 } ),
@@ -7046,13 +7046,14 @@ Slider = define.widget( 'slider', {
 		},
 		tip: function( v ) {
 			var t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' );
-			if ( t && ! this._tip )
-				this._tip = this.exec( { type: 'tip', text: this.tipText( v ), snap: this.$( 'thumb' ), snaptype: 'tb,bt', closable: F, on: { close: 'this.parentNode._tip=null' } } );
+			if ( t && ! this._tip ) {
+				this._tip = this.exec( { type: 'tip', text: this.tipText( v ), escape: F, snap: this.$( 'thumb' ), snaptype: 'tb,bt', closable: F, on: { close: 'this.parentNode._tip=null' } } );
+			}
 			return this._tip;
 		},
 		tipText: function( v ) {
 			var t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' );
-			return '<div class=w-slider-tip-text>' + this.formatStr( t, [ v ] ) + '</div>';
+			return '<code class="f-inbl w-slider-tip-text">' + this.formatStr( t, [ v ] ) + '</code>';
 		},
 		_left: function( v ) {
 			var m = this.max(), n = this.min();
@@ -10460,9 +10461,6 @@ Column = define.widget( 'column', {
 	},
 	Listener: {
 		body: {
-			ready: function() {
-				this.fixWidth();
-			},
 			resize: function() {
 				this.css( 'width', Math.max( this.innerWidth() - this.width_minus(), 0 ) );
 				this.fixWidth();
@@ -10511,6 +10509,9 @@ Colgroup = define.widget( 'colgroup', {
 		ROOT_TYPE: 'grid,form',
 		isScaleCover: T,
 		x_childtype: $.rt( 'column' ),
+		scaleWidth: function( a ) {
+			return this.grid !== this.rootNode ? this.rootNode.getColgroup()[ a.x.fixedIndex ].width() : HorzScale.prototype.scaleWidth.call( this, a );
+		},
 		insertCol: function( a, b ) {
 			 b == N || ! this[ b ] ? this.append( a ) : this[ b ].before( a );
 		},
