@@ -44,24 +44,29 @@ public class Base32InputStream extends AbstractPresentInputStream {
             outBuffLen=0;
         }else if(inBuffLen==2){
             outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x1F) << 3) | ((DECODE_TABLE[inBuff[1]] & 0x1C) >> 2));
+            outBuffLen=1;
         }else if(inBuffLen==4){
             outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x1F) << 3) | ((DECODE_TABLE[inBuff[1]] & 0x1C) >> 2));
             outBuff[1] = (byte) (((DECODE_TABLE[inBuff[1]] & 0x03) << 6) | ((DECODE_TABLE[inBuff[2]] & 0x1F) << 1) | ((DECODE_TABLE[inBuff[3]] & 0x10) >> 4));
+            outBuffLen=2;
         }else if(inBuffLen==5){
             outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x1F) << 3) | ((DECODE_TABLE[inBuff[1]] & 0x1C) >> 2));
             outBuff[1] = (byte) (((DECODE_TABLE[inBuff[1]] & 0x03) << 6) | ((DECODE_TABLE[inBuff[2]] & 0x1F) << 1) | ((DECODE_TABLE[inBuff[3]] & 0x10) >> 4));
             outBuff[2] = (byte) (((DECODE_TABLE[inBuff[3]] & 0x0F) << 4) | ((DECODE_TABLE[inBuff[4]] & 0x1E) >> 1));
+            outBuffLen=3;
         }else if(inBuffLen==7){
             outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x1F) << 3) | ((DECODE_TABLE[inBuff[1]] & 0x1C) >> 2));
             outBuff[1] = (byte) (((DECODE_TABLE[inBuff[1]] & 0x03) << 6) | ((DECODE_TABLE[inBuff[2]] & 0x1F) << 1) | ((DECODE_TABLE[inBuff[3]] & 0x10) >> 4));
             outBuff[2] = (byte) (((DECODE_TABLE[inBuff[3]] & 0x0F) << 4) | ((DECODE_TABLE[inBuff[4]] & 0x1E) >> 1));
             outBuff[3] = (byte) (((DECODE_TABLE[inBuff[4]] & 0x01) << 7) | ((DECODE_TABLE[inBuff[5]] & 0x1F) << 2) | ((DECODE_TABLE[inBuff[6]] & 0x18) >> 3));
+            outBuffLen=4;
         }else {
             outBuff[0] = (byte) (((DECODE_TABLE[inBuff[0]] & 0x1F) << 3) | ((DECODE_TABLE[inBuff[1]] & 0x1C) >> 2));
             outBuff[1] = (byte) (((DECODE_TABLE[inBuff[1]] & 0x03) << 6) | ((DECODE_TABLE[inBuff[2]] & 0x1F) << 1) | ((DECODE_TABLE[inBuff[3]] & 0x10) >> 4));
             outBuff[2] = (byte) (((DECODE_TABLE[inBuff[3]] & 0x0F) << 4) | ((DECODE_TABLE[inBuff[4]] & 0x1E) >> 1));
             outBuff[3] = (byte) (((DECODE_TABLE[inBuff[4]] & 0x01) << 7) | ((DECODE_TABLE[inBuff[5]] & 0x1F) << 2) | ((DECODE_TABLE[inBuff[6]] & 0x18) >> 3));
             outBuff[4] = (byte) (((DECODE_TABLE[inBuff[6]] & 0x07) << 5) | ((DECODE_TABLE[inBuff[7]] & 0x1F)));
+            outBuffLen=5;
         }
         outBuffOff =0;
     }
