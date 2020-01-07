@@ -4912,16 +4912,15 @@ Progress = define.widget( 'progress', {
 ProgressItem = define.widget( 'progress/item', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		x.hidepercent && (this.className += ' z-hidepercent');
 		!x.percent && (x.percent = 0);
 		if ( x.range ) {
-			for ( var i = 0, r = x.range.split( ',' ); i < r.length; i ++ ) {
-				if ( _number( x.percent ) <= _number( r[ i ] ) ) {
-					this.className += ' z-' + r[ i ];
-					break;
-				}
+			for ( var i = 0, r = x.range.split( ',' ), v = -1; i < r.length; i ++ ) {
+				if ( _number( x.percent ) >= _number( r[ i ] ) )
+					v = Math.max( v, r[ i ] );
 			}
+			v > -1 && (this.className += ' z-' + v);
 		}
+		x.hidepercent && (this.className += ' z-hidepercent');
 		this.cssText = 'height:auto;';
 	},
 	Listener: {
