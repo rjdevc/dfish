@@ -1,9 +1,8 @@
 package com.rongji.dfish.framework.mvc.filter;
 
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.base.util.JsonUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.framework.FrameworkHelper;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 public class OvertimeFilter implements Filter {
-	private Log LOG=LogFactory.getLog(OvertimeFilter.class);
 	private long time=1500;
 	@Override
 	public void destroy() {
@@ -27,23 +25,15 @@ public class OvertimeFilter implements Filter {
 			fc.doFilter(srequest, sresponse);
 			long end=System.currentTimeMillis();
 			if(end-begin>time){
-				LOG.warn("request cost "+(end-begin)+"ms. request=\r\n"+convert2JSON((HttpServletRequest)srequest));
+				LogUtil.warn(getClass(), "request cost "+(end-begin)+"ms. request=\r\n"+convert2JSON((HttpServletRequest)srequest));
 			}
-		}catch(IOException t){
+		}catch(IOException|ServletException|RuntimeException t){
 			long end=System.currentTimeMillis();
-			LOG.error("request cost "+(end-begin)+"ms and it cause "+t.getClass().getName()+". message="+t.getMessage()+" request=\r\n"+convert2JSON((HttpServletRequest)srequest));
-			throw t;
-		}catch(ServletException t){
-			long end=System.currentTimeMillis();
-			LOG.error("request cost "+(end-begin)+"ms and it cause "+t.getClass().getName()+". message="+t.getMessage()+" request=\r\n"+convert2JSON((HttpServletRequest)srequest));
-			throw t;
-		}catch(RuntimeException t){
-			long end=System.currentTimeMillis();
-			LOG.error("request cost "+(end-begin)+"ms and it cause "+t.getClass().getName()+". message="+t.getMessage()+" request=\r\n"+convert2JSON((HttpServletRequest)srequest));
+			LogUtil.error(getClass(), "request cost "+(end-begin)+"ms and it cause "+t.getClass().getName()+". message="+t.getMessage()+" request=\r\n"+convert2JSON((HttpServletRequest)srequest), t);
 			throw t;
 		}catch(Throwable t){
 			long end=System.currentTimeMillis();
-			LOG.error("request cost "+(end-begin)+"ms and it cause "+t.getClass().getName()+". message="+t.getMessage()+" request=\r\n"+convert2JSON((HttpServletRequest)srequest));
+			LogUtil.error(getClass(), "request cost "+(end-begin)+"ms and it cause "+t.getClass().getName()+". message="+t.getMessage()+" request=\r\n"+convert2JSON((HttpServletRequest)srequest), t);
 			throw new ServletException(t);
 		}
 	}

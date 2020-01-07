@@ -1,9 +1,10 @@
 package com.rongji.dfish.ui.form;
 
-import java.util.Map;
-
 import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.AbstractNode;
+
+import java.util.Map;
 
 /**
  * 校验
@@ -682,12 +683,12 @@ public class Validate extends AbstractNode<Validate> {
 						BeanUtil.invokeMethod(this, "set" +(char)(name.charAt(0)-32) +name.substring(1)+"text", new Object[]{props.get(name+"text")});
 					}catch(NoSuchMethodException ex){
 						//do nothing
-						LOG.debug(null,ex);
+						LogUtil.error(getClass(),null,ex);
 					}
 				}
 			}
 		} catch (Exception e) {
-			LOG.debug(null,e);
+			LogUtil.error(getClass(),null,e);
 		}
 		
 //		Method[] methods = this.getClass().getDeclaredMethods();

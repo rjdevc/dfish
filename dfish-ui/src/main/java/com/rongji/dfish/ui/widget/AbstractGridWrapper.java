@@ -1,22 +1,19 @@
 package com.rongji.dfish.ui.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
-import com.rongji.dfish.ui.AbstractWidgetWrapper;
-import com.rongji.dfish.ui.HiddenContainer;
-import com.rongji.dfish.ui.PrototypeChangeable;
-import com.rongji.dfish.ui.PubHolder;
-import com.rongji.dfish.ui.Scrollable;
+import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.layout.Grid;
 import com.rongji.dfish.ui.layout.ListView;
-import com.rongji.dfish.ui.layout.grid.GridPart;
 import com.rongji.dfish.ui.layout.grid.GridColumn;
+import com.rongji.dfish.ui.layout.grid.GridPart;
 import com.rongji.dfish.ui.layout.grid.Tr;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -394,7 +391,7 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
 		try {
 			return BeanUtil.getProperty(item, prop);
 		} catch (Exception e) {
-			LOG.debug(null, e);
+			LogUtil.error(AbstractGridWrapper.class, null, e);
 			return null;
 		}
 	

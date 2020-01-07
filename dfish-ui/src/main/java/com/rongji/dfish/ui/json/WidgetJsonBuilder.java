@@ -1,17 +1,12 @@
 package com.rongji.dfish.ui.json;
 
+import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.ui.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.FormElement;
-import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.JsonObject;
-import com.rongji.dfish.ui.Scrollable;
-import com.rongji.dfish.ui.Valignable;
-import com.rongji.dfish.ui.Widget;
 /**
  * WidgetJsonBuilder 为加速DFish3的json构建而设计
  * 因为JSON构建多为类反射构建，并且可能会严格检查每个属性的信息性能相对较差。
@@ -321,7 +316,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 					}
 				}
 			}
-			J.LOG.info(root.show());
+			LogUtil.info(getClass(), root.show());
 		}
 		public boolean match(Stack<PathInfo> path){
 			if(root.subs==null){

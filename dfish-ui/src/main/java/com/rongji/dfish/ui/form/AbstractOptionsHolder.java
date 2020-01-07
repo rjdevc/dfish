@@ -1,14 +1,10 @@
 package com.rongji.dfish.ui.form;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.rongji.dfish.base.Option;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.HtmlContentHolder;
+
+import java.util.*;
 
 /**
  * AbstractOptionsHolder 抽象的含有options的部件。
@@ -148,7 +144,7 @@ public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, P
 					value = item;
 					label =  String.valueOf(item);
 				} else {
-					LOG.error("invalide options item " + item + " ,should be Object[] ");
+					LogUtil.error(getClass(), "invalid options item " + item + " ,should be Object[] ", null);
 					break;
 				}
 				o = new Option(value, label);

@@ -1,11 +1,11 @@
 package com.rongji.dfish.ui.command;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.SingleContainer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 替换命令。替换某个 widget。
@@ -47,10 +47,7 @@ public class Replace extends NodeControlCommand<Replace> implements SingleContai
 	@Override
     public Replace setNode(HasId<?> node) {
 		if(node==null){
-			if(LOG.isWarnEnabled()){
-				LOG.warn("node should not be null",new NullPointerException());
-			}
-			return this;
+			throw new IllegalArgumentException("node == null");
 		}
 		this.node = node;
 		if(target==null&&node.getId()!=null){
