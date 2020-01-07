@@ -24,31 +24,6 @@
     background-color: #edf0f2;
 }
 
-/**tab样式**/
-.x-tab-bar {
-    height: 42px;
-    padding: 0 10px;
-}
-
-.x-tab-bar .w-buttonbar-line {
-    display: block;
-    height: 2px;
-    background: #2498fd;
-}
-
-.x-tab-btn {
-    background: #eee;
-    margin-right: 8px;
-    margin-top: 2px;
-    color: #333;
-    font-weight: bold;
-}
-
-.x-tab-btn.z-on {
-    background: #2498fd;
-    color: #fff;
-}
-
 .x-main {
     background-color: #fff;
 }
