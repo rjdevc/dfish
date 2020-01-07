@@ -28,7 +28,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     public AbstractDialog() {
     }
 
-    protected Integer position;
+    protected String position;
     protected Boolean pophide;
     protected Boolean cover;
     protected String title;
@@ -109,12 +109,12 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     }
 
     @Override
-    public Integer getPosition() {
+    public String getPosition() {
         return position;
     }
 
     @Override
-    public T setPosition(Integer position) {
+    public T setPosition(String position) {
         this.position = position;
         return (T) this;
     }

@@ -61,27 +61,28 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	private static final long serialVersionUID = 3246628575622594917L;
 
 	public static final String COLUMN_FIELD_UNKNOWN = "UNKNOWN";
-	
-	String beanProp;
-	int dataColumnIndex = -1;
-	String field;
-	String label;
-	String width;
-	Integer labelwidth;
-	String format;
+
+	private String beanProp;
+	private int dataColumnIndex = -1;
+	private String field;
+	private String label;
+	private String width;
+	private Integer labelwidth;
+	private String format;
 //	String sortsrc;
 //	String sort;
-	String style;
-	String cls;
-	String align;
-	String valign;
-	String dataFormat;
-	Object tip;
-	Object sort;
-	Integer minwidth;
-	Integer maxwidth;
-	Highlight highlight;
-	RawJson rawFormat;
+	private String style;
+	private String cls;
+	private String align;
+	private String valign;
+	private String dataFormat;
+	private Object tip;
+	private Object sort;
+	private Integer minwidth;
+	private Integer maxwidth;
+    private Highlight highlight;
+    private String fixed;
+    private RawJson rawFormat;
 
 	
 	public RawJson rawFormat() {
@@ -107,6 +108,15 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 	public static final String SORT_DESC = Sort.STATUS_DESC;
 	
 	public static final String BOX_NAME = "selectItem";
+
+    /**
+     * 是否浮动，不随滚动条滚动，粘在左边
+     */
+    public static final String FIXED_LEFT = "left";
+    /**
+     * 是否浮动，不随滚动条滚动，粘在右边
+     */
+    public static final String FIXED_RIGHT = "right";
 	
 	/**
 	 * 默认构造函数。
@@ -1087,4 +1097,21 @@ public class GridColumn extends AbstractNode<GridColumn> implements Alignable<Gr
 		return this;
 	}
 
+    /**
+     * 是否浮动，不随滚动条滚动，只能用left/right
+     * @return String
+     */
+    public String getFixed() {
+        return fixed;
+    }
+
+    /**
+     * 是否浮动，不随滚动条滚动，只能用left/right
+     * @param fixed String
+     * @return this
+     */
+    public GridColumn setFixed(String fixed){
+	    this.fixed=fixed;
+	    return this;
+    }
 }

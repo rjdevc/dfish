@@ -18,6 +18,7 @@ public class Tabs extends AbstractLayout<Tabs, Tab> implements MultiContainer<Ta
     private Split split;
     private Overflow overflow;
     private Tab pub;
+    private String position;
     /**
      * 构造函数
      *
@@ -174,5 +175,23 @@ public class Tabs extends AbstractLayout<Tabs, Tab> implements MultiContainer<Ta
     public Tabs removeHidden(String name) {
         hiddens.removeHidden(name);
         return this;
+    }
+
+    /**
+     * 标签页位置 b t l f 默认为t(top)在上方
+     * @return String
+     */
+    public String getPosition() {
+        return position;
+    }
+
+    /**
+     * 标签页位置 b t l f 默认为t(top)在上方
+     * @param position String
+     * @return this
+     */
+    public Tabs setPosition(String position) {
+        this.position = position;
+        return (Tabs) this;
     }
 }
