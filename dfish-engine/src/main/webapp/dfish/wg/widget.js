@@ -4493,7 +4493,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		getLocalParent: function() {
 			var p = this;
-			while ( (p = p.parentNode) && !p.type_view && !p.isDialogWidget );
+			while ( (p = p.parentNode) && ! p.type_view && ! p.isDialogWidget );
 			return p;
 		},
 		html_nodes: function() {
@@ -5180,10 +5180,13 @@ Collapse = define.widget( 'collapse', {
 			g = $.extend( { display: !!n[ i ].focus }, n[ i ].target );
 			b.push( $.extend( { type: 'collapse/button', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
 			b.push( g );
-			d == N && (d = b[ i * 2 ].focus && (i * 2));
+			//d == N && b[ i * 2 ].focus && (d = (i * 2));
 		}
-		d == N && b[ 0 ] && (d = 0, b[ 0 ].focus = T);
-		d != N && (b[ d + 1 ].display = T);
+		/* // 单选模式下，至少有一个节点默认展开
+		if ( ! x.focusmultiple ) {
+			d == N && b[ 0 ] && (d = 0, b[ 0 ].focus = T);
+			d != N && (b[ d + 1 ].display = T);
+		}*/
 		y.nodes = b;
 		Vert.call( this, $.extend( y, x ), p );
 	},

@@ -1493,7 +1493,43 @@ define( {
     Classes: [
       { name: '.w-tab', remark: '基础样式。' }
     ]
-  },  "deck": {
+  },
+  "collapse": {
+  	title: 'collapse',
+  	remark: '可切换标签容器。',
+  	extend: 'widget',
+	Examples: [
+	  { example: [
+          function() {
+          	// 有两个tab标签和对应内容的范例
+            return~
+            {
+              type: "collapse",
+              nodes: [
+                { type: "collapse/button", text: "标题 1", target: { type: "html", text: "内容1" } }, // 这里的 type 属性定义可以省略
+                { type: "collapse/button", text: "标题 2", target: { type: "html", text: "内容2" } }
+              ]
+            }
+          }
+      ] }
+    ],
+    Config: [
+      { name: 'focusmultiple', type: 'Boolean', remark: '设置为false，只允许一个按钮展开。默认值为false。' }
+    ],
+    Classes: [
+      { name: '.w-collapse', remark: '基础样式。' }
+    ]
+  },  
+  "collapse/button": {
+  	title: 'collapse/button',
+  	remark: '标签按钮。',
+  	extend: 'button',
+  	deprecate: 'focusable,name',
+    Classes: [
+      { name: '.w-tab', remark: '基础样式。' }
+    ]
+  },
+  "deck": {
   	title: 'deck',
   	remark: 'deck 功能面板。',
   	extend: 'widget',

@@ -238,7 +238,7 @@
 
 .w-dialog{position:absolute;z-index:10}
 .w-dialog-cover{position:absolute;background:#333;top:0;left:0;right:0;bottom:0;z-index:11;opacity:.2;filter:Alpha(opacity=20)}
-.w-dialog-move{position:fixed;background:#fff;top:0;left:0;right:0;bottom:0;z-index:11;opacity:0;filter:Alpha(opacity=0)}
+.w-dialog-move{position:fixed;background:#fff;top:0;left:0;right:0;bottom:0;z-index:1;opacity:0;filter:Alpha(opacity=0)}
 .w-dialog-prong{position:absolute}
 .w-dialog-prong .f-arw{position:absolute;margin:0}
 .w-dialog-prong.z-b{width:9px;height:8px;left:50%;margin-left:-9px;bottom:-8px;}
@@ -642,7 +642,7 @@
 .f-button-simple.z-hv .ico{display:none}
 .f-button-simple.z-hv .txt{display:block}
 
-.w-menu{padding:3px 0;background:#fff;border:1px solid #99a8b8;box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:11;overflow:hidden}
+.w-menu{padding:3px 0;background:#fff;border:1px solid #99a8b8;box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:11}
 .w-menu.z-scroll{padding:0;}
 .w-menu.z-mag-t,.w-menu.z-mag-b{box-shadow:none}
 .w-menu ._g{position:relative;overflow:hidden}

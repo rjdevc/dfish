@@ -140,6 +140,9 @@
 		        { "id": "tip", "text": "tip", "icon": ".icon .icon-class" }
 		      ] },
 		  	  { "text": "布局类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
+		        { "id": "collapse", "text": "collapse", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "collapse/button", "text": "collapse/button", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
 		        { "id": "ewin", "text": "ewin", "icon": ".icon .icon-class" },
 		        { "id": "fieldset", "text": "fieldset", "icon": ".icon .icon-class" },
@@ -154,7 +157,7 @@
 		        { "id": "horizontal", "text": "horizontal", "icon": ".icon .icon-class" },
 		        { "id": "tabs", "text": "tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "tab", "text": "tab", "icon": ".icon .icon-class" }
-		        ]  },
+		        ] },
 		        { "id": "vertical", "text": "vertical", "icon": ".icon .icon-class" },
 		        { "id": "view", "text": "view", "icon": ".icon .icon-class" },
 		        { "id": "xsrc", "text": "xsrc<sup>3.2+</sup>", "icon": ".icon .icon-class" }
