@@ -4476,7 +4476,7 @@ Dialog = define.widget( 'dialog', {
 		},
 		dragTitle: function( a, e ) {
 			var o = Dialog.get( a );
-			if ( o && o.x.moveable !== F ) {
+			if ( o ) {
 				o.front();
 				var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
 					x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
