@@ -1513,7 +1513,7 @@ define( {
       ] }
     ],
     Config: [
-      { name: 'focusmultiple', type: 'Boolean', remark: '设置为false，只允许一个按钮展开。默认值为false。' }
+      { name: 'focusmultiple', type: 'Boolean', remark: '设置为true，允许多个按钮聚焦，以及子面板展开。默认值为false。' }
     ],
     Classes: [
       { name: '.w-collapse', remark: '基础样式。' }
