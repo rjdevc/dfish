@@ -1501,7 +1501,6 @@ define( {
 	Examples: [
 	  { example: [
           function() {
-          	// 有两个tab标签和对应内容的范例
             return~
             {
               type: "collapse",
