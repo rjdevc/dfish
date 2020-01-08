@@ -2658,13 +2658,13 @@ View = define.widget( 'view', {
 		linkTarget: function( a, b, d ) {
 			var c = a.isWidget ? [ a ] : this.find( a.split( ',' ) );
 			for ( var i = 0; i < c.length; i ++ ) {
-				if ( c[ i ].parentNode && c[ i ].parentNode.type_frame ) {
+				if ( d && d.focusTarget )
+					d.focusTarget( c[ i ], b );
+				else if ( c[ i ].parentNode && c[ i ].parentNode.type_frame )
 					b && c[ i ].parentNode.focus( c[ i ] );
-				} else {
+				else {
 					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ ) {
 						r[ j ].disable( ! b );
-						// fixme：未知原因导致表单禁用，在此附加来源供参考
-						r[ j ].__disable_by = d;
 					}
 				}
 			}
@@ -3296,7 +3296,7 @@ Button = define.widget( 'button', {
 				}
 			},
 			click: function( e ) {
-				this.parentNode.x.focusmultiple ? this.toggleFocus() : this.focus();
+				this.rootNode && this.rootNode.x.focusmultiple ? this.toggleFocus() : this.focus();
 				if ( !(this.x.on && this.x.on.click) )
 					this.drop();
 			},
@@ -3427,19 +3427,20 @@ Button = define.widget( 'button', {
 		_focus: function( a ) {
 			if ( this._disposed )
 				return;
-			var a = a == N || a, p = this.parentNode, d;
+			var a = a == N || !!a, r = this.rootNode, m = r && r.x.focusmultiple;
+			this.x.focus = a;
 			if ( this.x.focusable && this.$() ) {
 				$.classAdd( this.$(), 'z-on', a );
 				if ( a ) {
-					if ( ! p.x.focusmultiple ) {
-						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : p; i < d.length; i ++ )
-							if ( d[ i ] !== this && d[ i ].x.name == this.x.name && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
+					if ( ! m ) {
+						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : this.parentNode; i < d.length; i ++ )
+							if ( d[ i ] !== this && d[ i ].type === this.type && d[ i ].x.name == this.x.name && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
 					}
-					this.x.target && this.ownerView.linkTarget( this.x.target, T, this );
 				}
-				a !== F && this.triggerHandler( 'focus' );
+				(m || a) && this.x.target && this.ownerView.linkTarget( this.x.target, a, this );
+				this.trigger( a ? 'focus' : 'blur' );
 			}
-			return (this.x.focus = !!a);
+			return this.x.focus;
 		},
 		focusOver: function() {
 			if ( this.x.focus ) {
@@ -4191,23 +4192,7 @@ DialogTitle = define.widget( 'dialog/title', {
 		body: {
 			mousedown: {
 				occupy: T,
-				method: function( e ) {
-					var o = Dialog.get( this );
-					if ( o ) {
-						o.front();
-						var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
-							x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), self = this, m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
-						if ( o.x.moveable !== F && ! o.x.fullscreen ) {
-							$.moveup( function( e ) {
-								! m && (m = $.db( '<div class=w-dialog-move style="width:' + $.width() + 'px;height:' + n + 'px;"></div>' ));
-								o.$().style[ v ] = $.numRange( t + b * (e.clientY - y), 0, n - 30 ) + 'px';
-								o.$().style[ h ] = $.numRange( l + r * (e.clientX - x), 100 - z, w - 30 ) + 'px';
-							}, function( e ) {
-								m && $.remove( m );
-							} );
-						}
-					}
-				}
+				method: function( e ) { Dialog.get( this ).dragTitle( this, e ) }
 			}
 		}
 	}
@@ -4489,9 +4474,22 @@ Dialog = define.widget( 'dialog', {
 				}
 			}
 		},
-		reset: function() {
-			delete this.contentView;
-			Xsrc.prototype.reset.call( this );
+		dragTitle: function( a, e ) {
+			var o = Dialog.get( a );
+			if ( o && o.x.moveable !== F ) {
+				o.front();
+				var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
+					x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
+				if ( o.x.moveable !== F && ! o.x.fullscreen ) {
+					$.moveup( function( e ) {
+						! m && (m = $.db( '<div class=w-dialog-move style="width:' + $.width() + 'px;height:' + n + 'px;"></div>' ));
+						o.$().style[ v ] = $.numRange( t + b * (e.clientY - y), 0, n - 30 ) + 'px';
+						o.$().style[ h ] = $.numRange( l + r * (e.clientX - x), 100 - z, w - 30 ) + 'px';
+					}, function( e ) {
+						m && $.remove( m );
+					} );
+				}
+			}	
 		},
 		getLocalParent: function() {
 			var p = this;
@@ -4503,8 +4501,12 @@ Dialog = define.widget( 'dialog', {
 			if ( ie7 )
 				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
 			if ( this.type === 'dialog' && this.x.loadinghead !== F )
-				s += '<div class=w-dialog-loadinghead><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
+				s += '<div class=w-dialog-loadinghead onmousedown=' + evw + '.dragTitle(this,event)><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
 			return s;
+		},
+		reset: function() {
+			delete this.contentView;
+			Xsrc.prototype.reset.call( this );
 		},
 		render: function() {
 			if ( this._disposed )
@@ -5168,24 +5170,55 @@ define.widget( 'deck', {
 		}
 	}
 } );
+var
 /* `collapse` */
-define.widget( 'collapse', {
+Collapse = define.widget( 'collapse', {
+	Const: function( x, p ) {
+		this.id = $.uid( this );
+		var y = { type: 'vert', width: '*', height: '*' }, b = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		for ( var i = 0, n = x.nodes || [], g; i < n.length; i ++ ) {
+			g = $.extend( { display: !!n[ i ].focus }, n[ i ].target );
+			b.push( $.extend( { type: 'collapse/button', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
+			b.push( g );
+			d == N && (d = b[ i * 2 ].focus && (i * 2));
+		}
+		d == N && b[ 0 ] && (d = 0, b[ 0 ].focus = T);
+		d != N && (b[ d + 1 ].display = T);
+		y.nodes = b;
+		VertScale.call( this, $.extend( { type: 'vert', nodes:[ y ] }, x ), p );
+	},
 	Extend: 'vert/scale',
 	Prototype: {
-		x_nodes: function() {
-			for ( var i = 0, d = this.x.nodes, l = d.length, r = []; i < l; i += 2 )
-				r.push( { button: d[ i ], content: d[ i + 1 ] } );
-			return r;
-		},
+		className: 'w-collapse',
 		getFocus: function() {
-			for ( var i = 0; i < this.length; i ++ )
-				if ( this[ i ].button.isFocus() ) return this[ i ].button;
+			for ( var i = 0; i < this[ 0 ].length; i += 2 )
+				if ( this[ 0 ][ i ].isFocus() ) return this[ i ];
 		}
 	}
-} );
-
+} ),
+/* `tab` */
+CollapseButton = define.widget( 'collapse/button', {
+	Const: function( x, p ) {
+		this.rootNode = p.parentNode;
+		Button.apply( this, arguments );
+	},
+	Extend: 'button',
+	Listener: {
+		body: {
+			focus: function() {
+				this.next().display();
+			},
+			blur: function() {
+				this.next().display( F );
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-button w-collapse-button'
+	}
+} ),
 /* `label` */
-var Label = define.widget( 'label', {
+Label = define.widget( 'label', {
 	Const: function( x, p ) {
 		this._pad = x.space != N ? x.space : 5;
 		this.className += ' f-nv' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
