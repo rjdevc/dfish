@@ -176,7 +176,7 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 	 * @return tfoot
 	 */
 	public GridPart getTfoot() {
-		return thead;
+		return tfoot;
 	}
 	
 	/**
