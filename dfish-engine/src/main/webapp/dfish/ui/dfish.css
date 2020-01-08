@@ -642,7 +642,7 @@
 .f-button-simple.z-hv .ico{display:none}
 .f-button-simple.z-hv .txt{display:block}
 
-.w-menu{padding:3px 0;background:#fff;border:1px solid #99a8b8;box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:11}
+.w-menu{padding:3px 0;background:#fff;border:1px solid #99a8b8;box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:11;overflow:hidden}
 .w-menu.z-scroll{padding:0;}
 .w-menu.z-mag-t,.w-menu.z-mag-b{box-shadow:none}
 .w-menu ._g{position:relative;overflow:hidden}

@@ -1676,7 +1676,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				return N;
 			var o = this.$();
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
-				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && this[ i ].$() && !this[ i ].isDisplay() ? 0 : this[ i ].attr( v ));
+				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && this[ i ].$() && !this[ i ].isDisplay() ? N : this[ i ].attr( v ));
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
@@ -4438,7 +4438,7 @@ Dialog = define.widget( 'dialog', {
 				r = this._dft_pos();
 			this._pos = r;
 			$.snapTo( this.$(), r );
-			if ( vs ) {
+			if ( vs && this.x.height && this.type === 'dialog' ) {
 				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
 				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
 				t && (this.height( r.height + r.top ));
@@ -4478,9 +4478,9 @@ Dialog = define.widget( 'dialog', {
 			var o = Dialog.get( a );
 			if ( o ) {
 				o.front();
-				var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
-					x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
 				if ( o.x.moveable !== F && ! o.x.fullscreen ) {
+					var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
+						x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
 					$.moveup( function( e ) {
 						! m && (m = $.db( '<div class=w-dialog-move style="width:' + $.width() + 'px;height:' + n + 'px;"></div>' ));
 						o.$().style[ v ] = $.numRange( t + b * (e.clientY - y), 0, n - 30 ) + 'px';
@@ -5175,7 +5175,7 @@ var
 Collapse = define.widget( 'collapse', {
 	Const: function( x, p ) {
 		this.id = $.uid( this );
-		var y = { type: 'vert', width: '*', height: '*' }, b = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		var y = { type: 'vert' }, b = [], d, e = _getDefaultOption( 'tabs', x.cls );
 		for ( var i = 0, n = x.nodes || [], g; i < n.length; i ++ ) {
 			g = $.extend( { display: !!n[ i ].focus }, n[ i ].target );
 			b.push( $.extend( { type: 'collapse/button', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
@@ -5185,31 +5185,41 @@ Collapse = define.widget( 'collapse', {
 		d == N && b[ 0 ] && (d = 0, b[ 0 ].focus = T);
 		d != N && (b[ d + 1 ].display = T);
 		y.nodes = b;
-		VertScale.call( this, $.extend( { type: 'vert', nodes:[ y ] }, x ), p );
+		Vert.call( this, $.extend( y, x ), p );
 	},
-	Extend: 'vert/scale',
+	Extend: 'vert',
 	Prototype: {
 		className: 'w-collapse',
 		getFocus: function() {
-			for ( var i = 0; i < this[ 0 ].length; i += 2 )
-				if ( this[ 0 ][ i ].isFocus() ) return this[ i ];
+			for ( var i = 0; i < this.length; i += 2 )
+				if ( this[ i ].isFocus() ) return this[ i ];
 		}
 	}
 } ),
 /* `tab` */
 CollapseButton = define.widget( 'collapse/button', {
 	Const: function( x, p ) {
-		this.rootNode = p.parentNode;
+		this.rootNode = p;
 		Button.apply( this, arguments );
 	},
 	Extend: 'button',
 	Listener: {
 		body: {
 			focus: function() {
-				this.next().display();
+				var b = this.next();
+				b.display();
+				if ( this.parentNode.outerHeight() != N ) {
+					b._height === U && (b._height = b.x.height);
+					b.height( b._height );
+				}
 			},
 			blur: function() {
-				this.next().display( F );
+				var b = this.next();
+				b.display( F );
+				if ( this.parentNode.outerHeight() != N ) {
+					b._height === U && (b._height = b.x.height);
+					b.height( 0 );
+				}
 			}
 		}
 	},
