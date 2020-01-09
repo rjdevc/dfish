@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import java.util.List;
 
+import com.rongji.dfish.base.Option;
 import com.rongji.dfish.ui.HasSrc;
 
 
@@ -12,7 +13,7 @@ import com.rongji.dfish.ui.HasSrc;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<Xbox> {
+public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<Xbox> {
 	/**
 	 * 
 	 */
@@ -56,6 +57,11 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Object> implements HasSrc<
 	 */
 	public Xbox(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
+	}
+
+	@Override
+	protected Option buildOption(Option o) {
+		return o;
 	}
 
 

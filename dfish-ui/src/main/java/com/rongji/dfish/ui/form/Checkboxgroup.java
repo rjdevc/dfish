@@ -17,7 +17,7 @@ import java.util.Set;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox,Object> {
+public class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox> {
 	private static final long serialVersionUID = -7269251020373915061L;
 	/**
 	 * @param name 表单元素名
@@ -29,6 +29,7 @@ public class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox,Objec
 			List<?> options) {
 		super(name, label, value, options);
 	}
+
 	@Override
 	protected Checkbox buildOption(Option o) {
 		return new Checkbox(null,null,o.getChecked(),o.getValue()==null?null:o.getValue().toString(),o.getText());
@@ -38,59 +39,6 @@ public class Checkboxgroup extends AbstractBoxgroup<Checkboxgroup,Checkbox,Objec
 		return "checkboxgroup";
 	}
 
-	@Override
-	public Checkboxgroup setValue(Object value) {
-		this.value= value;
-		Object checkedValue=value;
-		Set<String> theValue=null;
-		if(checkedValue==null){
-			theValue=new HashSet<String>();
-		}else if(checkedValue instanceof int[]){
-			int[] cast=(int[])checkedValue;
-			theValue=new HashSet<String>();
-			for(int o:cast){
-				theValue.add(String.valueOf(o));
-			}
-		}else if(checkedValue instanceof char[]){
-			char[] cast=(char[])checkedValue;
-			theValue=new HashSet<String>();
-			for(char o:cast){
-				theValue.add(String.valueOf(o));
-			}
-		}else if(checkedValue instanceof long[]){
-			long[] cast=(long[])checkedValue;
-			theValue=new HashSet<String>();
-			for(long o:cast){
-				theValue.add(String.valueOf(o));
-			}
-		}else if(checkedValue.getClass().isArray()){
-			Object[] cast=(Object[])checkedValue;
-			theValue=new HashSet<String>();
-			for(Object o:cast){
-				theValue.add(o==null?null:o.toString());
-			}
-		}else if(checkedValue instanceof Collection){
-			Collection<?> cast=(Collection<?>)checkedValue;
-			theValue=new HashSet<String>();
-			for(Object o:cast){
-				theValue.add(o==null?null:o.toString());
-			}
-		}else{
-			theValue=new HashSet<String>();
-			theValue.add(checkedValue==null?null:checkedValue.toString());
-		}
-		if(theValue.size()==0){
-			theValue.add(null);
-			theValue.add("");
-		}
-		if (nodes != null) {
-			for (Checkbox r : nodes) {
-				boolean checked =theValue.contains(r.getValue());
-				r.setChecked(checked?checked:null);
-			}
-		}
-		return this;
-	}
 	@Override
     public Checkbox newPub() {
 	    return new Checkbox(null, null, null, null, null);

@@ -3,7 +3,9 @@ package com.rongji.dfish.ui.form;
 import com.rongji.dfish.base.Option;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.HtmlContentHolder;
+import com.rongji.dfish.ui.Widget;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 /**
@@ -14,7 +16,7 @@ import java.util.*;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, P>, P> extends AbstractFormElement<T, P> implements HtmlContentHolder<T >{
+public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, N>, N> extends AbstractFormElement<T, Object> implements HtmlContentHolder<T >{
 	private static final long serialVersionUID = -1184424744014200791L;
 
 	/**
@@ -26,13 +28,13 @@ public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, P
 	public AbstractOptionsHolder(String name, String label, Object value, List<?> options){
 		this.setName(name);
 		this.setLabel(label);
-		this.setValue(value);
-		this.setOptions(options);
-//		escape=true;
+		this.doSetValue(value);
+		this.doSetOptions(options);
+        fixChecked();
 	}
 	
 	protected Boolean escape;
-	protected List<?> options;
+	protected List<N> options;
 //    protected Boolean br;
 //    protected String align;
 //	protected String valign;
@@ -43,9 +45,154 @@ public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, P
 	 * @return 本身，这样可以继续设置其他属性
      */
 	public T setOptions(List<?> options) {
-        this.options = options;
+        doSetOptions(options);
+        fixChecked();
         return(T)this;
     }
+
+    protected void doSetOptions(List<?> options) {
+        List<N> result=new ArrayList<N>(options==null?0:options.size());
+
+        Set<Object> theValue=null;
+        if(value==null){
+            theValue=new HashSet<Object>(0);
+        }else if(value.getClass().isArray()){
+            Object[] cast=(Object[])value;
+            theValue=new HashSet<Object>(Arrays.asList(cast));
+        }else if(value instanceof Collection){
+            Collection<?> cast=(Collection<?>)value;
+            theValue=new HashSet<Object>(cast);
+        }else{
+            theValue=new HashSet<Object>(0);
+            theValue.add(value);
+        }
+        if(options!=null){
+            for(Object item:options){
+                if(item ==null ){
+                    continue;
+                }
+                N node = null;
+                if (item instanceof Option) {
+                    node=buildOption((Option)item);
+                }else if(item instanceof AbstractBox<?>){
+                    ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+                    // 获取第一个类型参数的真实类型
+                    Class nodeClass = (Class<T>) pt.getActualTypeArguments()[1];
+                    if(nodeClass.isAssignableFrom(item.getClass())){
+                        node=(N)item;
+                    }
+                } else {
+
+                    String label = null;
+                    Object value = null;
+                    String ic = null;
+                    if (item instanceof Object[] || item instanceof String[]) {
+                        Object[] castItem = (Object[]) item;
+                        value = castItem[0];
+                        if (castItem.length > 2) {
+                            ic = String.valueOf(castItem[2]);
+                        } else if (castItem.length > 1) {
+                            label = String.valueOf(castItem[1]);
+                        } else {
+                            label = String.valueOf(castItem[0]);
+                        }
+                    } else if (item instanceof String || item instanceof Number ||
+                            item instanceof java.util.Date) {
+                        value = item;
+                        label = String.valueOf(item);
+                    } else {
+                        LogUtil.error(getClass(), "invalid options item " + item + " ,should be Object[] ", null);
+                        break;
+                    }
+                    Option o = new Option(value, label);
+                    o.setIcon(ic);
+                    o.setChecked(theValue.contains(value) ? true : null);
+                    node=buildOption(o);
+                }
+                if(node!=null) {
+                    result.add(node);
+                }
+            }
+        }
+        this.options=result;
+    }
+    /**
+     * 将统一的Option转化为当前对象专有的选项对象N，如RadioGroup中是Radio
+     * @param o Option
+     * @return N
+     */
+    protected abstract N buildOption(Option o);
+    protected N buildOption(Object value,String text,Boolean checked){
+        return buildOption(new Option(value,text).setChecked(checked));
+    }
+
+
+
+    protected void fixChecked(){
+        if(this.value==null){
+            //如果value没有值，则不进行判断以option自己的checked为准
+            return;
+        }
+        Set<String> theValue = null;
+        if (value == null) {
+            theValue = new HashSet<String>();
+        } else if (value instanceof int[]) {
+            int[] cast = (int[]) value;
+            theValue = new HashSet<String>();
+            for (int o : cast) {
+                theValue.add(String.valueOf(o));
+            }
+        } else if (value instanceof char[]) {
+            char[] cast = (char[]) value;
+            theValue = new HashSet<String>();
+            for (char o : cast) {
+                theValue.add(String.valueOf(o));
+            }
+        } else if (value instanceof long[]) {
+            long[] cast = (long[]) value;
+            theValue = new HashSet<String>();
+            for (long o : cast) {
+                theValue.add(String.valueOf(o));
+            }
+        } else if (value.getClass().isArray()) {
+            Object[] cast = (Object[]) value;
+            theValue = new HashSet<String>();
+            for (Object o : cast) {
+                theValue.add(o == null ? null : o.toString());
+            }
+        } else if (value instanceof Collection) {
+            Collection<?> cast = (Collection<?>) value;
+            theValue = new HashSet<String>();
+            for (Object o : cast) {
+                theValue.add(o == null ? null : o.toString());
+            }
+        } else {
+            theValue = new HashSet<String>();
+            theValue.add(value == null ? null : value.toString());
+        }
+        if (theValue.size() == 0) {
+            theValue.add(null);
+            theValue.add("");
+        }
+//		nodes.clear();
+        if (options != null) {
+            for (Object item : options) {
+                if (item == null) {
+                    continue;
+                } else if (item instanceof Option) {
+                    Option o = (Option) item;
+                    boolean checked=theValue.contains(o.getValue() == null ? null : o.getValue().toString());
+                    o.setChecked(checked?true:null);
+
+                } else if(item instanceof AbstractBox<?>) {
+                    AbstractBox<?> o = (AbstractBox<?>) item;
+                    boolean checked=theValue.contains(o.getValue() == null ? null : o.getValue().toString());
+                    o.setChecked(checked?true:null);
+                }
+            }
+        }
+    }
+
 //    /**
 //     * 是否每个选项独立一行.
 //     * @param br boolean
@@ -63,16 +210,16 @@ public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, P
 //	public Boolean getBr() {
 //		return br;
 //	}
-	
-	 /**
-     * 设置 已选中的值(多项)
-     * @param obj Object[]
-	 * @return 本身，这样可以继续设置其他属性
-     */
-	public T setValue(Object[] obj) {
-        this.value = (P) obj;
-        return(T)this;
-    }
+//
+//	 /**
+//     * 设置 已选中的值(多项)
+//     * @param obj Object[]
+//	 * @return 本身，这样可以继续设置其他属性
+//     */
+//	public T setValue(Object[] obj) {
+//        this.value = (P) obj;
+//        return(T)this;
+//    }
 
     /**
      * 设置 已选中的值(单项)
@@ -80,82 +227,36 @@ public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, P
      */
 	@Override
 	public T setValue(Object obj) {
-    	if(obj==null){
-    		//do nothing
-    	}else if(obj instanceof Object[]){
-    		this.value = (P) obj;
-    	}else if(obj instanceof String[]){
-    		this.value = (P) obj;
-    	}else if(obj instanceof Collection<?>){
-    		Collection<?> cast=(Collection<?>)obj;
-    		this.value = (P) cast.toArray();
-    	}else{
-    		value = (P) new Object[]{obj};
-    	}
-    	
+    	doSetValue(obj);
+        fixChecked();
         return (T)this;
+    }
+    protected void doSetValue(Object obj){
+        if(obj==null){
+            //do nothing
+        }else if(obj instanceof Object[]||
+                obj instanceof String[]){
+            this.value =  obj;
+        }else if(obj instanceof Collection<?>){
+            Collection<?> cast=(Collection<?>)obj;
+            this.value = cast.toArray();
+        }else{
+            value = new Object[]{obj};
+        }
     }
 	
     /**
 	 * @return the options
 	 */
 	public List<?> getOptions() {
-		List<Option> result=new ArrayList<Option>(options==null?0:options.size());
-		
-		Set<Object> theValue=null;
-		if(value==null){
-			theValue=new HashSet<Object>(0);
-		}else if(value.getClass().isArray()){
-			Object[] cast=(Object[])value;
-			theValue=new HashSet<Object>(Arrays.asList(cast));
-		}else if(value instanceof Collection){
-			Collection<?> cast=(Collection<?>)value;
-			theValue=new HashSet<Object>(cast);
-		}else{
-			theValue=new HashSet<Object>(0);
-			theValue.add(value);
-		}
-		if(options!=null){
-		for(Object item:options){
-			if(item ==null ){
-				continue;
-			}
-
-			Option o = null;
-			if (item instanceof Option) {
-				o = (Option) item;
-			} else {
-				String label=null;
-				Object value=null; 
-				String ic=null;
-				if (item instanceof Object[]|| item instanceof String[]) {
-					Object[] castItem = (Object[]) item;
-					value = castItem[0];
-					if (castItem.length > 2) {
-						ic= String.valueOf(castItem[2]);
-					}else if (castItem.length > 1) {
-						label = String.valueOf(castItem[1]);
-					} else {
-						label = String.valueOf(castItem[0]);
-					}
-					
-				} else if (item instanceof String || item instanceof Number ||
-						item instanceof java.util.Date) {
-					value = item;
-					label =  String.valueOf(item);
-				} else {
-					LogUtil.error(getClass(), "invalid options item " + item + " ,should be Object[] ", null);
-					break;
-				}
-				o = new Option(value, label);
-				o.setIcon(ic);
-				o.setChecked(theValue.contains(value)?true:null);
-			}
-			result.add(o);
-		}
-		}
-		return result;
+		return options;
 	}
+
+	@Override
+    protected List<? extends Object> findNodes(){
+	    return this.options;
+    }
+
 	
 //	protected static final void removeOpitonsProperties(Class<?> clz){
 ////		removeValidationProperties(clz);

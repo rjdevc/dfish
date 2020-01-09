@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.form;
 
+import com.rongji.dfish.base.Option;
+
 import java.util.List;
 
 
@@ -10,7 +12,7 @@ import java.util.List;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Imgbox extends AbstractOptionsHolder<Imgbox, Object> {
+public class Imgbox extends AbstractOptionsHolder<Imgbox, Option> {
 	/**
 	 * 
 	 */
@@ -27,6 +29,11 @@ public class Imgbox extends AbstractOptionsHolder<Imgbox, Object> {
 	 */
 	public Imgbox(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
+	}
+
+	@Override
+	protected Option buildOption(Option o) {
+		return o;
 	}
 
 	@Override

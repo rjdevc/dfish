@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.1
  * @since XMLTMPL 1.0
  */
-public class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio,String> {
+public class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio> {
 
 	private static final long serialVersionUID = 7676825772666910504L;
 	/**
@@ -36,15 +36,15 @@ public class Radiogroup extends AbstractBoxgroup<Radiogroup,Radio,String> {
 	}
 
 	@Override
-	public Radiogroup setValue(Object value) {
-		value=this.value=toString(value);
-		if (nodes != null) {
-			for (Radio r : nodes) {
-				boolean checked =value != null&&value.equals(r.getValue());
-				r.setChecked(checked?checked:null);
-			}
+	public void doSetValue(Object value) {
+		this.value=value;
+	}
+	@Override
+	public Object getValue() {
+		if(value.getClass().isArray()){
+			return ((Object[])value)[0];
 		}
-		return this;
+		return this.value;
 	}
 
 	@Override

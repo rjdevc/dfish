@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.form;
 
+import com.rongji.dfish.base.Option;
+
 import java.util.List;
 
 
@@ -10,7 +12,7 @@ import java.util.List;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Select extends AbstractOptionsHolder<Select, Object> {
+public class Select extends AbstractOptionsHolder<Select, Option> {
 	private static final long serialVersionUID = -4055773878898188252L;
 	private Boolean transparent;
 
@@ -23,6 +25,11 @@ public class Select extends AbstractOptionsHolder<Select, Object> {
 	 */
 	public Select(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
+	}
+
+	@Override
+	protected Option buildOption(Option o) {
+		return o;
 	}
 
 	@Override

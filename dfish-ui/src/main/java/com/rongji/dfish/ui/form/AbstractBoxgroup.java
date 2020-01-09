@@ -10,11 +10,10 @@ import java.util.*;
 /**
  * @param <T> 当前对象类型
  * @param <N> 子节点对象类型
- * @param <P> value对象类型
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N, P>, N extends AbstractBox<N>, P> extends AbstractOptionsHolder<T, P> implements Layout<T, N>, HtmlContentHolder<T>, Directional<T> {
+public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N>, N extends AbstractBox<N>> extends AbstractOptionsHolder<T, N> implements Layout<T, N>, HtmlContentHolder<T>, Directional<T> {
 
     /**
      *
@@ -42,16 +41,12 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N, P>, N ex
 //    	this.name=name;
 //    	this.label=label;
 //    	this.setValue(checkedValue);
-        checkOptions(checkedValue, options);
+//        checkOptions(checkedValue, options);
 //    	escape=true;
     }
 
-    /**
-     * 将统一的Option转化为当前对象专有的选项对象N，如RadioGroup中是Radio
-     * @param o Option
-     * @return N
-     */
-    protected abstract N buildOption(Option o);
+
+
 
     /**
      * 添加子面板
@@ -141,94 +136,6 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N, P>, N ex
             result.addAll(targets);
         }
         return result;
-    }
-
-    private void checkOptions(Object checkedValue, List<?> options) {
-        Set<String> theValue = null;
-        if (checkedValue == null) {
-            theValue = new HashSet<String>();
-        } else if (checkedValue instanceof int[]) {
-            int[] cast = (int[]) checkedValue;
-            theValue = new HashSet<String>();
-            for (int o : cast) {
-                theValue.add(String.valueOf(o));
-            }
-        } else if (checkedValue instanceof char[]) {
-            char[] cast = (char[]) checkedValue;
-            theValue = new HashSet<String>();
-            for (char o : cast) {
-                theValue.add(String.valueOf(o));
-            }
-        } else if (checkedValue instanceof long[]) {
-            long[] cast = (long[]) checkedValue;
-            theValue = new HashSet<String>();
-            for (long o : cast) {
-                theValue.add(String.valueOf(o));
-            }
-        } else if (checkedValue.getClass().isArray()) {
-            Object[] cast = (Object[]) checkedValue;
-            theValue = new HashSet<String>();
-            for (Object o : cast) {
-                theValue.add(o == null ? null : o.toString());
-            }
-        } else if (checkedValue instanceof Collection) {
-            Collection<?> cast = (Collection<?>) checkedValue;
-            theValue = new HashSet<String>();
-            for (Object o : cast) {
-                theValue.add(o == null ? null : o.toString());
-            }
-        } else {
-            theValue = new HashSet<String>();
-            theValue.add(checkedValue == null ? null : checkedValue.toString());
-        }
-        if (theValue.size() == 0) {
-            theValue.add(null);
-            theValue.add("");
-        }
-//		nodes.clear();
-        if (options != null) {
-            for (Object item : options) {
-                Option o = null;
-                if (item == null) {
-                    continue;
-                } else if (item instanceof Option) {
-                    o = (Option) item;
-                } else {
-                    String text = null;
-                    Object value = null;
-                    String ic = null;
-                    if (item instanceof Object[] || item instanceof String[]) {
-                        Object[] castItem = (Object[]) item;
-                        value = castItem[0];
-                        if (castItem.length > 2) {
-                            ic = String.valueOf(castItem[2]);
-                        }
-                        if (castItem.length > 1) {
-                            text = String.valueOf(castItem[1]);
-                        } else {
-                            text = String.valueOf(castItem[0]);
-                        }
-
-                    } else if (item instanceof String || item instanceof Number ||
-                            item instanceof java.util.Date) {
-                        value = item;
-                        text = String.valueOf(item);
-                    } else {
-                        LogUtil.error(getClass(), "invalid options item " + item + " ,should be Object[] ", null);
-                        break;
-                    }
-                    o = new Option(value, text);
-                    o.setIcon(ic);
-                }
-
-                if (theValue.contains(o.getValue() == null ? o.getValue() : o.getValue().toString())) {
-                    o.setChecked(true);
-                }
-                N option = buildOption(o);
-                option.setEscape(calcRealEscape(option.getEscape(), getEscape()));
-                this.addOption(option);
-            }
-        }
     }
 
 
