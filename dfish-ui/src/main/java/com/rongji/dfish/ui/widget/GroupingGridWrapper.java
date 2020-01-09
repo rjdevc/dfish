@@ -6,9 +6,9 @@ import java.util.Map;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.StringUtil;
-import com.rongji.dfish.ui.layout.grid.GridColumn;
-import com.rongji.dfish.ui.layout.grid.Td;
-import com.rongji.dfish.ui.layout.grid.Tr;
+import com.rongji.dfish.ui.layout.GridColumn;
+import com.rongji.dfish.ui.layout.Td;
+import com.rongji.dfish.ui.layout.Tr;
 
 /**
  * 表格模型封装类

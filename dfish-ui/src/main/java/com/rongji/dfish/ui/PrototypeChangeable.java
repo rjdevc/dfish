@@ -14,5 +14,5 @@ public interface PrototypeChangeable<P> extends JsonWrapper<P>{
 	/**
 	 * 通知本封装类，原型已经被改变了。
 	 */
-	void notifyChage();
+	void notifyChange();
 }

@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.json;
 
 import java.util.Collection;
 
-import com.rongji.dfish.ui.FormElement;
+import com.rongji.dfish.ui.form.FormElement;
 import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.JsonObject;

@@ -5,8 +5,8 @@ import java.util.*;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.ui.form.Combo;
-import com.rongji.dfish.ui.layout.grid.GridColumn;
-import com.rongji.dfish.ui.layout.grid.Tr;
+import com.rongji.dfish.ui.layout.GridColumn;
+import com.rongji.dfish.ui.layout.Tr;
 
 /**
  * GridPanel 为 表格模型封装类。

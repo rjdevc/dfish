@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.Command;
+import com.rongji.dfish.ui.command.Command;
 import com.rongji.dfish.ui.LazyLoad;
 import com.rongji.dfish.ui.SingleContainer;
 import com.rongji.dfish.ui.Widget;

@@ -11,19 +11,19 @@ public interface Scrollable<T extends Scrollable<T>> extends Widget<T>{
 	/**
 	 * 显示系统默认的滚动条
 	 */
-	public static final String SCROLL_SCROLL="scroll";
+	String SCROLL_SCROLL="scroll";
 	/**
 	 * 不显示滚动条
 	 */
-	public static final String SCROLL_HIDDEN="hidden";
+	String SCROLL_HIDDEN="hidden";
 	/**
 	 * 自动确定要不要显示滚动条，当窗口不够显示内容时显示
 	 */
-	public static final String SCROLL_AUTO="auto";
+	String SCROLL_AUTO="auto";
 	/**
 	 * 显示一个窄边的滚动条。并且鼠标不在范围内的时候不显示。
 	 */
-	public static final String SCROLL_MINI="miniscroll";
+	String SCROLL_MINI="miniscroll";
 	
 	/**
 	 * 设置这个widget是否需要滚动条

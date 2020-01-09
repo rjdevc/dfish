@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.AbstractNode;
-import com.rongji.dfish.ui.Command;
 
 /**
  * AbstractCommand为 抽象命令，提供默认方法简化Command的开发。

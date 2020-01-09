@@ -4,7 +4,6 @@ import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.layout.AbstractLayout;

@@ -12,8 +12,8 @@ import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.DFishUITestCase;
 import com.rongji.dfish.ui.widget.Highlight;
 import com.rongji.dfish.ui.layout.Grid;
-import com.rongji.dfish.ui.layout.grid.GridColumn;
-import com.rongji.dfish.ui.layout.grid.Td;
+import com.rongji.dfish.ui.layout.GridColumn;
+import com.rongji.dfish.ui.layout.Td;
 import com.rongji.dfish.ui.widget.Html;
 
 public class GridPanelTest extends DFishUITestCase {

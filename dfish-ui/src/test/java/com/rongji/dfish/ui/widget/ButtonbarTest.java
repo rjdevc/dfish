@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.DFishUITestCase;
-import com.rongji.dfish.ui.layout.Buttonbar;
 import com.rongji.dfish.ui.layout.Vertical;
 
 public class ButtonbarTest extends DFishUITestCase{

@@ -1,7 +1,5 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.AbstractDialog;
-import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.widget.Button;
 
