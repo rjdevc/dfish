@@ -143,7 +143,7 @@
 		        { "id": "collapse", "text": "collapse", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "collapse/button", "text": "collapse/button", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
+		      //{ "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
 		        { "id": "ewin", "text": "ewin", "icon": ".icon .icon-class" },
 		        { "id": "fieldset", "text": "fieldset", "icon": ".icon .icon-class" },
 		        { "id": "frame", "text": "frame", "icon": ".icon .icon-class" },
@@ -153,7 +153,7 @@
 		          { "id": "td", "text": "td", "icon": ".icon .icon-class" },
 		          { "id": "tr", "text": "tr", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "form", "text": "form<sup>3.3+</sup>", "icon": ".icon .icon-class" },
+		        { "id": "form", "text": "form<sup>5.0+</sup>", "icon": ".icon .icon-class" },
 		        { "id": "horizontal", "text": "horizontal", "icon": ".icon .icon-class" },
 		        { "id": "tabs", "text": "tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
 		          { "id": "tab", "text": "tab", "icon": ".icon .icon-class" }
@@ -218,7 +218,7 @@
 		        { "id": "rate", "text": "rate", "icon": ".icon .icon-class" },
 		        { "id": "select", "text": "select", "icon": ".icon .icon-class" },
 		        { "id": "slider", "text": "slider", "icon": ".icon .icon-class" },
-		        { "id": "slider/jigsaw", "text": "slider/jigsaw", "icon": ".icon .icon-class" },
+		        { "id": "jigsaw", "text": "jigsaw", "icon": ".icon .icon-class" },
 		        { "id": "spinner", "text": "spinner", "icon": ".icon .icon-class" },
 		        { "id": "switch", "text": "switch", "icon": ".icon .icon-class" },
 		        { "id": "text", "text": "text", "icon": ".icon .icon-class" },

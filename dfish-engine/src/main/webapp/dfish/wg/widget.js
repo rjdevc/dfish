@@ -293,12 +293,6 @@ _cmd = function( x, d ) {
 	for ( ; i < l; i ++ )
 		f && f.exec( x.nodes[ i ], N, N, d );
 },
-_cmdArgs = function( x, a, b ) {
-	a && (x.args = a);
-	b && (x.srcdata = b);
-	x.title && (x.title = $.strFormat( x.title, a ));
-	typeof x.src === _STR && (x.src = this.formatStr( x.src, a, T ));
-},
 _cmdWidgets = {},
 _cmdHooks = {
 	'cmd': function( x, a, b ) {
@@ -331,7 +325,10 @@ _cmdHooks = {
 $.each( 'menu dialog tip loading alert confirm'.split(' '), function( v, i ) {
 	_cmdWidgets[ v ] = T;
 	_cmdHooks[ v ] = function( x, a, b ) {
-		_cmdArgs.call( this, x, a, b );
+		a && (x.args = a);
+		b && (x.srcdata = b);
+		x.title && (x.title = $.strFormat( x.title, a ));
+		typeof x.src === _STR && (x.src = this.formatStr( x.src, a, T ));
 		if ( x.hide )
 			require( v ).hide( this );
 		else
@@ -466,9 +463,15 @@ _mergeAtPropHooks = {
 Template = $.createClass( {
 	// @ t -> template, d -> data, g -> widget, r -> target
 	Const: function( t, d, g ) {
-		this.data = g.x.data ? $.extend( {}, d, g.x.data ) : d;
 		this.wg   = g;
 		this.template = _getTemplate( t );
+		this.data = $.extend( {}, d );
+		if ( g.x.data )
+			$.extend( this.data, g.x.data );
+		if ( g.x.args ) {
+			for ( var i = 0, a = g.x.args; i < a.length; i ++ )
+				this.data[ i ] = a[ i ];
+		}
 	},
 	Extend: Node,
 	Prototype: {
@@ -744,6 +747,8 @@ W = define( 'widget', function() {
 		},
 		// @private: 初始化子节点
 		init_nodes: function() {
+			if ( this.length )
+				return;
 			var c = this.x_nodes();
 			if ( c ) {
 				for ( var j = 0, l = c.length; j < l; j ++ )
@@ -2347,7 +2352,7 @@ Xsrc = define.widget( 'xsrc', {
 		},
 		// @implement
 		init_nodes: function() {
-			if ( (this.x.node || this.x.nodes) && !this.layout )
+			if ( (this.x.node || this.x.nodes) && ! this.layout )
 				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
 		},
 		hasCssRes: function() {
@@ -3577,6 +3582,9 @@ Submitbutton = define.widget( 'submitbutton', {
 /* `menubutton` */
 _menu_button_height,
 MenuButton = define.widget( 'menu/button', {
+	Const: function() {
+		Button.apply( this, arguments );
+	},
 	Extend: Button,
 	Listener: {
 		body: {
@@ -4978,7 +4986,7 @@ Menu = define.widget( 'menu', {
 		// menu的z-index固定为3，总在最前面
 		front: $.rt( F ),
 		_front: $.rt( F ),
-		init_x: _proto.init_x,
+		//init_x: _proto.init_x,
 		init_nodes: _proto.init_nodes,
 		// menu有两种子节点: menu/split, menu/button
 		x_childtype: function( t ) {
