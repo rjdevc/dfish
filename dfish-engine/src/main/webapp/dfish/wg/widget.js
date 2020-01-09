@@ -264,22 +264,24 @@ _ajaxCmd = function( x, a, t ) {
 	this.trigger( 'lock' );
 	// @fixme: view base
 	$.ajaxJSON( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter != N ? x.filter : cfg.src_filter, error: x.error, beforesend: x.beforesend, 
-		success: function( r, a ) {
+		success: function( r, j ) {
 			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
 				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				if ( x.success )
-					$.fnapply( x.success, this, '$response,$ajax', [ v, a ] );
-				else
-					(v && this.exec( v, N, x.transfer, r ));
+					$.fnapply( x.success, this, '$response,$ajax', [ v, j ] );
+				else if ( v ) {
+					a && (v.args = a);
+					this.exec( v, N, x.transfer, r );
+				}
 			}
-		}, complete: function( r, a ) {
+		}, complete: function( r, j ) {
 			d && d.close();
 			if ( ! this._disposed && x.complete ) {
 				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
-				$.fnapply( x.complete, this, '$response,$ajax', [ v, a ] );
+				$.fnapply( x.complete, this, '$response,$ajax', [ v, j ] );
 			}
 			if ( ! this._disposed )
 				this.trigger( 'unlock' );
