@@ -291,6 +291,13 @@ _cmd = function( x, d ) {
 	for ( ; i < l; i ++ )
 		f && f.exec( x.nodes[ i ], N, N, d );
 },
+_cmdArgs = function( x, a, b ) {
+	a && (x.args = a);
+	b && (x.srcdata = b);
+	x.title && (x.title = $.strFormat( x.title, a ));
+	typeof x.src === _STR && (x.src = this.formatStr( x.src, a, T ));
+},
+_cmdWidgets = {},
 _cmdHooks = {
 	'cmd': function( x, a, b ) {
 		if ( x.delay != N ) {
@@ -317,36 +324,18 @@ _cmdHooks = {
 			var d = v.getPostData( g, !! x.download );
 			x.download ? $.download( x.src, d ) : _ajaxCmd.call( this, x, a, d );
 		}
-	},
-	'dialog': function( x, a, b ) {
-		b && (x.srcdata = b);
-		if ( typeof x.src === _STR )
-			x.src = this.formatStr( x.src, a, T );
-		else if ( a )
-			x.args = a;
-		x.title && (x.title = $.strFormat( x.title, a ));
-		return new Dialog( x, this ).show();
-	},
-	'tip': function( x, a, b ) {
-		b && (x.srcdata = b);
-		if ( typeof x.src === _STR )
-			x.src = this.formatStr( x.src, a, T );
-		if ( x.hide )
-			_inst_hide( 'tip' );
-		else
-			return new Tip( x, this ).show();
-	},
-	'loading': function( x, a, b ) {
-		b && (x.srcdata = b);
-		if ( x.hide ) {
-			var d = $.dialog( this );
-			d && d.type == 'loading' ? d.close() : _inst_hide( 'loading', _view( this ) );
-		} else {
-			return new Loading( x, this ).show();
-		}
 	}
-},
-_cmdWidgets = {};
+};
+$.each( 'menu dialog tip loading alert confirm'.split(' '), function( v, i ) {
+	_cmdWidgets[ v ] = T;
+	_cmdHooks[ v ] = function( x, a, b ) {
+		_cmdArgs.call( this, x, a, b );
+		if ( x.hide )
+			require( v ).hide( this );
+		else
+			return new (require( v ))( x, this ).show();
+	}
+} );
 $.each( 'before after prepend append replace remove'.split(' '), function( v, i ) {
 	_cmdHooks[ v ] = function( x, a, b ) {
 		var d = x.target || (i > 3 && x.node && x.node.id), e;
@@ -358,16 +347,6 @@ $.each( 'before after prepend append replace remove'.split(' '), function( v, i 
 			}
 		}
 	}
-} );
-$.each( 'menu dialog tip loading alert confirm'.split(' '), function( v, i ) {
-	_cmdWidgets[ v ] = T;
-	if ( ! _cmdHooks[ v ] ) {
-		_cmdHooks[ v ] = function( x, a, b ) {
-			b && (x.srcdata = b);
-			x.args = a;
-			return new (require( v ))( x, this ).show();
-		}
-	}	
 } );
 var
 /* `node` */
@@ -4331,6 +4310,12 @@ Dialog = define.widget( 'dialog', {
 			var h = this.attr( 'height' );
 			return h == N || h < 0 ? N : _docView.scaleHeight( this );
 		},
+		closestData: function( a ) {
+			var d = this.x.data && this.x.data[ a ];
+			if ( d === U )
+				d = this.x.args && this.x.args[ a ];
+			return d !== U ? d : this.parentNode.closestData( a );
+		},
 		getContentView: function() {
 			return this.contentView || (this.contentView = _getContentView( this ));
 		},
@@ -4800,6 +4785,9 @@ Tip = define.widget( 'tip', {
 		! this.x.multiple && _inst_add( this );
 	},
 	Extend: Dialog,
+	Helper: {
+		hide: function() { _inst_hide( 'tip' ); }
+	},
 	Prototype: {
 		className: 'w-dialog w-tip',
 		showLoading: $.rt(),
@@ -4820,6 +4808,12 @@ Loading = define.widget( 'loading', {
 	},
 	Extend: Dialog,
 	Default: { local: T },
+	Helper: {
+		hide: function( a ) {
+			var d = $.dialog( a );
+			d && d.type == 'loading' ? d.close() : _inst_hide( 'loading', _view( a ) );
+		}
+	},
 	Prototype: {
 		className: 'w-dialog w-loading f-shadow',
 		showLoading: $.rt(),
