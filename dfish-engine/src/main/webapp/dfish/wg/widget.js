@@ -3282,7 +3282,7 @@ Button = define.widget( 'button', {
 				}
 			},
 			click: function( e ) {
-				this.rootNode && this.rootNode.x.focusmultiple ? this.toggleFocus() : this.focus();
+				this.isToggleable() ? this.toggleFocus() : this.focus();
 				if ( !(this.x.on && this.x.on.click) )
 					this.drop();
 			},
@@ -3398,6 +3398,9 @@ Button = define.widget( 'button', {
 		_ustag: function() {
 			this.ownerView.linkTarget( this.x.target, this.isFocus(), this );
 		},
+		isToggleable: function() {
+			return this.rootNode && this.rootNode.x.focusmultiple;
+		},
 		isFocus: function() {
 			return ! this.isDisabled() && this.x.focusable && this.x.focus;
 		},
@@ -3413,7 +3416,7 @@ Button = define.widget( 'button', {
 		_focus: function( a ) {
 			if ( this._disposed )
 				return;
-			var a = a == N || !!a, r = this.rootNode, m = r && r.x.focusmultiple;
+			var a = a == N || !!a, m = this.rootNode && this.rootNode.x.focusmultiple;
 			this.x.focus = a;
 			if ( this.x.focusable && this.$() ) {
 				$.classAdd( this.$(), 'z-on', a );
@@ -5184,13 +5187,13 @@ Collapse = define.widget( 'collapse', {
 			g = $.extend( { display: !!n[ i ].focus }, n[ i ].target );
 			b.push( $.extend( { type: 'collapse/button', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
 			b.push( g );
-			d == N && b[ i * 2 ].focus && (d = (i * 2));
+			//d == N && b[ i * 2 ].focus && (d = (i * 2));
 		}
-		// 单选模式下，至少有一个节点默认展开
+		/*// 单选模式下，至少有一个节点默认展开
 		if ( ! x.focusmultiple ) {
 			d == N && b[ 0 ] && (d = 0, b[ 0 ].focus = T);
 			d != N && (b[ d + 1 ].display = T);
-		}
+		}*/
 		y.nodes = b;
 		Vert.call( this, $.extend( y, x ), p );
 	},
@@ -5231,7 +5234,8 @@ CollapseButton = define.widget( 'collapse/button', {
 		}
 	},
 	Prototype: {
-		className: 'w-button w-collapse-button'
+		className: 'w-button w-collapse-button',
+		isToggleable: $.rt( T )
 	}
 } ),
 /* `label` */
