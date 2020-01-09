@@ -238,7 +238,7 @@
 
 .w-dialog{position:absolute;z-index:10}
 .w-dialog-cover{position:absolute;background:#333;top:0;left:0;right:0;bottom:0;z-index:11;opacity:.2;filter:Alpha(opacity=20)}
-.w-dialog-move{position:fixed;background:#fff;top:0;left:0;right:0;bottom:0;z-index:11;opacity:0;filter:Alpha(opacity=0)}
+.w-dialog-move{position:fixed;background:#fff;top:0;left:0;right:0;bottom:0;z-index:1;opacity:0;filter:Alpha(opacity=0)}
 .w-dialog-prong{position:absolute}
 .w-dialog-prong .f-arw{position:absolute;margin:0}
 .w-dialog-prong.z-b{width:9px;height:8px;left:50%;margin-left:-9px;bottom:-8px;}
@@ -601,7 +601,10 @@
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
 .w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
 .w-button-split{vertical-align:middle;text-align:center}
+
 .w-tab{height:100%}
+
+.w-collapse-button{height:30px;text-align:left;}
 
 .w-badge{position:absolute;top:-3px;right:-3px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
 .w-badge.z-t{top:-7px;right:0;padding:1px 3px;width:auto;height:12px;transform:translateX(50%)}

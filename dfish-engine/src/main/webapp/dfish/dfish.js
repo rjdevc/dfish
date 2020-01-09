@@ -1948,9 +1948,10 @@ var boot = {
 					if ( br.css3 ) {
 						Q( e.target ).closest( '[w-type="xsrc"]' ).each( function() {
 							var g = $.all[ this.id ], c = $.bcr( this );
-							s += '<div class="f-develop z-tpl" style="width:' + (c.width - 6) + 'px;height:' + (c.height - 6) + 'px;left:' + (c.left + 1) + 'px;top:' + (c.top + 1) + 'px;">' +
-								'<div class=_t><span class=_s>id: ' + (g.x.id || '') + '<br>template: ' + (g.x.template || '') + '<br>src: ' + (g.x.src || '') + '</span></div>' +
-								'<div>';
+							if ( m.contains( g ) )
+								s += '<div class="f-develop z-tpl" style="width:' + (c.width - 6) + 'px;height:' + (c.height - 6) + 'px;left:' + (c.left + 1) + 'px;top:' + (c.top + 1) + 'px;">' +
+									'<div class=_t><span class=_s>id: ' + (g.x.id || '') + '<br>template: ' + (g.x.template || '') + '<br>src: ' + (g.x.src || '') + '</span></div>' +
+									'<div>';
 						} );
 					}
 					$.query( doc.body ).append( s );

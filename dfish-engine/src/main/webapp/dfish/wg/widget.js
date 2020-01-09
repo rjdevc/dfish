@@ -264,22 +264,24 @@ _ajaxCmd = function( x, a, t ) {
 	this.trigger( 'lock' );
 	// @fixme: view base
 	$.ajaxJSON( { src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, datatype: x.datatype, filter: x.filter != N ? x.filter : cfg.src_filter, error: x.error, beforesend: x.beforesend, 
-		success: function( r, a ) {
+		success: function( r, j ) {
 			d && (d.close(), d = N);
 			if ( ! this._disposed ) {
 				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
 				if ( x.success )
-					$.fnapply( x.success, this, '$response,$ajax', [ v, a ] );
-				else
-					(v && this.exec( v, N, x.transfer, r ));
+					$.fnapply( x.success, this, '$response,$ajax', [ v, j ] );
+				else if ( v ) {
+					a && (v.args = a);
+					this.exec( v, N, x.transfer, r );
+				}
 			}
-		}, complete: function( r, a ) {
+		}, complete: function( r, j ) {
 			d && d.close();
 			if ( ! this._disposed && x.complete ) {
 				var v = r;
 				r && x.template && (v = _compileTemplate( this, r, x.template ));
-				$.fnapply( x.complete, this, '$response,$ajax', [ v, a ] );
+				$.fnapply( x.complete, this, '$response,$ajax', [ v, j ] );
 			}
 			if ( ! this._disposed )
 				this.trigger( 'unlock' );
@@ -291,6 +293,13 @@ _cmd = function( x, d ) {
 	for ( ; i < l; i ++ )
 		f && f.exec( x.nodes[ i ], N, N, d );
 },
+_cmdArgs = function( x, a, b ) {
+	a && (x.args = a);
+	b && (x.srcdata = b);
+	x.title && (x.title = $.strFormat( x.title, a ));
+	typeof x.src === _STR && (x.src = this.formatStr( x.src, a, T ));
+},
+_cmdWidgets = {},
 _cmdHooks = {
 	'cmd': function( x, a, b ) {
 		if ( x.delay != N ) {
@@ -317,36 +326,18 @@ _cmdHooks = {
 			var d = v.getPostData( g, !! x.download );
 			x.download ? $.download( x.src, d ) : _ajaxCmd.call( this, x, a, d );
 		}
-	},
-	'dialog': function( x, a, b ) {
-		b && (x.srcdata = b);
-		if ( typeof x.src === _STR )
-			x.src = this.formatStr( x.src, a, T );
-		else if ( a )
-			x.args = a;
-		x.title && (x.title = $.strFormat( x.title, a ));
-		return new Dialog( x, this ).show();
-	},
-	'tip': function( x, a, b ) {
-		b && (x.srcdata = b);
-		if ( typeof x.src === _STR )
-			x.src = this.formatStr( x.src, a, T );
-		if ( x.hide )
-			_inst_hide( 'tip' );
-		else
-			return new Tip( x, this ).show();
-	},
-	'loading': function( x, a, b ) {
-		b && (x.srcdata = b);
-		if ( x.hide ) {
-			var d = $.dialog( this );
-			d && d.type == 'loading' ? d.close() : _inst_hide( 'loading', _view( this ) );
-		} else {
-			return new Loading( x, this ).show();
-		}
 	}
-},
-_cmdWidgets = {};
+};
+$.each( 'menu dialog tip loading alert confirm'.split(' '), function( v, i ) {
+	_cmdWidgets[ v ] = T;
+	_cmdHooks[ v ] = function( x, a, b ) {
+		_cmdArgs.call( this, x, a, b );
+		if ( x.hide )
+			require( v ).hide( this );
+		else
+			return new (require( v ))( x, this ).show();
+	}
+} );
 $.each( 'before after prepend append replace remove'.split(' '), function( v, i ) {
 	_cmdHooks[ v ] = function( x, a, b ) {
 		var d = x.target || (i > 3 && x.node && x.node.id), e;
@@ -358,16 +349,6 @@ $.each( 'before after prepend append replace remove'.split(' '), function( v, i 
 			}
 		}
 	}
-} );
-$.each( 'menu dialog tip loading alert confirm'.split(' '), function( v, i ) {
-	_cmdWidgets[ v ] = T;
-	if ( ! _cmdHooks[ v ] ) {
-		_cmdHooks[ v ] = function( x, a, b ) {
-			b && (x.srcdata = b);
-			x.args = a;
-			return new (require( v ))( x, this ).show();
-		}
-	}	
 } );
 var
 /* `node` */
@@ -1676,7 +1657,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				return N;
 			var o = this.$();
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
-				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && this[ i ].$() && !this[ i ].isDisplay() ? 0 : this[ i ].attr( v ));
+				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && this[ i ].$() && !this[ i ].isDisplay() ? N : this[ i ].attr( v ));
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
@@ -2658,13 +2639,13 @@ View = define.widget( 'view', {
 		linkTarget: function( a, b, d ) {
 			var c = a.isWidget ? [ a ] : this.find( a.split( ',' ) );
 			for ( var i = 0; i < c.length; i ++ ) {
-				if ( c[ i ].parentNode && c[ i ].parentNode.type_frame ) {
+				if ( d && d.focusTarget )
+					d.focusTarget( c[ i ], b );
+				else if ( c[ i ].parentNode && c[ i ].parentNode.type_frame )
 					b && c[ i ].parentNode.focus( c[ i ] );
-				} else {
+				else {
 					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ ) {
 						r[ j ].disable( ! b );
-						// fixme：未知原因导致表单禁用，在此附加来源供参考
-						r[ j ].__disable_by = d;
 					}
 				}
 			}
@@ -3296,7 +3277,7 @@ Button = define.widget( 'button', {
 				}
 			},
 			click: function( e ) {
-				this.parentNode.x.focusmultiple ? this.toggleFocus() : this.focus();
+				this.rootNode && this.rootNode.x.focusmultiple ? this.toggleFocus() : this.focus();
 				if ( !(this.x.on && this.x.on.click) )
 					this.drop();
 			},
@@ -3427,19 +3408,20 @@ Button = define.widget( 'button', {
 		_focus: function( a ) {
 			if ( this._disposed )
 				return;
-			var a = a == N || a, p = this.parentNode, d;
+			var a = a == N || !!a, r = this.rootNode, m = r && r.x.focusmultiple;
+			this.x.focus = a;
 			if ( this.x.focusable && this.$() ) {
 				$.classAdd( this.$(), 'z-on', a );
 				if ( a ) {
-					if ( ! p.x.focusmultiple ) {
-						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : p; i < d.length; i ++ )
-							if ( d[ i ] !== this && d[ i ].x.name == this.x.name && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
+					if ( ! m ) {
+						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : this.parentNode; i < d.length; i ++ )
+							if ( d[ i ] !== this && d[ i ].type === this.type && d[ i ].x.name == this.x.name && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
 					}
-					this.x.target && this.ownerView.linkTarget( this.x.target, T, this );
 				}
-				a !== F && this.triggerHandler( 'focus' );
+				(m || a) && this.x.target && this.ownerView.linkTarget( this.x.target, a, this );
+				this.trigger( a ? 'focus' : 'blur' );
 			}
-			return (this.x.focus = !!a);
+			return this.x.focus;
 		},
 		focusOver: function() {
 			if ( this.x.focus ) {
@@ -4191,23 +4173,7 @@ DialogTitle = define.widget( 'dialog/title', {
 		body: {
 			mousedown: {
 				occupy: T,
-				method: function( e ) {
-					var o = Dialog.get( this );
-					if ( o ) {
-						o.front();
-						var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
-							x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), self = this, m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
-						if ( o.x.moveable !== F && ! o.x.fullscreen ) {
-							$.moveup( function( e ) {
-								! m && (m = $.db( '<div class=w-dialog-move style="width:' + $.width() + 'px;height:' + n + 'px;"></div>' ));
-								o.$().style[ v ] = $.numRange( t + b * (e.clientY - y), 0, n - 30 ) + 'px';
-								o.$().style[ h ] = $.numRange( l + r * (e.clientX - x), 100 - z, w - 30 ) + 'px';
-							}, function( e ) {
-								m && $.remove( m );
-							} );
-						}
-					}
-				}
+				method: function( e ) { Dialog.get( this ).dragTitle( this, e ) }
 			}
 		}
 	}
@@ -4346,6 +4312,12 @@ Dialog = define.widget( 'dialog', {
 			var h = this.attr( 'height' );
 			return h == N || h < 0 ? N : _docView.scaleHeight( this );
 		},
+		closestData: function( a ) {
+			var d = this.x.data && this.x.data[ a ];
+			if ( d === U )
+				d = this.x.args && this.x.args[ a ];
+			return d !== U ? d : this.parentNode.closestData( a );
+		},
 		getContentView: function() {
 			return this.contentView || (this.contentView = _getContentView( this ));
 		},
@@ -4453,7 +4425,7 @@ Dialog = define.widget( 'dialog', {
 				r = this._dft_pos();
 			this._pos = r;
 			$.snapTo( this.$(), r );
-			if ( vs ) {
+			if ( vs && this.x.height && this.type === 'dialog' ) {
 				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
 				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
 				t && (this.height( r.height + r.top ));
@@ -4489,13 +4461,26 @@ Dialog = define.widget( 'dialog', {
 				}
 			}
 		},
-		reset: function() {
-			delete this.contentView;
-			Xsrc.prototype.reset.call( this );
+		dragTitle: function( a, e ) {
+			var o = Dialog.get( a );
+			if ( o ) {
+				o.front();
+				if ( o.x.moveable !== F && ! o.x.fullscreen ) {
+					var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
+						x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
+					$.moveup( function( e ) {
+						! m && (m = $.db( '<div class=w-dialog-move style="width:' + $.width() + 'px;height:' + n + 'px;"></div>' ));
+						o.$().style[ v ] = $.numRange( t + b * (e.clientY - y), 0, n - 30 ) + 'px';
+						o.$().style[ h ] = $.numRange( l + r * (e.clientX - x), 100 - z, w - 30 ) + 'px';
+					}, function( e ) {
+						m && $.remove( m );
+					} );
+				}
+			}	
 		},
 		getLocalParent: function() {
 			var p = this;
-			while ( (p = p.parentNode) && !p.type_view && !p.isDialogWidget );
+			while ( (p = p.parentNode) && ! p.type_view && ! p.isDialogWidget );
 			return p;
 		},
 		html_nodes: function() {
@@ -4503,8 +4488,12 @@ Dialog = define.widget( 'dialog', {
 			if ( ie7 )
 				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
 			if ( this.type === 'dialog' && this.x.loadinghead !== F )
-				s += '<div class=w-dialog-loadinghead><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
+				s += '<div class=w-dialog-loadinghead onmousedown=' + evw + '.dragTitle(this,event)><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
 			return s;
+		},
+		reset: function() {
+			delete this.contentView;
+			Xsrc.prototype.reset.call( this );
 		},
 		render: function() {
 			if ( this._disposed )
@@ -4798,6 +4787,9 @@ Tip = define.widget( 'tip', {
 		! this.x.multiple && _inst_add( this );
 	},
 	Extend: Dialog,
+	Helper: {
+		hide: function() { _inst_hide( 'tip' ); }
+	},
 	Prototype: {
 		className: 'w-dialog w-tip',
 		showLoading: $.rt(),
@@ -4818,6 +4810,12 @@ Loading = define.widget( 'loading', {
 	},
 	Extend: Dialog,
 	Default: { local: T },
+	Helper: {
+		hide: function( a ) {
+			var d = $.dialog( a );
+			d && d.type == 'loading' ? d.close() : _inst_hide( 'loading', _view( a ) );
+		}
+	},
 	Prototype: {
 		className: 'w-dialog w-loading f-shadow',
 		showLoading: $.rt(),
@@ -5168,24 +5166,68 @@ define.widget( 'deck', {
 		}
 	}
 } );
+var
 /* `collapse` */
-define.widget( 'collapse', {
-	Extend: 'vert/scale',
+Collapse = define.widget( 'collapse', {
+	Const: function( x, p ) {
+		this.id = $.uid( this );
+		var y = { type: 'vert' }, b = [], d, e = _getDefaultOption( 'tabs', x.cls );
+		for ( var i = 0, n = x.nodes || [], g; i < n.length; i ++ ) {
+			g = $.extend( { display: !!n[ i ].focus }, n[ i ].target );
+			b.push( $.extend( { type: 'collapse/button', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
+			b.push( g );
+			//d == N && b[ i * 2 ].focus && (d = (i * 2));
+		}
+		/* // 单选模式下，至少有一个节点默认展开
+		if ( ! x.focusmultiple ) {
+			d == N && b[ 0 ] && (d = 0, b[ 0 ].focus = T);
+			d != N && (b[ d + 1 ].display = T);
+		}*/
+		y.nodes = b;
+		Vert.call( this, $.extend( y, x ), p );
+	},
+	Extend: 'vert',
 	Prototype: {
-		x_nodes: function() {
-			for ( var i = 0, d = this.x.nodes, l = d.length, r = []; i < l; i += 2 )
-				r.push( { button: d[ i ], content: d[ i + 1 ] } );
-			return r;
-		},
+		className: 'w-collapse',
 		getFocus: function() {
-			for ( var i = 0; i < this.length; i ++ )
-				if ( this[ i ].button.isFocus() ) return this[ i ].button;
+			for ( var i = 0; i < this.length; i += 2 )
+				if ( this[ i ].isFocus() ) return this[ i ];
 		}
 	}
-} );
-
+} ),
+/* `tab` */
+CollapseButton = define.widget( 'collapse/button', {
+	Const: function( x, p ) {
+		this.rootNode = p;
+		Button.apply( this, arguments );
+	},
+	Extend: 'button',
+	Listener: {
+		body: {
+			focus: function() {
+				var b = this.next();
+				b.display();
+				if ( this.parentNode.outerHeight() != N ) {
+					b._height === U && (b._height = b.x.height);
+					b.height( b._height );
+				}
+			},
+			blur: function() {
+				var b = this.next();
+				b.display( F );
+				if ( this.parentNode.outerHeight() != N ) {
+					b._height === U && (b._height = b.x.height);
+					b.height( 0 );
+				}
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-button w-collapse-button'
+	}
+} ),
 /* `label` */
-var Label = define.widget( 'label', {
+Label = define.widget( 'label', {
 	Const: function( x, p ) {
 		this._pad = x.space != N ? x.space : 5;
 		this.className += ' f-nv' + (x.valign ? '-' + x.valign : '') + ' z-type-' + p.type.replace( /\//g, '-' );
