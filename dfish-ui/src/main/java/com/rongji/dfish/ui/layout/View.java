@@ -1,8 +1,5 @@
 package com.rongji.dfish.ui.layout;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.rongji.dfish.ui.LazyLoad;
 
 

@@ -3,7 +3,6 @@ package com.rongji.dfish.ui.form;
 import com.rongji.dfish.base.Option;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.Widget;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.*;

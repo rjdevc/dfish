@@ -5,7 +5,7 @@ package com.rongji.dfish.ui.layout;
  * @author DFish team
  * @param <T> 类型
  */
-public interface GridOper<T> {
+public interface GridOperation<T> {
 	/**
 	 * <p>在某行某列添加一个元素</p>
 	 * <p>行和列的初始坐标为0</p>

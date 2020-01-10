@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Form extends AbstractLayout<Form,Widget<?>>
         implements HtmlContentHolder<Form>, Scrollable<Form>,MultiContainer<Form,Widget<?>> ,
-        PubHolder<Form,Td> ,HiddenContainer<Form>{
+        PubHolder<Form,Grid.Td> ,HiddenContainer<Form>{
     /**
      * 无格式
      */
@@ -41,7 +41,7 @@ public class Form extends AbstractLayout<Form,Widget<?>>
      */
     public static final String FACE_DOT=Grid.FACE_DOT;
     private Integer cols;
-    private Td pub;
+    private Grid.Td pub;
     private Boolean escape;
     private String face;
     private Boolean nobr;
@@ -67,14 +67,14 @@ public class Form extends AbstractLayout<Form,Widget<?>>
     }
 
     @Override
-    public Td getPub() {
+    public Grid.Td getPub() {
         if (pub == null) {
-            setPub(new Td());
+            setPub(new Grid.Td());
         }
         return pub;
     }
     @Override
-    public Form setPub(Td pub) {
+    public Form setPub(Grid.Td pub) {
         this.pub = pub;
         return this;
     }
@@ -112,7 +112,7 @@ public class Form extends AbstractLayout<Form,Widget<?>>
 
     /**
      * 添加子元素，并且制定宽度。
-     * 相当于add(new Td().setColspan(colspan).setNode(w))
+     * 相当于add(new Grid.Td().setColspan(colspan).setNode(w))
      * @param w 元素
      * @param colspan 占用宽度
      * @return this
@@ -123,12 +123,12 @@ public class Form extends AbstractLayout<Form,Widget<?>>
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add (new Td().setColspan(colspan).setNode(w));
+        return add (new Grid.Td().setColspan(colspan).setNode(w));
     }
 
     /**
      * 添加子元素，并且制定宽度。
-     * 相当于add(new Td().setColspan(colspan).setRowspan(rowspan).setNode(w))
+     * 相当于add(new Grid.Td().setColspan(colspan).setRowspan(rowspan).setNode(w))
      * @param w 元素
      * @param colspan 占用宽度
      * @param rowspan 占用高度
@@ -140,7 +140,7 @@ public class Form extends AbstractLayout<Form,Widget<?>>
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add (new Td().setColspan(colspan).setRowspan(rowspan).setNode(w));
+        return add (new Grid.Td().setColspan(colspan).setRowspan(rowspan).setNode(w));
     }
 //    public FormLayout addLabelRow(LabelRow<?> w){
 //        return add(w);
@@ -250,7 +250,7 @@ public class Form extends AbstractLayout<Form,Widget<?>>
         for (Iterator<Widget<?>> iter = nodes.iterator();
              iter.hasNext(); ) {
             Widget<?> item = iter.next();
-            if (id.equals(item.getId())||(item instanceof Td && id.equals(((Td)item).getNode().getId()))) {
+            if (id.equals(item.getId())||(item instanceof Grid.Td && id.equals(((Grid.Td)item).getNode().getId()))) {
                 iter.remove();
             } else if (item instanceof Layout) {
                 Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) item;

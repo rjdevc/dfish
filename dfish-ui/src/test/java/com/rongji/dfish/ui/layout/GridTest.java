@@ -1,12 +1,11 @@
 package com.rongji.dfish.ui.layout;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.rongji.dfish.ui.DFishUITestCase;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Text;
 import com.rongji.dfish.ui.widget.Html;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class GridTest extends DFishUITestCase {
 	protected Object getWidget(){
@@ -20,16 +19,16 @@ public class GridTest extends DFishUITestCase {
 	public void autoExpend(){
 		Grid gl=new Grid("mygrid");
 		gl.add(1, 1, "test");
-		Assert.assertTrue(gl.getTbody().getRows().size()==2);
+		Assert.assertTrue(gl.getBody().getRows().size()==2);
 		
 	}
 
 	@Test
 	public void trSuit(){
 		Grid gl=new Grid("mygrid");
-		gl.addColumn(GridColumn.text("C1","*"));
-		gl.add(new Tr().setData("C1","第一列内容"));
-		gl.add(new Tr().setCls("tr-odd").setData("C1","第二行第一列内容"));
+		gl.addColumn(Grid.Column.text("C1","*"));
+		gl.add(new Grid.Tr().setData("C1","第一列内容"));
+		gl.add(new Grid.Tr().setCls("tr-odd").setData("C1","第二行第一列内容"));
 		output(gl);
 	}
 	
@@ -37,10 +36,10 @@ public class GridTest extends DFishUITestCase {
 	public void tdSuit(){
 		Grid gl=new Grid("mygrid");
 
-		gl.add(0,0,new Td().setNode(new Html("哈密瓜")));
-		gl.add(0,1,new Td().setAlign(Td.ALIGN_RIGHT).setNode(new Html("橙子")));
-		gl.add(1,0,new Td().setNode(new Html("山竹").setStyle("background-color:gray")));
-		gl.add(1,1,new Td().setAlign(Td.ALIGN_RIGHT).setNode(new Html("杨桃").setStyle("background-color:gray")));
+		gl.add(0,0,new Grid.Td().setNode(new Html("哈密瓜")));
+		gl.add(0,1,new Grid.Td().setAlign(Grid.Td.ALIGN_RIGHT).setNode(new Html("橙子")));
+		gl.add(1,0,new Grid.Td().setNode(new Html("山竹").setStyle("background-color:gray")));
+		gl.add(1,1,new Grid.Td().setAlign(Grid.Td.ALIGN_RIGHT).setNode(new Html("杨桃").setStyle("background-color:gray")));
 		gl.add(2,0,"火龙果");
 		gl.add(2,1,new Html("西瓜"));//FIXME 输出不是最简的 西瓜
 		gl.add(3,0,new Html("水蜜桃").setStyle("background-color:gray"));
@@ -61,7 +60,7 @@ public class GridTest extends DFishUITestCase {
 		
 		gl.replaceNodeById(new Html("就让这擦干又留出的泪水，化作漫天相思的雨").setId("tt2"));
 		output(gl);
-		gl.replaceNodeById(new Td().setId("tt2").setNode(new Html("就让这擦干又留出的泪水，化作漫天相思的雨")));
+		gl.replaceNodeById(new Grid.Td().setId("tt2").setNode(new Html("就让这擦干又留出的泪水，化作漫天相思的雨")));
 		output(gl);
 
 	}
@@ -71,22 +70,22 @@ public class GridTest extends DFishUITestCase {
 
 		props.setFace(Grid.FACE_LINE);
 
-		props.addColumn(GridColumn.text("C1","160"));
-		props.addColumn(GridColumn.text("C3","80"));
-		props.addColumn(GridColumn.text("C4","80"));
-		props.addColumn(GridColumn.text("C5","120"));
-		props.addColumn(GridColumn.text("C6","*"));
+		props.addColumn(Grid.Column.text("C1","160"));
+		props.addColumn(Grid.Column.text("C3","80"));
+		props.addColumn(Grid.Column.text("C4","80"));
+		props.addColumn(Grid.Column.text("C5","120"));
+		props.addColumn(Grid.Column.text("C6","*"));
 
-		Tr tHead=new Tr();
-		props.getThead().add(tHead);
+		Grid.Tr tHead=new Grid.Tr();
+		props.getHead().add(tHead);
 		tHead.setData("C1","属性名");
 		tHead.setData("C3","类型");
 		tHead.setData("C4","必填");
 		tHead.setData("C5","默认值");
 		tHead.setData("C6","提示信息");
 
-		Tr tBodyRow=new Tr();
-		props.getTbody().add(tBodyRow);
+		Grid.Tr tBodyRow=new Grid.Tr();
+		props.getBody().add(tBodyRow);
 		tBodyRow.setData("@C1","$item.name");
 		tBodyRow.setData("@C3","$item.type");
 		tBodyRow.setData("@C4","$item.required");

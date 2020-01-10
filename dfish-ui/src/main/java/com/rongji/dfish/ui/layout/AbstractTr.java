@@ -9,16 +9,16 @@ import java.util.Map;
 import com.rongji.dfish.ui.Widget;
 
 /**
- * Tr 表示 表格的行
+ * Grid.Tr 表示 表格的行
  * <p>表格的行有三种工作模式</p>
  * <p>常见的是里面包行单元格(Td)。
  * 每个单元格是一个文本或独立的widget，有widget的功能和属性，只是有的时候可能并不会给每个单元格设置ID。</p>
  * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或GridCell。
- * 并用{@link GridColumn#getField} 来说明这个内容显示在哪里。</p>
+ * 并用{@link Grid.Column#getField} 来说明这个内容显示在哪里。</p>
  * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
  * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
  *
- * @see AbstractTd {@link GridColumn} {@link GridLeaf}
+ * @see AbstractTd {@link Grid.Column} {@link GridLeaf}
  * @author DFish Team
  * @param <T> 当前类型
  * @since DFish 3.0
@@ -48,7 +48,7 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 	protected Boolean focus;
 	protected Boolean focusable;
 	protected String src;
-	protected List<Tr> rows;
+	protected List<Grid.Tr> rows;
 
 	
 
@@ -62,14 +62,14 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 	 * 取得可折叠的子元素
 	 * @return List
 	 */
-	public List<Tr> getRows() {
+	public List<Grid.Tr> getRows() {
 		return rows;
 	}
 	/**
 	 * 设置可折叠的子元素
 	 * @param rows List
 	 */
-	public void setRows(List<Tr> rows) {
+	public void setRows(List<Grid.Tr> rows) {
 		this.rows = rows;
 	}
 
@@ -83,9 +83,9 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 
-	public T addRow(Tr row) {
+	public T addRow(Grid.Tr row) {
 		if(rows==null){
-			rows=new ArrayList<Tr>();
+			rows=new ArrayList<Grid.Tr>();
 		}
 		rows.add(row);
 
@@ -134,8 +134,8 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 			return (T)this;
 		}
 		if(rows!=null){
-			for (Iterator<Tr> iter = rows.iterator(); iter.hasNext();) {
-				Tr item = iter.next();
+			for (Iterator<Grid.Tr> iter = rows.iterator(); iter.hasNext();) {
+				Grid.Tr item = iter.next();
 				if (id.equals(item.getId())) {
 					iter.remove();
 				} else {
@@ -198,10 +198,10 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 		String id = panel.getId();
 		if(rows!=null){
 			for (int i = 0; i < rows.size(); i++) {
-				Tr item = rows.get(i);
+				Grid.Tr item = rows.get(i);
 				if (id.equals(item.getId())) {
 					// 替换该元素
-					rows.set(i, (Tr)panel);
+					rows.set(i, (Grid.Tr)panel);
 					return true;
 				} else  {
 					boolean replaced = item.replaceNodeById(panel);

@@ -1,12 +1,12 @@
 package com.rongji.dfish.ui.widget;
 
-import java.util.*;
-
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.StringUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.form.Combo;
-import com.rongji.dfish.ui.layout.GridColumn;
-import com.rongji.dfish.ui.layout.Tr;
+import com.rongji.dfish.ui.layout.Grid;
+import com.rongji.dfish.ui.layout.Grid.Column;
+
+import java.util.*;
 
 /**
  * GridPanel 为 表格模型封装类。
@@ -116,25 +116,25 @@ public class GridWrapper extends AbstractGridWrapper<GridWrapper> {
      */
 	@Override
     protected void buildPrototype() {
-    	Tr headRow = null;
+    	Grid.Tr headRow = null;
     	if(hasTableHead){
-    		headRow=new Tr();
-			prototype.getThead().add(headRow);
+    		headRow=new Grid.Tr();
+			prototype.getHead().add(headRow);
     	}
-    	for(GridColumn gridColumn:columns){
-    		if(gridColumn.getWidth()!=null){//隐藏的字段不显示
+    	for(Column column :columns){
+    		if(column.getWidth()!=null){//隐藏的字段不显示
 //    			prototype.getColumns().add(gridColumn);
-    			prototype.addColumn(gridColumn);
+    			prototype.addColumn(column);
     		}
 			if(hasTableHead){
 				// 需要填充thead
 				Object columnData = null;
-				if (gridColumn.rawFormat() != null) {
-					columnData = gridColumn.rawFormat();
+				if (column.rawFormat() != null) {
+					columnData = column.rawFormat();
 				} else {
-					columnData = gridColumn.getLabel();
+					columnData = column.getLabel();
 				}
-				headRow.setData(gridColumn.getField(), columnData);
+				headRow.setData(column.getField(), columnData);
 			}
 		}
     	
@@ -146,14 +146,14 @@ public class GridWrapper extends AbstractGridWrapper<GridWrapper> {
     	// 假定这个集合所有对象的类型是一致的
     	int index=0;
     	for (Object data : gridData) {
-			Tr dataRow = new Tr();
+			Grid.Tr dataRow = new Grid.Tr();
 			boolean focus=focusRowIndexs.contains(index);
 			dataRow.setFocus(focus?true:null);
 			prototype.add(dataRow);
 			if (data == null) {
 				continue;
 			}
-			for(GridColumn gc:columns){
+			for(Column gc:columns){
 				Object value=null;
 				if(data instanceof Object[] &&gc.getDataColumnIndex()>=0){
 					int length=((Object[])data).length;
