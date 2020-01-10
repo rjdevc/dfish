@@ -18,7 +18,7 @@ dfish.config({
     default_option: {
         'alert': {preload: 'g/alert'},
         'confirm': {preload: 'g/alert'},
-        'dialog': {preload: 'g/std', resizable: true, width: 980, height: 550, error: "this.close();"},
+        'dialog': {preload: 'g/std', width: 680, height: 410, error: "this.close();"},
         'dialog.dlg-large': {width: 980, height: 550},
         'dialog.dlg-medium': {width: 680, height: 410},
         'dialog.dlg-small': {width: 440, height: 250},
@@ -50,9 +50,9 @@ dfish.config({
         'grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "cell"},
         'column': {tip: true},
         // 小分页模式暂时定于全数据关联的分页栏使用,所以不设置src
-        'page/mini': {align: 'right', btncount: 5, wmin: 40},
+        'page/mini': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage'},
         'page/buttongroup': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage'},
-        'page/text': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage', jump: true},
+        'page/text': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage'},
 
         'form': {scroll: true, pub: {colspan: -1}},
         'form.x-form1': {pub: {colspan: -1}},

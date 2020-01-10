@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.Widget;
 
 /**

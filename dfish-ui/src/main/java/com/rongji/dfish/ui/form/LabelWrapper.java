@@ -16,8 +16,9 @@ import com.rongji.dfish.ui.widget.Html;
  * form.add(new Label("备注","&lt;A HERF='#'&gt;查看详情&lt;/A&gt;"));
  * </pre>
  * @author DFish Team
- *
+ * @deprecated 使用Label 。 现在前端已经有对应原型，无需该类。
  */
+@Deprecated
 public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWrapper<Formgroup>,LabelRow<LabelWrapper>,
 	HtmlContentHolder<LabelWrapper>,HasText<LabelWrapper>{
 

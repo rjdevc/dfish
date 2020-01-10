@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.form.FormElement;
 
 /**
  * 抽象布局类，默认的布局同时还是一个Widget

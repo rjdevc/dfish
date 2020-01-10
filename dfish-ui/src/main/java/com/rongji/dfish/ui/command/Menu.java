@@ -1,8 +1,6 @@
 package com.rongji.dfish.ui.command;
 
 
-import com.rongji.dfish.ui.AbstractDialog;
-import com.rongji.dfish.ui.Command;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.AbstractButton;

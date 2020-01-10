@@ -7,10 +7,6 @@ import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.form.Hidden;
-import com.rongji.dfish.ui.layout.grid.GridColumn;
-import com.rongji.dfish.ui.layout.grid.GridPart;
-import com.rongji.dfish.ui.layout.grid.Td;
-import com.rongji.dfish.ui.layout.grid.Tr;
 
 import java.beans.Transient;
 import java.util.ArrayList;
@@ -62,7 +58,7 @@ import java.util.Map;
 }</pre></div>
  * <p>如果没有rowspan或cls属性的时候，td可以只写其中node的部分。这时可以是一个html元素或一个Text等输入框。甚至可以是一个布局元素。里面放任何内容。
  * 而如果这个node就是为了输出一个html并且不需要复杂 cls 等属性的时候。 td就可以缩写成范例中的那样，一个字符串。用于最简输出。同时也更容易被人阅读，理解，和调试</p>
- * <p>支持折叠和多层折叠 详见 {@link com.rongji.dfish.ui.widget.Toggle} 和 {@link com.rongji.dfish.ui.layout.grid.GridLeaf}</p>
+ * <p>支持折叠和多层折叠 详见 {@link com.rongji.dfish.ui.widget.Toggle} 和 {@link GridLeaf}</p>
  * <p>支持指定位置添加内容 见{@link Grid#add(int, int, Object)} 甚至可以直接指定一个区块合并单元格，并填充内容{@link Grid#add(Integer, Integer, Integer, Integer, Object)}</p>
  * <p>如基础定义所见，如果在GridLayout中直接指定位置添加内容，实际上指的是tbody部分。如果想在thead上使用该功能，要显式先取得 getThead()</p>
  * @author DFish team
@@ -113,7 +109,7 @@ public class Grid extends AbstractLayout<Grid, Tr> implements ListView<Grid>,
 	 */
 	public void notifyChange(){
 		if(wrapper!=null&&!prototypeBuilding){
-			wrapper.notifyChage();
+			wrapper.notifyChange();
 		}
 	}
 	/**

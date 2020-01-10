@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.FormElement;
 
 /**
  * 隐藏表单

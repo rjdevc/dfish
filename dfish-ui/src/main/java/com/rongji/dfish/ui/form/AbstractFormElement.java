@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.FormElement;
 import com.rongji.dfish.ui.Statusful;
 
 /**
