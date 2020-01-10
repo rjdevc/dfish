@@ -6771,7 +6771,7 @@ Datepicker = define.widget( 'datepicker', {
 			r = r.join( ',' );
 		}
 		x.value = r;
-		this.defaults( { width: 67 + this.x.format.length * 6 } );
+		this.defaults( { width: 67 + this.x.format.length * 6 + (this.x.multiple ? 20 : 0) } );
 	},
 	Extend: Text,
 	Listener: {
@@ -11171,8 +11171,8 @@ Grid = define.widget( 'grid', {
 		this.fixed = [];
 		if ( ! ie7 ) { //@fixme: 暂不支持ie7
 			var xl = [], xr = [];
-			for ( var i = 0, f, c; i < x.columns.length; i ++ ) {
-				(f = x.columns[ i ].fixed) && (f === 'left' ? xl : xr).push( $.extend( { fixed: N, fixedIndex: i }, x.columns[ i ] ) );
+			for ( var i = 0, f, c = x.columns, l = c ? c.length : 0; i < l; i ++ ) {
+				(f = c[ i ].fixed) && (f === 'left' ? xl : xr).push( $.extend( { fixed: N, fixedIndex: i }, c[ i ] ) );
 			}
 			if ( xl.length ) {
 				this.left = new GridLeft( { columns: xl, thead: x.thead, tbody: x.tbody, tfoot: x.tfoot }, this, -1 );
