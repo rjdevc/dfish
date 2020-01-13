@@ -3716,6 +3716,8 @@ Tabs = define.widget( 'tabs', {
 		this.id = $.uid( this );
 		var s = this.getTabPositionCode( x.position ), y = { type: s === 'r' || s === 'l' ? 'horz' : 'vert', width: '*', height: '*' }, b = [], c = [], d, e = _getDefaultOption( 'tabs', x.cls );
 		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
+			if ( ! Q.isPlainObject( n[ i ].target ) )
+				n[ i ].target = { type: 'Html' };
 			if ( n[ i ].type === 'split' ) {
 				b.push( n[ i ] );
 			} else {
