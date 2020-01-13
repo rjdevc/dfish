@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  *@author DFish Team
  *
  */
-public class Fieldset extends AbstractLayout<Fieldset,Widget<?>> implements MultiContainer<Fieldset,Widget<?>>{
+public class Fieldset extends AbstractLayout<Fieldset> implements MultiContainer<Fieldset,Widget<?>>{
 	/**
 	 * 
 	 */
@@ -73,7 +73,7 @@ public class Fieldset extends AbstractLayout<Fieldset,Widget<?>> implements Mult
 	}
 	@Override
 	public List<Widget<?>> getNodes() {
-		return nodes;
+		return (List)nodes;
 	}
 	
 }

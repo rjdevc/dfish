@@ -70,7 +70,7 @@ import java.util.Map;
  * @author DFish team
  * @since DFish 3.0
  */
-public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid>,
+public class Grid extends AbstractLayout<Grid> implements ListView<Grid>,
         HiddenContainer<Grid>, HtmlContentHolder<Grid>, PubHolder<Grid, Grid.Tr>, Scrollable<Grid>, GridOperation<Grid> {
 
     /**
@@ -339,8 +339,8 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Tr> findNodes() {
-        List<Tr> resultList = new ArrayList<Tr>();
+    public List findNodes() {
+        List<HasId> resultList = new ArrayList<>();
         if (body.findNodes() != null) {
             resultList.addAll(body.findNodes());
         }
@@ -354,8 +354,8 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
     }
 
     @Override
-    public Widget<?> findNodeById(String id) {
-        Widget<?> w = body.findNodeById(id);
+    public HasId findNodeById(String id) {
+        HasId w = body.findNodeById(id);
         if (w != null) {
             return w;
         }
@@ -755,8 +755,8 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
     }
 
     @Override
-    public Grid add(Tr w) {
-        body.add(w);
+    public Grid add(HasId w) {
+        body.add((Tr)w);
         return this;
     }
 
@@ -2134,7 +2134,7 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
      *
      * @author DFish team
      */
-    private static abstract class Part extends AbstractLayout<Part, Tr> implements GridOperation<Part> {
+    private static abstract class Part extends AbstractLayout<Part> implements GridOperation<Part> {
         /**
          *
          */
@@ -2173,12 +2173,13 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
          * @return List
          */
         public List<Tr> getRows() {
-            return nodes;
+            return (List)nodes;
         }
 
 
         @Override
-        public Part add(Tr w) {
+        public Part add(HasId row) {
+            Tr w=(Tr)row;
             w.owner(owner);
             return super.add(w);
         }
@@ -2269,7 +2270,8 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
                 if (colspan > 1) {
                     cell.setColspan(colspan);
                 }
-                nodes.get(fromRow).setData(columnMap.get(fromColumn), cell);
+
+                ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
             } else if (o instanceof Widget) {
                 //如果entry 是 Widget 那么将会包装在一个GridCell里面
                 if (rowspan > 1 || colspan > 1) {
@@ -2281,9 +2283,10 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
                     if (colspan > 1) {
                         cell.setColspan(colspan);
                     }
-                    nodes.get(fromRow).setData(columnMap.get(fromColumn), cell);
+
+                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
                 } else {
-                    nodes.get(fromRow).setData(columnMap.get(fromColumn), o);
+                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
                 }
             } else {
                 if (o != null && (rowspan > 1 || colspan > 1)) {
@@ -2295,9 +2298,9 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
                     if (colspan > 1) {
                         td.setColspan(colspan);
                     }
-                    nodes.get(fromRow).setData(columnMap.get(fromColumn), td);
+                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), td);
                 } else {
-                    nodes.get(fromRow).setData(columnMap.get(fromColumn), o);
+                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
                 }
             }
             // 如果 columns 不够则，自动增加columns
@@ -2351,7 +2354,8 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             }
             Map<String, Integer> columnMap = owner.getVisableColumnNumMap();
             int targetFromRow = 0;
-            for (Tr tr : nodes) {
+            for (Object obj : nodes) {
+                Tr tr=(Tr)obj;
                 if (tr.getData() == null) {
                     targetFromRow++;
                     continue;
@@ -2391,7 +2395,8 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             Map<String, Integer> columnMap = owner.getVisableColumnNumMap();
             List<Object[]> toRemove = new ArrayList<Object[]>();
             int row = 0;
-            for (Tr tr : nodes) {
+            for (Object obj : nodes) {
+                Tr tr=(Tr)obj;
                 if (tr.getData() != null) {
                     for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                         String key = entry.getKey();
@@ -2426,7 +2431,7 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
                 for (Object[] o : toRemove) {
                     int row_ = (Integer) o[0];
                     String key = (String) o[1];
-                    nodes.get(row_).removeData(key);
+                    ((Tr)nodes.get(row_)).removeData(key);
                 }
                 if (owner != null) {
                     owner.notifyChange();
@@ -2873,7 +2878,7 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             return super.setRowspan(rowspan);
         }
         @Override
-        public Td setNode(Widget<?> node) {
+        public Td setNode(HasId node) {
             nc();
             return super.setNode(node);
         }

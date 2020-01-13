@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.command.Command;
 import com.rongji.dfish.ui.LazyLoad;
 import com.rongji.dfish.ui.SingleContainer;
@@ -16,7 +17,7 @@ import com.rongji.dfish.ui.Widget;
  *
  * @param <T> 类型
  */
-public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayout<T, Widget<?>> implements SingleContainer<T, Widget<?>>,LazyLoad<T> {
+public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayout<T> implements SingleContainer<T>,LazyLoad<T> {
 	private String preload;
 	private String template;
 	private String src;
@@ -80,17 +81,17 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayo
 	 * @return Widget
 	 */
 	@Override
-	public Widget<?> getNode() {
+	public Widget getNode() {
 		if(nodes!=null&&nodes.size()>0){
-			return nodes.get(0);
+			return (Widget)nodes.get(0);
 		}
 		return null;
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Widget<?>> findNodes() {
-		return nodes;
+	public List<HasId<? extends HasId<?>>> findNodes() {
+		return (List)nodes;
 	}
 	/**
 	 * 同setNode;
@@ -105,18 +106,22 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayo
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public T setNode(Widget<?> rootWidget) {
-		if(rootWidget!=null){
+	public T setNode(HasId rootWidget) {
+		if(!(rootWidget instanceof Widget)){
+			throw new IllegalArgumentException("Widget only");
+		}
+		Widget widget=(Widget)rootWidget;
+		if(widget!=null){
 			if(nodes.size()>0){
-				nodes.set(0, rootWidget);
+				nodes.set(0, widget);
 			}else{
-				nodes.add(rootWidget);
+				nodes.add(widget);
 			}
-			if(Utils.isEmpty(rootWidget.getHeight())){
-				rootWidget.setHeight("*");
+			if(Utils.isEmpty(widget.getHeight())){
+				widget.setHeight("*");
 			}
-			if(Utils.isEmpty(rootWidget.getWidth())){
-				rootWidget.setWidth("*");
+			if(Utils.isEmpty(widget.getWidth())){
+				widget.setWidth("*");
 			}
 		}else{
 			nodes=null;
@@ -125,7 +130,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayo
 	}
 	
 	@Override
-	public T add(Widget<?> widget) {
+	public T add(HasId widget) {
 		return setNode(widget);
 	}
 

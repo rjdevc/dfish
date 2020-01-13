@@ -6,6 +6,7 @@ import java.util.List;
 import com.rongji.dfish.ui.Container;
 import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.MultiContainer;
+import com.rongji.dfish.ui.Widget;
 
 /**
  * AddCommand为增加一个元素的命令的基础格式，一般增加元素分为
@@ -16,12 +17,12 @@ import com.rongji.dfish.ui.MultiContainer;
  * @since DFish 2.0 当时为InsertComman通过where属性控制增加在哪里。
  */
 @SuppressWarnings("unchecked")
-public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCommand<T> implements Container<T>,
-        MultiContainer<T, JsonObject> {
+public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCommand<T> implements
+        MultiContainer<T, Widget<? extends Widget<?>>> {
 
     private static final long serialVersionUID = -2417775749900268295L;
 
-    protected List<JsonObject> nodes = new ArrayList<>();
+    protected List<Widget> nodes = new ArrayList<>();
 
     /**
      * 添加需要插入元素
@@ -30,7 +31,7 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
      * @param w JsonObject
      * @return 本身，这样可以继续设置其他属性
      */
-    public T add(JsonObject w) {
+    public T add(Widget w) {
         if (w == null) {
             return (T) this;
         }
@@ -42,12 +43,34 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
     }
 
     @Override
-    public List<JsonObject> findNodes() {
+    public List<Widget> findNodes() {
         return nodes;
     }
 
+
     @Override
-    public List<JsonObject> getNodes() {
-        return nodes;
+    public void clearNodes(){
+        this.nodes.clear();
     }
+    @Override
+    public List<Widget<?>> getNodes() {
+        return (List)nodes;
+    }
+
+    @Override
+    public Widget<?> findNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public T removeNodeById(String id) {
+        return (T)this;
+    }
+
+    @Override
+    public boolean replaceNodeById(Widget<?> w) {
+        return false;
+    }
+
+
 }

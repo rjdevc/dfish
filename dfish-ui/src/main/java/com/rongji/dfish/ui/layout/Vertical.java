@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.layout;
 
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 
@@ -36,7 +37,7 @@ public class Vertical extends LinearLayout<Vertical> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public Vertical add(int index, Widget<?> w, String height) {
+    public Vertical add(int index, Widget w, String height) {
 		if (w == null) {
 			throw new UnsupportedOperationException("The added widget can not be null.");
 		}

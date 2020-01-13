@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @author DFish team
  *
  */
-public class Progress extends AbstractLayout<Progress, ProgressItem> implements HasText<Progress>, HasSrc<Progress>,HasFormat<Progress>, PubHolder<Progress,ProgressItem> {
+public class Progress extends AbstractLayout<Progress> implements HasText<Progress>, HasSrc<Progress>,HasFormat<Progress>, PubHolder<Progress,ProgressItem> {
 	/**
 	 * 
 	 */

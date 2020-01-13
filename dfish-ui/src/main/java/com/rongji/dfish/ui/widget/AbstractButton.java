@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractLayout<T, Widget<?>> implements MultiContainer<T, Widget<?>>,HasFormat<T>,HtmlContentHolder<T> {
+public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractLayout<T> implements MultiContainer<T, Widget<?>>,HasFormat<T>,HtmlContentHolder<T> {
 
 	/**
 	 * 
@@ -322,7 +322,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 
 	@Override
 	public List<Widget<?>> getNodes() {
-		return nodes;
+		return (List)nodes;
 	}
 
 	/**

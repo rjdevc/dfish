@@ -3,10 +3,7 @@ package com.rongji.dfish.ui.layout;
 import java.util.Arrays;
 import java.util.List;
 
-import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.SingleContainer;
-import com.rongji.dfish.ui.Valignable;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 
 /**
  *  Td 表示一个Grid的单元格
@@ -15,10 +12,11 @@ import com.rongji.dfish.ui.Widget;
  * <p>虽然GridCell也是一个Widget，但其很可能并不会专门设置ID。虽然它是一个Layout，但它最多包含1个子节点。即其内容。</p>
  * @author DFish Team
  * @param <T> 本身类型
- * @see Tr
+ * @see com.rongji.dfish.ui.layout.Grid.Td
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout<T,Widget<?>> implements SingleContainer<T,Widget<?>>,Alignable<T>,Valignable<T>{
+public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout<T>
+		implements SingleContainer<T>,Alignable<T>,Valignable<T>{
 	/**
 	 * 
 	 */
@@ -126,8 +124,11 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public T setNode(Widget<?> node) {
-		this.node = node;
+    public T setNode(HasId node) {
+		if(!(node instanceof Widget)){
+			throw new IllegalArgumentException("Widget only");
+		}
+		this.node = (Widget<?>) node;
 		return (T)this;
 	}
 	/**
@@ -135,11 +136,11 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	 * GridCell 下只能有一个node，所以add和setNode是相同的功能
 	 * @param node Widget
 	 * @return 本身，这样可以继续设置其他属性
-	 * @see #setNode(Widget)
+	 * @see #setNode(HasId)
 	 */
 	@Override
-    public T add(Widget<?> node) {
-		this.node = node;
+    public T add(HasId node) {
+		this.node = (Widget) node;
 		return (T)this;
 	}
 
@@ -150,15 +151,15 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 		}
 		if (id.equals(node.getId())) {
 			return node;
-		} else if(node instanceof Layout<?,?>) {
-           Layout<?,Widget<?>> cast =(Layout<?,Widget<?>>)node;
-			return cast.findNodeById(id);
+		} else if(node instanceof Layout) {
+           Layout cast =(Layout)node;
+			return (Widget) cast.findNodeById(id);
 		}
 		return null;
 	}
 
 	@Override
-    public List<Widget<?>> findNodes() {
+    public List<HasId<?>> findNodes() {
 		return Arrays.asList(new Widget<?>[]{node});
 	}
 
@@ -171,8 +172,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 		if(id.equals(node.getId())){
 			node=null;
 		}
-		if(node instanceof Layout<?,?>) {
-            Layout<?,Widget<?>> cast =(Layout<?,Widget<?>>)node;
+		if(node instanceof Layout) {
+            Layout cast =(Layout)node;
 			cast.removeNodeById(id);
 		}
 		return (T)this;
@@ -186,8 +187,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 			// 替换该元素
 			node=w;
 			return true;
-		} else if(node instanceof Layout<?,?>) {
-			Layout<?,Widget<?>> cast =(Layout<?,Widget<?>>)node;
+		} else if(node instanceof Layout<?>) {
+			Layout cast =(Layout)node;
 			boolean replaced = cast.replaceNodeById(w);
 			if (replaced) {
 				return true;

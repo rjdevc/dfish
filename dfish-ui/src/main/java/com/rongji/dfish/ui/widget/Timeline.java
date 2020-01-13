@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @author lamontYu
  * @date 2019-11-25 11:52
  */
-public class Timeline extends AbstractLayout<Timeline, TimelineItem> implements Alignable<Timeline>, PubHolder<Timeline, TimelineItem> {
+public class Timeline extends AbstractLayout<Timeline> implements Alignable<Timeline>, PubHolder<Timeline, TimelineItem> {
 
     private String align;
     private TimelineItem pub;

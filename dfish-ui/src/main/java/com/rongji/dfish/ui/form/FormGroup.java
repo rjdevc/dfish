@@ -1,10 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.MultiContainer;
-import com.rongji.dfish.ui.Scrollable;
-import com.rongji.dfish.ui.Valignable;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.layout.LinearLayout;
 
 /**
@@ -60,7 +56,7 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-	public FormGroup add(int index, Widget<?> w, String width) {
+	public FormGroup add(int index, Widget w, String width) {
 		if(index<0){
 			nodes.add(w);
 		}else{

@@ -228,11 +228,6 @@ public abstract class AbstractOptionsHolder<T extends AbstractOptionsHolder<T, N
     }
 
     @Override
-    protected List<? extends Object> findNodes() {
-        return this.options;
-    }
-
-    @Override
     public Boolean getEscape() {
         return this.escape;
     }

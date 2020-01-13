@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0
  * @since XMLTMPL 2.0
  */
-public class Tree extends AbstractLayout<Tree, Leaf>
+public class Tree extends AbstractLayout<Tree>
 	implements Scrollable<Tree>,HiddenContainer<Tree>,  HtmlContentHolder<Tree>,
 	 PubHolder<Tree,Leaf>,MultiContainer<Tree, Leaf>,HasSrc<Tree> {
 	/**
@@ -233,14 +233,14 @@ public class Tree extends AbstractLayout<Tree, Leaf>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Leaf> findNodes() {
-		return rootLeaf.findNodes();
+	public List<HasId<?>> findNodes() {
+		return (List)rootLeaf.findNodes();
 	}
 
 
 	@Override
-	public Tree add(Leaf w) {
-		rootLeaf.add(w);
+	public Tree add(HasId w) {
+		rootLeaf.add((Leaf)w);
 		return this;
 	}
 

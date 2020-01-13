@@ -4,6 +4,7 @@ import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.layout.AbstractLayout;
@@ -15,7 +16,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @version 1.0
  * @since Period
  */
-public class Range extends AbstractLayout<Range, FormElement<?, ?>> implements LabelRow<Range>, MultiContainer<Range, FormElement<?, ?>> {
+public class Range extends AbstractLayout<Range> implements LabelRow<Range>, MultiContainer<Range, FormElement<?, ?>> {
 
     private static final long serialVersionUID = -4525721180514710555L;
 
@@ -151,19 +152,19 @@ public class Range extends AbstractLayout<Range, FormElement<?, ?>> implements L
     @Transient
     @Override
     public List<FormElement<?, ?>> getNodes() {
-        return nodes;
+        return (List)nodes;
     }
 
     @Override
     @Deprecated
-    public Range add(FormElement<?, ?> node) {
+    public Range add(HasId node) {
         throw new UnsupportedOperationException("use setBegin / setEnd instead");
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FormElement<?, ?>> findNodes() {
-        ArrayList<FormElement<?, ?>> ret = new ArrayList<FormElement<?, ?>>();
+    public List<HasId<?>> findNodes() {
+        ArrayList<HasId<?>> ret = new ArrayList<>();
         if (begin != null) {
             ret.add(begin);
         }

@@ -52,7 +52,7 @@ public class GridTest extends DFishUITestCase {
 		gl.add(1, 1, new Html("为了那苍白的爱情的继续").setId("tt1"));
 		gl.add(1, 2, new Html("为了那得到又失去的美丽").setId("tt2"));
 		
-		Widget w=gl.findNodeById("tt1");
+		Widget w=(Widget)gl.findNodeById("tt1");
 		Assert.assertTrue(w!=null);
 		
 		gl.removeNodeById("tt1");

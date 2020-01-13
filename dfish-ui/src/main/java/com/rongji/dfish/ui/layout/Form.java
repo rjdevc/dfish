@@ -20,7 +20,7 @@ import java.util.List;
  * @since 3.3
  *
  */
-public class Form extends AbstractLayout<Form,Widget<?>>
+public class Form extends AbstractLayout<Form>
         implements HtmlContentHolder<Form>, Scrollable<Form>,MultiContainer<Form,Widget<?>> ,
         PubHolder<Form,Grid.Td> ,HiddenContainer<Form>{
     /**
@@ -94,7 +94,7 @@ public class Form extends AbstractLayout<Form,Widget<?>>
     }
 
     @Override
-    public Form add(Widget<?>w ){
+    public Form add(HasId w){
         if (w == null) {
             return this;
         }
@@ -247,13 +247,13 @@ public class Form extends AbstractLayout<Form,Widget<?>>
     @Override
     public Form removeNodeById(String id){
        //如果remove的结果是，td的下一层是指定的元素，需要吧td删除
-        for (Iterator<Widget<?>> iter = nodes.iterator();
+        for (Iterator<HasId<?>> iter = nodes.iterator();
              iter.hasNext(); ) {
-            Widget<?> item = iter.next();
+            HasId<?> item = iter.next();
             if (id.equals(item.getId())||(item instanceof Grid.Td && id.equals(((Grid.Td)item).getNode().getId()))) {
                 iter.remove();
             } else if (item instanceof Layout) {
-                Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) item;
+                Layout<?> cast = (Layout<?>) item;
                 cast.removeNodeById(id);
             }
         }
@@ -264,6 +264,6 @@ public class Form extends AbstractLayout<Form,Widget<?>>
 
     @Override
     public List<Widget<?>> getNodes() {
-        return nodes;
+        return (List)nodes;
     }
 }

@@ -10,13 +10,13 @@ import com.rongji.dfish.ui.Widget;
  * <p>从3.0.4585-20180201起该接口继承Widget</p>
  *
  * @param <T> 当前对象类型
- * @param <N> value对象类型
+ * @param <P> value对象类型
  * @author DFish Team
  * @version 1.0
  * @date 2018-08-03 before
  * @since 2.0
  */
-public interface FormElement<T extends FormElement<T, N>, N> extends Widget<T> {
+public interface FormElement<T extends FormElement<T, P>, P> extends Widget<T> {
     /**
      * 设置表单的元素的值
      * <p>在HTML协议中提交表单元素的时候，以键值对的方式提交。
@@ -34,7 +34,7 @@ public interface FormElement<T extends FormElement<T, N>, N> extends Widget<T> {
      *
      * @return Object
      */
-    N getValue();
+    P getValue();
 
     /**
      * 设置表单的元素名称

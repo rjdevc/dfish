@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.Widget;
 
 /**
@@ -24,7 +25,7 @@ import com.rongji.dfish.ui.Widget;
  * @since DFish 3.0
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout<T,Widget<?>> {
+public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout<T> {
 	/**
 	 * 
 	 */
@@ -54,7 +55,7 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 
 	@Override
     @Deprecated
-	public T add(Widget<?> w) {
+	public T add(HasId w) {
 		throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
 	}
 
@@ -162,7 +163,7 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 						}
 					}
 					if (cast instanceof Layout) {
-						Layout<?, ?> cast3 = (Layout<?, ?>) entry.getValue();
+						Layout<?> cast3 = (Layout<?>) entry.getValue();
 						cast3.removeNodeById(id);
 					}
 				}
@@ -172,8 +173,8 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 	}
 
 	@Override
-	public List<Widget<?>> findNodes() {
-		List<Widget<?>> result=new ArrayList<Widget<?>>();
+	public List<HasId<?>> findNodes() {
+		List<HasId<?>> result=new ArrayList<>();
 		if(rows!=null){
 			for(Widget<?> o:rows){
 				result.add( o);
@@ -223,7 +224,7 @@ public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout
 				if (id.equals(cast.getId())) {
 					entry.setValue(panel);
 				} else if(cast instanceof Layout){
-					boolean replaced = ((Layout<?,?>)cast).replaceNodeById(panel);
+					boolean replaced = ((Layout<?>)cast).replaceNodeById(panel);
 					if (replaced) {
 						return true;
 					}

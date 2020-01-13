@@ -53,7 +53,7 @@ public class Horizontal extends LinearLayout<Horizontal>{
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public Horizontal add(int index, Widget<?> w, String width) {
+    public Horizontal add(int index, Widget w, String width) {
 		if (w == null) {
 			throw new UnsupportedOperationException("The added widget can not be null.");
 		}

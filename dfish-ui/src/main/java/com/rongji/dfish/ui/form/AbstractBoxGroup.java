@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.Option;
 import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.layout.AbstractLayout;
 import com.rongji.dfish.ui.layout.Layout;
 import com.rongji.dfish.ui.widget.Html;
 
@@ -14,7 +15,7 @@ import java.util.*;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N extends AbstractBox<N>> extends AbstractOptionsHolder<T, N> implements Layout<T, N>, HtmlContentHolder<T>, Directional<T> {
+public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N extends AbstractBox<N>> extends AbstractOptionsHolder<T, N> implements Layout<T>, HtmlContentHolder<T>, Directional<T> {
 
     private static final long serialVersionUID = 3733166777271763891L;
 
@@ -24,6 +25,16 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     protected List<N> nodes = new ArrayList<>();
     protected Boolean escape;
     protected String dir;
+    private AbstractLayout<?> bridgedObject=new AbstractLayout(null){
+        @Override
+        public String getType() {
+            return null;
+        }
+        @Override
+        public List<N> findNodes() {
+            return AbstractBoxGroup.this.nodes;
+        }
+    };
 
     /**
      * 构造函数
@@ -105,15 +116,6 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
         return add(option, target);
     }
 
-    @Override
-    public Widget<?> findNodeById(String id) {
-        return super.findNodeById(id);
-    }
-
-    @Override
-    public List<FormElement<?, ?>> findFormElementsByName(String name) {
-        return super.findFormElementsByName(name);
-    }
 
     @Override
     public List<Widget<?>> findNodes() {
@@ -147,10 +149,10 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
                 targets.remove(i);
                 i--;
             } else if (item instanceof Layout) {
-                Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) item;
+                Layout<?> cast = (Layout<?>) item;
                 cast.removeNodeById(id);
             } else if (targets.size() > i && targets.get(i) instanceof Layout) {
-                Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) targets.get(i);
+                Layout<?> cast = (Layout<?>) targets.get(i);
                 cast.removeNodeById(id);
             }
         }
@@ -185,7 +187,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
                     return false;
                 }
             } else if (t != null && t instanceof Layout) {
-                Layout<?, Widget<?>> cast = (Layout<?, Widget<?>>) t;
+                Layout<?> cast = (Layout<?>) t;
                 boolean replaced = cast.replaceNodeById(w);
                 if (replaced) {
                     return true;
@@ -193,6 +195,9 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
             }
         }
         return false;
+    }
+    protected boolean onReplace(Widget<?> oldItem,Widget<?>newItem){
+        return true;
     }
 
     @Override
@@ -288,5 +293,16 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
         this.dir = dir;
         return (T) this;
     }
+
+    @Override
+    public HasId<?> findNodeById(String id) {
+        return bridgedObject.findNodeById(id);
+    }
+
+
+
+//    public List<FormElement<?, ?>> findFormElementsByName(String name) {
+//        return bridgedObject.findFormElementsByName(name);
+//    }
 
 }

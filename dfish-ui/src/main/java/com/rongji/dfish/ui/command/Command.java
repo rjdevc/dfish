@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.command;
 
 
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.JsonNode;
 
 /**
@@ -11,6 +12,6 @@ import com.rongji.dfish.ui.JsonNode;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public interface Command<T extends Command<T>> extends JsonNode<T> {
+public interface Command<T extends Command<T>> extends JsonNode<T>,HasId<T> {
 
 }

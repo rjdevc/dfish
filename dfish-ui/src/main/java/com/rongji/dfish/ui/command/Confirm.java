@@ -1,6 +1,8 @@
 package com.rongji.dfish.ui.command;
 
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.Button;
 
 import java.util.List;

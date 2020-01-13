@@ -14,7 +14,7 @@ import java.util.List;
  * @author DFish Team
  *
  */
-public class Album extends AbstractLayout<Album,Img> implements HtmlContentHolder<Album>, Scrollable<Album>, ListView<Album>,PubHolder<Album,Img>,
+public class Album extends AbstractLayout<Album> implements HtmlContentHolder<Album>, Scrollable<Album>, ListView<Album>,PubHolder<Album,Img>,
 MultiContainer<Album,Img>{
 	/**
 	 * 
@@ -171,7 +171,7 @@ MultiContainer<Album,Img>{
 
 	@Override
 	public List<Img> getNodes() {
-		return nodes;
+		return (List)nodes;
 	}
 
 	/**

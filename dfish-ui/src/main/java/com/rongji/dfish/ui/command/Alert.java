@@ -118,4 +118,23 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Posi
         return this;
     }
 
+    @Override
+    public HasId<? extends HasId<?>> findNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public Alert removeNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public boolean replaceNodeById(Widget<?> w) {
+        return false;
+    }
+
+    @Override
+    public void clearNodes() {
+
+    }
 }

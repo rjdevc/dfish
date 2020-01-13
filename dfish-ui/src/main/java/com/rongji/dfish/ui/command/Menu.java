@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.command;
 
 
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.AbstractButton;
@@ -17,7 +18,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiContainer<Menu, Widget<?>> {
+public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiContainer<Menu,Widget> {
 
     private static final long serialVersionUID = 7565861352403693874L;
 
@@ -66,8 +67,8 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiCo
     }
 
     @Override
-    public List<Widget<?>> getNodes() {
-        return nodes;
+    public List<Widget> getNodes() {
+        return (List)nodes;
     }
 
     @Override
@@ -95,4 +96,23 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiCo
         return this;
     }
 
+    @Override
+    public HasId<? extends HasId<?>> findNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public Menu removeNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public boolean replaceNodeById(Widget<?> w) {
+        return false;
+    }
+
+    @Override
+    public void clearNodes() {
+
+    }
 }

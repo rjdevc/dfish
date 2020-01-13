@@ -2,13 +2,7 @@ package com.rongji.dfish.ui.layout;
 
 import java.util.List;
 
-import com.rongji.dfish.ui.Alignable;
-import com.rongji.dfish.ui.HiddenContainer;
-import com.rongji.dfish.ui.HiddenPart;
-import com.rongji.dfish.ui.MultiContainer;
-import com.rongji.dfish.ui.Scrollable;
-import com.rongji.dfish.ui.Valignable;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Hidden;
 
 /**
@@ -19,8 +13,9 @@ import com.rongji.dfish.ui.form.Hidden;
  * @param <T> 当前类型
  */
 @SuppressWarnings("unchecked")
-public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractLayout<T, Widget<?>> 
-implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>,HiddenContainer<T>{
+public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractLayout<T>
+implements Scrollable<T>,Alignable<T>,Valignable<T>,
+		MultiContainer<T,Widget<?>>,HiddenContainer<T>{
 	/**
 	 * 
 	 */
@@ -84,7 +79,7 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	}
 	@Override
 	public List<Widget<?>> getNodes() {
-		return nodes;
+		return (List)nodes;
 	}
 	
 	/**
@@ -95,7 +90,7 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	 * @param size String width或者height
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public abstract T add(int index,Widget<?>w,String size);
+	public abstract T add(int index,Widget w,String size);
 
 
   /**
@@ -104,16 +99,23 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
   * @param w  N
   * @return 本身，这样可以继续设置其他属性
   */
-	public T add(int index, Widget<?> w) {
+	public T add(int index, Widget w) {
 		return add(index, w,null);
  }
 
 	@Override
-	public T add(Widget<?> w) {
+	public T add(HasId w) {
 		if(w instanceof Hidden){
-			return add((Hidden)w);
+			Hidden hidden=(Hidden)w;
+			hiddens.addHidden(hidden.getName(), hidden.getValue());
+			return (T)this;
 		}
-		return add(-1, w,null);
+		return add(-1, (Widget)w,null);
+	}
+	@Override
+	public T add(Hidden w) {
+		hiddens.addHidden(w.getName(), w.getValue());
+		return (T)this;
 	}
 	
 	/**
@@ -136,16 +138,18 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 		hiddens.addHidden(name, value);
 		return (T)this;
 	}
+
+    @Override
+    public T removeHidden(String name) {
+	    hiddens.removeHidden(name);
+        return (T)this;
+    }
 //	public T addHidden(String name,AtExpression value) {
 //		hiddens.addHidden(name, value);
 //		return (T)this;
 //	}
 //
-	@Override
-    public T add(Hidden hidden) {
-		hiddens.add(hidden);
-		return (T)this;
-	}
+
 
 	@Override
     public List<Hidden> getHiddens() {
@@ -157,10 +161,6 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 		return hiddens.getHiddenValue(name);
 	}
 
-	@Override
-    public T removeHidden(String name) {
-		hiddens.removeHidden(name);
-		return (T)this;
-	}
+
 
 }

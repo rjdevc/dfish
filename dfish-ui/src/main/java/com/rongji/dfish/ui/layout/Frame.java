@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.layout;
 import java.util.List;
 
 import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
 
@@ -12,7 +13,7 @@ import com.rongji.dfish.ui.Widget;
  *
  * @author DFish Team
  */
-public class Frame extends AbstractLayout<Frame, Widget<?>> implements MultiContainer<Frame, Widget<?>> {
+public class Frame extends AbstractLayout<Frame> implements MultiContainer<Frame, Widget> {
     /**
      *
      */
@@ -54,8 +55,8 @@ public class Frame extends AbstractLayout<Frame, Widget<?>> implements MultiCont
     }
 
     @Override
-    public List<Widget<?>> getNodes() {
-        return nodes;
+    public List<Widget> getNodes() {
+        return (List)nodes;
     }
 
     /**
@@ -65,7 +66,7 @@ public class Frame extends AbstractLayout<Frame, Widget<?>> implements MultiCont
      * @param w     N
      * @return 本身，这样可以继续设置其他属性
      */
-    public Frame add(int index, Widget<?> w) {
+    public Frame add(int index, Widget w) {
         if (w == null) {
             return this;
         }
@@ -80,7 +81,7 @@ public class Frame extends AbstractLayout<Frame, Widget<?>> implements MultiCont
         }
         if (Utils.isEmpty(dft)) {
             // 默认聚焦widgetId显示
-            Widget<?> firstNode = nodes.get(0);
+            Widget<?> firstNode = (Widget)nodes.get(0);
             if (firstNode != null) {
                 dft = firstNode.getId();
             }
@@ -89,7 +90,7 @@ public class Frame extends AbstractLayout<Frame, Widget<?>> implements MultiCont
     }
 
     @Override
-    public Frame add(Widget<?> w) {
-        return add(-1, w);
+    public Frame add(HasId w) {
+        return add(-1, (Widget)w);
     }
 }

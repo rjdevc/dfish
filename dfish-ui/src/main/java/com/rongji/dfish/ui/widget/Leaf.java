@@ -26,7 +26,7 @@ import java.util.*;
  * @version 2.0
  * @since XMLTMPL 1.0
  */
-public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>,HtmlContentHolder<Leaf>, HasSrc<Leaf>, HasFormat<Leaf> {
+public class Leaf extends AbstractLayout<Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>,HtmlContentHolder<Leaf>, HasSrc<Leaf>, HasFormat<Leaf> {
     private static final long serialVersionUID = -6246121270694425393L;
     private Boolean focus;
     private Boolean focusable;
@@ -94,7 +94,8 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
             return true;
         }
         if (tree.nodes != null) {
-            for (Leaf elem : tree.nodes) {
+            for (Object obj : tree.nodes) {
+                Leaf elem=(Leaf)obj;
                 if (findPathById(path, elem, pkid)) {
                     return true;
                 }
@@ -135,7 +136,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
      */
     public Leaf addAllSubLeaf(Leaf otherTree) {
         if (nodes == null) {
-            nodes = new ArrayList<Leaf>();
+            nodes = new ArrayList<>();
         }
         if (otherTree.nodes != null) {
             nodes.addAll(otherTree.nodes);
@@ -175,7 +176,8 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     public void copyFromAnotherLeafSafe(Leaf otherLeaf) {
         this.data = new LinkedHashMap<String, Object>(otherLeaf.data);
         if (otherLeaf.nodes != null) {
-            for (Leaf elem : otherLeaf.nodes) {
+            for (Object obj : otherLeaf.nodes) {
+                Leaf elem=(Leaf)obj;
                 Leaf t = new Leaf();
                 t.copyFromAnotherLeafSafe(elem);
                 add(t);
@@ -472,7 +474,7 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
 
     @Override
     public List<Leaf> getNodes() {
-        return nodes;
+        return (List)nodes;
     }
 
     private static String[] TEXT_PROP_NAMES = {"text", "value"};

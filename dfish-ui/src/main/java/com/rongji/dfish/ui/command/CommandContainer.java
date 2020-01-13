@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.Container;
+import com.rongji.dfish.ui.HasId;
 
 /**
  * CommandContainer 为命令的容器。

@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.SingleContainer;
+import com.rongji.dfish.ui.Widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public class Replace extends NodeControlCommand<Replace> implements SingleContainer<Replace, HasId<?>> {
+public class Replace extends NodeControlCommand<Replace> implements SingleContainer<Replace> {
 
     private static final long serialVersionUID = -5997424469287615043L;
 
@@ -54,7 +55,7 @@ public class Replace extends NodeControlCommand<Replace> implements SingleContai
     }
 
     @Override
-    public Replace setNode(HasId<?> node) {
+    public Replace setNode(HasId node) {
         if (node == null) {
             throw new IllegalArgumentException("node == null");
         }
@@ -69,4 +70,23 @@ public class Replace extends NodeControlCommand<Replace> implements SingleContai
     }
 
 
+    @Override
+    public HasId<? extends HasId<?>> findNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public Replace removeNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public boolean replaceNodeById(Widget<?> w) {
+        return false;
+    }
+
+    @Override
+    public void clearNodes() {
+
+    }
 }

@@ -2,28 +2,97 @@ package com.rongji.dfish.ui.tool;
 
 import com.rongji.dfish.ui.JsonObject;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class ClassExtendsAnalysis extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        File f=new File("a.txt");
-        System.out.println(f.getAbsolutePath());
         List<Class> clzs=findClasses("./dfish-ui/target/classes");
-        TreeView<String> rootLayout=new TreeView<>();
+        TabPane rootLayout=new TabPane();
+
+        TreeView<String> tree=new TreeView<>();
+        rootLayout.getTabs().add(new Tab("类结构分析",tree));
+
         TreeItem<String> rootItem=new TreeItem<>();
         rootItem.setValue("所有Class");
         rootItem.setExpanded(true);
-        rootLayout.setRoot(rootItem);
+        tree.setRoot(rootItem);
+
         fillClassToTree(clzs,rootItem);
+
+        FlowPane props=new FlowPane();
+        ScrollPane scp=new ScrollPane();
+        scp.setContent(props);
+        rootLayout.getTabs().add(new Tab("属性名分析",scp));
+        fillPropNamesToPane(clzs,props);
+
         primaryStage.setScene(new Scene(rootLayout, 800, 600));
         primaryStage.show();
+    }
+
+    private void fillPropNamesToPane(List<Class> clzs, FlowPane props) {
+        TreeMap<String ,Object[]> propNames=new TreeMap<>();
+        TreeSet<String> clzNames=new TreeSet();
+        for(Class c:clzs){
+            if(c.isInterface()){
+                continue;
+            }
+            if(Modifier.isAbstract(c.getModifiers())){
+                continue;
+            }
+            if(!Modifier.isPublic(c.getModifiers())){
+                continue;
+            }
+            if(c.getAnnotation(Deprecated.class)!=null){
+                continue;
+            }
+            System.out.println(c.getName());
+        }
+        System.out.println( );
+
+        for(Class c:clzs){
+            for(Method m:c.getMethods()){
+                if(m.getName().startsWith("get")&& Modifier.isPublic(m.getReturnType().getModifiers())&&
+                        (m.getParameterTypes()==null||m.getParameterTypes().length==0)&&
+                        m.getAnnotation(Deprecated.class)==null){
+                    if(m.getDeclaringClass().getName().indexOf(".json.")>0){
+                        continue;
+                    }
+                    String propName=m.getName().substring(3);
+                    propName=((char)(propName.charAt(0)+32))+propName.substring(1);
+                    Object[] o=propNames.get(propName);
+                    if(o==null){
+                        propNames.put(propName,new Object[]{1,m.getDeclaringClass().getSimpleName()});
+                    }else{
+                        propNames.put(propName,new Object[]{(Integer)o[0]+1,m.getDeclaringClass().getSimpleName()});
+                    }
+                }
+            }
+        }
+        List<Map.Entry<String,Object[]>> entries =new ArrayList<>(propNames.entrySet());
+        Collections.sort(entries,(entry1,entry2)->{
+            Object[] o1=entry1.getValue();
+            Object[] o2=entry2.getValue();
+            return ((Integer)o2[0])- ((Integer)o1[0]);
+        });
+
+        for(Map.Entry<String,Object[]>entry:entries) {
+            Object[] o=entry.getValue();
+            System.out.println(entry.getKey()+"\t"+o[0]+"\t"+o[1]);
+            Label lb=new Label(entry.getKey()+"("+entry.getValue()[0]+")");
+            lb.setPadding(new Insets(5));
+            props.getChildren().add(lb);
+        }
+
     }
 
     private void fillClassToTree(List<Class> clzs, TreeItem<String> shell) {

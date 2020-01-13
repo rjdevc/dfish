@@ -3,7 +3,10 @@ package com.rongji.dfish.ui.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.MultiContainer;
+import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.form.FormElement;
 
 
 /**
@@ -17,7 +20,7 @@ import com.rongji.dfish.ui.MultiContainer;
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
  * @since 2.0
  */
-public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, MultiContainer<Cmd, Command<?>> {
+public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, MultiContainer<Cmd,Command<?>> {
 
     private static final long serialVersionUID = 6990584366431273097L;
     
@@ -120,8 +123,8 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Command<?>> findNodes() {
-        return nodes;
+    public List<HasId<?>> findNodes() {
+        return (List)nodes;
     }
 
     @Override
@@ -129,4 +132,23 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
         return nodes;
     }
 
+    @Override
+    public Widget<?> findNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public Cmd removeNodeById(String id) {
+        return null;
+    }
+
+    @Override
+    public boolean replaceNodeById(Widget<?> w) {
+        return false;
+    }
+
+    @Override
+    public void clearNodes() {
+
+    }
 }
