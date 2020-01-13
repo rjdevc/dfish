@@ -14,14 +14,13 @@ import com.rongji.dfish.ui.MultiContainer;
  * 那么需要用CommandGroup包括起来</p>
  *
  * @author DFish Team
- * @version 1.0
- * @since XMLTMPL 2.0
+ * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
+ * @since 2.0
  */
 public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, MultiContainer<Cmd, Command<?>> {
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 6990584366431273097L;
+    
     /**
      * 如果想在当前弹出窗口的父窗口(打开该弹出窗口的窗口)可以设置path为该常量
      */
@@ -38,6 +37,11 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     protected String path;
     protected String target;
     private Long delay;
+
+    @Override
+    public String getType() {
+        return "Cmd";
+    }
 
     /**
      * 执行路径，如果不设置为当前view
@@ -123,11 +127,6 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     @Override
     public List<Command<?>> getNodes() {
         return nodes;
-    }
-
-    @Override
-    public String getType() {
-        return "cmd";
     }
 
 }

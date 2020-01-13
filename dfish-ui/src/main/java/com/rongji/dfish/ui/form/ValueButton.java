@@ -9,10 +9,6 @@ import com.rongji.dfish.ui.widget.AbstractButton;
  */
 public class ValueButton extends AbstractButton<ValueButton> {
 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7556749223547329191L;
 
 	/**

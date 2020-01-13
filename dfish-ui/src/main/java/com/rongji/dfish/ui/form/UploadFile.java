@@ -7,13 +7,8 @@ package com.rongji.dfish.ui.form;
  */
 public class UploadFile extends AbstractUpload<UploadFile> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5921590784801725804L;
-	/**
-	 *
-	 */
+
 	public UploadFile(){
 
 	}
@@ -29,7 +24,7 @@ public class UploadFile extends AbstractUpload<UploadFile> {
 	
 	@Override
 	public String getType() {
-		return "upload/file";
+		return "UploadFile";
 	}
 
 }

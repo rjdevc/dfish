@@ -188,7 +188,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * 垂直对齐方式
 	 */
 	@Override
-    public String getValign() {
+    public String getvAlign() {
 		return valign;
 	}
 
@@ -196,8 +196,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>,Valignabl
 	 * 垂直对齐方式
 	 */
 	@Override
-    public Img setValign(String valign) {
-		this.valign = valign;
+    public Img setvAlign(String vAlign) {
+		this.valign = vAlign;
 		return this;
 	}
 

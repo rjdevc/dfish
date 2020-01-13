@@ -118,13 +118,13 @@ public class Tabs extends AbstractLayout<Tabs, Tab> implements MultiContainer<Ta
     }
 
     @Override
-    public String getValign() {
+    public String getvAlign() {
         return valign;
     }
 
     @Override
-    public Tabs setValign(String valign) {
-        this.valign = valign;
+    public Tabs setvAlign(String vAlign) {
+        this.valign = vAlign;
         return this;
     }
 

@@ -4,150 +4,79 @@ import com.rongji.dfish.ui.*;
 
 /**
  * 显示一个"请稍候"的信息窗
- * @author DFish Team
  *
+ * @author DFish Team
+ * @version 1.1 lamontYu 所有属性和type按照驼峰命名方式调整
+ * @date 2018-08-03 before
+ * @since 3.0
  */
-public class Loading extends AbstractDialog<Loading> implements Command<Loading>,HasText<Loading> {
+public class Loading extends AbstractDialog<Loading> implements Command<Loading>, HasText<Loading> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2229794408494180794L;
+    private static final long serialVersionUID = 2229794408494180794L;
 
+    private String text;
+    private Boolean hide;
 
-	@Override
-    public String getType() {
-	    return "loading";
+    /**
+     * 构造函数
+     */
+    public Loading() {
     }
-	
-	private String text;
-//	private Integer percent;
-	private Boolean hide;
-//	private Boolean cover;
-//	private Widget<?> node;
 
+    /**
+     * 构造函数
+     *
+     * @param text 提示文本
+     */
+    public Loading(String text) {
+        this.text = text;
+    }
 
-	/**
-	 * 构造函数
-	 */
-	public Loading() {
-		
-	}
-	
-	/**
-	 * 构造函数
-	 * @param text 提示文本
-	 */
-	public Loading(String text) {
-		this.text = text;
-	}
-	
-	/**
-	 * 显示加载的文本
-	 * @return String
-	 */
-	@Override
+    @Override
+    public String getType() {
+        return "Loading";
+    }
+
+    /**
+     * 显示加载的文本
+     *
+     * @return String
+     */
+    @Override
     public String getText() {
-		return text;
-	}
+        return text;
+    }
 
-	/**
-	 * 显示加载的文本
-	 * @param text String
-	 * @return this
-	 */
-	@Override
+    /**
+     * 显示加载的文本
+     *
+     * @param text String
+     * @return this
+     */
+    @Override
     public Loading setText(String text) {
-		this.text = text;
-		return this;
-	}
+        this.text = text;
+        return this;
+    }
 
-//	/**
-//	 * 显示一个进度条
-//	 * @return Integer
-//	 */
-//	public Integer getPercent() {
-//		return percent;
-//	}
-//
-//	/**
-//	 * 显示一个进度条
-//	 * @param percent Integer
-//	 * @return this
-//	 */
-//    public LoadingCommand setPercent(Integer percent) {
-//		this.percent = percent;
-//		return this;
-//	}
+    /**
+     * 关闭loading提示
+     *
+     * @return Boolean
+     */
+    public Boolean getHide() {
+        return hide;
+    }
 
-	/**
-	 * 关闭loading提示
-	 * @return Boolean
-	 */
-	public Boolean getHide() {
-		return hide;
-	}
-
-	/**
-	 * 关闭loading提示
-	 * @param hide Boolean
-	 * @return this
-	 */
-	public Loading setHide(Boolean hide) {
-		this.hide = hide;
-		return  this;
-	}
-	
-//	/**
-//     * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
-//     * @return 是否覆盖
-//     */
-//	public Boolean getCover() {
-//		return cover;
-//	}
-//
-//	/**
-//     * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
-//     * @param cover 是否覆盖
-//     * @return 本身，这样可以继续设置其他属性
-//     */
-//	public LoadingCommand setCover(Boolean cover) {
-//		this.cover = cover;
-//		return this;
-//	}
-//	/**
-//	 * 显示一个进度条。参数是 progress widget 的配置参数。
-//	 * @return Progress
-//	 */
-//	public Progress getProgress() {
-//		return progress;
-//	}
-//	/**
-//	 * 显示一个进度条。参数是 progress widget 的配置参数。
-//	 * @param progress Progress
-//	 * @return this
-//	 */
-//	public LoadingCommand setProgress(Progress progress) {
-//		this.progress = progress;
-//		return this;
-//	}
-
-//	/**
-//	 * widget节点
-//	 * @return Widget
-//	 */
-//	public Widget<?> getNode() {
-//		return node;
-//	}
-//
-//	/**
-//	 * widget节点
-//	 * @param node Widget
-//	 * @return this
-//	 */
-//	public LoadingCommand setNode(Widget<?> node) {
-//		this.node = node;
-//		return this;
-//	}
+    /**
+     * 关闭loading提示
+     *
+     * @param hide Boolean
+     * @return this
+     */
+    public Loading setHide(Boolean hide) {
+        this.hide = hide;
+        return this;
+    }
 
 }

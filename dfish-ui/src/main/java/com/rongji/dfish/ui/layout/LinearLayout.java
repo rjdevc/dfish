@@ -50,13 +50,13 @@ implements Scrollable<T>,Alignable<T>,Valignable<T>, MultiContainer<T,Widget<?>>
 	}
 
 	@Override
-    public String getValign() {
+    public String getvAlign() {
 		return valign;
 	}
 
 	@Override
-    public T setValign(String valign) {
-		this.valign = valign;
+    public T setvAlign(String vAlign) {
+		this.valign = vAlign;
 		return (T)this;
 	}
 	

@@ -11,7 +11,7 @@ public class UploadPost extends AbstractResultfulNode<UploadPost> {
 
     @Override
     public String getType() {
-        return "upload/post";
+        return "UploadPost";
     }
 
 }

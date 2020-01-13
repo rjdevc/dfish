@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.JsonObject;
 import com.rongji.dfish.ui.command.Dialog;
 
 /**
- * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link Combobox} {@link Linkbox}和{@link Onlinebox}
+ * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link ComboBox} {@link LinkBox}和{@link OnlineBox}
  * @author DFishTeam
  *
  * @param <T> 当前对象类型

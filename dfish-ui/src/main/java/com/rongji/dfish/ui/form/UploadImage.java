@@ -8,10 +8,9 @@ package com.rongji.dfish.ui.form;
  * @version 1.1 将Alignable, Valignable的接口下移到抽象类 lamontYu 2019-12-05
  */
 public class UploadImage extends AbstractUpload<UploadImage> {
-    /**
-     *
-     */
+
     private static final long serialVersionUID = -2689106571559435242L;
+
     private String thumbnail;
 
     /**
@@ -25,7 +24,7 @@ public class UploadImage extends AbstractUpload<UploadImage> {
 
     @Override
     public String getType() {
-        return "upload/image";
+        return "UploadImage";
     }
 
     /**
@@ -48,24 +47,4 @@ public class UploadImage extends AbstractUpload<UploadImage> {
         return this;
     }
 
-    /**
-     * 缩略图地址
-     *
-     * @return String
-     * @see #getThumbnail()
-     */
-    @Deprecated
-    public String getThumbnailsrc() {
-        return getThumbnail();
-    }
-
-    /**
-     * 缩略图地址
-     *
-     * @param thumbnailsrc 缩略图地址
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public UploadImage setThumbnailsrc(String thumbnailsrc) {
-        return setThumbnail(thumbnailsrc);
-    }
 }

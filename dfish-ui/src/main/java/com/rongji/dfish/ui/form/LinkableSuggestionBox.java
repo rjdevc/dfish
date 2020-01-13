@@ -5,13 +5,13 @@ import com.rongji.dfish.ui.PubHolder;
 import com.rongji.dfish.ui.command.Dialog;
 
 /**
- * LinkableSuggestionBox 默认可以通过填写出现输入提示的输入框，且所选择的选项可支持链接，主要有{@link Combobox}和{@link Linkbox}
+ * LinkableSuggestionBox 默认可以通过填写出现输入提示的输入框，且所选择的选项可支持链接，主要有{@link ComboBox}和{@link LinkBox}
  *
  * @param <T> 当前对象类型
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubHolder<T, ComboboxOption> {
+public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubHolder<T, ComboBoxOption> {
 
     /**
      *
@@ -20,9 +20,9 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     private String text;
     private Boolean escape;
     private Boolean strict;
-    private ComboboxOption pub;
+    private ComboBoxOption pub;
     //	private String src;//在线匹配关键词的 view src。支持 $value 和 $text 变量。
-    private String loadingtext;
+    private String loadingText;
 //	private Boolean suggest;
 //	private View node;
 
@@ -93,16 +93,16 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     }
 
     @Override
-    public ComboboxOption getPub() {
+    public ComboBoxOption getPub() {
         if (pub == null) {
-            pub = new ComboboxOption();
+            pub = new ComboBoxOption();
         }
         return pub;
     }
 
 
     @Override
-    public T setPub(ComboboxOption pub) {
+    public T setPub(ComboBoxOption pub) {
         this.pub = pub;
         return (T) this;
     }
@@ -112,57 +112,19 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
      *
      * @return String
      */
-    public String getLoadingtext() {
-        return loadingtext;
+    public String getLoadingText() {
+        return loadingText;
     }
 
     /**
      * 加载时显示的文本
      *
-     * @param loadingtext 加载时显示的文本
+     * @param loadingText 加载时显示的文本
      * @return this
      */
-    public T setLoadingtext(String loadingtext) {
-        this.loadingtext = loadingtext;
+    public T setLoadingText(String loadingText) {
+        this.loadingText = loadingText;
         return (T) this;
     }
-
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @return Boolean
-//	 */
-//	public Boolean getSuggest() {
-//		return suggest;
-//	}
-//
-//	/**
-//	 * 输入建议模式，该模式下，不会一次性装载全部数据
-//	 * @param suggest Boolean
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public T setSuggest(Boolean suggest) {
-//		this.suggest = suggest;
-//		return (T) this;
-//	}
-
-//	/**
-//	 * 选项节点的View
-//	 * @return View
-//	 * @author lamontYu
-//	 */
-//	public View getNode() {
-//		return node;
-//	}
-//
-//	/**
-//	 * 选项节点的View
-//	 * @param node 视图
-//	 * @return 本身，这样可以继续设置其他属性
-//	 * @author lamontYu
-//	 */
-//	public T setNode(View node) {
-//		this.node = node;
-//		return (T) this;
-//	}
 
 }

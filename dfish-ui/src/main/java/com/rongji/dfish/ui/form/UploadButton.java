@@ -8,9 +8,7 @@ import com.rongji.dfish.ui.widget.AbstractButton;
  *
  */
 public class UploadButton extends AbstractButton<UploadButton > {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -2174797939042068668L;
 
 	/**
@@ -34,7 +32,7 @@ public class UploadButton extends AbstractButton<UploadButton > {
   
 	@Override
 	public String getType() {
-		return "upload/button";
+		return "UploadButton";
 	}
 	
 }

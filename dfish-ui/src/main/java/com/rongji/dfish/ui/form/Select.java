@@ -13,7 +13,9 @@ import java.util.List;
  * @since XMLTMPL 1.0
  */
 public class Select extends AbstractOptionsHolder<Select, Option> {
+
 	private static final long serialVersionUID = -4055773878898188252L;
+
 	private Boolean transparent;
 
 	/**
@@ -34,7 +36,7 @@ public class Select extends AbstractOptionsHolder<Select, Option> {
 
 	@Override
     public String getType() {
-		return "select";
+		return "Select";
 	}
 
 	/**

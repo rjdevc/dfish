@@ -88,7 +88,7 @@ public interface Snapable<T extends Snapable<T>> {
 
 	 * @return String
 	 */
-	String getSnaptype();
+	String getSnapType();
 	/**
 	 * 指定 snap 的方式。
 	 * 可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。
@@ -97,10 +97,10 @@ public interface Snapable<T extends Snapable<T>> {
 	 * 范例: 对话框吸附到 mydiv 元素，吸附方式指定为 "41,32,14,23"。
 	 * 系统将先尝试 "41"，如果对话框没有超出浏览器可视范围就直接显示。
 	 * 如果超出了，则继续尝试 "32", 依此类推。
-	 * @param snaptype String
+	 * @param snapType String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	T setSnaptype(String snaptype);
+	T setSnapType(String snapType);
 //	/**
 //	 * 例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。
 //	 */

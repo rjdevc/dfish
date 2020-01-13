@@ -19,7 +19,7 @@ import com.rongji.dfish.ui.widget.Html;
  * @deprecated 使用Label 。 现在前端已经有对应原型，无需该类。
  */
 @Deprecated
-public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWrapper<Formgroup>,LabelRow<LabelWrapper>,
+public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWrapper<FormGroup>,LabelRow<LabelWrapper>,
 	HtmlContentHolder<LabelWrapper>,HasText<LabelWrapper>{
 
 	private static final long serialVersionUID = 2082708957092349423L;
@@ -58,11 +58,11 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 //	}
 	
 	@Override
-	public Formgroup getPrototype() {
+	public FormGroup getPrototype() {
 		Html prototype = new Html(text);
 		BeanUtil.copyPropertiesExact(prototype,this);
 		prototype.setId(null);
-		Formgroup hg=new Formgroup(null).setId(this.getId());
+		FormGroup hg=new FormGroup(null).setId(this.getId());
 		hg.setLabel(label);
 		hg.add(prototype);
 		return hg;

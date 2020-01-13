@@ -25,25 +25,25 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 				methods.set(i, new WidgetStringPropAppender("beforecontent"){
 					@Override
                     protected String getValue(Object w) {
-						return ((Widget<?>)w).getBeforecontent();
+						return ((Widget<?>)w).getBeforeContent();
 					}});
 			}else if("prependcontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("prependcontent"){
 					@Override
                     protected String getValue(Object w) {
-						return ((Widget<?>)w).getPrependcontent();
+						return ((Widget<?>)w).getPrependContent();
 					}});
 			}else if("appendcontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("appendcontent"){
 					@Override
                     protected String getValue(Object w) {
-						return ((Widget<?>)w).getAppendcontent();
+						return ((Widget<?>)w).getAppendContent();
 					}});
 			}else if("aftercontent".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("aftercontent"){
 					@Override
                     protected String getValue(Object w) {
-						return ((Widget<?>)w).getAftercontent();
+						return ((Widget<?>)w).getAfterContent();
 					}});
 			}else if("cls".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("cls"){
@@ -85,43 +85,43 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 				methods.set(i, new WidgetStringPropAppender("maxheight"){
 					@Override
                     protected String getValue(Object w) {
-						return  ((Widget<?>)w).getMaxheight();
+						return  ((Widget<?>)w).getMaxHeight();
 					}});
 			}else if("maxwidth".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("maxwidth"){
 					@Override
                     protected String getValue(Object w) {
-						return  ((Widget<?>)w).getMaxwidth();
+						return  ((Widget<?>)w).getMaxWidth();
 					}});
 			}else if("minheight".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("minheight"){
 					@Override
                     protected String getValue(Object w) {
-						return  ((Widget<?>)w).getMinheight();
+						return  ((Widget<?>)w).getMinHeight();
 					}});
 			}else if("minwidth".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("minwidth"){
 					@Override
                     protected String getValue(Object w) {
-						return  ((Widget<?>)w).getMinwidth();
+						return  ((Widget<?>)w).getMinWidth();
 					}});
 			}else if("minwidth".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetStringPropAppender("minwidth"){
 					@Override
                     protected String getValue(Object w) {
-						return  ((Widget<?>)w).getMinwidth();
+						return  ((Widget<?>)w).getMinWidth();
 					}});
 			}else if("hmin".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetIntegerPropAppender("hmin"){
 					@Override
                     protected Integer getValue(Object w) {
-						return  ((Widget<?>)w).getHmin();
+						return  ((Widget<?>)w).getHeightMinus();
 					}});
 			}else if("wmin".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetIntegerPropAppender("wmin"){
 					@Override
                     protected Integer getValue(Object w) {
-						return ((Widget<?>)w).getWmin();
+						return ((Widget<?>)w).getWidthMinus();
 					}});
 			}else if("type".equals(jbpg.getPropName())){
 				methods.set(i, WidgetTypeAppender.getInstance());
@@ -186,7 +186,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 					methods.set(i, new WidgetStringPropAppender("valign"){
 						@Override
                         protected String getValue(Object w) {
-							return ((Valignable<?>)w).getValign();
+							return ((Valignable<?>)w).getvAlign();
 						}});
 				}
 			} else if("text".equals(jbpg.getPropName())){

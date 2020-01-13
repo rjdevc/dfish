@@ -22,11 +22,11 @@ public interface Valignable<T extends Valignable<T>> {
 	 * 部件内容的垂直对齐方式
 	 * @return String
 	 */
-	public String getValign();
+	public String getvAlign();
 	/**
 	 * 部件内容的垂直对齐方式
-	 * @param valign String
+	 * @param vAlign String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setValign(String valign);
+	public T setvAlign(String vAlign);
 }

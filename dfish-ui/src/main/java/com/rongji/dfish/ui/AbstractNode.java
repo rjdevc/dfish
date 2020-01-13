@@ -32,9 +32,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
 
     protected Map<String, Object> data;
 
-    protected boolean prototypeLock;
-    protected boolean rebuild = true;
-
     @Override
     public String getId() {
         return id;
@@ -407,4 +404,5 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
         }
         return sb.toString();
     }
+
 }

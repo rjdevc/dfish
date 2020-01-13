@@ -199,13 +199,13 @@ public class Buttonbar extends AbstractLayout<Buttonbar, Widget<?>> implements P
 	}
 
 	@Override
-	public String getValign() {
+	public String getvAlign() {
 		return valign;
 	}
 
 	@Override
-	public Buttonbar setValign(String valign) {
-		this.valign = valign;
+	public Buttonbar setvAlign(String vAlign) {
+		this.valign = vAlign;
 		return this;
 	}
 

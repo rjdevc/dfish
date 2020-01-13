@@ -20,9 +20,9 @@ import com.rongji.dfish.ui.command.Dialog;
  * 
  * @author DFish Team
  * @version 1.2
- * @since XMLTMPL 1.0
+ * @since 1.0
  */
-public class Onlinebox extends SuggestionBox<Onlinebox> {
+public class OnlineBox extends SuggestionBox<OnlineBox> {
 
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 	 * @param value 初始值
 	 * @param suggest 在线匹配关键词的 view src。支持 $value 和 $text 变量。
 	 */
-	public Onlinebox(String name, String label, String value, String suggest) {
+	public OnlineBox(String name, String label, String value, String suggest) {
 		super(name, label, value, suggest);
 	}
 
@@ -47,13 +47,13 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 	 * @param value 初始值
 	 * @param suggest 候选项的弹窗命令
 	 */
-	public Onlinebox(String name, String label, String value, Dialog suggest) {
+	public OnlineBox(String name, String label, String value, Dialog suggest) {
 		super(name, label, value, suggest);
 	}
 
 	@Override
     public String getType() {
-		return "onlinebox";
+		return "OnlineBox";
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class Onlinebox extends SuggestionBox<Onlinebox> {
 	 * @deprecated 不支持此方法，该方法调用不会有效果。
 	 */
 	@Deprecated
-    public Onlinebox setSuggest(Boolean suggest) {
+    public OnlineBox setSuggest(Boolean suggest) {
 	    return this;
     }
 	

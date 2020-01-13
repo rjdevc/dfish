@@ -2,12 +2,11 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.Option;
 import com.rongji.dfish.ui.DFishUITestCase;
-import com.rongji.dfish.ui.widget.GridWrapper;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class CheckboxgroupTest extends DFishUITestCase {
+public class CheckBoxGroupTest extends DFishUITestCase {
 
     @Override
     protected Object getWidget() {
@@ -39,13 +38,13 @@ public class CheckboxgroupTest extends DFishUITestCase {
         System.out.println(xbox4.formatString());
 
 
-        List<Checkbox> cbOptions =Arrays.asList(new Checkbox("","",false,"1","问题一"),
-                new Checkbox("","",false,"2","问题二"),
-                new Checkbox("","",false,"3","问题三"));
-        Checkboxgroup cbg3=new Checkboxgroup("cbg","候选",Arrays.asList("2","3"),cbOptions);
+        List<CheckBox> cbOptions =Arrays.asList(new CheckBox("","",false,"1","问题一"),
+                new CheckBox("","",false,"2","问题二"),
+                new CheckBox("","",false,"3","问题三"));
+        CheckBoxGroup cbg3=new CheckBoxGroup("cbg","候选",Arrays.asList("2","3"),cbOptions);
         System.out.println(cbg3.formatString());
 
-        Checkboxgroup cbg=new Checkboxgroup("cbg","候选",Arrays.asList("2","3"),options);
+        CheckBoxGroup cbg=new CheckBoxGroup("cbg","候选",Arrays.asList("2","3"),options);
 
         return cbg;
     }

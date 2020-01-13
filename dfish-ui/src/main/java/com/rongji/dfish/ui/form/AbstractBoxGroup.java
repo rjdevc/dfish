@@ -11,18 +11,17 @@ import java.util.*;
  * @param <T> 当前对象类型
  * @param <N> 子节点对象类型
  * @author DFish Team
+ * @date 2018-08-03 before
+ * @since 1.0
  */
-@SuppressWarnings("unchecked")
-public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N>, N extends AbstractBox<N>> extends AbstractOptionsHolder<T, N> implements Layout<T, N>, HtmlContentHolder<T>, Directional<T> {
+public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N extends AbstractBox<N>> extends AbstractOptionsHolder<T, N> implements Layout<T, N>, HtmlContentHolder<T>, Directional<T> {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 3733166777271763891L;
+
     protected N pub;
     protected Integer space;
-    protected List<Widget<?>> targets = new ArrayList<Widget<?>>();
-    protected List<N> nodes = new ArrayList<N>();
+    protected List<Widget<?>> targets = new ArrayList<>();
+    protected List<N> nodes = new ArrayList<>();
     protected Boolean escape;
     protected String dir;
 
@@ -34,19 +33,9 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N>, N exten
      * @param checkedValue 已经选中的值
      * @param options      候选项
      */
-    public AbstractBoxgroup(String name, String label, Object checkedValue,
-                            List<?> options) {
+    public AbstractBoxGroup(String name, String label, Object checkedValue, List<?> options) {
         super(name, label, checkedValue, options);
-
-//    	this.name=name;
-//    	this.label=label;
-//    	this.setValue(checkedValue);
-//        checkOptions(checkedValue, options);
-//    	escape=true;
     }
-
-
-
 
     /**
      * 添加子面板
@@ -216,9 +205,9 @@ public abstract class AbstractBoxgroup<T extends AbstractBoxgroup<T, N>, N exten
     protected abstract N newPub();
 
     /**
-     * boxgroup的默认参数
+     * 公共参数
      *
-     * @return pub
+     * @return N pub
      */
     public N getPub() {
         if (this.pub == null) {

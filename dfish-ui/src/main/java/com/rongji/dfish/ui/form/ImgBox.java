@@ -10,9 +10,9 @@ import java.util.List;
  * Imgbox 图片下拉选择表单
  * @author DFish Team
  * @version 1.2
- * @since XMLTMPL 1.0
+ * @since 1.0
  */
-public class Imgbox extends AbstractOptionsHolder<Imgbox, Option> {
+public class ImgBox extends AbstractOptionsHolder<ImgBox, Option> {
 	/**
 	 * 
 	 */
@@ -27,7 +27,7 @@ public class Imgbox extends AbstractOptionsHolder<Imgbox, Option> {
 	 * @param value 选中的值
 	 * @param options 候选项
 	 */
-	public Imgbox(String name, String label, Object value, List<?> options) {
+	public ImgBox(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
 	}
 
@@ -54,7 +54,7 @@ public class Imgbox extends AbstractOptionsHolder<Imgbox, Option> {
 	 * @param imgheight Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Imgbox setImgheight(Integer imgheight) {
+	public ImgBox setImgheight(Integer imgheight) {
 		this.imgheight = imgheight;
 		return this;
 	}
@@ -72,20 +72,20 @@ public class Imgbox extends AbstractOptionsHolder<Imgbox, Option> {
 	 * @param imgwidth Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Imgbox setImgwidth(Integer imgwidth) {
+	public ImgBox setImgwidth(Integer imgwidth) {
 		this.imgwidth = imgwidth;
 		return this;
 	}
 	
 	@Override
     @Deprecated
-	public Imgbox setTip(Boolean tip) {
+	public ImgBox setTip(Boolean tip) {
 		return super.setTip(tip);
 	}
 	
 	@Override
     @Deprecated
-	public Imgbox setTip(String tip) {
+	public ImgBox setTip(String tip) {
 		return super.setTip(tip);
 	}
 	

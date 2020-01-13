@@ -7,33 +7,33 @@ package com.rongji.dfish.ui.form;
  * @version 1.0
  * @since XMLTMPL 2.1
  */
-public class Triplebox extends AbstractBox<Triplebox> {
+public class TripleBox extends AbstractBox<TripleBox> {
     /**
      *
      */
     private static final long serialVersionUID = -5234746180880441591L;
 
-    private Boolean partialsubmit;
+    private Boolean partialSubmit;
 
-    private Boolean checkall;
+    private Boolean checkAll;
 
     /**
      * 半选状态是否提交数据
      *
      * @return Boolean
      */
-    public Boolean getPartialsubmit() {
-        return partialsubmit;
+    public Boolean getPartialSubmit() {
+        return partialSubmit;
     }
 
     /**
      * 半选状态是否提交数据
      *
-     * @param partialsubmit Boolean
+     * @param partialSubmit Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Triplebox setPartialsubmit(Boolean partialsubmit) {
-        this.partialsubmit = partialsubmit;
+    public TripleBox setPartialSubmit(Boolean partialSubmit) {
+        this.partialSubmit = partialSubmit;
         return this;
     }
 
@@ -46,13 +46,13 @@ public class Triplebox extends AbstractBox<Triplebox> {
      * @param value      值
      * @param text       显示文本
      */
-    public Triplebox(String name, String label, Boolean checked, Object value, String text) {
+    public TripleBox(String name, String label, Boolean checked, Object value, String text) {
         super(name, label, checked, value, text);
     }
 
     @Override
     public String getType() {
-        return "triplebox";
+        return "TripleBox";
     }
 
     /**
@@ -60,18 +60,18 @@ public class Triplebox extends AbstractBox<Triplebox> {
      *
      * @return Boolean
      */
-    public Boolean getCheckall() {
-        return checkall;
+    public Boolean getCheckAll() {
+        return checkAll;
     }
 
     /**
      * 选中所有
      *
-     * @param checkall Boolean
+     * @param checkAll Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Triplebox setCheckall(Boolean checkall) {
-        this.checkall = checkall;
+    public TripleBox setCheckAll(Boolean checkAll) {
+        this.checkAll = checkAll;
         return this;
     }
 }

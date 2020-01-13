@@ -8,10 +8,10 @@ package com.rongji.dfish.ui.form;
 public class Switch extends AbstractFormElement<Switch, Object> {
 
     private Boolean checked;
-    private String checkedtext;
+    private String checkedText;
     private String sync;
     private String target;
-    private String uncheckedtext;
+    private String uncheckedText;
     private Boolean escape;
     private String format;
 
@@ -75,17 +75,17 @@ public class Switch extends AbstractFormElement<Switch, Object> {
      * 选中状态时的文本
      * @return String
      */
-    public String getCheckedtext() {
-        return checkedtext;
+    public String getCheckedText() {
+        return checkedText;
     }
 
     /**
      * 选中状态时的文本
-     * @param checkedtext String
+     * @param checkedText String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Switch setCheckedtext(String checkedtext) {
-        this.checkedtext = checkedtext;
+    public Switch setCheckedText(String checkedText) {
+        this.checkedText = checkedText;
         return this;
     }
 
@@ -131,17 +131,17 @@ public class Switch extends AbstractFormElement<Switch, Object> {
      * 未选中状态时的文本。
      * @return String
      */
-    public String getUncheckedtext() {
-        return uncheckedtext;
+    public String getUncheckedText() {
+        return uncheckedText;
     }
 
     /**
      * 未选中状态时的文本。
-     * @param uncheckedtext String
+     * @param uncheckedText String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Switch setUncheckedtext(String uncheckedtext) {
-        this.uncheckedtext = uncheckedtext;
+    public Switch setUncheckedText(String uncheckedText) {
+        this.uncheckedText = uncheckedText;
         return this;
     }
 

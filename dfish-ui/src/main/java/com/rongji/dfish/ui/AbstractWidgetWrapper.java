@@ -153,24 +153,24 @@ public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P
     }
 
 	@Override
-    public Integer getWmin() {
-	    return prototype.getWmin();
+    public Integer getWidthMinus() {
+	    return prototype.getWidthMinus();
     }
 
 	@Override
-    public T setWmin(Integer wmin) {
-	    prototype.setWmin(wmin);
+    public T setWidthMinus(Integer widthMinus) {
+	    prototype.setWidthMinus(widthMinus);
 	    return (T) this;
     }
 
 	@Override
-    public Integer getHmin() {
-	    return prototype.getHmin();
+    public Integer getHeightMinus() {
+	    return prototype.getHeightMinus();
     }
 
 	@Override
-    public T setHmin(Integer hmin) {
-	    prototype.setHmin(hmin);
+    public T setHeightMinus(Integer heightMinus) {
+	    prototype.setHeightMinus(heightMinus);
 	    return (T) this;
     }
 

@@ -39,7 +39,7 @@ public class GridPanelTest extends DFishUITestCase {
 	public void comboTest(){
 		GridWrapper grid = new GridWrapper("my");
 		grid.setCls("x-grid-odd");
-		grid.setCombo(new Combo().setField(new Combo.Field("uid", "un").setSearch("py,jp")).setKeepshow(false));
+		grid.setCombo(new Combo().setField(new Combo.Field("uid", "un").setSearch("py,jp")).setKeepShow(false));
 		grid.setGridData(Arrays.asList(new String[][]{
 			{"uid1","名称1","mingcheng1","jp1"},
 			{"uid2","名称2","mingcheng2","jp2"}}));
@@ -61,7 +61,7 @@ public class GridPanelTest extends DFishUITestCase {
 		Grid.Td  td=new Grid.Td();
 		gl.getBody().getRows().get(0).setData("C1",td );
 		td.setRowspan(2);
-		td.setNode(new Html("something").setValign(Html.VALIGN_MIDDLE));
+		td.setNode(new Html("something").setvAlign(Html.VALIGN_MIDDLE));
 		
 		output(gp);
 	}

@@ -24,7 +24,7 @@ public class Radio extends AbstractBox<Radio> {
 
 	@Override
 	public String getType() {
-		return "radio";
+		return "Radio";
 	}
 
 

@@ -15,11 +15,8 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractDialog<T extends AbstractDialog<T>> extends AbstractWidget<T>
-        implements SingleContainer<T, Widget<?>>, DialogWidth<T>, DialogHeight<T>, HasId<T>,
-        Positionable<T>, Snapable<T> {
-    /**
-     *
-     */
+        implements SingleContainer<T, Widget<?>>, DialogWidth<T>, DialogHeight<T>, HasId<T>, Positionable<T>, Snapable<T> {
+
     private static final long serialVersionUID = -6765281771952118355L;
 
     /**
@@ -29,16 +26,16 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     }
 
     protected String position;
-    protected Boolean pophide;
+    protected Boolean popHide;
     protected Boolean cover;
     protected String title;
     protected Boolean cache;
     protected String snap;
-    protected String snaptype;
+    protected String snapType;
     protected Integer indent;
     protected Long timeout;
     protected Widget<?> node;
-    protected Boolean moveable;
+    protected Boolean movable;
     protected Boolean fullscreen;
     protected Boolean resizable;
     protected Boolean independent;
@@ -84,18 +81,18 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      *
      * @return Boolean
      */
-    public Boolean getPophide() {
-        return pophide;
+    public Boolean getPopHide() {
+        return popHide;
     }
 
     /**
      * 如果设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。
      *
-     * @param pophide Boolean
+     * @param popHide Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setPophide(Boolean pophide) {
-        this.pophide = pophide;
+    public T setPopHide(Boolean popHide) {
+        this.popHide = popHide;
         return (T) this;
     }
 
@@ -151,13 +148,13 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     }
 
     @Override
-    public String getSnaptype() {
-        return snaptype;
+    public String getSnapType() {
+        return snapType;
     }
 
     @Override
-    public T setSnaptype(String snaptype) {
-        this.snaptype = snaptype;
+    public T setSnapType(String snapType) {
+        this.snapType = snapType;
         return (T) this;
     }
 
@@ -226,18 +223,18 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      *
      * @return Boolean
      */
-    public Boolean getMoveable() {
-        return moveable;
+    public Boolean getMovable() {
+        return movable;
     }
 
     /**
      * 窗口是否可用鼠标拖动
      *
-     * @param moveable 是否可用鼠标拖动
+     * @param movable 是否可用鼠标拖动
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setMoveable(Boolean moveable) {
-        this.moveable = moveable;
+    public T setMovable(Boolean movable) {
+        this.movable = movable;
         return (T) this;
     }
 
@@ -283,6 +280,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
     /**
      * 设置为true,取消与父窗口的关联效果
+     *
      * @return Boolean
      */
     public Boolean getIndependent() {
@@ -291,6 +289,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
     /**
      * 设置为true,取消与父窗口的关联效果
+     *
      * @param independent Boolean
      * @return 本身，这样可以继续设置其他属性
      */
@@ -301,6 +300,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
     /**
      * 用于显示文本是否需要转义,不设置默认是true
+     *
      * @return Boolean
      */
     public Boolean getEscape() {
@@ -309,6 +309,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
     /**
      * 用于显示文本是否需要转义,不设置默认是true
+     *
      * @param escape Boolean
      * @return 本身，这样可以继续设置其他属性
      */
@@ -319,6 +320,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
     /**
      * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     *
      * @return String 格式化内容
      */
     public String getFormat() {
@@ -327,6 +329,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
     /**
      * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     *
      * @param format String 格式化内容
      * @return 本身，这样可以继续设置其他属性
      */

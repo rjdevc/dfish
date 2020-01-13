@@ -9,8 +9,10 @@ import com.rongji.dfish.ui.command.Dialog;
  * @author DFish Team
  *
  */
-public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pickbox>{
+public class PickBox extends AbstractInput<PickBox,String> implements HasText<PickBox>{
+
 	private static final long serialVersionUID = 7493588393931087665L;
+
 	private String text;
 	private Boolean escape;
 	private Dialog drop;
@@ -28,7 +30,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @return this
 	 */
 	@Override
-    public Pickbox setText(String text) {
+    public PickBox setText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -39,7 +41,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param value 值
 	 * @param maxLength 最大长度
 	 */
-	public Pickbox(String name, String label, String value, Integer maxLength){
+	public PickBox(String name, String label, String value, Integer maxLength){
 		this.setName(name);
 		this.setValue(value);
 		this.setLabel(label);
@@ -52,7 +54,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param value 值
 	 * @since DFish 3.0
 	 */
-	public Pickbox(String name, String label, String value){
+	public PickBox(String name, String label, String value){
 		this.setName(name);
 		this.setValue(value);
 		this.setLabel(label);
@@ -62,7 +64,7 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	
 	@Override
     public String getType() {
-		return "pickbox";
+		return "PickBox";
 	}
 
 
@@ -78,13 +80,13 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param picker dialog 参数
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Pickbox setPicker(Dialog picker) {
+	public PickBox setPicker(Dialog picker) {
 		this.picker = picker;
 		return this;
 	}
 
 	@Override
-	public Pickbox setValue(Object value) {
+	public PickBox setValue(Object value) {
 		this.value=toString(value);
 		return this;
 	}
@@ -113,12 +115,12 @@ public class Pickbox extends AbstractInput<Pickbox,String> implements HasText<Pi
 	 * @param drop DialogCommand
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Pickbox setDrop(Dialog drop) {
+	public PickBox setDrop(Dialog drop) {
 		this.drop = drop;
 		return this;
 	}
 	@Override
-    public Pickbox setEscape(Boolean escape){
+    public PickBox setEscape(Boolean escape){
 		this.escape=escape;
 		return this;
 	}

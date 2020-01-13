@@ -1722,22 +1722,22 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
          * @see #VALIGN_BOTTOM
          */
         @Override
-        public String getValign() {
+        public String getvAlign() {
             return valign;
         }
 
         /**
          * 垂直对齐。可选值: top,middle,bottom
          *
-         * @param valign String
+         * @param vAlign String
          * @return 本身，这样可以继续设置其他属性
          * @see #VALIGN_TOP
          * @see #VALIGN_MIDDLE
          * @see #VALIGN_BOTTOM
          */
         @Override
-        public Column setValign(String valign) {
-            this.valign = valign;
+        public Column setvAlign(String vAlign) {
+            this.valign = vAlign;
             return this;
         }
 
@@ -1797,7 +1797,7 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             if (box.getValidate() != null) {
                 required = box.getValidate().getRequired();
             }
-            if (box instanceof Triplebox || box instanceof Checkbox) {
+            if (box instanceof TripleBox || box instanceof CheckBox) {
                 setGridTriplebox(box.getName(), null, required, box.getSync());
             } else if (box instanceof Radio) {
                 setGridRadio(box.getName(), null, required, box.getSync());
@@ -2537,13 +2537,13 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
                     tr.getHeight()!=null||tr.getSrc()!=null||
                     (tr.getRows()!=null&&tr.getRows().size()>0)||
                     tr.getCls()!=null||tr.getStyle()!=null ||//常用的属性排在前面
-                    tr.getBeforecontent()!=null||tr.getPrependcontent()!=null||
-                    tr.getAppendcontent()!=null||tr.getAftercontent()!=null||
-                    tr.getGid()!=null||tr.getHmin()!=null||
-                    tr.getMaxheight()!=null||tr.getMaxwidth()!=null||
-                    tr.getMinheight()!=null||tr.getMinwidth()!=null||
+                    tr.getBeforeContent()!=null||tr.getPrependContent()!=null||
+                    tr.getAppendContent()!=null||tr.getAfterContent()!=null||
+                    tr.getGid()!=null||tr.getHeightMinus()!=null||
+                    tr.getMaxHeight()!=null||tr.getMaxWidth()!=null||
+                    tr.getMinHeight()!=null||tr.getMinWidth()!=null||
                     (tr.getOn()!=null&&tr.getOn().size()>0)||
-                    tr.getWidth()!=null||tr.getWmin()!=null;
+                    tr.getWidth()!=null||tr.getWidthMinus()!=null;
         }
 
         @Override
@@ -2662,63 +2662,63 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
         }
 
         @Override
-        public Tr setWmin(Integer wmin) {
+        public Tr setWidthMinus(Integer widthMinus) {
             nc();
-            return super.setWmin(wmin);
+            return super.setWidthMinus(widthMinus);
         }
 
         @Override
-        public Tr setHmin(Integer hmin) {
+        public Tr setHeightMinus(Integer heightMinus) {
             nc();
-            return super.setHmin(hmin);
+            return super.setHeightMinus(heightMinus);
         }
 
         @Override
-        public Tr setMaxwidth(int maxwidth) {
+        public Tr setMaxWidth(int maxWidth) {
             nc();
-            return super.setMaxwidth(maxwidth);
+            return super.setMaxWidth(maxWidth);
         }
 
         @Override
-        public Tr setMaxwidth(String maxwidth) {
+        public Tr setMaxWidth(String maxWidth) {
             nc();
-            return super.setMaxwidth(maxwidth);
+            return super.setMaxWidth(maxWidth);
         }
 
         @Override
-        public Tr setMaxheight(String maxheight) {
+        public Tr setMaxHeight(String maxHeight) {
             nc();
-            return super.setMaxheight(maxheight);
+            return super.setMaxHeight(maxHeight);
         }
 
         @Override
-        public Tr setMaxheight(int maxheight) {
+        public Tr setMaxHeight(int maxHeight) {
             nc();
-            return super.setMaxheight(maxheight);
+            return super.setMaxHeight(maxHeight);
         }
 
         @Override
-        public Tr setMinwidth(int minwidth) {
+        public Tr setMinWidth(int minWidth) {
             nc();
-            return super.setMinwidth(minwidth);
+            return super.setMinWidth(minWidth);
         }
 
         @Override
-        public Tr setMinwidth(String minwidth) {
+        public Tr setMinWidth(String minWidth) {
             nc();
-            return super.setMinwidth(minwidth);
+            return super.setMinWidth(minWidth);
         }
 
         @Override
-        public Tr setMinheight(String minheight) {
+        public Tr setMinHeight(String minHeight) {
             nc();
-            return super.setMinheight(minheight);
+            return super.setMinHeight(minHeight);
         }
 
         @Override
-        public Tr setMinheight(int minheight) {
+        public Tr setMinHeight(int minHeight) {
             nc();
-            return super.setMinheight(minheight);
+            return super.setMinHeight(minHeight);
         }
     }
 
@@ -2808,16 +2808,16 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
 
         private static boolean hasTdllInfo(AbstractTd<?> td){
             return td.getId()!=null||td.getHeight()!=null||
-                    td.getAlign()!=null||td.getValign()!=null||
+                    td.getAlign()!=null||td.getvAlign()!=null||
                     td.getColspan()!=null||td.getRowspan()!=null||
                     td.getCls()!=null||td.getStyle()!=null ||//常用的属性排在前面
-                    td.getBeforecontent()!=null||td.getPrependcontent()!=null||
-                    td.getAppendcontent()!=null||td.getAftercontent()!=null||
-                    td.getGid()!=null||td.getHmin()!=null||
-                    td.getMaxheight()!=null||td.getMaxwidth()!=null||
-                    td.getMinheight()!=null||td.getMinwidth()!=null||
+                    td.getBeforeContent()!=null||td.getPrependContent()!=null||
+                    td.getAppendContent()!=null||td.getAfterContent()!=null||
+                    td.getGid()!=null||td.getHeightMinus()!=null||
+                    td.getMaxHeight()!=null||td.getMaxWidth()!=null||
+                    td.getMinHeight()!=null||td.getMinWidth()!=null||
                     (td.getOn()!=null&&td.getOn().size()>0)||
-                    td.getWidth()!=null||td.getWmin()!=null
+                    td.getWidth()!=null||td.getWidthMinus()!=null
                     ||td.getLabelwidth()!=null;
         }
         /**
@@ -2852,15 +2852,15 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             Html html=(Html)prototype;
             return html.getId()==null&&html.getHeight()==null&&
                     html.getWidth()==null&&html.getEscape()==null&&
-                    html.getAlign()==null&&html.getValign()==null&&
+                    html.getAlign()==null&&html.getvAlign()==null&&
                     html.getCls()==null&&html.getStyle()==null &&//常用的属性排在前面
-                    html.getAppendcontent()==null&&html.getPrependcontent()==null&&
-                    html.getGid()==null&&html.getHmin()==null&&
-                    html.getMaxheight()==null&&html.getMaxwidth()==null&&
-                    html.getMinheight()==null&&html.getMinwidth()==null&&
+                    html.getAppendContent()==null&&html.getPrependContent()==null&&
+                    html.getGid()==null&&html.getHeightMinus()==null&&
+                    html.getMaxHeight()==null&&html.getMaxWidth()==null&&
+                    html.getMinHeight()==null&&html.getMinWidth()==null&&
                     (html.getOn()==null||html.getOn().size()==0)&&
                     html.getScroll()==null&&html.getScrollClass()==null&&
-                    html.getWmin()==null;
+                    html.getWidthMinus()==null;
         }
         @Override
         public Td setColspan(Integer colspan) {
@@ -2892,9 +2892,9 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             return success;
         }
         @Override
-        public Td setValign(String valign) {
+        public Td setvAlign(String vAlign) {
             nc();
-            return super.setValign(valign);
+            return super.setvAlign(vAlign);
         }
         @Override
         public Td setAlign(String align) {
@@ -2912,14 +2912,14 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             return super.setCls(cls);
         }
         @Override
-        public Td setPrependcontent(String prependcontent) {
+        public Td setPrependContent(String prependContent) {
             nc();
-            return super.setPrependcontent(prependcontent);
+            return super.setPrependContent(prependContent);
         }
         @Override
-        public Td setAppendcontent(String appendcontent) {
+        public Td setAppendContent(String appendContent) {
             nc();
-            return super.setAppendcontent(appendcontent);
+            return super.setAppendContent(appendContent);
         }
         @Override
         public Td setId(String id) {
@@ -2957,14 +2957,14 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             return super.setOn(eventName, script);
         }
         @Override
-        public Td setWmin(Integer wmin) {
+        public Td setWidthMinus(Integer widthMinus) {
             nc();
-            return super.setWmin(wmin);
+            return super.setWidthMinus(widthMinus);
         }
         @Override
-        public Td setHmin(Integer hmin) {
+        public Td setHeightMinus(Integer heightMinus) {
             nc();
-            return super.setHmin(hmin);
+            return super.setHeightMinus(heightMinus);
         }
         @Override
         public Td setData(String key, Object value) {
@@ -2972,44 +2972,44 @@ public class Grid extends AbstractLayout<Grid, Grid.Tr> implements ListView<Grid
             return super.setData(key, value);
         }
         @Override
-        public Td setMaxwidth(int maxwidth) {
+        public Td setMaxWidth(int maxWidth) {
             nc();
-            return super.setMaxwidth(maxwidth);
+            return super.setMaxWidth(maxWidth);
         }
         @Override
-        public Td setMaxwidth(String maxwidth) {
+        public Td setMaxWidth(String maxWidth) {
             nc();
-            return super.setMaxwidth(maxwidth);
+            return super.setMaxWidth(maxWidth);
         }
         @Override
-        public Td setMaxheight(String maxheight) {
+        public Td setMaxHeight(String maxHeight) {
             nc();
-            return super.setMaxheight(maxheight);
+            return super.setMaxHeight(maxHeight);
         }
         @Override
-        public Td setMaxheight(int maxheight) {
+        public Td setMaxHeight(int maxHeight) {
             nc();
-            return super.setMaxheight(maxheight);
+            return super.setMaxHeight(maxHeight);
         }
         @Override
-        public Td setMinwidth(int minwidth) {
+        public Td setMinWidth(int minWidth) {
             nc();
-            return super.setMinwidth(minwidth);
+            return super.setMinWidth(minWidth);
         }
         @Override
-        public Td setMinwidth(String minwidth) {
+        public Td setMinWidth(String minWidth) {
             nc();
-            return super.setMinwidth(minwidth);
+            return super.setMinWidth(minWidth);
         }
         @Override
-        public Td setMinheight(String minheight) {
+        public Td setMinHeight(String minHeight) {
             nc();
-            return super.setMinheight(minheight);
+            return super.setMinHeight(minHeight);
         }
         @Override
-        public Td setMinheight(int minheight) {
+        public Td setMinHeight(int minHeight) {
             nc();
-            return super.setMinheight(minheight);
+            return super.setMinHeight(minHeight);
         }
 
     }

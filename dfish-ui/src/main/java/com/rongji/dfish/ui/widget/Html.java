@@ -116,12 +116,12 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 		return this;
 	}
 	@Override
-    public String getValign() {
+    public String getvAlign() {
 		return valign;
 	}
 	@Override
-    public Html setValign(String valign) {
-		this.valign = valign;
+    public Html setvAlign(String vAlign) {
+		this.valign = vAlign;
 		return this;
 	}
 	

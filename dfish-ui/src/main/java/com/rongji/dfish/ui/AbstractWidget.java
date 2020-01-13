@@ -23,19 +23,19 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
 
     protected String width;
     protected String height;
-    protected String maxwidth;
-    protected String maxheight;
-    protected String minwidth;
-    protected String minheight;
-    protected Integer wmin;
-    protected Integer hmin;
+    protected String maxWidth;
+    protected String maxHeight;
+    protected String minWidth;
+    protected String minHeight;
+    protected Integer widthMinus;
+    protected Integer heightMinus;
     protected String cls;
     protected String style;
 
-    protected String beforecontent;
-    protected String prependcontent;
-    protected String appendcontent;
-    protected String aftercontent;
+    protected String beforeContent;
+    protected String prependContent;
+    protected String appendContent;
+    protected String afterContent;
 
     protected Map<String, String> events;
 
@@ -135,8 +135,8 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return Integer
      */
     @Override
-    public Integer getWmin() {
-        return wmin;
+    public Integer getWidthMinus() {
+        return widthMinus;
     }
 
     /**
@@ -144,12 +144,12 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * 由于边框的因素，面板可用的空间和面板本身可能不一致，所以需要这个差值。
      * 如：面板边框为1像素，扣掉上下各1像素，该面板的wmin=2
      *
-     * @param wmin Integer
+     * @param widthMinus Integer
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setWmin(Integer wmin) {
-        this.wmin = wmin;
+    public T setWidthMinus(Integer widthMinus) {
+        this.widthMinus = widthMinus;
         return (T) this;
     }
 
@@ -159,8 +159,8 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return String
      */
     @Override
-    public Integer getHmin() {
-        return hmin;
+    public Integer getHeightMinus() {
+        return heightMinus;
     }
 
     /**
@@ -168,12 +168,12 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * 由于边框的因素，面板可用的空间和面板本身可能不一致，所以需要这个差值。
      * 如：面板边框为1像素，扣掉左右各1像素，该面板的hmin=2
      *
-     * @param hmin int
+     * @param heightMinus int
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setHmin(Integer hmin) {
-        this.hmin = hmin;
+    public T setHeightMinus(Integer heightMinus) {
+        this.heightMinus = heightMinus;
         return (T) this;
     }
 
@@ -202,7 +202,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
     @Override
     public T setData(String key, Object value) {
         if (data == null) {
-            data = new LinkedHashMap<String, Object>();
+            data = new LinkedHashMap<>();
         }
         data.put(key, value);
         return (T) this;
@@ -218,66 +218,29 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
-    @Override
-    public String getMaxwidth() {
-        return maxwidth;
+    public String getMaxWidth() {
+        return maxWidth;
     }
 
     /**
      * 部件在加入布局的时候一般会有大小限制
      *
-     * @param maxwidth Integer
+     * @param maxWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
-    @Override
-    public T setMaxwidth(int maxwidth) {
-        this.maxwidth = String.valueOf(maxwidth);
+    public T setMaxWidth(int maxWidth) {
+        this.maxWidth = String.valueOf(maxWidth);
         return (T) this;
     }
 
     /**
      * 部件在加入布局的时候一般会有大小限制
      *
-     * @param maxwidth Integer
+     * @param maxWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
-    @Override
-    public T setMaxwidth(String maxwidth) {
-        this.maxwidth = maxwidth;
-        return (T) this;
-    }
-
-    /**
-     * 部件在加入布局的时候一般会有大小限制
-     *
-     * @return Integer
-     */
-    @Override
-    public String getMaxheight() {
-        return maxheight;
-    }
-
-    /**
-     * 部件在加入布局的时候一般会有大小限制
-     *
-     * @param maxheight Integer
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    public T setMaxheight(String maxheight) {
-        this.maxheight = maxheight;
-        return (T) this;
-    }
-
-    /**
-     * 部件在加入布局的时候一般会有大小限制
-     *
-     * @param maxheight Integer
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    public T setMaxheight(int maxheight) {
-        this.maxheight = String.valueOf(maxheight);
+    public T setMaxWidth(String maxWidth) {
+        this.maxWidth = maxWidth;
         return (T) this;
     }
 
@@ -286,32 +249,29 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
-    @Override
-    public String getMinwidth() {
-        return minwidth;
+    public String getMaxHeight() {
+        return maxHeight;
     }
 
     /**
      * 部件在加入布局的时候一般会有大小限制
      *
-     * @param minwidth Integer
+     * @param maxHeight Integer
      * @return 本身，这样可以继续设置其他属性
      */
-    @Override
-    public T setMinwidth(int minwidth) {
-        this.minwidth = String.valueOf(minwidth);
+    public T setMaxHeight(String maxHeight) {
+        this.maxHeight = maxHeight;
         return (T) this;
     }
 
     /**
      * 部件在加入布局的时候一般会有大小限制
      *
-     * @param minwidth Integer
+     * @param maxHeight Integer
      * @return 本身，这样可以继续设置其他属性
      */
-    @Override
-    public T setMinwidth(String minwidth) {
-        this.minwidth = minwidth;
+    public T setMaxHeight(int maxHeight) {
+        this.maxHeight = String.valueOf(maxHeight);
         return (T) this;
     }
 
@@ -320,32 +280,60 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
-    @Override
-    public String getMinheight() {
-        return minheight;
+    public String getMinWidth() {
+        return minWidth;
     }
 
     /**
      * 部件在加入布局的时候一般会有大小限制
      *
-     * @param minheight Integer
+     * @param minWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
-    @Override
-    public T setMinheight(String minheight) {
-        this.minheight = minheight;
+    public T setMinWidth(int minWidth) {
+        this.minWidth = String.valueOf(minWidth);
         return (T) this;
     }
 
     /**
      * 部件在加入布局的时候一般会有大小限制
      *
-     * @param minheight Integer
+     * @param minWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
-    @Override
-    public T setMinheight(int minheight) {
-        this.minheight = String.valueOf(minheight);
+    public T setMinWidth(String minWidth) {
+        this.minWidth = minWidth;
+        return (T) this;
+    }
+
+    /**
+     * 部件在加入布局的时候一般会有大小限制
+     *
+     * @return Integer
+     */
+    public String getMinHeight() {
+        return minHeight;
+    }
+
+    /**
+     * 部件在加入布局的时候一般会有大小限制
+     *
+     * @param minHeight Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setMinHeight(String minHeight) {
+        this.minHeight = minHeight;
+        return (T) this;
+    }
+
+    /**
+     * 部件在加入布局的时候一般会有大小限制
+     *
+     * @param minHeight Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setMinHeight(int minHeight) {
+        this.minHeight = String.valueOf(minHeight);
         return (T) this;
     }
 
@@ -464,19 +452,19 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return String
      */
     @Override
-    public String getBeforecontent() {
-        return beforecontent;
+    public String getBeforeContent() {
+        return beforeContent;
     }
 
     /**
      * 附加到之前的内容(边框外前)
      *
-     * @param beforecontent String
+     * @param beforeContent String
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setBeforecontent(String beforecontent) {
-        this.beforecontent = beforecontent;
+    public T setBeforeContent(String beforeContent) {
+        this.beforeContent = beforeContent;
         return (T) this;
     }
 
@@ -486,19 +474,19 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return String
      */
     @Override
-    public String getPrependcontent() {
-        return prependcontent;
+    public String getPrependContent() {
+        return prependContent;
     }
 
     /**
      * 附加到开头的内容(边框内前)
      *
-     * @param prependcontent String
+     * @param prependContent String
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setPrependcontent(String prependcontent) {
-        this.prependcontent = prependcontent;
+    public T setPrependContent(String prependContent) {
+        this.prependContent = prependContent;
         return (T) this;
     }
 
@@ -508,19 +496,19 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return String
      */
     @Override
-    public String getAppendcontent() {
-        return appendcontent;
+    public String getAppendContent() {
+        return appendContent;
     }
 
     /**
      * 附加到末尾的内容(边框内后)
      *
-     * @param appendcontent String
+     * @param appendContent String
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setAppendcontent(String appendcontent) {
-        this.appendcontent = appendcontent;
+    public T setAppendContent(String appendContent) {
+        this.appendContent = appendContent;
         return (T) this;
     }
 
@@ -530,35 +518,35 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return String
      */
     @Override
-    public String getAftercontent() {
-        return aftercontent;
+    public String getAfterContent() {
+        return afterContent;
     }
 
     /**
      * 附加到之后的内容(边框外后)
      *
-     * @param aftercontent String
+     * @param afterContent String
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setAftercontent(String aftercontent) {
-        this.aftercontent = aftercontent;
+    public T setAfterContent(String afterContent) {
+        this.afterContent = afterContent;
         return (T) this;
     }
 
     /**
      * 设置备注<br/>
-     * 有默认样式,更符合经常使用习惯,高级用法直接使用{@link #setAftercontent(String)}
+     * 有默认样式,更符合经常使用习惯,高级用法直接使用{@link #setAfterContent(String)}
      *
      * @param remark String 为空时,会将aftercontent清空
      * @return 本身，这样可以继续设置其他属性
-     * @see #setAftercontent(String)
+     * @see #setAfterContent(String)
      */
     public T setRemark(String remark) {
         if (Utils.notEmpty(remark)) {
             remark = "<div class='f-remark'>" + Utils.escapeXMLword(remark) + "</div>";
         }
-        return setAftercontent(remark);
+        return setAfterContent(remark);
     }
 
     @Override
@@ -606,19 +594,19 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         to.gid = from.gid;
         to.width = from.width;
         to.height = from.height;
-        to.maxwidth = from.maxwidth;
-        to.maxheight = from.maxheight;
-        to.minwidth = from.minwidth;
-        to.minheight = from.minheight;
-        to.wmin = from.wmin;
-        to.hmin = from.hmin;
+        to.maxWidth = from.maxWidth;
+        to.maxHeight = from.maxHeight;
+        to.minWidth = from.minWidth;
+        to.minHeight = from.minHeight;
+        to.widthMinus = from.widthMinus;
+        to.heightMinus = from.heightMinus;
         to.cls = from.cls;
         to.style = from.style;
 
-        to.beforecontent = from.beforecontent;
-        to.prependcontent = from.prependcontent;
-        to.appendcontent = from.appendcontent;
-        to.aftercontent = from.aftercontent;
+        to.beforeContent = from.beforeContent;
+        to.prependContent = from.prependContent;
+        to.appendContent = from.appendContent;
+        to.afterContent = from.afterContent;
 
         to.events = from.events;
     }

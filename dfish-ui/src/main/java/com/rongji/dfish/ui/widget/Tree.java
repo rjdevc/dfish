@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.widget;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.form.Hidden;
-import com.rongji.dfish.ui.form.Triplebox;
+import com.rongji.dfish.ui.form.TripleBox;
 import com.rongji.dfish.ui.layout.AbstractLayout;
 
 import java.util.List;
@@ -267,7 +267,7 @@ public class Tree extends AbstractLayout<Tree, Leaf>
 	 */
 	public Tree fixBoxCheckStatus() {
 		// FIXME 根节点必须补box
-		rootLeaf.setBox(new Triplebox(null, null, null, null, null));
+		rootLeaf.setBox(new TripleBox(null, null, null, null, null));
 		rootLeaf.fixBoxCheckStatus();
 		return this;
 	}

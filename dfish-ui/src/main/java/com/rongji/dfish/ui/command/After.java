@@ -12,19 +12,17 @@ package com.rongji.dfish.ui.command;
  * <div>after</div>
  * </div>
  * @author DFish Team
- * @version 1.0
- * @since DFish 3.0
+ * @date 2018-08-03 before
+ * @since 3.0
+ * @version 1.1 lamontYu 所有属性和type按照驼峰命名方式调整
  */
 public class After extends AddCommand<After>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6784590200007210824L;
 
 	@Override
 	public String getType() {
-		return "after";
+		return "After";
 	}
 
 }

@@ -181,7 +181,7 @@ public class BaseUIController extends BaseActionController {
 		Vertical root = new Vertical(null);
 		view.add(root);
 		
-		Html main = new Html(null).setId(ID_DIALOG_BODY).setScroll(true).setStyle("padding:10px 20px;").setHmin(20).setWmin(40);
+		Html main = new Html(null).setId(ID_DIALOG_BODY).setScroll(true).setStyle("padding:10px 20px;").setHeightMinus(20).setWidthMinus(40);
 		root.add(main);
 		
 		return view;

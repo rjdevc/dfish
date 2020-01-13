@@ -198,12 +198,12 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout
 	}
 
 	@Override
-	public String getValign() {
+	public String getvAlign() {
 		return valign;
 	}
 	@Override
-	public T setValign(String valign) {
-		this.valign=valign;
+	public T setvAlign(String vAlign) {
+		this.valign= vAlign;
 		return (T)this;
 	}
 	@Override

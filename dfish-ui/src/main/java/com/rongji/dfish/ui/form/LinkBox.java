@@ -20,13 +20,10 @@ import com.rongji.dfish.ui.command.Dialog;
  * 
  * @author DFish Team
  * @version 3.0
- * @since XMLTMPL 1.0
+ * @since 1.0
  */
-public class Linkbox extends LinkableSuggestionBox<Linkbox> {
+public class LinkBox extends LinkableSuggestionBox<LinkBox> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 885423787975226663L;
 
 	/**
@@ -37,7 +34,7 @@ public class Linkbox extends LinkableSuggestionBox<Linkbox> {
 	 * @param value 初始值
 	 * @param suggest 候选项的URL
 	 */
-	public Linkbox(String name, String label, String value, String suggest) {
+	public LinkBox(String name, String label, String value, String suggest) {
 		super(name, label, value, suggest);
 	}
 
@@ -49,13 +46,13 @@ public class Linkbox extends LinkableSuggestionBox<Linkbox> {
 	 * @param value 初始值
 	 * @param suggest 候选项的弹窗命令
 	 */
-	public Linkbox(String name, String label, String value, Dialog suggest) {
+	public LinkBox(String name, String label, String value, Dialog suggest) {
 		super(name, label, value, suggest);
 	}
 
 	@Override
-    public String getType() {
-		return "linkbox";
+	public String getType() {
+		return "LinkBox";
 	}
-	
+
 }

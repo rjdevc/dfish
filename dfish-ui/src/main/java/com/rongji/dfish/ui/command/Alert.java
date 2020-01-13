@@ -7,108 +7,115 @@ import com.rongji.dfish.ui.widget.Button;
 
 /**
  * 该命令用于打开一个警告框(Dialog)
- * 
+ *
  * @author DFish Team
- * @version 2.0
- * @since XMLTMPL 2.0
+ * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
+ * @since 2.0
  */
-public class Alert extends AbstractDialog<Alert> implements Command<Alert>,Positionable<Alert>,HasText<Alert>  {
+public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Positionable<Alert>, HasText<Alert> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3046146830347964521L;
-	private String btncls;
-	private String icon;
-	private String text;
-	private List<Button> buttons;
-	private Command<?> yes;// 点击"确定"执行的命令。
+    private static final long serialVersionUID = 3046146830347964521L;
 
-	/**
-	 * 构造函数
-	 * @param text 文本
-	 */
-	public Alert(String text) {
-		this.text = text;
-	}
+    private String btnCls;
+    private String icon;
+    private String text;
+    private List<Button> buttons;
+    private Command<?> yes;// 点击"确定"执行的命令。
 
-	@Override
-	public Alert setText(String text) {
-		this.text = text;
-		return this;
-	}
+    /**
+     * 构造函数
+     *
+     * @param text 文本
+     */
+    public Alert(String text) {
+        this.text = text;
+    }
 
-	@Override
-	public String getText() {
-		return text;
-	}
+    @Override
+    public String getType() {
+        return "Alert";
+    }
 
-	/**
-	 * 按钮样式名
-	 * @return String
-	 */
-	public String getBtncls() {
-		return btncls;
-	}
+    @Override
+    public Alert setText(String text) {
+        this.text = text;
+        return this;
+    }
 
-	/**
-	 * 按钮样式名
-	 * @param btncls String
-	 * @return this
-	 */
-	public Alert setBtncls(String btncls) {
-		this.btncls = btncls;
-		return this;
-	}
+    @Override
+    public String getText() {
+        return text;
+    }
 
-	/**
-	 * 图标
-	 * @return the icon
-	 * @since XMLTMPL 2.1
-	 */
-	public String getIcon() {
-		return icon;
-	}
+    /**
+     * 按钮样式名
+     *
+     * @return String
+     */
+    public String getBtnCls() {
+        return btnCls;
+    }
 
-	/**
-	 * 图标
-	 * @param icon the icon to set
-	 * @return 本身，这样可以继续设置其他属性
-	 * @since XMLTMPL 2.1
-	 */
-	public Alert setIcon(String icon) {
-		this.icon = icon;
-		return this;
-	}
+    /**
+     * 按钮样式名
+     *
+     * @param btnCls String
+     * @return this
+     */
+    public Alert setBtnCls(String btnCls) {
+        this.btnCls = btnCls;
+        return this;
+    }
 
-	@Override
-	public String getType() {
-		return "alert";
-	}
+    /**
+     * 图标
+     *
+     * @return the icon
+     * @since XMLTMPL 2.1
+     */
+    public String getIcon() {
+        return icon;
+    }
 
-	public List<Button> getButtons() {
-		return buttons;
-	}
+    /**
+     * 图标
+     *
+     * @param icon the icon to set
+     * @return 本身，这样可以继续设置其他属性
+     * @since XMLTMPL 2.1
+     */
+    public Alert setIcon(String icon) {
+        this.icon = icon;
+        return this;
+    }
 
-	public Alert setButtons(List<Button> buttons) {
-		this.buttons = buttons;
-		return this;
-	}
-	/**
-	 * 点击"确定"执行的命令。
-	 * @return Command
-	 */
-	public Command<?> getYes() {
-		return yes;
-	}
-	/**
-	 * 点击"确定"执行的命令。
-	 * @param yes ConfirmCommand
-	 * @return this
-	 */
-	public Alert setYes(Command<?> yes) {
-		this.yes = yes;
-		return this;
-	}
+    public List<Button> getButtons() {
+        return buttons;
+    }
+
+    public Alert setButtons(List<Button> buttons) {
+        this.buttons = buttons;
+        return this;
+    }
+
+    /**
+     * 点击"确定"执行的命令。
+     *
+     * @return Command
+     */
+    public Command<?> getYes() {
+        return yes;
+    }
+
+    /**
+     * 点击"确定"执行的命令。
+     *
+     * @param yes ConfirmCommand
+     * @return this
+     */
+    public Alert setYes(Command<?> yes) {
+        this.yes = yes;
+        return this;
+    }
 
 }

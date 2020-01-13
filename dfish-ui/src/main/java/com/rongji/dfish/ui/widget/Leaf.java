@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
-import com.rongji.dfish.ui.form.Triplebox;
+import com.rongji.dfish.ui.form.TripleBox;
 import com.rongji.dfish.ui.layout.AbstractLayout;
 
 import java.util.*;
@@ -488,14 +488,14 @@ public class Leaf extends AbstractLayout<Leaf, Leaf> implements MultiContainer<L
     }
 
     /**
-     * 级联修复选择框的状态，仅支持Triplebox的状态修复，且根据{@link Triplebox#getChecked()} 来判断，true代表该节点被选中
+     * 级联修复选择框的状态，仅支持Triplebox的状态修复，且根据{@link TripleBox#getChecked()} 来判断，true代表该节点被选中
      *
      * @deprecated 该方法无需调用,前端引擎已实现自动计算
      * @return 本身，这样可以继续设置其他属性
      */
     @Deprecated
     public Leaf fixBoxCheckStatus() {
-        if (this.getBox() == null || !(this.getBox() instanceof Triplebox)) {
+        if (this.getBox() == null || !(this.getBox() instanceof TripleBox)) {
             // 无选择框或者选择框不是Triplebox 直接返回无需修复
             return this;
         }
