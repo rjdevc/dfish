@@ -7,7 +7,7 @@ import java.util.List;
 import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.AbstractContainer;
 
 /**
  * 指定范围的表单组合，实际上就是一个容器，里面可以放置begin和end两个表单
@@ -16,7 +16,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @version 1.0
  * @since Period
  */
-public class Range extends AbstractLayout<Range> implements LabelRow<Range>, MultiContainer<Range, FormElement<?, ?>> {
+public class Range extends AbstractContainer<Range> implements LabelRow<Range>, MultiContainer<Range, FormElement<?, ?>> {
 
     private static final long serialVersionUID = -4525721180514710555L;
 

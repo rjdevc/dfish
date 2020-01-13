@@ -4,7 +4,7 @@ import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.TripleBox;
-import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.AbstractContainer;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0
  * @since XMLTMPL 2.0
  */
-public class Tree extends AbstractLayout<Tree>
+public class Tree extends AbstractContainer<Tree>
 	implements Scrollable<Tree>,HiddenContainer<Tree>,  HtmlContentHolder<Tree>,
 	 PubHolder<Tree,Leaf>,MultiContainer<Tree, Leaf>,HasSrc<Tree> {
 	/**

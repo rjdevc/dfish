@@ -16,7 +16,7 @@ import com.rongji.dfish.ui.form.Hidden;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractLayout<T extends AbstractLayout<T> > extends AbstractWidget<T> implements Container<T> {
+public abstract class AbstractContainer<T extends AbstractContainer<T>> extends AbstractWidget<T> implements Container<T> {
 	
 	private static final long serialVersionUID = 6322077434879898040L;
 
@@ -29,7 +29,7 @@ public abstract class AbstractLayout<T extends AbstractLayout<T> > extends Abstr
 	 * 构造函数
 	 * @param id String
 	 */
-	public AbstractLayout(String id){
+	public AbstractContainer(String id){
 		this.id=id;
 	}
 	protected List<HasId<?>> nodes = new ArrayList<>();
@@ -114,7 +114,7 @@ public abstract class AbstractLayout<T extends AbstractLayout<T> > extends Abstr
      * @param to AbstractLayout
      * @param from AbstractLayout
      */
-    protected void copyProperties(AbstractLayout<?>to,AbstractLayout<?>from){
+    protected void copyProperties(AbstractContainer<?> to, AbstractContainer<?> from){
 		super.copyProperties(to, from);
 		to.nodes=from.nodes;
 	}
@@ -249,8 +249,8 @@ public abstract class AbstractLayout<T extends AbstractLayout<T> > extends Abstr
 					if (name.equals(cast.getName())) {
 						result.add(cast);
 					}
-				} else if (item instanceof AbstractLayout) {
-					((AbstractLayout) item).findFormElementsByName(name, result);
+				} else if (item instanceof AbstractContainer) {
+					((AbstractContainer) item).findFormElementsByName(name, result);
 				}
 			}
 		}

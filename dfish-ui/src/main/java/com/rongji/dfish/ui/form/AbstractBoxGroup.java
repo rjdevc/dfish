@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.Option;
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.AbstractContainer;
 import com.rongji.dfish.ui.layout.Layout;
 import com.rongji.dfish.ui.widget.Html;
 
@@ -25,7 +25,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     protected List<N> nodes = new ArrayList<>();
     protected Boolean escape;
     protected String dir;
-    private AbstractLayout<?> bridgedObject=new AbstractLayout(null){
+    private AbstractContainer<?> bridgedObject=new AbstractContainer(null){
         @Override
         public String getType() {
             return null;

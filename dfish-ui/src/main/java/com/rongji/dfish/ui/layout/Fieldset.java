@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  *@author DFish Team
  *
  */
-public class Fieldset extends AbstractLayout<Fieldset> implements MultiContainer<Fieldset,Widget<?>>{
+public class Fieldset extends AbstractContainer<Fieldset> implements MultiContainer<Fieldset,Widget<?>>{
 	/**
 	 * 
 	 */

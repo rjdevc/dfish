@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.Widget;
  *
  * @author DFish Team
  */
-public class Frame extends AbstractLayout<Frame> implements MultiContainer<Frame, Widget> {
+public class Frame extends AbstractContainer<Frame> implements MultiContainer<Frame, Widget> {
     /**
      *
      */

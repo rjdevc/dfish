@@ -25,7 +25,7 @@ import com.rongji.dfish.ui.Widget;
  * @since DFish 3.0
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractLayout<T> {
+public abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractContainer<T> {
 	/**
 	 * 
 	 */

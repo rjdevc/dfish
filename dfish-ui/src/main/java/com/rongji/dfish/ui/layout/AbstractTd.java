@@ -15,7 +15,7 @@ import com.rongji.dfish.ui.*;
  * @see com.rongji.dfish.ui.layout.Grid.Td
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractLayout<T>
+public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractContainer<T>
 		implements SingleContainer<T>,Alignable<T>,Valignable<T>{
 	/**
 	 * 

@@ -4,7 +4,7 @@ import com.rongji.dfish.ui.HtmlContentHolder;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.PubHolder;
 import com.rongji.dfish.ui.Scrollable;
-import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.AbstractContainer;
 import com.rongji.dfish.ui.layout.ListView;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author DFish Team
  *
  */
-public class Album extends AbstractLayout<Album> implements HtmlContentHolder<Album>, Scrollable<Album>, ListView<Album>,PubHolder<Album,Img>,
+public class Album extends AbstractContainer<Album> implements HtmlContentHolder<Album>, Scrollable<Album>, ListView<Album>,PubHolder<Album,Img>,
 MultiContainer<Album,Img>{
 	/**
 	 * 

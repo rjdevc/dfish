@@ -3,14 +3,14 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.PubHolder;
-import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.AbstractContainer;
 
 /**
  * 时间轴
  * @author lamontYu
  * @date 2019-11-25 11:52
  */
-public class Timeline extends AbstractLayout<Timeline> implements Alignable<Timeline>, PubHolder<Timeline, TimelineItem> {
+public class Timeline extends AbstractContainer<Timeline> implements Alignable<Timeline>, PubHolder<Timeline, TimelineItem> {
 
     private String align;
     private TimelineItem pub;

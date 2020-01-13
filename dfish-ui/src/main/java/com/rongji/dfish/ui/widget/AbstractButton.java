@@ -4,7 +4,7 @@ package com.rongji.dfish.ui.widget;
 import java.util.List;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.AbstractContainer;
 
 /**
  * AbstractButton 为抽象按钮类 用于方便扩展多种按钮
@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.layout.AbstractLayout;
  * @param <T> 当前对象类型
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractLayout<T> implements MultiContainer<T, Widget<?>>,HasFormat<T>,HtmlContentHolder<T> {
+public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractContainer<T> implements MultiContainer<T, Widget<?>>,HasFormat<T>,HtmlContentHolder<T> {
 
 	/**
 	 * 

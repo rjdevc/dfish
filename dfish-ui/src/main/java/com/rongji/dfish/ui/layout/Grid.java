@@ -70,7 +70,7 @@ import java.util.Map;
  * @author DFish team
  * @since DFish 3.0
  */
-public class Grid extends AbstractLayout<Grid> implements ListView<Grid>,
+public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         HiddenContainer<Grid>, HtmlContentHolder<Grid>, PubHolder<Grid, Grid.Tr>, Scrollable<Grid>, GridOperation<Grid> {
 
     /**
@@ -2134,7 +2134,7 @@ public class Grid extends AbstractLayout<Grid> implements ListView<Grid>,
      *
      * @author DFish team
      */
-    private static abstract class Part extends AbstractLayout<Part> implements GridOperation<Part> {
+    private static abstract class Part extends AbstractContainer<Part> implements GridOperation<Part> {
         /**
          *
          */

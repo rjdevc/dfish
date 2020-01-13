@@ -4,14 +4,14 @@ import com.rongji.dfish.ui.HasFormat;
 import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.PubHolder;
-import com.rongji.dfish.ui.layout.AbstractLayout;
+import com.rongji.dfish.ui.layout.AbstractContainer;
 
 /**
  * 进度条
  * @author DFish team
  *
  */
-public class Progress extends AbstractLayout<Progress> implements HasText<Progress>, HasSrc<Progress>,HasFormat<Progress>, PubHolder<Progress,ProgressItem> {
+public class Progress extends AbstractContainer<Progress> implements HasText<Progress>, HasSrc<Progress>,HasFormat<Progress>, PubHolder<Progress,ProgressItem> {
 	/**
 	 * 
 	 */

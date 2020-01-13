@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 可切换标签容器
  */
-public class Tabs extends AbstractLayout<Tabs> implements MultiContainer<Tabs, Tab>, PubHolder<Tabs, Tab>,
+public class Tabs extends AbstractContainer<Tabs> implements MultiContainer<Tabs, Tab>, PubHolder<Tabs, Tab>,
         Alignable<Tabs>, Valignable<Tabs>, HiddenContainer<Tabs> {
     private String align;
     private String valign;

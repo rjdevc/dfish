@@ -17,7 +17,7 @@ import com.rongji.dfish.ui.Widget;
  *
  * @param <T> 类型
  */
-public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractLayout<T> implements SingleContainer<T>,LazyLoad<T> {
+public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractContainer<T> implements SingleContainer<T>,LazyLoad<T> {
 	private String preload;
 	private String template;
 	private String src;

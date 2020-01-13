@@ -20,7 +20,7 @@ import java.util.List;
  * @since 3.3
  *
  */
-public class Form extends AbstractLayout<Form>
+public class Form extends AbstractContainer<Form>
         implements HtmlContentHolder<Form>, Scrollable<Form>,MultiContainer<Form,Widget<?>> ,
         PubHolder<Form,Grid.Td> ,HiddenContainer<Form>{
     /**

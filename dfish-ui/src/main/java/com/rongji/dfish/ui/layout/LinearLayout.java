@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.form.Hidden;
  * @param <T> 当前类型
  */
 @SuppressWarnings("unchecked")
-public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractLayout<T>
+public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractContainer<T>
 implements Scrollable<T>,Alignable<T>,Valignable<T>,
 		MultiContainer<T,Widget<?>>,HiddenContainer<T>{
 	/**
