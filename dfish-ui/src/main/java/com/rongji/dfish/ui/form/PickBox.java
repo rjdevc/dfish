@@ -14,6 +14,7 @@ public class PickBox extends AbstractInput<PickBox,String> implements HasText<Pi
 	private static final long serialVersionUID = 7493588393931087665L;
 
 	private String text;
+	private String format;
 	private Boolean escape;
 	private Dialog drop;
 	/**
@@ -32,6 +33,16 @@ public class PickBox extends AbstractInput<PickBox,String> implements HasText<Pi
 	@Override
     public PickBox setText(String text) {
 		this.text = text;
+		return this;
+	}
+	@Override
+	public String getFormat() {
+		return format;
+	}
+
+	@Override
+	public PickBox setFormat(String format) {
+		this.format = format;
 		return this;
 	}
 	/**

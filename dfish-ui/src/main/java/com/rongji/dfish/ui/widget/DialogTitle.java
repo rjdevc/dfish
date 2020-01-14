@@ -17,7 +17,7 @@ public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollab
 	private Boolean escape;
 	private String text;
 	private Boolean scroll;
-
+	private String format;
 	/**
 	 * 构造函数
 	 * @param id String 编号
@@ -34,7 +34,16 @@ public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollab
 	public DialogTitle(String text){
 		this(null, text);
 	}
+	@Override
+	public String getFormat() {
+		return format;
+	}
 
+	@Override
+	public DialogTitle setFormat(String format) {
+		this.format = format;
+		return this;
+	}
 	@Override
     public Boolean getEscape() {
 		return this.escape;

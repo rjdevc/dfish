@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.LazyLoad;
 
 /**
@@ -11,7 +10,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, HasSrc<Dialog> {
+public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, LazyLoad<Dialog> {
 
     private static final long serialVersionUID = -3055223672741088528L;
 

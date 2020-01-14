@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui;
+package com.rongji.dfish.ui.json;
 
 import com.rongji.dfish.ui.json.JsonWrapper;
 

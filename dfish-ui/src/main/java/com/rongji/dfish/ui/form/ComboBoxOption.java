@@ -16,8 +16,10 @@ public class ComboBoxOption extends AbstractWidget<ComboBoxOption> implements Ha
     private static final long serialVersionUID = -8723811310007986652L;
 
     private String text;
+    private String format;
     private Boolean escape;
     private String value;
+
 
     @Override
     public String getText() {
@@ -27,6 +29,16 @@ public class ComboBoxOption extends AbstractWidget<ComboBoxOption> implements Ha
     @Override
     public ComboBoxOption setText(String text) {
         this.text = text;
+        return this;
+    }
+    @Override
+    public String getFormat() {
+        return format;
+    }
+
+    @Override
+    public ComboBoxOption setFormat(String format) {
+        this.format = format;
         return this;
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Tree extends AbstractContainer<Tree>
 	implements Scrollable<Tree>,HiddenContainer<Tree>,  HtmlContentHolder<Tree>,
-	 PubHolder<Tree,Leaf>,MultiContainer<Tree, Leaf>,HasSrc<Tree> {
+	 PubHolder<Tree,Leaf>,MultiContainer<Tree, Leaf>,LazyLoad<Tree> {
 	/**
 	 * 
 	 */

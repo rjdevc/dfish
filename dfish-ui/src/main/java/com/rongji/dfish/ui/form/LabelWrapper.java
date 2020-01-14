@@ -22,6 +22,7 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 
 	private static final long serialVersionUID = 2082708957092349423L;
 	private String text;
+	private String format;
 	private Label label;
 	private Boolean hideLabel;
 	private Boolean escape = true;
@@ -107,6 +108,17 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 	@Override
     public LabelWrapper setText(String text) {
 		this.text = text;
+		return this;
+	}
+
+	@Override
+	public String getFormat() {
+		return format;
+	}
+
+	@Override
+	public LabelWrapper setFormat(String format) {
+		this.format = format;
 		return this;
 	}
 

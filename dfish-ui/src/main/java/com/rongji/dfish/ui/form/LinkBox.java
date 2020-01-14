@@ -50,4 +50,5 @@ public class LinkBox extends LinkableSuggestionBox<LinkBox> {
 		super(name, label, value, suggest);
 	}
 
+
 }

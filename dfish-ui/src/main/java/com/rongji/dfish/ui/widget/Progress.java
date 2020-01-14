@@ -8,7 +8,7 @@ import com.rongji.dfish.ui.layout.AbstractContainer;
  *
  * @author DFish team
  */
-public class Progress extends AbstractContainer<Progress> implements HasText<Progress>, HasSrc<Progress>, HasFormat<Progress>, PubHolder<Progress, Progress.Item> {
+public class Progress extends AbstractContainer<Progress> implements HasText<Progress>, LazyLoad<Progress>,  PubHolder<Progress, Progress.Item> {
 
     private static final long serialVersionUID = -5027456322715352343L;
 
@@ -281,7 +281,7 @@ public class Progress extends AbstractContainer<Progress> implements HasText<Pro
 	 * @date 2019-09-30 14:31
 	 * @since 5.0
 	 */
-	public static class Item extends AbstractWidget<Item> implements HasFormat<Item> {
+	public static class Item extends AbstractWidget<Item> implements HasText<Item> {
 
 		private Number percent;
 		private String text;

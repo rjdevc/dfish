@@ -26,7 +26,4 @@ public interface HtmlContentHolder<T extends HtmlContentHolder<T>> {
      * @return XMLFrag
      */
     T setEscape(Boolean escape);
-    
-   
-    
 }

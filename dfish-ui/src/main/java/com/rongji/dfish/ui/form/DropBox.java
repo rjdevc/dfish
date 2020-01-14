@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.form;
 import java.util.List;
 
 import com.rongji.dfish.base.Option;
-import com.rongji.dfish.ui.HasSrc;
+import com.rongji.dfish.ui.LazyLoad;
 
 
 
@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.HasSrc;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class DropBox extends AbstractOptionsHolder<DropBox, Option> implements HasSrc<DropBox> {
+public class DropBox extends AbstractOptionsHolder<DropBox, Option> implements LazyLoad<DropBox> {
 	/**
 	 * 
 	 */

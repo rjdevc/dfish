@@ -26,7 +26,7 @@ import java.util.*;
  * @version 2.0
  * @since XMLTMPL 1.0
  */
-public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>,HtmlContentHolder<Leaf>, HasSrc<Leaf>, HasFormat<Leaf> {
+public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf, Leaf>, Statusful<Leaf>,HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf> {
     private static final long serialVersionUID = -6246121270694425393L;
     private Boolean focus;
     private Boolean focusable;

@@ -15,7 +15,7 @@ import java.util.Map;
  * @param <T> 类型
  */
 public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractContainer<T>
-		implements SingleContainer<T,Widget>,HasSrc<T> {
+		implements SingleContainer<T,Widget>,LazyLoad<T> {
 	private String preload;
 	private String src;
 	private Boolean sync;

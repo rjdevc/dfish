@@ -18,6 +18,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
      */
     private static final long serialVersionUID = -1444093499873660133L;
     private String text;
+    private String format;
     private Boolean escape;
     private Boolean strict;
     private ComboBoxOption pub;
@@ -56,6 +57,16 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     @Override
     public String getText() {
         return text;
+    }
+    @Override
+    public String getFormat() {
+        return format;
+    }
+
+    @Override
+    public T setFormat(String format) {
+        this.format = format;
+        return (T) this;
     }
 
     @Override

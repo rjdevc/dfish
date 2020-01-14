@@ -21,6 +21,7 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	public static final String TARGET_NEXT = "next";
 	
 	private String text;
+	private String format;
 	private Boolean escape;
 	private String icon;
 	private String expandedIcon;
@@ -61,7 +62,16 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 		this.text = text;
 		return this;
 	}
-	
+	@Override
+	public String getFormat() {
+		return format;
+	}
+
+	@Override
+	public Split setFormat(String format) {
+		this.format = format;
+		return this;
+	}
 	/**
 	 * 收拢图标。图片地址url，或是以点 "." 开头的样式名
 	 * @return icon

@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.HasFormat;
+import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
 
 /**
@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.HtmlContentHolder;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractFormElement<T, Object> implements HtmlContentHolder<T>, HasFormat<T> {
+public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractFormElement<T, Object> implements HtmlContentHolder<T>, HasText<T> {
 
     private static final long serialVersionUID = -5120066286869690681L;
 

@@ -18,6 +18,7 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	//	private String align;
 //	private String valign;
 	private String text;
+	private String format;
 	private Boolean escape;
 	private String src;
 	private Boolean scroll;
@@ -58,6 +59,16 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 	@Override
     public EmbedWindow setText(String text) {
 		this.text = text;
+		return this;
+	}
+	@Override
+	public String getFormat() {
+		return format;
+	}
+
+	@Override
+	public EmbedWindow setFormat(String format) {
+		this.format = format;
 		return this;
 	}
 	

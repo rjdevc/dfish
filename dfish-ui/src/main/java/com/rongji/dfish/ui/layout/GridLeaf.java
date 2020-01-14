@@ -1,8 +1,8 @@
 package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.HasFormat;
-import com.rongji.dfish.ui.HasSrc;
+import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.LazyLoad;
 
 /**
  * GridTreeItem 是可折叠表格中的折叠项
@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.HasSrc;
  * @author DFish Team
  *
  */
-public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLeaf>,HasFormat<GridLeaf> {
+public class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridLeaf>,HasText<GridLeaf> {
 
 	private static final long serialVersionUID = -7465823398383091843L;
 	private String text;

@@ -7,7 +7,7 @@ package com.rongji.dfish.ui;
  *
  * @param <T> 当前对象类型
  */
-public interface HasSrc<T extends HasSrc<T>> {
+public interface LazyLoad<T extends LazyLoad<T>> {
 	/**
 	 * 加载 具体内容 的 url。访问这个url 时应当返回一个 json 字串。
 	 * 如果没有template 这个字符串应该是dfish的格式。

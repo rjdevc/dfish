@@ -18,6 +18,7 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
     private String thumbnail;
     private Boolean error;
     private String text;
+    private String format;
     private Boolean escape;
     private String width;
     private String height;
@@ -143,7 +144,16 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
         this.text = text;
         return this;
     }
+    @Override
+    public String getFormat() {
+        return format;
+    }
 
+    @Override
+    public UploadItem setFormat(String format) {
+        this.format = format;
+        return this;
+    }
     /**
      * 宽度
      *

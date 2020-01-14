@@ -8,7 +8,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  *
  * @author DFish Team
  */
-public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignable<Img>, HtmlContentHolder<Img>, HasFormat<Img> {
+public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignable<Img>, HtmlContentHolder<Img>, HasText<Img> {
     /**
      *
      */

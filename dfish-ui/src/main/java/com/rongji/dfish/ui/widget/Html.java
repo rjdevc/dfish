@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.*;
  * @author DFish Team
  *
  */
-public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlContentHolder<Html>,Alignable<Html>, VAlignable<Html>,HasFormat<Html> {
+public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlContentHolder<Html>,Alignable<Html>, VAlignable<Html>,HasText<Html> {
 
 	private static final long serialVersionUID = -3447946365229839223L;
 	private String align;

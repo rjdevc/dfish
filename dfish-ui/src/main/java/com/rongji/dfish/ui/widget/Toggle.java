@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.HasFormat;
+import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
 
 /**
@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.HtmlContentHolder;
  *
  * @author DFish Team
  */
-public class Toggle extends AbstractWidget<Toggle> implements HasFormat<Toggle>, HtmlContentHolder<Toggle> {
+public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, HtmlContentHolder<Toggle> {
 
     private static final long serialVersionUID = 4964103955404250558L;
 
