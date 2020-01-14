@@ -17,7 +17,8 @@ import com.rongji.dfish.ui.Widget;
  *
  * @param <T> 类型
  */
-public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractContainer<T> implements SingleContainer<T>,LazyLoad<T> {
+public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractContainer<T>
+		implements SingleContainer<T,Widget>,LazyLoad<T> {
 	private String preload;
 	private String template;
 	private String src;
@@ -106,10 +107,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public T setNode(HasId rootWidget) {
-		if(!(rootWidget instanceof Widget)){
-			throw new IllegalArgumentException("Widget only");
-		}
+	public T setNode(Widget rootWidget) {
 		Widget widget=(Widget)rootWidget;
 		if(widget!=null){
 			if(nodes.size()>0){
@@ -131,7 +129,10 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	
 	@Override
 	public T add(HasId widget) {
-		return setNode(widget);
+		if(!(widget instanceof Widget)){
+			throw 	new IllegalArgumentException("Widget only");
+		}
+		return setNode((Widget) widget);
 	}
 
 	@Override

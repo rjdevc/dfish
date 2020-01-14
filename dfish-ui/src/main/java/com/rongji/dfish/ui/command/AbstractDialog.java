@@ -15,7 +15,7 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractDialog<T extends AbstractDialog<T>> extends AbstractWidget<T>
-        implements SingleContainer<T>, DialogWidth<T>, DialogHeight<T>, HasId<T>, Positionable<T>, Snapable<T> {
+        implements SingleContainer<T,Widget>, DialogWidth<T>, DialogHeight<T>, HasId<T>, Positionable<T>, Snapable<T> {
 
     private static final long serialVersionUID = -6765281771952118355L;
 
@@ -213,8 +213,8 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setNode(HasId node) {
-        this.node = (Widget)node;
+    public T setNode(Widget node) {
+        this.node = node;
         return (T) this;
     }
 

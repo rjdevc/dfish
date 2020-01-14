@@ -6,16 +6,16 @@ package com.rongji.dfish.ui;
  *
  * @param <T> 当前对象类型
  */
-public interface SingleContainer<T extends SingleContainer<T>> extends Container<T> {
+public interface SingleContainer<T extends SingleContainer<T,N>,N extends HasId> extends Container<T> {
 	 /**
      * 取得下级的Widget
      * @return N
      */
-    HasId getNode();
+    N getNode();
     /**
      * 设置下级的Widget
      * @param node N
      * @return 本身，这样可以继续设置其他属性
      */
-    T setNode(HasId node);
+    T setNode(N node);
 }

@@ -16,7 +16,7 @@ import com.rongji.dfish.ui.*;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractContainer<T>
-		implements SingleContainer<T>,Alignable<T>,Valignable<T>{
+		implements SingleContainer<T ,Widget>,Alignable<T>,Valignable<T>{
 	/**
 	 * 
 	 */
@@ -124,11 +124,8 @@ public abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractContai
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public T setNode(HasId node) {
-		if(!(node instanceof Widget)){
-			throw new IllegalArgumentException("Widget only");
-		}
-		this.node = (Widget<?>) node;
+    public T setNode(Widget node) {
+		this.node =  node;
 		return (T)this;
 	}
 	/**

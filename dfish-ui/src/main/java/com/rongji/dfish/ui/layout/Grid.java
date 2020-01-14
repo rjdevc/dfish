@@ -2878,7 +2878,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             return super.setRowspan(rowspan);
         }
         @Override
-        public Td setNode(HasId node) {
+        public Td setNode(Widget node) {
             nc();
             return super.setNode(node);
         }

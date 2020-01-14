@@ -15,7 +15,8 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public class Replace extends NodeControlCommand<Replace> implements SingleContainer<Replace> {
+public class Replace extends NodeControlCommand<Replace>
+        implements SingleContainer<Replace,HasId> {
 
     private static final long serialVersionUID = -5997424469287615043L;
 
