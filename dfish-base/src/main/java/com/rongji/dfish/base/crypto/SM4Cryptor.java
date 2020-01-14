@@ -1,8 +1,7 @@
-package com.rongji.dfish.base.crypt;
+package com.rongji.dfish.base.crypto;
 
-import com.rongji.dfish.base.crypt.stream.SM4ECBInputStream;
-import com.rongji.dfish.base.crypt.stream.SM4ECBOutputStream;
-import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.crypto.stream.SM4ECBInputStream;
+import com.rongji.dfish.base.crypto.stream.SM4ECBOutputStream;
 
 import java.io.InputStream;
 import java.io.OutputStream;

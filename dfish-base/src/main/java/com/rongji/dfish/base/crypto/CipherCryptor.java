@@ -1,6 +1,4 @@
-package com.rongji.dfish.base.crypt;
-
-import com.rongji.dfish.base.util.LogUtil;
+package com.rongji.dfish.base.crypto;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -8,10 +6,8 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.zip.GZIPInputStream;

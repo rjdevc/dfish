@@ -1,4 +1,4 @@
-package com.rongji.dfish.base.crypt;
+package com.rongji.dfish.base.crypto;
 
 import com.rongji.dfish.base.util.LogUtil;
 

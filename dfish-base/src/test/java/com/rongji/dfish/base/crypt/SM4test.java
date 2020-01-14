@@ -1,19 +1,14 @@
 package com.rongji.dfish.base.crypt;
 
-import com.rongji.dfish.base.crypt.stream.SM4ECBInputStream;
-import com.rongji.dfish.base.crypt.stream.SM4ECBOutputStream;
-import com.rongji.dfish.base.util.ByteArrayUtil;
-import com.rongji.dfish.base.util.CryptUtil;
+import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.util.CryptoUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 public class SM4test {
     public static void main(String[] args) throws IOException {
-        Cryptor c=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_SM4,"RJ002474RJ002474")
-                .gzip(false).encoding("UTF-8").present(CryptUtil.PRESENT_BASE64_URLSAFE).build();
+        Cryptor c=CryptoUtil.prepareCryptor(CryptoUtil.ALGORITHM_SM4,"RJ002474RJ002474")
+                .gzip(false).encoding("UTF-8").present(CryptoUtil.PRESENT_BASE64_URLSAFE).build();
         String src=
                 "君不见，黄河之水天上来⑵，奔流到海不复回。\n" +
                 "君不见，高堂明镜悲白发，朝如青丝暮成雪⑶。\n" +

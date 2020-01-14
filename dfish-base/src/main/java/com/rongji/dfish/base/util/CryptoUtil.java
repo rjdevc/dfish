@@ -1,6 +1,6 @@
 package com.rongji.dfish.base.util;
 
-import com.rongji.dfish.base.crypt.*;
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 
 /**
  * 加解密常用的方法
@@ -13,7 +13,7 @@ import com.rongji.dfish.base.crypt.*;
  * @author DFish team
  *
  */
-public class CryptUtil {
+public class CryptoUtil {
 	public static final String ALGORITHM_NONE=null;
 	/**
 	 * BLOWFISH加解密方法,由于相同源可以得到不同结果,而且破解就像当于得到加密密钥的过程所以有相当的安全性,效率还可以.

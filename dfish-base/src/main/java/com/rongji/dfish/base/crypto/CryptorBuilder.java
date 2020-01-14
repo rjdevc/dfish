@@ -1,4 +1,4 @@
-package com.rongji.dfish.base.crypt;
+package com.rongji.dfish.base.crypto;
 
 public class CryptorBuilder {
     public static final int PRESENT_RAW = 0;

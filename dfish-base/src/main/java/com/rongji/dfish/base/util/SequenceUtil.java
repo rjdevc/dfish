@@ -1,6 +1,5 @@
 package com.rongji.dfish.base.util;
 
-import com.rongji.dfish.base.crypt.StringCryptor;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -314,7 +313,8 @@ public class SequenceUtil {
 	public static String getUID(int byteLength) {
 		byte[] temp = new byte[byteLength];
 		random.nextBytes(temp);
-		return StringCryptor.byte2hex(temp);
+		return ByteArrayUtil.toHexString(temp);
+//		return StringCryptor.byte2hex(temp);
 	}
 
 

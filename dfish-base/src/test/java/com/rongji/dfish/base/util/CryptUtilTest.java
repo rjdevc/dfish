@@ -3,13 +3,11 @@ package com.rongji.dfish.base.util;
 import java.io.*;
 import java.util.ArrayList;
 
-import com.rongji.dfish.base.crypt.AbstractCryptor;
 import com.rongji.dfish.base.crypt.CryptFactory;
-import com.rongji.dfish.base.crypt.Cryptor;
+import com.rongji.dfish.base.crypto.Cryptor;
 import com.rongji.dfish.base.crypt.StringCryptor;
-import com.rongji.dfish.base.crypt.stream.Base64InputStream;
-import com.rongji.dfish.base.crypt.stream.Base64UrlsafeOutputStream;
-import org.junit.Test;
+import com.rongji.dfish.base.crypto.stream.Base64InputStream;
+import com.rongji.dfish.base.crypto.stream.Base64UrlsafeOutputStream;
 
 public class CryptUtilTest {
 	
@@ -56,15 +54,15 @@ public class CryptUtilTest {
 //	}
 
 	public static void main (String[] args) throws IOException {
-		Cryptor c2=CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH,"DFish@RJ002474".getBytes())
-				.present(CryptUtil.PRESENT_BASE32).encoding(CryptUtil.ENCODING_UTF8).build();
+		Cryptor c2=CryptoUtil.prepareCryptor(CryptoUtil.ALGORITHM_BLOWFISH,"DFish@RJ002474".getBytes())
+				.present(CryptoUtil.PRESENT_BASE32).encoding(CryptoUtil.ENCODING_UTF8).build();
 		String en2=c2.encrypt("uguess");
 		String de2=c2.decrypt(en2);
 
 
 
-		Cryptor c=CryptUtil.prepareCryptor("Blowfish","THIS_IS_".getBytes())
-				.gzip(true).encoding("UTF-8").present(CryptUtil.PRESENT_BASE64_URLSAFE).build();
+		Cryptor c=CryptoUtil.prepareCryptor("Blowfish","THIS_IS_".getBytes())
+				.gzip(true).encoding("UTF-8").present(CryptoUtil.PRESENT_BASE64_URLSAFE).build();
 		String src="君不见，黄河之水天上来⑵，奔流到海不复回。\n" +
 				"君不见，高堂明镜悲白发，朝如青丝暮成雪⑶。\n" +
 				"人生得意须尽欢⑷，莫使金樽空对月。\n" +

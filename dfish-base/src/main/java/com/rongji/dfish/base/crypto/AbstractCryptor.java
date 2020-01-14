@@ -1,8 +1,8 @@
-package com.rongji.dfish.base.crypt;
+package com.rongji.dfish.base.crypto;
 
 
 import java.io.*;
-import com.rongji.dfish.base.crypt.stream.*;
+import com.rongji.dfish.base.crypto.stream.*;
 
 public abstract class AbstractCryptor implements Cryptor{
 

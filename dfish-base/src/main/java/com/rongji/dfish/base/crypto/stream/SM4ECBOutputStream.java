@@ -1,4 +1,4 @@
-package com.rongji.dfish.base.crypt.stream;
+package com.rongji.dfish.base.crypto.stream;
 
 import java.io.IOException;
 import java.io.OutputStream;

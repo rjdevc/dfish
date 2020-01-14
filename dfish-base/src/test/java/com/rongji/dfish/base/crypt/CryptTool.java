@@ -1,20 +1,18 @@
 package com.rongji.dfish.base.crypt;
 
-import com.rongji.dfish.base.util.CryptUtil;
+import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.util.CryptoUtil;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class CryptTool extends Application {
@@ -61,10 +59,10 @@ public class CryptTool extends Application {
         ComboBox alg=new ComboBox();
         middle.getChildren().add(alg);
         alg.setItems(FXCollections.observableArrayList(
-                CryptUtil.ALGORITHM_BLOWFISH,CryptUtil.ALGORITHM_AES,CryptUtil.ALGORITHM_DES,
-                CryptUtil.ALGORITHM_TRIPLE_DES,CryptUtil.ALGORITHM_SM4,
-                CryptUtil.ALGORITHM_MD5,CryptUtil.ALGORITHM_SHA1,CryptUtil.ALGORITHM_SHA256,
-                CryptUtil.ALGORITHM_SHA256,
+                CryptoUtil.ALGORITHM_BLOWFISH,CryptoUtil.ALGORITHM_AES,CryptoUtil.ALGORITHM_DES,
+                CryptoUtil.ALGORITHM_TRIPLE_DES,CryptoUtil.ALGORITHM_SM4,
+                CryptoUtil.ALGORITHM_MD5,CryptoUtil.ALGORITHM_SHA1,CryptoUtil.ALGORITHM_SHA256,
+                CryptoUtil.ALGORITHM_SHA256,
                 "不加密"));
         alg.setValue("Blowfish");
 
@@ -153,25 +151,25 @@ public class CryptTool extends Application {
         int intPresent=0;
         switch (present){
             case "HEX":
-                intPresent=CryptUtil.PRESENT_HEX;
+                intPresent=CryptoUtil.PRESENT_HEX;
                 break;
             case "BASE64":
-                intPresent=CryptUtil.PRESENT_BASE64;
+                intPresent=CryptoUtil.PRESENT_BASE64;
                 break;
             case "BASE32":
-                intPresent=CryptUtil.PRESENT_BASE32;
+                intPresent=CryptoUtil.PRESENT_BASE32;
                 break;
             case "BASE64_URLSAFE":
-                intPresent=CryptUtil.PRESENT_BASE64_URLSAFE;
+                intPresent=CryptoUtil.PRESENT_BASE64_URLSAFE;
                 break;
             case "RAW":
-                intPresent=CryptUtil.PRESENT_RAW;
+                intPresent=CryptoUtil.PRESENT_RAW;
                 break;
             default:
         }
         if("不加密".equals(alg)){
-            alg=CryptUtil.ALGORITHM_NONE;
+            alg=CryptoUtil.ALGORITHM_NONE;
         }
-        return CryptUtil.prepareCryptor(alg,key).present(intPresent).encoding(encoding).gzip(gzip).build();
+        return CryptoUtil.prepareCryptor(alg,key).present(intPresent).encoding(encoding).gzip(gzip).build();
     }
 }
