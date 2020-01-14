@@ -3,12 +3,11 @@ package com.rongji.dfish.framework.plugin.progress;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.impl.MemoryCache;
-import com.rongji.dfish.base.crypt.Cryptor;
+import com.rongji.dfish.base.crypto.Cryptor;
 import com.rongji.dfish.base.exception.Marked;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
-import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.config.CryptorFactoryBean;
 
 import java.io.Serializable;

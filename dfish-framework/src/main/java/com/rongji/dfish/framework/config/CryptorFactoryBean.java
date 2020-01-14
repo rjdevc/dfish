@@ -1,19 +1,19 @@
 package com.rongji.dfish.framework.config;
 
-import com.rongji.dfish.base.crypt.Cryptor;
-import com.rongji.dfish.base.util.CryptUtil;
+import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.util.CryptoUtil;
 import org.springframework.beans.factory.FactoryBean;
 
 public class CryptorFactoryBean implements FactoryBean<Cryptor> {
 
-    public static final String ALGORITHM_DEFAULT = CryptUtil.ALGORITHM_BLOWFISH;
-    public static final String ENCODING_DEFAULT = CryptUtil.ENCODING_UTF8;
-    public static final int PRESENT_DEFAULT = CryptUtil.PRESENT_BASE32;
+    public static final String ALGORITHM_DEFAULT = CryptoUtil.ALGORITHM_BLOWFISH;
+    public static final String ENCODING_DEFAULT = CryptoUtil.ENCODING_UTF8;
+    public static final int PRESENT_DEFAULT = CryptoUtil.PRESENT_BASE32;
     public static final String SECRET_KEY_DEFAULT = "DFish@RJ002474";
 
     @Override
     public Cryptor getObject() throws Exception {
-        return CryptUtil.prepareCryptor(algorithm,secretKey.getBytes("UTF-8"))
+        return CryptoUtil.prepareCryptor(algorithm,secretKey.getBytes("UTF-8"))
                 .encoding(encoding).present(present)
                 .build();
     }

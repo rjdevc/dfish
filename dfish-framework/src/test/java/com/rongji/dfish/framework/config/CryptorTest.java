@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.config;
 
-import com.rongji.dfish.base.crypt.Cryptor;
-import com.rongji.dfish.base.util.CryptUtil;
+import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.util.CryptoUtil;
 import org.junit.Test;
 
 public class CryptorTest {
@@ -11,13 +11,13 @@ public class CryptorTest {
         String[] strArray = new String[]{"test", "RJtest"};
 
         String[] algorithmArray = new String[]{
-                CryptUtil.ALGORITHM_BLOWFISH,
-                CryptUtil.ALGORITHM_SHA1,
-                CryptUtil.ALGORITHM_SHA256,
-                CryptUtil.ALGORITHM_SHA512
+                CryptoUtil.ALGORITHM_BLOWFISH,
+                CryptoUtil.ALGORITHM_SHA1,
+                CryptoUtil.ALGORITHM_SHA256,
+                CryptoUtil.ALGORITHM_SHA512
         };
         for (String algorithm : algorithmArray) {
-            Cryptor cryptor = CryptUtil.prepareCryptor(algorithm, "DFish@RJ002474").build();
+            Cryptor cryptor = CryptoUtil.prepareCryptor(algorithm, "DFish@RJ002474").build();
             for (String str : strArray) {
                 System.out.println("[" + algorithm + "]" + str + "->(" + cryptor.encrypt(str) + ")");
             }
@@ -26,7 +26,7 @@ public class CryptorTest {
 
     @Test
     public void decrypt() {
-        Cryptor cryptor = CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH, "DFish@RJ002474").build();
+        Cryptor cryptor = CryptoUtil.prepareCryptor(CryptoUtil.ALGORITHM_BLOWFISH, "DFish@RJ002474").build();
 
         String enStr = "42EAHECSTJZQV0ZMH7Z5TY55AR";
         System.out.println(enStr + "->" + cryptor.decrypt(enStr));

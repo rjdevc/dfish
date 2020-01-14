@@ -1,5 +1,6 @@
 package com.rongji.dfish.base.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,5 +66,10 @@ public class StringUtilTest {
 		map.put("</SCRIPT>","");
 		s=StringUtil.replace(src,map);
 		System.out.println(s);
+	}
+	@Test
+	public void testRead(){
+		ByteArrayOutputStream baos=new ByteArrayOutputStream();
+
 	}
 }

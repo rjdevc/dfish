@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.config.impl;
 
-import com.rongji.dfish.base.crypt.Cryptor;
+import com.rongji.dfish.base.crypto.Cryptor;
 import com.rongji.dfish.framework.config.PropertyCryptor;
 
 /**
