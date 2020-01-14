@@ -6,17 +6,15 @@ import com.rongji.dfish.ui.HasSrc;
 
 /**
  * GridTreeItem 是可折叠表格中的折叠项
- * <p>在GridRow中添加了下级可折叠的行的时候，GridTreeItem作为一个视觉标志出现在当前行({@link Tr})上。
+ * <p>在GridRow中添加了下级可折叠的行的时候，GridTreeItem作为一个视觉标志出现在当前行({@link Grid.TR})上。
  * 它前方有一个+号(或-号)点击有展开或折叠效果。</p>
  * <p>多级别的GridTreeItem自动产生缩进效果</p>
- * @see Tr
+ * @see Grid.TR
  * @author DFish Team
  *
  */
 public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLeaf>,HasFormat<GridLeaf> {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -7465823398383091843L;
 	private String text;
 	private Boolean escape;
@@ -26,7 +24,6 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	private String error;
 	private String complete;
 	private String filter;
-	private String template;
 	private String format;
 	private Boolean line;
 	private Object tip;
@@ -38,11 +35,6 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 	    super();
 	    this.text = text;
     }
-
-	@Override
-    public String getType() {
-		return "grid/leaf";
-	}
 	/**
 	 * 标题
 	 * @return String
@@ -91,16 +83,6 @@ public class GridLeaf extends AbstractWidget<GridLeaf> implements HasSrc<GridLea
 		return this;
 	}
 
-	@Override
-	public String getTemplate() {
-		return template;
-	}
-
-	@Override
-	public GridLeaf setTemplate(String template) {
-		this.template=template;
-		return this;
-	}
 	/**
 	 * 是否显示树结构的辅助线
 	 * @return Boolean

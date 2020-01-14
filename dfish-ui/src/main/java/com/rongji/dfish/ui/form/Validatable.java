@@ -97,27 +97,27 @@ public interface Validatable<T extends Validatable<T>> {
     /**
      * 字段输入值需要符合整形格式。这里是它的正则表达式格式
      */
-    String PATTERN_INTEGER = "/^-?\\d+$/g"; //
+    String PATTERN_INTEGER = "/^-?\\d+$/g";
 
     /**
      * 字段输入值需要符合无符号数字，正数格式。这里是它的正则表达式格式
      * 如1.0 2.5 或2
      */
-    String PATTERN_UNSIGN_FLOAT = "/^\\d+(\\.\\d+)?$/g"; ///**
+    String PATTERN_UNSIGN_FLOAT = "/^\\d+(\\.\\d+)?$/g";
     /**
      * 字段输入值需要符合无符号数字，正数格式。小数不超过2位。这里是它的正则表达式格式
      * 如1.0 2.5 或2
      */
-    String PATTERN_UNSIGN_MONEY = "/^\\d+(\\.\\d{1,2})?$/g"; ///**
+    String PATTERN_UNSIGN_MONEY = "/^\\d+(\\.\\d{1,2})?$/g";
     /**
      * 字段输入值需要符合\数字。这里是它的正则表达式格式
      */
-    String PATTERN_FLOAT = "/^-?\\d+(\\.\\d+)?$/g"; //
+    String PATTERN_FLOAT = "/^-?\\d+(\\.\\d+)?$/g";
 
     /**
      * 不能有逗号
      */
-    String PATTERN_NO_COMMA = "!/^ |,| $/"; // "!/,/"
+    String PATTERN_NO_COMMA = "!/^ |,| $/";
 
     /**
      * 匹配EMAIL
@@ -128,9 +128,5 @@ public interface Validatable<T extends Validatable<T>> {
      * 默认验证名称
      */
     String DEFAULT_VALIDATE_NAME = "default";
-//	/**
-//	 * 默认的验证组
-//	 */
-//	String[] DEFAULT_VALIDATE_GROUPS={"default"};
 
 }

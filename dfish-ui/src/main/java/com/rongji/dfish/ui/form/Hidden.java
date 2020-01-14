@@ -9,10 +9,8 @@ import com.rongji.dfish.ui.AbstractWidget;
  */
 public class Hidden extends AbstractWidget<Hidden> implements FormElement<Hidden,String> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7544920001509570208L;
+
 	private String name;
 	private String value;
 	/**
@@ -24,11 +22,6 @@ public class Hidden extends AbstractWidget<Hidden> implements FormElement<Hidden
 		this.name = name;
 		this.value = value;
 	}
-
-    @Override
-    public String getType() {
-	    return "Hidden";
-    }
 
 	@Override
     public String getName() {

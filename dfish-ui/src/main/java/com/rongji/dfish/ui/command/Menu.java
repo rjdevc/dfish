@@ -28,11 +28,6 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiCo
     public Menu() {
     }
 
-    @Override
-    public String getType() {
-        return "Menu";
-    }
-
     private List<Widget<?>> nodes;
     private Boolean prong;
 

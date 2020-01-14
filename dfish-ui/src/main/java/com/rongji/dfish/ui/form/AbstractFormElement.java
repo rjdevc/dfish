@@ -36,10 +36,6 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
      */
     protected N value;
     /**
-     * 是否检查非空
-     */
-    protected Boolean star;
-    /**
      * 状态
      */
     protected String status;
@@ -47,26 +43,16 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
     /**
      * 是否隐藏标题 这个不是必要属性，只是在helper里面才会使用它做辅助
      */
-    protected Boolean hideLabel;
+    protected Boolean noLabel;
 
     protected Object tip;
 
-    TreeMap<String, Validate> validates = new TreeMap<>();// new
-    // HashMap<String,ValidationPartBean>();
-
-
-//	public static final String[] DEFAULT_GROUP = new String[] { "default" };
-
+    TreeMap<String, Validate> validates = new TreeMap<>();
 
     @Override
     public T setName(String name) {
         this.name = name;
         return (T) this;
-    }
-
-    @Override
-    public Boolean getStar() {
-        return this.star;
     }
 
     @Override
@@ -212,7 +198,6 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
      * @since 3.0
      */
     public T setRequired(Boolean required) {
-        this.star = required;
         if (required == null || !required) {
             if (this.getValidate() != null) {
                 this.getValidate().setRequired(null);
@@ -227,36 +212,30 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
         return (T) this;
     }
 
-    @Override
-    public T setStar(Boolean star) {
-        this.star = star;
-        return (T) this;
-    }
-
     /**
      * 设置是隐藏标题
      *
      * @param hideLabel boolean
      * @return 本身，这样可以继续设置其他属性
-     * @see #setHideLabel
+     * @see #setNoLabel
      * @deprecated move to setHideLabel
      */
     @Deprecated
     public T setFullLine(Boolean hideLabel) {
-        this.hideLabel = hideLabel;
+        this.noLabel = hideLabel;
         return (T) this;
     }
 
     @Override
-    public Boolean getHideLabel() {
-        return hideLabel;
+    public Boolean getNoLabel() {
+        return noLabel;
     }
 
     @Override
-    public T setHideLabel(Boolean hideLabel) {
-        this.hideLabel = hideLabel;
+    public T setNoLabel(Boolean noLabel) {
+        this.noLabel = noLabel;
         if (label != null) {
-            boolean isHide = hideLabel != null && hideLabel;
+            boolean isHide = noLabel != null && noLabel;
             if (isHide) {
                 label.setWidth(0);
             } else if ("0".equals(label.getWidth())) {

@@ -47,8 +47,7 @@ public class GridWrapper extends AbstractGridWrapper<GridWrapper> {
 	
 
 	private Collection<?> gridData;
-	// FIXME 多行聚焦
-	private Set<Integer> focusRowIndexs = new HashSet<Integer>();
+	private Set<Integer> focusRowIndexs = new HashSet<>();
 
 	/**
 	 * 高亮行
@@ -119,7 +118,7 @@ public class GridWrapper extends AbstractGridWrapper<GridWrapper> {
     	Grid.TR headRow = null;
     	if(hasTableHead){
     		headRow=new Grid.TR();
-			prototype.getHead().add(headRow);
+			prototype.gettHead().add(headRow);
     	}
     	for(Column column :columns){
     		if(column.getWidth()!=null){//隐藏的字段不显示
@@ -199,18 +198,18 @@ public class GridWrapper extends AbstractGridWrapper<GridWrapper> {
 
 	/**
 	 * 内容不换行
-	 * @param nobr Boolean
+	 * @param noBr Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@Override
-    public GridWrapper setNobr(Boolean nobr) {
-		prototype.setNobr(nobr);
+    public GridWrapper setNoBr(Boolean noBr) {
+		prototype.setNoBr(noBr);
 		return this;
 	}
 
 	@Override
-    public GridWrapper setFocusmultiple(Boolean focusmultiple) {
-		prototype.setFocusmultiple(focusmultiple);
+    public GridWrapper setFocusMultiple(Boolean focusMultiple) {
+		prototype.setFocusMultiple(focusMultiple);
 		return this;
 	}
 	

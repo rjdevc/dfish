@@ -41,11 +41,6 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     protected String target;
     private Long delay;
 
-    @Override
-    public String getType() {
-        return "Cmd";
-    }
-
     /**
      * 执行路径，如果不设置为当前view
      *

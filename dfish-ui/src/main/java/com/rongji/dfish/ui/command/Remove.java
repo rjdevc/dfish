@@ -10,13 +10,8 @@ package com.rongji.dfish.ui.command;
  * @since 3.0
  */
 public class Remove extends NodeControlCommand<Remove> {
-    private static final long serialVersionUID = -5276859092129055953L;
 
-    /**
-     * 默认构造函数
-     */
-    public Remove() {
-    }
+    private static final long serialVersionUID = -5276859092129055953L;
 
     /**
      * 构造函数
@@ -27,8 +22,4 @@ public class Remove extends NodeControlCommand<Remove> {
         setTarget(target);
     }
 
-    @Override
-    public String getType() {
-        return "Remove";
-    }
 }

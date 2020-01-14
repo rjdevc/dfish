@@ -19,7 +19,9 @@ public interface JsonObject extends Serializable {
 	 * <p>少数对象只能以某些对象的子元素出现，这时候type值可能为空</p>
 	 * @return String
 	 */
-	String getType();
+	default String getType() {
+		return getClass().getSimpleName();
+	}
 	/**
 	 * asJson就是转成JSON字符串。
 	 * @return String

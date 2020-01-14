@@ -48,11 +48,6 @@ public class Switch extends AbstractFormElement<Switch, Object> {
         return this;
     }
 
-    @Override
-    public String getType() {
-        return "switch";
-    }
-
     /**
      * 是否选中
      * @return Boolean

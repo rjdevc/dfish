@@ -22,11 +22,6 @@ public class UploadImage extends AbstractUpload<UploadImage> {
         setLabel(label);
     }
 
-    @Override
-    public String getType() {
-        return "UploadImage";
-    }
-
     /**
      * 缩略图地址
      *

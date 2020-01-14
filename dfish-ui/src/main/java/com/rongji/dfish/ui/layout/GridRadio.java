@@ -18,9 +18,4 @@ public class GridRadio extends AbstractBox<GridRadio> {
 	    super(name, label, checked, value, text);
     }
 
-	@Override
-    public String getType() {
-	    return "grid/radio";
-    }
-
 }

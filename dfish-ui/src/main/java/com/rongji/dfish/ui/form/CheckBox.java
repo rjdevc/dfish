@@ -25,24 +25,4 @@ public class CheckBox extends AbstractBox<CheckBox> {
         super(name, label, checked, value, text);
     }
 
-    @Override
-    public String getType() {
-        return "CheckBox";
-    }
-
-//	/**
-//	 * @param value theValue
-//	 * @return this
-//	 */
-//	public Checkbox setValue(String value) {
-//		
-//		return this;
-//	}
-
-//	@Override
-//	public Checkbox setValue(Object value) {
-//		this.value=value;
-//		return this;
-//	}
-
 }

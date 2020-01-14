@@ -61,12 +61,6 @@ public class PickBox extends AbstractInput<PickBox,String> implements HasText<Pi
 	}
 
 	private Dialog picker;
-	
-	@Override
-    public String getType() {
-		return "PickBox";
-	}
-
 
 	/**
 	 * dialog 参数。其中 dialog 的 src 支持 $value 和 $text 变量。

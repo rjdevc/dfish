@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.HasSrc;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<Xbox> {
+public class DropBox extends AbstractOptionsHolder<DropBox, Option> implements HasSrc<DropBox> {
 	/**
 	 * 
 	 */
@@ -24,7 +24,6 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	private String error;
 	private String complete;
 	private String filter;
-	private String template;
 	private Boolean transparent;
 	private String placeholder;
 	private Boolean multiple;
@@ -42,7 +41,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	 * @param placeholder String
 	 * @return XBox
 	 */
-	public Xbox setPlaceholder(String placeholder) {
+	public DropBox setPlaceholder(String placeholder) {
 		this.placeholder = placeholder;
 		return this;
 	}
@@ -55,7 +54,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	 * @param value 值
 	 * @param options 候选项
 	 */
-	public Xbox(String name, String label, Object value, List<?> options) {
+	public DropBox(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
 	}
 
@@ -82,7 +81,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	 * @param transparent Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Xbox setTransparent(Boolean transparent) {
+	public DropBox setTransparent(Boolean transparent) {
 		this.transparent = transparent;
 		return this;
 	}
@@ -102,7 +101,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author lamontYu
 	 */
-	public Xbox setMultiple(Boolean multiple) {
+	public DropBox setMultiple(Boolean multiple) {
 		this.multiple = multiple;
 		return this;
 	}
@@ -113,19 +112,8 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	}
 
 	@Override
-	public Xbox setSrc(String src) {
+	public DropBox setSrc(String src) {
 		this.src=src;
-		return this;
-	}
-
-	@Override
-	public String getTemplate() {
-		return template;
-	}
-
-	@Override
-	public Xbox setTemplate(String template) {
-		this.template=template;
 		return this;
 	}
 
@@ -142,7 +130,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	 * @param cancelable Boolean
 	 * @return this
 	 */
-	public Xbox setCancelable(Boolean cancelable) {
+	public DropBox setCancelable(Boolean cancelable) {
 		this.cancelable=cancelable;
 		return this;
 	}
@@ -152,7 +140,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	}
 
 	@Override
-    public Xbox setSuccess(String success) {
+    public DropBox setSuccess(String success) {
 		this.success = success;
 		return this;
 	}
@@ -162,7 +150,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	}
 
 	@Override
-    public Xbox setError(String error) {
+    public DropBox setError(String error) {
 		this.error = error;
 		return this;
 	}
@@ -172,7 +160,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	}
 
 	@Override
-    public Xbox setComplete(String complete) {
+    public DropBox setComplete(String complete) {
 		this.complete = complete;
 		return this;
 	}
@@ -182,7 +170,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	}
 
 	@Override
-    public Xbox setFilter(String filter) {
+    public DropBox setFilter(String filter) {
 		this.filter = filter;
 		return this;
 	}
@@ -193,7 +181,7 @@ public class Xbox extends AbstractOptionsHolder<Xbox, Option> implements HasSrc<
 	}
 
 	@Override
-    public Xbox setSync(Boolean sync) {
+    public DropBox setSync(Boolean sync) {
 		this.sync = sync;
 		return this;
 	}

@@ -18,12 +18,6 @@ public class Combo extends AbstractNode<Combo> {
 
     private static final long serialVersionUID = -1238918488428976174L;
 
-    @Override
-    public String getType() {
-        return "Combo";
-    }
-
-
     private Field field;
     private Boolean keepShow;
     private Boolean fullPath;

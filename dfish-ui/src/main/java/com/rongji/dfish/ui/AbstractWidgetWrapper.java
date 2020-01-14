@@ -12,14 +12,10 @@ import com.rongji.dfish.ui.json.JsonWrapper;
  * @param <T>  当前对象类型
  * @param <P> 原型类型
  */
-@SuppressWarnings("unchecked")
 public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P>, P extends Widget<P>> extends AbstractWidget<T> implements JsonWrapper<P>,HasId<T> {
 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2711923347412806092L;
+
 	protected P prototype;
 	protected boolean prototypeChanged=false;
 	public void notifyChange(){

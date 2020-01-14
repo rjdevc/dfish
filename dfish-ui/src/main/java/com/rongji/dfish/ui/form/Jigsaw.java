@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.form;
 
+import com.rongji.dfish.ui.AbstractResultfulNode;
+
 /**
  * 拼图(滑动验证码)
  * @author lamontYu
@@ -57,9 +59,34 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
         throw new UnsupportedOperationException("value must be null.");
     }
 
-    @Override
-    public String getType() {
-        return "jigsaw";
+    /**
+     * 拼图验证
+     * @author lamontYu
+     * @date 2019-12-11
+     * @since 5.0
+     */
+    public static class JigsawAuth extends AbstractResultfulNode<JigsawAuth> {
+
+        @Override
+        public String getType() {
+            return "jigsawAuth";
+        }
+
+    }
+
+    /**
+     * 拼图图片
+     * @author lamontYu
+     * @date 2019-12-11
+     * @since 5.0
+     */
+    public static class JigsawImg extends AbstractResultfulNode<JigsawImg> {
+
+        @Override
+        public String getType() {
+            return "jigsawImg";
+        }
+
     }
 
 }

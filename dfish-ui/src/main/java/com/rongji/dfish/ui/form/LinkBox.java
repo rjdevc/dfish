@@ -50,9 +50,4 @@ public class LinkBox extends LinkableSuggestionBox<LinkBox> {
 		super(name, label, value, suggest);
 	}
 
-	@Override
-	public String getType() {
-		return "LinkBox";
-	}
-
 }

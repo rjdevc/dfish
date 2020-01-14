@@ -21,10 +21,5 @@ public class UploadFile extends AbstractUpload<UploadFile> {
 		this.name=name;
 		setLabel(label);
 	}
-	
-	@Override
-	public String getType() {
-		return "UploadFile";
-	}
 
 }

@@ -56,7 +56,7 @@ public class GroupingGridWrapper extends AbstractGridWrapper<GroupingGridWrapper
             }
             if (hasTableHead) {
                 Grid.TR headRow = new Grid.TR();
-                prototype.getHead().add(headRow);
+                prototype.gettHead().add(headRow);
                 headRow.setData(column.getField(), column.getLabel());
             }
             if (column.isVisable()) {
@@ -76,7 +76,7 @@ public class GroupingGridWrapper extends AbstractGridWrapper<GroupingGridWrapper
             Grid.TR tr = new Grid.TR();
             prototype.add(tr);
             //FIXME 这里应该不是0而是第0列的propName
-            tr.setData(firstColumnField, new Grid.TD().setColspan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setOpen(true)));
+            tr.setData(firstColumnField, new Grid.TD().setColSpan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setOpen(true)));
 
             for (Object data : entry.getValue()) {
                 Grid.TR dataRow = new Grid.TR();

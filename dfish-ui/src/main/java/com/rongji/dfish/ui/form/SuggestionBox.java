@@ -16,11 +16,13 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 */
 	private static final long serialVersionUID = -3727695759981575245L;
 	private Dialog suggest;
-//	private Boolean suggest;
 	private Boolean multiple;
-	private Boolean nobr;
-	private Dialog drop; //显示所有结果的 view suggest。;
+	private Boolean noBr;
+	/**
+	 * 显示搜索结果的界面
+	 */
 	private JsonObject picker;
+	private Dialog drop;
 	private Long delay;
 	private String separator;
 
@@ -69,19 +71,6 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	}
 
 	/**
-	 * 在线匹配关键词的 view suggest。支持 $value 和 $text 变量。
-	 * @param suggestsrc String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public T setSuggestsrc(String suggestsrc) {
-		this.setSuggest(suggestsrc);
-//		this.suggest=true;
-		return (T)this;
-	}
-
-	/**
 	 * "选择"按钮点击动作
 	 * @return "选择"组件
 	 */
@@ -112,17 +101,17 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
      * 设置当内容太多的时候不换行
 	 * @return the nobr
 	 */
-	public Boolean getNobr() {
-		return nobr;
+	public Boolean getNoBr() {
+		return noBr;
 	}
 
 	/**
-	 * @param nobr 设置当内容太多的时候不换行
+	 * @param noBr 设置当内容太多的时候不换行
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
-	public T setNobr(Boolean nobr) {
-		this.nobr = nobr;
+	public T setNoBr(Boolean noBr) {
+		this.noBr = noBr;
 		return (T)this;
 	}
 	
@@ -170,32 +159,6 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 */
 	public T setSuggest(Dialog suggest) {
 		this.suggest = suggest;
-		return (T) this;
-	}
-
-	/**
-	 * 显示所有结果的 view suggest。;
-	 * @return String
-	 * @see #getDrop()
-	 */
-	@Deprecated
-	public String getDropsrc() {
-		if (this.drop != null) {
-			return this.drop.getSrc();
-		}
-		return null;
-	}
-	
-	/**
-	 * 显示所有结果的 view suggest。;
-	 * @param dropsrc 所有结果的 view suggest
-	 * @return 本身，这样可以继续设置其他属性
-	 * @see #setDrop(Dialog)
-	 */
-	@SuppressWarnings("unchecked")
-	@Deprecated
-    public T setDropsrc(String dropsrc) {
-		drop().setSrc(dropsrc);
 		return (T) this;
 	}
 
@@ -266,22 +229,4 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 		return (T) this;
 	}
 
-//	/**
-//	 * 设置匹配高亮切词长度,<=0或者为空全字匹配,其他说明按照长度切词匹配
-//	 * @return Integer
-//	 */
-//	public Integer getMatchlength() {
-//		return matchlength;
-//	}
-//
-//	/**
-//	 * 设置匹配高亮切词长度,<=0或者为空全字匹配,其他说明按照长度切词匹配
-//	 * @param matchlength 切词长度
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public T setMatchlength(Integer matchlength) {
-//		this.matchlength = matchlength;
-//		return (T) this;
-//	}
-	
 }

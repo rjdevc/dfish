@@ -8,8 +8,8 @@ import com.rongji.dfish.ui.LazyLoad;
  * @author DFish Team
  *
  */
-@SuppressWarnings("deprecation")
 public class View extends AbstractSrc<View> implements LazyLoad<View>{
+
 	private static final long serialVersionUID = 8815207749140104383L;
 
 	/**
@@ -27,32 +27,7 @@ public class View extends AbstractSrc<View> implements LazyLoad<View>{
 		super(null);
 	}
 	
-//	private Boolean load;
 	private String base;
-//	@Deprecated
-//	protected Map<String,DialogTemplate> templates=new HashMap<String,DialogTemplate>();
-
-	@Override
-	public String getType() {
-		return "view";
-	}
-
-//	/**
-//	 * 如果设为 true, 当前窗口调用 .close() 方法关闭后，窗口处于隐藏状态并不删除，再次打开时将恢复为上次打开时的状态。
-//	 * @return cache
-//	 */
-//	public Boolean isCache() {
-//		return cache;
-//	}
-//	/**
-//	 * 如果设为 true, 当前窗口调用 .close() 方法关闭后，窗口处于隐藏状态并不删除，再次打开时将恢复为上次打开时的状态。
-//	 * @param cache
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public View setCache(Boolean cache) {
-//		this.cache = cache;
-//		return this;
-//	}
 
 
 	/**

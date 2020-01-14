@@ -21,12 +21,6 @@ public class Replace extends NodeControlCommand<Replace>
     private static final long serialVersionUID = -5997424469287615043L;
 
     /**
-     * 默认构造函数
-     */
-    public Replace() {
-    }
-
-    /**
      * 构造函数
      *
      * @param node 需要替换的内容
@@ -34,13 +28,12 @@ public class Replace extends NodeControlCommand<Replace>
     public Replace(HasId<?> node) {
         setNode(node);
     }
+    public Replace(HasId<?> node, String target) {
+        setNode(node);
+        setTarget(target);
+    }
 
     private HasId<?> node;
-
-    @Override
-    public String getType() {
-        return "Replace";
-    }
 
     @Override
     public HasId<?> getNode() {
@@ -50,7 +43,7 @@ public class Replace extends NodeControlCommand<Replace>
     @SuppressWarnings("unchecked")
     @Override
     public List<HasId<?>> findNodes() {
-        ArrayList<HasId<?>> result = new ArrayList<>();
+        List<HasId<?>> result = new ArrayList<>(1);
         result.add(node);
         return result;
     }

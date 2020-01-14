@@ -23,8 +23,7 @@ public class Range extends AbstractContainer<Range> implements LabelRow<Range>, 
     private Label label;
     private FormElement<?, ?> begin;
     private FormElement<?, ?> end;
-    private Boolean hideLabel;
-    private Boolean star;
+    private Boolean noLabel;
     private Object to;
 
     /**
@@ -39,12 +38,6 @@ public class Range extends AbstractContainer<Range> implements LabelRow<Range>, 
         this.setLabel(label);
         this.begin = begin;
         this.end = end;
-    }
-
-
-    @Override
-    public String getType() {
-        return "Range";
     }
 
     /**
@@ -110,43 +103,17 @@ public class Range extends AbstractContainer<Range> implements LabelRow<Range>, 
     }
 
     @Override
-    public Range setHideLabel(Boolean hideLabel) {
-        this.hideLabel = hideLabel;
-        if (hideLabel != null && label != null) {
-            label.setWidth(hideLabel ? "0" : null);
+    public Range setNoLabel(Boolean noLabel) {
+        this.noLabel = noLabel;
+        if (noLabel != null && label != null) {
+            label.setWidth(noLabel ? "0" : null);
         }
         return this;
     }
 
     @Override
-    public Boolean getHideLabel() {
-        return hideLabel;
-    }
-
-    /**
-     * 这个元素，是否非空，这里非空不是dfish2.4以后的真实判断，而是在界面显示一个非空标记
-     * 通常是红色字体的半角星号(*)
-     *
-     * @param notnull boolean
-     * @return 本身，这样可以继续设置其他属性
-     * @since 3.0
-     * @deprecated notnull 属性已经被 required替代
-     */
-
-    @Deprecated
-    public Range setNotnull(Boolean notnull) {
-        return setStar(notnull);
-    }
-
-    @Override
-    public Range setStar(Boolean star) {
-        this.star = star;
-        return this;
-    }
-
-    @Override
-    public Boolean getStar() {
-        return star;
+    public Boolean getNoLabel() {
+        return noLabel;
     }
 
     @Transient

@@ -7,7 +7,7 @@ import java.util.List;
 import com.rongji.dfish.base.Option;
 import com.rongji.dfish.ui.DFishUITestCase;
 
-public class XboxTest extends DFishUITestCase{
+public class DropBoxTest extends DFishUITestCase{
 
 	@Override
 	protected Object getWidget() {
@@ -15,8 +15,8 @@ public class XboxTest extends DFishUITestCase{
 		List<Object>realOptions=new ArrayList<>();
 		realOptions.add(new Option("ALL","全部").setCheckall(true));
 		realOptions.addAll(options);
-		Xbox xbox=new Xbox("gender","性别","2",realOptions).setMultiple(true);
-		return xbox;
+		DropBox dropBox =new DropBox("gender","性别","2",realOptions).setMultiple(true);
+		return dropBox;
 	}
 
 }

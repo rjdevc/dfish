@@ -11,9 +11,9 @@ import java.util.List;
  * 可切换标签容器
  */
 public class Tabs extends AbstractContainer<Tabs> implements MultiContainer<Tabs, Tab>, PubHolder<Tabs, Tab>,
-        Alignable<Tabs>, Valignable<Tabs>, HiddenContainer<Tabs> {
+        Alignable<Tabs>, VAlignable<Tabs>, HiddenContainer<Tabs> {
     private String align;
-    private String valign;
+    private String vAlign;
     private Integer space;
     private Split split;
     private Overflow overflow;
@@ -40,11 +40,6 @@ public class Tabs extends AbstractContainer<Tabs> implements MultiContainer<Tabs
     public Tabs setPub(Tab pub) {
         this.pub = pub;
         return this;
-    }
-
-    @Override
-    public String getType() {
-        return "tabs";
     }
 
     @Override
@@ -118,13 +113,13 @@ public class Tabs extends AbstractContainer<Tabs> implements MultiContainer<Tabs
     }
 
     @Override
-    public String getvAlign() {
-        return valign;
+    public String getVAlign() {
+        return vAlign;
     }
 
     @Override
-    public Tabs setvAlign(String vAlign) {
-        this.valign = vAlign;
+    public Tabs setVAlign(String vAlign) {
+        this.vAlign = vAlign;
         return this;
     }
 

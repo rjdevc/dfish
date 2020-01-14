@@ -10,9 +10,7 @@ import com.rongji.dfish.ui.form.Hidden;
  *
  */
 public class Vertical extends LinearLayout<Vertical> {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 51468869447120232L;
 
 	/**
@@ -21,11 +19,6 @@ public class Vertical extends LinearLayout<Vertical> {
 	 */
 	public Vertical(String id) {
 		super(id);
-	}
-
-	@Override
-    public String getType() {
-		return "vertical";
 	}
 
 	/**

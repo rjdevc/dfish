@@ -18,6 +18,7 @@ public class Frame extends AbstractContainer<Frame> implements MultiContainer<Fr
      *
      */
     private static final long serialVersionUID = -6122938745828564809L;
+
     protected String dft;
 
     /**
@@ -27,11 +28,6 @@ public class Frame extends AbstractContainer<Frame> implements MultiContainer<Fr
      */
     public Frame(String id) {
         super(id);
-    }
-
-    @Override
-    public String getType() {
-        return "frame";//
     }
 
     /**

@@ -6,10 +6,10 @@ public class CalendarTest extends  DFishUITestCase{
 
 	@Override
 	protected Object getWidget() {
-		Calendar w=new Calendar(Calendar.TYPE_DATE,"fake");
+		Calendar w=new Calendar(Calendar.FACE_DATE);
 		w.getPub().setCls("mycls");
-		w.add(1, new CalendarTd("1号"));
-		w.add(5, new CalendarTd("5号").setCls("highlight"));
+		w.add(1, new Calendar.Item("1号"));
+		w.add(5, new Calendar.Item("5号").setCls("highlight"));
 		return w;
 	}
 

@@ -51,11 +51,5 @@ public class Text extends AbstractInput<Text,String>{
 		this.value=toString(value);
 		return this;
 	}
-	
-	
-	@Override
-    public String getType() {
-		return "Text";
-	}
 
 }

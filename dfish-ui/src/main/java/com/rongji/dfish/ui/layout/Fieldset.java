@@ -51,10 +51,6 @@ public class Fieldset extends AbstractContainer<Fieldset> implements MultiContai
 		super(id);
 		this.legend=legend;
 	}
-	@Override
-    public String getType() {
-		return "fieldset";
-	}
 	/**
 	 * 选项表单，类型是 checkbox 或 radio。取消或勾选这个box，将同步fieldset内部所有表单的状态。
 	 * @return box

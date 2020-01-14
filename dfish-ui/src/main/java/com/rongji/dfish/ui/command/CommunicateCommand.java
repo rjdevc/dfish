@@ -20,10 +20,6 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
      */
     protected String src;
     /**
-     * http 格式的路径。
-     */
-    protected String template;
-    /**
      * 是否同步。
      */
     protected Boolean sync;
@@ -82,24 +78,6 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
     @SuppressWarnings("unchecked")
     public T setSrc(String src) {
         this.src = src;
-        return (T) this;
-    }
-
-    @Override
-    public String getTemplate() {
-        return template;
-    }
-
-    /**
-     * 通信地址 http 格式的路径。
-     *
-     * @param template String
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public T setTemplate(String template) {
-        this.template = template;
         return (T) this;
     }
 
@@ -281,6 +259,5 @@ public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extend
         this.filter = filter;
         return (T) this;
     }
-
 
 }

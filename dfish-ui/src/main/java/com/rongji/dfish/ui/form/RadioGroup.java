@@ -34,11 +34,6 @@ public class RadioGroup extends AbstractBoxGroup<RadioGroup, Radio> {
     }
 
     @Override
-    public String getType() {
-        return "RadioGroup";
-    }
-
-    @Override
     public void doSetValue(Object value) {
         this.value = value;
     }

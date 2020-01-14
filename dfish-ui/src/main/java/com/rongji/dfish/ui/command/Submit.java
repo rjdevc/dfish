@@ -98,11 +98,6 @@ public class Submit extends CommunicateCommand<Submit> {
         return this;
     }
 
-    @Override
-    public String getType() {
-        return "submit";
-    }
-
     /**
      * 验证效果
      *

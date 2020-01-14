@@ -14,7 +14,6 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
 
     private static final long serialVersionUID = -3055223672741088528L;
 
-    private String template;
     private String preload;
     private String src;
     private Boolean sync;
@@ -23,11 +22,6 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
     private String complete;
     private String filter;
     private Boolean prong;
-
-    @Override
-    public String getType() {
-        return "Dialog";
-    }
 
     /**
      * 打开对话框命令
@@ -40,10 +34,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
      * @param pos     DialogPosition 窗口在屏幕位置
      * @param src     String 窗口数据的URL
      */
-    @Deprecated
-    public Dialog(String id, String preload, String title,
-                  int width, int height, String pos,
-                  String src) {
+    public Dialog(String id, String preload, String title, int width, int height, String pos, String src) {
         this.id = id;
         this.preload = preload;
         this.title = title;
@@ -64,9 +55,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
      * @param pos     DialogPosition 窗口在屏幕位置
      * @param src     String 窗口数据的URL
      */
-    public Dialog(String id, String preload, String title,
-                  String width, String height, String pos,
-                  String src) {
+    public Dialog(String id, String preload, String title, String width, String height, String pos, String src) {
         this.id = id;
         this.preload = preload;
         this.title = title;
@@ -118,18 +107,6 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
     }
 
     /**
-     * 设置窗口使用的模板编号
-     *
-     * @param template 模板
-     * @return this
-     */
-    @Override
-    public Dialog setTemplate(String template) {
-        this.template = template;
-        return this;
-    }
-
-    /**
      * 加载 view 的 url。访问这个url 时应当返回一个 view 的 json 字串。
      *
      * @return src
@@ -137,16 +114,6 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
     @Override
     public String getSrc() {
         return src;
-    }
-
-    /**
-     * 模板ID。
-     *
-     * @return template
-     */
-    @Override
-    public String getTemplate() {
-        return template;
     }
 
     /**

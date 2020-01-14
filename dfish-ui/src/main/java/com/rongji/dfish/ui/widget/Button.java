@@ -11,9 +11,7 @@ import com.rongji.dfish.ui.Widget;
  * @since XMLTMPL 2.0
  */
 public class Button extends AbstractButton<Button> {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -3521425601089259935L;
 
 	private String target;
@@ -76,10 +74,5 @@ public class Button extends AbstractButton<Button> {
         this.target = target;
         return this;
     }
-
-	@Override
-    public String getType() {
-		return "button";
-	}
 
 }

@@ -1,8 +1,6 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.Button;
 
 import java.util.List;
@@ -20,8 +18,10 @@ import java.util.List;
  * @since 1.0
  */
 public class Confirm extends AbstractDialog<Confirm> implements Command<Confirm>, HasText<Confirm> {
+
     private static final long serialVersionUID = 6715410304552489693L;
-    private String btnCls;
+
+    private String buttonCls;
     /**
      * 显示文本。这里一般是询问的问题内容
      */
@@ -38,6 +38,9 @@ public class Confirm extends AbstractDialog<Confirm> implements Command<Confirm>
      * 点击"取消"执行的命令。
      */
     private Command<?> no;
+    /**
+     * 底部按钮
+     */
     private List<Button> buttons;
 
     /**
@@ -73,28 +76,23 @@ public class Confirm extends AbstractDialog<Confirm> implements Command<Confirm>
         this.no = no;
     }
 
-    @Override
-    public String getType() {
-        return "Confirm";
-    }
-
     /**
      * 按钮样式名
      *
      * @return 按钮样式名
      */
-    public String getBtnCls() {
-        return btnCls;
+    public String getButtonCls() {
+        return buttonCls;
     }
 
     /**
      * 按钮样式名
      *
-     * @param btnCls 按钮样式名
+     * @param buttonCls 按钮样式名
      * @return 本身
      */
-    public Confirm setBtnCls(String btnCls) {
-        this.btnCls = btnCls;
+    public Confirm setButtonCls(String buttonCls) {
+        this.buttonCls = buttonCls;
         return this;
     }
 
@@ -119,22 +117,6 @@ public class Confirm extends AbstractDialog<Confirm> implements Command<Confirm>
         this.text = text;
         return this;
     }
-//	/**
-//	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
-//	 * @return Boolean
-//	 */
-//	public Boolean getCover() {
-//		return cover;
-//	}
-//	/**
-//	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
-//	 * @param cover Boolean
-//	 * @return this
-//	 */
-//	public ConfirmCommand setCover(Boolean cover) {
-//		this.cover = cover;
-//		return this;
-//	}
 
     /**
      * 图标。

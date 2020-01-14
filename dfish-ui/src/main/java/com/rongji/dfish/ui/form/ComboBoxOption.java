@@ -20,11 +20,6 @@ public class ComboBoxOption extends AbstractWidget<ComboBoxOption> implements Ha
     private String value;
 
     @Override
-    public String getType() {
-        return "ComboBoxOption";
-    }
-
-    @Override
     public String getText() {
         return text;
     }

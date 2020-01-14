@@ -182,11 +182,11 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 						}});
 				}
 			} else if("valign".equals(jbpg.getPropName())){
-			    if(Valignable.class.isAssignableFrom(clz)){
+			    if(VAlignable.class.isAssignableFrom(clz)){
 					methods.set(i, new WidgetStringPropAppender("valign"){
 						@Override
                         protected String getValue(Object w) {
-							return ((Valignable<?>)w).getvAlign();
+							return ((VAlignable<?>)w).getVAlign();
 						}});
 				}
 			} else if("text".equals(jbpg.getPropName())){
@@ -205,15 +205,6 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                         protected Boolean getValue(Object w) {
                             return ((Scrollable<?>)w).getScroll();
                         }});
-                }
-            }else if("scrollClass".equals(jbpg.getPropName())){
-                if(Scrollable.class.isAssignableFrom(clz)) {
-                    methods.set(i, new WidgetStringPropAppender("scrollClass") {
-                        @Override
-                        protected String getValue(Object w) {
-                            return ((Scrollable<?>)w).getScrollClass();
-                        }
-                    });
                 }
             }
 

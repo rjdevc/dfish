@@ -32,11 +32,6 @@ public class Loading extends AbstractDialog<Loading> implements Command<Loading>
         this.text = text;
     }
 
-    @Override
-    public String getType() {
-        return "Loading";
-    }
-
     /**
      * 显示加载的文本
      *

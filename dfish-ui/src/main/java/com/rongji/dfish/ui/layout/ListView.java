@@ -23,14 +23,14 @@ public interface ListView <T extends ListView<T>>{
 	 * 是否可以选中多项
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	Boolean getFocusmultiple() ;
+	Boolean getFocusMultiple() ;
 
 	/**
 	 * 是否可以选中多项
-	 * @param focusmultiple Boolean
+	 * @param focusMultiple Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	T setFocusmultiple(Boolean focusmultiple) ;
+	T setFocusMultiple(Boolean focusMultiple) ;
 
 	/**
 	 * 是否有鼠标悬停效果
@@ -47,14 +47,14 @@ public interface ListView <T extends ListView<T>>{
 	
 	/**
 	 * 内容不换行
-	 * @param nobr boolean
+	 * @param noBr boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	T setNobr(Boolean nobr);
+	T setNoBr(Boolean noBr);
 	
 	/**
 	 * 内容不换行
 	 * @return Boolean
 	 */
-	Boolean getNobr();
+	Boolean getNoBr();
 }

@@ -28,9 +28,4 @@ public class Badge extends AbstractWidget<Badge> {
         this.text = text;
         return this;
     }
-
-    @Override
-    public String getType() {
-        return "badge";
-    }
 }

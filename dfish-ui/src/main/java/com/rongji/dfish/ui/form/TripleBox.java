@@ -50,11 +50,6 @@ public class TripleBox extends AbstractBox<TripleBox> {
         super(name, label, checked, value, text);
     }
 
-    @Override
-    public String getType() {
-        return "TripleBox";
-    }
-
     /**
      * 选中所有
      *

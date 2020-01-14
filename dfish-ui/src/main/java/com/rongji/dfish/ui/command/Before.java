@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.command;
 
+import com.rongji.dfish.ui.Widget;
+
 /**
  * 插入命令。在某个 widget 之前插入一个或多个 widget。
  *
@@ -12,9 +14,7 @@ public class Before extends AddCommand<Before> {
 
     private static final long serialVersionUID = -7957942021832245204L;
 
-    @Override
-    public String getType() {
-        return "Before";
+    public Before(String target, Widget<?>... nodes) {
+        super(target, nodes);
     }
-
 }

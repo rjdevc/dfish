@@ -31,15 +31,13 @@ public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf
     private Boolean focus;
     private Boolean focusable;
     private String icon;
-    private String openicon;
-    private Boolean open;
+    private String expandedIcon;
+    private Boolean expanded;
     private String text;
     private Object tip;
     private String src;
     private Boolean sync;
-    private String template;
-    //    private Leaf pub;
-    private Boolean hidetoggle;
+    private Boolean noToggle;
     private AbstractBox<?> box;
     private Boolean ellipsis;
     private Boolean line;
@@ -203,13 +201,6 @@ public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf
         return this;
     }
 
-
-    @Override
-    public String getType() {
-        return "leaf";//"widget/tree";
-    }
-
-
     /**
      * 选项表单，类型是 checkbox 或 radio。取消或勾选这个box，将同步fieldset内部所有表单的状态。
      *
@@ -296,18 +287,18 @@ public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf
      *
      * @return openicon
      */
-    public String getOpenicon() {
-        return openicon;
+    public String getExpandedIcon() {
+        return expandedIcon;
     }
 
     /**
      * 展开图标
      *
-     * @param openicon 展开图标
+     * @param expandedIcon 展开图标
      * @return 本身，这样可以继续设置其他属性
      */
-    public Leaf setOpenicon(String openicon) {
-        this.openicon = openicon;
+    public Leaf setExpandedIcon(String expandedIcon) {
+        this.expandedIcon = expandedIcon;
         return this;
     }
 
@@ -317,18 +308,18 @@ public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf
      *
      * @return open
      */
-    public Boolean getOpen() {
-        return open;
+    public Boolean getExpanded() {
+        return expanded;
     }
 
     /**
      * 是否展开状态。
      *
-     * @param open Boolean
+     * @param expanded Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Leaf setOpen(Boolean open) {
-        this.open = open;
+    public Leaf setExpanded(Boolean expanded) {
+        this.expanded = expanded;
         return this;
     }
 
@@ -413,18 +404,18 @@ public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf
      *
      * @return Boolean
      */
-    public Boolean getHidetoggle() {
-        return hidetoggle;
+    public Boolean getNoToggle() {
+        return noToggle;
     }
 
     /**
      * 是否隐藏 toggle 图标。
      *
-     * @param hidetoggle Boolean
+     * @param noToggle Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Leaf setHidetoggle(Boolean hidetoggle) {
-        this.hidetoggle = hidetoggle;
+    public Leaf setNoToggle(Boolean noToggle) {
+        this.noToggle = noToggle;
         return this;
     }
 
@@ -594,17 +585,6 @@ public class Leaf extends AbstractContainer<Leaf> implements MultiContainer<Leaf
     @Override
     public Leaf setStatus(String status) {
         this.status = status;
-        return this;
-    }
-
-    @Override
-    public String getTemplate() {
-        return template;
-    }
-
-    @Override
-    public Leaf setTemplate(String template) {
-        this.template = template;
         return this;
     }
 

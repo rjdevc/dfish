@@ -13,15 +13,11 @@ import com.rongji.dfish.ui.Scrollable;
  */
 public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollable<DialogTitle>,HtmlContentHolder<DialogTitle>,HasText<DialogTitle>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8155744934245686731L;
 	private Boolean escape;
 	private String text;
 	private Boolean scroll;
-	private String scrollClass;
-	
+
 	/**
 	 * 构造函数
 	 * @param id String 编号
@@ -37,12 +33,6 @@ public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollab
 	 */
 	public DialogTitle(String text){
 		this(null, text);
-	}
-
-
-	@Override
-    public String getType() {
-		return "dialog/title";
 	}
 
 	@Override
@@ -67,17 +57,6 @@ public class DialogTitle extends AbstractWidget<DialogTitle> implements Scrollab
 		return this;
 	}
 
-	@Override
-    public String getScrollClass() {
-		return scrollClass;
-	}
-	
-	@Override
-    public DialogTitle setScrollClass(String scrollClass) {
-		this.scrollClass = scrollClass;
-		return this;
-	}
-	
 	/**
 	 * 显示文本
 	 * @return 本身，这样可以继续设置其他属性

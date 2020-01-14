@@ -11,7 +11,7 @@ public class Spinner extends AbstractInput<Spinner, Number> {
 
     private static final long serialVersionUID = 4220692825414852306L;
     private Number step;
-    private Boolean showButton;
+    private Boolean noButton;
     private Integer decimal;
     private SpinnerFormat format;
 //    private String match;
@@ -97,18 +97,18 @@ public class Spinner extends AbstractInput<Spinner, Number> {
      *
      * @return Boolean
      */
-    public Boolean getShowButton() {
-        return showButton;
+    public Boolean getNoButton() {
+        return noButton;
     }
 
     /**
      * 是否显示尾部按钮
      *
-     * @param showButton Boolean
+     * @param noButton Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Spinner setShowButton(Boolean showButton) {
-        this.showButton = showButton;
+    public Spinner setNoButton(Boolean noButton) {
+        this.noButton = noButton;
         return this;
     }
 

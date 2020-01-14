@@ -9,10 +9,8 @@ package com.rongji.dfish.ui.form;
  */
 public class Password extends AbstractInput<Password, String> {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -5526694553323929504L;
+
     private Boolean autocomplete;
 
     /**
@@ -52,11 +50,6 @@ public class Password extends AbstractInput<Password, String> {
     public Password(String name, String label) {
         this.setName(name);
         this.setLabel(label);
-    }
-
-    @Override
-    public String getType() {
-        return "Password";
     }
 
     @Override

@@ -20,7 +20,10 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Posi
     private String icon;
     private String text;
     private List<Button> buttons;
-    private Command<?> yes;// 点击"确定"执行的命令。
+    /**
+     * 点击"确定"执行的命令。
+     */
+    private Command<?> yes;
 
     /**
      * 构造函数
@@ -29,11 +32,6 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Posi
      */
     public Alert(String text) {
         this.text = text;
-    }
-
-    @Override
-    public String getType() {
-        return "Alert";
     }
 
     @Override

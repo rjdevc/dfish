@@ -21,10 +21,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     private Boolean escape;
     private Boolean strict;
     private ComboBoxOption pub;
-    //	private String src;//在线匹配关键词的 view src。支持 $value 和 $text 变量。
     private String loadingText;
-//	private Boolean suggest;
-//	private View node;
 
     /**
      * 构造函数

@@ -9,9 +9,4 @@ import com.rongji.dfish.ui.AbstractResultfulNode;
  */
 public class UploadPost extends AbstractResultfulNode<UploadPost> {
 
-    @Override
-    public String getType() {
-        return "UploadPost";
-    }
-
 }

@@ -26,10 +26,6 @@ public abstract class NodeControlCommand<T extends NodeControlCommand<T>> extend
      * 目标类型-命令
      */
     public static final String SECTION_COMMAND = "cmd";
-    /**
-     * 目标类型-模板
-     */
-    public static final String SECTION_TEMPLATE = "template";
 
     /**
      * widget ID。

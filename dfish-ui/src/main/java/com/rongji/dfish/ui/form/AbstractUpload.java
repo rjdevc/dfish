@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.Directional;
-import com.rongji.dfish.ui.Valignable;
+import com.rongji.dfish.ui.VAlignable;
 import com.rongji.dfish.ui.command.Ajax;
 
 import java.util.ArrayList;
@@ -18,20 +18,10 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public abstract class AbstractUpload<T extends AbstractUpload<T>> extends AbstractFormElement<T, List<UploadItem>> implements Directional<T>, Alignable<T>, Valignable<T> {
+public abstract class AbstractUpload<T extends AbstractUpload<T>> extends AbstractFormElement<T, List<UploadItem>> implements Directional<T>, Alignable<T>, VAlignable<T> {
 
-    /**
-     * 方向:横向
-     */
-    public static final String DIR_HORIZONTAL = "h";
-    /**
-     * 方向:纵向
-     */
-    public static final String DIR_VERTICAL = "v";
-    /**
-     *
-     */
     private static final long serialVersionUID = 4779985030349561966L;
+
     protected UploadPost post;
     protected String download;
     protected Ajax preview;
@@ -682,12 +672,12 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
     }
 
     @Override
-    public String getvAlign() {
+    public String getVAlign() {
         return vAlign;
     }
 
     @Override
-    public T setvAlign(String vAlign) {
+    public T setVAlign(String vAlign) {
         this.vAlign = vAlign;
         return (T) this;
     }

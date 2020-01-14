@@ -23,8 +23,6 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 	private static final long serialVersionUID = 2082708957092349423L;
 	private String text;
 	private Label label;
-	private Boolean star;
-//	private Boolean hidden;
 	private Boolean hideLabel;
 	private Boolean escape = true;
 
@@ -39,22 +37,7 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 		this.text=text;
 		bundleProperties();
 	}
-//	/**
-//	 * 构造函数
-//	 * 如果你正在使用DFish3.2新增的template功能。该构造函数可以让代码更加简约,
-//	 * 你可以使用
-//	 * <p>new Label("姓名",()-&gt;"$data.userName");</p>
-//	 * 表达该Hidden是动态取值，如果没有Java8 support 通常你需要使用
-//	 * <p>new Label("姓名",null).at("text","$data.userName");</p>
-//	 * @param label 标题
-//	 * @param text 标签内容
-//	 */
-//	public Label(String label, AtExpression text){
-//		this.label=new FormLabel(label).setWidth(null);
-//		this.at("text",text.expr());
-//		bundleProperties();
-//	}
-	
+
 	@Override
 	public FormGroup getPrototype() {
 		Html prototype = new Html(text);
@@ -72,30 +55,16 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 	}
 
 	@Override
-    public Boolean getHideLabel() {
+    public Boolean getNoLabel() {
 		return hideLabel;
 	}
 
 	@Override
-    public LabelWrapper setHideLabel(Boolean hideLabel) {
-		this.hideLabel=hideLabel;
-		if(hideLabel!=null&&label!=null){
-			label.setWidth(hideLabel?"0":null);
+    public LabelWrapper setNoLabel(Boolean noLabel) {
+		this.hideLabel= noLabel;
+		if(noLabel !=null&&label!=null){
+			label.setWidth(noLabel ?"0":null);
 		}
-		return this;
-	}
-
-	 /**
-     * 这个元素，是否非空，这里非空不是dfish2.4以后的真实判断，而是在界面显示一个非空标记
-     * 通常是红色字体的半角星号(*)
-     * @param star boolean
-     * @return 本身，这样可以继续设置其他属性
-     * @since 3.0
-     * @deprecated notnull 属性已经被 required替代
-     */
-	@Deprecated
-	public LabelWrapper setNotnull(Boolean star) {
-		this.star=star;
 		return this;
 	}
 
@@ -151,17 +120,5 @@ public class LabelWrapper extends AbstractWidget<LabelWrapper> implements JsonWr
 		this.escape = escape;
 		return this;
 	}
-	
-	@Override
-    public LabelWrapper setStar(Boolean star) {
-		this.star=star;
-		return this;
-	}
-	
-	@Override
-    public Boolean getStar() {
-		return star;
-	}
-	
 
 }

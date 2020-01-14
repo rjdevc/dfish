@@ -9,9 +9,7 @@ import com.rongji.dfish.ui.HasText;
  *
  */
 public class Split extends AbstractWidget<Split> implements HasText<Split>{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 4972016491477561395L;
 	/**
 	 * 前节点
@@ -25,7 +23,7 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	private String text;
 	private Boolean escape;
 	private String icon;
-	private String openicon;
+	private String expandedIcon;
 	private String range;
 	private String target;
 
@@ -86,17 +84,17 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	 * 展开图标。图片地址url，或是以点 "." 开头的样式名。
 	 * @return openicon String 展开图标
 	 */
-	public String getOpenicon() {
-		return openicon;
+	public String getExpandedIcon() {
+		return expandedIcon;
 	}
 
 	/**
 	 * 展开图标。图片地址url，或是以点 "." 开头的样式名。
-	 * @param openicon 展开图标
+	 * @param expandedIcon 展开图标
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Split setOpenicon(String openicon) {
-		this.openicon = openicon;
+	public Split setExpandedIcon(String expandedIcon) {
+		this.expandedIcon = expandedIcon;
 		return this;
 	}
 
@@ -134,11 +132,6 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	public Split setTarget(String target) {
 		this.target = target;
 		return this;
-	}
-
-	@Override
-	public String getType() {
-		return "split";
 	}
 
 	@Override

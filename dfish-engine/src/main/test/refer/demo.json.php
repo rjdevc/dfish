@@ -962,9 +962,9 @@ if ( $act == 'panel-html' ) { ?>
 			    	      "C3": { "type": "date", "name": "date", "width1": "100%", "value": "", "format": "yyyy-mm-dd hh:ii", "placeholder": "" }
 			    	    },
 				        {
-			    	      "C0": "xbox:",
+			    	      "C0": "dropBox:",
 			    	      "C1": {
-			    	        "type": "xbox", "name": "xbox", "id": "xbox", "value": "sport", "readonly": !true, 
+			    	        "type": "dropBox", "name": "dropBox", "id": "dropBox", "value": "sport", "readonly": !true,
 			    	        "options": [
 			    	          { "text" : "请选择", "value" : "" },
 			    	          { "text" : "music", "value" : "music" },

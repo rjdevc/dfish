@@ -16,23 +16,15 @@ import com.rongji.dfish.ui.AbstractWidget;
  * ------------------------------------------------------------------
  * 2017-8-10	DFish Team - lamontYu	1.0			1.0 Version
  */
-public class GridRownum extends AbstractWidget<GridRownum> {
+public class GridRowNum extends AbstractWidget<GridRowNum> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8038094039396279588L;
 
-	@Override
-    public String getType() {
-	    return "grid/rownum";
-    }
-	
-	public GridRownum() {
+	public GridRowNum() {
 	    super();
     }
 
-	public GridRownum(Integer start) {
+	public GridRowNum(Integer start) {
 	    super();
 	    this.start = start;
     }
@@ -52,7 +44,7 @@ public class GridRownum extends AbstractWidget<GridRownum> {
 	 * @param start Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public GridRownum setStart(Integer start) {
+	public GridRowNum setStart(Integer start) {
 		this.start = start;
 		return this;
 	}

@@ -24,7 +24,6 @@ public class Tree extends AbstractContainer<Tree>
 	private static final long serialVersionUID = -6971221234006954948L;
 	private Leaf pub;
 	private Boolean scroll;
-	private String scrollClass;
     private Combo combo;
     private Highlight highlight;
     private Boolean ellipsis;
@@ -37,12 +36,6 @@ public class Tree extends AbstractContainer<Tree>
 	 */
 	public Tree(String id) {
 		super(id);
-	}
-
-
-	@Override
-    public String getType() {
-		return "tree";
 	}
 
 	private Leaf pub() {
@@ -74,17 +67,6 @@ public class Tree extends AbstractContainer<Tree>
 	    return this.scroll;
     }
 
-    @Override
-    public Tree setScrollClass(String scrollClass) {
-    	this.scrollClass = scrollClass;
-	    return this;
-    }
-
-    @Override
-    public String getScrollClass() {
-	    return this.scrollClass;
-    }
-	
     HiddenPart hiddens = new HiddenPart();
     @Override
     public Tree addHidden(String name, String value) {
@@ -145,12 +127,12 @@ public class Tree extends AbstractContainer<Tree>
 	/**
 	 * 是否隐藏 toggle 图标。
 	 * @deprecated 转移到{@link #getPub()}
-	 * @see Leaf#setHidetoggle(Boolean)
+	 * @see Leaf#setNoToggle(Boolean)
 	 * @param hidetoggle Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public Tree setHidetoggle(Boolean hidetoggle) {
-		getPub().setHidetoggle(hidetoggle);
+		getPub().setNoToggle(hidetoggle);
 		return this;
 	}
 	/**
@@ -311,19 +293,6 @@ public class Tree extends AbstractContainer<Tree>
     @Deprecated
 	public Tree setEllipsis(Boolean ellipsis) {
 		this.ellipsis = ellipsis;
-		return this;
-	}
-
-
-	@Override
-	public String getTemplate() {
-		return rootLeaf.getTemplate();
-	}
-
-
-	@Override
-	public Tree setTemplate(String template) {
-		rootLeaf.setTemplate(template);
 		return this;
 	}
 

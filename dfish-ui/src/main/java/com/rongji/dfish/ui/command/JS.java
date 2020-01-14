@@ -23,17 +23,6 @@ public class JS extends AbstractCommand<JS> {
         this.text = text;
     }
 
-    @Override
-    public String getType() {
-        return "JS";
-    }
-
-    /**
-     * 空命令
-     */
-    public static final JS EMPTY = new JS(null);
-
-
     /**
      * 设置 JS内容
      *

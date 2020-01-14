@@ -20,9 +20,6 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> extends AbstractWidgetWrapper<T, Grid> implements Scrollable<T>, HiddenContainer<T>, PubHolder<T, Grid.TR>, ListView<T>, PrototypeChangeable<Grid> {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -7218756238863890230L;
     /**
      * 用横竖的线把表格划分成多个单元格
@@ -51,33 +48,6 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
         prototype.setWrapper(this);
         bundleProperties();
     }
-
-//	/**
-//	 * 获取表格标题栏
-//	 * @return Grid.Tr headRow
-//	 */
-//	public Grid.Tr getHeadRow() {
-//		List<Grid.Tr> headRows = prototype.getThead().getRows();
-//		Grid.Tr headRow = null;
-//		if (Utils.isEmpty(headRows)) {
-//			headRow = new Grid.Tr();
-//			prototype.getThead().add(headRow);
-//		} else {
-//			headRow = headRows.get(0);
-//		}
-//		if(headRow==null){
-//			headRow=new Grid.Tr();
-//		}
-//		return headRow;
-//	}
-
-    // 显示域属性列表(仅在按数组下标添加域属性时添加数据)
-//	protected List<String> fieldProps = new ArrayList<String>();
-//	// 对象属性对应显示域属性的Map;Key-Value --> beanProp-field;
-//	protected Map<Object, String> propMap = new HashMap<Object, String>();
-    // 显示域属性对应的数据格式化
-//	protected Map<String, String> formatters = new HashMap<String, String>();
-    // 原型是否需要重构,默认是true
 
     protected static final int MODE_ARRAY = 2;
     protected static final int MODE_BEAN = 1;
@@ -239,8 +209,8 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public Boolean getNobr() {
-        return prototype.getNobr();
+    public Boolean getNoBr() {
+        return prototype.getNoBr();
     }
 
     @Override
@@ -271,17 +241,6 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
      */
     public T setResizable(Boolean resizable) {
         prototype.setResizable(resizable);
-        return (T) this;
-    }
-
-    @Override
-    public String getScrollClass() {
-        return prototype.getScrollClass();
-    }
-
-    @Override
-    public T setScrollClass(String scrollClass) {
-        prototype.setScrollClass(scrollClass);
         return (T) this;
     }
 
@@ -330,13 +289,13 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
     }
 
     @Override
-    public Boolean getFocusmultiple() {
-        return prototype.getFocusmultiple();
+    public Boolean getFocusMultiple() {
+        return prototype.getFocusMultiple();
     }
 
     @Override
-    public T setFocusmultiple(Boolean focusmultiple) {
-        prototype.setFocusmultiple(focusmultiple);
+    public T setFocusMultiple(Boolean focusMultiple) {
+        prototype.setFocusMultiple(focusMultiple);
         return (T) this;
     }
 
@@ -360,8 +319,8 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
     }
 
     @Override
-    public T setNobr(Boolean nobr) {
-        prototype.setNobr(nobr);
+    public T setNoBr(Boolean noBr) {
+        prototype.setNoBr(noBr);
         return (T) this;
     }
 
@@ -441,7 +400,7 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
      * @deprecated 该方法将会触发获取原型。请谨慎使用
      */
     public Grid.TR getHeadRow() {
-        Grid.Head head = getPrototype().getHead();
+        Grid.THead head = getPrototype().gettHead();
         if (head.getRows() != null && head.getRows().size() > 0) {
             return head.getRows().get(0);
         }

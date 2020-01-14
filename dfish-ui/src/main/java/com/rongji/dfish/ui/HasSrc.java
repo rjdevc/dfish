@@ -35,17 +35,17 @@ public interface HasSrc<T extends HasSrc<T>> {
 	 * @return this
 	 */
 	T setSync(Boolean sync);
-	/**
-	 * 指定用这个编号所对应的模板 将src返回的内容解析成dfish的格式。
-	 * @return String
-	 */
-	String getTemplate();
-	/**
-	 * 指定用这个编号所对应的模板 将src返回的内容解析成dfish的格式。
-	 * @param template String
-	 * @return this
-	 */
-	T setTemplate(String template);
+//	/**
+//	 * 指定用这个编号所对应的模板 将src返回的内容解析成dfish的格式。
+//	 * @return String
+//	 */
+//	String getTemplate();
+//	/**
+//	 * 指定用这个编号所对应的模板 将src返回的内容解析成dfish的格式。
+//	 * @param template String
+//	 * @return this
+//	 */
+//	T setTemplate(String template);
 
 
 	/**

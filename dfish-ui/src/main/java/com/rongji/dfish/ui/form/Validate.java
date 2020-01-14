@@ -36,31 +36,102 @@ public class Validate extends AbstractNode<Validate> {
 	 * 等于
 	 */
 	public static final String COMPARE_MODE_EQUALS="==";
-	private Boolean required;//必填
-	private String requiredtext;//必填提示文本  ${t}不能为空
-	private String pattern;//正则表达式
-	private String patterntext;//正则提示文本
-	private String compare;//另一个表单的name。用于简单的比较
-	private String comparemode;//比较符号，可选值: > >= < <= ==。
-	private String comparetext;//比较提示文本。
-	private Integer minlength;//最小字节数
-	private String minlengthtext;//最小字节数提示文本
-	private Integer maxlength;//最大字节数。用于 text textarea password
-	private String maxlengthtext;//最大字节数提示文本
-	private Boolean maxlengthcheck; // 设置为true，键入文本时将会即时检测是否超出最大长度。设置为false则在提交时检测。
-	private Integer minsize;//最少选择几项。用于 checkbox
-	private String minsizetext;//最少选择几项提示文本
-	private Integer maxsize;//最多选择几项。用于 checkbox
-	private String maxsizetext;//最多选择几项提示文本 
-	private String minvalue;//最小值。用于 spinner date 
-	private String minvaluetext;//最小值提示文本。 默认值为  ${t}不能小于于${maxvalue}
-	private String maxvalue;//最大值。用于 spinner date 
-	private String maxvaluetext;//最大值提示文本。默认值为  ${t}不能大于${maxvalue}
-	private Boolean beforenow;//不能大于当前时间。用于 date
-	private String beforenowtext;//必填提示文本  ${t}不能为空
-	private Boolean afternow;//不能小于当前时间的显示文本。
-	private String afternowtext;//必填提示文本  ${t}不能为空
-	private String method;//JS语句。如果验证不通过，执行语句应当 return 一个字符串作为说明。如果验证通过则无需返回或返回空。
+	/**
+	 * 必填
+	 */
+	private Boolean required;
+	/**
+	 * 必填提示文本  ${t}不能为空
+	 */
+	private String requiredText;
+	/**
+	 * 正则表达式
+	 */
+	private String pattern;
+	/**
+	 * 正则提示文本
+	 */
+	private String patternText;
+	/**
+	 * 另一个表单的name。用于简单的比较
+	 */
+	private String compare;
+	/**
+	 * 比较符号，可选值: > >= < <= ==。
+	 */
+	private String compareMode;
+	/**
+	 * 比较提示文本。
+	 */
+	private String compareText;
+	/**
+	 * 最小字节数
+	 */
+	private Integer minLength;
+	/**
+	 * 最小字节数提示文本
+	 */
+	private String minLengthText;
+	/**
+	 * 最大字节数。用于 text textarea password
+	 */
+	private Integer maxLength;
+	/**
+	 * 最大字节数提示文本
+	 */
+	private String maxLengthText;
+	/**
+	 * 最少选择几项。用于 checkbox
+	 */
+	private Integer minSize;
+	/**
+	 * 最少选择几项提示文本
+	 */
+	private String minSizeText;
+	/**
+	 * 最多选择几项。用于 checkbox
+	 */
+	private Integer maxSize;
+	/**
+	 * 最多选择几项提示文本
+	 */
+	private String maxSizeText;
+	/**
+	 * 最小值。用于 spinner date
+	 */
+	private String minValue;
+	/**
+	 * 最小值提示文本。 默认值为  ${t}不能小于于${maxvalue}
+	 */
+	private String minValueText;
+	/**
+	 * 最大值。用于 spinner date
+	 */
+	private String maxValue;
+	/**
+	 * 最大值提示文本。默认值为  ${t}不能大于${maxvalue}
+	 */
+	private String maxValueText;
+	/**
+	 * 不能大于当前时间。用于 date
+	 */
+	private Boolean beforeNow;
+	/**
+	 * 必填提示文本  ${t}不能为空
+	 */
+	private String beforeNowText;
+	/**
+	 * 不能小于当前时间的显示文本。
+	 */
+	private Boolean afterNow;
+	/**
+	 * 必填提示文本  ${t}不能为空
+	 */
+	private String afterNowText;
+	/**
+	 * JS语句。如果验证不通过，执行语句应当 return 一个字符串作为说明。如果验证通过则无需返回或返回空。
+	 */
+	private String method;
 
 	@Override
 	public String getType() {
@@ -91,18 +162,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 必填提示文本。
 	 * @return requiredtext
 	 */
-	public String getRequiredtext() {
-		return requiredtext;
+	public String getRequiredText() {
+		return requiredText;
 	}
 
 
 	/**
 	 * 必填提示文本。
-	 * @param requiredtext 必填提示文本
+	 * @param requiredText 必填提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setRequiredtext(String requiredtext) {
-		this.requiredtext = requiredtext;
+	public Validate setRequiredText(String requiredText) {
+		this.requiredText = requiredText;
 		return this;
 	}
 
@@ -131,18 +202,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 正则提示文本
 	 * @return  patterntext
 	 */
-	public String getPatterntext() {
-		return patterntext;
+	public String getPatternText() {
+		return patternText;
 	}
 
 
 	/**
 	 * 模式(正则表达式)
-	 * @param patterntext 模式
+	 * @param patternText 模式
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setPatterntext(String patterntext) {
-		this.patterntext = patterntext;
+	public Validate setPatternText(String patternText) {
+		this.patternText = patternText;
 		return this;
 	}
 
@@ -171,18 +242,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 比较符号，可选值: &gt; / &gt;= / &lt; / &lt;= / ==。
 	 * @return comparemode String
 	 */
-	public String getComparemode() {
-		return comparemode;
+	public String getCompareMode() {
+		return compareMode;
 	}
 
 
 	/**
 	 * 比较符号，可选值: &gt; / &gt;= / &lt; / &lt;= / ==。
-	 * @param comparemode String
+	 * @param compareMode String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setComparemode(String comparemode) {
-		this.comparemode = comparemode;
+	public Validate setCompareMode(String compareMode) {
+		this.compareMode = compareMode;
 		return this;
 	}
 
@@ -191,18 +262,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 比较提示文本
 	 * @return comparetext
 	 */
-	public String getComparetext() {
-		return comparetext;
+	public String getCompareText() {
+		return compareText;
 	}
 
 
 	/**
 	 * 比较结果，如果不吻合，提示文本
-	 * @param comparetext 比较结果，如果不吻合，提示文本
+	 * @param compareText 比较结果，如果不吻合，提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setComparetext(String comparetext) {
-		this.comparetext = comparetext;
+	public Validate setCompareText(String compareText) {
+		this.compareText = compareText;
 		return this;
 	}
 
@@ -211,21 +282,21 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最小字节数。
 	 * @return  minlength
 	 */
-	public Integer getMinlength() {
-		return minlength;
+	public Integer getMinLength() {
+		return minLength;
 	}
 
 
 	/**
 	 * 最小字节数。
-	 * @param minlength 最小字节数。
+	 * @param minLength 最小字节数。
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMinlength(Integer minlength) {
-		if (minlength != null && minlength <= 0) {
-			minlength = null;
+	public Validate setMinLength(Integer minLength) {
+		if (minLength != null && minLength <= 0) {
+			minLength = null;
 		}
-		this.minlength = minlength;
+		this.minLength = minLength;
 		return this;
 	}
 
@@ -234,18 +305,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最小字节数提示文本。
 	 * @return  minlengthtext
 	 */
-	public String getMinlengthtext() {
-		return minlengthtext;
+	public String getMinLengthText() {
+		return minLengthText;
 	}
 
 
 	/**
 	 * 最小字节数，如果不吻合，提示文本。
-	 * @param minlengthtext 提示文本。
+	 * @param minLengthText 提示文本。
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMinlengthtext(String minlengthtext) {
-		this.minlengthtext = minlengthtext;
+	public Validate setMinLengthText(String minLengthText) {
+		this.minLengthText = minLengthText;
 		return this;
 	}
 
@@ -254,21 +325,21 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最大字节数。
 	 * @return maxlength
 	 */
-	public Integer getMaxlength() {
-		return maxlength;
+	public Integer getMaxLength() {
+		return maxLength;
 	}
 
 
 	/**
 	 * 最大字节数
-	 * @param maxlength 最大字节数
+	 * @param maxLength 最大字节数
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMaxlength(Integer maxlength) {
-		if (maxlength != null && maxlength <= 0) {
-			maxlength = null;
+	public Validate setMaxLength(Integer maxLength) {
+		if (maxLength != null && maxLength <= 0) {
+			maxLength = null;
 		}
-		this.maxlength = maxlength;
+		this.maxLength = maxLength;
 		return this;
 	}
 
@@ -277,61 +348,40 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最大字节数提示文本。
 	 * @return maxlengthtext
 	 */
-	public String getMaxlengthtext() {
-		return maxlengthtext;
+	public String getMaxLengthText() {
+		return maxLengthText;
 	}
 
 
 	/**
 	 * 最大字节数，如果不吻合，提示文本。
-	 * @param maxlengthtext 提示文本
+	 * @param maxLengthText 提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMaxlengthtext(String maxlengthtext) {
-		this.maxlengthtext = maxlengthtext;
+	public Validate setMaxLengthText(String maxLengthText) {
+		this.maxLengthText = maxLengthText;
 		return this;
 	}
-
-	/**
-	 * 设置为true，键入文本时将会即时检测是否超出最大长度。设置为false则在提交时检测。
-	 * @return Boolean
-	 * @author lamontYu
-	 */
-	public Boolean getMaxlengthcheck() {
-		return maxlengthcheck;
-	}
-
-	/**
-	 * 设置为true，键入文本时将会即时检测是否超出最大长度。设置为false则在提交时检测。
-	 * @param maxlengthcheck Boolean
-	 * @return 本身，这样可以继续设置其他属性
-	 * @author lamontYu
-	 */
-	public Validate setMaxlengthcheck(Boolean maxlengthcheck) {
-		this.maxlengthcheck = maxlengthcheck;
-		return this;
-	}
-
 
 	/**
 	 * 最少选择几项。用于 checkbox
 	 * @return minsize
 	 */
-	public Integer getMinsize() {
-		return minsize;
+	public Integer getMinSize() {
+		return minSize;
 	}
 
 
 	/**
 	 * 最少选择几项。用于 checkbox
-	 * @param minsize 最少选择几项
+	 * @param minSize 最少选择几项
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMinsize(Integer minsize) {
-		if (minsize != null && minsize <= 0) {
-			minsize = null;
+	public Validate setMinSize(Integer minSize) {
+		if (minSize != null && minSize <= 0) {
+			minSize = null;
 		}
-		this.minsize = minsize;
+		this.minSize = minSize;
 		return this;
 	}
 
@@ -340,18 +390,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最少选择几项提示文本。
 	 * @return minsizetext
 	 */
-	public String getMinsizetext() {
-		return minsizetext;
+	public String getMinSizeText() {
+		return minSizeText;
 	}
 
 
 	/**
 	 * 最少选择几项，如果不吻合，提示文本。
-	 * @param minsizetext 提示文本
+	 * @param minSizeText 提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMinsizetext(String minsizetext) {
-		this.minsizetext = minsizetext;
+	public Validate setMinSizeText(String minSizeText) {
+		this.minSizeText = minSizeText;
 		return this;
 	}
 
@@ -360,21 +410,21 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最多选择几项。用于 checkbox
 	 * @return maxsize
 	 */
-	public Integer getMaxsize() {
-		return maxsize;
+	public Integer getMaxSize() {
+		return maxSize;
 	}
 
 
 	/**
 	 * 最多选择几项。用于 checkbox
-	 * @param maxsize 最多选择几项
+	 * @param maxSize 最多选择几项
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMaxsize(Integer maxsize) {
-		if (maxsize != null && maxsize <= 0) {
-			maxsize = null;
+	public Validate setMaxSize(Integer maxSize) {
+		if (maxSize != null && maxSize <= 0) {
+			maxSize = null;
 		}
-		this.maxsize = maxsize;
+		this.maxSize = maxSize;
 		return this;
 	}
 
@@ -383,18 +433,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最多选择几项提示文本
 	 * @return  maxsizetext
 	 */
-	public String getMaxsizetext() {
-		return maxsizetext;
+	public String getMaxSizeText() {
+		return maxSizeText;
 	}
 
 
 	/**
 	 * 最多选择几项，如果不吻合，提示文本
-	 * @param maxsizetext 提示文本
+	 * @param maxSizeText 提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMaxsizetext(String maxsizetext) {
-		this.maxsizetext = maxsizetext;
+	public Validate setMaxSizeText(String maxSizeText) {
+		this.maxSizeText = maxSizeText;
 		return this;
 	}
 
@@ -403,18 +453,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最小值。用于 spinner date
 	 * @return  minvalue
 	 */
-	public String getMinvalue() {
-		return minvalue;
+	public String getMinValue() {
+		return minValue;
 	}
 
 
 	/**
 	 * 最小值。用于 spinner date
-	 * @param minvalue 最小值
+	 * @param minValue 最小值
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMinvalue(String minvalue) {
-		this.minvalue = minvalue;
+	public Validate setMinValue(String minValue) {
+		this.minValue = minValue;
 		return this;
 	}
 
@@ -423,18 +473,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最小值提示文本。
 	 * @return minvaluetext
 	 */
-	public String getMinvaluetext() {
-		return minvaluetext;
+	public String getMinValueText() {
+		return minValueText;
 	}
 
 
 	/**
 	 * 最小值，如果不吻合，提示文本。
-	 * @param minvaluetext 提示文本
+	 * @param minValueText 提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMinvaluetext(String minvaluetext) {
-		this.minvaluetext = minvaluetext;
+	public Validate setMinValueText(String minValueText) {
+		this.minValueText = minValueText;
 		return this;
 	}
 
@@ -443,18 +493,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最大值。用于 spinner date
 	 * @return  maxvalue 最大值
 	 */
-	public String getMaxvalue() {
-		return maxvalue;
+	public String getMaxValue() {
+		return maxValue;
 	}
 
 
 	/**
 	 * 最大值。用于 spinner date
-	 * @param maxvalue 最大值
+	 * @param maxValue 最大值
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMaxvalue(String maxvalue) {
-		this.maxvalue = maxvalue;
+	public Validate setMaxValue(String maxValue) {
+		this.maxValue = maxValue;
 		return this;
 	}
 
@@ -463,18 +513,18 @@ public class Validate extends AbstractNode<Validate> {
 	 * 最大值提示文本。
 	 * @return maxvaluetext
 	 */
-	public String getMaxvaluetext() {
-		return maxvaluetext;
+	public String getMaxValueText() {
+		return maxValueText;
 	}
 
 
 	/**
 	 * 最大值，如果不吻合，提示文本。
-	 * @param maxvaluetext 提示文本
+	 * @param maxValueText 提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setMaxvaluetext(String maxvaluetext) {
-		this.maxvaluetext = maxvaluetext;
+	public Validate setMaxValueText(String maxValueText) {
+		this.maxValueText = maxValueText;
 		return this;
 	}
 
@@ -500,17 +550,17 @@ public class Validate extends AbstractNode<Validate> {
 	 * 不能大于当前时间。用于 date
 	 * @return Boolean
 	 */
-	public Boolean getBeforenow() {
-		return beforenow;
+	public Boolean getBeforeNow() {
+		return beforeNow;
 	}
 
 	/**
 	 * 不能大于当前时间。用于 date
-	 * @param beforenow Boolean
+	 * @param beforeNow Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setBeforenow(Boolean beforenow) {
-		this.beforenow = beforenow;
+	public Validate setBeforeNow(Boolean beforeNow) {
+		this.beforeNow = beforeNow;
 		return this;
 	}
 
@@ -518,17 +568,17 @@ public class Validate extends AbstractNode<Validate> {
 	 * 不能大于当前时间的显示文本。
 	 * @return String
 	 */
-	public String getBeforenowtext() {
-		return beforenowtext;
+	public String getBeforeNowText() {
+		return beforeNowText;
 	}
 
 	/**
 	 * 不能大于当前时间的提示文本。
-	 * @param beforenowtext 提示文本
+	 * @param beforeNowText 提示文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setBeforenowtext(String beforenowtext) {
-		this.beforenowtext = beforenowtext;
+	public Validate setBeforeNowText(String beforeNowText) {
+		this.beforeNowText = beforeNowText;
 		return this;
 	}
 
@@ -536,17 +586,17 @@ public class Validate extends AbstractNode<Validate> {
 	 * 不能小于当前时间。用于 date
 	 * @return Boolean
 	 */
-	public Boolean getAfternow() {
-		return afternow;
+	public Boolean getAfterNow() {
+		return afterNow;
 	}
 
 	/**
 	 * 不能小于当前时间。用于 date
-	 * @param afternow Boolean
+	 * @param afterNow Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setAfternow(Boolean afternow) {
-		this.afternow = afternow;
+	public Validate setAfterNow(Boolean afterNow) {
+		this.afterNow = afterNow;
 		return this;
 	}
 
@@ -554,17 +604,17 @@ public class Validate extends AbstractNode<Validate> {
 	 * 不能小于当前时间的显示文本。
 	 * @return String
 	 */
-	public String getAfternowtext() {
-		return afternowtext;
+	public String getAfterNowText() {
+		return afterNowText;
 	}
 
 	/**
 	 * 不能小于当前时间的显示文本。
-	 * @param afternowtext String
+	 * @param afterNowText String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Validate setAfternowtext(String afternowtext) {
-		this.afternowtext = afternowtext;
+	public Validate setAfterNowText(String afterNowText) {
+		this.afterNowText = afterNowText;
 		return this;
 	}
 	
@@ -592,7 +642,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate compare(String comparemode,String compare){
-		return new Validate().setComparemode(comparemode).setCompare(compare);
+		return new Validate().setCompareMode(comparemode).setCompare(compare);
 	}
 	/**
 	 * 便捷构建一个最大长度的校验
@@ -600,7 +650,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate maxlength(Integer maxlength){
-		return new Validate().setMaxlength(maxlength);
+		return new Validate().setMaxLength(maxlength);
 	}
 	/**
 	 * 便捷构建一个最多选择项的校验
@@ -608,7 +658,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate maxsize(Integer maxsize){
-		return new Validate().setMaxsize(maxsize);
+		return new Validate().setMaxSize(maxsize);
 	}
 	/**
 	 * 便捷构建一个最大值的校验
@@ -616,7 +666,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate maxvalue(String maxvalue){
-		return new Validate().setMaxvalue(maxvalue);
+		return new Validate().setMaxValue(maxvalue);
 	}
 	
 	/**
@@ -625,7 +675,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate minlength(Integer minlength){
-		return new Validate().setMinlength(minlength);
+		return new Validate().setMinLength(minlength);
 	}
 	/**
 	 * 便捷构建一个最小选择项的校验
@@ -633,7 +683,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate minsize(Integer minsize){
-		return new Validate().setMinsize(minsize);
+		return new Validate().setMinSize(minsize);
 	}
 	/**
 	 * 便捷构建一个最小值的校验
@@ -641,7 +691,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate minvalue(String minvalue){
-		return new Validate().setMinvalue(minvalue);
+		return new Validate().setMinValue(minvalue);
 	}
 	
 	/**
@@ -649,7 +699,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate beforenow() {
-		return new Validate().setBeforenow(true);
+		return new Validate().setBeforeNow(true);
 	}
 	
 	/**
@@ -657,7 +707,7 @@ public class Validate extends AbstractNode<Validate> {
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public static Validate afternow() {
-		return new Validate().setAfternow(true);
+		return new Validate().setAfterNow(true);
 	}
 	/**
 	 * 合并另一个条件，以便输出

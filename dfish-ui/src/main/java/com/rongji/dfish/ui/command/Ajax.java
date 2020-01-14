@@ -22,11 +22,4 @@ public class Ajax extends CommunicateCommand<Ajax> {
         super(src);
     }
 
-
-    @Override
-    public String getType() {
-        return "Ajax";
-    }
-
-
 }

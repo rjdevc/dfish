@@ -12,11 +12,6 @@ public class Rate extends AbstractFormElement<Rate, Integer> {
     private static final long serialVersionUID = -6595357232541220426L;
 
     @Override
-    public String getType() {
-        return "Rate";
-    }
-
-    @Override
     public Rate setValue(Object value) {
         if (value == null) {
             this.value = null;

@@ -13,12 +13,11 @@ import java.util.List;
  * @since 1.0
  */
 public class ImgBox extends AbstractOptionsHolder<ImgBox, Option> {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 666601483514746346L;
-	private Integer imgheight;
-	private Integer imgwidth;
+
+	private Integer imgHeight;
+	private Integer imgWidth;
 
 	/**
 	 * 构造函数
@@ -36,26 +35,21 @@ public class ImgBox extends AbstractOptionsHolder<ImgBox, Option> {
 		return o;
 	}
 
-	@Override
-    public String getType() {
-		return "imgbox";
-	}
-
 	/**
 	 * 图标高度
 	 * @return Integer
 	 */
-	public Integer getImgheight() {
-		return imgheight;
+	public Integer getImgHeight() {
+		return imgHeight;
 	}
 
 	/**
 	 * 设置图标高度
-	 * @param imgheight Integer
+	 * @param imgHeight Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ImgBox setImgheight(Integer imgheight) {
-		this.imgheight = imgheight;
+	public ImgBox setImgHeight(Integer imgHeight) {
+		this.imgHeight = imgHeight;
 		return this;
 	}
 
@@ -63,17 +57,17 @@ public class ImgBox extends AbstractOptionsHolder<ImgBox, Option> {
 	 * 图标宽度
 	 * @return Integer
 	 */
-	public Integer getImgwidth() {
-		return imgwidth;
+	public Integer getImgWidth() {
+		return imgWidth;
 	}
 
 	/**
 	 * 设置图标宽度
-	 * @param imgwidth Integer
+	 * @param imgWidth Integer
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public ImgBox setImgwidth(Integer imgwidth) {
-		this.imgwidth = imgwidth;
+	public ImgBox setImgWidth(Integer imgWidth) {
+		this.imgWidth = imgWidth;
 		return this;
 	}
 	

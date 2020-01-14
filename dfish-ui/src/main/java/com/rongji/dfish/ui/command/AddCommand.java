@@ -24,6 +24,15 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
 
     protected List<Widget> nodes = new ArrayList<>();
 
+    public AddCommand(String target, Widget<?>... nodes) {
+        setTarget(target);
+        if (nodes != null) {
+            for (Widget<?> node : nodes) {
+                add(node);
+            }
+        }
+    }
+
     /**
      * 添加需要插入元素
      * 一般是增加Widget。也允许增加Command等其他部件
@@ -71,6 +80,5 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
     public boolean replaceNodeById(Widget<?> w) {
         return false;
     }
-
 
 }

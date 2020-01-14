@@ -29,10 +29,5 @@ public class UploadButton extends AbstractButton<UploadButton > {
 	public UploadButton( String text) {
 		this.setText(text);
 	}
-  
-	@Override
-	public String getType() {
-		return "UploadButton";
-	}
-	
+
 }

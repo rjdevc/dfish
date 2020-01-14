@@ -62,11 +62,6 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
         super(name, label, value, suggest);
     }
 
-    @Override
-    public String getType() {
-        return "ComboBox";
-    }
-
     public String getFace() {
         return face;
     }

@@ -68,14 +68,11 @@ import java.util.*;
 public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         HiddenContainer<Grid>, HtmlContentHolder<Grid>, PubHolder<Grid, Grid.TR>, Scrollable<Grid>, GridOperation<Grid> {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 6537737987499258183L;
-    private Head head;
-    private Body body;
-    private Foot foot;
-    private List<Column> columns = new ArrayList<Column>();
+    private THead tHead;
+    private TBody tBody;
+    private TFoot tFoot;
+    private List<Column> columns = new ArrayList<>();
     private TR pub;
 
     private PrototypeChangeable<Grid> wrapper;
@@ -158,9 +155,9 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
     public Grid(String id) {
         super(id);
-        this.setHead(new Head());
-        this.setBody(new Body());
-        this.setFoot(new Foot());
+        this.settHead(new THead());
+        this.settBody(new TBody());
+        this.settFoot(new TFoot());
     }
 
     @Override
@@ -173,22 +170,22 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      *
      * @return Thead
      */
-    public Head getHead() {
-        return head;
+    public THead gettHead() {
+        return tHead;
     }
 
     /**
      * 设置表头
      *
-     * @param head Thead
+     * @param tHead Thead
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setHead(Head head) {
-        if (head == null) {
+    public Grid settHead(THead tHead) {
+        if (tHead == null) {
             throw new UnsupportedOperationException("Thead can not be null.");
         }
-        head.owner(this);
-        this.head = head;
+        tHead.owner(this);
+        this.tHead = tHead;
         return this;
     }
 
@@ -197,22 +194,22 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      *
      * @return Tbody
      */
-    public Body getBody() {
-        return body;
+    public TBody gettBody() {
+        return tBody;
     }
 
     /**
      * 设置表体
      *
-     * @param body 设置表体
+     * @param tBody 设置表体
      * @return this
      */
-    public Grid setBody(Body body) {
-        if (body == null) {
+    public Grid settBody(TBody tBody) {
+        if (tBody == null) {
             throw new UnsupportedOperationException("Tbody can not be null.");
         }
-        body.owner(this);
-        this.body = body;
+        tBody.owner(this);
+        this.tBody = tBody;
         return this;
     }
 
@@ -221,22 +218,22 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      *
      * @return tfoot
      */
-    public Foot getFoot() {
-        return foot;
+    public TFoot gettFoot() {
+        return tFoot;
     }
 
     /**
      * 设置表尾
      *
-     * @param foot Thead
+     * @param tFoot Thead
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setFoot(Foot foot) {
-        if (foot == null) {
+    public Grid settFoot(TFoot tFoot) {
+        if (tFoot == null) {
             throw new UnsupportedOperationException("tfoot can not be null.");
         }
-        foot.owner(this);
-        this.foot = foot;
+        tFoot.owner(this);
+        this.tFoot = tFoot;
         return this;
     }
 
@@ -336,45 +333,45 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     @Override
     public List findNodes() {
         List<HasId> resultList = new ArrayList<>();
-        if (body.findNodes() != null) {
-            resultList.addAll(body.findNodes());
+        if (tBody.findNodes() != null) {
+            resultList.addAll(tBody.findNodes());
         }
-        if (head.findNodes() != null) {
-            resultList.addAll(head.findNodes());
+        if (tHead.findNodes() != null) {
+            resultList.addAll(tHead.findNodes());
         }
-        if (foot.findNodes() != null) {
-            resultList.addAll(head.findNodes());
+        if (tFoot.findNodes() != null) {
+            resultList.addAll(tHead.findNodes());
         }
         return resultList;
     }
 
     @Override
     public HasId findNodeById(String id) {
-        HasId w = body.findNodeById(id);
+        HasId w = tBody.findNodeById(id);
         if (w != null) {
             return w;
         }
-        w = head.findNodeById(id);
+        w = tHead.findNodeById(id);
         if (w != null) {
             return w;
         }
-        return foot.findNodeById(id);
+        return tFoot.findNodeById(id);
     }
 
     @Override
     public Grid removeNodeById(String id) {
-        body.removeNodeById(id);
-        head.removeNodeById(id);
-        foot.removeNodeById(id);
+        tBody.removeNodeById(id);
+        tHead.removeNodeById(id);
+        tFoot.removeNodeById(id);
         return this;
     }
 
 
     @Override
     public boolean replaceNodeById(Widget<?> w) {
-        if (!body.replaceNodeById(w)) {
-            if (!head.replaceNodeById(w)) {
-                return foot.replaceNodeById(w);
+        if (!tBody.replaceNodeById(w)) {
+            if (!tHead.replaceNodeById(w)) {
+                return tFoot.replaceNodeById(w);
             }
         }
         return true;
@@ -431,13 +428,13 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     }
 
     @Override
-    public Boolean getFocusmultiple() {
+    public Boolean getFocusMultiple() {
         return focusmultiple;
     }
 
     @Override
-    public Grid setFocusmultiple(Boolean focusmultiple) {
-        this.focusmultiple = focusmultiple;
+    public Grid setFocusMultiple(Boolean focusMultiple) {
+        this.focusmultiple = focusMultiple;
         return this;
     }
 
@@ -576,19 +573,19 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * @return nobr
      */
     @Override
-    public Boolean getNobr() {
+    public Boolean getNoBr() {
         return nobr;
     }
 
     /**
      * 内容过多的时候不会换行，而是隐藏不显示
      *
-     * @param nobr Boolean
+     * @param noBr Boolean
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public Grid setNobr(Boolean nobr) {
-        this.nobr = nobr;
+    public Grid setNoBr(Boolean noBr) {
+        this.nobr = noBr;
         return this;
     }
 
@@ -620,21 +617,10 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     }
 
     @Override
-    public String getScrollClass() {
-        return scrollClass;
-    }
-
-    @Override
-    public Grid setScrollClass(String scrollClass) {
-        this.scrollClass = scrollClass;
-        return this;
-    }
-
-    @Override
     public void clearNodes() {
-        this.body.clearNodes();
-        this.head.clearNodes();
-        this.foot.clearNodes();
+        this.tBody.clearNodes();
+        this.tHead.clearNodes();
+        this.tFoot.clearNodes();
         if (this.columns != null) {
             this.columns.clear();
         }
@@ -677,14 +663,14 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
         int headRows = 0, headColumns = 0;
         int row = 0;
-        for (TR tr : head.getRows()) {
+        for (TR tr : tHead.getRows()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
                     TD td = (TD) entry.getValue();
-                    int rows = row + (td.getRowspan() == null ? 1 : td.getRowspan());
+                    int rows = row + (td.getRowSpan() == null ? 1 : td.getRowSpan());
                     int formColumn = columnMap.get(key);
-                    int columns = formColumn + (td.getColspan() == null ? 1 : td.getColspan());
+                    int columns = formColumn + (td.getColSpan() == null ? 1 : td.getColSpan());
                     if (rows > headRows) {
                         headRows = rows;
                     }
@@ -697,14 +683,14 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
         int footRows = 0, footColumns = 0;
         row = 0;
-        for (TR tr : foot.getRows()) {
+        for (TR tr : tFoot.getRows()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
                     TD td = (TD) entry.getValue();
-                    int rows = row + (td.getRowspan() == null ? 1 : td.getRowspan());
+                    int rows = row + (td.getRowSpan() == null ? 1 : td.getRowSpan());
                     int formColumn = columnMap.get(key);
-                    int columns = formColumn + (td.getColspan() == null ? 1 : td.getColspan());
+                    int columns = formColumn + (td.getColSpan() == null ? 1 : td.getColSpan());
                     if (rows > footRows) {
                         footRows = rows;
                     }
@@ -717,14 +703,14 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
         int bodyRows = 0, bodyColumns = 0;
         row = 0;
-        for (TR tr : body.getRows()) {
+        for (TR tr : tBody.getRows()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
                     TD td = (TD) entry.getValue();
-                    int rows = row + (td.getRowspan() == null ? 1 : td.getRowspan());
+                    int rows = row + (td.getRowSpan() == null ? 1 : td.getRowSpan());
                     int formColumn = columnMap.get(key);
-                    int columns = formColumn + (td.getColspan() == null ? 1 : td.getColspan());
+                    int columns = formColumn + (td.getColSpan() == null ? 1 : td.getColSpan());
                     if (rows > bodyRows) {
                         bodyRows = rows;
                     }
@@ -737,9 +723,9 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         retain(this.getColumns(), MathUtil.max(columnSize, bodyColumns, headColumns, footColumns));
-        retain(body.getRows(), bodyRows);
-        retain(head.getRows(), headRows);
-        retain(foot.getRows(), footRows);
+        retain(tBody.getRows(), bodyRows);
+        retain(tHead.getRows(), headRows);
+        retain(tFoot.getRows(), footRows);
         return this;
     }
 
@@ -751,48 +737,48 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
     @Override
     public Grid add(HasId w) {
-        body.add((TR)w);
+        tBody.add((TR)w);
         return this;
     }
 
     @Override
     public Grid add(int row, int column, Object o) {
-        body.add(row, column, o);
+        tBody.add(row, column, o);
         return this;
     }
 
     @Override
     public Grid add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
-        body.add(fromRow, fromColumn, toRow, toColumn, value);
+        tBody.add(fromRow, fromColumn, toRow, toColumn, value);
         return this;
     }
 
     @Override
     public Grid put(int row, int column, Object o) {
-        body.put(row, column, o);
+        tBody.put(row, column, o);
         return this;
     }
 
     @Override
     public Grid put(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
-        body.put(fromRow, fromColumn, toRow, toColumn, value);
+        tBody.put(fromRow, fromColumn, toRow, toColumn, value);
         return this;
     }
 
     @Override
     public Grid removeNode(int row, int column) {
-        body.removeNode(row, column);
+        tBody.removeNode(row, column);
         return this;
     }
 
     @Override
     public boolean containsNode(int fromRow, int fromColumn, int toRow, int toColumn) {
-        return body.containsNode(fromRow, fromColumn, toRow, toColumn);
+        return tBody.containsNode(fromRow, fromColumn, toRow, toColumn);
     }
 
     @Override
     public Grid removeNode(int fromRow, int fromColumn, int toRow, int toColumn) {
-        body.removeNode(fromRow, fromColumn, toRow, toColumn);
+        tBody.removeNode(fromRow, fromColumn, toRow, toColumn);
         return this;
     }
 
@@ -835,7 +821,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * </ul>
      * 可以使用 text / checkbox / hidden / radio方法快捷构建一个GridColumn
      */
-    public static class Column extends AbstractNode<Column> implements Alignable<Column>, Valignable<Column> {
+    public static class Column extends AbstractNode<Column> implements Alignable<Column>, VAlignable<Column> {
 
         /**
          *
@@ -1042,7 +1028,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column rownum(String label, Integer start, String width) {
-            return new Column(null, null, label, width).setFormat("javascript:return " + new GridRownum(start)).setAlign(Column.ALIGN_CENTER);
+            return new Column(null, null, label, width).setFormat("javascript:return " + new GridRowNum(start)).setAlign(Column.ALIGN_CENTER);
         }
 
         /**
@@ -1224,9 +1210,9 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                 triplebox.setName(BOX_NAME);
             }
             // 标题全选框
-            this.rawFormat = new RawJson(triplebox.setCheckall(true).toString());
+            this.rawFormat = new RawJson(triplebox.setCheckAll(true).toString());
             // 置空,省流量
-            triplebox.setCheckall(null);
+            triplebox.setCheckAll(null);
             triplebox.setValue(new RawJson("$" + boxField));
             return this.setFormat("javascript:return " + triplebox).setAlign(Column.ALIGN_CENTER);
         }
@@ -1712,12 +1698,12 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * 垂直对齐。可选值: top,middle,bottom
          *
          * @return valign String
-         * @see #VALIGN_TOP
-         * @see #VALIGN_MIDDLE
-         * @see #VALIGN_BOTTOM
+         * @see #V_ALIGN_TOP
+         * @see #V_ALIGN_MIDDLE
+         * @see #V_ALIGN_BOTTOM
          */
         @Override
-        public String getvAlign() {
+        public String getVAlign() {
             return valign;
         }
 
@@ -1726,12 +1712,12 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          *
          * @param vAlign String
          * @return 本身，这样可以继续设置其他属性
-         * @see #VALIGN_TOP
-         * @see #VALIGN_MIDDLE
-         * @see #VALIGN_BOTTOM
+         * @see #V_ALIGN_TOP
+         * @see #V_ALIGN_MIDDLE
+         * @see #V_ALIGN_BOTTOM
          */
         @Override
-        public Column setvAlign(String vAlign) {
+        public Column setVAlign(String vAlign) {
             this.valign = vAlign;
             return this;
         }
@@ -2102,21 +2088,21 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
     }
 
-    public static class Head extends Part {
+    public static class THead extends Part {
         @Override
         public String getType() {
             return "Head";
         }
     }
 
-    public static class Body extends Part {
+    public static class TBody extends Part {
         @Override
         public String getType() {
             return "Body";
         }
     }
 
-    public static class Foot extends Part {
+    public static class TFoot extends Part {
         @Override
         public String getType() {
             return "Foot";
@@ -2191,11 +2177,11 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                 int toRow = row;
                 //防止加了如一个大小大于大于Grid
                 AbstractTd<?> cast = (AbstractTd<?>) o;
-                if (cast.getColspan() != null && cast.getColspan() > 1) {
-                    toColumn += cast.getColspan() - 1;
+                if (cast.getColSpan() != null && cast.getColSpan() > 1) {
+                    toColumn += cast.getColSpan() - 1;
                 }
-                if (cast.getRowspan() != null && cast.getRowspan() > 1) {
-                    toRow += cast.getRowspan() - 1;
+                if (cast.getRowSpan() != null && cast.getRowSpan() > 1) {
+                    toRow += cast.getRowSpan() - 1;
                 }
                 put(row, column, toRow, toColumn, o, overwrite);
             } else {
@@ -2260,10 +2246,10 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                 //colspan 会重新计算。GridCell本身是什么模式就是什么模式
                 AbstractTd<?> cell = (AbstractTd<?>) o;
                 if (rowspan > 1) {
-                    cell.setRowspan(rowspan);
+                    cell.setRowSpan(rowspan);
                 }
                 if (colspan > 1) {
-                    cell.setColspan(colspan);
+                    cell.setColSpan(colspan);
                 }
 
                 ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
@@ -2273,10 +2259,10 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                     AbstractTd<?> cell = new TD();
                     cell.setNode((Widget<?>) o);
                     if (rowspan > 1) {
-                        cell.setRowspan(rowspan);
+                        cell.setRowSpan(rowspan);
                     }
                     if (colspan > 1) {
-                        cell.setColspan(colspan);
+                        cell.setColSpan(colspan);
                     }
 
                     ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
@@ -2288,10 +2274,10 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                     JsonTd td = new JsonTd();
                     td.setText(o.toString());
                     if (rowspan > 1) {
-                        td.setRowspan(rowspan);
+                        td.setRowSpan(rowspan);
                     }
                     if (colspan > 1) {
-                        td.setColspan(colspan);
+                        td.setColSpan(colspan);
                     }
                     ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), td);
                 } else {
@@ -2363,8 +2349,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                     int targetFromColumn = columnMap.get(key);
                     if (entry.getValue() instanceof TD) {
                         TD td = (TD) entry.getValue();
-                        int targetToRow = targetFromRow + (td.getRowspan() == null ? 1 : td.getRowspan()) - 1;
-                        int targetToColumn = targetFromColumn + (td.getColspan() == null ? 1 : td.getColspan()) - 1;
+                        int targetToRow = targetFromRow + (td.getRowSpan() == null ? 1 : td.getRowSpan()) - 1;
+                        int targetToColumn = targetFromColumn + (td.getColSpan() == null ? 1 : td.getColSpan()) - 1;
                         if (targetFromRow <= toRow && targetToRow >= fromRow
                                 && targetFromColumn <= toColumn && targetToColumn >= fromColumn) {
                             return true;
@@ -2405,8 +2391,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                         int targetToColumn = targetFromColumn;
                         if (entry.getValue() instanceof TD) {
                             TD td = (TD) entry.getValue();
-                            targetToRow = targetFromRow + (td.getRowspan() == null ? 1 : td.getRowspan()) - 1;
-                            targetToColumn = targetFromColumn + (td.getColspan() == null ? 1 : td.getColspan()) - 1;
+                            targetToRow = targetFromRow + (td.getRowSpan() == null ? 1 : td.getRowSpan()) - 1;
+                            targetToColumn = targetFromColumn + (td.getColSpan() == null ? 1 : td.getColSpan()) - 1;
                         }
                         if (targetFromRow <= toRow && targetToRow >= fromRow
                                 && targetFromColumn <= toColumn && targetToColumn >= fromColumn) {
@@ -2808,8 +2794,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
         private static boolean hasTdllInfo(AbstractTd<?> td){
             return td.getId()!=null||td.getHeight()!=null||
-                    td.getAlign()!=null||td.getvAlign()!=null||
-                    td.getColspan()!=null||td.getRowspan()!=null||
+                    td.getAlign()!=null||td.getVAlign()!=null||
+                    td.getColSpan()!=null||td.getRowSpan()!=null||
                     td.getCls()!=null||td.getStyle()!=null ||//常用的属性排在前面
                     td.getBeforeContent()!=null||td.getPrependContent()!=null||
                     td.getAppendContent()!=null||td.getAfterContent()!=null||
@@ -2818,7 +2804,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                     td.getMinHeight()!=null||td.getMinWidth()!=null||
                     (td.getOn()!=null&&td.getOn().size()>0)||
                     td.getWidth()!=null||td.getWidthMinus()!=null
-                    ||td.getLabelwidth()!=null;
+                    ||td.getLabelWidth()!=null;
         }
         /**
          * 取得html的内容。为了效率这个方法不再进行判断，所以只能跟在isTextWidget 后使用。
@@ -2852,25 +2838,24 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             Html html=(Html)prototype;
             return html.getId()==null&&html.getHeight()==null&&
                     html.getWidth()==null&&html.getEscape()==null&&
-                    html.getAlign()==null&&html.getvAlign()==null&&
+                    html.getAlign()==null&&html.getVAlign()==null&&
                     html.getCls()==null&&html.getStyle()==null &&//常用的属性排在前面
                     html.getAppendContent()==null&&html.getPrependContent()==null&&
                     html.getGid()==null&&html.getHeightMinus()==null&&
                     html.getMaxHeight()==null&&html.getMaxWidth()==null&&
                     html.getMinHeight()==null&&html.getMinWidth()==null&&
                     (html.getOn()==null||html.getOn().size()==0)&&
-                    html.getScroll()==null&&html.getScrollClass()==null&&
-                    html.getWidthMinus()==null;
+                    html.getScroll()==null&&html.getWidthMinus()==null;
         }
         @Override
-        public TD setColspan(Integer colspan) {
+        public TD setColSpan(Integer colSpan) {
             nc();
-            return super.setColspan(colspan);
+            return super.setColSpan(colSpan);
         }
         @Override
-        public TD setRowspan(Integer rowspan) {
+        public TD setRowSpan(Integer rowSpan) {
             nc();
-            return super.setRowspan(rowspan);
+            return super.setRowSpan(rowSpan);
         }
         @Override
         public TD setNode(Widget node) {
@@ -2892,9 +2877,9 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             return success;
         }
         @Override
-        public TD setvAlign(String vAlign) {
+        public TD setVAlign(String vAlign) {
             nc();
-            return super.setvAlign(vAlign);
+            return super.setVAlign(vAlign);
         }
         @Override
         public TD setAlign(String align) {
@@ -3029,8 +3014,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * @param <T> 当前类型
      * @since DFish 3.0
      */
-    @SuppressWarnings("unchecked")
     protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractContainer<T> {
+
         private static final long serialVersionUID = 4300223953187136245L;
 
         /**
@@ -3300,12 +3285,9 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * @param <T> 本身类型
      * @see Grid.TD
      */
-    @SuppressWarnings("unchecked")
     protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractContainer<T>
-            implements SingleContainer<T ,Widget>,Alignable<T>,Valignable<T>{
-        /**
-         *
-         */
+            implements SingleContainer<T ,Widget>,Alignable<T>, VAlignable<T> {
+
         private static final long serialVersionUID = -7870476532478876521L;
         /**
          * 默认构造函数
@@ -3313,15 +3295,15 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         public AbstractTd() {
             super(null);
         }
-        protected Integer colspan;
-        protected Integer rowspan;
+        protected Integer colSpan;
+        protected Integer rowSpan;
         //	private String text;
         protected String align;
-        protected String valign;
+        protected String vAlign;
         protected Widget<?> node;
         protected Boolean escape;
         protected String format;
-        protected Integer labelwidth;
+        protected Integer labelWidth;
 
         @Override
         public String getType() {
@@ -3333,25 +3315,25 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * 为空的时候相当于1
          * @return Integer
          */
-        public Integer getColspan() {
-            return colspan;
+        public Integer getColSpan() {
+            return colSpan;
         }
         /**
          * 这个这个单元格占几列。
          * 为空的时候相当于1
-         * @param colspan Integer
+         * @param colSpan Integer
          * @return 本身，这样可以继续设置其他属性
          */
-        public T setColspan(Integer colspan) {
-            if(colspan!=null){
-                if(colspan<1){
+        public T setColSpan(Integer colSpan) {
+            if(colSpan !=null){
+                if(colSpan <1){
                     throw new java.lang.IllegalArgumentException("colspan must greater than 1");
                 }
-                if(colspan==1){
-                    colspan=null;
+                if(colSpan ==1){
+                    colSpan =null;
                 }
             }
-            this.colspan = colspan;
+            this.colSpan = colSpan;
             return (T)this;
         }
         /**
@@ -3359,25 +3341,25 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * 为空的时候相当于1
          * @return Integer
          */
-        public Integer getRowspan() {
-            return rowspan;
+        public Integer getRowSpan() {
+            return rowSpan;
         }
         /**
          * 这个这个单元格占几行。
          * 为空的时候相当于1
-         * @param rowspan Integer
+         * @param rowSpan Integer
          * @return 本身，这样可以继续设置其他属性
          */
-        public T setRowspan(Integer rowspan) {
-            if(rowspan!=null){
-                if(rowspan<1){
+        public T setRowSpan(Integer rowSpan) {
+            if(rowSpan !=null){
+                if(rowSpan <1){
                     throw new java.lang.IllegalArgumentException("rowspan must greater than 1");
                 }
-                if(rowspan==1){
-                    rowspan=null;
+                if(rowSpan ==1){
+                    rowSpan =null;
                 }
             }
-            this.rowspan = rowspan;
+            this.rowSpan = rowSpan;
             return (T)this;
         }
         /**
@@ -3403,7 +3385,6 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * GridCell 下只能有一个node，所以add和setNode是相同的功能
          * @param node Widget
          * @return 本身，这样可以继续设置其他属性
-         * @see #setNode(HasId)
          */
         @Override
         public T add(HasId node) {
@@ -3466,12 +3447,12 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public String getvAlign() {
-            return valign;
+        public String getVAlign() {
+            return vAlign;
         }
         @Override
-        public T setvAlign(String vAlign) {
-            this.valign= vAlign;
+        public T setVAlign(String vAlign) {
+            this.vAlign = vAlign;
             return (T)this;
         }
         @Override
@@ -3492,10 +3473,10 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             super.copyProperties(to, from);
             to.node=from.node;
             to.align=from.align;
-            to.colspan=from.colspan;
-            to.rowspan=from.rowspan;
-            to.valign=from.valign;
-            to.labelwidth=from.labelwidth;
+            to.colSpan =from.colSpan;
+            to.rowSpan =from.rowSpan;
+            to.vAlign =from.vAlign;
+            to.labelWidth =from.labelWidth;
         }
 
         /**
@@ -3539,18 +3520,18 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * @return Integer
          * @since 3.3
          */
-        public Integer getLabelwidth() {
-            return labelwidth;
+        public Integer getLabelWidth() {
+            return labelWidth;
         }
 
         /**
          * 表单标题宽度。
-         * @param labelwidth Integer
+         * @param labelWidth Integer
          * @return 本身，这样可以继续设置其他属性
          * @since 3.3
          */
-        public T setLabelwidth(Integer labelwidth) {
-            this.labelwidth = labelwidth;
+        public T setLabelWidth(Integer labelWidth) {
+            this.labelWidth = labelWidth;
             return (T) this;
         }
     }

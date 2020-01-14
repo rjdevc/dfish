@@ -40,23 +40,6 @@ public class Textarea extends AbstractInput<Textarea, String> {
         this.setLabel(label);
     }
 
-    /**
-     * 占位符。当表单没有值时显示的提示文本。
-     *
-     * @param placeholder 占位符
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Deprecated
-    public Textarea setGrayTip(String placeholder) {
-        this.setPlaceholder(placeholder);
-        return this;
-    }
-
-    @Override
-    public String getType() {
-        return "Textarea";
-    }
-
     @Override
     public Textarea setValue(Object value) {
         this.value = toString(value);

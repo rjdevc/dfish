@@ -14,9 +14,9 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      */
     private static final long serialVersionUID = -4770736316914887083L;
 
-    private Boolean partialsubmit;
+    private Boolean partialSubmit;
 
-    private Boolean checkall;
+    private Boolean checkAll;
 
     /**
      * 构造函数
@@ -36,24 +36,19 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      *
      * @return Boolean
      */
-    public Boolean getPartialsubmit() {
-        return partialsubmit;
+    public Boolean getPartialSubmit() {
+        return partialSubmit;
     }
 
     /**
      * 半选状态是否提交数据
      *
-     * @param partialsubmit Boolean
+     * @param partialSubmit Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public GridTriplebox setPartialsubmit(Boolean partialsubmit) {
-        this.partialsubmit = partialsubmit;
+    public GridTriplebox setPartialSubmit(Boolean partialSubmit) {
+        this.partialSubmit = partialSubmit;
         return this;
-    }
-
-    @Override
-    public String getType() {
-        return "grid/triplebox";
     }
 
     /**
@@ -61,18 +56,18 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      *
      * @return Boolean
      */
-    public Boolean getCheckall() {
-        return checkall;
+    public Boolean getCheckAll() {
+        return checkAll;
     }
 
     /**
      * 选中所有
      *
-     * @param checkall Boolean
+     * @param checkAll Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public GridTriplebox setCheckall(Boolean checkall) {
-        this.checkall = checkall;
+    public GridTriplebox setCheckAll(Boolean checkAll) {
+        this.checkAll = checkAll;
         return this;
     }
 

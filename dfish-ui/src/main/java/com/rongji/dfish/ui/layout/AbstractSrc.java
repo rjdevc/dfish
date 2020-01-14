@@ -20,7 +20,6 @@ import com.rongji.dfish.ui.Widget;
 public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractContainer<T>
 		implements SingleContainer<T,Widget>,LazyLoad<T> {
 	private String preload;
-	private String template;
 	private String src;
 	private Boolean sync;
 	private String success;
@@ -143,16 +142,6 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	@Override
 	public T setPreload(String preload) {
 		this.preload = preload;
-		return (T) this;
-	}
-	@Override
-	public String getTemplate() {
-		return template;
-	}
-
-	@Override
-	public T setTemplate(String template) {
-		this.template = template;
 		return (T) this;
 	}
 

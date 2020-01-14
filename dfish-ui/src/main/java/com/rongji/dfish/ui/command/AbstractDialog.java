@@ -15,7 +15,7 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractDialog<T extends AbstractDialog<T>> extends AbstractWidget<T>
-        implements SingleContainer<T,Widget>, DialogWidth<T>, DialogHeight<T>, HasId<T>, Positionable<T>, Snapable<T> {
+        implements SingleContainer<T,Widget>, HasId<T>, Positionable<T>, Snapable<T> {
 
     private static final long serialVersionUID = -6765281771952118355L;
 
@@ -25,8 +25,17 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     public AbstractDialog() {
     }
 
+    /**
+     * 最大宽度
+     */
+    public static final String WIDTH_MAX = "*";
+    /**
+     * 最大高度
+     */
+    public static final String HEIGHT_MAX = "*";
+
     protected String position;
-    protected Boolean popHide;
+    protected Boolean autoHide;
     protected Boolean cover;
     protected String title;
     protected Boolean cache;
@@ -36,7 +45,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     protected Long timeout;
     protected Widget<?> node;
     protected Boolean movable;
-    protected Boolean fullscreen;
+    protected Boolean fullScreen;
     protected Boolean resizable;
     protected Boolean independent;
     protected Boolean escape;
@@ -59,6 +68,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
+    @SuppressWarnings("unchecked")
     public T setCover(Boolean cover) {
         this.cover = cover;
         return (T) this;
@@ -71,6 +81,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      * @param title String
      * @return 本身，这样可以继续设置其他属性
      */
+    @SuppressWarnings("unchecked")
     public T setTitle(String title) {
         this.title = title;
         return (T) this;
@@ -81,18 +92,19 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      *
      * @return Boolean
      */
-    public Boolean getPopHide() {
-        return popHide;
+    public Boolean getAutoHide() {
+        return autoHide;
     }
 
     /**
      * 如果设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。
      *
-     * @param popHide Boolean
+     * @param autoHide Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setPopHide(Boolean popHide) {
-        this.popHide = popHide;
+    @SuppressWarnings("unchecked")
+    public T setAutoHide(Boolean autoHide) {
+        this.autoHide = autoHide;
         return (T) this;
     }
 
@@ -122,6 +134,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T setTimeout(Long timeout) {
         this.timeout = timeout;
         return (T) this;
@@ -243,18 +256,18 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      *
      * @return Boolean
      */
-    public Boolean getFullscreen() {
-        return fullscreen;
+    public Boolean getFullScreen() {
+        return fullScreen;
     }
 
     /**
      * 窗口在初始化时是否最大化
      *
-     * @param fullscreen Boolean
+     * @param fullScreen Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setFullscreen(Boolean fullscreen) {
-        this.fullscreen = fullscreen;
+    public T setFullScreen(Boolean fullScreen) {
+        this.fullScreen = fullScreen;
         return (T) this;
     }
 

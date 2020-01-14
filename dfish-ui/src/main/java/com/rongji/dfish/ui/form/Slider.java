@@ -41,11 +41,6 @@ public class Slider extends AbstractFormElement<Slider, Number> {
         this.setMaxValue(maxValue);
     }
 
-    @Override
-    public String getType() {
-        return "Slider";
-    }
-
     /**
      * 设置最大值
      *

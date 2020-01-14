@@ -15,9 +15,6 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public abstract class AbstractWidget<T extends AbstractWidget<T>> extends AbstractNode<T> implements Widget<T>, EventTarget<T> {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 6752586392648341685L;
     protected String gid;
 

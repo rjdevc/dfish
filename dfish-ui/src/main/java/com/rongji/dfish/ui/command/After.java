@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.command;
 
+import com.rongji.dfish.ui.Widget;
+
 /**
  * 在元素外部的后方增加内容
  * <div>
@@ -20,9 +22,7 @@ public class After extends AddCommand<After>{
 
 	private static final long serialVersionUID = -6784590200007210824L;
 
-	@Override
-	public String getType() {
-		return "After";
+	public After(String target, Widget<?>... nodes) {
+		super(target, nodes);
 	}
-
 }

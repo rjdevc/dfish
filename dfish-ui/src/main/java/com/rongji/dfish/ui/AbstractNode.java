@@ -21,12 +21,8 @@ import java.util.regex.Pattern;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T>,
-        DataContainer<T>,JsonObject{
+public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T>, DataContainer<T>, JsonObject {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 3228228457257982847L;
     protected String id;
 
@@ -80,7 +76,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
     }
 
 
-
     /**
      * 拷贝属性
      *
@@ -124,10 +119,11 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
             return new Integer(str);
         }
     }
+
     /**
      * 默认构造函数，尝试去读取默认值，默认值放置在com.rongji.dfish.ui.default_prop.properties中
      */
-    public AbstractNode(){
+    public AbstractNode() {
         super();
         // 如果是封装类,绑定属性需要原型类构成后方可调用此方法
         if (!(this instanceof JsonWrapper)) {
@@ -135,23 +131,25 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
             bundleProperties();
         }
     }
-    static{
-        String version="unspecified";
+
+    static {
+        String version = "unspecified";
         try {
             Class<?> clz = AbstractNode.class;
-            URL url=clz.getClassLoader().getResource(clz.getName().replace(".", "/") + ".class");
+            URL url = clz.getClassLoader().getResource(clz.getName().replace(".", "/") + ".class");
             if (url != null) {
-                Matcher m=Pattern.compile("dfish-ui-\\S+.jar").matcher(url.toString());
-                if(m.find()){
-                    String jarName=m.group();
-                    version=jarName.substring(9,jarName.length()-4);
+                Matcher m = Pattern.compile("dfish-ui-\\S+.jar").matcher(url.toString());
+                if (m.find()) {
+                    String jarName = m.group();
+                    version = jarName.substring(9, jarName.length() - 4);
                 }
             }
         } catch (Throwable e) {
             LogUtil.error(AbstractNode.class, "", e);
         }
-        LogUtil.info("dfish-ui version : "+version);
+        LogUtil.info("dfish-ui version : " + version);
     }
+
     /**
      * 绑定默认属性
      *
@@ -203,20 +201,21 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
     }
 
     @Override
-    public String toString(){
-        Object o=this;
-        while(o instanceof JsonWrapper<?>){
-            Object prototype=((JsonWrapper<?>)o).getPrototype();
-            if(prototype==o){
+    public String toString() {
+        Object o = this;
+        while (o instanceof JsonWrapper<?>) {
+            Object prototype = ((JsonWrapper<?>) o).getPrototype();
+            if (prototype == o) {
                 break;
             }
-            o=prototype;
+            o = prototype;
         }
         return J.toJson(o);
     }
 
     /**
-     *  转化成带换行和缩进的JSON 格式
+     * 转化成带换行和缩进的JSON 格式
+     *
      * @return String
      */
     public String formatString() {
@@ -225,6 +224,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
 
     /**
      * HTML编码字符
+     *
      * @param src String
      * @return String
      */
@@ -268,7 +268,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T
                         sb.append("<br/>");
                         break;
                     default:
-                        if (c[i] < 0||c[i] > 31) {
+                        if (c[i] < 0 || c[i] > 31) {
                             sb.append(c[i]);
                         }
                 }

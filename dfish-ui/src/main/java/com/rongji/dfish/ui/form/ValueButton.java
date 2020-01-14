@@ -34,6 +34,5 @@ public class ValueButton extends AbstractButton<ValueButton> {
 	public String getType() {
 		return null;
 	}
-	
 
 }

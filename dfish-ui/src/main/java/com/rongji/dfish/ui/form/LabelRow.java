@@ -47,37 +47,16 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      * 这个元素，是否以藏标题。如果是，则不显示标题；否则显示标题。
      * <p>v2.3以后改方法返回自身以便可以继续对这个表单操作</p>
      *
-     * @param hideLabel boolean
+     * @param noLabel boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    T setHideLabel(Boolean hideLabel);
+    T setNoLabel(Boolean noLabel);
 
     /**
      * 这个元素，是否显示标题。如果是，则不显示标题；否则显示标题。
      *
      * @return showLabel
      */
-    Boolean getHideLabel();
-
-
-    /**
-     * 这个元素，是否必填，这里非空不是dfish2.4以后的真实判断，而是在界面显示一个非空标记
-     * 通常是红色字体的半角星号(*)
-     * setStar和setRequired不同，setStar仅设置必填的视觉效果，并不会增加校验。
-     *
-     * @param star boolean
-     * @return 本身，这样可以继续设置其他属性
-     * @since 3.0
-     */
-    T setStar(Boolean star);
-
-    /**
-     * 这个元素，是否非空，这里非空不是dfish2.4以后的真实判断，而是在界面显示一个非空标记
-     * 通常是红色字体的半角星号(*)
-     *
-     * @return Boolean
-     * @since 3.0
-     */
-    Boolean getStar();
+    Boolean getNoLabel();
 
 }

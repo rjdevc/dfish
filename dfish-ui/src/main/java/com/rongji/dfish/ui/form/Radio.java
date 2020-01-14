@@ -22,10 +22,4 @@ public class Radio extends AbstractBox<Radio> {
 		super(name, label, checked, value, text);
 	}
 
-	@Override
-	public String getType() {
-		return "Radio";
-	}
-
-
 }

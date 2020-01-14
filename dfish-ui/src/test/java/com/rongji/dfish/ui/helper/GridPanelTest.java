@@ -57,11 +57,11 @@ public class GridPanelTest extends DFishUITestCase {
 	public void getPrototypeTest(){
 		GridWrapper gp=getWidget();
 		Grid gl=gp.getPrototype();
-		gl.getBody().getRows().get(0).setCls("tr-0");
+		gl.gettBody().getRows().get(0).setCls("tr-0");
 		Grid.TD td=new Grid.TD();
-		gl.getBody().getRows().get(0).setData("C1",td );
-		td.setRowspan(2);
-		td.setNode(new Html("something").setvAlign(Html.VALIGN_MIDDLE));
+		gl.gettBody().getRows().get(0).setData("C1",td );
+		td.setRowSpan(2);
+		td.setNode(new Html("something").setVAlign(Html.V_ALIGN_MIDDLE));
 		
 		output(gp);
 	}

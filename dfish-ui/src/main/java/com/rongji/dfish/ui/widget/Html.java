@@ -7,16 +7,15 @@ import com.rongji.dfish.ui.*;
  * @author DFish Team
  *
  */
-public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlContentHolder<Html>,Alignable<Html>,Valignable<Html>,HasFormat<Html> {
+public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlContentHolder<Html>,Alignable<Html>, VAlignable<Html>,HasFormat<Html> {
 
 	private static final long serialVersionUID = -3447946365229839223L;
 	private String align;
-	private String valign;
+	private String vAlign;
 	private String text;
 	private Boolean scroll;
-	private String scrollClass;
 	private Boolean escape;
-	private String thumbwidth;
+	private String thumbWidth;
 	private String format;
 	/**
 	 * 构造函数
@@ -34,12 +33,6 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	 */
 	public Html(String text){
 		this(null, text);
-	}
-
-
-	@Override
-    public String getType() {
-		return "html";
 	}
 
 	/**
@@ -76,17 +69,6 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 		return this;
 	}
 
-	@Override
-    public String getScrollClass() {
-		return scrollClass;
-	}
-	
-	@Override
-    public Html setScrollClass(String scrollClass) {
-		this.scrollClass = scrollClass;
-		return this;
-	}
-	
 	/**
 	 * 单行文本输入框
 	 * @return String
@@ -116,29 +98,29 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 		return this;
 	}
 	@Override
-    public String getvAlign() {
-		return valign;
+    public String getVAlign() {
+		return vAlign;
 	}
 	@Override
-    public Html setvAlign(String vAlign) {
-		this.valign = vAlign;
+    public Html setVAlign(String vAlign) {
+		this.vAlign = vAlign;
 		return this;
 	}
-	
+
 	/**
 	 * 设置内容区域所有图片的最大宽度。点击图片可以预览大图。
 	 * @return String
 	 */
-	public String getThumbwidth () {
-		return thumbwidth ;
+	public String getThumbWidth() {
+		return thumbWidth;
 	}
 	/**
 	 * 设置内容区域所有图片的最大宽度。
-	 * @param thumbwidth 图片的最大宽度。
+	 * @param thumbWidth 图片的最大宽度。
 	 * @return this
 	 */
-	public Html setThumbwidth(String thumbwidth) {
-		this.thumbwidth = thumbwidth;
+	public Html setThumbWidth(String thumbWidth) {
+		this.thumbWidth = thumbWidth;
 		return this;
 	}
 	/**
@@ -147,7 +129,7 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	 * @return this
 	 */
 	public Html setThumbwidth(int thumbwidth) {
-    	this.thumbwidth = String.valueOf(thumbwidth);
+    	this.thumbWidth = String.valueOf(thumbwidth);
 	    return   this;
     }
 	@Override

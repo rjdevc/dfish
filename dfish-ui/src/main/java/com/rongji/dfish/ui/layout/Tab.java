@@ -47,8 +47,4 @@ public class Tab extends AbstractButton<Tab> {
         return this;
     }
 
-    @Override
-    public String getType() {
-        return "tab";
-    }
 }

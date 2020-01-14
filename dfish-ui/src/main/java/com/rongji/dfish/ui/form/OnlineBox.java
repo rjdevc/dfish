@@ -51,11 +51,6 @@ public class OnlineBox extends SuggestionBox<OnlineBox> {
 		super(name, label, value, suggest);
 	}
 
-	@Override
-    public String getType() {
-		return "OnlineBox";
-	}
-
 	/**
 	 * 设置搜索,onlinebox的用法就是suggest=true,所以没有suggest这个参数
 	 * @param suggest 是否支持输入
@@ -64,7 +59,7 @@ public class OnlineBox extends SuggestionBox<OnlineBox> {
 	 */
 	@Deprecated
     public OnlineBox setSuggest(Boolean suggest) {
-	    return this;
+		return this;
     }
 	
 }

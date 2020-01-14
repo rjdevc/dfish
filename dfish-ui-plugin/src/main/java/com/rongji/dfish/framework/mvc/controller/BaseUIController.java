@@ -117,7 +117,7 @@ public class BaseUIController extends BaseActionController {
 	
 	protected Dialog buildErrorDialog(Throwable t) {
 		View view = buildErrorView(t);
-		Dialog dialog = new Dialog("error", "系统提示信息", null).setWidth(Dialog.WIDTH_LARGE).setHeight(Dialog.HEIGHT_LARGE);
+		Dialog dialog = new Dialog("error", "系统提示信息", null);
 		dialog.setNode(view);
 		return dialog;
 	}

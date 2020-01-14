@@ -26,11 +26,6 @@ public class Tip extends AbstractDialog<Tip> implements Command<Tip>, Snapable<T
         this.text = text;
     }
 
-    @Override
-    public String getType() {
-        return "Tip";
-    }
-
     /**
      * 内容
      *
