@@ -35,7 +35,7 @@ public abstract class DFishUITestCase {
 		
 		String outputString = "";
 		if (obj != null) {
-			if (obj instanceof JsonObject) {
+			if (obj instanceof UiNode) {
 				outputString = J.formatJson(J.toJson(obj));
 			} else {
 				outputString = obj.toString();

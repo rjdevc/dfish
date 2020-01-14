@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.tool;
 
-import com.rongji.dfish.ui.JsonObject;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -41,23 +40,6 @@ public class ClassExtendsAnalysis extends Application {
 
     private void fillPropNamesToPane(List<Class> clzs, FlowPane props) {
         TreeMap<String ,Object[]> propNames=new TreeMap<>();
-        TreeSet<String> clzNames=new TreeSet();
-        for(Class c:clzs){
-            if(c.isInterface()){
-                continue;
-            }
-            if(Modifier.isAbstract(c.getModifiers())){
-                continue;
-            }
-            if(!Modifier.isPublic(c.getModifiers())){
-                continue;
-            }
-            if(c.getAnnotation(Deprecated.class)!=null){
-                continue;
-            }
-            System.out.println(c.getName());
-        }
-        System.out.println( );
 
         for(Class c:clzs){
             for(Method m:c.getMethods()){
@@ -87,7 +69,7 @@ public class ClassExtendsAnalysis extends Application {
 
         for(Map.Entry<String,Object[]>entry:entries) {
             Object[] o=entry.getValue();
-            System.out.println(entry.getKey()+"\t"+o[0]+"\t"+o[1]);
+//            System.out.println(entry.getKey()+"\t"+o[0]+"\t"+o[1]);
             Label lb=new Label(entry.getKey()+"("+entry.getValue()[0]+")");
             lb.setPadding(new Insets(5));
             props.getChildren().add(lb);

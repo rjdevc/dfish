@@ -6,7 +6,7 @@ package com.rongji.dfish.ui;
  *
  * @param <T> 当前对象类型
  */
-public interface SingleContainer<T extends SingleContainer<T,N>,N extends HasId> extends Container<T> {
+public interface SingleContainer<T extends SingleContainer<T,N>,N extends UiNode> extends Container<T> {
 	 /**
      * 取得下级的Widget
      * @return N

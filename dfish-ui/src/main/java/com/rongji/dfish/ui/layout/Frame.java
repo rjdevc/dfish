@@ -1,11 +1,11 @@
 package com.rongji.dfish.ui.layout;
 
-import java.util.List;
-
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.HasId;
+import com.rongji.dfish.ui.UiNode;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
+
+import java.util.List;
 
 
 /**
@@ -86,7 +86,7 @@ public class Frame extends AbstractContainer<Frame> implements MultiContainer<Fr
     }
 
     @Override
-    public Frame add(HasId w) {
+    public Frame add(UiNode w) {
         return add(-1, (Widget)w);
     }
 }

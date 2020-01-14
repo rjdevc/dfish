@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.command;
 
 
-import com.rongji.dfish.ui.HasId;
+import com.rongji.dfish.ui.UiNode;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.AbstractButton;
@@ -92,7 +92,7 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiCo
     }
 
     @Override
-    public HasId<? extends HasId<?>> findNodeById(String id) {
+    public UiNode<? > findNodeById(String id) {
         return null;
     }
 

@@ -8,7 +8,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @author DFish Team
  *
  */
-public class View extends AbstractSrc<View> implements LazyLoad<View>{
+public class View extends AbstractSrc<View>{
 
 	private static final long serialVersionUID = 8815207749140104383L;
 

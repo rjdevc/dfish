@@ -117,7 +117,7 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Posi
     }
 
     @Override
-    public HasId<? extends HasId<?>> findNodeById(String id) {
+    public UiNode<?> findNodeById(String id) {
         return null;
     }
 

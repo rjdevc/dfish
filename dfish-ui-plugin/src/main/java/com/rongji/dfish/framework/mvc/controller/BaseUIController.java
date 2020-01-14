@@ -6,7 +6,7 @@ import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.ui.JsonObject;
+import com.rongji.dfish.ui.UiNode;
 import com.rongji.dfish.ui.command.Alert;
 import com.rongji.dfish.ui.command.Dialog;
 import com.rongji.dfish.ui.json.J;
@@ -187,7 +187,7 @@ public class BaseUIController extends BaseActionController {
 		return view;
 	}
 
-	protected void outputJson(HttpServletResponse response, JsonObject jsonObject) {
+	protected void outputJson(HttpServletResponse response, UiNode jsonObject) {
 		outputJson(response, jsonObject.asJson());
 	}
 

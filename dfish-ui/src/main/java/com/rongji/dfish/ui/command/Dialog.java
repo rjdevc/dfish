@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.command;
 
+import com.rongji.dfish.ui.HasSrc;
 import com.rongji.dfish.ui.LazyLoad;
 
 /**
@@ -10,7 +11,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, LazyLoad<Dialog> {
+public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, HasSrc<Dialog> {
 
     private static final long serialVersionUID = -3055223672741088528L;
 
@@ -136,12 +137,21 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
         return this;
     }
 
-    @Override
+    /**
+     * 加载 具体内容 的 url。访问这个url 时应当返回一个 json 字串。
+     * 如果没有template 这个字符串应该是dfish的格式。
+     * 如果有template 那么template 讲把这个字符串解析成dfish需要的格式。
+     * @return String
+     */
     public String getPreload() {
         return preload;
     }
 
-    @Override
+    /**
+     * 指定用这个编号所对应的预加载模板 将src返回的内容解析成dfish的格式。
+     * @param preload String
+     * @return this
+     */
     public Dialog setPreload(String preload) {
         this.preload = preload;
         return this;

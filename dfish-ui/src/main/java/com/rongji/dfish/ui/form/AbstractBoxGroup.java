@@ -295,7 +295,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     }
 
     @Override
-    public HasId<?> findNodeById(String id) {
+    public UiNode<?> findNodeById(String id) {
         return bridgedObject.findNodeById(id);
     }
 

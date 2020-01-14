@@ -1,6 +1,7 @@
 package com.rongji.dfish.base.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,8 +69,18 @@ public class StringUtilTest {
 		System.out.println(s);
 	}
 	@Test
-	public void testRead(){
+	public void testRead() throws Exception {
 		ByteArrayOutputStream baos=new ByteArrayOutputStream();
-
+        FileInputStream fis=new FileInputStream("D:\\进展（8.24）.txt");
+        byte[] buff=new byte[8192];
+        int read=0;
+        while((read=fis.read(buff))>0){
+            baos.write(buff,0,read);
+        }
+        byte[] bytes=baos.toByteArray();
+        String encoding=StringUtil.detCharset(bytes);
+        String str=new String(bytes,encoding);
+        System.out.println(encoding);
+        System.out.println(str);
 	}
 }

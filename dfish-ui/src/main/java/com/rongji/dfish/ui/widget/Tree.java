@@ -215,13 +215,13 @@ public class Tree extends AbstractContainer<Tree>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<HasId<?>> findNodes() {
+	public List<UiNode<?>> findNodes() {
 		return (List)rootLeaf.findNodes();
 	}
 
 
 	@Override
-	public Tree add(HasId w) {
+	public Tree add(UiNode w) {
 		rootLeaf.add((Leaf)w);
 		return this;
 	}

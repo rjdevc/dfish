@@ -91,7 +91,7 @@ public class Form extends AbstractContainer<Form>
     }
 
     @Override
-    public Form add(HasId w) {
+    public Form add(UiNode w) {
         if (w == null) {
             return this;
         }
@@ -246,9 +246,9 @@ public class Form extends AbstractContainer<Form>
     @Override
     public Form removeNodeById(String id) {
         //如果remove的结果是，td的下一层是指定的元素，需要吧td删除
-        for (Iterator<HasId<?>> iter = nodes.iterator();
+        for (Iterator<UiNode<?>> iter = nodes.iterator();
              iter.hasNext(); ) {
-            HasId<?> item = iter.next();
+            UiNode<?> item = iter.next();
             if (id.equals(item.getId()) || (item instanceof Grid.TD && id.equals(((Grid.TD) item).getNode().getId()))) {
                 iter.remove();
             } else if (item instanceof Layout) {

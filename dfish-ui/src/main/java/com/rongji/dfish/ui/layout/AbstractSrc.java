@@ -1,15 +1,12 @@
 package com.rongji.dfish.ui.layout;
 
+import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.command.Command;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.HasId;
-import com.rongji.dfish.ui.command.Command;
-import com.rongji.dfish.ui.LazyLoad;
-import com.rongji.dfish.ui.SingleContainer;
-import com.rongji.dfish.ui.Widget;
 
 /**
  * 抽象视图，用于方便构建视图。
@@ -18,7 +15,7 @@ import com.rongji.dfish.ui.Widget;
  * @param <T> 类型
  */
 public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractContainer<T>
-		implements SingleContainer<T,Widget>,LazyLoad<T> {
+		implements SingleContainer<T,Widget>,HasSrc<T> {
 	private String preload;
 	private String src;
 	private Boolean sync;
@@ -90,7 +87,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<HasId<?>> findNodes() {
+	public List<UiNode<?>> findNodes() {
 		return (List)nodes;
 	}
 	/**
@@ -127,19 +124,28 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	}
 	
 	@Override
-	public T add(HasId widget) {
+	public T add(UiNode widget) {
 		if(!(widget instanceof Widget)){
 			throw 	new IllegalArgumentException("Widget only");
 		}
 		return setNode((Widget) widget);
 	}
 
-	@Override
+	/**
+	 * 加载 具体内容 的 url。访问这个url 时应当返回一个 json 字串。
+	 * 如果没有template 这个字符串应该是dfish的格式。
+	 * 如果有template 那么template 讲把这个字符串解析成dfish需要的格式。
+	 * @return String
+	 */
 	public String getPreload() {
 		return preload;
 	}
 
-	@Override
+	/**
+	 * 指定用这个编号所对应的预加载模板 将src返回的内容解析成dfish的格式。
+	 * @param preload String
+	 * @return this
+	 */
 	public T setPreload(String preload) {
 		this.preload = preload;
 		return (T) this;

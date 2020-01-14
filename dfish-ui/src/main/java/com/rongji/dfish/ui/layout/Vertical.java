@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.layout;
 
-import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.Hidden;
 

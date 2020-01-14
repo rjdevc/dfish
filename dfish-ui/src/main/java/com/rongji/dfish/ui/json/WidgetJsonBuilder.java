@@ -251,7 +251,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 
 		@Override
         public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
-			JsonObject w=(JsonObject)o;
+			UiNode w=(UiNode)o;
 			String type=w.getType();
 			if(type!=null&&!"".equals(type)){
 				if(!match(path)){
@@ -423,8 +423,8 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 			private String type;
 			@Override
             public boolean match(PathInfo pathInfo){
-				if(pathInfo.getPropValue() instanceof JsonObject){
-					String pType=((JsonObject)pathInfo.getPropValue()).getType();
+				if(pathInfo.getPropValue() instanceof UiNode){
+					String pType=((UiNode)pathInfo.getPropValue()).getType();
 					return type.equals(pType);
 				}
 				return false;

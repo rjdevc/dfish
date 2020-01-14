@@ -92,7 +92,7 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractCo
     }
 
     @Override
-    public T add(HasId w) {
+    public T add(UiNode w) {
         if (w instanceof Hidden) {
             Hidden hidden = (Hidden) w;
             hiddens.addHidden(hidden.getName(), hidden.getValue());

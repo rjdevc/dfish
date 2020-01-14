@@ -15,7 +15,7 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractDialog<T extends AbstractDialog<T>> extends AbstractWidget<T>
-        implements SingleContainer<T,Widget>, HasId<T>, Positionable<T>, Snapable<T> {
+        implements SingleContainer<T,Widget>, UiNode<T>, Positionable<T>, Snapable<T> {
 
     private static final long serialVersionUID = -6765281771952118355L;
 
@@ -353,7 +353,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
 
     @Override
-    public HasId<? extends HasId<?>> findNodeById(String id) {
+    public UiNode<? > findNodeById(String id) {
         return null;
     }
 

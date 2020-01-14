@@ -3,10 +3,9 @@ package com.rongji.dfish.ui.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rongji.dfish.ui.HasId;
+import com.rongji.dfish.ui.UiNode;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.form.FormElement;
 
 
 /**
@@ -118,7 +117,7 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<HasId<?>> findNodes() {
+    public List<UiNode<?>> findNodes() {
         return (List)nodes;
     }
 

@@ -1,11 +1,10 @@
 package com.rongji.dfish.ui.json;
 
-import java.util.Collection;
-
-import com.rongji.dfish.ui.form.FormElement;
-import com.rongji.dfish.ui.HasId;
 import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.JsonObject;
+import com.rongji.dfish.ui.UiNode;
+import com.rongji.dfish.ui.form.FormElement;
+
+import java.util.Collection;
 
 /**
  * 用于记录构建JSON过程中的路径
@@ -71,13 +70,13 @@ public class PathInfo {
 			sb.append("\"Arr[leng=");
 			sb.append(((Object[]) propValue).length);
 			sb.append("]\"");
-		}else if(propValue instanceof JsonObject){
+		}else if(propValue instanceof UiNode){
 			sb.append("\"Widget[type=");
-			sb.append(((JsonObject) propValue).getType());
+			sb.append(((UiNode) propValue).getType());
 			boolean showed=false;
 			if(!showed){
-				if(propValue instanceof HasId){
-					String id=((HasId<?>) propValue).getId();
+				if(propValue instanceof UiNode){
+					String id=((UiNode<?>) propValue).getId();
 					if(id!=null&&!"".equals(id)){
 						showed=true;
 						sb.append(",id=");

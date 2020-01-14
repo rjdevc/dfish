@@ -1,7 +1,5 @@
 package com.rongji.dfish.ui;
 
-import com.rongji.dfish.ui.form.FormElement;
-
 import java.util.List;
 /**
  * Container 为容器。
@@ -28,7 +26,7 @@ public interface Container<T extends Container<T>> {
 	 * @param id String
 	 * @return Widget
 	 */
-	HasId<? extends HasId<?>> findNodeById(String id);
+	UiNode<?> findNodeById(String id);
 
 
 

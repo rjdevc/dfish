@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.DataContainer;
 import com.rongji.dfish.ui.HasSrc;
 
 /**
@@ -12,7 +11,7 @@ import com.rongji.dfish.ui.HasSrc;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extends AbstractCommand<T> implements DataContainer<T>, HasSrc<T> {
+public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extends AbstractCommand<T> implements HasSrc<T> {
 
     private static final long serialVersionUID = -2296464991066275984L;
     /**

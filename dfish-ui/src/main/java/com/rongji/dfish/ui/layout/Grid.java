@@ -332,7 +332,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     @SuppressWarnings("unchecked")
     @Override
     public List findNodes() {
-        List<HasId> resultList = new ArrayList<>();
+        List<UiNode> resultList = new ArrayList<>();
         if (tBody.findNodes() != null) {
             resultList.addAll(tBody.findNodes());
         }
@@ -346,8 +346,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     }
 
     @Override
-    public HasId findNodeById(String id) {
-        HasId w = tBody.findNodeById(id);
+    public UiNode findNodeById(String id) {
+        UiNode w = tBody.findNodeById(id);
         if (w != null) {
             return w;
         }
@@ -736,7 +736,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     }
 
     @Override
-    public Grid add(HasId w) {
+    public Grid add(UiNode w) {
         tBody.add((TR)w);
         return this;
     }
@@ -2159,7 +2159,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
 
         @Override
-        public Part add(HasId row) {
+        public Part add(UiNode row) {
             TR w=(TR)row;
             w.owner(owner);
             return super.add(w);
@@ -3041,7 +3041,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
         @Override
         @Deprecated
-        public T add(HasId w) {
+        public T add(UiNode w) {
             throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
         }
 
@@ -3159,8 +3159,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public List<HasId<?>> findNodes() {
-            List<HasId<?>> result=new ArrayList<>();
+        public List<UiNode<?>> findNodes() {
+            List<UiNode<?>> result=new ArrayList<>();
             if(rows!=null){
                 for(Widget<?> o:rows){
                     result.add( o);
@@ -3387,7 +3387,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         @Override
-        public T add(HasId node) {
+        public T add(UiNode node) {
             this.node = (Widget) node;
             return (T)this;
         }
@@ -3407,7 +3407,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public List<HasId<?>> findNodes() {
+        public List<UiNode<?>> findNodes() {
             return Arrays.asList(new Widget<?>[]{node});
         }
 

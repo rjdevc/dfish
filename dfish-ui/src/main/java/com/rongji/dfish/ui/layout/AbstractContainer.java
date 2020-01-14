@@ -28,7 +28,7 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
         this.id = id;
     }
 
-    protected List<HasId<?>> nodes = new ArrayList<>();
+    protected List<UiNode<?>> nodes = new ArrayList<>();
 
     /**
      * 添加子面板
@@ -36,7 +36,7 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
      * @param w N
      * @return 本身，这样可以继续设置其他属性
      */
-    public T add(HasId w) {
+    public T add(UiNode w) {
         if (w == null) {
             return (T) this;
         }
@@ -59,12 +59,12 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
     }
 
     @Override
-    public List<HasId<?>> findNodes() {
+    public List<UiNode<?>> findNodes() {
         return nodes;
     }
 
     @Override
-    public HasId<? extends HasId<?>> findNodeById(String id) {
+    public UiNode<? extends UiNode<?>> findNodeById(String id) {
         List<?> nodes = findNodes();
         if (id == null || nodes == null) {
             return null;
@@ -73,10 +73,10 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
             Object item = iter.next();
 
             if (item instanceof Widget && id.equals(((Widget) item).getId())) {
-                return (HasId<? extends HasId<?>>) item;
+                return (UiNode<? extends UiNode<?>>) item;
             } else if (item instanceof Container) {
                 Container cast = (Container) item;
-                HasId<? extends HasId<?>> c = cast.findNodeById(id);
+                UiNode<? extends UiNode<?>> c = cast.findNodeById(id);
                 if (c != null) {
                     return c;
                 }

@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.mvc.response;
 
-import com.rongji.dfish.ui.JsonObject;
+import com.rongji.dfish.ui.UiNode;
 
 /**
  * 用于转化JSON 并输出
@@ -11,7 +11,7 @@ public class DFishUIConverter extends ObjectToJsonConverter {
 
 	@Override
 	protected boolean supports(Class<?> clz) {
-		return JsonObject.class.isAssignableFrom(clz);
+		return UiNode.class.isAssignableFrom(clz);
 	}
 	
 	@Override
@@ -19,7 +19,7 @@ public class DFishUIConverter extends ObjectToJsonConverter {
 		if (obj == null) {
 			return "";
 		}
-		return ((JsonObject) obj).asJson();
+		return ((UiNode) obj).asJson();
 	}
 
 }

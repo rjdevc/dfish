@@ -1,12 +1,8 @@
 package com.rongji.dfish.ui;
 
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.form.FormElement;
-import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.json.J;
 import com.rongji.dfish.ui.json.JsonWrapper;
-import com.rongji.dfish.ui.layout.Layout;
 
 import java.net.URL;
 import java.util.*;
@@ -21,7 +17,7 @@ import java.util.regex.Pattern;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractNode<T extends AbstractNode<T>> implements HasId<T>, DataContainer<T>, JsonObject {
+public abstract class AbstractNode<T extends AbstractNode<T>> implements UiNode<T> {
 
     private static final long serialVersionUID = 3228228457257982847L;
     protected String id;

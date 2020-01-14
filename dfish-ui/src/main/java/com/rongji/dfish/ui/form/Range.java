@@ -1,13 +1,13 @@
 package com.rongji.dfish.ui.form;
 
-import java.beans.Transient;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.rongji.dfish.ui.HasId;
+import com.rongji.dfish.ui.UiNode;
 import com.rongji.dfish.ui.MultiContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.layout.AbstractContainer;
+
+import java.beans.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 指定范围的表单组合，实际上就是一个容器，里面可以放置begin和end两个表单
@@ -124,14 +124,14 @@ public class Range extends AbstractContainer<Range> implements LabelRow<Range>, 
 
     @Override
     @Deprecated
-    public Range add(HasId node) {
+    public Range add(UiNode node) {
         throw new UnsupportedOperationException("use setBegin / setEnd instead");
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<HasId<?>> findNodes() {
-        ArrayList<HasId<?>> ret = new ArrayList<>();
+    public List<UiNode<?>> findNodes() {
+        ArrayList<UiNode<?>> ret = new ArrayList<>();
         if (begin != null) {
             ret.add(begin);
         }
