@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Form extends AbstractContainer<Form>
         implements HtmlContentHolder<Form>, Scrollable<Form>,MultiContainer<Form,Widget<?>> ,
-        PubHolder<Form,Grid.Td> ,HiddenContainer<Form>{
+        PubHolder<Form,Grid.TD> ,HiddenContainer<Form>{
     /**
      * 无格式
      */
@@ -41,7 +41,7 @@ public class Form extends AbstractContainer<Form>
      */
     public static final String FACE_DOT=Grid.FACE_DOT;
     private Integer cols;
-    private Grid.Td pub;
+    private Grid.TD pub;
     private Boolean escape;
     private String face;
     private Boolean nobr;
@@ -67,14 +67,14 @@ public class Form extends AbstractContainer<Form>
     }
 
     @Override
-    public Grid.Td getPub() {
+    public Grid.TD getPub() {
         if (pub == null) {
-            setPub(new Grid.Td());
+            setPub(new Grid.TD());
         }
         return pub;
     }
     @Override
-    public Form setPub(Grid.Td pub) {
+    public Form setPub(Grid.TD pub) {
         this.pub = pub;
         return this;
     }
@@ -123,7 +123,7 @@ public class Form extends AbstractContainer<Form>
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add (new Grid.Td().setColspan(colspan).setNode(w));
+        return add (new Grid.TD().setColspan(colspan).setNode(w));
     }
 
     /**
@@ -140,7 +140,7 @@ public class Form extends AbstractContainer<Form>
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add (new Grid.Td().setColspan(colspan).setRowspan(rowspan).setNode(w));
+        return add (new Grid.TD().setColspan(colspan).setRowspan(rowspan).setNode(w));
     }
 //    public FormLayout addLabelRow(LabelRow<?> w){
 //        return add(w);
@@ -250,7 +250,7 @@ public class Form extends AbstractContainer<Form>
         for (Iterator<HasId<?>> iter = nodes.iterator();
              iter.hasNext(); ) {
             HasId<?> item = iter.next();
-            if (id.equals(item.getId())||(item instanceof Grid.Td && id.equals(((Grid.Td)item).getNode().getId()))) {
+            if (id.equals(item.getId())||(item instanceof Grid.TD && id.equals(((Grid.TD)item).getNode().getId()))) {
                 iter.remove();
             } else if (item instanceof Layout) {
                 Layout<?> cast = (Layout<?>) item;

@@ -18,7 +18,7 @@ import java.util.List;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> extends AbstractWidgetWrapper<T, Grid> implements Scrollable<T>, HiddenContainer<T>, PubHolder<T, Grid.Tr>, ListView<T>, PrototypeChangeable<Grid> {
+public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> extends AbstractWidgetWrapper<T, Grid> implements Scrollable<T>, HiddenContainer<T>, PubHolder<T, Grid.TR>, ListView<T>, PrototypeChangeable<Grid> {
 
     /**
      *
@@ -85,7 +85,7 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
     protected int dataMode = MODE_UNDEFINED;
     protected List<Column> columns = new ArrayList<>();
 
-    protected Grid.Tr pub;
+    protected Grid.TR pub;
 //	protected Grid.Tr headRow;
 
     /**
@@ -169,14 +169,14 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public Grid.Tr getPub() {
+    public Grid.TR getPub() {
 //		Grid.Tr pub = prototype.getPub();
 //		if (pub == null) {
 //			pub = new Grid.Tr();
 //			prototype.setPub(pub);
 //		}
         if (pub == null) {
-            pub = new Grid.Tr();
+            pub = new Grid.TR();
         }
         return pub;
     }
@@ -188,7 +188,7 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public T setPub(Grid.Tr pub) {
+    public T setPub(Grid.TR pub) {
         prototype.setPub(pub);
         return (T) this;
     }
@@ -440,7 +440,7 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
      * @see #getPrototype()
      * @deprecated 该方法将会触发获取原型。请谨慎使用
      */
-    public Grid.Tr getHeadRow() {
+    public Grid.TR getHeadRow() {
         Grid.Head head = getPrototype().getHead();
         if (head.getRows() != null && head.getRows().size() > 0) {
             return head.getRows().get(0);

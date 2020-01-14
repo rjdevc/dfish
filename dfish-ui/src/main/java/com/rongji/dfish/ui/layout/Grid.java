@@ -6,18 +6,13 @@ import com.rongji.dfish.base.util.MathUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.*;
-import com.rongji.dfish.ui.helper.JsonTd;
-import com.rongji.dfish.ui.helper.JsonTr;
 import com.rongji.dfish.ui.json.JsonWrapper;
 import com.rongji.dfish.ui.json.RawJson;
 import com.rongji.dfish.ui.widget.Highlight;
 import com.rongji.dfish.ui.widget.Html;
 
 import java.beans.Transient;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * GridLayout 为表格。
@@ -71,7 +66,7 @@ import java.util.Map;
  * @since DFish 3.0
  */
 public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
-        HiddenContainer<Grid>, HtmlContentHolder<Grid>, PubHolder<Grid, Grid.Tr>, Scrollable<Grid>, GridOperation<Grid> {
+        HiddenContainer<Grid>, HtmlContentHolder<Grid>, PubHolder<Grid, Grid.TR>, Scrollable<Grid>, GridOperation<Grid> {
 
     /**
      *
@@ -81,7 +76,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     private Body body;
     private Foot foot;
     private List<Column> columns = new ArrayList<Column>();
-    private Tr pub;
+    private TR pub;
 
     private PrototypeChangeable<Grid> wrapper;
     private boolean prototypeBuilding = false;
@@ -324,15 +319,15 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     }
 
     @Override
-    public Tr getPub() {
+    public TR getPub() {
         if (pub == null) {
-            setPub(new Tr());
+            setPub(new TR());
         }
         return pub;
     }
 
     @Override
-    public Grid setPub(Tr pub) {
+    public Grid setPub(TR pub) {
         this.pub = pub;
         return this;
     }
@@ -682,11 +677,11 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
         int headRows = 0, headColumns = 0;
         int row = 0;
-        for (Tr tr : head.getRows()) {
+        for (TR tr : head.getRows()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
-                    Td td = (Td) entry.getValue();
+                    TD td = (TD) entry.getValue();
                     int rows = row + (td.getRowspan() == null ? 1 : td.getRowspan());
                     int formColumn = columnMap.get(key);
                     int columns = formColumn + (td.getColspan() == null ? 1 : td.getColspan());
@@ -702,11 +697,11 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
         int footRows = 0, footColumns = 0;
         row = 0;
-        for (Tr tr : foot.getRows()) {
+        for (TR tr : foot.getRows()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
-                    Td td = (Td) entry.getValue();
+                    TD td = (TD) entry.getValue();
                     int rows = row + (td.getRowspan() == null ? 1 : td.getRowspan());
                     int formColumn = columnMap.get(key);
                     int columns = formColumn + (td.getColspan() == null ? 1 : td.getColspan());
@@ -722,11 +717,11 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
         int bodyRows = 0, bodyColumns = 0;
         row = 0;
-        for (Tr tr : body.getRows()) {
+        for (TR tr : body.getRows()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
-                    Td td = (Td) entry.getValue();
+                    TD td = (TD) entry.getValue();
                     int rows = row + (td.getRowspan() == null ? 1 : td.getRowspan());
                     int formColumn = columnMap.get(key);
                     int columns = formColumn + (td.getColspan() == null ? 1 : td.getColspan());
@@ -756,7 +751,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
     @Override
     public Grid add(HasId w) {
-        body.add((Tr)w);
+        body.add((TR)w);
         return this;
     }
 
@@ -2172,14 +2167,14 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          *
          * @return List
          */
-        public List<Tr> getRows() {
+        public List<TR> getRows() {
             return (List)nodes;
         }
 
 
         @Override
         public Part add(HasId row) {
-            Tr w=(Tr)row;
+            TR w=(TR)row;
             w.owner(owner);
             return super.add(w);
         }
@@ -2238,7 +2233,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                 }
             }
             while (toRow >= nodes.size()) {
-                nodes.add(new Tr().owner(owner));
+                nodes.add(new TR().owner(owner));
             }
             Map<Integer, String> columnMap = new HashMap<Integer, String>();
             int column = 0;
@@ -2275,7 +2270,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             } else if (o instanceof Widget) {
                 //如果entry 是 Widget 那么将会包装在一个GridCell里面
                 if (rowspan > 1 || colspan > 1) {
-                    AbstractTd<?> cell = new Td();
+                    AbstractTd<?> cell = new TD();
                     cell.setNode((Widget<?>) o);
                     if (rowspan > 1) {
                         cell.setRowspan(rowspan);
@@ -2355,7 +2350,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             Map<String, Integer> columnMap = owner.getVisableColumnNumMap();
             int targetFromRow = 0;
             for (Object obj : nodes) {
-                Tr tr=(Tr)obj;
+                TR tr=(TR)obj;
                 if (tr.getData() == null) {
                     targetFromRow++;
                     continue;
@@ -2366,8 +2361,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                         continue;//防止hidden字段进入查询
                     }
                     int targetFromColumn = columnMap.get(key);
-                    if (entry.getValue() instanceof Td) {
-                        Td td = (Td) entry.getValue();
+                    if (entry.getValue() instanceof TD) {
+                        TD td = (TD) entry.getValue();
                         int targetToRow = targetFromRow + (td.getRowspan() == null ? 1 : td.getRowspan()) - 1;
                         int targetToColumn = targetFromColumn + (td.getColspan() == null ? 1 : td.getColspan()) - 1;
                         if (targetFromRow <= toRow && targetToRow >= fromRow
@@ -2396,7 +2391,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             List<Object[]> toRemove = new ArrayList<Object[]>();
             int row = 0;
             for (Object obj : nodes) {
-                Tr tr=(Tr)obj;
+                TR tr=(TR)obj;
                 if (tr.getData() != null) {
                     for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                         String key = entry.getKey();
@@ -2408,8 +2403,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                         int targetFromColumn = columnMap.get(key);
                         int targetToRow = targetFromRow;
                         int targetToColumn = targetFromColumn;
-                        if (entry.getValue() instanceof Td) {
-                            Td td = (Td) entry.getValue();
+                        if (entry.getValue() instanceof TD) {
+                            TD td = (TD) entry.getValue();
                             targetToRow = targetFromRow + (td.getRowspan() == null ? 1 : td.getRowspan()) - 1;
                             targetToColumn = targetFromColumn + (td.getColspan() == null ? 1 : td.getColspan()) - 1;
                         }
@@ -2431,7 +2426,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                 for (Object[] o : toRemove) {
                     int row_ = (Integer) o[0];
                     String key = (String) o[1];
-                    ((Tr)nodes.get(row_)).removeData(key);
+                    ((TR)nodes.get(row_)).removeData(key);
                 }
                 if (owner != null) {
                     owner.notifyChange();
@@ -2477,7 +2472,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * @author DFish Team
      * @since DFish 3.0
      */
-    public static class Tr extends AbstractTr<Tr> implements JsonWrapper<Object> {
+    public static class TR extends AbstractTr<TR> implements JsonWrapper<Object> {
 
         /**
          *
@@ -2487,7 +2482,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         /**
          * 默认构造函数
          */
-        public Tr(){
+        public TR(){
             super();
         }
         protected Grid owner;
@@ -2496,7 +2491,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             return owner;
         }
 
-        public Tr owner(Grid owner) {
+        public TR owner(Grid owner) {
             this.owner = owner;
             return this;
         }
@@ -2509,7 +2504,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * 构造函数
          * @param id String
          */
-        public Tr(String id){
+        public TR(String id){
             super(id);
         }
 
@@ -2517,7 +2512,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * 拷贝构造函数，相当于clone
          * @param tr another tr
          */
-        public Tr(AbstractTr<?> tr){
+        public TR(AbstractTr<?> tr){
             super();
             copyProperties(this,tr);
         }
@@ -2552,8 +2547,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public void setRows(List<Tr> rows) {
-            for(Tr row:rows){
+        public void setRows(List<TR> rows) {
+            for(TR row:rows){
                 row.owner(owner);
             }
             nc();
@@ -2561,27 +2556,27 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public Tr addRow(Tr row) {
+        public TR addRow(TR row) {
             row.owner(owner);
             nc();
             return super.addRow(row);
         }
 
         @Override
-        public Tr setFocus(Boolean focus) {
+        public TR setFocus(Boolean focus) {
             nc();
             return super.setFocus(focus);
         }
 
         @Override
-        public Tr setFocusable(Boolean focusable) {
+        public TR setFocusable(Boolean focusable) {
             nc();
             return super.setFocusable(focusable);
         }
 
         @Override
-        public Tr removeNodeById(String id) {
-            Tr tr= super.removeNodeById(id);
+        public TR removeNodeById(String id) {
+            TR tr= super.removeNodeById(id);
             if(tr!=null){
                 nc();
             }
@@ -2598,130 +2593,130 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public Tr setData(String key, Object value) {
+        public TR setData(String key, Object value) {
             nc();
-            if(value instanceof Td){
-                ((Td) value).owner(owner);
+            if(value instanceof TD){
+                ((TD) value).owner(owner);
             }
             return super.setData(key, value);
         }
 
         @Override
-        public Tr setSrc(String src) {
+        public TR setSrc(String src) {
             nc();
             return super.setSrc(src);
         }
 
         @Override
-        public Tr setStyle(String style) {
+        public TR setStyle(String style) {
             nc();
             return super.setStyle(style);
         }
 
         @Override
-        public Tr setCls(String cls) {
+        public TR setCls(String cls) {
             nc();
             return super.setCls(cls);
         }
 
         @Override
-        public Tr setId(String id) {
+        public TR setId(String id) {
             nc();
             return super.setId(id);
         }
 
         @Override
-        public Tr setGid(String gid) {
+        public TR setGid(String gid) {
             nc();
             return super.setGid(gid);
         }
 
         @Override
-        public Tr setWidth(String width) {
+        public TR setWidth(String width) {
             nc();
             return super.setWidth(width);
         }
 
         @Override
-        public Tr setHeight(String height) {
+        public TR setHeight(String height) {
             nc();
             return super.setHeight(height);
         }
 
         @Override
-        public Tr setWidth(int width) {
+        public TR setWidth(int width) {
             nc();
             return super.setWidth(width);
         }
 
         @Override
-        public Tr setHeight(int height) {
+        public TR setHeight(int height) {
             nc();
             return super.setHeight(height);
         }
 
         @Override
-        public Tr setOn(String eventName, String script) {
+        public TR setOn(String eventName, String script) {
             nc();
             return super.setOn(eventName, script);
         }
 
         @Override
-        public Tr setWidthMinus(Integer widthMinus) {
+        public TR setWidthMinus(Integer widthMinus) {
             nc();
             return super.setWidthMinus(widthMinus);
         }
 
         @Override
-        public Tr setHeightMinus(Integer heightMinus) {
+        public TR setHeightMinus(Integer heightMinus) {
             nc();
             return super.setHeightMinus(heightMinus);
         }
 
         @Override
-        public Tr setMaxWidth(int maxWidth) {
+        public TR setMaxWidth(int maxWidth) {
             nc();
             return super.setMaxWidth(maxWidth);
         }
 
         @Override
-        public Tr setMaxWidth(String maxWidth) {
+        public TR setMaxWidth(String maxWidth) {
             nc();
             return super.setMaxWidth(maxWidth);
         }
 
         @Override
-        public Tr setMaxHeight(String maxHeight) {
+        public TR setMaxHeight(String maxHeight) {
             nc();
             return super.setMaxHeight(maxHeight);
         }
 
         @Override
-        public Tr setMaxHeight(int maxHeight) {
+        public TR setMaxHeight(int maxHeight) {
             nc();
             return super.setMaxHeight(maxHeight);
         }
 
         @Override
-        public Tr setMinWidth(int minWidth) {
+        public TR setMinWidth(int minWidth) {
             nc();
             return super.setMinWidth(minWidth);
         }
 
         @Override
-        public Tr setMinWidth(String minWidth) {
+        public TR setMinWidth(String minWidth) {
             nc();
             return super.setMinWidth(minWidth);
         }
 
         @Override
-        public Tr setMinHeight(String minHeight) {
+        public TR setMinHeight(String minHeight) {
             nc();
             return super.setMinHeight(minHeight);
         }
 
         @Override
-        public Tr setMinHeight(int minHeight) {
+        public TR setMinHeight(int minHeight) {
             nc();
             return super.setMinHeight(minHeight);
         }
@@ -2748,9 +2743,9 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * <p>而td本身并没有setText属性</p>
      *
      * @author DFish Team
-     * @see Tr
+     * @see TR
      */
-    public static class Td extends AbstractTd<Td> implements JsonWrapper<Object>{
+    public static class TD extends AbstractTd<TD> implements JsonWrapper<Object>{
         /**
          *
          */
@@ -2758,14 +2753,14 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         /**
          * 默认构造函数
          */
-        public Td(){
+        public TD(){
             super();
         }
         /**
          * 拷贝构造函数 相当于clone
          * @param td  AbstractTd
          */
-        public Td(AbstractTd<?> td){
+        public TD(AbstractTd<?> td){
             super();
             copyProperties(this,td);
         }
@@ -2775,7 +2770,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             return owner;
         }
 
-        public Td owner(Grid owner) {
+        public TD owner(Grid owner) {
             this.owner = owner;
             return this;
         }
@@ -2868,23 +2863,23 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
                     html.getWidthMinus()==null;
         }
         @Override
-        public Td setColspan(Integer colspan) {
+        public TD setColspan(Integer colspan) {
             nc();
             return super.setColspan(colspan);
         }
         @Override
-        public Td setRowspan(Integer rowspan) {
+        public TD setRowspan(Integer rowspan) {
             nc();
             return super.setRowspan(rowspan);
         }
         @Override
-        public Td setNode(Widget node) {
+        public TD setNode(Widget node) {
             nc();
             return super.setNode(node);
         }
         @Override
-        public Td removeNodeById(String id) {
-            Td td=super.removeNodeById(id);
+        public TD removeNodeById(String id) {
+            TD td=super.removeNodeById(id);
             if(td!=null){
                 nc();
             }
@@ -2897,126 +2892,702 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
             return success;
         }
         @Override
-        public Td setvAlign(String vAlign) {
+        public TD setvAlign(String vAlign) {
             nc();
             return super.setvAlign(vAlign);
         }
         @Override
-        public Td setAlign(String align) {
+        public TD setAlign(String align) {
             nc();
             return super.setAlign(align);
         }
         @Override
-        public Td setStyle(String style) {
+        public TD setStyle(String style) {
             nc();
             return super.setStyle(style);
         }
         @Override
-        public Td setCls(String cls) {
+        public TD setCls(String cls) {
             nc();
             return super.setCls(cls);
         }
         @Override
-        public Td setPrependContent(String prependContent) {
+        public TD setPrependContent(String prependContent) {
             nc();
             return super.setPrependContent(prependContent);
         }
         @Override
-        public Td setAppendContent(String appendContent) {
+        public TD setAppendContent(String appendContent) {
             nc();
             return super.setAppendContent(appendContent);
         }
         @Override
-        public Td setId(String id) {
+        public TD setId(String id) {
             nc();
             return super.setId(id);
         }
         @Override
-        public Td setGid(String gid) {
+        public TD setGid(String gid) {
             nc();
             return super.setGid(gid);
         }
         @Override
-        public Td setWidth(String width) {
+        public TD setWidth(String width) {
             nc();
             return super.setWidth(width);
         }
         @Override
-        public Td setHeight(String height) {
+        public TD setHeight(String height) {
             nc();
             return super.setHeight(height);
         }
         @Override
-        public Td setWidth(int width) {
+        public TD setWidth(int width) {
             nc();
             return super.setWidth(width);
         }
         @Override
-        public Td setHeight(int height) {
+        public TD setHeight(int height) {
             nc();
             return super.setHeight(height);
         }
         @Override
-        public Td setOn(String eventName, String script) {
+        public TD setOn(String eventName, String script) {
             nc();
             return super.setOn(eventName, script);
         }
         @Override
-        public Td setWidthMinus(Integer widthMinus) {
+        public TD setWidthMinus(Integer widthMinus) {
             nc();
             return super.setWidthMinus(widthMinus);
         }
         @Override
-        public Td setHeightMinus(Integer heightMinus) {
+        public TD setHeightMinus(Integer heightMinus) {
             nc();
             return super.setHeightMinus(heightMinus);
         }
         @Override
-        public Td setData(String key, Object value) {
+        public TD setData(String key, Object value) {
             nc();
             return super.setData(key, value);
         }
         @Override
-        public Td setMaxWidth(int maxWidth) {
+        public TD setMaxWidth(int maxWidth) {
             nc();
             return super.setMaxWidth(maxWidth);
         }
         @Override
-        public Td setMaxWidth(String maxWidth) {
+        public TD setMaxWidth(String maxWidth) {
             nc();
             return super.setMaxWidth(maxWidth);
         }
         @Override
-        public Td setMaxHeight(String maxHeight) {
+        public TD setMaxHeight(String maxHeight) {
             nc();
             return super.setMaxHeight(maxHeight);
         }
         @Override
-        public Td setMaxHeight(int maxHeight) {
+        public TD setMaxHeight(int maxHeight) {
             nc();
             return super.setMaxHeight(maxHeight);
         }
         @Override
-        public Td setMinWidth(int minWidth) {
+        public TD setMinWidth(int minWidth) {
             nc();
             return super.setMinWidth(minWidth);
         }
         @Override
-        public Td setMinWidth(String minWidth) {
+        public TD setMinWidth(String minWidth) {
             nc();
             return super.setMinWidth(minWidth);
         }
         @Override
-        public Td setMinHeight(String minHeight) {
+        public TD setMinHeight(String minHeight) {
             nc();
             return super.setMinHeight(minHeight);
         }
         @Override
-        public Td setMinHeight(int minHeight) {
+        public TD setMinHeight(int minHeight) {
             nc();
             return super.setMinHeight(minHeight);
         }
 
+    }
+
+    /**
+     * Grid.Tr 表示 表格的行
+     * <p>表格的行有三种工作模式</p>
+     * <p>常见的是里面包行单元格(Td)。
+     * 每个单元格是一个文本或独立的widget，有widget的功能和属性，只是有的时候可能并不会给每个单元格设置ID。</p>
+     * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或GridCell。
+     * 并用{@link Grid.Column#getField} 来说明这个内容显示在哪里。</p>
+     * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
+     * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
+     *
+     * @see AbstractTd {@link Grid.Column} {@link GridLeaf}
+     * @author DFish Team
+     * @param <T> 当前类型
+     * @since DFish 3.0
+     */
+    @SuppressWarnings("unchecked")
+    protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractContainer<T> {
+        private static final long serialVersionUID = 4300223953187136245L;
+
+        /**
+         * 构造函数
+         * @param id 编号
+         */
+        public AbstractTr(String id) {
+            super(id);
+        }
+        /**
+         * 默认构造函数
+         */
+        public AbstractTr() {
+            super(null);
+        }
+
+        protected Boolean focus;
+        protected Boolean focusable;
+        protected String src;
+        protected List<Grid.TR> rows;
+
+
+
+        @Override
+        @Deprecated
+        public T add(HasId w) {
+            throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
+        }
+
+        /**
+         * 取得可折叠的子元素
+         * @return List
+         */
+        public List<Grid.TR> getRows() {
+            return rows;
+        }
+        /**
+         * 设置可折叠的子元素
+         * @param rows List
+         */
+        public void setRows(List<Grid.TR> rows) {
+            this.rows = rows;
+        }
+
+        @Override
+        public String getType() {
+            return null;
+        }
+        /**
+         * 添加一个可折叠的行。
+         * @param row GridRow
+         * @return 本身，这样可以继续设置其他属性
+         */
+
+        public T addRow(Grid.TR row) {
+            if(rows==null){
+                rows=new ArrayList<Grid.TR>();
+            }
+            rows.add(row);
+
+            return (T)this;
+        }
+
+        /**
+         * 当前行是不是聚焦状态
+         * @return Boolean
+         */
+        public Boolean getFocus() {
+            return focus;
+        }
+        /**
+         * 当前行是不是聚焦状态
+         * @param focus Boolean
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public T setFocus(Boolean focus) {
+            this.focus = focus;
+            return (T)this;
+        }
+
+        /**
+         * 是否可聚焦
+         * @return Boolean
+         */
+        public Boolean getFocusable() {
+            return focusable;
+        }
+
+        /**
+         * 设置是否可聚焦
+         * @param focusable Boolean
+         * @return this
+         */
+        public T setFocusable(Boolean focusable) {
+            this.focusable = focusable;
+            return (T) this;
+        }
+
+        @Override
+        public T removeNodeById(String id) {
+
+            if (id == null||(rows==null&&data==null)) {
+                return (T)this;
+            }
+            if(rows!=null){
+                for (Iterator<TR> iter = rows.iterator(); iter.hasNext();) {
+                    Grid.TR item = iter.next();
+                    if (id.equals(item.getId())) {
+                        iter.remove();
+                    } else {
+                        item.removeNodeById(id);
+                    }
+                }
+            }
+            if (data != null) {
+                for (Iterator<Map.Entry<String, Object>> iter = data.entrySet().iterator(); iter.hasNext();) {
+                    Map.Entry<String, Object> entry = iter.next();
+                    if (!(entry.getValue() instanceof Widget)) {
+                        // FIXME 本不该出现
+                        continue;
+                    }
+                    Widget<?> cast = (Widget<?>) entry.getValue();
+                    if (id.equals(cast.getId())) {
+                        iter.remove();
+                    } else {
+                        if (cast instanceof AbstractTd) {
+                            AbstractTd<?> cast2 = (AbstractTd<?>) entry.getValue();
+                            if (cast2.getNode() != null && id.equals(cast2.getNode().getId())) {
+                                // 删除Cell的时候如果cell是以node方式存在 node被删除cell也应该被删除
+                                iter.remove();
+                            }
+                        }
+                        if (cast instanceof Layout) {
+                            Layout<?> cast3 = (Layout<?>) entry.getValue();
+                            cast3.removeNodeById(id);
+                        }
+                    }
+                }
+            }
+            return (T) this;
+        }
+
+        @Override
+        public List<HasId<?>> findNodes() {
+            List<HasId<?>> result=new ArrayList<>();
+            if(rows!=null){
+                for(Widget<?> o:rows){
+                    result.add( o);
+                }
+            }
+            if(data!=null){
+                for(Object o:data.values()){
+                    if(o instanceof Widget){
+                        //去除字符串
+                        result.add( (Widget<?>)o);
+                    }
+                }
+            }
+            return result;
+        }
+        @Override
+        public boolean replaceNodeById(Widget<?> panel) {
+            if (panel == null || panel.getId() == null) {
+                return false;
+            }
+            String id = panel.getId();
+            if(rows!=null){
+                for (int i = 0; i < rows.size(); i++) {
+                    Grid.TR item = rows.get(i);
+                    if (id.equals(item.getId())) {
+                        // 替换该元素
+                        rows.set(i, (Grid.TR)panel);
+                        return true;
+                    } else  {
+                        boolean replaced = item.replaceNodeById(panel);
+                        if (replaced) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if(data!=null){
+                for (Iterator<Map.Entry<String, Object>> iter = data.entrySet()
+                        .iterator(); iter.hasNext();) {
+                    Map.Entry<String, Object> entry = iter.next();
+                    if(!(entry.getValue() instanceof Widget)){
+                        //FIXME 本不该出现
+                        continue;
+                    }
+                    Widget<?> cast=(Widget<?>)entry.getValue();
+                    if (id.equals(cast.getId())) {
+                        entry.setValue(panel);
+                    } else if(cast instanceof Layout){
+                        boolean replaced = ((Layout<?>)cast).replaceNodeById(panel);
+                        if (replaced) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        @Override
+        public T setData(String key, Object value) {
+            if(value==null){
+                return (T)this;
+            }
+
+            if(data == null){
+                data = new LinkedHashMap<String, Object>();
+            }
+            // 如果插入的内容是String/Object  以及非GridCell的Widget需要做一层封装。
+            data.put(key, value);
+            return (T)this;
+        }
+
+
+
+        /**
+         * 排序src
+         * @return String
+         */
+        public String getSrc() {
+            return src;
+        }
+        /**
+         * 排序src
+         * @param src String
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public T setSrc(String src) {
+            this.src = src;
+            return (T)this;
+        }
+        /**
+         * 拷贝属性
+         * @param to AbstractTr
+         * @param from AbstractTr
+         */
+        protected void copyProperties(AbstractTr<?> to,AbstractTr<?> from){
+            super.copyProperties(to, from);
+            to.rows=from.rows;
+            to.focus=from.focus;
+            to.src=from.src;
+            to.focusable=from.focusable;
+        }
+    }
+    /**
+     * 和javascript端是对应的TR模型。
+     * json中如果tr没有cls等额外属性，可能会简化显示它的data部分
+     * 所以Tr默认不能显示按封装类格式。这时候json中的原型将有可能还是这个JsonTr的格式
+     * 也有可能是Map格式。
+     * @author DFish team
+     *
+     */
+    @SuppressWarnings("unchecked")
+    protected static class JsonTr extends AbstractTr<JsonTr> {
+        private static final long serialVersionUID = -1034767067781605568L;
+
+    }
+    /**
+     *  Td 表示一个Grid的单元格
+     * <p>在一些复杂布局结构中，它可以占不止一行或不止一列</p>
+     * <p>GridCell 有两种工作模式，他内部可以包含一个Widget或简单的包含一个文本，如果包含了widget文本模式将失效</p>
+     * <p>虽然GridCell也是一个Widget，但其很可能并不会专门设置ID。虽然它是一个Layout，但它最多包含1个子节点。即其内容。</p>
+     * @author DFish Team
+     * @param <T> 本身类型
+     * @see Grid.TD
+     */
+    @SuppressWarnings("unchecked")
+    protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractContainer<T>
+            implements SingleContainer<T ,Widget>,Alignable<T>,Valignable<T>{
+        /**
+         *
+         */
+        private static final long serialVersionUID = -7870476532478876521L;
+        /**
+         * 默认构造函数
+         */
+        public AbstractTd() {
+            super(null);
+        }
+        protected Integer colspan;
+        protected Integer rowspan;
+        //	private String text;
+        protected String align;
+        protected String valign;
+        protected Widget<?> node;
+        protected Boolean escape;
+        protected String format;
+        protected Integer labelwidth;
+
+        @Override
+        public String getType() {
+            return null;
+        }
+
+        /**
+         * 这个这个单元格占几列。
+         * 为空的时候相当于1
+         * @return Integer
+         */
+        public Integer getColspan() {
+            return colspan;
+        }
+        /**
+         * 这个这个单元格占几列。
+         * 为空的时候相当于1
+         * @param colspan Integer
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public T setColspan(Integer colspan) {
+            if(colspan!=null){
+                if(colspan<1){
+                    throw new java.lang.IllegalArgumentException("colspan must greater than 1");
+                }
+                if(colspan==1){
+                    colspan=null;
+                }
+            }
+            this.colspan = colspan;
+            return (T)this;
+        }
+        /**
+         * 这个这个单元格占几行。
+         * 为空的时候相当于1
+         * @return Integer
+         */
+        public Integer getRowspan() {
+            return rowspan;
+        }
+        /**
+         * 这个这个单元格占几行。
+         * 为空的时候相当于1
+         * @param rowspan Integer
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public T setRowspan(Integer rowspan) {
+            if(rowspan!=null){
+                if(rowspan<1){
+                    throw new java.lang.IllegalArgumentException("rowspan must greater than 1");
+                }
+                if(rowspan==1){
+                    rowspan=null;
+                }
+            }
+            this.rowspan = rowspan;
+            return (T)this;
+        }
+        /**
+         * 部件(Widget)模式时， 取得单元格内部部件
+         * @return Widget
+         */
+        @Override
+        public Widget<?> getNode() {
+            return node;
+        }
+        /**
+         * 部件(Widget)模式时， 设置单元格内部部件
+         * @param node Widget
+         * @return 本身，这样可以继续设置其他属性
+         */
+        @Override
+        public T setNode(Widget node) {
+            this.node =  node;
+            return (T)this;
+        }
+        /**
+         *
+         * GridCell 下只能有一个node，所以add和setNode是相同的功能
+         * @param node Widget
+         * @return 本身，这样可以继续设置其他属性
+         * @see #setNode(HasId)
+         */
+        @Override
+        public T add(HasId node) {
+            this.node = (Widget) node;
+            return (T)this;
+        }
+
+        @Override
+        public Widget<?> findNodeById(String id) {
+            if (id == null || node==null) {
+                return null;
+            }
+            if (id.equals(node.getId())) {
+                return node;
+            } else if(node instanceof Layout) {
+                Layout cast =(Layout)node;
+                return (Widget) cast.findNodeById(id);
+            }
+            return null;
+        }
+
+        @Override
+        public List<HasId<?>> findNodes() {
+            return Arrays.asList(new Widget<?>[]{node});
+        }
+
+
+        @Override
+        public T removeNodeById(String id) {
+            if (id == null || node==null) {
+                return (T)this;
+            }
+            if(id.equals(node.getId())){
+                node=null;
+            }
+            if(node instanceof Layout) {
+                Layout cast =(Layout)node;
+                cast.removeNodeById(id);
+            }
+            return (T)this;
+        }
+        @Override
+        public boolean replaceNodeById(Widget<?> w) {
+            if (w == null || w.getId() == null || node==null) {
+                return false;
+            }
+            if (w.getId().equals(node.getId())) {
+                // 替换该元素
+                node=w;
+                return true;
+            } else if(node instanceof Layout<?>) {
+                Layout cast =(Layout)node;
+                boolean replaced = cast.replaceNodeById(w);
+                if (replaced) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        public String getvAlign() {
+            return valign;
+        }
+        @Override
+        public T setvAlign(String vAlign) {
+            this.valign= vAlign;
+            return (T)this;
+        }
+        @Override
+        public String getAlign() {
+            return align;
+        }
+        @Override
+        public T setAlign(String align) {
+            this.align=align;
+            return (T)this;
+        }
+        /**
+         * 拷贝属性
+         * @param to AbstractTd
+         * @param from AbstractTd
+         */
+        protected void copyProperties(AbstractTd<?> to,AbstractTd<?> from){
+            super.copyProperties(to, from);
+            to.node=from.node;
+            to.align=from.align;
+            to.colspan=from.colspan;
+            to.rowspan=from.rowspan;
+            to.valign=from.valign;
+            to.labelwidth=from.labelwidth;
+        }
+
+        /**
+         * 用于显示文本是否需要转义,不设置默认是true
+         * @return Boolean
+         */
+        public Boolean getEscape() {
+            return escape;
+        }
+
+        /**
+         * 用于显示文本是否需要转义,不设置默认是true
+         * @param escape Boolean
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public T setEscape(Boolean escape) {
+            this.escape = escape;
+            return (T) this;
+        }
+
+        /**
+         * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+         * @return String 格式化内容
+         */
+        public String getFormat() {
+            return format;
+        }
+
+        /**
+         * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+         * @param format String 格式化内容
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public T setFormat(String format) {
+            this.format = format;
+            return (T) this;
+        }
+
+        /**
+         * 表单标题宽度。
+         * @return Integer
+         * @since 3.3
+         */
+        public Integer getLabelwidth() {
+            return labelwidth;
+        }
+
+        /**
+         * 表单标题宽度。
+         * @param labelwidth Integer
+         * @return 本身，这样可以继续设置其他属性
+         * @since 3.3
+         */
+        public T setLabelwidth(Integer labelwidth) {
+            this.labelwidth = labelwidth;
+            return (T) this;
+        }
+    }
+
+    /**
+     * 和javascript端是对应的TD模型。
+     * json中如果td没有cls等额外属性，可能会简化显示它的node
+     * 如果这个node还是文本，可能会进一步简化显示成文本。
+     * 所以Td默认不能显示按封装类格式。这时候json中的原型将有可能还是这个JsonTd的格式
+     * 也有可能是Widget格式或者是text格式。
+     * @author DfishTeam
+     *
+     */
+    protected static class JsonTd extends AbstractTd<JsonTd> implements HasText<JsonTd>{
+        /**
+         *
+         */
+        private static final long serialVersionUID = -5125782398657967546L;
+        private String text;
+        /**
+         * 文本模式时， 取得单元格内部文本的值
+         * @return String
+         */
+        @Override
+        public String getText() {
+            return text;
+        }
+        /**
+         * 文本模式时， 设置单元格内部文本的值
+         * @param text String
+         * @return 本身，这样可以继续设置其他属性
+         */
+        @Override
+        public JsonTd setText(String text) {
+            this.text = text;
+            return this;
+        }
     }
 
 }

@@ -91,7 +91,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<HasId<? extends HasId<?>>> findNodes() {
+	public List<HasId<?>> findNodes() {
 		return (List)nodes;
 	}
 	/**

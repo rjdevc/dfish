@@ -90,4 +90,8 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
         return (T) this;
     }
 
+    protected static class JsonFormLabel extends AbstractFormLabel<JsonFormLabel> {
+        private static final long serialVersionUID = -5102447886806970560L;
+    }
 }
+

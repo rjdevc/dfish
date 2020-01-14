@@ -55,7 +55,7 @@ public class GroupingGridWrapper extends AbstractGridWrapper<GroupingGridWrapper
                 prototype.addColumn(column);
             }
             if (hasTableHead) {
-                Grid.Tr headRow = new Grid.Tr();
+                Grid.TR headRow = new Grid.TR();
                 prototype.getHead().add(headRow);
                 headRow.setData(column.getField(), column.getLabel());
             }
@@ -73,13 +73,13 @@ public class GroupingGridWrapper extends AbstractGridWrapper<GroupingGridWrapper
         // 假定这个集合所有对象的类型是一致的
         for (Map.Entry<String, Collection<?>> entry : col.entrySet()) {
             //添加可折叠的标题栏
-            Grid.Tr tr = new Grid.Tr();
+            Grid.TR tr = new Grid.TR();
             prototype.add(tr);
             //FIXME 这里应该不是0而是第0列的propName
-            tr.setData(firstColumnField, new Grid.Td().setColspan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setOpen(true)));
+            tr.setData(firstColumnField, new Grid.TD().setColspan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setOpen(true)));
 
             for (Object data : entry.getValue()) {
-                Grid.Tr dataRow = new Grid.Tr();
+                Grid.TR dataRow = new Grid.TR();
                 prototype.add(dataRow);
                 if (data == null) {
                     continue;

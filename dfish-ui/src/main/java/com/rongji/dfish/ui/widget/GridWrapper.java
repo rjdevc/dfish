@@ -116,9 +116,9 @@ public class GridWrapper extends AbstractGridWrapper<GridWrapper> {
      */
 	@Override
     protected void buildPrototype() {
-    	Grid.Tr headRow = null;
+    	Grid.TR headRow = null;
     	if(hasTableHead){
-    		headRow=new Grid.Tr();
+    		headRow=new Grid.TR();
 			prototype.getHead().add(headRow);
     	}
     	for(Column column :columns){
@@ -146,7 +146,7 @@ public class GridWrapper extends AbstractGridWrapper<GridWrapper> {
     	// 假定这个集合所有对象的类型是一致的
     	int index=0;
     	for (Object data : gridData) {
-			Grid.Tr dataRow = new Grid.Tr();
+			Grid.TR dataRow = new Grid.TR();
 			boolean focus=focusRowIndexs.contains(index);
 			dataRow.setFocus(focus?true:null);
 			prototype.add(dataRow);
