@@ -804,11 +804,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         private static final long serialVersionUID = 3246628575622594917L;
 
         public static final String COLUMN_FIELD_UNKNOWN = "UNKNOWN";
-
-        private String beanProp;
-        private int dataColumnIndex = -1;
         private String field;
-        private String label;
         private String width;
         private Integer labelwidth;
         private String format;
@@ -818,7 +814,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         private String cls;
         private String align;
         private String valign;
-        private String dataFormat;
         private Object tip;
         private Object sort;
         private Integer minwidth;
@@ -832,23 +827,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return rawFormat;
         }
 
-//	AbstractBox<?> box;
-
-        /**
-         * 排序-默认 {@link Sort#STATUS_DEFAULT}
-         */
-        @Deprecated
-        public static final String SORT_DEFAULT = Sort.STATUS_DEFAULT;
-        /**
-         * 排序-正序 {@link Sort#STATUS_ASC}
-         */
-        @Deprecated
-        public static final String SORT_ASC = Sort.STATUS_ASC;
-        /**
-         * 排序-倒序 {@link Sort#STATUS_DESC}
-         */
-        @Deprecated
-        public static final String SORT_DESC = Sort.STATUS_DESC;
 
         public static final String BOX_NAME = "selectItem";
 
@@ -871,70 +849,12 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * <p>构造函数</p>
          * <p>这个构造函数适用与数据是List&lt;Object[]&gt;的时候.</p>
          *
-         * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
          * @param field           String 输出时显示的JSON属性名字。注意不要有重复
-         * @param label           String 在表头显示的标题
          * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          */
-        public Column(int dataColumnIndex, String field, String label, String width) {
-            this.dataColumnIndex = dataColumnIndex;
+        public Column(String field, String width) {
             this.field = field;
-            this.label = label;
             this.width = width;
-        }
-
-        /**
-         * <p>构造函数</p>
-         * <p>这个构造函数适用与数据是List&lt;Object[]&gt;的时候.</p>
-         *
-         * @param beanProp String String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-         * @param field    String 输出时显示的JSON属性名字。注意不要有重复
-         * @param label    String 在表头显示的标题
-         * @param width    String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         */
-        public Column(String beanProp, String field, String label, String width) {
-            this.beanProp = beanProp;
-            this.field = field;
-            this.label = label;
-            this.width = width;
-        }
-
-        /**
-         * 构建一个TEXT类型的GridColumn
-         *
-         * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         * @param field           String 输出时显示的JSON属性名字。注意不要有重复
-         * @param label           String 在表头显示的标题
-         * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column text(int dataColumnIndex, String field, String label, String width) {
-            return new Column(dataColumnIndex, field, label, width);
-        }
-
-        /**
-         * 构建一个TEXT类型的GridColumn
-         *
-         * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         * @param label           String 在表头显示的标题
-         * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column text(int dataColumnIndex, String label, String width) {
-            return new Column(dataColumnIndex, null, label, width);
-        }
-
-        /**
-         * 构建一个TEXT类型的GridColumn
-         *
-         * @param beanProp String String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-         * @param field    String 输出时显示的JSON属性名字。注意不要有重复
-         * @param label    String 在表头显示的标题
-         * @param width    String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column text(String beanProp, String field, String label, String width) {
-            return new Column(beanProp, field, label, width);
         }
 
         /**
@@ -946,7 +866,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column text(String field, String width) {
-            return new Column(null, field, null, width);
+            return new Column( field, width);
         }
 
         /**
@@ -958,103 +878,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column text(String field, String width, String format) {
-            return new Column(null, field, null, width).setFormat(format);
-        }
-
-        /**
-         * 构建一个HIDDEN类型的GridColumn
-         *
-         * @param beanProp String String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-         * @param field    String 输出时显示的JSON属性名字。注意不要有重复
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column hidden(String beanProp, String field) {
-            return new Column(beanProp, field, null, null);
-        }
-
-        /**
-         * 构建一个HIDDEN类型的GridColumn
-         *
-         * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         * @param field           String 输出时显示的JSON属性名字。注意不要有重复
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column hidden(int dataColumnIndex, String field) {
-            return new Column(dataColumnIndex, field, null, null);
-        }
-
-        /**
-         * 构建一个序号列
-         *
-         * @param label 标签
-         * @param width 宽度
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column rownum(String label, String width) {
-            return rownum(label, null, width);
-        }
-
-        /**
-         * 构建一个序号列
-         *
-         * @param label 标签
-         * @param start 开始编号
-         * @param width 宽度
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column rownum(String label, Integer start, String width) {
-            return new Column(null, null, label, width).setFormat("javascript:return " + new GridRowNum(start)).setAlign(Column.ALIGN_CENTER);
-        }
-
-        /**
-         * 构建一个CHECKBOX类型的GridColumn
-         *
-         * @param checkedField String 所选中值指定的列名
-         * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @return 本身，这样可以继续设置其他属性
-         * @see #gridTriplebox(String, String)
-         */
-        @Deprecated
-        public static Column checkbox(String checkedField, String width) {
-//		return new GridColumn( null, field, null, width).setBox(new Checkbox(CHECK_FIELD_NAME, null, null, null,null).setField(new BoxField().setValue(field))).setAlign(GridColumn.ALIGN_CENTER);
-            // FIXME 刚开始若未指定field,这个效果就有问题
-//		return new GridColumn( null, field, null, width).setModel(new GridTriplebox(CHECK_FIELD_NAME, null, null, null, null)).addModelfield("value", field).setAlign(GridColumn.ALIGN_CENTER);
-//		return checkbox(null, FIELD_TRIPLEBOX, width, BOX_NAME, checkedField, null, null);
-            return gridTriplebox(checkedField, width);
-        }
-
-        /**
-         * 构建一个CHECKBOX类型的GridColumn
-         *
-         * @param beanProp     String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-         * @param field        String 返回前端的属性名
-         * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @param boxName      box提交时的名字
-         * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-         * @param required     是否必填提交时校验
-         * @return 本身，这样可以继续设置其他属性
-         */
-        @Deprecated
-        public static Column checkbox(String beanProp, String field, String width, String boxName, String checkedField, Boolean required) {
-//		return new GridColumn( beanProp, field, null, width).setBox(new Checkbox(boxName, null, null, null,null).addValidate(new Validate().setRequired(required)).setField(new BoxField().setValue(field).setChecked(checkedField))).setAlign(GridColumn.ALIGN_CENTER);
-//		return new GridColumn(beanProp, field, null, width).setGridTriplebox(boxName, checkedField, required, sync);
-            return gridTriplebox(beanProp, field, width).setGridTriplebox(boxName, checkedField, required, null);
-        }
-
-        /**
-         * 构建一个CHECKBOX类型的GridColumn
-         *
-         * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         * @param field           String 返回前端的属性名
-         * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @param boxName         box提交时的名字
-         * @param checkedField    如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-         * @param required        是否必填提交时校验
-         * @return 本身，这样可以继续设置其他属性
-         */
-        @Deprecated
-        public static Column checkbox(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required) {
-            return gridTriplebox(dataColumnIndex, field, width).setGridTriplebox(boxName, checkedField, required, null);
+            return new Column( field, width).setFormat(format);
         }
 
         /**
@@ -1065,71 +889,9 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridTriplebox(String checkedField, String width) {
-            return new Column(null, null, null, width).setGridTriplebox(BOX_NAME, checkedField, null, null);
+            return new Column( null, width).setGridTriplebox(BOX_NAME, checkedField, null, null);
         }
 
-        /**
-         * 构建一个GridTriplebox类型的GridColumn
-         *
-         * @param beanProp String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-         * @param field    String 返回前端的属性名
-         * @param width    String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column gridTriplebox(String beanProp, String field, String width) {
-            return new Column(beanProp, field, null, width).setGridTriplebox(BOX_NAME, field, null, null);
-        }
-
-        /**
-         * 构建一个GridTriplebox类型的GridColumn
-         *
-         * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         * @param field           String 返回前端的属性名
-         * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column gridTriplebox(int dataColumnIndex, String field, String width) {
-            return new Column(dataColumnIndex, field, null, width).setGridTriplebox(BOX_NAME, field, null, null);
-        }
-
-//	/**
-//	 * 构建一个Triplebox类型的GridColumn
-//	 * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-//	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public static GridColumn triplebox(String checkedField, String width) {
-//		return triplebox(null, FIELD_TRIPLEBOX, width, BOX_NAME, checkedField, null);
-//	}
-//
-//	/**
-//	 * 构建一个Triplebox类型的GridColumn
-//	 * @param beanProp String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-//	 * @param field String 返回前端的属性名
-//	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-//	 * @param boxName box提交时的名字
-//	 * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-//	 * @param required 是否必填提交时校验
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public static GridColumn triplebox(String beanProp, String field, String width, String boxName, String checkedField, Boolean required){
-//		return new GridColumn(beanProp, field, null, width).setTriplebox(boxName, checkedField, required);
-//	}
-//
-//
-//	/**
-//	 * 构建一个Triplebox类型的GridColumn
-//	 * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-//	 * @param field String 返回前端的属性名
-//	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-//	 * @param boxName box提交时的名字
-//	 * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-//	 * @param required 是否必填提交时校验
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public static GridColumn triplebox(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required){
-//		return new GridColumn(dataColumnIndex, field, null, width).setTriplebox(boxName, checkedField, required);
-//	}
 
         /**
          * 将此列设置为复选框
@@ -1203,15 +965,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return setGridRadio(BOX_NAME, null, null, sync);
         }
 
-//	/**
-//	 * 将此列设置为单选框
-//	 * @param boxName String 单选框名称
-//	 * @param required Boolean 是否必填
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public GridColumn setGridRadio(String boxName, Boolean required) {
-//		return setGridRadio(boxName, null, required, null);
-//	}
 
         /**
          * 将此列设置为单选框
@@ -1259,75 +1012,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return this.setFormat("javascript:return " + gridRadio.setValue(new RawJson("$" + boxField))).setAlign(Column.ALIGN_CENTER);
         }
 
-//	/**
-//	 * 将此列设置为单选框
-//	 * @param required Boolean 是否必填
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public GridColumn setRadio(Boolean required) {
-//		return setRadio(BOX_NAME, required);
-//	}
-//
-//	/**
-//	 * 将此列设置为单选框
-//	 * @param boxName String 单选框名称
-//	 * @param required Boolean 是否必填
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public GridColumn setRadio(String boxName, Boolean required) {
-//		return setRadio(boxName, null, required, null);
-//	}
-//
-//	/**
-//	 * 将此列设置为单选框
-//	 * @param boxName String 单选框名称
-//	 * @param checkedField String 所选值指向的列名
-//	 * @param required Boolean 是否必填
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public GridColumn setRadio(String boxName, String checkedField, Boolean required, String sync) {
-//		return setCommonRadio(boxName, checkedField, required, new Radio(null, null, null, null, null).setSync(sync));
-//	}
-
-//	/**
-//	 * 构建一个CHECKBOX类型的GridColumn
-//	 * @param checkedField String 所选中值指定的列名
-//	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public static GridColumn radio(String checkedField, String width){
-////		return new GridColumn(null, field, null, width).setModel(new Radio(CHECK_FIELD_NAME, null, null, null,null), "value").setAlign(GridColumn.ALIGN_CENTER);
-//		return radio(null, FIELD_RADIO, width, BOX_NAME, checkedField, null);
-//	}
-//
-//	/**
-//	 * 构建一个RADIO类型的GridColumn
-//	 * @param beanProp String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-//	 * @param field String 返回前端的属性名
-//	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-//	 * @param boxName box提交时的名字
-//	 * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-//	 * @param required 是否必填提交时校验
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public static GridColumn radio(String beanProp,String field, String width,String boxName,String checkedField,Boolean required){
-////		return new GridColumn(beanProp, field, null, width).setModel(new Radio(boxName, null, null, null,null).addValidate(new Validate().setRequired(required)), "value").setAlign(GridColumn.ALIGN_CENTER);
-//		return new GridColumn(beanProp, field, null, width).setRadio(boxName, checkedField, required);
-//	}
-//	/**
-//	 * 构建一个RADIO类型的GridColumn
-//	 * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-//	 * @param field String 返回前端的属性名
-//	 * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-//	 * @param boxName box提交时的名字
-//	 * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-//	 * @param required 是否必填提交时校验
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public static GridColumn radio(int dataColumnIndex,String field, String width,String boxName,String checkedField,Boolean required){
-////		return new GridColumn( dataColumnIndex, field, null, width).setBox(new Radio(boxName, null, null, null,null).addValidate(new Validate().setRequired(required)).setField(new BoxField().setValue(field).setChecked(checkedField))).setAlign(GridColumn.ALIGN_CENTER);
-//		return new GridColumn(dataColumnIndex, field, null, width).setRadio(boxName, checkedField, required);
-//	}
 
         /**
          * 构建一个CHECKBOX类型的GridColumn
@@ -1337,7 +1021,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridRadio(String checkedField, String width) {
-//		return new GridColumn(null, field, null, width).setModel(new Radio(CHECK_FIELD_NAME, null, null, null,null), "value").setAlign(GridColumn.ALIGN_CENTER);
             return gridRadio(checkedField, width, null);
         }
 
@@ -1350,64 +1033,9 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridRadio(String checkedField, String width, String sync) {
-            return gridRadio(null, null, width, BOX_NAME, checkedField, null, sync);
+            return new Column( null,  width).setGridRadio(BOX_NAME, checkedField, null, sync);
         }
 
-        /**
-         * 构建一个RADIO类型的GridColumn
-         *
-         * @param beanProp     String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
-         * @param field        String 返回前端的属性名
-         * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @param boxName      box提交时的名字
-         * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-         * @param required     是否必填提交时校验
-         * @param sync         是否与行点击动作同步
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column gridRadio(String beanProp, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
-//		return new GridColumn(beanProp, field, null, width).setModel(new Radio(boxName, null, null, null,null).addValidate(new Validate().setRequired(required)), "value").setAlign(GridColumn.ALIGN_CENTER);
-            return new Column(beanProp, field, null, width).setGridRadio(boxName, checkedField, required, sync);
-        }
-
-        /**
-         * 构建一个RADIO类型的GridColumn
-         *
-         * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         * @param field           String 返回前端的属性名
-         * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
-         * @param boxName         box提交时的名字
-         * @param checkedField    如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
-         * @param required        是否必填提交时校验
-         * @param sync            是否与行点击动作同步
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public static Column gridRadio(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
-//		return new GridColumn( dataColumnIndex, field, null, width).setBox(new Radio(boxName, null, null, null,null).addValidate(new Validate().setRequired(required)).setField(new BoxField().setValue(field).setChecked(checkedField))).setAlign(GridColumn.ALIGN_CENTER);
-            return new Column(dataColumnIndex, field, null, width).setGridRadio(boxName, checkedField, required, sync);
-        }
-
-        /**
-         * 如果数据是List&lt;JavaBean&gt;则这里表示这个JavaBean的属性名。该列取这个属性的值
-         *
-         * @return the beanProp
-         */
-        @Transient
-        public String getBeanProp() {
-            return beanProp;
-        }
-
-        /**
-         * <p>设置属性名</p>
-         * <p>如果数据是List&lt;JavaBean&gt;则这里表示这个JavaBean的属性名。该列取这个属性的值</p>
-         *
-         * @param beanProp 属性名
-         * @return this
-         */
-        public Column setBeanProp(String beanProp) {
-            this.beanProp = beanProp;
-            return this;
-        }
 
 
         /**
@@ -1428,42 +1056,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          */
         public Column setField(String field) {
             this.field = field;
-            return this;
-        }
-
-
-        /**
-         * 标题(一般设置在表头上)
-         *
-         * @return the label
-         */
-        @Transient
-        public String getLabel() {
-            return label;
-        }
-
-        /**
-         * 标题(一般设置在表头上)
-         *
-         * @param label the label to set
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public Column setLabel(String label) {
-            this.label = label;
-            return this;
-        }
-
-        /**
-         * 标题(一般设置在表头上)
-         *
-         * @param label the label to set
-         * @return 本身，这样可以继续设置其他属性
-         * @see #setLabel(String)
-         * @deprecated setLabel
-         */
-        @Deprecated
-        public Column setTitle(String label) {
-            this.label = label;
             return this;
         }
 
@@ -1545,7 +1137,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
 
 
         /**
-         * 排序状态。设置此参数表示当前列可点击排序。可选值为三个: {@link #SORT_DEFAULT}, {@link #SORT_ASC}, {@link #SORT_DESC}
+         * 排序状态。设置此参数表示当前列可点击排序。
          *
          * @return Object
          */
@@ -1572,27 +1164,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          */
         public Column setSort(Sort sort) {
             this.sort = sort;
-            return this;
-        }
-
-        /**
-         * int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         *
-         * @return the dataColumnIndex
-         */
-        @Transient
-        public int getDataColumnIndex() {
-            return dataColumnIndex;
-        }
-
-        /**
-         * int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
-         *
-         * @param dataColumnIndex int
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public Column setDataColumnIndex(int dataColumnIndex) {
-            this.dataColumnIndex = dataColumnIndex;
             return this;
         }
 
@@ -1697,26 +1268,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return this;
         }
 
-        /**
-         * 格式化内容
-         *
-         * @return dataFormat
-         */
-        @Transient
-        public String getDataFormat() {
-            return dataFormat;
-        }
-
-        /**
-         * 格式化内容
-         *
-         * @param dataFormat String
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public Column setDataFormat(String dataFormat) {
-            this.dataFormat = dataFormat;
-            return this;
-        }
 
         /**
          * 是否可见的。如果是false表示当前GridColumn是隐藏字段，不输出给javascript前端。仅仅用于JAVA后端用于方便获取属性用，起到方便开发的作用
@@ -1728,15 +1279,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return this.width != null && !"".equals(this.width);
         }
 
-        /**
-         * 选项表单，类型是 checkbox 或 radio。
-         *
-         * @return box
-         */
-        @Deprecated
-        public AbstractBox<?> getBox() {
-            throw new UnsupportedOperationException("");
-        }
+
 
         /**
          * 选项表单，类型是 checkbox 或 radio。
@@ -1763,54 +1306,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return this;
         }
 
-        /**
-         * 排序结果的 url
-         *
-         * @return String
-         */
-        @Deprecated
-        public String getSortsrc() {
-            if (sort != null && sort instanceof Sort) {
-                return ((Sort) sort).getSrc();
-            }
-            return null;
-        }
-
-        /**
-         * 排序结果的 url
-         *
-         * @param sortsrc String
-         * @return 本身，这样可以继续设置其他属性
-         */
-        @Deprecated
-        public Column setSortsrc(String sortsrc) {
-            this.sort = new Sort().setSrc(sortsrc);
-            return this;
-        }
-
-        /**
-         * 提示的字段
-         *
-         * @return String
-         */
-        @Deprecated
-        public String getTipfield() {
-            if (tip != null && tip instanceof Tip) {
-                return ((Tip) tip).getField();
-            }
-            return null;
-        }
-
-        /**
-         * 提示的字段
-         *
-         * @param tipfield String
-         * @return 本身，这样可以继续设置其他属性
-         */
-        @Deprecated
-        public Column setTipfield(String tipfield) {
-            return setTip(new Tip().setField(tipfield));
-        }
 
         /**
          * 提示的字段
