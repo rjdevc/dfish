@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @param <T> 当前对象类型
  */
-public interface Container<T extends Container<T>> {
+public interface NodeContainer<T extends NodeContainer<T>> {
    
 	/**
 	 * 取得它容纳的实际元素，而不是传输给页面的JSON元素。
@@ -26,7 +26,7 @@ public interface Container<T extends Container<T>> {
 	 * @param id String
 	 * @return Widget
 	 */
-	UiNode<?> findNodeById(String id);
+	Node<?> findNodeById(String id);
 
 
 

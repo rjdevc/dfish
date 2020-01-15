@@ -1,9 +1,9 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.UiNode;
-import com.rongji.dfish.ui.MultiContainer;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.layout.AbstractContainer;
+import com.rongji.dfish.ui.layout.AbstractNodeContainer;
 
 import java.beans.Transient;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  * @version 1.0
  * @since Period
  */
-public class Range extends AbstractContainer<Range> implements LabelRow<Range>, MultiContainer<Range, FormElement<?, ?>> {
+public class Range extends AbstractNodeContainer<Range> implements LabelRow<Range>, MultiNodeContainer<Range, FormElement<?, ?>> {
 
     private static final long serialVersionUID = -4525721180514710555L;
 
@@ -124,14 +124,14 @@ public class Range extends AbstractContainer<Range> implements LabelRow<Range>, 
 
     @Override
     @Deprecated
-    public Range add(UiNode node) {
+    public Range add(Node node) {
         throw new UnsupportedOperationException("use setBegin / setEnd instead");
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<UiNode<?>> findNodes() {
-        ArrayList<UiNode<?>> ret = new ArrayList<>();
+    public List<Node<?>> findNodes() {
+        ArrayList<Node<?>> ret = new ArrayList<>();
         if (begin != null) {
             ret.add(begin);
         }

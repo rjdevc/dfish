@@ -117,7 +117,7 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Posi
     }
 
     @Override
-    public UiNode<?> findNodeById(String id) {
+    public Node<?> findNodeById(String id) {
         return null;
     }
 

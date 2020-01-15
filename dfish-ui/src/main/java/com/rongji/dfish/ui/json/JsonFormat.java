@@ -14,7 +14,7 @@ import java.util.Stack;
  * @author DFish Team
  *
  */
-public class J {
+public class JsonFormat {
 	private static Map<Class<?>,JsonBuilder> djbs=new HashMap<Class<?>,JsonBuilder>();
 	/**
 	 * 取得这个Class对应的Builder.
@@ -140,7 +140,7 @@ public class J {
 		try{
 			get(clz).buildJson(o, sb,path);
 		}catch(Exception ex){
-			LogUtil.error(J.class, clz.getName(),ex);
+			LogUtil.error(JsonFormat.class, clz.getName(),ex);
 		}
 	}
 	/**

@@ -360,7 +360,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
             int propValueBegin = sb.length();
             path.push(new PathInfo(propName, v));
             try {
-                J.get(v.getClass()).buildJson(v, sb, path);
+                JsonFormat.get(v.getClass()).buildJson(v, sb, path);
             } catch (Exception ex) {
                 LogUtil.error(getClass(), v.getClass().getName(), ex);
             }

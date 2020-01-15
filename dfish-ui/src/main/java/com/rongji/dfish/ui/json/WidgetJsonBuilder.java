@@ -159,7 +159,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 							if(begin){begin=false;}else{sb.append(',');}
 							sb.append("\"data\":");
 							path.push(new PathInfo("data",data));
-							J.buildJson(data, sb, path);
+							JsonFormat.buildJson(data, sb, path);
 							path.pop();
 						}
 						return begin;
@@ -251,7 +251,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 
 		@Override
         public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
-			UiNode w=(UiNode)o;
+			com.rongji.dfish.ui.Node w=(com.rongji.dfish.ui.Node)o;
 			String type=w.getType();
 			if(type!=null&&!"".equals(type)){
 				if(!match(path)){
@@ -410,7 +410,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 				return expr;
 			}
 		}
-		public static class AllMatchNode extends Node{
+		public static class AllMatchNode extends Node {
 			@Override
             public boolean match(PathInfo pathInfo){
 				return true;
@@ -419,12 +419,12 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 				super(expr);
 			}
 		}
-		public static class TypeMatchNode extends Node{
+		public static class TypeMatchNode extends Node {
 			private String type;
 			@Override
             public boolean match(PathInfo pathInfo){
-				if(pathInfo.getPropValue() instanceof UiNode){
-					String pType=((UiNode)pathInfo.getPropValue()).getType();
+				if(pathInfo.getPropValue() instanceof com.rongji.dfish.ui.Node){
+					String pType=((com.rongji.dfish.ui.Node)pathInfo.getPropValue()).getType();
 					return type.equals(pType);
 				}
 				return false;
@@ -434,7 +434,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 				this.type=expr.substring(5);
 			}
 		}
-		public static class PathMatchNode extends Node{
+		public static class PathMatchNode extends Node {
 			private String path;
 			@Override
             public boolean match(PathInfo pathInfo){

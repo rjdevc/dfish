@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.command;
 
 
-import com.rongji.dfish.ui.UiNode;
+import com.rongji.dfish.ui.Node;
 
 /**
  * Command为操作指令，本身是有编号的。编号相同的命令，就认为它是一样的。
@@ -11,6 +11,6 @@ import com.rongji.dfish.ui.UiNode;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public interface Command<T extends Command<T>> extends UiNode<T> {
+public interface Command<T extends Command<T>> extends Node<T> {
 
 }

@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.Container;
+import com.rongji.dfish.ui.NodeContainer;
 
 /**
  * <p>LabelRowContainer表名这个对象可以可以容纳LabelRow</p>
@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.Container;
  *
  * @param <T> 当前对象类型
  */
-public interface LabelRowContainer<T extends LabelRowContainer<T>>  extends Container<T>{
+public interface LabelRowContainer<T extends LabelRowContainer<T>>  extends NodeContainer<T> {
 
 	/**
 	 * 标签宽度

@@ -11,7 +11,7 @@ import java.util.Map;
  * @version 1.1 DFish team
  * @since DFish 3.0
  */
-public interface UiNode<T extends UiNode<T>> extends Serializable {
+public interface Node<T extends Node<T>> extends Serializable {
 
 	/**
 	 * 获取这个对象的种类名
@@ -27,7 +27,7 @@ public interface UiNode<T extends UiNode<T>> extends Serializable {
 	 * asJson就是转成JSON字符串。
 	 * @return String
 	 */
-	String asJson();
+	default String asJson(){return toString();};
 	/**
 	 * JsonObject的toString就是转成JSON字符串。
 	 * @return String

@@ -2,7 +2,7 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.layout.AbstractContainer;
+import com.rongji.dfish.ui.layout.AbstractNodeContainer;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import java.util.List;
  * button 的父类。 Alignable
  */
 // FIXME ButtonBar的实现是HorizonalLayout,java端概念是否和js端统一大
-public class ButtonBar extends AbstractContainer<ButtonBar> implements PubHolder<ButtonBar, Button>,
-        Alignable<ButtonBar>, VAlignable<ButtonBar>, MultiContainer<ButtonBar, Widget<? extends Widget<?>>>, Directional<ButtonBar> {
+public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHolder<ButtonBar, Button>,
+        Alignable<ButtonBar>, VAlignable<ButtonBar>, MultiNodeContainer<ButtonBar, Widget<? extends Widget<?>>>, Directional<ButtonBar> {
 
     private static final long serialVersionUID = 5193505708325695202L;
 

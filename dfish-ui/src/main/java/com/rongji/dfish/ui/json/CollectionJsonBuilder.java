@@ -23,7 +23,7 @@ public class CollectionJsonBuilder extends AbstractJsonBuilder {
                 sb.append(',');
             }
 			path.push(new PathInfo("["+(i++)+"]",item));
-			J.buildJson(item, sb,path);
+			JsonFormat.buildJson(item, sb,path);
 			path.pop();
 		}
 		sb.append(']');

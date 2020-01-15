@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.rongji.dfish.ui.json.J;
+import com.rongji.dfish.ui.json.JsonFormat;
 
 public class TypeShowUtil{
 	
@@ -108,7 +108,7 @@ public class TypeShowUtil{
 				}
 			}
 		}
-		System.out.println(J.formatJson( typeMap));
+		System.out.println(JsonFormat.formatJson( typeMap));
 	}
 	
 	private static String[][] getHidTypeDefDatas(){

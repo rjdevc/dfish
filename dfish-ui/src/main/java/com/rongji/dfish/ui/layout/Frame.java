@@ -1,8 +1,8 @@
 package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.UiNode;
-import com.rongji.dfish.ui.MultiContainer;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author DFish Team
  */
-public class Frame extends AbstractContainer<Frame> implements MultiContainer<Frame, Widget> {
+public class Frame extends AbstractNodeContainer<Frame> implements MultiNodeContainer<Frame, Widget> {
     /**
      *
      */
@@ -86,7 +86,7 @@ public class Frame extends AbstractContainer<Frame> implements MultiContainer<Fr
     }
 
     @Override
-    public Frame add(UiNode w) {
+    public Frame add(Node w) {
         return add(-1, (Widget)w);
     }
 }

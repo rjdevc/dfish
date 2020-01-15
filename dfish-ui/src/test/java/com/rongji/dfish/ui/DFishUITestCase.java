@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import com.rongji.dfish.ui.json.J;
+import com.rongji.dfish.ui.json.JsonFormat;
 
 public abstract class DFishUITestCase {
 
@@ -35,8 +35,8 @@ public abstract class DFishUITestCase {
 		
 		String outputString = "";
 		if (obj != null) {
-			if (obj instanceof UiNode) {
-				outputString = J.formatJson(J.toJson(obj));
+			if (obj instanceof Node) {
+				outputString = JsonFormat.formatJson(JsonFormat.toJson(obj));
 			} else {
 				outputString = obj.toString();
 			}

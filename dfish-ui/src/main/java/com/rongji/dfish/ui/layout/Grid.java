@@ -66,7 +66,7 @@ import java.util.*;
  * @author DFish team
  * @since DFish 3.0
  */
-public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
+public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         HiddenContainer<Grid>, HtmlContentHolder<Grid>, PubHolder<Grid, Grid.TR>, Scrollable<Grid>, GridOperation<Grid> {
 
     private static final long serialVersionUID = 6537737987499258183L;
@@ -333,7 +333,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     @SuppressWarnings("unchecked")
     @Override
     public List findNodes() {
-        List<UiNode> resultList = new ArrayList<>();
+        List<Node> resultList = new ArrayList<>();
         if (tBody.findNodes() != null) {
             resultList.addAll(tBody.findNodes());
         }
@@ -347,8 +347,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     }
 
     @Override
-    public UiNode findNodeById(String id) {
-        UiNode w = tBody.findNodeById(id);
+    public Node findNodeById(String id) {
+        Node w = tBody.findNodeById(id);
         if (w != null) {
             return w;
         }
@@ -737,7 +737,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
     }
 
     @Override
-    public Grid add(UiNode w) {
+    public Grid add(Node w) {
         tBody.add((TR)w);
         return this;
     }
@@ -2116,7 +2116,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      *
      * @author DFish team
      */
-    private static abstract class Part extends AbstractContainer<Part> implements GridOperation<Part> {
+    private static abstract class Part extends AbstractNodeContainer<Part> implements GridOperation<Part> {
         /**
          *
          */
@@ -2160,7 +2160,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
 
         @Override
-        public Part add(UiNode row) {
+        public Part add(Node row) {
             TR w=(TR)row;
             w.owner(owner);
             return super.add(w);
@@ -3015,7 +3015,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * @param <T> 当前类型
      * @since DFish 3.0
      */
-    protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractContainer<T> {
+    protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractNodeContainer<T> {
 
         private static final long serialVersionUID = 4300223953187136245L;
 
@@ -3042,7 +3042,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
 
         @Override
         @Deprecated
-        public T add(UiNode w) {
+        public T add(Node w) {
             throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
         }
 
@@ -3160,8 +3160,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public List<UiNode<?>> findNodes() {
-            List<UiNode<?>> result=new ArrayList<>();
+        public List<Node<?>> findNodes() {
+            List<Node<?>> result=new ArrayList<>();
             if(rows!=null){
                 for(Widget<?> o:rows){
                     result.add( o);
@@ -3286,8 +3286,8 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
      * @param <T> 本身类型
      * @see Grid.TD
      */
-    protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractContainer<T>
-            implements SingleContainer<T ,Widget>,Alignable<T>, VAlignable<T> {
+    protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractNodeContainer<T>
+            implements SingleNodeContainer<T ,Widget>,Alignable<T>, VAlignable<T> {
 
         private static final long serialVersionUID = -7870476532478876521L;
         /**
@@ -3388,7 +3388,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
          * @return 本身，这样可以继续设置其他属性
          */
         @Override
-        public T add(UiNode node) {
+        public T add(Node node) {
             this.node = (Widget) node;
             return (T)this;
         }
@@ -3408,7 +3408,7 @@ public class Grid extends AbstractContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public List<UiNode<?>> findNodes() {
+        public List<Node<?>> findNodes() {
             return Arrays.asList(new Widget<?>[]{node});
         }
 

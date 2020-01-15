@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.Container;
+import com.rongji.dfish.ui.NodeContainer;
 
 /**
  * CommandContainer 为命令的容器。
@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.Container;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public interface CommandContainer<T extends CommandContainer<T>> extends Container<T> {
+public interface CommandContainer<T extends CommandContainer<T>> extends NodeContainer<T> {
     /**
      * 添加一个命令。
      *

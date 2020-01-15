@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.json;
 
 import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.UiNode;
+import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.form.FormElement;
 
 import java.util.Collection;
@@ -70,13 +70,13 @@ public class PathInfo {
 			sb.append("\"Arr[leng=");
 			sb.append(((Object[]) propValue).length);
 			sb.append("]\"");
-		}else if(propValue instanceof UiNode){
+		}else if(propValue instanceof Node){
 			sb.append("\"Widget[type=");
-			sb.append(((UiNode) propValue).getType());
+			sb.append(((Node) propValue).getType());
 			boolean showed=false;
 			if(!showed){
-				if(propValue instanceof UiNode){
-					String id=((UiNode<?>) propValue).getId();
+				if(propValue instanceof Node){
+					String id=((Node<?>) propValue).getId();
 					if(id!=null&&!"".equals(id)){
 						showed=true;
 						sb.append(",id=");

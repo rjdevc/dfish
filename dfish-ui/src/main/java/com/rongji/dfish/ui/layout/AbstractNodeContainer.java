@@ -15,7 +15,7 @@ import com.rongji.dfish.ui.form.Hidden;
  * @param <T> 当前对象类型
  * @author DFish Team
  */
-public abstract class AbstractContainer<T extends AbstractContainer<T>> extends AbstractWidget<T> implements Container<T> {
+public abstract class AbstractNodeContainer<T extends AbstractNodeContainer<T>> extends AbstractWidget<T> implements NodeContainer<T> {
 
     private static final long serialVersionUID = 6322077434879898040L;
 
@@ -24,11 +24,11 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
      *
      * @param id String
      */
-    public AbstractContainer(String id) {
+    public AbstractNodeContainer(String id) {
         this.id = id;
     }
 
-    protected List<UiNode<?>> nodes = new ArrayList<>();
+    protected List<Node<?>> nodes = new ArrayList<>();
 
     /**
      * 添加子面板
@@ -36,7 +36,7 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
      * @param w N
      * @return 本身，这样可以继续设置其他属性
      */
-    public T add(UiNode w) {
+    public T add(Node w) {
         if (w == null) {
             return (T) this;
         }
@@ -53,18 +53,18 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
      * @param to   AbstractLayout
      * @param from AbstractLayout
      */
-    protected void copyProperties(AbstractContainer<?> to, AbstractContainer<?> from) {
+    protected void copyProperties(AbstractNodeContainer<?> to, AbstractNodeContainer<?> from) {
         super.copyProperties(to, from);
         to.nodes = from.nodes;
     }
 
     @Override
-    public List<UiNode<?>> findNodes() {
+    public List<Node<?>> findNodes() {
         return nodes;
     }
 
     @Override
-    public UiNode<? extends UiNode<?>> findNodeById(String id) {
+    public Node<? extends Node<?>> findNodeById(String id) {
         List<?> nodes = findNodes();
         if (id == null || nodes == null) {
             return null;
@@ -73,10 +73,10 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
             Object item = iter.next();
 
             if (item instanceof Widget && id.equals(((Widget) item).getId())) {
-                return (UiNode<? extends UiNode<?>>) item;
-            } else if (item instanceof Container) {
-                Container cast = (Container) item;
-                UiNode<? extends UiNode<?>> c = cast.findNodeById(id);
+                return (Node<? extends Node<?>>) item;
+            } else if (item instanceof NodeContainer) {
+                NodeContainer cast = (NodeContainer) item;
+                Node<? extends Node<?>> c = cast.findNodeById(id);
                 if (c != null) {
                     return c;
                 }
@@ -96,8 +96,8 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
             Widget<?> item = iter.next();
             if (id.equals(item.getId())) {
                 iter.remove();
-            } else if (item instanceof Container) {
-                Container cast = (Container) item;
+            } else if (item instanceof NodeContainer) {
+                NodeContainer cast = (NodeContainer) item;
                 cast.removeNodeById(id);
             }
         }
@@ -121,8 +121,8 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
                 } else {
                     return false;
                 }
-            } else if (item instanceof Container) {
-                Container cast = (Container) item;
+            } else if (item instanceof NodeContainer) {
+                NodeContainer cast = (NodeContainer) item;
                 boolean replaced = cast.replaceNodeById(w);
                 if (replaced) {
                     return true;
@@ -187,8 +187,8 @@ public abstract class AbstractContainer<T extends AbstractContainer<T>> extends 
                     if (name.equals(cast.getName())) {
                         result.add(cast);
                     }
-                } else if (item instanceof AbstractContainer) {
-                    ((AbstractContainer) item).findFormElementsByName(name, result);
+                } else if (item instanceof AbstractNodeContainer) {
+                    ((AbstractNodeContainer) item).findFormElementsByName(name, result);
                 }
             }
         }

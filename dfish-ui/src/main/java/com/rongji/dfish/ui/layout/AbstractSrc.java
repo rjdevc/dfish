@@ -14,8 +14,8 @@ import java.util.Map;
  *
  * @param <T> 类型
  */
-public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractContainer<T>
-		implements SingleContainer<T,Widget>,LazyLoad<T> {
+public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractNodeContainer<T>
+		implements SingleNodeContainer<T,Widget>,LazyLoad<T> {
 	private String preload;
 	private String src;
 	private Boolean sync;
@@ -87,7 +87,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<UiNode<?>> findNodes() {
+	public List<Node<?>> findNodes() {
 		return (List)nodes;
 	}
 	/**
@@ -124,7 +124,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractCont
 	}
 	
 	@Override
-	public T add(UiNode widget) {
+	public T add(Node widget) {
 		if(!(widget instanceof Widget)){
 			throw 	new IllegalArgumentException("Widget only");
 		}

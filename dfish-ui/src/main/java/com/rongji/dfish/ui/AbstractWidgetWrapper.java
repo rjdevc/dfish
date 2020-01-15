@@ -12,7 +12,7 @@ import com.rongji.dfish.ui.json.JsonWrapper;
  * @param <T>  当前对象类型
  * @param <P> 原型类型
  */
-public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P>, P extends Widget<P>> extends AbstractWidget<T> implements JsonWrapper<P>,UiNode<T> {
+public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P>, P extends Widget<P>> extends AbstractWidget<T> implements JsonWrapper<P>,Node<T> {
 
 	private static final long serialVersionUID = 2711923347412806092L;
 

@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.UiNode;
-import com.rongji.dfish.ui.SingleContainer;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.SingleNodeContainer;
 import com.rongji.dfish.ui.Widget;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  * @since 3.0
  */
 public class Replace extends NodeControlCommand<Replace>
-        implements SingleContainer<Replace,UiNode> {
+        implements SingleNodeContainer<Replace,Node> {
 
     private static final long serialVersionUID = -5997424469287615043L;
 
@@ -25,31 +25,31 @@ public class Replace extends NodeControlCommand<Replace>
      *
      * @param node 需要替换的内容
      */
-    public Replace(UiNode<?> node) {
+    public Replace(Node<?> node) {
         setNode(node);
     }
-    public Replace(UiNode<?> node, String target) {
+    public Replace(Node<?> node, String target) {
         setNode(node);
         setTarget(target);
     }
 
-    private UiNode<?> node;
+    private Node<?> node;
 
     @Override
-    public UiNode<?> getNode() {
+    public Node<?> getNode() {
         return node;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<UiNode<?>> findNodes() {
-        List<UiNode<?>> result = new ArrayList<>(1);
+    public List<Node<?>> findNodes() {
+        List<Node<?>> result = new ArrayList<>(1);
         result.add(node);
         return result;
     }
 
     @Override
-    public Replace setNode(UiNode node) {
+    public Replace setNode(Node node) {
         if (node == null) {
             throw new IllegalArgumentException("node == null");
         }
@@ -65,7 +65,7 @@ public class Replace extends NodeControlCommand<Replace>
 
 
     @Override
-    public UiNode<?> findNodeById(String id) {
+    public Node<?> findNodeById(String id) {
         return null;
     }
 

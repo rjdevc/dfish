@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rongji.dfish.ui.MultiContainer;
+import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
 
 /**
@@ -16,7 +16,7 @@ import com.rongji.dfish.ui.Widget;
  */
 @SuppressWarnings("unchecked")
 public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCommand<T> implements
-        MultiContainer<T, Widget<? extends Widget<?>>> {
+        MultiNodeContainer<T, Widget<? extends Widget<?>>> {
 
     private static final long serialVersionUID = -2417775749900268295L;
 

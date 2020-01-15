@@ -1,8 +1,8 @@
 package com.rongji.dfish.ui.command;
 
 
-import com.rongji.dfish.ui.UiNode;
-import com.rongji.dfish.ui.MultiContainer;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.AbstractButton;
 import com.rongji.dfish.ui.widget.Split;
@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiContainer<Menu,Widget> {
+public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNodeContainer<Menu,Widget> {
 
     private static final long serialVersionUID = 7565861352403693874L;
 
@@ -92,7 +92,7 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiCo
     }
 
     @Override
-    public UiNode<? > findNodeById(String id) {
+    public Node<? > findNodeById(String id) {
         return null;
     }
 

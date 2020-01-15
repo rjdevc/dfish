@@ -4,7 +4,7 @@ import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.TripleBox;
-import com.rongji.dfish.ui.layout.AbstractContainer;
+import com.rongji.dfish.ui.layout.AbstractNodeContainer;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import java.util.List;
  * @version 1.0
  * @since XMLTMPL 2.0
  */
-public class Tree extends AbstractContainer<Tree>
+public class Tree extends AbstractNodeContainer<Tree>
 	implements Scrollable<Tree>,HiddenContainer<Tree>,  HtmlContentHolder<Tree>,
-	 PubHolder<Tree,Leaf>,MultiContainer<Tree, Leaf>,LazyLoad<Tree> {
+	 PubHolder<Tree,Leaf>,MultiNodeContainer<Tree, Leaf>,LazyLoad<Tree> {
 	/**
 	 * 
 	 */
@@ -215,13 +215,13 @@ public class Tree extends AbstractContainer<Tree>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<UiNode<?>> findNodes() {
+	public List<Node<?>> findNodes() {
 		return (List)rootLeaf.findNodes();
 	}
 
 
 	@Override
-	public Tree add(UiNode w) {
+	public Tree add(Node w) {
 		rootLeaf.add((Leaf)w);
 		return this;
 	}

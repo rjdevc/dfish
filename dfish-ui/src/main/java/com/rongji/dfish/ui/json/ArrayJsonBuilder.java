@@ -21,7 +21,7 @@ public  class ArrayJsonBuilder extends AbstractJsonBuilder {
 				appended=true;
 			}
 			path.push(new PathInfo("["+(i++)+"]",item));
-			J.buildJson(item, sb,path);
+			JsonFormat.buildJson(item, sb,path);
 			path.pop();
 		}
 		sb.append(']');

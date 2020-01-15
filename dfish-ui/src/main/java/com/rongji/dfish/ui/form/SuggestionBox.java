@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.UiNode;
+import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.command.Dialog;
 
 /**
@@ -21,7 +21,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	/**
 	 * 显示搜索结果的界面
 	 */
-	private UiNode picker;
+	private Node picker;
 	private Dialog drop;
 	private Long delay;
 	private String separator;
@@ -74,7 +74,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * "选择"按钮点击动作
 	 * @return "选择"组件
 	 */
-	public UiNode getPicker() {
+	public Node getPicker() {
 		return picker;
 	}
 
@@ -84,7 +84,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
-	public T setPicker(UiNode picker) {
+	public T setPicker(Node picker) {
 		this.picker = picker;
 		return (T)this;
 	}

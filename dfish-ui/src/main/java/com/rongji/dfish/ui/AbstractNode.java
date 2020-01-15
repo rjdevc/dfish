@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui;
 
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.ui.json.J;
+import com.rongji.dfish.ui.json.JsonFormat;
 import com.rongji.dfish.ui.json.JsonWrapper;
 
 import java.net.URL;
@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractNode<T extends AbstractNode<T>> implements UiNode<T> {
+public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T> {
 
     private static final long serialVersionUID = 3228228457257982847L;
     protected String id;
@@ -191,10 +191,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements UiNode<
 ////		return atProps;
 //    }
 
-    @Override
-    public String asJson() {
-        return toString();
-    }
 
     @Override
     public String toString() {
@@ -206,7 +202,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements UiNode<
             }
             o = prototype;
         }
-        return J.toJson(o);
+        return JsonFormat.toJson(o);
     }
 
     /**
@@ -215,7 +211,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements UiNode<
      * @return String
      */
     public String formatString() {
-        return J.formatJson(this.toString());
+        return JsonFormat.formatJson(this.toString());
     }
 
     /**

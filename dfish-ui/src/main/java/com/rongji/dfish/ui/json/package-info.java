@@ -6,7 +6,7 @@
  * <li>  dfish3.x 中有一些封装类/帮助类，需要先转化成原型类才能展现。</li>
  * </ol>
  * 因此，独立定制一个工具包
- * @see com.rongji.dfish.ui.json.J
+ * @see com.rongji.dfish.ui.json.JsonFormat
  */
 package com.rongji.dfish.ui.json;
 

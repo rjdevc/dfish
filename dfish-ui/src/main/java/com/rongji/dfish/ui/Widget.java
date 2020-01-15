@@ -6,7 +6,7 @@ package com.rongji.dfish.ui;
  * @param <T> 当前对象类型
  * @author DFish Team
  */
-public interface Widget<T extends Widget<T>> extends UiNode<T>, EventTarget<T>{
+public interface Widget<T extends Widget<T>> extends Node<T>, EventTarget<T>{
 
 
     /**

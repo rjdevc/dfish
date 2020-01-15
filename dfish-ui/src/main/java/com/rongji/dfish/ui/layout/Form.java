@@ -20,8 +20,8 @@ import java.util.List;
  *
  * @since 3.3
  */
-public class Form extends AbstractContainer<Form>
-        implements HtmlContentHolder<Form>, Scrollable<Form>, MultiContainer<Form, Widget<?>>,
+public class Form extends AbstractNodeContainer<Form>
+        implements HtmlContentHolder<Form>, Scrollable<Form>, MultiNodeContainer<Form, Widget<?>>,
         PubHolder<Form, Grid.TD>, HiddenContainer<Form> {
     /**
      * 无格式
@@ -91,7 +91,7 @@ public class Form extends AbstractContainer<Form>
     }
 
     @Override
-    public Form add(UiNode w) {
+    public Form add(Node w) {
         if (w == null) {
             return this;
         }
@@ -246,9 +246,9 @@ public class Form extends AbstractContainer<Form>
     @Override
     public Form removeNodeById(String id) {
         //如果remove的结果是，td的下一层是指定的元素，需要吧td删除
-        for (Iterator<UiNode<?>> iter = nodes.iterator();
+        for (Iterator<Node<?>> iter = nodes.iterator();
              iter.hasNext(); ) {
-            UiNode<?> item = iter.next();
+            Node<?> item = iter.next();
             if (id.equals(item.getId()) || (item instanceof Grid.TD && id.equals(((Grid.TD) item).getNode().getId()))) {
                 iter.remove();
             } else if (item instanceof Layout) {

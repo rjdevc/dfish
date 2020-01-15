@@ -1,14 +1,14 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.layout.AbstractContainer;
+import com.rongji.dfish.ui.layout.AbstractNodeContainer;
 
 /**
  * 进度条
  *
  * @author DFish team
  */
-public class Progress extends AbstractContainer<Progress> implements HasText<Progress>, LazyLoad<Progress>,  PubHolder<Progress, Progress.Item> {
+public class Progress extends AbstractNodeContainer<Progress> implements HasText<Progress>, LazyLoad<Progress>,  PubHolder<Progress, Progress.Item> {
 
     private static final long serialVersionUID = -5027456322715352343L;
 
