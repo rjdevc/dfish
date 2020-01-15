@@ -5,7 +5,6 @@ import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.layout.Grid;
 import com.rongji.dfish.ui.layout.GridFactory;
 import com.rongji.dfish.ui.widget.Highlight;
-import com.rongji.dfish.ui.widget.Html;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public class GridPanelTest extends DFishUITestCase {
 		}
 		gp.addColumn(GridFactory.Column.gridTriplebox("C", "40"));
 		gp.addColumn((GridFactory.Column)GridFactory.Column.text(dataColumnIndex++, "第1列", "*")
-				.setGridTriplebox("itemB", "B", true, null));
+				.setTripleBox("itemB", "B", true, null));
 		gp.addColumn(GridFactory.Column.text(dataColumnIndex++, "第2列", "*"));
 		gp.addColumn(GridFactory.Column.text(dataColumnIndex++, "第3列", "*"));
 		gp.setGridData(gridData);

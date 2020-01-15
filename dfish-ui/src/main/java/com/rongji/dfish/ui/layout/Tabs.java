@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Hidden;
+import com.rongji.dfish.ui.widget.AbstractButton;
 import com.rongji.dfish.ui.widget.Overflow;
 import com.rongji.dfish.ui.widget.Split;
 
@@ -9,8 +10,11 @@ import java.util.List;
 
 /**
  * 可切换标签容器
+ * @author LinLW
+ * @date 2019-10-16
+ * @since 5.0
  */
-public class Tabs extends AbstractNodeContainer<Tabs> implements MultiNodeContainer<Tabs, Tab>, PubHolder<Tabs, Tab>,
+public class Tabs extends AbstractNodeContainer<Tabs> implements MultiNodeContainer<Tabs, Tabs.Tab>, PubHolder<Tabs, Tabs.Tab>,
         Alignable<Tabs>, VAlignable<Tabs>, HiddenContainer<Tabs> {
     private String align;
     private String vAlign;
@@ -189,4 +193,54 @@ public class Tabs extends AbstractNodeContainer<Tabs> implements MultiNodeContai
         this.position = position;
         return (Tabs) this;
     }
+
+    /**
+     * 标签按钮
+     * @author LinLW
+     * @date 2019-10-16
+     * @since 5.0
+     */
+    public static class Tab extends AbstractButton<Tab> {
+
+        private Widget<?> target;
+        /**
+         * 构造函数
+         *
+         * @param text String 标题
+         */
+        public Tab(String text) {
+            this.setText(text);
+        }
+
+        /**
+         * 构造函数
+         *
+         * @param text String 标题
+         * @param target Widget&lt;?&gt; 目标组件
+         */
+        public Tab(String text, Widget<?> target) {
+            this.setText(text);
+            this.setTarget(target);
+        }
+
+        /**
+         * 标签对应的内容widget
+         * @return Widget&lt;?&gt;
+         */
+        public Widget<?> getTarget() {
+            return target;
+        }
+
+        /**
+         * 标签对应的内容widget
+         * @param target Widget&lt;?&gt;
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public Tab setTarget(Widget<?> target) {
+            this.target = target;
+            return this;
+        }
+
+    }
+
 }

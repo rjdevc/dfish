@@ -258,7 +258,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         int column = 0;
         if (getColumns() != null) {
             for (Column c : getColumns()) {
-                if (c.isVisable()) {
+                if (c.isVisible()) {
                     columnMap.put(c.getField(), column++);
                 }
             }
@@ -291,7 +291,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
 //			String s=Integer.toString(i+360, 36);
             int visableColumns = 0;
             for (Column column : columns) {
-                if (column.isVisable()) {
+                if (column.isVisible()) {
                     visableColumns++;
                 }
             }
@@ -616,7 +616,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         int column = 0;
         int columnSize = 0;
         for (Column c : this.getColumns()) {
-            if (c.isVisable()) {
+            if (c.isVisible()) {
                 columnMap.put(c.getField(), column++);
                 try {
                     Map<String, Object> props = BeanUtil.getPropMap(c);
@@ -798,26 +798,19 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
      */
     public static class Column extends AbstractNode<Column> implements Alignable<Column>, VAlignable<Column> {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 3246628575622594917L;
 
-        public static final String COLUMN_FIELD_UNKNOWN = "UNKNOWN";
         private String field;
         private String width;
-        private Integer labelwidth;
         private String format;
-        //	String sortsrc;
-//	String sort;
         private String style;
         private String cls;
         private String align;
-        private String valign;
+        private String vAlign;
         private Object tip;
         private Object sort;
-        private Integer minwidth;
-        private Integer maxwidth;
+        private Integer minWidth;
+        private Integer maxWidth;
         private Highlight highlight;
         private String fixed;
         private RawJson rawFormat;
@@ -888,8 +881,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridTriplebox(String checkedField, String width) {
-            return new Column( null, width).setGridTriplebox(BOX_NAME, checkedField, null, null);
+        public static Column tripleBox(String checkedField, String width) {
+            return new Column( null, width).setTripleBox(BOX_NAME, checkedField, null, null);
         }
 
 
@@ -899,8 +892,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param sync String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_CLICK}
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridTriplebox(String sync) {
-            return setGridTriplebox(BOX_NAME, null, null, sync);
+        public Column setTripleBox(String sync) {
+            return setTripleBox(BOX_NAME, null, null, sync);
         }
 
         /**
@@ -912,46 +905,46 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param sync         String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_FOCUS}
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridTriplebox(String boxName, String checkedField, Boolean required, String sync) {
-            GridTriplebox triplebox = new GridTriplebox(boxName, null, null, null, null);
-            triplebox.setSync(sync).addValidate(new Validate().setRequired(required));
-            return setGridTriplebox(triplebox, checkedField);
+        public Column setTripleBox(String boxName, String checkedField, Boolean required, String sync) {
+            GridTripleBox tripleBox = new GridTripleBox(boxName, null, null, null, null);
+            tripleBox.setSync(sync).addValidate(new Validate().setRequired(required));
+            return setTripleBox(tripleBox, checkedField);
         }
 
         /**
          * 设置公共的复选框
          *
-         * @param triplebox 复选框
+         * @param tripleBox 复选框
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridTriplebox(GridTriplebox triplebox) {
-            return setGridTriplebox(triplebox, null);
+        public Column setTripleBox(GridTripleBox tripleBox) {
+            return setTripleBox(tripleBox, null);
         }
 
         /**
          * 设置公共的复选框
          *
-         * @param triplebox    复选框
+         * @param tripleBox    复选框
          * @param checkedField String 所选值指向的列名
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridTriplebox(GridTriplebox triplebox, String checkedField) {
-            if (triplebox == null) {
-                throw new IllegalArgumentException("The triplebox can not be null.");
+        public Column setTripleBox(GridTripleBox tripleBox, String checkedField) {
+            if (tripleBox == null) {
+                throw new IllegalArgumentException("The GridTripleBox can not be null.");
             }
             String boxField = Utils.notEmpty(checkedField) ? checkedField : this.field;
             if (Utils.isEmpty(boxField)) {
                 throw new IllegalArgumentException("The checkedField can not be null.");
             }
-            if (Utils.isEmpty(triplebox.getName())) {
-                triplebox.setName(BOX_NAME);
+            if (Utils.isEmpty(tripleBox.getName())) {
+                tripleBox.setName(BOX_NAME);
             }
             // 标题全选框
-            this.rawFormat = new RawJson(triplebox.setCheckAll(true).toString());
+            this.rawFormat = new RawJson(tripleBox.setCheckAll(true).toString());
             // 置空,省流量
-            triplebox.setCheckAll(null);
-            triplebox.setValue(new RawJson("$" + boxField));
-            return this.setFormat("javascript:return " + triplebox).setAlign(Column.ALIGN_CENTER);
+            tripleBox.setCheckAll(null);
+            tripleBox.setValue(new RawJson("$" + boxField));
+            return this.setFormat("javascript:return " + tripleBox).setAlign(Column.ALIGN_CENTER);
         }
 
 
@@ -961,8 +954,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param sync String 同步状态,该参数可为空,参数值详见{@link AbstractBox#SYNC_CLICK}和{@link AbstractBox#SYNC_CLICK}
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridRadio(String sync) {
-            return setGridRadio(BOX_NAME, null, null, sync);
+        public Column setRadio(String sync) {
+            return setRadio(BOX_NAME, null, null, sync);
         }
 
 
@@ -975,10 +968,10 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param sync         String 是否和行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridRadio(String boxName, String checkedField, Boolean required, String sync) {
+        public Column setRadio(String boxName, String checkedField, Boolean required, String sync) {
             GridRadio gridRadio = new GridRadio(boxName, null, null, null, null);
             gridRadio.setSync(sync).addCls(sync).addValidate(new Validate().setRequired(required));
-            return setGridRadio(gridRadio, checkedField);
+            return setRadio(gridRadio, checkedField);
         }
 
         /**
@@ -987,8 +980,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param gridRadio GridRadio 单选框
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridRadio(GridRadio gridRadio) {
-            return setGridRadio(gridRadio, null);
+        public Column setRadio(GridRadio gridRadio) {
+            return setRadio(gridRadio, null);
         }
 
         /**
@@ -998,7 +991,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param checkedField String 所选值指向的列名
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setGridRadio(GridRadio gridRadio, String checkedField) {
+        public Column setRadio(GridRadio gridRadio, String checkedField) {
             if (gridRadio == null) {
                 throw new IllegalArgumentException("The gridRadio can not be null.");
             }
@@ -1020,8 +1013,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridRadio(String checkedField, String width) {
-            return gridRadio(checkedField, width, null);
+        public static Column radio(String checkedField, String width) {
+            return radio(checkedField, width, null);
         }
 
         /**
@@ -1032,11 +1025,9 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @param sync         是否与行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridRadio(String checkedField, String width, String sync) {
-            return new Column( null,  width).setGridRadio(BOX_NAME, checkedField, null, sync);
+        public static Column radio(String checkedField, String width, String sync) {
+            return new Column( null,  width).setRadio(BOX_NAME, checkedField, null, sync);
         }
-
-
 
         /**
          * 取得 该列在JSON中的属性名
@@ -1076,28 +1067,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          */
         public Column setWidth(String width) {
             this.width = width;
-            return this;
-        }
-
-        /**
-         * 表单标题宽度。
-         *
-         * @return Integer
-         * @since 3.3
-         */
-        public Integer getLabelwidth() {
-            return labelwidth;
-        }
-
-        /**
-         * 表单标题宽度。
-         *
-         * @param labelwidth Integer
-         * @return 本身，这样可以继续设置其他属性
-         * @since 3.3
-         */
-        public Column setLabelwidth(Integer labelwidth) {
-            this.labelwidth = labelwidth;
             return this;
         }
 
@@ -1250,7 +1219,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          */
         @Override
         public String getVAlign() {
-            return valign;
+            return vAlign;
         }
 
         /**
@@ -1264,7 +1233,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          */
         @Override
         public Column setVAlign(String vAlign) {
-            this.valign = vAlign;
+            this.vAlign = vAlign;
             return this;
         }
 
@@ -1275,7 +1244,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @return boolean
          */
         @Transient
-        public boolean isVisable() {
+        public boolean isVisible() {
             return this.width != null && !"".equals(this.width);
         }
 
@@ -1297,11 +1266,11 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
                 required = box.getValidate().getRequired();
             }
             if (box instanceof TripleBox || box instanceof CheckBox) {
-                setGridTriplebox(box.getName(), null, required, box.getSync());
+                setTripleBox(box.getName(), null, required, box.getSync());
             } else if (box instanceof Radio) {
-                setGridRadio(box.getName(), null, required, box.getSync());
+                setRadio(box.getName(), null, required, box.getSync());
             } else {
-                throw new IllegalArgumentException("The box must be Triplebox or Radio");
+                throw new IllegalArgumentException("The box must be TripleBox or Radio");
             }
             return this;
         }
@@ -1343,18 +1312,18 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          *
          * @return Integer
          */
-        public Integer getMinwidth() {
-            return minwidth;
+        public Integer getMinWidth() {
+            return minWidth;
         }
 
         /**
          * 列的最小宽度
          *
-         * @param minwidth Integer
+         * @param minWidth Integer
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setMinwidth(Integer minwidth) {
-            this.minwidth = minwidth;
+        public Column setMinWidth(Integer minWidth) {
+            this.minWidth = minWidth;
             return this;
         }
 
@@ -1363,18 +1332,18 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          *
          * @return Integer
          */
-        public Integer getMaxwidth() {
-            return maxwidth;
+        public Integer getMaxWidth() {
+            return maxWidth;
         }
 
         /**
          * 列的最大宽度
          *
-         * @param maxwidth Integer
+         * @param maxWidth Integer
          * @return 本身，这样可以继续设置其他属性
          */
-        public Column setMaxwidth(Integer maxwidth) {
-            this.maxwidth = maxwidth;
+        public Column setMaxWidth(Integer maxWidth) {
+            this.maxWidth = maxWidth;
             return this;
         }
 
@@ -1443,7 +1412,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         public static final String STATUS_DESC = "desc";
 
         private String field;
-        private Boolean isnumber;
+        private Boolean isNumber;
         private String status;
         private String src;
 
@@ -1472,18 +1441,18 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          *
          * @return Boolean
          */
-        public Boolean getIsnumber() {
-            return isnumber;
+        public Boolean getIsNumber() {
+            return isNumber;
         }
 
         /**
          * 设置是否按照数字方式排序
          *
-         * @param isnumber 按照数字方式排序
+         * @param isNumber 按照数字方式排序
          * @return 本身，这样可以继续设置其他属性
          */
-        public Sort setIsnumber(Boolean isnumber) {
-            this.isnumber = isnumber;
+        public Sort setIsNumber(Boolean isNumber) {
+            this.isNumber = isNumber;
             return this;
         }
 
@@ -1559,24 +1528,15 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
     }
 
     public static class THead extends Part {
-        @Override
-        public String getType() {
-            return "Head";
-        }
+        private static final long serialVersionUID = -3138216131641891355L;
     }
 
     public static class TBody extends Part {
-        @Override
-        public String getType() {
-            return "Body";
-        }
+        private static final long serialVersionUID = 8132436683745565461L;
     }
 
     public static class TFoot extends Part {
-        @Override
-        public String getType() {
-            return "Foot";
-        }
+        private static final long serialVersionUID = -6996403663837892469L;
     }
 
     /**
@@ -1586,10 +1546,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
      * @author DFish team
      */
     private static abstract class Part extends AbstractNodeContainer<Part> implements GridOperation<Part> {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -8651836374729282552L;
 
         /**
          * 构造函数
@@ -1664,7 +1620,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
                 throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in GridLayout.");
             }
             if (fromRow < 0 || fromColumn < 0 || toRow < 0 || toColumn < 0) { // 行列小于0,抛异常
-                throw new IndexOutOfBoundsException("Poisition: (" + Math.min(fromRow, toRow) + "," + Math.min(fromColumn, toColumn) + ")");
+                throw new IndexOutOfBoundsException("Position: (" + Math.min(fromRow, toRow) + "," + Math.min(fromColumn, toColumn) + ")");
             }
             if (fromRow > toRow) {
                 int temp = fromRow;
@@ -1691,13 +1647,13 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             while (toRow >= nodes.size()) {
                 nodes.add(new TR().owner(owner));
             }
-            Map<Integer, String> columnMap = new HashMap<Integer, String>();
+            Map<Integer, String> columnMap = new HashMap<>();
             int column = 0;
             List<Column> columns = owner.getColumns();
             // 获取当前已设定的列
             if (columns != null) {
                 for (Column c : columns) {
-                    if (c.isVisable()) {
+                    if (c.isVisible()) {
                         columnMap.put(column++, c.getField());
                     }
                 }
@@ -1901,17 +1857,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return scroll;
         }
 
-        public Part setScrollClass(String scrollClass) {
-            this.scrollClass = scrollClass;
-            return this;
-        }
-
-        public String getScrollClass() {
-            return scrollClass;
-        }
-
         private Boolean scroll;
-        private String scrollClass;
     }
 
     /**
@@ -1929,10 +1875,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
      * @since DFish 3.0
      */
     public static class TR extends AbstractTr<TR> implements JsonWrapper<Object> {
-
-        /**
-         *
-         */
         private static final long serialVersionUID = -1895404892414786019L;
 
         /**

@@ -11,18 +11,12 @@ import com.rongji.dfish.ui.Scrollable;
  */
 public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollable<EmbedWindow>, HasText<EmbedWindow>{
 
-/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2669895425202791322L;
-	//	private String align;
-//	private String valign;
 	private String text;
 	private String format;
 	private Boolean escape;
 	private String src;
 	private Boolean scroll;
-//	private Boolean escape;
 
 	/**
 	 * 构造函数

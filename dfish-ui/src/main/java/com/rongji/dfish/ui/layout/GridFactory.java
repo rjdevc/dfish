@@ -259,7 +259,7 @@ public class GridFactory {
                     prototype.gettHead().add(headRow);
                     headRow.setData(column.getField(), column.getLabel());
                 }
-                if (column.isVisable()) {
+                if (column.isVisible()) {
                     if (firstColumnField == null) {
                         firstColumnField = column.getField();
                     }
@@ -540,7 +540,7 @@ public class GridFactory {
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridTriplebox(String checkedField, String width) {
-            return (Column)new Column(null, null, null, width).setGridTriplebox(BOX_NAME, checkedField, null, null);
+            return (Column)new Column(null, null, null, width).setTripleBox(BOX_NAME, checkedField, null, null);
         }
 
         /**
@@ -552,7 +552,7 @@ public class GridFactory {
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridTriplebox(String beanProp, String field, String width) {
-            return (Column)new Column(beanProp, field, null, width).setGridTriplebox(BOX_NAME, field, null, null);
+            return (Column)new Column(beanProp, field, null, width).setTripleBox(BOX_NAME, field, null, null);
         }
 
         /**
@@ -564,7 +564,7 @@ public class GridFactory {
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridTriplebox(int dataColumnIndex, String field, String width) {
-            return (Column)new Column(dataColumnIndex, field, null, width).setGridTriplebox(BOX_NAME, field, null, null);
+            return (Column)new Column(dataColumnIndex, field, null, width).setTripleBox(BOX_NAME, field, null, null);
         }
 
 
@@ -606,7 +606,7 @@ public class GridFactory {
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridRadio(String beanProp, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
-            return (Column)new Column(beanProp, field, null, width).setGridRadio(boxName, checkedField, required, sync);
+            return (Column)new Column(beanProp, field, null, width).setRadio(boxName, checkedField, required, sync);
         }
 
         /**
@@ -622,7 +622,7 @@ public class GridFactory {
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column gridRadio(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
-            return (Column)new Column(dataColumnIndex, field, null, width).setGridRadio(boxName, checkedField, required, sync);
+            return (Column)new Column(dataColumnIndex, field, null, width).setRadio(boxName, checkedField, required, sync);
         }
 
     }

@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  *
  * @author lamontYu - DFish Team
  */
-public class GridTriplebox extends AbstractBox<GridTriplebox> {
+public class GridTripleBox extends AbstractBox<GridTripleBox> {
 
     /**
      *
@@ -27,7 +27,7 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      * @param value      值
      * @param text       显示文本
      */
-    public GridTriplebox(String name, String label, Boolean checked, Object value, String text) {
+    public GridTripleBox(String name, String label, Boolean checked, Object value, String text) {
         super(name, label, checked, value, text);
     }
 
@@ -46,7 +46,7 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      * @param partialSubmit Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public GridTriplebox setPartialSubmit(Boolean partialSubmit) {
+    public GridTripleBox setPartialSubmit(Boolean partialSubmit) {
         this.partialSubmit = partialSubmit;
         return this;
     }
@@ -66,7 +66,7 @@ public class GridTriplebox extends AbstractBox<GridTriplebox> {
      * @param checkAll Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public GridTriplebox setCheckAll(Boolean checkAll) {
+    public GridTripleBox setCheckAll(Boolean checkAll) {
         this.checkAll = checkAll;
         return this;
     }

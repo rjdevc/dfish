@@ -16,9 +16,9 @@ import java.util.List;
  * <p>
  * 3.2之前，它 功能由 FormPanel FlexGrid LayoutFormPanel分摊。但3.3以后，如果使用前后端分离的模式开发，
  * 则需要一个统一，方便的组件来代替，于是就封装了它。它现在对于前端是一个实际存在的类，不再是一个JsonWrapper。
- * 3.3以后建议  FormPanel FlexGrid LayoutFormPanel 全部改为使用该类。
+ * 5.0以后建议  FormPanel FlexGrid LayoutFormPanel 全部改为使用该类。
  *
- * @since 3.3
+ * @since 5.0
  */
 public class Form extends AbstractNodeContainer<Form>
         implements HtmlContentHolder<Form>, Scrollable<Form>, MultiNodeContainer<Form, Widget<?>>,

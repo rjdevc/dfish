@@ -140,6 +140,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
      * 加载 具体内容 的 url。访问这个url 时应当返回一个 json 字串。
      * 如果没有template 这个字符串应该是dfish的格式。
      * 如果有template 那么template 讲把这个字符串解析成dfish需要的格式。
+     *
      * @return String
      */
     public String getPreload() {
@@ -148,6 +149,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
 
     /**
      * 指定用这个编号所对应的预加载模板 将src返回的内容解析成dfish的格式。
+     *
      * @param preload String
      * @return this
      */

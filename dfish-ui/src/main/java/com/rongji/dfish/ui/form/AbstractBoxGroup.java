@@ -27,10 +27,6 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     protected String dir;
     private AbstractNodeContainer<?> bridgedObject=new AbstractNodeContainer(null){
         @Override
-        public String getType() {
-            return null;
-        }
-        @Override
         public List<N> findNodes() {
             return AbstractBoxGroup.this.nodes;
         }
