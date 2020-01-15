@@ -213,8 +213,8 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     }
 
     @Override
-    public List<? extends Widget<?>> findNodes() {
-        ArrayList<Widget<?>> result = new ArrayList<Widget<?>>();
+    public List<Node> findNodes() {
+        ArrayList<Node> result = new ArrayList<>();
         result.add(node);
         return result;
     }
@@ -363,7 +363,7 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     }
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         return false;
     }
 

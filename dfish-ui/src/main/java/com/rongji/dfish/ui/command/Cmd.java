@@ -19,7 +19,7 @@ import com.rongji.dfish.ui.Widget;
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
  * @since 2.0
  */
-public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, MultiNodeContainer<Cmd,Command<?>> {
+public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, MultiNodeContainer<Cmd> {
 
     private static final long serialVersionUID = 6990584366431273097L;
     
@@ -35,7 +35,7 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     @Deprecated
     public static final String PATH_FROM_VIEW = PATH_OWNER_VIEW;
 
-    protected ArrayList<Command<?>> nodes;
+    protected ArrayList<Command> nodes;
     protected String path;
     protected String target;
     private Long delay;
@@ -117,13 +117,13 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Node<?>> findNodes() {
+    public List<Node> findNodes() {
         return (List)nodes;
     }
 
     @Override
-    public List<Command<?>> getNodes() {
-        return nodes;
+    public List<Node> getNodes() {
+        return (List)nodes;
     }
 
     @Override
@@ -137,7 +137,7 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     }
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         return false;
     }
 

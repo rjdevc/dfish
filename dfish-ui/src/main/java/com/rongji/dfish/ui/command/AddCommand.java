@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rongji.dfish.ui.MultiNodeContainer;
+import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.Widget;
 
 /**
@@ -16,11 +17,11 @@ import com.rongji.dfish.ui.Widget;
  */
 @SuppressWarnings("unchecked")
 public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCommand<T> implements
-        MultiNodeContainer<T, Widget<? extends Widget<?>>> {
+        MultiNodeContainer<T> {
 
     private static final long serialVersionUID = -2417775749900268295L;
 
-    protected List<Widget> nodes = new ArrayList<>();
+    protected List<Node> nodes = new ArrayList<>();
 
     public AddCommand(String target, Widget<?>... nodes) {
         setTarget(target);
@@ -48,9 +49,8 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
         nodes.add(w);
         return (T) this;
     }
-
     @Override
-    public List<Widget> findNodes() {
+    public List<Node> findNodes() {
         return nodes;
     }
 
@@ -60,8 +60,8 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
         this.nodes.clear();
     }
     @Override
-    public List<Widget<?>> getNodes() {
-        return (List)nodes;
+    public List<Node> getNodes() {
+        return nodes;
     }
 
     @Override
@@ -75,8 +75,7 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
     }
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         return false;
     }
-
 }

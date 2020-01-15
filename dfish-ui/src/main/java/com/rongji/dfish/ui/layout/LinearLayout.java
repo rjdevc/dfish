@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.form.Hidden;
  */
 @SuppressWarnings("unchecked")
 public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractNodeContainer<T>
-        implements Scrollable<T>, Alignable<T>, VAlignable<T>, MultiNodeContainer<T, Widget<?>>, HiddenContainer<T> {
+        implements Scrollable<T>, Alignable<T>, VAlignable<T>, MultiNodeContainer<T>, HiddenContainer<T> {
 
 	private static final long serialVersionUID = -7555807071265375322L;
     private Boolean scroll;
@@ -65,7 +65,7 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractNo
     }
 
     @Override
-    public List<Widget<?>> getNodes() {
+    public List<Node> getNodes() {
         return (List) nodes;
     }
 

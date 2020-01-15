@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2019-10-16
  * @since 5.0
  */
-public class Tabs extends AbstractNodeContainer<Tabs> implements MultiNodeContainer<Tabs, Tabs.Tab>, PubHolder<Tabs, Tabs.Tab>,
+public class Tabs extends AbstractNodeContainer<Tabs> implements MultiNodeContainer<Tabs>, PubHolder<Tabs, Tabs.Tab>,
         Alignable<Tabs>, VAlignable<Tabs>, HiddenContainer<Tabs> {
     private String align;
     private String vAlign;
@@ -46,10 +46,6 @@ public class Tabs extends AbstractNodeContainer<Tabs> implements MultiNodeContai
         return this;
     }
 
-    @Override
-    public List<Tab> getNodes() {
-        return (List)nodes;
-    }
 
 
     /**
@@ -192,6 +188,11 @@ public class Tabs extends AbstractNodeContainer<Tabs> implements MultiNodeContai
     public Tabs setPosition(String position) {
         this.position = position;
         return (Tabs) this;
+    }
+
+    @Override
+    public List<Node> getNodes() {
+        return nodes;
     }
 
     /**

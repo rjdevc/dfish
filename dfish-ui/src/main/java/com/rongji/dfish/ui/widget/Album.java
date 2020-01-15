@@ -1,9 +1,6 @@
 package com.rongji.dfish.ui.widget;
 
-import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.MultiNodeContainer;
-import com.rongji.dfish.ui.PubHolder;
-import com.rongji.dfish.ui.Scrollable;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.layout.AbstractNodeContainer;
 import com.rongji.dfish.ui.layout.ListView;
 
@@ -15,7 +12,7 @@ import java.util.List;
  * @author DFish Team
  */
 public class Album extends AbstractNodeContainer<Album> implements HtmlContentHolder<Album>, Scrollable<Album>, ListView<Album>, PubHolder<Album, Img>,
-        MultiNodeContainer<Album, Img> {
+        MultiNodeContainer<Album> {
 
     private static final long serialVersionUID = 7141941441960631331L;
     private Integer space;
@@ -145,8 +142,8 @@ public class Album extends AbstractNodeContainer<Album> implements HtmlContentHo
     }
 
     @Override
-    public List<Img> getNodes() {
-        return (List) nodes;
+    public List<Node> getNodes() {
+        return nodes;
     }
 
     /**

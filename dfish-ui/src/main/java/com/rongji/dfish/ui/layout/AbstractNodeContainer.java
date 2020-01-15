@@ -28,7 +28,7 @@ public abstract class AbstractNodeContainer<T extends AbstractNodeContainer<T>> 
         this.id = id;
     }
 
-    protected List<Node<?>> nodes = new ArrayList<>();
+    protected List<Node> nodes = new ArrayList<>();
 
     /**
      * 添加子面板
@@ -59,7 +59,7 @@ public abstract class AbstractNodeContainer<T extends AbstractNodeContainer<T>> 
     }
 
     @Override
-    public List<Node<?>> findNodes() {
+    public List<Node> findNodes() {
         return nodes;
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractNodeContainer<T extends AbstractNodeContainer<T>> 
     }
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         List nodes = findNodes();
         if (w == null || w.getId() == null || nodes == null) {
             return false;
@@ -115,7 +115,7 @@ public abstract class AbstractNodeContainer<T extends AbstractNodeContainer<T>> 
             Object item = nodes.get(i);
             if (item instanceof Widget && id.equals(((Widget) item).getId())) {
                 // 替换该元素
-                if (onReplace((Widget) item, w)) {
+                if (onReplace((Widget) item, (Widget)w)) {
                     nodes.set(i, w);
                     return true;
                 } else {

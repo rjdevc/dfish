@@ -11,7 +11,7 @@ import java.util.List;
  */
 // FIXME ButtonBar的实现是HorizonalLayout,java端概念是否和js端统一大
 public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHolder<ButtonBar, Button>,
-        Alignable<ButtonBar>, VAlignable<ButtonBar>, MultiNodeContainer<ButtonBar, Widget<? extends Widget<?>>>, Directional<ButtonBar> {
+        Alignable<ButtonBar>, VAlignable<ButtonBar>, MultiNodeContainer<ButtonBar>, Directional<ButtonBar> {
 
     private static final long serialVersionUID = 5193505708325695202L;
 
@@ -219,7 +219,7 @@ public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHo
     }
 
     @Override
-    public List<Widget<?>> getNodes() {
+    public List<Node> getNodes() {
         return (List) nodes;
     }
 

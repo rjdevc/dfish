@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class Tree extends AbstractNodeContainer<Tree>
 	implements Scrollable<Tree>,HiddenContainer<Tree>,  HtmlContentHolder<Tree>,
-	 PubHolder<Tree, Tree.Leaf>, MultiNodeContainer<Tree, Tree.Leaf>,LazyLoad<Tree> {
+	 PubHolder<Tree, Tree.Leaf>, MultiNodeContainer<Tree>,LazyLoad<Tree> {
 	/**
 	 * 
 	 */
@@ -201,7 +201,7 @@ public class Tree extends AbstractNodeContainer<Tree>
 
 
 	@Override
-	public List<Leaf> getNodes() {
+	public List getNodes() {
 		return rootLeaf.getNodes();
 	}
 	private Leaf rootLeaf=new Leaf();
@@ -216,7 +216,7 @@ public class Tree extends AbstractNodeContainer<Tree>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Node<?>> findNodes() {
+	public List<Node> findNodes() {
 		return (List)rootLeaf.findNodes();
 	}
 
@@ -240,7 +240,7 @@ public class Tree extends AbstractNodeContainer<Tree>
 	}
 
 	@Override
-	public boolean replaceNodeById(Widget<?> w) {
+	public boolean replaceNodeById(Node w) {
 		return rootLeaf.replaceNodeById(w);
 	}
 	
@@ -367,7 +367,7 @@ public class Tree extends AbstractNodeContainer<Tree>
 	 * @version 2.0
 	 * @since XMLTMPL 1.0
 	 */
-	public static class Leaf extends AbstractNodeContainer<Leaf> implements MultiNodeContainer<Leaf, Leaf>, Statusful<Leaf>,HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf> {
+	public static class Leaf extends AbstractNodeContainer<Leaf> implements MultiNodeContainer<Leaf>, Statusful<Leaf>,HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf> {
 		private static final long serialVersionUID = -6246121270694425393L;
 		private Boolean focus;
 		private Boolean focusable;
@@ -805,7 +805,7 @@ public class Tree extends AbstractNodeContainer<Tree>
 		}
 
 		@Override
-		public List<Leaf> getNodes() {
+		public List<Node> getNodes() {
 			return (List)nodes;
 		}
 

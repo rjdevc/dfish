@@ -21,7 +21,7 @@ import java.util.List;
  * @since 5.0
  */
 public class Form extends AbstractNodeContainer<Form>
-        implements HtmlContentHolder<Form>, Scrollable<Form>, MultiNodeContainer<Form, Widget<?>>,
+        implements HtmlContentHolder<Form>, Scrollable<Form>, MultiNodeContainer<Form>,
         PubHolder<Form, Grid.TD>, HiddenContainer<Form> {
     /**
      * 无格式
@@ -246,7 +246,7 @@ public class Form extends AbstractNodeContainer<Form>
     @Override
     public Form removeNodeById(String id) {
         //如果remove的结果是，td的下一层是指定的元素，需要吧td删除
-        for (Iterator<Node<?>> iter = nodes.iterator();
+        for (Iterator<Node> iter = nodes.iterator();
              iter.hasNext(); ) {
             Node<?> item = iter.next();
             if (id.equals(item.getId()) || (item instanceof Grid.TD && id.equals(((Grid.TD) item).getNode().getId()))) {
@@ -262,7 +262,7 @@ public class Form extends AbstractNodeContainer<Form>
     }
 
     @Override
-    public List<Widget<?>> getNodes() {
-        return (List) nodes;
+    public List<Node> getNodes() {
+        return  nodes;
     }
 }

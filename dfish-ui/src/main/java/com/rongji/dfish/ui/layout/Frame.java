@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author DFish Team
  */
-public class Frame extends AbstractNodeContainer<Frame> implements MultiNodeContainer<Frame, Widget> {
+public class Frame extends AbstractNodeContainer<Frame> implements MultiNodeContainer<Frame> {
     /**
      *
      */
@@ -51,7 +51,7 @@ public class Frame extends AbstractNodeContainer<Frame> implements MultiNodeCont
     }
 
     @Override
-    public List<Widget> getNodes() {
+    public List<Node> getNodes() {
         return (List)nodes;
     }
 

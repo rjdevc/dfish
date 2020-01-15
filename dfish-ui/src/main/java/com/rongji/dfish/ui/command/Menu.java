@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNodeContainer<Menu,Widget> {
+public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNodeContainer<Menu> {
 
     private static final long serialVersionUID = 7565861352403693874L;
 
@@ -62,13 +62,13 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
     }
 
     @Override
-    public List<Widget> getNodes() {
+    public List<Node> getNodes() {
         return (List)nodes;
     }
 
     @Override
-    public List<Widget<?>> findNodes() {
-        return nodes;
+    public List<Node> findNodes() {
+        return (List)nodes;
     }
 
     /**
@@ -89,25 +89,5 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
     public Menu setProng(Boolean prong) {
         this.prong = prong;
         return this;
-    }
-
-    @Override
-    public Node<? > findNodeById(String id) {
-        return null;
-    }
-
-    @Override
-    public Menu removeNodeById(String id) {
-        return null;
-    }
-
-    @Override
-    public boolean replaceNodeById(Widget<?> w) {
-        return false;
-    }
-
-    @Override
-    public void clearNodes() {
-
     }
 }

@@ -62,8 +62,6 @@ public class Replace extends NodeControlCommand<Replace>
         }
         return this;
     }
-
-
     @Override
     public Node<?> findNodeById(String id) {
         return null;
@@ -75,7 +73,7 @@ public class Replace extends NodeControlCommand<Replace>
     }
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         return false;
     }
 

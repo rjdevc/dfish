@@ -16,7 +16,7 @@ import java.util.List;
  * @version 1.0
  * @since Period
  */
-public class Range extends AbstractNodeContainer<Range> implements LabelRow<Range>, MultiNodeContainer<Range, FormElement<?, ?>> {
+public class Range extends AbstractNodeContainer<Range> implements LabelRow<Range>, MultiNodeContainer<Range> {
 
     private static final long serialVersionUID = -4525721180514710555L;
 
@@ -118,8 +118,8 @@ public class Range extends AbstractNodeContainer<Range> implements LabelRow<Rang
 
     @Transient
     @Override
-    public List<FormElement<?, ?>> getNodes() {
-        return (List)nodes;
+    public List<Node> getNodes() {
+        return nodes;
     }
 
     @Override
@@ -130,8 +130,8 @@ public class Range extends AbstractNodeContainer<Range> implements LabelRow<Rang
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Node<?>> findNodes() {
-        ArrayList<Node<?>> ret = new ArrayList<>();
+    public List<Node> findNodes() {
+        ArrayList<Node> ret = new ArrayList<>();
         if (begin != null) {
             ret.add(begin);
         }
@@ -142,7 +142,7 @@ public class Range extends AbstractNodeContainer<Range> implements LabelRow<Rang
     }
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         if (w != null && w instanceof FormElement) {
             if (w.getId() == null) {
                 return false;

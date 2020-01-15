@@ -157,7 +157,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     }
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         List<Widget<?>> nodes = findNodes();
         if (w == null || w.getId() == null || nodes == null) {
             return false;
@@ -168,16 +168,16 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
             Widget<?> t = targets.size() > i ? targets.get(i) : null;
             if (id.equals(item.getId())) {
                 // 替换该元素
-                if (onReplace(item, w)) {
-                    nodes.set(i, w);
+                if (onReplace(item, (Widget) w)) {
+                    nodes.set(i, (Widget)w);
                     return true;
                 } else {
                     return false;
                 }
             } else if (t != null && id.equals(t.getId())) {
                 // 替换该元素
-                if (onReplace(t, w)) {
-                    targets.set(i, w);
+                if (onReplace(t, (Widget)w)) {
+                    targets.set(i, (Widget)w);
                     return true;
                 } else {
                     return false;

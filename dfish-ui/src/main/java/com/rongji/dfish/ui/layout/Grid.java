@@ -369,7 +369,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
 
 
     @Override
-    public boolean replaceNodeById(Widget<?> w) {
+    public boolean replaceNodeById(Node w) {
         if (!tBody.replaceNodeById(w)) {
             if (!tHead.replaceNodeById(w)) {
                 return tFoot.replaceNodeById(w);
@@ -1583,14 +1583,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return (List)nodes;
         }
 
-
-        @Override
-        public Part add(Node row) {
-            TR w=(TR)row;
-            w.owner(owner);
-            return super.add(w);
-        }
-
         @Override
         public Part add(int row, int column, Object o) {
             put(row, column, o, false);
@@ -1645,7 +1637,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
                 }
             }
             while (toRow >= nodes.size()) {
-                nodes.add(new TR().owner(owner));
+                nodes.add(new TR());
             }
             Map<Integer, String> columnMap = new HashMap<>();
             int column = 0;
@@ -1883,21 +1875,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         public TR(){
             super();
         }
-        protected Grid owner;
 
-        public Grid owner() {
-            return owner;
-        }
-
-        public TR owner(Grid owner) {
-            this.owner = owner;
-            return this;
-        }
-        private void nc(){
-            if(owner!=null){
-                owner.notifyChange();
-            }
-        }
         /**
          * 构造函数
          * @param id String
@@ -1944,180 +1922,9 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
                     tr.getWidth()!=null||tr.getWidthMinus()!=null;
         }
 
-        @Override
-        public void setRows(List<TR> rows) {
-            for(TR row:rows){
-                row.owner(owner);
-            }
-            nc();
-            super.setRows(rows);
-        }
 
-        @Override
-        public TR addRow(TR row) {
-            row.owner(owner);
-            nc();
-            return super.addRow(row);
-        }
 
-        @Override
-        public TR setFocus(Boolean focus) {
-            nc();
-            return super.setFocus(focus);
-        }
 
-        @Override
-        public TR setFocusable(Boolean focusable) {
-            nc();
-            return super.setFocusable(focusable);
-        }
-
-        @Override
-        public TR removeNodeById(String id) {
-            TR tr= super.removeNodeById(id);
-            if(tr!=null){
-                nc();
-            }
-            return tr;
-        }
-
-        @Override
-        public boolean replaceNodeById(Widget<?> panel) {
-            boolean success=super.replaceNodeById(panel);
-            if(success){
-                nc();
-            }
-            return success;
-        }
-
-        @Override
-        public TR setData(String key, Object value) {
-            nc();
-            if(value instanceof TD){
-                ((TD) value).owner(owner);
-            }
-            return super.setData(key, value);
-        }
-
-        @Override
-        public TR setSrc(String src) {
-            nc();
-            return super.setSrc(src);
-        }
-
-        @Override
-        public TR setStyle(String style) {
-            nc();
-            return super.setStyle(style);
-        }
-
-        @Override
-        public TR setCls(String cls) {
-            nc();
-            return super.setCls(cls);
-        }
-
-        @Override
-        public TR setId(String id) {
-            nc();
-            return super.setId(id);
-        }
-
-        @Override
-        public TR setGid(String gid) {
-            nc();
-            return super.setGid(gid);
-        }
-
-        @Override
-        public TR setWidth(String width) {
-            nc();
-            return super.setWidth(width);
-        }
-
-        @Override
-        public TR setHeight(String height) {
-            nc();
-            return super.setHeight(height);
-        }
-
-        @Override
-        public TR setWidth(int width) {
-            nc();
-            return super.setWidth(width);
-        }
-
-        @Override
-        public TR setHeight(int height) {
-            nc();
-            return super.setHeight(height);
-        }
-
-        @Override
-        public TR setOn(String eventName, String script) {
-            nc();
-            return super.setOn(eventName, script);
-        }
-
-        @Override
-        public TR setWidthMinus(Integer widthMinus) {
-            nc();
-            return super.setWidthMinus(widthMinus);
-        }
-
-        @Override
-        public TR setHeightMinus(Integer heightMinus) {
-            nc();
-            return super.setHeightMinus(heightMinus);
-        }
-
-        @Override
-        public TR setMaxWidth(int maxWidth) {
-            nc();
-            return super.setMaxWidth(maxWidth);
-        }
-
-        @Override
-        public TR setMaxWidth(String maxWidth) {
-            nc();
-            return super.setMaxWidth(maxWidth);
-        }
-
-        @Override
-        public TR setMaxHeight(String maxHeight) {
-            nc();
-            return super.setMaxHeight(maxHeight);
-        }
-
-        @Override
-        public TR setMaxHeight(int maxHeight) {
-            nc();
-            return super.setMaxHeight(maxHeight);
-        }
-
-        @Override
-        public TR setMinWidth(int minWidth) {
-            nc();
-            return super.setMinWidth(minWidth);
-        }
-
-        @Override
-        public TR setMinWidth(String minWidth) {
-            nc();
-            return super.setMinWidth(minWidth);
-        }
-
-        @Override
-        public TR setMinHeight(String minHeight) {
-            nc();
-            return super.setMinHeight(minHeight);
-        }
-
-        @Override
-        public TR setMinHeight(int minHeight) {
-            nc();
-            return super.setMinHeight(minHeight);
-        }
     }
 
     /**
@@ -2162,21 +1969,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             super();
             copyProperties(this,td);
         }
-        protected Grid owner;
 
-        public Grid owner() {
-            return owner;
-        }
-
-        public TD owner(Grid owner) {
-            this.owner = owner;
-            return this;
-        }
-        private void nc(){
-            if(owner!=null){
-                owner.notifyChange();
-            }
-        }
 
         @Override
         public Object getPrototype() {
@@ -2258,155 +2051,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
                     html.getMinHeight()==null&&html.getMinWidth()==null&&
                     (html.getOn()==null||html.getOn().size()==0)&&
                     html.getScroll()==null&&html.getWidthMinus()==null;
-        }
-        @Override
-        public TD setColSpan(Integer colSpan) {
-            nc();
-            return super.setColSpan(colSpan);
-        }
-        @Override
-        public TD setRowSpan(Integer rowSpan) {
-            nc();
-            return super.setRowSpan(rowSpan);
-        }
-        @Override
-        public TD setNode(Widget node) {
-            nc();
-            return super.setNode(node);
-        }
-        @Override
-        public TD removeNodeById(String id) {
-            TD td=super.removeNodeById(id);
-            if(td!=null){
-                nc();
-            }
-            return td;
-        }
-        @Override
-        public boolean replaceNodeById(Widget<?> w) {
-            boolean success=super.replaceNodeById(w);
-            if(success){nc();}
-            return success;
-        }
-        @Override
-        public TD setVAlign(String vAlign) {
-            nc();
-            return super.setVAlign(vAlign);
-        }
-        @Override
-        public TD setAlign(String align) {
-            nc();
-            return super.setAlign(align);
-        }
-        @Override
-        public TD setStyle(String style) {
-            nc();
-            return super.setStyle(style);
-        }
-        @Override
-        public TD setCls(String cls) {
-            nc();
-            return super.setCls(cls);
-        }
-        @Override
-        public TD setPrependContent(String prependContent) {
-            nc();
-            return super.setPrependContent(prependContent);
-        }
-        @Override
-        public TD setAppendContent(String appendContent) {
-            nc();
-            return super.setAppendContent(appendContent);
-        }
-        @Override
-        public TD setId(String id) {
-            nc();
-            return super.setId(id);
-        }
-        @Override
-        public TD setGid(String gid) {
-            nc();
-            return super.setGid(gid);
-        }
-        @Override
-        public TD setWidth(String width) {
-            nc();
-            return super.setWidth(width);
-        }
-        @Override
-        public TD setHeight(String height) {
-            nc();
-            return super.setHeight(height);
-        }
-        @Override
-        public TD setWidth(int width) {
-            nc();
-            return super.setWidth(width);
-        }
-        @Override
-        public TD setHeight(int height) {
-            nc();
-            return super.setHeight(height);
-        }
-        @Override
-        public TD setOn(String eventName, String script) {
-            nc();
-            return super.setOn(eventName, script);
-        }
-        @Override
-        public TD setWidthMinus(Integer widthMinus) {
-            nc();
-            return super.setWidthMinus(widthMinus);
-        }
-        @Override
-        public TD setHeightMinus(Integer heightMinus) {
-            nc();
-            return super.setHeightMinus(heightMinus);
-        }
-        @Override
-        public TD setData(String key, Object value) {
-            nc();
-            return super.setData(key, value);
-        }
-        @Override
-        public TD setMaxWidth(int maxWidth) {
-            nc();
-            return super.setMaxWidth(maxWidth);
-        }
-        @Override
-        public TD setMaxWidth(String maxWidth) {
-            nc();
-            return super.setMaxWidth(maxWidth);
-        }
-        @Override
-        public TD setMaxHeight(String maxHeight) {
-            nc();
-            return super.setMaxHeight(maxHeight);
-        }
-        @Override
-        public TD setMaxHeight(int maxHeight) {
-            nc();
-            return super.setMaxHeight(maxHeight);
-        }
-        @Override
-        public TD setMinWidth(int minWidth) {
-            nc();
-            return super.setMinWidth(minWidth);
-        }
-        @Override
-        public TD setMinWidth(String minWidth) {
-            nc();
-            return super.setMinWidth(minWidth);
-        }
-        @Override
-        public TD setMinHeight(String minHeight) {
-            nc();
-            return super.setMinHeight(minHeight);
-        }
-        @Override
-        public TD setMinHeight(int minHeight) {
-            nc();
-            return super.setMinHeight(minHeight);
         }
 
     }
@@ -2571,8 +2215,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public List<Node<?>> findNodes() {
-            List<Node<?>> result=new ArrayList<>();
+        public List<Node> findNodes() {
+            List<Node> result=new ArrayList<>();
             if(rows!=null){
                 for(Widget<?> o:rows){
                     result.add( o);
@@ -2589,7 +2233,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return result;
         }
         @Override
-        public boolean replaceNodeById(Widget<?> panel) {
+        public boolean replaceNodeById(Node panel) {
             if (panel == null || panel.getId() == null) {
                 return false;
             }
@@ -2712,7 +2356,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         //	private String text;
         protected String align;
         protected String vAlign;
-        protected Widget<?> node;
+        protected Widget node;
         protected Boolean escape;
         protected String format;
         protected Integer labelWidth;
@@ -2779,7 +2423,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          * @return Widget
          */
         @Override
-        public Widget<?> getNode() {
+        public Widget getNode() {
             return node;
         }
         /**
@@ -2800,7 +2444,11 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
          */
         @Override
         public T add(Node node) {
-            this.node = (Widget) node;
+            if(node instanceof  Widget){
+                this.node = (Widget)node;
+            }else{
+                throw new IllegalArgumentException("Widget");
+            }
             return (T)this;
         }
 
@@ -2819,8 +2467,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         }
 
         @Override
-        public List<Node<?>> findNodes() {
-            return Arrays.asList(new Widget<?>[]{node});
+        public List<Node> findNodes() {
+            return Arrays.asList(new Node[]{node});
         }
 
 
@@ -2839,13 +2487,13 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             return (T)this;
         }
         @Override
-        public boolean replaceNodeById(Widget<?> w) {
+        public boolean replaceNodeById(Node w) {
             if (w == null || w.getId() == null || node==null) {
                 return false;
             }
             if (w.getId().equals(node.getId())) {
                 // 替换该元素
-                node=w;
+                node=(Widget)w;
                 return true;
             } else if(node instanceof Layout<?>) {
                 Layout cast =(Layout)node;

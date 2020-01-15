@@ -17,7 +17,7 @@ public interface NodeContainer<T extends NodeContainer<T>> {
 	 * @return List
 	 * @param <W> 子元素类型
 	 */
-    <W extends Object> List<W> findNodes();
+    <W extends Node> List<W> findNodes();
 	/**
 	 * 可以根据子Widget的Id取得这个Widget。
 	 * 如果子集里面没有包含这个Widget，那么返回空
@@ -26,7 +26,7 @@ public interface NodeContainer<T extends NodeContainer<T>> {
 	 * @param id String
 	 * @return Widget
 	 */
-	Node<?> findNodeById(String id);
+	Node findNodeById(String id);
 
 
 
@@ -45,7 +45,7 @@ public interface NodeContainer<T extends NodeContainer<T>> {
 	 * <li>原先Layout中并不存在这个id的Widget。</li>
 	 * <li>不能替代Layout本身</li></ol>
 	 */
-	boolean replaceNodeById(Widget<?> w);
+	boolean replaceNodeById(Node w);
 
 	/**
 	 * 将所有子节点清空

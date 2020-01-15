@@ -7,9 +7,8 @@ import java.util.List;
  * @author DFish Team
  *
  * @param <T> 当前对象类型
- * @param <N> 子节点对象类型
  */
-public interface MultiNodeContainer<T extends MultiNodeContainer<T,N>,N> extends NodeContainer<T> {
+public interface MultiNodeContainer<T extends MultiNodeContainer<T>> extends NodeContainer<T> {
     /**
      * <p>取得它容纳的内容。在JSON中表示为下级。"nodes":[ ... ]</p>
      * 如果这写下级内容(N)还有下级，将<b>不</b>包含多层级的内容。
@@ -18,5 +17,5 @@ public interface MultiNodeContainer<T extends MultiNodeContainer<T,N>,N> extends
      * @see #findNodes()
      * @return List
      */
-    List<N> getNodes();
+    List<Node> getNodes();
 }

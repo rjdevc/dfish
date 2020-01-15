@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.layout;
 import java.util.List;
 
 import com.rongji.dfish.ui.MultiNodeContainer;
+import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.AbstractBox;
 
@@ -11,7 +12,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  *@author DFish Team
  *
  */
-public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNodeContainer<Fieldset,Widget<?>> {
+public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNodeContainer<Fieldset> {
 	/**
 	 * 
 	 */
@@ -68,8 +69,8 @@ public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNo
 		return this;
 	}
 	@Override
-	public List<Widget<?>> getNodes() {
-		return (List)nodes;
+	public List<Node> getNodes() {
+		return nodes;
 	}
 	
 }

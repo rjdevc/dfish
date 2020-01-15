@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2020-01-15
  * @since 5.0
  */
-public class Collapse extends AbstractNodeContainer<Collapse> implements MultiNodeContainer<Collapse, Collapse.Button>, PubHolder<Collapse, Collapse.Button>{
+public class Collapse extends AbstractNodeContainer<Collapse> implements MultiNodeContainer<Collapse>, PubHolder<Collapse, Collapse.Button>{
 
     private Boolean focusMultiple;
     private Button pub;
@@ -32,8 +32,8 @@ public class Collapse extends AbstractNodeContainer<Collapse> implements MultiNo
     }
 
     @Override
-    public List<Button> getNodes() {
-        return (List) nodes;
+    public List getNodes() {
+        return nodes;
     }
 
     public Button pub() {

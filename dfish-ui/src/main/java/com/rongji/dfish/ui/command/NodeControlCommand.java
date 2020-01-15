@@ -1,6 +1,11 @@
 package com.rongji.dfish.ui.command;
 
 
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.Widget;
+
+import java.util.List;
+
 /**
  * WidgetControlCommand 是 用于控制视图对象动作的命令
  * 一般分为视图对象的增加，删除，修改，
@@ -55,4 +60,7 @@ public abstract class NodeControlCommand<T extends NodeControlCommand<T>> extend
         this.section = section;
         return (T) this;
     }
+
+
+
 }

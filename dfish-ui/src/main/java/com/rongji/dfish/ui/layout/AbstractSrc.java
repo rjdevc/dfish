@@ -87,7 +87,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractNode
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Node<?>> findNodes() {
+	public List<Node> findNodes() {
 		return (List)nodes;
 	}
 	/**

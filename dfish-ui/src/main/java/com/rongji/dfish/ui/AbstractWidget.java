@@ -215,6 +215,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMaxWidth() {
         return maxWidth;
     }
@@ -225,6 +226,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxWidth(int maxWidth) {
         this.maxWidth = String.valueOf(maxWidth);
         return (T) this;
@@ -236,6 +238,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxWidth(String maxWidth) {
         this.maxWidth = maxWidth;
         return (T) this;
@@ -246,6 +249,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMaxHeight() {
         return maxHeight;
     }
@@ -256,6 +260,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxHeight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxHeight(String maxHeight) {
         this.maxHeight = maxHeight;
         return (T) this;
@@ -267,6 +272,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param maxHeight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMaxHeight(int maxHeight) {
         this.maxHeight = String.valueOf(maxHeight);
         return (T) this;
@@ -277,6 +283,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMinWidth() {
         return minWidth;
     }
@@ -287,6 +294,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinWidth(int minWidth) {
         this.minWidth = String.valueOf(minWidth);
         return (T) this;
@@ -298,6 +306,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minWidth Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinWidth(String minWidth) {
         this.minWidth = minWidth;
         return (T) this;
@@ -308,6 +317,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      *
      * @return Integer
      */
+    @Override
     public String getMinHeight() {
         return minHeight;
     }
@@ -318,6 +328,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minHeight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinHeight(String minHeight) {
         this.minHeight = minHeight;
         return (T) this;
@@ -329,6 +340,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @param minHeight Integer
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setMinHeight(int minHeight) {
         this.minHeight = String.valueOf(minHeight);
         return (T) this;
