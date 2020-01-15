@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.json;
+package com.rongji.dfish.ui;
 /**
  * 有的时候可以用该类再一些地方强行注入原始的JSON。比如某个属性是一个function或某个属性是
  * new Xxxx() 

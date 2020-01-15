@@ -6,7 +6,7 @@ import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Hidden;
-import com.rongji.dfish.ui.json.PrototypeChangeable;
+import com.rongji.dfish.ui.PrototypeChangeable;
 import com.rongji.dfish.ui.layout.Grid;
 import com.rongji.dfish.ui.layout.Grid.Column;
 import com.rongji.dfish.ui.layout.ListView;

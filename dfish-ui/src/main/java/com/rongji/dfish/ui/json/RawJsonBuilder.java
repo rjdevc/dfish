@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.json;
 
+import com.rongji.dfish.ui.RawJson;
+
 import java.util.Stack;
 
 public class RawJsonBuilder extends AbstractJsonBuilder {

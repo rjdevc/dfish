@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.json;
 
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.ui.JsonWrapper;
 
 import java.beans.Transient;
 import java.lang.reflect.Method;

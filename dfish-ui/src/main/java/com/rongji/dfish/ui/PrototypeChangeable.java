@@ -1,6 +1,4 @@
-package com.rongji.dfish.ui.json;
-
-import com.rongji.dfish.ui.json.JsonWrapper;
+package com.rongji.dfish.ui;
 
 /**
  * 有一些封装类，取得的原型可以被编辑。并且编辑后结果将会被保留。

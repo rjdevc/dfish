@@ -2,7 +2,6 @@ package com.rongji.dfish.ui;
 
 import java.util.Map;
 
-import com.rongji.dfish.ui.json.JsonWrapper;
 /**
  * 默认的warper抽象类
  * 一般继承与此类的抽象类需要在构造方法体内为

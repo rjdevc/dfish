@@ -2,7 +2,6 @@ package com.rongji.dfish.ui;
 
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.json.JsonFormat;
-import com.rongji.dfish.ui.json.JsonWrapper;
 
 import java.net.URL;
 import java.util.*;

@@ -4,7 +4,7 @@ import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.json.JsonWrapper;
+import com.rongji.dfish.ui.JsonWrapper;
 import com.rongji.dfish.ui.widget.Html;
 
 /**

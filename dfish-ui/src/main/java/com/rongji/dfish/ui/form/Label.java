@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.json.JsonWrapper;
+import com.rongji.dfish.ui.JsonWrapper;
 
 public class Label extends AbstractFormLabel<Label> implements JsonWrapper<Object> {
 

@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.json;
+package com.rongji.dfish.ui;
 
 /**
  * 基于原型构建的封装类接口
