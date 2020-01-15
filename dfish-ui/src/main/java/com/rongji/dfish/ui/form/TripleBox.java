@@ -14,7 +14,6 @@ public class TripleBox extends AbstractBox<TripleBox> {
     private static final long serialVersionUID = -5234746180880441591L;
 
     private Boolean partialSubmit;
-
     private Boolean checkAll;
 
     /**

@@ -185,7 +185,7 @@ public class GridFactory {
             Grid.TR headRow = null;
             if(hasTableHead){
                 headRow=new Grid.TR();
-                prototype.gettHead().add(headRow);
+                prototype.getTHead().add(headRow);
             }
             for(Column column :columns){
                 if(column.getWidth()!=null){//隐藏的字段不显示
@@ -256,7 +256,7 @@ public class GridFactory {
                 }
                 if (hasTableHead) {
                     Grid.TR headRow = new Grid.TR();
-                    prototype.gettHead().add(headRow);
+                    prototype.getTHead().add(headRow);
                     headRow.setData(column.getField(), column.getLabel());
                 }
                 if (column.isVisible()) {
@@ -526,7 +526,7 @@ public class GridFactory {
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column rownum(String label, Integer start, String width) {
-            return (Column)new Column(null, null, label, width).setFormat("javascript:return " + new GridRowNum(start)).setAlign(Grid.Column.ALIGN_CENTER);
+            return (Column)new Column(null, null, label, width).setFormat("javascript:return " + new Grid.RowNum(start)).setAlign(Grid.Column.ALIGN_CENTER);
         }
 
 

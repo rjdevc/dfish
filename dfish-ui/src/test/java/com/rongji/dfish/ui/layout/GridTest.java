@@ -19,7 +19,7 @@ public class GridTest extends DFishUITestCase {
 	public void autoExpend(){
 		Grid gl=new Grid("mygrid");
 		gl.add(1, 1, "test");
-		Assert.assertTrue(gl.gettBody().getRows().size()==2);
+		Assert.assertTrue(gl.getTBody().getRows().size()==2);
 		
 	}
 
@@ -77,7 +77,7 @@ public class GridTest extends DFishUITestCase {
 		props.addColumn(Grid.Column.text("C6","*"));
 
 		Grid.TR tHead=new Grid.TR();
-		props.gettHead().add(tHead);
+		props.getTHead().add(tHead);
 		tHead.setData("C1","属性名");
 		tHead.setData("C3","类型");
 		tHead.setData("C4","必填");
@@ -85,7 +85,7 @@ public class GridTest extends DFishUITestCase {
 		tHead.setData("C6","提示信息");
 
 		Grid.TR tBodyRow=new Grid.TR();
-		props.gettBody().add(tBodyRow);
+		props.getTBody().add(tBodyRow);
 		tBodyRow.setData("@C1","$item.name");
 		tBodyRow.setData("@C3","$item.type");
 		tBodyRow.setData("@C4","$item.required");

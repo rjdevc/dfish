@@ -2,7 +2,6 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.layout.AbstractNodeContainer;
-import com.rongji.dfish.ui.layout.ListView;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  *
  * @author DFish Team
  */
-public class Album extends AbstractNodeContainer<Album> implements HtmlContentHolder<Album>, Scrollable<Album>, ListView<Album>, PubHolder<Album, Img>,
+public class Album extends AbstractNodeContainer<Album> implements HtmlContentHolder<Album>, Scrollable<Album>, PubHolder<Album, Img>,
         MultiNodeContainer<Album> {
 
     private static final long serialVersionUID = 7141941441960631331L;
@@ -79,12 +78,10 @@ public class Album extends AbstractNodeContainer<Album> implements HtmlContentHo
         return this;
     }
 
-    @Override
     public Boolean getFocusMultiple() {
         return focusMultiple;
     }
 
-    @Override
     public Album setFocusMultiple(Boolean focusMultiple) {
         this.focusMultiple = focusMultiple;
         return this;
@@ -166,14 +163,11 @@ public class Album extends AbstractNodeContainer<Album> implements HtmlContentHo
         return this;
     }
 
-
-    @Override
     public Album setNoBr(Boolean noBr) {
         this.noBr = noBr;
         return this;
     }
 
-    @Override
     public Boolean getNoBr() {
         return noBr;
     }
