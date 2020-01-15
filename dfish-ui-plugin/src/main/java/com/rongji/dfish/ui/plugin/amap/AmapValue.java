@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.plugin.amap;
 
 import com.rongji.dfish.ui.AbstractNode ;
-import com.rongji.dfish.ui.json.J;
+import com.rongji.dfish.ui.json.JsonFormat;
 
 import java.util.List;
 
@@ -44,6 +44,6 @@ public class AmapValue extends AbstractNode<AmapValue> {
 
     @Override
     public String toString() {
-        return J.toJson(this);
+        return JsonFormat.toJson(this);
     }
 }

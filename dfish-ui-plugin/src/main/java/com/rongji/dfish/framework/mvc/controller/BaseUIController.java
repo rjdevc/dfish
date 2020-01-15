@@ -6,10 +6,10 @@ import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.ui.UiNode;
+import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.command.Alert;
 import com.rongji.dfish.ui.command.Dialog;
-import com.rongji.dfish.ui.json.J;
+import com.rongji.dfish.ui.json.JsonFormat;
 import com.rongji.dfish.ui.layout.Vertical;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;
@@ -187,13 +187,13 @@ public class BaseUIController extends BaseActionController {
 		return view;
 	}
 
-	protected void outputJson(HttpServletResponse response, UiNode jsonObject) {
+	protected void outputJson(HttpServletResponse response, Node jsonObject) {
 		outputJson(response, jsonObject.asJson());
 	}
 
 	public static void outputJson(HttpServletResponse response, final String content) {
 		FrameworkHelper.outputContent(response, content, "text/json");
-		LogUtil.lazyDebug(()->"\r\n" + J.formatJson(content));
+		LogUtil.lazyDebug(()->"\r\n" + JsonFormat.formatJson(content));
 	}
 
 }
