@@ -7,7 +7,6 @@ import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.*;
 import com.rongji.dfish.ui.JsonWrapper;
-import com.rongji.dfish.ui.PrototypeChangeable;
 import com.rongji.dfish.ui.RawJson;
 import com.rongji.dfish.ui.widget.Highlight;
 import com.rongji.dfish.ui.widget.Html;
@@ -76,47 +75,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
     private List<Column> columns = new ArrayList<>();
     private TR pub;
 
-    private PrototypeChangeable<Grid> wrapper;
-    private boolean prototypeBuilding = false;
-
-    /**
-     * 因为GridLayout经常作为其他封装类的圆形。所以提供该模式设置
-     * 如果正在被当做原型来构建的时候，他们，原则上它构建的时候不要进行严格的校验会不会某格可能被占用。而直接添加。同时他也不会报封装类被改动的同步改动异常
-     *
-     * @return boolean
-     */
-    public boolean prototypeBuilding() {
-        return prototypeBuilding;
-    }
-
-    /**
-     * 因为GridLayout经常作为其他封装类的圆形。所以提供该模式设置
-     * 如果正在被当做原型来构建的时候，他们，原则上它构建的时候不要进行严格的校验会不会某格可能被占用。而直接添加。同时他也不会报封装类被改动的同步改动异常
-     *
-     * @param building boolean
-     * @return boolean
-     */
-    public boolean prototypeBuilding(boolean building) {
-        return prototypeBuilding = building;
-    }
-
-    /**
-     * 如果GridLayout 是某个类的原型类，那么构建过程中，一般需要将封装类的句柄传递给GridLayout.以便GridLayout能够通知改类，它可能被改变了。
-     *
-     * @param wrapper 封装类
-     */
-    public void setWrapper(PrototypeChangeable<Grid> wrapper) {
-        this.wrapper = wrapper;
-    }
-
-    /**
-     * 子元素，通知Gridlayout被变更了，继而通知封装类，内容被变更
-     */
-    public void notifyChange() {
-        if (wrapper != null && !prototypeBuilding) {
-            wrapper.notifyChange();
-        }
-    }
 
     /**
      * 无格式
@@ -1704,7 +1662,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
             }
             // 如果 columns 不够则，自动增加columns
             // 如果 tr不够，则自动增加tr的数量
-            owner.notifyChange();
         }
 
         @Override
@@ -1747,9 +1704,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
         public boolean containsNode(int fromRow, int fromColumn, int toRow, int toColumn) {
             if (owner == null) {
                 throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in GridLayout.");
-            }
-            if (owner.prototypeBuilding()) {
-                return false;//假定prototype的构建过程是稳定的，不会构建错内容，所以不检查格子是否被占用。
             }
             Map<String, Integer> columnMap = owner.getVisableColumnNumMap();
             int targetFromRow = 0;
@@ -1831,9 +1785,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
                     int row_ = (Integer) o[0];
                     String key = (String) o[1];
                     ((TR)nodes.get(row_)).removeData(key);
-                }
-                if (owner != null) {
-                    owner.notifyChange();
                 }
             }
 
