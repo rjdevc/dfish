@@ -22,7 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.SocketException;
 
-public class BaseUIController extends BaseActionController {
+public class BaseUiController extends BaseActionController {
 
 	/**
 	 * 获取分页信息对象

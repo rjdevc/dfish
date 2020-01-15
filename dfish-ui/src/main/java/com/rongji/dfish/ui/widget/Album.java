@@ -93,19 +93,6 @@ public class Album extends AbstractNodeContainer<Album> implements HtmlContentHo
         return this;
     }
 
-    @Override
-    @Deprecated
-    public Boolean getHoverable() {
-        return null;
-    }
-
-    @Override
-    @Deprecated
-    public Album setHoverable(Boolean hoverable) {
-//		this.hoverable = hoverable;
-        return this;
-    }
-
     /**
      * 子节点的默认配置项
      *

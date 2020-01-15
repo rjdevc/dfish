@@ -20,7 +20,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
 
     private static final long serialVersionUID = 3228228457257982847L;
     protected String id;
-
+    protected String template;
     protected Map<String, Object> data;
 
     @Override
@@ -31,6 +31,15 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
     @Override
     public T setId(String id) {
         this.id = id;
+        return (T) this;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public T setTemplate(String template) {
+        this.template = template;
         return (T) this;
     }
 

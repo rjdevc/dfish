@@ -8,10 +8,9 @@ import java.util.Map;
  * @date 2019-12-11
  * @since 5.0
  */
-public abstract class AbstractResultfulNode<T extends AbstractResultfulNode<T>> extends AbstractNode<T> {
+public abstract class AbstractResultingNode<T extends AbstractResultingNode<T>> extends AbstractNode<T> {
 
     protected String src;
-    protected String template;
     protected Map<String, Object> result;
 
     /**
@@ -31,24 +30,6 @@ public abstract class AbstractResultfulNode<T extends AbstractResultfulNode<T>> 
      */
     public T setSrc(String src) {
         this.src = src;
-        return (T) this;
-    }
-
-    /**
-     * 模板地址
-     * @return String
-     */
-    public String getTemplate() {
-        return template;
-    }
-
-    /**
-     * 模板地址
-     * @param template String
-     * @return
-     */
-    public T setTemplate(String template) {
-        this.template = template;
         return (T) this;
     }
 

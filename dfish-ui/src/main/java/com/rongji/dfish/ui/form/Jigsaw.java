@@ -1,6 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.AbstractResultfulNode;
+import com.rongji.dfish.ui.AbstractResultingNode;
 
 /**
  * 拼图(滑动验证码)
@@ -10,8 +10,8 @@ import com.rongji.dfish.ui.AbstractResultfulNode;
  */
 public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
-    private JigsawImg img;
-    private JigsawAuth auth;
+    private Img img;
+    private Auth auth;
 
     public Jigsaw(String name, String label) {
         this.setName(name);
@@ -22,7 +22,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * 拼图图片
      * @return JigsawImg
      */
-    public JigsawImg getImg() {
+    public Img getImg() {
         return img;
     }
 
@@ -31,7 +31,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * @param img JigsawImg
      * @return this
      */
-    public Jigsaw setImg(JigsawImg img) {
+    public Jigsaw setImg(Img img) {
         this.img = img;
         return this;
     }
@@ -40,7 +40,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * 拼图验证
      * @return JigsawAuth
      */
-    public JigsawAuth getAuth() {
+    public Auth getAuth() {
         return auth;
     }
 
@@ -49,7 +49,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * @param auth JigsawAuth
      * @return this
      */
-    public Jigsaw setAuth(JigsawAuth auth) {
+    public Jigsaw setAuth(Auth auth) {
         this.auth = auth;
         return this;
     }
@@ -65,11 +65,11 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * @date 2019-12-11
      * @since 5.0
      */
-    public static class JigsawAuth extends AbstractResultfulNode<JigsawAuth> {
+    public static class Auth extends AbstractResultingNode<Auth> {
 
         @Override
         public String getType() {
-            return "jigsawAuth";
+            return "JigsawAuth";
         }
 
     }
@@ -80,11 +80,11 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * @date 2019-12-11
      * @since 5.0
      */
-    public static class JigsawImg extends AbstractResultfulNode<JigsawImg> {
+    public static class Img extends AbstractResultingNode<Img> {
 
         @Override
         public String getType() {
-            return "jigsawImg";
+            return "JigsawImg";
         }
 
     }

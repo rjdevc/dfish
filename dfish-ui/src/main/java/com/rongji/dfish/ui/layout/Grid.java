@@ -440,32 +440,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements ListView<Grid>,
     }
 
     /**
-     * 是否有鼠标悬停效果
-     *
-     * @return Boolean
-     * @deprecated 目前不支持
-     */
-    @Override
-    @Deprecated
-    public Boolean getHoverable() {
-        return null;
-    }
-
-    /**
-     * 是否有鼠标悬停效果
-     *
-     * @param hoverable Boolean
-     * @return 本身，这样可以继续设置其他属性
-     * @deprecated 目前不支持
-     */
-    @Override
-    @Deprecated
-    public Grid setHoverable(Boolean hoverable) {
-//		this.hoverable = hoverable;
-        return this;
-    }
-
-    /**
      * 设置当前的 grid 为某个 combobox 或 onlinebox 的数据选项表。
      *
      * @return combo

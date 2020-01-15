@@ -1,6 +1,10 @@
 package com.rongji.dfish.ui.plugin.amap;
 
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.json.JsonFormat;
+
+import java.util.List;
 
 /**
  * 地图组件
@@ -11,11 +15,6 @@ public class Amap extends AbstractWidget<Amap> {
 
     public Amap(String id) {
         setId(id);
-    }
-
-    @Override
-    public String getType() {
-        return "amap";
     }
 
     /**
@@ -41,8 +40,51 @@ public class Amap extends AbstractWidget<Amap> {
      * @param value AmapValue
      * @return 本身，这样可以继续设置其他属性
      */
-    public Amap setValue(AmapValue value) {
+    public Amap setValue(Value value) {
         return setValue(toString(value));
+    }
+
+    /**
+     * 地理坐标值
+     *
+     * @author DFish Team
+     * @version 1.0
+     */
+    public static class Value extends AbstractNode<Value> {
+
+        private List<Location> address;
+
+        public Value(List<Location> address) {
+            this.address = address;
+        }
+
+        /**
+         * 地图坐标点
+         * @return List
+         */
+        public List<Location> getAddress() {
+            return address;
+        }
+
+        /**
+         * 地图坐标
+         * @param address List
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public Value setAddress(List<Location> address) {
+            this.address = address;
+            return this;
+        }
+
+        @Override
+        public String getType() {
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return JsonFormat.toJson(this);
+        }
     }
 
 }

@@ -33,19 +33,6 @@ public interface ListView <T extends ListView<T>>{
 	T setFocusMultiple(Boolean focusMultiple) ;
 
 	/**
-	 * 是否有鼠标悬停效果
-	 * @return Boolean
-	 */
-	Boolean getHoverable();
-
-	/**
-	 * 是否有鼠标悬停效果
-	 * @param hoverable Boolean
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	T setHoverable(Boolean hoverable);
-	
-	/**
 	 * 内容不换行
 	 * @param noBr boolean
 	 * @return 本身，这样可以继续设置其他属性

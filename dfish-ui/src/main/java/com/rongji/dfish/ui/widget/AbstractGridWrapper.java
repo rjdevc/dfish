@@ -300,25 +300,6 @@ public abstract class AbstractGridWrapper<T extends AbstractGridWrapper<T>> exte
         return (T) this;
     }
 
-    /**
-     * 鼠标可移上去效果,目前无该方法
-     */
-    @Deprecated
-    @Override
-    public Boolean getHoverable() {
-        return prototype.getHoverable();
-    }
-
-    /**
-     * 鼠标可移上去效果,目前无该方法
-     */
-    @Deprecated
-    @Override
-    public T setHoverable(Boolean hoverable) {
-        prototype.setHoverable(hoverable);
-        return (T) this;
-    }
-
     @Override
     public T setNoBr(Boolean noBr) {
         prototype.setNoBr(noBr);
