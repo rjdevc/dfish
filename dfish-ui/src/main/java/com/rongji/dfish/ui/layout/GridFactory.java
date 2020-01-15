@@ -203,11 +203,6 @@ public class GridFactory {
                 }
             }
 
-
-            if (Utils.isEmpty(gridData)) {
-                prototype.prototypeBuilding(false);
-                return prototype;
-            }
             // 假定这个集合所有对象的类型是一致的
             int index=0;
             for (Object data : gridData) {
@@ -513,8 +508,8 @@ public class GridFactory {
          * @param width 宽度
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column rownum(String label, String width) {
-            return rownum(label, null, width);
+        public static Column rowNum(String label, String width) {
+            return rowNum(label, null, width);
         }
 
         /**
@@ -525,7 +520,7 @@ public class GridFactory {
          * @param width 宽度
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column rownum(String label, Integer start, String width) {
+        public static Column rowNum(String label, Integer start, String width) {
             return (Column)new Column(null, null, label, width).setFormat("javascript:return " + new Grid.RowNum(start)).setAlign(Grid.Column.ALIGN_CENTER);
         }
 
@@ -539,31 +534,31 @@ public class GridFactory {
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridTriplebox(String checkedField, String width) {
+        public static Column tripleBox(String checkedField, String width) {
             return (Column)new Column(null, null, null, width).setTripleBox(BOX_NAME, checkedField, null, null);
         }
 
         /**
-         * 构建一个GridTriplebox类型的GridColumn
+         * 构建一个TripleBox类型的GridColumn
          *
          * @param beanProp String 数据对象是List&lt;JAVA Bean&gt;时表示属性名
          * @param field    String 返回前端的属性名
          * @param width    String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridTriplebox(String beanProp, String field, String width) {
+        public static Column tripleBox(String beanProp, String field, String width) {
             return (Column)new Column(beanProp, field, null, width).setTripleBox(BOX_NAME, field, null, null);
         }
 
         /**
-         * 构建一个GridTriplebox类型的GridColumn
+         * 构建一个TripleBox类型的GridColumn
          *
          * @param dataColumnIndex int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
          * @param field           String 返回前端的属性名
          * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridTriplebox(int dataColumnIndex, String field, String width) {
+        public static Column tripleBox(int dataColumnIndex, String field, String width) {
             return (Column)new Column(dataColumnIndex, field, null, width).setTripleBox(BOX_NAME, field, null, null);
         }
 
@@ -576,9 +571,9 @@ public class GridFactory {
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridRadio(String checkedField, String width) {
+        public static Column radio(String checkedField, String width) {
 //		return new GridColumn(null, field, null, width).setModel(new Radio(CHECK_FIELD_NAME, null, null, null,null), "value").setAlign(GridColumn.ALIGN_CENTER);
-            return gridRadio(checkedField, width, null);
+            return radio(checkedField, width, null);
         }
 
         /**
@@ -589,8 +584,8 @@ public class GridFactory {
          * @param sync         是否与行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridRadio(String checkedField, String width, String sync) {
-            return gridRadio(null, null, width, BOX_NAME, checkedField, null, sync);
+        public static Column radio(String checkedField, String width, String sync) {
+            return radio(null, null, width, BOX_NAME, checkedField, null, sync);
         }
 
         /**
@@ -605,7 +600,7 @@ public class GridFactory {
          * @param sync         是否与行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridRadio(String beanProp, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
+        public static Column radio(String beanProp, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
             return (Column)new Column(beanProp, field, null, width).setRadio(boxName, checkedField, required, sync);
         }
 
@@ -621,7 +616,7 @@ public class GridFactory {
          * @param sync            是否与行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public static Column gridRadio(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
+        public static Column radio(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
             return (Column)new Column(dataColumnIndex, field, null, width).setRadio(boxName, checkedField, required, sync);
         }
 

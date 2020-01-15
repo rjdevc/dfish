@@ -18,7 +18,7 @@ public class GridPanelTest extends DFishUITestCase {
 	protected Grid getWidget(){
 		GridFactory.DefaultGridFactory gp=GridFactory.newGrid("gp");
 		gp.addColumn(GridFactory.Column.hidden(0, "id"));
-		gp.addColumn(GridFactory.Column.gridTriplebox("id", "40"));
+		gp.addColumn(GridFactory.Column.tripleBox("id", "40"));
 		gp.addColumn(GridFactory.Column.text(1, "C1","消息","*"));
 		gp.addColumn(GridFactory.Column.text(2, "C2","发送人","100"));
 		gp.addColumn((GridFactory.Column)GridFactory.Column.text(3, "C3","时间","100")
@@ -84,7 +84,7 @@ public class GridPanelTest extends DFishUITestCase {
 					"第" + i + "行列3"
 			});
 		}
-		gp.addColumn(GridFactory.Column.gridTriplebox("C", "40"));
+		gp.addColumn(GridFactory.Column.tripleBox("C", "40"));
 		gp.addColumn((GridFactory.Column)GridFactory.Column.text(dataColumnIndex++, "第1列", "*")
 				.setTripleBox("itemB", "B", true, null));
 		gp.addColumn(GridFactory.Column.text(dataColumnIndex++, "第2列", "*"));

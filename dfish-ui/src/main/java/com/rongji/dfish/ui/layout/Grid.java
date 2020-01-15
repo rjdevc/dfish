@@ -6,8 +6,6 @@ import com.rongji.dfish.base.util.MathUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.*;
-import com.rongji.dfish.ui.JsonWrapper;
-import com.rongji.dfish.ui.RawJson;
 import com.rongji.dfish.ui.widget.Highlight;
 import com.rongji.dfish.ui.widget.Html;
 
@@ -58,7 +56,7 @@ import java.util.*;
  * }</pre></div>
  * <p>如果没有rowspan或cls属性的时候，td可以只写其中node的部分。这时可以是一个html元素或一个Text等输入框。甚至可以是一个布局元素。里面放任何内容。
  * 而如果这个node就是为了输出一个html并且不需要复杂 cls 等属性的时候。 td就可以缩写成范例中的那样，一个字符串。用于最简输出。同时也更容易被人阅读，理解，和调试</p>
- * <p>支持折叠和多层折叠 详见 {@link com.rongji.dfish.ui.widget.Toggle}</p>
+ * <p>支持折叠和多层折叠 详见 {@link com.rongji.dfish.ui.widget.Toggle} 和 {@link GridLeaf}</p>
  * <p>支持指定位置添加内容 见{@link Grid#add(int, int, Object)} 甚至可以直接指定一个区块合并单元格，并填充内容{@link Grid#add(Integer, Integer, Integer, Integer, Object)}</p>
  * <p>如基础定义所见，如果在GridLayout中直接指定位置添加内容，实际上指的是tbody部分。如果想在thead上使用该功能，要显式先取得 getThead()</p>
  *
@@ -74,7 +72,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
     private TFoot tFoot;
     private List<Column> columns = new ArrayList<>();
     private TR pub;
-
 
     /**
      * 无格式
@@ -658,7 +655,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
     @Override
     public Grid add(Node w) {
-        tBody.add((TR)w);
+        tBody.add((TR) w);
         return this;
     }
 
@@ -788,8 +785,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
          * <p>构造函数</p>
          * <p>这个构造函数适用与数据是List&lt;Object[]&gt;的时候.</p>
          *
-         * @param field           String 输出时显示的JSON属性名字。注意不要有重复
-         * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
+         * @param field String 输出时显示的JSON属性名字。注意不要有重复
+         * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          */
         public Column(String field, String width) {
             this.field = field;
@@ -805,7 +802,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column text(String field, String width) {
-            return new Column( field, width);
+            return new Column(field, width);
         }
 
         /**
@@ -817,7 +814,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column text(String field, String width, String format) {
-            return new Column( field, width).setFormat(format);
+            return new Column(field, width).setFormat(format);
         }
 
         /**
@@ -828,7 +825,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column tripleBox(String checkedField, String width) {
-            return new Column( null, width).setTripleBox(BOX_NAME, checkedField, null, null);
+            return new Column(null, width).setTripleBox(BOX_NAME, checkedField, null, null);
         }
 
 
@@ -972,7 +969,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column radio(String checkedField, String width, String sync) {
-            return new Column( null,  width).setRadio(BOX_NAME, checkedField, null, sync);
+            return new Column(null, width).setRadio(BOX_NAME, checkedField, null, sync);
         }
 
         /**
@@ -1444,6 +1441,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
     /**
      * 表格列提示
+     *
      * @author lamontYu
      * @date 2017-07-31
      * @since 3.1
@@ -1454,6 +1452,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 提示的字段名
+         *
          * @return String
          */
         public String getField() {
@@ -1462,6 +1461,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 设置提示的字段名
+         *
          * @param field 字段名
          * @return 本身，这样可以继续设置其他属性
          */
@@ -1525,7 +1525,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
          * @return List
          */
         public List<TR> getRows() {
-            return (List)nodes;
+            return (List) nodes;
         }
 
         @Override
@@ -1615,7 +1615,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
                     cell.setColSpan(colspan);
                 }
 
-                ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
+                ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
             } else if (o instanceof Widget) {
                 //如果entry 是 Widget 那么将会包装在一个GridCell里面
                 if (rowspan > 1 || colspan > 1) {
@@ -1628,9 +1628,9 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
                         cell.setColSpan(colspan);
                     }
 
-                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
+                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
                 } else {
-                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
+                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
                 }
             } else {
                 if (o != null && (rowspan > 1 || colspan > 1)) {
@@ -1642,13 +1642,11 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
                     if (colspan > 1) {
                         td.setColSpan(colspan);
                     }
-                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), td);
+                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), td);
                 } else {
-                    ((Widget)nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
+                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
                 }
             }
-            // 如果 columns 不够则，自动增加columns
-            // 如果 tr不够，则自动增加tr的数量
         }
 
         @Override
@@ -1771,7 +1769,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
                 for (Object[] o : toRemove) {
                     int row_ = (Integer) o[0];
                     String key = (String) o[1];
-                    ((TR)nodes.get(row_)).removeData(key);
+                    ((TR) nodes.get(row_)).removeData(key);
                 }
             }
 
@@ -1800,8 +1798,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
      * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
      * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
      *
-     * @see AbstractTd {@link Grid.Column}
      * @author DFish Team
+     * @see AbstractTd {@link Grid.Column} {@link GridLeaf}
      * @since DFish 3.0
      */
     public static class TR extends AbstractTr<TR> implements JsonWrapper<Object> {
@@ -1810,63 +1808,63 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
         /**
          * 默认构造函数
          */
-        public TR(){
+        public TR() {
             super();
         }
 
         /**
          * 构造函数
+         *
          * @param id String
          */
-        public TR(String id){
+        public TR(String id) {
             super(id);
         }
 
         /**
          * 拷贝构造函数，相当于clone
+         *
          * @param tr another tr
          */
-        public TR(AbstractTr<?> tr){
+        public TR(AbstractTr<?> tr) {
             super();
-            copyProperties(this,tr);
+            copyProperties(this, tr);
         }
 
 
         @Override
         public Object getPrototype() {
-            if(hasTrProp(this)){
-                JsonTr p=new JsonTr();
-                copyProperties(p,this);
+            if (hasTrProp(this)) {
+                JsonTr p = new JsonTr();
+                copyProperties(p, this);
                 return p;
-            }else{
+            } else {
                 return this.getData();
             }
         }
 
         private static boolean hasTrProp(AbstractTr<?> tr) {
-            if(tr==null){
+            if (tr == null) {
                 return false;
             }
-            return tr.getId()!=null||tr.getFocus()!=null||tr.getFocusable()!=null||
-                    tr.getHeight()!=null||tr.getSrc()!=null||
-                    (tr.getRows()!=null&&tr.getRows().size()>0)||
-                    tr.getCls()!=null||tr.getStyle()!=null ||//常用的属性排在前面
-                    tr.getBeforeContent()!=null||tr.getPrependContent()!=null||
-                    tr.getAppendContent()!=null||tr.getAfterContent()!=null||
-                    tr.getGid()!=null||tr.getHeightMinus()!=null||
-                    tr.getMaxHeight()!=null||tr.getMaxWidth()!=null||
-                    tr.getMinHeight()!=null||tr.getMinWidth()!=null||
-                    (tr.getOn()!=null&&tr.getOn().size()>0)||
-                    tr.getWidth()!=null||tr.getWidthMinus()!=null;
+            return tr.getId() != null || tr.getFocus() != null || tr.getFocusable() != null ||
+                    tr.getHeight() != null || tr.getSrc() != null ||
+                    (tr.getRows() != null && tr.getRows().size() > 0) ||
+                    tr.getCls() != null || tr.getStyle() != null ||//常用的属性排在前面
+                    tr.getBeforeContent() != null || tr.getPrependContent() != null ||
+                    tr.getAppendContent() != null || tr.getAfterContent() != null ||
+                    tr.getGid() != null || tr.getHeightMinus() != null ||
+                    tr.getMaxHeight() != null || tr.getMaxWidth() != null ||
+                    tr.getMinHeight() != null || tr.getMinWidth() != null ||
+                    (tr.getOn() != null && tr.getOn().size() > 0) ||
+                    tr.getWidth() != null || tr.getWidthMinus() != null;
         }
-
-
 
 
     }
 
     /**
-     *  Td 表示一个Grid的单元格
+     * Td 表示一个Grid的单元格
      * <p>在一些复杂布局结构中，它可以占不止一行或不止一列</p>
      * <p>GridCell 有两种工作模式，他内部可以包含一个Widget或简单的包含一个文本，如果包含了widget文本模式将失效</p>
      * <p>虽然GridCell也是一个Widget，但其很可能并不会专门设置ID。</p>
@@ -1888,107 +1886,114 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
      * @author DFish Team
      * @see TR
      */
-    public static class TD extends AbstractTd<TD> implements JsonWrapper<Object>{
+    public static class TD extends AbstractTd<TD> implements JsonWrapper<Object> {
         /**
          *
          */
         private static final long serialVersionUID = 4639610865052336483L;
+
         /**
          * 默认构造函数
          */
-        public TD(){
+        public TD() {
             super();
         }
+
         /**
          * 拷贝构造函数 相当于clone
-         * @param td  AbstractTd
+         *
+         * @param td AbstractTd
          */
-        public TD(AbstractTd<?> td){
+        public TD(AbstractTd<?> td) {
             super();
-            copyProperties(this,td);
+            copyProperties(this, td);
         }
 
 
         @Override
         public Object getPrototype() {
-            if(hasTdllInfo(this)){
-                JsonTd p=new JsonTd();
-                copyProperties(p,this);
-                if(isTextWidget(getNode())){
+            if (hasTdllInfo(this)) {
+                JsonTd p = new JsonTd();
+                copyProperties(p, this);
+                if (isTextWidget(getNode())) {
                     //把文本当做cell的text
-                    String text=getTextValue(getNode());
+                    String text = getTextValue(getNode());
                     p.setText(text);
                     p.setNode(null);
                     return p;
-                }else{
+                } else {
                     p.setNode(getNode());
                     return p;
                 }
-            }else{
-                Widget<?> w=getNode();
-                if(isTextWidget(getNode())){
-                    String text=getTextValue(getNode());
+            } else {
+                Widget<?> w = getNode();
+                if (isTextWidget(getNode())) {
+                    String text = getTextValue(getNode());
                     return text;
-                }else{
+                } else {
                     return w;
                 }
             }
         }
 
-        private static boolean hasTdllInfo(AbstractTd<?> td){
-            return td.getId()!=null||td.getHeight()!=null||
-                    td.getAlign()!=null||td.getVAlign()!=null||
-                    td.getColSpan()!=null||td.getRowSpan()!=null||
-                    td.getCls()!=null||td.getStyle()!=null ||//常用的属性排在前面
-                    td.getBeforeContent()!=null||td.getPrependContent()!=null||
-                    td.getAppendContent()!=null||td.getAfterContent()!=null||
-                    td.getGid()!=null||td.getHeightMinus()!=null||
-                    td.getMaxHeight()!=null||td.getMaxWidth()!=null||
-                    td.getMinHeight()!=null||td.getMinWidth()!=null||
-                    (td.getOn()!=null&&td.getOn().size()>0)||
-                    td.getWidth()!=null||td.getWidthMinus()!=null
-                    ||td.getLabelWidth()!=null;
+        private static boolean hasTdllInfo(AbstractTd<?> td) {
+            return td.getId() != null || td.getHeight() != null ||
+                    td.getAlign() != null || td.getVAlign() != null ||
+                    td.getColSpan() != null || td.getRowSpan() != null ||
+                    td.getCls() != null || td.getStyle() != null ||//常用的属性排在前面
+                    td.getBeforeContent() != null || td.getPrependContent() != null ||
+                    td.getAppendContent() != null || td.getAfterContent() != null ||
+                    td.getGid() != null || td.getHeightMinus() != null ||
+                    td.getMaxHeight() != null || td.getMaxWidth() != null ||
+                    td.getMinHeight() != null || td.getMinWidth() != null ||
+                    (td.getOn() != null && td.getOn().size() > 0) ||
+                    td.getWidth() != null || td.getWidthMinus() != null
+                    || td.getLabelWidth() != null;
         }
+
         /**
          * 取得html的内容。为了效率这个方法不再进行判断，所以只能跟在isTextWidget 后使用。
+         *
          * @param node Widget
          * @return String
          */
         private String getTextValue(Widget<?> node) {
-            Object prototype=node;
-            while (prototype instanceof JsonWrapper){
-                prototype=((JsonWrapper<?>)prototype).getPrototype();
+            Object prototype = node;
+            while (prototype instanceof JsonWrapper) {
+                prototype = ((JsonWrapper<?>) prototype).getPrototype();
             }
-            Html cast=(Html)prototype;
+            Html cast = (Html) prototype;
             return cast.getText();
         }
+
         /**
          * 是不是内容里只有Text部分是有效信息，如果是的话。这里要简化输出json
+         *
          * @param node
          * @return 是否文本组件
          */
         private static boolean isTextWidget(Widget<?> node) {
-            if(node==null){
+            if (node == null) {
                 return false;
             }
-            Object prototype=node;
-            while (prototype instanceof JsonWrapper){
-                prototype=((JsonWrapper<?>)prototype).getPrototype();
+            Object prototype = node;
+            while (prototype instanceof JsonWrapper) {
+                prototype = ((JsonWrapper<?>) prototype).getPrototype();
             }
-            if(!(prototype instanceof Html)){
+            if (!(prototype instanceof Html)) {
                 return false;
             }
-            Html html=(Html)prototype;
-            return html.getId()==null&&html.getHeight()==null&&
-                    html.getWidth()==null&&html.getEscape()==null&&
-                    html.getAlign()==null&&html.getVAlign()==null&&
-                    html.getCls()==null&&html.getStyle()==null &&//常用的属性排在前面
-                    html.getAppendContent()==null&&html.getPrependContent()==null&&
-                    html.getGid()==null&&html.getHeightMinus()==null&&
-                    html.getMaxHeight()==null&&html.getMaxWidth()==null&&
-                    html.getMinHeight()==null&&html.getMinWidth()==null&&
-                    (html.getOn()==null||html.getOn().size()==0)&&
-                    html.getScroll()==null&&html.getWidthMinus()==null;
+            Html html = (Html) prototype;
+            return html.getId() == null && html.getHeight() == null &&
+                    html.getWidth() == null && html.getEscape() == null &&
+                    html.getAlign() == null && html.getVAlign() == null &&
+                    html.getCls() == null && html.getStyle() == null &&//常用的属性排在前面
+                    html.getAppendContent() == null && html.getPrependContent() == null &&
+                    html.getGid() == null && html.getHeightMinus() == null &&
+                    html.getMaxHeight() == null && html.getMaxWidth() == null &&
+                    html.getMinHeight() == null && html.getMinWidth() == null &&
+                    (html.getOn() == null || html.getOn().size() == 0) &&
+                    html.getScroll() == null && html.getWidthMinus() == null;
         }
 
     }
@@ -2003,9 +2008,9 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
      * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
      * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
      *
-     * @see AbstractTd {@link Grid.Column}
-     * @author DFish Team
      * @param <T> 当前类型
+     * @author DFish Team
+     * @see AbstractTd {@link Grid.Column} {@link GridLeaf}
      * @since DFish 3.0
      */
     protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractNodeContainer<T> {
@@ -2014,11 +2019,13 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 构造函数
+         *
          * @param id 编号
          */
         public AbstractTr(String id) {
             super(id);
         }
+
         /**
          * 默认构造函数
          */
@@ -2032,7 +2039,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
         protected List<Grid.TR> rows;
 
 
-
         @Override
         @Deprecated
         public T add(Node w) {
@@ -2041,13 +2047,16 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 取得可折叠的子元素
+         *
          * @return List
          */
         public List<Grid.TR> getRows() {
             return rows;
         }
+
         /**
          * 设置可折叠的子元素
+         *
          * @param rows List
          */
         public void setRows(List<Grid.TR> rows) {
@@ -2058,40 +2067,46 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
         public String getType() {
             return null;
         }
+
         /**
          * 添加一个可折叠的行。
+         *
          * @param row GridRow
          * @return 本身，这样可以继续设置其他属性
          */
 
         public T addRow(Grid.TR row) {
-            if(rows==null){
-                rows=new ArrayList<Grid.TR>();
+            if (rows == null) {
+                rows = new ArrayList<Grid.TR>();
             }
             rows.add(row);
 
-            return (T)this;
+            return (T) this;
         }
 
         /**
          * 当前行是不是聚焦状态
+         *
          * @return Boolean
          */
         public Boolean getFocus() {
             return focus;
         }
+
         /**
          * 当前行是不是聚焦状态
+         *
          * @param focus Boolean
          * @return 本身，这样可以继续设置其他属性
          */
         public T setFocus(Boolean focus) {
             this.focus = focus;
-            return (T)this;
+            return (T) this;
         }
 
         /**
          * 是否可聚焦
+         *
          * @return Boolean
          */
         public Boolean getFocusable() {
@@ -2100,6 +2115,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 设置是否可聚焦
+         *
          * @param focusable Boolean
          * @return this
          */
@@ -2111,11 +2127,11 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
         @Override
         public T removeNodeById(String id) {
 
-            if (id == null||(rows==null&&data==null)) {
-                return (T)this;
+            if (id == null || (rows == null && data == null)) {
+                return (T) this;
             }
-            if(rows!=null){
-                for (Iterator<TR> iter = rows.iterator(); iter.hasNext();) {
+            if (rows != null) {
+                for (Iterator<TR> iter = rows.iterator(); iter.hasNext(); ) {
                     Grid.TR item = iter.next();
                     if (id.equals(item.getId())) {
                         iter.remove();
@@ -2125,7 +2141,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
                 }
             }
             if (data != null) {
-                for (Iterator<Map.Entry<String, Object>> iter = data.entrySet().iterator(); iter.hasNext();) {
+                for (Iterator<Map.Entry<String, Object>> iter = data.entrySet().iterator(); iter.hasNext(); ) {
                     Map.Entry<String, Object> entry = iter.next();
                     if (!(entry.getValue() instanceof Widget)) {
                         // FIXME 本不该出现
@@ -2154,36 +2170,37 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         @Override
         public List<Node> findNodes() {
-            List<Node> result=new ArrayList<>();
-            if(rows!=null){
-                for(Widget<?> o:rows){
-                    result.add( o);
+            List<Node> result = new ArrayList<>();
+            if (rows != null) {
+                for (Widget<?> o : rows) {
+                    result.add(o);
                 }
             }
-            if(data!=null){
-                for(Object o:data.values()){
-                    if(o instanceof Widget){
+            if (data != null) {
+                for (Object o : data.values()) {
+                    if (o instanceof Widget) {
                         //去除字符串
-                        result.add( (Widget<?>)o);
+                        result.add((Widget<?>) o);
                     }
                 }
             }
             return result;
         }
+
         @Override
         public boolean replaceNodeById(Node panel) {
             if (panel == null || panel.getId() == null) {
                 return false;
             }
             String id = panel.getId();
-            if(rows!=null){
+            if (rows != null) {
                 for (int i = 0; i < rows.size(); i++) {
                     Grid.TR item = rows.get(i);
                     if (id.equals(item.getId())) {
                         // 替换该元素
-                        rows.set(i, (Grid.TR)panel);
+                        rows.set(i, (Grid.TR) panel);
                         return true;
-                    } else  {
+                    } else {
                         boolean replaced = item.replaceNodeById(panel);
                         if (replaced) {
                             return true;
@@ -2191,19 +2208,19 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
                     }
                 }
             }
-            if(data!=null){
+            if (data != null) {
                 for (Iterator<Map.Entry<String, Object>> iter = data.entrySet()
-                        .iterator(); iter.hasNext();) {
+                        .iterator(); iter.hasNext(); ) {
                     Map.Entry<String, Object> entry = iter.next();
-                    if(!(entry.getValue() instanceof Widget)){
+                    if (!(entry.getValue() instanceof Widget)) {
                         //FIXME 本不该出现
                         continue;
                     }
-                    Widget<?> cast=(Widget<?>)entry.getValue();
+                    Widget<?> cast = (Widget<?>) entry.getValue();
                     if (id.equals(cast.getId())) {
                         entry.setValue(panel);
-                    } else if(cast instanceof Layout){
-                        boolean replaced = ((Layout<?>)cast).replaceNodeById(panel);
+                    } else if (cast instanceof Layout) {
+                        boolean replaced = ((Layout<?>) cast).replaceNodeById(panel);
                         if (replaced) {
                             return true;
                         }
@@ -2212,83 +2229,93 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
             }
             return false;
         }
+
         @Override
         public T setData(String key, Object value) {
-            if(value==null){
-                return (T)this;
+            if (value == null) {
+                return (T) this;
             }
 
-            if(data == null){
+            if (data == null) {
                 data = new LinkedHashMap<String, Object>();
             }
             // 如果插入的内容是String/Object  以及非GridCell的Widget需要做一层封装。
             data.put(key, value);
-            return (T)this;
+            return (T) this;
         }
-
 
 
         /**
          * 排序src
+         *
          * @return String
          */
         public String getSrc() {
             return src;
         }
+
         /**
          * 排序src
+         *
          * @param src String
          * @return 本身，这样可以继续设置其他属性
          */
         public T setSrc(String src) {
             this.src = src;
-            return (T)this;
+            return (T) this;
         }
+
         /**
          * 拷贝属性
-         * @param to AbstractTr
+         *
+         * @param to   AbstractTr
          * @param from AbstractTr
          */
-        protected void copyProperties(AbstractTr<?> to,AbstractTr<?> from){
+        protected void copyProperties(AbstractTr<?> to, AbstractTr<?> from) {
             super.copyProperties(to, from);
-            to.rows=from.rows;
-            to.focus=from.focus;
-            to.src=from.src;
-            to.focusable=from.focusable;
+            to.rows = from.rows;
+            to.focus = from.focus;
+            to.src = from.src;
+            to.focusable = from.focusable;
         }
     }
+
     /**
      * 和javascript端是对应的TR模型。
      * json中如果tr没有cls等额外属性，可能会简化显示它的data部分
      * 所以Tr默认不能显示按封装类格式。这时候json中的原型将有可能还是这个JsonTr的格式
      * 也有可能是Map格式。
-     * @author DFish team
      *
+     * @author DFish team
      */
     @SuppressWarnings("unchecked")
     protected static class JsonTr extends AbstractTr<JsonTr> {
         private static final long serialVersionUID = -1034767067781605568L;
 
     }
+
     /**
-     *  Td 表示一个Grid的单元格
+     * Td 表示一个Grid的单元格
      * <p>在一些复杂布局结构中，它可以占不止一行或不止一列</p>
      * <p>GridCell 有两种工作模式，他内部可以包含一个Widget或简单的包含一个文本，如果包含了widget文本模式将失效</p>
      * <p>虽然GridCell也是一个Widget，但其很可能并不会专门设置ID。虽然它是一个Layout，但它最多包含1个子节点。即其内容。</p>
-     * @author DFish Team
+     *
      * @param <T> 本身类型
+     * @author DFish Team
      * @see Grid.TD
      */
     protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractNodeContainer<T>
-            implements SingleNodeContainer<T ,Widget>,Alignable<T>, VAlignable<T> {
+            implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> {
 
         private static final long serialVersionUID = -7870476532478876521L;
+
         /**
          * 默认构造函数
          */
         public AbstractTd() {
             super(null);
         }
+
         protected Integer colSpan;
         protected Integer rowSpan;
         //	private String text;
@@ -2307,98 +2334,110 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
         /**
          * 这个这个单元格占几列。
          * 为空的时候相当于1
+         *
          * @return Integer
          */
         public Integer getColSpan() {
             return colSpan;
         }
+
         /**
          * 这个这个单元格占几列。
          * 为空的时候相当于1
+         *
          * @param colSpan Integer
          * @return 本身，这样可以继续设置其他属性
          */
         public T setColSpan(Integer colSpan) {
-            if(colSpan !=null){
-                if(colSpan <1){
+            if (colSpan != null) {
+                if (colSpan < 1) {
                     throw new java.lang.IllegalArgumentException("colspan must greater than 1");
                 }
-                if(colSpan ==1){
-                    colSpan =null;
+                if (colSpan == 1) {
+                    colSpan = null;
                 }
             }
             this.colSpan = colSpan;
-            return (T)this;
+            return (T) this;
         }
+
         /**
          * 这个这个单元格占几行。
          * 为空的时候相当于1
+         *
          * @return Integer
          */
         public Integer getRowSpan() {
             return rowSpan;
         }
+
         /**
          * 这个这个单元格占几行。
          * 为空的时候相当于1
+         *
          * @param rowSpan Integer
          * @return 本身，这样可以继续设置其他属性
          */
         public T setRowSpan(Integer rowSpan) {
-            if(rowSpan !=null){
-                if(rowSpan <1){
+            if (rowSpan != null) {
+                if (rowSpan < 1) {
                     throw new java.lang.IllegalArgumentException("rowspan must greater than 1");
                 }
-                if(rowSpan ==1){
-                    rowSpan =null;
+                if (rowSpan == 1) {
+                    rowSpan = null;
                 }
             }
             this.rowSpan = rowSpan;
-            return (T)this;
+            return (T) this;
         }
+
         /**
          * 部件(Widget)模式时， 取得单元格内部部件
+         *
          * @return Widget
          */
         @Override
         public Widget getNode() {
             return node;
         }
+
         /**
          * 部件(Widget)模式时， 设置单元格内部部件
+         *
          * @param node Widget
          * @return 本身，这样可以继续设置其他属性
          */
         @Override
         public T setNode(Widget node) {
-            this.node =  node;
-            return (T)this;
+            this.node = node;
+            return (T) this;
         }
+
         /**
-         *
          * GridCell 下只能有一个node，所以add和setNode是相同的功能
+         *
          * @param node Widget
          * @return 本身，这样可以继续设置其他属性
          */
         @Override
         public T add(Node node) {
-            if(node instanceof  Widget){
-                this.node = (Widget)node;
-            }else{
+            if (node instanceof Widget) {
+                this.node = (Widget) node;
+            } else {
                 throw new IllegalArgumentException("Widget");
             }
-            return (T)this;
+            return (T) this;
         }
 
         @Override
         public Widget<?> findNodeById(String id) {
-            if (id == null || node==null) {
+            if (id == null || node == null) {
                 return null;
             }
             if (id.equals(node.getId())) {
                 return node;
-            } else if(node instanceof Layout) {
-                Layout cast =(Layout)node;
+            } else if (node instanceof Layout) {
+                Layout cast = (Layout) node;
                 return (Widget) cast.findNodeById(id);
             }
             return null;
@@ -2412,29 +2451,30 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         @Override
         public T removeNodeById(String id) {
-            if (id == null || node==null) {
-                return (T)this;
+            if (id == null || node == null) {
+                return (T) this;
             }
-            if(id.equals(node.getId())){
-                node=null;
+            if (id.equals(node.getId())) {
+                node = null;
             }
-            if(node instanceof Layout) {
-                Layout cast =(Layout)node;
+            if (node instanceof Layout) {
+                Layout cast = (Layout) node;
                 cast.removeNodeById(id);
             }
-            return (T)this;
+            return (T) this;
         }
+
         @Override
         public boolean replaceNodeById(Node w) {
-            if (w == null || w.getId() == null || node==null) {
+            if (w == null || w.getId() == null || node == null) {
                 return false;
             }
             if (w.getId().equals(node.getId())) {
                 // 替换该元素
-                node=(Widget)w;
+                node = (Widget) w;
                 return true;
-            } else if(node instanceof Layout<?>) {
-                Layout cast =(Layout)node;
+            } else if (node instanceof Layout<?>) {
+                Layout cast = (Layout) node;
                 boolean replaced = cast.replaceNodeById(w);
                 if (replaced) {
                     return true;
@@ -2448,37 +2488,43 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
         public String getVAlign() {
             return vAlign;
         }
+
         @Override
         public T setVAlign(String vAlign) {
             this.vAlign = vAlign;
-            return (T)this;
+            return (T) this;
         }
+
         @Override
         public String getAlign() {
             return align;
         }
+
         @Override
         public T setAlign(String align) {
-            this.align=align;
-            return (T)this;
+            this.align = align;
+            return (T) this;
         }
+
         /**
          * 拷贝属性
-         * @param to AbstractTd
+         *
+         * @param to   AbstractTd
          * @param from AbstractTd
          */
-        protected void copyProperties(AbstractTd<?> to,AbstractTd<?> from){
+        protected void copyProperties(AbstractTd<?> to, AbstractTd<?> from) {
             super.copyProperties(to, from);
-            to.node=from.node;
-            to.align=from.align;
-            to.colSpan =from.colSpan;
-            to.rowSpan =from.rowSpan;
-            to.vAlign =from.vAlign;
-            to.labelWidth =from.labelWidth;
+            to.node = from.node;
+            to.align = from.align;
+            to.colSpan = from.colSpan;
+            to.rowSpan = from.rowSpan;
+            to.vAlign = from.vAlign;
+            to.labelWidth = from.labelWidth;
         }
 
         /**
          * 用于显示文本是否需要转义,不设置默认是true
+         *
          * @return Boolean
          */
         public Boolean getEscape() {
@@ -2487,6 +2533,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 用于显示文本是否需要转义,不设置默认是true
+         *
          * @param escape Boolean
          * @return 本身，这样可以继续设置其他属性
          */
@@ -2497,6 +2544,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+         *
          * @return String 格式化内容
          */
         public String getFormat() {
@@ -2505,6 +2553,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+         *
          * @param format String 格式化内容
          * @return 本身，这样可以继续设置其他属性
          */
@@ -2515,6 +2564,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 表单标题宽度。
+         *
          * @return Integer
          * @since 3.3
          */
@@ -2524,6 +2574,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
 
         /**
          * 表单标题宽度。
+         *
          * @param labelWidth Integer
          * @return 本身，这样可以继续设置其他属性
          * @since 3.3
@@ -2540,25 +2591,29 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
      * 如果这个node还是文本，可能会进一步简化显示成文本。
      * 所以Td默认不能显示按封装类格式。这时候json中的原型将有可能还是这个JsonTd的格式
      * 也有可能是Widget格式或者是text格式。
-     * @author DfishTeam
      *
+     * @author DfishTeam
      */
-    protected static class JsonTd extends AbstractTd<JsonTd> implements HasText<JsonTd>{
+    protected static class JsonTd extends AbstractTd<JsonTd> implements HasText<JsonTd> {
         /**
          *
          */
         private static final long serialVersionUID = -5125782398657967546L;
         private String text;
+
         /**
          * 文本模式时， 取得单元格内部文本的值
+         *
          * @return String
          */
         @Override
         public String getText() {
             return text;
         }
+
         /**
          * 文本模式时， 设置单元格内部文本的值
+         *
          * @param text String
          * @return 本身，这样可以继续设置其他属性
          */
@@ -2569,4 +2624,354 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
         }
     }
 
+    /**
+     * GridTreeItem 是可折叠表格中的折叠项
+     * <p>在GridRow中添加了下级可折叠的行的时候，GridTreeItem作为一个视觉标志出现在当前行({@link Grid.TR})上。
+     * 它前方有一个+号(或-号)点击有展开或折叠效果。</p>
+     * <p>多级别的GridTreeItem自动产生缩进效果</p>
+     *
+     * @author DFish Team
+     * @see Grid.TR
+     */
+    public static class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridLeaf>, HasText<GridLeaf> {
+
+        private static final long serialVersionUID = -7465823398383091843L;
+        private String text;
+        private Boolean escape;
+        private String src;
+        private Boolean sync;
+        private String success;
+        private String error;
+        private String complete;
+        private String filter;
+        private String format;
+        private Boolean line;
+        private Object tip;
+
+        public GridLeaf() {
+            super();
+        }
+
+        public GridLeaf(String text) {
+            super();
+            this.text = text;
+        }
+
+        /**
+         * 标题
+         *
+         * @return String
+         */
+        @Override
+        public String getText() {
+            return text;
+        }
+
+        /**
+         * 标题
+         *
+         * @param text String
+         * @return 本身，这样可以继续设置其他属性
+         */
+        @Override
+        public GridLeaf setText(String text) {
+            this.text = text;
+            return this;
+        }
+
+        /**
+         * 如果展开的内容是延迟加载的。将在这个URL所指定的资源中获取内容
+         *
+         * @return String
+         */
+        @Override
+        public String getSrc() {
+            return src;
+        }
+
+        /**
+         * 如果展开的内容是延迟加载的。将在这个URL所指定的资源中获取内容
+         *
+         * @param src String
+         * @return 本身，这样可以继续设置其他属性
+         */
+        @Override
+        public GridLeaf setSrc(String src) {
+            this.src = src;
+            return this;
+        }
+
+        @Override
+        public String getFormat() {
+            return format;
+        }
+
+        @Override
+        public GridLeaf setFormat(String format) {
+            this.format = format;
+            return this;
+        }
+
+        /**
+         * 是否显示树结构的辅助线
+         *
+         * @return Boolean
+         */
+        public Boolean getLine() {
+            return line;
+        }
+
+        /**
+         * 是否显示树结构的辅助线
+         *
+         * @param line Boolean
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public GridLeaf setLine(Boolean line) {
+            this.line = line;
+            return this;
+        }
+
+        /**
+         * 提示信息。设为true，提示信息将使用text参数的值。
+         *
+         * @return tip
+         */
+        public Object getTip() {
+            return tip;
+        }
+
+        /**
+         * 提示信息。设为true，提示信息将使用text参数的值。
+         *
+         * @param tip Boolean
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public GridLeaf setTip(Boolean tip) {
+            this.tip = tip;
+            return this;
+        }
+
+        /**
+         * 提示信息。设为true，提示信息将使用text参数的值。
+         *
+         * @param tip 提示信息
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public GridLeaf setTip(String tip) {
+            this.tip = tip;
+            return this;
+        }
+
+        @Override
+        public String getSuccess() {
+            return success;
+        }
+
+        @Override
+        public GridLeaf setSuccess(String success) {
+            this.success = success;
+            return this;
+        }
+
+        @Override
+        public String getError() {
+            return error;
+        }
+
+        @Override
+        public GridLeaf setError(String error) {
+            this.error = error;
+            return this;
+        }
+
+        @Override
+        public String getComplete() {
+            return complete;
+        }
+
+        @Override
+        public GridLeaf setComplete(String complete) {
+            this.complete = complete;
+            return this;
+        }
+
+        @Override
+        public String getFilter() {
+            return filter;
+        }
+
+        @Override
+        public GridLeaf setFilter(String filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        @Override
+        public GridLeaf setEscape(Boolean escape) {
+            this.escape = escape;
+            return this;
+        }
+
+        @Override
+        public Boolean getEscape() {
+            return escape;
+        }
+
+        @Override
+        public GridLeaf setSync(Boolean sync) {
+            this.sync = sync;
+            return this;
+        }
+
+        @Override
+        public Boolean getSync() {
+            return sync;
+        }
+    }
+
+    /**
+     * Grid专用的单选框
+     *
+     * @author lamontYu - DFish Team
+     */
+    public static class Radio extends AbstractBox<Radio> {
+        private static final long serialVersionUID = -8886839296833661491L;
+
+        public Radio(String name, String label, Boolean checked, Object value, String text) {
+            super(name, label, checked, value, text);
+        }
+
+        @Override
+        public String getType() {
+            return "GridRadio";
+        }
+    }
+
+    /**
+     * Description: 用于grid的自增序号列
+     * Copyright:   Copyright (c)2017
+     * Company:     rongji
+     *
+     * @author DFish Team - lamontYu
+     * @version 1.0
+     * Create at:   2017-8-10 上午10:17:30
+     * <p>
+     * Modification History:
+     * Date			Author				Version		Description
+     * ------------------------------------------------------------------
+     * 2017-8-10	DFish Team - lamontYu	1.0			1.0 Version
+     */
+    public static class RowNum extends AbstractWidget<RowNum> {
+
+        private static final long serialVersionUID = -8038094039396279588L;
+
+        public RowNum() {
+            super();
+        }
+
+        public RowNum(Integer start) {
+            super();
+            this.start = start;
+        }
+
+        @Override
+        public String getType() {
+            return "GridRowNum";
+        }
+
+        private Integer start;
+
+        /**
+         * 初始值
+         *
+         * @return Integer
+         */
+        public Integer getStart() {
+            return start;
+        }
+
+        /**
+         * 设置初始值
+         *
+         * @param start Integer
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public RowNum setStart(Integer start) {
+            this.start = start;
+            return this;
+        }
+
+    }
+
+    /**
+     * Grid专用的复选框
+     *
+     * @author lamontYu - DFish Team
+     */
+    public static class TripleBox extends AbstractBox<TripleBox> {
+        private static final long serialVersionUID = -4770736316914887083L;
+
+        private Boolean partialSubmit;
+        private Boolean checkAll;
+
+        /**
+         * 构造函数
+         *
+         * @param name    名称
+         * @param label   标题
+         * @param checked 选中状态
+         * @param value   值
+         * @param text    显示文本
+         */
+        public TripleBox(String name, String label, Boolean checked, Object value, String text) {
+            super(name, label, checked, value, text);
+        }
+
+        @Override
+        public String getType() {
+            return "GridTripleBox";
+        }
+
+        /**
+         * 半选状态是否提交数据
+         *
+         * @return Boolean
+         */
+        public Boolean getPartialSubmit() {
+            return partialSubmit;
+        }
+
+        /**
+         * 半选状态是否提交数据
+         *
+         * @param partialSubmit Boolean
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public TripleBox setPartialSubmit(Boolean partialSubmit) {
+            this.partialSubmit = partialSubmit;
+            return this;
+        }
+
+        /**
+         * 选中所有
+         *
+         * @return Boolean
+         */
+        public Boolean getCheckAll() {
+            return checkAll;
+        }
+
+        /**
+         * 选中所有
+         *
+         * @param checkAll Boolean
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public TripleBox setCheckAll(Boolean checkAll) {
+            this.checkAll = checkAll;
+            return this;
+        }
+
+    }
 }
