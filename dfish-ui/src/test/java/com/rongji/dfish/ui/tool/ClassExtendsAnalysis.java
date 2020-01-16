@@ -69,7 +69,7 @@ public class ClassExtendsAnalysis extends Application {
 
         for(Map.Entry<String,Object[]>entry:entries) {
             Object[] o=entry.getValue();
-//            System.out.println(entry.getKey()+"\t"+o[0]+"\t"+o[1]);
+            System.out.println(entry.getKey());
             Label lb=new Label(entry.getKey()+"("+entry.getValue()[0]+")");
             lb.setPadding(new Insets(5));
             props.getChildren().add(lb);

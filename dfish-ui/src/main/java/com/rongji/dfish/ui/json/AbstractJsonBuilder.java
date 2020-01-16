@@ -6,14 +6,6 @@ package com.rongji.dfish.ui.json;
  *
  */
 public abstract class AbstractJsonBuilder implements JsonBuilder {
-	@Override
-    public void removeProperty(String propName){
-		throw new java.lang.UnsupportedOperationException();
-	}
-	@Override
-    public void replaceProperty(String propName, String newName){
-		throw new java.lang.UnsupportedOperationException();
-	}
 
 	/**
 	 * 转义JSON格式的字符串

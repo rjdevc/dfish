@@ -153,8 +153,9 @@ public class JsonFormat {
 	public static String toJson(Object o){
 		StringBuilder sb=new StringBuilder();
 		Stack<PathInfo> path =new Stack<PathInfo>();
-		path.add(new PathInfo(null,o));
+		path.push(new PathInfo(null,o));
 		buildJson(o, sb, path);
+		//help gc
 		path.clear();
 		return sb.toString();
 	}
@@ -165,8 +166,8 @@ public class JsonFormat {
 	  * @return String
 	  * @since dfish3.1
 	  */
-	 public static String formatJson(Object o){
-		 StringBuilder sb=new StringBuilder();
+	public static String formatJson(Object o){
+	    StringBuilder sb=new StringBuilder();
 		Stack<PathInfo> path =new Stack<PathInfo>();
 		buildJson(o, sb, path);
 		path.clear();

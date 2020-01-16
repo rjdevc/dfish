@@ -48,26 +48,20 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
             if ((m.getName().startsWith("get") || m.getName().startsWith("is"))
                     && m.getParameterTypes().length == 0) {
                 // 过时的注解不输出
-                if (m.getAnnotation(Deprecated.class) != null) {
-                    continue;
-                }
-                if (m.getAnnotation(Transient.class) != null) {
+                if (m.getAnnotation(Deprecated.class) != null||
+                        m.getAnnotation(Transient.class) != null) {
                     continue;
                 }
                 String fieldName = getFiledNameByGetterName(m.getName());
-                if (BAN_NAMES.contains(fieldName)) {
+                if (STOP_NAMES.contains(fieldName)) {
                     continue;
                 }
-                String propName = PROP_NAME_MAP.get(fieldName);
-                if (propName == null) {
-                    propName = fieldName;
-                }
-                if (propNames.add(propName)) {
-                    methods.add(new ReflectAppender(propName, m));
+                if (propNames.add(fieldName)) {
+                    methods.add(new ReflectAppender(fieldName, m));
                 } else {
                     //取出已经压入的属性，判断其是不是子类自己添加的，因为子类可以更改返回值成更小的范围
                     for (JsonPropAppender g : methods) {
-                        if (g.getPropName().equals(propName) && g instanceof ReflectAppender) {
+                        if (g.getPropName().equals(fieldName) && g instanceof ReflectAppender) {
                             ReflectAppender cast = (ReflectAppender) g;
                             Class<?> oldClz = cast.getterMethod.getDeclaringClass();
                             Class<?> newClz = m.getDeclaringClass();
@@ -82,50 +76,20 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                             break;
                         }
                     }
-                    LogUtil.debug(getClass(), "find a new property {name:'" + propName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
+                    LogUtil.debug(getClass(), "find a new property {name:'" + fieldName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
                 }
             }
-            Collections.sort(methods, new java.util.Comparator<JsonPropAppender>() {
-                @Override
-                public int compare(JsonPropAppender o1,
-                                   JsonPropAppender o2) {
+            Collections.sort(methods,(o1, o2)-> {
                     String name1 = o1.getPropName();
                     String name2 = o2.getPropName();
                     int pos1 = ORDERED_PORPS.indexOf(name1);
                     int pos2 = ORDERED_PORPS.indexOf(name2);
-                    if (pos1 >= 0 && pos2 >= 0) {
-                        return pos1 - pos2;
-                    } else if (pos1 >= 0) {
-                        return -1;
-                    } else if (pos2 >= 0) {
-                        return 1;
+                    if (pos1 >= 0 ) {
+                        return pos2>=0 ? pos1-pos2 : -1;
                     } else {
-                        return name1.compareTo(name2);
+                        return pos2 >= 0 ? 1 : name1.compareTo(name2);
                     }
-                }
             });
-        }
-    }
-
-    @Override
-    public void removeProperty(String propName) {
-        for (Iterator<JsonPropAppender> iter = methods.iterator(); iter.hasNext(); ) {
-            JsonPropAppender g = iter.next();
-            if (propName.equals(g.getPropName())) {
-                iter.remove();
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void replaceProperty(String propName, String newName) {
-        for (Iterator<JsonPropAppender> iter = methods.iterator(); iter.hasNext(); ) {
-            JsonPropAppender g = iter.next();
-            if (propName.equals(g.getPropName())) {
-                g.setPropName(newName);
-                break;
-            }
         }
     }
 
@@ -140,53 +104,29 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
         return methods;
     }
 
-    private static final HashMap<String, String> PROP_NAME_MAP = new HashMap<String, String>();
-    private static final HashSet<String> BAN_NAMES = new HashSet<String>();
+//    private static final HashMap<String, String> PROP_NAME_MAP = new HashMap<String, String>();
+    private static final HashSet<String> STOP_NAMES = new HashSet<String>();
     /**
      * 指定以下属性在JSON中按指定的顺序排列，而其他未考虑到的属性，排在json背后，并按字母表顺序排列
      */
     public static final List<String> ORDERED_PORPS = Arrays.asList(
-            //控制属性
-            "type", "id", "gid", "func", "face",
-            //普遍属性
-            "name", "label", "title", "value", "text", "options",
-            //细节属性
-            "src", "format", "legend", "checked", "multiple", "placeholder", "target",
-            "suggest", "dropsrc", "step", "picker", "nobr", "nocache", "strict", "checkmodify", "dft", "focus", "labelWidth", "description", "tip",
-            //表单属性
-            "readonly", "disabled", "hidden", "star", "hideTitle",
-            //样式属性
-            "cls", "styleClass", "style", "height", "width", "hmin", "wmin", "align", "valign", "dir", "space", "scroll", "scrollClass",
-            //样式细节
-            "focusable", "focusmultiple", "group", "groups",
-            //校验
-            "notnull", "required", "requiredtext",
-            "minlength", "minlengthtext", "maxlength", "maxlengthtext",
-            "minsize", "minsizetext", "maxsize", "maxsizetext",
-            "minvalue", "minvaluetext", "maxvalue", "maxvaluetext",
-            "pattern", "patterntext", "comparemode", "compare", "comparetext", "groups",
-            //子属性
-            "pub", "columns", "thead", "tbody", "rows", "data", "nodes", "validate", "validategroup", "events", "on",
-            //rows有两个Grid里面有，Textarea里面也有。因为textarea建议使用height来控制，所以这里排序按Grid为准
-            //
+            "type", "id","face",
+            "label","value","text",
+            "cls","style","width","height",
+            "minWidth","maxWidth","minHeight","maxHeight",
+            "widthMinus","heightMinus","align","vAlign","scroll",
+            "focus","pub","src","target",
+            "node","nodes","on","data",
             "NO_EXISTS"//占位符该属性不存在
     );
 
     static {
         /*
-         * 转化元素属性成json属性
-         */
-
-        /*
          * 标识不要关心这部分属性
          */
-        BAN_NAMES.add("");
-        BAN_NAMES.add("class");
-        BAN_NAMES.add("declaringClass");
-
-        BAN_NAMES.add("hideTitle");
-        BAN_NAMES.add("autoEscape");
-        BAN_NAMES.add("star");
+        STOP_NAMES.add("");
+        STOP_NAMES.add("class");
+        STOP_NAMES.add("declaringClass");
     }
 
     private static String getFiledNameByGetterName(String name) {

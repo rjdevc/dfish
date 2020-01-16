@@ -21,26 +21,26 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 		super(clz);
 		for(int i=0;i<methods.size();i++){
 			JsonPropAppender jbpg=methods.get(i);
-			if("beforecontent".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("beforecontent"){
+			if("beforeContent".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("beforeContent"){
 					@Override
                     protected String getValue(Object w) {
 						return ((Widget<?>)w).getBeforeContent();
 					}});
-			}else if("prependcontent".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("prependcontent"){
+			}else if("prependContent".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("prependContent"){
 					@Override
                     protected String getValue(Object w) {
 						return ((Widget<?>)w).getPrependContent();
 					}});
-			}else if("appendcontent".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("appendcontent"){
+			}else if("appendContent".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("appendContent"){
 					@Override
                     protected String getValue(Object w) {
 						return ((Widget<?>)w).getAppendContent();
 					}});
-			}else if("aftercontent".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("aftercontent"){
+			}else if("afterContent".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("afterContent"){
 					@Override
                     protected String getValue(Object w) {
 						return ((Widget<?>)w).getAfterContent();
@@ -81,43 +81,43 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                     protected String getValue(Object w) {
 						return  ((Widget<?>)w).getWidth();
 					}});
-			}else if("maxheight".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("maxheight"){
+			}else if("maxHeight".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("maxHeight"){
 					@Override
                     protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMaxHeight();
 					}});
-			}else if("maxwidth".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("maxwidth"){
+			}else if("maxWidth".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("maxWidth"){
 					@Override
                     protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMaxWidth();
 					}});
-			}else if("minheight".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("minheight"){
+			}else if("minHeight".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("minHeight"){
 					@Override
                     protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMinHeight();
 					}});
-			}else if("minwidth".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("minwidth"){
+			}else if("minWidth".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("minWidth"){
 					@Override
                     protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMinWidth();
 					}});
-			}else if("minwidth".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("minwidth"){
+			}else if("minWidth".equals(jbpg.getPropName())){
+				methods.set(i, new WidgetStringPropAppender("minWidth"){
 					@Override
                     protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMinWidth();
 					}});
-			}else if("hmin".equals(jbpg.getPropName())){
+			}else if("heightMinus".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetIntegerPropAppender("hmin"){
 					@Override
                     protected Integer getValue(Object w) {
 						return  ((Widget<?>)w).getHeightMinus();
 					}});
-			}else if("wmin".equals(jbpg.getPropName())){
+			}else if("widthMinus".equals(jbpg.getPropName())){
 				methods.set(i, new WidgetIntegerPropAppender("wmin"){
 					@Override
                     protected Integer getValue(Object w) {
@@ -181,9 +181,9 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 							return ((Alignable<?>)w).getAlign();
 						}});
 				}
-			} else if("valign".equals(jbpg.getPropName())){
+			} else if("vAlign".equals(jbpg.getPropName())){
 			    if(VAlignable.class.isAssignableFrom(clz)){
-					methods.set(i, new WidgetStringPropAppender("valign"){
+					methods.set(i, new WidgetStringPropAppender("vAlign"){
 						@Override
                         protected String getValue(Object w) {
 							return ((VAlignable<?>)w).getVAlign();
@@ -232,21 +232,13 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 			init("path:pub;" +
 					"path:hiddens,*;" +
 					"path:options,*;" +
-					"type:buttonbar,path:nodes,type:button;" +
-					"type:button,path:nodes,type:button;" +
-					"type:ablum,path:nodes,type:img;" +
-					"type:tree,path:nodes,type:leaf;" +
-					"type:leaf,path:nodes,type:leaf;" +
+					"type:ButtonBar,path:nodes,type:Button;" +
+					"type:Button,path:nodes,type:Button;" +
+					"type:Ablum,path:nodes,type:Img;" +
+					"type:Tree,path:nodes,type:Leaf;" +
+					"type:Leaf,path:nodes,type:Leaf;" +
+					"type:Calendar,path:nodes,type:CalendarItem;" +
 					"path:split;");
-//			String hideTypeConfig=null;
-//			try{
-//				ResourceBundle rb=ResourceBundle.getBundle("com.rongji.dfish.ui.json.WidgetJsonBuilder");
-//				hideTypeConfig=rb.getString("hideType");
-////				J.LOG.info("hideType config = "+hideTypeConfig);
-//			}catch(Exception ex){
-//				J.LOG.warn("can NOT load hideType config");
-//			}
-//			init(hideTypeConfig);
 		}
 
 		@Override
@@ -308,7 +300,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 					}
 				}
 			}
-			LogUtil.info(getClass(), root.show());
+			LogUtil.lazyDebug(getClass(), ()->root.show());
 		}
 		public boolean match(Stack<PathInfo> path){
 			if(root.subs==null){
@@ -446,32 +438,6 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 				this.path=expr.substring(5);
 			}
 		}
-//		private boolean showType(Stack<PathInfo> path) {
-//			if(path.size()>0){
-//				PathInfo curInfo=path.peek();
-//				boolean show= !"pub".equals(curInfo.getPropName());
-//				if(show&&path.size()>1){
-//					PathInfo theInfo=path.get(path.size()-2);
-//					show=!"options".equals(theInfo.getPropName())&&
-//						!"hiddens".equals(theInfo.getPropName());
-//				}
-//				if (show&&path.size()>2){
-//					PathInfo theInfo=path.get(path.size()-3);
-//					if(theInfo.getPropValue() instanceof JsonObject
-//							&& curInfo.getPropValue() instanceof JsonObject){
-//						String theType=((JsonObject)(theInfo.getPropValue())).getType();
-//						String curType=((JsonObject)(curInfo.getPropValue())).getType();
-//						show= !("buttonbar".equals(theType)&&"button".equals(curType))&&
-//								!("button".equals(theType)&&"button".equals(curType))&&
-//								!("album".equals(theType)&&"img".equals(curType))&&
-//								!("leaf".equals(theType)&&"leaf".equals(curType))&&
-//								!("tree".equals(theType)&&"leaf".equals(curType));
-//					}
-//				}
-//				return show;
-//			}
-//			return true;
-//		}
 	}
 	public static abstract class WidgetPropAppender implements JsonPropAppender{
 		public WidgetPropAppender(String propName){
@@ -487,7 +453,6 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 			this. propName=propName;
 		}
 
-//		protected abstract  T getValue(Widget<?> w);
 	}
 	public static  abstract class WidgetStringPropAppender extends WidgetPropAppender{
 		public WidgetStringPropAppender(String propName) {
