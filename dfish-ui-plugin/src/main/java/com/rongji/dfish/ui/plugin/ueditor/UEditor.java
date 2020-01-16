@@ -9,25 +9,20 @@ import java.util.Map;
 /**
  * @author LinLW
  */
-public class Ueditor extends AbstractInput<Ueditor, String> {
+public class UEditor extends AbstractInput<UEditor, String> {
 
     private static final long serialVersionUID = 3578548092631912403L;
 
     private Map<String, Object> option;
 
-    @Override
-    public String getType() {
-        return "ueditor";
-    }
-
-    public Ueditor(String name, String label, String value) {
+    public UEditor(String name, String label, String value) {
         this.setName(name);
         this.setValue(value);
         this.setLabel(label);
     }
 
     @Override
-    public Ueditor setValue(Object value) {
+    public UEditor setValue(Object value) {
         this.value = toString(value);
         return this;
     }
@@ -36,12 +31,12 @@ public class Ueditor extends AbstractInput<Ueditor, String> {
         return option;
     }
 
-    public Ueditor setOption(Map<String, Object> option) {
+    public UEditor setOption(Map<String, Object> option) {
         this.option = option;
         return this;
     }
 
-    public Ueditor setOption(String key, Object value) {
+    public UEditor setOption(String key, Object value) {
         if (this.option == null) {
             this.option = new HashMap<>();
         }
@@ -49,7 +44,7 @@ public class Ueditor extends AbstractInput<Ueditor, String> {
         return this;
     }
 
-    public Ueditor removeOption(String key) {
+    public UEditor removeOption(String key) {
         if (this.option != null) {
             this.option.remove(key);
         }

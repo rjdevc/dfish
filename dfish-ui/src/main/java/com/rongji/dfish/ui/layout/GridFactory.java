@@ -4,6 +4,7 @@ import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.Statusful;
 import com.rongji.dfish.ui.widget.Toggle;
 
 import java.beans.Transient;

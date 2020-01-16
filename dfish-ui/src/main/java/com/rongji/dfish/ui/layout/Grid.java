@@ -834,8 +834,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
         public Column setTripleBox(String boxName, String checkedField, Boolean required, String sync) {
-            TripleBox tripleBox = new TripleBox(boxName, null, null, null, null);
-            tripleBox.setSync(sync).addValidate(new Validate().setRequired(required));
+            TripleBox tripleBox = new TripleBox(boxName, null, null, null, null).setSync(sync);
+            if (required != null && required) {
+                tripleBox.addValidate(Validate.required(true));
+            }
             return setTripleBox(tripleBox, checkedField);
         }
 
@@ -897,8 +899,11 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
         public Column setRadio(String boxName, String checkedField, Boolean required, String sync) {
-            Radio radio = new Radio(boxName, null, null, null, null);
-            radio.setSync(sync).addCls(sync).addValidate(new Validate().setRequired(required));
+            Radio radio = new Radio(boxName, null, null, null, null).setSync(sync);
+            if (required != null && required) {
+                radio.addValidate(Validate.required(true));
+            }
+
             return setRadio(radio, checkedField);
         }
 
@@ -954,7 +959,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column radio(String checkedField, String width, String sync) {
-            return new Column(null, width).setRadio(BOX_NAME, checkedField, null, sync);
+            return new Column(null, width).setRadio(BOX_NAME, checkedField, false, sync);
         }
 
         /**
@@ -1189,8 +1194,8 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
                 return this;
             }
             Boolean required = null;
-            if (box.getValidate() != null) {
-                required = box.getValidate().getRequired();
+            if (box.getValidate() != null && box.getValidate().getRequired() != null) {
+                required = box.getValidate().getRequired().getValue();
             }
             if (box instanceof com.rongji.dfish.ui.form.TripleBox || box instanceof CheckBox) {
                 setTripleBox(box.getName(), null, required, box.getSync());
@@ -1339,7 +1344,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         public static final String STATUS_DESC = "desc";
 
         private String field;
-        private Boolean isNumber;
+        private Boolean number;
         private String status;
         private String src;
 
@@ -1368,18 +1373,18 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          *
          * @return Boolean
          */
-        public Boolean getIsNumber() {
-            return isNumber;
+        public Boolean getNumber() {
+            return number;
         }
 
         /**
          * 设置是否按照数字方式排序
          *
-         * @param isNumber 按照数字方式排序
+         * @param number 按照数字方式排序
          * @return 本身，这样可以继续设置其他属性
          */
-        public Sort setIsNumber(Boolean isNumber) {
-            this.isNumber = isNumber;
+        public Sort setNumber(Boolean number) {
+            this.number = number;
             return this;
         }
 
@@ -2850,10 +2855,6 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     public static class RowNum extends AbstractWidget<RowNum> {
 
         private static final long serialVersionUID = -8038094039396279588L;
-
-        public RowNum() {
-            super();
-        }
 
         public RowNum(Integer start) {
             super();

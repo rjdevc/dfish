@@ -37,7 +37,7 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * DFISH事件-当widget的子节点有增删改其中一种变化时触发
      */
-    String EVENT_NODECHANGE = "nodeChange";
+    String EVENT_NODE_CHANGE = "nodeChange";
     /**
      * DFISH事件-当 leaf tr 等widget 展开时触发
      */
@@ -58,15 +58,15 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * WINDOW事件-文档打印之后运行的脚本
      */
-    String EVENT_AFTERPRINT = "afterPrint";
+    String EVENT_AFTER_PRINT = "afterPrint";
     /**
      * WINDOW事件-文档打印之前运行的脚本
      */
-    String EVENT_BEFOREPRINT = "beforePrint";
+    String EVENT_BEFORE_PRINT = "beforePrint";
     /**
      * WINDOW事件-文档卸载之前运行的脚本
      */
-    String EVENT_BEFOREUNLOAD = "beforeUnload";
+    String EVENT_BEFORE_UNLOAD = "beforeUnload";
     /**
      * WINDOW事件-在错误发生时运行的脚本
      */
@@ -74,7 +74,7 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * WINDOW事件-当前 URL 的锚部分(以 '#' 号为开始) 发生改变时触发的脚本
      */
-    String EVENT_HASHCHANGE = "hashChange";
+    String EVENT_HASH_CHANGE = "hashChange";
     /**
      * WINDOW事件-页面结束加载之后触发
      */
@@ -94,15 +94,15 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * WINDOW事件-当窗口隐藏时运行的脚本
      */
-    String EVENT_PAGEHIDE = "pageHide";
+    String EVENT_PAGE_HIDE = "pageHide";
     /**
      * WINDOW事件-当窗口成为可见时运行的脚本
      */
-    String EVENT_PAGESHOW = "pageShow";
+    String EVENT_PAGE_SHOW = "pageShow";
     /**
      * WINDOW事件-当窗口历史记录改变时运行的脚本
      */
-    String EVENT_POPSTATE = "popState";
+    String EVENT_POP_STATE = "popState";
     /**
      * WINDOW事件-当文档执行撤销（redo）时运行的脚本
      */
@@ -133,7 +133,7 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * FORM事件-在元素值被改变前运行的脚本
      */
-    String EVENT_BEFORECHANGE = "beforeChange";
+    String EVENT_BEFORE_CHANGE = "beforeChange";
     /**
      * FORM事件-在元素值被改变时运行的脚本
      */
@@ -141,7 +141,7 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * FORM事件-当上下文菜单被触发时运行的脚本
      */
-    String EVENT_CONTEXTMENU = "contextMenu";
+    String EVENT_CONTEXT_MENU = "contextMenu";
     /**
      * FORM事件-当元素失去焦点时运行的脚本
      */
@@ -149,11 +149,11 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * FORM事件-在表单改变时运行的脚本
      */
-    String EVENT_FORMCHANGE = "formChange";
+    String EVENT_FORM_CHANGE = "formChange";
     /**
      * FORM事件-当表单获得用户输入时运行的脚本
      */
-    String EVENT_FORMINPUT = "formInput";
+    String EVENT_FORM_INPUT = "formInput";
     /**
      * FORM事件-当元素获得用户输入时运行的脚本
      */
@@ -184,15 +184,15 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * KEYBOARD事件-在用户按下按键时触发。
      */
-    String EVENT_KEYDOWN = "keyDown";
+    String EVENT_KEY_DOWN = "keyDown";
     /**
      * KEYBOARD事件-在用户敲击按钮时触发。
      */
-    String EVENT_KEYPRESS = "keyPress";
+    String EVENT_KEY_PRESS = "keyPress";
     /**
      * KEYBOARD事件-当用户释放按键时触发。
      */
-    String EVENT_KEYUP = "keyUp";
+    String EVENT_KEY_UP = "keyUp";
 
     /* 以下是MOUSE事件 */
     /**
@@ -202,7 +202,7 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * MOUSE事件-元素上发生鼠标双击时触发。
      */
-    String EVENT_DBLCLICK = "dblClick";
+    String EVENT_DBL_CLICK = "dblClick";
     /**
      * MOUSE事件-元素被拖动时运行的脚本。
      */
@@ -210,23 +210,23 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * MOUSE事件-在拖动操作末端运行的脚本。
      */
-    String EVENT_DRAGEND = "dragend";
+    String EVENT_DRAG_END = "dragEnd";
     /**
      * MOUSE事件-当元素元素已被拖动到有效拖放区域时运行的脚本。
      */
-    String EVENT_DRAGENTER = "dragEnter";
+    String EVENT_DRAG_ENTER = "dragEnter";
     /**
      * MOUSE事件-当元素离开有效拖放目标时运行的脚本。
      */
-    String EVENT_DRAGLEAVE = "dragLeave";
+    String EVENT_DRAG_LEAVE = "dragLeave";
     /**
      * MOUSE事件-当元素在有效拖放目标上正在被拖动时运行的脚本。
      */
-    String EVENT_DRAGOVER = "dragOver";
+    String EVENT_DRAG_OVER = "dragOver";
     /**
      * MOUSE事件-在拖动操作开端运行的脚本。
      */
-    String EVENT_DRAGSTART = "dragStart";
+    String EVENT_DRAG_START = "dragStart";
     /**
      * MOUSE事件-当被拖元素正在被拖放时运行的脚本。
      */
@@ -234,27 +234,27 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * MOUSE事件-当元素上按下鼠标按钮时触发。
      */
-    String EVENT_MOUSEDOWN = "mouseDown";
+    String EVENT_MOUSE_DOWN = "mouseDown";
     /**
      * MOUSE事件-当鼠标指针移动到元素上时触发。
      */
-    String EVENT_MOUSEMOVE = "mouseMove";
+    String EVENT_MOUSE_MOVE = "mouseMove";
     /**
      * MOUSE事件-当鼠标指针移出元素时触发。
      */
-    String EVENT_MOUSEOUT = "mouseOut";
+    String EVENT_MOUSE_OUT = "mouseOut";
     /**
      * MOUSE事件-当鼠标指针移动到元素上时触发。
      */
-    String EVENT_MOUSEOVER = "mouseOver";
+    String EVENT_MOUSE_OVER = "mouseOver";
     /**
      * MOUSE事件-当在元素上释放鼠标按钮时触发。
      */
-    String EVENT_MOUSEUP = "mouseUp";
+    String EVENT_MOUSE_UP = "mouseUp";
     /**
      * MOUSE事件-当鼠标滚轮正在被滚动时运行的脚本。
      */
-    String EVENT_MOUSEWHEEL = "mouseWheel";
+    String EVENT_MOUSE_WHEEL = "mouseWheel";
     /**
      * MOUSE事件-当元素滚动条被滚动时运行的脚本。
      */
@@ -271,11 +271,11 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * MEDIA事件-当媒介能够无需因缓冲而停止即可播放至结尾时运行的脚本。
      */
-    String EVENT_CANPLAYTHROUGH = "canPlayThrough";
+    String EVENT_CAN_PLAY_THROUGH = "canPlayThrough";
     /**
      * MEDIA事件-当媒介长度改变时运行的脚本。
      */
-    String EVENT_DURATIONCHANGE = "durationChange";
+    String EVENT_DURATION_CHANGE = "durationChange";
     /**
      * MEDIA事件-当发生故障并且文件突然不可用时运行的脚本（比如连接意外断开时）。
      */
@@ -291,11 +291,11 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * MEDIA事件-当元数据（比如分辨率和时长）被加载时运行的脚本。
      */
-    String EVENT_LOADEDMETADATA = "loadedMetadata";
+    String EVENT_LOADED_METADATA = "loadedMetadata";
     /**
      * MEDIA事件-在文件开始加载且未实际加载任何数据前运行的脚本。
      */
-    String EVENT_LOADSTART = "loadStart";
+    String EVENT_LOAD_START = "loadStart";
     /**
      * MEDIA事件-当媒介被用户或程序暂停时运行的脚本。
      */
@@ -315,11 +315,11 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * MEDIA事件-每当回放速率改变时运行的脚本（比如当用户切换到慢动作或快进模式）。
      */
-    String EVENT_RATECHANGE = "rateChange";
+    String EVENT_RATE_CHANGE = "rateChange";
     /**
      * MEDIA事件-每当就绪状态改变时运行的脚本（就绪状态监测媒介数据的状态）。
      */
-    String EVENT_READYSTATECHANGE = "readyStateChange";
+    String EVENT_READY_STATE_CHANGE = "readyStateChange";
     /**
      * MEDIA事件-当 seeking 属性设置为 false（指示定位已结束）时运行的脚本。
      */
@@ -339,12 +339,12 @@ public interface EventTarget<T extends EventTarget<T>> {
     /**
      * MEDIA事件-当播放位置改变时（比如当用户快进到媒介中一个不同的位置时）运行的脚本。
      */
-    String EVENT_TIMEUPDATE = "timeUpdate";
+    String EVENT_TIME_UPDATE = "timeUpdate";
 
     /**
      * MEDIA事件-每当音量改变时（包括将音量设置为静音）时运行的脚本。
      */
-    String EVENT_VOLUMECHANGE = "volumeChange";
+    String EVENT_VOLUME_CHANGE = "volumeChange";
     /**
      * MEDIA事件-当媒介已停止播放但打算继续播放时（比如当媒介暂停已缓冲更多数据）运行脚本
      */

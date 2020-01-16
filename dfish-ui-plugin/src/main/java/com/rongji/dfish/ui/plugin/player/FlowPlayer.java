@@ -1,25 +1,19 @@
 package com.rongji.dfish.ui.plugin.player;
 
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.plugin.carousel.CarouselOption;
-
-import java.util.List;
 
 /**
  * 流播放器
  */
-public class Flowplayer extends AbstractWidget<Flowplayer> {
+public class FlowPlayer extends AbstractWidget<FlowPlayer> {
 
-	@Override
-	public String getType() {
-		return "flowplayer";
-	}
+	private static final long serialVersionUID = 201444129291547600L;
 
 	/**
 	 * 构造方法
 	 * @param id
 	 */
-	public Flowplayer(String id) {
+	public FlowPlayer(String id) {
 		super.setId(id);
 	}
 	/**
@@ -27,7 +21,7 @@ public class Flowplayer extends AbstractWidget<Flowplayer> {
 	 * @param id
 	 * @param src
 	 */
-	public Flowplayer(String id, String src) {
+	public FlowPlayer(String id, String src) {
 		super.setId(id);
 		this.src = src;
 	}
@@ -47,7 +41,7 @@ public class Flowplayer extends AbstractWidget<Flowplayer> {
 	 * @param src String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Flowplayer setSrc(String src) {
+	public FlowPlayer setSrc(String src) {
 		this.src = src;
 		return this;
 	}

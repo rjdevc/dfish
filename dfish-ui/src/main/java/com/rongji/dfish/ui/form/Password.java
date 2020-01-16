@@ -25,7 +25,7 @@ public class Password extends AbstractInput<Password, String> {
         this.setName(name);
         this.setLabel(label);
         this.setValue(value);
-        this.addValidate(Validate.maxlength(maxLength));
+        this.addValidate(Validate.maxLength(maxLength));
     }
 
     /**

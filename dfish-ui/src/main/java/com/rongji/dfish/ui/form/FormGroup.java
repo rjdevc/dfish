@@ -23,11 +23,6 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	}
 
 	@Override
-	public String getType() {
-		return "FormGroup";
-	}
-
-	@Override
 	public Label getLabel() {
 		return label;
 	}

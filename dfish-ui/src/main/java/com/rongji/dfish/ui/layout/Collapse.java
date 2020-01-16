@@ -1,9 +1,6 @@
 package com.rongji.dfish.ui.layout;
 
-import com.rongji.dfish.ui.AbstractNodeContainer;
-import com.rongji.dfish.ui.MultiNodeContainer;
-import com.rongji.dfish.ui.PubNodeContainer;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.widget.AbstractButton;
 
 import java.util.List;
@@ -14,13 +11,17 @@ import java.util.List;
  * @date 2020-01-15
  * @since 5.0
  */
-public class Collapse extends AbstractNodeContainer<Collapse> implements MultiNodeContainer<Collapse>, PubNodeContainer<Collapse, Collapse.Button> {
+public class Collapse extends AbstractPubNodeContainer<Collapse, Collapse.Button> {
 
     private Boolean focusMultiple;
-    private Button pub;
 
     public Collapse(String id) {
         super(id);
+    }
+
+    @Override
+    protected Button newPub() {
+        return new Button(null);
     }
 
     public Boolean getFocusMultiple() {
@@ -29,29 +30,6 @@ public class Collapse extends AbstractNodeContainer<Collapse> implements MultiNo
 
     public Collapse setFocusMultiple(Boolean focusMultiple) {
         this.focusMultiple = focusMultiple;
-        return this;
-    }
-
-    @Override
-    public List getNodes() {
-        return nodes;
-    }
-
-    public Button pub() {
-        if (pub == null) {
-            pub = new Button(null);
-        }
-        return pub;
-    }
-
-    @Override
-    public Button getPub() {
-        return pub;
-    }
-
-    @Override
-    public Collapse setPub(Button pub) {
-        this.pub = pub;
         return this;
     }
 

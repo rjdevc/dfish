@@ -125,11 +125,11 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	}
 	/**
 	 * 设置内容区域所有图片的最大宽度。
-	 * @param thumbwidth 图片的最大宽度。
+	 * @param thumbWidth 图片的最大宽度。
 	 * @return this
 	 */
-	public Html setThumbwidth(int thumbwidth) {
-    	this.thumbWidth = String.valueOf(thumbwidth);
+	public Html setThumbWidth(int thumbWidth) {
+    	this.thumbWidth = String.valueOf(thumbWidth);
 	    return   this;
     }
 	@Override

@@ -88,7 +88,7 @@ public interface Validatable<T extends Validatable<T>> {
      *
      * @return 本身，这样可以继续设置其他属性
      */
-    Map<String, Validate> getValidategroup();
+    Map<String, Validate> getValidateGroup();
 
     /**
      * 字段输入值需要符合无符号整形(正整数)格式。这里是它的正则表达式格式

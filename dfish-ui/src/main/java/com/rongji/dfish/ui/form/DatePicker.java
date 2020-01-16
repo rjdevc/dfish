@@ -148,11 +148,6 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
     }
 
     @Override
-    public String getType() {
-        return "DatePicker";
-    }
-
-    @Override
     public DatePicker setValue(Object value) {
         if (value == null) {
             this.value = null;
