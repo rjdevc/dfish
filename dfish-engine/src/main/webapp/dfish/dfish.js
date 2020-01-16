@@ -271,7 +271,7 @@ Define = function( a ) {
 	// widget模块定义，默认继承 widget 类
 	b.widget = function( c, d ) {
 		var e = d.Extend, f = d.Prototype || (d.Prototype = {});
-		e = d.Extend = ! e ? [ 'widget' ] : ! _isArray( e ) ? [ e ] : e;
+		e = d.Extend = ! e ? [ 'Widget' ] : ! _isArray( e ) ? [ e ] : e;
 		for ( var i = 0; i < e.length; i ++ ) {
 			if ( typeof e[ i ] === _STR ) e[ i ] = r( e[ i ] );
 		}
@@ -281,11 +281,11 @@ Define = function( a ) {
 	}
 	b.template = function( c, d ) {
 		d == N && (d = c, c = N);
-		_moduleCache[ c ? _mod_uri( a, (_cfg.template_dir || '') + c ) : a ] = d;
+		_moduleCache[ c ? _mod_uri( a, (_cfg.templateDir || '') + c ) : a ] = d;
 	}
 	b.preload = function( c, d ) {
 		d == N && (d = c, c = N);
-		_moduleCache[ c ? _mod_uri( a, (_cfg.preload_dir || '') + c ) : a ] = d;
+		_moduleCache[ c ? _mod_uri( a, (_cfg.preloadDir || '') + c ) : a ] = d;
 	}
 	return b;
 },
@@ -469,14 +469,14 @@ _strRepeat = $.strRepeat = function( a, b ) {
 // 取字符串字节数(一个汉字算双字节)  /@ s -> str, b -> 一个汉字算几个字节？默认2个
 _strLen = $.strLen = function( s, b ) {
 	if ( ! s ) return 0;
-	if ( ! b ) b = _cfg.cn_bytes || 2;
+	if ( ! b ) b = _cfg.cnBytes || 2;
 	for ( var i = 0, d = 0, l = s.length; i < l; i ++ )
 		d += s.charCodeAt( i ) > 128 ? b : 1;
 	return d;
 },
 // 按照字节数截取字符串 / @a -> str, b -> len, c -> trancateExt 后缀, n -> html entries?
 _strSlice = $.strSlice = function( a, b, c, n ) {
-	var d = 0, e, f = c ? _strLen( c ) : 0, y = _cfg.cn_bytes || 2, k, i = 0, l = a.length;
+	var d = 0, e, f = c ? _strLen( c ) : 0, y = _cfg.cnBytes || 2, k, i = 0, l = a.length;
 	for ( ; i < l; i ++ ) {
 		e = a.charCodeAt( i ) > 128 ? y : 1;
 		if ( n && a.charAt( i ) === '&' ) {
@@ -1248,7 +1248,7 @@ _cancel = $.cancel = function( a ) {
 		a.stopPropagation ? a.stopPropagation() : (a.cancelBubble = T);
 },
 // 记录鼠标事件发生的坐标
-_event_click = { click: T, dblclick: T, contextmenu: T, mousedown: T, mouseup: T },
+_event_click = { click: T, dblclick: T, contextMenu: T, mousedown: T, mouseup: T },
 _point = $.point = function( e ) {
 	if( (e || (e = window.event)) && _event_click[ e.type ] ) {
 		_point.srcElement = e.srcElement, _point.offsetX = e.offsetX, _point.offsetY = e.offsetY, _point.clientX = e.clientX, _point.clientY = e.clientY;
@@ -1540,8 +1540,9 @@ Ajax = _createClass( {
 			}
 		},
 		send: function() {
-			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = !x.cdn && _ajax_data( _cfg.ajax_data ), e = _ajax_data( x.data ),
-				f = x.error != N ? x.error : _cfg.src_error, g = x.dataType || 'text', u = a, l, i, self = this;
+			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = !x.cdn && _ajax_data( _cfg.ajaxData ), e = _ajax_data( x.data ),
+				f = x.error != N ? x.error : _cfg.ajaxError, g = x.dataType || 'text', u = a, l, i, self = this;
+			if(x.src.indexOf('t/std.js')>0)debugger;
 			d && e ? (e = d + '&' + e) : (d && (e = d));
 			// get url超过长度则转为post
 			if ( ( a.length > 2000 && a.indexOf( '?' ) > 0 ) ) {
@@ -1591,6 +1592,7 @@ Ajax = _createClass( {
 					if ( ! c || ! c._disposed ) {
 				        if ( r ) {
 				        	self.errorCode = l.status;
+				        	if ( l.status === 404 ) debugger;
 							if ( f !== F && (_ajax_httpmode || l.status) ) {
 								typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
 								if ( f !== F && r !== 'filter' ) {
@@ -1873,7 +1875,7 @@ var boot = {
 		
 		_compatJS();
 		
-		if ( noGlobal || _cfg.no_conflict ) {
+		if ( noGlobal || _cfg.noConflict ) {
 			(Date.$ = $).abbr = 'Date.$';
 		}
 		var _define  = new Define( _path ),
@@ -1906,7 +1908,7 @@ var boot = {
 
 		var w = _require( _wg_lib + 'widget' );
 		
-		if ( !(noGlobal || _cfg.no_conflict) ) {
+		if ( !(noGlobal || _cfg.noConflict) ) {
 			win.Q  = win.jQuery = _jq;
 			win.VM = $.vm;
 		} else {
@@ -1920,7 +1922,7 @@ var boot = {
 			_compatDOM();
 			// 生成首页view
 			if ( _cfg.view ) {
-				var g = $.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+				var g = $.widget( _extend( _cfg.view, { type: 'View', width: '*', height: '*' } ) ).render( _db() );
 				Q( win ).on( 'beforeunload', function() { g.dispose() } );
 			} else {
 				// 把 <d:wg> 标签转换为 widget
@@ -1931,8 +1933,8 @@ var boot = {
 			}
 			// ie6及以下浏览器，弹出浮动升级提示
 			if ( ie && br.ieVer < 7 ) {
-				VM().cmd({ type: 'tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
-					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: doc.body, snaptype: 'tt', prong: F});
+				VM().cmd({ type: 'Tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
+					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: { target: doc.body, position: 'tt' }, prong: F});
 			}
 		} );
 		// 调试模式
@@ -1941,12 +1943,12 @@ var boot = {
 				if ( e.ctrlKey && ! $( ':develop' ) ) {
 					var m = $.vm( e.target ), c = $.bcr( m.$() ),
 						s = '<div class="f-develop" style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;"></div>',
-						d = m.closest( 'dialog' ),
+						d = m.closest( 'Dialog' ),
 						t = 'path: ' + m.path + (d ? '\ndialog: ' + (d.x.id || '') : '') + '\nsrc: ' + (m.x.src || '');
 					if ( m.x.template )
 						t += '\ntemplate: ' + m.x.template;
 					if ( br.css3 ) {
-						Q( e.target ).closest( '[w-type="xsrc"]' ).each( function() {
+						Q( e.target ).closest( '[w-type="Section"]' ).each( function() {
 							var g = $.all[ this.id ], c = $.bcr( this );
 							if ( m.contains( g ) )
 								s += '<div class="f-develop z-tpl" style="width:' + (c.width - 6) + 'px;height:' + (c.height - 6) + 'px;left:' + (c.left + 1) + 'px;top:' + (c.top + 1) + 'px;">' +
@@ -1956,7 +1958,7 @@ var boot = {
 					}
 					$.query( doc.body ).append( s );
 					setTimeout( function() {
-						$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { Q( '.f-develop' ).remove() } } ) : (alert( t ), Q( '.f-develop' ).remove());
+						$.vm ? $.vm().cmd( { type: 'Alert', text: t, yes: function() { Q( '.f-develop' ).remove() } } ) : (alert( t ), Q( '.f-develop' ).remove());
 					}, 50 );
 					e.preventDefault();
 				}
@@ -1984,8 +1986,8 @@ _merge( $, {
 	globals: {},
 	// 事件白名单
 	white_events: (function() {
-		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,beforepaste,beforedeactivate,' +
-			(br.mobile ? 'touchstart,touchmove,touchend,tap' : 'mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,mouseenter,mouseleave,dblclick'), 'input', 'focus,blur,input', 'option', 'change' ];
+		var a = [ 'all', 'click,contextMenu,dragStart,drag,dragEnd,dragEnter,dragExit,dragLeave,dragOver,drop,keyDown,keyPress,keyUp,copy,cut,paste,scroll,select,selectStart,propertyChange,beforePaste,beforeDeactivate,' +
+			(br.mobile ? 'touchStart,touchMove,touchEnd,touchCancel,tap' : 'mouseOver,mouseOut,mouseDown,mouseUp,mouseMove,mouseWheel,mouseEnter,mouseLeave,dblClick'), 'input', 'focus,blur,input', 'option', 'change' ];
 		for ( var i = 0, r = {}, j, k, v; i < a.length; i += 2 ) {
 			k = a[ i ], r[ k ] = {}, v = [];
 			for ( j = 1; j < i + 2; j += 2 )
@@ -2030,15 +2032,15 @@ _merge( $, {
 	},
 	// a -> text, b -> pos, c -> time, d -> id, e -> escape?
 	alert: function( a, b, c, d, e ) {
-		return $.vm ? $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.alert_id, escape: e !== F } ) : alert( a );
+		return $.vm ? $.vm().cmd( { type: 'Alert', text: a, position: b, timeout: c, id: d !== U ? d : $.alert_id, escape: e !== F } ) : alert( a );
 	},
 	// a -> text, b -> yes, c -> no
 	confirm: function( a, b, c ) {
-		return $.vm().cmd( { type: 'confirm', text: a, yes: b, no: c } );
+		return $.vm().cmd( { type: 'Confirm', text: a, yes: b, no: c } );
 	},
 	// 显示一个 tip /@a -> target, b -> feature?
 	tip: function( a, b ) {
-		VM(this).cmd( _extend( b || {}, { type: 'tip', text: _strEscape( a.getAttribute( 'data-title' ) ), snap: a, snaptype: 'a', timeout: 5 } ) );
+		VM(this).cmd( _extend( b || {}, { type: 'Tip', text: _strEscape( a.getAttribute( 'data-title' ) ), snap: { target: a, position: 'a' }, timeout: 5 } ) );
 	},	
 	show: function( a, b ) {
 		_classRemove( a, 'f-none' );
@@ -2269,8 +2271,8 @@ _merge( $, {
 	// @a -> image array, b -> id
 	previewImage: function( a, b ) {
 		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
-		$.vm().cmd( { type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
-			node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
+			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
@@ -2346,8 +2348,8 @@ _merge( $, {
 				'</div><div class="f-opc0 f-abs f-pic-prev-cursor" id=f:thumbnail-prev style="visibility:' + ( p ? 'visible' : 'hidden' ) +
 				';top:0;left:0;bottom:0;background:#000;width:' + ( w / 2 ) + 'px"></div><div class="f-opc0 f-abs f-pic-next-cursor" id=f:thumbnail-next style="visibility:' + ( n ? 'visible' : 'hidden' ) +
 				';top:0;right:0;bottom:0;background:#000;width:' + ( w / 2 ) + 'px"></div><em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>';
-			var d = $.vm().cmd( { type: 'dialog', width: w, height: h, cls: 'f-dialog-preview', cover: true, pophide: T,
-					node: { type: 'html', align: 'center', id: 'img', valign: 'middle', style: 'background:#000', text: s } } );
+			var d = $.vm().cmd( { type: 'Dialog', width: w, height: h, cls: 'f-dialog-preview', cover: true, autoHide: T,
+					node: { type: 'Html', align: 'center', id: 'img', vVlign: 'middle', style: 'background:#000', text: s } } );
 			$( 'f:thumbnail-prev' ).onclick = function() {
 				$( 'f:thumbnail-img' ).src = p.src;
 				n = _next( $img, p );
@@ -2384,7 +2386,7 @@ _merge( $, {
 	})(),
 	// 调试用的方法
 	j: function( a ) {
-		$.alert( '<pre>' + $.jsonString( a, N, 2 ) + '</pre>', N, N, N, F );
+		alert( $.jsonString( a, N, 2 ) );
 	},
 	debug: function() {
 		if ( _cfg.debug ) debugger;

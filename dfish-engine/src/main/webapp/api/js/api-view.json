@@ -1,24 +1,24 @@
 {
-  "type": "view",
+  "type": "View",
   "node": {
-    "type": "vert",
+    "type": "Vert",
     "height": "*",
     "nodes": [
-      { "type": "horz", "height": 55, "cls": "bg-top index-top", "nodes": [
-      	{ "type": "html", "width": 220, "align": "center", "text": "<i class=f-vi></i><img src=src/img/logo-white.png align=absmiddle height=25><span class=logo-text>JS Docs</span>" },
+      { "type": "Horz", "height": 55, "cls": "bg-top index-top", "nodes": [
+      	{ "type": "Html", "width": 220, "align": "center", "text": "<i class=f-vi></i><img src=src/img/logo-white.png align=absmiddle height=25><span class=logo-text>JS API</span>" },
         {
-          "type": "buttonbar", "id": "index-tabbar", "focusable": true, "cls": "bg-top index-tabbar", "style": "padding-top:23px", "hmin": 23,
-            "pub": { "cls": "index-tab", "closeable": true, "focusable": true, "escape": false, "on": { "click": "api.tabClick(this)" } },
+          "type": "ButtonBar", "id": "index-tabbar", "focusable": true, "cls": "bg-top index-tabbar", "style": "padding-top:23px",
+            "pub": { "cls": "index-tab", "closable": true, "focusable": true, "escape": false, "on": { "click": "api.tabClick(this)" } },
           "nodes": [
-            { "type": "button", "text": "简介", "focus": true, "id": "upgrade-btn", "target": "upgrade-con", "closeable": false }
+            { "text": "简介", "focus": true, "id": "upgrade-btn", "target": "upgrade-con", "closeable": false }
           ]
         }
       ] },     
       {
-        "type": "horz", "cls": "bg-white", "height": "*",
+        "type": "Horz", "cls": "bg-white", "height": "*",
         "nodes": [
 		  {
-		  	"type": "tree", "id": "f_tree", "cls": "bg-nav bd-nav f-onlyright", "wmin": 1, "width": 220, "scroll" : true,
+		  	"type": "Tree", "id": "f_tree", "cls": "bg-nav bd-nav f-onlyright", "widthMinus": 1, "width": 220, "scroll" : true,
 		  	"pub": {
 		      "icon": ".icon .icon-singleton",
 		      "cls": "navtree",
@@ -36,8 +36,6 @@
 		  	  { "text": "全局方法", "icon": ".icon .icon-pkg", "open": false, "nodes": [
 		        { "id": "$", "text": "dfish ($)", "open": false, "nodes": [
 		          { "id": "$.ajax", "text": "$.ajax", "datasrc": "$" },
-		          { "id": "$.ajaxCache", "text": "$.ajaxCache", "datasrc": "$" },
-		          { "id": "$.ajaxClean", "text": "$.ajaxClean", "datasrc": "$" },
 		          { "id": "$.ajaxJSON", "text": "$.ajaxJSON", "datasrc": "$" },
 		          { "id": "$.ajaxXML", "text": "$.ajaxXML", "datasrc": "$" },
 		          { "id": "$.alert", "text": "$.alert", "datasrc": "$" },
@@ -110,7 +108,7 @@
 		        { "id": "Q", "text": "Q" },
 		        { "id": "VM", "text": "VM" }
 		      ] },
-		  	  { "text": "模板<sup>3.2+</sup>", "open": false, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "模板", "open": false, "icon": ".icon .icon-pkg", "nodes": [
 		  	    { "text": "模板说明", "id": "@", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@propName", "id": "@propName", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-for", "id": "@w-for", "icon": ".icon .icon-component", "datasrc": "@" },
@@ -122,144 +120,122 @@
 		  	    { "text": "$this", "id": "$this", "icon": ".icon .icon-component", "datasrc": "@" }
 		  	  ] },
 		  	  { "text": "命令", "open": false, "icon": ".icon .icon-pkg", "nodes": [
-		        { "id": "after", "text": "after", "icon": ".icon .icon-class" },
-		        { "id": "ajax", "text": "ajax", "icon": ".icon .icon-class" },
-		        { "id": "alert", "text": "alert", "icon": ".icon .icon-class" },
-		        { "id": "append", "text": "append", "icon": ".icon .icon-class" },
-		        { "id": "before", "text": "before", "icon": ".icon .icon-class" },
-		        { "id": "cmd", "text": "cmd", "icon": ".icon .icon-class" },
-		        { "id": "confirm", "text": "confirm", "icon": ".icon .icon-class" },
-		        { "id": "dialog", "text": "dialog", "icon": ".icon .icon-class" },
-		        { "id": "js", "text": "js", "icon": ".icon .icon-class" },
-		        { "id": "loading", "text": "loading", "icon": ".icon .icon-class" },
-		        { "id": "menu", "text": "menu", "icon": ".icon .icon-class" },
-		        { "id": "prepend", "text": "prepend", "icon": ".icon .icon-class" },
-		        { "id": "replace", "text": "replace", "icon": ".icon .icon-class" },
-		        { "id": "remove", "text": "remove", "icon": ".icon .icon-class" },
-		        { "id": "submit", "text": "submit", "icon": ".icon .icon-class" },
-		        { "id": "tip", "text": "tip", "icon": ".icon .icon-class" }
+		        { "id": "After", "text": "After", "icon": ".icon .icon-class" },
+		        { "id": "Ajax", "text": "Ajax", "icon": ".icon .icon-class" },
+		        { "id": "Alert", "text": "Alert", "icon": ".icon .icon-class" },
+		        { "id": "Append", "text": "Append", "icon": ".icon .icon-class" },
+		        { "id": "Before", "text": "Before", "icon": ".icon .icon-class" },
+		        { "id": "Cmd", "text": "Cmd", "icon": ".icon .icon-class" },
+		        { "id": "Confirm", "text": "Confirm", "icon": ".icon .icon-class" },
+		        { "id": "Dialog", "text": "Dialog", "icon": ".icon .icon-class" },
+		        { "id": "JS", "text": "JS", "icon": ".icon .icon-class" },
+		        { "id": "Loading", "text": "Loading", "icon": ".icon .icon-class" },
+		        { "id": "Menu", "text": "Menu", "icon": ".icon .icon-class" },
+		        { "id": "Prepend", "text": "Prepend", "icon": ".icon .icon-class" },
+		        { "id": "Replace", "text": "Replace", "icon": ".icon .icon-class" },
+		        { "id": "Remove", "text": "Remove", "icon": ".icon .icon-class" },
+		        { "id": "Submit", "text": "Submit", "icon": ".icon .icon-class" },
+		        { "id": "Tip", "text": "Tip", "icon": ".icon .icon-class" }
 		      ] },
 		  	  { "text": "布局类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
-		        { "id": "collapse", "text": "collapse", "icon": ".icon .icon-class", "open": !true, "nodes": [
-		          { "id": "collapse/button", "text": "collapse/button", "icon": ".icon .icon-class" }
+		        { "id": "Collapse", "text": "Collapse", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "CollapseButton", "text": "CollapseButton", "icon": ".icon .icon-class" }
 		        ] },
 		      //{ "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
-		        { "id": "ewin", "text": "ewin", "icon": ".icon .icon-class" },
-		        { "id": "fieldset", "text": "fieldset", "icon": ".icon .icon-class" },
-		        { "id": "frame", "text": "frame", "icon": ".icon .icon-class" },
-		        { "id": "grid", "text": "grid", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "grid/leaf", "text": "grid/leaf", "icon": ".icon .icon-class" },
-		          { "id": "grid/rownum", "text": "grid/rownum", "icon": ".icon .icon-class" },
-		          { "id": "td", "text": "td", "icon": ".icon .icon-class" },
-		          { "id": "tr", "text": "tr", "icon": ".icon .icon-class" }
+		        { "id": "EmbedWindow", "text": "EmbedWindow", "icon": ".icon .icon-class" },
+		        { "id": "FieldSet", "text": "FieldSet", "icon": ".icon .icon-class" },
+		        { "id": "Frame", "text": "Frame", "icon": ".icon .icon-class" },
+		        { "id": "Grid", "text": "Grid", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "Column", "text": "Column", "icon": ".icon .icon-class" },
+		          { "id": "GridLeaf", "text": "GridLeaf", "icon": ".icon .icon-class" },
+		          { "id": "GridRowNum", "text": "GridRowNum", "icon": ".icon .icon-class" },
+		          { "id": "THead", "text": "THead", "icon": ".icon .icon-class" },
+		          { "id": "TBody", "text": "TBody", "icon": ".icon .icon-class" },
+		          { "id": "TFoot", "text": "TFoot", "icon": ".icon .icon-class" },
+		          { "id": "TR", "text": "TR", "icon": ".icon .icon-class" },
+		          { "id": "TD", "text": "TD", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "form", "text": "form<sup>5.0+</sup>", "icon": ".icon .icon-class" },
-		        { "id": "horizontal", "text": "horizontal", "icon": ".icon .icon-class" },
-		        { "id": "tabs", "text": "tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
-		          { "id": "tab", "text": "tab", "icon": ".icon .icon-class" }
+		        { "id": "Form", "text": "Form", "icon": ".icon .icon-class" },
+		        { "id": "Horizontal", "text": "Horizontal", "icon": ".icon .icon-class" },
+		        { "id": "Tabs", "text": "Tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "Tab", "text": "Tab", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "vertical", "text": "vertical", "icon": ".icon .icon-class" },
-		        { "id": "view", "text": "view", "icon": ".icon .icon-class" },
-		        { "id": "xsrc", "text": "xsrc<sup>3.2+</sup>", "icon": ".icon .icon-class" }
+		        { "id": "Vertical", "text": "Vertical", "icon": ".icon .icon-class" },
+		        { "id": "View", "text": "View", "icon": ".icon .icon-class" },
+		        { "id": "Section", "text": "Section", "icon": ".icon .icon-class" }
 		      ] },
 		  	  { "text": "功能类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
-		        { "id": "album", "text": "album", "icon": ".icon .icon-class" },
-		        { "id": "badge", "text": "badge", "icon": ".icon .icon-class" },
-		        { "id": "button", "text": "button", "icon": ".icon .icon-class" },
-		        { "id": "buttonbar", "text": "buttonbar", "icon": ".icon .icon-class" },
-		        { "id": "calendar/date", "text": "calendar/date", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        { "id": "Album", "text": "Album", "icon": ".icon .icon-class" },
+		        { "id": "Badge", "text": "Badge", "icon": ".icon .icon-class" },
+		        { "id": "Button", "text": "Button", "icon": ".icon .icon-class" },
+		        { "id": "ButtonBar", "text": "ButtonBar", "icon": ".icon .icon-class" },
+		        { "id": "Calendar", "text": "Calendar", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "CalendarItem", "text": "CalendarItem", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "calendar/week", "text": "calendar/week", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        { "id": "Empty", "text": "Empty", "icon": ".icon .icon-class" },
+		        { "id": "Html", "text": "Html", "icon": ".icon .icon-class" },
+		        { "id": "Img", "text": "Img", "icon": ".icon .icon-class" },
+		        { "id": "MenuButton", "text": "MenuButton", "icon": ".icon .icon-class" },
+		        { "id": "PageBar", "text": "PageBar", "icon": ".icon .icon-class" },
+		        { "id": "Progress", "text": "Progress", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "ProgressItem", "text": "ProgressItem", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "calendar/month","text": "calendar/month", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
+		        { "id": "Split", "text": "Split", "icon": ".icon .icon-class" },
+		        { "id": "SubmitButton", "text": "SubmitButton", "icon": ".icon .icon-class" },
+		        { "id": "Timeline", "text": "Timeline", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "TimelineItem", "text": "TimelineItem", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "calendar/year", "text": "calendar/year", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "calendar/td", "text": "calendar/td", "icon": ".icon .icon-class" }
-		        ] },
-		        { "id": "html", "text": "html", "icon": ".icon .icon-class" },
-		        { "id": "img", "text": "img", "icon": ".icon .icon-class" },
-		        { "id": "label", "text": "label<sup>3.2+</sup>", "icon": ".icon .icon-class" },
-		        { "id": "menu/button", "text": "menu/button", "icon": ".icon .icon-class" },
-		        { "id": "page/buttongroup", "text": "page/buttongroup", "icon": ".icon .icon-class" },
-		        { "id": "page/mini", "text": "page/mini", "icon": ".icon .icon-class" },
-		        { "id": "page/text", "text": "page/text", "icon": ".icon .icon-class" },
-		        { "id": "progress", "text": "progress", "icon": ".icon .icon-class", "open": !true, "nodes": [
-		          { "id": "progress/item", "text": "progress/item", "icon": ".icon .icon-class" }
-		        ] },
-		        { "id": "split", "text": "split", "icon": ".icon .icon-class" },
-		        { "id": "submitbutton", "text": "submitbutton", "icon": ".icon .icon-class" },
-		        { "id": "timeline", "text": "timeline", "icon": ".icon .icon-class", "open": !true, "nodes": [
-		          { "id": "timeline/item", "text": "timeline/item", "icon": ".icon .icon-class" }
-		        ] },
-		        { "id": "toggle", "text": "toggle", "icon": ".icon .icon-class" },
-		        { "id": "tree", "text": "tree", "icon": ".icon .icon-class", "open": !true, "nodes": [
-		          { "id": "leaf", "text": "leaf", "icon": ".icon .icon-class" }
+		        { "id": "Toggle", "text": "Toggle", "icon": ".icon .icon-class" },
+		        { "id": "Tree", "text": "Tree", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		          { "id": "Leaf", "text": "Leaf", "icon": ".icon .icon-class" }
 		        ] }
 		      ] },
 		  	  { "text": "表单类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
-		        { "id": "checkbox", "text": "checkbox", "icon": ".icon .icon-class" },
-		        { "id": "checkboxgroup", "text": "checkboxgroup", "icon": ".icon .icon-class" },
-		        { "id": "combobox", "text": "combobox", "icon": ".icon .icon-class" },
-		        { "id": "datepicker", "text": "datepicker", "icon": ".icon .icon-class" },
-		        { "id": "formgroup", "text": "formgroup<sup>3.2+</sup>", "icon": ".icon .icon-class" },
-		        { "id": "hidden", "text": "hidden", "icon": ".icon .icon-class" },
-		        { "id": "imgbox", "text": "imgbox", "icon": ".icon .icon-class" },
-		        { "id": "linkbox", "text": "linkbox", "icon": ".icon .icon-class" },
-		        { "id": "muldate", "text": "muldate", "icon": ".icon .icon-class" },
-		        { "id": "onlinebox", "text": "onlinebox", "icon": ".icon .icon-class" },
-		        { "id": "password", "text": "password", "icon": ".icon .icon-class" },
-		        { "id": "pickbox", "text": "pickbox", "icon": ".icon .icon-class" },
-		        { "id": "radio", "text": "radio", "icon": ".icon .icon-class" },
-		        { "id": "radiogroup", "text": "radiogroup", "icon": ".icon .icon-class" },
-		        { "id": "range", "text": "range", "icon": ".icon .icon-class" },
-		        { "id": "rate", "text": "rate", "icon": ".icon .icon-class" },
-		        { "id": "select", "text": "select", "icon": ".icon .icon-class" },
-		        { "id": "slider", "text": "slider", "icon": ".icon .icon-class" },
-		        { "id": "jigsaw", "text": "jigsaw", "icon": ".icon .icon-class" },
-		        { "id": "spinner", "text": "spinner", "icon": ".icon .icon-class" },
-		        { "id": "switch", "text": "switch", "icon": ".icon .icon-class" },
-		        { "id": "text", "text": "text", "icon": ".icon .icon-class" },
-		        { "id": "textarea", "text": "textarea", "icon": ".icon .icon-class" },
-		        { "id": "triplebox", "text": "triplebox", "icon": ".icon .icon-class" },
-		        { "id": "upload/file", "text": "upload/file", "icon": ".icon .icon-class" },
-		        { "id": "upload/image", "text": "upload/image", "icon": ".icon .icon-class" },
-		        { "id": "xbox", "text": "xbox", "icon": ".icon .icon-class" }
+		        { "id": "CheckBox", "text": "CheckBox", "icon": ".icon .icon-class" },
+		        { "id": "CheckBoxGroup", "text": "CheckBoxGroup", "icon": ".icon .icon-class" },
+		        { "id": "ComboBox", "text": "ComboBox", "icon": ".icon .icon-class" },
+		        { "id": "DatePicker", "text": "DatePicker", "icon": ".icon .icon-class" },
+		        { "id": "FormGroup", "text": "FormGroup", "icon": ".icon .icon-class" },
+		        { "id": "FormLabel", "text": "FormLabel", "icon": ".icon .icon-class" },
+		        { "id": "Hidden", "text": "Hidden", "icon": ".icon .icon-class" },
+		        { "id": "ImgBox", "text": "ImgBox", "icon": ".icon .icon-class" },
+		        { "id": "Label", "text": "Label", "icon": ".icon .icon-class" },
+		        { "id": "LinkBox", "text": "LinkBox", "icon": ".icon .icon-class" },
+		        { "id": "OnlineBox", "text": "OnlineBox", "icon": ".icon .icon-class" },
+		        { "id": "Password", "text": "Password", "icon": ".icon .icon-class" },
+		        { "id": "PickBox", "text": "PickBox", "icon": ".icon .icon-class" },
+		        { "id": "Radio", "text": "Radio", "icon": ".icon .icon-class" },
+		        { "id": "RadioGroup", "text": "RadioGroup", "icon": ".icon .icon-class" },
+		        { "id": "Range", "text": "Range", "icon": ".icon .icon-class" },
+		        { "id": "Rate", "text": "Rate", "icon": ".icon .icon-class" },
+		        { "id": "Select", "text": "Select", "icon": ".icon .icon-class" },
+		        { "id": "Slider", "text": "Slider", "icon": ".icon .icon-class" },
+		        { "id": "Jigsaw", "text": "Jigsaw", "icon": ".icon .icon-class" },
+		        { "id": "Spinner", "text": "Spinner", "icon": ".icon .icon-class" },
+		        { "id": "Switch", "text": "Switch", "icon": ".icon .icon-class" },
+		        { "id": "Text", "text": "Text", "icon": ".icon .icon-class" },
+		        { "id": "Textarea", "text": "Textarea", "icon": ".icon .icon-class" },
+		        { "id": "TripleBox", "text": "TripleBox", "icon": ".icon .icon-class" },
+		        { "id": "FileUpload", "text": "FileUpload", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "ImageUpload", "text": "ImageUpload", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "DropBox", "text": "DropBox", "icon": ".icon .icon-class" }
 		      ] }
 		  	]
 		  },
           {
-            "type": "frame", "id": "index-frame", "dft": "upgrade-con", "width": "*",
+            "type": "Frame", "id": "index-frame", "dft": "upgrade-con", "width": "*",
             "nodes": [
-              { "type": "vert", "id": "upgrade-con", "width": "*", "height": "*", "nodes": [
-              	{ "type": "html", "id": "upgrade-content", "style": "padding:10px;font-size:14px", "text": "<font size=4>更新日志:</font>\
+              { "type": "Vert", "id": "upgrade-con", "width": "*", "height": "*", "nodes": [
+              	{ "type": "Html", "id": "upgrade-content", "style": "padding:10px;font-size:14px", "text": "<font size=4>更新日志:</font>\
 					<dl class=upgrade>\
-						<dt>2018.12.07</dt>\
+						<dt>2020.01.16</dt>\
 						<dd>\
 						  <ul>\
-						    <li>新增3.2版本的模板说明。</li>\
-						    <li>首页配置项增加 server ajax_data input_detect view_js 参数。</li>\
-						    <li>所有 widget 新增 repaint() 方法。</li>\
-						    <li>移动端专用的参数名称后面会带一个移动图标。</li>\
-						    <li>特定版本适用的属性方法等，名称后面带有版本号的上标。</li>\
-						  </ul>\
-						</dd>\
-						<dt>2017.03.06</dt>\
-						<dd>\
-						  <ul>\
-						    <li>所有 widget 增加样式说明。</li>\
-						    <li>新增 JS/CSS 规范。</li>\
-						    <li>所有 widget 增加 addClass() removeClass() hasClass() css() 方法，用于调整 widget 的样式。</li>\
-						  </ul>\
-						</dd>\
-						<dt>* 支持浏览器的最低版本 *</dt>\
-						<dd>\
-						  <ul>\
-						    <li>IE: 7</li>\
-						    <li>Chrome: 16</li>\
-						    <li>Firefox: 9</li>\
+						    <li>5.0版API上线。</li>\
 						  </ul>\
 						</dd>\
 					</dl>\

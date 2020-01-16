@@ -57,10 +57,12 @@ server_error	: '<span{1}>[{0}] 系统异常，请联系管理员</span>',
 preload_error   :  '获取预装载模板 "{0}" 失败',
 
 page: '页',
-page_first: '首页',
-page_last : '尾页',
-page_next : '下页',
-page_prev : '上页',
+page_text: {
+	first: '首页',
+	last : '尾页',
+	next : '下页',
+	prev : '上页'
+},
 
 print_preview : '打印预览',
 
@@ -73,20 +75,20 @@ debug: {
 	no_command : '视图中没有定义此命令: {0}\nview path: {1}',
 	no_combo: '选项列表(或树)没有设置combo参数\nname: {0}',
 	error_template_type: '{0}\n请把此模板类型改为 "{1}"',
-	error_type: 'type错误或丢失\n<pre>{0}</pre>'
+	error_type: 'type错误或丢失\n{0}'
 },
 
 form : {
 	required:'{0}不能为空',
 	onlyone: '{0}只能选择一条记录',
-	maxlength: '{0}的字符长度超出了{1}个字节',
-	reach_maxlength: '已到达可输入的最大字符长度',
-	over_maxlength: '字符长度超出了{0}个字节',
-	minlength: '{0}不能少于{1}个字节',
-	maxvalue: '{0}最大值为{1}',
-	minvalue: '{0}最小值为{1}',
-	maxsize: '{0}最多选择{1}项',
-	minsize: '{0}最少选择{1}项',
+	maxLength: '{0}的字符长度超出了{1}个字节',
+	reach_maxLength: '已到达可输入的最大字符长度',
+	over_maxLength: '字符长度超出了{0}个字节',
+	minLength: '{0}不能少于{1}个字节',
+	maxValue: '{0}最大值为{1}',
+	minValue: '{0}最小值为{1}',
+	maxSize: '{0}最多选择{1}项',
+	minSize: '{0}最少选择{1}项',
 	pattern: '{0}格式不符合规范，或包含非法字符',
 	number_invalid: '{0}不是一个有效数字',
 	number_integer: '{0}请填入一个整数',
@@ -94,8 +96,8 @@ form : {
 	time_exceed: '{0}的年份超出有效范围。有效年份：{1}年 至 {2}年',
 	time_format: '{0}的时间格式错误。正确格式范例：{1}',
 	period_invalid: '{0}的起始时间应早于结束时间',
-	beforenow: '{0}不能大于当前时间',
-	afternow: '{0}不能小于当前时间',
+	beforeNow: '{0}不能大于当前时间',
+	afterNow: '{0}不能小于当前时间',
 	compare: '{3}需要满足此条件：{0} {1} {2}',
 	invalid_option: '存在无效选项',
 	need_valid_option: '请输入一个有效选项',
