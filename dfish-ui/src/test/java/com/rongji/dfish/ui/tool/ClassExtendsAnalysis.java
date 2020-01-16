@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.tool;
 
+import com.rongji.dfish.base.util.CharUtil;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -31,7 +32,7 @@ public class ClassExtendsAnalysis extends Application {
         TreeView<String> props=new TreeView<>();
         rootLayout.getTabs().add(new Tab("属性名分析",props));
         TreeItem<String> propsItem=new TreeItem<>();
-        propsItem.setValue("所有Class");
+        propsItem.setValue("所有方法");
         propsItem.setExpanded(true);
         props.setRoot(propsItem);
 
@@ -58,19 +59,79 @@ public class ClassExtendsAnalysis extends Application {
                 call.add(c.getName());
             }
         }
+        TreeItem<String> maybeWrong=new TreeItem<>("可能有问题的");
+        maybeWrong.setExpanded(true);
+        TreeItem<String> ok=new TreeItem<>("已经确认的");
+        shell.getChildren().add(maybeWrong);
+        shell.getChildren().add(ok);
         for(Map.Entry<String,Set<String>> entry:caller.entrySet()){
             String text=entry.getKey();
+            TreeItem target=isNameOk(text)?ok:maybeWrong;
             if(group.get(entry.getKey())!=null){
                 text+=" "+group.get(entry.getKey());
             }
             TreeItem ti=new TreeItem(text);
-            shell.getChildren().add(ti);
+            target.getChildren().add(ti);
             for(String cls:entry.getValue()){
                 TreeItem tiCls=new TreeItem(cls);
                 ti.getChildren().add(tiCls);
             }
         }
     }
+
+    private boolean isNameOk(String text) {
+        //如果有驼峰则分为多个词
+        List <String > words=split(text);
+        for(String w:words) {
+            if (!getOkKeys().contains(w.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private static HashSet<String> okKeys;
+    private static String[] OK_KEYS={
+            "width","height","min","max",
+            "id","cls","style","align","v",
+            "name","label","value","text","content",
+            "column","columns","col","row","cols","rows","span","leaf",
+            "command","commands",
+            "now","property","json",
+            "sub","mode","node","nodes","option","options","data",
+            "build","clear",
+            "by","as","contains","from",
+            "before","begin","end","compare","escape",
+            "append","add","get","find","set","after","copy","check","send","do"
+    };
+    private static Set<String> getOkKeys() {
+        if(okKeys==null){
+            okKeys=new HashSet<>();
+            for(String key:OK_KEYS){
+                okKeys.add(key);
+            }
+        }
+        return okKeys;
+    }
+
+    private List<String> split(String text) {
+        int lastPos=0;
+        int cur=0;
+        List<String> ret=new ArrayList<>();
+        for(char c:text.toCharArray()){
+            if(c>='A'&&c<='Z'){
+                if(cur>lastPos){
+                    ret.add(text.substring(lastPos,cur));
+                    lastPos=cur;
+                }
+            }
+            cur++;
+        }
+        if(cur>lastPos){
+            ret.add(text.substring(lastPos,cur));
+        }
+        return ret;
+    }
+
 
     private static String getRefName(String methodName,TreeMap<String,List<String>> group,TreeMap<String,String> groupRef) {
         if(groupRef.get(methodName)!=null){
