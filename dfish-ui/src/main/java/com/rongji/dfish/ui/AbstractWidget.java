@@ -397,7 +397,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return this
      */
     @Override
-    public T addCls(String cls) {
+    public T addClass(String cls) {
         // FIXME 这里性能可能有问题
         if (Utils.notEmpty(cls)) {
             cls = cls.trim();
@@ -420,7 +420,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
      * @return this
      */
     @Override
-    public T removeCls(String cls) {
+    public T removeClass(String cls) {
         if (Utils.notEmpty(cls) && Utils.notEmpty(this.cls)) {
             cls = cls.trim();
             Set<String> clsSet = parseClsSet(this.cls);
@@ -433,7 +433,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
 
     private Set<String> parseClsSet(String cls) {
         // FIXME 这里性能可能有问题
-        Set<String> clsSet = new HashSet<String>();
+        Set<String> clsSet = new HashSet<>();
         if (Utils.notEmpty(cls)) {
             String[] clsArray = cls.split(" ");
             Collections.addAll(clsSet, clsArray);

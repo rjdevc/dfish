@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class DropBox extends AbstractOptionsHolder<DropBox, Option> implements LazyLoad<DropBox> {
+public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoad<DropBox> {
 	/**
 	 * 
 	 */
@@ -28,6 +28,18 @@ public class DropBox extends AbstractOptionsHolder<DropBox, Option> implements L
 	private String placeholder;
 	private Boolean multiple;
 	private Boolean cancelable;
+
+	/**
+	 * 构造函数
+	 * @param name 表单元素名
+	 * @param label 标题
+	 * @param value 值
+	 * @param options 候选项
+	 */
+	public DropBox(String name, String label, Object value, List<?> options) {
+		super(name, label, value, options);
+	}
+
 	/**
 	 * 占位符。当表单没有值时显示的提示文本。
 	 * @return String
@@ -44,23 +56,6 @@ public class DropBox extends AbstractOptionsHolder<DropBox, Option> implements L
 	public DropBox setPlaceholder(String placeholder) {
 		this.placeholder = placeholder;
 		return this;
-	}
-
-
-	/**
-	 * 构造函数
-	 * @param name 表单元素名
-	 * @param label 标题
-	 * @param value 值
-	 * @param options 候选项
-	 */
-	public DropBox(String name, String label, Object value, List<?> options) {
-		super(name, label, value, options);
-	}
-
-	@Override
-	protected Option buildOption(Option o) {
-		return o;
 	}
 
 	/**

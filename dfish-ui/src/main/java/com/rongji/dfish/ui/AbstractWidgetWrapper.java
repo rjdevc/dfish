@@ -69,14 +69,14 @@ public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P
     }
 	
 	@Override
-	public T addCls(String styleClass) {
-		prototype.addCls(styleClass);
+	public T addClass(String styleClass) {
+		prototype.addClass(styleClass);
 		return (T) this;
 	}
 	
 	@Override
-	public T removeCls(String styleClass) {
-		prototype.removeCls(styleClass);
+	public T removeClass(String styleClass) {
+		prototype.removeClass(styleClass);
 		return (T) this;
 	}
 

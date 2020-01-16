@@ -10,6 +10,7 @@ import com.rongji.dfish.ui.AbstractNode;
  * @date 2018-08-03 before
  * @since 1.0
  */
+@Deprecated
 public class BoxField extends AbstractNode<BoxField> {
 
     private static final long serialVersionUID = 4188450997038991450L;

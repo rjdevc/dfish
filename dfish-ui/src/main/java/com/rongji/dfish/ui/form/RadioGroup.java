@@ -29,24 +29,6 @@ public class RadioGroup extends AbstractBoxGroup<RadioGroup, Radio> {
     }
 
     @Override
-    protected Radio buildOption(Option o) {
-        return new Radio(null, null, o.getChecked(), o.getValue() == null ? null : o.getValue().toString(), o.getText());
-    }
-
-    @Override
-    public void doSetValue(Object value) {
-        this.value = value;
-    }
-
-    @Override
-    public Object getValue() {
-        if (value.getClass().isArray()) {
-            return ((Object[]) value)[0];
-        }
-        return this.value;
-    }
-
-    @Override
     public Radio newPub() {
         return new Radio(null, null, null, null, null);
     }

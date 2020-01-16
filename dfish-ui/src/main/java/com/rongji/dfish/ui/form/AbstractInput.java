@@ -4,12 +4,12 @@ package com.rongji.dfish.ui.form;
  * 可以键盘输入的样式，一般都有一个边框。
  *
  * @param <T> 当前对象类型
- * @param <N> value对象类型
+ * @param <V> value对象类型
  * @author DFish Team
  * @date 2018-08-03 before
  * @since 1.0
  */
-public abstract class AbstractInput<T extends AbstractInput<T, N>, N> extends AbstractFormElement<T, N> {
+public abstract class AbstractInput<T extends AbstractInput<T, V>, V> extends AbstractFormElement<T, V> {
 
     private static final long serialVersionUID = 4291307643196526303L;
 

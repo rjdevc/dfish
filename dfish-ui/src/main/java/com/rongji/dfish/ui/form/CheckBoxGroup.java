@@ -31,11 +31,6 @@ public class CheckBoxGroup extends AbstractBoxGroup<CheckBoxGroup, CheckBox> {
     }
 
     @Override
-    protected CheckBox buildOption(Option o) {
-        return new CheckBox(null, null, o.getChecked(), o.getValue() == null ? null : o.getValue().toString(), o.getText());
-    }
-
-    @Override
     public CheckBox newPub() {
         return new CheckBox(null, null, null, null, null);
     }

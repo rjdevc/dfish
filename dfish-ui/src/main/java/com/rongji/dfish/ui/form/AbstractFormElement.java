@@ -76,12 +76,6 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
         return (T) this;
     }
 
-    @Override
-    public T setLabel(String label) {
-        this.label = new Label(label);
-        return (T) this;
-    }
-
     @Deprecated
     public T setTitle(String label) {
         return setLabel(label);
