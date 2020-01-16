@@ -14,7 +14,7 @@ public class Option {
 	private Object value;
 	private String icon;
 	private Boolean checked;
-	private Boolean checkall;
+	private Boolean checkAll;
 	private String status;
 	protected Map<String, Object> data;
 	
@@ -100,16 +100,16 @@ public class Option {
 	 * 是否全选
 	 * @return checkall
 	 */
-	public Boolean getCheckall() {
-		return checkall;
+	public Boolean getCheckAll() {
+		return checkAll;
 	}
 	/**
 	 * 是否全选
-	 * @param checkall Boolean
+	 * @param checkAll Boolean
 	 * @return this
 	 */
-	public Option setCheckall(Boolean checkall) {
-		this.checkall = checkall;
+	public Option setCheckAll(Boolean checkAll) {
+		this.checkAll = checkAll;
 		return this;
 	}
 	/**

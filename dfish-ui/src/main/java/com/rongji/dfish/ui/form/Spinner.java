@@ -56,7 +56,7 @@ public class Spinner extends AbstractInput<Spinner, Number> {
      * @return 本身，这样可以继续设置其他属性
      */
     public Spinner setMaxValue(Number maxValue) {
-        this.addValidate(Validate.maxvalue(maxValue == null ? null : String.valueOf(maxValue)));
+        this.addValidate(Validate.maxValue(maxValue == null ? null : String.valueOf(maxValue)));
 //        this.maxValue = maxValue;
         return this;
     }
@@ -68,7 +68,7 @@ public class Spinner extends AbstractInput<Spinner, Number> {
      * @return 本身，这样可以继续设置其他属性
      */
     public Spinner setMinValue(Number minValue) {
-        this.addValidate(Validate.minvalue(minValue == null ? null : String.valueOf(minValue)));
+        this.addValidate(Validate.minValue(minValue == null ? null : String.valueOf(minValue)));
         return this;
     }
 
@@ -165,11 +165,6 @@ public class Spinner extends AbstractInput<Spinner, Number> {
     public Spinner setMatch(String match) {
         this.addValidate(Validate.pattern(match));
         return this;
-    }
-
-    @Override
-    public String getType() {
-        return "Spinner";
     }
 
     @Override

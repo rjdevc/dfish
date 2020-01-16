@@ -5,13 +5,10 @@ import com.rongji.dfish.ui.AbstractNode;
 /**
  * 高亮配置
  * @author DFish Team
- * @since dfish 3.0
+ * @since 3.0
  */
 public class Highlight extends AbstractNode<Highlight> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1609037958308114536L;
 	/**
 	 * 高亮关键字
@@ -26,10 +23,6 @@ public class Highlight extends AbstractNode<Highlight> {
 	 */
 	private String keyCls;
 	
-	@Override
-    public String getType() {
-	    return null;
-    }
 	/**
 	 * 构造函数
 	 */

@@ -204,9 +204,15 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
             }
         } else {
             if (this.getValidate() != null) {
-                this.getValidate().setRequired(true);
+                Validate.BooleanValueRule rule = this.getValidate().getRequired();
+                if (rule == null) {
+                    rule = new Validate.BooleanValueRule(true);
+                    this.getValidate().setRequired(rule);
+                } else {
+                    rule.setValue(true);
+                }
             } else {
-                this.addValidate(Validate.required());
+                this.addValidate(Validate.required(true));
             }
         }
         return (T) this;
@@ -256,10 +262,9 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
     }
 
     @Override
-    public Map<String, Validate> getValidategroup() {
+    public Map<String, Validate> getValidateGroup() {
         //除了 DEFAULT_VALIDATE_NAME 外所有
-//		return valid.getValidategroup();
-        Map<String, Validate> result = new TreeMap<String, Validate>(validates);
+        Map<String, Validate> result = new TreeMap<>(validates);
         result.remove(Validatable.DEFAULT_VALIDATE_NAME);
         return result;
     }

@@ -24,7 +24,7 @@ public class Textarea extends AbstractInput<Textarea, String> {
         this.setName(name);
         this.setValue(value);
         this.setLabel(label);
-        this.addValidate(Validate.maxlength(maxLength));
+        this.addValidate(Validate.maxLength(maxLength));
     }
 
     /**

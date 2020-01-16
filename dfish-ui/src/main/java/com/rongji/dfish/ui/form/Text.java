@@ -22,7 +22,7 @@ public class Text extends AbstractInput<Text,String>{
 		this.setName(name);
 		this.setValue(value);
 		this.setLabel(label);
-		this.addValidate(Validate.maxlength(maxLength));
+		this.addValidate(Validate.maxLength(maxLength));
 	}
 	/**
 	 * 构造函数

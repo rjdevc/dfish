@@ -63,12 +63,6 @@ public class DropBox extends AbstractOptionsHolder<DropBox, Option> implements L
 		return o;
 	}
 
-
-	@Override
-    public String getType() {
-		return "xbox";
-	}
-
 	/**
 	 * 设置为true，表单将成为无边框无背景的状态。
 	 * @return  transparent

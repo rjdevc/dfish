@@ -22,11 +22,6 @@ public class Carousel extends AbstractWidget<Carousel> {
 
 	private static final long serialVersionUID = -8435402044894707490L;
 
-	@Override
-	public String getType() {
-		return "carousel";
-	}
-
 	/**
 	 * 构造方法
 	 * @param id
@@ -35,10 +30,10 @@ public class Carousel extends AbstractWidget<Carousel> {
 		super.setId(id);
 	}
 	
-	private Integer thumbwidth;
-	private Integer thumbheight;
-	private String bigwidth;
-	private String bigheight;
+	private Integer thumbWidth;
+	private Integer thumbHeight;
+	private String bigWidth;
+	private String bigHeight;
 	private List<CarouselOption> value;
 
 	/**
@@ -47,19 +42,19 @@ public class Carousel extends AbstractWidget<Carousel> {
 	 * @return Integer
 	 * @author DFish Team - lamontYu
 	 */
-	public Integer getThumbwidth() {
-		return thumbwidth;
+	public Integer getThumbWidth() {
+		return thumbWidth;
 	}
 
 	/**
 	 * 
 	 * <p>描述:设置缩略图宽度</p>
-	 * @param thumbwidth
+	 * @param thumbWidth
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author DFish Team - lamontYu
 	 */
-	public Carousel setThumbwidth(Integer thumbwidth) {
-		this.thumbwidth = thumbwidth;
+	public Carousel setThumbWidth(Integer thumbWidth) {
+		this.thumbWidth = thumbWidth;
 		return this;
 	}
 	
@@ -69,19 +64,19 @@ public class Carousel extends AbstractWidget<Carousel> {
 	 * @return
 	 * @author DFish Team - lamontYu
 	 */
-	public Integer getThumbheight() {
-		return thumbheight;
+	public Integer getThumbHeight() {
+		return thumbHeight;
 	}
 
 	/**
 	 * 
 	 * <p>描述:设置缩略图高度</p>
-	 * @param thumbheight
+	 * @param thumbHeight
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author DFish Team - lamontYu
 	 */
-	public Carousel setThumbheight(Integer thumbheight) {
-		this.thumbheight = thumbheight;
+	public Carousel setThumbHeight(Integer thumbHeight) {
+		this.thumbHeight = thumbHeight;
 		return this;
 	}
 
@@ -91,19 +86,19 @@ public class Carousel extends AbstractWidget<Carousel> {
 	 * @return
 	 * @author DFish Team - lamontYu
 	 */
-	public String getBigwidth() {
-		return bigwidth;
+	public String getBigWidth() {
+		return bigWidth;
 	}
 
 	/**
 	 * 
 	 * <p>描述:设置大图宽度</p>
-	 * @param bigwidth
+	 * @param bigWidth
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author DFish Team - lamontYu
 	 */
-	public Carousel setBigwidth(Integer bigwidth) {
-    	this.bigwidth = String.valueOf(bigwidth);
+	public Carousel setBigWidth(Integer bigWidth) {
+    	this.bigWidth = String.valueOf(bigWidth);
 		return this;
 	}
 
@@ -113,30 +108,30 @@ public class Carousel extends AbstractWidget<Carousel> {
 	 * @return
 	 * @author DFish Team - lamontYu
 	 */
-	public String getBigheight() {
-		return bigheight;
+	public String getBigHeight() {
+		return bigHeight;
 	}
 
 	/**
 	 * 
 	 * <p>描述:设置大图高度</p>
-	 * @param bigheight
+	 * @param bigHeight
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author DFish Team - lamontYu
 	 */
-	public Carousel setBigheight(Integer bigheight) {
-    	this.bigheight = String.valueOf(bigheight);
+	public Carousel setBigHeight(Integer bigHeight) {
+    	this.bigHeight = String.valueOf(bigHeight);
 		return this;
 	}
 	/**
 	 * 
 	 * <p>描述:设置大图宽度</p>
-	 * @param bigwidth
+	 * @param bigWidth
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author DFish Team - lamontYu
 	 */
-	public Carousel setBigwidth(String bigwidth) {
-		this.bigwidth = bigwidth;
+	public Carousel setBigWidth(String bigWidth) {
+		this.bigWidth = bigWidth;
 		return this;
 	}
 	
@@ -144,12 +139,12 @@ public class Carousel extends AbstractWidget<Carousel> {
 	/**
 	 * 
 	 * <p>描述:设置大图高度</p>
-	 * @param bigheight
+	 * @param bigHeight
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author DFish Team - lamontYu
 	 */
-	public Carousel setBigheight(String bigheight) {
-		this.bigheight = bigheight;
+	public Carousel setBigHeight(String bigHeight) {
+		this.bigHeight = bigHeight;
 		return this;
 	}
 

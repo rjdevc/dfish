@@ -48,7 +48,7 @@ public class Slider extends AbstractFormElement<Slider, Number> {
      * @return 本身，这样可以继续设置其他属性
      */
     public Slider setMaxValue(Number maxValue) {
-        this.addValidate(Validate.maxvalue(maxValue == null ? null : String.valueOf(maxValue)));
+        this.addValidate(Validate.maxValue(maxValue == null ? null : String.valueOf(maxValue)));
         return this;
     }
 
@@ -59,7 +59,7 @@ public class Slider extends AbstractFormElement<Slider, Number> {
      * @return 本身，这样可以继续设置其他属性
      */
     public Slider setMinValue(Number minValue) {
-        this.addValidate(Validate.minvalue(minValue == null ? null : String.valueOf(minValue)));
+        this.addValidate(Validate.minValue(minValue == null ? null : String.valueOf(minValue)));
         return this;
     }
 
