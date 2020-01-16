@@ -28,54 +28,75 @@ public class ClassExtendsAnalysis extends Application {
 
         fillClassToTree(clzs,rootItem);
 
-        FlowPane props=new FlowPane();
-        ScrollPane scp=new ScrollPane();
-        scp.setContent(props);
-        rootLayout.getTabs().add(new Tab("属性名分析",scp));
-        fillPropNamesToPane(clzs,props);
+        TreeView<String> props=new TreeView<>();
+        rootLayout.getTabs().add(new Tab("属性名分析",props));
+        TreeItem<String> propsItem=new TreeItem<>();
+        propsItem.setValue("所有Class");
+        propsItem.setExpanded(true);
+        props.setRoot(propsItem);
+
+
+        fillPropNamesToPane(clzs,propsItem);
 
         primaryStage.setScene(new Scene(rootLayout, 800, 600));
         primaryStage.show();
     }
 
-    private void fillPropNamesToPane(List<Class> clzs, FlowPane props) {
-        TreeMap<String ,Object[]> propNames=new TreeMap<>();
-
+    private void fillPropNamesToPane(List<Class> clzs, TreeItem<String> shell) {
+        TreeMap<String,Set<String>> caller=new TreeMap<>();
+        TreeMap<String,String> groupRef=new TreeMap<>();
+        TreeMap<String,List<String>> group=new TreeMap<>();
         for(Class c:clzs){
-            for(Method m:c.getMethods()){
-                if(m.getName().startsWith("get")&& Modifier.isPublic(m.getReturnType().getModifiers())&&
-                        (m.getParameterTypes()==null||m.getParameterTypes().length==0)&&
-                        m.getAnnotation(Deprecated.class)==null){
-                    if(m.getDeclaringClass().getName().indexOf(".json.")>0){
-                        continue;
-                    }
-                    String propName=m.getName().substring(3);
-                    propName=((char)(propName.charAt(0)+32))+propName.substring(1);
-                    Object[] o=propNames.get(propName);
-                    if(o==null){
-                        propNames.put(propName,new Object[]{1,m.getDeclaringClass().getSimpleName()});
-                    }else{
-                        propNames.put(propName,new Object[]{(Integer)o[0]+1,m.getDeclaringClass().getSimpleName()});
-                    }
+            for(Method m:c.getDeclaredMethods()){
+                String methodName=m.getName();
+                String refName=getRefName(methodName,group,groupRef);
+                Set<String> call=caller.get(refName);
+                if(call==null){
+                    call=new TreeSet<>();
+                    caller.put(refName,call);
                 }
+                call.add(c.getName());
             }
         }
-        List<Map.Entry<String,Object[]>> entries =new ArrayList<>(propNames.entrySet());
-        Collections.sort(entries,(entry1,entry2)->{
-            Object[] o1=entry1.getValue();
-            Object[] o2=entry2.getValue();
-            return ((Integer)o2[0])- ((Integer)o1[0]);
-        });
-
-        for(Map.Entry<String,Object[]>entry:entries) {
-            Object[] o=entry.getValue();
-            System.out.println(entry.getKey());
-            Label lb=new Label(entry.getKey()+"("+entry.getValue()[0]+")");
-            lb.setPadding(new Insets(5));
-            props.getChildren().add(lb);
+        for(Map.Entry<String,Set<String>> entry:caller.entrySet()){
+            String text=entry.getKey();
+            if(group.get(entry.getKey())!=null){
+                text+=" "+group.get(entry.getKey());
+            }
+            TreeItem ti=new TreeItem(text);
+            shell.getChildren().add(ti);
+            for(String cls:entry.getValue()){
+                TreeItem tiCls=new TreeItem(cls);
+                ti.getChildren().add(tiCls);
+            }
         }
-
     }
+
+    private static String getRefName(String methodName,TreeMap<String,List<String>> group,TreeMap<String,String> groupRef) {
+        if(groupRef.get(methodName)!=null){
+            return groupRef.get(methodName);
+        }
+        for(String prefix:PREFIXS){
+            if(methodName.startsWith(prefix)&&methodName.length()>prefix.length()){
+                char c=methodName.charAt(prefix.length());
+                if(c<'A'||c>'Z'){
+                    continue;
+                }
+                String s=methodName.substring(prefix.length());
+                s=(char)(s.charAt(0)+32)+s.substring(1);
+                groupRef.put(methodName,s);
+                List<String> sameName=group.get(s);
+                if(sameName==null){
+                    sameName=new ArrayList<>();
+                    group.put(s,sameName);
+                }
+                sameName.add(methodName);
+                return s;
+            }
+        }
+        return methodName;
+    }
+    private static final String[] PREFIXS={"is","get","set","add","remove"};
 
     private void fillClassToTree(List<Class> clzs, TreeItem<String> shell) {
         //去除 interface
