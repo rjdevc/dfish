@@ -30,7 +30,7 @@ public class GridPanelTest extends DFishUITestCase {
 		Grid grid=gp.build();
 
 		grid.setStyle("margin:10px;margin-bottom:0;");
-		grid.getPub().setHeight(40).setOn(Grid.EVENT_DBLCLICK, "dblclick();");
+		grid.getPub().setHeight(40).setOn(Grid.EVENT_DBL_CLICK, "dblclick();");
 //		gp.getHeadRow().setCls("handle_grid_head");
 
 		System.out.println(grid.getEscape());
