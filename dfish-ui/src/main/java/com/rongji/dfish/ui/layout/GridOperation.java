@@ -11,7 +11,7 @@ public interface GridOperation<T> {
 	 * <p>行和列的初始坐标为0</p>
 	 * <p>如果该行和该列还不存在，将会自动增补Tr和Td，直到足够容纳该行和列。
 	 * 自动增加的行可以通过pub指定高度样式等默认属性。自动增加的列，默认将按A B C D... Z AA AB ... AZ BA BB... 命名,宽度为*</p>
-	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Td}</p>
+	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Grid.TD}</p>
 	 * @param row 行
 	 * @param column 列
 	 * @param o 对象
@@ -24,7 +24,7 @@ public interface GridOperation<T> {
 	 * <p>行和列的初始坐标为0</p>
 	 * <p>如果该区块还不存在，将会自动增补Tr和Td，直到足够容纳该区块。
 	 * 自动增加的行可以通过pub指定高度样式等默认属性。自动增加的列，默认将按A B C D... Z AA AB ... AZ BA BB... 命名,宽度为*</p>
-	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Td}</p>
+	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Grid.TD}</p>
 	 * @param fromRow 区块起始行
 	 * @param fromColumn 区块起始列
 	 * @param toRow 区块结束行
@@ -39,7 +39,7 @@ public interface GridOperation<T> {
 	 * <p>行和列的初始坐标为0</p>
 	 * <p>如果该行和该列还不存在，将会自动增补Tr和Td，直到足够容纳该行和列。
 	 * 自动增加的行可以通过pub指定高度样式等默认属性。自动增加的列，默认将按A B C D... Z AA AB ... AZ BA BB... 命名,宽度为*</p>
-	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Td}</p>
+	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Grid.TD}</p>
 	 * @param row 行
 	 * @param column 列
 	 * @param o 对象
@@ -53,7 +53,7 @@ public interface GridOperation<T> {
 	 * <p>行和列的初始坐标为0</p>
 	 * <p>如果该区块还不存在，将会自动增补Tr和Td，直到足够容纳该区块。
 	 * 自动增加的行可以通过pub指定高度样式等默认属性。自动增加的列，默认将按A B C D... Z AA AB ... AZ BA BB... 命名,宽度为*</p>
-	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Td}</p>
+	 * <p>o 可以是String Widget 或者 Td。实际上都相当于一个Td里面的内容可以被简写，详见{@link Grid.TD}</p>
 	 * @param fromRow 区块起始行
 	 * @param fromColumn 区块起始列
 	 * @param toRow 区块结束行
@@ -88,7 +88,7 @@ public interface GridOperation<T> {
 	 * <p>删除所有的节点 </p>
 	 * <p>注意会删除掉所有的隐藏列。</p>
 	 */
-	void clearNodes();
+//	void clearNodes();
 	/**
 	 * <p>判定某个区块内是否有内容</p>
 	 * <p>行和列的初始坐标为0</p>

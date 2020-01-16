@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.TripleBox;
-import com.rongji.dfish.ui.layout.AbstractNodeContainer;
+import com.rongji.dfish.ui.AbstractNodeContainer;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class Tree extends AbstractNodeContainer<Tree>
 	implements Scrollable<Tree>,HiddenContainer<Tree>,  HtmlContentHolder<Tree>,
-	 PubHolder<Tree, Tree.Leaf>, MultiNodeContainer<Tree>,LazyLoad<Tree> {
+		PubNodeContainer<Tree, Tree.Leaf>, MultiNodeContainer<Tree>,LazyLoad<Tree> {
 	/**
 	 * 
 	 */
@@ -39,7 +39,7 @@ public class Tree extends AbstractNodeContainer<Tree>
 		super(id);
 	}
 
-	private Leaf pub() {
+	public Leaf pub() {
 	    if (this.pub == null) {
 	        this.pub = new Leaf();
         }
@@ -48,7 +48,7 @@ public class Tree extends AbstractNodeContainer<Tree>
 
 	@Override
     public Leaf getPub() {
-		return pub();
+		return pub;
 	}
 
 	@Override
@@ -129,11 +129,11 @@ public class Tree extends AbstractNodeContainer<Tree>
 	 * 是否隐藏 toggle 图标。
 	 * @deprecated 转移到{@link #getPub()}
 	 * @see Leaf#setNoToggle(Boolean)
-	 * @param hidetoggle Boolean
+	 * @param noToggle Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Tree setHidetoggle(Boolean hidetoggle) {
-		getPub().setNoToggle(hidetoggle);
+	public Tree setNoToggle(Boolean noToggle) {
+		getPub().setNoToggle(noToggle);
 		return this;
 	}
 	/**

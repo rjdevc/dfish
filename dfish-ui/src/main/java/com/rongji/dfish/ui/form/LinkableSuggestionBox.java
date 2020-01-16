@@ -1,8 +1,10 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.PubHolder;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.command.Dialog;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * LinkableSuggestionBox 默认可以通过填写出现输入提示的输入框，且所选择的选项可支持链接，主要有{@link ComboBox}和{@link LinkBox}
@@ -11,18 +13,15 @@ import com.rongji.dfish.ui.command.Dialog;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubHolder<T, ComboBoxOption> {
-
-    /**
-     *
-     */
+public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubNodeContainer<T, ComboBoxOption> {
     private static final long serialVersionUID = -1444093499873660133L;
     private String text;
     private String format;
     private Boolean escape;
     private Boolean strict;
-    private ComboBoxOption pub;
     private String loadingText;
+    private List<Node> nodes;
+    private ComboBoxOption pub;
 
     /**
      * 构造函数
@@ -100,21 +99,6 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
         return strict;
     }
 
-    @Override
-    public ComboBoxOption getPub() {
-        if (pub == null) {
-            pub = new ComboBoxOption();
-        }
-        return pub;
-    }
-
-
-    @Override
-    public T setPub(ComboBoxOption pub) {
-        this.pub = pub;
-        return (T) this;
-    }
-
     /**
      * 加载时显示的文本
      *
@@ -133,6 +117,35 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     public T setLoadingText(String loadingText) {
         this.loadingText = loadingText;
         return (T) this;
+    }
+
+    @Override
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    @Override
+    public ComboBoxOption pub() {
+        if (pub == null) {
+            pub = new ComboBoxOption();
+        }
+        return pub;
+    }
+
+    @Override
+    public ComboBoxOption getPub() {
+        return pub;
+    }
+
+    @Override
+    public T setPub(ComboBoxOption pub) {
+        this.pub = pub;
+        return (T) this;
+    }
+
+    @Override
+    public <W extends Node> List<W> findNodes() {
+        return (List<W>) nodes;
     }
 
 }

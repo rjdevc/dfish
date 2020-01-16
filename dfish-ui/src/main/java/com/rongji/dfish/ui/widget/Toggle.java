@@ -30,7 +30,7 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, H
     }
 
     private Boolean hr;
-    private Boolean open;
+    private Boolean expanded;
     private String target;
     private String text;
     private String icon;
@@ -62,20 +62,20 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, H
     /**
      * 设置初始状态为展开或收拢。如果设置了此参数，会产生一个toggle图标
      *
-     * @return open
+     * @return Boolean
      */
-    public Boolean getOpen() {
-        return open;
+    public Boolean getExpanded() {
+        return expanded;
     }
 
     /**
      * 设置初始状态为展开或收拢。如果设置了此参数，会产生一个toggle图标
      *
-     * @param open 设置初始状态是否展开
+     * @param expanded 设置初始状态是否展开
      * @return 本身，这样可以继续设置其他属性
      */
-    public Toggle setOpen(Boolean open) {
-        this.open = open;
+    public Toggle setExpanded(Boolean expanded) {
+        this.expanded = expanded;
         return this;
     }
 

@@ -2,9 +2,9 @@ package com.rongji.dfish.ui.layout;
 
 import java.util.List;
 
+import com.rongji.dfish.ui.AbstractNodeContainer;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Node;
-import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.AbstractBox;
 
 /**

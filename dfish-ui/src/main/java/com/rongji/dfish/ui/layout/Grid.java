@@ -63,15 +63,14 @@ import java.util.*;
  * @author DFish team
  * @since DFish 3.0
  */
-public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<Grid>,
-        HiddenContainer<Grid>, HtmlContentHolder<Grid>, PubHolder<Grid, Grid.TR>, Scrollable<Grid> {
+public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements GridOperation<Grid>,
+        HiddenContainer<Grid>, HtmlContentHolder<Grid>, Scrollable<Grid> {
 
     private static final long serialVersionUID = 6537737987499258183L;
     private THead tHead;
     private TBody tBody;
     private TFoot tFoot;
     private List<Column> columns = new ArrayList<>();
-    private TR pub;
 
     /**
      * 无格式
@@ -109,8 +108,8 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
     }
 
     @Override
-    public String getType() {
-        return "grid";
+    protected TR newPub() {
+        return new TR();
     }
 
     /**
@@ -261,20 +260,6 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
             sb.append((char) ('A' + x % 26));//26个大写字符
         } while ((x = x / 26 - 1) >= 0);
         return sb.reverse().toString();
-    }
-
-    @Override
-    public TR getPub() {
-        if (pub == null) {
-            setPub(new TR());
-        }
-        return pub;
-    }
-
-    @Override
-    public Grid setPub(TR pub) {
-        this.pub = pub;
-        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -469,7 +454,7 @@ public class Grid extends AbstractNodeContainer<Grid> implements GridOperation<G
     /**
      * 空白填充
      *
-     * @return cellpadding
+     * @return cellPadding
      */
     public Integer getCellPadding() {
         return cellPadding;

@@ -17,12 +17,10 @@ import java.util.List;
  * 3.2之前，它 功能由 FormPanel FlexGrid LayoutFormPanel分摊。但3.3以后，如果使用前后端分离的模式开发，
  * 则需要一个统一，方便的组件来代替，于是就封装了它。它现在对于前端是一个实际存在的类，不再是一个JsonWrapper。
  * 5.0以后建议  FormPanel FlexGrid LayoutFormPanel 全部改为使用该类。
- *
+ * @author LinLW
  * @since 5.0
  */
-public class Form extends AbstractNodeContainer<Form>
-        implements HtmlContentHolder<Form>, Scrollable<Form>, MultiNodeContainer<Form>,
-        PubHolder<Form, Grid.TD>, HiddenContainer<Form> {
+public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
     /**
      * 无格式
      */
@@ -41,11 +39,19 @@ public class Form extends AbstractNodeContainer<Form>
      */
     public static final String FACE_DOT = Grid.FACE_DOT;
     private Integer cols;
-    private Grid.TD pub;
     private Boolean escape;
     private String face;
     private Boolean noBr;
     private Boolean scroll;
+
+    public Form(String id) {
+        super(id);
+    }
+
+    @Override
+    protected Grid.TD newPub() {
+        return null;
+    }
 
     /**
      * 布局表格分成多少列。默认12
@@ -65,29 +71,6 @@ public class Form extends AbstractNodeContainer<Form>
     public Form setCols(Integer cols) {
         this.cols = cols;
         return this;
-    }
-
-    @Override
-    public Grid.TD getPub() {
-        if (pub == null) {
-            setPub(new Grid.TD());
-        }
-        return pub;
-    }
-
-    @Override
-    public Form setPub(Grid.TD pub) {
-        this.pub = pub;
-        return this;
-    }
-
-    /**
-     * 构造函数
-     *
-     * @param id String
-     */
-    public Form(String id) {
-        super(id);
     }
 
     @Override
@@ -142,9 +125,6 @@ public class Form extends AbstractNodeContainer<Form>
         return add(new Grid.TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));
     }
 
-    //    public FormLayout addLabelRow(LabelRow<?> w){
-//        return add(w);
-//    }
     private HiddenPart hiddens = new HiddenPart();
 
     @Override
@@ -265,4 +245,5 @@ public class Form extends AbstractNodeContainer<Form>
     public List<Node> getNodes() {
         return  nodes;
     }
+
 }

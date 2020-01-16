@@ -4,7 +4,7 @@ package com.rongji.dfish.ui.widget;
 import java.util.List;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.layout.AbstractNodeContainer;
+import com.rongji.dfish.ui.AbstractNodeContainer;
 
 /**
  * AbstractButton 为抽象按钮类 用于方便扩展多种按钮
@@ -40,13 +40,12 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	protected String icon;
 	protected String text;
 	protected Object tip;
-	protected Boolean closeable;
-//	protected Boolean disabled;
+	protected Boolean closable;
 	protected String status;
 	protected Boolean focus;
 	protected Boolean focusable;
-	protected Boolean hoverdrop;
-	protected Boolean hidetoggle;
+	protected Boolean hoverDrop;
+	protected Boolean noToggle;
 	protected Boolean escape;
 	protected String format;
 	protected Object badge;
@@ -56,19 +55,19 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * 
 	 * @return Boolean
 	 */
-	public Boolean getCloseable() {
-		return closeable;
+	public Boolean getClosable() {
+		return closable;
 	}
 
 	/**
 	 * 是否有关闭图标。
 	 * 
-	 * @param closeable
+	 * @param closable
 	 *            Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setCloseable(Boolean closeable) {
-		this.closeable = closeable;
+	public T setClosable(Boolean closable) {
+		this.closable = closable;
 		return (T) this;
 	}
 
@@ -329,17 +328,17 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * 是否当鼠标hover时展开下拉菜单
 	 * @return Boolean
 	 */
-	public Boolean getHoverdrop() {
-		return hoverdrop;
+	public Boolean getHoverDrop() {
+		return hoverDrop;
 	}
 
 	/**
 	 * 是否当鼠标hover时展开下拉菜单
-	 * @param hoverdrop Boolean
+	 * @param hoverDrop Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setHoverdrop(Boolean hoverdrop) {
-		this.hoverdrop = hoverdrop;
+	public T setHoverDrop(Boolean hoverDrop) {
+		this.hoverDrop = hoverDrop;
 		return (T) this;
 	}
 	
@@ -347,17 +346,17 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 	 * 是否隐藏 toggle 图标。
 	 * @return Boolean 
 	 */
-	public Boolean getHidetoggle() {
-		return hidetoggle;
+	public Boolean getNoToggle() {
+		return noToggle;
 	}
 
 	/**
 	 * 是否隐藏 toggle 图标。
-	 * @param hidetoggle Boolean
+	 * @param noToggle Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public T setHidetoggle(Boolean hidetoggle) {
-		this.hidetoggle = hidetoggle;
+	public T setNoToggle(Boolean noToggle) {
+		this.noToggle = noToggle;
 		return (T) this;
 	}
 

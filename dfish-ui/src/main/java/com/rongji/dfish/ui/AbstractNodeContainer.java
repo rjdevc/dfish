@@ -1,11 +1,10 @@
-package com.rongji.dfish.ui.layout;
+package com.rongji.dfish.ui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.FormElement;
 import com.rongji.dfish.ui.form.Hidden;
 
@@ -64,83 +63,9 @@ public abstract class AbstractNodeContainer<T extends AbstractNodeContainer<T>> 
     }
 
     @Override
-    public Node<? extends Node<?>> findNodeById(String id) {
-        List<?> nodes = findNodes();
-        if (id == null || nodes == null) {
-            return null;
-        }
-        for (Iterator iter = nodes.iterator(); iter.hasNext(); ) {
-            Object item = iter.next();
-
-            if (item instanceof Widget && id.equals(((Widget) item).getId())) {
-                return (Node<? extends Node<?>>) item;
-            } else if (item instanceof NodeContainer) {
-                NodeContainer cast = (NodeContainer) item;
-                Node<? extends Node<?>> c = cast.findNodeById(id);
-                if (c != null) {
-                    return c;
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public T removeNodeById(String id) {
-        List nodes = findNodes();
-        if (id == null || nodes == null) {
-            return (T) this;
-        }
-        for (Iterator<Widget<?>> iter = nodes.iterator();
-             iter.hasNext(); ) {
-            Widget<?> item = iter.next();
-            if (id.equals(item.getId())) {
-                iter.remove();
-            } else if (item instanceof NodeContainer) {
-                NodeContainer cast = (NodeContainer) item;
-                cast.removeNodeById(id);
-            }
-        }
-        return (T) this;
-    }
-
-    @Override
-    public boolean replaceNodeById(Node w) {
-        List nodes = findNodes();
-        if (w == null || w.getId() == null || nodes == null) {
-            return false;
-        }
-        String id = w.getId();
-        for (int i = 0; i < nodes.size(); i++) {
-            Object item = nodes.get(i);
-            if (item instanceof Widget && id.equals(((Widget) item).getId())) {
-                // 替换该元素
-                if (onReplace((Widget) item, (Widget)w)) {
-                    nodes.set(i, w);
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if (item instanceof NodeContainer) {
-                NodeContainer cast = (NodeContainer) item;
-                boolean replaced = cast.replaceNodeById(w);
-                if (replaced) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void clearNodes() {
-        List nodes = findNodes();
-        if (nodes != null) {
-            nodes.clear();
-        }
-    }
-
-    protected boolean onReplace(Widget<?> oldWidget, Widget<?> newWidget) {
+    public boolean onReplace(Node oldNode, Node newNode) {
+        Widget oldWidget = (Widget) oldNode;
+        Widget newWidget = (Widget) newNode;
         if (!Utils.isEmpty(oldWidget.getWidth()) && Utils.isEmpty(newWidget.getWidth())) {
             newWidget.setWidth(oldWidget.getWidth());
         }

@@ -1,14 +1,14 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.layout.AbstractNodeContainer;
+import com.rongji.dfish.ui.AbstractNodeContainer;
 
 /**
  * 进度条
  *
  * @author DFish team
  */
-public class Progress extends AbstractNodeContainer<Progress> implements HasText<Progress>, LazyLoad<Progress>,  PubHolder<Progress, Progress.Item> {
+public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item> implements HasText<Progress>, LazyLoad<Progress> {
 
     private static final long serialVersionUID = -5027456322715352343L;
 
@@ -16,7 +16,6 @@ public class Progress extends AbstractNodeContainer<Progress> implements HasText
     private String text;
     private Boolean escape;
     private String format;
-    private Item pub;
     private String src;
     private Boolean sync;
     private String complete;
@@ -31,6 +30,11 @@ public class Progress extends AbstractNodeContainer<Progress> implements HasText
      */
     public Progress(String id) {
         super(id);
+    }
+
+    @Override
+    protected Item newPub() {
+        return new Item(null);
     }
 
     /**
@@ -195,20 +199,6 @@ public class Progress extends AbstractNodeContainer<Progress> implements HasText
     }
 
     @Override
-    public Item getPub() {
-        if (pub == null) {
-            pub = new Item(null);
-        }
-        return pub;
-    }
-
-    @Override
-    public Progress setPub(Item pub) {
-        this.pub = pub;
-        return this;
-    }
-
-    @Override
     public String getComplete() {
         return complete;
     }
@@ -274,100 +264,107 @@ public class Progress extends AbstractNodeContainer<Progress> implements HasText
         return sync;
     }
 
-	/**
-	 * 进度项,用于展示进度情况
-	 *
-	 * @author lamontYu
-	 * @date 2019-09-30 14:31
-	 * @since 5.0
-	 */
-	public static class Item extends AbstractWidget<Item> implements HasText<Item> {
+    /**
+     * 进度项,用于展示进度情况
+     *
+     * @author lamontYu
+     * @date 2019-09-30 14:31
+     * @since 5.0
+     */
+    public static class Item extends AbstractWidget<Item> implements HasText<Item> {
 
-		private Number percent;
-		private String text;
-		private Boolean escape;
-		private String format;
+        private Number percent;
+        private String text;
+        private Boolean escape;
+        private String format;
 
-		public Item(String id) {
-			setId(id);
-		}
+        public Item(String id) {
+            setId(id);
+        }
 
-		public Item(String id, Number percent) {
-			setId(id);
-			setPercent(percent);
-		}
+        public Item(String id, Number percent) {
+            setId(id);
+            setPercent(percent);
+        }
 
-		@Override
-		public String getType() {
-			return "ProgressItem";
-		}
+        @Override
+        public String getType() {
+            return "ProgressItem";
+        }
 
-		/**
-		 * 进度值。范围从 0 到 100。
-		 * @return Number
-		 */
-		public Number getPercent() {
-			return percent;
-		}
+        /**
+         * 进度值。范围从 0 到 100。
+         *
+         * @return Number
+         */
+        public Number getPercent() {
+            return percent;
+        }
 
-		/**
-		 * 进度值。范围从 0 到 100。
-		 * @param percent Number
-		 * @return 本身，这样可以继续设置其他属性
-		 */
-		public Item setPercent(Number percent) {
-			this.percent = percent;
-			return this;
-		}
+        /**
+         * 进度值。范围从 0 到 100。
+         *
+         * @param percent Number
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public Item setPercent(Number percent) {
+            this.percent = percent;
+            return this;
+        }
 
-		/**
-		 * 显示文本。
-		 * @return String
-		 */
-		@Override
-		public String getText() {
-			return text;
-		}
+        /**
+         * 显示文本。
+         *
+         * @return String
+         */
+        @Override
+        public String getText() {
+            return text;
+        }
 
-		/**
-		 * 显示文本。
-		 * @param text String
-		 * @return 本身，这样可以继续设置其他属性
-		 */
-		@Override
-		public Item setText(String text) {
-			this.text = text;
-			return this;
-		}
+        /**
+         * 显示文本。
+         *
+         * @param text String
+         * @return 本身，这样可以继续设置其他属性
+         */
+        @Override
+        public Item setText(String text) {
+            this.text = text;
+            return this;
+        }
 
-		/**
-		 * 是否对html内容转义。默认值为true。
-		 * @return Boolean
-		 */
-		@Override
-		public Boolean getEscape() {
-			return escape;
-		}
+        /**
+         * 是否对html内容转义。默认值为true。
+         *
+         * @return Boolean
+         */
+        @Override
+        public Boolean getEscape() {
+            return escape;
+        }
 
-		/**
-		 * 是否对html内容转义。默认值为true。
-		 * @param escape Boolean
-		 * @return 本身，这样可以继续设置其他属性
-		 */
-		@Override
-		public Item setEscape(Boolean escape) {
-			this.escape = escape;
-			return this;
-		}
-		@Override
-		public String getFormat() {
-			return format;
-		}
+        /**
+         * 是否对html内容转义。默认值为true。
+         *
+         * @param escape Boolean
+         * @return 本身，这样可以继续设置其他属性
+         */
+        @Override
+        public Item setEscape(Boolean escape) {
+            this.escape = escape;
+            return this;
+        }
 
-		@Override
-		public Item setFormat(String format) {
-			this.format = format;
-			return this;
-		}
-	}
+        @Override
+        public String getFormat() {
+            return format;
+        }
+
+        @Override
+        public Item setFormat(String format) {
+            this.format = format;
+            return this;
+        }
+    }
 }

@@ -2,8 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.MultiNodeContainer;
-import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.layout.AbstractNodeContainer;
+import com.rongji.dfish.ui.AbstractNodeContainer;
 
 import java.beans.Transient;
 import java.util.ArrayList;

@@ -271,7 +271,7 @@ public class GridFactory {
                 Grid.TR tr = new Grid.TR();
                 prototype.add(tr);
                 //FIXME 这里应该不是0而是第0列的propName
-                tr.setData(firstColumnField, new Grid.TD().setColSpan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setOpen(true)));
+                tr.setData(firstColumnField, new Grid.TD().setColSpan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setExpanded(true)));
 
                 for (Object data : entry.getValue()) {
                     Grid.TR dataRow = new Grid.TR();

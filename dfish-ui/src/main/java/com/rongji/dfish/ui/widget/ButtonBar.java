@@ -2,22 +2,20 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.layout.AbstractNodeContainer;
+import com.rongji.dfish.ui.AbstractNodeContainer;
 
 import java.util.List;
 
 /**
  * button 的父类。 Alignable
  */
-// FIXME ButtonBar的实现是HorizonalLayout,java端概念是否和js端统一大
-public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHolder<ButtonBar, Button>,
-        Alignable<ButtonBar>, VAlignable<ButtonBar>, MultiNodeContainer<ButtonBar>, Directional<ButtonBar> {
+public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Button> implements Directional<ButtonBar>,
+        Alignable<ButtonBar>, VAlignable<ButtonBar> {
 
     private static final long serialVersionUID = 5193505708325695202L;
 
     private String dir;
     private Boolean focusMultiple;
-    private Button pub;
     private Integer space;
     private String align;
     private String vAlign;
@@ -25,6 +23,20 @@ public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHo
     private Boolean nobr;
     private Boolean scroll;
     private Overflow overflow;
+
+    /**
+     * 构造函数
+     *
+     * @param id String
+     */
+    public ButtonBar(String id) {
+        super(id);
+    }
+
+    @Override
+    protected Button newPub() {
+        return new Button(null);
+    }
 
     /**
      * 当按钮过多，放不下的时候的效果
@@ -88,23 +100,10 @@ public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHo
         return this;
     }
 
-
-    /**
-     * 设置为 true，按钮点击后转为焦点状态(按钮增加焦点样式 .z-on )
-     *
-     * @param focusable Boolean
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Deprecated
-    public ButtonBar setFocusable(Boolean focusable) {
-        getPub().setFocusable(true);
-        return this;
-    }
-
     /**
      * 是否有多个按钮可同时设为焦点状态。
      *
-     * @return focusmultiple
+     * @return focusMultiple
      */
     public Boolean getFocusMultiple() {
         return focusMultiple;
@@ -141,58 +140,16 @@ public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHo
         return this;
     }
 
-    @Override
-    public ButtonBar setPub(Button pub) {
-        this.pub = pub;
-        return this;
-    }
 
     /**
-     * 构造函数
-     *
-     * @param id String
-     */
-    public ButtonBar(String id) {
-        super(id);
-    }
-
-    /**
-     * 添加分隔符，默认添加2像素的分隔符
+     * 添加分隔符，默认添加1像素的分隔符
      *
      * @return 本身，这样可以继续设置其他属性
-     * @deprecated 使用 {@link #add(Widget)}
+     * @deprecated 使用 {@link #add(Node)}
      */
     @Deprecated
     public ButtonBar addSplit() {
-        nodes.add(new Split().setWidth("2"));
-        return this;
-    }
-
-    @Override
-    public Button getPub() {
-        if (pub == null) {
-            pub = new Button(null);
-        }
-        return pub;
-    }
-
-    /**
-     * 设置默认样式
-     *
-     * @param face String
-     * @return 本身，这样可以继续设置其他属性
-     * @deprecated 现在一般是setPub(new Button ( null).setCls(" xxx "));
-     */
-    @Deprecated
-    public ButtonBar setFace(String face) {
-        // FIXME 这里face和styleClass冲了,该如何定义? 是否将这个方法去除
-        if (Utils.isEmpty(face)) {
-            return this;
-        }
-        if (pub == null) {
-            setPub(new Button(null));
-        }
-        getPub().setCls(face);
+        nodes.add(new Split().setWidth(1));
         return this;
     }
 
@@ -218,26 +175,18 @@ public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHo
         return this;
     }
 
-    @Override
-    public List<Node> getNodes() {
-        return (List) nodes;
-    }
-
     /**
      * 在按钮之间默认插入的split
      *
      * @return Split
      */
     public Split getSplit() {
-        if (split == null) {
-            split = new Split();
-        }
         return split;
     }
 
     /**
      * 在按钮之间默认插入的split;
-     * 设置了该属性,无需调用{@link #add(Widget)}来添加split,按钮间自动添加1个split
+     * 设置了该属性,无需调用{@link #add(Node)}来添加split,按钮间自动添加1个split
      *
      * @param split Split
      * @return this
@@ -264,29 +213,6 @@ public class ButtonBar extends AbstractNodeContainer<ButtonBar> implements PubHo
      */
     public ButtonBar setScroll(Boolean scroll) {
         this.scroll = scroll;
-        return this;
-    }
-
-    /**
-     * 在指定的位置添加子面板
-     *
-     * @param index 位置
-     * @param w     N
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public ButtonBar add(int index, Widget<?> w) {
-        if (w == null) {
-            return this;
-        }
-        if (w == this) {
-            throw new IllegalArgumentException(
-                    "can not add widget itself as a sub widget");
-        }
-        if (index < 0) {
-            nodes.add(w);
-        } else {
-            nodes.add(index, w);
-        }
         return this;
     }
 }

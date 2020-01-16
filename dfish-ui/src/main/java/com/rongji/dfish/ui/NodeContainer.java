@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui;
 
+import java.util.Iterator;
 import java.util.List;
 /**
  * Container 为容器。
@@ -26,9 +27,26 @@ public interface NodeContainer<T extends NodeContainer<T>> {
 	 * @param id String
 	 * @return Widget
 	 */
-	Node findNodeById(String id);
+	default Node findNodeById(String id) {
+		List<?> nodes = findNodes();
+		if (id == null || nodes == null) {
+			return null;
+		}
+		for (Iterator iter = nodes.iterator(); iter.hasNext(); ) {
+			Object item = iter.next();
 
-
+			if (item instanceof Widget && id.equals(((Widget) item).getId())) {
+				return (Node<? extends Node<?>>) item;
+			} else if (item instanceof NodeContainer) {
+				NodeContainer cast = (NodeContainer) item;
+				Node<? extends Node<?>> c = cast.findNodeById(id);
+				if (c != null) {
+					return c;
+				}
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * 根据子Widget的Id，移除这个Widget
@@ -36,7 +54,23 @@ public interface NodeContainer<T extends NodeContainer<T>> {
 	 * @param id String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	T removeNodeById(String id);
+	default T removeNodeById(String id) {
+		List nodes = findNodes();
+		if (id == null || nodes == null) {
+			return (T) this;
+		}
+		for (Iterator<Widget<?>> iter = nodes.iterator();
+			 iter.hasNext(); ) {
+			Widget<?> item = iter.next();
+			if (id.equals(item.getId())) {
+				iter.remove();
+			} else if (item instanceof NodeContainer) {
+				NodeContainer cast = (NodeContainer) item;
+				cast.removeNodeById(id);
+			}
+		}
+		return (T) this;
+	}
 	/**
 	 * 替代一个Widget,同find仅替换第一个找到的。
 	 * <p>Widget 的种类可以不一致。但是ID必须一致，并且不能为空</p>
@@ -45,11 +79,45 @@ public interface NodeContainer<T extends NodeContainer<T>> {
 	 * <li>原先Layout中并不存在这个id的Widget。</li>
 	 * <li>不能替代Layout本身</li></ol>
 	 */
-	boolean replaceNodeById(Node w);
+	default boolean replaceNodeById(Node w) {
+		List<Node> nodes = findNodes();
+		if (w == null || w.getId() == null || nodes == null) {
+			return false;
+		}
+		String id = w.getId();
+		for (int i = 0; i < nodes.size(); i++) {
+			Node item = nodes.get(i);
+			if (id.equals((item.getId()))) {
+				// 替换该元素
+				if (onReplace(item, w)) {
+					nodes.set(i, w);
+					return true;
+				} else {
+					return false;
+				}
+			} else if (item instanceof NodeContainer) {
+				NodeContainer cast = (NodeContainer) item;
+				boolean replaced = cast.replaceNodeById(w);
+				if (replaced) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	default boolean onReplace(Node oldNode, Node newNode) {
+		return true;
+	}
 
 	/**
 	 * 将所有子节点清空
 	 */
-	void clearNodes();
+	default void clearNodes() {
+		List nodes = findNodes();
+		if (nodes != null) {
+			nodes.clear();
+		}
+	}
 
 }

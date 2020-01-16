@@ -1,7 +1,8 @@
 package com.rongji.dfish.ui.widget;
 
+import com.rongji.dfish.ui.AbstractPubNodeContainer;
 import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.PubHolder;
+import com.rongji.dfish.ui.PubNodeContainer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,10 +21,7 @@ import java.util.Map;
  * @version 2.0
  * @since xmltmpl 2.0
  */
-public class Calendar extends AbstractWidget<Calendar> implements PubHolder<Calendar, Calendar.Item> {
-    /**
-     *
-     */
+public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item> {
     private static final long serialVersionUID = -7016518294135279513L;
 
     /**
@@ -48,7 +46,6 @@ public class Calendar extends AbstractWidget<Calendar> implements PubHolder<Cale
     private String date;
     private String focusDate;
     private String src;
-    private Item pub;
     private Boolean fillBlank;
 
     /**
@@ -61,7 +58,12 @@ public class Calendar extends AbstractWidget<Calendar> implements PubHolder<Cale
      * @see #FACE_YEAR
      */
     public Calendar(String id) {
-        this.id = id;
+        super(id);
+    }
+
+    @Override
+    protected Item newPub() {
+        return new Item(null);
     }
 
     public String getFace() {
@@ -149,93 +151,6 @@ public class Calendar extends AbstractWidget<Calendar> implements PubHolder<Cale
         return this;
     }
 
-//	/**
-//	 * 设置css的值
-//	 * @param value String
-//	 * @return 本身，这样可以继续设置其他属性
-//	 * @see CalendarCss#setValue(String)
-//	 */
-//	public CalendarPanel setCssValue(String value){
-//		css.setValue(value);
-//		return this;
-//	}
-//	/**
-//	 * 取得css的值
-//	 * @return 本身，这样可以继续设置其他属性
-//	 * @see CalendarCss#setValue(String)
-//	 */
-//	@Transient
-//	public String getCssValue(){
-//		return css.getPrototype().get("value");
-//	}
-//	/**
-//	 * 设置css的关键字的值
-//	 * @param key char
-//	 * @param style String
-//	 * @return 本身，这样可以继续设置其他属性
-//	 */
-//	public CalendarPanel setCss(char key,String style){
-//		css.set(key, style);
-//		return this;
-//	}
-//	/**
-//	 * 取得css
-//	 * @return CalendarCss
-//	 */
-//	public CalendarCss getCss(){
-//		return css;
-//	}
-
-    /**
-     * 日期按钮的公共设置。
-     * 范例: 点击日期按钮显示日期值。
-     * var opt = { type: 'canlendar/date', pub: { on: { click: 'alert(this.val())' } } }
-     *
-     * @return CalendarItem
-     */
-    @Override
-    public Item getPub() {
-        if (pub == null) {
-            pub = new Item(null);
-        }
-        return pub;
-    }
-
-    /**
-     * 日期按钮的公共设置。
-     * 范例: 点击日期按钮显示日期值。
-     * var opt = { type: 'canlendar/date', pub: { on: { click: 'alert(this.val())' } } }
-     *
-     * @param pub CalendarItem
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    public Calendar setPub(Item pub) {
-        this.pub = pub;
-        return this;
-    }
-
-    public Map<String, Item> getBody() {
-        return body;
-    }
-
-    public Calendar setBody(Map<String, Item> body) {
-        this.body = body;
-        return this;
-    }
-
-    public Calendar add(String name, Item td) {
-        if (body == null) {
-            body = new LinkedHashMap<String, Item>();
-        }
-        body.put(name, td);
-        return this;
-    }
-
-    public Calendar add(int name, Item td) {
-        return add(String.valueOf(name), td);
-    }
-
     /**
      * 设置为true，当日历不满6行时填补一行空白
      *
@@ -265,11 +180,17 @@ public class Calendar extends AbstractWidget<Calendar> implements PubHolder<Cale
 
         private static final long serialVersionUID = 6176298189403402501L;
 
+        private String value;
         private String text;
         private Boolean focus;
         private Boolean focusable;
 
-        public Item(String text) {
+        public Item(String value) {
+            this.setValue(value);
+        }
+
+        public Item(String value, String text) {
+            this.setValue(value);
             this.setText(text);
         }
 
@@ -277,6 +198,15 @@ public class Calendar extends AbstractWidget<Calendar> implements PubHolder<Cale
         @Override
         public String getType() {
             return "CalendarItem";
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public Item setValue(String value) {
+            this.value = value;
+            return this;
         }
 
         /**
