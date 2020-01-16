@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.2
  * @since XMLTMPL 1.0
  */
-public class Select extends AbstractOptionsHolder<Select, Option> {
+public class Select extends AbstractOptionContainer<Select> {
 
 	private static final long serialVersionUID = -4055773878898188252L;
 
@@ -27,11 +27,6 @@ public class Select extends AbstractOptionsHolder<Select, Option> {
 	 */
 	public Select(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
-	}
-
-	@Override
-	protected Option buildOption(Option o) {
-		return o;
 	}
 
 	/**

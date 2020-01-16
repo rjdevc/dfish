@@ -17,7 +17,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	private static final long serialVersionUID = -3727695759981575245L;
 	private Dialog suggest;
 	private Boolean multiple;
-	private Boolean noBr;
+	private Boolean br;
 	/**
 	 * 显示搜索结果的界面
 	 */
@@ -101,17 +101,17 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
      * 设置当内容太多的时候不换行
 	 * @return the nobr
 	 */
-	public Boolean getNoBr() {
-		return noBr;
+	public Boolean getBr() {
+		return br;
 	}
 
 	/**
-	 * @param noBr 设置当内容太多的时候不换行
+	 * @param br 设置当内容太多的时候不换行
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
-	public T setNoBr(Boolean noBr) {
-		this.noBr = noBr;
+	public T setBr(Boolean br) {
+		this.br = br;
 		return (T)this;
 	}
 	

@@ -82,7 +82,7 @@ public interface Widget<T extends Widget<T>> extends Node<T>, EventTarget<T>{
      * @param cls 样式
      * @return 本身，这样可以继续设置其他属性
      */
-    T addCls(String cls);
+    T addClass(String cls);
 
     /**
      * 移除样式
@@ -90,7 +90,7 @@ public interface Widget<T extends Widget<T>> extends Node<T>, EventTarget<T>{
      * @param cls 样式
      * @return 本身，这样可以继续设置其他属性
      */
-    T removeCls(String cls);
+    T removeClass(String cls);
 
     /**
      * 设置水平方向可用像素(宽度)减少值。

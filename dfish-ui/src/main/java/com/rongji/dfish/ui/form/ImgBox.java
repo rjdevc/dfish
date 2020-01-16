@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.2
  * @since 1.0
  */
-public class ImgBox extends AbstractOptionsHolder<ImgBox, Option> {
+public class ImgBox extends AbstractOptionContainer<ImgBox> {
 
 	private static final long serialVersionUID = 666601483514746346L;
 
@@ -28,11 +28,6 @@ public class ImgBox extends AbstractOptionsHolder<ImgBox, Option> {
 	 */
 	public ImgBox(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
-	}
-
-	@Override
-	protected Option buildOption(Option o) {
-		return o;
 	}
 
 	/**

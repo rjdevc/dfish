@@ -23,7 +23,9 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      * @param label String
      * @return 本身，这样可以继续设置其他属性
      */
-    T setLabel(String label);
+    default T setLabel(String label) {
+        return setLabel(new Label(label));
+    }
 
     /**
      * 设置标题

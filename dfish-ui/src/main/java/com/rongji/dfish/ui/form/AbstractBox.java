@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
+import com.rongji.dfish.ui.Widget;
 
 /**
  * 单选框或多选框，他们经常作为复杂对象里面可以被选择的项。
@@ -17,16 +18,16 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
 
     private static final long serialVersionUID = -5120066286869690681L;
 
-    protected String target;
-    protected String text;
-    protected Object tip;
-    protected Boolean checked;
-    protected Boolean nobr;
-    protected String sync;
+    protected Boolean br;
     protected Boolean bubble;
-    protected BoxField field;
+    protected Boolean checked;
     protected Boolean escape;
     protected String format;
+    protected String sync;
+    protected Object target;
+    protected String text;
+    protected Object tip;
+//    protected BoxField field;
 
     public static final String SYNC_CLICK = "click";
     public static final String SYNC_FOCUS = "focus";
@@ -54,7 +55,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
      *
      * @return target
      */
-    public String getTarget() {
+    public Object getTarget() {
         return target;
     }
 
@@ -65,6 +66,11 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
      * @return 本身，这样可以继续设置其他属性
      */
     public T setTarget(String target) {
+        this.target = target;
+        return (T) this;
+    }
+
+    public T setTarget(Widget target) {
         this.target = target;
         return (T) this;
     }
@@ -100,26 +106,26 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
         return (T) this;
     }
 
-    /**
-     * 设定该box绑定字段
-     *
-     * @return BoxField
-     */
-    public BoxField getField() {
-        return field;
-    }
-
-    /**
-     * 该box绑定字段
-     *
-     * @param field BoxField
-     * @return this
-     */
-
-    public T setField(BoxField field) {
-        this.field = field;
-        return (T) this;
-    }
+//    /**
+//     * 设定该box绑定字段
+//     *
+//     * @return BoxField
+//     */
+//    public BoxField getField() {
+//        return field;
+//    }
+//
+//    /**
+//     * 该box绑定字段
+//     *
+//     * @param field BoxField
+//     * @return this
+//     */
+//
+//    public T setField(BoxField field) {
+//        this.field = field;
+//        return (T) this;
+//    }
 
     @Override
     public Boolean getEscape() {
@@ -211,18 +217,18 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
      *
      * @return Boolean
      */
-    public Boolean getNobr() {
-        return nobr;
+    public Boolean getBr() {
+        return br;
     }
 
     /**
      * 该选项不换行
      *
-     * @param nobr Boolean
+     * @param br Boolean
      * @return this
      */
-    public T setNobr(Boolean nobr) {
-        this.nobr = nobr;
+    public T setBr(Boolean br) {
+        this.br = br;
         return (T) this;
     }
 }

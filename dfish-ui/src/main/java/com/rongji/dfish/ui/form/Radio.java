@@ -17,8 +17,7 @@ public class Radio extends AbstractBox<Radio> {
 	 * @param value 值
 	 * @param text 显示的文本
 	 */
-	public Radio(String name, String label, Boolean checked, Object value,
-			String text) {
+	public Radio(String name, String label, Boolean checked, Object value, String text) {
 		super(name, label, checked, value, text);
 	}
 
