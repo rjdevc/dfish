@@ -509,7 +509,7 @@
 
 .w-checkboxgroup-align{vertical-align:middle}
 .w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding:5px 6px 5px 0;}
-.w-checkbox,.w-radio,.w-triplebox{padding:2px 2px 2px 0;font-style:normal}
+.w-checkbox,.w-radio,.w-triplebox{padding:2px 0;font-style:normal}
 .w-checkbox input,.w-radio input,.w-triplebox input{float:left;padding:0;vertical-align:middle}
 .w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;vertical-align:middle;cursor:pointer}
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
@@ -521,7 +521,7 @@
 /*  <!--  CSS3 checkbox  */
 .w-checkbox ._t,.w-triplebox ._t,.w-radio ._t{display:none}
 .f-css2 .w-checkbox ._t,.f-css2 .w-triplebox ._t,.f-css2 .w-radio ._t{display:inline-block}
-.w-checkbox ._t + label,.w-triplebox ._t + label,.w-radio ._t + label{position:relative;background-color:#fff;border:1px solid #c1caca;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05);padding:8px;border-radius:0;display:inline-block;margin-right:3px;vertical-align:middle;-webkit-appearance:none;cursor:pointer}
+.w-checkbox ._t + label,.w-triplebox ._t + label,.w-radio ._t + label{position:relative;background-color:#fff;border:1px solid #c1caca;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05);padding:8px;border-radius:0;display:inline-block;vertical-align:middle;-webkit-appearance:none;cursor:pointer}
 .w-checkbox.z-ds ._t + label,.w-triplebox.z-ds ._t + label,.w-radio.z-ds ._t + label{background-color:#ddd;cursor:default}
 .w-checkbox ._t:active + label,.w-triplebox ._t:active + label{box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
 .w-checkbox ._t:checked + label:after,.w-triplebox ._t:checked + label:after,.w-triplebox.z-half ._t + label:before{content:'\2714';font-family:'Times New Roman';position:absolute;top:0;left:0;color:#758794;width:100%;text-align:center;font-size:16px;font-weight:normal;vertical-align:text-top;line-height:1}
@@ -534,6 +534,7 @@
 .w-checkboxgroup ._t + label,.w-radiogroup ._t + label{vertical-align:middle}
 .w-grid-triplebox.w-triplebox ._t + label,.w-grid-radio.w-radio ._t + label{margin-right:0}
 .w-checkboxgroup.z-err .w-checkbox ._t + label,.w-radiogroup.z-err .w-radio ._t + label{border-color:#f00}
+.w-radiogroup-list ._t + label{vertical-align:top}
 /*  CSS3 checkbox  -->   */
 
 .w-switch{}

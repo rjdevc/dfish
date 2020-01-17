@@ -891,12 +891,21 @@ W = define( 'Widget', function() {
 			return a == N ? _slice.call( this ) : a < 0 ? this[ this.length + a ] : this[ a ];
 		},
 		// 获取所有子孙节点
-		getDescendants: function() {
+		descendants: function() {
 			for ( var i = 0, r = [], l = this.length; i < l; i ++ ) {
 				r.push( this[ i ] );
-				this[ i ].length && r.push.apply( r, this[ i ].getDescendants() );
+				this[ i ].length && r.push.apply( r, this[ i ].descendants() );
 			}
 			return r;
+		},
+		// 获取某个子孙节点 /@ a -> type
+		descendant: function( a ) {
+			if ( this.type === a )
+				return this;
+			for ( var i = 0, l = this.length, r; i < l; i ++ ) {
+				if ( r = this[ i ].descendant( a ) )
+					return r;
+			}
 		},
 		// 查找符合条件的祖先元素
 		// a -> string: 根据type查找
@@ -1819,8 +1828,8 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	};
 	// 实现: wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
 	_proto[ 'html_' + v ] = function() {
-		if ( this.x[ v + 'content' ] ) {
-			var c = this.x[ v + 'content' ];
+		if ( this.x[ v + 'Content' ] ) {
+			var c = this.x[ v + 'Content' ];
 			if ( typeof c === _STR && c.indexOf( 'javascript:' ) === 0 )
 				c = this.formatJS( c );
 			if ( typeof c === _OBJ )
@@ -9313,14 +9322,14 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				this.parentNode.expandTo( u, a, b );
 		},
 		draggable: function( a ) {
-			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
+			for ( var i = 0, b = this.descendants(), l = b.length; i < l; i ++ ) {
 				$.draggable( b[ i ], a );
 				b[ i ].getSrc() && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.draggable.call( this, a ) } );
 			}
 			return this;
 		},
 		droppable: function( a ) {
-			for ( var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++ ) {
+			for ( var i = 0, b = this.descendants(), l = b.length; i < l; i ++ ) {
 				$.droppable( b[ i ], a );
 				b[ i ].getSrc() && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.droppable.call( this, a ) } );
 			}
@@ -9452,7 +9461,7 @@ Leaf = define.widget( 'Leaf', {
 			a !== F && this.triggerHandler( 'focus' );
 			if ( this.box && this.box.x.sync === 'focus' && ! this.isEvent4Box( e ) ) {
 				if ( a ) {
-					for ( var i = 0, r = this.rootNode.getDescendants(), l = r.length; i < l; i ++ )
+					for ( var i = 0, r = this.rootNode.descendants(), l = r.length; i < l; i ++ )
 						r[ i ] !== this && r[ i ].check( F );
 				}
 				this.check( a );
