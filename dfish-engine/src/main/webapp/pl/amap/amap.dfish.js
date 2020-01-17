@@ -30,20 +30,20 @@
 
 var
 $ = require( 'dfish' ),
-W = require( 'widget' ),
+W = require( 'Widget' ),
 
 /*
- * { "type": "amap", "id": "amap", "name": "amap", "height": "*", "value": "{\"address\":[item]}" }
+ * { "type": "AMap", "id": "amap", "name": "amap", "height": "*", "value": "{\"address\":[item]}" }
  * value参数的item格式：{"lng":"118.868856","lat":"25.421089","icon":"图标地址","tip":"<div>福建省莆田市城厢区华亭镇院里 <a href=#>BBB</a></div>","focus":true}
  */
-amap = define.widget( 'amap', {
+DFishAMap = define.widget( 'AMap', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.markers = [];
 		this.errorCount = 0;
 		this.cssText = 'z-index:0;';
 	},
-	Extend: 'vert',
+	Extend: 'Vert',
 	Listener: {
 		body: {
 			ready: function() { this._render(); }
@@ -155,18 +155,18 @@ amap = define.widget( 'amap', {
  * @zoom: 缩放级别，默认取值范围为[3,18]
  * @value: {"lng":"118.868856","lat":"25.421089","icon":"图标地址","tip":"提示内容","focus":true}
  */
-AMapPicker = define.widget( 'amap/picker', {
+DFishAMapPicker = define.widget( 'AMapPicker', {
 	Const: function( x, p ) {
-		amap.apply( this, arguments );
-		var v = $.jsonParse( this.x.value ), c = this.add( { type: 'vert', height: '*' } ), self = this;
-		this.hd_lng = c.add( { type: 'hidden', value: v ? v.lng : '' } );
-		this.hd_lat = c.add( { type: 'hidden', value: v ? v.lat : '' } );
-		this.cn_map = c.add( { type: 'html', height: '*' } );
-		var d = c.add( { type: 'horz', height: 50, style: 'padding:10px', nodes: [ { type: 'html', text: '地点: &nbsp; ', width: 50, style: 'text-align:right;line-height:30px;' } ] } );
-		this.cn_adr = d.add( { type: 'text', cls: 'z-clear', width: '*', on: { keydown: function( e ) { (! e.keyCode || e.keyCode===13)&&self.markByAddress([this.val()]); } },
-			prependcontent: '<div style="float:right;width:28px;height:100%;text-align:center;cursor:pointer;left:auto;padding:0;right:0;" onclick="' + $.abbr + '.widget(this).trigger(\'keydown\')"><i class=f-vi></i><i class="f-i f-i-search"></i><input type=hidden id=' + this.id + 'v name="' + (x.name || '') + '"></div>' } );
+		DFishAMap.apply( this, arguments );
+		var v = $.jsonParse( this.x.value ), c = this.add( { type: 'Vert', height: '*' } ), self = this;
+		this.hd_lng = c.add( { type: 'Hidden', value: v ? v.lng : '' } );
+		this.hd_lat = c.add( { type: 'Hidden', value: v ? v.lat : '' } );
+		this.cn_map = c.add( { type: 'Html', height: '*' } );
+		var d = c.add( { type: 'Horz', height: 50, style: 'padding:10px', nodes: [ { type: 'Html', text: '地点: &nbsp; ', width: 50, style: 'text-align:right;line-height:30px;' } ] } );
+		this.cn_adr = d.add( { type: 'Text', cls: 'z-clear', width: '*', on: { keyDown: function( e ) { (! e.keyCode || e.keyCode===13)&&self.markByAddress([this.val()]); } },
+			prependContent: '<div style="float:right;width:28px;height:100%;text-align:center;cursor:pointer;left:auto;padding:0;right:0;" onclick="' + $.abbr + '.widget(this).trigger(\'keydown\')"><i class=f-vi></i><i class="f-i f-i-search"></i><input type=hidden id=' + this.id + 'v name="' + (x.name || '') + '"></div>' } );
 	},
-	Extend: amap,
+	Extend: DFishAMap,
 	Prototype: {
 		val: function() {
 			this.save();
@@ -240,7 +240,7 @@ AMapPicker = define.widget( 'amap/picker', {
 				 m.infoWindow.setContent( x.tip || x.address );
 				 m.infoWindow.open( this.map, n );
 		    } else
-		    	m = amap.prototype.addMarker.call( this, x );
+		    	m = DFishAMap.prototype.addMarker.call( this, x );
 			AMap.event.trigger( m, 'mouseover' );
 			return m;
 		},

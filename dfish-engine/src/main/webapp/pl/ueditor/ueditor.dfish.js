@@ -4,17 +4,17 @@
 
 var
 $ = require( 'dfish' ),
-W = require( 'widget' ),
+W = require( 'Widget' ),
 Q = require( 'jquery' ),
 Loc = require( 'loc' ),
-AbsForm = require( 'abs/form' ),
+AbsForm = require( 'AbsForm' ),
 us = {};
 
-define.widget( 'ueditor', {
+define.widget( 'UEditor', {
 	Const : function( x ) {
 		AbsForm.apply( this, arguments );
 		if ( x.transparent ) {
-			this.defaults( { wmin: 0, hmin: 0 } );
+			this.defaults( { widthMinus: 0, heightMinus: 0 } );
 			this.className += ' z-trans';
 		}
 		var o = x.option || {};
@@ -36,7 +36,7 @@ define.widget( 'ueditor', {
 			//"initialFrameHeight": 120, "maximumWords": 0
 			ready: function() {
 				var self = this;
-				require.async( ['./ueditor.config', './ueditor.all'], function() {
+				require.async( ['./ueditor.config', './ueditor.all.min'], function() {
 					_patch();
 					var h = self.innerHeight();
 					$.extend( self.options, { initialFrameHeight: (h ? Math.max( 0, h - 31 ) : 100), toolbars: UEDITOR_CONFIG[ self.options.advance ? 'toolbars' : 'simpleToolbars' ] } );
@@ -59,7 +59,7 @@ define.widget( 'ueditor', {
 			}
 		}
 	},
-	Default: { wmin: 2, hmin: 2 },
+	Default: { widthMinus: 2, heightMinus: 2 },
 	Prototype : {
 		val: function( a ) {
 			if ( a == null ) {
@@ -149,12 +149,12 @@ define.widget( 'ueditor', {
 			}
 		},
 		readonly: function( a ) {
-			this.x.readonly = a !== false;
+			this.x.status = a !== false ? 'readonly' : '';
 			this.u[ a === false ? 'enable' : 'disable' ]();
 			$.classAdd( this.$(), 'z-ds', a );
 		},
 		disable: function( a ) {
-			this.x.disabled = a !== false;
+			this.x.status = a !== false ? 'disabled' : '';
 			this.u[ a === false ? 'enable' : 'disable' ]();
 			$.classAdd( this.$(), 'z-ds', a );
 			$( this.id + 'v' ).disabled = a !== false;
@@ -166,7 +166,6 @@ define.widget( 'ueditor', {
 			return '<div id=' + this.id + 'u></div><input type=hidden id=' + this.id + 'v name=' + this.x.name + (this.x.disabled ? ' disabled' : '') + '>';
 		},
 		destroy: function() {
-			delete PL.UEditor._a[ this.id ];
 			try {
 				this.u.isReady && this.u.destroy();
 			} catch( e ) {}

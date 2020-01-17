@@ -36,26 +36,26 @@
 
 require.css( './carousel.css' );
 
-var $ = require( 'dfish' ), W = require( 'widget' );
+var $ = require( 'dfish' ), W = require( 'Widget' );
 
-define.widget( 'carousel', {
+define.widget( 'Carousel', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		if ( typeof x.value === 'string' )
 			x.value = $.jsonParse( x.value );
 		for ( var i = 0, t = [], f = [], g = $.abbr + '.all["' + this.id + '"]', s, v = x.value, l = v && v.length; i < l; i ++ ) {
-			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(' + i + ')' } } );
+			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbWidth, iconheight: x.thumbHeight, width: x.thumbWidth, height: x.thumbHeight, target: this.id + 'i' + i, focus: i === 0, on: { mouseOver: g + '.pause(' + i + ')' } } );
 			s = '<img src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
 			if ( v[ i ].text )
 				s += '<b class=_b></b><span class=_t>' + v[ i ].text + '</span>';
 			if ( v[ i ].href )
 				s = '<a ' + (v[ i ].href.indexOf( 'javascript:' ) === 0 ? ' onclick=' + g + '.click(' + i + ')' : 'href=' + v[ i ].href + ' target=_blank') + '>' + s + '</a>';
-			f.push( { type: 'html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
+			f.push( { type: 'Html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
 		}
-		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
-		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()' } } );
+		this.tab = this.add( { type: 'ButtonBar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseOut: g + '.play()' } } );
+		this.fra = this.add( { type: 'Frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseoVer: g + '.pause()', mouseOut: g + '.play()' } } );
 	},
-	Extend: 'vert',
+	Extend: 'Vert',
 	Listener: {
 		body: {
 			ready: function() { this.play(); }
