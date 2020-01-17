@@ -2101,7 +2101,7 @@ _merge( $, {
 		aniShow ? webview.close( aniShow ) : webview.close();
 	},
 	cleanPop: function() {
-		$.require( 'dialog' ).cleanPop();		
+		$.require( 'Dialog' ).cleanPop();		
 	},
 	// @a -> src, b -> feature { id: '', cls: '', style: '', click: '', tip: '' }
 	image: function( a, b ) {
