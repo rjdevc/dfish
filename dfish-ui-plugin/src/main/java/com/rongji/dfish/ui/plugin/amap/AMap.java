@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * 地图组件
  */
-public class Amap extends AbstractWidget<Amap> {
+public class AMap extends AbstractWidget<AMap> {
 
     private String value;
 
-    public Amap(String id) {
+    public AMap(String id) {
         setId(id);
     }
 
@@ -30,7 +30,7 @@ public class Amap extends AbstractWidget<Amap> {
      * @param value String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Amap setValue(String value) {
+    public AMap setValue(String value) {
         this.value = value;
         return this;
     }
@@ -40,7 +40,7 @@ public class Amap extends AbstractWidget<Amap> {
      * @param value AmapValue
      * @return 本身，这样可以继续设置其他属性
      */
-    public Amap setValue(Value value) {
+    public AMap setValue(Value value) {
         return setValue(toString(value));
     }
 

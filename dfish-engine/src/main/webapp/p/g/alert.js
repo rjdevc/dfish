@@ -1,31 +1,31 @@
 define.preload({
-    type: 'dialog', node: {
+    type: 'Dialog', node: {
         type: 'view',
         commands: {
-            'close': {type: 'js', text: '$.close(this);'},
+            'close': {type: 'JS', text: '$.close(this);'},
             'no': {
-                type: 'js',
+                type: 'JS',
                 text: 'this.cmd("close");'
             }
         },
         node: {
-            type: 'vert', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
+            type: 'Vertical', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
                 {
-                    type: 'horz', id: 'dlg_head', cls: 'dlg-head', height: 40, width: '*', valign: 'middle', nodes: [
+                    type: 'Horizontal', id: 'dlg_head', cls: 'dlg-head', height: 40, width: '*', vAlign: 'middle', nodes: [
                         {
-                            type: 'dialog/title',
+                            type: 'DialogTitle',
                             id: 'dlg_head_title',
                             cls: 'dlg-head-title',
                             width: '*',
-                            wmin: 10
+                            widthMinus: 10
                         },
                         {
-                            type: 'buttonbar',
+                            type: 'ButtonBar',
                             id: 'dlg_head_oper',
                             cls: 'dlg-head-oper',
                             width: -1,
                             align: 'right',
-                            valign: 'middle',
+                            vAlign: 'middle',
                             pub: {height: 40, width: 40},
                             nodes: [
                                 {
@@ -44,10 +44,10 @@ define.preload({
                     ]
                 },
                 {
-                    type: 'vert', id: 'dlg_trunk', cls: 'dlg-trunk', height: '*', width: '*', nodes: [
+                    type: 'Vertical', id: 'dlg_trunk', cls: 'dlg-trunk', height: '*', width: '*', nodes: [
                         {
-                            type: 'vert', height: '*', nodes: [
-                                {type: 'preload/body', id: 'dlg_body', cls: 'dlg-body', height: '*'}
+                            type: 'Vertical', height: '*', nodes: [
+                                {type: 'PreloadBody', id: 'dlg_body', cls: 'dlg-body', height: '*'}
                             ]
                         }
                     ]

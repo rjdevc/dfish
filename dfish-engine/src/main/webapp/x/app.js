@@ -75,19 +75,19 @@ window.app = {
             dateTimeMinute: 'yyyy-mm-dd hh:ii',
             dateTimeSecond: 'yyyy-mm-dd hh:ii:ss'
         },
-        datetime: function(datetime) {
-            if (datetime) {
+        dateTime: function(dateTime) {
+            if (dateTime) {
                 // 格式是yyyy-mm-dd hh:ii
-                return datetime.substr(0, 16);
+                return dateTime.substr(0, 16);
             }
-            return datetime;
+            return dateTime;
         },
-        date: function(datetime) {
-            if (datetime) {
+        date: function(dateTime) {
+            if (dateTime) {
                 // 格式是yyyy-mm-dd
-                return datetime.substr(0, 10);
+                return dateTime.substr(0, 10);
             }
-            return datetime;
+            return dateTime;
         }
     },
     options: {

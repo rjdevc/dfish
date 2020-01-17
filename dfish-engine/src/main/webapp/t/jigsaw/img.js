@@ -1,11 +1,11 @@
 define.template({
-    type: 'jigsaw/img',
+    type: 'JigsawImg',
     src: 'jigsaw/img',
     result: {
         '@big': '$data.big',
         '@small': '$data.small',
-        minvalue: 0,
-        '@maxvalue': '$data.big.width',
+        minValue: 0,
+        '@maxValue': '$data.big.width',
         error: {'@w-if':'$data.error', '@msg': '$data.error.msg', '@timeout': '$data.error.timeout'}
     }
 });

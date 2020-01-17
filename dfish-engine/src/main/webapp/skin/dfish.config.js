@@ -2,120 +2,121 @@ dfish.config({
     // 调试模式
     debug: true,
     // 模板目录
-    template_dir: 't/',
+    templateDir: 't/',
     // 预装载目录
-    preload_dir: 'p/',
+    preloadDir: 'p/',
     // 皮肤
     skin: {
         // 样式目录
         dir: 'skin/'
     },
     //表单验证效果 可选值: red,tip,alert
-    validate_effect: 'red,tip',
+    validate: {
+        effect: 'red,tip'
+    },
     // 所有表单提示信息按照系统规则显示,比如:请输入XXX
-    auto_placeholder: true,
+    autoPlaceholder: true,
     // 每个 widget 类都可以定义默认属性，以 widget type 作为 key
-    default_option: {
-        'alert': {preload: 'g/alert'},
-        'confirm': {preload: 'g/alert'},
-        'dialog': {preload: 'g/std', width: 680, height: 410, error: "this.close();"},
-        'dialog.dlg-large': {width: 980, height: 550},
-        'dialog.dlg-medium': {width: 680, height: 410},
-        'dialog.dlg-small': {width: 440, height: 250},
-        'dialog.dlg-alert': {preload: 'g/alert'},
-        'dialog.dlg-std': {preload: 'g/std'},
-        'dialog.dlg-stdx': {preload: 'g/stdx'},
-        'dialog.dlg-form': {preload: 'g/form'},
-        'dialog.dlg-picker': {preload: 'g/picker'},
-        'dialog.dlg-none': {preload: 'g/none'},
+    defaultOptions: {
+        'Alert': {preload: 'g/alert'},
+        'Confirm': {preload: 'g/alert'},
+        'Dialog': {preload: 'g/std', width: 680, height: 410, error: "this.close();"},
+        'Dialog.dlg-large': {width: 980, height: 550},
+        'Dialog.dlg-medium': {width: 680, height: 410},
+        'Dialog.dlg-small': {width: 440, height: 250},
+        'Dialog.dlg-alert': {preload: 'g/alert'},
+        'Dialog.dlg-std': {preload: 'g/std'},
+        'Dialog.dlg-stdx': {preload: 'g/stdx'},
+        'Dialog.dlg-form': {preload: 'g/form'},
+        'Dialog.dlg-picker': {preload: 'g/picker'},
+        'Dialog.dlg-none': {preload: 'g/none'},
 
-        'tree': {scroll: true, ellipsis: true},
-        'leaf': {tip: true, style: 'padding-right:10px;', wmin: 10},
+        'Tree': {scroll: true, ellipsis: true},
+        'Leaf': {tip: true, style: 'padding-right:10px;', widthMinus: 10},
 
-        'buttonbar': {space: 10, pub: {tip: true, height: 30}},
-        'buttonbar.dlg-head-oper': {space: 0},
-        'buttonbar.x-breadcrumb': {space: 0},
-        'buttonbar.face-text': {space: 0},
-        'button': {tip: true},
-        'submitbutton': {tip: true},
-        'tabs': {pub: {height: 40}},
-        'tabbar': {wmin: 20},
-        'tabbar.z-position-left': {wmin: 0, hmin: 20},
-        'tabbar.z-position-right': {wmin: 0, hmin: 20},
+        'ButtonBar': {space: 10, pub: {tip: true, height: 30}},
+        'ButtonBar.dlg-head-oper': {space: 0},
+        'ButtonBar.x-breadcrumb': {space: 0},
+        'ButtonBar.face-text': {space: 0},
+        'Button': {tip: true},
+        'SubmitButton': {tip: true},
+        'Tabs': {pub: {height: 40}},
+        'TabBar': {widthMinus: 20},
+        'TabBar.z-position-left': {widthMinus: 0, heightMinus: 20},
+        'TabBar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        'buttonbar.w-tabbar': {space: 0, wmin: 20},
-        'buttonbar.w-tabbar.z-position-left': {wmin: 0, hmin: 20},
-        'buttonbar.w-tabbar.z-position-right': {wmin: 0, hmin: 20},
+        'ButtonBar.w-tabbar': {space: 0, widthMinus: 20},
+        'ButtonBar.w-tabbar.z-position-left': {widthMinus: 0, heightMinus: 20},
+        'ButtonBar.w-tabbar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        'grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "cell"},
-        'column': {tip: true},
-        // 小分页模式暂时定于全数据关联的分页栏使用,所以不设置src
-        'page/mini': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage'},
-        'page/buttongroup': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage'},
-        'page/text': {align: 'right', btncount: 5, wmin: 40, name: 'currentPage'},
+        'Grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "cell"},
+        'Column': {tip: true},
+        'PageBar.z-normal': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
+        'PageBar.z-mini': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
+        'PageBar.z-simple': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
 
-        'form': {scroll: true, pub: {colspan: -1}},
-        'form.x-form1': {pub: {colspan: -1}},
-        'form.x-form2': {pub: {colspan: 6}},
-        'form.x-form3': {pub: {colspan: 4}},
-        'form.x-form4': {pub: {colspan: 3}},
+        'Form': {scroll: true, pub: {colSpan: -1}},
+        'Form.x-form1': {pub: {colSpan: -1}},
+        'Form.x-form2': {pub: {colSpan: 6}},
+        'Form.x-form3': {pub: {colSpan: 4}},
+        'Form.x-form4': {pub: {colSpan: 3}},
 
-        'label': {width: 120},
-        'textarea': {height: 100},
-        'date': {format: 'yyyy-mm-dd'},
-        'spinner': {step: 10, decimal: 0, validate: {minvalue: 1, maxvalue: 99999999}},
-        'combo': {keepshow: true},
-        'slider': {tip: true},
-        'jigsaw': {
+        'Label': {width: 120},
+        'Textarea': {height: 100},
+        'DatePicker': {format: 'yyyy-mm-dd'},
+        'Spinner': {step: 10, decimal: 0, validate: {minValue: 1, maxValue: 99999999}},
+        'Combo': {keepShow: true},
+        'Slider': {tip: true},
+        'Jigsaw': {
             img: {type: 'jigsaw/img', template: 'jigsaw/img'},
             auth: {type: 'jigsaw/auth', template: 'jigsaw/auth'}
         },
-        'upload/file': {
-            minfilesize: '1B',
-            maxfilesize: '10M',
+        'FileUpload': {
+            minFileSize: '1B',
+            maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
             post: {type: 'upload/post', template: 'upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
-            filetypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
-            uploadbutton: [{type: 'upload/button', text: '选择文件'}]
+            fileTypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
+            uploadButton: [{type: 'upload/button', text: '选择文件'}]
         },
-        'upload/image': {
-            minfilesize: '1B',
-            maxfilesize: '10M',
+        'ImageUpload': {
+            minFileSize: '1B',
+            maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
             post: {type: 'upload/post', src: 'file/upload/image?scheme=$scheme', template: 'upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             thumbnail: 'file/thumbnail?fileId=$id&scheme=$scheme',
             preview: {type: 'js', text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'},
-            filetypes: '*.png;*.jpg;*.jpeg;',
-            uploadbutton: [{type: 'upload/button', text: '+'}]
+            fileTypes: '*.png;*.jpg;*.jpeg;',
+            uploadButton: [{type: 'upload/button', text: '+'}]
         },
 
-        'toggle': {
+        'Toggle': {
             height: 40,
             icon: '.i-toggle-icon',
-            openicon: '.i-toggle-openicon',
+            expandedIcon: '.i-toggle-expandedIcon',
             cls: 'bd-split bd-onlybottom',
-            hmin: 1
+            heightMinus: 1
         },
-        'grid/toggle': {
+        'GridToggle': {
             height: 40,
             icon: '.i-toggle-icon',
-            openicon: '.i-toggle-openicon',
+            expandedIcon: '.i-toggle-expandedIcon',
             cls: 'bd-split bd-onlybottom',
-            hmin: 1
+            heightMinus: 1
         }
     },
     // 自定义widget
     alias: {
-        'amap': 'pl/amap/amap.dfish.js',
-        'amap/picker': 'pl/amap/amap.dfish.js',
-        'echarts': 'pl/echarts/echarts.dfish.js',
-        'ueditor': 'pl/ueditor/ueditor.dfish.js',
-        'flowplayer': 'pl/flowplayer/flowplayer.dfish.js',
-        'carousel': 'pl/carousel/carousel.dfish.js'
+        'AMap': 'pl/amap/amap.dfish.js',
+        'AMapPicker': 'pl/amap/amap.dfish.js',
+        'ECharts': 'pl/echarts/echarts.dfish.js',
+        'UEditor': 'pl/ueditor/ueditor.dfish.js',
+        'FlowPlayer': 'pl/flowplayer/flowplayer.dfish.js',
+        'Carousel': 'pl/carousel/carousel.dfish.js'
     },
-    src_filter: function (response) {
+    ajaxFilter: function (response) {
         if (response.error) {
             app.response.error(response);
         } else {
@@ -126,5 +127,5 @@ dfish.config({
         }
     },
     // 一个汉字算3个字节
-    cn_bytes: 3
+    cnBytes: 3
 });

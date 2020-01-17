@@ -34,7 +34,7 @@ public class Carousel extends AbstractWidget<Carousel> {
 	private Integer thumbHeight;
 	private String bigWidth;
 	private String bigHeight;
-	private List<CarouselOption> value;
+	private List<Option> value;
 
 	/**
 	 * 
@@ -154,7 +154,7 @@ public class Carousel extends AbstractWidget<Carousel> {
 	 * @return
 	 * @author DFish Team - lamontYu
 	 */
-	public List<CarouselOption> getValue() {
+	public List<Option> getValue() {
 		return value;
 	}
 
@@ -165,9 +165,106 @@ public class Carousel extends AbstractWidget<Carousel> {
 	 * @return 本身，这样可以继续设置其他属性
 	 * @author DFish Team - lamontYu
 	 */
-	public Carousel setValue(List<CarouselOption> value) {
+	public Carousel setValue(List<Option> value) {
 		this.value = value;
 		return this;
+	}
+
+	public static class Option {
+
+		private String url;
+		private String thumbnail;
+		private String text;
+		private String href;
+
+		/**
+		 *
+		 * <p>描述:图片链接</p>
+		 * @return String
+		 * @author DFish Team - lamontYu
+		 */
+		public String getUrl() {
+			return url;
+		}
+
+		/**
+		 *
+		 * <p>描述:设置图片链接</p>
+		 * @param url
+		 * @return 本身，这样可以继续设置其他属性
+		 * @author DFish Team - lamontYu
+		 */
+		public Option setUrl(String url) {
+			this.url = url;
+			return this;
+		}
+
+		/**
+		 *
+		 * <p>描述:缩略图</p>
+		 * @return String
+		 * @author DFish Team - lamontYu
+		 */
+		public String getThumbnail() {
+			return thumbnail;
+		}
+
+		/**
+		 * 设置缩略图,默认图片链接
+		 * <p>描述:</p>
+		 * @param thumbnail
+		 * @return 本身，这样可以继续设置其他属性
+		 * @author DFish Team - lamontYu
+		 */
+		public Option setThumbnail(String thumbnail) {
+			this.thumbnail = thumbnail;
+			return this;
+		}
+
+		/**
+		 *
+		 * <p>描述:图片文本</p>
+		 * @return String
+		 * @author DFish Team - lamontYu
+		 */
+		public String getText() {
+			return text;
+		}
+
+		/**
+		 *
+		 * <p>描述:设置图片文本</p>
+		 * @param text
+		 * @return 本身，这样可以继续设置其他属性
+		 * @author DFish Team - lamontYu
+		 */
+		public Option setText(String text) {
+			this.text = text;
+			return this;
+		}
+
+		/**
+		 *
+		 * <p>描述:图片链接动作</p>
+		 * @return String
+		 * @author DFish Team - lamontYu
+		 */
+		public String getHref() {
+			return href;
+		}
+
+		/**
+		 *
+		 * <p>描述:图片链接动作</p>
+		 * @param href
+		 * @return 本身，这样可以继续设置其他属性
+		 * @author DFish Team - lamontYu
+		 */
+		public Option setHref(String href) {
+			this.href = href;
+			return this;
+		}
+
 	}
 
 }

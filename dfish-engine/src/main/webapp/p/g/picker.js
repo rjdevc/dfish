@@ -1,36 +1,36 @@
 define.preload({
-    type: 'dialog',
+    type: 'Dialog',
     node: {
         type: 'view',
         commands: {
             'close': {
-                type: 'js',
+                type: 'JS',
                 text: '$.close(this);'
             },
             'no': {
-                type: 'js',
+                type: 'JS',
                 text: 'this.cmd("close");'
             }
         },
         node: {
-            type: 'vert', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
+            type: 'Vertical', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
                 {
-                    type: 'horz', id: 'dlg_head', cls: 'dlg-head', height: 40, width: '*', valign: 'middle', nodes: [
+                    type: 'Horizontal', id: 'dlg_head', cls: 'dlg-head', height: 40, width: '*', vAlign: 'middle', nodes: [
                         {
-                            type: 'dialog/title',
+                            type: 'DialogTitle',
                             id: 'dlg_head_title',
                             cls: 'dlg-head-title',
                             width: '*',
-                            wmin: 10,
-                            on: {'dblclick': '$.dialog(this).max();'}
+                            widthMinus: 10,
+                            on: {dblClick: '$.dialog(this).max();'}
                         },
                         {
-                            type: 'buttonbar',
+                            type: 'ButtonBar',
                             id: 'dlg_head_oper',
                             cls: 'dlg-head-oper',
                             width: -1,
                             align: 'right',
-                            valign: 'middle',
+                            vAlign: 'middle',
                             pub: {height: 40, width: 40},
                             nodes: [
                                 {
@@ -49,21 +49,21 @@ define.preload({
                     ]
                 },
                 {
-                    type: 'vert', id: 'dlg_trunk', cls: 'dlg-trunk', width: '*', height: '*', nodes: [
+                    type: 'Vertical', id: 'dlg_trunk', cls: 'dlg-trunk', width: '*', height: '*', nodes: [
                         {
-                            type: 'vert', width: '*', height: '*', nodes: [
-                                {type: 'preload/body', id: 'dlg_body', cls: 'dlg-body', height: '*'}
+                            type: 'Vertical', width: '*', height: '*', nodes: [
+                                {type: 'PreloadBody', id: 'dlg_body', cls: 'dlg-body', height: '*'}
                             ]
                         },
                         {
-                            type: 'horz',
+                            type: 'Horizontal',
                             id: 'dlg_foot',
                             cls: 'dlg-foot',
                             style: 'padding:0 20px;',
                             width: '*',
                             height: 50,
-                            hmin: 1,
-                            wmin: 40,
+                            heightMinus: 1,
+                            widthMinus: 40,
                             nodes: [
                                 {
                                     type: 'html',
@@ -73,7 +73,7 @@ define.preload({
                                     height: '*'
                                 },
                                 {
-                                    type: 'buttonbar',
+                                    type: 'ButtonBar',
                                     id: 'dlg_foot_oper',
                                     cls: 'dlg-foot-oper',
                                     width: '*',
@@ -83,7 +83,7 @@ define.preload({
                                     pub: {height: 30},
                                     nodes: [
                                         {
-                                            type: 'submitbutton', text: '确定', on: {click: 'this.cmd("yes");'}
+                                            type: 'SubmitButton', text: '确定', on: {click: 'this.cmd("yes");'}
                                         },
                                         {
                                             text: '取消', on: {click: 'this.cmd("no");'}

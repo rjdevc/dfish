@@ -1,5 +1,5 @@
 define.template({
-    type: 'upload/post',
+    type: 'UploadPost',
     src: 'file/upload/file?scheme=$scheme',
     result: {
         '@id': '$data.id',

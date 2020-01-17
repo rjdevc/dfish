@@ -1,5 +1,5 @@
 define.template({
-    type: 'jigsaw/auth',
+    type: 'JigsawAuth',
     src: 'jigsaw/auth?offset=$value',
     result: {
         '@success': '$data.success',

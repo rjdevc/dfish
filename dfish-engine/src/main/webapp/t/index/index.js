@@ -1,5 +1,5 @@
 define.template({
-    type: "view", node: {
-        type: "html", text: "Hello DFish"
+    type: "View", node: {
+        type: "Html", text: "Hello DFish"
     }
 });
