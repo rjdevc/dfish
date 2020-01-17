@@ -2207,7 +2207,8 @@ AbsSection = define.widget( 'AbsSection', {
 			return f;
 		},
 		getResult: function() {
-			return this.x.template ? this.x.result : this._srcdata;
+			return this.x.result;
+			//return this.x.template ? this.x.result : this._srcdata;
 		},
 		// @force: 强制刷新，不论是否在frame内
 		load: function( tar, fn, force ) {
@@ -4761,7 +4762,7 @@ Alert = define.widget( 'Alert', {
 				return Dialog.prototype.render.call( this );
 			} else {
 				var x = this.x;
-				if ( this.type === 'alert' ) {
+				if ( this.type === 'Alert' ) {
 					$.winbox( x.text );
 					x.yes && _operexe( x.yes, this.commander, x.args );
 				} else {
@@ -5144,6 +5145,7 @@ Collapse = define.widget( 'Collapse', {
 		Vert.call( this, $.extend( y, x ), p );
 	},
 	Extend: Vert,
+	Default: { scroll: T },
 	Prototype: {
 		className: 'w-collapse',
 		getFocus: function() {
@@ -5196,7 +5198,7 @@ Label = define.widget( 'Label', {
 		this.defaults( { widthMinus: this._pad } );
 		W.apply( this, arguments );
 		if ( ie7 ) { // IE7下需要根据td高度来手动调整label高度
-			var td = p.closest( 'td' );
+			var td = p.closest( 'TD' );
 			if ( td ) {
 				(this.ie7td = td).addEvent( 'nodeChange', function() {
 					Q( '.w-label', this.parentNode.parentNode.$() ).each( function() {
@@ -7116,10 +7118,11 @@ JigsawImg = define.widget( 'JigsawImg', {
 	Prototype: {
 		load: function( fn ) {
 			this.loadData( N, function( d ) {
-				var r = this.getResult(), p = this.parentNode;
+				var p = this.parentNode, r = this.getResult();
+				if ( ! r || (d instanceof Error) ) {
+					r = { error: { msg: Loc.form.jigsaw_errorimg } };
+				}
 				p.loaded = T;
-				if ( d instanceof Error )
-					return;
 				if ( r.error ) {
 					p.lock( r );
 				} else {
@@ -7172,7 +7175,7 @@ Jigsaw = define.widget( 'Jigsaw', {
 			height: 'javascript:return this.parentNode.popHeight()', snap: { target: this.id + 'f', position: 'tb,bt', indent: -1 }, memory: T, autoHide: T, hoverDrop: T, node: {
 			type: 'View',
 			node: {
-				type: 'Html', cls: 'f-rel', id: 'Img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
+				type: 'Html', cls: 'f-rel', id: 'img', format: 'javascript:return ' + abbr( this ) + '.html_img()'
 			}
 		}, on: { resize: 'this.parentNode.fixImg()' } }, -1 );
 		x.img && (this.img = new JigsawImg( x.img, this, -1 )).load();
@@ -7233,7 +7236,7 @@ Jigsaw = define.widget( 'Jigsaw', {
 		validHooks: {
 			valid: function( b, v ) {
 				if ( ! this.isSuccess() )
-					return _form_err.call( this, b, 'sliderjigsaw_required' );
+					return _form_err.call( this, b, 'jigsaw_required' );
 			}
 		},
 		isModified: $.rt( F ),
@@ -7309,7 +7312,7 @@ Jigsaw = define.widget( 'Jigsaw', {
 		html_info: function( d ) {
 			return d && d.error ? '<var class=_err>' + (d.error.msg != N ? d.error.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs( d.error.timeout ) + '</em>)' : '') + '</var>' :
 					d && d.success ? '<var class=_ok>' + (d.msg != N ? d.msg : Loc.auth_success) + '</var>' : 
-					(this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
+					(this.x.placeholder || Loc.form.jigsaw_drag_right);
 		},
 		html_img: function() {
 			var d = this.img.getResult();
@@ -9983,7 +9986,7 @@ GridRow = define.widget( 'GridRow', {
 					this.toggle_rows( a );
 				} else if ( this.x.src ) {
 					var c = this.grid.getColGroup(), d = {}, r;
-					d[ c[ 0 ].x.field ] = { colspan: c.length, node: { type: 'View', src: this.x.src } };
+					d[ c[ 0 ].x.field ] = { colSpan: c.length, node: { type: 'View', src: this.x.src } };
 					this.append( d ).isExpandRow = T;
 					this.x.expanded = T;
 				}
@@ -10014,7 +10017,7 @@ GridRow = define.widget( 'GridRow', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.grid, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowspan,
+			var a = this.nodeIndex, b = [], u = this.grid, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowSpan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
@@ -10023,12 +10026,12 @@ GridRow = define.widget( 'GridRow', {
 				}
 				var k = i, s = t = '', f = c[ i ].x, v = d && d[ f.field ];
 				if ( v != N && typeof v === _OBJ ) {
-					if ( v.rowspan > 1 ) {
-						for ( var j = 1; j < v.rowspan; j ++ )
-							$.jsonChain( v.colspan || 1, r, this.level, a + j, i );
+					if ( v.rowSpan > 1 ) {
+						for ( var j = 1; j < v.rowSpan; j ++ )
+							$.jsonChain( v.colSpan || 1, r, this.level, a + j, i );
 					}
-					if ( v.colspan > 1 )
-						i += v.colspan - 1;
+					if ( v.colSpan > 1 )
+						i += v.colSpan - 1;
 					t = this.addCell( v, k );
 				} else {
 					if ( e ) {
@@ -10091,7 +10094,7 @@ _td_wg = { Leaf: T, Toggle: T },
 /* `td` tcell 的子节点。当字段是一个 widget 时会先产生一个 TD 实例，包裹这个 widget 子节点。 */
 TD = define.widget( 'TD', {
 	Const: function( x, p ) {
-		if ( x.type && x.type !== 'td' )
+		if ( x.type && x.type !== 'TD' )
 			x = { node: x };
 		x.node && p.grid.x.escape !== F && $.extend( x.node, { escape: T } );
 		this.grid = p.grid;
@@ -10113,8 +10116,8 @@ TD = define.widget( 'TD', {
 				s += ' align='  + (this.x.align || c.x.align);
 			if ( c.x.vAlign || this.x.vAlign )
 				s += ' valign=' + (this.x.vAlign || c.x.vAlign);
-			this.x.colspan > 1 && (s += ' colspan=' + this.x.colspan);
-			this.x.rowspan > 1 && (s += ' rowspan=' + this.x.rowspan);
+			this.x.colSpan > 1 && (s += ' colspan=' + this.x.colSpan);
+			this.x.rowSpan > 1 && (s += ' rowspan=' + this.x.rowSpan);
 			c.x.style && (t += c.x.style);
 			this.x.style && (t += this.x.style);
 			t && (s += ' style="' + t + '"');
@@ -10353,7 +10356,7 @@ TCell = define.widget( 'TCell', {
 		ROOT_TYPE: 'Grid,Form',
 		x_childtype: $.rt( 'TD' ),
 		scaleWidth: function( a ) {
-			var w = 0, l = a.x.colspan || 1, r = this.grid, g = this.grid.getColGroup(), c = a.col, d = r._pad, e;
+			var w = 0, l = a.x.colSpan || 1, r = this.grid, g = this.grid.getColGroup(), c = a.col, d = r._pad, e;
 			while ( l -- )
 				(e = g[ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
@@ -10372,7 +10375,7 @@ TBody = define.widget( 'TBody', {
 	Const: function( x, p ) {
 		this.grid = p.grid;
 		W.apply( this, arguments );
-		this._rowspan = {};
+		this._rowSpan = {};
 	},
 	Listener: {
 		body: {
@@ -10599,7 +10602,7 @@ Table = define.widget( 'Table', {
 			s += '>';
 			for ( var t = '<tr>', i = 0, c = this.colgroup, l = c.length; i < l; i ++ )
 				t += '<td' + (c[ i ].x.style ? ' style="' + c[ i ].x.style + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
-			//IE下如果不加这个thead，当有colspan的列时，宽度可能会失调
+			//IE下如果不加这个thead，当有colSpan的列时，宽度可能会失调
 			if ( br.ms )
 				s += '<thead class="_fix_thead">' + t + '</thead>';
 			s += this.html_nodes();
@@ -10758,11 +10761,11 @@ AbsGrid = define.widget( 'AbsGrid', {
 					if ( a < 0 ) a = d.length + a;
 					d[ a ] && r.push( d[ a ] );
 				} else if ( a.isWidget ) {
-					var g = a.closest( 'tr' );
+					var g = a.closest( 'TR' );
 					g && r.push( g );
 				} else if ( a.nodeType === 1 ) {
 					var g = _widget( a );
-					g && (g = g.closest( 'tr' )) && r.push( g );
+					g && (g = g.closest( 'TR' )) && r.push( g );
 				} else
 					try {
 						var r = this._rows( a, b, d );
@@ -10805,7 +10808,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 		// a -> data, b -> index
 		_addRow: function( a, b ) {
 			var p = this.tBody();
-			p._rowspan = {};
+			p._rowSpan = {};
 			b == N && (b = p.length);
 			p[ b ] ? p[ b ].before( a ) : p.append( a );
 		},
@@ -10834,7 +10837,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 		},
 		// @a -> elem
 		getCellAxis: function( a ) {
-			var b = this.tBody(), c = Q( a ).closest( 'td' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'tr' );
+			var b = this.tBody(), c = Q( a ).closest( 'TD' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'TR' );
 			if ( b && r && r.$().parentNode === b.$() ) {
 				return { rowIndex: r.$().rowIndex - 1, cellIndex: c[ 0 ].cellIndex };
 			}
@@ -11189,7 +11192,7 @@ Grid = define.widget( 'Grid', {
 		fixedScroll: function( a ) {
 			for ( var i = 0, r = this.fixed, a = a || this; i < r.length; i ++ ) {
 				r[ i ].body.$().scrollTop = a.$( 'ovf' ).scrollTop;
-				r[ i ].addClass( 'z-cover', r[ i ].type === 'grid/left' ? a.$( 'ovf' ).scrollLeft > 0 : !a.isScrollRight() );
+				r[ i ].addClass( 'z-cover', r[ i ].type === 'GridLeft' ? a.$( 'ovf' ).scrollLeft > 0 : !a.isScrollRight() );
 			}
 		},
 		html_append: function() {
@@ -11253,31 +11256,31 @@ Form = define.widget( 'Form', {
 		for ( var i = 0, j = 0, n = x.nodes ? x.nodes.concat() : [], tr = {}, rp = {}; i < n.length; i ++ ) {
 			j == 0 && rows.push( tr );
 			var e = n[ i ], h = rows.length - 1,
-				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'td' ? { node: e } : e;
+				td = typeof e === _STR ? { text: e } : e.type && e.type !== 'TD' ? { node: e } : e;
 			$.extend( td, x.pub, d && d.pub );
-			!td.colspan && (td.colspan = -1);
-			td.colspan < 0 && (td.colspan = cols + 1 + td.colspan);
-			(td.colspan > cols) && (td.colspan = cols);
-			if ( td.rowspan ) {
-				for ( var k = 0; k < td.rowspan - 1; k ++ ) {
-					(rp[ h + k + 1 ] || (rp[ h + k + 1 ] = {}))[ j ] = Math.min( cols, td.colspan );
+			!td.colSpan && (td.colSpan = -1);
+			td.colSpan < 0 && (td.colSpan = cols + 1 + td.colSpan);
+			(td.colSpan > cols) && (td.colSpan = cols);
+			if ( td.rowSpan ) {
+				for ( var k = 0; k < td.rowSpan - 1; k ++ ) {
+					(rp[ h + k + 1 ] || (rp[ h + k + 1 ] = {}))[ j ] = Math.min( cols, td.colSpan );
 				}
 			}
 			if ( rp[ h ] ) {
-				for ( var k = j, l = Math.min( cols, j + td.colspan ); k < l; k ++ ) {
+				for ( var k = j, l = Math.min( cols, j + td.colSpan ); k < l; k ++ ) {
 					if ( rp[ h ][ k ] ) {
 						j = k + rp[ h ][ k ];
 						k = j;
 					}
 				}
 			}
-			if ( j + td.colspan > cols ) {
+			if ( j + td.colSpan > cols ) {
 				(tr = {})[ 0 ] = td;
-				j = td.colspan;
+				j = td.colSpan;
 				rows.push( tr );
 			} else {
 				tr[ j ] = td;
-				j += td.colspan;
+				j += td.colSpan;
 				if ( j >= cols ) {
 					j = 0;
 					tr = {};

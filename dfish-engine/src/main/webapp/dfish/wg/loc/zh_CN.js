@@ -103,8 +103,9 @@ form : {
 	need_valid_option: '请输入一个有效选项',
 	choose_atleastone: '请至少选择一项',
 	complete_required: '请完成必填项',
-	sliderjigsaw_drag_right: '向右拖动滑块填充拼图',
-	sliderjigsaw_required: '请完成滑块验证',
+	jigsaw_drag_right: '向右拖动滑块填充拼图',
+	jigsaw_required: '请完成滑块验证',
+	jigsaw_errorimg: '错误的图片格式',
 	no_files: '<没有文件>'
 },
 
