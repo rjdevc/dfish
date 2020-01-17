@@ -829,21 +829,21 @@
 .w-upload-icon-local.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -145px -49px}
 .w-upload-icon-net.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -172px -49px}
 .w-upload-icon-file.f-i{display:inline-block;width:16px;height:16px;background:url(g/i.png) no-repeat -103px -38px}
-.w-upload-button{margin:3px 0}
-.w-upload-button .swfupload{position:absolute;top:0;bottom:0;left:0;right:0;}
+.w-uploadbutton{margin:3px 0}
+.w-uploadbutton .swfupload{position:absolute;top:0;bottom:0;left:0;right:0;}
 
-.w-button.w-upload-button{margin-right:4px;cursor:pointer}
-.w-button.w-upload-button ._c{padding-left:4px}
-.w-button.w-upload-button ._t,.w-button.w-upload-button  ._i{padding-right:4px}
+.w-button.w-uploadbutton{margin-right:4px;cursor:pointer}
+.w-button.w-uploadbutton ._c{padding-left:4px}
+.w-button.w-uploadbutton ._t,.w-button.w-uploadbutton  ._i{padding-right:4px}
 
-.w-fileupload .w-upload-button{height:22px}
-.w-fileupload .w-upload-button.z-hv ._t{text-decoration:underline}
+.w-fileupload .w-uploadbutton{height:22px}
+.w-fileupload .w-uploadbutton.z-hv ._t{text-decoration:underline}
 .w-fileupload ._nofiles{padding-top:5px}
 
-.w-imageupload .w-upload-button{margin:2px 0;border:2px dashed #ccc}
-.w-imageupload .w-upload-button.z-hv{border-color:#72a9fc;color:#2678F2}
-.w-imageupload .w-upload-button ._m{display:none}
-.w-imageupload .w-upload-button.z-more ._c{margin-right:0}
+.w-imageupload .w-uploadbutton{margin:2px 0;border:2px dashed #ccc}
+.w-imageupload .w-uploadbutton.z-hv{border-color:#72a9fc;color:#2678F2}
+.w-imageupload .w-uploadbutton ._m{display:none}
+.w-imageupload .w-uploadbutton.z-more ._c{margin-right:0}
 
 .w-fileupload-value{position:relative;height:30px;margin:5px 10px 5px 0px;cursor:pointer}
 .w-fileupload-value ._icon{float:left;width:30px;height:30px;border-radius:2px 0 0 2px}

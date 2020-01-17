@@ -2179,6 +2179,9 @@ AbsSection = define.widget( 'AbsSection', {
 	Prototype: {
 		showLoading: $.rt(),
 		showLayout: $.rt(),
+		init_x: function( x ) {
+			this._init_x( x );
+		},
 		getSrc: function() {
 			var u = this._runtime_src; 
 			if ( ! u ) {
