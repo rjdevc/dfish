@@ -16,15 +16,15 @@ public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P
 	private static final long serialVersionUID = 2711923347412806092L;
 
 	protected P prototype;
-	protected boolean prototypeChanged=false;
-	public void notifyChange(){
-		prototypeChanged=true;
-	}
-	protected void checkConcurrentModify(){
-		if(prototypeChanged){
-			throw new java.util.ConcurrentModificationException("can NOT change wrapper when prototype is changed");
-		}
-	}
+//	protected boolean prototypeChanged=false;
+//	public void notifyChange(){
+//		prototypeChanged=true;
+//	}
+//	protected void checkConcurrentModify(){
+//		if(prototypeChanged){
+//			throw new java.util.ConcurrentModificationException("can NOT change wrapper when prototype is changed");
+//		}
+//	}
 
 	@Override
     public P getPrototype() {

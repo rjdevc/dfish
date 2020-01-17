@@ -80,7 +80,7 @@
 //        if (column == null) {
 //            return (T) this;
 //        }
-//        checkMod(column);
+//        checkMode(column);
 //        this.checkConcurrentModify();
 //        columns.add(column);
 //        return (T) this;
@@ -97,13 +97,13 @@
 //        if (column == null) {
 //            return (T) this;
 //        }
-//        checkMod(column);
+//        checkMode(column);
 //        this.checkConcurrentModify();
 //        columns.add(index, column);
 //        return (T) this;
 //    }
 //
-//    protected void checkMod(Column column) {
+//    protected void checkMode(Column column) {
 //        int currMode = MODE_UNDEFINED;
 //        if (column.getDataColumnIndex() >= 0) { // 数组模式
 //            currMode = MODE_ARRAY;

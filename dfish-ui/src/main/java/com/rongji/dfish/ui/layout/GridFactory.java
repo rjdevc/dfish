@@ -4,7 +4,6 @@ import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.Statusful;
 import com.rongji.dfish.ui.widget.Toggle;
 
 import java.beans.Transient;
@@ -40,8 +39,8 @@ public class GridFactory {
     public static DefaultGridFactory newGrid(String id){
         return new DefaultGridFactory(id);
     }
-    public static GroupingGridFactory newGroupinGrid(String id){
-        return new GroupingGridFactory(id);
+    public static GroupedGridFactory newGroupedGrid(String id){
+        return new GroupedGridFactory(id);
     }
 
     protected static abstract class AbstractGridFactory<T extends AbstractGridFactory<T>>{
@@ -96,7 +95,7 @@ public class GridFactory {
             if (column == null) {
                 return (T) this;
             }
-            checkMod(column);
+            checkMode(column);
             columns.add( column);
             return(T)this;
         }
@@ -140,7 +139,7 @@ public class GridFactory {
             return value;
         }
 
-        protected void checkMod(Column column) {
+        protected void checkMode(Column column) {
             int currMode = MODE_UNDEFINED;
             if (column.getDataColumnIndex() >= 0) { // 数组模式
                 currMode = MODE_ARRAY;
@@ -222,10 +221,10 @@ public class GridFactory {
 
 
     }
-    public static class GroupingGridFactory extends AbstractGridFactory<GroupingGridFactory>{
+    public static class GroupedGridFactory extends AbstractGridFactory<GroupedGridFactory>{
         private LinkedHashMap<String, Collection<?>> col = new LinkedHashMap<String, Collection<?>>();
 
-        public GroupingGridFactory(String id) {
+        public GroupedGridFactory(String id) {
             super(id);
         }
         /**
@@ -235,7 +234,7 @@ public class GridFactory {
          * @param col   具体数据
          * @return 本身，这样可以继续设置其他属性
          */
-        public GroupingGridFactory addGridData(String label, Collection<?> col) {
+        public GroupedGridFactory addGridData(String label, Collection<?> col) {
             this.col.put(label, col);
             return this;
         }

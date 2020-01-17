@@ -1902,7 +1902,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
         @Override
         public Object getPrototype() {
-            if (hasTdllInfo(this)) {
+            if (hasTdProp(this)) {
                 JsonTd p = new JsonTd();
                 copyProperties(p, this);
                 if (isTextWidget(getNode())) {
@@ -1926,7 +1926,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             }
         }
 
-        private static boolean hasTdllInfo(AbstractTd<?> td) {
+        private static boolean hasTdProp(AbstractTd<?> td) {
             return td.getId() != null || td.getHeight() != null ||
                     td.getAlign() != null || td.getVAlign() != null ||
                     td.getColSpan() != null || td.getRowSpan() != null ||

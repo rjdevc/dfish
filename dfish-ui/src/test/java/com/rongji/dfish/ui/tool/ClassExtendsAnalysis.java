@@ -90,24 +90,42 @@ public class ClassExtendsAnalysis extends Application {
         return true;
     }
     private static HashSet<String> okKeys;
-    private static String[] OK_KEYS={
-            "width","height","min","max",
-            "id","cls","style","align","v",
-            "name","label","value","text","content",
-            "column","columns","col","row","cols","rows","span","leaf",
-            "command","commands",
-            "now","property","json",
-            "sub","mode","node","nodes","option","options","data",
-            "build","clear",
-            "by","as","contains","from",
-            "before","begin","end","compare","escape",
-            "append","add","get","find","set","after","copy","check","send","do"
-    };
+
+    private static String OK_KEYS=
+            "add, after, align, all, another, append, as, auth, auto, " +
+            "autocomplete, badge, base, bean, before, begin, blank, box, btn, " +
+            "bubble, build, bundle, button, buttons, by, cache, calc, " +
+            "cancelable, cell, check, checked, class, clear, closable, cls, " +
+            "col, cols, column, columns, combine, combo, command, commands, " +
+            "compare, complete, complex, concurrent, contains, content, copy, count, " +
+            "cover, current, data, date, decimal, delay, description, dft,  " +
+            "disabled, do, download, drop, effect, ellipsis, end, equals, error, " +
+            "escape, expanded, face, field, file, filed, fill, filter, find, " +
+            "first, fix, fixed, focus, focusable, folder, forbid, form, format, " +
+            "from, full, get, getter, gid, grid, group, has, height, hidden, " +
+            "hide, highlight, hover, hr, html, icon, id, img, " +
+            "indent, independent, index, info, init, instance, item, json, jump, " +
+            "keep, key, label, last, leaf, legend, length, limit, line, loading, " +
+            "match, max, method, methods, min, minimize, minus, mode, more, " +
+            "movable, multiple, name, new, next, no, node, nodes, notify, " +
+            "notnull, now, num, number, on, onclick, option, options, overflow, " +
+            "owner, page, parse, partial, path, pattern, percent, picker, " +
+            "placeholder, position, post, preload, prepend, prev, preview, " +
+            "prong, prop, properties, property, prototype, pub, put, radio, " +
+            "range, raw, readonly, remark, remove, replace, required, " +
+            "resizable, result, retain, rightward, root, row, rows, scheme, " +
+            "scope, scroll, search, section, send, separator, set, setting, " +
+            "show, size, snap, sort, space, span, split, src, start, status, " +
+            "step, strict, string, style, sub, submit, success, suggest, sum, sync, " +
+            "target, targets, template, text, thumbnail, timeout, tip, title, " +
+            "to, transparent, tree, triple, type, unchecked, upload, url," +
+            "validate, value, visible, widget, width, yes," +
+            "v, t, body, foot, head";//valgin tbody
     private static Set<String> getOkKeys() {
         if(okKeys==null){
             okKeys=new HashSet<>();
-            for(String key:OK_KEYS){
-                okKeys.add(key);
+            for(String key:OK_KEYS.split(",")){
+                okKeys.add(key.trim());
             }
         }
         return okKeys;
