@@ -1,7 +1,7 @@
 define.preload({
     type: 'Dialog',
     node: {
-        type: 'view',
+        type: 'View',
         commands: {
             'close': {
                 type: 'JS',
@@ -66,7 +66,7 @@ define.preload({
                             widthMinus: 40,
                             nodes: [
                                 {
-                                    type: 'html',
+                                    type: 'Html',
                                     id: 'dlg_foot_info',
                                     cls: 'dlg-foot-info',
                                     width: '*',

@@ -68,28 +68,28 @@ dfish.config({
         'Combo': {keepShow: true},
         'Slider': {tip: true},
         'Jigsaw': {
-            img: {type: 'jigsaw/img', template: 'jigsaw/img'},
-            auth: {type: 'jigsaw/auth', template: 'jigsaw/auth'}
+            img: {type: 'JigsawImg', template: 'jigsaw/img'},
+            auth: {type: 'JigsawAuth', template: 'jigsaw/auth'}
         },
         'FileUpload': {
             minFileSize: '1B',
             maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
-            post: {type: 'upload/post', template: 'upload/post'},
+            post: {type: 'UploadPost', template: 'upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             fileTypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
-            uploadButton: [{type: 'upload/button', text: '选择文件'}]
+            uploadButton: [{type: 'UploadButton', text: '选择文件'}]
         },
         'ImageUpload': {
             minFileSize: '1B',
             maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
-            post: {type: 'upload/post', src: 'file/upload/image?scheme=$scheme', template: 'upload/post'},
+            post: {type: 'UploadPost', src: 'file/upload/image?scheme=$scheme', template: 'upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             thumbnail: 'file/thumbnail?fileId=$id&scheme=$scheme',
             preview: {type: 'js', text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'},
             fileTypes: '*.png;*.jpg;*.jpeg;',
-            uploadButton: [{type: 'upload/button', text: '+'}]
+            uploadButton: [{type: 'UploadButton', text: '+'}]
         },
 
         'Toggle': {

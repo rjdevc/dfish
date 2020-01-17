@@ -1,23 +1,21 @@
-package com.rongji.dfish.base;
+package com.rongji.dfish.ui.form;
 
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.rongji.dfish.ui.AbstractNode;
 
 /**
  * 选项类
  * @author DFish Team
  *
  */
-public class Option {
+public class Option extends AbstractNode<Option> {
 	private String text;
 	private Object value;
 	private String icon;
 	private Boolean checked;
 	private Boolean checkAll;
 	private String status;
-	protected Map<String, Object> data;
-	
+
 	/**
 	 * 默认构造函数
 	 * @deprecated 不建议使用无参构造方法
@@ -98,7 +96,7 @@ public class Option {
 	}
 	/**
 	 * 是否全选
-	 * @return checkall
+	 * @return checkAll
 	 */
 	public Boolean getCheckAll() {
 		return checkAll;
@@ -135,50 +133,6 @@ public class Option {
 
 	public Option setStatus(String status) {
 		this.status = status;
-		return this;
-	}
-
-	/**
-	 * 获取某个属性的值
-	 * @param key 数值属性的关键字
-	 * @return Object
-	 */
-	public Object getData(String key) {
-		if (key == null || "".equals(key)) {
-			return null;
-		}
-		if(data == null) {
-			return null;
-		}
-		return data.get(key);
-	}
-
-	/**
-	 * 移除某个属性的值
-	 * @param key 数值属性的关键字
-	 * @return Object
-	 */
-	public Object removeData(String key) {
-		if (key == null || "".equals(key)) {
-			return null;
-		}
-		if(data == null) {
-			return null;
-		}
-		return data.remove(key);
-	}
-
-	/**
-	 * 设置某个属性的值
-	 * @param key 数值属性的关键字
-	 * @param value 数值属性的值
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public Option setData(String key, Object value) {
-		if(data == null){
-			data = new LinkedHashMap<>();
-		}
-		data.put(key, value);
 		return this;
 	}
 

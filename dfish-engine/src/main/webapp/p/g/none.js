@@ -1,6 +1,6 @@
 define.preload({
     type: 'Dialog', node: {
-        type: 'view',
+        type: 'View',
         node: {
             type: 'Vertical', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
                 {

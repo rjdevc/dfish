@@ -1,6 +1,5 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.base.Option;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.HtmlContentHolder;
 
@@ -29,12 +28,11 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
         this.setName(name);
         this.setLabel(label);
         this.doSetValue(value);
-        this.doSetOptions(options);
-        fixChecked();
+        this.setOptions(options);
     }
 
     protected Boolean escape;
-    protected List<Option> options;
+    protected List<Option> nodes;
 
     /**
      * 设置候选项
@@ -43,45 +41,24 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
      * @return 本身，这样可以继续设置其他属性
      */
     public T setOptions(List<?> options) {
-        doSetOptions(options);
-        fixChecked();
+        List<Option> realOptions = parseOptions(options);
+        this.nodes = realOptions;
         return (T) this;
     }
 
-    protected void doSetOptions(List<?> options) {
-        List<Option> result = new ArrayList<>(options == null ? 0 : options.size());
-//        Set<Object> theValue = null;
-//        if (value == null) {
-//            theValue = new HashSet<>(0);
-//        } else if (value.getClass().isArray()) {
-//            Object[] cast = (Object[]) value;
-//            theValue = new HashSet<>(Arrays.asList(cast));
-//        } else if (value instanceof Collection) {
-//            Collection<?> cast = (Collection<?>) value;
-//            theValue = new HashSet<>(cast);
-//        } else {
-//            theValue = new HashSet<>(0);
-//            theValue.add(value);
-//        }
+    protected List<Option> parseOptions(List<?> options) {
         if (options != null) {
+            List<Option> result = new ArrayList<>(options == null ? 0 : options.size());
             for (Object item : options) {
                 if (item == null) {
                     continue;
                 }
-                Option node = null;
+                Option node;
                 if (item instanceof Option) {
                     node = (Option) item;
-//                } else if (item instanceof AbstractBox<?>) {
-//                    ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
-//                    // 获取第一个类型参数的真实类型
-//                    Class nodeClass = (Class<T>) pt.getActualTypeArguments()[1];
-//                    if (nodeClass.isAssignableFrom(item.getClass())) {
-//                        node = (N) item;
-//                    }
                 } else {
-
-                    String label = null;
-                    Object value = null;
+                    String text = null;
+                    Object value;
                     String ic = null;
                     if (item instanceof Object[] || item instanceof String[]) {
                         Object[] castItem = (Object[]) item;
@@ -89,99 +66,30 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
                         if (castItem.length > 2) {
                             ic = String.valueOf(castItem[2]);
                         } else if (castItem.length > 1) {
-                            label = String.valueOf(castItem[1]);
+                            text = String.valueOf(castItem[1]);
                         } else {
-                            label = String.valueOf(castItem[0]);
+                            text = String.valueOf(castItem[0]);
                         }
                     } else if (item instanceof String || item instanceof Number ||
                             item instanceof java.util.Date) {
                         value = item;
-                        label = String.valueOf(item);
+                        text = String.valueOf(item);
                     } else {
                         LogUtil.error(getClass(), "invalid option [" + item + "], should be Option", null);
                         break;
                     }
-                    node = new Option(value, label);
+                    node = new Option(value, text);
                     node.setIcon(ic);
-//                    node.setChecked(theValue.contains(value) ? true : null);
                 }
                 if (node != null) {
                     result.add(node);
                 }
             }
+            return result;
         }
-        this.options = result;
+        return null;
     }
 
-    protected Option buildOption(Object value, String text, Boolean checked) {
-        return new Option(value, text).setChecked(checked);
-    }
-
-
-    protected void fixChecked() {
-//        if (this.value == null) {
-//            //如果value没有值，则不进行判断以option自己的checked为准
-//            return;
-//        }
-//        Set<String> theValue = null;
-//        if (value == null) {
-//            theValue = new HashSet<>();
-//        } else if (value instanceof int[]) {
-//            int[] cast = (int[]) value;
-//            theValue = new HashSet<>();
-//            for (int o : cast) {
-//                theValue.add(String.valueOf(o));
-//            }
-//        } else if (value instanceof char[]) {
-//            char[] cast = (char[]) value;
-//            theValue = new HashSet<>();
-//            for (char o : cast) {
-//                theValue.add(String.valueOf(o));
-//            }
-//        } else if (value instanceof long[]) {
-//            long[] cast = (long[]) value;
-//            theValue = new HashSet<>();
-//            for (long o : cast) {
-//                theValue.add(String.valueOf(o));
-//            }
-//        } else if (value.getClass().isArray()) {
-//            Object[] cast = (Object[]) value;
-//            theValue = new HashSet<>();
-//            for (Object o : cast) {
-//                theValue.add(o == null ? null : o.toString());
-//            }
-//        } else if (value instanceof Collection) {
-//            Collection<?> cast = (Collection<?>) value;
-//            theValue = new HashSet<>();
-//            for (Object o : cast) {
-//                theValue.add(o == null ? null : o.toString());
-//            }
-//        } else {
-//            theValue = new HashSet<>();
-//            theValue.add(value == null ? null : value.toString());
-//        }
-//        if (theValue.size() == 0) {
-//            theValue.add(null);
-//            theValue.add("");
-//        }
-////		nodes.clear();
-//        if (options != null) {
-//            for (Object item : options) {
-//                if (item == null) {
-//                    continue;
-//                } else if (item instanceof Option) {
-//                    Option o = (Option) item;
-//                    boolean checked = theValue.contains(o.getValue() == null ? null : o.getValue().toString());
-//                    o.setChecked(checked ? true : null);
-//
-//                } else if (item instanceof AbstractBox<?>) {
-//                    AbstractBox<?> o = (AbstractBox<?>) item;
-//                    boolean checked = theValue.contains(o.getValue() == null ? null : o.getValue().toString());
-//                    o.setChecked(checked ? true : null);
-//                }
-//            }
-//        }
-    }
 
     /**
      * 设置 已选中的值(单项)
@@ -191,28 +99,27 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
     @Override
     public T setValue(Object obj) {
         doSetValue(obj);
-        fixChecked();
         return (T) this;
     }
 
     protected void doSetValue(Object obj) {
-        if (obj == null) {
-            //do nothing
-        } else if (obj instanceof Object[] || obj instanceof String[]) {
+        if (obj instanceof Object[] || obj instanceof String[]) {
             this.value = obj;
         } else if (obj instanceof Collection<?>) {
             Collection<?> cast = (Collection<?>) obj;
             this.value = cast.toArray();
         } else {
-            value = new Object[]{obj};
+            this.value = obj;
         }
     }
 
-    /**
-     * @return the options
-     */
-    public List<?> getOptions() {
-        return options;
+    public List<Option> getNodes() {
+        return nodes;
+    }
+
+    public T setNodes(List<Option> nodes) {
+        this.nodes = nodes;
+        return (T) this;
     }
 
     @Override

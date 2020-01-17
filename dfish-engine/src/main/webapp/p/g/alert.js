@@ -1,6 +1,6 @@
 define.preload({
     type: 'Dialog', node: {
-        type: 'view',
+        type: 'View',
         commands: {
             'close': {type: 'JS', text: '$.close(this);'},
             'no': {
