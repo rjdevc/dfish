@@ -902,8 +902,14 @@ W = define( 'Widget', function() {
 		descendant: function( a ) {
 			if ( this.type === a )
 				return this;
+			if ( this.isDialogWidget )
+				return;
 			for ( var i = 0, l = this.length, r; i < l; i ++ ) {
-				if ( r = this[ i ].descendant( a ) )
+				if ( !this[ i ].type_view && (r = this[ i ].descendant( a )) )
+					return r;
+			}
+			for ( var i in this.discNodes ) {
+				if ( !this.discNodes[ i ].type_view && (r = this.discNodes[ i ].descendant( a )) )
 					return r;
 			}
 		},
@@ -3150,11 +3156,11 @@ ButtonBar = define.widget( 'ButtonBar', {
 		x.br && (this.className += ' z-br');
 		!this.length && (this.className += ' z-empty');
 		W.apply( this, arguments );
-		(! x.vAlign && p && p.x.vAlign) && this.defaults( { vAlign: p.x.vAlign } );
-		//(x.nobr === F || x.dir === 'v') && this.defaults( { scroll: T } );
+		(!x.vAlign && p && p.x.vAlign) && this.defaults( { vAlign: p.x.vAlign } );
+		this.x.overflow && this.defaults( { scroll: F } );
 	},
 	Extend: Horz,
-	Default: { vAlign: 'middle'	},
+	Default: { vAlign: 'middle', scroll: T },
 	Listener: {
 		body: {
 			ready: function() {
@@ -3170,7 +3176,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 				Q( '.w-button', this.$() ).removeClass( 'z-last z-first' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
 				this.$( 'vi' ) && ! this.length && $.remove( this.$( 'vi' ) );
-				! this.$( 'vi' ) && this.length && this.x.nobr !== F && Q( this.$() ).prepend( '<i id=' + this.id + 'vi class=f-vi-' + this.attr( 'vAlign' ) + '></i>' );
+				! this.$( 'vi' ) && this.length && this.x.br !== T && Q( this.$() ).prepend( this.html_vi() );
 				if ( this.x.space > 0 ) {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
@@ -3224,7 +3230,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 		},
 		fixLine: function() {
 			this.$( 'vi' ) && Q( this.$() ).prepend( this.$( 'vi' ) );
-			Q( this.$() ).append( Q( '.w-' + this.type + '-line', this.$() ) );
+			Q( this.$() ).append( Q( '.w-' + this.type.toLowerCase() + '-line', this.$() ) );
 		},
 		overflow: function() {
 			if ( this._more ) {
@@ -3256,8 +3262,11 @@ ButtonBar = define.widget( 'ButtonBar', {
 				}
 			}
 		},
+		html_vi: function() {
+			return '<i id=' + this.id + 'vi class=f-vi-' + this.attr( 'vAlign' ) + (this.attr('scroll') === T && this.innerHeight() ? ' style="height:' + this.innerHeight() + 'px;"' : '') + '></i>';
+		},
 		html_nodes: function() {
-			for ( var i = 0, l = this.length, s = [], v = this.attr( 'vAlign' ); i < l; i ++ ) {
+			for ( var i = 0, l = this.length, s = []; i < l; i ++ ) {
 				s.push( this[ i ].html() );
 				if ( this.x.split && i < l - 1 && this[ i ].type !== 'ButtonSplit' && this[ i + 1 ].type !== 'ButtonSplit' ) {
 					s.push( this.add( $.extend( { type: 'Split' }, this.x.split ), i + 1 ).html() );
@@ -3266,8 +3275,8 @@ ButtonBar = define.widget( 'ButtonBar', {
 			}
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
-			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.nobr === F ? '' : '<i id=' + this.id + 'vi class=f-vi-' + v + '></i>';
-			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-' + this.type + '-line></div>';
+			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.br === T ? '' : this.html_vi(), v = this.attr( 'vAlign' );
+			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-' + this.type.toLowerCase() + '-line></div>';
 		}
 	}
 } ),
@@ -5278,7 +5287,7 @@ Label = define.widget( 'Label', {
 			var t = this.html_format(), d = this.parentNode.x.validate;
 			if ( typeof t === _OBJ )
 				t = this.add( t, -1 ).html();
-			d && d.required && (t = this.html_star() + t);
+			d && d.required && (t = this.html_star() + '<span class=f-va>' + t + '</span>');
 			return t + (this.x.suffix || '');
 		},
 		html_bg: function() {
@@ -5556,12 +5565,6 @@ AbsForm = define.widget( 'AbsForm', {
 		reset: function( a ) {
 			this.val( a || this.x.value == N ? '' : this.x.value );
 		},
-		/*prop_style1: function() {
-			var w = this.formWidth(), h = this.formHeight(), s = '';
-			w != N && w >= 0 && (s += 'width:' + w + 'px;');
-			h != N && h >= 0 && (s += 'height:' + h + 'px;');
-			return s + (this.x.style ? this.x.style : '');
-		},*/
 		input_prop_value: function() {
 			return $.strEscape(this.x.value == N ? '' : '' + this.x.value);
 		},
@@ -6027,7 +6030,16 @@ CheckBox = define.widget( 'CheckBox', {
 			}
 		},
 		getValidError: function( a ) {
-			return this.parentNode.isBoxGroup ? this.parentNode.getValidError( a ) : AbsForm.prototype.getValidError.call( this, a );
+			var e;
+			if ( this.isNormal() || this.isValidonly() )
+				e = _valid_err.call( this, _valid_opt.call( this, a ), this.groupVal() );
+			return e || (this.parentNode.isBoxGroup && this.parentNode.getValidError( a ));
+		},
+		warn: function( a ) {
+			this.parentNode.isBoxGroup ? this.parentNode.warn( a ) : AbsForm.prototype.warn.call( this, a );
+		},
+		snapElem: function() {
+			return this.$();
 		},
 		_ustag: function( a ) {
 			this.ownerView.linkTarget( this.x.target, ! this.isDisabled() && this.isChecked(), this );
@@ -7752,14 +7764,14 @@ ComboBox = define.widget( 'ComboBox', {
 				method: function( e ) {
 					//clearTimeout( this._sug_timer );
 					if ( this.usa() && ! this._imeMode ) {
-						var k = e.keyCode, t;
+						var k = e.keyCode, t, m;
 						if ( k === 13 || k === 38 || k === 40 ) { // 13:enter, 38:up, 40:down
 							$.stop( e );
 							var d = this.pop();
 							if ( k === 13 && (t = this.queryText()) != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
 								this.suggest( t );
-							} else if ( d.vis && d.getContentView().combo ) {
-								k === 13 && ! d.getContentView().combo.getFocus() ? _enter_submit( k, this ) : d.getContentView().combo.keyUp( k );
+							} else if ( d.vis && (m = this.store( d )) ) {
+								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : m.keyUp( k );
 							} else
 								_enter_submit( k, this );
 						} else if ( !(e.ctrlKey && k === 86) && !(k === 17) ) { //86: ctrl+v, 17: Ctrl, 37: left, 39: right
@@ -7895,8 +7907,20 @@ ComboBox = define.widget( 'ComboBox', {
 				a ? this.match( { value: a } ) : this.checkPlaceholder();
 			}
 		},
+		_storeView: function( a ) {
+			return (a || this.more).getContentView();
+		},
 		store: function( a ) {
-			return (a || this.more).getContentView().combo;
+			var b = this._storeView( a ), c;
+			if ( ! b.combo ) {
+				if( c = b.descendant( 'Grid' ) )
+					b.combo = new GridCombo( c, this.x.bind );
+			}
+			if ( ! b.combo ) {
+				if( c = b.descendant( 'Tree' ) )
+					b.combo = new TreeCombo( c, this.x.bind );
+			}
+			return b.combo;
 		},
 		checkPlaceholder: function( v ) {
 			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? (this._val() || this.queryText()) : v) );
@@ -7927,8 +7951,10 @@ ComboBox = define.widget( 'ComboBox', {
 				var d = self.pop();
 				d && d.vis && self.focusNode && self.focusNode.tabFocus( F );
 			} ).addEvent( 'load', function() {
-				//this.css( 'width', this.$().scrollWidth );
 				this.axis();
+				self.store( this ).showFocus();
+			} ).addEvent( 'show', function() {
+				//self.store( this ).showFocus();
 			} );
 		},
 		closePop: function() {
@@ -8037,7 +8063,7 @@ ComboBox = define.widget( 'ComboBox', {
 				d.preload( function() {
 					if ( ! c._disposed ) {
 						c.setLoading( F );
-						var o = this.getContentView().combo;
+						var o = self.store( this );
 						if ( o ) {
 							self.store().merge( o );
 							a.x ? self.fixOpt( a ) : self.addOpt( a );
@@ -8329,12 +8355,12 @@ LinkBox = define.widget( 'LinkBox', {
 				occupy: T,
 				method: function( e ) {
 					if ( this.usa() && ! this._imeMode ) {
-						var k = this._KC = e.keyCode;
+						var k = this._KC = e.keyCode, m;
 						if ( k === 13 || k === 38 || k === 40 || k === 17 ) { // 38:up, 40:down, 17:ctrl
 							$.stop( e );
 							var d = this.pop();
 							if ( d.vis )
-								d.getContentView().combo && d.getContentView().combo.keyUp( k );
+								(m = this.store( d )) && m.keyUp( k );
 							else if ( k === 13 )
 								this.fixStyle();
 						} else {
@@ -8578,8 +8604,9 @@ LinkBox = define.widget( 'LinkBox', {
 			if ( this._online ) {
 				var d = this.createPop( this.x.suggest, a.x || a ), self = this;
 				d.preload( function() {
-					if ( ! self._disposed && this.getContentView().combo ) {
-						self.store().merge( this.getContentView().combo );
+					var m;
+					if ( ! self._disposed && (m = self.store( this )) ) {
+						self.store().merge( m );
 						self.fixOpt();
 						b && b.call( self );
 					}
@@ -8710,13 +8737,13 @@ OnlineBox = define.widget( 'OnlineBox', {
 				occupy: T,
 				method: function( e ) {
 					if ( ! this._imeMode && ! this.isDisabled() && ! this._disposed && this.x.suggest ) {
-						var k = e.keyCode;
+						var k = e.keyCode, m;
 						if ( k === 13 || k === 38 || k === 40 ) { // 上下键
 							var d = this.pop(), t;
 							if ( k === 13 && (t = this.cursorText()) != this._query_text ) {
 								this.suggest( t );
-							} else if ( d.vis && d.getContentView().combo ) {
-								k === 13 && ! d.getContentView().combo.getFocus() ? _enter_submit( k, this ) : d.getContentView().combo.keyUp( k );
+							} else if ( d.vis && (m = this.store( d )) ) {
+								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : m.keyUp( k );
 							} else
 								_enter_submit( k, this );
 						} else if ( ! e.ctrlKey && k !== 17 ) { // 17: Ctrl
@@ -8835,8 +8862,8 @@ PickBox = define.widget( 'PickBox', {
 			this.x.text = '';
 			this._init_ready();
 		},
-		store: function( a ) {
-			return (a || this.dropper).getContentView().combo;
+		_storeView: function( a ) {
+			return (a || this.dropper).getContentView();
 		},
 		usa: function() {
 			return ! this.loading && this.isNormal();
@@ -8928,10 +8955,12 @@ Rate = define.widget( 'Rate', {
 } ),
 // `treecombo` 树搜索过滤器
 TreeCombo = $.createClass( {
-	Const: function( a ) {
+	// a -> tree, b -> bind
+	Const: function( a, b ) {
 		this.cab = a;
+		this.bind = b;
 		this.xml = this.node2xml( a );
-		a.x.combo && (this._keep_show = a.x.combo.keepShow);
+		b && (this._keep_show = b.keepShow);
 		a.x.highlight && (this._matchlength = a.x.highlight.matchlength);
 	},
 	Prototype: {
@@ -8948,13 +8977,13 @@ TreeCombo = $.createClass( {
 			}
 		},
 		node2xml: function( a ) {
-			var b = (a.rootNode || a).x.combo.field, f = b.search && b.search.split( ',' ), g = f && f.length;
+			var b = this.bind.field, f = b.search && b.search.split( ',' ), g = f && f.length;
 			this._sch = g;
 			return $.xmlParse( this._node2xml( a ) );
 		},
 		// 把 json 转成 xml，以便使用 xpath 查询
 		_node2xml: function( a ) {
-			for ( var i = 0, b = (a.rootNode || a).x.combo.field, c = [], d, e, f = b.search && b.search.split( ',' ), g = f && f.length, l = a.length, r, s; i < l; i ++ ) {
+			for ( var i = 0, b = this.bind.field, c = [], d, e, f = b.search && b.search.split( ',' ), g = f && f.length, l = a.length, r, s; i < l; i ++ ) {
 				e = a[ i ].x, d = e.data || F, r = d[ b.remark ] || e[ b.remark ], s = d[ b.search ] || e[ b.search ];
 				s = '<d v="' + $.strEscape( d[ b.value ] || e[ b.value ] || '' ) + '" t="' + $.strEscape(d[ b.text ] || e[ b.text ]) + '" i="' + a[ i ].id + '"';
 				r && (s += ' r="' + $.strEscape( r ) + '"');
@@ -8987,7 +9016,7 @@ TreeCombo = $.createClass( {
 			var d = a.nodeType === 1 ? a : this.getXML( a, b );
 			if ( d ) {
 				var v = d.getAttribute( 'v' ), t = d.getAttribute( 't' ), g = _all[ d.getAttribute( 'i' ) ];
-				if ( this.cab.x.combo.fullPath && g ) {
+				if ( this.bind.fullPath && g ) {
 					var p = g;
 					while ( (p = p.parentNode) && p.level > -1 ) {
 						var x = this.getXML( p, b ), f = x.getAttribute( 't' );
@@ -9003,7 +9032,7 @@ TreeCombo = $.createClass( {
 		},
 		// /@a -> text|value|leaf, b -> attrname
 		getXML: function( a, b ) {
-			typeof a === _STR && this.cab.x.combo.fullPath && (a = $.strFrom( a, '/', T ) || a);
+			typeof a === _STR && this.bind.fullPath && (a = $.strFrom( a, '/', T ) || a);
 			return $.xmlQuery( (a.isWidget ? a.ownerView.combo : this).xml, './/d[' + ( typeof a === _STR ? '@' + (b || 't') + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
 		},
 		// 合并来自另一个grid的某一行的combo xml /@a -> tr|xml|treeCombo
@@ -9199,7 +9228,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 			for ( var j = 0, l = n.length; j < l; j ++ )
 				this.add( n[ j ] );
 			this.$( 'c' ) && (this.$( 'c' ).innerHTML = _proto.html_nodes.call( this ));
-			if ( (this.rootNode || this).x.combo ) {
+			if ( this.ownerView.combo ) {
 				var o = new TreeCombo( this ).xml, m = this.ownerView.combo.getXML( this );
 				while ( o.firstChild )
 					m.appendChild( o.firstChild );
@@ -9403,7 +9432,7 @@ Leaf = define.widget( 'Leaf', {
 						return;
 					this.box && this.box.x.sync === 'click' && ! this.isEvent4Box( e ) && this.box.click();
 					e.srcElement ? this._focus( T, e ) : this.focus( T, e );
-					if( this.rootNode && this.rootNode.x.combo && !(this.x.on && this.x.on.click) ) {
+					if( this.ownerView.combo && !(this.x.on && this.x.on.click) ) {
 						$.dialog( this ).commander.complete( this );
 						$.close( this );
 					}
@@ -9605,11 +9634,6 @@ Leaf = define.widget( 'Leaf', {
 Tree = define.widget( 'Tree', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		if ( x.combo ) {
-			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
-			this.ownerView.combo = new TreeCombo( this );
-			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
-		}
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'hiddens', nodes: x.hiddens }, -1 );
 		this.loaded  = this.length ? T : F;
@@ -9679,10 +9703,11 @@ Hiddens = define.widget( 'Hiddens', {
 } ),
 // `gridcombo` 表格搜索过滤器
 GridCombo = $.createClass( {
-	Const: function( a ) {
+	Const: function( a, b ) {
 		this.cab = a;
+		this.bind = b;
 		this.xml = this.node2xml( a );
-		this._keep_show = a.x.combo.keepShow;
+		this._keep_show = b.keepShow;
 		for ( var i = 0, c = a.x.columns, l = c && c.length; i < l; i ++ ) {
 			if ( c[ i ].highlight ) {
 				this._matchlength = c[ i ].highlight.matchlength;
@@ -9693,7 +9718,7 @@ GridCombo = $.createClass( {
 	Extend: TreeCombo,
 	Prototype: {
 		node2xml: function( a ) {
-			for ( var i = 0, j, b = a.x.combo.field, c = [], d, t = a.tBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
+			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.tBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
 				d = t[ i ].x.data, r = d[ b.remark ];
 				s = '<d v="' + $.strEscape( d[ b.value ] ) + '" t="' + $.strEscape( d[ b.text ] ) + '" i="' + t[ i ].id + '"';
 				r && (s += ' r="' + $.strEscape( r ) + '"');
@@ -10191,7 +10216,7 @@ TR = define.widget( 'TR', {
 					! this.gridToggle && this.focus( r.x.focusMultiple ? (!this.isFocus()) : T, e );
 					b && ! this.isEvent4Box( e ) && s === 'click' && b.click();
 					this.x.src && this.toggle();
-					if( r.x.combo && ! (this.x.on && this.x.on.click) ) {
+					if( this.ownerView.combo && ! (this.x.on && this.x.on.click) ) {
 						$.dialog( this ).commander.complete( this );
 						$.close( this );
 					}
@@ -11153,10 +11178,6 @@ Grid = define.widget( 'Grid', {
 		this.body = new GridBody( $.extend( { table: { tBody: x.tBody, columns: x.columns } }, x.tBody, { width: '*', height: this.length ? '*' : -1, scroll: this.length && s } ), this, this.head ? 1 : 0 );
 		if ( x.hiddens )
 			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
-		if ( x.combo ) {
-			_dfopt.combo && $.extend( x.combo, _dfopt.combo );
-			this.ownerView.combo = new GridCombo( this );
-		}
 		this.fixed = [];
 		if ( ! ie7 ) { //@fixme: 暂不支持ie7
 			var xl = [], xr = [];
@@ -11178,8 +11199,6 @@ Grid = define.widget( 'Grid', {
 		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
 		if ( this.length > 1 && _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
-		if ( this.x.combo )
-			this.addEventOnce( 'ready', function() { this.ownerView.combo.showFocus() } );
 	},
 	Extend: AbsGrid,
 	Listener: {

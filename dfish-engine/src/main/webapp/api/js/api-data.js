@@ -1660,17 +1660,6 @@ define( {
   	extend: 'Widget',
     Config: [
       { name: 'columns', type: 'Array', remark: '列参数的数组集合。<br>单个列的参数参见 Column 类。' },
-      { name: 'combo', type: 'Object', remark: '设置当前的 tree 为某个 combobox 或 onlinebox 的数据选项表。', param: [
-      	{ name: 'field', type: 'String', remark: '字段参数。', param: [
-          { name: 'value', type: 'String', remark: '值字段名。' },
-          { name: 'text', type: 'String', remark: '文本字段名。' },
-          { name: 'search', type: 'String', remark: '搜索字段名。' },
-          { name: 'remark', type: 'String', remark: '备注字段名。' },
-          { name: 'forbid', type: 'String', remark: '禁用字段名。' }
-        ] },
-        { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
-        { name: 'fullPath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' }
-      ] },
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
       { name: 'focusMultiple', type: 'Boolean', remark: '是否有多选的点击高亮效果。' },
@@ -2272,16 +2261,6 @@ define( {
   	remark: '树。',
   	extend: 'Widget',
     Config: [
-      { name: 'combo', type: 'Object', remark: '设置当前的 tree 为某个 combobox 或 onlinebox 的数据选项表。', param: [
-      	{ name: 'field', type: 'String', remark: '字段参数。', param: [
-          { name: 'value', type: 'String', remark: '值字段名。' },
-          { name: 'text', type: 'String', remark: '文本字段名。' },
-          { name: 'search', type: 'String', remark: '搜索字段名。' },
-          { name: 'remark', type: 'String', remark: '备注字段名。' },
-          { name: 'forbid', type: 'String', remark: '禁用字段名。' }
-        ] },
-        { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' }
-      ] },
       { name: 'ellipsis', type: 'Boolean', remark: '设置为true，树节点文本超出可视范围部分以省略号显示。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'rootinvisible', type: 'Boolean', remark: '设为true，隐藏根节点，根节点的子节点缩进一层。' },
@@ -3093,9 +3072,8 @@ define( {
   	extend: 'CheckBoxGroup',
   	deprecate: 'placeholder,tip,transparent,value,focus,focusEnd,.z-trans,.w-text,.w-input,status',
     Config: [
-      { name: 'options', type: 'Array', remark: 'radio 节点数组。' },
-      { name: 'targets', type: 'Array', optional: true, remark: '和 radio 一一对应的节点数组。勾选单选框将改变 target 节点的 disabled 状态' },
-      { name: 'pub', type: 'Object', optional: true, remark: 'radio 的默认参数。这里的参数不会应用于 targets 中的 widget。 ' }
+      { name: 'nodes', type: 'Array', remark: 'Radio 节点数组。' },
+      { name: 'pub', type: 'Object', optional: true, remark: 'Radio 的默认参数。' },
     ],
     Classes: [
       { name: '.w-radiogroup', remark: '基础样式。' }
@@ -3452,6 +3430,17 @@ define( {
   	extend: 'Text',
   	deprecate: 'tip,.w-text',
     Config: [
+      { name: 'bind', type: 'Object', remark: '设置数据来源的参数。', param: [
+      	{ name: 'field', type: 'String', remark: '字段参数。', param: [
+          { name: 'value', type: 'String', remark: '值字段名。' },
+          { name: 'text', type: 'String', remark: '文本字段名。' },
+          { name: 'search', type: 'String', remark: '搜索字段名。' },
+          { name: 'remark', type: 'String', remark: '备注字段名。' },
+          { name: 'forbid', type: 'String', remark: '禁用字段名。' }
+        ] },
+        { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
+        { name: 'fullPath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' }
+      ] },
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
       { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'face', type: 'String', remark: '设置已选项的外观效果。可选值: <b>default</b>, <b>tag</b>' },

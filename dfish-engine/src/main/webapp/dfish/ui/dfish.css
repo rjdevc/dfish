@@ -534,7 +534,6 @@
 .w-checkboxgroup ._t + label,.w-radiogroup ._t + label{vertical-align:middle}
 .w-grid-triplebox.w-triplebox ._t + label,.w-grid-radio.w-radio ._t + label{margin-right:0}
 .w-checkboxgroup.z-err .w-checkbox ._t + label,.w-radiogroup.z-err .w-radio ._t + label{border-color:#f00}
-.w-radiogroup-list ._t + label{vertical-align:top}
 /*  CSS3 checkbox  -->   */
 
 .w-switch{}
