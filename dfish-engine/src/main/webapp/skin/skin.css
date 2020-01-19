@@ -155,7 +155,7 @@ i {
 /**↑表格↑**/
 
 /**↓分页栏↓**/
-.w-page-text ._o {
+.w-pagebar.z-face-normal ._o {
     cursor: not-allowed;
     height: 32px;
     line-height: 32px;
@@ -172,39 +172,39 @@ i {
     border-left-width: 1px;
 }
 
-.w-page-text ._o._num {
+.w-pagebar.z-face-normal ._o._num {
     line-height: 32px;
 }
 
-.w-page-text ._o._first {
+.w-pagebar.z-face-normal ._o._first {
     border-left-width: 1px;
 }
 
-.w-page-text ._o.z-us {
+.w-pagebar.z-face-normal ._o.z-us {
     cursor: pointer;
     color: #333;
 }
 
-.w-page-text ._o.z-us.z-hv {
+.w-pagebar.z-face-normal ._o.z-us.z-hv {
     border-color: #1e92df;
     color: #fff;
     background: #1e92df;
 }
 
-.w-page-text ._o._cur {
+.w-pagebar.z-face-normal ._o._cur {
     cursor: not-allowed;
     color: #1e92df;
 }
 
-.w-page-text ._jump, .w-page-text ._jbtn {
+.w-pagebar.z-face-normal ._jump, .w-pagebar.z-face-normal ._jbtn {
     height: 32px;
 }
 
-.w-page-text ._jump.z-on {
+.w-pagebar.z-face-normal ._jump.z-on {
     border-color: #19a3fb;
 }
 
-.w-page-text .w-buttonbar .w-button._jbtn.z-hv, .w-page-text .w-buttonbar .w-button._jbtn.z-on {
+.w-pagebar.z-face-normal .w-buttonbar .w-button._jbtn.z-hv, .w-pagebar.z-face-normal .w-buttonbar .w-button._jbtn.z-on {
     background-color: #19a3fb;
     color: #fff;
 }
@@ -377,17 +377,17 @@ i {
 .w-tabs {
 }
 
-.w-tabs .w-tabbar {
+.w-tabs .w-tabbar, .w-tabs.z-position-top .w-tabbar {
     padding: 0 10px;
 }
 
-.w-tabs .w-tabbar .w-tabbar-line {
+.w-tabs .w-tabbar .w-tabbar-line, .w-tabs.z-position-top .w-tabbar .w-tabbar-line {
     display: block;
     height: 2px;
     background: #2498fd;
 }
 
-.w-tabs .w-tabbar .w-tab {
+.w-tabs .w-tabbar .w-tab, .w-tabs.z-position-top .w-tabbar .w-tab {
     background: #eee;
     color: #333;
     font-weight: bold;
@@ -405,12 +405,12 @@ i {
     color: #fff;
 }
 
-.w-tabs.z-bottom .w-tabbar .w-tab {
+.w-tabs.z-position-bottom .w-tabbar .w-tab {
     margin-top: 0;
     margin-bottom: 2px;
 }
 
-.w-tabs.z-bottom .w-tabbar .w-tabbar-line {
+.w-tabs.z-position-bottom .w-tabbar .w-tabbar-line {
     top: 0;
 }
 
@@ -707,525 +707,525 @@ img {
 }
 
 /*编辑*/
-.i-oper-edit {
+.i-operation-edit {
     background: url("img/icon_operation_16.png") 0 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-edit.z-hv, .z-hv .i-oper-edit {
+.i-operation-edit.z-hv, .z-hv .i-operation-edit {
     background: url("img/icon_operation_16.png") 0 -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-edit.z-dn, .z-dn .i-oper-edit {
+.i-operation-edit.z-dn, .z-dn .i-operation-edit {
     background: url("img/icon_operation_16.png") 0 -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-edit.z-ds, .z-ds .i-oper-edit {
+.i-operation-edit.z-ds, .z-ds .i-operation-edit {
     background: url("img/icon_operation_16.png") 0 -60px;
     width: 16px;
     height: 16px;
 }
 
 /*删除*/
-.i-oper-del {
+.i-operation-del {
     background: url("img/icon_operation_16.png") -20px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-del.z-hv, .z-hv .i-oper-del {
+.i-operation-del.z-hv, .z-hv .i-operation-del {
     background: url("img/icon_operation_16.png") -20px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-del.z-dn, .z-dn .i-oper-del {
+.i-operation-del.z-dn, .z-dn .i-operation-del {
     background: url("img/icon_operation_16.png") -20px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-del.z-ds, .z-ds .i-oper-del {
+.i-operation-del.z-ds, .z-ds .i-operation-del {
     background: url("img/icon_operation_16.png") -20px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*更多*/
-.i-oper-more {
+.i-operation-more {
     background: url("img/icon_operation_16.png") -40px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-more.z-hv, .z-hv .i-oper-more {
+.i-operation-more.z-hv, .z-hv .i-operation-more {
     background: url("img/icon_operation_16.png") -40px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-more.z-dn, .z-dn .i-oper-more {
+.i-operation-more.z-dn, .z-dn .i-operation-more {
     background: url("img/icon_operation_16.png") -40px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-more.z-ds, .z-ds .i-oper-more {
+.i-operation-more.z-ds, .z-ds .i-operation-more {
     background: url("img/icon_operation_16.png") -40px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*置顶*/
-.i-oper-top {
+.i-operation-top {
     background: url("img/icon_operation_16.png") -60px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-top.z-hv, .z-hv .i-oper-top {
+.i-operation-top.z-hv, .z-hv .i-operation-top {
     background: url("img/icon_operation_16.png") -60px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-top.z-dn, .z-dn .i-oper-top {
+.i-operation-top.z-dn, .z-dn .i-operation-top {
     background: url("img/icon_operation_16.png") -60px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-top.z-ds, .z-ds .i-oper-top {
+.i-operation-top.z-ds, .z-ds .i-operation-top {
     background: url("img/icon_operation_16.png") -60px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*置底*/
-.i-oper-bottom {
+.i-operation-bottom {
     background: url("img/icon_operation_16.png") -80px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-bottom.z-hv, .z-hv .i-oper-bottom {
+.i-operation-bottom.z-hv, .z-hv .i-operation-bottom {
     background: url("img/icon_operation_16.png") -80px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-bottom.z-dn, .z-dn .i-oper-bottom {
+.i-operation-bottom.z-dn, .z-dn .i-operation-bottom {
     background: url("img/icon_operation_16.png") -80px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-bottom.z-ds, .z-ds .i-oper-bottom {
+.i-operation-bottom.z-ds, .z-ds .i-operation-bottom {
     background: url("img/icon_operation_16.png") -80px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*上移*/
-.i-oper-up {
+.i-operation-up {
     background: url("img/icon_operation_16.png") -100px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-up.z-hv, .z-hv .i-oper-up {
+.i-operation-up.z-hv, .z-hv .i-operation-up {
     background: url("img/icon_operation_16.png") -100px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-up.z-dn, .z-dn .i-oper-up {
+.i-operation-up.z-dn, .z-dn .i-operation-up {
     background: url("img/icon_operation_16.png") -100px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-up.z-ds, .z-ds .i-oper-up {
+.i-operation-up.z-ds, .z-ds .i-operation-up {
     background: url("img/icon_operation_16.png") -100px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*下移*/
-.i-oper-down {
+.i-operation-down {
     background: url("img/icon_operation_16.png") -120px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-down.z-hv, .z-hv .i-oper-down {
+.i-operation-down.z-hv, .z-hv .i-operation-down {
     background: url("img/icon_operation_16.png") -120px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-down.z-dn, .z-dn .i-oper-down {
+.i-operation-down.z-dn, .z-dn .i-operation-down {
     background: url("img/icon_operation_16.png") -120px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-down.z-ds, .z-ds .i-oper-down {
+.i-operation-down.z-ds, .z-ds .i-operation-down {
     background: url("img/icon_operation_16.png") -120px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*回退*/
-.i-oper-back {
+.i-operation-back {
     background: url("img/icon_operation_16.png") -140px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-back.z-hv, .z-hv .i-oper-back {
+.i-operation-back.z-hv, .z-hv .i-operation-back {
     background: url("img/icon_operation_16.png") -140px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-back.z-dn, .z-dn .i-oper-back {
+.i-operation-back.z-dn, .z-dn .i-operation-back {
     background: url("img/icon_operation_16.png") -140px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-back.z-ds, .z-ds .i-oper-back {
+.i-operation-back.z-ds, .z-ds .i-operation-back {
     background: url("img/icon_operation_16.png") -140px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*查询*/
-.i-oper-search {
+.i-operation-search {
     background: url("img/icon_operation_16.png") -160px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-search.z-hv, .z-hv .i-oper-search {
+.i-operation-search.z-hv, .z-hv .i-operation-search {
     background: url("img/icon_operation_16.png") -160px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-search.z-dn, .z-dn .i-oper-search {
+.i-operation-search.z-dn, .z-dn .i-operation-search {
     background: url("img/icon_operation_16.png") -160px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-search.z-ds, .z-ds .i-oper-search {
+.i-operation-search.z-ds, .z-ds .i-operation-search {
     background: url("img/icon_operation_16.png") -160px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*费用*/
-.i-oper-money {
+.i-operation-money {
     background: url("img/icon_operation_16.png") -180px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-money.z-hv, .z-hv .i-oper-money {
+.i-operation-money.z-hv, .z-hv .i-operation-money {
     background: url("img/icon_operation_16.png") -180px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-money.z-dn, .z-dn .i-oper-money {
+.i-operation-money.z-dn, .z-dn .i-operation-money {
     background: url("img/icon_operation_16.png") -180px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-money.z-ds, .z-ds .i-oper-money {
+.i-operation-money.z-ds, .z-ds .i-operation-money {
     background: url("img/icon_operation_16.png") -180px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*收藏*/
-.i-oper-favorite {
+.i-operation-favorite {
     background: url("img/icon_operation_16.png") -200px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-favorite.z-hv, .z-hv .i-oper-favorite {
+.i-operation-favorite.z-hv, .z-hv .i-operation-favorite {
     background: url("img/icon_operation_16.png") -200px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-favorite.z-dn, .z-dn .i-oper-favorite {
+.i-operation-favorite.z-dn, .z-dn .i-operation-favorite {
     background: url("img/icon_operation_16.png") -200px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-favorite.z-ds, .z-ds .i-oper-favorite {
+.i-operation-favorite.z-ds, .z-ds .i-operation-favorite {
     background: url("img/icon_operation_16.png") -200px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*设置*/
-.i-oper-setup {
+.i-operation-setup {
     background: url("img/icon_operation_16.png") -220px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-setup.z-hv, .z-hv .i-oper-setup {
+.i-operation-setup.z-hv, .z-hv .i-operation-setup {
     background: url("img/icon_operation_16.png") -220px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-setup.z-dn, .z-dn .i-oper-setup {
+.i-operation-setup.z-dn, .z-dn .i-operation-setup {
     background: url("img/icon_operation_16.png") -220px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-setup.z-ds, .z-ds .i-oper-setup {
+.i-operation-setup.z-ds, .z-ds .i-operation-setup {
     background: url("img/icon_operation_16.png") -220px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*历史*/
-.i-oper-history {
+.i-operation-history {
     background: url("img/icon_operation_16.png") -240px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-history.z-hv, .z-hv .i-oper-history {
+.i-operation-history.z-hv, .z-hv .i-operation-history {
     background: url("img/icon_operation_16.png") -240px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-history.z-dn, .z-dn .i-oper-history {
+.i-operation-history.z-dn, .z-dn .i-operation-history {
     background: url("img/icon_operation_16.png") -240px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-history.z-ds, .z-ds .i-oper-history {
+.i-operation-history.z-ds, .z-ds .i-operation-history {
     background: url("img/icon_operation_16.png") -240px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*提示*/
-.i-oper-tip {
+.i-operation-tip {
     background: url("img/icon_operation_16.png") -260px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-tip.z-hv, .z-hv .i-oper-tip {
+.i-operation-tip.z-hv, .z-hv .i-operation-tip {
     background: url("img/icon_operation_16.png") -260px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-tip.z-dn, .z-dn .i-oper-tip {
+.i-operation-tip.z-dn, .z-dn .i-operation-tip {
     background: url("img/icon_operation_16.png") -260px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-tip.z-ds, .z-ds .i-oper-tip {
+.i-operation-tip.z-ds, .z-ds .i-operation-tip {
     background: url("img/icon_operation_16.png") -260px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*刷新*/
-.i-oper-refresh {
+.i-operation-refresh {
     background: url("img/icon_operation_16.png") -320px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-refresh.z-hv, .z-hv .i-oper-refresh {
+.i-operation-refresh.z-hv, .z-hv .i-operation-refresh {
     background: url("img/icon_operation_16.png") -320px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-refresh.z-dn, .z-dn .i-oper-refresh {
+.i-operation-refresh.z-dn, .z-dn .i-operation-refresh {
     background: url("img/icon_operation_16.png") -320px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-refresh.z-ds, .z-ds .i-oper-refresh {
+.i-operation-refresh.z-ds, .z-ds .i-operation-refresh {
     background: url("img/icon_operation_16.png") -320px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*二维码*/
-.i-oper-qrcode {
+.i-operation-qrcode {
     background: url("img/icon_operation_16.png") -340px 0;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-qrcode.z-hv, .z-hv .i-oper-qrcode {
+.i-operation-qrcode.z-hv, .z-hv .i-operation-qrcode {
     background: url("img/icon_operation_16.png") -340px -20px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-qrcode.z-dn, .z-dn .i-oper-qrcode {
+.i-operation-qrcode.z-dn, .z-dn .i-operation-qrcode {
     background: url("img/icon_operation_16.png") -340px -40px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-qrcode.z-ds, .z-ds .i-oper-qrcode {
+.i-operation-qrcode.z-ds, .z-ds .i-operation-qrcode {
     background: url("img/icon_operation_16.png") -340px -60px;
     width: 16px;
     height: 16px;
 }
 
 /*签到*/
-.i-oper-sign {
+.i-operation-sign {
     background: url("img/icon_operation_16.png") 0 -80px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-sign.z-hv, .z-hv .i-oper-sign {
+.i-operation-sign.z-hv, .z-hv .i-operation-sign {
     background: url("img/icon_operation_16.png") 0 -100px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-sign.z-dn, .z-dn .i-oper-sign {
+.i-operation-sign.z-dn, .z-dn .i-operation-sign {
     background: url("img/icon_operation_16.png") 0 -120px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-sign.z-ds, .z-ds .i-oper-sign {
+.i-operation-sign.z-ds, .z-ds .i-operation-sign {
     background: url("img/icon_operation_16.png") 0 -140px;
     width: 16px;
     height: 16px;
 }
 
 /*查看*/
-.i-oper-view {
+.i-operation-view {
     background: url("img/icon_operation_16.png") -60px -80px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-view.z-hv, .z-hv .i-oper-view {
+.i-operation-view.z-hv, .z-hv .i-operation-view {
     background: url("img/icon_operation_16.png") -60px -100px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-view.z-dn, .z-dn .i-oper-view {
+.i-operation-view.z-dn, .z-dn .i-operation-view {
     background: url("img/icon_operation_16.png") -60px -120px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-view.z-ds, .z-ds .i-oper-view {
+.i-operation-view.z-ds, .z-ds .i-operation-view {
     background: url("img/icon_operation_16.png") -60px -140px;
     width: 16px;
     height: 16px;
 }
 
 /*同意*/
-.i-oper-pass {
+.i-operation-pass {
     background: url("img/icon_operation_16.png") -80px -80px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-pass.z-hv, .z-hv .i-oper-pass {
+.i-operation-pass.z-hv, .z-hv .i-operation-pass {
     background: url("img/icon_operation_16.png") -80px -100px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-pass.z-dn, .z-dn .i-oper-pass {
+.i-operation-pass.z-dn, .z-dn .i-operation-pass {
     background: url("img/icon_operation_16.png") -80px -120px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-pass.z-ds, .z-ds .i-oper-pass {
+.i-operation-pass.z-ds, .z-ds .i-operation-pass {
     background: url("img/icon_operation_16.png") -80px -140px;
     width: 16px;
     height: 16px;
 }
 
 /*驳回*/
-.i-oper-reject {
+.i-operation-reject {
     background: url("img/icon_operation_16.png") -100px -80px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-reject.z-hv, .z-hv .i-oper-reject {
+.i-operation-reject.z-hv, .z-hv .i-operation-reject {
     background: url("img/icon_operation_16.png") -100px -100px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-reject.z-dn, .z-dn .i-oper-reject {
+.i-operation-reject.z-dn, .z-dn .i-operation-reject {
     background: url("img/icon_operation_16.png") -100px -120px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-reject.z-ds, .z-ds .i-oper-reject {
+.i-operation-reject.z-ds, .z-ds .i-operation-reject {
     background: url("img/icon_operation_16.png") -100px -140px;
     width: 16px;
     height: 16px;
 }
 
 /*取消*/
-.i-oper-cancel {
+.i-operation-cancel {
     background: url("img/icon_operation_16.png") -120px -80px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-cancel.z-hv, .z-hv .i-oper-cancel {
+.i-operation-cancel.z-hv, .z-hv .i-operation-cancel {
     background: url("img/icon_operation_16.png") -120px -100px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-cancel.z-dn, .z-dn .i-oper-cancel {
+.i-operation-cancel.z-dn, .z-dn .i-operation-cancel {
     background: url("img/icon_operation_16.png") -120px -120px;
     width: 16px;
     height: 16px;
 }
 
-.i-oper-cancel.z-ds, .z-ds .i-oper-cancel {
+.i-operation-cancel.z-ds, .z-ds .i-operation-cancel {
     background: url("img/icon_operation_16.png") -120px -140px;
     width: 16px;
     height: 16px;
@@ -1238,7 +1238,7 @@ img {
     height: 16px;
 }
 
-.i-toggle-openicon {
+.i-toggle-expanded {
     background: url("img/btn-icon.png") -27px -247px;
     width: 16px;
     height: 16px;

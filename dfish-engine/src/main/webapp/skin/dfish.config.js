@@ -95,14 +95,14 @@ dfish.config({
         'Toggle': {
             height: 40,
             icon: '.i-toggle-icon',
-            expandedIcon: '.i-toggle-expandedIcon',
+            expandedIcon: '.i-toggle-expanded',
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         },
         'GridToggle': {
             height: 40,
             icon: '.i-toggle-icon',
-            expandedIcon: '.i-toggle-expandedIcon',
+            expandedIcon: '.i-toggle-expanded',
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         }
