@@ -550,7 +550,7 @@
 .w-switch.z-checked.z-ds ._o{border-color:#a2d2ff}
 
 .w-album{white-space:normal;text-align:justify}
-.w-img{position:relative;text-align:center;overflow:hidden}
+.w-img{position:relative;text-align:center}
 .w-album .w-img{position:relative;padding:10px;border:1px solid transparent;border-radius:2px;}
 .w-album .w-img.z-hv{background-color:#f7f8f9;}
 .w-album .w-img.z-on{border-color:#b7c6ce;background-color:#f2f2f2;box-shadow:0 2px 3px 0 #eee;}
