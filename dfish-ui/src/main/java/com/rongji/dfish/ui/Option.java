@@ -1,7 +1,5 @@
-package com.rongji.dfish.ui.form;
+package com.rongji.dfish.ui;
 
-
-import com.rongji.dfish.ui.AbstractNode;
 
 /**
  * 选项类
@@ -9,6 +7,7 @@ import com.rongji.dfish.ui.AbstractNode;
  *
  */
 public class Option extends AbstractNode<Option> {
+	private static final long serialVersionUID = 306013051979293811L;
 	private String text;
 	private Object value;
 	private String icon;
@@ -16,14 +15,6 @@ public class Option extends AbstractNode<Option> {
 	private Boolean checkAll;
 	private String status;
 
-	/**
-	 * 默认构造函数
-	 * @deprecated 不建议使用无参构造方法
-	 */
-	public Option(){
-		
-	}
-	
 	/**
 	 * 构造函数 
 	 * @param value 值

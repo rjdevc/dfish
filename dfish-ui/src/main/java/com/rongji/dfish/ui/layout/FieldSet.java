@@ -12,7 +12,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  *@author DFish Team
  *
  */
-public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNodeContainer<Fieldset> {
+public class FieldSet extends AbstractNodeContainer<FieldSet> implements MultiNodeContainer<FieldSet> {
 	/**
 	 * 
 	 */
@@ -32,7 +32,7 @@ public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNo
 	 * @param legend 标题文本
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Fieldset setLegend(String legend) {
+	public FieldSet setLegend(String legend) {
 		this.legend = legend;
 		return this;
 	}
@@ -40,7 +40,7 @@ public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNo
 	 * 构造 函数
 	 * @param legend  标题文本
 	 */
-	public Fieldset(String legend) {
+	public FieldSet(String legend) {
 		this(null,legend);
 	}
 	/**
@@ -48,7 +48,7 @@ public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNo
 	 * @param id 编号
 	 * @param legend 标题文本
 	 */
-	public Fieldset(String id, String legend) {
+	public FieldSet(String id, String legend) {
 		super(id);
 		this.legend=legend;
 	}
@@ -64,7 +64,7 @@ public class Fieldset extends AbstractNodeContainer<Fieldset> implements MultiNo
 	 * @param box 勾选项。可能是checkbox 或 radio
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Fieldset setBox(AbstractBox<?> box) {
+	public FieldSet setBox(AbstractBox<?> box) {
 		this.box = box;
 		return this;
 	}

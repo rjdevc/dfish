@@ -37,4 +37,9 @@ public interface FileDao4Mybatis extends FrameworkDao4Mybatis<PubFileRecord, Str
         }
         return entity.getFileId();
     }
+
+    @Override
+    default void evict(Object entity) {
+
+    }
 }

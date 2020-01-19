@@ -149,7 +149,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
 
     /**
      * 获取加密器
-     * @return StringCryptor
+     * @return Cryptor
      */
     Cryptor getCryptor();
 

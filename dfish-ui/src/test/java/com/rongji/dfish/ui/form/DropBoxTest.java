@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.rongji.dfish.ui.DFishUITestCase;
+import com.rongji.dfish.ui.Option;
 
 public class DropBoxTest extends DFishUITestCase{
 
