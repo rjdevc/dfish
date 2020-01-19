@@ -335,7 +335,7 @@ $.each( 'Before After Prepend Append Replace Remove'.split(' '), function( v, i 
 			if ( x.section === 'cmd' ) {
 				x.node && ((_view( this ).x.commands || (_view( this ).x.commands = {}))[ d ] = i === 5 ? N : x.node);
 			} else if ( e = _view( this ).find( d ) ) {
-				e[ v ]( x.node || x.nodes );
+				e[ v.toLowerCase() ]( x.node || x.nodes );
 			}
 		}
 	}
