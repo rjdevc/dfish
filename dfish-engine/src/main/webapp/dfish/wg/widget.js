@@ -5,7 +5,7 @@
  */
 // firefox调用arguments.callee会报错，因此目前还无法使用'use strict'
 //'use strict';
-var U, N = null, F = false, T = true, O = {}, _STR = 'string', _FUN = 'function', _OBJ = 'object', _NUM = 'number', _BOL = 'boolean',
+var U, N = null, F = false, T = true, A = [], O = {}, _STR = 'string', _FUN = 'function', _OBJ = 'object', _NUM = 'number', _BOL = 'boolean',
 $   = require( 'dfish' ),
 Q   = require( 'jquery' ),
 Loc = require( 'loc' ),
@@ -3001,7 +3001,7 @@ Timeline = define.widget( 'Timeline', {
 } ),
 /* `timelineitem` */
 TimelineItem = define.widget( 'TimelineItem', {
-	Default: { width: -1 },
+	Default: { width: -1, height: -1 },
 	Prototype: {
 		className: 'w-timeline-item',
 		tagName: 'li',
@@ -3357,6 +3357,20 @@ Button = define.widget( 'Button', {
 		// @implement
 		init_nodes: function() {
 			this.setMore( this.x );
+		},
+		append: function( a ) {
+			!$.isArray( a ) && (a = [ a ]);
+			!this.x.nodes && (this.x.nodes = []);
+			[].unshift.apply( this.x.nodes, a );
+			this.init_nodes();
+			this.render();
+		},
+		prepend: function( a ) {
+			!$.isArray( a ) && (a = [ a ]);
+			!this.x.nodes && (this.x.nodes = []);
+			[].push.apply( this.x.nodes, a );
+			this.init_nodes();
+			this.render();
 		},
 		// @implement
 		insertHTML: function( a, b ) {
@@ -4160,7 +4174,7 @@ PageBar = define.widget( 'PageBar', {
 				var g = this.x.dropAlign;
 				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'Button', text: d + '/' + s, cls: c + ' _drop', escape: F, on: { click: 'this.rootNode.parentNode.drop(this)' } } );
 			}
-			this.groupbar = this.add( { type: 'ButtonBar', cls: 'f-groupbar', nodes: b }, -1 );
+			this.groupbar = this.add( { type: 'ButtonBar', cls: 'w-pagebar-buttonbar f-nv f-groupbar', width: -1, nodes: b, space: -1 }, -1 );
 			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + d + '">' : '') + this.groupbar.html() + PageBar.prototype.html_info.call( this ) + '<i class=f-vi></i>';
 		},
 		html_nodes: function() {

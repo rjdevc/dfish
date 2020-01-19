@@ -2084,7 +2084,7 @@ define( {
       ] },
       { name: 'f(name, [range])', remark: '查找表单widget。', param: [
         { name: 'name', type: 'String', remark: '表单的name属性值。' },
-        { name: 'range', type: 'HTMLElement | widget', remark: '指定获取表单的范围，可以是html元素或widget对象。', optional: true }
+        { name: 'range', type: 'HTMLElement | Widget', remark: '指定获取表单的范围，可以是html元素或widget对象。', optional: true }
       ], example: [
           function() {
           	// 获取一个表单的值
@@ -2804,7 +2804,7 @@ define( {
   	remark: '单行文本输入框。',
   	extend: 'Widget',
     Config: [
-      { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
+      { name: 'label', type: 'String | Label', optional: true, remark: '表单标签。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
       	 example: [
           function() {
             // 显示标签的表单
