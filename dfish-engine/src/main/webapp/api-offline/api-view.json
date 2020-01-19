@@ -28,13 +28,13 @@
 		  	  }
 		  	},
 		  	"nodes" : [
-		  	  { "text": "应用指南", "open": false, "icon": ".icon .icon-pkg", "nodes": [
-		  	    { "text": "简介", "id": "upgrade", "open": false, "icon": ".icon .icon-component" },
-		  	    { "text": "模块加载规范", "id": "CommonModuleDefinition", "open": false, "icon": ".icon .icon-component" },
+		  	  { "text": "应用指南", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
+		  	    { "text": "简介", "id": "upgrade", "expanded": false, "icon": ".icon .icon-component" },
+		  	    { "text": "模块加载规范", "id": "CommonModuleDefinition", "expanded": false, "icon": ".icon .icon-component" },
 		  	    { "text": "JS/CSS规范", "id": "app", "icon": ".icon .icon-component" }
 		  	  ] },
-		  	  { "text": "全局方法", "icon": ".icon .icon-pkg", "open": false, "nodes": [
-		        { "id": "$", "text": "dfish ($)", "open": false, "nodes": [
+		  	  { "text": "全局方法", "icon": ".icon .icon-pkg", "expanded": false, "nodes": [
+		        { "id": "$", "text": "dfish ($)", "expanded": false, "nodes": [
 		          { "id": "$.ajax", "text": "$.ajax", "datasrc": "$" },
 		          { "id": "$.ajaxJSON", "text": "$.ajaxJSON", "datasrc": "$" },
 		          { "id": "$.ajaxXML", "text": "$.ajaxXML", "datasrc": "$" },
@@ -108,9 +108,9 @@
 		        { "id": "Q", "text": "Q" },
 		        { "id": "VM", "text": "VM" }
 		      ] },
-		  	  { "text": "模板", "open": false, "icon": ".icon .icon-pkg", "nodes": [
-		  	    { "text": "模板说明", "id": "@", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@propName", "id": "@propName", "open": false, "icon": ".icon .icon-component", "datasrc": "@" },
+		  	  { "text": "模板", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
+		  	    { "text": "模板说明", "id": "@", "expanded": false, "icon": ".icon .icon-component", "datasrc": "@" },
+		  	    { "text": "@propName", "id": "@propName", "expanded": false, "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-for", "id": "@w-for", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-if", "id": "@w-if", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "@w-elseif", "id": "@w-elseif", "icon": ".icon .icon-component", "datasrc": "@" },
@@ -119,7 +119,7 @@
 		  	    { "text": "$dataKey", "id": "$dataKey", "icon": ".icon .icon-component", "datasrc": "@" },
 		  	    { "text": "$this", "id": "$this", "icon": ".icon .icon-component", "datasrc": "@" }
 		  	  ] },
-		  	  { "text": "命令", "open": false, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "命令", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "After", "text": "After", "icon": ".icon .icon-class" },
 		        { "id": "Ajax", "text": "Ajax", "icon": ".icon .icon-class" },
 		        { "id": "Alert", "text": "Alert", "icon": ".icon .icon-class" },
@@ -137,8 +137,8 @@
 		        { "id": "Submit", "text": "Submit", "icon": ".icon .icon-class" },
 		        { "id": "Tip", "text": "Tip", "icon": ".icon .icon-class" }
 		      ] },
-		  	  { "text": "布局类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
-		        { "id": "Collapse", "text": "Collapse", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		  	  { "text": "布局类", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
+		        { "id": "Collapse", "text": "Collapse", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "CollapseButton", "text": "CollapseButton", "icon": ".icon .icon-class" }
 		        ] },
 		      //{ "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
@@ -157,14 +157,14 @@
 		        ] },
 		        { "id": "Form", "text": "Form", "icon": ".icon .icon-class" },
 		        { "id": "Horizontal", "text": "Horizontal", "icon": ".icon .icon-class" },
-		        { "id": "Tabs", "text": "Tabs", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		        { "id": "Tabs", "text": "Tabs", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "Tab", "text": "Tab", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Vertical", "text": "Vertical", "icon": ".icon .icon-class" },
 		        { "id": "View", "text": "View", "icon": ".icon .icon-class" },
 		        { "id": "Section", "text": "Section", "icon": ".icon .icon-class" }
 		      ] },
-		  	  { "text": "功能类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "功能类", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "Album", "text": "Album", "icon": ".icon .icon-class" },
 		        { "id": "Badge", "text": "Badge", "icon": ".icon .icon-class" },
 		        { "id": "Button", "text": "Button", "icon": ".icon .icon-class" },
@@ -177,20 +177,20 @@
 		        { "id": "Img", "text": "Img", "icon": ".icon .icon-class" },
 		        { "id": "MenuButton", "text": "MenuButton", "icon": ".icon .icon-class" },
 		        { "id": "PageBar", "text": "PageBar", "icon": ".icon .icon-class" },
-		        { "id": "Progress", "text": "Progress", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		        { "id": "Progress", "text": "Progress", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "ProgressItem", "text": "ProgressItem", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Split", "text": "Split", "icon": ".icon .icon-class" },
 		        { "id": "SubmitButton", "text": "SubmitButton", "icon": ".icon .icon-class" },
-		        { "id": "Timeline", "text": "Timeline", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		        { "id": "Timeline", "text": "Timeline", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "TimelineItem", "text": "TimelineItem", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Toggle", "text": "Toggle", "icon": ".icon .icon-class" },
-		        { "id": "Tree", "text": "Tree", "icon": ".icon .icon-class", "open": !true, "nodes": [
+		        { "id": "Tree", "text": "Tree", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "Leaf", "text": "Leaf", "icon": ".icon .icon-class" }
 		        ] }
 		      ] },
-		  	  { "text": "表单类", "open": false, "icon": ".icon .icon-pkg", "nodes": [
+		  	  { "text": "表单类", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "CheckBox", "text": "CheckBox", "icon": ".icon .icon-class" },
 		        { "id": "CheckBoxGroup", "text": "CheckBoxGroup", "icon": ".icon .icon-class" },
 		        { "id": "ComboBox", "text": "ComboBox", "icon": ".icon .icon-class" },
@@ -210,7 +210,10 @@
 		        { "id": "Rate", "text": "Rate", "icon": ".icon .icon-class" },
 		        { "id": "Select", "text": "Select", "icon": ".icon .icon-class" },
 		        { "id": "Slider", "text": "Slider", "icon": ".icon .icon-class" },
-		        { "id": "Jigsaw", "text": "Jigsaw", "icon": ".icon .icon-class" },
+		        { "id": "Jigsaw", "text": "Jigsaw", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "JigsawImg", "text": "JigsawImg", "icon": ".icon .icon-class" },
+		          { "id": "JigsawAuth", "text": "JigsawAuth", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "Spinner", "text": "Spinner", "icon": ".icon .icon-class" },
 		        { "id": "Switch", "text": "Switch", "icon": ".icon .icon-class" },
 		        { "id": "Text", "text": "Text", "icon": ".icon .icon-class" },

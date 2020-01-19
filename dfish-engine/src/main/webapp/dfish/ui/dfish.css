@@ -179,7 +179,7 @@
 .w-th-sort .f-arw-t1{border-bottom-color:#ccc;border-top:0;*margin-bottom:-7px}
 .w-th-sort.z-desc .f-arw-b1,.w-th-sort .f-arw-b1:hover{border-top-color:#777}
 .w-th-sort.z-asc .f-arw-t1,.w-th-sort .f-arw-t1:hover{border-bottom-color:#777}
-.w-th-sortwrap{width:12px;margin-left:2px}
+.w-th-sortwrap{width:12px;margin-left:2px;line-height:1}
 .w-grid-tfoot .w-td.z-face-line,.w-grid-tfoot .w-td.z-face-cell{border-top-width:1px;border-bottom-width:0}
 
 .w-label{position:relative}

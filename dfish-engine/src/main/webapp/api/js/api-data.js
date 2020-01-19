@@ -114,6 +114,8 @@ define( {
         { name: 'settings', type: 'Object', remark: '配置参数', param: [
           { name: 'alias', type: 'Object', remark: '新增的模块可在此注册别名' },
           { name: 'ajaxData', type: 'Object', remark: '以POST方式发送到服务器的数据。格式为 key:value。' },
+          { name: 'ajaxError', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
+          { name: 'ajaxFilter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'autoPlaceholder', type: 'Boolean', remark: '如果设为true，表单将自动填充placeholder。' },
           { name: 'cnBytes', type: 'Number', remark: '一个汉字算几个字节。默认值为2。' },
           { name: 'debug', type: 'Boolean', remark: '开启调试模式。调试模式下按"Ctrl+鼠标右键"可查看view的信息' },
@@ -125,18 +127,15 @@ define( {
           { name: 'lang', type: 'String', remark: '语言。可选项:zh_CN,zh_TW,en' },
           { name: 'noConflict', type: 'Boolean', remark: '设置为true，将变量$的控制权让渡给第一个实现它的那个库。' },
           { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
-          { name: 'supportUrl', type: 'String', remark: '显示支持与帮助的页面URL。如果配置此参数，系统所需的软件下载等都将指向这个地址。' },
-          { name: 'server', type: 'String', remark: '服务器地址的绝对路径。当执行 ajax 命令等交互操作时会使用此路径。<br>注：如果 ajax 命令的 src 参数以 ./ 开头，将不会使用 server 参数，而是访问本地地址。', mobile: true },
+          { name: 'preloadDir', type: 'String', remark: '预装载模板目录。' },
+          //{ name: 'server', type: 'String', remark: '服务器地址的绝对路径。当执行 ajax 命令等交互操作时会使用此路径。<br>注：如果 ajax 命令的 src 参数以 ./ 开头，将不会使用 server 参数，而是访问本地地址。', mobile: true },
           { name: 'skin', type: 'Object', remark: '配置皮肤样式。', param: [
             { name: 'dir', type: 'String', remark: '皮肤目录' },
             { name: 'theme', type: 'String', remark: '主题名。在皮肤目录下应有一个和主题名相同的目录，该目录里面有一个 "主题名.css"' },
             { name: 'color', type: 'String', remark: '颜色名。在主题目录下应有一个和颜色名相同的目录，该目录里面有一个 "颜色名.css"' }
           ] },
+          { name: 'supportUrl', type: 'String', remark: '显示支持与帮助的页面URL。如果配置此参数，系统所需的软件下载等都将指向这个地址。' },
           { name: 'templateDir', type: 'String', remark: '模板目录。' },
-          { name: 'preloadDir', type: 'String', remark: '预装载模板目录。' },
-          { name: 'autoPlaceholder', type: 'Boolean', remark: '如果设为true，表单将自动填充placeholder。' },
-          { name: 'ajaxError', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
-          { name: 'ajaxFilter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
           { name: 'validate', type: 'Object', remark: '表单验证选项。', param: [
             { name: 'effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
             { name: 'method', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' }
@@ -148,21 +147,18 @@ define( {
       ], example: [
           function() {
             dfish.config( {
-              path: '/itask7_2/', //工程目录
-              lib:  'dfish/',  //dfish包目录
               debug: true, // 开启调试模式
               lang: 'zh_CN',  // 语言包
               alias: { //自定义模块
-              	'ueditor':  'pl/ueditor1_4_3/ueditor.dfish.js', //百度编辑器
-              	'upload':	'pl/upload/upload.js' //上传组件
+              	'Ueditor': 'pl/ueditor1_4_3/ueditor.dfish.js', //百度编辑器
               },
-              ajax_error: function( req, url ) { // 处理ajax错误信息的方法
+              ajaxError: function( req, url ) { // 处理ajax错误信息的方法
               	alert( req.status );
               },
               // 给 alert 和 confirm 设置 btncls 的默认值。
-              default_option: {
-              	'alert': { btncls: 'x-btn' },
-              	'confirm': { btncls: 'x-btn' }
+              defaultOptions: {
+              	'Alert': { buttonCls: 'x-btn' },
+              	'Confirm': { buttonCls: 'x-btn' }
               },
               inputDetect: { // 表单即时检测
               	maxLength: true
@@ -176,11 +172,11 @@ define( {
               	id: 'index', // view的ID。可通过 VM( '/index' ) 来访问
               	src: 'm/index/index.json' // view的src
               },
-              view_js: { // view的依赖JS模块
-              	'/index'      : [ './m/pub.js', './m/index.js' ],
+              viewResources: { // view的依赖JS模块
+              	'/index' : [ './m/pub.js', './m/index.js' ],
               	'/index/task' : './m/task/task.js'
               }
-	        } );
+            } );
           }
       ] },
       { name: '$.cookie(name, [value], [expire], [path])', remark: '读/写cookie', common: true, param: [
@@ -1193,7 +1189,10 @@ define( {
             wg.fireEvent( 'click' );
           }
       ] },
-      { name: 'getDescendants()', remark: '获取所有子孙节点，返回一个数组。', common: true },
+      { name: 'descendants()', remark: '获取所有子孙节点，返回一个数组。', common: true },
+      { name: 'descendant(type)', remark: '获取某个子孙节点。', common: true, param: [
+        { name: 'type', type: 'String', remark: 'widget type。' }
+      ] },
       { name: 'hasClass(cls)', remark: '是否包含某些样式。', common: true, param: [
         { name: 'cls', type: 'String', remark: '样式名。多个样式用空格隔开。' }
       ] },
@@ -2614,7 +2613,7 @@ define( {
     ]
   },
   "EmbedWindow": {
-  	remark: '生成一个内嵌窗口。',
+  	remark: '生成一个内嵌窗口。作用与HTML的<iframe>标签相同。',
   	extend: 'Widget',
     Config: [
       { name: 'scroll', type: 'Boolean', remark: '是否显示滚动条。' },
@@ -2741,7 +2740,7 @@ define( {
   	remark: '日历。',
   	extend: 'Widget',
     Config: [
-      { name: 'body', type: 'Object', optional: true, remark: '定义日期的内容和样式等。以日期作为key，以 CalendarTD 作为值。' },
+      { name: 'nodes', type: 'Array', optional: true, remark: 'CalendarItem的数组集合。' },
       { name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当mode为week时本参数有效。' },
       { name: 'date', type: 'String', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
       { name: 'focusdate', type: 'String', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
@@ -3204,37 +3203,8 @@ define( {
   	remark: '滑块拼图。',
   	extend: 'Slider',
     Config: [
-      { name: 'img', type: 'String', remark: '获取拼图的图片数据。', example: [
-          function() {
-            // imgsrc 返回的数据格式
-            return~
-            {
-      	      big: {
-                src: 'big.jpg', width: 200, height: 90
-              },
-              small: {
-                src: 'small.jpg', width: 200, height: 90
-              },
-              minvalue: 0,
-              maxvalue: 300,
-              token: 'abc'
-            }
-          },
-          function() {
-            // imgsrc 返回的错误格式
-            return~
-            {
-      	      error: { msg: '次数过多，请稍候再试', timeout: 15 }
-            }
-          }
-      ] },
-      { name: 'auth', type: 'String', remark: '验证拼图是否正确的地址。支持变量 <b>$response</b><s>(值)</s> 和 <b>$token</b><s>(imgsrc返回的token)</s>。', example: [
-          function() {
-            // authsrc 返回的数据格式
-            return~
-            { result: true }
-          }
-      ] }
+      { name: 'img', type: 'String | JigsawImg', remark: '获取拼图的图片地址，或拼图图片对象。如果是地址，通过Ajax访问该地址应返回一个JigsawImg对象。' },
+      { name: 'auth', type: 'String | JigsawAuth', remark: '验证拼图是否正确的地址，或拼图验证对象。如果是地址，通过Ajax访问该地址应返回一个JigsawAuth对象。地址支持变量 <b>$response</b><s>(值)</s> 和 <b>$token</b><s>(jigsawImg的token)</s>。' }
     ],
     Event: [
       { name: 'auth', remark: '验证完成后触发。' },
@@ -3251,6 +3221,68 @@ define( {
       { name: '.z-drag', remark: '拖动时的样式。' },
       { name: '.z-success', remark: '验证成功的样式。' }
     ]
+  },
+  "JigsawImg": {
+  	remark: '拼图的图片对象。',
+    Config: [
+      { name: 'src', type: 'String', remark: '获取图片信息的地址。' },
+      { name: 'result', type: 'Object', remark: '设置分隔格式。', param: [
+        { name: 'big', type: 'Object', remark: '大图。', param: [
+          { name: 'src', type: 'String', remark: '图片地址。' },
+          { name: 'height', type: 'Number', remark: '图片高度。' },
+          { name: 'width', type: 'Number', remark: '图片宽度。' }
+        ] },
+        { name: 'error', type: 'Object', remark: '错误信息。', param: [
+          { name: 'msg', type: 'String', remark: '错误描述文本。' },
+          { name: 'timeout', type: 'Number', remark: '锁定并倒数时间，结束后自动刷新。单位:毫秒。' }
+        ] },
+        { name: 'maxValue', type: 'Number', remark: '最大值。' },
+        { name: 'minValue', type: 'Number', remark: '最小值。' },
+        { name: 'small', type: 'Object', remark: '小图。', param: [
+          { name: 'src', type: 'String', remark: '图片地址。' },
+          { name: 'height', type: 'Number', remark: '图片高度。' },
+          { name: 'width', type: 'Number', remark: '图片宽度。' }
+        ] },
+        { name: 'token', type: 'String', remark: '标识字串。' }
+      ] }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            // 正常范例
+            return~
+            {
+              type: 'JigsawImg',
+              src: 'getimg.sp',
+              result: {
+      	        big: {
+                  src: 'big.jpg', width: 200, height: 90
+                },
+                small: {
+                  src: 'small.jpg', width: 200, height: 90
+                },
+                minvalue: 0,
+                maxvalue: 300,
+                token: 'abc'
+              }
+            }
+          },
+          function() {
+            // 发生错误时的范例
+            return~
+            {
+              type: 'JigsawImg',
+              src: 'getimg.sp',
+              result: {
+      	        error: {
+                  msg: '次数过多，请稍候再试', timeout: 15
+                }
+              }
+            }
+          }
+      ] }
+    ],
+    
   },
   "Spinner": {
   	remark: '数字输入框。',
@@ -3802,8 +3834,7 @@ define( {
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'node', type: 'Widget', remark: 'widget节点。' },
-      { name: 'hide', type: 'Boolean', remark: '设为true，关闭 loading 窗口。' }
+      { name: 'node', type: 'Widget', remark: 'widget节点。' }
     ],
     Event: [
       { name: 'close', remark: '关闭提示框后触发。' }
@@ -3825,7 +3856,6 @@ define( {
   	extend: 'Alert',
   	deprecate: 'yes,timeout,buttonCls,buttons,icon,title,.w-alert',
     Config: [
-      { name: 'hide', type: 'Boolean', remark: '设置为true，关闭tip。' },
       { name: 'closeable', type: 'Boolean', remark: '是否显示关闭图标。' },
       { name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }
