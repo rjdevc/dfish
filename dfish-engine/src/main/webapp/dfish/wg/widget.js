@@ -2996,6 +2996,7 @@ Html = define.widget( 'Html', {
 } ),
 /* `timeline` 时间轴 */
 Timeline = define.widget( 'Timeline', {
+	Default: { scroll: T },
 	Prototype: {
 		className: 'w-timeline',
 		tagName: 'ul',
@@ -3170,6 +3171,8 @@ ButtonBar = define.widget( 'ButtonBar', {
 			resize: function( e, f ) {
 				Horz.Listener.body.resize.apply( this, arguments );
 				! f && this.x.overflow && this.overflow();
+				var h = this.innerHeight();
+				this.$( 'vi' ) && this.css( 'vi', 'height', h == N ? 'auto' : h );
 			},
 			nodeChange: function() {
 				Horz.Listener.body.nodeChange.apply( this, arguments );
@@ -4489,7 +4492,7 @@ Dialog = define.widget( 'Dialog', {
 			// 八方位浮动效果
 			n && Q( this.$() ).animate( n, 200 );
 			if ( this.x.prong && vs ) {
-				var m = r.mag_b ? 't' : r.mag_t ? 'b' : r.mag_l ? 'r' : 'l', x = Math.floor((r.target.left + r.target.right) / 2), y = Math.floor((r.target.top + r.target.bottom) / 2), 
+				var m = r.inner ? (r.mag_b ? 'b' : r.mag_t ? 't' : r.mag_l ? 'l' : 'r') : (r.mag_b ? 't' : r.mag_t ? 'b' : r.mag_l ? 'r' : 'l'), x = Math.floor((r.target.left + r.target.right) / 2), y = Math.floor((r.target.top + r.target.bottom) / 2), 
 					l = $.numRange( x - r.left, 7, r.left + r.width - 7 ), t = $.numRange( y - r.top, 7, r.top + r.height - 7 ), s = '';
 				(r.mag_b || r.mag_t) && (s += 'left:' + l + 'px;');
 				(r.mag_l || r.mag_r) && (s += 'top:' + t + 'px;');
@@ -5272,7 +5275,7 @@ Label = define.widget( 'Label', {
 				this.$() && ! $.get( '.f-required', this.$() ) && $.prepend( this.$( 'lb' ), this.html_star() );
 			} else {
 				this.$() && Q( '.f-required', this.$() ).remove();
-			}	
+			}
 		},
 		prop_cls: function() {
 			return _proto.prop_cls.call( this, this.parentNode.parentNode );
@@ -5284,10 +5287,10 @@ Label = define.widget( 'Label', {
 			return '<span class=f-required>*</span>';
 		},
 		html_text: function() {
-			var t = this.html_format(), d = this.parentNode.x.validate;
+			var t = this.html_format();
 			if ( typeof t === _OBJ )
 				t = this.add( t, -1 ).html();
-			d && d.required && (t = this.html_star() + '<span class=f-va>' + t + '</span>');
+			this.parentNode.isRequired() && (t = this.html_star() + '<span class=f-va>' + t + '</span>');
 			return t + (this.x.suffix || '');
 		},
 		html_bg: function() {
@@ -5447,6 +5450,9 @@ AbsForm = define.widget( 'AbsForm', {
 		},
 		isEmpty: function() {
 			return !(this.val() || this.text());
+		},
+		isRequired: function() {
+			return this.x.validate && this.x.validate.required && (this.x.validate.required === T ? T : this.x.validate.required.value);
 		},
 		// @a -> original?
 		isModified: function( a ) {
@@ -5887,6 +5893,9 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 				if ( this[ i ].isNormal() || this[ i ].isValidonly() )
 					return _valid_err.call( this, _valid_opt.call( this, a ), this.val() );
 			}
+		},
+		isRequired: function() {
+			return AbsForm.prototype.isRequired.call( this ) || (this[ 0 ] && this[ 0 ].isRequired());
 		},
 		// 设置事件  /@a -> event type, b -> fn
 		setOn: function( a, b ) {
@@ -6439,7 +6448,7 @@ Calendar = define.widget( 'Calendar', {
 		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
-				x = { type: 'Calendar', mode: ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
+				x = { type: 'Calendar', face: ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padrow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
 			return o.exec( { type: 'Dialog', ownproperty: T, snap: { target: a.isFormWidget ? a.$( 'f' ) : a, indent: 1 }, cls: 'w-calendar-dialog w-f-dialog f-shadow-snap', width: -1, height: -1, widthMinus: 2, autoHide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
@@ -7911,16 +7920,11 @@ ComboBox = define.widget( 'ComboBox', {
 			return (a || this.more).getContentView();
 		},
 		store: function( a ) {
-			var b = this._storeView( a ), c;
-			if ( ! b.combo ) {
-				if( c = b.descendant( 'Grid' ) )
-					b.combo = new GridCombo( c, this.x.bind );
-			}
-			if ( ! b.combo ) {
-				if( c = b.descendant( 'Tree' ) )
-					b.combo = new TreeCombo( c, this.x.bind );
-			}
-			return b.combo;
+			var b = this._storeView( a );
+			if ( b.combo )
+				return b.combo;
+			var c = this.x.bind.target ? b.find( this.x.bind.target ) : (b.descendant( 'Grid' ) || b.descendant( 'Tree' ));
+			return b.combo = new _comboHooks[ c.type ]( c, this.x.bind );
 		},
 		checkPlaceholder: function( v ) {
 			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? (this._val() || this.queryText()) : v) );
@@ -8953,8 +8957,9 @@ Rate = define.widget( 'Rate', {
 		}
 	}
 } ),
+_comboHooks = {},
 // `treecombo` 树搜索过滤器
-TreeCombo = $.createClass( {
+TreeCombo = _comboHooks.Tree = $.createClass( {
 	// a -> tree, b -> bind
 	Const: function( a, b ) {
 		this.cab = a;
@@ -9702,7 +9707,7 @@ Hiddens = define.widget( 'Hiddens', {
 	}
 } ),
 // `gridcombo` 表格搜索过滤器
-GridCombo = $.createClass( {
+GridCombo = _comboHooks.Grid = $.createClass( {
 	Const: function( a, b ) {
 		this.cab = a;
 		this.bind = b;

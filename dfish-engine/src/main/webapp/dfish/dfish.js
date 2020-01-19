@@ -1092,7 +1092,7 @@ _snaptype = {
 },
 _snapIndent = { h: {'21':-1,'34':-1,'12':1,'43':1}, v: {'14':1,'23':1,'41':-1,'32':-1} },
 _snapMag = (function() {
-	var r = [ 23,32,12,43,22,33,'rr','lr' ], b = [ 14,23,34,43,33,44,'bb','tb' ], i, o = { pix: { r:{}, b:{} }, mag: { l:{}, r:{}, t:{}, b:{} } };
+	var r = [ 23,32,12,43,22,33,'rr','lr' ], b = [ 14,23,34,43,33,44,'bb','tb' ], i, o = { pix: { r:{}, b:{} }, mag: { l:{}, r:{}, t:{}, b:{} }, inner:{} };
 	i = r.length; while ( i -- ) o.pix.r[ r[ i ] ] = T;
 	i = b.length; while ( i -- ) o.pix.b[ b[ i ] ] = T;
 	var r = [ 21,34,22,33,'rr','rl' ], b = [ 41,32,44,33,'bt','bb' ], l = [ 12,43,11,44,'lr','ll' ], t = [ 14,23,11,22,'tb','tt' ];
@@ -1100,6 +1100,8 @@ _snapMag = (function() {
 	i = b.length; while ( i -- ) o.mag.b[ b[ i ] ] = T;
 	i = l.length; while ( i -- ) o.mag.l[ l[ i ] ] = T;
 	i = t.length; while ( i -- ) o.mag.t[ t[ i ] ] = T;
+	var r = [ 11,22,33,44,'tt','bb','ll','rr' ];
+	i = r.length; while ( i -- ) o.inner[ r[ i ] ] = T;
 	return o;
 })(),
 // 获取对齐吸附模式的位置参数。元素四个角，左上为1，右上为2，右下为3，左下为4。目标元素在前，浮动元素在后。如"41"代表目标元素的左下角和浮动元素的左上角粘合。
@@ -1143,8 +1145,8 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 	} else { // t r b l 是边线中点对齐 .
 		for ( var i = 0, o, p, m, n = 0; i < s.length; i ++ ) {
 			g = s[ i ].charAt( 0 ), h = s[ i ].charAt( 1 );
-			t.push( ( g === 'r' || g === 'l' || g === 'c' ? ( c.top + c.bottom ) / 2 : ( g === 't' ? c.top + f : c.bottom - f ) ) - ( h === 'r' || h === 'l' || h === 'c' ? b / 2 : ( h === 'b' ? b : 0 ) ) );
-			l.push( ( g === 't' || g === 'b' || g === 'c' ? ( c.left + c.right ) / 2 : ( g === 'r' ? c.right - f : c.left + f ) ) - ( h === 't' || h === 'b' || h === 'c' ? a / 2 : ( h === 'r' ? a : 0 ) ) );
+			t.push( ( g === 'r' || g === 'l' || g === 'c' ? ( c.top + c.bottom ) / 2 : ( g === 't' ? c.top : c.bottom ) ) - ( h === 'r' || h === 'l' || h === 'c' ? b / 2 : ( h === 'b' ? b : 0 ) ) );
+			l.push( ( g === 't' || g === 'b' || g === 'c' ? ( c.left + c.right ) / 2 : ( g === 'r' ? c.right : c.left ) ) - ( h === 't' || h === 'b' || h === 'c' ? a / 2 : ( h === 'r' ? a : 0 ) ) );
 			o = t[ i ] >= 0 && t[ i ] + b <= eh;
 			p = l[ i ] + a <= ew && l[ i ] >= 0;
 			if ( o && p ) {
@@ -1170,6 +1172,14 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 	_snapMag.mag.b[ y ] && (o.mag_b = T, o.mag = 'b');
 	_snapMag.mag.l[ y ] && (o.mag_l = T, o.mag = 'l');
 	_snapMag.mag.t[ y ] && (o.mag_t = T, o.mag = 't');
+	_snapMag.inner[ y ] && (o.inner = T);
+	if ( f && o.mag ) {
+		if ( o.inner ) {
+			o.mag_t ? (o.top -= f) : o.mag_b ? (o.bottom -= f) : o.mag_r ? (o.right -= f) : (o.left -= f);
+		} else {
+			o.mag_t ? (o.bottom -= f) : o.mag_b ? (o.top -= f) : o.mag_r ? (o.left -= f) : (o.right -= f);
+		}
+	}
 	if ( e ) { // 自适应位置
 		var l = o.left, r = o.right, b = o.bottom, t = o.top;
 		if ( o.mag_t || o.mag_b ) {

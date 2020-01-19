@@ -1430,7 +1430,7 @@ SwfUpload = define.widget( 'SwfUpload', {
 		},
 		swfupload_load_failed_handler: function() {
 			if ( this.x.uploadButtons )
-				this.cmd( { type: 'alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'http://flash.cn') + ' target=_blank><b>点此下载>></b></a>' } );
+				this.cmd( { type: 'Alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'http://flash.cn') + ' target=_blank><b>点此下载>></b></a>' } );
 		},
 		swfupload_loaded_handler: function() {
 			this.uploadStats( this._value.length );
@@ -1751,7 +1751,7 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 		preview: function() {	
 			var c = this.u.x.preview;
 			if ( typeof c === 'string' )
-				c = { type: 'ajax', src: c };
+				c = { type: 'Ajax', src: c };
 			c.src && (c.src = this.formatStr( c.src, null, ! /^\$\w+$/.test( c.src ) ));
 			this.cmd( c );
 		},
@@ -1796,7 +1796,7 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 			return b;
 		},
 		more: function( a, e ) {
-			this.cmd( { type: 'menu', snap: a, nodes: this.moreNodes() } );
+			this.cmd( { type: 'Menu', snap: { target: a }, nodes: this.moreNodes() } );
 			e && $.stop( e );
 		},
 		close: function( a, e ) {
@@ -1824,7 +1824,7 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 		remove: function() {
 			var u = this.u;
 			if ( u.x.removesrc )
-				this.cmd( { type: 'ajax', src: u.x.removesrc, error: false } );
+				this.cmd( { type: 'Ajax', src: u.x.removesrc, error: false } );
 			if ( this.x.data )
 				u.removeValue( this.x.data );
 			if ( isSWF ) {
