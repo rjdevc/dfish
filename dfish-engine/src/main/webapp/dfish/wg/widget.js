@@ -3138,7 +3138,8 @@ Badge = define.widget( 'Badge', {
 	Prototype: {
 		className: 'w-badge',
 		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.x.text != N ? ' z-t' : '');
+			var p = _snapPosition( this.x.position );
+			return _proto.prop_cls.call( this ) + (p ? ' z-position-' + p : '') + (this.x.text != N ? ' z-t' : '');
 		},
 		html_nodes: function() {
 			return this.x.text != N ? this.x.text : '';
@@ -3172,14 +3173,14 @@ ButtonBar = define.widget( 'ButtonBar', {
 				Horz.Listener.body.resize.apply( this, arguments );
 				! f && this.x.overflow && this.overflow();
 				var h = this.innerHeight();
-				this.$( 'vi' ) && this.css( 'vi', 'height', h == N ? 'auto' : h );
+				this.$( 'vi' ) && this.css( 'vi', 'height', h == N ? '' : h );
 			},
 			nodeChange: function() {
 				Horz.Listener.body.nodeChange.apply( this, arguments );
 				Q( '.w-button', this.$() ).removeClass( 'z-last z-first' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
 				this.$( 'vi' ) && ! this.length && $.remove( this.$( 'vi' ) );
-				! this.$( 'vi' ) && this.length && this.x.br !== T && Q( this.$() ).prepend( this.html_vi() );
+				! this.$( 'vi' ) && this.length && this.x.br !== T && Q( this.$( 'cont' ) || this.$() ).prepend( this.html_vi() );
 				if ( this.x.space > 0 ) {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
@@ -3232,7 +3233,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 				if ( this[ i ].isLocked() ) return this[ i ];
 		},
 		fixLine: function() {
-			this.$( 'vi' ) && Q( this.$() ).prepend( this.$( 'vi' ) );
+			if ( this.$( 'vi' ) ) Q( this.$( 'cont' ) || this.$() ).prepend( this.$( 'vi' ) );
 			Q( this.$() ).append( Q( '.w-' + this.type.toLowerCase() + '-line', this.$() ) );
 		},
 		overflow: function() {
@@ -4239,7 +4240,10 @@ _getContentView = function( a ) {
 	for ( var i = 0, b; i < a.length; i ++ )
 		if ( b = _getContentView( a[ i ] ) ) return b;
 },
-_dialog_position = { topLeft: 'tl', topRight: 'tr', righTop: 'rt', rightBottom: 'rb', bottomRight: 'br', bottomLeft: 'bl', leftTop: 'lt', center: F, centerCenter: F, c: F, cc: F, '0': F },
+_snapHooks = { topLeft: 'tl', topRight: 'tr', righTop: 'rt', rightBottom: 'rb', bottomRight: 'br', bottomLeft: 'bl', leftTop: 'lt', center: F, centerCenter: F, c: F, cc: F, '0': F },
+_snapPosition = function( a ) {
+	return a && (_snapHooks[ a ] === F ? N : '' + (_snapHooks[ a ] || a));
+}
 /* `dialog`
  *  id 用于全局存取 ( dfish.dialog(id) ) 并保持唯一，以及用于里面的view的 path */
 Dialog = define.widget( 'Dialog', {
@@ -4451,13 +4455,9 @@ Dialog = define.widget( 'Dialog', {
 			var z = a ? 11 : 10;
 			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
 		},
-		getAxisType: function() {
-			var a = this.x.position;
-			return a && (_dialog_position[ a ] === F ? N : '' + (_dialog_position[ a ] || a));
-		},
 		// 定位 /@a -> fullScreen?
 		axis: function( a ) {
-			var c = this.attr( 'local' ), d = this.x.snap || O, f = this.getAxisType(), g = a ? N : this._snapElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
+			var c = this.attr( 'local' ), d = this.x.snap || O, f = _snapPosition( this.x.position ), g = a ? N : this._snapElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
 			if ( vs ) {
 				r = $.snap( w, h, g, d.position || this._snapType || (c && 'cc'), this._fitpos, d.indent != N ? d.indent : (this.x.prong && -10), c && (c === T ? this.getLocalParent().$() : $( c )) );
@@ -4661,7 +4661,7 @@ Dialog = define.widget( 'Dialog', {
 			if ( this.vis ) {
 				this.getContentView() && this.getContentView().abort();
 				this.listenHide( F );
-				var f = this.getAxisType();
+				var f = _snapPosition( this.x.position );
 				if ( f && br.css3 ) {
 					var w = this.$().offsetWidth, h = this.$().offsetHeight, self = this,
 						d = f.charAt( 0 ),
@@ -7835,7 +7835,7 @@ ComboBox = define.widget( 'ComboBox', {
 			this.more && this.more.dispose();
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
-			this.more = this.createPop( this.x.suggest || { type: 'Dialog', node: { type: 'Grid', combo: { field: {} } } }, { value: this._val() } );
+			this.more = this.createPop( this.x.suggest || { type: 'Dialog', node: { type: 'Grid' } }, { value: this._val() } );
 			if ( this.x.suggest ) {
 				this._online = typeof this.more.x.src === _STR && /\$text\b/.test( this.more.x.src );
 			}
