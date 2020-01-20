@@ -1456,6 +1456,7 @@ W = define( 'Widget', function() {
 			return this.html();
 		},
 		html: function() {
+			if (!this.html_before)VM('/index').fv('textarea',$.jsonString(this.ownerView.x,N,2));
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
 		removeElem: function( a ) {
@@ -3167,6 +3168,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 		body: {
 			ready: function() {
 				Horz.Listener.body.ready.apply( this, arguments );
+				this.isScrollable() && this.getFocus() && _scrollIntoView( this.getFocus() );
 				this.x.overflow && this.overflow();
 			},
 			resize: function( e, f ) {
@@ -4506,7 +4508,7 @@ Dialog = define.widget( 'Dialog', {
 		},
 		_snapTargetElem: function() {
 			var d = this.x.snap && this.x.snap.target, e;
-			return typeof d === _STR ? ((e = this.ownerView.find( d )) ? e.snapElem() : $( d )) : (d ? (d.isWidget ? d.snapElem() : $( d )) : this.parentNode.snapElem());
+			return typeof d === _STR ? ((e = this.ownerView.find( d )) ? e.snapElem() : $( d )) : (d ? (d.isWidget ? d.snapElem() : $( d )) : (this.attr( 'local' ) && this.ownerView.$()));
 		},
 		_snapCls: function( a ) {
 			var d = this._snapTargetElem(), r = this._pos;
@@ -8014,10 +8016,13 @@ ComboBox = define.widget( 'ComboBox', {
 		},
 		//@public(用于 combo 窗口的点击事件) 完成正在输入的文本，或是没有匹配成功的项 / @a -> tr|leaf|xml
 		complete: function( a ) {
-			this.store().merge( a );
-			var d = this.store().getParam( a ), f = this.focusNode;
-			if ( d )
-				f ? this.fixOpt( f, d ) : (this.queryText( '' ), this.addOpt( d.text, d ));
+			!$.isArray( a ) && (a = [ a ]);
+			for ( var i = 0; i < a.length; i ++ ) {
+				this.store().merge( a[ i ] );
+				var d = this.store().getParam( a[ i ] ), f = this.focusNode;
+				if ( d )
+					f ? this.fixOpt( f, d ) : (this.queryText( '' ), this.addOpt( d.text, d ));
+			}
 			this.focus();
 		},
 		// @t -> query text, s -> milliseconds?
@@ -8972,6 +8977,7 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		a.x.highlight && (this._matchlength = a.x.highlight.matchlength);
 	},
 	Prototype: {
+		type: 'Tree',
 		isCombo: T,
 		showFocus: function() {
 			var b = Dialog.get( this.cab ), c = b.parentNode;
@@ -9041,11 +9047,14 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		// /@a -> text|value|leaf, b -> attrname
 		getXML: function( a, b ) {
 			typeof a === _STR && this.bind.fullPath && (a = $.strFrom( a, '/', T ) || a);
-			return $.xmlQuery( (a.isWidget ? a.ownerView.combo : this).xml, './/d[' + ( typeof a === _STR ? '@' + (b || 't') + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
+			return $.xmlQuery( (a.isWidget ? this.getCombo( a ) : this).xml, './/d[' + ( typeof a === _STR ? '@' + (b || 't') + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
+		},
+		getCombo: function( a ) {
+			return a.ownerView.combo || (a.ownerView.combo = new _comboHooks[ this.type ]( a.rootNode, this.bind ));
 		},
 		// 合并来自另一个grid的某一行的combo xml /@a -> tr|xml|treeCombo
 		merge: function( a ) {
-			a.isWidget && (a = a.ownerView.combo.getXML( a ) || F);
+			a.isWidget && (a = this.getCombo( a ).getXML( a ) || F);
 			if ( a.nodeType === 1 ) {
 				if ( ! $.xmlQuery( this.xml, './/d[@v="' + a.getAttribute( 'v' ) + '"]' ) )
 					this.xml.appendChild( a.cloneNode( T ) );
@@ -9725,6 +9734,7 @@ GridCombo = _comboHooks.Grid = $.createClass( {
 	},
 	Extend: TreeCombo,
 	Prototype: {
+		type: 'Grid',
 		node2xml: function( a ) {
 			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.tBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
 				d = t[ i ].x.data, r = d[ b.remark ];
