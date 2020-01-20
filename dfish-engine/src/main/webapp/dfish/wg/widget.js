@@ -3371,14 +3371,14 @@ Button = define.widget( 'Button', {
 		init_nodes: function() {
 			this.setMore( this.x );
 		},
-		append: function( a ) {
+		prepend: function( a ) {
 			!$.isArray( a ) && (a = [ a ]);
 			!this.x.nodes && (this.x.nodes = []);
 			[].unshift.apply( this.x.nodes, a );
 			this.init_nodes();
 			this.render();
 		},
-		prepend: function( a ) {
+		append: function( a ) {
 			!$.isArray( a ) && (a = [ a ]);
 			!this.x.nodes && (this.x.nodes = []);
 			[].push.apply( this.x.nodes, a );
