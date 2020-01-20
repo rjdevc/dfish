@@ -611,6 +611,13 @@
 .w-badge{position:absolute;top:-3px;right:-3px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
 .w-badge.z-t{top:-7px;right:0;padding:1px 3px;width:auto;height:12px;transform:translateX(50%)}
 .w-leaf .w-badge{top:0;bottom:0;right:8px;margin:auto 8px}
+.w-badge.z-position-t{left:0;margin:auto}
+.w-badge.z-position-b{bottom:-3px;top:auto;left:0;margin:0 auto}
+.w-badge.z-position-r{bottom:0;top:0;margin:auto}
+.w-badge.z-position-l{bottom:0;top:0;left:-3px;right:auto;margin:auto}
+.w-badge.z-position-lt{left:-3px;right:auto}
+.w-badge.z-position-lb{left:-3px;right:auto;bottom:-3px;top:auto}
+.w-badge.z-position-rb{bottom:-3px;top:auto}
 
 .f-button{height:28px;border:1px solid #d3d3d3;border-radius:2px;background:#fafafa;color:#333}
 .f-button.z-on{background:#fff}

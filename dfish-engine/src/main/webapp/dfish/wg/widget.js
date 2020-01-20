@@ -810,7 +810,7 @@ W = define( 'Widget', function() {
 		defaults: function( a ) {
 			if ( typeof a === _STR ) {
 				var d = this.defaultHooks || this.Const.Default, e = d ? d[ a ] : U;
-				return typeof e === _FUN ? e.call( this ) : e;
+				return typeof e === _FUN ? e.call( this ) : a === 'type' ? this.type: e;
 			}
 			this.defaultHooks = $.extend( a, this.Const.Default, this.defaultHooks );
 		},
@@ -3374,14 +3374,14 @@ Button = define.widget( 'Button', {
 		prepend: function( a ) {
 			!$.isArray( a ) && (a = [ a ]);
 			!this.x.nodes && (this.x.nodes = []);
-			[].unshift.apply( this.x.nodes, a );
+			A.unshift.apply( this.x.nodes, a );
 			this.init_nodes();
 			this.render();
 		},
 		append: function( a ) {
 			!$.isArray( a ) && (a = [ a ]);
 			!this.x.nodes && (this.x.nodes = []);
-			[].push.apply( this.x.nodes, a );
+			A.push.apply( this.x.nodes, a );
 			this.init_nodes();
 			this.render();
 		},
@@ -4240,7 +4240,8 @@ _getContentView = function( a ) {
 	for ( var i = 0, b; i < a.length; i ++ )
 		if ( b = _getContentView( a[ i ] ) ) return b;
 },
-_snapHooks = { topLeft: 'tl', topRight: 'tr', righTop: 'rt', rightBottom: 'rb', bottomRight: 'br', bottomLeft: 'bl', leftTop: 'lt', center: F, centerCenter: F, c: F, cc: F, '0': F },
+_snapHooks = { topLeft: 'lt', leftTop: 'lt', topRight: 'rt', righTop: 'rt', rightBottom: 'rb', bottomRight: 'rb', bottomLeft: 'lb', leftBottom: 'lb',
+				tl: 'lt', tr: 'rt', bl: 'lb', br: 'rb', center: F, centerCenter: F, c: F, cc: F, '0': F },
 _snapPosition = function( a ) {
 	return a && (_snapHooks[ a ] === F ? N : '' + (_snapHooks[ a ] || a));
 }
@@ -4457,7 +4458,7 @@ Dialog = define.widget( 'Dialog', {
 		},
 		// 定位 /@a -> fullScreen?
 		axis: function( a ) {
-			var c = this.attr( 'local' ), d = this.x.snap || O, f = _snapPosition( this.x.position ), g = a ? N : this._snapElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
+			var c = this.attr( 'local' ), d = this.x.snap || O, f = _snapPosition( this.x.position ), g = a ? N : this._snapTargetElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
 			if ( vs ) {
 				r = $.snap( w, h, g, d.position || this._snapType || (c && 'cc'), this._fitpos, d.indent != N ? d.indent : (this.x.prong && -10), c && (c === T ? this.getLocalParent().$() : $( c )) );
@@ -4503,12 +4504,12 @@ Dialog = define.widget( 'Dialog', {
 			(c = this.parentNode.dropperCls && this.parentNode.dropperCls( this )) && $.classAdd( this.$(), c );
 			this._snapCls();
 		},
-		_snapElem: function() {
+		_snapTargetElem: function() {
 			var d = this.x.snap && this.x.snap.target, e;
-			return typeof d === _STR ? ((e = this.ownerView.find( d )) ? e.snapElem() : $( d )) : (d ? (d.isWidget ? d.snapElem() : $( d )) : (this.attr( 'local' ) && this.ownerView.$()));
+			return typeof d === _STR ? ((e = this.ownerView.find( d )) ? e.snapElem() : $( d )) : (d ? (d.isWidget ? d.snapElem() : $( d )) : this.parentNode.snapElem());
 		},
 		_snapCls: function( a ) {
-			var d = this._snapElem(), r = this._pos;
+			var d = this._snapTargetElem(), r = this._pos;
 			if ( d ) { 
 				$.classAdd( d, 'z-drop', a );
 				if ( r && r.type ) {
@@ -7835,7 +7836,7 @@ ComboBox = define.widget( 'ComboBox', {
 			this.more && this.more.dispose();
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
-			this.more = this.createPop( this.x.suggest || { type: 'Dialog', node: { type: 'Grid' } }, { value: this._val() } );
+			this.more = this.createPop( this.x.suggest || { type: 'Dialog', node: { type: 'View', node: { type: 'Grid' } } }, { value: this._val() } );
 			if ( this.x.suggest ) {
 				this._online = typeof this.more.x.src === _STR && /\$text\b/.test( this.more.x.src );
 			}
@@ -7923,8 +7924,10 @@ ComboBox = define.widget( 'ComboBox', {
 			var b = this._storeView( a );
 			if ( b.combo )
 				return b.combo;
-			var c = this.x.bind.target ? b.find( this.x.bind.target ) : (b.descendant( 'Grid' ) || b.descendant( 'Tree' ));
-			return b.combo = new _comboHooks[ c.type ]( c, this.x.bind );
+			if ( this.x.bind ) {
+				var c = this.x.bind.target ? b.find( this.x.bind.target ) : (b.descendant( 'Grid' ) || b.descendant( 'Tree' ));
+				return c && (b.combo = new _comboHooks[ c.type ]( c, this.x.bind ));
+			}
 		},
 		checkPlaceholder: function( v ) {
 			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? (this._val() || this.queryText()) : v) );
