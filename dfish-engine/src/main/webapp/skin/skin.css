@@ -107,20 +107,20 @@ i {
 /**↑组件状态↑**/
 
 /**↓表格↓**/
-.w-grid .w-grid-thead {
+.w-grid .w-thead {
     height: 40px;
     background-color: #96cee9;
 }
 
-.w-grid .w-grid-tbody .w-tr {
+.w-grid .w-tbody .w-tr {
     height: 40px;
 }
 
-.w-grid .w-grid-tbody .w-tr.z-hv {
+.w-grid .w-tbody .w-tr.z-hv {
     background-color: #d5ecff;
 }
 
-.w-grid .w-grid-tbody .w-tr.z-on {
+.w-grid .w-tbody .w-tr.z-on {
     background-color: #bce0ff;
 }
 
@@ -144,11 +144,11 @@ i {
 /*.w-grid .w-tr td.z-last {*/
 /*    padding-right: 10px;*/
 /*}*/
-.w-form .w-grid-tbody .w-tr.z-hv {
+.w-form .w-tbody .w-tr.z-hv {
     background-color: transparent;
 }
 
-.w-form .w-grid-tbody .w-tr.z-on {
+.w-form .w-tbody .w-tr.z-on {
     background-color: transparent;
 }
 
