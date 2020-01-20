@@ -93,7 +93,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     private String face;
     private Integer cellPadding;
     private Boolean focusMultiple;
-    private Boolean noBr;
+    private Boolean br;
     private Combo combo;
     private Integer limit;
     private Boolean resizable;
@@ -477,18 +477,18 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      *
      * @return Boolean
      */
-    public Boolean getNoBr() {
-        return noBr;
+    public Boolean getBr() {
+        return br;
     }
 
     /**
      * 内容过多的时候不会换行，而是隐藏不显示
      *
-     * @param noBr Boolean
+     * @param br Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setNoBr(Boolean noBr) {
-        this.noBr = noBr;
+    public Grid setBr(Boolean br) {
+        this.br = br;
         return this;
     }
 

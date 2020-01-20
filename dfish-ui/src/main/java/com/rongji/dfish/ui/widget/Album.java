@@ -1,9 +1,6 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.AbstractNodeContainer;
-
-import java.util.List;
 
 /**
  * 图片平铺
@@ -17,7 +14,7 @@ public class Album extends AbstractPubNodeContainer<Album, Img> implements Scrol
     private Boolean focusMultiple;
     private Boolean scroll;
     private String face;
-    private Boolean noBr;
+    private Boolean br;
 
 
     /**
@@ -103,13 +100,13 @@ public class Album extends AbstractPubNodeContainer<Album, Img> implements Scrol
         return this;
     }
 
-    public Album setNoBr(Boolean noBr) {
-        this.noBr = noBr;
+    public Album setBr(Boolean br) {
+        this.br = br;
         return this;
     }
 
-    public Boolean getNoBr() {
-        return noBr;
+    public Boolean getBr() {
+        return br;
     }
 
 }

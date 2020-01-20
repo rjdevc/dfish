@@ -13,21 +13,21 @@ public class Horizontal extends LinearLayout<Horizontal>{
 	 * 
 	 */
 	private static final long serialVersionUID = 7197719640365003017L;
-	private Boolean noBr;
+	private Boolean br;
 	/**
 	 * 当内容太多的时候不换行
 	 * @return Boolean
 	 */
-	public Boolean getNoBr() {
-		return noBr;
+	public Boolean getBr() {
+		return br;
 	}
 	/**
 	 * 当内容太多的时候不换行
-	 * @param noBr Boolean
+	 * @param br Boolean
 	 * @return this
 	 */
-	public Horizontal setNoBr(Boolean noBr) {
-		this.noBr = noBr;
+	public Horizontal setBr(Boolean br) {
+		this.br = br;
 		return this;
 	}
 

@@ -1,10 +1,6 @@
 package com.rongji.dfish.ui.widget;
 
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.AbstractNodeContainer;
-
-import java.util.List;
 
 /**
  * button 的父类。 Alignable
@@ -20,7 +16,7 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Button> imple
     private String align;
     private String vAlign;
     private Split split;
-    private Boolean nobr;
+    private Boolean br;
     private Boolean scroll;
     private Overflow overflow;
 
@@ -63,18 +59,18 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Button> imple
      *
      * @return Boolean
      */
-    public Boolean getNobr() {
-        return nobr;
+    public Boolean getBr() {
+        return br;
     }
 
     /**
      * 设置
      *
-     * @param nobr 设置当内容太多的时候不换行
+     * @param br 设置当内容太多的时候不换行
      * @return 本身，这样可以继续设置其他属性
      */
-    public ButtonBar setNobr(Boolean nobr) {
-        this.nobr = nobr;
+    public ButtonBar setBr(Boolean br) {
+        this.br = br;
         return this;
     }
 

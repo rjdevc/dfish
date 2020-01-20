@@ -99,7 +99,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 
     /**
      * 设置当内容太多的时候不换行
-	 * @return the nobr
+	 * @return Boolean
 	 */
 	public Boolean getBr() {
 		return br;

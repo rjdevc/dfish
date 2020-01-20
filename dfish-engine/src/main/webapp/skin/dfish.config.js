@@ -49,7 +49,7 @@ dfish.config({
         'ButtonBar.w-tabbar.z-position-left': {widthMinus: 0, heightMinus: 20},
         'ButtonBar.w-tabbar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        'Grid': {scroll: true, nobr: true, pub: {focusable: true}, face: "cell"},
+        'Grid': {scroll: true, br: false, pub: {focusable: true}, face: "cell"},
         'Column': {tip: true},
         'PageBar.z-normal': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
         'PageBar.z-mini': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},

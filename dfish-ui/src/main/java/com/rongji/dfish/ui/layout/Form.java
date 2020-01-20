@@ -41,7 +41,7 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
     private Integer cols;
     private Boolean escape;
     private String face;
-    private Boolean noBr;
+    private Boolean br;
     private Boolean scroll;
 
     public Form(String id) {
@@ -170,20 +170,20 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
     /**
      * 内容不换行。
      *
-     * @return nobr
+     * @return Boolean
      */
-    public Boolean getNoBr() {
-        return noBr;
+    public Boolean getBr() {
+        return br;
     }
 
     /**
      * 内容过多的时候不会换行，而是隐藏不显示
      *
-     * @param noBr Boolean
+     * @param br Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Form setNoBr(Boolean noBr) {
-        this.noBr = noBr;
+    public Form setBr(Boolean br) {
+        this.br = br;
         return this;
     }
 

@@ -23,7 +23,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
     public static final String FACE_STRAIGHT = "straight";
 
     private AbstractBox<?> box;
-    private Boolean nobr;
+    private Boolean br;
     private String text;
     private String src;
     private Boolean focus;
@@ -84,20 +84,20 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
     /**
      * 文本是否换行。
      *
-     * @return nobr
+     * @return Boolean
      */
-    public Boolean getNobr() {
-        return nobr;
+    public Boolean getBr() {
+        return br;
     }
 
     /**
      * 文本是否换行。
      *
-     * @param nobr Boolean
+     * @param br Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Img setNobr(Boolean nobr) {
-        this.nobr = nobr;
+    public Img setBr(Boolean br) {
+        this.br = br;
         return this;
     }
 
