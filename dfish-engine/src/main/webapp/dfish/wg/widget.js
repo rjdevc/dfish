@@ -7840,7 +7840,7 @@ ComboBox = define.widget( 'ComboBox', {
 				this._online = typeof this.more.x.src === _STR && /\$text\b/.test( this.more.x.src );
 			}
 			var c = this.more.getContentView();
-			c && c.layout && this._init_load( v );
+			c && c.layout && this._init_load();
 		},
 		_init_ready: function() {
 			this.domready = T;
@@ -9393,7 +9393,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 /* `leaf` */
 Leaf = define.widget( 'Leaf', {
 	Const: function( x, p ) {
-		this.level = p.level + (p.x.rootinvisible ? 0 : 1);
+		this.level = p.level + (p.x.rootInvisible ? 0 : 1);
 		W.apply( this, arguments );
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
