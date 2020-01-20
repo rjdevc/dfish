@@ -1060,7 +1060,7 @@ W = define( 'Widget', function() {
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
 			var c = a == N || (a.isWidget ? a.x.expanded : a), p = this.parentNode, d = 'f-hide' + (b ? '' : ' f-form-hide'), o = this.$();
-			$.classAdd( o, d, ! c );
+			o && $.classAdd( o, d, ! c );
 			a != N && a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
 			this.x.display = !!c;
 			!!c && this.trigger( 'display' );
@@ -2683,11 +2683,11 @@ View = define.widget( 'View', {
 		linkTarget: function( a, b, d ) {
 			var c = a.isWidget ? [ a ] : this.find( a.split( ',' ) );
 			for ( var i = 0; i < c.length; i ++ ) {
-				if ( d && d.focusTarget )
+				if ( d && d.focusTarget ) {
 					d.focusTarget( c[ i ], b );
-				else if ( c[ i ].parentNode && c[ i ].parentNode.type_frame )
+				} else if ( c[ i ].parentNode && c[ i ].parentNode.type_frame ) {
 					b && c[ i ].parentNode.focus( c[ i ] );
-				else {
+				} else {
 					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ ) {
 						r[ j ].disable( ! b );
 					}
@@ -2888,23 +2888,21 @@ Frame = define.widget( 'Frame', {
 		// @a -> wg,id
 		// animate: scrollX(横向滚动),scrollY(纵向滚动),
 		focus: function( a ) {
-			if ( this.$() ) {
-				var o = this.getFocus(),
-					n = a.isWidget ? a : this.ownerView.find( a );
-				if ( n && n !== o ) {
-					if ( o )
-						delete o.focusOwner;
-					this.focusNode = n;
-					n.focusOwner = this;
-					if ( this.x.animate && o ) {
-						var d = n.nodeIndex > o.nodeIndex ? 'Left' : 'Right';
-						n.display( T );
-						$.animate( o.$(), 'fadeOut' + d, 100 );
-						$.animate( n.$(), 'fadeIn' + d, 100, function() { o.display( F ); } );
-					} else {
-						o && o.display( F );
-						n.display( T );
-					}
+			var o = this.getFocus(),
+				n = a.isWidget ? a : this.ownerView.find( a );
+			if ( n && n !== o ) {
+				if ( o )
+					delete o.focusOwner;
+				this.focusNode = n;
+				n.focusOwner = this;
+				if ( this.x.animate && o && this.$() ) {
+					var d = n.nodeIndex > o.nodeIndex ? 'Left' : 'Right';
+					n.display( T );
+					$.animate( o.$(), 'fadeOut' + d, 100 );
+					$.animate( n.$(), 'fadeIn' + d, 100, function() { o.display( F ); } );
+				} else {
+					o && o.display( F );
+					n.display( T );
 				}
 			}
 			return n;
@@ -3288,6 +3286,10 @@ ButtonBar = define.widget( 'ButtonBar', {
 } ),
 /* `button` */
 Button = define.widget( 'Button', {
+	Const: function( x ) {
+		W.apply( this, arguments );
+		x.target && x.focus && this._ustag();
+	},
 	Listener: {
 		// 在触发事件之前做判断，如果返回true，则停止执行事件(包括系统事件和用户事件)
 		block: function( e ) {

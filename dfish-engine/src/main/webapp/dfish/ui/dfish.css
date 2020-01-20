@@ -147,10 +147,10 @@
 .w-grid-table tbody:empty + ._fix_tfoot,.w-form-table tbody:empty + ._fix_tfoot{display:table-footer-group}
 .w-grid-table,.w-form-table{table-layout:fixed;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:100%;width:100%}
 .w-grid.z-nohead .w-tbody.w-grid-bg,.w-form.z-nohead .w-tbody.w-grid-bg{height:100%}
-.w-grid-thead,.w-grid-tfoot{position:relative;line-height:1}
-.w-grid-thead .w-grid-table,.w-grid-tfoot.w-grid-table{height:100%}
-.w-grid-thead:hover .w-th-rsz{border-left:1px solid #ddd}
-.w-grid-thead:hover .w-td.w-th-rsz{border-left:0}
+.w-thead,.w-grid-tfoot{position:relative;line-height:1}
+.w-thead .w-grid-table,.w-grid-tfoot.w-grid-table{height:100%}
+.w-thead:hover .w-th-rsz{border-left:1px solid #ddd}
+.w-thead:hover .w-td.w-th-rsz{border-left:0}
 .w-grid-head{overflow:hidden}
 .w-grid-head td{position:relative}
 .w-grid-fixed{position:absolute;top:0;background:#fff;z-index:1}
