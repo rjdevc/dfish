@@ -4127,9 +4127,12 @@ PageBar = define.widget( 'PageBar', {
 			$.classAdd( this.$( 'j' ).nextSibling, 'z-on', a );
 		},
 		initByTarget: function() {
-			var c = this.ownerView.find( this.x.target ).page();
-			this.x.currentPage = Math.max( _number( c.currentPage ), 1 );
-			this.x.sumPage = Math.max( _number( c.sumPage ), 1 );
+			var b = this.ownerView.find( this.x.target );
+			if ( b ) {
+				var c = this.ownerView.find( this.x.target ).page();
+				this.x.currentPage = Math.max( _number( c.currentPage ), 1 );
+				this.x.sumPage = Math.max( _number( c.sumPage ), 1 );
+			}
 		},
 		eve: function( i, b ) {
 			return b ? ' onclick=' + evw + '.go(' + i + ',this) onmouseover=' + evw + '.over(this) onmouseout=' + evw + '.out(this)' : '';
@@ -4485,7 +4488,7 @@ Dialog = define.widget( 'Dialog', {
 				r = this._dft_pos();
 			this._pos = r;
 			$.snapTo( this.$(), r );
-			if ( vs && this.x.height && this.type === 'Dialog' ) {
+			if ( vs && this.type === 'Dialog' ) {
 				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
 				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
 				t && (this.height( r.height + r.top ));
