@@ -25,8 +25,8 @@ define.preload({
                         },
                         {
                             type: 'ButtonBar',
-                            id: 'dlg_head_oper',
-                            cls: 'dlg-head-oper',
+                            id: 'dlg_head_operation',
+                            cls: 'dlg-head-operation',
                             width: -1,
                             align: 'right',
                             vAlign: 'middle',

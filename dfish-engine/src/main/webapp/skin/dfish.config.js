@@ -35,7 +35,7 @@ dfish.config({
         'Leaf': {tip: true, style: 'padding-right:10px;', widthMinus: 10},
 
         'ButtonBar': {space: 10, pub: {tip: true, height: 30}},
-        'ButtonBar.dlg-head-oper': {space: 0},
+        'ButtonBar.dlg-head-operation': {space: 0},
         'ButtonBar.x-breadcrumb': {space: 0},
         'ButtonBar.face-text': {space: 0},
         'Button': {tip: true},

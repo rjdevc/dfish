@@ -8,7 +8,13 @@ define.preload({
         node: {
             type: 'Vertical', id: 'dlg_frame', width: '*', height: '*', nodes: [
                 {
-                    type: 'Horizontal', id: 'dlg_head', cls: 'dlg-head', width: '*', height: 40, vAlign: 'middle', nodes: [
+                    type: 'Horizontal',
+                    id: 'dlg_head',
+                    cls: 'dlg-head',
+                    width: '*',
+                    height: 40,
+                    vAlign: 'middle',
+                    nodes: [
                         {
                             type: 'DialogTitle',
                             id: 'dlg_head_title',
@@ -20,8 +26,8 @@ define.preload({
                         },
                         {
                             type: 'ButtonBar',
-                            id: 'dlg_head_oper',
-                            cls: 'dlg-head-oper',
+                            id: 'dlg_head_operation',
+                            cls: 'dlg-head-operation',
                             width: -1,
                             height: '*',
                             align: 'right',

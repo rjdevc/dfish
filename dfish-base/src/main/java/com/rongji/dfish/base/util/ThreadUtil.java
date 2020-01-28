@@ -16,7 +16,7 @@ public class ThreadUtil {
     private static final long KEEP_ALIVE=60;
 
 	/**
-	 * 使用另一个线程运行这个runable的内容。
+	 * 使用另一个线程运行这个runnable的内容。
 	 * 这样当前线程不需要等待它运行结束。
 	 * @param runnable 可运行的内容
 	 */
@@ -25,11 +25,11 @@ public class ThreadUtil {
 	}
 
     /**
-     * 在timeout时间内执行runable
+     * 在timeout时间内执行runnable
      * 如果执行成功并且没超时，则结束。继续执行下一个语句。
      * 如果超时，则在超时后，抛出TimeoutException
      *
-     * 超时的时候，如果forceStop==true，则会强制杀死正在执行的runable
+     * 超时的时候，如果forceStop==true，则会强制杀死正在执行的runnable
      * 可能会有风险，详情参看 {@link Thread#stop()}
      * 超时的时候，如果forceStop==false,则尝试杀死正在执行的Runnable.这种情况下
      * Runnable的run方法中需要要自己埋结束点 如在每个可打断的点加：

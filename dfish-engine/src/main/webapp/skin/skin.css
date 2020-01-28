@@ -343,7 +343,7 @@ i {
     color: #aaa;
 }
 
-.w-buttonbar.dlg-head-oper .w-button {
+.w-buttonbar.dlg-head-operation .w-button {
     background: transparent;
 }
 
@@ -477,31 +477,31 @@ i {
     line-height: 40px;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button {
     border-color: transparent;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button ._c {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button ._c {
     padding-left: 10px;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button ._i {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button ._i {
     padding-right: 10px;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.z-hv {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.z-hv {
     background-color: #1588d4;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-hv {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-oper-close.z-hv {
     background-color: #d00;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.z-dn {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.z-dn {
     background-color: #0e80cb;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-oper .w-button.dlg-oper-close.z-dn {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-oper-close.z-dn {
     background-color: #e81414;
 }
 
@@ -678,31 +678,31 @@ img {
     height: 30px;
 }
 
-.i-split-col {
+.i-split-expanded {
     background: url("img/ico_split.png") -30px 0;
     width: 10px;
     height: 30px;
     position: relative;
 }
 
-.i-split-col:hover {
+.i-split-expanded:hover {
     background: url("img/ico_split.png") -30px -30px;
     width: 10px;
     height: 30px;
 }
 
 /**↓常用操作图标↓**/
-.x-grid-oper i {
+.x-grid-operation i {
     cursor: pointer;
     display: inline-block;
     margin-left: 5px;
 }
 
-.x-grid-oper i:first-child {
+.x-grid-operation i:first-child {
     margin-left: 0;
 }
 
-.x-grid-oper i.z-ds {
+.x-grid-operation i.z-ds {
     cursor: default;
 }
 

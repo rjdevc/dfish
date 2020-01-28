@@ -4,7 +4,8 @@ define.preload({
         commands: {
             'close': {
                 type: 'JS',
-                text: 'if(VM(this).isModified()){this.cmd({type:"confirm",text:"您有内容尚未保存，确认关闭窗口吗？",yes:{type:"js",text:"$.close(this);"}});}else{$.close(this);}'
+                text: 'if(VM(this).isModified()){this.cmd({type:"Confirm",text:"您有内容尚未保存，确认关闭窗口吗？",' +
+                    'yes:{type:"JS",text:"$.close(this);"}});}else{$.close(this);}'
             },
             'no': {
                 type: 'JS',
@@ -14,7 +15,13 @@ define.preload({
         node: {
             type: 'Vertical', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
                 {
-                    type: 'Horizontal', id: 'dlg_head', cls: 'dlg-head', height: 40, width: '*', vAlign: 'middle', nodes: [
+                    type: 'Horizontal',
+                    id: 'dlg_head',
+                    cls: 'dlg-head',
+                    height: 40,
+                    width: '*',
+                    vAlign: 'middle',
+                    nodes: [
                         {
                             type: 'DialogTitle',
                             id: 'dlg_head_title',
@@ -25,8 +32,8 @@ define.preload({
                         },
                         {
                             type: 'ButtonBar',
-                            id: 'dlg_head_oper',
-                            cls: 'dlg-head-oper',
+                            id: 'dlg_head_operation',
+                            cls: 'dlg-head-operation',
                             width: -1,
                             align: 'right',
                             vAlign: 'middle',

@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.0.36-SNAPSHOT</version>
+        <version>5.0.0.37-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-framework-hibernate</artifactId>
@@ -44,6 +44,14 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.0.12.Final</version>
+        </dependency>
+
+        <!-- servlet -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
