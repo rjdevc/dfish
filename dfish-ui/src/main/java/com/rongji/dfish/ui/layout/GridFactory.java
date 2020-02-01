@@ -56,6 +56,7 @@ public class GridFactory {
 
         public AbstractGridFactory(String id){
             this.id=id;
+            this.hasTableHead=true;
         }
         public String getId() {
             return id;
