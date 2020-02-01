@@ -1497,6 +1497,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         public Part() {
             super(null);
         }
+        @Override
+        public String getType(){
+            return null;
+        }
 
         protected Grid owner;
 
@@ -1508,6 +1512,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             this.owner = owner;
             return this;
         }
+
 
         /**
          * 取得行
