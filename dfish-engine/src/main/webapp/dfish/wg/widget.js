@@ -153,6 +153,12 @@ _repaintSelfWithBox = function() {
 	Q( this.$() ).replaceWith( this.html_self() );
 	this.box && this.box.check( b );
 },
+//@ a ->context, b -> Extend, c -> event
+_superTrigger = function( a, b, c ) {
+	var t = c.runType || c.type || c,
+		m = b.Listener.body[ _event_hump[ t ] || t ];
+	m && (m.method || m).call( a, c );
+},
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( s ) {
 	var s = s || '', n, h = this.Const.Listener, r = _white_events[ h && h.range ] || _white_events.all;
@@ -1648,7 +1654,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 	// 实现 wg.width(), wg.height()
 	// 返回为null时，去获取元素的offsetWidth/offsetHeight
 	_proto[ v ] = function( a ) {
-		if ( a == N ) {
+		if ( a === U ) {
 			var b = this[ oz ]();
 			return b == N && this.$() ? this.$()[ 'offset' + z ] + _get_margin[ v ]( this.$() ) : b;
 		} else {
@@ -1788,8 +1794,6 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				t = this[ iz ]();
 				if ( this.$() ) {
 					this.$().style[ v ] = t == N ? '' : Math.max( t, 0 ) + 'px';
-					//this.x[ nv ] && (t = this[ nz ]()) && $.css( this.$(), 'min-' + v, t );
-					//this.x[ xv ] && (t = this[ xz ]()) && $.css( this.$(), 'max-' + v, t );
 				}
 			}
 		}
@@ -1850,16 +1854,7 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 } );
 // scroll helper
 var _html_resize_sensor = function( w, h ) {
-	var e = '', s = '';
-	if ( w != N ) {
-		e += 'width:' + w + 'px;';
-		s += 'width:200%;';
-	}
-	if ( h != N ) {
-		e += 'height:' + h + 'px;';
-		s += 'height:200%;';
-	}
-	return '<div id=' + this.id + 'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div>'
+	return '<div id=' + this.id + 'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div>';
 },
 _reset_resize_sensor = function() {
 	var b = this.$( 'rsz' ).children, i = b.length,
@@ -1908,10 +1903,6 @@ _show_scroll = function() {
 },
 /* `Scroll` */
 Scroll = define.widget( 'Scroll', {
-	Const: function( x ) {
-		W.apply( this, arguments );
-		this.attr( 'scroll' ) && $.classAdd( this, 'w-scroll' );
-	},
 	Helper: {
 		// 获取某个 widget 所在的有 scroll 的面板 / a -> widget|elem
 		get: function( a ) {
@@ -2072,10 +2063,13 @@ Scroll = define.widget( 'Scroll', {
 			return this.attr( 'scroll' ) && ((this.innerWidth() != N || this.x.maxWidth) || (this.innerHeight() != N || this.x.maxHeight));
 		},
 		isScrollBottom: function() {
-			return this.$( 'ovf' ).scrollTop == this.$( 'ovf' ).scrollHeight - this.$( 'ovf' ).clientHeight;
+			return this.$( 'ovf' ).scrollTop == this.scrollHeight();
 		},
 		isScrollRight: function() {
 			return this.$( 'ovf' ).scrollLeft == this.$( 'ovf' ).scrollWidth - this.$( 'ovf' ).clientWidth;
+		},
+		scrollHeight: function() {
+			return this.$( 'ovf' ).scrollHeight - this.$( 'ovf' ).clientHeight;
 		},
 		scrollDragY: function( a, e ) {
 			var b = this.id,
@@ -2174,8 +2168,7 @@ Scroll = define.widget( 'Scroll', {
 				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
 					(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
 					(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxHeight ? 'max-height:' + (+this.x.maxHeight + c) + 'px;' : '') + (this.x.minHeight ? 'min-height:' + (+this.x.minHeight + c) + 'px;' : '') +
-					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div><div id=' + this.id +
-					'rsz class=f-resize-sensor><div class=f-resize-sensor-expand><div class=f-resize-sensor-expand-core></div></div><div class=f-resize-sensor-shrink><div class=f-resize-sensor-shrink-core></div></div></div></div></div></div><div id=' +
+					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div>' + _html_resize_sensor.call( this ) + '</div></div></div><div id=' +
 					this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
 					this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
 			}
@@ -3164,19 +3157,19 @@ ButtonBar = define.widget( 'ButtonBar', {
 	Default: { vAlign: 'middle', scroll: T },
 	Listener: {
 		body: {
-			ready: function() {
-				Horz.Listener.body.ready.apply( this, arguments );
+			ready: function( e ) {
+				_superTrigger( this, Horz, e );
 				this.isScrollable() && this.getFocus() && _scrollIntoView( this.getFocus() );
 				this.x.overflow && this.overflow();
 			},
 			resize: function( e, f ) {
-				Horz.Listener.body.resize.apply( this, arguments );
+				_superTrigger( this, Horz, e );
 				! f && this.x.overflow && this.overflow();
 				var h = this.innerHeight();
 				this.$( 'vi' ) && this.css( 'vi', 'height', h == N ? '' : h );
 			},
-			nodeChange: function() {
-				Horz.Listener.body.nodeChange.apply( this, arguments );
+			nodeChange: function( e ) {
+				_superTrigger( this, Horz, e );
 				Q( '.w-button', this.$() ).removeClass( 'z-last z-first' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
 				this.$( 'vi' ) && ! this.length && $.remove( this.$( 'vi' ) );
@@ -4305,8 +4298,8 @@ Dialog = define.widget( 'Dialog', {
 	},
 	Listener: {
 		body: {
-			ready: function() {
-				Section.Listener.body.ready.apply( this, arguments );
+			ready: function( e ) {
+				_superTrigger( this, Section, e );
 				if ( this.x.resizable ) {
 					var self = this;
 					Q( '<div class="w-dialog-rsz z-w"></div><div class="w-dialog-rsz z-n"></div><div class="w-dialog-rsz z-e"></div><div class="w-dialog-rsz z-s"></div><div class="w-dialog-rsz z-nw"></div><div class="w-dialog-rsz z-ne"></div><div class="w-dialog-rsz z-sw"></div><div class="w-dialog-rsz z-se"></div>' )
@@ -5207,20 +5200,12 @@ CollapseButton = define.widget( 'CollapseButton', {
 	Listener: {
 		body: {
 			focus: function() {
-				var b = this.next();
-				b.display();
-				if ( this.parentNode.outerHeight() != N ) {
-					b._height === U && (b._height = b.x.height);
-					b.height( b._height );
-				}
+				this.next().display();
+				this.rootNode.trigger( 'resize' );
 			},
 			blur: function() {
-				var b = this.next();
-				b.display( F );
-				if ( this.parentNode.outerHeight() != N ) {
-					b._height === U && (b._height = b.x.height);
-					b.height( 0 );
-				}
+				this.next().display( F );
+				this.rootNode.trigger( 'resize' );
 			}
 		}
 	},
@@ -5800,8 +5785,8 @@ Textarea = define.widget( 'Textarea', {
 	Default: { height: 60, tip: F },
 	Listener: {
 		body: {
-			resize: function() {
-				AbsInput.Listener.body.resize.apply( this, arguments );
+			resize: function( e ) {
+				_superTrigger( this, AbsInput, e );
 				var h = this.innerHeight();
 				if ( h > 0 && this.$t() ) {
 					this.$t().style.height = h + 'px';
@@ -6184,7 +6169,7 @@ TripleBox = define.widget( 'TripleBox', {
 				block: function() { return ! this.isNormal() },
 				method: function( e ) {
 					if ( this.isNormal() ) {
-						CheckBox.Listener.body.change.method.apply( this, arguments );
+						_superTrigger( this, CheckBox, e );
 						this.x.checkAll && e.srcElement && this.relate();
 					}
 				}
@@ -6193,7 +6178,7 @@ TripleBox = define.widget( 'TripleBox', {
 				occupy: T,
 				method: function( e ) {
 					var s = this.checkstate();
-					CheckBox.Listener.body.click.method.apply( this, arguments );
+					_superTrigger( this, CheckBox, e );
 					$.classAdd( this.$(), 'z-half', this.checkstate() == 2 );
 					if ( e.srcElement ) {
 						this.relate();
@@ -6261,12 +6246,12 @@ Switch = define.widget( 'Switch', {
 	Listener: {
 		body: {
 			change: {
-				method: function() {
+				method: function( e ) {
 					if ( this.isNormal() ) {
 						var c = this.isChecked();
 						this.addClass( 'z-checked', c );
 						this.$( 'n' ).innerHTML = (c ? this.x.checkedText : this.x.uncheckedText) || '&nbsp;';
-						CheckBox.Listener.body.change.method.apply( this, arguments );
+						_superTrigger( this, CheckBox, e );
 					}
 				}
 			}			
@@ -6977,8 +6962,8 @@ Spinner = define.widget( 'Spinner', {
 			},
 			beforeDeactivate: {
 				occupy: ie,
-				method: function() {
-					OnlineBox.Listener.body.beforeDeactivate.method.call( this );
+				method: function( e ) {
+					_superTrigger( this, OnlineBox, e );
 				}
 			}
 		}
@@ -7070,8 +7055,8 @@ Slider = define.widget( 'Slider', {
 			ready: function() {
 				this.fixPos();
 			},
-			resize: function() {
-				AbsForm.Listener.body.resize.apply( this, arguments );
+			resize: function( e ) {
+				_superTrigger( this, AbsForm, e );
 				this.css( 't', 'width', this.formWidth() );
 				this.val( this.val() );
 			},
@@ -7278,8 +7263,8 @@ Jigsaw = define.widget( 'Jigsaw', {
 				this.auth.load();
 				this.more.keepHover( F );
 			},
-			resize: function() {
-				AbsForm.Listener.body.resize.apply( this, arguments );
+			resize: function( e ) {
+				_superTrigger( this, AbsForm, e );
 				this.css( 't', 'width', this.formWidth() );
 			}
 		}
@@ -7696,8 +7681,8 @@ ComboBox = define.widget( 'ComboBox', {
 			},
 			blur: {
 				occupy: T,
-				method: function() {
-					AbsInput.Listener.body.blur.method.apply( this, arguments );
+				method: function( e ) {
+					_superTrigger( this, AbsInput, e );
 					var t = this.$t();
 					! t.innerText && t.nextSibling && ! this.contains( document.activeElement ) && t.parentNode.appendChild( t );
 				}
@@ -9665,8 +9650,8 @@ Tree = define.widget( 'Tree', {
 	Default: { scroll: T },
 	Listener: {
 		body: {
-			ready: function() {
-				Scroll.Listener.body.ready.call( this );
+			ready: function( e ) {
+				_superTrigger( this, Scroll, e );
 				this.length && this.trigger( 'load' );
 				if ( !this.length && this.getSrc() )
 					Leaf.prototype.request.call( this );
@@ -9741,7 +9726,7 @@ GridCombo = _comboHooks.Grid = $.createClass( {
 	Prototype: {
 		type: 'Grid',
 		node2xml: function( a ) {
-			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.tBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
+			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.tableBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
 				d = t[ i ].x.data, r = d[ b.remark ];
 				s = '<d v="' + $.strEscape( d[ b.value ] ) + '" t="' + $.strEscape( d[ b.text ] ) + '" i="' + t[ i ].id + '"';
 				r && (s += ' r="' + $.strEscape( r ) + '"');
@@ -9760,7 +9745,7 @@ GridCombo = _comboHooks.Grid = $.createClass( {
 		},
 		filter: function( t, s ) {
 			var a = this.cab;
-			a.tBody() && a.setFilter( this._filter( t ) );
+			a.tableBody() && a.setFilter( this._filter( t ) );
 			return a.getEchoRows().length;
 		},
 		getLength: function() {
@@ -9768,14 +9753,15 @@ GridCombo = _comboHooks.Grid = $.createClass( {
 		}
 	}
 } ),
+/* grid的column设置了fixed时，会产生分身grid(LeftGrid, RightGrid)。当调用grid的方法比如append remove等，分身也需要同样处理，以保持数据一致。
+   _parallel_methods使grid的方法能作用到分身grid上。 */
 _parallel_methods = function( a, b ) {
 	$.each( b.split( ' ' ), function( v ) {
 		var f = a.prototype[ v ];
 		a.prototype[ v ] = function() {
-			var u = this.rootNode || this;
-			if ( u.fixed.length ) {
+			if ( (this.rootNode || this).fixed.length ) {
 				for ( var j = 0, c = this.getParallel(); j < c.length; j ++ )
-					f.apply( c[ j ], arguments );
+					(c[ j ][ v ] === arguments.callee ? f : c[ j ][ v ]).apply( c[ j ], arguments );
 			} else
 				f.apply( this, arguments );
 		}
@@ -9802,8 +9788,8 @@ GridLeaf = define.widget( 'GridLeaf', {
 	Extend: Leaf,
 	Listener: {
 		body: {
-			ready: function() {
-				Leaf.Listener.body.ready.apply( this, arguments );
+			ready: function( e ) {
+				_superTrigger( this, Leaf, e );
 				this.textNode && this.fix_text_size();
 				this.x.expanded === F && this.toggle( F );
 			},
@@ -9935,14 +9921,13 @@ GridTripleBox = define.widget( 'GridTripleBox', {
 	Extend: TripleBox,
 	Listener: {
 		body: {
-			ready: function() {
-				TripleBox.Listener.body.ready.apply( this, arguments );
+			ready: function( e ) {
+				_superTrigger( this, TripleBox, e );
 				this.checkstate() > 0 && this.triggerListener( 'change' );
 			},
 			change: {
 				occupy: T,
 				method: function() {
-					//TripleBox.Listener.body.change.method.apply( this, arguments );
 					var r = this.tr();
 					r.type_tr && r.addClass( 'z-checked', this.isChecked() );
 				}
@@ -9968,8 +9953,8 @@ GridRadio = define.widget( 'GridRadio', {
 	Extend: Radio,
 	Listener: {
 		body: {
-			ready: function() {
-				Radio.Listener.body.ready.apply( this, arguments );
+			ready: function( e ) {
+				_superTrigger( this, Radio, e );
 				this.x.checked && this.triggerListener( 'change' );
 			},
 			change: {
@@ -10253,21 +10238,19 @@ TR = define.widget( 'TR', {
 				occupy: T,
 				method: function() { this.removeClass( 'z-hv' ) }
 			},
-			nodeChange: function( e ) {
+			nodeChange: function() {
 				var l = this.gridLeaf;
 				if ( l ) {
 					l.fixFolder();
 					l.toggle( this.isExpanded() );
 					l.indent();
 				}
-				if ( this.rootNode != this.grid ) {
-					this.grid.body.fixHeight();
-				}
+				this.closest( 'TableBody' ).trigger( 'nodeChange' );
 			},
-			dnd_over: function( e ) {
+			dnd_over: function() {
 				$.classAdd( this.$(), 'z-dnd-over' );
 			},
-			dnd_out: function( e ) {
+			dnd_out: function() {
 				$.classRemove( this.$(), 'z-dnd-over' );
 			}
 		}
@@ -10277,7 +10260,7 @@ TR = define.widget( 'TR', {
 		x_childtype: $.rt( 'TR' ),
 		x_nodes: function() { return this.x.rows },
 		getPageIndex: function() {
-			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.tBody() || [], this );
+			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.tableBody() || [], this );
 			return r.x.limit ? Math.floor( a / r.x.limit ) + 1 : 1;
 		},
 		focus: function( a, e ) {
@@ -10385,7 +10368,7 @@ THR = define.widget( 'THR', {
 		var u = this.rootNode.x.pub;
 		if ( u && u.height )
 			this.defaults( { height: u.height } );
-		this.className += ' w-' + this.type;
+		//this.className += ' w-' + this.type.toLowerCase();
 	},
 	Extend: GridRow,
 	Default: TR.Default,
@@ -10441,8 +10424,8 @@ TCell = define.widget( 'TCell', {
 		html: $.rt( '' )
 	}
 } ),
-/* `tbody` */
-TBody = define.widget( 'TBody', {
+/* `TableBody` */
+TableBody = define.widget( 'TableBody', {
 	Const: function( x, p ) {
 		this.grid = p.grid;
 		W.apply( this, arguments );
@@ -10451,9 +10434,8 @@ TBody = define.widget( 'TBody', {
 	Listener: {
 		body: {
 			nodeChange: function() {
-				this.rootNode.resetRowCls();
-				if ( this.rootNode != this.grid )
-					this.grid.body.fixHeight();
+				this.grid.fixRowCls();
+				this.grid.fixFoot();
 			}
 		}
 	},
@@ -10465,13 +10447,13 @@ TBody = define.widget( 'TBody', {
 		insertHTML: function( a, b ) {
 			this.$() && Q( this.$() )[ b || 'append' ]( a.isWidget ? a.$() : a );
 		},
-		// 获取平行的tbody/thead /@a -> get root row?
+		// 获取平行的tablebody/tablehead /@a -> get root tableBody?
 		getParallel: function( a ) {
-			var u = this.rootNode, r = this.grid === this.rootNode ? this : u[ this.type ]();
+			var u = this.rootNode, r = this.grid === u ? this : u[ this.instanceType ]();
 			if ( a )
 				return r;
 			for ( var j = 0, r = [ r ]; j < u.fixed.length; j ++ )
-				r.push( u.fixed[ j ][ this.type ]() );
+				r.push( u.fixed[ j ][ this.instanceType ]() );
 			return r;
 		},
 		// @a -> rows json, b -> index
@@ -10502,11 +10484,11 @@ TBody = define.widget( 'TBody', {
 		html: function() { return '<tbody id=' + this.id + '>' + this.html_nodes() + '</tbody>' }
 	}
 } );
-_parallel_methods( TBody, 'prepend append before after' );
+_parallel_methods( TableBody, 'prepend append before after' );
 var
 /* `thead` */
-THead = define.widget( 'THead', {
-	Extend: TBody,
+TableHead = define.widget( 'TableHead', {
+	Extend: TableBody,
 	Listener: {
 		body: {
 			ready: function() {
@@ -10548,9 +10530,9 @@ THead = define.widget( 'THead', {
 		html_nodes: _proto.html_nodes
 	}
 } ),
-/* `thead` */
-TFoot = define.widget( 'TFoot', {
-	Extend: THead,
+/* `tablefoot` */
+TableFoot = define.widget( 'TableFoot', {
+	Extend: TableHead,
 	Listener: {
 		body: {
 			ready: N
@@ -10588,7 +10570,7 @@ Column = define.widget( 'Column', {
 	Prototype: {
 		ROOT_TYPE: 'Grid,Form',
 		th: function() {
-			var t = this.grid.tHead();
+			var t = this.grid.tableHead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		width_minus: function() {
@@ -10646,11 +10628,11 @@ Table = define.widget( 'Table', {
 		this.grid = p.grid;
 		this.colgroup = new ColGroup( { nodes: x.columns }, this );
 		if ( x.tHead )
-			this.tHead = new THead( x.tHead, this );
+			this.tableHead = new TableHead( x.tHead, this );
 		else if ( x.tFoot )
-			this.tFoot = new TFoot( x.tFoot, this );
+			this.tableFoot = new TableFoot( x.tFoot, this );
 		else
-			this.tBody = new TBody( x.tBody || {}, this );
+			this.tableBody = new TableBody( x.tBody || {}, this );
 	},
 	Listener: {
 		body: {
@@ -10679,14 +10661,14 @@ Table = define.widget( 'Table', {
 			s += this.html_nodes();
 			// Chrome下如果不加这个tfoot，当grid没有数据时，表格不会自动撑开，无法触发滚动条
 			// 虽然用thead也能实现效果，但没有适合这种效果的原生CSS，需要JS代码里去做。用tfoot则可以用 tbody:empty + ._fix_tfoot 的原生CSS来实现，比用代码更安全
-			if ( ! br.ms && this.tBody )
+			if ( ! br.ms )
 				s += '<tfoot class="_fix_tfoot">' + t + '</tfoot>';
 			return s + '</table>';
 		}
 	}
 } ),
-/* `gridhead` */
-GridHead = define.widget( 'GridHead', {
+/* `THead` */
+THead = define.widget( 'THead', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.grid = p;
@@ -10695,17 +10677,10 @@ GridHead = define.widget( 'GridHead', {
 		this.className = 'w-thead';
 	},
 	Extend: Vert,
-	Listener: {
-		body: {
-			ready: function() {
-				//this.x.table.tHead.fix && this.fixScroll();
-			}
-		}
-	},
 	Prototype: {
 		ROOT_TYPE: 'Grid,Form',
-		// 表头固定
-		fixScroll: function() {
+		// 表头固定在外部滚动面板的上方
+		fixOnTop: function() {
 			var a = Scroll.get( this.rootNode ), b, f;
 			a && a.addEvent( 'scroll', function() {
 				var e = this.$(),
@@ -10722,90 +10697,61 @@ GridHead = define.widget( 'GridHead', {
 		}
 	}
 } ),
-/* `gridfoot` */
-GridFoot = define.widget( 'GridFoot', {
+/* `TFoot` */
+TFoot = define.widget( 'TFoot', {
 	Const: function( x, p ) {
-		GridHead.apply( this, arguments );
+		THead.apply( this, arguments );
 		this.className = 'w-tfoot';
 	},
-	Extend: GridHead,
-	Listener: {
-		body: {
-			ready: function() {
-				this.x.table.tFoot.fix && this.fixScroll();
-			}
+	Extend: THead,
+	Prototype: {
+		html: function() {
+			return W.prototype.html.call( this ) + '<div id=' + this.id +'pad style=display:none></div>';
 		}
 	}
+	
 } ),
-/* `gridbody` */
-GridBody = define.widget( 'GridBody', {
+/* `TBody` */
+TBody = define.widget( 'TBody', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.grid = p;
 		this.table = new Table( x.table, this );
-		!p.attr( 'scroll' ) && $.classAdd( this, 'w-' + this.rootNode.type + '-bg' );
-		this.className = 'w-tbody';
+		!p.rootNode && !p.attr( 'scroll' ) && (this.className += ' w-' + this.rootNode.type.toLowerCase() + '-bg');
 	},
-	Extend: GridHead,
+	Extend: THead,
 	Listener: {
 		body: {
-			ready: function() {
-				Scroll.Listener.body.ready.apply( this, arguments );
-			},
 			scroll: function( e ) {
-				Scroll.Listener.body.scroll.apply( this, arguments );
-				var r = this.rootNode;
-				if ( r.head ) {
-					r.head.$().style.overflow = 'hidden';
-					r.head.$().scrollLeft = this.$( 'ovf' ).scrollLeft;
-				}
-				if ( r.foot ) {
-					r.foot.$().style.overflow = 'hidden';
-					r.foot.$().scrollLeft = this.$( 'ovf' ).scrollLeft;
-				}
-				r.fixedScroll( this );
-				r.triggerHandler( e );
-			}
-		}
-	}
-} ),
-/* `gridfixedbody` */
-GridFixedBody = define.widget( 'GridFixedBody', {
-	Extend: GridBody,
-	Listener: {
-		body: {
+				_superTrigger( this, Scroll, e );
+				this.rootNode.trigger( 'scroll' );
+			},
 			mouseOver: {
-				occupy: T,
 				method: function( e ) {
-					this.rootNode.body.trigger( e );
+					this.grid != this.rootNode ? this.rootNode.body.trigger( e ) : this.grid.head && _superTrigger( this, Scroll, e );
 				}
 			},
 			mouseOut: {
-				occupy: T,
 				method: function( e ) {
-					this.rootNode.body.trigger( e );
+					this.grid != this.rootNode ? this.rootNode.body.trigger( e ) : this.grid.head && _superTrigger( this, Scroll, e );
 				}
 			},
 			mouseWheel: {
-				occupy: T,
+				occupy: function() { return this.grid !== this.rootNode },
 				method: function( e ) {
-					if ( this.rootNode.isScrollable() ) {
-						var t = this.rootNode.scrollTop();
-						this.rootNode.scrollTop( t + (e.wheelDelta > 0 ? -20 : 20) );
-					} else if ( this.rootNode.body.isScrollable() ) {
-						var t = this.rootNode.body.scrollTop();
-						this.rootNode.body.scrollTop( t + (e.wheelDelta > 0 ? -20 : 20) );
+					var r = this.rootNode;
+					if ( r != this.grid ) {
+						var b = r.isScrollable() ? r : r.body.isScrollable() ? r.body : N;
+						b && b.scrollTop( b.scrollTop() + (e.wheelDelta > 0 ? -20 : 20) );
 					}
 				}
-			},
-			scroll: N
+			}			
 		}
 	},
 	Prototype: {
-		fixHeight: function() {
-			var r = this.rootNode;
-			this.height( r.head || r.foot ? r.body.height() : r.height() );
-			//this.$().style.height = (this.rootNode.head || this.rootNode.foot ? this.rootNode.body.height() : this.rootNode.height()) + 'px';
+		className: 'w-tbody',
+		html_nodes: function() {
+			return this.table.html() + (this.grid.foot ? this.grid.foot.html() : '');
 		}
 	}
 } ),
@@ -10814,16 +10760,37 @@ AbsGrid = define.widget( 'AbsGrid', {
 	Extend: Vert,
 	Prototype: {
 		x_childtype: $.rt( 'TR' ),
-		tHead: function() { return this.head && this.head.table.tHead },
-		tBody: function() { return this.body.table.tBody },
-		tFoot: function() { return this.foot && this.foot.table.tFoot },
+		initBody: function( x ) {
+			var r = x.tHead && x.tHead.rows, s = this.attr( 'scroll' );
+			if ( r && r.length ) {
+				this.head = new THead( $.extend( { table: { tHead: x.tHead, columns: x.columns } }, x.tHead, { width: '*' } ), this );
+				delete x.scroll;
+			}
+			r = x.tFoot && x.tFoot.rows;
+			if ( r && r.length ) {
+				this.foot = new TFoot( $.extend( { table: { tFoot: x.tFoot, columns: x.columns } }, x.tFoot, { width: '*' } ), this, -1 );
+			}
+			this.body = new TBody( $.extend( { table: { tBody: x.tBody, columns: x.columns } }, x.tBody, { width: '*', height: this.head ? '*' : -1, scroll: this.head && s } ), this );
+			x.limit && this.limit();
+			if ( this.head && _w_lay.height.call( this ) )
+				this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
+		},
+		tableHead: function() {
+			return this.head && this.head.table.tableHead;
+		},
+		tableBody: function() {
+			return this.body.table.tableBody;
+		},
+		tableFoot: function() {
+			return this.foot && this.foot.table.tableFoot;
+		},
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
 			return this.rows( a == N ? 0 : a, T )[ 0 ];
 		},
 		// 获取符合条件的所有行  /@ a -> condition?, b -> one?
 		rows: function( a, b ) {
-			var d = this.tBody(), r = [];
+			var d = this.tableBody(), r = [];
 			if ( d ) {
 				if ( a == N ) {
 					r = _slice.call( d );
@@ -10868,7 +10835,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 		},
 		// 获取显示中的tbody的所有行
 		getEchoRows: function() {
-			return this._echo_rows || this.tBody() || [];
+			return this._echo_rows || this.tableBody() || [];
 		},
 		// 获取符合条件的所有行的 data json  /@ a -> condition?, b -> one?
 		rowsData: function( a, b ) {
@@ -10878,7 +10845,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 		},
 		// a -> data, b -> index
 		_addRow: function( a, b ) {
-			var p = this.tBody();
+			var p = this.tableBody();
 			p._rowSpan = {};
 			b == N && (b = p.length);
 			p[ b ] ? p[ b ].before( a ) : p.append( a );
@@ -10908,7 +10875,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 		},
 		// @a -> elem
 		getCellAxis: function( a ) {
-			var b = this.tBody(), c = Q( a ).closest( 'TD' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'TR' );
+			var b = this.tableBody(), c = Q( a ).closest( 'TD' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'TR' );
 			if ( b && r && r.$().parentNode === b.$() ) {
 				return { rowIndex: r.$().rowIndex - 1, cellIndex: c[ 0 ].cellIndex };
 			}
@@ -10946,7 +10913,6 @@ AbsGrid = define.widget( 'AbsGrid', {
 		// a -> data, b -> data|index
 		updateRow: function( a, b ) {
 			b != N && (b = this.row( b )) && b.replace( a );
-			this.resetRowCls();
 		},
 		// a -> data|index
 		deleteRow: function( a ) {
@@ -11003,8 +10969,9 @@ AbsGrid = define.widget( 'AbsGrid', {
 			g.insertCol( a.columns[ 0 ], b );
 			if ( g = this.head && this.head.table.colgroup )
 				g.insertCol( a.columns[ 0 ], b );
-			(g = this.tHead()) && g.insertCol( a.tHead.rows, b );
-			(g = this.tBody()) && g.insertCol( a.tBody.rows, b );
+			(g = this.tableHead()) && g.insertCol( a.tHead.rows, b );
+			(g = this.tableBody()) && g.insertCol( a.tBody.rows, b );
+			(g = this.tableFoot()) && g.insertCol( a.tFoot.rows, b );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
@@ -11015,8 +10982,9 @@ AbsGrid = define.widget( 'AbsGrid', {
 			g.deleteCol( a );
 			if ( g = this.head && this.head.table.colgroup )
 				g.deleteCol( a );
-			(g = this.tHead()) && g.deleteCol( a );
-			(g = this.tBody()) && g.deleteCol( a );
+			(g = this.tableHead()) && g.deleteCol( a );
+			(g = this.tableBody()) && g.deleteCol( a );
+			(g = this.tableFoot()) && g.deleteCol( a );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
@@ -11035,7 +11003,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 		},
 		// 获取所有焦点行 / @a -> visible?
 		getFocusAll: function( a ) {
-			for ( var i = 0, b = this.tBody(), c, l = b.length, r = []; i < l; i ++ ) {
+			for ( var i = 0, b = this.tableBody(), c, l = b.length, r = []; i < l; i ++ ) {
 				(c = b[ i ].getFocusAll( a )) && c.length && (r = r.concat( c ));
 			}
 			return r;
@@ -11046,8 +11014,8 @@ AbsGrid = define.widget( 'AbsGrid', {
 				b[ i ].isBoxChecked() && r.push( b[ i ] );
 			return r;
 		},
-		resetRowCls: function() {
-			if ( this.tBody() ) {
+		fixRowCls: function() {
+			if ( this.tableBody() ) {
 				for ( var i = 0, r = this.getEchoRows(), l = r.length; i < l; i ++ ) {
 					$.classRemove( r[ i ].$(), 'z-0 z-1 z-first z-last' );
 					$.classAdd( r[ i ].$(), 'z-' + (i % 2) );
@@ -11089,12 +11057,12 @@ AbsGrid = define.widget( 'AbsGrid', {
 				this.limit();
 				this.$() && this.render();
 			}
-			return { currentPage: this.x.page, sumPage: Math.ceil((this._filter_rows || this.tBody() || []).length / this.x.limit) };
+			return { currentPage: this.x.page, sumPage: Math.ceil((this._filter_rows || this.tableBody() || []).length / this.x.limit) };
 		},
 		limit: function() {
-			if ( this.x.limit && this.tBody() ) {
+			if ( this.x.limit && this.tableBody() ) {
 				var g = this.x.page || 1, i = (g - 1) * this.x.limit, j = g * this.x.limit;
-				this._echo_rows = _slice.call( this._filter_rows || this.tBody(), i, j );
+				this._echo_rows = _slice.call( this._filter_rows || this.tableBody(), i, j );
 			}
 		},
 		// @f -> filter rows(经过筛选的行)
@@ -11109,21 +11077,19 @@ AbsGrid = define.widget( 'AbsGrid', {
 			this.body.render();
 		},
 		// a -> column
-		_sortrow: function( a ) {
+		_sortRow: function( a ) {
 			var b = a._sort, c = a.x.sort, d = c.field || a.x.field, r = $.arrMake( this.getEchoRows() );
 			r.sort( function( m, n ) {
 				var e = m.x.data[ d ], f = n.x.data[ d ];
 				if ( c.number ) { e = _number( e ); f = _number( f ); }
 				return b === 'asc' ? (e < f ? -1 : e == f ? 0 : 1) : (e < f ? 1 : e == f ? 0 : -1);
 			} );
-			for ( var i = 0, l = r.length, o = this.tBody().$().rows; i < l; i ++ ) {
+			for ( var i = 0, l = r.length, o = this.tableBody().$().rows; i < l; i ++ ) {
 				if ( o[ i ].id != r[ i ].id ) {
 					r[ i ].parentNode.addNode( r[ i ], i );
 					Q( o[ i ] ).before( r[ i ].$() );
 				}
 			}
-		},
-		resetTHCls: function( a, b ) {
 			Q( '.w-th-sort', this.head.$() ).removeClass( 'z-desc z-asc' );
 			for ( var k = 0, e = this.getColGroup(), l = e.length; k < l; k ++ ) {
 				if ( e[ k ].x.field == a ) {
@@ -11131,6 +11097,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 					break;
 				}
 			}
+			this.fixRowCls();
 		},
 		//排序 /@a -> field, b -> [asc,desc]
 		order: function( a, b ) {
@@ -11152,15 +11119,13 @@ AbsGrid = define.widget( 'AbsGrid', {
 					}
 				} else {
 					e[ k ]._sort = b;
-					this._sortrow( e[ k ] );
-					this.resetTHCls( a, b );
-					this.resetRowCls();
+					this._sortRow( e[ k ] );
 				}
 			}
 		},
 		// @k -> keycode
 		keyUp: function( k ) {
-			if ( ! this.tBody() )
+			if ( ! this.tableBody() )
 				return;
 			var r = this.getEchoRows(), d = k === 40, a;
 			if ( d || k === 38 ) { // key down/up
@@ -11170,37 +11135,47 @@ AbsGrid = define.widget( 'AbsGrid', {
 				(a = this.getFocus( T )) && a.click();
 			}
 		},
-		isScrollBottom: function() {
-			return this.head ? this.body.isScrollBottom() : Scroll.prototype.isScrollBottom.call( this );
-		},
 		// @implement
 		prop_cls_scroll_overflow: function() {
 			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.type + '-bg' : '');
-		}
+		},
+		fixScroll: function() {
+			if ( this.head ) {
+				this.head.$().style.overflow = 'hidden';
+				this.head.$().scrollLeft = this.scrollLeft();
+			}
+			if ( this.foot && this.foot.holdBottom ) {
+				this.foot.$().style.overflow = 'hidden';
+				this.foot.$().scrollLeft = this.scrollLeft();
+			}
+		},
+		fixFoot: function() {
+			if ( this.foot ) {
+				var f = this.foot, r = this.rootNode || this,
+					b = r.body.isScrollable() ? r.body : r.isScrollable() ? r : N;
+				if ( b ) {
+					var h = b.scrollHeight();
+					f.holdBottom = !!h;
+					f.css( 'pad', { height: h ? f.$().offsetHeight : '', display: h ? 'block' : 'none', overflow: h ? 'hidden' : 'visible' } );
+					f.addClass( 'z-fix', !!h );
+					h ? $.append( b === r ? this.$() : this.body.$(), f.$() ) : $.before( f.$( 'pad' ), f.$() );
+				}
+			}
+		}		
 	}
 } );
-_parallel_methods( AbsGrid, 'resetRowCls resetTHCls _sortrow' );
+_parallel_methods( AbsGrid, '_sortRow fixScroll' );
 var
 /* `grid` */
 Grid = define.widget( 'Grid', {
 	Const: function( x, p ) {
-		this._pad  = x.cellPadding != N ? x.cellPadding : 5;
+		this._pad = x.cellPadding != N ? x.cellPadding : 5;
 		W.apply( this, arguments );
 		x.scroll == N && (x.scroll = T);
 		this._face = x.face || 'none';
-		var r = x.tHead && x.tHead.rows, s = this.attr( 'scroll' );
-		if ( r && r.length ) {
-			this.head = new GridHead( $.extend( { table: { tHead: x.tHead, columns: x.columns } }, x.tHead, { width: '*' } ), this );
-			delete x.scroll;
-		}
-		r = x.tFoot && x.tFoot.rows;
-		if ( r && r.length ) {
-			this.foot = new GridFoot( $.extend( { table: { tFoot: x.tFoot, columns: x.columns } }, x.tFoot, { width: '*' } ), this );
-			delete x.scroll;
-		}
-		this.body = new GridBody( $.extend( { table: { tBody: x.tBody, columns: x.columns } }, x.tBody, { width: '*', height: this.length ? '*' : -1, scroll: this.length && s } ), this, this.head ? 1 : 0 );
+		this.initBody( x );
 		if ( x.hiddens )
-			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this );
+			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this, -1 );
 		this.fixed = [];
 		if ( ! ie7 ) { //@fixme: 暂不支持ie7
 			var xl = [], xr = [];
@@ -11208,26 +11183,23 @@ Grid = define.widget( 'Grid', {
 				(f = c[ i ].fixed) && (f === 'left' ? xl : xr).push( $.extend( { fixed: N, fixedIndex: i }, c[ i ] ) );
 			}
 			if ( xl.length ) {
-				this.left = new GridLeft( { columns: xl, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
+				this.left = new LeftGrid( { columns: xl, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
 				this.fixed.push( this.left );
 			}
 			if ( xr.length ) {
-				this.right = new GridRight( { columns: xr, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
+				this.right = new RightGrid( { columns: xr, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
 				this.fixed.push( this.right );
 			}
 		}
-		x.limit && this.limit();
 		x.width === -1 && $.classAdd( this, 'z-auto' );
 		$.classAdd( this, this.head ? 'z-head' : 'z-nohead' );
 		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
-		if ( this.length > 1 && _w_lay.height.call( this ) )
-			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 	},
 	Extend: AbsGrid,
 	Listener: {
 		body: {
 			ready: function() {
-				var a = this.tBody();
+				var a = this.tableBody();
 				if ( a ) {
 					var b = a.$().rows, c = this.getFocusAll();
 					b.length && ($.classAdd( b[ 0 ], 'z-first' ), $.classAdd( b[ b.length - 1 ], 'z-last' ));
@@ -11238,27 +11210,34 @@ Grid = define.widget( 'Grid', {
 						}
 					}
 				}
+				this.fixFoot();
 			},
 			scroll: function( e ) {
-				Vert.Listener.body.scroll.apply( this, arguments );
-				this.fixedScroll();
+				_superTrigger( this, Vert, e );
+				this.fixScroll();
 			},
-			resize: function() {
-				Vert.Listener.body.resize.apply( this, arguments );
-				for ( var i = 0; i < this.fixed.length; i ++ ) {
+			resize: function( e ) {
+				_superTrigger( this, Vert, e );
+				for ( var i = 0; i < this.fixed.length; i ++ )
 					this.fixed[ i ].trigger( 'resize' );
-				}
 				this.$() && $.classAdd( this.$(), 'z-auto', this.innerWidth() == N );
+				this.fixFoot();
 			}
 		}
 	},
 	Prototype: {
 		className: 'w-grid',
-		fixedScroll: function( a ) {
-			for ( var i = 0, r = this.fixed, a = a || this; i < r.length; i ++ ) {
-				r[ i ].body.$().scrollTop = a.$( 'ovf' ).scrollTop;
-				r[ i ].addClass( 'z-cover', r[ i ].type === 'GridLeft' ? a.$( 'ovf' ).scrollLeft > 0 : !a.isScrollRight() );
-			}
+		scrollTop: function() {
+			return this.head ? this.body.scrollTop.apply( this.body, arguments ) : AbsGrid.prototype.scrollTop.apply( this, arguments );
+		},
+		scrollLeft: function() {
+			return this.head ? this.body.scrollLeft.apply( this.body, arguments ) : AbsGrid.prototype.scrollLeft.apply( this, arguments );
+		},
+		isScrollBottom: function() {
+			return this.head ? this.body.isScrollBottom() : AbsGrid.prototype.isScrollBottom.call( this );
+		},
+		isScrollRight: function() {
+			return this.head ? this.body.isScrollRight() : AbsGrid.prototype.isScrollRight.call( this );
 		},
 		html_append: function() {
 			for ( var i = 0, s = ''; i < this.fixed.length; i ++ )
@@ -11267,20 +11246,13 @@ Grid = define.widget( 'Grid', {
 		}
 	}
 }),
-/* `gridleft` */
-GridLeft = define.widget( 'GridLeft', {
+/* `LeftGrid`  grid的column设置了fixed时，会产生分身grid(LeftGrid, RightGrid)。*/
+LeftGrid = define.widget( 'LeftGrid', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this._pad  = p._pad;
 		this._face = p._face;
-		var r = x.tHead && x.tHead.rows;
-		if ( r && r.length )
-			this.head = new GridHead( $.extend( { table: { tHead: x.tHead, columns: x.columns } }, x.tHead, { width: '*' } ), this );
-		r = x.tFoot && x.tFoot.rows;
-		if ( r && r.length )
-			this.foot = new GridFoot( $.extend( { table: { tFoot: x.tFoot, columns: x.columns } }, x.tFoot, { width: '*' } ), this );
-		this.body = new GridFixedBody( $.extend( { table: { tBody: x.tBody, columns: x.columns } }, x.tBody, { width: '*', height: -1 } ), this, this.head ? 1 : 0 );
-		x.limit && this.limit();
+		this.initBody( x );
 	},
 	Extend: AbsGrid,
 	Default: { width: -1 },
@@ -11289,29 +11261,43 @@ GridLeft = define.widget( 'GridLeft', {
 			ready: function() {
 				var p = this.parentNode;
 				if ( p.head ) {
-					for ( var i = 0, h = this.head.table.tHead, ph = p.head.table.tHead; i < h.length; i ++ )
+					for ( var i = 0, h = this.tableHead(), ph = p.tableHead(); i < h.length; i ++ )
 						h[ i ].height( ph[ i ].height() );
 				}
-				this.body.fixHeight();
+				this.fixSize();
+				this.fixFoot();
 			},
-			resize: function() {
-				this.body.fixHeight();
+			resize: function( e ) {
+				_superTrigger( this, Vert, e );
+				this.fixSize();
+				this.fixFoot();
 			}
 		}
 	},
 	Prototype: {
-		className: 'w-grid-left w-grid-fixed',
-		ROOT_TYPE: 'Grid,Form'
+		className: 'w-leftgrid w-fixedgrid',
+		ROOT_TYPE: 'Grid,Form',
+		fixSize: function() {
+			this.body.height( (this.rootNode.head ? this.rootNode.body : this.rootNode).innerHeight() );
+		},
+		fixScroll: function() {
+			this.body.$().scrollTop = this.rootNode.scrollTop();
+			this.addClass( 'z-cover', this.rootNode.scrollLeft() > 0 );
+		}
 	}
 } ),
-/* `gridright` */
-GridRight = define.widget( 'GridRight', {
-	Extend: GridLeft,
+/* `RightGrid`  grid的column设置了fixed时，会产生分身grid(LeftGrid, RightGrid)。*/
+RightGrid = define.widget( 'RightGrid', {
+	Extend: LeftGrid,
 	Prototype: {
-		className: 'w-grid-right w-grid-fixed'
+		className: 'w-rightgrid w-fixedgrid',
+		fixScroll: function() {
+			this.body.$().scrollTop = this.rootNode.scrollTop();
+			this.addClass( 'z-cover', !this.rootNode.isScrollRight() );
+		}
 	}
 } ),
-/* `form` */
+/* `form`  nodes内部可以是任何Widget。如果有colSpan、rowSpan需求，需要在Widget外套一层TD。 */
 Form = define.widget( 'Form', {
 	Const: function( x, p ) {
 		var c = [], d = this.getDefaultOption( x.cls ), rows = [], cols = x.cols || 12;

@@ -164,6 +164,8 @@ _createClass = $.createClass = function( a, b ) {
 	}
 	if ( n ) {
 		c[ _PRO ].type = c.type = n;
+		// 实例的type。两个字符为全小写，三个及以上为首字符小写
+		c[ _PRO ].instanceType = c.instanceType = n.length < 3 ? n.toLowerCase() : n.charAt( 0 ).toLowerCase() + n.slice( 1 );
 	}
 	a.Helper && _mergeDeep( c, a.Helper );
 	c[ _PRO ].Const = c;
