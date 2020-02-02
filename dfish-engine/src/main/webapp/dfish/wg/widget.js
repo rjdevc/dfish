@@ -3790,11 +3790,11 @@ Tabs = define.widget( 'Tabs', {
 			r = { type: 'TabBar', cls: 'z-position-' + n, align: x.align, vAlign: x.vAlign || (y.type === 'Horz' ? 'top' : N), split: x.split, dir: y.type === 'Horz' ? 'v' : 'h', space: x.space, overflow: x.overflow, nodes: b };
 		y.nodes = [ { type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
-		VertScale.call( this, $.extend( { type: 'Vert', nodes:[ y ] }, x ), p );
+		Vert.call( this, $.extend( { nodes:[ y ], scroll: F }, x ), p );
 		this.buttonbar = this[ 0 ];
 		this.frame = this[ 1 ];
 	},
-	Extend: VertScale,
+	Extend: Vert,
 	Prototype: {
 		className: 'w-tabs',
 		getTabPositionCode: function( s ) {
