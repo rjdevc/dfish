@@ -50,7 +50,7 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
 
     @Override
     protected Grid.TD newPub() {
-        return null;
+        return new Grid.TD();
     }
 
     /**
