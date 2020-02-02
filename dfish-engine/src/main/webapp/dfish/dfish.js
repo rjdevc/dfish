@@ -1260,7 +1260,7 @@ _cancel = $.cancel = function( a ) {
 		a.stopPropagation ? a.stopPropagation() : (a.cancelBubble = T);
 },
 // 记录鼠标事件发生的坐标
-_event_click = { click: T, dblclick: T, contextMenu: T, mousedown: T, mouseup: T },
+_event_click = { click: T, dblclick: T, contextmenu: T, mousedown: T, mouseup: T },
 _point = $.point = function( e ) {
 	if( (e || (e = window.event)) && _event_click[ e.type ] ) {
 		_point.srcElement = e.srcElement, _point.offsetX = e.offsetX, _point.offsetY = e.offsetY, _point.clientX = e.clientX, _point.clientY = e.clientY;
