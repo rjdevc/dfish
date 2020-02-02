@@ -56,7 +56,7 @@ import java.util.*;
  * }</pre></div>
  * <p>如果没有rowspan或cls属性的时候，td可以只写其中node的部分。这时可以是一个html元素或一个Text等输入框。甚至可以是一个布局元素。里面放任何内容。
  * 而如果这个node就是为了输出一个html并且不需要复杂 cls 等属性的时候。 td就可以缩写成范例中的那样，一个字符串。用于最简输出。同时也更容易被人阅读，理解，和调试</p>
- * <p>支持折叠和多层折叠 详见 {@link com.rongji.dfish.ui.widget.Toggle} 和 {@link GridLeaf}</p>
+ * <p>支持折叠和多层折叠 详见 {@link com.rongji.dfish.ui.widget.Toggle} 和 {@link Leaf}</p>
  * <p>支持指定位置添加内容 见{@link Grid#add(int, int, Object)} 甚至可以直接指定一个区块合并单元格，并填充内容{@link Grid#add(Integer, Integer, Integer, Integer, Object)}</p>
  * <p>如基础定义所见，如果在GridLayout中直接指定位置添加内容，实际上指的是tbody部分。如果想在thead上使用该功能，要显式先取得 getThead()</p>
  *
@@ -1480,7 +1480,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      *
      * @author DFish team
      */
-    private static abstract class Part extends AbstractNodeContainer<Part> implements GridOperation<Part> {
+    protected static abstract class Part extends AbstractNodeContainer<Part> implements GridOperation<Part> {
 
         /**
          * 构造函数
@@ -1497,8 +1497,9 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         public Part() {
             super(null);
         }
+
         @Override
-        public String getType(){
+        public String getType() {
             return null;
         }
 
@@ -1512,7 +1513,6 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             this.owner = owner;
             return this;
         }
-
 
         /**
          * 取得行
@@ -1789,12 +1789,12 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * <p>常见的是里面包行单元格(Td)。
      * 每个单元格是一个文本或独立的widget，有widget的功能和属性，只是有的时候可能并不会给每个单元格设置ID。</p>
      * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或GridCell。
-     * 并用{@link Grid.Column#getField()} 来说明这个内容显示在哪里。</p>
+     * 并用{@link Column#getField()} 来说明这个内容显示在哪里。</p>
      * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
      * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
      *
      * @author DFish Team
-     * @see AbstractTd {@link Grid.Column} {@link GridLeaf}
+     * @see AbstractTd {@link Column} {@link Leaf}
      * @since DFish 3.0
      */
     public static class TR extends AbstractTr<TR> implements JsonWrapper<Object> {
@@ -1999,13 +1999,13 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * <p>常见的是里面包行单元格(Td)。
      * 每个单元格是一个文本或独立的widget，有widget的功能和属性，只是有的时候可能并不会给每个单元格设置ID。</p>
      * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或GridCell。
-     * 并用{@link Grid.Column#getField} 来说明这个内容显示在哪里。</p>
+     * 并用{@link Column#getField} 来说明这个内容显示在哪里。</p>
      * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
      * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
      *
      * @param <T> 当前类型
      * @author DFish Team
-     * @see AbstractTd {@link Grid.Column} {@link GridLeaf}
+     * @see AbstractTd {@link Column} {@link Leaf}
      * @since DFish 3.0
      */
     protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractNodeContainer<T> {
@@ -2031,7 +2031,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         protected Boolean focus;
         protected Boolean focusable;
         protected String src;
-        protected List<Grid.TR> rows;
+        protected List<TR> rows;
 
 
         @Override
@@ -2045,7 +2045,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          *
          * @return List
          */
-        public List<Grid.TR> getRows() {
+        public List<TR> getRows() {
             return rows;
         }
 
@@ -2054,7 +2054,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          *
          * @param rows List
          */
-        public void setRows(List<Grid.TR> rows) {
+        public void setRows(List<TR> rows) {
             this.rows = rows;
         }
 
@@ -2070,9 +2070,9 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
 
-        public T addRow(Grid.TR row) {
+        public T addRow(TR row) {
             if (rows == null) {
-                rows = new ArrayList<Grid.TR>();
+                rows = new ArrayList<TR>();
             }
             rows.add(row);
 
@@ -2127,7 +2127,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             }
             if (rows != null) {
                 for (Iterator<TR> iter = rows.iterator(); iter.hasNext(); ) {
-                    Grid.TR item = iter.next();
+                    TR item = iter.next();
                     if (id.equals(item.getId())) {
                         iter.remove();
                     } else {
@@ -2190,10 +2190,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             String id = panel.getId();
             if (rows != null) {
                 for (int i = 0; i < rows.size(); i++) {
-                    Grid.TR item = rows.get(i);
+                    TR item = rows.get(i);
                     if (id.equals(item.getId())) {
                         // 替换该元素
-                        rows.set(i, (Grid.TR) panel);
+                        rows.set(i, (TR) panel);
                         return true;
                     } else {
                         boolean replaced = item.replaceNodeById(panel);
@@ -2297,7 +2297,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      *
      * @param <T> 本身类型
      * @author DFish Team
-     * @see Grid.TD
+     * @see TD
      */
     protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractNodeContainer<T>
             implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> {
@@ -2346,7 +2346,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         public T setColSpan(Integer colSpan) {
             if (colSpan != null) {
                 if (colSpan < 1) {
-                    throw new java.lang.IllegalArgumentException("colspan must greater than 1");
+                    throw new IllegalArgumentException("colspan must greater than 1");
                 }
                 if (colSpan == 1) {
                     colSpan = null;
@@ -2376,7 +2376,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         public T setRowSpan(Integer rowSpan) {
             if (rowSpan != null) {
                 if (rowSpan < 1) {
-                    throw new java.lang.IllegalArgumentException("rowspan must greater than 1");
+                    throw new IllegalArgumentException("rowspan must greater than 1");
                 }
                 if (rowSpan == 1) {
                     rowSpan = null;
@@ -2621,14 +2621,14 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
     /**
      * GridTreeItem 是可折叠表格中的折叠项
-     * <p>在GridRow中添加了下级可折叠的行的时候，GridTreeItem作为一个视觉标志出现在当前行({@link Grid.TR})上。
+     * <p>在GridRow中添加了下级可折叠的行的时候，GridTreeItem作为一个视觉标志出现在当前行({@link TR})上。
      * 它前方有一个+号(或-号)点击有展开或折叠效果。</p>
      * <p>多级别的GridTreeItem自动产生缩进效果</p>
      *
      * @author DFish Team
-     * @see Grid.TR
+     * @see TR
      */
-    public static class GridLeaf extends AbstractWidget<GridLeaf> implements LazyLoad<GridLeaf>, HasText<GridLeaf> {
+    public static class Leaf extends AbstractWidget<Leaf> implements LazyLoad<Leaf>, HasText<Leaf> {
 
         private static final long serialVersionUID = -7465823398383091843L;
         private String text;
@@ -2643,11 +2643,12 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         private Boolean line;
         private Object tip;
 
-        public GridLeaf() {
-            super();
+        @Override
+        public String getType() {
+            return "GridLeaf";
         }
 
-        public GridLeaf(String text) {
+        public Leaf(String text) {
             super();
             this.text = text;
         }
@@ -2669,7 +2670,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
         @Override
-        public GridLeaf setText(String text) {
+        public Leaf setText(String text) {
             this.text = text;
             return this;
         }
@@ -2691,7 +2692,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
         @Override
-        public GridLeaf setSrc(String src) {
+        public Leaf setSrc(String src) {
             this.src = src;
             return this;
         }
@@ -2702,7 +2703,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         @Override
-        public GridLeaf setFormat(String format) {
+        public Leaf setFormat(String format) {
             this.format = format;
             return this;
         }
@@ -2722,7 +2723,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @param line Boolean
          * @return 本身，这样可以继续设置其他属性
          */
-        public GridLeaf setLine(Boolean line) {
+        public Leaf setLine(Boolean line) {
             this.line = line;
             return this;
         }
@@ -2742,7 +2743,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @param tip Boolean
          * @return 本身，这样可以继续设置其他属性
          */
-        public GridLeaf setTip(Boolean tip) {
+        public Leaf setTip(Boolean tip) {
             this.tip = tip;
             return this;
         }
@@ -2753,7 +2754,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @param tip 提示信息
          * @return 本身，这样可以继续设置其他属性
          */
-        public GridLeaf setTip(String tip) {
+        public Leaf setTip(String tip) {
             this.tip = tip;
             return this;
         }
@@ -2764,7 +2765,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         @Override
-        public GridLeaf setSuccess(String success) {
+        public Leaf setSuccess(String success) {
             this.success = success;
             return this;
         }
@@ -2775,7 +2776,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         @Override
-        public GridLeaf setError(String error) {
+        public Leaf setError(String error) {
             this.error = error;
             return this;
         }
@@ -2786,7 +2787,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         @Override
-        public GridLeaf setComplete(String complete) {
+        public Leaf setComplete(String complete) {
             this.complete = complete;
             return this;
         }
@@ -2797,13 +2798,13 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         @Override
-        public GridLeaf setFilter(String filter) {
+        public Leaf setFilter(String filter) {
             this.filter = filter;
             return this;
         }
 
         @Override
-        public GridLeaf setEscape(Boolean escape) {
+        public Leaf setEscape(Boolean escape) {
             this.escape = escape;
             return this;
         }
@@ -2814,7 +2815,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         @Override
-        public GridLeaf setSync(Boolean sync) {
+        public Leaf setSync(Boolean sync) {
             this.sync = sync;
             return this;
         }

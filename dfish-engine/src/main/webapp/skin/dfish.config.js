@@ -33,13 +33,14 @@ dfish.config({
 
         'Tree': {scroll: true, ellipsis: true},
         'Leaf': {tip: true, style: 'padding-right:10px;', widthMinus: 10},
+        'Empty': {width: '*', height: '*'},
 
         'ButtonBar': {space: 10, pub: {tip: true, height: 30}},
         'ButtonBar.dlg-head-operation': {space: 0},
         'ButtonBar.x-breadcrumb': {space: 0},
         'ButtonBar.face-text': {space: 0},
-        'Button': {tip: true},
-        'SubmitButton': {tip: true},
+        'Button': {tip: true, widthMinus: 2, heightMinus: 2},
+        'SubmitButton': {tip: true, widthMinus: 2, heightMinus: 2},
         'Tabs': {pub: {height: 40}},
         'TabBar': {widthMinus: 20},
         'TabBar.z-position-left': {widthMinus: 0, heightMinus: 20},

@@ -22,7 +22,7 @@ define.preload({
                             width: '*',
                             height: '*',
                             widthMinus: 10,
-                            on: {dblclick: '$.dialog(this).max();'}
+                            on: {dblClick: '$.dialog(this).max();'}
                         },
                         {
                             type: 'ButtonBar',
@@ -32,7 +32,7 @@ define.preload({
                             height: '*',
                             align: 'right',
                             vAlign: 'middle',
-                            pub: {height: 40, width: 40},
+                            pub: {height: 40, width: 40, widthMinus: 2, heightMinus: 2},
                             nodes: [
                                 {
                                     tip: '最大化',
