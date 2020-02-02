@@ -11175,7 +11175,7 @@ Grid = define.widget( 'Grid', {
 		this._face = x.face || 'none';
 		this.initBody( x );
 		if ( x.hiddens )
-			new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this, -1 );
+			this._hiddens = new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this, -1 );
 		this.fixed = [];
 		if ( ! ie7 ) { //@fixme: 暂不支持ie7
 			var xl = [], xr = [];
