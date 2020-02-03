@@ -28,15 +28,15 @@ function find( a ) {
 }
 
 function apiContentWidget( id ) {
-	var a = data[ id ], b = [ { type: 'html', style: 'font-size:14px;padding-bottom:5px;', text: '<p>' + a.remark + '</p>' } ], s = [], t, i = 0;
+	var a = data[ id ], b = [ { type: 'Html', style: 'font-size:14px;padding-bottom:5px;', text: '<p>' + a.remark + '</p>' } ], s = [], t, i = 0;
 	for ( ; i < pk.length; i ++ )
-		(t = memberWidget( id, a, pk[ i ], pn[ i ], ! t )) && (b = b.concat( t ), s.push( { type: 'button', text: pn[ i ], id: id + '-btn-' + pk[ i ], data: { mod: id, chap: pk[ i ] }, focus: i === 0, on: { click: 'api.anchor(this)' } } ));
-	return { type: 'vert', id: id + '-con', nodes: [
-		{ type: 'horz', height: 55, cls: 'main-header bd-nav bd-onlybottom', nodes: [
-		  { type: 'html', text: '<h1>' + a.title + '</h1>' },
-		  { type: 'buttonbar', pub: { cls: 'hd-tab', focusable: true }, space: 1, nodes: s }
+		(t = memberWidget( id, a, pk[ i ], pn[ i ], ! t )) && (b = b.concat( t ), s.push( { type: 'Button', text: pn[ i ], id: id + '-btn-' + pk[ i ], data: { mod: id, chap: pk[ i ] }, focus: i === 0, on: { click: 'api.anchor(this)' } } ));
+	return { type: 'Vert', id: id + '-con', nodes: [
+		{ type: 'Horz', height: 55, cls: 'main-header bd-nav bd-onlybottom', nodes: [
+		  { type: 'Html', text: '<h1>' + (a.title || id) + '</h1>' },
+		  { type: 'ButtonBar', pub: { cls: 'hd-tab', focusable: true }, space: 1, nodes: s, scroll: false }
 		] },
-		{ type: 'vert', id: id + '-scr', scroll: true, style: 'padding:0 15px', height: '*', nodes: b, on: { scroll: 'api.onscroll(this)' } }
+		{ type: 'Vert', id: id + '-scr', scroll: true, style: 'padding:0 15px', height: '*', nodes: b, on: { scroll: 'api.onscroll(this)' } }
 	] };
 }
 //排除继承数据中重复的部分
@@ -85,8 +85,8 @@ function memberWidget( id, a, k, n, m ) {
 				}
 			}
 		}
-		return [ { type: 'html', text: '<div id=' + id + '-' + k + ' class="members-title" onclick="api.expand(this)"><h3>' + $.arrow( 'b2' ) + ' &nbsp;' + n + '</h3>' + (m ? '<div style="float:right;font-size:12px;color:#888;line-height:40px"><font color=#ff7921>*</font> 注: 蓝色字体是当前widget专有的属性事件方法，黑色字体是所有widget共有的属性事件方法。用法无区别，只是为了方便查阅而加以颜色区分。</div>' : '') + '</div>' },
-			{ type: 'grid', id: id + '-' + k + '-grid', face: 'cell', cls: 'detail-grid', escape: false, "columns":[ {"field":"name", "width":"*", "format":"javascript:return api.format(this)"} ], tbody: { rows: b } } ];
+		return [ { type: 'Html', text: '<div id=' + id + '-' + k + ' class="members-title" onclick="api.expand(this)"><h3>' + $.arrow( 'b2' ) + ' &nbsp;' + n + '</h3>' + (m ? '<div style="float:right;font-size:12px;color:#888;line-height:40px"><font color=#ff7921>*</font> 注: 蓝色字体是当前widget专有的属性事件方法，黑色字体是所有widget共有的属性事件方法。用法无区别，只是为了方便查阅而加以颜色区分。</div>' : '') + '</div>' },
+			{ type: 'Table', id: id + '-' + k + '-grid', face: 'cell', cls: 'detail-grid', escape: false, "columns":[ {"field":"name", "width":"*", "format":"javascript:return api.format(this)"} ], tBody: { rows: b } } ];
 	}
 }
 
@@ -98,7 +98,7 @@ function format( row ) {
 		s += formatParam( d.param, d.common );
 	if ( e = d.example )
 		s += exampleContent( e );
-	return { type: 'html', text: s, cls: 'title' };
+	return { type: 'Html', text: s, cls: 'title' };
 }
 
 function formatParam( p, c ) {
@@ -137,7 +137,7 @@ var api = {
 	vm: vm,
 	find: find,
 	init: function() {
-		find( 'guide' ).append( { type: 'html', text: '<a href="javascript:" onclick="$.widget(this).text(123)">click</a>' } );
+		find( 'guide' ).append( { type: 'Html', text: '<a href="javascript:" onclick="$.widget(this).text(123)">click</a>' } );
 	},
 	tab: function( btn, con ) {
 		var b = vm().find( 'index-tabbar' ).append( btn ),
@@ -156,7 +156,7 @@ var api = {
 			if ( b ) {
 				b.focus();
 			} else {
-				this.tab( { type: 'button', id: d + '-btn', text: ( t ? find( t ) : tree ).x.text, target: d + '-con' }, apiContentWidget( d ) );
+				this.tab( { type: 'Button', id: d + '-btn', text: ( t ? find( t ) : tree ).x.text, target: d + '-con' }, apiContentWidget( d ) );
 			}
 			if ( t ) {
 				setTimeout( function() {
@@ -185,7 +185,8 @@ var api = {
 		for ( var i = 0, b = a.x.id.replace( '-scr', '' ), c = $.bcr( a.$() ), l = pk.length; i < l; i ++ ) {
 			var d = $( b + '-' + pk[ i ] );
 			if ( d && (d = $.bcr( d )) && (d.top > c.top || i === l - 1) ) {
-				find( b + '-btn-' + pk[ d.top > ((c.top + c.bottom) / 2) ? i - 1 : i ] ).focus();
+				var n = find( b + '-btn-' + pk[ d.top > ((c.top + c.bottom) / 2) ? i - 1 : i ] );
+				n && n.focus();
 				break;
 			}
 		}

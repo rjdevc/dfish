@@ -1605,7 +1605,7 @@ define( {
     ]
   },
   "Column": {
-  	remark: 'grid的列配置。',
+  	remark: 'table的列配置。',
     Config: [
         { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
         { name: 'cls', type: 'String', remark: '样式名。' },
@@ -1635,21 +1635,21 @@ define( {
     ]
   },
   "THead": {
-  	remark: 'grid的表头。',
+  	remark: 'Table的表头。',
   	extend: 'Widget',
     Config: [
         { name: 'rows', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "TBody": {
-  	remark: 'grid的内容。',
+  	remark: 'Table的内容。',
   	extend: 'Widget',
     Config: [
         { name: 'rows', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "TFoot": {
-  	remark: 'grid的表尾。',
+  	remark: 'Table的表尾。',
   	extend: 'Widget',
     Config: [
         { name: 'rows', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
@@ -1694,8 +1694,8 @@ define( {
        ] }
       ], example: [
           function() {
-            // 设置grid可拖拽也可放置
-            vm.find( 'grid' ).draggable().droppable( {
+            // 设置Table可拖拽也可放置
+            vm.find( 'tbl' ).draggable().droppable( {
               drop: function( ev, ui ) {
                 var u = 'move.sp?act=move&from=' + ui.draggable.x.id + '&to=' + ui.droppable.x.id + '&type=' + ui.type;
                 alert(u);
@@ -1787,7 +1787,7 @@ define( {
         { name: 'checked', type: 'Boolean', remark: '是否选中。', optional: true }
       ] },
       { name: 'insertColumn(data, [index])', remark: '插入一列。', param: [
-        { name: 'data', type: 'Object', remark: '包含一列的数据，格式为 grid json。' },
+        { name: 'data', type: 'Object', remark: '包含一列的数据，格式为 table json。' },
         { name: 'index', type: 'Number | String', remark: '如果是数字，表示插入到序列号为 index 的那一列之前；如果是字符串，表示插入到 column.field == index 的那一列之前。如果不传此参数，表示插入到最后。', optional: true }
       ], example: [
           function() {
@@ -1807,7 +1807,7 @@ define( {
           }
       ] },
       { name: 'updateColumn(data, index)', remark: '更新一列。', param: [
-        { name: 'data', type: 'Object', remark: '包含一列的数据，格式为 grid json。' },
+        { name: 'data', type: 'Object', remark: '包含一列的数据，格式为 table json。' },
         { name: 'index', type: 'Number | String', remark: '如果是数字，表示更新序列号为 index 的那一列；如果是字符串，表示更新 column.field == index 的那一列。' }
       ], example: [
           function() {
@@ -1840,7 +1840,7 @@ define( {
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ],
     Classes: [
-      { name: '.w-grid', remark: '基础样式。' },
+      { name: '.w-table', remark: '基础样式。' },
       { name: '.z-empty', remark: '没有子节点时的样式。' }
     ],
 	Examples: [
@@ -1870,8 +1870,8 @@ define( {
       ] }
     ]
   },
-  "Grid": {
-  	remark: '12列栅栏布局表格。',
+  "Form": {
+  	remark: '12列栅栏表单布局。',
   	extend: 'Widget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
@@ -2142,7 +2142,7 @@ define( {
       { name: 'load', remark: '经 src 加载子节点完毕时触发。' }
     ],
     Properties: [
-      { name: 'rootNode', type: 'Table', remark: 'tr所属的grid。' }
+      { name: 'rootNode', type: 'Table', remark: 'tr所属的table。' }
     ],
     Methods: [
       { name: 'checkBox([checked])', remark: '设置 tr 的 checkbox / radio 为选中状态。', param: [
@@ -2475,20 +2475,20 @@ define( {
     ]
   },
   "TableLeaf": {
-  	remark: '用于grid的树节点。',
+  	remark: '用于table的树节点。',
   	extend: 'Leaf',
     Methods: [
       { name: 'tr()', remark: '获取leaf所在的tr行对象。' }
     ]
   },
   "TableRowNum": {
-  	remark: '用于grid的自增数字字段。',
+  	remark: '用于table的自增数字字段。',
   	extend: 'Widget',
     Config: [
       { name: 'start', type: 'Number', remark: '初始值。默认值为1' }
     ],
     Classes: [
-      { name: '.w-grid-rownum', remark: '基础样式。' }
+      { name: '.w-table-rownum', remark: '基础样式。' }
     ]
   },
   "Progress": {
@@ -2702,7 +2702,7 @@ define( {
             ] }
           }
       ] },
-      { name: 'target', type: 'Boolean', optional: true, remark: '绑定一个支持前端翻页的widget(例如grid)。' },
+      { name: 'target', type: 'Boolean', optional: true, remark: '绑定一个支持前端翻页的widget(例如table)。' },
       { name: 'transparent', type: 'Boolean', optional: true, remark: '设置为true，可去除边框背景等预设样式。' }
     ],
     Methods: [
@@ -3090,7 +3090,7 @@ define( {
     ]
   },
   "TableRadio": {
-  	remark: 'grid 内部专用的 radio。选中状态与 tr 的 focus 效果同步。',
+  	remark: 'table 内部专用的 radio。选中状态与 tr 的 focus 效果同步。',
   	deprecate: 'focus,focusEnd,placeholder,transparent,.w-text,.w-input,.z-trans,.z-on',
   	extend: 'Radio'
   },
@@ -3413,13 +3413,13 @@ define( {
     ],
     Methods: [
       { name: 'search(text)', remark: '根据关键词弹出对话框选择器。' },
-      { name: 'complete(obj)', remark: '返回完整的结果给 onlinebox，完成正在输入的文本。用于选择器中设置了 combofield 的 grid 或 tree。', param: [
+      { name: 'complete(obj)', remark: '返回完整的结果给 onlinebox，完成正在输入的文本。用于选择器中设置了 combofield 的 table 或 tree。', param: [
         { name: 'obj', type: 'Object', remark: 'tr 或 leaf 类型的 widget。' }
       ], example: [
           function() {
-            // 给 grid 绑一个点击事件，返回结果
+            // 给 table 绑一个点击事件，返回结果
             return~
-            { type: 'grid', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
+            { type: 'Table', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
           }
       ] }
     ],
@@ -3465,13 +3465,13 @@ define( {
     ],
     Methods: [
       { name: 'suggest(text)', remark: '根据关键词弹出对话框选择器。' },
-      { name: 'complete(obj)', remark: '返回完整的结果给 combobox，完成正在输入的文本。用于选择器中设置了 combofield 的 grid 或 tree。', param: [
+      { name: 'complete(obj)', remark: '返回完整的结果给 combobox，完成正在输入的文本。用于选择器中设置了 combofield 的 table 或 tree。', param: [
         { name: 'obj', type: 'Object', remark: 'tr 或 leaf 类型的 widget。' }
       ], example: [
           function() {
-            // 给 grid 绑一个点击事件，返回结果
+            // 给 table 绑一个点击事件，返回结果
             return~
-            { type: 'grid', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
+            { type: 'Table', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
           }
       ] },
       { name: 'resetOptions()', remark: '重置选项。' },

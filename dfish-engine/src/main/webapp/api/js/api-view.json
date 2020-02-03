@@ -155,7 +155,7 @@
 		          { "id": "TR", "text": "TR", "icon": ".icon .icon-class" },
 		          { "id": "TD", "text": "TD", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "Grid", "text": "Grid", "icon": ".icon .icon-class" },
+		        { "id": "Form", "text": "Form", "icon": ".icon .icon-class" },
 		        { "id": "Horizontal", "text": "Horizontal", "icon": ".icon .icon-class" },
 		        { "id": "Tabs", "text": "Tabs", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "Tab", "text": "Tab", "icon": ".icon .icon-class" }
