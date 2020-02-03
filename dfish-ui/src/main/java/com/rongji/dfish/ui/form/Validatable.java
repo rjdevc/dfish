@@ -9,7 +9,7 @@ import java.util.Map;
  * @author DFish Team
  * @since 2.4
  */
-//FIXME 模式需要变一下，这个接口是在太多了应该要改为类似GridColumn的模式
+//FIXME 模式需要变一下，这个接口是在太多了应该要改为类似TableColumn的模式
 //
 //另外应该提供 getValidategroup和getValidate的方法
 public interface Validatable<T extends Validatable<T>> {

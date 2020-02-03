@@ -33,7 +33,7 @@ public class Submit extends CommunicateCommand<Submit> {
     }
 
     /**
-     * 需要提交的面板的ID，多个用逗号(半角)隔开，如果为空则表示整个view里面的所有表单。值得注意的是Grid等面板里面也可以有隐藏值。提交的时候，要考虑非FormPanel的情况
+     * 需要提交的面板的ID，多个用逗号(半角)隔开，如果为空则表示整个view里面的所有表单。值得注意的是Table等面板里面也可以有隐藏值。提交的时候，要考虑非FormPanel的情况
      *
      * @param range String 设置需要提交的面板的ID
      * @return 本身，这样可以继续设置其他属性
@@ -44,7 +44,7 @@ public class Submit extends CommunicateCommand<Submit> {
     }
 
     /**
-     * 需要提交的面板的ID，多个用逗号(半角)隔开，如果为空则表示整个view里面的所有表单。值得注意的是Grid等面板里面也可以有隐藏值。提交的时候，要考虑非FormPanel的情况
+     * 需要提交的面板的ID，多个用逗号(半角)隔开，如果为空则表示整个view里面的所有表单。值得注意的是Table等面板里面也可以有隐藏值。提交的时候，要考虑非FormPanel的情况
      *
      * @return the range  String
      * @since XMLTMPL 2.1

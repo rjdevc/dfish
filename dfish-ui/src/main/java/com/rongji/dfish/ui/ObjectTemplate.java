@@ -15,10 +15,10 @@ import com.rongji.dfish.base.util.BeanUtil;
 
 /**
  * 用于记录 创建初始值的模板。
- * 比如说 如果设置了 helper.GridPanel.escape=true 那么
- * 将会在GridPanel 这class对应的ObjectTemplate中记录  methods=[#setEscape] value=true
- * 那么以后在每次new GridPanel的时候，将会自动将escape属性设置为true
- * 支持helper.GridPanel.pub.tip=true
+ * 比如说 如果设置了 helper.TablePanel.escape=true 那么
+ * 将会在TablePanel 这class对应的ObjectTemplate中记录  methods=[#setEscape] value=true
+ * 那么以后在每次new TablePanel的时候，将会自动将escape属性设置为true
+ * 支持helper.TablePanel.pub.tip=true
  * 那么ObjectTemplate中记录  methods=[#getPub,#setEscape] value=true
  * 
  * 注意多级属性中并不会在get第一级属性的时候进行空判断。然后自动创建。防止创建的时候产生其他风险。

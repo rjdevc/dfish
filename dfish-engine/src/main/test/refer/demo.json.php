@@ -80,7 +80,7 @@ if ( $act == 'panel-html' ) { ?>
   ] }
 ] }
 				        	  	
-<? } else if ( $act == 'grid-tree' ) { ?>
+<? } else if ( $act == 'table-tree' ) { ?>
 
 [
   {"C0":"大伯-0","C1":{ "node": { "type": "leaf", "text": "堂兄" } },"C2":"大伯-2","C3":"大伯-3"},
@@ -341,7 +341,7 @@ if ( $act == 'panel-html' ) { ?>
     "type": "vert",
     "nodes": [{
      "id":"f_grid",
-      "type":"grid",
+      "type":"table",
       "face":"line", /* none,line,cell */
       "scroll":true, /* true或.开头样式名 */
       "height":"*",
@@ -441,7 +441,7 @@ if ( $act == 'panel-html' ) { ?>
     "type": "vert",
     "nodes": [{
       "id":"f_grid",
-      "type":"grid",
+      "type":"table",
       "face":"line", /* none,line,cell */
       "scroll":true, /* true或.开头样式名 */
       "height":"*",
@@ -483,7 +483,7 @@ if ( $act == 'panel-html' ) { ?>
 	"type" : "view",
 	"cls": "f-bg-white",
 	"node": {
-		"id":"f_grid",	"type":"grid", "test": true,
+		"id":"f_grid",	"type":"table", "test": true,
 		"face":"line", /* none,line,cell */
 		"scroll":true, /* true或.开头样式名 */
 		"height":"*",
@@ -662,7 +662,7 @@ if ( $act == 'panel-html' ) { ?>
 				"nodes" : [
 				  {
 				    "id":"c_grid",
-				    "type":"grid",
+				    "type":"table",
 				    "face":"cell", /* none,line,cell */
 				    "scroll":true, /* true或.开头样式名 */
 				    "height":"240",
@@ -703,7 +703,7 @@ if ( $act == 'panel-html' ) { ?>
 				  { "id": "f_flow", "type": "vert", "height": "*", "scroll": true, "on": { "scroll1": "alert()" }, "nodes": [
 				      {
 				    	"id"     : "c_treegrid",
-				    	"type"   : "grid",
+				    	"type"   : "table",
 				    	"face"   : "dot", /* none,line,cell,dot */
 				    	"scroll1": true,
 				        "hoverable": true,
@@ -739,7 +739,7 @@ if ( $act == 'panel-html' ) { ?>
 				    	    "src": "webapp/demo.json.php?act=panel-html",
 				    	    "data": {"C0":{"value":"1-0"},"C1":{ "colspan": 1, "node": { "type" : "html", "text" : "blue", "style": "background:blue;color:white;position:relative" } },"C2":"1-2","C3":"1-3"}
 				    	  },
-				    	  {"C0":{"value":"2-0"},"C1":{ "node": { "type": "leaf", "text": "大伯", src: "webapp/demo.json.php?act=grid-tree" } },"C2":"2-2","C3":"0-3"}
+				    	  {"C0":{"value":"2-0"},"C1":{ "node": { "type": "leaf", "text": "大伯", src: "webapp/demo.json.php?act=table-tree" } },"C2":"2-2","C3":"0-3"}
 				    	]
 				      },
 				      {	"type": "page/mini", "height": "22", "currentpage": 4, "pagecount": 5, "sumpage": 10, "src": "webapp/demo.json.php?act=page&page=$0", "align": "right" },
@@ -858,7 +858,7 @@ if ( $act == 'panel-html' ) { ?>
 				"id": "f_right",
 				"width": "50%",
 		    	"nodes": [
-		    		{ "type": "grid",
+		    		{ "type": "table",
 		    		  "id": "right_table",
 				      "columns": [
 				        {"field":"C0", "width":90, "align":"right"},

@@ -77,7 +77,7 @@ if ( $act == 'version' ) { ?>
             { "type": "horz", "height": "*", "nodes": [
             { "type": "film", "width": "*", "dft": "c_prev", "nodes": [
               { "type": "vert", "id": "c_prev", "nodes": [
-                { "type": "grid", "id": "gd", "height": "150", "face": "cell", "scroll": true, "cellpadding": 0, "columns": [
+                { "type": "table", "id": "gd", "height": "150", "face": "cell", "scroll": true, "cellpadding": 0, "columns": [
 					{"func":"text","width":"35%","field":"K"},
 					{"func":"text","width":"*","field":"V"},
 					{"func":"text","width":"40","field":"O"}

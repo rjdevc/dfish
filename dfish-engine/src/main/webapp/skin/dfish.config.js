@@ -50,7 +50,7 @@ dfish.config({
         'ButtonBar.w-tabbar.z-position-left': {widthMinus: 0, heightMinus: 20},
         'ButtonBar.w-tabbar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        'Grid': {scroll: true, br: false, pub: {focusable: true}, face: "cell"},
+        'Table': {scroll: true, br: false, pub: {focusable: true}, face: "cell"},
         'Column': {tip: true},
         'PageBar.z-normal': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
         'PageBar.z-mini': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
@@ -100,7 +100,7 @@ dfish.config({
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         },
-        'GridToggle': {
+        'TableToggle': {
             height: 40,
             icon: '.i-toggle-icon',
             expandedIcon: '.i-toggle-expanded',

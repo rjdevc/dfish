@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.layout;
 
 ///**
-// * 对象查看器，主要就是平铺显示Album 或列表显示 GridLayout
+// * 对象查看器，主要就是平铺显示Album 或列表显示 TableLayout
 // * @author DFish Team
 // *
 // * @param <T>  当前对象类型

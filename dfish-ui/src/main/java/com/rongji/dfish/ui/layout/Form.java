@@ -14,30 +14,30 @@ import java.util.List;
  * 最后表单(FormLayout)上已有的最后一列，剩余的列 小于当前对象列大小。将会自动排到下一行。
  * 如果有些表单元素，rowspan大于1，也会占用当前列的大小。排不下的时候，也会自动排列到下一行。
  * <p>
- * 3.2之前，它 功能由 FormPanel FlexGrid LayoutFormPanel分摊。但3.3以后，如果使用前后端分离的模式开发，
+ * 3.2之前，它 功能由 FormPanel FlexTable LayoutFormPanel分摊。但3.3以后，如果使用前后端分离的模式开发，
  * 则需要一个统一，方便的组件来代替，于是就封装了它。它现在对于前端是一个实际存在的类，不再是一个JsonWrapper。
- * 5.0以后建议  FormPanel FlexGrid LayoutFormPanel 全部改为使用该类。
+ * 5.0以后建议  FormPanel FlexTable LayoutFormPanel 全部改为使用该类。
  * @author LinLW
  * @since 5.0
  */
-public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
+public class Form extends AbstractPubNodeContainer<Form, Table.TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
     /**
      * 无格式
      */
-    public static final String FACE_NONE = Grid.FACE_NONE;
+    public static final String FACE_NONE = Table.FACE_NONE;
 
     /**
      * 用横线把表格划分成多行
      */
-    public static final String FACE_LINE = Grid.FACE_LINE;
+    public static final String FACE_LINE = Table.FACE_LINE;
     /**
      * 用横竖的线把表格划分成多个单元格
      */
-    public static final String FACE_CELL = Grid.FACE_CELL;
+    public static final String FACE_CELL = Table.FACE_CELL;
     /**
      * 用横线(虚线)把表格划分成多行
      */
-    public static final String FACE_DOT = Grid.FACE_DOT;
+    public static final String FACE_DOT = Table.FACE_DOT;
     private Integer cols;
     private Boolean escape;
     private String face;
@@ -49,8 +49,8 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
     }
 
     @Override
-    protected Grid.TD newPub() {
-        return new Grid.TD();
+    protected Table.TD newPub() {
+        return new Table.TD();
     }
 
     /**
@@ -92,7 +92,7 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
 
     /**
      * 添加子元素，并且制定宽度。
-     * 相当于add(new Grid.Td().setColspan(colspan).setNode(w))
+     * 相当于add(new Table.Td().setColspan(colspan).setNode(w))
      *
      * @param w       元素
      * @param colspan 占用宽度
@@ -104,12 +104,12 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add(new Grid.TD().setColSpan(colspan).setNode(w));
+        return add(new Table.TD().setColSpan(colspan).setNode(w));
     }
 
     /**
      * 添加子元素，并且制定宽度。
-     * 相当于add(new Grid.Td().setColspan(colspan).setRowspan(rowspan).setNode(w))
+     * 相当于add(new Table.Td().setColspan(colspan).setRowspan(rowspan).setNode(w))
      *
      * @param w       元素
      * @param colspan 占用宽度
@@ -122,7 +122,7 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add(new Grid.TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));
+        return add(new Table.TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));
     }
 
     private HiddenPart hiddens = new HiddenPart();
@@ -188,7 +188,7 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
     }
 
 //		@Override
-//		public JsonGridLayout add(Tr w) {
+//		public JsonTableLayout add(Tr w) {
 //			throw new UnsupportedOperationException("not support this method");
 //	    }
 
@@ -229,7 +229,7 @@ public class Form extends AbstractPubNodeContainer<Form, Grid.TD> implements Htm
         for (Iterator<Node> iter = nodes.iterator();
              iter.hasNext(); ) {
             Node<?> item = iter.next();
-            if (id.equals(item.getId()) || (item instanceof Grid.TD && id.equals(((Grid.TD) item).getNode().getId()))) {
+            if (id.equals(item.getId()) || (item instanceof Table.TD && id.equals(((Table.TD) item).getNode().getId()))) {
                 iter.remove();
             } else if (item instanceof Layout) {
                 Layout<?> cast = (Layout<?>) item;

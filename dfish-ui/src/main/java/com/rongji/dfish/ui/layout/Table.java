@@ -13,32 +13,32 @@ import java.beans.Transient;
 import java.util.*;
 
 /**
- * GridLayout 为表格。
- * <p>作为DFISH3.x 最重要的一个布局面板之一，GridLayout是所有表格类布局的原型。包括分组表格，包括多层级(可折叠)表格。
- * 同时DFish2.x 的FormPanel / GridPanel 现在都是一个帮助类(封装类)。它们仅仅是为了使用起来方便，最终这些类，会生成GridLayout的实体。
- * 而DFish3.x大力推荐的FlexGrid也是该类的封装类。</p>
+ * Table 为表格。
+ * <p>作为DFISH3.x 最重要的一个布局面板之一，Table是所有表格类布局的原型。包括分组表格，包括多层级(可折叠)表格。
+ * 同时DFish2.x 的FormPanel / TablePanel 现在都是一个帮助类(封装类)。它们仅仅是为了使用起来方便，最终这些类，会生成Table的实体。
+ * 而DFish3.x大力推荐的FlexTable也是该类的封装类。</p>
  * <p>与2.x相似一个表格的定义最基本的有 列定义，表头定义，表体定义。</p>
  * <div style="border-top:1px solid #333;border-bottom:1px solid #333;background-color:#FEC;line-height:120%;font-size:12px;"><pre>
  * {
- * "type":"grid","id":"f","face":"line","columns":[
+ * "type":"Table","id":"table","face":"line","columns":[
  * {
- * "format":"javascript:return {\"type\":\"triplebox\",\"name\":\"selectItem\",\"value\":$id,\"sync\":\"click\"}","width":"40","align":"center","field":"grid_triplebox"
+ * "format":"javascript:return {\"type\":\"TableTripleBox\",\"name\":\"selectItem\",\"value\":$id,\"sync\":\"click\"}","width":"40","align":"center","field":"tripleBox"
  * },{"width":"*","field":"C1"},{"width":"100","field":"C2"},{"format":"yyyy-MM-dd HH:mm","width":"100","field":"C3"}
  * ],
- * "thead":{
+ * "tHead":{
  * "rows":[
  * {
- * "grid_triplebox":{"type":"triplebox","name":"selectItem","checkall":true,"sync":"click"},"C1":"消息","C2":"发送人","C3":"时间"
+ * "tripleBox":{"type":"TableTripleBox","name":"selectItem","checkAll":true,"sync":"click"},"C1":"消息","C2":"发送人","C3":"时间"
  * }
  * ]
- * },"tbody":{
+ * },"tBody":{
  * "rows":[
  * {"id":"000001","C1":"【通知】请各位同事明天着正装上班，迎接XX领导一行莅临参观指导。","C2":"行政部","C3":"2018-07-06 10:48:22"},
  * {"id":"000002","C1":"王哥，能不能把我工位上的一张XX项目的审批材料，拍个照发给我一下，谢谢","C2":"小张","C3":"2018-07-06 10:48:22"}
  * ]
  * }
  * }</pre></div>
- * <p>thead 和 tbody其实都是一个基本表格结构。他们可以分开设置样式，以实现独立的表头效果。thead可以没有。基本表格结构GridBody最基本格式为tr和td。</p>
+ * <p>tHead 和 tBody其实都是一个基本表格结构。他们可以分开设置样式，以实现独立的表头效果。tHead可以没有。基本表格结构TableBody最基本格式为tr和td。</p>
  * <p>Tr的完整格式其实是</p>
  * <div style="border-top:1px solid #333;border-bottom:1px solid #333;background-color:#FEC;line-height:120%;font-size:12px;"><pre>
  * {
@@ -57,14 +57,14 @@ import java.util.*;
  * <p>如果没有rowspan或cls属性的时候，td可以只写其中node的部分。这时可以是一个html元素或一个Text等输入框。甚至可以是一个布局元素。里面放任何内容。
  * 而如果这个node就是为了输出一个html并且不需要复杂 cls 等属性的时候。 td就可以缩写成范例中的那样，一个字符串。用于最简输出。同时也更容易被人阅读，理解，和调试</p>
  * <p>支持折叠和多层折叠 详见 {@link com.rongji.dfish.ui.widget.Toggle} 和 {@link Leaf}</p>
- * <p>支持指定位置添加内容 见{@link Grid#add(int, int, Object)} 甚至可以直接指定一个区块合并单元格，并填充内容{@link Grid#add(Integer, Integer, Integer, Integer, Object)}</p>
- * <p>如基础定义所见，如果在GridLayout中直接指定位置添加内容，实际上指的是tbody部分。如果想在thead上使用该功能，要显式先取得 getThead()</p>
+ * <p>支持指定位置添加内容 见{@link Table#add(int, int, Object)} 甚至可以直接指定一个区块合并单元格，并填充内容{@link Table#add(Integer, Integer, Integer, Integer, Object)}</p>
+ * <p>如基础定义所见，如果在Table中直接指定位置添加内容，实际上指的是tBody部分。如果想在tHead上使用该功能，要显式先取得 getThead()</p>
  *
  * @author DFish team
  * @since DFish 3.0
  */
-public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements GridOperation<Grid>,
-        HiddenContainer<Grid>, HtmlContentHolder<Grid>, Scrollable<Grid> {
+public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements TableOperation<Table>,
+        HiddenContainer<Table>, HtmlContentHolder<Table>, Scrollable<Table> {
 
     private static final long serialVersionUID = 6537737987499258183L;
     private THead tHead;
@@ -100,7 +100,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     private Boolean escape;
     private Boolean scroll;
 
-    public Grid(String id) {
+    public Table(String id) {
         super(id);
         this.setTHead(new THead());
         this.setTBody(new TBody());
@@ -127,7 +127,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param tHead Thead
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setTHead(THead tHead) {
+    public Table setTHead(THead tHead) {
         if (tHead == null) {
             throw new UnsupportedOperationException("THead can not be null.");
         }
@@ -151,7 +151,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param tBody 设置表体
      * @return this
      */
-    public Grid setTBody(TBody tBody) {
+    public Table setTBody(TBody tBody) {
         if (tBody == null) {
             throw new UnsupportedOperationException("TBody can not be null.");
         }
@@ -175,7 +175,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param tFoot Thead
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setTFoot(TFoot tFoot) {
+    public Table setTFoot(TFoot tFoot) {
         if (tFoot == null) {
             throw new UnsupportedOperationException("TFoot can not be null.");
         }
@@ -218,7 +218,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param columns 列属性定义
      * @return this
      */
-    public Grid setColumns(List<Column> columns) {
+    public Table setColumns(List<Column> columns) {
         this.columns = columns;
         return this;
     }
@@ -226,11 +226,11 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     /**
      * 添加列
      *
-     * @param gridColumn GridColumn
+     * @param gridColumn TableColumn
      * @return 本身，这样可以继续设置其他属性
      */
     @SuppressWarnings("deprecation")
-    public Grid addColumn(Column gridColumn) {
+    public Table addColumn(Column gridColumn) {
         //FIXME 重名
         if (Utils.isEmpty(gridColumn.getField()) && Utils.notEmpty(gridColumn.getWidth())) {
 //	 		int i=columns.size();
@@ -292,7 +292,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     @Override
-    public Grid removeNodeById(String id) {
+    public Table removeNodeById(String id) {
         tBody.removeNodeById(id);
         tHead.removeNodeById(id);
         tFoot.removeNodeById(id);
@@ -314,17 +314,17 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     private HiddenPart hiddens = new HiddenPart();
 
     @Override
-    public Grid add(Hidden hidden) {
+    public Table add(Hidden hidden) {
         hiddens.add(hidden);
         return this;
     }
 
     @Override
-    public Grid addHidden(String name, String value) {
+    public Table addHidden(String name, String value) {
         hiddens.addHidden(name, value);
         return this;
     }
-//	public GridLayout addHidden(String name,AtExpression value) {
+//	public Table addHidden(String name,AtExpression value) {
 //		hiddens.addHidden(name, value);
 //		return this;
 //	}
@@ -341,7 +341,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     @Override
-    public Grid removeHidden(String name) {
+    public Table removeHidden(String name) {
         hiddens.removeHidden(name);
         return this;
     }
@@ -354,7 +354,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @deprecated 目前通过{@link #getPub()}.{@link #setFocusable(Boolean)}来设置
      */
     @Deprecated
-    public Grid setFocusable(Boolean focusable) {
+    public Table setFocusable(Boolean focusable) {
 //		this.focusable = focusable;
         getPub().setFocusable(focusable);
         return this;
@@ -364,7 +364,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         return focusMultiple;
     }
 
-    public Grid setFocusMultiple(Boolean focusMultiple) {
+    public Table setFocusMultiple(Boolean focusMultiple) {
         this.focusMultiple = focusMultiple;
         return this;
     }
@@ -384,7 +384,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param combo 数据选项表。
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setCombo(Combo combo) {
+    public Table setCombo(Combo combo) {
         this.combo = combo;
         return this;
     }
@@ -406,7 +406,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param limit Integer
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setLimit(Integer limit) {
+    public Table setLimit(Integer limit) {
         this.limit = limit;
         return this;
     }
@@ -426,7 +426,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param resizable Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setResizable(Boolean resizable) {
+    public Table setResizable(Boolean resizable) {
         this.resizable = resizable;
         return this;
     }
@@ -446,7 +446,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param face 表格行的样式
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setFace(String face) {
+    public Table setFace(String face) {
         this.face = face;
         return this;
     }
@@ -467,7 +467,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @return 本身，这样可以继续设置其他属性
      */
 
-    public Grid setCellPadding(Integer cellPadding) {
+    public Table setCellPadding(Integer cellPadding) {
         this.cellPadding = cellPadding;
         return this;
     }
@@ -487,7 +487,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * @param br Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid setBr(Boolean br) {
+    public Table setBr(Boolean br) {
         this.br = br;
         return this;
     }
@@ -498,13 +498,13 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     @Override
-    public Grid setEscape(Boolean escape) {
+    public Table setEscape(Boolean escape) {
         this.escape = escape;
         return this;
     }
 
 //		@Override
-//		public JsonGridLayout add(Tr w) {
+//		public JsonTable add(Tr w) {
 //			throw new UnsupportedOperationException("not support this method");
 //	    }
 
@@ -514,7 +514,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     @Override
-    public Grid setScroll(Boolean scroll) {
+    public Table setScroll(Boolean scroll) {
         this.scroll = scroll;
         return this;
     }
@@ -536,7 +536,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      *
      * @return 本身，这样可以继续设置其他属性
      */
-    public Grid minimize() {
+    public Table minimize() {
         //需要判定head的最大宽度和最大高度，以及Column的最大宽度
         //FIXME
 
@@ -639,37 +639,37 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     @Override
-    public Grid add(Node w) {
+    public Table add(Node w) {
         tBody.add((TR) w);
         return this;
     }
 
     @Override
-    public Grid add(int row, int column, Object o) {
+    public Table add(int row, int column, Object o) {
         tBody.add(row, column, o);
         return this;
     }
 
     @Override
-    public Grid add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
+    public Table add(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
         tBody.add(fromRow, fromColumn, toRow, toColumn, value);
         return this;
     }
 
     @Override
-    public Grid put(int row, int column, Object o) {
+    public Table put(int row, int column, Object o) {
         tBody.put(row, column, o);
         return this;
     }
 
     @Override
-    public Grid put(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
+    public Table put(Integer fromRow, Integer fromColumn, Integer toRow, Integer toColumn, Object value) {
         tBody.put(fromRow, fromColumn, toRow, toColumn, value);
         return this;
     }
 
     @Override
-    public Grid removeNode(int row, int column) {
+    public Table removeNode(int row, int column) {
         tBody.removeNode(row, column);
         return this;
     }
@@ -680,7 +680,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     @Override
-    public Grid removeNode(int fromRow, int fromColumn, int toRow, int toColumn) {
+    public Table removeNode(int fromRow, int fromColumn, int toRow, int toColumn) {
         tBody.removeNode(fromRow, fromColumn, toRow, toColumn);
         return this;
     }
@@ -722,7 +722,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * 当为 Radio/checkBox 是否让radio和当前焦点状态同步。
      * </li>
      * </ul>
-     * 可以使用 text / checkbox / hidden / radio方法快捷构建一个GridColumn
+     * 可以使用 text / checkbox / hidden / radio方法快捷构建一个TableColumn
      */
     public static class Column extends AbstractNode<Column> implements Alignable<Column>, VAlignable<Column> {
 
@@ -779,8 +779,8 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         /**
-         * 构建一个TEXT类型的GridColumn 在GridLayou调用的时候不自动绑定数据。所以没有绑定数据的选项和label
-         * 这个一般在GridLayout原型的时候使用。
+         * 构建一个TEXT类型的TableColumn 在TableLayou调用的时候不自动绑定数据。所以没有绑定数据的选项和label
+         * 这个一般在Table原型的时候使用。
          *
          * @param field String 输出时显示的JSON属性名字。注意不要有重复
          * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
@@ -791,7 +791,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         /**
-         * 构建一个TEXT类型的GridColumn 在GridLayou调用的时候不自动绑定数据。所以没有绑定数据的选项和label
+         * 构建一个TEXT类型的TableColumn 在TableLayou调用的时候不自动绑定数据。所以没有绑定数据的选项和label
          *
          * @param field  String 输出时显示的JSON属性名字。注意不要有重复
          * @param width  String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
@@ -803,7 +803,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         /**
-         * 构建一个GridTriplebox类型的GridColumn
+         * 构建一个TableTriplebox类型的TableColumn
          *
          * @param checkedField 如果设定了这个字段，这个box选中状态将根据这个字段值进行设定
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
@@ -910,7 +910,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         /**
          * 将此列设置为单选框
          *
-         * @param radio GridRadio 单选框
+         * @param radio TableRadio 单选框
          * @return 本身，这样可以继续设置其他属性
          */
         public Column setRadio(Radio radio) {
@@ -920,7 +920,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         /**
          * 将此列设置为单选框
          *
-         * @param radio        GridRadio 单选框
+         * @param radio        TableRadio 单选框
          * @param checkedField String 所选值指向的列名
          * @return 本身，这样可以继续设置其他属性
          */
@@ -940,7 +940,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
 
         /**
-         * 构建一个CHECKBOX类型的GridColumn
+         * 构建一个CHECKBOX类型的TableColumn
          *
          * @param checkedField String 所选中值指定的列名
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
@@ -951,7 +951,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         /**
-         * 构建一个CHECKBOX类型的GridColumn
+         * 构建一个CHECKBOX类型的TableColumn
          *
          * @param checkedField String 所选中值指定的列名
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
@@ -1172,7 +1172,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
 
         /**
-         * 是否可见的。如果是false表示当前GridColumn是隐藏字段，不输出给javascript前端。仅仅用于JAVA后端用于方便获取属性用，起到方便开发的作用
+         * 是否可见的。如果是false表示当前TableColumn是隐藏字段，不输出给javascript前端。仅仅用于JAVA后端用于方便获取属性用，起到方便开发的作用
          *
          * @return boolean
          */
@@ -1475,12 +1475,12 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     /**
-     * 抽象的GridLayout 它有两个实例，一个是底层的JsonGridLayout 仅作吻合前端JSON要求的最低的封装，必要的getter和setter
-     * 另一个是常用的GridLayout 可以指定某个位置直接增加内容。
+     * 抽象的Table 它有两个实例，一个是底层的JsonTable 仅作吻合前端JSON要求的最低的封装，必要的getter和setter
+     * 另一个是常用的Table 可以指定某个位置直接增加内容。
      *
      * @author DFish team
      */
-    protected static abstract class Part extends AbstractNodeContainer<Part> implements GridOperation<Part> {
+    protected static abstract class Part extends AbstractNodeContainer<Part> implements TableOperation<Part> {
 
         /**
          * 构造函数
@@ -1503,13 +1503,13 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             return null;
         }
 
-        protected Grid owner;
+        protected Table owner;
 
-        public Grid owner() {
+        public Table owner() {
             return owner;
         }
 
-        public Part owner(Grid owner) {
+        public Part owner(Table owner) {
             this.owner = owner;
             return this;
         }
@@ -1533,7 +1533,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             if (o != null && o instanceof AbstractTd) {
                 int toColumn = column;
                 int toRow = row;
-                //防止加了如一个大小大于大于Grid
+                //防止加了如一个大小大于大于Table
                 AbstractTd<?> cast = (AbstractTd<?>) o;
                 if (cast.getColSpan() != null && cast.getColSpan() > 1) {
                     toColumn += cast.getColSpan() - 1;
@@ -1549,7 +1549,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
         private void put(int fromRow, int fromColumn, int toRow, int toColumn, Object o, boolean overwrite) {
             if (owner == null) {
-                throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in GridLayout.");
+                throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in Table.");
             }
             if (fromRow < 0 || fromColumn < 0 || toRow < 0 || toColumn < 0) { // 行列小于0,抛异常
                 throw new IndexOutOfBoundsException("Position: (" + Math.min(fromRow, toRow) + "," + Math.min(fromColumn, toColumn) + ")");
@@ -1600,8 +1600,8 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             int rowspan = toRow - fromRow + 1;
             int colspan = toColumn - fromColumn + 1;
             if (o instanceof AbstractTd) {
-                //如果是entry是GridCell就直接使用GridCell但，GridCell的rowspan和
-                //colspan 会重新计算。GridCell本身是什么模式就是什么模式
+                //如果是entry是TableCell就直接使用TableCell但，TableCell的rowspan和
+                //colspan 会重新计算。TableCell本身是什么模式就是什么模式
                 AbstractTd<?> cell = (AbstractTd<?>) o;
                 if (rowspan > 1) {
                     cell.setRowSpan(rowspan);
@@ -1612,7 +1612,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
                 ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
             } else if (o instanceof Widget) {
-                //如果entry 是 Widget 那么将会包装在一个GridCell里面
+                //如果entry 是 Widget 那么将会包装在一个TableCell里面
                 if (rowspan > 1 || colspan > 1) {
                     AbstractTd<?> cell = new TD();
                     cell.setNode((Widget<?>) o);
@@ -1683,7 +1683,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         @Override
         public boolean containsNode(int fromRow, int fromColumn, int toRow, int toColumn) {
             if (owner == null) {
-                throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in GridLayout.");
+                throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in Table.");
             }
             Map<String, Integer> columnMap = owner.getVisibleColumnNumMap();
             int targetFromRow = 0;
@@ -1722,7 +1722,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         @Override
         public Part removeNode(int fromRow, int fromColumn, int toRow, int toColumn) {
             if (owner == null) {
-                throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in GridLayout.");
+                throw new UnsupportedOperationException("can NOT use [x,y] mode when Thead or Tbody NOT in Table.");
             }
             // 如果有一个格子不能被移除则报错，不能被移除的可能，是指这个区域里面的某个格子被合并过单元，并且这个合并的单元格部分区域在这个区域之外。
             Map<String, Integer> columnMap = owner.getVisibleColumnNumMap();
@@ -1788,10 +1788,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
      * <p>表格的行有三种工作模式</p>
      * <p>常见的是里面包行单元格(Td)。
      * 每个单元格是一个文本或独立的widget，有widget的功能和属性，只是有的时候可能并不会给每个单元格设置ID。</p>
-     * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或GridCell。
+     * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或TableCell。
      * 并用{@link Column#getField()} 来说明这个内容显示在哪里。</p>
-     * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
-     * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
+     * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集TableRow构成的List。
+     * 而会有一个TableTreeItem字段用于做折叠操作的视觉效果</p>
      *
      * @author DFish Team
      * @see AbstractTd {@link Column} {@link Leaf}
@@ -1859,10 +1859,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     /**
-     * Td 表示一个Grid的单元格
+     * Td 表示一个Table的单元格
      * <p>在一些复杂布局结构中，它可以占不止一行或不止一列</p>
-     * <p>GridCell 有两种工作模式，他内部可以包含一个Widget或简单的包含一个文本，如果包含了widget文本模式将失效</p>
-     * <p>虽然GridCell也是一个Widget，但其很可能并不会专门设置ID。</p>
+     * <p>TableCell 有两种工作模式，他内部可以包含一个Widget或简单的包含一个文本，如果包含了widget文本模式将失效</p>
+     * <p>虽然TableCell也是一个Widget，但其很可能并不会专门设置ID。</p>
      * <p>由于很多情况下，界面上出现的就是TD元素。所以，TD元素一般输出的时候会自动简写</p>
      * 其完整格式为。
      * <pre>
@@ -1994,14 +1994,14 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     /**
-     * Grid.Tr 表示 表格的行
+     * Table.Tr 表示 表格的行
      * <p>表格的行有三种工作模式</p>
      * <p>常见的是里面包行单元格(Td)。
      * 每个单元格是一个文本或独立的widget，有widget的功能和属性，只是有的时候可能并不会给每个单元格设置ID。</p>
-     * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或GridCell。
+     * <p>为了能让表格的json尽可能小。允许data类型为 文本 widget 或TableCell。
      * 并用{@link Column#getField} 来说明这个内容显示在哪里。</p>
-     * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集GridRow构成的List。
-     * 而会有一个GridTreeItem字段用于做折叠操作的视觉效果</p>
+     * <p>当一行里面包含可折叠的子集内容的时候，它将包含rows属性。rows里面是一个有子集TableRow构成的List。
+     * 而会有一个TableTreeItem字段用于做折叠操作的视觉效果</p>
      *
      * @param <T> 当前类型
      * @author DFish Team
@@ -2037,7 +2037,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         @Override
         @Deprecated
         public T add(Node w) {
-            throw new UnsupportedOperationException("Use setData(String, GridCell) instead");
+            throw new UnsupportedOperationException("Use setData(String, TableCell) instead");
         }
 
         /**
@@ -2066,7 +2066,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         /**
          * 添加一个可折叠的行。
          *
-         * @param row GridRow
+         * @param row TableRow
          * @return 本身，这样可以继续设置其他属性
          */
 
@@ -2234,7 +2234,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
             if (data == null) {
                 data = new LinkedHashMap<String, Object>();
             }
-            // 如果插入的内容是String/Object  以及非GridCell的Widget需要做一层封装。
+            // 如果插入的内容是String/Object  以及非TableCell的Widget需要做一层封装。
             data.put(key, value);
             return (T) this;
         }
@@ -2290,10 +2290,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     /**
-     * Td 表示一个Grid的单元格
+     * Td 表示一个Table的单元格
      * <p>在一些复杂布局结构中，它可以占不止一行或不止一列</p>
-     * <p>GridCell 有两种工作模式，他内部可以包含一个Widget或简单的包含一个文本，如果包含了widget文本模式将失效</p>
-     * <p>虽然GridCell也是一个Widget，但其很可能并不会专门设置ID。虽然它是一个Layout，但它最多包含1个子节点。即其内容。</p>
+     * <p>TableCell 有两种工作模式，他内部可以包含一个Widget或简单的包含一个文本，如果包含了widget文本模式将失效</p>
+     * <p>虽然TableCell也是一个Widget，但其很可能并不会专门设置ID。虽然它是一个Layout，但它最多包含1个子节点。即其内容。</p>
      *
      * @param <T> 本身类型
      * @author DFish Team
@@ -2409,7 +2409,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
         }
 
         /**
-         * GridCell 下只能有一个node，所以add和setNode是相同的功能
+         * TableCell 下只能有一个node，所以add和setNode是相同的功能
          *
          * @param node Widget
          * @return 本身，这样可以继续设置其他属性
@@ -2620,10 +2620,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     /**
-     * GridTreeItem 是可折叠表格中的折叠项
-     * <p>在GridRow中添加了下级可折叠的行的时候，GridTreeItem作为一个视觉标志出现在当前行({@link TR})上。
+     * TableTreeItem 是可折叠表格中的折叠项
+     * <p>在TableRow中添加了下级可折叠的行的时候，TableTreeItem作为一个视觉标志出现在当前行({@link TR})上。
      * 它前方有一个+号(或-号)点击有展开或折叠效果。</p>
-     * <p>多级别的GridTreeItem自动产生缩进效果</p>
+     * <p>多级别的TableTreeItem自动产生缩进效果</p>
      *
      * @author DFish Team
      * @see TR
@@ -2645,7 +2645,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
         @Override
         public String getType() {
-            return "GridLeaf";
+            return "TableLeaf";
         }
 
         public Leaf(String text) {
@@ -2827,7 +2827,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     /**
-     * Grid专用的单选框
+     * Table专用的单选框
      *
      * @author lamontYu - DFish Team
      */
@@ -2840,24 +2840,10 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
         @Override
         public String getType() {
-            return "GridRadio";
+            return "TableRadio";
         }
     }
 
-    /**
-     * Description: 用于grid的自增序号列
-     * Copyright:   Copyright (c)2017
-     * Company:     rongji
-     *
-     * @author DFish Team - lamontYu
-     * @version 1.0
-     * Create at:   2017-8-10 上午10:17:30
-     * <p>
-     * Modification History:
-     * Date			Author				Version		Description
-     * ------------------------------------------------------------------
-     * 2017-8-10	DFish Team - lamontYu	1.0			1.0 Version
-     */
     public static class RowNum extends AbstractWidget<RowNum> {
 
         private static final long serialVersionUID = -8038094039396279588L;
@@ -2869,7 +2855,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
         @Override
         public String getType() {
-            return "GridRowNum";
+            return "TableRowNum";
         }
 
         private Integer start;
@@ -2897,7 +2883,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
     }
 
     /**
-     * Grid专用的复选框
+     * Table专用的复选框
      *
      * @author lamontYu - DFish Team
      */
@@ -2922,7 +2908,7 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
 
         @Override
         public String getType() {
-            return "GridTripleBox";
+            return "TableTripleBox";
         }
 
         /**
