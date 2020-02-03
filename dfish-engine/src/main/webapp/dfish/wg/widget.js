@@ -7828,7 +7828,7 @@ ComboBox = define.widget( 'ComboBox', {
 			this.more && this.more.dispose();
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
-			this.more = this.createPop( this.x.suggest || { type: 'Dialog', node: { type: 'View', node: { type: 'Grid' } } }, { value: this._val() } );
+			this.more = this.createPop( this.x.suggest || { type: 'Dialog', node: { type: 'View', node: { type: 'Table' } } }, { value: this._val() } );
 			if ( this.x.suggest ) {
 				this._online = typeof this.more.x.src === _STR && /\$text\b/.test( this.more.x.src );
 			}
@@ -7917,7 +7917,7 @@ ComboBox = define.widget( 'ComboBox', {
 			if ( b.combo )
 				return b.combo;
 			if ( this.x.bind ) {
-				var c = this.x.bind.target ? b.find( this.x.bind.target ) : (b.descendant( 'Grid' ) || b.descendant( 'Tree' ));
+				var c = this.x.bind.target ? b.find( this.x.bind.target ) : (b.descendant( 'Table' ) || b.descendant( 'Tree' ));
 				return c && (b.combo = new _comboHooks[ c.type ]( c, this.x.bind ));
 			}
 		},
@@ -9042,7 +9042,7 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		getCombo: function( a ) {
 			return a.ownerView.combo || (a.ownerView.combo = new _comboHooks[ this.type ]( a.rootNode, this.bind ));
 		},
-		// 合并来自另一个grid的某一行的combo xml /@a -> tr|xml|treeCombo
+		// 合并来自另一个table的某一行的combo xml /@a -> tr|xml|treeCombo
 		merge: function( a ) {
 			a.isWidget && (a = this.getCombo( a ).getXML( a ) || F);
 			if ( a.nodeType === 1 ) {
@@ -9708,8 +9708,8 @@ Hiddens = define.widget( 'Hiddens', {
 		html: _proto.html_nodes
 	}
 } ),
-// `gridcombo` 表格搜索过滤器
-GridCombo = _comboHooks.Grid = $.createClass( {
+// `tablecombo` 表格搜索过滤器
+TableCombo = _comboHooks.Table = $.createClass( {
 	Const: function( a, b ) {
 		this.cab = a;
 		this.bind = b;
@@ -9724,7 +9724,7 @@ GridCombo = _comboHooks.Grid = $.createClass( {
 	},
 	Extend: TreeCombo,
 	Prototype: {
-		type: 'Grid',
+		type: 'Table',
 		node2xml: function( a ) {
 			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.tableBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
 				d = t[ i ].x.data, r = d[ b.remark ];
@@ -9753,8 +9753,8 @@ GridCombo = _comboHooks.Grid = $.createClass( {
 		}
 	}
 } ),
-/* grid的column设置了fixed时，会产生分身grid(LeftGrid, RightGrid)。当调用grid的方法比如append remove等，分身也需要同样处理，以保持数据一致。
-   _parallel_methods使grid的方法能作用到分身grid上。 */
+/* Table的column设置了fixed时，会产生分身Table(LeftTable, RightTable)。当调用Table的方法比如append remove等，分身也需要同样处理，以保持数据一致。
+   _parallel_methods使Table的方法能作用到分身Table上。 */
 _parallel_methods = function( a, b ) {
 	$.each( b.split( ' ' ), function( v ) {
 		var f = a.prototype[ v ];
@@ -9767,22 +9767,22 @@ _parallel_methods = function( a, b ) {
 		}
 	} );
 },
-/* grid 辅助方法和专用类 */
-_grid_f_attr = function( v ) {
+/* Table 辅助方法和专用类 */
+_table_f_attr = function( v ) {
 	return typeof v === _OBJ && v && (! v.type || v.type === TD.type) ? (v.text || '') : v;
 },
-_grid_tr = function() {
+_table_tr = function() {
 	return this.closest( function() { return this.type_tr || this.type_thr || this.type_tfr } );
 },
-/* `gridleaf` */
-GridLeaf = define.widget( 'GridLeaf', {
+/* `Tableleaf` */
+TableLeaf = define.widget( 'TableLeaf', {
 	Const: function( x, p ) {
 		Leaf.apply( this, arguments );
 		var r = this.tr();
 		this.level = r.level;
 		x.src && (this.loaded = !!r.length);
 		x.expanded == N && (x.expanded = !x.src || !!r.length);
-		r.gridLeaf = this;
+		r.tableLeaf = this;
 		this.row = r;
 	},
 	Extend: Leaf,
@@ -9801,10 +9801,10 @@ GridLeaf = define.widget( 'GridLeaf', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
-		className: 'w-leaf w-grid-leaf',
+		ROOT_TYPE: 'Table,Grid',
+		className: 'w-leaf w-table-leaf',
 		_pad_left: 0,
-		tr: _grid_tr,
+		tr: _table_tr,
 		_focus: $.rt(),
 		isEllipsis: $.rt( T ),
 		scaleWidth: function() {
@@ -9814,7 +9814,7 @@ GridLeaf = define.widget( 'GridLeaf', {
 			return this.row.length;
 		},
 		parent: function() {
-			return this.row.parentNode.gridLeaf;
+			return this.row.parentNode.tableLeaf;
 		},
 		isFirst: function() {
 			return this.row.nodeIndex === 0;
@@ -9857,7 +9857,7 @@ GridLeaf = define.widget( 'GridLeaf', {
 			this.isFirst() && $.classAdd( this.$(), 'z-first' );
 			this.isLast() && $.classAdd( this.$(), 'z-last' );
 			for ( var i = 0, l = this.row.length; i < l; i ++ )
-				this.row[ i ].gridLeaf && this.row[ i ].gridLeaf.indent();
+				this.row[ i ].tableLeaf && this.row[ i ].tableLeaf.indent();
 		},
 		html: function() {
 			var r = this.tr(), s = this.html_self( r.length );
@@ -9865,11 +9865,11 @@ GridLeaf = define.widget( 'GridLeaf', {
 		}
 	}
 } ),
-/* `gridtoggle` */
-GridToggle = define.widget( 'GridToggle', {
+/* `tabletoggle` */
+TableToggle = define.widget( 'TableToggle', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		this.tr().gridToggle = this;
+		this.tr().tableToggle = this;
 	},
 	Extend: Toggle,
 	Listener: {
@@ -9888,15 +9888,15 @@ GridToggle = define.widget( 'GridToggle', {
 			t.toggle_rows( this.x.expanded );
 			for ( var i = t.nodeIndex + 1, d = t.parentNode, c, l = d.length; i < l; i ++ ) {
 				c = d[ i ];
-				if ( c.gridToggle )
+				if ( c.tableToggle )
 					break;
 				c.display( this );
 			}
 		}
 	}
 } ),
-/* `gridrownum` */
-GridRowNum = define.widget( 'GridRowNum', {
+/* `tablerownum` */
+TableRowNum = define.widget( 'TableRowNum', {
 	Const: function( x, p ) {
 		Html.apply( this, arguments );
 		var r = this.tr(), t = _number( this.attr( 'start' ) );
@@ -9906,14 +9906,14 @@ GridRowNum = define.widget( 'GridRowNum', {
 	Extend: Html,
 	Default: { start: 1 },
 	Prototype: {
-		tr: _grid_tr,
+		tr: _table_tr,
 		reset: function() {
 			this.text( _number( this.attr( 'start' ) ) + this.tr().nodeIndex );
 		}
 	}
 } ),
-/* `gridtriplebox` */
-GridTripleBox = define.widget( 'GridTripleBox', {
+/* `tabletriplebox` */
+TableTripleBox = define.widget( 'TableTripleBox', {
 	Const: function( x, p ) {
 		TripleBox.apply( this, arguments );
 		this.tr().box = this;
@@ -9936,16 +9936,16 @@ GridTripleBox = define.widget( 'GridTripleBox', {
 	},
 	Prototype: {
 		className: 'w-checkbox w-triplebox',
-		tr: _grid_tr,
+		tr: _table_tr,
 		getRelates: function() {
-			var r = [], g = this.tr().grid;
+			var r = [], g = this.tr().table;
 			g.head && r.push.apply( r, this.ownerView.fAll( this.x.name, g.head ) );
 			return r.concat( this.ownerView.fAll( this.x.name, g.body ) );
 		}
 	}
 } ),
-/* `gridradio` */
-GridRadio = define.widget( 'GridRadio', {
+/* `tableradio` */
+TableRadio = define.widget( 'TableRadio', {
 	Const: function( x, p ) {
 		Radio.apply( this, arguments );
 		this.tr().box = this;
@@ -9969,20 +9969,20 @@ GridRadio = define.widget( 'GridRadio', {
 	},
 	Prototype: {
 		className: 'w-f w-radio',
-		tr: _grid_tr
+		tr: _table_tr
 	}
 } ),
-/* `gridrow` tr 和 hr 的基础类 */
-GridRow = define.widget( 'GridRow', {
+/* `tablerow` tr 和 hr 的基础类 */
+TableRow = define.widget( 'TableRow', {
 	Const: function( x, p, n ) {
 		this.level = p.level == N ? 0 : p.level + 1;
 		if ( typeof x.data !== _OBJ )
 			x = { data: x };
-		this.grid = p.grid;
+		this.table = p.table;
 		W.call( this, x, p, n );
 	},
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -9998,11 +9998,11 @@ GridRow = define.widget( 'GridRow', {
 		},
 		// 获取平行的行 /@a -> get root row?
 		getParallel: function( a ) {
-			var b = this.type_tr ? 'body' : this.type_thr ? 'head' : 'foot', i = this.$().rowIndex, u = this.rootNode, r = this.grid === this.rootNode ? this : _widget( u[ b ].table.$().rows[ i ] );
+			var b = this.type_tr ? 'body' : this.type_thr ? 'head' : 'foot', i = this.$().rowIndex, u = this.rootNode, r = this.table === this.rootNode ? this : _widget( u[ b ].contentTable.$().rows[ i ] );
 			if ( a )
 				return r;
 			for ( var j = 0, r = [ r ], t; j < u.fixed.length; j ++ ) {
-				(t = u.fixed[ j ][ b ].table.$().rows[ i ]) && r.push( _widget( t ) );
+				(t = u.fixed[ j ][ b ].contentTable.$().rows[ i ]) && r.push( _widget( t ) );
 			}
 			return r;
 		},
@@ -10012,12 +10012,12 @@ GridRow = define.widget( 'GridRow', {
 			if ( e )
 				$.extend( x, { escape: e } );
 			var n = (this.tcell || (this.tcell = new TCell( {}, this ))).add( x );
-			n.col = this.grid.getColGroup()[ i ];
+			n.col = this.table.getColGroup()[ i ];
 			return n;
 		},
 		cellElem: function( i ) {
 			var c = this.$().cells;
-			if ( c.length === this.grid.getColGroup().length )
+			if ( c.length === this.table.getColGroup().length )
 				return c[ i ];
 			for ( var i = 0, l = c.length, n = 0; i < l; i ++ ) {
 				if ( n == i )
@@ -10034,14 +10034,14 @@ GridRow = define.widget( 'GridRow', {
 		prev: Leaf.prototype.prev,
 		// @a -> T/F, b -> src
 		toggle: function( a, b ) {
-			if ( this.gridToggle || this.gridLeaf ) {
-				(this.gridToggle || this.gridLeaf).toggle( a );
+			if ( this.tableToggle || this.tableLeaf ) {
+				(this.tableToggle || this.tableLeaf).toggle( a );
 			} else {
 				if ( this.length ) {
 					a == N && (a = ! this.x.expanded);
 					this.toggle_rows( a );
 				} else if ( this.x.src ) {
-					var c = this.grid.getColGroup(), d = {}, r;
+					var c = this.table.getColGroup(), d = {}, r;
 					d[ c[ 0 ].x.field ] = { colSpan: c.length, node: { type: 'View', src: this.x.src } };
 					this.append( d ).isExpandRow = T;
 					this.x.expanded = T;
@@ -10073,7 +10073,7 @@ GridRow = define.widget( 'GridRow', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.grid, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowSpan,
+			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowSpan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
@@ -10091,7 +10091,7 @@ GridRow = define.widget( 'GridRow', {
 					t = this.addCell( v, k );
 				} else {
 					if ( e ) {
-						var m = this.html_format( v, f.format, h, _grid_f_attr );
+						var m = this.html_format( v, f.format, h, _table_f_attr );
 						if ( typeof m === _OBJ )
 							t = this.addCell( m, i );
 						else
@@ -10128,7 +10128,7 @@ GridRow = define.widget( 'GridRow', {
 			var a = '', c = this.x.cls, h = this.attr( 'height' ),
 				s = '<tr id=' + this.id + ' class="' + this.className + (this.x.focus ? ' z-on': '') + (this.type_tr ? ' z-' + ((i == N ? this.nodeIndex : i) % 2) : '') + (c ? ' ' + c : '') + '"';
 			if ( h ) {
-				ie7 && (h -= this.grid._pad * 2 + (this.grid._face === 'none' ? 0 : 1));
+				ie7 && (h -= this.table._pad * 2 + (this.table._face === 'none' ? 0 : 1));
 				a += 'height:' + h + 'px;';
 			}
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
@@ -10144,7 +10144,7 @@ GridRow = define.widget( 'GridRow', {
 		}
 	}
 } );
-_parallel_methods( GridRow, 'addClass removeClass display before after append prepend replace remove' );
+_parallel_methods( TableRow, 'addClass removeClass display before after append prepend replace remove' );
 var
 _td_wg = { Leaf: T, Toggle: T },
 /* `td` tcell 的子节点。当字段是一个 widget 时会先产生一个 TD 实例，包裹这个 widget 子节点。 */
@@ -10152,18 +10152,18 @@ TD = define.widget( 'TD', {
 	Const: function( x, p ) {
 		if ( x.type && x.type !== 'TD' )
 			x = { node: x };
-		x.node && p.grid.x.escape !== F && $.extend( x.node, { escape: T } );
-		this.grid = p.grid;
+		x.node && p.table.x.escape !== F && $.extend( x.node, { escape: T } );
+		this.table = p.table;
 		W.call( this, x, p );
 	},
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		// @implement
 		x_childtype: function( t ) {
-			return _td_wg[ t ] ? 'Grid' + t : t;
+			return _td_wg[ t ] ? 'Table' + t : t;
 		},
 		html: function( k, i, L ) {
-			var r = this.parentNode.parentNode, g = this.grid, u = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.table, u = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td z-face-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_tr ? '' : ' w-th' + (r.type_thr && c.x.sort ? ' w-th-sort' : ''));
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (!ie7 && c.x.fixed ? ' f-form-hide' : '') + '"';
 			if ( this.x.on || this.Const.Listener )
@@ -10180,7 +10180,7 @@ TD = define.widget( 'TD', {
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
 			t = this.x.text;
 			if ( t ) {
-				t = this.html_format( t, e ? this.x.format || c.x.format : this.x.format, d, _grid_f_attr );
+				t = this.html_format( t, e ? this.x.format || c.x.format : this.x.format, d, _table_f_attr );
 				if ( typeof t === _OBJ )
 					this.x.node = t;
 			}
@@ -10204,7 +10204,7 @@ TD = define.widget( 'TD', {
 } ),
 /* `tr` */
 TR = define.widget( 'TR', {
-	Extend: GridRow,
+	Extend: TableRow,
 	Default: ie7 && {
 		heightMinus: function() {
 			return this.rootNode._pad * 2 + (this.rootNode._face == 'none' ? 0 : 1);
@@ -10213,15 +10213,15 @@ TR = define.widget( 'TR', {
 	Listener: {
 		body: {
 			ready: function() {
-				if ( this.grid != this.rootNode )
+				if ( this.table != this.rootNode )
 					Q( this.$() ).height( Q( this.getParallel( T ).$() ).height() );
 			},
 			click: {
 				occupy: T,
-				block: function( e ) { return this.isExpandRow || this.gridToggle },
+				block: function( e ) { return this.isExpandRow || this.tableToggle },
 				method: function( e ) {
 					var r = this.rootNode, b = this.getBox(), s = b && b.x.sync;
-					! this.gridToggle && this.focus( r.x.focusMultiple ? (!this.isFocus()) : T, e );
+					! this.tableToggle && this.focus( r.x.focusMultiple ? (!this.isFocus()) : T, e );
 					b && ! this.isEvent4Box( e ) && s === 'click' && b.click();
 					this.x.src && this.toggle();
 					if( this.ownerView.combo && ! (this.x.on && this.x.on.click) ) {
@@ -10239,7 +10239,7 @@ TR = define.widget( 'TR', {
 				method: function() { this.removeClass( 'z-hv' ) }
 			},
 			nodeChange: function() {
-				var l = this.gridLeaf;
+				var l = this.tableLeaf;
 				if ( l ) {
 					l.fixFolder();
 					l.toggle( this.isExpanded() );
@@ -10317,7 +10317,7 @@ TR = define.widget( 'TR', {
 			return b && b.isChecked();
 		},
 		isExpanded: function() {
-			var g = this.gridToggle || this.gridLeaf;
+			var g = this.tableToggle || this.tableLeaf;
 			return g ? g.isExpanded() : this.x.expanded;
 		},
 		next: function( n ) {
@@ -10364,13 +10364,13 @@ TR = define.widget( 'TR', {
 /* `thr`  thead 的子节点 */
 THR = define.widget( 'THR', {
 	Const: function( x, p, n ) {
-		GridRow.apply( this, arguments );
+		TableRow.apply( this, arguments );
 		var u = this.rootNode.x.pub;
 		if ( u && u.height )
 			this.defaults( { height: u.height } );
 		//this.className += ' w-' + this.type.toLowerCase();
 	},
-	Extend: GridRow,
+	Extend: TableRow,
 	Default: TR.Default,
 	Listener: {
 		body: {
@@ -10403,14 +10403,14 @@ TFR = define.widget( 'TFR', {
 // `TCell` 是 tr 的离散节点。当 tr 添加 td 时，先创建一个 tcell ，然后 tcell 添加这个 td
 TCell = define.widget( 'TCell', {
 	Const: function( x, p ) {
-		this.grid = p.grid;
+		this.table = p.table;
 		W.call( this, x, p, -1 );
 	},
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		x_childtype: $.rt( 'TD' ),
 		scaleWidth: function( a ) {
-			var w = 0, l = a.x.colSpan || 1, r = this.grid, g = this.grid.getColGroup(), c = a.col, d = r._pad, e;
+			var w = 0, l = a.x.colSpan || 1, r = this.table, g = this.table.getColGroup(), c = a.col, d = r._pad, e;
 			while ( l -- )
 				(e = g[ a.col.nodeIndex + l ]) != N && (w += e.width());
 			if ( isNaN( w ) )
@@ -10427,20 +10427,20 @@ TCell = define.widget( 'TCell', {
 /* `TableBody` */
 TableBody = define.widget( 'TableBody', {
 	Const: function( x, p ) {
-		this.grid = p.grid;
+		this.table = p.table;
 		W.apply( this, arguments );
 		this._rowSpan = {};
 	},
 	Listener: {
 		body: {
 			nodeChange: function() {
-				this.grid.fixRowCls();
-				this.grid.fixFoot();
+				this.table.fixRowCls();
+				this.table.fixFoot();
 			}
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		// @implement
 		x_childtype: $.rt( 'TR' ),
 		// @implement
@@ -10449,7 +10449,7 @@ TableBody = define.widget( 'TableBody', {
 		},
 		// 获取平行的tablebody/tablehead /@a -> get root tableBody?
 		getParallel: function( a ) {
-			var u = this.rootNode, r = this.grid === u ? this : u[ this.instanceType ]();
+			var u = this.rootNode, r = this.table === u ? this : u[ this.instanceType ]();
 			if ( a )
 				return r;
 			for ( var j = 0, r = [ r ]; j < u.fixed.length; j ++ )
@@ -10477,7 +10477,7 @@ TableBody = define.widget( 'TableBody', {
 		},
 		x_nodes: TR.prototype.x_nodes,
 		html_nodes: function() {
-			for ( var i = 0, r = this.grid.getEchoRows(), l = r.length, s = []; i < l; i ++ )
+			for ( var i = 0, r = this.table.getEchoRows(), l = r.length, s = []; i < l; i ++ )
 				s.push( r[ i ].html( i ) );
 			return s.join( '' );
 		},
@@ -10493,7 +10493,7 @@ TableHead = define.widget( 'TableHead', {
 		body: {
 			ready: function() {
 				// 拖动表头调整大小
-				var r = this.rootNode, g = this.grid, c = this.parentNode.colgroup;
+				var r = this.rootNode, g = this.table, c = this.parentNode.colgroup;
 				if ( r.x.resizable ) {
 					Q( 'td', this.$() ).append( '<div class=w-th-rsz></div>' );
 					Q( '.w-th-rsz', this.$() ).height( this.height() ).on( 'mousedown', function( e ) {
@@ -10545,7 +10545,7 @@ TableFoot = define.widget( 'TableFoot', {
 /* `column` */
 Column = define.widget( 'Column', {
 	Const: function( x, p ) {
-		this.grid = p.grid;
+		this.table = p.table;
 		W.apply( this, arguments );
 		if ( x.sort )
 			this._sort = x.sort.status;
@@ -10568,9 +10568,9 @@ Column = define.widget( 'Column', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		th: function() {
-			var t = this.grid.tableHead();
+			var t = this.table.tableHead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		width_minus: function() {
@@ -10579,13 +10579,13 @@ Column = define.widget( 'Column', {
 				var d = r._pad,
 					n = _size_fix( N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + (r._face === 'cell' && this.nodeIndex < this.parentNode.length - 1 ? 'border-right:1px solid #eee;' : '') + this.x.style ).widthMinus;
 			}
-			if ( this.grid != r && r._face === 'cell' && this.nodeIndex === 0 ) {
+			if ( this.table != r && r._face === 'cell' && this.nodeIndex === 0 ) {
 				n -= 1;
 			}
 			return n;
 		},
 		fixWidth: function() {
-			if ( this.grid !== this.rootNode ) {
+			if ( this.table !== this.rootNode ) {
 				var w = this.rootNode.getColGroup()[ this.x.fixedIndex ].width();
 				this.width() !== w && this.width( w );
 			}
@@ -10601,16 +10601,16 @@ Column = define.widget( 'Column', {
 /* `colgroup` */
 ColGroup = define.widget( 'ColGroup', {
 	Const: function( x, p ) {
-		this.grid = p.grid;
+		this.table = p.table;
 		W.apply( this, arguments );
 	},
 	Extend: HorzScale,
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		isScaleCover: T,
 		x_childtype: $.rt( 'Column' ),
 		scaleWidth: function( a ) {
-			return this.grid !== this.rootNode ? this.rootNode.getColGroup()[ a.x.fixedIndex ].width() : HorzScale.prototype.scaleWidth.call( this, a );
+			return this.table !== this.rootNode ? this.rootNode.getColGroup()[ a.x.fixedIndex ].width() : HorzScale.prototype.scaleWidth.call( this, a );
 		},
 		insertCol: function( a, b ) {
 			 b == N || ! this[ b ] ? this.append( a ) : this[ b ].before( a );
@@ -10622,10 +10622,10 @@ ColGroup = define.widget( 'ColGroup', {
 	}
 } ),
 /* `table` */
-Table = define.widget( 'Table', {
+ContentTable = define.widget( 'ContentTable', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		this.grid = p.grid;
+		this.table = p.table;
 		this.colgroup = new ColGroup( { nodes: x.columns }, this );
 		if ( x.tHead )
 			this.tableHead = new TableHead( x.tHead, this );
@@ -10645,9 +10645,9 @@ Table = define.widget( 'Table', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		html: function() {
-			var s = '<table id=' + this.id + ' class=w-' + this.rootNode.type.toLowerCase() + '-table cellspacing=0 cellpadding=' + this.grid._pad;
+			var s = '<table id=' + this.id + ' class=w-' + this.rootNode.type.toLowerCase() + '-tbl cellspacing=0 cellpadding=' + this.table._pad;
 			if ( br.ms || mbi ) {
 				var w = this.innerWidth();
 				w != N && (s += ' style="width:' + w + 'px"');
@@ -10659,7 +10659,7 @@ Table = define.widget( 'Table', {
 			if ( br.ms )
 				s += '<thead class="_fix_thead">' + t + '</thead>';
 			s += this.html_nodes();
-			// Chrome下如果不加这个tfoot，当grid没有数据时，表格不会自动撑开，无法触发滚动条
+			// Chrome下如果不加这个tfoot，当table没有数据时，表格不会自动撑开，无法触发滚动条
 			// 虽然用thead也能实现效果，但没有适合这种效果的原生CSS，需要JS代码里去做。用tfoot则可以用 tbody:empty + ._fix_tfoot 的原生CSS来实现，比用代码更安全
 			if ( ! br.ms )
 				s += '<tfoot class="_fix_tfoot">' + t + '</tfoot>';
@@ -10671,14 +10671,14 @@ Table = define.widget( 'Table', {
 THead = define.widget( 'THead', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		this.grid = p;
-		this.table = new Table( x.table, this );
+		this.table = p;
+		this.contentTable = new ContentTable( x.table, this );
 		p.attr( 'scroll' ) && $.classAdd( this, 'f-oh' );
 		this.className = 'w-thead';
 	},
 	Extend: Vert,
 	Prototype: {
-		ROOT_TYPE: 'Grid,Form',
+		ROOT_TYPE: 'Table,Grid',
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = Scroll.get( this.rootNode ), b, f;
@@ -10715,8 +10715,8 @@ TFoot = define.widget( 'TFoot', {
 TBody = define.widget( 'TBody', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		this.grid = p;
-		this.table = new Table( x.table, this );
+		this.table = p;
+		this.contentTable = new ContentTable( x.table, this );
 		!p.rootNode && !p.attr( 'scroll' ) && (this.className += ' w-' + this.rootNode.type.toLowerCase() + '-bg');
 	},
 	Extend: THead,
@@ -10728,19 +10728,19 @@ TBody = define.widget( 'TBody', {
 			},
 			mouseOver: {
 				method: function( e ) {
-					this.grid != this.rootNode ? this.rootNode.body.trigger( e ) : this.grid.head && _superTrigger( this, Scroll, e );
+					this.table != this.rootNode ? this.rootNode.body.trigger( e ) : this.table.head && _superTrigger( this, Scroll, e );
 				}
 			},
 			mouseOut: {
 				method: function( e ) {
-					this.grid != this.rootNode ? this.rootNode.body.trigger( e ) : this.grid.head && _superTrigger( this, Scroll, e );
+					this.table != this.rootNode ? this.rootNode.body.trigger( e ) : this.table.head && _superTrigger( this, Scroll, e );
 				}
 			},
 			mouseWheel: {
-				occupy: function() { return this.grid !== this.rootNode },
+				occupy: function() { return this.table !== this.rootNode },
 				method: function( e ) {
 					var r = this.rootNode;
-					if ( r != this.grid ) {
+					if ( r != this.table ) {
 						var b = r.isScrollable() ? r : r.body.isScrollable() ? r.body : N;
 						b && b.scrollTop( b.scrollTop() + (e.wheelDelta > 0 ? -20 : 20) );
 					}
@@ -10751,12 +10751,12 @@ TBody = define.widget( 'TBody', {
 	Prototype: {
 		className: 'w-tbody',
 		html_nodes: function() {
-			return this.table.html() + (this.grid.foot ? this.grid.foot.html() : '');
+			return this.contentTable.html() + (this.table.foot ? this.table.foot.html() : '');
 		}
 	}
 } ),
-/* `absgrid` */
-AbsGrid = define.widget( 'AbsGrid', {
+/* `AbsTable` */
+AbsTable = define.widget( 'AbsTable', {
 	Extend: Vert,
 	Prototype: {
 		x_childtype: $.rt( 'TR' ),
@@ -10776,13 +10776,13 @@ AbsGrid = define.widget( 'AbsGrid', {
 				this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 		},
 		tableHead: function() {
-			return this.head && this.head.table.tableHead;
+			return this.head && this.head.contentTable.tableHead;
 		},
 		tableBody: function() {
-			return this.body.table.tableBody;
+			return this.body.contentTable.tableBody;
 		},
 		tableFoot: function() {
-			return this.foot && this.foot.table.tableFoot;
+			return this.foot && this.foot.contentTable.tableFoot;
 		},
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
@@ -10868,7 +10868,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 			}
 			return this;
 		},
-		// 获取平行的grid /@a -> get root row?
+		// 获取平行的table /@a -> get root row?
 		getParallel: function( a ) {
 			var r = this.rootNode || this;
 			return a ? r : [ r ].concat( r.fixed );
@@ -10881,12 +10881,12 @@ AbsGrid = define.widget( 'AbsGrid', {
 			}
 		},
 		getColGroup: function( i ) {
-			return this.body.table.colgroup;
+			return this.body.contentTable.colgroup;
 		},
 		// @a -> col index, b -> width?
 		colWidth: function( a, b ) {
 			var g = [ this.getColGroup() ];
-			this.head && g.push( this.head.table.colgroup );
+			this.head && g.push( this.head.contentTable.colgroup );
 			if ( b == N )
 				return g[ 0 ] && g[ 0 ][ a ] && g[ 0 ][ a ].width();
 			for ( var i = 0; i < g.length; i ++ ) {
@@ -10962,12 +10962,12 @@ AbsGrid = define.widget( 'AbsGrid', {
 			}
 			return a;
 		},
-		//@public 插入一列 / @a -> 一列的数据grid json, b -> colIndex|colField
+		//@public 插入一列 / @a -> 一列的数据table json, b -> colIndex|colField
 		insertColumn: function( a, b ) {
 			b = this._col_parse( b );
 			var g = this.getColGroup();
 			g.insertCol( a.columns[ 0 ], b );
-			if ( g = this.head && this.head.table.colgroup )
+			if ( g = this.head && this.head.contentTable.colgroup )
 				g.insertCol( a.columns[ 0 ], b );
 			(g = this.tableHead()) && g.insertCol( a.tHead.rows, b );
 			(g = this.tableBody()) && g.insertCol( a.tBody.rows, b );
@@ -10980,7 +10980,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 			a = this._col_parse( a );
 			var g = this.getColGroup();
 			g.deleteCol( a );
-			if ( g = this.head && this.head.table.colgroup )
+			if ( g = this.head && this.head.contentTable.colgroup )
 				g.deleteCol( a );
 			(g = this.tableHead()) && g.deleteCol( a );
 			(g = this.tableBody()) && g.deleteCol( a );
@@ -10988,7 +10988,7 @@ AbsGrid = define.widget( 'AbsGrid', {
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
-		//@public 更新一列 / @a -> 一列的数据grid json, b -> colIndex|colField
+		//@public 更新一列 / @a -> 一列的数据table json, b -> colIndex|colField
 		updateColumn: function( a, b ) {
 			b = this._col_parse( b );
 			var g = this.getColGroup();
@@ -11164,10 +11164,10 @@ AbsGrid = define.widget( 'AbsGrid', {
 		}		
 	}
 } );
-_parallel_methods( AbsGrid, '_sortRow fixScroll' );
+_parallel_methods( AbsTable, '_sortRow fixScroll' );
 var
-/* `grid` */
-Grid = define.widget( 'Grid', {
+/* `table` */
+Table = define.widget( 'Table', {
 	Const: function( x, p ) {
 		this._pad = x.cellPadding != N ? x.cellPadding : 5;
 		W.apply( this, arguments );
@@ -11183,11 +11183,11 @@ Grid = define.widget( 'Grid', {
 				(f = c[ i ].fixed) && (f === 'left' ? xl : xr).push( $.extend( { fixed: N, fixedIndex: i }, c[ i ] ) );
 			}
 			if ( xl.length ) {
-				this.left = new LeftGrid( { columns: xl, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
+				this.left = new LeftTable( { columns: xl, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
 				this.fixed.push( this.left );
 			}
 			if ( xr.length ) {
-				this.right = new RightGrid( { columns: xr, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
+				this.right = new RightTable( { columns: xr, tHead: x.tHead, tBody: x.tBody, tFoot: x.tFoot }, this, -1 );
 				this.fixed.push( this.right );
 			}
 		}
@@ -11195,7 +11195,7 @@ Grid = define.widget( 'Grid', {
 		$.classAdd( this, this.head ? 'z-head' : 'z-nohead' );
 		!this.getEchoRows().length && $.classAdd( this, 'z-empty' );
 	},
-	Extend: AbsGrid,
+	Extend: AbsTable,
 	Listener: {
 		body: {
 			ready: function() {
@@ -11226,18 +11226,18 @@ Grid = define.widget( 'Grid', {
 		}
 	},
 	Prototype: {
-		className: 'w-grid',
+		className: 'w-table',
 		scrollTop: function() {
-			return this.head ? this.body.scrollTop.apply( this.body, arguments ) : AbsGrid.prototype.scrollTop.apply( this, arguments );
+			return this.head ? this.body.scrollTop.apply( this.body, arguments ) : AbsTable.prototype.scrollTop.apply( this, arguments );
 		},
 		scrollLeft: function() {
-			return this.head ? this.body.scrollLeft.apply( this.body, arguments ) : AbsGrid.prototype.scrollLeft.apply( this, arguments );
+			return this.head ? this.body.scrollLeft.apply( this.body, arguments ) : AbsTable.prototype.scrollLeft.apply( this, arguments );
 		},
 		isScrollBottom: function() {
-			return this.head ? this.body.isScrollBottom() : AbsGrid.prototype.isScrollBottom.call( this );
+			return this.head ? this.body.isScrollBottom() : AbsTable.prototype.isScrollBottom.call( this );
 		},
 		isScrollRight: function() {
-			return this.head ? this.body.isScrollRight() : AbsGrid.prototype.isScrollRight.call( this );
+			return this.head ? this.body.isScrollRight() : AbsTable.prototype.isScrollRight.call( this );
 		},
 		html_append: function() {
 			for ( var i = 0, s = ''; i < this.fixed.length; i ++ )
@@ -11246,15 +11246,15 @@ Grid = define.widget( 'Grid', {
 		}
 	}
 }),
-/* `LeftGrid`  grid的column设置了fixed时，会产生分身grid(LeftGrid, RightGrid)。*/
-LeftGrid = define.widget( 'LeftGrid', {
+/* `LeftTable`  table的column设置了fixed时，会产生分身table(LeftTable, RightTable)。*/
+LeftTable = define.widget( 'LeftTable', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this._pad  = p._pad;
 		this._face = p._face;
 		this.initBody( x );
 	},
-	Extend: AbsGrid,
+	Extend: AbsTable,
 	Default: { width: -1 },
 	Listener: {
 		body: {
@@ -11275,8 +11275,8 @@ LeftGrid = define.widget( 'LeftGrid', {
 		}
 	},
 	Prototype: {
-		className: 'w-leftgrid w-fixedgrid',
-		ROOT_TYPE: 'Grid,Form',
+		className: 'w-lefttable w-fixedtable',
+		ROOT_TYPE: 'Table,Grid',
 		fixSize: function() {
 			this.body.height( (this.rootNode.head ? this.rootNode.body : this.rootNode).innerHeight() );
 		},
@@ -11286,19 +11286,19 @@ LeftGrid = define.widget( 'LeftGrid', {
 		}
 	}
 } ),
-/* `RightGrid`  grid的column设置了fixed时，会产生分身grid(LeftGrid, RightGrid)。*/
-RightGrid = define.widget( 'RightGrid', {
-	Extend: LeftGrid,
+/* `RightTable`  table的column设置了fixed时，会产生分身table(LeftTable, RightTable)。*/
+RightTable = define.widget( 'RightTable', {
+	Extend: LeftTable,
 	Prototype: {
-		className: 'w-rightgrid w-fixedgrid',
+		className: 'w-righttable w-fixedtable',
 		fixScroll: function() {
 			this.body.$().scrollTop = this.rootNode.scrollTop();
 			this.addClass( 'z-cover', !this.rootNode.isScrollRight() );
 		}
 	}
 } ),
-/* `form`  nodes内部可以是任何Widget。如果有colSpan、rowSpan需求，需要在Widget外套一层TD。 */
-Form = define.widget( 'Form', {
+/* `grid`  nodes内部可以是任何Widget。如果有colSpan、rowSpan需求，需要在Widget外套一层TD。 */
+Grid = define.widget( 'Grid', {
 	Const: function( x, p ) {
 		var c = [], d = this.getDefaultOption( x.cls ), rows = [], cols = x.cols || 12;
 		for ( var i = 0; i < cols; i ++ ) {
@@ -11340,9 +11340,9 @@ Form = define.widget( 'Form', {
 		}
 		var y = $.extend( {}, x, { columns: c, tBody: { rows: rows } } );
 		delete y.pub; delete y.nodes;
-		Grid.call( this, y, p );
+		Table.call( this, y, p );
 	},
-	Extend: Grid,
+	Extend: Table,
 	Prototype: {
 		className: 'w-form'
 	}

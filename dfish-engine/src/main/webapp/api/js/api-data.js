@@ -1511,6 +1511,7 @@ define( {
       ] }
     ],
     Config: [
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'position', type: 'String', remark: 'tab位置。可选值: <b>top</b> <b>right</b> <b>bottom</b> <b>left</b>' }
     ],
     Properties: [
@@ -1611,7 +1612,6 @@ define( {
         { name: 'field', type: 'String', remark: '字段名。' },
         { name: 'fixed', type: 'String', remark: '固定列。可选值：<b>left</b>, <b>right</b>' },
         { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget格式的json对象)。' },
-        { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
         { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
           { name: 'key', type: 'String', remark: '关键词。' },
           { name: 'keycls', type: 'String', remark: '关键词样式名。' },
@@ -1655,16 +1655,17 @@ define( {
         { name: 'rows', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
     ]
   },
-  "Grid": {
+  "Table": {
   	remark: '表格。',
   	extend: 'Widget',
     Config: [
+      { name: 'br', type: 'Boolean', remark: '内容是否换行。默认值为true。' },
       { name: 'columns', type: 'Array', remark: '列参数的数组集合。<br>单个列的参数参见 Column 类。' },
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
       { name: 'focusMultiple', type: 'Boolean', remark: '是否有多选的点击高亮效果。' },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'limit', type: 'Int', remark: '最多显示多少行。如果需要前端翻页，可设置这个属性。' },
-      { name: 'br', type: 'Boolean', remark: '内容是否换行。默认值为true。' },
       { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' },
       { name: 'resizable', type: 'Boolean', remark: '是否可以拖动表头调整列宽。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
@@ -1707,15 +1708,15 @@ define( {
       ], example: [
           function() {
             // 显示所有行
-            vm.find( 'myGrid' ).filter();
+            vm.find( 'myTable' ).filter();
           },
           function() {
             // 显示所有字段 C0 值为 "1" 的行
-            vm.find( 'myGrid' ).filter( { C0: '1' } );
+            vm.find( 'myTable' ).filter( { C0: '1' } );
           },
           function() {
             // 显示所有字段 C0 值为 "1" 或 "2" 的行
-            vm.find( 'myGrid' ).filter( function( data ) {
+            vm.find( 'myTable' ).filter( function( data ) {
             	return data.C0 == '1' || data.C0 == '2';
             } );
           }
@@ -1728,15 +1729,15 @@ define( {
       ], example: [
           function() {
             // 获取所有行
-            var r = vm.find( 'myGrid' ).rows();
+            var r = vm.find( 'myTable' ).rows();
           },
           function() {
             // 获取所有字段 C0 值为 "1" 的行
-            var r = vm.find( 'myGrid' ).rows( { C0: '1' } );
+            var r = vm.find( 'myTable' ).rows( { C0: '1' } );
           },
           function() {
             // 获取所有字段 C0 值为 "1" 或 "2" 的行
-            var r = vm.find( 'myGrid' ).rows( function( data ) {
+            var r = vm.find( 'myTable' ).rows( function( data ) {
             	return data.C0 == '1' || data.C0 == '2';
             } );
           }
@@ -1757,11 +1758,11 @@ define( {
       ], example: [
           function() {
             // { C1: '000' } 是新增行的数据，把它新增到 { C1: '001' } 之前。本例和下例效果相同。
-            vm.find( 'myGrid' ).insertRow( { C1: '000' }, { C1: '001' } );
+            vm.find( 'myTable' ).insertRow( { C1: '000' }, { C1: '001' } );
           },
           function() {
             // { C1: '000' } 是新增行的数据，把它新增到 { C1: '001' } 之前。本例和上例效果相同。
-            var r = vm.find( 'myGrid' ).row( { C1: '001' } );
+            var r = vm.find( 'myTable' ).row( { C1: '001' } );
             r.before( { C1: '000' } );
           }
       ] },
@@ -1791,7 +1792,7 @@ define( {
       ], example: [
           function() {
             // 插入到最后一列
-            vm.find( 'myGrid' ).insertColumn( {
+            vm.find( 'myTable' ).insertColumn( {
             	columns: [
             	  { field: 'C3', width: 100 }
             	],
@@ -1811,7 +1812,7 @@ define( {
       ], example: [
           function() {
             // 更新 C3 字段
-            vm.find( 'myGrid' ).updateColumn( {
+            vm.find( 'myTable' ).updateColumn( {
             	columns: [
             	  { field: 'C3', width: 100 }
             	],
@@ -1830,7 +1831,7 @@ define( {
       ], example: [
           function() {
             // 删除第一列
-            vm.find( 'myGrid' ).deleteColumn( 0 );
+            vm.find( 'myTable' ).deleteColumn( 0 );
           }
       ] },
       { name: 'page(index)', remark: '翻页。', param: [
@@ -1848,7 +1849,7 @@ define( {
 	  	    // 简单表格
             return~
             {
-              type: 'Grid',
+              type: 'Table',
               columns: [
               	{ field: 'A', width: '40', align: 'center' },
               	{ field: 'B', width: '*' }
@@ -1869,8 +1870,8 @@ define( {
       ] }
     ]
   },
-  "Form": {
-  	remark: '布局表格。',
+  "Grid": {
+  	remark: '12列栅栏布局表格。',
   	extend: 'Widget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
@@ -2141,7 +2142,7 @@ define( {
       { name: 'load', remark: '经 src 加载子节点完毕时触发。' }
     ],
     Properties: [
-      { name: 'rootNode', type: 'Grid', remark: 'tr所属的grid。' }
+      { name: 'rootNode', type: 'Table', remark: 'tr所属的grid。' }
     ],
     Methods: [
       { name: 'checkBox([checked])', remark: '设置 tr 的 checkbox / radio 为选中状态。', param: [
@@ -2271,6 +2272,7 @@ define( {
       ] },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
+      { name: 'rootInvisible', type: 'Boolean', remark: '根节点是否可见。' },
       { name: 'src', type: 'String | Object', remark: '获取子节点的 URL 地址。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'template', type: 'String', remark: '模板地址。' }
@@ -2472,14 +2474,14 @@ define( {
       { name: '.w-widget', remark: '基础样式。' }
     ]
   },
-  "GridLeaf": {
+  "TableLeaf": {
   	remark: '用于grid的树节点。',
   	extend: 'Leaf',
     Methods: [
       { name: 'tr()', remark: '获取leaf所在的tr行对象。' }
     ]
   },
-  "GridRowNum": {
+  "TableRowNum": {
   	remark: '用于grid的自增数字字段。',
   	extend: 'Widget',
     Config: [
@@ -3087,7 +3089,7 @@ define( {
       { name: '.w-radio', remark: '基础样式。' }
     ]
   },
-  "GridRadio": {
+  "TableRadio": {
   	remark: 'grid 内部专用的 radio。选中状态与 tr 的 focus 效果同步。',
   	deprecate: 'focus,focusEnd,placeholder,transparent,.w-text,.w-input,.z-trans,.z-on',
   	extend: 'Radio'
@@ -3432,14 +3434,15 @@ define( {
     Config: [
       { name: 'bind', type: 'Object', remark: '设置数据来源的参数。', param: [
       	{ name: 'field', type: 'String', remark: '字段参数。', param: [
-          { name: 'value', type: 'String', remark: '值字段名。' },
-          { name: 'text', type: 'String', remark: '文本字段名。' },
-          { name: 'search', type: 'String', remark: '搜索字段名。' },
+          { name: 'forbid', type: 'String', remark: '禁用字段名。' },
           { name: 'remark', type: 'String', remark: '备注字段名。' },
-          { name: 'forbid', type: 'String', remark: '禁用字段名。' }
+          { name: 'search', type: 'String', remark: '搜索字段名。' },
+          { name: 'text', type: 'String', remark: '文本字段名。' },
+          { name: 'value', type: 'String', remark: '值字段名。' }
         ] },
         { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
-        { name: 'fullPath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' }
+        { name: 'fullPath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' },
+        { name: 'target', type: 'String', remark: '数据来源Widget的ID。类型可以是Table或Tree。如果不设置此参数，将以对话框内的第一个Table或第一个Tree作为数据来源。' }
       ] },
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
       { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
