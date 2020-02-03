@@ -9801,7 +9801,7 @@ TableLeaf = define.widget( 'TableLeaf', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		className: 'w-leaf w-table-leaf',
 		_pad_left: 0,
 		tr: _table_tr,
@@ -9982,7 +9982,7 @@ TableRow = define.widget( 'TableRow', {
 		W.call( this, x, p, n );
 	},
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -10157,7 +10157,7 @@ TD = define.widget( 'TD', {
 		W.call( this, x, p );
 	},
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		// @implement
 		x_childtype: function( t ) {
 			return _td_wg[ t ] ? 'Table' + t : t;
@@ -10407,7 +10407,7 @@ TCell = define.widget( 'TCell', {
 		W.call( this, x, p, -1 );
 	},
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		x_childtype: $.rt( 'TD' ),
 		scaleWidth: function( a ) {
 			var w = 0, l = a.x.colSpan || 1, r = this.table, g = this.table.getColGroup(), c = a.col, d = r._pad, e;
@@ -10440,7 +10440,7 @@ TableBody = define.widget( 'TableBody', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		// @implement
 		x_childtype: $.rt( 'TR' ),
 		// @implement
@@ -10568,7 +10568,7 @@ Column = define.widget( 'Column', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		th: function() {
 			var t = this.table.tableHead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
@@ -10606,7 +10606,7 @@ ColGroup = define.widget( 'ColGroup', {
 	},
 	Extend: HorzScale,
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		isScaleCover: T,
 		x_childtype: $.rt( 'Column' ),
 		scaleWidth: function( a ) {
@@ -10645,7 +10645,7 @@ ContentTable = define.widget( 'ContentTable', {
 		}
 	},
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		html: function() {
 			var s = '<table id=' + this.id + ' class=w-' + this.rootNode.type.toLowerCase() + '-tbl cellspacing=0 cellpadding=' + this.table._pad;
 			if ( br.ms || mbi ) {
@@ -10678,7 +10678,7 @@ THead = define.widget( 'THead', {
 	},
 	Extend: Vert,
 	Prototype: {
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = Scroll.get( this.rootNode ), b, f;
@@ -11157,7 +11157,7 @@ AbsTable = define.widget( 'AbsTable', {
 					var h = b.scrollHeight();
 					f.holdBottom = !!h;
 					f.css( 'pad', { height: h ? f.$().offsetHeight : '', display: h ? 'block' : 'none', overflow: h ? 'hidden' : 'visible' } );
-					f.addClass( 'z-fix', !!h );
+					f.addClass( 'z-fixed', !!h );
 					h ? $.append( b === r ? this.$() : this.body.$(), f.$() ) : $.before( f.$( 'pad' ), f.$() );
 				}
 			}
@@ -11276,7 +11276,7 @@ LeftTable = define.widget( 'LeftTable', {
 	},
 	Prototype: {
 		className: 'w-lefttable w-fixedtable',
-		ROOT_TYPE: 'Table,Grid',
+		ROOT_TYPE: 'Table,Form',
 		fixSize: function() {
 			this.body.height( (this.rootNode.head ? this.rootNode.body : this.rootNode).innerHeight() );
 		},
@@ -11297,8 +11297,8 @@ RightTable = define.widget( 'RightTable', {
 		}
 	}
 } ),
-/* `grid`  nodes内部可以是任何Widget。如果有colSpan、rowSpan需求，需要在Widget外套一层TD。 */
-Grid = define.widget( 'Grid', {
+/* `form`  nodes内部可以是任何Widget。如果有colSpan、rowSpan需求，需要在Widget外套一层TD。 */
+Form = define.widget( 'Form', {
 	Const: function( x, p ) {
 		var c = [], d = this.getDefaultOption( x.cls ), rows = [], cols = x.cols || 12;
 		for ( var i = 0; i < cols; i ++ ) {
