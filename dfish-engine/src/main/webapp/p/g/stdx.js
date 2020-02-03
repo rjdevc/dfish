@@ -34,7 +34,7 @@ define.preload({
                             nodes: [
                                 {
                                     tip: '关闭',
-                                    cls: 'dlg-oper-close',
+                                    cls: 'dlg-close',
                                     on: {click: 'this.cmd("close");'},
                                     icon: '.i-dlg-close'
                                 }

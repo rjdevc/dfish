@@ -493,7 +493,7 @@ i {
     background-color: #1588d4;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-oper-close.z-hv {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-close.z-hv {
     background-color: #d00;
 }
 
@@ -501,7 +501,7 @@ i {
     background-color: #0e80cb;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-oper-close.z-dn {
+.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-close.z-dn {
     background-color: #e81414;
 }
 

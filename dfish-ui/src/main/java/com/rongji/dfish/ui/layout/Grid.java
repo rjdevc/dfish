@@ -2344,14 +2344,14 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
         public T setColSpan(Integer colSpan) {
-            if (colSpan != null) {
-                if (colSpan < 1) {
-                    throw new IllegalArgumentException("colspan must greater than 1");
-                }
-                if (colSpan == 1) {
-                    colSpan = null;
-                }
-            }
+//            if (colSpan != null) {
+//                if (colSpan < 1) {
+//                    throw new IllegalArgumentException("colspan must greater than 1");
+//                }
+//                if (colSpan == 1) {
+//                    colSpan = null;
+//                }
+//            }
             this.colSpan = colSpan;
             return (T) this;
         }
@@ -2374,14 +2374,14 @@ public class Grid extends AbstractPubNodeContainer<Grid, Grid.TR> implements Gri
          * @return 本身，这样可以继续设置其他属性
          */
         public T setRowSpan(Integer rowSpan) {
-            if (rowSpan != null) {
-                if (rowSpan < 1) {
-                    throw new IllegalArgumentException("rowspan must greater than 1");
-                }
-                if (rowSpan == 1) {
-                    rowSpan = null;
-                }
-            }
+//            if (rowSpan != null) {
+//                if (rowSpan < 1) {
+//                    throw new IllegalArgumentException("rowspan must greater than 1");
+//                }
+//                if (rowSpan == 1) {
+//                    rowSpan = null;
+//                }
+//            }
             this.rowSpan = rowSpan;
             return (T) this;
         }
