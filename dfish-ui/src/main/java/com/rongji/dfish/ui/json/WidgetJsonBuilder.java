@@ -105,20 +105,14 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                     protected String getValue(Object w) {
 						return  ((Widget<?>)w).getMinWidth();
 					}});
-			}else if("minWidth".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetStringPropAppender("minWidth"){
-					@Override
-                    protected String getValue(Object w) {
-						return  ((Widget<?>)w).getMinWidth();
-					}});
 			}else if("heightMinus".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetIntegerPropAppender("hmin"){
+				methods.set(i, new WidgetIntegerPropAppender("heightMinus"){
 					@Override
                     protected Integer getValue(Object w) {
 						return  ((Widget<?>)w).getHeightMinus();
 					}});
 			}else if("widthMinus".equals(jbpg.getPropName())){
-				methods.set(i, new WidgetIntegerPropAppender("wmin"){
+				methods.set(i, new WidgetIntegerPropAppender("widthMinus"){
 					@Override
                     protected Integer getValue(Object w) {
 						return ((Widget<?>)w).getWidthMinus();
