@@ -34,7 +34,7 @@ function apiContentWidget( id ) {
 	return { type: 'Vert', id: id + '-con', nodes: [
 		{ type: 'Horz', height: 55, cls: 'main-header bd-nav bd-onlybottom', nodes: [
 		  { type: 'Html', text: '<h1>' + (a.title || id) + '</h1>' },
-		  { type: 'ButtonBar', pub: { cls: 'hd-tab', focusable: true }, space: 1, nodes: s }
+		  { type: 'ButtonBar', pub: { cls: 'hd-tab', focusable: true }, space: 1, nodes: s, scroll: false }
 		] },
 		{ type: 'Vert', id: id + '-scr', scroll: true, style: 'padding:0 15px', height: '*', nodes: b, on: { scroll: 'api.onscroll(this)' } }
 	] };
@@ -86,7 +86,7 @@ function memberWidget( id, a, k, n, m ) {
 			}
 		}
 		return [ { type: 'Html', text: '<div id=' + id + '-' + k + ' class="members-title" onclick="api.expand(this)"><h3>' + $.arrow( 'b2' ) + ' &nbsp;' + n + '</h3>' + (m ? '<div style="float:right;font-size:12px;color:#888;line-height:40px"><font color=#ff7921>*</font> 注: 蓝色字体是当前widget专有的属性事件方法，黑色字体是所有widget共有的属性事件方法。用法无区别，只是为了方便查阅而加以颜色区分。</div>' : '') + '</div>' },
-			{ type: 'Grid', id: id + '-' + k + '-grid', face: 'cell', cls: 'detail-grid', escape: false, "columns":[ {"field":"name", "width":"*", "format":"javascript:return api.format(this)"} ], tBody: { rows: b } } ];
+			{ type: 'Table', id: id + '-' + k + '-grid', face: 'cell', cls: 'detail-grid', escape: false, "columns":[ {"field":"name", "width":"*", "format":"javascript:return api.format(this)"} ], tBody: { rows: b } } ];
 	}
 }
 
@@ -185,7 +185,8 @@ var api = {
 		for ( var i = 0, b = a.x.id.replace( '-scr', '' ), c = $.bcr( a.$() ), l = pk.length; i < l; i ++ ) {
 			var d = $( b + '-' + pk[ i ] );
 			if ( d && (d = $.bcr( d )) && (d.top > c.top || i === l - 1) ) {
-				find( b + '-btn-' + pk[ d.top > ((c.top + c.bottom) / 2) ? i - 1 : i ] ).focus();
+				var n = find( b + '-btn-' + pk[ d.top > ((c.top + c.bottom) / 2) ? i - 1 : i ] );
+				n && n.focus();
 				break;
 			}
 		}

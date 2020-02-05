@@ -41,12 +41,12 @@ define.preload({
                             nodes: [
                                 {
                                     tip: '最大化',
-                                    cls: 'x-dlg-max',
+                                    cls: 'dlg-max',
                                     on: {click: 'app.dialog.max(this);'},
                                     icon: '.i-dlg-max'
                                 }, {
                                     tip: '关闭',
-                                    cls: 'dlg-oper-close',
+                                    cls: 'dlg-close',
                                     on: {click: 'this.cmd("close");'},
                                     icon: '.i-dlg-close'
                                 }

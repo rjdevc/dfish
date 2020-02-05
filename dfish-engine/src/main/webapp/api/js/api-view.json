@@ -7,7 +7,7 @@
       { "type": "Horz", "height": 55, "cls": "bg-top index-top", "nodes": [
       	{ "type": "Html", "width": 220, "align": "center", "text": "<i class=f-vi></i><img src=src/img/logo-white.png align=absmiddle height=25><span class=logo-text>JS API</span>" },
         {
-          "type": "ButtonBar", "id": "index-tabbar", "focusable": true, "cls": "bg-top index-tabbar", "style": "padding-top:23px",
+          "type": "ButtonBar", "id": "index-tabbar", "vAlign": "bottom", "cls": "bg-top index-tabbar", "style": "padding-top:23px",
             "pub": { "cls": "index-tab", "closable": true, "focusable": true, "escape": false, "on": { "click": "api.tabClick(this)" } },
           "nodes": [
             { "text": "简介", "focus": true, "id": "upgrade-btn", "target": "upgrade-con", "closeable": false }
@@ -145,10 +145,10 @@
 		        { "id": "EmbedWindow", "text": "EmbedWindow", "icon": ".icon .icon-class" },
 		        { "id": "FieldSet", "text": "FieldSet", "icon": ".icon .icon-class" },
 		        { "id": "Frame", "text": "Frame", "icon": ".icon .icon-class" },
-		        { "id": "Grid", "text": "Grid", "icon": ".icon .icon-class", "nodes": [
+		        { "id": "Table", "text": "Table", "icon": ".icon .icon-class", "nodes": [
 		          { "id": "Column", "text": "Column", "icon": ".icon .icon-class" },
-		          { "id": "GridLeaf", "text": "GridLeaf", "icon": ".icon .icon-class" },
-		          { "id": "GridRowNum", "text": "GridRowNum", "icon": ".icon .icon-class" },
+		          { "id": "TableLeaf", "text": "TableLeaf", "icon": ".icon .icon-class" },
+		          { "id": "TableRowNum", "text": "TableRowNum", "icon": ".icon .icon-class" },
 		          { "id": "THead", "text": "THead", "icon": ".icon .icon-class" },
 		          { "id": "TBody", "text": "TBody", "icon": ".icon .icon-class" },
 		          { "id": "TFoot", "text": "TFoot", "icon": ".icon .icon-class" },

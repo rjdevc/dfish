@@ -24,7 +24,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
     protected Boolean escape;
     protected String format;
     protected String sync;
-    protected Object target;
+    protected Widget target;
     protected String text;
     protected Object tip;
 //    protected BoxField field;
@@ -51,25 +51,20 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
     }
 
     /**
-     * 绑定 widget 或 widgetID，同步 disabled 属性。
+     * 绑定 widget，同步 disabled 属性。
      *
      * @return target
      */
-    public Object getTarget() {
+    public Widget getTarget() {
         return target;
     }
 
     /**
-     * 绑定 widget 或 widget ID，同步 disabled 属性。
+     * 绑定 widget，同步 disabled 属性。
      *
-     * @param target widget ID
+     * @param target widget
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setTarget(String target) {
-        this.target = target;
-        return (T) this;
-    }
-
     public T setTarget(Widget target) {
         this.target = target;
         return (T) this;

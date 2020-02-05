@@ -16,7 +16,7 @@ public interface Node<T extends Node<T>> extends Serializable {
 	/**
 	 * 获取这个对象的种类名
 	 * <p>种类名称一般标明这个对象的功能。JS引擎会根据这个对象的种类为其赋予一定的功能.
-	 * 这个种类名称一般是该类名的全称或缩写。如GridLayout的种类名称是grid</p>
+	 * 这个种类名称一般是该类名的全称或缩写。如TableLayout的种类名称是grid</p>
 	 * <p>少数对象只能以某些对象的子元素出现，这时候type值可能为空</p>
 	 * @return String
 	 */

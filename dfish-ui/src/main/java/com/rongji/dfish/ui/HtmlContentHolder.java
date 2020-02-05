@@ -8,7 +8,7 @@ package com.rongji.dfish.ui;
  * @since XMLTMPL 1.0
  * FIXME 部分控件如TEXT的value可能需要转移，可能需要特殊处理，如果这里不能做统一管理的话。
  * 则需要 FormElement Hidden  等组件getValue独立处理。
- * Label Button Grid Tree 几乎所有的表单元素可显示的部分，(label value) 和Hidden的(value)
+ * Label Button Table Tree 几乎所有的表单元素可显示的部分，(label value) 和Hidden的(value)
  */
 public interface HtmlContentHolder<T extends HtmlContentHolder<T>> {
 

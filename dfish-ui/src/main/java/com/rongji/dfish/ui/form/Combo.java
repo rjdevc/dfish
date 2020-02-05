@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.AbstractNode;
 /**
  * Combo 用于设置当前的 grid 为某个 combobox 或 onlinebox 的数据选项表。 其中field
  * 是用来表达和Combobox整合的方式；keepshow是下拉弹出框是否需要显示。
- * 主要应用场景是，当前对象为Grid或Tree的时候，可以作为Combobox值的候选项。
+ * 主要应用场景是，当前对象为Table或Tree的时候，可以作为Combobox值的候选项。
  * 这时候就需要设定他们如何和Combobox绑定。field设定各个绑定字段名，其中search多个字段可以用逗号隔开。
  *
  * @author DFish Team
