@@ -3168,7 +3168,7 @@ define( {
   	extend: 'Text',
   	deprecate: '.w-text,.z-trans,placeholder,transparent,focus,focusEnd,warn,change',
     Config: [
-      { name: 'tip', type: 'Boolean | String', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$0</b><s>(值)</s>。' }
+      { name: 'tip', type: 'Boolean | String', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$value</b><s>(值)</s>。' }
     ],
     Event: [
       { name: 'dragStart', remark: '拖动开始时触发。' },
