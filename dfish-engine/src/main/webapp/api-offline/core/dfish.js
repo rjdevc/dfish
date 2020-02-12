@@ -1,9 +1,8 @@
 /*!
- * dfish.js v3
- * (c) 2015-2018 Mingyuan Chen
- * Released under the MIT License.
+ * dfish.js v5
+ * (c) 2017-2020 Mingyuan Chen
+ * Released under the Apache License.
  */
-
 ( function( global, factory ) {
 	/* 在 CommonJS 环境下返回 dfish，不创建全局变量。 */
 	if ( typeof module === 'object' && typeof module.exports === 'object' ) {
@@ -14,19 +13,21 @@
 		factory( global );
 	}
 } )( this, function( win, noGlobal ) {
-	
+//'use strict';
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.0',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
 doc = win.document, cvs = doc.documentElement,
 
-$ = dfish = function( a ) {
+dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
 },
+
+$ = dfish,
 
 //获取dfish所在目录
 getPath = function() {
@@ -45,7 +46,8 @@ getPath = function() {
 		}
 		return src || js[ l ].src;
 	})();
-	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );		
+	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	!_cfg.ver && (_cfg.ver = _urlParam( u, 'ver' ));
 },
 
 // 浏览器信息
@@ -55,7 +57,8 @@ br = $.br = (function() {
 		n = u.indexOf( 'trident' ) > 0 && d > 10,
 		ie = navigator.appName === 'Microsoft Internet Explorer', // ie version <= 10
 		iv = ie && (d || parseFloat( u.substr( u.indexOf( 'msie' ) + 5 ) )),
-		chm = u.match( /\bchrome\/(\d+)/ );
+		chm = u.match( /\bchrome\/(\d+)/ ),
+		mbi = !!u.match( /\bmobile\b/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
 	return {
@@ -65,10 +68,11 @@ br = $.br = (function() {
 		ie10	: ie && d === 10,
 		ms		: ie || n, // 微软的浏览器( ie所有系列 )
 		chm		: chm && parseFloat( chm[ 1 ] ),
-		mobile  : !!u.match( /\bmobile\b/ ),
+		mobile  : mbi,
 		fox		: u.indexOf( 'firefox' ) > 0,
+		safari  : !chm && u.indexOf( 'safari' ) > 0,
 		css3	: !(ie && d < 9),
-		scroll	: 17,
+		scroll	: mbi ? 0 : 17,
 		chdiv	: function( a, b, c ) {
 			if ( typeof b === _FUN ) {
 				c = b, b = '1';
@@ -96,8 +100,7 @@ _extend = $.extend = function ( a ) {
 },
 // 递归继承
 _extendDeep = $.extendDeep = function ( a ) {
-	for ( var j = 1, l = arguments.length, c, i; j < l; j ++ ) {
-		c = arguments[ j ];
+	for ( var j = 1, l = arguments.length, c, i; j < l; j ++ ) if ( c = arguments[ j ] ) {
 		for ( i in c )
 			if ( ! ( i in a ) ) {
 				if ( c[ i ] != N && c[ i ].constructor === Object ) {
@@ -161,6 +164,8 @@ _createClass = $.createClass = function( a, b ) {
 	}
 	if ( n ) {
 		c[ _PRO ].type = c.type = n;
+		// 实例的type。两个字符为全小写，三个及以上为首字符小写
+		c[ _PRO ].instanceType = c.instanceType = n.length < 3 ? n.toLowerCase() : n.charAt( 0 ).toLowerCase() + n.slice( 1 );
 	}
 	a.Helper && _mergeDeep( c, a.Helper );
 	c[ _PRO ].Const = c;
@@ -169,6 +174,8 @@ _createClass = $.createClass = function( a, b ) {
 
 /* CMD模块规范 */
 _moduleCache = {},
+_templateCache = {},
+_preloadCache = {},
 //@a -> path, b -> id, f -> affix
 _mod_uri = function( a, b, f ) {
 	var c = b.charAt( 0 ) === '.' ? _urlLoc( a, b ) : b.charAt( 0 ) !== '/' ? _path + b : b;
@@ -199,12 +206,13 @@ Require = function( a ) {
 				return _moduleCache[ c ];
 			}
 			b = [ b ];
-		} else
+		} else if ( _isArray( b ) )
 			b = b.concat();
+		else
+			return;
 		for ( var i = 0, c = [], d = [], l = b.length; i < l; i ++ )
 			(_strFrom( b[ i ], '.', T ) === 'css' ? c : d).push( b[ i ] );
-		// 同步时，由于css目前只能异步加载，所以css_ok直接设为true
-		var css_ok = ! s || ! c.length, js_ok = ! d.length,
+		var css_ok = ! c.length, js_ok = ! d.length,
 			g = function() { js_ok && css_ok && f && f(); };
 		c.length && r.css( c, function() { css_ok = T, g() } );
 		return d.length && r.js( d, function() { js_ok = T, g() }, s );
@@ -236,7 +244,7 @@ Require = function( a ) {
 	// require.css(): 装载css
 	r.css = function( b, f ) {
 		typeof b === _STR && (b = [ b ]);
-		for ( var i = 0; c = [], d = [], i < b.length; i ++ )
+		for ( var i = 0, c = [], d = []; i < b.length; i ++ )
 			b[ i ] = _mod_uri( a, b[ i ], 'css' );
 		_loadCss( b, N, f );
 	};
@@ -265,7 +273,7 @@ Define = function( a ) {
 	// widget模块定义，默认继承 widget 类
 	b.widget = function( c, d ) {
 		var e = d.Extend, f = d.Prototype || (d.Prototype = {});
-		e = d.Extend = ! e ? [ 'widget' ] : ! _isArray( e ) ? [ e ] : e;
+		e = d.Extend = ! e ? [ 'Widget' ] : ! _isArray( e ) ? [ e ] : e;
 		for ( var i = 0; i < e.length; i ++ ) {
 			if ( typeof e[ i ] === _STR ) e[ i ] = r( e[ i ] );
 		}
@@ -273,16 +281,24 @@ Define = function( a ) {
 			d.Const = function() { e[ 0 ].apply( this, arguments ) };
 		return _moduleCache[ _mod_uri( a, c ) ] = _createClass( c, d );
 	}
+	b.template = function( c, d ) {
+		d == N && (d = c, c = N);
+		_moduleCache[ c ? _mod_uri( a, (_cfg.templateDir || '') + c ) : a ] = d;
+	}
+	b.preload = function( c, d ) {
+		d == N && (d = c, c = N);
+		_moduleCache[ c ? _mod_uri( a, (_cfg.preloadDir || '') + c ) : a ] = d;
+	}
 	return b;
 },
 //@a -> id, b -> uri, c -> script text
 _onModuleLoad = function( a, b, c ) {
 	var m = new Module( b );
-	try {
+	//try {
 		Function( 'define,require,module,exports', c + '\n//@ sourceURL=' + a ).call( win, Define( b ), Require( b ), m, m.exports );
-	} catch( e ) {
-		throw new Error( '"' + a + '": ' + e.message );
-	}
+	//} catch( e ) {
+	//	throw new Error( '"' + a + '": ' + e.message );
+	//}
 	if ( ! _moduleCache[ a ] )
 		_moduleCache[ a ] = m.exports;
 },
@@ -299,26 +315,34 @@ _loadJs = function( a, b, c ) {
 			}
 		};
 	while ( i -- )
-		$.ajax( { src: a[ i ], sync: c, success: g, cache: T } );
+		$.ajax( { src: a[ i ], sync: c, success: g, cache: T, cdn: T } );
 },
 // @a -> src, b -> id?, c -> fn?
 _loadCss = function( a, b, c ) {
 	typeof a === _STR && (a = [ a ]);
+	var d = doc.readyState === 'loading';
 	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
-		e = doc.createElement( 'link' );
-		e.rel  = 'stylesheet';
-		e.href = a[ i ] + _ver;
-		b && ($.remove( b[ i ] ), e.id = b[ i ]);
+		if ( d ) {
+			var u = b ? b[ i ] : _uid();
+			var s = '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">';
+			doc.write( s );
+			e = $( u );
+		} else {
+			e = doc.createElement( 'link' );
+			e.rel  = 'stylesheet';
+			e.href = a[ i ] + _ver;
+			b && ($.remove( b[ i ] ), e.id = b[ i ]);
+			_tags( 'head' )[ 0 ].appendChild( e );
+		}
 		if ( c ) {
-			if ( br.chm && br.chm < 19 ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
+			if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
 			    var img = doc.createElement( 'img' );
-		        img.onerror = function(){ --n === 0 && c() };
+		        img.onerror = function() { --n === 0 && c() };
 		        img.src = a[ i ] + _ver;
 		    } else {
-		    	c && (e.onload = function() { --n === 0 && c() });
+		    	e.onload = function() { --n === 0 && c() };
 		    }
-	    }
-		_tags( 'head' )[ 0 ].appendChild( e );
+		}
 	}
 },
 _loadStyle = function( a, b ) {
@@ -401,11 +425,17 @@ _numDecimal = $.numDecimal = function( a, b ) {
 		return f ? _strTo( '' + a, '.' ) + '.' + f.slice( 0, b ) : a;
 	}
 },
+_string = $.string = function( a ) {
+	return a == N ? '' : '' + a;
+},
 _strTrim = $.strTrim = function (a ) {
 	return String( a ).replace( /^\s+|\s+$/g, '' );
 },
-_strQuot = $.strQuot = function( a ) {
-	return String( a ).replace( /\"/g, '&quot;' );
+// @a -> str, b -> no html entities?
+_strQuot = $.strQuot = function( a, b ) {
+	a = String( a );
+	b && (a = a.replace( /<[^>]+>/g, '' ));
+	return a.replace( /\"/g, '&quot;' );
 },
 // 在a中取以b开始的字符串(不包括b) /@ c -> last indexOf ?
 _strFrom = $.strFrom = function( a, b, c ) {
@@ -431,17 +461,24 @@ _strPad = $.strPad = function( a, b, c ) {
 		a = c + a;
 	return a;
 },
+// a字符重复b次
+_strRepeat = $.strRepeat = function( a, b ) {
+	for ( var i = 0, r = a, l = b || 0; i < l; i ++ )
+		r += a;
+	return r;
+},
+
 // 取字符串字节数(一个汉字算双字节)  /@ s -> str, b -> 一个汉字算几个字节？默认2个
 _strLen = $.strLen = function( s, b ) {
 	if ( ! s ) return 0;
-	if ( ! b ) b = _cfg.cn_bytes || 2;
+	if ( ! b ) b = _cfg.cnBytes || 2;
 	for ( var i = 0, d = 0, l = s.length; i < l; i ++ )
 		d += s.charCodeAt( i ) > 128 ? b : 1;
 	return d;
 },
 // 按照字节数截取字符串 / @a -> str, b -> len, c -> trancateExt 后缀, n -> html entries?
 _strSlice = $.strSlice = function( a, b, c, n ) {
-	var d = 0, e, f = c ? _strLen( c ) : 0, y = _cfg.cn_bytes || 2, k, i = 0, l = a.length;
+	var d = 0, e, f = c ? _strLen( c ) : 0, y = _cfg.cnBytes || 2, k, i = 0, l = a.length;
 	for ( ; i < l; i ++ ) {
 		e = a.charCodeAt( i ) > 128 ? y : 1;
 		if ( n && a.charAt( i ) === '&' ) {
@@ -473,7 +510,7 @@ _strEscape = $.strEscape = function( s ) {
 },
 // 在 a 中查找 b 并给 b 加上标签样式 c /@ a -> str, b -> key, c -> matchLength?, d -> key cls?
 _strHighlight = $.strHighlight = function( a, b, c, d ) {
-	return (a = a + '').replace( RegExp( '(<[\\/!]?\\w+(?::\\w+)?\\s*(?:\\w+(?:=(\'|")?.*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ),  function($0, $1, $2, $3) {
+	return (a = a + '').replace( RegExp( '(<[\\/!]?\\w+(?::\\w+)?\\s*(?:[-\\w]+(?:=(\'|")?.*?\\2)?\\s*)*>)|(' + _strSplitword( b, c, T ).join( '|' ) + ')', 'ig' ), function($0, $1, $2, $3) {
 	   	return $3 === U ? $1 : '<em class="' + (d || 'f-keyword') + '">' + $3 + '</em>';
 	} );
 },
@@ -525,6 +562,18 @@ _idsAny = $.idsAny = function( s, n, p ) {
 	if ( (n = String( n )).indexOf( p ) > -1 ) {
 		for ( var i = 0, b = n.split( p ), l = b.length; i < l; i ++ )
 			if ( (p + s + p).indexOf( p + b[ i ] + p ) > -1 ) return T;
+	} else
+		return (p + s + p).indexOf( p + n + p ) > -1;
+},
+// s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
+_idsAll = $.idsAll = function( s, n, p ) {
+	if ( ! s ) return F;
+	if ( ! n || s == n ) return T;
+	if ( ! p ) p = ',';
+	if ( (n = String( n )).indexOf( p ) > -1 ) {
+		for ( var i = 0, b = n.split( p ), l = b.length; i < l; i ++ )
+			if ( (p + s + p).indexOf( p + b[ i ] + p ) === -1 ) return F;
+		return T;
 	} else
 		return (p + s + p).indexOf( p + n + p ) > -1;
 },
@@ -656,7 +705,7 @@ _jsonString = $.jsonString = function( a, b, c ) {
 },
 // 把字符串 转为 json /@ a -> str
 _jsonParse = $.jsonParse = function( a ) {
-	return ! a ? N : JSON.parse( a );
+	return ! a ? a : Function( 'return ' + a )();
 },
 // 复制 json
 _jsonClone = $.jsonClone = function( a ) {
@@ -845,7 +894,7 @@ _cookie_get = function( a ) {
 // 获取元素所在的window对象
 _win = function( o ) { return o && (o = (o.ownerDocument || o)) ? (o.defaultView || o.parentWindow || o) : win },
 // 往 document.body 内写入内容
-_db = $.db = function( a, b ) { return a ? (_append( b || doc.body, a ), doc.body.lastChild) : doc.body },
+_db = $.db = function( a, b ) { return a ? _append( b || doc.body, a ) : doc.body },
 // 简写 getElementsByTagName
 _tags = $.tags = function( a ) {
 	for ( var i = 0, c = doc.getElementsByTagName( a ), r = [], l = c.length; i < l; i ++ ) r.push( c[ i ] );
@@ -915,40 +964,12 @@ _set_style = function( o, n, v ) {
 	} else {
 		n = _css_camelize( n );
 		if ( n === 'width' || n === 'height' )
-			v = Math.max( _number( v ), 0 );
+			v && v !== 'auto' && (v = Math.max( _number( v ), 0 ));
 		if ( v && !isNaN( v ) && n !== 'zIndex' )
 			v += 'px';
 		o.style[ n ] = v;
 	}
 	return o;
-},
-_wmin = $.wmin = function( o ) {
-	if ( o.isWidget ) {
-		if ( o.x.wmin )
-			return o.x.wmin;
-		o = o.$();
-	}
-	var a = o.currentStyle, b = [ a.borderLeftWidth, a.borderRightWidth, a.paddingLeft, a.paddingRight, a.marginLeft, a.marginRight ], c = 0;
-	for( var i = 0, d; i < 6; i ++ ) {
-		d = parseFloat( b[ i ] );
-		if ( !isNaN( d ) )
-			c += d;
-	}
-	return Math.ceil( c );
-},
-_hmin = $.hmin = function( o ) {
-	if ( o.isWidget ) {
-		if ( o.x.wmin )
-			return o.x.wmin;
-		o = o.$();
-	}
-	var a = o.currentStyle, b = [ a.borderTopWidth, a.borderBottomWidth, a.paddingTop, a.paddingBottom, a.marginTop, a.marginBottom ], c = 0;
-	for( var i = 0, d; i < 6; i ++ ) {
-		d = parseFloat( b[ i ] );
-		if ( !isNaN( d ) )
-			c += d;
-	}
-	return Math.ceil( c );
 },
 // 以IeBox模式计算盒模型的应有宽高 / o -> HTML element, w -> width(对象o的期望宽度)
 _boxwd = $.boxwd = function( o, w ) {
@@ -999,10 +1020,10 @@ _html = $.html = function( o, s, r ) {
 	}
 	}
 },
-_append  = $.append  = function( o, s ) { _html( o, s, 3 ); return o.lastChild },	
-_prepend = $.prepend = function( o, s ) { _html( o, s, 1 ); return o.firstChild },
-_before  = $.before  = function( o, s ) { _html( o, s, 2 ); return o.previousSibling },
-_after   = $.after   = function( o, s ) { _html( o, s, 0 ); return o.nextSibling },
+_append  = $.append  = function( o, s ) { _html( o, s, 3 ); return o.lastElementChild || o.lastChild },	
+_prepend = $.prepend = function( o, s ) { _html( o, s, 1 ); return o.firstElementChild || o.firstChild },
+_before  = $.before  = function( o, s ) { _html( o, s, 2 ); return o.previousElementSibling || o.previousSibling },
+_after   = $.after   = function( o, s ) { _html( o, s, 0 ); return o.nextElementSibling || o.nextSibling },
 _replace = $.replace = function( o, s ) {
 	var a = o.nextSibling;
 	if ( a ) {
@@ -1066,11 +1087,14 @@ _arr_comma = function( a ) { return a.split( ',' ) },
 _snaptype = {
 	h : _arr_comma( '21,12,34,43' ),
 	v : _arr_comma( '41,14,32,23' ),
-	a : _arr_comma( '41,32,14,23,21,34,12,43,11' )
+	a : _arr_comma( '41,32,14,23,21,34,12,43,11' ),
+	t: ['tt'], b: ['bb'], l: ['ll'], r: ['rr'], top: ['tt'], bottom: ['bb'], left: ['ll'], right: ['rr'],
+	tl: ['11'], tr: ['22'], rt: ['22'], rb: ['33'], br: ['33'], bl: ['44'], lb: ['44'], lt: ['11'],
+	'1': ['11'], '2': ['22'], '3': ['22'], '4': ['33'], '5': ['33'], '6': ['44'], '7': ['44'], '8': ['11']
 },
 _snapIndent = { h: {'21':-1,'34':-1,'12':1,'43':1}, v: {'14':1,'23':1,'41':-1,'32':-1} },
 _snapMag = (function() {
-	var r = [ 23,32,12,43,22,33,'rr','lr' ], b = [ 14,23,34,43,33,44,'bb','tb' ], i, o = { pix: { r:{}, b:{} }, mag: { l:{}, r:{}, t:{}, b:{} } };
+	var r = [ 23,32,12,43,22,33,'rr','lr' ], b = [ 14,23,34,43,33,44,'bb','tb' ], i, o = { pix: { r:{}, b:{} }, mag: { l:{}, r:{}, t:{}, b:{} }, inner:{} };
 	i = r.length; while ( i -- ) o.pix.r[ r[ i ] ] = T;
 	i = b.length; while ( i -- ) o.pix.b[ b[ i ] ] = T;
 	var r = [ 21,34,22,33,'rr','rl' ], b = [ 41,32,44,33,'bt','bb' ], l = [ 12,43,11,44,'lr','ll' ], t = [ 14,23,11,22,'tb','tt' ];
@@ -1078,6 +1102,8 @@ _snapMag = (function() {
 	i = b.length; while ( i -- ) o.mag.b[ b[ i ] ] = T;
 	i = l.length; while ( i -- ) o.mag.l[ l[ i ] ] = T;
 	i = t.length; while ( i -- ) o.mag.t[ t[ i ] ] = T;
+	var r = [ 11,22,33,44,'tt','bb','ll','rr' ];
+	i = r.length; while ( i -- ) o.inner[ r[ i ] ] = T;
 	return o;
 })(),
 // 获取对齐吸附模式的位置参数。元素四个角，左上为1，右上为2，右下为3，左下为4。目标元素在前，浮动元素在后。如"41"代表目标元素的左下角和浮动元素的左上角粘合。
@@ -1121,8 +1147,8 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 	} else { // t r b l 是边线中点对齐 .
 		for ( var i = 0, o, p, m, n = 0; i < s.length; i ++ ) {
 			g = s[ i ].charAt( 0 ), h = s[ i ].charAt( 1 );
-			t.push( ( g === 'r' || g === 'l' || g === 'c' ? ( c.top + c.bottom ) / 2 : ( g === 't' ? c.top + f : c.bottom - f ) ) - ( h === 'r' || h === 'l' || h === 'c' ? b / 2 : ( h === 'b' ? b : 0 ) ) );
-			l.push( ( g === 't' || g === 'b' || g === 'c' ? ( c.left + c.right ) / 2 : ( g === 'r' ? c.right - f : c.left + f ) ) - ( h === 't' || h === 'b' || h === 'c' ? a / 2 : ( h === 'r' ? a : 0 ) ) );
+			t.push( ( g === 'r' || g === 'l' || g === 'c' ? ( c.top + c.bottom ) / 2 : ( g === 't' ? c.top : c.bottom ) ) - ( h === 'r' || h === 'l' || h === 'c' ? b / 2 : ( h === 'b' ? b : 0 ) ) );
+			l.push( ( g === 't' || g === 'b' || g === 'c' ? ( c.left + c.right ) / 2 : ( g === 'r' ? c.right : c.left ) ) - ( h === 't' || h === 'b' || h === 'c' ? a / 2 : ( h === 'r' ? a : 0 ) ) );
 			o = t[ i ] >= 0 && t[ i ] + b <= eh;
 			p = l[ i ] + a <= ew && l[ i ] >= 0;
 			if ( o && p ) {
@@ -1141,13 +1167,21 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 		}
 	}
 	if ( k < 0 ) k = 0;
-	var y = s[ k ], o = { left : l[ k ], top : t[ k ], right: l[ k ] + a, bottom: eh - (t[ k ] + b), right: ew - (l[ k ] + a), type : y };
+	var y = s[ k ], o = { left : l[ k ], top : t[ k ], bottom: eh - (t[ k ] + b), right: ew - (l[ k ] + a), type : y };
 	_snapMag.pix.r[ y ] && (o.pix_r = T);
 	_snapMag.pix.b[ y ] && (o.pix_b = T);
 	_snapMag.mag.r[ y ] && (o.mag_r = T, o.mag = 'r');
 	_snapMag.mag.b[ y ] && (o.mag_b = T, o.mag = 'b');
 	_snapMag.mag.l[ y ] && (o.mag_l = T, o.mag = 'l');
 	_snapMag.mag.t[ y ] && (o.mag_t = T, o.mag = 't');
+	_snapMag.inner[ y ] && (o.inner = T);
+	if ( f && o.mag ) {
+		if ( o.inner ) {
+			o.mag_t ? (o.top -= f) : o.mag_b ? (o.bottom -= f) : o.mag_r ? (o.right -= f) : (o.left -= f);
+		} else {
+			o.mag_t ? (o.bottom -= f) : o.mag_b ? (o.top -= f) : o.mag_r ? (o.left -= f) : (o.right -= f);
+		}
+	}
 	if ( e ) { // 自适应位置
 		var l = o.left, r = o.right, b = o.bottom, t = o.top;
 		if ( o.mag_t || o.mag_b ) {
@@ -1229,7 +1263,7 @@ _cancel = $.cancel = function( a ) {
 _event_click = { click: T, dblclick: T, contextmenu: T, mousedown: T, mouseup: T },
 _point = $.point = function( e ) {
 	if( (e || (e = window.event)) && _event_click[ e.type ] ) {
-		_point.originalEvent = e, _point.offsetX = e.offsetX, _point.offsetY = e.offsetY, _point.clientX = e.clientX, _point.clientY = e.clientY;
+		_point.srcElement = e.srcElement, _point.offsetX = e.offsetX, _point.offsetY = e.offsetY, _point.clientX = e.clientX, _point.clientY = e.clientY;
 	}
 },
 _rngSelection = $.rngSelection = (function() {
@@ -1361,7 +1395,7 @@ _Event = $.Event = _createClass( {
 				if ( d ) {
 					var i = d.length;
 					while ( i -- )
-						if ( b ? (d[ i ].fn === b && (! c || c === d[ i ].pvdr)) : T ) _event_remove( d[ i ] );
+						if ( b ? (d[ i ].fn === b && (! c || c === d[ i ].pvdr)) : c ? c === d[ i ].pvdr : T ) _event_remove( d[ i ] );
 				}
 			} else {
 				var c = _EventUser[ _uid( this ) ], i;
@@ -1518,8 +1552,9 @@ Ajax = _createClass( {
 			}
 		},
 		send: function() {
-			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = _ajax_data( _cfg.ajax_data ), e = _ajax_data( x.data ),
-				f = x.error != N ? x.error : _cfg.ajax_error, g = x.dataType, u = a, l, i, self = this;
+			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = !x.cdn && _ajax_data( _cfg.ajaxData ), e = _ajax_data( x.data ),
+				f = x.error != N ? x.error : _cfg.ajaxError, g = x.dataType || 'text', u = a, l, i, self = this;
+			if(x.src.indexOf('t/std.js')>0)debugger;
 			d && e ? (e = d + '&' + e) : (d && (e = d));
 			// get url超过长度则转为post
 			if ( ( a.length > 2000 && a.indexOf( '?' ) > 0 ) ) {
@@ -1528,15 +1563,18 @@ Ajax = _createClass( {
 			}
 			if ( x.base || _path )
 				u = _urlLoc( x.base || _path, u );
+			if ( x.cdn && _cfg.ver )
+				u = _urlParam( u, { _v: _cfg.ver } );
 			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
 			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
 				return x.complete && x.complete.call( c, N, self );
 			if ( g === 'xml' && br.ie10 )
 				l.responseType = 'msxml-document';
-			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
-			l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
+			if ( _cfg.debug || ! x.cdn )
+				l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
 			l.setRequestHeader( 'x-requested-with',  _expando );
+			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
@@ -1545,12 +1583,12 @@ Ajax = _createClass( {
 				    if ( c ) {
 				    	//delete self.request;
 				    	_arrPop( _ajax_contexts[ _uid( c ) ], self );
-				    	if ( c._disposed )
-				    		return;
 				    }
 				    if ( l.status < 400 ) {
 				    	if ( g === 'json' ) {
-							try { eval( 'm=' + l.responseText ) } catch( ex ) {	r = g; }
+							try {
+								eval( 'm=' + l.responseText );
+							} catch( ex ) { r = g; }
 				    	} else if ( g === 'xml' ) {
 							if ( m = l.responseXML.documentElement )
 								('setProperty' in l.responseXML) && l.responseXML.setProperty( 'SelectionLanguage', 'XPath' );
@@ -1558,25 +1596,29 @@ Ajax = _createClass( {
 								r = g;
 						} else
 							m = l.responseText;
+						if ( m != N && x.filter && (m = _fnapply( x.filter, c, '$response,$ajax', [ m, self ] )) == N )
+							r = 'filter';
 					} else
-						r = g || 'text';
-			        if ( r ) {
-			        	self.errorCode = l.status;
-						if ( f !== F && (_ajax_httpmode || l.status) ) {
-							typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
-							if ( f !== F ) {
-								var s = 'ajax ' + l.status + ': ' + a;
-								$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
-									$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
-								win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
+						r = g;
+					// 如果有context且context失效，则不执行error也不执行succcess，只执行complete
+					if ( ! c || ! c._disposed ) {
+				        if ( r ) {
+				        	self.errorCode = l.status;
+				        	if ( l.status === 404 ) debugger;
+							if ( f !== F && (_ajax_httpmode || l.status) ) {
+								typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
+								if ( f !== F && r !== 'filter' ) {
+									var s = 'ajax ' + l.status + ': ' + a;
+									$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
+										$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
+									win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
+								}
 							}
+					    } else {
+					    	self.response = m;
+							b && b.call( c, m, self );
+							_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 						}
-				    } else {
-				    	var t = x.filter;
-				    	t && (m = _fnapply( t, c, '$value,$ajax', [ m, self ] ));
-				    	self.response = m;
-						m == N ? (f && _fnapply( f, c, '$ajax', [ self ] )) : (b && b.call( c, m, self ));
-						_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
 					}
 					x.complete && x.complete.call( c, m, self );
 				}
@@ -1691,6 +1733,10 @@ function _compatDOM() {
 		} );
 		(tmp = doc.createEvent( 'HTMLEvents' )).initEvent( 'eventemu', T, T );
 		win.dispatchEvent( tmp );
+	}
+	(tmp = doc.createElement( 'div' )).innerHTML = '1';
+	if ( ! tmp.currentStyle ) {
+		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
 	}	
 }
 function _compatDOMPC() {
@@ -1780,9 +1826,6 @@ function _compatDOMPC() {
 			return str + ">" + this.innerHTML + "</" + this.tagName + ">";
 		});
 	}
-	if ( ! tmp.currentStyle ) {
-		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
-	}
 	_rm( tmp );
 	// 检测浏览器自带滚动条的宽度
 	br.chdiv( 'f-scroll-overflow', function() { br.scroll = 50 - this.clientWidth; } );
@@ -1810,11 +1853,12 @@ function _compatDOMMobile() {
 }
 
 
-/* 引导启动 */
+/* `boot` 引导启动 */
 var boot = {
 	init: function( x ) {
 		x && $.config( x );
-		this.initEnv(), this.initDocView();
+		this.initEnv();
+		this.initDocView();
 	},
 	ready: function( a ) {
 		this.fn = a;
@@ -1838,21 +1882,24 @@ var boot = {
 			_cfg.path = _path;
 		if ( _cfg.lib != N )
 			_lib = _cfg.lib;
-		_ver = _cfg.ver ? '?ver=' + _cfg.ver : '',
+		_ver = _cfg.ver ? '?_v=' + _cfg.ver : '',
 		_ui_path = _urlLoc( _path, _lib ) + 'ui/';
 		
 		_compatJS();
 		
-		if ( noGlobal || _cfg.no_conflict ) {
+		if ( noGlobal || _cfg.noConflict ) {
 			(Date.$ = $).abbr = 'Date.$';
 		}
 		var _define  = new Define( _path ),
 			_require = new Require( _path ),
 			_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
 			_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
-			_jq      = _loc && _require( _wg_lib + 'jquery/jquery-' + (br.mobile ? '3.3.1' : '1.12.4') );
-		if ( ! _loc )
+			_jq      = _loc && _require( _wg_lib + 'jquery/jquery' + (br.mobile ? '-mobile' : '') );
+		if ( _loc ) {
+			_cfg.loc && $.mergeDeep( _loc, _cfg.loc );
+		} else {
 			return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
+		}
 		for ( var k in _cfg.alias ) {
 			for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
 				_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
@@ -1873,7 +1920,7 @@ var boot = {
 
 		var w = _require( _wg_lib + 'widget' );
 		
-		if ( !(noGlobal || _cfg.no_conflict) ) {
+		if ( !(noGlobal || _cfg.noConflict) ) {
 			win.Q  = win.jQuery = _jq;
 			win.VM = $.vm;
 		} else {
@@ -1887,18 +1934,19 @@ var boot = {
 			_compatDOM();
 			// 生成首页view
 			if ( _cfg.view ) {
-				$.widget( _extend( _cfg.view, { type: 'view', width: '*', height: '*' } ) ).render( _db() );
+				var g = $.widget( _extend( _cfg.view, { type: 'View', width: '*', height: '*' } ) ).render( _db() );
+				Q( win ).on( 'beforeunload', function() { g.dispose() } );
 			} else {
 				// 把 <d:wg> 标签转换为 widget
 				for ( var i = 0, d = _tags( 'script' ), j, l = d.length; i < l; i ++ ) {
-					if ( d.getAttribute( 'type' ) === 'dfish/widget' && (eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) )) )
+					if ( d[ i ].getAttribute( 'type' ) === 'dfish/widget' && (eval( 'j = ' + d[ i ].innerHTML.replace( /&lt;/g, '<' ).replace( '&gt;', '>' ) )) )
 						$.widget( j ).render( d[ i ], 'replace' );
 				}
 			}
 			// ie6及以下浏览器，弹出浮动升级提示
 			if ( ie && br.ieVer < 7 ) {
-				VM().cmd({ type: 'tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
-					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.support_url ? _urlFormat( _cfg.support_url, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: doc.body, snaptype: 'tt', prong: F});
+				VM().cmd({ type: 'Tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
+					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: { target: doc.body, position: 'tt' }, prong: F});
 			}
 		} );
 		// 调试模式
@@ -1907,23 +1955,22 @@ var boot = {
 				if ( e.ctrlKey && ! $( ':develop' ) ) {
 					var m = $.vm( e.target ), c = $.bcr( m.$() ),
 						s = '<div class="f-develop" style="width:' + (c.width - 4) + 'px;height:' + (c.height - 4) + 'px;left:' + c.left + 'px;top:' + c.top + 'px;"></div>',
-						d = m.closest( 'dialog' ),
+						d = m.closest( 'Dialog' ),
 						t = 'path: ' + m.path + (d ? '\ndialog: ' + (d.x.id || '') : '') + '\nsrc: ' + (m.x.src || '');
 					if ( m.x.template )
 						t += '\ntemplate: ' + m.x.template;
 					if ( br.css3 ) {
-						Q( e.target ).closest( '[w-type="xsrc"],[w-type="tree"]' ).each( function() {
+						Q( e.target ).closest( '[w-type="Section"]' ).each( function() {
 							var g = $.all[ this.id ], c = $.bcr( this );
-							if ( g.x.template ) {
+							if ( m.contains( g ) )
 								s += '<div class="f-develop z-tpl" style="width:' + (c.width - 6) + 'px;height:' + (c.height - 6) + 'px;left:' + (c.left + 1) + 'px;top:' + (c.top + 1) + 'px;">' +
 									'<div class=_t><span class=_s>id: ' + (g.x.id || '') + '<br>template: ' + (g.x.template || '') + '<br>src: ' + (g.x.src || '') + '</span></div>' +
 									'<div>';
-							}
 						} );
 					}
 					$.query( doc.body ).append( s );
 					setTimeout( function() {
-						$.vm ? $.vm().cmd( { type: 'alert', text: t, yes: function() { Q( '.f-develop' ).remove() } } ) : (alert( t ), Q( '.f-develop' ).remove());
+						$.vm ? $.vm().cmd( { type: 'Alert', text: t, yes: function() { Q( '.f-develop' ).remove() } } ) : (alert( t ), Q( '.f-develop' ).remove());
 					}, 50 );
 					e.preventDefault();
 				}
@@ -1951,8 +1998,8 @@ _merge( $, {
 	globals: {},
 	// 事件白名单
 	white_events: (function() {
-		var a = [ 'all', 'click,contextmenu,dragstart,drag,dragend,dragenter,dragleave,dragover,drop,keydown,keypress,keyup,copy,cut,paste,scroll,select,selectstart,propertychange,beforepaste,beforedeactivate,' +
-			(br.mobile ? 'touchstart,touchmove,touchend,tap' : 'mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,mouseenter,mouseleave,dblclick'), 'input', 'focus,blur,input', 'option', 'change' ];
+		var a = [ 'all', 'click,contextMenu,dragStart,drag,dragEnd,dragEnter,dragExit,dragLeave,dragOver,drop,keyDown,keyPress,keyUp,copy,cut,paste,scroll,select,selectStart,propertyChange,beforePaste,beforeDeactivate,' +
+			(br.mobile ? 'touchStart,touchMove,touchEnd,touchCancel,tap' : 'mouseOver,mouseOut,mouseDown,mouseUp,mouseMove,mouseWheel,mouseEnter,mouseLeave,dblClick'), 'input', 'focus,blur,input', 'option', 'change' ];
 		for ( var i = 0, r = {}, j, k, v; i < a.length; i += 2 ) {
 			k = a[ i ], r[ k ] = {}, v = [];
 			for ( j = 1; j < i + 2; j += 2 )
@@ -1984,6 +2031,7 @@ _merge( $, {
 	data: function( a, b ) {
 		return b === U ? this._data[ a ] : (this._data[ a ] = b);
 	},
+	// @a -> context, b -> fn
 	proxy: function( a, b ) {
 		typeof b === _STR && (b = Function( b ));
 		return function() { return b.apply( a, arguments ) };
@@ -1994,17 +2042,17 @@ _merge( $, {
 	height: function() {
 		return cvs.clientHeight;
 	},
-	// a -> text, b -> pos, c -> time, d -> id
-	alert: function( a, b, c, d ) {
-		return $.vm ? $.vm().cmd( { type: 'alert', text: a, position: b, timeout: c, id: d !== U ? d : $.alert_id } ) : alert( a );
+	// a -> text, b -> pos, c -> time, d -> id, e -> escape?
+	alert: function( a, b, c, d, e ) {
+		return $.vm ? $.vm().cmd( { type: 'Alert', text: a, position: b, timeout: c, id: d !== U ? d : $.alert_id, escape: e !== F } ) : alert( a );
 	},
 	// a -> text, b -> yes, c -> no
 	confirm: function( a, b, c ) {
-		return $.vm().cmd( { type: 'confirm', text: a, yes: b, no: c } );
+		return $.vm().cmd( { type: 'Confirm', text: a, yes: b, no: c } );
 	},
 	// 显示一个 tip /@a -> target, b -> feature?
 	tip: function( a, b ) {
-		VM(this).cmd( _extend( b || {}, { type: 'tip', text: _strEscape( a.getAttribute( 'data-title' ) ), snap: a, snaptype: 'a', timeout: 5 } ) );
+		VM(this).cmd( _extend( b || {}, { type: 'Tip', text: _strEscape( a.getAttribute( 'data-title' ) ), snap: { target: a, position: 'a' }, timeout: 5 } ) );
 	},	
 	show: function( a, b ) {
 		_classRemove( a, 'f-none' );
@@ -2065,7 +2113,7 @@ _merge( $, {
 		aniShow ? webview.close( aniShow ) : webview.close();
 	},
 	cleanPop: function() {
-		$.require( 'dialog' ).cleanPop();		
+		$.require( 'Dialog' ).cleanPop();		
 	},
 	// @a -> src, b -> feature { id: '', cls: '', style: '', click: '', tip: '' }
 	image: function( a, b ) {
@@ -2087,7 +2135,8 @@ _merge( $, {
 			r += '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>';
 		} else {
 			if ( d ) {
-				r += '<img src="' + d + '" class="_ico f-va"' + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '');
+				r += '<img src="' + d + '" class="_ico f-va"' + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '') +
+					(b && b.error ? ' onerror="' + b.error + '"' : '') + (b && b.load ? ' onload="' + b.load + '"' : '');
 				if ( b && (b.maxwidth || b.maxheight) ) {
 					var t = '';
 					b.maxwidth && (t += 'max-width:' + b.maxwidth + 'px;');
@@ -2097,7 +2146,7 @@ _merge( $, {
 				r += '>';
 			}
 		}
-		return r + '<i class=f-vi></i></span>';
+		return r + '<i class=f-vi></i>' + ((b && b.append) || '') + '</span>';
 	},
 	arrow: function( a, b ) {
 		var c = b || a;
@@ -2135,16 +2184,19 @@ _merge( $, {
 	},
 	// @a -> move fn, b -> up fn, c -> el
 	moveup: function( a, b, c ) {
-		var d;
-		ie ? _attach( doc, 'selectstart', $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
-		_attach( doc, 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
-		_attach( doc, 'mouseup', function( e ) {
+		var d, f, m = function ( e ) { e.preventDefault(); };
+		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
+		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
+		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
 			b && b( ie ? Q.event.fix( e ) : e );
-			_detach( doc, 'mousemove', d, T );
-			_detach( doc, 'mouseup', arguments.callee, T );
-			ie ? _detach( doc, 'selectstart', $.rt( F ) ) : _classRemove( cvs, 'f-unsel' );
+			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', d, T );
+			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
+			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
+			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
 			c && _rm( c );
 		}, T );
+		// 业务拖动时禁用浏览器默认的拖动效果
+		br.mobile && doc.addEventListener( 'touchmove', m, { passive: F } );
 	},
 	// @a -> el, b -> type, c -> fast|normal|slow (.2s|.5s|1s), d -> fn 结束后执行的函数
 	animate: function( a, b, c, d ) {
@@ -2191,7 +2243,7 @@ _merge( $, {
 		var mimes = { ".323": "text/h323", ".3gp": "video/3gpp", ".aab": "application/x-authoware-bin", ".aam": "application/x-authoware-map", ".aas": "application/x-authoware-seg", ".acx": "application/internet-property-stream", ".ai": "application/postscript", ".aif": "audio/x-aiff", ".aifc": "audio/x-aiff", ".aiff": "audio/x-aiff", ".als": "audio/X-Alpha5", ".amc": "application/x-mpeg", ".apk": "application/vnd.android.package-archive", ".asc": "text/plain", ".asd": "application/astound", ".asf": "video/x-ms-asf", ".asn": "application/astound", ".asp": "application/x-asap", ".asr": "video/x-ms-asf", ".asx": "video/x-ms-asf", ".au": "audio/basic", ".avi": "video/x-msvideo", ".awb": "audio/amr-wb", ".axs": "application/olescript", ".bas": "text/plain", ".bcpio": "application/x-bcpio", ".bld": "application/bld", ".bld2": "application/bld2", ".bmp": "image/bmp", ".bz2": "application/x-bzip2", ".c": "text/plain", ".cal": "image/x-cals", ".cat": "application/vnd.ms-pkiseccat", ".ccn": "application/x-cnc", ".cco": "application/x-cocoa", ".cdf": "application/x-cdf", ".cer": "application/x-x509-ca-cert", ".cgi": "magnus-internal/cgi", ".chat": "application/x-chat", ".clp": "application/x-msclip", ".cmx": "image/x-cmx", ".co": "application/x-cult3d-object", ".cod": "image/cis-cod", ".conf": "text/plain", ".cpio": "application/x-cpio", ".cpp": "text/plain", ".cpt": "application/mac-compactpro", ".crd": "application/x-mscardfile", ".crl": "application/pkix-crl", ".crt": "application/x-x509-ca-cert", ".csh": "application/x-csh", ".csm": "chemical/x-csml", ".csml": "chemical/x-csml", ".css": "text/css", ".dcm": "x-lml/x-evm", ".dcr": "application/x-director", ".dcx": "image/x-dcx", ".der": "application/x-x509-ca-cert", ".dhtml": "text/html", ".dir": "application/x-director", ".dll": "application/x-msdownload", ".doc": "application/msword", ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".dot": "application/msword", ".dvi": "application/x-dvi", ".dwf": "drawing/x-dwf", ".dwg": "application/x-autocad", ".dxf": "application/x-autocad", ".dxr": "application/x-director", ".ebk": "application/x-expandedbook", ".emb": "chemical/x-embl-dl-nucleotide", ".embl": "chemical/x-embl-dl-nucleotide", ".eps": "application/postscript", ".epub": "application/epub+zip", ".eri": "image/x-eri", ".es": "audio/echospeech", ".esl": "audio/echospeech", ".etc": "application/x-earthtime", ".etx": "text/x-setext", ".evm": "x-lml/x-evm", ".evy": "application/envoy", ".fh4": "image/x-freehand", ".fh5": "image/x-freehand", ".fhc": "image/x-freehand", ".fif": "application/fractals", ".flr": "x-world/x-vrml", ".flv": "flv-application/octet-stream", ".fm": "application/x-maker", ".fpx": "image/x-fpx", ".fvi": "video/isivideo", ".gau": "chemical/x-gaussian-input", ".gca": "application/x-gca-compressed", ".gdb": "x-lml/x-gdb", ".gif": "image/gif", ".gps": "application/x-gps", ".gtar": "application/x-gtar", ".gz": "application/x-gzip",
 			".h": "text/plain", ".hdf": "application/x-hdf", ".hdm": "text/x-hdml", ".hdml": "text/x-hdml", ".hlp": "application/winhlp", ".hqx": "application/mac-binhex40", ".hta": "application/hta", ".htc": "text/x-component", ".htm": "text/html", ".html": "text/html", ".hts": "text/html", ".htt": "text/webviewhtml", ".ice": "x-conference/x-cooltalk", ".ico": "image/x-icon", ".ief": "image/ief", ".ifm": "image/gif", ".ifs": "image/ifs", ".iii": "application/x-iphone", ".imy": "audio/melody", ".ins": "application/x-internet-signup", ".ips": "application/x-ipscript", ".ipx": "application/x-ipix", ".isp": "application/x-internet-signup", ".it": "audio/x-mod", ".itz": "audio/x-mod", ".ivr": "i-world/i-vrml", ".j2k": "image/j2k", ".jad": "text/vnd.sun.j2me.app-descriptor", ".jam": "application/x-jam", ".jar": "application/java-archive", ".java": "text/plain", ".jfif": "image/pipeg", ".jnlp": "application/x-java-jnlp-file", ".jpe": "image/jpeg", ".jpeg": "image/jpeg", ".jpg": "image/jpeg", ".jpz": "image/jpeg", ".js": "application/x-javascript", ".jwc": "application/jwc", ".kjx": "application/x-kjx", ".lak": "x-lml/x-lak", ".latex": "application/x-latex", ".lcc": "application/fastman", ".lcl": "application/x-digitalloca", ".lcr": "application/x-digitalloca", ".lgh": "application/lgh", ".lml": "x-lml/x-lml", ".lmlpack": "x-lml/x-lmlpack", ".log": "text/plain", ".lsf": "video/x-la-asf", ".lsx": "video/x-la-asf", ".m13": "application/x-msmediaview", ".m14": "application/x-msmediaview", ".m15": "audio/x-mod", ".m3u": "audio/x-mpegurl", ".m3url": "audio/x-mpegurl", ".m4a": "audio/mp4a-latm", ".m4b": "audio/mp4a-latm", ".m4p": "audio/mp4a-latm", ".m4u": "video/vnd.mpegurl", ".m4v": "video/x-m4v", ".ma1": "audio/ma1", ".ma2": "audio/ma2", ".ma3": "audio/ma3", ".ma5": "audio/ma5", ".man": "application/x-troff-man", ".map": "magnus-internal/imagemap", ".mbd": "application/mbedlet", ".mct": "application/x-mascot", ".mdb": "application/x-msaccess", ".mdz": "audio/x-mod", ".me": "application/x-troff-me", ".mel": "text/x-vmel", ".mht": "message/rfc822", ".mhtml": "message/rfc822", ".mi": "application/x-mif", ".mid": "audio/mid", ".midi": "audio/midi", ".mif": "application/x-mif", ".mil": "image/x-cals", ".mio": "audio/x-mio", ".mmf": "application/x-skt-lbs", ".mng": "video/x-mng", ".mny": "application/x-msmoney", ".moc": "application/x-mocha", ".mocha": "application/x-mocha", ".mod": "audio/x-mod", ".mof": "application/x-yumekara", ".mol": "chemical/x-mdl-molfile", ".mop": "chemical/x-mopac-input", ".mov": "video/quicktime", ".movie": "video/x-sgi-movie", ".mp2": "video/mpeg", ".mp3": "audio/mpeg", ".mp4": "video/mp4", ".mpa": "video/mpeg", ".mpc": "application/vnd.mpohun.certificate", ".mpe": "video/mpeg", ".mpeg": "video/mpeg", ".mpg": "video/mpeg", ".mpg4": "video/mp4", ".mpga": "audio/mpeg", ".mpn": "application/vnd.mophun.application", ".mpp": "application/vnd.ms-project", ".mps": "application/x-mapserver", ".mpv2": "video/mpeg", ".mrl": "text/x-mrml", ".mrm": "application/x-mrm", ".ms": "application/x-troff-ms", ".msg": "application/vnd.ms-outlook", ".mts": "application/metastream", ".mtx": "application/metastream", ".mtz": "application/metastream", ".mvb": "application/x-msmediaview", ".mzv": "application/metastream", ".nar": "application/zip", ".nbmp": "image/nbmp", ".nc": "application/x-netcdf", ".ndb": "x-lml/x-ndb", ".ndwn": "application/ndwn", ".nif": "application/x-nif", ".nmz": "application/x-scream", ".nokia-op-logo": "image/vnd.nok-oplogo-color", ".npx": "application/x-netfpx", ".nsnd": "audio/nsnd", ".nva": "application/x-neva1", ".nws": "message/rfc822",
 			".oda": "application/oda", ".ogg": "audio/ogg", ".oom": "application/x-AtlasMate-Plugin", ".p10": "application/pkcs10", ".p12": "application/x-pkcs12", ".p7b": "application/x-pkcs7-certificates", ".p7c": "application/x-pkcs7-mime", ".p7m": "application/x-pkcs7-mime", ".p7r": "application/x-pkcs7-certreqresp", ".p7s": "application/x-pkcs7-signature", ".pac": "audio/x-pac", ".pae": "audio/x-epac", ".pan": "application/x-pan", ".pbm": "image/x-portable-bitmap", ".pcx": "image/x-pcx", ".pda": "image/x-pda", ".pdb": "chemical/x-pdb", ".pdf": "application/pdf", ".pfr": "application/font-tdpfr", ".pfx": "application/x-pkcs12", ".pgm": "image/x-portable-graymap", ".pict": "image/x-pict", ".pko": "application/ynd.ms-pkipko", ".pm": "application/x-perl", ".pma": "application/x-perfmon", ".pmc": "application/x-perfmon", ".pmd": "application/x-pmd", ".pml": "application/x-perfmon", ".pmr": "application/x-perfmon", ".pmw": "application/x-perfmon", ".png": "image/png", ".pnm": "image/x-portable-anymap", ".pnz": "image/png", ".pot,": "application/vnd.ms-powerpoint", ".ppm": "image/x-portable-pixmap", ".pps": "application/vnd.ms-powerpoint", ".ppt": "application/vnd.ms-powerpoint", ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation", ".pqf": "application/x-cprplayer", ".pqi": "application/cprplayer", ".prc": "application/x-prc", ".prf": "application/pics-rules", ".prop": "text/plain", ".proxy": "application/x-ns-proxy-autoconfig", ".ps": "application/postscript", ".ptlk": "application/listenup", ".pub": "application/x-mspublisher", ".pvx": "video/x-pv-pvx", ".qcp": "audio/vnd.qcelp", ".qt": "video/quicktime", ".qti": "image/x-quicktime", ".qtif": "image/x-quicktime", ".r3t": "text/vnd.rn-realtext3d", ".ra": "audio/x-pn-realaudio", ".ram": "audio/x-pn-realaudio", ".ras": "image/x-cmu-raster", ".rc": "text/plain", ".rdf": "application/rdf+xml", ".rf": "image/vnd.rn-realflash", ".rgb": "image/x-rgb", ".rlf": "application/x-richlink", ".rm": "audio/x-pn-realaudio", ".rmf": "audio/x-rmf", ".rmi": "audio/mid", ".rmm": "audio/x-pn-realaudio", ".rmvb": "audio/x-pn-realaudio", ".rnx": "application/vnd.rn-realplayer", ".roff": "application/x-troff", ".rp": "image/vnd.rn-realpix", ".rpm": "audio/x-pn-realaudio-plugin", ".rt": "text/vnd.rn-realtext", ".rte": "x-lml/x-gps", ".rtf": "application/rtf", ".rtg": "application/metastream", ".rtx": "text/richtext", ".rv": "video/vnd.rn-realvideo", ".rwc": "application/x-rogerwilco", ".s3m": "audio/x-mod", ".s3z": "audio/x-mod", ".sca": "application/x-supercard", ".scd": "application/x-msschedule", ".sct": "text/scriptlet", ".sdf": "application/e-score", ".sea": "application/x-stuffit", ".setpay": "application/set-payment-initiation", ".setreg": "application/set-registration-initiation", ".sgm": "text/x-sgml", ".sgml": "text/x-sgml", ".sh": "application/x-sh", ".shar": "application/x-shar", ".shtml": "magnus-internal/parsed-html", ".shw": "application/presentations", ".si6": "image/si6", ".si7": "image/vnd.stiwap.sis", ".si9": "image/vnd.lgtwap.sis", ".sis": "application/vnd.symbian.install", ".sit": "application/x-stuffit", ".skd": "application/x-Koan", ".skm": "application/x-Koan", ".skp": "application/x-Koan", ".skt": "application/x-Koan", ".slc": "application/x-salsa", ".smd": "audio/x-smd", ".smi": "application/smil", ".smil": "application/smil", ".smp": "application/studiom", ".smz": "audio/x-smd", ".snd": "audio/basic", ".spc": "application/x-pkcs7-certificates", ".spl": "application/futuresplash", ".spr": "application/x-sprite", ".sprite": "application/x-sprite", ".sdp": "application/sdp", ".spt": "application/x-spt",
-			".src": "application/x-wais-source", ".sst": "application/vnd.ms-pkicertstore", ".stk": "application/hyperstudio", ".stl": "application/vnd.ms-pkistl", ".stm": "text/html", ".svg": "image/svg+xml", ".sv4cpio": "application/x-sv4cpio", ".sv4crc": "application/x-sv4crc", ".svf": "image/vnd", ".svg": "image/svg+xml", ".svh": "image/svh", ".svr": "x-world/x-svr", ".swf": "application/x-shockwave-flash", ".swfl": "application/x-shockwave-flash", ".t": "application/x-troff", ".talk": "text/x-speech", ".tar": "application/x-tar", ".taz": "application/x-tar", ".tbp": "application/x-timbuktu", ".tbt": "application/x-timbuktu", ".tcl": "application/x-tcl", ".tex": "application/x-tex", ".texi": "application/x-texinfo", ".texinfo": "application/x-texinfo", ".tgz": "application/x-compressed", ".thm": "application/vnd.eri.thm", ".tif": "image/tiff", ".tiff": "image/tiff", ".tki": "application/x-tkined", ".tkined": "application/x-tkined", ".toc": "application/toc", ".toy": "image/toy", ".tr": "application/x-troff", ".trk": "x-lml/x-gps", ".trm": "application/x-msterminal", ".tsi": "audio/tsplayer", ".tsp": "application/dsptype", ".tsv": "text/tab-separated-values", ".ttz": "application/t-time", ".txt": "text/plain", ".uls": "text/iuls", ".ult": "audio/x-mod", ".ustar": "application/x-ustar", ".uu": "application/x-uuencode", ".uue": "application/x-uuencode", ".vcd": "application/x-cdlink", ".vcf": "text/x-vcard", ".vdo": "video/vdo", ".vib": "audio/vib", ".viv": "video/vivo", ".vivo": "video/vivo", ".vmd": "application/vocaltec-media-desc", ".vmf": "application/vocaltec-media-file", ".vmi": "application/x-dreamcast-vms-info", ".vms": "application/x-dreamcast-vms", ".vox": "audio/voxware", ".vqe": "audio/x-twinvq-plugin", ".vqf": "audio/x-twinvq", ".vql": "audio/x-twinvq", ".vre": "x-world/x-vream", ".vrml": "x-world/x-vrml", ".vrt": "x-world/x-vrt", ".vrw": "x-world/x-vream", ".vts": "workbook/formulaone", ".wav": "audio/x-wav", ".wax": "audio/x-ms-wax", ".wbmp": "image/vnd.wap.wbmp", ".wcm": "application/vnd.ms-works", ".wdb": "application/vnd.ms-works", ".web": "application/vnd.xara", ".wi": "image/wavelet", ".wis": "application/x-InstallShield", ".wks": "application/vnd.ms-works", ".wm": "video/x-ms-wm", ".wma": "audio/x-ms-wma", ".wmd": "application/x-ms-wmd", ".wmf": "application/x-msmetafile", ".wml": "text/vnd.wap.wml", ".wmlc": "application/vnd.wap.wmlc", ".wmls": "text/vnd.wap.wmlscript", ".wmlsc": "application/vnd.wap.wmlscriptc", ".wmlscript": "text/vnd.wap.wmlscript", ".wmv": "audio/x-ms-wmv", ".wmx": "video/x-ms-wmx", ".wmz": "application/x-ms-wmz", ".wpng": "image/x-up-wpng", ".wpt": "x-lml/x-gps", ".wri": "application/x-mswrite", ".wrl": "x-world/x-vrml", ".wrz": "x-world/x-vrml", ".ws": "text/vnd.wap.wmlscript", ".wsc": "application/vnd.wap.wmlscriptc", ".wv": "video/wavelet", ".wvx": "video/x-ms-wvx", ".wxl": "application/x-wxl", ".x-gzip": "application/x-gzip", ".xaf": "x-world/x-vrml", ".xar": "application/vnd.xara", ".xbm": "image/x-xbitmap", ".xdm": "application/x-xdma", ".xdma": "application/x-xdma", ".xdw": "application/vnd.fujixerox.docuworks", ".xht": "application/xhtml+xml", ".xhtm": "application/xhtml+xml", ".xhtml": "application/xhtml+xml", ".xla": "application/vnd.ms-excel", ".xlc": "application/vnd.ms-excel", ".xll": "application/x-excel", ".xlm": "application/vnd.ms-excel", ".xls": "application/vnd.ms-excel", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlt": "application/vnd.ms-excel", ".xlw": "application/vnd.ms-excel", ".xm": "audio/x-mod",
+			".src": "application/x-wais-source", ".sst": "application/vnd.ms-pkicertstore", ".stk": "application/hyperstudio", ".stl": "application/vnd.ms-pkistl", ".stm": "text/html", ".svg": "image/svg+xml", ".sv4cpio": "application/x-sv4cpio", ".sv4crc": "application/x-sv4crc", ".svf": "image/vnd", ".svh": "image/svh", ".svr": "x-world/x-svr", ".swf": "application/x-shockwave-flash", ".swfl": "application/x-shockwave-flash", ".t": "application/x-troff", ".talk": "text/x-speech", ".tar": "application/x-tar", ".taz": "application/x-tar", ".tbp": "application/x-timbuktu", ".tbt": "application/x-timbuktu", ".tcl": "application/x-tcl", ".tex": "application/x-tex", ".texi": "application/x-texinfo", ".texinfo": "application/x-texinfo", ".tgz": "application/x-compressed", ".thm": "application/vnd.eri.thm", ".tif": "image/tiff", ".tiff": "image/tiff", ".tki": "application/x-tkined", ".tkined": "application/x-tkined", ".toc": "application/toc", ".toy": "image/toy", ".tr": "application/x-troff", ".trk": "x-lml/x-gps", ".trm": "application/x-msterminal", ".tsi": "audio/tsplayer", ".tsp": "application/dsptype", ".tsv": "text/tab-separated-values", ".ttz": "application/t-time", ".txt": "text/plain", ".uls": "text/iuls", ".ult": "audio/x-mod", ".ustar": "application/x-ustar", ".uu": "application/x-uuencode", ".uue": "application/x-uuencode", ".vcd": "application/x-cdlink", ".vcf": "text/x-vcard", ".vdo": "video/vdo", ".vib": "audio/vib", ".viv": "video/vivo", ".vivo": "video/vivo", ".vmd": "application/vocaltec-media-desc", ".vmf": "application/vocaltec-media-file", ".vmi": "application/x-dreamcast-vms-info", ".vms": "application/x-dreamcast-vms", ".vox": "audio/voxware", ".vqe": "audio/x-twinvq-plugin", ".vqf": "audio/x-twinvq", ".vql": "audio/x-twinvq", ".vre": "x-world/x-vream", ".vrml": "x-world/x-vrml", ".vrt": "x-world/x-vrt", ".vrw": "x-world/x-vream", ".vts": "workbook/formulaone", ".wav": "audio/x-wav", ".wax": "audio/x-ms-wax", ".wbmp": "image/vnd.wap.wbmp", ".wcm": "application/vnd.ms-works", ".wdb": "application/vnd.ms-works", ".web": "application/vnd.xara", ".wi": "image/wavelet", ".wis": "application/x-InstallShield", ".wks": "application/vnd.ms-works", ".wm": "video/x-ms-wm", ".wma": "audio/x-ms-wma", ".wmd": "application/x-ms-wmd", ".wmf": "application/x-msmetafile", ".wml": "text/vnd.wap.wml", ".wmlc": "application/vnd.wap.wmlc", ".wmls": "text/vnd.wap.wmlscript", ".wmlsc": "application/vnd.wap.wmlscriptc", ".wmlscript": "text/vnd.wap.wmlscript", ".wmv": "audio/x-ms-wmv", ".wmx": "video/x-ms-wmx", ".wmz": "application/x-ms-wmz", ".wpng": "image/x-up-wpng", ".wpt": "x-lml/x-gps", ".wri": "application/x-mswrite", ".wrl": "x-world/x-vrml", ".wrz": "x-world/x-vrml", ".ws": "text/vnd.wap.wmlscript", ".wsc": "application/vnd.wap.wmlscriptc", ".wv": "video/wavelet", ".wvx": "video/x-ms-wvx", ".wxl": "application/x-wxl", ".x-gzip": "application/x-gzip", ".xaf": "x-world/x-vrml", ".xar": "application/vnd.xara", ".xbm": "image/x-xbitmap", ".xdm": "application/x-xdma", ".xdma": "application/x-xdma", ".xdw": "application/vnd.fujixerox.docuworks", ".xht": "application/xhtml+xml", ".xhtm": "application/xhtml+xml", ".xhtml": "application/xhtml+xml", ".xla": "application/vnd.ms-excel", ".xlc": "application/vnd.ms-excel", ".xll": "application/x-excel", ".xlm": "application/vnd.ms-excel", ".xls": "application/vnd.ms-excel", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlt": "application/vnd.ms-excel", ".xlw": "application/vnd.ms-excel", ".xm": "audio/x-mod",
 			".xml":"application/xml", ".xmz": "audio/x-mod", ".xof": "x-world/x-vrml", ".xpi": "application/x-xpinstall", ".xpm": "image/x-xpixmap", ".xsit": "text/xml", ".xsl": "text/xml", ".xul": "text/xul", ".xwd": "image/x-xwindowdump", ".xyz": "chemical/x-pdb", ".yz1": "application/x-yz1", ".z": "application/x-compress", ".zac": "application/x-zaurus-zac", ".json": "application/json", ".vsd":"application/vnd.visio", ".pot":"application/vnd.ms-powerpoint", ".et": "application/kset", ".wps": "application/kswps", ".dps": "application/ksdps" };
 		return function( a ) {
 			var b = _strFrom( a, '.', T );
@@ -2209,7 +2261,7 @@ _merge( $, {
 				_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
 				s.push( _ui_path + 'dfish.css' );
 				d.push( did );
-				br.mobile && (s.push(_ui_path + 'mobile.css'), d.push(''));
+				br.mobile && (s.push( _ui_path + 'mobile.css' ), d.push( _uid() ));
 			}
 			if ( x ) {
 				x = _extend( {}, x, y );
@@ -2219,9 +2271,11 @@ _merge( $, {
 					_rm( cid );
 				}
 				y = x;
-				! $( gid ) && (s.push( _path + x.dir + 'global.css' ), d.push( gid ));
-				! $( tid ) && (s.push( _path + x.dir + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
-				! $( cid ) && (s.push( _path + x.dir + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
+				var g = x.dir && x.dir.replace( /\/+$/, '' ),
+					h = g && _strFrom( g, '/', T ) || g;
+				g && !$( gid ) && (s.push( _path + g + '/' + h + '.css' ), d.push( gid ));
+				g && x.theme && !$( tid ) && (s.push( _path + g + '/' + x.theme + '/' + x.theme + '.css' ), d.push( tid ));
+				g && x.theme && x.color && !$( cid ) && (s.push( _path + g + '/' + x.theme + '/' + x.color + '/' + x.color + '.css' ), d.push( cid ));
 			}
 			_loadCss( s, d, f );
 		}
@@ -2229,8 +2283,8 @@ _merge( $, {
 	// @a -> image array, b -> id
 	previewImage: function( a, b ) {
 		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
-		$.vm().cmd( { type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
-			node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
+			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
@@ -2306,8 +2360,8 @@ _merge( $, {
 				'</div><div class="f-opc0 f-abs f-pic-prev-cursor" id=f:thumbnail-prev style="visibility:' + ( p ? 'visible' : 'hidden' ) +
 				';top:0;left:0;bottom:0;background:#000;width:' + ( w / 2 ) + 'px"></div><div class="f-opc0 f-abs f-pic-next-cursor" id=f:thumbnail-next style="visibility:' + ( n ? 'visible' : 'hidden' ) +
 				';top:0;right:0;bottom:0;background:#000;width:' + ( w / 2 ) + 'px"></div><em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>';
-			var d = $.vm().cmd( { type: 'dialog', width: w, height: h, cls: 'f-dialog-preview', cover: true, pophide: T,
-					node: { type: 'html', align: 'center', id: 'img', valign: 'middle', style: 'background:#000', text: s } } );
+			var d = $.vm().cmd( { type: 'Dialog', width: w, height: h, cls: 'f-dialog-preview', cover: true, autoHide: T,
+					node: { type: 'Html', align: 'center', id: 'img', vVlign: 'middle', style: 'background:#000', text: s } } );
 			$( 'f:thumbnail-prev' ).onclick = function() {
 				$( 'f:thumbnail-img' ).src = p.src;
 				n = _next( $img, p );
@@ -2344,7 +2398,7 @@ _merge( $, {
 	})(),
 	// 调试用的方法
 	j: function( a ) {
-		alert( $.jsonString( a ) );
+		alert( $.jsonString( a, N, 2 ) );
 	},
 	debug: function() {
 		if ( _cfg.debug ) debugger;
@@ -2360,14 +2414,17 @@ _merge( $, {
 		$.query( 'style', w ).each( function() { c.push( this.outerHTML ) });
 		var s = d.outerHTML;
 		s = s.replace( /<div[^>]+overflow-y[^>]+>/gi, function( $0 ) { return $0.replace( /height: \w+/gi, '' ); } );
-		$.query( ':text,textarea', d ).each( function() {
+		$.query( ':text,:password,textarea,select', d ).each( function() {
 			var h = this.outerHTML, v, r;
 			if ( y.input2text ) {
-				var g = $.widget( this );
+				var g = $.widget( this ), w = 'auto';
 				if ( g && g.isFormWidget ) {
-					h = g.$().outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					h = g.$( 'f' ).outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
+					if ( g.type !== 'date' && g.type !== 'spinner' )
+						w = g.$( 'f' ).style.width;
 				} else
 					v = this.value;
+				v = '<div class="f-inbl f-va f-wdbr" style="width:' + w + '">' + v + '</div>';
 			} else {
 				v = h.replace( 'value="' + this.defaultValue + '"', 'value="' + this.value + '"' );
 			}
@@ -2377,7 +2434,7 @@ _merge( $, {
 			if ( y.input2text ) {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget ) {
-					s = s.replace( g.$().outerHTML, g.isChecked() ? g.text() : '' );
+					s = s.replace( g.$().outerHTML, g.isChecked() ? '<div class="f-inbl f-va f-wdbr">' + g.text() + '</div>' : '' );
 				}
 			} else {
 				var h = this.outerHTML, n = h.replace( / checked=""/, '' );
@@ -2387,18 +2444,18 @@ _merge( $, {
 			}
 		} );
 		if ( y.input2text ) {
-			$.query( ':hidden', d ).each( function() {
+			$.query( 'input[type=hidden]', d ).each( function() {
 				var g = $.widget( this );
 				if ( g && g.isFormWidget && ! g.isHiddenWidget ) {
-					s = s.replace( g.$().outerHTML, g.text() );
+					s = s.replace( g.$('f').outerHTML, '<div class="f-inbl f-va f-wdbr" style="width:' + g.$( 'f' ).style.width + '">' + g.text() + '</div>' );
 				}
 			} );
 		}
 		w = window.open();
 		d = w.document;
 		d.open( 'text/html', 'replace' );
-		d.write( '<!doctype html><html><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join( '' ) +
-			(y.head || '') + '</head><body>' + s +
+		d.write( '<!doctype html><html class=f-print><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join( '' ) +
+			(y.head || '') + '</head><body><div class=x-print>' + s + '</div>' +
 			(! br.ms && y.print ? '<script>window.print();window.close()</script>' : '') +
 			'</body></html>' );
 		d.close();

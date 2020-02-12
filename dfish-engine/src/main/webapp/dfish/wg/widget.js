@@ -1906,7 +1906,12 @@ Scroll = define.widget( 'Scroll', {
 	Helper: {
 		// 获取某个 widget 所在的有 scroll 的面板 / a -> widget|elem
 		get: function( a ) {
-			return _widget( a ).closest( function() { return this.isScrollable && this.isScrollable() && this.innerHeight() > 0 } );
+			a = _widget( a );
+			do {
+				if ( a.isScrollable && a.isScrollable() && a.innerHeight() > 0 )
+					return a;
+			} while ( (a = a.parentNode) && !a.isDialogWidget );
+			//return _widget( a ).closest( function() { return this.isScrollable && this.isScrollable() && this.innerHeight() > 0 } );
 		}
 	},
 	Listener: {
@@ -4240,8 +4245,8 @@ _getContentView = function( a ) {
 	for ( var i = 0, b; i < a.length; i ++ )
 		if ( b = _getContentView( a[ i ] ) ) return b;
 },
-_snapHooks = { topLeft: 'lt', leftTop: 'lt', topRight: 'rt', righTop: 'rt', rightBottom: 'rb', bottomRight: 'rb', bottomLeft: 'lb', leftBottom: 'lb',
-				tl: 'lt', tr: 'rt', bl: 'lb', br: 'rb', center: F, centerCenter: F, c: F, cc: F, '0': F },
+_snapHooks = { topLeft: 'tl', leftTop: 'lt', topRight: 'tr', righTop: 'rt', rightBottom: 'rb', bottomRight: 'br', bottomLeft: 'bl', leftBottom: 'lb',
+				center: F, centerCenter: F, c: F, cc: F, '0': F },
 _snapPosition = function( a ) {
 	return a && (_snapHooks[ a ] === F ? N : '' + (_snapHooks[ a ] || a));
 }
@@ -7125,15 +7130,15 @@ Slider = define.widget( 'Slider', {
 			return this._thumb_wd;
 		},
 		tip: function( v ) {
-			var t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' );
+			var t = this.attr( 'tip' ) === T ? '$value' : this.attr( 'tip' );
 			if ( t && ! this._tip ) {
 				this._tip = this.exec( { type: 'Tip', text: this.tipText( v ), escape: F, snap: { target: this.$( 'thumb' ), position: 'tb,bt' }, closable: F, on: { close: 'this.parentNode._tip=null' } } );
 			}
 			return this._tip;
 		},
 		tipText: function( v ) {
-			var t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' );
-			return '<code class="f-inbl w-slider-tip-text">' + this.formatStr( t, [ v ] ) + '</code>';
+			var t = this.attr( 'tip' ) === T ? '$value' : this.attr( 'tip' );
+			return '<code class="f-inbl w-slider-tip-text">' + this.formatStr( t, { value: v } ) + '</code>';
 		},
 		_left: function( v ) {
 			var m = this.max(), n = this.min();
