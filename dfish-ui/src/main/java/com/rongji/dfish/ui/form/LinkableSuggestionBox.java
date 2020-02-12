@@ -3,7 +3,6 @@ package com.rongji.dfish.ui.form;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.command.Dialog;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ import java.util.List;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubNodeContainer<T, ComboBoxOption> {
+public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubNodeContainer<T, ComboOption> {
     private static final long serialVersionUID = -1444093499873660133L;
     private String text;
     private String format;
@@ -21,7 +20,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     private Boolean strict;
     private String loadingText;
     private List<Node> nodes;
-    private ComboBoxOption pub;
+    private ComboOption pub;
 
     /**
      * 构造函数
@@ -125,20 +124,20 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     }
 
     @Override
-    public ComboBoxOption pub() {
+    public ComboOption pub() {
         if (pub == null) {
-            pub = new ComboBoxOption();
+            pub = new ComboOption();
         }
         return pub;
     }
 
     @Override
-    public ComboBoxOption getPub() {
+    public ComboOption getPub() {
         return pub;
     }
 
     @Override
-    public T setPub(ComboBoxOption pub) {
+    public T setPub(ComboOption pub) {
         this.pub = pub;
         return (T) this;
     }

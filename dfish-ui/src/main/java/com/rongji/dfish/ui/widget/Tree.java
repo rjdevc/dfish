@@ -2,10 +2,8 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
-import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.TripleBox;
-import com.rongji.dfish.ui.AbstractNodeContainer;
 
 import java.util.*;
 
@@ -23,7 +21,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      */
     private static final long serialVersionUID = -6971221234006954948L;
     private Boolean scroll;
-    private Combo combo;
+//    private Combo combo;
     private Highlight highlight;
     private Boolean ellipsis;
 
@@ -146,25 +144,25 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
         return this;
     }
 
-    /**
-     * 设置当前的 tree 为某个 combobox 或 onlinebox 的数据选项表。
-     *
-     * @return Combo
-     */
-    public Combo getCombo() {
-        return combo;
-    }
-
-    /**
-     * 设置当前的 tree 为某个 combobox 或 onlinebox 的数据选项表。
-     *
-     * @param combo Combo
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Tree setCombo(Combo combo) {
-        this.combo = combo;
-        return this;
-    }
+//    /**
+//     * 设置当前的 tree 为某个 combobox 或 onlinebox 的数据选项表。
+//     *
+//     * @return Combo
+//     */
+//    public Combo getCombo() {
+//        return combo;
+//    }
+//
+//    /**
+//     * 设置当前的 tree 为某个 combobox 或 onlinebox 的数据选项表。
+//     *
+//     * @param combo Combo
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public Tree setCombo(Combo combo) {
+//        this.combo = combo;
+//        return this;
+//    }
 
     /**
      * 设置树的src

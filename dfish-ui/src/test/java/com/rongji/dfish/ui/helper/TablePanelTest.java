@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.helper;
 
 import com.rongji.dfish.ui.DFishUITestCase;
-import com.rongji.dfish.ui.form.Combo;
 import com.rongji.dfish.ui.layout.Table;
 import com.rongji.dfish.ui.layout.TableFactory;
 import com.rongji.dfish.ui.widget.Highlight;
@@ -53,7 +52,7 @@ public class TablePanelTest extends DFishUITestCase {
 
 		Table table =gp.build();
 		table.setCls("x-grid-odd");
-		table.setCombo(new Combo().setField(new Combo.Field("uid", "un").setSearch("py,jp")).setKeepShow(false));
+//		table.setCombo(new Combo().setField(new Combo.Field("uid", "un").setSearch("py,jp")).setKeepShow(false));
 		output(table);
 	}
 	

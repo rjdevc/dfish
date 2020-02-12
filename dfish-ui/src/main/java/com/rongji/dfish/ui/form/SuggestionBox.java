@@ -25,6 +25,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 	private Dialog drop;
 	private Long delay;
 	private String separator;
+	private Bind bind;
 
 	/**
 	 * 构造函数
@@ -227,6 +228,126 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
     public T setSeparator(String separator) {
 		this.separator = separator;
 		return (T) this;
+	}
+
+	public Bind getBind() {
+		return bind;
+	}
+
+	public T setBind(Bind bind) {
+		this.bind = bind;
+		return (T) this;
+	}
+
+	public static class Bind {
+		private Field field;
+		private Boolean keepShow;
+		private Boolean fullPath;
+		private String target;
+
+		public Bind(SuggestionBox.Field field, String target) {
+			this.field = field;
+			this.target = target;
+		}
+
+		public SuggestionBox.Field getField() {
+			return field;
+		}
+
+		public Bind setField(SuggestionBox.Field field) {
+			this.field = field;
+			return this;
+		}
+
+		public Boolean getKeepShow() {
+			return keepShow;
+		}
+
+		public Bind setKeepShow(Boolean keepShow) {
+			this.keepShow = keepShow;
+			return this;
+		}
+
+		public Boolean getFullPath() {
+			return fullPath;
+		}
+
+		public Bind setFullPath(Boolean fullPath) {
+			this.fullPath = fullPath;
+			return this;
+		}
+
+		public String getTarget() {
+			return target;
+		}
+
+		public Bind setTarget(String target) {
+			this.target = target;
+			return this;
+		}
+	}
+
+	public static class Field {
+		private String value;
+		private String text;
+		private String search;
+		private String remark;
+		private String forbid;
+
+		public Field(String value) {
+			this.value = value;
+		}
+
+		public Field(String value, String text) {
+			this.value = value;
+			this.text = text;
+		}
+
+		public Field(String value, String text, String search) {
+			this.value = value;
+			this.text = text;
+			this.search = search;
+		}
+
+		public String getForbid() {
+			return forbid;
+		}
+
+		public void setForbid(String forbid) {
+			this.forbid = forbid;
+		}
+
+		public String getRemark() {
+			return remark;
+		}
+
+		public void setRemark(String remark) {
+			this.remark = remark;
+		}
+
+		public String getSearch() {
+			return search;
+		}
+
+		public void setSearch(String search) {
+			this.search = search;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public void setText(String text) {
+			this.text = text;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
 	}
 
 }

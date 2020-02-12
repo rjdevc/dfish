@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.HasText;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public class ComboBoxOption extends AbstractWidget<ComboBoxOption> implements HasText<ComboBoxOption> {
+public class ComboOption extends AbstractWidget<ComboOption> implements HasText<ComboOption> {
 
     private static final long serialVersionUID = -8723811310007986652L;
 
@@ -27,7 +27,7 @@ public class ComboBoxOption extends AbstractWidget<ComboBoxOption> implements Ha
     }
 
     @Override
-    public ComboBoxOption setText(String text) {
+    public ComboOption setText(String text) {
         this.text = text;
         return this;
     }
@@ -37,13 +37,13 @@ public class ComboBoxOption extends AbstractWidget<ComboBoxOption> implements Ha
     }
 
     @Override
-    public ComboBoxOption setFormat(String format) {
+    public ComboOption setFormat(String format) {
         this.format = format;
         return this;
     }
 
     @Override
-    public ComboBoxOption setEscape(Boolean escape) {
+    public ComboOption setEscape(Boolean escape) {
         this.escape = escape;
         return this;
     }
@@ -68,7 +68,7 @@ public class ComboBoxOption extends AbstractWidget<ComboBoxOption> implements Ha
      * @param value 值
      * @return 本身，这样可以继续设置其他属性
      */
-    public ComboBoxOption setValue(String value) {
+    public ComboOption setValue(String value) {
         this.value = value;
         return this;
     }

@@ -94,7 +94,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
     private Integer cellPadding;
     private Boolean focusMultiple;
     private Boolean br;
-    private Combo combo;
+//    private Combo combo;
     private Integer limit;
     private Boolean resizable;
     private Boolean escape;
@@ -369,25 +369,25 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         return this;
     }
 
-    /**
-     * 设置当前的 grid 为某个 combobox 或 onlinebox 的数据选项表。
-     *
-     * @return combo
-     */
-    public Combo getCombo() {
-        return combo;
-    }
-
-    /**
-     * 设置当前的 grid 为某个 combobox 或 onlinebox 的数据选项表。
-     *
-     * @param combo 数据选项表。
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Table setCombo(Combo combo) {
-        this.combo = combo;
-        return this;
-    }
+//    /**
+//     * 设置当前的 grid 为某个 combobox 或 onlinebox 的数据选项表。
+//     *
+//     * @return combo
+//     */
+//    public Combo getCombo() {
+//        return combo;
+//    }
+//
+//    /**
+//     * 设置当前的 grid 为某个 combobox 或 onlinebox 的数据选项表。
+//     *
+//     * @param combo 数据选项表。
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public Table setCombo(Combo combo) {
+//        this.combo = combo;
+//        return this;
+//    }
 
     /**
      * 最多显示多少行。如果需要前端翻页，可设置这个属性。
