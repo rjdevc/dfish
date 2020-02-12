@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
+import com.rongji.dfish.ui.form.BoxHolder;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.TripleBox;
 
@@ -376,7 +377,8 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      * @version 2.0
      * @since XMLTMPL 1.0
      */
-    public static class Leaf extends AbstractNodeContainer<Leaf> implements MultiNodeContainer<Leaf>, Statusful<Leaf>, HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf> {
+    public static class Leaf extends AbstractNodeContainer<Leaf> implements MultiNodeContainer<Leaf>, Statusful<Leaf>,
+            HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf>, BoxHolder<Leaf> {
         private static final long serialVersionUID = -6246121270694425393L;
         private Boolean focus;
         private Boolean focusable;
@@ -388,7 +390,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
         private String src;
         private Boolean sync;
         private Boolean noToggle;
-        private AbstractBox<?> box;
+        private AbstractBox box;
         private Boolean ellipsis;
         private Boolean line;
         private String format;
@@ -556,7 +558,8 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
          *
          * @return AbstractBox
          */
-        public AbstractBox<?> getBox() {
+        @Override
+        public AbstractBox getBox() {
             return box;
         }
 
@@ -567,7 +570,8 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
          * @param box 选项表单
          * @return 本身，这样可以继续设置其他属性
          */
-        public Leaf setBox(AbstractBox<?> box) {
+        @Override
+        public Leaf setBox(AbstractBox box) {
             this.box = box;
             return this;
         }

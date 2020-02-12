@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
+import com.rongji.dfish.ui.TargetHolder;
 import com.rongji.dfish.ui.Widget;
 
 /**
@@ -14,7 +15,8 @@ import com.rongji.dfish.ui.Widget;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractFormElement<T, Object> implements HtmlContentHolder<T>, HasText<T> {
+public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractFormElement<T, Object>
+        implements HtmlContentHolder<T>, HasText<T>, TargetHolder<T, Widget> {
 
     private static final long serialVersionUID = -5120066286869690681L;
 
@@ -55,6 +57,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
      *
      * @return target
      */
+    @Override
     public Widget getTarget() {
         return target;
     }
@@ -65,6 +68,7 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
      * @param target widget
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setTarget(Widget target) {
         this.target = target;
         return (T) this;

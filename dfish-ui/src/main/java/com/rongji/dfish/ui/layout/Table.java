@@ -1181,31 +1181,30 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             return this.width != null && !"".equals(this.width);
         }
 
-
-        /**
-         * 选项表单，类型是 checkbox 或 radio。
-         *
-         * @param box AbstractBox
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public Column setBox(AbstractBox<?> box) {
-            if (box == null) {
-                this.setFormat("");
-                return this;
-            }
-            Boolean required = null;
-            if (box.getValidate() != null && box.getValidate().getRequired() != null) {
-                required = box.getValidate().getRequired().getValue();
-            }
-            if (box instanceof com.rongji.dfish.ui.form.TripleBox || box instanceof CheckBox) {
-                setTripleBox(box.getName(), null, required, box.getSync());
-            } else if (box instanceof com.rongji.dfish.ui.form.Radio) {
-                setRadio(box.getName(), null, required, box.getSync());
-            } else {
-                throw new IllegalArgumentException("The box must be TripleBox or Radio");
-            }
-            return this;
-        }
+//        /**
+//         * 选项表单，类型是 checkbox 或 radio。
+//         *
+//         * @param box AbstractBox
+//         * @return 本身，这样可以继续设置其他属性
+//         */
+//        public Column setBox(AbstractBox box) {
+//            if (box == null) {
+//                this.setFormat("");
+//                return this;
+//            }
+//            Boolean required = null;
+//            if (box.getValidate() != null && box.getValidate().getRequired() != null) {
+//                required = box.getValidate().getRequired().getValue();
+//            }
+//            if (box instanceof com.rongji.dfish.ui.form.TripleBox || box instanceof CheckBox) {
+//                setTripleBox(box.getName(), null, required, box.getSync());
+//            } else if (box instanceof com.rongji.dfish.ui.form.Radio) {
+//                setRadio(box.getName(), null, required, box.getSync());
+//            } else {
+//                throw new IllegalArgumentException("The box must be TripleBox or Radio");
+//            }
+//            return this;
+//        }
 
 
         /**

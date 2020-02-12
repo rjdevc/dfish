@@ -189,7 +189,7 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
      * @date 2019-10-16
      * @since 5.0
      */
-    public static class Tab extends AbstractButton<Tab> {
+    public static class Tab extends AbstractButton<Tab> implements TargetHolder<Tab, Widget> {
 
         private Widget<?> target;
         /**
@@ -214,18 +214,20 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
 
         /**
          * 标签对应的内容widget
-         * @return Widget&lt;?&gt;
+         * @return Widget
          */
-        public Widget<?> getTarget() {
+        @Override
+        public Widget getTarget() {
             return target;
         }
 
         /**
          * 标签对应的内容widget
-         * @param target Widget&lt;?&gt;
+         * @param target Widget
          * @return 本身，这样可以继续设置其他属性
          */
-        public Tab setTarget(Widget<?> target) {
+        @Override
+        public Tab setTarget(Widget target) {
             this.target = target;
             return this;
         }

@@ -2,13 +2,14 @@ package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
+import com.rongji.dfish.ui.form.BoxHolder;
 
 /**
  * img 图片
  *
  * @author DFish Team
  */
-public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignable<Img>, HtmlContentHolder<Img>, HasText<Img> {
+public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignable<Img>, HtmlContentHolder<Img>, HasText<Img>, BoxHolder<Img> {
     /**
      *
      */
@@ -22,7 +23,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      */
     public static final String FACE_STRAIGHT = "straight";
 
-    private AbstractBox<?> box;
+    private AbstractBox box;
     private Boolean br;
     private String text;
     private String src;
@@ -66,7 +67,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      *
      * @return box
      */
-    public AbstractBox<?> getBox() {
+    @Override
+    public AbstractBox getBox() {
         return box;
     }
 
@@ -76,7 +78,8 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      * @param box 附带的选项表单
      * @return 本身，这样可以继续设置其他属性
      */
-    public Img setBox(AbstractBox<?> box) {
+    @Override
+    public Img setBox(AbstractBox box) {
         this.box = box;
         return this;
     }
