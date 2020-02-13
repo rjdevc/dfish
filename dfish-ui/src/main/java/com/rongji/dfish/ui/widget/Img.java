@@ -9,7 +9,8 @@ import com.rongji.dfish.ui.form.BoxHolder;
  *
  * @author DFish Team
  */
-public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignable<Img>, HtmlContentHolder<Img>, HasText<Img>, BoxHolder<Img> {
+public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignable<Img>, HtmlContentHolder<Img>,
+        HasText<Img>, BoxHolder<Img>, BadgeHolder<Img> {
     /**
      *
      */
@@ -339,11 +340,11 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
     /**
      * 图片宽度。
      *
-     * @param imgwidth String
+     * @param imgWidth String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Img setImgwidth(String imgwidth) {
-        this.imgWidth = imgwidth;
+    public Img setImgWidth(String imgWidth) {
+        this.imgWidth = imgWidth;
         return this;
     }
 
@@ -370,11 +371,11 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
     /**
      * 图片高度。
      *
-     * @param imgheight String
+     * @param imgHeight String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Img setImgheight(String imgheight) {
-        this.imgHeight = imgheight;
+    public Img setImgHeight(String imgHeight) {
+        this.imgHeight = imgHeight;
         return this;
     }
 
@@ -416,6 +417,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      *
      * @return Object
      */
+    @Override
     public Object getBadge() {
         return badge;
     }
@@ -426,6 +428,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      * @param badge 为true时显示圆点
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public Img setBadge(Boolean badge) {
         this.badge = badge;
         return this;
@@ -437,6 +440,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      * @param badge 要显示的徽标对象
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public Img setBadge(Badge badge) {
         this.badge = badge;
         return this;

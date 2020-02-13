@@ -378,7 +378,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      * @since XMLTMPL 1.0
      */
     public static class Leaf extends AbstractNodeContainer<Leaf> implements MultiNodeContainer<Leaf>, Statusful<Leaf>,
-            HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf>, BoxHolder<Leaf> {
+            HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf>, BoxHolder<Leaf>, BadgeHolder<Leaf> {
         private static final long serialVersionUID = -6246121270694425393L;
         private Boolean focus;
         private Boolean focusable;
@@ -1056,6 +1056,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
          *
          * @return Object
          */
+        @Override
         public Object getBadge() {
             return badge;
         }
@@ -1066,6 +1067,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
          * @param badge 为true时显示圆点
          * @return 本身，这样可以继续设置其他属性
          */
+        @Override
         public Leaf setBadge(Boolean badge) {
             this.badge = badge;
             return this;
@@ -1077,6 +1079,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
          * @param badge 要显示的徽标对象
          * @return 本身，这样可以继续设置其他属性
          */
+        @Override
         public Leaf setBadge(Badge badge) {
             this.badge = badge;
             return this;

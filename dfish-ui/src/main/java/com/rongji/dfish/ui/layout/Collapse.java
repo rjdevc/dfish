@@ -36,9 +36,15 @@ public class Collapse extends AbstractPubNodeContainer<Collapse, Collapse.Button
     /**
      * 折叠按钮
      */
-    public static class Button extends AbstractButton<Button> {
+    public static class Button extends AbstractButton<Button> implements TargetHolder<Button> {
 
         private Widget<?> target;
+
+        @Override
+        public String getType() {
+            return "CollapseButton";
+        }
+
         /**
          * 构造函数
          *
@@ -52,27 +58,29 @@ public class Collapse extends AbstractPubNodeContainer<Collapse, Collapse.Button
          * 构造函数
          *
          * @param text String 标题
-         * @param target Widget&lt;?&gt; 目标组件
+         * @param target Widget 目标组件
          */
-        public Button(String text, Widget<?> target) {
+        public Button(String text, Widget target) {
             this.setText(text);
             this.setTarget(target);
         }
 
         /**
          * 折叠按钮对应的内容widget
-         * @return Widget&lt;?&gt;
+         * @return Widget
          */
-        public Widget<?> getTarget() {
+        @Override
+        public Widget getTarget() {
             return target;
         }
 
         /**
          * 折叠按钮对应的内容widget
-         * @param target Widget&lt;?&gt;
+         * @param target Widget
          * @return 本身，这样可以继续设置其他属性
          */
-        public Button setTarget(Widget<?> target) {
+        @Override
+        public Button setTarget(Widget target) {
             this.target = target;
             return this;
         }

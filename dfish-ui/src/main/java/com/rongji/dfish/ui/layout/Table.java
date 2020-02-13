@@ -128,9 +128,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      * @return 本身，这样可以继续设置其他属性
      */
     public Table setTHead(THead tHead) {
-        if (tHead == null) {
-            throw new UnsupportedOperationException("THead can not be null.");
-        }
+//        if (tHead == null) {
+//            throw new UnsupportedOperationException("THead can not be null.");
+//        }
         tHead.owner(this);
         this.tHead = tHead;
         return this;
@@ -152,9 +152,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      * @return this
      */
     public Table setTBody(TBody tBody) {
-        if (tBody == null) {
-            throw new UnsupportedOperationException("TBody can not be null.");
-        }
+//        if (tBody == null) {
+//            throw new UnsupportedOperationException("TBody can not be null.");
+//        }
         tBody.owner(this);
         this.tBody = tBody;
         return this;
@@ -176,9 +176,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      * @return 本身，这样可以继续设置其他属性
      */
     public Table setTFoot(TFoot tFoot) {
-        if (tFoot == null) {
-            throw new UnsupportedOperationException("TFoot can not be null.");
-        }
+//        if (tFoot == null) {
+//            throw new UnsupportedOperationException("TFoot can not be null.");
+//        }
         tFoot.owner(this);
         this.tFoot = tFoot;
         return this;

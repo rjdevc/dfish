@@ -16,7 +16,7 @@ import com.rongji.dfish.ui.Widget;
  * @since 1.0
  */
 public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractFormElement<T, Object>
-        implements HtmlContentHolder<T>, HasText<T>, TargetHolder<T, Widget> {
+        implements HtmlContentHolder<T>, HasText<T>, TargetHolder<T> {
 
     private static final long serialVersionUID = -5120066286869690681L;
 

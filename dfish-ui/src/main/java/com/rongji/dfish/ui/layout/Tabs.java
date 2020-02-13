@@ -189,7 +189,7 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
      * @date 2019-10-16
      * @since 5.0
      */
-    public static class Tab extends AbstractButton<Tab> implements TargetHolder<Tab, Widget> {
+    public static class Tab extends AbstractButton<Tab> implements TargetHolder<Tab> {
 
         private Widget<?> target;
         /**
@@ -205,9 +205,9 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
          * 构造函数
          *
          * @param text String 标题
-         * @param target Widget&lt;?&gt; 目标组件
+         * @param target Widget 目标组件
          */
-        public Tab(String text, Widget<?> target) {
+        public Tab(String text, Widget target) {
             this.setText(text);
             this.setTarget(target);
         }
