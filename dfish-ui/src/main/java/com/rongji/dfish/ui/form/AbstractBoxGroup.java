@@ -53,6 +53,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
         setName(name);
         setLabel(label);
         setValue(checkedValue);
+        setOptions(options);
     }
 
     public T setOptions(List<?> options) {

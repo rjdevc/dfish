@@ -177,11 +177,11 @@ public class TableFactory {
         /**
          * 设置表格数据
          *
-         * @param gridData Collection
+         * @param bodyData Collection
          * @return 本身，这样可以继续设置其他属性
          */
-        public DefaultTableFactory setBodyData(Collection<?> gridData) {
-            this.bodyData = gridData;
+        public DefaultTableFactory setBodyData(Collection<?> bodyData) {
+            this.bodyData = bodyData;
             return this;
         }
 
@@ -218,18 +218,20 @@ public class TableFactory {
                 }
             }
 
-            // 假定这个集合所有对象的类型是一致的
-            int index = 0;
-            for (Object data : bodyData) {
-                Table.TR dataRow = new Table.TR();
-                prototype.add(dataRow);
-                if (data == null) {
-                    continue;
+            if (bodyData != null) {
+                // 假定这个集合所有对象的类型是一致的
+//                int index = 0;
+                for (Object data : bodyData) {
+                    Table.TR dataRow = new Table.TR();
+                    prototype.add(dataRow);
+                    if (data == null) {
+                        continue;
+                    }
+                    for (Column gc : columns) {
+                        dataRow.setData(gc.getField(), getColumnValue(data, gc));
+                    }
+//                    index++;
                 }
-                for (Column gc : columns) {
-                    dataRow.setData(gc.getField(), getColumnValue(data, gc));
-                }
-                index++;
             }
             return prototype;
         }
