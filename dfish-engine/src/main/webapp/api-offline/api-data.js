@@ -3673,12 +3673,12 @@ define( {
       { name: 'movable', type: 'Boolean', remark: '窗口是否可用鼠标移动位置。默认值为 true。' },
       { name: 'resizable', type: 'Boolean', remark: '窗口是否可用鼠标拖动调整大小。' },
       { name: 'fullScreen', type: 'Boolean', remark: '窗口在初始化时是否最大化。' },
-      { name: 'snap', type: 'Object', remark: '吸附的对象。可以是 html 元素或 widget ID。', param: [
+      { name: 'snap', type: 'Object', remark: '吸附参数设置。', param: [
         { name: 'indent', type: 'Number', remark: '指定相对于初始位置缩进多少个像素。' },
         { name: 'inner', type: 'Boolean', remark: '是否在吸附对象的里面。默认值为false。' },
-        { name: 'target', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
         { name: 'position', type: 'String', remark: '指定 snap 的位置。 <!--a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a--><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值：<b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>' +
          '<br>备注：t:top, r:right, b:bottom, l:left, c:center' },
+        { name: 'target', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' }
       ] },
       { name: 'position', type: 'String', remark: '弹出位置。可选值: <b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>' +
          '<br>备注：t:top, r:right, b:bottom, l:left, c:center'
