@@ -513,8 +513,8 @@
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
 .w-table-triplebox,.w-table-radio{padding:2px}
 .w-checkbox.z-ds ._tit,.w-radio.z-ds ._tit,.w-triplebox.z-ds ._tit{cursor:default}
-.w-radiogroup-list{margin-bottom:10px}
-.w-radiogroup-list.z-last{margin-bottom:0}
+.w-checkboxgroup-list,.w-radiogroup-list{margin-bottom:10px}
+.w-checkboxgroup-list.z-last,.w-radiogroup-list.z-last{margin-bottom:0}
 
 /*  <!--  CSS3 checkbox  */
 .w-checkbox ._t,.w-triplebox ._t,.w-radio ._t{display:none}

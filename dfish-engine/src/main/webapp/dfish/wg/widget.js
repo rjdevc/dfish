@@ -678,6 +678,15 @@ _regWidget = function( x, p, n ) {
 	_all[ $.uid( this ) ] = this;
 	this.init_x( x );
 },
+_regTarget = function( a ) {
+	var a = $.proxy( this, a ), b = this.x.target.split( ',' );
+	for ( var i = 0, c; i < b.length; i ++ ) {
+		if ( c = this.ownerView.find( b[ i ] ) )
+			a();
+		else
+			this.ownerView.initTargets[ b[ i ] ] = a;
+	}
+},
 // 有模板的widget在初始化时会读取模板属性，但下列属性例外
 _init_ignore = { 'node': T, 'nodes': T, 'result': T },
 /* `widget`  最基础的widget类，所有widget都继承它 */
@@ -690,6 +699,10 @@ W = define( 'Widget', function() {
 		p && _setView.call( this, this.ownerView );
 		this.init_nodes();
 		this._instanced = T;
+		if ( this.x.id && this.ownerView.initTargets[ this.x.id ] ) {
+			this.ownerView.initTargets[ this.x.id ]();
+			delete this.ownerView.initTargets[ this.x.id ];
+		}
 	},
 	Helper : {
 		all: _all,
@@ -2460,6 +2473,7 @@ _initView = function() {
 	this.widgets = {};
 	this.names   = {};
 	this.views   = {};
+	this.initTargets = {};
 	this.layout  = N;
 },
 _setPath = function( p, x ) {
@@ -2538,13 +2552,15 @@ View = define.widget( 'View', {
 		},
 		// 根据ID获取wg /@a -> id
 		find: function( a ) {
-			if ( typeof a === _STR ) {
-				return this.widgets[ a ] || this.views[ a ];
-			} else {
-				for ( var i = 0, c, r = []; i < a.length; i ++ )
-					(c = this.widgets[ a[ i ] ] || this.views[ a[ i ] ]) && r.push( c );
-				return r;
-			}
+			return this.widgets[ a ] || this.views[ a ];
+		},
+		// 返回数组 /@a -> id
+		findAll: function( a ) {
+			if ( typeof a === _STR )
+				a = a.split( ',' );
+			for ( var i = 0, c, r = []; i < a.length; i ++ )
+				(c = this.find( a[ i ] )) && r.push( c );
+			return r;
 		},
 		// 获取表单 /@a -> name, b -> range?(elem|widget)
 		f: function( a, b ) {
@@ -2676,21 +2692,6 @@ View = define.widget( 'View', {
 			for ( k in e )
 				(n = _all[ e[ k ].wid ]) && n.trigger( 'error', F );
 			_inst_hide( 'Tip' );
-		},
-		// @a -> target id, b -> T/F, d -> fix test context?
-		linkTarget: function( a, b, d ) {
-			var c = a.isWidget ? [ a ] : this.find( a.split( ',' ) );
-			for ( var i = 0; i < c.length; i ++ ) {
-				if ( d && d.focusTarget ) {
-					d.focusTarget( c[ i ], b );
-				} else if ( c[ i ].parentNode && c[ i ].parentNode.type_frame ) {
-					b && c[ i ].parentNode.focus( c[ i ] );
-				} else {
-					for ( var j = 0, r = this.fAll( '*', c[ i ] ), l = r.length; j < l; j ++ ) {
-						r[ j ].disable( ! b );
-					}
-				}
-			}
 		},
 		append: function() {
 			this.layout.append.apply( this.layout, arguments );
@@ -3244,7 +3245,9 @@ ButtonBar = define.widget( 'ButtonBar', {
 			// 调整页面百分比时，scrollWidth可能会比offsetWidth大一个像素。这里加一个像素容错
 			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
-				this._more = this.add( $.extend( { focusable: F, closable: F, on: { click: '' } }, this.x.pub || {}, o.button ), -1 );
+				var t = $.extend( { type: 'Button', focusable: F, closable: F, on: { click: '' } }, this.x.pub || {}, o.button );
+				t.text == N && t.icon == N && (t.text = Loc.more);
+				this._more = this.add( t, -1 );
 				this._more.render( this.$() );
 				var w = this._more.width() + _number( this.x.space );
 				for ( var i = 0, j; i < this.length; i ++ ) {
@@ -3286,7 +3289,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 Button = define.widget( 'Button', {
 	Const: function( x ) {
 		W.apply( this, arguments );
-		x.target && x.focus && this._ustag();
+		x.target && x.focus && _regTarget.call( this, this._ustag );
 	},
 	Listener: {
 		// 在触发事件之前做判断，如果返回true，则停止执行事件(包括系统事件和用户事件)
@@ -3458,7 +3461,9 @@ Button = define.widget( 'Button', {
 			}
 		},
 		_ustag: function() {
-			this.ownerView.linkTarget( this.x.target, this.isFocus(), this );
+			for ( var i = 0, b = this.ownerView.findAll( this.x.target ); i < b.length; i ++ ) {
+				b[ i ].parentNode.type_frame && b[ i ].parentNode.focus( b[ i ] );
+			}
 		},
 		isToggleable: function() {
 			return this.rootNode && this.rootNode.x.focusMultiple;
@@ -3488,7 +3493,7 @@ Button = define.widget( 'Button', {
 							if ( d[ i ] !== this && d[ i ].type === this.type && d[ i ].x.name == this.x.name && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
 					}
 				}
-				(m || a) && this.x.target && this.ownerView.linkTarget( this.x.target, a, this );
+				a && this.x.target && this._ustag();
 				this.trigger( a ? 'focus' : 'blur' );
 			}
 			return this.x.focus;
@@ -3656,7 +3661,7 @@ MenuButton = define.widget( 'MenuButton', {
 			ready: N,
 			click: function() {
 				if ( ! this.isDisabled() ) {
-					this.x.target && this.ownerView.linkTarget( this.x.target, T, this );
+					this.x.target && this._ustag();
 					this.rootNode.hide();
 				}
 			}
@@ -3786,7 +3791,7 @@ Tabs = define.widget( 'Tabs', {
 			} else {
 				b.push( $.extend( { type: 'Tab', focusable: T }, n[ i ], x.pub, e && e.pub ) );
 				c.push( n[ i ].target );
-				b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'page' + i);
+				b[ i ].target = c[ i ].id || (c[ i ].id = this.id + 'target' + i);
 				!d && (d = b[ i ].focus && b[ i ]);
 			}
 		}
@@ -4063,6 +4068,11 @@ PageBar = define.widget( 'PageBar', {
 		x.sumPage && (x.sumPage = Math.ceil( x.sumPage ));
 		if ( this.face === 'normal' )
 			this.page_text = Loc.page_text;
+		x.target && _regTarget.call( this, function() {
+			var a = this.ownerView.find( x.target );
+			a.x.limit = this.x.pageRecords;
+			a.page( this.x.currentPage );
+		});
 	},
 	Extend: Html,
 	Listener: {
@@ -5851,8 +5861,10 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 		}
 		if ( t ) {
 			for ( var i = 0, o; i < this.length; i ++ ) {
-				t.push( o = this.add( Q.isPlainObject( this[ i ].x.target ) ? this[ i ].x.target : { type: 'Empty' }, -1 ) );
-				this[ i ].x.target = o;
+				o = Q.isPlainObject( this[ i ].x.target ) ? this[ i ].x.target : { type: 'Empty' };
+				! o.id && (o.id = this.id + 'target' + i);
+				t.push( this.add( o, -1 ) );
+				this[ i ].x.target = o.id;
 			}
 			this.targets = t;
 		}
@@ -6049,7 +6061,11 @@ CheckBox = define.widget( 'CheckBox', {
 			return this.$();
 		},
 		_ustag: function( a ) {
-			this.ownerView.linkTarget( this.x.target, ! this.isDisabled() && this.isChecked(), this );
+			var b = this.ownerView.findAll( this.x.target );
+			for ( var i = 0, c; i < b.length; i ++ ) {
+				for ( var j = 0, c = this.ownerView.fAll( '*', b[ i ] ); j < c.length; j ++ )
+					c[ j ].disable( ! this.isChecked() );
+			}
 		},
 		elements: function( a, b ) {
 			return Q( '[name="' + this.input_name() + '"]' + (b ? ':not(:disabled)' : '') + (a === T ? ':checked' : a === F ? ':not(:checked)' : (a || '')), this.ownerView.$() );
@@ -6145,7 +6161,7 @@ CheckBox = define.widget( 'CheckBox', {
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.br ? '' : ' f-fix') + '"' + this.prop_title() +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + ((this.x.target.x && this.x.target.x.id) || this.x.target.id || this.x.target) + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>' +
+				(this.x.target ? ' w-target="' + this.x.target + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>' +
 				(p.x.dir === 'v' && p[ p.length - 1 ] != this ? '<br>' : '');
 		}
 	}
@@ -9731,7 +9747,7 @@ TableCombo = _comboHooks.Table = $.createClass( {
 	Prototype: {
 		type: 'Table',
 		node2xml: function( a ) {
-			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.tableBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
+			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.contentBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
 				d = t[ i ].x.data, r = d[ b.remark ];
 				s = '<d v="' + $.strEscape( d[ b.value ] ) + '" t="' + $.strEscape( d[ b.text ] ) + '" i="' + t[ i ].id + '"';
 				r && (s += ' r="' + $.strEscape( r ) + '"');
@@ -9750,7 +9766,7 @@ TableCombo = _comboHooks.Table = $.createClass( {
 		},
 		filter: function( t, s ) {
 			var a = this.cab;
-			a.tableBody() && a.setFilter( this._filter( t ) );
+			a.contentBody() && a.setFilter( this._filter( t ) );
 			return a.getEchoRows().length;
 		},
 		getLength: function() {
@@ -9996,7 +10012,7 @@ TableRow = define.widget( 'TableRow', {
 			if ( l ) {
 				for ( var i = 0, r = []; i < l; i ++ )
 					r.push( this[ i ].getData() );
-				d.rows = r;
+				d.nodes = r;
 			}
 			this.x.data && (d.data = this.x.data);
 			return d;
@@ -10250,7 +10266,7 @@ TR = define.widget( 'TR', {
 					l.toggle( this.isExpanded() );
 					l.indent();
 				}
-				this.closest( 'TableBody' ).trigger( 'nodeChange' );
+				this.closest( 'ContentTableBody' ).trigger( 'nodeChange' );
 			},
 			dnd_over: function() {
 				$.classAdd( this.$(), 'z-dnd-over' );
@@ -10263,9 +10279,8 @@ TR = define.widget( 'TR', {
 	Prototype: {
 		type_tr: T,
 		x_childtype: $.rt( 'TR' ),
-		x_nodes: function() { return this.x.rows },
 		getPageIndex: function() {
-			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.tableBody() || [], this );
+			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.contentBody() || [], this );
 			return r.x.limit ? Math.floor( a / r.x.limit ) + 1 : 1;
 		},
 		focus: function( a, e ) {
@@ -10429,8 +10444,8 @@ TCell = define.widget( 'TCell', {
 		html: $.rt( '' )
 	}
 } ),
-/* `TableBody` */
-TableBody = define.widget( 'TableBody', {
+/* `ContentTableBody` */
+ContentTableBody = define.widget( 'ContentTableBody', {
 	Const: function( x, p ) {
 		this.table = p.table;
 		W.apply( this, arguments );
@@ -10452,7 +10467,7 @@ TableBody = define.widget( 'TableBody', {
 		insertHTML: function( a, b ) {
 			this.$() && Q( this.$() )[ b || 'append' ]( a.isWidget ? a.$() : a );
 		},
-		// 获取平行的tablebody/tablehead /@a -> get root tableBody?
+		// 获取平行的tablebody/contentHead /@a -> get root contentBody?
 		getParallel: function( a ) {
 			var u = this.rootNode, r = this.table === u ? this : u[ this.instanceType ]();
 			if ( a )
@@ -10480,7 +10495,6 @@ TableBody = define.widget( 'TableBody', {
 				Q( this[ i ] ).last().addClass( 'z-last' );
 			}
 		},
-		x_nodes: TR.prototype.x_nodes,
 		html_nodes: function() {
 			for ( var i = 0, r = this.table.getEchoRows(), l = r.length, s = []; i < l; i ++ )
 				s.push( r[ i ].html( i ) );
@@ -10489,11 +10503,11 @@ TableBody = define.widget( 'TableBody', {
 		html: function() { return '<tbody id=' + this.id + '>' + this.html_nodes() + '</tbody>' }
 	}
 } );
-_parallel_methods( TableBody, 'prepend append before after' );
+_parallel_methods( ContentTableBody, 'prepend append before after' );
 var
-/* `thead` */
-TableHead = define.widget( 'TableHead', {
-	Extend: TableBody,
+/* `ContentTableHead` */
+ContentTableHead = define.widget( 'ContentTableHead', {
+	Extend: ContentTableBody,
 	Listener: {
 		body: {
 			ready: function() {
@@ -10535,9 +10549,9 @@ TableHead = define.widget( 'TableHead', {
 		html_nodes: _proto.html_nodes
 	}
 } ),
-/* `tablefoot` */
-TableFoot = define.widget( 'TableFoot', {
-	Extend: TableHead,
+/* `ContentTableFoot` */
+ContentTableFoot = define.widget( 'ContentTableFoot', {
+	Extend: ContentTableHead,
 	Listener: {
 		body: {
 			ready: N
@@ -10575,7 +10589,7 @@ Column = define.widget( 'Column', {
 	Prototype: {
 		ROOT_TYPE: 'Table,Form',
 		th: function() {
-			var t = this.table.tableHead();
+			var t = this.table.contentHead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		width_minus: function() {
@@ -10626,18 +10640,18 @@ ColGroup = define.widget( 'ColGroup', {
 		html: function() { return '<colgroup id=' + this.id + '>' + this.html_nodes() + '</colgroup>' }
 	}
 } ),
-/* `table` */
+/* `ContentTable` */
 ContentTable = define.widget( 'ContentTable', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
 		this.table = p.table;
 		this.colgroup = new ColGroup( { nodes: x.columns }, this );
 		if ( x.tHead )
-			this.tableHead = new TableHead( x.tHead, this );
+			this.contentHead = new ContentTableHead( x.tHead, this );
 		else if ( x.tFoot )
-			this.tableFoot = new TableFoot( x.tFoot, this );
+			this.contentFoot = new ContentTableFoot( x.tFoot, this );
 		else
-			this.tableBody = new TableBody( x.tBody || {}, this );
+			this.contentBody = new ContentTableBody( x.tBody || {}, this );
 	},
 	Listener: {
 		body: {
@@ -10684,6 +10698,7 @@ THead = define.widget( 'THead', {
 	Extend: Vert,
 	Prototype: {
 		ROOT_TYPE: 'Table,Form',
+		x_nodes: $.rt(),
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = Scroll.get( this.rootNode ), b, f;
@@ -10766,12 +10781,12 @@ AbsTable = define.widget( 'AbsTable', {
 	Prototype: {
 		x_childtype: $.rt( 'TR' ),
 		initBody: function( x ) {
-			var r = x.tHead && x.tHead.rows, s = this.attr( 'scroll' );
+			var r = x.tHead && x.tHead.nodes, s = this.attr( 'scroll' );
 			if ( r && r.length ) {
 				this.head = new THead( $.extend( { table: { tHead: x.tHead, columns: x.columns } }, x.tHead, { width: '*' } ), this );
 				delete x.scroll;
 			}
-			r = x.tFoot && x.tFoot.rows;
+			r = x.tFoot && x.tFoot.nodes;
 			if ( r && r.length ) {
 				this.foot = new TFoot( $.extend( { table: { tFoot: x.tFoot, columns: x.columns } }, x.tFoot, { width: '*' } ), this, -1 );
 			}
@@ -10780,14 +10795,14 @@ AbsTable = define.widget( 'AbsTable', {
 			if ( this.head && _w_lay.height.call( this ) )
 				this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 		},
-		tableHead: function() {
-			return this.head && this.head.contentTable.tableHead;
+		contentHead: function() {
+			return this.head && this.head.contentTable.contentHead;
 		},
-		tableBody: function() {
-			return this.body.contentTable.tableBody;
+		contentBody: function() {
+			return this.body && this.body.contentTable.contentBody;
 		},
-		tableFoot: function() {
-			return this.foot && this.foot.contentTable.tableFoot;
+		contentFoot: function() {
+			return this.foot && this.foot.contentTable.contentFoot;
 		},
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
@@ -10795,7 +10810,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// 获取符合条件的所有行  /@ a -> condition?, b -> one?
 		rows: function( a, b ) {
-			var d = this.tableBody(), r = [];
+			var d = this.contentBody(), r = [];
 			if ( d ) {
 				if ( a == N ) {
 					r = _slice.call( d );
@@ -10840,7 +10855,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// 获取显示中的tbody的所有行
 		getEchoRows: function() {
-			return this._echo_rows || this.tableBody() || [];
+			return this._echo_rows || this.contentBody() || [];
 		},
 		// 获取符合条件的所有行的 data json  /@ a -> condition?, b -> one?
 		rowsData: function( a, b ) {
@@ -10850,7 +10865,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// a -> data, b -> index
 		_addRow: function( a, b ) {
-			var p = this.tableBody();
+			var p = this.contentBody();
 			p._rowSpan = {};
 			b == N && (b = p.length);
 			p[ b ] ? p[ b ].before( a ) : p.append( a );
@@ -10880,7 +10895,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// @a -> elem
 		getCellAxis: function( a ) {
-			var b = this.tableBody(), c = Q( a ).closest( 'TD' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'TR' );
+			var b = this.contentBody(), c = Q( a ).closest( 'TD' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'TR' );
 			if ( b && r && r.$().parentNode === b.$() ) {
 				return { rowIndex: r.$().rowIndex - 1, cellIndex: c[ 0 ].cellIndex };
 			}
@@ -10974,9 +10989,9 @@ AbsTable = define.widget( 'AbsTable', {
 			g.insertCol( a.columns[ 0 ], b );
 			if ( g = this.head && this.head.contentTable.colgroup )
 				g.insertCol( a.columns[ 0 ], b );
-			(g = this.tableHead()) && g.insertCol( a.tHead.rows, b );
-			(g = this.tableBody()) && g.insertCol( a.tBody.rows, b );
-			(g = this.tableFoot()) && g.insertCol( a.tFoot.rows, b );
+			(g = this.contentHead()) && g.insertCol( a.tHead.nodes, b );
+			(g = this.contentBody()) && g.insertCol( a.tBody.nodes, b );
+			(g = this.contentFoot()) && g.insertCol( a.tFoot.nodes, b );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
@@ -10987,9 +11002,9 @@ AbsTable = define.widget( 'AbsTable', {
 			g.deleteCol( a );
 			if ( g = this.head && this.head.contentTable.colgroup )
 				g.deleteCol( a );
-			(g = this.tableHead()) && g.deleteCol( a );
-			(g = this.tableBody()) && g.deleteCol( a );
-			(g = this.tableFoot()) && g.deleteCol( a );
+			(g = this.contentHead()) && g.deleteCol( a );
+			(g = this.contentBody()) && g.deleteCol( a );
+			(g = this.contentFoot()) && g.deleteCol( a );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
@@ -11008,7 +11023,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// 获取所有焦点行 / @a -> visible?
 		getFocusAll: function( a ) {
-			for ( var i = 0, b = this.tableBody(), c, l = b.length, r = []; i < l; i ++ ) {
+			for ( var i = 0, b = this.contentBody(), c, l = b.length, r = []; i < l; i ++ ) {
 				(c = b[ i ].getFocusAll( a )) && c.length && (r = r.concat( c ));
 			}
 			return r;
@@ -11020,7 +11035,7 @@ AbsTable = define.widget( 'AbsTable', {
 			return r;
 		},
 		fixRowCls: function() {
-			if ( this.tableBody() ) {
+			if ( this.contentBody() ) {
 				for ( var i = 0, r = this.getEchoRows(), l = r.length; i < l; i ++ ) {
 					$.classRemove( r[ i ].$(), 'z-0 z-1 z-first z-last' );
 					$.classAdd( r[ i ].$(), 'z-' + (i % 2) );
@@ -11062,12 +11077,12 @@ AbsTable = define.widget( 'AbsTable', {
 				this.limit();
 				this.$() && this.render();
 			}
-			return { currentPage: this.x.page, sumPage: Math.ceil((this._filter_rows || this.tableBody() || []).length / this.x.limit) };
+			return { currentPage: this.x.page, sumPage: Math.ceil((this._filter_rows || this.contentBody() || []).length / this.x.limit) };
 		},
 		limit: function() {
-			if ( this.x.limit && this.tableBody() ) {
+			if ( this.x.limit && this.contentBody() ) {
 				var g = this.x.page || 1, i = (g - 1) * this.x.limit, j = g * this.x.limit;
-				this._echo_rows = _slice.call( this._filter_rows || this.tableBody(), i, j );
+				this._echo_rows = _slice.call( this._filter_rows || this.contentBody(), i, j );
 			}
 		},
 		// @f -> filter rows(经过筛选的行)
@@ -11089,7 +11104,7 @@ AbsTable = define.widget( 'AbsTable', {
 				if ( c.number ) { e = _number( e ); f = _number( f ); }
 				return b === 'asc' ? (e < f ? -1 : e == f ? 0 : 1) : (e < f ? 1 : e == f ? 0 : -1);
 			} );
-			for ( var i = 0, l = r.length, o = this.tableBody().$().rows; i < l; i ++ ) {
+			for ( var i = 0, l = r.length, o = this.contentBody().$().rows; i < l; i ++ ) {
 				if ( o[ i ].id != r[ i ].id ) {
 					r[ i ].parentNode.addNode( r[ i ], i );
 					Q( o[ i ] ).before( r[ i ].$() );
@@ -11130,7 +11145,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// @k -> keycode
 		keyUp: function( k ) {
-			if ( ! this.tableBody() )
+			if ( ! this.contentBody() )
 				return;
 			var r = this.getEchoRows(), d = k === 40, a;
 			if ( d || k === 38 ) { // key down/up
@@ -11204,7 +11219,7 @@ Table = define.widget( 'Table', {
 	Listener: {
 		body: {
 			ready: function() {
-				var a = this.tableBody();
+				var a = this.contentBody();
 				if ( a ) {
 					var b = a.$().rows, c = this.getFocusAll();
 					b.length && ($.classAdd( b[ 0 ], 'z-first' ), $.classAdd( b[ b.length - 1 ], 'z-last' ));
@@ -11266,7 +11281,7 @@ LeftTable = define.widget( 'LeftTable', {
 			ready: function() {
 				var p = this.parentNode;
 				if ( p.head ) {
-					for ( var i = 0, h = this.tableHead(), ph = p.tableHead(); i < h.length; i ++ )
+					for ( var i = 0, h = this.contentHead(), ph = p.contentHead(); i < h.length; i ++ )
 						h[ i ].height( ph[ i ].height() );
 				}
 				this.fixSize();
@@ -11343,7 +11358,7 @@ Form = define.widget( 'Form', {
 				}
 			}
 		}
-		var y = $.extend( {}, x, { columns: c, tBody: { rows: rows } } );
+		var y = $.extend( {}, x, { columns: c, tBody: { nodes: rows } } );
 		delete y.pub; delete y.nodes;
 		Table.call( this, y, p );
 	},
