@@ -566,7 +566,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         }
         int headRows = 0, headColumns = 0;
         int row = 0;
-        for (TR tr : tHead.getRows()) {
+        for (TR tr : tHead.getNodes()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
@@ -586,7 +586,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         }
         int footRows = 0, footColumns = 0;
         row = 0;
-        for (TR tr : tFoot.getRows()) {
+        for (TR tr : tFoot.getNodes()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
@@ -606,7 +606,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         }
         int bodyRows = 0, bodyColumns = 0;
         row = 0;
-        for (TR tr : tBody.getRows()) {
+        for (TR tr : tBody.getNodes()) {
             if (tr.getData() != null) {
                 for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
                     String key = entry.getKey();
@@ -626,9 +626,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         }
 
         retain(this.getColumns(), MathUtil.max(columnSize, bodyColumns, headColumns, footColumns));
-        retain(tBody.getRows(), bodyRows);
-        retain(tHead.getRows(), headRows);
-        retain(tFoot.getRows(), footRows);
+        retain(tBody.getNodes(), bodyRows);
+        retain(tHead.getNodes(), headRows);
+        retain(tFoot.getNodes(), footRows);
         return this;
     }
 
@@ -1518,7 +1518,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          *
          * @return List
          */
-        public List<TR> getRows() {
+        public List<TR> getNodes() {
             return (List) nodes;
         }
 
@@ -1609,7 +1609,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                     cell.setColSpan(colspan);
                 }
 
-                ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
+                (nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
             } else if (o instanceof Widget) {
                 //如果entry 是 Widget 那么将会包装在一个TableCell里面
                 if (rowspan > 1 || colspan > 1) {
@@ -1622,9 +1622,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                         cell.setColSpan(colspan);
                     }
 
-                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
+                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
                 } else {
-                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
+                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
                 }
             } else {
                 if (o != null && (rowspan > 1 || colspan > 1)) {
@@ -1636,9 +1636,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                     if (colspan > 1) {
                         td.setColSpan(colspan);
                     }
-                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), td);
+                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), td);
                 } else {
-                    ((Widget) nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
+                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
                 }
             }
         }
@@ -1843,7 +1843,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             }
             return tr.getId() != null || tr.getFocus() != null || tr.getFocusable() != null ||
                     tr.getHeight() != null || tr.getSrc() != null ||
-                    (tr.getRows() != null && tr.getRows().size() > 0) ||
+                    (tr.getNodes() != null && tr.getNodes().size() > 0) ||
                     tr.getCls() != null || tr.getStyle() != null ||//常用的属性排在前面
                     tr.getBeforeContent() != null || tr.getPrependContent() != null ||
                     tr.getAppendContent() != null || tr.getAfterContent() != null ||
@@ -2030,31 +2030,25 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         protected Boolean focus;
         protected Boolean focusable;
         protected String src;
-        protected List<TR> rows;
+        protected List<TR> nodes;
 
-
-        @Override
-        @Deprecated
-        public T add(Node w) {
-            throw new UnsupportedOperationException("Use setData(String, TableCell) instead");
-        }
 
         /**
          * 取得可折叠的子元素
          *
          * @return List
          */
-        public List<TR> getRows() {
-            return rows;
+        public List<TR> getNodes() {
+            return nodes;
         }
 
         /**
          * 设置可折叠的子元素
          *
-         * @param rows List
+         * @param nodes List
          */
-        public void setRows(List<TR> rows) {
-            this.rows = rows;
+        public void setRows(List<TR> nodes) {
+            this.nodes = nodes;
         }
 
         @Override
@@ -2065,15 +2059,15 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         /**
          * 添加一个可折叠的行。
          *
-         * @param row TableRow
+         * @param node TableRow
          * @return 本身，这样可以继续设置其他属性
          */
 
-        public T addRow(TR row) {
-            if (rows == null) {
-                rows = new ArrayList<TR>();
+        public T add(TR node) {
+            if (nodes == null) {
+                nodes = new ArrayList<>();
             }
-            rows.add(row);
+            nodes.add(node);
 
             return (T) this;
         }
@@ -2121,11 +2115,11 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         @Override
         public T removeNodeById(String id) {
 
-            if (id == null || (rows == null && data == null)) {
+            if (id == null || (nodes == null && data == null)) {
                 return (T) this;
             }
-            if (rows != null) {
-                for (Iterator<TR> iter = rows.iterator(); iter.hasNext(); ) {
+            if (nodes != null) {
+                for (Iterator<TR> iter = nodes.iterator(); iter.hasNext(); ) {
                     TR item = iter.next();
                     if (id.equals(item.getId())) {
                         iter.remove();
@@ -2165,8 +2159,8 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         @Override
         public List<Node> findNodes() {
             List<Node> result = new ArrayList<>();
-            if (rows != null) {
-                for (Widget<?> o : rows) {
+            if (nodes != null) {
+                for (Widget<?> o : nodes) {
                     result.add(o);
                 }
             }
@@ -2187,12 +2181,12 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                 return false;
             }
             String id = panel.getId();
-            if (rows != null) {
-                for (int i = 0; i < rows.size(); i++) {
-                    TR item = rows.get(i);
+            if (nodes != null) {
+                for (int i = 0; i < nodes.size(); i++) {
+                    TR item = nodes.get(i);
                     if (id.equals(item.getId())) {
                         // 替换该元素
-                        rows.set(i, (TR) panel);
+                        nodes.set(i, (TR) panel);
                         return true;
                     } else {
                         boolean replaced = item.replaceNodeById(panel);
@@ -2267,7 +2261,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          */
         protected void copyProperties(AbstractTr<?> to, AbstractTr<?> from) {
             super.copyProperties(to, from);
-            to.rows = from.rows;
+            to.nodes = from.nodes;
             to.focus = from.focus;
             to.src = from.src;
             to.focusable = from.focusable;

@@ -19,7 +19,7 @@ public class TableTest extends DFishUITestCase {
 	public void autoExpend(){
 		Table gl=new Table("mygrid");
 		gl.add(1, 1, "test");
-		Assert.assertTrue(gl.getTBody().getRows().size()==2);
+		Assert.assertTrue(gl.getTBody().getNodes().size()==2);
 		
 	}
 
