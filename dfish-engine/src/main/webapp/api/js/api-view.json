@@ -144,25 +144,25 @@
 		      //{ "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
 		        { "id": "EmbedWindow", "text": "EmbedWindow", "icon": ".icon .icon-class" },
 		        { "id": "FieldSet", "text": "FieldSet", "icon": ".icon .icon-class" },
+		        { "id": "Form", "text": "Form", "icon": ".icon .icon-class" },
 		        { "id": "Frame", "text": "Frame", "icon": ".icon .icon-class" },
+		        { "id": "Horizontal", "text": "Horizontal", "icon": ".icon .icon-class" },
+		        { "id": "Section", "text": "Section", "icon": ".icon .icon-class" },
 		        { "id": "Table", "text": "Table", "icon": ".icon .icon-class", "nodes": [
 		          { "id": "Column", "text": "Column", "icon": ".icon .icon-class" },
 		          { "id": "TableLeaf", "text": "TableLeaf", "icon": ".icon .icon-class" },
 		          { "id": "TableRowNum", "text": "TableRowNum", "icon": ".icon .icon-class" },
-		          { "id": "THead", "text": "THead", "icon": ".icon .icon-class" },
 		          { "id": "TBody", "text": "TBody", "icon": ".icon .icon-class" },
+		          { "id": "TD", "text": "TD", "icon": ".icon .icon-class" },
 		          { "id": "TFoot", "text": "TFoot", "icon": ".icon .icon-class" },
-		          { "id": "TR", "text": "TR", "icon": ".icon .icon-class" },
-		          { "id": "TD", "text": "TD", "icon": ".icon .icon-class" }
+		          { "id": "THead", "text": "THead", "icon": ".icon .icon-class" },
+		          { "id": "TR", "text": "TR", "icon": ".icon .icon-class" }
 		        ] },
-		        { "id": "Form", "text": "Form", "icon": ".icon .icon-class" },
-		        { "id": "Horizontal", "text": "Horizontal", "icon": ".icon .icon-class" },
 		        { "id": "Tabs", "text": "Tabs", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "Tab", "text": "Tab", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Vertical", "text": "Vertical", "icon": ".icon .icon-class" },
-		        { "id": "View", "text": "View", "icon": ".icon .icon-class" },
-		        { "id": "Section", "text": "Section", "icon": ".icon .icon-class" }
+		        { "id": "View", "text": "View", "icon": ".icon .icon-class" }
 		      ] },
 		  	  { "text": "功能类", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "Album", "text": "Album", "icon": ".icon .icon-class" },
@@ -195,10 +195,17 @@
 		        { "id": "CheckBoxGroup", "text": "CheckBoxGroup", "icon": ".icon .icon-class" },
 		        { "id": "ComboBox", "text": "ComboBox", "icon": ".icon .icon-class" },
 		        { "id": "DatePicker", "text": "DatePicker", "icon": ".icon .icon-class" },
+		        { "id": "DropBox", "text": "DropBox", "icon": ".icon .icon-class" },
+		        { "id": "FileUpload", "text": "FileUpload", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "FormGroup", "text": "FormGroup", "icon": ".icon .icon-class" },
 		        { "id": "FormLabel", "text": "FormLabel", "icon": ".icon .icon-class" },
 		        { "id": "Hidden", "text": "Hidden", "icon": ".icon .icon-class" },
 		        { "id": "ImgBox", "text": "ImgBox", "icon": ".icon .icon-class" },
+		        { "id": "ImageUpload", "text": "ImageUpload", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "Label", "text": "Label", "icon": ".icon .icon-class" },
 		        { "id": "LinkBox", "text": "LinkBox", "icon": ".icon .icon-class" },
 		        { "id": "OnlineBox", "text": "OnlineBox", "icon": ".icon .icon-class" },
@@ -218,14 +225,7 @@
 		        { "id": "Switch", "text": "Switch", "icon": ".icon .icon-class" },
 		        { "id": "Text", "text": "Text", "icon": ".icon .icon-class" },
 		        { "id": "Textarea", "text": "Textarea", "icon": ".icon .icon-class" },
-		        { "id": "TripleBox", "text": "TripleBox", "icon": ".icon .icon-class" },
-		        { "id": "FileUpload", "text": "FileUpload", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
-		        ] },
-		        { "id": "ImageUpload", "text": "ImageUpload", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
-		        ] },
-		        { "id": "DropBox", "text": "DropBox", "icon": ".icon .icon-class" }
+		        { "id": "TripleBox", "text": "TripleBox", "icon": ".icon .icon-class" }
 		      ] }
 		  	]
 		  },

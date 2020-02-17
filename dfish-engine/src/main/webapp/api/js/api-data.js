@@ -3659,18 +3659,7 @@ define( {
           }
       ] },
       { name: 'loading', type: 'LoadingCommand', remark: '加载数据时显示一个等候窗口。' },
-      { name: 'node', type: 'Object', remark: 'Dialog的唯一子节点。', example: [
-          function() {
-            return~
-            {
-              type: 'dialog', width: 500, height: 400,
-              node: {
-                type: 'view',
-                node: { type: 'html', text: '内容..' }
-              }
-            }
-          }
-      ] },
+      { name: 'node', type: 'Object', remark: 'Dialog的唯一子节点。' },
       { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
           function() {
             VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
@@ -3685,9 +3674,11 @@ define( {
       { name: 'resizable', type: 'Boolean', remark: '窗口是否可用鼠标拖动调整大小。' },
       { name: 'fullScreen', type: 'Boolean', remark: '窗口在初始化时是否最大化。' },
       { name: 'snap', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。', param: [
-        { name: 'target', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
-        { name: 'position', type: 'String', remark: '指定 snap 的位置。 <a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值: 11,12,14,21,22,23,32,33,34,41,43,44,bb,bt,tb,tt,ll,lr,rl,rr,cc。其中 1、2、3、4、t、r、b、l、c 分别代表左上角、右上角、右下角、左下角、上中、右中，下中、左中、中心。例如 "41" 表示 snap 对象的左下角和 Dialog 对象的左上角吸附在一起。' },
         { name: 'indent', type: 'Number', remark: '指定相对于初始位置缩进多少个像素。' },
+        { name: 'inner', type: 'Boolean', remark: '是否在吸附对象的里面。默认值为false。' },
+        { name: 'target', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
+        { name: 'position', type: 'String', remark: '指定 snap 的位置。 <!--a href=javascript:; onclick="var s=this.nextSibling.style;s.display=s.display==\'none\'?\'block\':\'none\'"><b>点击查看参数说明图>></b></a--><span style="display:none"><img style="border:1px solid #ccc" src=src/img/snaptype.png></span><br>可选值：<b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>' +
+         '<br>备注：t:top, r:right, b:bottom, l:left, c:center' },
       ] },
       { name: 'position', type: 'String', remark: '弹出位置。可选值: <b>tl</b> <b>tr</b> <b>rt</b> <b>rb</b> <b>br</b> <b>bl</b> <b>lb</b> <b>lt</b> <b>t</b> <b>r</b> <b>b</b> <b>l</b> <b>c</b>' +
          '<br>备注：t:top, r:right, b:bottom, l:left, c:center'
