@@ -3673,7 +3673,7 @@ define( {
       { name: 'movable', type: 'Boolean', remark: '窗口是否可用鼠标移动位置。默认值为 true。' },
       { name: 'resizable', type: 'Boolean', remark: '窗口是否可用鼠标拖动调整大小。' },
       { name: 'fullScreen', type: 'Boolean', remark: '窗口在初始化时是否最大化。' },
-      { name: 'snap', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。', param: [
+      { name: 'snap', type: 'Object', remark: '吸附的对象。可以是 html 元素或 widget ID。', param: [
         { name: 'indent', type: 'Number', remark: '指定相对于初始位置缩进多少个像素。' },
         { name: 'inner', type: 'Boolean', remark: '是否在吸附对象的里面。默认值为false。' },
         { name: 'target', type: 'HtmlElement | Widget', remark: '吸附的对象。可以是 html 元素或 widget ID。' },
