@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.0.40-SNAPSHOT</version>
+        <version>5.0.0.41-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-framework</artifactId>

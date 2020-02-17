@@ -56,19 +56,19 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
      *
      * @return 是否覆盖
      */
-    @Override
+    /**
+     * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
+     * @return Boolean 是否覆盖
+     */
     public Boolean getCover() {
         return cover;
     }
 
     /**
-     * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
-     *
-     * @param cover 是否覆盖
+     * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
+     * @param cover Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    @Override
-    @SuppressWarnings("unchecked")
     public T setCover(Boolean cover) {
         this.cover = cover;
         return (T) this;
@@ -128,13 +128,19 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return (T) this;
     }
 
-    @Override
+    /**
+     * 定时关闭，单位:毫秒。-1则不关闭
+     * @return Long
+     */
     public Long getTimeout() {
         return timeout;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
+    /**
+     * 定时关闭，单位:毫秒。-1则不关闭
+     * @param timeout Long
+     * @return 本身，这样可以继续设置其他属性
+     */
     public T setTimeout(Long timeout) {
         this.timeout = timeout;
         return (T) this;
@@ -371,4 +377,51 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     public void clearNodes() {
 
     }
+
+    public static class Snap implements Positionable<Snap> {
+        private String target;
+        private String position;
+        private Boolean inner;
+        private Integer indent;
+
+        public String getTarget() {
+            return target;
+        }
+
+        public Snap setTarget(String target) {
+            this.target = target;
+            return this;
+        }
+
+        @Override
+        public Snap setPosition(String position) {
+            this.position = position;
+            return this;
+        }
+
+        @Override
+        public String getPosition() {
+            return position;
+        }
+
+        public Boolean getInner() {
+            return inner;
+        }
+
+        public Snap setInner(Boolean inner) {
+            this.inner = inner;
+            return this;
+        }
+
+        public Integer getIndent() {
+            return indent;
+        }
+
+        public Snap setIndent(Integer indent) {
+            this.indent = indent;
+            return this;
+        }
+
+    }
+
 }

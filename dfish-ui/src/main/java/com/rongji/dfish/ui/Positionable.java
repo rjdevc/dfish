@@ -20,29 +20,6 @@ public interface Positionable<T extends Positionable<T>> {
 	 */
 	String getPosition();
 	/**
-	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	Boolean getCover();
-	/**
-	 * 如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。
-	 * @param cover Boolean
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	T setCover(Boolean cover);
-	/**
-	 * 定时关闭，单位:毫秒。-1则不关闭
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	Long getTimeout();
-	/**
-	 * 定时关闭，单位:毫秒。-1则不关闭
-	 * @param timeout Integer
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	T setTimeout(Long timeout);
-	
-	/**
 	 * 位置正中
 	 */
 	public static String POSITION_CENTER="c";
