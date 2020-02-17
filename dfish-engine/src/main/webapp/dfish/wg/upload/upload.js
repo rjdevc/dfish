@@ -1391,7 +1391,7 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 	}
 } ),
 
-SwfUpload = define.widget( 'SwfUpload', {
+FlashUpload = define.widget( 'FlashUpload', {
 	Extend: [ AbsUpload, SWFUpload ],
 	Listener: {
 		body: {
@@ -1442,7 +1442,7 @@ isSWF = ! window.FormData,
 uploadCount = 0, fileCount = 0;
 
 if ( isSWF ) {
-	Upload = UploadSwf;
+	Upload = FlashUpload;
 	window.SWFUpload = SWFUpload;
 }
 

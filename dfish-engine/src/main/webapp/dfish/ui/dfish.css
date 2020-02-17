@@ -233,6 +233,8 @@
 .w-html.z-autosize{overflow:visible}
 
 .w-fieldset{margin:0;padding:0;border:1px solid #ccc;border-radius:2px;*display:block;}
+.w-fieldset-legend{height:26px}
+.w-fieldset-legend ._tit{margin-left:3px}
 
 .w-dialog{position:absolute;z-index:10}
 .w-dialog-cover{position:absolute;background:#333;top:0;left:0;right:0;bottom:0;z-index:11;opacity:.2;filter:Alpha(opacity=20)}

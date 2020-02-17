@@ -2994,13 +2994,13 @@ Html = define.widget( 'Html', {
 } ),
 /* `timeline` 时间轴 */
 Timeline = define.widget( 'Timeline', {
+	Extend: Scroll,
 	Default: { scroll: T },
 	Prototype: {
 		className: 'w-timeline',
-		tagName: 'ul',
 		x_childtype: $.rt( 'TimelineItem' ),
 		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.x.align ? ' z-' + this.x.align : '');
+			return Scroll.prototype.prop_cls.call( this ) + (this.x.align ? ' z-' + this.x.align : '');
 		}
 	}
 } ),
@@ -3009,7 +3009,6 @@ TimelineItem = define.widget( 'TimelineItem', {
 	Default: { width: -1, height: -1 },
 	Prototype: {
 		className: 'w-timeline-item',
-		tagName: 'li',
 		ROOT_TYPE: 'Timeline',
 		prop_cls: function() {
 			var p = this.parentNode;
@@ -4217,16 +4216,21 @@ PageBar = define.widget( 'PageBar', {
 /* `fieldset` */
 FieldSet = define.widget( 'FieldSet', {
 	Extend: VertScale,
-	Default: { widthMinus: 2, heightMinus: 2 },
+	Default: { widthMinus: 2, heightMinus: 3 },
 	Prototype: {
 		className: 'w-fieldset',
 		init_nodes: function() {
-			this.layout = new Layout( { heightMinus: 23, nodes: this.x.nodes }, this );
-			if ( this.x.box )
+			this.layout = new Layout( { height: '*', heightMinus: 26, nodes: this.x.nodes }, this );
+			if ( this.x.box ) {
+				if ( this.x.legend && this.x.box.text == N ) {
+					this.x.box.text = this.x.legend;
+					delete this.x.legend;
+				}
 				this.box = CheckBox.parseOption( this, { target: this.layout } );
+			}
 		},
 		html: function() {
-			return this.html_before() + '<fieldset' + this.html_prop() + '><legend class=w-fieldset-legend>' + ( this.box ? this.box.html() : '' ) + this.x.legend + '</legend>' + this.html_prepend() + this.layout.html() + this.html_append() + '</fieldset>' + this.html_after();
+			return this.html_before() + '<fieldset' + this.html_prop() + '><legend class=w-fieldset-legend>' + (this.box ? this.box.html() : '') + '<span class="_t f-va">' + (this.x.legend || '') + '</span><i class=f-vi></i></legend>' + this.html_prepend() + this.layout.html() + this.html_append() + '</fieldset>' + this.html_after();
 		}
 	}
 } ),
@@ -6377,7 +6381,7 @@ Select = define.widget( 'Select', {
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') + this.prop_title( o[ i ].text ) + '>' + f + '</option>' + s;
 			}
 			var w = this.formWidth(), z = this.x.size, t = (t === T ? (o[ k ] && o[ k ].text) : t) || '';
-			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' style="width:' + ( w ? w + 'px' : 'auto' ) + '" name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
+			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
 				(t ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') + (z ? ' size=' + z : '') + '>' + s + '</select><div class=_cvr></div>';
 		}
 	}

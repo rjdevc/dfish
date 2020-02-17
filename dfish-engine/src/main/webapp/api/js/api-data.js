@@ -1638,21 +1638,21 @@ define( {
   	remark: 'Table的表头。',
   	extend: 'Widget',
     Config: [
-        { name: 'rows', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' }
+        { name: 'nodes', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "TBody": {
   	remark: 'Table的内容。',
   	extend: 'Widget',
     Config: [
-        { name: 'rows', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' }
+        { name: 'nodes', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "TFoot": {
   	remark: 'Table的表尾。',
   	extend: 'Widget',
     Config: [
-        { name: 'rows', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
+        { name: 'nodes', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "Table": {
@@ -1665,7 +1665,6 @@ define( {
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
       { name: 'focusMultiple', type: 'Boolean', remark: '是否有多选的点击高亮效果。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
-      { name: 'limit', type: 'Int', remark: '最多显示多少行。如果需要前端翻页，可设置这个属性。' },
       { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' },
       { name: 'resizable', type: 'Boolean', remark: '是否可以拖动表头调整列宽。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
@@ -2134,7 +2133,7 @@ define( {
       { name: 'data', type: 'Object', remark: '行数据。' },
       { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
       { name: 'src', type: 'String', remark: '可展开内容的地址。这个 src 应当返回一个 view' },
-      { name: 'rows', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
+      { name: 'nodes', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
     ],
     Event: [
       { name: 'collapse', remark: '收起时触发。' },
@@ -2533,8 +2532,9 @@ define( {
   	extend: 'Widget',
     Config: [
       { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+      { name: 'nodes', type: 'Array', remark: '子节点数组。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
-      { name: 'nodes', type: 'Array', remark: '子节点数组。' }
+      { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' }
     ],
     Classes: [
       { name: '.w-timeline', remark: '基础样式。' }
@@ -2690,6 +2690,7 @@ define( {
       { name: 'firstText', type: 'String', optional: true, remark: '"首页"的文本。' },
       { name: 'lastText', type: 'String', optional: true, remark: '"尾页"的文本。' },
       { name: 'nextText', type: 'String', optional: true, remark: '"下一页"的文本。' },
+      { name: 'pageRecords', type: 'Number', remark: '每页显示多少条。配合target参数使用。' },
       { name: 'prevText', type: 'String', optional: true, remark: '"上一页"的文本。' },
       { name: 'src', type: 'String', optional: true, remark: '点击页数按钮将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表页数。支持以 "javascript:" 开头的JS语句。' },
       { name: 'sumPage', type: 'Number', remark: '总页数。(起始值为1)' },
