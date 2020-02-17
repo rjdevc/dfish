@@ -33,7 +33,8 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.3</version>
                 <configuration>
-                    <packagingExcludes>api/**,api-offline/**,css/**,m/**,webapp/**,*.jsp</packagingExcludes>
+                    <!-- 在线前端api的文档正常发布,不需要引入的可去除 -->
+                    <packagingExcludes>api-offline/**</packagingExcludes>
                 </configuration>
             </plugin>
         </plugins>

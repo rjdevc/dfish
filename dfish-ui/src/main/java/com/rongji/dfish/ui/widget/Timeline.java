@@ -8,9 +8,10 @@ import com.rongji.dfish.ui.*;
  * @author lamontYu
  * @date 2019-11-25 11:52
  */
-public class Timeline extends AbstractPubNodeContainer<Timeline, Timeline.Item> implements Alignable<Timeline> {
+public class Timeline extends AbstractPubNodeContainer<Timeline, Timeline.Item> implements Alignable<Timeline>, Scrollable<Timeline> {
 
     private String align;
+    private Boolean scroll;
 
     /**
      * 构造函数
@@ -34,6 +35,17 @@ public class Timeline extends AbstractPubNodeContainer<Timeline, Timeline.Item> 
     @Override
     public Timeline setAlign(String align) {
         this.align = align;
+        return this;
+    }
+
+    @Override
+    public Boolean getScroll() {
+        return scroll;
+    }
+
+    @Override
+    public Timeline setScroll(Boolean scroll) {
+        this.scroll = scroll;
         return this;
     }
 
