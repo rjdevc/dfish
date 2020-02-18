@@ -7872,7 +7872,7 @@ ComboBox = define.widget( 'ComboBox', {
 			this.domready && this.init();
 		},
 		init: function( v ) {
-			if ( ! this.$() )
+			if ( ! this.$() || ! this.x.bind )
 				return;
 			this._initOptions( this._val() );
 			this.queryText( '' );
@@ -8414,7 +8414,7 @@ LinkBox = define.widget( 'LinkBox', {
 			}
 		},
 		init: function() {
-			if ( ! this.$() )
+			if ( ! this.$() || ! this.x.bind )
 				return;
 			this._initOptions( this._val() );
 			this.save();
@@ -8434,7 +8434,7 @@ LinkBox = define.widget( 'LinkBox', {
 							b.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( o.text ) + '</u>' );
 						else if ( ! this.x.strict )
 							b.push( '<u>' + $.strEscape( (t && t[ i ]) || v[ i ] ) + '</u>' );
-					}
+					} 
 				}
 				b.length && (s = b.join( '<i>' + p + '</i>' ) + (this.x.multiple ? '<i>' + p + '</i>' : ''));
 			}

@@ -383,7 +383,7 @@ _isNumber = $.isNumber = function( a ) {
 	return a != N && ! isNaN( a );
 },
 _number = $.number = function( a ) {
-	var r = typeof a === _STR ? parseFloat( a.replace( /[^\d\.]/g, '' ) ) : + a;
+	var r = typeof a === _STR ? parseFloat( a.replace( /[^\d\.-]|\b-/g, '' ) ) : + a;
 	return isNaN( r ) ? 0 : r;
 },
 // 如果 a 的大小在 b 和 c 之间，则返回 a。否则返回 b 或 c
