@@ -142,7 +142,6 @@
 		          { "id": "CollapseButton", "text": "CollapseButton", "icon": ".icon .icon-class" }
 		        ] },
 		      //{ "id": "docview", "text": "docview", "icon": ".icon .icon-class" },
-		        { "id": "EmbedWindow", "text": "EmbedWindow", "icon": ".icon .icon-class" },
 		        { "id": "FieldSet", "text": "FieldSet", "icon": ".icon .icon-class" },
 		        { "id": "Form", "text": "Form", "icon": ".icon .icon-class" },
 		        { "id": "Frame", "text": "Frame", "icon": ".icon .icon-class" },
@@ -172,6 +171,7 @@
 		        { "id": "Calendar", "text": "Calendar", "icon": ".icon .icon-class", "nodes": [
 		          { "id": "CalendarItem", "text": "CalendarItem", "icon": ".icon .icon-class" }
 		        ] },
+		        { "id": "EmbedWindow", "text": "EmbedWindow", "icon": ".icon .icon-class" },
 		        { "id": "Empty", "text": "Empty", "icon": ".icon .icon-class" },
 		        { "id": "Html", "text": "Html", "icon": ".icon .icon-class" },
 		        { "id": "Img", "text": "Img", "icon": ".icon .icon-class" },

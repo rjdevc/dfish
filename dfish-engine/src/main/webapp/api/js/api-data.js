@@ -2594,7 +2594,7 @@ define( {
     ]
   },
   "EmbedWindow": {
-  	remark: '生成一个内嵌窗口。作用与HTML的<iframe>标签相同。',
+  	remark: '生成一个内嵌窗口。作用与HTML的&lt;iframe&gt;标签相同。',
   	extend: 'Widget',
     Config: [
       { name: 'scroll', type: 'Boolean', remark: '是否显示滚动条。' },
@@ -2723,12 +2723,13 @@ define( {
   	extend: 'Widget',
     Config: [
       { name: 'nodes', type: 'Array', optional: true, remark: 'CalendarItem的数组集合。' },
-      { name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当mode为week时本参数有效。' },
-      { name: 'date', type: 'String', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
-      { name: 'focusdate', type: 'String', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
+      { name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当 face 值为 "week" 时本参数有效。' },
+      { name: 'date', type: 'String', optional: true, remark: '以此日期为基准显示日历。' },
+      { name: 'face', type: 'String', optional: true, remark: '日历类型。可选值：<b>date</b>, <b>week</b>, <b>month</b>, <b>year</b>。默认值为"date"。' },
+      { name: 'focusDate', type: 'String', optional: true, remark: '高亮显示的某一日期。' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
       { name: 'start', type: 'Number', optional: true, remark: '一周的第一天是星期几。可选值从1到7。仅当mode为week时本参数有效。' },
-      { name: 'padrow', type: 'Boolean', optional: true, remark: '设置为true，当日历不满6行时填补一行空白行。' },
+      { name: 'padRow', type: 'Boolean', optional: true, remark: '设置为true，当日历不满6行时填补一行空白行。' },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。' }
     ],
     Methods: [
@@ -3441,8 +3442,8 @@ define( {
           { name: 'text', type: 'String', remark: '文本字段名。' },
           { name: 'value', type: 'String', remark: '值字段名。' }
         ] },
-        { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
         { name: 'fullPath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' },
+        { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
         { name: 'target', type: 'String', remark: '数据来源Widget的ID。类型可以是Table或Tree。如果不设置此参数，将以对话框内的第一个Table或第一个Tree作为数据来源。' }
       ] },
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },

@@ -12,7 +12,7 @@ ol{margin:10px}
 .logo-text{display:inline-block;height:25px;border-left:1px solid #99cdfc;margin-left:8px;padding-left:8px;line-height:25px;vertical-align:middle}
 .remark{margin-top:0}
 .typeof{font-weight:normal;font-size:12px;color:#666}
-.remark b{color:#D52DFF;font-weight:normal;padding: 3px 5px;margin: 0 2px;border-radius: 2px;white-space: nowrap;font-family:"courier new";background-color: #f8f8f8;-webkit-font-smoothing: initial;}
+.remark b{color:#D52DFF;font-weight:normal;font-size:16px;padding: 3px 5px;margin: 0 2px;border-radius: 2px;white-space: nowrap;font-family:"courier new";background-color: #f8f8f8;-webkit-font-smoothing: initial;}
 .remark s{color:#999;text-decoration:none}
 .param var{color:#1390fe;font-weight:bold;font-style:normal}
 .param.z-common var{color:#333;}

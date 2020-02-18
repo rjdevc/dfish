@@ -6450,7 +6450,7 @@ _calendarformatter = { date: 'yyyy-mm-dd', week: 'yyyy-mm-dd', month: 'yyyy-mm',
 /* `calendar` */
 Calendar = define.widget( 'Calendar', {
 	Const: function( x ) {
-		!x.date && x.focusdate && (x.date = x.focusdate);
+		!x.date && x.focusDate && (x.date = x.focusDate);
 		var d = x.date ? this._ps( x.date ) : new Date(),
 			b = x.begindate && this._ps( x.begindate ), e = x.enddate && this._ps( x.enddate );
 		this.face = x.face || 'date';
@@ -6463,11 +6463,11 @@ Calendar = define.widget( 'Calendar', {
 		this.nowValue = this._fm( new Date() );
 	},
 	Helper: {
-		// @a -> commander, b -> format, c -> date, d -> focusdate, e -> begindate, f -> enddate, g -> complete
+		// @a -> commander, b -> format, c -> date, d -> focusDate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'Calendar', face: ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
-					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padrow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
+					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padRow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
 			return o.exec( { type: 'Dialog', ownproperty: T, snap: { target: a.isFormWidget ? a.$( 'f' ) : a, indent: 1 }, cls: 'w-calendar-dialog w-f-dialog f-shadow-snap', width: -1, height: -1, widthMinus: 2, autoHide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
@@ -6707,7 +6707,7 @@ Calendar = define.widget( 'Calendar', {
 			return this.x.callback ? '<div class=w-calendar-time>' + (this.x.timebtn ? '<div class=_time onclick=' + evw + '.popTime(this)>' + Loc.calendar.picktime + '</div>' : '') + '<div class=_ok onclick=' + evw + '.backfill(this)>' + Loc.confirm + '</div></div>' : '';
 		},
 		html_date: function() {
-			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
+			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusDate ? this.x.focusDate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.getItemMap(),
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.today + '</div></div>' +
@@ -6719,7 +6719,7 @@ Calendar = define.widget( 'Calendar', {
 				d.setDate( d.getDate() + g );
 			if ( b.getDay() > 0 )
 				b.setDate( 1 - b.getDay() );
-			if ( this.x.padrow ) {
+			if ( this.x.padRow ) {
 				g = 1 + (d.getTime() - b.getTime()) / $.DATE_DAY;
 				g < 42 && d.setDate( d.getDate() + 42 - g );
 			}
@@ -6734,7 +6734,7 @@ Calendar = define.widget( 'Calendar', {
 		},
 		html_week: function() {
 			var a = this.date, w = $.dateWeek( a, this.x.cg, this.x.start ), y = w[ 0 ], n = this.x.begindate, m = this.x.enddate, t = this._fm( new Date() ),
-				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusdate && this._fm( this.x.focusdate ), o = this.getItemMap(),
+				b = $.dateWeek( new Date( y, 11, 31 ), this.x.cg, this.x.start ), e = [], f = this.x.focusDate && this._fm( this.x.focusDate ), o = this.getItemMap(),
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y )  + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.weeknow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			this._year = y;
@@ -6751,7 +6751,7 @@ Calendar = define.widget( 'Calendar', {
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		},
 		html_month: function() {
-			var a = this.date, e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )), y = a.getFullYear(),
+			var a = this.date, e = [], f = this.x.focusDate ? this.x.focusDate.slice( 0, 7 ) : (this.x.format && this._fm( a )), y = a.getFullYear(),
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.getItemMap(),
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
@@ -6763,7 +6763,7 @@ Calendar = define.widget( 'Calendar', {
 			return s + e.join( '' ) + '</tbody></table></div>' + this.html_ok();
 		},
 		html_year: function() {
-			var a = this.date, e = [], f = _number( this.x.focusdate ? this.x.focusdate.slice( 0, 7 ) : (this.x.format && this._fm( a )) ), y = a.getFullYear() - ( a.getFullYear() % 10 ) - 1,
+			var a = this.date, e = [], f = _number( this.x.focusDate ? this.x.focusDate.slice( 0, 7 ) : (this.x.format && this._fm( a )) ), y = a.getFullYear() - ( a.getFullYear() % 10 ) - 1,
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.getItemMap(),
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, (y + 1) + ' - ' + (y + 10) ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 				'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.yearnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
