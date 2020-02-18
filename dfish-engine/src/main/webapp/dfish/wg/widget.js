@@ -6467,7 +6467,7 @@ Calendar = define.widget( 'Calendar', {
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'Calendar', face: ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
-					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padRow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
+					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, fillBlank: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
 			return o.exec( { type: 'Dialog', ownproperty: T, snap: { target: a.isFormWidget ? a.$( 'f' ) : a, indent: 1 }, cls: 'w-calendar-dialog w-f-dialog f-shadow-snap', width: -1, height: -1, widthMinus: 2, autoHide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
@@ -6719,7 +6719,7 @@ Calendar = define.widget( 'Calendar', {
 				d.setDate( d.getDate() + g );
 			if ( b.getDay() > 0 )
 				b.setDate( 1 - b.getDay() );
-			if ( this.x.padRow ) {
+			if ( this.x.fillBlank ) {
 				g = 1 + (d.getTime() - b.getTime()) / $.DATE_DAY;
 				g < 42 && d.setDate( d.getDate() + 42 - g );
 			}

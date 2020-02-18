@@ -2729,7 +2729,7 @@ define( {
       { name: 'focusDate', type: 'String', optional: true, remark: '高亮显示的某一日期。' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
       { name: 'start', type: 'Number', optional: true, remark: '一周的第一天是星期几。可选值从1到7。仅当mode为week时本参数有效。' },
-      { name: 'padRow', type: 'Boolean', optional: true, remark: '设置为true，当日历不满6行时填补一行空白行。' },
+      { name: 'fillBlank', type: 'Boolean', optional: true, remark: '设置为true，填补空白的日期。当日历不满6行时填补空白行。' },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。' }
     ],
     Methods: [
