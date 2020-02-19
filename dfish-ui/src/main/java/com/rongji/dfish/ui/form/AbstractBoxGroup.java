@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.AbstractPubNodeContainer;
 import com.rongji.dfish.ui.Directional;
 import com.rongji.dfish.ui.Node;
@@ -76,7 +77,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
                     node = newPub();
                     Option option = (Option) item;
                     node.setValue(option.getValue());
-                    node.setText(option.getText());
+                    node.setText(Utils.isEmpty(option.getText()) ? String.valueOf(option.getValue()) : option.getText());
                     node.setName(getName());
                     node.setChecked(option.getChecked());
                 } else {

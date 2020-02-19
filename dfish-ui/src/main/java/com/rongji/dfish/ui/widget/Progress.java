@@ -277,6 +277,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item> 
         private String text;
         private Boolean escape;
         private String format;
+        private String range;
 
         public Item(String id) {
             setId(id);
@@ -364,6 +365,26 @@ public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item> 
         @Override
         public Item setFormat(String format) {
             this.format = format;
+            return this;
+        }
+
+        /**
+         * 划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。
+         * 例如设置 range: "60,100"，那么进度在 (>=60 && <100) 范围内会存在样式 "z-60"，进度在 100 时会存在样式 "z-100"。
+         * @return String
+         */
+        public String getRange() {
+            return range;
+        }
+
+        /**
+         * 划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。
+         * 例如设置 range: "60,100"，那么进度在 (>=60 && <100) 范围内会存在样式 "z-60"，进度在 100 时会存在样式 "z-100"。
+         * @param range String
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public Item setRange(String range) {
+            this.range = range;
             return this;
         }
     }

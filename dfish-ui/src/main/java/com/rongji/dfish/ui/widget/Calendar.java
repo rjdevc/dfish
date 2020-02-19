@@ -42,7 +42,7 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item> 
     public static final String FACE_YEAR = "year";
 
     private String face = FACE_DATE;
-    private Map<String, Item> body;
+//    private Map<String, Item> body;
     private String date;
     private String focusDate;
     private String src;

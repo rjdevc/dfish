@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.layout;
+package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;

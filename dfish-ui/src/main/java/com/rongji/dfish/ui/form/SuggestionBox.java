@@ -199,6 +199,10 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
         private Boolean fullPath;
         private String target;
 
+        public Bind(SuggestionBox.Field field) {
+            this.field = field;
+        }
+
         public Bind(SuggestionBox.Field field, String target) {
             this.field = field;
             this.target = target;
