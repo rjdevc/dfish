@@ -150,7 +150,7 @@ define( {
               debug: true, // 开启调试模式
               lang: 'zh_CN',  // 语言包
               alias: { //自定义模块
-              	'Ueditor': 'pl/ueditor1_4_3/ueditor.dfish.js', //百度编辑器
+              	'Ueditor': 'pl/ueditor1_4_3/ueditor.dfish.js' //百度编辑器
               },
               ajaxError: function( req, url ) { // 处理ajax错误信息的方法
               	alert( req.status );
@@ -1457,8 +1457,6 @@ define( {
       ] },
       { name: 'droppable([option])', remark: '设置所有按钮可放置。', param: [
         { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
-          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true },
           { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
           	{ name: 'event', type: 'Event', remark: '放置事件。' },
           	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
@@ -1466,7 +1464,17 @@ define( {
           		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
           		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
           	] }
-          ] }
+          ] },
+          { name: 'isDisabled', type: 'Function(event, ui)', remark: '当函数返回true时，当前放置节点为禁用状态。', optional: true, param: [
+          	{ name: 'event', type: 'Event', remark: '拖动事件。' },
+          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
+          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
+          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
+          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append"。' }
+          	] }
+          ] },
+          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
+          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true }
        ] }
       ], example: [
           function() {
@@ -1673,15 +1681,13 @@ define( {
       { name: 'tFoot', type: 'TFoot', remark: '表头。' }
     ],
     Methods: [
-      { name: 'draggable([option])', remark: '设置所有行可拖拽。', param: [
+      { name: 'draggable([option])', remark: '设置所有按钮可拖拽。', param: [
         { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
           { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true }
        ] }
       ] },
-      { name: 'droppable([option])', remark: '设置所有行可放置。', param: [
+      { name: 'droppable([option])', remark: '设置所有按钮可放置。', param: [
         { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
-          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true },
           { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
           	{ name: 'event', type: 'Event', remark: '放置事件。' },
           	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
@@ -1689,7 +1695,17 @@ define( {
           		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
           		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
           	] }
-          ] }
+          ] },
+          { name: 'isDisabled', type: 'Function(event, ui)', remark: '当函数返回true时，当前放置节点为禁用状态。', optional: true, param: [
+          	{ name: 'event', type: 'Event', remark: '拖动事件。' },
+          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
+          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
+          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
+          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append"。' }
+          	] }
+          ] },
+          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
+          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true }
        ] }
       ], example: [
           function() {
@@ -2277,15 +2293,13 @@ define( {
       { name: 'template', type: 'String', remark: '模板地址。' }
     ],
     Methods: [
-      { name: 'draggable([option])', remark: '设置所有leaf可拖拽。', param: [
+      { name: 'draggable([option])', remark: '设置所有按钮可拖拽。', param: [
         { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
           { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true }
        ] }
       ] },
-      { name: 'droppable([option])', remark: '设置所有leaf可放置。', param: [
+      { name: 'droppable([option])', remark: '设置所有按钮可放置。', param: [
         { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
-          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true },
           { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
           	{ name: 'event', type: 'Event', remark: '放置事件。' },
           	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
@@ -2293,7 +2307,17 @@ define( {
           		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
           		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
           	] }
-          ] }
+          ] },
+          { name: 'isDisabled', type: 'Function(event, ui)', remark: '当函数返回true时，当前放置节点为禁用状态。', optional: true, param: [
+          	{ name: 'event', type: 'Event', remark: '拖动事件。' },
+          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
+          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
+          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
+          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append"。' }
+          	] }
+          ] },
+          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
+          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true }
        ] }
       ], example: [
           function() {
@@ -2575,7 +2599,7 @@ define( {
               ] }
           }
       ] }
-    ],
+    ]
   },
   "TimelineItem": {
   	remark: '时间轴条目。',
@@ -3263,8 +3287,7 @@ define( {
             }
           }
       ] }
-    ],
-    
+    ]
   },
   "JigsawAuth": {
   	remark: '拼图的验证对象。',
@@ -3289,8 +3312,7 @@ define( {
             }
           }
       ] }
-    ],
-    
+    ]
   },
   "Spinner": {
   	remark: '数字输入框。',
