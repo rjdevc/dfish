@@ -18,7 +18,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.0.41-SNAPSHOT</version>
+        <version>5.0.0.42-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-misc</artifactId>

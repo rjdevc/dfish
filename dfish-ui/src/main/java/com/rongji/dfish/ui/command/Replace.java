@@ -57,9 +57,9 @@ public class Replace extends NodeControlCommand<Replace>
         if (target == null && node.getId() != null) {
             target = node.getId();
         }
-        if (node instanceof Command<?>) {
-            super.setSection(SECTION_COMMAND);
-        }
+//        if (node instanceof Command<?>) {
+//            super.setSection(SECTION_COMMAND);
+//        }
         return this;
     }
     @Override
