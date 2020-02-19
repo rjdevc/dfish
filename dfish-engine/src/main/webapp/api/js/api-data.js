@@ -3266,6 +3266,32 @@ define( {
     ],
     
   },
+  "JigsawAuth": {
+  	remark: '拼图的验证对象。',
+    Config: [
+      { name: 'src', type: 'String', remark: '验证地址。' },
+      { name: 'result', type: 'Object', remark: '设置分隔格式。', param: [
+        { name: 'success', type: 'Boolean', remark: '验证是否成功。' },
+        { name: 'msg', type: 'String', remark: '验证结果的描述信息。' }
+      ] }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'JigsawAuth',
+              src: 'auth.sp',
+              result: {
+      	        success: true,
+                msg: '验证通过'
+              }
+            }
+          }
+      ] }
+    ],
+    
+  },
   "Spinner": {
   	remark: '数字输入框。',
   	extend: 'Text',
