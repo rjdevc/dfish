@@ -1451,7 +1451,7 @@ $.draggable = function( a, b ) {
 						e.runType = 'dnd_over';
 						p.triggerListener( e );
 						if ( _drop_cache[ p.id ].cst.sort ) {
-							var c = $.bcr( p.$() ), f = p.type == 'tr' ? '<tr id=' + d + ' class=f-dnd-helper><td id=' + g + ' class=_g colspan=' + p.rootNode.colgrps[ 0 ].length + '></tr>' : '<div id=' + d + ' class=f-dnd-helper><div id=' + g + ' class=_g></div></div>';
+							var c = $.bcr( p.$() ), f = p.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-helper><td id=' + g + ' class=_g colspan=' + p.rootNode.colgrps[ 0 ].length + '></tr>' : '<div id=' + d + ' class=f-dnd-helper><div id=' + g + ' class=_g></div></div>';
 							if ( c.top < y && y - c.top <= 5 ) $.query( p.$() )[ sn = 'before' ]( $( d ) || f );
 							else if ( c.bottom > y && c.bottom - y <= 5 ) $.query( p.$() )[ sn = 'after' ]( $( d ) || f );
 							else if ( ! $( g ) || $( g ) != m )
@@ -1459,6 +1459,7 @@ $.draggable = function( a, b ) {
 							if ( $( d ) ) {
 								$( g ).dnd_wid = p.id;
 								$( d ).style.display = sn ? '' : 'none';
+								$( d ).style.left = p.padSort ? p.padSort() + 'px' : '';
 							}
 							p.trigger( 'dnd_sort', h );
 						}

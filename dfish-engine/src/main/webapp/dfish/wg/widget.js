@@ -136,7 +136,7 @@ _vmByElem = function ( o ) {
 	return _docView;
 },
 _url_format = function( a ) {
-	return a.indexOf( 'javascript:' ) === 0 ? this.formatJS( a ) : this.formatStr( a, N, T );
+	return a == N ? '' : (a = '' + a).indexOf( 'javascript:' ) === 0 ? this.formatJS( a ) : this.formatStr( a, N, T );
 },
 // 解析 html 中的 <d:wg> 标签 /@a -> html
 _parseHTML = function( a ) {
@@ -3626,8 +3626,7 @@ Button = define.widget( 'Button', {
 				a += this.html_icon();
 			if ( t || this.x.format )
 				a += this.html_text();
-			a += '</div>';
-			a += this.html_append() + (ie7 && !w ? '</table>' : '') + this.html_badge() + '</' + g + '>';
+			a += '</div>' + this.html_append() + (ie7 && !w ? '</table>' : '') + this.html_badge() + '</' + g + '>';
 			return this.html_before() + a + this.html_after();
 		}
 	}
@@ -7207,6 +7206,7 @@ JigsawAuth = define.widget( 'JigsawAuth', {
 		load: function( fn ) {
 			this.loadData( N, function() {
 				var x = this.getResult(), p = this.parentNode;
+				$.j(x);
 				p.success( x && x.success );
 				p.valid();
 				if ( p.isSuccess() ) {
@@ -7789,7 +7789,6 @@ ComboBox = define.widget( 'ComboBox', {
 			keyUp: {
 				occupy: T,
 				method: function( e ) {
-					//clearTimeout( this._sug_timer );
 					if ( this.usa() && ! this._imeMode ) {
 						var k = e.keyCode, t, m;
 						if ( k === 13 || k === 38 || k === 40 ) { // 13:enter, 38:up, 40:down
@@ -7872,7 +7871,7 @@ ComboBox = define.widget( 'ComboBox', {
 			this.domready && this.init();
 		},
 		init: function( v ) {
-			if ( ! this.$() || ! this.x.bind )
+			if ( ! this.$() )
 				return;
 			this._initOptions( this._val() );
 			this.queryText( '' );
@@ -7890,7 +7889,7 @@ ComboBox = define.widget( 'ComboBox', {
 			if ( v && (v = v.split( ',' )) ) {
 				for ( var i = 0, t = t && t.split( ',' ), o, s = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
-						if ( o = this.store().getParamByValue( v[ i ] ) )
+						if ( o = this.param( v[ i ], T ) )
 							this.append( o );
 						else if ( this.x.strict === F )
 							this.append( { text: v[ i ], error: T } );
@@ -7946,8 +7945,13 @@ ComboBox = define.widget( 'ComboBox', {
 				return c && (b.combo = new _comboHooks[ c.type ]( c, this.x.bind ));
 			}
 		},
+		// @a -> text|value|Leaf|TR, b -> isValue?
+		param: function( a, b ) {
+			var s = this.store();
+			return s && s.getParam( a, b );
+		},
 		checkPlaceholder: function( v ) {
-			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? (this._val() || this.queryText()) : v) );
+			this.$( 'ph' ) && $.classAdd( this.$( 'ph' ), 'f-none', !!(arguments.length === 0 ? (this.length || this.queryText()) : v) );
 		},
 		// 获取当前的选项对话框
 		pop: function() {
@@ -7976,9 +7980,8 @@ ComboBox = define.widget( 'ComboBox', {
 				d && d.vis && self.focusNode && self.focusNode.tabFocus( F );
 			} ).addEvent( 'load', function() {
 				this.axis();
-				self.store( this ).showFocus();
-			} ).addEvent( 'show', function() {
-				//self.store( this ).showFocus();
+				var s = self.store( this );
+				s && s.showFocus();
 			} );
 		},
 		closePop: function() {
@@ -8005,9 +8008,9 @@ ComboBox = define.widget( 'ComboBox', {
 			if ( t.value ) {
 				this._initOptions( t.value );
 			} else if ( (t = typeof t === _STR ? t : t.text) && (t = t.split( ',' )).length ) {
-				for ( var i = 0, c = this.store(), d, o, s = []; i < t.length; i ++ ) {
+				for ( var i = 0, d, o, s = []; i < t.length; i ++ ) {
 					if ( t[ i ] ) {
-						if ( d = (a || c.getParam( t[ i ] )) )
+						if ( d = (a || this.param( t[ i ] )) )
 							! $.idsAny( v, d.value ) && ( s.push( this.add( d, k ) ), $.idsAdd( v, d.value ) );
 						else
 							s.push( this.add( { text: t[ i ], error: T }, k ) );
@@ -8023,7 +8026,7 @@ ComboBox = define.widget( 'ComboBox', {
 		},
 		// 完成一个尚未匹配成功的项 /@o -> ComboBoxOption, a -> param data?
 		fixOpt: function( o, a ) {
-			var d = a || this.store().getParam( o.x.text );
+			var d = a || this.param( o.x.text );
 			if ( d && o.x.error ) {
 				$.idsAny( this._val(), d.value ) ? o.remove() : o.replace( d );
 				this.save();
@@ -8031,14 +8034,16 @@ ComboBox = define.widget( 'ComboBox', {
 		},
 		//@public(用于 combo 窗口的点击事件) 完成正在输入的文本，或是没有匹配成功的项 / @a -> tr|leaf|xml
 		complete: function( a ) {
-			!$.isArray( a ) && (a = [ a ]);
-			for ( var i = 0; i < a.length; i ++ ) {
-				this.store().merge( a[ i ] );
-				var d = this.store().getParam( a[ i ] ), f = this.focusNode;
-				if ( d )
-					f ? this.fixOpt( f, d ) : (this.queryText( '' ), this.addOpt( d.text, d ));
+			var r = this.store();
+			if ( r ) {
+				!$.isArray( a ) && (a = [ a ]);
+				for ( var i = 0, d, f; i < a.length; i ++ ) {
+					r.merge( a[ i ] );
+					if ( d = r.getParam( a[ i ] ) )
+						(f = this.focusNode) ? this.fixOpt( f, d ) : (this.queryText( '' ), this.addOpt( d.text, d ));
+				}
+				this.focus();
 			}
-			this.focus();
 		},
 		// @t -> query text, s -> milliseconds?
 		suggest: function( a, s ) {
@@ -8138,7 +8143,7 @@ ComboBox = define.widget( 'ComboBox', {
 			s = s.join( ',' );
 			this._val( s );
 			this.$().title = this.text();
-			this.checkPlaceholder( s || t );
+			this.checkPlaceholder( this.length || t );
 			if ( this.x.on && this.x.on.change && v != this._val() )
 				this.triggerHandler( 'change' );
 		},
@@ -8414,7 +8419,7 @@ LinkBox = define.widget( 'LinkBox', {
 			}
 		},
 		init: function() {
-			if ( ! this.$() || ! this.x.bind )
+			if ( ! this.$() )
 				return;
 			this._initOptions( this._val() );
 			this.save();
@@ -8430,7 +8435,7 @@ LinkBox = define.widget( 'LinkBox', {
 			if ( v && (v = v.split( ',' )) ) {
 				for ( var i = 0, t = t && t.split( p ), o, b = [], l = v.length; i < l; i ++ ) {
 					if ( v[ i ] ) {
-						if ( o = this.store().getParamByValue( v[ i ] ) )
+						if ( o = this.param( v[ i ], T ) )
 							b.push( '<u class=_o data-value="' + v[ i ] + '">' + $.strEscape( o.text ) + '</u>' );
 						else if ( ! this.x.strict )
 							b.push( '<u>' + $.strEscape( (t && t[ i ]) || v[ i ] ) + '</u>' );
@@ -8551,7 +8556,7 @@ LinkBox = define.widget( 'LinkBox', {
 			if ( this.x.multiple && t.length > 1 && t.indexOf( p ) > -1 ) {
 				for ( var i = 0, d = [], f = t.length - $.rngCursorOffset(), g, h, t = t.split( p ), m = []; i < t.length; i ++ ) {
 					if ( h = $.strTrim( t[ i ] ) ) {
-						g = this.store().getParam( h );
+						g = this.param( h );
 						d.push( '<u' + (g ? ' class=_o data-value="' + g.value + '"' : '') + '>' + h + '</u>' );
 						g ? m.push( 'u[data-value="' + g.value + '"]' ) : n.push( h );
 					} else
@@ -8576,7 +8581,7 @@ LinkBox = define.widget( 'LinkBox', {
 			} else {
 				this.closePop();
 				if ( t ) {
-					if ( $.classAny( c, '_o' ) && ! this.store().getParam( t ) ) {
+					if ( $.classAny( c, '_o' ) && ! this.param( t ) ) {
 						$.classRemove( c, '_o' );
 						c.removeAttribute( 'data-value' );
 						g = T;
@@ -8615,7 +8620,7 @@ LinkBox = define.widget( 'LinkBox', {
 		fixOpt: function() {
 			var self = this;
 			Q( 'u:not([data-value]):not(:empty)', this.$t() ).each( function() {
-				var g = self.store().getParam( this.innerText );
+				var g = self.param( this.innerText );
 				if ( g ) {
 					$.classAdd( this, '_o' );
 					this.setAttribute( 'data-value', g.value );
@@ -8653,9 +8658,12 @@ LinkBox = define.widget( 'LinkBox', {
 		},
 		//@public(用于 combo 窗口的点击事件) 完成正在输入的文本，或是没有匹配成功的项  / @a -> tr|leaf|xml
 		complete: function( a ) {
-			this.store().merge( a );
+			var s = this.store();
+			if ( ! s )
+				return;
+			s.merge( a );
 			this.focus();
-			var d = this.store().getParam( a ), u = this._currOpt || $.rngElement(), p = this.x.separator || ',', t = this.text();
+			var d = this.param( a ), u = this._currOpt || $.rngElement(), p = this.x.separator || ',', t = this.text();
 			if ( d && u ) { //&& ! $.idsAny( t, d.text, p ) ) {
 				if ( u.tagName === 'U' ) {
 					this._rng_text( u, 0, d.text );
@@ -8821,6 +8829,8 @@ OnlineBox = define.widget( 'OnlineBox', {
 				return this.$t().selectionStart;
 		},
 		complete: function( a ) {
+			if ( ! this.store() )
+				return;
 			var d = this.store( this.pop() ).getParam( a );
 			this.cursorText( d.text || d.value );
 			this.closePop();
@@ -8878,7 +8888,7 @@ PickBox = define.widget( 'PickBox', {
 				var self = this;
 				this.text( Loc.loading );
 				(this.dropper = this.createPop( this.x.drop )).preload( function() {
-					var r = self.store().getParamByValue( v );
+					var r = self.param( v, T );
 					r ? self.val( r.value, r.text ) : self.val( '', '' );
 					self.loading = F;
 					self.removeClass( 'z-loading' );
@@ -8908,6 +8918,8 @@ PickBox = define.widget( 'PickBox', {
 			this.$() && (this.$t().innerText = t);
 		},
 		complete: function( a ) {
+			if ( ! this.store() )
+				return;
 			var d = this.store( this.pop() ).getParam( a );
 			this.val( d.value, d.text );
 			a.focus && a.focus( T );
@@ -8999,7 +9011,7 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 			if ( c.dropper == b ) {
 				var v = c.val();
 				if ( v ) {
-					var d = this.getXML( $.strFrom( v, '/', T ) || v, 'v' ),
+					var d = this.getXML( $.strFrom( v, '/', T ) || v, T ),
 						e = d && _all[ d.getAttribute( 'i' ) ];
 					e && e != this.cab.getFocus() && e.focus();
 				}
@@ -9040,7 +9052,7 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		getFocus: function() {
 			return this.cab.getFocus();
 		},
-		// 根据文本返回一个ComboBoxOption参数 /@a -> text|xml|leaf
+		// 根据文本返回一个ComboBoxOption参数 /@a -> text|xml|leaf, b -> is value?
 		getParam: function( a, b ) {
 			var d = a.nodeType === 1 ? a : this.getXML( a, b );
 			if ( d ) {
@@ -9055,14 +9067,10 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 				return { value: v, text: t, remark: d.getAttribute( 'r' ), forbid: d.getAttribute( 'x' ) === '1', data: g && g.x.data };
 			}
 		},
-		// 根据文本返回一个ComboBoxOption参数 /@a -> text
-		getParamByValue: function( a ) {
-			return this.getParam( a, 'v' );
-		},
-		// /@a -> text|value|leaf, b -> attrname
+		// /@a -> text|value|leaf, b -> attr name
 		getXML: function( a, b ) {
 			typeof a === _STR && this.bind.fullPath && (a = $.strFrom( a, '/', T ) || a);
-			return $.xmlQuery( (a.isWidget ? this.getCombo( a ) : this).xml, './/d[' + ( typeof a === _STR ? '@' + (b || 't') + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id ) + '"]' );
+			return $.xmlQuery( (a.isWidget ? this.getCombo( a ) : this).xml, './/d[' + (typeof a === _STR ? '@' + (b ? 'v' : 't') + '="' + $.strTrim( a ).replace(/\"/g,'\\x34') : '@i="' + a.id) + '"]' );
 		},
 		getCombo: function( a ) {
 			return a.ownerView.combo || (a.ownerView.combo = new _comboHooks[ this.type ]( a.rootNode, this.bind ));
@@ -9135,6 +9143,10 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		_pad_level: 14,
 		padLeft: function() {
 			return (this.x.line ? 0 : this.level * this._pad_level) + this._pad_left;
+		},
+		// 给 dnd sort 用的
+		padSort: function() {
+			return this.level * this._pad_level + this._pad_left + 14;
 		},
 		// @implement
 		insertHTML: function( a, b ) {
