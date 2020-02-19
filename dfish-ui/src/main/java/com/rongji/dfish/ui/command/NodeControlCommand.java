@@ -1,11 +1,6 @@
 package com.rongji.dfish.ui.command;
 
 
-import com.rongji.dfish.ui.Node;
-import com.rongji.dfish.ui.Widget;
-
-import java.util.List;
-
 /**
  * WidgetControlCommand 是 用于控制视图对象动作的命令
  * 一般分为视图对象的增加，删除，修改，
@@ -21,16 +16,6 @@ public abstract class NodeControlCommand<T extends NodeControlCommand<T>> extend
     private static final long serialVersionUID = 999627992841928211L;
 
     protected String target;
-    protected String section;
-
-    /**
-     * 目标类型-视图组件
-     */
-    public static final String SECTION_WIDGET = "widget";
-    /**
-     * 目标类型-命令
-     */
-    public static final String SECTION_COMMAND = "cmd";
 
     /**
      * widget ID。
@@ -51,16 +36,5 @@ public abstract class NodeControlCommand<T extends NodeControlCommand<T>> extend
         this.target = target;
         return (T) this;
     }
-
-    public String getSection() {
-        return section;
-    }
-
-    public T setSection(String section) {
-        this.section = section;
-        return (T) this;
-    }
-
-
 
 }
