@@ -27,8 +27,8 @@ public class TableTest extends DFishUITestCase {
 	public void trSuit(){
 		Table gl=new Table("mygrid");
 		gl.addColumn(Table.Column.text("C1","*"));
-		gl.add(new Table.TR().setData("C1","第一列内容"));
-		gl.add(new Table.TR().setCls("tr-odd").setData("C1","第二行第一列内容"));
+		gl.add(new Table.TR().putData("C1","第一列内容"));
+		gl.add(new Table.TR().setCls("tr-odd").putData("C1","第二行第一列内容"));
 		output(gl);
 	}
 	
@@ -78,19 +78,19 @@ public class TableTest extends DFishUITestCase {
 
 		Table.TR tHead=new Table.TR();
 		props.getTHead().add(tHead);
-		tHead.setData("C1","属性名");
-		tHead.setData("C3","类型");
-		tHead.setData("C4","必填");
-		tHead.setData("C5","默认值");
-		tHead.setData("C6","提示信息");
+		tHead.putData("C1","属性名");
+		tHead.putData("C3","类型");
+		tHead.putData("C4","必填");
+		tHead.putData("C5","默认值");
+		tHead.putData("C6","提示信息");
 
 		Table.TR tBodyRow=new Table.TR();
 		props.getTBody().add(tBodyRow);
-		tBodyRow.setData("@C1","$item.name");
-		tBodyRow.setData("@C3","$item.type");
-		tBodyRow.setData("@C4","$item.required");
-		tBodyRow.setData("@C5","$item.defaultValue");
-		tBodyRow.setData("@C6","$item.tip");
+		tBodyRow.putData("@C1","$item.name");
+		tBodyRow.putData("@C3","$item.type");
+		tBodyRow.putData("@C4","$item.required");
+		tBodyRow.putData("@C5","$item.defaultValue");
+		tBodyRow.putData("@C6","$item.tip");
         System.out.print(props.formatString());
 	}
 }

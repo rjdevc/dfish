@@ -214,7 +214,7 @@ public class TableFactory {
                     } else {
                         columnData = column.getLabel();
                     }
-                    headRow.setData(column.getField(), columnData);
+                    headRow.putData(column.getField(), columnData);
                 }
             }
 
@@ -228,7 +228,7 @@ public class TableFactory {
                         continue;
                     }
                     for (Column gc : columns) {
-                        dataRow.setData(gc.getField(), getColumnValue(data, gc));
+                        dataRow.putData(gc.getField(), getColumnValue(data, gc));
                     }
 //                    index++;
                 }
@@ -272,7 +272,7 @@ public class TableFactory {
                 if (hasTableHead) {
                     Table.TR headRow = new Table.TR();
                     prototype.getTHead().add(headRow);
-                    headRow.setData(column.getField(), column.getLabel());
+                    headRow.putData(column.getField(), column.getLabel());
                 }
                 if (column.isVisible()) {
                     if (firstColumnField == null) {
@@ -291,7 +291,7 @@ public class TableFactory {
                 Table.TR tr = new Table.TR();
                 prototype.add(tr);
                 //FIXME 这里应该不是0而是第0列的propName
-                tr.setData(firstColumnField, new Table.TD().setColSpan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setExpanded(true)));
+                tr.putData(firstColumnField, new Table.TD().setColSpan(visableColumnCount).setNode(new Toggle().setText(entry.getKey()).setHr(true).setExpanded(true)));
 
                 for (Object data : entry.getValue()) {
                     Table.TR dataRow = new Table.TR();
@@ -300,7 +300,7 @@ public class TableFactory {
                         continue;
                     }
                     for (Column gc : columns) {
-                        dataRow.setData(gc.getField(), getColumnValue(data, gc));
+                        dataRow.putData(gc.getField(), getColumnValue(data, gc));
                     }
                 }
             }

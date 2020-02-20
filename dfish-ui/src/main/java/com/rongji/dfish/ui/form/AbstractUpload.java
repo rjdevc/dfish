@@ -329,7 +329,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
      * @return 本身，这样可以继续设置其他属性
      */
     public T setScheme(String scheme) {
-        this.setData("scheme", scheme);
+        this.putData("scheme", scheme);
         return (T) this;
     }
 

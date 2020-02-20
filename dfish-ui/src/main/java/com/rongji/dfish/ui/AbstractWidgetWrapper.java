@@ -180,8 +180,8 @@ public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P
 	}
 	
     @Override
-    public T setData(String key, Object value) {
-    	prototype.setData(key, value);
+    public T putData(String key, Object value) {
+    	prototype.putData(key, value);
         return (T) this;
     }
     

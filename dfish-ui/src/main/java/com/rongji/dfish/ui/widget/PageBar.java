@@ -459,9 +459,9 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
         }
         this.setSumPage(pageCount);
 
-        this.setData("pagesize", page.getPageSize());
-        this.setData("rowcount", page.getRowCount());
-        this.setData("currentcount", page.getCurrentCount());
+        this.putData("pageSize", page.getPageSize());
+        this.putData("rowCount", page.getRowCount());
+        this.putData("currentCount", page.getCurrentCount());
         return this;
     }
 

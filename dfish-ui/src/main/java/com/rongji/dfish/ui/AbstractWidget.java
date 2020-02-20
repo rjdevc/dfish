@@ -174,41 +174,41 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return (T) this;
     }
 
-    @Override
-    public Object getData(String key) {
-        if (key == null || "".equals(key)) {
-            return null;
-        }
-        if (data == null) {
-            return null;
-        }
-        return data.get(key);
-    }
-
-    @Override
-    public Object removeData(String key) {
-        if (key == null || "".equals(key)) {
-            return null;
-        }
-        if (data == null) {
-            return null;
-        }
-        return data.remove(key);
-    }
-
-    @Override
-    public T setData(String key, Object value) {
-        if (data == null) {
-            data = new LinkedHashMap<>();
-        }
-        data.put(key, value);
-        return (T) this;
-    }
-
-    @Override
-    public Map<String, Object> getData() {
-        return data;
-    }
+//    @Override
+//    public Object getData(String key) {
+//        if (key == null || "".equals(key)) {
+//            return null;
+//        }
+//        if (data == null) {
+//            return null;
+//        }
+//        return data.get(key);
+//    }
+//
+//    @Override
+//    public Object removeData(String key) {
+//        if (key == null || "".equals(key)) {
+//            return null;
+//        }
+//        if (data == null) {
+//            return null;
+//        }
+//        return data.remove(key);
+//    }
+//
+//    @Override
+//    public T setData(String key, Object value) {
+//        if (data == null) {
+//            data = new LinkedHashMap<>();
+//        }
+//        data.put(key, value);
+//        return (T) this;
+//    }
+//
+//    @Override
+//    public Map<String, Object> getData() {
+//        return data;
+//    }
 
     /**
      * 部件在加入布局的时候一般会有大小限制

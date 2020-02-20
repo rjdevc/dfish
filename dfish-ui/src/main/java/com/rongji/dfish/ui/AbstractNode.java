@@ -66,7 +66,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
     }
 
     @Override
-    public T setData(String key, Object value) {
+    public T putData(String key, Object value) {
         if (data == null) {
             data = new LinkedHashMap<String, Object>();
         }

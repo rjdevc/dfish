@@ -1609,7 +1609,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                     cell.setColSpan(colspan);
                 }
 
-                (nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
+                (nodes.get(fromRow)).putData(columnMap.get(fromColumn), cell);
             } else if (o instanceof Widget) {
                 //如果entry 是 Widget 那么将会包装在一个TableCell里面
                 if (rowspan > 1 || colspan > 1) {
@@ -1622,9 +1622,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                         cell.setColSpan(colspan);
                     }
 
-                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), cell);
+                    (nodes.get(fromRow)).putData(columnMap.get(fromColumn), cell);
                 } else {
-                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
+                    (nodes.get(fromRow)).putData(columnMap.get(fromColumn), o);
                 }
             } else {
                 if (o != null && (rowspan > 1 || colspan > 1)) {
@@ -1636,9 +1636,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                     if (colspan > 1) {
                         td.setColSpan(colspan);
                     }
-                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), td);
+                    (nodes.get(fromRow)).putData(columnMap.get(fromColumn), td);
                 } else {
-                    (nodes.get(fromRow)).setData(columnMap.get(fromColumn), o);
+                    (nodes.get(fromRow)).putData(columnMap.get(fromColumn), o);
                 }
             }
         }
@@ -2219,7 +2219,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         }
 
         @Override
-        public T setData(String key, Object value) {
+        public T putData(String key, Object value) {
             if (value == null) {
                 return (T) this;
             }
