@@ -59,6 +59,9 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 
     public T setOptions(List<?> options) {
         nodes = parseNodes(options);
+        if(nodes==null){
+            nodes=new ArrayList<>();
+        }
         return (T) this;
     }
 
