@@ -3204,20 +3204,6 @@ ButtonBar = define.widget( 'ButtonBar', {
 		scaleWidth: function() {
 			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
 		},
-		/*scaleHeight: function() {
-			return (this.x.dir === 'v' ? _w_scale.height : _proto.scaleHeight).apply( this, arguments );
-		},*/
-		draggable: function( a ) {
-			for ( var i = 0, l = this.length; i < l; i ++ )
-				$.draggable( this[ i ], a );
-			return this;
-		},
-		droppable: function( a ) {
-			$.droppable( this, a );
-			for ( var i = 0, l = this.length; i < l; i ++ )
-				$.droppable( this[ i ], a );
-			return this;
-		},
 		// @a -> name
 		getFocus: function( a ) {
 			for ( var i = 0; i < this.length; i ++ )
@@ -3519,14 +3505,6 @@ Button = define.widget( 'Button', {
 		},
 		isLocked: function() {
 			return this._locked;
-		},
-		draggable: function( a ) {
-			$.draggable( this, a );
-			return this;
-		},
-		droppable: function( a ) {
-			$.draggable( this, a );
-			return this;
 		},
 		// 新增或更换图标。如果 a == '', 则删除图标  / @a -> image src
 		icon: function( a ) {
@@ -4418,7 +4396,7 @@ Dialog = define.widget( 'Dialog', {
 		},
 		draggable: function( a, b ) {
 			if ( (a || (a = this)) && (a = a.isWidget ? a.$() : a) ) {
-				Q( a )[ b === F ? 'off' : 'on' ]( 'mouseDown', DialogTitle.Listener.body.mouseDown.method );
+				Q( a )[ b === F ? 'off' : 'on' ]( 'mousedown', DialogTitle.Listener.body.mouseDown.method );
 			}
 		},
 		max: function() {
@@ -9410,20 +9388,6 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 			if ( u && ! this.parentNode.loading )
 				this.parentNode.expandTo( u, a, b );
 		},
-		draggable: function( a ) {
-			for ( var i = 0, b = this.descendants(), l = b.length; i < l; i ++ ) {
-				$.draggable( b[ i ], a );
-				b[ i ].getSrc() && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.draggable.call( this, a ) } );
-			}
-			return this;
-		},
-		droppable: function( a ) {
-			for ( var i = 0, b = this.descendants(), l = b.length; i < l; i ++ ) {
-				$.droppable( b[ i ], a );
-				b[ i ].getSrc() && ! b[ i ].loaded && b[ i ].addEvent( 'load', function() { Tree.prototype.droppable.call( this, a ) } );
-			}
-			return this;
-		},
 		// @implement
 		removeElem: function( a ) {
 			a == N && $.remove( this.$( 'c' ) );
@@ -10544,7 +10508,8 @@ ContentTableHead = define.widget( 'ContentTableHead', {
 								var d = c[ n ].x.fixedIndex;
 								r.colWidth( d, r.colWidth( d ) + e.pageX - x );
 							}
-						}, o );
+							o && $.remove( o );
+						} );
 					} );
 				}
 				// 排序
@@ -10893,18 +10858,6 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		append: function( a ) {
 			this._addRow( a );
-		},
-		draggable: function( a ) {
-			for ( var i = 0, b = this.getEchoRows(), l = b.length; i < l; i ++ ) {
-				$.draggable( b[ i ], a );
-			}
-			return this;
-		},
-		droppable: function( a ) {
-			for ( var i = 0, b = this.getEchoRows(), l = b.length; i < l; i ++ ) {
-				$.droppable( b[ i ], a );
-			}
-			return this;
 		},
 		// 获取平行的table /@a -> get root row?
 		getParallel: function( a ) {

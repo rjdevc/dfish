@@ -1423,49 +1423,58 @@ Drop = _createClass( {
 	Const: function( a, b ) {
 		this.wg  = a;
 		this.cst = b;
+		a.isDroppable = T;
 		_drop_cache[ a.id ] = this;
 	}
-} );
+} ),
+_dnd_selector = { Tree: '.w-leaf', Table: '.w-tr', ButtonBar: '.w-button', Tabs: '.w-tab' },
+_dnd_childtype = { Tree: 'Leaf', Table: 'TR', ButtonBar: 'Button', Tabs: 'Tab' };
 // @a -> widget, b -> option
 $.draggable = function( a, b ) {
 	if ( _drag_cache[ a.id ] )
 		return;
 	b = b || {};
 	new Drag( a, b );
-	$.query( a.$() ).on( 'mousedown', function( e ) {
-		var ix = e.pageX, iy = e.pageY, sn, t, h, p, q, d = '_dndhelper', g = d + ':g',
-			dp = function( c ) {
-				return c.dnd_wid ? $.all[ c.dnd_wid ] : ((c = $.widget( c )) && c.closest( function() { var d = _drop_cache[ this.id ]; return d && (!d.cst.scope || !b.scope || _idsAny( d.cst.scope, b.scope )); } ))
+	$.query( a.$() ).on( 'mousedown', _dnd_selector[ a.type ], function( downEvent ) {
+		var ix = downEvent.pageX, iy = downEvent.pageY, sn, u, h, p, q, c = $.widget( downEvent.currentTarget ), d = '_dndhelper', g = d + ':g',
+			dp = function( o ) {
+				o = $.widget( o );
+				return o.rootNode && isDrop.call( o.rootNode ) ? o.rootNode : o.closest( isDrop );
+			}, isDrop = function() {
+				var d = _drop_cache[ this.id ];
+				return d && (!d.cst.scope || !b.scope || _idsAny( d.cst.scope, b.scope ));
 			};
 		$.moveup( function( e ) {
-			var x = e.pageX, y = e.pageY, m = e.srcElement, n, o;
+			var x = e.pageX, y = e.pageY, m = e.srcElement, n = $.widget( m ), o;
 			// 鼠标按下并移动5像素后才能触发拖动，避免误操作
-			! t && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) && (t = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px;border:1px dashed #ddd;opacity:.6;z-index:2">' + (a.attr( 'text' ) || '&nbsp;') + '</div>' ));
-			if ( t ) {
-				t.style.left = (e.pageX + 7) + 'px';
-				t.style.top  = (e.pageY + 7) + 'px';
-				if ( (p = dp( m )) && (o = _drop_cache[ p.id ]) ) {
-					if ( p == a || a.contains( p ) ) {
-						_classAdd( p.$(), 'f-dnd-notallowed' );
+			! u && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) && (u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;border:1px dashed #ddd;opacity:.6;z-index:2">' + ($.widget( downEvent.target ).attr( 'text' ) || '&nbsp;') + '</div>' ));
+			if ( u && m != u ) {
+				u.style.left = (e.pageX + 7) + 'px';
+				u.style.top  = (e.pageY + 7) + 'px';
+				if ( (p = dp( n )) && (o = _drop_cache[ p.id ]) ) {
+					if ( n == c || n.contains( c ) ) {
+						_classAdd( n.$(), 'f-dnd-notallowed' );
 						$( d ) && _rm( d );
-					} else if( o.cst.isDisabled && o.cst.isDisabled( e, { draggable: a, droppable: $.widget( m ), type: 'append' } ) ) {
-						_classAdd( $.widget( m ).$(), 'f-dnd-notallowed' );
+					} else if( o.cst.isDisabled && o.cst.isDisabled( e, { draggable: a, droppable: n, type: 'append' } ) ) {
+						_classAdd( n.$(), 'f-dnd-notallowed' );
 						$( d ) && _rm( d );
 					} else {
 						e.runType = 'dnd_over';
 						p.triggerListener( e );
 						if ( _drop_cache[ p.id ].cst.sort ) {
-							var c = $.bcr( p.$() ), f = p.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-helper><td id=' + g + ' class=_g colspan=' + p.rootNode.colgrps[ 0 ].length + '></tr>' : '<div id=' + d + ' class=f-dnd-helper><div id=' + g + ' class=_g></div></div>';
-							if ( c.top < y && y - c.top <= 5 ) $.query( p.$() )[ sn = 'before' ]( $( d ) || f );
-							else if ( c.bottom > y && c.bottom - y <= 5 ) $.query( p.$() )[ sn = 'after' ]( $( d ) || f );
-							else if ( ! $( g ) || $( g ) != m )
-								sn = N;
-							if ( $( d ) ) {
-								$( g ).dnd_wid = p.id;
-								$( d ).style.display = sn ? '' : 'none';
-								$( d ).style.left = p.padSort ? p.padSort() + 'px' : '';
+							_dnd_childtype[ p.type ] && n != p && (n = n.closest( _dnd_childtype[ p.type ] ));
+							if ( n ) {
+								var r = $.bcr( n.$() ), f = n.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-helper><td id=' + g + ' class=_g colspan=' + n.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-helper><div id=' + g + ' class=_g></div></div>';
+								if ( r.top < y && y - r.top <= 5 ) $.query( n.$() )[ sn = 'before' ]( $( d ) || f );
+								else if ( r.bottom > y && r.bottom - y <= 5 ) $.query( n.$() )[ sn = 'after' ]( $( d ) || f );
+								else if ( ! $( g ) || $( g ) != m )
+									sn = N;
+								if ( $( d ) ) {
+									$( d ).style.display = sn ? '' : 'none';
+									$( d ).style.left = n.padSort ? n.padSort() + 'px' : '';
+								}
+								p.trigger( 'dnd_sort', h );
 							}
-							p.trigger( 'dnd_sort', h );
 						}
 					}
 					q = p;
@@ -1478,14 +1487,17 @@ $.draggable = function( a, b ) {
 				}
 			}
 		}, function( e ) {
-			if ( t ) {
-				if ( (p = dp( e.srcElement )) && p != a && ! a.contains( p ) ) {
+			if ( u ) {
+				var m = e.srcElement, n = $.widget( m );
+				if ( (p = dp( m )) && p != a && ! a.contains( p ) ) {
 					if ( (sn == 'before' && p == a.next()) || (sn == 'after' && p == a.prev()) || (!sn && p == a.parentNode) ) {
 						$.alert( $.loc.tree_movefail1 );
-					} else if ( ! p.hasClass( 'f-dnd-notallowed' ) )
-						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: a, droppable: $.widget( e.srcElement ), type: sn || 'append' } );
+					} else if ( ! n.hasClass( 'f-dnd-notallowed' ) ) {
+						_drop_cache[ p.id ].cst.sort && _dnd_childtype[ p.type ] && n != p && (n = n.closest( _dnd_childtype[ p.type ] ));
+						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: a, droppable: n, type: sn || 'append' } );
+					}
 				}
-				_rm( t ), _rm( '_dndhelper' ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
+				_rm( u ), _rm( '_dndhelper' ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
 			}
 		} );
 	} );
@@ -2187,8 +2199,8 @@ _merge( $, {
 	    } );
 	    return r;
 	},
-	// @a -> move fn, b -> up fn, c -> el
-	moveup: function( a, b, c ) {
+	// @a -> move fn, b -> up fn
+	moveup: function( a, b ) {
 		var d, f, m = function ( e ) { e.preventDefault(); };
 		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
 		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
@@ -2198,7 +2210,6 @@ _merge( $, {
 			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
 			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
 			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
-			c && _rm( c );
 		}, T );
 		// 业务拖动时禁用浏览器默认的拖动效果
 		br.mobile && doc.addEventListener( 'touchmove', m, { passive: F } );
