@@ -50,13 +50,15 @@ public class Replace extends NodeControlCommand<Replace>
 
     @Override
     public Replace setNode(Node node) {
-        if (node == null) {
-            throw new IllegalArgumentException("node == null");
-        }
         this.node = node;
-        if (target == null && node.getId() != null) {
+        if (node == null) {
+            target = null;
+        }else{
             target = node.getId();
         }
+//        if (target == null && node.getId() != null) {
+//            target = node.getId();
+//        }
 //        if (node instanceof Command<?>) {
 //            super.setSection(SECTION_COMMAND);
 //        }
