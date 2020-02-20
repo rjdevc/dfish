@@ -982,9 +982,11 @@ W = define( 'Widget', function() {
 		// 存取临时变量
 		data: function( a, b ) {
 			if ( typeof a === _OBJ )
-				this.x.data = $.extend( a, this.x.data );
+				$.merge( this.x.data, a );
 			else if ( arguments.length === 1 )
 				return (this.x.data && this.x.data[ a ]);
+			else if ( a == N )
+				return this.x.data;
 			else
 				(this.x.data || (this.x.data = {}))[ a ] = b;
 		},

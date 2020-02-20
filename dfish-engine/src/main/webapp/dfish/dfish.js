@@ -1445,7 +1445,7 @@ $.draggable = function( a, b ) {
 				t.style.left = (e.pageX + 7) + 'px';
 				t.style.top  = (e.pageY + 7) + 'px';
 				if ( (p = dp( m )) && (o = _drop_cache[ p.id ]) ) {
-					if ( p == a || a.contains( p ) || (o.cst.isDisabled && o.cst.isDisabled( e, { draggable: a, droppable: $.widget( m ), type: 'append' } )) ) {
+					if ( p == a || a.contains( p ) || (o.cst.isDisabled && o.cst.isDisabled( e, { draggable: a, droppable: p, type: 'append' } )) ) {
 						_classAdd( p.$(), 'f-dnd-notallowed' );
 						$( d ) && _rm( d );
 					} else {
