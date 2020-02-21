@@ -4075,17 +4075,12 @@ PageBar = define.widget( 'PageBar', {
 		keyJump: function( a ) {
 			var self = this,
 				b = this._keyJump || (this._keyJump = function( e ) {
-				var k = e.keyCode;
-				if ( k === 37 || k === 39 ) { //37:left, 39:right
-					if ( Q( '.f-hide [id="' + self.id + '"]' ).length )
-						return;
-					var v = self.x.currentPage + (k === 37 ? -1 : 1);
-					if ( Q( '.w-dialog.z-front' ).length ) {
-						if ( Q( '.w-dialog.z-front [id="' + self.id + '"]' ).length ) {
-							self.go( v );
-						}
-					} else
-						self.go( v );
+				if ( (e.keyCode === 37 || e.keyCode === 39) && ! e.target.isContentEditable ) { //37:left, 39:right
+					if ( ! Q( '.f-hide [id="' + self.id + '"]' ).length ) {
+						var d = Q( '.w-dialog.z-front' );
+						if ( ! d.length || d.has( '[id="' + self.id + '"]' ).length )
+							self.go( self.x.currentPage + (e.keyCode === 37 ? -1 : 1) );
+					}
 				}
 			});
 			Q( document )[ a ? 'on' : 'off' ]( 'keyup', b );
