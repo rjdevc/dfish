@@ -1455,7 +1455,7 @@ $.draggable = function( a, b ) {
 					if ( n == c || n.contains( c ) ) {
 						_classAdd( n.$(), 'f-dnd-notallowed' );
 						$( d ) && _rm( d );
-					} else if( o.cst.isDisabled && o.cst.isDisabled( e, { draggable: a, droppable: n, type: 'append' } ) ) {
+					} else if( o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: n, type: 'append' } ) ) {
 						_classAdd( n.$(), 'f-dnd-notallowed' );
 						$( d ) && _rm( d );
 					} else {
@@ -1494,7 +1494,7 @@ $.draggable = function( a, b ) {
 						$.alert( $.loc.tree_movefail1 );
 					} else if ( ! n.hasClass( 'f-dnd-notallowed' ) ) {
 						_drop_cache[ p.id ].cst.sort && _dnd_childtype[ p.type ] && n != p && (n = n.closest( _dnd_childtype[ p.type ] ));
-						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: a, droppable: n, type: sn || 'append' } );
+						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: c, droppable: n, type: sn || 'append' } );
 					}
 				}
 				_rm( u ), _rm( '_dndhelper' ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
