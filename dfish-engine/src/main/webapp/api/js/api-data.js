@@ -2638,6 +2638,7 @@ define( {
       { name: 'dropAlign', type: 'String', optional: true, remark: '下拉按钮的位置，仅当 face:"simple" 时本参数有效。可选值: <b>left</b>, <b>center</b>, <b>right</b>。' },
       { name: 'face', type: 'String', optional: true, remark: '样式。可选值: <b>normal</b>, <b>mini</b>, <b>simple</b>' },
       { name: 'jump', type: 'Boolean', optional: true, remark: '显示一个可填写页数的表单。' },
+      { name: 'keyJump', type: 'Boolean', optional: true, remark: '设置为true，按下"← →"键时执行翻页。' },
       { name: 'name', type: 'String', optional: true, remark: '如果设置了name，将生成一个隐藏表单项，值为当前页数。' },
       { name: 'noFirstLast', type: 'Boolean', optional: true, remark: '不显示"首页"和"尾页"两个按钮。' },
       { name: 'firstText', type: 'String', optional: true, remark: '"首页"的文本。' },

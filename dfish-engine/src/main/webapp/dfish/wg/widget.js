@@ -4055,6 +4055,9 @@ PageBar = define.widget( 'PageBar', {
 	Extend: Html,
 	Listener: {
 		body: {
+			ready: function() {
+				this.x.keyJump && this.keyJump( T );
+			},
 			// 阻止默认触发用户事件，改在 go 方法中调用
 			click: { block: $.rt( T ) }
 		}
@@ -4068,6 +4071,24 @@ PageBar = define.widget( 'PageBar', {
 		},
 		out: function( a ) {
 			$.classRemove( a, 'z-hv' );
+		},
+		keyJump: function( a ) {
+			var self = this,
+				b = this._keyJump || (this._keyJump = function( e ) {
+				var k = e.keyCode;
+				if ( k === 37 || k === 39 ) { //37:left, 39:right
+					if ( Q( '.f-hide [id="' + self.id + '"]' ).length )
+						return;
+					var v = self.x.currentPage + (k === 37 ? -1 : 1);
+					if ( Q( '.w-dialog.z-front' ).length ) {
+						if ( Q( '.w-dialog.z-front [id="' + self.id + '"]' ).length ) {
+							self.go( v );
+						}
+					} else
+						self.go( v );
+				}
+			});
+			Q( document )[ a ? 'on' : 'off' ]( 'keyup', b );
 		},
 		go: function( i, a ) {
 			if ( (i = _number( i )) > 0 ) {
@@ -4126,7 +4147,7 @@ PageBar = define.widget( 'PageBar', {
 			return b ? ' onclick=' + evw + '.go(' + i + ',this) onmouseover=' + evw + '.over(this) onmouseout=' + evw + '.out(this)' : '';
 		},
 		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.x.noFirstLast ? ' z-noFirstLast' : '');
+			return _proto.prop_cls.call( this ) + (this.x.noFirstLast ? ' z-nofirstlast' : '') + (this.x.keyJump ? ' z-keyjump' : '');
 		},
 		html_info: function() {
 			var s = '';
@@ -4188,6 +4209,7 @@ PageBar = define.widget( 'PageBar', {
 		},
 		dispose: function() {
 			$( this.id + 'j' ) && ($( this.id + 'j' ).onblur = N); /* 如果不写这一句，谷歌浏览器会崩溃 */
+			this.x.keyJump && this.keyJump( F );
 			_proto.dispose.call( this );
 		}
 	}
@@ -4452,7 +4474,7 @@ Dialog = define.widget( 'Dialog', {
 		},
 		_front: function( a ) {
 			var z = a ? 11 : 10;
-			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } );
+			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } ).addClass( 'z-front', a );
 		},
 		// 定位 /@a -> fullScreen?
 		axis: function( a ) {
