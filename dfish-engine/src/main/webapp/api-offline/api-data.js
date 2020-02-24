@@ -150,7 +150,7 @@ define( {
               debug: true, // 开启调试模式
               lang: 'zh_CN',  // 语言包
               alias: { //自定义模块
-              	'Ueditor': 'pl/ueditor1_4_3/ueditor.dfish.js', //百度编辑器
+              	'Ueditor': 'pl/ueditor1_4_3/ueditor.dfish.js' //百度编辑器
               },
               ajaxError: function( req, url ) { // 处理ajax错误信息的方法
               	alert( req.status );
@@ -254,6 +254,46 @@ define( {
       { name: '$.download(url, [data])', remark: '下载文件。', common: true, param: [
         { name: 'url', type: 'String', remark: '下载的文件地址。' },
         { name: 'data', type: 'Object', remark: 'post方式发送到后台的数据。', optional: true }
+      ] },
+      { name: '$.draggable(target, [option])', remark: '设置对象为可拖拽。', param: [
+      	{ name: 'target', type: 'Widget', remark: 'widget元素。' },
+        { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
+          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true }
+        ] }
+      ] },
+      { name: '$.droppable(target, [option])', remark: '设置对象为可放置。', param: [
+      	{ name: 'target', type: 'Widget', remark: 'widget元素。' },
+        { name: 'option', type: 'Object', remark: '放置参数。', optional: true, param: [
+          { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
+          	{ name: 'event', type: 'Event', remark: '放置事件。' },
+          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
+          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
+          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
+          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
+          	] }
+          ] },
+          { name: 'isDisabled', type: 'Function(event, ui)', remark: '当函数返回true时，当前放置节点为禁用状态。', optional: true, param: [
+          	{ name: 'event', type: 'Event', remark: '拖动事件。' },
+          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
+          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
+          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
+          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append"。' }
+          	] }
+          ] },
+          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
+          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true }
+       ] }
+      ], example: [
+          function() {
+            // 设置树可拖拽也可放置
+            $.draggable( vm.find( 'f_tree' ) );
+            $.droppable( vm.find( 'f_tree' ), {
+              drop: function( ev, ui ) {
+                var u = 'move.sp?act=move&from=' + ui.draggable.x.id + '&to=' + ui.droppable.x.id + '&type=' + ui.type;
+                alert(u);
+              }
+            } );
+          }
       ] },
       { name: '$.each(arr, fn)', remark: '对数组进行循环处理。', common: true, param: [
         { name: 'arr', type: 'Array', remark: '发送请求的URL字符串' },
@@ -1154,8 +1194,8 @@ define( {
             vm.find( 'wg' ).css( 'height', '+=100' ); // 高度增加100px
           }
       ] },
-      { name: 'data(name, [value])', remark: '读/写自定义的数据。', common: true, param: [
-        { name: 'name', type: 'String', remark: '属性名。' },
+      { name: 'data([name], [value])', remark: '读/写自定义的数据。如果不设置任何参数，则返回整个data对象。', common: true, param: [
+        { name: 'name', type: 'String', remark: '属性名。', optional: true },
         { name: 'value', type: 'String', remark: '属性值。', optional: true }
       ], example: [
           function() {
@@ -1450,35 +1490,6 @@ define( {
       { name: 'vAlign', type: 'String', remark: '垂直居中。可选值: <b>top</b>, <b>bottom</b>, <b>middle</b>' }
     ],
     Methods: [
-      { name: 'draggable([option])', remark: '设置所有按钮可拖拽。', param: [
-        { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true }
-       ] }
-      ] },
-      { name: 'droppable([option])', remark: '设置所有按钮可放置。', param: [
-        { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
-          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true },
-          { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
-          	{ name: 'event', type: 'Event', remark: '放置事件。' },
-          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
-          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
-          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
-          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
-          	] }
-          ] }
-       ] }
-      ], example: [
-          function() {
-            // 设置按钮栏可拖拽也可放置
-            vm.find( 'tree' ).draggable().droppable( {
-              drop: function( ev, ui ) {
-                var u = 'move.sp?act=move&from=' + ui.draggable.x.id + '&to=' + ui.droppable.x.id + '&type=' + ui.type;
-                alert(u);
-              }
-            } );
-          }
-      ] },
       { name: 'getFocus([name])', remark: '获取焦点状态的按钮。', param: [
         { name: 'name', type: 'String', remark: '获取相同name的焦点按钮。', optional: true }
       ] },
@@ -1638,21 +1649,21 @@ define( {
   	remark: 'Table的表头。',
   	extend: 'Widget',
     Config: [
-        { name: 'rows', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' }
+        { name: 'nodes', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "TBody": {
   	remark: 'Table的内容。',
   	extend: 'Widget',
     Config: [
-        { name: 'rows', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' }
+        { name: 'nodes', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "TFoot": {
   	remark: 'Table的表尾。',
   	extend: 'Widget',
     Config: [
-        { name: 'rows', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
+        { name: 'nodes', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
     ]
   },
   "Table": {
@@ -1665,7 +1676,6 @@ define( {
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
       { name: 'focusMultiple', type: 'Boolean', remark: '是否有多选的点击高亮效果。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
-      { name: 'limit', type: 'Int', remark: '最多显示多少行。如果需要前端翻页，可设置这个属性。' },
       { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' },
       { name: 'resizable', type: 'Boolean', remark: '是否可以拖动表头调整列宽。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
@@ -1674,35 +1684,6 @@ define( {
       { name: 'tFoot', type: 'TFoot', remark: '表头。' }
     ],
     Methods: [
-      { name: 'draggable([option])', remark: '设置所有行可拖拽。', param: [
-        { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true }
-       ] }
-      ] },
-      { name: 'droppable([option])', remark: '设置所有行可放置。', param: [
-        { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
-          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true },
-          { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
-          	{ name: 'event', type: 'Event', remark: '放置事件。' },
-          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
-          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
-          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
-          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
-          	] }
-          ] }
-       ] }
-      ], example: [
-          function() {
-            // 设置Table可拖拽也可放置
-            vm.find( 'tbl' ).draggable().droppable( {
-              drop: function( ev, ui ) {
-                var u = 'move.sp?act=move&from=' + ui.draggable.x.id + '&to=' + ui.droppable.x.id + '&type=' + ui.type;
-                alert(u);
-              }
-            } );
-          }
-      ] },
       { name: 'filter([data])', remark: '只显示符合条件的行。', param: [
         { name: 'data', type: 'Object | Number | Function', remark: '用来过滤的字段对象，或行的序列号，或函数。', optional: true }
       ], example: [
@@ -2134,7 +2115,7 @@ define( {
       { name: 'data', type: 'Object', remark: '行数据。' },
       { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
       { name: 'src', type: 'String', remark: '可展开内容的地址。这个 src 应当返回一个 view' },
-      { name: 'rows', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
+      { name: 'nodes', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
     ],
     Event: [
       { name: 'collapse', remark: '收起时触发。' },
@@ -2278,35 +2259,6 @@ define( {
       { name: 'template', type: 'String', remark: '模板地址。' }
     ],
     Methods: [
-      { name: 'draggable([option])', remark: '设置所有leaf可拖拽。', param: [
-        { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true }
-       ] }
-      ] },
-      { name: 'droppable([option])', remark: '设置所有leaf可放置。', param: [
-        { name: 'option', type: 'Object', remark: '拖拽参数。', optional: true, param: [
-          { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true },
-          { name: 'sort', type: 'Boolean', remark: '是否可排序。', optional: true },
-          { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
-          	{ name: 'event', type: 'Event', remark: '放置事件。' },
-          	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
-          		{ name: 'draggable', type: 'Widget', remark: '拖拽节点。' },
-          		{ name: 'droppable', type: 'Widget', remark: '放置节点。' },
-          		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
-          	] }
-          ] }
-       ] }
-      ], example: [
-          function() {
-            // 设置树可拖拽也可放置
-            vm.find( 'tree' ).draggable().droppable( {
-              drop: function( ev, ui ) {
-                var u = 'move.sp?act=move&from=' + ui.draggable.x.id + '&to=' + ui.droppable.x.id + '&type=' + ui.type;
-                alert(u);
-              }
-            } );
-          }
-      ] },
       { name: 'getFocus()', remark: '获取焦点状态的 leaf。' },
       { name: 'expandTo(src, [sync], [fn])', remark: '通过src请求获取一个 json，并按照这个 json 的格式显示树。每个 leaf 节点都必须设置 id。', param: [
         { name: 'src',  type: 'String',  remark: '获取 json 的地址。' },
@@ -2533,8 +2485,9 @@ define( {
   	extend: 'Widget',
     Config: [
       { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+      { name: 'nodes', type: 'Array', remark: '子节点数组。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
-      { name: 'nodes', type: 'Array', remark: '子节点数组。' }
+      { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' }
     ],
     Classes: [
       { name: '.w-timeline', remark: '基础样式。' }
@@ -2575,7 +2528,7 @@ define( {
               ] }
           }
       ] }
-    ],
+    ]
   },
   "TimelineItem": {
   	remark: '时间轴条目。',
@@ -2594,7 +2547,7 @@ define( {
     ]
   },
   "EmbedWindow": {
-  	remark: '生成一个内嵌窗口。作用与HTML的<iframe>标签相同。',
+  	remark: '生成一个内嵌窗口。作用与HTML的&lt;iframe&gt;标签相同。',
   	extend: 'Widget',
     Config: [
       { name: 'scroll', type: 'Boolean', remark: '是否显示滚动条。' },
@@ -2685,11 +2638,13 @@ define( {
       { name: 'dropAlign', type: 'String', optional: true, remark: '下拉按钮的位置，仅当 face:"simple" 时本参数有效。可选值: <b>left</b>, <b>center</b>, <b>right</b>。' },
       { name: 'face', type: 'String', optional: true, remark: '样式。可选值: <b>normal</b>, <b>mini</b>, <b>simple</b>' },
       { name: 'jump', type: 'Boolean', optional: true, remark: '显示一个可填写页数的表单。' },
+      { name: 'keyJump', type: 'Boolean', optional: true, remark: '设置为true，按下"← →"键时执行翻页。' },
       { name: 'name', type: 'String', optional: true, remark: '如果设置了name，将生成一个隐藏表单项，值为当前页数。' },
       { name: 'noFirstLast', type: 'Boolean', optional: true, remark: '不显示"首页"和"尾页"两个按钮。' },
       { name: 'firstText', type: 'String', optional: true, remark: '"首页"的文本。' },
       { name: 'lastText', type: 'String', optional: true, remark: '"尾页"的文本。' },
       { name: 'nextText', type: 'String', optional: true, remark: '"下一页"的文本。' },
+      { name: 'pageSize', type: 'Number', remark: '每页显示多少条。配合target参数使用。' },
       { name: 'prevText', type: 'String', optional: true, remark: '"上一页"的文本。' },
       { name: 'src', type: 'String', optional: true, remark: '点击页数按钮将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表页数。支持以 "javascript:" 开头的JS语句。' },
       { name: 'sumPage', type: 'Number', remark: '总页数。(起始值为1)' },
@@ -2722,12 +2677,13 @@ define( {
   	extend: 'Widget',
     Config: [
       { name: 'nodes', type: 'Array', optional: true, remark: 'CalendarItem的数组集合。' },
-      { name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当mode为week时本参数有效。' },
-      { name: 'date', type: 'String', optional: true, remark: '以此日期为基准显示一个月的日期。格式 yyyy-mm-dd' },
-      { name: 'focusdate', type: 'String', optional: true, remark: '高亮显示的某一日期。格式 yyyy-mm-dd' },
+      { name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当 face 值为 "week" 时本参数有效。' },
+      { name: 'date', type: 'String', optional: true, remark: '以此日期为基准显示日历。' },
+      { name: 'face', type: 'String', optional: true, remark: '日历类型。可选值：<b>date</b>, <b>week</b>, <b>month</b>, <b>year</b>。默认值为"date"。' },
+      { name: 'focusDate', type: 'String', optional: true, remark: '高亮显示的某一日期。' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
       { name: 'start', type: 'Number', optional: true, remark: '一周的第一天是星期几。可选值从1到7。仅当mode为week时本参数有效。' },
-      { name: 'padrow', type: 'Boolean', optional: true, remark: '设置为true，当日历不满6行时填补一行空白行。' },
+      { name: 'fillBlank', type: 'Boolean', optional: true, remark: '设置为true，填补空白的日期。当日历不满6行时填补空白行。' },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。' }
     ],
     Methods: [
@@ -3261,8 +3217,32 @@ define( {
             }
           }
       ] }
+    ]
+  },
+  "JigsawAuth": {
+  	remark: '拼图的验证对象。',
+    Config: [
+      { name: 'src', type: 'String', remark: '验证地址。' },
+      { name: 'result', type: 'Object', remark: '设置分隔格式。', param: [
+        { name: 'success', type: 'Boolean', remark: '验证是否成功。' },
+        { name: 'msg', type: 'String', remark: '验证结果的描述信息。' }
+      ] }
     ],
-    
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'JigsawAuth',
+              src: 'auth.sp',
+              result: {
+      	        success: true,
+                msg: '验证通过'
+              }
+            }
+          }
+      ] }
+    ]
   },
   "Spinner": {
   	remark: '数字输入框。',
@@ -3440,8 +3420,8 @@ define( {
           { name: 'text', type: 'String', remark: '文本字段名。' },
           { name: 'value', type: 'String', remark: '值字段名。' }
         ] },
-        { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
         { name: 'fullPath', type: 'Boolean', remark: '设置为true，选中项的文本显示完整的路径。' },
+        { name: 'keepShow', type: 'Boolean', remark: '设置为true，无论是否有匹配到内容，都始终显示搜索结果框。' },
         { name: 'target', type: 'String', remark: '数据来源Widget的ID。类型可以是Table或Tree。如果不设置此参数，将以对话框内的第一个Table或第一个Tree作为数据来源。' }
       ] },
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
@@ -3839,8 +3819,8 @@ define( {
   	extend: 'Alert',
   	deprecate: 'yes,timeout,buttonCls,buttons,icon,title,.w-alert',
     Config: [
-      { name: 'closeable', type: 'Boolean', remark: '是否显示关闭图标。' },
-      { name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
+      { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。' },
+      //{ name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }
     ],
     Event: [

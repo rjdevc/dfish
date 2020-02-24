@@ -2938,8 +2938,8 @@ EmbedWindow = define.widget( 'EmbedWindow', {
 		}
 	}
 } ),
-/* `Empty` 空面板  */
-Empty = define.widget( 'Empty', { Prototype: { className: 'w-empty' } } ),
+/* `Blank` 空面板  */
+Blank = define.widget( 'Blank', { Prototype: { className: 'w-blank' } } ),
 /* `html`
  *  支持自定义标签: <d:wg></d:wg>
  *  内容为widget配置项，例: <d:wg>{type: "button", text: "click"}</d:wg>
@@ -4012,6 +4012,9 @@ Toggle = define.widget( 'Toggle', {
 		isExpanded: function() {
 			return this.x.expanded;
 		},
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.x.hr ? ' z-hr' : '');
+		},
 		// @a -> open?
 		html_icon: function( a ) {
 			var x = this.x, c = x.icon, d = x.expandedIcon || c, t = evw + '.toggle(event)';
@@ -4046,17 +4049,21 @@ PageBar = define.widget( 'PageBar', {
 		x.sumPage && (x.sumPage = Math.ceil( x.sumPage ));
 		if ( this.face === 'normal' )
 			this.page_text = Loc.page_text;
+		!x.currentPage && (x.currentPage = 1);
 		x.target && _regTarget.call( this, function() {
 			var a = this.ownerView.find( x.target );
-			a.x.limit = this.x.pageRecords;
-			a.page( this.x.currentPage );
+			if ( a ) {
+				a.x.limit = this.x.pageSize;
+				a.pageBar = this;
+				a.page( this.x.currentPage );
+			}
 		});
 	},
 	Extend: Html,
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.keyJump && this.keyJump( T );
+				this.x.keyJump && this.listenKeyJump( T );
 			},
 			// 阻止默认触发用户事件，改在 go 方法中调用
 			click: { block: $.rt( T ) }
@@ -4072,22 +4079,29 @@ PageBar = define.widget( 'PageBar', {
 		out: function( a ) {
 			$.classRemove( a, 'z-hv' );
 		},
-		keyJump: function( a ) {
+		listenKeyJump: function( a ) {
 			var self = this,
 				b = this._keyJump || (this._keyJump = function( e ) {
 				if ( (e.keyCode === 37 || e.keyCode === 39) && ! e.target.isContentEditable ) { //37:left, 39:right
 					if ( ! Q( '.f-hide [id="' + self.id + '"]' ).length ) {
 						var d = Q( '.w-dialog.z-front' );
 						if ( ! d.length || d.has( '[id="' + self.id + '"]' ).length )
-							self.go( self.x.currentPage + (e.keyCode === 37 ? -1 : 1) );
+							self.keyJump( e.keyCode );
 					}
 				}
 			});
 			Q( document )[ a ? 'on' : 'off' ]( 'keyup', b );
 		},
+		keyJump: function( a ) {
+			this.x.keyJump && this.go( this.x.currentPage + (a === 37 ? -1 : 1) );
+		},
 		go: function( i, a ) {
+			if ( ! this._disposed )
+				return;
 			if ( (i = _number( i )) > 0 ) {
 				i = Math.max( Math.floor( i ), 1 );
+				if ( this.x.sumPage )
+					i = Math.min( this.x.sumPage, i );
 				this.$( 'v' ) && (this.$( 'v' ).value = i);
 				if ( this.x.target ) {
 					var g = this.ownerView.find( this.x.target );
@@ -4142,7 +4156,7 @@ PageBar = define.widget( 'PageBar', {
 			return b ? ' onclick=' + evw + '.go(' + i + ',this) onmouseover=' + evw + '.over(this) onmouseout=' + evw + '.out(this)' : '';
 		},
 		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.x.noFirstLast ? ' z-nofirstlast' : '') + (this.x.keyJump ? ' z-keyjump' : '');
+			return _proto.prop_cls.call( this ) + (this.x.noFirstLast ? ' z-nofirstlast' : '');
 		},
 		html_info: function() {
 			var s = '';
@@ -4204,7 +4218,7 @@ PageBar = define.widget( 'PageBar', {
 		},
 		dispose: function() {
 			$( this.id + 'j' ) && ($( this.id + 'j' ).onblur = N); /* 如果不写这一句，谷歌浏览器会崩溃 */
-			this.x.keyJump && this.keyJump( F );
+			this.x.keyJump && this.listenKeyJump( F );
 			_proto.dispose.call( this );
 		}
 	}
@@ -7788,16 +7802,16 @@ ComboBox = define.widget( 'ComboBox', {
 				method: function( e ) {
 					if ( this.usa() && ! this._imeMode ) {
 						var k = e.keyCode, t, m;
-						if ( k === 13 || k === 38 || k === 40 ) { // 13:enter, 38:up, 40:down
+						if ( k === 13 || k === 37 || k === 38 || k === 39 || k === 40 ) { // 13:enter, 37: left, 38:up, 39:right, 40:down
 							$.stop( e );
-							var d = this.pop();
-							if ( k === 13 && (t = this.queryText()) != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
+							var d = this.pop(), t = this.queryText();
+							if ( k === 13 && t != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
 								this.suggest( t );
 							} else if ( d.vis && (m = this.store( d )) ) {
-								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : m.keyUp( k );
+								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : t ? m.keyUp( k ) : this.closePop();
 							} else
 								_enter_submit( k, this );
-						} else if ( !(e.ctrlKey && k === 86) && !(k === 17) ) { //86: ctrl+v, 17: Ctrl, 37: left, 39: right
+						} else if ( !(e.ctrlKey && k === 86) && !(k === 17) ) { //86: ctrl+v, 17: Ctrl
 							t = this.$t().innerText;
 							var s = String.fromCharCode( 160 ) + ' '; // 160: chrome的空格
 							if ( k === 32 && s.indexOf( t.charAt( t.length - 1 ) ) > -1 && (t = $.strTrim( t.slice( 0, -1 ) )) ) { // 最后一个字符是分隔符，则生成一个已选项
@@ -7806,7 +7820,7 @@ ComboBox = define.widget( 'ComboBox', {
 								o.x.error && this._online && this.match( o ); // 新增的选项如果没即时匹配成功，并且有suggest，则以隐藏模式去后台匹配一次数据。
 								this.closePop();
 								$.stop( e );
-							} else if ( ! e.ctrlKey ) {
+							} else if ( !e.ctrlKey ) { 
 								this.suggest( t );
 							}
 						}
@@ -11141,6 +11155,8 @@ AbsTable = define.widget( 'AbsTable', {
 				b ? b.focus() : (a && a.focus( F ));
 			} else if ( k === 13 ) {
 				(a = this.getFocus( T )) && a.click();
+			} else if ( k === 37 || k === 39 ) {
+				this.pageBar && this.pageBar.keyJump( k );
 			}
 		},
 		// @implement

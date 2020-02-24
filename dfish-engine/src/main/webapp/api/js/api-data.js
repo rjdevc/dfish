@@ -2644,7 +2644,7 @@ define( {
       { name: 'firstText', type: 'String', optional: true, remark: '"首页"的文本。' },
       { name: 'lastText', type: 'String', optional: true, remark: '"尾页"的文本。' },
       { name: 'nextText', type: 'String', optional: true, remark: '"下一页"的文本。' },
-      { name: 'pageRecords', type: 'Number', remark: '每页显示多少条。配合target参数使用。' },
+      { name: 'pageSize', type: 'Number', remark: '每页显示多少条。配合target参数使用。' },
       { name: 'prevText', type: 'String', optional: true, remark: '"上一页"的文本。' },
       { name: 'src', type: 'String', optional: true, remark: '点击页数按钮将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表页数。支持以 "javascript:" 开头的JS语句。' },
       { name: 'sumPage', type: 'Number', remark: '总页数。(起始值为1)' },
@@ -3819,8 +3819,8 @@ define( {
   	extend: 'Alert',
   	deprecate: 'yes,timeout,buttonCls,buttons,icon,title,.w-alert',
     Config: [
-      { name: 'closeable', type: 'Boolean', remark: '是否显示关闭图标。' },
-      { name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
+      { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。' },
+      //{ name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }
     ],
     Event: [
