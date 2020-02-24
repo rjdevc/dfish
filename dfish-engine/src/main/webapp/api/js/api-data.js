@@ -1671,6 +1671,7 @@ define( {
   	extend: 'Widget',
     Config: [
       { name: 'br', type: 'Boolean', remark: '内容是否换行。默认值为true。' },
+      { name: 'cellPadding', type: 'Number', remark: '设置单元边沿与其内容之间的空白。' },
       { name: 'columns', type: 'Array', remark: '列参数的数组集合。<br>单个列的参数参见 Column 类。' },
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
