@@ -2246,7 +2246,6 @@ define( {
     Config: [
       { name: 'ellipsis', type: 'Boolean', remark: '设置为true，树节点文本超出可视范围部分以省略号显示。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
-      { name: 'rootinvisible', type: 'Boolean', remark: '设为true，隐藏根节点，根节点的子节点缩进一层。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },
         { name: 'keycls', type: 'String', remark: '关键词样式名。' },
@@ -2254,7 +2253,7 @@ define( {
       ] },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
-      { name: 'rootInvisible', type: 'Boolean', remark: '根节点是否可见。' },
+      { name: 'rootInvisible', type: 'Boolean', remark: '设为true，隐藏根节点，根节点的子节点缩进一层。' },
       { name: 'src', type: 'String | Object', remark: '获取子节点的 URL 地址。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'template', type: 'String', remark: '模板地址。' }
@@ -2594,7 +2593,8 @@ define( {
     ],
     Classes: [
       { name: '.w-toggle', remark: '基础样式。' },
-      { name: '.z-expanded', remark: '展开时的样式。' }
+      { name: '.z-expanded', remark: '展开时的样式。' },
+      { name: '.z-hr', remark: '有横线时的样式。' }
     ]
   },
   "Split": {
@@ -2678,12 +2678,12 @@ define( {
   	extend: 'Widget',
     Config: [
       { name: 'nodes', type: 'Array', optional: true, remark: 'CalendarItem的数组集合。' },
-      { name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当 face 值为 "week" 时本参数有效。' },
+      //{ name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当 face 值为 "week" 时本参数有效。' },
       { name: 'date', type: 'String', optional: true, remark: '以此日期为基准显示日历。' },
       { name: 'face', type: 'String', optional: true, remark: '日历类型。可选值：<b>date</b>, <b>week</b>, <b>month</b>, <b>year</b>。默认值为"date"。' },
       { name: 'focusDate', type: 'String', optional: true, remark: '高亮显示的某一日期。' },
       { name: 'src', type: 'String', optional: true, remark: '点击日期将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表日期。' },
-      { name: 'start', type: 'Number', optional: true, remark: '一周的第一天是星期几。可选值从1到7。仅当mode为week时本参数有效。' },
+      //{ name: 'start', type: 'Number', optional: true, remark: '一周的第一天是星期几。可选值从1到7。仅当 face 为week时本参数有效。' },
       { name: 'fillBlank', type: 'Boolean', optional: true, remark: '设置为true，填补空白的日期。当日历不满6行时填补空白行。' },
       { name: 'pub', type: 'Object', optional: true, remark: '日期按钮的公共设置。' }
     ],
@@ -2884,7 +2884,6 @@ define( {
     ],
     Classes: [
       { name: '.w-text', remark: '基础样式。' },
-      { name: '.w-input', remark: '所有类似 text 的表单 widget (有一个外框，包含显示表单值)具有此样式。像 radio checkbox 等不具备此特征的表单就没有这个样式。' },
       { name: '.z-on', remark: '处于焦点状态时的样式。' },
       { name: '.z-required', remark: '必填状态的样式。' },
       { name: '.z-trans', remark: '设置 transparent:true 时的样式。' },
@@ -3332,7 +3331,7 @@ define( {
   "ImgBox": {
   	remark: '图片下拉选择表单。',
   	extend: 'DropBox',
-  	deprecate: 'focus,placeholder,tip,transparent,.w-text,.z-trans',
+  	deprecate: 'focus,placeholder,tip,transparent,cancelable,multiple,format,src,.w-text,.z-trans',
     Config: [
       { name: 'imgWidth', type: 'Number', remark: '图标宽度。' },
       { name: 'imgHeight', type: 'Number', remark: '图标高度。' },
@@ -3361,7 +3360,7 @@ define( {
     Config: [
       { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'text', type: 'String', remark: '显示文本。如果有设置value而text为空，将会尝试自动从drop中匹配文本。' },
-      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
+      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
       { name: 'pick()', remark: '弹出对话框选择器。' },
@@ -3388,9 +3387,9 @@ define( {
       { name: 'delay', type: 'Number', remark: '输入字符时的延迟查询时间。单位:毫秒。' },
       { name: 'drop', type: 'Dialog', remark: '显示所有选项的下拉对话框。' },
       { name: 'multiple', type: 'Boolean', remark: '多选模式。' },
-      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'picker', type: 'Object', remark: 'dialog 参数。其中 dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'separator', type: 'String', remark: '文本选项分隔符。默认是逗号。' },
-      { name: 'src', type: 'String', remark: '在线匹配关键词的 view src。支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
+      { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' }
     ],
     Methods: [
       { name: 'search(text)', remark: '根据关键词弹出对话框选择器。' },
@@ -3430,9 +3429,9 @@ define( {
       { name: 'face', type: 'String', remark: '设置已选项的外观效果。可选值: <b>default</b>, <b>tag</b>' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'loadingText', type: 'String', remark: '加载数据时显示的文本。' },
-      { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'suggest', type: 'Dialog', remark: '根据输入文本显示一个候选项提示框。src参数支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'br', type: 'Boolean', remark: '已选项是否换行。' },
-      { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$response</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
+      { name: 'picker', type: 'Object', remark: '选择器 dialog 参数。dialog 的 src 支持变量 <b>$value</b><s>(值)</s> 和 <b>$text</b><s>(文本)</s>。' },
       { name: 'pub', type: 'Object', remark: '用于 combobox/option 的默认参数。', example: [
           function() {
             // 设置每个已选项的宽度为 100，并绑定点击事件，显示选项的值
@@ -3480,19 +3479,19 @@ define( {
   "LinkBox": {
   	remark: '可输入的有下拉选项的表单。如果设置了dblclick事件，已选项的样式为带下划线的链接。',
   	extend: 'ComboBox',
-  	deprecate: 'pub,w-text,w-combobox',
+  	deprecate: 'pub,face,.w-text,.w-combobox',
     Config: [
       { name: 'strict', type: 'Boolean', remark: '设为 true，如果存在没有匹配成功的选项，则不能通过表单验证。设为false，允许存在没有匹配成功的选项。默认值是false。' },
       { name: 'separator', type: 'String', remark: '文本选项分隔符。默认是逗号。' }
     ],
     Classes: [
-      { name: '.w-combobox', remark: '基础样式。' }
+      { name: '.w-linkbox', remark: '基础样式。' }
     ]
   },
-  "FileUpload": {
-  	remark: '上传附件。',
+  "ImageUpload": {
+  	remark: '上传图片。',
   	extend: 'Text',
-  	deprecate: 'focus,focusEnd,placeholder,tip,transparent,.w-text,.w-input,.z-trans,.z-on',
+  	deprecate: 'focus,focusEnd,placeholder,tip,transparent,.w-text,.z-trans,.z-on',
     Config: [
       { name: 'dir', type: 'String', remark: '附件排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
       { name: 'download', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
@@ -3509,13 +3508,15 @@ define( {
       { name: 'value', type: 'String', remark: '值。' }
     ]
   },
-  "ImageUpload": {
-  	remark: '上传图片。',
-  	extend: 'FileUpload'
+  "FileUpload": {
+  	remark: '上传附件。',
+  	extend: 'ImageUpload',
+  	deprecate: 'thumbnail'
   },
   "UploadButton": {
   	remark: '上传按钮。FileUpload 和 ImageUpload 的专用按钮。',
-  	extend: 'Button'
+  	extend: 'Button',
+  	deprecate: 'target'
   },
   "Cmd": {
   	remark: '命令集合。',
