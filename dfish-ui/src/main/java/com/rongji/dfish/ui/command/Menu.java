@@ -29,7 +29,7 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
     }
 
     private List<Widget<?>> nodes;
-    private Boolean prong;
+//    private Boolean prong;
 
     /**
      * 支持增加子按钮
@@ -71,23 +71,23 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
         return (List)nodes;
     }
 
-    /**
-     * 设为 true，显示一个箭头，指向 snap 参数对象。
-     *
-     * @return Boolean
-     */
-    public Boolean getProng() {
-        return prong;
-    }
-
-    /**
-     * 设为 true，显示一个箭头，指向 snap 参数对象。
-     *
-     * @param prong Boolean
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Menu setProng(Boolean prong) {
-        this.prong = prong;
-        return this;
-    }
+//    /**
+//     * 设为 true，显示一个箭头，指向 snap 参数对象。
+//     *
+//     * @return Boolean
+//     */
+//    public Boolean getProng() {
+//        return prong;
+//    }
+//
+//    /**
+//     * 设为 true，显示一个箭头，指向 snap 参数对象。
+//     *
+//     * @param prong Boolean
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public Menu setProng(Boolean prong) {
+//        this.prong = prong;
+//        return this;
+//    }
 }

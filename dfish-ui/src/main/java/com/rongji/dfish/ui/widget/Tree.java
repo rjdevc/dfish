@@ -25,6 +25,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
 //    private Combo combo;
     private Highlight highlight;
     private Boolean ellipsis;
+    private Boolean rootInvisible;
 
     /**
      * 构造函数
@@ -260,7 +261,6 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      * 高亮关键词配置
      *
      * @return Highlight
-     * @author lamontYu
      */
     public Highlight getHighlight() {
         return highlight;
@@ -271,7 +271,6 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      *
      * @param highlight Highlight
      * @return 本身，这样可以继续设置其他属性
-     * @author lamontYu
      */
     public Tree setHighlight(Highlight highlight) {
         this.highlight = highlight;
@@ -285,7 +284,6 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      * @see #getPub()
      * @deprecated 在pub中设置该值
      */
-    @Deprecated
     public Boolean getEllipsis() {
         return ellipsis;
     }
@@ -298,9 +296,26 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      * @see #getPub()
      * @deprecated 在pub中设置该值
      */
-    @Deprecated
     public Tree setEllipsis(Boolean ellipsis) {
         this.ellipsis = ellipsis;
+        return this;
+    }
+
+    /**
+     * 根节点是否可见。设为true，隐藏根节点，根节点的子节点缩进一层。
+     * @return Boolean
+     */
+    public Boolean getRootInvisible() {
+        return rootInvisible;
+    }
+
+    /**
+     * 根节点是否可见。设为true，隐藏根节点，根节点的子节点缩进一层。
+     * @param rootInvisible Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Tree setRootInvisible(Boolean rootInvisible) {
+        this.rootInvisible = rootInvisible;
         return this;
     }
 
@@ -1061,24 +1076,18 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
             return badge;
         }
 
-        /**
-         * 显示徽标
-         *
-         * @param badge 为true时显示圆点
-         * @return 本身，这样可以继续设置其他属性
-         */
         @Override
         public Leaf setBadge(Boolean badge) {
             this.badge = badge;
             return this;
         }
 
-        /**
-         * 显示徽标
-         *
-         * @param badge 要显示的徽标对象
-         * @return 本身，这样可以继续设置其他属性
-         */
+        @Override
+        public Leaf setBadge(String badge) {
+            this.badge = badge;
+            return this;
+        }
+
         @Override
         public Leaf setBadge(Badge badge) {
             this.badge = badge;

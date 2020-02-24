@@ -15,7 +15,7 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractDialog<T extends AbstractDialog<T>> extends AbstractWidget<T>
-        implements SingleNodeContainer<T,Widget>, Node<T>, Positionable<T>, Snapable<T> {
+        implements SingleNodeContainer<T,Widget>, Node<T>, Positionable<T> {
 
     private static final long serialVersionUID = -6765281771952118355L;
 
@@ -39,8 +39,6 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     protected Boolean cover;
     protected String title;
     protected Boolean cache;
-    protected String snap;
-    protected String snapType;
     protected Integer indent;
     protected Long timeout;
     protected Widget<?> node;
@@ -50,6 +48,8 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     protected Boolean independent;
     protected Boolean escape;
     protected String format;
+    protected Snap snap;
+    protected Boolean prong;
 
     /**
      * 弹出窗口是否附带一个蒙版，让主窗口的元素不能被点击
@@ -166,27 +166,27 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return (T) this;
     }
 
-    @Override
-    public String getSnapType() {
-        return snapType;
-    }
-
-    @Override
-    public T setSnapType(String snapType) {
-        this.snapType = snapType;
-        return (T) this;
-    }
-
-    @Override
-    public String getSnap() {
-        return snap;
-    }
-
-    @Override
-    public T setSnap(String snap) {
-        this.snap = snap;
-        return (T) this;
-    }
+//    @Override
+//    public String getSnapType() {
+//        return snapType;
+//    }
+//
+//    @Override
+//    public T setSnapType(String snapType) {
+//        this.snapType = snapType;
+//        return (T) this;
+//    }
+//
+//    @Override
+//    public String getSnap() {
+//        return snap;
+//    }
+//
+//    @Override
+//    public T setSnap(String snap) {
+//        this.snap = snap;
+//        return (T) this;
+//    }
 
     /**
      * 当设置了 snap 时，再设置 indent 指定相对于初始位置缩进微调多少个像素。
@@ -357,6 +357,52 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return (T) this;
     }
 
+    /**
+     * 吸附的对象。
+     * @return Snap
+     */
+    public Snap getSnap() {
+        return snap;
+    }
+
+    /**
+     * 获取吸附的对象。不存在时将新建对象
+     * @return Snap
+     */
+    public Snap snap() {
+        if (snap == null) {
+            snap = new Snap();
+        }
+        return snap;
+    }
+
+    /**
+     * 吸附的对象。
+     * @param snap Snap
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setSnap(Snap snap) {
+        this.snap = snap;
+        return (T) this;
+    }
+
+    /**
+     * 设为 true，显示一个箭头，指向 snap 参数对象
+     * @return Boolean
+     */
+    public Boolean getProng() {
+        return prong;
+    }
+
+    /**
+     * 设为 true，显示一个箭头，指向 snap 参数对象
+     * @param prong Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setProng(Boolean prong) {
+        this.prong = prong;
+        return (T) this;
+    }
 
     @Override
     public Node<? > findNodeById(String id) {

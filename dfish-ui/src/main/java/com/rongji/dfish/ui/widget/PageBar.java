@@ -39,9 +39,17 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      */
     private Integer currentPage;
     /**
+     * 分页大小，每页显示多少条
+     */
+    private Integer pageSize;
+    /**
      * 显示一个可填写页数的表单。
      */
     private Boolean jump;
+    /**
+     * 是否支持按键翻页。设置为true时，可按“←→”进行翻页
+     */
+    private Boolean keyJump;
     /**
      * 不显示"首页"和"尾页"两个按钮。
      */
@@ -122,6 +130,24 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      */
     public PageBar setCurrentPage(Integer currentPage) {
         this.currentPage = currentPage;
+        return this;
+    }
+
+    /**
+     * 分页大小，每页显示多少条
+     * @return Integer
+     */
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    /**
+     * 分页大小，每页显示多少条
+     * @param pageSize Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public PageBar setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
         return this;
     }
 
@@ -213,6 +239,24 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      */
     public PageBar setJump(Boolean jump) {
         this.jump = jump;
+        return this;
+    }
+
+    /**
+     * 是否支持按键翻页。设置为true时，可按“←→”进行翻页
+     * @return Boolean
+     */
+    public Boolean getKeyJump() {
+        return keyJump;
+    }
+
+    /**
+     * 是否支持按键翻页。设置为true时，可按“←→”进行翻页
+     * @param keyJump Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public PageBar setKeyJump(Boolean keyJump) {
+        this.keyJump = keyJump;
         return this;
     }
 

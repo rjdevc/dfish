@@ -47,6 +47,7 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item> 
     private String focusDate;
     private String src;
     private Boolean fillBlank;
+    private Integer start;
 
     /**
      * 构造函数
@@ -168,6 +169,24 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item> 
      */
     public Calendar setFillBlank(Boolean fillBlank) {
         this.fillBlank = fillBlank;
+        return this;
+    }
+
+    /**
+     * 一周的第一天是星期几。可选值从1到7。仅当mode为week时本参数有效。
+     * @return Integer
+     */
+    public Integer getStart() {
+        return start;
+    }
+
+    /**
+     * 一周的第一天是星期几。可选值从1到7。仅当mode为week时本参数有效。
+     * @param start Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Calendar setStart(Integer start) {
+        this.start = start;
         return this;
     }
 

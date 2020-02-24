@@ -30,8 +30,8 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
     protected String minFileSize;
     protected String maxFileSize;
     protected Integer uploadLimit;
-    protected List<ValueButton> valueButton;
-    protected List<UploadButton> uploadButton;
+    protected List<ValueButton> valueButtons;
+    protected List<UploadButton> uploadButtons;
     protected String dir;
     protected String align;
     protected String vAlign;
@@ -216,18 +216,18 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
      *
      * @return List&lt;{@link ValueButton}&gt;
      */
-    public List<ValueButton> getValueButton() {
-        return valueButton;
+    public List<ValueButton> getValueButtons() {
+        return valueButtons;
     }
 
     /**
      * 附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。
      *
-     * @param valueButton "更多"选项 button 数组
+     * @param valueButtons "更多"选项 button 数组
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setValueButton(List<ValueButton> valueButton) {
-        this.valueButton = valueButton;
+    public T setValueButtons(List<ValueButton> valueButtons) {
+        this.valueButtons = valueButtons;
         return (T) this;
     }
 
@@ -238,10 +238,10 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
      * @return 本身，这样可以继续设置其他属性
      */
     public T addValueButton(ValueButton button) {
-        if (this.valueButton == null) {
-            this.valueButton = new ArrayList<>();
+        if (this.valueButtons == null) {
+            this.valueButtons = new ArrayList<>();
         }
-        valueButton.add(button);
+        valueButtons.add(button);
         return (T) this;
     }
 
@@ -250,18 +250,18 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
      *
      * @return List&lt;{@link UploadButton}&gt;
      */
-    public List<UploadButton> getUploadButton() {
-        return uploadButton;
+    public List<UploadButton> getUploadButtons() {
+        return uploadButtons;
     }
 
     /**
      * 上传按钮
      *
-     * @param uploadButton 上传按钮
+     * @param uploadButtons 上传按钮
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setUploadButton(List<UploadButton> uploadButton) {
-        this.uploadButton = uploadButton;
+    public T setUploadButtons(List<UploadButton> uploadButtons) {
+        this.uploadButtons = uploadButtons;
         return (T) this;
     }
 
@@ -272,10 +272,10 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
      * @return 本身，这样可以继续设置其他属性
      */
     public T addUploadButton(UploadButton button) {
-        if (this.uploadButton == null) {
-            this.uploadButton = new ArrayList<>();
+        if (this.uploadButtons == null) {
+            this.uploadButtons = new ArrayList<>();
         }
-        this.uploadButton.add(button);
+        this.uploadButtons.add(button);
         return (T) this;
     }
 

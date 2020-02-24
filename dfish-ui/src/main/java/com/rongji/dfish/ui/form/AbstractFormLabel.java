@@ -13,6 +13,7 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
     protected String text;
     protected Boolean escape;
     protected String format;
+    protected String suffix;
 
     @Override
     public String getType() {
@@ -75,6 +76,7 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
      *
      * @return String 格式化内容
      */
+    @Override
     public String getFormat() {
         return format;
     }
@@ -85,8 +87,27 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
      * @param format String 格式化内容
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setFormat(String format) {
         this.format = format;
+        return (T) this;
+    }
+
+    /**
+     * 后缀
+     * @return String
+     */
+    public String getSuffix() {
+        return suffix;
+    }
+
+    /**
+     * 后缀
+     * @param suffix String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setSuffix(String suffix) {
+        this.suffix = suffix;
         return (T) this;
     }
 

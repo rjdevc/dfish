@@ -95,7 +95,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
     private Boolean focusMultiple;
     private Boolean br;
 //    private Combo combo;
-    private Integer limit;
+//    private Integer limit;
     private Boolean resizable;
     private Boolean escape;
     private Boolean scroll;
@@ -389,27 +389,27 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
 //        return this;
 //    }
 
-    /**
-     * 最多显示多少行。如果需要前端翻页，可设置这个属性。
-     * 一般做combobox里的构成时才会用这个属性。
-     *
-     * @return limit
-     */
-    public Integer getLimit() {
-        return limit;
-    }
-
-    /**
-     * 最多显示多少行。如果需要前端翻页，可设置这个属性。
-     * 一般做combobox里的构成时才会用这个属性。
-     *
-     * @param limit Integer
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Table setLimit(Integer limit) {
-        this.limit = limit;
-        return this;
-    }
+//    /**
+//     * 最多显示多少行。如果需要前端翻页，可设置这个属性。
+//     * 一般做combobox里的构成时才会用这个属性。
+//     *
+//     * @return limit
+//     */
+//    public Integer getLimit() {
+//        return limit;
+//    }
+//
+//    /**
+//     * 最多显示多少行。如果需要前端翻页，可设置这个属性。
+//     * 一般做combobox里的构成时才会用这个属性。
+//     *
+//     * @param limit Integer
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public Table setLimit(Integer limit) {
+//        this.limit = limit;
+//        return this;
+//    }
 
     /**
      * 是否可以拖动表头调整列宽。
@@ -742,7 +742,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         private Highlight highlight;
         private String fixed;
         private RawJson rawFormat;
-
+        private Integer labelWidth;
 
         public RawJson rawFormat() {
             return rawFormat;
@@ -1311,13 +1311,30 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          * 是否浮动，不随滚动条滚动，只能用left/right
          *
          * @param fixed String
-         * @return this
+         * @return 本身，这样可以继续设置其他属性
          */
         public Column setFixed(String fixed) {
             this.fixed = fixed;
             return this;
         }
 
+        /**
+         * 表单标题宽度
+         * @return Integer
+         */
+        public Integer getLabelWidth() {
+            return labelWidth;
+        }
+
+        /**
+         * 表单标题宽度
+         * @param labelWidth Integer
+         * @return 本身，这样可以继续设置其他属性
+         */
+        public Column setLabelWidth(Integer labelWidth) {
+            this.labelWidth = labelWidth;
+            return this;
+        }
     }
 
     /**

@@ -25,6 +25,13 @@ public interface BadgeHolder<T> {
 
     /**
      * 设置徽标
+     * @param badge String 徽标提示文本
+     * @return 本身，这样可以继续设置其他属性
+     */
+    T setBadge(String badge);
+
+    /**
+     * 设置徽标
      * @param badge Badge 徽标
      * @return 本身，这样可以继续设置其他属性
      */

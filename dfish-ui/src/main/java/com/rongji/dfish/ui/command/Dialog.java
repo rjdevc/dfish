@@ -21,7 +21,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
     private String error;
     private String complete;
     private String filter;
-    private Boolean prong;
+//    private Boolean prong;
 
     /**
      * 打开对话框命令
@@ -116,25 +116,25 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
         return src;
     }
 
-    /**
-     * 如果设置为true，显示一个箭头，指向snap 参数对象
-     *
-     * @return Boolean
-     */
-    public Boolean getProng() {
-        return prong;
-    }
-
-    /**
-     * 如果设置为true，显示一个箭头，指向snap 参数对象
-     *
-     * @param prong Boolean
-     * @return this
-     */
-    public Dialog setProng(Boolean prong) {
-        this.prong = prong;
-        return this;
-    }
+//    /**
+//     * 如果设置为true，显示一个箭头，指向snap 参数对象
+//     *
+//     * @return Boolean
+//     */
+//    public Boolean getProng() {
+//        return prong;
+//    }
+//
+//    /**
+//     * 如果设置为true，显示一个箭头，指向snap 参数对象
+//     *
+//     * @param prong Boolean
+//     * @return this
+//     */
+//    public Dialog setProng(Boolean prong) {
+//        this.prong = prong;
+//        return this;
+//    }
 
     /**
      * 加载 具体内容 的 url。访问这个url 时应当返回一个 json 字串。

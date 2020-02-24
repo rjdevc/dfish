@@ -10,12 +10,12 @@ import com.rongji.dfish.ui.*;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public class Tip extends AbstractDialog<Tip> implements Command<Tip>, Snapable<Tip>, HasText<Tip> {
+public class Tip extends AbstractDialog<Tip> implements Command<Tip>, HasText<Tip> {
 
     private static final long serialVersionUID = -3534531697064109684L;
 
     private String text;
-    private Boolean hoverDrop;
+//    private Boolean multiple;
 
     /**
      * 构造函数
@@ -48,24 +48,21 @@ public class Tip extends AbstractDialog<Tip> implements Command<Tip>, Snapable<T
         return this;
     }
 
-    /**
-     * 鼠标移开时tip自动关闭
-     *
-     * @return Boolean
-     */
-    public Boolean getHoverDrop() {
-        return hoverDrop;
-    }
-
-    /**
-     * 设置鼠标移开时tip自动关闭
-     *
-     * @param hoverDrop Boolean
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Tip setHoverDrop(Boolean hoverDrop) {
-        this.hoverDrop = hoverDrop;
-        return this;
-    }
-
+//    /**
+//     * 是否允许多个实例存在。
+//     * @return Boolean
+//     */
+//    public Boolean getMultiple() {
+//        return multiple;
+//    }
+//
+//    /**
+//     * 是否允许多个实例存在。
+//     * @param multiple Boolean
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public Tip setMultiple(Boolean multiple) {
+//        this.multiple = multiple;
+//        return this;
+//    }
 }

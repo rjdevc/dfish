@@ -100,6 +100,10 @@ dfish.config({
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         },
+        'Toggle.z-hr': {
+            cls: null,
+            heightMinus: null
+        },
         'TableToggle': {
             height: 40,
             icon: '.i-toggle-icon',

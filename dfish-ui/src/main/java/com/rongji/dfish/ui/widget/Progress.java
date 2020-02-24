@@ -16,6 +16,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item> 
     private String text;
     private Boolean escape;
     private String format;
+    private String guide;
     private String src;
     private Boolean sync;
     private String complete;
@@ -125,6 +126,24 @@ public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item> 
     @Override
     public Progress setSrc(String src) {
         this.src = src;
+        return this;
+    }
+
+    /**
+     * 首次访问的地址。比src优先，且只访问一次。
+     * @return String
+     */
+    public String getGuide() {
+        return guide;
+    }
+
+    /**
+     * 首次访问的地址。比src优先，且只访问一次。
+     * @param guide String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Progress setGuide(String guide) {
+        this.guide = guide;
         return this;
     }
 

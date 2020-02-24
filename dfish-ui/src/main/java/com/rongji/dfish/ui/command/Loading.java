@@ -15,7 +15,7 @@ public class Loading extends AbstractDialog<Loading> implements Command<Loading>
     private static final long serialVersionUID = 2229794408494180794L;
 
     private String text;
-    private Boolean hide;
+//    private Boolean hide;
 
     /**
      * 构造函数
@@ -54,24 +54,24 @@ public class Loading extends AbstractDialog<Loading> implements Command<Loading>
         return this;
     }
 
-    /**
-     * 关闭loading提示
-     *
-     * @return Boolean
-     */
-    public Boolean getHide() {
-        return hide;
-    }
-
-    /**
-     * 关闭loading提示
-     *
-     * @param hide Boolean
-     * @return this
-     */
-    public Loading setHide(Boolean hide) {
-        this.hide = hide;
-        return this;
-    }
+//    /**
+//     * 关闭loading提示
+//     *
+//     * @return Boolean
+//     */
+//    public Boolean getHide() {
+//        return hide;
+//    }
+//
+//    /**
+//     * 关闭loading提示
+//     *
+//     * @param hide Boolean
+//     * @return this
+//     */
+//    public Loading setHide(Boolean hide) {
+//        this.hide = hide;
+//        return this;
+//    }
 
 }

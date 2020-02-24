@@ -16,7 +16,7 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Posi
 
     private static final long serialVersionUID = 3046146830347964521L;
 
-    private String btnCls;
+    private String buttonCls;
     private String icon;
     private String text;
     private List<Button> buttons;
@@ -50,18 +50,18 @@ public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Posi
      *
      * @return String
      */
-    public String getBtnCls() {
-        return btnCls;
+    public String getButtonCls() {
+        return buttonCls;
     }
 
     /**
      * 按钮样式名
      *
-     * @param btnCls String
+     * @param buttonCls String
      * @return this
      */
-    public Alert setBtnCls(String btnCls) {
-        this.btnCls = btnCls;
+    public Alert setButtonCls(String buttonCls) {
+        this.buttonCls = buttonCls;
         return this;
     }
 

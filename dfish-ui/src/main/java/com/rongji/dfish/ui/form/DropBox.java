@@ -27,6 +27,7 @@ public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoa
 	private String placeholder;
 	private Boolean multiple;
 	private Boolean cancelable;
+	private String format;
 
 	/**
 	 * 构造函数
@@ -87,7 +88,6 @@ public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoa
 	 * 是否支持多值
 	 * @param multiple 多值
 	 * @return 本身，这样可以继续设置其他属性
-	 * @author lamontYu
 	 */
 	public DropBox setMultiple(Boolean multiple) {
 		this.multiple = multiple;
@@ -116,7 +116,7 @@ public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoa
 	/**
 	 *  如果设置为true 可取消当前选中的选项，并且不会默认选中第一项。该参数仅在单选模式下有效，默认值为false
 	 * @param cancelable Boolean
-	 * @return this
+	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public DropBox setCancelable(Boolean cancelable) {
 		this.cancelable=cancelable;
@@ -171,6 +171,24 @@ public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoa
 	@Override
     public DropBox setSync(Boolean sync) {
 		this.sync = sync;
+		return this;
+	}
+
+	/**
+	 * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+	 * @return String
+	 */
+	public String getFormat() {
+		return format;
+	}
+
+	/**
+	 * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+	 * @param format String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public DropBox setFormat(String format) {
+		this.format = format;
 		return this;
 	}
 }

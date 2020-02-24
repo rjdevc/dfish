@@ -419,6 +419,12 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
         return (T) this;
     }
 
+    @Override
+    public T setBadge(String badge) {
+        this.badge = badge;
+        return (T) this;
+    }
+
     /**
      * 显示徽标
      *
