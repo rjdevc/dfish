@@ -2296,11 +2296,6 @@ define( {
       ] },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' },
       { name: 'noToggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
-      { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
-        { name: 'key', type: 'String', remark: '关键词。' },
-        { name: 'keyCls', type: 'String', remark: '关键词样式名。' },
-        { name: 'matchLength', type: 'Number', remark: '切词长度。' }
-      ] },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。默认值为true。' },
       { name: 'folder', type: 'Boolean', remark: '是否有子节点。' },
@@ -2809,7 +2804,10 @@ define( {
         ] },
         { name: 'method', type: 'String', remark: 'JS语句。如果验证不通过，执行语句应当 return 一个字符串作为说明。如果验证通过则无需返回或返回空。' }
       ] },
-      { name: 'validateGroup', type: 'Object', optional: true, remark: '附加的表单校验选项。' }
+      { name: 'validateGroup', type: 'Object', optional: true, remark: '表单校验选项组。', param: [
+          { name: 'name', type: 'String', remark: '校验组名。' },
+          { name: 'validate', type: 'Object', remark: '校验选项。' }
+        ] }
     ],
     Event: [
       { name: 'change', remark: '值发生改变时触发。' },
@@ -3057,7 +3055,7 @@ define( {
     Config: [
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
-      { name: 'options', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
+      { name: 'nodes', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
       	{ name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' },
       	{ name: 'text', type: 'String', remark: '文本。' },
       	{ name: 'value', type: 'String', remark: '值。' }
@@ -3273,7 +3271,7 @@ define( {
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'src', type: 'String | Object',  remark: '获取选项的 URL 地址。' },
       { name: 'template', type: 'String', remark: '模板地址。' },
-      { name: 'options', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
+      { name: 'nodes', type: 'Array', remark: '下拉选项数组。<br>单个选项的配置参数如下:', param: [
       	{ name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' },
       	{ name: 'icon', type: 'String', optional: true, remark: '图标。可以是图片地址，或以 "." 开头的样式名。' },
       	{ name: 'text', type: 'String', remark: '文本。' },
@@ -3335,7 +3333,7 @@ define( {
     Config: [
       { name: 'imgWidth', type: 'Number', remark: '图标宽度。' },
       { name: 'imgHeight', type: 'Number', remark: '图标高度。' },
-      { name: 'options', type: 'Array', remark: '下拉选项数组。', param: [
+      { name: 'nodes', type: 'Array', remark: '下拉选项数组。', param: [
       	{ name: 'icon', type: 'String', remark: '图标。' },
       	{ name: 'text', type: 'String', remark: '文本。', optional: true },
       	{ name: 'value', type: 'String', remark: '值。' }

@@ -2199,7 +2199,7 @@ Scroll = define.widget( 'Scroll', {
 		}
 	}
 } ),
-/* `abssrc` */
+/* `AbsSection` */
 AbsSection = define.widget( 'AbsSection', {
 	Const: function( x, p, n ) {
 		typeof x === _STR && (x = { src: x });
@@ -3533,8 +3533,7 @@ Button = define.widget( 'Button', {
 			return this.x.badge ? (this._badge = new Badge( this.x.badge === T ? {} : typeof this.x.badge === _OBJ ? this.x.badge : { text: this.x.badge }, this, -1 )).html() : '';
 		},
 		html_icon: function( a ) {
-			var t = this.x.text;
-			return $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } );
+			return this.x.icon ? $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } ) : '';
 		},
 		html_text: function( a ) {
 			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text ) +
@@ -3602,8 +3601,7 @@ Button = define.widget( 'Button', {
 				a += '<div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class="_xi">&times;</i></div>';
 			
 			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
-			if ( x.icon )
-				a += this.html_icon();
+			a += this.html_icon();
 			if ( t || this.x.format )
 				a += this.html_text();
 			a += '</div>' + this.html_append() + (ie7 && !w ? '</table>' : '') + this.html_badge() + '</' + g + '>';
@@ -3966,6 +3964,10 @@ Img = define.widget( 'Img', {
  *  /@text: 文本; @hr(Bool) 显示横线; /@open(Bool): 设置初始展开收拢效果并产生一个toggle图标; /@target: 指定展开收拢的widget ID, 多个用逗号隔开
  */
 Toggle = define.widget( 'Toggle', {
+	Const: function( x ) {
+		x.hr && (this.className += ' z-hr');
+		W.apply( this, arguments );
+	},
 	Listener: {
 		body: {
 			ready: function() {
@@ -4011,9 +4013,6 @@ Toggle = define.widget( 'Toggle', {
 		},
 		isExpanded: function() {
 			return this.x.expanded;
-		},
-		prop_cls: function() {
-			return _proto.prop_cls.call( this ) + (this.x.hr ? ' z-hr' : '');
 		},
 		// @a -> open?
 		html_icon: function( a ) {
@@ -4096,7 +4095,7 @@ PageBar = define.widget( 'PageBar', {
 			this.x.keyJump && this.go( this.x.currentPage + (a === 37 ? -1 : 1) );
 		},
 		go: function( i, a ) {
-			if ( ! this._disposed )
+			if ( this._disposed )
 				return;
 			if ( (i = _number( i )) > 0 ) {
 				i = Math.max( Math.floor( i ), 1 );
@@ -5210,7 +5209,7 @@ Collapse = define.widget( 'Collapse', {
 		Vert.call( this, $.extend( y, x ), p );
 	},
 	Extend: Vert,
-	Default: { scroll: T },
+	Default: { scroll: T, widthMinus: 2, heightMinus: 2 },
 	Prototype: {
 		className: 'w-collapse',
 		getFocus: function() {
@@ -5224,23 +5223,39 @@ CollapseButton = define.widget( 'CollapseButton', {
 	Const: function( x, p ) {
 		this.rootNode = p;
 		Button.apply( this, arguments );
+		this.nodeIndex == 0 && (this.className += ' z-first');
+		!p.length && (this.className += ' z-first');
 	},
 	Extend: Button,
 	Listener: {
 		body: {
 			focus: function() {
-				this.next().display();
+				var n = this.next();
+				n.display();
+				this.addClass( 'z-expanded' );
+				$.arrow( this.$( 'clp-arw' ), 'b2' );
+				n.next() && n.next().addClass( 'z-expanded-after' );
 				this.rootNode.trigger( 'resize' );
 			},
 			blur: function() {
-				this.next().display( F );
+				var n = this.next();
+				n.display( F );
+				this.removeClass( 'z-expanded' );
+				$.arrow( this.$( 'clp-arw' ), 'r2' );
+				n.next() && n.next().removeClass( 'z-expanded-after' );
 				this.rootNode.trigger( 'resize' );
 			}
 		}
 	},
 	Prototype: {
 		className: 'w-button w-collapse-button',
-		isToggleable: $.rt( T )
+		isToggleable: $.rt( T ),
+		prop_cls: function() {
+			return _proto.prop_cls.call( this ) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === this.parentNode.length - 2 ? ' z-last' : '');
+		},
+		html_icon: function() {
+			return this.x.icon ? Button.prototype.html_icon.call( this ) : '<div class=_clp_arw>' + $.arrow( this.id + 'clp-arw', 'r2' ) + '<i class=f-vi></i></div>';
+		}
 	}
 } ),
 /* `label` */
