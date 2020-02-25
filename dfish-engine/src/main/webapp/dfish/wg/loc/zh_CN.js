@@ -125,7 +125,7 @@ calendar : {
 	day_title : ['日','一','二','三','四','五','六'],
 	ym : '<span class="_year">{0} 年</span> &nbsp; <span class="_month">{1} 月</span>',
 	y  : '<span class="_year">{0} 年</span>',
-	monthname : ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
+	monthname : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
 	backdate: '返回日期',
 	picktime: '选择时间',
 	h: '时',

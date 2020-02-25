@@ -6781,7 +6781,7 @@ Calendar = define.widget( 'Calendar', {
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.y, y ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
 					'<div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.monthnow + '</div></div><div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><tbody>';
 			for ( var i = 0; i < 12; i ++ ) {
-				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, num: i + 1, status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
+				var v = y + '-' + $.strPad( i + 1 ), g = { value: v, num: Loc.calendar.monthname[ i ], status: (n && n > v) || (m && m < v) ? 'disabled' : '', focus: f === v };
 				o && o[ v ] && $.extend( g, o[ v ] );
 				e.push( (i % 4 === 0 ? '<tr class=_tr>' : '') + this.add( g ).html() );
 			}
@@ -9917,7 +9917,7 @@ TableLeaf = define.widget( 'TableLeaf', {
 /* `tabletoggle` */
 TableToggle = define.widget( 'TableToggle', {
 	Const: function( x, p ) {
-		W.apply( this, arguments );
+		Toggle.apply( this, arguments );
 		this.tr().tableToggle = this;
 	},
 	Extend: Toggle,
