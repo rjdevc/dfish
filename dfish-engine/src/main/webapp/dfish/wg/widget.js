@@ -4861,7 +4861,7 @@ _inst_del = function( a, b ) {
 Tip = define.widget( 'Tip', {
 	Const: function( x, p ) {
 		$.extendDeep( x, { prong: x.prong == N ? T : x.prong, autoHide: T, independent: T, snap: { target: p, position: 'tb,rl,lr,bt,rr,ll,bb,tt,cc' },
-			node: { type: 'Html', text: '<div class=w-tip-text><span class=f-va' + (x.closable ? ' style="padding-right:20px;"' : '') + '>' + this.html_format( x.text, x.format, x.escape ) + '</span><i class=f-vi></i></div>' + (x.closable !== F ? $.image('.f-i-close',{cls: 'w-tip-x', click:$.abbr + '.close(this)'}) : '') }
+			node: { type: 'Html', text: '<div class=w-tip-text><span class=f-va>' + this.html_format( x.text, x.format, x.escape ) + '</span><i class=f-vi></i></div>' + (x.closable !== F ? $.image('.f-i-close',{cls: 'w-tip-x', click:$.abbr + '.close(this)'}) : '') }
 		} );
 		x.closable !== F && (this.className += ' z-x');
 		Dialog.apply( this, arguments );

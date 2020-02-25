@@ -3819,7 +3819,7 @@ define( {
   	extend: 'Alert',
   	deprecate: 'yes,timeout,buttonCls,buttons,icon,title,.w-alert',
     Config: [
-      { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。' },
+      { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。默认值为 true。' },
       //{ name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }
     ],
