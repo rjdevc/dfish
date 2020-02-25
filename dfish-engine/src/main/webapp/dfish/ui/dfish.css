@@ -603,6 +603,7 @@
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
 .w-button.z-combo ._m,.w-tab.z-combo ._m{width:20px;text-align:center}
 .w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
+.w-button ._c .w-badge{position:static;display:inline-block;margin-left:5px}
 .w-button-split{vertical-align:middle;text-align:center}
 
 .w-tab{height:100%}
@@ -616,15 +617,15 @@
 .w-collapse-button ._clp_arw{float:left;width:16px;height:100%;text-align:left}
 
 .w-badge{position:absolute;top:2px;right:2px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
-.w-badge.z-t{top:-7px;right:0;padding:1px 3px;width:auto;height:12px}
+.w-badge.z-t{padding:1px 3px;width:auto;height:12px}
 .w-leaf .w-badge{top:0;bottom:0;margin:auto 8px}
-.w-badge.z-position-t{left:0;top:0;margin:auto}
+/*.w-badge.z-position-t{left:0;top:0;margin:auto}
 .w-badge.z-position-b{bottom:0;top:auto;left:0;margin:0 auto}
 .w-badge.z-position-r{bottom:0;top:0;right:0;margin:auto}
 .w-badge.z-position-l{bottom:0;top:0;left:0;right:auto;margin:auto}
 .w-badge.z-position-lt,.w-badge.z-position-tl{left:2px;right:auto}
 .w-badge.z-position-lb,.w-badge.z-position-bl{left:2px;right:auto;bottom:2px;top:auto}
-.w-badge.z-position-rb,.w-badge.z-position-br{bottom:2px;top:auto}
+.w-badge.z-position-rb,.w-badge.z-position-br{bottom:2px;top:auto}*/
 
 .f-button{height:28px;border:1px solid #d3d3d3;border-radius:2px;background:#fafafa;color:#333}
 .f-button.z-on{background:#fff}
