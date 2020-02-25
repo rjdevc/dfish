@@ -603,7 +603,8 @@
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
 .w-button.z-combo ._m,.w-tab.z-combo ._m{width:20px;text-align:center}
 .w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
-.w-button ._c .w-badge{position:static;display:inline-block;margin-left:5px}
+.w-button .w-badge,.w-tab .w-badge{position:static;display:inline-block;margin-left:5px}
+.w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute}
 .w-button-split{vertical-align:middle;text-align:center}
 
 .w-tab{height:100%}
