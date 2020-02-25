@@ -581,7 +581,7 @@
  */
 .w-button,.w-tab{position:relative;display:inline-block;text-align:center;vertical-align:middle;white-space:nowrap;word-break:keep-all;cursor:pointer;*display:inline;*zoom:1}
 .w-button ._c,.w-button ._i,.w-button ._t,.w-button ._m,.w-button ._x,.w-tab ._c,.w-tab ._i,.w-tab ._t,.w-tab ._m,.w-tab ._x{height:100%;vertical-align:top;*vertical-align:middle;}
-.w-button ._c,.w-tab ._c{position:relative;padding-left:8px;overflow:hidden}
+.w-button ._c,.w-tab ._c{padding-left:8px;overflow:hidden}
 .w-button ._t,.w-button ._i,.w-tab ._t,.w-tab ._i{padding-right:8px}
 .w-button ._s,.w-tab ._s{position:relative}
 .w-button ._i,.w-tab ._i{float:left;line-height:1;text-align:center}
