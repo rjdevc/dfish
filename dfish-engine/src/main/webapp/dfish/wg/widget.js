@@ -3144,7 +3144,7 @@ _setBadge = function( b ) {
 Badge = define.widget( 'Badge', {
 	Default: { width: -1, height: -1 },
 	Prototype: {
-		className: 'w-badge f-nv',
+		className: 'w-badge f-inbl',
 		prop_cls: function() {
 			var p = _snapPosition( this.x.position );
 			return _proto.prop_cls.call( this ) + (p ? ' z-position-' + p : '') + (this.x.text != N ? ' z-t' : '');
@@ -9321,7 +9321,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		},
 		toggle_nodes: function( a ) {
 			if ( this.isFolder() ) {
-				this.$( 'c' ) && $.classAdd( this.$( 'c' ), 'z-expanded', a );
+				this.$( 'c' ) && ($.classAdd( this.$( 'c' ), 'z-expanded', a ), $.classAdd( this.$( 'c' ), 'f-hide', !a ));
 				this.addClass( 'z-expanded', a );
 			}
 		},
@@ -9474,6 +9474,7 @@ Leaf = define.widget( 'Leaf', {
 				if ( this.box && ! this.isFolder() && this.nodeIndex === this.parentNode.length -1 ) {
 					this._triple();
 				}
+				this.textNode && this.fixTextNodeWidth();
 			},
 			mouseOver: {
 				occupy: T,
@@ -9515,6 +9516,9 @@ Leaf = define.widget( 'Leaf', {
 				this.fixFolder();
 				Q( '>.w-leaf', this.$( 'c' ) ).removeClass( 'z-first z-last' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				this.indent();
+			},
+			resize: function() {
+				this.textNode && this.fixTextNodeWidth();
 			}
 		}
 	},
@@ -9528,6 +9532,12 @@ Leaf = define.widget( 'Leaf', {
 		// @a 设为 true 时，获取视觉范围内可见的相邻的下一个节点
 		init_badge: function() {
 			return Button.prototype.init_badge.call( this );
+		},
+		fixTextNodeWidth: function() {
+			var a = this.rootNode.innerWidth();
+			if ( a > 0 ) {
+				this.textNode.width( a - this.textNode.$().offsetLeft );
+			}
 		},
 		offsetParent: function() {
 			return this.rootNode;
@@ -9695,7 +9705,7 @@ Leaf = define.widget( 'Leaf', {
 				this.x.status = $.inArray( f, this ) ? '' : 'disabled';
 				$.classAdd( this, 'z-notg', !!(this.length && !s) ); // 子节点都被过滤时，隐藏tg
 			}
-			return b ? this.html_self() + '<div class="w-leaf-cont' + (this.isFolder() && this.x.expanded ? ' z-expanded' : '') + '" id=' + this.id + 'c>' + s + '</div>' : '';
+			return b ? this.html_self() + '<div class="w-leaf-cont' + (this.isFolder() && this.x.expanded ? ' z-expanded' : ' f-hide') + '" id=' + this.id + 'c>' + s + '</div>' : '';
 		}
 	}
 } ),

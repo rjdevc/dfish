@@ -222,8 +222,6 @@
 .w-leaf.z-line .w-leaf-o .f-arw{border:0;width:9px;height:9px;background:url(g/i.png) no-repeat -76px -180px;margin-left:-1px;}
 .w-leaf.z-line .w-leaf-o .f-arw-r1{background-position:-111px -180px;margin-left:0}
 .w-leaf.z-line .w-leaf-o .f-arw-b1{*margin-top:0}
-.w-leaf-cont{display:none}
-.w-leaf-cont.z-expanded{display:block}
 .w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}
 .w-leaf.w-table-leaf{height:auto}
 .w-leaf.z-ds{color:#999}
@@ -603,7 +601,7 @@
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
 .w-button.z-combo ._m,.w-tab.z-combo ._m{width:20px;text-align:center}
 .w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
-.w-button .w-badge,.w-tab .w-badge{position:static;display:inline-block;margin-left:5px}
+.w-button .w-badge,.w-tab .w-badge{position:static;margin-left:5px}
 .w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute}
 .w-button-split{vertical-align:middle;text-align:center}
 

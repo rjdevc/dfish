@@ -3571,12 +3571,36 @@ define( {
       ] },
    ]
   },
+  "After": {
+  	remark: '插入命令。在某个 widget 之后插入一个或多个 widget。',
+    Config: [
+      { name: 'id', type: 'String', remark: '命令ID。' },
+      { name: 'target', type: 'String', remark: 'widget ID。' },
+      //{ name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
+      { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//在 id=f_btn 的按钮后面增加一个按钮
+            return~
+            vm.cmd( {
+              type: 'After',
+              target: 'f_btn',
+              nodes: [
+                { type: 'Button', text: '新增After' }
+              ]
+            } );
+          }
+      ] }
+    ]    
+  },
   "Prepend": {
   	remark: '插入命令。在某个 widget 内部前置一个或多个 widget。',
     Config: [
       { name: 'id', type: 'String', remark: '命令ID。' },
       { name: 'target', type: 'String', remark: 'widget ID。' },
-      { name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
+      //{ name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
       { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。node 和 nodes 不应同时使用。' }
     ]
   },
@@ -3585,7 +3609,7 @@ define( {
     Config: [
       { name: 'id', type: 'String', remark: '命令ID。' },
       { name: 'target', type: 'String', remark: 'widget ID。' },
-      { name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
+      //{ name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
       { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。node 和 nodes 不应同时使用。' }
     ]
   },
@@ -3594,16 +3618,7 @@ define( {
     Config: [
       { name: 'id', type: 'String', remark: '命令ID。' },
       { name: 'target', type: 'String', remark: 'widget ID。' },
-      { name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
-      { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。node 和 nodes 不应同时使用。' }
-    ]
-  },
-  "After": {
-  	remark: '插入命令。在某个 widget 之后插入一个或多个 widget。',
-    Config: [
-      { name: 'id', type: 'String', remark: '命令ID。' },
-      { name: 'target', type: 'String', remark: 'widget ID。' },
-      { name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
+      //{ name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
       { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。node 和 nodes 不应同时使用。' }
     ]
   },
