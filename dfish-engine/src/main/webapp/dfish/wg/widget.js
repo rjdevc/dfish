@@ -9516,9 +9516,6 @@ Leaf = define.widget( 'Leaf', {
 				this.fixFolder();
 				Q( '>.w-leaf', this.$( 'c' ) ).removeClass( 'z-first z-last' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
 				this.indent();
-			},
-			resize: function() {
-				this.textNode && this.fixTextNodeWidth();
 			}
 		}
 	},
@@ -9533,11 +9530,15 @@ Leaf = define.widget( 'Leaf', {
 		init_badge: function() {
 			return Button.prototype.init_badge.call( this );
 		},
-		fixTextNodeWidth: function() {
-			var a = this.rootNode.innerWidth();
-			if ( a > 0 ) {
-				this.textNode.width( a - this.textNode.$().offsetLeft );
+		scaleWidth: function( a, b ) {
+			if ( a == this.textNode && a.isReady ) {
+				var w = this.offsetParent().innerWidth();
+				return w == N ? N : _proto.scaleWidth.call( this, a, b, w - a.$().offsetLeft );
 			}
+		},
+		fixTextNodeWidth: function() {
+			this.textNode.isReady = T;
+			_w_rsz_all.call( this.textNode );
 		},
 		offsetParent: function() {
 			return this.rootNode;
@@ -9862,7 +9863,7 @@ TableLeaf = define.widget( 'TableLeaf', {
 		body: {
 			ready: function( e ) {
 				_superTrigger( this, Leaf, e );
-				this.textNode && this.fix_text_size();
+				this.textNode && this.fixTextNodeWidth();
 				this.x.expanded === F && this.toggle( F );
 			},
 			resize: function() {
@@ -9879,14 +9880,14 @@ TableLeaf = define.widget( 'TableLeaf', {
 		tr: _table_tr,
 		_focus: $.rt(),
 		isEllipsis: $.rt( T ),
-		scaleWidth: function() {
-			return this.parentNode.scaleWidth.apply( this.parentNode, arguments );
-		},
 		getLength: function() {
 			return this.row.length;
 		},
 		parent: function() {
 			return this.row.parentNode.tableLeaf;
+		},
+		offsetParent: function() {
+			return this.parentNode;
 		},
 		isFirst: function() {
 			return this.row.nodeIndex === 0;
