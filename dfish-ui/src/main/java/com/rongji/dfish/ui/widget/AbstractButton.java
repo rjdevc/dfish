@@ -4,7 +4,7 @@ package com.rongji.dfish.ui.widget;
 import java.util.List;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.AbstractNodeContainer;
+import com.rongji.dfish.ui.AbstractMultiNodeContainer;
 
 /**
  * AbstractButton 为抽象按钮类 用于方便扩展多种按钮
@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.AbstractNodeContainer;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractNodeContainer<T>
+public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractMultiNodeContainer<T>
         implements MultiNodeContainer<T>, HasText<T>, HtmlContentHolder<T>, BadgeHolder<T> {
 
     /**
@@ -319,10 +319,6 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
         return (T) this;
     }
 
-    @Override
-    public List<Node> getNodes() {
-        return nodes;
-    }
 
     /**
      * 是否当鼠标hover时展开下拉菜单

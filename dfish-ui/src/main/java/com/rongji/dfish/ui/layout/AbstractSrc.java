@@ -2,8 +2,10 @@ package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.command.AbstractDialog;
 import com.rongji.dfish.ui.command.Command;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +16,7 @@ import java.util.Map;
  *
  * @param <T> 类型
  */
-public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractNodeContainer<T>
+public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidget<T>
 		implements SingleNodeContainer<T,Widget>,LazyLoad<T> {
 	private String preload;
 	private String src;
@@ -23,19 +25,18 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractNode
 	private String error;
 	private String complete;
 	private String filter;
+	private Widget node;
 	/**
 	 * 默认构造函数
 	 */
-	public AbstractSrc() {
-		super(null);
-	}
+	public AbstractSrc() {}
 	
 	/**
 	 * 构造函数
 	 * @param id String
 	 */
 	public AbstractSrc(String id) {
-		super(id);
+		setId(id);
 	}
 
 	private static final long serialVersionUID = 8070987310944365757L;
@@ -79,17 +80,9 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractNode
 	 */
 	@Override
 	public Widget getNode() {
-		if(nodes!=null&&nodes.size()>0){
-			return (Widget)nodes.get(0);
-		}
-		return null;
+		return node;
 	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<Node> findNodes() {
-		return (List)nodes;
-	}
+
 	/**
 	 * 同setNode;
 	 * @param rootWidget Widget
@@ -104,32 +97,18 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractNode
 	@Override
 	@SuppressWarnings("unchecked")
 	public T setNode(Widget rootWidget) {
-		Widget widget=(Widget)rootWidget;
-		if(widget!=null){
-			if(nodes.size()>0){
-				nodes.set(0, widget);
-			}else{
-				nodes.add(widget);
+		node = rootWidget;
+		if(node != null){
+			if(Utils.isEmpty(node.getHeight())){
+				node.setHeight("*");
 			}
-			if(Utils.isEmpty(widget.getHeight())){
-				widget.setHeight("*");
+			if(Utils.isEmpty(node.getWidth())){
+				node.setWidth("*");
 			}
-			if(Utils.isEmpty(widget.getWidth())){
-				widget.setWidth("*");
-			}
-		}else{
-			nodes=null;
 		}
 		return (T) this;
 	}
-	
-	@Override
-	public T add(Node widget) {
-		if(!(widget instanceof Widget)){
-			throw 	new IllegalArgumentException("Widget only");
-		}
-		return setNode((Widget) widget);
-	}
+
 
 	/**
 	 * 加载 具体内容 的 url。访问这个url 时应当返回一个 json 字串。
@@ -210,5 +189,37 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractNode
 	public T setSync(Boolean sync) {
 		this.sync = sync;
 		return (T) this;
+	}
+
+	protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+		@Override
+		protected  List<Node> nodes() {
+			return Arrays.asList(node) ;
+		}
+
+		@Override
+		protected void setNode(int i, Node node) {
+			assert(i==0);
+			AbstractSrc.this.setNode((Widget) node);
+		}
+	};
+	@Override
+	public Node findNode(Filter filter) {
+		return containerPart.findNode(filter);
+	}
+
+	@Override
+	public List<Node> findAllNodes(Filter filter) {
+		return containerPart.findAllNodes(filter);
+	}
+
+	@Override
+	public Node replaceNode(Filter filter, Node node) {
+		return containerPart.replaceNode(filter,node);
+	}
+
+	@Override
+	public int replaceAllNodes(Filter filter, Node node) {
+		return containerPart.replaceAllNodes(filter,node);
 	}
 }

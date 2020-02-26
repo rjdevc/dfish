@@ -175,13 +175,9 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
      */
     public Tabs setPosition(String position) {
         this.position = position;
-        return (Tabs) this;
+        return this;
     }
 
-    @Override
-    public List<Node> getNodes() {
-        return nodes;
-    }
 
     /**
      * 标签按钮

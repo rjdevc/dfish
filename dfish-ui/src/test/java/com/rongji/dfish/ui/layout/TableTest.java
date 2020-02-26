@@ -57,7 +57,7 @@ public class TableTest extends DFishUITestCase {
 		
 		gl.removeNodeById("tt1");
 		Assert.assertTrue(gl.findNodeById("tt1")==null);
-		
+//		gl.repalceNodeById();
 		gl.replaceNodeById(new Html("就让这擦干又留出的泪水，化作漫天相思的雨").setId("tt2"));
 		output(gl);
 		gl.replaceNodeById(new Table.TD().setId("tt2").setNode(new Html("就让这擦干又留出的泪水，化作漫天相思的雨")));

@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.AbstractNodeContainer;
+import com.rongji.dfish.ui.AbstractMultiNodeContainer;
 import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author DFish Team
  */
-public class Frame extends AbstractNodeContainer<Frame> implements MultiNodeContainer<Frame> {
+public class Frame extends AbstractMultiNodeContainer<Frame> implements MultiNodeContainer<Frame> {
     /**
      *
      */
@@ -49,11 +49,6 @@ public class Frame extends AbstractNodeContainer<Frame> implements MultiNodeCont
     public Frame setDft(String dft) {
         this.dft = dft;
         return this;
-    }
-
-    @Override
-    public List<Node> getNodes() {
-        return (List)nodes;
     }
 
     /**

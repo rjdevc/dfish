@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.command;
 
 
+import com.rongji.dfish.ui.AbstractNodeContainerPart;
 import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
@@ -28,7 +29,7 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
     public Menu() {
     }
 
-    private List<Widget<?>> nodes;
+    private List<Widget> nodes;
 //    private Boolean prong;
 
     /**
@@ -38,15 +39,7 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
      * @return 本身，这样可以继续设置其他属性
      */
     public Menu add(AbstractButton<?> btn) {
-        add((Widget<?>) btn);
-        return this;
-    }
-
-    protected Menu add(Widget<?> w) {
-        if (nodes == null) {
-            nodes = new ArrayList<>();
-        }
-        nodes.add(w);
+        add((Node) btn);
         return this;
     }
 
@@ -57,8 +50,14 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
      * @return 本身，这样可以继续设置其他属性
      */
     public Menu add(Split split) {
-        add((Widget<?>) split);
+        add((Node) split);
         return this;
+    }
+
+    @Override
+    @Deprecated
+    public Menu setNode(Widget node) {
+        throw new UnsupportedOperationException("deprecated. see addNode");
     }
 
     @Override
@@ -66,10 +65,8 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
         return (List)nodes;
     }
 
-    @Override
-    public List<Node> findNodes() {
-        return (List)nodes;
-    }
+
+
 
 //    /**
 //     * 设为 true，显示一个箭头，指向 snap 参数对象。
@@ -90,4 +87,39 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
 //        this.prong = prong;
 //        return this;
 //    }
+
+    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+        @Override
+        protected  List<Widget> nodes() {
+            return Menu.this.nodes;
+        }
+
+        @Override
+        protected void setNode(int i, Node node) {
+            if(node==null){
+                nodes.remove(i);
+            }else{
+                nodes.set(i,(Widget)node);
+            }
+        }
+    };
+    @Override
+    public Node findNode(Filter filter) {
+        return containerPart.findNode(filter);
+    }
+
+    @Override
+    public List<Node> findAllNodes(Filter filter) {
+        return containerPart.findAllNodes(filter);
+    }
+
+    @Override
+    public Node replaceNode(Filter filter, Node node) {
+        return containerPart.replaceNode(filter,node);
+    }
+
+    @Override
+    public int replaceAllNodes(Filter filter, Node node) {
+        return containerPart.replaceAllNodes(filter,node);
+    }
 }

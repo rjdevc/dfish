@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.AbstractNodeContainer;
 
 /**
  * 进度条

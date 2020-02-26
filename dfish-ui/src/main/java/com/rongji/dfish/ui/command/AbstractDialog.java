@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.command;
 import com.rongji.dfish.ui.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -218,13 +219,6 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return node;
     }
 
-    @Override
-    public List<Node> findNodes() {
-        ArrayList<Node> result = new ArrayList<>();
-        result.add(node);
-        return result;
-    }
-
     /**
      * 它只能包含唯一的节点
      *
@@ -404,25 +398,6 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return (T) this;
     }
 
-    @Override
-    public Node<? > findNodeById(String id) {
-        return null;
-    }
-
-    @Override
-    public T removeNodeById(String id) {
-        return (T)this;
-    }
-
-    @Override
-    public boolean replaceNodeById(Node w) {
-        return false;
-    }
-
-    @Override
-    public void clearNodes() {
-
-    }
 
     public static class Snap implements Positionable<Snap> {
         private String target;
@@ -468,6 +443,38 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
             return this;
         }
 
+    }
+
+    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+        @Override
+        protected  List<Node> nodes() {
+            return Arrays.asList(AbstractDialog.this.node) ;
+        }
+
+        @Override
+        protected void setNode(int i, Node node) {
+            assert(i==0);
+            AbstractDialog.this.setNode((Widget) node);
+        }
+    };
+    @Override
+    public Node findNode(Filter filter) {
+        return containerPart.findNode(filter);
+    }
+
+    @Override
+    public List<Node> findAllNodes(Filter filter) {
+        return containerPart.findAllNodes(filter);
+    }
+
+    @Override
+    public Node replaceNode(Filter filter, Node node) {
+        return containerPart.replaceNode(filter,node);
+    }
+
+    @Override
+    public int replaceAllNodes(Filter filter, Node node) {
+        return containerPart.replaceAllNodes(filter,node);
     }
 
 }

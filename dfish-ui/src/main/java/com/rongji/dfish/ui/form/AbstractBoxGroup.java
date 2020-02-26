@@ -34,7 +34,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //    protected List<Widget<?>> targets = new ArrayList<>();
 //    protected List<N> nodes = new ArrayList<>();
     //    protected Boolean escape;
-//    private AbstractNodeContainer<?> bridgedObject = new AbstractNodeContainer(null) {
+//    private AbstractMultiNodeContainer<?> bridgedObject = new AbstractMultiNodeContainer(null) {
 //        @Override
 //        public List<N> findNodes() {
 //            return AbstractBoxGroup.this.nodes;

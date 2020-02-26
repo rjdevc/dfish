@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.NodeContainer;
  *
  * @param <T> 当前对象类型
  */
-public interface LabelRowContainer<T extends LabelRowContainer<T>>  extends NodeContainer<T> {
+public interface LabelRowContainer<T extends LabelRowContainer<T>>  extends NodeContainer {
 
 	/**
 	 * 标签宽度

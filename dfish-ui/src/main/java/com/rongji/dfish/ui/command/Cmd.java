@@ -1,8 +1,10 @@
 package com.rongji.dfish.ui.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.rongji.dfish.ui.AbstractNodeContainerPart;
 import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
@@ -89,7 +91,11 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
 
 
     @Override
-    public Cmd add(Command<?> cmd) {
+    public Cmd add(Node node) {
+        return add((Command) node);
+    }
+    @Override
+    public Cmd add(Command cmd) {
         nodes.add(cmd);
         return this;
     }
@@ -115,11 +121,6 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
         return this;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Node> findNodes() {
-        return (List)nodes;
-    }
 
     @Override
     public List<Node> getNodes() {
@@ -127,22 +128,41 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     }
 
     @Override
-    public Widget<?> findNodeById(String id) {
-        return null;
-    }
-
-    @Override
-    public Cmd removeNodeById(String id) {
-        return null;
-    }
-
-    @Override
-    public boolean replaceNodeById(Node w) {
-        return false;
-    }
-
-    @Override
     public void clearNodes() {
+        nodes.clear();
+    }
+    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+        @Override
+        protected  List<Command> nodes() {
+            return Cmd.this.nodes;
+        }
 
+        @Override
+        protected void setNode(int i, Node node) {
+            if(node==null){
+                nodes.remove(i);
+            }else{
+                nodes.set(i,(Command)node);
+            }
+        }
+    };
+    @Override
+    public Node findNode(Filter filter) {
+        return containerPart.findNode(filter);
+    }
+
+    @Override
+    public List<Node> findAllNodes(Filter filter) {
+        return containerPart.findAllNodes(filter);
+    }
+
+    @Override
+    public Node replaceNode(Filter filter, Node node) {
+        return containerPart.replaceNode(filter,node);
+    }
+
+    @Override
+    public int replaceAllNodes(Filter filter, Node node) {
+        return containerPart.replaceAllNodes(filter,node);
     }
 }

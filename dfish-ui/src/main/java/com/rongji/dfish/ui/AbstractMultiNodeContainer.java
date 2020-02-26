@@ -1,46 +1,45 @@
 package com.rongji.dfish.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author lamontYu
- * @date 2020-01-16
- * @since 5.0
+ * 抽象布局类，默认的布局同时还是一个Widget
+ *
+ * @param <T> 当前对象类型
+ * @author DFish Team
  */
-public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContainer<T, N>, N extends Node> extends AbstractMultiNodeContainer<T> implements PubNodeContainer<T, N> {
-    private static final long serialVersionUID = 5077405748817820249L;
+public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeContainer<T>> extends AbstractWidget<T> implements MultiNodeContainer<T> {
 
-    private N pub;
+    private static final long serialVersionUID = 6322077434879898040L;
 
     /**
      * 构造函数
      *
      * @param id String
      */
-    public AbstractPubNodeContainer(String id) {
-        super(id);
+    public AbstractMultiNodeContainer(String id) {
+        this.id = id;
     }
 
-    protected abstract N newPub();
+    protected List<Node> nodes = new ArrayList<>();
 
-    @Override
-    public N pub() {
-        if (pub == null) {
-            pub = newPub();
-        }
-        return pub;
+    public List<Node> getNodes(){
+        return nodes;
     }
 
-    @Override
-    public N getPub() {
-        return pub;
+
+    /**
+     * 拷贝属性
+     *
+     * @param to   AbstractLayout
+     * @param from AbstractLayout
+     */
+    protected void copyProperties(AbstractMultiNodeContainer<?> to, AbstractMultiNodeContainer<?> from) {
+        super.copyProperties(to, from);
+        to.nodes = from.nodes;
     }
 
-    @Override
-    public T setPub(N pub) {
-        this.pub = pub;
-        return (T) this;
-    }
     protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
         @Override
         protected  List<Node> nodes() {
@@ -56,6 +55,7 @@ public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContaine
             }
         }
     };
+
     @Override
     public Node findNode(Filter filter) {
         return containerPart.findNode(filter);
@@ -75,7 +75,5 @@ public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContaine
     public int replaceAllNodes(Filter filter, Node node) {
         return containerPart.replaceAllNodes(filter,node);
     }
-
-
 
 }

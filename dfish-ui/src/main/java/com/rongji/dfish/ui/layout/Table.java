@@ -105,7 +105,32 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         this.setTHead(new THead());
         this.setTBody(new TBody());
         this.setTFoot(new TFoot());
+        containerPart=new AbstractNodeContainerPart() {
+            @Override
+            protected  List<Node> nodes() {
+                return Arrays.asList(tHead,tBody,tFoot);
+            }
+
+            @Override
+            protected void setNode(int i, Node node) {
+                switch (i){
+                    case 0:
+                        tHead=(THead) node;
+                        break;
+                    case 1:
+                        tBody=(TBody) node;
+                        break;
+                    case 2:
+                        tFoot=(TFoot) node;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("expect 0-tHead 1-tBody  2-tFoot,, but get "+i);
+                }
+            }
+        };
     }
+
+
 
     @Override
     protected TR newPub() {
@@ -262,53 +287,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         return sb.reverse().toString();
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List findNodes() {
-        List<Node> resultList = new ArrayList<>();
-        if (tBody.findNodes() != null) {
-            resultList.addAll(tBody.findNodes());
-        }
-        if (tHead.findNodes() != null) {
-            resultList.addAll(tHead.findNodes());
-        }
-        if (tFoot.findNodes() != null) {
-            resultList.addAll(tHead.findNodes());
-        }
-        return resultList;
-    }
 
-    @Override
-    public Node findNodeById(String id) {
-        Node w = tBody.findNodeById(id);
-        if (w != null) {
-            return w;
-        }
-        w = tHead.findNodeById(id);
-        if (w != null) {
-            return w;
-        }
-        return tFoot.findNodeById(id);
-    }
-
-    @Override
-    public Table removeNodeById(String id) {
-        tBody.removeNodeById(id);
-        tHead.removeNodeById(id);
-        tFoot.removeNodeById(id);
-        return this;
-    }
-
-
-    @Override
-    public boolean replaceNodeById(Node w) {
-        if (!tBody.replaceNodeById(w)) {
-            if (!tHead.replaceNodeById(w)) {
-                return tFoot.replaceNodeById(w);
-            }
-        }
-        return true;
-    }
 
 
     private HiddenPart hiddens = new HiddenPart();
@@ -564,72 +543,54 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                 }
             }
         }
-        int headRows = 0, headColumns = 0;
-        int row = 0;
-        for (TR tr : tHead.getNodes()) {
-            if (tr.getData() != null) {
-                for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
-                    String key = entry.getKey();
-                    TD td = (TD) entry.getValue();
-                    int rows = row + (td.getRowSpan() == null ? 1 : td.getRowSpan());
-                    int formColumn = columnMap.get(key);
-                    int columns = formColumn + (td.getColSpan() == null ? 1 : td.getColSpan());
-                    if (rows > headRows) {
-                        headRows = rows;
-                    }
-                    if (columns > headColumns) {
-                        headColumns = columns;
-                    }
-                }
-            }
-            row++;
-        }
-        int footRows = 0, footColumns = 0;
-        row = 0;
-        for (TR tr : tFoot.getNodes()) {
-            if (tr.getData() != null) {
-                for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
-                    String key = entry.getKey();
-                    TD td = (TD) entry.getValue();
-                    int rows = row + (td.getRowSpan() == null ? 1 : td.getRowSpan());
-                    int formColumn = columnMap.get(key);
-                    int columns = formColumn + (td.getColSpan() == null ? 1 : td.getColSpan());
-                    if (rows > footRows) {
-                        footRows = rows;
-                    }
-                    if (columns > footColumns) {
-                        footColumns = columns;
-                    }
-                }
-            }
-            row++;
-        }
-        int bodyRows = 0, bodyColumns = 0;
-        row = 0;
-        for (TR tr : tBody.getNodes()) {
-            if (tr.getData() != null) {
-                for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
-                    String key = entry.getKey();
-                    TD td = (TD) entry.getValue();
-                    int rows = row + (td.getRowSpan() == null ? 1 : td.getRowSpan());
-                    int formColumn = columnMap.get(key);
-                    int columns = formColumn + (td.getColSpan() == null ? 1 : td.getColSpan());
-                    if (rows > bodyRows) {
-                        bodyRows = rows;
-                    }
-                    if (columns > bodyColumns) {
-                        bodyColumns = columns;
-                    }
-                }
-            }
-            row++;
-        }
+        MinimizeState state=new MinimizeState();
+        minimize(tBody,MinimizeState.TBODY,state,columnMap);
+        minimize(tHead,MinimizeState.THEAD,state,columnMap);
+        minimize(tFoot,MinimizeState.TFOOT,state,columnMap);
 
-        retain(this.getColumns(), MathUtil.max(columnSize, bodyColumns, headColumns, footColumns));
-        retain(tBody.getNodes(), bodyRows);
-        retain(tHead.getNodes(), headRows);
-        retain(tFoot.getNodes(), footRows);
+        retain(this.getColumns(), MathUtil.max(columnSize,
+                state.columns[MinimizeState.TBODY],
+                state.columns[MinimizeState.THEAD],
+                state.columns[MinimizeState.TFOOT]));
+        retain(tBody.getNodes(), state.columns[MinimizeState.TBODY]);
+        retain(tHead.getNodes(), state.columns[MinimizeState.THEAD]);
+        retain(tFoot.getNodes(), state.columns[MinimizeState.TFOOT]);
         return this;
+    }
+    private class MinimizeState{
+        int[] rows;
+        int[] columns;
+        public MinimizeState(){
+            rows=new int[3];
+            columns=new int[3];
+            Arrays.fill(rows,0);
+            Arrays.fill(columns,0);
+        }
+        public static final int TBODY=0;
+        public static final int THEAD=1;
+        public static final int TFOOT=2;
+    }
+    private void minimize(Part part, int type, MinimizeState state, Map<String, Integer> columnMap){
+        int rowIndex=0;
+        for (Node node : part.getNodes()) {
+            TR tr=(TR)node;
+            if (tr.getData() != null) {
+                for (Map.Entry<String, Object> entry : tr.getData().entrySet()) {
+                    String key = entry.getKey();
+                    TD td = (TD) entry.getValue();
+                    int rowCount = rowIndex + (td.getRowSpan() == null ? 1 : td.getRowSpan());
+                    int formColumn = columnMap.get(key);
+                    int columnCount = formColumn + (td.getColSpan() == null ? 1 : td.getColSpan());
+                    if (rowCount > state.rows[type]) {
+                        state.rows[type] = rowCount;
+                    }
+                    if (columnCount > state.columns[type]) {
+                        state.columns[type] = columnCount;
+                    }
+                }
+            }
+            rowIndex++;
+        }
     }
 
     private void retain(List<?> list, int retainLength) {
@@ -1496,8 +1457,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      *
      * @author DFish team
      */
-    protected static abstract class Part extends AbstractNodeContainer<Part> implements TableOperation<Part> {
-
+    protected static abstract class Part extends AbstractMultiNodeContainer<Part> implements TableOperation<Part>,MultiNodeContainer<Part>{
         /**
          * 构造函数
          *
@@ -1530,14 +1490,6 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             return this;
         }
 
-        /**
-         * 取得行
-         *
-         * @return List
-         */
-        public List<TR> getNodes() {
-            return (List) nodes;
-        }
 
         @Override
         public Part add(int row, int column, Object o) {
@@ -1829,7 +1781,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          * @param id String
          */
         public TR(String id) {
-            super(id);
+            setId(id);
         }
 
         /**
@@ -1860,7 +1812,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             }
             return tr.getId() != null || tr.getFocus() != null || tr.getFocusable() != null ||
                     tr.getHeight() != null || tr.getSrc() != null ||
-                    (tr.getNodes() != null && tr.getNodes().size() > 0) ||
+                    (tr.getData() != null && tr.getData().size() > 0) ||
                     tr.getCls() != null || tr.getStyle() != null ||//常用的属性排在前面
                     tr.getBeforeContent() != null || tr.getPrependContent() != null ||
                     tr.getAppendContent() != null || tr.getAfterContent() != null ||
@@ -2024,69 +1976,74 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      * @see AbstractTd {@link Column} {@link Leaf}
      * @since DFish 3.0
      */
-    protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractNodeContainer<T> {
+    protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractWidget<T> implements NodeContainer{
 
         private static final long serialVersionUID = 4300223953187136245L;
 
         /**
-         * 构造函数
-         *
-         * @param id 编号
-         */
-        public AbstractTr(String id) {
-            super(id);
-        }
-
-        /**
          * 默认构造函数
          */
-        public AbstractTr() {
-            super(null);
+        public AbstractTr() {}
+
+        protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+            Map<Integer,String> posMap;
+            @Override
+            protected  List<Node> nodes() {
+                if(data ==null){
+                    return Collections.emptyList();
+                }
+                List<Node> result=new ArrayList();
+                posMap=new HashMap<>();
+                int index=0;
+                for(Map.Entry<String,Object >entry:data.entrySet()){
+                   if(entry.getValue() instanceof Node){
+                       result.add((Node)entry.getValue());
+                       posMap.put(index++,entry.getKey());
+                   }
+                }
+                return result;
+            }
+
+            @Override
+            protected void setNode(int i, Node node) {
+                if(posMap==null){
+                    return; //本不该发生
+                }else if(node==null){
+                    data.remove(posMap.get(i));
+                }else{
+                    data.put(posMap.get(i),node);
+                }
+            }
+        };
+
+        @Override
+        public Node findNode(Filter filter) {
+            return containerPart.findNode(filter);
         }
+
+        @Override
+        public List<Node> findAllNodes(Filter filter) {
+            return containerPart.findAllNodes(filter);
+        }
+
+        @Override
+        public Node replaceNode(Filter filter, Node node) {
+            return containerPart.replaceNode(filter,node);
+        }
+
+        @Override
+        public int replaceAllNodes(Filter filter, Node node) {
+            return containerPart.replaceAllNodes(filter,node);
+        }
+
 
         protected Boolean focus;
         protected Boolean focusable;
         protected String src;
-        protected List<TR> nodes;
-
-
-        /**
-         * 取得可折叠的子元素
-         *
-         * @return List
-         */
-        public List<TR> getNodes() {
-            return nodes;
-        }
-
-        /**
-         * 设置可折叠的子元素
-         *
-         * @param nodes List
-         */
-        public void setRows(List<TR> nodes) {
-            this.nodes = nodes;
-        }
 
         @Override
         public String getType() {
             return null;
-        }
-
-        /**
-         * 添加一个可折叠的行。
-         *
-         * @param node TableRow
-         * @return 本身，这样可以继续设置其他属性
-         */
-
-        public T add(TR node) {
-            if (nodes == null) {
-                nodes = new ArrayList<>();
-            }
-            nodes.add(node);
-
-            return (T) this;
         }
 
         /**
@@ -2129,126 +2086,6 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             return (T) this;
         }
 
-        @Override
-        public T removeNodeById(String id) {
-
-            if (id == null || (nodes == null && data == null)) {
-                return (T) this;
-            }
-            if (nodes != null) {
-                for (Iterator<TR> iter = nodes.iterator(); iter.hasNext(); ) {
-                    TR item = iter.next();
-                    if (id.equals(item.getId())) {
-                        iter.remove();
-                    } else {
-                        item.removeNodeById(id);
-                    }
-                }
-            }
-            if (data != null) {
-                for (Iterator<Map.Entry<String, Object>> iter = data.entrySet().iterator(); iter.hasNext(); ) {
-                    Map.Entry<String, Object> entry = iter.next();
-                    if (!(entry.getValue() instanceof Widget)) {
-                        // FIXME 本不该出现
-                        continue;
-                    }
-                    Widget<?> cast = (Widget<?>) entry.getValue();
-                    if (id.equals(cast.getId())) {
-                        iter.remove();
-                    } else {
-                        if (cast instanceof AbstractTd) {
-                            AbstractTd<?> cast2 = (AbstractTd<?>) entry.getValue();
-                            if (cast2.getNode() != null && id.equals(cast2.getNode().getId())) {
-                                // 删除Cell的时候如果cell是以node方式存在 node被删除cell也应该被删除
-                                iter.remove();
-                            }
-                        }
-                        if (cast instanceof Layout) {
-                            Layout<?> cast3 = (Layout<?>) entry.getValue();
-                            cast3.removeNodeById(id);
-                        }
-                    }
-                }
-            }
-            return (T) this;
-        }
-
-        @Override
-        public List<Node> findNodes() {
-            List<Node> result = new ArrayList<>();
-            if (nodes != null) {
-                for (Widget<?> o : nodes) {
-                    result.add(o);
-                }
-            }
-            if (data != null) {
-                for (Object o : data.values()) {
-                    if (o instanceof Widget) {
-                        //去除字符串
-                        result.add((Widget<?>) o);
-                    }
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public boolean replaceNodeById(Node panel) {
-            if (panel == null || panel.getId() == null) {
-                return false;
-            }
-            String id = panel.getId();
-            if (nodes != null) {
-                for (int i = 0; i < nodes.size(); i++) {
-                    TR item = nodes.get(i);
-                    if (id.equals(item.getId())) {
-                        // 替换该元素
-                        nodes.set(i, (TR) panel);
-                        return true;
-                    } else {
-                        boolean replaced = item.replaceNodeById(panel);
-                        if (replaced) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            if (data != null) {
-                for (Iterator<Map.Entry<String, Object>> iter = data.entrySet()
-                        .iterator(); iter.hasNext(); ) {
-                    Map.Entry<String, Object> entry = iter.next();
-                    if (!(entry.getValue() instanceof Widget)) {
-                        //FIXME 本不该出现
-                        continue;
-                    }
-                    Widget<?> cast = (Widget<?>) entry.getValue();
-                    if (id.equals(cast.getId())) {
-                        entry.setValue(panel);
-                    } else if (cast instanceof Layout) {
-                        boolean replaced = ((Layout<?>) cast).replaceNodeById(panel);
-                        if (replaced) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public T putData(String key, Object value) {
-            if (value == null) {
-                return (T) this;
-            }
-
-            if (data == null) {
-                data = new LinkedHashMap<String, Object>();
-            }
-            // 如果插入的内容是String/Object  以及非TableCell的Widget需要做一层封装。
-            data.put(key, value);
-            return (T) this;
-        }
-
 
         /**
          * 排序src
@@ -2278,11 +2115,13 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          */
         protected void copyProperties(AbstractTr<?> to, AbstractTr<?> from) {
             super.copyProperties(to, from);
-            to.nodes = from.nodes;
+            //data
             to.focus = from.focus;
             to.src = from.src;
             to.focusable = from.focusable;
         }
+
+
     }
 
     /**
@@ -2309,17 +2148,11 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      * @author DFish Team
      * @see TD
      */
-    protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractNodeContainer<T>
+    protected static abstract class AbstractTd<T extends AbstractTd<T>> extends AbstractWidget<T>
             implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> {
 
         private static final long serialVersionUID = -7870476532478876521L;
 
-        /**
-         * 默认构造函数
-         */
-        public AbstractTd() {
-            super(null);
-        }
 
         protected Integer colSpan;
         protected Integer rowSpan;
@@ -2396,98 +2229,8 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             return (T) this;
         }
 
-        /**
-         * 部件(Widget)模式时， 取得单元格内部部件
-         *
-         * @return Widget
-         */
-        @Override
-        public Widget getNode() {
-            return node;
-        }
-
-        /**
-         * 部件(Widget)模式时， 设置单元格内部部件
-         *
-         * @param node Widget
-         * @return 本身，这样可以继续设置其他属性
-         */
-        @Override
-        public T setNode(Widget node) {
-            this.node = node;
-            return (T) this;
-        }
-
-        /**
-         * TableCell 下只能有一个node，所以add和setNode是相同的功能
-         *
-         * @param node Widget
-         * @return 本身，这样可以继续设置其他属性
-         */
-        @Override
-        public T add(Node node) {
-            if (node instanceof Widget) {
-                this.node = (Widget) node;
-            } else {
-                throw new IllegalArgumentException("Widget");
-            }
-            return (T) this;
-        }
-
-        @Override
-        public Widget<?> findNodeById(String id) {
-            if (id == null || node == null) {
-                return null;
-            }
-            if (id.equals(node.getId())) {
-                return node;
-            } else if (node instanceof Layout) {
-                Layout cast = (Layout) node;
-                return (Widget) cast.findNodeById(id);
-            }
-            return null;
-        }
-
-        @Override
-        public List<Node> findNodes() {
-            return Arrays.asList(new Node[]{node});
-        }
 
 
-        @Override
-        public T removeNodeById(String id) {
-            if (id == null || node == null) {
-                return (T) this;
-            }
-            if (id.equals(node.getId())) {
-                node = null;
-            }
-            if (node instanceof Layout) {
-                Layout cast = (Layout) node;
-                cast.removeNodeById(id);
-            }
-            return (T) this;
-        }
-
-        @Override
-        public boolean replaceNodeById(Node w) {
-            if (w == null || w.getId() == null || node == null) {
-                return false;
-            }
-            if (w.getId().equals(node.getId())) {
-                // 替换该元素
-                node = (Widget) w;
-                return true;
-            } else if (node instanceof Layout<?>) {
-                Layout cast = (Layout) node;
-                boolean replaced = cast.replaceNodeById(w);
-                if (replaced) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         @Override
         public String getVAlign() {
@@ -2587,6 +2330,47 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         public T setLabelWidth(Integer labelWidth) {
             this.labelWidth = labelWidth;
             return (T) this;
+        }
+
+        protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+            @Override
+            protected  List<Node> nodes() {
+                return Arrays.asList(AbstractTd.this.node) ;
+            }
+
+            @Override
+            protected void setNode(int i, Node node) {
+                assert(i==0);
+                AbstractTd.this.setNode((Widget) node);
+            }
+        };
+        @Override
+        public Node findNode(Filter filter) {
+            return containerPart.findNode(filter);
+        }
+
+        @Override
+        public List<Node> findAllNodes(Filter filter) {
+            return containerPart.findAllNodes(filter);
+        }
+
+        @Override
+        public Node replaceNode(Filter filter, Node node) {
+            return containerPart.replaceNode(filter,node);
+        }
+
+        @Override
+        public int replaceAllNodes(Filter filter, Node node) {
+            return containerPart.replaceAllNodes(filter,node);
+        }
+        @Override
+        public T setNode(Widget node){
+            this.node=(Widget)node;
+            return (T)this;
+        }
+        @Override
+        public Widget getNode(){
+            return node;
         }
     }
 

@@ -8,8 +8,8 @@ public class CalendarTest extends  DFishUITestCase{
 	protected Object getWidget() {
 		Calendar w=new Calendar(Calendar.FACE_DATE);
 		w.getPub().setCls("mycls");
-		w.add(1, new Calendar.Item("1号"));
-		w.add(5, new Calendar.Item("5号").setCls("highlight"));
+//		w.add(1, new Calendar.Item("1号"));
+//		w.add(5, new Calendar.Item("5号").setCls("highlight"));
 		return w;
 	}
 

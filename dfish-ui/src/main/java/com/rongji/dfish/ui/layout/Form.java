@@ -223,27 +223,4 @@ public class Form extends AbstractPubNodeContainer<Form, Table.TD> implements Ht
         return this;
     }
 
-    @Override
-    public Form removeNodeById(String id) {
-        //如果remove的结果是，td的下一层是指定的元素，需要吧td删除
-        for (Iterator<Node> iter = nodes.iterator();
-             iter.hasNext(); ) {
-            Node<?> item = iter.next();
-            if (id.equals(item.getId()) || (item instanceof Table.TD && id.equals(((Table.TD) item).getNode().getId()))) {
-                iter.remove();
-            } else if (item instanceof Layout) {
-                Layout<?> cast = (Layout<?>) item;
-                cast.removeNodeById(id);
-            }
-        }
-
-
-        return this;
-    }
-
-    @Override
-    public List<Node> getNodes() {
-        return  nodes;
-    }
-
 }

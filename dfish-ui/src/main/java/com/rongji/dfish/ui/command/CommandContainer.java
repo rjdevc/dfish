@@ -10,13 +10,13 @@ import com.rongji.dfish.ui.NodeContainer;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public interface CommandContainer<T extends CommandContainer<T>> extends NodeContainer<T> {
+public interface CommandContainer<T extends CommandContainer<T>> extends NodeContainer {
     /**
      * 添加一个命令。
      *
      * @param command Command
      * @return CommandContainer
      */
-    T add(Command<?> command);
+    T add(Command command);
 
 }

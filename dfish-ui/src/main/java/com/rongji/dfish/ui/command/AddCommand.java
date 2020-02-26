@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rongji.dfish.ui.AbstractNodeContainerPart;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.Widget;
@@ -22,7 +23,6 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
     private static final long serialVersionUID = -2417775749900268295L;
 
     protected List<Node> nodes = new ArrayList<>();
-
     public AddCommand(String target, Widget<?>... nodes) {
         setTarget(target);
         if (nodes != null) {
@@ -31,51 +31,44 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
             }
         }
     }
-
-    /**
-     * 添加需要插入元素
-     * 一般是增加Widget。也允许增加Command等其他部件
-     *
-     * @param w JsonObject
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public T add(Widget w) {
-        if (w == null) {
-            return (T) this;
-        }
-        if (w == this) {
-            throw new IllegalArgumentException("can not add widget itself as a sub widget");
-        }
-        nodes.add(w);
-        return (T) this;
-    }
-    @Override
-    public List<Node> findNodes() {
+    public List<Node> getNodes(){
         return nodes;
     }
 
+    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+        @Override
+        protected  List<Node> nodes() {
+            return AddCommand.this.nodes;
+        }
+
+        @Override
+        protected void setNode(int i, Node node) {
+            if(node==null){
+                nodes.remove(i);
+            }else{
+                nodes.set(i,node);
+            }
+        }
+    };
 
     @Override
-    public void clearNodes(){
-        this.nodes.clear();
-    }
-    @Override
-    public List<Node> getNodes() {
-        return nodes;
+    public Node findNode(Filter filter) {
+        return containerPart.findNode(filter);
     }
 
     @Override
-    public Widget<?> findNodeById(String id) {
-        return null;
+    public List<Node> findAllNodes(Filter filter) {
+        return containerPart.findAllNodes(filter);
     }
 
     @Override
-    public T removeNodeById(String id) {
-        return (T)this;
+    public Node replaceNode(Filter filter, Node node) {
+        return containerPart.replaceNode(filter,node);
     }
 
     @Override
-    public boolean replaceNodeById(Node w) {
-        return false;
+    public int replaceAllNodes(Filter filter, Node node) {
+        return containerPart.replaceAllNodes(filter,node);
     }
+
 }

@@ -67,8 +67,11 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
 
     @Override
     public T putData(String key, Object value) {
+        if(value==null){
+            return (T) this;
+        }
         if (data == null) {
-            data = new LinkedHashMap<String, Object>();
+            data = new LinkedHashMap<>();
         }
         data.put(key, value);
         return (T) this;
@@ -101,6 +104,9 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
 //		to.width=from.width;
 //		to.wmin=from.wmin;
         //浅拷贝
+
+        to.template=from.template;
+        to.data=from.data;
         to.id = from.id;
         to.data = from.data;
     }

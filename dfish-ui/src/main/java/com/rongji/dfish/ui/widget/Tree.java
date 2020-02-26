@@ -34,6 +34,21 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      */
     public Tree(String id) {
         super(id);
+        containerPart=new AbstractNodeContainerPart() {
+            @Override
+            protected  List<Node> nodes() {
+                return rootLeaf.getNodes();
+            }
+
+            @Override
+            protected void setNode(int i, Node node) {
+                if(node==null){
+                    rootLeaf.getNodes().remove(i);
+                }else{
+                    rootLeaf.getNodes().set(i,node);
+                }
+            }
+        };
     }
 
     @Override
@@ -211,39 +226,6 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
     }
 
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Node> findNodes() {
-        return rootLeaf.findNodes();
-    }
-
-
-    @Override
-    public Tree add(Node node) {
-        if (!(node instanceof Leaf)) {
-            throw new IllegalArgumentException("node must be Tree.Leaf");
-        }
-        rootLeaf.add(node);
-        return this;
-    }
-
-    @Override
-    public Tree add(int index, Leaf w) {
-        rootLeaf.add(index, w);
-        return this;
-    }
-
-
-    @Override
-    public Tree removeNodeById(String id) {
-        rootLeaf.removeNodeById(id);
-        return this;
-    }
-
-    @Override
-    public boolean replaceNodeById(Node w) {
-        return rootLeaf.replaceNodeById(w);
-    }
 
     /**
      * 修复叶节点的选中状态
@@ -392,7 +374,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      * @version 2.0
      * @since XMLTMPL 1.0
      */
-    public static class Leaf extends AbstractNodeContainer<Leaf> implements MultiNodeContainer<Leaf>, Statusful<Leaf>,
+    public static class Leaf extends AbstractMultiNodeContainer<Leaf> implements MultiNodeContainer<Leaf>, Statusful<Leaf>,
             HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf>, BoxHolder<Leaf>, BadgeHolder<Leaf> {
         private static final long serialVersionUID = -6246121270694425393L;
         private Boolean focus;
@@ -832,11 +814,6 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
             return this;
         }
 
-        @Override
-        public List<Node> getNodes() {
-            return (List) nodes;
-        }
-
         private static String[] TEXT_PROP_NAMES = {"text", "value"};
 
         /**
@@ -1094,4 +1071,6 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
             return this;
         }
     }
+
+
 }
