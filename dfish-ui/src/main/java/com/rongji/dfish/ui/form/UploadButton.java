@@ -20,8 +20,8 @@ public class UploadButton extends AbstractButton<UploadButton > {
 	public UploadButton(String icon, String text) {
 		this.setIcon(icon);
 		this.setText(text);
-      
 	}
+
 	/**
 	 * 构造函数
 	 * @param text String 标题

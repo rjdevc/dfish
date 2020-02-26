@@ -15,6 +15,7 @@ public class Tip extends AbstractDialog<Tip> implements Command<Tip>, HasText<Ti
     private static final long serialVersionUID = -3534531697064109684L;
 
     private String text;
+    private Boolean closable;
 //    private Boolean multiple;
 
     /**
@@ -48,6 +49,23 @@ public class Tip extends AbstractDialog<Tip> implements Command<Tip>, HasText<Ti
         return this;
     }
 
+    /**
+     * 是否显示关闭图标
+     * @return Boolean
+     */
+    public Boolean getClosable() {
+        return closable;
+    }
+
+    /**
+     * 是否显示关闭图标
+     * @param closable
+     * @return Boolean
+     */
+    public Tip setClosable(Boolean closable) {
+        this.closable = closable;
+        return this;
+    }
 //    /**
 //     * 是否允许多个实例存在。
 //     * @return Boolean

@@ -82,7 +82,15 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
                     node.setValue(option.getValue());
                     node.setText(Utils.isEmpty(option.getText()) ? String.valueOf(option.getValue()) : option.getText());
                     node.setName(getName());
-                    node.setChecked(option.getChecked());
+
+                    if (option.getChecked() != null) {
+                        node.setChecked(option.getChecked());
+                    } else if (value != null) {
+                        boolean checked = value.equals(option.getValue());
+                        if (checked) {
+                            node.setChecked(true);
+                        }
+                    }
                 } else {
                     String text = null;
                     Object value;

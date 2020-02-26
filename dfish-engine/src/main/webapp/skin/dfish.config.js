@@ -33,7 +33,7 @@ dfish.config({
 
         'Tree': {scroll: true, ellipsis: true},
         'Leaf': {tip: true, style: 'padding-right:10px;', widthMinus: 10},
-        'Empty': {width: '*', height: '*'},
+        'Blank': {width: '*', height: '*'},
 
         'ButtonBar': {space: 10, pub: {tip: true, height: 30}},
         'ButtonBar.dlg-head-operation': {space: 0},
@@ -102,7 +102,7 @@ dfish.config({
         },
         'Toggle.z-hr': {
             cls: null,
-            heightMinus: null
+            heightMinus: 0
         },
         'TableToggle': {
             height: 40,
@@ -110,6 +110,10 @@ dfish.config({
             expandedIcon: '.i-toggle-expanded',
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
+        },
+        'TableToggle.z-hr': {
+            cls: null,
+            heightMinus: 0
         }
     },
     // 自定义widget

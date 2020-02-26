@@ -8,5 +8,5 @@ import com.rongji.dfish.ui.AbstractWidget;
  * @date 2020-01-16
  * @since 5.0
  */
-public class Empty extends AbstractWidget<Empty> {
+public class Blank extends AbstractWidget<Blank> {
 }

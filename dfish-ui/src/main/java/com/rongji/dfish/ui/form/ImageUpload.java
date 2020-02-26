@@ -14,6 +14,7 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
     private static final long serialVersionUID = -2689106571559435242L;
 
     private String thumbnail;
+    private Boolean transparent;
 
     /**
      * @param name
@@ -55,4 +56,21 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
         return this;
     }
 
+    /**
+     * 设置为true，表单将成为无边框无背景的状态。
+     * @return Boolean
+     */
+    public Boolean getTransparent() {
+        return transparent;
+    }
+
+    /**
+     * 设置为true，表单将成为无边框无背景的状态。
+     * @param transparent Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public ImageUpload setTransparent(Boolean transparent) {
+        this.transparent = transparent;
+        return this;
+    }
 }
