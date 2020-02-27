@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.*;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public class Loading extends AbstractDialog<Loading> implements Command<Loading>, HasText<Loading> {
+public class Loading extends AbstractPopup<Loading> implements Command<Loading>, HasText<Loading> {
 
     private static final long serialVersionUID = 2229794408494180794L;
 

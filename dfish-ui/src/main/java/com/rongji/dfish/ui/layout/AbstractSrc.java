@@ -2,7 +2,6 @@ package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.command.AbstractDialog;
 import com.rongji.dfish.ui.command.Command;
 
 import java.util.Arrays;

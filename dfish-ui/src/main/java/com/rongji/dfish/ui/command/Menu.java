@@ -8,7 +8,6 @@ import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.widget.AbstractButton;
 import com.rongji.dfish.ui.widget.Split;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNodeContainer<Menu,Widget> {
+public class Menu extends AbstractPopup<Menu> implements Command<Menu>, MultiNodeContainer<Menu,Widget> {
 
     private static final long serialVersionUID = 7565861352403693874L;
 
@@ -52,12 +51,6 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
     public Menu add(Split split) {
         add((Widget) split);
         return this;
-    }
-
-    @Override
-    @Deprecated
-    public Menu setNode(Widget node) {
-        throw new UnsupportedOperationException("deprecated. see addNode");
     }
 
     @Override

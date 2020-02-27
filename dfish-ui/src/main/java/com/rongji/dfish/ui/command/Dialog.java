@@ -1,6 +1,10 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.LazyLoad;
+import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.layout.View;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 该命令用于打开一个对话框(Dialog)
@@ -10,7 +14,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, LazyLoad<Dialog> {
+public class Dialog extends AbstractPopup<Dialog> implements SingleNodeContainer<Dialog,View>,Command<Dialog>, LazyLoad<Dialog> {
 
     private static final long serialVersionUID = -3055223672741088528L;
 
@@ -21,6 +25,7 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
     private String error;
     private String complete;
     private String filter;
+    protected View node;
 //    private Boolean prong;
 
     /**
@@ -211,6 +216,59 @@ public class Dialog extends AbstractDialog<Dialog> implements Command<Dialog>, L
     public Dialog setSync(Boolean sync) {
         this.sync = sync;
         return this;
+    }
+
+    /**
+     * 取得可以展示的根widget
+     *
+     * @return Widget
+     */
+    @Override
+    public View getNode() {
+        return node;
+    }
+
+    /**
+     * 它只能包含唯一的节点
+     *
+     * @param node Widget
+     * @return 本身，这样可以继续设置其他属性
+     */
+    @Override
+    public Dialog setNode(View node) {
+        this.node = node;
+        return  this;
+    }
+    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
+        @Override
+        protected List<Node> nodes() {
+            return Arrays.asList(Dialog.this.node) ;
+        }
+
+        @Override
+        protected void setNode(int i, Node node) {
+            assert(i==0);
+            Dialog.this.setNode((View) node);
+        }
+    };
+    @Override
+    public Node findNode(Filter filter) {
+        return containerPart.findNode(filter);
+    }
+
+    @Override
+    public List<Node> findAllNodes(Filter filter) {
+        return containerPart.findAllNodes(filter);
+    }
+
+    @Override
+    public Node replaceNode(Filter filter, Node node) {
+        return containerPart.replaceNode(filter,node);
+    }
+
+    @Override
+    public int replaceAllNodes(Filter filter, Node node) {
+        return containerPart.replaceAllNodes(filter,node);
     }
 
 }

@@ -2,7 +2,6 @@ package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,15 +14,15 @@ import java.util.List;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractDialog<T extends AbstractDialog<T>> extends AbstractWidget<T>
-        implements SingleNodeContainer<T,Widget>, Node<T>, Positionable<T> {
+public abstract class AbstractPopup<T extends AbstractPopup<T>> extends AbstractWidget<T>
+        implements Node<T>, Positionable<T> {
 
     private static final long serialVersionUID = -6765281771952118355L;
 
     /**
      * 默认构造函数
      */
-    public AbstractDialog() {
+    public AbstractPopup() {
     }
 
     /**
@@ -42,7 +41,6 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
     protected Boolean cache;
     protected Integer indent;
     protected Long timeout;
-    protected Widget<?> node;
     protected Boolean movable;
     protected Boolean fullScreen;
     protected Boolean resizable;
@@ -209,27 +207,6 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
         return (T) this;
     }
 
-    /**
-     * 取得可以展示的根widget
-     *
-     * @return Widget
-     */
-    @Override
-    public Widget<?> getNode() {
-        return node;
-    }
-
-    /**
-     * 它只能包含唯一的节点
-     *
-     * @param node Widget
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    public T setNode(Widget node) {
-        this.node = node;
-        return (T) this;
-    }
 
     /**
      * 窗口是否可用鼠标拖动
@@ -445,36 +422,5 @@ public abstract class AbstractDialog<T extends AbstractDialog<T>> extends Abstra
 
     }
 
-    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
-        @Override
-        protected  List<Node> nodes() {
-            return Arrays.asList(AbstractDialog.this.node) ;
-        }
-
-        @Override
-        protected void setNode(int i, Node node) {
-            assert(i==0);
-            AbstractDialog.this.setNode((Widget) node);
-        }
-    };
-    @Override
-    public Node findNode(Filter filter) {
-        return containerPart.findNode(filter);
-    }
-
-    @Override
-    public List<Node> findAllNodes(Filter filter) {
-        return containerPart.findAllNodes(filter);
-    }
-
-    @Override
-    public Node replaceNode(Filter filter, Node node) {
-        return containerPart.replaceNode(filter,node);
-    }
-
-    @Override
-    public int replaceAllNodes(Filter filter, Node node) {
-        return containerPart.replaceAllNodes(filter,node);
-    }
 
 }

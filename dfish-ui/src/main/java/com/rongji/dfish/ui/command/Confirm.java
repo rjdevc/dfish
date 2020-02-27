@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.HasText;
-import com.rongji.dfish.ui.NodeContainer;
 import com.rongji.dfish.ui.widget.Button;
 
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public class Confirm extends AbstractDialog<Confirm> implements Command<Confirm>, HasText<Confirm> {
+public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>, HasText<Confirm> {
 
     private static final long serialVersionUID = 6715410304552489693L;
 

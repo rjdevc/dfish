@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.*;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public class Tip extends AbstractDialog<Tip> implements Command<Tip>, HasText<Tip> {
+public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip> {
 
     private static final long serialVersionUID = -3534531697064109684L;
 

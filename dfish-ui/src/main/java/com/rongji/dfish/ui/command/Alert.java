@@ -12,7 +12,7 @@ import com.rongji.dfish.ui.widget.Button;
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
  * @since 2.0
  */
-public class Alert extends AbstractDialog<Alert> implements Command<Alert>, Positionable<Alert>, HasText<Alert> {
+public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Positionable<Alert>, HasText<Alert> {
 
     private static final long serialVersionUID = 3046146830347964521L;
 
