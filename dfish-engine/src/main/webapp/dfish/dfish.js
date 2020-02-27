@@ -1436,7 +1436,7 @@ $.draggable = function( a, b ) {
 	b = b || {};
 	new Drag( a, b );
 	$.query( a.$() ).on( 'mousedown', _dnd_selector[ a.type ], function( downEvent ) {
-		var ix = downEvent.pageX, iy = downEvent.pageY, sn, u, h, p, q, c = $.widget( downEvent.currentTarget ), d = '_dndhelper', g = d + ':g',
+		var ix = downEvent.pageX, iy = downEvent.pageY, sn, u, v, h, p, q, c = $.widget( downEvent.currentTarget ), d = '_dndhelper', g = d + ':g',
 			dp = function( o ) {
 				o = $.widget( o );
 				return o.rootNode && isDrop.call( o.rootNode ) ? o.rootNode : o.closest( isDrop );
@@ -1445,13 +1445,26 @@ $.draggable = function( a, b ) {
 				return d && (!d.cst.scope || !b.scope || _idsAny( d.cst.scope, b.scope ));
 			};
 		$.moveup( function( e ) {
-			var x = e.pageX, y = e.pageY, m = e.srcElement, n = $.widget( m ), o;
+			var x = e.pageX, y = e.pageY, m = e.srcElement, n = m != v && $.widget( m ), o;
 			// 鼠标按下并移动5像素后才能触发拖动，避免误操作
-			! u && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) && (u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;border:1px dashed #ddd;opacity:.6;z-index:2">' + ($.widget( downEvent.target ).attr( 'text' ) || '&nbsp;') + '</div>' ));
+			if ( ! u && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) ) {
+				var f = $.widget( downEvent.target ), t = f.attr( 'text' );
+				if ( ! t && f.attr( 'icon' ) ) {
+					t = $.image( f.attr( 'icon' ), { maxWidth: 32, maxHeight: 32 } );
+				}
+				v = _db( '<div style="position:absolute;background:#777;top:0;left:0;right:0;bottom:0;opacity:.5;z-index:1"></div>' );
+				u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:3" class=f-fix>' + (t || '&nbsp;') + '</div>' );
+				for ( var k in _drop_cache ) {
+					if ( isDrop.call( $.all[ k ] ) ) {
+						$.all[ k ].$().style.zIndex = 3;
+						$.all[ k ].$().style.background = '#fff';
+					}
+				}
+			}
 			if ( u && m != u ) {
 				u.style.left = (e.pageX + 7) + 'px';
 				u.style.top  = (e.pageY + 7) + 'px';
-				if ( (p = dp( n )) && (o = _drop_cache[ p.id ]) ) {
+				if ( n && (p = dp( n )) && (o = _drop_cache[ p.id ]) ) {
 					if ( n == c || n.contains( c ) ) {
 						_classAdd( n.$(), 'f-dnd-notallowed' );
 						$( d ) && _rm( d );
@@ -1488,8 +1501,8 @@ $.draggable = function( a, b ) {
 			}
 		}, function( e ) {
 			if ( u ) {
-				var m = e.srcElement, n = $.widget( m );
-				if ( (p = dp( m )) && p != a && ! a.contains( p ) ) {
+				var m = e.srcElement, n = m != v && $.widget( m );
+				if ( n && (p = dp( m )) && p != a && ! a.contains( p ) ) {
 					if ( (sn == 'before' && p == a.next()) || (sn == 'after' && p == a.prev()) || (!sn && p == a.parentNode) ) {
 						$.alert( $.loc.tree_movefail1 );
 					} else if ( ! n.hasClass( 'f-dnd-notallowed' ) ) {
@@ -1497,7 +1510,13 @@ $.draggable = function( a, b ) {
 						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: c, droppable: n, type: sn || 'append' } );
 					}
 				}
-				_rm( u ), _rm( '_dndhelper' ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
+				for ( var k in _drop_cache ) {
+					if ( isDrop.call( $.all[ k ] ) ) {
+						$.all[ k ].$().style.zIndex = '';
+						$.all[ k ].$().style.background = '';
+					}
+				}
+				_rm( u ), _rm( v ), _rm( '_dndhelper' ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
 			}
 		} );
 	} );

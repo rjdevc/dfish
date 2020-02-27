@@ -1712,7 +1712,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 			return N;
 		return r;
 	};
-	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget, b -> size, c -> appoint size?
+	// scaleWidth, scaleHeight 默认的分配给子元素高宽的方法 /@a -> widget, b -> widget size, c -> this size?
 	_proto[ sz ] = function( a, b, c ) {
 		if ( a == N )
 			return N;
@@ -3543,7 +3543,7 @@ Button = define.widget( 'Button', {
 				this.remove();
 		},
 		html_icon: function( a ) {
-			return this.x.icon ? $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconwidth, height: this.x.iconheight } ) : '';
+			return this.x.icon ? $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconWidth, height: this.x.iconHeight } ) : '';
 		},
 		html_text: function( a ) {
 			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text ) +
@@ -4886,7 +4886,7 @@ Tip = define.widget( 'Tip', {
 	Prototype: {
 		className: 'w-dialog w-tip',
 		showLoading: $.rt(),
-		// alert 类型对话框z-index固定值为3，总在最前面，不做修改
+		// alert 类型对话框z-index固定值为11，总在最前面，不做修改
 		front: $.rt( F ),
 		_front: $.rt( F ),
 		text: function( a ) {
