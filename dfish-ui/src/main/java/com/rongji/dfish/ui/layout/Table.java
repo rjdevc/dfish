@@ -1942,9 +1942,20 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      * @see AbstractTd {@link Column} {@link Leaf}
      * @since DFish 3.0
      */
-    protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractWidget<T> implements NodeContainer{
+    protected static abstract class AbstractTr<T extends AbstractTr<T>> extends AbstractWidget<T> implements MultiNodeContainer<T,TR>{
 
         private static final long serialVersionUID = 4300223953187136245L;
+        protected List<TR> nodes;
+        @Override
+        public List<TR>getNodes(){
+            return nodes;
+        }
+        @Override
+        public T setNodes(List<TR> nodes){
+            this.nodes=nodes;
+            return (T)this;
+        }
+
 
         /**
          * 默认构造函数
