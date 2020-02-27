@@ -1457,6 +1457,7 @@ $.draggable = function( a, b ) {
 						if ( _drop_cache[ k ].cst.highlight ) {
 							$.all[ k ].$().style.zIndex = 3;
 							$.all[ k ].$().style.background = '#fff';
+							$.all[ k ].addClass( 'z-droppable-highlight' );
 							g = T;
 						}
 						$.all[ k ].addClass( 'z-droppable' );
@@ -1519,6 +1520,7 @@ $.draggable = function( a, b ) {
 						if ( _drop_cache[ k ].cst.highlight ) {
 							$.all[ k ].$().style.zIndex = '';
 							$.all[ k ].$().style.background = '';
+							$.all[ k ].removeClass( 'z-droppable-highlight' );
 							g = T;
 						}
 						$.all[ k ].removeClass( 'z-droppable' );

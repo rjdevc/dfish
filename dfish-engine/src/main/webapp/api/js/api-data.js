@@ -261,7 +261,7 @@ define( {
           { name: 'scope', type: 'String', remark: '用于组合配套 draggable 和 droppable 项。一个与 droppable 带有相同的 scope 值的 draggable 会被该 droppable 接受。多个scope用逗号隔开。', optional: true }
         ] }
       ] },
-      { name: '$.droppable(target, [option])', remark: '设置对象为可放置。', param: [
+      { name: '$.droppable(target, [option])', remark: '设置对象为可放置。拖拽过程中，放置节点有状态样式 z-droppable。', param: [
       	{ name: 'target', type: 'Widget', remark: 'widget元素。' },
         { name: 'option', type: 'Object', remark: '放置参数。', optional: true, param: [
           { name: 'drop', type: 'Function(event, ui)', remark: '当一个可接受的 draggable 被放置在 droppable 上时触发。', optional: true, param: [
@@ -272,7 +272,7 @@ define( {
           		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
           	] }
           ] },
-          { name: 'highlight', type: 'Boolean', remark: '设置为true时，当前放置节点高亮，周围被半透明蒙版遮住。', optional: true },
+          { name: 'highlight', type: 'Boolean', remark: '设置为true时，当前放置节点高亮，周围被半透明蒙版遮住。当前节点增加状态样式 z-droppable-highlight。', optional: true },
           { name: 'isDisabled', type: 'Function(event, ui)', remark: '当函数返回true时，当前放置节点为禁用状态。', optional: true, param: [
           	{ name: 'event', type: 'Event', remark: '拖动事件。' },
           	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
