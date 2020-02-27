@@ -272,6 +272,7 @@ define( {
           		{ name: 'type', type: 'String', remark: '放置方式。可能的值："append","before","after"。' }
           	] }
           ] },
+          { name: 'highlight', type: 'Boolean', remark: '设置为true时，当前放置节点高亮，周围被半透明蒙版遮住。', optional: true },
           { name: 'isDisabled', type: 'Function(event, ui)', remark: '当函数返回true时，当前放置节点为禁用状态。', optional: true, param: [
           	{ name: 'event', type: 'Event', remark: '拖动事件。' },
           	{ name: 'ui', type: 'Object', remark: '辅助参数。', param: [
@@ -3523,12 +3524,35 @@ define( {
       { name: 'nodes', type: 'Array', remark: '命令集合的数组。' },
       { name: 'path', type: 'String', remark: '指定一个 view path，当前的命令集由这个 view 作为执行主体。' },
       { name: 'target', type: 'String', remark: '指定一个 widget id，当前的命令集由这个 widget 作为执行主体。path 和 target 同时指定时，相当于 VM( path ).find( target ).cmd( args ); ' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//执行一个命令集
+            return~
+            vm.cmd( {
+              type: 'Cmd',
+              nodes: [
+                { type: 'JS', text: 'alert("one")' },
+                { type: 'JS', text: 'alert("two")' }
+              ]
+            } );
+          }
+      ] }
     ]
   },
   "JS": {
   	remark: 'js命令。',
     Config: [
       { name: 'text', type: 'String', remark: 'js语句。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            vm.cmd( { type: 'JS', text: 'alert("JS Command")' } );
+          }
+      ] }
     ]
   },
   "Ajax": {
@@ -3536,18 +3560,7 @@ define( {
     Config: [
       { name: 'beforeSend', type: 'String | Function', remark: '在发送请求之前调用的函数。如果返回false可以取消本次ajax请求。支持一个变量，<b>$ajax</b>(Ajax实例)' },
       { name: 'complete', type: 'String | Function', remark: '在得到服务器的响应后调用的函数(不论成功失败都会执行)。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
-      { name: 'data', type: 'String | Object', remark: 'post 数据。', example: [
-          function() {
-            // 对象类型的数据，不需要url编码
-            return~
-            { type: 'ajax', src: 'abc.sp', data: { id: '001', name: 'a b' } }
-          },
-          function() {
-            // 字符串类型的数据，需要url编码
-            return~
-            { type: 'ajax', src: 'abc.sp', data: 'id=001&name=a%20b' }
-          }
-      ] },
+      { name: 'data', type: 'String | Object', remark: 'post 数据。' },
       { name: 'dataType', type: 'String', remark: '指定后台返回的数据格式。可选值: <b>json</b>(默认), <b>xml</b>, <b>text</b>' },
       { name: 'download', type: 'Boolean', remark: '设置为true，转为下载模式。' },
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
@@ -3557,6 +3570,38 @@ define( {
       { name: 'template', type: 'String', remark: '模板地址。' },
       { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'sync', type: 'Boolean', remark: '是否同步。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            // 数据提交过程中显示"正在加载"的提示框，完成后提示框自动关闭
+            return~
+            vm.cmd( {
+            	type: 'Ajax',
+            	src: 'get.sp',
+            	loading: true
+            } );
+          },
+          function() {
+            // 用 data 发送数据
+            vm.cmd( {
+            	type: 'Ajax',
+            	src: 'get.sp',
+            	data: {
+            	    id: '001',
+            	    name: 'a b'
+            	}
+            } );
+          },
+          function() {
+            // 打印服务器返回的数据
+            vm.cmd( {
+            	type: 'Ajax',
+            	src: 'get.sp',
+            	success: 'console.log($response)'
+            } );
+          }
+      ] }
    ]
   },
   "Submit": {
@@ -3568,7 +3613,36 @@ define( {
         { name: 'range', type: 'String', remark: '指定一个 widget id，只校验这个 widget 内的表单。多个 id 用逗号隔开。如果以感叹号 ! 开头，则表示不校验 widget 内的表单。' },
         { name: 'group', type: 'String', remark: '验证组名。' },
         { name: 'effect', type: 'String', remark: '验证效果。可选值: <b>alert</b>, <b>red</b>, <b>none</b>' }
-      ] },
+      ] }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            // 数据提交过程中显示"正在加载"的提示框，完成后提示框自动关闭
+            return~
+            vm.cmd( {
+            	type: 'Submit',
+            	src: 'post.sp',
+            	loading: true
+            } );
+          },
+          function() {
+            // 指定只提交 id=f_form 面板内的表单数据
+            vm.cmd( {
+            	type: 'Submit',
+            	src: 'post.sp',
+            	range: 'f_form'
+            } );
+          },
+          function() {
+            // 打印服务器返回的数据
+            vm.cmd( {
+            	type: 'Submit',
+            	src: 'post.sp',
+            	success: 'console.log($response)'
+            } );
+          }
+      ] }
    ]
   },
   "After": {
@@ -3593,7 +3667,7 @@ define( {
             } );
           }
       ] }
-    ]    
+    ]
   },
   "Prepend": {
   	remark: '插入命令。在某个 widget 内部前置一个或多个 widget。',
@@ -3602,6 +3676,21 @@ define( {
       { name: 'target', type: 'String', remark: 'widget ID。' },
       //{ name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
       { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。node 和 nodes 不应同时使用。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//在 id=f_bbr 的按钮栏里面插入一个按钮，位置在最前
+            return~
+            vm.cmd( {
+              type: 'Prepend',
+              target: 'f_bbr',
+              nodes: [
+                { type: 'Button', text: '新增Prepend' }
+              ]
+            } );
+          }
+      ] }
     ]
   },
   "Append": {
@@ -3611,6 +3700,21 @@ define( {
       { name: 'target', type: 'String', remark: 'widget ID。' },
       //{ name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
       { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。node 和 nodes 不应同时使用。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//在 id=f_bbr 的按钮栏里面插入一个按钮，位置在最后
+            return~
+            vm.cmd( {
+              type: 'Append',
+              target: 'f_bbr',
+              nodes: [
+                { type: 'Button', text: '新增Append' }
+              ]
+            } );
+          }
+      ] }
     ]
   },
   "Before": {
@@ -3620,6 +3724,21 @@ define( {
       { name: 'target', type: 'String', remark: 'widget ID。' },
       //{ name: 'node', type: 'Object', remark: '新增的 widget 配置项。' },
       { name: 'nodes', type: 'Array', remark: '新增多个 widget 的配置项数组。node 和 nodes 不应同时使用。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//在 id=f_btn 的按钮前面增加一个按钮
+            return~
+            vm.cmd( {
+              type: 'Before',
+              target: 'f_btn',
+              nodes: [
+                { type: 'Button', text: '新增Before' }
+              ]
+            } );
+          }
+      ] }
     ]
   },
   "Replace": {
@@ -3827,6 +3946,14 @@ define( {
     Classes: [
       { name: '.w-dialog', remark: '基础样式。' },
       { name: '.w-loading', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            vm.cmd( { type: 'Loading' } );
+          }
+      ] }
     ]
   },
   "Tip": {

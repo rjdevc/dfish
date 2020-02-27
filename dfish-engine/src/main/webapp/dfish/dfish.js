@@ -1448,18 +1448,19 @@ $.draggable = function( a, b ) {
 			var x = e.pageX, y = e.pageY, m = e.srcElement, n = m != v && $.widget( m ), o;
 			// 鼠标按下并移动5像素后才能触发拖动，避免误操作
 			if ( ! u && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) ) {
-				var f = $.widget( downEvent.target ), t = f.attr( 'text' );
+				var f = $.widget( downEvent.target ), t = f.attr( 'text' ), g;
 				if ( ! t && f.attr( 'icon' ) ) {
 					t = $.image( f.attr( 'icon' ), { maxWidth: 32, maxHeight: 32 } );
 				}
-				v = _db( '<div style="position:absolute;background:#777;top:0;left:0;right:0;bottom:0;opacity:.5;z-index:1"></div>' );
-				u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:3" class=f-fix>' + (t || '&nbsp;') + '</div>' );
 				for ( var k in _drop_cache ) {
-					if ( isDrop.call( $.all[ k ] ) ) {
+					if ( isDrop.call( $.all[ k ] ) && _drop_cache[ k ].cst.highlight ) {
 						$.all[ k ].$().style.zIndex = 3;
 						$.all[ k ].$().style.background = '#fff';
+						g = T;
 					}
 				}
+				v = g && _db( '<div style="position:absolute;background:#777;top:0;left:0;right:0;bottom:0;opacity:.5;z-index:1"></div>' );
+				u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:3" class=f-fix>' + (t || '&nbsp;') + '</div>' );
 			}
 			if ( u && m != u ) {
 				u.style.left = (e.pageX + 7) + 'px';
