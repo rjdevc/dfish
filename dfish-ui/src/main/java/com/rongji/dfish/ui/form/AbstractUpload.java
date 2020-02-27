@@ -385,7 +385,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 
     public UploadItem pub() {
         if (pub == null) {
-            pub = new UploadItem();
+            pub = new UploadItem(null,null);
         }
         return pub;
     }

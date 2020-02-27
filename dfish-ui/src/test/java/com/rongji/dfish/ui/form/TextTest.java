@@ -9,7 +9,7 @@ public class TextTest {
 		t.getLabel().setWidth(null);
 		System.out.println(t);
 		Form form =new Form("");
-		form.add(new LabelWrapper("what","you guess"));
+		form.add(new FormLabel("what","you guess"));
 		System.out.println(form.formatString());
 
 	}

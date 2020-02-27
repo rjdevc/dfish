@@ -1,11 +1,9 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.AbstractNodeContainerPart;
+import com.rongji.dfish.ui.NodeContainerDecorator;
 import com.rongji.dfish.ui.Node;
 import com.rongji.dfish.ui.SingleNodeContainer;
-import com.rongji.dfish.ui.Widget;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,35 +51,37 @@ public class Replace extends NodeControlCommand<Replace>
         return this;
     }
 
-    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
-        @Override
-        protected  List<Node> nodes() {
-            return Arrays.asList(node) ;
-        }
+    protected NodeContainerDecorator getNodeContainerDecorator(){
+        return new NodeContainerDecorator() {
+            @Override
+            protected  List<Node> nodes() {
+                return Arrays.asList(node) ;
+            }
 
-        @Override
-        protected void setNode(int i, Node node) {
-            assert(i==0);
-            Replace.this.setNode(node);
-        }
-    };
+            @Override
+            protected void setNode(int i, Node node) {
+                assert(i==0);
+                Replace.this.setNode(node);
+            }
+        };
+    }
     @Override
     public Node findNode(Filter filter) {
-        return containerPart.findNode(filter);
+        return getNodeContainerDecorator().findNode(filter);
     }
 
     @Override
     public List<Node> findAllNodes(Filter filter) {
-        return containerPart.findAllNodes(filter);
+        return getNodeContainerDecorator().findAllNodes(filter);
     }
 
     @Override
     public Node replaceNode(Filter filter, Node node) {
-        return containerPart.replaceNode(filter,node);
+        return getNodeContainerDecorator().replaceNode(filter,node);
     }
 
     @Override
     public int replaceAllNodes(Filter filter, Node node) {
-        return containerPart.replaceAllNodes(filter,node);
+        return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 }

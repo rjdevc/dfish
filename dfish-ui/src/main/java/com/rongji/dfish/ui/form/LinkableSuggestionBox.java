@@ -147,39 +147,41 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
         return (T) this;
     }
 
-    protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
-        @Override
-        protected List<Node> nodes() {
-            return (List)nodes;
-        }
-
-        @Override
-        protected void setNode(int i, Node node) {
-            if(node==null){
-                nodes.remove(i);
-            }else{
-                nodes.set(i,(ComboOption)node);
+    protected NodeContainerDecorator getNodeContainerDecorator() {
+        return new NodeContainerDecorator() {
+            @Override
+            protected List<Node> nodes() {
+                return (List) nodes;
             }
-        }
-    };
+
+            @Override
+            protected void setNode(int i, Node node) {
+                if (node == null) {
+                    nodes.remove(i);
+                } else {
+                    nodes.set(i, (ComboOption) node);
+                }
+            }
+        };
+    }
     @Override
     public Node findNode(Filter filter) {
-        return containerPart.findNode(filter);
+        return getNodeContainerDecorator().findNode(filter);
     }
 
     @Override
     public List<Node> findAllNodes(Filter filter) {
-        return containerPart.findAllNodes(filter);
+        return getNodeContainerDecorator().findAllNodes(filter);
     }
 
     @Override
     public Node replaceNode(Filter filter, Node node) {
-        return containerPart.replaceNode(filter,node);
+        return getNodeContainerDecorator().replaceNode(filter,node);
     }
 
     @Override
     public int replaceAllNodes(Filter filter, Node node) {
-        return containerPart.replaceAllNodes(filter,node);
+        return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 
 }

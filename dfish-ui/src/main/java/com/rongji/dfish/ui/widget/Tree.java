@@ -34,21 +34,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      */
     public Tree(String id) {
         super(id);
-        containerPart=new AbstractNodeContainerPart() {
-            @Override
-            protected  List<Node> nodes() {
-                return rootLeaf.getNodes();
-            }
 
-            @Override
-            protected void setNode(int i, Node node) {
-                if(node==null){
-                    rootLeaf.getNodes().remove(i);
-                }else{
-                    rootLeaf.getNodes().set(i,node);
-                }
-            }
-        };
     }
     public Tree() {
         this(null);
@@ -1067,6 +1053,23 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
             return this;
         }
     }
+    @Override
+    protected NodeContainerDecorator getNodeContainerDecorator(){
+        return new NodeContainerDecorator() {
+            @Override
+            protected  List<Node> nodes() {
+                return rootLeaf.getNodes();
+            }
 
+            @Override
+            protected void setNode(int i, Node node) {
+                if(node==null){
+                    rootLeaf.getNodes().remove(i);
+                }else{
+                    rootLeaf.getNodes().set(i,node);
+                }
+            }
+        };
+    }
 
 }

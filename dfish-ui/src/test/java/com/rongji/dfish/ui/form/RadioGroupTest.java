@@ -12,7 +12,7 @@ public class RadioGroupTest extends DFishUITestCase {
 //        rg.add("3","直到",new DatePicker("theDate","直到","2019-10-01 09:00", DatePicker.FORMAT_DATE_TIME).setId("myStyle"));
 //        rg.addOption(new Radio(null,null,false,"4","其他"));
         System.out.println(rg.formatString());
-        rg.replaceNodeById(new DatePicker("theDate","直到","2019-10-01", DatePicker.FORMAT_DATE).setId("myStyle"));
+        rg.replaceNodeById(new DatePicker("theDate","直到","2019-10-01").setId("myStyle"));
         return rg;
     }
 }

@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class AbstractNodeContainerPart implements NodeContainer{
+public abstract class NodeContainerDecorator implements NodeContainer{
 
     protected abstract <W extends Node> List<W> nodes();
     protected abstract void setNode(int i,Node node);
-
-
     @Override
     public Node findNode(Filter filter) {
         List<Node> nodes=nodes();

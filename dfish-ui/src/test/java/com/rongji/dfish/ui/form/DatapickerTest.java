@@ -7,6 +7,6 @@ import java.util.Date;
 public class DatapickerTest  extends DFishUITestCase {
     @Override
     protected Object getWidget() {
-        return new DatePicker("update","时间",new Date(), DatePicker.FORMAT_DATE_TIME);
+        return new DatePicker("update","时间",new Date());
     }
 }

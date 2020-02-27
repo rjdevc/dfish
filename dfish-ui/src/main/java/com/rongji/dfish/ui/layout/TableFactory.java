@@ -549,7 +549,7 @@ public class TableFactory {
          * @return 本身，这样可以继续设置其他属性
          */
         public static Column rowNum(String label, Integer start, String width) {
-            return (Column) new Column(null, null, label, width).setFormat("javascript:return " + new Table.RowNum(start)).setAlign(Table.Column.ALIGN_CENTER);
+            return (Column) new Column(null, null, label, width).setFormat("javascript:return " + new Table.RowNum().setStart(start)).setAlign(Table.Column.ALIGN_CENTER);
         }
 
 

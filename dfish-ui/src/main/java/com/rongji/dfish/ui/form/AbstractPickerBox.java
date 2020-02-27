@@ -41,7 +41,7 @@ public class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractI
      */
     protected Dialog drop() {
         if (this.drop == null) {
-            this.drop = new Dialog();
+            this.drop = new Dialog(null,null,null);
         }
         return this.drop;
     }

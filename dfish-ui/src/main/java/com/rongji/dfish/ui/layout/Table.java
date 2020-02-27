@@ -108,29 +108,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         this.setTHead(new THead());
         this.setTBody(new TBody());
         this.setTFoot(new TFoot());
-        containerPart=new AbstractNodeContainerPart() {
-            @Override
-            protected  List<Node> nodes() {
-                return Arrays.asList(tHead,tBody,tFoot);
-            }
 
-            @Override
-            protected void setNode(int i, Node node) {
-                switch (i){
-                    case 0:
-                        tHead=(THead) node;
-                        break;
-                    case 1:
-                        tBody=(TBody) node;
-                        break;
-                    case 2:
-                        tFoot=(TFoot) node;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("expect 0-tHead 1-tBody  2-tFoot,, but get "+i);
-                }
-            }
-        };
     }
 
 
@@ -1973,55 +1951,57 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          */
         public AbstractTr() {}
 
-        protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
-            Map<Integer,String> posMap;
-            @Override
-            protected  List<Node> nodes() {
-                if(data ==null){
-                    return Collections.emptyList();
+        protected NodeContainerDecorator getNodeContainerDecorator(){
+            return new NodeContainerDecorator() {
+                Map<Integer,String> posMap;
+                @Override
+                protected  List<Node> nodes() {
+                    if(data ==null){
+                        return Collections.emptyList();
+                    }
+                    List<Node> result=new ArrayList();
+                    posMap=new HashMap<>();
+                    int index=0;
+                    for(Map.Entry<String,Object >entry:data.entrySet()){
+                        if(entry.getValue() instanceof Node){
+                            result.add((Node)entry.getValue());
+                            posMap.put(index++,entry.getKey());
+                        }
+                    }
+                    return result;
                 }
-                List<Node> result=new ArrayList();
-                posMap=new HashMap<>();
-                int index=0;
-                for(Map.Entry<String,Object >entry:data.entrySet()){
-                   if(entry.getValue() instanceof Node){
-                       result.add((Node)entry.getValue());
-                       posMap.put(index++,entry.getKey());
-                   }
-                }
-                return result;
-            }
 
-            @Override
-            protected void setNode(int i, Node node) {
-                if(posMap==null){
-                    return; //本不该发生
-                }else if(node==null){
-                    data.remove(posMap.get(i));
-                }else{
-                    data.put(posMap.get(i),node);
+                @Override
+                protected void setNode(int i, Node node) {
+                    if(posMap==null){
+                        return; //本不该发生
+                    }else if(node==null){
+                        data.remove(posMap.get(i));
+                    }else{
+                        data.put(posMap.get(i),node);
+                    }
                 }
-            }
-        };
+            };
+        }
 
         @Override
         public Node findNode(Filter filter) {
-            return containerPart.findNode(filter);
+            return getNodeContainerDecorator().findNode(filter);
         }
 
         @Override
         public List<Node> findAllNodes(Filter filter) {
-            return containerPart.findAllNodes(filter);
+            return getNodeContainerDecorator().findAllNodes(filter);
         }
 
         @Override
         public Node replaceNode(Filter filter, Node node) {
-            return containerPart.replaceNode(filter,node);
+            return getNodeContainerDecorator().replaceNode(filter,node);
         }
 
         @Override
         public int replaceAllNodes(Filter filter, Node node) {
-            return containerPart.replaceAllNodes(filter,node);
+            return getNodeContainerDecorator().replaceAllNodes(filter,node);
         }
 
 
@@ -2320,36 +2300,38 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             return (T) this;
         }
 
-        protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
-            @Override
-            protected  List<Node> nodes() {
-                return Arrays.asList(AbstractTd.this.node) ;
-            }
+        protected NodeContainerDecorator getNodeContainerDecorator(){
+            return new NodeContainerDecorator() {
+                @Override
+                protected  List<Node> nodes() {
+                    return Arrays.asList(AbstractTd.this.node) ;
+                }
 
-            @Override
-            protected void setNode(int i, Node node) {
-                assert(i==0);
-                AbstractTd.this.setNode((Widget) node);
-            }
-        };
+                @Override
+                protected void setNode(int i, Node node) {
+                    assert(i==0);
+                    AbstractTd.this.setNode((Widget) node);
+                }
+            };
+        }
         @Override
         public Node findNode(Filter filter) {
-            return containerPart.findNode(filter);
+            return getNodeContainerDecorator().findNode(filter);
         }
 
         @Override
         public List<Node> findAllNodes(Filter filter) {
-            return containerPart.findAllNodes(filter);
+            return getNodeContainerDecorator().findAllNodes(filter);
         }
 
         @Override
         public Node replaceNode(Filter filter, Node node) {
-            return containerPart.replaceNode(filter,node);
+            return getNodeContainerDecorator().replaceNode(filter,node);
         }
 
         @Override
         public int replaceAllNodes(Filter filter, Node node) {
-            return containerPart.replaceAllNodes(filter,node);
+            return getNodeContainerDecorator().replaceAllNodes(filter,node);
         }
         @Override
         public T setNode(Widget node){
@@ -2730,4 +2712,32 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
         }
 
     }
+
+    @Override
+    protected NodeContainerDecorator getNodeContainerDecorator(){
+        return new NodeContainerDecorator() {
+            @Override
+            protected  List<Node> nodes() {
+                return Arrays.asList(tHead,tBody,tFoot);
+            }
+
+            @Override
+            protected void setNode(int i, Node node) {
+                switch (i){
+                    case 0:
+                        tHead=(THead) node;
+                        break;
+                    case 1:
+                        tBody=(TBody) node;
+                        break;
+                    case 2:
+                        tFoot=(TFoot) node;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("expect 0-tHead 1-tBody  2-tFoot,, but get "+i);
+                }
+            }
+        };
+    }
+
 }

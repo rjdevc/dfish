@@ -113,7 +113,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
      */
     protected Dialog suggest() {
         if (this.suggest == null) {
-            this.suggest = new Dialog();
+            this.suggest = new Dialog(null,null,null);
         }
         return this.suggest;
     }

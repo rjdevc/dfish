@@ -38,9 +38,9 @@ public class CheckBoxGroupTest extends DFishUITestCase {
         System.out.println(dropBox4.formatString());
 
 
-        List<CheckBox> cbOptions =Arrays.asList(new CheckBox("","",false,"1","问题一"),
-                new CheckBox("","",false,"2","问题二"),
-                new CheckBox("","",false,"3","问题三"));
+        List<CheckBox> cbOptions =Arrays.asList(new CheckBox("","","1","问题一"),
+                new CheckBox("","","2","问题二"),
+                new CheckBox("","","3","问题三"));
         CheckBoxGroup cbg3=new CheckBoxGroup("cbg","候选",Arrays.asList("2","3"),cbOptions);
         System.out.println(cbg3.formatString());
 
