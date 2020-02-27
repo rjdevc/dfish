@@ -17,7 +17,6 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, H
      * 构造函数
      */
     public Toggle() {
-
     }
 
     /**

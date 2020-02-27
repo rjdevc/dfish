@@ -34,6 +34,9 @@ public class Album extends AbstractPubNodeContainer<Album, Img> implements Scrol
     public Album(String id) {
         super(id);
     }
+    public Album() {
+        super(null);
+    }
 
     @Override
     protected Img newPub() {

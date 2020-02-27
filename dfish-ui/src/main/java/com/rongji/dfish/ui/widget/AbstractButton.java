@@ -32,8 +32,11 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     /**
      * 默认构造函数
      */
-    public AbstractButton() {
+    public AbstractButton(String text,String onClick,String icon) {
         super(null);
+        setText(text);
+        setOn(Button.EVENT_CLICK, onClick);
+        setIcon(icon);
     }
 
     protected String name;

@@ -44,6 +44,9 @@ public class Form extends AbstractPubNodeContainer<Form, Table.TD> implements Ht
     private Boolean br;
     private Boolean scroll;
 
+    public Form() {
+        super(null);
+    }
     public Form(String id) {
         super(id);
     }

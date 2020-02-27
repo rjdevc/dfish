@@ -17,12 +17,11 @@ public class CheckBox extends AbstractBox<CheckBox> {
      *
      * @param name    表单名
      * @param label   标题
-     * @param checked 选中
      * @param value   如果选中的提交的值
      * @param text    显示的内容标签
      */
-    public CheckBox(String name, String label, Boolean checked, Object value, String text) {
-        super(name, label, checked, value, text);
+    public CheckBox(String name, String label, Object value, String text) {
+        super(name, label, value, text);
     }
 
 }

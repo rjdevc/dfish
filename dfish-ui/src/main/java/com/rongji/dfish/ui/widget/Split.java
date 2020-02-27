@@ -32,7 +32,6 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	 * 构造函数
 	 */
 	public Split() {
-		
 	}
 	
 	/**

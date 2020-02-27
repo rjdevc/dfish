@@ -12,17 +12,6 @@ public class FileUpload extends AbstractUpload<FileUpload> {
 
     private static final long serialVersionUID = 5921590784801725804L;
 
-    /**
-     * 构造函数
-     *
-     * @param name  String 提交属性的名字
-     * @param label String 显示的标题
-     */
-    public FileUpload(String name, String label) {
-        this.name = name;
-        setLabel(label);
-    }
-
 	/**
 	 * 构造函数
 	 *

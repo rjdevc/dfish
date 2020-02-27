@@ -16,14 +16,6 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
     private String thumbnail;
     private Boolean transparent;
 
-    /**
-     * @param name
-     * @param label
-     */
-    public ImageUpload(String name, String label) {
-        this.name = name;
-        setLabel(label);
-    }
 
     /**
      * @param name

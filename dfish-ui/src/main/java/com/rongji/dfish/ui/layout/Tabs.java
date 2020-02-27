@@ -30,6 +30,9 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
     public Tabs(String id) {
         super(id);
     }
+    public Tabs() {
+        super(null);
+    }
 
     @Override
     protected Tab newPub() {
@@ -194,7 +197,7 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
          * @param text String 标题
          */
         public Tab(String text) {
-            this.setText(text);
+            super(text,null,null);
         }
 
         /**
@@ -204,7 +207,7 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
          * @param target Widget 目标组件
          */
         public Tab(String text, Widget target) {
-            this.setText(text);
+            super(text,null,null);
             this.setTarget(target);
         }
 

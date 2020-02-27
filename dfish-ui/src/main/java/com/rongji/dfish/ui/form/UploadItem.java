@@ -23,6 +23,11 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
     private String width;
     private String height;
 
+    public UploadItem(String name,String url){
+        this.setName(name);
+        this.setUrl(url);
+    }
+
     /**
      * 显示的名称
      *

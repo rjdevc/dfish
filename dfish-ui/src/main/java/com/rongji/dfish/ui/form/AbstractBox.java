@@ -39,16 +39,14 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
      *
      * @param name    表单元素名
      * @param label   标题
-     * @param checked 是否选中
      * @param value   如果选中提交的值
      * @param text    显示的文本
      */
-    public AbstractBox(String name, String label, Boolean checked, Object value, String text) {
+    public AbstractBox(String name, String label, Object value, String text) {
         this.setName(name);
         this.setValue(value);
         this.setLabel(label);
         this.setText(text);
-        this.setChecked(checked);
 //		escape=true;
     }
 

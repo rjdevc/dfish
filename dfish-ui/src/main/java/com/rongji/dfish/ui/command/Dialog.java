@@ -31,48 +31,6 @@ public class Dialog extends AbstractPopup<Dialog> implements SingleNodeContainer
     /**
      * 打开对话框命令
      *
-     * @param id      String 编号
-     * @param preload 预加载模板
-     * @param title   String 标题栏内容
-     * @param width   String 窗口宽度
-     * @param height  String 窗口高度
-     * @param pos     DialogPosition 窗口在屏幕位置
-     * @param src     String 窗口数据的URL
-     */
-    public Dialog(String id, String preload, String title, int width, int height, String pos, String src) {
-        this.id = id;
-        this.preload = preload;
-        this.title = title;
-        this.setWidth(width);
-        this.setHeight(height);
-        this.position = pos;
-        this.src = src;
-    }
-
-    /**
-     * 打开对话框命令
-     *
-     * @param id      String 编号
-     * @param preload 预加载模板
-     * @param title   String 标题栏内容
-     * @param width   String 窗口宽度
-     * @param height  String 窗口高度
-     * @param pos     DialogPosition 窗口在屏幕位置
-     * @param src     String 窗口数据的URL
-     */
-    public Dialog(String id, String preload, String title, String width, String height, String pos, String src) {
-        this.id = id;
-        this.preload = preload;
-        this.title = title;
-        this.setWidth(width);
-        this.setHeight(height);
-        this.position = pos;
-        this.src = src;
-    }
-
-    /**
-     * 打开对话框命令
-     *
      * @param id    String 编号
      * @param title String 标题栏内容
      * @param src   String 窗口数据的URL
@@ -81,22 +39,6 @@ public class Dialog extends AbstractPopup<Dialog> implements SingleNodeContainer
         this.id = id;
         this.title = title;
         this.src = src;
-    }
-
-    /**
-     * 打开对话框命令
-     *
-     * @param src String 窗口数据的URL
-     */
-    public Dialog(String src) {
-        this.src = src;
-    }
-
-    /**
-     * 打开对话框命令
-     */
-    public Dialog() {
-
     }
 
     /**

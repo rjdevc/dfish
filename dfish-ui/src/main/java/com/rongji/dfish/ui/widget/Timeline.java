@@ -21,6 +21,9 @@ public class Timeline extends AbstractPubNodeContainer<Timeline, Timeline.Item> 
     public Timeline(String id) {
         super(id);
     }
+    public Timeline() {
+        super(null);
+    }
 
     @Override
     protected Item newPub() {
@@ -65,6 +68,9 @@ public class Timeline extends AbstractPubNodeContainer<Timeline, Timeline.Item> 
 
         public Item(String id) {
             this.setId(id);
+        }
+        public Item() {
+            this.setId(null);
         }
 
         @Override

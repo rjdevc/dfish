@@ -41,12 +41,11 @@ public class TripleBox extends AbstractBox<TripleBox> {
      *
      * @param name       名称
      * @param label      标题
-     * @param checked    选中状态
      * @param value      值
      * @param text       显示文本
      */
-    public TripleBox(String name, String label, Boolean checked, Object value, String text) {
-        super(name, label, checked, value, text);
+    public TripleBox(String name, String label, Object value, String text) {
+        super(name, label, value, text);
     }
 
     /**

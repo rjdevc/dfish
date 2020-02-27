@@ -14,7 +14,7 @@ public class Append extends AddCommand<Append> {
 
     private static final long serialVersionUID = -2369976181411608729L;
 
-    public Append(String target, Widget<?>... nodes) {
-        super(target, nodes);
+    public Append(String target) {
+        super(target);
     }
 }

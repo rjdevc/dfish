@@ -31,6 +31,9 @@ public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item> 
     public Progress(String id) {
         super(id);
     }
+    public Progress() {
+        super(null);
+    }
 
     @Override
     protected Item newPub() {

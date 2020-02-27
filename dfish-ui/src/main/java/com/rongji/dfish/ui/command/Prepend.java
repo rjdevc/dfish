@@ -14,7 +14,7 @@ public class Prepend extends AddCommand<Prepend> {
 
     private static final long serialVersionUID = -6112878724451958092L;
 
-    public Prepend(String target, Widget<?>... nodes) {
-        super(target, nodes);
+    public Prepend(String target) {
+        super(target);
     }
 }

@@ -30,6 +30,9 @@ public class Frame extends AbstractMultiNodeContainer<Frame,Widget> implements M
     public Frame(String id) {
         super(id);
     }
+    public Frame() {
+        super(null);
+    }
 
     /**
      * 默认显示 widget 的 ID

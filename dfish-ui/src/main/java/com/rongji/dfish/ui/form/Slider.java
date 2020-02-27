@@ -23,23 +23,6 @@ public class Slider extends AbstractFormElement<Slider, Number> {
         setValue(value);
     }
 
-    /**
-     * 默认构造函数
-     *
-     * @param name     表单元素名
-     * @param label    标题
-     * @param value    值
-     * @param minValue 最小值
-     * @param maxValue 最大值
-     */
-    public Slider(String name, String label, Number value, Number minValue,
-                  Number maxValue) {
-        super.setName(name);
-        super.setLabel(label);
-        setValue(value);
-        this.setMinValue(minValue);
-        this.setMaxValue(maxValue);
-    }
 
     /**
      * 设置最大值

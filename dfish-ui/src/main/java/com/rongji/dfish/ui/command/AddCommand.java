@@ -23,13 +23,8 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
     private static final long serialVersionUID = -2417775749900268295L;
 
     protected List<Widget> nodes = new ArrayList<>();
-    public AddCommand(String target, Widget<?>... nodes) {
+    public AddCommand(String target) {
         setTarget(target);
-        if (nodes != null) {
-            for (Widget<?> node : nodes) {
-                add(node);
-            }
-        }
     }
     @Override
     public List<Widget> getNodes(){

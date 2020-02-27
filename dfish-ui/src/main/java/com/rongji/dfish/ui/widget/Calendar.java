@@ -61,6 +61,9 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item> 
     public Calendar(String id) {
         super(id);
     }
+    public Calendar() {
+        super(null);
+    }
 
     @Override
     protected Item newPub() {

@@ -74,21 +74,6 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
         // 默认日期
     }
 
-    /**
-     * 构造函数
-     *
-     * @param name   String
-     * @param label  String
-     * @param value  Object
-     * @param format String
-     */
-    public DatePicker(String name, String label, Object value, String format) {
-        this.setName(name);
-        this.setLabel(label);
-        calFormat(format);
-        this.setValue(value);
-    }
-
     private void calFormat(String format) {
         for (String[] row : DATE_FORMATS) {
             if (row[0].equals(format)) {

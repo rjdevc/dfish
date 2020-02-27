@@ -100,6 +100,9 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
     private Boolean escape;
     private Boolean scroll;
 
+    public Table() {
+        this(null);
+    }
     public Table(String id) {
         super(id);
         this.setTHead(new THead());
@@ -795,7 +798,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          * @return 本身，这样可以继续设置其他属性
          */
         public Column setTripleBox(String boxName, String checkedField, Boolean required, String sync) {
-            TripleBox tripleBox = new TripleBox(boxName, null, null, null, null).setSync(sync);
+            TripleBox tripleBox = new TripleBox(boxName, null, null, null).setSync(sync);
             if (required != null && required) {
                 tripleBox.addValidate(Validate.required(true));
             }
@@ -860,7 +863,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          * @return 本身，这样可以继续设置其他属性
          */
         public Column setRadio(String boxName, String checkedField, Boolean required, String sync) {
-            Radio radio = new Radio(boxName, null, null, null, null).setSync(sync);
+            Radio radio = new Radio(boxName, null, null, null).setSync(sync);
             if (required != null && required) {
                 radio.addValidate(Validate.required(true));
             }
@@ -1417,6 +1420,10 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
 
         private String field;
 
+        public Tip(String field){
+            setField(field);
+        }
+
         /**
          * 提示的字段名
          *
@@ -1459,15 +1466,6 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      */
     protected static abstract class Part extends AbstractMultiNodeContainer<Part, TR> implements TableOperation<Part>,MultiNodeContainer<Part,TR>{
         /**
-         * 构造函数
-         *
-         * @param id String
-         */
-        public Part(String id) {
-            super(id);
-        }
-
-        /**
          * 默认构造函数
          */
         public Part() {
@@ -1489,7 +1487,6 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
             this.owner = owner;
             return this;
         }
-
 
         @Override
         public Part add(int row, int column, Object o) {
@@ -1773,15 +1770,6 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          */
         public TR() {
             super();
-        }
-
-        /**
-         * 构造函数
-         *
-         * @param id String
-         */
-        public TR(String id) {
-            setId(id);
         }
 
         /**
@@ -2628,8 +2616,8 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
     public static class Radio extends AbstractBox<Radio> {
         private static final long serialVersionUID = -8886839296833661491L;
 
-        public Radio(String name, String label, Boolean checked, Object value, String text) {
-            super(name, label, checked, value, text);
+        public Radio(String name, String label,  Object value, String text) {
+            super(name, label, value, text);
         }
 
         @Override
@@ -2642,10 +2630,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
 
         private static final long serialVersionUID = -8038094039396279588L;
 
-        public RowNum(Integer start) {
-            super();
-            this.start = start;
-        }
+        public RowNum() {}
 
         @Override
         public String getType() {
@@ -2692,12 +2677,11 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
          *
          * @param name    名称
          * @param label   标题
-         * @param checked 选中状态
          * @param value   值
          * @param text    显示文本
          */
-        public TripleBox(String name, String label, Boolean checked, Object value, String text) {
-            super(name, label, checked, value, text);
+        public TripleBox(String name, String label, Object value, String text) {
+            super(name, label,  value, text);
         }
 
         @Override

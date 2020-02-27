@@ -19,6 +19,9 @@ public class Vertical extends LinearLayout<Vertical> {
 	public Vertical(String id) {
 		super(id);
 	}
+	public Vertical() {
+		super(null);
+	}
 
 	/**
 	 * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略

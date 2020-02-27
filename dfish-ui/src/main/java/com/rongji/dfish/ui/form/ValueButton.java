@@ -12,22 +12,19 @@ public class ValueButton extends AbstractButton<ValueButton> {
 	private static final long serialVersionUID = 7556749223547329191L;
 
 	/**
-	 * 
-	 * 构造函数
-	 * @param icon String 图标
-	 * @param text String 标题
-	 */
-	public ValueButton(String icon, String text) {
-		this.setIcon(icon);
-		this.setText(text);
-      
-	}
-	/**
 	 * 构造函数
 	 * @param text String 标题
 	 */
 	public ValueButton(String text) {
-		this.setText(text);
+		super(text,null,null);
+	}
+
+
+    public ValueButton(String text,String onClick) {
+        super(text,onClick,null);
+    }
+	public ValueButton(String text,String onClick, String icon) {
+		super(text,onClick,icon);
 	}
   
 	@Override

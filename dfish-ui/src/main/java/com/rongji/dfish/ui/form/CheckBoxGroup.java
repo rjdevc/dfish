@@ -29,7 +29,7 @@ public class CheckBoxGroup extends AbstractBoxGroup<CheckBoxGroup, CheckBox> {
 
     @Override
     public CheckBox newPub() {
-        return new CheckBox(null, null, null, null, null);
+        return new CheckBox(null, null, null, null);
     }
 
 }

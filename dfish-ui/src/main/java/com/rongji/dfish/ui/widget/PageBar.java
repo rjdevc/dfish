@@ -101,8 +101,9 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      * @see #FACE_TEXT
      */
     public PageBar(String id) {
-        this.id = id;
+        setId(id);
     }
+    public PageBar() { }
 
 	public String getFace() {
 		return face;

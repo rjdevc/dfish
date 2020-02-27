@@ -51,7 +51,7 @@ public class Collapse extends AbstractPubNodeContainer<Collapse, Collapse.Button
          * @param text String 标题
          */
         public Button(String text) {
-            this.setText(text);
+            super(text,null,null);
         }
 
         /**
@@ -61,7 +61,7 @@ public class Collapse extends AbstractPubNodeContainer<Collapse, Collapse.Button
          * @param target Widget 目标组件
          */
         public Button(String text, Widget target) {
-            this.setText(text);
+            super(text,null,null);
             this.setTarget(target);
         }
 

@@ -28,6 +28,9 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Widget> imple
     public ButtonBar(String id) {
         super(id);
     }
+    public ButtonBar() {
+        super(null);
+    }
 
     @Override
     protected Button newPub() {

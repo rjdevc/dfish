@@ -17,35 +17,15 @@ public class Html extends AbstractWidget<Html> implements Scrollable<Html>,HtmlC
 	private Boolean escape;
 	private String thumbWidth;
 	private String format;
-	/**
-	 * 构造函数
-	 * @param id  自定义的ID。可通过 view.find( id ) 方法来获取 widget。
-	 * @param text html内容。文本支持 &lt;d:wg&gt; 标签。
-	 */
-	public Html(String id,String text){
-		super();
-		this.id=id;
-		this.text=text;
-	}
+
 	/**
 	 * 构造函数
 	 * @param text html内容。文本支持 &lt;d:wg&gt; 标签。
 	 */
 	public Html(String text){
-		this(null, text);
+		setText(text);
 	}
 
-	/**
-	 * 设置文本
-	 * @param text 显示文本
-	 * @return this
-	 * @deprecated 已过时，使用 {@link #setText(String)}替代
-	 */
-	@Deprecated 
-	public Html setHtml(String text) {
-		this.text = text;
-		return this;
-	}
 
 	@Override
     public Boolean getEscape() {

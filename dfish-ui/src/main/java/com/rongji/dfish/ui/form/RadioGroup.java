@@ -28,7 +28,7 @@ public class RadioGroup extends AbstractBoxGroup<RadioGroup, Radio> {
 
     @Override
     public Radio newPub() {
-        return new Radio(null, null, null, null, null);
+        return new Radio(null, null, null, null);
     }
 
 }

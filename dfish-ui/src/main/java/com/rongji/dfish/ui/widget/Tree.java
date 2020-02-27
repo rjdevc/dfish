@@ -50,6 +50,9 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
             }
         };
     }
+    public Tree() {
+        this(null);
+    }
 
     @Override
     public Tree setScroll(Boolean scroll) {
@@ -211,10 +214,10 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
 
     @Override
     protected Leaf newPub() {
-        return new Leaf();
+        return new Leaf(null);
     }
 
-    private Leaf rootLeaf = new Leaf();
+    private Leaf rootLeaf = new Leaf(null);
 
     /**
      * 取得根节点。这样树面板可以直接使用Leaf的接口
@@ -234,7 +237,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      */
     public Tree fixBoxCheckStatus() {
         // FIXME 根节点必须补box
-        rootLeaf.setBox(new TripleBox(null, null, null, null, null));
+        rootLeaf.setBox(new TripleBox(null, null, null, null));
         rootLeaf.fixBoxCheckStatus();
         return this;
     }
@@ -400,21 +403,14 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
         private String filter;
         private Object badge;
 
-        /**
-         * 默认构造函数,因为树经常没有下级,但一般有属性,所默认创建属性的list
-         */
-        public Leaf() {
-            super(null);
-        }
 
         /**
          * 构造函数,
          *
-         * @param id   String
          * @param text 显示文本
          */
-        public Leaf(String id, String text) {
-            super(id);
+        public Leaf( String text) {
+            super(null);
             this.setText(text);
         }
 
@@ -525,7 +521,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
             if (otherLeaf.nodes != null) {
                 for (Object obj : otherLeaf.nodes) {
                     Leaf elem = (Leaf) obj;
-                    Leaf t = new Leaf();
+                    Leaf t = new Leaf(null);
                     t.copyFromAnotherLeafSafe(elem);
                     add(t);
                 }

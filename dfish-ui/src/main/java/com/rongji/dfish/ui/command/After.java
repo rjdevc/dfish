@@ -22,7 +22,7 @@ public class After extends AddCommand<After>{
 
 	private static final long serialVersionUID = -6784590200007210824L;
 
-	public After(String target, Widget<?>... nodes) {
-		super(target, nodes);
+	public After(String target) {
+		super(target);
 	}
 }

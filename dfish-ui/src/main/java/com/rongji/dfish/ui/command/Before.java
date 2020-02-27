@@ -14,7 +14,7 @@ public class Before extends AddCommand<Before> {
 
     private static final long serialVersionUID = -7957942021832245204L;
 
-    public Before(String target, Widget<?>... nodes) {
-        super(target, nodes);
+    public Before(String target) {
+        super(target);
     }
 }

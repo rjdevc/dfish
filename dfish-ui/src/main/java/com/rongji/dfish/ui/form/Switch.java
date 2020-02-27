@@ -16,26 +16,14 @@ public class Switch extends AbstractFormElement<Switch, Object> {
     private String format;
 
     /**
-     * 构造函数(默认提交值是"1")
-     * @param name 表单名
-     * @param label 标题
-     * @param checked 选中
-     */
-    public Switch(String name, String label, Boolean checked) {
-        this(name, label, checked, "1");
-    }
-
-    /**
      * 构造函数
      * @param name 表单名
      * @param label 标题
-     * @param checked 选中
      * @param value 如果选中的提交的值
      */
-    public Switch(String name, String label, Boolean checked, Object value) {
+    public Switch(String name, String label, Object value) {
         this.setName(name);
         this.setLabel(label);
-        this.setChecked(checked);
         this.setValue(value);
     }
 

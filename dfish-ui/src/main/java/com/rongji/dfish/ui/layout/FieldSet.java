@@ -43,17 +43,10 @@ public class FieldSet extends AbstractMultiNodeContainer<FieldSet,Widget> implem
 	 * @param legend  标题文本
 	 */
 	public FieldSet(String legend) {
-		this(null,legend);
+		super(null);
+		setLegend(legend);
 	}
-	/**
-	 * 构造 函数
-	 * @param id 编号
-	 * @param legend 标题文本
-	 */
-	public FieldSet(String id, String legend) {
-		super(id);
-		this.legend=legend;
-	}
+
 	/**
 	 * 选项表单，类型是 checkbox 或 radio。取消或勾选这个box，将同步fieldset内部所有表单的状态。
 	 * @return box

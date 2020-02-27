@@ -20,20 +20,10 @@ public class EmbedWindow extends AbstractWidget<EmbedWindow> implements Scrollab
 
 	/**
 	 * 构造函数
-	 * @param id 编号
-	 * @param src 地址
-	 */
-	public EmbedWindow(String id, String src){
-		super();
-		this.id=id;
-		this.src=src;
-	}
-	/**
-	 * 构造函数
 	 * @param src 地址
 	 */
 	public EmbedWindow(String src){
-		this(null, src);
+		this.setSrc(src);
 	}
 
 	/**
