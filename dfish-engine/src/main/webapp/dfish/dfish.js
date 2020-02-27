@@ -1453,10 +1453,13 @@ $.draggable = function( a, b ) {
 					t = $.image( f.attr( 'icon' ), { maxWidth: 32, maxHeight: 32 } );
 				}
 				for ( var k in _drop_cache ) {
-					if ( isDrop.call( $.all[ k ] ) && _drop_cache[ k ].cst.highlight ) {
-						$.all[ k ].$().style.zIndex = 3;
-						$.all[ k ].$().style.background = '#fff';
-						g = T;
+					if ( isDrop.call( $.all[ k ] ) ) {
+						if ( _drop_cache[ k ].cst.highlight ) {
+							$.all[ k ].$().style.zIndex = 3;
+							$.all[ k ].$().style.background = '#fff';
+							g = T;
+						}
+						$.all[ k ].addClass( 'z-droppable' );
 					}
 				}
 				v = g && _db( '<div style="position:absolute;background:#777;top:0;left:0;right:0;bottom:0;opacity:.5;z-index:1"></div>' );
@@ -1513,8 +1516,12 @@ $.draggable = function( a, b ) {
 				}
 				for ( var k in _drop_cache ) {
 					if ( isDrop.call( $.all[ k ] ) ) {
-						$.all[ k ].$().style.zIndex = '';
-						$.all[ k ].$().style.background = '';
+						if ( _drop_cache[ k ].cst.highlight ) {
+							$.all[ k ].$().style.zIndex = '';
+							$.all[ k ].$().style.background = '';
+							g = T;
+						}
+						$.all[ k ].removeClass( 'z-droppable' );
 					}
 				}
 				_rm( u ), _rm( v ), _rm( '_dndhelper' ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
