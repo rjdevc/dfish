@@ -19,7 +19,7 @@ import com.rongji.dfish.ui.form.AbstractBox;
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
  * @since 2.0
  */
-public class Cmd extends AbstractNode<Cmd> implements MultiNodeContainer<Cmd,Command> {
+public class Cmd extends AbstractNode<Cmd> implements MultiNodeContainer<Cmd,Command>, Command<Cmd> {
 
     private static final long serialVersionUID = 6990584366431273097L;
     
