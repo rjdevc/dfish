@@ -6,7 +6,7 @@ import com.rongji.dfish.ui.layout.LinearLayout;
 /**
  * 与HorzontalPanel用法一样，多了setLabel，可以添加标题，可能有些属性不全，后期补上
  */
-public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGroup>,Scrollable<FormGroup>,Alignable<FormGroup>, VAlignable<FormGroup>, MultiNodeContainer<FormGroup> {
+public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGroup>,Scrollable<FormGroup>,Alignable<FormGroup>, VAlignable<FormGroup>, MultiNodeContainer<FormGroup,Widget> {
 	
 	private static final long serialVersionUID = 6045136733949121294L;
 

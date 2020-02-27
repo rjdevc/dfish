@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.*;
 /**
  * button 的父类。 Alignable
  */
-public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Button> implements Directional<ButtonBar>,
+public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Widget> implements Directional<ButtonBar>,
         Alignable<ButtonBar>, VAlignable<ButtonBar> {
 
     private static final long serialVersionUID = 5193505708325695202L;

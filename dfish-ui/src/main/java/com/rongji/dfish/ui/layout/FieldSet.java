@@ -5,6 +5,7 @@ import java.util.List;
 import com.rongji.dfish.ui.AbstractMultiNodeContainer;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.BoxHolder;
 
@@ -13,7 +14,7 @@ import com.rongji.dfish.ui.form.BoxHolder;
  *@author DFish Team
  *
  */
-public class FieldSet extends AbstractMultiNodeContainer<FieldSet> implements MultiNodeContainer<FieldSet>, BoxHolder<FieldSet> {
+public class FieldSet extends AbstractMultiNodeContainer<FieldSet,Widget> implements MultiNodeContainer<FieldSet,Widget>, BoxHolder<FieldSet> {
 	/**
 	 * 
 	 */

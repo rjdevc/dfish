@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.tool;
 import com.rongji.dfish.base.util.CharUtil;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
@@ -57,6 +58,9 @@ public class ClassExtendsAnalysis extends Application {
                     caller.put(refName,call);
                 }
                 call.add(c.getName());
+                if(m.getName().equals("getType")&&c!= Node.class){
+                    System.out.println(c.getName());
+                }
             }
         }
         TreeItem<String> maybeWrong=new TreeItem<>("可能有问题的");

@@ -7,7 +7,7 @@ package com.rongji.dfish.ui;
  * @param <N> 子节点对象类型
  * @author DFish Team
  */
-public interface PubNodeContainer<T extends PubNodeContainer<T, N>, N> extends MultiNodeContainer<T> {
+public interface PubNodeContainer<T extends PubNodeContainer<T, N>, N extends Node> extends MultiNodeContainer<T,N> {
 
 	/**
 	 * 安全取得默认对象,如果未设置过默认对象,将创建对象

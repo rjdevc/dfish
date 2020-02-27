@@ -19,7 +19,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNodeContainer<Menu> {
+public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNodeContainer<Menu,Widget> {
 
     private static final long serialVersionUID = 7565861352403693874L;
 
@@ -38,8 +38,8 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
      * @param btn 按钮
      * @return 本身，这样可以继续设置其他属性
      */
-    public Menu add(AbstractButton<?> btn) {
-        add((Node) btn);
+    public Menu add(AbstractButton btn) {
+        add((Widget) btn);
         return this;
     }
 
@@ -50,7 +50,7 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
      * @return 本身，这样可以继续设置其他属性
      */
     public Menu add(Split split) {
-        add((Node) split);
+        add((Widget) split);
         return this;
     }
 
@@ -63,6 +63,11 @@ public class Menu extends AbstractDialog<Menu> implements Command<Menu>, MultiNo
     @Override
     public List<Node> getNodes() {
         return (List)nodes;
+    }
+    @Override
+    public Menu setNodes(List<Widget> nodes) {
+        this.nodes=nodes;
+        return this;
     }
 
 

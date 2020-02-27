@@ -7,7 +7,7 @@ import java.util.List;
  * @date 2020-01-16
  * @since 5.0
  */
-public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContainer<T, N>, N extends Node> extends AbstractMultiNodeContainer<T> implements PubNodeContainer<T, N> {
+public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContainer<T, N>, N extends Node> extends AbstractMultiNodeContainer<T,N> implements PubNodeContainer<T, N> {
     private static final long serialVersionUID = 5077405748817820249L;
 
     private N pub;

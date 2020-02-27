@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.rongji.dfish.ui.AbstractNodeContainerPart;
-import com.rongji.dfish.ui.Node;
-import com.rongji.dfish.ui.MultiNodeContainer;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.form.AbstractBox;
 
 
 /**
@@ -21,7 +19,7 @@ import com.rongji.dfish.ui.Widget;
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
  * @since 2.0
  */
-public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, MultiNodeContainer<Cmd> {
+public class Cmd extends AbstractNode<Cmd> implements MultiNodeContainer<Cmd,Command> {
 
     private static final long serialVersionUID = 6990584366431273097L;
     
@@ -37,7 +35,7 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     @Deprecated
     public static final String PATH_FROM_VIEW = PATH_OWNER_VIEW;
 
-    protected ArrayList<Command> nodes;
+    protected List<Command> nodes;
     protected String path;
     protected String target;
     private Long delay;
@@ -90,16 +88,6 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     }
 
 
-    @Override
-    public Cmd add(Node node) {
-        return add((Command) node);
-    }
-    @Override
-    public Cmd add(Command cmd) {
-        nodes.add(cmd);
-        return this;
-    }
-
     /**
      * 延迟执行，单位:毫秒
      *
@@ -125,6 +113,11 @@ public class Cmd extends AbstractCommand<Cmd> implements CommandContainer<Cmd>, 
     @Override
     public List<Node> getNodes() {
         return (List)nodes;
+    }
+    @Override
+    public Cmd setNodes(List<Command> nodes) {
+        this.nodes=nodes;
+        return this;
     }
 
     @Override

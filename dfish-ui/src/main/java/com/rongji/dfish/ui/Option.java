@@ -6,7 +6,7 @@ package com.rongji.dfish.ui;
  * @author DFish Team
  *
  */
-public class Option extends AbstractNode<Option> {
+public class Option extends AbstractNode<Option> implements Statusful<Option>{
 	private static final long serialVersionUID = 306013051979293811L;
 	private String text;
 	private Object value;
@@ -118,10 +118,12 @@ public class Option extends AbstractNode<Option> {
 		return this;
 	}
 
+	@Override
 	public String getStatus() {
 		return status;
 	}
 
+	@Override
 	public Option setStatus(String status) {
 		this.status = status;
 		return this;

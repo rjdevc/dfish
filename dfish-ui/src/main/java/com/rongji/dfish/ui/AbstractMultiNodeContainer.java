@@ -9,7 +9,7 @@ import java.util.List;
  * @param <T> 当前对象类型
  * @author DFish Team
  */
-public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeContainer<T>> extends AbstractWidget<T> implements MultiNodeContainer<T> {
+public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeContainer<T,N>,N extends Node> extends AbstractWidget<T> implements MultiNodeContainer<T,N> {
 
     private static final long serialVersionUID = 6322077434879898040L;
 
@@ -24,8 +24,14 @@ public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeCont
 
     protected List<Node> nodes = new ArrayList<>();
 
+    @Override
     public List<Node> getNodes(){
         return nodes;
+    }
+    @Override
+    public T setNodes(List<N> nodes){
+        this.nodes=(List)nodes;
+        return (T)this;
     }
 
 
@@ -35,7 +41,7 @@ public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeCont
      * @param to   AbstractLayout
      * @param from AbstractLayout
      */
-    protected void copyProperties(AbstractMultiNodeContainer<?> to, AbstractMultiNodeContainer<?> from) {
+    protected void copyProperties(AbstractMultiNodeContainer to, AbstractMultiNodeContainer from) {
         super.copyProperties(to, from);
         to.nodes = from.nodes;
     }
@@ -43,7 +49,7 @@ public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeCont
     protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
         @Override
         protected  List<Node> nodes() {
-            return nodes;
+            return (List)nodes;
         }
 
         @Override

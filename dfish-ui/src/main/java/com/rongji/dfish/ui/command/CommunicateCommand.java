@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.command;
 
+import com.rongji.dfish.ui.AbstractNode;
 import com.rongji.dfish.ui.LazyLoad;
 
 /**
@@ -11,7 +12,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extends AbstractCommand<T> implements LazyLoad<T> {
+public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extends AbstractNode<T> implements LazyLoad<T>,Command<T> {
 
     private static final long serialVersionUID = -2296464991066275984L;
     /**

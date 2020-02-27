@@ -73,8 +73,7 @@ public class Form extends AbstractPubNodeContainer<Form, Table.TD> implements Ht
         return this;
     }
 
-    @Override
-    public Form add(Node w) {
+    public Form add(Widget w) {
         if (w == null) {
             return this;
         }

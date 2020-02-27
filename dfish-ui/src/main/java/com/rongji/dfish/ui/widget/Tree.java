@@ -374,7 +374,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
      * @version 2.0
      * @since XMLTMPL 1.0
      */
-    public static class Leaf extends AbstractMultiNodeContainer<Leaf> implements MultiNodeContainer<Leaf>, Statusful<Leaf>,
+    public static class Leaf extends AbstractMultiNodeContainer<Leaf,Leaf> implements MultiNodeContainer<Leaf,Leaf>, Statusful<Leaf>,
             HtmlContentHolder<Leaf>, LazyLoad<Leaf>, HasText<Leaf>, BoxHolder<Leaf>, BadgeHolder<Leaf> {
         private static final long serialVersionUID = -6246121270694425393L;
         private Boolean focus;

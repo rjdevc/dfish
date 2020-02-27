@@ -13,8 +13,8 @@ import com.rongji.dfish.ui.form.Hidden;
  * @author DFish team
  */
 @SuppressWarnings("unchecked")
-public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMultiNodeContainer<T>
-        implements Scrollable<T>, Alignable<T>, VAlignable<T>, MultiNodeContainer<T>, HiddenContainer<T> {
+public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMultiNodeContainer<T,Widget>
+        implements Scrollable<T>, Alignable<T>, VAlignable<T>, MultiNodeContainer<T,Widget>, HiddenContainer<T> {
 
 	private static final long serialVersionUID = -7555807071265375322L;
     private Boolean scroll;
@@ -87,7 +87,7 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMu
     }
 
     @Override
-    public T add(Node w) {
+    public T add(Widget w) {
         if (w instanceof Hidden) {
             Hidden hidden = (Hidden) w;
             hiddens.addHidden(hidden.getName(), hidden.getValue());

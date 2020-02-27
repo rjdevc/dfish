@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.command;
 
+import com.rongji.dfish.ui.AbstractNode;
+
 /**
  * JSCommand 封装一个基本的JS命令
  *
@@ -8,7 +10,7 @@ package com.rongji.dfish.ui.command;
  * @date 2018-08-03 before
  * @since 2.0
  */
-public class JS extends AbstractCommand<JS> {
+public class JS extends AbstractNode<JS> implements Command<JS> {
 
     private static final long serialVersionUID = -3246276181010606891L;
 

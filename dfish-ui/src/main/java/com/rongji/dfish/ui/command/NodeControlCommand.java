@@ -1,6 +1,8 @@
 package com.rongji.dfish.ui.command;
 
 
+import com.rongji.dfish.ui.AbstractNode;
+
 /**
  * WidgetControlCommand 是 用于控制视图对象动作的命令
  * 一般分为视图对象的增加，删除，修改，
@@ -11,7 +13,7 @@ package com.rongji.dfish.ui.command;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public abstract class NodeControlCommand<T extends NodeControlCommand<T>> extends AbstractCommand<T> {
+public abstract class NodeControlCommand<T extends NodeControlCommand<T>> extends AbstractNode<T> implements Command<T> {
 
     private static final long serialVersionUID = 999627992841928211L;
 

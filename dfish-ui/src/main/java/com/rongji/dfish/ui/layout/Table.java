@@ -600,8 +600,8 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
     }
 
     @Override
-    public Table add(Node w) {
-        tBody.add((TR) w);
+    public Table add(TR w) {
+        tBody.add(w);
         return this;
     }
 
@@ -1457,7 +1457,7 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
      *
      * @author DFish team
      */
-    protected static abstract class Part extends AbstractMultiNodeContainer<Part> implements TableOperation<Part>,MultiNodeContainer<Part>{
+    protected static abstract class Part extends AbstractMultiNodeContainer<Part, TR> implements TableOperation<Part>,MultiNodeContainer<Part,TR>{
         /**
          * 构造函数
          *

@@ -19,7 +19,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     private Boolean escape;
     private Boolean strict;
     private String loadingText;
-    private List<Node> nodes;
+    private List<ComboOption> nodes;
     private ComboOption pub;
 
     /**
@@ -119,8 +119,13 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     }
 
     @Override
-    public List<Node> getNodes() {
+    public List<ComboOption> getNodes() {
         return nodes;
+    }
+    @Override
+    public T setNodes(List<ComboOption> nodes){
+        this.nodes=nodes;
+        return (T)this;
     }
 
     @Override
@@ -145,7 +150,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
         @Override
         protected List<Node> nodes() {
-            return nodes;
+            return (List)nodes;
         }
 
         @Override
@@ -153,7 +158,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
             if(node==null){
                 nodes.remove(i);
             }else{
-                nodes.set(i,node);
+                nodes.set(i,(ComboOption)node);
             }
         }
     };

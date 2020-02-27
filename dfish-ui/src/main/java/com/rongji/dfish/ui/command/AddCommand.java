@@ -18,11 +18,11 @@ import com.rongji.dfish.ui.Widget;
  */
 @SuppressWarnings("unchecked")
 public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCommand<T> implements
-        MultiNodeContainer<T> {
+        MultiNodeContainer<T,Widget> {
 
     private static final long serialVersionUID = -2417775749900268295L;
 
-    protected List<Node> nodes = new ArrayList<>();
+    protected List<Widget> nodes = new ArrayList<>();
     public AddCommand(String target, Widget<?>... nodes) {
         setTarget(target);
         if (nodes != null) {
@@ -31,14 +31,20 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
             }
         }
     }
-    public List<Node> getNodes(){
+    @Override
+    public List<Widget> getNodes(){
         return nodes;
+    }
+    @Override
+    public T setNodes(List<Widget>nodes){
+        this.nodes=nodes;
+        return (T)this;
     }
 
     protected AbstractNodeContainerPart containerPart=new AbstractNodeContainerPart() {
         @Override
         protected  List<Node> nodes() {
-            return AddCommand.this.nodes;
+            return (List)AddCommand.this.nodes;
         }
 
         @Override
@@ -46,7 +52,7 @@ public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCom
             if(node==null){
                 nodes.remove(i);
             }else{
-                nodes.set(i,node);
+                nodes.set(i,(Widget)node);
             }
         }
     };

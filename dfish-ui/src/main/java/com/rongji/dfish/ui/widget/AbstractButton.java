@@ -13,8 +13,8 @@ import com.rongji.dfish.ui.AbstractMultiNodeContainer;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractMultiNodeContainer<T>
-        implements MultiNodeContainer<T>, HasText<T>, HtmlContentHolder<T>, BadgeHolder<T> {
+public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractMultiNodeContainer<T,Widget>
+        implements MultiNodeContainer<T,Widget>, HasText<T>, HtmlContentHolder<T>, BadgeHolder<T> {
 
     /**
      *

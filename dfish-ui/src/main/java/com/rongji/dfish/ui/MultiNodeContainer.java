@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  *
  * @param <T> 当前对象类型
  */
-public interface MultiNodeContainer<T extends MultiNodeContainer<T>> extends NodeContainer {
+public interface MultiNodeContainer<T extends MultiNodeContainer<T,N>,N extends Node> extends NodeContainer {
     /**
      * <p>取得它容纳的内容。在JSON中表示为下级。"nodes":[ ... ]</p>
      * 如果这写下级内容(N)还有下级，将<b>不</b>包含多层级的内容。
@@ -17,6 +18,7 @@ public interface MultiNodeContainer<T extends MultiNodeContainer<T>> extends Nod
      * @return List
      */
     <W extends Node>List<W> getNodes();
+    T setNodes(List<N> nodes);
     default void clearNodes(){
         getNodes().clear();
     }
@@ -28,14 +30,19 @@ public interface MultiNodeContainer<T extends MultiNodeContainer<T>> extends Nod
      * @param node Node
      * @return 本身，这样可以继续设置其他属性
      */
-    default T add(Node node){
+    default T add(N node){
         if (node == null) {
             return (T) this;
         }
         if (node == this) {
             throw new IllegalArgumentException("can not add widget itself as a sub widget");
         }
-        getNodes().add(node);
+        List<N> nodes=getNodes();
+        if(nodes==null){
+            nodes=new ArrayList<>();
+            setNodes(nodes);
+        }
+        nodes.add(node);
         return (T) this;
     }
 }
