@@ -6,9 +6,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * NodeContainerDecorator 为NodeContainer的装饰器。
+ * <p>因为java为单根继承。一些类如果想同时有多个父类的特性，只能继承其中一个父类。而其他的父类的特性。
+ * 通常要用模式集成进来。这里使用装饰（Decorator）模式。将NodeContainer的行为集成进来</p>
+ */
 public abstract class NodeContainerDecorator implements NodeContainer{
-
+    /**
+     * 该装饰器应该从宿主 类中获取的下一级节点的信息。
+     * @param <W> 返回的类型可以是Node 也可以是更精细的类型
+     * @return nodes列表
+     */
     protected abstract <W extends Node> List<W> nodes();
+
+    /**
+     * 如果替换或删除的时候，通知宿主类，更改值。
+     * 删除模式时，node=null
+     * 这个i 和nodes()里面的位置是对应的。
+     * 如果node 为空，可能根据宿主本身的特性，考虑动作，如果宿主不支持空对象。
+     * 可能需要移除节点。
+     * 移除的时候需要注意，后续setNode位置是和nodes()，可能和移除完的node并不对应。
+     * @param i 位置，和nodes方法对应
+     * @param node 需要替代的内容，如果是删除，这里是null
+     */
     protected abstract void setNode(int i,Node node);
     @Override
     public Node findNode(Filter filter) {

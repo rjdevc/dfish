@@ -14,11 +14,21 @@ public interface MultiNodeContainer<T extends MultiNodeContainer<T,N>,N extends 
      * <p>取得它容纳的内容。在JSON中表示为下级。"nodes":[ ... ]</p>
      * 如果这写下级内容(N)还有下级，将<b>不</b>包含多层级的内容。
      * 大部分情况下getNodes只是视觉效果，比如说Table的nodes在这里可能会分属于自己的rows和head的rows中去。
-     * 如果要取得对象，请调用，findNodes
+     * @param <W> 返回结果可以是Node的列表页可以是更精细的类型。
      * @return List
      */
     <W extends Node>List<W> getNodes();
+
+    /**
+     * 设置节点列表
+     * @param nodes
+     * @return
+     */
     T setNodes(List<N> nodes);
+
+    /**
+     * 清理节点
+     */
     default void clearNodes(){
         getNodes().clear();
     }
