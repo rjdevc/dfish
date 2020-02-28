@@ -1967,17 +1967,19 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                 Map<Integer,String> posMap;
                 @Override
                 protected  List<Node> nodes() {
-                    if(data ==null){
-                        return Collections.emptyList();
-                    }
                     List<Node> result=new ArrayList();
                     posMap=new HashMap<>();
-                    int index=0;
-                    for(Map.Entry<String,Object >entry:data.entrySet()){
-                        if(entry.getValue() instanceof Node){
-                            result.add((Node)entry.getValue());
-                            posMap.put(index++,entry.getKey());
+                    if(data !=null) {
+                        int index = 0;
+                        for (Map.Entry<String, Object> entry : data.entrySet()) {
+                            if (entry.getValue() instanceof Node) {
+                                result.add((Node) entry.getValue());
+                                posMap.put(index++, entry.getKey());
+                            }
                         }
+                    }
+                    if(nodes!=null){
+                        result.addAll(nodes);
                     }
                     return result;
                 }
@@ -1986,10 +1988,22 @@ public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements 
                 protected void setNode(int i, Node node) {
                     if(posMap==null){
                         return; //本不该发生
-                    }else if(node==null){
-                        data.remove(posMap.get(i));
-                    }else{
-                        data.put(posMap.get(i),node);
+                    }else {
+                        if(i < posMap.size()){
+                            //在data中寻找
+                            if (node == null) {
+                                data.remove(posMap.get(i));
+                            } else {
+                                data.put(posMap.get(i), node);
+                            }
+                        }else {
+                            //在nodes中寻找
+                            if (node == null) {
+                                nodes.remove(i-posMap.size());
+                            }else{
+                                nodes.set(i-posMap.size(), (TR)node);
+                            }
+                        }
                     }
                 }
             };

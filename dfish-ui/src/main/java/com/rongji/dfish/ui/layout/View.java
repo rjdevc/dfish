@@ -1,6 +1,12 @@
 package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.LazyLoad;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.NodeContainerDecorator;
+import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.command.Command;
+
+import java.util.*;
 
 
 /**
@@ -76,6 +82,42 @@ public class View extends AbstractSrc<View>{
 	public View setBase(String base) {
 		this.base = base;
 		return this;
+	}
+	@Override
+	protected NodeContainerDecorator getNodeContainerDecorator(){
+		return new NodeContainerDecorator() {
+			Map<Integer, String> posMap;
+
+			@Override
+			protected List<Node> nodes() {
+				List<Node> result = new ArrayList<>();
+				result.add(node);
+				posMap = new HashMap<>();
+				int index = 1;
+				if(commands!=null) {
+					for (Map.Entry<String, Command> entry : commands.entrySet()) {
+						if (entry.getValue() instanceof Node) {
+							result.add( entry.getValue());
+							posMap.put(index++, entry.getKey());
+						}
+					}
+				}
+				return result;
+			}
+
+			@Override
+			protected void setNode(int i, Node node) {
+				if (posMap == null) {
+					return; //本不该发生
+				} else  if(i==0) {
+					View.this.node=(Widget)node;
+				}else if (node == null) {
+					data.remove(posMap.get(i));
+				} else {
+					data.put(posMap.get(i), node);
+				}
+			}
+		};
 	}
 
 }

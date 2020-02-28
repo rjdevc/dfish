@@ -18,6 +18,9 @@ public abstract class NodeContainerDecorator implements NodeContainer{
         }
 		for (Iterator<Node> iter = nodes.iterator(); iter.hasNext(); ) {
             Node item = iter.next();
+            if(item==null){
+                continue;
+            }
 			if (filter.accept(item)) {
 				return item;
 			} else if (item instanceof NodeContainer) {
@@ -40,6 +43,9 @@ public abstract class NodeContainerDecorator implements NodeContainer{
         }
         for (Iterator<Node> iter = nodes().iterator(); iter.hasNext(); ) {
             Node item = iter.next();
+            if(item==null){
+                continue;
+            }
             if (filter.accept(item)) {
                 ret.add(item);
             }
@@ -60,6 +66,9 @@ public abstract class NodeContainerDecorator implements NodeContainer{
         }
         for (int i=0;i<nodes.size();i++) {
             Node item =nodes.get(i);
+            if(item==null){
+                continue;
+            }
             if (filter.accept(item)) {
                 if(onReplace(item,node)) {
                     setNode(i, node);
@@ -85,6 +94,9 @@ public abstract class NodeContainerDecorator implements NodeContainer{
         }
         for (int i=0;i<nodes.size();i++) {
             Node item =nodes.get(i);
+            if(item==null){
+                continue;
+            }
             if (filter.accept(item)) {
                 if(onReplace(item,node)) {
                     replaced++;

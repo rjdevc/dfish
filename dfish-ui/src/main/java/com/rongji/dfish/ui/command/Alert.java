@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.rongji.dfish.ui.*;
@@ -12,7 +13,7 @@ import com.rongji.dfish.ui.widget.Button;
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
  * @since 2.0
  */
-public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Positionable<Alert>, HasText<Alert> {
+public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Positionable<Alert>, HasText<Alert>,NodeContainer{
 
     private static final long serialVersionUID = 3046146830347964521L;
 
@@ -114,6 +115,58 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
     public Alert setYes(Command<?> yes) {
         this.yes = yes;
         return this;
+    }
+
+    protected NodeContainerDecorator getNodeContainerDecorator(){
+        return new NodeContainerDecorator() {
+            @Override
+            protected List<Node> nodes() {
+                List<Node> ret=new ArrayList<>(1+(buttons==null?0:buttons.size()));
+                ret.add(yes);
+                if(buttons!=null){
+                    ret.addAll(buttons);
+                }
+                return ret;
+            }
+
+            @Override
+            protected void setNode(int i, Node node) {
+                switch (i){
+                    case 0:
+                        yes=(Command) node;
+                        break;
+                    default:
+                        if(buttons==null||i<0||i-1>=buttons.size()) {
+                            throw new ArrayIndexOutOfBoundsException(i-1);
+                        }
+                        if(node==null){
+                            buttons.remove(i-1);
+                        }else{
+                            buttons.set(i-1,(Button)node);
+                        }
+                }
+            }
+        };
+    }
+
+    @Override
+    public Node findNode(NodeContainer.Filter filter) {
+        return getNodeContainerDecorator().findNode(filter);
+    }
+
+    @Override
+    public List<Node> findAllNodes(NodeContainer.Filter filter) {
+        return getNodeContainerDecorator().findAllNodes(filter);
+    }
+
+    @Override
+    public Node replaceNode(NodeContainer.Filter filter, Node node) {
+        return getNodeContainerDecorator().replaceNode(filter,node);
+    }
+
+    @Override
+    public int replaceAllNodes(NodeContainer.Filter filter, Node node) {
+        return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 
 }

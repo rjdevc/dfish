@@ -17,14 +17,14 @@ import java.util.Map;
  */
 public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidget<T>
 		implements SingleNodeContainer<T,Widget>,LazyLoad<T> {
-	private String preload;
-	private String src;
-	private Boolean sync;
-	private String success;
-	private String error;
-	private String complete;
-	private String filter;
-	private Widget node;
+	protected String preload;
+	protected String src;
+	protected Boolean sync;
+	protected String success;
+	protected String error;
+	protected String complete;
+	protected String filter;
+	protected Widget node;
 	/**
 	 * 默认构造函数
 	 */
@@ -43,7 +43,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidg
 	/**
 	 * 视图中的所有命令
 	 */
-	protected Map<String,Command<?>> commands=new HashMap<String,Command<?>>();
+	protected Map<String,Command> commands=new HashMap<>();
 	
 	/**
 	 * 增加一个命令，如果id重复会被覆盖
@@ -52,7 +52,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidg
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	@SuppressWarnings("unchecked")
-	public T addCommand(String id,Command<?> command) {
+	public T addCommand(String id,Command command) {
 		commands.put(id, command);
 	     return (T) this;
 	}
@@ -61,7 +61,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidg
 	 * @param id String
 	 * @return Command
 	 */
-	public Command<?> getCommandById(String id) {
+	public Command getCommandById(String id) {
 		return commands.get(id);
 	}
 	
@@ -69,7 +69,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidg
 	 * 取得所有命令
 	 * @return commands Map
 	 */
-	public Map<String,Command<?>> getCommands() {
+	public Map<String,Command> getCommands() {
 		return commands;
 	}
 

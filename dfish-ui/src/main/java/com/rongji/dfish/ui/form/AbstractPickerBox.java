@@ -1,6 +1,12 @@
 package com.rongji.dfish.ui.form;
 
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.NodeContainer;
+import com.rongji.dfish.ui.NodeContainerDecorator;
 import com.rongji.dfish.ui.command.Dialog;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * picker选择框组件,这里定义选择框组件该有特性
@@ -9,11 +15,11 @@ import com.rongji.dfish.ui.command.Dialog;
  * @date 2020-02-12
  * @author lamontYu
  */
-public class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractInput<T, String> {
+public class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractInput<T, String> implements NodeContainer {
 
     private static final long serialVersionUID = 647561925546899578L;
-    private Dialog drop;
-    private Dialog picker;
+    protected Dialog drop;
+    protected Dialog picker;
 
     /**
      * 构造函数
@@ -84,6 +90,48 @@ public class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractI
     public T setPicker(Dialog picker) {
         this.picker = picker;
         return (T) this;
+    }
+
+    protected NodeContainerDecorator getNodeContainerDecorator(){
+        return new NodeContainerDecorator() {
+            @Override
+            protected List<Node> nodes() {
+                return Arrays.asList(picker,drop) ;
+            }
+
+            @Override
+            protected void setNode(int i, Node node) {
+                switch (i){
+                    case 0:
+                        picker=(Dialog) node;
+                        break;
+                    case 1:
+                        drop=(Dialog) node;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("expect 0-picker 1-drop, but get "+i);
+                }
+            }
+        };
+    }
+    @Override
+    public Node findNode(NodeContainer.Filter filter) {
+        return getNodeContainerDecorator().findNode(filter);
+    }
+
+    @Override
+    public List<Node> findAllNodes(NodeContainer.Filter filter) {
+        return getNodeContainerDecorator().findAllNodes(filter);
+    }
+
+    @Override
+    public Node replaceNode(NodeContainer.Filter filter, Node node) {
+        return getNodeContainerDecorator().replaceNode(filter,node);
+    }
+
+    @Override
+    public int replaceAllNodes(NodeContainer.Filter filter, Node node) {
+        return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 
 }

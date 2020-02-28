@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.form;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.command.Dialog;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -145,43 +146,6 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
     public T setPub(ComboOption pub) {
         this.pub = pub;
         return (T) this;
-    }
-
-    protected NodeContainerDecorator getNodeContainerDecorator() {
-        return new NodeContainerDecorator() {
-            @Override
-            protected List<Node> nodes() {
-                return (List) nodes;
-            }
-
-            @Override
-            protected void setNode(int i, Node node) {
-                if (node == null) {
-                    nodes.remove(i);
-                } else {
-                    nodes.set(i, (ComboOption) node);
-                }
-            }
-        };
-    }
-    @Override
-    public Node findNode(Filter filter) {
-        return getNodeContainerDecorator().findNode(filter);
-    }
-
-    @Override
-    public List<Node> findAllNodes(Filter filter) {
-        return getNodeContainerDecorator().findAllNodes(filter);
-    }
-
-    @Override
-    public Node replaceNode(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceNode(filter,node);
-    }
-
-    @Override
-    public int replaceAllNodes(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 
 }

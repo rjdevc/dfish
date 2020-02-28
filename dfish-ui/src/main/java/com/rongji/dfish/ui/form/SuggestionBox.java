@@ -1,7 +1,12 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.NodeContainerDecorator;
 import com.rongji.dfish.ui.command.Dialog;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * SuggestionBox 默认可以通过填写出现输入提示的输入框，主要有{@link ComboBox} {@link LinkBox}和{@link OnlineBox}
@@ -307,5 +312,31 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
             this.value = value;
         }
     }
+    protected NodeContainerDecorator getNodeContainerDecorator() {
+        return new NodeContainerDecorator() {
+            @Override
+            protected List<Node> nodes() {
+                return Arrays.asList(picker,drop,suggest) ;
+            }
 
+            @Override
+            protected void setNode(int i, Node node) {
+                switch (i){
+                    case 0:
+                        picker=(Dialog) node;
+                        break;
+                    case 1:
+                        drop=(Dialog) node;
+                        break;
+                    case 2:
+                        suggest=(Dialog) node;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("expect 0-picker 1-drop 2-suggest, but get "+i);
+                }
+            }
+        };
+
+
+    }
 }

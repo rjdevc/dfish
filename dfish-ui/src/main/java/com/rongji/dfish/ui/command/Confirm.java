@@ -1,8 +1,12 @@
 package com.rongji.dfish.ui.command;
 
 import com.rongji.dfish.ui.HasText;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.NodeContainer;
+import com.rongji.dfish.ui.NodeContainerDecorator;
 import com.rongji.dfish.ui.widget.Button;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,7 +21,7 @@ import java.util.List;
  * @date 2018-08-03 before
  * @since 1.0
  */
-public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>, HasText<Confirm> {
+public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>, HasText<Confirm> ,NodeContainer {
 
     private static final long serialVersionUID = 6715410304552489693L;
 
@@ -186,5 +190,59 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
         this.buttons = buttons;
         return this;
     }
+    protected NodeContainerDecorator getNodeContainerDecorator(){
+        return new NodeContainerDecorator() {
+            @Override
+            protected List<Node> nodes() {
+                List<Node> ret=new ArrayList<>(2+(buttons==null?0:buttons.size()));
+                ret.add(yes);
+                ret.add(no);
+                if(buttons!=null){
+                    ret.addAll(buttons);
+                }
+                return ret;
+            }
 
+            @Override
+            protected void setNode(int i, Node node) {
+                switch (i){
+                    case 0:
+                        yes=(Command) node;
+                        break;
+                    case 1:
+                        no=(Command) node;
+                        break;
+                    default:
+                        if(buttons==null||i<0||i-2>=buttons.size()) {
+                            throw new ArrayIndexOutOfBoundsException(i-2);
+                        }
+                        if(node==null){
+                            buttons.remove(i-2);
+                        }else{
+                            buttons.set(i-2,(Button)node);
+                        }
+                }
+            }
+        };
+    }
+
+    @Override
+    public Node findNode(Filter filter) {
+        return getNodeContainerDecorator().findNode(filter);
+    }
+
+    @Override
+    public List<Node> findAllNodes(Filter filter) {
+        return getNodeContainerDecorator().findAllNodes(filter);
+    }
+
+    @Override
+    public Node replaceNode(Filter filter, Node node) {
+        return getNodeContainerDecorator().replaceNode(filter,node);
+    }
+
+    @Override
+    public int replaceAllNodes(Filter filter, Node node) {
+        return getNodeContainerDecorator().replaceAllNodes(filter,node);
+    }
 }
