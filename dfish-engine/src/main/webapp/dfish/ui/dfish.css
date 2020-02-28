@@ -923,10 +923,11 @@
 
 .f-opc0{opacity:0}
 .f-css2 .f-opc0{filter:Alpha(opacity=0)}
-div.f-dnd-helper{position:absolute;left:0;right:0;height:2px;z-index:1}
-div.f-dnd-helper ._g{position:absolute;top:0;left:0;right:0;bottom:0;background:red}
-tr.f-dnd-helper{height:2px;background:red}
-tr.f-dnd-helper ._g{padding:0}
+.f-dnd-sort{position:absolute;left:0;right:0;height:2px;border-bottom:2px solid transparent;z-index:21;cursor:default}
+.f-dnd-sort.z-after{border-bottom:0;border-top:3px solid transparent;margin-top:-3px}
+.f-dnd-sort ._g{position:absolute;top:0;left:0;right:0;bottom:0;background:red}
+.f-dnd-sort-tr{height:2px;background:red}
+.f-dnd-sort-tr ._g{padding:0}
 .f-dnd-notallowed,.f-dnd-notallowed *{cursor:not-allowed!important}
 
 .f-develop{position:absolute;border:2px dashed red;z-index:11}
