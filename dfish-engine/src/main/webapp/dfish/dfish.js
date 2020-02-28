@@ -1436,7 +1436,7 @@ $.draggable = function( a, b ) {
 	b = b || {};
 	new Drag( a, b );
 	$.query( a.$() ).on( 'mousedown', _dnd_selector[ a.type ], function( downEvent ) {
-		var ix = downEvent.pageX, iy = downEvent.pageY, sn, u, v, h, p, q, c = $.widget( downEvent.currentTarget ), d = '_dndhelper', g = d + ':g',
+		var ix = downEvent.pageX, iy = downEvent.pageY, sn, n, u, v, p, q, c = $.widget( downEvent.currentTarget ), d = '_dndhelper', g = d + ':g',
 			dp = function( o ) {
 				o = $.widget( o );
 				return o.rootNode && isDrop.call( o.rootNode ) ? o.rootNode : o.closest( isDrop );
@@ -1445,75 +1445,73 @@ $.draggable = function( a, b ) {
 				return d && (!d.cst.scope || !b.scope || _idsAny( d.cst.scope, b.scope ));
 			};
 		$.moveup( function( e ) {
-			var x = e.pageX, y = e.pageY, m = e.srcElement, n = m != v && $.widget( m ), o;
+			var x = e.pageX, y = e.pageY, f = e.srcElement, m = f != v && (f.dndSortID ? $.all[ f.dndSortID ] : $.widget( f )), o;
+			n = sn = N;
 			// 鼠标按下并移动5像素后才能触发拖动，避免误操作
 			if ( ! u && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) ) {
-				var f = $.widget( downEvent.target ), t = f.attr( 'text' ), g;
+				var t = c.attr( 'text' ), h;
 				if ( ! t ) {
-					var ic = f.attr( 'icon' ) || (f.type === 'Img' && f.attr( 'src' ));
+					var ic = c.attr( 'icon' ) || (c.type === 'Img' && c.attr( 'src' ));
 					t = ic && $.image( ic, { maxWidth: 32, maxHeight: 32 } );
 				}
 				for ( var k in _drop_cache ) {
 					if ( isDrop.call( $.all[ k ] ) ) {
 						if ( _drop_cache[ k ].cst.highlight ) {
-							$.all[ k ].$().style.zIndex = 3;
+							$.all[ k ].$().style.zIndex = 21;
 							$.all[ k ].$().style.background = '#fff';
 							$.all[ k ].addClass( 'z-droppable-highlight' );
-							g = T;
+							h = T;
 						}
 						$.all[ k ].addClass( 'z-droppable' );
 					}
 				}
-				v = g && _db( '<div style="position:absolute;background:#777;top:0;left:0;right:0;bottom:0;opacity:.5;z-index:1"></div>' );
-				u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:3" class=f-fix>' + (t || '&nbsp;') + '</div>' );
+				v = h && _db( '<div style="position:absolute;background:#777;top:0;left:0;right:0;bottom:0;opacity:.5;z-index:20"></div>' );
+				u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:22" class=f-fix>' + (t || '&nbsp;') + '</div>' );
 			}
-			if ( u && m != u ) {
+			if ( u ) {
 				u.style.left = (e.pageX + 7) + 'px';
 				u.style.top  = (e.pageY + 7) + 'px';
-				if ( n && (p = dp( n )) && (o = _drop_cache[ p.id ]) ) {
-					if ( _dnd_childtype[ p.type ] && n != p )
-					 	n = n.closest( _dnd_childtype[ p.type ] );
-					if ( n == c || n.contains( c ) ) {
-						_classAdd( n.$(), 'f-dnd-notallowed' );
-						$( d ) && _rm( d );
-					} else if( o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: n, type: 'append' } ) ) {
-						_classAdd( n.$(), 'f-dnd-notallowed' );
-						$( d ) && _rm( d );
+				if ( m && (p = dp( m )) && (o = _drop_cache[ p.id ]) ) {
+					if ( _dnd_childtype[ p.type ] && m != p )
+					 	m = m.closest( _dnd_childtype[ p.type ] );
+					if ( m == c || m.contains( c ) ) {
+						_classAdd( m.$(), 'f-dnd-notallowed' );
+						_rm( d );
 					} else {
-						e.runType = 'dnd_over';
-						p.triggerListener( e );
-						if ( _drop_cache[ p.id ].cst.sort ) {
-							var r = $.bcr( n.$() ), f = n.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-helper><td id=' + g + ' class=_g colspan=' + n.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-helper><div id=' + g + ' class=_g></div></div>';
-							if ( r.top < y && y - r.top <= 5 ) $.query( n.$() )[ sn = 'before' ]( $( d ) || f );
-							else if ( r.bottom > y && r.bottom - y <= 5 ) $.query( n.$() )[ sn = 'after' ]( $( d ) || f );
-							else if ( ! $( g ) || $( g ) != m )
-								sn = N;
-							if ( $( d ) ) {
-								$( d ).style.display = sn ? '' : 'none';
-								$( d ).style.left = n.padSort ? n.padSort() + 'px' : '';
-							}
-							p.trigger( 'dnd_sort', h );
+						if ( _drop_cache[ p.id ].cst.sort && (!o.cst.isDisabled || (m != p && !o.cst.isDisabled( e, { draggable: c, droppable: m.parentNode, type: 'append' } ))) ) {
+							var r = $.bcr( m.$() ), t = m.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>';
+							if ( r.top <= y && y - r.top < 4 ) $.query( m.$() )[ sn = 'before' ]( $( d ) || t );
+							else if ( r.bottom > y && r.bottom - y < 4 ) $.query( m.$() )[ sn = 'after' ]( $( d ) || t );
+							else sn = F;
+						}
+						if ( sn ) {
+							$( g ).dndSortID = $( d ).dndSortID = m.id;
+							$.classAdd( $( d ), 'z-after', sn === 'after' );
+							if ( m.padSort )
+								$( g ).style.left = m.padSort() + 'px';
+							m.status( 'dndSort' );
+						} else {
+							m.normal();
+							! f.dndSortID && (m.trigger( 'mouseOver' ), _rm( d ));
+						}
+						if ( ! sn && o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: m, type: 'append' } ) ) {
+							_classAdd( m.$(), 'f-dnd-notallowed' );
+						} else {
+							n = m;
 						}
 					}
 					q = p;
 				} else {
 					_rm( d );
-					if ( q ) {
-						q.triggerListener( 'dnd_out' );
-						q = N;
-					}
+					q = N;
 				}
 			}
 		}, function( e ) {
 			if ( u ) {
-				var m = e.srcElement, n = m != v && $.widget( m );
 				if ( n && (p = dp( n )) && p != a && ! a.contains( p ) ) {
-					if ( _dnd_childtype[ p.type ] && n != p )
-					 	n = n.closest( _dnd_childtype[ p.type ] );
 					if ( (sn == 'before' && p == a.next()) || (sn == 'after' && p == a.prev()) || (!sn && p == a.parentNode) ) {
 						$.alert( $.loc.tree_movefail1 );
-					} else if ( ! n.hasClass( 'f-dnd-notallowed' ) ) {
-						//_drop_cache[ p.id ].cst.sort && _dnd_childtype[ p.type ] && n != p && (n = n.closest( _dnd_childtype[ p.type ] ));
+					} else {
 						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: c, droppable: n, type: sn || 'append' } );
 					}
 				}

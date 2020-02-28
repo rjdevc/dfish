@@ -1298,7 +1298,7 @@ W = define( 'Widget', function() {
 		status: function( a ) {
 			if ( a == N )
 				return this.x.status;
-			a === 'disabled' ? this.disable() : a === 'readonly' ? this.readonly() : a === 'validonly' ? this.validonly() : this.normal();
+			a === 'disabled' ? this.disable() : a === 'readonly' ? this.readonly() : a === 'validonly' ? this.validonly() : (a === 'normal' || a == '') ? this.normal() : (this.x.status = a);
 		},
 		// 调整大小
 		resize: function( w, h ) {
@@ -9169,13 +9169,6 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 } ),
 /* `absleaf` */
 AbsLeaf = define.widget( 'AbsLeaf', {
-	Listener: {
-		body: {
-			dnd_sort: function( e, o ) {
-				if ( o ) o.style.left = (this.padLeft() + 14) + 'px';
-			}
-		}
-	},
 	Prototype: {
 		_pad_left: 5,
 		_pad_level: 14,
@@ -9478,11 +9471,11 @@ Leaf = define.widget( 'Leaf', {
 			},
 			mouseOver: {
 				occupy: T,
-				method: function() { ! this.isDisabled() && $.classAdd( this.$(), 'z-hv' ); }
+				method: function() { this.isNormal() && $.classAdd( this.$(), 'z-hv' ); }
 			},
 			mouseOut: {
 				occupy: T,
-				method: function() { ! this.isDisabled() && $.classRemove( this.$(), 'z-hv' ); }
+				method: function() { $.classRemove( this.$(), 'z-hv' ); }
 			},
 			focus: {
 				block: T
@@ -10319,12 +10312,6 @@ TR = define.widget( 'TR', {
 					l.indent();
 				}
 				this.closest( 'ContentTableBody' ).trigger( 'nodeChange' );
-			},
-			dnd_over: function() {
-				$.classAdd( this.$(), 'z-dnd-over' );
-			},
-			dnd_out: function() {
-				$.classRemove( this.$(), 'z-dnd-over' );
 			}
 		}
 	},
