@@ -1474,14 +1474,14 @@ $.draggable = function( a, b ) {
 				if ( m && (p = dp( m )) && (o = _drop_cache[ p.id ]) ) {
 					if ( _dnd_childtype[ p.type ] && m != p )
 					 	m = m.closest( _dnd_childtype[ p.type ] );
-					if ( m == c || m.contains( c ) ) {
+					if ( m == c || c.contains( m ) ) {
 						_classAdd( m.$(), 'f-dnd-notallowed' );
 						_rm( d );
 					} else {
 						if ( _drop_cache[ p.id ].cst.sort ) {
-							var r = $.bcr( m.$() ), t = m.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>';
-							if ( r.top <= y && y - r.top < 4 ) sn = 'before';
-							else if ( r.bottom > y && r.bottom - y < 4 ) sn = 'after';
+							var r = $.bcr( m.$() );
+							if ( r.top <= y && y - r.top < 4 && m.prev() != c ) sn = 'before';
+							else if ( r.bottom > y && r.bottom - y < 4 && m.next() != c ) sn = 'after';
 							else sn = F;
 							if ( sn && o.cst.isDisabled && m != p && o.cst.isDisabled( e, { draggable: c, droppable: m, type: sn } ) )
 								sn = F;
@@ -1497,7 +1497,7 @@ $.draggable = function( a, b ) {
 						}
 						if ( sn === F ) {
 							m.normal();
-							$( d ) && ! f.dndSortID && (m.trigger( 'mouseOver' ), _rm( d ));
+							! f.dndSortID && $( d ) && (m.trigger( 'mouseOver' ), _rm( d ));
 						}
 						if ( ! sn && o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: m, type: 'append' } ) ) {
 							_classAdd( m.$(), 'f-dnd-notallowed' );
@@ -1505,16 +1505,14 @@ $.draggable = function( a, b ) {
 							n = m;
 						}
 					}
-					q = p;
 				} else {
 					_rm( d );
-					q = N;
 				}
 			}
 		}, function( e ) {
 			if ( u ) {
-				if ( n && (p = dp( n )) && p != a && ! a.contains( p ) ) {
-					if ( (sn == 'before' && p == a.next()) || (sn == 'after' && p == a.prev()) || (!sn && p == a.parentNode) ) {
+				if ( n && (p = dp( n )) && n != c && ! c.contains( n ) ) {
+					if ( (sn == 'before' && n == c.next()) || (sn == 'after' && n == c.prev()) || (!sn && n == c.parentNode) ) {
 						$.alert( $.loc.tree_movefail1 );
 					} else {
 						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: c, droppable: n, type: sn || 'append' } );
@@ -1530,7 +1528,7 @@ $.draggable = function( a, b ) {
 						$.all[ k ].removeClass( 'z-droppable' );
 					}
 				}
-				_rm( u ), _rm( v ), _rm( '_dndhelper' ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
+				_rm( u ), _rm( v ), _rm( d ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
 			}
 		} );
 	} );
