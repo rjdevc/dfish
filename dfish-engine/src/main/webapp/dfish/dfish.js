@@ -1465,7 +1465,7 @@ $.draggable = function( a, b ) {
 						$.all[ k ].addClass( 'z-droppable' );
 					}
 				}
-				v = h && _db( '<div style="position:absolute;background:#777;top:0;left:0;right:0;bottom:0;opacity:.5;z-index:20"></div>' );
+				v = h && _db( '<div class=w-dialog-cover style="opacity:.3;z-index:20"></div>' );
 				u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:22" class=f-fix>' + (t || '&nbsp;') + '</div>' );
 			}
 			if ( u ) {
@@ -1476,36 +1476,34 @@ $.draggable = function( a, b ) {
 					 	m = m.closest( _dnd_childtype[ p.type ] );
 					if ( m == c || c.contains( m ) ) {
 						_classAdd( m.$(), 'f-dnd-notallowed' );
-						_rm( d );
 					} else {
-						if ( _drop_cache[ p.id ].cst.sort ) {
+						if ( f.dndSortType )
+							sn = f.dndSortType;
+						else if ( _drop_cache[ p.id ].cst.sort ) {
 							var r = $.bcr( m.$() );
-							if ( r.top <= y && y - r.top < 4 && m.prev() != c ) sn = 'before';
-							else if ( r.bottom > y && r.bottom - y < 4 && m.next() != c ) sn = 'after';
-							else sn = F;
+							sn = r.top <= y && y - r.top < 4 && m.prev() != c ? 'before' :
+								r.bottom > y && r.bottom - y < 4 && m.next() != c ? 'after' : F;
 							if ( sn && o.cst.isDisabled && m != p && o.cst.isDisabled( e, { draggable: c, droppable: m, type: sn } ) )
 								sn = F;
 							if ( sn ) {
 								$.query( m.$() )[ sn ]( $( d ) || (m.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>') );
 								$( g ).dndSortID = $( d ).dndSortID = m.id;
+								$( g ).dndSortType = $( d ).dndSortType = sn;
 								$.classAdd( $( d ), 'z-after', sn === 'after' );
-								if ( m.padSort )
-									$( g ).style.left = m.padSort() + 'px';
+								$( g ).style.left = m.padSort ? m.padSort() + 'px' : '';
 								m.trigger( 'mouseOut' );
 								m.status( 'dndSort' );
 							}
 						}
-						if ( sn === F ) {
-							m.normal();
-							! f.dndSortID && $( d ) && (m.trigger( 'mouseOver' ), _rm( d ));
-						}
-						if ( ! sn && o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: m, type: 'append' } ) ) {
+						if ( ! sn && o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: m, type: 'append' } ) )
 							_classAdd( m.$(), 'f-dnd-notallowed' );
-						} else {
+						else
 							n = m;
-						}
 					}
-				} else {
+				}
+				if ( ! sn && ! f.dndSortID && $( d ) ) {
+					$.all[ $( d ).dndSortID ].normal();
+					m && m.trigger( 'mouseOver' );
 					_rm( d );
 				}
 			}
