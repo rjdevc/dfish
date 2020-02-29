@@ -243,6 +243,8 @@ _scrollIntoView = function( a, b, c, d ) {
  */// @x -> cmd object, a -> url args, t -> post data
 _ajaxCmd = function( x, a, t ) {
 	var u = x.src, d;
+	if ( ! u )
+		return;
 	if ( u.indexOf( 'javascript:' ) === 0 )
 		u = this.formatJS( u );
 	u = this.formatStr( u, a, T );

@@ -1478,21 +1478,26 @@ $.draggable = function( a, b ) {
 						_classAdd( m.$(), 'f-dnd-notallowed' );
 						_rm( d );
 					} else {
-						if ( _drop_cache[ p.id ].cst.sort && (!o.cst.isDisabled || (m != p && !o.cst.isDisabled( e, { draggable: c, droppable: m.parentNode, type: 'append' } ))) ) {
+						if ( _drop_cache[ p.id ].cst.sort ) {
 							var r = $.bcr( m.$() ), t = m.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>';
-							if ( r.top <= y && y - r.top < 4 ) $.query( m.$() )[ sn = 'before' ]( $( d ) || t );
-							else if ( r.bottom > y && r.bottom - y < 4 ) $.query( m.$() )[ sn = 'after' ]( $( d ) || t );
+							if ( r.top <= y && y - r.top < 4 ) sn = 'before';
+							else if ( r.bottom > y && r.bottom - y < 4 ) sn = 'after';
 							else sn = F;
+							if ( sn && o.cst.isDisabled && m != p && o.cst.isDisabled( e, { draggable: c, droppable: m, type: sn } ) )
+								sn = F;
+							if ( sn ) {
+								$.query( m.$() )[ sn ]( $( d ) || (m.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>') );
+								$( g ).dndSortID = $( d ).dndSortID = m.id;
+								$.classAdd( $( d ), 'z-after', sn === 'after' );
+								if ( m.padSort )
+									$( g ).style.left = m.padSort() + 'px';
+								m.trigger( 'mouseOut' );
+								m.status( 'dndSort' );
+							}
 						}
-						if ( sn ) {
-							$( g ).dndSortID = $( d ).dndSortID = m.id;
-							$.classAdd( $( d ), 'z-after', sn === 'after' );
-							if ( m.padSort )
-								$( g ).style.left = m.padSort() + 'px';
-							m.status( 'dndSort' );
-						} else {
+						if ( sn === F ) {
 							m.normal();
-							! f.dndSortID && (m.trigger( 'mouseOver' ), _rm( d ));
+							$( d ) && ! f.dndSortID && (m.trigger( 'mouseOver' ), _rm( d ));
 						}
 						if ( ! sn && o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: m, type: 'append' } ) ) {
 							_classAdd( m.$(), 'f-dnd-notallowed' );
@@ -1521,7 +1526,6 @@ $.draggable = function( a, b ) {
 							$.all[ k ].$().style.zIndex = '';
 							$.all[ k ].$().style.background = '';
 							$.all[ k ].removeClass( 'z-droppable-highlight' );
-							g = T;
 						}
 						$.all[ k ].removeClass( 'z-droppable' );
 					}
