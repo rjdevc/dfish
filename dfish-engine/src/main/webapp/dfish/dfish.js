@@ -1428,7 +1428,16 @@ Drop = _createClass( {
 	}
 } ),
 _dnd_selector = { Tree: '.w-leaf', Table: '.w-tr', ButtonBar: '.w-button', Tabs: '.w-tab', Album: '.w-img' },
-_dnd_childtype = { Tree: 'Leaf', Table: 'TR', ButtonBar: 'Button', Tabs: 'Tab', Album: 'Img' };
+_dnd_childtype = { Tree: 'Leaf', Table: 'TR', ButtonBar: 'Button', Tabs: 'Tab', Album: 'Img' }
+_dndSortNormal = function( a ) {
+	var d = $( '_dndhelper' ) && $( '_dndhelper' ).dndSortID;
+	if ( d && (d = $.all[ d ]) ) {
+		if ( a )
+			d.status() === 'dndSort' && d.normal();
+		else
+			d.isNormal() && d.status( 'dndSort' );
+	}
+};
 // @a -> widget, b -> option
 $.draggable = function( a, b ) {
 	if ( _drag_cache[ a.id ] )
@@ -1445,7 +1454,10 @@ $.draggable = function( a, b ) {
 				return d && (!d.cst.scope || !b.scope || _idsAny( d.cst.scope, b.scope ));
 			};
 		$.moveup( function( e ) {
-			var x = e.pageX, y = e.pageY, f = e.srcElement, m = f != v && (f.dndSortID ? $.all[ f.dndSortID ] : $.widget( f )), o;
+			var x = e.pageX, y = e.pageY, f = e.srcElement, m, o;
+			if ( f.dndSortID )
+				return;
+			m = f != v && f != u && (f.dndSortID ? $.all[ f.dndSortID ] : $.widget( f )), o;
 			n = sn = N;
 			// 鼠标按下并移动5像素后才能触发拖动，避免误操作
 			if ( ! u && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5) ) {
@@ -1469,30 +1481,28 @@ $.draggable = function( a, b ) {
 				u = _db( '<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:22" class=f-fix>' + (t || '&nbsp;') + '</div>' );
 			}
 			if ( u ) {
-				u.style.left = (e.pageX + 7) + 'px';
-				u.style.top  = (e.pageY + 7) + 'px';
+				u.style.left = (x + 7) + 'px';
+				u.style.top  = (y + 7) + 'px';
 				if ( m && (p = dp( m )) && (o = _drop_cache[ p.id ]) ) {
 					if ( _dnd_childtype[ p.type ] && m != p )
 					 	m = m.closest( _dnd_childtype[ p.type ] );
 					if ( m == c || c.contains( m ) ) {
 						_classAdd( m.$(), 'f-dnd-notallowed' );
 					} else {
-						if ( f.dndSortType )
-							sn = f.dndSortType;
-						else if ( _drop_cache[ p.id ].cst.sort ) {
+						if ( o.cst.sort ) {
 							var r = $.bcr( m.$() );
 							sn = r.top <= y && y - r.top < 4 && m.prev() != c ? 'before' :
 								r.bottom > y && r.bottom - y < 4 && m.next() != c ? 'after' : F;
 							if ( sn && o.cst.isDisabled && m != p && o.cst.isDisabled( e, { draggable: c, droppable: m, type: sn } ) )
 								sn = F;
 							if ( sn ) {
-								$.query( m.$() )[ sn ]( $( d ) || (m.type == 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>') );
+								_dndSortNormal( T );
+								$.query( m.$() )[ sn ]( $( d ) || (m.type === 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>') );
 								$( g ).dndSortID = $( d ).dndSortID = m.id;
-								$( g ).dndSortType = $( d ).dndSortType = sn;
 								$.classAdd( $( d ), 'z-after', sn === 'after' );
 								$( g ).style.left = m.padSort ? m.padSort() + 'px' : '';
 								m.trigger( 'mouseOut' );
-								m.status( 'dndSort' );
+								_dndSortNormal( F );
 							}
 						}
 						if ( ! sn && o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: m, type: 'append' } ) )
@@ -1501,8 +1511,8 @@ $.draggable = function( a, b ) {
 							n = m;
 					}
 				}
-				if ( ! sn && ! f.dndSortID && $( d ) ) {
-					$.all[ $( d ).dndSortID ].normal();
+				if ( ! sn && $( d ) ) {
+					_dndSortNormal( T );
 					m && m.trigger( 'mouseOver' );
 					_rm( d );
 				}
@@ -1510,7 +1520,7 @@ $.draggable = function( a, b ) {
 		}, function( e ) {
 			if ( u ) {
 				if ( n && (p = dp( n )) && n != c && ! c.contains( n ) ) {
-					if ( (sn == 'before' && n == c.next()) || (sn == 'after' && n == c.prev()) || (!sn && n == c.parentNode) ) {
+					if ( (sn === 'before' && n == c.next()) || (sn === 'after' && n == c.prev()) || (!sn && n == c.parentNode) ) {
 						$.alert( $.loc.tree_movefail1 );
 					} else {
 						_drop_cache[ p.id ].cst.drop && _drop_cache[ p.id ].cst.drop.call( p, e, { draggable: c, droppable: n, type: sn || 'append' } );
@@ -1526,6 +1536,7 @@ $.draggable = function( a, b ) {
 						$.all[ k ].removeClass( 'z-droppable' );
 					}
 				}
+				_dndSortNormal( T );
 				_rm( u ), _rm( v ), _rm( d ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
 			}
 		} );
