@@ -984,7 +984,7 @@ W = define( 'Widget', function() {
 		// 存取临时变量
 		data: function( a, b ) {
 			if ( typeof a === _OBJ )
-				$.merge( this.x.data, a );
+				$.merge( this.x.data || (this.x.data = {}), a );
 			else if ( arguments.length === 1 )
 				return (this.x.data && this.x.data[ a ]);
 			else if ( a == N )
@@ -1553,7 +1553,11 @@ _w_rsz_all = function() {
 			_w_rsz_all.call( this[ i ] );
 	}
 	for ( var i in this.discNodes ) {
-		_w_rsz_all.call( this.discNodes[ i ] );
+		var n = this.discNodes[ i ];
+		if ( n.isDialogWidget && n.x.memory && ! n.$() )
+			! n.hasEvent( 'show._w_rsz_all' ) && n.addEventOnce( 'show._w_rsz_all', _w_rsz_all );
+		else
+			_w_rsz_all.call( n );
 	}
 	this.trigger( 'resize' );
 },
