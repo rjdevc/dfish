@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Hidden;
+import com.rongji.dfish.ui.form.Label;
 import com.rongji.dfish.ui.form.LabelRow;
 import sun.plugin2.main.client.WDonatePrivilege;
 
@@ -84,10 +85,16 @@ public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implem
         }
         if (w instanceof Hidden) {
             return add((Hidden) w);
-        }
-        if (w instanceof LabelRow) {
-            if ("0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
+        }else if (w instanceof LabelRow) {
+            if (((LabelRow) w).getNoLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
                 ((LabelRow<?>) w).getLabel().setWidth(null);
+            }
+        }else if(w instanceof Table.TD){
+            if(((Table.TD) w).getNode() instanceof LabelRow){
+                LabelRow cast= (LabelRow) ((Table.TD) w).getNode();
+                if(cast.getLabel()!=null&&"0".equals(cast.getLabel().getWidth())){
+                    cast.getLabel().setWidth(null);
+                }
             }
         }
         if(nodes==null){
@@ -107,7 +114,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implem
      */
     public Form add(Widget<?> w, int colspan) {
         if (w instanceof LabelRow) {
-            if ("0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
+            if (((LabelRow) w).getNoLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
@@ -125,7 +132,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implem
      */
     public Form add(Widget<?> w, int colspan, int rowspan) {
         if (w instanceof LabelRow) {
-            if ("0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
+            if (((LabelRow) w).getNoLabel()!=null && "0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
