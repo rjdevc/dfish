@@ -1479,7 +1479,6 @@ W = define( 'Widget', function() {
 			return this.html();
 		},
 		html: function() {
-			if (!this.html_before)VM('/index').fv('textarea',$.jsonString(this.ownerView.x,N,2));
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
 		removeElem: function( a ) {
@@ -1553,8 +1552,9 @@ _w_rsz_all = function() {
 		for ( var i = 0; i < l; i ++ )
 			_w_rsz_all.call( this[ i ] );
 	}
-	for ( var i in this.discNodes )
+	for ( var i in this.discNodes ) {
 		_w_rsz_all.call( this.discNodes[ i ] );
+	}
 	this.trigger( 'resize' );
 },
 _w_rsz_layout = function() {
@@ -1779,6 +1779,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 		return f && d;
 	};
 	_w_mix[ v ] = function() {
+		if ( ! this.$() )
+			return;
 		delete this._scales;
 		for ( var i = 0, d; i < this.length; i ++ ) {
 			d = this[ i ].x[ v ];
@@ -9974,6 +9976,7 @@ TableRowNum = define.widget( 'TableRowNum', {
 	Extend: Html,
 	Default: { start: 1 },
 	Prototype: {
+		className: 'w-tablerownum',
 		tr: _table_tr,
 		reset: function() {
 			this.text( _number( this.attr( 'start' ) ) + this.tr().nodeIndex );

@@ -132,10 +132,12 @@
 		        { "id": "Dialog", "text": "Dialog", "icon": ".icon .icon-class" },
 		        { "id": "JS", "text": "JS", "icon": ".icon .icon-class" },
 		        { "id": "Loading", "text": "Loading", "icon": ".icon .icon-class" },
-		        { "id": "Menu", "text": "Menu", "icon": ".icon .icon-class" },
+		        { "id": "Menu", "text": "Menu", "icon": ".icon .icon-class", nodes: [
+		          { "id": "MenuButton", "text": "MenuButton", "icon": ".icon .icon-class" }
+		        ] },
 		        { "id": "Prepend", "text": "Prepend", "icon": ".icon .icon-class" },
-		        { "id": "Replace", "text": "Replace", "icon": ".icon .icon-class" },
 		        { "id": "Remove", "text": "Remove", "icon": ".icon .icon-class" },
+		        { "id": "Replace", "text": "Replace", "icon": ".icon .icon-class" },
 		        { "id": "Submit", "text": "Submit", "icon": ".icon .icon-class" },
 		        { "id": "Tip", "text": "Tip", "icon": ".icon .icon-class" }
 		      ] },
@@ -152,7 +154,9 @@
 		        { "id": "Table", "text": "Table", "icon": ".icon .icon-class", "nodes": [
 		          { "id": "Column", "text": "Column", "icon": ".icon .icon-class" },
 		          { "id": "TableLeaf", "text": "TableLeaf", "icon": ".icon .icon-class" },
+		          { "id": "TableRadio", "text": "TableRadio", "icon": ".icon .icon-class" },
 		          { "id": "TableRowNum", "text": "TableRowNum", "icon": ".icon .icon-class" },
+		          { "id": "TableTripleBox", "text": "TableTripleBox", "icon": ".icon .icon-class" },
 		          { "id": "TBody", "text": "TBody", "icon": ".icon .icon-class" },
 		          { "id": "TD", "text": "TD", "icon": ".icon .icon-class" },
 		          { "id": "TFoot", "text": "TFoot", "icon": ".icon .icon-class" },
@@ -168,16 +172,15 @@
 		  	  { "text": "功能类", "expanded": false, "icon": ".icon .icon-pkg", "nodes": [
 		        { "id": "Album", "text": "Album", "icon": ".icon .icon-class" },
 		        { "id": "Badge", "text": "Badge", "icon": ".icon .icon-class" },
+		        { "id": "Blank", "text": "Blank", "icon": ".icon .icon-class" },
 		        { "id": "Button", "text": "Button", "icon": ".icon .icon-class" },
 		        { "id": "ButtonBar", "text": "ButtonBar", "icon": ".icon .icon-class" },
 		        { "id": "Calendar", "text": "Calendar", "icon": ".icon .icon-class", "nodes": [
 		          { "id": "CalendarItem", "text": "CalendarItem", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "EmbedWindow", "text": "EmbedWindow", "icon": ".icon .icon-class" },
-		        { "id": "Empty", "text": "Empty", "icon": ".icon .icon-class" },
 		        { "id": "Html", "text": "Html", "icon": ".icon .icon-class" },
 		        { "id": "Img", "text": "Img", "icon": ".icon .icon-class" },
-		        { "id": "MenuButton", "text": "MenuButton", "icon": ".icon .icon-class" },
 		        { "id": "PageBar", "text": "PageBar", "icon": ".icon .icon-class" },
 		        { "id": "Progress", "text": "Progress", "icon": ".icon .icon-class", "expanded": !true, "nodes": [
 		          { "id": "ProgressItem", "text": "ProgressItem", "icon": ".icon .icon-class" }
@@ -204,9 +207,13 @@
 		        { "id": "FormGroup", "text": "FormGroup", "icon": ".icon .icon-class" },
 		        { "id": "FormLabel", "text": "FormLabel", "icon": ".icon .icon-class" },
 		        { "id": "Hidden", "text": "Hidden", "icon": ".icon .icon-class" },
-		        { "id": "ImgBox", "text": "ImgBox", "icon": ".icon .icon-class" },
 		        { "id": "ImageUpload", "text": "ImageUpload", "icon": ".icon .icon-class", "nodes": [
 		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
+		        ] },
+		        { "id": "ImgBox", "text": "ImgBox", "icon": ".icon .icon-class" },
+		        { "id": "Jigsaw", "text": "Jigsaw", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "JigsawAuth", "text": "JigsawAuth", "icon": ".icon .icon-class" },
+		          { "id": "JigsawImg", "text": "JigsawImg", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Label", "text": "Label", "icon": ".icon .icon-class" },
 		        { "id": "LinkBox", "text": "LinkBox", "icon": ".icon .icon-class" },
@@ -219,10 +226,6 @@
 		        { "id": "Rate", "text": "Rate", "icon": ".icon .icon-class" },
 		        { "id": "Select", "text": "Select", "icon": ".icon .icon-class" },
 		        { "id": "Slider", "text": "Slider", "icon": ".icon .icon-class" },
-		        { "id": "Jigsaw", "text": "Jigsaw", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "JigsawImg", "text": "JigsawImg", "icon": ".icon .icon-class" },
-		          { "id": "JigsawAuth", "text": "JigsawAuth", "icon": ".icon .icon-class" }
-		        ] },
 		        { "id": "Spinner", "text": "Spinner", "icon": ".icon .icon-class" },
 		        { "id": "Switch", "text": "Switch", "icon": ".icon .icon-class" },
 		        { "id": "Text", "text": "Text", "icon": ".icon .icon-class" },
