@@ -7252,7 +7252,6 @@ JigsawAuth = define.widget( 'JigsawAuth', {
 		load: function( fn ) {
 			this.loadData( N, function() {
 				var x = this.getResult(), p = this.parentNode;
-				$.j(x);
 				p.success( x && x.success );
 				p.valid();
 				if ( p.isSuccess() ) {
