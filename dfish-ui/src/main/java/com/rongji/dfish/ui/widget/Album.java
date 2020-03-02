@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.*;
  *
  * @author DFish Team
  */
-public class Album extends AbstractPubNodeContainer<Album, Img> implements Scrollable<Album>  {
+public class Album extends AbstractPubNodeContainer<Album, Img,Img> implements Scrollable<Album>  {
 
     private static final long serialVersionUID = 7141941441960631331L;
     private Integer space;

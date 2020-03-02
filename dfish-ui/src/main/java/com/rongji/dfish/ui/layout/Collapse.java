@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2020-01-15
  * @since 5.0
  */
-public class Collapse extends AbstractPubNodeContainer<Collapse, Collapse.Button> {
+public class Collapse extends AbstractPubNodeContainer<Collapse, Collapse.Button, Collapse.Button> {
 
     private Boolean focusMultiple;
 

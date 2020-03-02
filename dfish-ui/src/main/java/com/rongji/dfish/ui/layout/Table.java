@@ -63,7 +63,7 @@ import java.util.*;
  * @author DFish team
  * @since DFish 3.0
  */
-public class Table extends AbstractPubNodeContainer<Table, Table.TR> implements TableOperation<Table>,
+public class Table extends AbstractPubNodeContainer<Table, Table.TR,Table.TR> implements TableOperation<Table>,
         HiddenContainer<Table>, HtmlContentHolder<Table>, Scrollable<Table> {
 
     private static final long serialVersionUID = 6537737987499258183L;

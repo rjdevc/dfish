@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2019-10-16
  * @since 5.0
  */
-public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab> implements
+public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab, Tabs.Tab> implements
         Alignable<Tabs>, VAlignable<Tabs>, HiddenContainer<Tabs> {
     private String align;
     private String vAlign;

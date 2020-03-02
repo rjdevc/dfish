@@ -21,7 +21,7 @@ import java.util.Map;
  * @version 2.0
  * @since xmltmpl 2.0
  */
-public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item> {
+public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item, Calendar.Item> {
     private static final long serialVersionUID = -7016518294135279513L;
 
     /**

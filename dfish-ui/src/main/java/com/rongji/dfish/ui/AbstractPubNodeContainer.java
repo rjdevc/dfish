@@ -7,10 +7,10 @@ import java.util.List;
  * @date 2020-01-16
  * @since 5.0
  */
-public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContainer<T, N>, N extends Node> extends AbstractMultiNodeContainer<T,N> implements PubNodeContainer<T, N> {
+public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContainer<T, N, PN>, N extends Node,PN extends Node> extends AbstractMultiNodeContainer<T,N> implements PubNodeContainer<T, N,PN> {
     private static final long serialVersionUID = 5077405748817820249L;
 
-    private N pub;
+    private PN pub;
 
     /**
      * 构造函数
@@ -21,10 +21,10 @@ public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContaine
         super(id);
     }
 
-    protected abstract N newPub();
+    protected abstract PN newPub();
 
     @Override
-    public N pub() {
+    public PN pub() {
         if (pub == null) {
             pub = newPub();
         }
@@ -32,12 +32,12 @@ public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContaine
     }
 
     @Override
-    public N getPub() {
+    public PN getPub() {
         return pub;
     }
 
     @Override
-    public T setPub(N pub) {
+    public T setPub(PN pub) {
         this.pub = pub;
         return (T) this;
     }

@@ -19,7 +19,7 @@ import java.util.List;
  * @since 1.0
  */
 public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N extends AbstractBox<N>>
-        extends AbstractPubNodeContainer<T, N> implements FormElement<T, String>, LabelRow<T>, Directional<T> {
+        extends AbstractPubNodeContainer<T, N,N> implements FormElement<T, String>, LabelRow<T>, Directional<T> {
 
     private static final long serialVersionUID = 3733166777271763891L;
 

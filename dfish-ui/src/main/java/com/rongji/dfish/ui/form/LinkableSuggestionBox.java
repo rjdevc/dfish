@@ -13,7 +13,7 @@ import java.util.List;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubNodeContainer<T, ComboOption> {
+public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> extends SuggestionBox<T> implements HasText<T>, PubNodeContainer<T, ComboOption, ComboOption> {
     private static final long serialVersionUID = -1444093499873660133L;
     private String text;
     private String format;

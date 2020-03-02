@@ -15,7 +15,7 @@ import java.util.*;
  * @version 1.0
  * @since XMLTMPL 2.0
  */
-public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf>
+public class Tree extends AbstractPubNodeContainer<Tree, Tree.Leaf, Tree.Leaf>
         implements Scrollable<Tree>, HiddenContainer<Tree>, HtmlContentHolder<Tree>, LazyLoad<Tree> {
     /**
      *

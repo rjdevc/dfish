@@ -8,7 +8,7 @@ import com.rongji.dfish.ui.*;
  * @author lamontYu
  * @date 2019-11-25 11:52
  */
-public class Timeline extends AbstractPubNodeContainer<Timeline, Timeline.Item> implements Alignable<Timeline>, Scrollable<Timeline> {
+public class Timeline extends AbstractPubNodeContainer<Timeline, Timeline.Item, Timeline.Item> implements Alignable<Timeline>, Scrollable<Timeline> {
 
     private String align;
     private Boolean scroll;

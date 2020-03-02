@@ -3,7 +3,9 @@ package com.rongji.dfish.ui.layout;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
+import sun.plugin2.main.client.WDonatePrivilege;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +22,7 @@ import java.util.List;
  * @author LinLW
  * @since 5.0
  */
-public class Form extends AbstractPubNodeContainer<Form, Table.TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
+public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
     /**
      * 无格式
      */
@@ -87,6 +89,9 @@ public class Form extends AbstractPubNodeContainer<Form, Table.TD> implements Ht
             if ("0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
+        }
+        if(nodes==null){
+            nodes=new ArrayList<>();
         }
         nodes.add(w);
         return this;

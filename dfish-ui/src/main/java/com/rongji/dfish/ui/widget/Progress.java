@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.*;
  *
  * @author DFish team
  */
-public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item> implements HasText<Progress>, LazyLoad<Progress> {
+public class Progress extends AbstractPubNodeContainer<Progress, Progress.Item, Progress.Item> implements HasText<Progress>, LazyLoad<Progress> {
 
     private static final long serialVersionUID = -5027456322715352343L;
 
