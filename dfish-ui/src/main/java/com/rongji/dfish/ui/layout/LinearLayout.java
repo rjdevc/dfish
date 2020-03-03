@@ -82,6 +82,7 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMu
      * @param w     N
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T add(int index, Widget w) {
         return add(index, w, null);
     }

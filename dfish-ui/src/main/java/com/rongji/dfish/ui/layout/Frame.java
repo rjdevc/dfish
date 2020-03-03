@@ -61,6 +61,7 @@ public class Frame extends AbstractMultiNodeContainer<Frame,Widget> implements M
      * @param w     N
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public Frame add(int index, Widget w) {
         if (w == null) {
             return this;

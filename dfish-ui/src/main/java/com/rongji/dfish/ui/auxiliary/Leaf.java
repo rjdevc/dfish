@@ -25,11 +25,12 @@ import java.util.*;
  * @version 2.0
  * @since XMLTMPL 1.0
  */
-public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,Leaf> {
+public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf, Leaf> {
     private static final long serialVersionUID = -6246121270694425393L;
 
 
     public List<Leaf> nodes;
+
     @Override
     public List<Leaf> getNodes() {
         return nodes;
@@ -37,7 +38,7 @@ public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,
 
     @Override
     public Leaf setNodes(List<Leaf> nodes) {
-        this.nodes=nodes;
+        this.nodes = nodes;
         return this;
     }
 
@@ -46,7 +47,7 @@ public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,
      *
      * @param text 显示文本
      */
-    public Leaf( String text) {
+    public Leaf(String text) {
         super(text);
     }
 
@@ -59,7 +60,7 @@ public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,
      * @return Tree
      */
     public List<Leaf> findPathById(String id) {
-        LinkedList<Leaf> result = new LinkedList<Leaf>();
+        LinkedList<Leaf> result = new LinkedList<>();
         findPathById(result, this, id);
         return result;
     }
@@ -107,97 +108,19 @@ public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,
         return sb.toString();
     }
 
-    /**
-     * 添加另一颗树的子树
-     *
-     * @param otherTree Tree
-     * @return Tree
-     */
-    public Leaf addNodes(Leaf otherTree) {
-        if (nodes == null) {
-            nodes = new ArrayList<>();
-        }
-        if (otherTree.nodes != null) {
-            nodes.addAll(otherTree.nodes);
-        }
-        return this;
-    }
-
-
-    /**
-     * 复制另一颗树的内容,包括属性和子树.
-     * 注意是浅拷贝,改动这个树的内容将会影响原先的树.
-     *
-     * @param otherLeaf Tree
-     */
-    public void copyFromAnotherLeaf(Leaf otherLeaf) {
-//        this.dataPart = otherLeaf.dataPart;
-        this.data = otherLeaf.data;
-        this.nodes = otherLeaf.nodes;
-    }
-
-    /**
-     * 复制另一颗树的内容,包括属性和子树.
-     * 注意是深拷贝,速度比较慢.
-     *
-     * @param otherLeaf Tree
-     */
-    public void copyFromAnotherLeafSafe(Leaf otherLeaf) {
-        this.data = new LinkedHashMap<String, Object>(otherLeaf.data);
-        if (otherLeaf.nodes != null) {
-            for (Object obj : otherLeaf.nodes) {
-                Leaf elem = (Leaf) obj;
-                Leaf t = new Leaf(null);
-                t.copyFromAnotherLeafSafe(elem);
-                add(t);
-            }
-        }
-    }
-
-
-
-
-
-
-
-    /**
-     * 在指定的位置添加子面板
-     *
-     * @param index 位置
-     * @param w     N
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Leaf add(int index, Leaf w) {
-        if (w == null) {
-            return this;
-        }
-        if (w == this) {
-            throw new IllegalArgumentException("can not add widget itself as a sub widget");
-        }
-        if(nodes==null){
-            nodes=new ArrayList<>();
-        }
-        if (index < 0) {
-            nodes.add(w);
-        } else {
-            nodes.add(index, w);
-        }
-        return this;
-    }
-
-    protected NodeContainerDecorator getNodeContainerDecorator(){
+    protected NodeContainerDecorator getNodeContainerDecorator() {
         return new NodeContainerDecorator() {
             @Override
-            protected  List<Node> nodes() {
-                return (List)nodes;
+            protected List<Node> nodes() {
+                return (List) nodes;
             }
 
             @Override
             protected void setNode(int i, Node node) {
-                if(node==null){
+                if (node == null) {
                     nodes.remove(i);
-                }else{
-                    nodes.set(i,(Leaf)node);
+                } else {
+                    nodes.set(i, (Leaf) node);
                 }
             }
         };
@@ -215,12 +138,12 @@ public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,
 
     @Override
     public Node replaceNode(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceNode(filter,node);
+        return getNodeContainerDecorator().replaceNode(filter, node);
     }
 
     @Override
     public int replaceAllNodes(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceAllNodes(filter,node);
+        return getNodeContainerDecorator().replaceAllNodes(filter, node);
     }
 
 

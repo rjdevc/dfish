@@ -78,6 +78,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
         return this;
     }
 
+    @Override
     public Form add(Widget w) {
         if (w == null) {
             return this;
