@@ -152,7 +152,7 @@ public class JsonFormat {
 	 */
 	public static String toJson(Object o){
 		StringBuilder sb=new StringBuilder();
-		Stack<PathInfo> path =new Stack<PathInfo>();
+		Stack<PathInfo> path =new Stack<>();
 		path.push(new PathInfo(null,o));
 		buildJson(o, sb, path);
 		//help gc
@@ -168,7 +168,7 @@ public class JsonFormat {
 	  */
 	public static String formatJson(Object o){
 	    StringBuilder sb=new StringBuilder();
-		Stack<PathInfo> path =new Stack<PathInfo>();
+		Stack<PathInfo> path =new Stack<>();
 		buildJson(o, sb, path);
 		path.clear();
 		return formatJson(sb.toString());

@@ -12,7 +12,11 @@ public class LeafTest extends  DFishUITestCase{
 		shell.add(root);
 		root.add(new Leaf("福建省"));
 		root.add(new Leaf("福州市"));
-		return shell;
+
+		Tree tree = new Tree();
+		tree.add(root);
+		return tree;
 	}
+
 
 }
