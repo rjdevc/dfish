@@ -88,9 +88,9 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
             if (((LabelRow) w).getLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
-        }else if(w instanceof Table.TD){
-            if(((Table.TD) w).getNode() instanceof LabelRow){
-                LabelRow cast= (LabelRow) ((Table.TD) w).getNode();
+        }else if(w instanceof TD){
+            if(((TD) w).getNode() instanceof LabelRow){
+                LabelRow cast= (LabelRow) ((TD) w).getNode();
                 if(cast.getLabel()!=null&&"0".equals(cast.getLabel().getWidth())){
                     cast.getLabel().setWidth(null);
                 }
