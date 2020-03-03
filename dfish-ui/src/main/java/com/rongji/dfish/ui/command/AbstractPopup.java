@@ -35,7 +35,6 @@ public abstract class AbstractPopup<T extends AbstractPopup<T>> extends Abstract
     public static final String HEIGHT_MAX = "*";
 
     protected String position;
-    protected Boolean autoHide;
     protected Boolean cover;
     protected String title;
     protected Boolean cache;
@@ -83,27 +82,6 @@ public abstract class AbstractPopup<T extends AbstractPopup<T>> extends Abstract
     @SuppressWarnings("unchecked")
     public T setTitle(String title) {
         this.title = title;
-        return (T) this;
-    }
-
-    /**
-     * 如果设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。
-     *
-     * @return Boolean
-     */
-    public Boolean getAutoHide() {
-        return autoHide;
-    }
-
-    /**
-     * 如果设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。
-     *
-     * @param autoHide Boolean
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @SuppressWarnings("unchecked")
-    public T setAutoHide(Boolean autoHide) {
-        this.autoHide = autoHide;
         return (T) this;
     }
 

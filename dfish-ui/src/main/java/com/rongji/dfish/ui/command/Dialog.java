@@ -25,7 +25,8 @@ public class Dialog extends AbstractPopup<Dialog> implements SingleNodeContainer
     private String error;
     private String complete;
     private String filter;
-    protected View node;
+    private Boolean autoHide;
+    private View node;
 //    private Boolean prong;
 
     /**
@@ -157,6 +158,26 @@ public class Dialog extends AbstractPopup<Dialog> implements SingleNodeContainer
     @Override
     public Dialog setSync(Boolean sync) {
         this.sync = sync;
+        return this;
+    }
+
+    /**
+     * 如果设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。
+     *
+     * @return Boolean
+     */
+    public Boolean getAutoHide() {
+        return autoHide;
+    }
+
+    /**
+     * 如果设为 true, 鼠标点击 Dialog 以外的地方将关闭 Dialog。
+     *
+     * @param autoHide Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Dialog setAutoHide(Boolean autoHide) {
+        this.autoHide = autoHide;
         return this;
     }
 
