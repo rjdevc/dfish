@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.form;
 import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.ui.auxiliary.ValidateRule;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -38,147 +39,147 @@ public class Validate implements Serializable {
     /**
      * 必填
      */
-    private BooleanValueRule required;
+    private ValidateRule required;
     /**
      * 正则表达式
      */
-    private StringValueRule pattern;
+    private ValidateRule pattern;
     /**
      * 另一个表单的name。用于简单的比较
      */
-    private CompareRule compare;
+    private ValidateRule compare;
     /**
      * 最小字节数
      */
-    private NumberValueRule minLength;
+    private ValidateRule minLength;
     /**
      * 最大字节数。用于 text textarea password
      */
-    private NumberValueRule maxLength;
+    private ValidateRule maxLength;
     /**
      * 最少选择几项。用于 checkbox
      */
-    private NumberValueRule minSize;
+    private ValidateRule minSize;
     /**
      * 最多选择几项。用于 checkbox
      */
-    private NumberValueRule maxSize;
+    private ValidateRule maxSize;
     /**
      * 最小值。用于 spinner date
      */
-    private ObjectValueRule minValue;
+    private ValidateRule minValue;
     /**
      * 最大值。用于 spinner date
      */
-    private ObjectValueRule maxValue;
+    private ValidateRule maxValue;
     /**
      * 不能大于当前时间。用于 date
      */
-    private BooleanValueRule beforeNow;
+    private ValidateRule beforeNow;
     /**
      * 不能小于当前时间的显示文本。
      */
-    private BooleanValueRule afterNow;
+    private ValidateRule afterNow;
     /**
      * JS语句。如果验证不通过，执行语句应当 return 一个字符串作为说明。如果验证通过则无需返回或返回空。
      */
     private String method;
 
-    public BooleanValueRule getRequired() {
+    public ValidateRule getRequired() {
         return required;
     }
 
-    public Validate setRequired(BooleanValueRule required) {
+    public Validate setRequired(ValidateRule required) {
         this.required = required;
         return this;
     }
 
-    public StringValueRule getPattern() {
+    public ValidateRule getPattern() {
         return pattern;
     }
 
-    public Validate setPattern(StringValueRule pattern) {
+    public Validate setPattern(ValidateRule pattern) {
         this.pattern = pattern;
         return this;
     }
 
-    public CompareRule getCompare() {
+    public ValidateRule getCompare() {
         return compare;
     }
 
-    public Validate setCompare(CompareRule compare) {
+    public Validate setCompare(ValidateRule compare) {
         this.compare = compare;
         return this;
     }
 
-    public NumberValueRule getMinLength() {
+    public ValidateRule getMinLength() {
         return minLength;
     }
 
-    public Validate setMinLength(NumberValueRule minLength) {
+    public Validate setMinLength(ValidateRule minLength) {
         this.minLength = minLength;
         return this;
     }
 
-    public NumberValueRule getMaxLength() {
+    public ValidateRule getMaxLength() {
         return maxLength;
     }
 
-    public Validate setMaxLength(NumberValueRule maxLength) {
+    public Validate setMaxLength(ValidateRule maxLength) {
         this.maxLength = maxLength;
         return this;
     }
 
-    public NumberValueRule getMinSize() {
+    public ValidateRule getMinSize() {
         return minSize;
     }
 
-    public Validate setMinSize(NumberValueRule minSize) {
+    public Validate setMinSize(ValidateRule minSize) {
         this.minSize = minSize;
         return this;
     }
 
-    public NumberValueRule getMaxSize() {
+    public ValidateRule getMaxSize() {
         return maxSize;
     }
 
-    public Validate setMaxSize(NumberValueRule maxSize) {
+    public Validate setMaxSize(ValidateRule maxSize) {
         this.maxSize = maxSize;
         return this;
     }
 
-    public ObjectValueRule getMinValue() {
+    public ValidateRule getMinValue() {
         return minValue;
     }
 
-    public Validate setMinValue(ObjectValueRule minValue) {
+    public Validate setMinValue(ValidateRule minValue) {
         this.minValue = minValue;
         return this;
     }
 
-    public ObjectValueRule getMaxValue() {
+    public ValidateRule getMaxValue() {
         return maxValue;
     }
 
-    public Validate setMaxValue(ObjectValueRule maxValue) {
+    public Validate setMaxValue(ValidateRule maxValue) {
         this.maxValue = maxValue;
         return this;
     }
 
-    public BooleanValueRule getBeforeNow() {
+    public ValidateRule getBeforeNow() {
         return beforeNow;
     }
 
-    public Validate setBeforeNow(BooleanValueRule beforeNow) {
+    public Validate setBeforeNow(ValidateRule beforeNow) {
         this.beforeNow = beforeNow;
         return this;
     }
 
-    public BooleanValueRule getAfterNow() {
+    public ValidateRule getAfterNow() {
         return afterNow;
     }
 
-    public Validate setAfterNow(BooleanValueRule afterNow) {
+    public Validate setAfterNow(ValidateRule afterNow) {
         this.afterNow = afterNow;
         return this;
     }
@@ -214,7 +215,7 @@ public class Validate implements Serializable {
     }
 
     public static Validate required(boolean required, String text) {
-        return new Validate().setRequired(new BooleanValueRule(required, text));
+        return new Validate().setRequired(new ValidateRule(required, text));
     }
 
     /**
@@ -231,7 +232,7 @@ public class Validate implements Serializable {
         if (Utils.isEmpty(pattern)) {
             throw new IllegalArgumentException("pattern is empty");
         }
-        return new Validate().setPattern(new StringValueRule(pattern, text));
+        return new Validate().setPattern(new ValidateRule(pattern, text));
     }
 
     public static Validate compare(String target, String mode) {
@@ -253,7 +254,7 @@ public class Validate implements Serializable {
         if (Utils.isEmpty(mode)) {
             throw new IllegalArgumentException("mode is empty");
         }
-        return new Validate().setCompare(new CompareRule(target, mode, text));
+        return new Validate().setCompare(new ValidateRule(null, text).setTarget(target).setMode(mode));
     }
 
     /**
@@ -267,7 +268,7 @@ public class Validate implements Serializable {
     }
 
     public static Validate minLength(int minLength, String text) {
-        return new Validate().setMinLength(new NumberValueRule(minLength, text));
+        return new Validate().setMinLength(new ValidateRule(minLength, text));
     }
 
     public static Validate maxLength(int maxLength) {
@@ -281,7 +282,7 @@ public class Validate implements Serializable {
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate maxLength(int maxLength, String text) {
-        return new Validate().setMaxLength(new NumberValueRule(maxLength, text));
+        return new Validate().setMaxLength(new ValidateRule(maxLength, text));
     }
 
     /**
@@ -295,7 +296,7 @@ public class Validate implements Serializable {
     }
 
     public static Validate minSize(int minSize, String text) {
-        return new Validate().setMinSize(new NumberValueRule(minSize, text));
+        return new Validate().setMinSize(new ValidateRule(minSize, text));
     }
 
     public static Validate maxSize(int maxSize) {
@@ -309,7 +310,7 @@ public class Validate implements Serializable {
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate maxSize(int maxSize, String text) {
-        return new Validate().setMaxSize(new NumberValueRule(maxSize, text));
+        return new Validate().setMaxSize(new ValidateRule(maxSize, text));
     }
 
     /**
@@ -323,7 +324,7 @@ public class Validate implements Serializable {
     }
 
     public static Validate minValue(Object minValue, String text) {
-        return new Validate().setMinValue(new ObjectValueRule(minValue, text));
+        return new Validate().setMinValue(new ValidateRule(minValue, text));
     }
 
 
@@ -338,7 +339,7 @@ public class Validate implements Serializable {
     }
 
     public static Validate maxValue(Object maxValue, String text) {
-        return new Validate().setMaxValue(new ObjectValueRule(maxValue, text));
+        return new Validate().setMaxValue(new ValidateRule(maxValue, text));
     }
 
     /**
@@ -351,7 +352,7 @@ public class Validate implements Serializable {
     }
 
     public static Validate beforeNow(boolean beforeNow, String text) {
-        return new Validate().setBeforeNow(new BooleanValueRule(beforeNow, text));
+        return new Validate().setBeforeNow(new ValidateRule(beforeNow, text));
     }
 
     /**
@@ -364,7 +365,7 @@ public class Validate implements Serializable {
     }
 
     public static Validate afterNow(boolean afterNow, String text) {
-        return new Validate().setAfterNow(new BooleanValueRule(afterNow, text));
+        return new Validate().setAfterNow(new ValidateRule(afterNow, text));
     }
 
     /**
@@ -399,141 +400,6 @@ public class Validate implements Serializable {
      */
     public void clear() {
         BeanUtil.copyPropertiesExact(this, new Validate());
-    }
-
-    public static class Rule<T extends Rule<T>> {
-        protected String text;
-
-        public String getText() {
-            return text;
-        }
-
-        public T setText(String text) {
-            this.text = text;
-            return (T) this;
-        }
-    }
-
-    public static class BooleanValueRule extends Rule<BooleanValueRule> {
-        private Boolean value;
-
-        public BooleanValueRule(Boolean value) {
-            this.value = value;
-        }
-
-        public BooleanValueRule(Boolean value, String text) {
-            this.value = value;
-            this.text = text;
-        }
-
-        public Boolean getValue() {
-            return value;
-        }
-
-        public BooleanValueRule setValue(Boolean value) {
-            this.value = value;
-            return this;
-        }
-    }
-
-    public static class StringValueRule extends Rule<StringValueRule> {
-        private String value;
-
-        public StringValueRule(String value) {
-            this.value = value;
-        }
-
-        public StringValueRule(String value, String text) {
-            this.value = value;
-            this.text = text;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public StringValueRule setValue(String value) {
-            this.value = value;
-            return this;
-        }
-    }
-
-    public static class NumberValueRule extends Rule<NumberValueRule> {
-        private Number value;
-
-        public NumberValueRule(Number value) {
-            this.value = value;
-        }
-
-        public NumberValueRule(Number value, String text) {
-            this.value = value;
-            this.text = text;
-        }
-
-        public Number getValue() {
-            return value;
-        }
-
-        public NumberValueRule setValue(Number value) {
-            this.value = value;
-            return this;
-        }
-    }
-
-    public static class ObjectValueRule extends Rule<ObjectValueRule> {
-        private Object value;
-
-        public ObjectValueRule(Object value) {
-            this.value = value;
-        }
-
-        public ObjectValueRule(Object value, String text) {
-            this.value = value;
-            this.text = text;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public ObjectValueRule setValue(Object value) {
-            this.value = value;
-            return this;
-        }
-    }
-
-    public static class CompareRule extends Rule<StringValueRule> {
-        private String target;
-        private String mode;
-
-        public CompareRule(String target, String mode) {
-            this.target = target;
-            this.mode = mode;
-        }
-
-        public CompareRule(String target, String mode, String text) {
-            this.target = target;
-            this.mode = mode;
-            this.text = text;
-        }
-
-        public String getTarget() {
-            return target;
-        }
-
-        public CompareRule setTarget(String target) {
-            this.target = target;
-            return this;
-        }
-
-        public String getMode() {
-            return mode;
-        }
-
-        public CompareRule setMode(String mode) {
-            this.mode = mode;
-            return this;
-        }
     }
 
 }

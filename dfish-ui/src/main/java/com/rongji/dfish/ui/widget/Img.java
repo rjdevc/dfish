@@ -1,6 +1,8 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.auxiliary.Badge;
+import com.rongji.dfish.ui.auxiliary.BadgeHolder;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.BoxHolder;
 

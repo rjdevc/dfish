@@ -1,10 +1,10 @@
 package com.rongji.dfish.ui.widget;
 
 
-import java.util.List;
-
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.AbstractMultiNodeContainer;
+import com.rongji.dfish.ui.auxiliary.Badge;
+import com.rongji.dfish.ui.auxiliary.BadgeHolder;
 
 /**
  * AbstractButton 为抽象按钮类 用于方便扩展多种按钮

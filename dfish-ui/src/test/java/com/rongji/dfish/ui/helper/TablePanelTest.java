@@ -1,9 +1,10 @@
 package com.rongji.dfish.ui.helper;
 
 import com.rongji.dfish.ui.DFishUITestCase;
+import com.rongji.dfish.ui.auxiliary.Column;
 import com.rongji.dfish.ui.layout.Table;
 import com.rongji.dfish.ui.layout.TableFactory;
-import com.rongji.dfish.ui.widget.Highlight;
+import com.rongji.dfish.ui.auxiliary.Highlight;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -16,11 +17,11 @@ public class TablePanelTest extends DFishUITestCase {
 	
 	protected Table getWidget(){
 		TableFactory.DefaultTableFactory gp= TableFactory.newTable("gp");
-		gp.addColumn(TableFactory.Column.hidden(0, "id"));
-		gp.addColumn(TableFactory.Column.tripleBox("id", "40"));
-		gp.addColumn(TableFactory.Column.text(1, "C1","消息","*"));
-		gp.addColumn(TableFactory.Column.text(2, "C2","发送人","100"));
-		gp.addColumn((TableFactory.Column) TableFactory.Column.text(3, "C3","时间","100")
+		gp.addColumn(TableFactory.FactoryColumn.hidden(0, "id"));
+		gp.addColumn(TableFactory.FactoryColumn.tripleBox("id", "40"));
+		gp.addColumn(TableFactory.FactoryColumn.text(1, "C1","消息","*"));
+		gp.addColumn(TableFactory.FactoryColumn.text(2, "C2","发送人","100"));
+		gp.addColumn((TableFactory.FactoryColumn) TableFactory.FactoryColumn.text(3, "C3","时间","100")
 				.setFormat("yyyy-MM-dd HH:mm"));
 		gp.setBodyData(Arrays.asList( new Object[][]{
 			{"000001","【通知】请各位同事明天着正装上班，迎接XX领导一行莅临参观指导。","行政部",new Date()},
@@ -43,12 +44,13 @@ public class TablePanelTest extends DFishUITestCase {
 		gp.setBodyData(Arrays.asList(new String[][]{
 			{"uid1","名称1","mingcheng1","jp1"},
 			{"uid2","名称2","mingcheng2","jp2"}}));
-		gp.addColumn(TableFactory.Column.hidden(0, "uid"));
-		Table.Column un = TableFactory.Column.text(1, "un", "名称", "60%").setHighlight(new Highlight(null, 2));
+		gp.addColumn(TableFactory.FactoryColumn.hidden(0, "uid"));
+
+		Column un = TableFactory.FactoryColumn.text(1, "un", "名称", "60%").setHighlight(new Highlight(null, 2));
 //		un.setTipfield("un");
-		gp.addColumn((TableFactory.Column)un);
-		gp.addColumn(TableFactory.Column.hidden(2, "py"));
-		gp.addColumn(TableFactory.Column.hidden(3, "jp"));
+		gp.addColumn((TableFactory.FactoryColumn)un);
+		gp.addColumn(TableFactory.FactoryColumn.hidden(2, "py"));
+		gp.addColumn(TableFactory.FactoryColumn.hidden(3, "jp"));
 
 		Table table =gp.build();
 		table.setCls("x-grid-odd");
@@ -83,11 +85,11 @@ public class TablePanelTest extends DFishUITestCase {
 					"第" + i + "行列3"
 			});
 		}
-		gp.addColumn(TableFactory.Column.tripleBox("C", "40"));
-		gp.addColumn((TableFactory.Column) TableFactory.Column.text(dataColumnIndex++, "第1列", "*")
+		gp.addColumn(TableFactory.FactoryColumn.tripleBox("C", "40"));
+		gp.addColumn((TableFactory.FactoryColumn) TableFactory.FactoryColumn.text(dataColumnIndex++, "第1列", "*")
 				.setTripleBox("itemB", "B", true, null));
-		gp.addColumn(TableFactory.Column.text(dataColumnIndex++, "第2列", "*"));
-		gp.addColumn(TableFactory.Column.text(dataColumnIndex++, "第3列", "*"));
+		gp.addColumn(TableFactory.FactoryColumn.text(dataColumnIndex++, "第2列", "*"));
+		gp.addColumn(TableFactory.FactoryColumn.text(dataColumnIndex++, "第3列", "*"));
 		gp.setBodyData(gridData);
 		
 //		grid.getPrototype().getThead().getRows().get(0).setCls("x-grid-head");

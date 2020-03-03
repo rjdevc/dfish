@@ -1,9 +1,10 @@
 package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.auxiliary.Tab;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.widget.AbstractButton;
-import com.rongji.dfish.ui.widget.Overflow;
+import com.rongji.dfish.ui.auxiliary.Overflow;
 import com.rongji.dfish.ui.widget.Split;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * @date 2019-10-16
  * @since 5.0
  */
-public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab, Tabs.Tab> implements
+public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
         Alignable<Tabs>, VAlignable<Tabs>, HiddenContainer<Tabs> {
     private String align;
     private String vAlign;
@@ -179,58 +180,6 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tabs.Tab, Tabs.Tab> imp
     public Tabs setPosition(String position) {
         this.position = position;
         return this;
-    }
-
-
-    /**
-     * 标签按钮
-     * @author LinLW
-     * @date 2019-10-16
-     * @since 5.0
-     */
-    public static class Tab extends AbstractButton<Tab> implements TargetHolder<Tab> {
-
-        private Widget<?> target;
-        /**
-         * 构造函数
-         *
-         * @param text String 标题
-         */
-        public Tab(String text) {
-            super(text,null,null);
-        }
-
-        /**
-         * 构造函数
-         *
-         * @param text String 标题
-         * @param target Widget 目标组件
-         */
-        public Tab(String text, Widget target) {
-            super(text,null,null);
-            this.setTarget(target);
-        }
-
-        /**
-         * 标签对应的内容widget
-         * @return Widget
-         */
-        @Override
-        public Widget getTarget() {
-            return target;
-        }
-
-        /**
-         * 标签对应的内容widget
-         * @param target Widget
-         * @return 本身，这样可以继续设置其他属性
-         */
-        @Override
-        public Tab setTarget(Widget target) {
-            this.target = target;
-            return this;
-        }
-
     }
 
 }

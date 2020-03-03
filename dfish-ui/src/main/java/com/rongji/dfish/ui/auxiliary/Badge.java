@@ -1,4 +1,4 @@
-package com.rongji.dfish.ui.widget;
+package com.rongji.dfish.ui.auxiliary;
 
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HtmlContentHolder;

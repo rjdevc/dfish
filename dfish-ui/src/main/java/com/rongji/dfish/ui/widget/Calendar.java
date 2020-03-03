@@ -1,11 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.AbstractPubNodeContainer;
-import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.PubNodeContainer;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.rongji.dfish.ui.auxiliary.CalendarItem;
 
 /**
  * 用于表示日历的控件
@@ -21,7 +17,7 @@ import java.util.Map;
  * @version 2.0
  * @since xmltmpl 2.0
  */
-public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item, Calendar.Item> {
+public class Calendar extends AbstractPubNodeContainer<Calendar, CalendarItem, CalendarItem> {
     private static final long serialVersionUID = -7016518294135279513L;
 
     /**
@@ -66,8 +62,8 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item, 
     }
 
     @Override
-    protected Item newPub() {
-        return new Item(null);
+    protected CalendarItem newPub() {
+        return new CalendarItem(null);
     }
 
     public String getFace() {
@@ -191,106 +187,6 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, Calendar.Item, 
     public Calendar setStart(Integer start) {
         this.start = start;
         return this;
-    }
-
-    /**
-     * Calendar里面每个元素按钮的默认值
-     *
-     * @author DFish Team
-     */
-    public static class Item extends AbstractWidget<Item> {
-
-        private static final long serialVersionUID = 6176298189403402501L;
-
-        private String value;
-        private String text;
-        private Boolean focus;
-        private Boolean focusable;
-
-        public Item(String value) {
-            this.setValue(value);
-        }
-
-        public Item(String value, String text) {
-            this.setValue(value);
-            this.setText(text);
-        }
-
-
-        @Override
-        public String getType() {
-            return "CalendarItem";
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public Item setValue(String value) {
-            this.value = value;
-            return this;
-        }
-
-        /**
-         * 显示内容
-         *
-         * @return String
-         */
-        public String getText() {
-            return text;
-        }
-
-        /**
-         * 显示内容
-         *
-         * @param text String
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public Item setText(String text) {
-            this.text = text;
-            return this;
-        }
-
-        /**
-         * 是否焦点
-         *
-         * @return Boolean
-         */
-        public Boolean getFocus() {
-            return focus;
-        }
-
-        /**
-         * 是否聚焦
-         *
-         * @param focus Boolean
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public Item setFocus(Boolean focus) {
-            this.focus = focus;
-            return this;
-        }
-
-        /**
-         * 是否可聚焦模式
-         *
-         * @return
-         */
-        public Boolean getFocusable() {
-            return focusable;
-        }
-
-        /**
-         * 是否可聚焦模式
-         *
-         * @param focusable Boolean
-         * @return 本身，这样可以继续设置其他属性
-         */
-        public Item setFocusable(Boolean focusable) {
-            this.focusable = focusable;
-            return this;
-        }
-
     }
 
 }

@@ -1,12 +1,11 @@
 package com.rongji.dfish.ui.layout;
 
 import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.auxiliary.TD;
 import com.rongji.dfish.ui.form.Hidden;
 import com.rongji.dfish.ui.form.LabelRow;
-import sun.plugin2.main.client.WDonatePrivilege;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ import java.util.List;
  * @author LinLW
  * @since 5.0
  */
-public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
+public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
     /**
      * 无格式
      */
@@ -54,8 +53,8 @@ public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implem
     }
 
     @Override
-    protected Table.TD newPub() {
-        return new Table.TD();
+    protected TD newPub() {
+        return new TD();
     }
 
     /**
@@ -111,7 +110,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implem
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add(new Table.TD().setColSpan(colspan).setNode(w));
+        return add(new TD().setColSpan(colspan).setNode(w));
     }
 
     /**
@@ -129,7 +128,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implem
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }
-        return add(new Table.TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));
+        return add(new TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));
     }
 
     private HiddenPart hiddens = new HiddenPart();

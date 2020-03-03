@@ -1,9 +1,9 @@
 package com.rongji.dfish.ui.command;
 
-import com.rongji.dfish.ui.*;
-
-import java.util.Arrays;
-import java.util.List;
+import com.rongji.dfish.ui.AbstractWidget;
+import com.rongji.dfish.ui.Node;
+import com.rongji.dfish.ui.Positionable;
+import com.rongji.dfish.ui.auxiliary.Snap;
 
 
 /**
@@ -374,53 +374,5 @@ public abstract class AbstractPopup<T extends AbstractPopup<T>> extends Abstract
         this.prong = prong;
         return (T) this;
     }
-
-
-    public static class Snap implements Positionable<Snap> {
-        private String target;
-        private String position;
-        private Boolean inner;
-        private Integer indent;
-
-        public String getTarget() {
-            return target;
-        }
-
-        public Snap setTarget(String target) {
-            this.target = target;
-            return this;
-        }
-
-        @Override
-        public Snap setPosition(String position) {
-            this.position = position;
-            return this;
-        }
-
-        @Override
-        public String getPosition() {
-            return position;
-        }
-
-        public Boolean getInner() {
-            return inner;
-        }
-
-        public Snap setInner(Boolean inner) {
-            this.inner = inner;
-            return this;
-        }
-
-        public Integer getIndent() {
-            return indent;
-        }
-
-        public Snap setIndent(Integer indent) {
-            this.indent = indent;
-            return this;
-        }
-
-    }
-
 
 }

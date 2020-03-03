@@ -1,6 +1,4 @@
-package com.rongji.dfish.ui.widget;
-
-import com.rongji.dfish.ui.widget.Badge;
+package com.rongji.dfish.ui.auxiliary;
 
 /**
  * 带有徽标的组件
