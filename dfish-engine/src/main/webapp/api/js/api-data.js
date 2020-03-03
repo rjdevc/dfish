@@ -1357,34 +1357,8 @@ define( {
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，按钮点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
       { name: 'hoverDrop', type: 'Boolean', remark: '是否当鼠标 hover 时展开下拉菜单。' },
-      { name: 'icon', type: 'String', remark: '图标的url。支持以 "." 开头的样式名。', example: [
-          function() {
-          	// 使用图片路径
-          	return~
-            { type: 'Button', icon: 'img/abc.gif' };
-          },
-          function() {
-          	// 使用样式
-          	return~
-            { type: 'Button', icon: '.ico-edit' };
-          }
-      ] },
-      { name: 'more', type: 'Menu | Dialog', remark: 'menu或dialog。点击按钮时展示。', example: [
-          function() {
-          	// 一个有下拉选项的按钮
-          	return~
-            {
-              type: 'button',
-              text: '更多',
-              more: {
-                type: 'menu', nodes: [
-                  { text: '新建' },
-                  { text: '编辑' }
-                ]
-              }
-            }
-          }
-      ] },
+      { name: 'icon', type: 'String', remark: '图标的url。支持以 "." 开头的样式名。' },
+      { name: 'more', type: 'Menu | Dialog', remark: 'menu或dialog。点击按钮时展示。' },
       { name: 'name', type: 'String', remark: '在一个 view 中设置了相同 name 的 button 将成为一组，focus 只会作用于其中一个。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。点击下拉显示右键菜单。nodes 和 more 不应同时使用。' },
       { name: 'status', type: 'String', remark: '按钮状态。可选值：<b>normal</b>, <b>disabled</b>。' },
@@ -1444,6 +1418,32 @@ define( {
       { name: '.z-first', remark: '如果按钮的父节点是ButtonBar，且当前按钮为ButtonBar的第一个子节点时的样式。' },
       { name: '.z-last', remark: '如果按钮的父节点是ButtonBar，且当前按钮为ButtonBar的最后一个子节点时的样式。' },
       { name: '.z-on', remark: '高亮的样式。如果按钮设置了 disabled:true 则无此样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	// 图标使用图片路径
+          	return~
+            { type: 'Button', icon: 'img/abc.gif' }
+          },
+          function() {
+          	// 图标使用样式名
+          	return~
+            { type: 'Button', icon: '.i-edit', text: '编辑' }
+          },
+          function() {
+          	// 有下拉选项的按钮
+          	return~
+            {
+                type: 'Button',
+                text: '更多',
+                nodes: [
+                    { text: '新建' },
+                    { text: '编辑' }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "SubmitButton": {
@@ -1451,6 +1451,14 @@ define( {
   	extend: 'Button',
     Classes: [
       { name: '.w-submit', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            { type: 'SubmitButton', text: '提交' }
+          }
+      ] }
     ]
   },
   "MenuButton": {
@@ -1458,6 +1466,20 @@ define( {
   	extend: 'Button',
     Methods: [
       { name: 'getCommander()', remark: '获取最上层菜单的 commander 对象。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            {
+                type: 'Menu',
+                nodes: [
+                    { type: 'MenuButton', text: 'Menu1' }, // type属性可以省略
+                    { type: 'MenuButton', text: 'Menu2' }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "ButtonBar": {
@@ -1471,18 +1493,6 @@ define( {
       { name: 'overflow', type: 'Object', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。', param: [
         { name: 'effect', type: 'String', remark: '效果。可选值：<b>normal</b><s>(默认)</s>, <b>swap</b><s>(点击下拉菜单按钮，和可见按钮交换位置。)</s>', optional: true },
         { name: 'button', type: 'Button', remark: '显示"更多"的按钮。', optional: true }
-      ], example: [
-          function() {
-            // 设置按钮栏可拖拽也可放置
-            return~
-            {
-              "type": "ButtonBar",
-              "overflow": {
-                "effect": "swap",
-                "button": { "type": "button", "text": "更多" }
-              }
-            }
-          }
       ] },
       { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
@@ -1500,6 +1510,41 @@ define( {
       { name: '.w-ButtonBar', remark: '基础样式。' },
       { name: '.z-dirv', remark: '设置了 dir:"v"(按钮垂直排列) 时的样式。' },
       { name: '.z-dirh', remark: '设置了 dir:"v"(按钮水平排列) 时的样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//例1: 用于对话框的按钮栏
+          	return~
+            {
+                type: 'ButtonBar',
+                space: 10,
+                height: 40,
+                align: 'right',
+                nodes: [
+                    { type: 'SubmitButton', text: '确定' },
+                    { type: 'Button', text: '取消', on: { click: '$.close(this)' } }
+                ]
+            }
+          },
+          function() {
+          	//例2: 当按钮过多，超出按钮栏宽度时，设置overflow参数，显示一个"更多"的可下拉按钮。
+          	return~
+            {
+                type: 'ButtonBar',
+                space: 10,
+                height: 40,
+                nodes: [
+                    { text: 'Button 1' },
+                    { text: 'Button 2' },
+                    { text: 'Button 3' }
+                ],
+                overflow: {
+                    button: { text: '更多' }
+                }
+            }
+          }
+      ] }
     ]
   },
   "Tabs": {
@@ -1550,10 +1595,10 @@ define( {
           function() {
             return~
             {
-              type: "Collapse",
+              type: 'Collapse',
               nodes: [
-                { type: "CollapseButton", text: "标题 1", target: { type: "Html", text: "内容1" } }, // 这里的 type 属性定义可以省略
-                { type: "CollapseButton", text: "标题 2", target: { type: "Html", text: "内容2" } }
+                  { type: 'CollapseButton', text: '标题 1', target: { type: 'Html', text: '内容1' } }, // 这里的 type 属性定义可以省略
+                  { type: 'CollapseButton', text: '标题 2', target: { type: 'Html', text: '内容2' } }
               ]
             }
           }
@@ -1573,6 +1618,20 @@ define( {
   	deprecate: 'focusable,name',
     Classes: [
       { name: '.w-tab', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'Collapse',
+              nodes: [
+                  { type: 'CollapseButton', text: '标题 1', target: { type: 'Html', text: '内容1' } }, // 这里的 type 属性定义可以省略
+                  { type: 'CollapseButton', text: '标题 2', target: { type: 'Html', text: '内容2' } }
+              ]
+            }
+          }
+      ] }
     ]
   },
   "FieldSet": {
@@ -1587,16 +1646,28 @@ define( {
         { name: 'text',    type: 'String',  remark: '显示文本。', optional: true },
         { name: 'checked', type: 'Booelan', remark: '是否默认选中。', optional: true },
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
-      ], example: [
-          function() {
-            return~
-            { type: 'fieldset', box: { type: 'checkbox', name: 'box', text: '选项一' } };
-          }
       ] },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' }
     ],
     Classes: [
       { name: '.w-fieldset', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+                type: 'FieldSet',
+                legend: '标题', 
+                nodes: [
+                    {
+                        type: 'Html',
+                        text: '内容'
+                    }
+                ]
+            };
+          }
+      ] }
     ]
   },
   "Frame": {
@@ -1611,9 +1682,42 @@ define( {
       { name: 'focus(id)', remark: '显示某个子元素。', param: [
         { name: 'id', type: 'String | widget', remark: 'widget ID 或对象。' }
       ] }
-   ],
+    ],
     Classes: [
       { name: '.w-frame', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//用 ButtonBar + Frame 来实现 Tab 效果
+            return~
+            {
+                type: 'Vertial',
+                height: '*',
+                nodes: [
+                    {
+                    	type: 'ButtonBar',
+                    	height: 30,
+                    	pub: {
+                    	    focusable: true
+                    	},
+                    	nodes: [
+                    	    { type: 'Button', text: '标题1', target: 'html_1', focus: true },
+                    	    { type: 'Button', text: '标题2', target: 'html_2' }
+                    	]
+                    },
+                    {
+                    	type: 'Frame',
+                    	height: '*',
+                    	nodes: [
+                    	    { type: 'Html', id: 'html_1', text: '内容1' },
+                    	    { type: 'Html', id: 'html_2', text: '内容2' }
+                    	]
+                    }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Column": {
@@ -1644,6 +1748,31 @@ define( {
         ] },
         { name: 'vAlign', type: 'String', remark: '垂直对齐方式。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
         { name: 'width', type: 'String | Percent | Number', remark: '列的宽度。可选值: *, 百分比, 整数。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'B', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: 'ID', B: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { A: '001', B: 'title 1' },
+                  { A: '002', B: 'title 2' }
+                ]
+              }
+            }
+          }
+      ] }
     ]
   },
   "THead": {
@@ -1651,6 +1780,31 @@ define( {
   	extend: 'Widget',
     Config: [
         { name: 'nodes', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'B', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: 'ID', B: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { A: '001', B: 'title 1' },
+                  { A: '002', B: 'title 2' }
+                ]
+              }
+            }
+          }
+      ] }
     ]
   },
   "TBody": {
@@ -1658,6 +1812,31 @@ define( {
   	extend: 'Widget',
     Config: [
         { name: 'nodes', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'B', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: 'ID', B: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { A: '001', B: 'title 1' },
+                  { A: '002', B: 'title 2' }
+                ]
+              }
+            }
+          }
+      ] }
     ]
   },
   "TFoot": {
@@ -1665,6 +1844,313 @@ define( {
   	extend: 'Widget',
     Config: [
         { name: 'nodes', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'B', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: 'ID', B: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { A: '001', B: 'title 1' },
+                  { A: '002', B: 'title 2' }
+                ]
+              },
+              tFoot: {
+              	nodes: [
+                  { A: '统计', B: '总计100' }
+                ]
+              }
+            }
+          }
+      ] }
+    ]
+  },
+  "TableLeaf": {
+  	remark: '用于table的树节点。',
+  	extend: 'Leaf',
+    Methods: [
+      { name: 'tr()', remark: '获取leaf所在的tr行对象。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: 40, align: 'center' },
+              	{ field: 'B', width: 150 },
+              	{ field: 'C', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: 'ID', B: '树节点', C: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  {
+                    data: {
+                      A: '001',
+                      B: { type: 'TableLeaf', text: 'leaf 1' },
+                      C: 'title 1'
+                    },
+                    nodes: [
+                      {
+                        data: {
+                          A: '002',
+                          B: { type: 'TableLeaf', text: 'leaf 2' },
+                          C: 'title 2'
+                        }
+                      },
+                      {
+                        data: {
+                          A: '003',
+                          B: { type: 'TableLeaf', text: 'leaf 3' },
+                          C: 'title 3'
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+      ] }
+     ]
+  },
+  "TableRowNum": {
+  	remark: '用于table的自增数字字段。',
+  	extend: 'Widget',
+    Config: [
+      { name: 'start', type: 'Number', remark: '初始值。默认值为1' }
+    ],
+    Classes: [
+      { name: '.w-tablerownum', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+	  	    // 带自增数字的表格
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center', format: 'javascript:return {type:"TableRowNum"}' },
+              	{ field: 'B', width: '50', align: 'center' },
+              	{ field: 'C', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: '序号', B: 'ID', C: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { B: '001', C: 'title 1' },
+                  { B: '002', C: 'title 2' }
+                ]
+              }
+            }
+          }
+      ] }
+    ]
+  },
+  "TableRadio": {
+  	remark: 'Table 内部专用的 Radio。选中状态与 TR 的 focus 效果同步。',
+  	deprecate: 'focus,focusEnd,placeholder,transparent,.w-text,.w-input,.z-trans,.z-on',
+  	extend: 'Radio',
+	Examples: [
+	  { example: [
+          function() {
+	  	    // 带单选框的表格
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center', format: 'javascript:return {type:"TableRadio",name:"selectItem",value:$B}' },
+              	{ field: 'B', width: '50', align: 'center' },
+              	{ field: 'C', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { B: 'ID', C: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { B: '001', C: 'title 1' },
+                  { B: '002', C: 'title 2' }
+                ]
+              }
+            }
+          }
+      ] }
+    ]
+  },
+  "TableTripleBox": {
+  	remark: 'Table 内部专用的 TripleBox。选中状态与 TR 的 focus 效果同步。',
+  	deprecate: 'focus,focusEnd,placeholder,transparent,.w-text,.w-input,.z-trans,.z-on',
+  	extend: 'TripleBox',
+	Examples: [
+	  { example: [
+          function() {
+	  	    // 带选择框的表格
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center', format: 'javascript:return {type:"TableTripleBox",name:"selectItem",value:$B}' },
+              	{ field: 'B', width: '50', align: 'center' },
+              	{ field: 'C', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: { type: 'TableTripleBox', name: 'selectItem', checkAll: true }, B: 'ID', C: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { B: '001', C: 'title 1' },
+                  { B: '002', C: 'title 2' }
+                ]
+              }
+            }
+          }
+      ] }
+    ]
+  },
+  "TR": {
+  	remark: '表格行。',
+  	extend: 'Widget',
+    Config: [
+      { name: 'data', type: 'Object', remark: '行数据。' },
+      { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
+      { name: 'src', type: 'String', remark: '可展开内容的地址。这个 src 应当返回一个 view' },
+      { name: 'nodes', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
+    ],
+    Event: [
+      { name: 'collapse', remark: '收起时触发。' },
+      { name: 'expand', remark: '展开时触发。' },
+      { name: 'load', remark: '经 src 加载子节点完毕时触发。' }
+    ],
+    Properties: [
+      { name: 'rootNode', type: 'Table', remark: 'tr所属的table。' }
+    ],
+    Methods: [
+      { name: 'checkBox([checked])', remark: '设置 tr 的 checkbox / radio 为选中状态。', param: [
+        { name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' }
+      ] },
+      { name: 'focus([bFocus])', remark: '设置 tr 为焦点状态。', param: [
+        { name: 'bFocus', type: 'Boolean', optional: true, remark: '是否选中。' }
+      ] },
+      { name: 'isFocus()', remark: '获取当前行是否处于焦点状态。' },
+      { name: 'isBoxChecked()', remark: '获取 checkbox / radio 是否为选中状态。' },
+      { name: 'move(index)', remark: '上移或下移。', param: [
+        { name: 'index', type: 'Number | String', remark: '移动到指定行的序列号。支持 "+=数字", "-=数字" 格式的用法。' }
+      ], example: [
+          function() {
+          	// 移动到第一行
+            tr.move( 0 );
+          },
+          function() {
+          	// 往上移一行
+            tr.move( "-=1" );
+          }
+      ] },
+      { name: 'toggle([expand])', remark: '展开或收拢。', param: [
+        { name: 'expand', type: 'Boolean', optional: true, remark: '是否展开。' }
+      ] }
+    ],
+    Classes: [
+      { name: '.w-tr', remark: '基础样式。' },
+      { name: '.z-0', remark: '当前行为偶数行时的样式。' },
+      { name: '.z-1', remark: '当前行为奇数行时的样式。' },
+      { name: '.z-hv', remark: '鼠标移到行上的样式。' },
+      { name: '.z-on', remark: '高亮的样式。需要设置属性 focusable:true' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+	  	    // TR格式的表格
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'B', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: 'ID', B: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { type: 'TR', data: { A: '001', B: 'title 1' } }, //type属性可以省略
+                  { type: 'TR', data: { A: '002', B: 'title 2' } }
+                ]
+              }
+            }
+          }
+      ] }
+    ]
+  },
+  "TD": {
+  	remark: '表格单元格。',
+  	extend: 'Widget',
+    Config: [
+      { name: 'colSpan', type: 'Number', remark: '跨行数。' },
+      { name: 'rowSpan', type: 'Number', remark: '跨列数。' },
+      { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
+      { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
+      { name: 'node', type: 'Object', remark: '子节点。' },
+      { name: 'text', type: 'String', remark: '显示文本。' },
+      { name: 'labelWidth', type: 'Number', remark: '表单标题宽度。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+	  	    // 用TD实现跨列
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'B', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: 'ID', B: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { A: '001', B: 'title 1' },
+                  { A: '002', B: 'title 2' },
+                  {
+                    A: {
+                      type: 'TD', //type属性可以省略
+                      colSpan: 2,
+                      node: { type: 'Html', text: '跨列' }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+      ] }
     ]
   },
   "Table": {
@@ -1780,9 +2266,9 @@ define( {
             	  { field: 'C3', width: 100 }
             	],
             	tHead: {
-            	  rows: [ { C3: 'C3-title' } ]
+            	  nodes: [ { C3: 'C3-title' } ]
             	},
-            	rows: [
+            	nodes: [
             	  { C3: 'C3-content0' },
             	  { C3: 'C3-content1' }
             	]
@@ -1800,9 +2286,9 @@ define( {
             	  { field: 'C3', width: 100 }
             	],
             	tHead: {
-            	  rows: [ { C3: 'C3-title' } ]
+            	  nodes: [ { C3: 'C3-title' } ]
             	},
-            	rows: [
+            	nodes: [
             	  { C3: 'C3-content0' },
             	  { C3: 'C3-content1' }
             	]
@@ -1829,7 +2315,7 @@ define( {
 	Examples: [
 	  { example: [
           function() {
-	  	    // 简单表格
+	  	    // 跨列范例
             return~
             {
               type: 'Table',
@@ -1838,14 +2324,43 @@ define( {
               	{ field: 'B', width: '*' }
               ],
               tHead: {
-              	rows: [
-                  { A: 'ID', B: '内容' }
+              	nodes: [
+                  { A: 'ID', B: '标题' }
                 ]
               },
               tBody: {
-              	rows: [
-                  { A: '001', B: 'content 1' },
-                  { A: '001', B: 'content 2' }
+              	nodes: [
+                  { A: '001', B: 'title 1' },
+                  { A: '002', B: 'title 2' },
+                  {
+                    A: {
+                      colSpan: 2,
+                      node: { type: 'Html', text: '跨列' }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          function() {
+	  	    // 带选择框的表格
+            return~
+            {
+              type: 'Table',
+              columns: [
+              	{ field: 'A', width: '40', align: 'center', format: 'javascript:return {type:"TableTripleBox",name:"selectItem",value:$B}' },
+              	{ field: 'B', width: '50', align: 'center' },
+              	{ field: 'C', width: '*' }
+              ],
+              tHead: {
+              	nodes: [
+                  { A: { type: 'TableTripleBox', name: 'selectItem', checkAll: true }, B: 'ID', C: '标题' }
+                ]
+              },
+              tBody: {
+              	nodes: [
+                  { B: '001', C: 'title 1' },
+                  { B: '002', C: 'title 2' }
                 ]
               }
             }
@@ -1867,6 +2382,34 @@ define( {
     ],
     Methods: [
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	// 简单范例
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    { type: 'Text', label: { text: '标题' } },
+                    { type: 'Textarea', label: { text: '内容' } }
+                ]
+            }
+          },
+          function() {
+          	// 跨列范例
+            return~
+            {
+                type: 'Form',
+                cols: 12,
+                nodes: [
+                    { colSpan: 6, node: { type: 'Text', label: { text: '姓名' } } },
+                    { colSpan: 6, node: { type: 'Text', label: { text: '住址' } } },
+                    { type: 'Textarea', label: { text: '说明' } }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Vertical": {
@@ -1905,6 +2448,30 @@ define( {
     ],
     Classes: [
       { name: '.w-Vertical', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//两个Html纵向排列
+            return~
+            {
+                type: 'Vertical',
+                height: '*',
+                nodes: [
+                    {
+                    	type: 'Html',
+                    	height: 300,
+                    	text: '内容1'
+                    },
+                    {
+                    	type: 'Html',
+                    	height: '*',
+                    	text: '内容2'
+                    }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Horizontal": {
@@ -1916,6 +2483,21 @@ define( {
 	],
     Classes: [
       { name: '.w-horizontal', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//两个Html横向排列
+            return~
+            {
+                type: 'Horizontal',
+                nodes: [
+                    { type: 'Html', width: 300, text: '内容1' },
+                    { type: 'Html', width: '*', text: '内容2' }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "FormGroup": {
@@ -1927,14 +2509,53 @@ define( {
 	],
     Classes: [
       { name: '.w-formgroup', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//在Form中显示一个FormGroup
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    {
+                        type: 'FormGroup',
+                        label: { text: 'FormGroup', width: 90 },
+                        nodes: [
+                            { type: 'Html', width: 100, text: '内容1' },
+                            { type: 'Html', width: '*', text: '内容2' }
+                        ]
+                    }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "FormLabel": {
-  	remark: '表单容器。默认横向排列。',
+  	remark: '文本表单。',
   	extend: 'Html',
   	deprecate: '.w-html,scroll,thumbWidth',
     Classes: [
       { name: '.w-formlabel', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//在Form中显示一个FormLabel
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    {
+                        type: 'FormLabel',
+                        label: { text: 'FormLabel', width: 90 },
+                        text: '内容'
+                    }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "docview": {
@@ -2035,7 +2656,31 @@ define( {
             { type: 'view', id: 'myview', src: 'abc.sp', on: { load: "alert(this.path)" } };
           }
       ] }
-    ]	
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	// 用 Section 加载显示
+            return~
+            {
+                type: 'Section',
+                height: '*',
+                src: 'getSec.sp'
+            }
+          },
+          function() {
+          	// 上例 getSec.sp 返回的内容
+            return~
+            {
+                type: 'Section',
+                node: {
+                    type: 'Html',
+                    text: '内容'
+                }
+            }
+          }
+      ] }
+    ]
   },
   "View": {
   	remark: '视图对象。',
@@ -2108,69 +2753,30 @@ define( {
     ],
     Classes: [
       { name: '.w-view', remark: '基础样式。' }
-    ]
-  },
-  "TR": {
-  	remark: '表格行。',
-  	extend: 'Widget',
-    Config: [
-      { name: 'data', type: 'Object', remark: '行数据。' },
-      { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
-      { name: 'src', type: 'String', remark: '可展开内容的地址。这个 src 应当返回一个 view' },
-      { name: 'nodes', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
     ],
-    Event: [
-      { name: 'collapse', remark: '收起时触发。' },
-      { name: 'expand', remark: '展开时触发。' },
-      { name: 'load', remark: '经 src 加载子节点完毕时触发。' }
-    ],
-    Properties: [
-      { name: 'rootNode', type: 'Table', remark: 'tr所属的table。' }
-    ],
-    Methods: [
-      { name: 'checkBox([checked])', remark: '设置 tr 的 checkbox / radio 为选中状态。', param: [
-        { name: 'checked', type: 'Boolean', optional: true, remark: '是否选中。' }
-      ] },
-      { name: 'focus([bFocus])', remark: '设置 tr 为焦点状态。', param: [
-        { name: 'bFocus', type: 'Boolean', optional: true, remark: '是否选中。' }
-      ] },
-      { name: 'isFocus()', remark: '获取当前行是否处于焦点状态。' },
-      { name: 'isBoxChecked()', remark: '获取 checkbox / radio 是否为选中状态。' },
-      { name: 'move(index)', remark: '上移或下移。', param: [
-        { name: 'index', type: 'Number | String', remark: '移动到指定行的序列号。支持 "+=数字", "-=数字" 格式的用法。' }
-      ], example: [
+	Examples: [
+	  { example: [
           function() {
-          	// 移动到第一行
-            tr.move( 0 );
+          	// 用 View 加载显示
+            return~
+            {
+                type: 'View',
+                height: '*',
+                src: 'getView.sp'
+            }
           },
           function() {
-          	// 往上移一行
-            tr.move( "-=1" );
+          	// 上例 getView.sp 返回的内容
+            return~
+            {
+                type: 'View',
+                node: {
+                    type: 'Html',
+                    text: '内容'
+                }
+            }
           }
-      ] },
-      { name: 'toggle([expand])', remark: '展开或收拢。', param: [
-        { name: 'expand', type: 'Boolean', optional: true, remark: '是否展开。' }
       ] }
-    ],
-    Classes: [
-      { name: '.w-tr', remark: '基础样式。' },
-      { name: '.z-0', remark: '当前行为偶数行时的样式。' },
-      { name: '.z-1', remark: '当前行为奇数行时的样式。' },
-      { name: '.z-hv', remark: '鼠标移到行上的样式。' },
-      { name: '.z-on', remark: '高亮的样式。需要设置属性 focusable:true' }
-    ]
-  },
-  "TD": {
-  	remark: '表格单元格。',
-  	extend: 'Widget',
-    Config: [
-      { name: 'colSpan', type: 'Number', remark: '跨行数。' },
-      { name: 'rowSpan', type: 'Number', remark: '跨列数。' },
-      { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
-      { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
-      { name: 'node', type: 'Object', remark: '子节点。' },
-      { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'labelWidth', type: 'Number', remark: '表单标题宽度。' }
     ]
   },
   "Album": {
@@ -2196,6 +2802,35 @@ define( {
       { name: '.w-album', remark: '基础样式。' },
       { name: '.z-face-straight', remark: '当设置参数 face:"straight" 时的样式。' },
       { name: '.z-empty', remark: '没有子节点时的样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            {
+                type: 'Album',
+                pub: { width: 50, height: 50 },
+                nodes: [
+                    { src: 'images/001.jpg', text: '图片1' },
+                    { src: 'images/002.jpg', text: '图片2' }
+                ]
+            }
+          },
+          function() {
+          	// 带有选择框的Album
+          	return~
+            {
+                type: 'Album',
+                focusMultiple: true,
+                space: 10,
+                pub: { width: 50, height: 50, focusable: true },
+                nodes: [
+                    { src: 'images/001.jpg', text: '图片1', box: { type: 'CheckBox', name: 'selectItem', value: '001' } },
+                    { src: 'images/002.jpg', text: '图片2', box: { type: 'CheckBox', name: 'selectItem', value: '002' } }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Img": {
@@ -2239,6 +2874,20 @@ define( {
       { name: '.z-hv', remark: '鼠标hover样式。' },
       { name: '.z-on', remark: '焦点高亮样式。需要设置属性 focusable:true' },
       { name: '.z-err', remark: '图片加载失败时的样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//用图片URL地址展示图片
+          	return~
+            { type: 'Img', width: 100, height: 100, src: 'images/001.jpg' }
+          },
+          function() {
+          	//用样式名展示图片
+          	return~
+            { type: 'Img', width: 16, height: 16, src: '.f-i-config' }
+          }
+      ] }
     ]
   },
   "Tree": {
@@ -2280,6 +2929,26 @@ define( {
     Classes: [
       { name: '.w-tree', remark: '基础样式。' },
       { name: '.z-empty', remark: '没有子节点时的样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+                type: 'Tree',
+                nodes: [
+                    {
+                        text: '我的收藏', 
+                        expanded: true, 
+                        nodes: [
+                            { text: '收藏1' },
+                            { text: '收藏2' }
+                        ]
+                    }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Leaf": {
@@ -2365,6 +3034,27 @@ define( {
       { name: '.z-expanded', remark: '展开时的样式。' },
       { name: '.z-first', remark: '在兄弟节点中排行第一时的样式。' },
       { name: '.z-last', remark: '在兄弟节点中排行最后时的样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+                type: 'Tree',
+                nodes: [
+                    {
+                        type: 'Leaf', // type属性可以省略
+                        text: '我的收藏', 
+                        expanded: true, 
+                        nodes: [
+                            { type: 'Leaf', text: '收藏1' },
+                            { type: 'Leaf', text: '收藏2' }
+                        ]
+                    }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Html": {
@@ -2387,6 +3077,14 @@ define( {
     ],
     Classes: [
       { name: '.w-html', remark: '基础样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+            { type: 'Html', text: '显示内容' }
+          }
+      ] }
     ]
   },
   "Label": {
@@ -2401,13 +3099,35 @@ define( {
     ],
     Classes: [
       { name: '.w-label', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    { type: 'Text', label: { text: '标题', width: 100 } },
+                    { type: 'Textarea', label: { text: '内容', width: 100 } }
+                ]
+            }
+          }
+      ] }
     ]
   },
-  "Empty": {
+  "Blank": {
   	remark: '空白面板。',
   	extend: 'Widget',
     Classes: [
-      { name: '.w-empty', remark: '基础样式。' }
+      { name: '.w-Blank', remark: '基础样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+            { type: 'Blank' }
+          }
+      ] }
     ]
   },
   "Badge": {
@@ -2420,23 +3140,28 @@ define( {
     ],
     Classes: [
       { name: '.w-widget', remark: '基础样式。' }
-    ]
-  },
-  "TableLeaf": {
-  	remark: '用于table的树节点。',
-  	extend: 'Leaf',
-    Methods: [
-      { name: 'tr()', remark: '获取leaf所在的tr行对象。' }
-    ]
-  },
-  "TableRowNum": {
-  	remark: '用于table的自增数字字段。',
-  	extend: 'Widget',
-    Config: [
-      { name: 'start', type: 'Number', remark: '初始值。默认值为1' }
     ],
-    Classes: [
-      { name: '.w-table-rownum', remark: '基础样式。' }
+	Examples: [
+	  { example: [
+          function() {
+          	//在按钮上显示圆点徽标
+          	return~
+            {
+                type: 'Button',
+                badge: true
+            }
+          },
+          function() {
+          	//在按钮上显示有数字的徽标
+          	return~
+            {
+                type: 'Button',
+                badge: {
+                    text: '99'
+                }
+            }
+          }
+      ] }
     ]
   },
   "Progress": {
@@ -2455,6 +3180,20 @@ define( {
     ],
     Classes: [
       { name: '.w-progress', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            {
+                type: 'Progress',
+                width: 200,
+                nodes: [
+                    { percent: 30 }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "ProgressItem": {
@@ -2474,6 +3213,20 @@ define( {
     ],
     Classes: [
       { name: '.w-progress', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            {
+                type: 'Progress',
+                width: 200,
+                nodes: [
+                    { type: 'ProgressItem', percent: 30 } // type属性可以省略
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Timeline": {
@@ -2494,34 +3247,42 @@ define( {
 	  	    // 靠左
             return~
             {
-              type: "Timeline",
-              nodes: [
-                { text: "商品已经下单 2019-09-01" },
-                { text: "卖家已发货 2019-09-01" },
-                { text: "包裹正在等待揽收 2019-09-01", icon: ".f-i-search" },
-                { text: "正在为您派件 2019-09-01" }
-              ]
+                type: "Timeline",
+                nodes: [
+                    { text: "商品已经下单 2019-09-01" },
+                    { text: "卖家已发货 2019-09-01" },
+                    { text: "包裹正在等待揽收 2019-09-01", icon: ".f-i-search" },
+                    { text: "正在为您派件 2019-09-01" }
+                ]
             }
           },
           function() {
 	  	    // 靠右
             return~
-              { type: 'Timeline', align: 'right', nodes: [
-                { text: "商品已经下单" },
-                { text: "卖家已发货" },
-                { text: "包裹正在等待揽收" },
-                { text: "正在为您派件" }
-              ] }
+            {
+                type: 'Timeline', 
+                align: 'right', 
+                nodes: [
+                    { text: "商品已经下单" },
+                    { text: "卖家已发货" },
+                    { text: "包裹正在等待揽收" },
+                    { text: "正在为您派件" }
+                ]
+            }
           },
           function() {
 	  	    // 居中
             return~
-              { type: 'Timeline', align: 'center', nodes: [
-                { text: "商品已经下单" },
-                { text: "卖家已发货", align: 'left' },
-                { text: "包裹正在等待揽收" },
-                { text: "正在为您派件", align: 'left' }
-              ] }
+            {
+                type: 'Timeline',
+                align: 'center', 
+                nodes: [
+                    { text: "商品已经下单" },
+                    { text: "卖家已发货", align: 'left' },
+                    { text: "包裹正在等待揽收" },
+                    { text: "正在为您派件", align: 'left' }
+               ]
+            }
           }
       ] }
     ]
@@ -2540,6 +3301,22 @@ define( {
       { name: '.w-timeline-item', remark: '基础样式。' },
       { name: '.z-first', remark: '当前节点是兄弟节点中的首个节点时的样式。' },
       { name: '.z-last', remark: '当前节点是兄弟节点中的末尾节点时的样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+                type: 'Timeline',
+                nodes: [
+                    { type: 'TimelineItem', text: '商品已经下单 2019-09-01' }, // type属性可以省略
+                    { type: 'TimelineItem', text: '卖家已发货 2019-09-01' },
+                    { type: 'TimelineItem', text: '包裹正在等待揽收 2019-09-01' },
+                    { type: 'TimelineItem', text: '正在为您派件 2019-09-01' }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "EmbedWindow": {
@@ -2557,6 +3334,14 @@ define( {
       ] },
       { name: 'text(content)', remark: '写入文本内容。', param: [
         { name: 'content', type: 'String', remark: '文本内容。' }
+      ] }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+            { type: 'EmbedWindow', src: 'http://www.baidu.com' }
+          }
       ] }
     ]
   },
@@ -2591,6 +3376,22 @@ define( {
       { name: '.w-toggle', remark: '基础样式。' },
       { name: '.z-expanded', remark: '展开时的样式。' },
       { name: '.z-hr', remark: '有横线时的样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+          	//点击Toggle，展开或收起后面的兄弟节点
+            return~
+            {
+                type: 'Vertical',
+                nodes: [
+                    { type: 'Toggle', text: '展开折叠', expanded: true },
+                    { type: 'Html', text: '内容1' },
+                    { type: 'Html', text: '内容2' }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Split": {
@@ -2621,6 +3422,22 @@ define( {
     Classes: [
       { name: '.w-split', remark: '基础样式。' },
       { name: '.z-expanded', remark: '展开时的样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+          	//点击Toggle，展开或收起后面的兄弟节点
+            return~
+            {
+                type: 'Vertical',
+                nodes: [
+                    { type: 'Toggle', text: '展开折叠', expanded: true },
+                    { type: 'Html', text: '内容1' },
+                    { type: 'Html', text: '内容2' }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "PageBar": {
@@ -2645,15 +3462,7 @@ define( {
       { name: 'prevText', type: 'String', optional: true, remark: '"上一页"的文本。' },
       { name: 'src', type: 'String', optional: true, remark: '点击页数按钮将通过ajax访问此地址。后台应返回一个 command。支持 $0 变量代表页数。支持以 "javascript:" 开头的JS语句。' },
       { name: 'sumPage', type: 'Number', remark: '总页数。(起始值为1)' },
-      { name: 'setting', type: 'Array', remark: 'button数组。生成一个配置按钮和下拉菜单。', example: [
-          function() {
-            return~
-            { type: 'page/mini', setting: [
-            	{ "text": "显示设置" },
-            	{ "text": "每页显示" }
-            ] }
-          }
-      ] },
+      { name: 'setting', type: 'Array', remark: 'button数组。生成一个配置按钮和下拉菜单。' },
       { name: 'target', type: 'Boolean', optional: true, remark: '绑定一个支持前端翻页的widget(例如table)。' },
       { name: 'transparent', type: 'Boolean', optional: true, remark: '设置为true，可去除边框背景等预设样式。' }
     ],
@@ -2667,6 +3476,14 @@ define( {
       { name: '.z-face-normal', remark: 'normal样式。' },
       { name: '.z-face-mini', remark: 'mini样式。' },
       { name: '.z-face-simple', remark: 'simple样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+			{ type: 'PageBar', face: 'mini', height: 22, currentPage: 1, buttonCount: 5, sumPage: 10, src: 'getData.sp?page=$0' }
+          }
+      ] }
     ]
   },
   "Calendar": {
@@ -2703,17 +3520,23 @@ define( {
     Examples: [
 	  { example: [
           function() {
-            // 给1日和7日设置样式和内容。
+            // 简单范例
+            return~
+            { type: 'Canlendar', face: 'date' }
+          },
+          function() {
+            // 给1日和7日设置样式和内容
             return~
             {
               type: 'Canlendar',
+              face: 'date',
               date: '2019-05-05',
               pub: {
-                on: { click: 'alert(this.val())' }
+                  on: { click: 'alert(this.val())' }
               },
               nodes: [
-                { type: 'CalendarItem', value: '2019-05-01', cls: 'x-cal-yes', text: '第一个日程' }, // 可以省略 type 定义 
-                { type: 'CalendarItem', value: '2019-05-07', cls: 'x-cal-yes', text: '第二个日程' }
+                  { type: 'CalendarItem', value: '2019-05-01', cls: 'x-cal-yes', text: '第一个日程' }, // 可以省略 type 定义 
+                  { type: 'CalendarItem', value: '2019-05-07', cls: 'x-cal-yes', text: '第二个日程' }
               ]
             }
           }
@@ -2732,6 +3555,26 @@ define( {
     Classes: [
       { name: '._td', remark: '基础样式。' },
       { name: '.z-pad', remark: '填充空白的状态样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            // 给1日和7日设置样式和内容
+            return~
+            {
+              type: 'Canlendar',
+              face: 'date',
+              date: '2019-05-05',
+              pub: {
+                  on: { click: 'alert(this.val())' }
+              },
+              nodes: [
+                  { type: 'CalendarItem', value: '2019-05-01', cls: 'x-cal-yes', text: '第一个日程' }, // 可以省略 type 定义 
+                  { type: 'CalendarItem', value: '2019-05-07', cls: 'x-cal-yes', text: '第二个日程' }
+              ]
+            }
+          }
+      ] }
     ]
   },
   "Text": {
@@ -2740,11 +3583,6 @@ define( {
     Config: [
       { name: 'label', type: 'String | Label', optional: true, remark: '表单标签。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
       	 example: [
-          function() {
-            // 显示标签的表单
-            return~
-            { type: 'Text', label: { text: '姓名', width: 100 } }
-          },
           function() {
             // 在css中设置标签背景色
             return''
@@ -2888,6 +3726,31 @@ define( {
       { name: '.z-trans', remark: '设置 transparent:true 时的样式。' },
       { name: '.z-ds', remark: '设置 status 为 readonly,validonly,disabled 时的样式。' },
       { name: '.z-err', remark: '表单验证出错时的样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+          	//设置输入框为必填项
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    {
+                        type: 'Text',
+                        name: 'usr',
+                        label: { text: '用户名', width: 100 },
+                        validate: { required: true }
+                    },
+                    {
+                        type: 'Password',
+                        name: 'pwd',
+                        label: { text: '密码', width: 100 },
+                        validate: { required: true }
+                    },
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Textarea": {
@@ -2896,6 +3759,28 @@ define( {
   	deprecate: '.w-text',
     Classes: [
       { name: '.w-textarea', remark: '基础样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    {
+                        type: 'Text',
+                        name: 'title',
+                        label: { text: '标题', width: 100 }
+                    },
+                    {
+                        type: 'Textarea',
+                        name: 'content',
+                        label: { text: '内容', width: 100 }
+                    },
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Password": {
@@ -2907,6 +3792,30 @@ define( {
     ],
     Classes: [
       { name: '.w-password', remark: '基础样式。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    {
+                        type: 'Text',
+                        name: 'usr',
+                        label: { text: '用户名', width: 100 },
+                        validate: { required: true }
+                    },
+                    {
+                        type: 'Password',
+                        name: 'pwd',
+                        label: { text: '密码', width: 100 },
+                        validate: { required: true }
+                    },
+                ]
+            }
+          }
+      ] }
     ]
   },
   "CheckBoxGroup": {
@@ -2934,29 +3843,26 @@ define( {
             // 设置 CheckBox 宽度为 50%, 可以形成整齐的两列排列
             return~
             {
-              type: 'CheckBoxGroup',
-              pub: {
-              	name: 'box',
-              	width: '50%'
-              },
-              nodes: [
-                { text: '选项1' },
-                { text: '选项2' },
-                { text: '选项3' },
-                { text: '选项4' }
-              ]
+                type: 'CheckBoxGroup',
+                pub: { name: 'box', width: '50%' },
+                nodes: [
+                    { text: '选项1' },
+                    { text: '选项2' },
+                    { text: '选项3' },
+                    { text: '选项4' }
+                ]
             }
           },
           function() {
             // CheckBox 和其他表单的组合
             return~
             {
-              type: 'CheckBoxGroup',
-              nodes: [
-                { text: '选项1', target: { type: 'Date' } },
-                { text: '选项2', target: { type: 'Spinner' } },
-                { text: '选项3', target: { type: 'Text' } }
-              ]
+                type: 'CheckBoxGroup',
+                nodes: [
+                    { text: '选项1', target: { type: 'Date' } },
+                    { text: '选项2', target: { type: 'Spinner' } },
+                    { text: '选项3', target: { type: 'Text' } }
+                ]
             }
           }
         ]
@@ -2992,6 +3898,22 @@ define( {
     ],
     Classes: [
       { name: '.w-checkbox', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'CheckBoxGroup',
+                nodes: [
+                    { type: 'CheckBox', value: '1', text: '选项1', checked: true }, //type属性可以省略
+                    { type: 'CheckBox', value: '2', text: '选项2' },
+                    { type: 'CheckBox', value: '3', text: '选项3' }
+                ]
+            }
+          }
+        ]
+      }
     ]
   },
   "TripleBox": {
@@ -3008,6 +3930,28 @@ define( {
         { name: 'checked', type: 'Boolean | String', remark: '选中状态。可选值: <b>true</b><s>(选中)</s>, <b>false</b><s>(未选)</s>, <b>checked</b><s>(选中)</s>, <b>unchecked</b><s>(未选)</s>, <b>partial</b><s>(半选)</s>', optional: true }
       ] },
       { name: 'isPartial()', remark: '是否半选中状态。' }
+    ],
+    Examples: [
+	  { example: [
+          function() {
+          	//带有TripleBox的树
+            return~
+            {
+                type: 'Tree',
+                nodes: [
+                    {
+                        text: '我的收藏', 
+                        box: { type: 'TripleBox', name: 'box1', value: '1' },
+                        expanded: true, 
+                        nodes: [
+                            { text: '收藏1', box: { type: 'TripleBox', name: 'box2', value: '2' } },
+                            { text: '收藏2', box: { type: 'TripleBox', name: 'box3', value: '3' } }
+                        ]
+                    }
+                ]
+            }
+          }
+      ] }
     ]
   },
   "Switch": {
@@ -3022,6 +3966,19 @@ define( {
       { name: 'check([checked])', remark: '设置选中状态。', param: [
         { name: 'checked', type: 'Number', remark: '选中状态。可选值: <b>0</b><s>(未选)</s>，<b>1</b><s>(选中)</s>，<b>2</b><s>(半选)</s>', optional: true }
       ] }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'Switch',
+                name: 'enable',
+                label: { text: '启用' }
+            }
+          }
+        ]
+      }
     ]
   },
   "RadioGroup": {
@@ -3034,6 +3991,22 @@ define( {
     ],
     Classes: [
       { name: '.w-radiogroup', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'RadioGroup',
+                nodes: [
+                    { type: 'Radio', value: '1', text: '选项1', checked: true }, //type属性可以省略
+                    { type: 'Radio', value: '2', text: '选项2' },
+                    { type: 'Radio', value: '3', text: '选项3' }
+                ]
+            }
+          }
+        ]
+      }
     ]
   },
   "Radio": {
@@ -3042,12 +4015,23 @@ define( {
   	deprecate: 'focus,focusEnd,placeholder,transparent,.w-text,.w-input,.z-trans,.z-on',
     Classes: [
       { name: '.w-radio', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'RadioGroup',
+                nodes: [
+                    { type: 'Radio', value: '1', text: '选项1', checked: true }, //type属性可以省略
+                    { type: 'Radio', value: '2', text: '选项2' },
+                    { type: 'Radio', value: '3', text: '选项3' }
+                ]
+            }
+          }
+        ]
+      }
     ]
-  },
-  "TableRadio": {
-  	remark: 'table 内部专用的 radio。选中状态与 tr 的 focus 效果同步。',
-  	deprecate: 'focus,focusEnd,placeholder,transparent,.w-text,.w-input,.z-trans,.z-on',
-  	extend: 'Radio'
   },
   "Select": {
   	remark: '下拉选择表单。',
@@ -3069,6 +4053,22 @@ define( {
     ],
     Classes: [
       { name: '.w-select', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'Select',
+                nodes: [
+                    { value: '001', text: '选项1', checked: true },
+                    { value: '002', text: '选项2' },
+                    { value: '003', text: '选项3' }
+                ]
+            }
+          }
+        ]
+      }
     ]
   },
   "DatePicker": {
@@ -3081,12 +4081,51 @@ define( {
     ],
     Classes: [
       { name: '.w-datepicker', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+          	//日期选择器
+            return~
+            { type: 'DatePicker', format: 'yyyy-mm-dd' }
+          },
+          function() {
+          	//可选择小时分钟的日期选择器
+            return~
+            { type: 'DatePicker', format: 'yyyy-mm-dd hh:ii' }
+          }
+        ]
+      }
     ]
   },
   "Hidden": {
   	remark: '隐藏表单。',
   	extend: 'Text',
-  	deprecate: 'label,focus,focusEnd,placeholder,tip,transparent,status,validate,validateGroup,.w-text,.z-trans,.z-on'
+  	deprecate: 'label,focus,focusEnd,placeholder,tip,transparent,status,validate,validateGroup,.w-text,.z-trans,.z-on,.z-required,.z-err,.z-ds',
+    Classes: [
+      { name: '.w-hidden', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//在Form中使用Hidden
+            return~
+            {
+                type: 'Form',
+                nodes: [
+                    {
+                        type: 'FormLabel',
+                        label: { text: 'FormLabel', width: 90 },
+                        text: '内容'
+                    }
+                ],
+                Hiddens: [
+                    { type: 'Hidden', name: 'newId', value: '1' }
+                ]
+            }
+          }
+      ] }
+    ]
   },
   "Rate": {
   	remark: '评分表单。',
@@ -3094,13 +4133,26 @@ define( {
   	deprecate: 'focus,focusEnd,.w-text,.z-trans,placeholder,tip,transparent',
     Config: [
       { name: 'value', type: 'String', remark: '表单值。从0 - 10。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'Rate',
+                name: 'rate',
+                label: { text: '评分' }
+            }
+          }
+        ]
+      }
     ]
   },
   "Range": {
   	remark: '指定范围的表单组合。',
   	extend: 'Widget',
     Config: [
-      { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。<br><font color=red>*</font> 3.2版本中可设置为LabelWidget。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
+      { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。<br>当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
       	 example: [
           function() {
             // 显示标签的表单
@@ -3116,6 +4168,21 @@ define( {
       { name: 'begin', type: 'Widget', remark: '开始值的表单。' },
       { name: 'end', type: 'Widget', remark: '结束值的表单。' },
       { name: 'to', type: 'Widget', remark: '中间的连接显示。一般是一个html widget。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+          	// 选择开始日期和结束日期
+            return~
+            {
+                type: 'Range',
+                label: { text: '日期' },
+                begin: { type: 'DatePicker', format: 'yyyy-mm-dd', label: { text: '开始日期' } },
+                end: { type: 'DatePicker', format: 'yyyy-mm-dd', label: { text: '结束日期' } }
+            }
+          }
+        ]
+      }
     ]
   },
   "Slider": {
@@ -3132,6 +4199,18 @@ define( {
     ],
     Classes: [
       { name: '.w-slider', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'Slider',
+                label: { text: '滑块' }
+            }
+          }
+        ]
+      }
     ]
   },
   "Jigsaw": {
@@ -3155,6 +4234,45 @@ define( {
       { name: '.z-authing', remark: '正在验证时的样式。' },
       { name: '.z-drag', remark: '拖动时的样式。' },
       { name: '.z-success', remark: '验证成功的样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+          	//例1
+            return~
+            {
+                type: 'Jigsaw',
+                label: { text: '验证码' },
+                img: { type: 'JigsawImg', src: 'jigsawimg.sp' },
+                auth: { type: 'JigsawAuth', src: 'jigsawauth.sp?value=$value' }
+            }
+          },
+          function() {
+          	//例1 jigsawimg.sp 地址返回的数据格式范例
+            return~
+            {
+                type: 'JigsawImg',
+                src: 'jigsawimg.sp',
+                result: {
+                    big: { src: 'img/big.png', width: 400, height: 200 },
+                    small: { src: 'img/small.png', width: 64, height: 200 }
+                }
+            }
+          },
+          function() {
+          	//例1 jigsawauth.sp 地址返回的数据格式范例
+            return~
+            {
+                type: 'JigsawAuth',
+                src: 'jigsawauth.sp?value=$value',
+                result: {
+                    success: true,
+                    msg: '验证通过'
+                }
+            }
+          }
+        ]
+      }
     ]
   },
   "JigsawImg": {
@@ -3184,18 +4302,18 @@ define( {
 	Examples: [
 	  { example: [
           function() {
-            // 正常范例
+            // 正常返回的范例
             return~
             {
               type: 'JigsawImg',
               src: 'getimg.sp',
               result: {
-      	        big: {
-                  src: 'big.jpg', width: 200, height: 90
-                },
-                small: {
-                  src: 'small.jpg', width: 200, height: 90
-                },
+      	          big: {
+                      src: 'big.jpg', width: 200, height: 90
+                  },
+                  small: {
+                      src: 'small.jpg', width: 200, height: 90
+                  },
                 minvalue: 0,
                 maxvalue: 300,
                 token: 'abc'
@@ -3209,9 +4327,9 @@ define( {
               type: 'JigsawImg',
               src: 'getimg.sp',
               result: {
-      	        error: {
-                  msg: '次数过多，请稍候再试', timeout: 15
-                }
+      	          error: {
+                      msg: '次数过多，请稍候再试', timeout: 15
+                  }
               }
             }
           }
@@ -3233,10 +4351,10 @@ define( {
             return~
             {
               type: 'JigsawAuth',
-              src: 'auth.sp',
+              src: 'auth.sp?value=$value',
               result: {
-      	        success: true,
-                msg: '验证通过'
+      	          success: true,
+                  msg: '验证通过'
               }
             }
           }
@@ -3246,6 +4364,7 @@ define( {
   "Spinner": {
   	remark: '数字输入框。',
   	extend: 'Text',
+  	deprecate: '.w-text',
     Config: [
       { name: 'decimal', type: 'Number', optional: true, remark: '设为0时，只允许输入整数。设为正整数，则限制小数的最大位数。设为负数，则不限整数和小数。默认值为0' },
       { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
@@ -3256,9 +4375,32 @@ define( {
         { name: 'rightward', type: 'Boolean', remark: '设置为true，从左向右的方向进行分隔。默认值为 false' }        
       ] }
     ],
-  	deprecate: '.w-text',
     Classes: [
       { name: '.w-spinner', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	// 设置最大值和最小值
+            return~
+            {
+              type: 'Spinner',
+              name: 'count',
+              label: { text: '数字框' },
+              validate: { minValue: 0, maxValue: 100 }
+            }
+          },
+          function() {
+          	// 千分位格式化
+            return~
+            {
+              type: 'Spinner',
+              name: 'count',
+              label: { text: '数字框' },
+              format: { separator: ',', length: 3 }
+            }
+          }
+      ] }
     ]
   },
   "DropBox": {
@@ -3325,6 +4467,22 @@ define( {
     ],
     Classes: [
       { name: '.w-xbox', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'DropBox',
+                nodes: [
+                    { value: '001', text: '选项1', checked: true },
+                    { value: '002', text: '选项2' },
+                    { value: '003', text: '选项3' }
+                ]
+            }
+          }
+        ]
+      }
     ]
   },
   "ImgBox": {
@@ -3340,9 +4498,6 @@ define( {
       	{ name: 'value', type: 'String', remark: '值。' }
       ] }
     ],
-    Classes: [
-      { name: '.w-imgbox', remark: '基础样式。' }
-    ],
     Methods: [
       { name: 'getFocusOption()', remark: '获取当前的选项对象。' },
       { name: 'getPrevOption()', remark: '获取上一个选项对象。' },
@@ -3350,6 +4505,28 @@ define( {
       { name: 'setOptions(opt)', remark: '设置下拉选项。', param: [
         { name: 'opt', type: 'Array', remark: '选项数组。' }
       ] }
+    ],
+    Classes: [
+      { name: '.w-imgbox', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            return~
+            {
+                type: 'ImgBox',
+                name: 'fileType',
+                imgWidth: 100,
+                imgHeight: 100,
+                nodes: [
+                    { icon: '.i-doc', value: '001', text: 'Word', checked: true },
+                    { icon: '.i-ppt', value: '002', text: 'PowerPoint' },
+                    { icon: '.i-xls', value: '003', text: 'Excel' }
+                ]
+            }
+          }
+        ]
+      }
     ]
   },
   "PickBox": {
@@ -3376,6 +4553,50 @@ define( {
     ],
     Classes: [
       { name: '.w-pickbox', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+          	//树形候选项
+            return~
+            {
+                type: 'PickBox',
+                name: 'address',
+                label: { text: '住址', width: 100 },
+                bind: {
+                    field: { value: 'code', text: 'text' }
+                },
+                drop: {
+                    type: 'Dialog',
+                    node: {
+                        type: 'View',
+                        node: {
+                            type: 'Tree',
+                            nodes: [
+                                {
+                                    text: '福州市',
+                                    data: { code: '350000' },
+                                    nodes: [
+                                        { text: '鼓楼区', data: { code: '350001' } },
+                                        { text: '晋安区', data: { code: '350002' } }
+                                    ]
+                                },
+                                {
+                                    text: '厦门市',
+                                    data: { code: '360000' },
+                                    nodes: [
+                                        { text: '思明区', data: { code: '360001' } },
+                                        { text: '海沧区', data: { code: '360002' } }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+          }
+        ]
+      }
     ]
   },
   "OnlineBox": {
@@ -3404,6 +4625,24 @@ define( {
     ],
     Classes: [
       { name: '.w-onlinebox', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+             return~
+            {
+                type: 'OnlineBox',
+                bind: {
+                    field: { value: 'id', text: 'name' }
+                },
+                suggest: {
+                    type: 'Dialog',
+                    src: 'search.sp?text=$text'
+                }
+            }
+          }
+        ]
+      }
     ]
   },
   "ComboBox": {
@@ -3459,6 +4698,40 @@ define( {
     ],
     Classes: [
       { name: '.w-combobox', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+          	//下例中输入"张"字，将出现两个候选项
+            return~
+            {
+                type: 'ComboBox',
+                bind: {
+                    field: { value: 'id', text: 'name' }
+                },
+                suggest: {
+                    type: 'Dialog',
+                    node: {
+                        type: 'View',
+                        node: {
+                            type: 'Table',
+                            columns: [
+                                { field: 'name', width: '*' }
+                            ],
+                            tBody: {
+                                nodes: [
+                                    { id: '001', name: '张飞' },
+                                    { id: '002', name: '赵云' },
+                                    { id: '003', name: '张角' }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+          }
+        ]
+      }
     ]
   },
   "ComboBoxOption": {
@@ -3473,6 +4746,43 @@ define( {
       { name: 'close()', remark: '删除。' },
       { name: 'val()', remark: '获取值。' },
       { name: 'text()', remark: '获取文本。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+          	//给选中的项绑定点击事件
+            return~
+            {
+                type: 'ComboBox',
+                pub: {
+                    on: { click: 'alert(this.val())' }
+                },
+                bind: {
+                    field: { value: 'id', text: 'name' }
+                },
+                suggest: {
+                    type: 'Dialog',
+                    node: {
+                        type: 'View',
+                        node: {
+                            type: 'Table',
+                            columns: [
+                                { field: 'name', width: '*' }
+                            ],
+                            tBody: {
+                                nodes: [
+                                    { id: '001', name: '张飞' },
+                                    { id: '002', name: '赵云' },
+                                    { id: '003', name: '张角' }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+          }
+        ]
+      }
     ]
   },
   "LinkBox": {
@@ -3485,6 +4795,40 @@ define( {
     ],
     Classes: [
       { name: '.w-linkbox', remark: '基础样式。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+          	//下例中输入"张"字，将出现两个候选项
+            return~
+            {
+                type: 'LinkBox',
+                bind: {
+                    field: { value: 'id', text: 'name' }
+                },
+                suggest: {
+                    type: 'Dialog',
+                    node: {
+                        type: 'View',
+                        node: {
+                            type: 'Table',
+                            columns: [
+                                { field: 'name', width: '*' }
+                            ],
+                            tBody: {
+                                nodes: [
+                                    { id: '001', name: '张飞' },
+                                    { id: '002', name: '赵云' },
+                                    { id: '003', name: '张角' }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+          }
+        ]
+      }
     ]
   },
   "ImageUpload": {
@@ -3504,18 +4848,94 @@ define( {
       { name: 'uploadLimit', type: 'Number', remark: '最多可上传数量。' },
       { name: 'post', type: 'String', remark: '上传地址。<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s><br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
       { name: 'valueButtons', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
-      { name: 'value', type: 'String', remark: '值。' }
+      { name: 'value', type: 'String | Array', remark: '值。' }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            // 图片上传控件
+            return~
+            {
+                type: 'ImageUpload',
+                post: { type: 'UploadPost', src: 'upload.sp' },
+                pub: { width: 70, height: 70 },
+                fileTypes: '*.png;*.jpg;*.gif',
+                uploadButtons: [
+                    { type: 'UploadButton', text: '上传照片' }
+                ],
+                value: [
+                    { id: '001', name: '001.jpg', thumbnail: 'images/001.jpg' }
+                ]
+            }
+          },
+          function() {
+          	// 上例中的 upload.sp 处理附件数据后返回的内容示例
+            return~
+            {
+                type: 'UploadPost',
+                result: {
+                    id: '002', name: '002.jpg', thumbnail: 'images/002.jpg'
+                }
+            }
+          }
+        ]
+      }
     ]
   },
   "FileUpload": {
   	remark: '上传附件。',
   	extend: 'ImageUpload',
-  	deprecate: 'thumbnail'
+  	deprecate: 'thumbnail',
+    Examples: [
+      { example: [
+          function() {
+            // 文件上传控件
+            return~
+            {
+                type: 'FileUpload',
+                post: { type: 'UploadPost', src: 'upload.sp' },
+                uploadButtons: [
+                    { type: 'UploadButton', text: '选择文件' }
+                ],
+                value: [
+                    { id: '001', name: '001.doc' }
+                ]
+            }
+          },
+          function() {
+          	// 上例中的 upload.sp 处理附件数据后返回的内容示例
+            return~
+            {
+                type: 'UploadPost',
+                result: {
+                    id: '002', name: '002.doc'
+                }
+            }
+          }
+        ]
+      }
+    ]
   },
   "UploadButton": {
   	remark: '上传按钮。FileUpload 和 ImageUpload 的专用按钮。',
   	extend: 'Button',
-  	deprecate: 'target'
+  	deprecate: 'target',
+    Examples: [
+      { example: [
+          function() {
+            // 文件上传控件
+            return~
+            {
+                type: 'FileUpload',
+                post: { type: 'UploadPost', src: 'upload.sp' },
+                uploadButtons: [
+                    { type: 'UploadButton', text: '选择文件' }
+                ]
+            }
+          }
+        ]
+      }
+    ]
   },
   "Cmd": {
   	remark: '命令集合。',
@@ -3747,14 +5167,41 @@ define( {
       { name: 'id', type: 'String', remark: '命令ID。' },
       { name: 'node', type: 'Object', remark: '新的 widget 配置项。' },
       { name: 'target', type: 'String', remark: 'widget ID。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//替换 id="f_btn" 的按钮
+            return~
+            vm.cmd( {
+            	type: 'Replace',
+            	target: 'f_btn',
+            	node: {
+            	    type: 'Button',
+            	    text: '新按钮'
+            	}
+            } );
+          }
+      ] }
     ]
   },
   "Remove": {
   	remark: '删除命令。删除某个 widget。',
-  	extend: 'Widget',
     Config: [
       { name: 'id', type: 'String', remark: '命令ID。' },
       { name: 'target', type: 'String', remark: 'widget ID。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//删除 id="f_btn" 的按钮
+            return~
+            vm.cmd( {
+            	type: 'Remove',
+            	target: 'f_btn'
+            } );
+          }
+      ] }
     ]
   },
   "Dialog": {
@@ -3765,20 +5212,10 @@ define( {
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
-      { name: 'id', type: 'String', remark: 'Dialog 的 id 参数有全局性。可以通过两种方式获取 dialog 的实例: <br> 1. 可通过 view.find( id ) 方法来获取 widget。<br> 2. 通过 $.dialog( id ) 获取。', example: [
-          function() {
-            vm.cmd( { type: "dialog", id: 'mydialog', width: 500, height: 400, src: 'dialog.sp' } );
-            var dg1 = vm.find( 'mydialog' ); // 获取方式1
-            var dg2 = $.dialog( 'mydialog' ); // 获取方式2
-          }
-      ] },
+      { name: 'id', type: 'String', remark: 'Dialog 的 id 参数有全局性。可以通过两种方式获取 dialog 的实例: <br> 1. 可通过 view.find( id ) 方法来获取 widget。<br> 2. 通过 $.dialog( id ) 获取。' },
       { name: 'loading', type: 'LoadingCommand', remark: '加载数据时显示一个等候窗口。' },
       { name: 'node', type: 'Object', remark: 'Dialog的唯一子节点。' },
-      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。', example: [
-          function() {
-            VM().cmd( { type: "dialog", width: 500, height: 400, src: 'dialog.sp' } );
-          }
-      ] },
+      { name: 'src', type: 'String | Object', remark: '加载 view 的 url。<br>3.2版本以上，src可以是JSON对象。' },
       { name: 'independent', type: 'Boolean', remark: '设置为true，取消与父窗口的关联效果。' },
       { name: 'maxWidth', type: 'Number', remark: '最大宽度。' },
       { name: 'maxHeight', type: 'Number', remark: '最大高度。' },
@@ -3805,13 +5242,7 @@ define( {
       { name: 'title', type: 'String', remark: '标题。如果有设置 template, 标题将显示在 template/title 中。' }
     ],
     Event: [
-      { name: 'load', remark: '对话框内的 view 加载完毕后触发。', example: [
-          function() {
-          	// view加载完毕后显示path
-            return~
-            { type: 'dialog', width: 500, height: 400, src: 'abc.sp', on: { load: "alert(this.contentView.path)" } }
-          }
-      ] },
+      { name: 'load', remark: '对话框内的 view 加载完毕后触发。' },
       { name: 'close', remark: '关闭对话框后触发。' }
     ],
     Properties: [
@@ -3823,10 +5254,6 @@ define( {
       { name: 'close()', remark: '关闭，并触发 close 事件。如果设置了 cache:true，调用 close() 方法只会隐藏对话框。' },
       { name: 'draggable([target])', remark: '允许鼠标拖动窗口。', param: [
         { name: 'target', type: 'Widget | HTMLElement', optional: true, remark: '可拖动的对象。如果不设置此参数，那么整个窗口都可以拖动。' }
-      ], example: [
-          function() {
-            $.dialog(this).draggable();
-          }
       ] },
       { name: 'hide()', remark: '隐藏。和 show() 方法对应。' },
       { name: 'isShow()', remark: '是否可见状态。' },
@@ -3844,6 +5271,41 @@ define( {
       { name: '.w-dialog', remark: '基础样式。' },
       { name: '.z-snap-{**}', remark: ' dialog 设置了 snap 参数时的样式。{**} 值根据 snap 结果类型而定。例如 snaptype 为 "41"，那么该样式名称则为: z-snap-41' },
       { name: '.z-mag-{*}', remark: ' dialog 设置了 snap 参数时的样式。{*} 值根据 snap 位置类型而定。x 的可能值有: t(top), r(right), b(bottom), l(left)' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//例1: Dialog用src加载显示
+            return~
+            {
+                type: 'Dialog',
+                width: 700,
+                height: 500,
+                src: 'getView.sp'
+            }
+          },
+          function() {
+          	//例1的 getView.sp 返回的内容
+            return~
+            {
+                type: 'View',
+                node: { type: 'Html', text: '内容' }
+            }
+          },
+          function() {
+          	//例2: Dialog用node显示
+            return~
+            {
+                type: 'Dialog',
+                width: 700,
+                height: 500,
+                node: {
+                    type: 'View',
+                    node: { type: 'Html', text: '内容' }
+                }
+            }
+          }
+      ] }
     ]
   },
   "Menu": {
@@ -3868,6 +5330,21 @@ define( {
       { name: '.w-menu-line', remark: '用于button和menu的连接效果。如果需要这个效果，则设置: .w-menu-line{display:block}' },
       { name: '.z-snap-{**}', remark: ' dialog 设置了 snap 参数时的样式。{**} 值根据 snap 结果类型而定。例如 snaptype 为 "41"，那么该样式名称则为: z-snap-41' },
       { name: '.z-mag-{*}', remark: ' dialog 设置了 snap 参数时的样式。{*} 值根据 snap 位置类型而定。x 的可能值有: t(top), r(right), b(bottom), l(left)' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//树节点上点右键，显示一个Menu菜单
+          	return~
+            {
+                type: 'Leaf',
+                text: '树节点1',
+                on: {
+                    contextMenu: 'this.cmd( { type: "Menu", nodes: [ { text: "Menu1" }, { text: "Menu2" } ] } )'
+                }
+            }
+          }
+      ] }
     ]
   },
   "Alert": {
@@ -3906,9 +5383,14 @@ define( {
     ],
     Classes: [
       { name: '.w-dialog', remark: '基础样式。' },
-      { name: '.w-alert', remark: '基础样式。' },
-      { name: '.z-snap-{**}', remark: ' dialog 设置了 snap 参数时的样式。{**} 值根据 snap 结果类型而定。例如 snaptype 为 "41"，那么该样式名称则为: z-snap-41' },
-      { name: '.z-mag-{*}', remark: ' dialog 设置了 snap 参数时的样式。{*} 值根据 snap 位置类型而定。x 的可能值有: t(top), r(right), b(bottom), l(left)' }
+      { name: '.w-alert', remark: '基础样式。' }    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            vm.cmd( { type: 'Alert', text: '提示内容' } );
+          }
+      ] }
     ]
   },
   "Confirm": {
@@ -3921,6 +5403,25 @@ define( {
     ],
     Classes: [
       { name: '.w-confirm', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+            return~
+            vm.cmd( {
+            	type: 'Confirm', 
+            	text: '确定吗？', 
+            	yes: { 
+            	    type: 'JS', 
+            	    text: 'alert("yes")'
+            	}, 
+            	no: { 
+            	    type: 'JS', 
+            	    text: 'alert("no")' 
+            	} 
+            } );
+          }
+      ] }
     ]
   },
   "Loading": {
@@ -3950,8 +5451,16 @@ define( {
 	Examples: [
 	  { example: [
           function() {
+          	// Ajax命令在src加载进程中显示一个Loading窗口。进程结束后Loading窗口自动关闭。
             return~
-            vm.cmd( { type: 'Loading' } );
+            vm.cmd( {
+                type: 'Ajax',
+                src: 'getData.sp',
+                loading: {
+                    type: 'Loading',
+                    text: '正在加载，请稍候..'
+                }
+            } );
           }
       ] }
     ]
@@ -3980,6 +5489,15 @@ define( {
       { name: '.w-tip', remark: '基础样式。' },
       { name: '.z-x', remark: '设置了 closeable:true 时的样式。' },
       { name: '.z-noprong', remark: '设置了 prong:false 时的样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//让 id="f_btn" 的按钮显示一个Tip
+            return~
+            vm.find( 'f_btn' ).cmd( { type: 'Tip', text: "提示内容" } );
+          }
+      ] }
     ]
   }
 } );

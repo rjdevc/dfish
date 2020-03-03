@@ -1362,6 +1362,10 @@ _event_handlers = function( a, b ) {
 _Event = $.Event = _createClass( {
 	Const: function() {},
 	Prototype: {
+		hasEvent: function( type ) {
+			var a = _event_handlers( this, type );
+			return a && a.length;
+		},
 		// type -> event type, fn -> fn, pvdr -> context, one -> exec once [T/F]
 		addEvent: function( type, fn, pvdr, one ) {
 			var k = { id: _uid( this ), type: _event_name( type ), ns: _event_space( type ),
