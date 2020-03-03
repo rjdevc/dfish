@@ -215,19 +215,6 @@ public class Tree extends AbstractPubNodeContainer<Tree, Leaf, Leaf>
     }
 
 
-
-    /**
-     * 修复叶节点的选中状态
-     *
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Tree fixBoxCheckStatus() {
-        // FIXME 根节点必须补box
-        rootLeaf.setBox(new TripleBox(null, null, null, null));
-        rootLeaf.fixBoxCheckStatus();
-        return this;
-    }
-
     /**
      * 高亮关键词配置
      *
@@ -349,7 +336,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Leaf, Leaf>
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override
-            protected  List<Node> nodes() {
+            protected  List<Leaf> nodes() {
                 return rootLeaf.getNodes();
             }
 
@@ -358,7 +345,7 @@ public class Tree extends AbstractPubNodeContainer<Tree, Leaf, Leaf>
                 if(node==null){
                     rootLeaf.getNodes().remove(i);
                 }else{
-                    rootLeaf.getNodes().set(i,node);
+                    rootLeaf.getNodes().set(i,(Leaf)node);
                 }
             }
         };

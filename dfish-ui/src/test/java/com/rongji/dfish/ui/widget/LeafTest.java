@@ -1,16 +1,17 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.DFishUITestCase;
+import com.rongji.dfish.ui.auxiliary.Leaf;
 
 public class LeafTest extends  DFishUITestCase{
 
 	@Override
 	protected Object getWidget() {
-		Tree.Leaf shell=new Tree.Leaf(null);
-		Tree.Leaf root=new Tree.Leaf("根节点").setSrc("tree/open?id=root");
+		Leaf shell=new Leaf(null);
+		Leaf root=new Leaf("根节点").setSrc("tree/open?id=root");
 		shell.add(root);
-		root.add(new Tree.Leaf("福建省"));
-		root.add(new Tree.Leaf("福州市"));
+		root.add(new Leaf("福建省"));
+		root.add(new Leaf("福州市"));
 		return shell;
 	}
 

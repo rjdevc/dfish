@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.Statusful;
+import com.rongji.dfish.ui.auxiliary.ValidateRule;
 
 /**
  * 抽象的FromElement 用于方便formElelemt的编写。
@@ -198,9 +199,9 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
             }
         } else {
             if (this.getValidate() != null) {
-                Validate.BooleanValueRule rule = this.getValidate().getRequired();
+                ValidateRule rule = this.getValidate().getRequired();
                 if (rule == null) {
-                    rule = new Validate.BooleanValueRule(true);
+                    rule = new ValidateRule(true);
                     this.getValidate().setRequired(rule);
                 } else {
                     rule.setValue(true);
