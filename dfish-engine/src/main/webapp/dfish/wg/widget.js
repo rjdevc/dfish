@@ -2017,9 +2017,9 @@ Scroll = define.widget( 'Scroll', {
 				} else if ( y === 'middle' ) {
 					t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
 				} else {
-					if ( f.bottom < c.top || f.top > c.bottom - br.scroll )
-						t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
-					else if ( f.top < c.top )
+					//if ( f.bottom < c.top || f.top > c.bottom - br.scroll )
+					//	t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
+					if ( f.top < c.top )
 						t = a.scrollTop - c.top + f.top;
 					else if ( f.bottom > c.bottom - br.scroll )
 						t = a.scrollTop + f.bottom - c.bottom + br.scroll;
@@ -2502,6 +2502,13 @@ Layout = define.widget( 'Layout', {
 		this.rootNode = p;
 		W.apply( this, arguments );
 	},
+	Listener: {
+		body: {
+			domHide: function() {
+				this.domready = N;
+			}
+		}
+	},
 	Prototype: {
 		x_childtype: function( t ) {
 			return this.parentNode.x_childtype ? this.parentNode.x_childtype( t ) : t;
@@ -2734,8 +2741,8 @@ DocView = define.widget( 'DocView', {
 		$.attach( window, 'resize', f = function( e, w, h ) {
 			w = w || self.width(); h = h || self.height();
 			if ( self._wd !== w || self._ht !== h ) {
-				self.resize( self._wd = w, self._ht = h );
 				Dialog.cleanPop();
+				self.resize( self._wd = w, self._ht = h );
 			}
 		} );
 		if ( ie ) { // ie7监视缩放
@@ -3046,6 +3053,14 @@ Split = define.widget( 'Split', {
 				if ( w <= 1 ) $.classAdd( this.$(), 'z-0' );
 				this.x.range && this.isExpanded() && $.classAdd( this.$(), 'z-expanded' );
 				ie7 && this.css( 'bg', 'backgroundColor', this.$().currentStyle.backgroundColor );
+			},
+			mouseOver: {
+				occupy: T,
+				method: function() { this.addClass( 'z-hv' ) }
+			},
+			mouseOut: {
+				occupy: T,
+				method: function() { this.removeClass( 'z-hv' ) }
 			}
 		}
 	},
@@ -4427,6 +4442,9 @@ Dialog = define.widget( 'Dialog', {
 				d = this.x.args && this.x.args[ a ];
 			return d !== U ? d : this.parentNode.closestData( a );
 		},
+		getContentNode: function() {
+			return this.layout && this.layout[ 0 ];
+		},
 		getContentView: function() {
 			return this.contentView || (this.contentView = _getContentView( this ));
 		},
@@ -4700,9 +4718,10 @@ Dialog = define.widget( 'Dialog', {
 			this._snapCls( F );
 			if ( this.x.cache )
 				this.$() && ($.hide( this.$() ), (this.x.cover && $.hide( this.$( 'cvr' ) )), this.vis = F);
-			else if ( this.x.memory )
+			else if ( this.x.memory ) {
 				 this._hide();
-			else {
+				 this.triggerAll( 'domHide' );
+			} else {
 				this.remove();
 			}
 		},
@@ -4717,8 +4736,9 @@ Dialog = define.widget( 'Dialog', {
 						n = d == 1 || d == 2 || d === 't' ? { top: -h } : d == 3 || d == 4 || d === 'r' ? { right: -w } : d == 5 || d == 6 || d === 'b' ? { bottom: -h } : d == 7 || d == 8 || d === 'l' ? { left: -w } : N;
 					$.classAdd( this.$(), 'z-closing' ); // z-closing生成遮盖层，避免在消失过程中内容部分再被点击
 					n ? Q( this.$() ).animate( n, 150, function() { self.removeElem() } ) : this.removeElem();
-				} else
+				} else {
 					this.removeElem();
+				}
 				this.vis = F;
 			}
 		},
@@ -5347,8 +5367,7 @@ Label = define.widget( 'Label', {
 			var t = this.html_format();
 			if ( typeof t === _OBJ )
 				t = this.add( t, -1 ).html();
-			this.parentNode.isRequired() && (t = this.html_star() + '<span class=f-va>' + t + '</span>');
-			return t + (this.x.suffix || '');
+			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span class=f-va>' + t + '</span>' + (this.x.suffix || '');
 		},
 		html_bg: function() {
 			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
@@ -7569,8 +7588,8 @@ DropBox = define.widget( 'DropBox', {
 		fixCheckAll: function() {
 			var q = Q( this._dropper.$() ).find( '._o.z-on' );
 		},
-		choose: function( e ) {
-			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.nodes[ d.attr( '_i' ) ].value;
+		choose: function( a ) {
+			var d = Q( a ).closest( '._o' ), v = '' + this.x.nodes[ d.attr( '_i' ) ].value;
 			if ( this.x.multiple || this.x.cancelable ) {
 				d.toggleClass( 'z-on' );
 			}
@@ -7603,8 +7622,36 @@ DropBox = define.widget( 'DropBox', {
 				this.focus();
 				this._dropper = this.exec( { type: 'Dialog', ownproperty: T, minWidth: this.formWidth() + 2, maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ), widthMinus: 2, heightMinus: 2, id: this.id,
 					cls: 'w-dropbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), autoHide: T,
-					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }, node: { type: 'Html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
-					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
+					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }, node: { type: 'Html', id: 'list', scroll: T, text: this.html_options() },
+					on: { load: 'this.commander.listenPop(!0)', close: 'this.commander.listenPop(!1)' }
+				} );
+			}
+		},
+		listenPop: function( a ) {
+			if ( a ) {
+				var c = this._dropper.getContentNode(), d = $.get( '.z-on', c.$() ), self = this;
+				d && c.scrollTop( d, 'middle', N, d.offsetHeight );
+				! this.x.multiple && Q( document ).on( 'keydown.' + this.id, function( e ) {
+					if ( e.keyCode === 38 || e.keyCode === 40 ) {
+						var g = Q( '.z-on', c.$() ), h;
+						if ( g.length ) {
+							h = g[ e.keyCode === 38 ? 'prev' : 'next' ]();
+							h.length && h.addClass( 'z-on' ).end().removeClass( 'z-on' );
+						} else {
+							h = Q( '._o:' + (e.keyCode === 38 ? 'last' : 'first'), c.$() );
+							h.addClass( 'z-on' );
+						}
+						h.length && c.scrollTop( h[ 0 ], 'auto' );
+						e.preventDefault();
+					} else if ( e.keyCode === 13 ) {
+						var g = $.get( '.z-on', c.$() );
+						g && self.choose( g );
+					}
+				} );
+			} else {
+				this.focus( F );
+				this._dropper = N;
+				! this.x.multiple && Q( document ).off( 'keydown.' + this.id );
 			}
 		},
 		showLoading: function( a ) {
@@ -7647,7 +7694,7 @@ DropBox = define.widget( 'DropBox', {
 				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (o[ i ].checkAll ? ' _all=1' : '') +
 				(this.attr( 'tip' ) ? this.prop_title( o[ i ].text ) : '') + _event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
 			}
-			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(event)>' + s.join( '' ) + '</div>';
+			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(event.srcElement)>' + s.join( '' ) + '</div>';
 		},
 		html_btn: function() {
 			return '<em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
@@ -7842,7 +7889,7 @@ ComboBox = define.widget( 'ComboBox', {
 							if ( k === 13 && t != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
 								this.suggest( t );
 							} else if ( d.vis && (m = this.store( d )) ) {
-								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : t ? m.keyUp( k ) : this.closePop();
+								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : t || d == this.dropper ? m.keyUp( k ) : this.closePop();
 							} else
 								_enter_submit( k, this );
 						} else if ( !(e.ctrlKey && k === 86) && !(k === 17) ) { //86: ctrl+v, 17: Ctrl
@@ -8196,9 +8243,10 @@ ComboBox = define.widget( 'ComboBox', {
 			if ( this.usa() ) {
 				var d = this.dropper, b = d && d.vis;
 				this.closePop();
-				//this.focus();
-				if ( ! b )
+				if ( ! b ) {
+					this.focus();
 					(d || (this.dropper = this.createPop( this.x.drop ))).show();
+				}
 			}
 		},
 		pick: function() {

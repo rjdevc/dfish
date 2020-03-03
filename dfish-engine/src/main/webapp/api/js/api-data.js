@@ -1879,6 +1879,7 @@ define( {
   "TableLeaf": {
   	remark: '用于table的树节点。',
   	extend: 'Leaf',
+  	deprecate: 'nodes',
     Methods: [
       { name: 'tr()', remark: '获取leaf所在的tr行对象。' }
     ],
@@ -3421,7 +3422,8 @@ define( {
     ],    
     Classes: [
       { name: '.w-split', remark: '基础样式。' },
-      { name: '.z-expanded', remark: '展开时的样式。' }
+      { name: '.z-expanded', remark: '展开时的样式。' },
+      { name: '.z-hv', remark: '鼠标经过时的样式。' }
     ],
     Examples: [
 	  { example: [
