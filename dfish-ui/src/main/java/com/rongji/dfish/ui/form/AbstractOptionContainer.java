@@ -66,7 +66,8 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
                         value = castItem[0];
                         if (castItem.length > 2) {
                             ic = String.valueOf(castItem[2]);
-                        } else if (castItem.length > 1) {
+                        }
+                        if (castItem.length > 1) {
                             text = String.valueOf(castItem[1]);
                         } else {
                             text = String.valueOf(castItem[0]);
