@@ -42,36 +42,36 @@ public class Horizontal extends LinearLayout<Horizontal>{
 		super(null);
 	}
 
-	/**
-	 * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
-	 * 
-	 * @param index 位置
-	 * @param w Widget
-	 * @param width String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@Override
-    public Horizontal add(int index, Widget w, String width) {
-		if (w == null) {
-			throw new UnsupportedOperationException("The added widget can not be null.");
-		}
-		if (w instanceof Hidden) {
-			Hidden cast = (Hidden) w;
-			return addHidden(cast.getName(), cast.getValue());
-		}
-		if(index<0){
-			nodes.add(w);
-		}else{
-			nodes.add(index,w);
-		}
-		if(width==null){
-			if(w.getWidth()==null){
-				w.setWidth("*");
-			}
-		}else if(w instanceof Widget){
-	        w.setWidth(width);
-		}
-		return this;
-	}
+//	/**
+//	 * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
+//	 *
+//	 * @param index 位置
+//	 * @param w Widget
+//	 * @param width String
+//	 * @return 本身，这样可以继续设置其他属性
+//	 */
+//	@Override
+//    public Horizontal add(int index, Widget w, String width) {
+//		if (w == null) {
+//			throw new UnsupportedOperationException("The added widget can not be null.");
+//		}
+//		if (w instanceof Hidden) {
+//			Hidden cast = (Hidden) w;
+//			return addHidden(cast.getName(), cast.getValue());
+//		}
+//		if(index<0){
+//			nodes.add(w);
+//		}else{
+//			nodes.add(index,w);
+//		}
+//		if(width==null){
+//			if(w.getWidth()==null){
+//				w.setWidth("*");
+//			}
+//		}else if(w instanceof Widget){
+//	        w.setWidth(width);
+//		}
+//		return this;
+//	}
 
 }

@@ -6,7 +6,7 @@ import com.rongji.dfish.base.util.MathUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.auxiliary.*;
-import com.rongji.dfish.ui.form.*;
+import com.rongji.dfish.ui.form.Hidden;
 
 import java.beans.Transient;
 import java.util.*;
@@ -110,7 +110,6 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
         this.setTFoot(new TFoot());
 
     }
-
 
     @Override
     protected TR newPub() {
@@ -266,7 +265,6 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
         } while ((x = x / 26 - 1) >= 0);
         return sb.reverse().toString();
     }
-
 
     private HiddenPart hiddens = new HiddenPart();
 

@@ -41,30 +41,30 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 		return setLabel(label);
 	}
 
-	/**
-	 * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
-	 * 
-	 * @param index 位置
-	 * @param w Widget
-	 * @param width String
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	@Override
-	public FormGroup add(int index, Widget w, String width) {
-		if(index<0){
-			nodes.add(w);
-		}else{
-			nodes.add(index,w);
-		}
-		if(width==null){
-			if((!(w instanceof Hidden))&& w.getWidth()==null){
-				w.setWidth("*");
-			}
-		}else if(w instanceof Widget){
-	        	w.setWidth(width);
-		}
-		return this;
-	}
+//	/**
+//	 * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
+//	 *
+//	 * @param index 位置
+//	 * @param w Widget
+//	 * @param width String
+//	 * @return 本身，这样可以继续设置其他属性
+//	 */
+//	@Override
+//	public FormGroup add(int index, Widget w, String width) {
+//		if(index<0){
+//			nodes.add(w);
+//		}else{
+//			nodes.add(index,w);
+//		}
+//		if(width==null){
+//			if((!(w instanceof Hidden))&& w.getWidth()==null){
+//				w.setWidth("*");
+//			}
+//		}else if(w instanceof Widget){
+//	        	w.setWidth(width);
+//		}
+//		return this;
+//	}
 
 	@Override
 	public FormGroup setNoLabel(Boolean noLabel) {
