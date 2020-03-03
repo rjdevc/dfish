@@ -86,7 +86,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget,Table.TD> implem
         if (w instanceof Hidden) {
             return add((Hidden) w);
         }else if (w instanceof LabelRow) {
-            if (((LabelRow) w).getNoLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
+            if (((LabelRow) w).getLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
                 ((LabelRow<?>) w).getLabel().setWidth(null);
             }
         }else if(w instanceof Table.TD){
