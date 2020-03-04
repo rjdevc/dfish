@@ -3115,6 +3115,7 @@ Split = define.widget( 'Split', {
 				n = this.isExpanded();
 			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
 			$.classAdd( this.$(), 'z-expanded', n );
+			this.trigger( 'mouseOut' );
 			this.fixHide();
 		},
 		fixHide: function( n ) {
