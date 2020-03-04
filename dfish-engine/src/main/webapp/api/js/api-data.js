@@ -3412,7 +3412,7 @@ define( {
       ] },
       { name: 'icon',  type: 'String', optional: true, remark: '收拢图标。图片地址url，或是以点 "." 开头的样式名。' },
       { name: 'expandedIcon',  type: 'String', optional: true, remark: '展开图标。图片地址url，或是以点 "." 开头的样式名。' },
-      { name: 'target',  type: 'String', optional: true, remark: '指定展开收拢的节点位置。可选值: <b>prev</b><s>(默认,前节点)</s>, <b>next</b><s>(后节点)</s>。本参数配合 icon expandedIcon 参数一起使用。' },
+      { name: 'hide',  type: 'String', optional: true, remark: '指定展开收拢的节点位置。可选值: <b>prev</b><s>(默认,前节点)</s>, <b>next</b><s>(后节点)</s>。本参数配合 icon expandedIcon 参数一起使用。' },
       { name: 'text',  type: 'String', optional: true, remark: '显示文本。' }
     ],
     Methods: [

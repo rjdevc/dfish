@@ -3001,7 +3001,7 @@ Html = define.widget( 'Html', {
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'vAlign' );
 			if ( v )
-				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>';
+				s = '<i class=f-vi-' + v + '></i><span id=' + this.id + 'vln style="vertical-align:' + v + '">' + s + '</span>';
 			return s;
 		}
 	}
@@ -3066,7 +3066,7 @@ Split = define.widget( 'Split', {
 		// 拖动调整大小
 		drag: function( a, e ) {
 			var r = $.bcr( e.srcElement.parentNode ), o = this.isExpanded(), p = this.prev(), n = this.next(), d = this.x.range.split( ',' ), j = _number( d[ 0 ] ), k = _number( d[ 1 ] ),
-				h = this.parentNode.type_horz, t = this.x.target == 'next', cln = h ? 'clientX' : 'clientY', pos = h ? 'left' : 'top', x = e[ cln ], self = this, b, c, f, g, h,
+				h = this.parentNode.type_horz, t = this.x.hide === 'next', cln = h ? 'clientX' : 'clientY', pos = h ? 'left' : 'top', x = e[ cln ], self = this, b, c, f, g, h,
 				down = function() {
 					h = $.db( '<div style="position:absolute;top:0;bottom:0;left:0;right:0;z-index:1"></div>' );
 					b = $.db( '<div style="position:absolute;width:' + (h ? 5 : r.width) + 'px;height:' + (h ? r.height : 5) + 'px;left:' + r.left + 'px;top:' + r.top + 'px;background:#bbb;opacity:.6;z-index:1"></div>' );
@@ -3119,24 +3119,24 @@ Split = define.widget( 'Split', {
 			this.fixHide();
 		},
 		fixHide: function( n ) {
-			var r = this[ this.x.target || 'prev' ]();
+			var r = this[ this.x.hide || 'prev' ]();
 			r.addClass( 'f-hide', !this.isExpanded() && (this.major() <= r.widthMinus()) );
 		},
 		getMajorMin: function() {
-			return (this.x.range || '').split( ',' )[ this.x.target === 'next' ? 1 : 0 ];
+			return (this.x.range || '').split( ',' )[ this.x.hide === 'next' ? 1 : 0 ];
 		},
 		isExpanded: function() {
 			return this.major() > this.getMajorMin();
 		},
 		major: function( a ) {
-			return _splitSize( this[ this.x.target || 'prev' ](), a );
+			return _splitSize( this[ this.x.hide || 'prev' ](), a );
 		},
 		minor: function( a ) {
-			return _splitSize( this[ this.x.target === 'next' ? 'prev' : 'next' ](), a );
+			return _splitSize( this[ this.x.hide === 'next' ? 'prev' : 'next' ](), a );
 		},
 		html_icon: function( a ) {
 			a = a == N ? this.isExpanded() : a;
-			return $.image( ( ! a && this.x.expandedIcon) || this.x.icon, { id: this.id + 'i', cls: '_' + (this.x.target || 'prev'), click: evw + '.toggle()' } );
+			return $.image( ( ! a && this.x.expandedIcon) || this.x.icon, { id: this.id + 'i', cls: '_' + (this.x.hide || 'prev'), click: evw + '.toggle()' } );
 		},
 		html_nodes: function() {
 			var w = this.width(), h = this.height(), p = this.parentNode, z = p.type_horz,
@@ -3147,7 +3147,7 @@ Split = define.widget( 'Split', {
 				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.major();
 			}
 			if ( this.x.icon )
-				s += '<table cellspacing=0 cellpadding=0 border=0 width=100% height=100%><tr><td align=' + ( this.x.target === 'next' ? 'right' : 'left' ) + '>' + this.html_icon() + '</table>';
+				s += '<table cellspacing=0 cellpadding=0 border=0 width=100% height=100%><tr><td align=' + ( this.x.hide === 'next' ? 'right' : 'left' ) + '>' + this.html_icon() + '</table>';
 			return s + '</div>';
 		}
 	}
