@@ -3,14 +3,7 @@ package com.rongji.dfish.base.util;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class BeanUtil {
 
@@ -353,7 +346,28 @@ public class BeanUtil {
         }
         if (candidates.size() == 0) {
             throw nsme;
-        } else if (candidates.size() == 1) {
+        } else if (candidates.size() > 0) {
+            Collections.sort(candidates, (Method o1,Method o2)-> {
+                Class c1=o1.getDeclaringClass();
+                Class c2=o2.getDeclaringClass();
+                if(c1==c2) {
+                }else if(isAssignableFrom(c1,c2)){
+                    return 1;
+                }else if(isAssignableFrom(c1,c2)){
+                    return -1;
+                }
+                Class[] type1=o1.getParameterTypes();
+                Class[] type2=o1.getParameterTypes();
+                for(int i=0;i<type1.length;i++){
+                    if(type1[i]==type2[i]){
+                    }else if(isAssignableFrom(type1[i],type2[i])){
+                        return 1;
+                    }else if(isAssignableFrom(type1[i],type2[i])){
+                        return -1;
+                    }
+                }
+                return 0;
+            });
             return candidates.get(0);
         }
         // 多个都吻合的时候要首先更具declareClass做一层判断，如果getParameterTypes 完全一致，只能留子类的方法。
