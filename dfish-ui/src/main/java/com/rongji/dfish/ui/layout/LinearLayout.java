@@ -64,60 +64,61 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMu
         return (T) this;
     }
 
-    /**
-     * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
-     *
-     * @param index 位置
-     * @param w     Widget
-     * @param size  String width或者height
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public abstract T add(int index, Widget w, String size);
-
-
-    /**
-     * 在指定的位置添加子面板
-     *
-     * @param index 位置
-     * @param w     N
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    public T add(int index, Widget w) {
-        return add(index, w, null);
-    }
-
-    @Override
-    public T add(Widget w) {
-        if (w instanceof Hidden) {
-            Hidden hidden = (Hidden) w;
-            hiddens.addHidden(hidden.getName(), hidden.getValue());
-            return (T) this;
-        }
-        return add(-1, (Widget) w, null);
-    }
-
-    @Override
-    public T add(Hidden w) {
-        hiddens.addHidden(w.getName(), w.getValue());
-        return (T) this;
-    }
-
-    /**
-     * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
-     *
-     * @param w    Widget
-     * @param size String width或者height
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public T add(Widget<?> w, String size) {
-        return add(-1, w, size);
-    }
+//    /**
+//     * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
+//     *
+//     * @param index 位置
+//     * @param w     Widget
+//     * @param size  String width或者height
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public abstract T add(int index, Widget w, String size);
+//
+//
+//    /**
+//     * 在指定的位置添加子面板
+//     *
+//     * @param index 位置
+//     * @param w     N
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    @Override
+//    public T add(int index, Widget w) {
+//        return add(index, w, null);
+//    }
+//
+//    @Override
+//    public T add(Widget w) {
+//        if (w instanceof Hidden) {
+//            Hidden hidden = (Hidden) w;
+//            hiddens.addHidden(hidden.getName(), hidden.getValue());
+//            return (T) this;
+//        }
+//        return add(-1, (Widget) w, null);
+//    }
+//
+//
+//    /**
+//     * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
+//     *
+//     * @param w    Widget
+//     * @param size String width或者height
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public T add(Widget<?> w, String size) {
+//        return add(-1, w, size);
+//    }
 
     /**
      * 隐藏表单组
      */
     private HiddenPart hiddens = new HiddenPart();
+
+    @Override
+    public T add(Hidden hidden) {
+        hiddens.add(hidden);
+        return (T) this;
+    }
 
     @Override
     public T addHidden(String name, String value) {
@@ -136,7 +137,6 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMu
 //	}
 //
 
-
     @Override
     public List<Hidden> getHiddens() {
         return hiddens.getHiddens();
@@ -146,6 +146,5 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMu
     public List<String> getHiddenValue(String name) {
         return hiddens.getHiddenValue(name);
     }
-
 
 }

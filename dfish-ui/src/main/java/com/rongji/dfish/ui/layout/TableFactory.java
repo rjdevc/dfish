@@ -4,7 +4,6 @@ import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.ui.auxiliary.Column;
 import com.rongji.dfish.ui.auxiliary.TD;
 import com.rongji.dfish.ui.auxiliary.TR;
 import com.rongji.dfish.ui.auxiliary.TableRowNum;
@@ -53,7 +52,7 @@ public class TableFactory {
         protected String id;
         protected String cls;
         protected boolean hasTableHead;
-        protected List<FactoryColumn> columns = new ArrayList<>();
+        protected List<Column> columns = new ArrayList<>();
 
         protected static final int MODE_ARRAY = 2;
         protected static final int MODE_BEAN = 1;
@@ -98,11 +97,11 @@ public class TableFactory {
             return hasTableHead;
         }
 
-        public List<FactoryColumn> getColumns() {
+        public List<Column> getColumns() {
             return columns;
         }
 
-        public T addColumn(FactoryColumn column) {
+        public T addColumn(Column column) {
             if (column == null) {
                 return (T) this;
             }
@@ -132,7 +131,7 @@ public class TableFactory {
             }
         }
 
-        protected Object getColumnValue(Object data, FactoryColumn gc) {
+        protected Object getColumnValue(Object data, Column gc) {
             Object value = null;
             if (data instanceof Object[] && gc.getDataColumnIndex() >= 0) {
                 int length = ((Object[]) data).length;
@@ -151,7 +150,7 @@ public class TableFactory {
             return value;
         }
 
-        protected void checkMode(FactoryColumn column) {
+        protected void checkMode(Column column) {
             int currMode = MODE_UNDEFINED;
             if (column.getDataColumnIndex() >= 0) { // 数组模式
                 currMode = MODE_ARRAY;
@@ -206,7 +205,7 @@ public class TableFactory {
                 headRow = new TR();
                 prototype.getTHead().add(headRow);
             }
-            for (FactoryColumn column : columns) {
+            for (Column column : columns) {
                 if (column.getWidth() != null) {//隐藏的字段不显示
                     prototype.addColumn(column);
                 }
@@ -231,7 +230,7 @@ public class TableFactory {
                     if (data == null) {
                         continue;
                     }
-                    for (FactoryColumn gc : columns) {
+                    for (Column gc : columns) {
                         dataRow.putData(gc.getField(), getColumnValue(data, gc));
                     }
 //                    index++;
@@ -269,7 +268,7 @@ public class TableFactory {
             //  需要填充thead
             int visableColumnCount = 0;//可见的布局行数
             String firstColumnField = null;
-            for (FactoryColumn column : columns) {
+            for (Column column : columns) {
                 if (column.getWidth() != null) {//隐藏的字段不显示
                     prototype.addColumn(column);
                 }
@@ -303,7 +302,7 @@ public class TableFactory {
                     if (data == null) {
                         continue;
                     }
-                    for (FactoryColumn gc : columns) {
+                    for (Column gc : columns) {
                         dataRow.putData(gc.getField(), getColumnValue(data, gc));
                     }
                 }
@@ -316,7 +315,7 @@ public class TableFactory {
      * 扩展的Column 包含如何取数据，如何快速设置表头。
      * 数据格式等。这些将不输出。
      */
-    public static class FactoryColumn extends Column {
+    public static class Column extends com.rongji.dfish.ui.auxiliary.Column {
 
         /**
          * 如果数据是List&lt;JavaBean&gt;则这里表示这个JavaBean的属性名。该列取这个属性的值
@@ -342,7 +341,7 @@ public class TableFactory {
          * @param beanProp 属性名
          * @return this
          */
-        public FactoryColumn setBeanProp(String beanProp) {
+        public Column setBeanProp(String beanProp) {
             this.beanProp = beanProp;
             return this;
         }
@@ -363,7 +362,7 @@ public class TableFactory {
          * @param dataColumnIndex int
          * @return this
          */
-        public FactoryColumn setDataColumnIndex(int dataColumnIndex) {
+        public Column setDataColumnIndex(int dataColumnIndex) {
             this.dataColumnIndex = dataColumnIndex;
             return this;
         }
@@ -391,7 +390,7 @@ public class TableFactory {
          * @see java.text.SimpleDateFormat
          * @see java.text.NumberFormat
          */
-        public FactoryColumn setDataFormat(String dataFormat) {
+        public Column setDataFormat(String dataFormat) {
             this.dataFormat = dataFormat;
             return this;
         }
@@ -412,7 +411,7 @@ public class TableFactory {
          * @param label the label to set
          * @return this
          */
-        public FactoryColumn setLabel(String label) {
+        public Column setLabel(String label) {
             this.label = label;
             return this;
         }
@@ -426,7 +425,7 @@ public class TableFactory {
          * @param label           String 在表头显示的标题
          * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          */
-        public FactoryColumn(int dataColumnIndex, String field, String label, String width) {
+        public Column(int dataColumnIndex, String field, String label, String width) {
             this.dataColumnIndex = dataColumnIndex;
             this.label = label;
             this.setField(field);
@@ -442,7 +441,7 @@ public class TableFactory {
          * @param label    String 在表头显示的标题
          * @param width    String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          */
-        public FactoryColumn(String beanProp, String field, String label, String width) {
+        public Column(String beanProp, String field, String label, String width) {
             this.beanProp = beanProp;
             this.label = label;
             this.setField(field);
@@ -458,8 +457,8 @@ public class TableFactory {
          * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn text(int dataColumnIndex, String field, String label, String width) {
-            return new FactoryColumn(dataColumnIndex, field, label, width);
+        public static Column text(int dataColumnIndex, String field, String label, String width) {
+            return new Column(dataColumnIndex, field, label, width);
         }
 
         /**
@@ -470,8 +469,8 @@ public class TableFactory {
          * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn text(int dataColumnIndex, String label, String width) {
-            return new FactoryColumn(dataColumnIndex, null, label, width);
+        public static Column text(int dataColumnIndex, String label, String width) {
+            return new Column(dataColumnIndex, null, label, width);
         }
 
         /**
@@ -483,8 +482,8 @@ public class TableFactory {
          * @param width    String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn text(String beanProp, String field, String label, String width) {
-            return new FactoryColumn(beanProp, field, label, width);
+        public static Column text(String beanProp, String field, String label, String width) {
+            return new Column(beanProp, field, label, width);
         }
 
         /**
@@ -495,8 +494,8 @@ public class TableFactory {
          * @param width String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn text(String field, String width) {
-            return new FactoryColumn(null, field, null, width);
+        public static Column text(String field, String width) {
+            return new Column(null, field, null, width);
         }
 
         /**
@@ -507,8 +506,8 @@ public class TableFactory {
          * @param format 文本格式转化
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn text(String field, String width, String format) {
-            return (FactoryColumn) new FactoryColumn(null, field, null, width).setFormat(format);
+        public static Column text(String field, String width, String format) {
+            return (Column) new Column(null, field, null, width).setFormat(format);
         }
 
         /**
@@ -518,8 +517,8 @@ public class TableFactory {
          * @param field    String 输出时显示的JSON属性名字。注意不要有重复
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn hidden(String beanProp, String field) {
-            return new FactoryColumn(beanProp, field, null, null);
+        public static Column hidden(String beanProp, String field) {
+            return new Column(beanProp, field, null, null);
         }
 
         /**
@@ -529,8 +528,8 @@ public class TableFactory {
          * @param field           String 输出时显示的JSON属性名字。注意不要有重复
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn hidden(int dataColumnIndex, String field) {
-            return new FactoryColumn(dataColumnIndex, field, null, null);
+        public static Column hidden(int dataColumnIndex, String field) {
+            return new Column(dataColumnIndex, field, null, null);
         }
 
         /**
@@ -540,7 +539,7 @@ public class TableFactory {
          * @param width 宽度
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn rowNum(String label, String width) {
+        public static Column rowNum(String label, String width) {
             return rowNum(label, null, width);
         }
 
@@ -552,8 +551,8 @@ public class TableFactory {
          * @param width 宽度
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn rowNum(String label, Integer start, String width) {
-            return (FactoryColumn) new FactoryColumn(null, null, label, width).setFormat("javascript:return " + new TableRowNum().setStart(start)).setAlign(Column.ALIGN_CENTER);
+        public static Column rowNum(String label, Integer start, String width) {
+            return (Column) new Column(null, null, label, width).setFormat("javascript:return " + new TableRowNum().setStart(start)).setAlign(com.rongji.dfish.ui.auxiliary.Column.ALIGN_CENTER);
         }
 
 
@@ -564,8 +563,8 @@ public class TableFactory {
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn tripleBox(String checkedField, String width) {
-            return (FactoryColumn) new FactoryColumn(null, null, null, width).setTripleBox(BOX_NAME, checkedField, null, null);
+        public static Column tripleBox(String checkedField, String width) {
+            return (Column) new Column(null, null, null, width).setTripleBox(BOX_NAME, checkedField, null, null);
         }
 
         /**
@@ -576,8 +575,8 @@ public class TableFactory {
          * @param width    String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn tripleBox(String beanProp, String field, String width) {
-            return (FactoryColumn) new FactoryColumn(beanProp, field, null, width).setTripleBox(BOX_NAME, field, null, null);
+        public static Column tripleBox(String beanProp, String field, String width) {
+            return (Column) new Column(beanProp, field, null, width).setTripleBox(BOX_NAME, field, null, null);
         }
 
         /**
@@ -588,8 +587,8 @@ public class TableFactory {
          * @param width           String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn tripleBox(int dataColumnIndex, String field, String width) {
-            return (FactoryColumn) new FactoryColumn(dataColumnIndex, field, null, width).setTripleBox(BOX_NAME, field, null, null);
+        public static Column tripleBox(int dataColumnIndex, String field, String width) {
+            return (Column) new Column(dataColumnIndex, field, null, width).setTripleBox(BOX_NAME, field, null, null);
         }
 
 
@@ -600,7 +599,7 @@ public class TableFactory {
          * @param width        String 列宽度，可以是 数字表示多少像素 百分比 如35% 表示页面宽度 或* 自动分配
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn radio(String checkedField, String width) {
+        public static Column radio(String checkedField, String width) {
 //		return new TableColumn(null, field, null, width).setModel(new Radio(CHECK_FIELD_NAME, null, null, null,null), "value").setAlign(TableColumn.ALIGN_CENTER);
             return radio(checkedField, width, null);
         }
@@ -613,7 +612,7 @@ public class TableFactory {
          * @param sync         是否与行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn radio(String checkedField, String width, String sync) {
+        public static Column radio(String checkedField, String width, String sync) {
             return radio(null, null, width, BOX_NAME, checkedField, null, sync);
         }
 
@@ -629,8 +628,8 @@ public class TableFactory {
          * @param sync         是否与行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn radio(String beanProp, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
-            return (FactoryColumn) new FactoryColumn(beanProp, field, null, width).setRadio(boxName, checkedField, required, sync);
+        public static Column radio(String beanProp, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
+            return (Column) new Column(beanProp, field, null, width).setRadio(boxName, checkedField, required, sync);
         }
 
         /**
@@ -645,8 +644,8 @@ public class TableFactory {
          * @param sync            是否与行点击动作同步
          * @return 本身，这样可以继续设置其他属性
          */
-        public static FactoryColumn radio(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
-            return (FactoryColumn) new FactoryColumn(dataColumnIndex, field, null, width).setRadio(boxName, checkedField, required, sync);
+        public static Column radio(int dataColumnIndex, String field, String width, String boxName, String checkedField, Boolean required, String sync) {
+            return (Column) new Column(dataColumnIndex, field, null, width).setRadio(boxName, checkedField, required, sync);
         }
 
     }

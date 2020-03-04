@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.layout.Form;
 
 public class TextTest {
 	public static void main(String[] args) {
-		Text t=new Text("a","b","c");
+		Text t=new Text("a","b","c").setRequired(true);
 		t.getLabel().setWidth(null);
 		System.out.println(t);
 		Form form =new Form("");

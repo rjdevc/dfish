@@ -9,6 +9,10 @@ public class DataOption implements Serializable {
     private String icon;
     private String status;
 
+    public DataOption(Object value) {
+        this.value = value;
+    }
+
     public DataOption(Object value, String text) {
         this.value = value;
         this.text = text;

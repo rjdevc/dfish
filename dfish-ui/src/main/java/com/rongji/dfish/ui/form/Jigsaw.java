@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.AbstractResultingNode;
+import com.rongji.dfish.ui.auxiliary.JigsawAuth;
+import com.rongji.dfish.ui.auxiliary.JigsawImg;
 
 /**
  * 拼图(滑动验证码)
@@ -10,8 +11,8 @@ import com.rongji.dfish.ui.AbstractResultingNode;
  */
 public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
-    private Img img;
-    private Auth auth;
+    private JigsawImg img;
+    private JigsawAuth auth;
     private String placeholder;
     private Boolean transparent;
 
@@ -24,7 +25,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * 拼图图片
      * @return JigsawImg
      */
-    public Img getImg() {
+    public JigsawImg getImg() {
         return img;
     }
 
@@ -33,7 +34,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * @param img JigsawImg
      * @return 本身，这样可以继续设置其他属性
      */
-    public Jigsaw setImg(Img img) {
+    public Jigsaw setImg(JigsawImg img) {
         this.img = img;
         return this;
     }
@@ -42,7 +43,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * 拼图验证
      * @return JigsawAuth
      */
-    public Auth getAuth() {
+    public JigsawAuth getAuth() {
         return auth;
     }
 
@@ -51,7 +52,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
      * @param auth JigsawAuth
      * @return 本身，这样可以继续设置其他属性
      */
-    public Jigsaw setAuth(Auth auth) {
+    public Jigsaw setAuth(JigsawAuth auth) {
         this.auth = auth;
         return this;
     }
@@ -97,34 +98,5 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
         throw new UnsupportedOperationException("value must be null.");
     }
 
-    /**
-     * 拼图验证
-     * @author lamontYu
-     * @date 2019-12-11
-     * @since 5.0
-     */
-    public static class Auth extends AbstractResultingNode<Auth> {
-
-        @Override
-        public String getType() {
-            return "JigsawAuth";
-        }
-
-    }
-
-    /**
-     * 拼图图片
-     * @author lamontYu
-     * @date 2019-12-11
-     * @since 5.0
-     */
-    public static class Img extends AbstractResultingNode<Img> {
-
-        @Override
-        public String getType() {
-            return "JigsawImg";
-        }
-
-    }
 
 }

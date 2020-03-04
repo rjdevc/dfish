@@ -14,11 +14,11 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	/**
 	 * 前节点
 	 */
-	public static final String TARGET_PREV = "prev";
+	public static final String HIDE_PREV = "prev";
 	/**
 	 * 后节点
 	 */
-	public static final String TARGET_NEXT = "next";
+	public static final String HIDE_NEXT = "next";
 	
 	private String text;
 	private String format;
@@ -26,7 +26,7 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	private String icon;
 	private String expandedIcon;
 	private String range;
-	private String target;
+	private String hide;
 
 	/**
 	 * 构造函数
@@ -129,17 +129,17 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	 * 指定展开收拢的节点位置。可选值有两个: "prev"(前节点), "next"(后节点)。
 	 * @return target
 	 */
-	public String getTarget() {
-		return target;
+	public String getHide() {
+		return hide;
 	}
 
 	/**
 	 * 指定展开收拢的节点位置。可选值有两个: "prev"(前节点), "next"(后节点)。
-	 * @param target 展开收拢的节点位置
+	 * @param hide 展开收拢的节点位置
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Split setTarget(String target) {
-		this.target = target;
+	public Split setHide(String hide) {
+		this.hide = hide;
 		return this;
 	}
 

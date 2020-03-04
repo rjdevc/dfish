@@ -333,6 +333,23 @@ public class Tree extends AbstractPubNodeContainer<Tree, Leaf, Leaf>
     }
 
     @Override
+    public void clearNodes() {
+        rootLeaf.clearNodes();
+    }
+
+    @Override
+    public Tree add(Leaf node) {
+        rootLeaf.add(node);
+        return this;
+    }
+
+    @Override
+    public Tree add(int index, Leaf node) {
+        rootLeaf.add(index, node);
+        return this;
+    }
+
+    @Override
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override

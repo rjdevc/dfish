@@ -1367,7 +1367,7 @@ W = define( 'Widget', function() {
 			//fixme: 用于调试定位
 		},
 		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
-		render: function( a, b ) {
+		_render: function( a, b ) {
 			// 没有父节点 则先加上父节点
 			if ( ! this.parentNode ) {
 				((a && _widget( a )) || _docView).add( this );
@@ -1386,6 +1386,10 @@ W = define( 'Widget', function() {
 				}
 				! c && p.insertHTML( s );
 			}
+		},
+		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
+		render: function( a, b ) {
+			this._render( a, b );
 			this.triggerAll( 'ready' );
 			! this._disposed && this.nodeIndex >= 0 && this.parentNode.trigger( 'nodeChange' );
 			return this;
@@ -1554,6 +1558,7 @@ _w_rsz_all = function() {
 	}
 	for ( var i in this.discNodes ) {
 		var n = this.discNodes[ i ];
+		//对话框内有-1和*元素共存时，需要有$()才能调整
 		if ( n.isDialogWidget && n.x.memory && ! n.$() )
 			! n.hasEvent( 'show._w_rsz_all' ) && n.addEventOnce( 'show._w_rsz_all', _w_rsz_all );
 		else
@@ -1573,7 +1578,7 @@ _w_size_rng = function( a, b, c ) {
 	return a;
 },
 // widget配置项里设置了style，又没有设置widthMinus和heightMinus，则由系统解析style，获取widthMinus和heightMinus的值
-// 如果设置了cls，而cls里有 padding margin border 等，就需要人工计算并设置widthMinus和heightMinus
+// 如果设置了cls，而cls里有 padding margin border 等，就需要业务计算并设置widthMinus和heightMinus
 //@ _c -> cls, _1 -> style, _2 -> widthMinus, _3 = heightMinus
 _size_fix = function( _c, _1, _2, _3 ) {
 	var m, p, d, _2 = _2 == N ? 0 : _2, _3 = _3 == N ? 0 : _3, r = cfg.border_cls_regexp, o = cfg.border_cls_only;
@@ -2017,9 +2022,9 @@ Scroll = define.widget( 'Scroll', {
 				} else if ( y === 'middle' ) {
 					t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
 				} else {
-					if ( f.bottom < c.top || f.top > c.bottom - br.scroll )
-						t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
-					else if ( f.top < c.top )
+					//if ( f.bottom < c.top || f.top > c.bottom - br.scroll )
+					//	t = f.top - d.top - (( c.height / 2 ) - ( f.height / 2 ));
+					if ( f.top < c.top )
 						t = a.scrollTop - c.top + f.top;
 					else if ( f.bottom > c.bottom - br.scroll )
 						t = a.scrollTop + f.bottom - c.bottom + br.scroll;
@@ -2372,7 +2377,7 @@ Section = define.widget( 'Section', {
 		body: {
 			ready: function() {
 				this.domready = T;
-				this.layout ? setTimeout( $.proxy( this, 'this.trigger("load")' ) ) : this.start();
+				this.layout ? setTimeout( $.proxy( this, 'this.trigger("load")' ) ) : this.start( F );
 			},
 			display: function() {
 				this.domready && this.start();
@@ -2385,7 +2390,7 @@ Section = define.widget( 'Section', {
 		// @implement
 		init_x: function( x ) {
 			this.x = x;
-			if ( ! this.isDisplay() )
+			if ( ! x.node && ! this.isDisplay() )
 				return;
 			_proto._init_x.call( this, x );
 			var t = x.preload && _getPreload( x.preload );
@@ -2415,6 +2420,12 @@ Section = define.widget( 'Section', {
 			if ( (this.x.node || this.x.nodes) && ! this.layout )
 				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
 		},
+		// 限制ready只触发一次。在frame中的view，layout调用render方法时会再次触发ready。理论上应该在_proto上做此限制，但出于性能考虑，目前做在这里
+		triggerAll1: function( e ) {
+			if ( e === 'ready' && this.layout )
+				return;
+			_proto.triggerAll.apply( this, arguments );
+		},
 		hasCssRes: function() {
 			var a = this.type_view && _viewResources[ this.path ];
 			if ( a ) {
@@ -2425,13 +2436,14 @@ Section = define.widget( 'Section', {
 			}
 			return F;
 		},
-		start: function() {
+		// init初始化没有layout的情况下，再次开始寻求加载layout
+		start: function( re ) {
 			if ( !this.x.src && !this.x.template )
 				return;
 			if ( ! this._x_ini ) {
 				this.init_x( this.x );
 				this.repaint();
-				this.layout && this.showLayout();
+				this.layout && this.showLayout( N, re );
 			}
 			! this.layout && this.isDisplay() && this.load();
 		},
@@ -2447,13 +2459,15 @@ Section = define.widget( 'Section', {
 			}
 			return r;
 		},
-		showLayout: function( tar ) {
+		// tar -> 目标ID, re -> ready event?
+		showLayout: function( tar, re ) {
 			if ( tar ) {
 				for ( var i = 0, b = this._getReplaceTargets( this.x.node, tar ); i < b.length; i ++ )
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
 			} else if ( this.layout ) {
 				this.showLoading( F );
-				this.layout.render();
+				this.layout._render();
+				re !== F && this.layout.triggerAll( 'ready' );
 				this.trigger( 'load' );
 			}
 			this.removeClass( 'z-loading' );
@@ -2505,16 +2519,6 @@ Layout = define.widget( 'Layout', {
 	Prototype: {
 		x_childtype: function( t ) {
 			return this.parentNode.x_childtype ? this.parentNode.x_childtype( t ) : t;
-		},
-		// 限制ready只触发一次
-		// 原因：在frame中的view，layout调用render方法时会再次触发ready。理论上应该在_proto上做此限制，但出于性能考虑，目前做在这里
-		triggerAll: function( e ) {
-			if ( e === 'ready' ) {
-				if ( this.domready )
-					return;
-				this.domready = T;
-			}
-			_proto.triggerAll.apply( this, arguments );
 		}
 	}
 } ),
@@ -2734,8 +2738,8 @@ DocView = define.widget( 'DocView', {
 		$.attach( window, 'resize', f = function( e, w, h ) {
 			w = w || self.width(); h = h || self.height();
 			if ( self._wd !== w || self._ht !== h ) {
-				self.resize( self._wd = w, self._ht = h );
 				Dialog.cleanPop();
+				self.resize( self._wd = w, self._ht = h );
 			}
 		} );
 		if ( ie ) { // ie7监视缩放
@@ -2997,7 +3001,7 @@ Html = define.widget( 'Html', {
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'vAlign' );
 			if ( v )
-				s = '<i class=f-vi-' + v + '></i><div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>';
+				s = '<i class=f-vi-' + v + '></i><span id=' + this.id + 'vln style="vertical-align:' + v + '">' + s + '</span>';
 			return s;
 		}
 	}
@@ -3046,6 +3050,14 @@ Split = define.widget( 'Split', {
 				if ( w <= 1 ) $.classAdd( this.$(), 'z-0' );
 				this.x.range && this.isExpanded() && $.classAdd( this.$(), 'z-expanded' );
 				ie7 && this.css( 'bg', 'backgroundColor', this.$().currentStyle.backgroundColor );
+			},
+			mouseOver: {
+				occupy: T,
+				method: function() { this.addClass( 'z-hv' ) }
+			},
+			mouseOut: {
+				occupy: T,
+				method: function() { this.removeClass( 'z-hv' ) }
 			}
 		}
 	},
@@ -3053,11 +3065,11 @@ Split = define.widget( 'Split', {
 		className: 'w-split',
 		// 拖动调整大小
 		drag: function( a, e ) {
-			var r = $.bcr( e.srcElement.parentNode ), o = this.isExpanded(), p = this.prev(), n = this.next(), d = this.x.range.split( ',' ), j = _number( d[ 0 ] ), k = _number( d[ 1 ] ),
-				h = this.parentNode.type_horz, t = this.x.target == 'next', cln = h ? 'clientX' : 'clientY', pos = h ? 'left' : 'top', x = e[ cln ], self = this, b, c, f, g, h,
+			var self = this, r = $.bcr( this.$() ), o = this.isExpanded(), p = this.prev(), n = this.next(), d = this.x.range.split( ',' ), j = _number( d[ 0 ] ), k = _number( d[ 1 ] ),
+				th = this.parentNode.type_horz, t = this.x.hide === 'next', cln = th ? 'clientX' : 'clientY', pos = th ? 'left' : 'top', x = e[ cln ], b, c, f, g, h,
 				down = function() {
 					h = $.db( '<div style="position:absolute;top:0;bottom:0;left:0;right:0;z-index:1"></div>' );
-					b = $.db( '<div style="position:absolute;width:' + (h ? 5 : r.width) + 'px;height:' + (h ? r.height : 5) + 'px;left:' + r.left + 'px;top:' + r.top + 'px;background:#bbb;opacity:.6;z-index:1"></div>' );
+					b = $.db( '<div style="position:absolute;width:' + (r.width) + 'px;height:' + (r.height) + 'px;left:' + r.left + 'px;top:' + r.top + 'px;background:#bbb;opacity:.6;z-index:1"></div>' );
 				};
 			//$.stop( e );
 			down();
@@ -3103,27 +3115,28 @@ Split = define.widget( 'Split', {
 				n = this.isExpanded();
 			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
 			$.classAdd( this.$(), 'z-expanded', n );
+			this.trigger( 'mouseOut' );
 			this.fixHide();
 		},
 		fixHide: function( n ) {
-			var r = this[ this.x.target || 'prev' ]();
+			var r = this[ this.x.hide || 'prev' ]();
 			r.addClass( 'f-hide', !this.isExpanded() && (this.major() <= r.widthMinus()) );
 		},
 		getMajorMin: function() {
-			return (this.x.range || '').split( ',' )[ this.x.target === 'next' ? 1 : 0 ];
+			return (this.x.range || '').split( ',' )[ this.x.hide === 'next' ? 1 : 0 ];
 		},
 		isExpanded: function() {
 			return this.major() > this.getMajorMin();
 		},
 		major: function( a ) {
-			return _splitSize( this[ this.x.target || 'prev' ](), a );
+			return _splitSize( this[ this.x.hide || 'prev' ](), a );
 		},
 		minor: function( a ) {
-			return _splitSize( this[ this.x.target === 'next' ? 'prev' : 'next' ](), a );
+			return _splitSize( this[ this.x.hide === 'next' ? 'prev' : 'next' ](), a );
 		},
 		html_icon: function( a ) {
 			a = a == N ? this.isExpanded() : a;
-			return $.image( ( ! a && this.x.expandedIcon) || this.x.icon, { id: this.id + 'i', cls: '_' + (this.x.target || 'prev'), click: evw + '.toggle()' } );
+			return $.image( (a && this.x.expandedIcon) || this.x.icon || this.x.expandedIcon, { id: this.id + 'i', cls: '_' + (this.x.hide || 'prev'), click: evw + '.toggle()' } );
 		},
 		html_nodes: function() {
 			var w = this.width(), h = this.height(), p = this.parentNode, z = p.type_horz,
@@ -3133,8 +3146,8 @@ Split = define.widget( 'Split', {
 					(! z || w >= 5 ? '100%' : '5px') + ';margin-' + (z ? 'left' : 'top') + ':' + ( (z ? w : h) < 5 ? ((z ? w : h) - 5) / 2 : 0 ) + 'px;z-index:1;"></div>';
 				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.major();
 			}
-			if ( this.x.icon )
-				s += '<table cellspacing=0 cellpadding=0 border=0 width=100% height=100%><tr><td align=' + ( this.x.target === 'next' ? 'right' : 'left' ) + '>' + this.html_icon() + '</table>';
+			if ( this.x.icon || this.x.expandedIcon )
+				s += '<table cellspacing=0 cellpadding=0 border=0 width=100% height=100%><tr><td align=center>' + this.html_icon() + '</table>';
 			return s + '</div>';
 		}
 	}
@@ -4427,6 +4440,9 @@ Dialog = define.widget( 'Dialog', {
 				d = this.x.args && this.x.args[ a ];
 			return d !== U ? d : this.parentNode.closestData( a );
 		},
+		getContentNode: function() {
+			return this.layout && this.layout[ 0 ];
+		},
 		getContentView: function() {
 			return this.contentView || (this.contentView = _getContentView( this ));
 		},
@@ -4700,9 +4716,9 @@ Dialog = define.widget( 'Dialog', {
 			this._snapCls( F );
 			if ( this.x.cache )
 				this.$() && ($.hide( this.$() ), (this.x.cover && $.hide( this.$( 'cvr' ) )), this.vis = F);
-			else if ( this.x.memory )
+			else if ( this.x.memory ) {
 				 this._hide();
-			else {
+			} else {
 				this.remove();
 			}
 		},
@@ -4717,8 +4733,9 @@ Dialog = define.widget( 'Dialog', {
 						n = d == 1 || d == 2 || d === 't' ? { top: -h } : d == 3 || d == 4 || d === 'r' ? { right: -w } : d == 5 || d == 6 || d === 'b' ? { bottom: -h } : d == 7 || d == 8 || d === 'l' ? { left: -w } : N;
 					$.classAdd( this.$(), 'z-closing' ); // z-closing生成遮盖层，避免在消失过程中内容部分再被点击
 					n ? Q( this.$() ).animate( n, 150, function() { self.removeElem() } ) : this.removeElem();
-				} else
+				} else {
 					this.removeElem();
+				}
 				this.vis = F;
 			}
 		},
@@ -4954,7 +4971,7 @@ Progress = define.widget( 'Progress', {
 			a === F && this.removeElem( 'loading' );
 		},
 		showLayout: function() {
-			Section.prototype.showLayout.call( this );
+			Section.prototype.showLayout.apply( this, arguments );
 			var d = $.dialog( this );
 			d && d.type === 'Loading' && d.axis();
 		},
@@ -4975,13 +4992,13 @@ Progress = define.widget( 'Progress', {
 		getSrc: function() {
 			return this._guide ? this.formatStr( this._guide, this.x.args, T ) : Section.prototype.getSrc.call( this );
 		},
-		start: function() {
+		start: function( re ) {
 			if ( !this.x.src && !this.x.template )
 				return;
 			if ( ! this._x_ini ) {
 				this.init_x( this.x );
 				this.repaint();
-				this.layout && this.showLayout();
+				this.layout && this.showLayout( re );
 			}
 			! this.layout && this.isDisplay() && this.load( N, function() { delete this._guide; this._load() } );
 		},
@@ -5347,8 +5364,7 @@ Label = define.widget( 'Label', {
 			var t = this.html_format();
 			if ( typeof t === _OBJ )
 				t = this.add( t, -1 ).html();
-			this.parentNode.isRequired() && (t = this.html_star() + '<span class=f-va>' + t + '</span>');
-			return t + (this.x.suffix || '');
+			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span class=f-va>' + t + '</span>' + (this.x.suffix || '');
 		},
 		html_bg: function() {
 			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
@@ -5920,20 +5936,29 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 	},
 	Extend: AbsForm,
 	Listener: {
-		range: 'option'
+		range: 'option',
+		body: {
+			/*ready: function() {
+				if ( this.targets && this[ 0 ].attr( 'width' ) == -1 ) {
+					var w = 0;
+					for ( var i = 0; i < this.length; i ++ )
+						w = Math.max( this[ i ].width(), w );
+					for ( var i = 0; i < this.length; i ++ )
+						this[ i ].attr( 'width', w );
+					_w_rsz_all.call( this );
+				}
+			}*/
+		}
 	},
 	Prototype: {
 		type_horz: T,
 		isBoxGroup: T,
 		x_childtype: $.rt( 'CheckBox' ),
-		/*x_nodes: function() {
-			return this.x.nodes || [ { value: this.x.value, text: this.x.text, checked: this.x.checked, target: this.x.target } ];
-		},*/
 		scaleWidth: function( a, m ) {
 			if ( a.nodeIndex < 0 && a != this.label ) {
 				var i = $.arrIndex( this.targets, a ),
 					w = a.attr( 'width' ),
-					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() : 0, w == N ? '*' : w < 0 ? '*' : w ] );
+					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() || 0 : 0, w == N ? '*' : w < 0 ? '*' : w ] );
 				return c[ 1 ];
 			} else {
 				return _proto.scaleWidth.call( this, a, m, a == this.label ? U : this.formWidth() );
@@ -6014,7 +6039,7 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 		},
 		html_nodes: function() {
 			if ( this.targets ) {
-				for ( var i = 0, s = '', l = Math.max( this.length, this.x.targets.length ); i < l; i ++ )
+				for ( var i = 0, s = '', l = Math.max( this.length, this.targets.length ); i < l; i ++ )
 					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i == 0 ? ' z-firt' : i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)>' + (this[ i ] ? this[ i ].html() : '') + (this.targets[ i ] ? this.targets[ i ].html() : '') + '</div>';
 				return s;
 			} else
@@ -7569,8 +7594,8 @@ DropBox = define.widget( 'DropBox', {
 		fixCheckAll: function() {
 			var q = Q( this._dropper.$() ).find( '._o.z-on' );
 		},
-		choose: function( e ) {
-			var d = Q( e.srcElement ).closest( '._o' ), v = '' + this.x.nodes[ d.attr( '_i' ) ].value;
+		choose: function( a ) {
+			var d = Q( a ).closest( '._o' ), v = '' + this.x.nodes[ d.attr( '_i' ) ].value;
 			if ( this.x.multiple || this.x.cancelable ) {
 				d.toggleClass( 'z-on' );
 			}
@@ -7603,8 +7628,36 @@ DropBox = define.widget( 'DropBox', {
 				this.focus();
 				this._dropper = this.exec( { type: 'Dialog', ownproperty: T, minWidth: this.formWidth() + 2, maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ), widthMinus: 2, heightMinus: 2, id: this.id,
 					cls: 'w-dropbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), autoHide: T,
-					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }, node: { type: 'Html', scroll: T, text: this.html_options(), on: { ready: function(){var t=$.get('.z-on',this.$());t&&this.scrollTop(t,'middle',N,t.offsetHeight);} } },
-					on: { close: 'this.commander.focus(!1);this.commander._dropper=null;' } } );
+					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }, node: { type: 'Html', id: 'list', scroll: T, text: this.html_options() },
+					on: { load: 'this.commander.listenPop(!0)', close: 'this.commander.listenPop(!1)' }
+				} );
+			}
+		},
+		listenPop: function( a ) {
+			if ( a ) {
+				var c = this._dropper.getContentNode(), d = $.get( '.z-on', c.$() ), self = this;
+				d && c.scrollTop( d, 'middle', N, d.offsetHeight );
+				! this.x.multiple && Q( document ).on( 'keydown.' + this.id, function( e ) {
+					if ( e.keyCode === 38 || e.keyCode === 40 ) {
+						var g = Q( '.z-on', c.$() ), h;
+						if ( g.length ) {
+							h = g[ e.keyCode === 38 ? 'prev' : 'next' ]();
+							h.length && h.addClass( 'z-on' ).end().removeClass( 'z-on' );
+						} else {
+							h = Q( '._o:' + (e.keyCode === 38 ? 'last' : 'first'), c.$() );
+							h.addClass( 'z-on' );
+						}
+						h.length && c.scrollTop( h[ 0 ], 'auto' );
+						e.preventDefault();
+					} else if ( e.keyCode === 13 ) {
+						var g = $.get( '.z-on', c.$() );
+						g && self.choose( g );
+					}
+				} );
+			} else {
+				this.focus( F );
+				this._dropper = N;
+				! this.x.multiple && Q( document ).off( 'keydown.' + this.id );
 			}
 		},
 		showLoading: function( a ) {
@@ -7647,7 +7700,7 @@ DropBox = define.widget( 'DropBox', {
 				s.push( '<div class="_o f-fix' + (o[ i ].value && $.idsAny( v, o[ i ].value ) ? ' z-on' : '') + '" _i="' + i + '"' + (o[ i ].checkAll ? ' _all=1' : '') +
 				(this.attr( 'tip' ) ? this.prop_title( o[ i ].text ) : '') + _event_zhover + '>' + this.html_li( o[ i ] ) + '</div>' );
 			}
-			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(event)>' + s.join( '' ) + '</div>';
+			return '<div id=' + this.id + 'opts class=_drop onclick=' + evw + '.choose(event.srcElement)>' + s.join( '' ) + '</div>';
 		},
 		html_btn: function() {
 			return '<em class=f-boxbtn><i class=f-vi></i>' + $.arrow( mbi ? 'b3' : 'b2' ) + '</em>';
@@ -7842,7 +7895,7 @@ ComboBox = define.widget( 'ComboBox', {
 							if ( k === 13 && t != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
 								this.suggest( t );
 							} else if ( d.vis && (m = this.store( d )) ) {
-								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : t ? m.keyUp( k ) : this.closePop();
+								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : t || d == this.dropper ? m.keyUp( k ) : this.closePop();
 							} else
 								_enter_submit( k, this );
 						} else if ( !(e.ctrlKey && k === 86) && !(k === 17) ) { //86: ctrl+v, 17: Ctrl
@@ -8196,9 +8249,10 @@ ComboBox = define.widget( 'ComboBox', {
 			if ( this.usa() ) {
 				var d = this.dropper, b = d && d.vis;
 				this.closePop();
-				//this.focus();
-				if ( ! b )
+				if ( ! b ) {
+					this.focus();
 					(d || (this.dropper = this.createPop( this.x.drop ))).show();
+				}
 			}
 		},
 		pick: function() {
