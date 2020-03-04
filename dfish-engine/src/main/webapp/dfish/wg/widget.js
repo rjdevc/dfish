@@ -1367,7 +1367,7 @@ W = define( 'Widget', function() {
 			//fixme: 用于调试定位
 		},
 		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
-		render: function( a, b ) {
+		_render: function( a, b ) {
 			// 没有父节点 则先加上父节点
 			if ( ! this.parentNode ) {
 				((a && _widget( a )) || _docView).add( this );
@@ -1386,6 +1386,10 @@ W = define( 'Widget', function() {
 				}
 				! c && p.insertHTML( s );
 			}
+		},
+		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
+		render: function( a, b ) {
+			this._render( a, b );
 			this.triggerAll( 'ready' );
 			! this._disposed && this.nodeIndex >= 0 && this.parentNode.trigger( 'nodeChange' );
 			return this;
@@ -1554,6 +1558,7 @@ _w_rsz_all = function() {
 	}
 	for ( var i in this.discNodes ) {
 		var n = this.discNodes[ i ];
+		//对话框内有-1和*元素共存时，需要有$()才能调整
 		if ( n.isDialogWidget && n.x.memory && ! n.$() )
 			! n.hasEvent( 'show._w_rsz_all' ) && n.addEventOnce( 'show._w_rsz_all', _w_rsz_all );
 		else
@@ -1573,7 +1578,7 @@ _w_size_rng = function( a, b, c ) {
 	return a;
 },
 // widget配置项里设置了style，又没有设置widthMinus和heightMinus，则由系统解析style，获取widthMinus和heightMinus的值
-// 如果设置了cls，而cls里有 padding margin border 等，就需要人工计算并设置widthMinus和heightMinus
+// 如果设置了cls，而cls里有 padding margin border 等，就需要业务计算并设置widthMinus和heightMinus
 //@ _c -> cls, _1 -> style, _2 -> widthMinus, _3 = heightMinus
 _size_fix = function( _c, _1, _2, _3 ) {
 	var m, p, d, _2 = _2 == N ? 0 : _2, _3 = _3 == N ? 0 : _3, r = cfg.border_cls_regexp, o = cfg.border_cls_only;
@@ -2372,7 +2377,7 @@ Section = define.widget( 'Section', {
 		body: {
 			ready: function() {
 				this.domready = T;
-				this.layout ? setTimeout( $.proxy( this, 'this.trigger("load")' ) ) : this.start();
+				this.layout ? setTimeout( $.proxy( this, 'this.trigger("load")' ) ) : this.start( F );
 			},
 			display: function() {
 				this.domready && this.start();
@@ -2385,7 +2390,7 @@ Section = define.widget( 'Section', {
 		// @implement
 		init_x: function( x ) {
 			this.x = x;
-			if ( ! this.isDisplay() )
+			if ( ! x.node && ! this.isDisplay() )
 				return;
 			_proto._init_x.call( this, x );
 			var t = x.preload && _getPreload( x.preload );
@@ -2415,6 +2420,12 @@ Section = define.widget( 'Section', {
 			if ( (this.x.node || this.x.nodes) && ! this.layout )
 				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
 		},
+		// 限制ready只触发一次。在frame中的view，layout调用render方法时会再次触发ready。理论上应该在_proto上做此限制，但出于性能考虑，目前做在这里
+		triggerAll1: function( e ) {
+			if ( e === 'ready' && this.layout )
+				return;
+			_proto.triggerAll.apply( this, arguments );
+		},
 		hasCssRes: function() {
 			var a = this.type_view && _viewResources[ this.path ];
 			if ( a ) {
@@ -2425,13 +2436,14 @@ Section = define.widget( 'Section', {
 			}
 			return F;
 		},
-		start: function() {
+		// init初始化没有layout的情况下，再次开始寻求加载layout
+		start: function( re ) {
 			if ( !this.x.src && !this.x.template )
 				return;
 			if ( ! this._x_ini ) {
 				this.init_x( this.x );
 				this.repaint();
-				this.layout && this.showLayout();
+				this.layout && this.showLayout( N, re );
 			}
 			! this.layout && this.isDisplay() && this.load();
 		},
@@ -2447,13 +2459,15 @@ Section = define.widget( 'Section', {
 			}
 			return r;
 		},
-		showLayout: function( tar ) {
+		// tar -> 目标ID, re -> ready event?
+		showLayout: function( tar, re ) {
 			if ( tar ) {
 				for ( var i = 0, b = this._getReplaceTargets( this.x.node, tar ); i < b.length; i ++ )
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
 			} else if ( this.layout ) {
 				this.showLoading( F );
-				this.layout.render();
+				this.layout._render();
+				re !== F && this.layout.triggerAll( 'ready' );
 				this.trigger( 'load' );
 			}
 			this.removeClass( 'z-loading' );
@@ -2502,26 +2516,9 @@ Layout = define.widget( 'Layout', {
 		this.rootNode = p;
 		W.apply( this, arguments );
 	},
-	Listener: {
-		body: {
-			domHide: function() {
-				this.domready = N;
-			}
-		}
-	},
 	Prototype: {
 		x_childtype: function( t ) {
 			return this.parentNode.x_childtype ? this.parentNode.x_childtype( t ) : t;
-		},
-		// 限制ready只触发一次
-		// 原因：在frame中的view，layout调用render方法时会再次触发ready。理论上应该在_proto上做此限制，但出于性能考虑，目前做在这里
-		triggerAll: function( e ) {
-			if ( e === 'ready' ) {
-				if ( this.domready )
-					return;
-				this.domready = T;
-			}
-			_proto.triggerAll.apply( this, arguments );
 		}
 	}
 } ),
@@ -4720,7 +4717,6 @@ Dialog = define.widget( 'Dialog', {
 				this.$() && ($.hide( this.$() ), (this.x.cover && $.hide( this.$( 'cvr' ) )), this.vis = F);
 			else if ( this.x.memory ) {
 				 this._hide();
-				 this.triggerAll( 'domHide' );
 			} else {
 				this.remove();
 			}
@@ -4974,7 +4970,7 @@ Progress = define.widget( 'Progress', {
 			a === F && this.removeElem( 'loading' );
 		},
 		showLayout: function() {
-			Section.prototype.showLayout.call( this );
+			Section.prototype.showLayout.apply( this, arguments );
 			var d = $.dialog( this );
 			d && d.type === 'Loading' && d.axis();
 		},
@@ -4995,13 +4991,13 @@ Progress = define.widget( 'Progress', {
 		getSrc: function() {
 			return this._guide ? this.formatStr( this._guide, this.x.args, T ) : Section.prototype.getSrc.call( this );
 		},
-		start: function() {
+		start: function( re ) {
 			if ( !this.x.src && !this.x.template )
 				return;
 			if ( ! this._x_ini ) {
 				this.init_x( this.x );
 				this.repaint();
-				this.layout && this.showLayout();
+				this.layout && this.showLayout( re );
 			}
 			! this.layout && this.isDisplay() && this.load( N, function() { delete this._guide; this._load() } );
 		},
@@ -5939,20 +5935,29 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 	},
 	Extend: AbsForm,
 	Listener: {
-		range: 'option'
+		range: 'option',
+		body: {
+			/*ready: function() {
+				if ( this.targets && this[ 0 ].attr( 'width' ) == -1 ) {
+					var w = 0;
+					for ( var i = 0; i < this.length; i ++ )
+						w = Math.max( this[ i ].width(), w );
+					for ( var i = 0; i < this.length; i ++ )
+						this[ i ].attr( 'width', w );
+					_w_rsz_all.call( this );
+				}
+			}*/
+		}
 	},
 	Prototype: {
 		type_horz: T,
 		isBoxGroup: T,
 		x_childtype: $.rt( 'CheckBox' ),
-		/*x_nodes: function() {
-			return this.x.nodes || [ { value: this.x.value, text: this.x.text, checked: this.x.checked, target: this.x.target } ];
-		},*/
 		scaleWidth: function( a, m ) {
 			if ( a.nodeIndex < 0 && a != this.label ) {
 				var i = $.arrIndex( this.targets, a ),
 					w = a.attr( 'width' ),
-					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() : 0, w == N ? '*' : w < 0 ? '*' : w ] );
+					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() || 0 : 0, w == N ? '*' : w < 0 ? '*' : w ] );
 				return c[ 1 ];
 			} else {
 				return _proto.scaleWidth.call( this, a, m, a == this.label ? U : this.formWidth() );
@@ -6033,7 +6038,7 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 		},
 		html_nodes: function() {
 			if ( this.targets ) {
-				for ( var i = 0, s = '', l = Math.max( this.length, this.x.targets.length ); i < l; i ++ )
+				for ( var i = 0, s = '', l = Math.max( this.length, this.targets.length ); i < l; i ++ )
 					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i == 0 ? ' z-firt' : i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)>' + (this[ i ] ? this[ i ].html() : '') + (this.targets[ i ] ? this.targets[ i ].html() : '') + '</div>';
 				return s;
 			} else
