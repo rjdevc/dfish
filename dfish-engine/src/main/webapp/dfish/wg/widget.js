@@ -3136,7 +3136,7 @@ Split = define.widget( 'Split', {
 		},
 		html_icon: function( a ) {
 			a = a == N ? this.isExpanded() : a;
-			return $.image( ( ! a && this.x.expandedIcon) || this.x.icon, { id: this.id + 'i', cls: '_' + (this.x.hide || 'prev'), click: evw + '.toggle()' } );
+			return $.image( (a && this.x.expandedIcon) || this.x.icon || this.x.expandedIcon, { id: this.id + 'i', cls: '_' + (this.x.hide || 'prev'), click: evw + '.toggle()' } );
 		},
 		html_nodes: function() {
 			var w = this.width(), h = this.height(), p = this.parentNode, z = p.type_horz,
@@ -3146,7 +3146,7 @@ Split = define.widget( 'Split', {
 					(! z || w >= 5 ? '100%' : '5px') + ';margin-' + (z ? 'left' : 'top') + ':' + ( (z ? w : h) < 5 ? ((z ? w : h) - 5) / 2 : 0 ) + 'px;z-index:1;"></div>';
 				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.major();
 			}
-			if ( this.x.icon )
+			if ( this.x.icon || this.x.expandedIcon )
 				s += '<table cellspacing=0 cellpadding=0 border=0 width=100% height=100%><tr><td align=center>' + this.html_icon() + '</table>';
 			return s + '</div>';
 		}
