@@ -666,26 +666,50 @@ img {
 }
 
 .i-split-left {
-    background: url("img/ico_split.png") 0 0;
-    width: 10px;
-    height: 30px;
-    position: relative;
-}
+     background: url("img/split-horizontal.png") 0 0;
+     width: 10px;
+     height: 30px;
+     position: relative;
+ }
 
 .w-split.z-hv .i-split-left {
-    background: url("img/ico_split.png") 0 -30px;
+    background: url("img/split-horizontal.png") 0 -30px;
 }
 
 .i-split-right {
-    background: url("img/ico_split.png") -30px 0;
+    background: url("img/split-horizontal.png") -30px 0;
     width: 10px;
     height: 30px;
     position: relative;
 }
 
 .w-split.z-hv .i-split-right {
-    background: url("img/ico_split.png") -30px -30px;
+    background: url("img/split-horizontal.png") -30px -30px;
 }
+
+
+.i-split-top {
+    background: url("img/split-vertical.png") 0 0;
+    width: 30px;
+    height: 10px;
+    position: relative;
+}
+
+.w-split.z-hv .i-split-top {
+    background: url("img/split-vertical.png") -30px 0;
+}
+
+.i-split-bottom {
+    background: url("img/split-vertical.png") 0 -10px;
+    width: 30px;
+    height: 10px;
+    position: relative;
+}
+
+.w-split.z-hv .i-split-bottom {
+    background: url("img/split-vertical.png") -30px -10px;
+}
+
 
 /**↓常用操作图标↓**/
 .x-grid-operation i {
