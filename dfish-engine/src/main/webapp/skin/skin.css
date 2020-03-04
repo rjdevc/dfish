@@ -672,7 +672,7 @@ img {
     position: relative;
 }
 
-.z-hv .i-split-left {
+.w-split.z-hv .i-split-left {
     background: url("img/ico_split.png") 0 -30px;
 }
 
@@ -683,7 +683,7 @@ img {
     position: relative;
 }
 
-.z-hv .i-split-right {
+.w-split.z-hv .i-split-right {
     background: url("img/ico_split.png") -30px -30px;
 }
 

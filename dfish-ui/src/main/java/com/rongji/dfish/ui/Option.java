@@ -18,13 +18,21 @@ public class Option extends AbstractNode<Option> implements Statusful<Option>{
 	/**
 	 * 构造函数 
 	 * @param value 值
+	 */
+	public Option(Object value) {
+		this.value = value;
+	}
+
+	/**
+	 * 构造函数
+	 * @param value 值
 	 * @param text 显示文本
 	 */
 	public Option(Object value, String text) {
 		this.value = value;
 		this.text = text;
 	}
-	
+
 	/**
 	 * 构造函数
 	 * @param value 值
