@@ -188,6 +188,9 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
         public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
             Object v = null;
             try {
+                if(!Modifier.isPublic(getterMethod.getDeclaringClass().getModifiers())){
+                    getterMethod.setAccessible(true);
+                }
                 v = getterMethod.invoke(o);
             } catch (Exception ex) {/* 如果属性获取没权限等情况这里不做任何记录，否则日志会很长 */}
             if (v == null) {//为空则跳出
