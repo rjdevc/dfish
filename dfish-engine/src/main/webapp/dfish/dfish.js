@@ -1241,7 +1241,7 @@ _attach = $.attach = function( a, b, c, d ) {
 		for ( var i = 0, d = b.split( ' ' ); i < d.length; i ++ )
 			d[ i ] && _attach( a, d[ i ], c );
 	}
-	ie ? a.attachEvent( 'on' + b, c ) : a.addEventListener( b, c, F );
+	a.addEventListener ? a.addEventListener( b, c, F ) : a.attachEvent( 'on' + b, c );
 },
 // a -> el, b -> event type, c -> fn
 _detach = $.detach = function( a, b, c, d ) {
@@ -1781,7 +1781,7 @@ function _compatDOM() {
 	// 增加 event 的支持
 	if ( win.dispatchEvent ) {
 		_attach( win, 'eventemu', function( e ) {
-			if ( ! e.srcElement ) {
+			if ( e.srcElement === U ) {
 				var S = function( n ) { while (n && n.nodeType !== 1) n = n.parentNode; return n };
 				Event.prototype.__defineGetter__( 'srcElement',  function() { return S( this.target ) } );
 				Event.prototype.__defineGetter__( 'fromElement', function() { return S( this.type === 'mouseover' ? this.relatedTarget : this.type === 'mouseout' ? this.target : U ) } );
@@ -2246,13 +2246,15 @@ _merge( $, {
 	// @a -> move fn, b -> up fn
 	moveup: function( a, b ) {
 		var d, f, m = function ( e ) { e.preventDefault(); };
-		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
-		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
+		ie && _attach( doc, 'selectstart', f = $.rt( F ) );
+		_classAdd( cvs, 'f-unsel' );
+		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', a, T );
 		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
-			b && b( ie ? Q.event.fix( e ) : e );
-			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', d, T );
+			b && b( e );
+			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', a, T );
 			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
-			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
+			ie && _detach( doc, 'selectstart', f );
+			_classRemove( cvs, 'f-unsel' );
 			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
 		}, T );
 		// 业务拖动时禁用浏览器默认的拖动效果

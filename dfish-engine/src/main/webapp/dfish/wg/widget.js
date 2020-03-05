@@ -11271,8 +11271,8 @@ AbsTable = define.widget( 'AbsTable', {
 				if ( b ) {
 					var h = b.scrollHeight();
 					f.holdBottom = !!h;
-					f.css( 'pad', { height: h ? f.$().offsetHeight : '', display: h ? 'block' : 'none', overflow: h ? 'hidden' : 'visible' } );
-					f.addClass( 'z-fixed', !!h );
+					f.css( 'pad', { height: h ? f.$().offsetHeight -1 : '', display: h ? 'block' : 'none', overflow: h ? 'hidden' : 'visible' } );
+					f.addClass( 'z-cover', !!h );
 					h ? $.append( b === r ? this.$() : this.body.$(), f.$() ) : $.before( f.$( 'pad' ), f.$() );
 				}
 			}
