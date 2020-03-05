@@ -16,11 +16,11 @@ import java.util.Date;
  */
 public class LobDao4Hibernate extends FrameworkDao4Hibernate<PubLob, String> implements LobDao {
     @Override
-    public int updateContent(String lobId, String lobContent, Date operTime) {
+    public int updateLobData(String lobId, byte[] lobData, Date operTime) {
         if (Utils.isEmpty(lobId)) {
             return 0;
         }
-        return bulkUpdate("UPDATE PubLob t SET t.lobContent=?,t.operTime=? WHERE t.lobId=?", new Object[]{lobContent, operTime, lobId});
+        return bulkUpdate("UPDATE PubLob t SET t.lobData=?,t.operTime=? WHERE t.lobId=?", new Object[]{lobData, operTime, lobId});
     }
 
     @Override

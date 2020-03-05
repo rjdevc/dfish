@@ -17,14 +17,24 @@ import java.util.*;
 public interface LobDao extends FrameworkDao<PubLob, String> {
 
     /**
-     * 更新lob内容
+     * 更新lob内容(字符串)
      *
      * @param lobId      编号
      * @param lobContent 内容
      * @param operTime 操作时间
      * @return int 更新条数,0代表未更新
      */
-    int updateContent(String lobId, String lobContent, Date operTime);
+//    int updateContent(String lobId, String lobContent, Date operTime);
+
+    /**
+     * 更新lob内容（文件）
+     *
+     * @param lobId      编号
+     * @param lobData 内容
+     * @param operTime 操作时间
+     * @return int 更新条数,0代表未更新
+     */
+    int updateLobData(String lobId, byte[] lobData, Date operTime);
 
     /**
      if (Utils.isEmpty(lobId)) {
@@ -77,14 +87,14 @@ public interface LobDao extends FrameworkDao<PubLob, String> {
      * @param lobIds 编号
      * @return Map&lt;String, String&gt;
      */
-    default Map<String, String> getContents(Collection<String> lobIds) {
+    default Map<String, byte[]> getLobDatas(Collection<String> lobIds) {
         if (Utils.isEmpty(lobIds)) {
             return Collections.emptyMap();
         }
         List<PubLob> lobs = listByIds(lobIds);
-        Map<String, String> contents = new HashMap<>(lobs.size());
+        Map<String, byte[]> contents = new HashMap<>(lobs.size());
         for (PubLob lob : lobs) {
-            contents.put(lob.getLobId(), lob.getLobContent());
+            contents.put(lob.getLobId(), lob.getLobData());
         }
         return contents;
     }

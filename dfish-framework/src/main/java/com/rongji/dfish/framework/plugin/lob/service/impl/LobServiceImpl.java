@@ -6,8 +6,8 @@ import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 import com.rongji.dfish.framework.plugin.lob.service.LobService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
-
 import javax.annotation.Resource;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -38,22 +38,86 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
         String lobId = getNewId();
         PubLob pubLob = new PubLob();
         pubLob.setLobId(lobId);
-        pubLob.setLobContent(lobContent);
+//        pubLob.setLobContent(lobContent);
         pubLob.setOperTime(new Date());
         pubLob.setArchiveFlag("0");
+        pubLob.setLobData(lobContent.getBytes());
         getDao().save(pubLob);
         return lobId;
     }
 
+
+    @Override
+    public String saveLobData(FileInputStream lobData) throws Exception {
+        if (lobData==null) {
+            throw new MarkedException("存储内容不能为空");
+        }
+        String lobId = getNewId();
+        PubLob pubLob = new PubLob();
+        pubLob.setLobId(lobId);
+//        pubLob.setLobContent(lobContent);
+        pubLob.setOperTime(new Date());
+        pubLob.setArchiveFlag("0");
+        try {
+            byte[] buffer = new byte[lobData.available()];
+            lobData.read(buffer);
+            lobData.close();
+            pubLob.setLobData(buffer);
+            getDao().save(pubLob);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }// 定义文件读入流
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lobId;
+    }
     @Override
     public int updateContent(String lobId, String lobContent) {
-        return getDao().updateContent(lobId, lobContent, new Date());
+        return getDao().updateLobData(lobId, lobContent.getBytes(), new Date());
+    }
+
+    @Override
+    public int updateLobData(String lobId, FileInputStream lobData) {
+        byte[] buffer=null;
+        try {
+            buffer = new byte[lobData.available()];
+            lobData.read(buffer);
+            lobData.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }// 定义文件读入流
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return getDao().updateLobData(lobId,  buffer, new Date());
     }
 
     @Override
     public int archive(String lobId) {
         return getDao().archive(lobId, "1", new Date());
     }
+
+
+    @Override
+    public byte[] getLobData(String lobId) {
+        Map<String, byte[]> lobMap = getLobDatas(lobId);
+        return lobMap.get(lobId);
+    }
+
+    @Override
+    public Map<String, byte[]> getLobDatas(String... lobIds) {
+        if (Utils.isEmpty(lobIds)) {
+            return Collections.emptyMap();
+        }
+        return getLobDatas(Arrays.asList(lobIds));
+    }
+
+    @Override
+    public Map<String, byte[]> getLobDatas(Collection<String> lobIds) {
+        return getDao().getLobDatas(lobIds);
+    }
+
 
     @Override
     public String getContent(String lobId) {
@@ -71,7 +135,12 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 
     @Override
     public Map<String, String> getContents(Collection<String> lobIds) {
-        return getDao().getContents(lobIds);
+        Map<String, byte[]> lobDatas = getDao().getLobDatas(lobIds);
+        Map<String, String> contents = new HashMap<>(lobDatas.size());
+        for ( Map.Entry<String , byte[]>  entry : lobDatas.entrySet()) {
+            contents.put(entry.getKey(), new String(entry.getValue()));
+        }
+        return contents;
     }
 
 }

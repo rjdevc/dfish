@@ -21,8 +21,11 @@ public interface LobDao4Mybatis extends FrameworkDao4Mybatis<PubLob, String>, Lo
         return entity.getLobId();
     }
 
+   /* @Override
+    int updateContent(@Param("lobId") String lobId, @Param("lobContent") String lobContent, @Param("operTime") Date operTime);*/
+
     @Override
-    int updateContent(@Param("lobId") String lobId, @Param("lobContent") String lobContent, @Param("operTime") Date operTime);
+    int updateLobData(@Param("lobId") String lobId, @Param("lobData") byte[] lobData, @Param("operTime") Date operTime);
 
     @Override
     int archive(@Param("lobId") String lobId, @Param("archiveFlag") String archiveFlag, @Param("archiveTime") Date archiveTime);

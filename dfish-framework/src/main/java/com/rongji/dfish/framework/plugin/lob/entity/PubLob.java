@@ -19,6 +19,7 @@ public class PubLob implements java.io.Serializable {
     private Date operTime;
     private String archiveFlag;
     private Date archiveTime;
+    private byte[] lobData;
 
     /**
      * default constructor
@@ -77,6 +78,14 @@ public class PubLob implements java.io.Serializable {
 
     public void setArchiveTime(Date archiveTime) {
         this.archiveTime = archiveTime;
+    }
+    @Column(name = "LOB_DATA")
+    public byte[] getLobData() {
+        return lobData;
+    }
+
+    public void setLobData(byte[] lobData) {
+        this.lobData = lobData;
     }
 
 }
