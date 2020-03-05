@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
 
-public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends AbstractWidget<T> implements HtmlContentHolder<T>, Alignable<T>, HasText<T> {
+abstract class AbstractLabel<T extends AbstractLabel<T>> extends AbstractWidget<T> implements HtmlContentHolder<T>, Alignable<T>, HasText<T> {
 
     private static final long serialVersionUID = -8829564341034469323L;
 
@@ -42,11 +42,13 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
         return (T) this;
     }
 
-    protected void copyProperties(AbstractFormLabel<?> to, AbstractFormLabel<?> from) {
+    protected void copyProperties(AbstractLabel<?> to, AbstractLabel<?> from) {
         super.copyProperties(to, from);
         to.align = from.align;
         to.escape = from.escape;
         to.text = from.text;
+        to.format = from.format;
+        to.suffix = from.suffix;
     }
 
     /**
@@ -111,7 +113,7 @@ public abstract class AbstractFormLabel<T extends AbstractFormLabel<T>> extends 
         return (T) this;
     }
 
-    protected static class JsonFormLabel extends AbstractFormLabel<JsonFormLabel> {
+    static class JsonLabel extends AbstractLabel<JsonLabel> {
         private static final long serialVersionUID = -5102447886806970560L;
     }
 }

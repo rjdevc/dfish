@@ -82,35 +82,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
         return data;
     }
 
-
-    /**
-     * 拷贝属性
-     *
-     * @param to   AbstractNode
-     * @param from AbstractNode
-     */
-    protected void copyProperties(AbstractNode<?> to, AbstractNode<?> from) {
-//		Utils.copyPropertiesExact(to, from);
-//		to.appendcontent =from.appendcontent;
-//		to.prependcontent =from.prependcontent;
-//		to.cls=from.cls;
-//		to.height=from.height;
-//		to.hmin=from.hmin;
-//		to.maxheight=from.maxheight;
-//		to.maxwidth=from.maxwidth;
-//		to.minheight=from.minheight;
-//		to.minwidth=from.minwidth;
-//		to.style=from.style;
-//		to.width=from.width;
-//		to.wmin=from.wmin;
-        //浅拷贝
-
-        to.template=from.template;
-        to.data=from.data;
-        to.id = from.id;
-        to.data = from.data;
-    }
-
     protected String toString(Object value) {
         return value == null ? null : value.toString();
     }
@@ -169,43 +140,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
         ObjectTemplate.get(getClass()).bundleProperties(this);
     }
 
-//    private Map<String,String> atProps;
-//    @Override
-//    @SuppressWarnings("unchecked")
-//    public T at(String prop,String expr){
-//        if(atProps==null){
-//            atProps=new LinkedHashMap<String,String>();
-//        }
-//        atProps.put(prop,expr);
-//        return(T)this;
-//    }
-//    @Override
-//    public T setFor(String expr){
-//        return setFor(expr,null,null);
-//    }
-//
-//
-//    @Override
-//    public T setFor(String dataExpr, String itemName, String indexName){
-//        itemName = Utils.isEmpty(itemName) ? "item" : itemName;
-////		if(indexName==null||indexName.equals("")){
-////			at("w-for","$"+itemName+" in ("+dataExpr+")");
-////		}else{
-////		}
-//        at("w-for","$" + itemName + (Utils.notEmpty(indexName) ? ",$" + indexName : "") + " in ("+dataExpr+")");
-//        return (T)this;
-//    }
-//    @Override
-//    public Map<String,String> ats(){
-//        return atProps;
-//    }
-//    @Override
-//    public void ats(Map<String,String> ats){
-//        this.atProps=ats;
-////		return atProps;
-//    }
-
-
     @Override
     public String toString() {
         Object o = this;
@@ -226,61 +160,6 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
      */
     public String formatString() {
         return JsonFormat.formatJson(this.toString());
-    }
-
-    /**
-     * HTML编码字符
-     *
-     * @param src String
-     * @return String
-     */
-    public static String toHtml(String src) {
-        StringBuilder sb = new StringBuilder();
-        if (src != null) {
-            char[] c = src.toCharArray();
-            for (int i = 0; i < c.length; i++) {
-                switch (c[i]) {
-                    case '&':
-                        sb.append("&amp;");
-                        break;
-                    case '<':
-                        sb.append("&lt;");
-                        break;
-                    case '>':
-                        sb.append("&gt;");
-                        break;
-                    case '\"':
-                        sb.append("&quot;");
-                        break;
-                    case '\'':
-                        sb.append("&#39;");
-                        break;
-                    case '\r': { //把换行替换成<br/>
-                        sb.append("<br/>");
-                        if (i + 1 < c.length && c[i + 1] == '\n') {
-                            i++; //如果紧跟着的那个是\n那么忽略掉.这样对macos linux window 都支持
-                        }
-                        break;
-                    }
-                    case ' ': {
-                        if (i + 1 < c.length && c[i + 1] == ' ') {
-                            sb.append("&nbsp;"); //根据HTML规范如果两个以上的空格,除了最后一个是空格外,其他要打&nbsp;
-                        } else {
-                            sb.append(' ');
-                        }
-                        break;
-                    }
-                    case '\n': //把换行替换成<br/>
-                        sb.append("<br/>");
-                        break;
-                    default:
-                        if (c[i] < 0 || c[i] > 31) {
-                            sb.append(c[i]);
-                        }
-                }
-            }
-        }
-        return sb.toString();
     }
 
 }

@@ -174,41 +174,6 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return (T) this;
     }
 
-//    @Override
-//    public Object getData(String key) {
-//        if (key == null || "".equals(key)) {
-//            return null;
-//        }
-//        if (data == null) {
-//            return null;
-//        }
-//        return data.get(key);
-//    }
-//
-//    @Override
-//    public Object removeData(String key) {
-//        if (key == null || "".equals(key)) {
-//            return null;
-//        }
-//        if (data == null) {
-//            return null;
-//        }
-//        return data.remove(key);
-//    }
-//
-//    @Override
-//    public T setData(String key, Object value) {
-//        if (data == null) {
-//            data = new LinkedHashMap<>();
-//        }
-//        data.put(key, value);
-//        return (T) this;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getData() {
-//        return data;
-//    }
 
     /**
      * 部件在加入布局的时候一般会有大小限制
@@ -580,26 +545,12 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return (T) this;
     }
 
-    /**
-     * 计算得到当前节点是否要输出转义的Json
-     *
-     * @param selfEscape   当前节点转义开关
-     * @param parentEscape 上级节点转义开关
-     * @return Boolean
-     */
-    public static Boolean calcRealEscape(Boolean selfEscape, Boolean parentEscape) {
-        // 暂时先将方法写在这里
-        if (selfEscape == null) { // 为空时默认继承上级的设置
-            return null;
-        } else if (parentEscape == null) { // 上级为空,默认相当于没有转义
-            return Boolean.TRUE.equals(selfEscape) ? true : null;
-        } else { // 2个都不为空时
-            return !selfEscape.equals(parentEscape) ? selfEscape : null;
-        }
-    }
-
     protected void copyProperties(AbstractWidget<?> to, AbstractWidget<?> from) {
-        super.copyProperties(to, from);
+        //父类属性
+        to.template=from.template;
+        to.data=from.data;
+        to.id = from.id;
+        //Widget属性
         to.gid = from.gid;
         to.width = from.width;
         to.height = from.height;

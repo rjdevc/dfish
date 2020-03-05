@@ -45,7 +45,7 @@ public class TR extends AbstractTR<TR> implements JsonWrapper<Object> {
 
     @Override
     public Object getPrototype() {
-        if (hasTrProp(this)) {
+        if (isComplex()) {
             JsonTR p = new JsonTR();
             copyProperties(p, this);
             return p;
@@ -54,21 +54,20 @@ public class TR extends AbstractTR<TR> implements JsonWrapper<Object> {
         }
     }
 
-    private static boolean hasTrProp(AbstractTR<?> tr) {
-        if (tr == null) {
-            return false;
-        }
-        return tr.getId() != null || tr.getFocus() != null || tr.getFocusable() != null ||
-                tr.getHeight() != null || tr.getSrc() != null ||
-                (tr.getData() != null && tr.getData().size() > 0) ||
-                tr.getCls() != null || tr.getStyle() != null ||//常用的属性排在前面
-                tr.getBeforeContent() != null || tr.getPrependContent() != null ||
-                tr.getAppendContent() != null || tr.getAfterContent() != null ||
-                tr.getGid() != null || tr.getHeightMinus() != null ||
-                tr.getMaxHeight() != null || tr.getMaxWidth() != null ||
-                tr.getMinHeight() != null || tr.getMinWidth() != null ||
-                (tr.getOn() != null && tr.getOn().size() > 0) ||
-                tr.getWidth() != null || tr.getWidthMinus() != null;
+    private boolean isComplex() {
+        return getId() != null || getFocus() != null || getFocusable() != null ||
+                getTemplate() != null ||
+                (getNodes() != null && getNodes().size() > 0) ||//新增的属性 2020-03-05
+                getHeight() != null || getSrc() != null ||
+//                (getData() != null && getData().size() > 0) ||
+                getCls() != null || getStyle() != null ||//常用的属性排在前面
+                getBeforeContent() != null || getPrependContent() != null ||
+                getAppendContent() != null || getAfterContent() != null ||
+                getGid() != null || getHeightMinus() != null ||
+                getMaxHeight() != null || getMaxWidth() != null ||
+                getMinHeight() != null || getMinWidth() != null ||
+                (getOn() != null && getOn().size() > 0) ||
+                getWidth() != null || getWidthMinus() != null;
     }
 
 

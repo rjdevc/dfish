@@ -55,7 +55,7 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
 
     @Override
     public Object getPrototype() {
-        if (hasTdProp(this)) {
+        if (isComplex()) {
             JsonTD p = new JsonTD();
             copyProperties(p, this);
             if (isTextWidget(getNode())) {
@@ -79,19 +79,22 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
         }
     }
 
-    private static boolean hasTdProp(AbstractTD<?> td) {
-        return td.getId() != null || td.getHeight() != null ||
-                td.getAlign() != null || td.getVAlign() != null ||
-                td.getColSpan() != null || td.getRowSpan() != null ||
-                td.getCls() != null || td.getStyle() != null ||//常用的属性排在前面
-                td.getBeforeContent() != null || td.getPrependContent() != null ||
-                td.getAppendContent() != null || td.getAfterContent() != null ||
-                td.getGid() != null || td.getHeightMinus() != null ||
-                td.getMaxHeight() != null || td.getMaxWidth() != null ||
-                td.getMinHeight() != null || td.getMinWidth() != null ||
-                (td.getOn() != null && td.getOn().size() > 0) ||
-                td.getWidth() != null || td.getWidthMinus() != null
-                || td.getLabelWidth() != null;
+    private boolean isComplex() {
+        return getId() != null || getHeight() != null ||
+                getAlign() != null || getVAlign() != null ||
+                getColSpan() != null || getRowSpan() != null ||
+                getLabelWidth() != null ||
+                getEscape() != null || getFormat() != null ||//新增的属性 2020-03-05
+                getTemplate() != null ||
+                (getData() != null && getData().size() > 0) ||
+                getCls() != null || getStyle() != null ||//常用的属性排在前面
+                getBeforeContent() != null || getPrependContent() != null ||
+                getAppendContent() != null || getAfterContent() != null ||
+                getGid() != null || getHeightMinus() != null ||
+                getMaxHeight() != null || getMaxWidth() != null ||
+                getMinHeight() != null || getMinWidth() != null ||
+                (getOn() != null && getOn().size() > 0) ||
+                getWidth() != null || getWidthMinus() != null;
     }
 
     /**
@@ -136,6 +139,8 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
                 html.getMaxHeight() == null && html.getMaxWidth() == null &&
                 html.getMinHeight() == null && html.getMinWidth() == null &&
                 (html.getOn() == null || html.getOn().size() == 0) &&
-                html.getScroll() == null && html.getWidthMinus() == null;
+                html.getScroll() == null && html.getWidthMinus() == null&&
+                html.getTemplate() == null &&
+                ( html.getData() == null || html.getData().size() == 0) ;
     }
 }
