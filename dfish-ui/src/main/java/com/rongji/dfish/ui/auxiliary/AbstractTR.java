@@ -195,6 +195,7 @@ abstract class AbstractTR<T extends AbstractTR<T>> extends AbstractWidget<T> imp
         to.focus = from.focus;
         to.src = from.src;
         to.focusable = from.focusable;
+        to.nodes = from.nodes;
     }
 
 

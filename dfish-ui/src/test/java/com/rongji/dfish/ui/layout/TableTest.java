@@ -5,6 +5,7 @@ import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.auxiliary.Column;
 import com.rongji.dfish.ui.auxiliary.TD;
 import com.rongji.dfish.ui.auxiliary.TR;
+import com.rongji.dfish.ui.auxiliary.TableLeaf;
 import com.rongji.dfish.ui.form.Text;
 import com.rongji.dfish.ui.widget.Html;
 import org.junit.Assert;
@@ -34,7 +35,7 @@ public class TableTest extends DFishUITestCase {
 		gl.add(new TR().setCls("tr-odd").putData("C1","第二行第一列内容"));
 		output(gl);
 	}
-	
+
 	@Test
 	public void tdSuit(){
 		Table gl=new Table("mygrid");
@@ -48,6 +49,29 @@ public class TableTest extends DFishUITestCase {
 		gl.add(3,0,new Html("水蜜桃").setStyle("background-color:gray"));
 		output(gl);
 	}
+
+	@Test
+	public void leafSuit(){
+		Table gl=new Table("mygrid");
+		gl.addColumn(Column.text("A","*"));
+		gl.addColumn(Column.text("B","*"));
+		TR tr1 = new TR();
+		gl.add(tr1);
+		tr1.putData("A", new TableLeaf("一班"));
+		tr1.add(new TR().putData("B","80"));
+		tr1.add(new TR().putData("B","90"));
+		tr1.add(new TR().putData("B","100"));
+
+		TR tr2 = new TR();
+		gl.add(tr2);
+		tr2.putData("A", new TableLeaf("二班"));
+		tr2.add(new TR().putData("B","60"));
+		tr2.add(new TR().putData("B","70"));
+		tr2.add(new TR().putData("B","80"));
+
+		output(gl);
+	}
+
 	@Test
 	public void layoutTest(){
 		Table gl=new Table("mygrid");
