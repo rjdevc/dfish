@@ -85,17 +85,17 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
         }
         if (w instanceof Hidden) {
             return add((Hidden) w);
-        }else if (w instanceof LabelRow) {
-            if (((LabelRow) w).getLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
-                ((LabelRow<?>) w).getLabel().setWidth(null);
-            }
-        }else if(w instanceof TD){
-            if(((TD) w).getNode() instanceof LabelRow){
-                LabelRow cast= (LabelRow) ((TD) w).getNode();
-                if(cast.getLabel()!=null&&"0".equals(cast.getLabel().getWidth())){
-                    cast.getLabel().setWidth(null);
-                }
-            }
+//        }else if (w instanceof LabelRow) {
+//            if (((LabelRow) w).getLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
+//                ((LabelRow<?>) w).getLabel().setWidth(null);
+//            }
+//        }else if(w instanceof TD){
+//            if(((TD) w).getNode() instanceof LabelRow){
+//                LabelRow cast= (LabelRow) ((TD) w).getNode();
+//                if(cast.getLabel()!=null&&"0".equals(cast.getLabel().getWidth())){
+//                    cast.getLabel().setWidth(null);
+//                }
+//            }
         }
         if(nodes==null){
             nodes=new ArrayList<>();
