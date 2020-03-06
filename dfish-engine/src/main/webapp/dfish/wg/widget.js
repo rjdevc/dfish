@@ -3151,7 +3151,7 @@ Split = define.widget( 'Split', {
 			var w = this.width(), h = this.height(), p = this.parentNode, z = p.type_horz,
 				s = '<div id=' + this.id + 'bg style="position:absolute;background:inherit;height:' + (z ? '100%' : h + 'px') + ';width:' + (z ? w + 'px' : '100%') + '">';
 			if ( this.x.range && (z || p.type_vert) && this.next() && this.prev() ) {
-				s += '<div onmousedown=' + evw + '.drag(this,event) style="position:absolute;cursor:' + (z ? 'col' : 'row') + '-resize;height:' + (z || h >= 5 ? '100%' : '5px') + ';width:' +
+				s += '<div onmousedown=' + evw + '.drag(this,event) style="position:absolute;' + (this.x.movable ? 'cursor:' + (z ? 'col' : 'row') + '-resize;' : '') + 'height:' + (z || h >= 5 ? '100%' : '5px') + ';width:' +
 					(! z || w >= 5 ? '100%' : '5px') + ';margin-' + (z ? 'left' : 'top') + ':' + ( (z ? w : h) < 5 ? ((z ? w : h) - 5) / 2 : 0 ) + 'px;z-index:1;"></div>';
 				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.major();
 			}
