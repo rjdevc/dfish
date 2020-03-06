@@ -68,9 +68,10 @@ br = $.br = (function() {
 		ie10	: ie && d === 10,
 		ms		: ie || n, // 微软的浏览器( ie所有系列 )
 		chm		: chm && parseFloat( chm[ 1 ] ),
-		mobile  : mbi,
 		fox		: u.indexOf( 'firefox' ) > 0,
 		safari  : !chm && u.indexOf( 'safari' ) > 0,
+		mobile  : mbi,
+		app		: location.protocol === 'file:',
 		css3	: !(ie && d < 9),
 		scroll	: mbi ? 0 : 17,
 		chdiv	: function( a, b, c ) {
@@ -310,7 +311,7 @@ _loadJs = function( a, b, c ) {
 		g = function() {
 			if( -- f === 0 ) {
 				for ( var j = 0, r = []; j < a.length; j ++ )
-					r.push( _ajax_cache[ _ajax_url( a[ j ] ) ].response );
+					r.push( _ajax_cache[ _ajax_url( a[ j ], T ) ].response );
 				b && b( r );
 			}
 		};
@@ -1458,7 +1459,7 @@ $.draggable = function( a, b ) {
 				return d && (!d.cst.scope || !b.scope || _idsAny( d.cst.scope, b.scope ));
 			};
 		$.moveup( function( e ) {
-			var x = e.pageX, y = e.pageY, f = e.srcElement, m, o;
+			var x = e.clientX, y = e.clientY, f = e.srcElement, m, o;
 			if ( f.dndSortID )
 				return;
 			m = f != v && f != u && (f.dndSortID ? $.all[ f.dndSortID ] : $.widget( f )), o;
@@ -1564,8 +1565,8 @@ _ajax_xhr = (function() {
 	try { c(); return c; } catch( e ) {}
 	$.winbox( 'Cannot create XMLHTTP object!' );
 })(),
-_ajax_url = function( a ) {
-	return a.indexOf( './' ) == 0 || a.indexOf( '../' ) == 0 ? _urlLoc( _path, a ) : a.indexOf( 'http://' ) == 0 || a.indexOf( 'https://' ) == 0 ? a : (_cfg.server || '') + a;
+_ajax_url = function( a, b ) {
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : a.indexOf( 'http://' ) === 0 || a.indexOf( 'https://' ) === 0 ? a : (b ? '' : (_cfg.server || '')) + a;
 },
 _ajax_data = function( e ) {
 	if ( e && typeof e === _OBJ ) {
@@ -1598,7 +1599,7 @@ Ajax = _createClass( {
 	Extend: _Event,
 	Prototype: {
 		sendCache: function() {
-			var x = this.x, u = _ajax_url( x.src ), c = _ajax_cache[ x.src ];
+			var x = this.x, u = _ajax_url( x.src, x.cdn ), c = _ajax_cache[ u ];
 			if ( c ) {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
@@ -1613,9 +1614,8 @@ Ajax = _createClass( {
 			}
 		},
 		send: function() {
-			var x = this.x, a = _ajax_url( x.src ), b = x.success, c = x.context, d = !x.cdn && _ajax_data( _cfg.ajaxData ), e = _ajax_data( x.data ),
+			var x = this.x, a = _ajax_url( x.src, x.cdn ), b = x.success, c = x.context, d = !x.cdn && _ajax_data( _cfg.ajaxData ), e = _ajax_data( x.data ),
 				f = x.error != N ? x.error : _cfg.ajaxError, g = x.dataType || 'text', u = a, l, i, self = this;
-			if(x.src.indexOf('t/std.js')>0)debugger;
 			d && e ? (e = d + '&' + e) : (d && (e = d));
 			// get url超过长度则转为post
 			if ( ( a.length > 2000 && a.indexOf( '?' ) > 0 ) ) {
@@ -1624,7 +1624,7 @@ Ajax = _createClass( {
 			}
 			if ( x.base || _path )
 				u = _urlLoc( x.base || _path, u );
-			if ( x.cdn && _cfg.ver )
+			if ( ! br.app && x.cdn && _cfg.ver )
 				u = _urlParam( u, { _v: _cfg.ver } );
 			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
@@ -1678,7 +1678,7 @@ Ajax = _createClass( {
 					    } else {
 					    	self.response = m;
 							b && b.call( c, m, self );
-							_ajax_cache[ a ] === self && self.fireEvent( 'cache' );
+							_ajax_cache[ u ] === self && self.fireEvent( 'cache' );
 						}
 					}
 					x.complete && x.complete.call( c, m, self );
@@ -1923,9 +1923,9 @@ var boot = {
 	},
 	ready: function( a ) {
 		this.fn = a;
-		br.mobile && location.protocol == 'file:' ? doc.addEventListener( 'plusready', this.domReady ) : $.query( doc ).ready( this.domReady );
+		br.app ? doc.addEventListener( 'plusready', this.domReady ) : $.query( doc ).ready( this.domReady );
 	},
-	domReady: function() {
+	domReady: function(e) {
 		boot.dom_ok = T;
 		boot.callback();
 	},
@@ -2246,14 +2246,14 @@ _merge( $, {
 	// @a -> move fn, b -> up fn
 	moveup: function( a, b ) {
 		var d, f, m = function ( e ) { e.preventDefault(); };
-		ie && _attach( doc, 'selectstart', f = $.rt( F ) );
+		ie && _attach( doc, 'selectstart', _stop );
 		_classAdd( cvs, 'f-unsel' );
 		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', a, T );
 		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
 			b && b( e );
 			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', a, T );
 			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
-			ie && _detach( doc, 'selectstart', f );
+			ie && _detach( doc, 'selectstart', _stop );
 			_classRemove( cvs, 'f-unsel' );
 			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
 		}, T );

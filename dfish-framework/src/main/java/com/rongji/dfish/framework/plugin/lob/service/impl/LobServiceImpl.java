@@ -48,7 +48,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 
 
     @Override
-    public String saveLobData(FileInputStream lobData) throws Exception {
+    public String saveLobData(InputStream lobData) throws Exception {
         if (lobData==null) {
             throw new MarkedException("存储内容不能为空");
         }
@@ -78,7 +78,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     }
 
     @Override
-    public int updateLobData(String lobId, FileInputStream lobData) {
+    public int updateLobData(String lobId, InputStream lobData) {
         byte[] buffer=null;
         try {
             buffer = new byte[lobData.available()];

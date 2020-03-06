@@ -3,7 +3,7 @@ package com.rongji.dfish.framework.plugin.lob.service;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 import com.rongji.dfish.framework.service.FrameworkService;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
      * 保存lob内容（文件、图片）
      * @return String 保存的编号
      */
-    String saveLobData(FileInputStream lobData) throws Exception;
+    String saveLobData(InputStream lobData) throws Exception;
     /**
      * 更新lob内容(字符串)
      * @param lobId 编号
@@ -43,7 +43,7 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
      * @param lobData 内容
      * @return int 更新记录数
      */
-    int updateLobData(String lobId, FileInputStream lobData);
+    int updateLobData(String lobId, InputStream lobData);
 
 
     /**
