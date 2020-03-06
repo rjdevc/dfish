@@ -30,9 +30,7 @@ public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends 
      * @since DFish 3.0
      */
     public AbstractPickerBox(String name, String label, String value) {
-        this.setName(name);
-        this.setValue(value);
-        this.setLabel(label);
+        super(name,label,value);
     }
     /**
      * 构造函数
@@ -43,9 +41,7 @@ public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends 
      * @since DFish 3.0
      */
     public AbstractPickerBox(String name, Label label, String value) {
-        this.setName(name);
-        this.setValue(value);
-        this.setLabel(label);
+        super(name,label,value);
     }
 
     @Override
