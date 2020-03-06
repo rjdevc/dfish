@@ -19,5 +19,15 @@ public class Radio extends AbstractBox<Radio> {
 	public Radio(String name, String label, Object value, String text) {
 		super(name, label,  value, text);
 	}
+	/**
+	 * 构造函数
+	 * @param name 表单元素
+	 * @param label 标题
+	 * @param value 值
+	 * @param text 显示的文本
+	 */
+	public Radio(String name, Label label, Object value, String text) {
+		super(name, label,  value, text);
+	}
 
 }

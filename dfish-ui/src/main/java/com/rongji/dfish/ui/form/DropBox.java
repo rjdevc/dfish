@@ -39,6 +39,16 @@ public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoa
 	public DropBox(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
 	}
+	/**
+	 * 构造函数
+	 * @param name 表单元素名
+	 * @param label 标题
+	 * @param value 值
+	 * @param options 候选项
+	 */
+	public DropBox(String name, Label label, Object value, List<?> options) {
+		super(name, label, value, options);
+	}
 
 	/**
 	 * 占位符。当表单没有值时显示的提示文本。

@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2020-02-12
  * @author lamontYu
  */
-public class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractInput<T, String> implements NodeContainer {
+public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractInput<T, String> implements NodeContainer {
 
     private static final long serialVersionUID = 647561925546899578L;
     protected Dialog drop;
@@ -30,6 +30,19 @@ public class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractI
      * @since DFish 3.0
      */
     public AbstractPickerBox(String name, String label, String value) {
+        this.setName(name);
+        this.setValue(value);
+        this.setLabel(label);
+    }
+    /**
+     * 构造函数
+     *
+     * @param name  表单元素名
+     * @param label 标题
+     * @param value 值
+     * @since DFish 3.0
+     */
+    public AbstractPickerBox(String name, Label label, String value) {
         this.setName(name);
         this.setValue(value);
         this.setLabel(label);

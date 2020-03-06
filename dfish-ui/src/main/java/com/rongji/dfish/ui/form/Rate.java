@@ -42,7 +42,19 @@ public class Rate extends AbstractFormElement<Rate, Integer> {
      * @param value 值
      */
     public Rate(String name, String label, Integer value) {
-        this.name = name;
+        setName(name);
+        setLabel(label);
+        setValue(value);
+    }
+    /**
+     * 默认构造函数
+     *
+     * @param name  名字
+     * @param label 标题
+     * @param value 值
+     */
+    public Rate(String name, Label label, Integer value) {
+        setName(name);
         setLabel(label);
         setValue(value);
     }

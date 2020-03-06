@@ -25,10 +25,21 @@ public class RadioGroup extends AbstractBoxGroup<RadioGroup, Radio> {
     public RadioGroup(String name, String label, Object value, List<?> options) {
         super(name, label, value, options);
     }
+    /**
+     * 构造函数
+     *
+     * @param name    表单元素名
+     * @param label   标题
+     * @param value   值
+     * @param options 候选项
+     */
+    public RadioGroup(String name, Label label, Object value, List<?> options) {
+        super(name, label, value, options);
+    }
 
     @Override
     public Radio newPub() {
-        return new Radio(null, null, null, null);
+        return new Radio(null, (Label) null, null, null);
     }
 
 }

@@ -21,6 +21,14 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 		super(null);
 		setLabel(label);
 	}
+	/**
+	 * 构造函数
+	 * @param label String
+	 */
+	public FormGroup(Label label) {
+		super(null);
+		setLabel(label);
+	}
 
 	@Override
 	public Label getLabel() {

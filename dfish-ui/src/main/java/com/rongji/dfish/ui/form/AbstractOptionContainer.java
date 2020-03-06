@@ -31,6 +31,18 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
         this.doSetValue(value);
         this.setOptions(options);
     }
+    /**
+     * @param name    表单名
+     * @param label   标签
+     * @param value   选中的值
+     * @param options 候选项
+     */
+    public AbstractOptionContainer(String name, Label label, Object value, List<?> options) {
+        this.setName(name);
+        this.setLabel(label);
+        this.doSetValue(value);
+        this.setOptions(options);
+    }
 
     protected Boolean escape;
     protected List<Option> nodes;

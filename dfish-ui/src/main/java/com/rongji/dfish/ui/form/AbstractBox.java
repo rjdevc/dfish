@@ -47,7 +47,20 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
         this.setValue(value);
         this.setLabel(label);
         this.setText(text);
-//		escape=true;
+    }
+    /**
+     * 构造函数
+     *
+     * @param name    表单元素名
+     * @param label   标题
+     * @param value   如果选中提交的值
+     * @param text    显示的文本
+     */
+    public AbstractBox(String name, Label label, Object value, String text) {
+        this.setName(name);
+        this.setValue(value);
+        this.setLabel(label);
+        this.setText(text);
     }
 
     /**

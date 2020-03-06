@@ -16,6 +16,17 @@ public abstract class AbstractInput<T extends AbstractInput<T, V>, V> extends Ab
     protected Boolean transparent;
     protected String placeholder;
 
+    public AbstractInput(String name, String label, Object value) {
+        this.setName(name);
+        this.setLabel(label);
+        this.setValue(value);
+    }
+    public AbstractInput(String name, Label label, Object value) {
+        this.setName(name);
+        this.setLabel(label);
+        this.setValue(value);
+    }
+
     /**
      * 设置为true，表单将成为无边框无背景的状态。
      *

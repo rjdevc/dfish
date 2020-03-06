@@ -43,7 +43,7 @@ public abstract class LinkableSuggestionBox<T extends LinkableSuggestionBox<T>> 
      * @param value   初始值
      * @param suggest 候选项的弹窗命令
      */
-    public LinkableSuggestionBox(String name, String label, String value, Dialog suggest) {
+    public LinkableSuggestionBox(String name, Label label, String value, Dialog suggest) {
         super(name, label, value, suggest);
     }
 

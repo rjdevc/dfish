@@ -20,6 +20,10 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
         this.setName(name);
         this.setLabel(label);
     }
+    public Jigsaw(String name, Label label) {
+        this.setName(name);
+        this.setLabel(label);
+    }
 
     /**
      * 拼图图片

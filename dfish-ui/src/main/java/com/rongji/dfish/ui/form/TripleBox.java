@@ -47,6 +47,17 @@ public class TripleBox extends AbstractBox<TripleBox> {
     public TripleBox(String name, String label, Object value, String text) {
         super(name, label, value, text);
     }
+    /**
+     * 构造函数
+     *
+     * @param name       名称
+     * @param label      标题
+     * @param value      值
+     * @param text       显示文本
+     */
+    public TripleBox(String name, Label label, Object value, String text) {
+        super(name, label, value, text);
+    }
 
     /**
      * 选中所有

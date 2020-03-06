@@ -22,6 +22,18 @@ public class Slider extends AbstractFormElement<Slider, Number> {
         super.setLabel(label);
         setValue(value);
     }
+    /**
+     * 默认构造函数
+     *
+     * @param name  表单元素名
+     * @param label 标题
+     * @param value 值
+     */
+    public Slider(String name, Label label, Number value) {
+        super.setName(name);
+        super.setLabel(label);
+        setValue(value);
+    }
 
 
     /**

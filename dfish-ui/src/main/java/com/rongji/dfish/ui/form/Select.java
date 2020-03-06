@@ -27,6 +27,16 @@ public class Select extends AbstractOptionContainer<Select> {
 	public Select(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
 	}
+	/**
+	 * 构造函数
+	 * @param name 表单元素名
+	 * @param label 标题
+	 * @param value 值
+	 * @param options 候选项
+	 */
+	public Select(String name, Label label, Object value, List<?> options) {
+		super(name, label, value, options);
+	}
 
 	/**
 	 * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。

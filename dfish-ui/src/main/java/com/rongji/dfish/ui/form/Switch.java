@@ -26,6 +26,17 @@ public class Switch extends AbstractFormElement<Switch, Object> {
         this.setLabel(label);
         this.setValue(value);
     }
+    /**
+     * 构造函数
+     * @param name 表单名
+     * @param label 标题
+     * @param value 如果选中的提交的值
+     */
+    public Switch(String name, Label label, Object value) {
+        this.setName(name);
+        this.setLabel(label);
+        this.setValue(value);
+    }
 
     public static final String SYNC_CLICK = "click";
     public static final String SYNC_FOCUS = "focus";

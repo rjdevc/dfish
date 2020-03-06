@@ -22,9 +22,19 @@ public class Password extends AbstractInput<Password, String> {
      * @param maxLength int
      */
     public Password(String name, String label, String value, int maxLength) {
-        this.setName(name);
-        this.setLabel(label);
-        this.setValue(value);
+        super(name,label,value);
+        this.addValidate(Validate.maxLength(maxLength));
+    }
+    /**
+     * 构造函数
+     *
+     * @param name      String
+     * @param label     String
+     * @param value     Object
+     * @param maxLength int
+     */
+    public Password(String name, Label label, String value, int maxLength) {
+        super(name,label,value);
         this.addValidate(Validate.maxLength(maxLength));
     }
 
@@ -36,20 +46,7 @@ public class Password extends AbstractInput<Password, String> {
      * @param value Object
      */
     public Password(String name, String label, String value) {
-        this.setName(name);
-        this.setLabel(label);
-        this.setValue(value);
-    }
-
-    /**
-     * 构造函数
-     *
-     * @param name  String
-     * @param label String
-     */
-    public Password(String name, String label) {
-        this.setName(name);
-        this.setLabel(label);
+        super(name,label,value);
     }
 
     @Override

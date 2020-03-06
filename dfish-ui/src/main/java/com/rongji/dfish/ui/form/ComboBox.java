@@ -58,7 +58,7 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
      * @param value   初始值
      * @param suggest 候选项的弹窗命令
      */
-    public ComboBox(String name, String label, String value, Dialog suggest) {
+    public ComboBox(String name, Label label, String value, Dialog suggest) {
         super(name, label, value, suggest);
     }
 

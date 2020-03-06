@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.plugin.ueditor;
 
 
 import com.rongji.dfish.ui.form.AbstractInput;
+import com.rongji.dfish.ui.form.Label;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +17,10 @@ public class UEditor extends AbstractInput<UEditor, String> {
     private Map<String, Object> option;
 
     public UEditor(String name, String label, String value) {
-        this.setName(name);
-        this.setValue(value);
-        this.setLabel(label);
+        super(name,label,value);
+    }
+    public UEditor(String name, Label label, String value) {
+        super(name,label,value);
     }
 
     @Override

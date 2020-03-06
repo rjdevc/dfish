@@ -56,6 +56,21 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
         setValue(checkedValue);
         setOptions(options);
     }
+    /**
+     * 构造函数
+     *
+     * @param name         表单名
+     * @param label        标题
+     * @param checkedValue 已经选中的值
+     * @param options      候选项
+     */
+    public AbstractBoxGroup(String name, Label label, Object checkedValue, List<?> options) {
+        super(null);
+        setName(name);
+        setLabel(label);
+        setValue(checkedValue);
+        setOptions(options);
+    }
 
     public T setOptions(List<?> options) {
         nodes = parseNodes(options);
