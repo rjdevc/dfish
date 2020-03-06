@@ -16,7 +16,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
 
     private static final long serialVersionUID = -4525721180514710555L;
 
-    private Label label;
+    private Object label;
     private FormElement<?, ?> begin;
     private FormElement<?, ?> end;
     private Boolean noLabel;
@@ -89,7 +89,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
 
     @Override
     public Range setLabel(String label) {
-        this.label = new Label(label);
+        this.label = label;
         return this;
     }
 
@@ -105,15 +105,15 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
     }
 
     @Override
-    public Label getLabel() {
+    public Object getLabel() {
         return label;
     }
 
     @Override
     public Range setNoLabel(Boolean noLabel) {
         this.noLabel = noLabel;
-        if (noLabel != null && label != null) {
-            label.setWidth(noLabel ? "0" : null);
+        if (noLabel != null && label instanceof Label) {
+            ((Label) label).setWidth(noLabel ? "0" : null);
         }
         return this;
     }

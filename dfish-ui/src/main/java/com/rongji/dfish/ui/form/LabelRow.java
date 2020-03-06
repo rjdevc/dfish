@@ -23,9 +23,7 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      * @param label String
      * @return 本身，这样可以继续设置其他属性
      */
-    default T setLabel(String label) {
-        return setLabel(new Label(label));
-    }
+    T setLabel(String label);
 
     /**
      * 设置标题
@@ -43,7 +41,7 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      * @return label
      * @since 3.2.0
      */
-    Label getLabel();
+    Object getLabel();
 
     /**
      * 这个元素，是否以藏标题。如果是，则不显示标题；否则显示标题。
@@ -52,6 +50,7 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      * @param noLabel boolean
      * @return 本身，这样可以继续设置其他属性
      */
+    @Deprecated
     T setNoLabel(Boolean noLabel);
 
     /**
@@ -59,6 +58,7 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      *
      * @return showLabel
      */
+    @Deprecated
     Boolean getNoLabel();
 
 }

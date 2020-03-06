@@ -27,7 +27,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     protected String dir;
     protected String name;
     protected String value;
-    protected Label label;
+    protected Object label;
     protected Boolean noLabel;
 
     //    protected Integer space;
@@ -195,12 +195,17 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 
 
     @Override
-    public Label getLabel() {
+    public Object getLabel() {
         return label;
     }
 
     @Override
     public T setLabel(Label label) {
+        this.label = label;
+        return (T) this;
+    }
+    @Override
+    public T setLabel(String label) {
         this.label = label;
         return (T) this;
     }
