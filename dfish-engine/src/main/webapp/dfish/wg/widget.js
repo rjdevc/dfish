@@ -3794,7 +3794,7 @@ Tabs = define.widget( 'Tabs', {
 		var s = this.getTabPositionCode( x.position ), y = { type: s === 'r' || s === 'l' ? 'Horz' : 'Vert', width: '*', height: '*' }, b = [], c = [], d, e = this.getDefaultOption( x.cls );
 		for ( var i = 0, n = x.nodes || []; i < n.length; i ++ ) {
 			if ( ! Q.isPlainObject( n[ i ].target ) )
-				n[ i ].target = { type: 'Empty' };
+				n[ i ].target = { type: 'Blank' };
 			if ( n[ i ].type === 'Split' ) {
 				b.push( n[ i ] );
 			} else {
@@ -5929,7 +5929,7 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 		}
 		if ( t ) {
 			for ( var i = 0, o; i < this.length; i ++ ) {
-				o = Q.isPlainObject( this[ i ].x.target ) ? this[ i ].x.target : { type: 'Empty' };
+				o = Q.isPlainObject( this[ i ].x.target ) ? this[ i ].x.target : { type: 'Blank' };
 				! o.id && (o.id = this.id + 'target' + i);
 				t.push( this.add( o, -1 ) );
 				this[ i ].x.target = o.id;
