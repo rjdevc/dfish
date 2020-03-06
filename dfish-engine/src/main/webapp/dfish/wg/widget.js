@@ -4548,6 +4548,7 @@ Dialog = define.widget( 'Dialog', {
 			}
 			if ( ! r )
 				r = this._dft_pos();
+			this._pos && this._snapCls( F );
 			this._pos = r;
 			$.snapTo( this.$(), r );
 			if ( vs && this.type === 'Dialog' ) {
@@ -5156,13 +5157,13 @@ Menu = define.widget( 'Menu', {
 		},
 		scroll: function( a ) {
 			if ( $.classAny( this.$( a > 0 ? 'dn': 'up' ), 'z-us' ) ) {
-				var i = a > 0 ? this.echoEnd : this.echoStart, l = this.length, c = 0;
+				var i = a > 0 ? this.echoEnd  : this.echoStart, l = this.length, c = 0;
 				for ( ; i > -1 && i < l; i += ( a === 0 ? 1 : a ) ) {
 					c += this[ i ].elemht();
 					if ( c > this.realht )
 						break;
 				}
-				a > 0 ? (this.echoStart = this.echoEnd, this.echoEnd = Math.min( i, l - 1 )) : (this.echoEnd = this.echoStart, this.echoStart = Math.max( 0, i ));
+				a > 0 ? (this.echoStart = this.echoEnd + 1, this.echoEnd = Math.min( i, l - 1 )) : (this.echoEnd = this.echoStart, this.echoStart = Math.max( 0, i ));
 				if ( c < this.realht ) {
 					for ( i = this.echoEnd; i < l; i ++ ) {
 						c += this[ i ].elemht();
@@ -5215,6 +5216,7 @@ Menu = define.widget( 'Menu', {
 				this.x.line && (w = Math.max( this._pos.target.width - 2, w ));
 				this.css( 'min-width', w );
 			}
+			this.axis();
 			this.triggerHandler( 'ready' );
 			return this;
 		}
@@ -6043,7 +6045,7 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 		html_nodes: function() {
 			if ( this.targets ) {
 				for ( var i = 0, s = '', l = Math.max( this.length, this.targets.length ); i < l; i ++ )
-					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i == 0 ? ' z-firt' : i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)>' + (this[ i ] ? this[ i ].html() : '') + (this.targets[ i ] ? this.targets[ i ].html() : '') + '</div>';
+					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i === 0 ? ' z-firt' : '') + (i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)>' + (this[ i ] ? this[ i ].html() : '') + (this.targets[ i ] ? this.targets[ i ].html() : '') + '</div>';
 				return s;
 			} else
 				return AbsForm.prototype.html_nodes.call( this );
