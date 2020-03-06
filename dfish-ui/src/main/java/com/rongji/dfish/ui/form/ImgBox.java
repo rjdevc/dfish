@@ -27,6 +27,16 @@ public class ImgBox extends AbstractOptionContainer<ImgBox> {
 	public ImgBox(String name, String label, Object value, List<?> options) {
 		super(name, label, value, options);
 	}
+	/**
+	 * 构造函数
+	 * @param name 表单元素名
+	 * @param label 标题
+	 * @param value 选中的值
+	 * @param options 候选项
+	 */
+	public ImgBox(String name, Label label, Object value, List<?> options) {
+		super(name, label, value, options);
+	}
 
 	/**
 	 * 图标高度

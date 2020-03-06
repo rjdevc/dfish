@@ -27,9 +27,19 @@ public class CheckBoxGroup extends AbstractBoxGroup<CheckBoxGroup, CheckBox> {
         super(name, label, value, options);
     }
 
+    /**
+     * @param name    表单元素名
+     * @param label   标题
+     * @param value   选中的项
+     * @param options 候选项
+     */
+    public CheckBoxGroup(String name, Label label, Object value, List<?> options) {
+        super(name, label, value, options);
+    }
+
     @Override
     public CheckBox newPub() {
-        return new CheckBox(null, null, null, null);
+        return new CheckBox(null, (Label) null, null, null);
     }
 
 }

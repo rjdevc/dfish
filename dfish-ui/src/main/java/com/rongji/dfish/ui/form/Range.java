@@ -34,6 +34,18 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
         this.begin = begin;
         this.end = end;
     }
+    /**
+     * 构造函数
+     *
+     * @param label String 标签名
+     * @param begin FormElement 范围的开始表单
+     * @param end   FormElement 范围的结束表单
+     */
+    public Range(Label label, FormElement<?, ?> begin, FormElement<?, ?> end) {
+        this.setLabel(label);
+        this.begin = begin;
+        this.end = end;
+    }
 
     /**
      * 范围的开始表单

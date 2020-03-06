@@ -16,6 +16,11 @@ public class FormLabel extends AbstractWidget<FormLabel> implements Scrollable<F
         this.setText(text);
     }
 
+    public FormLabel( Label label, String text){
+        this.setLabel(label);
+        this.setText(text);
+    }
+
     @Override
     public String getAlign() {
         return align;

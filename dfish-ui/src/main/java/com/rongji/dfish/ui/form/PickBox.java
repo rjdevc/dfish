@@ -61,6 +61,18 @@ public class PickBox extends AbstractPickerBox<PickBox> implements HasText<PickB
     public PickBox(String name, String label, String value) {
     	super(name, label, value);
     }
+    /**
+     * 构造函数
+     *
+     * @param name  表单元素名
+     * @param label 标题
+     * @param value 值
+     * @since DFish 3.0
+     */
+    public PickBox(String name, Label label, String value) {
+        super(name, label, value);
+    }
+
 
     @Override
     public PickBox setValue(Object value) {

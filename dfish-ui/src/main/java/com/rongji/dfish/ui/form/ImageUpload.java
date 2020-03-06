@@ -29,6 +29,17 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
     }
 
     /**
+     * @param name
+     * @param label
+     * @param value
+     */
+    public ImageUpload(String name, Label label, List<UploadItem> value) {
+        this.name = name;
+        setLabel(label);
+        this.setValue(value);
+    }
+
+    /**
      * 缩略图地址
      *
      * @return String

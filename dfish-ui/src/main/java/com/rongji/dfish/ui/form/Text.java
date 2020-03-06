@@ -19,9 +19,18 @@ public class Text extends AbstractInput<Text,String>{
 	 * @param maxLength 最大长度
 	 */
 	public Text(String name, String label, Object value, Integer maxLength){
-		this.setName(name);
-		this.setValue(value);
-		this.setLabel(label);
+		super(name,label,value);
+		this.addValidate(Validate.maxLength(maxLength));
+	}
+	/**
+	 * 构造函数
+	 * @param name 表单元素名
+	 * @param label 标题
+	 * @param value 值
+	 * @param maxLength 最大长度
+	 */
+	public Text(String name, Label label, Object value, Integer maxLength){
+		super(name,label,value);
 		this.addValidate(Validate.maxLength(maxLength));
 	}
 	/**
@@ -32,9 +41,7 @@ public class Text extends AbstractInput<Text,String>{
 	 * @since DFish 3.0
 	 */
 	public Text(String name, String label, String value){
-		this.setName(name);
-		this.setValue(value);
-		this.setLabel(label);
+		super(name,label,value);
 	}
 
     /**

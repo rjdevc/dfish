@@ -46,7 +46,7 @@ public class LinkBox extends LinkableSuggestionBox<LinkBox> {
 	 * @param value 初始值
 	 * @param suggest 候选项的弹窗命令
 	 */
-	public LinkBox(String name, String label, String value, Dialog suggest) {
+	public LinkBox(String name, Label label, String value, Dialog suggest) {
 		super(name, label, value, suggest);
 	}
 

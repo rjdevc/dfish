@@ -48,7 +48,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
      * @param value   初始值
      * @param suggest 在线匹配关键词的 view suggest。支持 $value 和 $text 变量。
      */
-    public SuggestionBox(String name, String label, String value, Dialog suggest) {
+    public SuggestionBox(String name, Label label, String value, Dialog suggest) {
         super(name, label, value);
         this.setSuggest(suggest);
     }
