@@ -1969,8 +1969,8 @@ Scroll = define.widget( 'Scroll', {
 							_reset_resize_sensor.call( this );
 							this._scr_ready = T;
 						}
-						if ( ! this._scr_timer )
-							this._scr_timer = setInterval( this._scr_check, 777 );
+						//if ( ! this._scr_timer )
+						//	this._scr_timer = setInterval( this._scr_check, 999 );
 						$.classAdd( this.$(), 'z-hv' );
 					}
 				}
@@ -3042,6 +3042,10 @@ _splitSize = function( a, b ) {
 },
 /* `split`  可拖动调整大小的分隔条 */
 Split = define.widget( 'Split', {
+	Const: function( x ) {
+		W.apply( this, arguments );
+		x.movable && (this.className += ' z-movable');
+	},
 	Listener: {
 		body: {
 			ready: function() {
@@ -3065,6 +3069,8 @@ Split = define.widget( 'Split', {
 		className: 'w-split',
 		// 拖动调整大小
 		drag: function( a, e ) {
+			if ( ! this.x.movable )
+				return;
 			var self = this, r = $.bcr( this.$() ), o = this.isExpanded(), p = this.prev(), n = this.next(), d = this.x.range.split( ',' ), j = _number( d[ 0 ] ), k = _number( d[ 1 ] ),
 				th = this.parentNode.type_horz, t = this.x.hide === 'next', cln = th ? 'clientX' : 'clientY', pos = th ? 'left' : 'top', x = e[ cln ], b, c, f, g, h,
 				down = function() {
@@ -5369,7 +5375,7 @@ Label = define.widget( 'Label', {
 			var t = this.html_format();
 			if ( typeof t === _OBJ )
 				t = this.add( t, -1 ).html();
-			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span class=f-va>' + t + '</span>' + (this.x.suffix || '');
+			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span>' + t + (this.x.suffix || '') + '</span>';
 		},
 		html_bg: function() {
 			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
