@@ -19,7 +19,7 @@
         <property name="archiveTime" type="java.util.Date">
             <column name="ARCHIVE_TIME"></column>
         </property>
-        <property name="lobData" type="java.lang.Object">
+        <property name="lobData" type="byte[]">
         <column name="LOB_DATA"></column>
     </property>
     </class>
