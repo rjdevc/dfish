@@ -31,7 +31,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
     /**
      * 标题
      */
-    protected Label label;
+    protected Object label;
     /**
      * 值
      */
@@ -67,12 +67,17 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
     }
 
     @Override
-    public Label getLabel() {
+    public Object getLabel() {
         return label;
     }
 
     @Override
     public T setLabel(Label label) {
+        this.label = label;
+        return (T) this;
+    }
+    @Override
+    public T setLabel(String label) {
         this.label = label;
         return (T) this;
     }
@@ -235,12 +240,13 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
     @Override
     public T setNoLabel(Boolean noLabel) {
         this.noLabel = noLabel;
-        if (label != null) {
+        if (label instanceof Label) {
             boolean isHide = noLabel != null && noLabel;
+            Label cast=(Label)label;
             if (isHide) {
-                label.setWidth(0);
-            } else if ("0".equals(label.getWidth())) {
-                label.setWidth(null);
+                cast.setWidth(0);
+            } else if ("0".equals(cast.getWidth())) {
+                cast.setWidth(null);
             }
         }
         return (T) this;

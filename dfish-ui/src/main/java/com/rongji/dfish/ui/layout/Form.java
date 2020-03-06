@@ -83,6 +83,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
         if (w == null) {
             return this;
         }
+
         if (w instanceof Hidden) {
             return add((Hidden) w);
 //        }else if (w instanceof LabelRow) {
@@ -96,6 +97,11 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
 //                    cast.getLabel().setWidth(null);
 //                }
 //            }
+        }else if (w instanceof LabelRow){
+           Object label =((LabelRow) w).getLabel();
+           if(label!=null && !(label instanceof Label)){
+               ((LabelRow) w).setLabel(new Label(label.toString()));
+           }
         }
         if(nodes==null){
             nodes=new ArrayList<>();
@@ -113,11 +119,6 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
      * @return this
      */
     public Form add(Widget<?> w, int colspan) {
-        if (w instanceof LabelRow) {
-            if (((LabelRow) w).getNoLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
-                ((LabelRow<?>) w).getLabel().setWidth(null);
-            }
-        }
         return add(new TD().setColSpan(colspan).setNode(w));
     }
 
@@ -131,11 +132,6 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
      * @return
      */
     public Form add(Widget<?> w, int colspan, int rowspan) {
-        if (w instanceof LabelRow) {
-            if (((LabelRow) w).getNoLabel()!=null && "0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
-                ((LabelRow<?>) w).getLabel().setWidth(null);
-            }
-        }
         return add(new TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));
     }
 

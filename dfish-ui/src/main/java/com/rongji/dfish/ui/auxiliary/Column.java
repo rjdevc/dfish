@@ -162,7 +162,7 @@ public class Column extends AbstractNode<Column> implements Alignable<Column>, V
      * @return 本身，这样可以继续设置其他属性
      */
     public Column setTripleBox(String boxName, String checkedField, Boolean required, String sync) {
-        TripleBox tripleBox = new TripleBox(boxName, null, null, null).setSync(sync);
+        TripleBox tripleBox = new TripleBox(boxName, (String)null, null, null).setSync(sync);
         if (required != null && required) {
             tripleBox.addValidate(Validate.required(true));
         }
@@ -227,7 +227,7 @@ public class Column extends AbstractNode<Column> implements Alignable<Column>, V
      * @return 本身，这样可以继续设置其他属性
      */
     public Column setRadio(String boxName, String checkedField, Boolean required, String sync) {
-        Radio radio = new Radio(boxName, null, null, null).setSync(sync);
+        Radio radio = new Radio(boxName, (String)null, null, null).setSync(sync);
         if (required != null && required) {
             radio.addValidate(Validate.required(true));
         }

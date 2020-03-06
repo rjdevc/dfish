@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.*;
 public class FormLabel extends AbstractWidget<FormLabel> implements Scrollable<FormLabel>,HtmlContentHolder<FormLabel>,Alignable<FormLabel>, VAlignable<FormLabel>,HasText<FormLabel>,LabelRow<FormLabel> {
     private String align;
     private String vAlign;
-    private Label label;
+    private Object label;
     private Boolean noLabel;
     private String text;
     private Boolean scroll;
@@ -92,9 +92,14 @@ public class FormLabel extends AbstractWidget<FormLabel> implements Scrollable<F
         this.label=label;
         return this;
     }
+    @Override
+    public FormLabel setLabel(String label) {
+        this.label=label;
+        return this;
+    }
 
     @Override
-    public Label getLabel() {
+    public Object getLabel() {
         return label;
     }
 

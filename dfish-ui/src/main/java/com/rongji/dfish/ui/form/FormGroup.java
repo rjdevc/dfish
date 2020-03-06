@@ -10,7 +10,7 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	
 	private static final long serialVersionUID = 6045136733949121294L;
 
-	private Label label;
+	private Object label;
 	private Boolean noLabel;
 
 	/**
@@ -31,12 +31,12 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	}
 
 	@Override
-	public Label getLabel() {
+	public Object getLabel() {
 		return label;
 	}
 	@Override
 	public FormGroup setLabel(String label) {
-		this.label=new Label(label).setWidth(null);
+		this.label=label;
 		return this;
 	}
 	@Override
@@ -77,8 +77,8 @@ public class FormGroup extends LinearLayout<FormGroup>implements LabelRow<FormGr
 	@Override
 	public FormGroup setNoLabel(Boolean noLabel) {
 		this.noLabel = noLabel;
-		if(noLabel !=null&&label!=null){
-			label.setWidth(noLabel ?"0":null);
+		if(noLabel !=null&&label instanceof Label){
+			((Label) label).setWidth(noLabel ?"0":null);
 		}
 		return this;
 	}
