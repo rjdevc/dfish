@@ -8,7 +8,7 @@ public class Label extends AbstractLabel<Label> implements JsonWrapper<Object> {
 
     public Label(String text) {
         this.setText(text);
-        this.setWidth("0");
+//        this.setWidth("0");
     }
 
     @Override

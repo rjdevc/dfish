@@ -2127,8 +2127,9 @@ define( {
             return~
             {
               type: 'Table',
+              face: 'cell',
               columns: [
-              	{ field: 'A', width: '40', align: 'center' },
+              	{ field: 'A', width: '100', align: 'center' },
               	{ field: 'B', width: '*' }
               ],
               tHead: {
@@ -2144,7 +2145,7 @@ define( {
                     A: {
                       type: 'TD', //type属性可以省略
                       colSpan: 2,
-                      node: { type: 'Html', text: '跨列' }
+                      node: { type: 'Textarea', value: '跨列' }
                     }
                   }
                 ]
