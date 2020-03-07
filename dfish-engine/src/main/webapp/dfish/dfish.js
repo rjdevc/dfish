@@ -1140,7 +1140,6 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 					ol = l[ i ] < 0 ? -l[ i ] : 0;
 				m = s[ i ] === '14' || s[ i ] === '34' ? (a-or)*(b-ot) : s[ i ] === '23' || s[ i ] === '43' ? (a-ol)*(b-ot) :
 					s[ i ] === '32' || s[ i ] === '12' ? (a-ol)*(b-ob) : (a-or)*(b-ob);
-				console.log([s[i], ot, or, ob, ol]);
 				if ( ! n || n < m ) {
 					n = m;
 					k = i;
