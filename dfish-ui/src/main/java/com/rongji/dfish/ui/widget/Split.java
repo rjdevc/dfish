@@ -27,6 +27,7 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	private String expandedIcon;
 	private String range;
 	private String hide;
+	private Boolean movable;
 
 	/**
 	 * 构造函数
@@ -71,6 +72,17 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 		this.format = format;
 		return this;
 	}
+
+	@Override
+	public Split setEscape(Boolean escape){
+		this.escape=escape;
+		return this;
+	}
+	@Override
+	public Boolean getEscape(){
+		return escape;
+	}
+
 	/**
 	 * 收拢图标。图片地址url，或是以点 "." 开头的样式名
 	 * @return icon
@@ -143,13 +155,21 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 		return this;
 	}
 
-	@Override
-    public Split setEscape(Boolean escape){
-		this.escape=escape;
-		return this;
+	/**
+	 * 是否可拖动改变布局大小
+	 * @return Boolean
+	 */
+	public Boolean getMovable() {
+		return movable;
 	}
-	@Override
-    public Boolean getEscape(){
-		return escape;
+
+	/**
+	 * 是否可拖动改变布局大小
+	 * @param movable Boolean
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Split setMovable(Boolean movable) {
+		this.movable = movable;
+		return this;
 	}
 }
