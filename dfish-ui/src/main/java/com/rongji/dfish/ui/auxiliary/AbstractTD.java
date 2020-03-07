@@ -21,11 +21,6 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
     protected String format;
     protected Integer labelWidth;
 
-    @Override
-    public String getType() {
-        return null;
-    }
-
     /**
      * 这个这个单元格占几列。
      * 为空的时候相当于1
@@ -69,8 +64,6 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
         this.rowSpan = rowSpan;
         return (T) this;
     }
-
-
 
 
     @Override
@@ -173,20 +166,21 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
         return (T) this;
     }
 
-    protected NodeContainerDecorator getNodeContainerDecorator(){
+    protected NodeContainerDecorator getNodeContainerDecorator() {
         return new NodeContainerDecorator() {
             @Override
             protected List<Node> nodes() {
-                return Arrays.asList(AbstractTD.this.node) ;
+                return Arrays.asList(AbstractTD.this.node);
             }
 
             @Override
             protected void setNode(int i, Node node) {
-                assert(i==0);
+                assert (i == 0);
                 AbstractTD.this.setNode((Widget) node);
             }
         };
     }
+
     @Override
     public Node findNode(Filter filter) {
         return getNodeContainerDecorator().findNode(filter);
@@ -199,20 +193,22 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
 
     @Override
     public Node replaceNode(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceNode(filter,node);
+        return getNodeContainerDecorator().replaceNode(filter, node);
     }
 
     @Override
     public int replaceAllNodes(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceAllNodes(filter,node);
+        return getNodeContainerDecorator().replaceAllNodes(filter, node);
     }
+
     @Override
-    public T setNode(Widget node){
-        this.node=(Widget)node;
-        return (T)this;
+    public T setNode(Widget node) {
+        this.node = node;
+        return (T) this;
     }
+
     @Override
-    public Widget getNode(){
+    public Widget getNode() {
         return node;
     }
 }

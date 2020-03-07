@@ -11,4 +11,9 @@ package com.rongji.dfish.ui.auxiliary;
 class JsonTR extends AbstractTR<JsonTR> {
     private static final long serialVersionUID = -1034767067781605568L;
 
+    @Override
+    public String getType() {
+        return "TR";
+    }
+
 }

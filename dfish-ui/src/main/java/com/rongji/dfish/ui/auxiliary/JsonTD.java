@@ -18,6 +18,11 @@ class JsonTD extends AbstractTD<JsonTD> implements HasText<JsonTD> {
     private static final long serialVersionUID = -5125782398657967546L;
     private String text;
 
+    @Override
+    public String getType() {
+        return "TD";
+    }
+
     /**
      * 文本模式时， 取得单元格内部文本的值
      *

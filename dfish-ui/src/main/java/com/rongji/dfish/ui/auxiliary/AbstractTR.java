@@ -117,11 +117,6 @@ abstract class AbstractTR<T extends AbstractTR<T>> extends AbstractWidget<T> imp
     protected Boolean focusable;
     protected String src;
 
-    @Override
-    public String getType() {
-        return null;
-    }
-
     /**
      * 当前行是不是聚焦状态
      *
