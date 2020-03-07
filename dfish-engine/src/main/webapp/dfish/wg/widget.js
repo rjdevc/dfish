@@ -1764,7 +1764,7 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 				return N;
 			var o = this.$();
 			for ( var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++ ) {
-				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? this[ i ][ v ]() : (o && this[ i ].$() && !this[ i ].isDisplay() ? N : this[ i ].attr( v ));
+				e = b != N && this[ i ] === a ? b : this[ i ][ rv ] ? (this[ i ].isDisplay() ? this[ i ][ v ]() : N) : (o && this[ i ].$() && !this[ i ].isDisplay() ? N : this[ i ].attr( v ));
 				f = (e == N || e < 0) && ! this[ _w_bro[ v ] ] ? '*' : e;
 				r.push( { value: f, min: this[ i ].attr( nv ), max: this[ i ].attr( xv ) } );
 			}
@@ -1969,8 +1969,8 @@ Scroll = define.widget( 'Scroll', {
 							_reset_resize_sensor.call( this );
 							this._scr_ready = T;
 						}
-						if ( ! this._scr_timer )
-							this._scr_timer = setInterval( this._scr_check, 777 );
+						//if ( ! this._scr_timer )
+						//	this._scr_timer = setInterval( this._scr_check, 999 );
 						$.classAdd( this.$(), 'z-hv' );
 					}
 				}
@@ -3042,6 +3042,10 @@ _splitSize = function( a, b ) {
 },
 /* `split`  可拖动调整大小的分隔条 */
 Split = define.widget( 'Split', {
+	Const: function( x ) {
+		W.apply( this, arguments );
+		x.movable && (this.className += ' z-movable');
+	},
 	Listener: {
 		body: {
 			ready: function() {
@@ -3065,6 +3069,8 @@ Split = define.widget( 'Split', {
 		className: 'w-split',
 		// 拖动调整大小
 		drag: function( a, e ) {
+			if ( ! this.x.movable )
+				return;
 			var self = this, r = $.bcr( this.$() ), o = this.isExpanded(), p = this.prev(), n = this.next(), d = this.x.range.split( ',' ), j = _number( d[ 0 ] ), k = _number( d[ 1 ] ),
 				th = this.parentNode.type_horz, t = this.x.hide === 'next', cln = th ? 'clientX' : 'clientY', pos = th ? 'left' : 'top', x = e[ cln ], b, c, f, g, h,
 				down = function() {
@@ -3075,7 +3081,7 @@ Split = define.widget( 'Split', {
 			down();
 			$.moveup( function( e ) {
 				if ( e[ cln ] !== x ) {
-					f = p && _splitSize( p ), g = n && _splitSize( n );
+					f = p && (p.isDisplay() ? _splitSize( p ) : 0), g = n && (n.isDisplay() ? _splitSize( n ) : 0);
 				}
 				if ( b ) {
 					c = e[ cln ];
@@ -3088,13 +3094,8 @@ Split = define.widget( 'Split', {
 					$.remove( b ), $.remove( h );
 					var j = f + c - x, k = g + x - c;
 					if ( j > -1 && k > -1 ) {
-						p && _splitSize( p, n && t ? '*' : j );
-						n && _splitSize( n, p && ! t ? '*' : k );
-						if ( j && k )
-							self._size = t ? k : j;
-						if ( self.$( 'i' ) && o != (j = self.isExpanded()) )
-							$.replace( self.$( 'i' ), self.html_icon( j ) );
-						self.fixHide();
+						self._size = t ? k : j;
+						self.toggle( t ? k : j );
 					}
 				}
 			} );
@@ -3109,33 +3110,38 @@ Split = define.widget( 'Split', {
 				n = a;
 				v = a ? this._size : m;
 			}
-			if ( this._size == N )
-				this._size = this.major();
-			this.major( v );
-			this.minor( '*' );
+			this.majorSize( v );
+			this.minorSize( '*' );
 			if ( n === U )
 				n = this.isExpanded();
 			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
 			$.classAdd( this.$(), 'z-expanded', n );
 			this.trigger( 'mouseOut' );
-			this.fixHide();
-		},
-		fixHide: function( n ) {
-			var r = this[ this.x.hide || 'prev' ]();
-			r.addClass( 'f-hide', !this.isExpanded() && (this.major() <= r.widthMinus()) );
 		},
 		getMajorMin: function() {
 			return (this.x.range || '').split( ',' )[ this.x.hide === 'next' ? 1 : 0 ];
 		},
 		isExpanded: function() {
-			var v = this.major();
+			if ( ! this.major().isDisplay() )
+				return F;
+			var v = this.majorSize();
 			return v === U || v > this.getMajorMin();
 		},
-		major: function( a ) {
-			return _splitSize( this[ this.x.hide || 'prev' ](), a );
+		major: function() {
+			return this[ this.x.hide || 'prev' ]();
 		},
-		minor: function( a ) {
-			return _splitSize( this[ this.x.hide === 'next' ? 'prev' : 'next' ](), a );
+		minor: function() {
+			return this[ this.x.hide === 'next' ? 'prev' : 'next' ]();
+		},
+		majorSize: function( a ) {
+			if ( a == 0 ) {
+				return this.major().display( F );
+			}
+			arguments.length && this.major().display();
+			return _splitSize( this.major(), a );
+		},
+		minorSize: function( a ) {
+			return _splitSize( this.minor(), a );
 		},
 		html_icon: function( a ) {
 			a = a == N ? this.isExpanded() : a;
@@ -3145,9 +3151,9 @@ Split = define.widget( 'Split', {
 			var w = this.width(), h = this.height(), p = this.parentNode, z = p.type_horz,
 				s = '<div id=' + this.id + 'bg style="position:absolute;background:inherit;height:' + (z ? '100%' : h + 'px') + ';width:' + (z ? w + 'px' : '100%') + '">';
 			if ( this.x.range && (z || p.type_vert) && this.next() && this.prev() ) {
-				s += '<div onmousedown=' + evw + '.drag(this,event) style="position:absolute;cursor:' + (z ? 'col' : 'row') + '-resize;height:' + (z || h >= 5 ? '100%' : '5px') + ';width:' +
+				s += '<div onmousedown=' + evw + '.drag(this,event) style="position:absolute;' + (this.x.movable ? 'cursor:' + (z ? 'col' : 'row') + '-resize;' : '') + 'height:' + (z || h >= 5 ? '100%' : '5px') + ';width:' +
 					(! z || w >= 5 ? '100%' : '5px') + ';margin-' + (z ? 'left' : 'top') + ':' + ( (z ? w : h) < 5 ? ((z ? w : h) - 5) / 2 : 0 ) + 'px;z-index:1;"></div>';
-				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.major();
+				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.majorSize();
 			}
 			if ( this.x.icon || this.x.expandedIcon )
 				s += this.html_icon();
@@ -3308,6 +3314,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 /* `button` */
 Button = define.widget( 'Button', {
 	Const: function( x ) {
+		x.nodes && !x.nodes.length && (x.nodes = N);
 		W.apply( this, arguments );
 		x.target && x.focus && _regTarget.call( this, this._ustag );
 		x.badge && this.init_badge();
@@ -5369,7 +5376,7 @@ Label = define.widget( 'Label', {
 			var t = this.html_format();
 			if ( typeof t === _OBJ )
 				t = this.add( t, -1 ).html();
-			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span class=f-va>' + t + '</span>' + (this.x.suffix || '');
+			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span>' + t + (this.x.suffix || '') + '</span>';
 		},
 		html_bg: function() {
 			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';

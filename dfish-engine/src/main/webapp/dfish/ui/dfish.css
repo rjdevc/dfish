@@ -51,7 +51,7 @@
 .f-form-hide{visibility:hidden}
 
 
-.f-required{color:red;font-family:tahoma;font-style:normal;margin-right:6px;vertical-align:middle}
+.f-required{color:red;font-family:tahoma;font-style:normal;margin-right:2px}
 .f-keyword{color:red;font-style:normal}
 .f-addcon{font-style:normal}
 .f-nobr,.f-omit,.f-fix{white-space:nowrap;word-break:keep-all;word-wrap:normal}

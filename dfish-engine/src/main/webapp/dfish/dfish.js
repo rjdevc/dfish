@@ -795,7 +795,7 @@ _urlFormat = $.urlFormat = function( a, b ) {
 // 以 a 为基础，解析出 b 的路径
 _urlLoc = $.urlLoc = function( a, b ) {
 	a = _strTo( a, '/', T );
-	return b.indexOf( './' ) === 0 ? _urlLoc( a + '/', b.slice( 2 ) ) : b.indexOf( '../' ) === 0 ? _urlLoc( a, b.slice( 3 ) ) : b.charAt( 0 ) === '/' ? b : (b.indexOf( 'http:' ) === 0 || b.indexOf( 'https:' ) === 0) ? b : a + '/' + b;
+	return b.indexOf( './' ) === 0 ? _urlLoc( a + '/', b.slice( 2 ) ) : b.indexOf( '../' ) === 0 ? _urlLoc( a, b.slice( 3 ) ) : b.charAt( 0 ) === '/' ? b : _ajax_httpmode( b ) ? b : a + '/' + b;
 },
 // @ a-> url, b -> name/object
 _urlParam = $.urlParam = function( a, b ) {
@@ -1568,7 +1568,7 @@ _ajax_xhr = (function() {
 	$.winbox( 'Cannot create XMLHTTP object!' );
 })(),
 _ajax_url = function( a, b ) {
-	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : a.indexOf( 'http://' ) === 0 || a.indexOf( 'https://' ) === 0 ? a : (b ? '' : (_cfg.server || '')) + a;
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + a;
 },
 _ajax_data = function( e ) {
 	if ( e && typeof e === _OBJ ) {
@@ -1584,7 +1584,7 @@ _ajax_data = function( e ) {
 	}
 	return e;
 },
-_ajax_httpmode = location.protocol === 'http:' || location.protocol === 'https:',
+_ajax_httpmode = function( a ) { return a.indexOf( 'http:' ) === 0 || a.indexOf( 'https:' ) === 0 },
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
 _ajax_contexts = {},
@@ -1668,7 +1668,7 @@ Ajax = _createClass( {
 				        if ( r ) {
 				        	self.errorCode = l.status;
 				        	if ( l.status === 404 ) debugger;
-							if ( f !== F && (_ajax_httpmode || l.status) ) {
+							if ( f !== F && (_ajax_httpmode( u ) || l.status) ) {
 								typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
 								if ( f !== F && r !== 'filter' ) {
 									var s = 'ajax ' + l.status + ': ' + a;
