@@ -1083,8 +1083,8 @@ W = define( 'Widget', function() {
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
 			var c = a == N || (a.isWidget ? a.x.expanded : a), p = this.parentNode, d = 'f-hide' + (b ? '' : ' f-form-hide'), o = this.$();
+			a != N && a.isWidget && (c ? (o.toggleCommander = N) : (o.toggleCommander = a.id));
 			o && $.classAdd( o, d, ! c );
-			a != N && a.isWidget && (c ? o.removeAttribute( 'w-toggle' ) : o.setAttribute( 'w-toggle', a.id ));
 			this.x.display = !!c;
 			!!c && this.trigger( 'display' );
 		},
@@ -4022,7 +4022,7 @@ Toggle = define.widget( 'Toggle', {
 		focus: function( a ) {
 			var p = a;
 			do {
-				var b = p.$() && p.$().getAttribute( 'w-toggle' );
+				var b = p.$() && p.$().toggleCommander;
 				if ( b ) {
 					_all[ b ].toggle( T );
 					break;
@@ -10031,6 +10031,7 @@ TableToggle = define.widget( 'TableToggle', {
 					break;
 				c.display( this );
 			}
+			t.table.parallel( 'fixFoot' );
 		}
 	}
 } ),
@@ -10292,6 +10293,7 @@ TD = define.widget( 'TD', {
 	Const: function( x, p ) {
 		if ( x.type && x.type !== 'TD' )
 			x = { node: x };
+		x.colSpan == -1 && (x.colSpan = p.table.getColGroup().length);
 		x.node && p.table.x.escape !== F && $.extend( x.node, { escape: T } );
 		this.table = p.table;
 		W.call( this, x, p );
@@ -10994,6 +10996,11 @@ AbsTable = define.widget( 'AbsTable', {
 		getParallel: function( a ) {
 			var r = this.rootNode || this;
 			return a ? r : [ r ].concat( r.fixed );
+		},
+		// table和平行table都执行同一方法 /a -> method name, b -> args
+		parallel: function( a, b ) {
+			for ( var i = 0, c = this.getParallel(); i < c.length; i ++ )
+				c[ i ][ a ].apply( c[ i ], b || A );
 		},
 		// @a -> elem
 		getCellAxis: function( a ) {
