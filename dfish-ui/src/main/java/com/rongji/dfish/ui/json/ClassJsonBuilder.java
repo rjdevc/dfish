@@ -21,7 +21,7 @@ import java.util.*;
  * <p>改变这个构建器的方法，请参看#removeProperty #replaceProperty
  * 以及#buildJsonProps</p>
  * <p>构建器在创建的时候，会自动扫描该clz的所有getter方法(根据getXxx或isXxx匹配)。分析出属性名。
- * 然后，过滤banNames中的属性，并且完成propNameMap中指定的属性名转化。
+ * 然后，过滤banNames中的属性，并且完成propertyNameMap中指定的属性名转化。
  * 然后会根据ORDERED_PORPS 进行排序，在这个里面的属性，将会按其顺序严格排序，
  * 接下来按字母顺序排序。每个类通过buildJson添加的属性将在最后。</p>
  * <p>各个类中可能通过<strong>static</strong>标签，引入构建器的变更。比如说Checkbox可能会移除value属性</p>
@@ -40,28 +40,26 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
      * @param clz Class
      */
     public ClassJsonBuilder(Class<?> clz) {
-        HashSet<String> propNames = new HashSet<String>();
+        HashSet<String> propertyNames = new HashSet<>();
         for (Method m : clz.getMethods()) {
             if (Modifier.isTransient(m.getModifiers()) || Modifier.isStatic(m.getModifiers()) || !Modifier.isPublic(m.getModifiers())) {
                 continue;
             }
-            if ((m.getName().startsWith("get") || m.getName().startsWith("is"))
-                    && m.getParameterTypes().length == 0) {
+            if ((m.getName().startsWith("get") || m.getName().startsWith("is")) && m.getParameterTypes().length == 0) {
                 // 过时的注解不输出
-                if (m.getAnnotation(Deprecated.class) != null||
-                        m.getAnnotation(Transient.class) != null) {
+                if (m.getAnnotation(Deprecated.class) != null || m.getAnnotation(Transient.class) != null) {
                     continue;
                 }
                 String fieldName = getFiledNameByGetterName(m.getName());
                 if (STOP_NAMES.contains(fieldName)) {
                     continue;
                 }
-                if (propNames.add(fieldName)) {
+                if (propertyNames.add(fieldName)) {
                     methods.add(new ReflectAppender(fieldName, m));
                 } else {
                     //取出已经压入的属性，判断其是不是子类自己添加的，因为子类可以更改返回值成更小的范围
-                    for (JsonPropAppender g : methods) {
-                        if (g.getPropName().equals(fieldName) && g instanceof ReflectAppender) {
+                    for (JsonPropertyAppender g : methods) {
+                        if (g.getPropertyName().equals(fieldName) && g instanceof ReflectAppender) {
                             ReflectAppender cast = (ReflectAppender) g;
                             Class<?> oldClz = cast.getterMethod.getDeclaringClass();
                             Class<?> newClz = m.getDeclaringClass();
@@ -79,45 +77,46 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                     LogUtil.debug(getClass(), "find a new property {name:'" + fieldName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
                 }
             }
-            Collections.sort(methods,(o1, o2)-> {
-                    String name1 = o1.getPropName();
-                    String name2 = o2.getPropName();
-                    int pos1 = ORDERED_PORPS.indexOf(name1);
-                    int pos2 = ORDERED_PORPS.indexOf(name2);
-                    if (pos1 >= 0 ) {
-                        return pos2>=0 ? pos1-pos2 : -1;
-                    } else {
-                        return pos2 >= 0 ? 1 : name1.compareTo(name2);
-                    }
+            Collections.sort(methods, (o1, o2) -> {
+                String name1 = o1.getPropertyName();
+                String name2 = o2.getPropertyName();
+                int pos1 = ORDERED_PROPERTIES.indexOf(name1);
+                int pos2 = ORDERED_PROPERTIES.indexOf(name2);
+                if (pos1 >= 0) {
+                    return pos2 >= 0 ? pos1 - pos2 : -1;
+                } else {
+                    return pos2 >= 0 ? 1 : name1.compareTo(name2);
+                }
             });
         }
     }
 
-    protected List<JsonPropAppender> methods = new ArrayList<JsonPropAppender>();
+    protected List<JsonPropertyAppender> methods = new ArrayList<>();
 
     /**
      * 获得模板
      *
      * @return List
      */
-    public List<JsonPropAppender> getMethods() {
+    public List<JsonPropertyAppender> getMethods() {
         return methods;
     }
 
-//    private static final HashMap<String, String> PROP_NAME_MAP = new HashMap<String, String>();
-    private static final HashSet<String> STOP_NAMES = new HashSet<String>();
+    //    private static final HashMap<String, String> PROP_NAME_MAP = new HashMap<String, String>();
+    private static final HashSet<String> STOP_NAMES = new HashSet<>();
     /**
      * 指定以下属性在JSON中按指定的顺序排列，而其他未考虑到的属性，排在json背后，并按字母表顺序排列
      */
-    public static final List<String> ORDERED_PORPS = Arrays.asList(
-            "type", "id","face",
-            "label","value","text",
-            "cls","style","width","height",
-            "minWidth","maxWidth","minHeight","maxHeight",
-            "widthMinus","heightMinus","align","vAlign","scroll",
-            "focus","pub","src","target",
-            "node","nodes","on","data",
-            "NO_EXISTS"//占位符该属性不存在
+    protected static final List<String> ORDERED_PROPERTIES = Arrays.asList(
+            "type", "id", "face",
+            "label", "value", "text",
+            "cls", "style", "width", "height",
+            "minWidth", "maxWidth", "minHeight", "maxHeight",
+            "widthMinus", "heightMinus", "align", "vAlign", "scroll",
+            "focus", "pub", "src", "target",
+            "node", "nodes", "on", "data",
+            // 占位符该属性不存在
+            "NO_EXISTS"
     );
 
     static {
@@ -155,7 +154,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
     public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
         sb.append('{');
         boolean begin = true;
-        for (JsonPropAppender entry : methods) {
+        for (JsonPropertyAppender entry : methods) {
             try {
                 begin = entry.appendProperty(o, sb, path, begin);
             } catch (Exception e) {
@@ -165,30 +164,30 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
         sb.append('}');
     }
 
-    public static class ReflectAppender implements JsonPropAppender {
-        public ReflectAppender(String propName, Method getterMethod) {
-            this.propName = propName;
+    public static class ReflectAppender implements JsonPropertyAppender {
+        public ReflectAppender(String propertyName, Method getterMethod) {
+            this.propertyName = propertyName;
             this.getterMethod = getterMethod;
         }
 
-        String propName;
+        String propertyName;
         Method getterMethod;
 
         @Override
-        public String getPropName() {
-            return propName;
+        public String getPropertyName() {
+            return propertyName;
         }
 
         @Override
-        public void setPropName(String propName) {
-            this.propName = propName;
+        public void setPropertyName(String propertyName) {
+            this.propertyName = propertyName;
         }
 
         @Override
         public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
             Object v = null;
             try {
-                if(!Modifier.isPublic(getterMethod.getDeclaringClass().getModifiers())){
+                if (!Modifier.isPublic(getterMethod.getDeclaringClass().getModifiers())) {
                     getterMethod.setAccessible(true);
                 }
                 v = getterMethod.invoke(o);
@@ -300,9 +299,9 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                 sb.append(',');
             }
             //部分属性不输出
-            sb.append('"').append(propName).append('"').append(':');
+            sb.append('"').append(propertyName).append('"').append(':');
             int propValueBegin = sb.length();
-            path.push(new PathInfo(propName, v));
+            path.push(new PathInfo(propertyName, v));
             try {
                 JsonFormat.get(v.getClass()).buildJson(v, sb, path);
             } catch (Exception ex) {

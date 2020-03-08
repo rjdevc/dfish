@@ -8,105 +8,116 @@ import java.util.Collection;
 
 /**
  * 用于记录构建JSON过程中的路径
- * @author Dfish team
  *
+ * @author Dfish team
  */
 public class PathInfo {
-	/**
-	 * 完整构造函数
-	 * @param propName String
-	 * @param propValue Object
-	 */
-	public PathInfo(String propName,Object propValue){
-		this.propName = propName;
-		this.propValue=propValue;
-	}
-	private String propName;
-	private Object propValue;
-	/**
-	 * 属性名
-	 * @return String
-	 */
-	public String getPropName() {
-		return propName;
-	}
-	/**
-	 * 属性名
-	 * @param propName 属性名
-	 */
-	public void setPropName(String propName) {
-		this.propName = propName;
-	}
-	/**
-	 * 属性值
-	 * @return Object
-	 */
-	public Object getPropValue() {
-		return propValue;
-	}
-	/**
-	 * 属性值
-	 * @param propValue Object
-	 */
-	public void setPropValue(Object propValue) {
-		this.propValue = propValue;
-	}
-	@Override
-    public String toString(){
-		StringBuilder sb=new StringBuilder();
+    /**
+     * 完整构造函数
+     *
+     * @param propertyName  String
+     * @param propertyValue Object
+     */
+    public PathInfo(String propertyName, Object propertyValue) {
+        this.propertyName = propertyName;
+        this.propertyValue = propertyValue;
+    }
 
-		sb.append("{\"");
-		if(propName!=null){
-			sb.append("path\":\"").append(propName).append("\", \"");
-		}
-		sb.append("obj\":");
-		if(propValue==null){
-			sb.append("null");
-		}else if(propValue instanceof Collection){
-			sb.append("\"Arr[size=");
-			sb.append(((Collection<?>) propValue).size());
-			sb.append("]\"");
-		}else if(propValue instanceof Object[]){
-			sb.append("\"Arr[leng=");
-			sb.append(((Object[]) propValue).length);
-			sb.append("]\"");
-		}else if(propValue instanceof Node){
-			sb.append("\"Widget[type=");
-			sb.append(((Node) propValue).getType());
-			boolean showed=false;
-			if(!showed){
-				if(propValue instanceof Node){
-					String id=((Node<?>) propValue).getId();
-					if(id!=null&&!"".equals(id)){
-						showed=true;
-						sb.append(",id=");
-						sb.append(id);
-					}
-				}
-			}
-			if(!showed){
-				if(propValue instanceof FormElement){
-					String name=((FormElement<?, ?>) propValue).getName();
-					if(name!=null&&!"".equals(name)){
-						showed=true;
-						sb.append(",name=");
-						sb.append(name);
-					}
-				}
-			}
-			if(!showed){
-				if(propValue instanceof HasText){
-					String text=((HasText<?>) propValue).getText();
-					if(text!=null&&!"".equals(text)){
-						showed=true;
-						sb.append(",text=");
-						sb.append(text);
-					}
-				}
-			}
-			sb.append("]\"");
-		}
-		sb.append('}');
-		return sb.toString();
-	}
+    private String propertyName;
+    private Object propertyValue;
+
+    /**
+     * 属性名
+     *
+     * @return String
+     */
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    /**
+     * 属性名
+     *
+     * @param propertyName 属性名
+     */
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    /**
+     * 属性值
+     *
+     * @return Object
+     */
+    public Object getPropertyValue() {
+        return propertyValue;
+    }
+
+    /**
+     * 属性值
+     *
+     * @param propertyValue Object
+     */
+    public void setPropertyValue(Object propertyValue) {
+        this.propertyValue = propertyValue;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("{\"");
+        if (propertyName != null) {
+            sb.append("path\":\"").append(propertyName).append("\", \"");
+        }
+        sb.append("obj\":");
+        if (propertyValue == null) {
+            sb.append("null");
+        } else if (propertyValue instanceof Collection) {
+            sb.append("\"Arr[size=");
+            sb.append(((Collection<?>) propertyValue).size());
+            sb.append("]\"");
+        } else if (propertyValue instanceof Object[]) {
+            sb.append("\"Arr[leng=");
+            sb.append(((Object[]) propertyValue).length);
+            sb.append("]\"");
+        } else if (propertyValue instanceof Node) {
+            sb.append("\"Widget[type=");
+            sb.append(((Node) propertyValue).getType());
+            boolean showed = false;
+            if (!showed) {
+                if (propertyValue instanceof Node) {
+                    String id = ((Node<?>) propertyValue).getId();
+                    if (id != null && !"".equals(id)) {
+                        showed = true;
+                        sb.append(",id=");
+                        sb.append(id);
+                    }
+                }
+            }
+            if (!showed) {
+                if (propertyValue instanceof FormElement) {
+                    String name = ((FormElement<?, ?>) propertyValue).getName();
+                    if (name != null && !"".equals(name)) {
+                        showed = true;
+                        sb.append(",name=");
+                        sb.append(name);
+                    }
+                }
+            }
+            if (!showed) {
+                if (propertyValue instanceof HasText) {
+                    String text = ((HasText<?>) propertyValue).getText();
+                    if (text != null && !"".equals(text)) {
+                        showed = true;
+                        sb.append(",text=");
+                        sb.append(text);
+                    }
+                }
+            }
+            sb.append("]\"");
+        }
+        sb.append('}');
+        return sb.toString();
+    }
 }
