@@ -6,6 +6,7 @@ import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
 import com.rongji.dfish.framework.plugin.lob.service.LobService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
+
 import javax.annotation.Resource;
 import java.io.*;
 import java.util.*;
@@ -49,7 +50,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 
     @Override
     public String saveLobData(InputStream lobData) throws Exception {
-        if (lobData==null) {
+        if (lobData == null) {
             throw new MarkedException("存储内容不能为空");
         }
         String lobId = getNewId();
@@ -80,6 +81,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
         }
         return lobId;
     }
+
     @Override
     public int updateContent(String lobId, String lobContent) {
         return getDao().updateLobData(lobId, lobContent.getBytes(), new Date());
@@ -87,7 +89,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 
     @Override
     public int updateLobData(String lobId, InputStream lobData) {
-        byte[] buffer=null;
+        byte[] buffer = null;
         try {
             buffer = new byte[lobData.available()];
             lobData.read(buffer);
@@ -98,7 +100,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
         catch (IOException e) {
             e.printStackTrace();
         }
-        return getDao().updateLobData(lobId,  buffer, new Date());
+        return getDao().updateLobData(lobId, buffer, new Date());
     }
 
     @Override
@@ -145,10 +147,10 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     public Map<String, String> getContents(Collection<String> lobIds) {
         Map<String, byte[]> lobDatas = getDao().getLobDatas(lobIds);
         Map<String, String> contents = new HashMap<>(lobDatas.size());
-        for ( Map.Entry<String , byte[]>  entry : lobDatas.entrySet()) {
-            String value="";
-            if(entry.getValue()!=null){
-                value=new String(entry.getValue());
+        for (Map.Entry<String, byte[]> entry : lobDatas.entrySet()) {
+            String value = null;
+            if (entry.getValue() != null) {
+                value = new String(entry.getValue());
             }
             contents.put(entry.getKey(), value);
         }
