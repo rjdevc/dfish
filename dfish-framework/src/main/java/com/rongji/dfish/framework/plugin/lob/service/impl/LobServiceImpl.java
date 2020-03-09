@@ -59,15 +59,15 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
         pubLob.setOperTime(new Date());
         pubLob.setArchiveFlag("0");
         try {
-//            byte[] buffer = new byte[lobData.available()];
-            byte[] b = new byte[1024];
-            int num = 0;
-            String res = "";
-            while ((num = lobData.read(b)) != -1)
-            {
-                res += new String(b, 0, num);
-            }
-            byte[] buffer = res.getBytes();
+            byte[] buffer = new byte[lobData.available()];
+//            byte[] b = new byte[1024];
+//            int num = 0;
+//            String res = "";
+//            while ((num = lobData.read(b)) != -1)
+//            {
+//                res += new String(b, 0, num);
+//            }
+//            byte[] buffer = res.getBytes();
             lobData.read(buffer);
             lobData.close();
             pubLob.setLobData(buffer);
