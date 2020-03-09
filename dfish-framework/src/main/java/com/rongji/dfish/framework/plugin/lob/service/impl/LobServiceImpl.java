@@ -145,10 +145,12 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     public Map<String, String> getContents(Collection<String> lobIds) {
         Map<String, byte[]> lobDatas = getDao().getLobDatas(lobIds);
         Map<String, String> contents = new HashMap<>(lobDatas.size());
-        if(Utils.notEmpty(lobIds)){
-            for ( Map.Entry<String , byte[]>  entry : lobDatas.entrySet()) {
-                contents.put(entry.getKey(), new String(entry.getValue()));
+        for ( Map.Entry<String , byte[]>  entry : lobDatas.entrySet()) {
+            String value="";
+            if(entry.getValue()!=null){
+                value=new String(entry.getValue());
             }
+            contents.put(entry.getKey(), value);
         }
         return contents;
     }
