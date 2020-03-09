@@ -42,7 +42,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 //        pubLob.setLobContent(lobContent);
         pubLob.setOperTime(new Date());
         pubLob.setArchiveFlag("0");
-        pubLob.setLobData(lobContent.getBytes());
+        pubLob.setLobData(lobContent.getBytes("utf-8"));
         getDao().save(pubLob);
         return lobId;
     }
@@ -130,13 +130,13 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 
 
     @Override
-    public String getContent(String lobId) {
+    public String getContent(String lobId) throws  Exception{
         Map<String, String> lobMap = getContents(lobId);
         return lobMap.get(lobId);
     }
 
     @Override
-    public Map<String, String> getContents(String... lobIds) {
+    public Map<String, String> getContents(String... lobIds) throws  Exception{
         if (Utils.isEmpty(lobIds)) {
             return Collections.emptyMap();
         }
@@ -144,13 +144,13 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     }
 
     @Override
-    public Map<String, String> getContents(Collection<String> lobIds) {
+    public Map<String, String> getContents(Collection<String> lobIds) throws  Exception{
         Map<String, byte[]> lobDatas = getDao().getLobDatas(lobIds);
         Map<String, String> contents = new HashMap<>(lobDatas.size());
         for (Map.Entry<String, byte[]> entry : lobDatas.entrySet()) {
             String value = null;
             if (entry.getValue() != null) {
-                value = new String(entry.getValue());
+                value = new String(entry.getValue(),"utf-8");
             }
             contents.put(entry.getKey(), value);
         }

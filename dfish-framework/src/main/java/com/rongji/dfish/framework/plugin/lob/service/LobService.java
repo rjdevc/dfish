@@ -80,20 +80,20 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
      * @param lobId 编号
      * @return String lob内容值
      */
-    String getContent(String lobId);
+    String getContent(String lobId) throws  Exception;
 
     /**
      * 批量获取lob内容
      * @param lobIds 编号数组
      * @return Map&lt;String, String&gt; 编号-内容的键值对集合
      */
-    Map<String, String> getContents(String... lobIds);
+    Map<String, String> getContents(String... lobIds) throws  Exception;
 
     /**
      * 批量获取lob内容
      * @param lobIds 编号集合
      * @return Map&lt;String, String&gt; 编号-内容的键值对集合
      */
-    Map<String, String> getContents(Collection<String> lobIds);
+    Map<String, String> getContents(Collection<String> lobIds) throws  Exception;
 
 }
