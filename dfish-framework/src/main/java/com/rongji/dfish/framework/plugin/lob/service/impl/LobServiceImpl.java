@@ -59,7 +59,15 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
         pubLob.setOperTime(new Date());
         pubLob.setArchiveFlag("0");
         try {
-            byte[] buffer = new byte[lobData.available()];
+//            byte[] buffer = new byte[lobData.available()];
+            byte[] b = new byte[1024];
+            int num = 0;
+            String res = "";
+            while ((num = lobData.read(b)) != -1)
+            {
+                res += new String(b, 0, num);
+            }
+            byte[] buffer = res.getBytes();
             lobData.read(buffer);
             lobData.close();
             pubLob.setLobData(buffer);
@@ -137,8 +145,10 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     public Map<String, String> getContents(Collection<String> lobIds) {
         Map<String, byte[]> lobDatas = getDao().getLobDatas(lobIds);
         Map<String, String> contents = new HashMap<>(lobDatas.size());
-        for ( Map.Entry<String , byte[]>  entry : lobDatas.entrySet()) {
-            contents.put(entry.getKey(), new String(entry.getValue()));
+        if(Utils.notEmpty(lobIds)){
+            for ( Map.Entry<String , byte[]>  entry : lobDatas.entrySet()) {
+                contents.put(entry.getKey(), new String(entry.getValue()));
+            }
         }
         return contents;
     }
