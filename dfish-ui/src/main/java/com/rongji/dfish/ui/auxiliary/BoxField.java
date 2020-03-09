@@ -26,39 +26,44 @@ public class BoxField {
         return forbid;
     }
 
-    public void setForbid(String forbid) {
+    public BoxField setForbid(String forbid) {
         this.forbid = forbid;
+        return this;
     }
 
     public String getRemark() {
         return remark;
     }
 
-    public void setRemark(String remark) {
+    public BoxField setRemark(String remark) {
         this.remark = remark;
+        return this;
     }
 
     public String getSearch() {
         return search;
     }
 
-    public void setSearch(String search) {
+    public BoxField setSearch(String search) {
         this.search = search;
+        return this;
     }
 
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
+    public BoxField setText(String text) {
         this.text = text;
+        return this;
     }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public BoxField setValue(String value) {
         this.value = value;
+        return this;
     }
 }
