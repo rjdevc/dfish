@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.plugin.lob.service.impl;
 
 import com.rongji.dfish.base.exception.MarkedException;
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.plugin.lob.dao.LobDao;
 import com.rongji.dfish.framework.plugin.lob.entity.PubLob;
@@ -130,13 +131,13 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
 
 
     @Override
-    public String getContent(String lobId) throws  Exception{
+    public String getContent(String lobId) {
         Map<String, String> lobMap = getContents(lobId);
         return lobMap.get(lobId);
     }
 
     @Override
-    public Map<String, String> getContents(String... lobIds) throws  Exception{
+    public Map<String, String> getContents(String... lobIds) {
         if (Utils.isEmpty(lobIds)) {
             return Collections.emptyMap();
         }
@@ -144,13 +145,17 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     }
 
     @Override
-    public Map<String, String> getContents(Collection<String> lobIds) throws  Exception{
+    public Map<String, String> getContents(Collection<String> lobIds) {
         Map<String, byte[]> lobDatas = getDao().getLobDatas(lobIds);
         Map<String, String> contents = new HashMap<>(lobDatas.size());
         for (Map.Entry<String, byte[]> entry : lobDatas.entrySet()) {
             String value = null;
             if (entry.getValue() != null) {
-                value = new String(entry.getValue(),"utf-8");
+                try {
+                    value = new String(entry.getValue(), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    LogUtil.error("字符转码异常", e);
+                }
             }
             contents.put(entry.getKey(), value);
         }
