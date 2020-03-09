@@ -1513,8 +1513,10 @@ $.draggable = function( a, b ) {
 						}
 						if ( ! sn && o.cst.isDisabled && o.cst.isDisabled( e, { draggable: c, droppable: m, type: 'append' } ) )
 							_classAdd( m.$(), 'f-dnd-notallowed' );
-						else
+						else {
 							n = m;
+							_classAdd( m.$(), 'f-dnd-allowed' );
+						}
 					}
 				}
 				if ( ! sn && $( d ) ) {
@@ -1536,14 +1538,14 @@ $.draggable = function( a, b ) {
 					if ( isDrop.call( $.all[ k ] ) ) {
 						if ( _drop_cache[ k ].cst.highlight ) {
 							$.all[ k ].$().style.zIndex = '';
-							$.all[ k ].$().style.background = '';
+							$.all[ k ].$().style.background = ''
 							$.all[ k ].removeClass( 'z-droppable-highlight' );
 						}
 						$.all[ k ].removeClass( 'z-droppable' );
 					}
 				}
 				_dndSortNormal( T );
-				_rm( u ), _rm( v ), _rm( d ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' );
+				_rm( u ), _rm( v ), _rm( d ), $.query( '.f-dnd-notallowed' ).removeClass( 'f-dnd-notallowed' ), $.query( '.f-dnd-allowed' ).removeClass( 'f-dnd-allowed' );
 			}
 		} );
 	} );

@@ -928,7 +928,8 @@
 .f-dnd-sort ._g{position:absolute;top:0;left:0;right:0;bottom:0;background:red}
 .f-dnd-sort-tr{height:2px;background:red}
 .f-dnd-sort-tr ._g{padding:0}
-.f-dnd-notallowed,.f-dnd-notallowed *{cursor:not-allowed!important}
+.f-dnd-notallowed{cursor:not-allowed!important}
+.f-dnd-allowed{cursor:default!important}
 
 .f-develop{position:absolute;border:2px dashed red;z-index:11}
 .f-develop.z-tpl{border-color:blue}
