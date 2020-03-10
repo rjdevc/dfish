@@ -6093,7 +6093,8 @@ CheckBox = define.widget( 'CheckBox', {
 				block: function() { return ! this.isNormal() },
 				method: function() {
 					if ( this.isNormal() ) {
-						this.elements( '[w-target]' ).each( function() { _widget( this )._ustag() } );
+						this.siblings( function() { this.x.target && this._ustag() } );
+						//this.elements( '[w-target]' ).each( function() { _widget( this )._ustag() } );
 						this.parentNode.isBoxGroup && this.parentNode.triggerHandler( 'change' );
 					}
 				}
@@ -6147,7 +6148,7 @@ CheckBox = define.widget( 'CheckBox', {
 			return this.$();
 		},
 		_ustag: function( a ) {
-			var b = this.ownerView.findAll( this.x.target );
+			var b = this.x.target.isWidget ? [ this.x.target ] : this.ownerView.findAll( this.x.target );
 			for ( var i = 0, c; i < b.length; i ++ ) {
 				for ( var j = 0, c = this.ownerView.fAll( '*', b[ i ] ); j < c.length; j ++ )
 					c[ j ].disable( ! this.isChecked() );
@@ -6155,6 +6156,11 @@ CheckBox = define.widget( 'CheckBox', {
 		},
 		elements: function( a, b ) {
 			return Q( '[name="' + this.input_name() + '"]' + (b ? ':not(:disabled)' : '') + (a === T ? ':checked' : a === F ? ':not(:checked)' : (a || '')), this.ownerView.$() );
+		},
+		siblings: function( a ) {
+			for ( var i = 0, b = this.elements(), l = b.length; i < l; i ++ ) {
+				a.call( _widget( b[ i ] )  );
+			}
 		},
 		input_name: function() {
 			return this.x.name || this.parentNode.x.name || '';
@@ -6247,7 +6253,7 @@ CheckBox = define.widget( 'CheckBox', {
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.br ? '' : ' f-fix') + '"' + this.prop_title() +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
-				(this.x.target ? ' w-target="' + this.x.target + '"' : '') + _html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>' +
+				_html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>' +
 				(p.x.dir === 'v' && p[ p.length - 1 ] != this ? '<br>' : '');
 		}
 	}
