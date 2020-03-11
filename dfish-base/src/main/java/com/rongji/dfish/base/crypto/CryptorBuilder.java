@@ -1,5 +1,12 @@
 package com.rongji.dfish.base.crypto;
 
+/**
+ * 加解密工具的构建器。
+ * 使用它可以更加方便的构建一个工具
+ *  CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH,"password".getBytes())
+ *   .present(CryptUtil.PRESENT_BASE32).build();
+ *   String s=c.decrypt(src);
+ */
 public class CryptorBuilder {
     public static final int PRESENT_RAW = 0;
     public static final int PRESENT_HEX = 1;

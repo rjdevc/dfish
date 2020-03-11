@@ -13,6 +13,10 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * 基于JDK - JCE体系中Cipher 制作的加解密工具
+ * 该工具支持 ALGORITHM_BLOWFISH  ALGORITHM_DES ALGORITHM_TRIPLE_DES 和 ALGORITHM_AES
+ */
 public class CipherCryptor extends  AbstractCryptor{
 
     public CipherCryptor(CryptorBuilder cb){
@@ -66,7 +70,6 @@ public class CipherCryptor extends  AbstractCryptor{
         if(inited){
             return;
         }
-
         String[] providers = {"com.sun.crypto.provider.SunJCE",
                 "com.ibm.crypto.provider.IBMJCE",
                 "com.ibm.crypto.hdwrCCA.provider.IBMJCE4758",

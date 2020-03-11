@@ -7,6 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 
+
+/**
+ * 基于JDK - JCE体系中MessageDigest(数字摘要) 制作的加解密工具
+ * 该工具支持 MD5 SHA1等。
+ * 数字摘要工具，不可解密。更多用于签名。
+ */
 public class MessageDigestCryptor extends  AbstractCryptor{
     @Override
     protected void doEncrypt(InputStream is, OutputStream os) {

@@ -2,6 +2,9 @@ package com.rongji.dfish.base.crypto.stream;
 
 import java.io.InputStream;
 
+/**
+ *  把原文输出成BASE64格式。
+ */
 public class Base64InputStream extends AbstractPresentInputStream {
 
     public Base64InputStream(InputStream in) {

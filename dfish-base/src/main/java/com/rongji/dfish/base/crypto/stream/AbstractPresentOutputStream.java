@@ -4,6 +4,14 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * 加密完的数据通常呈现二进制流的状态。所以一般会用可打印字符表达。
+ * 常见的有用16进制字符表达，一个二进制字节用2个HEX字符；
+ * 用32进制字符表达。5个二进制字节用8个BASE32字符；
+ * 用64进制字符表达。3个二进制字节用4个BASE64字符；
+ *
+ * 与AbstractPresentInputputStream 相反，它负责把原文写成编码过后的格式
+ */
 public abstract class AbstractPresentOutputStream extends FilterOutputStream {
     protected int TEXT_SIZE = 2;
     protected int BIN_SIZE = 1;

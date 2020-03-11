@@ -3,6 +3,9 @@ package com.rongji.dfish.base.crypto.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * 把原文输出成BAS332格式。
+ */
 public class Base32OutputStream extends AbstractPresentOutputStream {
     public Base32OutputStream(OutputStream out) {
         super(out);

@@ -4,6 +4,12 @@ package com.rongji.dfish.base.crypto.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ *  把原文输出成BASE64格式。同时不再使用URL上会转义的字符。
+ *  由于JDK8.0 和dfish3.x版本 都是使用减号和下划线。唯一不同的是JDK8
+ *  使用了=作为PADDING  但这个是一个要转义的字符。它并不合理，
+ *  所以5.0版本。转成BASE53不再使用PADDING 但，不管有没有PADDING 是等号还是点号都能解析出原文。
+ */
 public class Base64UrlsafeOutputStream extends AbstractPresentOutputStream {
     public Base64UrlsafeOutputStream(OutputStream out) {
         super(out);

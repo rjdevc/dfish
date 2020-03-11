@@ -3,6 +3,9 @@ package com.rongji.dfish.base.crypto.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * SM4算法的流模式适配器
+ */
 public class SM4ECBOutputStream extends AbstractPresentOutputStream {
     private long[] key;
     private boolean flushed;

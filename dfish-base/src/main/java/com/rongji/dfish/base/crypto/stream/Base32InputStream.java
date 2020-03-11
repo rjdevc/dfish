@@ -3,6 +3,7 @@ package com.rongji.dfish.base.crypto.stream;
 import java.io.InputStream;
 
 /**
+ * 从BAS332格式中读取内容，并转化成原文。
  * 每次读取读取8个字节的数据，并转化成5个字节，直到最后一组可能不是5的倍数。
  */
 public class Base32InputStream extends AbstractPresentInputStream {

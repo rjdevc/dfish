@@ -4,20 +4,20 @@ package com.rongji.dfish.base.crypto;
 import java.io.*;
 import com.rongji.dfish.base.crypto.stream.*;
 
+/**
+ * 抽象加解密工具，提供基础方法，用于计划加解密工作开发
+ */
 public abstract class AbstractCryptor implements Cryptor{
 
-    /**
-     * 该方法不计入encoding.
-     * 1 先过 zip 的流
-     * 2 转接 加密流
-     * 3 转接 present的流
-     *
-     * @param is
-     * @param os
-     */
     @Override
     public void encrypt(InputStream is, OutputStream os) {
 
+        /*
+        该方法不计入encoding.
+     * 1 先过 zip 的流
+     * 2 转接 加密流
+     * 3 转接 present的流
+         */
         is=decorate(is);
         os=decorate(os);
         OutputStream pos;
@@ -54,8 +54,18 @@ public abstract class AbstractCryptor implements Cryptor{
         return new BufferedOutputStream(out);
     }
 
+    /**
+     * 去除了 压缩， 字符集，以及 转化成BASE64 等操作后，内核的加解密动作
+     * @param is InputStream
+     * @param os OutputStream
+     */
     protected abstract void doEncrypt(InputStream is, OutputStream os);
 
+    /**
+     * 去除了 解压缩， 字符集，以及 转化成BASE64 等操作后，内核的加解密动作
+     * @param is InputStream
+     * @param os OutputStream
+     */
     protected abstract void doDecrypt(InputStream is, OutputStream os);
 
     @Override
@@ -105,12 +115,27 @@ public abstract class AbstractCryptor implements Cryptor{
         }
     }
 
+    /**
+     * 构造函数
+     * @param builder
+     */
     public AbstractCryptor(CryptorBuilder builder) {
         this.builder = builder;
     }
 
+    /**
+     * 取得builder句柄。
+     */
     protected CryptorBuilder builder;
 
+    /**
+     * 将文本配置的秘钥转化成当前算法要求的 byte[]
+     * @param key 文本秘钥
+     * @param minLen 最小宽度
+     * @param maxLen 最大宽度
+     * @param algorithm 算法
+     * @return byte[]
+     */
     protected static byte[] getKeyBytes(String key,int minLen,int maxLen,String algorithm){
         if(isHex(key)&& key.length()/2>=minLen&&key.length()/2>=maxLen){
             return parseHex(key);
@@ -158,6 +183,11 @@ public abstract class AbstractCryptor implements Cryptor{
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
             0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 96
 
+    /**
+     * 运行加密或解密的流动作
+     * @param is  InputStream
+     * @param os OutputStream
+     */
     protected void run(InputStream is, OutputStream os) {
         byte[] b = new byte[8192];
         int len = 0;

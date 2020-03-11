@@ -8,6 +8,10 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * 基于国密算法SM4 制作的加解密工具
+ * 分组方式现在固定为ECB
+ */
 public class SM4Cryptor extends AbstractCryptor {
     public <T extends CryptorBuilder> SM4Cryptor(CryptorBuilder builder) {
         super(builder);

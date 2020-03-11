@@ -3,6 +3,9 @@ package com.rongji.dfish.base.crypto.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ *  把原文输出成BASE64格式。
+ */
 public class Base64OutputStream extends AbstractPresentOutputStream {
     public Base64OutputStream(OutputStream out) {
         super(out);
