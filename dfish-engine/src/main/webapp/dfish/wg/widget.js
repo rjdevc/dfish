@@ -1468,8 +1468,8 @@ W = define( 'Widget', function() {
 				b += _html_on.call( this );
 			if ( v = this.prop_cls() )
 				b += ' class="' + v + '"';
-			if ( v = this.attr( 'align' ) )
-				b += ' align=' + v;
+			//if ( v = this.attr( 'align' ) )
+			//	b += ' align=' + v;
 			if ( this.property )
 				b += this.property;
 			return b;
@@ -2514,6 +2514,7 @@ _viewResources = cfg.viewResources || {},
 Layout = define.widget( 'Layout', {
 	Const: function( x, p ) {
 		this.rootNode = p;
+		p.x.bind && (this.bind = p.x.bind);
 		W.apply( this, arguments );
 	},
 	Prototype: {
@@ -2531,6 +2532,7 @@ View = define.widget( 'View', {
 		_setParent.call( this, r );
 		_regWidget.apply( this, arguments );
 		_regIdName.call( this, r );
+		p && p.bind && (this.bind = p.bind);
 		this.init_nodes();
 		this._instanced = T;
 
@@ -2963,6 +2965,7 @@ Html = define.widget( 'Html', {
 			this.addEvent( 'ready',  this.thumb );
 			this.addEvent( 'resize', this.thumb );
 		}
+		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		if ( ! x.vAlign && p && p.x.vAlign )
 			this.defaults( { vAlign: p.x.vAlign } );
 	},
@@ -3196,6 +3199,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 		x.br && (this.className += ' z-br');
 		!this.length && (this.className += ' z-empty');
 		W.apply( this, arguments );
+		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		(!x.vAlign && p && p.x.vAlign) && this.defaults( { vAlign: p.x.vAlign } );
 		this.x.overflow && this.defaults( { scroll: F } );
 	},
@@ -4092,6 +4096,7 @@ PageBar = define.widget( 'PageBar', {
 		if ( this.face === 'normal' )
 			this.page_text = Loc.page_text;
 		!x.currentPage && (x.currentPage = 1);
+		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		x.target && _regTarget.call( this, function() {
 			var a = this.ownerView.find( x.target );
 			if ( a ) {
@@ -4620,7 +4625,7 @@ Dialog = define.widget( 'Dialog', {
 			var s = _proto.html_nodes.apply( this, arguments );
 			if ( ie7 )
 				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
-			if ( this.type === 'Dialog' && this.x.loadinghead !== F )
+			if ( this.type === 'Dialog' && this.x.loadingHead !== F )
 				s += '<div class=w-dialog-loadinghead onmousedown=' + evw + '.dragTitle(this,event)><i class=f-vi></i><span class="_t f-va">' + (typeof this.x.title === _STR ? this.x.title : '') + '</span><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
 			return s;
 		},
@@ -6477,7 +6482,7 @@ Select = define.widget( 'Select', {
 CalendarNum = define.widget( 'CalendarNum', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		x.focus && $.classAdd( this, 'z-on' );
+		(x.focusable || x.value === p.x.focusDate) && x.focus && $.classAdd( this, 'z-on' );
 		x.value === p.nowValue && $.classAdd( this, 'z-today' );
 	},
 	Listener: {
@@ -6814,7 +6819,7 @@ Calendar = define.widget( 'Calendar', {
 			while ( b <= d ) {
 				var v = this._fm( b ),
 					t = { value: v, num: b.getDate(), pad: b.getMonth() !== c, status: (n && n > v) || (m && m < v) ? 'disabled' : N, focus: f === v };
-				o && o[ v ] && $.extend( t, o[ v ] );
+				o && o[ v ] && $.merge( t, o[ v ] );
 				e.push( (b.getDay() === 0 ? '<tr>' : '') + this.add( t ).html() );
 				b.setDate( b.getDate() + 1 );
 			}
@@ -8075,7 +8080,7 @@ ComboBox = define.widget( 'ComboBox', {
 		},
 		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
-			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', snap: { indent: 1 }, loadinghead: F };
+			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', snap: { indent: 1 }, loadingHead: F, bind: this };
 			$.extendDeep( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
 			var o = { type: 'Dialog', autoHide: T, memory: T, snap: { target: this.id + 'f', position: 'v' }, widthMinus: 2, heightMinus: 2 },
@@ -8117,6 +8122,9 @@ ComboBox = define.widget( 'ComboBox', {
 			for ( var i = 0, s = []; i < this.length; i ++ )
 				s.push( this[ i ].x.text );
 			return $.idsAdd( s.join( ',' ), this.queryText() );
+		},
+		getHighlightKey: function() {
+			return this.queryText();
 		},
 		// 根据文本增加已选项, 多个用逗号或空白符隔开 /@ t -> text|replaceObject, a -> param data?
 		addOpt: function( t, a ) {
@@ -9737,7 +9745,7 @@ Leaf = define.widget( 'Leaf', {
 		html_text: function() {
 			var t = this.html_format(), h;
 			if ( typeof t === _STR && (h = this.rootNode.x.highlight) && ! this.isDisabled() ) {
-				var key = h.key == N ? (this.ownerView.combo && this.ownerView.combo.getKey()) : h.key;
+				var key = h.key == N ? (this.ownerView.bind && this.ownerView.bind.getHighlightKey()) : h.key;
 				key && (t = $.strHighlight( t, key, h.matchlength, h.keyCls ));
 			}
 			if ( typeof t === _OBJ ) {
@@ -10247,7 +10255,7 @@ TableRow = define.widget( 'TableRow', {
 						h && (v = $.strEscape( v ));
 					}
 					if ( v != N && e && f.highlight ) {
-						var key = f.highlight.key == N ? (this.ownerView.combo && this.ownerView.combo.getKey()) : f.highlight.key;
+						var key = f.highlight.key == N ? (this.ownerView.bind && this.ownerView.bind.getHighlightKey()) : f.highlight.key;
 						key && (v = $.strHighlight( v, key, f.highlight.matchlength, f.highlight.keyCls ));
 					}
 				}

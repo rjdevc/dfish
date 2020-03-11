@@ -535,11 +535,11 @@ define( {
             var s2 = $.strFrom( 'm/pub/test.js', '/', true ); // 返回 "test.js"
           }
       ] },
-      { name: '$.strHighlight(str, key, [matchLength], [keycls])', remark: '给字串中的关键词加上高亮的样式标签。', common: true, param: [
+      { name: '$.strHighlight(str, key, [matchLength], [keyCls])', remark: '给字串中的关键词加上高亮的样式标签。', common: true, param: [
         { name: 'str', type: 'String', remark: '字符串。' },
         { name: 'key', type: 'String', remark: '关键词。' },
         { name: 'matchLength', type: 'Number', optional: true, remark: '切词长度。' },
-        { name: 'keycls', type: 'String', optional: true, remark: '高亮的样式名。默认值为"f-keyword"。' }
+        { name: 'keyCls', type: 'String', optional: true, remark: '高亮的样式名。默认值为"f-keyword"。' }
       ] },
       { name: '$.strLen(str, [cnbyte])', remark: '获取字符串的字节长度。中文字符的字节数读取自 dfish 全局配置的 cnBytes 参数。如果没有设置此参数，默认算两个字符。', common: true, param: [
         { name: 'str', type: 'String', remark: '字符串。' },
@@ -1730,7 +1730,7 @@ define( {
         { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget格式的json对象)。' },
         { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
           { name: 'key', type: 'String', remark: '关键词。' },
-          { name: 'keycls', type: 'String', remark: '关键词样式名。' },
+          { name: 'keyCls', type: 'String', remark: '关键词样式名。' },
           { name: 'matchLength', type: 'Number', remark: '切词长度。' }
         ] },
         { name: 'labelWidth', type: 'Number', remark: '表单标题宽度。' },
@@ -2900,7 +2900,7 @@ define( {
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },
-        { name: 'keycls', type: 'String', remark: '关键词样式名。' },
+        { name: 'keyCls', type: 'String', remark: '关键词样式名。' },
         { name: 'matchLength', type: 'Number', remark: '切词长度。' }
       ] },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
@@ -3452,7 +3452,7 @@ define( {
       { name: 'buttonCls', type: 'String', optional: true, remark: '按钮样式。' },
       { name: 'buttonCount', type: 'Number', optional: true, remark: '数字页数按钮的数量。' },
       { name: 'buttonSumPage', type: 'Boolean', optional: true, remark: '显示总页数按钮。' },
-      { name: 'currentpage', type: 'Number', remark: '当前页数。(起始值为1)' },
+      { name: 'currentPage', type: 'Number', remark: '当前页数。(起始值为1)' },
       { name: 'dropAlign', type: 'String', optional: true, remark: '下拉按钮的位置，仅当 face:"simple" 时本参数有效。可选值: <b>left</b>, <b>center</b>, <b>right</b>。' },
       { name: 'face', type: 'String', optional: true, remark: '样式。可选值: <b>normal</b>, <b>mini</b>, <b>simple</b>' },
       { name: 'jump', type: 'Boolean', optional: true, remark: '显示一个可填写页数的表单。' },
