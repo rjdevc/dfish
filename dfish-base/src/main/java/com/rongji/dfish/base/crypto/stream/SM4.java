@@ -1,5 +1,8 @@
 package com.rongji.dfish.base.crypto.stream;
 
+/**
+ * 国密SM4算法。只支持ECB模式
+ */
 public class SM4 {
 
     public static void oneRound(long[] sk, byte[] input, int inOff, byte[] output, int outOff){

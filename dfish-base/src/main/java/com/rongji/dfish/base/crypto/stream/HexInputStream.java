@@ -3,6 +3,9 @@ package com.rongji.dfish.base.crypto.stream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ *  把原文输出成16进制格式。
+ */
 public class HexInputStream extends AbstractPresentInputStream {
     private static final byte[] HEX_DE = { // 用于加速解密的cache
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0

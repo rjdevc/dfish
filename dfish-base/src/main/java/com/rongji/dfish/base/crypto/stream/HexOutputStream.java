@@ -3,6 +3,9 @@ package com.rongji.dfish.base.crypto.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ *  把原文输出成16进制格式。
+ */
 public class HexOutputStream extends AbstractPresentOutputStream {
     public HexOutputStream(OutputStream out) {
         super(out);
