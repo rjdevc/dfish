@@ -7,6 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Jpeg图片的基本信息处理
+ */
 public class JpegInfo extends ImageInfo {
     private byte[] thumbData;
     private int thumbOff;

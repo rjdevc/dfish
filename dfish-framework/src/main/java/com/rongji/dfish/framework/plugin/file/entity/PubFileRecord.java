@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * 
+ * 关于附件的实体类
  */
 public class PubFileRecord implements java.io.Serializable {
 

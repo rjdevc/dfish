@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * 抽象类，用于引入外部插件需要用到附件上传的处理方式
  * @author lamontYu
  * @date 2019-12-10
  */

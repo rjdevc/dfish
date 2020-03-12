@@ -1,5 +1,8 @@
 package com.rongji.dfish.base.util;
 
+/**
+ * 执行数学任务的工具类
+ */
 public class MathUtil {
 
     public static int max(int... i) {

@@ -8,6 +8,7 @@ import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import java.util.*;
 
 /**
+ * 附件file的hibernate实现dao层
  * @author lamontYu
  * @date 2019-12-18
  * @since 5.0

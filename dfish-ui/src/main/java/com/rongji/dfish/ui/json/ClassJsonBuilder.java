@@ -164,6 +164,9 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
         sb.append('}');
     }
 
+    /**
+     * 用于获取属性名
+     */
     public static class ReflectAppender implements JsonPropertyAppender {
         public ReflectAppender(String propertyName, Method getterMethod) {
             this.propertyName = propertyName;

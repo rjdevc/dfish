@@ -1,7 +1,9 @@
 package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.*;
-
+/**
+ * 表单容器。默认横向排列。
+ */
 public class FormLabel extends AbstractWidget<FormLabel> implements Scrollable<FormLabel>,HtmlContentHolder<FormLabel>,Alignable<FormLabel>, VAlignable<FormLabel>,HasText<FormLabel>,LabelRow<FormLabel> {
     private String align;
     private String vAlign;

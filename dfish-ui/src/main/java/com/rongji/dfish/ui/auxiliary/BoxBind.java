@@ -1,5 +1,8 @@
 package com.rongji.dfish.ui.auxiliary;
 
+/**
+ * Box专用，设置数据来源
+ */
 public class BoxBind {
     private BoxField field;
     private Boolean keepShow;

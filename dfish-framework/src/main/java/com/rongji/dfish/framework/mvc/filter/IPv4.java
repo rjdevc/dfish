@@ -1,9 +1,8 @@
 package com.rongji.dfish.framework.mvc.filter;
 
 /**
+ * 对IPV4协议进行处理
  * 
- * 
- *
  */
 public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 	private static final long serialVersionUID = 8891234771470437121L;

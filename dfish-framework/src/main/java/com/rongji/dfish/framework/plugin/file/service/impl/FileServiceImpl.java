@@ -18,6 +18,9 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.Map.Entry;
 
+/**
+ * 附件数据服务层定义实现类
+ */
 public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileRecord, String> implements FileService {
     @Resource(name = "fileDao")
     private FileDao dao;

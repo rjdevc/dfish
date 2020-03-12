@@ -250,6 +250,9 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 
     }
 
+    /**
+     * 组件关于type属性的json构建
+     */
     public static class WidgetTypeAppender extends WidgetPropertyAppender {
         static WidgetTypeAppender instance = new WidgetTypeAppender();
 
@@ -490,6 +493,9 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
         }
     }
 
+    /**
+     * 抽象类，构建组件属性的json
+     */
     public static abstract class WidgetPropertyAppender implements JsonPropertyAppender {
         public WidgetPropertyAppender(String propertyName) {
             this.propertyName = propertyName;
@@ -509,6 +515,9 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 
     }
 
+    /**
+     * 抽象类，构建String属性的json
+     */
     public static abstract class WidgetStringPropertyAppender extends WidgetPropertyAppender {
         public WidgetStringPropertyAppender(String propertyName) {
             super(propertyName);
@@ -540,7 +549,9 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
          */
         protected abstract String getValue(Object w);
     }
-
+    /**
+     * 抽象类，构建Integer属性的json
+     */
     public static abstract class WidgetIntegerPropertyAppender extends WidgetPropertyAppender {
         public WidgetIntegerPropertyAppender(String propertyName) {
             super(propertyName);
@@ -571,7 +582,9 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
          */
         protected abstract Integer getValue(Object w);
     }
-
+    /**
+     * 抽象类，构建Boolean属性的json
+     */
     public static abstract class WidgetBooleanPropertyAppender extends WidgetPropertyAppender {
         public WidgetBooleanPropertyAppender(String propertyName) {
             super(propertyName);

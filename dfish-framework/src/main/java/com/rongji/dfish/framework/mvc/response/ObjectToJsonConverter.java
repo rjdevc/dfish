@@ -14,6 +14,10 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 自定义的HttpMessageConverter，并注册这个HttpMessageConverter到Spring MVC。
+ * 处理request和response里面的数据，自定义返回json数据的格式
+ */
 public class ObjectToJsonConverter extends AbstractHttpMessageConverter<Object> {
 
     /**

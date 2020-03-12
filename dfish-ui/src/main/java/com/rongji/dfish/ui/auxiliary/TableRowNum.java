@@ -2,6 +2,9 @@ package com.rongji.dfish.ui.auxiliary;
 
 import com.rongji.dfish.ui.AbstractWidget;
 
+/**
+ * 用于table的自增数字字段。
+ */
 public class TableRowNum extends AbstractWidget<TableRowNum> {
 
     private static final long serialVersionUID = -8038094039396279588L;

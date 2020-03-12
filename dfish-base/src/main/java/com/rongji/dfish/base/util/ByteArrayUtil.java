@@ -1,5 +1,8 @@
 package com.rongji.dfish.base.util;
 
+/**
+ * byte[]处理类
+ */
 public class ByteArrayUtil {
     public static int indexOf( byte[] src, byte[] target) {
         return indexOf(src,0,src.length,target);

@@ -11,6 +11,9 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * 敏感词过滤器
+ */
 public class SensitiveWordFilter {
 
     private static SensitiveWordFilter instance = new SensitiveWordFilter();

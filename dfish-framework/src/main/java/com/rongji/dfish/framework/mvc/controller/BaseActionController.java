@@ -23,6 +23,9 @@ import java.lang.reflect.Method;
 import java.net.SocketException;
 import java.util.*;
 
+/**
+ * 提供一个入口，对request传来的数据进行统一处理
+ */
 public class BaseActionController extends MultiActionController {
     /**
      * 允许用户自定义分页数设置

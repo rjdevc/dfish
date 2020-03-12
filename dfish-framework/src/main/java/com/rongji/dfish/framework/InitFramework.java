@@ -25,6 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * 框架初始化配置类
+ */
 public class InitFramework implements ServletContextAware, ApplicationContextAware {
 	private ServletContext servletContext;
 	private ApplicationContext applicationContext;

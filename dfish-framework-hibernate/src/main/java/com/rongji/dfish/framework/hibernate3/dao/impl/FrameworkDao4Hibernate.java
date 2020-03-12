@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
+ * 接口，Hibernate的数据访问层定义
  * @author lamontYu
  * @date 2019-12-04
  * @since 5.0

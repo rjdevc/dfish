@@ -7,6 +7,7 @@ import com.rongji.dfish.base.util.json.JsonBuilder;
 import java.util.List;
 
 /**
+ * Json处理工具类
  * @author lamontYu
  * @date 2019-12-10
  */

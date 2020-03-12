@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 富文本编辑器插件
  * @author LinLW
  */
 public class UEditor extends AbstractInput<UEditor, String> {

@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 接口，数据访问层，定义对数据库表的操作
  * @author lamontYu
  * @date 2019-12-04 15:40
  */

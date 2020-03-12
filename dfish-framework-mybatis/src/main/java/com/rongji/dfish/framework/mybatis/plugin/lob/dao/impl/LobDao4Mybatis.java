@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Date;
 
 /**
+ * Mybatis模式下，存储lob的数据库操作定义
  * @author lamontYu
  * @date 2019-12-05
  */

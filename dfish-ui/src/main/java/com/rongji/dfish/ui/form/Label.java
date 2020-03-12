@@ -2,6 +2,9 @@ package com.rongji.dfish.ui.form;
 
 import com.rongji.dfish.ui.*;
 
+/**
+ * 表单标签。
+ */
 public class Label extends AbstractWidget<Label> implements HtmlContentHolder<Label>, Alignable<Label>, HasText<Label> {
 
     private static final long serialVersionUID = -1384522916094820984L;

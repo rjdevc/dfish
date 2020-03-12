@@ -170,6 +170,9 @@ public class Carousel extends AbstractWidget<Carousel> {
 		return this;
 	}
 
+	/**
+	 * 幻灯片插件中的选项
+	 */
 	public static class Option {
 
 		private String url;

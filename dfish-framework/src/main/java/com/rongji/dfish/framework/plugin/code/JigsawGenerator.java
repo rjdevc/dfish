@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 拼图滑块验证工具
+ */
 public class JigsawGenerator {
 
     public static final String KEY_CAPTCHA = "com.rongji.dfish.CAPTCHA.JIGSAW";

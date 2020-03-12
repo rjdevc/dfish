@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * 对传入的参数进行过滤配置
+ */
 public class OvertimeFilter implements Filter {
 	private long time=1500;
 	@Override

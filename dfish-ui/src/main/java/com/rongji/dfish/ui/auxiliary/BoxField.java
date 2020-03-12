@@ -1,5 +1,8 @@
 package com.rongji.dfish.ui.auxiliary;
 
+/**
+ * Box专用，字段参数
+ */
 public class BoxField {
     private String value;
     private String text;

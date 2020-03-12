@@ -10,6 +10,9 @@ import com.rongji.dfish.framework.info.ServletInfo;
 
 import java.io.File;
 
+/**
+ * 默认系统配置
+ */
 public class DefaultSystemConfig implements SystemConfigHolder {
     private String configFile;
     private JsonConfigHelper xmltool;

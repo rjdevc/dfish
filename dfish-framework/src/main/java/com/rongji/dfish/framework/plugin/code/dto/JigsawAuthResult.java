@@ -3,6 +3,7 @@ package com.rongji.dfish.framework.plugin.code.dto;
 import java.io.Serializable;
 
 /**
+ * 拼图验证对象
  * @author lamontYu
  * @date 2019-12-10
  */

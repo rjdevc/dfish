@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * 适用于处理json格式的数据，将数据转换为json字符串
+ * @param <T>
+ */
 public class JsonResponse<T> {
     private Header header = new Header();
     private Error error;

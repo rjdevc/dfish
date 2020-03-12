@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
+ * 抽象类，定义对数据库表的基本操作方法
  * @author lamontYu
  * @date 2019-12-04 17:50
  */
