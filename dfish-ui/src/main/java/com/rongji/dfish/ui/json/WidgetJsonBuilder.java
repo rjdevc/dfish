@@ -251,16 +251,24 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
     }
 
     /**
-     * 组件关于type属性的json构建
+     * Widget的type属性在输出的时候，有很多种情况是可以忽略的，用于减少JSON长度。
+     * 这里WidgetTypeAppender就是专门处理type属性的Appender.
      */
     public static class WidgetTypeAppender extends WidgetPropertyAppender {
-        static WidgetTypeAppender instance = new WidgetTypeAppender();
+        private static WidgetTypeAppender instance = new WidgetTypeAppender();
 
+        /**
+         * 因为要读取h和编译配置，所以这个Append必须是单例的，以提高性能。
+         * @return WidgetTypeAppender
+         */
         public static WidgetTypeAppender getInstance() {
             return instance;
         }
 
-        public WidgetTypeAppender() {
+        /**
+         * 构造函数
+         */
+        private WidgetTypeAppender() {
             super("type");
             //加载信息type 可以省略的信息
             init("path:pub;" +
@@ -294,12 +302,26 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
             return begin;
         }
 
+        /**
+         * 节点配置 表示任何节点
+         */
         public static final String ANY = "*";
+        /**
+         * 节点配置 的前缀 表示路径为这个值的节点
+         */
         public static final String PATH_PREFIX = "path:";
+        /**
+         * 节点配置的前缀 表示 type为这个值的节点
+         */
         public static final String TYPE_PREFIX = "type:";
         private Node root = new AllMatchNode(ANY);
 
-        public void init(String config) {
+        /**
+         * 初始化，根据文本的配置，编译成Node树的格式，
+         * 该格式可以高性能的判断 type是否需要输出。
+         * @param config String 配置
+         */
+        protected void init(String config) {
             if (config == null) {
                 return;
             }
@@ -331,7 +353,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                         } else if (expr.startsWith(TYPE_PREFIX)) {
                             node = new TypeMatchNode(expr);
                         }
-                        parent.addSubNode(node);
+                        parent.addNode(node);
                     }
                     parent = node;
                     if (!node.end) {
@@ -342,6 +364,11 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
             LogUtil.lazyDebug(getClass(), () -> root.show());
         }
 
+        /**
+         * 当前路径是否符合 不需要输出type属性的规则。
+         * @param path 构建过程中path 详见构建过程JsonFormat
+         * @return boolean
+         */
         public boolean match(Stack<PathInfo> path) {
             if (root.subs == null) {
                 return false;
@@ -374,6 +401,10 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
             return false;
         }
 
+        /**
+         * 用于将Type可以隐藏的规则编译成树格式
+         * 所以这个Node有subs 当最满足一整串条件的时候，end值为true。这时候即可得出结论。
+         */
         public static abstract class Node {
             protected String expr;
             protected List<Node> subs;
@@ -398,6 +429,12 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
             private static final char CHAR_T = '\u251C';//制表符├
             private static final char CHAR_L = '\u2514';//制表符└
 
+            /**
+             * 构建成有缩进格式的文本，以便理解
+             * @param prefix 前缀
+             * @param expr 当前节点表达式
+             * @param sb 结果输出到该StringBuilder
+             */
             private void show(String prefix, String expr, StringBuilder sb) {
                 sb.append(prefix);
                 sb.append(expr);
@@ -431,11 +468,19 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                 }
             }
 
+            /**
+             * 构造函数
+             * @param expr 当前节点表达式
+             */
             public Node(String expr) {
                 this.expr = expr;
             }
 
-            public void addSubNode(Node sub) {
+            /**
+             * 增加子节点
+             * @param sub Node
+             */
+            public void addNode(Node sub) {
                 if (subs == null) {
                     subs = new ArrayList<Node>();
                 }
@@ -448,17 +493,29 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
             }
         }
 
+        /**
+         * 表达式 * 编译成的节点。
+         * 即任何节点。都符合这段配置
+         */
         public static class AllMatchNode extends Node {
             @Override
             public boolean match(PathInfo pathInfo) {
                 return true;
             }
 
+            /**
+             * 构造函数
+             * @param expr  表达式 这里只能是*
+             */
             public AllMatchNode(String expr) {
                 super(expr);
             }
         }
 
+        /**
+         * 表达式 type:xxxx 所编译成的节点
+         * 即表示 type必须符合这个值才能匹配。
+         */
         public static class TypeMatchNode extends Node {
             private String type;
 
@@ -471,12 +528,20 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                 return false;
             }
 
+            /**
+             * 构造函数
+             * @param expr 表达式
+             */
             public TypeMatchNode(String expr) {
                 super(expr);
                 this.type = expr.substring(5);
             }
         }
 
+        /**
+         * 表达式 path:xxx 所编译成的节点
+         * 即表示 path必须符合这个值才能匹配
+         */
         public static class PathMatchNode extends Node {
             private String path;
 
@@ -486,6 +551,10 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                 return path.equals(pPath);
             }
 
+            /**
+             * 构造函数
+             * @param expr 表达式
+             */
             public PathMatchNode(String expr) {
                 super(expr);
                 this.path = expr.substring(5);
@@ -494,9 +563,16 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
     }
 
     /**
-     * 抽象类，构建组件属性的json
+     * WidgetPropertyAppender 用于构建类的属性。
+     * 与默认的JsonPropertyAppender不同
+     * 因为它只处理符合Widget接口的对象。部分属性是直接调用。而非类反射。
+     * 从而提高性能。
      */
     public static abstract class WidgetPropertyAppender implements JsonPropertyAppender {
+        /**
+         * 构造函数
+         * @param propertyName 属性名
+         */
         public WidgetPropertyAppender(String propertyName) {
             this.propertyName = propertyName;
         }
@@ -516,9 +592,13 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
     }
 
     /**
-     * 抽象类，构建String属性的json
+     * 属性添加器，它用于添加Widget属性中类型是String的属性。
      */
     public static abstract class WidgetStringPropertyAppender extends WidgetPropertyAppender {
+        /**
+         * 构造函数
+         * @param propertyName 属性名
+         */
         public WidgetStringPropertyAppender(String propertyName) {
             super(propertyName);
         }
@@ -549,10 +629,15 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
          */
         protected abstract String getValue(Object w);
     }
+
     /**
-     * 抽象类，构建Integer属性的json
+     * 属性添加器，它用于添加Widget属性中类型是Integer的属性。
      */
     public static abstract class WidgetIntegerPropertyAppender extends WidgetPropertyAppender {
+        /**
+         * 构造函数
+         * @param propertyName 属性名
+         */
         public WidgetIntegerPropertyAppender(String propertyName) {
             super(propertyName);
         }
@@ -582,10 +667,15 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
          */
         protected abstract Integer getValue(Object w);
     }
+
     /**
-     * 抽象类，构建Boolean属性的json
+     * 属性添加器，它用于添加Widget属性中类型是Boolean的属性。
      */
     public static abstract class WidgetBooleanPropertyAppender extends WidgetPropertyAppender {
+        /**
+         * 构造函数
+         * @param propertyName 属性名
+         */
         public WidgetBooleanPropertyAppender(String propertyName) {
             super(propertyName);
         }
