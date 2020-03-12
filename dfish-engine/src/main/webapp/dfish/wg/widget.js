@@ -883,7 +883,7 @@ W = define( 'Widget', function() {
 				case 'prependContent':
 				case 'appendContent':
 				case 'afterContent':
-					var d = a.replace( 'content', '' ), s = this[ 'html_' + d ]();
+					var d = a.replace( 'Content', '' ), s = this[ 'html_' + d ]();
 					this.$( d ) ? Q( this.$( d ) ).replaceWith( s ) : Q( this.$() )[ d ]( s );
 				break;
 			}
@@ -1448,11 +1448,9 @@ W = define( 'Widget', function() {
 			l < 3 && (c = this.x.escape);
 			if ( b ) {
 				var s = '';
-				try {
+				//try {
 					s = b.indexOf( 'javascript:' ) === 0 ? this.formatJS( b, N, N, d, e ) : this.formatStr( b, N, c !== F && 'strEscape', d, e );
-				} catch( ex ) {
-					throw ex;
-				}
+				//} catch( ex ) {	throw ex; }
 				return typeof s === _STR ? _parseHTML.call( this, s ) : s;
 			} else
 				return c !== F ? $.strEscape( a ) : (a == N ? '' : '' + a);
