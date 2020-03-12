@@ -6,6 +6,9 @@ public class ValidateRule<E> {
     private String target;
     private String mode;
 
+    public ValidateRule() {
+    }
+
     public ValidateRule(E value) {
         this.value = value;
     }

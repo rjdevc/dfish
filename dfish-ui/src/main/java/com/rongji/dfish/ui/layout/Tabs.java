@@ -3,8 +3,7 @@ package com.rongji.dfish.ui.layout;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.auxiliary.Tab;
 import com.rongji.dfish.ui.form.Hidden;
-import com.rongji.dfish.ui.widget.AbstractButton;
-import com.rongji.dfish.ui.auxiliary.Overflow;
+import com.rongji.dfish.ui.auxiliary.OverflowButton;
 import com.rongji.dfish.ui.widget.Split;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
     private String vAlign;
     private Integer space;
     private Split split;
-    private Overflow overflow;
+    private OverflowButton overflowButton;
     private String position;
     /**
      * 构造函数
@@ -89,18 +88,18 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
      *
      * @return Overflow
      */
-    public Overflow getOverflow() {
-        return overflow;
+    public OverflowButton getOverflowButton() {
+        return overflowButton;
     }
 
     /**
      * 当按钮过多，放不下的时候，的效果
      *
-     * @param overflow 设置当内容太多的时候不换行
+     * @param overflowButton 设置当内容太多的时候不换行
      * @return this
      */
-    public Tabs setOverflow(Overflow overflow) {
-        this.overflow = overflow;
+    public Tabs setOverflowButton(OverflowButton overflowButton) {
+        this.overflowButton = overflowButton;
         return this;
     }
 

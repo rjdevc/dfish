@@ -1,7 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.*;
-import com.rongji.dfish.ui.auxiliary.Overflow;
+import com.rongji.dfish.ui.auxiliary.OverflowButton;
 
 /**
  * button 的父类。 Alignable
@@ -19,7 +19,7 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Widget, Butto
     private Split split;
     private Boolean br;
     private Boolean scroll;
-    private Overflow overflow;
+    private OverflowButton overflowButton;
 
     /**
      * 构造函数
@@ -43,18 +43,18 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Widget, Butto
      *
      * @return Overflow
      */
-    public Overflow getOverflow() {
-        return overflow;
+    public OverflowButton getOverflowButton() {
+        return overflowButton;
     }
 
     /**
      * 当按钮过多，放不下的时候，的效果
      *
-     * @param overflow 设置当内容太多的时候不换行
+     * @param overflowButton 设置当内容太多的时候不换行
      * @return this
      */
-    public ButtonBar setOverflow(Overflow overflow) {
-        this.overflow = overflow;
+    public ButtonBar setOverflowButton(OverflowButton overflowButton) {
+        this.overflowButton = overflowButton;
         return this;
     }
 
