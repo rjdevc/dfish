@@ -5321,6 +5321,7 @@ Label = define.widget( 'Label', {
 		w != N && x.width == N && (x.width = w);
 		this.defaults( { widthMinus: this._pad } );
 		W.apply( this, arguments );
+		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		if ( ie7 ) { // IE7下需要根据td高度来手动调整label高度
 			var td = p.closest( 'TD' );
 			if ( td ) {
