@@ -174,7 +174,9 @@
 		        { "id": "Badge", "text": "Badge", "icon": ".icon .icon-class" },
 		        { "id": "Blank", "text": "Blank", "icon": ".icon .icon-class" },
 		        { "id": "Button", "text": "Button", "icon": ".icon .icon-class" },
-		        { "id": "ButtonBar", "text": "ButtonBar", "icon": ".icon .icon-class" },
+		        { "id": "ButtonBar", "text": "ButtonBar", "icon": ".icon .icon-class", "nodes": [
+		          { "id": "OverflowButton", "text": "OverflowButton", "icon": ".icon .icon-class" }
+		        ]  },
 		        { "id": "Calendar", "text": "Calendar", "icon": ".icon .icon-class", "nodes": [
 		          { "id": "CalendarItem", "text": "CalendarItem", "icon": ".icon .icon-class" }
 		        ] },

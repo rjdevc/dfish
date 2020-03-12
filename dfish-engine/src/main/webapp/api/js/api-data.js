@@ -1358,7 +1358,7 @@ define( {
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，按钮点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
       { name: 'hoverDrop', type: 'Boolean', remark: '是否当鼠标 hover 时展开下拉菜单。' },
       { name: 'icon', type: 'String', remark: '图标的url。支持以 "." 开头的样式名。' },
-      { name: 'more', type: 'Menu | Dialog', remark: 'menu或dialog。点击按钮时展示。' },
+      { name: 'more', type: 'Menu | Dialog', remark: '点击按钮时展示一个下拉元素。类型为Menu或Dialog。' },
       { name: 'name', type: 'String', remark: '在一个 view 中设置了相同 name 的 button 将成为一组，focus 只会作用于其中一个。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。点击下拉显示右键菜单。nodes 和 more 不应同时使用。' },
       { name: 'status', type: 'String', remark: '按钮状态。可选值：<b>normal</b>, <b>disabled</b>。' },
@@ -1446,6 +1446,36 @@ define( {
       ] }
     ]
   },
+  "OverflowButton": {
+  	remark: 'ButtonBar溢出时显示的按钮。',
+  	extend: 'Button',
+  	deprecate: 'closable,focusable,focus,name,target,.z-on',
+  	Config: [
+      { name: 'effect', type: 'String', remark: '效果。可选值：<b>normal</b><s>(默认)</s>, <b>swap</b><s>(点击下拉菜单按钮，和可见按钮交换位置。)</s>', optional: true },
+    ],
+    Classes: [
+      { name: '.w-overflowbutton', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//例2: 当按钮过多，超出按钮栏宽度时，设置overflowButton参数，显示一个"更多"的可下拉按钮。
+          	return~
+            {
+                type: 'ButtonBar',
+                space: 10,
+                height: 40,
+                nodes: [
+                    { text: 'Button 1' },
+                    { text: 'Button 2' },
+                    { text: 'Button 3' }
+                ],
+                overflowButton: { type: 'OverflowButton', text: '更多', effect: 'swap' } //type参数可以省略
+            }
+          }
+      ] }
+    ]
+  },
   "SubmitButton": {
   	remark: '默认提交按钮。<ul><li>在 text 等表单上按回车，将触发此按钮的点击事件。<li>执行 submit 命令时，默认带 lock: true 的效果。</ul>',
   	extend: 'Button',
@@ -1490,10 +1520,7 @@ define( {
       { name: 'dir', type: 'String', remark: '按钮排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
       { name: 'focusMultiple', type: 'Boolean', remark: '是否有多个按钮可同时设为焦点状态。' },
       { name: 'br', type: 'Boolean', remark: '是否换行。默认为false。' },
-      { name: 'overflow', type: 'Object', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。', param: [
-        { name: 'effect', type: 'String', remark: '效果。可选值：<b>normal</b><s>(默认)</s>, <b>swap</b><s>(点击下拉菜单按钮，和可见按钮交换位置。)</s>', optional: true },
-        { name: 'button', type: 'Button', remark: '显示"更多"的按钮。', optional: true }
-      ] },
+      { name: 'overflowButton', type: 'OverflowButton', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。' },
       { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'space', type: 'Number', remark: '按钮之间的间隔。' },
@@ -1528,7 +1555,7 @@ define( {
             }
           },
           function() {
-          	//例2: 当按钮过多，超出按钮栏宽度时，设置overflow参数，显示一个"更多"的可下拉按钮。
+          	//例2: 当按钮过多，超出按钮栏宽度时，设置overflowButton参数，显示一个"更多"的可下拉按钮。
           	return~
             {
                 type: 'ButtonBar',
@@ -1539,9 +1566,7 @@ define( {
                     { text: 'Button 2' },
                     { text: 'Button 3' }
                 ],
-                overflow: {
-                    button: { text: '更多' }
-                }
+                overflowButton: { type: 'OverflowButton', text: '更多' }
             }
           }
       ] }

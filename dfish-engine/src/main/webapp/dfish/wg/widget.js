@@ -3199,20 +3199,19 @@ ButtonBar = define.widget( 'ButtonBar', {
 		W.apply( this, arguments );
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		(!x.vAlign && p && p.x.vAlign) && this.defaults( { vAlign: p.x.vAlign } );
-		this.x.overflow && this.defaults( { scroll: F } );
 	},
 	Extend: Horz,
-	Default: { vAlign: 'middle', scroll: T },
+	Default: { vAlign: 'middle' },
 	Listener: {
 		body: {
 			ready: function( e ) {
 				_superTrigger( this, Horz, e );
 				this.isScrollable() && this.getFocus() && _scrollIntoView( this.getFocus() );
-				this.x.overflow && this.overflow();
+				this.x.overflowButton && this.overflow();
 			},
 			resize: function( e, f ) {
 				_superTrigger( this, Horz, e );
-				! f && this.x.overflow && this.overflow();
+				! f && this.x.overflowButton && this.overflow();
 				var h = this.innerHeight();
 				this.$( 'vi' ) && this.css( 'vi', 'height', h == N ? '' : h );
 			},
@@ -3226,7 +3225,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
 				}
-				if ( this.x.overflow ) {
+				if ( this.x.overflowButton ) {
 					this.overflow();
 					var f = this.getFocus();
 					f && f.focusOver();
@@ -3271,9 +3270,9 @@ ButtonBar = define.widget( 'ButtonBar', {
 					this[ i ].css( { visibility: '' } );
 			}
 			// 调整页面百分比时，scrollWidth可能会比offsetWidth大一个像素。这里加一个像素容错
-			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
+			var tw = this.$().offsetWidth + 1, o = this.x.overflowButton;
 			if ( this.$().scrollWidth > tw ) {
-				var t = $.extend( { type: 'Button', focusable: F, closable: F, on: { click: '' } }, this.x.pub || {}, o.button );
+				var t = $.extend( { type: 'OverflowButton', focusable: F, closable: F, on: { click: '' } }, this.x.pub || {}, o );
 				t.text == N && t.icon == N && (t.text = Loc.more);
 				this._more = this.add( t, -1 );
 				this._more.render( this.$() );
@@ -3284,14 +3283,16 @@ ButtonBar = define.widget( 'ButtonBar', {
 					w += j;
 				}
 				$.before( this[ i ].$(), this._more.$() );
-				var m = this._more.setMore( { nodes: [] } ), self = this;
-				for ( ; i < this.length; i ++ ) {
-					m.add( $.extend( { cls: '', focus: F, closable: this[ i ].x.closable, on: {
-						ready: 'this.addClass("z-on",!!' + abbr( this[ i ] ) + '.isFocus())',
-						click: 'var b=this.getCommander().parentNode;' + abbr( this[ i ] ) + '.click();b.overflow()',
-						close: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],p=o.parentNode;o.close();p._more&&p._more.drop()'
-					} , text: this[ i ].x.text, nodes: this[ i ].x.nodes } ) );
-					this[ i ].css( { visibility: 'hidden' } );
+				if ( ! this._more.more ) {
+					var m = this._more.setMore( { nodes: [] } ), self = this;
+					for ( ; i < this.length; i ++ ) {
+						m.add( $.extend( { cls: '', focus: F, closable: this[ i ].x.closable, on: {
+							ready: 'this.addClass("z-on",!!' + abbr( this[ i ] ) + '.isFocus())',
+							click: 'var b=this.getCommander().parentNode;' + abbr( this[ i ] ) + '.click();b.overflow()',
+							close: 'var o=' + $.abbr + '.all["' + this[ i ].id + '"],p=o.parentNode;o.close();p._more&&p._more.drop()'
+						} , text: this[ i ].x.text, nodes: this[ i ].x.nodes } ) );
+						this[ i ].css( { visibility: 'hidden' } );
+					}
 				}
 			}
 		},
@@ -3516,27 +3517,26 @@ Button = define.widget( 'Button', {
 				return;
 			var a = a == N || !!a, m = this.rootNode && this.rootNode.x.focusMultiple;
 			this.x.focus = a;
-			if ( this.x.focusable && this.$() ) {
-				$.classAdd( this.$(), 'z-on', a );
-				if ( a ) {
-					if ( ! m ) {
-						for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : this.parentNode; i < d.length; i ++ )
-							if ( d[ i ] !== this && d[ i ].type === this.type && d[ i ].x.name == this.x.name && d[ i ].x.focusable && d[ i ].x.focus ) { d[ i ]._focus( F ); }
-					}
+			this.x.focusable && this.addClass( 'z-on', a );
+			if ( a ) {
+				this.x.target && this._ustag();
+				if ( ! m ) {
+					for ( var i = 0, d = this.x.name ? this.ownerView.names[ this.x.name ] : this.parentNode; i < d.length; i ++ )
+						if ( d[ i ] !== this && d[ i ].type === this.type && d[ i ].x.name == this.x.name && d[ i ].x.focus ) { d[ i ]._focus( F ); }
 				}
-				a && this.x.target && this._ustag();
-				this.trigger( a ? 'focus' : 'blur' );
 			}
+			this.x.focusable && this.trigger( a ? 'focus' : 'blur' );
 			return this.x.focus;
 		},
 		focusOver: function() {
 			if ( this.x.focus ) {
-				var p = this.parentNode, o = p.x.overflow;
+				var p = this.parentNode, o = p.x.overflowButton;
 				if ( o && o.effect === 'swap' && p._more ) {
 					var q = Q( p._more.$() ).prev( '.w-button' )[ 0 ], v = q && _widget( q );
 					if ( v && v.nodeIndex < this.nodeIndex ) {
 						v.swap( this );
-						p.overflow();
+						p.trigger( 'nodeChange' );
+						//p.overflow();
 					}
 				}
 			}
@@ -3651,6 +3651,14 @@ Button = define.widget( 'Button', {
 		}
 	}
 }),
+/* `OverflowButton` */
+OverflowButton = define.widget( 'OverflowButton', {
+	Extend: Button,
+	Prototype: {
+		className: 'w-overflowButton w-button',
+		_focus: $.rt( F )
+	}
+} ),
 /* `submitbutton` */
 SubmitButton = define.widget( 'SubmitButton', {
 	Const: function( x, p ) {
@@ -3815,7 +3823,7 @@ Tabs = define.widget( 'Tabs', {
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
 		var n = this.getTabPositionName( x.position ),
-			r = { type: 'TabBar', cls: 'z-position-' + n, align: x.align, vAlign: x.vAlign || (y.type === 'Horz' ? 'top' : N), split: x.split, dir: y.type === 'Horz' ? 'v' : 'h', space: x.space, overflow: x.overflow, nodes: b };
+			r = { type: 'TabBar', cls: 'z-position-' + n, align: x.align, vAlign: x.vAlign || (y.type === 'Horz' ? 'top' : N), split: x.split, dir: y.type === 'Horz' ? 'v' : 'h', space: x.space, overflowButton: x.overflowButton, nodes: b };
 		y.nodes = [ { type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
 		Vert.call( this, $.extend( { nodes:[ y ], scroll: F }, x ), p );
