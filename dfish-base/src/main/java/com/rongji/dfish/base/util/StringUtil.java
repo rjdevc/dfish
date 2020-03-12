@@ -435,7 +435,17 @@ public class StringUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * 如果内容里面有表达式 如 ${xxx}
+	 * 解析过程当中，会把xxx内容当从参数提供给这个接口回调。
+	 * 接口返回实际内容，则可完成解析。
+	 */
 	public static interface ELcontentGetter{
+		/**
+		 * 将el里面的tag转化成实际内容
+		 * @param tag 标记
+		 * @return String
+		 */
 		public String getCotent(String tag);
 	}
 	

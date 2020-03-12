@@ -60,6 +60,13 @@ public class JpegInfo extends ImageInfo {
         return ji;
     }
 
+    /**
+     * JPEG 数据块
+     * 根据JPEG规范 JPEG文件是可以分为几个有规范的数据块。
+     * 每块至少两个字节，都是由0xFF开头，第二个字节是它的类型。
+     * 除了开头和结尾数据块，仅由两个字节构成外，其他块后续都有内容。具体格式根据类型有所不同
+     *
+     */
     public static class JpegChunk {
         static final byte MAGIC =(byte)0xFF;
         /**
@@ -104,6 +111,12 @@ public class JpegInfo extends ImageInfo {
          * Comment
          */
         public static final byte COM =(byte)0xFE;// 注释
+
+        /**
+         * 把JPEG 数据块(chunk)类型转化成人便于阅读的符号。
+         * @param type byte
+         * @return String
+         */
         public static String getTypeName(byte type) {
             switch (type){
                 case SOI: return "SOI";
@@ -124,14 +137,35 @@ public class JpegInfo extends ImageInfo {
             }
         }
         // 原文链接：https://blog.csdn.net/yun_hen/article/details/78135122
+        /**
+         * 内容的引用。注意这里的src并不是全部属于该chunk
+         */
         public byte[]src;
+        /**
+         * 标识 src 数据哪些方位属于该数据块
+         */
         public int start,end;
+        /**
+         * 数据块类型。这个值一定等于src[start+1]
+         */
         public byte type;
+
+        /**
+         * 构造函数
+         * @param src
+         * @param start
+         * @param end
+         */
         public JpegChunk(byte[] src, int start, int end){
             this.src=src;
             this.start=start;
             this.end=end;
         }
+
+        /**
+         * 是否是结束节点
+         * @return boolean
+         */
         public boolean isEnd(){
             if(end-start==2&src!=null){
                 return src[end-2]==-1&& src[end-1]== SOF0;
@@ -139,6 +173,13 @@ public class JpegInfo extends ImageInfo {
             return false;
         }
 
+        /**
+         * 从JPEG数据流中读取下一个内容块
+         * @param eb ExtendableBytes
+         * @param start 开始
+         * @return JpegChunk
+         * @throws IOException
+         */
         public static JpegChunk readNextJpegChunk(ExtendableBytes eb, int start)throws IOException {
             eb.ensureLen(start+2);//FF type
             JpegChunk jb=  new JpegChunk(eb.getBytes(),start,0);
@@ -162,18 +203,46 @@ public class JpegInfo extends ImageInfo {
             }
         }
     }
+
+    /**
+     * 可扩展的Byte数组
+     * 由于使用流模式读取JPEG内容。一旦读取到足够信息，就会放弃读取剩余内容。
+     * 所以，数据块的大小，会随着需要不断的扩展。直到足够。
+     * 通常 数码相机的照片，它的大小，分辨率(DPI)等参数并不在第一个8K内。毕竟缩略图，拍照参数等。会占用一定空间。
+     * 所以，在流模式处理过程中，会将ExtendableBytes 的句柄给高一层的程序。而具体bytes[]将会变化。
+     * 从高一层的应用程序看，就是这个byte数组扩展了。
+     */
     protected static class ExtendableBytes {
         private byte[] bytes;
         private int len;
         private InputStream source;
+
+        /**
+         * 取得这个byte的原始值
+         * @return byte[]
+         */
         public byte[] getBytes(){
             return bytes;
         }
+
+        /**
+         * 构造函数
+         * @param bytes 已知的byte数组 和流模式一样，它有很大可能是buff的倍数长度。但其有效长度只有在len中。后续空间是没有初始化过的无效内容。
+         * @param len 已知的有效长度
+         * @param source 输入流的句柄。
+         */
         ExtendableBytes(byte[] bytes, int len, InputStream source){
             this.bytes = bytes;
             this.len =len;
             this.source=source;
         }
+
+        /**
+         * 保证从流中读取不少于 len长度的内容。很多情况下，流并不是按当个字节读的。
+         * 所以ensureLen的时候，有很大可能，不仅仅读取到len 而是buff的倍数。
+         * @param len int
+         * @throws IOException
+         */
         public void ensureLen(int len)throws IOException{
             if(this.len >=len){
                 return;

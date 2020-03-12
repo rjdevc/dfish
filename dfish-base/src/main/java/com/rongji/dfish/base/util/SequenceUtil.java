@@ -243,6 +243,9 @@ public class SequenceUtil {
 		}
 	}
 
+	/**
+	 * 32进制的序列号。该32进制使用的字符遵循Crockfords规范
+	 */
 	protected static class B32CrockfordsSeq extends SequenceUtil{
 		public B32CrockfordsSeq(){
 			super("0123456789ABCDEFGHJKMNPQRSTVWXYZ",true);
@@ -254,6 +257,13 @@ public class SequenceUtil {
 			DECODE_TABLE['l']=1;
 		}
 	}
+
+	/**
+	 * 便于人阅读的序列 HUMAN_READABLE
+	 * 先用纯数字，然后使用BASE32 (Crockford's)
+	 * 000-999 99A-9ZZ A00-ZZZ 不会主动出现0A0等情况
+	 * 这种情况下，性能会稍低，注意plus和next 将会有同样的结果。
+	 */
 	protected static class HRSeq extends SequenceUtil{
 		@Override
 		public String plus(String sequence) {

@@ -126,6 +126,12 @@ public class CharUtil {
 		return arr;
 	}
 
+	/**
+	 * 是否包含
+	 * @param str  字符串
+	 * @param type 类型
+	 * @return 判断结果
+	 */
 	public static boolean contains(String str,int type){
 		char[] cs=str.toCharArray();
 		for(char c:cs){
@@ -135,7 +141,15 @@ public class CharUtil {
 		}
 		return false;
 	}
-	public static String repace(String str,int type,CharRepacer cf){
+
+	/**
+	 * 将字符串的某些内容替换成其他值。
+	 * @param str 字符串
+	 * @param type 类型
+	 * @param cf 指定哪些内容需要替换
+	 * @return
+	 */
+	public static String repace(String str,int type,CharReplacer cf){
 		if(str==null){
 			return null;
 		}
@@ -150,9 +164,25 @@ public class CharUtil {
 		}
 		return sb.toString();
 	}
-	public static interface CharRepacer{
+
+	/**
+	 * 替换器
+	 */
+	public interface CharReplacer {
+		/**
+		 * 如果这个字符属于指定类型，需要替换成其他字符
+		 * @param c 字符
+		 * @return String
+		 */
 		public String replaceTo(char c);
 	}
+
+	/**
+	 * 判断char是否是这个类型
+	 * @param c char
+	 * @param type 类型
+	 * @return boolean
+	 */
 	public static boolean is(char c,int type){
 		for(int typeIndex=0;typeIndex<ALL_CHARS.length;typeIndex++){
 			char[] toCheck=ALL_CHARS[typeIndex];

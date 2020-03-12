@@ -190,6 +190,13 @@ public class ListDataComparator<T> {
         }
     }
 
+    /**
+     * <p>数据辨识器</p>
+     * DataIdentifier要求能判断两条数据，逻辑上是否相等。但不要求一定要有顺序。
+     * 只有判断两条数据逻辑上是否相等，才能判断数据有新增 修改 删除
+     * @param <T>
+     * @author DFish Team
+     */
     public static interface DataIdentifier<T> {
         /**
          * 判定两条数据逻辑上是否属于同一条数据

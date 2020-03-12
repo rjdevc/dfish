@@ -7,11 +7,23 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 读取网卡MAC地址。注意，调用的是操作系统的方法。所以，有可能被欺骗
+ */
 @SuppressWarnings("ALL")
 public class EthNetInfo {
+	/**
+	 * 读取出错的时候，记录的MAC地址
+	 */
 	protected static final String ERR_MAC="00:00:00:00:00:00";
 	private static String mac = null;
 
+	/**
+	 * 读取网卡MAC地址。因为机器可能有多个物理网卡或虚拟网卡。这里去的是第一个地址。
+	 * 因为某些设备，比如说笔记本电脑，在使用电池，并且接了有线的情况下，有可能会自动禁用无线网卡。
+	 * 导致这个值可能是变化的。
+	 * @return String
+	 */
 	public static String getMacAddress() {
 //		return "00:00:00:00:00:00";
 		// String mac = "";
@@ -43,6 +55,12 @@ public class EthNetInfo {
 
 	private static Set<String> macs = null;
 
+	/**
+	 * 读取所有激活状态下的网卡的MAC地址。可能包含物理网卡和虚拟网卡。
+	 * 因为某些设备，比如说笔记本电脑，在使用电池，并且接了有线的情况下，有可能会自动禁用无线网卡。
+	 * 导致这个值可能是变化的。
+	 * @return
+	 */
 	public static Set<String> getAllMacAddress() {
 //		if(macs==null){
 //			macs=new HashSet<String>();
@@ -122,6 +140,9 @@ public class EthNetInfo {
 
 	/**
 	 * linuxParseMacAddresses
+	 * 支持linux 2.4 和2.6 的不同格式。
+	 * 不管是 HWaddr 还是 ether关键字都可以识别。
+	 * 但部分操作系统返回的是中文，就可能不可识别了。
 	 * 
 	 * @param ipConfigResponse
 	 *            String

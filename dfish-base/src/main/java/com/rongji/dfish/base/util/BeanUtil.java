@@ -5,6 +5,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+/**
+ * BeanUtil是JAVA Bean常用工具类合集。
+ * 对于JAVA Bean 这些工具通常都是在做类放射。
+ */
 public class BeanUtil {
 
 
@@ -303,6 +307,14 @@ public class BeanUtil {
         }
     }
 
+    /**
+     * 根据 类，方法名，参数类型获取合适的方法。
+     * @param targetClass 类
+     * @param name 方法名
+     * @param paramTypes 类型
+     * @return
+     * @throws NoSuchMethodException
+     */
     public static Method getMethod(Class<?> targetClass, String name, Class<?>... paramTypes) throws NoSuchMethodException {
         NoSuchMethodException nsme = null;
         try {
@@ -746,6 +758,11 @@ public class BeanUtil {
 
     private static Map<String, Boolean> existsMap = new HashMap<String, Boolean>();
 
+    /**
+     * 判断当前环境里面有没有存在该类
+     * @param className String
+     * @return boolean
+     */
     public static boolean exists(String className) {
         Boolean cachedRet = existsMap.get(className);
         if (cachedRet != null) {
@@ -762,6 +779,12 @@ public class BeanUtil {
         }
     }
 
+    /**
+     * 创建一个对象
+     * @param className 类名
+     * @param args 参数
+     * @return 对象
+     */
     public static Object newInstance(String className, Object... args) {
         try {
             Class<?> objectClass = Class.forName(className);
@@ -772,6 +795,12 @@ public class BeanUtil {
         return null;
     }
 
+    /**
+     * 创建一个对象
+     * @param objectClass Class
+     * @param args 参数
+     * @return 对象
+     */
     public static Object newInstance(Class<?> objectClass, Object... args) {
 		try {
 			if (args == null || args.length == 0) {

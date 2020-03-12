@@ -14,6 +14,15 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 图像处理器。
+ * 典型用法
+ * ImageProcessor.of(new FileInputStream("test.jpg"))
+ *   .zoom(160,160,true)
+ *   .waterMark("榕基软件",16, new Color(51,102,153), -80,-32)
+ *   .output(new FileOutputStream("test_thumb.jpg"));
+ * 它会尽可能的减少图像格式转化过程中的临时文件保存，从而提高性能。
+ */
 public class ImageProcessor implements Cloneable {
     private InputStream input;
     private BufferedImage image;
@@ -403,6 +412,13 @@ public class ImageProcessor implements Cloneable {
         });
     }
 
+    /**
+     * 缩放并且增加补白，以填满指定大小
+     * @param width 宽度
+     * @param height 高度
+     * @param color 颜色。注意如果使用透明的颜色的话，要确认图片保存格式是否支持透明。
+     * @return 自己
+     */
     public ImageProcessor zoomAndPad(int width, int height, Color color) {
         return schedule((image, processor) -> {
             int imageWidth = image.getWidth();
@@ -427,6 +443,12 @@ public class ImageProcessor implements Cloneable {
         });
     }
 
+    /**
+     * 缩放并把不符合长宽比的内容剪切走，保留中心的内容
+     * @param width 宽度
+     * @param height 高度
+     * @return 自己
+     */
     public ImageProcessor zoomAndCut(int width, int height) {
         return schedule((image, processor) -> {
             int imageWidth = image.getWidth();
@@ -451,7 +473,7 @@ public class ImageProcessor implements Cloneable {
     /**
      * 等比例缩放
      *
-     * @param scale double
+     * @param scale double 比例 小于1是缩小，大于1是放大
      * @return this
      */
     public ImageProcessor zoom(double scale) {

@@ -1,6 +1,6 @@
 package com.rongji.dfish.base.util;
 
-import com.rongji.dfish.base.util.CharUtil.CharRepacer;
+import com.rongji.dfish.base.util.CharUtil.CharReplacer;
 
 public class CharUtilTest {
 	public static void main(String[] args) {
@@ -8,7 +8,7 @@ public class CharUtilTest {
 		System.out.println(CharUtil.contains("我是好人", CharUtil.CHAR_TYPE_ASCII | CharUtil.CHAR_TYPE_SBC));
 		System.out.println(CharUtil.contains("我是好人", CharUtil.CHAR_TYPE_CHINESE));
 		System.out.println(CharUtil.contains("Ｗｏｎｄｅｒｆｕｌ", CharUtil.CHAR_TYPE_CHINESE));
-		System.out.println(CharUtil.repace("Ｗｏｎｄｅｒｆｕｌ", CharUtil.CHAR_TYPE_SBC,new CharRepacer() {
+		System.out.println(CharUtil.repace("Ｗｏｎｄｅｒｆｕｌ", CharUtil.CHAR_TYPE_SBC,new CharReplacer() {
 			public String replaceTo(char c) {
 				return new String(new char[]{CharUtil.sbc2dbc(c)});
 			}
