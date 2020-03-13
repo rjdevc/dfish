@@ -7,6 +7,14 @@ package com.rongji.dfish.ui;
  * @author LinLW
  */
 public class RawJson {
+	/**
+	 * 构造函数
+	 * @param text
+	 */
+	public RawJson(String text){
+		this.text=text;
+	}
+
 	private String text;
 	public String getText() {
 		return text;
@@ -14,9 +22,7 @@ public class RawJson {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public RawJson(String text){
-		this.text=text;
-	}
+
 	@Override
     public String toString(){
 		return text;

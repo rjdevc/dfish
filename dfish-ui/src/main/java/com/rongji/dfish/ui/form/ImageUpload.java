@@ -18,6 +18,7 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
 
 
     /**
+     * 构造函数
      * @param name
      * @param label
      * @param value
@@ -29,6 +30,7 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
     }
 
     /**
+     * 构造函数
      * @param name
      * @param label
      * @param value

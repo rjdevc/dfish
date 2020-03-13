@@ -113,7 +113,12 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 //		return (T) this;
 //	}
 
-
+    /**
+     * 添加子节点
+     * @param index
+     * @param oper
+     * @return
+     */
     public T add(int index, Widget<?> oper) {
         if (oper instanceof AbstractButton || oper instanceof Split) {
             nodes.add(index, oper);

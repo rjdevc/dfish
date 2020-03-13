@@ -36,6 +36,10 @@ public class Tree extends AbstractPubNodeContainer<Tree, Leaf, Leaf>
         super(id);
 
     }
+
+    /**
+     * 构造函数
+     */
     public Tree() {
         this(null);
     }

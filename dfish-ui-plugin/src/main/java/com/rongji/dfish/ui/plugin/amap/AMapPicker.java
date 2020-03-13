@@ -11,11 +11,24 @@ public class AMapPicker extends AbstractFormElement<AMapPicker, String> {
 
 	private static final long serialVersionUID = 2234567246638912510L;
 
+	/**
+	 * 构造函数
+	 * @param name
+	 * @param label
+	 * @param value
+	 */
 	public AMapPicker(String name, String label, Object value) {
 		this.setName(name);
 		this.setLabel(label);
 		this.setValue(value);
 	}
+
+	/**
+	 * 构造函数
+	 * @param name
+	 * @param label
+	 * @param value
+	 */
 	public AMapPicker(String name, Label label, Object value) {
 		this.setName(name);
 		this.setLabel(label);

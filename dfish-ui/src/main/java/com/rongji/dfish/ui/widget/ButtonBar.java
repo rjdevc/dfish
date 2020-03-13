@@ -29,6 +29,10 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Widget, Butto
     public ButtonBar(String id) {
         super(id);
     }
+
+    /**
+     * 构造函数
+     */
     public ButtonBar() {
         super(null);
     }

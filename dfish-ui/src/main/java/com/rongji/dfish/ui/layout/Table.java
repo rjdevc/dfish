@@ -315,10 +315,19 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
         return this;
     }
 
+    /**
+     * 是否有多选的点击高亮效果。
+     * @return
+     */
     public Boolean getFocusMultiple() {
         return focusMultiple;
     }
 
+    /**
+     * 是否有多选的点击高亮效果。
+     * @param focusMultiple
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Table setFocusMultiple(Boolean focusMultiple) {
         this.focusMultiple = focusMultiple;
         return this;

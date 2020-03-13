@@ -9,6 +9,9 @@ public class TableRowNum extends AbstractWidget<TableRowNum> {
 
     private static final long serialVersionUID = -8038094039396279588L;
 
+    /**
+     * 构造函数
+     */
     public TableRowNum() {
     }
 

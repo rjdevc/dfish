@@ -28,6 +28,12 @@ public class Replace extends NodeControlCommand<Replace>
     public Replace(Node<?> node) {
         setNode(node);
     }
+
+    /**
+     * 构造函数
+     * @param node
+     * @param target
+     */
     public Replace(Node<?> node, String target) {
         setNode(node);
         setTarget(target);

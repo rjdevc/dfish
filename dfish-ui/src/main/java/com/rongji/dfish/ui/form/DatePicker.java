@@ -160,6 +160,11 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
         return this;
     }
 
+    /**
+     * 以文本方式表示
+     * @param iter
+     * @return
+     */
     protected String toString(Iterable<?> iter) {
 
         StringBuilder sb = new StringBuilder();
@@ -183,6 +188,11 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
         return sb.toString();
     }
 
+    /**
+     * 以文本方式表示
+     * @param iter
+     * @return
+     */
     protected String toString(Object[] iter) {
         StringBuilder sb = new StringBuilder();
         boolean begin = true;

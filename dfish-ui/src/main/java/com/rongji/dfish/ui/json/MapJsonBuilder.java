@@ -42,7 +42,7 @@ public class MapJsonBuilder extends AbstractJsonBuilder{
 			path.pop();
 			if((sb.length()-sbBeginAppend==2&&
 					sb.charAt(sbBeginAppend)=='{'&&sb.charAt(sbBeginAppend+1)=='}')){
-				//回滚
+				//回滚RawJsonBuilder
 				sb.delete(sbLen, sb.length());
 				hasContent=hasContentOld;
 			}

@@ -14,6 +14,10 @@ public class Prepend extends AddCommand<Prepend> {
 
     private static final long serialVersionUID = -6112878724451958092L;
 
+    /**
+     * 构造函数
+     * @param target
+     */
     public Prepend(String target) {
         super(target);
     }

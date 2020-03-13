@@ -6,21 +6,10 @@ import com.rongji.dfish.ui.Positionable;
  * 吸附对象
  */
 public class Snap implements Positionable<Snap> {
-    /**
-     * 吸附的对象
-     */
+
     private String target;
-    /**
-     * 指定snap的位置
-     */
     private String position;
-    /**
-     * 是否在吸附对象里面，默认值为false
-     */
     private Boolean inner;
-    /**
-     * 指定相对于初始位置缩进多少个像素
-     */
     private Integer indent;
 
 

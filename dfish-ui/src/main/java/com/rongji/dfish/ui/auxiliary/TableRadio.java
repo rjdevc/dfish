@@ -10,6 +10,9 @@ import com.rongji.dfish.ui.form.AbstractBox;
 public class TableRadio extends AbstractBox<TableRadio> {
     private static final long serialVersionUID = -8886839296833661491L;
 
+    /**
+     * 构造函数
+     */
     public TableRadio(String name, String label,  Object value, String text) {
         super(name, label, value, text);
     }

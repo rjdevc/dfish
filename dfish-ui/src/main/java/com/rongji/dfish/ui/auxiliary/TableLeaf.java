@@ -18,6 +18,10 @@ public class TableLeaf extends AbstractLeaf<TableLeaf> {
 
     private static final long serialVersionUID = -7465823398383091843L;
 
+    /**
+     * 构造函数
+     * @param text
+     */
     public TableLeaf(String text) {
         super(text);
     }

@@ -42,11 +42,19 @@ public class Location extends AbstractNode<Location> {
      */
     private Boolean focus;
 
-
+    /**
+     * 构造函数
+     */
     public Location() {
 
     }
 
+    /**
+     * 构造函数
+     * @param lng
+     * @param lat
+     * @param address
+     */
     public Location(double lng, double lat, String address) {
         this.lng = lng;
         this.lat = lat;

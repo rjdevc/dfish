@@ -16,19 +16,37 @@ public class CalendarItem extends AbstractWidget<CalendarItem> {
     private Boolean focus;
     private Boolean focusable;
 
+    /**
+     * 构造函数
+     * @param value 日期
+     */
     public CalendarItem(String value) {
         this.setValue(value);
     }
 
+    /**
+     * 构造函数
+     * @param value 日期
+     * @param text 显示内容
+     */
     public CalendarItem(String value, String text) {
         this.setValue(value);
         this.setText(text);
     }
 
+    /**
+     * 日期
+     * @return String
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * 设置日期
+     * @param value
+     * @return 本身，这样可以继续设置其他属性
+     */
     public CalendarItem setValue(String value) {
         this.value = value;
         return this;

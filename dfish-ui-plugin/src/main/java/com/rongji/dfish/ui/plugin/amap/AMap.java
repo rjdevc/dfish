@@ -54,6 +54,10 @@ public class AMap extends AbstractWidget<AMap> {
 
         private List<Location> address;
 
+        /**
+         * 构造函数
+         * @param address
+         */
         public Value(List<Location> address) {
             this.address = address;
         }

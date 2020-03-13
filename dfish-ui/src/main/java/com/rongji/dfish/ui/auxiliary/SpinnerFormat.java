@@ -9,6 +9,10 @@ public class SpinnerFormat {
     private String separator;
     private Boolean rightward;
 
+    /**
+     * 构造函数
+     * @param length 分隔长度。
+     */
     public SpinnerFormat(Integer length) {
         this.length = length;
     }

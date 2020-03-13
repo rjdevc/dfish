@@ -59,24 +59,46 @@ public class TableFactory {
         protected static final int MODE_UNDEFINED = 0;
         protected int dataMode = MODE_UNDEFINED;
 
+        /**
+         * 构造函数
+         * @param id
+         */
         public AbstractTableFactory(String id) {
             this.id = id;
             this.hasTableHead = true;
         }
 
+        /**
+         * 获取id
+         * @return
+         */
         public String getId() {
             return id;
         }
 
+        /**
+         * 设置id
+         * @param id
+         * @return
+         */
         public T setId(String id) {
             this.id = id;
             return (T) this;
         }
 
+        /**
+         * 取得该面板所用的CSS类型
+         * @return
+         */
         public String getCls() {
             return cls;
         }
 
+        /**
+         * 该面板所用的CSS类型
+         * @param cls
+         * @return
+         */
         public T setCls(String cls) {
             this.cls = cls;
             return (T) this;
@@ -101,6 +123,11 @@ public class TableFactory {
             return columns;
         }
 
+        /**
+         * 添加列
+         * @param column
+         * @return
+         */
         public T addColumn(Column column) {
             if (column == null) {
                 return (T) this;
@@ -110,6 +137,10 @@ public class TableFactory {
             return (T) this;
         }
 
+        /**
+         * 抽象类，构建器
+         * @return
+         */
         public abstract Table build();
 
         /**
@@ -150,6 +181,10 @@ public class TableFactory {
             return value;
         }
 
+        /**
+         * 模式校验
+         * @param column
+         */
         protected void checkMode(Column column) {
             int currMode = MODE_UNDEFINED;
             if (column.getDataColumnIndex() >= 0) { // 数组模式

@@ -16,10 +16,21 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
     private String placeholder;
     private Boolean transparent;
 
+    /**
+     * 构造函数
+     * @param name
+     * @param label
+     */
     public Jigsaw(String name, String label) {
         this.setName(name);
         this.setLabel(label);
     }
+
+    /**
+     * 构造函数
+     * @param name
+     * @param label
+     */
     public Jigsaw(String name, Label label) {
         this.setName(name);
         this.setLabel(label);

@@ -15,6 +15,10 @@ public class Label extends AbstractWidget<Label> implements HtmlContentHolder<La
     protected String format;
     protected String suffix;
 
+    /**
+     * 构造函数
+     * @param text
+     */
     public Label(String text){
         this.text=text;
     }

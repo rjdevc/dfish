@@ -75,6 +75,9 @@ public class Submit extends CommunicateCommand<Submit> {
         return this;
     }
 
+    /**
+     * 提交命令校验
+     */
     public SubmitValidate validate() {
         if (validate == null) {
             validate = new SubmitValidate();
@@ -82,14 +85,31 @@ public class Submit extends CommunicateCommand<Submit> {
         return validate;
     }
 
+    /**
+     * 设置需要提交的面板的ID
+     * @param validateRange
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Submit setValidateRange(String validateRange) {
         validate().setRange(validateRange);
         return this;
     }
+
+    /**
+     * 设置表单校验选项组
+     * @param validateGroup
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Submit setValidateGroup(String validateGroup) {
         validate().setGroup(validateGroup);
         return this;
     }
+
+    /**
+     * 设置如果没校验通过的提醒效果
+     * @param validateEffect
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Submit setValidateEffect(String validateEffect) {
         validate().setEffect(validateEffect);
         return this;

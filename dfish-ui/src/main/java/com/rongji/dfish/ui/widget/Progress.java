@@ -34,6 +34,10 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
     public Progress(String id) {
         super(id);
     }
+
+    /**
+     * 构造函数
+     */
     public Progress() {
         super(null);
     }

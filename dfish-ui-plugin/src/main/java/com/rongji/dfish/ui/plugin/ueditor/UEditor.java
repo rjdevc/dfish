@@ -17,9 +17,22 @@ public class UEditor extends AbstractInput<UEditor, String> {
 
     private Map<String, Object> option;
 
+    /**
+     * 构造函数
+     * @param name
+     * @param label
+     * @param value
+     */
     public UEditor(String name, String label, String value) {
         super(name,label,value);
     }
+
+    /**
+     * 构造函数
+     * @param name
+     * @param label
+     * @param value
+     */
     public UEditor(String name, Label label, String value) {
         super(name,label,value);
     }

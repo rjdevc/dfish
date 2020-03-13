@@ -85,100 +85,199 @@ public class Validate implements Serializable {
      */
     private String method;
 
+    /**
+     * 是否必填。默认值为true。
+     * @return
+     */
     public ValidateRule getRequired() {
         return required;
     }
 
+    /**
+     * 是否必填。默认值为true。
+     * @param required
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setRequired(ValidateRule required) {
         this.required = required;
         return this;
     }
 
+    /**
+     * 正则表达式。
+     * @return
+     */
     public ValidateRule getPattern() {
         return pattern;
     }
 
+    /**
+     * 正则表达式。
+     * @param pattern
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setPattern(ValidateRule pattern) {
         this.pattern = pattern;
         return this;
     }
 
+    /**
+     * 和另一个表单做比较。
+     * @return
+     */
     public ValidateRule getCompare() {
         return compare;
     }
 
+    /**
+     * 和另一个表单做比较。
+     * @param compare
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setCompare(ValidateRule compare) {
         this.compare = compare;
         return this;
     }
 
+    /**
+     * 最小字节数。
+     * @return
+     */
     public ValidateRule getMinLength() {
         return minLength;
     }
 
+    /**
+     * 最小字节数。
+     * @param minLength
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setMinLength(ValidateRule minLength) {
         this.minLength = minLength;
         return this;
     }
 
+    /**
+     * 最大字节数。用于 Text Textarea Password
+     * @return
+     */
     public ValidateRule getMaxLength() {
         return maxLength;
     }
 
+    /**
+     * 最大字节数。用于 Text Textarea Password
+     * @param maxLength
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setMaxLength(ValidateRule maxLength) {
         this.maxLength = maxLength;
         return this;
     }
 
+    /**
+     * 最少选择几项。用于 CheckBox
+     * @return
+     */
     public ValidateRule getMinSize() {
         return minSize;
     }
 
+    /**
+     * 最少选择几项。用于 CheckBox
+     * @param minSize
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setMinSize(ValidateRule minSize) {
         this.minSize = minSize;
         return this;
     }
 
+    /**
+     * 最多选择几项。用于 CheckBox
+     * @return
+     */
     public ValidateRule getMaxSize() {
         return maxSize;
     }
 
+    /**
+     * 最多选择几项。用于 CheckBox
+     * @param maxSize
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setMaxSize(ValidateRule maxSize) {
         this.maxSize = maxSize;
         return this;
     }
 
+    /**
+     * 最小值。用于 Spinner DatePicker
+     * @return
+     */
     public ValidateRule getMinValue() {
         return minValue;
     }
 
+    /**
+     * 最小值。用于 Spinner DatePicker
+     * @param minValue
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setMinValue(ValidateRule minValue) {
         this.minValue = minValue;
         return this;
     }
 
+    /**
+     * 最大值。用于 Spinner DatePicker
+     * @return
+     */
     public ValidateRule getMaxValue() {
         return maxValue;
     }
 
+    /**
+     * 最大值。用于 Spinner DatePicker
+     * @param maxValue
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setMaxValue(ValidateRule maxValue) {
         this.maxValue = maxValue;
         return this;
     }
 
+    /**
+     * 不能大于当前时间。用于 DatePicker
+     * @return
+     */
     public ValidateRule getBeforeNow() {
         return beforeNow;
     }
 
+    /**
+     * 不能大于当前时间。用于 DatePicker
+     * @param beforeNow
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setBeforeNow(ValidateRule beforeNow) {
         this.beforeNow = beforeNow;
         return this;
     }
 
+    /**
+     * 不能小于当前时间。用于 DatePicker
+     * @return
+     */
     public ValidateRule getAfterNow() {
         return afterNow;
     }
 
+    /**
+     * 不能小于当前时间。用于 DatePicker
+     * @param afterNow
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Validate setAfterNow(ValidateRule afterNow) {
         this.afterNow = afterNow;
         return this;
@@ -214,6 +313,12 @@ public class Validate implements Serializable {
         return required(required, null);
     }
 
+    /**
+     * 便捷构建一个必填的校验
+     * @param required
+     * @param text
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate required(boolean required, String text) {
         return new Validate().setRequired(new ValidateRule(required, text));
     }
@@ -228,6 +333,12 @@ public class Validate implements Serializable {
         return pattern(pattern, null);
     }
 
+    /**
+     * 便捷构建一个模式的校验
+     * @param pattern
+     * @param text
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate pattern(String pattern, String text) {
         if (Utils.isEmpty(pattern)) {
             throw new IllegalArgumentException("pattern is empty");
@@ -235,6 +346,12 @@ public class Validate implements Serializable {
         return new Validate().setPattern(new ValidateRule(pattern, text));
     }
 
+    /**
+     * 便捷构建一个对比的校验
+     * @param target
+     * @param mode
+     * @return
+     */
     public static Validate compare(String target, String mode) {
         return compare(target, mode, null);
     }
@@ -267,10 +384,21 @@ public class Validate implements Serializable {
         return minLength(minLength, null);
     }
 
+    /**
+     * 便捷构建一个最小长度的校验
+     * @param minLength
+     * @param text
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate minLength(int minLength, String text) {
         return new Validate().setMinLength(new ValidateRule(minLength, text));
     }
 
+    /**
+     * 便捷构建一个最大长度的校验
+     * @param maxLength
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate maxLength(int maxLength) {
         return maxLength(maxLength, null);
     }
@@ -295,10 +423,21 @@ public class Validate implements Serializable {
         return minSize(minSize, null);
     }
 
+    /**
+     * 便捷构建一个最小选择项的校验
+     * @param minSize
+     * @param text
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate minSize(int minSize, String text) {
         return new Validate().setMinSize(new ValidateRule(minSize, text));
     }
 
+    /**
+     * 便捷构建一个最多选择项的校验
+     * @param maxSize
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate maxSize(int maxSize) {
         return maxSize(maxSize, null);
     }
@@ -323,6 +462,12 @@ public class Validate implements Serializable {
         return minValue(minValue, null);
     }
 
+    /**
+     * 便捷构建一个最小值的校验
+     * @param minValue
+     * @param text
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate minValue(Object minValue, String text) {
         return new Validate().setMinValue(new ValidateRule(minValue, text));
     }
@@ -338,6 +483,12 @@ public class Validate implements Serializable {
         return maxValue(maxValue, null);
     }
 
+    /**
+     * 便捷构建一个最大值的校验
+     * @param maxValue
+     * @param text
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate maxValue(Object maxValue, String text) {
         return new Validate().setMaxValue(new ValidateRule(maxValue, text));
     }
@@ -351,6 +502,12 @@ public class Validate implements Serializable {
         return beforeNow(beforeNow, null);
     }
 
+    /**
+     * 便捷构建一个早于当前时间的校验
+     * @param beforeNow
+     * @param text
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate beforeNow(boolean beforeNow, String text) {
         return new Validate().setBeforeNow(new ValidateRule(beforeNow, text));
     }
@@ -363,7 +520,11 @@ public class Validate implements Serializable {
     public static Validate afterNow(boolean afterNow) {
         return afterNow(afterNow, null);
     }
-
+    /**
+     * 便捷构建一个晚于当前时间的校验
+     *
+     * @return 本身，这样可以继续设置其他属性
+     */
     public static Validate afterNow(boolean afterNow, String text) {
         return new Validate().setAfterNow(new ValidateRule(afterNow, text));
     }

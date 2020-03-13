@@ -289,11 +289,20 @@ public abstract class TablePart extends AbstractMultiNodeContainer<TablePart, TR
         return this;
     }
 
+    /**
+     * 是否有滚动条。
+     * @param scroll
+     * @return 本身，这样可以继续设置其他属性
+     */
     public TablePart setScroll(Boolean scroll) {
         this.scroll = scroll;
         return this;
     }
 
+    /**
+     * 是否有滚动条。
+     * @return
+     */
     public Boolean getScroll() {
         return scroll;
     }

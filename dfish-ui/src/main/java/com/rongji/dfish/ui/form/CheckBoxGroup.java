@@ -18,6 +18,7 @@ public class CheckBoxGroup extends AbstractBoxGroup<CheckBoxGroup, CheckBox> {
     private static final long serialVersionUID = -7269251020373915061L;
 
     /**
+     * 构造函数
      * @param name    表单元素名
      * @param label   标题
      * @param value   选中的项
@@ -28,6 +29,7 @@ public class CheckBoxGroup extends AbstractBoxGroup<CheckBoxGroup, CheckBox> {
     }
 
     /**
+     * 构造函数
      * @param name    表单元素名
      * @param label   标题
      * @param value   选中的项

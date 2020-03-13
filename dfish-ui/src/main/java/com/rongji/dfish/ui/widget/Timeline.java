@@ -22,6 +22,10 @@ public class Timeline extends AbstractPubNodeContainer<Timeline, TimelineItem, T
     public Timeline(String id) {
         super(id);
     }
+
+    /**
+     * 构造函数
+     */
     public Timeline() {
         super(null);
     }

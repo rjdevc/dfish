@@ -9,6 +9,10 @@ import com.rongji.dfish.ui.AbstractWidget;
 public class ECharts extends AbstractWidget<ECharts> {
     private static final long serialVersionUID = 8385046704642567144L;
 
+    /**
+     * 构造函数
+     * @param id
+     */
     public ECharts(String id) {
         setId(id);
     }

@@ -34,6 +34,10 @@ public class Album extends AbstractPubNodeContainer<Album, Img,Img> implements S
     public Album(String id) {
         super(id);
     }
+
+    /**
+     * 构造函数
+     */
     public Album() {
         super(null);
     }
@@ -74,10 +78,19 @@ public class Album extends AbstractPubNodeContainer<Album, Img,Img> implements S
         return this;
     }
 
+    /**
+     * 是否有多个按钮可同时设为焦点状态。
+     * @return
+     */
     public Boolean getFocusMultiple() {
         return focusMultiple;
     }
 
+    /**
+     * 是否有多个按钮可同时设为焦点状态。
+     * @param focusMultiple
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Album setFocusMultiple(Boolean focusMultiple) {
         this.focusMultiple = focusMultiple;
         return this;
@@ -103,13 +116,5 @@ public class Album extends AbstractPubNodeContainer<Album, Img,Img> implements S
         return this;
     }
 
-    public Album setBr(Boolean br) {
-        this.br = br;
-        return this;
-    }
-
-    public Boolean getBr() {
-        return br;
-    }
 
 }

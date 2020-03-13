@@ -17,9 +17,17 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
     private String icon;
     private String text;
 
+    /**
+     * 构造函数
+     * @param id
+     */
     public TimelineItem(String id) {
         this.setId(id);
     }
+
+    /**
+     * 构造函数
+     */
     public TimelineItem() {
         this.setId(null);
     }

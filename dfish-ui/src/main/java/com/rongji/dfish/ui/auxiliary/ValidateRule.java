@@ -6,6 +6,9 @@ public class ValidateRule<E> {
     private String target;
     private String mode;
 
+    /**
+     * 构造函数
+     */
     public ValidateRule() {
     }
 

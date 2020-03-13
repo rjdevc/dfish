@@ -11,6 +11,10 @@ public class ColumnTip {
 
     private String field;
 
+    /**
+     * 构造函数
+     * @param field 提示的字段名
+     */
     public ColumnTip(String field){
         setField(field);
     }

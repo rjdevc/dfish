@@ -62,10 +62,19 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
         super(name, label, value, suggest);
     }
 
+    /**
+     * 设置已选项的外观效果
+     * @return
+     */
     public String getFace() {
         return face;
     }
 
+    /**
+     * 设置已选项的外观效果
+     * @param face
+     * @return 本身，这样可以继续设置其他属性
+     */
     public ComboBox setFace(String face) {
         this.face = face;
         return this;

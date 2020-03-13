@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 单选框或多选框表单组
  * @param <T> 当前对象类型
  * @param <N> 子节点对象类型
  * @author DFish Team

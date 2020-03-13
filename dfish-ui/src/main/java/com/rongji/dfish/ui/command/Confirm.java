@@ -182,10 +182,19 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
         return this;
     }
 
+    /**
+     * 获取按钮
+     * @return
+     */
     public List<Button> getButtons() {
         return buttons;
     }
 
+    /**
+     * 设置按钮
+     * @param buttons
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Confirm setButtons(List<Button> buttons) {
         this.buttons = buttons;
         return this;

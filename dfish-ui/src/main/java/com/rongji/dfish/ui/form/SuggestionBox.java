@@ -190,10 +190,19 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
         return (T) this;
     }
 
+    /**
+     * box的数据来源
+     * @return
+     */
     public BoxBind getBind() {
         return bind;
     }
 
+    /**
+     * box的数据来源
+     * @param bind
+     * @return
+     */
     public T setBind(BoxBind bind) {
         this.bind = bind;
         return (T) this;

@@ -76,7 +76,9 @@ public class Column extends AbstractNode<Column> implements Alignable<Column>, V
         return rawFormat;
     }
 
-
+    /**
+     * 后台获取前端BOX选中值时对应的名称
+     */
     public static final String BOX_NAME = "selectItem";
 
     /**

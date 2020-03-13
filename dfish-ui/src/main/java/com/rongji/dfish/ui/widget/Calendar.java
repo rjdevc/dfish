@@ -57,6 +57,10 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, CalendarItem, C
     public Calendar(String id) {
         super(id);
     }
+
+    /**
+     * 构造函数
+     */
     public Calendar() {
         super(null);
     }
@@ -66,10 +70,19 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, CalendarItem, C
         return new CalendarItem(null);
     }
 
+    /**
+     * 日历类型。可选值：date, week, month, year。默认值为"date"。
+     * @return
+     */
     public String getFace() {
         return face;
     }
 
+    /**
+     * 日历类型。可选值：date, week, month, year。默认值为"date"。
+     * @param face
+     * @return 本身，这样可以继续设置其他属性
+     */
     public Calendar setFace(String face) {
         this.face = face;
         return this;

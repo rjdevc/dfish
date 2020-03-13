@@ -19,9 +19,21 @@ public class UploadButton extends AbstractButton<UploadButton > {
 		super(text,null,null);
 	}
 
+	/**
+	 * 构造函数
+	 * @param text
+	 * @param onClick
+	 */
 	public UploadButton(String text,String onClick) {
 		super(text,onClick,null);
 	}
+
+	/**
+	 * 构造函数
+	 * @param text
+	 * @param onClick
+	 * @param icon
+	 */
 	public UploadButton(String text,String onClick, String icon) {
 		super(text,onClick,icon);
 	}

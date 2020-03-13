@@ -28,7 +28,9 @@ import java.util.*;
 public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf, Leaf> {
     private static final long serialVersionUID = -6246121270694425393L;
 
-
+    /**
+     * 节点列表
+     */
     public List<Leaf> nodes;
 
     @Override
