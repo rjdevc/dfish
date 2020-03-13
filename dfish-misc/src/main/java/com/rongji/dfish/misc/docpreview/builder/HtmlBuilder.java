@@ -9,10 +9,19 @@ import com.rongji.dfish.misc.docpreview.data.*;
  */
 public class HtmlBuilder {
     BuilderConfig config;
+
+    /**
+     * 构造函数
+     * @param config 配置
+     */
     public HtmlBuilder(BuilderConfig config){
         this.config=config;
     }
-
+    /**
+     * 构建 text
+     * @param doc 文档
+     * @return String
+     */
     public String build(Document doc) {
         StringBuilder sb=new StringBuilder();
         build(doc,sb);

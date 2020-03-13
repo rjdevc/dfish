@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 转成Summary   summary是Text的一部分。
+ */
 public class SummaryBuilder {
     public static final int TYPE_CHARACTER=0;
     public static final int TYPE_DOCUMENT=1;

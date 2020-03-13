@@ -9,6 +9,10 @@ import com.rongji.dfish.base.text.TrieTree;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 
+/**
+ * 将汉字转为拼音
+ * 如果有一整句话。那这个转化工具，将尽量根据词组。正确的转化多音字。
+ */
 public class PinyinConverter {
 	public static final int WITH_TONE_MARK = 2;
 	public static final int WITHOUT_TONE = 1;
@@ -25,6 +29,14 @@ public class PinyinConverter {
 	public PinyinConverter(int mode){
 		this.mode=mode;
 	}
+
+	/**
+	 * 转化成拼音 非汉字部分不转化
+	 * @param str 含有汉字的字符串
+	 * @param separator 拼音转化出来后的分隔符，有时需要用空格分隔
+	 * @param pinyinFormat 格式，纯ASCII字母还是带 阴平 阳平等音调
+	 * @return String
+	 */
 	public  String convert(String str, String separator, int pinyinFormat) {
 		TrieTree<String> trieTree=getMainLib();
 		return convert(trieTree, str, separator, pinyinFormat);
@@ -135,6 +147,11 @@ public class PinyinConverter {
 			}
 	}
 
+	/**
+	 * 构造函数
+	 * @param str
+	 * @return
+	 */
 	public String convert(String str) {
 		return convert(str,"",WITHOUT_TONE);
 	}

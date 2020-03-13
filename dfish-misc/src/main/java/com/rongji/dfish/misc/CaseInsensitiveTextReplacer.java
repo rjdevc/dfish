@@ -3,27 +3,33 @@ package com.rongji.dfish.misc;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * <p>TextReplacer 为字符串替换工具，用于高效地替换多个关键词。</p>
+ * <p>一般可用于敏感词替换，为关键词增加超链接等地方</p>
+ * <p>ps:这只是个替换工具，如果要增加超链接，需要自行增加完整文本 比如</p>
+ * <table>
+ * <tr>
+ * <td><b>关键词</b></td>
+ * <td>福州市</td>
+ * </tr>
+ * <tr>
+ * <td><b>替换为</b></td>
+ * <td>&lt;a href="http://www.fuzhou.gov.cn"&gt;福州市&lt;/a&gt;</td>
+ * </tr>
+ * </table>
+ * <p>本工具只提供替换功能，如果已经增加过超链接的文本，再次替换的话，可能会出现问题。又比如说HTML中可能有一些关键字并不适合替换如
+ * &lt;img alt="福州市夜景"/ src="xxx"&gt;</p>
+ * <p>其工作原理为加载关键词的时候，对关键字进行排列。并在替换的时候，根据关键字的顺序快速定位关键字，而非循环判定。</p>
+ * <p>如果两个关键字有包含关系 如 <b>福州</b> 与 <b>福州市</b> 那么优先替换长的关键字。</p>
+ *
+ * @see com.rongji.dfish.base.text.TrieTree
+ * @see com.rongji.dfish.misc.senswords.SensitiveWordFilter
+ * @deprecated 使用场景不明，如果需要现在应该统一使用字典树来构造以获得更全面的功能。如果考虑大全角等因素，可以参考SensitiveWordFilter
+ */
 @Deprecated
 public class CaseInsensitiveTextReplacer {
 	/**
-	 * <p>TextReplacer 为字符串替换工具，用于高效地替换多个关键词。</p>
-	 * <p>一般可用于敏感词替换，为关键词增加超链接等地方</p>
-	 * <p>ps:这只是个替换工具，如果要增加超链接，需要自行增加完整文本 比如</p>
-	 * <table>
-	 * <tr>
-	 * <td><b>关键词</b></td>
-	 * <td>福州市</td>
-	 * </tr>
-	 * <tr>
-	 * <td><b>替换为</b></td>
-	 * <td>&lt;a href="http://www.fuzhou.gov.cn"&gt;福州市&lt;/a&gt;</td>
-	 * </tr>
-	 * </table>
-	 * <p>本工具只提供替换功能，如果已经增加过超链接的文本，再次替换的话，可能会出现问题。又比如说HTML中可能有一些关键字并不适合替换如
-	 * &lt;img alt="福州市夜景"/ src="xxx"&gt;</p>
-	 * <p>其工作原理为加载关键词的时候，对关键字进行排列。并在替换的时候，根据关键字的顺序快速定位关键字，而非循环判定。</p>
-	 * <p>如果两个关键字有包含关系 如 <b>福州</b> 与 <b>福州市</b> 那么优先替换长的关键字。</p>
+	 * 默认构造函数
 	 */
 	public CaseInsensitiveTextReplacer(){
 		

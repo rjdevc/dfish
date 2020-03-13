@@ -3,16 +3,34 @@ package com.rongji.dfish.misc;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+/**
+ * 将时间格式，转成JAVA/js/oracle的定义格式。
+ *
+ * @deprecated  使用场景不明，疑似应该在项目中
+ */
+@Deprecated
 public class DateFormatRecogniser {
 	public String format;
 
+	/**
+	 * 构造函数
+	 */
 	public DateFormatRecogniser() {
 	}
 
+	/**
+	 * 构造函数
+	 * @param format
+	 */
 	public DateFormatRecogniser(String format) {
 		this.format = format.trim().replaceAll("[0-9]*", "");
 	}
 
+	/**
+	 * 取得不同环境的定义文件。
+	 * @param flag String
+	 * @return String
+	 */
 	public String getFormat(String flag) {
 		String result = "";
 		if (format.contains("y") || format.contains("Y")) {

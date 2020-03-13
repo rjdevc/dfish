@@ -4,39 +4,75 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
 /**
+ * 图片信息，便于快速读取word里面内嵌的图片的基础信息，以便如何保存。
  * 这个ImageInfo 只适用于已知byte[]的 情况。
  */
 public class ImageInfo {
 
-
+    /**
+     * 图片格式 PNG
+     */
     public static final String PNG="png";
+    /**
+     * 图片格式JPG
+     */
     public static final String JPG="jpg";
+    /**
+     * 图片格式GIF
+     */
     public static final String GIF="gif";
+    /**
+     * 图片格式BMP
+     */
     public static final String BMP="bmp";
     private int width;
     private int height;
     private String type;
 
+    /**
+     * 图片宽度
+     * @return int
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * 图片宽度
+     * @param width int
+     */
     public void setWidth(int width) {
         this.width = width;
     }
 
+    /**
+     * 图片高度
+     * @return int
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * 图片高度
+     * @param height int
+     */
     public void setHeight(int height) {
         this.height = height;
     }
 
+    /**
+     * 图片类型
+     * @return String
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * 图片类型
+     * @param type String
+     */
     public void setType(String type) {
         this.type = type;
     }
@@ -56,6 +92,11 @@ public class ImageInfo {
     private static final byte[] GIF_FEATURE = new byte[]{(byte) 'G', (byte) 'I', (byte) 'F'};
     private static final byte[] BMP_FEATURE = new byte[]{(byte) 'B', (byte) 'M'};
 
+    /**
+     * 从byte[] 中读取基础信息
+     * @param src byte[]
+     * @return ImageInfo
+     */
     public static ImageInfo of(byte[] src){
         ImageInfo ii=new ImageInfo();
         if(startsWith(src,JPEG_FEATURE)){

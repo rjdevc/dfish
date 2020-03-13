@@ -22,12 +22,26 @@ import java.util.Random;
 public class Builder {
     private BuilderConfig config;
     private Document doc;
+
+    /**
+     * 构造函数
+     */
     public Builder(){
         config=getRootConfig().clone();
     }
+
+    /**
+     * 设置文档对象
+     * @param doc Document
+     */
     public void setDocument(Document doc){
         this.doc=doc;
     }
+
+    /**
+     * 取得文档对象
+     * @return Document
+     */
     public Document getDocument(){
         return doc;
     }
@@ -60,18 +74,31 @@ public class Builder {
         HtmlBuilder hmtlBuilder =new HtmlBuilder(getConfig());
         return  hmtlBuilder.build(doc);
     }
+
+    /**
+     * 获得文本，有可能比较长
+     * @return String
+     */
     public String buildText(){
         TextBuilder hmtlBuilder =new TextBuilder();
         return  hmtlBuilder.build(doc);
     }
 
 
-
-
     private static BuilderConfig rootConfg=new BuilderConfig();
+
+    /**
+     * 取得根配置。
+     * @return
+     */
     public static BuilderConfig getRootConfig(){
         return rootConfg;
     }
+
+    /**
+     * 取得当前配置。
+     * @return
+     */
     public BuilderConfig getConfig(){
         return config;
     }

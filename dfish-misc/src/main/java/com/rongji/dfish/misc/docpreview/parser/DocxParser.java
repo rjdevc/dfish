@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * word 03版本解析器 后缀名是.docx
+ */
 public class DocxParser extends DocumentParser {
     @Override
     public Document parse(InputStream is) {

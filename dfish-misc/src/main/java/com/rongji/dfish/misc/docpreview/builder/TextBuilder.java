@@ -4,7 +4,17 @@ import com.rongji.dfish.misc.docpreview.data.*;
 
 import java.util.List;
 
+
+
+/**
+ * 转成text
+ */
 public class TextBuilder {
+    /**
+     * 构建 text
+     * @param doc 文档
+     * @return String
+     */
     public String build(Document doc) {
         StringBuilder sb = new StringBuilder();
         build(doc, sb);

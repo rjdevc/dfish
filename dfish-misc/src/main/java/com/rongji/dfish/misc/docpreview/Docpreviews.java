@@ -8,6 +8,12 @@ import com.rongji.dfish.misc.docpreview.parser.DocxParser;
 
 import java.io.*;
 
+/**
+ * 文档预览工具的主入口
+ * 用法
+ * Docpreviews.of(new File(fileName3))
+ *   .buildHtml();
+ */
 public class Docpreviews {
     public static final int JSON=0;
     public static final int TXT=1;

@@ -13,6 +13,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * word 97 文件解析，后缀名是.doc
+ *
+ */
 public class DocParser extends DocumentParser {
     @Override
     public Document parse(InputStream is) {
@@ -82,6 +86,11 @@ public class DocParser extends DocumentParser {
 
     private static char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+    /**
+     * word 97 颜色格式可以由这种RGB来表示
+     * @param color int
+     * @return String
+     */
     protected static String getHexColor(int color) {
         if(color==-1){
             return null;

@@ -10,6 +10,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 从文本文件中解析出对象。
+ */
 public class TxtParser extends DocumentParser {
     @Override
     public Document parse(InputStream is) {

@@ -12,6 +12,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 从JSON中解析出对象
+ */
 public class JsonParser extends DocumentParser {
     @Override
     public Document parse(InputStream is) {
