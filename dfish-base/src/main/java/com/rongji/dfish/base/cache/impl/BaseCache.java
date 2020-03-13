@@ -56,10 +56,17 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         this.action = valueGetter;
     }
 
+    /**
+     * 构造函数
+     */
     public BaseCache() {
         super();
     }
 
+    /**
+     * 构造函数
+     * @param valueGetter
+     */
     public BaseCache(BatchAction<K, V> valueGetter) {
         super(valueGetter);
     }
@@ -153,6 +160,11 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         return core.containsKey(key);
     }
 
+    /**
+     * 判断是否包含value值
+     * @param value
+     * @return
+     */
     public boolean containsValue(V value) {
         Collection<CacheItem<V>> col = core.values();
         for (CacheItem<V> item : col) {

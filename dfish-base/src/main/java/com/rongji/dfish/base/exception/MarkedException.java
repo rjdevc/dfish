@@ -27,27 +27,54 @@ public class MarkedException extends Exception implements Marked {
         this.code = code;
     }
 
+    /**
+     * 构造函数
+     */
     public MarkedException() {
         super();
     }
 
+    /**
+     * 构造函数
+     * @param message
+     */
     public MarkedException(String message) {
         super(message);
     }
 
+    /**
+     * 构造函数
+     * @param cause
+     */
     public MarkedException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * 构造函数
+     * @param message
+     * @param cause
+     */
     public MarkedException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * 构造函数
+     * @param message
+     * @param code
+     */
     public MarkedException(String message, String code) {
         super(message);
         this.code = code;
     }
 
+    /**
+     * 构造函数
+     * @param message
+     * @param cause
+     * @param code
+     */
     public MarkedException(String message, Throwable cause, String code) {
         super(message, cause);
         this.code = code;

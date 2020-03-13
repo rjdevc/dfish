@@ -7,6 +7,10 @@ import java.io.OutputStream;
  * 把原文输出成BAS332格式。
  */
 public class Base32OutputStream extends AbstractPresentOutputStream {
+    /**
+     * 构造函数
+     * @param out
+     */
     public Base32OutputStream(OutputStream out) {
         super(out);
         TEXT_SIZE = 8;

@@ -9,6 +9,12 @@ import java.io.InputStream;
 public class SM4ECBInputStream extends AbstractPresentInputStream {
     private long[] key;
     private int preread;
+
+    /**
+     * 构造函数
+     * @param in
+     * @param key
+     */
     public SM4ECBInputStream(InputStream in,byte[] key) {
         super(in);
         TEXT_SIZE = 16;

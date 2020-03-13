@@ -601,22 +601,51 @@ public class StringUtil {
 		 * 高亮关键字匹配长度;&lt;=0:全字匹配,其他情况按照长度拆分关键字再进行匹配
 		 */
 		private int minMatch;
-		
+
+		/**
+		 * 获得高亮标签前缀
+		 * @return String
+		 */
 		public String getPrefix() {
 			return prefix;
 		}
+
+		/**
+		 * 设置高亮标签前缀
+		 * @param prefix
+		 */
 		public void setPrefix(String prefix) {
 			this.prefix = prefix;
 		}
+
+		/**
+		 * 获得高亮标签后缀
+		 * @return String
+		 */
 		public String getPostfix() {
 			return postfix;
 		}
+
+		/**
+		 * 设置高亮标签后缀
+		 * @param postfix
+		 */
 		public void setPostfix(String postfix) {
 			this.postfix = postfix;
 		}
+
+		/**
+		 * 获得高亮关键字匹配长度;&lt;=0:全字匹配,其他情况按照长度拆分关键字再进行匹配
+		 * @return int
+		 */
 		public int getMinMatch() {
 			return minMatch;
 		}
+
+		/**
+		 * 设置高亮关键字匹配长度;&lt;=0:全字匹配,其他情况按照长度拆分关键字再进行匹配
+		 * @param minMatch
+		 */
 		public void setMinMatch(int minMatch) {
 			this.minMatch = minMatch;
 		}
@@ -664,8 +693,14 @@ public class StringUtil {
     	return ret-1;
     }
 
+	/**
+	 * 字符集编码：UTF-8
+	 */
     public static final String ENCODING_UTF8="UTF-8";
-    public static final String ENCODING_GBK="GBK";
+	/**
+	 * 字符集编码:GBK
+	 */
+	public static final String ENCODING_GBK="GBK";
     //根据传进来 byte[]
     /**
      * 根据传进来 byte[] 判定字符集。

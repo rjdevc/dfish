@@ -31,13 +31,25 @@ public class Page implements Serializable {
 
     private boolean autoRowCount = true;
 
+    /**
+     * 构造函数
+     */
     public Page() {
     }
 
+    /**
+     * 构造函数
+     * @param currentPage
+     */
     public Page(int currentPage) {
         this.currentPage = currentPage;
     }
 
+    /**
+     * 构造函数
+     * @param currentPage
+     * @param pageSize
+     */
     public Page(int currentPage, int pageSize) {
         this.currentPage = currentPage;
         this.pageSize = pageSize;

@@ -42,6 +42,9 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
         this.core = core;
     }
 
+    /**
+     * 构造函数
+     */
     public CachedBatchAction() {
         this(null);
     }

@@ -19,6 +19,10 @@ public abstract class AbstractPresentOutputStream extends FilterOutputStream {
     protected int buffLen;
     private final byte[] singleByte = new byte[1];
 
+    /**
+     * 构造函数
+     * @param out
+     */
     public AbstractPresentOutputStream(OutputStream out) {
         super(out);
         buffLen = 0;

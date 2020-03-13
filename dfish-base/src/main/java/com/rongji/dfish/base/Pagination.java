@@ -17,13 +17,25 @@ public class Pagination implements Serializable {
     private Integer size;
     private boolean autoRowCount = true;
 
+    /**
+     * 构造函数
+     */
     public Pagination() {
     }
 
+    /**
+     * 构造函数
+     * @param offset
+     */
     public Pagination(int offset) {
         this.offset = offset;
     }
 
+    /**
+     * 构造函数
+     * @param offset
+     * @param limit
+     */
     public Pagination(int offset, int limit) {
         this.offset = offset;
         this.limit = limit;
@@ -145,16 +157,6 @@ public class Pagination implements Serializable {
      *
      * @return Page
      */
-    public Page toPage() {
-        Page page = new Page();
-        page.setAutoRowCount(this.isAutoRowCount());
-        page.setRowCount(this.getSize() == null ? 0 : this.getSize());
-        page.setPageSize(this.getLimit());
-        if (this.getLimit() > 0) {
-            int offset = this.getOffset();
-            page.setCurrentPage(offset / this.getLimit() + 1);
-        }
-        return page;
-    }
+    public Page toPage() QueuedBatchAction
 
 }

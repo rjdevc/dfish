@@ -42,6 +42,7 @@ public class BaseBeanContextHodler implements BeanContextHolder {
     public Object get(String name) {
         return contextByClass.get(name);
     }
+
     public void add(Object obj){
         if(obj==null){return;}
         Class clz=obj.getClass();

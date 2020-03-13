@@ -64,6 +64,11 @@ public class Utils {
         return os != null && os.length > 0;
     }
 
+    /**
+     * 判断一个Map是否为空
+     * @param os
+     * @return
+     */
     public static boolean isEmpty(Object[] os) {
         return os == null || os.length <= 0;
     }
@@ -79,7 +84,7 @@ public class Utils {
     }
 
     /**
-     * 判断一个Map否为空 ZHL 2009-10-19
+     * 判断一个Map是否为空 ZHL 2009-10-19
      *
      * @param m
      * @return

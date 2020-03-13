@@ -55,6 +55,9 @@ public class Lunar {
     private boolean isLeapMonth;
 
     private final static int MAX_YEAR = 2050;
+    /**
+     * 时间显示的格式
+     */
     public final static DateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
     private final static Date BASE_DATE = new Date();
 //    private static int lunarYear;
@@ -938,62 +941,124 @@ public class Lunar {
         // 农历日期完整名称
         private String lunarDateStr;
 
+        /**
+         * 农历年份
+         * @return int
+         */
         public int getYear() {
             return year;
         }
 
+        /**
+         * 农历年份
+         * @param year
+         */
         public void setYear(int year) {
             this.year = year;
         }
 
+        /**
+         * 农历月份,负值表示闰月,正值表示非闰月
+         * @return int
+         */
         public int getMonth() {
             return month;
         }
 
+        /**
+         * 农历月份,负值表示闰月,正值表示非闰月
+         * @param month
+         */
         public void setMonth(int month) {
             this.month = month;
         }
 
+        /**
+         * 农历日
+         * @return int
+         */
         public int getDay() {
             return day;
         }
 
+        /**
+         * 农历日
+         * @param day
+         */
         public void setDay(int day) {
             this.day = day;
         }
 
+        /**
+         * 农历年份中文名称
+         * @return String
+         */
         public String getYearStr() {
             return yearStr;
         }
 
+        /**
+         * 农历年份中文名称
+         * @param yearStr
+         */
         public void setYearStr(String yearStr) {
             this.yearStr = yearStr;
         }
 
+        /**
+         * 农历月份中文名称
+         * @return String
+         */
         public String getMonthStr() {
             return monthStr;
         }
 
+        /**
+         * 农历月份中文名称
+         * @param monthStr
+         */
         public void setMonthStr(String monthStr) {
             this.monthStr = monthStr;
         }
 
+        /**
+         * 农历日中文名称
+         * @return String
+         */
         public String getDayStr() {
             return dayStr;
         }
 
+        /**
+         * 农历日中文名称
+         * @param dayStr
+         */
         public void setDayStr(String dayStr) {
             this.dayStr = dayStr;
         }
 
+        /**
+         * 农历日期完整名称
+         * @return  String
+         */
         public String getLunarDateStr() {
             return lunarDateStr;
         }
 
+        /**
+         * 农历日期完整名称
+         * @param lunarDateStr
+         */
         public void setLunarDateStr(String lunarDateStr) {
             this.lunarDateStr = lunarDateStr;
         }
 
+        /**
+         * 农历日期完整名称
+         * @param yearStr
+         * @param monthStr
+         * @param dayStr
+         */
         void setLunarDateStr(String yearStr, String monthStr, String dayStr) {
             setYearStr(yearStr);
             setMonthStr(monthStr);

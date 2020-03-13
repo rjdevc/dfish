@@ -83,19 +83,41 @@ public class ImageProcessorGroup {
         return new ImageProcessorGroup(file);
     }
 
+    /**
+     * 输出目标目录
+     * @return String
+     */
     public String getDest() {
         return dest;
     }
 
+    /**
+     * 输出目标目录
+     * @param dest
+     * @return this
+     */
     public ImageProcessorGroup setDest(String dest) {
         this.dest = dest;
         return this;
     }
 
+    /**
+     * 文件输出别名
+     *  目前支持别名规则有
+     * {FILE_NAME}:原始文件名
+     * {ALIAS}:输出文件别名
+     * {EXTENSION}:文件扩展名
+     * @return String
+     */
     public String getAliasPattern() {
         return aliasPattern;
     }
 
+    /**
+     * 文件输出别名
+     * @param aliasPattern
+     * @return this
+     */
     public ImageProcessorGroup setAliasPattern(String aliasPattern) {
         this.aliasPattern = aliasPattern;
         return this;

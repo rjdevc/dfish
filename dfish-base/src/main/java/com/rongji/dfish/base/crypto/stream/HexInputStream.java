@@ -16,6 +16,10 @@ public class HexInputStream extends AbstractPresentInputStream {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
             0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 96
 
+    /**
+     * 构造函数
+     * @param in
+     */
     public HexInputStream(InputStream in) {
         super(in);
         inBuff = new byte[2];

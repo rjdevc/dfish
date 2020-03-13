@@ -124,9 +124,18 @@ public interface Cache<K, V> {
 	 * @param alive long
 	 */
 	void setAlive(long alive);
-	
+
+	/**
+	 * 获得CacheItem
+	 * @param key
+	 * @return
+	 */
 	CacheItem<V> getItem(K key);
-	
+
+	/**
+	 * 批量获得CacheItem
+	 * @return
+	 */
 	Map<K, CacheItem<V>> getItems();
 
 

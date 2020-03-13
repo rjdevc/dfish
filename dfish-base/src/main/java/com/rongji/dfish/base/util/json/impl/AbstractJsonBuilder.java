@@ -19,6 +19,10 @@ public abstract class AbstractJsonBuilder implements JsonBuilder {
         return dateFormat;
     }
 
+    /**
+     * 设置日期格式
+     * @param dateFormat
+     */
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }

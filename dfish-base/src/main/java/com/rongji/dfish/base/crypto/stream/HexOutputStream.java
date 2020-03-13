@@ -7,6 +7,10 @@ import java.io.OutputStream;
  *  把原文输出成16进制格式。
  */
 public class HexOutputStream extends AbstractPresentOutputStream {
+    /**
+     * 构造函数
+     * @param out
+     */
     public HexOutputStream(OutputStream out) {
         super(out);
     }

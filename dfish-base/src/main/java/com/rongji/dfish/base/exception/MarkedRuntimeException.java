@@ -17,31 +17,62 @@ public class MarkedRuntimeException extends RuntimeException implements Marked {
         return code;
     }
 
+    /**
+     * 获取标识码
+     * @param code
+     */
     public void setCode(String code) {
         this.code = code;
     }
 
+    /**
+     * 构造函数
+     */
     public MarkedRuntimeException() {
         super();
     }
 
+    /**
+     * 构造函数
+     * @param message
+     */
     public MarkedRuntimeException(String message) {
         super(message);
     }
 
+    /**
+     * 构造函数
+     * @param cause
+     */
     public MarkedRuntimeException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * 构造函数
+     * @param message
+     * @param cause
+     */
     public MarkedRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * 构造函数
+     * @param message
+     * @param code
+     */
     public MarkedRuntimeException(String message, String code) {
         super(message);
         this.code = code;
     }
 
+    /**
+     * 构造函数
+     * @param message
+     * @param cause
+     * @param code
+     */
     public MarkedRuntimeException(String message, Throwable cause, String code) {
         super(message, cause);
         this.code = code;

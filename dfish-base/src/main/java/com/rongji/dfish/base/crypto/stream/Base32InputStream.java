@@ -7,7 +7,10 @@ import java.io.InputStream;
  * 每次读取读取8个字节的数据，并转化成5个字节，直到最后一组可能不是5的倍数。
  */
 public class Base32InputStream extends AbstractPresentInputStream {
-
+    /**
+     * 构造函数
+     * @param in
+     */
     public Base32InputStream(InputStream in) {
         super(in);
         TEXT_SIZE = 8;

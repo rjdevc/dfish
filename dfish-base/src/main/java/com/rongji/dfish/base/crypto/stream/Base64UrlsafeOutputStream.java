@@ -11,6 +11,10 @@ import java.io.OutputStream;
  *  所以5.0版本。转成BASE53不再使用PADDING 但，不管有没有PADDING 是等号还是点号都能解析出原文。
  */
 public class Base64UrlsafeOutputStream extends AbstractPresentOutputStream {
+    /**
+     * 构造函数
+     * @param out
+     */
     public Base64UrlsafeOutputStream(OutputStream out) {
         super(out);
         TEXT_SIZE = 4;

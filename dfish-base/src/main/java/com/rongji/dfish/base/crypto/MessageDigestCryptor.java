@@ -63,7 +63,10 @@ public class MessageDigestCryptor extends  AbstractCryptor{
         throw new UnsupportedOperationException("can not decrypt message digest");
     }
 
-
+    /**
+     * 构造函数
+     * @param db
+     */
     public MessageDigestCryptor(CryptorBuilder db){
         super(db);
     }

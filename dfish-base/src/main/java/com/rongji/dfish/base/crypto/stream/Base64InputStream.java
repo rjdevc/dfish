@@ -6,7 +6,10 @@ import java.io.InputStream;
  *  把原文输出成BASE64格式。
  */
 public class Base64InputStream extends AbstractPresentInputStream {
-
+    /**
+     * 构造函数
+     * @param in
+     */
     public Base64InputStream(InputStream in) {
         super(in);
         TEXT_SIZE = 4;

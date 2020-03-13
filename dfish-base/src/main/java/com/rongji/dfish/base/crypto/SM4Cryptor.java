@@ -13,6 +13,11 @@ import java.util.zip.GZIPOutputStream;
  * 分组方式现在固定为ECB
  */
 public class SM4Cryptor extends AbstractCryptor {
+    /**
+     * 构造函数
+     * @param builder
+     * @param <T>
+     */
     public <T extends CryptorBuilder> SM4Cryptor(CryptorBuilder builder) {
         super(builder);
     }

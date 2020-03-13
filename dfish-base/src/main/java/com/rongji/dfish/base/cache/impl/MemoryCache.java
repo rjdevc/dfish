@@ -9,11 +9,19 @@ import com.rongji.dfish.base.batch.BatchAction;
  * @version 1.0
  */
 public class MemoryCache<K, V> extends BaseCache<K, V> {
-
+    /**
+     * 构造函数
+     */
     public MemoryCache() {
         super(null);
     }
 
+    /**
+     * 构造函数
+     * @param valueGetter
+     * @param maxSize
+     * @param alive
+     */
     public MemoryCache(BatchAction<K, V> valueGetter, int maxSize, long alive) {
         super(valueGetter, maxSize, alive);
     }

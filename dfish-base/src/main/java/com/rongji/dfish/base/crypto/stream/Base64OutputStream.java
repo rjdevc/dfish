@@ -7,6 +7,10 @@ import java.io.OutputStream;
  *  把原文输出成BASE64格式。
  */
 public class Base64OutputStream extends AbstractPresentOutputStream {
+    /**
+     * 构造函数
+     * @param out
+     */
     public Base64OutputStream(OutputStream out) {
         super(out);
         TEXT_SIZE = 4;

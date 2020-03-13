@@ -79,7 +79,7 @@ public class CharUtil {
 	public final static int CHAR_TYPE_UPPER_CASE=1<<1;
 	public final static int CHAR_TYPE_LOWER_CASE=1<<2;
 	public final static int CHAR_TYPE_ALPHABET=
-			CHAR_TYPE_LOWER_CASE |CHAR_TYPE_UPPER_CASE;
+			CHAR_TYPE_LOWER_CASE |CHAR_TYPE_UPPER_CASE;CryptoUtil
 	public final static int CHAR_TYPE_XSS=1<<4;
 	public final static int CHAR_TYPE_ASCII_SYMBOL=1<<3|1<<4|1<<5|1<<6;
 	public final static int CHAR_TYPE_ASCII=

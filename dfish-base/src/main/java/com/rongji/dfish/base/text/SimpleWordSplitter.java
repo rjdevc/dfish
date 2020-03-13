@@ -15,6 +15,7 @@ import java.util.List;
  *
  */
 public class SimpleWordSplitter implements WordSplitter{
+
     private static SimpleWordSplitter instance=new SimpleWordSplitter();
     List<CharInfo> charinfos=new ArrayList<>();
     private SimpleWordSplitter(){
@@ -62,6 +63,10 @@ public class SimpleWordSplitter implements WordSplitter{
         });
     }
 
+    /**
+     * 获得切词器实例
+     * @return
+     */
     public static SimpleWordSplitter getInstance(){
         return instance;
     }

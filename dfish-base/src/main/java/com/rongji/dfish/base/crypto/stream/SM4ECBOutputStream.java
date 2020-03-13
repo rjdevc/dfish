@@ -9,6 +9,12 @@ import java.io.OutputStream;
 public class SM4ECBOutputStream extends AbstractPresentOutputStream {
     private long[] key;
     private boolean flushed;
+
+    /**
+     * 构造函数
+     * @param out
+     * @param key
+     */
     public SM4ECBOutputStream(OutputStream out,byte[] key) {
         super(out);
         super.TEXT_SIZE=16;
