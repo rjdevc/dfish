@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * 适用于处理json格式的数据，将数据转换为json字符串
+ *
  * @param <T>
  */
 public class JsonResponse<T> {
@@ -32,6 +33,7 @@ public class JsonResponse<T> {
     public static <T> JsonResponse<T> of(T data) {
         return of(data, null);
     }
+
     public static <T> JsonResponse<T> of(T data, Pagination pagination) {
         JsonResponse<T> response = new JsonResponse<>(data, pagination);
         return response;
@@ -108,6 +110,13 @@ public class JsonResponse<T> {
         return this;
     }
 
+    /**
+     * 接口响应的头部信息
+     *
+     * @author lamontYu
+     * @date 2019-09-23
+     * @since 5.0
+     */
     public static class Header {
 
         private String timestamp;
@@ -118,52 +127,100 @@ public class JsonResponse<T> {
 
         public static final SimpleDateFormat DF = new SimpleDateFormat("yyyyMMddHHmmssZ");
 
+        /**
+         * 构造函数
+         */
         public Header() {
             synchronized (DF) {
                 this.setTimestamp(DF.format(new Date()));
             }
         }
 
+        /**
+         * 接口响应时间戳
+         * @return String
+         */
         public String getTimestamp() {
             return timestamp;
         }
 
+        /**
+         * 接口响应时间戳
+         * @param timestamp String
+         * @return 本身，这样可以继续设置其他属性
+         */
         public Header setTimestamp(String timestamp) {
             this.timestamp = timestamp;
             return this;
         }
 
+        /**
+         * 分批接口调用时,响应的总记录数
+         * @return Integer
+         */
         public Integer getSize() {
             return size;
         }
 
+        /**
+         * 分批接口调用时,响应的总记录数
+         * @param size Integer
+         * @return 本身，这样可以继续设置其他属性
+         */
         public Header setSize(Integer size) {
             this.size = size;
             return this;
         }
 
+        /**
+         * 分批接口调用时,请求的偏移量(即跳过记录数)
+         * @return Integer
+         */
         public Integer getOffset() {
             return offset;
         }
 
+        /**
+         * 分批接口调用时,请求的偏移量(即跳过记录数)
+         * @param offset Integer
+         * @return 本身，这样可以继续设置其他属性
+         */
         public Header setOffset(Integer offset) {
             this.offset = offset;
             return this;
         }
 
+        /**
+         * 分批接口调用时,请求的当前批数量
+         * @return Integer
+         */
         public Integer getLimit() {
             return limit;
         }
 
+        /**
+         * 分批接口调用时,请求的当前批数量
+         * @param limit Integer
+         * @return 本身，这样可以继续设置其他属性
+         */
         public Header setLimit(Integer limit) {
             this.limit = limit;
             return this;
         }
 
+        /**
+         * 接口调用时,响应头部信息
+         * @return HeaderPrincipal
+         */
         public HeaderPrincipal getPrincipal() {
             return principal;
         }
 
+        /**
+         * 接口调用时,响应头部信息
+         * @param principal HeaderPrincipal
+         * @return 本身，这样可以继续设置其他属性
+         */
         public Header setPrincipal(HeaderPrincipal principal) {
             this.principal = principal;
             return this;
@@ -171,15 +228,31 @@ public class JsonResponse<T> {
 
     }
 
+    /**
+     * 接口响应头部的调用者信息
+     *
+     * @author lamontYu
+     * @date 2019-11-29
+     * @since 5.0
+     */
     public static class HeaderPrincipal implements ResponsePrincipal {
         private String name;
         private String natureName;
         private String fullName;
 
+        /**
+         * 构造函数
+         * @param name 调用者主信息
+         */
         public HeaderPrincipal(String name) {
             this.name = name;
         }
 
+        /**
+         * 构造函数
+         * @param name 调用者主信息
+         * @param natureName 调用者名称
+         */
         public HeaderPrincipal(String name, String natureName) {
             this.name = name;
             this.natureName = natureName;
@@ -216,23 +289,48 @@ public class JsonResponse<T> {
         }
     }
 
+    /**
+     * 接口响应的错误信息
+     *
+     * @author lamontYu
+     * @date 2019-09-23
+     * @since 5.0
+     */
     public static class Error {
         private String code;
         private String msg;
 
+        /**
+         * 错误代码
+         * @return String
+         */
         public String getCode() {
             return code;
         }
 
+        /**
+         * 错误代码
+         * @param code String
+         * @return 本身，这样可以继续设置其他属性
+         */
         public Error setCode(String code) {
             this.code = code;
             return this;
         }
 
+        /**
+         * 错误信息
+         * @return String
+         */
         public String getMsg() {
             return msg;
         }
 
+        /**
+         * 错误信息
+         * @param msg String
+         * @return 本身，这样可以继续设置其他属性
+         */
         public Error setMsg(String msg) {
             this.msg = msg;
             return this;

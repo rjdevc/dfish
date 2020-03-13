@@ -8,6 +8,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
+ * 实体类支持类,用于实现框架内核中默认方法实体类的创建,这样让默认的子类只关注本身的方法,而不用关注常用方法的实现
+ *
  * @author lamontYu
  * @date 2019-12-18
  * @since 5.0
@@ -19,6 +21,11 @@ public class EntitySupport<P> {
     private String idName;
     private Method idGetter;
 
+    /**
+     * 构造函数
+     *
+     * @param clz 实体类Class
+     */
     public EntitySupport(Class<?> clz) {
         if (clz == null) {
             throw new IllegalArgumentException("clz == null");
@@ -45,6 +52,13 @@ public class EntitySupport<P> {
 
     }
 
+    /**
+     * 获取实体类Class
+     *
+     * @param clz Class 当前实现类,一般是DAO
+     * @param <P> 实体类
+     * @return Class 实体类Class
+     */
     private <P> Class<P> getEntityClass(Class<?> clz) {
         Class<?> workingClz = clz;
         while (true) {
@@ -68,18 +82,38 @@ public class EntitySupport<P> {
         throw new UnsupportedOperationException("can not recognize the entity type.[" + clz.getName() + "]");
     }
 
+    /**
+     * 获取实体类Class
+     *
+     * @return Class
+     */
     public Class<P> getEntityClass() {
         return entityClass;
     }
 
+    /**
+     * 获取实体类名称
+     *
+     * @return String
+     */
     public String getEntityName() {
         return entityName;
     }
 
+    /**
+     * 获取实体类中ID名称
+     *
+     * @return String
+     */
     public String getIdName() {
         return idName;
     }
 
+    /**
+     * 获取实体类中ID属性的getter方法
+     *
+     * @return Method
+     */
     public Method getIdGetter() {
         return idGetter;
     }

@@ -11,13 +11,17 @@ import com.rongji.dfish.framework.info.ServletInfo;
 import java.io.File;
 
 /**
- * 默认系统配置
+ * 默认系统配置实现类
+ * 该实现类将系统配置保存在配置文件中
+ * @since 2.x
+ * @date 2018-08-03 before
+ * @author DFish Team
  */
 public class DefaultSystemConfig implements SystemConfigHolder {
     private String configFile;
     private JsonConfigHelper xmltool;
 
-    private Cache<String, String> propertyCache = new MemoryCache<String, String>();
+    private Cache<String, String> propertyCache = new MemoryCache<>();
 
     @Override
     public String getProperty(String name) {
@@ -46,14 +50,21 @@ public class DefaultSystemConfig implements SystemConfigHolder {
         propertyCache.put(key, value);
     }
 
+    /**
+     * 获取配置文件名
+     * @return String
+     */
     public String getConfigFile() {
         return configFile;
     }
 
+    /**
+     * 设置配置文件名
+     * @param configFile String
+     */
     public void setConfigFile(String configFile) {
         this.configFile = configFile;
         reset();
     }
-
 
 }

@@ -14,19 +14,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 服务层工具类
+ *
  * @author lamontYu
  * @date 2019-12-04 13:27
+ * @since 5.0
  */
 public class ServletUtil {
 
     private static final String ENCODING = "UTF-8";
     public static final String DOWNLOAD_ENCODING = "ISO8859-1";
 
+    /**
+     * 获取参数值
+     *
+     * @param request 请求
+     * @param key     参数名
+     * @return String
+     */
     public static String getParameter(HttpServletRequest request, String key) {
         String[] values = getParameterValues(request, key);
         return StringUtil.toString(values);
     }
 
+    /**
+     * 获取参数值数组
+     *
+     * @param request 请求
+     * @param key     参数名
+     * @return Strnig[] 参数值数组
+     */
     public static String[] getParameterValues(HttpServletRequest request, String key) {
         // 处理tomcat下的中文URL的问题 tomcat在GET方法下传递URL
         // encode的数据会出错。它并是不是按照request设置的字符集进行解码的。
@@ -61,9 +78,9 @@ public class ServletUtil {
     /**
      * 从COOKIE中取得值
      *
-     * @param request
-     * @param name
-     * @return
+     * @param request 请求
+     * @param name    名称
+     * @return String
      */
     public static String getCookieValue(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
@@ -124,6 +141,7 @@ public class ServletUtil {
     /**
      * 下载数据流
      * 经过实测证明，部分浏览器/应用可能在没有content-length 属性的时候，直接停止下载。请慎用该方法
+     *
      * @param response
      * @param is
      * @throws UnsupportedEncodingException
@@ -260,11 +278,34 @@ public class ServletUtil {
         }
     }
 
+    /**
+     * 下载文件
+     *
+     * @param request     请求
+     * @param response    响应
+     * @param file        文件
+     * @param fileName    下载的文件名
+     * @param contentType 类型
+     * @throws IOException
+     */
     public static void downLoadFile(HttpServletRequest request, HttpServletResponse response, File file, String fileName,
                                     String contentType) throws IOException {
         downLoadFile(request, response, false, contentType, new FileInputStream(file), file.length(), fileName);
     }
 
+    /**
+     * 下载文件
+     *
+     * @param request     请求
+     * @param response    响应
+     * @param inline      是否内联
+     * @param contentType 类型
+     * @param fileInput   文件输入流
+     * @param fileLength  文件大小
+     * @param fileName    下载的文件名
+     * @return boolean 下载完成
+     * @throws IOException
+     */
     public static boolean downLoadFile(HttpServletRequest request, HttpServletResponse response, boolean inline, String contentType,
                                        InputStream fileInput, long fileLength, String fileName) throws IOException {
         String range = request.getHeader("Range");

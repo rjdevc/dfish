@@ -23,6 +23,10 @@ import java.util.Random;
 
 /**
  * 拼图滑块验证工具
+ *
+ * @author lamontYu
+ * @date 2019-05-07
+ * @since 3.2
  */
 public class JigsawGenerator {
 
@@ -71,82 +75,163 @@ public class JigsawGenerator {
      */
     private Color gapColor = new Color(255, 255, 255, 220);
 
+    /**
+     * 大拼图宽度
+     * @return int
+     */
     public int getBigWidth() {
         return bigWidth;
     }
 
+    /**
+     * 大拼图宽度
+     * @param bigWidth int
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setBigWidth(int bigWidth) {
         this.bigWidth = bigWidth;
         return this;
     }
 
+    /**
+     * 大拼图高度
+     * @return int
+     */
     public int getBigHeight() {
         return bigHeight;
     }
 
+    /**
+     * 大拼图高度
+     * @param bigHeight int
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setBigHeight(int bigHeight) {
         this.bigHeight = bigHeight;
         return this;
     }
 
+    /**
+     * 小拼图大小(正方形)
+     * @return int
+     */
     public int getSmallSize() {
         return smallSize;
     }
 
+    /**
+     * 小拼图大小(正方形)
+     * @param smallSize int
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setSmallSize(int smallSize) {
         this.smallSize = smallSize;
         return this;
     }
 
+    /**
+     * 图片候选目录
+     * @return String
+     */
     public String getImageFolder() {
         return imageFolder;
     }
 
+    /**
+     * 图片候选目录
+     * @param imageFolder String
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setImageFolder(String imageFolder) {
         this.imageFolder = imageFolder;
         return this;
     }
 
+    /**
+     * 空隙颜色
+     * @return Color
+     */
     public Color getGapColor() {
         return gapColor;
     }
 
+    /**
+     * 空隙颜色
+     * @param gapColor Color
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setGapColor(Color gapColor) {
         this.gapColor = gapColor;
         return this;
     }
 
+    /**
+     * 容错精度范围
+     * @return double
+     */
     public double getErrorRange() {
         return errorRange;
     }
 
+    /**
+     * 容错精度范围
+     * @param errorRange double
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setErrorRange(double errorRange) {
         this.errorRange = errorRange;
         return this;
     }
 
+    /**
+     * 最大错误次数
+     * @return int
+     */
     public int getMaxErrorCount() {
         return maxErrorCount;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public JigsawGenerator setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-        return this;
-    }
-
+    /**
+     * 最大错误次数
+     * @param maxErrorCount int
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setMaxErrorCount(int maxErrorCount) {
         this.maxErrorCount = maxErrorCount;
         return this;
     }
 
+    /**
+     * 错误信息
+     * @return String
+     */
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    /**
+     * 错误信息
+     * @param errorMsg String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public JigsawGenerator setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+        return this;
+    }
+
+    /**
+     * 超限后需要等待的时长(毫秒)
+     * @return long
+     */
     public long getTimeout() {
         return timeout;
     }
 
+    /**
+     * 超限后需要等待的时长(毫秒)
+     * @param timeout long
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JigsawGenerator setTimeout(long timeout) {
         this.timeout = timeout;
         return this;
@@ -157,7 +242,7 @@ public class JigsawGenerator {
     /**
      * 生成拼图
      *
-     * @param request
+     * @param request 请求
      * @return
      * @throws Exception
      */
@@ -238,16 +323,16 @@ public class JigsawGenerator {
 
         jigsaw.setBig(bigImg);
         jigsaw.setSmall(smallImg);
-        jigsaw.setMaxvalue(bigWidth);
+        jigsaw.setMaxValue(bigWidth);
         return jigsaw;
     }
 
     /**
      * 校验拼图是否正确
      *
-     * @param request
-     * @param offsetStr
-     * @return boolean
+     * @param request 请求
+     * @param offsetStr 偏移量
+     * @return boolean 是否验证通过
      */
     public boolean checkJigsawOffset(HttpServletRequest request, String offsetStr) {
         if (Utils.isEmpty(offsetStr)) {
@@ -264,9 +349,9 @@ public class JigsawGenerator {
     /**
      * 校验拼图是否正确
      *
-     * @param request
-     * @param offset
-     * @return boolean
+     * @param request 请求
+     * @param offset 偏移量
+     * @return boolean 是否验证通过
      */
     public boolean checkJigsawOffset(HttpServletRequest request, Number offset) {
         if (offset == null) {
@@ -289,7 +374,7 @@ public class JigsawGenerator {
     /**
      * 获取原始图片目录
      *
-     * @return
+     * @return Strnig
      */
     private String getImageRawDir() {
         String realServletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
@@ -317,7 +402,7 @@ public class JigsawGenerator {
      */
     private JigsawImgItem generatorBigImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
         FileOutputStream output = null;
-        try (FileInputStream input = new FileInputStream(rawFile)){
+        try (FileInputStream input = new FileInputStream(rawFile)) {
             String fileExtName = FileUtil.getFileExtName(rawFile.getName());
             String destFileName = jigsawFileName + "-B" + fileExtName;
             File tempDestFile = getTempDestFile(destFileName);
@@ -358,7 +443,7 @@ public class JigsawGenerator {
      */
     private JigsawImgItem generatorSmallImage(String jigsawFileName, File rawFile, int x, int y, int width, int height) throws Exception {
         FileOutputStream output = null;
-        try (FileInputStream input = new FileInputStream(rawFile)){
+        try (FileInputStream input = new FileInputStream(rawFile)) {
             String fileExtName = FileUtil.getFileExtName(rawFile.getName());
             String destFileName = jigsawFileName + "-S" + fileExtName;
             File tempDestFile = getTempDestFile(destFileName);

@@ -26,9 +26,12 @@ public class CryptorTest {
 
     @Test
     public void decrypt() {
-        Cryptor cryptor = CryptoUtil.prepareCryptor(CryptoUtil.ALGORITHM_BLOWFISH, "DFish@RJ002474").build();
+        Cryptor cryptor = CryptoUtil.prepareCryptor(CryptoUtil.ALGORITHM_BLOWFISH, "DFish@v5").build();
 
-        String enStr = "42EAHECSTJZQV0ZMH7Z5TY55AR";
+        String str = "DFishV587!";
+        System.out.println(str + "->" + cryptor.encrypt(str));
+
+        String enStr = "2ARS5BN2ZTEHTX7C0X5TXHAAB0";
         System.out.println(enStr + "->" + cryptor.decrypt(enStr));
     }
 
