@@ -2785,6 +2785,7 @@ Horz = define.widget( 'Horz', {
 	Const: function( x ) {
 		x.br && (this.className += ' z-br');
 		Scroll.apply( this, arguments );
+		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'Hiddens', nodes: x.hiddens }, -1 );
 		if ( _w_lay.width.call( this ) )
@@ -2829,6 +2830,7 @@ VertScale = define.widget( 'VertScale', {
 Vert = define.widget( 'Vert', {
 	Const: function( x ) {
 		Scroll.apply( this, arguments );
+		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		if ( _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 		if ( x.hiddens )
@@ -9781,7 +9783,7 @@ Leaf = define.widget( 'Leaf', {
 			return this.html_before() + '<dl class="' + this.className + ' z-level' + this.level + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.expanded ? ' z-expanded' : '') + (this.isEllipsis() && !this.textNode ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + this.prop_title() + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.noToggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (this.isFolder() ? $.arrow( this.id + 'r', x.expanded ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
-				(this.box ? this.box.html() : '') + this.html_icon() + '<cite class=w-leaf-t id=' + this.id + 't>' + t + '</cite></dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
+				(this.box ? this.box.html() : '') + this.html_icon() + (this.textNode ? t : '<cite class=w-leaf-t id=' + this.id + 't>' + t + '</cite>') + '</dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();
