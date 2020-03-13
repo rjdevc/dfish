@@ -157,6 +157,16 @@ public class Pagination implements Serializable {
      *
      * @return Page
      */
-    public Page toPage() QueuedBatchAction
+    public Page toPage() {
+        Page page = new Page();
+        page.setAutoRowCount(this.isAutoRowCount());
+        page.setRowCount(this.getSize() == null ? 0 : this.getSize());
+        page.setPageSize(this.getLimit());
+        if (this.getLimit() > 0) {
+            int offset = this.getOffset();
+            page.setCurrentPage(offset / this.getLimit() + 1);
+        }
+        return page;
+    }
 
 }
