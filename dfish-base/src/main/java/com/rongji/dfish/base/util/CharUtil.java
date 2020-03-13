@@ -73,19 +73,49 @@ public class CharUtil {
 		}
 		return r;
 	}
-	
-	
+
+
+	/**
+	 * 类型 -  仅数字
+	 */
 	public final static int CHAR_TYPE_NUMBER=1<<0;
+	/**
+	 * 类型 -  仅大写字母
+	 */
 	public final static int CHAR_TYPE_UPPER_CASE=1<<1;
+	/**
+	 * 类型 -  仅小写字母
+	 */
 	public final static int CHAR_TYPE_LOWER_CASE=1<<2;
+	/**
+	 * 类型 -  仅字母表大小写字符
+	 */
 	public final static int CHAR_TYPE_ALPHABET=
 			CHAR_TYPE_LOWER_CASE |CHAR_TYPE_UPPER_CASE;
+	/**
+	 * 仅XSS符号
+	 */
 	public final static int CHAR_TYPE_XSS=1<<4;
+	/**
+	 * 所有ASCII 的可见符号 (不包含 内码为0-31的控制符号 如换行)
+	 */
 	public final static int CHAR_TYPE_ASCII_SYMBOL=1<<3|1<<4|1<<5|1<<6;
+	/**
+	 * 所有ASCII 可见字符  (不包含 内码为0-31的控制符号 如换行)
+	 */
 	public final static int CHAR_TYPE_ASCII=
 			CHAR_TYPE_ASCII_SYMBOL | CHAR_TYPE_NUMBER | CHAR_TYPE_ALPHABET;
+	/**
+	 * 全角符号
+	 */
 	public final static int CHAR_TYPE_SBC=1<<7;
+	/**
+	 * 中文符号(同全角符号)
+	 */
 	public final static int CHAR_TYPE_CHINESE_SYMBOL=1<<7;
+	/**
+	 * 汉字
+	 */
 	public final static int CHAR_TYPE_CHINESE=1<<15;
 	/*
 	 * 第0段 数字

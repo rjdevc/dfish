@@ -76,6 +76,7 @@ public class ImageProcessorGroup {
 
 
     /**
+     * 由File内容构建 ImageProcessorGroup
      * @param file 原始文件
      * @return this
      */

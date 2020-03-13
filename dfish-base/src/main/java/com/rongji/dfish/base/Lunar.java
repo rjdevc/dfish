@@ -740,6 +740,9 @@ public class Lunar {
         this.isLeapMonth = isLeapMonth;
     }
 
+    /**
+     * 节气
+     */
     public static class SolarTerms {
         // 2000年-2030年间所有节气日期
         private static final String[][] SOLAR_TERM_DATA = new String[][] {
@@ -897,6 +900,11 @@ public class Lunar {
             System.out.println("===========初始化节气数据,用时" + (end - begin) + "ms");
         }
 
+        /**
+         * 节气名
+         * @param date 时间
+         * @return 节气名
+         */
         public static String getSolarTermName(Date date) {
             String name = "";
             Calendar cal = Calendar.getInstance();

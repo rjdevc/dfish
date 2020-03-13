@@ -8,9 +8,21 @@ package com.rongji.dfish.base.crypto;
  *   String s=c.decrypt(src);
  */
 public class CryptorBuilder {
+    /**
+     * 原文输出，注意，这样的流，不可以直接转成文本的，通常保存成BLOB
+     */
     public static final int PRESENT_RAW = 0;
+    /**
+     * 16进制表示，原一个字节表示成2个16进制字符。
+     */
     public static final int PRESENT_HEX = 1;
+    /**
+     * Base64表示。原3个字节的二进制内容表示成4个字符。
+     */
     public static final int PRESENT_BASE64 = 2;
+    /**
+     * Bsee32表示。原5个字节的二进制内容表示成8个字符
+     */
     public static final int PRESENT_BASE32 = 3;
     /**
      * 注意和 RTF4648 的并不完全一致，该表示方式没有最后的PAD(=)
@@ -61,7 +73,7 @@ public class CryptorBuilder {
      */
     public static final String ALGORITHM_MD5 = "MD5";
     /**
-     * 不加密。仅转化内码和字符串
+     * 不加密。仅转化内码为字符串
      */
     public static final String ALGORITHM_NONE = null;
     /**
@@ -124,6 +136,12 @@ public class CryptorBuilder {
     private CryptorBuilder() {
     }
 
+    /**
+     * 创建一个指定算法的Builder。用builder可以构建出 Cryptor
+     * @param algorithm
+     * @param key
+     * @return
+     */
     public static CryptorBuilder create(String algorithm, Object key) {
         CryptorBuilder cb = new CryptorBuilder();
         cb.algorithm = algorithm;
@@ -149,6 +167,10 @@ public class CryptorBuilder {
         return this;
     }
 
+    /**
+     * 构建一个 Cryptor
+     * @return
+     */
     public Cryptor build() {
         if(isDigest(algorithm)){
             return new MessageDigestCryptor(this);

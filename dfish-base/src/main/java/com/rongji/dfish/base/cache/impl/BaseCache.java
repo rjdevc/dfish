@@ -48,10 +48,20 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         this.alive = alive;
     }
 
+    /**
+     * 注入一个BatchAction 这个batchAction 的作用是批量从原始途经获取数值的。
+     * BaseCache里面是策略会在何时的时机回调该valueGetter
+     * @return BatchAction
+     */
     public BatchAction<K, V> getValueGetter() {
         return action;
     }
 
+    /**
+     * 注入一个BatchAction 这个batchAction 的作用是批量从原始途经获取数值的。
+     * BaseCache里面是策略会在何时的时机回调该valueGetter
+     * @param valueGetter BatchAction
+     */
     public void setValueGetter(BatchAction<K, V> valueGetter) {
         this.action = valueGetter;
     }

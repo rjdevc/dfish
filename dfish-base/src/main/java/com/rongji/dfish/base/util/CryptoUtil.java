@@ -14,6 +14,9 @@ import com.rongji.dfish.base.crypto.CryptorBuilder;
  *
  */
 public class CryptoUtil {
+	/**
+	 * 不做加解密，（可能是转32进制，或压缩）
+	 */
 	public static final String ALGORITHM_NONE=null;
 	/**
 	 * BLOWFISH加解密方法,由于相同源可以得到不同结果,而且破解就像当于得到加密密钥的过程所以有相当的安全性,效率还可以.
@@ -66,9 +69,21 @@ public class CryptoUtil {
 	 */
 	public static final String ALGORITHM_SHA512 = CryptorBuilder.ALGORITHM_SHA512;
 
+	/**
+	 * 原文输出，注意，这样的流，不可以直接转成文本的，通常保存成BLOB
+	 */
 	public static final int PRESENT_RAW = CryptorBuilder.PRESENT_RAW;
+	/**
+	 * 16进制表示，原一个字节表示成2个16进制字符。
+	 */
 	public static final int PRESENT_HEX = CryptorBuilder.PRESENT_HEX;
+	/**
+	 * Base64表示。原3个字节的二进制内容表示成4个字符。
+	 */
 	public static final int PRESENT_BASE64 = CryptorBuilder.PRESENT_BASE64;
+	/**
+	 * Bsee32表示。原5个字节的二进制内容表示成8个字符
+	 */
 	public static final int PRESENT_BASE32 = CryptorBuilder.PRESENT_BASE32;
 	/**
 	 * 注意和 RTF4648 的并不完全一致，该表示方式没有最后的PAD(=)
@@ -86,9 +101,21 @@ public class CryptoUtil {
 	 */
 	public static final String ENCODING_UTF8 = CryptorBuilder.ENCODING_UTF8;
 
+	/**
+	 * 准备一个 加解密工具
+	 * @param algorithm 算法
+	 * @param key 秘钥
+	 * @return 工具的Builder
+	 */
 	public static CryptorBuilder prepareCryptor(String algorithm, Object key){
 		return CryptorBuilder.create(algorithm,key);
 	}
+
+	/**
+	 * 准备一个 数据摘要工具（只能加密，不能解密）
+	 * @param algorithm 算法
+	 * @return 工具的Builder
+	 */
 	public static CryptorBuilder prepareMessageDigest(String algorithm){
 		return prepareCryptor(algorithm,null);
 	}

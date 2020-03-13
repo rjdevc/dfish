@@ -55,14 +55,26 @@ public final class LibrayInfo {
         return libPath;
     }
 
+    /**
+     * 环境中支持 dom4j
+     * @return
+     */
     public boolean isSupportDom4j() {
         return supportDom4j;
     }
 
+    /**
+     * 环境支持JAVA 1.5或以上
+     * @return boolean
+     */
     public boolean isSupportJdk15() {
         return supportJdk15;
     }
 
+    /**
+     * 支持图形处理，部分Linux操作系统服务版本，允许不安装 图形环境。
+     * @return boolean
+     */
     public boolean isSupportImageProcessing() {
         return supportImageProcessing;
     }

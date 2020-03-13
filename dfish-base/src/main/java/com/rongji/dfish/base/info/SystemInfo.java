@@ -44,33 +44,58 @@ public final class SystemInfo {
     return retValue;
   }
 
+  /**
+   * 取得CPU信息
+   * @return String
+   */
   public String getCpu() {
     return cpu;
   }
 
   /**
    * 取得操作系统名
+   *  @return String
    */
   public String getOperationSystem() {
     return operationSystem;
   }
 
+  /**
+   * 取得运行环境名
+   * @return String
+   */
   public String getRuntimeName() {
     return runtimeName;
   }
 
+  /**
+   * 取得运行环境版本
+   * @return String
+   */
   public String getRuntimeVersion() {
     return runtimeVersion;
   }
 
+  /**
+   * 取得虚拟机名字
+   * @return String
+   */
   public String getVmName() {
     return vmName;
   }
 
+  /**
+   * 取得虚拟机产商
+   * @return
+   */
   public String getVmVendor() {
     return vmVendor;
   }
 
+  /**
+   * 取得虚拟机版本
+   * @return
+   */
   public String getVmVersion() {
     return vmVersion;
   }

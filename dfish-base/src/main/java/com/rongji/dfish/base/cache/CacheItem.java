@@ -16,14 +16,26 @@ public class CacheItem<V> {
 		born = System.currentTimeMillis();
 	}
 
+	/**
+	 * 取得 对象
+	 * @return V
+	 */
 	public V getValue() {
 		return value;
 	}
 
+	/**
+	 * 设置对象
+	 * @param value V
+	 */
 	public void setValue(V value) {
 		this.value = value;
 	}
 
+	/**
+	 * 取得生成时间。
+	 * @return
+	 */
 	public long getBorn() {
 		return born;
 	}

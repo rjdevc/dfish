@@ -5,6 +5,14 @@ package com.rongji.dfish.base.crypto.stream;
  */
 public class SM4 {
 
+    /**
+     * 进行一轮加密
+     * @param sk
+     * @param input
+     * @param inOff
+     * @param output
+     * @param outOff
+     */
     public static void oneRound(long[] sk, byte[] input, int inOff, byte[] output, int outOff){
         int i = 0;
         // unsigned long buffer
@@ -56,10 +64,20 @@ public class SM4 {
         return rk;
     }
 
+    /**
+     * 设置加密用的 key
+     * @param sk SK
+     * @param key 秘钥
+     */
     public static void setEncryptKey(long[] sk, byte[] key){
         setKey(sk,key);
     }
 
+    /**
+     * 设置 解密用的 key 。该KEY 加密秘钥交换出来
+     * @param sk SK
+     * @param key 秘钥
+     */
     public static void setDecryptKey(long[] sk, byte[] key){
         setKey(sk,key);
         for (int i = 0; i < 16; i++){

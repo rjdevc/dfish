@@ -101,5 +101,11 @@ public abstract class AbstractPresentInputStream extends FilterInputStream {
         }
         return totalRead;
     }
+
+    /**
+     * 因为流模式，每次处理的时候，不一定缓冲区的字节数都适合算法整数倍处理。
+     * 最后可能会剩下一段byte[] 数组需要单独处理。
+     * 这段处理过程定位为doChunk
+     */
     protected abstract void doChunk();
 }

@@ -1,6 +1,8 @@
 package com.rongji.dfish.base.util;
 
 import java.io.*;
+import java.nio.file.CopyOption;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -27,7 +29,13 @@ import java.util.zip.ZipOutputStream;
  * @version 2.1
  */
 public final class FileUtil {
+    /**
+     * 服务器端字符集
+     */
     public static final String ENCODING = "UTF-8";
+    /**
+     * 客户端字符集(默认，客户端WINDOWS系统居多)
+     */
     public static final String CLIENT_ENCODING = "GBK";
 
     private FileUtil() {
@@ -173,6 +181,12 @@ public final class FileUtil {
         }
     }
 
+    /**
+     * 进行流的读写操作
+     * @param input InputStream
+     * @param output OutputStream
+     * @throws IOException
+     */
     public static void readAndWrite(InputStream input, OutputStream output) throws IOException {
         try {
             if (input != null && output != null) {
@@ -485,12 +499,20 @@ public final class FileUtil {
         zos.flush();
     }
 
+    /**
+     * 用流方式 深度拷贝文件。
+     * 不过,如果环境是 JDK7以上 通常建议用操作系统的拷贝会更快。
+     * @param fromFileFullName String
+     * @param toFileFolder String
+     * @param toFileName String
+     * @see java.nio.file.Files#copy(Path, Path, CopyOption...)
+     * @return 是否成功
+     */
     public static boolean copyFile(String fromFileFullName, String toFileFolder, String toFileName) {
         boolean isExist = true;
         OutputStream os = null;
         InputStream ins = null;
         try {
-
             File attachFile = new File(fromFileFullName.replace('/',
                     File.separatorChar));
             if (attachFile.exists() && attachFile.isFile()) { // 原附件存在

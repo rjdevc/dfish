@@ -14,6 +14,11 @@ public class JpegInfo extends ImageInfo {
     private byte[] thumbData;
     private int thumbOff;
     private int thumbLen;
+
+    /**
+     * 取得JPEG里面自带的缩略图。注意该缩略，并不一定都存在。
+     * @return ByteArrayInputStream
+     */
     public ByteArrayInputStream getThumbnail(){
         if(thumbData==null){
             return null;
@@ -21,6 +26,14 @@ public class JpegInfo extends ImageInfo {
         return new ByteArrayInputStream(thumbData,thumbOff,thumbLen);
     }
 
+    /**
+     * 亏损读取基础信息。而不需要全部读取，或转化成图形对象
+     * @param src byte[]
+     * @param read  src中有多少字节是已读的(有效的)
+     * @param source 输出
+     * @return JpegInfo
+     * @throws IOException
+     */
     public static JpegInfo readJpegInfo(byte[] src, int read, InputStream source) throws IOException {
         JpegInfo ji=new JpegInfo();
         ji.setType(TYPE_JPEG);

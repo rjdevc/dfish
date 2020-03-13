@@ -16,18 +16,36 @@ import java.math.BigInteger;
  */
 public class SimHash {
     private static final WordSplitter DEFAULT_SPLITER=SimpleWordSplitter.getInstance();
+
+    /**
+     * 切词器
+     * @return WordSplitter
+     */
     public WordSplitter getSplitter() {
         return splitter;
     }
 
+    /**
+     * 切词器
+     * @param splitter WordSplitter
+     */
     public void setSplitter(WordSplitter splitter) {
         this.splitter = splitter;
     }
 
     private WordSplitter splitter;
 
+    /**
+     * 默认位数 64 位
+     */
     public static int hashbits = 64;
 
+    /**
+     * 将文本转化成SimHash
+     * @param tokens 文本
+     * @return 默认16个字符的结果
+     * @throws Exception
+     */
     public String getSimHash(String tokens) throws Exception {
         splitter=DEFAULT_SPLITER;
         return getSimHash(tokens, hashbits);
@@ -45,6 +63,13 @@ public class SimHash {
             0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0 // 96
     };
 
+    /**
+     * 将文本转化成SimHash
+     * @param tokens 文本
+     * @param hashbits 位数
+     * @return 默认位数除以四个字符的结果
+     * @throws Exception
+     */
     public String getSimHash(String tokens, int hashbits) throws Exception {
         // 定义特征向量/数组
         int[] v = new int[hashbits];
@@ -108,6 +133,12 @@ public class SimHash {
         }
     }
 
+    /**
+     * 判定两个哈希值的距离(相似度)
+     * @param hash1 哈希值
+     * @param hash2 哈希值
+     * @return int
+     */
     public static int getDistance(String hash1, String hash2) {
         int distance;
         if (hash1.length() != hash2.length()) {

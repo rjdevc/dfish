@@ -43,6 +43,10 @@ public class BaseBeanContextHodler implements BeanContextHolder {
         return contextByClass.get(name);
     }
 
+    /**
+     * 增加一个元素
+     * @param obj
+     */
     public void add(Object obj){
         if(obj==null){return;}
         Class clz=obj.getClass();

@@ -34,10 +34,18 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     protected Map<I, CacheItem<O>> core;
     protected BatchAction<I, O> action;
 
+    /**
+     * 换粗的数据放在这个core中
+     * @return Map
+     */
     protected Map<I, CacheItem<O>> getCore() {
         return core;
     }
 
+    /**
+     * 缓存的数据放在这个Core当中
+     * @param core Map
+     */
     protected void setCore(Map<I, CacheItem<O>> core) {
         this.core = core;
     }
