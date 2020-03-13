@@ -15,11 +15,29 @@ import java.io.*;
  *   .buildHtml();
  */
 public class Docpreviews {
+    /**
+     * .json文件标识
+     */
     public static final int JSON=0;
+    /**
+     * .txt文件标识
+     */
     public static final int TXT=1;
+    /**
+     * .doc文件标识
+     */
     public static final int DOC=2;
+    /**
+     * .doc文件标识(word2003)
+     */
     public static final int WORD2003=DOC;
+    /**
+     * .docx文件标识
+     */
     public static final int DOCX=3;
+    /**
+     * .docx文件标识(word2007)
+     */
     public static final int WORD2007=DOCX;
     private static final int RTF=4;
     private static final int WPS=5;

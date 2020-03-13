@@ -26,6 +26,11 @@ public class PinyinConverter {
 	 */
 	public static final int MODE_PERSON_NAME=1;
 	private int mode;
+
+	/**
+	 * 构造函数
+	 * @param mode
+	 */
 	public PinyinConverter(int mode){
 		this.mode=mode;
 	}

@@ -16,6 +16,10 @@ import java.util.zip.ZipInputStream;
  */
 @SuppressWarnings("JavadocReference")
 public class ClassPackageUtil {
+	/**
+	 * 得到已经装载的包。
+	 * @return
+	 */
 	public static String[] getPackages() {
 		Package[] pckgs = Package.getPackages();
 		// 以下是已经装载的包。
@@ -39,7 +43,7 @@ public class ClassPackageUtil {
 	}
 	
 	/**
-	 * 
+	 * 找到某个包下的所有类
 	 * @param packageName 包名
 	 * @param inner 是否包含内嵌类
 	 * @param extPaths 检察额外的路径。如${webroot}/WEB-INFO/lib下。
@@ -95,6 +99,11 @@ public class ClassPackageUtil {
 
 		return result.toArray(new String[result.size()]);
 	}
+
+	/**
+	 * 得到当前路径
+	 * @return
+	 */
 	public static String getCurrentPath(){
 		// 如果如果URL是file:/C:/.../WEB-INF/classes/com/rongji/dfish/common/ClassUtil.class
 		// 或linux下的 file://usr/myapp/.../WEB-INF/classes/com/rongji/dfish/common/ClassUtil.class

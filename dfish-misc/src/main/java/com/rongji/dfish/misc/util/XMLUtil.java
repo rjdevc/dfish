@@ -34,19 +34,35 @@ public class XMLUtil {
 	private String fileFullName;
 	private Document doc;
 	private static final String ENCODING = "UTF-8";
-	
+
+	/**
+	 * 获得文件全名
+	 * @return
+	 */
 	public String getFileFullName() {
 		return fileFullName;
 	}
 
+	/**
+	 * 设置文件全名
+	 * @param fileFullName
+	 */
 	public void setFileFullName(String fileFullName) {
 		this.fileFullName = fileFullName;
 	}
 
+	/**
+	 * 获得 Document
+	 * @return
+	 */
 	public Document getDoc() {
 		return doc;
 	}
 
+	/**
+	 * 设置Document
+	 * @param doc
+	 */
 	public void setDoc(Document doc) {
 		this.doc = doc;
 	}
@@ -57,15 +73,29 @@ public class XMLUtil {
 	public XMLUtil() {
 		doc = DocumentHelper.createDocument();
 	}
-	
+
+	/**
+	 * 创建对象
+	 * @param doc
+	 */
 	public XMLUtil(Document doc) {
 		this.doc = doc;
 	}
-	
+
+	/**
+	 * 创建对象
+	 * @param inputStream
+	 * @throws DocumentException
+	 */
 	public XMLUtil(InputStream inputStream) throws DocumentException {
 		readDoc(inputStream);
 	}
-	
+
+	/**
+	 * 创建对象
+	 * @param file
+	 * @throws DocumentException
+	 */
 	public XMLUtil(File file) throws DocumentException {
 		if (file == null) {
 			throw new UnsupportedOperationException("The input File can not be null.");
@@ -73,7 +103,12 @@ public class XMLUtil {
 		fileFullName = file.getAbsolutePath();
 		readDoc(file);
 	}
-	
+
+	/**
+	 * 创建对象
+	 * @param fileFullName
+	 * @throws DocumentException
+	 */
 	public XMLUtil(String fileFullName) throws DocumentException {
 		this.fileFullName = fileFullName;
 		readDoc();

@@ -36,12 +36,18 @@ import com.rongji.dfish.base.util.Utils;
  * @author DFish Team
  */
 public class ExcelUtil {
-    // 03版Excel
+    /**
+     * 03版Excel
+     */
     public static final String TYPE_HSSF = "xls";
-    // 07版Excel及以上
+    /**
+     * 07版Excel及以上
+     */
     public static final String TYPE_XSSF = "xlsx";
 
-    // 日期格式类型;poi中存的类型是0-5;我们这里使用9,以防版本更新添加了类型导致冲突
+    /**
+     * 日期格式类型;poi中存的类型是0-5;我们这里使用9,以防版本更新添加了类型导致冲突
+     */
     private static final int CELL_TYPE_DATE = 9;
 
     /**
