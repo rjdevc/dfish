@@ -190,6 +190,11 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidg
 		return (T) this;
 	}
 
+	/**
+	 * 获得装饰器
+	 * @see com.rongji.dfish.ui.NodeContainerDecorator
+	 * @return NodeContainerDecorator
+	 */
 	protected NodeContainerDecorator getNodeContainerDecorator(){
 		return new NodeContainerDecorator() {
 			@Override

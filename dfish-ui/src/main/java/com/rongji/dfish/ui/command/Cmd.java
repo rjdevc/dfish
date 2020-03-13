@@ -122,6 +122,12 @@ public class Cmd extends AbstractNode<Cmd> implements MultiNodeContainer<Cmd,Com
     public void clearNodes() {
         nodes.clear();
     }
+
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override

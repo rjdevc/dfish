@@ -110,6 +110,11 @@ public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,
         return sb.toString();
     }
 
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator() {
         return new NodeContainerDecorator() {
             @Override

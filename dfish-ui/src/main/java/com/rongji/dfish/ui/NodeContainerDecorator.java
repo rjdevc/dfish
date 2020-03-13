@@ -132,6 +132,13 @@ public abstract class NodeContainerDecorator implements NodeContainer{
     }
 
 
+    /**
+     * 替换节点的时候。默认继承被替换内容的高宽。
+     * 这里利用 onReplace动作来补偿。如果不需要，可以重写此方法。
+     * @param oldNode 被替换的节点
+     * @param newNode 节点
+     * @return 是否允许替换
+     */
     protected boolean onReplace(Node oldNode, Node newNode) {
         if(oldNode instanceof Widget && newNode instanceof  Widget){
             Widget oldWidget = (Widget) oldNode;

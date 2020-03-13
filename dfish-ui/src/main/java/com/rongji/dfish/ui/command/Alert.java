@@ -117,6 +117,11 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
         return this;
     }
 
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override

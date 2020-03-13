@@ -57,6 +57,11 @@ public class Replace extends NodeControlCommand<Replace>
         return this;
     }
 
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override

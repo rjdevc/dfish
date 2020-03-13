@@ -101,6 +101,11 @@ public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends 
         return (T) this;
     }
 
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override

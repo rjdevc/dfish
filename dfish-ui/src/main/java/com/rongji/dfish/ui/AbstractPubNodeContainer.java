@@ -22,6 +22,12 @@ public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContaine
         super(id);
     }
 
+    /**
+     * 当需要的时候，创建一个 当前容器合适的Pub对象。
+     * 而尽量减少用setPub 方法，防止因为被覆盖而造成数据丢失。
+     * 这要求，各个实现类，需要提供新建的方法。
+     * @return PN
+     */
     protected abstract PN newPub();
 
     @Override

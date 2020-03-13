@@ -202,6 +202,12 @@ public class Dialog extends AbstractPopup<Dialog> implements SingleNodeContainer
         this.node = node;
         return  this;
     }
+
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override

@@ -143,6 +143,12 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
         this.to = to;
         return this;
     }
+
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             @Override

@@ -45,6 +45,11 @@ abstract class AbstractTR<T extends AbstractTR<T>> extends AbstractWidget<T> imp
      */
     public AbstractTR() {}
 
+    /**
+     * 获得装饰器
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     * @return NodeContainerDecorator
+     */
     protected NodeContainerDecorator getNodeContainerDecorator(){
         return new NodeContainerDecorator() {
             Map<Integer,String> posMap;
