@@ -35,7 +35,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     public AbstractButton(String text,String onClick,String icon) {
         super(null);
         setText(text);
-        setOn(Button.EVENT_CLICK, onClick);
+        putOn(Button.EVENT_CLICK, onClick);
         setIcon(icon);
     }
 
@@ -180,7 +180,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
      */
     @Deprecated
     public T setOnclick(String onclick) {
-        this.setOn(EVENT_CLICK, onclick);
+        this.putOn(EVENT_CLICK, onclick);
         return (T) this;
     }
 

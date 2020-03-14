@@ -19,7 +19,7 @@ public interface EventTarget<T extends EventTarget<T>> {
      * @param script    触发的动作脚本，当这个值为空的时候，表示取消该动作
      * @return T this
      */
-    T setOn(String eventName, String script);
+    T putOn(String eventName, String script);
 
     /**
      * 获取事件的名称和动作。
@@ -29,6 +29,23 @@ public interface EventTarget<T extends EventTarget<T>> {
      */
     Map<String, String> getOn();
 
+    /**
+     * 根据事件的名称获取事件动作。
+     * 如果为空则这个部件上没有绑定该事件
+     *
+     * @param eventName 事件的名称，如 click等
+     * @return 如果为空则这个部件上没有绑定该事件
+     */
+    String getOn(String eventName);
+
+    /**
+     * 根据事件的名称获取事件动作。
+     * 如果为空则这个部件上没有绑定该事件
+     *
+     * @param eventName 事件的名称，如 click等
+     * @return 如果为空则这个部件上没有绑定该事件
+     */
+    String removeOn(String eventName);
 
     /**
      * DFISH事件-当widget在页面上生成HTML dom对象后触发

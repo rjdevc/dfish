@@ -34,7 +34,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
     protected String appendContent;
     protected String afterContent;
 
-    protected Map<String, String> events;
+    protected Map<String, String> on;
 
     /**
      * 取得自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。
@@ -525,24 +525,34 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
 
     @Override
     public Map<String, String> getOn() {
-        return events;
+        return on;
     }
 
     @Override
-    public T setOn(String eventName, String script) {
+    public T putOn(String eventName, String script) {
         if (eventName == null) {
             return (T) this;
         }
-        if (events == null) {
-            events = new TreeMap<>();
+        if (on == null) {
+            on = new TreeMap<>();
         }
 
         if (script == null || "".equals(script)) {
-            events.remove(eventName);
+            on.remove(eventName);
         } else {
-            events.put(eventName, script);
+            on.put(eventName, script);
         }
         return (T) this;
+    }
+
+    @Override
+    public String getOn(String eventName) {
+        return on == null ? null : on.get(eventName);
+    }
+
+    @Override
+    public String removeOn(String eventName) {
+        return on == null ? null : on.remove(eventName);
     }
 
     protected void copyProperties(AbstractWidget<?> to, AbstractWidget<?> from) {
@@ -568,6 +578,6 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         to.appendContent = from.appendContent;
         to.afterContent = from.afterContent;
 
-        to.events = from.events;
+        to.on = from.on;
     }
 }

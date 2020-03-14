@@ -142,8 +142,8 @@ public abstract class AbstractWidgetWrapper<T extends AbstractWidgetWrapper<T, P
     }
 
 	@Override
-    public T setOn(String eventName, String script) {
-	    prototype.setOn(eventName, script);
+    public T putOn(String eventName, String script) {
+	    prototype.putOn(eventName, script);
 	    return (T) this;
     }
 
