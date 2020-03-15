@@ -215,6 +215,11 @@ public class IdGenerator {
             String indexStr = id.substring(split2);
             value[2] = Long.parseLong(indexStr, RADIX);
     	}
+
+        /**
+         * 获取编号id
+         * @return
+         */
     	public String getId(){
     		return id;
     	}
@@ -223,12 +228,27 @@ public class IdGenerator {
     		SimpleDateFormat SDF=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
     		return id+"={\"time\"=\""+SDF.format(getTime())+"\",\"systemKey\"="+value[1]+",\"sequence\"="+value[2]+"}";
     	}
+
+        /**
+         * 时间
+         * @return
+         */
     	public Date getTime(){
     		return new Date(value[0]);
     	}
+
+        /**
+         * 序号
+         * @return
+         */
     	public long getSequence(){
     		return value[2];
     	}
+
+        /**
+         * 标识
+         * @return
+         */
     	public long getSystemKey(){
     		return value[1];
     	}

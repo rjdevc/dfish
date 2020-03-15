@@ -19,10 +19,18 @@ public class DefaultPropertyCryptor implements PropertyCryptor {
 
 	private Cryptor cryptor;
 
+	/**
+	 * 获得Cryptor
+	 * @return
+	 */
 	public Cryptor getCryptor() {
 		return cryptor;
 	}
 
+	/**
+	 * Cryptor
+	 * @param cryptProvider
+	 */
 	public void setCryptor(Cryptor cryptProvider) {
 		this.cryptor = cryptor;
 	}

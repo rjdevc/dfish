@@ -61,26 +61,48 @@ public class FileController extends BaseActionController {
 
     private String defaultImageFolder = "x/default/img/";
 
+    /**
+     * 获取fileService
+     * @return
+     */
     public FileService getFileService() {
         return fileService;
     }
 
+    /**
+     * 设置fileService
+     * @param fileService
+     */
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
     }
 
+    /**
+     * 获取FileHandleManager
+     * @return
+     */
     public FileHandleManager getFileHandleManager() {
         return fileHandleManager;
     }
-
+    /**
+     * 设置 FileHandleManager
+     */
     public void setFileHandleManager(FileHandleManager fileHandleManager) {
         this.fileHandleManager = fileHandleManager;
     }
 
+    /**
+     * 默认图片路径
+     * @return
+     */
     public String getDefaultImageFolder() {
         return defaultImageFolder;
     }
 
+    /**
+     * 默认图片路径
+     * @param defaultImageFolder
+     */
     public void setDefaultImageFolder(String defaultImageFolder) {
         if (defaultImageFolder != null && !defaultImageFolder.endsWith("/")) {
             defaultImageFolder += "/";

@@ -23,6 +23,9 @@ import com.alibaba.fastjson.parser.Feature;
  */
 public class JsonConfigHelper {
 	private static final Log LOG=LogFactory.getLog(JsonConfigHelper.class);
+	/**
+	 * 文件字符集UTF-8
+	 */
 	public static final String FILE_ENCODING="UTF-8";
 	private File file;
 	private static JSONObject json;//如果file为空则临时存储在内存中，jvm重启丢失。

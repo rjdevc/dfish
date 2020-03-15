@@ -25,18 +25,34 @@ public class ProgressManager {
     private Cache<String, ProgressData> progressCache = new MemoryCache<>();
     private Cryptor cryptor;
 
+    /**
+     * 进度条缓存
+     * @return
+     */
     public Cache<String, ProgressData> getProgressCache() {
         return progressCache;
     }
 
+    /**
+     * 进度条缓存
+     * @param progressCache
+     */
     public void setProgressCache(Cache<String, ProgressData> progressCache) {
         this.progressCache = progressCache;
     }
 
+    /**
+     * 加解密工具
+     * @return
+     */
     public Cryptor getCryptor() {
         return cryptor;
     }
 
+    /**
+     * 加解密工具
+     * @param cryptor
+     */
     public void setCryptor(Cryptor cryptor) {
         this.cryptor = cryptor;
     }

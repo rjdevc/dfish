@@ -9,6 +9,10 @@ public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 	
 	private int v;
 
+	/**
+	 * 构造函数
+	 * @param s
+	 */
 	public IPv4(String s){
 		String[] p=s.split("[.]");
 		v= (Integer.parseInt(p[0])<<24)|
@@ -16,12 +20,17 @@ public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 			(Integer.parseInt(p[2])<<8)|
 			Integer.parseInt(p[3]);
 	}
+
+	/**
+	 * 构造函数
+	 * @param l
+	 */
 	public IPv4(long l){
 		v= (int)l;
 	}
 	
 	/**
-	 * 
+	 * 构造函数
 	 * @param b
 	 */
 	public IPv4(byte[] b){

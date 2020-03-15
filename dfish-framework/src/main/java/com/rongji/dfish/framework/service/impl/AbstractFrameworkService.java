@@ -23,6 +23,10 @@ public abstract class AbstractFrameworkService<V, P, ID extends Serializable> im
         return cryptor;
     }
 
+    /**
+     * 加密器
+     * @param cryptor
+     */
     public void setCryptor(Cryptor cryptor) {
         this.cryptor = cryptor;
     }

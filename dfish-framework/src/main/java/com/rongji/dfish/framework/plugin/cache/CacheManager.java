@@ -37,6 +37,10 @@ public class CacheManager {
         }
     }
 
+    /**
+     * 将cache注册到 CacheManager
+     * @param cache
+     */
     public void registerCache(Cache cache) {
         if (cache == null) {
             return;

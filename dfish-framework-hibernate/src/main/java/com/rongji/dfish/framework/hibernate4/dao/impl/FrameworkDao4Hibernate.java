@@ -45,6 +45,13 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         entitySupport = new EntitySupport<>(getClass());
     }
 
+    /**
+     * 查询返回对象
+     * @param hql
+     * @param args
+     * @param <T>
+     * @return
+     */
     public <T> T queryForObject(final String hql, final Object... args) {
         List<T> list = queryForList(hql, args);
         if (Utils.notEmpty(list)) {
@@ -53,9 +60,17 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         return null;
     }
 
+    /**
+     * 查询返回对象集合
+     * @param hql
+     * @param args
+     * @param <T>
+     * @return
+     */
     public <T> List<T> queryForList(final String hql, final Object... args) {
         return getHibernateTemplate().execute((session) -> queryForList(session, hql, args));
     }
+
 
     private <T> List<T> queryForList(Session session, String hql, Object... args) {
         Query query = session.createQuery(hql);
@@ -69,6 +84,14 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         return list;
     }
 
+    /**
+     * 查询返回对象集合
+     * @param hql
+     * @param pagination
+     * @param args
+     * @param <T>
+     * @return
+     */
     public <T> List<T> queryForList(final String hql, final Pagination pagination, final Object... args) {
         if (pagination == null || pagination.getLimit() < 0) {
             return queryForList(hql, args);
@@ -127,10 +150,22 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         }
     }
 
+    /**
+     * 批量更新/删除
+     * @param hql
+     * @param args
+     * @return
+     */
     public int bulkUpdate(String hql, Object... args) {
         return getHibernateTemplate().bulkUpdate(hql, args);
     }
 
+    /**
+     * 批量更新/删除
+     * @param hql
+     * @param argList
+     * @return
+     */
     public int[] batchUpdate(String hql, List<Object[]> argList) {
         if (Utils.isEmpty(argList)) {
             return new int[0];

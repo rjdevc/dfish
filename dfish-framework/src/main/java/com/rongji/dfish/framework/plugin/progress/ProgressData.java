@@ -60,90 +60,178 @@ public class ProgressData implements Serializable, Cloneable {
 	 */
 	private Error error;
 
+	/**
+	 * 进度编号
+	 * @return String
+	 */
 	public String getProgressKey() {
 		return progressKey;
 	}
 
+	/**
+	 * 进度编号
+	 * @param progressKey
+	 */
 	public void setProgressKey(String progressKey) {
 		this.progressKey = progressKey;
 	}
 
+	/**
+	 * 进度显示文本
+	 * @return
+	 */
 	public String getProgressText() {
 		return progressText;
 	}
 
+	/**
+	 * 进度显示文本
+	 * @param progressText
+	 */
 	public void setProgressText(String progressText) {
 		this.progressText = progressText;
 	}
 
+	/**
+	 * 总步骤数,默认只有1个步骤
+	 * @return
+	 */
 	public int getSteps() {
 		return steps;
 	}
 
+	/**
+	 * 总步骤数,默认只有1个步骤
+	 * @param steps
+	 */
 	public void setSteps(int steps) {
 		this.steps = steps;
 	}
 
+	/**
+	 * 步骤比例
+	 * @return
+	 */
 	public double[] getStepScales() {
 		return stepScales;
 	}
 
+	/**
+	 * 步骤比例
+	 * @param stepScales
+	 */
 	public void setStepScales(double[] stepScales) {
 		this.stepScales = stepScales;
 	}
 
+	/**
+	 * 当前步骤
+	 * @return
+	 */
 	public int getStepIndex() {
 		return stepIndex;
 	}
 
+	/**
+	 * 当前步骤
+	 * @param stepIndex
+	 */
 	public void setStepIndex(int stepIndex) {
 		this.stepIndex = stepIndex;
 	}
 
+	/**
+	 * 当前步骤完成情况
+	 * @return
+	 */
 	public double getStepPercent() {
 		return stepPercent;
 	}
 
+	/**
+	 * 当前步骤完成情况
+	 * @param stepPercent
+	 */
 	public void setStepPercent(double stepPercent) {
 		this.stepPercent = stepPercent;
 	}
 
+	/**
+	 * 所有步骤总完成情况,单步骤时等于{@link #stepPercent}
+	 * @return
+	 */
 	public double getDonePercent() {
 		return donePercent;
 	}
 
+	/**
+	 * 所有步骤总完成情况,单步骤时等于{@link #stepPercent}
+	 * @param donePercent
+	 */
 	public void setDonePercent(double donePercent) {
 		this.donePercent = donePercent;
 	}
 
+	/**
+	 * 下次加载时间
+	 * @return
+	 */
 	public long getDelay() {
 		return delay;
 	}
 
+	/**
+	 * 下次加载时间
+	 * @param delay
+	 */
 	public void setDelay(long delay) {
 		this.delay = delay;
 	}
 
+	/**
+	 * 是否进度完成,就算进度已经100%,该属性如果还是false,进度条还是不会关闭
+	 * @return
+	 */
 	public boolean isFinish() {
 		return finish;
 	}
 
+	/**
+	 * 是否进度完成,就算进度已经100%,该属性如果还是false,进度条还是不会关闭
+	 * @param finish
+	 */
 	public void setFinish(boolean finish) {
 		this.finish = finish;
 	}
 
+	/**
+	 * 完成之后的结果
+	 * @return
+	 */
 	public Serializable getComplete() {
 		return complete;
 	}
 
+	/**
+	 * 完成之后的结果
+	 * @param complete
+	 */
 	public void setComplete(Serializable complete) {
 		this.complete = complete;
 	}
 
+	/**
+	 * 错误提示
+	 * @return
+	 */
 	public Error getError() {
 		return error;
 	}
 
+	/**
+	 * 错误提示
+	 * @param error
+	 */
 	public void setError(Error error) {
 		this.error = error;
 	}
@@ -154,35 +242,64 @@ public class ProgressData implements Serializable, Cloneable {
 		}
 		return error;
 	}
-	
+
+	/**
+	 * 错误信息
+	 * @param errorMsg
+	 * @return
+	 */
 	public ProgressData setErrorMsg(String errorMsg) {
 		error().setMsg(errorMsg);
 		return this;
 	}
 
+	/**
+	 * 错误代码
+	 * @param errorCode
+	 * @return
+	 */
 	public ProgressData setErrorCode(String errorCode) {
 		error().setCode(errorCode);
 		return this;
 	}
 
+	/**
+	 * 进度条异常显示的错误提示
+	 */
 	static class Error implements Serializable {
 		private static final long serialVersionUID = 4655326902090143895L;
 
 		private String code;
 		private String msg;
 
+		/**
+		 * 错误代码
+		 * @return
+		 */
 		public String getCode() {
 			return code;
 		}
 
+		/**
+		 * 错误代码
+		 * @param code
+		 */
 		public void setCode(String code) {
 			this.code = code;
 		}
 
+		/**
+		 *错误信息
+		 * @return
+		 */
 		public String getMsg() {
 			return msg;
 		}
 
+		/**
+		 * 错误信息
+		 * @param msg
+		 */
 		public void setMsg(String msg) {
 			this.msg = msg;
 		}

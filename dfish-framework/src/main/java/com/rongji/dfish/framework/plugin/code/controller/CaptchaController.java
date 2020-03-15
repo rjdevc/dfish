@@ -64,6 +64,12 @@ public class CaptchaController extends BaseActionController {
         return generator;
     }
 
+    /**
+     * 生成校验码图片
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @RequestMapping("/codeImg.png")
     @ResponseBody
     public void codeImg(HttpServletRequest request, HttpServletResponse response) throws Exception {

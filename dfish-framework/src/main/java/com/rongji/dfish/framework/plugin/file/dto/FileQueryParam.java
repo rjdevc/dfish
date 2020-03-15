@@ -15,19 +15,37 @@ public class FileQueryParam extends QueryParam<FileQueryParam> {
     private String fileLink;
     private String fileKey;
 
+    /**
+     * 链接名
+     * @return String
+     */
     public String getFileLink() {
         return fileLink;
     }
 
+    /**
+     * 链接名
+     * @param fileLink
+     * @return 本身，这样可以继续设置其他属性
+     */
     public FileQueryParam setFileLink(String fileLink) {
         this.fileLink = fileLink;
         return this;
     }
 
+    /**
+     * 关联数据
+     * @return
+     */
     public String getFileKey() {
         return fileKey;
     }
 
+    /**
+     * 关联数据
+     * @param fileKey
+     * @return 本身，这样可以继续设置其他属性
+     */
     public FileQueryParam setFileKey(String fileKey) {
         this.fileKey = fileKey;
         return this;

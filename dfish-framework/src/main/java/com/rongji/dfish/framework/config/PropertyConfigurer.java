@@ -28,7 +28,7 @@ import java.util.Properties;
 public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 
 	protected PropertyCryptor propertyCryptor;
-	
+
 	public PropertyCryptor getPropertyCryptor() {
 		return propertyCryptor;
 	}
@@ -79,6 +79,12 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 		props = properties;
 	}
 
+	/**
+	 * 属性配置缓存
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
 	public static String getProperty(String key, String defaultValue) {
 		return props.getProperty(key, defaultValue);
 	}

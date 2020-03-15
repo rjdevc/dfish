@@ -39,6 +39,10 @@ public class JsonResponse<T> {
         return response;
     }
 
+    /**
+     * 接口响应的头部信息
+     * @return
+     */
     public Header getHeader() {
         return header;
     }
@@ -50,15 +54,29 @@ public class JsonResponse<T> {
         return header;
     }
 
+    /**
+     * 接口响应的头部信息
+     * @param header
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JsonResponse<T> setHeader(Header header) {
         this.header = header;
         return this;
     }
 
+    /**
+     * 接口响应的错误信息
+     * @return
+     */
     public Error getError() {
         return error;
     }
 
+    /**
+     * 接口响应的错误信息
+     * @param error
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JsonResponse<T> setError(Error error) {
         this.error = error;
         return this;
@@ -80,16 +98,31 @@ public class JsonResponse<T> {
         return this;
     }
 
+    /**
+     * 设置错误信息
+     * @param msg
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JsonResponse<T> setErrMsg(String msg) {
         error().setMsg(msg);
         return this;
     }
 
+    /**
+     * 设置错误代码
+     * @param code
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JsonResponse<T> setErrCode(String code) {
         error().setCode(code);
         return this;
     }
 
+    /**
+     * 设置分批调用接口时的信息
+     * @param pagination
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JsonResponse<T> setPagination(Pagination pagination) {
         if (pagination != null) {
             Header header = header();
@@ -100,11 +133,21 @@ public class JsonResponse<T> {
         return this;
     }
 
+    /**
+     * 接口调用时,响应头部信息
+     * @param principal
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JsonResponse<T> setPrincipal(HeaderPrincipal principal) {
         header().setPrincipal(principal);
         return this;
     }
 
+    /**
+     * 调用者主信息
+     * @param principalName
+     * @return 本身，这样可以继续设置其他属性
+     */
     public JsonResponse<T> setPrincipalName(String principalName) {
         setPrincipal(new HeaderPrincipal(principalName));
         return this;
@@ -258,11 +301,20 @@ public class JsonResponse<T> {
             this.natureName = natureName;
         }
 
+        /**
+         * 调用者主信息
+         * @return
+         */
         @Override
         public String getName() {
             return name;
         }
 
+        /**
+         * 调用者主信息
+         * @param name
+         * @return
+         */
         public HeaderPrincipal setName(String name) {
             this.name = name;
             return this;
@@ -273,6 +325,11 @@ public class JsonResponse<T> {
             return natureName;
         }
 
+        /**
+         * 调用者名称
+         * @param natureName
+         * @return
+         */
         public HeaderPrincipal setNatureName(String natureName) {
             this.natureName = natureName;
             return this;
@@ -283,6 +340,11 @@ public class JsonResponse<T> {
             return fullName;
         }
 
+        /**
+         * 调用者的完整名称
+         * @param fullName
+         * @return
+         */
         public HeaderPrincipal setFullName(String fullName) {
             this.fullName = fullName;
             return this;

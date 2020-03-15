@@ -110,18 +110,33 @@ public class BaseUiController extends BaseActionController {
 //		saveException(time, logContent, logUser, url, methodName);
 		return obj;
 	}
-	
+
+	/**
+	 * 构建警告框窗口
+	 * @param alertMsg
+	 * @return
+	 */
 	protected Alert buildWarnAlert(String alertMsg){
 		return new Alert(alertMsg);
 	}
-	
+
+	/**
+	 * 构建错误信息提示窗口
+	 * @param t
+	 * @return
+	 */
 	protected Dialog buildErrorDialog(Throwable t) {
 		View view = buildErrorView(t);
 		Dialog dialog = new Dialog("error", "系统提示信息", null);
 		dialog.setNode(view);
 		return dialog;
 	}
-	
+
+	/**
+	 * 构建错误信息的详细内容
+	 * @param t
+	 * @return
+	 */
 	protected View buildErrorView(Throwable t) {
 		// errNum = ItaskException.UNKNOWN_EXCEPTION;
 		String errType = "系统错误";
@@ -174,7 +189,11 @@ public class BaseUiController extends BaseActionController {
 	}
 	
 	protected static final String ID_DIALOG_BODY = "dlg_body";
-	
+
+	/**
+	 * 构建对话窗口
+	 * @return
+	 */
 	protected View buildDialogView() {
 		View view = new View();
 		
@@ -191,6 +210,11 @@ public class BaseUiController extends BaseActionController {
 		outputJson(response, jsonObject.asJson());
 	}
 
+	/**
+	 * 以json格式输出
+	 * @param response
+	 * @param content
+	 */
 	public static void outputJson(HttpServletResponse response, final String content) {
 		FrameworkHelper.outputContent(response, content, "text/json");
 		LogUtil.lazyDebug(()->"\r\n" + JsonFormat.formatJson(content));

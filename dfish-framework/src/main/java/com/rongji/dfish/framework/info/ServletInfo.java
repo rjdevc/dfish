@@ -86,6 +86,10 @@ public final class ServletInfo {
 		return servletRealPath;
 	}
 
+	/**
+	 * 获取ServletContext
+	 * @return
+	 */
 	public ServletContext getServletContext() {
 		return servletContext;
 	}

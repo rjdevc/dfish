@@ -19,7 +19,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RequestMapping("/qrCode")
 public class QRCodeController extends BaseActionController {
-
+    /**
+     * 生成图片
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @RequestMapping("/image")
     public void image(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String content = ServletUtil.getParameter(request, "content");

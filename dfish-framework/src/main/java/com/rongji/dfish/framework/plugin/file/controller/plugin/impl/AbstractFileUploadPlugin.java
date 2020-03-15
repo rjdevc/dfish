@@ -26,18 +26,34 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
     @Autowired
     protected FileHandleManager fileHandleManager;
 
+    /**
+     * 获取fileService
+     * @return
+     */
     public FileService getFileService() {
         return fileService;
     }
 
+    /**
+     * 设置fileService
+     * @param fileService
+     */
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
     }
 
+    /**
+     * 获取 fileHandleManager
+     * @return
+     */
     public FileHandleManager getFileHandleManager() {
         return fileHandleManager;
     }
 
+    /**
+     * 设置 fileHandleManager
+     * @param fileHandleManager
+     */
     public void setFileHandleManager(FileHandleManager fileHandleManager) {
         this.fileHandleManager = fileHandleManager;
     }

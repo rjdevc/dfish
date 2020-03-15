@@ -33,10 +33,18 @@ public class BaseActionController extends MultiActionController {
     protected boolean customizedLimit;
     protected int progressKeyLength = 128;
 
+    /**
+     * 允许用户自定义分页数设置
+     * @return
+     */
     public boolean isCustomizedLimit() {
         return customizedLimit;
     }
 
+    /**
+     * 允许用户自定义分页数设置
+     * @param customizedLimit
+     */
     public void setCustomizedLimit(boolean customizedLimit) {
         this.customizedLimit = customizedLimit;
     }
@@ -154,6 +162,12 @@ public class BaseActionController extends MultiActionController {
             }
         }
 
+        /**
+         * 数据绑定
+         * @param request
+         * @param obj
+         * @throws Exception
+         */
         public void bind(HttpServletRequest request, Object obj) throws Exception {
             for (Iterator<Format> iter = formats.iterator(); iter.hasNext(); ) {
                 Format format = iter.next();
@@ -257,10 +271,19 @@ public class BaseActionController extends MultiActionController {
         }
     }
 
+    /**
+     * 分页结果最多显示多少行
+     * @return
+     */
     protected int getPaginationLimit() {
         return 30;
     }
 
+    /**
+     * 获取分页信息
+     * @param request
+     * @return
+     */
     public Pagination getPagination(HttpServletRequest request) {
         int limit = 0;
         if (isCustomizedLimit()) {
@@ -296,6 +319,11 @@ public class BaseActionController extends MultiActionController {
         return pagination;
     }
 
+    /**
+     * 分页组件是否在查询的时候自动统计行数
+     * @param request
+     * @return
+     */
     protected Boolean getPaginationAutoRowCount(HttpServletRequest request) {
         String autoRowCount = request.getParameter("autoRowCount");
         if (Utils.notEmpty(autoRowCount)) {
@@ -400,6 +428,11 @@ public class BaseActionController extends MultiActionController {
         return cause;
     }
 
+    /**
+     * 将获取的信息转化为json格式
+     * @param request
+     * @return
+     */
     protected String convert2JSON(HttpServletRequest request) {
         if (request == null) {
             return "";

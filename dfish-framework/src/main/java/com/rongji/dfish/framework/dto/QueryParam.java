@@ -33,26 +33,51 @@ public class QueryParam<T> implements Serializable {
      */
     protected Date endTime;
 
+    /**
+     * 构造函数
+     */
     public QueryParam() {
     }
 
+    /**
+     * 构造函数
+     * @param request
+     */
     public QueryParam(HttpServletRequest request) {
         bind(request);
     }
 
+    /**
+     * 查询开始时间
+     * @return
+     */
     public Date getBeginTime() {
         return beginTime;
     }
 
+    /**
+     * 查询开始时间
+     * @param beginTime
+     * @return
+     */
     public T setBeginTime(Date beginTime) {
         this.beginTime = beginTime;
         return (T) this;
     }
 
+    /**
+     * 查询结束时间
+     * @return
+     */
     public Date getEndTime() {
         return endTime;
     }
 
+    /**
+     * 查询结束时间
+     * @param endTime
+     * @return
+     */
     public T setEndTime(Date endTime) {
         this.endTime = endTime;
         return (T) this;

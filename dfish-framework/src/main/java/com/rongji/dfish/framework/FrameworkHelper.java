@@ -43,9 +43,21 @@ public class FrameworkHelper {
      */
 
     public static final int INT_ENCODING_UNKNOWN = 0;
+    /**
+     * 字符集UTF-8
+     */
     public static final int INT_ENCODING_UTF_8 = 1;
+    /**
+     * 字符集GBK
+     */
     public static final int INT_ENCODING_GBK = 2;
+    /**
+     * 字符集GB2312
+     */
     public static final int INT_ENCODING_GB2312 = 3;
+    /**
+     * 字符集ISO-8859-1
+     */
     public static final int INT_ENCODING_ISO8859_1 = 4;
     public static final int INT_ENCODING_UNICODE = 5;
 
@@ -269,10 +281,19 @@ public class FrameworkHelper {
         return (String) request.getSession().getAttribute(LOGIN_USER_KEY);
     }
 
+    /**
+     * 在Session中存储loginUser的key
+     * @param request
+     * @param loginUser
+     */
     public static void setLoginUser(HttpServletRequest request, String loginUser) {
         request.getSession().setAttribute(LOGIN_USER_KEY, loginUser);
     }
 
+    /**
+     * Session中移除LoninUser的key
+     * @param request
+     */
     public static void removeLoginUser(HttpServletRequest request) {
         request.getSession().removeAttribute(LOGIN_USER_KEY);
     }
