@@ -11,6 +11,10 @@ public class CacheItem<V> {
 	private V value;
 	private long born;
 
+	/**
+	 * 构造函数
+	 * @param value
+	 */
 	public CacheItem(V value) {
 		this.value = value;
 		born = System.currentTimeMillis();

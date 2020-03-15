@@ -110,7 +110,10 @@ public class CryptorBuilder {
         return gzip;
     }
 
-
+    /**
+     * 算法
+     * @return
+     */
     public String getAlgorithm() {
         return algorithm;
     }
@@ -119,14 +122,29 @@ public class CryptorBuilder {
         return encoding;
     }
 
+    /**
+     * 表现方式，比如Base64或者Base32
+     * @return
+     */
     public int getPresent() {
         return present;
     }
 
+    /**
+     * 字符集
+     * @param encoding
+     * @return
+     */
     public CryptorBuilder encoding(String encoding) {
         this.encoding = encoding;
         return this;
     }
+
+    /**
+     * 表现方式，比如Base64或者Base32
+     * @param present
+     * @return
+     */
     public CryptorBuilder present(int present) {
         this.present = present;
         return this;

@@ -25,46 +25,91 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 	private Integer onColor;
 	private Integer offColor;
 
+	/**
+	 * 转码内容
+	 * @return
+	 */
 	public String getContent() {
 		return content;
 	}
 
+	/**
+	 * 转码内容
+	 * @param content
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public QRCode setContent(String content) {
 		this.content = content;
 		return rebuildPrototype();
 	}
 
+	/**
+	 * 二维码大小
+	 * @return
+	 */
 	public int getSize() {
 		return size;
 	}
 
+	/**
+	 * 二维码大小
+	 * @param size
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public QRCode setSize(int size) {
 		this.size = size;
 		return rebuildPrototype();
 	}
 
+	/**
+	 * 二维码图片格式
+	 * @return
+	 */
 	public String getFormat() {
 		return format;
 	}
 
+	/**
+	 * 二维码图片格式
+	 * @param format
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public QRCode setFormat(String format) {
 		this.format = format;
 		return rebuildPrototype();
 	}
 
+	/**
+	 * 二维码颜色(黑色部分)
+	 * @return
+	 */
 	public Integer getOnColor() {
 		return onColor;
 	}
 
+	/**
+	 * 二维码颜色(黑色部分)
+	 * @param onColor
+	 * @return  本身，这样可以继续设置其他属性
+	 */
 	public QRCode setOnColor(Integer onColor) {
 		this.onColor = onColor;
 		return this;
 	}
 
+	/**
+	 *  二维码颜色(白色部分)
+	 * @return
+	 */
 	public Integer getOffColor() {
 		return offColor;
 	}
 
+	/**
+	 *  二维码颜色(白色部分)
+	 * @param offColor
+	 * @return 本身，这样可以继续设置其他属性
+	 */
 	public QRCode setOffColor(Integer offColor) {
 		this.offColor = offColor;
 		return this;

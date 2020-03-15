@@ -22,6 +22,10 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         return name;
     }
 
+    /**
+     * 缓存名称
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -201,6 +205,10 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         return core.keySet();
     }
 
+    /**
+     * value集合
+     * @return
+     */
     public Collection<V> values() {
         Collection<CacheItem<V>> col = core.values();
         Collection<V> result = new ArrayList<>();
