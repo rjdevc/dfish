@@ -1,8 +1,10 @@
 package com.rongji.dfish.base.crypto;
 
 
-import java.io.*;
 import com.rongji.dfish.base.crypto.stream.*;
+import com.rongji.dfish.base.util.Utils;
+
+import java.io.*;
 
 /**
  * 抽象加解密工具，提供基础方法，用于计划加解密工作开发
@@ -92,7 +94,10 @@ public abstract class AbstractCryptor implements Cryptor{
 
     @Override
     public String encrypt(String src) {
-        ByteArrayInputStream bais = null;
+        if (Utils.isEmpty(src)) {
+            return null;
+        }
+        ByteArrayInputStream bais;
         try {
             bais = new ByteArrayInputStream(src.getBytes(builder.encoding));
         } catch (UnsupportedEncodingException e) {
@@ -105,6 +110,9 @@ public abstract class AbstractCryptor implements Cryptor{
 
     @Override
     public String decrypt(String src) {
+        if (Utils.isEmpty(src)) {
+            return null;
+        }
         ByteArrayInputStream bais = new ByteArrayInputStream(src.getBytes());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         this.decrypt(bais, baos);

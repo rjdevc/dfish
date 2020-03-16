@@ -9,6 +9,7 @@ import java.util.*;
 
 /**
  * 附件file的hibernate实现dao层
+ *
  * @author lamontYu
  * @date 2019-12-05
  * @since 5.0
@@ -23,7 +24,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
         args.add(fileStatus);
         args.add(updateTime);
         args.addAll(fileIds);
-        return bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileId=?", args.toArray());
+        return bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileId IN(" + getParamStr(fileIds.size()) + ")", args.toArray());
     }
 
     @Override

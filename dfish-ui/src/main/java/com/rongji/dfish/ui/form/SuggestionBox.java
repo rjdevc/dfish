@@ -37,7 +37,9 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
      */
     public SuggestionBox(String name, String label, String value, String suggest) {
         super(name, label, value);
-        suggest().setSrc(suggest);
+        if (Utils.notEmpty(suggest)) {
+            suggest().setSrc(suggest);
+        }
     }
 
     /**
