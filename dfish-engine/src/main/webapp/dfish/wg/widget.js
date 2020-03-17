@@ -1363,9 +1363,6 @@ W = define( 'Widget', function() {
 			Q( this.$() ).replaceWith( '<' + this.tagName + this.html_prop() + '></' + this.tagName + '>' );
 			Q( this.$() ).append( f );
 		},
-		develop: function() {
-			//fixme: 用于调试定位
-		},
 		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
 		_render: function( a, b ) {
 			// 没有父节点 则先加上父节点
@@ -1377,6 +1374,8 @@ W = define( 'Widget', function() {
 				$.replace( this.$(), s );
 			else if ( a )
 				 $[ b || 'append' ]( a, s );
+			else if ( this.nodeIndex === -1 )
+				p.insertHTML( s );
 			else {
 				for ( var i = this.nodeIndex - 1, l = p.length, c; i > -1; i -- )
 					if ( p[ i ].$() ) { (c = p[ i ]).insertHTML( s, 'after' ); break; }
@@ -2518,6 +2517,10 @@ Layout = define.widget( 'Layout', {
 	Prototype: {
 		x_childtype: function( t ) {
 			return this.parentNode.x_childtype ? this.parentNode.x_childtype( t ) : t;
+		},
+		// @a -> name, b -> value
+		addHidden: function( a, b ) {
+			return this.add( { type: 'Hidden', name: a, value: b }, -1 ).render();
 		}
 	}
 } ),
@@ -2582,9 +2585,15 @@ View = define.widget( 'View', {
 		},
 		// 读/写表单值 /@a -> name, b -> value, c -> text
 		fv: function( a, b, c ) {
-			if ( a = this.f( a ) )
-				b === U ? (b = a.groupVal ? a.groupVal() : a.val()) : a.groupVal ? a.groupVal( b, c ) : a.val( b, c );
-			return b;
+			var d = this.f( a );
+			if ( b === U ) {
+				return d && (d.groupVal ? d.groupVal() : d.val());
+			} else {
+				if ( ! d && this.layout )
+					d = this.layout.addHidden( a, b );
+				d && d.val( b );
+				return this;
+			}
 		},
 		// 获取范围内的所有表单 /@a -> name, b -> range?(elem|widget)
 		fAll: function( a, b ) {
@@ -8745,10 +8754,10 @@ LinkBox = define.widget( 'LinkBox', {
 			if ( v ) {
 				if ( ! o.id )
 					o.id = this.add( {} ).id;
-				var n = $.all[ o.id ];
+				var n = _all[ o.id ];
 				n.x.value = v;
 				n.x.text  = Q( o ).text();
-				$.all[ o.id ].trigger( e );
+				_all[ o.id ].trigger( e );
 			}
 		},
 		fixOpt: function() {
