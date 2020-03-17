@@ -1926,7 +1926,7 @@ var boot = {
 	},
 	ready: function( a ) {
 		this.fn = a;
-		br.app ? doc.addEventListener( 'plusready', this.domReady ) : $.query( doc ).ready( this.domReady );
+		br.app ? (win.plus ? this.domReady() : doc.addEventListener( 'plusready', this.domReady )) : $.query( doc ).ready( this.domReady );
 	},
 	domReady: function(e) {
 		boot.dom_ok = T;
@@ -1999,7 +1999,7 @@ var boot = {
 			// 生成首页view
 			if ( _cfg.view ) {
 				var g = $.widget( _extend( _cfg.view, { type: 'View', width: '*', height: '*' } ) ).render( _db() );
-				Q( win ).on( 'beforeunload', function() { g.dispose() } );
+				//Q( win ).on( 'beforeunload', function() { g.dispose() } );
 			} else {
 				// 把 <d:wg> 标签转换为 widget
 				for ( var i = 0, d = _tags( 'script' ), j, l = d.length; i < l; i ++ ) {
