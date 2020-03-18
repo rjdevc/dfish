@@ -196,6 +196,12 @@ public class CryptorBuilder {
         this.param = param;
         return this;
     }
+
+    /**
+     * 设置加密器文本流会不会先按照GZIP压缩以后再加密。
+     * @param gzip
+     * @return
+     */
     public CryptorBuilder gzip(boolean gzip) {
         this.gzip = gzip;
         return this;

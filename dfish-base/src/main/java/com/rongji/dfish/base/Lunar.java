@@ -564,6 +564,11 @@ public class Lunar {
         return cal.getTime();
     }
 
+    /**
+     * 将Date转化为农历日期信息类
+     * @param date
+     * @return
+     */
     public static LunarDateInfo getLunarDateInfo(Date date) {
         LunarDateInfo lunarDate = new LunarDateInfo();
 

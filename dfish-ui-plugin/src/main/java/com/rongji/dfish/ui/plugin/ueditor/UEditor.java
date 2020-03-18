@@ -43,6 +43,10 @@ public class UEditor extends AbstractInput<UEditor, String> {
         return this;
     }
 
+    /**
+     * UEditor的参数设置,参考ueditor.config.js
+     * @return
+     */
     public Map<String, Object> getOption() {
         return option;
     }
