@@ -695,7 +695,7 @@
 .w-dialog .w-dialog-loadinghead{display:none}
 .w-dialog.z-loading .w-dialog-loadinghead{display:block}
 
-.w-tip{border:1px solid #f3e041;background:#faf0cd;box-shadow:0 0 4px #d9d9d9;z-index:11}
+.w-tip.w-dialog{border:1px solid #f3e041;background:#faf0cd;box-shadow:0 0 4px #d9d9d9;z-index:11}
 .w-tip-text{padding:4px 10px;min-height:20px;}
 .w-tip.z-x .w-tip-text{padding-right:22px}
 .w-tip .w-tip-x{position:absolute;right:2px;top:4px;}
