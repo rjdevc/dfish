@@ -5439,17 +5439,17 @@ _valid_err = function( b, v ) {
 		return;
 	if ( this.vv('required', b) && (k.required ? k.required.call(this, b, v) : (! v)) )
 		return _form_err.call( this, b, 'required' );
-	if ( (c = this.vv('minLength', b)) && (k.minLength ? k.minLength.call(this, b, v) : ($.strLen(v) < c)) )
+	if ( (c = this.vv('minLength', b)) && c > 0 && (k.minLength ? k.minLength.call(this, b, v) : ($.strLen(v) < c)) )
 		return _form_err.call( this, b, 'minLength', [ c ] );
-	if ( (c = this.vv('maxLength', b)) && (k.maxLength ? k.maxLength.call(this, b, v) : ((d = $.strLen(v)) > c)) )
+	if ( (c = this.vv('maxLength', b)) && c > 0 && (k.maxLength ? k.maxLength.call(this, b, v) : ((d = $.strLen(v)) > c)) )
 		return _form_err.call( this, b, 'maxLength', [ d - c ] );
 	if ( (c = this.vv('minValue', b)) && v && (k.minValue ? k.minValue.call(this, b, v) : ($.isNumber(c) ? (_number(v) < _number(c)) : (v < c))) )
 		return _form_err.call( this, b, 'minValue', [ c ] );
 	if ( (c = this.vv('maxValue', b)) && v && (k.maxValue ? k.maxValue.call(this, b, v) : ($.isNumber(c) ? (_number(v) > _number(c)) : (v > c))) )
 		return _form_err.call( this, b, 'maxValue', [ c ] );
-	if ( (c = this.vv('minSize', b)) && v && (k.minSize ? k.minSize.call(this, b, v) : (v.split(',').length < _number(c))) )
+	if ( (c = this.vv('minSize', b)) && c > 0 && v && (k.minSize ? k.minSize.call(this, b, v) : (v.split(',').length < _number(c))) )
 		return _form_err.call( this, b, 'minSize', [ c ] );
-	if ( (c = this.vv('maxSize', b)) && v && (k.maxSize ? k.maxSize.call(this, b, v) : (v.split(',').length > _number(c))) )
+	if ( (c = this.vv('maxSize', b)) && c > 0 && v && (k.maxSize ? k.maxSize.call(this, b, v) : (v.split(',').length > _number(c))) )
 		return _form_err.call( this, b, 'maxSize', [ c ] );
 	if ( (c = this.vv('pattern', b)) && v && (k.pattern ? k.pattern.call(this, b, c) : (! eval( c + '.test(v)' ))) )
 		return _form_err.call( this, b, 'pattern' );
@@ -6971,7 +6971,7 @@ DatePicker = define.widget( 'DatePicker', {
 				if ( this === this.parentNode.begin ) {
 					var c = this.parentNode.end, d = c.val();
 					if ( v && d && this.validHooks.compare.call( this, { compare: { mode: '<=' } }, v, c, d ) )
-						return _form_err.call( this, b, 'compare', [ '<=', c.x.label ] );
+						return _form_err.call( this, b, 'compare', [ '<=', c.x.label ? (c.x.label.text || c.x.label) : '' ] );
 				}
 			}
 		},

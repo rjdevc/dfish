@@ -527,6 +527,19 @@ i {
 
 /**↑对话框↑**/
 
+/**↓Tip↓**/
+
+.w-tip .w-dialog-prong.z-b ._in{border-top-color:#fff}
+.w-tip .w-dialog-prong.z-b ._out{border-top-color:#90b5d5}
+.w-tip .w-dialog-prong.z-t ._in{border-bottom-color:#fff}
+.w-tip .w-dialog-prong.z-t ._out{border-bottom-color:#90b5d5}
+.w-tip .w-dialog-prong.z-l ._in{border-right-color:#fff}
+.w-tip .w-dialog-prong.z-l ._out{border-right-color:#90b5d5}
+.w-tip .w-dialog-prong.z-r ._in{border-left-color:#fff}
+.w-tip .w-dialog-prong.z-r ._out{border-left-color:#90b5d5}
+
+/**↑Tip↑**/
+
 /**↓图片↓**/
 img {
     border: 0;
