@@ -7158,7 +7158,7 @@ Spinner = define.widget( 'Spinner', {
 		},
 		step: function( a ) {
 			if ( this.isNormal() ) {
-				var d = this.x.validate, m = d && d.maxValue, n = d && d.minValue, v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
+				var d = this.x.validate, m = d && this.vv( 'maxValue' ), n = d && this.vv( 'minValue' ), v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
 				m != N && (v = Math.min( m, v ));
 				n != N && (v = Math.max( n, v ));
 				this.focus();
@@ -9343,7 +9343,9 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		},
 		isFolder: function() {
 			//return this.length || (this.x.src && !this.loaded) ? T : F;
-			return this.length || this.x.folder ? T : F;
+			if ( this.length ) return T;
+			if ( this.x.folder != N ) return this.x.folder;
+			return (this.x.src && !this.loaded) ? T : F;
 		},
 		fixFolder: function() {
 			this.addClass( 'z-folder', this.isFolder() );
@@ -11502,7 +11504,11 @@ Form = define.widget( 'Form', {
 			}
 		}
 		var y = $.extend( {}, x, { columns: c, tBody: { nodes: rows } } );
-		delete y.pub; delete y.nodes;
+		delete y.nodes;
+		if ( x.pub ) {
+			y.pub = {};
+			x.pub.height && (y.pub.height = x.pub.height);
+		}
 		Table.call( this, y, p );
 	},
 	Extend: Table,
