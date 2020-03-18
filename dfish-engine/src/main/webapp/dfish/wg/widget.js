@@ -4784,7 +4784,7 @@ Dialog = define.widget( 'Dialog', {
 		},
 		_listenHide: function( a ) {
 			var self = this, d = this.x.hoverDrop;
-			$.attach( document, 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
+			$.attach( document, mbi ? 'touchstart' : 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
 				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble( e.srcElement ) || (!self.x.independent && self.x.snap && self.x.snap.target && _widget( self.x.snap.target ).hasBubble( e.srcElement )))) ) {self.close()};
 			}), a );
 			if ( d ) {
@@ -5426,7 +5426,7 @@ _validate_dft_value = { required: T, beforeNow: T, afterNow: T },
 _form_err = function( a, b, c ) {
 	var t = this.x.label;
 	typeof t === _OBJ && (t = t.text || '');
-	return { wid: this.id, name: this.x.name, code: b, label: t, text: (a && a[ b ] && a[ b ].text) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! t ? 'complete_required' : b ], t || Loc.field ].concat( c || [] ) ) || '' };
+	return { wid: this.id, name: this.x.name, code: b, label: t, text: (a && a[ b ] && a[ b ].text) || Loc.ps.apply( N, [ Loc.form[ b === 'required' && ! t ? 'complete_required' : b ], t || (b === 'compare' ? 'begin' : Loc.field) ].concat( c || [] ) ) || '' };
 },
 _valid_err = function( b, v ) {
 	if ( typeof v !== _STR )
@@ -5454,7 +5454,7 @@ _valid_err = function( b, v ) {
 	if ( (c = this.vv('pattern', b)) && v && (k.pattern ? k.pattern.call(this, b, c) : (! eval( c + '.test(v)' ))) )
 		return _form_err.call( this, b, 'pattern' );
 	if ( b.compare && v && (c = this.ownerView.f( b.compare.target )) && (d = c.val()) && ( k.compare ? k.compare.call( this, b, v, c, d ) : ! eval( '"' + $.strQuot( v ) + '"' + (b.compare.mode || '==') + '"' + $.strQuot( d ) + '"' ) ) )
-			return _form_err.call( this, b, 'compare', [ b.compare.mode, c.x.label ? (c.x.label.text || c.x.label) : '' ] );
+			return _form_err.call( this, b, 'compare', [ b.compare.mode, (c.x.label && c.x.label.text != N ? c.x.label.text : c.x.label) || 'end' ] );
 	if ( b.method && (d = this.formatJS( b.method )) )
 		return { wid: this.id, name: this.x.name, code: 'method', text: d };
 },
@@ -6927,6 +6927,7 @@ DatePicker = define.widget( 'DatePicker', {
 				method: function() {
 					this.$( 'a' ).innerHTML = this.val();
 					this.focus( F );
+					this.valid();
 				}
 			}
 		}
@@ -6971,7 +6972,7 @@ DatePicker = define.widget( 'DatePicker', {
 				if ( this === this.parentNode.begin ) {
 					var c = this.parentNode.end, d = c.val();
 					if ( v && d && this.validHooks.compare.call( this, { compare: { mode: '<=' } }, v, c, d ) )
-						return _form_err.call( this, b, 'compare', [ '<=', c.x.label ? (c.x.label.text || c.x.label) : '' ] );
+						return _form_err.call( this, b, 'compare', [ '<=', (c.x.label && c.x.label.text != N ? c.x.label.text : c.x.label) || 'end' ] );
 				}
 			}
 		},
@@ -7134,7 +7135,7 @@ Spinner = define.widget( 'Spinner', {
 				if ( this == this.parentNode.begin ) {
 					var c = this.parentNode.end, d = c.val();
 					if ( v && d && this.validHooks.compare.call( this, { compare: { mode: '<=' } }, v, c, d ) )
-						return _form_err.call( this, b, 'compare', [ '<=', c.x.label ] );
+						return _form_err.call( this, b, 'compare', [ '<=', (c.x.label && c.x.label.text != N ? c.x.label.text : c.x.label) || 'end' ] );
 				}
 			}
 		},
@@ -7363,7 +7364,7 @@ Jigsaw = define.widget( 'Jigsaw', {
 		body: {
 			mouseOver: {
 				occupy: T,
-				proxy: br.mobile ? 'touchStart' : N,
+				proxy: mbi ? 'touchStart' : N,
 				method: function() {
 					if ( ! this.usa() ) return;
 					if ( this.loaded ) {

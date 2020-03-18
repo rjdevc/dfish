@@ -98,7 +98,7 @@ form : {
 	period_invalid: '{0}的起始时间应早于结束时间',
 	beforeNow: '{0}不能大于当前时间',
 	afterNow: '{0}不能小于当前时间',
-	compare: '{3}需要满足此条件：{0} {1} {2}',
+	compare: '{3}需要满足条件：{0} {1} {2}',
 	invalid_option: '存在无效选项',
 	need_valid_option: '请输入一个有效选项',
 	choose_atleastone: '请至少选择一项',
