@@ -45,6 +45,11 @@ public class Docpreviews {
     private static final int PPTX=7;
     private static final int PDF=8;
 
+    /**
+     * 构建预览工具
+     * @param file
+     * @return
+     */
     public static Builder of(File file){
         FileInputStream fis= null;
         try {
@@ -81,6 +86,12 @@ public class Docpreviews {
 //    private static DocumentParser JSON_PARSER=new JsonParser();
 //    private static DocumentParser TXT_PARSER=new TxtParser();
 
+    /**
+     * 构建预览工具
+     * @param is
+     * @param type
+     * @return
+     */
     public static Builder of(InputStream is ,int type) {
         DocumentParser parser;
         switch (type){

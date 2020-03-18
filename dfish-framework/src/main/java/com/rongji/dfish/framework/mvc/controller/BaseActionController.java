@@ -156,6 +156,10 @@ public class BaseActionController extends MultiActionController {
     public static class Convertor {
         List<Format> formats = new ArrayList<Format>();
 
+        /**
+         * 添加format元素
+         * @param format
+         */
         public void addFormat(Format format) {
             if (format != null) {
                 formats.add(format);
@@ -187,30 +191,60 @@ public class BaseActionController extends MultiActionController {
         Method method;
         Class<?> type;
 
+        /**
+         * 名称
+         * @return
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * 名称
+         * @param name
+         */
         public void setName(String name) {
             this.name = name;
         }
 
+        /**
+         * 方法名
+         * @return
+         */
         public Method getMethod() {
             return method;
         }
 
+        /**
+         * 方法名
+         * @param method
+         */
         public void setMethod(Method method) {
             this.method = method;
         }
 
+        /**
+         * Class类型
+         * @return
+         */
         public Class<?> getType() {
             return type;
         }
 
+        /**
+         * Class类型
+         * @param type
+         */
         public void setType(Class<?> type) {
             this.type = type;
         }
 
+        /**
+         * 数据绑定
+         * @param request
+         * @param obj
+         * @throws Exception
+         */
         public void bind(HttpServletRequest request, Object obj) throws Exception {
             Object value = null;
             String str = ServletUtil.getParameter(request, name);

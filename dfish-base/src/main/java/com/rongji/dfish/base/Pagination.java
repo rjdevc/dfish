@@ -41,14 +41,29 @@ public class Pagination implements Serializable {
         this.limit = limit;
     }
 
+    /**
+     * 构建Pagination
+     * @return
+     */
     public static Pagination of() {
         return new Pagination();
     }
 
+    /**
+     * 构建Pagination
+     * @param offset 偏移量，结果从第几条开始显示，初始是0条
+     * @return
+     */
     public static Pagination of(int offset) {
         return new Pagination(offset);
     }
 
+    /**
+     *构建Pagination
+     * @param offset 偏移量，结果从第几条开始显示，初始是0条
+     * @param limit 结果最多显示多少行
+     * @return
+     */
     public static Pagination of(int offset, int limit) {
         return new Pagination(offset, limit);
     }
@@ -129,6 +144,12 @@ public class Pagination implements Serializable {
         return this;
     }
 
+    /**
+     * 计算结果从第几条开始显示
+     * @param size
+     * @param limit
+     * @return
+     */
     public static int calculateOffset(int size, int limit) {
         int offset = (size - 1) / limit * limit;
         return offset < 0 ? 0 : offset;

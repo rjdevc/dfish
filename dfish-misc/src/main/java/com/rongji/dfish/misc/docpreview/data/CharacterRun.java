@@ -4,9 +4,21 @@ package com.rongji.dfish.misc.docpreview.data;
  * 一段文本，相当于html的Span
  */
 public class CharacterRun implements ParagraphElement{
+    /**
+     *  划线类别- 下划线
+     */
     public static final int STRIKE_UNDERLINE=1;
+    /**
+     * 划线类别 -中划线
+     */
     public static final int STRIKE_LINE_THROUGH=2;
+    /**
+     * 划线类别 -双划线
+     */
     public static final int STRIKE_DOUBLE_THROUGH=3;//HTML不支持
+    /**
+     * 划线类别- 上方划线
+     */
     public static final int STRIKE_OVERLINE=4;
 
     /**

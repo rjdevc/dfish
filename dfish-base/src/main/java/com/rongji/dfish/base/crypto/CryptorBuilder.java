@@ -99,13 +99,29 @@ public class CryptorBuilder {
     protected boolean gzip = false;
     private Object key;
     private Object param;
+
+    /**
+     *  加解密的秘钥。
+     * @return
+     */
     public Object getKey() {
         return key;
     }
+
+    /**
+     * 加密的参数。不同的机密方式不太一样。比如说DES表示的就是偏移量。
+     * 一般来说，我们JAVA环境通常不设置这个值，用默认的。
+     *  但是如果需要和.NET等其他语言对接。很可能要设置。否则，通常无法识别对方加密的结果。
+     * @return
+     */
     public Object getParam() {
         return param;
     }
 
+    /**
+     * 文本流会不会先按照GZIP压缩以后再加密。在大于600字以上的文本中。压缩效果通常比价不错。
+     * @return
+     */
     public boolean isGzip() {
         return gzip;
     }

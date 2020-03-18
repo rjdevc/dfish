@@ -157,6 +157,11 @@ public class SensitiveWordFilter {
         return new String(reverse(chars));
     }
 
+    /**
+     * 对字符串进行反转操作
+     * @param chars
+     * @return
+     */
     public static char[] reverse(char[] chars) {
         if (chars == null) {
             return null;
@@ -175,7 +180,6 @@ public class SensitiveWordFilter {
             }
         }
     }
-
     private void fillBlack(int begin, int end, StringBuilder result) {
 
         for (int i = end - 1; i >= begin; i--) {

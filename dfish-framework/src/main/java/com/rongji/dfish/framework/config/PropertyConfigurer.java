@@ -29,10 +29,18 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 
 	protected PropertyCryptor propertyCryptor;
 
+	/**
+	 * 获得PropertyCryptor
+	 * @return
+	 */
 	public PropertyCryptor getPropertyCryptor() {
 		return propertyCryptor;
 	}
 
+	/**
+	 * 设置PropertyCryptor
+	 * @param propertyCryptor
+	 */
 	public void setPropertyCryptor(PropertyCryptor propertyCryptor) {
 		this.propertyCryptor = propertyCryptor;
 	}
@@ -89,6 +97,12 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 		return props.getProperty(key, defaultValue);
 	}
 
+	/**
+	 * 获取属性配置
+	 * @param key
+	 * @param defaultValue
+	 * @return Integer
+	 */
 	public static Integer getPropertyAsInteger(String key, Integer defaultValue) {
 		String value = getProperty(key, defaultValue == null ? null : defaultValue.toString());
 		if (Utils.notEmpty(value)) {

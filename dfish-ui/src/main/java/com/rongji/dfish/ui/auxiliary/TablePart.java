@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.auxiliary;
 import com.rongji.dfish.ui.AbstractMultiNodeContainer;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.json.WidgetJsonBuilder;
 import com.rongji.dfish.ui.layout.Table;
 import com.rongji.dfish.ui.layout.TableOperation;
 
@@ -32,10 +33,19 @@ public abstract class TablePart extends AbstractMultiNodeContainer<TablePart, TR
 
     protected Table owner;
 
+    /**
+     * TablePart所属table
+     * @return Table
+     */
     public Table owner() {
         return owner;
     }
 
+    /**
+     * TablePart所属table
+     * @param owner
+     * @return TablePart
+     */
     public TablePart owner(Table owner) {
         this.owner = owner;
         return this;

@@ -40,10 +40,20 @@ import java.util.*;
  * @since dfish 2.0
  */
 public class TableFactory {
+    /**
+     * 构建DefaultTableFactory
+     * @param id
+     * @return DefaultTableFactory
+     */
     public static DefaultTableFactory newTable(String id) {
         return new DefaultTableFactory(id);
     }
 
+    /**
+     * 构建 GroupedTableFactory
+     * @param id
+     * @return GroupedTableFactory
+     */
     public static GroupedTableFactory newGroupedTable(String id) {
         return new GroupedTableFactory(id);
     }

@@ -72,6 +72,10 @@ public class Column extends AbstractNode<Column> implements Alignable<Column>, V
     private RawJson rawFormat;
     private Integer labelWidth;
 
+    /**
+     * 标题全选框
+     * @return RawJson
+     */
     public RawJson rawFormat() {
         return rawFormat;
     }

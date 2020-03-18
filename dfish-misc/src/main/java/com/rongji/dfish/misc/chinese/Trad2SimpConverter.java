@@ -14,8 +14,13 @@ import com.rongji.dfish.base.text.TrieTree;
  *
  */
 public class Trad2SimpConverter {
-
+	/**
+	 * 转化类型-繁体转化为简体
+	 */
 	public static final int TRADITIONAL_TO_SIMPLIFIED =1;
+	/**
+	 * 转化类型-简体转化为繁体
+	 */
 	public static final int SIMPLIFIED_TO_TRADITIONAL =2;
 	private TrieTree<String> trieTree;
 	private int mod;

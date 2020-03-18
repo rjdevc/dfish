@@ -15,27 +15,76 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 转成Summary   summary是Text的一部分。
  */
 public class SummaryBuilder {
+    /**
+     * 组件类型-字符
+     */
     public static final int TYPE_CHARACTER=0;
+    /**
+     * 组件类型-文档
+     */
     public static final int TYPE_DOCUMENT=1;
+    /**
+     * 组件类型-段落
+     */
     public static final int TYPE_PARAGRAPH=2;
+    /**
+     * 组件类型-一段文本，相当于html的Span
+     */
     public static final int TYPE_CHARACTER_RUN=3;
+    /**
+     * 组件类型-图片
+     */
     public static final int TYPE_DRAWING=4;
+    /**
+     * 组件类型-表格
+     */
     public static final int TYPE_TABLE=5;
+    /**
+     * 组件类型-表格行
+     */
     public static final int TYPE_ROW=6;
+    /**
+     * 组件类型-单元格
+     */
     public static final int TYPE_CELL=7;
+    /**
+     * 组件类型-列
+     */
     public static final int TYPE_COLUMN=8;
 
     private int summaryScore = 6000;
     private int[] scores =new int[]{10,0,200,0,500,0,0,0,0};
+
+    /**
+     * 总分，满了6000分左右截止
+     * @return int
+     */
     public int getSummaryScore(){
         return summaryScore;
     }
+
+    /**
+     * type类型的元素对应的分数
+     * @param type
+     * @return int
+     */
     public int getScore(int type){
         return scores[type];
     }
+
+    /**
+     * 总分
+     * @param summaryScore
+     */
     public void setSummaryScore(int summaryScore){
         this.summaryScore=summaryScore;
     }
+
+    /**
+     * type类型的元素对应的分数
+     * @param type
+     * @param score
+     */
     public void setScore(int type,int score){
         scores[type]=score;
     }

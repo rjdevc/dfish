@@ -19,10 +19,19 @@ public class ECharts extends AbstractWidget<ECharts> {
 
     private GsonOption option;
 
+    /**
+     * ECharts的option对象，可设置标题、图例、工具栏等
+     * @return GsonOption
+     */
     public GsonOption getOption() {
         return option;
     }
 
+    /**
+     * ECharts的option对象，可设置标题、图例、工具栏等
+     * @param option
+     * @return ECharts
+     */
     public ECharts setOption(GsonOption option) {
         this.option = option;
         return this;

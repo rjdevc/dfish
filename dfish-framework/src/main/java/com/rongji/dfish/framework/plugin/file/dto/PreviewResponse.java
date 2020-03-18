@@ -7,11 +7,22 @@ package com.rongji.dfish.framework.plugin.file.dto;
  * @since 5.0
  */
 public class PreviewResponse {
-
+    /**
+     * 预览方式-文件下载
+     */
     public static final int WAY_DOWNLOAD = 0;
+    /**
+     * 预览方式-内联方式
+     */
     public static final int WAY_INLINE = 1;
+    /**
+     * 预览方式-图片预览
+     */
     public static final int WAY_PREVIEW_IMAGE = 2;
-    public static final int WAY_PREVIEW_FILE = 3;
+    /**
+     * 预览方式-文档预览
+     */
+    public static final int WAY_PREVIEW_DOCUMENT = 3;
 
     private int way = WAY_DOWNLOAD;
     private String url;

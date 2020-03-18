@@ -16,9 +16,19 @@ public class RawJson {
 	}
 
 	private String text;
+
+	/**
+	 * 注入的文本
+	 * @return  String
+	 */
 	public String getText() {
 		return text;
 	}
+
+	/**
+	 * 注入的文本
+	 * @param text
+	 */
 	public void setText(String text) {
 		this.text = text;
 	}

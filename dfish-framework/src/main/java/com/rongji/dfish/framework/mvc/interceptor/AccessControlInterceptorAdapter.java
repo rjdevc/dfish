@@ -30,14 +30,30 @@ import java.util.*;
 public abstract class AccessControlInterceptorAdapter extends HandlerInterceptorAdapter {
     protected long cacheExpired = 300000L;
 
+    /**
+     * 过期时间
+     * @return
+     */
     public long getCacheExpired() {
         return cacheExpired;
     }
 
+    /**
+     * 过期时间
+     * @param cacheExpired
+     */
     public void setCacheExpired(long cacheExpired) {
         this.cacheExpired = cacheExpired;
     }
 
+    /**
+     * 验证是否具有权限
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 

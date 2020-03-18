@@ -10,6 +10,11 @@ import java.io.InputStream;
  */
 public abstract class DocumentParser {
     protected Builder builder;
+
+    /**
+     * 构建器
+     * @param builder
+     */
     public void setBuilder(Builder builder){
         this.builder=builder;
     }

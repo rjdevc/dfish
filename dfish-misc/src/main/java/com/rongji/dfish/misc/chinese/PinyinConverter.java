@@ -14,8 +14,17 @@ import net.sourceforge.pinyin4j.PinyinHelper;
  * 如果有一整句话。那这个转化工具，将尽量根据词组。正确的转化多音字。
  */
 public class PinyinConverter {
+	/**
+	 * 使用音调，shǒudū
+	 */
 	public static final int WITH_TONE_MARK = 2;
+	/**
+	 * 不使用音调 shoudu
+	 */
 	public static final int WITHOUT_TONE = 1;
+	/**
+	 * 使用数字标识   shou3du1
+	 */
 	public static final int WITH_TONE_NUMBER = 0;
 	/**
 	 * 默认-音序

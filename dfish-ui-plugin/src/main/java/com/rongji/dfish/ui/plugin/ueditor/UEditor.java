@@ -47,11 +47,22 @@ public class UEditor extends AbstractInput<UEditor, String> {
         return option;
     }
 
+    /**
+     * UEditor的参数设置,参考ueditor.config.js
+     * @param option
+     * @return UEditor
+     */
     public UEditor setOption(Map<String, Object> option) {
         this.option = option;
         return this;
     }
 
+    /**
+     * UEditor的参数设置,参考ueditor.config.js
+     * @param key
+     * @param value
+     * @return UEditor
+     */
     public UEditor setOption(String key, Object value) {
         if (this.option == null) {
             this.option = new HashMap<>();
@@ -60,6 +71,11 @@ public class UEditor extends AbstractInput<UEditor, String> {
         return this;
     }
 
+    /**
+     * remove UEditor的某个参数设置
+     * @param key
+     * @return
+     */
     public UEditor removeOption(String key) {
         if (this.option != null) {
             this.option.remove(key);

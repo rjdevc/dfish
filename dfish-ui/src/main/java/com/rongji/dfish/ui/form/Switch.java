@@ -38,7 +38,13 @@ public class Switch extends AbstractFormElement<Switch, Object> {
         this.setValue(value);
     }
 
+    /**
+     * 选中状态跟父节点同步，用于 leaf 或 tr 的选项box。可选值: click(点击父节点，box也触发点击)
+     */
     public static final String SYNC_CLICK = "click";
+    /**
+     * 选中状态跟父节点同步，用于 leaf 或 tr 的选项box。可选值: focus(父节点聚焦则box则选中，父节点失去焦点则box未选中)
+     */
     public static final String SYNC_FOCUS = "focus";
 
     @Override

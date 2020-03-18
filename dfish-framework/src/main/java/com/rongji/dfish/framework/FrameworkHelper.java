@@ -310,6 +310,12 @@ public class FrameworkHelper {
         return Utils.isEmpty(value) ? defaultValue : value;
     }
 
+    /**
+     * 获取系统配置
+     * @param key
+     * @param defaultValue
+     * @return Integer
+     */
     public static Integer getSystemConfigAsInteger(String key, Integer defaultValue) {
         String strValue = getSystemConfig(key, null);
         if (Utils.notEmpty(strValue)) {
@@ -352,6 +358,12 @@ public class FrameworkHelper {
 
     }
 
+    /**
+     * 公用获取个人配置参数配置方法 如果当前个人设置为空则自动取默认值
+     * @param userId
+     * @param argStr
+     * @return Integer
+     */
     public static Integer getPersonalConfigAsInteger(String userId, String argStr) {
         String strValue = SystemContext.getInstance().get(PersonalConfigHolder.class).getProperty(userId, argStr);
         if (strValue == null) {

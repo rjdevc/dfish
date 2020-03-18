@@ -118,14 +118,38 @@ public abstract class AbstractFrameworkDao<P, ID extends Serializable> implement
 
     }
 
+    /**
+     * 执行某个针对数据库的查询
+     * @param sql
+     * @param rowMapper
+     * @param <T>
+     * @return List
+     */
     public <T> List<T> query(String sql, RowMapper<T> rowMapper) {
         return query(sql, null, rowMapper);
     }
 
+    /**
+     * 执行某个针对数据库的查询,带查询参数
+     * @param sql
+     * @param args
+     * @param rowMapper
+     * @param <T> List
+     * @return
+     */
     public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) {
         return query(sql, null, args, rowMapper);
     }
 
+    /**
+     * 执行某个针对数据库的查询,带查询参数，分页信息
+     * @param sql
+     * @param pagination
+     * @param args
+     * @param rowMapper
+     * @param <T>
+     * @return List
+     */
     public <T> List<T> query(String sql, Pagination pagination, Object[] args, RowMapper<T> rowMapper) {
         QueryPreparation preparation = QueryPreparation.of(sql, pagination, args);
         List<T> dataList = jdbcTemplate.query(preparation.getQuerySql(), preparation.getQueryArgs(), rowMapper);

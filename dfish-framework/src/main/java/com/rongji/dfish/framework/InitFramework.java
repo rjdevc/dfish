@@ -43,6 +43,9 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 		this.applicationContext = context;
 	}
 
+	/**
+	 * 初始化配置信息
+	 */
 	@SuppressWarnings("deprecation")
 	public void init() {
 		Locale.setDefault(Locale.SIMPLIFIED_CHINESE);

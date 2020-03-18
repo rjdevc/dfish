@@ -732,10 +732,18 @@ public class Lunar {
         cal.add(Calendar.HOUR_OF_DAY, TIME_ZONE);
     }
 
+    /**
+     * 是否闰月
+     * @return boolean
+     */
     public boolean isLeapMonth() {
         return isLeapMonth;
     }
 
+    /**
+     * 是否闰月
+     * @param isLeapMonth
+     */
     public void setLeapMonth(boolean isLeapMonth) {
         this.isLeapMonth = isLeapMonth;
     }

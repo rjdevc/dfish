@@ -72,7 +72,13 @@ public class ChineseOrder implements java.util.Comparator<Object>{
 		NINE_POSTION=CHAR_POS.get('9');
 		LOADED_MODES.put(mode, this);
 	}
-	
+
+	/**
+	 * 对字符进行排序比较
+	 * @param o1
+	 * @param o2
+	 * @return
+	 */
 	@Override
     public int compare(Object o1, Object o2) {
 		if(o1==null){

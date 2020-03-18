@@ -391,8 +391,17 @@ public class OriginMatcher {
 	 * 匹配结果类，便于对结果进行分析
 	 */
 	public static class MatchResult {
+		/**
+		 * 设置匹配可信度-未匹配上
+		 */
 		public static final int CONFIDENCE_NONE = 0;
+		/**
+		 * 设置匹配可信度-全匹配
+		 */
 		public static final int CONFIDENCE_FULL = 100;
+		/**
+		 * 设置匹配可信度-没有找到可以辨识的前缀（比如类似鼓楼那样，全国有一堆鼓楼。但没找到可以辨识的前缀。）
+		 */
 		public static final int CONFIDENCE_UNMATCH = -1;
 		private String code;
 		private int confidence;	

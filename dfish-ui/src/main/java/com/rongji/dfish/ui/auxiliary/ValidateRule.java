@@ -12,10 +12,19 @@ public class ValidateRule<E> {
     public ValidateRule() {
     }
 
+    /**
+     * 构造函数
+     * @param value
+     */
     public ValidateRule(E value) {
         this.value = value;
     }
 
+    /**
+     * 构造函数
+     * @param value
+     * @param text
+     */
     public ValidateRule(E value, String text) {
         this.value = value;
         this.text = text;

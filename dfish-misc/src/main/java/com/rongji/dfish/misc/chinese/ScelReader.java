@@ -41,21 +41,51 @@ public class ScelReader {
 		String readme2;
 		String[] pinyins;
 		LinkedHashMap<String,LinkedHashMap<String,Integer>> words;
+
+		/**
+		 * 发布时间
+		 * @return
+		 */
 		public Date getPublishTime() {
 			return publishTime;
 		}
+
+		/**
+		 * 福州本地公交地名库
+		 * @return
+		 */
 		public String getName() {
 			return name;
 		}
+
+		/**
+		 * 城市
+		 * @return
+		 */
 		public String getCatelog() {
 			return catelog;
 		}
+
+		/**
+		 * 备注
+		 * @return
+		 */
 		public String getReadme() {
 			return readme;
 		}
+
+		/**
+		 * 备注
+		 * @return
+		 */
 		public String getReadme2() {
 			return readme2;
 		}
+
+		/**
+		 * 所有的拼音.
+		 * @return
+		 */
 		public String[] getPinyins(){
 			return pinyins;
 		}
