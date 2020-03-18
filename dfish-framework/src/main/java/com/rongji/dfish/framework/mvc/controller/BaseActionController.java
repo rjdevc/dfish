@@ -25,6 +25,10 @@ import java.util.*;
 
 /**
  * 提供一个入口，对request传来的数据进行统一处理
+ *
+ * @author lamontYu
+ * @date 2019-09-03
+ * @since 3.2
  */
 public class BaseActionController extends MultiActionController {
     /**
@@ -35,6 +39,7 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 允许用户自定义分页数设置
+     *
      * @return
      */
     public boolean isCustomizedLimit() {
@@ -43,6 +48,7 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 允许用户自定义分页数设置
+     *
      * @param customizedLimit
      */
     public void setCustomizedLimit(boolean customizedLimit) {
@@ -153,11 +159,20 @@ public class BaseActionController extends MultiActionController {
 
     protected static HashMap<Class<?>, Convertor> formatMap = new HashMap<Class<?>, Convertor>();
 
+    /**
+     * 请求数据转换器
+     * 通过设置转换格式将请求数据转换成指定对象
+     *
+     * @author DFish Team
+     * @date 2018-08-03 before
+     * @since 3.0
+     */
     public static class Convertor {
-        List<Format> formats = new ArrayList<Format>();
+        List<Format> formats = new ArrayList<>();
 
         /**
          * 添加format元素
+         *
          * @param format
          */
         public void addFormat(Format format) {
@@ -168,6 +183,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * 数据绑定
+         *
          * @param request
          * @param obj
          * @throws Exception
@@ -186,6 +202,13 @@ public class BaseActionController extends MultiActionController {
         }
     }
 
+    /**
+     * 对象属性格式转换配置(含对象映射类,属性名,方法等方法)
+     *
+     * @author DFish Team
+     * @date 2018-08-03 before
+     * @since 3.0
+     */
     public static class Format {
         String name;
         Method method;
@@ -193,6 +216,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * 名称
+         *
          * @return
          */
         public String getName() {
@@ -201,6 +225,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * 名称
+         *
          * @param name
          */
         public void setName(String name) {
@@ -209,6 +234,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * 方法名
+         *
          * @return
          */
         public Method getMethod() {
@@ -217,6 +243,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * 方法名
+         *
          * @param method
          */
         public void setMethod(Method method) {
@@ -225,6 +252,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * Class类型
+         *
          * @return
          */
         public Class<?> getType() {
@@ -233,6 +261,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * Class类型
+         *
          * @param type
          */
         public void setType(Class<?> type) {
@@ -241,6 +270,7 @@ public class BaseActionController extends MultiActionController {
 
         /**
          * 数据绑定
+         *
          * @param request
          * @param obj
          * @throws Exception
@@ -307,6 +337,7 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 分页结果最多显示多少行
+     *
      * @return
      */
     protected int getPaginationLimit() {
@@ -315,6 +346,7 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 获取分页信息
+     *
      * @param request
      * @return
      */
@@ -355,6 +387,7 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 分页组件是否在查询的时候自动统计行数
+     *
      * @param request
      * @return
      */
@@ -371,7 +404,7 @@ public class BaseActionController extends MultiActionController {
      * 获取进度条编号,由[调用方法#sessionId#dataId]构成
      *
      * @param sessionId
-     * @param dataId 数据编号
+     * @param dataId    数据编号
      * @return
      */
     protected String getProgressKey(String sessionId, String dataId) {
@@ -420,7 +453,7 @@ public class BaseActionController extends MultiActionController {
             request.setAttribute("EXCEPTION_HANDLED", true);
         }
 
-        Throwable cause= getCause(e);
+        Throwable cause = getCause(e);
 
         if (cause instanceof Marked) {
             jsonResponse.setErrCode(((Marked) cause).getCode());
@@ -428,8 +461,9 @@ public class BaseActionController extends MultiActionController {
         } else {
             String requestJson = "[UNKNOWN REQUEST CONTENT]";
             try {
-                requestJson=convert2JSON(request);
-            }catch (Throwable t){}
+                requestJson = convert2JSON(request);
+            } catch (Throwable t) {
+            }
             String errMsg = null;
             if (cause instanceof SocketException) {
                 errMsg = "网络异常@" + System.currentTimeMillis();
@@ -464,6 +498,7 @@ public class BaseActionController extends MultiActionController {
 
     /**
      * 将获取的信息转化为json格式
+     *
      * @param request
      * @return
      */

@@ -712,17 +712,17 @@ img {
 
 
 /**↓常用操作图标↓**/
-.x-grid-operation i {
+.x-operation-group i, i.x-operation {
     cursor: pointer;
     display: inline-block;
     margin-left: 5px;
 }
 
-.x-grid-operation i:first-child {
+.x-operation-group i:first-child {
     margin-left: 0;
 }
 
-.x-grid-operation i.z-ds {
+.x-operation-group i.z-ds, i.x-operation.z-ds {
     cursor: default;
 }
 

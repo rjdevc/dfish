@@ -12,12 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 滑动验证码
+ *
  * @author lamontYu
  * @date 2019-12-09
  * @since 3.2
  */
 @RequestMapping("/jigsaw")
 public class JigsawController extends BaseActionController {
+    /**
+     * 滑动图片生成器
+     */
     private JigsawGenerator jigsawGenerator = new JigsawGenerator();
 
     public JigsawGenerator getJigsawGenerator() {
@@ -28,6 +32,13 @@ public class JigsawController extends BaseActionController {
         this.jigsawGenerator = jigsawGenerator;
     }
 
+    /**
+     * 图片加载地址
+     *
+     * @param request 请求
+     * @return Object 图片加载对象(含地址等信息)
+     * @throws Exception
+     */
     @RequestMapping("/img")
     @ResponseBody
     public Object img(HttpServletRequest request) throws Exception {
@@ -35,6 +46,12 @@ public class JigsawController extends BaseActionController {
         return new JsonResponse<>(response);
     }
 
+    /**
+     * 滑动认证方法
+     *
+     * @param request 请求
+     * @return Object 认证信息对象
+     */
     @RequestMapping("/auth")
     @ResponseBody
     public Object auth(HttpServletRequest request) {
