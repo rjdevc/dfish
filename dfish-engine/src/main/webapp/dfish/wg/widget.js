@@ -2198,7 +2198,7 @@ Scroll = define.widget( 'Scroll', {
 				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
 					(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
 					(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxHeight ? 'max-height:' + (+this.x.maxHeight + c) + 'px;' : '') + (this.x.minHeight ? 'min-height:' + (+this.x.minHeight + c) + 'px;' : '') +
-					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class=f-rel') + '><div id=' + this.id + 'cont>' + (s || '') + '</div>' + _html_resize_sensor.call( this ) + '</div></div></div><div id=' +
+					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div class="f-oh" id=' + this.id + 'cont>' + (s || '') + '</div>' + _html_resize_sensor.call( this ) + '</div></div></div><div id=' +
 					this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
 					this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
 			}
@@ -5838,7 +5838,7 @@ FormLabel = define.widget( 'FormLabel', {
 			return 'w-f w-formlabel f-nv' + (c ? ' ' + c: '');
 		},
 		form_cls: function() {
-			return 'w-formlabel-text f-nv';
+			return 'w-formlabel-text f-nv f-oh';
 		},
 		html_nodes: function() {
 			return Html.prototype.html_nodes.call( this );
