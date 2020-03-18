@@ -5835,10 +5835,10 @@ FormLabel = define.widget( 'FormLabel', {
 	Prototype: {
 		prop_cls: function() {
 			var c = _proto.prop_cls.call( this );
-			return 'w-f w-formlabel f-nv' + (c ? ' ' + c: '');
+			return 'w-f w-formlabel f-nv f-nobr' + (c ? ' ' + c: '');
 		},
 		form_cls: function() {
-			return 'w-formlabel-text f-nv f-oh';
+			return 'w-formlabel-text f-nv f-oh f-wdbr';
 		},
 		html_nodes: function() {
 			return Html.prototype.html_nodes.call( this );

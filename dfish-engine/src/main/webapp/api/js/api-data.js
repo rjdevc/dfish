@@ -1573,7 +1573,7 @@ define( {
     ]
   },
   "Tabs": {
-  	remark: '可切换标签容器。',
+  	remark: '可切换标签容器。<br>子节点宽度默认为*，高度默认为*。',
   	extend: 'ButtonBar',
   	deprecate: 'dir,focusMultiple,br,scroll,.w-ButtonBar,.z-dirh,.z-dirv',
 	Examples: [
@@ -1696,7 +1696,7 @@ define( {
     ]
   },
   "Frame": {
-  	remark: '帧模式布局。只显示一个子元素，其他子元素都隐藏。',
+  	remark: '帧模式布局。只显示一个子元素，其他子元素都隐藏。<br>子节点宽度默认为*，高度默认为*。',
   	extend: 'Widget',
     Config: [
       { name: 'dft', type: 'String', remark: '默认显示 widget 的 ID。' },
@@ -2440,7 +2440,7 @@ define( {
     ]
   },
   "Vertical": {
-  	remark: '子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
+  	remark: '子节点按垂直方向排列的布局widget。子节点的默认宽度为*，高度默认为-1。高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
   	extend: 'Widget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
@@ -2502,7 +2502,7 @@ define( {
     ]
   },
   "Horizontal": {
-   	remark: '子节点按水平方向排列的布局widget。子节点的高度默认为100%；宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
+   	remark: '子节点按水平方向排列的布局widget。子节点的默认高度为*，默认宽度为-1。宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
   	extend: 'Vertical',
   	deprecate: '.w-Vertical',
     Config: [
@@ -2710,7 +2710,7 @@ define( {
     ]
   },
   "View": {
-  	remark: '视图对象。',
+  	remark: '视图对象。<br>子节点宽度默认为*，高度默认为*。',
   	extend: 'Section',
   	deprecate: 'ownerView',
     Config: [
