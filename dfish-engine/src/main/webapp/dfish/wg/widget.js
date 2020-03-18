@@ -5791,7 +5791,7 @@ AbsInput = define.widget( 'AbsInput', {
 		},
 		html_placeholder: function() {
 			var v = this.x.value, s = this.getPlaceholder();
-			return s ? '<label class="w-input-placeholder f-fix' + (v != N && v !== '' ? ' f-none' : '') +
+			return (s = s && $.strEscape( s )) ? '<label class="w-input-placeholder f-fix' + (v != N && v !== '' ? ' f-none' : '') +
 				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event) title="' + $.strQuot( s ) + '"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + s + '</span></label>' : '';
 		},
 		html_btn: function() {

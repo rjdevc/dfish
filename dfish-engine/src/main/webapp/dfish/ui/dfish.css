@@ -510,7 +510,7 @@
 .w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{position:relative;padding:3px 6px 3px 0;top:-1px}
 .w-checkbox,.w-radio,.w-triplebox{padding:2px 0;font-style:normal}
 .w-checkbox input,.w-radio input,.w-triplebox input{float:left;padding:0;vertical-align:middle}
-.w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;vertical-align:text-top;cursor:pointer}
+.w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;cursor:pointer;vertical-align:text-top;vertical-align:middle\0}
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
 .w-table-triplebox,.w-table-radio{padding:2px}
 .w-checkbox.z-ds ._tit,.w-radio.z-ds ._tit,.w-triplebox.z-ds ._tit{cursor:default}

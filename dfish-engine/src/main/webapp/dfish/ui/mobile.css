@@ -42,6 +42,8 @@
 
 .w-select ._t{background:#fff}
 
+.w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{vertical-align:middle}
+
 .w-spinner.w-input.z-on,.w-date.w-input.z-on{border-color:rgba(0,0,0,.2)}
 .w-spinner .f-boxbtn{width:30px;text-align:center;color:#666}
 .w-spinner.z-ds .f-boxbtn{color:#aaa}
