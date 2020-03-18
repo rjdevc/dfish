@@ -3208,6 +3208,11 @@ ButtonBar = define.widget( 'ButtonBar', {
 		x.br && (this.className += ' z-br');
 		!this.length && (this.className += ' z-empty');
 		W.apply( this, arguments );
+		if ( this.x.split ) {
+			var i = this.length;
+			while ( (--i) > 0 )
+				this.add( $.extend( { type: 'Split' }, this.x.split ), i );
+		}
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		(!x.vAlign && p && p.x.vAlign) && this.defaults( { vAlign: p.x.vAlign } );
 	},
@@ -3313,10 +3318,6 @@ ButtonBar = define.widget( 'ButtonBar', {
 		html_nodes: function() {
 			for ( var i = 0, l = this.length, s = []; i < l; i ++ ) {
 				s.push( this[ i ].html() );
-				if ( this.x.split && i < l - 1 && this[ i ].type !== 'ButtonSplit' && this[ i + 1 ].type !== 'ButtonSplit' ) {
-					s.push( this.add( $.extend( { type: 'Split' }, this.x.split ), i + 1 ).html() );
-					i ++, l ++;
-				}
 			}
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
@@ -3838,7 +3839,7 @@ Tabs = define.widget( 'Tabs', {
 		y.nodes = [ { type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
 		Vert.call( this, $.extend( { nodes:[ y ], scroll: F }, x ), p );
-		this.buttonbar = this[ 0 ];
+		this.tabBar = this[ 0 ];
 		this.frame = this[ 1 ];
 	},
 	Extend: Vert,
@@ -3857,7 +3858,9 @@ TabBar = define.widget( 'TabBar', {
 	Extend: ButtonBar,
 	Prototype: {
 		className: 'w-tabbar',
-		x_childtype: $.rt( 'Tab' )
+		x_childtype: function( t ) {
+			return t === 'Split' ? 'ButtonSplit' : (t || 'Tab');
+		},
 	}
 } ),
 /* `tab` */
