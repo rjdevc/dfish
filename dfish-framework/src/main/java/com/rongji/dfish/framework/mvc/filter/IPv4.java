@@ -51,9 +51,6 @@ public class IPv4 implements java.io.Serializable,java.lang.Comparable<Object>{
 		return v;
 	}
 
-	public byte[] toByteArray(){
-		return null;
-	}
 	public long toLong(){
 		return (long)v&0xFFFFFFFFL;
 	}
