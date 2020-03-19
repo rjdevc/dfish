@@ -2,6 +2,7 @@ package com.rongji.dfish.framework.util;
 
 import org.apache.commons.logging.Log;
 
+@Deprecated
 public class WrappedLog implements Log{
 		Log core;
 		
