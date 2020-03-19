@@ -2626,8 +2626,7 @@ View = define.widget( 'View', {
 					if ( g = this.find( a[ i ] ) )
 						e.push( '[id="' + g.id + '"] ' + f );
 				}
-				if ( e = e.join() )
-					r = Q( this.$() ).find( d ? f + ':not(' + e + ')' : e );
+				r = (e = e.join()) ? Q( this.$() ).find( d ? f + ':not(' + e + ')' : e ) : Q( [] );
 			} else {
 				r = Q( (a && $( a )) || this.$() ).find( f );
 			}
