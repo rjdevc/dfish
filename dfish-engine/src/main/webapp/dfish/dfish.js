@@ -1908,12 +1908,12 @@ function _compatDOMMobile() {
 	    }
 	    n = t = N;
 	});
-	// 检测回退键
+	/* // 检测回退键
 	if ( win.plus ) {
 		plus.key.addEventListener( 'backbutton', function() { 
 			$.closeAll( plus.webview.currentWebview() );
 		} );
-	}
+	}*/
 }
 
 

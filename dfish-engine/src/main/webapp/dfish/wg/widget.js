@@ -2626,12 +2626,12 @@ View = define.widget( 'View', {
 					if ( g = this.find( a[ i ] ) )
 						e.push( '[id="' + g.id + '"] ' + f );
 				}
-				r = (e = e.join()) ? Q( this.$() ).find( d ? f + ':not(' + e + ')' : e ) : Q( [] );
+				if ( e = e.join() )
+					r = Q( this.$() ).find( d ? f + ':not(' + e + ')' : e );
 			} else {
 				r = Q( (a && $( a )) || this.$() ).find( f );
 			}
-			r && r.not( '.f-form-hide :input' );
-			return r || [];
+			return r ? r.not( '.f-form-hide :input' ) : Q( [] );
 		},
 		// 获取提交数据 { name: value, ... } /@ a -> range [widgetID, 可选，如果 range 以 ! 开头，表示排除], b -> json mode?
 		getPostData: function( a, b ) {
