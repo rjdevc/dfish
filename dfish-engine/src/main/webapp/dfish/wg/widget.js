@@ -6921,7 +6921,7 @@ DatePicker = define.widget( 'DatePicker', {
 			r = r.join( ',' );
 		}
 		x.value = r;
-		this.defaults( { width: 40 + this.x.format.length * 7 + (this.x.multiple ? 20 : 0) - (this.x.noButton ? 20 : 0) } );
+		this.defaults( { width: 35 + this.x.format.length * 7 + (this.x.multiple ? 20 : 0) + (mbi ? 10 : 0) - (this.x.noButton ? 20 : 0) } );
 	},
 	Extend: Text,
 	Listener: {
