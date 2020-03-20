@@ -113,6 +113,15 @@ _extendDeep = $.extendDeep = function ( a ) {
 	}
 	return a;
 },
+// 只继承指定的属性
+_extendAny = $.extendAny = function ( a, b ) {
+	for ( var i = 2, d; i < arguments.length; i ++ ) {
+		if ( d = arguments[ i ] ) {
+			for ( var k in d ) if ( _idsAny( b, k ) && !(k in a) ) a[ k ] = d[ k ];
+		}
+	}
+	return a;
+},
 // a拷贝b的属性
 _merge = $.merge = function( a ) {
 	for ( var i = 1, c, l = arguments.length; i < l; i ++ ) {

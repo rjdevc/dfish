@@ -3834,7 +3834,8 @@ Tabs = define.widget( 'Tabs', {
 		}
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
 		var n = this.getTabPositionName( x.position ),
-			r = { type: 'TabBar', cls: 'z-position-' + n, align: x.align, vAlign: x.vAlign || (y.type === 'Horz' ? 'top' : N), split: x.split, dir: y.type === 'Horz' ? 'v' : 'h', space: x.space, overflowButton: x.overflowButton, nodes: b };
+			r = { type: 'TabBar', cls: 'z-position-' + n, nodes: b };
+		$.extendAny( r, 'align,vAlign,split,dir,space,overflowButton', x, e, { vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h' } );
 		y.nodes = [ { type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
 		Vert.call( this, $.extend( { nodes:[ y ], scroll: F }, x ), p );
