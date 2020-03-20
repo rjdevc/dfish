@@ -64,6 +64,8 @@
 .f-boxbtn{width:30px;height:38px;line-height:38px;text-align:center;text-indent:0;font-style:normal}
 .f-boxbtn .f-arw-b3{border-top-color:#99a8b8;*margin-top:3px}
 
+.f-form-transparent .w-spinner ._l,.f-form-transparent .w-spinner ._r{border:0}
+
 /*
 .f-i-back,.f-i-upload,.f-i-trash,.f-i-plus{background:none}
 .f-i-back:before{content:'\e471';}

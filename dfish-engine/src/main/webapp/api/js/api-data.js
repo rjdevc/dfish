@@ -4106,7 +4106,8 @@ define( {
   	deprecate: '.w-text',
     Config: [
       { name: 'format', type: 'String', remark: '日期格式: yyyy-mm-dd hh:ii:ss' },
-      { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' }
+      { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
+      { name: 'noButton', type: 'Boolean', optional: true, remark: '设置为true，不显示按钮。' }
     ],
     Classes: [
       { name: '.w-datepicker', remark: '基础样式。' }
@@ -4397,7 +4398,7 @@ define( {
     Config: [
       { name: 'decimal', type: 'Number', optional: true, remark: '设为0时，只允许输入整数。设为正整数，则限制小数的最大位数。设为负数，则不限整数和小数。默认值为0' },
       { name: 'step', type: 'Number', optional: true, remark: '递增/递减的数值。' },
-      { name: 'noButton', type: 'Boolean', optional: true, remark: '是否显示增减的按钮。默认值为true' },
+      { name: 'noButton', type: 'Boolean', optional: true, remark: '设置为true，不显示按钮。' },
       { name: 'format', type: 'Object', optional: true, remark: '设置分隔格式。',  param: [
         { name: 'length', type: 'Number', remark: '分隔长度。默认值为 3' },
         { name: 'separator', type: 'String', remark: '分隔符。默认值为 ","' },

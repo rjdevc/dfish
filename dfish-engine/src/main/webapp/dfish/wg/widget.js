@@ -5857,7 +5857,7 @@ Range = define.widget( 'Range', {
 	Const: function( x, p ) {
 		AbsForm.apply( this, arguments );
 		this.begin = x.begin && this.add( x.begin );
-		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'Html', text: x.to || Loc.to, width: 30, align: 'center' } );
+		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'Html', cls: 'w-range-to', text: x.to || Loc.to, width: 30, align: 'center' } );
 		this.end   = x.end && this.add( x.end );
 		this.className = 'w-horz w-range f-nv';
 		if ( ! x.vAlign && p && p.x.vAlign )
@@ -5872,6 +5872,9 @@ Range = define.widget( 'Range', {
 		},
 		scaleWidth: function( a, b ) {
 			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
+		},
+		isRequired: function() {
+			return (this.begin && this.begin.isRequired()) || (this.end && this.end.isRequired());
 		}
 	}
 } ),
@@ -6918,7 +6921,7 @@ DatePicker = define.widget( 'DatePicker', {
 			r = r.join( ',' );
 		}
 		x.value = r;
-		this.defaults( { width: 67 + this.x.format.length * 6 + (this.x.multiple ? 20 : 0) } );
+		this.defaults( { width: 40 + this.x.format.length * 7 + (this.x.multiple ? 20 : 0) - (this.x.noButton ? 20 : 0) } );
 	},
 	Extend: Text,
 	Listener: {
@@ -7073,7 +7076,7 @@ DatePicker = define.widget( 'DatePicker', {
 			this.list && this.list.close();
 		},
 		html_btn: function() {
-			return '<label ' + (mbi ? 'for="' + this.id + 't"' : 'onclick=' + eve) + ' class="f-boxbtn _pick"><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
+			return this.x.noButton ? '' : '<label ' + (mbi ? 'for="' + this.id + 't"' : 'onclick=' + eve) + ' class="f-boxbtn _pick"><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
 		},
 		input_prop_value: function() {
 			var v = this.x.value;
