@@ -4198,7 +4198,7 @@ PageBar = define.widget( 'PageBar', {
 			this.go( a );
 		},
 		ego: function( e ) {
-			if ( e.type === 'keyUp' && e.keyCode !== 13 )
+			if ( e.type === 'keyup' && e.keyCode !== 13 )
 				return;
 			else if ( e.type === 'click' )
 				this.$( 'j' ).focus();
