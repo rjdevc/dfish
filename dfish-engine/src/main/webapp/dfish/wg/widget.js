@@ -5790,7 +5790,7 @@ AbsInput = define.widget( 'AbsInput', {
 		},
 		getPlaceholder: function() {
 			var s = this.x.placeholder;
-			s == N && cfg.autoPlaceholder && (s = Loc.ps( Loc[ this.placeholder_type || 'placeholder_input' ], this.label ? this.label.x.text : this.x.label && (this.x.label.text || this.x.label) ));
+			s == N && cfg.autoPlaceholder && (s = Loc.ps( Loc[ this.placeholder_type || 'placeholder_input' ], this.label ? this.label.x.text : this.x.label && (this.x.label.text != N ? this.x.label.text : this.x.label) ));
 			return s;
 		},
 		checkPlaceholder: function( v ) {
@@ -7085,7 +7085,7 @@ DatePicker = define.widget( 'DatePicker', {
 		},
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix _a">' + v.replace( 'T', ' ' ) + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><div class=_pad>' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix _a">' + v.replace( 'T', ' ' ) + '</label>' :
 				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}

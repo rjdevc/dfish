@@ -30,9 +30,6 @@
 
 */
 
-.w-datepicker ._t{position:absolute;width:1px;visibility:hidden;}
-.w-datepicker ._a{display:block;height:100%;line-height:38px;overflow:hidden}
-
 .w-calendar-dialog{font-size:20px}
 .w-calendar-head{height:40px;line-height:40px}
 .w-calendar ._t,.w-calendar ._y,.w-calendar ._m{height:100%;vertical-align:middle;cursor:pointer}
@@ -52,6 +49,9 @@
 .w-spinner ._r{float:right;width:38px;height:100%;border-left:1px solid  rgba(0,0,0,.2);color:rgba(0,0,0,.5);text-align:center;font-size:32px;line-height:1.1;font-style:normal}
 .f-form-transparent .w-spinner ._l,.f-form-transparent .w-spinner ._r{border:0}
 
+.w-datepicker ._t{position:absolute;width:1px;visibility:hidden;}
+.w-datepicker ._a{position:absolute;top:0;left:0;display:block;height:100%;line-height:38px;overflow:hidden}
+.w-datepicker ._pad{visibility:hidden;}
 .w-datepicker.z-nobutton ._c{padding-right:5px}
 .f-form-transparent .w-datepicker.z-nobutton ._c{padding-right:0}
 
