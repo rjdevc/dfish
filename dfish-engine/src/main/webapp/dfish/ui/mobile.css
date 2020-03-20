@@ -37,8 +37,8 @@
 .w-calendar-head{height:40px;line-height:40px}
 .w-calendar ._t,.w-calendar ._y,.w-calendar ._m{height:100%;vertical-align:middle;cursor:pointer}
 
-.w-input{height:38px;}
-.w-input ._t{line-height:38px}
+.w-input{height:38px}
+.w-input ._t{height:38px;line-height:38px}
 
 .w-select ._t{background:#fff}
 

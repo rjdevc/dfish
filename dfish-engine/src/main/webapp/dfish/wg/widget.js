@@ -5685,9 +5685,13 @@ AbsForm = define.widget( 'AbsForm', {
 		input_prop_value: function() {
 			return $.strEscape(this.x.value == N ? '' : '' + this.x.value);
 		},
+		input_prop_style: function() {
+			var h = this.innerHeight();
+			return h ?  ' style="height:' + h + 'px;line-height:' + (h + (br.ms ? 0 : 1)) + 'px"' : '';
+		},
 		input_prop: function() {
 			var t = this.attr( 'tip' ), v = this.input_prop_value();
-			return ' id="' + this.id + 't" class=_t name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
+			return ' id="' + this.id + 't" class=_t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call( this );
 		},
 		prop_cls: function() {
@@ -5919,6 +5923,7 @@ Textarea = define.widget( 'Textarea', {
 			return this.val().replace( /\r\n/g, '\n' ) != v.replace( /\r\n/g, '\n' );
 		},
 		input_prop_value: $.rt(),
+		input_prop_style: $.rt( '' ),
 		form_cls: function() {
 			return 'w-input z-ah f-nv';
 		},

@@ -350,10 +350,10 @@
 .w-f textarea{vertical-align:middle}
 .w-formgroup .w-html{vertical-align:middle}
 
-.w-input{border:1px solid #ccc;background:#fff;position:relative;height:28px;text-align:left;}
+.w-input{border:1px solid #ccc;background:#fff;position:relative;height:28px;text-align:left}
 .w-input.z-ah,.w-input.z-ah ._t{height:auto}
-.w-input ._c{position:relative;padding-left:5px;height:100%;overflow:hidden;}
-.w-input ._t{width:100%;height:100%;line-height:28px;*height:28px}
+.w-input ._c{position:relative;padding-left:5px;height:100%;overflow:hidden}
+.w-input ._t{width:100%;height:28px;line-height:28px}
 .w-f.z-on .w-input{border-color:#3298fe;box-shadow:none}
 .w-f.z-ds .w-input{background:#f1f1f1;box-shadow:none}
 .w-f.z-err .w-input{border-color:red;box-shadow:inset 0 0 2px #fbb}
@@ -362,6 +362,12 @@
 .w-f-dialog{border:1px solid #3298fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
 
 .w-input-placeholder{position:absolute;width:100%;height:100%;color:#a9a9a9;cursor:text}
+
+.w-range{overflow:visible}
+.w-range .f-sub-horz{vertical-align:middle}
+.w-range .f-sub-horz.z-htmn{float:none}
+
+.w-formlabel-text{margin-top:-1px;margin-top:-2px\0}
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
 
@@ -380,10 +386,6 @@
 .w-datepicker ._pick:hover ._pick_i{background-position:-25px 50%}
 .w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
 
-.w-range{overflow:visible}
-.w-range .f-sub-horz{vertical-align:middle}
-.w-range .f-sub-horz.z-htmn{float:none}
-
 .w-spinner ._t{vertical-align:middle}
 .w-spinner ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0}
 .w-spinner ._b em{display:block;height:50%;text-indent:5px;cursor:pointer}
@@ -394,8 +396,6 @@
 .w-spinner.z-ds ._b em{cursor:default}
 .w-spinner.z-ds ._b em:hover .f-arw-t2{border-bottom-color:#99a8b8}
 .w-spinner.z-ds ._b em:hover .f-arw-b2{border-top-color:#99a8b8}
-
-.w-formlabel .w-label ._lb{margin-top:0}
 
 .w-slider ._t{position:relative;height:6px;margin:2px 0;background:#f2f2f2;border-radius:6px;box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);}
 .w-slider ._track{position:absolute;height:6px;background:#999;border-radius:6px;}
