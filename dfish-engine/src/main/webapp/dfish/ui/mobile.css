@@ -50,6 +50,11 @@
 .w-spinner ._t{vertical-align:middle}
 .w-spinner ._l{float:left;width:38px;height:100%;border-right:1px solid  rgba(0,0,0,.2);color:rgba(0,0,0,.5);text-align:center;font-size:32px;line-height:1.1;font-style:normal}
 .w-spinner ._r{float:right;width:38px;height:100%;border-left:1px solid  rgba(0,0,0,.2);color:rgba(0,0,0,.5);text-align:center;font-size:32px;line-height:1.1;font-style:normal}
+.f-form-transparent .w-spinner ._l,.f-form-transparent .w-spinner ._r{border:0}
+
+.w-datepicker.z-nobutton ._c{padding-right:5px}
+.f-form-transparent .w-datepicker.z-nobutton ._c{padding-right:0}
+
 
 .w-combobox ._c{min-height:38px}
 .w-combobox ._plus,.w-pickbox ._plus,.w-onlinebox ._plus,.w-linkbox ._plus,.w-combobox.z-ds ._plus:hover,.w-pickbox.z-ds:hover ._plus,.w-onlinebox.z-ds ._plus:hover{background:none}
@@ -64,7 +69,6 @@
 .f-boxbtn{width:30px;height:38px;line-height:38px;text-align:center;text-indent:0;font-style:normal}
 .f-boxbtn .f-arw-b3{border-top-color:#99a8b8;*margin-top:3px}
 
-.f-form-transparent .w-spinner ._l,.f-form-transparent .w-spinner ._r{border:0}
 
 /*
 .f-i-back,.f-i-upload,.f-i-trash,.f-i-plus{background:none}
