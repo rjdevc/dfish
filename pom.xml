@@ -75,13 +75,13 @@
             <distributionManagement>
                 <repository>
                     <id>local</id>
-                    <url>http://192.168.0.143:8081/nexus/repository/releases</url>
+                    <url>http://maven.rongji.com/repository/releases</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
 
                 <snapshotRepository>
                     <id>local</id>
-                    <url>http://192.168.0.143:8081/nexus/repository/snapshots</url>
+                    <url>http://maven.rongji.com/repository/snapshots</url>
                     <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>
