@@ -1,31 +1,29 @@
 <?xml version="1.0"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.rongji.dfish</groupId>
-		<artifactId>dfish</artifactId>
-		<version>3.2.7.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>dfish-ui-plugin</artifactId>
-	<name>dfish-ui-plugin</name>
-	<url>http://dfish.rongji.com</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>com.rongji.dfish</groupId>
-			<artifactId>dfish-ui</artifactId>
-		</dependency>
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.rongji.dfish</groupId>
+        <artifactId>dfish</artifactId>
+        <version>3.2.7.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>dfish-ui-plugin</artifactId>
+    <name>dfish-ui-plugin</name>
+    <url>http://dfish.rongji.com</url>
 
-		<!-- echarts -->
-		<dependency>
-			<groupId>com.github.abel533</groupId>
-			<artifactId>ECharts</artifactId>
-			<version>3.0.0.2</version>
-		</dependency>
-		
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.rongji.dfish</groupId>
+            <artifactId>dfish-ui</artifactId>
+        </dependency>
+
+        <!-- echarts -->
+        <dependency>
+            <groupId>com.github.abel533</groupId>
+            <artifactId>ECharts</artifactId>
+            <version>3.0.0.2</version>
+        </dependency>
+
+    </dependencies>
 </project>
