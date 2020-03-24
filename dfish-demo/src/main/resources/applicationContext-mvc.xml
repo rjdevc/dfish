@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+       default-lazy-init="true">
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
+
+    <!-- 开启多值传输功能 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <!-- dfish-ui 包内容转化器 -->
+            <bean class="com.rongji.dfish.framework.mvc.response.DFishUIConverter"></bean>
+            <!-- 字符转换 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="${system.encoding}"/>
+            </bean>
+            <!-- 接口开发模式的JsonResponse转换 -->
+            <bean class="com.rongji.dfish.framework.mvc.response.ObjectToJsonConverter"></bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- 附件上传参数  -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 最大上传附件大小,单位B -->
+        <property name="maxUploadSize" value="${file.maxUploadSize}"/>
+        <property name="defaultEncoding" value="${system.encoding}"/>
+    </bean>
+
+    <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+    <mvc:default-servlet-handler/>
+
+    <!-- 附件 -->
+    <bean class="com.rongji.dfish.framework.plugin.file.controller.FileController"></bean>
+    <!-- 拖动验证码 -->
+    <bean class="com.rongji.dfish.framework.plugin.code.controller.JigsawController"></bean>
+
+</beans>

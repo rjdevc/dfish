@@ -1,0 +1,22 @@
+<!doctype html>
+<html xmlns:d>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+    <link rel="shortcut icon" href="./skin/img/favicon.ico">
+    <title>DFish Demo V5</title>
+
+    <script src="./dfish/dfish.js?ver=20191014"></script>
+    <script>
+        // 必须放在dfish.config前面调用,有通用配置先引入
+        dfish.use('skin/dfish.config.js');
+        dfish.use('skin/skin.config.js');
+        dfish.init({
+            view : {
+                id: 'index',
+                template: 'index/index'
+            }
+        });
+    </script>
+</head>
+<body class="f-body" scroll="no"></body>
+</html>

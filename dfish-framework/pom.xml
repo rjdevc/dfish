@@ -4,22 +4,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <modelVersion>4.0.0</modelVersion>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.0.52-SNAPSHOT</version>
+        <version>5.0.0.53-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-framework</artifactId>
@@ -34,6 +22,7 @@
         <dependency>
             <groupId>com.rongji.dfish</groupId>
             <artifactId>dfish-misc</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!-- 数据库连接池 -->
         <dependency>
@@ -58,13 +47,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-
-        <!-- hibernate升级到5.x所需包,可能要移到-hibernate工程 -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.9.1</version>
         </dependency>
 
         <!-- org.apache.log4j.Logger -->

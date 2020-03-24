@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.0.52-SNAPSHOT</version>
+        <version>5.0.0.53-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-ui</artifactId>
@@ -21,6 +21,7 @@
         <dependency>
             <groupId>com.rongji.dfish</groupId>
             <artifactId>dfish-base</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

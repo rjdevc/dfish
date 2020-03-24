@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-lazy-init="true">
+
+    <!-- 加密提供 -->
+    <bean id="cryptor" class="com.rongji.dfish.framework.config.CryptorFactoryBean">
+        <property name="secretKey" value="DFish@RJ002474"></property>
+    </bean>
+
+    <!-- 默认属性加密器 -->
+    <bean id="propertyCryptor" class="com.rongji.dfish.framework.config.impl.DefaultPropertyCryptor">
+        <property name="cryptor" ref="cryptor"></property>
+    </bean>
+    <!-- 属性配置器 -->
+    <bean id="propertyConfigurer" class="com.rongji.dfish.framework.config.PropertyConfigurer">
+        <property name="propertyCryptor" ref="propertyCryptor"></property>
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="UTF-8"></property>
+    </bean>
+
+    <!-- 数据源公共配置 -->
+    <bean id="abstractDataSource"
+          class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${db.driverClassName}"/>
+
+        <property name="testOnBorrow" value="${db.testOnBorrow}"/>
+        <property name="testOnReturn" value="${db.testOnReturn}"/>
+        <property name="validationQuery" value="${db.validationQuery}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${db.timeBetweenEvictionRunsMillis}"/>
+        <property name="maxActive" value="${db.maxActive}"/>
+        <property name="maxWait" value="${db.maxWait}"/>
+        <property name="removeAbandoned" value="${db.removeAbandoned}"/>
+        <property name="removeAbandonedTimeout" value="${db.removeAbandonedTimeout}"/>
+    </bean>
+
+    <!-- 当前项目数据源  -->
+    <bean id="dataSource" parent="abstractDataSource">
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+    </bean>
+
+    <!-- JdbcTemplate -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg name="dataSource" ref="dataSource"></constructor-arg>
+    </bean>
+
+    <!-- dao层扫描 -->
+    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+    <!-- Service层扫描 -->
+    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+    <!-- Controller层扫描 -->
+    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <!-- Component扫描 -->
+    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+    </context:component-scan>
+
+    <!-- 根据dao层实现修改配置,-mybatis代表使用mybatis,-hibernate代表使用hibernate -->
+    <import resource="applicationContext-dao-mybatis.xml"/>
+    <!-- 引入service配置 -->
+    <import resource="applicationContext-service.xml"/>
+    <!-- 引入mvc配置 -->
+    <import resource="applicationContext-mvc.xml"/>
+    <!-- 引入定时器配置 -->
+    <import resource="applicationContext-quartz.xml"/>
+    <!-- 初始化系统框架 -->
+    <bean class="com.rongji.dfish.framework.InitFramework" init-method="init" lazy-init="false"/>
+
+</beans>

@@ -3,42 +3,52 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
         <version>5.0.0.53-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dfish-framework-hibernate</artifactId>
-    <name>dfish-framework-hibernate</name>
+    <groupId>com.rongji.dfish</groupId>
+    <artifactId>dfish-demo</artifactId>
+    <version>5.0.0.52-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>dfish-demo</name>
     <url>http://dfish.rongji.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>com.rongji.dfish</groupId>
-            <artifactId>dfish-framework</artifactId>
+            <artifactId>dfish-engine</artifactId>
+            <type>war</type>
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Hibernate -->
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.0.12.Final</version>
+            <groupId>com.rongji.dfish</groupId>
+            <artifactId>dfish-framework-mybatis</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
-        <!-- hibernate升级到5.x所需包,可能要移到-hibernate工程 -->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.9.1</version>
+            <groupId>com.rongji.dfish</groupId>
+            <artifactId>dfish-ui-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
         </dependency>
 
         <!-- servlet -->
@@ -48,7 +58,12 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
