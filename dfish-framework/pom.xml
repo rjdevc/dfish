@@ -17,10 +17,12 @@
 	<dependency>
 	    <groupId>com.rongji.dfish</groupId>
 	    <artifactId>dfish-misc</artifactId>
+		<version>${project.version}</version>
 	</dependency>
   	<dependency>
 	    <groupId>com.rongji.dfish</groupId>
 	    <artifactId>dfish-ui-plugin</artifactId>
+		<version>${project.version}</version>
 	</dependency>
 
 	<!-- servlet -->

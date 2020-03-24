@@ -186,36 +186,6 @@
         <url>https://github.com/rjdevc/dfish.git</url>
     </scm>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.rongji.dfish</groupId>
-                <artifactId>dfish-base</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.rongji.dfish</groupId>
-                <artifactId>dfish-misc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.rongji.dfish</groupId>
-                <artifactId>dfish-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.rongji.dfish</groupId>
-                <artifactId>dfish-ui-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.rongji.dfish</groupId>
-                <artifactId>dfish-framework</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <modules>
         <module>dfish-base</module>
         <module>dfish-misc</module>
