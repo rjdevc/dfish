@@ -1467,7 +1467,7 @@ define.widget( 'upload/file', {
 			valid: function( b, v ) {
 				var b = this.valuebar, l = b.length, d, e;
 				for ( var i = 0; i < l; i ++ ) {
-					b[ i ].error && (e = Loc.form.upload_error);
+					b[ i ].error && (e = Loc.form.upload_invalid_file);
 					b[ i ].loading && (d = Loc.form.upload_loading);
 				}
 				return (e || d) && { name: this.x.name, wid: this.id, code: 'upload', text: e || d };
