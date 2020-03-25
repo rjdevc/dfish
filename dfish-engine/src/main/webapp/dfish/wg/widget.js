@@ -2198,7 +2198,7 @@ Scroll = define.widget( 'Scroll', {
 				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
 					(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
 					(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxHeight ? 'max-height:' + (+this.x.maxHeight + c) + 'px;' : '') + (this.x.minHeight ? 'min-height:' + (+this.x.minHeight + c) + 'px;' : '') +
-					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div class="f-oh" id=' + this.id + 'cont>' + (s || '') + '</div>' + _html_resize_sensor.call( this ) + '</div></div></div><div id=' +
+					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div id=' + this.id + 'cont>' + (s || '') + '</div>' + _html_resize_sensor.call( this ) + '</div></div></div><div id=' +
 					this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
 					this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
 			}
@@ -2473,7 +2473,8 @@ Section = define.widget( 'Section', {
 		showLoading: function( a ) {
 			if ( a === F ) {
 				this.removeElem( 'loading' );
-				this.exec( { type: 'Loading', hide: T } );
+				var u = (this.isDialogWidget && this.getContentView()) || _view( this );
+				_inst_hide( 'Loading', u );
 			} else {
 				if ( this.x.loading || this.layout ) {
 					this.exec( $.extend( this.x.loading || {}, { type: 'Loading' } ) );
@@ -2486,7 +2487,8 @@ Section = define.widget( 'Section', {
 			return this.render();
 		},
 		html_loading: function() {
-			return '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + Loc.loading + '</em></cite></div>';
+			var c = _dfopt.Loading || O, t = c.text || '';
+			return '<div class="w-view-loading" id=' + this.id + 'loading><i class=f-vi></i><div class="w-loading f-nv">' + $.image( c.icon || '%img%/loading-cir.gif' ) + ( t ? '<div class=_t>' + t + '</div>' : '') + '</div></div>';
 		}
 	}
 } ),
@@ -2605,7 +2607,7 @@ View = define.widget( 'View', {
 			var r = this.names[ a ], c = b && r && (typeof b === _STR ? this.find( b ) : b), f = [];
 			if ( r ) {
 				if ( r.length > 1 ) { // 表单如果移动了位置，view.names里面的顺序不会跟着变，所以当同名表单大于一个时，通过jquery来获取
-					for ( var i = 0, d = Q( 'input[name="' + r[ 0 ].input_name() + '"]', c ? (c.isWidget ? c.$() : c) : this.$() ), l = d.length, e; i < l; i ++ )
+					for ( var i = 0, d = Q( ':input[name="' + r[ 0 ].input_name() + '"]', c ? (c.isWidget ? c.$() : c) : this.$() ), l = d.length, e; i < l; i ++ )
 						(e = d[ i ].id) && (e = _getWidgetById( e )) && f.push( e );
 				} else {
 					r[ 0 ] && (!c || c.contains( r[ 0 ].$() )) && f.push( r[ 0 ] );
@@ -3041,7 +3043,7 @@ TimelineItem = define.widget( 'TimelineItem', {
 				(p.x.align === 'center' ? ' z-' + (this.x.align || 'right') : '');
 		},
 		html_icon: function() {
-			return '<div class=_i>' + (this.x.icon ? $.image( this.x.icon ) : '<div class="_cir f-inbl"></div>') + '<i class=f-vi></i></div>';
+			return '<div class=_i>' + (this.x.icon ? $.image( this.x.icon ) : '<div class="_cir f-nv"></div>') + '<i class=f-vi></i></div>';
 		},
 		html_nodes: function() {
 			return '<div class=_line></div>' + this.html_icon() + '<div class=_t>' + this.html_format() + '</div>';
@@ -3210,7 +3212,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 		if ( this.x.split ) {
 			var i = this.length;
 			while ( (--i) > 0 )
-				this.add( $.extend( { type: 'Split' }, this.x.split ), i );
+				this[ i ].type !== 'ButtonSplit' && this[ i - 1 ].type !== 'ButtonSplit' && this.add( $.extend( { type: 'Split' }, this.x.split ), i );
 		}
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		(!x.vAlign && p && p.x.vAlign) && this.defaults( { vAlign: p.x.vAlign } );
@@ -3678,7 +3680,7 @@ SubmitButton = define.widget( 'SubmitButton', {
 	},
 	Extend: Button,
 	Prototype: {
-		className: 'w-submit w-button',
+		className: 'w-button w-submitbutton',
 		dispose: function() {
 			if ( this.ownerView.submitButton === this )
 				delete this.ownerView.submitButton;
@@ -4115,6 +4117,8 @@ PageBar = define.widget( 'PageBar', {
 		x.sumPage && (x.sumPage = Math.ceil( x.sumPage ));
 		if ( this.face === 'normal' )
 			this.page_text = Loc.page_text;
+		else if ( this.face === 'mini' )
+			this.page_text = { first: '<span class=_s>|</span>&lt;', prev: '&lt;', next: '&gt;', last: '&gt;<span class=_s>|</span>' };
 		!x.currentPage && (x.currentPage = 1);
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		x.target && _regTarget.call( this, function() {
@@ -4266,7 +4270,7 @@ PageBar = define.widget( 'PageBar', {
 			for ( ; i <= s; i ++ ) {
 				n.push( { text: i, on: { click: 'this.getCommander().parentNode.parentNode.go(' + i + ')' }, status: this.x.currentPage == i ? 'disabled' : '' } );
 			}
-			a.exec( { type: 'Menu', nodes: n, snap: { target: a, position: 'v', indent: 1 }, line: true, memory: T, focusIndex: c } );
+			a.exec( { type: 'Menu', cls: 'w-pagebar-simple-menu', nodes: n, snap: { target: a, position: 'v', indent: 1 }, line: true, memory: T, focusIndex: c } );
 		},
 		html_simple: function() {
 			this.x.target && this.initByTarget();
@@ -4304,6 +4308,10 @@ FieldSet = define.widget( 'FieldSet', {
 					delete this.x.legend;
 				}
 				this.box = CheckBox.parseOption( this, { target: this.layout } );
+				this.box.addEvent( 'click', function() {
+					this.parentNode.addClass( 'z-checked', !!this.isChecked() );
+				} );
+				this.className += (this.box.isDisabled() ? ' z-ds' : '') + (this.box.isChecked() ? ' z-checked' : '');
 			}
 		},
 		html: function() {
@@ -4351,6 +4359,10 @@ Dialog = define.widget( 'Dialog', {
 			x.width = '*';
 		if ( x.fullScreen || (x.height && ! isNaN( x.height ) && x.height > $.height()) )
 			x.height = '*';
+		if ( x.node && x.node.type === 'View' && ! x.node.node && x.node.src ) {
+			//x.src = x.node.src;
+			//delete x.node;
+		}
 		p == N && (p = _docView);
 		Section.call( this, x, p, n == N ? -1 : n );
 		Dialog.all[ this.id ] = this;
@@ -4936,6 +4948,7 @@ Tip = define.widget( 'Tip', {
 		$.extendDeep( x, { prong: x.prong == N ? T : x.prong, autoHide: T, independent: T, snap: { target: p, position: 'tb,rl,lr,bt,rr,ll,bb,tt,cc' },
 			node: { type: 'Html', text: '<div class=w-tip-text><span class=f-va>' + this.html_format( x.text, x.format, x.escape ) + '</span><i class=f-vi></i></div>' + (x.closable !== F ? $.image('.f-i-close',{cls: 'w-tip-x', click:$.abbr + '.close(this)'}) : '') }
 		} );
+		x.face && x.face !== 'normal' && (this.className += ' z-face-' + x.face);
 		x.closable !== F && (this.className += ' z-x');
 		Dialog.apply( this, arguments );
 		! this.x.multiple && _inst_add( this );
@@ -4960,7 +4973,7 @@ Loading = define.widget( 'Loading', {
 	Const: function( x, p ) {
 		$.extend( x, { width: x.node ? 200 : -1 } );
 		Dialog.apply( this, arguments );
-		_inst_add( this, this.ownerView );
+		_inst_add( this, _view( this ) );
 	},
 	Extend: Dialog,
 	Default: { local: T },
@@ -4977,7 +4990,8 @@ Loading = define.widget( 'Loading', {
 			if ( this.x.node ) {
 				return Dialog.prototype.html_nodes.apply( this, arguments );
 			} else {
-				return '<cite class=_c>' + $.image( '%img%/loading-cir.gif' ) + ' <em class=_t>' + this.html_format( this.x.text || Loc.loading ) + '</em></cite><i class=f-vi></i>';
+				var t = this.x.text;
+				return $.image( this.x.icon || '%img%/loading-cir.gif' ) + (t ? '<div class=_t>' + this.html_format( t ) + '</div>' : '');
 			}
 		}
 	}
@@ -5166,8 +5180,8 @@ Menu = define.widget( 'Menu', {
 			if ( r.bottom > h )
 				m += r.bottom - h;
 			if ( m ) {
-				// realht 是按钮可展现区域的高度 / 22 = 上下两个翻页按钮高度 + menu的padding border高度
-				this.realht = g.offsetHeight - 22 - m;
+				// realht 是按钮可展现区域的高度 / 24 = 上下两个翻页按钮高度 + menu的padding border高度
+				this.realht = g.offsetHeight - 24 - m;
 				this.realht -= this.realht % b;
 				g.style.height = this.realht + 'px';
 				$.before( g, '<div id=' + this.id + 'up class="_ar" onclick=' + evw + '.scroll(-1)>' + $.arrow( 't2' ) + '<i class=f-vi></i></div>' );
@@ -5272,13 +5286,7 @@ Collapse = define.widget( 'Collapse', {
 			g = $.extend( { display: !!n[ i ].focus }, n[ i ].target );
 			b.push( $.extend( { type: 'CollapseButton', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
 			b.push( g );
-			//d == N && b[ i * 2 ].focus && (d = (i * 2));
 		}
-		/*// 单选模式下，至少有一个节点默认展开
-		if ( ! x.focusMultiple ) {
-			d == N && b[ 0 ] && (d = 0, b[ 0 ].focus = T);
-			d != N && (b[ d + 1 ].display = T);
-		}*/
 		y.nodes = b;
 		Vert.call( this, $.extend( y, x ), p );
 	},
@@ -5321,6 +5329,7 @@ CollapseButton = define.widget( 'CollapseButton', {
 			}
 		}
 	},
+	Default: { widthMinus: 2 },
 	Prototype: {
 		className: 'w-button w-collapse-button',
 		isToggleable: $.rt( T ),
@@ -5336,13 +5345,14 @@ CollapseButton = define.widget( 'CollapseButton', {
 Label = define.widget( 'Label', {
 	Const: function( x, p ) {
 		this._pad = x.space != N ? x.space : 5;
-		this.className += ' f-nv' + (x.vAlign ? '-' + x.vAlign : '') + ' z-type-' + p.type.toLowerCase();
+		this.className += ' z-type-' + p.type.toLowerCase();
 		var td = p.parentNode, w = td.x.labelWidth;
 		if ( w == N && td.col )
 			w = td.col.x.labelWidth;
 		w != N && x.width == N && (x.width = w);
 		this.defaults( { widthMinus: this._pad } );
 		W.apply( this, arguments );
+		x.vAlign && (this.className += ' z-va-' + x.vAlign);
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' )); 
 		if ( ie7 ) { // IE7下需要根据td高度来手动调整label高度
 			var td = p.closest( 'TD' );
@@ -5381,7 +5391,7 @@ Label = define.widget( 'Label', {
 		}
 	},
 	Prototype: {
-		className: 'w-label f-wdbr',
+		className: 'w-label f-nv f-wdbr',
 		setValidate: function( x ) {
 			if ( x && x.required ) {
 				this.$() && ! $.get( '.f-required', this.$() ) && $.prepend( this.$( 'lb' ), this.html_star() );
@@ -5532,7 +5542,7 @@ AbsForm = define.widget( 'AbsForm', {
 			this.trigger( 'resize' );
 		},
 		validTip: function( t ) {
-			return { type: 'Tip', text: t };
+			return { type: 'Tip', face: 'warn', text: t };
 		},
 		form_minus:  function() {
 			return (this.label ? this.label.outerWidth() : 0);
@@ -5686,8 +5696,7 @@ AbsForm = define.widget( 'AbsForm', {
 			return $.strEscape(this.x.value == N ? '' : '' + this.x.value);
 		},
 		input_prop_style: function() {
-			var h = this.innerHeight();
-			return h ?  ' style="height:' + h + 'px;line-height:' + (h + (br.ms ? 0 : 1)) + 'px"' : '';
+			return '';
 		},
 		input_prop: function() {
 			var t = this.attr( 'tip' ), v = this.input_prop_value();
@@ -5912,10 +5921,7 @@ Textarea = define.widget( 'Textarea', {
 		body: {
 			resize: function( e ) {
 				_superTrigger( this, AbsInput, e );
-				var h = this.innerHeight();
-				if ( h > 0 && this.$t() ) {
-					this.$t().style.height = h + 'px';
-				}
+				this.css( 'c', 'height', this.innerHeight() );
 			}
 		}
 	},
@@ -5926,12 +5932,15 @@ Textarea = define.widget( 'Textarea', {
 			return this.val().replace( /\r\n/g, '\n' ) != v.replace( /\r\n/g, '\n' );
 		},
 		input_prop_value: $.rt(),
-		input_prop_style: $.rt( '' ),
 		form_cls: function() {
 			return 'w-input z-ah f-nv';
 		},
 		html_input: function() {
 			return '<textarea' + this.input_prop() + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
+		},
+		html_nodes: function() {
+			var h = this.innerHeight();
+			return this.html_btn() + '<div class=_c id="' + this.id + 'c"' + (h ? ' style="height:' + h + 'px;"' : '') + '>' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -6086,7 +6095,7 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 		html_nodes: function() {
 			if ( this.targets ) {
 				for ( var i = 0, s = '', l = Math.max( this.length, this.targets.length ); i < l; i ++ )
-					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i === 0 ? ' z-firt' : '') + (i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)>' + (this[ i ] ? this[ i ].html() : '') + (this.targets[ i ] ? this.targets[ i ].html() : '') + '</div>';
+					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i === 0 ? ' z-firt' : '') + (i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)><i class=f-vi></i>' + (this[ i ] ? this[ i ].html() : '') + (this.targets[ i ] ? this.targets[ i ].html() : '') + '</div>';
 				return s;
 			} else
 				return AbsForm.prototype.html_nodes.call( this );
@@ -6101,7 +6110,7 @@ _checked_states = function( a ) {
 CheckBox = define.widget( 'CheckBox', {
 	Const: function( x, p ) {
 		if ( p && p.isBoxGroup ) {
-			this.defaults( { widthMinus: 6, width: p.x.targets ? 62 : -1 } );
+			this.defaults( { width: p.x.targets ? 62 : -1 } );
 			p.x.status && $.extend( x, { status: p.x.status } );
 		}
 		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p.isBoxGroup && p.x.value && x.value && $.idsAny( p.x.value, x.value )));
@@ -6159,7 +6168,7 @@ CheckBox = define.widget( 'CheckBox', {
 			}
 		}
 	},
-	Default: { width: -1, widthMinus: 1, heightMinus: 6, tip: T },
+	Default: { width: -1, heightMinus: 6, tip: T },
 	Prototype: {
 		ROOT_TYPE: 'CheckBoxGroup',
 		tagName: 'cite',
@@ -6215,7 +6224,7 @@ CheckBox = define.widget( 'CheckBox', {
 			return r;
 		},
 		isChecked: function() {
-			return this.$t().checked;
+			return this.$t() ? this.$t().checked : this._modchk;
 		},
 		isModified: function( a ) {
 			return this.isChecked() !== (a ? this._dft_modchk : this._modchk);
@@ -6682,9 +6691,9 @@ Calendar = define.widget( 'Calendar', {
 		},
 		// 年、月的浮动选择器
 		popYM: function( a, e ) {
-			var Y = a === 'y', M = a === 'm', d = this.date, h = 18, l = M ? 12 : 10, c = [], g = d.getMinutes(), self = this,
+			var Y = a === 'y', M = a === 'm', d = this.date, h = 20, l = M ? 12 : 10, c = [], g = d.getMinutes(), self = this,
 				b = Y ? d.getFullYear() : d.getMonth() + 1,
-				y = Y ? (b - 5) : 1,
+				y = Y ? (b - 4) : 1,
 				s = (M ? '' : '<div class="_b _scr">-</div>') + '<div class="_wr">',
 				htm = function() {
 					var d = e.type == 'CalendarNum' ? self._ps( e.val() ) : self.date, g = $.dateFormat( d, 'yyyy-mm-dd' ), f = Y ? 'yyyy' : 'yyyy-mm',
@@ -6697,7 +6706,7 @@ Calendar = define.widget( 'Calendar', {
 					return r;
 				};
 			s += htm() + '</div>' + ( M ? '' : '<div class="_b _scr">+</div>' );
-			var d = this.exec( { type: 'Dialog', ownproperty: T, width: 60, height: h * 12, cls: 'w-calendar-select', snap: { target: e, position: e.dropSnapType || 'cc' }, autoHide: T, node: { type: 'Html', text: s },
+			var d = this.exec( { type: 'Dialog', ownproperty: T, independent: T, width: 60, height: h * 12, cls: 'w-calendar-select', snap: { target: e, position: e.dropSnapType || 'cc' }, autoHide: T, node: { type: 'Html', text: s },
 					on: { mouseleave: function(){ this.close() }, close: function() { clearTimeout( t ); Q( d.$() ).off(); } }
 				} ),
 				r = Q( '._wr', d.$() ),
@@ -6922,7 +6931,7 @@ DatePicker = define.widget( 'DatePicker', {
 			r = r.join( ',' );
 		}
 		x.value = r;
-		!mbi && this.defaults( { width: 35 + x.format.length * 7 + (x.multiple ? 20 : 0) - (x.noButton ? 20 : 0) } );
+		!mbi && this.defaults( { width: 180 } );
 	},
 	Extend: Text,
 	Listener: {
@@ -7735,7 +7744,7 @@ DropBox = define.widget( 'DropBox', {
 			return '';
 		},
 		html_li: function( a, b ) {
-			return a ? (a.icon ? $.image( a.icon, { cls: 'w-dropbox-ico' } ) : '') + this.option_text( a ) + (!b ? '<i class=_box></i>' : '') : '';
+			return a ? (a.icon ? $.image( a.icon, { cls: 'w-dropbox-ico' } ) : '') + this.option_text( a ) + (!b ? '<i class=_box>\u2714</i>' : '') : '';
 		},
 		html_text: function() {
 			if ( this.loading ) {
@@ -9587,7 +9596,7 @@ Leaf = define.widget( 'Leaf', {
 				if ( this.box && ! this.isFolder() && this.nodeIndex === this.parentNode.length -1 ) {
 					this._triple();
 				}
-				this.textNode && this.fixTextNodeWidth();
+				this.formatNode && this.fixFormatNodeWidth();
 			},
 			mouseOver: {
 				occupy: T,
@@ -9644,14 +9653,14 @@ Leaf = define.widget( 'Leaf', {
 			return Button.prototype.init_badge.call( this );
 		},
 		scaleWidth: function( a, b ) {
-			if ( a == this.textNode && a.isReady ) {
+			if ( a == this.formatNode && a.isReady ) {
 				var w = this.offsetParent().innerWidth();
 				return w == N ? N : _proto.scaleWidth.call( this, a, b, w - a.$().offsetLeft );
 			}
 		},
-		fixTextNodeWidth: function() {
-			this.textNode.isReady = T;
-			_w_rsz_all.call( this.textNode );
+		fixFormatNodeWidth: function() {
+			this.formatNode.isReady = T;
+			_w_rsz_all.call( this.formatNode );
 		},
 		offsetParent: function() {
 			return this.rootNode;
@@ -9782,7 +9791,7 @@ Leaf = define.widget( 'Leaf', {
 				key && (t = $.strHighlight( t, key, h.matchlength, h.keyCls ));
 			}
 			if ( typeof t === _OBJ ) {
-				t = (this.textNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
+				t = (this.formatNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
 			} else
 				t = '<span class=w-leaf-s>' + t + '</span><i class=f-vi></i>';
 			return t;
@@ -9804,10 +9813,10 @@ Leaf = define.widget( 'Leaf', {
 			x.style && (s += x.style);
 			a == N  && (a = this.length);
 			var t = this.html_text();
-			return this.html_before() + '<dl class="' + this.className + ' z-level' + this.level + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.expanded ? ' z-expanded' : '') + (this.isEllipsis() && !this.textNode ? ' f-omit' : ' f-nobr') +
+			return this.html_before() + '<dl class="' + this.className + ' z-level' + this.level + (x.cls ? ' ' + x.cls : '') + (c ? ' z-line' : '') + (this.isFirst() ? ' z-first' : '') + (this.isLast() ? ' z-last' : '') + (this.isDisabled() ? ' z-ds' : '') + (this.isFolder() ? ' z-folder' : '') + (this.isFolder() && x.expanded ? ' z-expanded' : '') + (this.isEllipsis() && !this.formatNode ? ' f-omit' : ' f-nobr') +
 				'" id=' + this.id + this.prop_title() + _html_on.call( this ) + (x.id ? ' w-id="' + x.id + '"' : '') + ' style="' + s + '">' + this.html_prepend() +
 				'<dt class="w-leaf-a">' + e + (x.noToggle ? '' : '<b class=w-leaf-o id=' + this.id + 'o onclick=' + evw + '.toggle(event)><i class=f-vi></i>' + (this.isFolder() ? $.arrow( this.id + 'r', x.expanded ? 'b1' : 'r1' ) : '') + (c ? '<i class=_vl></i><i class=_hl></i>' : '') + '</b>') +
-				(this.box ? this.box.html() : '') + this.html_icon() + (this.textNode ? t : '<cite class=w-leaf-t id=' + this.id + 't>' + t + '</cite>') + '</dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
+				(this.box ? this.box.html() : '') + this.html_icon() + (this.formatNode ? t : '<cite class=w-leaf-t id=' + this.id + 't>' + t + '</cite>') + '</dt>' + this.html_append() + this.html_badge() + '</dl>' + this.html_after();
 		},
 		html: function() {
 			var f = this.rootNode._filter_leaves, b = !f, s = this.html_nodes();
@@ -9976,11 +9985,11 @@ TableLeaf = define.widget( 'TableLeaf', {
 		body: {
 			ready: function( e ) {
 				_superTrigger( this, Leaf, e );
-				this.textNode && this.fixTextNodeWidth();
+				this.formatNode && this.fixFormatNodeWidth();
 				this.x.expanded === F && this.toggle( F );
 			},
 			resize: function() {
-				this.textNode && _w_css.width.call( this.textNode );
+				this.formatNode && _w_css.width.call( this.formatNode );
 			},
 			mouseOver: N,
 			mouseOut: N
@@ -10012,7 +10021,7 @@ TableLeaf = define.widget( 'TableLeaf', {
 			return this.row.length || (this.x.src && !this.loaded) ? T : F;
 		},
 		fix_text_size: function() {
-			var t = this.textNode, a = $.bcr( this.$() ), b = $.bcr( t.$() ), c = b.left - a.left;
+			var t = this.formatNode, a = $.bcr( this.$() ), b = $.bcr( t.$() ), c = b.left - a.left;
 			if ( c > 0 ) {
 				t.attr( 'widthMinus', (t.attr( 'widthMinus' ) || 0) + c );
 				t.width( t.attr( 'width' ) || '*' );
@@ -10062,6 +10071,7 @@ TableToggle = define.widget( 'TableToggle', {
 		body: { click: N }
 	},
 	Prototype: {
+		className: 'w-toggle w-tabletoggle',
 		tr: function() {
 			return this.closest( 'TR' );
 		},
@@ -11315,7 +11325,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// @implement
 		prop_cls_scroll_overflow: function() {
-			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.type + '-bg' : '');
+			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.type.toLowerCase() + '-bg' : '');
 		},
 		fixScroll: function() {
 			if ( this.head ) {

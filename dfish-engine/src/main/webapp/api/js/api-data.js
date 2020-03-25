@@ -5465,8 +5465,9 @@ define( {
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
-      { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'node', type: 'Widget', remark: 'widget节点。' }
+      { name: 'icon', type: 'String', remark: '图标。' },
+      { name: 'node', type: 'Widget', remark: 'widget节点。' },
+      { name: 'text', type: 'String', remark: '显示文本。' }
     ],
     Event: [
       { name: 'close', remark: '关闭提示框后触发。' }
@@ -5505,7 +5506,7 @@ define( {
   	deprecate: 'yes,timeout,buttonCls,buttons,icon,title,.w-alert',
     Config: [
       { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。默认值为 true。' },
-      //{ name: 'multiple', type: 'Boolean', remark: '是否允许多个实例存在。' },
+      { name: 'face', type: 'String', remark: '样式效果。可选值：<b>normal</b>(默认值), <b>warn</b>(警告)' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }
     ],
     Event: [

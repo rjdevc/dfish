@@ -106,6 +106,8 @@ form : {
 	jigsaw_drag_right: '向右拖动滑块填充拼图',
 	jigsaw_required: '请完成滑块验证',
 	jigsaw_errorimg: '错误的图片格式',
+	upload_loading: '正在上传，请稍候..',
+	upload_invalid_file: '存在无效文件',
 	no_files: '<没有文件>'
 },
 

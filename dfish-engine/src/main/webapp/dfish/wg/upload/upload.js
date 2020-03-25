@@ -1384,8 +1384,9 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 				}, false );
 				ldr.loading = true;
 				ldr.xhr     = xhr;
-				xhr.open( 'post', this.formatStr( this.x.upload_url , null, ! /^\$\w+$/.test( this.x.upload_url ) ) );
-				xhr.send( d );
+				alert(ldr.id);
+				//xhr.open( 'post', this.formatStr( this.x.upload_url , null, ! /^\$\w+$/.test( this.x.upload_url ) ) );
+				//xhr.send( d );
 			}
 		}
 	}
@@ -1475,10 +1476,10 @@ FileUpload = define.widget( 'FileUpload', {
 			valid: function( b, v ) {
 				var b = this.valuebar, l = b.length, d, e;
 				for ( var i = 0; i < l; i ++ ) {
-					b[ i ].error && (e = Loc.form.upload_error);
 					b[ i ].loading && (d = Loc.form.upload_loading);
+					b[ i ].error && (e = Loc.form.upload_invalid_file);
 				}
-				return (e || d) && { name: this.x.name, wid: this.id, code: 'upload', text: e || d };
+				return (d || e) && { name: this.x.name, wid: this.id, code: 'upload', text: d || e };
 			}
 		},
 		append: function( a ) {
@@ -1551,7 +1552,12 @@ FileUploadButtonBar = define.widget( 'FileUploadButtonBar', {
 } ),
 
 ImageUploadButtonBar = define.widget( 'ImageUploadButtonBar', {
-	Extend: FileUploadButtonBar
+	Extend: FileUploadButtonBar,
+	Prototype: {
+		x_childtype: function( t ) {
+			return 'ImageUpload' + t;
+		}
+	}
 } ),
 
 // 附件列表
@@ -1623,7 +1629,7 @@ ImageUploadButton = define.widget( 'ImageUploadButton', {
 		FileUploadButton.apply( this, arguments );
 		var b = this.u.x.pub || false, w = b.width || 80, h = b.height || 80, t = this.x.style || '';
 		if ( w || h ) {
-			t += 'width:' + (w - 2) + 'px;height:' + (h - 2) + 'px;';
+			t += 'width:' + (w - (this.attr( 'widthMinus' ) || 0)) + 'px;height:' + (h - (this.attr( 'heightMinus' ) || 0)) + 'px;';
 			this.x.style = t;
 		}
 		this.u.x.dir === 'v' && $.classAdd( this.parentNode, 'f-left f-clear' );
@@ -1709,6 +1715,7 @@ ImageUploadUploadButton = define.widget( 'ImageUploadUploadButton', {
 		ImageUploadButton.apply( this, arguments );
 		this.fileID = this.id + 'u-' + uploadCount;
 	},
+	Default: { widthMinus: 2, heightMinus: 2 },
 	Extend: FileUploadUploadButton
 } ),
 
@@ -1883,7 +1890,7 @@ FileUploadValue = define.widget( 'FileUploadValue', {
 				else if ( $.br.ie7 )
 					tw = Math.min( pw, 200 );
 			}
-			this.cssText = 'min-width:' + nw + 'px;max-width:' + xw + 'px;' + (tw != null ? 'width:' + tw + 'px;' : '');
+			this.cssText = 'min-width:' + nw + 'px;max-width:' + (xw) + 'px;' + (tw != null ? 'width:' + (tw) + 'px;' : '');
 			this.x.file && this.addClass( 'z-loading' );
 			return Horz.prototype.html.call( this );
 		}

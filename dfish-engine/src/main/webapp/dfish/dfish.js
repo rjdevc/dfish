@@ -1134,8 +1134,8 @@ _snap = $.snap = function( a, b, c, d, e, f, u ) {
 	if ( /[1-4]/.test( s[ 0 ] ) ) { // 1-4是边角对齐 .
 		for ( var i = 0, o, p, m, n = 0; i < s.length; i ++ ) {
 			g = + s[ i ].charAt( 0 ), h = + s[ i ].charAt( 1 );
-			t.push( ( g === 1 || g === 2 ? c.top : c.bottom ) - ( h === 3 || h === 4 ? b : 0 ) + (f && (_snapIndent.v[ s[ i ] ] || 0) * f) );
-			l.push( ( g === 1 || g === 4 ? c.left : c.right ) - ( h === 2 || h === 3 ? a : 0 ) + (f && (_snapIndent.h[ s[ i ] ] || 0) * f) );
+			t.push( ( g === 1 || g === 2 ? c.top : c.bottom ) - ( h === 3 || h === 4 ? b : 0 ) );
+			l.push( ( g === 1 || g === 4 ? c.left : c.right ) - ( h === 2 || h === 3 ? a : 0 ) );
 			o = t[ i ] >= 0 && t[ i ] + b <= eh;
 			p = l[ i ] + a <= ew && l[ i ] >= 0;
 			if ( o && p ) {
@@ -1677,9 +1677,8 @@ Ajax = _createClass( {
 					if ( ! c || ! c._disposed ) {
 				        if ( r ) {
 				        	self.errorCode = l.status;
-				        	if ( l.status === 404 ) debugger;
-							if ( f !== F && (_ajax_httpmode( u ) || l.status) ) {
-								typeof f === _FUN && (f = _fnapply( f, c, '$ajax', [ self ] ));
+							if ( f !== F && (_ajax_httpmode( location.protocol ) || l.status) ) {
+								f = _fnapply( f, c, '$ajax', [ self ] );
 								if ( f !== F && r !== 'filter' ) {
 									var s = 'ajax ' + l.status + ': ' + a;
 									$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
@@ -2203,7 +2202,7 @@ _merge( $, {
 			if ( c.tip ) t += ' title="' + _strQuot( c.tip ) + '"';
 			s.push( t );
 		}
-		var r = '<span' + (s[ 0 ] || '') + '>';
+		var r = '';
 		if ( e ) {
 			r += '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>';
 		} else {
@@ -2219,7 +2218,7 @@ _merge( $, {
 				r += '>';
 			}
 		}
-		return r + '<i class=f-vi></i>' + ((b && b.append) || '') + '</span>';
+		return (s[ 0 ] ? '<span' + s[ 0 ] + '><i class=f-vi></i>' : '') + r + ((b && b.append) || '') + (s[ 0 ] ? '</span>' : '');
 	},
 	arrow: function( a, b ) {
 		var c = b || a;
