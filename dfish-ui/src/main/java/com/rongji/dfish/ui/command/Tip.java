@@ -14,9 +14,36 @@ public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip
 
     private static final long serialVersionUID = -3534531697064109684L;
 
+    public static final String FACE_NORMAL = "normal";
+    public static final String FACE_WARN = "warn";
+
+    private String face;
     private String text;
     private Boolean closable;
-//    private Boolean multiple;
+
+    /**
+     * 样式效果
+     *
+     * @return String
+     * @see #FACE_NORMAL
+     * @see #FACE_WARN
+     */
+    public String getFace() {
+        return face;
+    }
+
+    /**
+     * 样式效果
+     *
+     * @param face String
+     * @return 本身，这样可以继续设置其他属性
+     * @see #FACE_NORMAL
+     * @see #FACE_WARN
+     */
+    public Tip setFace(String face) {
+        this.face = face;
+        return this;
+    }
 
     /**
      * 构造函数
@@ -51,6 +78,7 @@ public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip
 
     /**
      * 是否显示关闭图标
+     *
      * @return Boolean
      */
     public Boolean getClosable() {
@@ -59,6 +87,7 @@ public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip
 
     /**
      * 是否显示关闭图标
+     *
      * @param closable
      * @return Boolean
      */

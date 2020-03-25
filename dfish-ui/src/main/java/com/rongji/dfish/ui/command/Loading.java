@@ -15,7 +15,7 @@ public class Loading extends AbstractPopup<Loading> implements Command<Loading>,
     private static final long serialVersionUID = 2229794408494180794L;
 
     private String text;
-//    private Boolean hide;
+    private String icon;
 
     /**
      * 构造函数
@@ -46,7 +46,7 @@ public class Loading extends AbstractPopup<Loading> implements Command<Loading>,
      * 显示加载的文本
      *
      * @param text String
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
     @Override
     public Loading setText(String text) {
@@ -54,6 +54,25 @@ public class Loading extends AbstractPopup<Loading> implements Command<Loading>,
         return this;
     }
 
+    /**
+     * 显示加载图标
+     *
+     * @return String
+     */
+    public String getIcon() {
+        return icon;
+    }
+
+    /**
+     * 显示加载图标
+     *
+     * @param icon String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Loading setIcon(String icon) {
+        this.icon = icon;
+        return this;
+    }
 //    /**
 //     * 关闭loading提示
 //     *
@@ -67,7 +86,7 @@ public class Loading extends AbstractPopup<Loading> implements Command<Loading>,
 //     * 关闭loading提示
 //     *
 //     * @param hide Boolean
-//     * @return this
+//     * @return 本身，这样可以继续设置其他属性
 //     */
 //    public Loading setHide(Boolean hide) {
 //        this.hide = hide;

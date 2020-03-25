@@ -34,12 +34,6 @@
             <version>5.0.12.Final</version>
         </dependency>
 
-        <!-- hibernate升级到5.x所需包,可能要移到-hibernate工程 -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.9.1</version>
-        </dependency>
 
         <!-- servlet -->
         <dependency>

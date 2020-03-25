@@ -49,6 +49,13 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <!-- Spring事务需要用到的包 -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.1</version>
+        </dependency>
+
         <!-- org.apache.log4j.Logger -->
         <dependency>
             <groupId>org.slf4j</groupId>
