@@ -4292,7 +4292,7 @@ PageBar = define.widget( 'PageBar', {
 					  { type: 'Button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.nextText || Loc.page_next || ''), cls: c + ' _next', status: d == s ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
 			if ( this.x.buttonCount != 0 ) {
 				var g = this.x.dropAlign;
-				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'Button', text: d + '/' + s, cls: c + ' _drop', escape: F, on: { click: 'this.rootNode.parentNode.drop(this)' } } );
+				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'Button', ownproperty: T, text: d + '/' + s, cls: c + ' _drop', escape: F, on: { click: 'this.rootNode.parentNode.drop(this)' } } );
 			}
 			this.groupbar = this.add( { type: 'ButtonBar', cls: 'w-pagebar-buttonbar f-nv f-groupbar', width: -1, nodes: b, space: -1 }, -1 );
 			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + d + '">' : '') + this.groupbar.html() + PageBar.prototype.html_info.call( this ) + '<i class=f-vi></i>';
