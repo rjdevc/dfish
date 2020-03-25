@@ -58,6 +58,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
     private String format;
     private String javaFormat;
     private Boolean multiple;
+    private Boolean noButton;
 
     /**
      * 构造函数
@@ -67,10 +68,11 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      * @param value Object
      */
     public DatePicker(String name, String label, Object value) {
-        super(name,label,value);
+        super(name, label, value);
         calFormat(FORMAT_DATE);
         // 默认日期
     }
+
     /**
      * 构造函数
      *
@@ -79,7 +81,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      * @param value Object
      */
     public DatePicker(String name, Label label, Object value) {
-        super(name,label,value);
+        super(name, label, value);
         calFormat(FORMAT_DATE);
         // 默认日期
     }
@@ -114,7 +116,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      * 设置格式。该格式为JS的格式。如 yyyy-mm-dd hh:ii:ss
      *
      * @param format String
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      * @see #FORMAT_DATE_TIME_FULL
      */
     public DatePicker setFormat(String format) {
@@ -135,10 +137,30 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      * 是否多选模式
      *
      * @param multiple Boolean
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
     public DatePicker setMultiple(Boolean multiple) {
         this.multiple = multiple;
+        return this;
+    }
+
+    /**
+     * 设置为true，不显示按钮
+     *
+     * @return Boolean
+     */
+    public Boolean getNoButton() {
+        return noButton;
+    }
+
+    /**
+     * 设置为true，不显示按钮
+     *
+     * @param noButton Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public DatePicker setNoButton(Boolean noButton) {
+        this.noButton = noButton;
         return this;
     }
 
@@ -162,6 +184,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
 
     /**
      * 以文本方式表示
+     *
      * @param iter
      * @return
      */
@@ -190,6 +213,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
 
     /**
      * 以文本方式表示
+     *
      * @param iter
      * @return
      */
