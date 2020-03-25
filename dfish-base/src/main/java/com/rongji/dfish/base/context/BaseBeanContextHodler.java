@@ -1,5 +1,6 @@
 package com.rongji.dfish.base.context;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
  */
 public class BaseBeanContextHodler implements BeanContextHolder {
     private String scope;
-    private Map<Class, Object> contextByClass = new HashMap<>();
+    private Map<Class, Object> contextByClass = Collections.synchronizedMap(new HashMap<>());
     private Map<String, Object> context = new HashMap<>();
 
     /**
@@ -25,6 +26,7 @@ public class BaseBeanContextHodler implements BeanContextHolder {
     public <T> T get(Class<T> clz) {
         T obj = (T) contextByClass.get(clz);
         if (obj == null) {
+
             for (Object o : contextByClass.values()) {
                 if (clz.isAssignableFrom(o.getClass())) {
                     obj = (T) o;
