@@ -2202,7 +2202,7 @@ _merge( $, {
 			if ( c.tip ) t += ' title="' + _strQuot( c.tip ) + '"';
 			s.push( t );
 		}
-		var r = '<span' + (s[ 0 ] || '') + '><i class=f-vi></i>';
+		var r =  '<span' + (s[ 0 ] || '') + '><i class=f-vi></i>';
 		if ( e ) {
 			r += '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>';
 		} else {
