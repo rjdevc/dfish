@@ -4114,12 +4114,13 @@ PageBar = define.widget( 'PageBar', {
 		this.className += ' z-face-' + this.face;
 		x.transparent && (this.className += ' z-trans');
 		W.apply( this, arguments );
+		!x.currentPage && (x.currentPage = 1);
+		x.currentPage && (x.currentPage = Math.ceil( x.currentPage ));
 		x.sumPage && (x.sumPage = Math.ceil( x.sumPage ));
-		if ( this.face === 'normal' )
+		if ( this.face === 'normal' || this.face === 'none' )
 			this.page_text = Loc.page_text;
 		else if ( this.face === 'mini' )
 			this.page_text = { first: '<span class=_s>|</span>&lt;', prev: '&lt;', next: '&gt;', last: '&gt;<span class=_s>|</span>' };
-		!x.currentPage && (x.currentPage = 1);
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		x.target && _regTarget.call( this, function() {
 			var a = this.ownerView.find( x.target );
@@ -4263,6 +4264,9 @@ PageBar = define.widget( 'PageBar', {
 			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + (c || 1) + '">' : '') + s + this.html_info() + '<i class=f-vi></i>';
 		},
 		html_mini: function() {
+			return this.html_normal();
+		},
+		html_none: function() {
 			return this.html_normal();
 		},
 		drop: function( a ) {
