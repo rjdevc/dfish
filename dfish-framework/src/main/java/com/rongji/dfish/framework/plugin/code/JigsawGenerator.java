@@ -354,6 +354,18 @@ public class JigsawGenerator {
      * @return boolean 是否验证通过
      */
     public boolean checkJigsawOffset(HttpServletRequest request, Number offset) {
+        return checkJigsawOffset(request, offset, false);
+    }
+
+    /**
+     * 校验拼图是否正确
+     *
+     * @param request 请求
+     * @param offset 偏移量
+     * @param retainCaptcha 保留验证码(一般情况是组件的验证使用)
+     * @return boolean 是否验证通过
+     */
+    public boolean checkJigsawOffset(HttpServletRequest request, Number offset, boolean retainCaptcha) {
         if (offset == null) {
             return false;
         }
@@ -367,8 +379,9 @@ public class JigsawGenerator {
             // 匹配成功,清理错误计数数据
             session.removeAttribute(KEY_CAPTCHA_COUNT);
             session.removeAttribute(KEY_CAPTCHA_LOCK);
-        } else {
-            // 验证不通过,需要将验证码清理,防止暴力破解
+        }
+        if (!match || !retainCaptcha) {
+            // 验证不通过,或不保留验证码,需要将验证码清理,防止暴力破解
             request.getSession().removeAttribute(JigsawGenerator.KEY_CAPTCHA);
         }
         return match;

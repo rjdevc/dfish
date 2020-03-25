@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.code.controller;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
@@ -55,7 +56,14 @@ public class JigsawController extends BaseActionController {
     @RequestMapping("/auth")
     @ResponseBody
     public Object auth(HttpServletRequest request) {
-        boolean result = getJigsawGenerator().checkJigsawOffset(request, request.getParameter("offset"));
+        Number offset = null;
+        String offsetStr = request.getParameter("offset");
+        try {
+            offset = Double.parseDouble(offsetStr);
+        } catch (Exception e) {
+            LogUtil.error("", e);
+        }
+        boolean result = getJigsawGenerator().checkJigsawOffset(request, offset, true);
         return new JsonResponse<>(new JigsawAuthResult(result));
     }
 
