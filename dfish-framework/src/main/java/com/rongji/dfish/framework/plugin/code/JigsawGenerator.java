@@ -359,14 +359,17 @@ public class JigsawGenerator {
         }
         double customOffset = offset.doubleValue() * (bigWidth - smallSize) / bigWidth;
         HttpSession session = request.getSession();
+        // KEY_CAPTCHA,需要二次验证
         Integer realOffset = (Integer) session.getAttribute(KEY_CAPTCHA);
         // 小于误差范围内都是校验成功
         boolean match = realOffset != null && Math.abs((customOffset - realOffset) / realOffset) <= errorRange;
         if (match) {
-            // 匹配成功,清理数据
+            // 匹配成功,清理错误计数数据
             session.removeAttribute(KEY_CAPTCHA_COUNT);
             session.removeAttribute(KEY_CAPTCHA_LOCK);
-            // KEY_CHECKCODE数据不能清理,需要二次验证
+        } else {
+            // 验证不通过,需要将验证码清理,防止暴力破解
+            request.getSession().removeAttribute(JigsawGenerator.KEY_CAPTCHA);
         }
         return match;
     }

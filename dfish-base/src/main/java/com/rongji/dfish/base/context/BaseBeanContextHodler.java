@@ -11,7 +11,7 @@ import java.util.Map;
 public class BaseBeanContextHodler implements BeanContextHolder {
     private String scope;
     private Map<Class, Object> contextByClass = Collections.synchronizedMap(new HashMap<>());
-    private Map<String, Object> context = new HashMap<>();
+    private Map<String, Object> context = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * 构造函数
@@ -26,7 +26,6 @@ public class BaseBeanContextHodler implements BeanContextHolder {
     public <T> T get(Class<T> clz) {
         T obj = (T) contextByClass.get(clz);
         if (obj == null) {
-
             for (Object o : contextByClass.values()) {
                 if (clz.isAssignableFrom(o.getClass())) {
                     obj = (T) o;
