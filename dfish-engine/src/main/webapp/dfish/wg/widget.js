@@ -3275,6 +3275,9 @@ ButtonBar = define.widget( 'ButtonBar', {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isLocked() ) return this[ i ];
 		},
+		getTabPosition: function() {
+			return 'top';
+		},
 		fixLine: function() {
 			if ( this.$( 'vi' ) ) Q( this.$( 'cont' ) || this.$() ).prepend( this.$( 'vi' ) );
 			Q( this.$() ).append( Q( '.w-' + this.type.toLowerCase() + '-line', this.$() ) );
@@ -3323,7 +3326,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
 			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.br === T ? '' : this.html_vi(), v = this.attr( 'vAlign' );
-			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class=w-' + this.type.toLowerCase() + '-line></div>';
+			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class="w-' + this.type.toLowerCase() + '-line z-position-' + this.getTabPosition() + '"></div>';
 		}
 	}
 } ),
@@ -3852,6 +3855,9 @@ Tabs = define.widget( 'Tabs', {
 		},
 		getTabPositionName: function( s ) {
 			return (s && (_tab_position_name[ s ] || s)) || 'top';
+		},
+		getTabPosition: function() {
+			return this.getTabPositionName( this.x.position );
 		}
 	}
 } ),
@@ -3863,6 +3869,9 @@ TabBar = define.widget( 'TabBar', {
 		x_childtype: function( t ) {
 			return t === 'Split' ? 'ButtonSplit' : (t || 'Tab');
 		},
+		getTabPosition: function() {
+			return this.parentNode.parentNode.getTabPosition();
+		}
 	}
 } ),
 /* `tab` */

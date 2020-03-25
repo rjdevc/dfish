@@ -586,10 +586,11 @@
 .w-buttonbar.z-dirh.z-br,.w-tabbar.z-dirh.z-br{white-space:normal;word-break:break-all}
 .w-buttonbar.z-dirv .w-button,.w-tabbar.z-dirv .w-tab{display:block}
 .w-buttonbar.z-autosize,.w-tabbar.z-autosize{overflow:visible}
-.w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;right:0;left:0;bottom:0;height:1px;background:#ddd}
-.w-tabs.z-position-left .w-tabbar-line{top:0;left:auto;width:1px;height:auto}
-.w-tabs.z-position-right  .w-tabbar-line{top:0;right:auto;width:1px;height:auto}
-.w-tabs.z-position-bottom .w-tabbar-line{bottom:auto;top:0}
+.w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;height:1px;background:#ddd}
+.w-buttonbar-line.z-position-top,.w-tabbar-line.z-position-top{right:0;left:0;bottom:0}
+.w-buttonbar-line.z-position-bottom,.w-tabbar-line.z-position-bottom{right:0;left:0;top:0}
+.w-buttonbar-line.z-position-left,.w-tabbar-line.z-position-left{top:0;bottom:0;right:0}
+.w-buttonbar-line.z-position-right,.w-tabbar-line.z-position-right{top:0;bottom:0;left:0}
 
 /*! button
  *	c: content, i: icon, t: text, m: more, x: close
