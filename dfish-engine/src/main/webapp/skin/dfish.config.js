@@ -31,7 +31,7 @@ dfish.config({
         'Dialog.dlg-picker': {preload: 'g/picker'},
         'Dialog.dlg-none': {preload: 'g/none'},
 
-        'Tree': {scroll: true, ellipsis: true},
+        'Tree': {ellipsis: true},
         'Leaf': {tip: true, style: 'padding-right:10px;', widthMinus: 10},
         'Blank': {width: '*', height: '*'},
 
@@ -41,22 +41,23 @@ dfish.config({
         'ButtonBar.face-text': {space: 0},
         'Button': {tip: true, widthMinus: 2, heightMinus: 2},
         'SubmitButton': {tip: true, widthMinus: 2, heightMinus: 2},
-        'Tabs': {pub: {height: 40}},
-        'TabBar': {widthMinus: 20},
-        'TabBar.z-position-left': {widthMinus: 0, heightMinus: 20},
-        'TabBar.z-position-right': {widthMinus: 0, heightMinus: 20},
+        // 'Tabs': {pub: {height: 40}},
+        // 'TabBar': {widthMinus: 20},
+        // 'TabBar.z-position-left': {widthMinus: 0, heightMinus: 20},
+        // 'TabBar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        'ButtonBar.w-tabbar': {space: 0, widthMinus: 20},
-        'ButtonBar.w-tabbar.z-position-left': {widthMinus: 0, heightMinus: 20},
-        'ButtonBar.w-tabbar.z-position-right': {widthMinus: 0, heightMinus: 20},
+        // 'ButtonBar.w-tabbar': {space: 0, widthMinus: 20},
+        // 'ButtonBar.w-tabbar.z-position-left': {widthMinus: 0, heightMinus: 20},
+        // 'ButtonBar.w-tabbar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        'Table': {scroll: true, br: false, pub: {focusable: true}, face: "cell"},
+        'Table': {br: false, pub: {focusable: true}, face: "cell"},
         'Column': {tip: true},
-        'PageBar.z-normal': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
-        'PageBar.z-mini': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
-        'PageBar.z-simple': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
+        'PageBar': {align: 'right', buttonCount: 5, widthMinus: 40},
+        // 'PageBar.z-normal': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
+        // 'PageBar.z-mini': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
+        // 'PageBar.z-simple': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
 
-        'Form': {scroll: true, pub: {colSpan: -1}},
+        'Form': {pub: {colSpan: -1}},
         'Form.x-form1': {pub: {colSpan: -1}},
         'Form.x-form2': {pub: {colSpan: 6}},
         'Form.x-form3': {pub: {colSpan: 4}},
@@ -65,8 +66,8 @@ dfish.config({
         'Label': {width: 120},
         'Textarea': {height: 100},
         'DatePicker': {format: 'yyyy-mm-dd'},
-        'Spinner': {step: 10, decimal: 0, validate: {minValue: 1, maxValue: 99999999}},
-        'Combo': {keepShow: true},
+        'Spinner': {step: 10, decimal: 0, validate: {minValue: 1, maxValue: 9999999999999999}},
+        // 'Combo': {keepShow: true},
         'Slider': {tip: true},
         'Jigsaw': {
             img: {type: 'JigsawImg', template: 'jigsaw/img'},
@@ -93,28 +94,28 @@ dfish.config({
             uploadButtons: [{type: 'UploadButton', text: '+'}]
         },
 
-        'Toggle': {
-            height: 40,
-            icon: '.i-toggle-icon',
-            expandedIcon: '.i-toggle-expanded',
-            cls: 'bd-split bd-onlybottom',
-            heightMinus: 1
-        },
-        'Toggle.z-hr': {
-            cls: null,
-            heightMinus: 0
-        },
-        'TableToggle': {
-            height: 40,
-            icon: '.i-toggle-icon',
-            expandedIcon: '.i-toggle-expanded',
-            cls: 'bd-split bd-onlybottom',
-            heightMinus: 1
-        },
-        'TableToggle.z-hr': {
-            cls: null,
-            heightMinus: 0
-        }
+        // 'Toggle': {
+        //     height: 40,
+        //     icon: '.i-toggle-icon',
+        //     expandedIcon: '.i-toggle-expanded',
+        //     cls: 'bd-split bd-onlybottom',
+        //     heightMinus: 1
+        // },
+        // 'Toggle.z-hr': {
+        //     cls: null,
+        //     heightMinus: 0
+        // },
+        // 'TableToggle': {
+        //     height: 40,
+        //     icon: '.i-toggle-icon',
+        //     expandedIcon: '.i-toggle-expanded',
+        //     cls: 'bd-split bd-onlybottom',
+        //     heightMinus: 1
+        // },
+        // 'TableToggle.z-hr': {
+        //     cls: null,
+        //     heightMinus: 0
+        // }
     },
     // 自定义widget
     alias: {

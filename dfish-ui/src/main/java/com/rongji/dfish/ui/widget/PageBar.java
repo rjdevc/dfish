@@ -14,6 +14,24 @@ import java.util.List;
 public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBar> {
 
     private static final long serialVersionUID = -7425582244642151536L;
+
+    /**
+     * 小按钮风格的翻页工具条。
+     */
+    public static final String FACE_MINI = "mini";
+    /**
+     * 文本风格的翻页工具条。
+     */
+    public static final String FACE_TEXT = "text";
+    /**
+     * 组合按钮风格的翻页工具条。
+     */
+    public static final String FACE_BUTTON_GROUP = "buttonGroup";
+    /**
+     * 无边框风格的翻页工具条。
+     */
+    public static final String FACE_BUTTON_NONE = "none";
+
 	/**
 	 * 显示皮肤
 	 */
@@ -78,19 +96,6 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
     private List<Button> setting;
     private String dropAlign;
     private Boolean buttonSumPage;
-
-    /**
-     * page/mini 小按钮风格的翻页工具条。
-     */
-    public static final String FACE_MINI = "mini";
-    /**
-     * page/text 文本风格的翻页工具条。
-     */
-    public static final String FACE_TEXT = "text";
-    /**
-     * page/buttongroup 组合按钮风格的翻页工具条。
-     */
-    public static final String FACE_BUTTON_GROUP = "buttonGroup";
 
     /**
      * 构造函数

@@ -78,7 +78,7 @@ define.template({
                                 {
                                     type: 'Frame',
                                     height: '*',
-                                    style: 'background:#e9e9e9;',
+                                    // style: 'background:#e9e9e9;',
                                     // 多个子节点
                                     nodes: [
                                         {type: 'Html', id: 'frame_html1', text: '这是第1块内容(Frame下的组件一般需要id)'},
