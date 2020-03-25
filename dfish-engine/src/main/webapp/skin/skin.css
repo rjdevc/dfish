@@ -107,23 +107,6 @@ i {
 /**↑组件状态↑**/
 
 /**↓表格↓**/
-.w-table .w-thead {
-    height: 40px;
-    background-color: #96cee9;
-}
-
-.w-table .w-tbody .w-tr {
-    height: 40px;
-}
-
-.w-table .w-tbody .w-tr.z-hv {
-    background-color: #d5ecff;
-}
-
-.w-table .w-tbody .w-tr.z-on {
-    background-color: #bce0ff;
-}
-
 .w-table.z-empty .w-table-bg, .w-album.z-empty, .w-tree.z-empty {
     background: url("./img/nodata_160.png") no-repeat center;
     min-height: 160px;
@@ -137,197 +120,28 @@ i {
     border-right: 1px solid #e9e9e9;
 }
 
-/*.w-table .w-tr td.z-first {*/
-/*    padding-left: 10px;*/
-/*}*/
-
-/*.w-table .w-tr td.z-last {*/
-/*    padding-right: 10px;*/
-/*}*/
-.w-form .w-tbody .w-tr.z-hv {
-    background-color: transparent;
-}
-
-.w-form .w-tbody .w-tr.z-on {
-    background-color: transparent;
-}
-
 /**↑表格↑**/
-
-/**↓分页栏↓**/
-.w-pagebar.z-face-normal ._o {
-    cursor: not-allowed;
-    height: 32px;
-    line-height: 32px;
-    padding: 0 10px;
-    margin-right: 0;
-    border-width: 1px 1px 1px 0;
-    border-style: solid;
-    border-color: #ddd;
-    color: #999;
-    font-size: 13px;
-}
-
-.z-nofirstlast ._o._prev {
-    border-left-width: 1px;
-}
-
-.w-pagebar.z-face-normal ._o._num {
-    line-height: 32px;
-}
-
-.w-pagebar.z-face-normal ._o._first {
-    border-left-width: 1px;
-}
-
-.w-pagebar.z-face-normal ._o.z-us {
-    cursor: pointer;
-    color: #333;
-}
-
-.w-pagebar.z-face-normal ._o.z-us.z-hv {
-    border-color: #1e92df;
-    color: #fff;
-    background: #1e92df;
-}
-
-.w-pagebar.z-face-normal ._o._cur {
-    cursor: not-allowed;
-    color: #1e92df;
-}
-
-.w-pagebar.z-face-normal ._jump, .w-pagebar.z-face-normal ._jbtn {
-    height: 32px;
-}
-
-.w-pagebar.z-face-normal ._jump.z-on {
-    border-color: #19a3fb;
-}
-
-.w-pagebar.z-face-normal .w-buttonbar .w-button._jbtn.z-hv, .w-pagebar.z-face-normal .w-buttonbar .w-button._jbtn.z-on {
-    background-color: #19a3fb;
-    color: #fff;
-}
-
-/**↑分页栏↑**/
 
 /**↓树节点↓**/
 .w-leaf-i {
     min-width: 0;
 }
 
-/*d5ecff  bce0ff*/
-.w-leaf.z-hv, .w-leaf.z-hv .w-leaf-t {
-    background-color: #d5ecff;
-}
-
-.w-leaf.z-on, .w-leaf.z-on .w-leaf-t {
-    background-color: #bce0ff;
-}
 
 /**↑树节点↑**/
 
 /**↓按钮↓**/
 
 /* 按钮默认样式 */
-.w-buttonbar .w-button,
-.w-button.x-btn {
+.w-button {
     font-size: 14px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    color: #333;
-    border-radius: 4px;
-}
-
-.w-buttonbar .w-button ._t,
-.w-button.x-btn ._t {
-    width: auto;
-}
-
-/*按钮样式默认和文字左右间隔15px  */
-.w-buttonbar .w-button ._t, .w-buttonbar .w-button ._i,
-.w-button.x-btn ._t, .w-button.x-btn ._i {
-    padding-right: 15px;
-}
-
-.w-buttonbar .w-button ._c,
-.w-button.x-btn ._c {
-    padding-left: 15px;
-}
-
-/* 按钮-禁用 */
-.w-buttonbar .w-button.z-ds,
-.w-button.x-btn.z-ds {
-    cursor: default;
-    background-color: #eee;
-}
-
-.w-buttonbar .w-button.z-ds ._m .f-arw,
-.w-button.x-btn.z-ds ._m .f-arw {
-    border-top-color: #aaa;
-}
-
-/* 按钮-鼠标经过 */
-.w-buttonbar .w-button.z-normal.z-hv, .w-buttonbar .w-button.z-more.z-hv, .w-buttonbar .w-button.z-combo ._c.z-hv, .w-buttonbar .w-button.z-combo ._m.z-hv,
-.w-button.x-btn.z-normal.z-hv, .w-button.x-btn.z-more.z-hv, .w-button.x-btn.z-combo ._c.z-hv, .w-button.x-btn.z-combo ._m.z-hv {
-    background-color: #f8f8f8;
-}
-
-/* 按钮-鼠标点击 */
-.w-buttonbar .w-button.z-normal.z-dn, .w-buttonbar .w-button.z-more.z-dn, .w-buttonbar .w-button.z-combo ._c.z-dn, .w-buttonbar .w-button.z-combo ._m.z-dn, .w-buttonbar .w-button.z-more.z-snap, .w-buttonbar .w-button.z-combo.z-snap ._m,
-.w-button.x-btn.z-normal.z-dn, .w-button.x-btn.z-more.z-dn, .w-button.x-btn.z-combo ._c.z-dn, .w-button.x-btn.z-combo ._m.z-dn, .w-button.x-btn.z-more.z-snap, .w-button.x-btn.z-combo.z-snap ._m {
-    background-color: #eaeaea;
-}
-
-/* 选项按钮 */
-.w-buttonbar .w-button.z-combo ._m,
-.w-button.x-btn.z-combo ._m {
-    border-left: 1px solid #ccc;
-}
-
-/* 主按钮 */
-.w-buttonbar .w-button.w-submit,
-.w-button.x-btn.w-submit {
-    background-color: #1e92df;
-    border-color: #1e92df;
-    color: #fff;
 }
 
 /* 主按钮-禁用 */
-.w-buttonbar .w-button.w-submit.z-ds,
-.w-button.x-btn.w-submit.z-ds {
+.w-submitbutton.z-ds {
     background-color: #def0fe;
     border-color: #def0fe;
     color: #999;
-}
-
-/* 主按钮-鼠标经过 */
-.w-buttonbar .w-button.z-normal.w-submit.z-hv, .w-buttonbar .w-button.z-more.w-submit.z-hv, .w-buttonbar .w-button.z-combo.w-submit ._c.z-hv, .w-buttonbar .w-button.z-combo.w-submit ._m.z-hv,
-.w-button.x-btn.z-normal.w-submit.z-hv, .w-button.x-btn.z-more.w-submit.z-hv, .w-button.x-btn.z-combo.w-submit ._c.z-hv, .w-button.x-btn.z-combo.w-submit ._m.z-hv {
-    background: #19a3fb;
-}
-
-/* 主按钮-鼠标点击 */
-.w-buttonbar .w-button.z-normal.w-submit.z-dn, .w-buttonbar .w-button.z-more.w-submit.z-dn, .w-buttonbar .w-button.z-combo.w-submit ._c.z-dn, .w-buttonbar .w-button.z-combo.w-submit ._m.z-dn, .w-buttonbar .w-button.z-more.w-submit.z-snap, .w-buttonbar .w-button.z-combo.w-submit.z-snap ._m,
-.w-button.x-btn.z-normal.w-submit.z-dn, .w-button.x-btn.z-more.w-submit.z-dn, .w-button.x-btn.z-combo.w-submit ._c.z-dn, .w-button.x-btn.z-combo.w-submit ._m.z-dn, .w-button.x-btn.z-more.w-submit.z-snap, .w-button.x-btn.z-combo.w-submit.z-snap ._m {
-    background: #1989e0;
-}
-
-.w-buttonbar.face-text .w-button ._t, .w-buttonbar.face-text .w-button ._i, .w-buttonbar.face-text .w-button ._t, .w-buttonbar.face-text .w-button ._i {
-    padding-right: 5px;
-}
-
-.w-buttonbar.face-text .w-button ._c, .w-buttonbar.face-text .w-button ._c {
-    padding-left: 5px;
-}
-
-.w-buttonbar.face-text .w-button.z-normal, .w-buttonbar.face-text .w-button.z-normal {
-    border-color: transparent;
-    background-color: transparent;
-}
-
-.w-buttonbar.face-text .w-button.z-normal.z-hv, .w-buttonbar.face-text .w-button.z-normal.z-on, .w-buttonbar.face-text .w-button.z-normal.z-dn, .w-buttonbar.face-text .w-button.z-normal.z-ds {
-    background-color: transparent;
 }
 
 .w-buttonbar.x-breadcrumb .w-button.z-normal {
@@ -467,7 +281,7 @@ i {
 }
 
 .w-dialog .dlg-head {
-    background-color: #009bdb;
+    background-color: #2498ff;
 }
 
 .w-dialog .dlg-head .dlg-head-title {
@@ -506,11 +320,11 @@ i {
 }
 
 .w-dialog .dlg-foot {
-    background-color: #edf0f2;
+    background-color: #f8f8f8;
 }
 
 .w-dialog .w-dialog-loadinghead {
-    background: #009bdb
+    background: #2498ff
 }
 
 .w-dialog .w-dialog-loadinghead ._x {
