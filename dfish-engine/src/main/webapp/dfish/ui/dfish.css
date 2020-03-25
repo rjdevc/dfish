@@ -587,10 +587,10 @@
 .w-buttonbar.z-dirv .w-button,.w-tabbar.z-dirv .w-tab{display:block}
 .w-buttonbar.z-autosize,.w-tabbar.z-autosize{overflow:visible}
 .w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;height:1px;background:#ddd}
-.w-buttonbar-line.z-position-top,.w-tabbar-line.z-position-top{right:0;left:0;bottom:0}
-.w-buttonbar-line.z-position-bottom,.w-tabbar-line.z-position-bottom{right:0;left:0;top:0}
-.w-buttonbar-line.z-position-left,.w-tabbar-line.z-position-left{top:0;bottom:0;right:0}
-.w-buttonbar-line.z-position-right,.w-tabbar-line.z-position-right{top:0;bottom:0;left:0}
+.w-buttonbar-line,.w-tabbar-line.z-position-top{right:0;left:0;bottom:0}
+.w-tabbar-line.z-position-bottom{right:0;left:0;top:0}
+.w-tabbar-line.z-position-left{top:0;bottom:0;right:0}
+.w-tabbar-line.z-position-right{top:0;bottom:0;left:0}
 
 /*! button
  *	c: content, i: icon, t: text, m: more, x: close
@@ -639,13 +639,14 @@
 
 .w-collapse-button{height:34px;text-align:left;background:#fafafa;border:1px solid #d9d9d9;margin-bottom:10px}
 .w-collapse-button.z-hv{background:#f5faff}
-.w-collapse-button.z-expanded{color:#2498ff}
+.w-collapse-button.z-expanded{margin-bottom:0;color:#2498ff}
 .w-collapse-button.z-expanded  .f-arw{border-top-color:#2498ff}
 /*.w-collapse-button.z-expanded{border-bottom:1px solid #d9d9d9}
 .w-collapse-button.z-expanded-after{border-top:1px solid #d9d9d9}
 .w-collapse-button.z-last{margin-bottom:-1px}
 .w-collapse-button.z-last.z-expanded{margin-bottom:0}*/
 .w-collapse-button ._clp_arw{float:left;width:16px;height:100%;text-align:left}
+.w-collapse-cont{padding:20px;border:1px solid #ddd;border-top:0;margin-bottom:10px}
 
 .w-badge{position:absolute;top:2px;right:2px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
 .w-badge.z-t{padding:1px 3px;width:auto;height:12px}

@@ -3276,7 +3276,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 				if ( this[ i ].isLocked() ) return this[ i ];
 		},
 		getTabPosition: function() {
-			return 'top';
+			return '';
 		},
 		fixLine: function() {
 			if ( this.$( 'vi' ) ) Q( this.$( 'cont' ) || this.$() ).prepend( this.$( 'vi' ) );
@@ -3325,8 +3325,8 @@ ButtonBar = define.widget( 'ButtonBar', {
 			}
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
-			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.br === T ? '' : this.html_vi(), v = this.attr( 'vAlign' );
-			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class="w-' + this.type.toLowerCase() + '-line z-position-' + this.getTabPosition() + '"></div>';
+			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.br === T ? '' : this.html_vi(), v = this.attr( 'vAlign' ), n = this.getTabPosition();
+			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class="w-' + this.type.toLowerCase() + '-line' + (n ? ' z-position-' + n : '') + '"></div>';
 		}
 	}
 } ),
@@ -5296,7 +5296,7 @@ Collapse = define.widget( 'Collapse', {
 		this.id = $.uid( this );
 		var y = { type: 'Vert' }, b = [], d, e = this.getDefaultOption( x.cls );
 		for ( var i = 0, n = x.nodes || [], g; i < n.length; i ++ ) {
-			g = $.extend( { display: !!n[ i ].focus }, n[ i ].target );
+			g = { type: 'Vert', cls: 'w-collapse-cont', widthMinus: 42, heightMinus: 41, display: !!n[ i ].focus, nodes: [ n[ i ].target ] };
 			b.push( $.extend( { type: 'CollapseButton', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
 			b.push( g );
 		}
