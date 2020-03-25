@@ -2202,7 +2202,7 @@ _merge( $, {
 			if ( c.tip ) t += ' title="' + _strQuot( c.tip ) + '"';
 			s.push( t );
 		}
-		var r = '';
+		var r = '<span' + (s[ 0 ] || '') + '><i class=f-vi></i>';
 		if ( e ) {
 			r += '<em class="_ico f-i ' + d.replace( /\./g, '' ) + '"' + (s[ 1 ] || '') + '></em>';
 		} else {
@@ -2218,7 +2218,7 @@ _merge( $, {
 				r += '>';
 			}
 		}
-		return (s[ 0 ] ? '<span' + s[ 0 ] + '><i class=f-vi></i>' : '') + r + ((b && b.append) || '') + (s[ 0 ] ? '</span>' : '');
+		return r + ((b && b.append) || '') + '</span>';
 	},
 	arrow: function( a, b ) {
 		var c = b || a;
