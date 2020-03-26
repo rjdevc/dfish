@@ -179,18 +179,12 @@ i {
     cursor: pointer;
 }
 
-.w-menu-line {
-    display: block;
-}
-
 
 /**按钮**/
 
 /**对话框**/
 .w-dialog {
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(114, 182, 227, 0.7);
-    border: 1px solid #90b5d5;
 }
 
 .w-dialog .dlg-frame {
