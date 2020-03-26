@@ -33,7 +33,7 @@ public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, Stri
     }
 
     @Override
-    public String saveLob(String lobContent) throws Exception {
+    public String saveContent(String lobContent) throws Exception {
         if (Utils.isEmpty(lobContent)) {
             throw new MarkedException("文本内容不能为空");
         }
