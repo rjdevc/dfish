@@ -8,6 +8,7 @@ define.template({
     node: {
         type: 'Tabs',
         position: 'l',
+        scroll: true,
         nodes: [
             {
                 text: 'Text',

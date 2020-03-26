@@ -41,7 +41,7 @@ dfish.config({
         'ButtonBar.face-text': {space: 0},
         'Button': {tip: true, widthMinus: 2, heightMinus: 2},
         'SubmitButton': {tip: true, widthMinus: 2, heightMinus: 2},
-        'Tabs': {widthMinus: 2, heightMinus: 2},
+        // 'Tabs': {widthMinus: 2, heightMinus: 2},
         // 'TabBar': {widthMinus: 20},
         // 'TabBar.z-position-left': {widthMinus: 0, heightMinus: 20},
         // 'TabBar.z-position-right': {widthMinus: 0, heightMinus: 20},

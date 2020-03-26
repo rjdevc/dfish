@@ -237,8 +237,9 @@
 .w-fieldset{margin:0;padding:0;border:1px solid #ddd;border-radius:2px;*display:block;}
 .w-fieldset.z-checked{border-color:#2498ff}
 .w-fieldset.z-checked.z-ds{border-color:#ddd}
-.w-fieldset-legend{height:26px;margin-left:10px;padding:0 10px 3px 10px}
+.w-fieldset-legend{height:26px;padding:0 10px 3px 10px;margin-left:10px}
 .w-fieldset-legend .w-checkbox ._tit,.w-fieldset-legend .w-radio ._tit,.w-fieldset-legend .w-triplebox ._tit{padding-right:0}
+.w-fieldset-cont{padding:6px 20px 20px 20px}
 
 .w-dialog{position:absolute;z-index:10}
 .w-dialog-cover{position:absolute;background:#333;top:0;left:0;right:0;bottom:0;z-index:11;opacity:.2;filter:Alpha(opacity=20)}
@@ -306,8 +307,8 @@
 .f-split-hide{position:absolute!important;visibility:hidden}
 
 /* calendar */
-.w-calendar-body{padding:5px}
-.w-calendar-head{position:relative;height:24px;line-height:24px;padding:6px 0 5px 0;margin:0 10px;border-bottom:1px solid #ddd}
+.w-calendar{border:1px solid #ddd;padding:0 20px 20px 20px}
+.w-calendar-head{position:relative;height:38px;line-height:38px;padding:6px 0 5px 0;border-bottom:1px solid #ddd;margin-bottom:10px}
 .w-calendar-head ._circle{text-indent:-3px;overflow:hidden}
 .w-calendar-head ._circle i{font-size:34px;line-height:21px}
 .w-calendar-head ._iptm{width:0;height:0;visibility: hidden;}
@@ -315,14 +316,18 @@
 .w-calendar-head .f-arw-r5{margin-left:20px;vertical-align:middle;cursor:pointer}
 .w-calendar-head .f-arw-l2{margin-right:15px;vertical-align:baseline;cursor:pointer}
 .w-calendar-head .f-arw-r2{margin-left:15px;vertical-align:baseline;cursor:pointer}
+.w-calendar-head .f-arw-l2:hover{border-right-color:#2498ff}
+.w-calendar-head .f-arw-r2:hover{border-left-color:#2498ff}
 .w-calendar-tbl{width:100%;table-layout:fixed;border-collapse:collapse;text-align:center;cursor:default}
+.w-calendar ._th{background:#f8f8f8;border-bottom:1px solid #ddd;height:26px}
+.w-calendar ._td{border-bottom:1px solid #ddd;height:80px;vertical-align:top}
 .w-calendar ._td.z-hv{background:#f5faff}
-.w-calendar ._td.z-on{background:#e5f3ff;color:#2498ff}
+.w-calendar ._td.z-on{background:#2498ff;color:#fff}
 .w-calendar ._td.z-ds{color:#999}
 .w-calendar ._td.z-pad ._num{color:#999}
 .w-calendar ._today,.w-calendar ._year,.w-calendar ._month{height:24px;cursor:pointer}
 .w-calendar ._month{display:inline-block;min-width:32px;text-align:center}
-.w-calendar ._today:hover,.w-calendar ._year:hover,.w-calendar ._month:hover{text-decoration:underline}
+.w-calendar ._today:hover,.w-calendar ._year:hover,.w-calendar ._month:hover{color:#2498ff}
 .w-calendar ._today{position:absolute;top:5px;right:5px}
 .w-calendar ._today.z-ds{color:#999}
 .w-calendar-select{background:#f5f5f5;text-align:center;cursor:default;border:1px solid #ccc}
@@ -332,23 +337,27 @@
 .w-calendar-select ._b.z-ds:hover{background:transparent}
 .w-calendar-select ._wr{height:200px;overflow:hidden}
 .w-calendar-select ._c,.w-calendar-select ._c:hover{background:#2498ff;color:#fff}
-.w-calendar-month ._td,.w-calendar-year ._td{padding:10px}
-.w-calendar-time{height:30px;line-height:30px;border-top:1px solid #eee}
-.w-calendar-time ._time{float:left;padding-left:10px;cursor:pointer}
-.w-calendar-time ._ok{float:right;padding-right:10px;cursor:pointer}
-.w-calendar-time ._time:hover,.w-calendar-time ._ok:hover{text-decoration:underline}
+.w-calendar-time{height:35px;line-height:35px;border-top:1px solid #ddd}
+.w-calendar-time ._time{float:left;margin-left:5px;cursor:pointer}
+.w-calendar-time ._ok{float:right;margin-right:5px;cursor:pointer}
+.w-calendar-time ._time:hover,.w-calendar-time ._ok:hover{color:#2498ff}
 .w-dialog.w-calendar-time-dlg{margin:1px;text-align:center;border:0;box-shadow:none}
-.w-calendar-time-dlg ._th{border-bottom:1px solid #ddd;line-height:28px}
+.w-calendar-time-dlg ._th{border-bottom:1px solid #ddd;line-height:31px}
 .w-calendar-time-dlg ._bl{border-left:1px solid #ddd}
-.w-calendar-time-dlg ._o{height:26px;line-height:26px}
+.w-calendar-time-dlg ._o{height:28px;line-height:28px}
 .w-calendar-time-dlg ._o.z-hv{background:#f5faff}
 .w-calendar-time-dlg ._o.z-on{background:#2498ff;color:#fff}
 .w-calendar-time-dlg ._o.z-ds{color:gray}
 .w-calendar-time-dlg ._o.z-ds.z-hv{background:transparent}
+.w-calendar-date .w-calendar-head{border:0;margin:0}
+
 .w-calendar-dialog{background:#fff}
-.w-calendar-dialog .w-calendar-tbl{width:auto;*table-layout:auto}
-.w-calendar-dialog .w-calendar-date ._td,.w-calendar-dialog .w-calendar-week ._td{width:23px;height:23px}
-.w-calendar-dialog .w-calendar-month ._td{width:40px}
+.w-calendar.z-mini{border:0;padding:0 10px 0 10px}
+.w-calendar.z-mini .w-calendar-head{height:24px;line-height:24px;padding:6px 0 5px 0}
+.w-calendar.z-mini .w-calendar-tbl{width:auto;*table-layout:auto}
+.w-calendar.z-mini ._td{border:0}
+.w-calendar-date.z-mini ._td,.w-calendar-week.z-mini ._td{width:23px;height:23px}
+.w-calendar-month.z-mini ._td,.w-calendar-year.z-mini ._td{width:57px;height:32px}
 
 /* form */
 .w-f.z-ds ._t{color:#999}
@@ -394,10 +403,11 @@
 .w-datepicker ._pick_i{background:url(g/n.png) no-repeat 0 50%}
 .w-datepicker ._pick:hover ._pick_i{background-position:-25px 50%}
 .w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
+.w-datepicker .w-input.z-auto{width:178px}
 
 .w-spinner ._t{vertical-align:middle}
 .w-spinner ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0}
-.w-spinner ._b em{display:block;height:50%;text-indent:5px;cursor:pointer}
+.w-spinner ._b em{display:block;height:50%;cursor:pointer}
 .w-spinner .f-arw-t2{border-bottom-color:#99a8b8;position:relative;top:1px}
 .w-spinner ._b em:hover .f-arw-t2{border-bottom-color:#546272}
 .w-spinner .f-arw-b2{border-top-color:#99a8b8;position:relative;top:-1px}
@@ -412,7 +422,7 @@
 .w-slider-tip-text{min-width:30px;text-align:center}
 
 .w-jigsaw var,.w-jigsaw em{font-style:normal}
-.w-jigsaw ._t{position:relative;height:100%;background:#f7f9fa;text-indent:0}
+.w-jigsaw ._t{position:relative;height:100%;background:#f8f8f8;text-indent:0}
 .w-jigsaw ._track{display:none;position:absolute;left:-1px;top:-1px;bottom:-1px;background:#d1e9ff;border:1px solid transparent}
 .w-jigsaw ._thumb{position:absolute;width:30px;height:100%;line-height:0;background:#fff;cursor:pointer;text-align:center;box-shadow:0px 0px 3px rgba(0,0,0,0.3)}
 .w-jigsaw ._thumb ._i{background:url(g/i.png) no-repeat -73px -204px}
@@ -586,11 +596,11 @@
 .w-buttonbar.z-dirh.z-br,.w-tabbar.z-dirh.z-br{white-space:normal;word-break:break-all}
 .w-buttonbar.z-dirv .w-button,.w-tabbar.z-dirv .w-tab{display:block}
 .w-buttonbar.z-autosize,.w-tabbar.z-autosize{overflow:visible}
-.w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;height:1px;background:#ddd}
-.w-buttonbar-line,.w-tabbar-line.z-position-top{right:0;left:0;bottom:0}
-.w-tabbar-line.z-position-bottom{right:0;left:0;top:0}
-.w-tabbar-line.z-position-left{top:0;bottom:0;right:0}
-.w-tabbar-line.z-position-right{top:0;bottom:0;left:0}
+.w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;background:#ddd}
+.w-buttonbar-line,.w-tabbar.z-position-top .w-tabbar-line{right:0;left:0;bottom:0;height:1px}
+.w-tabbar.z-position-bottom .w-tabbar-line{right:0;left:0;top:0;height:1px}
+.w-tabbar.z-position-left .w-tabbar-line{top:0;bottom:0;right:0;width:1px}
+.w-tabbar.z-position-right .w-tabbar-line{top:0;bottom:0;left:0;width:1px}
 
 /*! button
  *	c: content, i: icon, t: text, m: more, x: close
@@ -628,13 +638,22 @@
 .w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute;top:2px}
 .w-button-split{vertical-align:middle;text-align:center}
 
-.w-tab{height:100%}
+.w-tabs{border:1px solid #ddd}
+.w-tabbar{background:#f8f8f8}
+.w-tab{height:36px;border:1px solid #ddd}
+.w-tabbar .w-tabbar-line{display:block}
+.w-tab.z-hv{background:#f5faff;color:#666}
+.w-tab.z-on{background:#fff;color:#2498ff}
+.w-tab.z-ds{background:#e6e6e6;color:#999}
+.w-tabbar.z-position-top .w-tab,.w-tabbar.z-position-bottom .w-tab{margin-left:-1px;border-top:0;border-bottom:0}
+.w-tabbar.z-position-left .w-tab{margin-top:-1px;border-left:0;border-right:0;text-align:left}
+.w-tabbar.z-position-right .w-tab{margin-top:-1px;border-left:0;border-right:0;text-align:right}
 
 .w-submitbutton{background:#2498ff;border-color:#2498ff;color:#fff}
 .w-submitbutton.z-combo ._m{border-left:1px solid #fff}
 .w-submitbutton ._m .f-arw{border-top-color:#fff}
 .z-normal.w-submitbutton.z-hv,.z-more.w-submitbutton.z-hv,.z-combo.w-submitbutton ._c.z-hv,.z-combo.w-submitbutton ._m.z-hv{background:#208ff2}
-.z-normal.w-submitbutton.z-dn,.z-more.w-submitbutton.z-dn,.z-combo.w-submitbutton ._c.z-dn,.z-combo.w-submitbutton ._m.z-dn{background:#1b88ea;box-shadow:inset 0 2px 0 #11a0d7;}
+.z-normal.w-submitbutton.z-dn,.z-more.w-submitbutton.z-dn,.z-combo.w-submitbutton ._c.z-dn,.z-combo.w-submitbutton ._m.z-dn{background:#1b88ea}
 .w-submitbutton.z-more.z-snap,.w-submitbutton.z-combo.z-snap ._m{background:#e3e3e3}
 
 .w-collapse-button{height:34px;text-align:left;background:#fafafa;border:1px solid #d9d9d9;margin-bottom:10px}

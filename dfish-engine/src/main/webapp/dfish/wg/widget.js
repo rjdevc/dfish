@@ -3275,9 +3275,6 @@ ButtonBar = define.widget( 'ButtonBar', {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isLocked() ) return this[ i ];
 		},
-		getTabPosition: function() {
-			return '';
-		},
 		fixLine: function() {
 			if ( this.$( 'vi' ) ) Q( this.$( 'cont' ) || this.$() ).prepend( this.$( 'vi' ) );
 			Q( this.$() ).append( Q( '.w-' + this.type.toLowerCase() + '-line', this.$() ) );
@@ -3325,8 +3322,8 @@ ButtonBar = define.widget( 'ButtonBar', {
 			}
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
-			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.br === T ? '' : this.html_vi(), v = this.attr( 'vAlign' ), n = this.getTabPosition();
-			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class="w-' + this.type.toLowerCase() + '-line' + (n ? ' z-position-' + n : '') + '"></div>';
+			var f = (ie7 && this.isScrollable()) || ! this.length || this.x.br === T ? '' : this.html_vi(), v = this.attr( 'vAlign' );
+			return (v ? f + (this.x.dir === 'v' ? '<div id=' + this.id + 'vln class="f-nv-' + v + '">' + s + '</div>' : s) : s) + '<div class="w-' + this.type.toLowerCase() + '-line"></div>';
 		}
 	}
 } ),
@@ -3840,7 +3837,7 @@ Tabs = define.widget( 'Tabs', {
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
 		var n = this.getTabPositionName( x.position ),
 			r = { type: 'TabBar', cls: 'z-position-' + n, nodes: b };
-		$.extendAny( r, 'align,vAlign,split,dir,space,overflowButton', x, e, { vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h' } );
+		$.extendAny( r, 'align,dir,scroll,space,split,overflowButton,vAlign', x, e, { vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h' } );
 		y.nodes = [ { type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
 		Vert.call( this, $.extend( { nodes:[ y ], scroll: F }, x ), p );
@@ -3848,6 +3845,7 @@ Tabs = define.widget( 'Tabs', {
 		this.frame = this[ 1 ];
 	},
 	Extend: Vert,
+	Default: { widthMinus: 2, heightMinus: 2 },
 	Prototype: {
 		className: 'w-tabs',
 		getTabPositionCode: function( s ) {
@@ -3855,9 +3853,6 @@ Tabs = define.widget( 'Tabs', {
 		},
 		getTabPositionName: function( s ) {
 			return (s && (_tab_position_name[ s ] || s)) || 'top';
-		},
-		getTabPosition: function() {
-			return this.getTabPositionName( this.x.position );
 		}
 	}
 } ),
@@ -3868,9 +3863,6 @@ TabBar = define.widget( 'TabBar', {
 		className: 'w-tabbar',
 		x_childtype: function( t ) {
 			return t === 'Split' ? 'ButtonSplit' : (t || 'Tab');
-		},
-		getTabPosition: function() {
-			return this.parentNode.parentNode.getTabPosition();
 		}
 	}
 } ),
@@ -4043,6 +4035,7 @@ Img = define.widget( 'Img', {
  */
 Toggle = define.widget( 'Toggle', {
 	Const: function( x ) {
+		x.expanded == U && (x.expanded = T);
 		x.hr && (this.className += ' z-hr');
 		W.apply( this, arguments );
 	},
@@ -4310,11 +4303,11 @@ PageBar = define.widget( 'PageBar', {
 /* `fieldset` */
 FieldSet = define.widget( 'FieldSet', {
 	Extend: VertScale,
-	Default: { widthMinus: 2, heightMinus: 3 },
+	Default: { widthMinus: 2, heightMinus: 2 },
 	Prototype: {
 		className: 'w-fieldset',
 		init_nodes: function() {
-			this.layout = new Layout( { height: '*', heightMinus: 26, nodes: this.x.nodes }, this );
+			this.layout = new Layout( { cls: 'w-fieldset-cont', height: '*', widthMinus: 40, heightMinus: 54, nodes: this.x.nodes }, this );
 			if ( this.x.box ) {
 				if ( this.x.legend && this.x.box.text == N ) {
 					this.x.box.text = this.x.legend;
@@ -5304,7 +5297,7 @@ Collapse = define.widget( 'Collapse', {
 		Vert.call( this, $.extend( y, x ), p );
 	},
 	Extend: Vert,
-	Default: { scroll: T, widthMinus: 2, heightMinus: 2 },
+	Default: { scroll: T },
 	Prototype: {
 		className: 'w-collapse',
 		getFocus: function() {
@@ -5561,6 +5554,8 @@ AbsForm = define.widget( 'AbsForm', {
 			return (this.label ? this.label.outerWidth() : 0);
 		},
 		formWidth: function() {
+			if ( ! isNaN( this.x.width ) )
+				return this.x.width;
 			var w = this.innerWidth();
 			return w == N || w < 0 ? N : w - this.form_minus();
 		},
@@ -6398,7 +6393,7 @@ TripleBox = define.widget( 'TripleBox', {
 		},
 		html: function() {
 			var c = this.checkstate();
-			return '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (c == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
+			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (c == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
 				(c == 1 ? ' checked' : '') + (c == 2 ? ' indeterminate' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '') + '</' + this.tagName + '>';
 		}
@@ -6610,12 +6605,13 @@ Calendar = define.widget( 'Calendar', {
 		// @a -> commander, b -> format, c -> date, d -> focusDate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
-				x = { type: 'Calendar', face: ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
+				x = { type: 'Calendar', cls: 'z-mini', face: ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, fillBlank: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
 			return o.exec( { type: 'Dialog', ownproperty: T, snap: { target: a.isFormWidget ? a.$( 'f' ) : a, indent: 1 }, cls: 'w-calendar-dialog w-f-dialog f-shadow-snap', width: -1, height: -1, widthMinus: 2, autoHide: T, cover: mbi, node: x,
 				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
+	Default: { widthMinus: 42, heightMinus: 22 },
 	Prototype: {
 		className: 'w-calendar',
 		x_nodes: $.rt( N ),
@@ -6801,10 +6797,10 @@ Calendar = define.widget( 'Calendar', {
 				~f.indexOf( 'h' ) && list( 'h', 24 );
 				~f.indexOf( 'i' ) && list( 'i', 60 );
 				~f.indexOf( 's' ) && list( 's', 60 );
-				this._dlg_time = this.exec( { type: 'Dialog', ownproperty: T, cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: { target: b, position: '11' }, autoHide: T, node: {
+				this._dlg_time = this.exec( { type: 'Dialog', ownproperty: T, cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 38, snap: { target: b, position: '11' }, autoHide: T, node: {
 					 type: 'View', node: {
 					 type: 'Vert', nodes: [
-					 	{ type: 'Horz', height: 29, nodes: h },
+					 	{ type: 'Horz', height: 32, nodes: h },
 					 	{ type: 'Horz', height: '*', nodes: c,
 					 		on: {
 					 			// 让时分秒的初始焦点项对齐
@@ -6854,8 +6850,8 @@ Calendar = define.widget( 'Calendar', {
 			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusDate ? this.x.focusDate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
 				n = this.x.begindate && this._fm( this.x.begindate ), m = this.x.enddate && this._fm( this.x.enddate ), t = this._fm( new Date() ), o = this.getItemMap(),
 				s = '<div class="w-calendar-head f-clearfix" onclick=' + evw + '.nav(event)>' + $.arrow( this.id + 'al', mbi ? 'l5' : 'l2' ) + Loc.ps( Loc.calendar.ym, a.getFullYear(), c + 1 ) + $.arrow( this.id + 'ar', mbi ? 'r5' : 'r2' ) +
-					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + Loc.calendar.today + '</div></div>' +
-					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><thead><tr><td>' + Loc.calendar.day_title.join( '<td>' ) + '</thead><tbody>';
+					'<input type=month id=' + this.id +'iptm value="' + $.dateFormat( b, 'yyyy-mm' ) + '" class=_iptm onchange=' + evw + '.inputMonth()><div class="_today' + ((n && n > t) || (m && m < t) ? ' z-ds' : '') + '">' + (this.x.timebtn ? Loc.calendar.now : Loc.calendar.today) + '</div></div>' +
+					'<div class=w-calendar-body><table class=w-calendar-tbl cellspacing=0 cellpadding=5><thead><tr><td class=_th>' + Loc.calendar.day_title.join( '<td class=_th>' ) + '</thead><tbody>';
 			b.setDate( 1 );
 			d.setDate( new Date( b.getFullYear(), c + 1, 0 ).getDate() );
 			var g = 7 - (b.getDay() + d.getDate()) % 7;
@@ -6944,9 +6940,9 @@ DatePicker = define.widget( 'DatePicker', {
 			r = r.join( ',' );
 		}
 		x.value = r;
-		!mbi && this.defaults( { width: 180 } );
 	},
 	Extend: Text,
+	Default: { width: -1 },
 	Listener: {
 		body: {
 			click: {
@@ -6969,10 +6965,6 @@ DatePicker = define.widget( 'DatePicker', {
 	Prototype: {
 		dropSnapType: 'v',
 		placeholder_type: 'placeholder_select',
-		form_minus: function() {
-			var w = this.x.width;
-			return (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
-		},
 		validHooks: {
 			minValue: function( b, v ) {
 				return $.dateParse( v, this.x.format ) < $.dateParse( this.vv( 'minValue', b ), this.x.format );
@@ -7009,6 +7001,10 @@ DatePicker = define.widget( 'DatePicker', {
 						return _form_err.call( this, b, 'compare', [ '<=', (c.x.label && c.x.label.text != N ? c.x.label.text : c.x.label) || 'end' ] );
 				}
 			}
+		},
+		form_minus: function() {
+			var w = this.x.width;
+			return (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
 		},
 		$v: function() { return $( this.id + (this.x.multiple ? 'v' : 't') ) },
 		val: function( a ) {
@@ -7098,6 +7094,9 @@ DatePicker = define.widget( 'DatePicker', {
 			this.cal && this.cal.close();
 			this.list && this.list.close();
 		},
+		form_cls: function() {
+			return AbsInput.prototype.form_cls.call( this ) + (this.innerWidth() ? '' : ' z-auto');
+		},
 		html_btn: function() {
 			return this.x.noButton ? '' : '<label ' + (mbi ? 'for="' + this.id + 't"' : 'onclick=' + eve) + ' class="f-boxbtn _pick"><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
 		},
@@ -7107,7 +7106,7 @@ DatePicker = define.widget( 'DatePicker', {
 		},
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><div class=_pad>' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix _a">' + v.replace( 'T', ' ' ) + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix _a">' + v.replace( 'T', ' ' ) + '</label>' :
 				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}

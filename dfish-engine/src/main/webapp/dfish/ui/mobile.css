@@ -50,11 +50,13 @@
 .f-form-transparent .w-spinner ._l,.f-form-transparent .w-spinner ._r{border:0}
 
 .w-datepicker ._t{position:absolute;width:1px;visibility:hidden;}
-.w-datepicker ._a{position:absolute;top:0;left:0;display:block;height:100%;line-height:38px;overflow:hidden}
-.w-datepicker ._pad{visibility:hidden;}
+.w-datepicker ._a{position:absolute;top:0;left:0;display:block;padding-left:10px;height:100%;line-height:38px;overflow:hidden}
+.w-datepicker ._pad{visibility:hidden}
 .w-datepicker.z-nobutton ._c{padding-right:5px}
+.w-datepicker.z-nobutton ._pad{padding-right:5px}
+.w-datepicker .w-input.z-auto{width:auto}
 .f-form-transparent .w-datepicker.z-nobutton ._c{padding-right:0}
-
+.f-form-transparent .w-datepicker ._a,.f-form-transparent .w-datepicker ._pad{padding:0}
 
 .w-combobox ._c{min-height:38px}
 .w-combobox ._plus,.w-pickbox ._plus,.w-onlinebox ._plus,.w-linkbox ._plus,.w-combobox.z-ds ._plus:hover,.w-pickbox.z-ds:hover ._plus,.w-onlinebox.z-ds ._plus:hover{background:none}
