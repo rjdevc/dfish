@@ -296,7 +296,38 @@ public interface FrameworkService<V, P, ID extends Serializable> {
         V vo = parseVo(po, evict);
         return vo;
     }
-
+    /**
+     * 根据编号集合批量获取实体对象
+     * @param ids 编号集合
+     * @return List&lt;P&gt; 实体对象集合
+     */
+    default List<V> listByIds(List<ID> ids){
+        return listByIds(ids,true);
+    }
+    /**
+     * 根据编号集合批量获取实体对象
+     * @param ids 编号集合
+     * @param evict 是否驱逐缓存
+     * @return List&lt;P&gt; 实体对象集合
+     */
+    default List<V> listByIds(List<ID> ids, boolean evict){
+        Map<ID,V> map=gets(ids,evict);
+        // 因为DAO中 MyBatis和Hibernate无法统一，所以DAO都用 listByIds 来获取数据。
+        // 而service 建议用gets方法。
+        // 如果调用listByIds方法。则这个方法是有序的，如果某个ID没值，会补空值
+        //LinLW 2020-03-26
+        List<V> result=new ArrayList<>();
+        for(ID id : ids){
+            result.add(map.get(id));
+        }
+        return result;
+//        List<P> pos = getDao().listByIds(ids);
+//        List<V> vos = new ArrayList<>(pos.size());
+//        for (P item : pos) {
+//            vos.add(parseVo(item, evict));
+//        }
+//        return vos;
+    }
     /**
      * 批量获取视图对象
      * @param ids 主键集合

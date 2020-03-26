@@ -38,7 +38,13 @@ public interface FrameworkDao<P, ID extends Serializable> {
         if (Utils.isEmpty(ids)) {
             return Collections.emptyMap();
         }
-        List<P> dataList = listByIds(ids);
+        List<P> dataList; //= listByIds(ids);
+        if(ids instanceof List){
+            dataList = listByIds((List)ids);
+        }else{
+            dataList = listByIds(new ArrayList<>(ids));
+        }
+
         Map<ID, P> dataMap = new HashMap<>(dataList.size());
         for (P data : dataList) {
             if (data != null) {
@@ -60,7 +66,7 @@ public interface FrameworkDao<P, ID extends Serializable> {
      * @param ids 编号集合
      * @return List&lt;P&gt; 实体对象集合
      */
-    List<P> listByIds(Collection<ID> ids);
+    List<P> listByIds(List<ID> ids);
 
     /**
      * 根据分页信息和参数获取列表
