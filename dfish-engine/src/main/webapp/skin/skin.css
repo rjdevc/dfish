@@ -132,56 +132,8 @@ i {
 /**FieldSet**/
 /****布局****/
 
-/**树节点**/
-.w-leaf-i {
-    min-width: 0;
-}
 
-
-/**树节点**/
-
-/**按钮**/
-
-/* 按钮默认样式 */
-.w-button {
-    font-size: 14px;
-}
-
-/* 主按钮-禁用 */
-.w-submitbutton.z-ds {
-    background-color: #def0fe;
-    border-color: #def0fe;
-    color: #999;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal {
-    border-color: transparent;
-    background-color: transparent;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal.z-hv, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-on, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-dn, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
-    background-color: transparent;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
-    color: #aaa;
-}
-
-.w-buttonbar.dlg-head-operation .w-button {
-    background: transparent;
-}
-
-.w-menu {
-    border-color: #ccc;
-}
-
-.w-menu .w-menu-button {
-    cursor: pointer;
-}
-
-
-/**按钮**/
-
+/****命令类****/
 /**对话框**/
 .w-dialog {
     background-color: #fff;
@@ -251,6 +203,53 @@ i {
 }
 
 /**对话框**/
+/****命令类****/
+
+/****功能类****/
+/**树节点**/
+.w-leaf-i {
+    min-width: 0;
+}
+/**树节点**/
+
+/**按钮**/
+/* 按钮默认样式 */
+.w-button {
+    font-size: 14px;
+}
+
+/* 主按钮-禁用 */
+.w-submitbutton.z-ds {
+    background-color: #def0fe;
+    border-color: #def0fe;
+    color: #999;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-hv, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-on, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-dn, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
+    background-color: transparent;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
+    color: #aaa;
+}
+
+.w-buttonbar.dlg-head-operation .w-button {
+    background: transparent;
+}
+
+.w-menu {
+    border-color: #ccc;
+}
+
+.w-menu .w-menu-button {
+    cursor: pointer;
+}
+/**按钮**/
 
 /**图片**/
 img {
@@ -316,6 +315,26 @@ img {
 }
 
 /**图片**/
+/**进度条**/
+.w-progress .w-progress-item.z-0 ._up {
+    background-color: #fff000;
+}
+
+.w-progress .w-progress-item.z-25 ._up {
+    background-color: #ffb527;
+}
+
+.w-progress .w-progress-item.z-50 ._up {
+    background-color: #fc942d;
+}
+
+.w-progress .w-progress-item.z-75 ._up {
+    background-color: #72b636;
+}
+
+/**进度条**/
+/****功能类****/
+
 
 /**图标**/
 .i-file {
@@ -434,7 +453,6 @@ img {
 .w-split.z-hv .i-split-bottom {
     background: url("img/split-vertical.png") -30px -10px;
 }
-
 
 /**常用操作图标**/
 .x-operation-group i, i.x-operation {
@@ -1051,22 +1069,3 @@ img {
 }
 
 /**图标**/
-
-/**进度条**/
-.w-progress .w-progress-item.z-0 ._up {
-    background-color: #fff000;
-}
-
-.w-progress .w-progress-item.z-25 ._up {
-    background-color: #ffb527;
-}
-
-.w-progress .w-progress-item.z-50 ._up {
-    background-color: #fc942d;
-}
-
-.w-progress .w-progress-item.z-75 ._up {
-    background-color: #72b636;
-}
-
-/**进度条**/
