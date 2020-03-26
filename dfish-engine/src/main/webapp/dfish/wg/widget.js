@@ -4355,7 +4355,6 @@ _snapHooks = { topLeft: 'tl', leftTop: 'lt', topRight: 'tr', righTop: 'rt', righ
 _snapPosition = function( a ) {
 	return a && (_snapHooks[ a ] === F ? N : '' + (_snapHooks[ a ] || a));
 },
-_dialogFrontIndex = 0,
 /* `dialog`
  *  id 用于全局存取 ( dfish.dialog(id) ) 并保持唯一，以及用于里面的view的 path */
 Dialog = define.widget( 'Dialog', {
@@ -4393,7 +4392,7 @@ Dialog = define.widget( 'Dialog', {
 		custom: {},
 		get: function( a ) {
 			if ( arguments.length === 0 ) {
-				var b = Q( '.w-dialog.z-front' );
+				var b = Q( '.w-dialog.z-front,.w-dialog:last' );
 				return b[ 0 ] && $.all[ b[ 0 ].id ];
 			}
 			if ( typeof a === _STR )
@@ -4577,7 +4576,6 @@ Dialog = define.widget( 'Dialog', {
 		_front: function( a ) {
 			var z = a ? 11 : 10;
 			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } ).addClass( 'z-front', !!a );
-			a && Q( this.$() ).data( 'frontIndex', _dialogFrontIndex ++ );
 		},
 		// 定位 /@a -> fullScreen?
 		axis: function( a ) {

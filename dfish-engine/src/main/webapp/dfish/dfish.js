@@ -837,6 +837,11 @@ _urlParam = $.urlParam = function( a, b ) {
 	}
 	return u + (h ? '#' + h : '');
 },
+_urlComplete = $.urlComplete = function( a ) {
+	a = _ajax_url( a );
+	_cfg.ajaxData && (a = _urlParam( a, _cfg.ajaxData ));
+	return a;
+},
 // @a -> fn(得到0-1的参数), b -> milliseconds, c -> times
 _ease = $.ease = function( a, b, c ) {
 	a( 0 );
@@ -2363,8 +2368,7 @@ _merge( $, {
 			w = $.width() - 36;
 			h = $.height() - 36;
 		}
-		a = _ajax_url( a );
-		_cfg.ajaxData && (a = _urlParam( a, _cfg.ajaxData ));
+		a = _urlComplete( a );
 		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
 			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' class=f-va style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
