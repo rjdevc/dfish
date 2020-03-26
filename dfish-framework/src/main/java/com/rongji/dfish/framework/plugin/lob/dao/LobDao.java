@@ -91,9 +91,9 @@ public interface LobDao extends FrameworkDao<PubLob, String> {
         if (Utils.isEmpty(lobIds)) {
             return Collections.emptyMap();
         }
-        List<PubLob> lobs = listByIds(lobIds);
+        Map<String,PubLob> lobs = gets(lobIds);
         Map<String, byte[]> contents = new HashMap<>(lobs.size());
-        for (PubLob lob : lobs) {
+        for (PubLob lob : lobs.values()) {
             contents.put(lob.getLobId(), lob.getLobData());
         }
         return contents;

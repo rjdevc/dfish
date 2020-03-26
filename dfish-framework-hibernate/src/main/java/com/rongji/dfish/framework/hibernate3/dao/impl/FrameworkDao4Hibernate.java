@@ -207,7 +207,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
     }
 
     @Override
-    public List<P> listByIds(Collection<ID> ids) {
+    public List<P> listByIds(List<ID> ids) {
         Set<ID> idSet = new HashSet<>(ids);
         idSet.remove(null);
         idSet.remove("");

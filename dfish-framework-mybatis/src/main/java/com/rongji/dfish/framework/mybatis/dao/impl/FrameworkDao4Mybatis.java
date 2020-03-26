@@ -31,7 +31,7 @@ public interface FrameworkDao4Mybatis<P, ID extends Serializable> extends Framew
     List<P> listByRowBounds(RowBounds rowBounds, RequestParam requestParam);
 
     @Override
-    List<P> listByIds(@Param("ids") Collection<ID> ids);
+    List<P> listByIds(@Param("ids") List<ID> ids);
 
     @Override
     default int delete(P entity) {
