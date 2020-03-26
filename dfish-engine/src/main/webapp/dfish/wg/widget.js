@@ -4391,6 +4391,10 @@ Dialog = define.widget( 'Dialog', {
 		all: {},
 		custom: {},
 		get: function( a ) {
+			if ( arguments.length === 0 ) {
+				var b = Q( '.w-dialog.z-front' );
+				return b[ 0 ] && $.all[ b[ 0 ].id ];
+			}
 			if ( typeof a === _STR )
 				return Dialog.custom[ a ];
 			if ( a.isWidget )
@@ -4571,7 +4575,7 @@ Dialog = define.widget( 'Dialog', {
 		},
 		_front: function( a ) {
 			var z = a ? 11 : 10;
-			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } ).addClass( 'z-front', a );
+			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } ).addClass( 'z-front', !!a );
 		},
 		// 定位 /@a -> fullScreen?
 		axis: function( a ) {

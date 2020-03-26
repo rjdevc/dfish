@@ -1384,7 +1384,8 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 				}, false );
 				ldr.loading = true;
 				ldr.xhr     = xhr;
-				xhr.open( 'post', this.formatStr( this.x.upload_url , null, ! /^\$\w+$/.test( this.x.upload_url ) ) );
+				var u = $.ajaxUrl( this.x.upload_url );
+				xhr.open( 'post', this.formatStr( u, null, ! /^\$\w+$/.test( u ) ) );
 				xhr.send( d );
 			}
 		}

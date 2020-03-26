@@ -355,7 +355,7 @@
 .w-calendar.z-mini{border:0;padding:0 10px 0 10px}
 .w-calendar.z-mini .w-calendar-head{height:24px;line-height:24px;padding:6px 0 5px 0}
 .w-calendar.z-mini .w-calendar-tbl{width:auto;*table-layout:auto}
-.w-calendar.z-mini ._td{border:0}
+.w-calendar.z-mini ._td{border:0;vertical-align:middle}
 .w-calendar-date.z-mini ._td,.w-calendar-week.z-mini ._td{width:23px;height:23px}
 .w-calendar-month.z-mini ._td,.w-calendar-year.z-mini ._td{width:57px;height:32px}
 

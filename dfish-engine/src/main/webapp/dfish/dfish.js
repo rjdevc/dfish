@@ -1567,6 +1567,9 @@ $.droppable = function( a, b ) {
 }
 
 var
+_ajax_url = $.ajaxUrl = function( a, b ) {
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + a;
+},
 _ajax_xhr = (function() {
 	var a = function() { return new XMLHttpRequest() },
 		b = function() { return new ActiveXObject( 'MSXML2.XMLHTTP' ) },
@@ -1577,9 +1580,6 @@ _ajax_xhr = (function() {
 	try { c(); return c; } catch( e ) {}
 	$.winbox( 'Cannot create XMLHTTP object!' );
 })(),
-_ajax_url = function( a, b ) {
-	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + a;
-},
 _ajax_data = function( e ) {
 	if ( e && typeof e === _OBJ ) {
 		var s = [], i;
