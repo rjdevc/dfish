@@ -123,87 +123,8 @@ i {
 /**表格**/
 
 /**Tabs**/
-.w-tabs {
-    border: 1px solid #ddd;
-}
 
-.w-tabs .w-tabbar {
-    background: #f8f8f8;
-}
 
-.w-tabs .w-tabbar, .w-tabs.z-position-top .w-tabbar {
-    /*padding: 0 10px;*/
-}
-
-.w-tabs .w-tabbar .w-tabbar-line {
-    display: block;
-    height: 1px;
-    background: #ddd;
-}
-
-.w-tabs .w-tabbar .w-tab {
-    height: 36px;
-    background: #f8f8f8;
-    color: #666;
-    /*font-weight: bold;*/
-    /*margin-right: 8px;*/
-    /*margin-top: 2px;*/
-}
-
-.w-tabs.z-position-top .w-tabbar .w-tab, .w-tabs.z-position-bottom .w-tabbar .w-tab {
-    border-right: 1px solid #ddd;
-    border-bottom-width: 0;
-}
-
-.w-tabs.z-position-left .w-tabbar .w-tab, .w-tabs.z-position-right .w-tabbar .w-tab {
-    border-bottom: 1px solid #ddd;
-    border-right-width: 0;
-}
-
-.w-tabs .w-tabbar .w-tab.z-on {
-    background: #fff;
-    color: #2498fd;
-}
-
-.w-tabs .w-tabbar .w-tab.z-hv {
-    background: #f5faff;
-    color: #666;
-}
-
-.w-tabs.z-position-bottom .w-tabbar .w-tab {
-    /*margin-top: 0;*/
-    /*margin-bottom: 2px;*/
-}
-
-/*.w-tabs.z-position-bottom .w-tabbar .w-tabbar-line {*/
-/*    top: 0;*/
-/*}*/
-
-/*.w-tabs.z-position-left .w-tabbar, .w-tabs.z-position-right .w-tabbar {*/
-/*    padding: 10px 0;*/
-/*}*/
-
-/*.w-tabs.z-position-left .w-tabbar .w-tab {*/
-/*    margin-top: 8px;*/
-/*    margin-left: 2px;*/
-/*    margin-right: 0;*/
-/*}*/
-
-/*.w-tabs.z-position-right .w-tabbar .w-tab {*/
-/*    margin-top: 8px;*/
-/*    margin-left: 0;*/
-/*    margin-right: 2px;*/
-/*}*/
-
-/*.w-tabs.z-position-left .w-tabbar .w-tabbar-line {*/
-/*    width: 2px;*/
-/*    height: auto;*/
-/*}*/
-
-/*.w-tabs.z-position-right .w-tabbar .w-tabbar-line {*/
-/*    width: 2px;*/
-/*    height: auto;*/
-/*}*/
 /**Tabs**/
 
 /**FieldSet**/
@@ -211,65 +132,11 @@ i {
 /**FieldSet**/
 /****布局****/
 
-/**树节点**/
-.w-leaf-i {
-    min-width: 0;
-}
 
-
-/**树节点**/
-
-/**按钮**/
-
-/* 按钮默认样式 */
-.w-button {
-    font-size: 14px;
-}
-
-/* 主按钮-禁用 */
-.w-submitbutton.z-ds {
-    background-color: #def0fe;
-    border-color: #def0fe;
-    color: #999;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal {
-    border-color: transparent;
-    background-color: transparent;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal.z-hv, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-on, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-dn, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
-    background-color: transparent;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
-    color: #aaa;
-}
-
-.w-buttonbar.dlg-head-operation .w-button {
-    background: transparent;
-}
-
-.w-menu {
-    border-color: #ccc;
-}
-
-.w-menu .w-menu-button {
-    cursor: pointer;
-}
-
-.w-menu-line {
-    display: block;
-}
-
-
-/**按钮**/
-
+/****命令类****/
 /**对话框**/
 .w-dialog {
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(114, 182, 227, 0.7);
-    border: 1px solid #90b5d5;
 }
 
 .w-dialog .dlg-frame {
@@ -336,6 +203,53 @@ i {
 }
 
 /**对话框**/
+/****命令类****/
+
+/****功能类****/
+/**树节点**/
+.w-leaf-i {
+    min-width: 0;
+}
+/**树节点**/
+
+/**按钮**/
+/* 按钮默认样式 */
+.w-button {
+    font-size: 14px;
+}
+
+/* 主按钮-禁用 */
+.w-submitbutton.z-ds {
+    background-color: #def0fe;
+    border-color: #def0fe;
+    color: #999;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-hv, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-on, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-dn, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
+    background-color: transparent;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
+    color: #aaa;
+}
+
+.w-buttonbar.dlg-head-operation .w-button {
+    background: transparent;
+}
+
+.w-menu {
+    border-color: #ccc;
+}
+
+.w-menu .w-menu-button {
+    cursor: pointer;
+}
+/**按钮**/
 
 /**图片**/
 img {
@@ -401,6 +315,26 @@ img {
 }
 
 /**图片**/
+/**进度条**/
+.w-progress .w-progress-item.z-0 ._up {
+    background-color: #fff000;
+}
+
+.w-progress .w-progress-item.z-25 ._up {
+    background-color: #ffb527;
+}
+
+.w-progress .w-progress-item.z-50 ._up {
+    background-color: #fc942d;
+}
+
+.w-progress .w-progress-item.z-75 ._up {
+    background-color: #72b636;
+}
+
+/**进度条**/
+/****功能类****/
+
 
 /**图标**/
 .i-file {
@@ -519,7 +453,6 @@ img {
 .w-split.z-hv .i-split-bottom {
     background: url("img/split-vertical.png") -30px -10px;
 }
-
 
 /**常用操作图标**/
 .x-operation-group i, i.x-operation {
@@ -1136,22 +1069,3 @@ img {
 }
 
 /**图标**/
-
-/**进度条**/
-.w-progress .w-progress-item.z-0 ._up {
-    background-color: #fff000;
-}
-
-.w-progress .w-progress-item.z-25 ._up {
-    background-color: #ffb527;
-}
-
-.w-progress .w-progress-item.z-50 ._up {
-    background-color: #fc942d;
-}
-
-.w-progress .w-progress-item.z-75 ._up {
-    background-color: #72b636;
-}
-
-/**进度条**/

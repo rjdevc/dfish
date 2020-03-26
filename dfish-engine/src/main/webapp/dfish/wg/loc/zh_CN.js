@@ -120,6 +120,7 @@ minute	: '分',
 second	: '秒',
 
 calendar : {
+	now: '现在',
 	today	: '今天',
 	weeknow	: '本周',
 	monthnow: '本月',

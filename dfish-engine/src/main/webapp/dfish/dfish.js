@@ -2493,7 +2493,7 @@ _merge( $, {
 				var g = $.widget( this ), w = 'auto';
 				if ( g && g.isFormWidget ) {
 					h = g.$( 'f' ).outerHTML; v = g.text(), r = $.query( '.f-remark,.f-beforecontent,.f-aftercontent', g.$() ).html();
-					if ( g.type !== 'date' && g.type !== 'spinner' )
+					if ( g.type !== 'Date' && g.type !== 'Spinner' )
 						w = g.$( 'f' ).style.width;
 				} else
 					v = this.value;
