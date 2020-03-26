@@ -20,10 +20,10 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
     /**
      * 保存lob内容记录(字符串)
      *
-     * @param lobContent 内容
+     * @param text 内容
      * @return String 保存的编号
      */
-    String saveContent(String lobContent) throws Exception;
+    String saveContent(String text) throws Exception;
 
 
     /**
@@ -34,13 +34,19 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
     String saveLobData(InputStream lobData) throws Exception;
 
     /**
+     * 保存lob内容（文件、图片）
+     *
+     * @return String 保存的编号
+     */
+    String saveLobData(byte[] lobData) throws Exception;
+    /**
      * 更新lob内容(字符串)
      *
      * @param lobId      编号
-     * @param lobContent 内容
+     * @param text 内容
      * @return int 更新记录数
      */
-    int updateContent(String lobId, String lobContent);
+    int updateContent(String lobId, String text);
 
     /**
      * 更新lob内容(文件)
@@ -50,6 +56,15 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
      * @return int 更新记录数
      */
     int updateLobData(String lobId, InputStream lobData);
+
+    /**
+     * 更新lob内容(文件)
+     *
+     * @param lobId   编号
+     * @param lobData 内容
+     * @return int 更新记录数
+     */
+    int updateLobData(String lobId, byte[] lobData);
 
 
     /**
