@@ -1821,6 +1821,8 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 				! m && (m = this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
 				! m && (m = v.url);
 			}
+			m = $.ajaxUrl( m );
+			$.x.ajaxData && (m = $.urlParam( m, $.x.ajaxData ));
 			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif><div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
 				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.arrow( 'b2' ) + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
