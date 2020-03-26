@@ -229,7 +229,7 @@ define.template({
                 target: {
                     type: 'Timeline',
                     align: 'center',
-                    pub: {icon: '.i-file'},
+                    // pub: {icon: '.i-file'},
                     nodes: [
                         {
                             type: 'TimelineItem', // 可省略不写

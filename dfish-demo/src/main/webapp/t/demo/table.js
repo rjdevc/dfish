@@ -413,6 +413,15 @@ define.template({
                             jump: true,
                             sumPage: 10,
                             prependContent: '简单样式:&nbsp;&nbsp;'
+                        },
+                        {
+                            type: 'PageBar',
+                            face: 'none',
+                            buttonCount: 5,
+                            currentPage: 6,
+                            jump: true,
+                            sumPage: 10,
+                            prependContent: '无边框样式:&nbsp;&nbsp;'
                         }
                     ]
                 }

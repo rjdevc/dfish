@@ -16,6 +16,34 @@ define.template({
             }
         }
     },
+    // node: {
+    //     type: 'Horizontal',
+    //     nodes: [
+    //         {
+    //             type: 'ButtonBar', dir: 'v', width: -1,
+    //             nodes: [
+    //                 {text: '布局类', target: 'layout'},
+    //                 {text: '表格类', target: 'table'},
+    //                 {text: '表单类', target: 'form'},
+    //                 {text: '命令类', target: 'command'},
+    //                 {text: '功能类', target: 'widget'},
+    //                 {text: '高级功能', target: 'adv'}
+    //             ]
+    //         },
+    //         {
+    //             type: 'Frame',
+    //             width: '*',
+    //             nodes: [
+    //                 {type: 'View', id: 'layout', template: 'demo/layout'},
+    //                 {type: 'View', id: 'table', template: 'demo/table'},
+    //                 {type: 'View', id: 'form', template: 'demo/form'},
+    //                 {type: 'View', id: 'command', template: 'demo/command'},
+    //                 {type: 'View', id: 'widget', template: 'demo/widget'},
+    //                 {type: 'View', id: 'adv', template: 'demo/adv'}
+    //             ]
+    //         }
+    //     ]
+    // }
     node: {
         type: 'Tabs',
         cls: 'bg-white',

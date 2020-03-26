@@ -27,7 +27,9 @@ define.template({
                             type: 'Text',
                             name: 'text5',
                             value: '文字删除可以看到无label的效果(关注placeholder提示语)'
-                        }
+                        },
+                        {type: 'Text', name: 'text5', value: '禁用状态', label: {text: '禁用状态'}, status: 'disabled'},
+                        {type: 'Text', name: 'text6', value: '只读状态', label: {text: '只读状态'}, status: 'readonly'}
                     ]
                 }
             },

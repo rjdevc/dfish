@@ -1,7 +1,7 @@
 dfish.config({
     skin: {
         // 主题风格
-        theme: 'matrix',
+        theme: 'classic',
         // 颜色
         color: 'blue'
     },
