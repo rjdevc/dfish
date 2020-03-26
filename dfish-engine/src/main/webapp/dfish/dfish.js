@@ -2284,9 +2284,12 @@ _merge( $, {
 	// @a -> src, b -> post json?
 	download: function( a, b ) {
 		var c = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
+		if ( _cfg.ajaxData ) {
+			b = $.extend( b || {}, _cfg.ajaxData );
+		}
 		if ( b ) {
 			var f = document.createElement( 'form' ), u = '_download_' + $.uid();
-			f.action = a;
+			f.action = _ajax_url( a );
 			f.target = u;
 			f.method = 'post';
 			for ( var i in b ) {
