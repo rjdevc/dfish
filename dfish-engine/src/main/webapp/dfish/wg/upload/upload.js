@@ -1365,7 +1365,7 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 				var d   = new FormData(),
 					f   = ldr.x.file,
 					xhr = new XMLHttpRequest(),
-					data = $.x.ajax_data,
+					data = $.x.ajaxData,
 					self = this;
 				d.append( 'Filedata', f );
 				for ( var i in data ) {
@@ -1405,8 +1405,8 @@ FlashUpload = define.widget( 'FlashUpload', {
 					button_cursor: SWFUpload.CURSOR.HAND,
 					button_placeholder_id: this.id + 'swf'
 				} );
-				if ( $.x.ajax_data )
-					this.settings.post_params = $.extend( this.settings.post_params || {}, $.x.ajax_data );
+				if ( $.x.ajaxData )
+					this.settings.post_params = $.extend( this.settings.post_params || {}, $.x.ajaxData );
 				this.initSWFUpload( this.settings );
 			}
 		}
