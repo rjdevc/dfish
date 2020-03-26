@@ -6,7 +6,7 @@ define.template({
                     {
                         type: 'Horizontal',
                         cls: 'index-head',
-                        style: 'background:#009bdb;',
+                        style: 'background:#2498ff;',
                         height: 50,
                         nodes: [
                             {
@@ -22,10 +22,10 @@ define.template({
                                     {
                                         type: 'ButtonBar',
                                         id: 'menuBar',
+                                        cls: 'index-head-nav',
                                         width: '*',
                                         space: 0,
-                                        cls: 'index-head-nav',
-                                        pub: {height: '*', width: 100, focusable: true},
+                                        pub: {height: '*', width: 100},
                                         nodes: [
                                             {text: '范例', target: 'demo', focus: true}
                                         ]

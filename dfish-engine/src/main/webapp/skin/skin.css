@@ -55,12 +55,12 @@ i {
     font-weight: bold;
 }
 
-/**↓背景样式↓**/
+/**背景样式**/
 .bg-white {
     background: #fff;
 }
 
-/**↑背景样式↑**/
+/**背景样式**/
 
 /*****边框样式*****/
 .bd-main, .bd-split {
@@ -99,14 +99,15 @@ i {
     border-width: 0 0 0 1px !important;
 }
 
-/**↓组件状态↓**/
+/**组件状态**/
 .z-ds {
     cursor: default !important;
 }
 
-/**↑组件状态↑**/
+/**组件状态**/
 
-/**↓表格↓**/
+/****布局****/
+/**表格**/
 .w-table.z-empty .w-table-bg, .w-album.z-empty, .w-tree.z-empty {
     background: url("./img/nodata_160.png") no-repeat center;
     min-height: 160px;
@@ -119,75 +120,9 @@ i {
 .w-table .w-td-cell.z-last {
     border-right: 1px solid #e9e9e9;
 }
+/**表格**/
 
-/**↑表格↑**/
-
-/**↓树节点↓**/
-.w-leaf-i {
-    min-width: 0;
-}
-
-
-/**↑树节点↑**/
-
-/**↓按钮↓**/
-
-/* 按钮默认样式 */
-.w-button {
-    font-size: 14px;
-}
-
-/* 主按钮-禁用 */
-.w-submitbutton.z-ds {
-    background-color: #def0fe;
-    border-color: #def0fe;
-    color: #999;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal {
-    border-color: transparent;
-    background-color: transparent;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal.z-hv, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-on, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-dn, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
-    background-color: transparent;
-}
-
-.w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
-    color: #aaa;
-}
-
-.w-buttonbar.dlg-head-operation .w-button {
-    background: transparent;
-}
-
-.w-menu {
-    border-color: #ccc;
-}
-
-.w-menu .w-menu-button {
-    cursor: pointer;
-}
-
-.w-menu-line {
-    display: block;
-}
-
-.w-menu-button {
-
-}
-
-.w-menu-button.z-hv {
-    background: #d5ecff;
-}
-
-.w-menu-button.z-on {
-    background: #bce0ff;
-}
-
-/**↑按钮↑**/
-
-/**↓tabs↓**/
+/**Tabs**/
 .w-tabs {
     border: 1px solid #ddd;
 }
@@ -200,7 +135,7 @@ i {
     /*padding: 0 10px;*/
 }
 
-.w-tabs .w-tabbar .w-tabbar-line, .w-tabs.z-position-top .w-tabbar .w-tabbar-line {
+.w-tabs .w-tabbar .w-tabbar-line {
     display: block;
     height: 1px;
     background: #ddd;
@@ -269,23 +204,68 @@ i {
 /*    width: 2px;*/
 /*    height: auto;*/
 /*}*/
+/**Tabs**/
 
-/**↑tabs↑**/
+/**FieldSet**/
 
-/**↓表单↓**/
-.w-input {
-    border: 1px solid #ccc;
-    border-radius: 0;
-    color: #333;
+/**FieldSet**/
+/****布局****/
+
+/**树节点**/
+.w-leaf-i {
+    min-width: 0;
 }
 
-.w-form.z-ds .w-input {
-    background: #e6e6e6;
+
+/**树节点**/
+
+/**按钮**/
+
+/* 按钮默认样式 */
+.w-button {
+    font-size: 14px;
 }
 
-/**↑表单↑**/
+/* 主按钮-禁用 */
+.w-submitbutton.z-ds {
+    background-color: #def0fe;
+    border-color: #def0fe;
+    color: #999;
+}
 
-/**↓对话框↓**/
+.w-buttonbar.x-breadcrumb .w-button.z-normal {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-hv, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-on, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-dn, .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
+    background-color: transparent;
+}
+
+.w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
+    color: #aaa;
+}
+
+.w-buttonbar.dlg-head-operation .w-button {
+    background: transparent;
+}
+
+.w-menu {
+    border-color: #ccc;
+}
+
+.w-menu .w-menu-button {
+    cursor: pointer;
+}
+
+.w-menu-line {
+    display: block;
+}
+
+
+/**按钮**/
+
+/**对话框**/
 .w-dialog {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(114, 182, 227, 0.7);
@@ -355,9 +335,9 @@ i {
     display: block
 }
 
-/**↑对话框↑**/
+/**对话框**/
 
-/**↓图片↓**/
+/**图片**/
 img {
     border: 0;
 }
@@ -420,9 +400,9 @@ img {
     background-image: none !important;
 }
 
-/**↑图片↑**/
+/**图片**/
 
-/**↓图标↓**/
+/**图标**/
 .i-file {
     background: url("img/file.png");
     width: 16px;
@@ -541,7 +521,7 @@ img {
 }
 
 
-/**↓常用操作图标↓**/
+/**常用操作图标**/
 .x-operation-group i, i.x-operation {
     cursor: pointer;
     display: inline-block;
@@ -1106,7 +1086,7 @@ img {
     height: 16px;
 }
 
-/**↑常用操作图标↑**/
+/**常用操作图标**/
 .i-toggle-icon {
     background: url("img/btn-icon.png") -27px -266px;
     width: 16px;
@@ -1155,9 +1135,9 @@ img {
     height: 100px;
 }
 
-/**↑图标↑**/
+/**图标**/
 
-/**↓进度条↓**/
+/**进度条**/
 .w-progress .w-progress-item.z-0 ._up {
     background-color: #fff000;
 }
@@ -1174,4 +1154,4 @@ img {
     background-color: #72b636;
 }
 
-/**↑进度条↑**/
+/**进度条**/
