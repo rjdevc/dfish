@@ -45,7 +45,7 @@ public class DemoController extends BaseActionController {
         fileService.updateFileLinks(imageJson, "IMAGE_TEST", "IMAGE01");
         String lobContent = ServletUtil.getParameter(request, "lobContent");
         if (Utils.notEmpty(lobContent)) {
-            lobService.saveLob(lobContent);
+            lobService.saveContent(lobContent);
         }
         return new JsonResponse<>(true);
     }
