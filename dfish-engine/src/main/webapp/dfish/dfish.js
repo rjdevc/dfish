@@ -2359,8 +2359,14 @@ _merge( $, {
 	// @a -> image array, b -> id
 	previewImage: function( a, b ) {
 		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
+		if ( br.mobile ) {
+			w = $.width() - 36;
+			h = $.height() - 36;
+		}
+		a = _ajax_url( a );
+		_cfg.ajaxData && (a = _urlParam( a, _cfg.ajaxData ));
 		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
-			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' class=f-va style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
