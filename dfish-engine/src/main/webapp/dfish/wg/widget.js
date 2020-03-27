@@ -736,11 +736,17 @@ W = define( 'Widget', function() {
 		x_childtype: function( t ) {
 			return t;
 		},
+		// @implement
+		init_x_pub: function( x ) {
+			var r = this.rootNode;
+			r && r.x.pub && $.extend( x, r.x.pub );
+		},
 		// @private: 初始化配置参数
 		_init_x: function( x ) {
 			this.x = x;
-			var r = this.rootNode;
-			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
+			if ( this.nodeIndex > -1 ) {
+				this.init_x_pub( x );
+			}
 			if ( this.x.template ) {
 				var t = _getTemplate( this.x.template, T );
 				if ( t ) {
@@ -3845,7 +3851,6 @@ Tabs = define.widget( 'Tabs', {
 		this.frame = this[ 1 ];
 	},
 	Extend: Vert,
-	Default: { widthMinus: 2, heightMinus: 2 },
 	Prototype: {
 		className: 'w-tabs',
 		getTabPositionCode: function( s ) {
@@ -10201,6 +10206,10 @@ TableRow = define.widget( 'TableRow', {
 	},
 	Prototype: {
 		ROOT_TYPE: 'Table,Form',
+		init_x_pub: function( x ) {
+			var p = this.parentNode.parentNode.parentNode; //tHead tBody tFoot
+			p.x.pub && $.extendDeep( x, p.x.pub );
+		},
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -10291,7 +10300,7 @@ TableRow = define.widget( 'TableRow', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowSpan,
+			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = this.x.escape !== F, r = this.offsetParent()._rowSpan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
@@ -10329,7 +10338,7 @@ TableRow = define.widget( 'TableRow', {
 				} else {
 					v = v == N ? '' : v;
 					var g = '';
-					if ( !e || u.x.br === F )
+					if ( ! this.x.br )
 						g += ' class="f-fix"';
 					if ( this.type_thr && f.sort )
 						v += c[ i ].html_sortarrow();
@@ -10891,7 +10900,12 @@ THead = define.widget( 'THead', {
 	Extend: Vert,
 	Prototype: {
 		ROOT_TYPE: 'Table,Form',
+		x_childtype: $.rt( 'TR' ),
 		x_nodes: $.rt(),
+		isPubAllow: function( t ) {
+			alert(t);
+			return t === 'TR';
+		},
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = Scroll.get( this.rootNode ), b, f;
@@ -10972,7 +10986,6 @@ TBody = define.widget( 'TBody', {
 AbsTable = define.widget( 'AbsTable', {
 	Extend: Vert,
 	Prototype: {
-		x_childtype: $.rt( 'TR' ),
 		initBody: function( x ) {
 			var r = x.tHead && x.tHead.nodes, s = this.attr( 'scroll' );
 			if ( r && r.length ) {
@@ -11549,8 +11562,8 @@ Form = define.widget( 'Form', {
 		var y = $.extend( {}, x, { columns: c, tBody: { nodes: rows } } );
 		delete y.nodes;
 		if ( x.pub ) {
-			y.pub = {};
-			x.pub.height && (y.pub.height = x.pub.height);
+			y.tBody.pub = {};
+			x.pub.height && (y.tBody.pub.height = x.pub.height);
 		}
 		Table.call( this, y, p );
 	},
