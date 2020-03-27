@@ -63,7 +63,7 @@ import java.util.*;
  * @since DFish 3.0
  */
 public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements TableOperation<Table>,
-        HiddenContainer<Table>, HtmlContentHolder<Table>, Scrollable<Table> {
+        HiddenContainer<Table>,  Scrollable<Table> {
 
     private static final long serialVersionUID = 6537737987499258183L;
     private THead tHead;
@@ -92,11 +92,10 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
     private String face;
     private Integer cellPadding;
     private Boolean focusMultiple;
-    private Boolean br;
     //    private Combo combo;
-//    private Integer limit;
     private Boolean resizable;
-    private Boolean escape;
+    //    private Integer limit;
+
     private Boolean scroll;
 
     public Table() {
@@ -436,36 +435,7 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
         return this;
     }
 
-    /**
-     * 内容不换行。
-     *
-     * @return Boolean
-     */
-    public Boolean getBr() {
-        return br;
-    }
 
-    /**
-     * 内容过多的时候不会换行，而是隐藏不显示
-     *
-     * @param br Boolean
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public Table setBr(Boolean br) {
-        this.br = br;
-        return this;
-    }
-
-    @Override
-    public Boolean getEscape() {
-        return escape;
-    }
-
-    @Override
-    public Table setEscape(Boolean escape) {
-        this.escape = escape;
-        return this;
-    }
 
 //		@Override
 //		public JsonTable add(Tr w) {

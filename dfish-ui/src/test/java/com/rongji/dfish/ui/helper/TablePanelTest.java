@@ -32,7 +32,7 @@ public class TablePanelTest extends DFishUITestCase {
 		table.pub().setHeight(40).putOn(Table.EVENT_DBL_CLICK, "dblclick();");
 //		gp.getHeadRow().setCls("handle_grid_head");
 
-		System.out.println(table.getEscape());
+//		System.out.println(table.getEscape());
 		System.out.println(table.getScroll());
 		return table;
 	}

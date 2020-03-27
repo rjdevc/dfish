@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
-        implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> {
+        implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> ,HtmlContentHolder<T> {
 
     private static final long serialVersionUID = -7870476532478876521L;
 
@@ -20,6 +20,28 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
     protected Boolean escape;
     protected String format;
     protected Integer labelWidth;
+
+    private Boolean br;
+    /**
+     * 内容不换行。
+     *
+     * @return Boolean
+     */
+    public Boolean getBr() {
+        return br;
+    }
+
+    /**
+     * 内容过多的时候不会换行，而是隐藏不显示
+     *
+     * @param br Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setBr(Boolean br) {
+        this.br = br;
+        return (T)this;
+    }
+
 
     /**
      * 这个这个单元格占几列。

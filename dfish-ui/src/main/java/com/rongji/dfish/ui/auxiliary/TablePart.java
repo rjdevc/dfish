@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.auxiliary;
 
 import com.rongji.dfish.ui.AbstractMultiNodeContainer;
+import com.rongji.dfish.ui.HtmlContentHolder;
 import com.rongji.dfish.ui.MultiNodeContainer;
 import com.rongji.dfish.ui.Widget;
 import com.rongji.dfish.ui.json.WidgetJsonBuilder;
@@ -18,7 +19,8 @@ import java.util.Map;
  *
  * @author DFish team
  */
-public abstract class TablePart extends AbstractMultiNodeContainer<TablePart, TR> implements TableOperation<TablePart>, MultiNodeContainer<TablePart, TR> {
+public abstract class TablePart extends AbstractMultiNodeContainer<TablePart, TR> implements
+        TableOperation<TablePart>, MultiNodeContainer<TablePart, TR> ,HtmlContentHolder<TablePart> {
     /**
      * 默认构造函数
      */
@@ -32,6 +34,39 @@ public abstract class TablePart extends AbstractMultiNodeContainer<TablePart, TR
     }
 
     protected Table owner;
+    private Boolean br;
+    private Boolean escape;
+    /**
+     * 内容不换行。
+     *
+     * @return Boolean
+     */
+    public Boolean getBr() {
+        return br;
+    }
+
+    /**
+     * 内容过多的时候不会换行，而是隐藏不显示
+     *
+     * @param br Boolean
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public TablePart setBr(Boolean br) {
+        this.br = br;
+        return this;
+    }
+
+    @Override
+    public Boolean getEscape() {
+        return escape;
+    }
+
+    @Override
+    public TablePart setEscape(Boolean escape) {
+        this.escape = escape;
+        return this;
+    }
+
 
     /**
      * TablePart所属table
