@@ -736,11 +736,17 @@ W = define( 'Widget', function() {
 		x_childtype: function( t ) {
 			return t;
 		},
+		// @implement
+		init_x_pub: function( x ) {
+			var r = this.rootNode;
+			r && r.x.pub && $.extend( x, r.x.pub );
+		},
 		// @private: 初始化配置参数
 		_init_x: function( x ) {
 			this.x = x;
-			var r = this.rootNode;
-			r && this.nodeIndex > -1 && r.x_childtype( this.type ) === this.type && (r = r.x.pub) && $.extendDeep( x, r );
+			if ( this.nodeIndex > -1 ) {
+				this.init_x_pub( x );
+			}
 			if ( this.x.template ) {
 				var t = _getTemplate( this.x.template, T );
 				if ( t ) {
@@ -3845,7 +3851,6 @@ Tabs = define.widget( 'Tabs', {
 		this.frame = this[ 1 ];
 	},
 	Extend: Vert,
-	Default: { widthMinus: 2, heightMinus: 2 },
 	Prototype: {
 		className: 'w-tabs',
 		getTabPositionCode: function( s ) {
@@ -4354,7 +4359,7 @@ _snapHooks = { topLeft: 'tl', leftTop: 'lt', topRight: 'tr', righTop: 'rt', righ
 				center: F, centerCenter: F, c: F, cc: F, '0': F },
 _snapPosition = function( a ) {
 	return a && (_snapHooks[ a ] === F ? N : '' + (_snapHooks[ a ] || a));
-}
+},
 /* `dialog`
  *  id 用于全局存取 ( dfish.dialog(id) ) 并保持唯一，以及用于里面的view的 path */
 Dialog = define.widget( 'Dialog', {
@@ -4391,6 +4396,10 @@ Dialog = define.widget( 'Dialog', {
 		all: {},
 		custom: {},
 		get: function( a ) {
+			if ( arguments.length === 0 ) {
+				var b = Q( '.w-dialog.z-front,.w-dialog:last' );
+				return b[ 0 ] && $.all[ b[ 0 ].id ];
+			}
 			if ( typeof a === _STR )
 				return Dialog.custom[ a ];
 			if ( a.isWidget )
@@ -4571,7 +4580,7 @@ Dialog = define.widget( 'Dialog', {
 		},
 		_front: function( a ) {
 			var z = a ? 11 : 10;
-			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } ).addClass( 'z-front', a );
+			this.vis && this.css( { zIndex: z } ).css( 'cvr', { zIndex: z } ).addClass( 'z-front', !!a );
 		},
 		// 定位 /@a -> fullScreen?
 		axis: function( a ) {
@@ -7216,6 +7225,10 @@ Spinner = define.widget( 'Spinner', {
 /* `slider` */
 /* 值的范围默认 0-100 */
 Slider = define.widget( 'Slider', {
+	Const: function( x ) {
+		x.value == N && (x.value = 0);
+		AbsForm.apply( this, arguments );
+	},
 	Extend: AbsForm,
 	Default: {
 		width: '*', widthMinus: 0
@@ -7313,8 +7326,8 @@ Slider = define.widget( 'Slider', {
 			return 'f-nv';
 		},
 		html_nodes: function() {
-			var w = this.formWidth(), v = this.x.value == N ? 0 : this.x.value;
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
+			var w = this.formWidth();
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + this.x.value + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
 				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + '.dragStart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
@@ -10193,6 +10206,10 @@ TableRow = define.widget( 'TableRow', {
 	},
 	Prototype: {
 		ROOT_TYPE: 'Table,Form',
+		init_x_pub: function( x ) {
+			var p = this.parentNode.parentNode.parentNode; //tHead tBody tFoot
+			p.x.pub && $.extendDeep( x, p.x.pub );
+		},
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -10283,7 +10300,7 @@ TableRow = define.widget( 'TableRow', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = u.x.escape !== F, r = this.offsetParent()._rowSpan,
+			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = this.x.escape !== F, r = this.offsetParent()._rowSpan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
@@ -10321,7 +10338,7 @@ TableRow = define.widget( 'TableRow', {
 				} else {
 					v = v == N ? '' : v;
 					var g = '';
-					if ( !e || u.x.br === F )
+					if ( ! this.x.br )
 						g += ' class="f-fix"';
 					if ( this.type_thr && f.sort )
 						v += c[ i ].html_sortarrow();
@@ -10883,7 +10900,12 @@ THead = define.widget( 'THead', {
 	Extend: Vert,
 	Prototype: {
 		ROOT_TYPE: 'Table,Form',
+		x_childtype: $.rt( 'TR' ),
 		x_nodes: $.rt(),
+		isPubAllow: function( t ) {
+			alert(t);
+			return t === 'TR';
+		},
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = Scroll.get( this.rootNode ), b, f;
@@ -10964,7 +10986,6 @@ TBody = define.widget( 'TBody', {
 AbsTable = define.widget( 'AbsTable', {
 	Extend: Vert,
 	Prototype: {
-		x_childtype: $.rt( 'TR' ),
 		initBody: function( x ) {
 			var r = x.tHead && x.tHead.nodes, s = this.attr( 'scroll' );
 			if ( r && r.length ) {
@@ -11541,8 +11562,8 @@ Form = define.widget( 'Form', {
 		var y = $.extend( {}, x, { columns: c, tBody: { nodes: rows } } );
 		delete y.nodes;
 		if ( x.pub ) {
-			y.pub = {};
-			x.pub.height && (y.pub.height = x.pub.height);
+			y.tBody.pub = {};
+			x.pub.height && (y.tBody.pub.height = x.pub.height);
 		}
 		Table.call( this, y, p );
 	},

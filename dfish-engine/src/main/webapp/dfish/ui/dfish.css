@@ -107,7 +107,7 @@
 .f-shadow-snap.z-mag-b{box-shadow:0 1px 4px #ddd}
 .f-shadow-snap.z-mag-t{box-shadow:0 -1px 4px #ddd}
 
-.f-dialog-preview{background:#333}
+.w-dialog.f-dialog-preview{background:#333}
 .f-dialog-preview ._dlg_x{position:absolute;top:-18px;right:-18px;width:36px;height:36px;background:url(g/i.png) no-repeat 0 -187px;cursor:pointer}
 .f-dialog-preview ._dlg_x:hover{background-position:0 -228px}
 .f-dialog-preview ._origin{position:absolute;top:10px;right:25px;color:#fff;padding:5px 10px;background:rgba(74,74,74,0.6);border-radius:3px}
@@ -355,7 +355,7 @@
 .w-calendar.z-mini{border:0;padding:0 10px 0 10px}
 .w-calendar.z-mini .w-calendar-head{height:24px;line-height:24px;padding:6px 0 5px 0}
 .w-calendar.z-mini .w-calendar-tbl{width:auto;*table-layout:auto}
-.w-calendar.z-mini ._td{border:0}
+.w-calendar.z-mini ._td{border:0;vertical-align:middle}
 .w-calendar-date.z-mini ._td,.w-calendar-week.z-mini ._td{width:23px;height:23px}
 .w-calendar-month.z-mini ._td,.w-calendar-year.z-mini ._td{width:57px;height:32px}
 
@@ -638,7 +638,6 @@
 .w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute;top:2px}
 .w-button-split{vertical-align:middle;text-align:center}
 
-.w-tabs{border:1px solid #ddd}
 .w-tabbar{background:#f8f8f8}
 .w-tab{height:36px;border:1px solid #ddd}
 .w-tabbar .w-tabbar-line{display:block}

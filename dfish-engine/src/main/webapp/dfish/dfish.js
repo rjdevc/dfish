@@ -837,6 +837,11 @@ _urlParam = $.urlParam = function( a, b ) {
 	}
 	return u + (h ? '#' + h : '');
 },
+_urlComplete = $.urlComplete = function( a ) {
+	a = _ajax_url( a );
+	_cfg.ajaxData && (a = _urlParam( a, _cfg.ajaxData ));
+	return a;
+},
 // @a -> fn(得到0-1的参数), b -> milliseconds, c -> times
 _ease = $.ease = function( a, b, c ) {
 	a( 0 );
@@ -1567,6 +1572,9 @@ $.droppable = function( a, b ) {
 }
 
 var
+_ajax_url = $.ajaxUrl = function( a, b ) {
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + a;
+},
 _ajax_xhr = (function() {
 	var a = function() { return new XMLHttpRequest() },
 		b = function() { return new ActiveXObject( 'MSXML2.XMLHTTP' ) },
@@ -1577,9 +1585,6 @@ _ajax_xhr = (function() {
 	try { c(); return c; } catch( e ) {}
 	$.winbox( 'Cannot create XMLHTTP object!' );
 })(),
-_ajax_url = function( a, b ) {
-	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + a;
-},
 _ajax_data = function( e ) {
 	if ( e && typeof e === _OBJ ) {
 		var s = [], i;
@@ -2284,9 +2289,12 @@ _merge( $, {
 	// @a -> src, b -> post json?
 	download: function( a, b ) {
 		var c = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
+		if ( _cfg.ajaxData ) {
+			b = $.extend( b || {}, _cfg.ajaxData );
+		}
 		if ( b ) {
 			var f = document.createElement( 'form' ), u = '_download_' + $.uid();
-			f.action = a;
+			f.action = _ajax_url( a );
 			f.target = u;
 			f.method = 'post';
 			for ( var i in b ) {
@@ -2356,8 +2364,13 @@ _merge( $, {
 	// @a -> image array, b -> id
 	previewImage: function( a, b ) {
 		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
+		if ( br.mobile ) {
+			w = $.width() - 36;
+			h = $.height() - 36;
+		}
+		a = _urlComplete( a );
 		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
-			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' class=f-va style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},

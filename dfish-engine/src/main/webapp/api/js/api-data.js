@@ -1804,7 +1804,8 @@ define( {
   	remark: 'Table的表头。',
   	extend: 'Widget',
     Config: [
-        { name: 'nodes', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' }
+      { name: 'nodes', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' },
+      { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' }
     ],
 	Examples: [
 	  { example: [
@@ -1836,7 +1837,8 @@ define( {
   	remark: 'Table的内容。',
   	extend: 'Widget',
     Config: [
-        { name: 'nodes', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' }
+      { name: 'nodes', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' },
+      { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' }      
     ],
 	Examples: [
 	  { example: [
@@ -1868,7 +1870,8 @@ define( {
   	remark: 'Table的表尾。',
   	extend: 'Widget',
     Config: [
-        { name: 'nodes', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' }
+      { name: 'nodes', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' },
+      { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' }      
     ],
 	Examples: [
 	  { example: [
@@ -2061,7 +2064,9 @@ define( {
   	remark: '表格行。',
   	extend: 'Widget',
     Config: [
+      { name: 'br', type: 'Boolean', remark: '内容是否换行。' },
       { name: 'data', type: 'Object', remark: '行数据。' },
+      { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
       { name: 'src', type: 'String', remark: '可展开内容的地址。这个 src 应当返回一个 view' },
       { name: 'nodes', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
@@ -2184,14 +2189,11 @@ define( {
   	remark: '表格。',
   	extend: 'Widget',
     Config: [
-      { name: 'br', type: 'Boolean', remark: '内容是否换行。默认值为true。' },
       { name: 'cellPadding', type: 'Number', remark: '设置单元边沿与其内容之间的空白。' },
       { name: 'columns', type: 'Array', remark: '列参数的数组集合。<br>单个列的参数参见 Column 类。' },
-      { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
       { name: 'focusMultiple', type: 'Boolean', remark: '是否有多选的点击高亮效果。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
-      { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' },
       { name: 'resizable', type: 'Boolean', remark: '是否可以拖动表头调整列宽。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'tHead', type: 'THead', remark: '表尾。' },
@@ -4876,7 +4878,7 @@ define( {
       { name: 'thumbnail', type: 'String', remark: '缩略图地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'uploadButtons', type: 'Array', remark: '上传按钮的数组。' },
       { name: 'uploadLimit', type: 'Number', remark: '最多可上传数量。' },
-      { name: 'post', type: 'String', remark: '上传地址。<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s><br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
+      { name: 'post', type: 'String | UploadPost', remark: '上传地址。<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s><br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
       { name: 'valueButtons', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
       { name: 'value', type: 'String | Array', remark: '值。' }
     ],

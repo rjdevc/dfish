@@ -1205,7 +1205,13 @@ AbsUpload = define.widget( 'AbsUpload', {
 			if ( typeof v === 'string' ) {
 				v = v.charAt( 0 ) == '[' ? $.jsonParse( v ) : [];
 			}
-			return $.jsonString( v ) != (this.val() || '[]');
+			u = this._value || [];
+			if ( v.length !== u.length )
+				return true;
+			for ( var i = 0; i < v.length; i ++ ) {
+				if ( v[ i ].id != u[ i ].id )
+					return true;
+			}
 		},
 		saveModified: function() {
 			this._modval = this.val();
@@ -1365,7 +1371,7 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 				var d   = new FormData(),
 					f   = ldr.x.file,
 					xhr = new XMLHttpRequest(),
-					data = $.x.ajax_data,
+					data = $.x.ajaxData,
 					self = this;
 				d.append( 'Filedata', f );
 				for ( var i in data ) {
@@ -1384,7 +1390,8 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 				}, false );
 				ldr.loading = true;
 				ldr.xhr     = xhr;
-				xhr.open( 'post', this.formatStr( this.x.upload_url , null, ! /^\$\w+$/.test( this.x.upload_url ) ) );
+				var u = $.ajaxUrl( this.x.upload_url );
+				xhr.open( 'post', this.formatStr( u, null, ! /^\$\w+$/.test( u ) ) );
 				xhr.send( d );
 			}
 		}
@@ -1404,8 +1411,8 @@ FlashUpload = define.widget( 'FlashUpload', {
 					button_cursor: SWFUpload.CURSOR.HAND,
 					button_placeholder_id: this.id + 'swf'
 				} );
-				if ( $.x.ajax_data )
-					this.settings.post_params = $.extend( this.settings.post_params || {}, $.x.ajax_data );
+				if ( $.x.ajaxData )
+					this.settings.post_params = $.extend( this.settings.post_params || {}, $.x.ajaxData );
 				this.initSWFUpload( this.settings );
 			}
 		}
@@ -1820,6 +1827,7 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 				! m && (m = this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
 				! m && (m = v.url);
 			}
+			m = $.urlComplete( m );
 			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif><div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
 				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.arrow( 'b2' ) + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
