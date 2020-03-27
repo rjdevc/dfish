@@ -1804,6 +1804,8 @@ define( {
   	remark: 'Table的表头。',
   	extend: 'Widget',
     Config: [
+      { name: 'br', type: 'Boolean', remark: '内容是否换行。' },
+      { name: 'escape', type: 'Boolean', remark: 'html内容转义。默认值为true。' },
       { name: 'nodes', type: 'Array', remark: '表头的行数组集合。每条数据都是一个 TR。' },
       { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' }
     ],
@@ -1835,11 +1837,7 @@ define( {
   },
   "TBody": {
   	remark: 'Table的内容。',
-  	extend: 'Widget',
-    Config: [
-      { name: 'nodes', type: 'Array', remark: '表格内容的行数组集合。每条数据都是一个 TR。' },
-      { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' }      
-    ],
+  	extend: 'THead',
 	Examples: [
 	  { example: [
           function() {
@@ -1868,11 +1866,7 @@ define( {
   },
   "TFoot": {
   	remark: 'Table的表尾。',
-  	extend: 'Widget',
-    Config: [
-      { name: 'nodes', type: 'Array', remark: '表尾的行数组集合。每条数据都是一个 TR。' },
-      { name: 'pub', type: 'Object', remark: '为每一行设置默认属性' }      
-    ],
+  	extend: 'THead',
 	Examples: [
 	  { example: [
           function() {
@@ -2064,9 +2058,7 @@ define( {
   	remark: '表格行。',
   	extend: 'Widget',
     Config: [
-      { name: 'br', type: 'Boolean', remark: '内容是否换行。' },
       { name: 'data', type: 'Object', remark: '行数据。' },
-      { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
       { name: 'src', type: 'String', remark: '可展开内容的地址。这个 src 应当返回一个 view' },
       { name: 'nodes', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
@@ -2142,13 +2134,15 @@ define( {
   	remark: '表格单元格。',
   	extend: 'Widget',
     Config: [
-      { name: 'colSpan', type: 'Number', remark: '跨行数。' },
-      { name: 'rowSpan', type: 'Number', remark: '跨列数。' },
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
-      { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
+      { name: 'br', type: 'Boolean', remark: '内容是否换行。' },
+      { name: 'colSpan', type: 'Number', remark: '跨行数。' },
+      { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
+      { name: 'labelWidth', type: 'Number', remark: '表单标题宽度。' },
+      { name: 'rowSpan', type: 'Number', remark: '跨列数。' },
       { name: 'node', type: 'Object', remark: '子节点。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'labelWidth', type: 'Number', remark: '表单标题宽度。' }
+      { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' }
     ],
 	Examples: [
 	  { example: [

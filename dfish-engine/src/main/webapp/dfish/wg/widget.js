@@ -10025,6 +10025,7 @@ TableLeaf = define.widget( 'TableLeaf', {
 		className: 'w-leaf w-table-leaf',
 		_pad_left: 0,
 		tr: _table_tr,
+		init_x_pub: $.rt(),
 		_focus: $.rt(),
 		isEllipsis: $.rt( T ),
 		getLength: function() {
@@ -10201,14 +10202,14 @@ TableRow = define.widget( 'TableRow', {
 		this.level = p.level == N ? 0 : p.level + 1;
 		if ( typeof x.data !== _OBJ )
 			x = { data: x };
+		this.pubNode = p.pubNode || p.parentNode.parentNode; //tHead tBody tFoot
 		this.table = p.table;
 		W.call( this, x, p, n );
 	},
 	Prototype: {
 		ROOT_TYPE: 'Table,Form',
 		init_x_pub: function( x ) {
-			var p = this.parentNode.parentNode.parentNode; //tHead tBody tFoot
-			p.x.pub && $.extendDeep( x, p.x.pub );
+			this.pubNode.x.pub && $.extendDeep( x, this.pubNode.x.pub );
 		},
 		className: 'w-tr',
 		// @implement
@@ -10235,9 +10236,6 @@ TableRow = define.widget( 'TableRow', {
 		},
 		// x -> widget option, i -> colIndex
 		addCell: function( x, i ) {
-			var e = this.rootNode.x.escape !== F;
-			if ( e )
-				$.extend( x, { escape: e } );
 			var n = (this.tcell || (this.tcell = new TCell( {}, this ))).add( x );
 			n.col = this.table.getColGroup()[ i ];
 			return n;
@@ -10300,7 +10298,7 @@ TableRow = define.widget( 'TableRow', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = this.x.escape !== F, r = this.offsetParent()._rowSpan,
+			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = this.pubNode.x.escape !== F, r = this.offsetParent()._rowSpan,
 				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
@@ -10338,7 +10336,7 @@ TableRow = define.widget( 'TableRow', {
 				} else {
 					v = v == N ? '' : v;
 					var g = '';
-					if ( ! this.x.br )
+					if ( ! this.pubNode.x.br )
 						g += ' class="f-fix"';
 					if ( this.type_thr && f.sort )
 						v += c[ i ].html_sortarrow();
@@ -10380,7 +10378,10 @@ TD = define.widget( 'TD', {
 		if ( x.type && x.type !== 'TD' )
 			x = { node: x };
 		x.colSpan == -1 && (x.colSpan = p.table.getColGroup().length);
-		x.node && p.table.x.escape !== F && $.extend( x.node, { escape: T } );
+		if ( x.node ) {
+			var e = x.escape == N ? p.parentNode.pubNode.x.escape : x.escape;
+			e != N && $.extend( x.node, { escape: e } );
+		}
 		this.table = p.table;
 		W.call( this, x, p );
 	},
@@ -10391,7 +10392,7 @@ TD = define.widget( 'TD', {
 			return _td_wg[ t ] ? 'Table' + t : t;
 		},
 		html: function( k, i, L ) {
-			var r = this.parentNode.parentNode, g = this.table, u = this.rootNode, c = this.col, d = this.x.escape == N ? g.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.table, u = this.rootNode, c = this.col, d = this.x.escape == N ? r.pubNode.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td z-face-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_tr ? '' : ' w-th' + (r.type_thr && c.x.sort ? ' w-th-sort' : ''));
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (!ie7 && c.x.fixed ? ' f-form-hide' : '') + '"';
 			if ( this.x.on || this.Const.Listener )
@@ -10415,7 +10416,7 @@ TD = define.widget( 'TD', {
 			s += '>' + this.html_prepend() + this.html_nodes();
 			if ( ! this.x.node ) {
 				var f = '';
-				if ( ! e || g.x.br )
+				if ( !(this.x.br == N ? r.pubNode.x.br : this.x.br) )
 					f += ' class="f-fix"';
 				if ( ! e && c._sort )
 					t += c.html_sortarrow();
