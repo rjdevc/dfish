@@ -1205,7 +1205,13 @@ AbsUpload = define.widget( 'AbsUpload', {
 			if ( typeof v === 'string' ) {
 				v = v.charAt( 0 ) == '[' ? $.jsonParse( v ) : [];
 			}
-			return $.jsonString( v ) != (this.val() || '[]');
+			u = this._value || [];
+			if ( v.length !== u.length )
+				return true;
+			for ( var i = 0; i < v.length; i ++ ) {
+				if ( v[ i ].id != u[ i ].id )
+					return true;
+			}
 		},
 		saveModified: function() {
 			this._modval = this.val();

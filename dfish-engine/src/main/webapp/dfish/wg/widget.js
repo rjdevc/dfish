@@ -7220,6 +7220,10 @@ Spinner = define.widget( 'Spinner', {
 /* `slider` */
 /* 值的范围默认 0-100 */
 Slider = define.widget( 'Slider', {
+	Const: function( x ) {
+		x.value == N && (x.value = 0);
+		AbsForm.apply( this, arguments );
+	},
 	Extend: AbsForm,
 	Default: {
 		width: '*', widthMinus: 0
@@ -7317,8 +7321,8 @@ Slider = define.widget( 'Slider', {
 			return 'f-nv';
 		},
 		html_nodes: function() {
-			var w = this.formWidth(), v = this.x.value == N ? 0 : this.x.value;
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + v + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
+			var w = this.formWidth();
+			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + this.x.value + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
 				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + '.dragStart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i _i"></i></div></div>' + this.html_placeholder();
 		}
 	}
