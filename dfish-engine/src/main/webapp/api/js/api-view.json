@@ -204,13 +204,15 @@
 		        { "id": "DatePicker", "text": "DatePicker", "icon": ".icon .icon-class" },
 		        { "id": "DropBox", "text": "DropBox", "icon": ".icon .icon-class" },
 		        { "id": "FileUpload", "text": "FileUpload", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
+		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" },
+		          { "id": "UploadPost", "text": "UploadPost", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "FormGroup", "text": "FormGroup", "icon": ".icon .icon-class" },
 		        { "id": "FormLabel", "text": "FormLabel", "icon": ".icon .icon-class" },
 		        { "id": "Hidden", "text": "Hidden", "icon": ".icon .icon-class" },
 		        { "id": "ImageUpload", "text": "ImageUpload", "icon": ".icon .icon-class", "nodes": [
-		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" }
+		          { "id": "UploadButton", "text": "UploadButton", "icon": ".icon .icon-class" },
+		          { "id": "UploadPost", "text": "UploadPost", "icon": ".icon .icon-class" }
 		        ] },
 		        { "id": "ImgBox", "text": "ImgBox", "icon": ".icon .icon-class" },
 		        { "id": "Jigsaw", "text": "Jigsaw", "icon": ".icon .icon-class", "nodes": [
@@ -219,6 +221,7 @@
 		        ] },
 		        { "id": "Label", "text": "Label", "icon": ".icon .icon-class" },
 		        { "id": "LinkBox", "text": "LinkBox", "icon": ".icon .icon-class" },
+		        { "id": "Number", "text": "Number", "icon": ".icon .icon-class" },
 		        { "id": "OnlineBox", "text": "OnlineBox", "icon": ".icon .icon-class" },
 		        { "id": "Password", "text": "Password", "icon": ".icon .icon-class" },
 		        { "id": "PickBox", "text": "PickBox", "icon": ".icon .icon-class" },

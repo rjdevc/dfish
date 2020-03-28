@@ -3230,11 +3230,11 @@ ButtonBar = define.widget( 'ButtonBar', {
 			ready: function( e ) {
 				_superTrigger( this, Horz, e );
 				this.isScrollable() && this.getFocus() && _scrollIntoView( this.getFocus() );
-				this.x.overflowButton && this.overflow();
+				this.x.overflow && this.overflow();
 			},
 			resize: function( e, f ) {
 				_superTrigger( this, Horz, e );
-				! f && this.x.overflowButton && this.overflow();
+				! f && this.x.overflow && this.overflow();
 				var h = this.innerHeight();
 				this.$( 'vi' ) && this.css( 'vi', 'height', h == N ? '' : h );
 			},
@@ -3248,7 +3248,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 					var c = 'margin-' + (this.x.dir === 'v' ? 'bottom' : 'right');
 					Q( '.w-button', this.$() ).css( c, this.x.space + 'px' ).last().css( c, 0 );
 				}
-				if ( this.x.overflowButton ) {
+				if ( this.x.overflow ) {
 					this.overflow();
 					var f = this.getFocus();
 					f && f.focusOver();
@@ -3293,7 +3293,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 					this[ i ].css( { visibility: '' } );
 			}
 			// 调整页面百分比时，scrollWidth可能会比offsetWidth大一个像素。这里加一个像素容错
-			var tw = this.$().offsetWidth + 1, o = this.x.overflowButton;
+			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
 				var t = $.extend( { type: 'OverflowButton', focusable: F, closable: F, on: { click: '' } }, this.x.pub || {}, o );
 				t.text == N && t.icon == N && (t.text = Loc.more);
@@ -3549,7 +3549,7 @@ Button = define.widget( 'Button', {
 		},
 		focusOver: function() {
 			if ( this.x.focus ) {
-				var p = this.parentNode, o = p.x.overflowButton;
+				var p = this.parentNode, o = p.x.overflow;
 				if ( o && o.effect === 'swap' && p._more ) {
 					var q = Q( p._more.$() ).prev( '.w-button' )[ 0 ], v = q && _widget( q );
 					if ( v && v.nodeIndex < this.nodeIndex ) {
@@ -3843,7 +3843,7 @@ Tabs = define.widget( 'Tabs', {
 		!d && b[ 0 ] && ((d = b[ 0 ]).focus = T);
 		var n = this.getTabPositionName( x.position ),
 			r = { type: 'TabBar', cls: 'z-position-' + n, nodes: b };
-		$.extendAny( r, 'align,dir,scroll,space,split,overflowButton,vAlign', x, e, { vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h' } );
+		$.extendAny( r, 'align,dir,scroll,space,split,overflow,vAlign', x, e, { vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h' } );
 		y.nodes = [ { type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c } ];
 		y.nodes[ s === 'b' || s === 'r' ? 'push' : 'unshift' ]( r );
 		Vert.call( this, $.extend( { nodes:[ y ], scroll: F }, x ), p );
@@ -7120,16 +7120,14 @@ DatePicker = define.widget( 'DatePicker', {
 		}
 	}
 } ),
-/* `spinner` */
-Spinner = define.widget( 'Spinner', {
+/* `number` */
+_Number = define.widget( 'Number', {
 	Const: function( x, p ) {
 		AbsInput.apply( this, arguments );
 		x.format && x.value && (x.value = $.numFormat( x.value, x.format.length, x.format.separator, x.format.rightward ));
 	},
 	Extend: Text,
-	Default: {
-		width: mbi ? 160 : 100
-	},
+	Default: { width: 100 },
 	Listener: {
 		body: {
 			format: {
@@ -7204,7 +7202,7 @@ Spinner = define.widget( 'Spinner', {
 				var d = this.x.validate, m = d && this.vv( 'maxValue' ), n = d && this.vv( 'minValue' ), v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
 				m != N && (v = Math.min( m, v ));
 				n != N && (v = Math.max( n, v ));
-				this.focus();
+				this.focus( this.type === 'Number' );
 				this.val( v );
 			}
 		},
@@ -7213,15 +7211,27 @@ Spinner = define.widget( 'Spinner', {
 			return v ? $.numDecimal( v, this.x.decimal ) : '';
 		},
 		html_btn: function() {
-			return this.x.noButton ? '' : mbi ? '<cite class="f-inbl _l" onclick=' + evw + '.step(-1)>&minus;</cite><cite class="f-inbl _r" onclick=' + evw + '.step(1)>&plus;</cite>' :
-				'<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
+			return this.x.noButton ? '' : '<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
 		},
 		html_input: function() {
-			return mbi ? '<input type=number' + this.input_prop() + '>' :
-				'<input type=text' + this.input_prop() + ' w-valuetype="number">';
+			return '<input type=' + (mbi ? 'number' : 'text') + this.input_prop() + ' w-valuetype="number">';
 		}
 	}
 } ),
+/* `spinner` */
+Spinner = define.widget( 'Spinner', {
+	Extend: _Number,
+	Default: { width: mbi ? 160 : 140 },
+	Prototype: {
+		form_cls: function() {
+			return 'w-input f-nv';
+		},
+		html_btn: function() {
+			return this.x.noButton ? '' : '<cite class="f-inbl f-unsel f-boxbtn _l"' + _event_zhover + ' onclick=' + evw + '.step(-1)>&minus;</cite><cite class="f-inbl f-unsel f-boxbtn _r"' + _event_zhover + ' onclick=' + evw + '.step(1)>&plus;</cite>';
+		}
+	}
+} ),
+
 /* `slider` */
 /* 值的范围默认 0-100 */
 Slider = define.widget( 'Slider', {
@@ -8231,7 +8241,7 @@ ComboBox = define.widget( 'ComboBox', {
 					if ( d = r.getParam( a[ i ] ) )
 						(f = this.focusNode) ? this.fixOpt( f, d ) : (this.queryText( '' ), this.addOpt( d.text, d ));
 				}
-				this.focus();
+				this.focus( !mbi );
 			}
 		},
 		// @t -> query text, s -> milliseconds?
@@ -8341,7 +8351,7 @@ ComboBox = define.widget( 'ComboBox', {
 				var d = this.dropper, b = d && d.vis;
 				this.closePop();
 				if ( ! b ) {
-					this.focus();
+					this.focus( !mbi );
 					(d || (this.dropper = this.createPop( this.x.drop ))).show();
 				}
 			}
@@ -8852,7 +8862,7 @@ LinkBox = define.widget( 'LinkBox', {
 			if ( ! s )
 				return;
 			s.merge( a );
-			this.focus();
+			this.focus( !mbi );
 			var d = this.param( a ), u = this._currOpt || $.rngElement(), p = this.x.separator || ',', t = this.text();
 			if ( d && u ) { //&& ! $.idsAny( t, d.text, p ) ) {
 				if ( u.tagName === 'U' ) {
@@ -8907,7 +8917,7 @@ LinkBox = define.widget( 'LinkBox', {
 		drop: function() {
 			if ( this.usa() ) {
 				this.closePop();
-				this.focus();
+				this.focus( !mbi );
 				this._query_text = N;
 				(this.dropper || (this.dropper = this.createPop( this.x.drop ))).show();
 			}

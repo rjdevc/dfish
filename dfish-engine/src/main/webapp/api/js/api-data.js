@@ -236,19 +236,26 @@ define( {
             var date = $.dateParse( '2015-11-12' );
           }
       ] },
-      { name: '$.dialog(obj)', remark: '获取dialog对象', common: true, param: [
+      { name: '$.dialog([obj])', remark: '获取obj所在的Dialog对象。如果不传任何参数，将返回显示在最前面的Dialog对象。', common: true, param: [
         { name: 'obj', type: 'String | HTMLElement | widget', remark: '发送请求的URL字符串' }
       ], example: [
           function() {
           	// 根据id获取dialog
-            var d = VM().cmd( { type: "dialog", width: 500, height: 400, id: "myDialog" } );
+            var d = VM().cmd( { type: "Dialog", width: 500, height: 400, id: "myDialog" } );
             var e = $.dialog( "myDialog" );
             alert( d === e ); //显示true
           },
           function() {
           	// 点击按钮，关闭当前窗口
             return~
-            { type: "button", text: "关闭", on: { click: "$.dialog(this).close()" } }
+            { type: "Button", text: "关闭", on: { click: "$.dialog(this).close()" } }
+          },
+          function() {
+          	// 关闭显示在最前的Dialog
+            var d = $.dialog();
+            if ( d ) {
+            	d.close();
+            }
           }
       ] },
       { name: '$.download(url, [data])', remark: '下载文件。', common: true, param: [
@@ -581,7 +588,7 @@ define( {
           function() {
             $.template( 'index_view', {
             	type: 'view',
-            	node: { type: 'html', text: 'hello world' }
+            	node: { type: 'Html', text: 'hello world' }
             } );
           }
       ] },
@@ -661,7 +668,7 @@ define( {
       ], example: [
           function() {
           	// 点击这个 html widget 里的链接，更换内容为123
-          	var opt = { type: 'html', text: '<a href="javascript:" onclick="$.widget(this).text(123)">click</a>' }
+          	var opt = { type: 'Html', text: '<a href="javascript:" onclick="$.widget(this).text(123)">click</a>' }
           }
       ] },
       { name: '$.width()', remark: '获取浏览器可用的宽度。', common: true, example: [
@@ -917,7 +924,7 @@ define( {
           function() {
           	/// 使用模板的树
           	return~
-            { type: 'tree', src: 'tree.sp', template: 'tmpl_tree' }
+            { type: 'Tree', src: 'tree.sp', template: 'tmpl_tree' }
           },
           function() {
           	/// tree.sp 返回数据
@@ -932,16 +939,16 @@ define( {
           	return~
             define.template( 'tmpl_tree', {
               type: 'leaf', nodes: [
-                { type: 'leaf', '@w-for': '$item in $data', '@text': '$item.name' }
+                { type: 'Leaf', '@w-for': '$item in $data', '@text': '$item.name' }
               ]
             } );
           },
           function() {
             /// 上述模板解析结果为：
           	return~
-            { type: 'leaf', nodes: [
-              { type: 'leaf', text: '张三' },
-              { type: 'leaf', text: '李四' }
+            { type: 'Leaf', nodes: [
+              { type: 'Leaf', text: '张三' },
+              { type: 'Leaf', text: '李四' }
             ] }
           }
 	  ] },
@@ -1052,6 +1059,7 @@ define( {
             }
           }
       ] },
+      { name: 'formatNode', type: 'Widget', remark: '如果使用format并返回widget，那么可以使用formatNode来获取这个widget。', common: true },
       { name: 'id', type: 'String', remark: 'widget对象的ID。这个ID由引擎自动生成。', common: true },
       { name: 'isWidget', type: 'Boolean', remark: '是否是一个widget对象。所有widget的这个属性都为 true。可用来简单区分widget对象和JSON对象。', common: true },
       { name: 'ownerView', type: 'View', remark: 'widget 所属的 view 对象。', common: true, example: [
@@ -1137,14 +1145,14 @@ define( {
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-            wg.after( { type: 'html', text: '123' } );
+            wg.after( { type: 'Html', text: '123' } );
           }
       ] },
       { name: 'append(opt)', remark: '在内部的末尾处插入子节点。', common: true, param: [
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-            wg.append( { type: 'html', text: '123' } );
+            wg.append( { type: 'Html', text: '123' } );
           }
       ] },
       { name: 'attr(name, [value])', remark: '读/写属性。', common: true, param: [
@@ -1153,7 +1161,7 @@ define( {
       ], example: [
           function() {
           	// 读取属性
-            var wg = $.create( { type: 'html', text: '123' } );
+            var wg = $.create( { type: 'Html', text: '123' } );
             alert( wg.attr( 'text' ) ); // 显示"123"
           },
           function() {
@@ -1165,7 +1173,7 @@ define( {
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-            wg.before( { type: 'html', text: '123' } );
+            wg.before( { type: 'Html', text: '123' } );
           }
       ] },
       { name: 'closest(type)', remark: '获取符合条件的祖先节点。从当前节点开始，逐级向上级匹配，并返回最先匹配的节点。', common: true, param: [
@@ -1173,9 +1181,9 @@ define( {
       ], example: [
           function() {
           	// 以下三条语句等效
-            var p1 = wg.closest( 'vert' );
-            var p2 = wg.closest( { type: 'vert' } );
-            var p3 = wg.closest( function() { return this.type == 'vert' } );
+            var p1 = wg.closest( 'Vert' );
+            var p2 = wg.closest( { type: 'Vert' } );
+            var p3 = wg.closest( function() { return this.type == 'Vert' } );
           }
       ] },
       { name: 'cmd(cmdID, [arg1, arg2...argN])', remark: '执行命令。', common: true, param: [
@@ -1183,7 +1191,7 @@ define( {
         { name: 'argN', type: 'String', remark: '调用 ajax 或 submit 命令时，会替换 src 中的 $0...$N', optional: true }
       ], example: [
           function() {
-            wg.cmd( { type: 'ajax', src: 'abc.sp' } );
+            wg.cmd( { type: 'Ajax', src: 'abc.sp' } );
           }
       ] },
       { name: 'css(name, value)', remark: '设置 widget 的 style。', common: true, param: [
@@ -1264,7 +1272,7 @@ define( {
         { name: 'opt', type: 'object | widget | Array', remark: 'widget 配置参数或对象。如果要新增多个，可以使用数组。' }
       ], example: [
           function() {
-            wg.prepend( { type: 'html', text: '123' } );
+            wg.prepend( { type: 'Html', text: '123' } );
           }
       ] },
       { name: 'prev()', remark: '获取上一个兄弟节点。', common: true, example: [
@@ -1297,7 +1305,7 @@ define( {
         { name: 'opt', type: 'object | widget', remark: 'widget 配置参数或对象。' }
       ], example: [
           function() {
-            wg.replace( { type: 'html', text: '123' } );
+            wg.replace( { type: 'Html', text: '123' } );
           }
       ] },
       { name: 'remove()', remark: '移除。', common: true },
@@ -1459,7 +1467,7 @@ define( {
 	Examples: [
 	  { example: [
           function() {
-          	//例2: 当按钮过多，超出按钮栏宽度时，设置overflowButton参数，显示一个"更多"的可下拉按钮。
+          	//例2: 当按钮过多，超出按钮栏宽度时，设置overflow参数，显示一个"更多"的可下拉按钮。
           	return~
             {
                 type: 'ButtonBar',
@@ -1470,7 +1478,7 @@ define( {
                     { text: 'Button 2' },
                     { text: 'Button 3' }
                 ],
-                overflowButton: { type: 'OverflowButton', text: '更多', effect: 'swap' } //type参数可以省略
+                overflow: { type: 'OverflowButton', text: '更多', effect: 'swap' } //type参数可以省略
             }
           }
       ] }
@@ -1519,8 +1527,8 @@ define( {
       { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'dir', type: 'String', remark: '按钮排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
       { name: 'focusMultiple', type: 'Boolean', remark: '是否有多个按钮可同时设为焦点状态。' },
-      { name: 'br', type: 'Boolean', remark: '是否换行。默认为false。' },
-      { name: 'overflowButton', type: 'OverflowButton', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。' },
+      { name: 'br', type: 'Boolean', remark: '是否允许换行。' },
+      { name: 'overflow', type: 'OverflowButton', remark: '按钮溢出可见范围时，显示一个有下拉菜单的"更多"按钮。' },
       { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'space', type: 'Number', remark: '按钮之间的间隔。' },
@@ -1566,7 +1574,7 @@ define( {
                     { text: 'Button 2' },
                     { text: 'Button 3' }
                 ],
-                overflowButton: { type: 'OverflowButton', text: '更多' }
+                overflow: { type: 'OverflowButton', text: '更多' }
             }
           }
       ] }
@@ -2669,14 +2677,14 @@ define( {
           function() {
           	// view加载完毕后显示path
             return~
-            { type: 'view', id: 'myview', src: 'abc.sp', on: { filter: "return $response;" } };
+            { type: 'View', id: 'myview', src: 'abc.sp', on: { filter: "return $response;" } };
           }
       ] },
       { name: 'load', remark: '数据加载完毕并展示后触发。', example: [
           function() {
           	// view加载完毕后显示path
             return~
-            { type: 'view', id: 'myview', src: 'abc.sp', on: { load: "alert(this.path)" } };
+            { type: 'View', id: 'myview', src: 'abc.sp', on: { load: "alert(this.path)" } };
           }
       ] }
     ],
@@ -2890,7 +2898,7 @@ define( {
       ] }
     ],
     Properties: [
-      { name: 'box', type: 'Widget', remark: 'widget对象的选项widget。可能是一个radio或者checkbox。' }
+      { name: 'box', type: 'Widget', remark: 'widget对象的选项widget。' }
     ],
     Classes: [
       { name: '.w-img', remark: '基础样式。' },
@@ -3425,10 +3433,10 @@ define( {
           function() {
             // 横向布局的3个widget, 拖动中间的分割线调整大小
             return~
-            { type: 'horz', nodes:[
-                { type: 'html',  width: '*', text: 'aaa' },
-                { type: 'split', width: 1, style: 'background:blue', range: '100,100' },
-                { type: 'html',  width: '*', text: 'bbb' }
+            { type: 'Horz', nodes:[
+                { type: 'Html',  width: '*', text: 'aaa' },
+                { type: 'Split', width: 1, style: 'background:blue', range: '100,100' },
+                { type: 'Html',  width: '*', text: 'bbb' }
             ] }
           }
       ] },
@@ -4388,7 +4396,7 @@ define( {
     ]
   },
   "Spinner": {
-  	remark: '数字输入框。',
+  	remark: '数字输入框。输入框两边有增减按钮。',
   	extend: 'Text',
   	deprecate: '.w-text',
     Config: [
@@ -4415,12 +4423,34 @@ define( {
               label: { text: '数字框' },
               validate: { minValue: 0, maxValue: 100 }
             }
+          }
+      ] }
+    ]
+  },
+  "Number": {
+  	remark: '数字输入框。',
+  	extend: 'Spinner',
+  	deprecate: '.w-spinner,.w-text',
+    Classes: [
+      { name: '.w-number', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	// 设置最大值和最小值
+            return~
+            {
+              type: 'Number',
+              name: 'count',
+              label: { text: '数字框' },
+              validate: { minValue: 0, maxValue: 100 }
+            }
           },
           function() {
           	// 千分位格式化
             return~
             {
-              type: 'Spinner',
+              type: 'Number',
               name: 'count',
               label: { text: '数字框' },
               format: { separator: ',', length: 3 }
@@ -4866,13 +4896,12 @@ define( {
       { name: 'download', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'fileTypes', type: 'String', remark: '允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"' },
       { name: 'preview', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
-      //{ name: 'removesrc', type: 'String', remark: '删除附件的地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'maxFileSize', type: 'String', remark: '单个附件最大的文件大小。如 "50M"。' },
       { name: 'minFileSize', type: 'String', remark: '单个附件最小的文件大小。如 "1B"。' },
       { name: 'thumbnail', type: 'String', remark: '缩略图地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'uploadButtons', type: 'Array', remark: '上传按钮的数组。' },
       { name: 'uploadLimit', type: 'Number', remark: '最多可上传数量。' },
-      { name: 'post', type: 'String | UploadPost', remark: '上传地址。<br>上传成功返回JSON格式: { "id": "ID", "name": "名称", "size": "字节数", "url": "地址", "thumbnail": "缩略图地址" } <s>//id 和 name 必填</s><br>上传失败返回JSON格式: { "error": true, "text": "失败原因" }' },
+      { name: 'post', type: 'UploadPost | String', remark: '上传配置对象。如果是字符串，将被视为是UploadPost的src。' },
       { name: 'valueButtons', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
       { name: 'value', type: 'String | Array', remark: '值。' }
     ],
@@ -4957,6 +4986,46 @@ define( {
                 uploadButtons: [
                     { type: 'UploadButton', text: '选择文件' }
                 ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "UploadPost": {
+  	remark: '上传配置对象。',
+    Config: [
+      { name: 'src', type: 'String', remark: '上传URL地址。' },
+      { name: 'result', type: 'Object', remark: '上传完毕后服务器返回数据。', param: [
+      	{ name: 'id', type: 'String', remark: '文件ID。' },
+      	{ name: 'error', type: 'String', optional: true, remark: '可选，上传失败时的说明。' },
+      	{ name: 'name', type: 'String', remark: '文件名。' },
+      	{ name: 'thumbnail', type: 'String', optional: true, remark: '可选，文件缩略图地址。' },
+      	{ name: 'url', type: 'String', optional: true, remark: '可选，文件地址。' }
+      ] }
+    ],
+    Examples: [
+      { example: [
+          function() {
+            // 文件上传控件
+            return~
+            {
+                type: 'FileUpload',
+                post: { type: 'UploadPost', src: 'upload.sp' },
+                uploadButtons: [
+                    { type: 'UploadButton', text: '选择文件' }
+                ]
+            }
+          },
+          function() {
+            // 上例upload.sp返回数据格式
+            return~
+            {
+                type: 'UploadPost', //type可以省略
+                result: {
+                    id: '00001',
+                    name: '附件.doc'
+                }
             }
           }
         ]

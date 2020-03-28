@@ -1774,7 +1774,7 @@ function _compatJS() {
 
 // 浏览器DOM兼容
 function _compatDOM() {
-	br.mobile ? _compatDOMMobile() : _compatDOMPC();
+	br.mobile && _compatDOMMobile();
 	var tmp;
 	if ( !('ActiveXObject' in win) ) {
 		XMLDocument.prototype.loadXML = function( a ) {
@@ -1814,10 +1814,7 @@ function _compatDOM() {
 	(tmp = doc.createElement( 'div' )).innerHTML = '1';
 	if ( ! tmp.currentStyle ) {
 		HTMLElement.prototype.__defineGetter__( 'currentStyle', function() { return this.ownerDocument.defaultView.getComputedStyle( this, N ) } );
-	}	
-}
-function _compatDOMPC() {
-	var tmp;
+	}
 	if ( window.Range && ! Range.prototype.movePoint ) {
 		if ( Range.prototype.__defineGetter__ ) {
 			Range.prototype.__defineGetter__( 'text', function() { return this.toString() } );
@@ -1905,7 +1902,7 @@ function _compatDOMPC() {
 	}
 	_rm( tmp );
 	// 检测浏览器自带滚动条的宽度
-	br.chdiv( 'f-scroll-overflow', function() { br.scroll = 50 - this.clientWidth; } );
+	!br.mobile && br.chdiv( 'f-scroll-overflow', function() { br.scroll = 50 - this.clientWidth; } );
 }
 function _compatDOMMobile() {
 	// 实现tap事件
@@ -2138,10 +2135,10 @@ _merge( $, {
 		_classAdd( a, 'f-none' );
 	},
 	zover: function( a ) {
-		!a.contains( event.fromElement ) && _classAdd( a, 'z-hv' );
+		$.widget( a ).isNormal() && !a.contains( event.fromElement ) && _classAdd( a, 'z-hv' );
 	},
 	zout: function( a ) {
-		!a.contains( event.toElement ) && _classRemove( a, 'z-hv' );
+		$.widget( a ).isNormal() && !a.contains( event.toElement ) && _classRemove( a, 'z-hv' );
 	},
 	loadCss: function( a ) {
 		return $.require.css( a );
