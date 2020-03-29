@@ -9201,7 +9201,7 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		this.bind = b;
 		this.xml = this.node2xml( a );
 		b && (this._keep_show = b.keepShow);
-		a.x.highlight && (this._matchlength = a.x.highlight.matchlength);
+		a.x.highlight && (this._matchLength = a.x.highlight.matchLength);
 	},
 	Prototype: {
 		type: 'Tree',
@@ -9294,7 +9294,7 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		// 根据关键词过滤得到有效节点 /@a -> keyword
 		_filter: function( a ) {
 			if ( a ) {
-				var b = $.strSplitword( a, this._matchlength ), f = [];
+				var b = $.strSplitword( a, this._matchLength ), f = [];
 				for ( var i = 0, c, s; i < b.length; i ++ ) {
 					c = $.strQuot( b[ i ] );
 					s = 'contains(@t,"' + c + '") or contains(@r,"' + c + '")';
@@ -9823,7 +9823,7 @@ Leaf = define.widget( 'Leaf', {
 			var t = this.html_format(), h;
 			if ( typeof t === _STR && (h = this.rootNode.x.highlight) && ! this.isDisabled() ) {
 				var key = h.key == N ? (this.ownerView.bind && this.ownerView.bind.getHighlightKey()) : h.key;
-				key && (t = $.strHighlight( t, key, h.matchlength, h.keyCls ));
+				key && (t = $.strHighlight( t, key, h.matchLength, h.keyCls ));
 			}
 			if ( typeof t === _OBJ ) {
 				t = (this.formatNode = this.add( t, -1 )).addClass( 'w-leaf-node' ).html();
@@ -9947,7 +9947,7 @@ TableCombo = _comboHooks.Table = $.createClass( {
 		this._keep_show = b.keepShow;
 		for ( var i = 0, c = a.x.columns, l = c && c.length; i < l; i ++ ) {
 			if ( c[ i ].highlight ) {
-				this._matchlength = c[ i ].highlight.matchlength;
+				this._matchLength = c[ i ].highlight.matchLength;
 				break;
 			}
 		}
@@ -10297,7 +10297,7 @@ TableRow = define.widget( 'TableRow', {
 				this.x.expanded = a;
 			}
 		},
-		// 高亮某个字段的关键字 /@ a -> colIndex, b -> key, c -> matchlength, d -> keyCls
+		// 高亮某个字段的关键字 /@ a -> colIndex, b -> key, c -> matchLength, d -> keyCls
 		highlight: function( a, b, c, d ) {
 			var f = this.cellElem( a );
 			if ( f ) {
@@ -10336,7 +10336,7 @@ TableRow = define.widget( 'TableRow', {
 					}
 					if ( v != N && e && f.highlight ) {
 						var key = f.highlight.key == N ? (this.ownerView.bind && this.ownerView.bind.getHighlightKey()) : f.highlight.key;
-						key && (v = $.strHighlight( v, key, f.highlight.matchlength, f.highlight.keyCls ));
+						key && (v = $.strHighlight( v, key, f.highlight.matchLength, f.highlight.keyCls ));
 					}
 				}
 				f.align  && (s += ' align='  + f.align);
@@ -11256,7 +11256,7 @@ AbsTable = define.widget( 'AbsTable', {
 			}
 			this.addClass( 'z-empty', ! this.getEchoRows().length );
 		},
-		// 高亮某个字段的关键字 /@ a -> field name, b -> key, c -> matchlength, d -> keyCls
+		// 高亮某个字段的关键字 /@ a -> field name, b -> key, c -> matchLength, d -> keyCls
 		highlight: function( a, b, c, d ) {
 			for ( var k = 0, e = this.getColGroup(), l = e.length; k < l; k ++ ) {
 				if ( e[ k ].x.field == a ) break;
