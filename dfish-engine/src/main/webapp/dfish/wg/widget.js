@@ -3195,7 +3195,7 @@ Badge = define.widget( 'Badge', {
 	Prototype: {
 		className: 'w-badge f-inbl',
 		prop_cls: function() {
-			var p = _snapPosition( this.x.position );
+			var p = _dialogPosition( this.x.position );
 			return _proto.prop_cls.call( this ) + (p ? ' z-position-' + p : '') + (this.x.text != N ? ' z-t' : '');
 		},
 		html_nodes: function() {
@@ -4355,10 +4355,21 @@ _getContentView = function( a ) {
 	for ( var i = 0, b; i < a.length; i ++ )
 		if ( b = _getContentView( a[ i ] ) ) return b;
 },
-_snapHooks = { topLeft: 'tl', leftTop: 'lt', topRight: 'tr', righTop: 'rt', rightBottom: 'rb', bottomRight: 'br', bottomLeft: 'bl', leftBottom: 'lb',
+_dialogPositionHooks = { topLeft: 'tl', leftTop: 'lt', topRight: 'tr', righTop: 'rt', rightBottom: 'rb', bottomRight: 'br', bottomLeft: 'bl', leftBottom: 'lb',
 				center: F, centerCenter: F, c: F, cc: F, '0': F },
-_snapPosition = function( a ) {
-	return a && (_snapHooks[ a ] === F ? N : '' + (_snapHooks[ a ] || a));
+_dialogPosition = function( a ) {
+	return a && (_dialogPositionHooks[ a ] === F ? N : '' + (_dialogPositionHooks[ a ] || a));
+},
+_dialogSnapOuter = { t: 'tb', top: 'tb', r: 'rl', right: 'rl', b: 'bt', bottom: 'bt', l: 'lr', left: 'lr', c: 'cc', center: 'cc',
+	tl: '14', tr: '23', rt: '21', rb: '34', bl: '41', br: '32', lt: '12', lb: '43' };
+_dialogSnap = function( a ) {
+	var b = a.position;
+	if ( b ) {
+		for ( var i = 0, c = b.split( ',' ), d = []; i < c.length; i ++ )
+			d.push( a.inner ? c[ i ] : (_dialogSnapOuter[ c[ i ] ] || c[ i ]) )
+		return d.join();
+	}
+	
 },
 /* `dialog`
  *  id 用于全局存取 ( dfish.dialog(id) ) 并保持唯一，以及用于里面的view的 path */
@@ -4584,10 +4595,10 @@ Dialog = define.widget( 'Dialog', {
 		},
 		// 定位 /@a -> fullScreen?
 		axis: function( a ) {
-			var c = this.attr( 'local' ), d = this.x.snap || O, f = _snapPosition( this.x.position ), g = a ? N : this._snapTargetElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
+			var c = this.attr( 'local' ), d = this.x.snap || O, f = _dialogPosition( this.x.position ), g = a ? N : this._snapTargetElem(), vs = g && Q( g ).is( ':visible' ), w = this.$().offsetWidth, h = this.$().offsetHeight, n, r;
 			// 如果有指定 snap，采用 snap 模式
 			if ( vs ) {
-				r = $.snap( w, h, g, d.position || this._snapType || (c && 'cc'), this._fitpos, d.indent != N ? d.indent : (this.x.prong && -10), c && (c === T ? this.getLocalParent().$() : $( c )) );
+				r = $.snap( w, h, g, _dialogSnap( d ) || this._snapType || (c && 'cc'), this._fitpos, d.indent != N ? d.indent : (this.x.prong && -10), c && (c === T ? this.getLocalParent().$() : $( c )) );
 			} else if ( f ) { // 八方位浮动的起始位置
 				r = $.snap( w, h, N, f, this._fitpos, d.indent );
 				var d = f.charAt( 0 );
@@ -4789,7 +4800,7 @@ Dialog = define.widget( 'Dialog', {
 			if ( this.vis ) {
 				this.getContentView() && this.getContentView().abort();
 				this.listenHide( F );
-				var f = _snapPosition( this.x.position );
+				var f = _dialogPosition( this.x.position );
 				if ( f && br.css3 ) {
 					var w = this.$().offsetWidth, h = this.$().offsetHeight, self = this,
 						d = f.charAt( 0 ),
