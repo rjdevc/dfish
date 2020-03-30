@@ -12,7 +12,6 @@ import com.rongji.dfish.ui.auxiliary.SpinnerFormat;
  */
 public class AbstractNumberInput<T extends AbstractNumberInput<T>> extends AbstractInput<T, Number> {
 
-    private static final long serialVersionUID = 4220692825414852306L;
     private Number step;
     private Boolean noButton;
     private Integer decimal;
