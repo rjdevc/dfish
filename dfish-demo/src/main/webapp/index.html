@@ -8,8 +8,10 @@
     <script src="./dfish/dfish.js?ver=20191014"></script>
     <script>
         // 必须放在dfish.config前面调用,有通用配置先引入
-        dfish.use('skin/dfish.config.js');
-        dfish.use('skin/skin.config.js');
+        dfish.use('skin/dfish.config.js'); // 这里的代码是$.config();可看官网提供的文件配置
+        // 再将个性化皮肤设置引入
+        dfish.use('skin/skin.config.js'); // 这里的代码是$.config();
+        // 初始化应用环境
         dfish.init({
             view : {
                 id: 'index',

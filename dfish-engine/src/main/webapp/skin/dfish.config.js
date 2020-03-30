@@ -8,7 +8,11 @@ dfish.config({
     // 皮肤
     skin: {
         // 样式目录
-        dir: 'skin/'
+        dir: 'skin/',
+        // 主题风格
+        theme: 'classic',
+        // 色调
+        color: 'blue'
     },
     //表单验证效果 可选值: red,tip,alert
     validate: {

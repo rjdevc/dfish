@@ -137,6 +137,7 @@ i {
 /**对话框**/
 .w-dialog {
     background-color: #fff;
+    border: 1px solid #eee;
 }
 
 .w-dialog .dlg-frame {
@@ -331,7 +332,6 @@ img {
 .w-progress .w-progress-item.z-75 ._up {
     background-color: #72b636;
 }
-
 /**进度条**/
 /****功能类****/
 
