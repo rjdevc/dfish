@@ -9,6 +9,8 @@ package com.rongji.dfish.ui.form;
  */
 public class NumberBox extends AbstractNumberInput<NumberBox> {
 
+    private static final long serialVersionUID = -8926939363636955539L;
+
     public NumberBox(String name, String label, Number value) {
         super(name, label, value);
     }

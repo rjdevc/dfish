@@ -9,6 +9,8 @@ package com.rongji.dfish.ui.form;
  */
 public class Spinner extends AbstractNumberInput<Spinner> {
 
+    private static final long serialVersionUID = -3131991622042455798L;
+
     public Spinner(String name, String label, Number value) {
         super(name, label, value);
     }
