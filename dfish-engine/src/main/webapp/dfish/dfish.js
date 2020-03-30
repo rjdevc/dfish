@@ -1683,7 +1683,7 @@ Ajax = _createClass( {
 				        if ( r ) {
 				        	self.errorCode = l.status;
 							if ( f !== F && (_ajax_httpmode( location.protocol ) || l.status) ) {
-								f = _fnapply( f, c, '$ajax', [ self ] );
+								f && (typeof f === _STR || typeof f === _FUN) && (f = _fnapply( f, c, '$ajax', [ self ] ));
 								if ( f !== F && r !== 'filter' ) {
 									var s = 'ajax ' + l.status + ': ' + a;
 									$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
