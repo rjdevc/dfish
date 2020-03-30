@@ -19,7 +19,7 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Widget, Butto
     private Split split;
     private Boolean br;
     private Boolean scroll;
-    private OverflowButton overflowButton;
+    private OverflowButton overflow;
 
     /**
      * 构造函数
@@ -47,18 +47,18 @@ public class ButtonBar extends AbstractPubNodeContainer<ButtonBar, Widget, Butto
      *
      * @return Overflow
      */
-    public OverflowButton getOverflowButton() {
-        return overflowButton;
+    public OverflowButton getOverflow() {
+        return overflow;
     }
 
     /**
      * 当按钮过多，放不下的时候，的效果
      *
-     * @param overflowButton 设置当内容太多的时候不换行
+     * @param overflow 设置当内容太多的时候不换行
      * @return this
      */
-    public ButtonBar setOverflowButton(OverflowButton overflowButton) {
-        this.overflowButton = overflowButton;
+    public ButtonBar setOverflow(OverflowButton overflow) {
+        this.overflow = overflow;
         return this;
     }
 

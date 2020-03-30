@@ -137,6 +137,7 @@ i {
 /**对话框**/
 .w-dialog {
     background-color: #fff;
+    border: 1px solid #eee;
 }
 
 .w-dialog .dlg-frame {
@@ -215,14 +216,48 @@ i {
 /**按钮**/
 /* 按钮默认样式 */
 .w-button {
-    font-size: 14px;
+    /*font-size: 14px;*/
 }
 
 /* 主按钮-禁用 */
 .w-submitbutton.z-ds {
-    background-color: #def0fe;
-    border-color: #def0fe;
-    color: #999;
+    /*background-color: #def0fe;*/
+    /*border-color: #def0fe;*/
+    /*color: #999;*/
+}
+
+.w-buttonbar.x-face-text .w-button ._t, .w-buttonbar.x-face-text .w-button ._i, .w-buttonbar.x-face-text .w-button ._t, .w-buttonbar.x-face-text .w-button ._i {
+    padding-right: 5px;
+}
+
+.w-buttonbar.x-face-text .w-button ._c, .w-buttonbar.x-face-text .w-button ._c {
+    padding-left: 5px;
+}
+
+.w-buttonbar.x-face-text .w-button.z-normal, .w-buttonbar.x-face-text .w-button.z-normal {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.w-buttonbar.x-face-text .w-button.z-normal.z-hv, .w-buttonbar.x-face-text .w-button.z-normal.z-on, .w-buttonbar.x-face-text .w-button.z-normal.z-dn, .w-buttonbar.x-face-text .w-button.z-normal.z-ds {
+    background-color: transparent;
+}
+
+.w-button.x-face-text ._t, .w-button.x-face-text ._i, .w-button.x-face-text ._t, .w-button.x-face-text ._i {
+    padding-right: 5px;
+}
+
+.w-button.x-face-text ._c, .w-button.x-face-text ._c {
+    padding-left: 5px;
+}
+
+.w-button.x-face-text.z-normal, .w-button.x-face-text.z-normal {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.w-button.x-face-text.z-normal.z-hv, .w-button.x-face-text.z-normal.z-on, .w-button.x-face-text.z-normal.z-dn, .w-button.x-face-text.z-normal.z-ds {
+    background-color: transparent;
 }
 
 .w-buttonbar.x-breadcrumb .w-button.z-normal {
@@ -331,7 +366,6 @@ img {
 .w-progress .w-progress-item.z-75 ._up {
     background-color: #72b636;
 }
-
 /**进度条**/
 /****功能类****/
 

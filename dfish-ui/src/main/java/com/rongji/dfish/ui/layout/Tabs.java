@@ -20,7 +20,7 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
     private String vAlign;
     private Integer space;
     private Split split;
-    private OverflowButton overflowButton;
+    private OverflowButton overflow;
     private String position;
     /**
      * 构造函数
@@ -88,18 +88,18 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
      *
      * @return Overflow
      */
-    public OverflowButton getOverflowButton() {
-        return overflowButton;
+    public OverflowButton getOverflow() {
+        return overflow;
     }
 
     /**
      * 当按钮过多，放不下的时候，的效果
      *
-     * @param overflowButton 设置当内容太多的时候不换行
+     * @param overflow 设置当内容太多的时候不换行
      * @return this
      */
-    public Tabs setOverflowButton(OverflowButton overflowButton) {
-        this.overflowButton = overflowButton;
+    public Tabs setOverflow(OverflowButton overflow) {
+        this.overflow = overflow;
         return this;
     }
 
