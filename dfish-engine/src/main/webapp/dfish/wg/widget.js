@@ -7131,14 +7131,14 @@ DatePicker = define.widget( 'DatePicker', {
 		}
 	}
 } ),
-/* `number` */
-_Number = define.widget( 'Number', {
+/* `Spinner` */
+Spinner = define.widget( 'Spinner', {
 	Const: function( x, p ) {
 		AbsInput.apply( this, arguments );
 		x.format && x.value && (x.value = $.numFormat( x.value, x.format.length, x.format.separator, x.format.rightward ));
 	},
 	Extend: Text,
-	Default: { width: 100 },
+	Default: { width: 112 },
 	Listener: {
 		body: {
 			format: {
@@ -7229,9 +7229,9 @@ _Number = define.widget( 'Number', {
 		}
 	}
 } ),
-/* `spinner` */
-Spinner = define.widget( 'Spinner', {
-	Extend: _Number,
+/* `NumberBox` */
+NumberBox = define.widget( 'NumberBox', {
+	Extend: Spinner,
 	Default: { width: mbi ? 160 : 140 },
 	Prototype: {
 		form_cls: function() {

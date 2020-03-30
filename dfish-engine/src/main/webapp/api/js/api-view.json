@@ -221,7 +221,7 @@
 		        ] },
 		        { "id": "Label", "text": "Label", "icon": ".icon .icon-class" },
 		        { "id": "LinkBox", "text": "LinkBox", "icon": ".icon .icon-class" },
-		        { "id": "Number", "text": "Number", "icon": ".icon .icon-class" },
+		        { "id": "NumberBox", "text": "NumberBox", "icon": ".icon .icon-class" },
 		        { "id": "OnlineBox", "text": "OnlineBox", "icon": ".icon .icon-class" },
 		        { "id": "Password", "text": "Password", "icon": ".icon .icon-class" },
 		        { "id": "PickBox", "text": "PickBox", "icon": ".icon .icon-class" },

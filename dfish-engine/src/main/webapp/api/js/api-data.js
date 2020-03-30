@@ -4396,7 +4396,7 @@ define( {
     ]
   },
   "Spinner": {
-  	remark: '数字输入框。输入框两边有增减按钮。',
+  	remark: '数字输入框。',
   	extend: 'Text',
   	deprecate: '.w-text',
     Config: [
@@ -4427,12 +4427,12 @@ define( {
       ] }
     ]
   },
-  "Number": {
-  	remark: '数字输入框。',
+  "NumberBox": {
+  	remark: '数字输入框。输入框两边有增减按钮。',
   	extend: 'Spinner',
   	deprecate: '.w-spinner,.w-text',
     Classes: [
-      { name: '.w-number', remark: '基础样式。' }
+      { name: '.w-numberbox', remark: '基础样式。' }
     ],
 	Examples: [
 	  { example: [

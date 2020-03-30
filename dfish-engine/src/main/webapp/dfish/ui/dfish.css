@@ -414,26 +414,26 @@
 .w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
 .w-datepicker .w-input.z-auto{width:178px}
 
-.w-number ._t{vertical-align:middle}
-.w-number ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0}
-.w-number ._b em{display:block;height:50%;cursor:pointer}
-.w-number .f-arw-t2{border-bottom-color:#99a8b8;position:relative;top:1px}
-.w-number ._b em:hover .f-arw-t2{border-bottom-color:#546272}
-.w-number .f-arw-b2{border-top-color:#99a8b8;position:relative;top:-1px}
-.w-number ._b em:hover .f-arw-b2{border-top-color:#546272}
-.w-number.z-ds ._b em{cursor:default}
-.w-number.z-ds ._b em:hover .f-arw-t2{border-bottom-color:#99a8b8}
-.w-number.z-ds ._b em:hover .f-arw-b2{border-top-color:#99a8b8}
-
 .w-spinner ._t{vertical-align:middle}
-.w-spinner ._l{float:left;left:-1px;}
-.w-spinner ._r{float:right;right:-1px}
-.w-spinner.z-on ._l{z-index:0;border-right-color:#2498ff}
-.w-spinner.z-on ._r{z-index:0;border-left-color:#2498ff}
-.w-spinner .f-boxbtn{position:relative;top:-1px;z-index:1;width:26px;color:#999;border:1px solid #ddd;text-align:center;font-style:normal;font-size:24px;line-height:1.1}
-.w-spinner .f-boxbtn.z-hv{border-color:#2498ff;color:#2498ff}
-.w-spinner.z-ds .f-boxbtn{color:#ccc}
-.w-spinner ._s{position:absolute;top:0;left:0;bottom:0;right:0;margin:auto}
+.w-spinner ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0}
+.w-spinner ._b em{display:block;height:50%;cursor:pointer}
+.w-spinner .f-arw-t2{border-bottom-color:#99a8b8;position:relative;top:1px}
+.w-spinner ._b em:hover .f-arw-t2{border-bottom-color:#546272}
+.w-spinner .f-arw-b2{border-top-color:#99a8b8;position:relative;top:-1px}
+.w-spinner ._b em:hover .f-arw-b2{border-top-color:#546272}
+.w-spinner.z-ds ._b em{cursor:default}
+.w-spinner.z-ds ._b em:hover .f-arw-t2{border-bottom-color:#99a8b8}
+.w-spinner.z-ds ._b em:hover .f-arw-b2{border-top-color:#99a8b8}
+
+.w-numberbox ._t{vertical-align:middle}
+.w-numberbox ._l{float:left;left:-1px;}
+.w-numberbox ._r{float:right;right:-1px}
+.w-numberbox.z-on ._l{z-index:0;border-right-color:#2498ff}
+.w-numberbox.z-on ._r{z-index:0;border-left-color:#2498ff}
+.w-numberbox .f-boxbtn{position:relative;top:-1px;z-index:1;width:26px;color:#999;border:1px solid #ddd;text-align:center;font-style:normal;font-size:24px;line-height:1.1}
+.w-numberbox .f-boxbtn.z-hv{border-color:#2498ff;color:#2498ff}
+.w-numberbox.z-ds .f-boxbtn{color:#ccc}
+.w-numberbox ._s{position:absolute;top:0;left:0;bottom:0;right:0;margin:auto}
 
 .w-slider ._t{position:relative;height:6px;margin:2px 0;background:#e6e6e6;border-radius:6px}
 .w-slider ._track{position:absolute;height:6px;background:#2498ff;border-radius:6px;}
@@ -970,7 +970,7 @@
 
 .f-form-transparent .w-input,.f-form-transparent .w-f.z-on .w-input{border-color:transparent}
 .f-form-transparent .w-input ._c,.f-form-transparent{padding-left:0}
-.f-form-transparent .w-spinner ._l,.f-form-transparent .w-spinner ._r{border:0}
+.f-form-transparent .w-numberbox ._l,.f-form-transparent .w-numberbox ._r{border:0}
 
 .f-opc0{opacity:0}
 .f-css2 .f-opc0{filter:Alpha(opacity=0)}
