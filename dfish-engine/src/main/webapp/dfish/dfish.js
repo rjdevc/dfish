@@ -377,8 +377,8 @@ _arrfn = function( a ) { return Function( 'v,i,r', 'return(' + a + ')' ) },
 _fnapply = $.fnapply = function( a, b, c, d ) {
 	if ( typeof a === _FUN ) {
 		return a.apply( b, d || A );
-	} else {
-		for ( var i = 0, r = {}, g = c.split(','), l = (d || A).length; i < l; i ++ )
+	} else if ( typeof a === _STR ) {
+		for ( var i = 0, r = {}, g = c.split( ',' ), l = (d || A).length; i < l; i ++ )
 			r[ g[ i ] ] = d[ i ];
 		return b && b.isWidget && b.formatJS( a, r );
 	}
@@ -1683,7 +1683,7 @@ Ajax = _createClass( {
 				        if ( r ) {
 				        	self.errorCode = l.status;
 							if ( f !== F && (_ajax_httpmode( location.protocol ) || l.status) ) {
-								f && (typeof f === _STR || typeof f === _FUN) && (f = _fnapply( f, c, '$ajax', [ self ] ));
+								f && (f = _fnapply( f, c, '$ajax', [ self ] ));
 								if ( f !== F && r !== 'filter' ) {
 									var s = 'ajax ' + l.status + ': ' + a;
 									$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
