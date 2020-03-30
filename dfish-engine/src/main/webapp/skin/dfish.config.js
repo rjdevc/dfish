@@ -42,7 +42,7 @@ dfish.config({
         'ButtonBar': {space: 10, pub: {tip: true, height: 30}},
         'ButtonBar.dlg-head-operation': {space: 0},
         'ButtonBar.x-breadcrumb': {space: 0},
-        'ButtonBar.face-text': {space: 0},
+        'ButtonBar.x-face-text': {space: 0},
         'Button': {tip: true, widthMinus: 2, heightMinus: 2},
         'SubmitButton': {tip: true, widthMinus: 2, heightMinus: 2},
         // 'Tabs': {widthMinus: 2, heightMinus: 2},
