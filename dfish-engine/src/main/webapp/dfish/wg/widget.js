@@ -10147,9 +10147,10 @@ TableToggle = define.widget( 'TableToggle', {
 TableRowNum = define.widget( 'TableRowNum', {
 	Const: function( x, p ) {
 		Html.apply( this, arguments );
-		var r = this.tr(), t = _number( this.attr( 'start' ) );
-		x.text = (t + r.nodeIndex);
+		var r = this.tr(), b = r.pubNode;
 		r.rownum = this;
+		b._rowNumCounter ++;
+		x.text = b._rowNumCounter;
 	},
 	Extend: Html,
 	Default: { start: 1 },
@@ -10157,7 +10158,7 @@ TableRowNum = define.widget( 'TableRowNum', {
 		className: 'w-tablerownum',
 		tr: _table_tr,
 		reset: function() {
-			this.text( _number( this.attr( 'start' ) ) + this.tr().nodeIndex );
+			this.text( _number( this.attr( 'start' ) ) + this.tr().$().rowIndex - 1 );
 		}
 	}
 } ),
@@ -10903,8 +10904,7 @@ ContentTable = define.widget( 'ContentTable', {
 			for ( var t = '<tr>', i = 0, c = this.colgroup, l = c.length; i < l; i ++ )
 				t += '<td' + (c[ i ].x.style ? ' style="' + c[ i ].x.style + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
 			//IE下如果不加这个thead，当有colSpan的列时，宽度可能会失调
-			if ( br.ms )
-				s += '<thead class="_fix_thead">' + t + '</thead>';
+			s += '<thead class="_fix_thead">' + t + '</thead>';
 			s += this.html_nodes();
 			// Chrome下如果不加这个tfoot，当table没有数据时，表格不会自动撑开，无法触发滚动条
 			// 虽然用thead也能实现效果，但没有适合这种效果的原生CSS，需要JS代码里去做。用tfoot则可以用 tbody:empty + ._fix_tfoot 的原生CSS来实现，比用代码更安全
@@ -11003,6 +11003,7 @@ TBody = define.widget( 'TBody', {
 	},
 	Prototype: {
 		className: 'w-tbody',
+		_rowNumCounter: 0,
 		html_nodes: function() {
 			return this.contentTable.html() + (this.table.foot ? this.table.foot.html() : '');
 		}
