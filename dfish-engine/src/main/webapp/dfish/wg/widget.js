@@ -10114,6 +10114,7 @@ TableLeaf = define.widget( 'TableLeaf', {
 /* `tabletoggle` */
 TableToggle = define.widget( 'TableToggle', {
 	Const: function( x, p ) {
+		p.table.type === 'Form' && (this.className += ' z-form');
 		Toggle.apply( this, arguments );
 		this.tr().tableToggle = this;
 	},
