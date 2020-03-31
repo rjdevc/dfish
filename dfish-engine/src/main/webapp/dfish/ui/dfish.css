@@ -810,7 +810,7 @@
 .w-pagebar-button._prev.z-ds .f-arw{border-right-color:#bbb}
 .w-pagebar-button._next.z-ds .f-arw{border-left-color:#bbb}
 
-.w-pagebar-simple-menu{color:#999}
+.w-pagebar-simple-menu{color:#999;text-align:center}
 
 .w-muldate ._c{height:100%;vertical-align:middle;padding-left:5px;line-height:28px}
 .w-muldate-dialog a{color:#333}

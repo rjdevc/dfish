@@ -4282,9 +4282,10 @@ PageBar = define.widget( 'PageBar', {
 		drop: function( a ) {
 			var i = 1, c = _number( this.x.currentPage ) || 1, s = _number( this.x.sumPage ) || 1, n = [];
 			for ( ; i <= s; i ++ ) {
-				n.push( { text: i, on: { click: 'this.getCommander().parentNode.parentNode.go(' + i + ')' }, status: this.x.currentPage == i ? 'disabled' : '' } );
+				n.push( { text: i, on: { click: 'this.getCommander().parentNode.go(' + i + ')' }, status: this.x.currentPage == i ? 'disabled' : '' } );
 			}
-			a.exec( { type: 'Menu', cls: 'w-pagebar-simple-menu', nodes: n, snap: { target: a, position: 'v', indent: 1 }, line: true, memory: T, focusIndex: c } );
+			var g = a.parentNode;
+			g.exec( { type: 'Menu', cls: 'w-pagebar-simple-menu', nodes: n, width: 'javascript:return this.parentNode.width() - 2', snap: { target: g, position: 'v', indent: -5 }, line: true, memory: T, focusIndex: c } );
 		},
 		html_simple: function() {
 			this.x.target && this.initByTarget();
@@ -11575,9 +11576,12 @@ Form = define.widget( 'Form', {
 				}
 			}
 			if ( j + td.colSpan > cols ) {
-				(tr = {})[ 0 ] = td;
+				i --;
+				j = 0;
+				tr = {};
+				/*(tr = {})[ 0 ] = td;
 				j = td.colSpan;
-				rows.push( tr );
+				rows.push( tr );*/
 			} else {
 				tr[ j ] = td;
 				j += td.colSpan;

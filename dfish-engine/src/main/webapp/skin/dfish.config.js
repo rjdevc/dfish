@@ -128,6 +128,7 @@ dfish.config({
         'AMapPicker': 'pl/amap/amap.dfish.js',
         'ECharts': 'pl/echarts/echarts.dfish.js',
         'UEditor': 'pl/ueditor/ueditor.dfish.js',
+        'UEditorHtml': 'pl/ueditor/ueditorhtml.dfish.js',
         'FlowPlayer': 'pl/flowplayer/flowplayer.dfish.js',
         'Carousel': 'pl/carousel/carousel.dfish.js'
     },
