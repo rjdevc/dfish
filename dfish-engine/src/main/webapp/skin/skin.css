@@ -137,7 +137,8 @@ i {
 /**对话框**/
 .w-dialog {
     background-color: #fff;
-    border: 1px solid #eee;
+    border: 0;
+    box-shadow:0 0 8px #bbb;
 }
 
 .w-dialog .dlg-frame {

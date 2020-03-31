@@ -49,7 +49,7 @@ define.preload({
                     ]
                 },
                 {
-                    type: 'Vertical', id: 'dlg_trunk', cls: 'dlg-trunk', width: '*', height: '*', nodes: [
+                    type: 'Vertical', id: 'dlg_trunk', cls: 'dlg-trunk bd-main bd-notop', widthMinus: 2, heightMinus: 1, width: '*', height: '*', nodes: [
                         {
                             type: 'Vertical', width: '*', height: '*', nodes: [
                                 {type: 'PreloadBody', id: 'dlg_body', cls: 'dlg-body', height: '*'}

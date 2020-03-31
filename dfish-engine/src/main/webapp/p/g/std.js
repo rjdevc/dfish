@@ -50,7 +50,7 @@ define.preload({
                         }
                     ]
                 }, {
-                    type: 'Vertical', id: 'dlg_trunk', width: '*', height: '*', nodes: [
+                    type: 'Vertical', id: 'dlg_trunk bd-main bd-notop', widthMinus: 2, heightMinus: 1, width: '*', height: '*', nodes: [
                         {
                             type: 'Vertical', height: '*', nodes: [
                                 {type: 'PreloadBody', id: 'dlg_body', height: '*'}

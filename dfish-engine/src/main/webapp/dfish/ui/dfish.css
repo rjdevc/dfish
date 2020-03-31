@@ -430,10 +430,11 @@
 .w-numberbox ._r{float:right;right:-1px}
 .w-numberbox.z-on ._l{z-index:0;border-right-color:#2498ff}
 .w-numberbox.z-on ._r{z-index:0;border-left-color:#2498ff}
+.w-numberbox ._s{position:absolute;top:0;left:0;bottom:0;right:0;margin:auto}
 .w-numberbox .f-boxbtn{position:relative;top:-1px;z-index:1;width:26px;color:#999;border:1px solid #ddd;text-align:center;font-style:normal;font-size:24px;line-height:1.1}
 .w-numberbox .f-boxbtn.z-hv{border-color:#2498ff;color:#2498ff}
 .w-numberbox.z-ds .f-boxbtn{color:#ccc}
-.w-numberbox ._s{position:absolute;top:0;left:0;bottom:0;right:0;margin:auto}
+.w-f.z-err .f-boxbtn{border-color:#f00}
 
 .w-slider ._t{position:relative;height:6px;margin:2px 0;background:#e6e6e6;border-radius:6px}
 .w-slider ._track{position:absolute;height:6px;background:#2498ff;border-radius:6px;}
@@ -664,6 +665,7 @@
 .z-normal.w-submitbutton.z-hv,.z-more.w-submitbutton.z-hv,.z-combo.w-submitbutton ._c.z-hv,.z-combo.w-submitbutton ._m.z-hv{background:#208ff2}
 .z-normal.w-submitbutton.z-dn,.z-more.w-submitbutton.z-dn,.z-combo.w-submitbutton ._c.z-dn,.z-combo.w-submitbutton ._m.z-dn{background:#1b88ea}
 .w-submitbutton.z-more.z-snap,.w-submitbutton.z-combo.z-snap ._m{background:#e3e3e3}
+.w-submitbutton.z-ds{border-color:#e6e6e6}
 
 .w-collapse-button{height:34px;text-align:left;background:#fafafa;border:1px solid #d9d9d9;margin-bottom:10px}
 .w-collapse-button.z-hv{background:#f5faff}

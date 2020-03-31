@@ -2995,16 +2995,17 @@ define( {
         { name: 'checked', type: 'Booelan', remark: '是否默认选中。', optional: true },
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ] },
+      { name: 'collapsedIcon', type: 'String', remark: '折叠状态图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' },
       { name: 'noToggle', type: 'Boolean', remark: '是否隐藏 toggle 图标。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。默认值为true。' },
       { name: 'folder', type: 'Boolean', remark: '是否有子节点。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
-      { name: 'icon', type: 'String', remark: '图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'expanded', type: 'Boolean', remark: '是否展开状态。' },
+      { name: 'expandedIcon', type: 'String', remark: '展开状态图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },
       { name: 'status', type: 'String', remark: '节点状态。可选值：<b>normal</b>, <b>disabled</b>。' },
       { name: 'template', type: 'String', remark: '模板地址。' },
@@ -3380,10 +3381,10 @@ define( {
   	remark: '展开收拢的工具条。',
   	extend: 'Widget',
     Config: [
+      { name: 'collapsedIcon', type: 'String', optional: true, remark: '折叠状态图标。可用 "." 开头的样式名，或图片路径。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'expandedIcon', type: 'String', optional: true, remark: '展开状态图标。可用 "." 开头的样式名，或图片路径。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
-      { name: 'icon', type: 'String', optional: true, remark: '收拢时的图标。可用 . 开头的样式名，或图片路径。' },
-      { name: 'expandedIcon', type: 'String', optional: true, remark: '展开时的图标。可用 . 开头的样式名，或图片路径。' },
       { name: 'hr', type: 'Boolean', optional: true, remark: '显示一条水平线。' },
       { name: 'expanded', type: 'Boolean', optional: true, remark: '设置初始状态为展开或收拢。如果设置了此参数，会产生一个toggle图标' },
       { name: 'target', type: 'String', remark: '绑定要展开收拢的 widget ID。多个用逗号隔开。' },
@@ -3440,8 +3441,8 @@ define( {
             ] }
           }
       ] },
-      { name: 'icon',  type: 'String', optional: true, remark: '收拢图标。图片地址url，或是以点 "." 开头的样式名。' },
-      { name: 'expandedIcon',  type: 'String', optional: true, remark: '展开图标。图片地址url，或是以点 "." 开头的样式名。' },
+      { name: 'collapsedIcon', type: 'String', optional: true, remark: '折叠状态图标。可用 "." 开头的样式名，或图片路径。' },
+      { name: 'expandedIcon', type: 'String', optional: true, remark: '展开状态图标。可用 "." 开头的样式名，或图片路径。' },
       { name: 'hide',  type: 'String', optional: true, remark: '指定展开收拢的节点位置。可选值: <b>prev</b><s>(默认,前节点)</s>, <b>next</b><s>(后节点)</s>。本参数配合 icon expandedIcon 参数一起使用。' },
       { name: 'movable',  type: 'Boolean', optional: true, remark: '设置为true，可以用鼠标拖动调整大小。' },
       { name: 'text',  type: 'String', optional: true, remark: '显示文本。' }

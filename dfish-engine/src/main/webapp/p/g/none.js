@@ -4,7 +4,7 @@ define.preload({
         node: {
             type: 'Vertical', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
                 {
-                    type: 'Vertical', id: 'dlg_trunk', cls: 'dlg-trunk', height: '*', width: '*', nodes: [
+                    type: 'Vertical', id: 'dlg_trunk bd-main', widthMinus: 2, heightMinus: 2, cls: 'dlg-trunk', height: '*', width: '*', nodes: [
                         {
                             type: 'Vertical', height: '*', width: '*', nodes: [
                                 {type: 'PreloadBody', id: 'dlg_body', cls: 'dlg-body', height: '*', width: '*'}

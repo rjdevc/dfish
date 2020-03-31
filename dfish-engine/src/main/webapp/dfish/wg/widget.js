@@ -3163,8 +3163,8 @@ Split = define.widget( 'Split', {
 			return _splitSize( this.minor(), a );
 		},
 		html_icon: function( a ) {
-			a = a == N ? this.isExpanded() : a;
-			return $.image( (a && this.x.expandedIcon) || this.x.icon || this.x.expandedIcon, { id: this.id + 'i', cls: '_i _' + (this.x.hide || 'prev'), click: evw + '.toggle()' } );
+			var c = _toggleIcon( this.x, a == N ? this.isExpanded() : a );
+			return c ? $.image( c, { id: this.id + 'i', cls: '_i _' + (this.x.hide || 'prev'), click: evw + '.toggle()' } ) : '';
 		},
 		html_nodes: function() {
 			var w = this.width(), h = this.height(), p = this.parentNode, z = p.type_horz,
@@ -3174,8 +3174,7 @@ Split = define.widget( 'Split', {
 					(! z || w >= 5 ? '100%' : '5px') + ';margin-' + (z ? 'left' : 'top') + ':' + ( (z ? w : h) < 5 ? ((z ? w : h) - 5) / 2 : 0 ) + 'px;z-index:1;"></div>';
 				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.majorSize();
 			}
-			if ( this.x.icon || this.x.expandedIcon )
-				s += this.html_icon();
+			s += this.html_icon();
 			return s + '</div>';
 		}
 	}
@@ -4035,6 +4034,10 @@ Img = define.widget( 'Img', {
 		}
 	}
 } ),
+_toggleIcon = function( x, a ) {
+	a == N && (a = x.expanded);
+	return (a === F ? x.collapsedIcon : x.expandedIcon) || (x.collapsedIcon || x.expandedIcon);
+},
 /* `toggle` 可展开收拢的工具条。可显示单行文本与(或)分割线。
  *  /@text: 文本; @hr(Bool) 显示横线; /@open(Bool): 设置初始展开收拢效果并产生一个toggle图标; /@target: 指定展开收拢的widget ID, 多个用逗号隔开
  */
@@ -4092,10 +4095,10 @@ Toggle = define.widget( 'Toggle', {
 		},
 		// @a -> open?
 		html_icon: function( a ) {
-			var x = this.x, c = x.icon, d = x.expandedIcon || c, t = evw + '.toggle(event)';
-			a == N && (a = x.expanded);
-			return d ? $.image( a === F ? (c || d) : d, { cls: '_i f-inbl', id: this.id + 'o', click: t } ) :
-				(x.expanded != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
+			a == N && (a = this.x.expanded);
+			var c = _toggleIcon( this.x, a ), t = evw + '.toggle(event)';
+			return c ? $.image( c, { cls: '_i f-inbl', id: this.id + 'o', click: t } ) :
+				(this.x.expanded != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.arrow( a === F ? 'r2' : 'b2' ) + '<i class=f-vi></i></span>' : '');
 		},
 		html_nodes: function() {
 			var t = (this.x.text ? '<span class="f-omit f-va"' + this.prop_title() + '>' + this.x.text + '</span><i class=f-vi></i>' : '');
@@ -4382,8 +4385,8 @@ Dialog = define.widget( 'Dialog', {
 		if ( x.fullScreen || (x.height && ! isNaN( x.height ) && x.height > $.height()) )
 			x.height = '*';
 		if ( x.node && x.node.type === 'View' && ! x.node.node && x.node.src ) {
-			//x.src = x.node.src;
-			//delete x.node;
+			x.src = x.node.src;
+			delete x.node;
 		}
 		p == N && (p = _docView);
 		Section.call( this, x, p, n == N ? -1 : n );
@@ -6165,8 +6168,8 @@ CheckBox = define.widget( 'CheckBox', {
 				method: function() {
 					if ( this.isNormal() ) {
 						this.siblings( function() { this.x.target && this._ustag() } );
-						//this.elements( '[w-target]' ).each( function() { _widget( this )._ustag() } );
 						this.parentNode.isBoxGroup && this.parentNode.triggerHandler( 'change' );
+						this.parentNode.removeClass( 'z-err' );
 					}
 				}
 			},
@@ -7213,6 +7216,7 @@ Spinner = define.widget( 'Spinner', {
 				var d = this.x.validate, m = d && this.vv( 'maxValue' ), n = d && this.vv( 'minValue' ), v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
 				m != N && (v = Math.min( m, v ));
 				n != N && (v = Math.max( n, v ));
+				this.removeClass( 'z-err' );
 				this.focus( this.type === 'Number' );
 				this.val( v );
 			}
@@ -9827,7 +9831,7 @@ Leaf = define.widget( 'Leaf', {
 			return this._badge ? this._badge.html() : '';
 		},
 		html_icon: function() {
-			var c = (this.x.expanded && this.length && this.x.expandedIcon) || this.x.icon;
+			var c = _toggleIcon( this.x, this.x.expanded && !!this.length );
 			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i' } ) : '';
 		},
 		html_text: function() {
