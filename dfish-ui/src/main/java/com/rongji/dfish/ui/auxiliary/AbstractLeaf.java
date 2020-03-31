@@ -3,10 +3,6 @@ package com.rongji.dfish.ui.auxiliary;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.BoxHolder;
-import com.rongji.dfish.ui.form.TripleBox;
-import com.rongji.dfish.ui.layout.Table;
-
-import java.util.*;
 
 /**
  * TableTreeItem 是可折叠表格中的折叠项
@@ -21,7 +17,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
         HtmlContentHolder<T>, LazyLoad<T>, HasText<T>, BoxHolder<T>, BadgeHolder<T> {
     private Boolean focus;
     private Boolean focusable;
-    private String icon;
+    private String collapsedIcon;
     private String expandedIcon;
     private Boolean expanded;
     private String text;
@@ -120,18 +116,18 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      *
      * @return icon
      */
-    public String getIcon() {
-        return icon;
+    public String getCollapsedIcon() {
+        return collapsedIcon;
     }
 
     /**
      * 图标。可使用图片url地址，或以 "." 开头的样式名。
      *
-     * @param icon 图标 闭合时的图标
+     * @param collapsedIcon 图标 闭合时的图标
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setIcon(String icon) {
-        this.icon = icon;
+    public T setCollapsedIcon(String collapsedIcon) {
+        this.collapsedIcon = collapsedIcon;
         return (T)this;
     }
 

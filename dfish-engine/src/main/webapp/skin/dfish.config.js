@@ -54,9 +54,10 @@ dfish.config({
         // 'ButtonBar.w-tabbar.z-position-left': {widthMinus: 0, heightMinus: 20},
         // 'ButtonBar.w-tabbar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        'Table': {br: false, pub: {focusable: true}, face: "cell"},
+        'Table': {face: "cell"},
+        'TBody': {br: false, pub: {focusable: true}},
         'Column': {tip: true},
-        'PageBar': {align: 'right', buttonCount: 5, widthMinus: 40},
+        'PageBar': {align: 'right', buttonCount: 5},
         // 'PageBar.z-normal': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
         // 'PageBar.z-mini': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},
         // 'PageBar.z-simple': {align: 'right', buttonCount: 5, widthMinus: 40, name: 'currentPage'},

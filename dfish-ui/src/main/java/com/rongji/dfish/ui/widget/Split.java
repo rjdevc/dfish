@@ -23,7 +23,7 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	private String text;
 	private String format;
 	private Boolean escape;
-	private String icon;
+	private String collapsedIcon;
 	private String expandedIcon;
 	private String range;
 	private String hide;
@@ -87,17 +87,17 @@ public class Split extends AbstractWidget<Split> implements HasText<Split>{
 	 * 收拢图标。图片地址url，或是以点 "." 开头的样式名
 	 * @return icon
 	 */
-	public String getIcon() {
-		return icon;
+	public String getCollapsedIcon() {
+		return collapsedIcon;
 	}
 
 	/**
 	 * 收拢图标。图片地址url，或是以点 "." 开头的样式名
-	 * @param icon 图标 收拢图标
+	 * @param collapsedIcon 图标 收拢图标
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public Split setIcon(String icon) {
-		this.icon = icon;
+	public Split setCollapsedIcon(String collapsedIcon) {
+		this.collapsedIcon = collapsedIcon;
 		return this;
 	}
 

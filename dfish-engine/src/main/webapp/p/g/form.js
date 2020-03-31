@@ -67,7 +67,6 @@ define.preload({
                             cls: 'dlg-foot',
                             style: 'padding:0 20px;',
                             height: 50,
-                            heightMinus: 1,
                             widthMinus: 40,
                             nodes: [
                                 {

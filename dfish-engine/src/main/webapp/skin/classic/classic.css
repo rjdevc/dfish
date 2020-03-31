@@ -1,3 +1,96 @@
 .w-buttonbar.index-head-nav .w-button {
     border-color: transparent;
 }
+
+/**根外框**/
+.x-root {
+    background-color: #edf0f2;
+}
+
+/**主体样式**/
+.x-body {
+    background-color: #edf0f2;
+}
+
+.x-main {
+    background-color: #fff;
+}
+
+.x-main-head {
+    border-bottom: 1px solid #ddd;
+}
+
+.w-buttonbar.x-main-operation {
+    padding: 0 20px;
+}
+
+.x-main-title {
+    font-size: 16px;
+    color: #333;
+    padding: 0 20px;
+}
+
+.x-main-nav {
+    border-right: 1px solid #ddd;
+}
+
+.x-welcome {
+    padding: 5px 0;
+}
+
+.x-main-display {
+    padding: 5px 20px;
+}
+
+.x-split-display {
+    padding: 5px 20px 5px 10px;
+}
+
+.x-main-node {
+    padding: 5px 0;
+}
+
+.x-dlg-main {
+    padding: 10px 20px;
+}
+
+.w-buttonbar .w-button.x-btn-option {
+    background-color: #fff;
+    border-color: #ddd;
+    height: 30px;
+}
+
+.w-buttonbar .w-button.x-btn-option.z-hv {
+    background-color: #d5ecff;
+    border-color: #1e92df;
+}
+
+.w-buttonbar .w-button.x-btn-option.z-on {
+    background-color: #bce0ff;
+    border-color: #1e92df;
+}
+
+.w-buttonbar .w-button.x-btn-option ._c {
+    padding-left: 5px;
+}
+
+.w-buttonbar .w-button.x-btn-option ._t {
+    text-align: left;
+    padding-right: 0;
+}
+
+.w-buttonbar .w-button.x-btn-option ._i {
+    float: right;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.i-option-btn {
+    background: url("../img/ico_16_16.png") 0px -80px;
+    width: 16px;
+    height: 16px;
+}
+
+.z-on .i-option-btn, .z-hv .i-option-btn {
+    background-position: -16px -80px;
+}

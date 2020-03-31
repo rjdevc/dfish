@@ -32,7 +32,7 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, H
     private Boolean expanded;
     private String target;
     private String text;
-    private String icon;
+    private String collapsedIcon;
     private String expandedIcon;
     private Boolean escape;
     private String format;
@@ -125,18 +125,18 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, H
      *
      * @return String
      */
-    public String getIcon() {
-        return icon;
+    public String getCollapsedIcon() {
+        return collapsedIcon;
     }
 
     /**
      * 收缩图标
      *
-     * @param icon String icon
+     * @param collapsedIcon String icon
      * @return this
      */
-    public Toggle setIcon(String icon) {
-        this.icon = icon;
+    public Toggle setCollapsedIcon(String collapsedIcon) {
+        this.collapsedIcon = collapsedIcon;
         return this;
     }
 

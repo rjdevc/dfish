@@ -62,7 +62,6 @@ define.preload({
                             style: 'padding:0 20px;',
                             width: '*',
                             height: 50,
-                            heightMinus: 1,
                             widthMinus: 40,
                             nodes: [
                                 {
