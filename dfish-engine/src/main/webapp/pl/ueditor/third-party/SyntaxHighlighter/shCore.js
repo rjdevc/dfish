@@ -1008,8 +1008,12 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                 //by zhanyi 去掉多余的外围div
                 var tmp = element.firstChild.firstChild;
                 tmp.className = element.firstChild.className;
+                
+                var wrap = document.createElement( 'div' );
+                wrap.className = 'syntaxhighlighter-wrap';
+                wrap.appendChild( tmp );
 
-                target.parentNode.replaceChild(tmp, target);
+                target.parentNode.replaceChild(wrap, target);
             }
         },
 
