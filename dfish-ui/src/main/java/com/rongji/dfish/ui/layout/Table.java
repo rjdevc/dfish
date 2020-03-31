@@ -112,7 +112,20 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
 
     @Override
     protected TR newPub() {
-        return new TR();
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public TR pub(){
+        return tBody.pub();
+    }
+    @Override
+    public TR getPub(){
+        return tBody.getPub();
+    }
+    @Override
+    public Table setPub(TR pub){
+        tBody.setPub(pub);
+        return this;
     }
 
     /**

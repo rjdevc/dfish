@@ -1,9 +1,6 @@
 package com.rongji.dfish.ui.auxiliary;
 
-import com.rongji.dfish.ui.AbstractMultiNodeContainer;
-import com.rongji.dfish.ui.HtmlContentHolder;
-import com.rongji.dfish.ui.MultiNodeContainer;
-import com.rongji.dfish.ui.Widget;
+import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.json.WidgetJsonBuilder;
 import com.rongji.dfish.ui.layout.Table;
 import com.rongji.dfish.ui.layout.TableOperation;
@@ -19,13 +16,17 @@ import java.util.Map;
  *
  * @author DFish team
  */
-public abstract class TablePart extends AbstractMultiNodeContainer<TablePart, TR> implements
-        TableOperation<TablePart>, MultiNodeContainer<TablePart, TR> ,HtmlContentHolder<TablePart> {
+public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, TR> implements
+        TableOperation<TablePart>,HtmlContentHolder<TablePart> {
     /**
      * 默认构造函数
      */
     public TablePart() {
         super(null);
+    }
+    @Override
+    protected TR newPub(){
+        return new TR();
     }
 
     @Override
