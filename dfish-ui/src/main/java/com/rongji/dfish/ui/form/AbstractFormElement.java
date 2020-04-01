@@ -48,6 +48,8 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
 
     protected Object tip;
 
+    protected String remark;
+
     TreeMap<String, Validate> validates = new TreeMap<>();
 
     @Override
@@ -76,6 +78,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
         this.label = label;
         return (T) this;
     }
+
     @Override
     public T setLabel(String label) {
         this.label = label;
@@ -242,7 +245,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
         this.noLabel = noLabel;
         if (label instanceof Label) {
             boolean isHide = noLabel != null && noLabel;
-            Label cast=(Label)label;
+            Label cast = (Label) label;
             if (isHide) {
                 cast.setWidth(0);
             } else if ("0".equals(cast.getWidth())) {
@@ -320,7 +323,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
      * 设置鼠标移上去是否显示提示语
      *
      * @param tip Boolean
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
     public T setTip(Boolean tip) {
         this.tip = tip;
@@ -331,11 +334,28 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
      * 设置鼠标移上去显示的提示语
      *
      * @param tip String
-     * @return this
+     * @return 本身，这样可以继续设置其他属性
      */
     public T setTip(String tip) {
         this.tip = tip;
         return (T) this;
     }
 
+    /**
+     * 备注说明，正常情况位于表单的后方
+     * @return String
+     */
+    public String getRemark() {
+        return remark;
+    }
+
+    /**
+     * 备注说明，正常情况位于表单的后方
+     * @param remark String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setRemark(String remark) {
+        this.remark = remark;
+        return (T) this;
+    }
 }

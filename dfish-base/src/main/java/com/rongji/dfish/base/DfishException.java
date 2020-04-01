@@ -1,5 +1,7 @@
 package com.rongji.dfish.base;
 
+import com.rongji.dfish.base.exception.MarkedException;
+
 /**
  * 带有标识码的异常
  * @author DFish Team
@@ -7,17 +9,16 @@ package com.rongji.dfish.base;
  * @see com.rongji.dfish.base.exception.MarkedException
  */
 @Deprecated
-public class DfishException extends Exception {
+public class DfishException extends MarkedException {
 
     private static final long serialVersionUID = 7079476050905181817L;
-    private String exceptionCode;
 
     public String getExceptionCode() {
-        return exceptionCode;
+        return getCode();
     }
 
     public void setExceptionCode(String exceptionCode) {
-        this.exceptionCode = exceptionCode;
+        setCode(exceptionCode);
     }
 
     public DfishException() {
@@ -38,6 +39,6 @@ public class DfishException extends Exception {
 
     public DfishException(String message, String exceptionCode) {
         super(message);
-        this.exceptionCode = exceptionCode;
+        setExceptionCode(exceptionCode);
     }
 }

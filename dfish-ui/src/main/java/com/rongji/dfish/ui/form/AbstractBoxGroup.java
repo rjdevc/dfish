@@ -24,7 +24,6 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 
     private static final long serialVersionUID = 3733166777271763891L;
 
-
     protected String dir;
     protected String name;
     protected String value;
@@ -221,6 +220,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
         this.noLabel = noLabel;
         return (T) this;
     }
+
     //    /**
 //     * 添加子面板
 //     *
