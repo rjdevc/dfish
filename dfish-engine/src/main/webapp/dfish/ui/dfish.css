@@ -398,9 +398,9 @@
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
 
-.w-password ._weak,.w-password ._middle,.w-password ._strong{margin-left:5px;width:80px;height:24px;line-height:24px;background:#e1e1e1;color:#fff;text-align:center}
-.w-password.z-weak ._weak,.w-password.z-middle ._weak,.w-password.z-strong ._weak{background:#f00}
-.w-password.z-middle ._middle,.w-password.z-strong ._middle{background:#f72}
+.w-password ._weak,.w-password ._medium,.w-password ._strong{margin-left:5px;width:80px;height:24px;line-height:24px;background:#e1e1e1;color:#fff;text-align:center}
+.w-password.z-weak ._weak,.w-password.z-medium ._weak,.w-password.z-strong ._weak{background:#f00}
+.w-password.z-medium ._medium,.w-password.z-strong ._medium{background:#f72}
 .w-password.z-strong ._strong{background:#aea}
 
 .w-textarea ._t{position:absolute;top:0;bottom:0;left:0;right:0;padding:5px 0 0 10px;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word}

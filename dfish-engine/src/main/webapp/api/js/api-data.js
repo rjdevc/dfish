@@ -3827,7 +3827,7 @@ define( {
     ],
     Methods: [
       { name: 'strength(value)', remark: '设置密码强度。', param: [
-        { name: 'value', type: 'String', remark: '密码强度。可选值 <b>weak</b><s>(弱)</s>,<b>middle</b><s>(中)</s>,<b>strong</b><s>(强)</s>。' }
+        { name: 'value', type: 'String', remark: '密码强度。可选值 <b>weak</b><s>(弱)</s>,<b>medium</b><s>(中)</s>,<b>strong</b><s>(强)</s>。' }
       ] }
     ],
     Classes: [

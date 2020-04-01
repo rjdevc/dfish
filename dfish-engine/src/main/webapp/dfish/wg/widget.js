@@ -6014,7 +6014,7 @@ Password = define.widget( 'Password', {
 	},
 	Prototype: {
 		strength: function( a ) {
-			this.removeClass( 'z-weak z-middle z-strong' );
+			this.removeClass( 'z-weak z-medium z-strong' );
 			a && this.addClass( 'z-' + a );
 		},
 		fixWidth: function() {
@@ -6028,7 +6028,7 @@ Password = define.widget( 'Password', {
 			var h = Text.prototype.html_append.call( this ), s = this.x.strength;
 			if ( s ) {
 				h += '</div><div id=' + this.id + 'strong class="w-password-strong f-nv"><div class="_weak f-nv">' + Loc.form.password_weak +
-					'</div><div class="_middle f-nv">' + Loc.form.password_middle + '</div><div class="_strong f-nv">' + Loc.form.password_strong + '</div>';
+					'</div><div class="_medium f-nv">' + Loc.form.password_middle + '</div><div class="_strong f-nv">' + Loc.form.password_strong + '</div>';
 			}
 			return h;
 		}
