@@ -3822,7 +3822,13 @@ define( {
   	extend: 'Text',
   	deprecate: '.w-text',
     Config: [
-      { name: 'autocomplete', type: 'Boolean', optional: true, remark: '是否允许自动填充保存的密码。默认值为false。' }
+      { name: 'strength', type: 'Boolean', optional: true, remark: '设置为true，显示密码强度提示信息。' },
+      { name: 'autocomplete', type: 'Boolean', optional: true, remark: '是否允许自动填充保存的密码。' }
+    ],
+    Methods: [
+      { name: 'strength(value)', remark: '设置密码强度。', param: [
+        { name: 'value', type: 'String', remark: '密码强度。可选值 <b>weak</b><s>(弱)</s>,<b>middle</b><s>(中)</s>,<b>strong</b><s>(强)</s>。' }
+      ] }
     ],
     Classes: [
       { name: '.w-password', remark: '基础样式。' }

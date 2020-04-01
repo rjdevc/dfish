@@ -379,14 +379,14 @@
 .w-input{border:1px solid #ddd;background:#fff;position:relative;height:30px;text-align:left}
 .w-input.z-ah,.w-input.z-ah ._t{height:auto}
 .w-input ._c{position:relative;padding:0 5px 0 10px;height:100%;overflow:hidden}
-.w-input ._t{width:100%;height:100%;line-height:30px}
+.w-input ._t{width:100%;height:100%;line-height:30px;*height:30px}
 .w-input-placeholder{position:absolute;top:0;left:0;right:0;height:100%;padding:0 5px 0 10px;line-height:1;color:#999;cursor:text}
 .w-f.z-on .w-input{border-color:#2498ff;box-shadow:none}
 .w-f.z-ds .w-input{background:#e6e6e6;box-shadow:none}
 .w-f.z-err .w-input{border-color:red;box-shadow:inset 0 0 2px #fbb}
 .w-f.z-trans .w-input,.w-f.z-trans.z-err .w-input{border-width:0;border-radius:0;box-shadow:none}
 
-.w-label{position:relative;line-height:16px}
+.w-label{position:relative;line-height:16px;*line-height:18px}
 .w-label ._lb{margin-right:6px}
 .w-label ._bg{position:absolute;top:0;left:0}
 .w-label.z-va-top{vertical-align:top}
@@ -397,6 +397,11 @@
 .w-range .f-sub-horz.z-htmn{float:none}
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
+
+.w-password ._weak,.w-password ._middle,.w-password ._strong{margin-left:5px;width:80px;height:24px;line-height:24px;background:#e1e1e1;color:#fff;text-align:center}
+.w-password.z-weak ._weak,.w-password.z-middle ._weak,.w-password.z-strong ._weak{background:#f00}
+.w-password.z-middle ._middle,.w-password.z-strong ._middle{background:#f72}
+.w-password.z-strong ._strong{background:#aea}
 
 .w-textarea ._t{position:absolute;top:0;bottom:0;left:0;right:0;padding:5px 0 0 10px;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word}
 .w-textarea .w-input-placeholder{height:31px}
@@ -644,7 +649,7 @@
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
 .w-button.z-combo ._m,.w-tab.z-combo ._m{border-left:1px solid #ccc;width:20px;text-align:center}
 .w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
-.w-button .w-badge,.w-tab .w-badge{position:relative;margin-left:5px;top:-1px}
+.w-button .w-badge,.w-tab .w-badge{position:relative;margin-left:5px;top:-1px;*top:-6px}
 .w-button .w-badge.z-t,.w-tab .w-badge.z-t{top:2px}
 .w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute;top:2px}
 .w-button-split{vertical-align:middle;text-align:center}

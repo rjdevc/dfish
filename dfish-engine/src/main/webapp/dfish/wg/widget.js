@@ -5578,8 +5578,6 @@ AbsForm = define.widget( 'AbsForm', {
 			return (this.label ? this.label.outerWidth() : 0);
 		},
 		formWidth: function() {
-			if ( ! isNaN( this.x.width ) )
-				return this.x.width;
 			var w = this.innerWidth();
 			return w == N || w < 0 ? N : w - this.form_minus();
 		},
@@ -5998,10 +5996,42 @@ Text = define.widget( 'Text', {
 } ),
 /* `password` */
 Password = define.widget( 'Password', {
+	Const: function( x ) {
+		//x.strength && x.strength.value && (this.className += 'z-' + x.strength.value);
+		Text.apply( this, arguments );
+	},
 	Extend: Text,
 	Default: { tip: F },
+	Listener: {
+		body: {
+			ready: function() {
+				this.fixWidth();
+			},
+			resize: function() {
+				this.fixWidth();
+			}
+		}
+	},
 	Prototype: {
-		input_prop: function() { return AbsForm.prototype.input_prop.call( this ) + (this.x.autocomplete === T ? '' : ' autocomplete="new-password"'); }
+		strength: function( a ) {
+			this.removeClass( 'z-weak z-middle z-strong' );
+			a && this.addClass( 'z-' + a );
+		},
+		fixWidth: function() {
+			if ( this.x.strength ) {
+				var w = this.attr( 'width' );
+				(!w || isNaN( w )) && $.css( this.$( 'f' ), 'width', (this.formWidth() - this.$( 'strong' ).offsetWidth) );
+			}
+		},
+		input_prop: function() { return AbsForm.prototype.input_prop.call( this ) + (this.x.autocomplete === T ? '' : ' autocomplete="new-password"'); },
+		html_append: function(){
+			var h = Text.prototype.html_append.call( this ), s = this.x.strength;
+			if ( s ) {
+				h += '</div><div id=' + this.id + 'strong class="w-password-strong f-nv"><div class="_weak f-nv">' + Loc.form.password_weak +
+					'</div><div class="_middle f-nv">' + Loc.form.password_middle + '</div><div class="_strong f-nv">' + Loc.form.password_strong + '</div>';
+			}
+			return h;
+		}
 	}
 } ),
 /* `checkboxgroup` */
@@ -11420,6 +11450,7 @@ var
 Table = define.widget( 'Table', {
 	Const: function( x, p ) {
 		this._pad = x.cellPadding != N ? x.cellPadding : 5;
+		x.face && (this.className += ' z-face-' + x.face);
 		W.apply( this, arguments );
 		x.scroll == N && (x.scroll = T);
 		this._face = x.face || 'none';
