@@ -54,7 +54,7 @@ dfish.config({
         // 'ButtonBar.w-tabbar.z-position-left': {widthMinus: 0, heightMinus: 20},
         // 'ButtonBar.w-tabbar.z-position-right': {widthMinus: 0, heightMinus: 20},
 
-        // 'Table': {face: "cell"},
+        'Table': {face: "line"},
         'TBody': {br: false, pub: {focusable: true}},
         'Column': {tip: true},
         'PageBar': {align: 'right', buttonCount: 5},
@@ -120,6 +120,9 @@ dfish.config({
         'TableToggle.z-form.z-hr': {
             cls: null,
             heightMinus: 0
+        },
+        'UEditor': {
+            height: 300
         }
     },
     // 自定义widget
