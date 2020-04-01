@@ -5541,7 +5541,7 @@ AbsForm = define.widget( 'AbsForm', {
 			resize: function() {
 				if ( this.$() ) {
 					var w = this.formWidth();
-					w != N && w >= 0 && this.css( 'f', 'width', w );
+					w != N && w >= 0 && this.css( 'm', 'width', w );
 				}
 			},
 			valid: function( e, a ) {
@@ -5619,7 +5619,13 @@ AbsForm = define.widget( 'AbsForm', {
 			_proto.attrSetter.apply( this, arguments );
 			if ( a === 'status' ) {
 				b === 'readonly' ? this.readonly() : b === 'validonly' ? this.validonly() : b === 'disabled' ? this.disable() : this.normal();
+			} else if ( a === 'remark' ) {
+				var s = this[ 'html_' + a ]();
+				this.$( a ) ? Q( this.$( a ) ).replaceWith( s ) : Q( this.$( 'm' ) ).prepend( s );
 			}
+		},
+		remark: function( a ) {
+			this.attr( 'remark', a );
 		},
 		normal: function() {
 			this.$v().removeAttribute( 'readOnly' );
@@ -5740,18 +5746,37 @@ AbsForm = define.widget( 'AbsForm', {
 		prop_style: function() {
 			return this.x.style ? this.x.style : '';
 		},
-		form_prop: function() {
+		main_prop: function() {
 			var w = this.formWidth(), h = this.formHeight(), s = '';
 			w != N && w >= 0 && (s += 'width:' + w + 'px;');
 			h != N && h >= 0 && (s += 'height:' + h + 'px;');
-			return ' id=' + this.id + 'f class="' + this.form_cls() + '"' + (s ? ' style="' + s + '"' : '');
+			return ' id=' + this.id + 'm class="' + this.main_cls() + '"' + (s ? ' style="' + s + '"' : '');
+		},
+		main_cls: function() {
+			return 'w-f-main f-nv';
+		},
+		form_prop: function() {
+			return ' id=' + this.id + 'f class="' + this.form_cls() + '"';
 		},
 		form_cls: function() {
-			return 'f-nv';
+			return 'f-oh f-nv';
 		},
 		html_placeholder: $.rt( '' ),
+		html_remark: function() {
+			if ( this.x.remark ) {
+				var c = this.x.remark;
+				if ( typeof c === _STR && c.indexOf( 'javascript:' ) === 0 )
+					c = this.formatJS( c );
+				if ( typeof c === _OBJ )
+					c = this.add( c, -1 ).html();
+				else
+					c = _parseHTML.call( this, c );
+				return '<div id=' + this.id + 'remark class=w-f-remark>' + c + '</div>';
+			}
+			return '';
+		},
 		html: function() {
-			return this.html_before() + '<div ' + this.html_prop() + '><i class=f-vi></i>' + (this.label ? this.label.html() : '') + '<div' + this.form_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div></div>' + this.html_after();
+			return this.html_before() + '<div ' + this.html_prop() + '><i class=f-vi></i>' + (this.label ? this.label.html() : '') + '<div' + this.main_prop() + '>' + this.html_remark() + '<div' + this.form_prop() + '>' + this.html_prepend() + this.html_nodes() + this.html_append() + '</div></div></div>' + this.html_after();
 		}
 	}
 } ),
@@ -5800,7 +5825,7 @@ AbsInput = define.widget( 'AbsInput', {
 		}
 	},
 	Default: {
-		tip: T, widthMinus: _dft_min, heightMinus: _dft_min
+		tip: T//, widthMinus: _dft_min, heightMinus: _dft_min
 	},
 	Prototype: {
 		focus: function( a ) {
@@ -5825,7 +5850,7 @@ AbsInput = define.widget( 'AbsInput', {
 			this.trigger( e );
 		},
 		form_cls: function() {
-			return 'w-input f-rel f-nv';
+			return 'w-input f-rel f-oh';
 		},
 		getPlaceholder: function() {
 			var s = this.x.placeholder;
@@ -5963,7 +5988,7 @@ Textarea = define.widget( 'Textarea', {
 		},
 		input_prop_value: $.rt(),
 		form_cls: function() {
-			return 'w-input z-ah f-nv';
+			return 'w-input z-ah';
 		},
 		html_input: function() {
 			return '<textarea' + this.input_prop() + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
@@ -6005,10 +6030,10 @@ Password = define.widget( 'Password', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.fixWidth();
+				//this.fixWidth();
 			},
 			resize: function() {
-				this.fixWidth();
+				//this.fixWidth();
 			}
 		}
 	},
@@ -6027,8 +6052,8 @@ Password = define.widget( 'Password', {
 		html_append: function(){
 			var h = Text.prototype.html_append.call( this ), s = this.x.strength;
 			if ( s ) {
-				h += '</div><div id=' + this.id + 'strong class="w-password-strong f-nv"><div class="_weak f-nv">' + Loc.form.password_weak +
-					'</div><div class="_medium f-nv">' + Loc.form.password_middle + '</div><div class="_strong f-nv">' + Loc.form.password_strong + '</div>';
+				h += '</div><div id=' + this.id + 'strong class="w-password-strength"><i class=f-vi></i><div class="_weak f-nv"><div class=_st>' + Loc.form.password_weak +
+					'</div></div><div class="_medium f-nv"><div class=_st>' + Loc.form.password_middle + '</div></div><div class="_strong f-nv"><div class=_st>' + Loc.form.password_strong + '</div></div>';
 			}
 			return h;
 		}
@@ -6075,7 +6100,7 @@ CheckBoxGroup = define.widget( 'CheckBoxGroup', {
 			if ( a.nodeIndex < 0 && a != this.label ) {
 				var i = $.arrIndex( this.targets, a ),
 					w = a.attr( 'width' ),
-					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() || 0 : 0, w == N ? '*' : w < 0 ? '*' : w ] );
+					c = $.scale( this.formWidth(), [ this[ i ] ? this[ i ].width() || 0 : 0, w == N ? '*' : w < 0 ? -1 : w ] );
 				return c[ 1 ];
 			} else {
 				return _proto.scaleWidth.call( this, a, m, a == this.label ? U : this.formWidth() );
@@ -6521,7 +6546,7 @@ Select = define.widget( 'Select', {
 		x.size && $.classAdd( this, 'w-select-multiple' );
 	},
 	Extend: AbsInput,
-	Default: { width: -1 },
+	//Default: { width: -1 },
 	Listener: {
 		range: 'option',
 		body: {
@@ -7148,8 +7173,8 @@ DatePicker = define.widget( 'DatePicker', {
 			this.cal && this.cal.close();
 			this.list && this.list.close();
 		},
-		form_cls: function() {
-			return AbsInput.prototype.form_cls.call( this ) + (this.innerWidth() ? '' : ' z-auto');
+		main_cls: function() {
+			return AbsInput.prototype.main_cls.call( this ) + (this.innerWidth() ? '' : ' z-auto');
 		},
 		html_btn: function() {
 			return this.x.noButton ? '' : '<label ' + (mbi ? 'for="' + this.id + 't"' : 'onclick=' + eve) + ' class="f-boxbtn _pick"><i class="f-i _pick_i"></i><i class=f-vi></i></label>';
@@ -7172,7 +7197,7 @@ Spinner = define.widget( 'Spinner', {
 		x.format && x.value && (x.value = $.numFormat( x.value, x.format.length, x.format.separator, x.format.rightward ));
 	},
 	Extend: Text,
-	Default: { width: 112 },
+	Default: { width: -1 },
 	Listener: {
 		body: {
 			format: {
@@ -7192,10 +7217,6 @@ Spinner = define.widget( 'Spinner', {
 	},
 	Prototype: {
 		_csr_pos: 0,
-		form_minus: function() {
-			var w = this.x.width;
-			return w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0);
-		},
 		validHooks: {
 			minValue: function( b, v ) {
 				return _number( v ) < _number( this.vv( 'minValue', b ) );
@@ -7256,6 +7277,9 @@ Spinner = define.widget( 'Spinner', {
 			var v = $.strEscape( this.x.value == N ? '' : '' + this.x.value );
 			return v ? $.numDecimal( v, this.x.decimal ) : '';
 		},
+		main_cls: function() {
+			return AbsInput.prototype.main_cls.call( this ) + (this.innerWidth() ? '' : ' z-auto');
+		},
 		html_btn: function() {
 			return this.x.noButton ? '' : '<cite class=_b><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-arw f-arw-t2"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-arw f-arw-b2"></i></em></cite>';
 		},
@@ -7267,13 +7291,11 @@ Spinner = define.widget( 'Spinner', {
 /* `NumberBox` */
 NumberBox = define.widget( 'NumberBox', {
 	Extend: Spinner,
-	Default: { width: mbi ? 160 : 140 },
 	Prototype: {
-		form_cls: function() {
-			return 'w-input f-nv';
-		},
-		html_btn: function() {
-			return this.x.noButton ? '' : '<cite class="f-inbl f-unsel f-boxbtn _l"' + _event_zhover + ' onclick=' + evw + '.step(-1)>&minus;</cite><cite class="f-inbl f-unsel f-boxbtn _r"' + _event_zhover + ' onclick=' + evw + '.step(1)>&plus;</cite>';
+		html_btn: $.rt( '' ),
+		html_remark: function() {
+			var s = this.x.noButton ? '' : '<cite class="f-inbl f-unsel f-boxbtn _l"' + _event_zhover + ' onclick=' + evw + '.step(-1)>&minus;</cite><cite class="f-inbl f-unsel f-boxbtn _r"' + _event_zhover + ' onclick=' + evw + '.step(1)>&plus;</cite>';
+			return (this.x.remark ? AbsInput.prototype.html_remark.call( this ) : '') + s;
 		}
 	}
 } ),
@@ -11450,10 +11472,10 @@ var
 Table = define.widget( 'Table', {
 	Const: function( x, p ) {
 		this._pad = x.cellPadding != N ? x.cellPadding : 5;
+		this._face = x.face || 'none';
 		x.face && (this.className += ' z-face-' + x.face);
 		W.apply( this, arguments );
 		x.scroll == N && (x.scroll = T);
-		this._face = x.face || 'none';
 		this.initBody( x );
 		if ( x.hiddens )
 			this._hiddens = new Hiddens( { type: 'hiddens', nodes: x.hiddens }, this, -1 );

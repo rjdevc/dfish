@@ -377,14 +377,16 @@
 .f-boxbtn ._pick_i{width:16px;height:16px;vertical-align:middle}
 
 .w-input{border:1px solid #ddd;background:#fff;position:relative;height:30px;text-align:left}
-.w-input.z-ah,.w-input.z-ah ._t{height:auto}
+.w-input.z-ah,.w-input.z-ah ._t{height:100%}
 .w-input ._c{position:relative;padding:0 5px 0 10px;height:100%;overflow:hidden}
 .w-input ._t{width:100%;height:100%;line-height:30px;*height:30px}
 .w-input-placeholder{position:absolute;top:0;left:0;right:0;height:100%;padding:0 5px 0 10px;line-height:1;color:#999;cursor:text}
 .w-f.z-on .w-input{border-color:#2498ff;box-shadow:none}
 .w-f.z-ds .w-input{background:#e6e6e6;box-shadow:none}
+.w-f.z-err .f-boxbtn{border-color:#f00}
 .w-f.z-err .w-input{border-color:red;box-shadow:inset 0 0 2px #fbb}
 .w-f.z-trans .w-input,.w-f.z-trans.z-err .w-input{border-width:0;border-radius:0;box-shadow:none}
+.w-f-remark{float:right;padding-left:5px;height:32px;line-height:32px}
 
 .w-label{position:relative;line-height:16px;*line-height:18px}
 .w-label ._lb{margin-right:6px}
@@ -398,13 +400,18 @@
 
 .w-text.z-clear input._t::-ms-clear,.w-password.z-clear input._t::-ms-reveal{display:none}
 
-.w-password ._weak,.w-password ._medium,.w-password ._strong{margin-left:5px;width:80px;height:24px;line-height:24px;background:#e1e1e1;color:#fff;text-align:center}
-.w-password.z-weak ._weak,.w-password.z-medium ._weak,.w-password.z-strong ._weak{background:#f00}
-.w-password.z-medium ._medium,.w-password.z-strong ._medium{background:#f72}
-.w-password.z-strong ._strong{background:#aea}
+.w-password ._weak,.w-password ._medium,.w-password ._strong{width:33.3333%;height:24px;line-height:24px;text-align:center}
+.w-password.z-weak ._weak ._st,.w-password.z-medium ._weak ._st,.w-password.z-strong ._weak ._st{border-color:#e52929}
+.w-password.z-medium ._medium ._st,.w-password.z-strong ._medium ._st{border-color:#ff9d13}
+.w-password.z-strong ._strong ._st{border-color:#24c301}
+.w-password-strength{margin-top:10px}
+.w-password-strength ._strong{width:33.3334%;}
+.w-password-strength ._st{margin-right:10px;border-top:5px solid #e1e1e1;color:#999}
+.w-password-strength ._strong ._st{margin-right:0}
 
-.w-textarea ._t{position:absolute;top:0;bottom:0;left:0;right:0;padding:5px 0 0 10px;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word}
+.w-textarea ._t{position:static;top:0;bottom:0;left:0;right:0;line-height:1.5;overflow:auto;word-break:break-all;word-wrap:break-word}
 .w-textarea .w-input-placeholder{height:31px}
+.w-textarea ._c{padding-right:0}
 
 .w-select ._t{height:100%;border:0;*text-indent:0}
 .w-select.w-select-multiple{height:auto}
@@ -417,7 +424,7 @@
 .w-datepicker ._pick_i{background:url(g/n.png) no-repeat 0 50%}
 .w-datepicker ._pick:hover ._pick_i{background-position:-25px 50%}
 .w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
-.w-datepicker .w-input.z-auto{width:178px}
+.w-datepicker .w-f-main.z-auto{width:178px}
 
 .w-spinner ._t{vertical-align:middle}
 .w-spinner ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0}
@@ -429,17 +436,18 @@
 .w-spinner.z-ds ._b em{cursor:default}
 .w-spinner.z-ds ._b em:hover .f-arw-t2{border-bottom-color:#99a8b8}
 .w-spinner.z-ds ._b em:hover .f-arw-b2{border-top-color:#99a8b8}
+.w-spinner .w-f-main.z-auto{width:112px}
 
 .w-numberbox ._t{vertical-align:middle}
-.w-numberbox ._l{float:left;left:-1px;}
-.w-numberbox ._r{float:right;right:-1px}
+.w-numberbox ._l{float:left;margin-right:-1px}
+.w-numberbox ._r{float:right;margin-left:-1px}
 .w-numberbox.z-on ._l{z-index:0;border-right-color:#2498ff}
 .w-numberbox.z-on ._r{z-index:0;border-left-color:#2498ff}
 .w-numberbox ._s{position:absolute;top:0;left:0;bottom:0;right:0;margin:auto}
-.w-numberbox .f-boxbtn{position:relative;top:-1px;z-index:1;width:26px;color:#999;border:1px solid #ddd;text-align:center;font-style:normal;font-size:24px;line-height:1.1}
+.w-numberbox .f-boxbtn{position:relative;z-index:1;width:26px;color:#999;border:1px solid #ddd;text-align:center;font-style:normal;font-size:24px;line-height:1.1}
 .w-numberbox .f-boxbtn.z-hv{border-color:#2498ff;color:#2498ff}
-.w-numberbox.z-ds .f-boxbtn{color:#ccc}
-.w-f.z-err .f-boxbtn{border-color:#f00}
+.w-numberbox.z-ds .f-boxbtn{background:#e6e6e6;color:#ccc}
+.w-numberbox .w-f-main.z-auto{width:140px}
 
 .w-slider ._t{position:relative;height:6px;margin:2px 0;background:#e6e6e6;border-radius:6px}
 .w-slider ._track{position:absolute;height:6px;background:#2498ff;border-radius:6px;}
@@ -589,6 +597,8 @@
 .w-switch.z-ds ._o{border-color:#e6e6e6}
 .w-switch.z-checked.z-ds ._l{background:#a2d2ff;border-color:#a2d2ff}
 .w-switch.z-checked.z-ds ._o{border-color:#a2d2ff}
+
+.w-formlabel .w-f-remark{height:auto;line-height:inherit}
 
 .w-album{white-space:normal;text-align:justify}
 .w-img{position:relative;text-align:center}

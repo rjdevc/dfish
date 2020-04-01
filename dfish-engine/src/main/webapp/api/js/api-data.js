@@ -3624,6 +3624,7 @@ define( {
           }
       ] },
       { name: 'name', type: 'String', remark: '表单名。' },
+      { name: 'remark', type: 'String', remark: '备注信息。' },
       { name: 'placeholder', type: 'String', optional: true, remark: '当表单没有值时显示的提示文本。' },
       { name: 'status', type: 'String', optional: true, remark: '表单状态。可选值: <b>normal</b><s>(默认)</s>, <b>readonly</b><s>(只读，不验证数据)</s>, <b>validonly</b><s>(只读，验证数据)</s>, <b>disabled</b><s>(禁用)</s>。' },
       { name: 'tip', type: 'Boolean | string', remark: '提示信息。如果设置为true，提示内容为当前的文本。' },
@@ -3735,6 +3736,9 @@ define( {
       ] },
       { name: 'saveModified([original])', remark: '把当前的表单值设置默认值。', param: [
         { name: 'original', type: 'Boolean', remark: '设为true，检测表单是否有修改，对照参考的值为初始值。', optional: true }
+      ] },
+      { name: 'remark(value)', remark: '设置备注信息。', param: [
+        { name: 'value', type: 'String', remark: '备注信息。' }
       ] },
       { name: 'reset()', remark: '把表单的值重置为初始值。' },
       { name: 'val([value])', remark: '获取或设置值。', param: [
@@ -3862,7 +3866,7 @@ define( {
   	title: 'CheckBoxGroup',
   	remark: '复选表单组。',
   	extend: 'Text',
-  	deprecate: 'placeholder,tip,transparent,name,value,focus,focusEnd,.z-trans,.w-text,.w-input,status',
+  	deprecate: 'placeholder,tip,transparent,name,value,focus,focusEnd,.z-trans,.w-text,.w-input,status,remark',
     Config: [
       { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>h</b><s>(横向,默认)</s>,<b>v</b><s>(纵向)</s>' },
       { name: 'nodes', type: 'Array', remark: 'CheckBox 节点数组。' },
@@ -4024,7 +4028,7 @@ define( {
   "RadioGroup": {
   	remark: '单选表单组。',
   	extend: 'CheckBoxGroup',
-  	deprecate: 'placeholder,tip,transparent,value,focus,focusEnd,.z-trans,.w-text,.w-input,status',
+  	deprecate: 'placeholder,tip,transparent,value,focus,focusEnd,.z-trans,.w-text,.w-input,status,remark',
     Config: [
       { name: 'nodes', type: 'Array', remark: 'Radio 节点数组。' },
       { name: 'pub', type: 'Object', optional: true, remark: 'Radio 的默认参数。' },
