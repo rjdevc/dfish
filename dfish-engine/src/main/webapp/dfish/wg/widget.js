@@ -6027,16 +6027,6 @@ Password = define.widget( 'Password', {
 	},
 	Extend: Text,
 	Default: { tip: F },
-	Listener: {
-		body: {
-			ready: function() {
-				//this.fixWidth();
-			},
-			resize: function() {
-				//this.fixWidth();
-			}
-		}
-	},
 	Prototype: {
 		strength: function( a ) {
 			this.removeClass( 'z-weak z-medium z-strong' );
