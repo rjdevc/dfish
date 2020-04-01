@@ -224,6 +224,16 @@ i {
 /**对话框**/
 /****命令类****/
 
+/****表单类****/
+/**Password**/
+.w-password ._weak, .w-password ._medium, .w-password ._strong {
+    width: 60px;
+    height: 16px;
+    line-height: 16px;
+}
+/**Password**/
+/****表单类****/
+
 /****功能类****/
 /**树节点**/
 .w-leaf-i {

@@ -2,14 +2,14 @@ define.template({
     type: 'View',
     commands: {
         'submit': {
-            type: 'submit',
+            type: 'Submit',
             src: 'demo/submit',
             success: '$.alert("提交成功",null,5000);'
         },
         'loading': {
-            type: 'loading',
+            type: 'Loading',
             node: {
-                type: 'progress',
+                type: 'Progress',
                 guide: 'demo/loading',
                 template: 'progress/multiple',
                 success: 'if($response.data.finish){$.close(this);$.alert("完成了!",null,5000);}'
