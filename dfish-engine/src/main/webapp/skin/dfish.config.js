@@ -99,28 +99,28 @@ dfish.config({
             uploadButtons: [{type: 'UploadButton', text: '+'}]
         },
 
-        // 'Toggle': {
-        //     height: 40,
-        //     icon: '.i-toggle-icon',
-        //     expandedIcon: '.i-toggle-expanded',
-        //     cls: 'bd-split bd-onlybottom',
-        //     heightMinus: 1
-        // },
-        // 'Toggle.z-hr': {
-        //     cls: null,
-        //     heightMinus: 0
-        // },
-        // 'TableToggle': {
-        //     height: 40,
-        //     icon: '.i-toggle-icon',
-        //     expandedIcon: '.i-toggle-expanded',
-        //     cls: 'bd-split bd-onlybottom',
-        //     heightMinus: 1
-        // },
-        // 'TableToggle.z-hr': {
-        //     cls: null,
-        //     heightMinus: 0
-        // }
+        'Toggle': {
+            height: 40,
+            collapsedIcon: '.i-toggle-collapsed',
+            expandedIcon: '.i-toggle-expanded',
+            cls: 'bd-split bd-onlybottom',
+            heightMinus: 1
+        },
+        'Toggle.z-hr': {
+            cls: null,
+            heightMinus: 0
+        },
+        'TableToggle.z-form': {
+            height: 40,
+            collapsedIcon: '.i-toggle-collapsed',
+            expandedIcon: '.i-toggle-expanded',
+            cls: 'bd-split bd-onlybottom',
+            heightMinus: 1
+        },
+        'TableToggle.z-form.z-hr': {
+            cls: null,
+            heightMinus: 0
+        }
     },
     // 自定义widget
     alias: {

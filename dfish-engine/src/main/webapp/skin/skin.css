@@ -1055,7 +1055,7 @@ img {
 }
 
 /**常用操作图标**/
-.i-toggle-icon {
+.i-toggle-collapsed {
     background: url("img/btn-icon.png") -27px -266px;
     width: 16px;
     height: 16px;
