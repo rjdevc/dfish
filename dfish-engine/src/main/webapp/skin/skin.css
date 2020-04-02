@@ -165,7 +165,9 @@ i {
 .w-dialog .dlg-head {
     background-color: #2498ff;
 }
-
+.w-dialog .dlg-head .w-button ._i {
+    color: #fff;
+}
 .w-dialog .dlg-head .dlg-head-title {
     color: #fff;
     font-size: 14px;
@@ -186,7 +188,7 @@ i {
 }
 
 .w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.z-hv {
-    background-color: #1588d4;
+    background-color: #208ff2;
 }
 
 .w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-close.z-hv {

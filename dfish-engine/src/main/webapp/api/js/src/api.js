@@ -28,9 +28,9 @@ function find( a ) {
 }
 
 function apiContentWidget( id ) {
-	var a = data[ id ], b = [ { type: 'Html', style: 'font-size:14px;padding-bottom:5px;', text: '<p>' + a.remark + '</p>' } ], s = [], t, i = 0;
+	var a = data[ id ], b = [ typeof a.remark === 'string' ? { type: 'Html', style: 'font-size:14px;padding-bottom:5px;', text: '<p>' + a.remark + '</p>' } : a.remark ], s = [], t, i = 0;
 	for ( ; i < pk.length; i ++ )
-		(t = memberWidget( id, a, pk[ i ], pn[ i ], ! t )) && (b = b.concat( t ), s.push( { type: 'Button', text: pn[ i ], id: id + '-btn-' + pk[ i ], data: { mod: id, chap: pk[ i ] }, focus: i === 0, on: { click: 'api.anchor(this)' } } ));
+		(t = memberWidget( id, a, pk[ i ], pn[ i ], i == 0 )) && (b = b.concat( t ), s.push( { type: 'Button', text: pn[ i ], id: id + '-btn-' + pk[ i ], data: { mod: id, chap: pk[ i ] }, focus: i === 0, on: { click: 'api.anchor(this)' } } ));
 	return { type: 'Vert', id: id + '-con', nodes: [
 		{ type: 'Horz', height: 55, cls: 'main-header bd-nav bd-onlybottom', nodes: [
 		  { type: 'Html', text: '<h1>' + (a.title || id) + '</h1>' },
@@ -85,7 +85,7 @@ function memberWidget( id, a, k, n, m ) {
 				}
 			}
 		}
-		return [ { type: 'Html', text: '<div id=' + id + '-' + k + ' class="members-title" onclick="api.expand(this)"><h3>' + $.arrow( 'b2' ) + ' &nbsp;' + n + '</h3>' + (m ? '<div style="float:right;font-size:12px;color:#888;line-height:40px"><font color=#ff7921>*</font> 注: 蓝色字体是当前widget专有的属性事件方法，黑色字体是所有widget共有的属性事件方法。用法无区别，只是为了方便查阅而加以颜色区分。</div>' : '') + '</div>' },
+		return [ { type: 'Html', text: '<div id=' + id + '-' + k + ' class="members-title" onclick="api.expand(this)"><h3>' + $.caret( 'd' ) + ' &nbsp;' + n + '</h3>' + (m ? '<div style="float:right;font-size:12px;color:#888;line-height:40px"><font color=#ff7921>*</font> 注: 蓝色字体是当前widget专有的属性事件方法，黑色字体是所有widget共有的属性事件方法。用法无区别，只是为了方便查阅而加以颜色区分。</div>' : '') + '</div>' },
 			{ type: 'Table', id: id + '-' + k + '-grid', face: 'cell', cls: 'detail-grid', escape: false, "columns":[ {"field":"name", "width":"*", "format":"javascript:return api.format(this)"} ], tBody: { nodes: b } } ];
 	}
 }
@@ -171,10 +171,11 @@ var api = {
 		api.find( a ).scrollIntoView();
 	},
 	expand: function( a, b ) {
-		var t = $.get( '.f-arw-b2', a );
+		var t = $.get( '.f-i-caret-down', a );
 		b == null && (b = ! t);
+		
 		$.classAdd( $.w( a ).next().$(), 'f-none', ! b );
-		$.arrow( t || $.get( '.f-arw-t2', a ), b ? 'b2' : 't2' );
+		$.caret( t || $.get( '.f-i-caret-up', a ), b ? 'd' : 'u' );
 	},
 	anchor: function( a ) {
 		var d = a.x.data;

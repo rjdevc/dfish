@@ -33,7 +33,7 @@
 		  	    { "text": "模块加载规范", "id": "CommonModuleDefinition", "expanded": false, "collapsedIcon": ".icon .icon-component" },
 		  	    { "text": "JS/CSS规范", "id": "app", "collapsedIcon": ".icon .icon-component" }
 		  	  ] },
-		  	  { "text": "全局方法", "collapsedIcon": ".icon .icon-pkg", "expanded": false, "nodes": [
+		  	  { "text": "方法样式", "collapsedIcon": ".icon .icon-pkg", "expanded": false, "nodes": [
 		        { "id": "$", "text": "dfish ($)", "expanded": false, "nodes": [
 		          { "id": "$.ajax", "text": "$.ajax", "datasrc": "$" },
 		          { "id": "$.ajaxJSON", "text": "$.ajaxJSON", "datasrc": "$" },
@@ -108,7 +108,8 @@
 		          { "id": "$.xmlQueryAll", "text": "$.xmlQueryAll", "datasrc": "$" }
 		        ] },
 		        { "id": "Q", "text": "Q" },
-		        { "id": "VM", "text": "VM" }
+		        { "id": "VM", "text": "VM" },
+		        { "id": "iconfont", "text": "字体图标" }
 		      ] },
 		  	  { "text": "模板", "expanded": false, "collapsedIcon": ".icon .icon-pkg", "nodes": [
 		  	    { "text": "模板说明", "id": "@", "expanded": false, "collapsedIcon": ".icon .icon-component", "datasrc": "@" },

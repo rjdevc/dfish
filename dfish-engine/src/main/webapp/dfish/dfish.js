@@ -1099,6 +1099,7 @@ _offset = function( o ) {
 	return a;
 },
 _arr_comma = function( a ) { return a.split( ',' ) },
+_caretHooks = { r: 'right', l: 'left', u: 'up', d: 'down', '+': 'plus', '-': 'minus' },
 _snaptype = {
 	h : _arr_comma( '21,12,34,43' ),
 	v : _arr_comma( '41,14,32,23' ),
@@ -2222,12 +2223,13 @@ _merge( $, {
 		}
 		return r + ((b && b.append) || '') + '</span>';
 	},
-	arrow: function( a, b ) {
-		var c = b || a;
+	caret: function( a, b ) {
+		var c = _caretHooks[ b || a ] || b || a,
+			d = c === 'plus' || c === 'minus' ? 'f-i f-i-' + c + '-squre' : 'f-i f-i-caret-' + c;
 		if ( a && a.nodeType ) {
-			a.className = 'f-arw f-arw-' + c;
+			a.className = d;
 		} else
-			return '<em class="f-arw f-arw-' + (c || 'b1') + '"' + (b ? ' id=' + a : '') + '></em>';
+			return '<i class="' + d + '"' + (b ? ' id=' + a : '') + '></i>';
 	},
 	colIndex: function( o ) {
 	    var td = $.query( o ).closest( 'td' )[ 0 ], m = [], r,

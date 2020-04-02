@@ -1,6 +1,6 @@
 /* api.css */
 
-body{font-size:14px;font-family:verdana;line-height:1.8;}
+body{font-size:14px;font-family:verdana,"Microsoft yahei";line-height:1.8;}
 
 h1{font-size:22px}
 h1,h4{margin:0;padding:16px 0;}
@@ -34,6 +34,7 @@ ol{margin:10px}
 .example-content code{position:relative;left:-76px;font-family: "courier new";-webkit-font-smoothing: initial;-moz-osx-font-smoothing: initial}
 .example-content span{margin-left:10px}
 .example-content em{font-style:normal}
+li .example-content code{left:-46px;}
 
 .code-str,.code-str .code-key,.code-str .code-lit,.code-str .code-fun,.code-str .code-ann{color:#3CA676}
 .code-ann,.code-ann .code-key,.code-ann .code-lit,.code-ann .code-fun{color:#b3b3b3}
@@ -95,4 +96,7 @@ sup {
     color: #ff404b;
 }
 h4 sup{left:6px}
+
+.album-iconfont .f-i{font-size:28px}
+.album-iconfont .w-img-t{padding-left:15px;color:#777}
 

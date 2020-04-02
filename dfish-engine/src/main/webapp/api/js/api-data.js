@@ -868,6 +868,63 @@ define( {
   		"<li><b>颜色CSS文件命名</b>：<br>与颜色目录名相同，放在颜色子目录下。颜色CSS文件内定义颜色相关的CSS样式。" +
   		"</ul></dd></dl>"
   },
+  "iconfont": {
+  	title: '字体图标',
+  	remark: {
+  		type: 'Album',
+  		cls: 'album-iconfont',
+  		pub: {
+  			face: 'straight',
+  			width: '33.3%',
+  			widthMinus: 22
+  		},
+  		nodes: [
+  			{ src: '.f-i .f-i-edit', text: '.f-i .f-i-edit' },
+  			{ src: '.f-i .f-i-view', text: '.f-i .f-i-view' },
+  			{ src: '.f-i .f-i-favor', text: '.f-i .f-i-favor' },
+  			{ src: '.f-i .f-i-trash', text: '.f-i .f-i-trash' },
+  			{ src: '.f-i .f-i-angle-double-right', text: '.f-i .f-i-angle-double-right' },
+  			{ src: '.f-i .f-i-check', text: '.f-i .f-i-check' },
+  			{ src: '.f-i .f-i-caret-down', text: '.f-i .f-i-caret-down' },
+  			{ src: '.f-i .f-i-caret-up', text: '.f-i .f-i-caret-up' },
+  			{ src: '.f-i .f-i-caret-left', text: '.f-i .f-i-caret-left' },
+  			{ src: '.f-i .f-i-caret-right', text: '.f-i .f-i-caret-right' },
+  			{ src: '.f-i .f-i-folder', text: '.f-i .f-i-folder' },
+  			{ src: '.f-i .f-i-folder-open', text: '.f-i .f-i-folder-open' },
+  			{ src: '.f-i .f-i-file', text: '.f-i .f-i-file' },
+  			{ src: '.f-i .f-i-ellipsis', text: '.f-i .f-i-ellipsis' },
+  			{ src: '.f-i .f-i-upload-image', text: '.f-i .f-i-upload-image' },
+  			{ src: '.f-i .f-i-upload', text: '.f-i .f-i-upload' },
+  			{ src: '.f-i .f-i-date', text: '.f-i .f-i-date' },
+  			{ src: '.f-i .f-i-long-arrow-down', text: '.f-i .f-i-long-arrow-down' },
+  			{ src: '.f-i .f-i-long-arrow-up', text: '.f-i .f-i-long-arrow-up' },
+  			{ src: '.f-i .f-i-long-arrow-left', text: '.f-i .f-i-long-arrow-left' },
+  			{ src: '.f-i .f-i-long-arrow-right', text: '.f-i .f-i-long-arrow-right' },
+  			{ src: '.f-i .f-i-minus', text: '.f-i .f-i-minus' },
+  			{ src: '.f-i .f-i-plus', text: '.f-i .f-i-plus' },
+  			{ src: '.f-i .f-i-minus-squre', text: '.f-i .f-i-minus-squre' },
+  			{ src: '.f-i .f-i-plus-squre', text: '.f-i .f-i-plus-squre' },
+  			{ src: '.f-i .f-i-warning', text: '.f-i .f-i-warning' },
+  			{ src: '.f-i .f-i-question', text: '.f-i .f-i-question' },
+  			{ src: '.f-i .f-i-check-circle', text: '.f-i .f-i-check-circle' },
+  			{ src: '.f-i .f-i-search', text: '.f-i .f-i-search' },
+  			{ src: '.f-i .f-i-angle-first', text: '.f-i .f-i-angle-first' },
+  			{ src: '.f-i .f-i-angle-last', text: '.f-i .f-i-angle-last' },
+  			{ src: '.f-i .f-i-angle-up', text: '.f-i .f-i-angle-up' },
+  			{ src: '.f-i .f-i-angle-down', text: '.f-i .f-i-angle-down' },
+  			{ src: '.f-i .f-i-angle-left', text: '.f-i .f-i-angle-left' },
+  			{ src: '.f-i .f-i-angle-right', text: '.f-i .f-i-angle-right' },
+  			{ src: '.f-i .f-i-star-empty', text: '.f-i .f-i-star-empty' },
+  			{ src: '.f-i .f-i-star-half', text: '.f-i .f-i-star-half' },
+  			{ src: '.f-i .f-i-star-full', text: '.f-i .f-i-star-full' },
+  			{ src: '.f-i .f-i-dialog-max', text: '.f-i .f-i-dialog-max' },
+  			{ src: '.f-i .f-i-dialog-min', text: '.f-i .f-i-dialog-min' },
+  			{ src: '.f-i .f-i-dialog-restore', text: '.f-i .f-i-dialog-restore' },
+  			{ src: '.f-i .f-i-close', text: '.f-i .f-i-close' },
+  			{ src: '.f-i .f-i-spinner', text: '.f-i .f-i-spinner' }
+  		]
+  	}
+  },
   "@": {
   	title: '模板',
   	sort: false,

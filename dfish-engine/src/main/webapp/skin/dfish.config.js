@@ -85,7 +85,7 @@ dfish.config({
             post: {type: 'UploadPost', template: 'upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             fileTypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
-            uploadButtons: [{type: 'UploadButton', text: '选择文件'}]
+            uploadButtons: [{type: 'UploadButton', text: '选择文件', icon: '.f-i-upload'}]
         },
         'ImageUpload': {
             minFileSize: '1B',
@@ -96,7 +96,7 @@ dfish.config({
             thumbnail: 'file/thumbnail?fileId=$id&scheme=$scheme',
             preview: {type: 'JS', text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'},
             fileTypes: '*.png;*.jpg;*.jpeg;',
-            uploadButtons: [{type: 'UploadButton', text: '+'}]
+            uploadButtons: [{type: 'UploadButton', icon: '.f-i-upload-image'}]
         },
 
         'Toggle': {
