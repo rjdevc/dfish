@@ -2,18 +2,18 @@ define.preload({
     type: 'Dialog', node: {
         type: 'View',
         commands: {
+            // 实际关闭命令(原因是顶部关闭也需要调用)
             'close': {
                 type: 'JS',
                 text: 'if(VM(this).isModified()){this.cmd({type:"Confirm",text:"您有内容尚未保存，确认关闭窗口吗？",' +
                     'yes:{type:"JS",text:"$.close(this);"}});}else{$.close(this);}'
             },
-            'no': {
-                type: 'JS',
-                text: 'this.cmd("close");'
-            }
+            // 关闭按钮命令,这边绕一层的原因是为了能够将顶部关闭按钮和底部命令有个性化区分时使用,预先声明,未想到使用场景
+            'no': {type: 'JS', text: 'this.cmd("close");'}
         },
         node: {
             type: 'Vertical', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
+                // 这里是标题栏
                 {
                     type: 'Horizontal',
                     id: 'dlg_head',
@@ -44,7 +44,8 @@ define.preload({
                                     cls: 'dlg-max',
                                     on: {click: 'app.dialog.max(this);'},
                                     icon: '.i-dlg-max'
-                                }, {
+                                },
+                                {
                                     tip: '关闭',
                                     cls: 'dlg-close',
                                     on: {click: 'this.cmd("close");'},
@@ -55,12 +56,16 @@ define.preload({
                     ]
                 },
                 {
-                    type: 'Vertical', id: 'dlg_trunk', cls: 'dlg-trunk bd-main bd-notop', widthMinus: 2, heightMinus: 1, height: '*', nodes: [
-                        {
-                            type: 'Vertical', height: '*', nodes: [
-                                {type: 'PreloadBody', id: 'dlg_body', cls: 'dlg-body', height: '*'}
-                            ]
-                        },
+                    type: 'Vertical',
+                    id: 'dlg_trunk',
+                    cls: 'dlg-trunk bd-main bd-notop',
+                    widthMinus: 2,
+                    heightMinus: 1,
+                    height: '*',
+                    nodes: [
+                        // 主内容加载区
+                        {type: 'PreloadBody', id: 'dlg_body', cls: 'dlg-body', height: '*'},
+                        // 底部按钮栏
                         {
                             type: 'Horizontal',
                             id: 'dlg_foot',
@@ -69,25 +74,17 @@ define.preload({
                             height: 50,
                             widthMinus: 40,
                             nodes: [
-                                {
-                                    type: 'Html',
-                                    id: 'dlg_foot_info',
-                                    width: '*'
-                                },
+                                {type: 'Html', id: 'dlg_foot_info', width: '*'},
                                 {
                                     type: 'ButtonBar',
-                                    id: 'dlg_foot_oper',
+                                    id: 'dlg_foot_operation',
                                     width: '*',
                                     align: 'right',
                                     space: 10,
                                     pub: {height: 30},
                                     nodes: [
-                                        {
-                                            type: 'SubmitButton', text: '保存', on: {click: 'this.cmd("yes");'}
-                                        },
-                                        {
-                                            text: '关闭', on: {click: 'this.cmd("no");'}
-                                        }
+                                        {type: 'SubmitButton', text: '保存', on: {click: 'this.cmd("yes");'}},
+                                        {text: '关闭', on: {click: 'this.cmd("no");'}}
                                     ]
                                 }
                             ]

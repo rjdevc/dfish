@@ -73,7 +73,7 @@ define.preload({
                                 },
                                 {
                                     type: 'ButtonBar',
-                                    id: 'dlg_foot_oper',
+                                    id: 'dlg_foot_operation',
                                     cls: 'dlg-foot-oper',
                                     width: '*',
                                     height: '*',

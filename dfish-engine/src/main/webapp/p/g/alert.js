@@ -2,11 +2,7 @@ define.preload({
     type: 'Dialog', node: {
         type: 'View',
         commands: {
-            'close': {type: 'JS', text: '$.close(this);'},
-            'no': {
-                type: 'JS',
-                text: 'this.cmd("close");'
-            }
+            'close': {type: 'JS', text: '$.close(this);'}
         },
         node: {
             type: 'Vertical', id: 'dlg_frame', cls: 'dlg-frame', height: '*', width: '*', nodes: [
