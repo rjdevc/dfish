@@ -2,29 +2,6 @@
  * mobile.css
  */
 
-@font-face {font-family:'icomoon';src:url('f/icomoon.ttf') format('truetype');font-weight:normal;font-style:normal;}
-@font-face {font-family:'muiicons';src:url('f/mui.ttf') format('truetype');font-weight:normal;font-style:normal;}
-@font-face {
-  font-family: 'Font Awesome 5 Free';
-  font-style: normal;
-  font-display: auto;
-  src: url("f/fa-solid-900.eot");
-  src: url("f/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("f/fa-solid-900.woff2") format("woff2"), url("f/fa-solid-900.woff") format("woff"), url("f.ttf") format("truetype"), url("f/fa-solid-900.svg#fontawesome") format("svg"); }
-.f-fa {
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 100;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block;
-  font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
-  line-height: 1; }
-.f-fa-minus:before {content:"\f068"}
-.f-fa-plus:before {content:"\f067"}
-
-.f-muiicons{display:inline-block;font-family:'muiicons';width:auto;height:auto;font-size:24px;font-style:normal;font-weight:400;text-decoration:none;-webkit-font-smoothing:antialiased}
-
 .w-scroll{position:relative}
 .w-scroll-overflow{background:inherit;position:relative;overflow:auto}
 .w-scroll-swipedown{position:absolute;left:0;right:0;height:40px;text-align:center;visibility:hidden;overflow:hidden}
@@ -60,6 +37,8 @@
 
 .w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{vertical-align:middle}
 
+.w-dropbox ._o,.w-dropbox-dialog ._o{height:42px;line-height:42px;border-bottom:1px solid #ddd}
+
 .w-datepicker ._t{position:absolute;width:1px;visibility:hidden;}
 .w-datepicker ._a{position:absolute;top:0;left:0;display:block;padding-left:10px;height:100%;line-height:38px;overflow:hidden}
 .w-datepicker ._pad{visibility:hidden}
@@ -88,6 +67,7 @@
 .f-boxbtn{width:30px;height:38px;line-height:38px;text-align:center;text-indent:0;font-style:normal}
 .f-boxbtn .f-arw-b3{border-top-color:#99a8b8;*margin-top:3px}
 
+.w-dialog-cover{opacity:.4}
 
 /*
 .f-i-back,.f-i-upload,.f-i-trash,.f-i-plus{background:none}

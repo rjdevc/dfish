@@ -491,8 +491,9 @@
 .w-dropbox ._o,.w-dropbox-dialog ._o{position:relative;padding:0 5px;height:32px;line-height:32px}
 .w-dropbox-dialog ._o{padding-right:36px}
 .w-dropbox-dialog ._o.z-hv{background-color:#f5faff}
-.w-dropbox-dialog ._o.z-on{color:#2498ff}
+.w-dropbox-dialog ._o.z-on{background:#2498ff;color:#fff}
 .w-dropbox-dialog ._box{visibility:hidden}
+.w-dropbox-dialog.z-mul ._o.z-on{background:#fff;color:#2498ff}
 .w-dropbox-dialog.z-cancel ._o.z-on ._box,.w-dropbox-dialog.z-mul ._o.z-on ._box{position:absolute;visibility:visible;width:16px;height:100%;top:0;right:10px;font-family:"Times New Roman";font-weight:normal;font-style:normal;font-size:18px}
 
 .w-combobox ._c{padding-left:0;min-height:28px;cursor:text}

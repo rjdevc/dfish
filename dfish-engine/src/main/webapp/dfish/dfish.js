@@ -1921,14 +1921,14 @@ function _compatDOMMobile() {
 	    }
 	    n = t = N;
 	});
-	/* // 检测回退键
+	 // 检测回退键
 	if ( win.plus ) {
 		plus.key.addEventListener( 'backbutton', function() { 
-			$.closeAll( plus.webview.currentWebview() );
+			var d = $.dialog();
+			d && d.close();
 		} );
-	}*/
+	}
 }
-
 
 /* `boot` 引导启动 */
 var boot = {
@@ -1941,16 +1941,16 @@ var boot = {
 		this.fn = a;
 		br.app ? (win.plus ? this.domReady() : doc.addEventListener( 'plusready', this.domReady )) : $.query( doc ).ready( this.domReady );
 	},
-	domReady: function(e) {
+	domReady: function() {
 		boot.dom_ok = T;
-		boot.callback();
+		boot.callback('domok');
 	},
 	cssReady: function() {
 		boot.css_ok = T;
-		boot.callback();
+		boot.callback('css_ok');
 	},
-	callback: function() {
-		this.dom_ok && this.css_ok && this.fn();
+	callback: function(e) {
+		this.dom_ok && this.css_ok && this.fn(e);
 	},
 	initEnv: function() {
 		if ( _cfg.path != N )
@@ -2010,7 +2010,7 @@ var boot = {
 		$.skin( _cfg.skin, boot.cssReady );
 	},
 	initDocView: function() {
-		$.ready( function() {
+		$.ready( function(e) {
 			_compatDOM();
 			// 生成首页view
 			if ( _cfg.view ) {

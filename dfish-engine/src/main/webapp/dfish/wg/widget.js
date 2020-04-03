@@ -4804,8 +4804,12 @@ Dialog = define.widget( 'Dialog', {
 		},
 		_listenHide: function( a ) {
 			var self = this, d = this.x.hoverDrop;
-			$.attach( document, mbi ? 'touchstart' : 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
-				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble( e.srcElement ) || (!self.x.independent && self.x.snap && self.x.snap.target && _widget( self.x.snap.target ).hasBubble( e.srcElement )))) ) {self.close()};
+			$.attach( document, mbi ? 'touchend' : 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
+				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble( e.srcElement ) || (!self.x.independent && self.x.snap && self.x.snap.target && _widget( self.x.snap.target ).hasBubble( e.srcElement )))) ) {
+					if ( e.srcElement.id == self.id + 'cvr' )
+						$.stop( e );
+					self.close();
+				};
 			}), a );
 			if ( d ) {
 				var o = d === T ? (this.x.snap && this.x.snap.target ? $( this.x.snap.target ) : this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
@@ -7733,18 +7737,24 @@ DropBox = define.widget( 'DropBox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'Dialog', ownproperty: T, minWidth: this.formWidth(), maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ), widthMinus: 2, heightMinus: 2, id: this.id,
+				var d = { type: 'Dialog', ownproperty: T, id: this.id,
 					cls: 'w-dropbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), autoHide: T,
-					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }, node: { type: 'Html', id: 'list', scroll: T, text: this.html_options() },
+					node: { type: 'Html', id: 'list', scroll: T, text: this.html_options() },
 					on: { load: 'this.commander.listenPop(!0)', close: 'this.commander.listenPop(!1)' }
-				} );
+				};
+				this._dropper = this.exec( $.extend( d, mbi ? {
+					width: $.width() - 40, maxHeight: $.height() - 40, cover: T,
+				} : {
+					minWidth: this.formWidth(), maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ), widthMinus: 2, heightMinus: 2, 
+					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }
+				}) );
 			}
 		},
 		listenPop: function( a ) {
 			if ( a ) {
 				var c = this._dropper.getContentNode(), d = $.get( '.z-on', c.$() ), self = this;
 				d && c.scrollY( d, 'middle', N, d.offsetHeight );
-				! this.x.multiple && Q( document ).on( 'keydown.' + this.id, function( e ) {
+				!mbi && !this.x.multiple && Q( document ).on( 'keydown.' + this.id, function( e ) {
 					if ( e.keyCode === 38 || e.keyCode === 40 ) {
 						var g = Q( '.z-on', c.$() ), h;
 						if ( g.length ) {
@@ -7764,7 +7774,7 @@ DropBox = define.widget( 'DropBox', {
 			} else {
 				this.focus( F );
 				this._dropper = N;
-				! this.x.multiple && Q( document ).off( 'keydown.' + this.id );
+				!mbi && !this.x.multiple && Q( document ).off( 'keydown.' + this.id );
 			}
 		},
 		showLoading: function( a ) {
@@ -8159,7 +8169,7 @@ ComboBox = define.widget( 'ComboBox', {
 		// 创建选项窗口 /@ u -> dialogOption, r -> replace object?
 		createPop: function( u, r ) {
 			var d = { ownproperty: T, cls: 'w-combobox-dialog w-f-dialog', snap: { indent: 1 }, loadingHead: F, bind: this };
-			$.extendDeep( d, u );
+			$.mergeDeep( d, u );
 			u.cls && (d.cls += ' ' + u.cls);
 			var o = { type: 'Dialog', autoHide: T, memory: T, snap: { target: this.id + 'f', position: 'v' }, widthMinus: 2, heightMinus: 2 },
 				w = 'javascript:return this.parentNode.$("f").offsetWidth';
@@ -8355,7 +8365,12 @@ ComboBox = define.widget( 'ComboBox', {
 				this.closePop();
 				if ( ! b ) {
 					this.focus( !mbi );
-					(d || (this.dropper = this.createPop( this.x.drop ))).show();
+					if ( ! d ) {
+						var x = this.x.drop;
+						mbi && (x = $.extend( {}, x, {width: $.width() - 40, maxHeight: $.height - 40, snap: {indent: 0, target: N, position: N}, cover: T} ));
+						d = this.dropper = this.createPop( x );
+					}
+					d.show();
 				}
 			}
 		},
@@ -8912,7 +8927,12 @@ LinkBox = define.widget( 'LinkBox', {
 				this.closePop();
 				this.focus( !mbi );
 				this._query_text = N;
-				(this.dropper || (this.dropper = this.createPop( this.x.drop ))).show();
+				if ( ! this.dropper ) {
+					var x = this.x.drop;
+					mbi && (x = $.extend( {}, x, {width: $.width() - 40, maxHeight: $.height - 40, snap: {indent: 0, target: N, position: N}, cover: T} ));
+					this.dropper = this.createPop( x );
+				}
+				this.dropper.show();
 			}
 		},
 		bookmark: function() {
