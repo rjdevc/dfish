@@ -1922,12 +1922,11 @@ function _compatDOMMobile() {
 	    n = t = N;
 	});
 	 // 检测回退键
-	if ( win.plus ) {
+	/*if ( win.plus ) {
 		plus.key.addEventListener( 'backbutton', function() { 
-			var d = $.dialog();
-			d && d.close();
+			var d = $.dialog(); d && d.close();
 		} );
-	}
+	}*/
 }
 
 /* `boot` 引导启动 */

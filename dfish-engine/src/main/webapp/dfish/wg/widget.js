@@ -4811,6 +4811,9 @@ Dialog = define.widget( 'Dialog', {
 					self.close();
 				};
 			}), a );
+			if ( mbi ) {
+				window.plus.key[ a ? 'addEventListener' : 'removeEventListener' ]( 'backbutton', self.listenHide_1 || (self.listenHide_1 = function() {self.close()}), F );
+			}
 			if ( d ) {
 				var o = d === T ? (this.x.snap && this.x.snap.target ? $( this.x.snap.target ) : this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
 				Q( [ o, self.$() ] )[ f ]( 'mouseenter', self._hover_over || (self._hover_over = function() { clearTimeout( self._hover_timer ); delete self._hover_timer; }) );
