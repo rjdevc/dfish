@@ -31,7 +31,9 @@
 		  	  { "text": "应用指南", "expanded": false, "collapsedIcon": ".icon .icon-pkg", "nodes": [
 		  	    { "text": "简介", "id": "upgrade", "expanded": false, "collapsedIcon": ".icon .icon-component" },
 		  	    { "text": "模块加载规范", "id": "CommonModuleDefinition", "expanded": false, "collapsedIcon": ".icon .icon-component" },
-		  	    { "text": "JS/CSS规范", "id": "app", "collapsedIcon": ".icon .icon-component" }
+		  	    { "text": "JS/CSS规范", "id": "app", "collapsedIcon": ".icon .icon-component" },
+		  	    { "text": "创建插件", "id": "define.widget", "collapsedIcon": ".icon .icon-component" },
+		  	    { "text": "引入外部插件", "id": "third-party", "collapsedIcon": ".icon .icon-component" }
 		  	  ] },
 		  	  { "text": "方法样式", "collapsedIcon": ".icon .icon-pkg", "expanded": false, "nodes": [
 		        { "id": "$", "text": "dfish ($)", "expanded": false, "nodes": [
@@ -142,11 +144,15 @@
 		        { "id": "Submit", "text": "Submit", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Tip", "text": "Tip", "collapsedIcon": ".icon .icon-class" }
 		      ] },
+		  	  /*{ "text": "基础与扩展", "expanded": false, "collapsedIcon": ".icon .icon-pkg", "nodes": [
+		        { "id": "Widget", "text": "Widget", "collapsedIcon": ".icon .icon-class" },
+		        { "id": "UEditor", "text": "UEditor", "collapsedIcon": ".icon .icon-class" },
+		        { "id": "ECharts", "text": "ECharts", "collapsedIcon": ".icon .icon-class" }
+		      ] },*/
 		  	  { "text": "布局类", "expanded": false, "collapsedIcon": ".icon .icon-pkg", "nodes": [
-		        { "id": "Collapse", "text": "Collapse", "collapsedIcon": ".icon .icon-class", "expanded": !true, "nodes": [
+		        { "id": "Collapse", "text": "Collapse", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
 		          { "id": "CollapseButton", "text": "CollapseButton", "collapsedIcon": ".icon .icon-class" }
 		        ] },
-		      //{ "id": "docview", "text": "docview", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "FieldSet", "text": "FieldSet", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Form", "text": "Form", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Frame", "text": "Frame", "collapsedIcon": ".icon .icon-class" },
@@ -164,7 +170,7 @@
 		          { "id": "THead", "text": "THead", "collapsedIcon": ".icon .icon-class" },
 		          { "id": "TR", "text": "TR", "collapsedIcon": ".icon .icon-class" }
 		        ] },
-		        { "id": "Tabs", "text": "Tabs", "collapsedIcon": ".icon .icon-class", "expanded": !true, "nodes": [
+		        { "id": "Tabs", "text": "Tabs", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
 		          { "id": "Tab", "text": "Tab", "collapsedIcon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Vertical", "text": "Vertical", "collapsedIcon": ".icon .icon-class" },
@@ -185,16 +191,16 @@
 		        { "id": "Html", "text": "Html", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Img", "text": "Img", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "PageBar", "text": "PageBar", "collapsedIcon": ".icon .icon-class" },
-		        { "id": "Progress", "text": "Progress", "collapsedIcon": ".icon .icon-class", "expanded": !true, "nodes": [
+		        { "id": "Progress", "text": "Progress", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
 		          { "id": "ProgressItem", "text": "ProgressItem", "collapsedIcon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Split", "text": "Split", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "SubmitButton", "text": "SubmitButton", "collapsedIcon": ".icon .icon-class" },
-		        { "id": "Timeline", "text": "Timeline", "collapsedIcon": ".icon .icon-class", "expanded": !true, "nodes": [
+		        { "id": "Timeline", "text": "Timeline", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
 		          { "id": "TimelineItem", "text": "TimelineItem", "collapsedIcon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Toggle", "text": "Toggle", "collapsedIcon": ".icon .icon-class" },
-		        { "id": "Tree", "text": "Tree", "collapsedIcon": ".icon .icon-class", "expanded": !true, "nodes": [
+		        { "id": "Tree", "text": "Tree", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
 		          { "id": "Leaf", "text": "Leaf", "collapsedIcon": ".icon .icon-class" }
 		        ] }
 		      ] },

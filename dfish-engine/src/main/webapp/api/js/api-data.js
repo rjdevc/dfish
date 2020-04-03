@@ -782,37 +782,6 @@ define( {
             } );
           }
       ] },
-      { name: 'define.widget([id], factory)', remark: 'widget是在dfish3里经过特别封装的模块类。使用此方法定义的widget，会默认继承Widget基础类的所有属性和方法。', param: [
-        { name: 'id', type: 'String', remark: '模块id。如果不写此参数，那么模块id默认为当前js文件的路径' },
-        { name: 'factory', type: 'Object', remark: 'widget类的参数', param: [
-       	  { name: 'Const(settings, [parentNode])', type: 'Function', remark: '构造函数。第一个参数是widget的配置json对象，第二个参数是父节点对象' },
-       	  { name: 'Extend', type: 'String | Array', remark: '要继承的widget类' },
-       	  { name: 'Helper', type: 'Object', remark: '静态方法/属性' },
-       	  { name: 'Listener', type: 'Object', remark: '事件监听' },
-       	  { name: 'Prototype', type: 'Object', remark: '方法/属性' }
-       	] }
-      ], example: [
-          function() {
-          	// 定义一个circle类，它在页面上生成一个圆形，点击它时背景变成红色。内容如下
-            var W = require( 'widget' );
-            define.widget( 'circle', {
-              Const: function( settings, parentNode ) {
-                W.apply( this, arguments );
-              },
-              Listener: {
-                click: function() {
-                  this.$().style.background = 'red';
-                }
-              },
-              Prototype: {
-                // 覆盖 widget 基础类的输出接口
-                html: function() {
-                  return '<div ' + this.html_prop() + ' style="background:#000;border-radius:' + this.x.radius + 'px"></div>';
-                }
-              }
-            } );
-          }
-      ] },
       { name: 'require(id, [fn])', remark: '加载模块。读入并执行一个JavaScript文件，然后返回该模块的exports对象。', param: [
         { name: 'id', type: 'String | Array', remark: '模块id或url。<br>如果是内置模块，如 require("view")，则返回该模块。<br>如果在全局配置项的alias里有设置模块名，则根据这个配置装载模块。<br>如果以 "./" 或者 "../" 或者 "/" 开头，则根据路径来装载模块。' },
         { name: 'fn', type: 'Function', remark: '模块装载完毕后的回调函数。当设置了此参数时，模块以异步方式装载。' }
@@ -867,6 +836,169 @@ define( {
   		"<li><b>主题CSS文件命名</b>：<br>与主题目录名相同，放在主题根目录下。主题CSS文件内定义全局CSS样式。" +
   		"<li><b>颜色CSS文件命名</b>：<br>与颜色目录名相同，放在颜色子目录下。颜色CSS文件内定义颜色相关的CSS样式。" +
   		"</ul></dd></dl>"
+  },
+  "define.widget": {
+  	title: '创建插件',
+  	remark: '用 define.widget( name, options ) 方法创建Widget。创建的插件类默认继承基础类Widget的方法和属性。<br>options 参数如下：',
+    Properties: [
+      { name: 'Const(opt, parentNode)', type: 'Function', remark: '构造函数。', param: [
+      	{ name: 'opt', type: 'Object', remark: 'widget配置参数。' },
+      	{ name: 'parentNode', type: 'Widget', remark: '父节点。' }
+      ] },
+      { name: 'Extend', type: 'String | Widget', remark: '指定继承的对象、或对象名称。' },
+      { name: 'Listener', type: 'Object', remark: '监听事件。可以是HTML事件，也可以是自定义事件。', param: [
+      	{ name: 'body', type: 'Object', remark: '事件配置参数。以下仅列出部分事件。更多事件请参考任意Widget的公共事件。', param: [
+      	  { name: 'ready', type: 'Function', remark: '在widget初始化成并在页面上生成DOM对象后触发。' },
+      	  { name: 'resize', type: 'Function', remark: '在widget调整大小时触发。' },
+      	  { name: 'click', type: 'Function', remark: '在widget上点击时触发。' }
+        ] }
+      ] },
+      { name: 'Prototype', type: 'Object', remark: '定义当前widget的方法和属性。方法可以自定义，也可以重构继承自Widget的方法和属性。以下仅列出在构建Widget时可能会用到的部分方法和属性。更多继承自Widget的方法和属性，请参考任意Widget的公共属性和公共方法。', param: [
+      	{ name: 'className', type: 'String', remark: '样式名。' },
+      	{ name: 'html()', type: 'Function', remark: '用于在Web上显示的全部HTML内容。' },
+      	{ name: 'html_nodes()', type: 'Function', remark: '子节点的HTML内容。' }
+      ] }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	// 创建一个名为 Test 的插件，它只有一个属性 "content"，目标是在页面上显示出这个 content。<br>//第一步: 创建文件 pl/test/test.js，并编写以下代码：
+            return~
+            //调用基础Widget类。引擎中所有Widget都继承此类
+            //~//var W = require( 'Widget' );
+            define.widget( 'Test', {
+            	// 此构造函数可以省略，因为会默认调用基础类的构造函数
+            	Const: function( x, p ) {
+            	    // 调用基础类的构造函数
+            	    W.apply( this, arguments );
+            	},
+            	// 继承Widget。此项可以省略，因为会默认继承
+            	Extend: W,
+            	//定义当前节点的监听事件
+                Listener: {
+            	    body: {
+                        // 点击查看当前节点的高度和宽度
+                        click: function() {
+                            alert('width:' + this.innerWidth() + '\nheight:' + this.innerHeight());
+                        },
+                        // 鼠标移到当前节点上，会有z-hv样式
+                        mouseOver: function() {
+                            this.addClass( 'z-hv' );
+                        },
+                        // 鼠标从当前节点移出，删除z-hv样式
+                        mouseOut: function() {
+                            this.removeClass( 'z-hv' );
+                        }
+                    }
+            	},
+            	//在这里设置当前节点的属性与方法
+            	Prototype: {
+                    // 设置当前节点的样式名
+                    className: 'w-test',
+                    // 重构 html_nodes 方法，把 content 作为输出到页面显示的内容
+                    // 此例中无需重构html方法，直接用继承自基础Widget的html方法
+                    html_nodes: function() {
+                        return this.x.content || '';
+                    }
+            	}
+            } );
+          },
+          function() {
+          	// 第二步: 在首页配置项的alias中增加Test的配置，指定插件地址
+            return~
+            dfish.config({
+                defaultOptions: {
+                    alias: {
+            	        'Test': 'pl/test/test.js' 
+            	    }
+            	}
+            });
+          },
+          function() {
+          	// 第三步：在View中使用这个Widget
+            return~
+            {
+            	type: 'View',
+            	node: {
+            	    type: 'Test',
+            	    content: '测试内容'
+            	}
+            }
+          }
+      ] }
+    ]
+  },
+  "third-party": {
+  	title: '引入外部插件',
+  	remark: '用 define.widget() 创建Widget，并嵌入第三方插件。',
+	Examples: [
+	  { example: [
+          function() {
+          	// 以下是引入 ECharts 的范例<br>// 第一步：创建 pl/echarts 目录，把从ECharts官网下载的 echarts.min.js 放入其中，<br>// 并在同一目录下创建 echarts.dfish.js 文件，编码如下:
+            return~
+            // 引入echarts
+            //~//var echarts = require( './echarts.min' );
+            define.widget( 'ECharts', {
+            	Listener: {
+            	    body: {
+            	        ready: function() {
+            	            // ready事件触发意味着当前节点DOM元素已经生成，可以调用ECharts的初始化方法了。
+            	            this.x.option && this.init( this.x.option );
+            	        },
+            	        resize: function() {
+            	            // 页面调整大小时会触发当前节点的resize事件，在此可调用echarts的resize方法，通知echarts跟随调整大小。
+            	            this.echarts && this.echarts.resize();
+            	        }
+            	    }
+            	},
+            	Prototype: {
+            	    // init是自定义方法
+            	    init: function( opt ) {
+            	    	// ECharts 官方文档提供的调用方式为 echarts.init(element).setOption(option);
+            	    	// this.$()是当前 Widget 的 DOM Element
+            	        this.echarts = echarts.init( this.$() );
+            	        // 调用 echarts 的 setOption 方法
+            	        this.echarts.setOption( opt );
+            	    }
+            	}
+            } );
+          },
+          function() {
+          	// 第二步: 在首页配置项的alias中增加ECharts的配置，指定插件地址
+            return~
+            dfish.config({
+                defaultOptions: {
+                    alias: {
+            	        'ECharts': 'pl/echarts/echarts.dfish.js' 
+            	    }
+            	}
+            });
+          },
+          function() {
+          	// 第三步：在View中使用这个Widget
+            return~
+            {
+            	type: 'View',
+            	node: {
+            	    type: 'ECharts',
+            	    option: {
+                        xAxis: {
+                            type: 'category',
+                            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: [820, 932, 901, 934, 1290, 1330, 1320],
+                            type: 'line'
+                        }]
+                    }
+            	}
+            }
+          }
+      ] }
+    ]
   },
   "iconfont": {
   	title: '字体图标',
@@ -1080,7 +1212,7 @@ define( {
           }
       ] }
   ] },
-  "Widget": {
+  "AbsWidget": {
   	title: 'Widget基础类',
   	remark: '所有Widget都继承此类。',
     Config: [
@@ -1116,6 +1248,7 @@ define( {
             }
           }
       ] },
+      { name: 'className', type: 'String', remark: '样式名。' },
       { name: 'formatNode', type: 'Widget', remark: '如果使用format并返回widget，那么可以使用formatNode来获取这个widget。', common: true },
       { name: 'id', type: 'String', remark: 'widget对象的ID。这个ID由引擎自动生成。', common: true },
       { name: 'isWidget', type: 'Boolean', remark: '是否是一个widget对象。所有widget的这个属性都为 true。可用来简单区分widget对象和JSON对象。', common: true },
@@ -1410,9 +1543,96 @@ define( {
       ] }
     ]
   },
+  "Widget": {
+  	remark: '基础类。所有Widget都继承此类。蓝色部分的方法和属性，主要用于开发插件时做设置或重构。其他widget也有这些方法属性，但没列出，因为使用过程中一般用不上。',
+  	extend: 'AbsWidget',
+    Config: [
+      { name: 'className', type: 'String', remark: '样式名。' },
+      { name: 'tip', type: 'String', remark: '浮动显示的提示文本。' }
+    ],
+    Methods: [
+      { name: 'badge([value])', remark: '设置徽标。', param: [
+        { name: 'value', type: 'Boolean | String | Number', remark: '读取/设置徽标。', optional: true }
+      ], example: [
+          function() {
+          	// 设置徽标
+            this.badge( 5 );
+            this.badge( '99+' );
+            // 取消徽标
+            this.badge( false );
+          }
+      ] },
+      { name: 'click()', remark: '模拟一次点击。' },
+      { name: 'disable([bDisabled])', remark: '设置按钮状态为可用/禁用。', param: [
+        { name: 'bDisabled', type: 'Boolean', remark: '是否禁用。', optional: true }
+      ] },
+      { name: 'focus([bFocus])', remark: '设置焦点状态。', param: [
+        { name: 'bFocus', type: 'Boolean', remark: '默认为 true', optional: true }
+      ], example: [
+          function() {
+            btn.focus(); // 聚焦
+            btn.focus( false ); // 失去焦点
+          }
+      ] },
+      { name: 'drop()', remark: '如果有设置 more 参数，执行此方法可以展示下拉菜单。'},
+      { name: 'icon(src)', remark: '更换图标。', param: [
+        { name: 'src', type: 'String', remark: '图标地址。可以是 url 地址或以"."开头的图标样式名。' }
+      ] },
+      { name: 'isFocus()', remark: '是否焦点状态。' },
+      { name: 'isLocked()', remark: '是否锁定状态。' },
+      { name: 'lock([locked])', remark: '锁定/解锁按钮。', param: [
+        { name: 'locked', type: 'Boolean', remark: 'true: 锁定状态; false: 解除锁定。', optional: true }
+      ] },
+      { name: 'status([status])', remark: '获取或设置状态。', param: [
+        { name: 'status', type: 'String', remark: '传入此参数是设置状态。不传此参数是获取状态。可选值: <b>normal</b><s>(默认)</s>, <b>disabled</b><s>(禁用)</s>。', optional: true }
+      ] },
+      { name: 'text(str)', remark: '更换文本。', param: [
+        { name: 'str', type: 'String', remark: '文本内容。' }
+      ] }
+    ],
+    Classes: [
+      { name: '.w-button', remark: '基础样式。' },
+      { name: '.z-ds', remark: '设置了 disabled:true 时的样式。' },
+      { name: '.z-combo', remark: '同时设置了 click 事件和 nodes 时的样式。(有下拉箭头，和按钮文本分开。)' },
+      { name: '.z-normal', remark: '没有 nodes 时的样式。(无下拉箭头)' },
+      { name: '.z-more', remark: '设置了 nodes 时的样式。(有下拉箭头)' },
+      { name: '.z-lock', remark: '按钮处于锁定状态的样式。当按钮执行submit或ajax命令时会被锁定，避免重复点击。' },
+      { name: '.z-hv', remark: '鼠标移到按钮上的样式。如果按钮设置了 disabled:true 则无此样式。' },
+      { name: '.z-dn', remark: '鼠标按下时的样式。如果按钮设置了 disabled:true 则无此样式。' },
+      { name: '.z-first', remark: '如果按钮的父节点是ButtonBar，且当前按钮为ButtonBar的第一个子节点时的样式。' },
+      { name: '.z-last', remark: '如果按钮的父节点是ButtonBar，且当前按钮为ButtonBar的最后一个子节点时的样式。' },
+      { name: '.z-on', remark: '高亮的样式。如果按钮设置了 disabled:true 则无此样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	// 图标使用图片路径
+          	return~
+            { type: 'Button', icon: 'img/abc.gif' }
+          },
+          function() {
+          	// 图标使用样式名
+          	return~
+            { type: 'Button', icon: '.i-edit', text: '编辑' }
+          },
+          function() {
+          	// 有下拉选项的按钮
+          	return~
+            {
+                type: 'Button',
+                text: '更多',
+                nodes: [
+                    { text: '新建' },
+                    { text: '编辑' }
+                ]
+            }
+          }
+      ] }
+    ]
+  },
   "Button": {
   	remark: '按钮类。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
   	//deprecate: 'prepend,append',
     Config: [
       { name: 'badge', type: 'Boolean | String | Badge', remark: '显示徽标。' },
@@ -1579,7 +1799,7 @@ define( {
   },
   "ButtonBar": {
   	remark: 'Button 的父类。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'dir', type: 'String', remark: '按钮排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
@@ -1679,7 +1899,7 @@ define( {
   },
   "Collapse": {
   	remark: '可切换标签容器。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
 	Examples: [
 	  { example: [
           function() {
@@ -1726,7 +1946,7 @@ define( {
   },
   "FieldSet": {
   	remark: 'FieldSet模式布局。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'legend', type: 'String', remark: '标题文本。' },
       { name: 'box', type: 'Object', remark: '选项表单，类型是 checkbox 或 radio。取消或勾选这个box，将同步fieldset内部所有表单的状态。', param: [
@@ -1762,7 +1982,7 @@ define( {
   },
   "Frame": {
   	remark: '帧模式布局。只显示一个子元素，其他子元素都隐藏。<br>子节点宽度默认为*，高度默认为*。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'dft', type: 'String', remark: '默认显示 widget 的 ID。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' }
@@ -1867,7 +2087,7 @@ define( {
   },
   "THead": {
   	remark: 'Table的表头。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'br', type: 'Boolean', remark: '内容是否换行。' },
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。默认值为true。' },
@@ -2020,7 +2240,7 @@ define( {
   },
   "TableRowNum": {
   	remark: '用于table的自增数字字段。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'start', type: 'Number', remark: '初始值。默认值为1' }
     ],
@@ -2121,7 +2341,7 @@ define( {
   },
   "TR": {
   	remark: '表格行。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'data', type: 'Object', remark: '行数据。' },
       { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
@@ -2197,7 +2417,7 @@ define( {
   },
   "TD": {
   	remark: '表格单元格。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
       { name: 'br', type: 'Boolean', remark: '内容是否换行。' },
@@ -2246,7 +2466,7 @@ define( {
   },
   "Table": {
   	remark: '表格。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'cellPadding', type: 'Number', remark: '设置单元边沿与其内容之间的空白。' },
       { name: 'columns', type: 'Array', remark: '列参数的数组集合。<br>单个列的参数参见 Column 类。' },
@@ -2458,7 +2678,7 @@ define( {
   },
   "Form": {
   	remark: '12列栅栏表单布局。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
@@ -2502,7 +2722,7 @@ define( {
   },
   "Vertical": {
   	remark: '子节点按垂直方向排列的布局widget。子节点的默认宽度为*，高度默认为-1。高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐方式。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
@@ -2523,19 +2743,22 @@ define( {
         { name: 'x',     type: 'String', remark: '元素滚动到可见区域的的水平位置。可选值: <b>left</b>, <b>center</b>, <b>right</b>，或数字', optional: true },
         { name: 'speed', type: 'String | Number', remark: '平滑滚动效果参数。可选值: <b>fast</b>, <b>normal</b>, <b>slow</b>, 或毫秒', optional: true }
       ] },
-      { name: 'scrollTop([y], [speed])', remark: '获取或设置滚动垂直位置。不设置任何参数时返回滚动垂直位置。', param: [
+      { name: 'scrollY([y], [speed])', remark: '获取或设置滚动垂直位置。不设置任何参数时返回滚动垂直位置。', param: [
         { name: 'y',     type: 'String | Number', remark: '元素滚动到可见区域的的垂直位置。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>，或数字。', optional: true },
         { name: 'speed', type: 'String | Number', remark: '平滑滚动效果参数。可选值: <b>fast</b>, <b>normal</b>, <b>slow</b>, 或毫秒', optional: true }
       ] },
-      { name: 'scrollLeft([x], [speed])', remark: '获取或设置滚动水平位置。不设置任何参数时返回滚动水平位置。', param: [
+      { name: 'scrollX([x], [speed])', remark: '获取或设置滚动水平位置。不设置任何参数时返回滚动水平位置。', param: [
         { name: 'x',     type: 'String', remark: '元素滚动到可见区域的的水平位置。可选值: <b>left</b>, <b>center</b>, <b>right</b>，或数字', optional: true },
         { name: 'speed', type: 'String | Number', remark: '平滑滚动效果参数。可选值: <b>fast</b>, <b>normal</b>, <b>slow</b>, 或毫秒', optional: true }
       ] },
-      { name: 'isScrollable()', remark: '是否有滚动条。' },
-      { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
+      { name: 'isScroll()', remark: '是否有滚动条。' },
+      { name: 'isScrollTop()', remark: '滚动条是否滚动到了顶部。' },
+      { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' },
+      { name: 'isScrollLeft()', remark: '滚动条是否滚动到了最左边。' },
+      { name: 'isScrollRight()', remark: '滚动条是否滚动到了最右边。' }
     ],
     Classes: [
-      { name: '.w-Vertical', remark: '基础样式。' }
+      { name: '.w-vertical', remark: '基础样式。' }
     ],
 	Examples: [
 	  { example: [
@@ -2565,7 +2788,7 @@ define( {
   "Horizontal": {
    	remark: '子节点按水平方向排列的布局widget。子节点的默认高度为*，默认宽度为-1。宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
   	extend: 'Vertical',
-  	deprecate: '.w-Vertical',
+  	deprecate: '.w-vertical',
     Config: [
       { name: 'br', type: 'Boolean', remark: '是否换行。默认值为 false。' },
 	],
@@ -2707,7 +2930,7 @@ define( {
   		'<li>如果有node，就直接展示node。' + 
 	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
 	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。' },
       { name: 'preload', type: 'String | Object', remark: '预装载模板地址，或预装载模板内容。' },
@@ -2869,7 +3092,7 @@ define( {
   },
   "Album": {
   	remark: '图片集。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'focusMultiple', type: 'Boolean', remark: '是否可多选。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
@@ -2923,7 +3146,7 @@ define( {
   },
   "Img": {
   	remark: '图片。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'badge', type: 'Boolean | String | Badge', remark: '显示徽标。' },
       { name: 'box', type: 'Object', remark: '选项表单，类型是 checkbox 或 radio。取消或勾选这个box，将同步fieldset内部所有表单的状态。', param: [
@@ -2980,7 +3203,7 @@ define( {
   },
   "Tree": {
   	remark: '树。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'ellipsis', type: 'Boolean', remark: '设置为true，树节点文本超出可视范围部分以省略号显示。' },
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
@@ -3041,7 +3264,7 @@ define( {
   },
   "Leaf": {
   	remark: '树节点。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'badge', type: 'Boolean | String | Badge', remark: '显示徽标。' },
       { name: 'box', type: 'Object', remark: '选项表单，类型是 checkbox 或 radio。取消或勾选这个 box，将同步 fieldset 内部所有表单的状态。', param: [
@@ -3148,7 +3371,7 @@ define( {
   },
   "Html": {
   	remark: '展示html内容。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
@@ -3178,7 +3401,7 @@ define( {
   },
   "Label": {
   	remark: '表单标签。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', remark: '水平居中。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
@@ -3206,7 +3429,7 @@ define( {
   },
   "Blank": {
   	remark: '空白面板。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Classes: [
       { name: '.w-Blank', remark: '基础样式。' }
     ],
@@ -3221,7 +3444,7 @@ define( {
   },
   "Badge": {
   	remark: '徽标。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
@@ -3255,7 +3478,7 @@ define( {
   },
   "Progress": {
   	remark: '进度条集合。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'delay', type: 'Number', remark: '延迟访问 src 。单位:毫秒。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
@@ -3288,7 +3511,7 @@ define( {
   "ProgressItem": {
   	title: 'ProgressItem',
   	remark: '进度条。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
@@ -3320,7 +3543,7 @@ define( {
   },
   "Timeline": {
   	remark: '时间轴。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'nodes', type: 'Array', remark: '子节点数组。' },
@@ -3378,7 +3601,7 @@ define( {
   },
   "TimelineItem": {
   	remark: '时间轴条目。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。仅当父节点设置align:"center"时本参数有效。可选值: <b>left</b>, <b>right</b>' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
@@ -3410,7 +3633,7 @@ define( {
   },
   "EmbedWindow": {
   	remark: '生成一个内嵌窗口。作用与HTML的&lt;iframe&gt;标签相同。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'scroll', type: 'Boolean', remark: '是否显示滚动条。' },
       { name: 'src', type: 'String', remark: '页面地址。' },
@@ -3436,7 +3659,7 @@ define( {
   },
   "Toggle": {
   	remark: '展开收拢的工具条。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'collapsedIcon', type: 'String', optional: true, remark: '折叠状态图标。可用 "." 开头的样式名，或图片路径。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
@@ -3485,7 +3708,7 @@ define( {
   },
   "Split": {
   	remark: '分割线。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'range', type: 'String', optional: true, remark: '设置拖动调整大小的前后范围。只在父节点为 vert, horz 时可用。此参数由2-3个数字组成，以逗号隔开。第一个数字表示前一个节点的最小size，第二个数字表示后一个节点的最小size，第三个数字可选，表示 toggle 节点的初始size。', example: [
           function() {
@@ -3533,7 +3756,7 @@ define( {
   },
   "PageBar": {
   	remark: '小按钮风格的翻页工具条。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
       { name: 'buttonCls', type: 'String', optional: true, remark: '按钮样式。' },
@@ -3579,7 +3802,7 @@ define( {
   },
   "Calendar": {
   	remark: '日历。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'nodes', type: 'Array', optional: true, remark: 'CalendarItem的数组集合。' },
       //{ name: 'cg', type: 'Number', optional: true, remark: '一周的重心是星期几。可选值从1到7。仅当 face 值为 "week" 时本参数有效。' },
@@ -3636,7 +3859,7 @@ define( {
   },
   "CalendarItem": {
   	remark: '日历单元格。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
       { name: 'focusable', type: 'Boolean', remark: '设置为 true，点击后转为焦点状态(按钮增加焦点样式 .z-on )' },
@@ -3670,7 +3893,7 @@ define( {
   },
   "Text": {
   	remark: '单行文本输入框。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'label', type: 'String | Label', optional: true, remark: '表单标签。当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
       	 example: [
@@ -4099,6 +4322,7 @@ define( {
             return~
             {
                 type: 'RadioGroup',
+                on: { change: 'alert(this.val())' }, // 切换选项时弹出提示
                 nodes: [
                     { type: 'Radio', value: '1', text: '选项1', checked: true }, //type属性可以省略
                     { type: 'Radio', value: '2', text: '选项2' },
@@ -4252,7 +4476,7 @@ define( {
   },
   "Range": {
   	remark: '指定范围的表单组合。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'label', type: 'String | LabelWidget', optional: true, remark: '表单标签。<br>当设为 labelWidget 并有宽度时，将在表单左边显示标签内容。',
       	 example: [
@@ -4860,7 +5084,7 @@ define( {
   },
   "ComboBoxOption": {
   	remark: 'ComboBox 的已选项。它由 ComboBox 自动生成，没有显式定义。可以通过 ComboBox 的 pub 属性来设置它的参数。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'value', type: 'String', remark: '值。' },
       { name: 'text', type: 'String', remark: '文本。' },
@@ -5369,7 +5593,7 @@ define( {
   },
   "Dialog": {
   	remark: '打开一个对话框。dialog 既是命令，也是 widget。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'cache', type: 'Boolean', remark: '如果设为 true, 当前窗口调用 .close() 方法关闭后，窗口处于隐藏状态并不删除，再次打开时将恢复为上次打开时的状态。' },
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },
@@ -5473,7 +5697,7 @@ define( {
   },
   "Menu": {
   	remark: '显示一个菜单。menu 既是命令，也是 widget。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'nodes', type: 'Array', remark: '子节点集合。子节点类型是 button 或 split。' },
       { name: 'snap', type: 'Object', remark: '吸附参数设置。', param: [
@@ -5514,7 +5738,7 @@ define( {
   },
   "Alert": {
   	remark: '警告提示框。alert 是特殊的 dialog，既是命令，也是 widget。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'buttonCls', type: 'String', remark: '按钮样式名。' },
       { name: 'buttons', type: 'Array', remark: '自定义的一组按钮。' },
@@ -5593,7 +5817,7 @@ define( {
   },
   "Loading": {
   	remark: '显示一个"请稍候"的信息窗。',
-  	extend: 'Widget',
+  	extend: 'AbsWidget',
     Config: [
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },

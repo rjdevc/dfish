@@ -1755,7 +1755,7 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 	},
 	Default: { width: 80, height: 80, widthMinus: 2, heightMinus: 2 },
 	Prototype: {
-		ROOT_TYPE: 'ImageUpload',
+		rootType: 'ImageUpload',
 		className: 'w-imageupload-value',
 		download: function() {
 			var s = this.u.x.download;
@@ -1867,7 +1867,7 @@ FileUploadValue = define.widget( 'FileUploadValue', {
 	},
 	Default: { width: -1, height: -1 },
 	Prototype: {
-		ROOT_TYPE: 'FileUpload',
+		rootType: 'FileUpload',
 		className: 'w-fileupload-value',
 		setProgress: function( a ) {
 			this.$( 'p' ).style.width = a + '%';

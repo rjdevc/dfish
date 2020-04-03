@@ -17,7 +17,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
+_path, _ui_path, _lib, _cfg = {}, _aliasPath = {}, _aliasName = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -205,12 +205,12 @@ Module = _createClass( {
 		this.exports = {};
 	}
 } ),
-//每个模块的运行环境下都会生成一个Require的实例 /@a -> path
-Require = function( a ) {
+//每个模块的运行环境下都会生成一个Require的实例
+Require = function( uri, id ) {
 	// @b -> js css array, f -> fn?, s -> async?
 	var	r = function( b, f, s ) {
 		if ( typeof b === _STR ) {
-			var c = _mod_uri( a, b );
+			var c = _mod_uri( uri, b );
 			if ( _moduleCache[ c ] ) {
 				f && f( _moduleCache[ c ] );
 				return _moduleCache[ c ];
@@ -235,9 +235,9 @@ Require = function( a ) {
 	// @ b -> js array, f -> fn, s -> async?
 	r.js = function( b, f, s ) {
 		for ( var i = 0, d = [], e = [], u; i < b.length; i ++ ) {
-			b[ i ] = _mod_uri( a, b[ i ] );
-			if ( (u = _alias[ b[ i ] ] || b[ i ]) === a ) u = b[ i ];
-			u !== a && ! _moduleCache[ b[ i ] ] && (d.push( b[ i ] ), e.push( u ));
+			b[ i ] = _mod_uri( uri, b[ i ] );
+			if ( (u = _aliasPath[ b[ i ] ] || b[ i ]) === uri ) u = b[ i ];
+			u !== uri && ! _moduleCache[ b[ i ] ] && (d.push( b[ i ] ), e.push( u ));
 		}
 		if ( d.length ) {
 			_loadJs( e, function( g ) {
@@ -255,7 +255,7 @@ Require = function( a ) {
 	r.css = function( b, f ) {
 		typeof b === _STR && (b = [ b ]);
 		for ( var i = 0, c = [], d = []; i < b.length; i ++ )
-			b[ i ] = _mod_uri( a, b[ i ], 'css' );
+			b[ i ] = _mod_uri( uri, b[ i ], 'css' );
 		_loadCss( b, N, f );
 	};
 	// require.async(): 异步装载js
@@ -264,24 +264,25 @@ Require = function( a ) {
 	};
 	return r;
 },
-//每个模块的运行环境下都会生成一个Define的实例 /@a -> uri
-Define = function( a ) {
-	var r = Require( a ),
+//每个模块的运行环境下都会生成一个Define的实例
+Define = function( uri, id ) {
+	var r = Require( uri, id ),
 		// @n -> id, p -> dependents, f -> fn
 		b = function( n, p, f ) {
-			var m = new Module( a ), u = a;
+			var m = new Module( uri ), u = uri;
 			if ( arguments.length === 1 )
 				f = n;
 			else if ( arguments.length === 2 )
-				f = p, u = _mod_uri( a, n );
+				f = p, u = _mod_uri( uri, n );
 			else { //3
 				r( p );
-				u = _mod_uri( a, n );
+				u = _mod_uri( uri, n );
 			}
 			return _moduleCache[ u ] = typeof f === _FUN ? ( f.call( r, m.exports, m ) || m.exports ) : f;
 		};
 	// widget模块定义，默认继承 widget 类
 	b.widget = function( c, d ) {
+		d == N && (d = c, c = N);
 		var e = d.Extend, f = d.Prototype || (d.Prototype = {});
 		e = d.Extend = ! e ? [ 'Widget' ] : ! _isArray( e ) ? [ e ] : e;
 		for ( var i = 0; i < e.length; i ++ ) {
@@ -289,15 +290,16 @@ Define = function( a ) {
 		}
 		if ( ! d.Const )
 			d.Const = function() { e[ 0 ].apply( this, arguments ) };
-		return _moduleCache[ _mod_uri( a, c ) ] = _createClass( c, d );
+		!c && (c = _aliasName[ id ]);
+		return _moduleCache[ _mod_uri( uri, c ) ] = _createClass( c, d );
 	}
 	b.template = function( c, d ) {
 		d == N && (d = c, c = N);
-		_moduleCache[ c ? _mod_uri( a, (_cfg.templateDir || '') + c ) : a ] = d;
+		_moduleCache[ c ? _mod_uri( uri, (_cfg.templateDir || '') + c ) : uri ] = d;
 	}
 	b.preload = function( c, d ) {
 		d == N && (d = c, c = N);
-		_moduleCache[ c ? _mod_uri( a, (_cfg.preloadDir || '') + c ) : a ] = d;
+		_moduleCache[ c ? _mod_uri( uri, (_cfg.preloadDir || '') + c ) : uri ] = d;
 	}
 	return b;
 },
@@ -305,7 +307,7 @@ Define = function( a ) {
 _onModuleLoad = function( a, b, c ) {
 	var m = new Module( b );
 	//try {
-		Function( 'define,require,module,exports', c + '\n//@ sourceURL=' + a ).call( win, Define( b ), Require( b ), m, m.exports );
+		Function( 'define,require,module,exports', c + '\n//@ sourceURL=' + a ).call( win, Define( b, a ), Require( b, a ), m, m.exports );
 	//} catch( e ) {
 	//	throw new Error( '"' + a + '": ' + e.message );
 	//}
@@ -1976,8 +1978,11 @@ var boot = {
 			return alert( 'path is not exist:\n{\n  path: "' + _path + '",\n  lib: "' + _lib + '"\n}' );
 		}
 		for ( var k in _cfg.alias ) {
-			for ( var i = 0, b = k.split( ',' ); i < b.length; i ++ )
-				_alias[ _mod_uri( _path, b[ i ] ) ] = _cfg.alias[ k ];
+			for ( var i = 0, b = k.split( ',' ), c; i < b.length; i ++ ) {
+				c = _mod_uri( _path, b[ i ] );
+				_aliasPath[ c ] = _cfg.alias[ k ];
+				_aliasName[ c ] = k;
+			}
 		}
 		_define( 'dfish',  function() { return $ } );
 		_define( 'jquery', function() { return _jq } );

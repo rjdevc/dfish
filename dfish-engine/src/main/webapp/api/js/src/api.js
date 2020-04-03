@@ -118,7 +118,7 @@ function exampleContent( e ) {
 			s += '<div class="example-title">// ' + (f[ 0 ].indexOf( '///' ) > -1 ? '' : '') + $.strTrim( f[ 0 ] ).replace( /^\/+/g, '' ) + '</div>';
 			f.splice( 0, 1 );
 		}
-		h = f.join( '\n' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' )
+		h = f.join( '\n' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace(/\/\/~\/\//g, '')
 			.replace( /\/\/.+/g, function( $0 ){ return '<em class=code-ann>' + $0 + '</em>' } )
 			.replace( /return~/g, '' );
 		if ( h.indexOf( "return''" ) > -1 )
