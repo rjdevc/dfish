@@ -24,6 +24,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/**
+ * DFish辅助工具包桌面程序
+ * @since 5.0
+ * @date 2020-04-03
+ * @version 1.0 LinLW 完成加解密初版功能
+ * @version 1.1 lamontYu 将工具包移到misc下,完成二维码功能,其他功能待补充
+ * @author lamontYu
+ */
 public class DFishTools extends Application {
 
     public static void main(String[] args) {
@@ -183,24 +191,45 @@ public class DFishTools extends Application {
         return rootLayout;
     }
 
+    /**
+     * 错误
+     * @param t
+     */
     private void error(Throwable t) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(t.getClass().getName() + " : " + t.getMessage());
         alert.showAndWait();
     }
 
+    /**
+     * 警告
+     * @param msg
+     */
     private void warn(String msg) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText(msg);
         alert.showAndWait();
     }
 
+    /**
+     * 提示
+     * @param msg
+     */
     private void info(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(msg);
         alert.showAndWait();
     }
 
+    /**
+     * 获取加密器
+     * @param alg
+     * @param encoding
+     * @param present
+     * @param gzip
+     * @param key
+     * @return
+     */
     private Cryptor getCryptor(String alg, String encoding, String present, boolean gzip, String key) {
         int intPresent = 0;
         switch (present) {
@@ -229,6 +258,10 @@ public class DFishTools extends Application {
 
     private static final Insets PADDING = new Insets(10);
 
+    /**
+     * 二维码
+     * @return
+     */
     private Parent getQRCodeLayout() {
         HBox layout = new HBox();
 
