@@ -7425,7 +7425,7 @@ Jigsaw = define.widget( 'Jigsaw', {
 		widthMinus: 2
 	},
 	Listener: {
-		tag: '',
+		tag: 'f',
 		body: {
 			mouseOver: {
 				proxy: mbi ? 'touchStart' : N,
@@ -7545,6 +7545,9 @@ Jigsaw = define.widget( 'Jigsaw', {
 		},
 		form_cls: function() {
 			return 'w-input f-nv';
+		},
+		form_prop: function() {
+			return AbsForm.prototype.form_prop.call( this ) + _html_on.call( this );
 		},
 		html_info: function( d ) {
 			return d && d.error ? '<var class=_err>' + (d.error.msg != N ? d.error.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs( d.error.timeout ) + '</em>)' : '') + '</var>' :
@@ -7730,7 +7733,7 @@ DropBox = define.widget( 'DropBox', {
 				d.close();
 			} else {
 				this.focus();
-				this._dropper = this.exec( { type: 'Dialog', ownproperty: T, minWidth: this.formWidth() + 2, maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ), widthMinus: 2, heightMinus: 2, id: this.id,
+				this._dropper = this.exec( { type: 'Dialog', ownproperty: T, minWidth: this.formWidth(), maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ), widthMinus: 2, heightMinus: 2, id: this.id,
 					cls: 'w-dropbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), autoHide: T,
 					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }, node: { type: 'Html', id: 'list', scroll: T, text: this.html_options() },
 					on: { load: 'this.commander.listenPop(!0)', close: 'this.commander.listenPop(!1)' }
