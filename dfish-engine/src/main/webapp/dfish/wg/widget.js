@@ -5580,7 +5580,7 @@ AbsForm = define.widget( 'AbsForm', {
 			return this.val() != (v == N ? (u == N ? '' : u) : v);
 		},
 		saveModified: function( b ) {
-			this._modval = this.$v().value || '';
+			this._modval = this.val() || '';
 			b && (this.x.value = this._modval);
 		},
 		//@implement
