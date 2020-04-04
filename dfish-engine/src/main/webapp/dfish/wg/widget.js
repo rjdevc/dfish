@@ -740,7 +740,7 @@ W = define( 'Widget', function() {
 		// @implement
 		init_x_pub: function( x ) {
 			var r = this.rootNode;
-			r && r.x.pub && $.extend( x, r.x.pub );
+			r && r.x.pub && $.extendDeep( x, r.x.pub );
 		},
 		// @private: 初始化配置参数
 		_init_x: function( x ) {
