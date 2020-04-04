@@ -9476,6 +9476,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				} } );
 		},
 		render_nodes: function( n ) {
+			this.loaded = T;
 			for ( var j = 0, l = n.length; j < l; j ++ )
 				this.add( n[ j ] );
 			this.$( 'c' ) && (this.$( 'c' ).innerHTML = _proto.html_nodes.call( this ));
