@@ -5862,6 +5862,8 @@ define( {
   	extend: 'Alert',
   	deprecate: 'yes,timeout,buttonCls,buttons,icon,title,.w-alert',
     Config: [
+      { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>。默认值为center。' },
+      { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>。默认值为middle。' },
       { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。' },
       { name: 'face', type: 'String', remark: '样式效果。可选值：<b>normal</b>(默认值), <b>warn</b>(警告)' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }

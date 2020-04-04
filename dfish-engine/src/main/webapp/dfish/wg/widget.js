@@ -3023,7 +3023,7 @@ Html = define.widget( 'Html', {
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'vAlign' );
-			if ( v )
+			if ( v && v !== 'top' )
 				s = '<i class=f-vi-' + v + '></i><span id=' + this.id + 'vln style="vertical-align:' + v + '">' + s + '</span>';
 			return s;
 		}
@@ -4965,8 +4965,8 @@ _inst_del = function( a, b ) {
 /*  `tip`  */
 Tip = define.widget( 'Tip', {
 	Const: function( x, p ) {
-		$.extendDeep( x, { prong: x.prong == N ? T : x.prong, autoHide: T, independent: T, snap: { target: p, position: 'tb,rl,lr,bt,rr,ll,bb,tt,cc' },
-			node: { type: 'Html', text: '<div class=w-tip-text><span class=f-va>' + this.html_format( x.text, x.format, x.escape ) + '</span><i class=f-vi></i></div>' + (x.closable ? $.image('.f-i-close',{cls: 'w-tip-x', click: $.abbr + '.close(this)'}) : '') }
+		$.extendDeep( x, { widthMinus: 2, heightMinus: 2, prong: x.prong == N ? T : x.prong, autoHide: T, independent: T, snap: { target: p, position: 'tb,rl,lr,bt,rr,ll,bb,tt,cc' },
+			node: { type: 'Html', minHeight: 30, height: '*', style: 'padding:3px ' + (x.closable ? '24px' : '10px') + ' 3px 10px', align: (x.align || 'center'), vAlign: (x.vAlign || 'middle'), text: this.html_format( x.text, x.format, x.escape ) + (x.closable ? $.image('.f-i-close',{cls: 'w-tip-x', click: $.abbr + '.close(this)'}) : '') }
 		} );
 		x.face && x.face !== 'normal' && (this.className += ' z-face-' + x.face);
 		x.closable && (this.className += ' z-x');
