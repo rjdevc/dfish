@@ -1011,6 +1011,10 @@ W = define( 'Widget', function() {
 		prev: function() {
 			 return this.parentNode && this.parentNode[ this.nodeIndex - 1 ];
 		},
+		tip: function( o ) {
+			var t = this.attr( 'tip' );
+			this.exec( $.extendDeep( {}, o, typeof t === _OBJ ? t : N, { type: 'Tip', hoverDrop: T } ) );
+		},
 		// 当前节点跟a节点交换位置
 		swap: function( a ) {
 			var b = this.nodeIndex, c = a.nodeIndex, p = this.parentNode,
@@ -1437,14 +1441,13 @@ W = define( 'Widget', function() {
 		},
 		// @a -> text, @b -> format, @c -> escape
 		prop_title: function( a, b, c ) {
-			var l = arguments.length;
+			var l = arguments.length, t = this.attr( 'tip' );
 			if ( l < 1 ) {
-				var t = this.attr( 'tip' );
 				a = t === T ? this.x.text : t;
 			}
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
-			return a && typeof a === _STR && ! b ? ' title="' + $.strQuot( c ? a.replace( /&/g, '&amp;' ) : a, !c ) + '"' : '';
+			return a && typeof a === _STR && (!t || typeof t !== _OBJ) && ! b ? ' title="' + $.strQuot( c ? a.replace( /&/g, '&amp;' ) : a, !c ) + '"' : '';
 		},
 		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function( a, b, c, d, e ) {
@@ -3317,7 +3320,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 			return '<i id=' + this.id + 'vi class=f-vi-' + this.attr( 'vAlign' ) + (this.attr('scroll') === T && this.innerHeight() ? ' style="height:' + this.innerHeight() + 'px;"' : '') + '></i>';
 		},
 		html_nodes: function() {
-			for ( var i = 0, l = this.length, s = []; i < l; i ++ ) {
+			for ( var i = 0, l = this.length, s  = []; i < l; i ++ ) {
 				s.push( this[ i ].html() );
 			}
 			s = s.join( '' );
@@ -3327,6 +3330,10 @@ ButtonBar = define.widget( 'ButtonBar', {
 		}
 	}
 } ),
+_hover_tip = function() {
+	var t = this.x.tip;
+	t && (t.text || t.node) && this.tip();
+},
 /* `button` */
 Button = define.widget( 'Button', {
 	Const: function( x ) {
@@ -3354,6 +3361,7 @@ Button = define.widget( 'Button', {
 					this.drop();
 				} else if ( m && ! this.more && m.parentNode.parentNode === this.parentNode )
 					m.hide();
+				_hover_tip.call( this );
 			},
 			mouseOut: function( e ) {
 				$.classRemove( $( e.elemId || this.id ), 'z-hv' );
@@ -3996,7 +4004,7 @@ Img = define.widget( 'Img', {
 		html_text: function() {
 			var x = this.x, t = this.html_format(), w = x.textWidth;
 			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.br ? 'wdbr' : 'fix') + '"' + this.prop_title() + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
-					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
+					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix"' + this.prop_title( x.description ) + '>' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
 			var t = this.html_text(), s = this.html_img( t );
@@ -4805,7 +4813,7 @@ Dialog = define.widget( 'Dialog', {
 		_listenHide: function( a ) {
 			var self = this, d = this.x.hoverDrop;
 			$.attach( document, mbi ? 'touchend' : 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function( e ) {
-				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble( e.srcElement ) || (!self.x.independent && self.x.snap && self.x.snap.target && _widget( self.x.snap.target ).hasBubble( e.srcElement )))) ) {
+				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble( e.srcElement ) || (!self.x.independent && self.x.snap && self.x.snap.target && _widget( self._snapTargetElem() ).hasBubble( e.srcElement )))) ) {
 					if ( e.srcElement.id == self.id + 'cvr' )
 						$.stop( e );
 					self.close();
@@ -4815,7 +4823,7 @@ Dialog = define.widget( 'Dialog', {
 				window.plus.key[ a ? 'addEventListener' : 'removeEventListener' ]( 'backbutton', self.listenHide_1 || (self.listenHide_1 = function() {self.close()}), F );
 			}
 			if ( d ) {
-				var o = d === T ? (this.x.snap && this.x.snap.target ? $( this.x.snap.target ) : this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
+				var o = d === T ? (this.x.snap && this.x.snap.target ? this._snapTargetElem() : this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
 				Q( [ o, self.$() ] )[ f ]( 'mouseenter', self._hover_over || (self._hover_over = function() { clearTimeout( self._hover_timer ); delete self._hover_timer; }) );
 				Q( document )[ f ]( 'mousemove', self._hover_move || (self._hover_move = function( e ) {
 					if ( ! o.contains( e.target ) && ! self.hasBubble( e.target ) && ! self._keep_hover ) {
@@ -4958,10 +4966,10 @@ _inst_del = function( a, b ) {
 Tip = define.widget( 'Tip', {
 	Const: function( x, p ) {
 		$.extendDeep( x, { prong: x.prong == N ? T : x.prong, autoHide: T, independent: T, snap: { target: p, position: 'tb,rl,lr,bt,rr,ll,bb,tt,cc' },
-			node: { type: 'Html', text: '<div class=w-tip-text><span class=f-va>' + this.html_format( x.text, x.format, x.escape ) + '</span><i class=f-vi></i></div>' + (x.closable !== F ? $.image('.f-i-close',{cls: 'w-tip-x', click:$.abbr + '.close(this)'}) : '') }
+			node: { type: 'Html', text: '<div class=w-tip-text><span class=f-va>' + this.html_format( x.text, x.format, x.escape ) + '</span><i class=f-vi></i></div>' + (x.closable ? $.image('.f-i-close',{cls: 'w-tip-x', click: $.abbr + '.close(this)'}) : '') }
 		} );
 		x.face && x.face !== 'normal' && (this.className += ' z-face-' + x.face);
-		x.closable !== F && (this.className += ' z-x');
+		x.closable && (this.className += ' z-x');
 		Dialog.apply( this, arguments );
 		! this.x.multiple && _inst_add( this );
 	},
@@ -5514,6 +5522,7 @@ AbsForm = define.widget( 'AbsForm', {
 				_z_on.call( this );
 			},
 			blur: function() { this.$( 'f' ) && !this.$( 'f' ).contains( document.activeElement ) && _z_on.call( this, F ) },
+			mouseOver: _hover_tip,
 			resize: function() {
 				if ( this.$() ) {
 					var w = this.formWidth();
@@ -5712,7 +5721,7 @@ AbsForm = define.widget( 'AbsForm', {
 		},
 		input_prop: function() {
 			var t = this.attr( 'tip' ), v = this.input_prop_value();
-			return ' id="' + this.id + 't" class=_t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + (t ? ' title="' + $.strQuot((t === T ? (this.x.text || this.x.value) : t) || '') + '"' : '') +
+			return ' id="' + this.id + 't" class=_t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + this.prop_style( this.x.text || this.x.value ) +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call( this );
 		},
 		prop_cls: function() {
@@ -5839,7 +5848,7 @@ AbsInput = define.widget( 'AbsInput', {
 		html_placeholder: function() {
 			var v = this.x.value, s = this.getPlaceholder();
 			return (s = s && $.strEscape( s )) ? '<label class="w-input-placeholder f-fix' + (v != N && v !== '' ? ' f-none' : '') +
-				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event) title="' + $.strQuot( s ) + '"><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + s + '</span></label>' : '';
+				'" id="' + this.id + 'ph" onclick=' + evw + '.clkhdr(event) ondblclick=' + evw + '.clkhdr(event)' + this.prop_title( s ) + '><i class=f-vi></i><span class=f-va id="' + this.id + 'pht">' + s + '</span></label>' : '';
 		},
 		html_btn: function() {
 			return '';
@@ -6326,9 +6335,6 @@ CheckBox = define.widget( 'CheckBox', {
 				}
 			}
 		},
-		tip: function() {
-			this.exec( $.extend( {}, this.attr( 'tip' ), { type: 'Tip', hoverDrop: true } ) );
-		},
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class="_tit f-oh ' + (this.x.br ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '');			
@@ -6558,9 +6564,9 @@ Select = define.widget( 'Select', {
 					f = this.html_format( o[ i ].text, this.x.format, this.x.escape, N, o[ i ] );
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') + this.prop_title( o[ i ].text ) + '>' + f + '</option>' + s;
 			}
-			var w = this.formWidth(), z = this.x.size, t = (t === T ? (o[ k ] && o[ k ].text) : t) || '';
+			var w = this.formWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : t) || '';
 			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
-				(t ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') + (z ? ' size=' + z : '') + '>' + s + '</select><div class=_cvr></div>';
+				(typeof t === _STR ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') + (z ? ' size=' + z : '') + '>' + s + '</select><div class=_cvr></div>';
 		}
 	}
 } ),
@@ -7335,7 +7341,7 @@ Slider = define.widget( 'Slider', {
 		tip: function( v ) {
 			var t = this.attr( 'tip' ) === T ? '$value' : this.attr( 'tip' );
 			if ( t && ! this._tip ) {
-				this._tip = this.exec( { type: 'Tip', text: this.tipText( v ), escape: F, snap: { target: this.$( 'thumb' ), position: 'tb,bt' }, closable: F, on: { close: 'this.parentNode._tip=null' } } );
+				this._tip = this.exec( { type: 'Tip', text: this.tipText( v ), escape: F, snap: { target: this.$( 'thumb' ), position: 'tb,bt' }, on: { close: 'this.parentNode._tip=null' } } );
 			}
 			return this._tip;
 		},
@@ -7485,7 +7491,7 @@ Jigsaw = define.widget( 'Jigsaw', {
 		},
 		isModified: $.rt( F ),
 		validTip: function( t ) {
-			return { type: 'Tip', text: t, snap: { position: this.more ? 'rl,lr' : 'tb,bt' } };
+			return { type: 'Tip', text: t, snap: { position: this.more ? 'rl,lr' : 'tb,bt' }, face: 'warn' };
 		},
 		usa: function() {
 			return this.img && this.isNormal();
@@ -7826,9 +7832,10 @@ DropBox = define.widget( 'DropBox', {
 			return '<em class=f-boxbtn><i class=f-vi></i>' + $.caret( 'd' ) + '</em>';
 		},
 		html_input: function() {
-			var s = this._sel[ 0 ], t = this.attr( 'tip' ) && this.html_text();
+			var s = this._sel[ 0 ], t = this.attr( 'tip' ), h = this.html_text();
+			t === T && (t = h);
 			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-omit _t" id=' + this.id + 't ' +
-				(t ? ' title="' + $.strQuot( t.replace(/<[^>]+>/g, '') ) + '"' : '') + '><span id=' + this.id + 'p>' + this.html_text() + '</span></div>';
+				(typeof t === _STR ? ' title="' + $.strQuot( t.replace(/<[^>]+>/g, '') ) + '"' : '') + '><span id=' + this.id + 'p>' + h + '</span></div>';
 		}
 	}
 }),
@@ -9138,7 +9145,7 @@ PickBox = define.widget( 'PickBox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-fix _t" ' + _html_on.call( this ) + ' title="' + $.strQuot(this.x.text || '') + '">' + $.strEscape( this.x.text ) + '</div>';
+				't" class="f-fix _t" ' + _html_on.call( this ) + this.prop_title( this.x.text || '' ) + '>' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),

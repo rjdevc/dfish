@@ -1649,7 +1649,7 @@ define( {
       { name: 'status', type: 'String', remark: '按钮状态。可选值：<b>normal</b>, <b>disabled</b>。' },
       { name: 'target', type: 'Widget', remark: '标签对应的内容widget。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'tip', type: 'String', remark: '浮动显示的提示文本。' }
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '浮动显示的提示文本。' }
     ],
     Methods: [
       { name: 'badge([value])', remark: '设置徽标。', param: [
@@ -3168,7 +3168,7 @@ define( {
       { name: 'br', type: 'Boolean', remark: '文本是否换行。默认值为false。' },
       { name: 'src', type: 'String', remark: '图片地址。支持以 "." 开头的样式名。支持以 "javascript:" 开头的JS语句。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'tip', type: 'Boolean | string', remark: '图片的文本提示信息。' },
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '图片的文本提示信息。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' }
     ],
     Methods: [
@@ -3290,7 +3290,7 @@ define( {
       { name: 'status', type: 'String', remark: '节点状态。可选值：<b>normal</b>, <b>disabled</b>。' },
       { name: 'template', type: 'String', remark: '模板地址。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'tip', type: 'Boolean | String', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
     ],
     Event: [
       { name: 'collapse', remark: '收起时触发。' },
@@ -3669,7 +3669,7 @@ define( {
       { name: 'expanded', type: 'Boolean', optional: true, remark: '设置初始状态为展开或收拢。如果设置了此参数，会产生一个toggle图标' },
       { name: 'target', type: 'String', remark: '绑定要展开收拢的 widget ID。多个用逗号隔开。' },
       { name: 'text', type: 'String', remark: '显示文本。' },
-      { name: 'tip', type: 'Boolean | String', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '提示信息。设为true，提示信息将使用 text 参数的值。' }
     ],
     Event: [
       { name: 'collapse', remark: '收起时触发。' },
@@ -3907,7 +3907,7 @@ define( {
       { name: 'remark', type: 'String', remark: '备注信息。' },
       { name: 'placeholder', type: 'String', optional: true, remark: '当表单没有值时显示的提示文本。' },
       { name: 'status', type: 'String', optional: true, remark: '表单状态。可选值: <b>normal</b><s>(默认)</s>, <b>readonly</b><s>(只读，不验证数据)</s>, <b>validonly</b><s>(只读，验证数据)</s>, <b>disabled</b><s>(禁用)</s>。' },
-      { name: 'tip', type: 'Boolean | string', remark: '提示信息。如果设置为true，提示内容为当前的文本。' },
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '提示信息。如果设置为true，提示内容为当前的文本。' },
       { name: 'transparent', type: 'Boolean', optional: true, remark: '设置为true，表单将成为无边框无背景的状态。' },
       { name: 'value', type: 'String', remark: '表单值。' },
       { name: 'validate', type: 'Object', optional: true, remark: '表单校验选项。', param: [
@@ -5862,7 +5862,7 @@ define( {
   	extend: 'Alert',
   	deprecate: 'yes,timeout,buttonCls,buttons,icon,title,.w-alert',
     Config: [
-      { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。默认值为 true。' },
+      { name: 'closable', type: 'Boolean', remark: '是否显示关闭图标。' },
       { name: 'face', type: 'String', remark: '样式效果。可选值：<b>normal</b>(默认值), <b>warn</b>(警告)' },
       { name: 'prong', type: 'Boolean', remark: '是否显示箭头。默认值为 true' }
     ],

@@ -746,6 +746,7 @@
 .w-tip-text{padding:3px 10px 5px 10px;min-height:20px;}
 .w-tip.z-x .w-tip-text{padding-right:22px}
 .w-tip .w-tip-x{position:absolute;right:1px;top:4px;padding:0 3px}
+.w-tip .f-i-close{font-size:12px;color:#999}
 .w-tip .w-dialog-prong.z-b ._in{border-top-color:#f5faff}
 .w-tip .w-dialog-prong.z-b ._out{border-top-color:#2498ff}
 .w-tip .w-dialog-prong.z-t ._in{border-bottom-color:#f5faff}
