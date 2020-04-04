@@ -14,7 +14,6 @@ public class Album extends AbstractPubNodeContainer<Album, Img,Img> implements S
     private Boolean focusMultiple;
     private Boolean scroll;
     private String face;
-    private Boolean br;
 
 
     /**

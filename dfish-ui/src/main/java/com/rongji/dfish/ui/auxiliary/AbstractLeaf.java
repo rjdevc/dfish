@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.auxiliary;
 
 import com.rongji.dfish.ui.*;
+import com.rongji.dfish.ui.command.Tip;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.BoxHolder;
 
@@ -43,7 +44,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      *
      * @param text 显示文本
      */
-    public AbstractLeaf( String text) {
+    public AbstractLeaf(String text) {
         super();
         this.setText(text);
     }
@@ -68,7 +69,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setBox(AbstractBox box) {
         this.box = box;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -88,7 +89,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setFocus(Boolean focus) {
         this.focus = focus;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -108,7 +109,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setFocusable(Boolean focusable) {
         this.focusable = focusable;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -128,7 +129,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setCollapsedIcon(String collapsedIcon) {
         this.collapsedIcon = collapsedIcon;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -148,7 +149,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setExpandedIcon(String expandedIcon) {
         this.expandedIcon = expandedIcon;
-        return (T)this;
+        return (T) this;
     }
 
 
@@ -169,7 +170,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setExpanded(Boolean expanded) {
         this.expanded = expanded;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -191,7 +192,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setText(String text) {
         this.text = text;
-        return (T)this;
+        return (T) this;
     }
 
 
@@ -212,7 +213,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setTip(Boolean tip) {
         this.tip = tip;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -223,7 +224,18 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setTip(String tip) {
         this.tip = tip;
-        return (T)this;
+        return (T) this;
+    }
+
+    /**
+     * 提示信息。
+     *
+     * @param tip Tip提示命令
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setTip(Tip tip) {
+        this.tip = tip;
+        return (T) this;
     }
 
     /**
@@ -245,7 +257,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setSrc(String src) {
         this.src = src;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -265,7 +277,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setNoToggle(Boolean noToggle) {
         this.noToggle = noToggle;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -285,10 +297,8 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setLine(Boolean line) {
         this.line = line;
-        return (T)this;
+        return (T) this;
     }
-
-
 
 
     @Override
@@ -300,7 +310,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setFormat(String format) {
         this.format = format;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -311,7 +321,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setStatus(String status) {
         this.status = status;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -332,7 +342,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      */
     public T setFolder(Boolean folder) {
         this.folder = folder;
-        return (T)this;
+        return (T) this;
     }
 
 
@@ -344,7 +354,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setEscape(Boolean escape) {
         this.escape = escape;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -355,7 +365,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setSuccess(String success) {
         this.success = success;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -366,7 +376,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setError(String error) {
         this.error = error;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -377,7 +387,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setComplete(String complete) {
         this.complete = complete;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -388,7 +398,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setFilter(String filter) {
         this.filter = filter;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -399,7 +409,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setSync(Boolean sync) {
         this.sync = sync;
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -415,19 +425,19 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
     @Override
     public T setBadge(Boolean badge) {
         this.badge = badge;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
     public T setBadge(String badge) {
         this.badge = badge;
-        return (T)this;
+        return (T) this;
     }
 
     @Override
     public T setBadge(Badge badge) {
         this.badge = badge;
-        return (T)this;
+        return (T) this;
     }
 }
 

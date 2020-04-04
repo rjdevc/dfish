@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.widget;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.auxiliary.Badge;
 import com.rongji.dfish.ui.auxiliary.BadgeHolder;
+import com.rongji.dfish.ui.command.Tip;
 import com.rongji.dfish.ui.form.AbstractBox;
 import com.rongji.dfish.ui.form.BoxHolder;
 
@@ -255,6 +256,17 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      * @return 本身，这样可以继续设置其他属性
      */
     public Img setTip(String tip) {
+        this.tip = tip;
+        return this;
+    }
+
+    /**
+     * 提示
+     *
+     * @param tip Tip 提示命令
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Img setTip(Tip tip) {
         this.tip = tip;
         return this;
     }

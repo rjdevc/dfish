@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.form;
 
 
 import com.rongji.dfish.ui.command.Dialog;
+import com.rongji.dfish.ui.command.Tip;
 
 /**
  * <p>
@@ -64,6 +65,7 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
 
     /**
      * 设置已选项的外观效果
+     *
      * @return
      */
     public String getFace() {
@@ -72,6 +74,7 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
 
     /**
      * 设置已选项的外观效果
+     *
      * @param face
      * @return 本身，这样可以继续设置其他属性
      */
@@ -89,6 +92,12 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
     @Override
     @Deprecated
     public ComboBox setTip(String tip) {
+        return this;
+    }
+
+    @Override
+    @Deprecated
+    public ComboBox setTip(Tip tip) {
         return this;
     }
 

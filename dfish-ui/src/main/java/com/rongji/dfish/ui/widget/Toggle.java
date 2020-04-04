@@ -3,6 +3,7 @@ package com.rongji.dfish.ui.widget;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.HtmlContentHolder;
+import com.rongji.dfish.ui.command.Tip;
 
 /**
  * 展开收拢的工具条
@@ -194,6 +195,17 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, H
     /**
      * 提示信息。设为true，提示信息将使用 text 参数的值。
      *
+     * @param tip 设为true，提示信息将使用 text 参数的值。
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public Toggle setTip(Boolean tip) {
+        this.tip = tip;
+        return this;
+    }
+
+    /**
+     * 提示信息。设为true，提示信息将使用 text 参数的值。
+     *
      * @param tip 提示信息
      * @return 本身，这样可以继续设置其他属性
      */
@@ -202,13 +214,14 @@ public class Toggle extends AbstractWidget<Toggle> implements HasText<Toggle>, H
         return this;
     }
 
+
     /**
-     * 提示信息。设为true，提示信息将使用 text 参数的值。
+     * 提示信息。
      *
-     * @param tip 设为true，提示信息将使用 text 参数的值。
+     * @param tip Tip命令
      * @return 本身，这样可以继续设置其他属性
      */
-    public Toggle setTip(Boolean tip) {
+    public Toggle setTip(Tip tip) {
         this.tip = tip;
         return this;
     }

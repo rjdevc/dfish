@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.Statusful;
 import com.rongji.dfish.ui.auxiliary.ValidateRule;
+import com.rongji.dfish.ui.command.Tip;
 
 /**
  * 抽象的FromElement 用于方便formElelemt的编写。
@@ -342,7 +343,19 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
     }
 
     /**
+     * 设置鼠标移上去显示的提示语
+     *
+     * @param tip Tip 提示命令
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setTip(Tip tip) {
+        this.tip = tip;
+        return (T) this;
+    }
+
+    /**
      * 备注说明，正常情况位于表单的后方
+     *
      * @return String
      */
     public String getRemark() {
@@ -351,6 +364,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
 
     /**
      * 备注说明，正常情况位于表单的后方
+     *
      * @param remark String
      * @return 本身，这样可以继续设置其他属性
      */

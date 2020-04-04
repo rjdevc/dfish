@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.*;
  * @date 2018-08-03 before
  * @since 3.0
  */
-public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip> {
+public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip>, Alignable<Tip>, VAlignable<Tip> {
 
     private static final long serialVersionUID = -3534531697064109684L;
 
@@ -20,6 +20,8 @@ public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip
     private String face;
     private String text;
     private Boolean closable;
+    private String align;
+    private String vAlign;
 
     /**
      * 样式效果
@@ -112,4 +114,26 @@ public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip
 //        this.multiple = multiple;
 //        return this;
 //    }
+
+    @Override
+    public String getAlign() {
+        return align;
+    }
+
+    @Override
+    public Tip setAlign(String align) {
+        this.align = align;
+        return this;
+    }
+
+    @Override
+    public String getVAlign() {
+        return vAlign;
+    }
+
+    @Override
+    public Tip setVAlign(String vAlign) {
+        this.vAlign = vAlign;
+        return this;
+    }
 }

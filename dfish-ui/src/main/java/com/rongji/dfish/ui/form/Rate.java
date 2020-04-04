@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.form;
 
+import com.rongji.dfish.ui.command.Tip;
+
 /**
  * Rate 为5个星评价输入
  *
@@ -46,6 +48,7 @@ public class Rate extends AbstractFormElement<Rate, Integer> {
         setLabel(label);
         setValue(value);
     }
+
     /**
      * 默认构造函数
      *
@@ -68,6 +71,12 @@ public class Rate extends AbstractFormElement<Rate, Integer> {
     @Override
     @Deprecated
     public Rate setTip(String tip) {
+        return this;
+    }
+
+    @Override
+    @Deprecated
+    public Rate setTip(Tip tip) {
         return this;
     }
 }

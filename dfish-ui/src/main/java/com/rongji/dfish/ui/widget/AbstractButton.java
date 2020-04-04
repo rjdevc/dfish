@@ -5,6 +5,7 @@ import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.AbstractMultiNodeContainer;
 import com.rongji.dfish.ui.auxiliary.Badge;
 import com.rongji.dfish.ui.auxiliary.BadgeHolder;
+import com.rongji.dfish.ui.command.Tip;
 
 /**
  * AbstractButton 为抽象按钮类 用于方便扩展多种按钮
@@ -13,8 +14,8 @@ import com.rongji.dfish.ui.auxiliary.BadgeHolder;
  * @author DFish Team
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractMultiNodeContainer<T,Widget>
-        implements MultiNodeContainer<T,Widget>, HasText<T>, HtmlContentHolder<T>, BadgeHolder<T> {
+public abstract class AbstractButton<T extends AbstractButton<T>> extends AbstractMultiNodeContainer<T, Widget>
+        implements MultiNodeContainer<T, Widget>, HasText<T>, HtmlContentHolder<T>, BadgeHolder<T> {
 
     /**
      *
@@ -32,7 +33,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     /**
      * 默认构造函数
      */
-    public AbstractButton(String text,String onClick,String icon) {
+    public AbstractButton(String text, String onClick, String icon) {
         super(null);
         setText(text);
         putOn(Button.EVENT_CLICK, onClick);
@@ -95,33 +96,16 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
         return this.more;
     }
 
-//	public T add(Widget<?> oper) {
-//		if (oper == null || oper == this) { // 不允许子按钮为空或是自己
-//			return (T) this;
-//		}
-//		if (more == null || !(more instanceof MenuCommand)) {
-//			more = new MenuCommand();
-//		}
-//		MenuCommand menu = (MenuCommand) more;
-//		if(oper instanceof AbstractButton){
-//			menu.add((AbstractButton<?>)oper);
-//		}else if(oper instanceof Split){
-//			menu.add((Split)oper);
-//		}else{
-//			throw new java.lang.UnsupportedOperationException("Only AbstractButton(Button SubmitButton) or split is supported");
-//		}
-//		return (T) this;
-//	}
-
     /**
      * 添加子节点
+     *
      * @param index
-     * @param oper
+     * @param node
      * @return
      */
-    public T add(int index, Widget<?> oper) {
-        if (oper instanceof AbstractButton || oper instanceof Split) {
-            nodes.add(index, oper);
+    public T add(int index, Widget<?> node) {
+        if (node instanceof AbstractButton || node instanceof Split) {
+            nodes.add(index, node);
             return (T) this;
         } else {
             throw new java.lang.UnsupportedOperationException("Only AbstractButton(Button SubmitButton) or split is supported");
@@ -288,6 +272,17 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     /**
      * 鼠标悬停的时候的提示文字
      *
+     * @param tip 提示文字，如果设置true与text相同
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setTip(Boolean tip) {
+        this.tip = tip;
+        return (T) this;
+    }
+
+    /**
+     * 鼠标悬停的时候的提示文字
+     *
      * @param tip 提示文字
      * @return 本身，这样可以继续设置其他属性
      */
@@ -299,10 +294,10 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     /**
      * 鼠标悬停的时候的提示文字
      *
-     * @param tip 提示文字，如果设置true与text相同
+     * @param tip 提示命令
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setTip(Boolean tip) {
+    public T setTip(Tip tip) {
         this.tip = tip;
         return (T) this;
     }
@@ -435,7 +430,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
      * @param badge 要显示的徽标对象
      * @return 本身，这样可以继续设置其他属性
      */
-	@Override
+    @Override
     public T setBadge(Badge badge) {
         this.badge = badge;
         return (T) this;

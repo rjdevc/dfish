@@ -4,6 +4,7 @@ import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.Directional;
 import com.rongji.dfish.ui.VAlignable;
 import com.rongji.dfish.ui.command.Ajax;
+import com.rongji.dfish.ui.command.Tip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -313,6 +314,12 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
         return (T) this;
     }
 
+    @Deprecated
+    @Override
+    public T setTip(Tip tip) {
+        return (T) this;
+    }
+
     /**
      * 附件上传方案
      *
@@ -385,7 +392,7 @@ public abstract class AbstractUpload<T extends AbstractUpload<T>> extends Abstra
 
     public UploadItem pub() {
         if (pub == null) {
-            pub = new UploadItem(null,null);
+            pub = new UploadItem(null, null);
         }
         return pub;
     }

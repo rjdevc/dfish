@@ -28,7 +28,6 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
     protected String sync;
     protected Widget target;
     protected String text;
-    protected Object tip;
 //    protected BoxField field;
 
     public static final String SYNC_CLICK = "click";
@@ -162,18 +161,6 @@ public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractForm
     @Override
     public Object getTip() {
         return tip;
-    }
-
-    @Override
-    public T setTip(Boolean tip) {
-        this.tip = tip;
-        return (T) this;
-    }
-
-    @Override
-    public T setTip(String tip) {
-        this.tip = tip;
-        return (T) this;
     }
 
     /**
