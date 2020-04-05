@@ -1557,6 +1557,7 @@ _w_bro   = { 'width': 'type_horz', 'height': 'type_vert' },
 _w_rsz_all = function() {
 	_w_css.width.call( this );
 	_w_css.height.call( this );
+	this.trigger( 'resize' );
 	delete this._scales;
 	var l = this.length;
 	if ( l ) {
@@ -1571,7 +1572,6 @@ _w_rsz_all = function() {
 		else
 			_w_rsz_all.call( n );
 	}
-	this.trigger( 'resize' );
 },
 _w_rsz_layout = function() {
 	delete this._scales;
@@ -2981,13 +2981,12 @@ Blank = define.widget( 'Blank', { Prototype: { className: 'w-blank' } } ),
 Html = define.widget( 'Html', {
 	Const: function( x, p ) {
 		Scroll.apply( this, arguments );
-		if ( this.x.thumbWidth ) {
+		if ( this.attr( 'thumbWidth' ) ) {
 			this.addEvent( 'ready',  this.thumb );
 			this.addEvent( 'resize', this.thumb );
 		}
+		! x.vAlign && p && p.x.vAlign && this.defaults( { vAlign: p.x.vAlign } );
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
-		if ( ! x.vAlign && p && p.x.vAlign )
-			this.defaults( { vAlign: p.x.vAlign } );
 	},
 	Extend: Scroll,
 	Prototype: {
@@ -3007,7 +3006,7 @@ Html = define.widget( 'Html', {
 			this.trigger( 'resize' );
 		},
 		thumb: function() {
-			this.x.thumbWidth && $.thumbnail( this.$(), this.scaleWidth( this, this.x.thumbWidth ) );
+			$.thumbnail( this.$(), this.scaleWidth( this, this.attr( 'thumbWidth' ) ) );
 		},
 		html_text: function() {
 			var t = this.html_format( this.x.text, this.x.format, this.x.escape === T );
@@ -3024,7 +3023,7 @@ Html = define.widget( 'Html', {
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr( 'vAlign' );
 			if ( v && v !== 'top' )
-				s = '<i class=f-vi-' + v + '></i><span id=' + this.id + 'vln style="vertical-align:' + v + '">' + s + '</span>';
+				s = '<i class=f-vi-' + v + '></i><span id=' + this.id + 'vln class="w-html-text f-va-' + v + '">' + s + '</span>';
 			return s;
 		}
 	}
@@ -4966,7 +4965,8 @@ _inst_del = function( a, b ) {
 Tip = define.widget( 'Tip', {
 	Const: function( x, p ) {
 		$.extendDeep( x, { widthMinus: 2, heightMinus: 2, prong: x.prong == N ? T : x.prong, autoHide: T, independent: T, snap: { target: p, position: 'tb,rl,lr,bt,rr,ll,bb,tt,cc' },
-			node: { type: 'Html', minHeight: 30, height: '*', style: 'padding:3px ' + (x.closable ? '24px' : '10px') + ' 3px 10px', align: (x.align || 'center'), vAlign: (x.vAlign || 'middle'), text: this.html_format( x.text, x.format, x.escape ) + (x.closable ? $.image('.f-i-close',{cls: 'w-tip-x', click: $.abbr + '.close(this)'}) : '') }
+			node: { type: 'Html', minHeight: 30, width: '*', height: '*', cls: 'w-tip-text', style: 'padding:3px ' + (x.closable ? '24px' : '10px') + ' 3px 10px', align: (x.align || 'center'), vAlign: (x.vAlign || 'middle'), text: this.html_format( x.text, x.format, x.escape ),
+				appendContent: (x.closable ? $.image('.f-i-close',{cls: 'w-tip-x', click: $.abbr + '.close(this)'}) : '') }
 		} );
 		x.face && x.face !== 'normal' && (this.className += ' z-face-' + x.face);
 		x.closable && (this.className += ' z-x');
@@ -8461,6 +8461,9 @@ ComboboxOption = define.widget( 'ComboBoxOption', {
 	Listener: {
 		body: {
 			ready: function() {
+				this.fixSize();
+			},
+			resize: function() {
 				this.fixSize();
 			},
 			touchStart: function() {

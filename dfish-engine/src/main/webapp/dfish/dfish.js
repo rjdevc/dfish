@@ -2410,7 +2410,6 @@ _merge( $, {
 				if ( ! img.title )
 					img.title = $.loc.click_preview;
 				if ( fn !== F ) {
-					_classAdd( img, 'f-hand' );
 					_classAdd( img, 'f-thumbnail' );
 				}
 				if ( fn && img.parentNode.tagName !== 'A' ) {
@@ -2443,25 +2442,25 @@ _merge( $, {
 			$( 'f:thumbnail-page' ).innerText = k + 1;
 		}
 		function _pop( $img, g ) {
-			var w = $.width() * .9, h = $.height() - 60, p = _prev( $img, g ), n = _next( $img, g ), k = _arrIndex( $img, g ),
+			var w = $.width() - 80, h = $.height() - 60, p = _prev( $img, g ), n = _next( $img, g ), k = _arrIndex( $img, g ),
 				s = '<table cellspacing=0 cellpadding=0 width=100% height=100%><tr><td align=center valign=middle><img id=f:thumbnail-img src=' + g.src + ' style="max-width:' + ( w - 40 ) +
 				'px;max-height:' + ( h - 50 ) + 'px;"></table><div style="position:absolute;bottom:2px;left:50%;color:#fff"><span id=f:thumbnail-page>' + ( k + 1 ) + '</span>/' + $img.length +
 				'</div><div class="f-opc0 f-abs f-pic-prev-cursor" id=f:thumbnail-prev style="visibility:' + ( p ? 'visible' : 'hidden' ) +
 				';top:0;left:0;bottom:0;background:#000;width:' + ( w / 2 ) + 'px"></div><div class="f-opc0 f-abs f-pic-next-cursor" id=f:thumbnail-next style="visibility:' + ( n ? 'visible' : 'hidden' ) +
 				';top:0;right:0;bottom:0;background:#000;width:' + ( w / 2 ) + 'px"></div><em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>';
-			var d = $.vm().cmd( { type: 'Dialog', width: w, height: h, cls: 'f-dialog-preview', cover: true, autoHide: T,
-					node: { type: 'Html', align: 'center', id: 'img', vVlign: 'middle', style: 'background:#000', text: s } } );
+			var d = $.vm().cmd( { type: 'Dialog', ownproperty: T, width: w, height: h, cls: 'f-dialog-preview', cover: T, autoHide: T,
+					node: { type: 'View', node:{ type: 'Html', align: 'center', id: 'img', vVlign: 'middle', style: 'background:#000', text: s } } } );
 			$( 'f:thumbnail-prev' ).onclick = function() {
 				$( 'f:thumbnail-img' ).src = p.src;
 				n = _next( $img, p );
 				p = _prev( $img, p );
-				_btn( d.contentView.find( 'img' ).$(), p, n, -- k );
+				_btn( d.getContentView().find( 'img' ).$(), p, n, -- k );
 			}
 			$( 'f:thumbnail-next' ).onclick = function() {
 				$( 'f:thumbnail-img' ).src = n.src;
 				p = _prev( $img, n );
 				n = _next( $img, n );
-				_btn( d.contentView.find( 'img' ).$(), p, n, ++ k );
+				_btn( d.getContentView().find( 'img' ).$(), p, n, ++ k );
 			}	
 		}
 		return function( range, maxWidth, fn ) {
@@ -2469,19 +2468,20 @@ _merge( $, {
 			var $img = $.query( 'img', range );
 			$img.each( function() {
 				if ( _classAny( this, 'f-thumbnail' ) )
-					this.style.maxWidth = '';
+					this.style.maxWidth = ''; 
 				if ( this.complete ) {
 					_thumb( this, maxWidth, fn );
 				} else {
 					$.query( this ).on( 'load', function() { _thumb( this, maxWidth, fn ); } );
 				}
 			} );
-			if ( fn == null || fn === T ) {
+			if ( (fn == null || fn === T) && ! range._thumb ) {
 				$.query( range ).click( function( ev ) {
 					if ( _classAny( ev.target.className, 'f-thumbnail' ) && ! $.query( ev.target ).closest( 'a' ).length ) {
 						_pop( $img, ev.target );
 					} 
 				} );
+				range._thumb = T;
 			}
 		}
 	})(),
