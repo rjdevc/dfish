@@ -1837,9 +1837,13 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	// 实现: wg.append(), wg.prepend(), wg.before, wg.after()
 	_proto[ v ] = function( o ) {
+		if ( ! o )
+			return;
 		if ( typeof o === _STR )
 			return this.insertHTML( o, v );
 		var a = o.isWidget ? [ o ] : $.arrMake( o ), b, q, i;
+		if ( ! a.length )
+			return;
 		if ( a[ 0 ].isWidget ) {
 			if ( a[ 0 ] === this )
 				return this;
@@ -1974,8 +1978,8 @@ Scroll = define.widget( 'Scroll', {
 						_reset_resize_sensor.call( this );
 						this._scr_ready = T;
 					}
-					//if ( ! this._scr_timer )
-					//	this._scr_timer = setInterval( this._scr_check, 999 );
+					if ( ! this._scr_timer )
+						this._scr_timer = setInterval( this._scr_check, 6 * 1000 );
 					$.classAdd( this.$(), 'z-hv' );
 				}
 			},
@@ -9974,7 +9978,7 @@ TableCombo = _comboHooks.Table = $.createClass( {
 	Prototype: {
 		type: 'Table',
 		node2xml: function( a ) {
-			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.contentBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
+			for ( var i = 0, j, b = this.bind.field, c = [], d, t = a.contentTBody(), e = b.search && b.search.split( ',' ), f = e && e.length, l = t && t.length, r, s; i < l; i ++ ) {
 				d = t[ i ].x.data, r = d[ b.remark ];
 				s = '<d v="' + $.strEscape( d[ b.value ] ) + '" t="' + $.strEscape( d[ b.text ] ) + '" i="' + t[ i ].id + '"';
 				r && (s += ' r="' + $.strEscape( r ) + '"');
@@ -9993,7 +9997,7 @@ TableCombo = _comboHooks.Table = $.createClass( {
 		},
 		filter: function( t, s ) {
 			var a = this.cab;
-			a.contentBody() && a.setFilter( this._filter( t ) );
+			a.contentTBody() && a.setFilter( this._filter( t ) );
 			var f = a.getFocus();
 			f && f.focus( F );
 			return a.getEchoRows().length;
@@ -10497,7 +10501,7 @@ TR = define.widget( 'TR', {
 					l.toggle( this.isExpanded() );
 					l.indent();
 				}
-				this.closest( 'ContentTableBody' ).trigger( 'nodeChange' );
+				this.closest( 'ContentTBody' ).trigger( 'nodeChange' );
 			}
 		}
 	},
@@ -10505,7 +10509,7 @@ TR = define.widget( 'TR', {
 		type_tr: T,
 		x_childtype: $.rt( 'TR' ),
 		getPageIndex: function() {
-			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.contentBody() || [], this );
+			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.contentTBody() || [], this );
 			return r.x.limit ? Math.floor( a / r.x.limit ) + 1 : 1;
 		},
 		focus: function( a, e ) {
@@ -10670,8 +10674,8 @@ TCell = define.widget( 'TCell', {
 		html: $.rt( '' )
 	}
 } ),
-/* `ContentTableBody` */
-ContentTableBody = define.widget( 'ContentTableBody', {
+/* `ContentTBody` */
+ContentTBody = define.widget( 'ContentTBody', {
 	Const: function( x, p ) {
 		this.table = p.table;
 		W.apply( this, arguments );
@@ -10693,7 +10697,7 @@ ContentTableBody = define.widget( 'ContentTableBody', {
 		insertHTML: function( a, b ) {
 			this.$() && Q( this.$() )[ b || 'append' ]( a.isWidget ? a.$() : a );
 		},
-		// 获取平行的tablebody/contentHead /@a -> get root contentBody?
+		// 获取平行的tablebody/contentTHead /@a -> get root contentTBody?
 		getParallel: function( a ) {
 			var u = this.rootNode, r = this.table === u ? this : u[ this.instanceType ]();
 			if ( a )
@@ -10729,11 +10733,11 @@ ContentTableBody = define.widget( 'ContentTableBody', {
 		html: function() { return '<tbody id=' + this.id + '>' + this.html_nodes() + '</tbody>' }
 	}
 } );
-_parallel_methods( ContentTableBody, 'prepend append before after' );
+_parallel_methods( ContentTBody, 'prepend append before after' );
 var
-/* `ContentTableHead` */
-ContentTableHead = define.widget( 'ContentTableHead', {
-	Extend: ContentTableBody,
+/* `ContentTHead` */
+ContentTHead = define.widget( 'ContentTHead', {
+	Extend: ContentTBody,
 	Listener: {
 		body: {
 			ready: function() {
@@ -10777,9 +10781,9 @@ ContentTableHead = define.widget( 'ContentTableHead', {
 		html_nodes: _proto.html_nodes
 	}
 } ),
-/* `ContentTableFoot` */
-ContentTableFoot = define.widget( 'ContentTableFoot', {
-	Extend: ContentTableHead,
+/* `ContentTFoot` */
+ContentTFoot = define.widget( 'ContentTFoot', {
+	Extend: ContentTHead,
 	Listener: {
 		body: {
 			ready: N
@@ -10817,7 +10821,7 @@ Column = define.widget( 'Column', {
 	Prototype: {
 		rootType: 'Table,Form',
 		th: function() {
-			var t = this.table.contentHead();
+			var t = this.table.contentTHead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
 		},
 		width_minus: function() {
@@ -10875,11 +10879,11 @@ ContentTable = define.widget( 'ContentTable', {
 		this.table = p.table;
 		this.colgroup = new ColGroup( { nodes: x.columns }, this );
 		if ( x.tHead )
-			this.contentHead = new ContentTableHead( x.tHead, this );
+			this.contentTHead = new ContentTHead( x.tHead, this );
 		else if ( x.tFoot )
-			this.contentFoot = new ContentTableFoot( x.tFoot, this );
+			this.contentTFoot = new ContentTFoot( x.tFoot, this );
 		else
-			this.contentBody = new ContentTableBody( x.tBody || {}, this );
+			this.contentTBody = new ContentTBody( x.tBody || {}, this );
 	},
 	Listener: {
 		body: {
@@ -11023,14 +11027,14 @@ AbsTable = define.widget( 'AbsTable', {
 			if ( this.head && _w_lay.height.call( this ) )
 				this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
 		},
-		contentHead: function() {
-			return this.head && this.head.contentTable.contentHead;
+		contentTHead: function() {
+			return this.head && this.head.contentTable.contentTHead;
 		},
-		contentBody: function() {
-			return this.body && this.body.contentTable.contentBody;
+		contentTBody: function() {
+			return this.body && this.body.contentTable.contentTBody;
 		},
-		contentFoot: function() {
-			return this.foot && this.foot.contentTable.contentFoot;
+		contentTFoot: function() {
+			return this.foot && this.foot.contentTable.contentTFoot;
 		},
 		// 获取符合条件的某一行  /@ a -> condition?
 		row: function( a ) {
@@ -11038,7 +11042,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// 获取符合条件的所有行  /@ a -> condition?, b -> one?
 		rows: function( a, b ) {
-			var d = this.contentBody(), r = [];
+			var d = this.contentTBody(), r = [];
 			if ( d ) {
 				if ( a == N ) {
 					r = _slice.call( d );
@@ -11083,7 +11087,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// 获取显示中的tbody的所有行
 		getEchoRows: function() {
-			return this._echo_rows || this.contentBody() || [];
+			return this._echo_rows || this.contentTBody() || [];
 		},
 		// 获取符合条件的所有行的 data json  /@ a -> condition?, b -> one?
 		rowsData: function( a, b ) {
@@ -11093,7 +11097,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// a -> data, b -> index
 		_addRow: function( a, b ) {
-			var p = this.contentBody();
+			var p = this.contentTBody();
 			p._rowSpan = {};
 			b == N && (b = p.length);
 			p[ b ] ? p[ b ].before( a ) : p.append( a );
@@ -11116,7 +11120,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// @a -> elem
 		getCellAxis: function( a ) {
-			var b = this.contentBody(), c = Q( a ).closest( 'TD' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'TR' );
+			var b = this.contentTBody(), c = Q( a ).closest( 'TD' ), r = c[ 0 ] && _widget( c[ 0 ] ).closest( 'TR' );
 			if ( b && r && r.$().parentNode === b.$() ) {
 				return { rowIndex: r.$().rowIndex - 1, cellIndex: c[ 0 ].cellIndex };
 			}
@@ -11210,9 +11214,9 @@ AbsTable = define.widget( 'AbsTable', {
 			g.insertCol( a.columns[ 0 ], b );
 			if ( g = this.head && this.head.contentTable.colgroup )
 				g.insertCol( a.columns[ 0 ], b );
-			(g = this.contentHead()) && g.insertCol( a.tHead.nodes, b );
-			(g = this.contentBody()) && g.insertCol( a.tBody.nodes, b );
-			(g = this.contentFoot()) && g.insertCol( a.tFoot.nodes, b );
+			(g = this.contentTHead()) && g.insertCol( a.tHead.nodes, b );
+			(g = this.contentTBody()) && g.insertCol( a.tBody.nodes, b );
+			(g = this.contentTFoot()) && g.insertCol( a.tFoot.nodes, b );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
@@ -11223,9 +11227,9 @@ AbsTable = define.widget( 'AbsTable', {
 			g.deleteCol( a );
 			if ( g = this.head && this.head.contentTable.colgroup )
 				g.deleteCol( a );
-			(g = this.contentHead()) && g.deleteCol( a );
-			(g = this.contentBody()) && g.deleteCol( a );
-			(g = this.contentFoot()) && g.deleteCol( a );
+			(g = this.contentTHead()) && g.deleteCol( a );
+			(g = this.contentTBody()) && g.deleteCol( a );
+			(g = this.contentTFoot()) && g.deleteCol( a );
 			this.resize();
 			this.attr( 'scroll' ) && (this.head ? this.body : this).checkScroll();
 		},
@@ -11244,7 +11248,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// 获取所有焦点行 / @a -> visible?
 		getFocusAll: function( a ) {
-			for ( var i = 0, b = this.contentBody(), c, l = b.length, r = []; i < l; i ++ ) {
+			for ( var i = 0, b = this.contentTBody(), c, l = b.length, r = []; i < l; i ++ ) {
 				(c = b[ i ].getFocusAll( a )) && c.length && (r = r.concat( c ));
 			}
 			return r;
@@ -11256,7 +11260,7 @@ AbsTable = define.widget( 'AbsTable', {
 			return r;
 		},
 		fixRowCls: function() {
-			if ( this.contentBody() ) {
+			if ( this.contentTBody() ) {
 				for ( var i = 0, r = this.getEchoRows(), l = r.length; i < l; i ++ ) {
 					$.classRemove( r[ i ].$(), 'z-0 z-1 z-first z-last' );
 					$.classAdd( r[ i ].$(), 'z-' + (i % 2) );
@@ -11298,12 +11302,12 @@ AbsTable = define.widget( 'AbsTable', {
 				this.limit();
 				this.$() && this.render();
 			}
-			return { currentPage: this.x.page, sumPage: Math.ceil((this._filter_rows || this.contentBody() || []).length / this.x.limit) };
+			return { currentPage: this.x.page, sumPage: Math.ceil((this._filter_rows || this.contentTBody() || []).length / this.x.limit) };
 		},
 		limit: function() {
-			if ( this.x.limit && this.contentBody() ) {
+			if ( this.x.limit && this.contentTBody() ) {
 				var g = this.x.page || 1, i = (g - 1) * this.x.limit, j = g * this.x.limit;
-				this._echo_rows = _slice.call( this._filter_rows || this.contentBody(), i, j );
+				this._echo_rows = _slice.call( this._filter_rows || this.contentTBody(), i, j );
 			}
 		},
 		// @f -> filter rows(经过筛选的行)
@@ -11325,7 +11329,7 @@ AbsTable = define.widget( 'AbsTable', {
 				if ( c.number ) { e = _number( e ); f = _number( f ); }
 				return b === 'asc' ? (e < f ? -1 : e == f ? 0 : 1) : (e < f ? 1 : e == f ? 0 : -1);
 			} );
-			for ( var i = 0, l = r.length, o = this.contentBody().$().rows; i < l; i ++ ) {
+			for ( var i = 0, l = r.length, o = this.contentTBody().$().rows; i < l; i ++ ) {
 				if ( o[ i ].id != r[ i ].id ) {
 					r[ i ].parentNode.addNode( r[ i ], i );
 					Q( o[ i ] ).before( r[ i ].$() );
@@ -11366,7 +11370,7 @@ AbsTable = define.widget( 'AbsTable', {
 		},
 		// @k -> keycode
 		keyUp: function( k ) {
-			if ( ! this.contentBody() )
+			if ( ! this.contentTBody() )
 				return;
 			var r = this.getEchoRows(), d = k === 40, a;
 			if ( d || k === 38 ) { // key down/up
@@ -11443,7 +11447,7 @@ Table = define.widget( 'Table', {
 	Listener: {
 		body: {
 			ready: function() {
-				var a = this.contentBody();
+				var a = this.contentTBody();
 				if ( a ) {
 					var b = a.$().rows, c = this.getFocusAll();
 					b.length && ($.classAdd( b[ 0 ], 'z-first' ), $.classAdd( b[ b.length - 1 ], 'z-last' ));
@@ -11511,7 +11515,7 @@ LeftTable = define.widget( 'LeftTable', {
 			ready: function() {
 				var p = this.parentNode;
 				if ( p.head ) {
-					for ( var i = 0, h = this.contentHead(), ph = p.contentHead(); i < h.length; i ++ )
+					for ( var i = 0, h = this.contentTHead(), ph = p.contentTHead(); i < h.length; i ++ )
 						h[ i ].height( ph[ i ].height() );
 				}
 				this.fixSize();
