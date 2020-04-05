@@ -7,6 +7,7 @@ var SyntaxHighlighter = require( './third-party/SyntaxHighlighter/shCore.js' ).S
 
 define.widget( 'UEditorHtml', {
 	Extend: 'Html',
+	Default: { thumbWidth: '*' },
 	Listener: {
 		body: {
 			ready: function() {
