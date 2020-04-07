@@ -9355,6 +9355,12 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		}
 	}
 } ),
+_reloadFocusCallack = function( a ) {
+	var r = a.rootNode || a, f = r.getFocus();
+	return f && f.x.id && function() {
+		!r.getFocus() && (f = this.ownerView.find( f.x.id )) && f.focus();
+	}
+},
 /* `absleaf` */
 AbsLeaf = define.widget( 'AbsLeaf', {
 	Prototype: {
@@ -9596,16 +9602,16 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 					c && c.call( this );
 				} } );
 		},
-		// @a -> sync?
-		reload: function( a ) {
+		// @a -> sync?, b -> fn?
+		reload: function( a, b ) {
 			if ( ! this.loading && this.getSrc() ) {
 				this.toggle( F );
 				$.ajaxAbort( this );
-				var d = this.focusNode && this.focusNode.id, i = this.length;
+				var b = b || _reloadFocusCallack( this ), i = this.length;
 				while( i -- ) this[ i ].remove();
 				this.css( 'o', 'visibility', '' );
 				this.loaded = this.loading = F;
-				this.toggle( T, a, function() { d && (d = this.ownerView.find( d )) && d.focus() } );
+				this.toggle( T, a, b );
 			}
 			return this;
 		},
@@ -9613,7 +9619,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		reloadForAdd: function( a, b ) {
 			if ( this._disposed || this.loading )
 				return;
-			var u = this.getSrc();
+			var u = this.getSrc(), b = b || _reloadFocusCallack( this );
 			if ( u ) {
 				this.expandTo( u, a, b );
 			} else {
@@ -9628,7 +9634,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				$.ajaxAbort( this );
 			var u = this.parentNode.getSrc();
 			if ( u && ! this.parentNode.loading )
-				this.parentNode.expandTo( u, a, b );
+				this.parentNode.expandTo( u, a, b || _reloadFocusCallack( this ) );
 		},
 		// @implement
 		removeElem: function( a ) {

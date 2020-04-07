@@ -21,18 +21,19 @@
 .f-scroll-tank{width:100%;height:100%;overflow:hidden;*position:relative}
 .f-scroll-overflow{position:relative;overflow:scroll;*width:100%}
 .f-scroll-overflow::-webkit-scrollbar{width:0;height:0}
-.f-scroll-y{position:absolute;top:0;bottom:0;right:1px;width:14px;display:none;visibility:hidden;z-index:2}
-.f-scroll-y-track{position:absolute;height:100%;width:8px;top:0;right:0;background:#b2bdc8;opacity:.9;transition:width .07s cubic-bezier(.78, .14, .15, .86)}
+.f-scroll-y{position:absolute;top:0;bottom:0;right:0;width:14px;display:none;visibility:hidden;z-index:2;overflow:hidden}
+.f-scroll-y-track{position:absolute;height:100%;width:8px;top:0;right:1px;background:#b2bdc8;opacity:.9;transition:width .07s cubic-bezier(.78, .14, .15, .86)}
+.f-scroll-y-track:after{content:"";position:absolute;width:1px;height:100%;right:-1px}
 .f-scroll-wrap:hover > .f-scroll-y,.f-css2 .f-scroll-wrap:hover .f-scroll-y,.f-scroll-wrap.z-hv > .f-scroll-y,.f-css2 .f-scroll-wrap.z-hv .f-scroll-y{visibility:visible}
 .f-scroll-wrap:hover > .f-scroll-x,.f-css2 .f-scroll-wrap:hover .f-scroll-x,.f-scroll-wrap.z-hv > .f-scroll-x,.f-css2 .f-scroll-wrap.z-hv .f-scroll-x{visibility:visible}
 .f-scroll-y:hover .f-scroll-y-track{background:#99a8b8;opacity:.85;width:100%}
-.f-scroll-x{position:absolute;left:0;right:0;bottom:1px;height:14px;display:none;visibility:hidden;z-index:2}
-.f-scroll-x-track{position:absolute;width:100%;height:7px;left:0;bottom:0;background:#b2bdc8;opacity:.9;transition:height .07s cubic-bezier(.78, .14, .15, .86)}
+.f-scroll-x{position:absolute;left:0;right:0;bottom:1px;height:14px;display:none;visibility:hidden;z-index:2;overflow:hidden}
+.f-scroll-x-track{position:absolute;width:100%;left:0;height:8px;bottom:0;background:#b2bdc8;opacity:.9;transition:height .07s cubic-bezier(.78, .14, .15, .86)}
+.f-scroll-x-track:after{content:"";position:absolute;height:1px;width:100%;bottom:-1px}
 .f-scroll-x:hover .f-scroll-x-track{background:#99a8b8;opacity:.85;height:100%}
 .f-scroll-wrap.z-ovis{overflow:visible}
 
 .f-bl{display:block}
-.f-inbl,.f-nv,.f-nv-top,.f-nv-middle,.f-nv-bottom{display:inline-block;*display:inline;*zoom:1}
 .f-left{float:left}
 .f-right{float:right}
 .f-clear{clear:both}
@@ -41,7 +42,7 @@
 .f-abs{position:absolute}
 .f-rel{position:relative}
 .f-thumbnail{cursor:pointer}
-.f-sub-horz{display:inline-block;*display:inline;*zoom:1}
+.f-inbl,.f-nv,.f-nv-top,.f-nv-middle,.f-nv-bottom,.f-sub-horz{display:inline-block;*display:inline;*zoom:1}
 .f-sub-horz.z-htmn{float:left;*display:normal}
 .f-sub-horz,.f-sub-vert{vertical-align:top}
 .f-sub-horz{white-space:normal;*white-space:nowrap}
