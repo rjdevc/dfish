@@ -6997,7 +6997,6 @@ DatePicker = define.widget( 'DatePicker', {
 			input: mbi && {
 				method: function() {
 					this.$( 'a' ).innerHTML = this.val();
-					VM(this).f('password').val(this.val());
 					//this.focus( F );
 					this.valid();
 				}
@@ -7053,6 +7052,7 @@ DatePicker = define.widget( 'DatePicker', {
 			if ( a == N ) {
 				if ( this.$v() ) {
 					var v = this.$v().value.replace( 'T', ' ' );
+					mbi && (v = v.slice( this.x.format.length ));
 					return v ? $.dateFormat( v, this.x.format ) : '';
 				}
 				return this.x.value;
@@ -7104,6 +7104,9 @@ DatePicker = define.widget( 'DatePicker', {
 			}
 			this.focus();
 		},
+		clickLabelFor: function(e) {
+			!this.isNormal() && $.stop(e);
+		},
 		// @a -> el, b -> act
 		addValue: function( a, b ) {
 			var self = this, t = Q( a ).closest( 'table' );
@@ -7153,7 +7156,7 @@ DatePicker = define.widget( 'DatePicker', {
 		},
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + ' w-format="' + this.x.format + '"><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix f-inbl _a">' + v.replace( 'T', ' ' ) + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + ' w-format="' + this.x.format + '"><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix f-inbl _a" onclick=' + evw + '.clickLabelFor(event)>' + v.replace( 'T', ' ' ) + '</label>' :
 				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
