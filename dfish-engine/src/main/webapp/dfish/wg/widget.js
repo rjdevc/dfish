@@ -7051,8 +7051,7 @@ DatePicker = define.widget( 'DatePicker', {
 		val: function( a ) {
 			if ( a == N ) {
 				if ( this.$v() ) {
-					var v = this.$v().value.replace( 'T', ' ' );
-					mbi && (v = v.slice( this.x.format.length ));
+					var v = this.$v().value.replace( 'T', ' ' ).slice( 0, this.x.format.length );
 					return v ? $.dateFormat( v, this.x.format ) : '';
 				}
 				return this.x.value;
