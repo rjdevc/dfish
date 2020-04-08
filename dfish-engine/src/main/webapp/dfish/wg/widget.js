@@ -7062,6 +7062,7 @@ DatePicker = define.widget( 'DatePicker', {
 				this.$v().value = a;
 				this.$v() && this.checkPlaceholder();
 				this.x.multiple && this.text( this.v2t( a ) );
+				mbi && (this.$( 'a' ).innerHTML = this.val());
 				this.trigger( 'change' );
 			} else
 				this.x.value = a;
