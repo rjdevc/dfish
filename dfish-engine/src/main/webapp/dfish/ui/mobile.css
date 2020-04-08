@@ -10,6 +10,8 @@
 .w-scroll-swipedown.z-loading .f-i:before{content:''}
 .w-scroll-swipedown.z-loading .f-i{width:24px;height:24px;background:url(g/loading.gif) no-repeat 50% 50%;vertical-align: middle;}
 
+.w-label{line-height: inherit;}
+
 .w-combobox ._plus .f-i:before,.w-pickbox ._plus .f-i:before,.w-linkbox ._plus .f-i:before,.w-onlinebox ._plus .f-i:before{content:'\e409'}
 
 .w-scroll-overflow .w-grid{overflow:visible}

@@ -215,7 +215,7 @@ _f_val = function( a, b, r ) {
 			ie && (v = v.replace( /\\r\\n/g, '\n' ));
 		break;
 		case 'datetime-local':
-			v = v.replace( 'T', ' ' );
+			mbi && v && (v = $.dateFormat( v.replace( 'T', ' ' ), a.getAttribute( 'w-format' )));
 		break;
 	}
 	v && (v = $.strTrim( v ));
@@ -6997,6 +6997,7 @@ DatePicker = define.widget( 'DatePicker', {
 			input: mbi && {
 				method: function() {
 					this.$( 'a' ).innerHTML = this.val();
+					VM(this).f('password').val(this.val());
 					//this.focus( F );
 					this.valid();
 				}
@@ -7049,8 +7050,13 @@ DatePicker = define.widget( 'DatePicker', {
 		},
 		$v: function() { return $( this.id + (this.x.multiple ? 'v' : 't') ) },
 		val: function( a ) {
-			if ( a == N )
-				return this.$v() ? this.$v().value.replace( 'T', ' ' ) : this.x.value;
+			if ( a == N ) {
+				if ( this.$v() ) {
+					var v = this.$v().value.replace( 'T', ' ' );
+					return $.dateFormat( v, this.x.format );
+				}
+				return this.x.value;
+			}
 			if ( this.$() ) {
 				a = $.strTrim( a );
 				mbi && (a = a.replace( ' ', 'T' ));
@@ -7147,7 +7153,7 @@ DatePicker = define.widget( 'DatePicker', {
 		},
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix f-inbl _a">' + v.replace( 'T', ' ' ) + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + ' w-format="' + this.x.format + '"><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix f-inbl _a">' + v.replace( 'T', ' ' ) + '</label>' :
 				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
@@ -10909,13 +10915,11 @@ ContentTable = define.widget( 'ContentTable', {
 		rootType: 'Table,Form',
 		html: function() {
 			var s = '<table id=' + this.id + ' class=w-' + this.rootNode.type.toLowerCase() + '-tbl cellspacing=0 cellpadding=' + this.table._pad;
-			if ( br.ms || mbi ) {
-				var w = this.innerWidth();
-				w != N && (s += ' style="width:' + w + 'px"');
+			for ( var t = '<tr>', w = 0, i = 0, c = this.colgroup, l = c.length, d; i < l; i ++ ) {
+				d = (mbi ? 'width:' + c[ i ].width() + 'px;' : '') + c[ i ].x.style;
+				t += '<td' + (d ? ' style="' + d + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
 			}
 			s += '>';
-			for ( var t = '<tr>', i = 0, c = this.colgroup, l = c.length; i < l; i ++ )
-				t += '<td' + (c[ i ].x.style ? ' style="' + c[ i ].x.style + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
 			//IE下如果不加这个thead，当有colSpan的列时，宽度可能会失调
 			s += '<thead class="_fix_thead">' + t + '</thead>';
 			s += this.html_nodes();

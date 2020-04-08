@@ -1179,9 +1179,10 @@ AbsUpload = define.widget( 'AbsUpload', {
 		this.uploadbar = this.add( { type: this.type + 'ButtonBar' } );
 		this.valuebar  = this.add( { type: this.type + 'ValueBar', br: true, cls: '_vbar' } );
 		this._queues   = [];
-		if ( ! x.uploadButtons ) {
+		if ( ! x.uploadButtons )
 			this.className += ' z-lmt';
-		}
+		if ( ! this.valuebar.length )
+			this.className += ' z-nofiles';
 	},
 	Default:{ height: -1 },
 	Extend: AbsForm,
@@ -1587,6 +1588,7 @@ FileUploadValueBar = define.widget( 'FileUploadValueBar', {
 				$.classAdd( u.$(), 'z-lmt', u.isLimit() );
 				this.length && this.$( 'nf' ) && $.remove( this.$( 'nf' ) );
 				! this.length && ! this.$( 'nf' ) && Q( this.$() ).prepend( this.html_nofiles() );
+				$.classAdd( u.$(), 'z-nofiles', !this.length );
 				u.fixLabelVAlign();
 			}
 		}
