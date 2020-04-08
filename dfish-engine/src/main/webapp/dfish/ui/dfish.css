@@ -428,14 +428,14 @@
 .w-datepicker ._pick_i{background:url(g/n.png) no-repeat 0 50%}
 .w-datepicker ._pick:hover ._pick_i{background-position:-25px 50%}
 .w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
-.w-datepicker .w-f-main.z-auto{width:178px}
+.w-datepicker .w-f-main.z-auto{width:182px}
 
 .w-spinner ._t{vertical-align:middle}
-.w-spinner ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0;color:#999}
+.w-spinner ._b{float:right;width:20px;height:100%;vertical-align:middle;font-size:0;line-height:0;color:#999}
 .w-spinner ._b em{display:block;height:50%;cursor:pointer}
-.w-spinner .f-i-caret-up{position:relative;top:1px;left:-4px}
+.w-spinner .f-i-caret-up{position:relative;left:-4px;top:0;top:1px\0}
 .w-spinner ._b em:hover{color:#2498ff}
-.w-spinner .f-i-caret-down{position:relative;top:-2px;left:-4px}
+.w-spinner .f-i-caret-down{position:relative;left:-4px;top:-4px;top:-2px\0}
 .w-spinner ._b em:hover{border-top-color:#2498ff}
 .w-spinner.z-ds ._b em{cursor:default}
 .w-spinner.z-ds ._b em:hover{border-bottom-color:#999}

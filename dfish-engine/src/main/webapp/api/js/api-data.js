@@ -3226,10 +3226,11 @@ define( {
         { name: 'sync', type: 'Boolean',  remark: '是否同步。', optional: true },
         { name: 'fn', type: 'Function',  remark: '请求结束后执行的回调函数。', optional: true }
       ] },
-      { name: 'reload()', remark: '重新装载子节点。' },
-      { name: 'reloadForAdd([sync], [fn])', remark: '重新读取当前节点的 src 获取子节点数据，如果有新的子节点，将会显示这些新节点。', param: [
-        { name: 'sync', type: 'Booelan', optional: true, remark: '是否同步。true: 同步; false: 异步。' },
-        { name: 'fn', type: 'Function', optional: true, remark: '节点更新完毕后执行的回调函数。' }
+      { name: 'reload([fn])', remark: '重新装载子节点。', param: [
+        { name: 'fn', type: 'Function | Boolean', optional: true, remark: '节点更新完毕后执行的回调函数。如果设为true，则刷新过程为同步。' }
+      ] },
+      { name: 'reloadForAdd([fn])', remark: '重新读取当前节点的 src 获取子节点数据，如果有新的子节点，将会显示这些新节点。', param: [
+        { name: 'fn', type: 'Function | Boolean', optional: true, remark: '节点更新完毕后执行的回调函数。如果设为true，则刷新过程为同步。' }
       ], example: [
           function() {
             vm.find( 'myLeaf' ).reloadForAdd();
@@ -3304,32 +3305,30 @@ define( {
       { name: 'disable([bDisabled])', remark: '设置按钮状态为可用/禁用。', param: [
         { name: 'bDisabled', type: 'Boolean', remark: '是否禁用。', optional: true }
       ] },
-      { name: 'toggle([expand], [sync], [fn])', remark: '展开或收拢。', param: [
+      { name: 'toggle([expand], [fn])', remark: '展开或收拢。', param: [
         { name: 'expand', type: 'Booelan', optional: true, remark: '是否展开。true: 展开; false: 收拢。' },
-        { name: 'sync', type: 'Booelan', optional: true, remark: '是否同步。true: 同步; false: 异步。' },
-        { name: 'fn', type: 'Function', optional: true, remark: '节点展开或收拢后执行的回调函数。' }
+        { name: 'fn', type: 'Function | Boolean', optional: true, remark: '节点更新完毕后执行的回调函数。如果设为true，则刷新过程为同步。' }
       ] },
-      { name: 'toggleOne([expand], [sync], [fn])', remark: '展开或收拢。当前节点为展开状态时，其他兄弟节点全部收拢。', param: [
+      { name: 'toggleOne([expand], [fn])', remark: '展开或收拢。当前节点为展开状态时，其他兄弟节点全部收拢。', param: [
         { name: 'expand', type: 'Booelan', optional: true, remark: '是否展开。true: 展开; false: 收拢。' },
-        { name: 'bSync', type: 'Booelan', optional: true, remark: '是否同步。true: 同步; false: 异步。' },
-        { name: 'fn', type: 'Function', optional: true, remark: '节点展开或收拢后执行的回调函数。' }
+        { name: 'fn', type: 'Function | Boolean', optional: true, remark: '节点更新完毕后执行的回调函数。如果设为true，则刷新过程为同步。' }
       ] },
       { name: 'focus([bFocus])', remark: '设为焦点状态。', param: [
         { name: 'bFocus', type: 'Booelan', optional: true, remark: '是否焦点状态。' }
       ] },
       { name: 'isFocus()', remark: '获取树节点是否为焦点状态。' },
-      { name: 'reload()', remark: '重新装载子节点。' },
-      { name: 'reloadForAdd([sync], [fn])', remark: '重新读取当前节点的 src 获取子节点数据，如果有新的子节点，将会显示这些新节点。', param: [
-        { name: 'sync', type: 'Booelan', optional: true, remark: '是否同步。true: 同步; false: 异步。' },
-        { name: 'fn', type: 'Function', optional: true, remark: '节点更新完毕后执行的回调函数。' }
+      { name: 'reload([fn])', remark: '重新装载子节点。', param: [
+        { name: 'fn', type: 'Function | Boolean', optional: true, remark: '节点更新完毕后执行的回调函数。如果设为true，则刷新过程为同步。' }
+      ] },
+      { name: 'reloadForAdd([fn])', remark: '重新读取当前节点的 src 获取子节点数据，如果有新的子节点，将会显示这些新节点。', param: [
+        { name: 'fn', type: 'Function | Boolean', optional: true, remark: '节点更新完毕后执行的回调函数。如果设为true，则刷新过程为同步。' }
       ], example: [
           function() {
             vm.find( 'myLeaf' ).reloadForAdd();
           }
       ] },
-      { name: 'reloadForModify([sync], [fn])', remark: '重新读取父节点的 src 获取当前节点数据，并更新当前节点。', param: [
-        { name: 'sync', type: 'Booelan', optional: true, remark: '是否同步。true: 同步; false: 异步。' },
-        { name: 'fn', type: 'Function', optional: true, remark: '节点更新完毕后执行的回调函数。' }
+      { name: 'reloadForModify([fn])', remark: '重新读取父节点的 src 获取当前节点数据，并更新当前节点。', param: [
+        { name: 'fn', type: 'Function | Boolean', optional: true, remark: '节点更新完毕后执行的回调函数。如果设为true，则刷新过程为同步。' }
       ] },
       { name: 'checkBox([checked])', remark: '设置 checkbox / radio为选中/未选中状态。', param: [
         { name: 'checked', type: 'Booelan', optional: true, remark: '是否选中。' }

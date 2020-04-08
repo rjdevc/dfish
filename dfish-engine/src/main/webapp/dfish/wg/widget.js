@@ -2762,7 +2762,7 @@ DocView = define.widget( 'DocView', {
 		$.attach( window, 'resize', f = function( e, w, h ) {
 			w = w || self.width(); h = h || self.height();
 			if ( self._wd !== w || self._ht !== h ) {
-				Dialog.cleanPop();
+				Dialog.axisPop();
 				self.resize( self._wd = w, self._ht = h );
 			}
 		} );
@@ -4416,6 +4416,12 @@ Dialog = define.widget( 'Dialog', {
 		close: function( a ) {
 			(a = Dialog.get( a )) && a.close();
 		},
+		axisPop: function( a ) {
+			for ( var k in Dialog.all ) {
+				var d = Dialog.all[ k ];
+				d.vis && d.axis();
+			}
+		},
 		cleanPop: function( a ) {
 			for ( var k in Dialog.all ) {
 				var d = Dialog.all[ k ];
@@ -4822,9 +4828,7 @@ Dialog = define.widget( 'Dialog', {
 					self.close();
 				};
 			}), a );
-			if ( mbi ) {
-				window.plus.key[ a ? 'addEventListener' : 'removeEventListener' ]( 'backbutton', self.listenHide_1 || (self.listenHide_1 = function() {self.close()}), F );
-			}
+			plus && plus.key[ a ? 'addEventListener' : 'removeEventListener' ]( 'backbutton', self.listenHide_1 || (self.listenHide_1 = function() {self.close()}), F );
 			if ( d ) {
 				var o = d === T ? (this.x.snap && this.x.snap.target ? this._snapTargetElem() : this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
 				Q( [ o, self.$() ] )[ f ]( 'mouseenter', self._hover_over || (self._hover_over = function() { clearTimeout( self._hover_timer ); delete self._hover_timer; }) );
@@ -6993,7 +6997,7 @@ DatePicker = define.widget( 'DatePicker', {
 			input: mbi && {
 				method: function() {
 					this.$( 'a' ).innerHTML = this.val();
-					this.focus( F );
+					//this.focus( F );
 					this.valid();
 				}
 			}
@@ -7143,7 +7147,7 @@ DatePicker = define.widget( 'DatePicker', {
 		},
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
-			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix _a">' + v.replace( 'T', ' ' ) + '</label>' :
+			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + '><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix f-inbl _a">' + v.replace( 'T', ' ' ) + '</label>' :
 				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
@@ -9355,10 +9359,11 @@ TreeCombo = _comboHooks.Tree = $.createClass( {
 		}
 	}
 } ),
-_reloadFocusCallack = function( a ) {
+_reloadFocusCallack = function( a, b ) {
 	var r = a.rootNode || a, f = r.getFocus();
-	return f && f.x.id && function() {
-		!r.getFocus() && (f = this.ownerView.find( f.x.id )) && f.focus();
+	return function() {
+		f && f.x.id && !r.getFocus() && (f = this.ownerView.find( f.x.id )) && f.focus();
+		typeof b === _FUN && b.call( a );
 	}
 },
 /* `absleaf` */
@@ -9515,13 +9520,13 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				this.addClass( 'z-expanded', a );
 			}
 		},
-		// 展开或收拢 /@a -> T/F/event, b -> sync?, f -> fn?
-		toggle: function( a, b, f ) {
+		// 展开或收拢 /@a -> T/F/event, b -> sync|fn?
+		toggle: function( a, b ) {
 			var c = typeof a === _BOL ? a : !this.x.expanded, d = !!this.x.expanded;
 			this.x.expanded = c;
 			this.toggle_nodes( c );
 			if ( this.isFolder() && this.getSrc() && a !== F && !this.loaded && !this.loading ) 
-				this.request( b, f );
+				this.request( b === T, typeof b === _FUN && b );
 			if ( this.$( 'r' ) )
 				this.caret( c, T );
 			if ( this.loading ) {
@@ -9533,8 +9538,8 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 			}
 			a && a.type && $.stop( a );
 		},
-		// 当前节点展开时，其他兄弟节点全部收起 /@a -> T/F/event, b -> sync?, f -> fn?
-		toggleOne: function( a, b, f ) {
+		// 当前节点展开时，其他兄弟节点全部收起 /@a -> T/F/event, b -> sync|fn?
+		toggleOne: function( a, b ) {
 			this.toggle.apply( this, arguments );
 			if ( this.isExpanded() ) {
 				for ( var i = 0, p = this.parentNode; i < p.length; i ++ ) {
@@ -9580,11 +9585,10 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 			}
 			return this;
 		},
-		// 深度展开。leaf需要有id进行对比  /@a -> src, b -> sync?, c -> fn
-		expandTo: function( a, b, c ) {
+		// 深度展开。leaf需要有id进行对比  /@a -> src, b -> sync|fn?
+		expandTo: function( a, b ) {
 			var f = (this.rootNode || this).getFocus();
-			typeof b === _FUN && (c = b, b = N);
-			this.exec( { type: 'Ajax', src: a, sync: b,
+			this.exec( { type: 'Ajax', src: a, sync: b === T,
 				success: function( x ) {
 					if ( this.x.template ) {
 						x = _compileTemplate( this, x );
@@ -9599,42 +9603,42 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				complete: function() {
 					var d = (this.rootNode || this).getFocus();
 					d && d !== f && d.scrollIntoView();
-					c && c.call( this );
+					typeof b === _FUN && b.call( this );
 				} } );
 		},
-		// @a -> sync?, b -> fn?
-		reload: function( a, b ) {
+		// @a -> sync|fn?
+		reload: function( a ) {
 			if ( ! this.loading && this.getSrc() ) {
 				this.toggle( F );
 				$.ajaxAbort( this );
-				var b = b || _reloadFocusCallack( this ), i = this.length;
+				var b = _reloadFocusCallack( this, a ), i = this.length;
 				while( i -- ) this[ i ].remove();
 				this.css( 'o', 'visibility', '' );
 				this.loaded = this.loading = F;
-				this.toggle( T, a, b );
+				this.toggle( T, b );
 			}
 			return this;
 		},
-		// 获取最新的子节点数据，对比原有数据，如果有新增节点就显示出来 / @a -> sync?, b -> fn?
-		reloadForAdd: function( a, b ) {
+		// 获取最新的子节点数据，对比原有数据，如果有新增节点就显示出来 / @a -> sync|fn?
+		reloadForAdd: function( a ) {
 			if ( this._disposed || this.loading )
 				return;
-			var u = this.getSrc(), b = b || _reloadFocusCallack( this );
+			var u = this.getSrc(), b = _reloadFocusCallack( this, a );
 			if ( u ) {
-				this.expandTo( u, a, b );
+				this.expandTo( u, b );
 			} else {
 				this.reloadForModify( a, function() { u && this.toggle( T, b ) } );
 			}
 		},
-		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync?, b -> fn?
-		reloadForModify: function( a, b ) {
+		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync|fn?
+		reloadForModify: function( a ) {
 			if ( this._disposed )
 				return;
 			if ( this.loading )
 				$.ajaxAbort( this );
 			var u = this.parentNode.getSrc();
 			if ( u && ! this.parentNode.loading )
-				this.parentNode.expandTo( u, a, b || _reloadFocusCallack( this ) );
+				this.parentNode.expandTo( u, _reloadFocusCallack( this, a ) );
 		},
 		// @implement
 		removeElem: function( a ) {
