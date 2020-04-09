@@ -658,43 +658,6 @@ _compilePreloadConfig = function( a, x ) {
 	} else
 		$.winbox( Loc.ps( Loc.preload_error, a ) );
 },
-//
-_compilePreloadWidget = function( o, x ) {
-	var a = o.x.preload, p = _getPreload( a ), y = x, x = x.type === 'Dialog' ? x.node : x, n = x, v, u = o.isDialogWidget ? o.getContentView() : _view( o );
-	if ( p ) {
-		if ( x.type === 'View' && x.node ) {
-			v = _tpl_view( p );
-			v && (n = x.node);
-		}
-		var t = 'PreloadBody',
-			//s = _tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( p )),
-			c = _tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( p )),
-			d = _tpl_parse( n, c );
-		for ( var k in c ) {
-			if ( d[ k ] ) {
-				//s = s.replace( $.jsonString( c[ k ] ), $.jsonString( d[ k ] ) );
-				u.find( k ).replace( d[ k ] );
-			}
-		}
-		// 如果之前的替换处理后， PreloadBody 没被替换掉，那么它将替换整个node
-		if ( c[ t ] ) {
-			//s = s.replace( $.jsonString( c[ t ] ), function() { return $.jsonString( $.extend( {}, n, c[ t ] ) ) } );
-			if ( o.preloadBody && !o.preloadBody._disposed ) {
-				var m = o.preloadBody.replace( $.extend( {}, n, c[ t ] ) );
-				o.preloadBody = N;
-			}
-		}
-		if ( v && (v = _tpl_view( o.x )) ) {
-			x.commands && $.merge( v.commands || (v.commands = {}), x.commands );
-			x.on && $.merge( v.on || (v.on = {}), x.on );
-		}
-		/*if ( r.type === y.type ) {
-			for ( var k in y )
-				if ( k !== 'node' && k !== 'nodes' ) r[ k ] = y[ k ];
-		}*/
-	} else
-		$.winbox( Loc.ps( Loc.preload_error, a ) );
-},
 _setView = function( a ) {
 	if ( a && !this.type_view ) {
 		this.ownerView = a;
@@ -822,13 +785,13 @@ W = define( 'Widget', function() {
 					this.exec( x );
 				} else {
 					if ( this.x.preload ) {
-						_compilePreloadWidget( this, x );
+						x = _compilePreloadConfig( this.x.preload, x );
 					}
 					if ( x ) {
 						if ( x.type && x.type !== this.type )
 							x = { type: this.type, node: x };
 						var k, _x = this.prior_x || {};
-						for ( k in x ) {
+						for ( k in x ) {;
 							if ( !(k in _x) ) this.attr( k, x[ k ] );
 						}
 						this.init_nodes();
@@ -2446,8 +2409,10 @@ Section = define.widget( 'Section', {
 				if ( x.node ) {
 					var n = _compilePreloadConfig( x.preload, x.node );
 					n && $.merge( x, n );
-				} else
+				} else {
 					$.extendDeep( x, t );
+					this.className += ' z-loading';
+				}
 			}
 			if ( this.domready && this.x.id ) {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
@@ -2456,9 +2421,9 @@ Section = define.widget( 'Section', {
 				var s = this.getSrc() || (this.x.template && ! this.hasCssRes() && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
-				}
+				} else
+					this.className += ' z-loading';
 			}
-			!this.isLoaded() && (this.className += ' z-loading');
 			this._x_ini = T;
 		},
 		isLoaded: function() {
@@ -2466,8 +2431,10 @@ Section = define.widget( 'Section', {
 		},
 		// @implement
 		init_nodes: function() {
-			if ( (this.x.node || this.x.nodes) && ! this.layout )
+			if ( this.x.node || this.x.nodes ) {
+				this.layout && this.layout.remove();
 				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
+			}
 		},
 		hasCssRes: function() {
 			var a = this.type_view && _viewResources[ this.path ];
@@ -2509,10 +2476,8 @@ Section = define.widget( 'Section', {
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
 			} else if ( this.layout ) {
 				this.showLoading( F );
-				if ( !this.layout.$() ) {
-					this.layout._render();
-					re !== F && this.layout.triggerAll( 'ready' );
-				}
+				this.layout._render();
+				re !== F && this.layout.triggerAll( 'ready' );
 				this.trigger( 'load' );
 			}
 			this.removeClass( 'z-loading' );
@@ -4582,6 +4547,8 @@ Dialog = define.widget( 'Dialog', {
 			},
 			load: function() {
 				this.draggable( N, F );
+				//var u = this.getContentView();
+				//u && u.trigger( 'load' );
 			},
 			mouseDown: function() {
 				this.front();
