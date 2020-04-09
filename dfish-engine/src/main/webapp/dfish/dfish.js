@@ -1689,8 +1689,8 @@ Ajax = _createClass( {
 								f && (f = _fnapply( f, c, '$ajax', [ self ] ));
 								if ( f !== F && r !== 'filter' ) {
 									var s = 'ajax ' + l.status + ': ' + a;
-									//$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
-									//	$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
+									$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
+										$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
 									win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
 								}
 							}
