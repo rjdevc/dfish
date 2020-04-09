@@ -180,20 +180,8 @@ i {
     background-color: #f8f8f8;
 }
 
-.w-dialog .w-dialog-loadinghead {
-    background: #2498ff
-}
-
-.w-dialog .w-dialog-loadinghead ._x {
-    background: url(img/g.png) no-repeat -85px 4px
-}
-
-.w-dialog .w-dialog-loadinghead ._x.z-hv {
-    background-color: red
-}
-
-.w-dialog.z-loading .w-dialog-loadinghead {
-    display: block
+.w-dialog.z-loading .dlg-foot-operation {
+    visibility: hidden
 }
 
 /**对话框**/
