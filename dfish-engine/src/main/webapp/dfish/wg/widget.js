@@ -5914,7 +5914,7 @@ Range = define.widget( 'Range', {
 	Const: function( x, p ) {
 		AbsForm.apply( this, arguments );
 		this.begin = x.begin && this.add( x.begin );
-		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'Html', cls: 'w-range-to', text: x.to || Loc.to, width: 30, align: 'center' } );
+		this.to    = (x.begin && x.end) && this.add( typeof x.to === _OBJ ? x.to : { type: 'Html', cls: 'w-range-to', text: x.to || Loc.to, width: mbi ? 20 : 30, align: 'center' } );
 		this.end   = x.end && this.add( x.end );
 		this.className = 'w-horz w-range f-nv';
 		if ( ! x.vAlign && p && p.x.vAlign )
@@ -5995,6 +5995,10 @@ Textarea = define.widget( 'Textarea', {
 } ),
 /* `text` */
 Text = define.widget( 'Text', {
+	Const: function( x ) {
+		x.value && (x.value = ('' + x.value).replace(/\n/g, ''));
+		AbsInput.apply( this, arguments );
+	},
 	Extend: AbsInput,
 	Listener: {
 		body: {
