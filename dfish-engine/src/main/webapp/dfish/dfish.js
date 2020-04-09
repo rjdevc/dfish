@@ -47,6 +47,7 @@ getPath = function() {
 		return src || js[ l ].src;
 	})();
 	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
+	_cfg.path != N && (_path = _cfg.path);
 	!_cfg.ver && (_cfg.ver = _urlParam( u, 'ver' ));
 },
 
