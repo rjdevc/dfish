@@ -2196,6 +2196,7 @@ Scroll = define.widget( 'Scroll', {
 		},
 		html: function() {
 			this.width() == N && ! this.x.maxWidth && ! this.x.maxHeight && $.classAdd( this, 'z-autosize' );
+			mbi && this.attr( 'scroll' ) && $.classAdd( this, 'f-oa' );
 			// 执行 html_nodes 要在执行 html_prop 之前，以备html_nodes中可能要增加样式等操作
 			var s = this.html_nodes();
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + (this.isScroll() ? this.html_scroll( s ) : s) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
@@ -2204,10 +2205,7 @@ Scroll = define.widget( 'Scroll', {
 			this._scr_usable = T;
 			var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll;
 			if ( mbi ) {
-				return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + '<div id=' + this.id + 'ovf class=w-scroll-overflow style="' +
-					(w ? 'width:' + w + 'px;' : '' ) + (this.x.maxWidth ? 'max-width:' + this.x.maxWidth + 'px;' : '') +
-					(this.x.minWidth ? 'min-width:' + this.x.minWidth + 'px;' : '') + (h ? 'height:' + h + 'px;' : '' ) + (this.x.maxHeight ? 'max-height:' + this.x.maxHeight + 'px;' : '') +
-					(this.x.minHeight ? 'min-height:' + this.x.minHeight + 'px;' : '') + '" onscroll=' + eve + '><div id=' + this.id + 'cont>' + (s || '') + '</div></div>';		
+				return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + (s || '');		
 			} else {
 				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
 					(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
@@ -2413,6 +2411,7 @@ Section = define.widget( 'Section', {
 					var n = _compilePreload( x.preload, x.node );
 					n && $.merge( x, n );
 				}
+				//this.x = x = $.extendDeep( t, x );
 			}
 			if ( this.domready && this.x.id ) {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
@@ -2978,6 +2977,8 @@ EmbedWindow = define.widget( 'EmbedWindow', {
 } ),
 /* `Blank` 空面板  */
 Blank = define.widget( 'Blank', { Prototype: { className: 'w-blank' } } ),
+/* `Blank` 空面板  */
+PreloadBody = define.widget( 'PreloadBody', { Prototype: { className: 'w-preloadbody' } } ),
 /* `html`
  *  支持自定义标签: <d:wg></d:wg>
  *  内容为widget配置项，例: <d:wg>{type: "button", text: "click"}</d:wg>

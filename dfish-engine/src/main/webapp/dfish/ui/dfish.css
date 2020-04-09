@@ -132,6 +132,7 @@
 .w-progress.z-hidepercent ._s{display:none}
 
 .f-oh{overflow:hidden}
+.f-oa{overflow:auto!important}
 .w-horz,.w-horizontal{white-space:nowrap}
 .w-horz.z-br,.w-horizontal.z-br{white-space:normal}
 .w-horizontal-vln{width:100%}
