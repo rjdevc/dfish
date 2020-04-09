@@ -47,7 +47,6 @@ getPath = function() {
 		return src || js[ l ].src;
 	})();
 	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
-	_cfg.path != N && (_path = _cfg.path);
 	!_cfg.ver && (_cfg.ver = _urlParam( u, 'ver' ));
 },
 
@@ -1690,8 +1689,8 @@ Ajax = _createClass( {
 								f && (f = _fnapply( f, c, '$ajax', [ self ] ));
 								if ( f !== F && r !== 'filter' ) {
 									var s = 'ajax ' + l.status + ': ' + a;
-									$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
-										$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
+									//$.alert( _cfg.debug ? _strEscape( s ) + '\n\n' + ($.loc ? ($.loc.ajax[ l.status ] || $.loc.ajax[ r ] || r + ' error') : r + ' error') :
+									//	$.loc ? $.loc.ps( l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape( s ) + '" onmouseover=dfish.tip(this)' ) : s );
 									win.console && console.error( s + ((r = l.responseText) ? '\n' + r : '') );
 								}
 							}
@@ -1953,9 +1952,9 @@ var boot = {
 		this.dom_ok && this.css_ok && this.fn(e);
 	},
 	initEnv: function() {
-		if ( _cfg.path != N )
-			_path = _cfg.path;
-		else
+		if ( _cfg.path != N ) {
+			_path = _urlLoc( _path, _cfg.path );
+		} else
 			_cfg.path = _path;
 		if ( _cfg.lib != N )
 			_lib = _cfg.lib;
