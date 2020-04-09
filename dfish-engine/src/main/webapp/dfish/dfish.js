@@ -2087,6 +2087,7 @@ _merge( $, {
 			_path = _urlLoc( _dftPath, a.path );
 		if ( a.lib != N )
 			_lib = a.lib;
+		_cfg.path = _path;
 		this.x = _cfg = _extendDeep( a, _cfg );
 		a.data && this._data && _extend( this._data, a.data );
 	},
