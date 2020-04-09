@@ -17,7 +17,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _aliasPath = {}, _aliasName = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
+_path, _uiPath, _dftPath, _lib, _cfg = {}, _aliasPath = {}, _aliasName = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -32,10 +32,11 @@ $ = dfish,
 //获取dfish所在目录
 getPath = function() {
 	var u = location.href.substring( 0, location.href.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
-	_path = u.substring( 0, u.lastIndexOf( '/' ) + 1 ) || './';
-	if ( _path.indexOf( './' ) === 0 || _path.indexOf( '../' ) === 0 ) {
-		_path = _urlLoc( location.pathname, _path );
+	_dftPath = u.substring( 0, u.lastIndexOf( '/' ) + 1 ) || './';
+	if ( _dftPath.indexOf( './' ) === 0 || _dftPath.indexOf( '../' ) === 0 ) {
+		_dftPath = _urlLoc( location.pathname, _dftPath );
 	}
+	_path = _dftPath;
 	u = doc.currentScript ? doc.currentScript.src : (function() {
 		var js = doc.scripts, l = js.length - 1, src;
 		for ( var i = l; i > 0; i -- ) {
@@ -1952,17 +1953,9 @@ var boot = {
 		this.dom_ok && this.css_ok && this.fn(e);
 	},
 	initEnv: function() {
-		if ( _cfg.path != N ) {
-			_path = _urlLoc( _path, _cfg.path );
-		} else
-			_cfg.path = _path;
-		if ( _cfg.lib != N )
-			_lib = _cfg.lib;
 		_ver = _cfg.ver ? '?_v=' + _cfg.ver : '',
-		_ui_path = _urlLoc( _path, _lib ) + 'ui/';
-		
+		_uiPath = _urlLoc( _path, _lib ) + 'ui/';
 		_compatJS();
-		
 		if ( noGlobal || _cfg.noConflict ) {
 			(Date.$ = $).abbr = 'Date.$';
 		}
@@ -1989,7 +1982,7 @@ var boot = {
 		
 		$.PATH = _path;
 		$.LIB  = _lib;
-		$.IMGPATH = _ui_path + 'g/';
+		$.IMGPATH = _uiPath + 'g/';
 		$.version = version;
 		
 		$.loc     = _loc;
@@ -2090,6 +2083,10 @@ _merge( $, {
 	})(),
 	// 设置全局配置，可多次调用
 	config: function( a ) {
+		if ( a.path != N )
+			_path = _urlLoc( _dftPath, a.path );
+		if ( a.lib != N )
+			_lib = a.lib;
 		this.x = _cfg = _extendDeep( a, _cfg );
 		a.data && this._data && _extend( this._data, a.data );
 	},
@@ -2198,7 +2195,7 @@ _merge( $, {
 	image: function( a, b ) {
 		var d = a || '', e = ! d.indexOf( '.' ) && d.indexOf( '/' ) < 0, s = [];
 		if ( ! e && d.indexOf( '%' ) > -1 ) {
-			d = d.replace( '%img%', _ui_path + 'g' );
+			d = d.replace( '%img%', _uiPath + 'g' );
 		}
 		for ( var i = 1, c, t; i < arguments.length; i ++ ) {
 			c = arguments[ i ], t = '';
@@ -2341,11 +2338,11 @@ _merge( $, {
 			var s = [], d = [];
 			if ( ! $( did ) ) {
 				_classAdd( cvs, br.css3 ? 'f-css3' : 'f-css2' );
-				var k = location.protocol + '//' + location.host + _ui_path + 'g/';
+				var k = location.protocol + '//' + location.host + _uiPath + 'g/';
 				_loadStyle( '.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}' );
-				s.push( _ui_path + 'dfish.css' );
+				s.push( _uiPath + 'dfish.css' );
 				d.push( did );
-				br.mobile && (s.push( _ui_path + 'mobile.css' ), d.push( _uid() ));
+				br.mobile && (s.push( _uiPath + 'mobile.css' ), d.push( _uid() ));
 			}
 			if ( x ) {
 				x = _extend( {}, x, y );
