@@ -187,6 +187,9 @@
 		        { "id": "Calendar", "text": "Calendar", "collapsedIcon": ".icon .icon-class", "nodes": [
 		          { "id": "CalendarItem", "text": "CalendarItem", "collapsedIcon": ".icon .icon-class" }
 		        ] },
+		        { "id": "DialogCloseButton", "text": "DialogCloseButton", "collapsedIcon": ".icon .icon-class" },
+		        { "id": "DialogMaxButton", "text": "DialogMaxButton", "collapsedIcon": ".icon .icon-class" },
+		        { "id": "DialogTitle", "text": "DialogTitle", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "EmbedWindow", "text": "EmbedWindow", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Html", "text": "Html", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Img", "text": "Img", "collapsedIcon": ".icon .icon-class" },

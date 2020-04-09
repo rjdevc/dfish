@@ -624,8 +624,7 @@ _tpl_view = function( a ) {
 			if ( v = _tpl_view( a.nodes[ i ] ) ) return v;
 	}
 },
-//
-_compilePreload = function( a, x ) {
+_compilePreloadConfig = function( a, x ) {
 	var b = typeof a === _OBJ, p = b ? a : _getPreload( a ), y = x, x = x.type === 'Dialog' ? x.node : x, n = x, v;
 	if ( p ) {
 		if ( x.type === 'View' && x.node ) {
@@ -656,6 +655,43 @@ _compilePreload = function( a, x ) {
 				if ( k !== 'node' && k !== 'nodes' ) r[ k ] = y[ k ];
 		}
 		return r;
+	} else
+		$.winbox( Loc.ps( Loc.preload_error, a ) );
+},
+//
+_compilePreloadWidget = function( o, x ) {
+	var a = o.x.preload, p = _getPreload( a ), y = x, x = x.type === 'Dialog' ? x.node : x, n = x, v, u = o.isDialogWidget ? o.getContentView() : _view( o );
+	if ( p ) {
+		if ( x.type === 'View' && x.node ) {
+			v = _tpl_view( p );
+			v && (n = x.node);
+		}
+		var t = 'PreloadBody',
+			//s = _tpl_str[ a ] || (_tpl_str[ a ] = $.jsonString( p )),
+			c = _tpl_ids[ a ] || (_tpl_ids[ a ] = _tpl_parse( p )),
+			d = _tpl_parse( n, c );
+		for ( var k in c ) {
+			if ( d[ k ] ) {
+				//s = s.replace( $.jsonString( c[ k ] ), $.jsonString( d[ k ] ) );
+				u.find( k ).replace( d[ k ] );
+			}
+		}
+		// 如果之前的替换处理后， PreloadBody 没被替换掉，那么它将替换整个node
+		if ( c[ t ] ) {
+			//s = s.replace( $.jsonString( c[ t ] ), function() { return $.jsonString( $.extend( {}, n, c[ t ] ) ) } );
+			if ( o.preloadBody && !o.preloadBody._disposed ) {
+				var m = o.preloadBody.replace( $.extend( {}, n, c[ t ] ) );
+				o.preloadBody = N;
+			}
+		}
+		if ( v && (v = _tpl_view( o.x )) ) {
+			x.commands && $.merge( v.commands || (v.commands = {}), x.commands );
+			x.on && $.merge( v.on || (v.on = {}), x.on );
+		}
+		/*if ( r.type === y.type ) {
+			for ( var k in y )
+				if ( k !== 'node' && k !== 'nodes' ) r[ k ] = y[ k ];
+		}*/
 	} else
 		$.winbox( Loc.ps( Loc.preload_error, a ) );
 },
@@ -786,7 +822,7 @@ W = define( 'Widget', function() {
 					this.exec( x );
 				} else {
 					if ( this.x.preload ) {
-						x = _compilePreload( this.x.preload, x );
+						_compilePreloadWidget( this, x );
 					}
 					if ( x ) {
 						if ( x.type && x.type !== this.type )
@@ -2386,7 +2422,7 @@ Section = define.widget( 'Section', {
 		body: {
 			ready: function() {
 				this.domready = T;
-				this.layout ? setTimeout( $.proxy( this, 'this.trigger("load")' ) ) : this.start( F );
+				this.isLoaded() ? setTimeout( $.proxy( this, 'this.trigger("load")' ) ) : this.start( F );
 			},
 			display: function() {
 				this.domready && this.start();
@@ -2402,16 +2438,16 @@ Section = define.widget( 'Section', {
 			if ( ! x.node && ! this.isDisplay() )
 				return;
 			_proto._init_x.call( this, x );
-			var t = x.preload && _getPreload( x.preload );
+			var t = x.preload && _getPreload( x.preload, T );
 			if ( t ) {
-				for ( var k in t ) {
+				/*for ( var k in t ) {
 					!(k in x) && k !== 'node' && k !== 'nodes' && (x[ k ] = t[ k ]);
-				}
+				}*/
 				if ( x.node ) {
-					var n = _compilePreload( x.preload, x.node );
+					var n = _compilePreloadConfig( x.preload, x.node );
 					n && $.merge( x, n );
-				}
-				//this.x = x = $.extendDeep( t, x );
+				} else
+					$.extendDeep( x, t );
 			}
 			if ( this.domready && this.x.id ) {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
@@ -2420,21 +2456,18 @@ Section = define.widget( 'Section', {
 				var s = this.getSrc() || (this.x.template && ! this.hasCssRes() && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
-				} else
-					this.className += ' z-loading';
+				}
 			}
+			!this.isLoaded() && (this.className += ' z-loading');
 			this._x_ini = T;
+		},
+		isLoaded: function() {
+			return !this.preloadBody && this.layout;
 		},
 		// @implement
 		init_nodes: function() {
 			if ( (this.x.node || this.x.nodes) && ! this.layout )
 				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
-		},
-		// 限制ready只触发一次。在frame中的view，layout调用render方法时会再次触发ready。理论上应该在_proto上做此限制，但出于性能考虑，目前做在这里
-		triggerAll1: function( e ) {
-			if ( e === 'ready' && this.layout )
-				return;
-			_proto.triggerAll.apply( this, arguments );
 		},
 		hasCssRes: function() {
 			var a = this.type_view && _viewResources[ this.path ];
@@ -2455,7 +2488,7 @@ Section = define.widget( 'Section', {
 				this.repaint();
 				this.layout && this.showLayout( N, re );
 			}
-			! this.layout && this.isDisplay() && this.load();
+			! this.isLoaded() && this.isDisplay() && this.load();
 		},
 		_getReplaceTargets: function( x, tar, r ) {
 			! r && (r = []);
@@ -2476,23 +2509,27 @@ Section = define.widget( 'Section', {
 					_view( this ).find( b[ i ].id ).replace( b[ i ] );
 			} else if ( this.layout ) {
 				this.showLoading( F );
-				this.layout._render();
-				re !== F && this.layout.triggerAll( 'ready' );
+				if ( !this.layout.$() ) {
+					this.layout._render();
+					re !== F && this.layout.triggerAll( 'ready' );
+				}
 				this.trigger( 'load' );
 			}
 			this.removeClass( 'z-loading' );
 		},
 		// @a -> close?
 		showLoading: function( a ) {
+			if ( this.preloadBody )
+				return this.preloadBody.showLoading( a );
 			if ( a === F ) {
 				this.removeElem( 'loading' );
-				var u = (this.isDialogWidget && this.getContentView()) || _view( this );
+				var u = _view( this );
 				_inst_hide( 'Loading', u );
 			} else {
 				if ( this.x.loading || this.layout ) {
 					this.exec( $.extend( this.x.loading || {}, { type: 'Loading' } ) );
 				} else {
-					! this.$( 'loading' ) && $.append( this.$(), this.html_loading() );
+					!this.$( 'loading' ) && $.append( this.$(), this.html_loading() );
 				}
 			}
 		},
@@ -2977,8 +3014,32 @@ EmbedWindow = define.widget( 'EmbedWindow', {
 } ),
 /* `Blank` 空面板  */
 Blank = define.widget( 'Blank', { Prototype: { className: 'w-blank' } } ),
-/* `Blank` 空面板  */
-PreloadBody = define.widget( 'PreloadBody', { Prototype: { className: 'w-preloadbody' } } ),
+/* `PreloadBody` 预加载内容面板  */
+PreloadBody = define.widget( 'PreloadBody',{
+	Const: function( x, p ) {
+		W.apply( this, arguments );
+		var u = _view( p );
+		while ( (u = u.parentNode) )
+			if( u.x.preload ) { u.preloadBody = this; break; }
+	},
+	Prototype: {
+		className: 'w-preloadbody',
+		// @a -> close?
+		showLoading: function( a ) {
+			if ( a === F ) {
+				this.removeElem( 'loading' );
+			} else {
+				!this.$( 'loading' ) && $.append( this.$(), this.html_loading() );
+			}
+		},
+		html_nodes: function() {
+			return this.html_loading();
+		},
+		html_loading: function() {
+			return Section.prototype.html_loading.call( this );
+		}
+	}
+} ),
 /* `html`
  *  支持自定义标签: <d:wg></d:wg>
  *  内容为widget配置项，例: <d:wg>{type: "button", text: "click"}</d:wg>
@@ -3447,7 +3508,7 @@ Button = define.widget( 'Button', {
 				return;
 			if ( a === 'icon' ) {
 				if ( b )
-					this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon( b ) ) : $.prepend( this.$( 'c' ), this.html_icon( b ) );
+					this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon() ) : $.prepend( this.$( 'c' ), this.html_icon() );
 				else
 					this.removeElem( 'i' );
 			} else if ( a === 'text' ) {
@@ -3568,7 +3629,7 @@ Button = define.widget( 'Button', {
 			return this.attr( 'icon', a );
 		},
 		isIconOnly: function() {
-			return this.x.text == N && ! this.x.format && this.x.icon;
+			return this.x.text == N && ! this.x.format && this.attr( 'icon' );
 		},
 		// 文本
 		text: function( a ) {
@@ -3588,8 +3649,9 @@ Button = define.widget( 'Button', {
 			if ( ! this._disposed && F !== this.trigger( 'close' ) )
 				this.remove();
 		},
-		html_icon: function( a ) {
-			return this.x.icon ? $.image( a || this.x.icon, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconWidth, height: this.x.iconHeight } ) : '';
+		html_icon: function() {
+			var c = this.attr( 'icon' );
+			return c ? $.image( c, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconWidth, height: this.x.iconHeight } ) : '';
 		},
 		html_text: function( a ) {
 			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text ) +
@@ -3600,7 +3662,7 @@ Button = define.widget( 'Button', {
 				a = '<' + g + ' id=' + this.id + ' class="', b = this.prop_cls(), c = this._combo, d, s = '', t = x.text == N ? '' : ('' + x.text),
 				io = this.isIconOnly();
 			b += x.noToggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
-			if ( x.closable || x.closeicon )
+			if ( x.closable )
 				b += ' z-x';
 			if ( io )
 				b += ' z-i';
@@ -3641,7 +3703,7 @@ Button = define.widget( 'Button', {
 			if ( x.target )
 				a += ' w-target="' + ((x.target.x && x.target.x.id) || x.target) + '"';
 			a += c ? ' onmouseover=' + eve + ' onmouseout=' + eve : _html_on.call( this, ' onclick=' + eve );
-			if ( x.tip )
+			if ( this.attr( 'tip' ) )
 				a += this.prop_title();
 			x.id && (a += ' w-id="' + x.id + '"');
 			if ( this.property )
@@ -3651,8 +3713,6 @@ Button = define.widget( 'Button', {
 				a += '<table cellpadding=0 cellspacing=0 height=100%><tr height=100%><td>';
 			if ( ! x.noToggle && this.more )
 				a += '<div class=_m id=' + this.id + 'm' + ( c ? _html_on.call( this, ' onclick=' + evw + '.drop()' ) : '' ) + '><i class="f-i f-i-caret-down"></i><i class=f-vi></i></div>';
-			if ( x.closeicon )
-				a += $.image( x.closeicon, { cls: '_x', click: evw + '.close()' } );
 			else if ( x.closable )
 				a += '<div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class="_xi">&times;</i></div>';
 			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call( this, ' onclick=' + eve ) : '' ) + '>';
@@ -3664,11 +3724,51 @@ Button = define.widget( 'Button', {
 		}
 	}
 }),
+/* `DialogCloseButton` */
+DialogCloseButton = define.widget( 'DialogCloseButton', {
+	Extend: Button,
+	Default: { icon: '.f-i-close', tip: Loc.close },
+	Listener: {
+		body: {
+			click: {
+				method: function() { !(this.x.on && this.x.on.click) && $.close( this ); }
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-button w-dialogclosebutton'
+	}
+} ),
+/* `DialogMaxButton` */
+DialogMaxButton = define.widget( 'DialogMaxButton', {
+	Extend: Button,
+	Default: { icon: '.f-i-dialog-max', tip: function() { return this.isMax() ? Loc.restore : Loc.dialog_max } },
+	Listener: {
+		body: {
+			click: {
+				method: function() {
+					if ( !(this.x.on && this.x.on.click) ) {
+						var d = Dialog.get( this );
+						d && d.max();
+						this.attrSetter( 'tip', this.attr( 'tip' ) );
+					}
+				}
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-button w-dialogmaxbutton',
+		isMax: function() {
+			var d = Dialog.get( this );
+			return d && d.isMax();
+		}
+	}
+} ),
 /* `OverflowButton` */
 OverflowButton = define.widget( 'OverflowButton', {
 	Extend: Button,
 	Prototype: {
-		className: 'w-overflowButton w-button',
+		className: 'w-button w-overflowbutton',
 		_focus: $.rt( F )
 	}
 } ),
@@ -4342,6 +4442,9 @@ DialogTitle = define.widget( 'DialogTitle', {
 		body: {
 			mouseDown: function( e ) { Dialog.get( this ).dragTitle( this, e ) }
 		}
+	},
+	Prototype: {
+		className: 'w-html w-dialogtitle'
 	}
 } ),
 _getContentView = function( a ) {
@@ -4680,8 +4783,6 @@ Dialog = define.widget( 'Dialog', {
 			var s = _proto.html_nodes.apply( this, arguments );
 			if ( ie7 )
 				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
-			if ( this.type === 'Dialog' && this.x.loadingHead !== F )
-				s += '<div class=w-dialog-loadinghead onmousedown=' + evw + '.dragTitle(this,event)><i class=f-vi></i><span class="_t f-va">' + (typeof this.x.title === _STR ? this.x.title : '') + '</span><i class="_x f-inbl" onclick=' + $.abbr + '.close(this) ' + _event_zhover + '></i></div>';
 			return s;
 		},
 		reset: function() {
@@ -4916,7 +5017,7 @@ Alert = define.widget( 'Alert', {
 		if ( t && (this._tpl = _getPreload( t )) ) {
 			var f = this.html_format( $.strFormat( x.text == N ? '' : ('' + x.text), x.args || [] ), x.format, x.escape );
 			x.escape !== F && (f = f.replace( /\n/g, '<br>' ));
-			$.extend( x, { preload: t, minWidth: 260, maxWidth: 700, maxHeight: 600, title: Loc.opertip, node: { type: 'Vert', height: '*', nodes: [
+			$.extend( x, { preload: t, minWidth: 260, maxWidth: $.numRange( 700, $.width() / 2, $.width() ), maxHeight: $.numRange( 600, $.height() * 3 / 4, $.height() ), title: Loc.opertip, node: { type: 'Vert', height: '*', nodes: [
 				{ type: 'Html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
 				$.image( x.icon ? x.icon : '.f-i-' + (a ? 'warning' : 'question'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + f + '</div></table></div>' },
 				{ type: 'ButtonBar', cls: 'z-sub-' + this.type, align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }

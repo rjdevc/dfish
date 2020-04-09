@@ -175,33 +175,6 @@ i {
     line-height: 40px;
 }
 
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button {
-    border-color: transparent;
-}
-
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button ._c {
-    padding-left: 10px;
-}
-
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button ._i {
-    padding-right: 10px;
-}
-
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.z-hv {
-    background-color: #208ff2;
-}
-
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-close.z-hv {
-    background-color: #d00;
-}
-
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.z-dn {
-    background-color: #0e80cb;
-}
-
-.w-dialog .dlg-head .w-buttonbar.dlg-head-operation .w-button.dlg-close.z-dn {
-    background-color: #e81414;
-}
 
 .w-dialog .dlg-foot {
     background-color: #f8f8f8;
@@ -302,10 +275,6 @@ i {
 
 .w-buttonbar.x-breadcrumb .w-button.z-normal.z-ds {
     color: #aaa;
-}
-
-.w-buttonbar.dlg-head-operation .w-button {
-    background: transparent;
 }
 
 .w-menu {

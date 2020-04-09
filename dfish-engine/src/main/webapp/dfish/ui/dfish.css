@@ -714,11 +714,14 @@
 .w-dialog.z-snap-32 .w-menu-line{right:-1px;top:-1px}
 .w-dialog.z-snap-14 .w-menu-line{left:-1px;bottom:-1px}
 .w-dialog.z-snap-23 .w-menu-line{right:-1px;bottom:-1px}
-.w-dialog-loadinghead{position:absolute;top:0;left:0;right:0;height:40px;}
-.w-dialog-loadinghead ._t{margin-left:10px;color:#fff}
-.w-dialog-loadinghead ._x{position:absolute;height:100%;width:40px;right:0;cursor:pointer}
-.w-dialog .w-dialog-loadinghead{display:none}
-.w-dialog.z-loading .w-dialog-loadinghead{display:block}
+
+.w-dialogclosebutton,.w-dialogmaxbutton{border:0;background:transparent}
+.w-dialogclosebutton ._c,.w-dialogmaxbutton ._c{padding-left:0}
+.w-dialogclosebutton.z-i ._i,.w-dialogmaxbutton.z-i ._i{padding-right:0}
+.w-dialogclosebutton.z-normal.z-hv{background:#d00}
+.w-dialogclosebutton.z-normal.z-dn{background:#e81414}
+.w-dialogmaxbutton.z-normal.z-hv{background:#208ff2}
+.w-dialogmaxbutton.z-normal.z-dn{background:#0e80cb}
 
 .w-menu.w-dialog{padding:3px 0;background:#fff;border:1px solid #ddd;box-shadow:none;z-index:11}
 .w-menu.z-scroll{padding:0}

@@ -1776,6 +1776,51 @@ define( {
       ] }
     ]
   },
+  "DialogCloseButton": {
+  	remark: '对话框的关闭按钮。',
+  	extend: 'Button',
+    Classes: [
+      { name: '.w-dialogclosebutton', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            { type: 'DialogCloseButton' }
+          }
+      ] }
+    ]
+  },
+  "DialogMaxButton": {
+  	remark: '对话框的最大化按钮。',
+  	extend: 'Button',
+    Classes: [
+      { name: '.w-dialogmaxbutton', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            { type: 'DialogMaxButton' }
+          }
+      ] }
+    ]
+  },
+  "DialogTitle": {
+  	remark: '对话框的标题栏。',
+  	extend: 'Html',
+    Classes: [
+      { name: '.w-dialogtitle', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	return~
+            { type: 'DialogTitle' }
+          }
+      ] }
+    ]
+  },
   "MenuButton": {
   	remark: 'Menu菜单中的按钮。',
   	extend: 'Button',

@@ -22,19 +22,11 @@ define.preload({
                             width: -1,
                             align: 'right',
                             vAlign: 'middle',
-                            pub: {height: 40, width: 40, widthMinus: 2, heightMinus: 2},
+                            pub: {height: 40, width: 40},
                             nodes: [
                                 {
-                                    tip: '最大化',
-                                    cls: 'dlg-max',
-                                    on: {click: 'app.dialog.max(this);'},
-                                    icon: '.i-dlg-max'
-                                },
-                                {
-                                    tip: '关闭',
-                                    cls: 'dlg-close',
-                                    on: {click: 'this.cmd("close");'},
-                                    icon: '.i-dlg-close'
+                                	type: 'DialogCloseButton',
+                                	on: {click: 'this.cmd("close")'}
                                 }
                             ]
                         }
