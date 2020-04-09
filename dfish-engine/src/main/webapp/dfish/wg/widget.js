@@ -5884,6 +5884,9 @@ FormGroup = define.widget( 'FormGroup', {
 			var c = _proto.prop_cls.call( this );
 			return 'w-horz w-f w-formgroup f-nv' + (this.x.br ? ' z-br' : '') + (c ? ' ' + c: '');
 		},
+		main_prop: function() {
+			return AbsForm.prototype.main_prop.call( this ) + _html_on.call( this );
+		},
 		html_nodes: function() {
 			return Horz.prototype.html_nodes.call( this );
 		}
@@ -5926,6 +5929,9 @@ Range = define.widget( 'Range', {
 		x_nodes: $.rt(),
 		form_minus:  function() {
 			return this.label ? this.label.outerWidth() : 0;
+		},
+		main_prop: function() {
+			return AbsForm.prototype.main_prop.call( this ) + _html_on.call( this );
 		},
 		scaleWidth: function( a, b ) {
 			return _w_scale.width.call( this, a, b, a == this.label ? U : this.formWidth() );
