@@ -2087,7 +2087,9 @@ Scroll = define.widget( 'Scroll', {
 			this.scrollTo( e, N, x, p, q );
 		},
 		setScroll: function() {
-			if ( ! this._scr_usable && this.$() ) {
+			if ( mbi ) {
+				this.addClass( 'f-oa' );
+			} else if ( !this._scr_usable && this.$() ) {
 				var a = $.frag( this.$() );
 				$.append( this.$(), this.html_scroll() );
 				$.append( this.$( 'cont' ), a );
