@@ -24,15 +24,14 @@ public class Button extends AbstractButton<Button> {
      * @param text    String 标题
      * @param onclick String 所触发的动作(JS)
      */
-    @Deprecated
-    public Button( String text, String onclick,String icon) {
-       super(text, onclick,icon);
+    public Button(String text, String onclick, String icon) {
+        super(text, onclick, icon);
     }
 
     /**
      * 构造函数
      *
-     * @param text String 图标
+     * @param text    String 图标
      * @param onclick String 标题
      */
     public Button(String text, String onclick) {
