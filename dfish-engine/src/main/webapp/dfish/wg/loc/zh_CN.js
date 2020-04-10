@@ -36,6 +36,8 @@ opertip	 : '操作提示',
 nodata	: '暂无数据',
 more : '更多',
 field: '字段',
+rotate_left: '向左旋转',
+rotate_right: '向右旋转',
 
 browser_upgrade : '我们发现您的IE浏览器版本过低，您的浏览体验受到影响。<br>我们强烈建议您安装新版浏览器，点击图标即可下载。',
 loading			: '正在加载..',
@@ -99,8 +101,6 @@ form : {
 	complete_required: '请完成必填项',
 	sliderjigsaw_drag_right: '向右拖动滑块填充拼图',
 	sliderjigsaw_required: '请完成滑块验证',
-	upload_loading: '正在上传，请稍候..',
-	upload_invalid_file: '存在无效文件',
 	no_files: '<没有文件>'
 },
 

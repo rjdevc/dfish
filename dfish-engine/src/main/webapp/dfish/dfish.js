@@ -2243,13 +2243,25 @@ _merge( $, {
 			_loadCss( s, d, f );
 		}
 	})(),
-	// @a -> image array, b -> id
+	// @a -> preview src, b -> download src
 	previewImage: function( a, b ) {
 		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
 		$.vm().cmd( { type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
-			node: { type: 'html', align: 'center', valign: 'middle', text: '<img src=' + a + ' style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+			node: { type: 'html', align: 'center', valign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
+				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)>' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)>' + $.loc.rotate_right + '</a></div>' +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
+	},
+	// @a -> preview src
+	previewImageRotate: function( a ) {
+		var g = Q( '._img', $.dialog( a ).$() ), r = g.data('rotate'), w = g.data('maxwidth'), h = g.data('maxheight');
+		if ( a.className == '_r' ) {
+			r = 90 + r;
+		} else
+			r = (-90) + r;
+		var t = (r/90)%2;
+		g.css({transform: 'rotate(' + r + 'deg)', maxWidth: t ? h : w, maxHeight: t ? w : h});
+		g.data('rotate', r);
 	},
 	/* ! 把range内的图片变成缩略图
 	 * @range: htmlElement
