@@ -334,16 +334,17 @@ _loadJs = function( a, b, c ) {
 _loadCss = function( a, b, c ) {
 	typeof a === _STR && (a = [ a ]);
 	var d = doc.readyState === 'loading';
-	for ( var i = 0, l = a.length, n = l, e; i < l; i ++ ) {
+	for ( var i = 0, l = a.length, n = l, e, f; i < l; i ++ ) {
+		f = _ajax_url( a[ i ] ) + _ver;
 		if ( d ) {
 			var u = b ? b[ i ] : _uid();
-			var s = '<link rel=stylesheet href="' + a[ i ] + _ver + '" id="' + u + '">';
+			var s = '<link rel=stylesheet href="' + f + '" id="' + u + '">';
 			doc.write( s );
 			e = $( u );
 		} else {
 			e = doc.createElement( 'link' );
 			e.rel  = 'stylesheet';
-			e.href = a[ i ] + _ver;
+			e.href = f;
 			b && ($.remove( b[ i ] ), e.id = b[ i ]);
 			_tags( 'head' )[ 0 ].appendChild( e );
 		}
@@ -351,7 +352,7 @@ _loadCss = function( a, b, c ) {
 			if ( (br.chm && br.chm < 19) || br.safari ) { // 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
 			    var img = doc.createElement( 'img' );
 		        img.onerror = function() { --n === 0 && c() };
-		        img.src = a[ i ] + _ver;
+		        img.src = f;
 		    } else {
 		    	e.onload = function() { --n === 0 && c() };
 		    }
@@ -2371,9 +2372,17 @@ _merge( $, {
 		}
 		a = _urlComplete( a );
 		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
-			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img src=' + a + ' class=f-va style="max-width:' + (w - 30) + 'px;max-height:' + h + 'px">' +
+			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
+				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)>' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)>' + $.loc.rotate_right + '</a></div>' +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
+	},
+	// @a -> preview src
+	previewImageRotate: function( a ) {
+		var g = Q('._img', $.dialog( a ).$()), w = g.data('maxwidth'), h = g.data('maxheight'),
+		r = (a.className == '_r' ? 90 : -90) + g.data('rotate'), t = (r / 90) % 2;
+		g.css({transform: 'rotate(' + r + 'deg)', maxWidth: t ? h : w, maxHeight: t ? w : h});
+		g.data('rotate', r);
 	},
 	/* ! 把range内的图片变成缩略图
 	 * @range: htmlElement

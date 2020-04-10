@@ -42,7 +42,7 @@
 .f-abs{position:absolute}
 .f-rel{position:relative}
 .f-thumbnail{cursor:pointer}
-.f-inbl,.f-nv,.f-nv-top,.f-nv-middle,.f-nv-bottom,.f-sub-horz{display:inline-block;*display:inline;*zoom:1}
+.f-inbl,.f-nv,.f-nv-top,.f-nv-middle,.f-nv-bottom,.f-sub-horz,.w-html-text{display:inline-block;*display:inline;*zoom:1}
 .f-sub-horz.z-htmn{float:left;*display:normal}
 .f-sub-horz,.f-sub-vert{vertical-align:top}
 .f-sub-horz{white-space:normal;*white-space:nowrap}
@@ -113,6 +113,10 @@
 .f-dialog-preview ._dlg_x{position:absolute;top:-18px;right:-18px;width:36px;height:36px;background:url(g/i.png) no-repeat 0 -187px;cursor:pointer}
 .f-dialog-preview ._dlg_x:hover{background-position:0 -228px}
 .f-dialog-preview ._origin{position:absolute;top:10px;right:25px;color:#fff;padding:5px 10px;background:rgba(74,74,74,0.6);border-radius:3px}
+.f-dialog-preview ._rotate{position:absolute;top:0px;left:0;right:0;margin:0 auto;height:40px;line-height:40px}
+.f-dialog-preview ._rotate a{color:#eee;cursor:pointer}
+.f-dialog-preview ._rotate ._s{margin:0 10px;color:#999}
+.f-dialog-preview ._img{margin:0 40px}
 
 .w-loading{padding:10px 15px;border:1px solid #ddd;background:#fcfcfc;text-align:center}
 .w-view-loading{width:100%;height:100%;text-align:center}
@@ -229,6 +233,7 @@
 .w-leaf.z-line .w-leaf-o .f-i-plus-squre{background-position:-111px -180px;margin-left:0}
 .w-leaf.z-line .w-leaf-o .f-i-minus-squre{*margin-top:0}
 .w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}
+.w-leaf-node .w-html-text{display:inline}
 .w-leaf.w-table-leaf{height:auto}
 .w-leaf.z-ds{color:#999}
 .w-leaf.z-ds .w-leaf-o,.w-leaf.z-ds .w-leaf-t{cursor:default}
@@ -452,7 +457,7 @@
 .w-numberbox .f-boxbtn{position:relative;z-index:1;width:26px;color:#999;border:1px solid #ddd;text-align:center;font-style:normal;font-size:24px;line-height:1.1}
 .w-numberbox .f-boxbtn.z-hv{border-color:#2498ff;color:#2498ff}
 .w-numberbox.z-ds .f-boxbtn{background:#e6e6e6;color:#ccc}
-.w-numberbox .w-f-main.z-auto{width:140px}
+.w-numberbox .w-f-main.z-auto{width:126px}
 
 .w-slider ._t{position:relative;height:6px;margin:2px 0;background:#e6e6e6;border-radius:6px}
 .w-slider ._track{position:absolute;height:6px;background:#2498ff;border-radius:6px;}
@@ -753,7 +758,6 @@
 .w-menu-button.z-hv,.w-menu-button.z-drop,.w-menu ._ar.z-us:hover{background:#f8f8f8}
 
 .w-tip.w-dialog{border:1px solid #2498ff;background:#f5faff;box-shadow:0 0 4px #d9d9d9;z-index:11}
-.w-tip .w-html-text{display:inline-block}
 .w-tip .w-tip-x{position:absolute;right:3px;top:3px;padding:0 3px;cursor:pointer}
 .w-tip .f-i-close{font-size:12px;color:#999}
 .w-tip .w-dialog-prong.z-b ._in{border-top-color:#f5faff}

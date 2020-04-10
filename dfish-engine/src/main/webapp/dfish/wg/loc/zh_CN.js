@@ -38,6 +38,8 @@ more 	: '更多',
 field	: '字段',
 close	: '关闭',
 restore	: '还原',
+rotate_left: '向左旋转',
+rotate_right: '向右旋转',
 dialog_max	: '最大化',
 dialog_min	: '最小化',
 

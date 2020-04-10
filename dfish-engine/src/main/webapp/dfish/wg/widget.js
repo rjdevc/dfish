@@ -2232,6 +2232,23 @@ AbsSection = define.widget( 'AbsSection', {
 		init_x: function( x ) {
 			this._init_x( x );
 		},
+		init_preload: function() {
+			var x = this.x, t = x.preload && _getPreload( x.preload );
+			if ( t ) {
+				if ( this.preload_x ) {
+					this.x = x = $.extend( {}, this.preload_x );
+				} else {
+					this.preload_x = $.extend( {}, x );
+				}
+				if ( x.node ) {
+					var n = _compilePreloadConfig( x.preload, x.node );
+					n && $.merge( x, n );
+				} else {
+					$.extendDeep( x, t );
+					this.className += ' z-loading';
+				}
+			}
+		},
 		getSrc: function() {
 			var u = this._runtime_src; 
 			if ( ! u ) {
@@ -2419,21 +2436,6 @@ Section = define.widget( 'Section', {
 			}
 			this._x_ini = T;
 		},
-		init_preload: function() {
-			var x = this.x, t = x.preload && _getPreload( x.preload, T );
-			if ( t ) {
-				/*for ( var k in t ) {
-					!(k in x) && k !== 'node' && k !== 'nodes' && (x[ k ] = t[ k ]);
-				}*/
-				if ( x.node ) {
-					var n = _compilePreloadConfig( x.preload, x.node );
-					n && $.merge( x, n );
-				} else {
-					$.extendDeep( x, t );
-					this.className += ' z-loading';
-				}
-			}
-		},
 		isLoaded: function() {
 			return !this.preloadBody && this.layout;
 		},
@@ -2495,8 +2497,9 @@ Section = define.widget( 'Section', {
 		},
 		// @a -> close?
 		showLoading: function( a ) {
+			this.addClass( 'z-loading', a );
 			if ( this.preloadBody )
-				return this.preloadBody.showLoading( a );
+				return;
 			if ( a === F ) {
 				this.removeElem( 'loading' );
 				var u = _view( this );
