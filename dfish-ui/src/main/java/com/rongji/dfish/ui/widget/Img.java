@@ -19,13 +19,13 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
      */
     private static final long serialVersionUID = 672057364742087182L;
     /**
-     * 默认皮肤
+     * 图片文字排列方向-水平
      */
-    public static final String FACE_NONE = "none";
+    public static final String DIR_HORIZONTAL = "h";
     /**
-     * 当 album face="straight" 时会显示说明(description)。
+     * 图片文字排列方向-垂直(默认值)
      */
-    public static final String FACE_STRAIGHT = "straight";
+    public static final String DIR_VERTICAL = "v";
 
     private AbstractBox box;
     private Boolean br;
@@ -38,7 +38,7 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
     private Object tip;
     private String description;
     private Integer textWidth;
-    private String face;
+    private String dir;
     private String imgWidth;
     private String imgHeight;
     private String format;
@@ -312,22 +312,22 @@ public class Img extends AbstractWidget<Img> implements Alignable<Img>, VAlignab
     }
 
     /**
-     * 图片展现方式。可选值: "none","straight"。默认值为"none"。
+     * 图片文字排列方向(水平或垂直)
      *
      * @return String
      */
-    public String getFace() {
-        return face;
+    public String getDir() {
+        return dir;
     }
 
     /**
-     * 图片展现方式。可选值: "none","straight"。默认值为"none"。
+     * 图片文字排列方向(水平或垂直)
      *
-     * @param face String
+     * @param dir String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Img setFace(String face) {
-        this.face = face;
+    public Img setDir(String dir) {
+        this.dir = dir;
         return this;
     }
 

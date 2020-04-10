@@ -29,6 +29,14 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
      * 状态-禁用
      */
     public static final String STATUS_DISABLED = "disabled";
+    /**
+     * 图片文字排列方向-水平(默认值)
+     */
+    public static final String DIR_HORIZONTAL = "h";
+    /**
+     * 图片文字排列方向-垂直
+     */
+    public static final String DIR_VERTICAL = "v";
 
     /**
      * 默认构造函数
@@ -53,6 +61,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     protected Boolean escape;
     protected String format;
     protected Object badge;
+    protected String dir;
 
     /**
      * 是否有关闭图标。
@@ -433,6 +442,24 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     @Override
     public T setBadge(Badge badge) {
         this.badge = badge;
+        return (T) this;
+    }
+
+    /**
+     * 图片文字排列方向(水平或垂直)
+     * @return String
+     */
+    public String getDir() {
+        return dir;
+    }
+
+    /**
+     * 图片文字排列方向(水平或垂直)
+     * @param dir String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public T setDir(String dir) {
+        this.dir = dir;
         return (T) this;
     }
 }
