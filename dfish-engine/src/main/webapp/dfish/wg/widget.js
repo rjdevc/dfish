@@ -736,6 +736,7 @@ W = define( 'Widget', function() {
 		x_childtype: function( t ) {
 			return t;
 		},
+		init_x_cls: $.rt(),
 		// @implement
 		init_x_pub: function( x ) {
 			var r = this.rootNode;
@@ -763,6 +764,7 @@ W = define( 'Widget', function() {
 					}
 				}
 			}
+			this.init_x_cls();
 			!x.ownproperty && $.extendDeep( x, this.getDefaultOption( x.cls ) );
 		},
 		init_x: function( x ) {
@@ -791,7 +793,7 @@ W = define( 'Widget', function() {
 						if ( x.type && x.type !== this.type )
 							x = { type: this.type, node: x };
 						var k, _x = this.prior_x || {};
-						for ( k in x ) {;
+						for ( k in x ) {
 							if ( !(k in _x) ) this.attr( k, x[ k ] );
 						}
 						this.init_nodes();
@@ -1542,8 +1544,6 @@ W = define( 'Widget', function() {
 	}
 	} );
 } ),
-// 模板内容
-PreloadBody = define.widget( 'PreloadBody', {} ),
 
 _proto   = W.prototype,
 _w_scale = {},
@@ -2344,6 +2344,11 @@ AbsSection = define.widget( 'AbsSection', {
 			tpl && (this.x.template = tpl);
 			this.reset( tar );
 			if ( this.$() ) {
+				if ( !tar && this.x.preload ) {
+					this.init_preload();
+					this.init_nodes();
+					this.showLayout( F );
+				}
 				var s = this.getSrc();
 				typeof s === _STR ? this.load( tar, fn, T ) : this.srcData( s || {}, tar );
 			} else {
@@ -2401,19 +2406,7 @@ Section = define.widget( 'Section', {
 			if ( ! x.node && ! this.isDisplay() )
 				return;
 			_proto._init_x.call( this, x );
-			var t = x.preload && _getPreload( x.preload, T );
-			if ( t ) {
-				/*for ( var k in t ) {
-					!(k in x) && k !== 'node' && k !== 'nodes' && (x[ k ] = t[ k ]);
-				}*/
-				if ( x.node ) {
-					var n = _compilePreloadConfig( x.preload, x.node );
-					n && $.merge( x, n );
-				} else {
-					$.extendDeep( x, t );
-					this.className += ' z-loading';
-				}
-			}
+			this.init_preload();
 			if ( this.domready && this.x.id ) {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
 			}
@@ -2426,13 +2419,31 @@ Section = define.widget( 'Section', {
 			}
 			this._x_ini = T;
 		},
+		init_preload: function() {
+			var x = this.x, t = x.preload && _getPreload( x.preload, T );
+			if ( t ) {
+				/*for ( var k in t ) {
+					!(k in x) && k !== 'node' && k !== 'nodes' && (x[ k ] = t[ k ]);
+				}*/
+				if ( x.node ) {
+					var n = _compilePreloadConfig( x.preload, x.node );
+					n && $.merge( x, n );
+				} else {
+					$.extendDeep( x, t );
+					this.className += ' z-loading';
+				}
+			}
+		},
 		isLoaded: function() {
 			return !this.preloadBody && this.layout;
 		},
 		// @implement
 		init_nodes: function() {
 			if ( this.x.node || this.x.nodes ) {
-				this.layout && this.layout.remove();
+				if ( this.layout ) {
+					this.layout.remove();
+					this.preloadBody && (this.preloadBody = N);
+				}
 				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
 			}
 		},
@@ -3291,8 +3302,10 @@ ButtonBar = define.widget( 'ButtonBar', {
 		x_childtype: function( t ) {
 			return t === 'Split' ? 'ButtonSplit' : (t || 'Button');
 		},
-		scaleWidth: function() {
-			return (this.x.dir === 'v' || this.x.nobr === F ? _proto.scaleWidth : _w_scale.width).apply( this, arguments );
+		scaleWidth: function( a, b ) {
+			if ( this.x.dir === 'v' )
+				return _proto.scaleWidth.call( this, a, b );
+			return _w_scale.width.call( this, a, b, this.innerWidth() - (this.length - 1) * (this.x.space || 0) );
 		},
 		// @a -> name
 		getFocus: function( a ) {
@@ -3442,6 +3455,9 @@ Button = define.widget( 'Button', {
 		className: 'w-button',
 		_menu_snapType: 'v',
 		_menu_type: 'Menu',
+		init_x_cls: function() {
+			this.x.dir && (this.className += ' z-dir-' + this.x.dir);
+		},
 		// @implement
 		init_nodes: function() {
 			this.setMore( this.x );
@@ -3955,7 +3971,9 @@ Album = define.widget( 'Album', {
 	Prototype: {
 		className: 'w-album',
 		x_childtype: $.rt( 'Img' ),
-		scaleWidth: _proto.scaleWidth,
+		scaleWidth: function() {
+			return ButtonBar.prototype.scaleWidth.apply( this, arguments );
+		},
 		getFocus: function() {
 			for ( var i = 0; i < this.length; i ++ )
 				if ( this[ i ].isFocus() ) return this[ i ];
@@ -3975,7 +3993,7 @@ Album = define.widget( 'Album', {
 Img = define.widget( 'Img', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
-		x.face && (this.className += ' z-face-' + x.face);
+		x.dir && (this.className += ' z-dir-' + x.dir);
 		x.focus && (this.className += ' z-on');
 		x.badge && this.init_badge();
 		p.type === this.rootType && this.defaults( { width: -1, height: -1 } );
@@ -4057,7 +4075,7 @@ Img = define.widget( 'Img', {
 				t += 'width:' + v + 'px;';
 			if ( (v = this.innerHeight()) != N )
 				t += 'height:' + v + 'px;';
-			c && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
+			c && this.nodeIndex !== this.parentNode.length -1 && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
 			this.x.style && (t += this.x.style);
 			return t;
 		},
@@ -4066,7 +4084,7 @@ Img = define.widget( 'Img', {
 		},
 		html_img: function( t ) {
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call( this, this.x.src ),
-				iw = this.x.imgWidth, ih = this.x.imgHeight, w = iw || (this.x.face === 'straight' ? N : mw), h = ih || mh;
+				iw = this.x.imgWidth, ih = this.x.imgHeight, w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh;
 			var g = $.image( u, { width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()' }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
 		},
@@ -7667,7 +7685,7 @@ Jigsaw = define.widget( 'Jigsaw', {
 			var d = this.img.getResult();
 			if ( ! d._date )
 				d._date = { "_date": new Date().getTime() };
-			return '<img class=_big src=' + $.urlParam( d.big.src, d._date ) + ' width=100% height=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( d.small.src, d._date ) +
+			return '<img class=_big src=' + $.urlParam( $.ajaxUrl( d.big.src ), d._date ) + ' width=100% height=100% ondragstart=return(!1)><img class=_small src=' + $.urlParam( $.ajaxUrl( d.small.src ), d._date ) +
 				' width=' + this.smallWidth() + ' height=100% ' + ev_down + abbr( this ) + '.dragSmall(event) ondragstart=return(!1)><span onclick=' + abbr( this ) + '.reload(true) class=_ref>' + Loc.refresh + '</span>';
 		},
 		html_placeholder: function() {

@@ -1577,7 +1577,7 @@ $.droppable = function( a, b ) {
 
 var
 _ajax_url = $.ajaxUrl = function( a, b ) {
-	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + a;
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + _urlLoc( _path, a );
 },
 _ajax_xhr = (function() {
 	var a = function() { return new XMLHttpRequest() },
@@ -1959,8 +1959,8 @@ var boot = {
 		if ( noGlobal || _cfg.noConflict ) {
 			(Date.$ = $).abbr = 'Date.$';
 		}
-		var _define  = new Define( _path ),
-			_require = new Require( _path ),
+		var _define  = new Define( _dftPath ),
+			_require = new Require( _dftPath ),
 			_wg_lib  = _urlLoc( _path, _lib ) + 'wg/',
 			_loc     = _require( _wg_lib + 'loc/' + (_cfg.lang || 'zh_CN') ),
 			_jq      = _loc && _require( _wg_lib + 'jquery/jquery' + (br.mobile ? '-mobile' : '') );
@@ -2099,7 +2099,7 @@ _merge( $, {
 		boot.ready( a );
 	},
 	use: function( a ) {
-		return (new Require( _path || '' ))( a );
+		return (new Require( _dftPath || '' ))( a );
 	},
 	rt: function( a ) {
 		return function() { return a };

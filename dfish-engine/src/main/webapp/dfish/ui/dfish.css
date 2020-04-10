@@ -618,9 +618,9 @@
 .w-img .w-img-t{text-align:center;margin-top:10px}
 .w-img .w-img-d{color:gray;line-height:2}
 .w-img .w-img-i{position:relative;text-align:center;vertical-align:middle}
-.w-img.z-face-straight{text-align:left}
-.w-img.z-face-straight .w-img-t{padding-left:10px;margin-top:0;display:inline-block;text-align:left;vertical-align:middle;*display:inline;*zoom:1}
-.w-img.z-face-straight .w-img-s{font-size:14px;line-height:2}
+.w-img.z-dir-h{text-align:left;white-space:nowrap}
+.w-img.z-dir-h .w-img-t{padding-left:10px;margin-top:0;display:inline-block;text-align:left;vertical-align:middle;*display:inline;*zoom:1}
+.w-img.z-dir-h .w-img-s{font-size:14px;line-height:2}
 .w-img-box{display:none;position:absolute;top:3px;left:3px}
 .w-img-box.w-checkbox{padding:0}
 .w-img.z-hv .w-img-box,.w-img.z-on .w-img-box{display:inline-block}
@@ -672,6 +672,10 @@
 .w-button .w-badge,.w-tab .w-badge{position:relative;margin-left:5px;top:-1px;*top:-6px}
 .w-button .w-badge.z-t,.w-tab .w-badge.z-t{top:2px}
 .w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute;top:2px}
+.w-button.z-dir-v,.w-tab.z-dir-v{border:0;height:auto}
+.w-button.z-dir-v ._c,.w-tab.z-dir-v ._c{padding-top:5px;padding-bottom:5px}
+.w-button.z-dir-v ._i,.w-tab.z-dir-v ._i{float:none}
+
 .w-button-split{vertical-align:middle;text-align:center}
 
 .w-tabbar{background:#f8f8f8}

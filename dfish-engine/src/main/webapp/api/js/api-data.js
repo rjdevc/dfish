@@ -1637,6 +1637,7 @@ define( {
     Config: [
       { name: 'badge', type: 'Boolean | String | Badge', remark: '显示徽标。' },
       { name: 'closable', type: 'Boolean', remark: '是否有关闭图标。' },
+      { name: 'dir', type: 'String', remark: '图片展现方式。可选值: <b>h</b>, <b>v</b>。默认值为h' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'focus', type: 'Boolean', remark: '是否焦点模式。' },
@@ -3204,7 +3205,7 @@ define( {
       ] },
       { name: 'description', type: 'String', remark: '图片说明。当 album face="straight" 时会显示说明。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
-      { name: 'face', type: 'String', remark: '图片展现方式。可选值: <b>none</b>, <b>straight</b>。' },
+      { name: 'dir', type: 'String', remark: '图片展现方式。可选值: <b>h</b>, <b>v</b>。默认值为v' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'imgWidth', type: 'Number | String', remark: '图片宽度。' },
