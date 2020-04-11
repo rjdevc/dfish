@@ -2376,19 +2376,24 @@ AbsSection = define.widget( 'AbsSection', {
 		},
 		reload: function( src, tpl, tar, fn ) {
 			this._runtime_src = src;
-			src && (this.x.src = src);
-			tpl && (this.x.template = tpl);
+			var y = {};
+			src && (y.src = src);
+			tpl && (y.template = tpl);
+			$.merge( this.x, y );
 			this.reset( tar );
 			if ( this.$() ) {
-				if ( !tar && this.x.preload ) {
-					if ( this.owner_x )
-						this.x = $.extend( {}, this.owner_x );
-					this.init_preload();
-					this.init_nodes();
-					this.showLayout( F );
-				}
 				var s = this.getSrc();
-				typeof s === _STR ? this.load( tar, fn, T ) : this.srcData( s || {}, tar );
+				if ( typeof s === _STR ) {
+					if ( !tar && this.x.preload ) {
+						if ( this.owner_x )
+							this.x = $.extend( {}, y, this.owner_x );
+						this.init_preload();
+						this.init_nodes();
+						this.showLayout( F );
+					}
+					this.load( tar, fn, T );
+				} else
+					this.srcData( s || {}, tar );
 			} else {
 				this.show();
 				! this.loading && this.load( tar, fn, T );
