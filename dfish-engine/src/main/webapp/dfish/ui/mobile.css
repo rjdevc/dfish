@@ -32,6 +32,8 @@
 .w-calendar-head{height:40px;line-height:40px}
 .w-calendar ._t,.w-calendar ._y,.w-calendar ._m{height:100%;vertical-align:middle;cursor:pointer}
 
+.w-button{height:38px}
+
 .w-input{height:38px}
 .w-input ._t{height:38px;line-height:38px}
 
@@ -71,6 +73,13 @@
 
 .w-dialog-cover{opacity:.6}
 
+.w-alert.w-dialog{border-top:2px solid #2498ff}
+.w-alert .w-button{background:transparent;color:#333;border-color:transparent;border-top-color:#ddd}
+.w-alert-content{padding:10px}
+.w-alert-table{margin-left:0}
+.w-alert-text{padding:0 10px;font-size:16px;color:#2498ff}
+.w-alert ._ico{color:#e0e0e0}
+.w-confirm .w-submitbutton{border-left-color:#ddd}
 /*
 .f-i-back,.f-i-upload,.f-i-trash,.f-i-plus{background:none}
 .f-i-back:before{content:'\e471';}

@@ -5022,10 +5022,12 @@ Alert = define.widget( 'Alert', {
 		if ( t && (this._tpl = _getPreload( t )) ) {
 			var f = this.html_format( $.strFormat( x.text == N ? '' : ('' + x.text), x.args || [] ), x.format, x.escape );
 			x.escape !== F && (f = f.replace( /\n/g, '<br>' ));
-			$.extend( x, { preload: t, minWidth: 260, maxWidth: $.numRange( 700, $.width() / 2, $.width() ), maxHeight: $.numRange( 600, $.height() * 3 / 4, $.height() ), title: Loc.opertip, node: { type: 'Vert', height: '*', nodes: [
-				{ type: 'Html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr><td align=center valign=top>' +
-				$.image( x.icon ? x.icon : '.f-i-' + (a ? 'warning' : 'question'), { cls: 'w-alert-icon' } ) + '<td><div class=w-alert-text>' + f + '</div></table></div>' },
-				{ type: 'ButtonBar', cls: 'z-sub-' + this.type, align: 'center', height: 60, space: 10, nodes: d || (a ? [ b ] : [ b, c ]) }
+			$.extend( x, { preload: t, minWidth: mbi ? 180 : 260, maxWidth: $.numRange( 700, $.width() / 2, $.width() ), maxHeight: $.numRange( 600, $.height() * 3 / 4, $.height() ), 
+				//移动端要-6的widthMinus,否则文本会换行,尚未搞清楚原因
+				widthMinus: mbi ? -6 : 0, title: Loc.opertip, node: { type: 'Vert', height: '*', nodes: [
+				{ type: 'Html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr>' +
+				'<td align=center valign=top>' + $.image( x.icon ? x.icon : '.f-i-' + (a ? 'warning' : 'question'), { cls: 'w-alert-icon' } ) + '<td class=w-alert-td><div class=w-alert-text>' + f + '</div></table></div>' },
+				{ type: 'ButtonBar', cls: 'z-sub-' + this.type, align: 'center', height: mbi ? 40 : 60, space: mbi ? 0 : 10, pub: mbi && { width: '*' }, nodes: d || (a ? [b] : mbi ? [c, b] : [b, c]) }
 			] } } );
 		}
 		(x.yes || x.no) && this.addEventOnce( 'close', function() {
@@ -5057,7 +5059,10 @@ Alert = define.widget( 'Alert', {
 } ),
 /*  `confirm`  */
 Confirm = define.widget( 'Confirm', {
-	Extend: Alert
+	Extend: Alert,
+	Prototype: {
+		className: 'w-dialog w-alert w-confirm',
+	}
 } ),
 _instCache = {},
 // 唯一实例 /@a -> widget, b -> owner widget?
