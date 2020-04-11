@@ -126,6 +126,9 @@ _view = function( a ) {
 	}
 	return _docView;
 },
+_contentView = function( a ) {
+	return (a.getContentView && a.getContentView()) || _view( a );
+},
 _vmByElem = function ( o ) {
 	var p = _widget( o );
 	if( p ) {
@@ -748,24 +751,25 @@ W = define( 'Widget', function() {
 			if ( this.nodeIndex > -1 ) {
 				this.init_x_pub( x );
 			}
-			if ( this.x.template ) {
-				var t = _getTemplate( this.x.template, T );
+			if ( x.template ) {
+				var t = _getTemplate( x.template, T );
 				if ( t ) {
 					if ( !t.type || t.type === this.type ) {
-						// prior_x 是优先的，不可被template重写的属性
-						this.prior_x = $.extend( {}, x );
 						for ( var k in t ) {
 							if ( k.charAt( 0 ) !== '@' && !(k in x) && !_init_ignore[ k ] ) {
 								x[ k ] = t[ k ];
 							}
 						}
 					} else if ( t.type && !W.isCmd( t ) ) {
-						$.alert( Loc.ps( Loc.debug.error_template_type, this.x.template, this.type ) );
+						$.alert( Loc.ps( Loc.debug.error_template_type, x.template, this.type ) );
 					}
 				}
 			}
 			this.init_x_cls();
 			!x.ownproperty && $.extendDeep( x, this.getDefaultOption( x.cls ) );
+			// owner_x 是优先的，不可被template重写的属性
+			if ( !this.owner_x && (x.template || x.preload) )
+				this.owner_x = $.extend( {}, x );
 		},
 		init_x: function( x ) {
 			this._init_x( x );
@@ -792,7 +796,7 @@ W = define( 'Widget', function() {
 					if ( x ) {
 						if ( x.type && x.type !== this.type )
 							x = { type: this.type, node: x };
-						var k, _x = this.prior_x || {};
+						var k, _x = this.owner_x || {};
 						for ( k in x ) {
 							if ( !(k in _x) ) this.attr( k, x[ k ] );
 						}
@@ -2222,6 +2226,24 @@ Scroll = define.widget( 'Scroll', {
 		}
 	}
 } ),
+_childName = 'node,target'.split(','),
+_childNames = 'nodes,hiddens'.split(','),
+_getReplaceTargets = function( x, tar, r ) {
+	! r && (r = []);
+	if ( x.id && $.idsAny( tar, x.id ) )
+		r.push( x );
+	else {
+		for ( var i = 0, b; i < _childName.length; i ++ )
+			(b = x[ _childName[ i ] ]) && _getReplaceTargets( b, tar, r );
+		for ( i = 0; i < _childNames.length; i ++ ) {
+			if ( b = x[ _childNames[ i ] ] ) {
+				for ( var j = 0, l = b.length; j < l; j ++ )
+					_getReplaceTargets( b[ j ], tar, r );
+			}
+		}
+	}
+	return r;
+},
 /* `AbsSection` */
 AbsSection = define.widget( 'AbsSection', {
 	Const: function( x, p, n ) {
@@ -2237,11 +2259,6 @@ AbsSection = define.widget( 'AbsSection', {
 		init_preload: function() {
 			var x = this.x, t = x.preload && _getPreload( x.preload );
 			if ( t ) {
-				if ( this.preload_x ) {
-					this.x = x = $.extend( {}, this.preload_x );
-				} else {
-					this.preload_x = $.extend( {}, x );
-				}
 				if ( x.node ) {
 					var n = _compilePreloadConfig( x.preload, x.node );
 					n && $.merge( x, n );
@@ -2261,7 +2278,7 @@ AbsSection = define.widget( 'AbsSection', {
 				}
 				!u && (u = this.attr( 'src' ));
 			}
-			u && this.x.args && (u = this.formatStr( u, this.x.args, T ));
+			u && typeof u === _STR && this.x.args && (u = this.formatStr( u, this.x.args, T ));
 			return u;
 		},
 		getSrcFilter: function() {
@@ -2364,6 +2381,8 @@ AbsSection = define.widget( 'AbsSection', {
 			this.reset( tar );
 			if ( this.$() ) {
 				if ( !tar && this.x.preload ) {
+					if ( this.owner_x )
+						this.x = $.extend( {}, this.owner_x );
 					this.init_preload();
 					this.init_nodes();
 					this.showLayout( F );
@@ -2443,12 +2462,13 @@ Section = define.widget( 'Section', {
 		},
 		// @implement
 		init_nodes: function() {
-			if ( this.x.node || this.x.nodes ) {
-				if ( this.layout ) {
+			if ( (this.x.node || this.x.nodes) ) {
+				if ( this.preloadBody ) {
 					this.layout.remove();
-					this.preloadBody && (this.preloadBody = N);
+					this.preloadBody = this.layout = N;
 				}
-				this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
+				if ( !this.layout )
+					this.layout = new Layout( this.x.node ? { node: this.x.node } : { nodes: this.x.nodes }, this );
 			}
 		},
 		hasCssRes: function() {
@@ -2472,23 +2492,11 @@ Section = define.widget( 'Section', {
 			}
 			! this.isLoaded() && this.isDisplay() && this.load();
 		},
-		_getReplaceTargets: function( x, tar, r ) {
-			! r && (r = []);
-			if ( x.id && $.idsAny( tar, x.id ) )
-				r.push( x );
-			else if ( x.node )
-				this._getReplaceTargets( x.node, tar, r );
-			else if ( x.nodes ) {
-				for ( var i = 0, l = x.nodes.length; i < l; i ++ )
-					this._getReplaceTargets( x.nodes[ i ], tar, r );
-			}
-			return r;
-		},
 		// tar -> 目标ID, re -> ready event?
 		showLayout: function( tar, re ) {
 			if ( tar ) {
-				for ( var i = 0, b = this._getReplaceTargets( this.x.node, tar ); i < b.length; i ++ )
-					_view( this ).find( b[ i ].id ).replace( b[ i ] );
+				for ( var i = 0, b = _getReplaceTargets( this.x.node, tar ), c = _contentView( this ); i < b.length; i ++ )
+					c.find( b[ i ].id ).replace( b[ i ] );
 			} else if ( this.layout ) {
 				this.showLoading( F );
 				this.layout._render();
@@ -2538,6 +2546,14 @@ _setParent = function( a ) {
 	this.parent && _setPath.call( this, a );
 	this.parent = a;
 	this.x && _regIdName.call( this, a );
+},
+// 返回数组 /@a -> id
+findIDs = function( a ) {
+	if ( typeof a === _STR )
+		a = a.split( ',' );
+	for ( var i = 0, c, r = []; i < a.length; i ++ )
+		(c = this.find( a[ i ] )) && r.push( c );
+	return r;
 },
 _viewResources = cfg.viewResources || {},
 /* `layout` 用于连接父节点和可装载的子节点 */
@@ -2603,14 +2619,6 @@ View = define.widget( 'View', {
 		// 根据ID获取wg /@a -> id
 		find: function( a ) {
 			return this.widgets[ a ] || this.views[ a ];
-		},
-		// 返回数组 /@a -> id
-		findAll: function( a ) {
-			if ( typeof a === _STR )
-				a = a.split( ',' );
-			for ( var i = 0, c, r = []; i < a.length; i ++ )
-				(c = this.find( a[ i ] )) && r.push( c );
-			return r;
 		},
 		// 获取表单 /@a -> name, b -> range?(elem|widget)
 		f: function( a, b ) {
@@ -3553,7 +3561,7 @@ Button = define.widget( 'Button', {
 			}
 		},
 		_ustag: function() {
-			for ( var i = 0, b = this.ownerView.findAll( this.x.target ); i < b.length; i ++ ) {
+			for ( var i = 0, b = findIDs.call( this.ownerView, this.x.target ); i < b.length; i ++ ) {
 				b[ i ].parentNode.type_frame && b[ i ].parentNode.focus( b[ i ] );
 			}
 		},
@@ -4775,9 +4783,11 @@ Dialog = define.widget( 'Dialog', {
 				s = '<table cellpadding=0 cellspacing=0 border=0><tr><td id=' + this.id + 'cont>' + s + '</td></tr></table>';
 			return s;
 		},
-		reset: function() {
-			delete this.contentView;
-			Section.prototype.reset.call( this );
+		reset: function( tar ) {
+			Section.prototype.reset.apply( this, arguments );
+			if ( !tar ) {
+				delete this.contentView;
+			}
 		},
 		render: function() {
 			if ( this._disposed )
@@ -6359,7 +6369,7 @@ CheckBox = define.widget( 'CheckBox', {
 			return this.$();
 		},
 		_ustag: function( a ) {
-			var b = this.x.target.isWidget ? [ this.x.target ] : this.ownerView.findAll( this.x.target );
+			var b = this.x.target.isWidget ? [ this.x.target ] : findIDs.call( this.ownerView, this.x.target );
 			for ( var i = 0, c; i < b.length; i ++ ) {
 				for ( var j = 0, c = this.ownerView.fAll( '*', b[ i ] ); j < c.length; j ++ )
 					c[ j ].disable( ! this.isChecked() );
