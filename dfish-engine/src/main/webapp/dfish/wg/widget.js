@@ -9150,7 +9150,6 @@ OnlineBox = define.widget( 'OnlineBox', {
 							return _enter_submit( k, this );
 						//IE中文输入法回车，会触发两次keyup，目前暂时用时间戳解决
 						if ( k === 13 && e.timeStamp ) {
-							console.log(this.cursorText()+';'+this._query_text);
 							if ( e.timeStamp - _enter_timestamp < 10 )
 								return;
 							_enter_timestamp = e.timeStamp;
