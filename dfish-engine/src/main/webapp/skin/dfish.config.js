@@ -69,20 +69,24 @@ dfish.config({
         'Form.x-form4': {pub: {colSpan: 3}},
 
         'Label': {width: 120},
+        'Label.z-type-password': {vAlign: 'top'},
+        'Label.z-type-textarea': {vAlign: 'top'},
+        'Label.z-type-fileupload': {vAlign: 'top'},
+
         'Textarea': {height: 100},
         'DatePicker': {format: 'yyyy-mm-dd'},
         'Spinner': {step: 10, decimal: 0, validate: {minValue: 1, maxValue: 9999999999999999}},
         // 'Combo': {keepShow: true},
         'Slider': {tip: true},
         'Jigsaw': {
-            img: {type: 'JigsawImg', template: 'jigsaw/img'},
-            auth: {type: 'JigsawAuth', template: 'jigsaw/auth'}
+            img: {type: 'JigsawImg', template: 'g/jigsaw/img'},
+            auth: {type: 'JigsawAuth', template: 'g/jigsaw/auth'}
         },
         'FileUpload': {
             minFileSize: '1B',
             maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
-            post: {type: 'UploadPost', template: 'upload/post'},
+            post: {type: 'UploadPost', template: 'g/upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             fileTypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
             uploadButtons: [{type: 'UploadButton', text: '选择文件', icon: '.f-i-upload'}]
@@ -91,7 +95,7 @@ dfish.config({
             minFileSize: '1B',
             maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
-            post: {type: 'UploadPost', src: 'file/upload/image?scheme=$scheme', template: 'upload/post'},
+            post: {type: 'UploadPost', src: 'file/upload/image?scheme=$scheme', template: 'g/upload/post'},
             download: 'file/download?fileId=$id&scheme=$scheme',
             thumbnail: 'file/thumbnail?fileId=$id&scheme=$scheme',
             preview: {type: 'JS', text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'},
