@@ -4199,9 +4199,9 @@ Toggle = define.widget( 'Toggle', {
 	}
 } ),
 /* `pagebar`
- *  @target: 指向另一个widget，点击页数时让这个widget执行 .page() 方法。如果设定了此参数，那么 currentPage sumPage 等参数都从这个widget里读取
+ *  @target: 指向另一个widget，点击页数时让这个widget执行 .page() 方法。如果设定了此参数，那么 offset size 等参数都从这个widget里读取
  *  @src: 带$0的url, 点击页数时把$0替换为页数并执行ajax命令
- *  @sumPage: 总页数
+ *  @size: 总页数
  *  @noFirstLast: 不显示"首页"和"尾页"
  *  @jump: 显示跳转输入框
  *  @buttonCount: 中间有几个显示页数的按钮
@@ -4213,9 +4213,9 @@ PageBar = define.widget( 'PageBar', {
 		this.className += ' z-face-' + this.face;
 		x.transparent && (this.className += ' z-trans');
 		W.apply( this, arguments );
-		!x.currentPage && (x.currentPage = 1);
-		x.currentPage && (x.currentPage = Math.ceil( x.currentPage ));
-		x.sumPage && (x.sumPage = Math.ceil( x.sumPage ));
+		!x.offset && (x.offset = 0);
+		!x.limit && (x.limit = 1);
+		!x.size && (x.size = 0);
 		if ( this.face === 'normal' || this.face === 'none' )
 			this.page_text = Loc.page_text;
 		else if ( this.face === 'mini' )
@@ -4231,7 +4231,7 @@ PageBar = define.widget( 'PageBar', {
 			if ( a ) {
 				a.x.limit = this.x.pageSize;
 				a.pageBar = this;
-				a.page( this.x.currentPage );
+				a.page( this.x.offset );
 			}
 		});
 	},
@@ -4269,42 +4269,41 @@ PageBar = define.widget( 'PageBar', {
 			Q( document )[ a ? 'on' : 'off' ]( 'keyup', b );
 		},
 		keyJump: function( a ) {
-			this.x.keyJump && this.go( this.x.currentPage + (a === 37 ? -1 : 1) );
+			this.x.keyJump && this.go( this.x.offset + (a === 37 ? -1 : 1) );
 		},
 		go: function( i, a ) {
 			if ( this._disposed )
 				return;
 			if ( (i = _number( i )) > 0 ) {
-				i = Math.max( Math.floor( i ), 1 );
-				if ( this.x.sumPage )
-					i = Math.min( this.x.sumPage, i );
-				this.$( 'v' ) && (this.$( 'v' ).value = i);
+				var o = Math.min( (i - 1) * this.x.limit, (Math.ceil(this.x.size / this.x.limit) - 1) * this.x.limit );
+				i = Math.max( i, 1 );
+				this.$( 'v' ) && (this.$( 'v' ).value = o);
 				if ( this.x.target ) {
 					var g = this.ownerView.find( this.x.target );
 					if ( g ) {
 						g.page( i );
-						this.x.currentPage = i;
+						this.x.offset = o;
 						this.render();
 					}
 				} else if ( this.x.src ) {
 					var s = this.x.src;
 					if ( s.indexOf( 'javascript:' ) === 0 )
-						this.exec( { type: 'JS', text: s }, [ i ] );
+						this.exec( { type: 'JS', text: s }, [ o, this.x.limit ] );
 					else {
 						this.exec( { type: 'Ajax', src: s, filter: this.x.filter, complete: this.x.complete,
 							success: this.x.success || function( x ) {
 								W.isCmd( x ) ? this.cmd( x ) : this.srcParent().reload( x );
-							}, error: this.x.error }, [ i ] );
+							}, error: this.x.error }, [ o, this.x.limit ] );
 					}
 				}
 				// 为业务 click 事件之中的 $0 提供值
-				this.triggerHandler( 'click', [ i ] );
+				this.triggerHandler( 'click', [ i, this.x.limit ] );
 			}
 		},
 		val: function( a ) {
 			if ( a === U )
-				return this.x.currentPage;
-			this.go( a );
+				return this.x.offset;
+			this.go( Math.ceil( a / this.x.limit ) );
 		},
 		ego: function( e ) {
 			if ( e.type === 'keyup' && e.keyCode !== 13 )
@@ -4324,8 +4323,8 @@ PageBar = define.widget( 'PageBar', {
 			var b = this.ownerView.find( this.x.target );
 			if ( b ) {
 				var c = this.ownerView.find( this.x.target ).page();
-				this.x.currentPage = Math.max( _number( c.currentPage ), 1 );
-				this.x.sumPage = Math.max( _number( c.sumPage ), 1 );
+				this.x.offset = Math.max( _number( c.offset ), 0 );
+				this.x.size = Math.max( _number( c.size ), 0 );
 			}
 		},
 		eve: function( i, b ) {
@@ -4348,24 +4347,26 @@ PageBar = define.widget( 'PageBar', {
 		},
 		html_normal: function() {
 			this.x.target && this.initByTarget();
-			var c = this.x.currentPage, m = _number( this.x.sumPage ), n = _number( this.x.buttonCount ), f = Math.max( 1, c - Math.ceil( n / 2 ) + 1 ),
-				l = Math.min( m + 1, f + n ), d = l - f < n ? Math.max( 1, l - n ) : f, h = this.x.noFirstLast, z = this.x.buttonCls ? ' ' + this.x.buttonCls : '',
-				s = ( h ? '' : '<em class="_o _b _first' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( 1, c != 1 ) + '>' + (this.x.firstText || this.page_text.first || '') + '</em>' ) +
-					'<em class="_o _b _prev' + ( c == 1 ? '' : ' z-us' ) + z + '"' + this.eve( c - 1, c != 1 ) + '>' + (this.x.prevText || this.page_text.prev || '') + '</em>';
-			if ( m && this.x.buttonSumPage && d > 1 ) {
+			var n = _number( this.x.buttonCount ),
+				sp = Math.ceil(this.x.size / this.x.limit) || 1, cp = Math.ceil( this.x.offset / this.x.limit ) + 1,
+				f = Math.max( 1, cp - Math.ceil( n / 2 ) + 1 ),
+				l = Math.min( sp + 1, f + n ), d = l - f < n ? Math.max( 1, l - n ) : f, h = this.x.noFirstLast, z = this.x.buttonCls ? ' ' + this.x.buttonCls : '',
+				s = ( h ? '' : '<em class="_o _b _first' + ( cp == 1 ? '' : ' z-us' ) + z + '"' + this.eve( 1, cp != 1 ) + '>' + (this.x.firstText || this.page_text.first || '') + '</em>' ) +
+					'<em class="_o _b _prev' + ( cp == 1 ? '' : ' z-us' ) + z + '"' + this.eve( cp - 1, cp != 1 ) + '>' + (this.x.prevText || this.page_text.prev || '') + '</em>';
+			if ( sp && this.x.buttonSumPage && d > 1 ) {
 					s += '<em class="_o _num z-us z-sum' + z + '"' + this.eve( 1, T ) + '>1<i>...</i></em>';
 					s += '<em class="_o _num z-sumdot' + z + '">...</em>';
 			}
 			for ( var i = d; i < l; i ++ ) {
-				s += '<em class="_o _num' + ( i == c ? ' _cur' : ' z-us' ) + z + '"' + this.eve( i, i != c ) + '>' + i + '</em>';
+				s += '<em class="_o _num' + ( i == cp ? ' _cur' : ' z-us' ) + z + '"' + this.eve( i, i != cp ) + '>' + i + '</em>';
 			}
-			if ( m && this.x.buttonSumPage && m >= i ) {
+			if ( sp && this.x.buttonSumPage && sp >= i ) {
 				s += '<em class="_o _num z-sumdot' + z + '">...</em>';
-				s += '<em class="_o _num z-us z-sum' + z + '"' + this.eve( m, T ) + '><i>...</i>' + m + '</em>';
+				s += '<em class="_o _num z-us z-sum' + z + '"' + this.eve( sp, T ) + '><i>...</i>' + sp + '</em>';
 			}
-			s += '<em class="_o _b _next' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( c + 1, c != m ) + '>' + (this.x.nextText || this.page_text.next || '') + '</em>' +
-				( h ? '' : '<em class="_o _b _last' + ( c == m ? '' : ' z-us' ) + z + '"' + this.eve( m, c != m ) + '>' + (this.x.lastText || this.page_text.last || '') + '</em>' );
-			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + (c || 1) + '">' : '') + s + this.html_info() + '<i class=f-vi></i>';
+			s += '<em class="_o _b _next' + ( cp == sp ? '' : ' z-us' ) + z + '"' + this.eve( cp + 1, cp != sp ) + '>' + (this.x.nextText || this.page_text.next || '') + '</em>' +
+				( h ? '' : '<em class="_o _b _last' + ( cp == sp ? '' : ' z-us' ) + z + '"' + this.eve( sp, cp != sp ) + '>' + (this.x.lastText || this.page_text.last || '') + '</em>' );
+			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + (cp || 1) + '">' : '') + s + this.html_info() + '<i class=f-vi></i>';
 		},
 		html_mini: function() {
 			return this.html_normal();
@@ -4374,24 +4375,25 @@ PageBar = define.widget( 'PageBar', {
 			return this.html_normal();
 		},
 		drop: function( a ) {
-			var i = 1, c = _number( this.x.currentPage ) || 1, s = _number( this.x.sumPage ) || 1, n = [];
-			for ( ; i <= s; i ++ ) {
-				n.push( { text: i, on: { click: 'this.getCommander().parentNode.go(' + i + ')' }, status: this.x.currentPage == i ? 'disabled' : '' } );
+			var i = 1, n = [], sp = Math.ceil(this.x.size / this.x.limit) || 1, cp = Math.ceil( this.x.offset / this.x.limit ) + 1;
+			for ( ; i <= sp; i ++ ) {
+				n.push( { text: i, on: { click: 'this.getCommander().parentNode.go(' + i + ')' }, status: cp == i ? 'disabled' : '' } );
 			}
 			var g = a.parentNode;
-			g.exec( { type: 'Menu', cls: 'w-pagebar-simple-menu', nodes: n, width: 'javascript:return this.parentNode.width() - 2', snap: { target: g, position: 'v', indent: -5 }, line: true, memory: T, focusIndex: c } );
+			g.exec( { type: 'Menu', cls: 'w-pagebar-simple-menu', nodes: n, width: 'javascript:return this.parentNode.width() - 2', snap: { target: g, position: 'v', indent: -5 }, line: T, memory: T, focusIndex: cp } );
 		},
 		html_simple: function() {
 			this.x.target && this.initByTarget();
-			var c = 'w-pagebar-button ' + (this.x.buttonCls != N ? this.x.buttonCls : 'f-button'), d = _number( this.x.currentPage ) || 1, s = _number( this.x.sumPage ) || 1,
-				b = [ { type: 'Button', ownproperty: T, text: '&lt;<i class="f-arw f-arw-l4"></i>', tip: (this.x.prevText || Loc.page_prev || ''), cls: c + ' _prev', status: d == 1 ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (d - 1) + ')' } },
-					  { type: 'Button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.nextText || Loc.page_next || ''), cls: c + ' _next', status: d == s ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (d + 1) + ')' } } ];
+			var c = 'w-pagebar-button ' + (this.x.buttonCls != N ? this.x.buttonCls : 'f-button'),
+				sp = Math.ceil(this.x.size / this.x.limit) || 1, cp = Math.ceil( this.x.offset / this.x.limit ) + 1,
+				b = [ { type: 'Button', ownproperty: T, text: '&lt;<i class="f-arw f-arw-l4"></i>', tip: (this.x.prevText || Loc.page_prev || ''), cls: c + ' _prev', status: cp == 1 ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (cp - 1) + ')' } },
+					  { type: 'Button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.nextText || Loc.page_next || ''), cls: c + ' _next', status: cp == sp ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (cp + 1) + ')' } } ];
 			if ( this.x.buttonCount != 0 ) {
 				var g = this.x.dropAlign;
-				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'Button', ownproperty: T, text: d + '/' + s, cls: c + ' _drop', escape: F, on: { click: 'this.rootNode.parentNode.drop(this)' } } );
+				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'Button', ownproperty: T, text: cp + '/' + sp, cls: c + ' _drop', escape: F, on: { click: 'this.rootNode.parentNode.drop(this)' } } );
 			}
 			this.groupbar = this.add( { type: 'ButtonBar', cls: 'w-pagebar-buttonbar f-nv f-groupbar', width: -1, nodes: b, space: -1 }, -1 );
-			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + d + '">' : '') + this.groupbar.html() + PageBar.prototype.html_info.call( this ) + '<i class=f-vi></i>';
+			return (this.x.name ? '<input type=hidden id="' + this.id + 'v" name="' + this.x.name + '" value="' + cp + '">' : '') + this.groupbar.html() + PageBar.prototype.html_info.call( this ) + '<i class=f-vi></i>';
 		},
 		html_nodes: function() {
 			return this[ 'html_' + this.face ]();
@@ -11441,7 +11443,7 @@ AbsTable = define.widget( 'AbsTable', {
 				this.limit();
 				this.$() && this.render();
 			}
-			return { currentPage: this.x.page, sumPage: Math.ceil((this._filter_rows || this.contentTBody() || []).length / this.x.limit) };
+			return { offset: this.x.page, limit: this.x.limit, size: (this._filter_rows || this.contentTBody() || []).length };
 		},
 		limit: function() {
 			if ( this.x.limit && this.contentTBody() ) {
