@@ -5616,6 +5616,7 @@ _valid_err = function( b, v ) {
 _valid_opt = function( a ) {
 	return a == N || a === T ? this.x.validate : a === F ? N : typeof a === _OBJ ? a : (this.x.validateGroup && this.x.validateGroup[ a ]);
 },
+_enter_timestamp = 0,
 _enter_submit = function( k, a ) {
 	k === 13 && a.ownerView.submitButton && a.ownerView.submitButton.click();
 },
@@ -8154,6 +8155,12 @@ ComboBox = define.widget( 'ComboBox', {
 						var k = e.keyCode, t, m;
 						if ( k === 13 || k === 37 || k === 38 || k === 39 || k === 40 ) { // 13:enter, 37: left, 38:up, 39:right, 40:down
 							$.stop( e );
+							//IE中文输入法回车，会触发两次keyup，目前暂时用时间戳解决
+							if ( k === 13 && e.timeStamp ) {
+								if ( e.timeStamp - _enter_timestamp < 10 )
+									return;
+								_enter_timestamp = e.timeStamp;
+							}
 							var d = this.pop(), t = this.queryText();
 							if ( k === 13 && t != this._query_text ) { // 中文输入法按回车，是把文本放入输入框里的动作，不是提交动作
 								this.suggest( t );
@@ -9139,9 +9146,18 @@ OnlineBox = define.widget( 'OnlineBox', {
 				method: function( e ) {
 					if ( ! this._imeMode && ! this.isDisabled() && ! this._disposed ) {
 						var k = e.keyCode, m;
+						if ( k === 13 && !this.x.suggest )
+							return _enter_submit( k, this );
+						//IE中文输入法回车，会触发两次keyup，目前暂时用时间戳解决
+						if ( k === 13 && e.timeStamp ) {
+							console.log(this.cursorText()+';'+this._query_text);
+							if ( e.timeStamp - _enter_timestamp < 10 )
+								return;
+							_enter_timestamp = e.timeStamp;
+						}
 						if ( k === 13 || k === 38 || k === 40 ) { // 上下键
 							var d = this.pop(), t;
-							if ( k === 13 && this.x.suggest && (t = this.cursorText()) != this._query_text ) {
+							if ( k === 13 && (t = this.cursorText()) != this._query_text ) {
 								this.suggest( t );
 							} else if ( d && d.vis && (m = this.store( d )) ) {
 								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : m.keyUp( k );
