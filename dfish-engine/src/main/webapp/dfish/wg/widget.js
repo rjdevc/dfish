@@ -8159,8 +8159,9 @@ ComboBox = define.widget( 'ComboBox', {
 								this.suggest( t );
 							} else if ( d.vis && (m = this.store( d )) ) {
 								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : t || d == this.dropper ? m.keyUp( k ) : this.closePop();
-							} else
-								_enter_submit( k, this );
+							} else {
+								k === 13 && _enter_submit( k, this );
+							}
 						} else if ( !(e.ctrlKey && k === 86) && !(k === 17) ) { //86: ctrl+v, 17: Ctrl
 							t = this.$t().innerText;
 							var s = String.fromCharCode( 160 ) + ' '; // 160: chrome的空格
@@ -9136,16 +9137,16 @@ OnlineBox = define.widget( 'OnlineBox', {
 			},
 			keyUp: {
 				method: function( e ) {
-					if ( ! this._imeMode && ! this.isDisabled() && ! this._disposed && this.x.suggest ) {
+					if ( ! this._imeMode && ! this.isDisabled() && ! this._disposed ) {
 						var k = e.keyCode, m;
 						if ( k === 13 || k === 38 || k === 40 ) { // 上下键
 							var d = this.pop(), t;
-							if ( k === 13 && (t = this.cursorText()) != this._query_text ) {
+							if ( k === 13 && this.x.suggest && (t = this.cursorText()) != this._query_text ) {
 								this.suggest( t );
-							} else if ( d.vis && (m = this.store( d )) ) {
+							} else if ( d && d.vis && (m = this.store( d )) ) {
 								k === 13 && ! m.getFocus() ? _enter_submit( k, this ) : m.keyUp( k );
 							} else
-								_enter_submit( k, this );
+								k === 13 && _enter_submit( k, this );
 						} else if ( ! e.ctrlKey && k !== 17 ) { // 17: Ctrl
 							var t = this.cursorText();
 							clearTimeout( this._sug_timer );
@@ -11697,7 +11698,7 @@ Form = define.widget( 'Form', {
 	Const: function( x, p ) {
 		var c = [], d = this.getDefaultOption( x.cls ), rows = [], cols = x.cols || 12;
 		for ( var i = 0; i < cols; i ++ ) {
-			c.push( { field: '' + i, width: '*' } );
+			c.push( { field: '#' + i, width: '*' } );
 		}
 		for ( var i = 0, j = 0, n = x.nodes ? x.nodes.concat() : [], tr = {}, rp = {}; i < n.length; i ++ ) {
 			j == 0 && rows.push( tr );
@@ -11728,7 +11729,7 @@ Form = define.widget( 'Form', {
 				j = td.colSpan;
 				rows.push( tr );*/
 			} else {
-				tr[ j ] = td;
+				tr[ '#' + j ] = td;
 				j += td.colSpan;
 				if ( j >= cols ) {
 					j = 0;
