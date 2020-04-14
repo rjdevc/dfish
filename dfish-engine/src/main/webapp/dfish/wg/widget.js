@@ -896,6 +896,9 @@ W = define( 'Widget', function() {
 				case 'style':
 					this.css( b );
 				break;
+				case 'data':
+					b && c && (this.x.data = $.extend( c, b ));
+				break;
 				case 'beforeContent':
 				case 'prependContent':
 				case 'appendContent':
