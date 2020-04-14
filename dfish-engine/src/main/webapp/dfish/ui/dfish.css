@@ -816,6 +816,7 @@
 .w-pagebar.z-face-normal .z-us{color:#000;cursor:pointer}
 .w-pagebar.z-face-normal .z-us.z-hv{color:#3e89fa;border-color:#2498ff;z-index:1}
 .w-pagebar.z-face-normal.z-trans ._o{padding:0 8px}
+.w-pagebar.z-face-normal.z-align-right ._o{margin-right:0;margin-left:-1px}
 
 .w-pagebar.z-face-none{font-size:12px;color:#999}
 .w-pagebar.z-face-none ._o{display:inline-block;height:20px;line-height:20px;padding:0 3px;margin:0 6px;font-style:normal;vertical-align:middle}

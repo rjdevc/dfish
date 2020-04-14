@@ -766,7 +766,12 @@ W = define( 'Widget', function() {
 				}
 			}
 			this.init_x_cls();
-			!x.ownproperty && $.extendDeep( x, this.getDefaultOption( x.cls ) );
+			var y = this.getDefaultOption( x.cls );
+			if ( y ) {
+				!x.ownproperty && $.extendDeep( x, y );
+				// 属性和cls在获取defaultOption之前可能会相互定义，因此需要调用两次
+				this.init_x_cls();
+			}
 			// owner_x 是优先的，不可被template重写的属性
 			if ( !this.owner_x && (x.template || x.preload) )
 				this.owner_x = $.extend( {}, x );
@@ -3474,7 +3479,7 @@ Button = define.widget( 'Button', {
 		_menu_snapType: 'v',
 		_menu_type: 'Menu',
 		init_x_cls: function() {
-			this.x.dir && (this.className += ' z-dir-' + this.x.dir);
+			this.x.dir && $.classAdd( this, ' z-dir-' + this.x.dir );
 		},
 		// @implement
 		init_nodes: function() {
@@ -4209,9 +4214,6 @@ Toggle = define.widget( 'Toggle', {
  */
 PageBar = define.widget( 'PageBar', {
 	Const: function( x ) {
-		this.face = x.face || 'normal';
-		this.className += ' z-face-' + this.face;
-		x.transparent && (this.className += ' z-trans');
 		W.apply( this, arguments );
 		!x.offset && (x.offset = 0);
 		!x.limit && (x.limit = 1);
@@ -4248,6 +4250,11 @@ PageBar = define.widget( 'PageBar', {
 	Prototype: {
 		className: 'w-pagebar',
 		page_text: {},
+		init_x_cls: function() {
+			this.face = this.x.face || 'normal';
+			$.classAdd( this, ' z-face-' + this.face );
+			this.x.align && $.classAdd( this, ' z-align-' + this.x.align);
+		},
 		isModified: $.rt( F ),
 		over: function( a ) {
 			$.classAdd( a, 'z-hv' );
