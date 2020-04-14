@@ -25,6 +25,7 @@ public class Pagination implements Serializable {
 
     /**
      * 构造函数
+     *
      * @param offset
      */
     public Pagination(int offset) {
@@ -33,6 +34,7 @@ public class Pagination implements Serializable {
 
     /**
      * 构造函数
+     *
      * @param offset
      * @param limit
      */
@@ -43,7 +45,8 @@ public class Pagination implements Serializable {
 
     /**
      * 构建Pagination
-     * @return
+     *
+     * @return 对象本身
      */
     public static Pagination of() {
         return new Pagination();
@@ -51,18 +54,20 @@ public class Pagination implements Serializable {
 
     /**
      * 构建Pagination
+     *
      * @param offset 偏移量，结果从第几条开始显示，初始是0条
-     * @return
+     * @return 对象本身
      */
     public static Pagination of(int offset) {
         return new Pagination(offset);
     }
 
     /**
-     *构建Pagination
+     * 构建Pagination
+     *
      * @param offset 偏移量，结果从第几条开始显示，初始是0条
-     * @param limit 结果最多显示多少行
-     * @return
+     * @param limit  结果最多显示多少行
+     * @return 对象本身
      */
     public static Pagination of(int offset, int limit) {
         return new Pagination(offset, limit);
@@ -81,6 +86,7 @@ public class Pagination implements Serializable {
      * 是否在查询的时候自动统计行数，默认为true
      *
      * @param autoRowCount boolean
+     * @return 本身，这样可以继续设置其他属性
      */
     public Pagination setAutoRowCount(boolean autoRowCount) {
         this.autoRowCount = autoRowCount;
@@ -100,6 +106,7 @@ public class Pagination implements Serializable {
      * 结果最多显示多少行 Integer
      *
      * @param limit Integer
+     * @return 本身，这样可以继续设置其他属性
      */
     public Pagination setLimit(int limit) {
         this.limit = limit;
@@ -119,6 +126,7 @@ public class Pagination implements Serializable {
      * 偏移量，结果从第几条开始显示，初始是0条
      *
      * @param offset int
+     * @return 本身，这样可以继续设置其他属性
      */
     public Pagination setOffset(int offset) {
         this.offset = offset;
@@ -138,6 +146,7 @@ public class Pagination implements Serializable {
      * 如果开启了autoRowCount 统计出来的行数，讲从这里获取
      *
      * @param size Integer
+     * @return 本身，这样可以继续设置其他属性
      */
     public Pagination setSize(Integer size) {
         this.size = size;
@@ -146,6 +155,7 @@ public class Pagination implements Serializable {
 
     /**
      * 计算结果从第几条开始显示
+     *
      * @param size
      * @param limit
      * @return

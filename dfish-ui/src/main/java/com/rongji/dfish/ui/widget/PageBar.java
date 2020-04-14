@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.base.Page;
+import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.Alignable;
 
@@ -32,10 +33,10 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      */
     public static final String FACE_BUTTON_NONE = "none";
 
-	/**
-	 * 显示皮肤
-	 */
-	private String face;
+    /**
+     * 显示皮肤
+     */
+    private String face;
     /**
      * 如果设置了name，将生成一个隐藏项，值为当前页数
      */
@@ -52,10 +53,6 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      * 中间有几个显示页数的按钮。
      */
     private Integer buttonCount;
-    /**
-     * 当前页数。(起始值为1)
-     */
-    private Integer currentPage;
     /**
      * 分页大小，每页显示多少条
      */
@@ -77,10 +74,6 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      */
     private String src;
     /**
-     * 总页数。(起始值为1)
-     */
-    private Integer sumPage;
-    /**
      * 绑定一个支持前端翻页的widget(例如grid)。
      */
     private String target;
@@ -96,6 +89,9 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
     private List<Button> setting;
     private String dropAlign;
     private Boolean buttonSumPage;
+    private Integer offset;
+    private Integer size;
+    private Integer limit;
 
     /**
      * 构造函数
@@ -112,24 +108,30 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
     /**
      * 构造函数
      */
-    public PageBar() { }
+    public PageBar() {
+    }
 
-	public String getFace() {
-		return face;
-	}
+    public String getFace() {
+        return face;
+    }
 
-	public PageBar setFace(String face) {
-		this.face = face;
-		return this;
-	}
+    public PageBar setFace(String face) {
+        this.face = face;
+        return this;
+    }
 
-	/**
+    /**
      * 当前页数。(起始值为1)
      *
-     * @return currentpage
+     * @return Integer
+     * @see #getOffset()
      */
+    @Deprecated
     public Integer getCurrentPage() {
-        return currentPage;
+        if (offset == null || limit == null) {
+            return null;
+        }
+        return offset / limit + 1;
     }
 
     /**
@@ -137,14 +139,19 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      *
      * @param currentPage Integer
      * @return 本身，这样可以继续设置其他属性
+     * @see #setOffset(Integer)
      */
+    @Deprecated
     public PageBar setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
+        if (currentPage != null && limit != null) {
+            setOffset(limit * (currentPage - 1));
+        }
         return this;
     }
 
     /**
      * 分页大小，每页显示多少条
+     *
      * @return Integer
      */
     public Integer getPageSize() {
@@ -153,6 +160,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 
     /**
      * 分页大小，每页显示多少条
+     *
      * @param pageSize Integer
      * @return 本身，这样可以继续设置其他属性
      */
@@ -164,10 +172,15 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
     /**
      * 总页数。(起始值为1)
      *
-     * @return sumpage
+     * @return Integer
+     * @see #getSize()
      */
+    @Deprecated
     public Integer getSumPage() {
-        return sumPage;
+        if (size == null || limit == null) {
+            return null;
+        }
+        return (size - 1) / limit + 1;
     }
 
     /**
@@ -175,9 +188,10 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      *
      * @param sumPage Integer
      * @return 本身，这样可以继续设置其他属性
+     * @see #setSize(Integer)
      */
+    @Deprecated
     public PageBar setSumPage(Integer sumPage) {
-        this.sumPage = sumPage;
         return this;
     }
 
@@ -254,6 +268,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 
     /**
      * 是否支持按键翻页。设置为true时，可按“←→”进行翻页
+     *
      * @return Boolean
      */
     public Boolean getKeyJump() {
@@ -262,6 +277,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
 
     /**
      * 是否支持按键翻页。设置为true时，可按“←→”进行翻页
+     *
      * @param keyJump Boolean
      * @return 本身，这样可以继续设置其他属性
      */
@@ -491,35 +507,6 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
     }
 
     /**
-     * 设置分页信息
-     *
-     * @param page Page
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public PageBar setPage(Page page) {
-        if (page == null) {
-            return this;
-        }
-        if (page.getCurrentPage() < 1) {
-            page.setCurrentPage(1);
-        }
-        if (page.getPageSize() < 1) {
-            page.setPageSize(10);
-        }
-        this.setCurrentPage(page.getCurrentPage());
-        int pageCount = page.getPageCount();
-        if (pageCount < 1) {
-            pageCount = 1;
-        }
-        this.setSumPage(pageCount);
-
-        this.putData("pageSize", page.getPageSize());
-        this.putData("rowCount", page.getRowCount());
-        this.putData("currentCount", page.getCurrentCount());
-        return this;
-    }
-
-    /**
      * 下拉按钮的位置
      *
      * @return String
@@ -557,6 +544,109 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
     public PageBar setButtonSumPage(Boolean buttonSumPage) {
         this.buttonSumPage = buttonSumPage;
         return this;
+    }
+
+    /**
+     * 当前开始记录数(跳过记录条数)
+     *
+     * @return Integer
+     */
+    public Integer getOffset() {
+        return offset;
+    }
+
+    /**
+     * 当前开始记录数(跳过记录条数)
+     *
+     * @param offset Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public PageBar setOffset(Integer offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    /**
+     * 总记录数
+     *
+     * @return Integer
+     */
+    public Integer getSize() {
+        return size;
+    }
+
+    /**
+     * 总记录数
+     *
+     * @param size Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public PageBar setSize(Integer size) {
+        this.size = size;
+        return this;
+    }
+
+    /**
+     * 一页限制的最大记录数
+     *
+     * @return Integer
+     */
+    public Integer getLimit() {
+        return limit;
+    }
+
+    /**
+     * 一页限制的最大记录数
+     *
+     * @param limit Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public PageBar setLimit(Integer limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    /**
+     * 设置分页信息
+     *
+     * @param page Page
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public PageBar setPage(Page page) {
+        if (page == null) {
+            return this;
+        }
+//        if (page.getCurrentPage() < 1) {
+//            page.setCurrentPage(1);
+//        }
+//        if (page.getPageSize() < 1) {
+//            page.setPageSize(10);
+//        }
+//        this.setCurrentPage(page.getCurrentPage());
+//        int pageCount = page.getPageCount();
+//        if (pageCount < 1) {
+//            pageCount = 1;
+//        }
+//        this.setSumPage(pageCount);
+//
+//        this.putData("pageSize", page.getPageSize());
+//        this.putData("rowCount", page.getRowCount());
+//        this.putData("currentCount", page.getCurrentCount());
+//        return this;
+        return setPagination(Pagination.fromPage(page));
+    }
+
+    /**
+     * 设置分页信息
+     *
+     * @param pagination Pagination
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public PageBar setPagination(Pagination pagination) {
+        if (pagination == null) {
+            return this;
+        }
+        return setOffset(pagination.getOffset()).setSize(pagination.getSize()).setLimit(pagination.getLimit());
     }
 
 }
