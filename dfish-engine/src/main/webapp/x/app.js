@@ -19,10 +19,12 @@ window.app = {
     },
     alert: {
         info: function (msg) {
-            $.alert(msg, 5, 5000);
+            // $.alert(msg, 'br', 5000);
+            VM().cmd({type: 'Alert', cls: 'x-alert-info', text: msg});
         },
         warn: function (msg) {
-            $.alert(msg);
+            // $.alert(msg);
+            VM().cmd({type: 'Alert', cls: 'x-alert-warn', text: msg});
         }
     },
     dialog: {
@@ -37,36 +39,36 @@ window.app = {
             'large': 550,
             'medium': 410,
             'small': 250
-        },
-        max: function (target) {
-            var d = dfish.dialog(target);
-            var isMax = d.isMax();
-            target.attr('tip', isMax ? '最大化' : '还原');
-            // 最大化/还原
-            d.max();
         }
+        // max: function (target) {
+        //     var d = dfish.dialog(target);
+        //     var isMax = d.isMax();
+        //     target.attr('tip', isMax ? '最大化' : '还原');
+        //     // 最大化/还原
+        //     d.max();
+        // }
     },
-    page: {
-        getSumPage: function (header) {
-            if (!header) {
-                return 1;
-            }
-            var size = header.size || 0;
-            var limit = header.limit || 1;
-            var sumPage = size / limit;
-            // 这里不做任何处理,因为框架默认有小数代表超过当前页,总页数会向上取整
-            return sumPage;
-        },
-        getCurrentPage: function (header) {
-            if (!header) {
-                return 1;
-            }
-            var offset = header.offset || 0;
-            var limit = header.limit || 1;
-            var currentPage = (offset / limit) + 1;
-            return currentPage;
-        }
-    },
+    // page: {
+    //     getSumPage: function (header) {
+    //         if (!header) {
+    //             return 1;
+    //         }
+    //         var size = header.size || 0;
+    //         var limit = header.limit || 1;
+    //         var sumPage = size / limit;
+    //         // 这里不做任何处理,因为框架默认有小数代表超过当前页,总页数会向上取整
+    //         return sumPage;
+    //     },
+    //     getCurrentPage: function (header) {
+    //         if (!header) {
+    //             return 1;
+    //         }
+    //         var offset = header.offset || 0;
+    //         var limit = header.limit || 1;
+    //         var currentPage = (offset / limit) + 1;
+    //         return currentPage;
+    //     }
+    // },
     format: {
         pattern: {
             year: 'yyyy',

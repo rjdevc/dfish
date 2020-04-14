@@ -23,6 +23,8 @@ dfish.config({
     // 每个 widget 类都可以定义默认属性，以 widget type 作为 key
     defaultOptions: {
         'Alert': {preload: 'g/alert'},
+        'Alert.x-alert-info': {position: 'br', timeout: 3000},
+        'Alert.x-alert-warn': {icon: '.f-i-warning .f-i'},
         'Confirm': {preload: 'g/alert'},
         'Dialog': {preload: 'g/std', width: 680, height: 410, error: "this.close();"},
         'Dialog.dlg-large': {width: 980, height: 550},
