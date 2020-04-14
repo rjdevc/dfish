@@ -896,6 +896,9 @@ W = define( 'Widget', function() {
 				case 'style':
 					this.css( b );
 				break;
+				case 'data':
+					b && c && (this.x.data = $.extend( c, b ));
+				break;
 				case 'beforeContent':
 				case 'prependContent':
 				case 'appendContent':
@@ -1905,7 +1908,7 @@ var _html_resize_sensor = function( w, h ) {
 },
 _reset_resize_sensor = function() {
 	var b = this.$( 'rsz' ).children, i = b.length,
-		w = this.$( 'ovf' ).scrollWidth, h = this.$( 'cont' ).offsetHeight;
+		w = this.ovf().scrollWidth, h = this.$( 'cont' ).offsetHeight;
 	if ( this._scr_wd !== w || this._scr_ht !== h ) {
 		b[ 0 ].firstChild.style.width  = w + 'px';
 		b[ 0 ].firstChild.style.height = h + 'px';
@@ -2082,7 +2085,7 @@ Scroll = define.widget( 'Scroll', {
 		//@public  /@ e -> el, y -> (top,bottom,middle), p -> ease?, q -> divide, r -> callback
 		scrollY: function( e, y, p, q, r ) {
 			if ( arguments.length === 0 )
-				return this.$( 'ovf' ).scrollTop;
+				return this.ovf().scrollTop;
 			if ( typeof e !== _OBJ )
 				q = p, p = y, y = e, e = N;
 			this.scrollTo( e, y, N, p, q );
@@ -2090,7 +2093,7 @@ Scroll = define.widget( 'Scroll', {
 		//@public  /@ e -> el, x -> (left,right,center), p -> ease?, q -> divide, r -> callback
 		scrollX: function( e, x, p, q, r ) {
 			if ( arguments.length === 0 )
-				return this.$( 'ovf' ).scrollLeft;
+				return this.ovf().scrollLeft;
 			if ( typeof e !== _OBJ )
 				q = p, p = x, x = e, e = N;
 			this.scrollTo( e, N, x, p, q );
@@ -2110,20 +2113,23 @@ Scroll = define.widget( 'Scroll', {
 		isScroll: function() {
 			return this.attr( 'scroll' ) && ((this.innerWidth() != N || this.x.maxWidth) || (this.innerHeight() != N || this.x.maxHeight));
 		},
+		ovf: function() {
+			return mbi ? this.$() : this.$( 'ovf' );
+		},
 		isScrollTop: function() {
-			return this.$( 'ovf' ).scrollTop == 0;
+			return this.ovf().scrollTop == 0;
 		},
 		isScrollBottom: function() {
-			return this.$( 'ovf' ).scrollTop == this.scrollHeight();
+			return this.ovf().scrollTop == this.scrollHeight();
 		},
 		isScrollLeft: function() {
-			return this.$( 'ovf' ).scrollLeft == 0;
+			return this.ovf().scrollLeft == 0;
 		},
 		isScrollRight: function() {
-			return this.$( 'ovf' ).scrollLeft == this.$( 'ovf' ).scrollWidth - this.$( 'ovf' ).clientWidth;
+			return this.ovf().scrollLeft == this.ovf().scrollWidth - this.ovf().clientWidth;
 		},
 		scrollHeight: function() {
-			return this.$( 'ovf' ).scrollHeight - this.$( 'ovf' ).clientHeight;
+			return this.ovf().scrollHeight - this.ovf().clientHeight;
 		},
 		scrollDragY: function( a, e ) {
 			var b = this.id,
@@ -2157,7 +2163,7 @@ Scroll = define.widget( 'Scroll', {
 		},
 		// @mobile 下拉刷新
 		setSwipedown: function() {
-			var o = this.$( 'ovf' ), d = this.$( 'swipedown' ), iy, rl, ht, self = this,
+			var o = this.ovf(), d = this.$( 'swipedown' ), iy, rl, ht, self = this,
 				cmp = function() {
 					Q( o ).css( { transform: 'translate3d(0,0,0)', transition: '500ms cubic-bezier(0.165, 0.84, 0.44, 1)' } );
 			    	Q( d ).css( { visibility: '', height: '' } );
@@ -11555,10 +11561,6 @@ AbsTable = define.widget( 'AbsTable', {
 				this.pageBar && this.pageBar.keyJump( k );
 			}
 		},
-		// @implement
-		prop_cls_scroll_overflow: function() {
-			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.type.toLowerCase() + '-bg' : '');
-		},
 		fixScroll: function() {
 			if ( this.head ) {
 				this.head.$().style.overflow = 'hidden';
@@ -11581,7 +11583,14 @@ AbsTable = define.widget( 'AbsTable', {
 					h ? $.append( b === r ? this.$() : this.body.$(), f.$() ) : $.before( f.$( 'pad' ), f.$() );
 				}
 			}
-		}		
+		},
+		prop_cls: function() {
+			return Scroll.prototype.prop_cls.call( this ) + (mbi ? (!this.head && this.attr( 'scroll' ) ? ' w-' + this.instanceType + '-bg' : '') : '' );
+		},
+		// @implement
+		prop_cls_scroll_overflow: function() {
+			return 'f-scroll-overflow' + (!this.head && this.attr( 'scroll' ) ? ' w-' + this.instanceType + '-bg' : '');
+		}
 	}
 } );
 _parallel_methods( AbsTable, '_sortRow fixScroll' );
