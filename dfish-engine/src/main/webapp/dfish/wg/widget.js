@@ -7739,7 +7739,7 @@ DropBox = define.widget( 'DropBox', {
 		//tag: N,
 		body: {
 			ready: function() {
-				! this.x.nodes && this.x.src && this.load();
+				(!this.x.nodes || !this.x.nodes.length) && this.x.src && this.load();
 			},
 			click: {
 				method: function() {
@@ -7756,11 +7756,18 @@ DropBox = define.widget( 'DropBox', {
 			this._sel.length = 0;
 			var x = this.x, o = x.nodes || (x.nodes = []), v = x.value == N ? '' : '' + x.value, e, g = ! this.x.multiple;
 			for ( var i = 0, l = o.length; i < l; i ++ ) {
-				e = o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
-				if ( o[ i ].checked || (v && e && $.idsAny( v, o[ i ].value )) ) {
-					this._sel.push( o[ i ] );
-					if ( g ) break;
+				if ( o[ i ].checked ) {
+					if ( g ) {
+						this._sel = [ o[ i ] ];
+						break;
+					} else
+						this._sel.push( o[ i ] );
+				} else {
+					e = o[ i ].value = o[ i ].value == N ? '' : '' + o[ i ].value;
+					if ( v && e && $.idsAny( v, o[ i ].value ) )
+						this._sel.push( o[ i ] );
 				}
+					
 				if ( o[ i ].checkAll )
 					this._chkall = o[ i ];
 			}
@@ -7770,6 +7777,7 @@ DropBox = define.widget( 'DropBox', {
 					s.push( this._sel[ i ].value );
 				x.value = s.join(); // 设一下value，给 isModified() 用
 			}
+			this.layout = T;
 		},
 		// @a -> options, b -> index?
 		setOptions: function( a, b ) {
@@ -7930,10 +7938,11 @@ DropBox = define.widget( 'DropBox', {
 		},
 		showLoading: function( a ) {
 			this.addClass( 'z-loading', a );
-			a !== F && (this.$( 'p' ).innerHTML = this.x.loadingText || Loc.loading);
+			this.$( 'p' ).innerHTML = a ? (this.x.loadingText || Loc.loading) : '';
 		},
 		showLayout: function() {
-			this.val( this.x.value );
+			if ( this._sel.length )
+				this.val( this._sel[ 0 ].value );
 		},
 		form_prop: function() {
 			var s = AbsInput.prototype.form_prop.call( this );
