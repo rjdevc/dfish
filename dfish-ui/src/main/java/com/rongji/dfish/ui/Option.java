@@ -137,4 +137,9 @@ public class Option extends AbstractNode<Option> implements Statusful<Option>{
 		return this;
 	}
 
+	@Override
+	public String getType(){
+		return null;
+	}
+
 }
