@@ -1031,8 +1031,8 @@ define( {
   		type: 'Album',
   		cls: 'album-iconfont',
   		pub: {
-  			face: 'straight',
-  			width: '200',
+  			dir: 'h',
+  			width: '220',
   			widthMinus: 22
   		},
   		nodes: [
