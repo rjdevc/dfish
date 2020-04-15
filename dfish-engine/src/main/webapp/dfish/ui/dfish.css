@@ -351,9 +351,9 @@
 
 .w-date ._b,.w-muldate ._b{display:inline-block;width:19px;text-align:center;color:#666;cursor:default}
 .w-date ._b:hover,.w-muldate ._b:hover{color:#333}
-.w-datepicker ._pick_i{background:url(g/n.png) no-repeat 0 50%}
-.w-datepicker ._pick:hover ._pick_i{background-position:-25px 50%}
-.w-datepicker.z-ds ._pick_i,.w-datepicker.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
+.w-date ._pick_i{background:url(g/n.png) no-repeat 0 50%}
+.w-date ._pick:hover ._pick_i{background-position:-25px 50%}
+.w-date.z-ds ._pick_i,.w-date.z-ds ._pick:hover ._pick_i{background-position:0 50%;cursor:default}
 
 .w-range{overflow:visible}
 .w-range .f-sub-horz{vertical-align:middle}
