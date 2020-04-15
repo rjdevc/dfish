@@ -54,10 +54,6 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      */
     private Integer buttonCount;
     /**
-     * 分页大小，每页显示多少条
-     */
-    private Integer pageSize;
-    /**
      * 显示一个可填写页数的表单。
      */
     private Boolean jump;
@@ -153,9 +149,11 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      * 分页大小，每页显示多少条
      *
      * @return Integer
+     * @see #getLimit()
      */
+    @Deprecated
     public Integer getPageSize() {
-        return pageSize;
+        return getLimit();
     }
 
     /**
@@ -163,10 +161,11 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      *
      * @param pageSize Integer
      * @return 本身，这样可以继续设置其他属性
+     * @see #setLimit(Integer)
      */
+    @Deprecated
     public PageBar setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-        return this;
+        return setLimit(pageSize);
     }
 
     /**
