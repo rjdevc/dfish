@@ -7786,6 +7786,9 @@ DropBox = define.widget( 'DropBox', {
 	Prototype: {
 		x_nodes: $.rt( N ),
 		$v: function() { return $( this.id + 'v' ) },
+		init_x: function( x ) {
+			this._init_x( x );
+		},
 		init_nodes: function() {
 			this._sel.length = 0;
 			var x = this.x, o = x.nodes || (x.nodes = []), v = x.value == N ? '' : '' + x.value, e, g = ! this.x.multiple;
@@ -7868,8 +7871,11 @@ DropBox = define.widget( 'DropBox', {
 					for ( var i = 0, q = a.parent().find( '._o.z-on' ), l = q.length; i < l; i ++ )
 						b.push( this.x.nodes[ q[ i ].getAttribute( '_i' ) ] );
 				} else {
-					for ( var i = 0, q = this.x.nodes, l = q.length, c; i < l; i ++ )
-						if ( q[ i ].value == '' ? a == '' : $.idsAny( a, q[ i ].value ) ) b.push( q[ i ] );
+					for ( var i = 0, q = this.x.nodes, c, l = q.length; i < l; i ++ )
+						if ( q[ i ].value == '' ? a == '' : $.idsAny( a, q[ i ].value ) ) {
+							b.push( q[ i ] );
+							if( ! this.x.multiple ) break;
+						}
 				}
 				for ( var i = 0, s = [], t = [], u = []; i < b.length; i ++ ) {
 					s.push( this.html_li( b[ i ], T ) );
