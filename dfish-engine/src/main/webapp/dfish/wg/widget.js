@@ -4237,9 +4237,9 @@ PageBar = define.widget( 'PageBar', {
 		x.target && _regTarget.call( this, function() {
 			var a = this.ownerView.find( x.target );
 			if ( a ) {
-				a.x.limit = this.x.pageSize;
+				a.x.limit = this.x.limit;
 				a.pageBar = this;
-				a.page( this.x.offset );
+				a.page( this.currentPage() );
 			}
 		});
 	},
@@ -4342,6 +4342,9 @@ PageBar = define.widget( 'PageBar', {
 		},
 		eve: function( i, b ) {
 			return b ? ' onclick=' + evw + '.go(' + i + ',this) onmouseover=' + evw + '.over(this) onmouseout=' + evw + '.out(this)' : '';
+		},
+		currentPage: function() {
+			return Math.ceil( this.x.offset / this.x.limit ) + 1;
 		},
 		prop_cls: function() {
 			return _proto.prop_cls.call( this ) + (this.x.noFirstLast ? ' z-nofirstlast' : '');
@@ -11481,7 +11484,7 @@ AbsTable = define.widget( 'AbsTable', {
 				this.limit();
 				this.$() && this.render();
 			}
-			return { offset: this.x.page, limit: this.x.limit, size: (this._filter_rows || this.contentTBody() || []).length };
+			return { offset: (this.x.page -1) * this.x.limit, limit: this.x.limit, size: (this._filter_rows || this.contentTBody() || []).length };
 		},
 		limit: function() {
 			if ( this.x.limit && this.contentTBody() ) {
