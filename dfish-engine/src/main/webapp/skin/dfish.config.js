@@ -142,14 +142,15 @@ dfish.config({
         'Carousel': 'pl/carousel/carousel.dfish.js'
     },
     ajaxFilter: function (response) {
-        if (response.error) {
+        var hasError = response.error;
+        if (hasError) {
             app.response.error(response);
         } else {
             if (!response.data) {
                 response.data = {};
             }
-            return response;
         }
+        return !hasError;
     },
     // 一个汉字算3个字节
     cnBytes: 3
