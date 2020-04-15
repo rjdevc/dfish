@@ -114,8 +114,33 @@ define( {
         { name: 'settings', type: 'Object', remark: '配置参数', param: [
           { name: 'alias', type: 'Object', remark: '新增的模块可在此注册别名' },
           { name: 'ajaxData', type: 'Object', remark: '以POST方式发送到服务器的数据。格式为 key:value。' },
-          { name: 'ajaxError', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。该方法接收一个参数，ajax实例。' },
-          { name: 'ajaxFilter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理，并返回处理后的数据。该方法接收两个参数，第一个是返回数据，第二个是ajax实例。' },
+          { name: 'ajaxError', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。', param: [
+	        { name: 'ajax', type: 'Ajax', remark: 'CSS类名。多个用空格隔开' }
+	      ]  },
+          { name: 'ajaxFilter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理。如果返回false，则不执行success。', param: [
+	        { name: 'response', type: 'Object', remark: '服务器返回的数据JSON对象。' },
+	        { name: 'ajax', type: 'Ajax', remark: 'ajax实例' }
+	      ], example: [
+            function() {
+              //如果服务器返回数据有error参数，则返回false，不执行success
+              dfish.config( {
+ 	              ajaxFilter: function(response, ajax) {
+	              	if (response.error) {
+	              		alert('服务器报错');
+	              		return false;
+	              	}
+	              }
+	          } );
+            },
+            function() {
+              //修改服务器返回数据
+              dfish.config( {
+             	 ajaxFilter: function(response, ajax) {
+              		ajax.response = {data: response};
+              	}
+              } );
+            }
+          ] },
           { name: 'autoPlaceholder', type: 'Boolean', remark: '如果设为true，表单将自动填充placeholder。' },
           { name: 'cnBytes', type: 'Number', remark: '一个汉字算几个字节。默认值为2。' },
           { name: 'debug', type: 'Boolean', remark: '开启调试模式。调试模式下按"Ctrl+鼠标右键"可查看view的信息' },
@@ -152,8 +177,8 @@ define( {
               alias: { //自定义模块
               	'Ueditor': 'pl/ueditor1_4_3/ueditor.dfish.js' //百度编辑器
               },
-              ajaxError: function( req, url ) { // 处理ajax错误信息的方法
-              	alert( req.status );
+              ajaxError: function(ajax) { // 处理ajax错误信息的方法
+              	alert( ajax.request.status );
               },
               // 给 alert 和 confirm 设置 btncls 的默认值。
               defaultOptions: {
@@ -1007,53 +1032,53 @@ define( {
   		cls: 'album-iconfont',
   		pub: {
   			face: 'straight',
-  			width: '33.3%',
+  			width: '200',
   			widthMinus: 22
   		},
   		nodes: [
-  			{ src: '.f-i .f-i-edit', text: '.f-i .f-i-edit' },
-  			{ src: '.f-i .f-i-view', text: '.f-i .f-i-view' },
-  			{ src: '.f-i .f-i-favor', text: '.f-i .f-i-favor' },
-  			{ src: '.f-i .f-i-trash', text: '.f-i .f-i-trash' },
-  			{ src: '.f-i .f-i-angle-double-right', text: '.f-i .f-i-angle-double-right' },
-  			{ src: '.f-i .f-i-check', text: '.f-i .f-i-check' },
-  			{ src: '.f-i .f-i-caret-down', text: '.f-i .f-i-caret-down' },
-  			{ src: '.f-i .f-i-caret-up', text: '.f-i .f-i-caret-up' },
-  			{ src: '.f-i .f-i-caret-left', text: '.f-i .f-i-caret-left' },
-  			{ src: '.f-i .f-i-caret-right', text: '.f-i .f-i-caret-right' },
-  			{ src: '.f-i .f-i-folder', text: '.f-i .f-i-folder' },
-  			{ src: '.f-i .f-i-folder-open', text: '.f-i .f-i-folder-open' },
-  			{ src: '.f-i .f-i-file', text: '.f-i .f-i-file' },
-  			{ src: '.f-i .f-i-ellipsis', text: '.f-i .f-i-ellipsis' },
-  			{ src: '.f-i .f-i-upload-image', text: '.f-i .f-i-upload-image' },
-  			{ src: '.f-i .f-i-upload', text: '.f-i .f-i-upload' },
-  			{ src: '.f-i .f-i-date', text: '.f-i .f-i-date' },
-  			{ src: '.f-i .f-i-long-arrow-down', text: '.f-i .f-i-long-arrow-down' },
-  			{ src: '.f-i .f-i-long-arrow-up', text: '.f-i .f-i-long-arrow-up' },
-  			{ src: '.f-i .f-i-long-arrow-left', text: '.f-i .f-i-long-arrow-left' },
-  			{ src: '.f-i .f-i-long-arrow-right', text: '.f-i .f-i-long-arrow-right' },
-  			{ src: '.f-i .f-i-minus', text: '.f-i .f-i-minus' },
-  			{ src: '.f-i .f-i-plus', text: '.f-i .f-i-plus' },
-  			{ src: '.f-i .f-i-minus-squre', text: '.f-i .f-i-minus-squre' },
-  			{ src: '.f-i .f-i-plus-squre', text: '.f-i .f-i-plus-squre' },
-  			{ src: '.f-i .f-i-warning', text: '.f-i .f-i-warning' },
-  			{ src: '.f-i .f-i-question', text: '.f-i .f-i-question' },
-  			{ src: '.f-i .f-i-check-circle', text: '.f-i .f-i-check-circle' },
-  			{ src: '.f-i .f-i-search', text: '.f-i .f-i-search' },
-  			{ src: '.f-i .f-i-angle-first', text: '.f-i .f-i-angle-first' },
-  			{ src: '.f-i .f-i-angle-last', text: '.f-i .f-i-angle-last' },
-  			{ src: '.f-i .f-i-angle-up', text: '.f-i .f-i-angle-up' },
-  			{ src: '.f-i .f-i-angle-down', text: '.f-i .f-i-angle-down' },
-  			{ src: '.f-i .f-i-angle-left', text: '.f-i .f-i-angle-left' },
-  			{ src: '.f-i .f-i-angle-right', text: '.f-i .f-i-angle-right' },
-  			{ src: '.f-i .f-i-star-empty', text: '.f-i .f-i-star-empty' },
-  			{ src: '.f-i .f-i-star-half', text: '.f-i .f-i-star-half' },
-  			{ src: '.f-i .f-i-star-full', text: '.f-i .f-i-star-full' },
-  			{ src: '.f-i .f-i-dialog-max', text: '.f-i .f-i-dialog-max' },
-  			{ src: '.f-i .f-i-dialog-min', text: '.f-i .f-i-dialog-min' },
-  			{ src: '.f-i .f-i-dialog-restore', text: '.f-i .f-i-dialog-restore' },
-  			{ src: '.f-i .f-i-close', text: '.f-i .f-i-close' },
-  			{ src: '.f-i .f-i-spinner', text: '.f-i .f-i-spinner' }
+  			{ src: '.f-i-edit', text: '.f-i-edit' },
+  			{ src: '.f-i-view', text: '.f-i-view' },
+  			{ src: '.f-i-favor', text: '.f-i-favor' },
+  			{ src: '.f-i-trash', text: '.f-i-trash' },
+  			{ src: '.f-i-angle-double-right', text: '.f-i-angle-double-right' },
+  			{ src: '.f-i-check', text: '.f-i-check' },
+  			{ src: '.f-i-caret-down', text: '.f-i-caret-down' },
+  			{ src: '.f-i-caret-up', text: '.f-i-caret-up' },
+  			{ src: '.f-i-caret-left', text: '.f-i-caret-left' },
+  			{ src: '.f-i-caret-right', text: '.f-i-caret-right' },
+  			{ src: '.f-i-folder', text: '.f-i-folder' },
+  			{ src: '.f-i-folder-open', text: '.f-i-folder-open' },
+  			{ src: '.f-i-file', text: '.f-i-file' },
+  			{ src: '.f-i-ellipsis', text: '.f-i-ellipsis' },
+  			{ src: '.f-i-upload-image', text: '.f-i-upload-image' },
+  			{ src: '.f-i-upload', text: '.f-i-upload' },
+  			{ src: '.f-i-date', text: '.f-i-date' },
+  			{ src: '.f-i-long-arrow-down', text: '.f-i-long-arrow-down' },
+  			{ src: '.f-i-long-arrow-up', text: '.f-i-long-arrow-up' },
+  			{ src: '.f-i-long-arrow-left', text: '.f-i-long-arrow-left' },
+  			{ src: '.f-i-long-arrow-right', text: '.f-i-long-arrow-right' },
+  			{ src: '.f-i-minus', text: '.f-i-minus' },
+  			{ src: '.f-i-plus', text: '.f-i-plus' },
+  			{ src: '.f-i-minus-squre', text: '.f-i-minus-squre' },
+  			{ src: '.f-i-plus-squre', text: '.f-i-plus-squre' },
+  			{ src: '.f-i-warning', text: '.f-i-warning' },
+  			{ src: '.f-i-question', text: '.f-i-question' },
+  			{ src: '.f-i-check-circle', text: '.f-i-check-circle' },
+  			{ src: '.f-i-search', text: '.f-i-search' },
+  			{ src: '.f-i-angle-first', text: '.f-i-angle-first' },
+  			{ src: '.f-i-angle-last', text: '.f-i-angle-last' },
+  			{ src: '.f-i-angle-up', text: '.f-i-angle-up' },
+  			{ src: '.f-i-angle-down', text: '.f-i-angle-down' },
+  			{ src: '.f-i-angle-left', text: '.f-i-angle-left' },
+  			{ src: '.f-i-angle-right', text: '.f-i-angle-right' },
+  			{ src: '.f-i-star-empty', text: '.f-i-star-empty' },
+  			{ src: '.f-i-star-half', text: '.f-i-star-half' },
+  			{ src: '.f-i-star-full', text: '.f-i-star-full' },
+  			{ src: '.f-i-dialog-max', text: '.f-i-dialog-max' },
+  			{ src: '.f-i-dialog-min', text: '.f-i-dialog-min' },
+  			{ src: '.f-i-dialog-restore', text: '.f-i-dialog-restore' },
+  			{ src: '.f-i-close', text: '.f-i-close' },
+  			{ src: '.f-i-spinner', text: '.f-i-spinner' }
   		]
   	}
   },

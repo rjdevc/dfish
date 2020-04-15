@@ -1679,7 +1679,8 @@ Ajax = _createClass( {
 								r = g;
 						} else
 							m = l.responseText;
-						if ( m != N && x.filter && (m = _fnapply( x.filter, c, '$response,$ajax', [ m, self ] )) == N )
+						self.response = m;
+						if ( !r && x.filter && _fnapply( x.filter, c, '$response,$ajax', [ m, self ] ) === F )
 							r = 'filter';
 					} else
 						r = g;
@@ -1697,12 +1698,11 @@ Ajax = _createClass( {
 								}
 							}
 					    } else {
-					    	self.response = m;
-							b && b.call( c, m, self );
+							b && b.call( c, self.response, self );
 							_ajax_cache[ u ] === self && self.fireEvent( 'cache' );
 						}
 					}
-					x.complete && x.complete.call( c, m, self );
+					x.complete && x.complete.call( c, self.response, self );
 				}
 			}
 			l.onreadystatechange = _onchange;
@@ -1715,6 +1715,17 @@ Ajax = _createClass( {
 				} );
 				c && _jsonArray( this, _ajax_contexts, _uid( c ) );
 			}
+		},
+		// 存取临时变量
+		data: function( a, b ) {
+			if ( typeof a === _OBJ )
+				$.merge( this._data || (this._data = {}), a );
+			else if ( arguments.length === 1 )
+				return (this._data && this._data[ a ]);
+			else if ( a == N )
+				return this._data;
+			else
+				(this._data || (this._data = {}))[ a ] = b;
 		},
 		dispose: function() {
 			$.ajaxAbort( this );
