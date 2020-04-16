@@ -1,6 +1,8 @@
 package com.rongji.dfish.misc.javafx;
 
 import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.img.ImageProcessConfig;
+import com.rongji.dfish.base.img.ImageProcessorGroup;
 import com.rongji.dfish.base.util.CryptoUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.misc.chinese.PinyinConverter;
@@ -21,12 +23,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.HTMLEditor;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,35 +55,56 @@ public class DFishTools extends Application {
         tabPane.getTabs().add(getTab("二维码生成", getQRCodeLayout()));
         tabPane.getTabs().add(getTab("中文处理", getChineseLayout()));
         tabPane.getTabs().add(getTab("敏感词加密", getSensitiveWordsLayout()));
-        tabPane.getTabs().add(getTab("图片处理", getComingSoonLayout()));
+        tabPane.getTabs().add(getTab("图片处理", getImageLayout(primaryStage)));
         tabPane.getTabs().add(getTab("关于", getCopyrightLayout(), false));
 
         primaryStage.setScene(new Scene(tabPane, 800, 600));
         primaryStage.show();
     }
 
+    /**
+     * 创建Tab标签
+     *
+     * @param text 文本
+     * @param node 子节点
+     * @return Tab
+     */
     private Tab getTab(String text, Node node) {
         return getTab(text, node, true);
     }
 
+    /**
+     * @param text     文本
+     * @param node     子节点
+     * @param closable 是否可关闭
+     * @return Tab
+     */
     private Tab getTab(String text, Node node, boolean closable) {
         Tab tab = new Tab(text, node);
         tab.setClosable(closable);
         return tab;
     }
 
+    /**
+     * 版本信息
+     *
+     * @return Parent
+     */
     private Parent getCopyrightLayout() {
         VBox root = new VBox();
         root.setPadding(PADDING);
 
-        HTMLEditor html = new HTMLEditor();
-        root.getChildren().add(html);
-
-        html.setHtmlText("本工具由DFish开发团队提供，展示DFish后台框架积累的工具类，本工具上所有源码可参考com.rongji.dfish.misc.javafx.DFishTools");
+        Label content = new Label("本工具由DFish开发团队提供，展示DFish后台框架积累的工具类，本工具上调用源码可参考com.rongji.dfish.misc.javafx.DFishTools");
+        root.getChildren().add(content);
 
         return root;
     }
 
+    /**
+     * 敬请期待
+     *
+     * @return Parent
+     */
     private Parent getComingSoonLayout() {
         VBox root = new VBox();
         root.setPadding(PADDING);
@@ -93,7 +115,7 @@ public class DFishTools extends Application {
     /**
      * 加/解密工具
      *
-     * @return
+     * @return Parent
      */
     private Parent getCryptoLayout() {
         HBox rootLayout = new HBox();
@@ -246,12 +268,12 @@ public class DFishTools extends Application {
     /**
      * 获取加密器
      *
-     * @param alg
-     * @param encoding
-     * @param present
-     * @param gzip
-     * @param key
-     * @return
+     * @param alg      算法
+     * @param encoding 编码
+     * @param present  呈现方式
+     * @param gzip     是否压缩
+     * @param key      秘钥
+     * @return Cryptor
      */
     private Cryptor getCryptor(String alg, String encoding, String present, boolean gzip, String key) {
         int intPresent = 0;
@@ -284,7 +306,7 @@ public class DFishTools extends Application {
     /**
      * 二维码
      *
-     * @return
+     * @return Parent
      */
     private Parent getQRCodeLayout() {
         HBox layout = new HBox();
@@ -378,6 +400,11 @@ public class DFishTools extends Application {
 //        }
 //    }
 
+    /**
+     * 中文处理
+     *
+     * @return Parent
+     */
     private Parent getChineseLayout() {
         HBox layout = new HBox();
 
@@ -474,6 +501,11 @@ public class DFishTools extends Application {
         return layout;
     }
 
+    /**
+     * 敏感词处理
+     *
+     * @return Parent
+     */
     private Parent getSensitiveWordsLayout() {
         HBox layout = new HBox();
 
@@ -516,6 +548,142 @@ public class DFishTools extends Application {
             String source = originalText.getText();
             String result = SensitiveWordFilter.getInstance().replace(source);
             resultText.setText(result);
+        });
+
+        return layout;
+    }
+
+    private Parent getImageLayout(Stage primaryStage) {
+
+        HBox layout = new HBox();
+        layout.setPadding(PADDING);
+        layout.setSpacing(5);
+        HBox.setHgrow(layout, Priority.ALWAYS);
+
+//        ScrollPane scrollPane = new ScrollPane();
+//        layout.getChildren().add(scrollPane);
+//        scrollPane.setFitToHeight(true);
+//        scrollPane.setFitToWidth(true);
+
+        VBox sourceBox = new VBox();
+        layout.getChildren().add(sourceBox);
+        sourceBox.setSpacing(5);
+        sourceBox.setMinWidth(400);
+        sourceBox.setMaxWidth(400);
+        VBox.setVgrow(sourceBox, Priority.ALWAYS);
+
+        Button chooseBtn = new Button("选择图片");
+        sourceBox.getChildren().add(chooseBtn);
+
+        Label sourceFilePath = new Label();
+        sourceBox.getChildren().add(sourceFilePath);
+
+        ScrollPane scrollPane = new ScrollPane();
+        sourceBox.getChildren().add(scrollPane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        ImageView imageView = new ImageView();
+        scrollPane.setContent(imageView);
+
+        chooseBtn.setOnAction((event) -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("选择图片");
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("All Images", "*.jpg;*.gif;*.bmp;*.png;"),
+                    new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                    new FileChooser.ExtensionFilter("GIF", "*.gif"),
+                    new FileChooser.ExtensionFilter("BMP", "*.bmp"),
+                    new FileChooser.ExtensionFilter("PNG", "*.png")
+            );
+            File file = fileChooser.showOpenDialog(primaryStage);
+            sourceFilePath.setText(file.getAbsolutePath());
+            try (InputStream input = new FileInputStream(file)) {
+                imageView.setImage(new Image(input));
+            } catch (Exception e) {
+                error(e);
+            }
+        });
+
+        VBox destBox = new VBox();
+        destBox.setSpacing(5);
+        VBox.setVgrow(destBox, Priority.ALWAYS);
+        HBox.setHgrow(destBox, Priority.ALWAYS);
+        layout.getChildren().add(destBox);
+
+        Button destBtn = new Button("指定输出目录");
+        destBox.getChildren().add(destBtn);
+
+        TextField destDir = new TextField(System.getProperty("user.dir"));
+        destBox.getChildren().add(destDir);
+
+        destBtn.setOnAction((event) -> {
+            DirectoryChooser dirChooser = new DirectoryChooser();
+            dirChooser.setTitle("输出目录");
+            dirChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+            File file = dirChooser.showDialog(primaryStage);
+            destDir.setText(file.getAbsolutePath());
+        });
+
+        destBox.getChildren().add(new Label("输出宽度(-1代表原始大小)"));
+        Spinner widthInput = new Spinner(1, 99999999, -1);
+        widthInput.setEditable(true);
+        destBox.getChildren().add(widthInput);
+        destBox.getChildren().add(new Label("输出高度(-1代表原始大小)"));
+        Spinner heightInput = new Spinner(1, 99999999, -1);
+        heightInput.setEditable(true);
+        destBox.getChildren().add(heightInput);
+
+        destBox.getChildren().add(new Label("加工方式"));
+        ComboBox wayBox = new ComboBox();
+        destBox.getChildren().add(wayBox);
+
+        Map<String, String> ways = new HashMap<>(3);
+        ways.put("压缩", ImageProcessConfig.WAY_ZOOM);
+        ways.put("剪切", ImageProcessConfig.WAY_CUT);
+        ways.put("指定尺寸", ImageProcessConfig.WAY_RESIZE);
+        wayBox.setItems(FXCollections.observableArrayList("缩放", "剪切", "指定尺寸"));
+        wayBox.setValue("缩放");
+
+        Button executeBtn = new Button("开始加工");
+        destBox.getChildren().add(executeBtn);
+
+        executeBtn.setOnMouseClicked((event) -> {
+
+            try {
+                File sourceFile = null;
+                if (Utils.notEmpty(sourceFilePath.getText())) {
+                    try {
+                        sourceFile = new File(sourceFilePath.getText());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (sourceFile == null || !sourceFile.exists()) {
+                    warn("请选择需要加工的图片");
+                    return;
+                }
+                ImageProcessorGroup imageProcessorGroup = ImageProcessorGroup.of(new File(sourceFilePath.getText())).setDest(destDir.getText());
+                String widthValue = widthInput.getEditor().getText();
+                String heightValue = heightInput.getEditor().getText();
+                if (Utils.isEmpty(widthValue) || Utils.isEmpty(heightValue)) {
+                    warn("请设置输出宽/高度");
+                    return;
+                }
+                int width = Integer.parseInt(widthValue);
+                int height = Integer.parseInt(heightValue);
+                String alias = width + "x" + height;
+
+                String way = (String) wayBox.getValue();
+                way = Utils.isEmpty(way) ? ImageProcessConfig.WAY_ZOOM : way;
+
+                imageProcessorGroup.process(width, height, way, alias);
+                imageProcessorGroup.setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}").execute();
+                info("图片加工完成");
+            } catch (Exception e) {
+                error(e);
+            }
         });
 
         return layout;
