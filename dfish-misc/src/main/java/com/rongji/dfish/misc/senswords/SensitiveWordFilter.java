@@ -136,9 +136,8 @@ public class SensitiveWordFilter {
                     break;
                 } else if (node.isEnd()) {
                     find = node;
-                    wordbegin = k;
                     wordend = i;
-                    i=k;
+                    wordbegin = i=k;
                 }
             }
         }
