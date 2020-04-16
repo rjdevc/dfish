@@ -534,12 +534,18 @@ Template = $.createClass( {
 						if ( k.indexOf( '@w-if' ) === 0 || k.indexOf( '@w-elseif' ) === 0 ) {
 							if ( typeof b === _OBJ ) {
 								$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
-							} else if ( ! this.format( b, g, y ) ) {
-								r = N;
-								break;
+							} else {
+								var d = this.format( b, g, y );
+								if ( ! d || typeof d !== _OBJ ) {
+									r = d;
+									break;
+								}
 							}
 						} else if ( k === '@w-else' ) {
 							f._switchdefault = b;
+						} else if ( k === '@w-echo' ) {
+							r = this.format( b, g, y );
+							break;
 						}
 					} else {
 						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );
@@ -913,6 +919,28 @@ W = define( 'Widget', function() {
 				break;
 				case 'data':
 					b && c && (this.x.data = $.extend( c, b ));
+				break;
+				case 'width':
+					this.width( b );
+				break;
+				case 'height':
+					this.height( b );
+				break;
+				case 'minWidth':
+					b && this.innerWidth() != N && this.width() < b && this.width( b );
+					this.css( 'minWidth', b );
+				break;
+				case 'minHeight':
+					b && this.innerHeight() != N && this.height() < b && this.height( b );
+					this.css( 'minHeight', b );
+				break;
+				case 'maxWidth':
+					b && this.innerWidth() != N && this.width() > b && this.width( b );
+					this.css( 'maxWidth', b );
+				break;
+				case 'maxHeight':
+					b && this.innerHeight() != N && this.height() > b && this.height( b );
+					this.css( 'maxHeight', b );
 				break;
 				case 'beforeContent':
 				case 'prependContent':
@@ -2041,7 +2069,7 @@ Scroll = define.widget( 'Scroll', {
 	Prototype: {
 		// 让元素滚动到可见区域。支持下面两种调用方式 /e -> el|wg, y -> (top,bottom,middle,auto,top+n,bottom+n,n), x -> (left,right,center,auto), p -> ease?, q -> divide(整除数字，让滚动的距离是这个数字的整数倍), r -> callback
 		scrollTo: function( e, y, x, p, q, r ) {
-			var a = this.$( 'ovf' ), b = this.$( 'gut' ) || this.$( 'cont' ), c = $.bcr( a ), d = $.bcr( b ), f = e ? $.bcr( e ) : d, t, l;
+			var a = this.ovf(), b = this.$( 'gut' ) || this.$( 'cont' ) || a, c = $.bcr( a ), d = $.bcr( b ), f = e ? $.bcr( e ) : d, t, l;
 			if ( y != N || e ) {
 				if ( y == N || !isNaN( y ) ) {
 					t = _number( y );
@@ -2472,14 +2500,14 @@ Section = define.widget( 'Section', {
 		// @implement
 		init_x: function( x ) {
 			this.x = x;
-			if ( ! x.node && ! this.isDisplay() )
+			if ( ! x.node && ! x.nodes && ! this.isDisplay() )
 				return;
 			_proto._init_x.call( this, x );
 			this.init_preload();
 			if ( this.domready && this.x.id ) {
 				this.parent ? _setParent.call( this, this.parent ) : _setView.call( this, this.ownerView );
 			}
-			if ( ! x.node ) {
+			if ( ! x.node && ! x.nodes ) {
 				var s = this.getSrc() || (this.x.template && ! this.hasCssRes() && {});
 				if ( s && typeof s === _OBJ ) {
 					this._loadEnd( s );
@@ -4849,11 +4877,11 @@ Dialog = define.widget( 'Dialog', {
 				$.db( '<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type.toLowerCase() + '"></div>', c && this.getLocalParent().$() );
 			$.db( this.html(), c && this.getLocalParent().$() );
 			if ( this.x.minWidth || this.x.maxWidth ) {
-				var ew = Math.min( Math.max( this.$().offsetWidth, this.$().scrollWidth + 2 ), $.width() ), n = this.minWidth( T ), m = this.maxWidth( T );
+				var ew = Math.min( Math.max( $.boxwd( this.$() ), this.$().scrollWidth ), $.width() ), n = this.minWidth( T ), m = this.maxWidth( T );
 				this.width( n && n > ew ? n : m && m < ew ? m : ew );
 			}
 			if ( this.x.minHeight || this.x.maxHeight ) {
-				var eh = Math.min( Math.max( this.$().offsetHeight, this.$().scrollHeight + 2 ), $.height() ), n = this.minHeight( T ), m = this.maxHeight( T );
+				var eh = Math.min( Math.max( $.boxht( this.$() ), this.$().scrollHeight ), $.height() ), n = this.minHeight( T ), m = this.maxHeight( T );
 				this.height( n && n > eh ? n : m && m < eh ? m : eh );
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
@@ -7787,7 +7815,7 @@ DropBox = define.widget( 'DropBox', {
 		x_nodes: $.rt( N ),
 		$v: function() { return $( this.id + 'v' ) },
 		init_x: function( x ) {
-			this._init_x( x );
+			Section.prototype.init_x.call( this, x );
 		},
 		init_nodes: function() {
 			this._sel.length = 0;
@@ -7944,7 +7972,7 @@ DropBox = define.widget( 'DropBox', {
 				this._dropper = this.exec( $.extend( d, mbi ? {
 					width: $.width() - 40, maxHeight: $.height() - 40, cover: T,
 				} : {
-					minWidth: this.formWidth(), maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ), widthMinus: 2, heightMinus: 2, 
+					minWidth: this.formWidth(), maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ),
 					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }
 				}) );
 			}
@@ -7983,6 +8011,7 @@ DropBox = define.widget( 'DropBox', {
 		showLayout: function() {
 			if ( this._sel.length )
 				this.val( this._sel[ 0 ].value );
+			this.removeClass( 'z-loading' );
 		},
 		form_prop: function() {
 			var s = AbsInput.prototype.form_prop.call( this );
@@ -9588,7 +9617,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		// @implement
 		append: function( a ) {
 			// 尚未装载的节点不直接增加子节点
-			if ( this.getSrc() && !this.loaded )
+			if ( this.isFolder() && this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.append.apply( this, arguments );
@@ -9596,7 +9625,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		// @implement
 		prepend: function( a ) {
 			// 尚未装载的节点不直接增加子节点
-			if ( this.getSrc() && !this.loaded )
+			if ( this.isFolder() && this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.prepend.apply( this, arguments );
