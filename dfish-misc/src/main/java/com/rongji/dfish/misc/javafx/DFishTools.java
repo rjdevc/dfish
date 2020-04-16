@@ -627,11 +627,11 @@ public class DFishTools extends Application {
         });
 
         destBox.getChildren().add(new Label("输出宽度(-1代表原始大小)"));
-        Spinner widthInput = new Spinner(1, 99999999, -1);
+        Spinner widthInput = new Spinner(-1, 99999999, -1);
         widthInput.setEditable(true);
         destBox.getChildren().add(widthInput);
         destBox.getChildren().add(new Label("输出高度(-1代表原始大小)"));
-        Spinner heightInput = new Spinner(1, 99999999, -1);
+        Spinner heightInput = new Spinner(-1, 99999999, -1);
         heightInput.setEditable(true);
         destBox.getChildren().add(heightInput);
 
