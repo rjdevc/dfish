@@ -107,16 +107,17 @@ public class SensitiveWordFilter {
                 continue;
             }
             find = null;
+            char cpcurrc2 = 0; // 用于控制叠字 不能使用cpcurrc 是因为不能改变前一轮状态
             for (int k = i - 1; k >= 0; k--) {
                 currc = chs[k];
                 if (SensitiveTrieTree.stopChar.contains(currc)) {
                     continue;
                 }
                 currc = toLowerCase(currc);
-                if (currc == cpcurrc) {
-                    continue;
+                if (currc == cpcurrc2) {
+                    continue;//用于控制叠字
                 } else {
-                    cpcurrc = currc;
+                    cpcurrc2 = currc;
                 }
                 node = node.get(currc);
                 if (node == null) {
@@ -137,6 +138,7 @@ public class SensitiveWordFilter {
                     find = node;
                     wordbegin = k;
                     wordend = i;
+                    i=k;
                 }
             }
         }
