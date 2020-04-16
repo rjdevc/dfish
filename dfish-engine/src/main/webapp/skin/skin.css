@@ -108,7 +108,7 @@ i {
 
 /****布局****/
 /**表格**/
-.w-table.z-empty .w-table-bg, .w-album.z-empty, .w-tree.z-empty {
+.w-table.z-head.z-empty .w-tbody, .w-table.z-nohead.z-empty, .w-album.z-empty, .w-tree.z-empty {
     background: url("./img/nodata_160.png") no-repeat center;
     min-height: 160px;
 }
@@ -165,9 +165,11 @@ i {
 .w-dialog .dlg-head {
     background-color: #2498ff;
 }
+
 .w-dialog .dlg-head .w-button ._i {
     color: #fff;
 }
+
 .w-dialog .dlg-head .dlg-head-title {
     color: #fff;
     font-size: 14px;
@@ -194,6 +196,7 @@ i {
     height: 16px;
     line-height: 16px;
 }
+
 /**Password**/
 /****表单类****/
 
