@@ -9617,7 +9617,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		// @implement
 		append: function( a ) {
 			// 尚未装载的节点不直接增加子节点
-			if ( this.getSrc() && !this.loaded )
+			if ( this.isFolder() && this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.append.apply( this, arguments );
@@ -9625,7 +9625,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		// @implement
 		prepend: function( a ) {
 			// 尚未装载的节点不直接增加子节点
-			if ( this.getSrc() && !this.loaded )
+			if ( this.isFolder() && this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
 			else
 				_proto.prepend.apply( this, arguments );
