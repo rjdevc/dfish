@@ -9619,16 +9619,21 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 			// 尚未装载的节点不直接增加子节点
 			if ( this.isFolder() && this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
-			else
+			else {
 				_proto.append.apply( this, arguments );
+				this.loaded = T;
+			}
 		},
 		// @implement
 		prepend: function( a ) {
 			// 尚未装载的节点不直接增加子节点
 			if ( this.isFolder() && this.getSrc() && !this.loaded )
 				a.isWidget && a.remove();
-			else
+			else {
 				_proto.prepend.apply( this, arguments );
+				this.loaded = T;
+			}
+				
 		},
 		// @implement
 		attrSetter: function( a, b, c ) {
