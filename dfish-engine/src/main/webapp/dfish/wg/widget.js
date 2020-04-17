@@ -235,10 +235,27 @@ _f_val = function( a, b, r ) {
 // @a -> widget|el, b -> top?, c -> left?, d -> frame focus?
 _scrollIntoView = function( a, b, c, d ) {
 	if ( a && (!a.isWidget || a.$()) ) {
-		d && (Frame.focus( a ), Toggle.focus( a ));
+		d && _scrollFocus( a );
 		var s = Scroll.get( a );
 		s && s.scrollTo( a, b || 'auto', c || 'auto' );
 	}
+},
+_scrollFocus = function( a ) {
+	var n = _widget( a );
+	do {
+		if ( ! n.isDisplay() ) {
+			if ( n._toggleCommander ) {
+				n._toggleCommander.toggle( T );
+			} else if ( n.type_collapselist ) {
+				n.prev().focus();
+			} else if ( n.parentNode && n.parentNode.type_frame ) {
+				if ( n.parentNode.getFocus() != n ) {
+					var e = $.get( '[w-target="' + n.x.id + '"]', n.parentNode.ownerView.$() );
+					e ? _widget( e ).focus() : n.parentNode.focus( n );
+				}
+			}
+		}
+	} while ( (n = n.parentNode) && ! n.isDialogWidget );
 },
 /*	beforesend 发送请求之前调用
  *	error      请求出错时调用。传入XMLHttpRequest对象，描述错误类型的字符串以及一个异常对象（如果有的话）
@@ -1143,15 +1160,15 @@ W = define( 'Widget', function() {
 					return T;
 				return ! b && this.contains( _widget( a ) );
 			}
-		},
+		}, 
 		hasBubble: function( a, b ) {
 			return this.contains( a, b );
 		},
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
-			var c = a == N || (a.isWidget ? a.x.expanded : a), p = this.parentNode, d = 'f-hide' + (b ? '' : ' f-form-hide'), o = this.$();
-			a != N && a.isWidget && (c ? (o.toggleCommander = N) : (o.toggleCommander = a.id));
-			o && $.classAdd( o, d, ! c );
+			var c = a == N || (a.isWidget ? a.x.expanded : a), p = this.parentNode, d = 'f-hide' + (b ? '' : ' f-form-hide');
+			a != N && a.isWidget && (c ? (this._toggleCommander = N) : (this._toggleCommander = a));
+			this.addClass( d, ! c );
 			this.x.display = !!c;
 			!!c && this.trigger( 'display' );
 		},
@@ -2978,27 +2995,6 @@ Frame = define.widget( 'Frame', {
 			}
 		}
 	},
-	Helper: {
-		// 获取a节点最接近 frame 的祖先元素
-		edge: function( a ) {
-			var n = _widget( a );
-			do {
-				if ( n.parentNode && n.parentNode.type_frame )
-					return n;
-			} while( (n = n.parentNode) && ! n.isDialogWidget );
-		},
-		// 让 frame 中的a可见 /@a -> widget|elem
-		focus: function( a ) {
-			var e = a && Frame.edge( a );
-			if ( e ) {
-				if ( e.parentNode.getFocus() != e ) {
-					var n = $.get( '[w-target="' + e.x.id + '"]', e.parentNode.ownerView.$() );
-					n && _widget( n ).focus();
-				}
-				Frame.focus( e.parentNode );
-			}
-		}
-	},
 	Prototype: {
 		type_frame: T,
 		className: 'w-frame',
@@ -4201,9 +4197,9 @@ Toggle = define.widget( 'Toggle', {
 		focus: function( a ) {
 			var p = a;
 			do {
-				var b = p.$() && p.$().toggleCommander;
+				var b = p && p._displayCommander;
 				if ( b ) {
-					_all[ b ].toggle( T );
+					b.toggle( T );
 					break;
 				}
 			} while ( p = p.parentNode );
@@ -5487,7 +5483,7 @@ Collapse = define.widget( 'Collapse', {
 		this.id = $.uid( this );
 		var y = { type: 'Vert' }, b = [], d, e = this.getDefaultOption( x.cls );
 		for ( var i = 0, n = x.nodes || [], g; i < n.length; i ++ ) {
-			g = { type: 'Vert', cls: 'w-collapse-cont', widthMinus: 42, heightMinus: 41, display: !!n[ i ].focus, nodes: [ n[ i ].target ] };
+			g = { type: 'CollapseList', cls: 'w-collapse-cont', widthMinus: 42, heightMinus: 41, display: !!n[ i ].focus, nodes: [ n[ i ].target ] };
 			b.push( $.extend( { type: 'CollapseButton', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
 			b.push( g );
 		}
@@ -5535,7 +5531,7 @@ CollapseButton = define.widget( 'CollapseButton', {
 	},
 	Default: { widthMinus: 2 },
 	Prototype: {
-		className: 'w-button w-collapse-button',
+		className: 'w-button w-collapsebutton',
 		isToggleable: $.rt( T ),
 		prop_cls: function() {
 			return _proto.prop_cls.call( this ) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === this.parentNode.length - 2 ? ' z-last' : '');
@@ -5543,6 +5539,14 @@ CollapseButton = define.widget( 'CollapseButton', {
 		html_icon: function() {
 			return this.x.icon ? Button.prototype.html_icon.call( this ) : '<div class=_clp_arw>' + $.caret( this.id + 'clp-arw', 'r' ) + '<i class=f-vi></i></div>';
 		}
+	}
+} ),
+/* `CollapseList` */
+CollapseList = define.widget( 'CollapseList', {
+	Extend: Vertical,
+	Prototype: {
+		type_collapselist: T,
+		className: 'w-vertical w-collapselist'
 	}
 } ),
 /* `label` */
