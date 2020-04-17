@@ -1,6 +1,7 @@
 package com.rongji.dfish.misc.javafx;
 
 import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.img.ImageProcessConfig;
 import com.rongji.dfish.base.img.ImageProcessorGroup;
 import com.rongji.dfish.base.util.CryptoUtil;
@@ -23,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -30,6 +32,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * DFish辅助工具包桌面程序
@@ -41,13 +44,21 @@ import java.util.Map;
  */
 public class DFishTools extends Application {
 
+    private static final Map<String, String> IMAGE_WAYS = new HashMap<>(3);
+
+    static {
+        IMAGE_WAYS.put("压缩", ImageProcessConfig.WAY_ZOOM);
+        IMAGE_WAYS.put("剪切", ImageProcessConfig.WAY_CUT);
+        IMAGE_WAYS.put("指定尺寸", ImageProcessConfig.WAY_RESIZE);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("DFish辅助工具V0.9");
+        primaryStage.setTitle("DFish辅助工具v1.0");
 
         TabPane tabPane = new TabPane();
         tabPane.setSide(Side.TOP);
@@ -56,7 +67,7 @@ public class DFishTools extends Application {
         tabPane.getTabs().add(getTab("中文处理", getChineseLayout()));
         tabPane.getTabs().add(getTab("敏感词加密", getSensitiveWordsLayout()));
         tabPane.getTabs().add(getTab("图片处理", getImageLayout(primaryStage)));
-        tabPane.getTabs().add(getTab("关于", getCopyrightLayout(), false));
+        tabPane.getTabs().add(getTab("关于", getCopyrightLayout()));
 
         primaryStage.setScene(new Scene(tabPane, 800, 600));
         primaryStage.show();
@@ -70,7 +81,7 @@ public class DFishTools extends Application {
      * @return Tab
      */
     private Tab getTab(String text, Node node) {
-        return getTab(text, node, true);
+        return getTab(text, node, false);
     }
 
     /**
@@ -94,7 +105,7 @@ public class DFishTools extends Application {
         VBox root = new VBox();
         root.setPadding(PADDING);
 
-        Label content = new Label("本工具由DFish开发团队提供，展示DFish后台框架积累的工具类，本工具上调用源码可参考com.rongji.dfish.misc.javafx.DFishTools");
+        Text content = new Text("本工具由DFish开发团队提供，展示DFish后台框架积累的工具类，本工具上调用源码可参考com.rongji.dfish.misc.javafx.DFishTools");
         root.getChildren().add(content);
 
         return root;
@@ -174,11 +185,11 @@ public class DFishTools extends Application {
         present.setItems(FXCollections.observableArrayList("HEX", "BASE64", "BASE32", "BASE64_URLSAFE", "RAW"));
         present.setValue("BASE32");
 
-        middle.getChildren().add(new Label("压缩"));
+        middle.getChildren().add(new Label("压缩(文本不长可不开启)"));
         CheckBox gzip = new CheckBox();
         middle.getChildren().add(gzip);
         gzip.setSelected(false);
-        gzip.setText("文本不长时，不用开启");
+        gzip.setText("开启");
 
         middle.getChildren().add(new Label("秘钥"));
         TextField key = new TextField();
@@ -239,7 +250,14 @@ public class DFishTools extends Application {
      */
     private void error(Throwable t) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(t.getClass().getName() + " : " + t.getMessage());
+        String msg = null;
+        if (t instanceof MarkedRuntimeException) {
+            msg = t.getMessage();
+        } else {
+            msg = t.getClass().getName() + " : " + t.getMessage();
+        }
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
         alert.showAndWait();
     }
 
@@ -250,7 +268,8 @@ public class DFishTools extends Application {
      */
     private void warn(String msg) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(msg);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
         alert.showAndWait();
     }
 
@@ -261,7 +280,8 @@ public class DFishTools extends Application {
      */
     private void info(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(msg);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
         alert.showAndWait();
     }
 
@@ -353,6 +373,8 @@ public class DFishTools extends Application {
                     bais = new ByteArrayInputStream(baos.toByteArray());
                     Image image = new Image(bais);
                     imageView.setImage(image);
+                } else {
+                    warn("请在左侧输入需要转码内容");
                 }
             } catch (Throwable t) {
                 error(t);
@@ -553,6 +575,7 @@ public class DFishTools extends Application {
         return layout;
     }
 
+
     private Parent getImageLayout(Stage primaryStage) {
 
         HBox layout = new HBox();
@@ -575,7 +598,7 @@ public class DFishTools extends Application {
         Button chooseBtn = new Button("选择图片");
         sourceBox.getChildren().add(chooseBtn);
 
-        Label sourceFilePath = new Label();
+        Label sourceFilePath = new Label("");
         sourceBox.getChildren().add(sourceFilePath);
 
         ScrollPane scrollPane = new ScrollPane();
@@ -585,26 +608,6 @@ public class DFishTools extends Application {
 
         ImageView imageView = new ImageView();
         scrollPane.setContent(imageView);
-
-        chooseBtn.setOnAction((event) -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("选择图片");
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("All Images", "*.jpg;*.gif;*.bmp;*.png;"),
-                    new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-                    new FileChooser.ExtensionFilter("GIF", "*.gif"),
-                    new FileChooser.ExtensionFilter("BMP", "*.bmp"),
-                    new FileChooser.ExtensionFilter("PNG", "*.png")
-            );
-            File file = fileChooser.showOpenDialog(primaryStage);
-            sourceFilePath.setText(file.getAbsolutePath());
-            try (InputStream input = new FileInputStream(file)) {
-                imageView.setImage(new Image(input));
-            } catch (Exception e) {
-                error(e);
-            }
-        });
 
         VBox destBox = new VBox();
         destBox.setSpacing(5);
@@ -617,14 +620,6 @@ public class DFishTools extends Application {
 
         TextField destDir = new TextField(System.getProperty("user.dir"));
         destBox.getChildren().add(destDir);
-
-        destBtn.setOnAction((event) -> {
-            DirectoryChooser dirChooser = new DirectoryChooser();
-            dirChooser.setTitle("输出目录");
-            dirChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-            File file = dirChooser.showDialog(primaryStage);
-            destDir.setText(file.getAbsolutePath());
-        });
 
         destBox.getChildren().add(new Label("输出宽度(-1代表原始大小)"));
         Spinner widthInput = new Spinner(-1, 99999999, -1);
@@ -639,18 +634,53 @@ public class DFishTools extends Application {
         ComboBox wayBox = new ComboBox();
         destBox.getChildren().add(wayBox);
 
-        Map<String, String> ways = new HashMap<>(3);
-        ways.put("压缩", ImageProcessConfig.WAY_ZOOM);
-        ways.put("剪切", ImageProcessConfig.WAY_CUT);
-        ways.put("指定尺寸", ImageProcessConfig.WAY_RESIZE);
         wayBox.setItems(FXCollections.observableArrayList("缩放", "剪切", "指定尺寸"));
         wayBox.setValue("缩放");
 
+        destBox.getChildren().add(new Label("输出文件别名:{FILE_NAME}_{WIDTH}x{HEIGHT}.{EXTENSION}"));
+//        destBox.getChildren().add(new Label("预计输出文件:"));
+//        Label outputFileLabel = new Label("请在左侧选择需要加工的图片");
+//        destBox.getChildren().add(outputFileLabel);
+
         Button executeBtn = new Button("开始加工");
         destBox.getChildren().add(executeBtn);
+//        executeBtn.setDisable(true);
+
+        ImageProcessConfig processConfig = new ImageProcessConfig();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("选择图片");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Images", "*.jpg;*.gif;*.bmp;*.png;"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("GIF", "*.gif"),
+                new FileChooser.ExtensionFilter("BMP", "*.bmp"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
+
+        chooseBtn.setOnAction((event) -> {
+            File file = fileChooser.showOpenDialog(primaryStage);
+            sourceFilePath.setText(file.getAbsolutePath());
+            fileChooser.setInitialDirectory(file.getParentFile());
+            try (InputStream input = new FileInputStream(file)) {
+                imageView.setImage(new Image(input));
+//                setProcessConfig(processConfig, outputFileLabel, sourceFilePath, destDir, widthInput, heightInput, wayBox, executeBtn);
+            } catch (Exception e) {
+                error(e);
+            }
+        });
+
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        dirChooser.setTitle("输出目录");
+        dirChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        destBtn.setOnAction((event) -> {
+            File file = dirChooser.showDialog(primaryStage);
+            destDir.setText(file.getAbsolutePath());
+            dirChooser.setInitialDirectory(file);
+        });
 
         executeBtn.setOnMouseClicked((event) -> {
-
             try {
                 File sourceFile = null;
                 if (Utils.notEmpty(sourceFilePath.getText())) {
@@ -661,26 +691,58 @@ public class DFishTools extends Application {
                     }
                 }
                 if (sourceFile == null || !sourceFile.exists()) {
-                    warn("请选择需要加工的图片");
+                    warn("请在左侧选择需要加工的图片");
                     return;
                 }
-                ImageProcessorGroup imageProcessorGroup = ImageProcessorGroup.of(new File(sourceFilePath.getText())).setDest(destDir.getText());
-                String widthValue = widthInput.getEditor().getText();
-                String heightValue = heightInput.getEditor().getText();
-                if (Utils.isEmpty(widthValue) || Utils.isEmpty(heightValue)) {
-                    warn("请设置输出宽/高度");
+                String destDirText = destDir.getText();
+                if (Utils.isEmpty(destDirText)) {
+                    warn("请选择输出目录");
                     return;
                 }
-                int width = Integer.parseInt(widthValue);
-                int height = Integer.parseInt(heightValue);
+                ImageProcessorGroup imageProcessorGroup = ImageProcessorGroup.of(sourceFile).setDest(destDirText).setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}");
+                Integer width = getIntegerValue(widthInput);
+                Integer height = getIntegerValue(heightInput);
+                width = width == null ? -1 : width;
+                height = height == null ? -1 : height;
+
                 String alias = width + "x" + height;
 
-                String way = (String) wayBox.getValue();
+                // FIXME ComboBox选项问题不清楚怎么做,这里做法比较猥琐
+                String way = IMAGE_WAYS.get(wayBox.getValue());
                 way = Utils.isEmpty(way) ? ImageProcessConfig.WAY_ZOOM : way;
 
                 imageProcessorGroup.process(width, height, way, alias);
-                imageProcessorGroup.setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}").execute();
-                info("图片加工完成");
+
+                StringBuilder fileName = new StringBuilder(destDir.getText());
+                if (!destDirText.endsWith(File.separator)) {
+                    fileName.append(File.separatorChar);
+                }
+                String sourceFileName = sourceFile.getName();
+                int dotSplit = sourceFileName.lastIndexOf(".");
+                if (dotSplit >= 0) {
+                    fileName.append(sourceFileName.substring(0, dotSplit));
+                    fileName.append('_').append(width).append('x').append(height).append('.').append(sourceFileName.substring(dotSplit + 1));
+                } else {
+                    fileName.append(sourceFileName).append('_').append(width).append('x').append(height);
+                }
+                File destFile = new File(fileName.toString());
+
+                if (destFile.exists()) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("确认信息对话框");
+                    alert.setHeaderText(null);
+                    alert.setContentText("文件[" + destFile.getName() + "]已存在,确认覆盖文件?");
+
+                    Optional result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK) {
+                        imageProcessorGroup.execute();
+                        info("图片加工完成");
+                    }
+                } else {
+                    imageProcessorGroup.execute();
+                    info("图片加工完成");
+                }
+
             } catch (Exception e) {
                 error(e);
             }
@@ -688,5 +750,66 @@ public class DFishTools extends Application {
 
         return layout;
     }
+
+    private Integer getIntegerValue(Spinner spinner) {
+        String valueText = spinner.getEditor().getText();
+        if (Utils.notEmpty(valueText)) {
+            try {
+                return Integer.parseInt(valueText);
+            } catch (Exception e) {
+                throw new MarkedRuntimeException("输入值不合法[" + valueText + "]");
+            }
+        }
+
+        return null;
+    }
+
+//    private void setProcessConfig(ImageProcessConfig processConfig, Label outputFileLabel, Label sourceFilePath, TextField destDir, Spinner widthInput, Spinner heightInput, ComboBox wayBox, Button executeBtn) {
+//        String sourceName = sourceFilePath.getText();
+//        if (Utils.isEmpty(sourceName)) {
+//            executeBtn.setDisable(true);
+//            outputFileLabel.setText("请在左侧选择需要加工的图片");
+//            throw new MarkedRuntimeException("请在左侧选择需要加工的图片");
+//        }
+//        String outputFileDir = destDir.getText();
+//        if (Utils.isEmpty(outputFileDir)) {
+//            executeBtn.setDisable(true);
+//            outputFileLabel.setText("请选择输出目录");
+//            throw new MarkedRuntimeException("请选择输出目录");
+//        }
+//        Integer width = getIntegerValue(widthInput);
+//        Integer height = getIntegerValue(heightInput);
+//        width = width == null ? -1 : width;
+//        height = height == null ? -1 : height;
+//
+//        // FIXME ComboBox选项问题不清楚怎么做,这里做法比较猥琐
+//        String way = IMAGE_WAYS.get(wayBox.getValue());
+//        way = Utils.isEmpty(way) ? ImageProcessConfig.WAY_ZOOM : way;
+//
+//        executeBtn.setDisable(false);
+//
+//        StringBuilder outputFileName = new StringBuilder(outputFileDir);
+//        if (!outputFileDir.endsWith(File.pathSeparator)) {
+//            outputFileName.append(File.pathSeparatorChar);
+//        }
+//
+//        int pathSplit = sourceName.lastIndexOf(File.pathSeparator);
+//        if (pathSplit > -1) {
+//            sourceName.substring(pathSplit + 1);
+//        }
+//        int dotSplit = sourceName.lastIndexOf(".");
+//
+//        String preName = dotSplit > 0 ? sourceName.substring(0, dotSplit) : sourceName;
+//        String extension = dotSplit > 0 ? sourceName.substring(dotSplit + 1) : "";
+//
+//        // 名字根式参照上面格式要求{FILE_NAME}_{ALIAS}.{EXTENSION}
+//        outputFileName.append(preName).append('_').append(width).append('x').append(height).append('.').append(extension);
+//        outputFileLabel.setText(outputFileName.toString());
+//
+//        processConfig.setWidth(width);
+//        processConfig.setHeight(height);
+//        processConfig.setWay(way);
+//        processConfig.setAlias(width + "x" + height);
+//    }
 
 }
