@@ -4,10 +4,12 @@ import com.rongji.dfish.base.crypto.Cryptor;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.img.ImageProcessConfig;
 import com.rongji.dfish.base.img.ImageProcessorGroup;
+import com.rongji.dfish.base.text.TrieTree;
 import com.rongji.dfish.base.util.CryptoUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.misc.chinese.PinyinConverter;
 import com.rongji.dfish.misc.chinese.Trad2SimpConverter;
+import com.rongji.dfish.misc.origin.OriginMatcher;
 import com.rongji.dfish.misc.qrcode.MatrixToImageWriter;
 import com.rongji.dfish.misc.senswords.SensitiveWordFilter;
 import javafx.application.Application;
@@ -27,6 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -65,7 +68,8 @@ public class DFishTools extends Application {
         tabPane.getTabs().add(getTab("加/解密", getCryptoLayout()));
         tabPane.getTabs().add(getTab("二维码生成", getQRCodeLayout()));
         tabPane.getTabs().add(getTab("中文处理", getChineseLayout()));
-        tabPane.getTabs().add(getTab("敏感词加密", getSensitiveWordsLayout()));
+        tabPane.getTabs().add(getTab("行政区划识别", getOriginLayout()));
+        tabPane.getTabs().add(getTab("敏感词过滤", getSensitiveWordsLayout()));
         tabPane.getTabs().add(getTab("图片处理", getImageLayout(primaryStage)));
         tabPane.getTabs().add(getTab("关于", getCopyrightLayout()));
 
@@ -523,6 +527,91 @@ public class DFishTools extends Application {
         return layout;
     }
 
+    private Parent getOriginLayout() {
+        HBox layout = new HBox();
+
+        VBox left = new VBox();
+        layout.getChildren().add(left);
+        left.setPadding(PADDING);
+        left.getChildren().add(new Label("原文"));
+        TextArea originalText = new TextArea();
+        left.getChildren().add(originalText);
+        originalText.setText("厦门市湖里区金山街道金安社区\r\n" +
+                "鼓楼区\r\n" +
+                "河南开封鼓楼\r\n" +
+                "河南省鼓楼区\r\n" +
+                "江苏鼓楼\r\n" +
+                "江苏省徐州市鼓楼区\r\n" +
+                "江苏南京鼓楼\r\n");
+        originalText.setWrapText(true);
+        VBox.setVgrow(originalText, Priority.ALWAYS);
+
+        VBox center = new VBox();
+        layout.getChildren().add(center);
+        center.setMinWidth(150);
+        center.setMaxWidth(150);
+        center.setSpacing(10);
+        center.setAlignment(Pos.CENTER);
+        center.setPadding(new Insets(10, 5, 10, 5));
+
+//        FXCollections.
+
+        VBox pinyinBox = new VBox();
+        center.getChildren().add(pinyinBox);
+        pinyinBox.setSpacing(5);
+
+
+
+        Button pinyinBtn = new Button("解析 >>");
+        pinyinBox.getChildren().add(pinyinBtn);
+
+//        Button simplified2TraditionalBtn = new Button("简体->繁体");
+//        center.getChildren().add(simplified2TraditionalBtn);
+//        Button traditional2SimplifiedBtn = new Button("繁体->简体");
+//        center.getChildren().add(traditional2SimplifiedBtn);
+
+        VBox right = new VBox();
+        layout.getChildren().add(right);
+        right.setPadding(PADDING);
+
+        right.getChildren().add(new Label("结果"));
+        TextArea resultText = new TextArea();
+        right.getChildren().add(resultText);
+        resultText.setWrapText(true);
+        Label infoLabel=new Label("请点击解析按钮");
+        right.getChildren().add(infoLabel);
+        VBox.setVgrow(resultText, Priority.ALWAYS);
+
+        pinyinBtn.setOnMouseClicked((event) -> {
+            String source = originalText.getText();
+            StringReader sr=new StringReader(source);
+            BufferedReader br=new BufferedReader(sr);
+            long begin=System.currentTimeMillis();
+            OriginMatcher matcher=OriginMatcher.createInstance();
+            long loaded=System.currentTimeMillis();
+            String line=null;
+            StringBuilder ret=new StringBuilder();
+            try {
+                while ((line = br.readLine()) != null) {
+                    if(Utils.isEmpty(line.trim())){
+                        continue;
+                    }
+                    OriginMatcher.MatchResult mr=matcher.match(line);
+                    ret.append(mr.getCode()).append(" (可信度=").append(mr.getConfidence()).append(")\r\n");
+                }
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+            long parsed=System.currentTimeMillis();
+            resultText.setText(ret.toString());
+            infoLabel.setText("装载库"+(loaded-begin)+"ms. 解析"+(parsed-loaded)+"ms. (建议静态变量装载)");
+        });
+
+
+
+        return layout;
+    }
+
     /**
      * 敏感词处理
      *
@@ -556,6 +645,9 @@ public class DFishTools extends Application {
         Button pinyinBtn = new Button("敏感词过滤 >>");
         pinyinBox.getChildren().add(pinyinBtn);
 
+        Button showLib = new Button("查看敏感词库");
+        pinyinBox.getChildren().add(showLib);
+
         VBox right = new VBox();
         layout.getChildren().add(right);
         right.setPadding(PADDING);
@@ -571,8 +663,70 @@ public class DFishTools extends Application {
             String result = SensitiveWordFilter.getInstance().replace(source);
             resultText.setText(result);
         });
+        showLib.setOnMouseClicked(event -> {
+            //弹出一个窗口 展示敏感词库
+            Stage newStage = new Stage();
+            TreeView pane2=new TreeView();
+
+            pane2.setRoot( showLibAsTree());
+
+            Scene scene2 = new Scene(pane2, 400, 600);
+            newStage.setScene(scene2);
+            //指定 stage 的模式
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.setTitle("查看词库");
+            newStage.showAndWait();
+
+        });
 
         return layout;
+    }
+
+    private TreeItem showLibAsTree() {
+        TreeItem<String> rootItem=new TreeItem<>();
+        rootItem.setValue("【敏感词库(m结尾部分)】");
+        rootItem.setExpanded(true);
+
+        TrieTree<Boolean> trieTree= SensitiveWordFilter.getInstance().getCore();
+        TrieTree.Node node=trieTree.getRoot();
+        node=node.get('m');//只展现m部分
+        showNode(node,"m",rootItem);
+        return rootItem;
+    }
+
+    private void showNode(TrieTree.Node<Boolean> node, String prefix,TreeItem<String> shell) {
+        Map<Character,TrieTree.Node<Boolean>> getChildrenMap=node.getChildrenMap();
+        if(getChildrenMap==null|| getChildrenMap.size()==0){
+            return;
+        }
+        for (Map.Entry<Character,TrieTree.Node<Boolean>> sub : getChildrenMap.entrySet()) {
+            Map.Entry<Character,TrieTree.Node<Boolean>> sub2=sub;
+            String prefix2=prefix;
+            for(;;) {
+                if(sub2.getValue().getValue()!=null){
+                    break;
+                }
+                Map<Character,TrieTree.Node<Boolean>> childrenMap2=sub2.getValue().getChildrenMap();
+                if(childrenMap2==null||childrenMap2.size()!=1){
+                    break;
+                }
+                prefix2=sub2.getKey()+prefix2;
+                sub2=childrenMap2.entrySet().iterator().next();//下钻
+
+//                prefix2=sub2.getKey()+prefix2;
+            }
+
+            String fullKey=sub2.getKey()+prefix2;
+            String title=fullKey;
+            Boolean b=sub2.getValue().getValue();
+            if(b!=null){
+                title += b?" (黑)":" (白)";
+            }
+            TreeItem<String> ti=new TreeItem(title);
+            shell.getChildren().add(ti);
+            shell.setExpanded(true);
+            showNode(sub2.getValue(),fullKey,ti);
+        }
     }
 
 

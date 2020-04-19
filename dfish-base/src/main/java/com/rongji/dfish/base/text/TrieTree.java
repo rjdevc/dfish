@@ -1,8 +1,6 @@
 package com.rongji.dfish.base.text;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 字典树类
@@ -334,7 +332,7 @@ public class TrieTree<V extends Object> {
 	 *
 	 * @param <V> 值类型
 	 */
-	private static class HashNode<V>{
+	public static class HashNode<V>{
 		public HashNode(char key,Node<V> value){
 			this.key=key;
 			this.value=value;
@@ -374,7 +372,23 @@ public class TrieTree<V extends Object> {
 			return end;
 		}
 
-
+        /**
+         * 取得下级节点。一般性能敏感的地方不该嗲用改方法。
+         * @return
+         */
+		public Map<Character,Node<V>> getChildrenMap(){
+		    if(children==null){
+				return null;
+			}
+			Map<Character,Node<V>> ret=new HashMap<>();
+			for(HashNode<V> hn:children){
+                while(hn!=null){
+                    ret.put(hn.key,hn.value);
+                    hn=hn.next;
+                }
+            }
+			return ret;
+		}
 		/**
 		 * 是否一个词结束了。
 		 * @param end boolean
@@ -697,8 +711,9 @@ public class TrieTree<V extends Object> {
 				sb.append(key);
 				// 取得唯一的值
 				for (HashNode<V> node : children) {
-					if (node != null) {
+					while (node != null) {
 						node.value.toString(prefix, node.key, sb, false);
+						node=node.next;
 						break;
 					}
 				}

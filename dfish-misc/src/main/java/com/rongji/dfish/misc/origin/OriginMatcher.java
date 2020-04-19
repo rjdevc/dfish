@@ -328,7 +328,7 @@ public class OriginMatcher {
 					belong(codeList.get(0),codeList.get(1))){
 				return new MatchResult(codeList.get(0).code,codeList.get(0).confidence); 
 			}else{
-				codeList.get(0).setConfidence(0);
+				codeList.get(0).setConfidence(MatchResult.CONFIDENCE_UNMATCH);
 				return new MatchResult(codeList.get(0).code,codeList.get(0).confidence); 
 			}	
 		}		

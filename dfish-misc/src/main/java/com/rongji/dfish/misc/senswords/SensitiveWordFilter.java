@@ -28,6 +28,9 @@ public class SensitiveWordFilter {
     }
 
     TrieTree<Boolean> core = new SensitiveTrieTree();
+    public TrieTree<Boolean> getCore(){
+        return core;
+    }
 
     private SensitiveWordFilter() {
         loadDic(); //读取铭感词和 白名单
