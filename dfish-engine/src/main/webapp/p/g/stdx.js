@@ -1,9 +1,7 @@
-$.preload("g/form",{
+define.preload("g/std",{
 	"type":"dialog","cls":"dlg","node":{
 		"type":"view","commands":{
-			"close":{
-				"type":"js","text":"if(VM(this).isModified()){this.cmd({type:'confirm',text:'您有内容尚未保存，确认关闭窗口吗？',yes:function(){$.close(this);}});}else{$.close(this);}"
-			}
+			"close":{"type":"js","text":"dfish.close(this);"}
 		},"node":{
 			"type":"vert","id":"dlg_frame","height":"*","width":"*","nodes":[
 				{
@@ -13,8 +11,6 @@ $.preload("g/form",{
 						},{
 							"type":"buttonbar","id":"dlg_head_oper","cls":"dlg-head-oper","width":"-1","align":"center","valign":"middle","pub":{"height":"*","width":"40"},"nodes":[
 								{
-									"tip":"最大化","cls":"x-dlg-max","on":{"click":"app.dialog.max(this);"},"icon":".i-dlg-max"
-								},{
 									"tip":"关闭","cls":"x-dlg-close","on":{"click":"this.cmd('close');"},"icon":".i-dlg-close"
 								}
 							]
@@ -31,8 +27,6 @@ $.preload("g/form",{
 								{
 									"type":"buttonbar","id":"dlg_foot_oper","width":"*","align":"right","space":10,"pub":{"cls":"x-btn"},"nodes":[
 										{
-											"type":"submitbutton","text":"保存","on":{"click":"this.cmd('save');"}
-										},{
 											"text":"关闭","on":{"click":"this.cmd('close');"}
 										}
 									]

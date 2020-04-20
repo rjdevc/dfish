@@ -1,4 +1,4 @@
-$.preload("g/none",{
+define.preload("g/none",{
 	"type":"dialog","cls":"dlg","node":{
 		"type":"view","commands":{
 			"close":{"type":"js","text":"dfish.close(this);"}

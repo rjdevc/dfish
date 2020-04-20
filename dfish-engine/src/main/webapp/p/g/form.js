@@ -1,7 +1,9 @@
-$.preload("g/std",{
+define.preload("g/form",{
 	"type":"dialog","cls":"dlg","node":{
 		"type":"view","commands":{
-			"close":{"type":"js","text":"dfish.close(this);"}
+			"close":{
+				"type":"js","text":"if(VM(this).isModified()){this.cmd({type:'confirm',text:'您有内容尚未保存，确认关闭窗口吗？',yes:function(){$.close(this);}});}else{$.close(this);}"
+			}
 		},"node":{
 			"type":"vert","id":"dlg_frame","height":"*","width":"*","nodes":[
 				{
@@ -29,6 +31,8 @@ $.preload("g/std",{
 								{
 									"type":"buttonbar","id":"dlg_foot_oper","width":"*","align":"right","space":10,"pub":{"cls":"x-btn"},"nodes":[
 										{
+											"type":"submitbutton","text":"保存","on":{"click":"this.cmd('save');"}
+										},{
 											"text":"关闭","on":{"click":"this.cmd('close');"}
 										}
 									]
