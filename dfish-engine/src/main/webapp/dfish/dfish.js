@@ -1656,8 +1656,9 @@ Ajax = _createClass( {
 				l.responseType = 'msxml-document';
 			if ( _cfg.debug || ! x.cdn )
 				l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
-			l.setRequestHeader( 'x-requested-with',  _expando );
 			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
+			l.setRequestHeader( 'x-requested-with',  _expando );
+			l.setRequestHeader( 'x-requested-device', br.mobile ? 'mobile' : 'pc' );
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
