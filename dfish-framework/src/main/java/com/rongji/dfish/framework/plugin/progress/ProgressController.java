@@ -53,6 +53,7 @@ public class ProgressController extends BaseActionController {
             }
         } else {
             ProgressData finishData = new ProgressData();
+            finishData.setProgressKey(progressKey);
             finishData.setFinish(true);
             jsonReponse.setData(finishData);
         }

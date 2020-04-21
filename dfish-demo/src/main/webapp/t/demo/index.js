@@ -11,7 +11,7 @@ define.template({
             node: {
                 type: 'Progress',
                 guide: 'demo/loading',
-                template: 'progress/multiple',
+                template: 'g/progress/multiple',
                 success: 'if($response.data.finish){$.close(this);$.alert("完成了!",null,5000);}'
             }
         }

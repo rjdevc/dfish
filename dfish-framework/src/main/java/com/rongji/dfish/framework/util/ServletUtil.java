@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ServletUtil {
 
-    private static final String ENCODING = "UTF-8";
+    public static final String ENCODING_UTF8 = "UTF-8";
     public static final String DOWNLOAD_ENCODING = "ISO8859-1";
 
     /**
@@ -57,7 +57,7 @@ public class ServletUtil {
                 String[] pair = string.split("[=]");
                 if (pair.length == 2 && key.equals(pair[0])) {
                     try {
-                        String value = java.net.URLDecoder.decode(pair[1].replace("%C2%A0", "%20"), ENCODING);
+                        String value = java.net.URLDecoder.decode(pair[1].replace("%C2%A0", "%20"), ENCODING_UTF8);
                         if (Utils.notEmpty(value)) {
                             values.add(value);
                             hasFind = true;
