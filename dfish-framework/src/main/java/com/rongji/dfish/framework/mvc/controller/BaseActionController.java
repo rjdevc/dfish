@@ -403,18 +403,18 @@ public class BaseActionController extends MultiActionController {
     /**
      * 获取进度条编号,由[调用方法#sessionId#dataId]构成
      *
-     * @param sessionId
-     * @param dataId    数据编号
-     * @return
+     * @param sessionId 会话编号
+     * @param linkedData  数据关联编号
+     * @return 进度条编号
      */
-    protected String getProgressKey(String sessionId, String dataId) {
-        if (Utils.isEmpty(dataId)) {
+    protected String getProgressKey(String sessionId, String linkedData) {
+        if (Utils.isEmpty(linkedData)) {
             throw new IllegalArgumentException("dataId == null");
         }
-        String progressKey = sessionId + "#" + dataId;
+        String progressKey = sessionId + "#" + linkedData;
         // 名称太长时强制截取字符,这里给的相对比较安全的数字
         if (progressKey.length() > progressKeyLength) {
-            final String callDataId = dataId;
+            final String callDataId = linkedData;
             final int leftLength = progressKeyLength - sessionId.length() - 1;
             LogUtil.lazyWarn(getClass(), () -> {
                 try {
@@ -431,14 +431,17 @@ public class BaseActionController extends MultiActionController {
         return progressKey;
     }
 
-    protected String getDataId(String progressKey) {
+    /**
+     * 根据进度条编号获取进度关联数据编号
+     *
+     * @param progressKey String 进度条编号
+     * @return String 关联数据编号
+     */
+    protected String getProgressLinkedData(String progressKey) {
         if (Utils.isEmpty(progressKey)) {
-            return "";
+            return null;
         }
         int endIndex = progressKey.lastIndexOf("#");
-        if (endIndex < 0) {
-            endIndex = progressKey.length();
-        }
         String dataId = progressKey.substring(endIndex + 1);
         return dataId;
     }
