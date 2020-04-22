@@ -233,7 +233,7 @@ public class HttpInvoker {
      */
     public static int getRouteCount(String host) {
         int routeCount = 100;
-        // 读取配置
+        // FIXME 这里需要读取配置
 //        try {
 //            routeCount = FrameworkHelper.getSystemConfigAsInteger("intf.http.routeCount", 100);
 //        } catch (Exception e) {
