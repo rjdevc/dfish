@@ -188,9 +188,9 @@ define.template({
                     type: 'Form',
                     nodes: [
                         {type: 'DatePicker', name: 'datePicker1', label: {text: '日期'}},
-                        {type: 'DatePicker', name: 'datePicker2', label: {text: '月'}, format: 'yyyy-mm'},
+                        {type: 'DatePicker', name: 'datePicker2', label: {text: '月'}, format: 'yyyy-MM'},
                         {type: 'DatePicker', name: 'datePicker3', label: {text: '年'}, format: 'yyyy'},
-                        {type: 'DatePicker', name: 'datePicker4', label: {text: '时间'}, format: 'yyyy-mm-dd hh:ii:ss'}
+                        {type: 'DatePicker', name: 'datePicker4', label: {text: '时间'}, format: 'yyyy-MM-dd HH:mm:ss'}
                     ]
                 }
             },
@@ -1022,7 +1022,7 @@ define.template({
                             name: 'birthday',
                             label: {text: '生日'},
                             value: '1970-01-01',
-                            format: 'yyyy-mm-dd'
+                            format: 'yyyy-MM-dd'
                         },
                         {
                             type: 'CheckBoxGroup',

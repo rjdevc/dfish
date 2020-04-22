@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.auxiliary.SpinnerFormat;
  * @date 2020-03-30
  * @since 5.0
  */
-public class AbstractNumberInput<T extends AbstractNumberInput<T>> extends AbstractInput<T, Number> {
+public abstract class AbstractNumberInput<T extends AbstractNumberInput<T>> extends AbstractInput<T, Number> {
 
     private Number step;
     private Boolean noButton;

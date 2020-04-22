@@ -20,15 +20,15 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
     /**
      * 仅日期类型(年月日)
      */
-    public static final String FORMAT_DATE = "yyyy-mm-dd";
+    public static final String FORMAT_DATE = "yyyy-MM-dd";
     /**
      * 日期和时间，精确到分钟
      */
-    public static final String FORMAT_DATE_TIME = "yyyy-mm-dd hh:ii";
+    public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm";
     /**
      * 日期，仅精确到月
      */
-    public static final String FORMAT_MONTH = "yyyy-mm";
+    public static final String FORMAT_MONTH = "yyyy-MM";
     /**
      * 日期，仅精确到年
      */
@@ -36,27 +36,27 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
     /**
      * 时间，仅小时和分钟
      */
-    public static final String FORMAT_TIME = "hh:ii";
+    public static final String FORMAT_TIME = "HH:mm";
     /**
      * 日期，只有月和日。
      */
-    public static final String FORMAT_MONTH_DAY = "mm-dd";
+    public static final String FORMAT_MONTH_DAY = "MM-dd";
     /**
      * 日期完整，包括日期时间，精确到秒
      */
-    public static final String FORMAT_DATE_TIME_FULL = "yyyy-mm-dd hh:ii:ss";
+    public static final String FORMAT_DATE_TIME_FULL = "yyyy-MM-dd HH:mm:ss";
 
-    static final String[][] DATE_FORMATS = {
-            {FORMAT_DATE, "yyyy-MM-dd"},
-            {FORMAT_DATE_TIME, "yyyy-MM-dd HH:mm"},
-            {FORMAT_MONTH, "yyyy-MM"},
-            {FORMAT_YEAR, "yyyy"},
-            {FORMAT_TIME, "HH:mm"},
-            {FORMAT_MONTH_DAY, "MM-dd"},
-            {FORMAT_DATE_TIME_FULL, "yyyy-MM-dd HH:mm:ss"}
-    };
+//    static final String[][] DATE_FORMATS = {
+//            {FORMAT_DATE, "yyyy-MM-dd"},
+//            {FORMAT_DATE_TIME, "yyyy-MM-dd HH:mm"},
+//            {FORMAT_MONTH, "yyyy-MM"},
+//            {FORMAT_YEAR, "yyyy"},
+//            {FORMAT_TIME, "HH:mm"},
+//            {FORMAT_MONTH_DAY, "MM-dd"},
+//            {FORMAT_DATE_TIME_FULL, "yyyy-MM-dd HH:mm:ss"}
+//    };
     private String format;
-    private String javaFormat;
+//    private String javaFormat;
     private Boolean multiple;
     private Boolean noButton;
 
@@ -69,8 +69,8 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      */
     public DatePicker(String name, String label, Object value) {
         super(name, label, value);
-        calFormat(FORMAT_DATE);
         // 默认日期
+        setFormat(FORMAT_DATE);
     }
 
     /**
@@ -82,28 +82,28 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      */
     public DatePicker(String name, Label label, Object value) {
         super(name, label, value);
-        calFormat(FORMAT_DATE);
         // 默认日期
+        setFormat(FORMAT_DATE);
     }
 
-    private void calFormat(String format) {
-        for (String[] row : DATE_FORMATS) {
-            if (row[0].equals(format)) {
-                this.format = row[0];
-                this.javaFormat = row[1];
-                break;
-            }
-        }
-        if (this.format == null) {
-            String[] row = DATE_FORMATS[0];
-            this.format = row[0];
-            this.javaFormat = row[1];
-        }
-    }
+//    private void calFormat(String format) {
+//        for (String[] row : DATE_FORMATS) {
+//            if (row[0].equals(format)) {
+//                this.format = row[0];
+//                this.javaFormat = row[1];
+//                break;
+//            }
+//        }
+//        if (this.format == null) {
+//            String[] row = DATE_FORMATS[0];
+//            this.format = row[0];
+//            this.javaFormat = row[1];
+//        }
+//    }
 
 
     /**
-     * 设置格式。该格式为JS的格式。如 yyyy-mm-dd hh:ii:ss
+     * 设置格式。该格式为JS的格式。如 yyyy-MM-dd HH:mm:ss
      *
      * @return the date Format
      * @see #FORMAT_DATE_TIME_FULL
@@ -113,14 +113,15 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
     }
 
     /**
-     * 设置格式。该格式为JS的格式。如 yyyy-mm-dd hh:ii:ss
+     * 设置格式。该格式为JS的格式。如 yyyy-MM-dd HH:mm:ss
      *
      * @param format String
      * @return 本身，这样可以继续设置其他属性
      * @see #FORMAT_DATE_TIME_FULL
      */
     public DatePicker setFormat(String format) {
-        calFormat(format);
+//        calFormat(format);
+        this.format = format;
         return this;
     }
 
@@ -169,7 +170,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
         if (value == null) {
             this.value = null;
         } else if (value instanceof java.util.Date) {
-            this.value = DateUtil.format((java.util.Date) value, javaFormat);
+            this.value = DateUtil.format((java.util.Date) value, format);
         } else if (value.getClass().isArray()) {
             Object[] arr = (Object[]) value;
             this.value = toString(arr);
@@ -189,7 +190,6 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      * @return
      */
     protected String toString(Iterable<?> iter) {
-
         StringBuilder sb = new StringBuilder();
         boolean begin = true;
         for (Object o : iter) {
@@ -202,7 +202,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
                     sb.append(',');
                 }
                 if (o instanceof java.util.Date) {
-                    sb.append(DateUtil.format((java.util.Date) o, javaFormat));
+                    sb.append(DateUtil.format((java.util.Date) o, format));
                 } else {
                     sb.append(o);
                 }
@@ -230,7 +230,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
                     sb.append(',');
                 }
                 if (o instanceof java.util.Date) {
-                    sb.append(DateUtil.format((java.util.Date) o, javaFormat));
+                    sb.append(DateUtil.format((java.util.Date) o, format));
                 } else {
                     sb.append(o);
                 }
