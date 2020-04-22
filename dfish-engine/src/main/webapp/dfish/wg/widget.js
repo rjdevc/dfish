@@ -4253,10 +4253,14 @@ Toggle = define.widget( 'Toggle', {
 			return c ? $.image( c, { cls: '_i f-inbl', id: this.id + 'o', click: t } ) :
 				(this.x.expanded != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.caret( a === F ? 'r' : 'd' ) + '<i class=f-vi></i></span>' : '');
 		},
+		html_text: function() {
+			return Html.prototype.html_text.call( this );
+		},
 		html_nodes: function() {
-			var t = (this.x.text ? '<span class="f-omit f-va"' + this.prop_title() + '>' + this.x.text + '</span><i class=f-vi></i>' : '');
+			var h = this.html_text(),
+				t = (this.x.text ? '<span class="f-omit f-va"' + this.prop_title() + '>' + h + '</span><i class=f-vi></i>' : '');
 			if ( this.x.hr ) {
-				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + t + '<td width=100%><hr noshade class=_hr></table>';
+				t = '<table cellpadding=0 cellspacing=0 height=100%><tr><td>' + h + '<td width=100%><hr noshade class=_hr></table>';
 			}
 			return this.html_icon() + '<div class="_c f-oh f-fix">' + t + '</div>';
 		}
