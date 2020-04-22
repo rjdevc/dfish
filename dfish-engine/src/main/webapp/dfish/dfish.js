@@ -728,40 +728,35 @@ _jsonClone = $.jsonClone = function( a ) {
 // 一天的毫秒数
 _date_D = $.DATE_DAY = 86400000,
 // 标准格式化字符串
-_date_sf = 'yyyy-mm-dd hh:ii:ss',
+_date_sf = 'yyyy-MM-dd HH:mm:ss',
 // 格式化日期
 _dateFormat = $.dateFormat = function( a, b ) {
 	if ( typeof a === _STR )
 		a = _dateParse( a, b );
 	var o = { y : a.getFullYear(), m : a.getMonth(), d : a.getDate(), h : a.getHours(), i : a.getMinutes(), s : a.getSeconds(), w : ( a.getDay() || 7 ) };
-	return (b || _date_sf).toLowerCase().replace( 'yyyy' , o.y ).replace( 'yy', o.y % 100 ).replace( 'mm', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'hh', _strPad( o.h ) )
-		.replace( 'ii', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) ).replace( 'm', o.m + 1 ).replace( 'd', o.d ).replace( 'h', o.h ).replace( 'i', o.i ).replace( 's', o.s );
+	return (b || _date_sf).replace( 'yyyy' , o.y ).replace( 'yy', o.y % 100 ).replace( 'MM', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'HH', _strPad( o.h ) )
+		.replace( 'mm', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) ).replace( 'M', o.m + 1 ).replace( 'd', o.d ).replace( 'H', o.h ).replace( 'm', o.i ).replace( 's', o.s );
 },
 // 字串型转为日期型 /@s -> str, f -> format?
 _dateParse = $.dateParse = function( s, f ) {
 	s = '' + s;
 	!f && (f = _date_sf);
-	var d = new Date(), i = f.indexOf( 'yyyy' );
-	i > -1 && d.setYear( s.substr( i, 4 ) );
-	i = f.indexOf( 'mm' );
-	i > -1 && d.setMonth( s.substr( i, 2 ) -1 );
-	i = f.indexOf( 'dd' );
-	i > -1 && d.setDate( s.substr( i, 2 ) );
-	i = f.indexOf( 'hh' );
-	i > -1 && d.setHours( s.substr( i, 2 ) );
-	i = f.indexOf( 'ii' );
-	i > -1 && d.setMinutes( s.substr( i, 2 ) );
-	i = f.indexOf( 'ss' );
-	i > -1 && d.setSeconds( s.substr( i, 2 ) );
-	return d;
+	var a,
+		y = (a = f.indexOf( 'yyyy' )) > -1 ? s.substr( a, 4 ) : 2020,
+		M = (a = f.indexOf( 'MM' )) > -1 ? s.substr( a, 2 ) -1 : 0,
+		d = (a = f.indexOf( 'dd' )) > -1 ? s.substr( a, 2 ) : 1,
+		H = (a = f.indexOf( 'HH' )) > -1 ? s.substr( a, 2 ) : 0,
+		m = (a = f.indexOf( 'mm' )) > -1 ? s.substr( a, 2 ) : 0,
+		s = (a = f.indexOf( 'ss' )) > -1 ? s.substr( a, 2 ) : 0;
+	return new Date( y, M, d, H, m, s );
 },
-// 日期增减  /@ a -> date, b -> type enum ( y/m/d/h/i/s ), c -> value
+// 日期增减  /@ a -> date, b -> type enum ( y/M/d/H/m/s ), c -> value
 _dateAdd = $.dateAdd = function( a, b, c ) {
 	var e = a;
 	if ( c ) {
-		var d = 'y/m/d/h/i/s'.replace( b, c ).replace( /[a-z]/g, '0' ).split( '/' ),
+		var d = 'y/M/d/H/m/s'.replace( b, c ).replace( /[a-zA-Z]/g, '0' ).split( '/' ),
 			e = new Date( a.getFullYear() + parseInt( d[ 0 ] ), a.getMonth() + parseInt( d[ 1 ] ), a.getDate() + parseInt( d[ 2 ] ), a.getHours() + parseInt( d[ 3 ] ), a.getMinutes() + parseInt( d[ 4 ] ), a.getSeconds() + parseInt( d[ 5 ] ) );
-		if ( ( b === 'y' || b === 'm' ) && e.getDate() != a.getDate() )
+		if ( ( b === 'y' || b === 'M' ) && e.getDate() != a.getDate() )
 			e = new Date( e.getTime() - e.getDate() * _date_D );
 	}
 	if ( arguments.length > 3 ) {
@@ -2227,7 +2222,7 @@ _merge( $, {
 					b.maxheight && (t += 'max-height:' + b.maxheight + 'px;');
 					r += ' style="' + t + '"';
 				}
-				r += '>';
+				r += (s[ 1 ] || '') + '>';
 			}
 		}
 		return r + ((b && b.append) || '') + '</span>';

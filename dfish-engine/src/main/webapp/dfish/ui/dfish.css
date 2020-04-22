@@ -322,12 +322,10 @@
 .w-calendar-head ._circle{text-indent:-3px;overflow:hidden}
 .w-calendar-head ._circle i{font-size:34px;line-height:21px}
 .w-calendar-head ._iptm{width:0;height:0;visibility: hidden;}
-.w-calendar-head .f-arw-l5{margin-right:20px;vertical-align:middle;cursor:pointer}
-.w-calendar-head .f-arw-r5{margin-left:20px;vertical-align:middle;cursor:pointer}
-.w-calendar-head .f-arw-l2{margin-right:15px;vertical-align:baseline;cursor:pointer}
-.w-calendar-head .f-arw-r2{margin-left:15px;vertical-align:baseline;cursor:pointer}
-.w-calendar-head .f-arw-l2:hover{border-right-color:#2498ff}
-.w-calendar-head .f-arw-r2:hover{border-left-color:#2498ff}
+.w-calendar-head .f-i-caret-left{margin-right:10px;color:#777;vertical-align:middle;cursor:pointer}
+.w-calendar-head .f-i-caret-right{margin-left:10px;color:#777;vertical-align:middle;cursor:pointer}
+.w-calendar-head .f-i-caret-right:hover{color:#2498ff}
+.w-calendar-head .f-i-caret-right:hover{color:#2498ff}
 .w-calendar-tbl{width:100%;table-layout:fixed;border-collapse:collapse;text-align:center;cursor:default}
 .w-calendar ._th{background:#f8f8f8;border-bottom:1px solid #ddd;height:26px}
 .w-calendar ._td{border-bottom:1px solid #ddd;height:80px;vertical-align:top}
@@ -846,9 +844,8 @@
 
 .w-pagebar-simple-menu{color:#999;text-align:center}
 
-.w-muldate ._c{height:100%;vertical-align:middle;padding-left:5px;line-height:28px}
-.w-muldate-dialog a{color:#333}
-.w-muldate-dialog ._i{cursor:pointer}
+.w-datepicker-multiple-dialog a{color:#333}
+.w-datepicker-multiple-dialog ._i{font-size:20px;cursor:pointer}
 
 .f-tab-bar{background:#f8f8f8}
 .f-tab-bar.z-horz-2,.f-tab-bar.z-horz-3{text-align:right}

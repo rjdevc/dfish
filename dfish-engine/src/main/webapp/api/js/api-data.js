@@ -243,7 +243,8 @@ define( {
         { name: 'type', type: 'String', remark: '要增加的日期类型，可选值：<b>y</b>(年) <b>m</b>(月) <b>d</b>(日) <b>h</b>(时) <b>i</b>(分) <b>s</b>(秒)' }
       ], example: [
           function() {
-            var tomorrow = $.dateAdd( new Date(), 'd', 1 ); // 给当下的时间加一天
+          	// 给当下的时间加一天
+            var tomorrow = $.dateAdd( new Date(), 'd', 1 );
           }
       ] },
       { name: '$.dateFormat(date, format)', remark: '把日期对象格式化成字串', common: true, param: [
@@ -251,15 +252,15 @@ define( {
         { name: 'format', type: 'String', remark: '时间格式，可选值：<b>y</b>(年) <b>m</b>(月) <b>d</b>(日) <b>h</b>(时) <b>i</b>(分) <b>s</b>(秒)' }
       ], example: [
           function() {
-            var f = $.dateFormat( new Date(), 'yyyy-mm-dd hh:ii:ss' );
+            var f = $.dateFormat( new Date(), 'yyyy-MM-dd HH:mm:ss' );
           }
       ] },
       { name: '$.dateParse(date,[format])', remark: '把字符串格式的日期转为日期对象。', common: true, param: [
         { name: 'date', type: 'String', remark: '时间。' },
-        { name: 'format', type: 'String', optional: true, remark: '格式。默认值为yyyy-mm-dd hh:ii:ss' }
+        { name: 'format', type: 'String', optional: true, remark: '格式。默认值为yyyy-MM-dd HH:mm:ss' }
       ], example: [
           function() {
-            var date = $.dateParse( '2015-11-12', 'yyyy-mm-dd' );
+            var date = $.dateParse( '2015-11-12', 'yyyy-MM-dd' );
           }
       ] },
       { name: '$.dialog([obj])', remark: '获取obj所在的Dialog对象。如果不传任何参数，将返回显示在最前面的Dialog对象。', common: true, param: [
@@ -4473,7 +4474,7 @@ define( {
   	extend: 'Text',
   	deprecate: '.w-text',
     Config: [
-      { name: 'format', type: 'String', remark: '日期格式: yyyy-mm-dd hh:ii:ss' },
+      { name: 'format', type: 'String', remark: '日期格式: yyyy-MM-dd HH:mm:ss' },
       { name: 'multiple', type: 'Boolean', remark: '是否多选模式。' },
       { name: 'noButton', type: 'Boolean', optional: true, remark: '设置为true，不显示按钮。' }
     ],
@@ -4485,12 +4486,12 @@ define( {
           function() {
           	//日期选择器
             return~
-            { type: 'DatePicker', format: 'yyyy-mm-dd' }
+            { type: 'DatePicker', format: 'yyyy-MM-dd' }
           },
           function() {
           	//可选择小时分钟的日期选择器
             return~
-            { type: 'DatePicker', format: 'yyyy-mm-dd hh:ii' }
+            { type: 'DatePicker', format: 'yyyy-MM-dd HH:mm' }
           }
         ]
       }
@@ -4575,8 +4576,8 @@ define( {
             {
                 type: 'Range',
                 label: { text: '日期' },
-                begin: { type: 'DatePicker', format: 'yyyy-mm-dd', label: { text: '开始日期' } },
-                end: { type: 'DatePicker', format: 'yyyy-mm-dd', label: { text: '结束日期' } }
+                begin: { type: 'DatePicker', format: 'yyyy-MM-dd', label: { text: '开始日期' } },
+                end: { type: 'DatePicker', format: 'yyyy-MM-dd', label: { text: '结束日期' } }
             }
           }
         ]
