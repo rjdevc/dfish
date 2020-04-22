@@ -76,7 +76,7 @@ dfish.config({
         'Label.z-type-fileupload': {vAlign: 'top'},
 
         'Textarea': {height: 100},
-        'DatePicker': {format: 'yyyy-mm-dd'},
+        'DatePicker': {format: 'yyyy-MM-dd'},
         'Spinner': {step: 10, decimal: 0, validate: {minValue: 1, maxValue: 9999999999999999}},
         // 'Combo': {keepShow: true},
         'Slider': {tip: true},
