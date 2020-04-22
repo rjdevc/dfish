@@ -160,7 +160,7 @@ var api = {
 			}
 			if ( t ) {
 				setTimeout( function() {
-					find( d + '-scr' ).scrollTop( $( tree.x.id ), 'top', true );
+					find( d + '-scr' ).scrollY( $( tree.x.id ), 'top', true );
 				}, 100 );
 			}
 		}

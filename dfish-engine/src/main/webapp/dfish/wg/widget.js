@@ -3813,6 +3813,31 @@ DialogMaxButton = define.widget( 'DialogMaxButton', {
 		}
 	}
 } ),
+/* `DialogMinButton` */
+DialogMinButton = define.widget( 'DialogMinButton', {
+	Extend: Button,
+	Default: { icon: '.f-i-dialog-min', tip: function() { return this.isMax() ? Loc.restore : Loc.dialog_max } },
+	Listener: {
+		body: {
+			click: {
+				method: function() {
+					if ( !(this.x.on && this.x.on.click) ) {
+						var d = Dialog.get( this );
+						d && d.min();
+						this.attrSetter( 'tip', this.attr( 'tip' ) );
+					}
+				}
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-button w-dialogmaxbutton',
+		isMax: function() {
+			var d = Dialog.get( this );
+			return d && d.isMax();
+		}
+	}
+} ),
 /* `OverflowButton` */
 OverflowButton = define.widget( 'OverflowButton', {
 	Extend: Button,
@@ -4191,18 +4216,6 @@ Toggle = define.widget( 'Toggle', {
 			ready: function() {
 				this.x.expanded != N && this.$() && this.toggle( this.x.expanded );
 			}
-		}
-	},
-	Helper: {
-		focus: function( a ) {
-			var p = a;
-			do {
-				var b = p && p._displayCommander;
-				if ( b ) {
-					b.toggle( T );
-					break;
-				}
-			} while ( p = p.parentNode );
 		}
 	},
 	Prototype: {

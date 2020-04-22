@@ -254,11 +254,12 @@ define( {
             var f = $.dateFormat( new Date(), 'yyyy-mm-dd hh:ii:ss' );
           }
       ] },
-      { name: '$.dateParse(date)', id: '$.dateFormat', remark: '把字符串格式的日期转为日期对象', common: true, param: [
-        { name: 'date', type: 'String', remark: '时间' }
+      { name: '$.dateParse(date,[format])', remark: '把字符串格式的日期转为日期对象。', common: true, param: [
+        { name: 'date', type: 'String', remark: '时间。' },
+        { name: 'format', type: 'String', optional: true, remark: '格式。默认值为yyyy-mm-dd hh:ii:ss' }
       ], example: [
           function() {
-            var date = $.dateParse( '2015-11-12' );
+            var date = $.dateParse( '2015-11-12', 'yyyy-mm-dd' );
           }
       ] },
       { name: '$.dialog([obj])', remark: '获取obj所在的Dialog对象。如果不传任何参数，将返回显示在最前面的Dialog对象。', common: true, param: [

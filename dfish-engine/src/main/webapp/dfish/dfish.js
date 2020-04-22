@@ -740,26 +740,20 @@ _dateFormat = $.dateFormat = function( a, b ) {
 // 字串型转为日期型 /@s -> str, f -> format?
 _dateParse = $.dateParse = function( s, f ) {
 	s = '' + s;
-	if ( f ) {
-		var g = f.charAt( 0 );
-		if ( g == 'm' )
-			s = '2017-' + s;
-		else if ( g == 'd' )
-			s = '2017-03-' + s;
-		else if ( g == 'h' )
-			s = '2017-03-01 ' + s;
-		else if ( g == 'i' )
-			s = '2017-03-01 00:' + s;
-	}
-	var b = s.split( '-' );
-	if ( b.length === 1 )
-		s += '-03-01';
-	else if ( b.length === 2 )
-		s += '-01';
-	var a = new Date( s.replace( /-/g, '/' ) );
-	if ( isNaN( a ) )
-		a = new Date( s.split( ' ' )[ 0 ].replace( /-/g, '/' ) );
-	return isNaN( a ) ? new Date : a;
+	!f && (f = _date_sf);
+	var d = new Date(), i = f.indexOf( 'yyyy' );
+	i > -1 && d.setYear( s.substr( i, 4 ) );
+	i = f.indexOf( 'mm' );
+	i > -1 && d.setMonth( s.substr( i, 2 ) -1 );
+	i = f.indexOf( 'dd' );
+	i > -1 && d.setDate( s.substr( i, 2 ) );
+	i = f.indexOf( 'hh' );
+	i > -1 && d.setHours( s.substr( i, 2 ) );
+	i = f.indexOf( 'ii' );
+	i > -1 && d.setMinutes( s.substr( i, 2 ) );
+	i = f.indexOf( 'ss' );
+	i > -1 && d.setSeconds( s.substr( i, 2 ) );
+	return d;
 },
 // 日期增减  /@ a -> date, b -> type enum ( y/m/d/h/i/s ), c -> value
 _dateAdd = $.dateAdd = function( a, b, c ) {
