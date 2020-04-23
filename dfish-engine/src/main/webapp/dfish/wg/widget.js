@@ -551,18 +551,12 @@ Template = $.createClass( {
 						if ( k.indexOf( '@w-if' ) === 0 || k.indexOf( '@w-elseif' ) === 0 ) {
 							if ( typeof b === _OBJ ) {
 								$.jsonArray( [ $.strRange( k, '(', ')' ), b ], f, '_switch' );
-							} else {
-								var d = this.format( b, g, y );
-								if ( ! d || typeof d !== _OBJ ) {
-									r = d;
-									break;
-								}
+							} else if ( ! this.format( b, g, y ) ) {
+								r = N;
+								break;
 							}
 						} else if ( k === '@w-else' ) {
 							f._switchdefault = b;
-						} else if ( k === '@w-echo' ) {
-							r = this.format( b, g, y );
-							break;
 						}
 					} else {
 						var d = typeof b === _STR ? this.format( b, g, y ) : this.compile( b, y );

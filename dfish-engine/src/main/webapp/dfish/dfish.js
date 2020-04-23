@@ -741,13 +741,15 @@ _dateFormat = $.dateFormat = function( a, b ) {
 _dateParse = $.dateParse = function( s, f ) {
 	s = '' + s;
 	!f && (f = _date_sf);
-	var a,
-		y = (a = f.indexOf( 'yyyy' )) > -1 ? s.substr( a, 4 ) : 2020,
-		M = (a = f.indexOf( 'MM' )) > -1 ? s.substr( a, 2 ) -1 : 0,
-		d = (a = f.indexOf( 'dd' )) > -1 ? s.substr( a, 2 ) : 1,
-		H = (a = f.indexOf( 'HH' )) > -1 ? s.substr( a, 2 ) : 0,
-		m = (a = f.indexOf( 'mm' )) > -1 ? s.substr( a, 2 ) : 0,
-		s = (a = f.indexOf( 'ss' )) > -1 ? s.substr( a, 2 ) : 0;
+	if ( s.length != f.length ) {
+		s = s.replace( /\b(\d)\b/, '0\$1' );
+	}
+	var a, y = (a = f.indexOf( 'yyyy' )) > -1 ? _number( s.substr( a, 4 ) ) || 2020 : 2020,
+		M = (a = f.indexOf( 'MM' )) > -1 ? _number( s.substr( a, 2 ) -1 ) : 0,
+		d = (a = f.indexOf( 'dd' )) > -1 ? _number( s.substr( a, 2 ) ) || 1 : 1,
+		H = (a = f.indexOf( 'HH' )) > -1 ? _number( s.substr( a, 2 ) ) : 0,
+		m = (a = f.indexOf( 'mm' )) > -1 ? _number( s.substr( a, 2 ) ) : 0,
+		s = (a = f.indexOf( 'ss' )) > -1 ? _number( s.substr( a, 2 ) ) : 0;
 	return new Date( y, M, d, H, m, s );
 },
 // 日期增减  /@ a -> date, b -> type enum ( y/M/d/H/m/s ), c -> value
