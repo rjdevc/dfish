@@ -59,7 +59,7 @@ public class EthNetInfo {
 	 * 读取所有激活状态下的网卡的MAC地址。可能包含物理网卡和虚拟网卡。
 	 * 因为某些设备，比如说笔记本电脑，在使用电池，并且接了有线的情况下，有可能会自动禁用无线网卡。
 	 * 导致这个值可能是变化的。
-	 * @return
+	 * @return Mac地址集合
 	 */
 	public static Set<String> getAllMacAddress() {
 //		if(macs==null){

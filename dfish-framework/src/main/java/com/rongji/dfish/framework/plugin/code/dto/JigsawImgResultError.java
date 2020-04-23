@@ -6,8 +6,7 @@ import java.io.Serializable;
  * 滑动验证码错误结果信息
  *
  * @author lamontYu
- * @date 2019-12-10
- * @since 5.0
+ * @since DFish5.0
  */
 public class JigsawImgResultError implements Serializable {
     private static final long serialVersionUID = -9063472952742234038L;

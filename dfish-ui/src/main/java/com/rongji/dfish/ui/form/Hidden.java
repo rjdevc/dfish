@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.AbstractWidget;
 /**
  * 隐藏表单
  * @author DFish Team
- * @since XMLTMPL 1.0
+ * @since DFish1.0
  */
 public class Hidden extends AbstractWidget<Hidden> implements FormElement<Hidden,String> {
 

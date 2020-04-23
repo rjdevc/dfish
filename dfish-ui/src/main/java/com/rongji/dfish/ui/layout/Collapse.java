@@ -9,8 +9,7 @@ import java.util.List;
 /**
  * 折叠面板。可以折叠/展开的内容区域。
  * @author lamontYu
- * @date 2020-01-15
- * @since 5.0
+ * @since DFish5.0
  */
 public class Collapse extends AbstractPubNodeContainer<Collapse, CollapseButton, CollapseButton> {
 

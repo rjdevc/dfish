@@ -7,8 +7,7 @@
 // *
 // * @param <T> 当前对象类型
 // * @author DFish Team
-// * @date 2018-08-03 before
-// * @since 2.0
+// * @since DFish2.0
 // */
 //public interface CommandContainer<T extends CommandContainer<T>> extends NodeContainer {
 //    /**

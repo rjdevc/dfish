@@ -21,14 +21,14 @@ import com.rongji.dfish.base.util.ThreadUtil;
  * <p>一般来说，如果需要控制某些资源不要被过于频繁的使用，会想办法让请求排队，并分组进行批量请求。
  * 可以用以下代码，进行封装</p>
  * <pre>
- * QueuedBatchAction<String,Object> m=new QueuedBatchAction<String,Object>(
- * new BatchAction<String,Object>(){
- * 	public Map<String,Object> act(Set<String> input) {
+ * QueuedBatchAction&lt;String,Object&gt; m=new QueuedBatchAction&lt;String,Object&gt;(
+ * new BatchAction&lt;String,Object&gt;(){
+ * 	public Map&lt;String,Object&gt; act(Set&lt;String&gt; input) {
  * 		return null; // 实际批量获取的代码。
  * 	}
  * });
  * Object o=m.act("something");
- * Map<String,Object> map.=m.get( new HashSet<String>(Arrays.asList("str2","str3")));
+ * Map&lt;String,Object&gt; map.=m.get( new HashSet&lt;String&gt;(Arrays.asList("str2","str3")));
  * </pre>
  * 如果调用这个方法超过3个以上的线程，或某些查询批量超过15的时候，
  * 在不同线程中的单个查询或小批量查询，有可能产生排队，并重新编程每组不超过15个的批量查询。

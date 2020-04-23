@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
  * 二维码图标图片生成
  *
  * @author lamontYu
- * @date 2018-08-03 before
- * @since 3.0
+ *
+ * @since DFish3.0
  */
 @RequestMapping("/qrCode")
 public class QRCodeController extends BaseActionController {

@@ -2,8 +2,7 @@ package com.rongji.dfish.ui.auxiliary;
 
 /**
  * 带有徽标的组件
- * @since 5.0
- * @date 2020-02-12
+ * @since DFish5.0
  * @author lamontYu
  */
 public interface BadgeHolder<T> {

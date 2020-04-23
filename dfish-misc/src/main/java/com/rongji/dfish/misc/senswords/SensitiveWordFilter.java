@@ -163,8 +163,8 @@ public class SensitiveWordFilter {
 
     /**
      * 对字符串进行反转操作
-     * @param chars
-     * @return
+     * @param chars 字符数组
+     * @return 反转的字符数组
      */
     public static char[] reverse(char[] chars) {
         if (chars == null) {

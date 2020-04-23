@@ -18,7 +18,7 @@ import java.util.zip.ZipInputStream;
 public class ClassPackageUtil {
 	/**
 	 * 得到已经装载的包。
-	 * @return
+	 * @return String[]
 	 */
 	public static String[] getPackages() {
 		Package[] pckgs = Package.getPackages();
@@ -36,7 +36,7 @@ public class ClassPackageUtil {
 	 * @param packageName 包名
 	 * @param inner 是否包含内嵌类
 	 * @return 找到的类名
-	 * @throws Exception
+	 * @throws Exception 文件流异常
 	 */
 	public static String[] findClasses(String packageName, boolean inner) throws Exception {
 		return findClasses(packageName, inner, null);
@@ -48,7 +48,7 @@ public class ClassPackageUtil {
 	 * @param inner 是否包含内嵌类
 	 * @param extPaths 检察额外的路径。如${webroot}/WEB-INFO/lib下。
 	 * @return 找到的类名
-	 * @throws Exception
+	 * @throws Exception 文件流异常
 	 */
 	public static String[] findClasses(String packageName, boolean inner, String[] extPaths) throws Exception {
 		String classpath = System.getProperty("java.class.path");
@@ -58,7 +58,7 @@ public class ClassPackageUtil {
 		 */
 
 		String[] all = classpath.split(";");
-		Set<String> paths = new HashSet<String>();
+		Set<String> paths = new HashSet<>();
 		for (String path : all) {
 			if(path==null||path.length()==0) {
                 continue;
@@ -85,7 +85,7 @@ public class ClassPackageUtil {
 		}
 
 
-		Set<String> result = new TreeSet<String>();
+		Set<String> result = new TreeSet<>();
 
 		for (String path : paths) {
 			path.trim();
@@ -102,7 +102,7 @@ public class ClassPackageUtil {
 
 	/**
 	 * 得到当前路径
-	 * @return
+	 * @return String
 	 */
 	public static String getCurrentPath(){
 		// 如果如果URL是file:/C:/.../WEB-INF/classes/com/rongji/dfish/common/ClassUtil.class
@@ -127,11 +127,11 @@ public class ClassPackageUtil {
 	/**
 	 * find class in flat file
 	 * 
-	 * @param pathStr
-	 * @param packName
-	 * @param inner
-	 * @param result
-	 * @throws Exception
+	 * @param pathStr 路径
+	 * @param packName 包名
+	 * @param inner 是否内部类
+	 * @param result 结果集
+	 * @throws Exception 文件流异常
 	 */
 	private static void findFile(String pathStr, final String packName, final boolean inner, final Set<String> result)
 			throws Exception {
@@ -167,9 +167,9 @@ public class ClassPackageUtil {
 	/**
 	 * find class in jar
 	 * 
-	 * @param jar
-	 * @param packName
-	 * @throws Exception
+	 * @param jar jar包名
+	 * @param packName 包路径名
+	 * @throws Exception 文件流异常
 	 */
 	private static void findJar(String jar, String packName, boolean inner, Set<String> result) throws Exception {
 		@SuppressWarnings("resource")

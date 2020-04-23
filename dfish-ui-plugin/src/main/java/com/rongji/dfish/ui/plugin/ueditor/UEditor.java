@@ -19,9 +19,9 @@ public class UEditor extends AbstractInput<UEditor, String> {
 
     /**
      * 构造函数
-     * @param name
-     * @param label
-     * @param value
+     * @param name 名称
+     * @param label 标签
+     * @param value 值
      */
     public UEditor(String name, String label, String value) {
         super(name,label,value);
@@ -29,9 +29,9 @@ public class UEditor extends AbstractInput<UEditor, String> {
 
     /**
      * 构造函数
-     * @param name
-     * @param label
-     * @param value
+     * @param name 名称
+     * @param label 标签
+     * @param value 值
      */
     public UEditor(String name, Label label, String value) {
         super(name,label,value);
@@ -45,7 +45,7 @@ public class UEditor extends AbstractInput<UEditor, String> {
 
     /**
      * UEditor的参数设置,参考ueditor.config.js
-     * @return
+     * @return 参数设置对象
      */
     public Map<String, Object> getOption() {
         return option;
@@ -53,7 +53,7 @@ public class UEditor extends AbstractInput<UEditor, String> {
 
     /**
      * UEditor的参数设置,参考ueditor.config.js
-     * @param option
+     * @param option 参数设置
      * @return UEditor
      */
     public UEditor setOption(Map<String, Object> option) {
@@ -63,8 +63,8 @@ public class UEditor extends AbstractInput<UEditor, String> {
 
     /**
      * UEditor的参数设置,参考ueditor.config.js
-     * @param key
-     * @param value
+     * @param key 设置项
+     * @param value 设置值
      * @return UEditor
      */
     public UEditor setOption(String key, Object value) {
@@ -77,8 +77,8 @@ public class UEditor extends AbstractInput<UEditor, String> {
 
     /**
      * remove UEditor的某个参数设置
-     * @param key
-     * @return
+     * @param key 设置项
+     * @return UEditor
      */
     public UEditor removeOption(String key) {
         if (this.option != null) {

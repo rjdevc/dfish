@@ -7,11 +7,11 @@ public class SM4 {
 
     /**
      * 进行一轮加密
-     * @param sk
-     * @param input
-     * @param inOff
-     * @param output
-     * @param outOff
+     * @param sk 数据
+     * @param input 输入流数据
+     * @param inOff 输入流数据开始位置
+     * @param output 输出流数据
+     * @param outOff 输出流数据开始位置
      */
     public static void oneRound(long[] sk, byte[] input, int inOff, byte[] output, int outOff){
         int i = 0;

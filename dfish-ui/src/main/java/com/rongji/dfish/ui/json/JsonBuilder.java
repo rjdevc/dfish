@@ -17,7 +17,7 @@ public interface JsonBuilder {
 	 * @param o 指定的对象
 	 * @param sb StringBuilder
 	 * @param path Stack
-	 * @since dfish 1.0 原来名字是buildXML
+	 * @since DFish1.0 原来名字是buildXML
 	 */
 	void buildJson(Object o,StringBuilder sb,Stack<PathInfo> path);
 

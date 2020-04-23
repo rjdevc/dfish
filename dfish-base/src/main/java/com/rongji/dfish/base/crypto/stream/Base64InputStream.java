@@ -8,7 +8,7 @@ import java.io.InputStream;
 public class Base64InputStream extends AbstractPresentInputStream {
     /**
      * 构造函数
-     * @param in
+     * @param in 输入流
      */
     public Base64InputStream(InputStream in) {
         super(in);

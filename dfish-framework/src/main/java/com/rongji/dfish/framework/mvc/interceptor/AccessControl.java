@@ -19,7 +19,7 @@ public @interface AccessControl {
 	/**
 	 * 权限过滤的关键字，根据不同项目可能会是菜单流水号，菜单编号。或是角色代号等。
 	 * 允许有多个。如果多个的情况下，任何一个key吻合，将通过判断。
-	 * @return
+	 * @return String[] 关键字数组
 	 */
 	String[] keys();
 }

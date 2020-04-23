@@ -7,8 +7,7 @@ import java.util.List;
 /**
  * 图片处理方案
  * @author lamontYu
- * @date 2019-12-18
- * @since 5.0
+ * @since DFish5.0
  */
 public class ImageHandleScheme extends FileHandleScheme {
     /**
@@ -26,7 +25,7 @@ public class ImageHandleScheme extends FileHandleScheme {
 
     /**
      * 处理配置
-     * @return
+     * @return 处理配置
      */
     @Override
     public List<ImageHandleConfig> getHandleConfigs() {
@@ -35,7 +34,7 @@ public class ImageHandleScheme extends FileHandleScheme {
 
     /**
      * 处理配置
-     * @param handleConfigs
+     * @param handleConfigs 处理配置
      */
     public void setHandleConfigs(List<ImageHandleConfig> handleConfigs) {
         this.handleConfigs = handleConfigs;
@@ -43,7 +42,7 @@ public class ImageHandleScheme extends FileHandleScheme {
 
     /**
      * 是否需要以原图大小压缩
-     * @return
+     * @return 是否以原图大小压缩
      */
     public boolean isHandleZoomDefault() {
         return handleZoomDefault;
@@ -59,7 +58,7 @@ public class ImageHandleScheme extends FileHandleScheme {
 
     /**
      * 默认图片(图片不存在时显示默认图片,暂没想到文件有什么类似需求,暂时以这个命名)
-     * @return
+     * @return 默认图片
      */
     public String getDefaultIcon() {
         return defaultIcon;
@@ -67,7 +66,7 @@ public class ImageHandleScheme extends FileHandleScheme {
 
     /**
      * 默认图片(图片不存在时显示默认图片,暂没想到文件有什么类似需求,暂时以这个命名)
-     * @param defaultIcon
+     * @param defaultIcon 默认图片
      */
     public void setDefaultIcon(String defaultIcon) {
         this.defaultIcon = defaultIcon;

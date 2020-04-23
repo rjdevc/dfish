@@ -20,7 +20,7 @@ import java.util.List;
  * 则需要一个统一，方便的组件来代替，于是就封装了它。它现在对于前端是一个实际存在的类，不再是一个JsonWrapper。
  * 5.0以后建议  FormPanel FlexTable LayoutFormPanel 全部改为使用该类。
  * @author LinLW
- * @since 5.0
+ * @since DFish5.0
  */
 public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements HtmlContentHolder<Form>, Scrollable<Form>, HiddenContainer<Form> {
     /**
@@ -129,7 +129,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
      * @param w       元素
      * @param colspan 占用宽度
      * @param rowspan 占用高度
-     * @return
+     * @return 本身，这样可以继续设置属性
      */
     public Form add(Widget<?> w, int colspan, int rowspan) {
         return add(new TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));

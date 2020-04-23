@@ -16,7 +16,7 @@ public class BaseBeanContextHodler implements BeanContextHolder {
     /**
      * 构造函数
      *
-     * @param scope
+     * @param scope 范围
      */
     public BaseBeanContextHodler(String scope) {
         this.scope = scope;
@@ -52,7 +52,7 @@ public class BaseBeanContextHodler implements BeanContextHolder {
     /**
      * 增加一个元素
      *
-     * @param obj
+     * @param obj 增加的元素
      */
     public void add(Object obj) {
         if (obj == null) {

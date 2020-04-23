@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 抽象类，用于引入外部插件需要用到附件上传的处理方式
  * @author lamontYu
- * @date 2019-12-10
+ * @since DFish5.0
  */
 public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
 
@@ -28,7 +28,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
 
     /**
      * 获取fileService
-     * @return
+     * @return FileService
      */
     public FileService getFileService() {
         return fileService;
@@ -36,7 +36,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
 
     /**
      * 设置fileService
-     * @param fileService
+     * @param fileService 文件服务
      */
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
@@ -44,7 +44,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
 
     /**
      * 获取 fileHandleManager
-     * @return
+     * @return FileHandleManager
      */
     public FileHandleManager getFileHandleManager() {
         return fileHandleManager;
@@ -52,7 +52,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
 
     /**
      * 设置 fileHandleManager
-     * @param fileHandleManager
+     * @param fileHandleManager 文件处理管理器
      */
     public void setFileHandleManager(FileHandleManager fileHandleManager) {
         this.fileHandleManager = fileHandleManager;
@@ -61,8 +61,8 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
     /**
      * 附件保存方法,根据定义情况对上传附件类型进行限制
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 上传数据项
      */
     public UploadItem saveFile(HttpServletRequest request) {
         UploadItem uploadItem = null;

@@ -13,8 +13,8 @@ import com.rongji.dfish.ui.Widget;
  * @param <V> value对象类型
  * @author DFish Team
  * @version 1.0
- * @date 2018-08-03 before
- * @since 2.0
+ *
+ * @since DFish2.0
  */
 public interface FormElement<T extends FormElement<T, V>, V> extends Widget<T> {
     /**

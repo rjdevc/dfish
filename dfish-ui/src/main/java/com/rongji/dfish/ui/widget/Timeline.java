@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.auxiliary.TimelineItem;
 /**
  * 时间轴
  * @author lamontYu
- * @date 2019-11-25 11:52
+ * @since DFish5.0
  */
 public class Timeline extends AbstractPubNodeContainer<Timeline, TimelineItem, TimelineItem> implements Alignable<Timeline>, Scrollable<Timeline> {
 

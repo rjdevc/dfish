@@ -6,7 +6,7 @@ package com.rongji.dfish.ui.form;
  *
  * @author DFish Team
  * @version 1.1
- * @since XMLTMPL 1.0
+ * @since DFish1.0
  */
 public class Textarea extends AbstractInput<Textarea, String> {
 

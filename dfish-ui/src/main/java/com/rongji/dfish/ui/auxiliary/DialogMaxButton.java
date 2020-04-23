@@ -6,8 +6,7 @@ import com.rongji.dfish.ui.widget.AbstractButton;
  * 对话框最大化按钮
  *
  * @author lamontYu
- * @date 2020-04-10
- * @since 5.0
+ * @since DFish5.0
  */
 public class DialogMaxButton extends AbstractButton<DialogMaxButton> {
 

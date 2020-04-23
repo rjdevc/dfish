@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.widget.Button;
  *
  * @author DFish Team
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @since 2.0
+ * @since DFish2.0
  */
 public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Positionable<Alert>, HasText<Alert>,NodeContainer{
 
@@ -70,7 +70,7 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
      * 图标
      *
      * @return the icon
-     * @since XMLTMPL 2.1
+     * @since DFish2.1
      */
     public String getIcon() {
         return icon;
@@ -81,7 +81,7 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
      *
      * @param icon the icon to set
      * @return 本身，这样可以继续设置其他属性
-     * @since XMLTMPL 2.1
+     * @since DFish2.1
      */
     public Alert setIcon(String icon) {
         this.icon = icon;

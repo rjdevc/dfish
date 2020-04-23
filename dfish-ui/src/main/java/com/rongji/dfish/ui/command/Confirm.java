@@ -18,8 +18,8 @@ import java.util.List;
  *
  * @author DFish Team
  * @version 3.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>, HasText<Confirm> ,NodeContainer {
 
@@ -184,7 +184,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
 
     /**
      * 获取按钮
-     * @return
+     * @return 按钮集合
      */
     public List<Button> getButtons() {
         return buttons;
@@ -192,7 +192,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
 
     /**
      * 设置按钮
-     * @param buttons
+     * @param buttons 按钮集合
      * @return 本身，这样可以继续设置其他属性
      */
     public Confirm setButtons(List<Button> buttons) {

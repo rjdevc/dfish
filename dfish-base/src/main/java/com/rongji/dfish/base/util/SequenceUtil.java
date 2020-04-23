@@ -145,7 +145,7 @@ public class SequenceUtil {
 	 * 增加
 	 * @param cs 字节串位置
 	 * @param index 位置 0到cs.length-1
-	 * @param step 不允许<0 不允许大等于 radix 
+	 * @param step 不允许&lt;0 不允许大等于 radix
 	 *  对于0没有性能优化，外部判断后，尽量不要是0
 	 *  @param src 原始字符串，用于抛出异常时的详细信息
 	 * @return 是否产生进位

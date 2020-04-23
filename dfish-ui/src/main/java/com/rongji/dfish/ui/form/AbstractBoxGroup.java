@@ -16,8 +16,8 @@ import java.util.List;
  * @param <T> 当前对象类型
  * @param <N> 子节点对象类型
  * @author DFish Team
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N extends AbstractBox<N>>
         extends AbstractPubNodeContainer<T, N,N> implements FormElement<T, String>, LabelRow<T>, Directional<T> {

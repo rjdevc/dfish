@@ -75,7 +75,7 @@ public interface Cache<K, V> {
 	/**
 	 * 缓存是否可被清理
 	 *
-	 * @return
+	 * @return 是否可清理
 	 */
 	default boolean clearable() {
 		return true;
@@ -127,14 +127,14 @@ public interface Cache<K, V> {
 
 	/**
 	 * 获得CacheItem
-	 * @param key
-	 * @return
+	 * @param key 缓存键
+	 * @return 缓存数据项
 	 */
 	CacheItem<V> getItem(K key);
 
 	/**
 	 * 批量获得CacheItem
-	 * @return
+	 * @return 缓存数据项集合
 	 */
 	Map<K, CacheItem<V>> getItems();
 
@@ -142,7 +142,6 @@ public interface Cache<K, V> {
 	/**
 	 * 缓存名称
 	 * @return {@link String}
-	 * @author lamontYu
 	 */
 	String getName();
 

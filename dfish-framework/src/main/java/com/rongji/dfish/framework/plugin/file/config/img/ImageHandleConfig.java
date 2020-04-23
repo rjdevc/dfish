@@ -8,8 +8,7 @@ import com.rongji.dfish.framework.plugin.file.config.FileHandleConfig;
  * 图片处理定义
  *
  * @author lamontYu
- * @date 2019-08-07
- * @since 5.0
+ * @since DFish5.0
  */
 public class ImageHandleConfig extends ImageProcessConfig implements FileHandleConfig {
     /**
@@ -20,8 +19,9 @@ public class ImageHandleConfig extends ImageProcessConfig implements FileHandleC
 
     /**
      * 构造函数
-     * @param width
-     * @param height
+     *
+     * @param width  宽度
+     * @param height 高度
      */
     public ImageHandleConfig(int width, int height) {
         super(width, height);
@@ -29,9 +29,10 @@ public class ImageHandleConfig extends ImageProcessConfig implements FileHandleC
 
     /**
      * 构造函数
-     * @param width
-     * @param height
-     * @param way
+     *
+     * @param width  宽度
+     * @param height 高度
+     * @param way    处理方式
      */
     public ImageHandleConfig(int width, int height, String way) {
         super(width, height, way);
@@ -39,10 +40,11 @@ public class ImageHandleConfig extends ImageProcessConfig implements FileHandleC
 
     /**
      * 构造函数
-     * @param width
-     * @param height
-     * @param way
-     * @param alias
+     *
+     * @param width  宽度
+     * @param height 高度
+     * @param way    处理方式
+     * @param alias  别名
      */
     public ImageHandleConfig(int width, int height, String way, String alias) {
         super(width, height, way, alias);
@@ -50,11 +52,12 @@ public class ImageHandleConfig extends ImageProcessConfig implements FileHandleC
 
     /**
      * 构造函数
-     * @param width
-     * @param height
-     * @param way
-     * @param alias
-     * @param lazy
+     *
+     * @param width  宽度
+     * @param height 高度
+     * @param way    处理方式
+     * @param alias  别名
+     * @param lazy   懒运行
      */
     public ImageHandleConfig(int width, int height, String way, String alias, boolean lazy) {
         super(width, height, way, alias, lazy);

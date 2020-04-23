@@ -5,8 +5,7 @@ import java.awt.*;
 /**
  * 图片处理定义
  * @author lamontYu
- * @date 2019-12-16
- * @since 5.0
+ * @since DFish5.0
  */
 public class ImageProcessConfig {
 

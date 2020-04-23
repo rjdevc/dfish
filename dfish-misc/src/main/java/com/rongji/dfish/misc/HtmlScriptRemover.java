@@ -3,7 +3,7 @@ package com.rongji.dfish.misc;
 /**
  * 将HTML里面可能有的注入信息改变，防止脚本攻击
  *
- * @deprecated  方案不完整。 也没有符合规范。毕竟注入还可能通过&# 的方式注入一些转义过的 绿盟的建议是过滤特殊字符。
+ * @deprecated 方案不完整。也没有符合规范。毕竟注入还可能通过&amp;#的方式注入一些转义过的 绿盟的建议是过滤特殊字符。
  */
 @Deprecated
 public class HtmlScriptRemover {

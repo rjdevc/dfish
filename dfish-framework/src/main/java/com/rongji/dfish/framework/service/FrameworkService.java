@@ -12,8 +12,7 @@ import java.util.*;
 /**
  * 框架默认service的接口,定义基本增删查改等接口
  * @author lamontYu
- * @date 2019-12-04
- * @since 5.0
+ * @since DFish5.0
  */
 public interface FrameworkService<V, P, ID extends Serializable> {
 
@@ -185,7 +184,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * 保存或修改方法
      * @param vo 视图对象
      * @return int 更新记录数
-     * @throws Exception
+     * @throws Exception 保存或更新记录可能会出现业务异常
      */
     default int saveOrUpdate(V vo) throws Exception {
         if (vo == null) {
@@ -201,7 +200,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * 保存方法
      * @param vo 视图对象
      * @return int 更新记录数
-     * @throws Exception
+     * @throws Exception 保存记录可能会出现业务异常
      */
     default int save(V vo) throws Exception {
         if (vo == null) {
@@ -216,7 +215,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * 修改方法
      * @param vo 视图对象
      * @return int 更新记录数
-     * @throws Exception
+     * @throws Exception 更新记录可能会出现业务异常
      */
     default int update(V vo) throws Exception {
         if (vo == null) {
@@ -231,7 +230,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * 删除方法
      * @param vo 视图对象
      * @return int 更新记录数
-     * @throws Exception
+     * @throws Exception 删除记录可能会出现业务异常
      */
     default int delete(V vo) throws Exception {
         if (vo == null) {
@@ -244,7 +243,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * 批量删除
      * @param vos 视图对象集合
      * @return int 更新记录数
-     * @throws Exception
+     * @throws Exception 删除记录可能会出现业务异常
      */
     default int deleteAll(Collection<V> vos) throws Exception {
         if (Utils.isEmpty(vos)) {
@@ -268,7 +267,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * 删除记录
      * @param id 主键
      * @return int 更新记录数
-     * @throws Exception
+     * @throws Exception 删除记录可能会出现业务异常
      */
     default int delete(ID id) throws Exception {
         V vo = get(id);

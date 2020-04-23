@@ -15,7 +15,7 @@ import com.rongji.dfish.ui.auxiliary.CalendarItem;
  *
  * @author DFish Team
  * @version 2.0
- * @since xmltmpl 2.0
+ * @since DFish2.0
  */
 public class Calendar extends AbstractPubNodeContainer<Calendar, CalendarItem, CalendarItem> {
     private static final long serialVersionUID = -7016518294135279513L;
@@ -72,7 +72,7 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, CalendarItem, C
 
     /**
      * 日历类型。可选值：date, week, month, year。默认值为"date"。
-     * @return
+     * @return 日历类型
      */
     public String getFace() {
         return face;
@@ -80,7 +80,7 @@ public class Calendar extends AbstractPubNodeContainer<Calendar, CalendarItem, C
 
     /**
      * 日历类型。可选值：date, week, month, year。默认值为"date"。
-     * @param face
+     * @param face 日历类型
      * @return 本身，这样可以继续设置其他属性
      */
     public Calendar setFace(String face) {

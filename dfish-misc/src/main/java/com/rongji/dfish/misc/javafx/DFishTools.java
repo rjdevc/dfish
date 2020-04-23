@@ -42,8 +42,7 @@ import java.util.Optional;
  *
  * @author LinLW
  * @version 1.1 lamontYu 将工具包移到misc下,完成二维码功能,其他功能待补充
- * @date 2020-04-03
- * @since 5.0
+ * @since DFish5.0
  */
 public class DFishTools extends Application {
 

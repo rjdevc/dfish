@@ -37,12 +37,12 @@ import java.util.*;
  * 否则，需要些一个方法设置grid 关于风格的参数。</p>
  *
  * @author DFish Team
- * @since dfish 2.0
+ * @since DFish2.0
  */
 public class TableFactory {
     /**
      * 构建DefaultTableFactory
-     * @param id
+     * @param id 编号
      * @return DefaultTableFactory
      */
     public static DefaultTableFactory newTable(String id) {
@@ -51,7 +51,7 @@ public class TableFactory {
 
     /**
      * 构建 GroupedTableFactory
-     * @param id
+     * @param id 编号
      * @return GroupedTableFactory
      */
     public static GroupedTableFactory newGroupedTable(String id) {
@@ -71,7 +71,7 @@ public class TableFactory {
 
         /**
          * 构造函数
-         * @param id
+         * @param id 编号
          */
         public AbstractTableFactory(String id) {
             this.id = id;
@@ -80,7 +80,7 @@ public class TableFactory {
 
         /**
          * 获取id
-         * @return
+         * @return 编号
          */
         public String getId() {
             return id;
@@ -88,8 +88,8 @@ public class TableFactory {
 
         /**
          * 设置id
-         * @param id
-         * @return
+         * @param id 编号
+         * @return 本身，这样可以继续设置属性
          */
         public T setId(String id) {
             this.id = id;
@@ -98,7 +98,7 @@ public class TableFactory {
 
         /**
          * 取得该面板所用的CSS类型
-         * @return
+         * @return css样式
          */
         public String getCls() {
             return cls;
@@ -106,8 +106,8 @@ public class TableFactory {
 
         /**
          * 该面板所用的CSS类型
-         * @param cls
-         * @return
+         * @param cls css样式
+         * @return 本身，这样可以继续设置属性
          */
         public T setCls(String cls) {
             this.cls = cls;
@@ -125,18 +125,26 @@ public class TableFactory {
             return (T) this;
         }
 
-        public boolean isHasTableHead(boolean hasTableHead) {
+        /**
+         * 是否有表头设置
+         * @return boolean 是否有表头
+         */
+        public boolean isHasTableHead() {
             return hasTableHead;
         }
 
+        /**
+         * 表格列
+         * @return 列集合
+         */
         public List<Column> getColumns() {
             return columns;
         }
 
         /**
          * 添加列
-         * @param column
-         * @return
+         * @param column 表格列
+         * @return 本身，这样可以继续设置属性
          */
         public T addColumn(Column column) {
             if (column == null) {
@@ -149,7 +157,7 @@ public class TableFactory {
 
         /**
          * 抽象类，构建器
-         * @return
+         * @return Table对象
          */
         public abstract Table build();
 
@@ -193,7 +201,7 @@ public class TableFactory {
 
         /**
          * 模式校验
-         * @param column
+         * @param column 列
          */
         protected void checkMode(Column column) {
             int currMode = MODE_UNDEFINED;
@@ -373,7 +381,7 @@ public class TableFactory {
         /**
          * 如果数据是List&lt;JavaBean&gt;则这里表示这个JavaBean的属性名。该列取这个属性的值
          *
-         * @return
+         * @return bean属性名
          */
         @Transient
         public String getBeanProp() {
@@ -384,7 +392,7 @@ public class TableFactory {
          * 如果数据是List&lt;JavaBean&gt;则这里表示这个JavaBean的属性名。该列取这个属性的值
          *
          * @param beanProp 属性名
-         * @return this
+         * @return 本身，这样可以继续设置属性
          */
         public Column setBeanProp(String beanProp) {
             this.beanProp = beanProp;
@@ -394,7 +402,7 @@ public class TableFactory {
         /**
          * int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
          *
-         * @return
+         * @return int 数据列下标
          */
         @Transient
         public int getDataColumnIndex() {
@@ -405,7 +413,7 @@ public class TableFactory {
          * int 数据对象是List&lt;Object[]&gt;时表示数据在第几列
          *
          * @param dataColumnIndex int
-         * @return this
+         * @return 本身，这样可以继续设置属性
          */
         public Column setDataColumnIndex(int dataColumnIndex) {
             this.dataColumnIndex = dataColumnIndex;
@@ -431,7 +439,7 @@ public class TableFactory {
          * 详见SimpleDateFormat与NumberFormat
          *
          * @param dataFormat String
-         * @return this
+         * @return 本身，这样可以继续设置属性
          * @see java.text.SimpleDateFormat
          * @see java.text.NumberFormat
          */
@@ -443,7 +451,7 @@ public class TableFactory {
         /**
          * 标题(一般设置在表头上)
          *
-         * @return
+         * @return 标题
          */
         @Transient
         public String getLabel() {
@@ -454,7 +462,7 @@ public class TableFactory {
          * 标题(一般设置在表头上)
          *
          * @param label the label to set
-         * @return this
+         * @return 本身，这样可以继续设置属性
          */
         public Column setLabel(String label) {
             this.label = label;

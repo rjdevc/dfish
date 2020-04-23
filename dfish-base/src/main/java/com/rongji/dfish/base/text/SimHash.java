@@ -44,9 +44,8 @@ public class SimHash {
      * 将文本转化成SimHash
      * @param tokens 文本
      * @return 默认16个字符的结果
-     * @throws Exception
      */
-    public String getSimHash(String tokens) throws Exception {
+    public String getSimHash(String tokens) {
         splitter=DEFAULT_SPLITER;
         return getSimHash(tokens, hashbits);
     }
@@ -68,9 +67,8 @@ public class SimHash {
      * @param tokens 文本
      * @param hashbits 位数
      * @return 默认位数除以四个字符的结果
-     * @throws Exception
      */
-    public String getSimHash(String tokens, int hashbits) throws Exception {
+    public String getSimHash(String tokens, int hashbits) {
         // 定义特征向量/数组
         int[] v = new int[hashbits];
         for(String word:splitter.split(tokens)){

@@ -2,9 +2,9 @@ package com.rongji.dfish.base.exception;
 
 /**
  * 带有异常标识码的异常
+ *
  * @author lamontYu
- * @date 2019-12-11
- * @since 5.0
+ * @since DFish5.0
  */
 public class MarkedException extends Exception implements Marked {
 
@@ -13,19 +13,6 @@ public class MarkedException extends Exception implements Marked {
      * 异常标识码
      */
     private String code;
-
-    @Override
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * 设置异常标识码
-     * @param code String 异常标识码
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     /**
      * 构造函数
@@ -36,7 +23,8 @@ public class MarkedException extends Exception implements Marked {
 
     /**
      * 构造函数
-     * @param message
+     *
+     * @param message 信息
      */
     public MarkedException(String message) {
         super(message);
@@ -44,7 +32,8 @@ public class MarkedException extends Exception implements Marked {
 
     /**
      * 构造函数
-     * @param cause
+     *
+     * @param cause 起因
      */
     public MarkedException(Throwable cause) {
         super(cause);
@@ -52,8 +41,9 @@ public class MarkedException extends Exception implements Marked {
 
     /**
      * 构造函数
-     * @param message
-     * @param cause
+     *
+     * @param message 信息
+     * @param cause   起因
      */
     public MarkedException(String message, Throwable cause) {
         super(message, cause);
@@ -61,8 +51,9 @@ public class MarkedException extends Exception implements Marked {
 
     /**
      * 构造函数
-     * @param message
-     * @param code
+     *
+     * @param message 信息
+     * @param code    标识码
      */
     public MarkedException(String message, String code) {
         super(message);
@@ -71,13 +62,36 @@ public class MarkedException extends Exception implements Marked {
 
     /**
      * 构造函数
-     * @param message
-     * @param cause
-     * @param code
+     *
+     * @param message 信息
+     * @param cause   起因
+     * @param code    标识码
      */
     public MarkedException(String message, Throwable cause, String code) {
         super(message, cause);
         this.code = code;
     }
-    
+
+    /**
+     * 获取异常标识码
+     *
+     * @return 标识码
+     */
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+    /**
+     * 设置异常标识码
+     *
+     * @param code String 标识码
+     * @return 本身，这样可以继续设置属性
+     */
+    public MarkedException setCode(String code) {
+        this.code = code;
+        return this;
+    }
+
+
 }

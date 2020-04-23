@@ -10,8 +10,8 @@ import java.io.File;
 /**
  * 默认个人配置实现类
  * 该实现类将系统配置保存在配置文件中
- * @since 2.x
- * @date 2018-08-03 before
+ * @since DFish2.x
+ *
  * @author DFish Team
  */
 public class DefaultPersonalConfig implements PersonalConfigHolder {

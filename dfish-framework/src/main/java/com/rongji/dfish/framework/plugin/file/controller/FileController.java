@@ -46,8 +46,8 @@ import java.util.*;
  *
  * @author lamontYu
  * @version 1.3 去掉类注解,采用配置加载模式,有利于项目自定义配置 lamontYu 2019-12-5
- * @date 2018-08-03 before
- * @since 3.0
+ *
+ * @since DFish3.0
  */
 @RequestMapping("/file")
 public class FileController extends BaseActionController {
@@ -283,7 +283,6 @@ public class FileController extends BaseActionController {
      *
      * @param request
      * @param response
-     * @return
      * @throws Exception
      */
     @RequestMapping("/download")

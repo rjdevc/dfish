@@ -7,8 +7,7 @@ import com.rongji.dfish.ui.auxiliary.SubmitValidate;
  *
  * @author DFish Team
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 2.0
+ * @since DFish2.0
  */
 public class Submit extends CommunicateCommand<Submit> {
 
@@ -49,7 +48,7 @@ public class Submit extends CommunicateCommand<Submit> {
      * 需要提交的面板的ID，多个用逗号(半角)隔开，如果为空则表示整个view里面的所有表单。值得注意的是Table等面板里面也可以有隐藏值。提交的时候，要考虑非FormPanel的情况
      *
      * @return the range  String
-     * @since XMLTMPL 2.1
+     * @since DFish2.1
      */
     public String getRange() {
         return range;
@@ -77,6 +76,7 @@ public class Submit extends CommunicateCommand<Submit> {
 
     /**
      * 提交命令校验
+     * @return SubmitValidate 命令校验
      */
     public SubmitValidate validate() {
         if (validate == null) {
@@ -87,7 +87,7 @@ public class Submit extends CommunicateCommand<Submit> {
 
     /**
      * 设置需要提交的面板的ID
-     * @param validateRange
+     * @param validateRange 校验范围
      * @return 本身，这样可以继续设置其他属性
      */
     public Submit setValidateRange(String validateRange) {
@@ -97,7 +97,7 @@ public class Submit extends CommunicateCommand<Submit> {
 
     /**
      * 设置表单校验选项组
-     * @param validateGroup
+     * @param validateGroup 校验组
      * @return 本身，这样可以继续设置其他属性
      */
     public Submit setValidateGroup(String validateGroup) {
@@ -107,7 +107,7 @@ public class Submit extends CommunicateCommand<Submit> {
 
     /**
      * 设置如果没校验通过的提醒效果
-     * @param validateEffect
+     * @param validateEffect 校验效果
      * @return 本身，这样可以继续设置其他属性
      */
     public Submit setValidateEffect(String validateEffect) {

@@ -7,8 +7,7 @@ import java.util.Date;
 /**
  * lob实体类
  * @author lamontYu
- * @date 2019-09-23
- * @since 3.2
+ * @since DFish3.2
  * @version 1.1 去除注解,框架默认采用配置加载模式 lamontYu 2019-12-05
  */
 public class PubLob implements java.io.Serializable {
@@ -28,7 +27,7 @@ public class PubLob implements java.io.Serializable {
     }
 
     /**
-     * minimal constructor
+     * @param lobId 编号
      */
     public PubLob(String lobId) {
         this.lobId = lobId;
@@ -36,7 +35,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 编号
-     * @return
+     * @return String
      */
     @Id
     @Column(name = "LOB_ID")
@@ -46,7 +45,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 编号
-     * @param lobId
+     * @param lobId 编号
      */
     public void setLobId(String lobId) {
         this.lobId = lobId;
@@ -54,7 +53,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * lob内容（字符串）
-     * @return
+     * @return String
      */
     @Column(name = "LOB_CONTENT")
     public String getLobContent() {
@@ -63,7 +62,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * lob内容（字符串）
-     * @param lobContent
+     * @param lobContent lob内容
      */
     public void setLobContent(String lobContent) {
         this.lobContent = lobContent;
@@ -71,7 +70,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 操作时间
-     * @return
+     * @return Date
      */
     @Column(name = "OPER_TIME")
     public Date getOperTime() {
@@ -80,7 +79,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 操作时间
-     * @param operTime
+     * @param operTime 操作时间
      */
     public void setOperTime(Date operTime) {
         this.operTime = operTime;
@@ -88,7 +87,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 归档标识
-     * @return
+     * @return 归档标识
      */
     @Column(name = "ARCHIVE_FLAG")
     public String getArchiveFlag() {
@@ -97,7 +96,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 归档标识
-     * @param archiveFlag
+     * @param archiveFlag 归档标识
      */
     public void setArchiveFlag(String archiveFlag) {
         this.archiveFlag = archiveFlag;
@@ -105,7 +104,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 归档时间
-     * @return
+     * @return Date
      */
     @Column(name = "ARCHIVE_TIME")
     public Date getArchiveTime() {
@@ -114,7 +113,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * 归档时间
-     * @param archiveTime
+     * @param archiveTime 归档时间
      */
     public void setArchiveTime(Date archiveTime) {
         this.archiveTime = archiveTime;
@@ -122,7 +121,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * lob内容（二进制）
-     * @return
+     * @return byte[]
      */
     @Column(name = "LOB_DATA")
     public byte[] getLobData() {
@@ -131,7 +130,7 @@ public class PubLob implements java.io.Serializable {
 
     /**
      * lob内容（二进制）
-     * @param lobData
+     * @param lobData lob内容（二进制）
      */
     public void setLobData(byte[] lobData) {
         this.lobData = lobData;

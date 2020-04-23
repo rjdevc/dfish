@@ -19,9 +19,9 @@ public interface FileUploadPlugin {
     /**
      * 插件附件请求方法
      *
-     * @param request
-     * @return Object
-     * @throws Exception
+     * @param request 请求
+     * @return 插件附件请求结果
+     * @throws Exception 插件请求可能会出现的业务异常
      */
     Object doRequest(HttpServletRequest request) throws Exception;
 

@@ -78,7 +78,7 @@ public final class DataBaseInfo {
 	/**
 	 * 使用一个连接来获取数据库的头信息。
 	 * 
-	 * @param conn
+	 * @param conn 链接
 	 */
 	public DataBaseInfo(Connection conn) {
 		DatabaseMetaData dbmd = null;
@@ -123,7 +123,7 @@ public final class DataBaseInfo {
 	/**
 	 * 取得数据库名称
 	 * 
-	 * @return
+	 * @return String 数据库名称
 	 */
 	public String getDatabaseProductName() {
 		return databaseProductName;
@@ -132,7 +132,7 @@ public final class DataBaseInfo {
 	/**
 	 * 取得数据库版本号
 	 * 
-	 * @return
+	 * @return String 数据库版本号
 	 */
 	public String getDatabaseProductVersion() {
 		return databaseProductVersion;
@@ -141,7 +141,7 @@ public final class DataBaseInfo {
 	/**
 	 * 取得数据库连接字符串
 	 * 
-	 * @return
+	 * @return String 数据库连接字符串
 	 */
 	public String getDatabaseUrl() {
 		return databaseUrl;
@@ -149,28 +149,28 @@ public final class DataBaseInfo {
 
 	/**
 	 * 取得数据库连接用户名
-	 * @return
+	 * @return String 数据库连接用户名
 	 */
 	public String getDatabaseUsername() {
 		return databaseUsername;
 	}
 	/**
 	 * 取得驱动名称
-	 * @return
+	 * @return String 驱动名称
 	 */
 	public String getDriverName() {
 		return driverName;
 	}
 	/**
 	 * 取得驱动版本号。
-	 * @return
+	 * @return String 驱动版本号
 	 */
 	public String getDriverVersion() {
 		return driverVersion;
 	}
 	/**
 	 * 取得数据库类型
-	 * @return
+	 * @return int 数据库类型
 	 * @see #DATABASE_UNKNOWN
 	 * @see #DATABASE_ORACLE
 	 * @see #DATABASE_POSTGRESQL

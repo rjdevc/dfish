@@ -5,8 +5,7 @@ import java.util.List;
 /**
  * 文件处理方案,定义了上传
  * @author lamontYu
- * @date 2019-08-07
- * @since 5.0
+ * @since DFish5.0
  */
 public class FileHandleScheme {
     /**

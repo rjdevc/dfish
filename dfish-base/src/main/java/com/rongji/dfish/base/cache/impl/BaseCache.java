@@ -24,7 +24,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
 
     /**
      * 缓存名称
-     * @param name
+     * @param name 缓存名称
      */
     public void setName(String name) {
         this.name = name;
@@ -125,8 +125,8 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
     /**
      * 删除
      *
-     * @param key
-     * @return V
+     * @param key 键
+     * @return V 缓存值
      */
     @Override
     public V remove(K key) {
@@ -176,8 +176,8 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
 
     /**
      * 判断是否包含value值
-     * @param value
-     * @return
+     * @param value 缓存值
+     * @return 是否包含
      */
     public boolean containsValue(V value) {
         Collection<CacheItem<V>> col = core.values();
@@ -207,7 +207,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
 
     /**
      * value集合
-     * @return
+     * @return value集合
      */
     public Collection<V> values() {
         Collection<CacheItem<V>> col = core.values();

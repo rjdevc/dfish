@@ -5,7 +5,7 @@ package com.rongji.dfish.ui.form;
  *
  * @author DFish Team
  * @version 1.0
- * @since XMLTMPL 2.1
+ * @since DFish2.1
  */
 public class TripleBox extends AbstractBox<TripleBox> {
     /**

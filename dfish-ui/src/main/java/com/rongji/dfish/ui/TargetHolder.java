@@ -3,8 +3,7 @@ package com.rongji.dfish.ui;
 /**
  * 定义了该组件有target指向的组件及相关方法
  * @param <T> 组件本身
- * @since 5.0
- * @date 2020-02-12
+ * @since DFish5.0
  * @author lamontYu
  */
 public interface TargetHolder<T> {

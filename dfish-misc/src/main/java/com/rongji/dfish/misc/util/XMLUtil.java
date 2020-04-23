@@ -37,7 +37,7 @@ public class XMLUtil {
 
 	/**
 	 * 获得文件全名
-	 * @return
+	 * @return String
 	 */
 	public String getFileFullName() {
 		return fileFullName;
@@ -45,7 +45,7 @@ public class XMLUtil {
 
 	/**
 	 * 设置文件全名
-	 * @param fileFullName
+	 * @param fileFullName String
 	 */
 	public void setFileFullName(String fileFullName) {
 		this.fileFullName = fileFullName;
@@ -53,7 +53,7 @@ public class XMLUtil {
 
 	/**
 	 * 获得 Document
-	 * @return
+	 * @return Document
 	 */
 	public Document getDoc() {
 		return doc;
@@ -61,7 +61,7 @@ public class XMLUtil {
 
 	/**
 	 * 设置Document
-	 * @param doc
+	 * @param doc Document
 	 */
 	public void setDoc(Document doc) {
 		this.doc = doc;
@@ -76,7 +76,7 @@ public class XMLUtil {
 
 	/**
 	 * 创建对象
-	 * @param doc
+	 * @param doc Document
 	 */
 	public XMLUtil(Document doc) {
 		this.doc = doc;
@@ -84,8 +84,8 @@ public class XMLUtil {
 
 	/**
 	 * 创建对象
-	 * @param inputStream
-	 * @throws DocumentException
+	 * @param inputStream 输入流
+	 * @throws DocumentException 文档异常
 	 */
 	public XMLUtil(InputStream inputStream) throws DocumentException {
 		readDoc(inputStream);
@@ -93,8 +93,8 @@ public class XMLUtil {
 
 	/**
 	 * 创建对象
-	 * @param file
-	 * @throws DocumentException
+	 * @param file 文件
+	 * @throws DocumentException 文档异常
 	 */
 	public XMLUtil(File file) throws DocumentException {
 		if (file == null) {
@@ -106,8 +106,8 @@ public class XMLUtil {
 
 	/**
 	 * 创建对象
-	 * @param fileFullName
-	 * @throws DocumentException
+	 * @param fileFullName 文件完整名
+	 * @throws DocumentException 文档异常
 	 */
 	public XMLUtil(String fileFullName) throws DocumentException {
 		this.fileFullName = fileFullName;
@@ -158,8 +158,7 @@ public class XMLUtil {
 	/**
 	 * 写入文件内容
 	 * 
-	 * @param encoding
-	 *            String
+	 * @param encoding String 编码
 	 */
 	public synchronized void writeDoc(String encoding) {
 		OutputStream out = null;
@@ -197,7 +196,8 @@ public class XMLUtil {
 	
 	/**
 	 * 获取XML的格式,以换行、易看懂的格式
-	 * 
+	 *
+	 * @param encoding 编码
 	 * @return 设置好的XML格式
 	 */
 	public static OutputFormat getOutputFormat(String encoding) {
@@ -214,11 +214,11 @@ public class XMLUtil {
 	/**
 	 * 格式化XML
 	 * 
-	 * @param doc
-	 * @param encoding
-	 * @return
-	 * @throws IOException
+	 * @param doc Document
+	 * @param encoding 编码
 	 * @return String
+	 * @throws IOException XML异常
+	 * @return String XML文本
 	 */
 	public static String formatXML(Document doc, String encoding)
 			throws IOException {

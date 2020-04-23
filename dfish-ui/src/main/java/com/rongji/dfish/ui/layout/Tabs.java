@@ -11,8 +11,7 @@ import java.util.List;
 /**
  * 可切换标签容器
  * @author LinLW
- * @date 2019-10-16
- * @since 5.0
+ * @since DFish5.0
  */
 public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
         Alignable<Tabs>, VAlignable<Tabs>, HiddenContainer<Tabs> {

@@ -13,10 +13,8 @@ import java.util.*;
  * 缓存管理类
  *
  * @author lamontYu
- * @date 2019-09-23
- * @since 3.2
- * @version 1.1 去除缓存定义类,采用缓存实现 LinLW 2019-11-28
  * @version 1.2 支持清理缓存超期数据 lamontYu 2019-12-05
+ * @since DFish3.2
  */
 @Component
 public class CacheManager {
@@ -39,7 +37,8 @@ public class CacheManager {
 
     /**
      * 将cache注册到 CacheManager
-     * @param cache
+     *
+     * @param cache 缓存
      */
     public void registerCache(Cache cache) {
         if (cache == null) {
@@ -61,7 +60,8 @@ public class CacheManager {
      * 根据婚车名称获取缓存组
      *
      * @param cacheName 缓存名称
-     * @param <K,       V>       缓存值泛型
+     * @param <K>       缓存键key
+     * @param <V>       缓存值value
      * @return 获取的缓存组
      */
     public <K, V> Cache<K, V> getCache(String cacheName) {
@@ -72,7 +72,7 @@ public class CacheManager {
     /**
      * 获取系统所有缓存名称
      *
-     * @return
+     * @return 集合
      */
     public Collection<String> cacheNames() {
         return Collections.unmodifiableSet(cacheMap.keySet());
@@ -95,7 +95,8 @@ public class CacheManager {
      * 根据缓存名称移除缓存组
      *
      * @param cacheName 缓存名称
-     * @param <K, V>       缓存值泛型
+     * @param <K>       缓存键key
+     * @param <V>       缓存值value
      * @return 移除的缓存组
      */
     public <K, V> Cache<K, V> removeCache(String cacheName) {

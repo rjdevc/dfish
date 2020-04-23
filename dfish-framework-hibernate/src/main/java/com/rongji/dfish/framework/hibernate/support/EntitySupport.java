@@ -11,8 +11,7 @@ import java.lang.reflect.Type;
  * 实体类支持类,用于实现框架内核中默认方法实体类的创建,这样让默认的子类只关注本身的方法,而不用关注常用方法的实现
  *
  * @author lamontYu
- * @date 2019-12-18
- * @since 5.0
+ * @since DFish5.0
  */
 public class EntitySupport<P> {
 

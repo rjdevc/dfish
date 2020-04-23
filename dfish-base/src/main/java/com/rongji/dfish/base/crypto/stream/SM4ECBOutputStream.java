@@ -12,8 +12,8 @@ public class SM4ECBOutputStream extends AbstractPresentOutputStream {
 
     /**
      * 构造函数
-     * @param out
-     * @param key
+     * @param out 输出流
+     * @param key 秘钥
      */
     public SM4ECBOutputStream(OutputStream out,byte[] key) {
         super(out);

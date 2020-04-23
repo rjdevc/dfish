@@ -56,7 +56,7 @@ public class PickBox extends AbstractPickerBox<PickBox> implements HasText<PickB
      * @param name  表单元素名
      * @param label 标题
      * @param value 值
-     * @since DFish 3.0
+     * @since DFish3.0
      */
     public PickBox(String name, String label, String value) {
     	super(name, label, value);
@@ -67,7 +67,7 @@ public class PickBox extends AbstractPickerBox<PickBox> implements HasText<PickB
      * @param name  表单元素名
      * @param label 标题
      * @param value 值
-     * @since DFish 3.0
+     * @since DFish3.0
      */
     public PickBox(String name, Label label, String value) {
         super(name, label, value);

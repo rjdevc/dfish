@@ -13,7 +13,7 @@ import java.io.OutputStream;
 public class Base64UrlsafeOutputStream extends AbstractPresentOutputStream {
     /**
      * 构造函数
-     * @param out
+     * @param out 输出流
      */
     public Base64UrlsafeOutputStream(OutputStream out) {
         super(out);
@@ -33,10 +33,10 @@ public class Base64UrlsafeOutputStream extends AbstractPresentOutputStream {
     /**
      * 完整的5字节转8字节。独立出来，是为了性能。 完整的分组无需复杂计算。
      *
-     * @param in
-     * @param inPos
-     * @param out
-     * @param outPos
+     * @param in 输入流数据
+     * @param inPos 输入流数据开始位置
+     * @param out 输出流数据
+     * @param outPos 输出流写入位置
      */
     @Override
     protected void doChunk(byte[] in, int inPos, byte[] out, int outPos) {

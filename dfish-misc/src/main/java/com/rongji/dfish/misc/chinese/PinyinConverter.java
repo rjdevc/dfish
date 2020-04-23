@@ -62,7 +62,7 @@ public class PinyinConverter {
     /**
      * 构造函数
      *
-     * @param mode
+     * @param mode 模式
      */
     public PinyinConverter(int mode) {
         this.mode = mode;
@@ -74,7 +74,7 @@ public class PinyinConverter {
      * @param str          含有汉字的字符串
      * @param separator    拼音转化出来后的分隔符，有时需要用空格分隔
      * @param pinyinFormat 格式，纯ASCII字母还是带 阴平 阳平等音调
-     * @return String
+     * @return String 转化后的拼音结果
      */
     public String convert(String str, String separator, int pinyinFormat) {
         TrieTree<String> trieTree = getMainLib();
@@ -204,8 +204,8 @@ public class PinyinConverter {
     /**
      * 构造函数
      *
-     * @param str
-     * @return
+     * @param str 字符
+     * @return 转换后的拼音结果
      */
     public String convert(String str) {
         return convert(str, "", FORMAT_WITHOUT_TONE);
@@ -214,9 +214,9 @@ public class PinyinConverter {
     /**
      * 取得拼音
      *
-     * @param str
+     * @param str 字符
      * @param hasToneNumber 是否包含音调。音调以0(轻声)1(阴平)2(阳平)3(上声)4(去声)
-     * @return String
+     * @return String 转换后的拼音结果
      */
     public static String getPinyin(String str, boolean hasToneNumber) {
         if (str == null) {
@@ -251,8 +251,8 @@ public class PinyinConverter {
     /**
      * 同时取得全拼和简拼的字符串
      *
-     * @param str
-     * @param hasToneNumber
+     * @param str 字符
+     * @param hasToneNumber 是否有音标
      * @return String[]
      */
     public static String[] getPinyinFullShortFormat(String str, boolean hasToneNumber) {

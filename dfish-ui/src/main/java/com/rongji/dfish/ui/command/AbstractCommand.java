@@ -8,7 +8,7 @@
 // * @param <T> 当前对象类型
 // * @author DFish Team
 // * @version 1.0
-// * @since DFish 3.0
+// * @since DFish3.0
 // */
 //public abstract class AbstractCommand<T extends AbstractCommand<T>> extends AbstractNode<T> implements Command<T> {
 //

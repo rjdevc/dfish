@@ -27,8 +27,7 @@ import java.util.*;
  * 提供一个入口，对request传来的数据进行统一处理
  *
  * @author lamontYu
- * @date 2019-09-03
- * @since 3.2
+ * @since DFish3.2
  */
 public class BaseActionController extends MultiActionController {
     /**
@@ -40,7 +39,7 @@ public class BaseActionController extends MultiActionController {
     /**
      * 允许用户自定义分页数设置
      *
-     * @return
+     * @return boolean 是否允许自定义分页数设置
      */
     public boolean isCustomizedLimit() {
         return customizedLimit;
@@ -49,7 +48,7 @@ public class BaseActionController extends MultiActionController {
     /**
      * 允许用户自定义分页数设置
      *
-     * @param customizedLimit
+     * @param customizedLimit 是否允许自定义分页数设置
      */
     public void setCustomizedLimit(boolean customizedLimit) {
         this.customizedLimit = customizedLimit;
@@ -164,8 +163,7 @@ public class BaseActionController extends MultiActionController {
      * 通过设置转换格式将请求数据转换成指定对象
      *
      * @author DFish Team
-     * @date 2018-08-03 before
-     * @since 3.0
+     * @since DFish3.0
      */
     public static class Convertor {
         List<Format> formats = new ArrayList<>();
@@ -206,8 +204,7 @@ public class BaseActionController extends MultiActionController {
      * 对象属性格式转换配置(含对象映射类,属性名,方法等方法)
      *
      * @author DFish Team
-     * @date 2018-08-03 before
-     * @since 3.0
+     * @since DFish3.0
      */
     public static class Format {
         String name;
@@ -338,7 +335,7 @@ public class BaseActionController extends MultiActionController {
     /**
      * 分页结果最多显示多少行
      *
-     * @return
+     * @return 一页最多显示多少记录数
      */
     protected int getPaginationLimit() {
         return 30;
@@ -347,8 +344,8 @@ public class BaseActionController extends MultiActionController {
     /**
      * 获取分页信息
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 分页信息
      */
     public Pagination getPagination(HttpServletRequest request) {
         int limit = 0;
@@ -388,8 +385,8 @@ public class BaseActionController extends MultiActionController {
     /**
      * 分页组件是否在查询的时候自动统计行数
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return Boolean 是否自动统计行数
      */
     protected Boolean getPaginationAutoRowCount(HttpServletRequest request) {
         String autoRowCount = request.getParameter("autoRowCount");
@@ -403,8 +400,8 @@ public class BaseActionController extends MultiActionController {
     /**
      * 获取进度条编号,由[调用方法#sessionId#dataId]构成
      *
-     * @param sessionId 会话编号
-     * @param linkedData  数据关联编号
+     * @param sessionId  会话编号
+     * @param linkedData 数据关联编号
      * @return 进度条编号
      */
     protected String getProgressKey(String sessionId, String linkedData) {
@@ -502,8 +499,8 @@ public class BaseActionController extends MultiActionController {
     /**
      * 将获取的信息转化为json格式
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 转Json格式字符
      */
     protected String convert2JSON(HttpServletRequest request) {
         if (request == null) {

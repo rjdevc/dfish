@@ -1,7 +1,7 @@
 /**
  *@author lamontYu
- *@date 2019-12-27
- *@since
+ *
+ *@since DFish5.0
  */
 define.template({
     type: 'View',

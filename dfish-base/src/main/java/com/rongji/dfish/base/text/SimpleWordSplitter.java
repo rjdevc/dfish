@@ -65,7 +65,7 @@ public class SimpleWordSplitter implements WordSplitter{
 
     /**
      * 获得切词器实例
-     * @return
+     * @return SimpleWordSplitter
      */
     public static SimpleWordSplitter getInstance(){
         return instance;

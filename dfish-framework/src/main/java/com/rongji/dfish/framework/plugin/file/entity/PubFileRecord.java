@@ -27,20 +27,23 @@ public class PubFileRecord implements java.io.Serializable {
 	private String fileKey;
 	private String fileStatus;
 
-	// Constructors
-
-	/** default constructor */
+	/**
+	 * 构造函数
+	 */
 	public PubFileRecord() {
 	}
 
-	/** minimal constructor */
+	/**
+	 * 构造函数
+	 * @param fileId String 附件编号
+	 */
 	public PubFileRecord(String fileId) {
 		this.fileId = fileId;
 	}
 
 	/**
 	 * 附件编号
-	 * @return
+	 * @return String
 	 */
 	@Id
 	@Column(name = "FILE_ID")
@@ -50,7 +53,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件编号
-	 * @param fileId
+	 * @param fileId String 附件编号
 	 */
 	public void setFileId(String fileId) {
 		this.fileId = fileId;
@@ -58,7 +61,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件名称
-	 * @return
+	 * @return String
 	 */
 	@Column(name = "FILE_NAME")
 	public String getFileName() {
@@ -67,7 +70,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件名称
-	 * @param fileName
+	 * @param fileName String 附件名称
 	 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
@@ -75,7 +78,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件类型
-	 * @return
+	 * @return String
 	 */
 	@Column(name = "FILE_TYPE")
 	public String getFileType() {
@@ -84,7 +87,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件类型
-	 * @param fileType
+	 * @param fileType String 附件类型
 	 */
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
@@ -92,7 +95,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件存储地址
-	 * @return
+	 * @return String
 	 */
 	@Column(name = "FILE_URL")
 	public String getFileUrl() {
@@ -100,6 +103,7 @@ public class PubFileRecord implements java.io.Serializable {
 	}
 	/**
 	 * 附件存储地址
+	 * @param fileUrl String 附件地址
 	 */
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
@@ -107,7 +111,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 文件大小
-	 * @return
+	 * @return Long
 	 */
 	@Column(name = "FILE_SIZE")
 	public Long getFileSize() {
@@ -116,7 +120,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 文件大小
-	 * @param fileSize
+	 * @param fileSize Long
 	 */
 	public void setFileSize(Long fileSize) {
 		this.fileSize = fileSize;
@@ -124,7 +128,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 文件创建人
-	 * @return
+	 * @return String
 	 */
 	@Column(name = "FILE_CREATOR")
 	public String getFileCreator() {
@@ -133,7 +137,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 文件创建人
-	 * @param fileCreator
+	 * @param fileCreator String
 	 */
 	public void setFileCreator(String fileCreator) {
 		this.fileCreator = fileCreator;
@@ -141,7 +145,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 创建时间
-	 * @return
+	 * @return Date 创建时间
 	 */
 	@Column(name = "CREATE_TIME")
 	public Date getCreateTime() {
@@ -150,7 +154,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 创建时间
-	 * @param createTime
+	 * @param createTime Date 创建时间
 	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
@@ -158,7 +162,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 更新时间
-	 * @return
+	 * @return Date
 	 */
 	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
@@ -167,7 +171,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 更新时间
-	 * @param updateTime
+	 * @param updateTime Date 更新时间
 	 */
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
@@ -175,7 +179,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件链接模块
-	 * @return
+	 * @return String 链接模块
 	 */
 	@Column(name = "FILE_LINK")
 	public String getFileLink() {
@@ -184,7 +188,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件链接模块
-	 * @param fileLink
+	 * @param fileLink String 链接模块
 	 */
 	public void setFileLink(String fileLink) {
 		this.fileLink = fileLink;
@@ -192,7 +196,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件链接的关键字
-	 * @return
+	 * @return String
 	 */
 	@Column(name = "FILE_KEY")
 	public String getFileKey() {
@@ -201,7 +205,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件链接的关键字
-	 * @param fileKey
+	 * @param fileKey String 链接关键字
 	 */
 	public void setFileKey(String fileKey) {
 		this.fileKey = fileKey;
@@ -209,7 +213,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件状态#0:正常,1:删除
-	 * @return
+	 * @return String
 	 */
 	@Column(name = "FILE_STATUS")
 	public String getFileStatus() {
@@ -218,7 +222,7 @@ public class PubFileRecord implements java.io.Serializable {
 
 	/**
 	 * 附件状态#0:正常,1:删除
-	 * @param fileStatus
+	 * @param fileStatus String 附件状态
 	 */
 	public void setFileStatus(String fileStatus) {
 		this.fileStatus = fileStatus;

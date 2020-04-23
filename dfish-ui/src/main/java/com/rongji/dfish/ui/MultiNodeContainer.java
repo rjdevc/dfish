@@ -23,8 +23,8 @@ public interface MultiNodeContainer<T extends MultiNodeContainer<T, N>, N extend
     /**
      * 设置节点列表
      *
-     * @param nodes
-     * @return
+     * @param nodes 节点集合
+     * @return 本身，这样可以继续设置其他属性
      */
     T setNodes(List<N> nodes);
 
@@ -50,6 +50,7 @@ public interface MultiNodeContainer<T extends MultiNodeContainer<T, N>, N extend
      * 添加需要插入元素
      * 一般是增加Widget。也允许增加Command等其他部件
      *
+     * @param index 插入位置下标
      * @param node Node
      * @return 本身，这样可以继续设置其他属性
      */

@@ -7,8 +7,7 @@ import org.springframework.beans.factory.FactoryBean;
 /**
  * 加密工具工厂类,实现Spring的FactoryBean接口
  * 通过不同配置快速得到不同的实例
- * @since 5.0
- * @date 2019-12-10
+ * @since DFish5.0
  * @author LinLW
  */
 public class CryptorFactoryBean implements FactoryBean<Cryptor> {

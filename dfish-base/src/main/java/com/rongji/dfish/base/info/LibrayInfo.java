@@ -57,7 +57,7 @@ public final class LibrayInfo {
 
     /**
      * 环境中支持 dom4j
-     * @return
+     * @return boolean 是否支持
      */
     public boolean isSupportDom4j() {
         return supportDom4j;

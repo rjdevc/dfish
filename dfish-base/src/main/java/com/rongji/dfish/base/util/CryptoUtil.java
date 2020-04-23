@@ -4,7 +4,8 @@ import com.rongji.dfish.base.crypto.CryptorBuilder;
 
 /**
  * 加解密常用的方法
- * <p><strong>usage</strong><br/>
+ * <p><strong>usage</strong></p>
+ * <p>
  * Cryptor c= CryptUtil.prepareCryptor(CryptUtil.ALGORITHM_BLOWFISH,"password".getBytes())
  * .present(CryptUtil.PRESENT_BASE32).build();
  * String s=c.decrypt(src);

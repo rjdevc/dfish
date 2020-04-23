@@ -1,6 +1,6 @@
 /**
  *@author lamontYu
- *@date 2019-12-27
+ *
  *@since
  */
 define.template({

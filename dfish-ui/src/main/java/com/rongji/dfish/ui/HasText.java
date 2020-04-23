@@ -5,7 +5,7 @@ package com.rongji.dfish.ui;
  * @author DFish Team
  * @version 1.0
  * @param <T> 当前对象类型
- * @since XMLTMPL 2.0
+ * @since DFish2.0
  */
 public interface HasText<T extends HasText<T>> extends HtmlContentHolder<T>{
     /**

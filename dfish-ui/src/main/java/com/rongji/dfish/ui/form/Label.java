@@ -17,10 +17,11 @@ public class Label extends AbstractWidget<Label> implements HtmlContentHolder<La
 
     /**
      * 构造函数
-     * @param text
+     *
+     * @param text 文本
      */
-    public Label(String text){
-        this.text=text;
+    public Label(String text) {
+        this.text = text;
     }
 
     @Override
@@ -96,6 +97,7 @@ public class Label extends AbstractWidget<Label> implements HtmlContentHolder<La
 
     /**
      * 后缀
+     *
      * @return String
      */
     public String getSuffix() {
@@ -104,6 +106,7 @@ public class Label extends AbstractWidget<Label> implements HtmlContentHolder<La
 
     /**
      * 后缀
+     *
      * @param suffix String
      * @return 本身，这样可以继续设置其他属性
      */

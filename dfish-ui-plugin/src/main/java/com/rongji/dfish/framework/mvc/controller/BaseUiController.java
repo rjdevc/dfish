@@ -27,8 +27,8 @@ import java.net.SocketException;
  *
  * @author DFish Team
  * @version 1.2 lamontYu 将视图处理和数据处理分开
- * @date 2018-08-03 before
- * @since 3.0
+ *
+ * @since DFish3.0
  */
 public class BaseUiController extends BaseActionController {
 

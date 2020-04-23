@@ -5,7 +5,7 @@ import com.rongji.dfish.ui.AbstractNode;
 /**
  * 高亮配置
  * @author DFish Team
- * @since 3.0
+ * @since DFish3.0
  */
 public class Highlight extends AbstractNode<Highlight> {
 

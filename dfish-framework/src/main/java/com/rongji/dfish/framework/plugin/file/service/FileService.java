@@ -17,7 +17,7 @@ import java.util.*;
  * 附件数据服务层接口定义
  *
  * @author lamontYu
- * @date 2019-12-05
+ * @since DFish3.0
  */
 public interface FileService extends FrameworkService<PubFileRecord, PubFileRecord, String> {
 
@@ -68,8 +68,8 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param originalFileName 原始文件名
      * @param fileSize         文件大小
      * @param loginUserId      登录人员
-     * @return UploadItem
-     * @throws Exception
+     * @return UploadItem 上传数据项
+     * @throws Exception 文件记录保存过程可能出现的业务异常
      */
     UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception;
 
@@ -187,7 +187,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      *
      * @param fileId 附件编号
      * @return InputStream 输入流
-     * @throws Exception
+     * @throws Exception 文件流异常
      */
     default InputStream getFileInputStream(String fileId) throws Exception {
         return getFileInputStream(get(fileId));
@@ -198,7 +198,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      *
      * @param fileRecord 附件记录
      * @return InputStream 输入流
-     * @throws Exception
+     * @throws Exception 文件流异常
      */
     default InputStream getFileInputStream(PubFileRecord fileRecord) throws Exception {
         return getFileInputStream(fileRecord, null);
@@ -211,7 +211,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileRecord 附件记录
      * @param alias      附件别名
      * @return InputStream 输入流
-     * @throws Exception
+     * @throws Exception 文件流异常
      */
     InputStream getFileInputStream(PubFileRecord fileRecord, String alias) throws Exception;
 
@@ -502,7 +502,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      *
      * @param extName     拓展名(不管有没.都支持;即doc和.doc)
      * @param acceptTypes 可接受的类型;格式如:*.doc;*.png;*.jpg;
-     * @return
+     * @return boolean 拓展名是否匹配
      */
     default boolean accept(String extName, String acceptTypes) {
         if (acceptTypes == null || "".equals(acceptTypes)) {

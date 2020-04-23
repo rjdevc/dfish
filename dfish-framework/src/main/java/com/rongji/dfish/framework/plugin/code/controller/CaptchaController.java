@@ -18,8 +18,7 @@ import java.util.Map;
 /**
  * 验证码controller
  * @author lamontYu
- * @date 2019-12-28
- * @since 5.0
+ * @since DFish5.0
  */
 @RequestMapping("/captcha")
 public class CaptchaController extends BaseActionController {
@@ -66,9 +65,9 @@ public class CaptchaController extends BaseActionController {
 
     /**
      * 生成校验码图片
-     * @param request
-     * @param response
-     * @throws Exception
+     * @param request 请求
+     * @param response 相应
+     * @throws Exception 图片绘制异常
      */
     @RequestMapping("/codeImg.png")
     @ResponseBody

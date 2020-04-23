@@ -7,8 +7,8 @@ import com.rongji.dfish.ui.*;
  *
  * @author DFish Team
  * @version 1.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 3.0
+ *
+ * @since DFish3.0
  */
 public class Loading extends AbstractPopup<Loading> implements Command<Loading>, HasText<Loading> {
 

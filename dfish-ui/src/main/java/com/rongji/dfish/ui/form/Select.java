@@ -8,7 +8,7 @@ import java.util.List;
  * Select 下拉选择表单。
  * @author DFish Team
  * @version 1.2
- * @since XMLTMPL 1.0
+ * @since DFish1.0
  */
 public class Select extends AbstractOptionContainer<Select> {
 

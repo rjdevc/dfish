@@ -3,8 +3,7 @@ package com.rongji.dfish.framework.plugin.file.dto;
 /**
  * 预览响应
  * @author lamontYu
- * @date 2019-12-11
- * @since 5.0
+ * @since DFish5.0
  */
 public class PreviewResponse {
     /**
@@ -29,7 +28,7 @@ public class PreviewResponse {
 
     /**
      * 预览方式,目前
-     * @return
+     * @return int 预览方式
      */
     public int getWay() {
         return way;
@@ -37,7 +36,7 @@ public class PreviewResponse {
 
     /**
      * 预览方式
-     * @param way
+     * @param way 预览方式
      * @return 本身，这样可以继续设置其他属性
      */
     public PreviewResponse setWay(int way) {
@@ -47,7 +46,7 @@ public class PreviewResponse {
 
     /**
      * url地址
-     * @return
+     * @return url地址
      */
     public String getUrl() {
         return url;
@@ -55,7 +54,7 @@ public class PreviewResponse {
 
     /**
      * url地址
-     * @param url
+     * @param url url地址
      * @return 本身，这样可以继续设置其他属性
      */
     public PreviewResponse setUrl(String url) {

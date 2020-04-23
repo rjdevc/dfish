@@ -5,7 +5,7 @@ import com.rongji.dfish.base.exception.MarkedException;
 /**
  * 带有标识码的异常
  * @author DFish Team
- * @since 2.x
+ * @since DFish2.x
  * @see com.rongji.dfish.base.exception.MarkedException
  */
 @Deprecated

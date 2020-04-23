@@ -26,7 +26,7 @@ public class Pagination implements Serializable {
     /**
      * 构造函数
      *
-     * @param offset
+     * @param offset 跳过记录数
      */
     public Pagination(int offset) {
         this.offset = offset;
@@ -35,8 +35,8 @@ public class Pagination implements Serializable {
     /**
      * 构造函数
      *
-     * @param offset
-     * @param limit
+     * @param offset 跳过记录数
+     * @param limit 一页最大记录数
      */
     public Pagination(int offset, int limit) {
         this.offset = offset;
@@ -156,9 +156,9 @@ public class Pagination implements Serializable {
     /**
      * 计算结果从第几条开始显示
      *
-     * @param size
-     * @param limit
-     * @return
+     * @param size  总记录数
+     * @param limit 每页记录数
+     * @return int 计算得出跳过多少记录数
      */
     public static int calculateOffset(int size, int limit) {
         int offset = (size - 1) / limit * limit;
@@ -168,8 +168,8 @@ public class Pagination implements Serializable {
     /**
      * 转化
      *
-     * @param page Page
-     * @return Pagination
+     * @param page Page 分页信息
+     * @return Pagination对象
      */
     public static Pagination fromPage(Page page) {
         if (page == null) {
@@ -186,7 +186,7 @@ public class Pagination implements Serializable {
     /**
      * 转化
      *
-     * @return Page
+     * @return Page对象
      */
     public Page toPage() {
         Page page = new Page();

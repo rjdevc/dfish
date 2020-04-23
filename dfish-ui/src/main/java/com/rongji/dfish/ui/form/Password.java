@@ -5,7 +5,7 @@ package com.rongji.dfish.ui.form;
  *
  * @author DFish Team
  * @version 1.1 2020-04-01 lamontYu 增加密码强度显示
- * @since 1.0
+ * @since DFish1.0
  */
 public class Password extends AbstractInput<Password, String> {
 

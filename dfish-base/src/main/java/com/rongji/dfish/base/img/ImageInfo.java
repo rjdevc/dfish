@@ -37,7 +37,7 @@ public class ImageInfo{
      *
      * @param input InputStream
      * @return ImageInfo
-     * @throws IOException
+     * @throws IOException 图片读取的IO异常
      */
     public static ImageInfo of(InputStream input) throws IOException {
 

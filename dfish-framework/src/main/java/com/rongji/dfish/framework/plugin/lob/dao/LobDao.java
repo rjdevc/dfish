@@ -11,8 +11,7 @@ import java.util.*;
  *
  * @author lamontYu
  * @version 1.1 改造成接口实现模式 lamontYu 2019-12-05
- * @date 2019-09-23
- * @since 3.2
+ * @since DFish3.2
  */
 public interface LobDao extends FrameworkDao<PubLob, String> {
 

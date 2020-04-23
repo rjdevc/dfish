@@ -6,8 +6,7 @@ import com.rongji.dfish.ui.widget.AbstractButton;
  * 对话框关闭按钮
  *
  * @author lamontYu
- * @date 2020-04-10
- * @since 5.0
+ * @since DFish5.0
  */
 public class DialogCloseButton extends AbstractButton<DialogCloseButton> {
 

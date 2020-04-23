@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.Widget;
  *
  * @author DFish Team
  * @version 1.0
- * @since XMLTMPL 2.0
+ * @since DFish2.0
  */
 public class Button extends AbstractButton<Button> {
 

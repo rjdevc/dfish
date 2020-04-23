@@ -14,8 +14,8 @@ import com.rongji.dfish.ui.Widget;
  * <div>after</div>
  * </div>
  * @author DFish Team
- * @date 2018-08-03 before
- * @since 3.0
+ *
+ * @since DFish3.0
  * @version 1.1 lamontYu 所有属性和type按照驼峰命名方式调整
  */
 public class After extends AddCommand<After>{

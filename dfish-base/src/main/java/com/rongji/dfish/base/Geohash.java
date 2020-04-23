@@ -10,7 +10,7 @@ import java.util.HashMap;
  * 可以使用expand方法进行计算。
  * 参考https://en.wikipedia.org/wiki/Geohash
  * 原来使用从谷歌获取的Geohash，但是这个方法从hash转化回经纬度存在BUG。故重做了，并增加expand方法以供实际项目使用
- * @since 3.2.0
+ * @since DFish3.2.0
  */
 public class Geohash {
 	private static final String BASECODE="0123456789bcdefghjkmnpqrstuvwxyz";
@@ -52,7 +52,7 @@ public class Geohash {
 	/**
 	* 求与当前geohash相邻的8个格子的geohash值。
 	 * 
-	 * @param geohash
+	 * @param geohash geohash值
 	 * @return string 数组，周围格子的geohash值
 	 */
 	public static String[] expand(String geohash) {

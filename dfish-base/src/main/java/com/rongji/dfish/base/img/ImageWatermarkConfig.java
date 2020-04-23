@@ -5,9 +5,9 @@ import java.io.File;
 
 /**
  * 图片处理水印配置
+ *
  * @author lamontYu
- * @date 2019-12-18
- * @since 5.0
+ * @since DFish5.0
  */
 public class ImageWatermarkConfig {
 
@@ -21,48 +21,54 @@ public class ImageWatermarkConfig {
     private int y;
 
     /**
-     * 水印文本
-     * @return
+     * 文本水印内容
+     *
+     * @return String 文本水印内容
      */
     public String getText() {
         return text;
     }
 
     /**
-     *  水印文本
-     * @param text
+     * 文本水印内容
+     *
+     * @param text 文本水印内容
      */
     public void setText(String text) {
         this.text = text;
     }
 
     /**
-     * 字体
-     * @return Font
+     * 文本水印字体
+     *
+     * @return Font 文本水印字体
      */
     public Font getTextFont() {
         return textFont;
     }
 
     /**
-     * 字体
-     * @param textFont Font
+     * 文本水印字体
+     *
+     * @param textFont 文本水印字体
      */
     public void setTextFont(Font textFont) {
         this.textFont = textFont;
     }
 
     /**
-     * 文字颜色
-     * @return textColor
+     * 文本水印颜色
+     *
+     * @return textColor 文本水印颜色
      */
     public Color getTextColor() {
         return textColor;
     }
 
     /**
-     * 文字颜色
-     * @param textColor
+     * 文本水印颜色
+     *
+     * @param textColor 文本水印颜色
      */
     public void setTextColor(Color textColor) {
         this.textColor = textColor;
@@ -70,6 +76,7 @@ public class ImageWatermarkConfig {
 
     /**
      * 图片文件
+     *
      * @return File
      */
     public File getImageFile() {
@@ -78,7 +85,8 @@ public class ImageWatermarkConfig {
 
     /**
      * 图片文件
-     * @param  File
+     *
+     * @param imageFile 图片文件
      */
     public void setImageFile(File imageFile) {
         this.imageFile = imageFile;
@@ -86,6 +94,7 @@ public class ImageWatermarkConfig {
 
     /**
      * 文件相对路径
+     *
      * @return String
      */
     public String getImagePath() {
@@ -94,6 +103,7 @@ public class ImageWatermarkConfig {
 
     /**
      * 文件相对路径
+     *
      * @param imagePath String
      */
     public void setImagePath(String imagePath) {
@@ -101,7 +111,8 @@ public class ImageWatermarkConfig {
     }
 
     /**
-     *图片透明度
+     * 图片透明度
+     *
      * @return float
      */
     public float getImageAlpha() {
@@ -111,7 +122,7 @@ public class ImageWatermarkConfig {
     /**
      * 图片透明度
      *
-     * @param imageAlpha float
+     * @param imageAlpha float 图片透明度
      */
     public void setImageAlpha(float imageAlpha) {
         this.imageAlpha = imageAlpha;
@@ -119,7 +130,8 @@ public class ImageWatermarkConfig {
 
     /**
      * 位置-x
-     * @return int
+     *
+     * @return int 水印横坐标位置
      */
     public int getX() {
         return x;
@@ -127,7 +139,8 @@ public class ImageWatermarkConfig {
 
     /**
      * 位置-x
-     * @param x int
+     *
+     * @param x int 水印横坐标位置
      */
     public void setX(int x) {
         this.x = x;
@@ -135,7 +148,8 @@ public class ImageWatermarkConfig {
 
     /**
      * 位置-y
-     * @return  int
+     *
+     * @return int 水印纵坐标位置
      */
     public int getY() {
         return y;
@@ -143,7 +157,8 @@ public class ImageWatermarkConfig {
 
     /**
      * 位置-y
-     * @param y int
+     *
+     * @param y int 水印纵坐标位置
      */
     public void setY(int y) {
         this.y = y;

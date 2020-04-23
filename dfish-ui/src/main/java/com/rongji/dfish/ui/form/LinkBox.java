@@ -20,7 +20,7 @@ import com.rongji.dfish.ui.command.Dialog;
  * 
  * @author DFish Team
  * @version 3.0
- * @since 1.0
+ * @since DFish1.0
  */
 public class LinkBox extends LinkableSuggestionBox<LinkBox> {
 

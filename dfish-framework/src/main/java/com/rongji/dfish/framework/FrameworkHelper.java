@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author I-Task Team
  * @version 1.0.0
- * @since 1.0.0    ZHL		2009-9-8
+ * @since DFish1.0.0    ZHL		2009-9-8
  */
 public class FrameworkHelper {
 
@@ -39,7 +39,7 @@ public class FrameworkHelper {
     public static final String[] ENCODINGS = {STR_UNKNOWN, "utf-8", "gbk", "gb2312", "iso8859-1", "unicode"};
 
     /**
-     * @see
+     * 字符集-未知
      */
 
     public static final int INT_ENCODING_UNKNOWN = 0;
@@ -283,6 +283,7 @@ public class FrameworkHelper {
 
     /**
      * 在Session中存储loginUser的key
+     *
      * @param request
      * @param loginUser
      */
@@ -292,6 +293,7 @@ public class FrameworkHelper {
 
     /**
      * Session中移除LoninUser的key
+     *
      * @param request
      */
     public static void removeLoginUser(HttpServletRequest request) {
@@ -312,6 +314,7 @@ public class FrameworkHelper {
 
     /**
      * 获取系统配置
+     *
      * @param key
      * @param defaultValue
      * @return Integer
@@ -360,6 +363,7 @@ public class FrameworkHelper {
 
     /**
      * 公用获取个人配置参数配置方法 如果当前个人设置为空则自动取默认值
+     *
      * @param userId
      * @param argStr
      * @return Integer
@@ -392,7 +396,6 @@ public class FrameworkHelper {
      * @param userId String
      * @param argStr String
      * @param value  String
-     * @return String
      */
     public static void setPersonalConfig(String userId, String argStr, String value) {
         SystemContext.getInstance().get(PersonalConfigHolder.class).setProperty(userId, argStr, value);
@@ -402,7 +405,7 @@ public class FrameworkHelper {
      * 获取IP
      *
      * @param request
-     * @return
+     * @return String
      */
     public static String getIpAddr(HttpServletRequest request) {
         String ipStr = request.getHeader("X-Forwarded-For");
@@ -492,13 +495,13 @@ public class FrameworkHelper {
      * <p>取得某个路径下的文本文档的内容</p>
      * <p>文本可以是JS/HTML/CSS等，但一般不建议使用JSP的内容。
      * 因为其动态内容不会被执行。</p>
-     * <p>path 为从webcontext开始的绝对路径<br/>
-     * 如一个应用访问地址是 http://www.foo.com/myapp/<br/>
-     * 他的一个动态页面地址是http://www.foo.com/myapp/service/testingServ.sp?act=index<br/>
-     * 里面需要一个HTML的内容。这个HTML位于http://www.foo.com/myapp/res/introduce/total.html<br/>
-     * 那么这个path应该是/res/introduce/total.html或前面无斜杠res/introduce/total.html<br/>
-     * 而不是../res/introduce/total.html<br/>
-     * 也不是/myapp/res/introduce/total.html<br/>
+     * <p>path 为从webcontext开始的绝对路径</p><p>
+     * 如一个应用访问地址是 http://www.foo.com/myapp/</p><p>
+     * 他的一个动态页面地址是http://www.foo.com/myapp/service/testingServ.sp?act=index</p><p>
+     * 里面需要一个HTML的内容。这个HTML位于http://www.foo.com/myapp/res/introduce/total.html</p><p>
+     * 那么这个path应该是/res/introduce/total.html或前面无斜杠res/introduce/total.html</p><p>
+     * 而不是../res/introduce/total.html</p><p>
+     * 也不是/myapp/res/introduce/total.html
      * </p>
      * <p>这个方法会自动识别文本的字符集</p>
      * <p>典型用法:</p>
@@ -510,7 +513,7 @@ public class FrameworkHelper {
      *
      * @param path 路径
      * @return 文本内容
-     * @since 2012/2/2
+     * @since DFish2.x
      */
     public static String getFileText(String path) {
         @SuppressWarnings("deprecation")

@@ -18,8 +18,7 @@ import java.util.*;
 /**
  * 查询参数类,用于数据传输过程中查询参数封装对象
  * @author lamontYu
- * @date 2019-12-05
- * @since 5.0
+ * @since DFish5.0
  */
 public class QueryParam<T> implements Serializable {
 
@@ -49,7 +48,7 @@ public class QueryParam<T> implements Serializable {
 
     /**
      * 查询开始时间
-     * @return
+     * @return Date 查询开始时间
      */
     public Date getBeginTime() {
         return beginTime;
@@ -57,8 +56,8 @@ public class QueryParam<T> implements Serializable {
 
     /**
      * 查询开始时间
-     * @param beginTime
-     * @return
+     * @param beginTime Date 查询开始时间
+     * @return 本身，这样可以继续设置其他属性
      */
     public T setBeginTime(Date beginTime) {
         this.beginTime = beginTime;
@@ -67,7 +66,7 @@ public class QueryParam<T> implements Serializable {
 
     /**
      * 查询结束时间
-     * @return
+     * @return 查询结束时间
      */
     public Date getEndTime() {
         return endTime;
@@ -75,8 +74,8 @@ public class QueryParam<T> implements Serializable {
 
     /**
      * 查询结束时间
-     * @param endTime
-     * @return
+     * @param endTime 查询结束时间
+     * @return 本身，这样可以继续设置其他属性
      */
     public T setEndTime(Date endTime) {
         this.endTime = endTime;
@@ -268,8 +267,8 @@ public class QueryParam<T> implements Serializable {
 
     /**
      * 绑定数据
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 本身，这样可以继续设置其他属性
      */
     public T bind(HttpServletRequest request) {
         Map<String, FieldMethods> fields = getDefineFields();

@@ -19,8 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 图片处理工具类
  *
  * @author lamontYu
- * @date 2019-12-16
- * @since
+ * @since DFish5.0
  */
 public class ImageProcessorGroup {
 
@@ -77,8 +76,9 @@ public class ImageProcessorGroup {
 
     /**
      * 由File内容构建 ImageProcessorGroup
+     *
      * @param file 原始文件
-     * @return this
+     * @return 本身，这样可以继续设置属性
      */
     public static ImageProcessorGroup of(File file) {
         return new ImageProcessorGroup(file);
@@ -86,6 +86,7 @@ public class ImageProcessorGroup {
 
     /**
      * 输出目标目录
+     *
      * @return String
      */
     public String getDest() {
@@ -94,8 +95,9 @@ public class ImageProcessorGroup {
 
     /**
      * 输出目标目录
-     * @param dest
-     * @return this
+     *
+     * @param dest 目标目录
+     * @return 本身，这样可以继续设置属性
      */
     public ImageProcessorGroup setDest(String dest) {
         this.dest = dest;
@@ -104,10 +106,11 @@ public class ImageProcessorGroup {
 
     /**
      * 文件输出别名
-     *  目前支持别名规则有
+     * 目前支持别名规则有
      * {FILE_NAME}:原始文件名
      * {ALIAS}:输出文件别名
      * {EXTENSION}:文件扩展名
+     *
      * @return String
      */
     public String getAliasPattern() {
@@ -116,8 +119,9 @@ public class ImageProcessorGroup {
 
     /**
      * 文件输出别名
-     * @param aliasPattern
-     * @return this
+     *
+     * @param aliasPattern 别名格式
+     * @return 本身，这样可以继续设置属性
      */
     public ImageProcessorGroup setAliasPattern(String aliasPattern) {
         this.aliasPattern = aliasPattern;
@@ -131,7 +135,7 @@ public class ImageProcessorGroup {
      * @param height 高度
      * @param way    方式
      * @param alias  别名
-     * @return this
+     * @return 本身，这样可以继续设置属性
      */
     public ImageProcessorGroup process(int width, int height, String way, String alias) {
         return process(new ImageProcessConfig(width, height, way, alias));
@@ -145,7 +149,7 @@ public class ImageProcessorGroup {
      * @param way    方式
      * @param alias  别名
      * @param lazy   延迟处理
-     * @return this
+     * @return 本身，这样可以继续设置属性
      */
     public ImageProcessorGroup process(int width, int height, String way, String alias, boolean lazy) {
         return process(new ImageProcessConfig(width, height, way, alias, lazy));
@@ -155,7 +159,7 @@ public class ImageProcessorGroup {
      * 处理方案
      *
      * @param config 处理方案定义
-     * @return this
+     * @return 本身，这样可以继续设置属性
      */
     public ImageProcessorGroup process(ImageProcessConfig config) {
         if (config == null) {

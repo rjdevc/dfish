@@ -6,8 +6,7 @@ import java.io.Serializable;
  * 拼图的图片对象
  *
  * @author lamontYu
- * @date 2019-12-10
- * @since 5.0
+ * @since DFish5.0
  */
 public class JigsawImgItem implements Serializable {
     private static final long serialVersionUID = -4474116526766117185L;

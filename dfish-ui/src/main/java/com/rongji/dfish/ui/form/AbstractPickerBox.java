@@ -11,8 +11,7 @@ import java.util.List;
 /**
  * picker选择框组件,这里定义选择框组件该有特性
  * @param <T> 组件本身
- * @since 5.0
- * @date 2020-02-12
+ * @since DFish5.0
  * @author lamontYu
  */
 public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends AbstractInput<T, String> implements NodeContainer {
@@ -27,7 +26,7 @@ public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends 
      * @param name  表单元素名
      * @param label 标题
      * @param value 值
-     * @since DFish 3.0
+     * @since DFish3.0
      */
     public AbstractPickerBox(String name, String label, String value) {
         super(name,label,value);
@@ -38,7 +37,7 @@ public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends 
      * @param name  表单元素名
      * @param label 标题
      * @param value 值
-     * @since DFish 3.0
+     * @since DFish3.0
      */
     public AbstractPickerBox(String name, Label label, String value) {
         super(name,label,value);

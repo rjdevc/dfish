@@ -6,14 +6,14 @@ package com.rongji.dfish.base.context;
 public interface ContextHolder {
     /**
      * 这个对象内容的范围
-     * @return String
+     * @return String 范围
      */
     String getScope();
 
     /**
      * 根据内容名字获得内容
-     * @param name
-     * @return
+     * @param name 名称
+     * @return 内容对象
      */
     Object get(String name);
 }

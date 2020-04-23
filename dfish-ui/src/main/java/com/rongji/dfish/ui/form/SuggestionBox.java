@@ -117,7 +117,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
     /**
      * 获取在线匹配关键词的命令,当不存在时,将创建新的对话框
      *
-     * @return
+     * @return Dialog 搜索建议下拉框
      */
     protected Dialog suggest() {
         if (this.suggest == null) {
@@ -194,7 +194,7 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 
     /**
      * box的数据来源
-     * @return
+     * @return BoxBind 数据项绑定对象
      */
     public BoxBind getBind() {
         return bind;
@@ -202,8 +202,8 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
 
     /**
      * box的数据来源
-     * @param bind
-     * @return
+     * @param bind 数据项绑定对象
+     * @return 本身，这样可以继续设置其他属性
      */
     public T setBind(BoxBind bind) {
         this.bind = bind;

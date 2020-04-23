@@ -7,7 +7,6 @@ import com.rongji.dfish.framework.dto.QueryParam;
  *
  * @author lamontYu
  * @version 1.1 继承通用查询参数基类
- * @date 2018-08-03 before
  */
 public class FileQueryParam extends QueryParam<FileQueryParam> {
 
@@ -17,6 +16,7 @@ public class FileQueryParam extends QueryParam<FileQueryParam> {
 
     /**
      * 链接名
+     *
      * @return String
      */
     public String getFileLink() {
@@ -25,7 +25,8 @@ public class FileQueryParam extends QueryParam<FileQueryParam> {
 
     /**
      * 链接名
-     * @param fileLink
+     *
+     * @param fileLink 文件链接
      * @return 本身，这样可以继续设置其他属性
      */
     public FileQueryParam setFileLink(String fileLink) {
@@ -35,7 +36,8 @@ public class FileQueryParam extends QueryParam<FileQueryParam> {
 
     /**
      * 关联数据
-     * @return
+     *
+     * @return 文件关键字
      */
     public String getFileKey() {
         return fileKey;
@@ -43,7 +45,8 @@ public class FileQueryParam extends QueryParam<FileQueryParam> {
 
     /**
      * 关联数据
-     * @param fileKey
+     *
+     * @param fileKey 文件关键字
      * @return 本身，这样可以继续设置其他属性
      */
     public FileQueryParam setFileKey(String fileKey) {

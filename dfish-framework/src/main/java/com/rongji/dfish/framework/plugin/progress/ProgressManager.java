@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 进度条数据管理器
+ *
  * @author lamontYu
- * @date 2018-08-03 before
- * @since 3.0
+ * @since DFish3.0
  */
 public class ProgressManager {
     private Cache<String, ProgressData> progressCache = new MemoryCache<>();
@@ -27,7 +27,8 @@ public class ProgressManager {
 
     /**
      * 进度条缓存
-     * @return
+     *
+     * @return 进度条缓存数据
      */
     public Cache<String, ProgressData> getProgressCache() {
         return progressCache;
@@ -35,7 +36,8 @@ public class ProgressManager {
 
     /**
      * 进度条缓存
-     * @param progressCache
+     *
+     * @param progressCache 进度条缓存数据
      */
     public void setProgressCache(Cache<String, ProgressData> progressCache) {
         this.progressCache = progressCache;
@@ -43,7 +45,8 @@ public class ProgressManager {
 
     /**
      * 加解密工具
-     * @return
+     *
+     * @return 加解密工具
      */
     public Cryptor getCryptor() {
         return cryptor;
@@ -51,7 +54,8 @@ public class ProgressManager {
 
     /**
      * 加解密工具
-     * @param cryptor
+     *
+     * @param cryptor 加解密工具
      */
     public void setCryptor(Cryptor cryptor) {
         this.cryptor = cryptor;
@@ -129,8 +133,8 @@ public class ProgressManager {
     /**
      * 将进度条数据放到缓存中
      *
-     * @param progressData
-     * @return
+     * @param progressData 进度数据
+     * @return 是否新缓存
      */
     public boolean setProgressData(ProgressData progressData) {
         if (progressData == null || Utils.isEmpty(progressData.getProgressKey())) {
@@ -274,9 +278,9 @@ public class ProgressManager {
     /**
      * 注册进度条,业务方法调用
      *
-     * @param runnable
-     * @param progressKey
-     * @return
+     * @param runnable    执行线程
+     * @param progressKey 进度条编号
+     * @return 进度数据
      */
     public ProgressData register(final Runnable runnable, final String progressKey) {
         return register(runnable, progressKey, null);
@@ -285,24 +289,23 @@ public class ProgressManager {
     /**
      * 注册进度条,业务方法调用
      *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @return
+     * @param runnable     执行线程
+     * @param progressKey  进度条编号
+     * @param progressText 进度显示文本
+     * @return 进度数据
      */
     public ProgressData register(final Runnable runnable, final String progressKey, String progressText) {
         return register(runnable, progressKey, progressText, null, 1);
     }
 
-
     /**
      * 注册进度条,业务方法调用
      *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param steps
-     * @return
+     * @param runnable     执行线程
+     * @param progressKey  进度条编号
+     * @param progressText 进度显示文本
+     * @param steps        总步骤数
+     * @return 进度数据
      */
     public ProgressData register(final Runnable runnable, final String progressKey, String progressText, int steps) {
         return register(runnable, progressKey, progressText, null, steps);
@@ -311,11 +314,11 @@ public class ProgressManager {
     /**
      * 注册进度条,业务方法调用
      *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param complete
-     * @return
+     * @param runnable     执行线程
+     * @param progressKey  进度条编号
+     * @param progressText 进度显示文本
+     * @param complete     完成数据
+     * @return 进度数据
      */
     public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable complete) {
         return register(runnable, progressKey, progressText, complete, 1);
@@ -324,12 +327,12 @@ public class ProgressManager {
     /**
      * 注册进度条,业务方法调用
      *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param complete
-     * @param steps
-     * @return
+     * @param runnable     执行线程
+     * @param progressKey  进度条编号
+     * @param progressText 进度显示文本
+     * @param complete     完成数据
+     * @param steps        总步骤数
+     * @return 进度数据
      */
     public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable complete, int steps) {
         return register(runnable, progressKey, progressText, complete, getStepScales(steps));
@@ -349,12 +352,12 @@ public class ProgressManager {
     /**
      * 注册进度条,业务方法调用
      *
-     * @param runnable
-     * @param progressKey
-     * @param progressText
-     * @param complete
-     * @param stepScale
-     * @return
+     * @param runnable     执行线程
+     * @param progressKey  进度条编号
+     * @param progressText 进度显示文本
+     * @param complete     完成数据
+     * @param stepScale    步骤比例
+     * @return 进度数据
      */
     public ProgressData register(final Runnable runnable, final String progressKey, String progressText, Serializable complete, Number[] stepScale) {
         // 空处理
@@ -521,7 +524,7 @@ public class ProgressManager {
      * 移除进度
      *
      * @param progressKey 进度编号
-     * @return
+     * @return 进度数据
      */
     public ProgressData removeProgress(String progressKey) {
         return progressCache.remove(progressKey);
@@ -531,7 +534,6 @@ public class ProgressManager {
      * 结束进度
      *
      * @param progressKey 进度编号
-     * @return
      */
     public void finishProgress(String progressKey) {
         ProgressData progressData = getProgressData(progressKey);
@@ -550,6 +552,7 @@ public class ProgressManager {
      *
      * @param progressKey 进度编号
      * @param stepScale   步骤比例组
+     * @return 是否设置成功
      */
     public boolean resetStepScale(String progressKey, Number... stepScale) {
         ProgressData progressData = getProgressData(progressKey);
@@ -600,8 +603,9 @@ public class ProgressManager {
     /**
      * 设置步骤数
      *
-     * @param progressKey
-     * @param steps
+     * @param progressKey 进度条编号
+     * @param steps       步骤数
+     * @return 是否设置成功
      */
     public boolean resetSteps(String progressKey, int steps) {
         if (steps < 1) {
@@ -665,8 +669,8 @@ public class ProgressManager {
     /**
      * 是否还有下一步
      *
-     * @param progressKey
-     * @return
+     * @param progressKey 进度条编号
+     * @return 是否有下一步
      */
     public boolean hasNext(String progressKey) {
         ProgressData progressData = getProgressData(progressKey);
@@ -676,13 +680,20 @@ public class ProgressManager {
     /**
      * 是否还有下一步
      *
-     * @param progressData
-     * @return
+     * @param progressData 进度数据
+     * @return 是否还有下一步
      */
     private boolean hasNext(ProgressData progressData) {
         return progressData != null && !progressData.isFinish() && progressData.getStepIndex() < progressData.getSteps();
     }
 
+    /**
+     * 设置完成数据
+     *
+     * @param progressKey 进度条编号
+     * @param complete    完成数据
+     * @return 本身，这样可以继续设置其他属性
+     */
     public ProgressManager setComplete(String progressKey, Serializable complete) {
         ProgressData progressData = getProgressData(progressKey);
         if (progressData != null) {
@@ -708,8 +719,8 @@ public class ProgressManager {
     /**
      * 加密
      *
-     * @param progressKey String
-     * @return String
+     * @param progressKey String 原进度编号
+     * @return String 密文
      */
     public String encrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {
@@ -723,8 +734,8 @@ public class ProgressManager {
     /**
      * 解密
      *
-     * @param progressKey String
-     * @return String
+     * @param progressKey String 加密的进度编号
+     * @return String 解密后的原进度编号
      */
     public String decrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {

@@ -25,8 +25,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 
     /**
      * 构造函数
-     * @param name
-     * @param url
+     * @param name 名称
+     * @param url 链接地址
      */
     public UploadItem(String name,String url){
         this.setName(name);

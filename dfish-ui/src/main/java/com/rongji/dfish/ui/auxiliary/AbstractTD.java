@@ -170,7 +170,7 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
      * 表单标题宽度。
      *
      * @return Integer
-     * @since 3.3
+     * @since DFish3.3
      */
     public Integer getLabelWidth() {
         return labelWidth;
@@ -181,7 +181,7 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
      *
      * @param labelWidth Integer
      * @return 本身，这样可以继续设置其他属性
-     * @since 3.3
+     * @since DFish3.3
      */
     public T setLabelWidth(Integer labelWidth) {
         this.labelWidth = labelWidth;

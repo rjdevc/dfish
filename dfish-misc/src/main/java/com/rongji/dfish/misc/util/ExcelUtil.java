@@ -78,6 +78,7 @@ public class ExcelUtil {
      * @param is   输入流
      * @param type 工作簿类型  {@link #TYPE_HSSF}:03版; {@link #TYPE_XSSF}:07版;
      * @return 工作簿
+     * @throws Exception 工作簿创建异常
      */
     public static Workbook newWorkbook(InputStream is, String type) throws Exception {
         Workbook workbook = null;

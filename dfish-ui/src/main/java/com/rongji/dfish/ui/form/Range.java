@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author DFish Team
  * @version 1.0
- * @since Period
+ * @since DFishPeriod
  */
 public class Range extends AbstractWidget<Range> implements LabelRow<Range>, NodeContainer {
 

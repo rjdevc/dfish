@@ -10,8 +10,7 @@ import java.io.OutputStream;
 /**
  * 图片处理工具类
  * @author lamontYu
- * @date 2019-05-07
- * @since 3.2
+ * @since DFish3.2
  */
 public class ImageUtil {
 
@@ -21,8 +20,8 @@ public class ImageUtil {
      *
      * @param input       图片文件输入流
      * @param output      图片文件输出流
-     * @param width       输出图片的宽,<=0时采用原始图片宽度
-     * @param height      输出图片的高,<=0时采用原始图片高度
+     * @param width       输出图片的宽,&lt;=0时采用原始图片宽度
+     * @param height      输出图片的高,&lt;=0时采用原始图片高度
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
     public static void zoom(InputStream input, OutputStream output, int width, int height) throws Exception {

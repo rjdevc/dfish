@@ -15,8 +15,8 @@ import java.util.List;
 public interface WordSplitter {
     /**
      * 将文本切成一个个词语。
-     * @param text
-     * @return
+     * @param text 文本
+     * @return 切词集合
      */
     List<String> split(String text);
 }

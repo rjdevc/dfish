@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * 字典树类
  * <p>用于多关键词的字符串匹配，利用字符串的公共前缀来减少查询时间，最大限度地减少无谓的字符串比较，查询效率比哈希树高。</p>
- * <p>可参照<a href="http://baike.baidu.com/view/2759664.htm">百度百科-字典树</a>(http://baike.baidu.com/view/2759664.htm)了解其更多信息。<p>
+ * <p>可参照<a href="http://baike.baidu.com/view/2759664.htm">百度百科-字典树</a>(http://baike.baidu.com/view/2759664.htm)了解其更多信息。</p>
  * <p>这里封装的字典树除了树本身，还允许节点上存储内容，以便扩展更多的应用。因为其应用很类似于java.util.Map。所以方法命名和参数，向Map靠近。</p>
  * 1.0 
  * [完成] 要支持 remove (字典树比较特殊revome完要优化树，删除不必要的节点，所以如果有批量删除，
@@ -62,7 +62,7 @@ public class TrieTree<V extends Object> {
 	}
 	/**
 	 * 构造函数，复制一另一个字典树的数据，相当于clone
-	 * @param another
+	 * @param another 另外一个字典树
 	 */
 	public TrieTree(TrieTree<? extends V> another) {
 		this(another,another.reverse);
@@ -209,13 +209,13 @@ public class TrieTree<V extends Object> {
 	 * 在指定的文本中查找字典树中相关的内容。
 	 * 找到的每个关键字将会匹配出来，默认匹配更长的关键字
 	 * <div style="border:1px solid gray">
-	 * 如果同时有北京市和北京两个关键字，默认匹配北京市，如果北京后面没有带市则匹配北京。<br/>
-	 * 如果这时候同时有北京市 和 市委两个关键词，而内容为 北京市委  根据最长匹配规则 北京市匹配到了，后面的委字则独立出来，匹配不出市委这个词。<br/>
-	 * 有时候为了提高中文匹配度，会使用从右向左匹配new TrieTree(true)，或者不管当前匹配到多长的关键字，都从后面一个字符开始匹配。searchAll<br/>
-	 * 这类信息可以了解搜索引擎的中文切词器
+	 * <p>如果同时有北京市和北京两个关键字，默认匹配北京市，如果北京后面没有带市则匹配北京。</p>
+	 * <p>如果这时候同时有北京市 和 市委两个关键词，而内容为 北京市委  根据最长匹配规则 北京市匹配到了，后面的委字则独立出来，匹配不出市委这个词。</p>
+	 * <p>有时候为了提高中文匹配度，会使用从右向左匹配new TrieTree(true)，或者不管当前匹配到多长的关键字，都从后面一个字符开始匹配。searchAll</p>
+	 * <p>这类信息可以了解搜索引擎的中文切词器</p>
 	 * </div>
 	 * @param text 内容
-	 * @return List
+	 * @return List 查询结果列表
 	 */
 	public List<SearchResult<V>> search(String text) {
 		List<SearchResult<V>> searchResult = new ArrayList<SearchResult<V>>();
@@ -374,7 +374,7 @@ public class TrieTree<V extends Object> {
 
         /**
          * 取得下级节点。一般性能敏感的地方不该嗲用改方法。
-         * @return
+         * @return 下级节点集合
          */
 		public Map<Character,Node<V>> getChildrenMap(){
 		    if(children==null){

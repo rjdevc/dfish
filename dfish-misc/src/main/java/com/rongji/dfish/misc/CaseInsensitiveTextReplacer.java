@@ -7,7 +7,7 @@ import java.util.Map;
  * <p>TextReplacer 为字符串替换工具，用于高效地替换多个关键词。</p>
  * <p>一般可用于敏感词替换，为关键词增加超链接等地方</p>
  * <p>ps:这只是个替换工具，如果要增加超链接，需要自行增加完整文本 比如</p>
- * <table>
+ * <table summary="敏感词">
  * <tr>
  * <td><b>关键词</b></td>
  * <td>福州市</td>

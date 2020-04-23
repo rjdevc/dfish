@@ -22,9 +22,9 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
      * 添加隐藏组件,添加时将逐一寻找已存在的隐藏组件,找到第1个相同name将其隐藏值覆盖;不存在时将自动添加
      * 用法类似Map.put
      *
-     * @param name  String
-     * @param value String
-     * @return
+     * @param name  名称
+     * @param value 值
+     * @return 本身，这样可以继续设置其他属性
      */
     @Override
     public HiddenPart addHidden(String name, String value) {
@@ -51,8 +51,8 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
     /**
      * 按顺序添加隐藏组件
      *
-     * @param hidden Hidden
-     * @return
+     * @param hidden Hidden 隐藏域对象
+     * @return 本身，这样可以继续设置其他属性
      */
     @Override
     public HiddenPart add(Hidden hidden) {

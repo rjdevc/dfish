@@ -12,8 +12,8 @@ import java.util.*;
  *
  * @param <T> 当前对象类型
  * @author DFish Team
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<T>> extends AbstractFormElement<T, Object> implements HtmlContentHolder<T> {
 

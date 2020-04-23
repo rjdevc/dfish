@@ -12,8 +12,7 @@ import java.util.Map;
  *
  * @author lamontYu
  * @version 1.1 改造成接口模式,并调整方法名 lamontYu 2019-12-05
- * @date 2019-12-05
- * @since 3.2
+ * @since DFish3.2
  */
 public interface LobService extends FrameworkService<PubLob, PubLob, String> {
 
@@ -22,6 +21,7 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
      *
      * @param text 内容
      * @return String 保存的编号
+     * @throws Exception 记录保存可能发生的业务异常
      */
     String saveContent(String text) throws Exception;
 
@@ -29,21 +29,26 @@ public interface LobService extends FrameworkService<PubLob, PubLob, String> {
     /**
      * 保存lob内容（文件、图片）
      *
+     * @param lobData 保存数据
      * @return String 保存的编号
+     * @throws Exception 记录保存可能发生的业务异常
      */
     String saveLobData(InputStream lobData) throws Exception;
 
     /**
      * 保存lob内容（文件、图片）
      *
+     * @param lobData 保存数据
      * @return String 保存的编号
+     * @throws Exception 记录保存可能发生的业务异常
      */
     String saveLobData(byte[] lobData) throws Exception;
+
     /**
      * 更新lob内容(字符串)
      *
-     * @param lobId      编号
-     * @param text 内容
+     * @param lobId 编号
+     * @param text  内容
      * @return int 更新记录数
      */
     int updateContent(String lobId, String text);

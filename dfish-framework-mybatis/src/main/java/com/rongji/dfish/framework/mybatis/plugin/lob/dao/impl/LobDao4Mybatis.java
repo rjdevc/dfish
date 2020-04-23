@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Mybatis模式下，存储lob的数据库操作定义
  * @author lamontYu
- * @date 2019-12-05
+ * @since DFish5.0
  */
 public interface LobDao4Mybatis extends FrameworkDao4Mybatis<PubLob, String>, LobDao {
 

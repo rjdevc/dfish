@@ -59,7 +59,7 @@ public class PinyinWordSplitter implements WordSplitter{
 	}
 	/**
 	 * 因为默认装载了词库，所以只需要一个实例就够了，这里使用单例模式
-	 * @return
+	 * @return PinyinWordSplitter
 	 */
 	public static PinyinWordSplitter getInstance(){
 		return instance;
@@ -78,8 +78,8 @@ public class PinyinWordSplitter implements WordSplitter{
 	 * 如果是 拼音 比如是 longyanweiyuanhui 将会切成 [long],[yan],[wei],[yuan],[hui]
 	 * 拼音将会按最大切词，如果是西安 拼音xian将不会切词，如果需要切词的话，text请用 单引号分开 如 xi'an 拼音最大切词以右边匹配优先
 	 * 比如sangang 会匹配成san'gang而不是sang'ang. 相同的如果需要改变切词结果text中请传递单引号。
-	 * @param text
-	 * @return
+	 * @param text 文本
+	 * @return 切词集合
 	 */
 	@Override
 	public List<String> split(String text) {

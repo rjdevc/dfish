@@ -12,8 +12,8 @@ import com.rongji.dfish.ui.Widget;
  * @param <T> 当前对象类型
  * @author DFish Team
  * @version 3.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public abstract class AbstractBox<T extends AbstractBox<T>> extends AbstractFormElement<T, Object>
         implements HtmlContentHolder<T>, HasText<T>, TargetHolder<T> {

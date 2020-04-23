@@ -11,8 +11,7 @@ import java.util.List;
 /**
  * Json对象构建器采用fastjson实现
  * @author lamontYu
- * @date 2019-09-29
- * @since 5.0
+ * @since DFish5.0
  */
 public class JsonBuilder4Fastjson extends AbstractJsonBuilder {
     @Override

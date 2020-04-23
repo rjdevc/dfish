@@ -18,7 +18,7 @@ public class HexInputStream extends AbstractPresentInputStream {
 
     /**
      * 构造函数
-     * @param in
+     * @param in 输入流
      */
     public HexInputStream(InputStream in) {
         super(in);

@@ -7,8 +7,7 @@ import java.io.Serializable;
  * 这个类的属性和dfish-ui中同名类的属性基本一致，但因为包层不能继承，导致创建了2个相近的对象，同时Java开发模式数据还需二次转换
  *
  * @author lamontYu
- * @date 2019-12-09
- * @since 5.0
+ * @since DFish5.0
  */
 public class UploadItem implements Serializable {
 

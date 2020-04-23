@@ -12,8 +12,8 @@ public class SM4ECBInputStream extends AbstractPresentInputStream {
 
     /**
      * 构造函数
-     * @param in
-     * @param key
+     * @param in 输入流
+     * @param key 秘钥
      */
     public SM4ECBInputStream(InputStream in,byte[] key) {
         super(in);

@@ -18,9 +18,9 @@ public class MemoryCache<K, V> extends BaseCache<K, V> {
 
     /**
      * 构造函数
-     * @param valueGetter
-     * @param maxSize
-     * @param alive
+     * @param valueGetter 值获取
+     * @param maxSize 最大缓存数
+     * @param alive 存活时间
      */
     public MemoryCache(BatchAction<K, V> valueGetter, int maxSize, long alive) {
         super(valueGetter, maxSize, alive);
