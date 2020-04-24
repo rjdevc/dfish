@@ -703,9 +703,8 @@
 .w-collapsebutton{height:34px;text-align:left;background:#fafafa;border:1px solid #d9d9d9;margin-bottom:10px}
 .w-collapsebutton.z-hv{background:#f5faff}
 .w-collapsebutton.z-expanded{margin-bottom:0;color:#2498ff}
-.w-collapsebutton.z-expanded  ._clp_arw{color:#2498ff}
-.w-collapsebutton ._clp_arw{float:left;width:16px;height:100%;text-align:left;color:#999}
-.w-collapse-cont{padding:20px;border:1px solid #ddd;border-top:0;margin-bottom:10px}
+.w-collapsebutton ._i{padding-right:0}
+.w-collapselist{padding:20px;border:1px solid #ddd;border-top:0;margin-bottom:10px}
 
 .w-badge{position:absolute;top:2px;right:2px;border-radius:10px;background:#f00;font-size:12px;font-style:normal;color:#fff;height:6px;width:6px;line-height:1}
 .w-badge.z-t{padding:1px 3px;width:auto;height:12px}

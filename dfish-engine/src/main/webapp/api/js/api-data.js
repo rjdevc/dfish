@@ -1998,7 +1998,11 @@ define( {
   "CollapseButton": {
   	remark: '标签按钮。',
   	extend: 'Button',
-  	deprecate: 'focusable,name',
+  	deprecate: 'focusable,name,icon',
+    Config: [
+      { name: 'collapsedIcon', type: 'String', remark: '折叠状态图标。可使用图片url地址，或以 "." 开头的样式名。' },
+      { name: 'expandedIcon', type: 'String', remark: '展开状态图标。可使用图片url地址，或以 "." 开头的样式名。' }
+    ],
     Classes: [
       { name: '.w-tab', remark: '基础样式。' }
     ],

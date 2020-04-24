@@ -2335,9 +2335,8 @@ AbsSection = define.widget( 'AbsSection', {
 			var u = this._runtime_src; 
 			if ( ! u ) {
 				var t = this.x.template;
-				if ( t ) {
-					typeof t === _STR && (t = _getTemplate( t ));
-					t && t.src && (u = t.src);
+				if ( t && (t = _getTemplate( t )) ) {
+					u = t.src || (t[ '@src' ] && this.formatJS( 'return ' + t[ '@src' ] ));
 				}
 				!u && (u = this.attr( 'src' ));
 			}
@@ -3232,7 +3231,7 @@ Split = define.widget( 'Split', {
 			this.minorSize( '*' );
 			if ( n === U )
 				n = this.isExpanded();
-			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon( n ) );
+			o != n && this.$( 'i' ) && $.replace( this.$( 'i' ), this.html_icon() );
 			$.classAdd( this.$(), 'z-expanded', n );
 			this.trigger( 'mouseOut' );
 		},
@@ -3261,8 +3260,8 @@ Split = define.widget( 'Split', {
 		minorSize: function( a ) {
 			return _splitSize( this.minor(), a );
 		},
-		html_icon: function( a ) {
-			var c = _toggleIcon( this.x, a == N ? this.isExpanded() : a );
+		html_icon: function() {
+			var c = _toggleIcon.call( this );
 			return c ? $.image( c, { id: this.id + 'i', cls: '_i _' + (this.x.hide || 'prev'), click: evw + '.toggle()' } ) : '';
 		},
 		html_nodes: function() {
@@ -3476,7 +3475,7 @@ Button = define.widget( 'Button', {
 				$.classRemove( $( e.elemId || this.id ), 'z-dn' );
 			},
 			click: function( e ) {
-				this.isToggleable() ? this.toggleFocus() : this.focus();
+				this.isMultiple() ? this.toggleFocus() : this.focus();
 				if ( !(this.x.on && this.x.on.click) )
 					this.drop();
 			},
@@ -3612,7 +3611,11 @@ Button = define.widget( 'Button', {
 				b[ i ].parentNode.type_frame && b[ i ].parentNode.focus( b[ i ] );
 			}
 		},
-		isToggleable: function() {
+		isToggleable: $.rt(),
+		isExpanded: function() {
+			return this.x.expanded;
+		},
+		isMultiple: function() {
 			return this.rootNode && this.rootNode.x.focusMultiple;
 		},
 		isFocus: function() {
@@ -3691,8 +3694,8 @@ Button = define.widget( 'Button', {
 				this.remove();
 		},
 		html_icon: function() {
-			var c = this.attr( 'icon' );
-			return c ? $.image( c, { id: this.id + 'i', cls: '_i f-inbl', width: this.x.iconWidth, height: this.x.iconHeight } ) : '';
+			var c = _toggleIcon.call( this );
+			return c ? $.image( c, { id: this.id + 'i', cls: '_i f-inbl' } ) : '';
 		},
 		html_text: function( a ) {
 			return '<div id=' + this.id + 't class="_t f-omit"' + (this.x.textstyle ? ' style="' + this.x.textstyle + '"' : '') + '><em class="_s f-omit">' + this.html_format( a || this.x.text ) +
@@ -4193,9 +4196,8 @@ Img = define.widget( 'Img', {
 		}
 	}
 } ),
-_toggleIcon = function( x, a ) {
-	a == N && (a = x.expanded);
-	return (a === F ? x.collapsedIcon : x.expandedIcon) || (x.collapsedIcon || x.expandedIcon);
+_toggleIcon = function() {
+	return (!this.isExpanded() ? this.x.collapsedIcon : this.x.expandedIcon) || (this.x.collapsedIcon || this.x.expandedIcon) || this.attr( 'icon' );
 },
 /* `toggle` 可展开收拢的工具条。可显示单行文本与(或)分割线。
  *  /@text: 文本; @hr(Bool) 显示横线; /@open(Bool): 设置初始展开收拢效果并产生一个toggle图标; /@target: 指定展开收拢的widget ID, 多个用逗号隔开
@@ -4242,8 +4244,7 @@ Toggle = define.widget( 'Toggle', {
 		},
 		// @a -> open?
 		html_icon: function( a ) {
-			a == N && (a = this.x.expanded);
-			var c = _toggleIcon( this.x, a ), t = evw + '.toggle(event)';
+			var c = _toggleIcon.call( this ), t = evw + '.toggle(event)';
 			return c ? $.image( c, { cls: '_i f-inbl', id: this.id + 'o', click: t } ) :
 				(this.x.expanded != N ? '<span class="_i f-inbl" id=' + this.id + 'o onclick=' + t + '>' + $.caret( a === F ? 'r' : 'd' ) + '<i class=f-vi></i></span>' : '');
 		},
@@ -5495,7 +5496,7 @@ Collapse = define.widget( 'Collapse', {
 		this.id = $.uid( this );
 		var y = { type: 'Vert' }, b = [], d, e = this.getDefaultOption( x.cls );
 		for ( var i = 0, n = x.nodes || [], g; i < n.length; i ++ ) {
-			g = { type: 'CollapseList', cls: 'w-collapse-cont', widthMinus: 42, heightMinus: 41, display: !!n[ i ].focus, nodes: [ n[ i ].target ] };
+			g = { type: 'CollapseList', widthMinus: 42, heightMinus: 41, display: !!n[ i ].focus, nodes: [ n[ i ].target ] };
 			b.push( $.extend( { type: 'CollapseButton', width: '*', focusable: T, target: N }, n[ i ], x.pub, e && e.pub ) );
 			b.push( g );
 		}
@@ -5517,6 +5518,7 @@ CollapseButton = define.widget( 'CollapseButton', {
 	Const: function( x, p ) {
 		this.rootNode = p;
 		Button.apply( this, arguments );
+		!x.collapsedIcon && !x.expandedIcon && (x.collapsedIcon = '.f-i-caret-right',x.expandedIcon = '.f-i-caret-down');
 		this.nodeIndex == 0 && (this.className += ' z-first');
 		!p.length && (this.className += ' z-first');
 	},
@@ -5524,18 +5526,20 @@ CollapseButton = define.widget( 'CollapseButton', {
 	Listener: {
 		body: {
 			focus: function() {
+				this.x.expanded = T;
 				var n = this.next();
 				n.display();
 				this.addClass( 'z-expanded' );
-				$.caret( this.$( 'clp-arw' ), 'd' );
+				this.icon( _toggleIcon.call( this ) );
 				n.next() && n.next().addClass( 'z-expanded-after' );
 				this.rootNode.trigger( 'resize' );
 			},
 			blur: function() {
+				this.x.expanded = F;
 				var n = this.next();
 				n.display( F );
 				this.removeClass( 'z-expanded' );
-				$.caret( this.$( 'clp-arw' ), 'r' );
+				this.icon( _toggleIcon.call( this ) );
 				n.next() && n.next().removeClass( 'z-expanded-after' );
 				this.rootNode.trigger( 'resize' );
 			}
@@ -5544,12 +5548,10 @@ CollapseButton = define.widget( 'CollapseButton', {
 	Default: { widthMinus: 2 },
 	Prototype: {
 		className: 'w-button w-collapsebutton',
+		isMultiple: $.rt( T ),
 		isToggleable: $.rt( T ),
 		prop_cls: function() {
 			return _proto.prop_cls.call( this ) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === this.parentNode.length - 2 ? ' z-last' : '');
-		},
-		html_icon: function() {
-			return this.x.icon ? Button.prototype.html_icon.call( this ) : '<div class=_clp_arw>' + $.caret( this.id + 'clp-arw', 'r' ) + '<i class=f-vi></i></div>';
 		}
 	}
 } ),
@@ -10055,7 +10057,7 @@ Leaf = define.widget( 'Leaf', {
 			return this.rootNode.focusNode === this;
 		},
 		isExpanded: function() {
-			return this.x.expanded;
+			return this.x.expanded && !!this.length;
 		},
 		isEvent4Box: function( e ) {
 			return this.box && e && e.srcElement && e.srcElement.id === this.box.id + 't';
@@ -10110,7 +10112,7 @@ Leaf = define.widget( 'Leaf', {
 			return this._badge ? this._badge.html() : '';
 		},
 		html_icon: function() {
-			var c = _toggleIcon( this.x, this.x.expanded && !!this.length );
+			var c = _toggleIcon.call( this );
 			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i' } ) : '';
 		},
 		html_text: function() {

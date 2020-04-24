@@ -734,8 +734,9 @@ _dateFormat = $.dateFormat = function( a, b ) {
 	if ( typeof a === _STR )
 		a = _dateParse( a, b );
 	var o = { y : a.getFullYear(), m : a.getMonth(), d : a.getDate(), h : a.getHours(), i : a.getMinutes(), s : a.getSeconds(), w : ( a.getDay() || 7 ) };
-	return (b || _date_sf).replace( 'yyyy' , o.y ).replace( 'yy', o.y % 100 ).replace( 'MM', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'HH', _strPad( o.h ) )
-		.replace( 'mm', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) ).replace( 'M', o.m + 1 ).replace( 'd', o.d ).replace( 'H', o.h ).replace( 'm', o.i ).replace( 's', o.s );
+	return (b || _date_sf).replace( 'yyyy' , o.y ).replace( 'MM', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'HH', _strPad( o.h ) )
+		.replace( 'mm', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) );
+		//.replace( 'M', o.m + 1 ).replace( 'd', o.d ).replace( 'H', o.h ).replace( 'm', o.i ).replace( 's', o.s );
 },
 // 字串型转为日期型 /@s -> str, f -> format?
 _dateParse = $.dateParse = function( s, f ) {
