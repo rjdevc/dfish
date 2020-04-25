@@ -116,6 +116,7 @@
 .f-dialog-preview ._rotate{position:absolute;top:0px;left:0;right:0;margin:0 auto;height:40px;line-height:40px}
 .f-dialog-preview ._rotate a{color:#eee;cursor:pointer}
 .f-dialog-preview ._rotate ._s{margin:0 10px;color:#999}
+.f-dialog-preview ._rotate .f-i{font-size:12px;color:#ddd}
 .f-dialog-preview ._img{margin:0 40px}
 
 .w-loading{padding:10px 15px;border:1px solid #ddd;background:#fcfcfc;text-align:center}
@@ -231,8 +232,8 @@
 .w-leaf.z-last ._vl{bottom:50%}
 .w-leaf.z-line .w-leaf-o .f-i{display:inline-block;width:9px;height:9px;background:url(g/i.png) no-repeat -76px -180px;left:3px;top:-1px}
 .w-leaf.z-line .w-leaf-o .f-i:before{content:''}
-.w-leaf.z-line .w-leaf-o .f-i-plus-squre{background-position:-111px -180px;margin-left:0}
-.w-leaf.z-line .w-leaf-o .f-i-minus-squre{*margin-top:0}
+.w-leaf.z-line .w-leaf-o .f-i-plus-square{background-position:-111px -180px;margin-left:0}
+.w-leaf.z-line .w-leaf-o .f-i-minus-square{*margin-top:0}
 .w-leaf-node{display:inline-block;vertical-align:middle;height:100%;*display:inline;*zoom:1}
 .w-leaf-node .w-html-text{display:inline}
 .w-leaf.w-table-leaf{height:auto}
@@ -310,7 +311,7 @@
 .w-tabletoggle.z-expanded{color:#2498ff}
 .w-tabletoggle.z-expanded .f-arw{border-top-color:#2498ff}
 
-.w-split{overflow:hidden;text-align:center;font-size:0}
+.w-split{overflow:hidden;white-space:nowrap;text-align:center;font-size:0}
 .w-split ._prev,.w-split ._next{cursor:pointer}
 .w-split ._ico{position:relative;z-index:1}
 .w-split.z-0.f-sub-horz ._next{position:relative;top:0;left:-100%}
@@ -1043,19 +1044,40 @@ d\:wg{display:none}
   -moz-osx-font-smoothing: grayscale;
 }
 .f-i-caret-down,.f-i-caret-up,.f-i-caret-left,.f-i-caret-right{font-size:18px}
+.f-i-git:before{content:'\e67b'}
+.f-i-mail:before{content:'\e67c'}
+.f-i-qq:before{content:'\e67d'}
+.f-i-gitee:before{content:'\e67e'}
+.f-i-rotate-left:before{content:'\e676'}
+.f-i-rotate-right:before{content:'\e677'}
+.f-i-folder:before{content:'\e673'}
+.f-i-folder-open:before{content:'\e675'}
+.f-i-file:before{content:'\e674'}
+.f-i-layout-list:before{content:'\e671'}
+.f-i-layout-grid:before{content:'\e672'}
+.f-i-comment:before{content:'\e668'}
+.f-i-comment-full:before{content:'\e663'}
+.f-i-thumbs-up:before{content:'\e662'}
+.f-i-thumbs-up-full:before{content:'\e664'}
+.f-i-read:before{content:'\e667'}
+.f-i-read-full:before{content:'\e666'}
+.f-i-top:before{content:'\e65f'}
+.f-i-search-square:before{content:'\e660'}
+.f-i-post-create:before{content:'\e661'}
 .f-i-edit:before{content:'\e65c'}
 .f-i-view:before{content:'\e65a'}
 .f-i-favor:before{content:'\e65b'}
 .f-i-trash:before{content:'\e65d'}
 .f-i-angle-double-right:before{content:'\e659'}
+.f-i-angle-double-down:before{content:'\e678'}
 .f-i-check:before{content:'\e656'}
 .f-i-caret-down:before{content:'\e654'}
 .f-i-caret-left:before{content:'\e655'}
 .f-i-caret-right:before{content:'\e657'}
 .f-i-caret-up:before{content:'\e658'}
-.f-i-folder:before{content:'\e651'}
-.f-i-folder-open:before{content:'\e652'}
-.f-i-file:before{content:'\e653'}
+.f-i-leaf-folder:before{content:'\e651'}
+.f-i-leaf-folder-open:before{content:'\e652'}
+.f-i-leaf-file:before{content:'\e653'}
 .f-i-ellipsis:before{content:'\e650'}
 .f-i-upload-image:before{content:'\e64d'}
 .f-i-upload:before{content:'\e64e'}
@@ -1064,10 +1086,10 @@ d\:wg{display:none}
 .f-i-long-arrow-right:before{content:'\e64a'}
 .f-i-long-arrow-left:before{content:'\e64b'}
 .f-i-long-arrow-up:before{content:'\e64c'}
-.f-i-minus:before{content:'\e647'}
-.f-i-plus:before{content:'\e648'}
-.f-i-plus-squre:before{content:'\e645'}
-.f-i-minus-squre:before{content:'\e646'}
+.f-i-minus:before{content:'\e67a'}
+.f-i-plus:before{content:'\e679'}
+.f-i-plus-square:before{content:'\e645'}
+.f-i-minus-square:before{content:'\e646'}
 .f-i-warning:before{content:'\e642'}
 .f-i-question:before{content:'\e644'}
 .f-i-check-circle:before{content:'\e643'}

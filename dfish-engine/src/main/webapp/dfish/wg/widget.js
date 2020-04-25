@@ -9687,9 +9687,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		getSrc: function() {
 			return Section.prototype.getSrc.call( this );
 		},
-		isContentData: function() {
-			return T;
-		},
+		isContentData: $.rt( T ),
 		isFolder: function() {
 			if ( !this._instanced && this.x.nodes && this.x.nodes.length ) return T;
 			if ( this.length ) return T;
