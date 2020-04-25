@@ -5,10 +5,10 @@
     <class name="com.rongji.dfish.framework.plugin.lob.entity.PubLob" table="PUB_LOB">
         <id name="lobId" type="java.lang.String">
             <column name="LOB_ID"/>
-            <generator class="assigned" />
+            <generator class="assigned"/>
         </id>
-        <property name="lobContent" type="java.lang.String">
-            <column name="LOB_CONTENT"></column>
+        <property name="lobData" type="byte[]">
+            <column name="LOB_DATA"></column>
         </property>
         <property name="operTime" type="java.util.Date">
             <column name="OPER_TIME"></column>
@@ -19,8 +19,5 @@
         <property name="archiveTime" type="java.util.Date">
             <column name="ARCHIVE_TIME"></column>
         </property>
-        <property name="lobData" type="byte[]">
-        <column name="LOB_DATA"></column>
-    </property>
     </class>
 </hibernate-mapping>

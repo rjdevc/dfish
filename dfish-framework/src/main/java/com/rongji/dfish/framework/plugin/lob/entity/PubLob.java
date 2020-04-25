@@ -9,16 +9,16 @@ import java.util.Date;
  * @author lamontYu
  * @since DFish3.2
  * @version 1.1 去除注解,框架默认采用配置加载模式 lamontYu 2019-12-05
+ * @version 1.2 去除lobContent,采用lobData,将数据存储在blob
  */
 public class PubLob implements java.io.Serializable {
 
     private static final long serialVersionUID = -3653424051971393087L;
     private String lobId;
-    private String lobContent;
+    private byte[] lobData;
     private Date operTime;
     private String archiveFlag;
     private Date archiveTime;
-    private byte[] lobData;
 
     /**
      * default constructor
@@ -52,21 +52,38 @@ public class PubLob implements java.io.Serializable {
     }
 
     /**
-     * lob内容（字符串）
-     * @return String
+     * lob内容（二进制）
+     * @return byte[]
      */
-    @Column(name = "LOB_CONTENT")
-    public String getLobContent() {
-        return this.lobContent;
+    @Column(name = "LOB_DATA")
+    public byte[] getLobData() {
+        return lobData;
     }
 
     /**
-     * lob内容（字符串）
-     * @param lobContent lob内容
+     * lob内容（二进制）
+     * @param lobData lob内容（二进制）
      */
-    public void setLobContent(String lobContent) {
-        this.lobContent = lobContent;
+    public void setLobData(byte[] lobData) {
+        this.lobData = lobData;
     }
+
+//    /**
+//     * lob内容（字符串）
+//     * @return String
+//     */
+//    @Column(name = "LOB_CONTENT")
+//    public String getLobContent() {
+//        return this.lobContent;
+//    }
+//
+//    /**
+//     * lob内容（字符串）
+//     * @param lobContent lob内容
+//     */
+//    public void setLobContent(String lobContent) {
+//        this.lobContent = lobContent;
+//    }
 
     /**
      * 操作时间
@@ -117,23 +134,6 @@ public class PubLob implements java.io.Serializable {
      */
     public void setArchiveTime(Date archiveTime) {
         this.archiveTime = archiveTime;
-    }
-
-    /**
-     * lob内容（二进制）
-     * @return byte[]
-     */
-    @Column(name = "LOB_DATA")
-    public byte[] getLobData() {
-        return lobData;
-    }
-
-    /**
-     * lob内容（二进制）
-     * @param lobData lob内容（二进制）
-     */
-    public void setLobData(byte[] lobData) {
-        this.lobData = lobData;
     }
 
 }
