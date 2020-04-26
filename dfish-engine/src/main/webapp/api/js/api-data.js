@@ -672,13 +672,15 @@ define( {
             var url = $.urlParam( 'a.sp?id=1', { id: 2, page: 3 } ); // 返回 "a.sp?id=2&page=3"
           }
       ] },
-      { name: '$.use(url)', remark: '装载模块。模块js是在CMD模块规范的封闭环境内运行，运行环境说明参见"<a href=javascript:>模块加载</a>"', common: true, param: [
-        { name: 'url', type: 'String | Array', remark: '模块名称/地址' }
+      { name: '$.use(src)', remark: '装载模块。模块js是在CMD模块规范的封闭环境内运行，运行环境说明参见"<a href=javascript:>模块加载</a>"', common: true, param: [
+        { name: 'src', type: 'String | Array', remark: 'JS/CSS地址。' }
       ], example: [
           function() {
-          	// 范例1：完成配置后，装载业务模块
-            dfish.config( { path: '/itask7/', lib: 'dfish/' } );
-            dfish.use( './m/app.js' );
+          	// 范例1：完成配置后，装载业务JS/CSS
+            dfish.config( { path: '/itask7/' } );
+            dfish.use( './x/app.js' );
+            dfish.use( './x/app.css' );
+            dfish.use( [ './x/a.js', './x/a.css' ] );
           }
       ] },
       { name: '$.vm(obj)', remark: '获取某个对象所属的view。和 VM 方法相同。', common: true, param: [

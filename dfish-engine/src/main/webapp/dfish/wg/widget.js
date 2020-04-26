@@ -3194,7 +3194,6 @@ Split = define.widget( 'Split', {
 					h = $.db( '<div style="position:absolute;top:0;bottom:0;left:0;right:0;z-index:1"></div>' );
 					b = $.db( '<div style="position:absolute;width:' + (r.width) + 'px;height:' + (r.height) + 'px;left:' + r.left + 'px;top:' + r.top + 'px;background:#bbb;opacity:.6;z-index:1"></div>' );
 				};
-			//$.stop( e );
 			down();
 			$.moveup( function( e ) {
 				if ( e[ cln ] !== x ) {
