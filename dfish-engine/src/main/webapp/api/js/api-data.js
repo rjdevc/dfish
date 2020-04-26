@@ -1058,6 +1058,7 @@ define( {
   			{ src: '.f-i-top', text: '.f-i-top' },
   			{ src: '.f-i-search-square', text: '.f-i-search-square' },
   			{ src: '.f-i-post-create', text: '.f-i-post-create' },
+  			{ src: '.f-i-user', text: '.f-i-user' },
   			{ src: '.f-i-edit', text: '.f-i-edit' },
   			{ src: '.f-i-view', text: '.f-i-view' },
   			{ src: '.f-i-favor', text: '.f-i-favor' },

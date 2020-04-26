@@ -2149,7 +2149,7 @@ _merge( $, {
 		$.widget( a ).isNormal() && !a.contains( event.toElement ) && _classRemove( a, 'z-hv' );
 	},
 	loadCss: function( a ) {
-		return $.require.css( a );
+		_loadCss( _urlLoc( _path, a ) );
 	},
 	// 根据expr获取单个元素 /a -> expr, b -> context
 	get: function( a, b ) {
