@@ -35,9 +35,9 @@
 .w-button{height:38px}
 
 .w-input{height:38px}
-.w-input ._t{height:38px;line-height:38px}
+.w-input-t{line-height:38px}
 
-.w-select ._t{background:#fff}
+.w-select .w-input-t{background:#fff}
 
 .w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{vertical-align:middle}
 

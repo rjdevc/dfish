@@ -5923,7 +5923,7 @@ AbsForm = define.widget( 'AbsForm', {
 		},
 		input_prop: function() {
 			var t = this.attr( 'tip' ), v = this.input_prop_value();
-			return ' id="' + this.id + 't" class=_t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + this.prop_style( this.x.text || this.x.value ) +
+			return ' id="' + this.id + 't" class=w-input-t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + this.prop_style( this.x.text || this.x.value ) +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call( this );
 		},
 		prop_cls: function() {
@@ -6012,7 +6012,7 @@ AbsInput = define.widget( 'AbsInput', {
 		}
 	},
 	Default: {
-		tip: T//, widthMinus: _dft_min, heightMinus: _dft_min
+		tip: T //, widthMinus: _dft_min, heightMinus: _dft_min
 	},
 	Prototype: {
 		focus: function( a ) {
@@ -6059,7 +6059,7 @@ AbsInput = define.widget( 'AbsInput', {
 			return '';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placeholder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class=w-input-c id="' + this.id + 'c">' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -6189,7 +6189,7 @@ Textarea = define.widget( 'Textarea', {
 			return '<textarea' + this.input_prop() + '>' + $.strEscape(this.x.value || '').replace( /<\/textarea>/g, '&lt;\/textarea&gt;' ) + '</textarea>';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class=_c id="' + this.id + 'c">' + this.html_placeholder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class=w-input-c id="' + this.id + 'c">' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -6777,7 +6777,7 @@ Select = define.widget( 'Select', {
 				s = '<option value="' + (o[ i ].value || '') + '"' + (o[ i ].checked || o[ i ].value == v ? (k = i, ' selected') : '') + this.prop_title( o[ i ].text ) + '>' + f + '</option>' + s;
 			}
 			var w = this.formWidth(), z = this.x.size, t = (this.x.tip === T ? (o[ k ] && o[ k ].text) : t) || '';
-			return '<select class=_t id=' + this.id + 't ' + _html_on.call( this ) + ' name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
+			return '<select class=w-input-t id=' + this.id + 't ' + _html_on.call( this ) + ' name="' + this.input_name() + '"' + ( this.x.multiple ? ' multiple' : '' ) +
 				(typeof t === _STR ? ' title="' + $.strQuot( $.strEscape( t ) ) + '"' : '') + (z ? ' size=' + z : '') + '>' + s + '</select><div class=_cvr></div>';
 		}
 	}
@@ -7585,7 +7585,7 @@ Slider = define.widget( 'Slider', {
 		html_nodes: function() {
 			var w = this.formWidth();
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + this.x.value + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
-				't class=_t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + 
+				't class=w-input-t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + 
 				'.dragStart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i f-i-long-arrow-right"></i><i class="f-i f-i-check"></i></div></div>' + this.html_placeholder();
 		}
 	}
@@ -8076,7 +8076,7 @@ DropBox = define.widget( 'DropBox', {
 		html_input: function() {
 			var s = this._sel[ 0 ], t = this.attr( 'tip' ), h = this.html_text();
 			t === T && (t = h);
-			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-omit _t" id=' + this.id + 't ' +
+			return '<input type=hidden name="' + this.x.name + '" id=' + this.id + 'v value="' + (this.x.value || '') + '"><div class="f-omit w-input-t" id=' + this.id + 't ' +
 				(typeof t === _STR ? ' title="' + $.strQuot( t.replace(/<[^>]+>/g, '') ) + '"' : '') + '><span id=' + this.id + 'p>' + h + '</span></div>';
 		}
 	}
@@ -8694,7 +8694,7 @@ ComboBox = define.widget( 'ComboBox', {
 				'><var class="_e f-nobr" id=' + this.id + 't' + ( this.usa() ? ' contenteditable' : '' ) + ' ' + _html_on.call( this ) + '>' + (this.x.loadingText || Loc.loading) + '</var>';
 		},
 		html_nodes: function() {
-			return this.html_btn() + '<div class="_c' + (this.x.br ? '' : ' f-nobr') + '" id="' + this.id + 'c" onclick=' + eve + '>' + this.html_placeholder() + this.html_input() + '</div>';
+			return this.html_btn() + '<div class="w-input-c' + (this.x.br ? '' : ' f-nobr') + '" id="' + this.id + 'c" onclick=' + eve + '>' + this.html_placeholder() + this.html_input() + '</div>';
 		}
 	}
 } ),
@@ -9217,7 +9217,7 @@ LinkBox = define.widget( 'LinkBox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') +
-				'><var class="f-nv _t" id=' + this.id + 't' + (this.usa() ? ' contenteditable' : '') + ' ' + _html_on.call( this ) + '>' + (this.x.loadingText || Loc.loading) + '</var>';
+				'><var class="f-nv w-input-t" id=' + this.id + 't' + (this.usa() ? ' contenteditable' : '') + ' ' + _html_on.call( this ) + '>' + (this.x.loadingText || Loc.loading) + '</var>';
 		}
 	}
 } ),
