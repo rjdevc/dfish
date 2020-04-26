@@ -7366,7 +7366,7 @@ DatePicker = define.widget( 'DatePicker', {
 		html_input: function() {
 			var v = (mbi || this.x.multiple) && this.input_prop_value();
 			return mbi ? '<input type=' + (_date_formtype[ this.x.format ] || 'date') + this.input_prop() + ' w-format="' + this.x.format + '"><div class="_pad f-nobr">' + ('0000-00-00 00:00:00'.substr( 0, this.x.format.length )) + '</div><label id="' + this.id + 'a" for="' + this.id + 't" class="f-fix f-inbl _a" onclick=' + evw + '.clickLabelFor(event)>' + v.replace( 'T', ' ' ) + '</label>' :
-				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix _t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
+				this.x.multiple ? '<input type=hidden id=' + this.id + 'v name="' + this.x.name + '" value="' + v + '"><div id=' + this.id + 't class="f-fix w-input-t"' + _html_on.call( this ) + '>' + this.v2t( v ) + '</div>' : '<input type=text' + this.input_prop() + '>';
 		}
 	}
 } ),
@@ -9405,7 +9405,7 @@ PickBox = define.widget( 'PickBox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
-				't" class="f-fix _t" ' + _html_on.call( this ) + this.prop_title( this.x.text || '' ) + '>' + $.strEscape( this.x.text ) + '</div>';
+				't" class="f-fix w-input-t" ' + _html_on.call( this ) + this.prop_title( this.x.text || '' ) + '>' + $.strEscape( this.x.text ) + '</div>';
 		}
 	}
 } ),
