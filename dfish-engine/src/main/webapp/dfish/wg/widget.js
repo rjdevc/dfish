@@ -406,7 +406,7 @@ Node = $.createClass( {
 								break;
 							}
 								 
-						} while ( r = r.parentNode );
+						} while ( (r = r.parentNode) && ! r.isDialogWidget );
 					}
 				}
 				// 给有rootType的widget设置rootNode
