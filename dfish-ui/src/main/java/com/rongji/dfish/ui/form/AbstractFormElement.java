@@ -16,8 +16,8 @@ import com.rongji.dfish.ui.command.Tip;
  * @param <T> 当前对象类型
  * @param <N> value对象类型
  * @author DFish Team
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N> extends AbstractWidget<T> implements
         FormElement<T, N>, LabelRow<T>, Validatable<T>, Statusful<T> {
@@ -184,7 +184,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
      *
      * @param required boolean
      * @return 本身，这样可以继续设置其他属性
-     * @since 3.0
+     * @since DFish3.0
      * @deprecated notnull 属性已经被 required替代
      */
     @Deprecated
@@ -199,7 +199,7 @@ public abstract class AbstractFormElement<T extends AbstractFormElement<T, N>, N
      *
      * @param required boolean
      * @return 本身，这样可以继续设置其他属性
-     * @since 3.0
+     * @since DFish3.0
      */
     public T setRequired(Boolean required) {
         if (required == null || !required) {

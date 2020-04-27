@@ -6,7 +6,6 @@ import java.util.List;
  * 上传图片组件
  *
  * @author DFish Team
- * @date 2018-08-03 before
  * @version 1.1 将Alignable, Valignable的接口下移到抽象类 lamontYu 2019-12-05
  */
 public class ImageUpload extends AbstractUpload<ImageUpload> {
@@ -19,9 +18,10 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
 
     /**
      * 构造函数
-     * @param name
-     * @param label
-     * @param value
+     *
+     * @param name  名称
+     * @param label 标签
+     * @param value 附件上传项集合
      */
     public ImageUpload(String name, String label, List<UploadItem> value) {
         this.name = name;
@@ -31,9 +31,10 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
 
     /**
      * 构造函数
-     * @param name
-     * @param label
-     * @param value
+     *
+     * @param name  名称
+     * @param label 标签
+     * @param value 附件上传项集合
      */
     public ImageUpload(String name, Label label, List<UploadItem> value) {
         this.name = name;
@@ -63,6 +64,7 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
 
     /**
      * 设置为true，表单将成为无边框无背景的状态。
+     *
      * @return Boolean
      */
     public Boolean getTransparent() {
@@ -71,6 +73,7 @@ public class ImageUpload extends AbstractUpload<ImageUpload> {
 
     /**
      * 设置为true，表单将成为无边框无背景的状态。
+     *
      * @param transparent Boolean
      * @return 本身，这样可以继续设置其他属性
      */

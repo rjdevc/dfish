@@ -13,7 +13,7 @@ import com.rongji.dfish.ui.Widget;
  * @author DFish Team
  * @version 1.0
  * @see FormElement
- * @since 2.0
+ * @since DFish2.0
  */
 public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
     /**
@@ -31,7 +31,7 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      *
      * @param label String
      * @return 本身，这样可以继续设置其他属性
-     * @since 3.2.0
+     * @since DFish3.2.0
      */
     T setLabel(Label label);
 
@@ -39,7 +39,7 @@ public interface LabelRow<T extends LabelRow<T>> extends Widget<T> {
      * 取得标题
      *
      * @return label
-     * @since 3.2.0
+     * @since DFish3.2.0
      */
     Object getLabel();
 

@@ -3,7 +3,7 @@ package com.rongji.dfish.ui.form;
 /**
  * 开关选项
  * @author DFish Team
- * @since dfish 3.1
+ * @since DFish3.1
  */
 public class Switch extends AbstractFormElement<Switch, Object> {
 

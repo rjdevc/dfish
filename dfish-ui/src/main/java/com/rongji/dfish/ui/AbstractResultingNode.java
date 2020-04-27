@@ -5,8 +5,7 @@ import java.util.Map;
 /**
  * 前后端需要交互且结果解析的组件
  * @author lamontYu
- * @date 2019-12-11
- * @since 5.0
+ * @since DFish5.0
  */
 public abstract class AbstractResultingNode<T extends AbstractResultingNode<T>> extends AbstractNode<T> {
 

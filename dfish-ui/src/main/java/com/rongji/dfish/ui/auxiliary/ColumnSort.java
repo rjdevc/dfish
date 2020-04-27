@@ -4,8 +4,7 @@ package com.rongji.dfish.ui.auxiliary;
  * 表格列排序
  *
  * @author lamontYu
- * @date 2017-07-31
- * @since 3.1
+ * @since DFish3.1
  */
 public class ColumnSort {
 

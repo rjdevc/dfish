@@ -9,8 +9,8 @@ import com.rongji.dfish.ui.LazyLoad;
  * @param <T> 当前对象类型
  * @author DFish Team
  * @version 1.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 3.0
+ *
+ * @since DFish3.0
  */
 public abstract class CommunicateCommand<T extends CommunicateCommand<T>> extends AbstractNode<T> implements LazyLoad<T>,Command<T> {
 

@@ -5,7 +5,6 @@ import com.rongji.dfish.base.util.json.JsonBuilder;
 /**
  * Json对象构建器的默认实现类,具体实现类可继承该方法
  * @author lamontYu
- * @date 2019-09-29
  */
 public abstract class AbstractJsonBuilder implements JsonBuilder {
 
@@ -21,7 +20,7 @@ public abstract class AbstractJsonBuilder implements JsonBuilder {
 
     /**
      * 设置日期格式
-     * @param dateFormat
+     * @param dateFormat 日期格式
      */
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;

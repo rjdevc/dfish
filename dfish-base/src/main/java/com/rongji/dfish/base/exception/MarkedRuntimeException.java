@@ -4,26 +4,12 @@ package com.rongji.dfish.base.exception;
  * 带有异常编码的运行时异常
  *
  * @author lamontYu
- * @date 2019-12-11
- * @since 5.0
+ * @since DFish5.0
  */
 public class MarkedRuntimeException extends RuntimeException implements Marked {
 
     private static final long serialVersionUID = -7624791248986463899L;
     private String code;
-
-    @Override
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * 获取标识码
-     * @param code
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     /**
      * 构造函数
@@ -34,7 +20,7 @@ public class MarkedRuntimeException extends RuntimeException implements Marked {
 
     /**
      * 构造函数
-     * @param message
+     * @param message 信息
      */
     public MarkedRuntimeException(String message) {
         super(message);
@@ -42,7 +28,7 @@ public class MarkedRuntimeException extends RuntimeException implements Marked {
 
     /**
      * 构造函数
-     * @param cause
+     * @param cause 起因
      */
     public MarkedRuntimeException(Throwable cause) {
         super(cause);
@@ -50,8 +36,8 @@ public class MarkedRuntimeException extends RuntimeException implements Marked {
 
     /**
      * 构造函数
-     * @param message
-     * @param cause
+     * @param message 信息
+     * @param cause 起因
      */
     public MarkedRuntimeException(String message, Throwable cause) {
         super(message, cause);
@@ -59,8 +45,8 @@ public class MarkedRuntimeException extends RuntimeException implements Marked {
 
     /**
      * 构造函数
-     * @param message
-     * @param code
+     * @param message 信息
+     * @param code 标识码
      */
     public MarkedRuntimeException(String message, String code) {
         super(message);
@@ -69,13 +55,32 @@ public class MarkedRuntimeException extends RuntimeException implements Marked {
 
     /**
      * 构造函数
-     * @param message
-     * @param cause
-     * @param code
+     * @param message 信息
+     * @param cause 起因
+     * @param code 标识码
      */
     public MarkedRuntimeException(String message, Throwable cause, String code) {
         super(message, cause);
         this.code = code;
+    }
+
+    /**
+     * 获取异常标识码
+     * @return 标识码
+     */
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+    /**
+     * 设置异常标识码
+     * @param code 标识码
+     * @return 本身，这样可以继续设置属性
+     */
+    public MarkedRuntimeException setCode(String code) {
+        this.code = code;
+        return this;
     }
 
 }

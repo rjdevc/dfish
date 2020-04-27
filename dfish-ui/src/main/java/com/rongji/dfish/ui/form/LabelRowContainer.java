@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.NodeContainer;
  * 某些封装类将会对这种行为进行封装。我们定义他们为LabelRowContainer</p>
  * 
  * @author DFish Team
- * @since 3.2.0
+ * @since DFish3.2.0
  * @see LabelRow
  *
  * @param <T> 当前对象类型

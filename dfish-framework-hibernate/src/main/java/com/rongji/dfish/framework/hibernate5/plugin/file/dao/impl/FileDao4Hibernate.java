@@ -10,8 +10,7 @@ import java.util.*;
 /**
  * 附件file的hibernate实现dao层
  * @author lamontYu
- * @date 2019-12-18
- * @since 5.0
+ * @since DFish5.0
  */
 public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, String> implements FileDao {
     @Override

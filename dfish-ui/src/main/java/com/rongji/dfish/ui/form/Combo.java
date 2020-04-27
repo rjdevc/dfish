@@ -11,8 +11,8 @@
 // * @author DFish Team
 // * @version 1.0.20160819
 // * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
-// * @date 2018-08-03 before
-// * @since 1.0
+// *
+// * @since DFish1.0
 // */
 //public class Combo extends AbstractNode<Combo> {
 //

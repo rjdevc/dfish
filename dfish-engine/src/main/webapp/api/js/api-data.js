@@ -672,13 +672,15 @@ define( {
             var url = $.urlParam( 'a.sp?id=1', { id: 2, page: 3 } ); // 返回 "a.sp?id=2&page=3"
           }
       ] },
-      { name: '$.use(url)', remark: '装载模块。模块js是在CMD模块规范的封闭环境内运行，运行环境说明参见"<a href=javascript:>模块加载</a>"', common: true, param: [
-        { name: 'url', type: 'String | Array', remark: '模块名称/地址' }
+      { name: '$.use(src)', remark: '装载模块。模块js是在CMD模块规范的封闭环境内运行，运行环境说明参见"<a href=javascript:>模块加载</a>"', common: true, param: [
+        { name: 'src', type: 'String | Array', remark: 'JS/CSS地址。' }
       ], example: [
           function() {
-          	// 范例1：完成配置后，装载业务模块
-            dfish.config( { path: '/itask7/', lib: 'dfish/' } );
-            dfish.use( './m/app.js' );
+          	// 范例1：完成配置后，装载业务JS/CSS
+            dfish.config( { path: '/itask7/' } );
+            dfish.use( './x/app.js' );
+            dfish.use( './x/app.css' );
+            dfish.use( [ './x/a.js', './x/a.css' ] );
           }
       ] },
       { name: '$.vm(obj)', remark: '获取某个对象所属的view。和 VM 方法相同。', common: true, param: [
@@ -1038,19 +1040,41 @@ define( {
   			widthMinus: 22
   		},
   		nodes: [
+  			{ src: '.f-i-git', text: '.f-i-git' },
+  			{ src: '.f-i-mail', text: '.f-i-mail' },
+  			{ src: '.f-i-qq', text: '.f-i-qq' },
+  			{ src: '.f-i-gitee', text: '.f-i-gitee' },
+  			{ src: '.f-i-rotate-left', text: '.f-i-rotate-left' },
+  			{ src: '.f-i-rotate-right', text: '.f-i-rotate-right' },
+  			{ src: '.f-i-folder', text: '.f-i-folder' },
+  			{ src: '.f-i-folder-full', text: '.f-i-folder-full' },
+  			{ src: '.f-i-folder-open', text: '.f-i-folder-open' },
+  			{ src: '.f-i-folder-open-full', text: '.f-i-folder-open-full' },
+  			{ src: '.f-i-file', text: '.f-i-file' },
+  			{ src: '.f-i-file-full', text: '.f-i-file-full' },
+  			{ src: '.f-i-layout-list', text: '.f-i-layout-list' },
+  			{ src: '.f-i-layout-grid', text: '.f-i-layout-grid' },
+  			{ src: '.f-i-comment', text: '.f-i-comment' },
+  			{ src: '.f-i-comment-full', text: '.f-i-comment-full' },
+  			{ src: '.f-i-thumbs-up', text: '.f-i-thumbs-up' },
+  			{ src: '.f-i-thumbs-up-full', text: '.f-i-thumbs-up-full' },
+  			{ src: '.f-i-read', text: '.f-i-read' },
+  			{ src: '.f-i-read-full', text: '.f-i-read-full' },
+  			{ src: '.f-i-top', text: '.f-i-top' },
+  			{ src: '.f-i-search-square', text: '.f-i-search-square' },
+  			{ src: '.f-i-post-create', text: '.f-i-post-create' },
+  			{ src: '.f-i-user', text: '.f-i-user' },
   			{ src: '.f-i-edit', text: '.f-i-edit' },
   			{ src: '.f-i-view', text: '.f-i-view' },
   			{ src: '.f-i-favor', text: '.f-i-favor' },
   			{ src: '.f-i-trash', text: '.f-i-trash' },
   			{ src: '.f-i-angle-double-right', text: '.f-i-angle-double-right' },
+  			{ src: '.f-i-angle-double-down', text: '.f-i-angle-double-down' },
   			{ src: '.f-i-check', text: '.f-i-check' },
   			{ src: '.f-i-caret-down', text: '.f-i-caret-down' },
   			{ src: '.f-i-caret-up', text: '.f-i-caret-up' },
   			{ src: '.f-i-caret-left', text: '.f-i-caret-left' },
   			{ src: '.f-i-caret-right', text: '.f-i-caret-right' },
-  			{ src: '.f-i-folder', text: '.f-i-folder' },
-  			{ src: '.f-i-folder-open', text: '.f-i-folder-open' },
-  			{ src: '.f-i-file', text: '.f-i-file' },
   			{ src: '.f-i-ellipsis', text: '.f-i-ellipsis' },
   			{ src: '.f-i-upload-image', text: '.f-i-upload-image' },
   			{ src: '.f-i-upload', text: '.f-i-upload' },
@@ -1061,8 +1085,8 @@ define( {
   			{ src: '.f-i-long-arrow-right', text: '.f-i-long-arrow-right' },
   			{ src: '.f-i-minus', text: '.f-i-minus' },
   			{ src: '.f-i-plus', text: '.f-i-plus' },
-  			{ src: '.f-i-minus-squre', text: '.f-i-minus-squre' },
-  			{ src: '.f-i-plus-squre', text: '.f-i-plus-squre' },
+  			{ src: '.f-i-minus-square', text: '.f-i-minus-square' },
+  			{ src: '.f-i-plus-square', text: '.f-i-plus-square' },
   			{ src: '.f-i-warning', text: '.f-i-warning' },
   			{ src: '.f-i-question', text: '.f-i-question' },
   			{ src: '.f-i-check-circle', text: '.f-i-check-circle' },
@@ -1998,7 +2022,11 @@ define( {
   "CollapseButton": {
   	remark: '标签按钮。',
   	extend: 'Button',
-  	deprecate: 'focusable,name',
+  	deprecate: 'focusable,name,icon',
+    Config: [
+      { name: 'collapsedIcon', type: 'String', remark: '折叠状态图标。可使用图片url地址，或以 "." 开头的样式名。' },
+      { name: 'expandedIcon', type: 'String', remark: '展开状态图标。可使用图片url地址，或以 "." 开头的样式名。' }
+    ],
     Classes: [
       { name: '.w-tab', remark: '基础样式。' }
     ],

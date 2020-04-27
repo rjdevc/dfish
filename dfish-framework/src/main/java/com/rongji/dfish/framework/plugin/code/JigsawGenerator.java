@@ -25,8 +25,7 @@ import java.util.Random;
  * 拼图滑块验证工具
  *
  * @author lamontYu
- * @date 2019-05-07
- * @since 3.2
+ * @since DFish3.2
  */
 public class JigsawGenerator {
 

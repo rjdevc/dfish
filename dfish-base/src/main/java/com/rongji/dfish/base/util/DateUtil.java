@@ -15,8 +15,7 @@ import java.util.Map;
  *
  * @author DFish Team
  * @version 0.9
- * @category 工具类(util)
- * @since dfish-base v1.2
+ * @since DFish1.2
  */
 public class DateUtil {
 

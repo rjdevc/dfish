@@ -11,8 +11,7 @@ import java.util.Map;
 /**
  * 请求参数集合,用于数据传输过程参数调用
  * @author lamontYu
- * @since 5.0
- * @date 2019-12-04 13:19
+ * @since DFish5.0
  */
 public class RequestParam extends LinkedHashMap<String, String[]> {
 

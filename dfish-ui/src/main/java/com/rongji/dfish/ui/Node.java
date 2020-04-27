@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author DFish Team
  * @version 1.1 DFish team
- * @since DFish 3.0
+ * @since DFish3.0
  */
 public interface Node<T extends Node<T>> extends Serializable {
 

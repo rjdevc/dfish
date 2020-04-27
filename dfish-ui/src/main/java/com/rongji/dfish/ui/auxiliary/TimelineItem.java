@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.Alignable;
  * 时间轴条目
  *
  * @author lamontYu
- * @date 2019-11-25 11:54
+ * @since DFish5.0
  */
 public class TimelineItem extends AbstractWidget<TimelineItem> implements Alignable<TimelineItem> {
 
@@ -19,6 +19,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 构造函数
+     *
      * @param id
      */
     public TimelineItem(String id) {
@@ -45,6 +46,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 是否对html内容转义。默认值为true。
+     *
      * @return Boolean
      */
     public Boolean getEscape() {
@@ -53,6 +55,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 是否对html内容转义。默认值为true。
+     *
      * @param escape 为true时对html内容转义
      * @return 本身，这样可以继续设置其他属性
      */
@@ -63,6 +66,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     *
      * @return String
      */
     public String getFormat() {
@@ -71,6 +75,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。
+     *
      * @param format 内容格式
      * @return 本身，这样可以继续设置其他属性
      */
@@ -81,6 +86,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 图标。可用 "." 开头的样式名，或图片路径。
+     *
      * @return String
      */
     public String getIcon() {
@@ -89,6 +95,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 图标。可用 "." 开头的样式名，或图片路径。
+     *
      * @param icon 图标
      * @return 本身，这样可以继续设置其他属性
      */
@@ -99,6 +106,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 显示文本。
+     *
      * @return String
      */
     public String getText() {
@@ -107,6 +115,7 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
 
     /**
      * 显示文本。
+     *
      * @param text 显示文本。
      * @return 本身，这样可以继续设置其他属性
      */

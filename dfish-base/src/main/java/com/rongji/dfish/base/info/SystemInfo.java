@@ -86,7 +86,7 @@ public final class SystemInfo {
 
   /**
    * 取得虚拟机产商
-   * @return
+   * @return String 虚拟机产商
    */
   public String getVmVendor() {
     return vmVendor;
@@ -94,7 +94,7 @@ public final class SystemInfo {
 
   /**
    * 取得虚拟机版本
-   * @return
+   * @return String 虚拟机版本
    */
   public String getVmVersion() {
     return vmVersion;
@@ -102,7 +102,7 @@ public final class SystemInfo {
 
   /**
    * 取得文件系统字符集
-   * @return
+   * @return String 文件系统字符集
    */
   public String getFileEncoding() {
     return fileEncoding;
@@ -110,14 +110,14 @@ public final class SystemInfo {
 
   /**
    * 取得JAVA版本号
-   * @return
+   * @return String JAVA版本号
    */
   public String getJavaVersion() {
     return javaVersion;
   }
   /**
    * 取得空闲内存大小
-   * @return
+   * @return long 空闲内存大小
    */
   public long getFreeMemory() {
     Runtime runtime = Runtime.getRuntime();
@@ -125,7 +125,7 @@ public final class SystemInfo {
   }
   /**
    * 取得总的内存大小
-   * @return
+   * @return long 总的内存大小
    */
   public long getTotalMemory() {
     Runtime runtime = Runtime.getRuntime();

@@ -7,8 +7,8 @@ import com.rongji.dfish.ui.*;
  *
  * @author DFish Team
  * @version 1.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 3.0
+ *
+ * @since DFish3.0
  */
 public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip>, Alignable<Tip>, VAlignable<Tip> {
 
@@ -90,8 +90,8 @@ public class Tip extends AbstractPopup<Tip> implements Command<Tip>, HasText<Tip
     /**
      * 是否显示关闭图标
      *
-     * @param closable
-     * @return Boolean
+     * @param closable 是否可关闭
+     * @return 本身，这样可以继续设置其他属性
      */
     public Tip setClosable(Boolean closable) {
         this.closable = closable;

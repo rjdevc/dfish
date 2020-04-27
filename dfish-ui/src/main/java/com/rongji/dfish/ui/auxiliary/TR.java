@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author DFish Team
  * @see AbstractTD {@link Column} {@link Leaf}
- * @since DFish 3.0
+ * @since DFish3.0
  */
 public class TR extends AbstractTR<TR> implements JsonWrapper<Object> {
     private static final long serialVersionUID = -1895404892414786019L;

@@ -107,8 +107,8 @@ dfish.config({
 
         'Toggle': {
             height: 40,
-            collapsedIcon: '.i-toggle-collapsed',
-            expandedIcon: '.i-toggle-expanded',
+            collapsedIcon: '.f-i .f-i-plus',
+            expandedIcon: '.f-i .f-i-minus',
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         },
@@ -118,8 +118,8 @@ dfish.config({
         },
         'TableToggle.z-form': {
             height: 40,
-            collapsedIcon: '.i-toggle-collapsed',
-            expandedIcon: '.i-toggle-expanded',
+            collapsedIcon: '.f-i .f-i-plus',
+            expandedIcon: '.f-i .f-i-minus',
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         },

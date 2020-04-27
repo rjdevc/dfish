@@ -59,7 +59,7 @@ public class OriginMatcher {
 
     /**
 	 * 获取行政区划代码匹配类的对象，匹配范围为县级及县级以上行政区划,匹配目标为6位行政区划代码
-     * @return
+     * @return OriginMatcher对象
      */
     public static OriginMatcher getInstance() {
         if (instance == null) {
@@ -71,9 +71,9 @@ public class OriginMatcher {
     /**
 	 * 获取行政区划代码匹配类的对象, 根据行政区划代码前缀自定义匹配范围，匹配目标为12位行政区划代码
      * @param codePrefix 行政区划代码前缀，用于自定义匹配范围，若大于12位则截取前12位作为前缀
-     *                   <p>若不为null则作为行政区划前缀，匹配目标为以前缀开头的12位行政区划代码。<br/>
-     *                   若为null则表示匹配范围为县级及县级以上行政区划,匹配目标为6位行政区划代码。<p/>
-     * @return
+     *                   <p>若不为null则作为行政区划前缀，匹配目标为以前缀开头的12位行政区划代码。</p>
+     *                   <p>若为null则表示匹配范围为县级及县级以上行政区划,匹配目标为6位行政区划代码。</p>
+     * @return OriginMatcher对象
      */
     public static OriginMatcher createInstance(String codePrefix) {
         if (codePrefix == null) {
@@ -86,7 +86,7 @@ public class OriginMatcher {
 
     /**
 	 * 获取行政区划代码匹配类的对象, 匹配范围为全国，匹配目标为12位行政区划代码
-     * @return
+     * @return OriginMatcher对象
      */
     public static OriginMatcher createInstance() {
         return createInstance("");

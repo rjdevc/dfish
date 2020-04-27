@@ -21,7 +21,7 @@ public abstract class AbstractPresentOutputStream extends FilterOutputStream {
 
     /**
      * 构造函数
-     * @param out
+     * @param out 输出流
      */
     public AbstractPresentOutputStream(OutputStream out) {
         super(out);
@@ -85,7 +85,7 @@ public abstract class AbstractPresentOutputStream extends FilterOutputStream {
 
     /**
      * 输出一半在buff里面的内容。
-     * @throws IOException
+     * @throws IOException IO异常
      */
     public abstract void flushBuff()throws IOException;
 }

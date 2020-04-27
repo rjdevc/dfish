@@ -40,6 +40,9 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
 
     /**
      * 默认构造函数
+     * @param text 文本
+     * @param onClick  点击动作
+     * @param icon 图标
      */
     public AbstractButton(String text, String onClick, String icon) {
         super(null);
@@ -108,9 +111,9 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     /**
      * 添加子节点
      *
-     * @param index
-     * @param node
-     * @return
+     * @param index 添加位置下标
+     * @param node 节点
+     * @return 本身，这样可以继续设置其他属性
      */
     public T add(int index, Widget<?> node) {
         if (node instanceof AbstractButton || node instanceof Split) {

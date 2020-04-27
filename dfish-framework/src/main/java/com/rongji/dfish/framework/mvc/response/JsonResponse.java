@@ -157,8 +157,7 @@ public class JsonResponse<T> {
      * 接口响应的头部信息
      *
      * @author lamontYu
-     * @date 2019-09-23
-     * @since 5.0
+     * @since DFish5.0
      */
     public static class Header {
 
@@ -275,8 +274,7 @@ public class JsonResponse<T> {
      * 接口响应头部的调用者信息
      *
      * @author lamontYu
-     * @date 2019-11-29
-     * @since 5.0
+     * @since DFish5.0
      */
     public static class HeaderPrincipal implements ResponsePrincipal {
         private String name;
@@ -355,8 +353,7 @@ public class JsonResponse<T> {
      * 接口响应的错误信息
      *
      * @author lamontYu
-     * @date 2019-09-23
-     * @since 5.0
+     * @since DFish5.0
      */
     public static class Error {
         private String code;

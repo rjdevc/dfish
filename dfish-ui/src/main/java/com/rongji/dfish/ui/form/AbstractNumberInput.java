@@ -7,8 +7,7 @@ import com.rongji.dfish.ui.auxiliary.SpinnerFormat;
  *
  * @param <T> 泛型
  * @author lamontYu
- * @date 2020-03-30
- * @since 5.0
+ * @since DFish5.0
  */
 public abstract class AbstractNumberInput<T extends AbstractNumberInput<T>> extends AbstractInput<T, Number> {
 

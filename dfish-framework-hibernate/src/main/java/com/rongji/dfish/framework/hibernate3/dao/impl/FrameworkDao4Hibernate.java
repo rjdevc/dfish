@@ -21,9 +21,9 @@ import java.util.*;
 
 /**
  * 接口，Hibernate的数据访问层定义
+ *
  * @author lamontYu
- * @date 2019-12-04
- * @since 5.0
+ * @since DFish5.0
  */
 public class FrameworkDao4Hibernate<P, ID extends Serializable> extends AbstractFrameworkDao<P, ID> {
     @Resource(name = "hibernateTemplate")
@@ -46,10 +46,11 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 查询返回对象
-     * @param hql
-     * @param args
-     * @param <T>
-     * @return
+     *
+     * @param hql  hql语句
+     * @param args 参数
+     * @param <T>  数据记录对象
+     * @return 结果数据对象
      */
     public <T> T queryForObject(final String hql, final Object... args) {
         List<T> list = queryForList(hql, args);
@@ -61,10 +62,11 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 查询返回对象集合
-     * @param hql
-     * @param args
-     * @param <T>
-     * @return
+     *
+     * @param hql  hql语句
+     * @param args 参数
+     * @param <T>  数据记录对象
+     * @return 结果数据对象集合
      */
     public <T> List<T> queryForList(final String hql, final Object... args) {
         return getHibernateTemplate().execute((session) -> queryForList(session, hql, args));
@@ -72,11 +74,12 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 查询返回对象集合
-     * @param session
-     * @param hql
-     * @param args
-     * @param <T>
-     * @return
+     *
+     * @param session 会话
+     * @param hql     hql语句
+     * @param args    参数
+     * @param <T>     数据记录对象
+     * @return 结果数据对象集合
      */
     private <T> List<T> queryForList(Session session, String hql, Object... args) {
         Query query = session.createQuery(hql);
@@ -90,6 +93,15 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         return list;
     }
 
+    /**
+     * 查询返回对象集合
+     *
+     * @param hql        hql语句
+     * @param pagination 分页信息
+     * @param args       参数
+     * @param <T>        数据记录对象
+     * @return 结果数据对象
+     */
     public <T> List<T> queryForList(final String hql, final Pagination pagination, final Object... args) {
         if (pagination == null || pagination.getLimit() < 0) {
             return queryForList(hql, args);
@@ -150,9 +162,10 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 批量更新/删除
-     * @param hql
-     * @param args
-     * @return
+     *
+     * @param hql hql语句
+     * @param args 参数
+     * @return 更新记录数
      */
     public int bulkUpdate(String hql, Object... args) {
         return getHibernateTemplate().bulkUpdate(hql, args);
@@ -160,9 +173,10 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 批量更新/删除
-     * @param hql
-     * @param argList
-     * @return
+     *
+     * @param hql hql语句
+     * @param argList 参数集合
+     * @return 更新记录数组
      */
     public int[] batchUpdate(String hql, List<Object[]> argList) {
         if (Utils.isEmpty(argList)) {

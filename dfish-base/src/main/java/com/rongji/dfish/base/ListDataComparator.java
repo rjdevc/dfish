@@ -194,7 +194,7 @@ public class ListDataComparator<T> {
      * <p>数据辨识器</p>
      * DataIdentifier要求能判断两条数据，逻辑上是否相等。但不要求一定要有顺序。
      * 只有判断两条数据逻辑上是否相等，才能判断数据有新增 修改 删除
-     * @param <T>
+     * @param <T> 对比对象泛型
      * @author DFish Team
      */
     public static interface DataIdentifier<T> {
@@ -202,9 +202,9 @@ public class ListDataComparator<T> {
          * 判定两条数据逻辑上是否属于同一条数据
          * <p>比如持久化对象POJO。如果ID一致，我们可能就认为它是同一行
          *
-         * @param row1
-         * @param row2
-         * @return
+         * @param row1 对象1
+         * @param row2 对象2
+         * @return 是否同个数据
          */
         boolean isSameRow(T row1, T row2);
 
@@ -213,9 +213,9 @@ public class ListDataComparator<T> {
          * <p>比如持久化对象POJO。如果任何一个值(除ID外)不同，则认为修改过。
          * 在判定isRowChanges前，会先判断isSamRow，不同的行不会进行Changes判断。
          *
-         * @param row1
-         * @param row2
-         * @return
+         * @param row1 对象1
+         * @param row2 对象2
+         * @return 是否数据变化
          */
         boolean isRowChanges(T row1, T row2);
     }
@@ -227,7 +227,7 @@ public class ListDataComparator<T> {
      * 如果他们是同一行，那么返回0；
      * 所以如果实现这个接口的话，一般来说isSameRow的写法是 return compareRow(row1,row2)==0;
      *
-     * @param <T>
+     * @param <T> 对比对象泛型
      * @author DFish Team
      */
     public static interface OrderedDataIdentifier<T> extends DataIdentifier<T> {
@@ -235,17 +235,17 @@ public class ListDataComparator<T> {
          * 如果row1在row2前。那么返回一个小于0的数，如果row1在row2后，返回一个大于0的数
          * 如果他们是同一行，那么返回0；
          *
-         * @param row1
-         * @param row2
-         * @return
+         * @param row1 对象1
+         * @param row2 对象2
+         * @return 比较结果
          */
         int compareRow(T row1, T row2);
 
         /**
          * 判断是否同一行数据
-         * @param row1
-         * @param row2
-         * @return
+         * @param row1 对象1
+         * @param row2 对象2
+         * @return 是否同一数据
          */
         @Override
         default boolean isSameRow(T row1, T row2) {
@@ -258,7 +258,7 @@ public class ListDataComparator<T> {
      * <p>取得新增的数据列表</p>
      * 在compare后进行调用
      *
-     * @return
+     * @return 新增列表
      */
     public List<T> getInsertList() {
         return insertList;
@@ -268,7 +268,7 @@ public class ListDataComparator<T> {
      * <p>取得修改的数据列表</p>
      * 在compare后进行调用
      *
-     * @return
+     * @return 修改列表
      */
     public List<T> getUpdateList() {
         return updateList;
@@ -278,7 +278,7 @@ public class ListDataComparator<T> {
      * <p>取得不变的数据列表</p>
      * 在compare后进行调用
      *
-     * @return
+     * @return 不变列表
      */
     public List<T> getRestrictList() {
         return restrictList;
@@ -288,7 +288,7 @@ public class ListDataComparator<T> {
      * <p>取得删除的数据列表</p>
      * 在compare后进行调用
      *
-     * @return
+     * @return 删除列表
      */
     public List<T> getDeleteList() {
         return deleteList;

@@ -49,7 +49,6 @@ public class Document {
 
     /**
      * 构建过程中summary分数
-     * @return int
      */
     public void setSummaryScore(int summaryScore) {
         this.summaryScore = summaryScore;

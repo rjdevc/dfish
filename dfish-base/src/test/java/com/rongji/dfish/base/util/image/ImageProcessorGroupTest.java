@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author lamontYu
- * @date 2019-12-17
- * @since
  */
 public class ImageProcessorGroupTest {
 

@@ -10,8 +10,8 @@ import com.rongji.dfish.ui.widget.Img;
 /**
  * 二维码组件
  * @author lamontYu
- * @date 2018-08-03 before
- * @since 3.1
+ *
+ * @since DFish3.1
  * @version 调整包层 lamontYu 2019-12-05
  */
 public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
@@ -27,7 +27,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 转码内容
-	 * @return
+	 * @return String 需转码的内容
 	 */
 	public String getContent() {
 		return content;
@@ -35,7 +35,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 转码内容
-	 * @param content
+	 * @param content 需转码的内容
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public QRCode setContent(String content) {
@@ -45,7 +45,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 二维码大小
-	 * @return
+	 * @return int 二维码图片大小
 	 */
 	public int getSize() {
 		return size;
@@ -53,7 +53,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 二维码大小
-	 * @param size
+	 * @param size int 二维码图片大小
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public QRCode setSize(int size) {
@@ -63,7 +63,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 二维码图片格式
-	 * @return
+	 * @return String 二维码图片格式
 	 */
 	public String getFormat() {
 		return format;
@@ -71,7 +71,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 二维码图片格式
-	 * @param format
+	 * @param format 二维码图片格式
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public QRCode setFormat(String format) {
@@ -81,7 +81,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 二维码颜色(黑色部分)
-	 * @return
+	 * @return Integer 黑色部分颜色值
 	 */
 	public Integer getOnColor() {
 		return onColor;
@@ -89,7 +89,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 * 二维码颜色(黑色部分)
-	 * @param onColor
+	 * @param onColor 黑色部分颜色值
 	 * @return  本身，这样可以继续设置其他属性
 	 */
 	public QRCode setOnColor(Integer onColor) {
@@ -99,7 +99,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 *  二维码颜色(白色部分)
-	 * @return
+	 * @return 白色部分颜色值
 	 */
 	public Integer getOffColor() {
 		return offColor;
@@ -107,7 +107,7 @@ public class QRCode extends AbstractWidgetWrapper<QRCode, Img>{
 
 	/**
 	 *  二维码颜色(白色部分)
-	 * @param offColor
+	 * @param offColor 白色部分颜色值
 	 * @return 本身，这样可以继续设置其他属性
 	 */
 	public QRCode setOffColor(Integer offColor) {

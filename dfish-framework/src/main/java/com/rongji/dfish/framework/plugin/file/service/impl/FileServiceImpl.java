@@ -37,7 +37,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 路径分隔符
      *
-     * @return
+     * @return String 路径分隔符
      */
     public String getDirSeparator() {
         return "/";
@@ -46,7 +46,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 文件存放目录
      *
-     * @return
+     * @return String 文件存放目录
      */
     @Override
     public String getUploadDir() {
@@ -61,7 +61,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 文件限制大小
      *
-     * @return
+     * @return String 文件限制大小
      */
     @Override
     public String getSizeLimit() {
@@ -71,7 +71,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 文件上传支持的类型
      *
-     * @return
+     * @return String 文件上传类型
      */
     @Override
     public String getFileTypes() {
@@ -83,7 +83,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 图片上传支持的类型
      *
-     * @return
+     * @return String 图片类型
      */
     @Override
     public String getImageTypes() {
@@ -93,11 +93,11 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 保存文件以及文件记录
      *
-     * @param input
-     * @param originalFileName
-     * @param fileSize
-     * @param loginUserId
-     * @throws Exception
+     * @param input 输入流
+     * @param originalFileName 原始文件名
+     * @param fileSize 文件大小
+     * @param loginUserId 登录人员
+     * @throws Exception 记录保存可能触发的业务异常
      */
     @Override
     public UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception {
@@ -138,6 +138,11 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         return parseUploadItem(fileRecord);
     }
 
+    /**
+     * 执行文件保存
+     * @param inputStream 输入流
+     * @param fileRecord 文件记录
+     */
     protected void doSaveFile(InputStream inputStream, PubFileRecord fileRecord) {
         // 这边没异常,不管有没保存成功都会增加文件记录
         String fileUrl = fileRecord.getFileUrl();
@@ -155,7 +160,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * 获取附件记录
      *
      * @param fileId 附件编号
-     * @return PubFileRecord
+     * @return PubFileRecord 文件记录
      * @see #get(Serializable)
      */
     @Deprecated
@@ -178,9 +183,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 更新文件记录状态
      *
-     * @param fileLink
-     * @param fileKey
-     * @param fileStatus
+     * @param fileLink 文件链接
+     * @param fileKey 文件关键字
+     * @param fileStatus 文件状态
      */
     @Override
     public int updateFileStatus(String fileLink, String fileKey, String fileStatus) {
@@ -194,9 +199,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 获取文件流
      *
-     * @param fileRecord
-     * @return
-     * @throws Exception
+     * @param fileRecord 文件记录
+     * @return 文件输入流
+     * @throws Exception 文件流相关异常
      */
     @Override
     public InputStream getFileInputStream(PubFileRecord fileRecord, String alias) throws Exception {
@@ -216,7 +221,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @param fileRecord   文件记录
      * @param alias        文件别名
      * @param fix2Original 文件找不到时使用原始文件
-     * @return
+     * @return File 目标文件
      */
     @Override
     public File getFile(PubFileRecord fileRecord, String alias, boolean fix2Original) {
@@ -247,8 +252,8 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 根据文件记录获取文件
      *
-     * @param fileRecords
-     * @return
+     * @param fileRecords 文件记录
+     * @return 文件记录列表
      */
     public List<File> getFiles(List<PubFileRecord> fileRecords) {
         if (Utils.isEmpty(fileRecords)) {
@@ -267,8 +272,8 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 根据文件记录获取文件
      *
-     * @param itemJson
-     * @return
+     * @param itemJson 数据项Json
+     * @return 文件列表
      */
     public List<File> getFiles(String itemJson) {
         return getFiles(itemJson, false);
@@ -277,9 +282,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 根据文件记录获取文件
      *
-     * @param itemJson
-     * @param single
-     * @return
+     * @param itemJson 数据项Json
+     * @param single 是否只获取一个文件
+     * @return 文件列表
      */
     private List<File> getFiles(String itemJson, boolean single) {
         if (Utils.isEmpty(itemJson)) {
@@ -311,8 +316,8 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 根据文件记录获取文件,方便项目中导入文件时候使用
      *
-     * @param itemJson
-     * @return
+     * @param itemJson 数据项Json
+     * @return 文件
      */
     public File getFile(String itemJson) {
         List<File> fileList = getFiles(itemJson, true);
@@ -325,8 +330,8 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 获取文件大小
      *
-     * @param fileRecord
-     * @return
+     * @param fileRecord 文件记录
+     * @return 文件大小
      */
     @Override
     public long getFileSize(PubFileRecord fileRecord, String alias) {
@@ -346,9 +351,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 查询可用的文件记录
      *
-     * @param fileLink
-     * @param fileKey
-     * @return
+     * @param fileLink 文件链接
+     * @param fileKey 文件关键字
+     * @return 文件记录列表
      */
     @Override
     public List<PubFileRecord> getRecords(String fileLink, String fileKey) {
@@ -363,9 +368,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 查询可用的文件记录
      *
-     * @param fileLink
-     * @param fileKeys
-     * @return
+     * @param fileLink 文件链接
+     * @param fileKeys 文件关键字
+     * @return Map&lt;String, List&lt;PubFileRecord&gt;&gt; 附件记录集合
      */
     @Override
     public Map<String, List<PubFileRecord>> getRecords(String fileLink, Collection<String> fileKeys) {
@@ -399,9 +404,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 根据链接查询文件数据项
      *
-     * @param fileLink
-     * @param fileKey
-     * @return
+     * @param fileLink 文件链接
+     * @param fileKey 文件关键字
+     * @return 上传项列表
      */
     @Override
     public List<UploadItem> listUploadItems(String fileLink, String fileKey) {
@@ -412,9 +417,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 根据链接查询文件数据项
      *
-     * @param fileLink
-     * @param fileKeys
-     * @return
+     * @param fileLink 文件链接
+     * @param fileKeys 文件关键字列表
+     * @return Map&lt;String, List&lt;UploadItem&gt;&gt; 文件数据项
      */
     @Override
     public Map<String, List<UploadItem>> getUploadItems(String fileLink, Collection<String> fileKeys) {
@@ -459,8 +464,8 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     /**
      * 查询可用文件数据项
      *
-     * @param fileIds
-     * @return
+     * @param fileIds 文件编号
+     * @return  文件数据项列表
      */
     @Override
     public List<UploadItem> listUploadItems(String... fileIds) {

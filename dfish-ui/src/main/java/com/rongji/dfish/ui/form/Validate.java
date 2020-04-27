@@ -87,7 +87,8 @@ public class Validate implements Serializable {
 
     /**
      * 是否必填。默认值为true。
-     * @return
+     *
+     * @return 必填校验规则
      */
     public ValidateRule getRequired() {
         return required;
@@ -95,7 +96,8 @@ public class Validate implements Serializable {
 
     /**
      * 是否必填。默认值为true。
-     * @param required
+     *
+     * @param required boolean 是否必填
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setRequired(ValidateRule required) {
@@ -105,7 +107,8 @@ public class Validate implements Serializable {
 
     /**
      * 正则表达式。
-     * @return
+     *
+     * @return 正则校验规则
      */
     public ValidateRule getPattern() {
         return pattern;
@@ -113,7 +116,8 @@ public class Validate implements Serializable {
 
     /**
      * 正则表达式。
-     * @param pattern
+     *
+     * @param pattern ValidateRule 正则表达式
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setPattern(ValidateRule pattern) {
@@ -123,7 +127,8 @@ public class Validate implements Serializable {
 
     /**
      * 和另一个表单做比较。
-     * @return
+     *
+     * @return 比较校验规则
      */
     public ValidateRule getCompare() {
         return compare;
@@ -131,7 +136,8 @@ public class Validate implements Serializable {
 
     /**
      * 和另一个表单做比较。
-     * @param compare
+     *
+     * @param compare ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setCompare(ValidateRule compare) {
@@ -141,7 +147,8 @@ public class Validate implements Serializable {
 
     /**
      * 最小字节数。
-     * @return
+     *
+     * @return 最小字节数校验规则
      */
     public ValidateRule getMinLength() {
         return minLength;
@@ -149,7 +156,8 @@ public class Validate implements Serializable {
 
     /**
      * 最小字节数。
-     * @param minLength
+     *
+     * @param minLength ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setMinLength(ValidateRule minLength) {
@@ -159,7 +167,8 @@ public class Validate implements Serializable {
 
     /**
      * 最大字节数。用于 Text Textarea Password
-     * @return
+     *
+     * @return 最大字节数校验规则
      */
     public ValidateRule getMaxLength() {
         return maxLength;
@@ -167,7 +176,8 @@ public class Validate implements Serializable {
 
     /**
      * 最大字节数。用于 Text Textarea Password
-     * @param maxLength
+     *
+     * @param maxLength ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setMaxLength(ValidateRule maxLength) {
@@ -177,7 +187,8 @@ public class Validate implements Serializable {
 
     /**
      * 最少选择几项。用于 CheckBox
-     * @return
+     *
+     * @return 最少选择项校验规则
      */
     public ValidateRule getMinSize() {
         return minSize;
@@ -185,7 +196,8 @@ public class Validate implements Serializable {
 
     /**
      * 最少选择几项。用于 CheckBox
-     * @param minSize
+     *
+     * @param minSize ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setMinSize(ValidateRule minSize) {
@@ -195,7 +207,8 @@ public class Validate implements Serializable {
 
     /**
      * 最多选择几项。用于 CheckBox
-     * @return
+     *
+     * @return 最多选择项校验规则
      */
     public ValidateRule getMaxSize() {
         return maxSize;
@@ -203,7 +216,8 @@ public class Validate implements Serializable {
 
     /**
      * 最多选择几项。用于 CheckBox
-     * @param maxSize
+     *
+     * @param maxSize ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setMaxSize(ValidateRule maxSize) {
@@ -213,7 +227,8 @@ public class Validate implements Serializable {
 
     /**
      * 最小值。用于 Spinner DatePicker
-     * @return
+     *
+     * @return 最小值校验规则
      */
     public ValidateRule getMinValue() {
         return minValue;
@@ -221,7 +236,8 @@ public class Validate implements Serializable {
 
     /**
      * 最小值。用于 Spinner DatePicker
-     * @param minValue
+     *
+     * @param minValue ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setMinValue(ValidateRule minValue) {
@@ -231,7 +247,8 @@ public class Validate implements Serializable {
 
     /**
      * 最大值。用于 Spinner DatePicker
-     * @return
+     *
+     * @return 最大值校验规则
      */
     public ValidateRule getMaxValue() {
         return maxValue;
@@ -239,7 +256,8 @@ public class Validate implements Serializable {
 
     /**
      * 最大值。用于 Spinner DatePicker
-     * @param maxValue
+     *
+     * @param maxValue ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setMaxValue(ValidateRule maxValue) {
@@ -249,7 +267,8 @@ public class Validate implements Serializable {
 
     /**
      * 不能大于当前时间。用于 DatePicker
-     * @return
+     *
+     * @return 时间校验规则
      */
     public ValidateRule getBeforeNow() {
         return beforeNow;
@@ -257,7 +276,8 @@ public class Validate implements Serializable {
 
     /**
      * 不能大于当前时间。用于 DatePicker
-     * @param beforeNow
+     *
+     * @param beforeNow ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setBeforeNow(ValidateRule beforeNow) {
@@ -267,7 +287,8 @@ public class Validate implements Serializable {
 
     /**
      * 不能小于当前时间。用于 DatePicker
-     * @return
+     *
+     * @return 时间校验规则
      */
     public ValidateRule getAfterNow() {
         return afterNow;
@@ -275,7 +296,8 @@ public class Validate implements Serializable {
 
     /**
      * 不能小于当前时间。用于 DatePicker
-     * @param afterNow
+     *
+     * @param afterNow ValidateRule 校验规则
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setAfterNow(ValidateRule afterNow) {
@@ -286,7 +308,7 @@ public class Validate implements Serializable {
     /**
      * JS语句。如果验证不通过，执行语句应当 return 一个字符串作为说明。如果验证通过则无需返回或返回空。
      *
-     * @return method
+     * @return method JS方法
      */
     public String getMethod() {
         return method;
@@ -296,7 +318,7 @@ public class Validate implements Serializable {
     /**
      * JS语句。如果验证不通过，执行语句应当 return 一个字符串作为说明。如果验证通过则无需返回或返回空。
      *
-     * @param method String
+     * @param method String JS方法
      * @return 本身，这样可以继续设置其他属性
      */
     public Validate setMethod(String method) {
@@ -307,6 +329,7 @@ public class Validate implements Serializable {
     /**
      * 便捷构建一个必填的校验
      *
+     * @param required 是否必填
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate required(boolean required) {
@@ -315,8 +338,9 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个必填的校验
-     * @param required
-     * @param text
+     *
+     * @param required 是否必填
+     * @param text     错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate required(boolean required, String text) {
@@ -335,8 +359,9 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个模式的校验
-     * @param pattern
-     * @param text
+     *
+     * @param pattern 正则表达式
+     * @param text    错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate pattern(String pattern, String text) {
@@ -348,9 +373,10 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个对比的校验
-     * @param target
-     * @param mode
-     * @return
+     *
+     * @param target 对比目标
+     * @param mode   对比模式
+     * @return 校验对象
      */
     public static Validate compare(String target, String mode) {
         return compare(target, mode, null);
@@ -386,8 +412,9 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个最小长度的校验
-     * @param minLength
-     * @param text
+     *
+     * @param minLength 最小长度
+     * @param text      错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate minLength(int minLength, String text) {
@@ -396,7 +423,8 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个最大长度的校验
-     * @param maxLength
+     *
+     * @param maxLength 最大长度
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate maxLength(int maxLength) {
@@ -407,6 +435,7 @@ public class Validate implements Serializable {
      * 便捷构建一个最大长度的校验
      *
      * @param maxLength 最大长度
+     * @param text      错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate maxLength(int maxLength, String text) {
@@ -425,8 +454,9 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个最小选择项的校验
-     * @param minSize
-     * @param text
+     *
+     * @param minSize 最小选择项
+     * @param text    错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate minSize(int minSize, String text) {
@@ -435,7 +465,8 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个最多选择项的校验
-     * @param maxSize
+     *
+     * @param maxSize 最多选择项
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate maxSize(int maxSize) {
@@ -446,6 +477,7 @@ public class Validate implements Serializable {
      * 便捷构建一个最多选择项的校验
      *
      * @param maxSize 最多选择项
+     * @param text    错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate maxSize(int maxSize, String text) {
@@ -464,8 +496,9 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个最小值的校验
-     * @param minValue
-     * @param text
+     *
+     * @param minValue 最小值
+     * @param text     错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate minValue(Object minValue, String text) {
@@ -485,8 +518,9 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个最大值的校验
-     * @param maxValue
-     * @param text
+     *
+     * @param maxValue 最大值
+     * @param text     错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate maxValue(Object maxValue, String text) {
@@ -496,6 +530,7 @@ public class Validate implements Serializable {
     /**
      * 便捷构建一个早于当前时间的校验
      *
+     * @param beforeNow 是否早于当前时间
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate beforeNow(boolean beforeNow) {
@@ -504,8 +539,9 @@ public class Validate implements Serializable {
 
     /**
      * 便捷构建一个早于当前时间的校验
-     * @param beforeNow
-     * @param text
+     *
+     * @param beforeNow 是否早于当前时间
+     * @param text      错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate beforeNow(boolean beforeNow, String text) {
@@ -515,14 +551,18 @@ public class Validate implements Serializable {
     /**
      * 便捷构建一个晚于当前时间的校验
      *
+     * @param afterNow 是否晚于当前时间
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate afterNow(boolean afterNow) {
         return afterNow(afterNow, null);
     }
+
     /**
      * 便捷构建一个晚于当前时间的校验
      *
+     * @param afterNow 是否晚于当前时间
+     * @param text     错误提示
      * @return 本身，这样可以继续设置其他属性
      */
     public static Validate afterNow(boolean afterNow, String text) {

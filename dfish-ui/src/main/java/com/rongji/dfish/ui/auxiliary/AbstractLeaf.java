@@ -12,7 +12,6 @@ import com.rongji.dfish.ui.form.BoxHolder;
  * <p>多级别的TableTreeItem自动产生缩进效果</p>
  *
  * @author DFish Team
- * @see
  */
 public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWidget<T> implements Statusful<T>,
         HtmlContentHolder<T>, LazyLoad<T>, HasText<T>, BoxHolder<T>, BadgeHolder<T> {
@@ -328,7 +327,7 @@ public abstract class AbstractLeaf<T extends AbstractLeaf<T>> extends AbstractWi
      * 是否为一个可展开的目录，如果不设置本参数，那么引擎将根据是否有src属性或leaf子节点来自动判断
      *
      * @return Boolean
-     * @since 3.2.0
+     * @since DFish3.2.0
      */
     public Boolean getFolder() {
         return folder;

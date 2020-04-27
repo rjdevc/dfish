@@ -23,6 +23,10 @@ _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'pr
 
 doc = win.document, cvs = doc.documentElement,
 
+_opener = (function() {
+	try { return win.opener.document && win.opener; }catch(ex){}
+})();
+
 dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
 },
@@ -734,20 +738,23 @@ _dateFormat = $.dateFormat = function( a, b ) {
 	if ( typeof a === _STR )
 		a = _dateParse( a, b );
 	var o = { y : a.getFullYear(), m : a.getMonth(), d : a.getDate(), h : a.getHours(), i : a.getMinutes(), s : a.getSeconds(), w : ( a.getDay() || 7 ) };
-	return (b || _date_sf).replace( 'yyyy' , o.y ).replace( 'yy', o.y % 100 ).replace( 'MM', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'HH', _strPad( o.h ) )
-		.replace( 'mm', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) ).replace( 'M', o.m + 1 ).replace( 'd', o.d ).replace( 'H', o.h ).replace( 'm', o.i ).replace( 's', o.s );
+	return (b || _date_sf).replace( 'yyyy' , o.y ).replace( 'MM', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'HH', _strPad( o.h ) )
+		.replace( 'mm', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) );
+		//.replace( 'M', o.m + 1 ).replace( 'd', o.d ).replace( 'H', o.h ).replace( 'm', o.i ).replace( 's', o.s );
 },
 // 字串型转为日期型 /@s -> str, f -> format?
 _dateParse = $.dateParse = function( s, f ) {
 	s = '' + s;
 	!f && (f = _date_sf);
-	var a,
-		y = (a = f.indexOf( 'yyyy' )) > -1 ? s.substr( a, 4 ) : 2020,
-		M = (a = f.indexOf( 'MM' )) > -1 ? s.substr( a, 2 ) -1 : 0,
-		d = (a = f.indexOf( 'dd' )) > -1 ? s.substr( a, 2 ) : 1,
-		H = (a = f.indexOf( 'HH' )) > -1 ? s.substr( a, 2 ) : 0,
-		m = (a = f.indexOf( 'mm' )) > -1 ? s.substr( a, 2 ) : 0,
-		s = (a = f.indexOf( 'ss' )) > -1 ? s.substr( a, 2 ) : 0;
+	if ( s.length != f.length ) {
+		s = s.replace( /\b(\d)\b/, '0\$1' );
+	}
+	var a, y = (a = f.indexOf( 'yyyy' )) > -1 ? _number( s.substr( a, 4 ) ) || 2020 : 2020,
+		M = (a = f.indexOf( 'MM' )) > -1 ? _number( s.substr( a, 2 ) -1 ) : 0,
+		d = (a = f.indexOf( 'dd' )) > -1 ? _number( s.substr( a, 2 ) ) || 1 : 1,
+		H = (a = f.indexOf( 'HH' )) > -1 ? _number( s.substr( a, 2 ) ) : 0,
+		m = (a = f.indexOf( 'mm' )) > -1 ? _number( s.substr( a, 2 ) ) : 0,
+		s = (a = f.indexOf( 'ss' )) > -1 ? _number( s.substr( a, 2 ) ) : 0;
 	return new Date( y, M, d, H, m, s );
 },
 // 日期增减  /@ a -> date, b -> type enum ( y/M/d/H/m/s ), c -> value
@@ -1611,6 +1618,13 @@ Ajax = _createClass( {
 	Prototype: {
 		sendCache: function() {
 			var x = this.x, u = _ajax_url( x.src, x.cdn ), c = _ajax_cache[ u ];
+			if ( ! c && _opener ) {
+				try {
+					this.response = _opener.dfish.ajaxCache[ u ].response;
+					if ( this.response )
+						c = _ajax_cache[ u ] = this;
+				} catch( ex ){}
+			}
 			if ( c ) {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
@@ -1647,7 +1661,7 @@ Ajax = _createClass( {
 				l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
 			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
 			l.setRequestHeader( 'x-requested-with',  _expando );
-			l.setRequestHeader( 'x-requested-device', br.mobile ? 'mobile' : 'pc' );
+			//l.setRequestHeader( 'x-requested-device', br.mobile ? 'mobile' : 'pc' );
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
@@ -2067,6 +2081,7 @@ var boot = {
 _merge( $, {
 	abbr: '$',
 	alert_id: 'dfish:alert',
+	ajaxCache: _ajax_cache,
 	_data: {},
 	all: {},
 	globals: {},
@@ -2146,7 +2161,7 @@ _merge( $, {
 		$.widget( a ).isNormal() && !a.contains( event.toElement ) && _classRemove( a, 'z-hv' );
 	},
 	loadCss: function( a ) {
-		return $.require.css( a );
+		_loadCss( _urlLoc( _path, a ) );
 	},
 	// 根据expr获取单个元素 /a -> expr, b -> context
 	get: function( a, b ) {
@@ -2375,7 +2390,7 @@ _merge( $, {
 		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
 			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
-				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)>' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)>' + $.loc.rotate_right + '</a></div>' +
+				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	// @a -> preview src

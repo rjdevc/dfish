@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author DFish Team
  * @version 1.2
- * @since 1.0
+ * @since DFish1.0
  */
 public class ImgBox extends AbstractOptionContainer<ImgBox> {
 

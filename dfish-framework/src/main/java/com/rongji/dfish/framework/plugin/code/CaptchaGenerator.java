@@ -34,8 +34,7 @@ import java.util.Random;
  *
  * @author lamontYu
  * @version 1.1 LinLW 验证码模糊匹配方案支持
- * @date 2019-12-08
- * @since 5.0
+ * @since DFish5.0
  */
 public class CaptchaGenerator {
     /**

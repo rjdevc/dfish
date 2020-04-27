@@ -5,8 +5,7 @@ package com.rongji.dfish.ui.auxiliary;
  *
  * @param <E> 泛型类，一般是String或Boolean
  * @author lamontYu
- * @date 2020-03-03
- * @since 5.0
+ * @since DFish5.0
  */
 public class ValidateRule<E> {
     private E value;
@@ -101,7 +100,7 @@ public class ValidateRule<E> {
     }
 
     /**
-     * 规则校验模式，比如：> < =等运算符，这个属性一般和target配合使用，用于字段间比较
+     * 规则校验模式，比如：&gt; &lt; =等运算符，这个属性一般和target配合使用，用于字段间比较
      *
      * @return String
      */
@@ -110,7 +109,7 @@ public class ValidateRule<E> {
     }
 
     /**
-     * 规则校验模式，比如：> < =等运算符，这个属性一般和target配合使用，用于字段间比较
+     * 规则校验模式，比如：&gt; &lt; =等运算符，这个属性一般和target配合使用，用于字段间比较
      *
      * @param mode String
      * @return 本身，这样可以继续设置其他属性

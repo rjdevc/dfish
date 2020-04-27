@@ -9,7 +9,7 @@ import java.io.OutputStream;
 public class HexOutputStream extends AbstractPresentOutputStream {
     /**
      * 构造函数
-     * @param out
+     * @param out 输出流
      */
     public HexOutputStream(OutputStream out) {
         super(out);

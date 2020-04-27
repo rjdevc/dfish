@@ -18,8 +18,7 @@ import java.util.zip.GZIPOutputStream;
  * lob数据服务层默认实现
  *
  * @author lamontYu
- * @date 2019-09-23
- * @since 5.0
+ * @since DFish5.0
  */
 public class LobServiceImpl extends AbstractFrameworkService4Simple<PubLob, String> implements LobService {
     public static final String ARCHIVE_YES="1";

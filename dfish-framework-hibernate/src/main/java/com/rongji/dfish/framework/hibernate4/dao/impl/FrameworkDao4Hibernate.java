@@ -23,8 +23,7 @@ import java.util.*;
 /**
  * 接口，Hibernate的数据访问层定义
  * @author lamontYu
- * @date 2019-12-18
- * @since 5.0
+ * @since DFish5.0
  */
 public class FrameworkDao4Hibernate<P, ID extends Serializable> extends AbstractFrameworkDao<P, ID> {
     @Resource(name = "hibernateTemplate")
@@ -47,10 +46,10 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 查询返回对象
-     * @param hql
-     * @param args
-     * @param <T>
-     * @return
+     * @param hql hql语句
+     * @param args 参数
+     * @param <T> 实体类
+     * @return 查询数据实体类
      */
     public <T> T queryForObject(final String hql, final Object... args) {
         List<T> list = queryForList(hql, args);
@@ -62,15 +61,14 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 查询返回对象集合
-     * @param hql
-     * @param args
-     * @param <T>
-     * @return
+     * @param hql hql语句
+     * @param args 参数
+     * @param <T> 实体类
+     * @return 查询数据实体类集合
      */
     public <T> List<T> queryForList(final String hql, final Object... args) {
         return getHibernateTemplate().execute((session) -> queryForList(session, hql, args));
     }
-
 
     private <T> List<T> queryForList(Session session, String hql, Object... args) {
         Query query = session.createQuery(hql);
@@ -86,11 +84,11 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 查询返回对象集合
-     * @param hql
-     * @param pagination
-     * @param args
-     * @param <T>
-     * @return
+     * @param hql hql语句
+     * @param pagination 分页信息
+     * @param args 参数
+     * @param <T> 实体类
+     * @return 查询数据实体类
      */
     public <T> List<T> queryForList(final String hql, final Pagination pagination, final Object... args) {
         if (pagination == null || pagination.getLimit() < 0) {
@@ -152,9 +150,9 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 批量更新/删除
-     * @param hql
-     * @param args
-     * @return
+     * @param hql hql语句
+     * @param args 参数
+     * @return int 更新记录数
      */
     public int bulkUpdate(String hql, Object... args) {
         return getHibernateTemplate().bulkUpdate(hql, args);
@@ -162,9 +160,9 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     /**
      * 批量更新/删除
-     * @param hql
-     * @param argList
-     * @return
+     * @param hql hql语句
+     * @param argList 参数列表
+     * @return int[] 更新记录数组
      */
     public int[] batchUpdate(String hql, List<Object[]> argList) {
         if (Utils.isEmpty(argList)) {

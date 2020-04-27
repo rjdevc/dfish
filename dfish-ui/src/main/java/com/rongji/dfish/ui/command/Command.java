@@ -8,8 +8,8 @@ import com.rongji.dfish.ui.Node;
  *
  * @param <T> 当前对象类型
  * @author DFish Team
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public interface Command<T extends Command<T>> extends Node<T> {
 

@@ -496,7 +496,7 @@ public class ImageProcessor implements Cloneable {
      * 图片完成并输出
      *
      * @param output 输出地址
-     * @throws Exception
+     * @throws Exception 图片输出异常
      */
     public void output(OutputStream output) throws Exception {
         if (callbacks.size() == 0 && image == null) {
@@ -533,7 +533,7 @@ public class ImageProcessor implements Cloneable {
      *
      * @param output    输出地址
      * @param imageType 可改变图片类型。jpg(jpeg) png gif
-     * @throws Exception exception
+     * @throws Exception 图片输出异常
      */
     public void output(OutputStream output, String imageType) throws Exception {
         callbacks.add((image, processor) -> {

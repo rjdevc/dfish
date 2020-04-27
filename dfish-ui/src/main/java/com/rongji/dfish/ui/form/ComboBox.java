@@ -21,8 +21,7 @@ import com.rongji.dfish.ui.command.Tip;
  *
  * @author DFish Team
  * @version 3.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2005
- * @since 1.0
+ * @since DFish1.0
  */
 public class ComboBox extends LinkableSuggestionBox<ComboBox> {
 
@@ -66,7 +65,7 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
     /**
      * 设置已选项的外观效果
      *
-     * @return
+     * @return String 皮肤外观
      */
     public String getFace() {
         return face;
@@ -75,7 +74,7 @@ public class ComboBox extends LinkableSuggestionBox<ComboBox> {
     /**
      * 设置已选项的外观效果
      *
-     * @param face
+     * @param face String 皮肤外观
      * @return 本身，这样可以继续设置其他属性
      */
     public ComboBox setFace(String face) {

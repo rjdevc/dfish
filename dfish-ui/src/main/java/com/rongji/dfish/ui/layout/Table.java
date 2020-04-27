@@ -60,7 +60,7 @@ import java.util.*;
  * <p>如基础定义所见，如果在Table中直接指定位置添加内容，实际上指的是tBody部分。如果想在tHead上使用该功能，要显式先取得 getThead()</p>
  *
  * @author DFish team
- * @since DFish 3.0
+ * @since DFish3.0
  */
 public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements TableOperation<Table>,
         HiddenContainer<Table>,  Scrollable<Table> {
@@ -329,7 +329,7 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
 
     /**
      * 是否有多选的点击高亮效果。
-     * @return
+     * @return Boolean 是否多行聚焦
      */
     public Boolean getFocusMultiple() {
         return focusMultiple;
@@ -337,7 +337,7 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
 
     /**
      * 是否有多选的点击高亮效果。
-     * @param focusMultiple
+     * @param focusMultiple 是否多行聚焦
      * @return 本身，这样可以继续设置其他属性
      */
     public Table setFocusMultiple(Boolean focusMultiple) {

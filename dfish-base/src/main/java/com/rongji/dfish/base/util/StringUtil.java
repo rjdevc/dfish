@@ -76,12 +76,12 @@ public class StringUtil {
      *                        但字节数为3， GB18030下字节数为4
      * @param replacePostfix  被截取的字符用该字符代替
      * @return String
-     * @todo 英文单词，如果可能最好也不要被分割。 by YeJL 2006-08
      * @deprecated 该方法，不能精确的表达字符的大小，比如说UTF8中，大部分非ASCII码字符是3个字节，但是部分如é是两个字节，根据Unicode 6.1规范，一些非常用汉字或日韩文可能是4个字节。所以有可能出现异常。
      * 而在GB18030中，也并非所有汉字都是4个字节，大部分汉字还是2个字节，只有冷僻汉字才是4个字节。建议使用shortenStringUTF8 或shortenStringGB
      */
     public static String shortenString(String content, int limitSize, int chineseCharSize,
                                        String replacePostfix) {
+        // TODO 英文单词，如果可能最好也不要被分割。 by YeJL 2006-08
         if (content == null || "".equals(content) || limitSize == 0) {
             return "";
         }
@@ -113,20 +113,20 @@ public class StringUtil {
     /**
      * 截取字符串content前面size个字节的内容 数字相当于1个英文，每个英文字母占一个字节空间
      * 要保证多字节字符不被错误分割，因为UTF8是变长字符集，所以不能强制设定非ASCII码字符都是3个字节。部分字符应该2个字节。
-     * <table>
+     * <table summary="字符截取说明">
      * <tr><td>0XXX XXXX</td><td>ASCII</td></tr>
-     * <tr><td>110X XXXX<br/>10XX XXXX</td><td>2字节，如全角等字符</td></tr>
-     * <tr><td>1110XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>3字节，汉字主要集中在这个区域</td></tr>
-     * <tr><td>1111 0XXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>4字节，UNICODE6.1定义范围</td></tr>
-     * <tr><td>1111 10XX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>5字节，预留</td></tr>
-     * <tr><td>1111 110X<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>6字节，预留</td></tr>
+     * <tr><td><p>110X XXXX</p><p>10XX XXXX</p></td><td>2字节，如全角等字符</td></tr>
+     * <tr><td><p>1110 XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>3字节，汉字主要集中在这个区域</td></tr>
+     * <tr><td><p>1111 0XXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>4字节，UNICODE6.1定义范围</td></tr>
+     * <tr><td><p>1111 10XX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>5字节，预留</td></tr>
+     * <tr><td><p>1111 110X</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>6字节，预留</td></tr>
      * </table>
      * 本方法内计算UTF8的字节长按照规范来。就是说可能出现1-6个字节。虽然4-6个字节的字符原则上现在还没有。
      *
-     * @param content
-     * @param limitSize
-     * @param replacePostfix
-     * @return
+     * @param content 内容
+     * @param limitSize 限制大小
+     * @param replacePostfix 替换后缀
+     * @return 截取结果
      */
     public static String shortenStringUTF8(String content, int limitSize, String replacePostfix) {
         if (content == null || "".equals(content) || limitSize <= 0) {
@@ -185,18 +185,18 @@ public class StringUtil {
     /**
      * 截取字符串content前面size个字节的内容，数字相当于1个英文，每个英文字母占一个字节空间
      * 要保证多字节字符不被错误分割，因为GB18030是变长字符集(主体是GBK 中文2个字节)，所以不能强制设定非ASCII码字符都是2个字节。部分字符应该4个字节。
-     * <table>
+     * <table summary="字符截取说明">
      * <tr><td>0x00-0x1F</td><td>1字节 控制字符</td></tr>
      * <tr><td>0x20-0x7F</td><td>1字节 ASCII</td></tr>
-     * <tr><td>首0x81-0xFE<br/>次0x40-0xFE</td><td>2字节，大部分常用汉字</td></tr>
-     * <tr><td>首0x81-0xFE<br/>次0x30-0x39<br/>三0x81-0xFE<br/>末0x30-0x39</td><td>4字节，增补，主要为冷僻汉字</td></tr>
+     * <tr><td><p>首0x81-0xFE</p><p>次0x40-0xFE</p></td><td>2字节，大部分常用汉字</td></tr>
+     * <tr><td><p>首0x81-0xFE</p><p>次0x30-0x39</p><p>三0x81-0xFE</p><p>末0x30-0x39</p></td><td>4字节，增补，主要为冷僻汉字</td></tr>
      * </table>
      * 本方法适用于GBK GB2312 以及GB18030的字符集
      *
-     * @param content
-     * @param limitSize
-     * @param replacePostfix
-     * @return
+     * @param content 内容
+     * @param limitSize 限制大小
+     * @param replacePostfix 替换后缀
+     * @return 截取结果
      */
     public static String shortenStringGB(String content, int limitSize, String replacePostfix) {
         if (content == null || "".equals(content) || limitSize <= 0) {
@@ -741,11 +741,11 @@ public class StringUtil {
      * UTF8是变长字符集，所以不能强制设定非ASCII码字符都是3个字节。部分字符应该2个字节。
      * <table>
      * <tr><td>0XXX XXXX</td><td>ASCII</td></tr>
-     * <tr><td>110X XXXX<br/>10XX XXXX</td><td>2字节，如全角等字符</td></tr>
-     * <tr><td>1110XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>3字节，汉字主要集中在这个区域</td></tr>
-     * <tr><td>1111 0XXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>4字节，UNICODE6.1定义范围</td></tr>
-     * <tr><td>1111 10XX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>5字节，预留</td></tr>
-     * <tr><td>1111 110X<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX<br/>10XX XXXX</td><td>6字节，预留</td></tr>
+     * <tr><td><p>110X XXXX</p><p>10XX XXXX</p></td><td>2字节，如全角等字符</td></tr>
+     * <tr><td><p>1110XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>3字节，汉字主要集中在这个区域</td></tr>
+     * <tr><td><p>1111 0XXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>4字节，UNICODE6.1定义范围</td></tr>
+     * <tr><td><p>1111 10XX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>5字节，预留</td></tr>
+     * <tr><td><p>1111 110X</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p><p>10XX XXXX</p></td><td>6字节，预留</td></tr>
      * </table>
      *
      * @param sample byte[]
@@ -825,8 +825,8 @@ public class StringUtil {
      * <table>
      * <tr><td>0x00-0x1F</td><td>1字节 控制字符</td></tr>
      * <tr><td>0x20-0x7F</td><td>1字节 ASCII</td></tr>
-     * <tr><td>首0x81-0xFE<br/>次0x40-0xFE</td><td>2字节，大部分常用汉字</td></tr>
-     * <tr><td>首0x81-0xFE<br/>次0x30-0x39<br/>三0x81-0xFE<br/>末0x30-0x39</td><td>4字节，增补，主要为冷僻汉字</td></tr>
+     * <tr><td><p>首0x81-0xFE</p><p>次0x40-0xFE</p></td><td>2字节，大部分常用汉字</td></tr>
+     * <tr><td><p>首0x81-0xFE</p><p>次0x30-0x39</p><p>三0x81-0xFE</p><p>末0x30-0x39</p></td><td>4字节，增补，主要为冷僻汉字</td></tr>
      * </table>
      *
      * @param sample

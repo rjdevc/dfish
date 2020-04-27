@@ -27,7 +27,7 @@ public class SystemContext {
 
     /**
      * 获得唯一实例
-     * @return
+     * @return SystemContext实例对象
      */
     public static SystemContext getInstance(){
         return instance;
@@ -122,7 +122,7 @@ public class SystemContext {
 
     /**
      * 例举出现在实例中已注册的范围值。
-     * @return
+     * @return 范围集合
      */
     public Set<String> supportScopes(){
         return holders.keySet();

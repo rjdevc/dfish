@@ -79,7 +79,7 @@ public class Album extends AbstractPubNodeContainer<Album, Img,Img> implements S
 
     /**
      * 是否有多个按钮可同时设为焦点状态。
-     * @return
+     * @return Boolean 是否多图片聚焦
      */
     public Boolean getFocusMultiple() {
         return focusMultiple;
@@ -87,7 +87,7 @@ public class Album extends AbstractPubNodeContainer<Album, Img,Img> implements S
 
     /**
      * 是否有多个按钮可同时设为焦点状态。
-     * @param focusMultiple
+     * @param focusMultiple 是否多图片聚焦
      * @return 本身，这样可以继续设置其他属性
      */
     public Album setFocusMultiple(Boolean focusMultiple) {

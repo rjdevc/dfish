@@ -6,7 +6,7 @@ import com.rongji.dfish.ui.HtmlContentHolder;
 /**
  * 徽标数
  * @author lamontYu
- * @date 2019-11-25 12:36
+ * @since DFish5.0
  */
 public class Badge extends AbstractWidget<Badge> implements HtmlContentHolder<Badge> {
 

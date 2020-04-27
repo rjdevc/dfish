@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * 抽象类，定义对数据库表的基本操作方法
  * @author lamontYu
- * @date 2019-12-04 17:50
+ * @since DFish5.0
  */
 public abstract class AbstractFrameworkDao<P, ID extends Serializable> implements FrameworkDao<P, ID> {
     @Resource(name = "jdbcTemplate")
@@ -120,10 +120,10 @@ public abstract class AbstractFrameworkDao<P, ID extends Serializable> implement
 
     /**
      * 执行某个针对数据库的查询
-     * @param sql
-     * @param rowMapper
-     * @param <T>
-     * @return List
+     * @param sql sql语句
+     * @param rowMapper 映射对象
+     * @param <T> 表映射实体对象
+     * @return List 表映射实体对象集合
      */
     public <T> List<T> query(String sql, RowMapper<T> rowMapper) {
         return query(sql, null, rowMapper);
@@ -131,11 +131,11 @@ public abstract class AbstractFrameworkDao<P, ID extends Serializable> implement
 
     /**
      * 执行某个针对数据库的查询,带查询参数
-     * @param sql
-     * @param args
-     * @param rowMapper
-     * @param <T> List
-     * @return
+     * @param sql sql语句
+     * @param args 参数
+     * @param rowMapper 映射对象
+     * @param <T> 表映射实体对象
+     * @return List 表映射实体对象集合
      */
     public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) {
         return query(sql, null, args, rowMapper);
@@ -143,12 +143,12 @@ public abstract class AbstractFrameworkDao<P, ID extends Serializable> implement
 
     /**
      * 执行某个针对数据库的查询,带查询参数，分页信息
-     * @param sql
-     * @param pagination
-     * @param args
-     * @param rowMapper
-     * @param <T>
-     * @return List
+     * @param sql sql语句
+     * @param pagination 分页信息
+     * @param args 参数
+     * @param rowMapper 映射对象
+     * @param <T> 表映射实体对象
+     * @return List 表映射实体对象集合
      */
     public <T> List<T> query(String sql, Pagination pagination, Object[] args, RowMapper<T> rowMapper) {
         QueryPreparation preparation = QueryPreparation.of(sql, pagination, args);
@@ -168,6 +168,14 @@ public abstract class AbstractFrameworkDao<P, ID extends Serializable> implement
         return rowCount.intValue();
     }
 
+    /**
+     * 查询记录对象
+     * @param sql sql语句
+     * @param args 参数
+     * @param rowMapper 映射对象
+     * @param <T> 表映射实体对象
+     * @return 表映射实体对象
+     */
     public <T> T queryForObject(String sql, Object[] args, RowMapper<T> rowMapper) {
         // 这样的写法更好安全,查不出数据不会报错
         List<T> dataList = query(sql, args, rowMapper);

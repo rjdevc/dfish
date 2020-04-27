@@ -21,8 +21,8 @@ public class ValueButton extends AbstractButton<ValueButton> {
 
 	/**
 	 * 构造函数
-	 * @param text
-	 * @param onClick
+	 * @param text 文本
+	 * @param onClick 点击动作
 	 */
     public ValueButton(String text,String onClick) {
         super(text,onClick,null);
@@ -30,9 +30,9 @@ public class ValueButton extends AbstractButton<ValueButton> {
 
 	/**
 	 * 构造函数
-	 * @param text
-	 * @param onClick
-	 * @param icon
+	 * @param text 文本
+	 * @param onClick 点击动作
+	 * @param icon 图标
 	 */
 	public ValueButton(String text,String onClick, String icon) {
 		super(text,onClick,icon);

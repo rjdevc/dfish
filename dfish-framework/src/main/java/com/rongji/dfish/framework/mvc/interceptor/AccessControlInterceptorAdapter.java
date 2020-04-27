@@ -13,17 +13,17 @@ import java.util.*;
  * 一般业务方法需要扩展与这个类实现hasPermission(String loginUser, String[] keys);方法。
  * 判定是否有权限。这个方法默认cacheExpired毫秒期间是相同参数是不是调用第二次的。用于提高性能。
  * 你可能需要在applicationContext-mvc.xml 增加一段
- * <mvc:interceptors>
- * <!-- 多个拦截器,顺序执行 -->
- * <mvc:interceptor>
- * <!-- 如果不配置或/**,将拦截所有的Controller -->
- * <mvc:mapping path="/**" />
- * <!-- 界面展示之前做一些通用处理   -->
- * <bean class="com.rongji.fzwp.common.controller.YourInterceptorAdapter">
- * <property name="cacheExpired" value="300000"/>
- * </bean>
- * </mvc:interceptor>
- * </mvc:interceptors>
+ * &lt;mvc:interceptors&gt;
+ * &lt;!-- 多个拦截器,顺序执行 --&gt;
+ * &lt;mvc:interceptor&gt;
+ * &lt;!-- 如果不配置或/**,将拦截所有的Controller --&gt;
+ * &lt;mvc:mapping path="/**" /&gt;
+ * &lt;!-- 界面展示之前做一些通用处理   --&gt;
+ * &lt;bean class="com.rongji.fzwp.common.controller.YourInterceptorAdapter"&gt;
+ * &lt;property name="cacheExpired" value="300000"/&gt;
+ * &lt;/bean&gt;
+ * &lt;/mvc:interceptor&gt;
+ * &lt;/mvc:interceptors&gt;
  *
  * @author DFish Team
  */
@@ -31,8 +31,8 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
     protected long cacheExpired = 300000L;
 
     /**
-     * 过期时间
-     * @return
+     * 过期时间(毫秒值)
+     * @return long 缓存过期时间
      */
     public long getCacheExpired() {
         return cacheExpired;
@@ -40,7 +40,7 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 
     /**
      * 过期时间
-     * @param cacheExpired
+     * @param cacheExpired 缓存过期时间
      */
     public void setCacheExpired(long cacheExpired) {
         this.cacheExpired = cacheExpired;
@@ -48,11 +48,11 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
 
     /**
      * 验证是否具有权限
-     * @param request
-     * @param response
-     * @param handler
-     * @return
-     * @throws Exception
+     * @param request 请求
+     * @param response 相应
+     * @param handler 处理方法
+     * @return 是否有权限
+     * @throws Exception 验证过程可能出现业务异常
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -128,9 +128,9 @@ public abstract class AccessControlInterceptorAdapter extends HandlerInterceptor
     /**
      * 判断登录人员是否有这些key的权限。
      *
-     * @param loginUser
-     * @param keys
-     * @return
+     * @param loginUser 登录人员
+     * @param keys 权限关键字
+     * @return boolean 是否有权限
      */
     protected abstract boolean hasPermission(String loginUser, Set<String> keys);
 

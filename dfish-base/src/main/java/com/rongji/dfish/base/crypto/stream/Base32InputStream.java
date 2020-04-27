@@ -9,7 +9,7 @@ import java.io.InputStream;
 public class Base32InputStream extends AbstractPresentInputStream {
     /**
      * 构造函数
-     * @param in
+     * @param in 输入流
      */
     public Base32InputStream(InputStream in) {
         super(in);

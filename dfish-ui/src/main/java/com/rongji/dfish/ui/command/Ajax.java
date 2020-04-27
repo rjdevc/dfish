@@ -6,8 +6,8 @@ package com.rongji.dfish.ui.command;
  *
  * @author DFish Team
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since DFish 2.0
+ *
+ * @since DFish2.0
  */
 public class Ajax extends CommunicateCommand<Ajax> {
 

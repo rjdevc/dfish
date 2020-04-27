@@ -6,8 +6,8 @@ package com.rongji.dfish.ui.form;
  * @param <T> 当前对象类型
  * @param <V> value对象类型
  * @author DFish Team
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public abstract class AbstractInput<T extends AbstractInput<T, V>, V> extends AbstractFormElement<T, V> {
 

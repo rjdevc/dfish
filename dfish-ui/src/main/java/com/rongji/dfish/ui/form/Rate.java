@@ -7,7 +7,7 @@ import com.rongji.dfish.ui.command.Tip;
  *
  * @author DFish Team
  * @version 1.1
- * @since 3.0
+ * @since DFish3.0
  */
 public class Rate extends AbstractFormElement<Rate, Integer> {
 

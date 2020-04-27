@@ -12,11 +12,10 @@ import java.util.List;
  *
  * @author DFish Team
  * @version 1.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 3.0
+ * @since DFish3.0
  */
 public class Replace extends NodeControlCommand<Replace>
-        implements SingleNodeContainer<Replace,Node> {
+        implements SingleNodeContainer<Replace, Node> {
 
     private static final long serialVersionUID = -5997424469287615043L;
 
@@ -31,8 +30,9 @@ public class Replace extends NodeControlCommand<Replace>
 
     /**
      * 构造函数
-     * @param node
-     * @param target
+     *
+     * @param node   需要替换的内容
+     * @param target 目标
      */
     public Replace(Node<?> node, String target) {
         setNode(node);
@@ -51,7 +51,7 @@ public class Replace extends NodeControlCommand<Replace>
         this.node = node;
         if (node == null) {
             target = null;
-        }else{
+        } else {
             target = node.getId();
         }
         return this;
@@ -59,23 +59,25 @@ public class Replace extends NodeControlCommand<Replace>
 
     /**
      * 获得装饰器
-     * @see com.rongji.dfish.ui.NodeContainerDecorator
+     *
      * @return NodeContainerDecorator
+     * @see com.rongji.dfish.ui.NodeContainerDecorator
      */
-    protected NodeContainerDecorator getNodeContainerDecorator(){
+    protected NodeContainerDecorator getNodeContainerDecorator() {
         return new NodeContainerDecorator() {
             @Override
-            protected  List<Node> nodes() {
-                return Arrays.asList(node) ;
+            protected List<Node> nodes() {
+                return Arrays.asList(node);
             }
 
             @Override
             protected void setNode(int i, Node node) {
-                assert(i==0);
+                assert (i == 0);
                 Replace.this.setNode(node);
             }
         };
     }
+
     @Override
     public Node findNode(Filter filter) {
         return getNodeContainerDecorator().findNode(filter);
@@ -88,11 +90,11 @@ public class Replace extends NodeControlCommand<Replace>
 
     @Override
     public Node replaceNode(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceNode(filter,node);
+        return getNodeContainerDecorator().replaceNode(filter, node);
     }
 
     @Override
     public int replaceAllNodes(Filter filter, Node node) {
-        return getNodeContainerDecorator().replaceAllNodes(filter,node);
+        return getNodeContainerDecorator().replaceAllNodes(filter, node);
     }
 }

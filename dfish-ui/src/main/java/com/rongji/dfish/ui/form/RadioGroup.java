@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author DFish Team
  * @version 1.1
- * @since XMLTMPL 1.0
+ * @since DFish1.0
  */
 public class RadioGroup extends AbstractBoxGroup<RadioGroup, Radio> {
 

@@ -7,7 +7,7 @@ import java.util.Map;
  *
  * @param <T> 当前对象类型
  * @author DFish Team
- * @since 2.4
+ * @since DFish2.4
  */
 //FIXME 模式需要变一下，这个接口是在太多了应该要改为类似TableColumn的模式
 //

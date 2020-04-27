@@ -7,8 +7,7 @@ import com.rongji.dfish.ui.widget.AbstractButton;
 /**
  * 标签按钮
  * @author LinLW
- * @date 2019-10-16
- * @since 5.0
+ * @since DFish5.0
  */
 public class Tab extends AbstractButton<Tab> implements TargetHolder<Tab> {
 

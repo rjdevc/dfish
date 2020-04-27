@@ -15,7 +15,7 @@ import com.rongji.dfish.ui.*;
  *
  * @author DFish Team
  * @version 2.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @since 2.0
+ * @since DFish2.0
  */
 public class Cmd extends AbstractNode<Cmd> implements MultiNodeContainer<Cmd,Command>, Command<Cmd> {
 

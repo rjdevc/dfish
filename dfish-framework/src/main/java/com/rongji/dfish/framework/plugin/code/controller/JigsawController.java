@@ -15,8 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  * 滑动验证码
  *
  * @author lamontYu
- * @date 2019-12-09
- * @since 3.2
+ * @since DFish3.2
  */
 @RequestMapping("/jigsaw")
 public class JigsawController extends BaseActionController {
@@ -38,7 +37,7 @@ public class JigsawController extends BaseActionController {
      *
      * @param request 请求
      * @return Object 图片加载对象(含地址等信息)
-     * @throws Exception
+     * @throws Exception 图片生成异常
      */
     @RequestMapping("/img")
     @ResponseBody

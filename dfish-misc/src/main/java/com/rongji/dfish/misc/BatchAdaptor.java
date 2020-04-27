@@ -131,7 +131,6 @@ public abstract class BatchAdaptor {
 	/**
 	 * 真正实现发送数据到服务器的后台方法
 	 * @param list 数据内容
-	 * @return 服务器处理完后，返回true
 	 */
 	public abstract void executeBatch(List<Object> list);
 	

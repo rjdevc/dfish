@@ -14,7 +14,7 @@ import com.rongji.dfish.ui.Widget;
  *
  * @param <T> 当前对象类型
  * @author DFish Team
- * @since DFish 2.0 当时为InsertComman通过where属性控制增加在哪里。
+ * @since DFish2.0 当时为InsertComman通过where属性控制增加在哪里。
  */
 @SuppressWarnings("unchecked")
 public abstract class AddCommand<T extends AddCommand<T>> extends NodeControlCommand<T> implements

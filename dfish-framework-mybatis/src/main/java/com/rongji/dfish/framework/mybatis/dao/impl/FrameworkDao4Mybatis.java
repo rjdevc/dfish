@@ -14,7 +14,6 @@ import java.util.*;
 /**
  * 接口，Mybatis的数据访问层定义
  * @author lamontYu
- * @date 2019-12-04 17:54
  */
 public interface FrameworkDao4Mybatis<P, ID extends Serializable> extends FrameworkDao<P, ID> {
 
@@ -24,9 +23,10 @@ public interface FrameworkDao4Mybatis<P, ID extends Serializable> extends Framew
     }
 
     /**
-     * 根据分页信息和条件查询列表
-     * @param rowBounds
-     * @return
+     * 根据MyBatis分页对象和条件查询列表
+     * @param rowBounds MyBatis分页对象
+     * @param requestParam 请求参数
+     * @return List 数据集合
      */
     List<P> listByRowBounds(RowBounds rowBounds, RequestParam requestParam);
 
@@ -64,8 +64,8 @@ public interface FrameworkDao4Mybatis<P, ID extends Serializable> extends Framew
     /**
      * 通过编号批量删除
      *
-     * @param ids
-     * @return
+     * @param ids 编号集合
+     * @return 删除的记录数
      */
     int deleteByIds(@Param("ids") Collection<ID> ids);
 

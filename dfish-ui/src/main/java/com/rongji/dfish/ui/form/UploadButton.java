@@ -13,7 +13,7 @@ public class UploadButton extends AbstractButton<UploadButton > {
 
 	/**
 	 * 构造函数
-	 * @param text String 标题
+	 * @param text String 文本
 	 */
 	public UploadButton(String text) {
 		super(text,null,null);
@@ -21,8 +21,8 @@ public class UploadButton extends AbstractButton<UploadButton > {
 
 	/**
 	 * 构造函数
-	 * @param text
-	 * @param onClick
+	 * @param text String 文本
+	 * @param onClick 点击动作
 	 */
 	public UploadButton(String text,String onClick) {
 		super(text,onClick,null);
@@ -30,9 +30,9 @@ public class UploadButton extends AbstractButton<UploadButton > {
 
 	/**
 	 * 构造函数
-	 * @param text
-	 * @param onClick
-	 * @param icon
+	 * @param text 文本
+	 * @param onClick 点击动作
+	 * @param icon 图标
 	 */
 	public UploadButton(String text,String onClick, String icon) {
 		super(text,onClick,icon);

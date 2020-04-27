@@ -10,8 +10,8 @@ import java.util.Collection;
  *
  * @author DFish Team
  * @version 3.1 lamontYu 所有属性和type按照驼峰命名方式调整
- * @date 2018-08-03 before
- * @since 1.0
+ *
+ * @since DFish1.0
  */
 public class DatePicker extends AbstractInput<DatePicker, String> {
 
@@ -186,8 +186,8 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
     /**
      * 以文本方式表示
      *
-     * @param iter
-     * @return
+     * @param iter 时间集合
+     * @return 时间文本
      */
     protected String toString(Iterable<?> iter) {
         StringBuilder sb = new StringBuilder();
@@ -214,8 +214,8 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
     /**
      * 以文本方式表示
      *
-     * @param iter
-     * @return
+     * @param iter 时间数组
+     * @return 时间文本
      */
     protected String toString(Object[] iter) {
         StringBuilder sb = new StringBuilder();

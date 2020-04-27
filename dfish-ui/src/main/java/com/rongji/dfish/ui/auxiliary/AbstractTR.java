@@ -23,7 +23,7 @@ import java.util.Map;
  * @param <T> 当前类型
  * @author DFish Team
  * @see AbstractTD {@link Column} {@link Leaf}
- * @since DFish 3.0
+ * @since DFish3.0
  */
 abstract class AbstractTR<T extends AbstractTR<T>> extends AbstractWidget<T> implements MultiNodeContainer<T, TR> {
 

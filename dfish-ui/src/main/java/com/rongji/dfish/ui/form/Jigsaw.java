@@ -5,9 +5,9 @@ import com.rongji.dfish.ui.auxiliary.JigsawImg;
 
 /**
  * 拼图(滑动验证码)
+ *
  * @author lamontYu
- * @date 2019-12-11
- * @since 5.0
+ * @since DFish5.0
  */
 public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
@@ -18,8 +18,9 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 构造函数
-     * @param name
-     * @param label
+     *
+     * @param name 名称
+     * @param label 标签
      */
     public Jigsaw(String name, String label) {
         this.setName(name);
@@ -28,8 +29,9 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 构造函数
-     * @param name
-     * @param label
+     *
+     * @param name  名称
+     * @param label 标签
      */
     public Jigsaw(String name, Label label) {
         this.setName(name);
@@ -38,7 +40,8 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 拼图图片
-     * @return JigsawImg
+     *
+     * @return JigsawImg 拼图图片
      */
     public JigsawImg getImg() {
         return img;
@@ -46,7 +49,8 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 拼图图片
-     * @param img JigsawImg
+     *
+     * @param img JigsawImg 拼图图片
      * @return 本身，这样可以继续设置其他属性
      */
     public Jigsaw setImg(JigsawImg img) {
@@ -56,7 +60,8 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 拼图验证
-     * @return JigsawAuth
+     *
+     * @return JigsawAuth 拼图验证
      */
     public JigsawAuth getAuth() {
         return auth;
@@ -64,7 +69,8 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 拼图验证
-     * @param auth JigsawAuth
+     *
+     * @param auth JigsawAuth 拼图验证
      * @return 本身，这样可以继续设置其他属性
      */
     public Jigsaw setAuth(JigsawAuth auth) {
@@ -74,6 +80,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 当表单没有值时显示的提示文本。
+     *
      * @return String
      */
     public String getPlaceholder() {
@@ -82,6 +89,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 当表单没有值时显示的提示文本。
+     *
      * @param placeholder String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -92,6 +100,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 设置为true，表单将成为无边框无背景的状态。
+     *
      * @return Boolean
      */
     public Boolean getTransparent() {
@@ -100,6 +109,7 @@ public class Jigsaw extends AbstractFormElement<Jigsaw, String> {
 
     /**
      * 设置为true，表单将成为无边框无背景的状态。
+     *
      * @param transparent Boolean
      * @return 本身，这样可以继续设置其他属性
      */

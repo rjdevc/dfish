@@ -49,7 +49,7 @@ public final class ServletInfo {
 
 	/**
 	 * 取得主版本号，如tomcat5.5是2.4的servlet容器，这里将取得2
-	 * @return
+	 * @return int 主版本号
 	 */
 	public int getMajorVersion() {
 		return majorVersion;
@@ -57,21 +57,21 @@ public final class ServletInfo {
 
 	/**
 	 * 取得分版本号，如tomcat5.5是2.4的servlet容器，这里将取得4
-	 * @return
+	 * @return int 分版本号
 	 */
 	public int getMinorVersion() {
 		return minorVersion;
 	}
 	/**
 	 * 取得服务器描述
-	 * @return
+	 * @return String 服务器描述
 	 */
 	public String getServerInfo() {
 		return serverInfo;
 	}
 	/**
 	 * 取得servlet容器版本号，如tomcat5.5是2.4的servlet容器，这里将取得2.4
-	 * @return
+	 * @return String 容器
 	 */
 	public String getServletVersion() {
 		return servletVersion;
@@ -80,7 +80,7 @@ public final class ServletInfo {
 	/**
 	 * 取得servlet运行期的真实路径。比如说 E:\tomcat5.5\webapps\myapp\
 	 * 这个方式不适合war包部署的情况，含websphere上部署的情况，慎用
-	 * @return String
+	 * @return String servlet运行期的真实路径
 	 */
 	public String getServletRealPath() {
 		return servletRealPath;
@@ -88,7 +88,7 @@ public final class ServletInfo {
 
 	/**
 	 * 获取ServletContext
-	 * @return
+	 * @return ServletContext上下文
 	 */
 	public ServletContext getServletContext() {
 		return servletContext;

@@ -10,7 +10,7 @@ import com.rongji.dfish.ui.LazyLoad;
  * Xbox 为带图标的下拉框标签，支持多个checked
  * @author DFish Team
  * @version 1.2
- * @since XMLTMPL 1.0
+ * @since DFish1.0
  */
 public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoad<DropBox> {
 	/**

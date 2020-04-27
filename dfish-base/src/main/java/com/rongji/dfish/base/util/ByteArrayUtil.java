@@ -16,12 +16,12 @@ public class ByteArrayUtil {
     }
     /**
      * 特征byte[] 在src中的位置
+     * <p>可参考java.lang.String.indexOf(char[], int, int, String, int)方法</p>
      * @param src byte[]
      * @param target byte[]
      * @param off 从第几个字节算起
      * @param len 最多检查到多少个字节
-     * @return int
-     * @see java.lang.String##indexOf(byte[], int, int, byte[])
+     * @return int 所处位置
      */
     public static int indexOf( byte[] src, int off, int len,byte[] target) {
         byte first = target[0];

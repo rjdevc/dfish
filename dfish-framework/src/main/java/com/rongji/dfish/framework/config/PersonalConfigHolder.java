@@ -2,7 +2,7 @@ package com.rongji.dfish.framework.config;
 
 /**
  * 个人配置接口,主要用于获取/设置个人配置
- * @since 2.x
+ * @since DFish2.x
  */
 public interface PersonalConfigHolder {
 

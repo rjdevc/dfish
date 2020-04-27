@@ -7,8 +7,7 @@ import com.rongji.dfish.ui.HasText;
  * 进度项,用于展示进度情况
  *
  * @author lamontYu
- * @date 2019-09-30 14:31
- * @since 5.0
+ * @since DFish5.0
  */
 public class ProgressItem extends AbstractWidget<ProgressItem> implements HasText<ProgressItem> {
 
@@ -104,7 +103,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
 
     /**
      * 划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。
-     * 例如设置 range: "60,100"，那么进度在 (>=60 && <100) 范围内会存在样式 "z-60"，进度在 100 时会存在样式 "z-100"。
+     * 例如设置 range: "60,100"，那么进度在 (&gt;=60 &amp;&amp; &lt;100) 范围内会存在样式 "z-60"，进度在 100 时会存在样式 "z-100"。
      * @return String
      */
     public String getRange() {
@@ -113,7 +112,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
 
     /**
      * 划分进度阶段的数值，用逗号隔开。每个数字都会生成该阶段的样式 "z-数值"，数值范围从 0 到 100。
-     * 例如设置 range: "60,100"，那么进度在 (>=60 && <100) 范围内会存在样式 "z-60"，进度在 100 时会存在样式 "z-100"。
+     * 例如设置 range: "60,100"，那么进度在 (&gt;=60 &amp;&amp; &lt;100) 范围内会存在样式 "z-60"，进度在 100 时会存在样式 "z-100"。
      * @param range String
      * @return 本身，这样可以继续设置其他属性
      */

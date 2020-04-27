@@ -38,7 +38,7 @@ public class Text extends AbstractInput<Text,String>{
 	 * @param name 表单元素名
 	 * @param label 标题
 	 * @param value 值
-	 * @since DFish 3.0
+	 * @since DFish3.0
 	 */
 	public Text(String name, String label, String value){
 		super(name,label,value);

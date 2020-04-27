@@ -10,6 +10,8 @@ import com.rongji.dfish.ui.widget.AbstractButton;
 public class CollapseButton extends AbstractButton<CollapseButton> implements TargetHolder<CollapseButton> {
 
     private Widget<?> target;
+    private String collapsedIcon;
+    private String expandedIcon;
 
     /**
      * 构造函数
@@ -51,4 +53,21 @@ public class CollapseButton extends AbstractButton<CollapseButton> implements Ta
         return this;
     }
 
+    public String getCollapsedIcon() {
+        return collapsedIcon;
+    }
+
+    public CollapseButton setCollapsedIcon(String collapsedIcon) {
+        this.collapsedIcon = collapsedIcon;
+        return this;
+    }
+
+    public String getExpandedIcon() {
+        return expandedIcon;
+    }
+
+    public CollapseButton setExpandedIcon(String expandedIcon) {
+        this.expandedIcon = expandedIcon;
+        return this;
+    }
 }

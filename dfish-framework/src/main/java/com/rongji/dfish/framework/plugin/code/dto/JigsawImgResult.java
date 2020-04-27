@@ -6,8 +6,7 @@ import java.io.Serializable;
  * 滑动验证码加载的图片结果
  *
  * @author lamontYu
- * @date 2019-12-10
- * @since 5.0
+ * @since DFish5.0
  */
 public class JigsawImgResult implements Serializable {
     private static final long serialVersionUID = -2076497536245307557L;

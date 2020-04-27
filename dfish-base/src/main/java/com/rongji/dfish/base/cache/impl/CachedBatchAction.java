@@ -13,14 +13,14 @@ import java.util.concurrent.ExecutorService;
  * 带缓存的执行器。它可以通过缓存。减少执行的次数，或每次执行的输入大小。
  * 如果有一个BatchAction 套用的这个类即可获得缓存效果。
  * <pre>
- * CachedBatchAction<String,Object> m=new CachedBatchAction<String,Object>(
- * new BatchAction<String,Object>(){
- * 	public Map<String,Object> act(Set<String> input) {
+ * CachedBatchAction&lt;String,Object&gt; m=new CachedBatchAction&lt;String,Object&gt;(
+ * new BatchAction&lt;String,Object&gt;(){
+ * 	public Map&lt;String,Object&gt; act(Set&lt;String&gt; input) {
  * 		return null; // 实际批量获取的代码。
  * 	}
  * });
  * Object o=m.act("something");
- * Map<String,Object> map.=m.get( new HashSet<String>(Arrays.asList("str2","str3")));
+ * Map&lt;String,Object&gt; map.=m.get( new HashSet&lt;String&gt;(Arrays.asList("str2","str3")));
  * </pre>
  *  调用的时候，即可生效。
  *  通常这个类是单例的。
@@ -59,7 +59,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
 
     /**
      * 缓存最大数量8192，最长时间300秒
-     * @param act
+     * @param act 批处理动作
      */
     public CachedBatchAction(BatchAction<I, O> act) {
         this( act,8192, 300000L);
@@ -68,6 +68,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     /**
      * 构造函数
      *
+     * @param action 批处理动作
      * @param maxSize 最大缓存数量
      * @param alive   最大生存时间 -毫秒
      */
@@ -88,9 +89,6 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     private final Set<I> waiting = Collections.synchronizedSet(new HashSet<I>());
     //执行加载动作的加载器
     protected ExecutorService exec = ThreadUtil.getCachedThreadPool();
-
-
-
 
     @Override
     public Map<I, O> act(Set<I> input) {

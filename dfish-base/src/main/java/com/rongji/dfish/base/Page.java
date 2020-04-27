@@ -39,7 +39,7 @@ public class Page implements Serializable {
 
     /**
      * 构造函数
-     * @param currentPage
+     * @param currentPage 当前页
      */
     public Page(int currentPage) {
         this.currentPage = currentPage;
@@ -47,8 +47,8 @@ public class Page implements Serializable {
 
     /**
      * 构造函数
-     * @param currentPage
-     * @param pageSize
+     * @param currentPage 当前页
+     * @param pageSize 一页最大记录数
      */
     public Page(int currentPage, int pageSize) {
         this.currentPage = currentPage;
@@ -58,7 +58,8 @@ public class Page implements Serializable {
     /**
      * 设置当前页号
      *
-     * @param currentPage
+     * @param currentPage 当前页
+     * @return 本身，这样可以继续设置属性
      */
     public Page setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
@@ -68,7 +69,7 @@ public class Page implements Serializable {
     /**
      * 取得当前页号
      *
-     * @return
+     * @return 当前页
      */
     public int getCurrentPage() {
         return currentPage;
@@ -77,7 +78,8 @@ public class Page implements Serializable {
     /**
      * 当前页大小
      *
-     * @param pageSize
+     * @param pageSize 当前页大小
+     * @return 本身，这样可以继续设置属性
      */
     public Page setPageSize(int pageSize) {
         this.pageSize = pageSize;
@@ -87,7 +89,7 @@ public class Page implements Serializable {
     /**
      * 当前页大小
      *
-     * @return
+     * @return 当前页大小
      */
     public int getPageSize() {
         return pageSize;
@@ -96,7 +98,8 @@ public class Page implements Serializable {
     /**
      * 行数
      *
-     * @param rowCount
+     * @param rowCount 行数
+     * @return 本身，这样可以继续设置属性
      */
     public Page setRowCount(int rowCount) {
         this.rowCount = rowCount;
@@ -106,7 +109,7 @@ public class Page implements Serializable {
     /**
      * 行数
      *
-     * @return
+     * @return 行数
      */
     public int getRowCount() {
         return rowCount;
@@ -115,7 +118,7 @@ public class Page implements Serializable {
     /**
      * 取得页数
      *
-     * @return
+     * @return 总页数
      */
     public int getPageCount() {
         if (pageSize > 0) {
@@ -133,7 +136,7 @@ public class Page implements Serializable {
     /**
      * 是否自动统计总记录数
      *
-     * @return Boolean
+     * @return Boolean 是否自动统计总记录数
      * @see #isAutoRowCount()
      */
     @Deprecated
@@ -144,8 +147,8 @@ public class Page implements Serializable {
     /**
      * 是否自动统计总记录数
      *
-     * @param autoRowCount Boolean
-     * @return
+     * @param autoRowCount Boolean 是否自动统计总记录数
+     * @return 本身，这样可以继续设置属性
      * @see #setAutoRowCount(boolean)
      */
     @Deprecated
@@ -158,7 +161,7 @@ public class Page implements Serializable {
     /**
      * 是否自动统计总记录数
      *
-     * @return boolean
+     * @return boolean 是否自动统计总记录数
      */
     public boolean isAutoRowCount() {
         return autoRowCount;
@@ -167,8 +170,8 @@ public class Page implements Serializable {
     /**
      * 是否自动统计总记录数
      *
-     * @param autoRowCount boolean
-     * @return
+     * @param autoRowCount boolean 是否自动统计总记录数
+     * @return 本身，这样可以继续设置属性
      */
     public Page setAutoRowCount(boolean autoRowCount) {
         this.autoRowCount = autoRowCount;
@@ -178,7 +181,7 @@ public class Page implements Serializable {
     /**
      * 当前页记录数
      *
-     * @return
+     * @return 当前页结果记录数
      */
     public int getCurrentCount() {
         if (currentCount < 0) {
@@ -199,7 +202,7 @@ public class Page implements Serializable {
      * 当前页记录数
      *
      * @param currentCount 当前页记录数
-     * @return
+     * @return 本身，这样可以继续设置属性
      */
     public Page setCurrentCount(int currentCount) {
         this.currentCount = currentCount;

@@ -10,7 +10,7 @@ import java.lang.reflect.ParameterizedType;
 /**
  * service默认实现基类
  * @author lamontYu
- * @date 2019-12-04
+ * @since DFish5.0
  */
 public abstract class AbstractFrameworkService<V, P, ID extends Serializable> implements FrameworkService<V, P, ID> {
     @Resource(name = "cryptor")
@@ -25,7 +25,7 @@ public abstract class AbstractFrameworkService<V, P, ID extends Serializable> im
 
     /**
      * 加密器
-     * @param cryptor
+     * @param cryptor 加密器
      */
     public void setCryptor(Cryptor cryptor) {
         this.cryptor = cryptor;

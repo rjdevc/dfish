@@ -16,12 +16,12 @@ import java.util.List;
  *
  * userage:
  * //初始化
- * RangeDataFinder<String ,Long> finder=new RangeDataFinder();
+ * RangeDataFinder&lt;String ,Long&gt; finder=new RangeDataFinder();
  * finder.add("福州市", IPV4.stringToLong("27.148.0.0"), IPV4.stringToLong("27.149.255.255"));
  * finder.add("南平市", IPV4.stringToLong("27.150.32.0"), IPV4.stringToLong("27.150.37.255"));
  * // and many data
  * //平时使用
- * List<K> keys=finder.find(IPV4.stringToLong("27.150.33.14"));
+ * List&lt;K&gt; keys=finder.find(IPV4.stringToLong("27.150.33.14"));
  * @param <K> 关键字的类型
  * @param <V> 范围的类型，必须是可以比较的类型。
  * @deprecated 未完成，临时提交换个环境开发。

@@ -33,7 +33,7 @@ public class Region {
 
     /**
      * 获得行政区划代码
-     * @return String
+     * @return String 行政区划代码
      */
     public String getCode() {
         return code;
@@ -41,7 +41,7 @@ public class Region {
 
     /**
      * 行政区划代码
-     * @param code
+     * @param code 行政区划代码
      */
     public void setCode(String code) {
         this.code = code;
@@ -49,7 +49,7 @@ public class Region {
 
     /**
      * 获得行政区划名称
-     * @return String
+     * @return String 行政区划名称
      */
     public String getName() {
         return name;
@@ -57,7 +57,7 @@ public class Region {
 
     /**
      * 行政区划名称
-     * @param name
+     * @param name 行政区划名称
      */
     public void setName(String name) {
         this.name = name;
@@ -65,7 +65,7 @@ public class Region {
 
     /**
      * 获得行政区划名称后缀
-     * @return Integer
+     * @return Integer 行政区划名称后缀
      */
     public Integer getTail() {
         return tail;
@@ -73,7 +73,7 @@ public class Region {
 
     /**
      * 行政区划名称后缀
-     * @param tail
+     * @param tail 行政区划名称后缀
      */
     public void setTail(Integer tail) {
         this.tail = tail;
@@ -81,7 +81,7 @@ public class Region {
 
     /**
      * 获得行政区划名称前缀
-     * @return Integer
+     * @return Integer 行政区划名称前缀
      */
     public Integer getPrefix() {
         return prefix;
@@ -89,7 +89,7 @@ public class Region {
 
     /**
      * 行政区划名称前缀
-     * @param prefix
+     * @param prefix 行政区划名称前缀
      */
     public void setPrefix(Integer prefix) {
         this.prefix = prefix;

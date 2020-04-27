@@ -44,7 +44,7 @@ public class ScelReader {
 
 		/**
 		 * 发布时间
-		 * @return
+		 * @return 发布时间
 		 */
 		public Date getPublishTime() {
 			return publishTime;
@@ -52,7 +52,7 @@ public class ScelReader {
 
 		/**
 		 * 福州本地公交地名库
-		 * @return
+		 * @return 福州本地公交地名库
 		 */
 		public String getName() {
 			return name;
@@ -60,7 +60,7 @@ public class ScelReader {
 
 		/**
 		 * 城市
-		 * @return
+		 * @return 城市
 		 */
 		public String getCatelog() {
 			return catelog;
@@ -68,7 +68,7 @@ public class ScelReader {
 
 		/**
 		 * 备注
-		 * @return
+		 * @return 备注
 		 */
 		public String getReadme() {
 			return readme;
@@ -76,7 +76,7 @@ public class ScelReader {
 
 		/**
 		 * 备注
-		 * @return
+		 * @return 备注
 		 */
 		public String getReadme2() {
 			return readme2;
@@ -84,7 +84,7 @@ public class ScelReader {
 
 		/**
 		 * 所有的拼音.
-		 * @return
+		 * @return 所有的拼音
 		 */
 		public String[] getPinyins(){
 			return pinyins;
