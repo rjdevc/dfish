@@ -960,7 +960,10 @@ public class StringUtil {
      * @param coll
      * @param split
      * @return
+     * @deprecated
+     * @see #jion(Object[], String)
      */
+    @Deprecated
     public static String toString(Collection<?> coll, char split) {
         if (coll == null) {
             return null;
@@ -986,7 +989,10 @@ public class StringUtil {
      *
      * @param coll
      * @return
+     * @deprecated
+     * @see #jion(Object[], String)
      */
+    @Deprecated
     public static String toString(Collection<?> coll) {
         return toString(coll, ',');
     }
@@ -996,7 +1002,10 @@ public class StringUtil {
      *
      * @param array
      * @return
+     * @deprecated
+     * @see #jion(Object[], String)
      */
+    @Deprecated
     public static <T> String toString(T[] array) {
         if (array == null) {
             return null;
@@ -1010,7 +1019,10 @@ public class StringUtil {
      * @param array
      * @param split
      * @return
+     * @deprecated
+     * @see #jion(Object[], String)
      */
+    @Deprecated
     public static <T> String toString(T[] array, char split) {
         return toString(Arrays.asList(array), split);
     }
@@ -1074,7 +1086,7 @@ public class StringUtil {
 //        CharUtil.dbc2sbcl()
     }
 
-    private static Map<Map<String, String>, TrieTree<String>> tries = Collections.synchronizedMap(new HashMap<>());
+    private static Map<Map<String, String>, TrieTree<String>> tries = Collections.synchronizedMap(new HashMap<Map<String, String>, TrieTree<String>>());
 
     /**
      * 替换字符串，同时提换多个字符串，如果几个字符串有包含关系，更长的优先。
@@ -1112,6 +1124,207 @@ public class StringUtil {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 把一个集合转化成可显示的字符串
+     * @param strs 集合
+     * @return
+     */
+    public static String jion(Object[] strs){
+        return jion(Arrays.asList(strs),",");
+    }
+
+    /**
+     * 把一个集合转化成可显示的字符串
+     * @param strs
+     * @param split
+     * @return
+     */
+    public static String jion(Object[] strs,char split){
+        return jion(Arrays.asList(strs),new String(new char[]{split}));
+    }
+
+    /**
+     * 把一个集合转化成可显示的字符串
+     * @param strs
+     * @param split
+     * @return
+     */
+    public static String jion(Object[] strs,String split){
+        return jion(Arrays.asList(strs),split);
+    }
+
+    /**
+     * 把一个集合转化成可显示的字符串
+     * @param strs
+     * @return
+     */
+    public static String jion(Collection strs){
+        return jion(strs,",");
+    }
+
+    /**
+     * 把一个集合转化成可显示的字符串
+     * @param strs
+     * @param split
+     * @return
+     */
+    public static String jion(Collection strs,char split){
+        return jion(strs,new String(new char[]{split}));
+    }
+
+    /**
+     * 把一个集合转化成可显示的字符串
+     * @param strs
+     * @param split
+     * @return
+     */
+    public static String jion(Collection strs,String split){
+        if (strs == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean begin = true;
+        for (Object o : strs) {
+            if (o == null || "".equals(o)) {
+                continue;
+            }
+            if (begin) {
+                begin = false;
+            } else {
+                sb.append(split);
+            }
+            sb.append(o);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 在左边加入字符串补齐字符串到指定长度
+     * 如果字符串比指定的长度还要长，这里并不会截取
+     * @param str
+     * @param size
+     * @param padStr
+     * @return
+     */
+    public static String leftPad(String str,int size, String padStr){
+        if (str == null) {
+            return null;
+        } else {
+            if (padStr == null || "".equals(padStr)) {
+                padStr = " ";
+            }
+
+            int padLen = padStr.length();
+            int strLen = str.length();
+            int pads = size - strLen;
+            if (pads <= 0) {
+                return str;
+            } else if (padLen == 1 && pads <= 8192) {
+                return leftPad(str, size, padStr.charAt(0));
+            } else if (pads == padLen) {
+                return padStr.concat(str);
+            } else if (pads < padLen) {
+                return padStr.substring(0, pads).concat(str);
+            } else {
+                char[] padding = new char[pads];
+                char[] padChars = padStr.toCharArray();
+
+                for(int i = 0; i < pads; ++i) {
+                    padding[i] = padChars[i % padLen];
+                }
+
+                return (new String(padding)).concat(str);
+            }
+        }
+    }
+    /**
+     * 在左边加入字符串补齐字符串到指定长度
+     * 如果字符串比指定的长度还要长，这里并不会截取
+     * @param str
+     * @param size
+     * @param padChar
+     * @return
+     */
+    public static String leftPad(String str,int size, char padChar){
+        if (str == null) {
+            return null;
+        } else {
+            int pads = size - str.length();
+            if (pads <= 0) {
+                return str;
+            } else {
+                char[] ret=new char[size];
+                Arrays.fill(ret,0,pads,padChar);
+                System.arraycopy(str.toCharArray(),0,ret,pads,str.length());
+                return new String(ret);
+            }
+        }
+    }
+
+    /**
+     * 在右边加入字符串补齐字符串到指定长度
+     * 如果字符串比指定的长度还要长，这里并不会截取
+     * @param str
+     * @param size
+     * @param padStr
+     * @return
+     */
+    public static String rightPad(String str,int size, String padStr){
+        if (str == null) {
+            return null;
+        } else {
+            if (padStr == null || "".equals(padStr)) {
+                padStr = " ";
+            }
+
+            int padLen = padStr.length();
+            int strLen = str.length();
+            int pads = size - strLen;
+            if (pads <= 0) {
+                return str;
+            } else if (padLen == 1 && pads <= 8192) {
+                return rightPad(str, size, padStr.charAt(0));
+            } else if (pads == padLen) {
+                return str.concat(padStr);
+            } else if (pads < padLen) {
+                return str.concat(padStr.substring(0, pads));
+            } else {
+                char[] padding = new char[pads];
+                char[] padChars = padStr.toCharArray();
+
+                for(int i = 0; i < pads; ++i) {
+                    padding[i] = padChars[i % padLen];
+                }
+
+                return str.concat(new String(padding));
+            }
+        }
+    }
+
+    /**
+     * 在右边加入字符串补齐字符串到指定长度
+     * 如果字符串比指定的长度还要长，这里并不会截取
+     * @param str
+     * @param size
+     * @param padChar
+     * @return
+     */
+    public static String rightPad(String str,int size, char padChar){
+        if (str == null) {
+            return null;
+        } else {
+            int pads = size - str.length();
+            if (pads <= 0) {
+                return str;
+            } else {
+                char[] ret=new char[size];
+                System.arraycopy(str.toCharArray(),0,ret,0,str.length());
+                Arrays.fill(ret,str.length(),pads,padChar);
+                return new String(ret);
+            }
+        }
     }
 
 }
