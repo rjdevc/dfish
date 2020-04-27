@@ -18,11 +18,15 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.6',
+_path, _ui_path, _lib, _cfg = {}, _alias = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '3.2.7',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
 doc = win.document, cvs = doc.documentElement,
+
+_opener = (function() {
+	try { return win.opener.document && win.opener; }catch(ex){}
+})();
 
 $ = dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
@@ -171,8 +175,6 @@ _createClass = $.createClass = function( a, b ) {
 
 /* CMD模块规范 */
 _moduleCache = {},
-_templateCache = {},
-_preloadCache = {},
 //@a -> path, b -> id, f -> affix
 _mod_uri = function( a, b, f ) {
 	var c = b.charAt( 0 ) === '.' ? _urlLoc( a, b ) : b.charAt( 0 ) !== '/' ? _path + b : b;
@@ -1509,7 +1511,14 @@ Ajax = _createClass( {
 	Extend: _Event,
 	Prototype: {
 		sendCache: function() {
-			var x = this.x, u = _ajax_url( x.src ), c = _ajax_cache[ x.src ];
+			var x = this.x, u = _ajax_url( x.src ), c = _ajax_cache[ u ];
+			if ( ! c && _opener ) {
+				try {
+					this.response = _opener.dfish.ajaxCache[ u ].response;
+					if ( this.response )
+						c = _ajax_cache[ u ] = this;
+				} catch( ex ){}
+			}
 			if ( c ) {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
@@ -1518,7 +1527,7 @@ Ajax = _createClass( {
 				} else {
 					c.addEvent( 'cache', this.sendCache, this );
 				}
-			} else {
+			} else{
 				_ajax_cache[ u ] = this;
 				this.send();
 			}
@@ -1958,6 +1967,7 @@ var boot = {
 _merge( $, {
 	abbr: '$',
 	alert_id: 'dfish:alert',
+	ajaxCache: _ajax_cache,
 	_data: {},
 	all: {},
 	globals: {},

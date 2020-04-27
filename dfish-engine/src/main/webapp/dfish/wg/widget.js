@@ -10525,13 +10525,6 @@ Form = define.widget( 'form', {
 	}
 } );
 
-// 向上兼容
-define.widget( 'datepicker', { Extend: 'date' } );
-define.widget( 'vertical', { Extend: 'vert' } );
-define.widget( 'horizontal', { Extend: 'horz' } );
-define.widget( 'timeline', { Extend: 'html' } );
-define.widget( 'jigsaw', { Extend: 'slider/jigsaw', Prototype: { className: 'w-slider-jigsaw' } } );
-
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
 $.preload = _regPreload;
