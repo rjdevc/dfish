@@ -1050,6 +1050,9 @@ d\:wg{display:none}
 .f-i-folder:before{content:'\e673'}
 .f-i-folder-open:before{content:'\e675'}
 .f-i-file:before{content:'\e674'}
+.f-i-folder-full:before{content:'\e685'}
+.f-i-folder-open-full:before{content:'\e684'}
+.f-i-file-full:before{content:'\e683'}
 .f-i-layout-list:before{content:'\e671'}
 .f-i-layout-grid:before{content:'\e672'}
 .f-i-comment:before{content:'\e668'}
@@ -1084,8 +1087,8 @@ d\:wg{display:none}
 .f-i-long-arrow-right:before{content:'\e64a'}
 .f-i-long-arrow-left:before{content:'\e64b'}
 .f-i-long-arrow-up:before{content:'\e64c'}
-.f-i-minus:before{content:'\e67a'}
-.f-i-plus:before{content:'\e679'}
+.f-i-minus:before{content:'\e687'}
+.f-i-plus:before{content:'\e686'}
 .f-i-plus-square:before{content:'\e645'}
 .f-i-minus-square:before{content:'\e646'}
 .f-i-warning:before{content:'\e642'}

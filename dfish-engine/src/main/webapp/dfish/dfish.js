@@ -23,6 +23,10 @@ _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'pr
 
 doc = win.document, cvs = doc.documentElement,
 
+_opener = (function() {
+	try { return win.opener.document && win.opener; }catch(ex){}
+})();
+
 dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
 },
@@ -1614,6 +1618,13 @@ Ajax = _createClass( {
 	Prototype: {
 		sendCache: function() {
 			var x = this.x, u = _ajax_url( x.src, x.cdn ), c = _ajax_cache[ u ];
+			if ( ! c && _opener ) {
+				try {
+					this.response = _opener.dfish.ajaxCache[ u ].response;
+					if ( this.response )
+						c = _ajax_cache[ u ] = this;
+				} catch( ex ){}
+			}
 			if ( c ) {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
@@ -2070,6 +2081,7 @@ var boot = {
 _merge( $, {
 	abbr: '$',
 	alert_id: 'dfish:alert',
+	ajaxCache: _ajax_cache,
 	_data: {},
 	all: {},
 	globals: {},

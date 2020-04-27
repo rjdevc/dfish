@@ -395,25 +395,10 @@ Node = $.createClass( {
 					this.length ++;
 					this[ n ] = a;
 				}
-				// 给有rootType的widget设置pubNode。 pubNode的用途是获取pub参数
-				if ( a.pubType ) {
-					a.pubNode = this.pubNode;
-					if ( !a.pubNode ) {
-						var r = this;
-						do {
-							if ( $.idsAny( a.pubType, r.type ) ) {
-								a.pubNode = r;
-								break;
-							}
-								 
-						} while ( (r = r.parentNode) && !r.isDialogWidget && !r.type_view );
-					}
-				}
 				// 给有rootType的widget设置rootNode
 				if ( a.rootType ) {
-					a.rootNode = this.rootNode || ($.idsAny( a.rootType, this.type ) && this);
-				} else if ( a.pubNode )
-					a.rootNode = a.pubNode;
+					a.rootNode = this.rootNode || ($.idsAny( a.rootType, this.type ) ? this : N);
+				}
 			}
 			return a;
 		},
@@ -773,15 +758,15 @@ W = define( 'Widget', function() {
 		},
 		init_x_cls: $.rt(),
 		// @implement
-		init_x_pub: function( x ) {
-			var r = this.pubNode;
-			r && r.x.pub && $.extendDeep( x, r.x.pub );
+		pubParent: function() {
+			return this.rootNode;
 		},
 		// @private: 初始化配置参数
 		_init_x: function( x ) {
 			this.x = x;
 			if ( this.nodeIndex > -1 ) {
-				this.init_x_pub( x );
+				var r = this.pubParent();
+				r && r.x.pub && $.extendDeep( x, r.x.pub );
 			}
 			if ( x.template ) {
 				var t = _getTemplate( x.template, T );
@@ -1296,7 +1281,7 @@ W = define( 'Widget', function() {
 				if ( c ) {
 					v = c[ f[ i ] ];
 				} else {
-					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] )) === U && (v = this.rootNode && this.rootNode.x[ k ]);
+					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] ));
 				}
 				m.push( d ? d( v ) : v );
 			}
@@ -1315,7 +1300,7 @@ W = define( 'Widget', function() {
 						v = b[ k ];
 					} else {
 						x == N && (x = self.x);
-						(v = x.data && x.data[ k ]) === U && (v = x[ k ]) === U && (v = self.closestData( k )) === U && (v = self.rootNode && self.rootNode.x[ k ]);
+						(v = x.data && x.data[ k ]) === U && (v = x[ k ]) === U && (v = self.closestData( k ));
 					}
 					if ( t && v != N ) {
 						try { eval( 'v = v' + t ); } catch( ex ) { v = N; }
@@ -3145,8 +3130,8 @@ Timeline = define.widget( 'Timeline', {
 TimelineItem = define.widget( 'TimelineItem', {
 	Default: { width: -1, height: -1 },
 	Prototype: {
+		rootType: 'Timeline',
 		className: 'w-timeline-item',
-		pubType: 'Timeline',
 		prop_cls: function() {
 			var p = this.parentNode;
 			return _proto.prop_cls.call( this ) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.length - 1 ? ' z-last' : '') +
@@ -3499,7 +3484,7 @@ Button = define.widget( 'Button', {
 			},
 			close: function() {
 				if ( this.x.target ) {
-					var p = this.parentNode, f = p.type === this.pubType && p.getFocus(), n = f && f == this && (this.next() || this.prev());
+					var p = this.parentNode, f = p === this.pubParent() && p.getFocus(), n = f && f == this && (this.next() || this.prev());
 					n && n.click();
 					for ( var i = 0, b = this.ownerView.find( this.x.target.split( ',' ) ); i < b.length; i ++ )
 						b[ i ].remove();
@@ -3509,7 +3494,7 @@ Button = define.widget( 'Button', {
 	},
 	Default: { width: -1, height: -1 },
 	Prototype: {
-		pubType: 'ButtonBar',
+		rootType: 'ButtonBar',
 		className: 'w-button',
 		_menu_snapType: 'v',
 		_menu_type: 'Menu',
@@ -3714,7 +3699,7 @@ Button = define.widget( 'Button', {
 			}
 			if ( x.focus && x.focusable )
 				b += ' z-on';
-			if ( p.type === this.pubType ) {
+			if ( p === this.pubParent() ) {
 				if ( this === p[ 0 ] || ((d = this.prev()) && d.type === 'ButtonSplit') )
 					b += ' z-first';
 				if ( this === p[ p.length - 1 ] || ((d = this.next()) && d.type === 'ButtonSplit') )
@@ -3875,7 +3860,7 @@ MenuButton = define.widget( 'MenuButton', {
 		}
 	},
 	Prototype: {
-		pubType: 'Menu',
+		rootType: 'Menu',
 		className: 'w-menu-button f-nobr',
 		_menu_snapType: '',
 		_menu_type: 'SubMenu',
@@ -4083,7 +4068,7 @@ Img = define.widget( 'Img', {
 		x.dir && (this.className += ' z-dir-' + x.dir);
 		x.focus && (this.className += ' z-on');
 		x.badge && this.init_badge();
-		p.type === this.pubType && this.defaults( { width: -1, height: -1 } );
+		this.rootNode && this.defaults( { width: -1, height: -1 } );
 	},
 	Listener: {
 		body: {
@@ -4106,7 +4091,7 @@ Img = define.widget( 'Img', {
 		}
 	},
 	Prototype: {
-		pubType: 'Album',
+		rootType: 'Album',
 		className: 'w-img',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -4133,7 +4118,7 @@ Img = define.widget( 'Img', {
 			this.box && this.box.click( a );
 		},
 		_focus: function( a, e ) {
-			var a = a == N || a, p = this.parentNode, b = p && p.type === this.pubType && p.getFocus();
+			var a = a == N || a, p = this.parentNode, b = p && p === this.rootNode && p.getFocus();
 			$.classAdd( this.$(), 'z-on', a );
 			a && b && b !== this && ! p.x.focusMultiple && b._focus( F );
 		},
@@ -4148,7 +4133,7 @@ Img = define.widget( 'Img', {
 		},
 		imgLoad: function() {
 			// @fixme: 父节点也是-1的情况
-			if ( this.parentNode.type != this.pubType ) {
+			if ( ! this.rootNode ) {
 				var w = this.attr( 'width' );
 				if ( w < 0 || w == N ) {
 					this.parentNode.trigger( 'resize' );
@@ -4157,7 +4142,7 @@ Img = define.widget( 'Img', {
 			this.addClass( 'z-success' );
 		},
 		prop_style: function() {
-			var t = this.cssText || '', v, c = this.parentNode.x.space;
+			var t = this.cssText || '', v, c = this.rootNode && this.rootNode.x.space;
 			if ( (v = this.innerWidth()) != N )
 				t += 'width:' + v + 'px;';
 			if ( (v = this.innerHeight()) != N )
@@ -4176,7 +4161,7 @@ Img = define.widget( 'Img', {
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call( this, this.x.src ),
 				iw = this.x.imgWidth, ih = this.x.imgHeight, w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh;
 			var g = $.image( u, { width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()' } );
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
 		},
 		html_text: function() {
 			var x = this.x, t = this.html_format(), w = x.textWidth;
@@ -5308,7 +5293,7 @@ ProgressItem = define.widget( 'ProgressItem', {
 		}
 	},
 	Prototype: {
-		pubType: 'Progress',
+		rootType: 'Progress',
 		className: 'w-progress-item',
 		html_nodes: function() {
 			var p = this.x.percent, h = this.innerHeight();
@@ -5484,7 +5469,7 @@ Menu = define.widget( 'Menu', {
 SubMenu = define.widget( 'SubMenu', {
 	Extend: Menu,
 	Prototype: {
-		pubType: 'Menu',
+		rootType: 'Menu',
 		className: 'w-menu w-submenu w-dialog',
 		_snapType: '21,12'
 	}
@@ -5515,7 +5500,6 @@ Collapse = define.widget( 'Collapse', {
 /* `CollapseButton` */
 CollapseButton = define.widget( 'CollapseButton', {
 	Const: function( x, p ) {
-		this.rootNode = p;
 		Button.apply( this, arguments );
 		!x.collapsedIcon && !x.expandedIcon && (x.collapsedIcon = '.f-i-caret-right',x.expandedIcon = '.f-i-caret-down');
 		this.nodeIndex == 0 && (this.className += ' z-first');
@@ -5546,6 +5530,7 @@ CollapseButton = define.widget( 'CollapseButton', {
 	},
 	Default: { widthMinus: 2 },
 	Prototype: {
+		rootType: 'Collapse',
 		className: 'w-button w-collapsebutton',
 		isMultiple: $.rt( T ),
 		isToggleable: $.rt( T ),
@@ -6440,7 +6425,7 @@ CheckBox = define.widget( 'CheckBox', {
 	},
 	Default: { width: -1, heightMinus: 6, tip: T },
 	Prototype: {
-		pubType: 'CheckBoxGroup',
+		rootType: 'CheckBoxGroup',
 		tagName: 'cite',
 		formType: 'checkbox',
 		attrSetter: function( a, b ) {
@@ -6705,7 +6690,7 @@ RadioGroup = define.widget( 'RadioGroup', {
 Radio = define.widget( 'Radio', {
 	Extend: CheckBox,
 	Prototype: {
-		pubType: 'RadioGroup',
+		rootType: 'RadioGroup',
 		formType: 'radio',
 		// 为避免页面内出现相同name的radio组(如果同name，选中效果会出问题)，需要给name加上前缀
 		input_name: function() {
@@ -6821,7 +6806,7 @@ CalendarNum = define.widget( 'CalendarNum', {
 	},
 	Default: { width: -1, height: -1 },
 	Prototype: {
-		pubType: 'Calendar',
+		rootType: 'Calendar',
 		className: '_td',
 		tagName: 'td',
 		val: function() { return this.x.value },
@@ -8745,7 +8730,7 @@ ComboboxOption = define.widget( 'ComboBoxOption', {
 		}
 	},
 	Prototype: {
-		pubType: 'ComboBox',
+		rootType: 'ComboBox',
 		className: 'w-combobox-opt f-nv',
 		val: function() {
 			return this.x.value;
@@ -8804,7 +8789,7 @@ LinkBoxOption = define.widget( 'LinkBoxOption', {
 		}
 	},
 	Prototype: {
-		pubType: 'LinkBox'
+		rootType: 'LinkBox'
 	}
 } ),
 /* `linkbox` */
@@ -9743,13 +9728,11 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 						this.toggle( F );
 					}
 					this.fixFolder();
-					if ( this.$( 'o' ) ) {
-						$.classRemove( this.$(), 'z-loading' );
-						if ( x = this.html_icon() ) {
-							this.$( 'i' ) && $.replace( this.$( 'i' ), x );
-						} else
-							$.remove( this.id + 'ld' );
-					}
+					$.classRemove( this.$(), 'z-loading' );
+					if ( x = this.html_icon() ) {
+						this.$( 'i' ) && $.replace( this.$( 'i' ), x );
+					} else
+						$.remove( this.id + 'ld' );
 				} } );
 		},
 		render_nodes: function( n ) {
@@ -9958,7 +9941,7 @@ Leaf = define.widget( 'Leaf', {
 		}
 	},
 	Prototype: {
-		pubType: 'Tree',
+		rootType: 'Tree',
 		className: 'w-leaf',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
@@ -10110,7 +10093,7 @@ Leaf = define.widget( 'Leaf', {
 		},
 		html_icon: function() {
 			var c = _toggleIcon.call( this );
-			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i' } ) : '';
+			return c ? $.image( c, { id: this.id + 'i', cls: 'w-leaf-i', click: this.x.noToggle ? evw + '.toggle(event)' : '' } ) : '';
 		},
 		html_text: function() {
 			var t = this.html_format(), h;
@@ -10329,7 +10312,7 @@ TableLeaf = define.widget( 'TableLeaf', {
 		className: 'w-leaf w-table-leaf',
 		_pad_left: 0,
 		tr: _table_tr,
-		init_x_pub: $.rt(),
+		pubParent: $.rt(),
 		_focus: $.rt(),
 		isEllipsis: $.rt( T ),
 		getLength: function() {
@@ -10428,7 +10411,7 @@ TableToggle = define.widget( 'TableToggle', {
 TableRowNum = define.widget( 'TableRowNum', {
 	Const: function( x, p ) {
 		Html.apply( this, arguments );
-		var r = this.tr(), b = r.pubNode;
+		var r = this.tr(), b = r.pubParent();
 		r.rownum = this;
 		b._rowNumCounter ++;
 		x.text = b._rowNumCounter;
@@ -10599,14 +10582,14 @@ TableRow = define.widget( 'TableRow', {
 			}
 		},
 		html_cells: function( i, l ) {
-			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, h = this.pubNode.x.escape !== F, r = this.offsetParent()._rowSpan,
-				i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
+			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, q = this.pubParent(),
+				h = q.x.escape !== F, r = this.offsetParent()._rowSpan, i = i == N ? 0 : i, t, k, L = c.length - 1, l = l == N ? L : l;
 			for ( ; i <= l; i ++ ) {
 				if ( r && r[ this.level ] && r[ this.level ][ a ] && r[ this.level ][ a ][ i ] ) {
 					i += r[ this.level ][ a ][ i ] - 1;
 					continue;
 				}
-				var k = i, s = t = '', f = c[ i ].x, v = d && d[ f.field ];
+				var k = i, s = '', t = '', f = c[ i ].x, v = d && d[ f.field ];
 				if ( v != N && typeof v === _OBJ ) {
 					if ( v.rowSpan > 1 ) {
 						for ( var j = 1; j < v.rowSpan; j ++ )
@@ -10637,7 +10620,7 @@ TableRow = define.widget( 'TableRow', {
 				} else {
 					v = v == N ? '' : v;
 					var g = '';
-					if ( ! this.pubNode.x.br )
+					if ( ! q.x.br )
 						g += ' class="f-fix"';
 					if ( this.type_thr && f.sort )
 						v = '<span class=f-va>' + v + '</span>' + c[ i ].html_sortarrow();
@@ -10680,7 +10663,7 @@ TD = define.widget( 'TD', {
 			x = { node: x };
 		x.colSpan == -1 && (x.colSpan = p.table.getColGroup().length);
 		if ( x.node ) {
-			var e = x.escape == N ? p.parentNode.pubNode.x.escape : x.escape;
+			var e = x.escape == N ? p.parentNode.pubParent().x.escape : x.escape;
 			e != N && $.extend( x.node, { escape: e } );
 		}
 		this.table = p.table;
@@ -10688,12 +10671,14 @@ TD = define.widget( 'TD', {
 	},
 	Prototype: {
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		// @implement
 		x_childtype: function( t ) {
 			return _td_wg[ t ] ? 'Table' + t : t;
 		},
 		html: function( k, i, L ) {
-			var r = this.parentNode.parentNode, g = this.table, u = this.rootNode, c = this.col, d = this.x.escape == N ? r.pubNode.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
+			var r = this.parentNode.parentNode, g = this.table, u = this.rootNode, q = r.pubParent(), c = this.col,
+			d = this.x.escape == N ? q.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td z-face-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_tr ? '' : ' w-th' + (r.type_thr && c.x.sort ? ' w-th-sort' : ''));
 			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (!ie7 && c.x.fixed ? ' f-form-hide' : '') + '"';
 			if ( this.x.on || this.Const.Listener )
@@ -10717,7 +10702,7 @@ TD = define.widget( 'TD', {
 			s += '>' + this.html_prepend() + this.html_nodes();
 			if ( ! this.x.node ) {
 				var f = '';
-				if ( !(this.x.br == N ? r.pubNode.x.br : this.x.br) )
+				if ( !(this.x.br == N ? q.x.br : this.x.br) )
 					f += ' class="f-fix"';
 				if ( ! e && c._sort )
 					t += c.html_sortarrow();
@@ -10773,9 +10758,12 @@ TR = define.widget( 'TR', {
 		}
 	},
 	Prototype: {
-		pubType: 'TBody',
 		type_tr: T,
 		x_childtype: $.rt( 'TR' ),
+		pubParent: function() {
+			//层级关系: Table/TBody/ContentTable/ContentTBody/TR
+			return this.parentNode.type === this.type ? this.parentNode.pubParent() : this.parentNode.parentNode.parentNode;
+		},
 		getPageIndex: function() {
 			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.contentTBody() || [], this );
 			return r.x.limit ? Math.floor( a / r.x.limit ) + 1 : 1;
@@ -10892,7 +10880,6 @@ THR = define.widget( 'THR', {
 		}
 	},
 	Prototype: {
-		pubType: 'THead',
 		type_thr: T,
 		getBox: TR.prototype.getBox,
 		isEvent4Box: TR.prototype.isEvent4Box,
@@ -10911,7 +10898,6 @@ THR = define.widget( 'THR', {
 TFR = define.widget( 'TFR', {
 	Extend: THR,
 	Prototype: {
-		pubType: 'TFoot',
 		type_thr: F,
 		type_tfr: T
 	}
@@ -10924,6 +10910,7 @@ TCell = define.widget( 'TCell', {
 	},
 	Prototype: {
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		x_childtype: $.rt( 'TD' ),
 		scaleWidth: function( a ) {
 			var w = 0, l = a.x.colSpan || 1, r = this.table, g = this.table.getColGroup(), c = a.col, d = r._pad, e;
@@ -10957,6 +10944,7 @@ ContentTBody = define.widget( 'ContentTBody', {
 	},
 	Prototype: {
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		// @implement
 		x_childtype: $.rt( 'TR' ),
 		// @implement
@@ -11086,6 +11074,7 @@ Column = define.widget( 'Column', {
 	},
 	Prototype: {
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		th: function() {
 			var t = this.table.contentTHead();
 			return t && t[ 0 ].$().cells[ this.nodeIndex ];
@@ -11124,6 +11113,7 @@ ColGroup = define.widget( 'ColGroup', {
 	Extend: HorzScale,
 	Prototype: {
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		isScaleCover: T,
 		x_childtype: $.rt( 'Column' ),
 		scaleWidth: function( a ) {
@@ -11163,6 +11153,7 @@ ContentTable = define.widget( 'ContentTable', {
 	},
 	Prototype: {
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		html: function() {
 			var s = '<table id=' + this.id + ' class=w-' + this.rootNode.type.toLowerCase() + '-tbl cellspacing=0 cellpadding=' + this.table._pad;
 			for ( var t = '<tr>', w = 0, i = 0, c = this.colgroup, l = c.length, d; i < l; i ++ ) {
@@ -11193,6 +11184,7 @@ THead = define.widget( 'THead', {
 	Extend: Vert,
 	Prototype: {
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		x_childtype: $.rt( 'TR' ),
 		x_nodes: $.rt(),
 		// 表头固定在外部滚动面板的上方
@@ -11798,6 +11790,7 @@ LeftTable = define.widget( 'LeftTable', {
 	Prototype: {
 		className: 'w-lefttable w-fixedtable',
 		rootType: 'Table,Form',
+		pubParent: $.rt(),
 		fixSize: function() {
 			this.body.height( (this.rootNode.head ? this.rootNode.body : this.rootNode).innerHeight() );
 		},
