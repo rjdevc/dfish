@@ -119,8 +119,9 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
         return tBody.pub();
     }
     @Override
+    @Deprecated
     public TR getPub(){
-        return tBody.getPub();
+        return null;
     }
     @Override
     public Table setPub(TR pub){
