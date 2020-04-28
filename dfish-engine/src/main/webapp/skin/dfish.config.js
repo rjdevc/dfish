@@ -24,7 +24,7 @@ dfish.config({
     defaultOptions: {
         'Alert': {preload: 'g/alert'},
         'Alert.x-alert-info': {position: 'br', timeout: 3000},
-        'Alert.x-alert-warn': {icon: '.f-i-warning .f-i'},
+        'Alert.x-alert-warn': {icon: '.f-i-warning'},
         'Confirm': {preload: 'g/alert'},
         'Dialog': {preload: 'g/std', width: 680, height: 410, error: "this.close();"},
         'Dialog.dlg-large': {width: 980, height: 550},
@@ -107,8 +107,8 @@ dfish.config({
 
         'Toggle': {
             height: 40,
-            collapsedIcon: '.f-i .f-i-plus',
-            expandedIcon: '.f-i .f-i-minus',
+            collapsedIcon: '.f-i-plus',
+            expandedIcon: '.f-i-minus',
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         },
@@ -118,8 +118,8 @@ dfish.config({
         },
         'TableToggle.z-form': {
             height: 40,
-            collapsedIcon: '.f-i .f-i-plus',
-            expandedIcon: '.f-i .f-i-minus',
+            collapsedIcon: '.f-i-plus',
+            expandedIcon: '.f-i-minus',
             cls: 'bd-split bd-onlybottom',
             heightMinus: 1
         },

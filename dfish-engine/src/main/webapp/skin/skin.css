@@ -110,7 +110,7 @@ i {
 /**表格**/
 .w-table.z-head.z-empty .w-tbody, .w-table.z-nohead.z-empty, .w-album.z-empty, .w-tree.z-empty {
     background: url("./img/nodata.png") no-repeat center;
-    min-height: 160px;
+    min-height: 180px;
 }
 
 .w-table .w-td-cell.z-first {
@@ -417,11 +417,18 @@ img {
     background-position: -16px -96px;
 }
 
-.i-logo {
-    background-image: url("img/logo.png");
+.i-logo-white {
+    background-image: url("img/logo-white.png");
     background-repeat: no-repeat;
-    width: 130px;
-    height: 30px;
+    width: 163px;
+    height: 40px;
+}
+
+.i-logo-blue {
+    background-image: url("img/logo-blue.png");
+    background-repeat: no-repeat;
+    width: 163px;
+    height: 40px;
 }
 
 .i-index-person {
@@ -484,8 +491,16 @@ img {
 /**常用操作图标**/
 .x-operation-group i, i.x-operation {
     cursor: pointer;
-    display: inline-block;
     margin-left: 5px;
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.x-operation-group i:hover, i.x-operation:hover {
+    color: #2498ff;
 }
 
 .x-operation-group i:first-child {
@@ -1058,6 +1073,42 @@ img {
 /*    width: 16px;*/
 /*    height: 16px;*/
 /*}*/
+
+.i-default {
+    background-image: url("img/icon_default.png");
+    width: 60px;
+    height: 60px;
+}
+
+.i-default.x-size-xs {
+    background-image: url("img/icon_default_20.png");
+    width: 20px;
+    height: 20px;
+}
+
+.i-default.x-size-s {
+    background-image: url("img/icon_default_40.png");
+    width: 40px;
+    height: 40px;
+}
+
+.i-default.x-size-m {
+    background-image: url("img/icon_default_60.png");
+    width: 60px;
+    height: 60px;
+}
+
+.i-default.x-size-l {
+    background-image: url("img/icon_default_80.png");
+    width: 80px;
+    height: 80px;
+}
+
+.i-default.x-size-xl {
+    background-image: url("img/icon_default_100.png");
+    width: 100px;
+    height: 100px;
+}
 
 .i-user {
     background-image: url("img/icon_user.png");
