@@ -9659,8 +9659,8 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 			} else if ( a === 'src' ) {
 				this.fixFolder();
 			} else if ( a === 'cls' ) {
-				this.removeClass( c );
-				this.addClass( b );
+				c && this.removeClass( c );
+				b && this.addClass( b );
 			} else if ( a === 'badge' ) {
 				_setBadge.call( this, b );
 			}

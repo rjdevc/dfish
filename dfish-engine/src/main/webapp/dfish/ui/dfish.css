@@ -842,7 +842,7 @@
 .w-pagebar-simple-menu{color:#999;text-align:center}
 
 .w-datepicker-multiple-dialog a{color:#333}
-.w-datepicker-multiple-dialog ._i{font-size:20px;cursor:pointer}
+.w-datepicker-multiple-dialog ._i{cursor:pointer}
 
 .f-tab-bar{background:#f8f8f8}
 .f-tab-bar.z-horz-2,.f-tab-bar.z-horz-3{text-align:right}
