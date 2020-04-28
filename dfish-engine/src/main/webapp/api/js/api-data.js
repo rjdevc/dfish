@@ -1083,6 +1083,8 @@ define( {
   			{ src: '.f-i-long-arrow-up', text: '.f-i-long-arrow-up' },
   			{ src: '.f-i-long-arrow-left', text: '.f-i-long-arrow-left' },
   			{ src: '.f-i-long-arrow-right', text: '.f-i-long-arrow-right' },
+  			{ src: '.f-i-long-arrow-top', text: '.f-i-long-arrow-top' },
+  			{ src: '.f-i-long-arrow-bottom', text: '.f-i-long-arrow-bottom' },
   			{ src: '.f-i-minus', text: '.f-i-minus' },
   			{ src: '.f-i-plus', text: '.f-i-plus' },
   			{ src: '.f-i-minus-square', text: '.f-i-minus-square' },

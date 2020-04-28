@@ -2244,7 +2244,7 @@ _merge( $, {
 	},
 	caret: function( a, b ) {
 		var c = _caretHooks[ b || a ] || b || a,
-			d = c === 'plus' || c === 'minus' ? 'f-i f-i-' + c + '-squre' : 'f-i f-i-caret-' + c;
+			d = c === 'plus' || c === 'minus' ? 'f-i f-i-' + c + '-square' : 'f-i f-i-caret-' + c;
 		if ( a && a.nodeType ) {
 			a.className = d;
 		} else

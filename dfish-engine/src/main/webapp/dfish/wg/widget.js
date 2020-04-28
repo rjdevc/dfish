@@ -2321,7 +2321,7 @@ AbsSection = define.widget( 'AbsSection', {
 			if ( ! u ) {
 				var t = this.x.template;
 				if ( t && (t = _getTemplate( t )) ) {
-					u = t.src || (t[ '@src' ] && this.formatJS( 'return ' + t[ '@src' ] ));
+					u = t.src; //|| (t[ '@src' ] && this.formatJS( 'return ' + t[ '@src' ] ));
 				}
 				!u && (u = this.attr( 'src' ));
 			}
@@ -4441,8 +4441,8 @@ PageBar = define.widget( 'PageBar', {
 			this.x.target && this.initByTarget();
 			var sp = this.sumPage(), cp = this.currentPage(),
 				c = 'w-pagebar-button ' + (this.x.buttonCls != N ? this.x.buttonCls : 'f-button'),
-				b = [ { type: 'Button', ownproperty: T, text: '&lt;<i class="f-arw f-arw-l4"></i>', tip: (this.x.prevText || Loc.page_prev || ''), cls: c + ' _prev', status: cp == 1 ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (cp - 1) + ')' } },
-					  { type: 'Button', ownproperty: T, text: '&gt;<i class="f-arw f-arw-r4"></i>', tip: (this.x.nextText || Loc.page_next || ''), cls: c + ' _next', status: cp == sp ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (cp + 1) + ')' } } ];
+				b = [ { type: 'Button', ownproperty: T, icon: '.f-i-angle-left', tip: (this.x.prevText || Loc.page_prev || ''), cls: c + ' _prev', status: cp == 1 ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (cp - 1) + ')' } },
+					  { type: 'Button', ownproperty: T, icon: '.f-i-angle-right', tip: (this.x.nextText || Loc.page_next || ''), cls: c + ' _next', status: cp == sp ? 'disabled' : '', escape: F, on: { click: 'this.rootNode.parentNode.go(' + (cp + 1) + ')' } } ];
 			if ( this.x.buttonCount != 0 ) {
 				var g = this.x.dropAlign;
 				b.splice( g === 'right' ? 2 : g === 'left' ? 0 : 1, 0, { type: 'Button', ownproperty: T, text: cp + '/' + sp, cls: c + ' _drop', escape: F, on: { click: 'this.rootNode.parentNode.drop(this)' } } );
@@ -9729,10 +9729,12 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 					}
 					this.fixFolder();
 					$.classRemove( this.$(), 'z-loading' );
-					if ( x = this.html_icon() ) {
-						this.$( 'i' ) && $.replace( this.$( 'i' ), x );
-					} else
-						$.remove( this.id + 'ld' );
+					if ( this.level > -1 ) {
+						if ( x = this.html_icon() ) {
+							this.$( 'i' ) && $.replace( this.$( 'i' ), x );
+						} else
+							$.remove( this.id + 'ld' );
+					}
 				} } );
 		},
 		render_nodes: function( n ) {

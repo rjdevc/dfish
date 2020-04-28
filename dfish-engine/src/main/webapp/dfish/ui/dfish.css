@@ -655,7 +655,7 @@
 .w-button ._x,.w-tab ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
 .w-button ._xi,.w-tab ._xi{display:inline-block;margin-top:-2px;font:normal 18px verdana;vertical-align:middle}
 .w-button ._xi:hover,.w-tab ._xi:hover{color:#f00}
-.w-button em,.w-tab em,.w-menu-button em{font-style:normal;vertical-align:middle}
+.w-button em,.w-tab em,.w-menu-button em{font-style:normal;font-weight:normal;vertical-align:middle}
 .w-button img,.w-tab img,.w-menu-button img{vertical-align:middle}
 .w-button ._m .f-i,.w-tab ._m .f-i{margin-left:-6px;color:#888}
 .w-button ._ld,.w-tab ._ld{position:absolute;top:0;bottom:0;left:0;right:0;background:url(g/loading-cir.gif) no-repeat 50% 50%}
@@ -792,7 +792,7 @@
 .w-pagebar ._jump{width:28px;height:30px;margin:0;padding:0;vertical-align:middle;border:1px solid #ddd;text-align:center}
 
 .w-pagebar.z-face-mini{font-size:12px}
-.w-pagebar.z-face-mini ._o{display:inline-block;height:23px;min-width:18px;line-height:23px;padding:0 3px;margin-right:4px;border:1px solid #ddd;color:#333;font-size:12px;font-style:normal;text-align:center;vertical-align:middle;outline:none;*width:18px}
+.w-pagebar.z-face-mini ._o{display:inline-block;height:23px;min-width:18px;line-height:20px;padding:0 3px;margin-right:4px;border:1px solid #ddd;color:#333;font-size:12px;font-style:normal;text-align:center;vertical-align:middle;outline:none;*width:18px}
 .w-pagebar.z-face-mini ._o.z-us.z-hv{cursor:pointer;border-color:#2498ff;color:#2498ff}
 .w-pagebar.z-face-mini ._cur{background:#2498ff;border-color:#2498ff;color:#fff}
 .w-pagebar.z-face-mini ._first,.w-pagebar.z-face-mini ._prev,.w-pagebar.z-face-mini ._next,.w-pagebar.z-face-mini ._last{color:#999}
@@ -831,7 +831,7 @@
 
 .w-pagebar.z-face-simple{*position:relative}
 .w-pagebar-button{color:#999}
-.w-pagebar-button ._c,.w-pagebar-button ._t{padding:0}
+.w-pagebar-button ._c,.w-pagebar-button ._t,.w-pagebar-button.z-i ._i{padding:0}
 .w-pagebar-button.z-ds{color:#ccc}
 .w-pagebar-button._drop{min-width:60px}
 .w-pagebar-button._prev,.w-pagebar-button._next{width:30px;font-size:15px;font-family:simsun;font-weight:700;line-height:30px\0}
@@ -1083,10 +1083,12 @@ d\:wg{display:none}
 .f-i-upload-image:before{content:'\e64d'}
 .f-i-upload:before{content:'\e64e'}
 .f-i-date:before{content:'\e64f'}
-.f-i-long-arrow-down:before{content:'\e649'}
-.f-i-long-arrow-right:before{content:'\e64a'}
-.f-i-long-arrow-left:before{content:'\e64b'}
-.f-i-long-arrow-up:before{content:'\e64c'}
+.f-i-long-arrow-down:before{content:'\e68b'}
+.f-i-long-arrow-right:before{content:'\e68c'}
+.f-i-long-arrow-left:before{content:'\e68d'}
+.f-i-long-arrow-up:before{content:'\e68a'}
+.f-i-long-arrow-top:before{content:'\e689'}
+.f-i-long-arrow-bottom:before{content:'\e688'}
 .f-i-minus:before{content:'\e687'}
 .f-i-plus:before{content:'\e686'}
 .f-i-plus-square:before{content:'\e645'}
@@ -1097,10 +1099,10 @@ d\:wg{display:none}
 .f-i-search:before{content:'\e641'}
 .f-i-angle-first:before{content:'\e63f'}
 .f-i-angle-last:before{content:'\e640'}
-.f-i-angle-up:before{content:'\e63b'}
-.f-i-angle-down:before{content:'\e63c'}
-.f-i-angle-left:before{content:'\e63d'}
-.f-i-angle-right:before{content:'\e63e'}
+.f-i-angle-up:before{content:'\e691'}
+.f-i-angle-down:before{content:'\e68f'}
+.f-i-angle-left:before{content:'\e68e'}
+.f-i-angle-right:before{content:'\e690'}
 .f-i-star-empty:before{content:'\e638'}
 .f-i-star-full:before{content:'\e639'}
 .f-i-star-half:before{content:'\e63a'}
