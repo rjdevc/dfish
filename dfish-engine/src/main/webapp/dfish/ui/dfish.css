@@ -795,7 +795,7 @@
 .w-pagebar.z-face-mini ._o{display:inline-block;height:23px;min-width:18px;line-height:20px;padding:0 3px;margin-right:4px;border:1px solid #ddd;color:#333;font-size:12px;font-style:normal;text-align:center;vertical-align:middle;outline:none;*width:18px}
 .w-pagebar.z-face-mini ._o.z-us.z-hv{cursor:pointer;border-color:#2498ff;color:#2498ff}
 .w-pagebar.z-face-mini ._cur{background:#2498ff;border-color:#2498ff;color:#fff}
-.w-pagebar.z-face-mini ._first,.w-pagebar.z-face-mini ._prev,.w-pagebar.z-face-mini ._next,.w-pagebar.z-face-mini ._last{color:#999}
+.w-pagebar.z-face-mini ._first .f-i,.w-pagebar.z-face-mini ._prev .f-i,.w-pagebar.z-face-mini ._next .f-i,.w-pagebar.z-face-mini ._last .f-i{font-size:14px;color:#999}
 .w-pagebar.z-face-mini ._first ._s{font-size:14px;margin-right:-2px;margin-left:-3px;font-weight:normal}
 .w-pagebar.z-face-mini ._last ._s{font-size:14px;margin-right:-1px;margin-left:-2px;font-weight:normal}
 .w-pagebar.z-face-mini ._jbtn ._c{padding-left:3px}
@@ -1069,8 +1069,10 @@ d\:wg{display:none}
 .f-i-view:before{content:'\e65a'}
 .f-i-favor:before{content:'\e65b'}
 .f-i-trash:before{content:'\e65d'}
-.f-i-angle-double-right:before{content:'\e659'}
-.f-i-angle-double-down:before{content:'\e678'}
+.f-i-angle-double-left:before{content:'\e697'}
+.f-i-angle-double-right:before{content:'\e694'}
+.f-i-angle-double-down:before{content:'\e695'}
+.f-i-angle-double-up:before{content:'\e696'}
 .f-i-check:before{content:'\e656'}
 .f-i-caret-down:before{content:'\e654'}
 .f-i-caret-left:before{content:'\e655'}
@@ -1097,8 +1099,8 @@ d\:wg{display:none}
 .f-i-question:before{content:'\e644'}
 .f-i-check-circle:before{content:'\e643'}
 .f-i-search:before{content:'\e641'}
-.f-i-angle-first:before{content:'\e63f'}
-.f-i-angle-last:before{content:'\e640'}
+.f-i-angle-first:before{content:'\e692'}
+.f-i-angle-last:before{content:'\e693'}
 .f-i-angle-up:before{content:'\e691'}
 .f-i-angle-down:before{content:'\e68f'}
 .f-i-angle-left:before{content:'\e68e'}
