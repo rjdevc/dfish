@@ -1061,7 +1061,6 @@ define( {
   			{ src: '.f-i-caret-down', text: '.f-i-caret-down' },
   			{ src: '.f-i-caret-up', text: '.f-i-caret-up' },
   			{ src: '.f-i-top', text: '.f-i-top' },
-
   			{ src: '.f-i-rotate-left', text: '.f-i-rotate-left' },
   			{ src: '.f-i-rotate-right', text: '.f-i-rotate-right' },
   			{ src: '.f-i-folder', text: '.f-i-folder' },
@@ -1912,7 +1911,7 @@ define( {
       { name: 'pub', type: 'Object', remark: '按钮的默认属性。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'space', type: 'Number', remark: '按钮之间的间隔。' },
-      { name: 'split', type: 'Object', remark: '在按钮之间插入一个split widget。' },
+      { name: 'split', type: 'Split', remark: '在按钮之间插入一个split。' },
       { name: 'vAlign', type: 'String', remark: '垂直居中。可选值: <b>top</b>, <b>bottom</b>, <b>middle</b>' }
     ],
     Methods: [
@@ -2836,6 +2835,7 @@ define( {
       { name: 'vAlign', type: 'String', remark: '垂直对齐方式。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。<br>一般情况下，如果希望纵向滚动，内部子节点高度应该设为-1；如果希望横向滚动，子节点宽度应该设为-1。' },
+      { name: 'split', type: 'Split', remark: '在子节点之间插入一个split。' },
       { name: 'swipeDown', type: 'String', remark: '下拉刷新的URL地址。', mobile: true }
     ],
     Event: [

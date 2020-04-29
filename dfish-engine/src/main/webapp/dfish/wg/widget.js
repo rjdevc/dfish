@@ -1884,7 +1884,8 @@ $.each( [ 'width', 'height' ], function( v, j ) {
 } );
 $.each( 'prepend append before after'.split(' '), function( v, j ) {
 	// 实现: wg.append(), wg.prepend(), wg.before, wg.after()
-	_proto[ v ] = function( o ) {
+	// @o -> widget | widgetOption, m -> 
+	_proto[ v ] = function( o, m ) {
 		if ( ! o )
 			return;
 		if ( typeof o === _STR )
@@ -1913,15 +1914,17 @@ $.each( 'prepend append before after'.split(' '), function( v, j ) {
 				this.insertHTML( o, v );
 			}
 		}
-		d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
-		if ( ! b && this.$() ) {
-			for ( k = 0; k < l; k ++ )
-				r[ k ].triggerAll( 'ready' );
+		if ( ! m ) {
+			d && (((k = {})[ s ] = r[ 0 ].x[ s ]), r[ 0 ].resize( k ));
+			if ( ! b && this.$() ) {
+				for ( k = 0; k < l; k ++ )
+					r[ k ].triggerAll( 'ready' );
+			}
+			d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
+			q && q.trigger( 'nodeChange' );
+			p.trigger( 'nodeChange' );
+			p.trigger( 'resize', v );
 		}
-		d && q && q[ 0 ] && (((k = {})[ s ] = q[ 0 ].x[ s ]), q[ 0 ].resize( k ));
-		q && q.trigger( 'nodeChange' );
-		p.trigger( 'nodeChange' );
-		p.trigger( 'resize', v );
 		return r[ 0 ];
 	};
 	// 实现: wg.html_before(), wg.html_prepend(), wg.html_append(), wg.html_after()
@@ -2886,6 +2889,7 @@ Horz = define.widget( 'Horz', {
 	Const: function( x ) {
 		x.br && (this.className += ' z-br');
 		Scroll.apply( this, arguments );
+		x.split && _initSplit.call( this );
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		if ( x.hiddens )
 			this._hiddens = this.add( { type: 'Hiddens', nodes: x.hiddens }, -1 );
@@ -2895,7 +2899,11 @@ Horz = define.widget( 'Horz', {
 	Extend: [ Scroll, HorzScale ],
 	Listener: {
 		body: {
-			nodeChange: _w_rsz_layout
+			nodeChange: function() {
+				if ( this.x.split )
+					_fixSplit.call( this );
+				_w_rsz_layout.call( this );
+			}
 		}
 	},
 	Prototype: {
@@ -2931,6 +2939,7 @@ VertScale = define.widget( 'VertScale', {
 Vert = define.widget( 'Vert', {
 	Const: function( x ) {
 		Scroll.apply( this, arguments );
+		x.split && _initSplit.call( this );
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		if ( _w_lay.height.call( this ) )
 			this.addEvent( 'resize', _w_mix.height ).addEvent( 'ready', _w_mix.height );
@@ -3148,11 +3157,26 @@ TimelineItem = define.widget( 'TimelineItem', {
 _splitSize = function( a, b ) {
 	return a && a[ a.parentNode.type_horz ? 'width' : 'height' ]( b );
 },
+_initSplit = function() {
+	var i = this.length;
+	while ( (--i) > 0 )
+		!this[ i ].type_split && !this[ i - 1 ].type_split && this.add( $.extend( { type: 'Split', autoSplit: T }, this.x.split ), i );
+},
+_fixSplit = function() {
+	for ( var l = this.length -1, i = l; i > -1; i -- ) {
+		if ( this[ i ].type_split ) {
+			if ( this[ i ].x.autoSplit && (i === 0 || i === l || this[ i ].prev().type_split) ) { this[ i ].remove( T ); }
+		} else {
+			if ( i > 0 && !this[ i ].prev().type_split ) { this[ i ].before( $.extend( { type: 'Split', autoSplit: T }, this.x.split ), T ); }
+		}
+	}
+},
 /* `split`  可拖动调整大小的分隔条 */
 Split = define.widget( 'Split', {
-	Const: function( x ) {
-		W.apply( this, arguments );
+	Const: function( x, p ) {
 		x.movable && (this.className += ' z-movable');
+		this.className += p.type_horz ? ' z-horizontal f-inbl' : ' z-vertical';
+		W.apply( this, arguments );
 	},
 	Listener: {
 		body: {
@@ -3169,6 +3193,7 @@ Split = define.widget( 'Split', {
 	},
 	Prototype: {
 		className: 'w-split',
+		type_split: T,
 		// 拖动调整大小
 		drag: function( a, e ) {
 			if ( ! this.x.movable )
@@ -3244,20 +3269,22 @@ Split = define.widget( 'Split', {
 		minorSize: function( a ) {
 			return _splitSize( this.minor(), a );
 		},
+		html_text: function() {
+			return this.x.text ? '<i class=f-vi></i>' + this.html_format( this.x.text, this.x.format, this.x.escape === T ) : '';
+		},
 		html_icon: function() {
 			var c = _toggleIcon.call( this );
 			return c ? $.image( c, { id: this.id + 'i', cls: '_i _' + (this.x.hide || 'prev'), click: evw + '.toggle()' } ) : '';
 		},
 		html_nodes: function() {
 			var w = this.width(), h = this.height(), p = this.parentNode, z = p.type_horz,
-				s = '<div id=' + this.id + 'bg style="position:absolute;background:inherit;height:' + (z ? '100%' : h + 'px') + ';width:' + (z ? w + 'px' : '100%') + '">';
+				s = '<div id=' + this.id + 'bg class=_bg style="height:' + (z ? '100%' : h + 'px') + ';width:' + (z ? (w ? w + 'px' : 'auto') : '100%') + '">';
 			if ( this.x.range && (z || p.type_vert) && this.next() && this.prev() ) {
 				s += '<div onmousedown=' + evw + '.drag(this,event) style="position:absolute;' + (this.x.movable ? 'cursor:' + (z ? 'col' : 'row') + '-resize;' : '') + 'height:' + (z || h >= 5 ? '100%' : '5px') + ';width:' +
 					(! z || w >= 5 ? '100%' : '5px') + ';margin-' + (z ? 'left' : 'top') + ':' + ( (z ? w : h) < 5 ? ((z ? w : h) - 5) / 2 : 0 ) + 'px;z-index:1;"></div>';
 				this._size = _number( this.x.range.split( ',' )[ 2 ] ) || this.majorSize();
 			}
-			s += this.html_icon();
-			return s + '</div>';
+			return s + this.html_icon() + '</div>' + this.html_text();
 		}
 	}
 } ),
@@ -3292,15 +3319,13 @@ Badge = define.widget( 'Badge', {
 /* `buttonbar` */
 ButtonBar = define.widget( 'ButtonBar', {
 	Const: function( x, p ) {
-		this.className += ' z-dir' + (x.dir || 'h');
+		!x.dir && (x.dir = 'h');
+		this.className += ' z-dir' + x.dir;
 		x.br && (this.className += ' z-br');
 		!this.length && (this.className += ' z-empty');
+		x.dir === 'v' && (this.type_vert = T, this.type_horz = F);
 		W.apply( this, arguments );
-		if ( this.x.split ) {
-			var i = this.length;
-			while ( (--i) > 0 )
-				this[ i ].type !== 'ButtonSplit' && this[ i - 1 ].type !== 'ButtonSplit' && this.add( $.extend( { type: 'Split' }, this.x.split ), i );
-		}
+		x.split && _initSplit.call( this );
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		(!x.vAlign && p && p.x.vAlign) && this.defaults( { vAlign: p.x.vAlign } );
 	},
@@ -3343,7 +3368,7 @@ ButtonBar = define.widget( 'ButtonBar', {
 		className: 'w-buttonbar',
 		childCls: '',
 		x_childtype: function( t ) {
-			return t === 'Split' ? 'ButtonSplit' : (t || 'Button');
+			return t || 'Button';
 		},
 		scaleWidth: function( a, b ) {
 			if ( this.x.dir === 'v' )
@@ -3700,9 +3725,9 @@ Button = define.widget( 'Button', {
 			if ( x.focus && x.focusable )
 				b += ' z-on';
 			if ( p === this.pubParent() ) {
-				if ( this === p[ 0 ] || ((d = this.prev()) && d.type === 'ButtonSplit') )
+				if ( this === p[ 0 ] || ((d = this.prev()) && d.type_split) )
 					b += ' z-first';
-				if ( this === p[ p.length - 1 ] || ((d = this.next()) && d.type === 'ButtonSplit') )
+				if ( this === p[ p.length - 1 ] || ((d = this.next()) && d.type_split) )
 					b += ' z-last';
 			}
 			a += b + '"';
@@ -3947,26 +3972,6 @@ MenuSubmitButton = define.widget( 'MenuSubmitButton', {
 		}
 	}
 } ),
-/* `buttonsplit` */
-ButtonSplit = define.widget( 'ButtonSplit', {
-	Const: function( x, p ) {
-		W.apply( this, arguments );
-		var p = this.parentNode,
-			w = p.x.space;
-		w && ! x.ownproperty && this.defaults( { width: w } );
-		if ( p.x.br ) {
-			this.defaults( { height: -1 } );
-			this.cssText = 'margin-bottom:' + w + 'px;';
-		}
-	},
-	Default: { width: -1 },
-	Prototype: {
-		className: 'w-button-split f-inbl',
-		html_nodes: function() {
-			return '<span class="f-va _vr">' + (this.x.text || '') + '</span><i class=f-vi></i>';
-		}
-	}
-} ),
 _tab_position = { top: 't', right: 'r', bottom: 'b', left: 'l' },
 _tab_position_name = { t: 'top', r: 'right', b: 'bottom', l: 'left', c: 'center', m: 'middle' },
 /* `tabs` */
@@ -4014,7 +4019,7 @@ TabBar = define.widget( 'TabBar', {
 	Prototype: {
 		className: 'w-tabbar',
 		x_childtype: function( t ) {
-			return t === 'Split' ? 'ButtonSplit' : (t || 'Tab');
+			return t || 'Tab';
 		}
 	}
 } ),

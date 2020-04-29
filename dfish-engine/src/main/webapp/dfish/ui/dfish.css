@@ -310,10 +310,11 @@
 .w-toggle ._hr{height:1px;margin-left:10px;border:0;background:#ddd}
 .w-tabletoggle.z-expanded{color:#2498ff}
 
-.w-split{overflow:hidden;white-space:nowrap;text-align:center;font-size:0}
+.w-split{overflow:hidden;white-space:nowrap;text-align:center}
 .w-split ._prev,.w-split ._next{cursor:pointer}
 .w-split ._ico{position:relative;z-index:1}
 .w-split.z-0.f-sub-horz ._next{position:relative;top:0;left:-100%}
+.w-split ._bg{position:absolute;background:inherit}
 .f-split-hide{position:absolute!important;visibility:hidden}
 
 /* calendar */
@@ -638,6 +639,7 @@
 .w-tabbar.z-position-bottom .w-tabbar-line{right:0;left:0;top:0;height:1px}
 .w-tabbar.z-position-left .w-tabbar-line{top:0;bottom:0;right:0;width:1px}
 .w-tabbar.z-position-right .w-tabbar-line{top:0;bottom:0;left:0;width:1px}
+.w-buttonbar .w-split.z-horizontal,.w-tabbar .w-split.z-horizontal{vertical-align:middle}
 
 /*! button
  *	c: content, i: icon, t: text, m: more, x: close

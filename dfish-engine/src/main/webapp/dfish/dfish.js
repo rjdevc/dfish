@@ -56,8 +56,6 @@ getPath = function() {
 },
 // 浏览器缩放检测
 detectZoom = function(){
-	if ( _cookie( 'dfish.detectZoom' ) )
-		return;
     var ratio = 0;
     if ( win.devicePixelRatio !== U ) {
         ratio = win.devicePixelRatio;
@@ -2056,11 +2054,13 @@ var boot = {
 					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: { target: doc.body, position: 'tt' }, prong: F});
 			}
 			//浏览器缩放状态下弹出提示
-			var ratio = detectZoom();
-			if ( ratio && ratio != 100 ) {
-				VM().cmd({ type: 'Tip', cls: 'f-shadow', face: 'warn', escape: F, closable: T, text: '<div style="color:#f00;font-size:14px;padding:5px;line-height:2">' + $.loc.ps( $.loc.detect_zoom, ratio ) +
-					'<div><a href=javascript: onclick=dfish.cookie("dfish.detectZoom",1,365);dfish.close(this)><u>' + $.loc.no_tip_anymore + '</u></a></div></div>',
-					position: 't', snap: N, timeout: 5000, prong: F});
+			if ( ! _cookie( 'dfish.detectZoom' ) ) {
+				var ratio = detectZoom();
+				if ( ratio && ratio != 100 ) {
+					VM().cmd({ type: 'Tip', cls: 'f-shadow', face: 'warn', escape: F, closable: T, text: '<div style="color:#f00;font-size:14px;padding:5px;line-height:2">' + $.loc.ps( $.loc.detect_zoom, ratio ) +
+						'<div><a href=javascript: onclick=dfish.cookie("dfish.detectZoom",1,365);dfish.close(this)><u>' + $.loc.no_tip_anymore + '</u></a></div></div>',
+						position: 't', snap: N, timeout: 5000, prong: F});
+				}
 			}
 		} );
 		// 调试模式
