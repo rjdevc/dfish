@@ -54,6 +54,23 @@ getPath = function() {
 	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
 	!_cfg.ver && (_cfg.ver = _urlParam( u, 'ver' ));
 },
+// 浏览器缩放检测
+detectZoom = function(){
+    var ratio = 0;
+    if ( win.devicePixelRatio !== U ) {
+        ratio = win.devicePixelRatio;
+    } else if ( br.ie ) {  // ie
+        if ( screen.deviceXDPI && screen.logicalXDPI ) {
+            ratio = screen.deviceXDPI / screen.logicalXDPI;
+        }
+    } else if ( win.outerWidth !== U && win.innerWidth !== U ) {
+        ratio = win.outerWidth / win.innerWidth;
+    }
+    if ( ratio ) {
+    	ratio = Math.round(ratio * 100);
+    }
+    return ratio;
+};
 
 // 浏览器信息
 br = $.br = (function() {
@@ -2036,6 +2053,12 @@ var boot = {
 				VM().cmd({ type: 'Tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
 					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: { target: doc.body, position: 'tt' }, prong: F});
 			}
+			//浏览器缩放状态下弹出提示
+			var ratio = detectZoom();
+			if ( ratio && ratio != 100 ) {
+				VM().cmd({ type: 'Tip', cls: 'f-shadow', face: 'warn', escape: F, closable: T, text: '<div style="color:#f00;font-size:14px;padding:5px">' + $.loc.ps( $.loc.detect_zoom, ratio ) + '</div>',
+					position: 't', snap: N, timeout: 5000, prong: F});
+			}
 		} );
 		// 调试模式
 		if ( _cfg.debug ) {
@@ -2175,36 +2198,7 @@ _merge( $, {
 	},
 	//关闭窗口
 	close: function( a ) {
-		if ( a = this.dialog( a ) ) {
-			a.close();
-		} else if ( win.plus ) {
-			$.closeAll( plus.webview.currentWebview() );
-		}
-	},
-	// 关闭当前webview打开的所有webview；
-	closeOpened: function(webview) {
-		var opened = webview.opened();
-		if( opened ) {
-			for( var i = 0, len = opened.length; i < len; i ++ ) {
-				var openedWebview = opened[i];
-				var open_open = openedWebview.opened();
-				if(open_open && open_open.length > 0) {
-					//关闭打开的webview
-					$.closeOpened(openedWebview);
-					//关闭自己
-					openedWebview.close("none");
-				} else {
-					//如果直接孩子节点，就不用关闭了，因为父关闭的时候，会自动关闭子；
-					if(openedWebview.parent() !== webview) {
-						openedWebview.close('none');
-					}
-				}
-			}
-		}
-	},
-	closeAll: function( webview, aniShow ) {
-		$.closeOpened(webview);
-		aniShow ? webview.close( aniShow ) : webview.close();
+		(a = this.dialog( a )) && a.close();
 	},
 	cleanPop: function() {
 		$.require( 'Dialog' ).cleanPop();		
