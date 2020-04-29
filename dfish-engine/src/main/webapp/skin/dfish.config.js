@@ -32,7 +32,7 @@ dfish.config({
         'Dialog.dlg-small': {width: 440, height: 250},
         'Dialog.dlg-alert': {preload: 'g/alert'},
         'Dialog.dlg-std': {preload: 'g/std'},
-        'Dialog.dlg-stdx': {preload: 'g/stdx'},
+        'Dialog.dlg-fixed': {preload: 'g/fixed'},
         'Dialog.dlg-form': {preload: 'g/form'},
         'Dialog.dlg-picker': {preload: 'g/picker'},
         'Dialog.dlg-none': {preload: 'g/none'},
