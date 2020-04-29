@@ -56,6 +56,8 @@ getPath = function() {
 },
 // 浏览器缩放检测
 detectZoom = function(){
+	if ( _cookie( 'dfish.detectZoom' ) )
+		return;
     var ratio = 0;
     if ( win.devicePixelRatio !== U ) {
         ratio = win.devicePixelRatio;
@@ -2056,7 +2058,8 @@ var boot = {
 			//浏览器缩放状态下弹出提示
 			var ratio = detectZoom();
 			if ( ratio && ratio != 100 ) {
-				VM().cmd({ type: 'Tip', cls: 'f-shadow', face: 'warn', escape: F, closable: T, text: '<div style="color:#f00;font-size:14px;padding:5px">' + $.loc.ps( $.loc.detect_zoom, ratio ) + '</div>',
+				VM().cmd({ type: 'Tip', cls: 'f-shadow', face: 'warn', escape: F, closable: T, text: '<div style="color:#f00;font-size:14px;padding:5px;line-height:2">' + $.loc.ps( $.loc.detect_zoom, ratio ) +
+					'<div><a href=javascript: onclick=dfish.cookie("dfish.detectZoom",1,365);dfish.close(this)><u>' + $.loc.no_tip_anymore + '</u></a></div></div>',
 					position: 't', snap: N, timeout: 5000, prong: F});
 			}
 		} );
