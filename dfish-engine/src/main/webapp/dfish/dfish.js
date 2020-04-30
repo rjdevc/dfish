@@ -23,6 +23,10 @@ _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'pr
 
 doc = win.document, cvs = doc.documentElement,
 
+_opener = (function() {
+	try { return win.opener.document && win.opener; }catch(ex){}
+})();
+
 dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
 },
@@ -50,6 +54,23 @@ getPath = function() {
 	_lib = u.substring( 0, u.lastIndexOf( '/' ) + 1 ).replace( location.protocol + '//' + location.host, '' );
 	!_cfg.ver && (_cfg.ver = _urlParam( u, 'ver' ));
 },
+// 浏览器缩放检测
+detectZoom = function(){
+    var ratio = 0;
+    if ( win.devicePixelRatio !== U ) {
+        ratio = win.devicePixelRatio;
+    } else if ( br.ie ) {  // ie
+        if ( screen.deviceXDPI && screen.logicalXDPI ) {
+            ratio = screen.deviceXDPI / screen.logicalXDPI;
+        }
+    } else if ( win.outerWidth !== U && win.innerWidth !== U ) {
+        ratio = win.outerWidth / win.innerWidth;
+    }
+    if ( ratio ) {
+    	ratio = Math.round(ratio * 100);
+    }
+    return ratio;
+};
 
 // 浏览器信息
 br = $.br = (function() {
@@ -734,8 +755,9 @@ _dateFormat = $.dateFormat = function( a, b ) {
 	if ( typeof a === _STR )
 		a = _dateParse( a, b );
 	var o = { y : a.getFullYear(), m : a.getMonth(), d : a.getDate(), h : a.getHours(), i : a.getMinutes(), s : a.getSeconds(), w : ( a.getDay() || 7 ) };
-	return (b || _date_sf).replace( 'yyyy' , o.y ).replace( 'yy', o.y % 100 ).replace( 'MM', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'HH', _strPad( o.h ) )
-		.replace( 'mm', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) ).replace( 'M', o.m + 1 ).replace( 'd', o.d ).replace( 'H', o.h ).replace( 'm', o.i ).replace( 's', o.s );
+	return (b || _date_sf).replace( 'yyyy' , o.y ).replace( 'MM', _strPad( o.m + 1 ) ).replace( 'dd', _strPad( o.d ) ).replace( 'HH', _strPad( o.h ) )
+		.replace( 'mm', _strPad( o.i ) ).replace( 'ss', _strPad( o.s ) );
+		//.replace( 'M', o.m + 1 ).replace( 'd', o.d ).replace( 'H', o.h ).replace( 'm', o.i ).replace( 's', o.s );
 },
 // 字串型转为日期型 /@s -> str, f -> format?
 _dateParse = $.dateParse = function( s, f ) {
@@ -1613,6 +1635,13 @@ Ajax = _createClass( {
 	Prototype: {
 		sendCache: function() {
 			var x = this.x, u = _ajax_url( x.src, x.cdn ), c = _ajax_cache[ u ];
+			if ( ! c && _opener ) {
+				try {
+					this.response = _opener.dfish.ajaxCache[ u ].response;
+					if ( this.response )
+						c = _ajax_cache[ u ] = this;
+				} catch( ex ){}
+			}
 			if ( c ) {
 				if ( c.response != N ) {
 					x.success && x.success.call( x.context, c.response );
@@ -2024,6 +2053,15 @@ var boot = {
 				VM().cmd({ type: 'Tip', cls: 'f-shadow', text: '<div style="float:left;padding:10px 30px 0 0;">' + $.loc.browser_upgrade + '</div><div style="float:left;line-height:4"><a target=_blank title=Chrome href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['chrome'] ) : 'https://www.baidu.com/s?wd=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD') + '>' +
 					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: { target: doc.body, position: 'tt' }, prong: F});
 			}
+			//浏览器缩放状态下弹出提示
+			if ( ! _cookie( 'dfish.detectZoom' ) ) {
+				var ratio = detectZoom();
+				if ( ratio && ratio != 100 ) {
+					VM().cmd({ type: 'Tip', cls: 'f-shadow', face: 'warn', escape: F, closable: T, text: '<div style="color:#f00;font-size:14px;padding:5px;line-height:2">' + $.loc.ps( $.loc.detect_zoom, ratio ) +
+						'<div><a href=javascript: onclick=dfish.cookie("dfish.detectZoom",1,365);dfish.close(this)><u>' + $.loc.no_tip_anymore + '</u></a></div></div>',
+						position: 't', snap: N, timeout: 5000, prong: F});
+				}
+			}
 		} );
 		// 调试模式
 		if ( _cfg.debug ) {
@@ -2069,6 +2107,7 @@ var boot = {
 _merge( $, {
 	abbr: '$',
 	alert_id: 'dfish:alert',
+	ajaxCache: _ajax_cache,
 	_data: {},
 	all: {},
 	globals: {},
@@ -2148,7 +2187,7 @@ _merge( $, {
 		$.widget( a ).isNormal() && !a.contains( event.toElement ) && _classRemove( a, 'z-hv' );
 	},
 	loadCss: function( a ) {
-		return $.require.css( a );
+		_loadCss( _urlLoc( _path, a ) );
 	},
 	// 根据expr获取单个元素 /a -> expr, b -> context
 	get: function( a, b ) {
@@ -2162,36 +2201,7 @@ _merge( $, {
 	},
 	//关闭窗口
 	close: function( a ) {
-		if ( a = this.dialog( a ) ) {
-			a.close();
-		} else if ( win.plus ) {
-			$.closeAll( plus.webview.currentWebview() );
-		}
-	},
-	// 关闭当前webview打开的所有webview；
-	closeOpened: function(webview) {
-		var opened = webview.opened();
-		if( opened ) {
-			for( var i = 0, len = opened.length; i < len; i ++ ) {
-				var openedWebview = opened[i];
-				var open_open = openedWebview.opened();
-				if(open_open && open_open.length > 0) {
-					//关闭打开的webview
-					$.closeOpened(openedWebview);
-					//关闭自己
-					openedWebview.close("none");
-				} else {
-					//如果直接孩子节点，就不用关闭了，因为父关闭的时候，会自动关闭子；
-					if(openedWebview.parent() !== webview) {
-						openedWebview.close('none');
-					}
-				}
-			}
-		}
-	},
-	closeAll: function( webview, aniShow ) {
-		$.closeOpened(webview);
-		aniShow ? webview.close( aniShow ) : webview.close();
+		(a = this.dialog( a )) && a.close();
 	},
 	cleanPop: function() {
 		$.require( 'Dialog' ).cleanPop();		
@@ -2231,7 +2241,7 @@ _merge( $, {
 	},
 	caret: function( a, b ) {
 		var c = _caretHooks[ b || a ] || b || a,
-			d = c === 'plus' || c === 'minus' ? 'f-i f-i-' + c + '-squre' : 'f-i f-i-caret-' + c;
+			d = c === 'plus' || c === 'minus' ? 'f-i f-i-' + c + '-square' : 'f-i f-i-caret-' + c;
 		if ( a && a.nodeType ) {
 			a.className = d;
 		} else
@@ -2377,7 +2387,7 @@ _merge( $, {
 		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
 			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
-				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)>' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)>' + $.loc.rotate_right + '</a></div>' +
+				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
 				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	// @a -> preview src

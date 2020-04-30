@@ -1623,7 +1623,7 @@ ImageUploadValueBar = define.widget( 'ImageUploadValueBar', {
 
 FileUploadButton = define.widget( 'FileUploadButton', {
 	Const: function( x, p ) {
-		this.u = this.rootNode = p.parentNode;
+		this.u = p.parentNode;
 		Button.apply( this, arguments );
 	},
 	Extend: Button,
@@ -1730,7 +1730,7 @@ ImageUploadUploadButton = define.widget( 'ImageUploadUploadButton', {
 // 图片模式显示value
 ImageUploadValue = define.widget( 'ImageUploadValue', {
 	Const: function( x, p ) {
-		this.u = this.rootNode = p.u;
+		this.u = p.u;
 		W.apply( this, arguments );
 		this.loading = false;
 		this.loaded  = !! x.data;
@@ -1757,8 +1757,8 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 	},
 	Default: { width: 80, height: 80, widthMinus: 2, heightMinus: 2 },
 	Prototype: {
-		pubType: 'ImageUpload',
 		className: 'w-imageupload-value',
+		pubParent: function() { return this.u },
 		download: function() {
 			var s = this.u.x.download;
 			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
@@ -1869,7 +1869,9 @@ FileUploadValue = define.widget( 'FileUploadValue', {
 	},
 	Default: { width: -1, height: -1 },
 	Prototype: {
-		pubType: 'FileUpload',
+		pubParent: function() {
+			return this.u;
+		},
 		className: 'w-fileupload-value',
 		setProgress: function( a ) {
 			this.$( 'p' ).style.width = a + '%';

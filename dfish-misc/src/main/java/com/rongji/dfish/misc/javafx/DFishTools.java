@@ -379,7 +379,6 @@ public class DFishTools extends Application {
                 if (Utils.notEmpty(source)) {
                     int size = 240;
                     String format = "png";
-
                     MatrixToImageWriter.writeToStream(MatrixToImageWriter.toBitMatrix(source, size), format, baos);
                     bais = new ByteArrayInputStream(baos.toByteArray());
                     Image image = new Image(bais);
@@ -736,6 +735,9 @@ public class DFishTools extends Application {
         }
     }
 
+    private String getOutputDirectory() {
+        return System.getProperty("user.dir") + File.separator + "output";
+    }
 
     private Parent getImageLayout(Stage primaryStage) {
 
@@ -779,7 +781,12 @@ public class DFishTools extends Application {
         Button destBtn = new Button("指定输出目录");
         destBox.getChildren().add(destBtn);
 
-        TextField destDir = new TextField(System.getProperty("user.dir"));
+        String destOutput = getOutputDirectory();
+        File outputDir = new File(destOutput);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+        TextField destDir = new TextField(destOutput);
         destBox.getChildren().add(destDir);
 
         destBox.getChildren().add(new Label("输出宽度(-1代表原始大小)"));
@@ -807,7 +814,7 @@ public class DFishTools extends Application {
         destBox.getChildren().add(executeBtn);
 //        executeBtn.setDisable(true);
 
-        ImageProcessConfig processConfig = new ImageProcessConfig();
+//        ImageProcessConfig processConfig = new ImageProcessConfig();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("选择图片");
@@ -834,7 +841,7 @@ public class DFishTools extends Application {
 
         DirectoryChooser dirChooser = new DirectoryChooser();
         dirChooser.setTitle("输出目录");
-        dirChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        dirChooser.setInitialDirectory(outputDir);
         destBtn.setOnAction((event) -> {
             File file = dirChooser.showDialog(primaryStage);
             destDir.setText(file.getAbsolutePath());

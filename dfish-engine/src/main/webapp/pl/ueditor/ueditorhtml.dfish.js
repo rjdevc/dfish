@@ -5,8 +5,15 @@ require( './third-party/SyntaxHighlighter/shCoreDefault.css' );
 
 var SyntaxHighlighter = require( './third-party/SyntaxHighlighter/shCore.js' ).SyntaxHighlighter;
 
+var Html = require( 'Html' );
+
 define.widget( 'UEditorHtml', {
-	Extend: 'Html',
+	Const: function( x ) {
+		if ( x.text )
+			x.text = x.text.replace( /(?:<p>(<br\/>|&nbsp;)<\/p>)+$/, '' );
+		Html.apply( this, arguments );
+	},
+	Extend: Html,
 	Default: { thumbWidth: '*' },
 	Listener: {
 		body: {

@@ -16,11 +16,9 @@ window.app = {
     },
     alert: {
         info: function (msg) {
-            // $.alert(msg, 'br', 5000);
             VM().cmd({type: 'Alert', cls: 'x-alert-info', text: msg});
         },
         warn: function (msg) {
-            // $.alert(msg);
             VM().cmd({type: 'Alert', cls: 'x-alert-warn', text: msg});
         }
     },
