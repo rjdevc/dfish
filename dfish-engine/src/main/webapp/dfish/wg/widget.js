@@ -2320,13 +2320,10 @@ AbsSection = define.widget( 'AbsSection', {
 			}
 		},
 		getSrc: function() {
-			var u = this._runtime_src; 
+			var u = this._runtime_src || this.attr( 'src' ); 
 			if ( ! u ) {
 				var t = this.x.template;
-				if ( t && (t = _getTemplate( t )) ) {
-					u = t.src; //|| (t[ '@src' ] && this.formatJS( 'return ' + t[ '@src' ] ));
-				}
-				!u && (u = this.attr( 'src' ));
+				t && (t = _getTemplate( t )) && (u = t.src);
 			}
 			u && typeof u === _STR && this.x.args && (u = this.formatStr( u, this.x.args, T ));
 			return u;
