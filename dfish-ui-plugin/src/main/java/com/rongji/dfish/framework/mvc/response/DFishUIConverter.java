@@ -1,8 +1,6 @@
 package com.rongji.dfish.framework.mvc.response;
 
-import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.ui.Node;
-import com.rongji.dfish.ui.json.JsonFormat;
 
 /**
  * 用于转化JSON 并输出
@@ -21,9 +19,7 @@ public class DFishUIConverter extends ObjectToJsonConverter {
 		if (obj == null) {
 			return "";
 		}
-		String json=((Node) obj).asJson();
-		LogUtil.lazyDebug(DFishUIConverter.class,()-> JsonFormat.formatJson(json));
-		return json;
+		return ((Node) obj).asJson();
 	}
 
 }
