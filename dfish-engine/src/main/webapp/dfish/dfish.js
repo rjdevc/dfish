@@ -1,6 +1,6 @@
 /*!
  * dfish.js v5
- * (c) 2017-2020 Mingyuan Chen
+ * Mingyuan Chen
  * Released under the Apache License.
  */
 ( function( global, factory ) {
@@ -2358,6 +2358,7 @@ _merge( $, {
 				s.push( _uiPath + 'dfish.css' );
 				d.push( did );
 				br.mobile && (s.push( _uiPath + 'mobile.css' ), d.push( _uid() ));
+				br.ie7 && (s.push( _uiPath + 'ie7.css' ), d.push( _uid() ));
 			}
 			if ( x ) {
 				x = _extend( {}, x, y );
