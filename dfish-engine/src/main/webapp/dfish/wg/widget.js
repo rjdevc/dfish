@@ -8823,8 +8823,8 @@ LinkBox = define.widget( 'LinkBox', {
 					return F;
 				}
 			},*/
-			blur: {
-				method: AbsInput.Listener.body.blur.method
+			blur: function() {
+				AbsInput.Listener.body.blur.apply( this, arguments );
 			},
 			// chrome中文模式打完字后按回车时，不会响应keyUp事件，因此设置input事件来触发suggest()
 			// fixme: 在chrome的中文模式下输入英文按回车，没有响应
