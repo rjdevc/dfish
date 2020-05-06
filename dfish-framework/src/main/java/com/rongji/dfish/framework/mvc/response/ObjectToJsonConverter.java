@@ -33,8 +33,8 @@ public class ObjectToJsonConverter extends AbstractHttpMessageConverter<Object> 
         return null;
     }
 
-    private static Charset CHARSET = Charset.forName("UTF-8");
-    private static List<Charset> ACCEPT_CHARSETS = Collections.singletonList(CHARSET);
+    protected static Charset CHARSET = Charset.forName("UTF-8");
+    protected static List<Charset> ACCEPT_CHARSETS = Collections.singletonList(CHARSET);
 
     @Override
     protected void writeInternal(final Object obj, HttpOutputMessage outputMessage)
