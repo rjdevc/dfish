@@ -48,13 +48,15 @@ public class ObjectToJsonConverter extends AbstractHttpMessageConverter<Object> 
         outputMessage.getHeaders().setContentLength(ba.length);
         outputMessage.getBody().write(ba);
         outputMessage.getBody().close();
-        LogUtil.debug(objJson);
+//        LogUtil.debug(objJson);
+        LogUtil.lazyDebug(()-> objJson);
     }
 
     protected String getObjectJson(Object obj) {
         if (obj == null) {
             return "";
         }
+
         return JsonUtil.toJson(obj);
     }
 

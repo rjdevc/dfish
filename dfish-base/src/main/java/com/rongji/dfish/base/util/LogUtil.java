@@ -276,8 +276,7 @@ public class LogUtil {
         if (log.isDebugEnabled()) {
             SINGLE_EXECUTOR.execute(() -> {
                 try {
-                    Object o = callable.call();
-                    log.debug(o);
+                    log.debug(callable.call());
                 } catch (Exception e) {
                     log.error(null, e);
                 }
@@ -318,8 +317,7 @@ public class LogUtil {
         if (log.isInfoEnabled()) {
             SINGLE_EXECUTOR.execute(() -> {
                 try {
-                    Object o = callable.call();
-                    log.info(o);
+                    log.info(callable.call());
                 } catch (Exception e) {
                     log.error(null, e);
                 }
@@ -362,8 +360,7 @@ public class LogUtil {
         if (log.isWarnEnabled()) {
             SINGLE_EXECUTOR.execute(() -> {
                 try {
-                    Object o = callable.call();
-                    log.warn(o);
+                    log.warn(callable.call());
                 } catch (Exception e) {
                     log.error(null, e);
                 }
