@@ -1,6 +1,6 @@
 /*!
  * dfish.js v5
- * (c) 2017-2020 Mingyuan Chen
+ * Mingyuan Chen
  * Released under the Apache License.
  */
 ( function( global, factory ) {
@@ -1674,11 +1674,9 @@ Ajax = _createClass( {
 				return x.complete && x.complete.call( c, N, self );
 			if ( g === 'xml' && br.ie10 )
 				l.responseType = 'msxml-document';
-			if ( _cfg.debug || ! x.cdn )
-				l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
+			! x.cdn && l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
 			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
 			l.setRequestHeader( 'x-requested-with',  _expando );
-			//l.setRequestHeader( 'x-requested-device', br.mobile ? 'mobile' : 'pc' );
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
@@ -2358,6 +2356,7 @@ _merge( $, {
 				s.push( _uiPath + 'dfish.css' );
 				d.push( did );
 				br.mobile && (s.push( _uiPath + 'mobile.css' ), d.push( _uid() ));
+				br.ie7 && (s.push( _uiPath + 'ie7.css' ), d.push( _uid() ));
 			}
 			if ( x ) {
 				x = _extend( {}, x, y );

@@ -1,6 +1,6 @@
 /*!
  * widget.js v5
- * (c) 2017-2020 Mingyuan Chen
+ * Mingyuan Chen
  * Released under the Apache License.
  */
 // firefox调用arguments.callee会报错，因此目前还无法使用'use strict'
@@ -4266,10 +4266,10 @@ PageBar = define.widget( 'PageBar', {
 			this.page_text = Loc.page_text;
 		else if ( this.face === 'mini' )
 			this.page_text = {
-				first: '<i class="f-i f-i-angle-first"></i>',
-				prev: '<i class="f-i f-i-angle-left"></i>',
-				next: '<i class="f-i f-i-angle-right"></i>',
-				last: '<i class="f-i f-i-angle-last"></i>'
+				first: '<i class=f-vi></i><i class="f-i f-i-angle-first"></i>',
+				prev:  '<i class=f-vi></i><i class="f-i f-i-angle-left"></i>',
+				next:  '<i class=f-vi></i><i class="f-i f-i-angle-right"></i>',
+				last:  '<i class=f-vi></i><i class="f-i f-i-angle-last"></i>'
 			};
 		this.attr( 'align' ) && (this.property = ' align=' + this.attr( 'align' ));
 		x.target && _regTarget.call( this, function() {
@@ -5120,7 +5120,7 @@ Alert = define.widget( 'Alert', {
 Confirm = define.widget( 'Confirm', {
 	Extend: Alert,
 	Prototype: {
-		className: 'w-dialog w-alert w-confirm',
+		className: 'w-dialog w-alert w-confirm'
 	}
 } ),
 _instCache = {},
@@ -7460,7 +7460,7 @@ NumberBox = define.widget( 'NumberBox', {
 	Prototype: {
 		html_btn: $.rt( '' ),
 		html_remark: function() {
-			var s = this.x.noButton ? '' : '<cite class="f-inbl f-unsel f-boxbtn _l"' + _event_zhover + ' onclick=' + evw + '.step(-1)>&minus;</cite><cite class="f-inbl f-unsel f-boxbtn _r"' + _event_zhover + ' onclick=' + evw + '.step(1)>&plus;</cite>';
+			var s = this.x.noButton ? '' : '<cite class="f-inbl f-unsel f-boxbtn _l"' + _event_zhover + ' onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-i f-i-minus"></i></cite><cite class="f-inbl f-unsel f-boxbtn _r"' + _event_zhover + ' onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-i f-i-plus"></i></cite>';
 			return (this.x.remark ? AbsInput.prototype.html_remark.call( this ) : '') + s;
 		}
 	}
@@ -7973,13 +7973,13 @@ DropBox = define.widget( 'DropBox', {
 				d.close();
 			} else {
 				this.focus();
-				var d = { type: 'Dialog', ownproperty: T, id: this.id,
+				var d = { type: 'Dialog', ownproperty: T, id: this.id, widthMinus: 2, heightMinus: 2,
 					cls: 'w-dropbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), autoHide: T,
 					node: { type: 'Html', id: 'list', scroll: T, text: this.html_options() },
 					on: { load: 'this.commander.listenPop(!0)', close: 'this.commander.listenPop(!1)' }
 				};
 				this._dropper = this.exec( $.extend( d, mbi ? {
-					width: $.width() - 40, maxHeight: $.height() - 40, cover: T,
+					width: $.width() - 40, maxHeight: $.height() - 40, cover: T
 				} : {
 					minWidth: this.formWidth(), maxWidth: Math.max( $.width() - a.left - 2, a.right - 2 ), maxHeight: Math.max( $.height() - a.bottom, a.top ),
 					snap: { target: this.$( 'f' ), position: 'v', indent: 1 }
@@ -9755,8 +9755,8 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 		},
 		toggle_nodes: function( a ) {
 			if ( this.isFolder() ) {
-				this.$( 'c' ) && ($.classAdd( this.$( 'c' ), 'z-expanded', a ), $.classAdd( this.$( 'c' ), 'f-hide', !a ));
-				this.addClass( 'z-expanded', a );
+				this.$( 'c' ) && ($.classAdd( this.$( 'c' ), 'z-expanded', !!a ), $.classAdd( this.$( 'c' ), 'f-hide', !a ));
+				this.addClass( 'z-expanded', !!a );
 			}
 		},
 		// 展开或收拢 /@a -> T/F/event, b -> sync|fn?
