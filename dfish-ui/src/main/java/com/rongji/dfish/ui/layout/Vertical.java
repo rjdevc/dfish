@@ -1,7 +1,6 @@
 package com.rongji.dfish.ui.layout;
 
-import com.rongji.dfish.ui.Widget;
-import com.rongji.dfish.ui.form.Hidden;
+import com.rongji.dfish.ui.widget.Split;
 
 /**
  * 子节点按垂直方向排列的布局widget。子节点的宽度默认为100%；高度可以设置数字,百分比,*。如果高度设为-1，表示自适应高度。
@@ -11,7 +10,7 @@ import com.rongji.dfish.ui.form.Hidden;
 public class Vertical extends LinearLayout<Vertical> {
 
 	private static final long serialVersionUID = 51468869447120232L;
-
+	private Split split;
 	/**
 	 * 构造函数
 	 * @param id String
@@ -23,6 +22,23 @@ public class Vertical extends LinearLayout<Vertical> {
 		super(null);
 	}
 
+	/**
+	 * 分隔间隙
+	 * @return Split
+	 */
+	public Split getSplit() {
+		return split;
+	}
+
+	/**
+	 * 分隔间隙
+	 * @param split Split 分隔栏
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Vertical setSplit(Split split) {
+		this.split = split;
+		return this;
+	}
 //	/**
 //	 * 添加子面板 一般在布局面板下只能添加可见的元素， 如果添加hidden那么该size将被忽略
 //	 *

@@ -70,7 +70,7 @@ public class DFishTools extends Application {
         tabPane.getTabs().add(getTab("行政区划识别", getOriginLayout()));
         tabPane.getTabs().add(getTab("敏感词过滤", getSensitiveWordsLayout()));
         tabPane.getTabs().add(getTab("图片处理", getImageLayout(primaryStage)));
-        tabPane.getTabs().add(getTab("关于", getCopyrightLayout()));
+        tabPane.getTabs().add(getTab("关于", getAboutLayout()));
 
         primaryStage.setScene(new Scene(tabPane, 800, 600));
         primaryStage.show();
@@ -100,15 +100,23 @@ public class DFishTools extends Application {
     }
 
     /**
-     * 版本信息
+     * 关于本工具信息
      *
      * @return Parent
      */
-    private Parent getCopyrightLayout() {
+    private Parent getAboutLayout() {
         VBox root = new VBox();
         root.setPadding(PADDING);
 
-        Text content = new Text("本工具由DFish开发团队提供，展示DFish后台框架积累的工具类，本工具上调用源码可参考com.rongji.dfish.misc.javafx.DFishTools");
+        Text content = new Text("本工具由DFish开发团队提供，展示DFish后台框架积累的工具类。除已展示的工具外，还提供以下工具类：" +
+                "\n1）JsonUtil、XMLUtil、ExcelUtil等工具类；" +
+                "\n2）缓存管理：实现缓存统一管理、查看等功能；" +
+                "\n3）批处理工具：用于批量调用，提供性能；" +
+                "\n4）集合比较器ListDataComparator：用于筛选出2个集合对比的新增、修改、删除的部分；" +
+                "\n5）GeoHash：用于附近位置数据获取；" +
+                "\n6）SimHash：用于相似文章匹配；" +
+                "\n7）word和pdf文档解析等。" +
+                "\n本工具上调用源码在DFish5.0版本上，源码参考com.rongji.dfish.misc.javafx.DFishTools");
         root.getChildren().add(content);
 
         return root;
@@ -371,7 +379,6 @@ public class DFishTools extends Application {
                 if (Utils.notEmpty(source)) {
                     int size = 240;
                     String format = "png";
-
                     MatrixToImageWriter.writeToStream(MatrixToImageWriter.toBitMatrix(source, size), format, baos);
                     bais = new ByteArrayInputStream(baos.toByteArray());
                     Image image = new Image(bais);
@@ -728,6 +735,9 @@ public class DFishTools extends Application {
         }
     }
 
+    private String getOutputDirectory() {
+        return System.getProperty("user.dir") + File.separator + "output";
+    }
 
     private Parent getImageLayout(Stage primaryStage) {
 
@@ -771,7 +781,12 @@ public class DFishTools extends Application {
         Button destBtn = new Button("指定输出目录");
         destBox.getChildren().add(destBtn);
 
-        TextField destDir = new TextField(System.getProperty("user.dir"));
+        String destOutput = getOutputDirectory();
+        File outputDir = new File(destOutput);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+        TextField destDir = new TextField(destOutput);
         destBox.getChildren().add(destDir);
 
         destBox.getChildren().add(new Label("输出宽度(-1代表原始大小)"));
@@ -799,7 +814,7 @@ public class DFishTools extends Application {
         destBox.getChildren().add(executeBtn);
 //        executeBtn.setDisable(true);
 
-        ImageProcessConfig processConfig = new ImageProcessConfig();
+//        ImageProcessConfig processConfig = new ImageProcessConfig();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("选择图片");
@@ -826,7 +841,7 @@ public class DFishTools extends Application {
 
         DirectoryChooser dirChooser = new DirectoryChooser();
         dirChooser.setTitle("输出目录");
-        dirChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        dirChooser.setInitialDirectory(outputDir);
         destBtn.setOnAction((event) -> {
             File file = dirChooser.showDialog(primaryStage);
             destDir.setText(file.getAbsolutePath());
