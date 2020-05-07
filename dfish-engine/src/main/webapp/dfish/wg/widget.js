@@ -5147,6 +5147,7 @@ Tip = define.widget( 'Tip', {
 			node: { type: 'Html', minHeight: 30, width: '*', height: '*', cls: 'w-tip-text', style: 'padding:3px ' + (x.closable ? '24px' : '10px') + ' 3px 10px', align: (x.align || 'center'), vAlign: (x.vAlign || 'middle'), text: this.html_format( x.text, x.format, x.escape ),
 				appendContent: (x.closable ? $.image('.f-i-close',{cls: 'w-tip-x', click: $.abbr + '.close(this)'}) : '') }
 		} );
+		alert(x.prong);
 		x.face && x.face !== 'normal' && (this.className += ' z-face-' + x.face);
 		x.closable && (this.className += ' z-x');
 		Dialog.apply( this, arguments );
