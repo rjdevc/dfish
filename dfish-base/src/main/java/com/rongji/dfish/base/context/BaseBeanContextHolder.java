@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * BaseBeanContextHodler 为基础的上下文拥有者。
+ * BaseBeanContextHolder 为基础的上下文拥有者。
  * 它可以用于放置普通对象（Bean）或文本属性（Properties）
  */
-public class BaseBeanContextHodler implements BeanContextHolder {
+public class BaseBeanContextHolder implements BeanContextHolder {
     private String scope;
-    private Map<Class, Object> contextByClass = Collections.synchronizedMap(new HashMap<>());
+    private Map<Class, Object> contextByClass = new HashMap<>();
     private Map<String, Object> context = Collections.synchronizedMap(new HashMap<>());
 
     /**
@@ -18,25 +18,27 @@ public class BaseBeanContextHodler implements BeanContextHolder {
      *
      * @param scope 范围
      */
-    public BaseBeanContextHodler(String scope) {
+    public BaseBeanContextHolder(String scope) {
         this.scope = scope;
     }
 
     @Override
     public <T> T get(Class<T> clz) {
-        T obj = (T) contextByClass.get(clz);
-        if (obj == null) {
-            for (Object o : contextByClass.values()) {
-                if (clz.isAssignableFrom(o.getClass())) {
-                    obj = (T) o;
-                    break;
+        synchronized (contextByClass) {
+            T obj = (T) contextByClass.get(clz);
+            if (obj == null) {
+                for (Object o : contextByClass.values()) {
+                    if (clz.isAssignableFrom(o.getClass())) {
+                        obj = (T) o;
+                        break;
+                    }
+                }
+                if (obj != null) {
+                    contextByClass.put(clz, obj);
                 }
             }
-            if (obj != null) {
-                contextByClass.put(clz, obj);
-            }
+            return obj;
         }
-        return obj;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class BaseBeanContextHodler implements BeanContextHolder {
 
     @Override
     public Object get(String name) {
-        return contextByClass.get(name);
+        return context.get(name);
     }
 
     /**
@@ -59,7 +61,9 @@ public class BaseBeanContextHodler implements BeanContextHolder {
             return;
         }
         Class clz = obj.getClass();
-        contextByClass.put(clz, obj);
+        synchronized (contextByClass) {
+            contextByClass.put(clz, obj);
+        }
         String name = clz.getSimpleName();
         char firstChar = name.charAt(0);
         if (firstChar >= 'A' && firstChar <= 'Z') {
