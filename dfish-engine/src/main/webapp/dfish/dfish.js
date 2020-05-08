@@ -2052,7 +2052,7 @@ var boot = {
 					$.image( '.f-i-chrome' ) + '</a> &nbsp; <a target=_blank title=IE href=' + (_cfg.supportUrl ? _urlFormat( _cfg.supportUrl, ['ie'] ) : 'https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads') + '>' + $.image( '.f-i-ie' ) + '</a></div>', width: '*', snap: { target: doc.body, position: 'tt' }, prong: F});
 			}
 			//浏览器缩放状态下弹出提示
-			if ( ! _cookie( 'dfish.detectZoom' ) ) {
+			if ( ! br.mobile && ! _cookie( 'dfish.detectZoom' ) ) {
 				var ratio = detectZoom();
 				if ( ratio && ratio != 100 ) {
 					VM().cmd({ type: 'Tip', cls: 'f-shadow', face: 'warn', escape: F, closable: T, text: '<div style="color:#f00;font-size:14px;padding:5px;line-height:2">' + $.loc.ps( $.loc.detect_zoom, ratio ) +

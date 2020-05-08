@@ -4354,7 +4354,7 @@ define( {
     Config: [
       { name: 'checkAll', type: 'Boolean', remark: '设为 true 时，点击它可以全选/全不选其他相同name的triplebox。一组同name的TripleBox中只能有一个设置checkAll参数。' },
       { name: 'checked', type: 'Boolean | String', remark: '选中状态。可选值: <b>true</b><s>(选中)</s>, <b>false</b><s>(未选)</s>, <b>checked</b><s>(选中)</s>, <b>unchecked</b><s>(未选)</s>, <b>partial</b><s>(半选)</s>。默认值为false' },
-      { name: 'partialsubmit', type: 'Boolean', remark: '设为 true 时，半选状态也会提交数据。' }
+      { name: 'partialSubmit', type: 'Boolean', remark: '设为 true 时，半选状态也会提交数据。' }
     ],
     Methods: [
       { name: 'check([checked])', remark: '设置选中状态。', param: [

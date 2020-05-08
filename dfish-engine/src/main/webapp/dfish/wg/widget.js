@@ -6638,7 +6638,7 @@ TripleBox = define.widget( 'TripleBox', {
 		html: function() {
 			var c = this.checkstate();
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (c == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
-				(c == 1 ? ' checked' : '') + (c == 2 ? ' indeterminate' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				(c == 1 ? ' checked' : '') + (c == 2 ? ' indeterminate' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialSubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '') + '</' + this.tagName + '>';
 		}
 	}
@@ -11871,7 +11871,85 @@ Form = define.widget( 'Form', {
 	Prototype: {
 		className: 'w-form'
 	}
+} ),
+/* `Org` */
+Org = define.widget( 'Org', {
+	Const: function( x, p ) {
+		Scroll.apply( this, arguments );
+		this.indent();
+	},
+	Extend: Scroll,
+	Default: { scroll: T },
+	Prototype: {
+		count: 0,
+		className: 'w-org f-rel',
+		level: -1,
+		x_childtype: $.rt( 'OrgItem' ),
+		indent: function() {
+			
+		}
+	}
+} ),
+/* `OrgItem` */
+OrgItem = define.widget( 'OrgItem', {
+	Const: function( x, p ) {
+		this.level = p.level + 1;
+		W.apply( this, arguments );
+		var r = p.rootNode || p, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []), c = a[ p.level ], m = c && c[ c.length - 1 ], n = p.x.nodes;
+		b.push( this );
+		r.count ++;
+		this.countIndex = r.count;
+		this.length && (this.countIndex --);
+		if ( this.length > 1 ) {
+			this.countIndex = Math.ceil( (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2 );
+		}
+		if ( this.length === 0 && m ) {
+			var i = v, k;
+			//while ( i -- ) {
+			//	k = Math.max(  )
+			//}*/
+			//var k = m.countIndex + 1 - Math.floor( (n.length - 1) / 2 );
+			//this.countIndex = k;
+		}
+		if ( b.length > 1 && this.countIndex <= b[ b.length -2 ].countIndex ) {
+			this.countIndex = b[ b.length -2 ].countIndex + 1;
+		}
+		r.count = this.countIndex;
+		this.nodeIndex === 0 && (this.className += ' z-first');
+		this.nodeIndex === n.length -1 && (this.className += ' z-last');
+		this.length && (this.className += ' z-folder');
+		this.level === 0 && (this.className += ' z-root');
+	},
+	Default: { width: 34, height: 110, widthMinus: 4, heightMinus: 4 },
+	Prototype: {
+		countIndex: 0,
+		rootType: 'Org',
+		className: 'w-orgitem',
+		x_childtype: $.rt( 'OrgItem' ),
+		getPrev: function() {
+			 var r = this.rootNode, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []);
+			 return b[ b.length - 1 ];
+		},
+		getTop: function() {
+			return (this.attr( 'height' ) + 30) * this.level;
+		},
+		getLeft: function() {
+			return this._left !== U ? this._left :
+				(this. _left = this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * 60);
+		},
+		prop_style: function() {
+			return _proto.prop_style.call( this ) + ';left:' + this.getLeft() + 'px;top:' + this.getTop() + 'px;';
+		},
+		html_nodes: function() {
+			return '<div class=w-orgitem-vl></div><div class=w-orgitem-t>' + this.countIndex + this.x.text + '</div>';
+		},
+		html_after: function() {
+			return _proto.html_after.call( this ) + _proto.html_nodes.call( this ) +
+				(this.length > 1 ? '<div class=w-orgitem-hl style="width:' + (this.get( -1 ).getLeft() - this[ 0 ].getLeft() + 2) + 'px;top:' + (this[ 0 ].getTop() - 15) + 'px;left:' + (this[ 0 ].getLeft() + 17) + 'px;"></div>' : '');;
+		}
+	}
 } );
+
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
