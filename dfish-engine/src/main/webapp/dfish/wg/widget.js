@@ -5147,7 +5147,6 @@ Tip = define.widget( 'Tip', {
 			node: { type: 'Html', minHeight: 30, width: '*', height: '*', cls: 'w-tip-text', style: 'padding:3px ' + (x.closable ? '24px' : '10px') + ' 3px 10px', align: (x.align || 'center'), vAlign: (x.vAlign || 'middle'), text: this.html_format( x.text, x.format, x.escape ),
 				appendContent: (x.closable ? $.image('.f-i-close',{cls: 'w-tip-x', click: $.abbr + '.close(this)'}) : '') }
 		} );
-		alert(x.prong);
 		x.face && x.face !== 'normal' && (this.className += ' z-face-' + x.face);
 		x.closable && (this.className += ' z-x');
 		Dialog.apply( this, arguments );
@@ -11872,7 +11871,76 @@ Form = define.widget( 'Form', {
 	Prototype: {
 		className: 'w-form'
 	}
+} ),
+/* `Org` */
+Org = define.widget( 'Org', {
+	Extend: Scroll,
+	Default: { scroll: T },
+	Prototype: {
+		count: 0,
+		className: 'w-org f-rel',
+		level: -1,
+		x_childtype: $.rt( 'OrgItem' )
+	}
+} ),
+/* `OrgItem` */
+OrgItem = define.widget( 'OrgItem', {
+	Const: function( x, p ) {
+		this.level = p.level + 1;
+		W.apply( this, arguments );
+		var r = p.rootNode || p, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []), n = p.x.nodes;
+		r.count ++;
+		this.countIndex = r.count;
+		this.length && (this.countIndex --);
+		b.push( this );
+		var c = a[ p.level ], m = c && c[ c.length - 1 ];
+		if ( b[ 0 ] === this && n.length > 1 ) {
+			if ( m ) {
+				var k = Math.ceil( (n.length -1) / 2 );
+				this.countIndex -= k;
+			}
+		}
+		if ( this.length > 1 ) {
+			this.countIndex = Math.ceil( (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2 );
+		}
+		if ( this.nodeIndex === 0 && this.length === 0 && m ) {
+			this.countIndex = m.countIndex + 1 - Math.floor( (n.length - 1) / 2 );
+		}
+		if ( b.length > 1 && this.countIndex <= b[ b.length -2 ].countIndex ) {
+			this.countIndex = b[ b.length -2 ].countIndex + 1;
+		}
+		r.count = this.countIndex;
+		this.nodeIndex === 0 && (this.className += ' z-first');
+		this.nodeIndex === n.length -1 && (this.className += ' z-last');
+		this.length && (this.className += ' z-folder');
+		this.level === 0 && (this.className += ' z-root');
+	},
+	Default: { width: 34, height: 110, widthMinus: 4, heightMinus: 4 },
+	Prototype: {
+		countIndex: 0,
+		rootType: 'Org',
+		className: 'w-orgitem',
+		x_childtype: $.rt( 'OrgItem' ),
+		getTop: function() {
+			return (this.attr( 'height' ) + 30) * this.level;
+		},
+		getLeft: function() {
+			return this._left !== U ? this._left :
+				(this. _left = this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * 60);
+		},
+		prop_style: function() {
+			return _proto.prop_style.call( this ) + ';left:' + this.getLeft() + 'px;top:' + this.getTop() + 'px;';
+		},
+		html_nodes: function() {
+			return '<div class=w-orgitem-vl></div><div class=w-orgitem-t>' + this.countIndex + this.x.text + '</div>';
+		},
+		html_after: function() {
+			return _proto.html_after.call( this ) + _proto.html_nodes.call( this ) +
+				(this.length > 1 ? '<div class=w-orgitem-hl style="width:' + (this.get( -1 ).getLeft() - this[ 0 ].getLeft() + 2) + 'px;top:' + (this[ 0 ].getTop() - 15) + 'px;left:' + (this[ 0 ].getLeft() + 17) + 'px;"></div>' : '');;
+		}
+	}
 } );
+
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
