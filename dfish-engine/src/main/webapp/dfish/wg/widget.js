@@ -6638,7 +6638,7 @@ TripleBox = define.widget( 'TripleBox', {
 		html: function() {
 			var c = this.checkstate();
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + this.prop_cls() + (c == 2 ? ' z-half' : '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><input type=checkbox id=' + this.id + 't name="' + this.x.name + '" value="' + (this.x.value || '') + '" class=_t' +
-				(c == 1 ? ' checked' : '') + (c == 2 ? ' indeterminate' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialsubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
+				(c == 1 ? ' checked' : '') + (c == 2 ? ' indeterminate' : '') + (this.isDisabled() ? ' disabled' : '') + (this.x.partialSubmit ? ' w-partialsubmit="1"' : '') + _html_on.call( this ) + '>' + (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class=_tit id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '') + '</' + this.tagName + '>';
 		}
 	}
@@ -11874,13 +11874,20 @@ Form = define.widget( 'Form', {
 } ),
 /* `Org` */
 Org = define.widget( 'Org', {
+	Const: function( x, p ) {
+		Scroll.apply( this, arguments );
+		this.indent();
+	},
 	Extend: Scroll,
 	Default: { scroll: T },
 	Prototype: {
 		count: 0,
 		className: 'w-org f-rel',
 		level: -1,
-		x_childtype: $.rt( 'OrgItem' )
+		x_childtype: $.rt( 'OrgItem' ),
+		indent: function() {
+			
+		}
 	}
 } ),
 /* `OrgItem` */
@@ -11888,23 +11895,21 @@ OrgItem = define.widget( 'OrgItem', {
 	Const: function( x, p ) {
 		this.level = p.level + 1;
 		W.apply( this, arguments );
-		var r = p.rootNode || p, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []), n = p.x.nodes;
+		var r = p.rootNode || p, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []), c = a[ p.level ], m = c && c[ c.length - 1 ], n = p.x.nodes;
+		b.push( this );
 		r.count ++;
 		this.countIndex = r.count;
 		this.length && (this.countIndex --);
-		b.push( this );
-		var c = a[ p.level ], m = c && c[ c.length - 1 ];
-		if ( b[ 0 ] === this && n.length > 1 ) {
-			if ( m ) {
-				var k = Math.ceil( (n.length -1) / 2 );
-				this.countIndex -= k;
-			}
-		}
 		if ( this.length > 1 ) {
 			this.countIndex = Math.ceil( (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2 );
 		}
-		if ( this.nodeIndex === 0 && this.length === 0 && m ) {
-			this.countIndex = m.countIndex + 1 - Math.floor( (n.length - 1) / 2 );
+		if ( this.length === 0 && m ) {
+			var i = v, k;
+			//while ( i -- ) {
+			//	k = Math.max(  )
+			//}*/
+			//var k = m.countIndex + 1 - Math.floor( (n.length - 1) / 2 );
+			//this.countIndex = k;
 		}
 		if ( b.length > 1 && this.countIndex <= b[ b.length -2 ].countIndex ) {
 			this.countIndex = b[ b.length -2 ].countIndex + 1;
@@ -11921,6 +11926,10 @@ OrgItem = define.widget( 'OrgItem', {
 		rootType: 'Org',
 		className: 'w-orgitem',
 		x_childtype: $.rt( 'OrgItem' ),
+		getPrev: function() {
+			 var r = this.rootNode, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []);
+			 return b[ b.length - 1 ];
+		},
 		getTop: function() {
 			return (this.attr( 'height' ) + 30) * this.level;
 		},
