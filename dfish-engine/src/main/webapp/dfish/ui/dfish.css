@@ -830,9 +830,12 @@
 
 .w-orgitem{position:absolute;border:2px solid #2498ff;text-align:center;letter-spacing:2px}
 .w-orgitem-t{position:relative;width:100%;height:100%;overflow:hidden;background:#fff}
-.w-orgitem-hl{position:absolute;height:2px;background:#2498ff}
-.w-orgitem-vl{position:absolute;top:-17px;left:15px;bottom:0;width:2px;background:#2498ff}
-.w-orgitem.z-folder .w-orgitem-vl{bottom:-17px}
+.w-orgitem-ol{position:absolute;width:2px;height:2px;background:#2498ff}
+.w-orgitem-il{position:absolute;top:-17px;left:15px;bottom:0;width:2px;background:#2498ff}
+.w-orgitem.z-folder .w-orgitem-il{bottom:-17px}
+.w-orgitem.z-dir-v{text-align:left;line-height:30px;text-indent:5px;}
+.w-orgitem.z-dir-v .w-orgitem-il{top:15px;left:-17px;right:0;bottom:auto;width:auto;height:2px;}
+.w-orgitem.z-dir-v.z-folder .w-orgitem-il{right:-17px}
 
 .f-tab-bar{background:#f8f8f8}
 .f-tab-bar.z-horz-2,.f-tab-bar.z-horz-3{text-align:right}

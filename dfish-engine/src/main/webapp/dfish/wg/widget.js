@@ -11876,76 +11876,90 @@ Form = define.widget( 'Form', {
 Org = define.widget( 'Org', {
 	Const: function( x, p ) {
 		Scroll.apply( this, arguments );
-		this.indent();
+		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].maxCnt = 0, this[ i ].indent();
 	},
 	Extend: Scroll,
 	Default: { scroll: T },
 	Prototype: {
-		count: 0,
 		className: 'w-org f-rel',
 		level: -1,
-		x_childtype: $.rt( 'OrgItem' ),
-		indent: function() {
-			
-		}
+		x_childtype: $.rt( 'OrgItem' )
 	}
 } ),
 /* `OrgItem` */
 OrgItem = define.widget( 'OrgItem', {
 	Const: function( x, p ) {
 		this.level = p.level + 1;
+		this.base = p.base || (p.level === 0 && p);
 		W.apply( this, arguments );
-		var r = p.rootNode || p, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []), c = a[ p.level ], m = c && c[ c.length - 1 ], n = p.x.nodes;
-		b.push( this );
-		r.count ++;
-		this.countIndex = r.count;
-		this.length && (this.countIndex --);
-		if ( this.length > 1 ) {
-			this.countIndex = Math.ceil( (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2 );
+		var e = this.base, r = this.rootNode;
+		if ( e ) {
+			var v = this.level, a = e.all || (e.all = []), b = a[ v ] || (a[ v ] = []), o = b[ b.length - 1 ];
+			b && b.push( this );
+			e.count === U && (e.count = e && e.nodeIndex ? e.prev().maxCnt : 0);
+			this.countIndex = ++ e.count;
+			this.length && (this.countIndex --);
+			this.length > 0 && (this.countIndex = (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2);
+			if ( o ) {
+				if ( o.length > 1 ) {
+					o.countIndex = (o[ 0 ].countIndex + o[ o.length - 1 ].countIndex) / 2;
+					! this.length && o.parentNode === this.parentNode && (this.countIndex -= (o.length - 1) / 2);
+				}
+				this.countIndex = Math.max( this.countIndex, o.countIndex + 1 );
+			}
+			e.count = this.countIndex;
+			e.maxCnt = Math.max( e.maxCnt, e.count );
 		}
-		if ( this.length === 0 && m ) {
-			var i = v, k;
-			//while ( i -- ) {
-			//	k = Math.max(  )
-			//}*/
-			//var k = m.countIndex + 1 - Math.floor( (n.length - 1) / 2 );
-			//this.countIndex = k;
-		}
-		if ( b.length > 1 && this.countIndex <= b[ b.length -2 ].countIndex ) {
-			this.countIndex = b[ b.length -2 ].countIndex + 1;
-		}
-		r.count = this.countIndex;
-		this.nodeIndex === 0 && (this.className += ' z-first');
-		this.nodeIndex === n.length -1 && (this.className += ' z-last');
-		this.length && (this.className += ' z-folder');
-		this.level === 0 && (this.className += ' z-root');
+		this.className += (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.x.nodes.length -1 ? ' z-last' : '') +
+			(this.length ? ' z-folder' : '') + (this.level === 0 ? ' z-root' : '') + (r.x.dir === 'v' ? ' z-dir-v' : ' z-dir-h');
+		r.x.dir === 'v' && this.defaults( { width: 110, height: 34 } );
 	},
 	Default: { width: 34, height: 110, widthMinus: 4, heightMinus: 4 },
 	Prototype: {
 		countIndex: 0,
+		maxCnt: 0,
 		rootType: 'Org',
 		className: 'w-orgitem',
 		x_childtype: $.rt( 'OrgItem' ),
+		indent: function() {
+			for ( var r = this.rootNode, e = this.base, i = 0, l = this.length; i < l; i ++ )
+				this[ i ].indent();
+			if ( this.nodeIndex === 0 ) {
+				var p = this, k = [];
+				do {
+					var v = p.getPrev();
+					k.push( v ? p.countIndex - v.countIndex : p.countIndex - (e && e.nodeIndex ? e.prev().maxCnt : 0) );
+				} while ( (p = p.parentNode) && p.level > 0 );
+				k = Math.min.apply( N, k );
+				if ( k > 1 ) r.count = Math.max( 0, k - 1 );
+			}
+			r.count && (this.countIndex -= r.count);
+			e && (e.maxCnt = Math.max( e.maxCnt, this.countIndex ));
+		},
 		getPrev: function() {
-			 var r = this.rootNode, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []);
-			 return b[ b.length - 1 ];
+			 var a = this.base && this.base.all[ this.level ];
+			 return a && a[ $.arrIndex( a, this ) - 1 ];
 		},
 		getTop: function() {
-			return (this.attr( 'height' ) + 30) * this.level;
+			return this._top !== U ? this._top :
+				(this._top = this.rootNode.x.dir === 'v' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : (this.countIndex -1) * 60 ) :
+					(this.attr( 'height' ) + 30) * this.level);
 		},
 		getLeft: function() {
 			return this._left !== U ? this._left :
-				(this. _left = this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * 60);
+				(this. _left = this.rootNode.x.dir === 'v' ? (this.attr( 'width' ) + 30) * this.level :
+					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : (this.countIndex -1) * 60));
 		},
 		prop_style: function() {
 			return _proto.prop_style.call( this ) + ';left:' + this.getLeft() + 'px;top:' + this.getTop() + 'px;';
 		},
 		html_nodes: function() {
-			return '<div class=w-orgitem-vl></div><div class=w-orgitem-t>' + this.countIndex + this.x.text + '</div>';
+			return '<div class=w-orgitem-il></div><div class=w-orgitem-t>' + this.countIndex + this.x.text + '</div>';
 		},
 		html_after: function() {
+			var v = this.rootNode.x.dir === 'v';
 			return _proto.html_after.call( this ) + _proto.html_nodes.call( this ) +
-				(this.length > 1 ? '<div class=w-orgitem-hl style="width:' + (this.get( -1 ).getLeft() - this[ 0 ].getLeft() + 2) + 'px;top:' + (this[ 0 ].getTop() - 15) + 'px;left:' + (this[ 0 ].getLeft() + 17) + 'px;"></div>' : '');;
+				(this.length > 1 ? '<div class=w-orgitem-ol style="' + (v ? 'height:' + (this.get( -1 ).getTop() - this[ 0 ].getTop() + 2) + 'px;' : 'width:' + (this.get( -1 ).getLeft() - this[ 0 ].getLeft() + 2) + 'px;') + 'top:' + (this[ 0 ].getTop() + (v ? 17 : -15)) + 'px;left:' + (this[ 0 ].getLeft() + (v ? -15 : 17)) + 'px;"></div>' : '');;
 		}
 	}
 } );
