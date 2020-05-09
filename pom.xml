@@ -185,6 +185,6 @@
         <module>dfish-framework</module>
         <module>dfish-framework-hibernate</module>
         <module>dfish-framework-mybatis</module>
-<!--        <module>dfish-demo</module>-->
+        <module>dfish-demo</module>
     </modules>
 </project>

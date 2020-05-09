@@ -15,6 +15,14 @@ public abstract class AbstractPubNodeContainer<T extends AbstractPubNodeContaine
     /**
      * 构造函数
      *
+     */
+    public AbstractPubNodeContainer() {
+        super();
+    }
+
+    /**
+     * 构造函数
+     *
      * @param id String
      */
     public AbstractPubNodeContainer(String id) {

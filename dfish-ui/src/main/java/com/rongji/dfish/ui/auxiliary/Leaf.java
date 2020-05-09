@@ -31,7 +31,7 @@ public class Leaf extends AbstractLeaf<Leaf> implements MultiNodeContainer<Leaf,
     /**
      * 节点列表
      */
-    public List<Leaf> nodes;
+    protected List<Leaf> nodes;
 
     @Override
     public List<Leaf> getNodes() {
