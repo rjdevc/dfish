@@ -3515,7 +3515,7 @@ define( {
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
       { name: 'br', type: 'Boolean', remark: '文本是否换行。默认值为true' },
-      { name: 'tip', type: 'Boolean | String', remark: '提示文本。默认值为true' },
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '提示文本。默认值为true' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true' },
       { name: 'format', type: 'String', remark: '格式化内容。支持"javascript:"开头的JS语句(需return返回值)。' },
       { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
@@ -4693,12 +4693,12 @@ define( {
     Examples: [
       { example: [
           function() {
-          	// 选择开始日期和结束日期
+          	// 自定义验证提示信息
             return~
             {
                 type: 'Range',
                 label: { text: '日期' },
-                begin: { type: 'DatePicker', format: 'yyyy-MM-dd', label: { text: '开始日期' } },
+                begin: { type: 'DatePicker', format: 'yyyy-MM-dd', label: { text: '开始日期' }, validate: { compare: { text: '开始日期必须小于结束日期' } } },
                 end: { type: 'DatePicker', format: 'yyyy-MM-dd', label: { text: '结束日期' } }
             }
           }
@@ -4711,7 +4711,7 @@ define( {
   	extend: 'Text',
   	deprecate: '.w-text,.z-trans,placeholder,transparent,focus,focusEnd,warn,change',
     Config: [
-      { name: 'tip', type: 'Boolean | String', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$value</b><s>(值)</s>。' }
+      { name: 'tip', type: 'Boolean | String | Tip', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$value</b><s>(值)</s>。' }
     ],
     Event: [
       { name: 'dragStart', remark: '拖动开始时触发。' },

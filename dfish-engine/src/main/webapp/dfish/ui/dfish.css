@@ -832,10 +832,12 @@
 .w-structureitem.z-a-left{text-align:left}
 .w-structureitem.z-a-right{text-align:right}
 .w-structureitem-t{position:absolute;top:0;left:0;right:0;bottom:0;padding:3px 5px 0 5px}
-.w-structureitem-ch{position:absolute;border:1px solid #2498ff;border-right:0;border-radius:5px 0 0 5px}
-.w-structureitem-cv{position:absolute;border:1px solid #2498ff;border-bottom:0;border-radius:5px 5px 0 0}
-.w-structureitem-lh{position:absolute;width:1px;border-top:1px solid #2498ff}
-.w-structureitem-lv{position:absolute;width:1px;border-left:1px solid #2498ff}
+.w-structureitem-cl{position:absolute;border:1px solid #2498ff}
+.w-structureitem-cl.z-dir-h{border-right:0;border-radius:5px 0 0 5px}
+.w-structureitem-cl.z-dir-v{border-bottom:0;border-radius:5px 5px 0 0}
+.w-structureitem-il{position:absolute;border:1px solid #2498ff}
+.w-structureitem-il.z-dir-h{border-width:1px 0 0 0}
+.w-structureitem-il.z-dir-v{border-width:0 0 0 1px}
 .w-structureitem.z-dir-h .w-structureitem-t{padding:5px}
 .w-structureitem-t.f-fix .w-structureitem-s{display:inline}
 

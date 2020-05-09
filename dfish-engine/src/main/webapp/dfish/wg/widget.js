@@ -162,6 +162,9 @@ _superTrigger = function( a, b, c ) {
 		m = b.Listener.body[ _event_hump[ t ] || t ];
 	m && (m.method || m).call( a, c );
 },
+_html_prop_title = function() {
+	return _proto.html_prop.call( this ) + this.prop_title();
+}
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( s ) {
 	var s = s || '', n, h = this.Const.Listener, r = _white_events[ h && h.range ] || _white_events.all;
@@ -4161,9 +4164,7 @@ Img = define.widget( 'Img', {
 			this.x.style && (t += this.x.style);
 			return t;
 		},
-		html_prop: function() {
-			return _proto.html_prop.call( this ) + this.prop_title();
-		},
+		html_prop: _html_prop_title,
 		html_badge: function() {
 			return this._badge ? this._badge.html() : '';
 		},
@@ -4206,7 +4207,8 @@ Toggle = define.widget( 'Toggle', {
 		body: {
 			ready: function() {
 				this.x.expanded != N && this.$() && this.toggle( this.x.expanded );
-			}
+			},
+			mouseOver: _hover_tip
 		}
 	},
 	Prototype: {
@@ -4236,6 +4238,7 @@ Toggle = define.widget( 'Toggle', {
 		isExpanded: function() {
 			return this.x.expanded;
 		},
+		html_prop: _html_prop_title,
 		// @a -> open?
 		html_icon: function( a ) {
 			var c = _toggleIcon.call( this ), t = evw + '.toggle(event)';
@@ -11929,6 +11932,11 @@ StructureItem = define.widget( 'StructureItem', {
 		r.x.dir === 'h' && this.defaults( { width: 115, height: 34 } );
 	},
 	Default: { width: 34, height: 115, widthMinus: 2, heightMinus: 2, tip: T },
+	Listener: {
+		body: {
+			mouseOver: _hover_tip
+		}
+	},
 	Prototype: {
 		maxCnt: 0,
 		rootType: 'Structure',
@@ -11962,12 +11970,10 @@ StructureItem = define.widget( 'StructureItem', {
 		},
 		getLeft: function() {
 			return this._left !== U ? this._left :
-				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'vSpace' )) * this.level :
+				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' )) * this.level :
 					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
 		},
-		html_prop: function() {
-			return _proto.html_prop.call( this ) + this.prop_title();
-		},
+		html_prop: _html_prop_title,
 		prop_style: function() {
 			return _proto.prop_style.call( this ) + ';left:' + this.getLeft() + 'px;top:' + this.getTop() + 'px;';
 		},
@@ -11978,8 +11984,8 @@ StructureItem = define.widget( 'StructureItem', {
 		html_after: function() {
 			var r = this.rootNode, d = r.x.dir === 'h', m = this.attr( 'widthMinus' ) / 2, w = this.attr( 'width' ), h = this.attr( 'height' ), l = this.getLeft(), t = this.getTop(), hs = r.attr( 'hSpace' ), vs = r.attr( 'vSpace' ), i = this.nodeIndex, tl = this.length, pl = this.parentNode.length;
 			return _proto.html_after.call( this ) + _proto.html_nodes.call( this ) +
-				'<div class=w-structureitem-l' + (r.x.dir || 'v') + ' style="left:' + (d ? (l - (pl===1||(i&&i<pl-1) ? hs/2 : 0)) : l + w/2) + 'px;top:' + (d ? t + h/2 : t - (pl===1||(i&&i<pl-1) ? vs/2 : 0)) + 'px;width:' + (d ? w + (tl ? hs : 0) - (pl===1||(i&&i<pl-1) ? 0 : vs/2) : 0) + 'px;height:' + (d ? 0 : h + (tl ? vs : 0) - (pl===1||(i&&i<pl-1) ? 0 : vs/2)) + 'px;"></div>' +
-				(tl > 1 ? '<div class=w-structureitem-c' + (r.x.dir || 'v') + ' style="width:' + (d ? vs/2 : this.get( -1 ).getLeft() - this[ 0 ].getLeft()) + 'px;height:' + (d ? this.get( -1 ).getTop() - this[ 0 ].getTop() : vs/2) + 'px;top:' + (d ? this[ 0 ].getTop() + h/2 - m : t + h + vs/2) + 'px;left:' + (d ? l + w + hs/2 : this[ 0 ].getLeft() + w/2 - m) + 'px;"></div>' : '');;
+				'<div class="w-structureitem-il z-dir-' + (r.x.dir || 'v') + '" style="left:' + (d ? (l - (pl===1||(i&&i<pl-1) ? hs/2 : 0)) : l + w/2) + 'px;top:' + (d ? t + h/2 : t - (pl===1||(i&&i<pl-1) ? vs/2 : 0)) + 'px;width:' + (d ? w + (tl ? hs : 0) - (pl===1||(i&&i<pl-1) ? 0 : hs/2) : 0) + 'px;height:' + (d ? 0 : h + (tl ? vs : 0) - (pl===1||(i&&i<pl-1) ? 0 : vs/2)) + 'px;"></div>' +
+				(tl > 1 ? '<div class="w-structureitem-cl z-dir-' + (r.x.dir || 'v') + '" style="width:' + (d ? w + hs/2 - m : this.get( -1 ).getLeft() - this[ 0 ].getLeft()) + 'px;height:' + (d ? this.get( -1 ).getTop() - this[ 0 ].getTop() : h + vs/2 - m) + 'px;top:' + (d ? this[ 0 ].getTop() + h/2 - m : t + h + vs/2) + 'px;left:' + (d ? l + w + hs/2 : this[ 0 ].getLeft() + w/2 - m) + 'px;"></div>' : '');;
 		}
 	}
 } );
