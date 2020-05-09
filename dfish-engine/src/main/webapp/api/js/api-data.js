@@ -3476,10 +3476,9 @@ define( {
     ]
   },
   "Structure": {
-  	remark: '组织机构树。',
+  	remark: '机构树。',
   	extend: 'AbsWidget',
     Config: [
-      { name: 'br', type: 'Boolean', remark: '文本是否换行。默认值为true' },
       { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>v</b><s>(纵向,默认)</s>,<b>h</b><s>(横向)</s>' },
       { name: 'hSpace', type: 'Number', remark: '横向间距。' },
       { name: 'vSpace', type: 'Number', remark: '纵向间距。' },
@@ -3511,11 +3510,13 @@ define( {
     ]
   },
   "StructureItem": {
-  	remark: '组织机构树的节点。',
+  	remark: '机构树节点。',
   	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
-      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
+      { name: 'br', type: 'Boolean', remark: '文本是否换行。默认值为true' },
+      { name: 'tip', type: 'Boolean | String', remark: '提示文本。默认值为true' },
+      { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true' },
       { name: 'format', type: 'String', remark: '格式化内容。支持"javascript:"开头的JS语句(需return返回值)。' },
       { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'text', type: 'String', remark: 'html内容。支持 &lt;d:wg&gt; 标签。' }
@@ -3529,6 +3530,25 @@ define( {
             return~
             {
                 type: 'Structure',
+                nodes: [
+                    {
+                        text: '福建省', 
+                        nodes: [
+                            { text: '福州市' },
+                            { text: '厦门市' }
+                        ]
+                    }
+                ]
+            }
+          },
+          function() {
+          	// 改变节点大小和间距
+            return~
+            {
+                type: 'Structure',
+                hSpace: 60,
+                vSpace: 60,
+                pub: {width: 100, height: 50},
                 nodes: [
                     {
                         text: '福建省', 

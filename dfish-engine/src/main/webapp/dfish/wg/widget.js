@@ -11928,7 +11928,7 @@ StructureItem = define.widget( 'StructureItem', {
 			(this.length ? ' z-folder' : '') + (this.level === 0 ? ' z-root' : '') + (r.x.dir === 'h' ? ' z-dir-h' : ' z-dir-v') + (this.attr( 'align' ) ? ' z-a-' + this.attr( 'align' ) : '');
 		r.x.dir === 'h' && this.defaults( { width: 115, height: 34 } );
 	},
-	Default: { width: 34, height: 115, widthMinus: 2, heightMinus: 2 },
+	Default: { width: 34, height: 115, widthMinus: 2, heightMinus: 2, tip: T },
 	Prototype: {
 		maxCnt: 0,
 		rootType: 'Structure',
@@ -11965,12 +11965,15 @@ StructureItem = define.widget( 'StructureItem', {
 				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'vSpace' )) * this.level :
 					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
 		},
+		html_prop: function() {
+			return _proto.html_prop.call( this ) + this.prop_title();
+		},
 		prop_style: function() {
 			return _proto.prop_style.call( this ) + ';left:' + this.getLeft() + 'px;top:' + this.getTop() + 'px;';
 		},
 		html_nodes: function() {
 			var va = this.attr( 'vAlign' );
-			return '<div class="w-structureitem-t' + (this.rootNode.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') + '<span class="w-structureitem-s f-inbl f-va">' + this.html_format() + '</span></div>';
+			return '<div class="w-structureitem-t' + (this.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') + '<span class="w-structureitem-s f-inbl f-va">' + this.html_format() + '</span></div>';
 		},
 		html_after: function() {
 			var r = this.rootNode, d = r.x.dir === 'h', m = this.attr( 'widthMinus' ) / 2, w = this.attr( 'width' ), h = this.attr( 'height' ), l = this.getLeft(), t = this.getTop(), hs = r.attr( 'hSpace' ), vs = r.attr( 'vSpace' ), i = this.nodeIndex, tl = this.length, pl = this.parentNode.length;
