@@ -2319,11 +2319,19 @@ AbsSection = define.widget( 'AbsSection', {
 				}
 			}
 		},
+		// @implement
+		attrSetter: function( a, b, c ) {
+			_proto.attrSetter.apply( this, arguments );
+			if ( a === 'src' ) {
+				this._runtime_src = b;
+			}
+		},
 		getSrc: function() {
-			var u = this._runtime_src || this.attr( 'src' ); 
+			var u = this._runtime_src; 
 			if ( ! u ) {
 				var t = this.x.template;
 				t && (t = _getTemplate( t )) && (u = t.src);
+				! u && (u = this.attr( 'src' ));
 			}
 			u && typeof u === _STR && this.x.args && (u = this.formatStr( u, this.x.args, T ));
 			return u;
@@ -3002,7 +3010,7 @@ Frame = define.widget( 'Frame', {
 					$.animate( o.$(), 'fadeOut' + d, 100 );
 					$.animate( n.$(), 'fadeIn' + d, 100, function() { o.display( F ); } );
 				} else {
-					o && o.display( F );
+					o && o.display( F, T );
 					n.display( T );
 				}
 			}
@@ -4208,13 +4216,13 @@ Toggle = define.widget( 'Toggle', {
 			this.x.expanded = b;
 			if ( c && (c = c.split(',')) ) {
 				for ( var i = 0, g; i < c.length; i ++ ) {
-					(g = this.ownerView.find( c[ i ] )) && g.display( this );
+					(g = this.ownerView.find( c[ i ] )) && g.display( this, T );
 				}
 			} else {
 				for ( var i = this.nodeIndex + 1, p = this.parentNode, l = p.length; i < l; i ++ ) {
 					if ( p[ i ].type === this.type )
 						break;
-					p[ i ].display( this );
+					p[ i ].display( this, T );
 				}
 			}
 			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
@@ -10397,7 +10405,7 @@ TableToggle = define.widget( 'TableToggle', {
 		isExpanded: function() {
 			return this.x.expanded;
 		},
-		toggle: function( a ) {
+		toggle: function( a, b ) {
 			Toggle.prototype.toggle.apply( this, arguments );
 			var t = this.tr();
 			t.toggle_rows( this.x.expanded );
@@ -10405,7 +10413,7 @@ TableToggle = define.widget( 'TableToggle', {
 				c = d[ i ];
 				if ( c.tableToggle )
 					break;
-				c.display( this );
+				c.display( this, T );
 			}
 			t.table.parallel( 'fixFoot' );
 		}
@@ -11872,22 +11880,27 @@ Form = define.widget( 'Form', {
 		className: 'w-form'
 	}
 } ),
-/* `Org` */
-Org = define.widget( 'Org', {
+/* `Structure` */
+Structure = define.widget( 'Structure', {
 	Const: function( x, p ) {
 		Scroll.apply( this, arguments );
-		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].maxCnt = 0, this[ i ].indent();
+		for ( var i = 0, l = this.length, b; i < l; i ++ ) {
+			b = this[ i ];
+			b.maxCnt = b.countIndex = b.count = 0;
+			if ( ! b.length ) b.countIndex = b.maxCnt = b.nodeIndex ? b.prev().maxCnt + 1 : 0;
+			b.indent();
+		}
 	},
-	Extend: Scroll,
-	Default: { scroll: T },
+	Extend: [ Scroll ],
+	Default: { scroll: T, hSpace: 30, vSpace: 30 },
 	Prototype: {
-		className: 'w-org f-rel',
-		level: -1,
-		x_childtype: $.rt( 'OrgItem' )
+		className: 'w-structure f-rel f-oh',
+		x_childtype: $.rt( 'StructureItem' ),
+		level: -1
 	}
 } ),
-/* `OrgItem` */
-OrgItem = define.widget( 'OrgItem', {
+/* `StructureItem` */
+StructureItem = define.widget( 'StructureItem', {
 	Const: function( x, p ) {
 		this.level = p.level + 1;
 		this.base = p.base || (p.level === 0 && p);
@@ -11896,45 +11909,47 @@ OrgItem = define.widget( 'OrgItem', {
 		if ( e ) {
 			var v = this.level, a = e.all || (e.all = []), b = a[ v ] || (a[ v ] = []), o = b[ b.length - 1 ];
 			b && b.push( this );
-			e.count === U && (e.count = e && e.nodeIndex ? e.prev().maxCnt : 0);
-			this.countIndex = ++ e.count;
-			this.length && (this.countIndex --);
-			this.length > 0 && (this.countIndex = (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2);
+			e.count === U && (e.count = e && e.nodeIndex ? e.prev().maxCnt + 1 : 0);
+			this.countIndex = e.count;
+			this.length > 0 && (this.countIndex = (this[ 0 ].countIndex + this.get( -1 ).countIndex) / 2);
 			if ( o ) {
 				if ( o.length > 1 ) {
 					o.countIndex = (o[ 0 ].countIndex + o[ o.length - 1 ].countIndex) / 2;
-					! this.length && o.parentNode === this.parentNode && (this.countIndex -= (o.length - 1) / 2);
+					! this.length && o.parentNode === this.parentNode && (this.countIndex = o.countIndex + 1);
 				}
 				this.countIndex = Math.max( this.countIndex, o.countIndex + 1 );
 			}
-			e.count = this.countIndex;
-			e.maxCnt = Math.max( e.maxCnt, e.count );
+			e.count = this.countIndex + 1;
+			e.maxCnt = Math.max( e.maxCnt, this.countIndex );
+		} else if ( ! this.length ) {
+			this.countIndex = this.maxCnt = this.nodeIndex ? this.prev().maxCnt + 1 : 0;
 		}
 		this.className += (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.x.nodes.length -1 ? ' z-last' : '') +
-			(this.length ? ' z-folder' : '') + (this.level === 0 ? ' z-root' : '') + (r.x.dir === 'v' ? ' z-dir-v' : ' z-dir-h');
-		r.x.dir === 'v' && this.defaults( { width: 110, height: 34 } );
+			(this.length ? ' z-folder' : '') + (this.level === 0 ? ' z-root' : '') + (r.x.dir === 'h' ? ' z-dir-h' : ' z-dir-v') + (this.attr( 'align' ) ? ' z-a-' + this.attr( 'align' ) : '');
+		r.x.dir === 'h' && this.defaults( { width: 115, height: 34 } );
 	},
-	Default: { width: 34, height: 110, widthMinus: 4, heightMinus: 4 },
+	Default: { width: 34, height: 115, widthMinus: 2, heightMinus: 2 },
 	Prototype: {
-		countIndex: 0,
 		maxCnt: 0,
-		rootType: 'Org',
-		className: 'w-orgitem',
-		x_childtype: $.rt( 'OrgItem' ),
+		rootType: 'Structure',
+		className: 'w-structureitem',
+		x_childtype: $.rt( 'StructureItem' ),
 		indent: function() {
-			for ( var r = this.rootNode, e = this.base, i = 0, l = this.length; i < l; i ++ )
+			for ( var e = this.base, i = 0, l = this.length; i < l; i ++ )
 				this[ i ].indent();
 			if ( this.nodeIndex === 0 ) {
 				var p = this, k = [];
 				do {
 					var v = p.getPrev();
-					k.push( v ? p.countIndex - v.countIndex : p.countIndex - (e && e.nodeIndex ? e.prev().maxCnt : 0) );
+					k.push( v ? p.countIndex - v.countIndex - 1 : p.countIndex - (e.nodeIndex ? e.prev().maxCnt + 1 : 0) );
 				} while ( (p = p.parentNode) && p.level > 0 );
-				k = Math.min.apply( N, k );
-				if ( k > 1 ) r.count = Math.max( 0, k - 1 );
+				e.count = Math.max( 0, Math.min.apply( N, k ) );
 			}
-			r.count && (this.countIndex -= r.count);
-			e && (e.maxCnt = Math.max( e.maxCnt, this.countIndex ));
+			e.count && (this.countIndex -= e.count);
+			this.length > 1 && (this.countIndex = (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2);
+			var v = this.prev();
+			v && (this.countIndex = Math.max( v.countIndex + 1, this.countIndex ));
+			e.maxCnt = Math.max( e.maxCnt, this.countIndex );
 		},
 		getPrev: function() {
 			 var a = this.base && this.base.all[ this.level ];
@@ -11942,24 +11957,26 @@ OrgItem = define.widget( 'OrgItem', {
 		},
 		getTop: function() {
 			return this._top !== U ? this._top :
-				(this._top = this.rootNode.x.dir === 'v' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : (this.countIndex -1) * 60 ) :
-					(this.attr( 'height' ) + 30) * this.level);
+				(this._top = this.rootNode.x.dir === 'h' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : this.countIndex * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
+					(this.attr( 'height' ) + this.rootNode.attr( 'vSpace' )) * this.level);
 		},
 		getLeft: function() {
 			return this._left !== U ? this._left :
-				(this. _left = this.rootNode.x.dir === 'v' ? (this.attr( 'width' ) + 30) * this.level :
-					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : (this.countIndex -1) * 60));
+				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'vSpace' )) * this.level :
+					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
 		},
 		prop_style: function() {
 			return _proto.prop_style.call( this ) + ';left:' + this.getLeft() + 'px;top:' + this.getTop() + 'px;';
 		},
 		html_nodes: function() {
-			return '<div class=w-orgitem-il></div><div class=w-orgitem-t>' + this.countIndex + this.x.text + '</div>';
+			var va = this.attr( 'vAlign' );
+			return '<div class="w-structureitem-t' + (this.rootNode.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') + '<span class="w-structureitem-s f-inbl f-va">' + this.x.text + '</span></div>';
 		},
 		html_after: function() {
-			var v = this.rootNode.x.dir === 'v';
+			var r = this.rootNode, d = r.x.dir === 'h', m = this.attr( 'widthMinus' ) / 2, w = this.attr( 'width' ), h = this.attr( 'height' ), l = this.getLeft(), t = this.getTop(), hs = r.attr( 'hSpace' ), vs = r.attr( 'vSpace' ), i = this.nodeIndex, tl = this.length, pl = this.parentNode.length;
 			return _proto.html_after.call( this ) + _proto.html_nodes.call( this ) +
-				(this.length > 1 ? '<div class=w-orgitem-ol style="' + (v ? 'height:' + (this.get( -1 ).getTop() - this[ 0 ].getTop() + 2) + 'px;' : 'width:' + (this.get( -1 ).getLeft() - this[ 0 ].getLeft() + 2) + 'px;') + 'top:' + (this[ 0 ].getTop() + (v ? 17 : -15)) + 'px;left:' + (this[ 0 ].getLeft() + (v ? -15 : 17)) + 'px;"></div>' : '');;
+				'<div class=w-structureitem-l' + (r.x.dir || 'v') + ' style="left:' + (d ? (l - (pl===1||(i&&i<pl-1) ? hs/2 : 0)) : l + w/2) + 'px;top:' + (d ? t + h/2 : t - (pl===1||(i&&i<pl-1) ? vs/2 : 0)) + 'px;width:' + (d ? w + (tl ? hs : 0) - (pl===1||(i&&i<pl-1) ? 0 : vs/2) : 0) + 'px;height:' + (d ? 0 : h + (tl ? vs : 0) - (pl===1||(i&&i<pl-1) ? 0 : vs/2)) + 'px;"></div>' +
+				(tl > 1 ? '<div class=w-structureitem-c' + (r.x.dir || 'v') + ' style="width:' + (d ? vs/2 : this.get( -1 ).getLeft() - this[ 0 ].getLeft()) + 'px;height:' + (d ? this.get( -1 ).getTop() - this[ 0 ].getTop() : vs/2) + 'px;top:' + (d ? this[ 0 ].getTop() + h/2 - m : t + h + vs/2) + 'px;left:' + (d ? l + w + hs/2 : this[ 0 ].getLeft() + w/2 - m) + 'px;"></div>' : '');;
 		}
 	}
 } );
