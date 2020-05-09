@@ -3476,7 +3476,7 @@ define( {
     ]
   },
   "Structure": {
-  	remark: '机构树。',
+  	remark: '结构树。',
   	extend: 'AbsWidget',
     Config: [
       { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>v</b><s>(纵向,默认)</s>,<b>h</b><s>(横向)</s>' },
@@ -3510,7 +3510,7 @@ define( {
     ]
   },
   "StructureItem": {
-  	remark: '机构树节点。',
+  	remark: '结构树节点。',
   	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
