@@ -11970,7 +11970,7 @@ StructureItem = define.widget( 'StructureItem', {
 		},
 		html_nodes: function() {
 			var va = this.attr( 'vAlign' );
-			return '<div class="w-structureitem-t' + (this.rootNode.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') + '<span class="w-structureitem-s f-inbl f-va">' + this.x.text + '</span></div>';
+			return '<div class="w-structureitem-t' + (this.rootNode.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') + '<span class="w-structureitem-s f-inbl f-va">' + this.html_format() + '</span></div>';
 		},
 		html_after: function() {
 			var r = this.rootNode, d = r.x.dir === 'h', m = this.attr( 'widthMinus' ) / 2, w = this.attr( 'width' ), h = this.attr( 'height' ), l = this.getLeft(), t = this.getTop(), hs = r.attr( 'hSpace' ), vs = r.attr( 'vSpace' ), i = this.nodeIndex, tl = this.length, pl = this.parentNode.length;
