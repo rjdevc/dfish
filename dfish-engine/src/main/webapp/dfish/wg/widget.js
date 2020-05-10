@@ -11887,7 +11887,7 @@ Form = define.widget( 'Form', {
 Structure = define.widget( 'Structure', {
 	Const: function( x, p ) {
 		Scroll.apply( this, arguments );
-		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].indent();
+		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].indentStart();
 	},
 	Extend: [ Scroll ],
 	Default: { scroll: T, hSpace: 30, vSpace: 30 },
@@ -11918,7 +11918,7 @@ StructureItem = define.widget( 'StructureItem', {
 			b.push( this );
 			this.lineIndex = b.length - 1;
 			this.offset = e.count;
-			this.length > 0 && (this.offset = (this[ 0 ].offset + this.get( -1 ).offset) / 2);
+			this.length > 0 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
 			if ( o ) {
 				if ( o.length > 1 ) {
 					o.offset = (o[ 0 ].offset + o[ o.length - 1 ].offset) / 2;
@@ -11943,9 +11943,10 @@ StructureItem = define.widget( 'StructureItem', {
 		rootType: 'Structure',
 		className: 'w-structureitem',
 		x_childtype: $.rt( 'StructureItem' ),
-		indent: function() {
+		// 向起始方向缩进
+		indentStart: function() {
 			for ( var e = this.base, i = 0, l = this.length; i < l; i ++ )
-				this[ i ].indent();
+				this[ i ].indentStart();
 			if ( ! e ) return;
 			if ( this.nodeIndex === 0 && ! this.length ) {
 				var p = e.all[ this.level ][ 0 ] === this ? this.parentNode : this, k = [];
@@ -11957,8 +11958,16 @@ StructureItem = define.widget( 'StructureItem', {
 			}
 			e.count && (this.offset -= e.count);
 			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
-			var v = this.prev();
-			v && (this.offset = Math.max( v.offset + 1, this.offset ));
+			this.nodeIndex && (this.offset = Math.max( this.prev().offset + 1, this.offset ));
+			if ( this.length && this.nodeIndex ) { //向结束方向缩进
+				var v = this.prev(), a = this.offset - v.offset;
+				if ( a > 1 ) {
+					while ( v && ! v.length ) { v = v.prev(); }
+					if ( ! v && (v = this) ) {
+						while ( v = v.prev() ) { v.offset += a - 1; }
+					}
+				}
+			}
 			this.offset < 0 && (e.min = Math.min( e.min, this.offset ));
 			(! e.furthest || e.furthest.offset < this.offset) && (e.furthest = this);
 		},
