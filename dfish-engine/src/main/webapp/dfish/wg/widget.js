@@ -11887,7 +11887,8 @@ Form = define.widget( 'Form', {
 Structure = define.widget( 'Structure', {
 	Const: function( x, p ) {
 		Scroll.apply( this, arguments );
-		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].indentStart();
+		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].count = 0, this[ i ].indentStart();
+		for ( var i = this.length - 1; i >= 0; i -- ) this[ i ].count = 0, this[ i ].indentEnd();
 	},
 	Extend: [ Scroll ],
 	Default: { scroll: T, hSpace: 30, vSpace: 30 },
@@ -11959,7 +11960,7 @@ StructureItem = define.widget( 'StructureItem', {
 			e.count && (this.offset -= e.count);
 			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
 			this.nodeIndex && (this.offset = Math.max( this.prev().offset + 1, this.offset ));
-			if ( this.length && this.nodeIndex ) { //向结束方向缩进
+			if ( this.length && this.nodeIndex ) { //让无子节点的节点向结束方向缩进
 				var v = this.prev(), a = this.offset - v.offset;
 				if ( a > 1 ) {
 					while ( v && ! v.length ) { v = v.prev(); }
@@ -11970,6 +11971,23 @@ StructureItem = define.widget( 'StructureItem', {
 			}
 			this.offset < 0 && (e.min = Math.min( e.min, this.offset ));
 			(! e.furthest || e.furthest.offset < this.offset) && (e.furthest = this);
+		},
+		// 向结束方向缩进
+		indentEnd: function() {
+			for ( var e = this.base, i = this.length - 1; i >= 0; i -- )
+				this[ i ].indentEnd();
+			if ( ! e ) return;
+			if ( ! this.length && this.nodeIndex === this.parentNode.length - 1 && this.lineIndex < e.all[ this.level ].length - 1 ) {
+				var a = e.all[ this.level ], p = this, k = [];
+				do {
+					var v = p.level && e.all[ p.level ][ p.lineIndex + 1 ];
+					k.push( v ? v.offset - p.offset - 1 : e.furthest.offset - p.offset );
+				} while ( (p = p.parentNode) && p.level > 0 );
+				e.count = Math.min.apply( N, k );
+			}
+			e.count && (this.offset += e.count);
+			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			this.nodeIndex < this.parentNode.length -1 && (this.offset = Math.min( this.next().offset - 1, this.offset ));
 		},
 		getTop: function() {
 			return this._top !== U ? this._top :
