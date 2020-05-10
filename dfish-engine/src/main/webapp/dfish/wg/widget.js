@@ -11887,10 +11887,7 @@ Form = define.widget( 'Form', {
 Structure = define.widget( 'Structure', {
 	Const: function( x, p ) {
 		Scroll.apply( this, arguments );
-		for ( var i = 0, l = this.length; i < l; i ++ ) {
-			this[ i ].countIndex = this[ i ].count = 0;
-			this[ i ].indent();
-		}
+		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].indent();
 	},
 	Extend: [ Scroll ],
 	Default: { scroll: T, hSpace: 30, vSpace: 30 },
@@ -11899,11 +11896,11 @@ Structure = define.widget( 'Structure', {
 		x_childtype: $.rt( 'StructureItem' ),
 		level: -1,
 		html_nodes: function() {
-			var a = this.attr('align'), d = this.x.dir === 'h', hs = this.attr('hSpace'), vs = this.attr('vSpace');
+			var a = this.attr( 'align' ), d = this.x.dir === 'h', hs = this.attr( 'hSpace' ), vs = this.attr( 'vSpace' );
 			for ( var i = 0, a = s = '<div class="w-structure-cont' + (a ? ' f-a-' + a : '') + '">'; i < this.length; i ++ ) {
-				var f = this[ i ].furthest || this[ i ], w = this[ i ].attr('width'), h = this[ i ].attr('height'), al = Math.max( 1, this[ i ].all.length );
+				var f = this[ i ].furthest || this[ i ], w = this[ i ].attr( 'width' ), h = this[ i ].attr( 'height' ), al = Math.max( 1, this[ i ].all.length );
 				i > 0 && (s += '<div class="w-structure-split' + (d ? '' : ' f-inbl') + '" style="' + (d ? 'height:' + vs : 'width:' + hs) + 'px"></div>');
-				s += '<div class="w-structure-root f-rel f-inbl" style="width:' + (d ? al * w + (al-1) * hs : f.getLeft() + w) + 'px;height:' + (d ? f.getTop() + h : al * h + (al-1) * vs) + 'px">' + this[i].html() + '</div>';
+				s += '<div class="w-structure-root f-rel f-inbl" style="width:' + (d ? al * w + (al-1) * hs : f.getLeft() + w) + 'px;height:' + (d ? f.getTop() + h : al * h + (al-1) * vs) + 'px">' + this[ i ].html() + '</div>';
 			}
 			return s + '</div>';
 		}
@@ -11913,25 +11910,26 @@ Structure = define.widget( 'Structure', {
 StructureItem = define.widget( 'StructureItem', {
 	Const: function( x, p ) {
 		this.level = p.level + 1;
-		this.level === 0 && (this.all = [], this.count = 0);
+		this.level === 0 && (this.all = [], this.count = this.min = 0);
 		this.base = p.base || (p.level === 0 && p);
 		W.apply( this, arguments );
 		if ( this.base ) {
 			var e = this.base, b = e.all[ this.level ] || (e.all[ this.level ] = []), o = b[ b.length - 1 ];
-			b && b.push( this );
-			this.countIndex = e.count;
-			this.length > 0 && (this.countIndex = (this[ 0 ].countIndex + this.get( -1 ).countIndex) / 2);
+			b.push( this );
+			this.lineIndex = b.length - 1;
+			this.offset = e.count;
+			this.length > 0 && (this.offset = (this[ 0 ].offset + this.get( -1 ).offset) / 2);
 			if ( o ) {
 				if ( o.length > 1 ) {
-					o.countIndex = (o[ 0 ].countIndex + o[ o.length - 1 ].countIndex) / 2;
-					! this.length && o.parentNode == this.parentNode && (this.countIndex = o.countIndex + 1);
+					o.offset = (o[ 0 ].offset + o[ o.length - 1 ].offset) / 2;
+					! this.length && o.parentNode == this.parentNode && (this.offset = o.offset + 1);
 				}
-				this.countIndex = Math.max( this.countIndex, o.countIndex + 1 );
+				this.offset = Math.max( this.offset, o.offset + 1 );
 			}
-			e.count = this.countIndex + 1;
+			e.count = this.offset + 1;
 		}
 		this.className += (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.x.nodes.length -1 ? ' z-last' : '') +
-			(this.length ? ' z-folder' : '') + (this.level === 0 ? ' z-root' : '') + (this.rootNode.x.dir === 'h' ? ' z-dir-h' : ' z-dir-v') + (this.attr( 'align' ) ? ' z-a-' + this.attr( 'align' ) : '');
+			(this.length ? ' z-folder' : '') + (this.rootNode.x.dir === 'h' ? ' z-dir-h' : ' z-dir-v') + ' f-a-' + (this.attr( 'align' ) || 'center');
 		this.rootNode.x.dir === 'h' && this.defaults( { width: 115, height: 34 } );
 	},
 	Default: { width: 34, height: 115, widthMinus: 2, heightMinus: 2, tip: T },
@@ -11941,7 +11939,7 @@ StructureItem = define.widget( 'StructureItem', {
 		}
 	},
 	Prototype: {
-		countIndex: 0,
+		offset: 0,
 		rootType: 'Structure',
 		className: 'w-structureitem',
 		x_childtype: $.rt( 'StructureItem' ),
@@ -11952,35 +11950,27 @@ StructureItem = define.widget( 'StructureItem', {
 			if ( this.nodeIndex === 0 && ! this.length ) {
 				var p = e.all[ this.level ][ 0 ] === this ? this.parentNode : this, k = [];
 				do {
-					var v = p.getPrev();
-					k.push( v ? p.countIndex - v.countIndex - 1 : p.countIndex );
+					var v = p.level && e.all[ p.level ][ p.lineIndex - 1 ];
+					k.push( v ? p.offset - v.offset - 1 : p.offset );
 				} while ( (p = p.parentNode) && p.level > 0 );
 				e.count = Math.min.apply( N, k );
 			}
-			e.count && (this.countIndex -= e.count);
-			this.length > 1 && (this.countIndex = (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2);
+			e.count && (this.offset -= e.count);
+			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
 			var v = this.prev();
-			v && (this.countIndex = Math.max( v.countIndex + 1, this.countIndex ));
-			this.countIndex < 0 && e.fixIndex( - this.countIndex );
-			(! e.furthest || e.furthest.countIndex < this.countIndex) && (e.furthest = this);
-		},
-		fixIndex: function( a ) {
-			this.countIndex += a;
-			for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].fixIndex( a );
-		},
-		getPrev: function() {
-			 var a = this.base && this.base.all[ this.level ];
-			 return a && a[ $.arrIndex( a, this ) - 1 ];
+			v && (this.offset = Math.max( v.offset + 1, this.offset ));
+			this.offset < 0 && (e.min = Math.min( e.min, this.offset ));
+			(! e.furthest || e.furthest.offset < this.offset) && (e.furthest = this);
 		},
 		getTop: function() {
 			return this._top !== U ? this._top :
-				(this._top = this.rootNode.x.dir === 'h' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : this.countIndex * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
+				(this._top = this.rootNode.x.dir === 'h' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : (this.offset - (this.base || this).min) * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
 					(this.attr( 'height' ) + this.rootNode.attr( 'vSpace' )) * this.level);
 		},
 		getLeft: function() {
 			return this._left !== U ? this._left :
 				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' )) * this.level :
-					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
+					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : (this.offset - (this.base || this).min) * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
 		},
 		html_prop: _html_prop_title,
 		prop_style: function() {
