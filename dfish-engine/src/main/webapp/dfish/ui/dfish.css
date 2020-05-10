@@ -69,6 +69,9 @@
 .f-va,.f-va-middle,.f-nv,.f-nv-middle{vertical-align:middle}
 .f-va-top,.f-nv-top{vertical-align:top}
 .f-va-bottom,.f-nv-bottom{vertical-align:bottom}
+.f-a,.f-a-left{text-align:left}
+.f-a-center{text-align:center}
+.f-a-right{text-align:right}
 
 .f-resize-sensor{position:absolute;left:0px;top:0px;right:0px;bottom:0px;z-index:-1;visibility:hidden;*display:none}
 .f-resize-sensor-expand{position:absolute;left:0;top:0;right:0;bottom:0;overflow:scroll;border:1px solid green;}
@@ -828,7 +831,9 @@
 .w-datepicker-multiple-dialog a{color:#333}
 .w-datepicker-multiple-dialog ._i{cursor:pointer}
 
-.w-structureitem{position:absolute;z-index:1;border:1px solid #2498ff;text-align:center;overflow:hidden;background:#fff}
+.w-structure-cont{white-space:nowrap}
+.w-structure-root,.w-structure-root{vertical-align:top}
+.w-structureitem{position:absolute;z-index:1;border:1px solid #2498ff;text-align:center;overflow:hidden;background:#fff;white-space:normal}
 .w-structureitem.z-a-left{text-align:left}
 .w-structureitem.z-a-right{text-align:right}
 .w-structureitem-t{position:absolute;top:0;left:0;right:0;bottom:0;padding:3px 5px 0 5px}

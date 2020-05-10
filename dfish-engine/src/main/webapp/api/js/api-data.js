@@ -3479,6 +3479,7 @@ define( {
   	remark: '结构树。',
   	extend: 'AbsWidget',
     Config: [
+      { name: 'align', type: 'String', remark: '水平对齐。可选值: <b>left</b>, <b>center</b>, <b>right</b>' },
       { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>v</b><s>(纵向,默认)</s>,<b>h</b><s>(横向)</s>' },
       { name: 'hSpace', type: 'Number', remark: '横向间距。' },
       { name: 'vSpace', type: 'Number', remark: '纵向间距。' },
