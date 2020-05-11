@@ -11899,7 +11899,7 @@ Structure = define.widget( 'Structure', {
 		html_nodes: function() {
 			var a = this.attr( 'align' ), d = this.x.dir === 'h', hs = this.attr( 'hSpace' ), vs = this.attr( 'vSpace' );
 			for ( var i = 0, a = s = '<div class="w-structure-cont' + (a ? ' f-a-' + a : '') + '">'; i < this.length; i ++ ) {
-				var f = this[ i ].furthest || this[ i ], w = this[ i ].attr( 'width' ), h = this[ i ].attr( 'height' ), al = Math.max( 1, this[ i ].all.length );
+				var f = this[ i ].getFurthest(), w = this[ i ].attr( 'width' ), h = this[ i ].attr( 'height' ), al = Math.max( 1, this[ i ].all.length );
 				i > 0 && (s += '<div class="w-structure-split' + (d ? '' : ' f-inbl') + '" style="' + (d ? 'height:' + vs : 'width:' + hs) + 'px"></div>');
 				s += '<div class="w-structure-root f-rel f-inbl" style="width:' + (d ? al * w + (al-1) * hs : f.getLeft() + w) + 'px;height:' + (d ? f.getTop() + h : al * h + (al-1) * vs) + 'px">' + this[ i ].html() + '</div>';
 			}
@@ -11969,8 +11969,6 @@ StructureItem = define.widget( 'StructureItem', {
 					}
 				}
 			}
-			this.offset < 0 && (e.min = Math.min( e.min, this.offset ));
-			(! e.furthest || e.furthest.offset < this.offset) && (e.furthest = this);
 		},
 		// 向结束方向缩进
 		indentEnd: function() {
@@ -11981,23 +11979,44 @@ StructureItem = define.widget( 'StructureItem', {
 				var a = e.all[ this.level ], p = this, k = [];
 				do {
 					var v = p.level && e.all[ p.level ][ p.lineIndex + 1 ];
-					k.push( v ? v.offset - p.offset - 1 : e.furthest.offset - p.offset );
+					k.push( v ? v.offset - p.offset - 1 : e.getFurthest().offset - p.offset );
 				} while ( (p = p.parentNode) && p.level > 0 );
 				e.count = Math.min.apply( N, k );
 			}
 			e.count && (this.offset += e.count);
-			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			this.length && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
 			this.nodeIndex < this.parentNode.length -1 && (this.offset = Math.min( this.next().offset - 1, this.offset ));
+			if ( ! this.length && this.nodeIndex < this.parentNode.length -1 ) {this.offset = this.next().offset - 1;}
+		},
+		getFurthest: function() {
+			var a = (this.base || this);
+			if ( a.furthest ) return a.furthest;
+			var b = a.all, c, r, i = b.length;
+			while ( i -- ) if ( c = b[ i ] ) {
+				var d = c[ c.length - 1 ];
+				if (! r || r.offset < d.offset ) r = d;
+			}
+			return (a.furthest = r || this);
+		},
+		getMinest: function() {
+			var a = (this.base || this);
+			if ( a.minest ) return a.minest;
+			var b = a.all, c, r, i = b.length;
+			while ( i -- ) if ( c = b[ i ] ) {
+				var d = c[ 0 ];
+				if ( ! r || r.offset > d.offset ) r = d;
+			}
+			return (a.minest = r || this);
 		},
 		getTop: function() {
 			return this._top !== U ? this._top :
-				(this._top = this.rootNode.x.dir === 'h' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : (this.offset - (this.base || this).min) * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
+				(this._top = this.rootNode.x.dir === 'h' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : (this.offset - this.getMinest().offset) * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
 					(this.attr( 'height' ) + this.rootNode.attr( 'vSpace' )) * this.level);
 		},
 		getLeft: function() {
 			return this._left !== U ? this._left :
 				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' )) * this.level :
-					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : (this.offset - (this.base || this).min) * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
+					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : (this.offset - this.getMinest().offset) * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
 		},
 		html_prop: _html_prop_title,
 		prop_style: function() {
