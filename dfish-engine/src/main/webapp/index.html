@@ -9,10 +9,11 @@
     <script src="./dfish/dfish.js?ver=20191014"></script>
     <script>
         dfish.use( 'x/app' );
+        dfish.use( 'skin/dfish.config.js' );
         dfish.init({
             view : {
                 id: 'index',
-                node: 'index/index'
+                template: 'index/index'
             }
         });
     </script>

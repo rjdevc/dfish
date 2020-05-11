@@ -375,7 +375,7 @@ _loadCss = function( a, b, c ) {
 		        img.onerror = function() { --n === 0 && c() };
 		        img.src = f;
 		    } else {
-		    	e.onload = function() { --n === 0 && c() };
+		    	e.onload = e.onerror = function() { --n === 0 && c() };
 		    }
 		}
 	}

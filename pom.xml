@@ -6,7 +6,7 @@
     <name>dfish</name>
     <groupId>com.rongji.dfish</groupId>
     <artifactId>dfish</artifactId>
-    <version>5.0.0.RELEASE</version>
+    <version>5.0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://dfish.rongji.com</url>
@@ -185,6 +185,6 @@
         <module>dfish-framework</module>
         <module>dfish-framework-hibernate</module>
         <module>dfish-framework-mybatis</module>
-<!--        <module>dfish-demo</module>-->
+        <module>dfish-demo</module>
     </modules>
 </project>

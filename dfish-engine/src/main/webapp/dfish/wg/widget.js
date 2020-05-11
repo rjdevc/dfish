@@ -162,6 +162,9 @@ _superTrigger = function( a, b, c ) {
 		m = b.Listener.body[ _event_hump[ t ] || t ];
 	m && (m.method || m).call( a, c );
 },
+_html_prop_title = function() {
+	return _proto.html_prop.call( this ) + this.prop_title();
+}
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function( s ) {
 	var s = s || '', n, h = this.Const.Listener, r = _white_events[ h && h.range ] || _white_events.all;
@@ -2319,11 +2322,19 @@ AbsSection = define.widget( 'AbsSection', {
 				}
 			}
 		},
+		// @implement
+		attrSetter: function( a, b, c ) {
+			_proto.attrSetter.apply( this, arguments );
+			if ( a === 'src' ) {
+				this._runtime_src = b;
+			}
+		},
 		getSrc: function() {
-			var u = this._runtime_src || this.attr( 'src' ); 
+			var u = this._runtime_src; 
 			if ( ! u ) {
 				var t = this.x.template;
 				t && (t = _getTemplate( t )) && (u = t.src);
+				! u && (u = this.attr( 'src' ));
 			}
 			u && typeof u === _STR && this.x.args && (u = this.formatStr( u, this.x.args, T ));
 			return u;
@@ -3002,7 +3013,7 @@ Frame = define.widget( 'Frame', {
 					$.animate( o.$(), 'fadeOut' + d, 100 );
 					$.animate( n.$(), 'fadeIn' + d, 100, function() { o.display( F ); } );
 				} else {
-					o && o.display( F );
+					o && o.display( F, T );
 					n.display( T );
 				}
 			}
@@ -4153,9 +4164,7 @@ Img = define.widget( 'Img', {
 			this.x.style && (t += this.x.style);
 			return t;
 		},
-		html_prop: function() {
-			return _proto.html_prop.call( this ) + this.prop_title();
-		},
+		html_prop: _html_prop_title,
 		html_badge: function() {
 			return this._badge ? this._badge.html() : '';
 		},
@@ -4198,7 +4207,8 @@ Toggle = define.widget( 'Toggle', {
 		body: {
 			ready: function() {
 				this.x.expanded != N && this.$() && this.toggle( this.x.expanded );
-			}
+			},
+			mouseOver: _hover_tip
 		}
 	},
 	Prototype: {
@@ -4208,13 +4218,13 @@ Toggle = define.widget( 'Toggle', {
 			this.x.expanded = b;
 			if ( c && (c = c.split(',')) ) {
 				for ( var i = 0, g; i < c.length; i ++ ) {
-					(g = this.ownerView.find( c[ i ] )) && g.display( this );
+					(g = this.ownerView.find( c[ i ] )) && g.display( this, T );
 				}
 			} else {
 				for ( var i = this.nodeIndex + 1, p = this.parentNode, l = p.length; i < l; i ++ ) {
 					if ( p[ i ].type === this.type )
 						break;
-					p[ i ].display( this );
+					p[ i ].display( this, T );
 				}
 			}
 			this.$( 'o' ) && $.replace( this.$( 'o' ), this.html_icon( b ) );
@@ -4228,6 +4238,7 @@ Toggle = define.widget( 'Toggle', {
 		isExpanded: function() {
 			return this.x.expanded;
 		},
+		html_prop: _html_prop_title,
 		// @a -> open?
 		html_icon: function( a ) {
 			var c = _toggleIcon.call( this ), t = evw + '.toggle(event)';
@@ -10397,7 +10408,7 @@ TableToggle = define.widget( 'TableToggle', {
 		isExpanded: function() {
 			return this.x.expanded;
 		},
-		toggle: function( a ) {
+		toggle: function( a, b ) {
 			Toggle.prototype.toggle.apply( this, arguments );
 			var t = this.tr();
 			t.toggle_rows( this.x.expanded );
@@ -10405,7 +10416,7 @@ TableToggle = define.widget( 'TableToggle', {
 				c = d[ i ];
 				if ( c.tableToggle )
 					break;
-				c.display( this );
+				c.display( this, T );
 			}
 			t.table.parallel( 'fixFoot' );
 		}
@@ -11872,80 +11883,136 @@ Form = define.widget( 'Form', {
 		className: 'w-form'
 	}
 } ),
-/* `Org` */
-Org = define.widget( 'Org', {
+/* `Structure` */
+Structure = define.widget( 'Structure', {
 	Const: function( x, p ) {
 		Scroll.apply( this, arguments );
-		this.indent();
+		for ( var i = 0, l = this.length; i < l; i ++ ) this[ i ].count = 0, this[ i ].indentStart();
+		for ( var i = this.length - 1; i >= 0; i -- ) this[ i ].count = 0, this[ i ].indentEnd();
 	},
-	Extend: Scroll,
-	Default: { scroll: T },
+	Extend: [ Scroll ],
+	Default: { scroll: T, hSpace: 30, vSpace: 30 },
 	Prototype: {
-		count: 0,
-		className: 'w-org f-rel',
+		className: 'w-structure f-rel f-oh',
+		x_childtype: $.rt( 'StructureItem' ),
 		level: -1,
-		x_childtype: $.rt( 'OrgItem' ),
-		indent: function() {
-			
+		html_nodes: function() {
+			var a = this.attr( 'align' ), d = this.x.dir === 'h', hs = this.attr( 'hSpace' ), vs = this.attr( 'vSpace' );
+			for ( var i = 0, a = s = '<div class="w-structure-cont' + (a ? ' f-a-' + a : '') + '">'; i < this.length; i ++ ) {
+				var f = this[ i ].furthest || this[ i ], w = this[ i ].attr( 'width' ), h = this[ i ].attr( 'height' ), al = Math.max( 1, this[ i ].all.length );
+				i > 0 && (s += '<div class="w-structure-split' + (d ? '' : ' f-inbl') + '" style="' + (d ? 'height:' + vs : 'width:' + hs) + 'px"></div>');
+				s += '<div class="w-structure-root f-rel f-inbl" style="width:' + (d ? al * w + (al-1) * hs : f.getLeft() + w) + 'px;height:' + (d ? f.getTop() + h : al * h + (al-1) * vs) + 'px">' + this[ i ].html() + '</div>';
+			}
+			return s + '</div>';
 		}
 	}
 } ),
-/* `OrgItem` */
-OrgItem = define.widget( 'OrgItem', {
+/* `StructureItem` */
+StructureItem = define.widget( 'StructureItem', {
 	Const: function( x, p ) {
 		this.level = p.level + 1;
+		this.level === 0 && (this.all = [], this.count = this.min = 0);
+		this.base = p.base || (p.level === 0 && p);
 		W.apply( this, arguments );
-		var r = p.rootNode || p, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []), c = a[ p.level ], m = c && c[ c.length - 1 ], n = p.x.nodes;
-		b.push( this );
-		r.count ++;
-		this.countIndex = r.count;
-		this.length && (this.countIndex --);
-		if ( this.length > 1 ) {
-			this.countIndex = Math.ceil( (this[ 0 ].countIndex + this[ this.length - 1 ].countIndex) / 2 );
+		if ( this.base ) {
+			var e = this.base, b = e.all[ this.level ] || (e.all[ this.level ] = []), o = b[ b.length - 1 ];
+			b.push( this );
+			this.lineIndex = b.length - 1;
+			this.offset = e.count;
+			this.length > 0 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			if ( o ) {
+				if ( o.length > 1 ) {
+					o.offset = (o[ 0 ].offset + o[ o.length - 1 ].offset) / 2;
+					! this.length && o.parentNode == this.parentNode && (this.offset = o.offset + 1);
+				}
+				this.offset = Math.max( this.offset, o.offset + 1 );
+			}
+			e.count = this.offset + 1;
 		}
-		if ( this.length === 0 && m ) {
-			var i = v, k;
-			//while ( i -- ) {
-			//	k = Math.max(  )
-			//}*/
-			//var k = m.countIndex + 1 - Math.floor( (n.length - 1) / 2 );
-			//this.countIndex = k;
-		}
-		if ( b.length > 1 && this.countIndex <= b[ b.length -2 ].countIndex ) {
-			this.countIndex = b[ b.length -2 ].countIndex + 1;
-		}
-		r.count = this.countIndex;
-		this.nodeIndex === 0 && (this.className += ' z-first');
-		this.nodeIndex === n.length -1 && (this.className += ' z-last');
-		this.length && (this.className += ' z-folder');
-		this.level === 0 && (this.className += ' z-root');
+		this.className += (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.x.nodes.length -1 ? ' z-last' : '') +
+			(this.length ? ' z-folder' : '') + (this.rootNode.x.dir === 'h' ? ' z-dir-h' : ' z-dir-v') + ' f-a-' + (this.attr( 'align' ) || 'center');
+		this.rootNode.x.dir === 'h' && this.defaults( { width: 115, height: 34 } );
 	},
-	Default: { width: 34, height: 110, widthMinus: 4, heightMinus: 4 },
+	Default: { width: 34, height: 115, widthMinus: 2, heightMinus: 2, tip: T },
+	Listener: {
+		body: {
+			mouseOver: _hover_tip
+		}
+	},
 	Prototype: {
-		countIndex: 0,
-		rootType: 'Org',
-		className: 'w-orgitem',
-		x_childtype: $.rt( 'OrgItem' ),
-		getPrev: function() {
-			 var r = this.rootNode, v = this.level, a = r.all || (r.all = []), b = a[ v ] || (a[ v ] = []);
-			 return b[ b.length - 1 ];
+		offset: 0,
+		rootType: 'Structure',
+		className: 'w-structureitem',
+		x_childtype: $.rt( 'StructureItem' ),
+		// 向起始方向缩进
+		indentStart: function() {
+			for ( var e = this.base, i = 0, l = this.length; i < l; i ++ )
+				this[ i ].indentStart();
+			if ( ! e ) return;
+			if ( this.nodeIndex === 0 && ! this.length ) {
+				var p = e.all[ this.level ][ 0 ] === this ? this.parentNode : this, k = [];
+				do {
+					var v = p.level && e.all[ p.level ][ p.lineIndex - 1 ];
+					k.push( v ? p.offset - v.offset - 1 : p.offset );
+				} while ( (p = p.parentNode) && p.level > 0 );
+				e.count = Math.min.apply( N, k );
+			}
+			e.count && (this.offset -= e.count);
+			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			this.nodeIndex && (this.offset = Math.max( this.prev().offset + 1, this.offset ));
+			if ( this.length && this.nodeIndex ) { //让无子节点的节点向结束方向缩进
+				var v = this.prev(), a = this.offset - v.offset;
+				if ( a > 1 ) {
+					while ( v && ! v.length ) { v = v.prev(); }
+					if ( ! v && (v = this) ) {
+						while ( v = v.prev() ) { v.offset += a - 1; }
+					}
+				}
+			}
+			this.offset < 0 && (e.min = Math.min( e.min, this.offset ));
+			(! e.furthest || e.furthest.offset < this.offset) && (e.furthest = this);
+		},
+		// 向结束方向缩进
+		indentEnd: function() {
+			for ( var e = this.base, i = this.length - 1; i >= 0; i -- )
+				this[ i ].indentEnd();
+			if ( ! e ) return;
+			if ( ! this.length && this.nodeIndex === this.parentNode.length - 1 && this.lineIndex < e.all[ this.level ].length - 1 ) {
+				var a = e.all[ this.level ], p = this, k = [];
+				do {
+					var v = p.level && e.all[ p.level ][ p.lineIndex + 1 ];
+					k.push( v ? v.offset - p.offset - 1 : e.furthest.offset - p.offset );
+				} while ( (p = p.parentNode) && p.level > 0 );
+				e.count = Math.min.apply( N, k );
+			}
+			e.count && (this.offset += e.count);
+			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			this.nodeIndex < this.parentNode.length -1 && (this.offset = Math.min( this.next().offset - 1, this.offset ));
 		},
 		getTop: function() {
-			return (this.attr( 'height' ) + 30) * this.level;
+			return this._top !== U ? this._top :
+				(this._top = this.rootNode.x.dir === 'h' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : (this.offset - (this.base || this).min) * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
+					(this.attr( 'height' ) + this.rootNode.attr( 'vSpace' )) * this.level);
 		},
 		getLeft: function() {
 			return this._left !== U ? this._left :
-				(this. _left = this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : this.countIndex * 60);
+				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' )) * this.level :
+					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : (this.offset - (this.base || this).min) * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
 		},
+		html_prop: _html_prop_title,
 		prop_style: function() {
 			return _proto.prop_style.call( this ) + ';left:' + this.getLeft() + 'px;top:' + this.getTop() + 'px;';
 		},
 		html_nodes: function() {
-			return '<div class=w-orgitem-vl></div><div class=w-orgitem-t>' + this.countIndex + this.x.text + '</div>';
+			var va = this.attr( 'vAlign' );
+			return '<div class="w-structureitem-t' + (this.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') +
+				'<span class="w-structureitem-s f-inbl f-va">' + this.html_format() + '</span></div>';
 		},
 		html_after: function() {
+			var r = this.rootNode, d = r.x.dir === 'h', m = this.attr( 'widthMinus' ) / 2, w = this.attr( 'width' ), h = this.attr( 'height' ), l = this.getLeft(), t = this.getTop(), hs = r.attr( 'hSpace' ), vs = r.attr( 'vSpace' ), i = this.nodeIndex, tl = this.length, pl = this.parentNode.length;
 			return _proto.html_after.call( this ) + _proto.html_nodes.call( this ) +
-				(this.length > 1 ? '<div class=w-orgitem-hl style="width:' + (this.get( -1 ).getLeft() - this[ 0 ].getLeft() + 2) + 'px;top:' + (this[ 0 ].getTop() - 15) + 'px;left:' + (this[ 0 ].getLeft() + 17) + 'px;"></div>' : '');;
+				'<div class="w-structureitem-il z-dir-' + (r.x.dir || 'v') + '" style="left:' + (d ? (l - (this.level&&(pl===1||(i&&i<pl-1)) ? hs/2 : 0)) : l + w/2) + 'px;top:' + (d ? t + h/2 : t - (this.level&&(pl===1||(i&&i<pl-1)) ? vs/2 : 0)) + 'px;width:' + (d ? w + (tl ? hs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : hs/2) : 0) + 'px;height:' + (d ? 0 : h + (tl ? vs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : vs/2)) + 'px;"></div>' +
+				(tl > 1 ? '<div class="w-structureitem-cl z-dir-' + (r.x.dir || 'v') + '" style="width:' + (d ? w + hs/2 - m : this.get( -1 ).getLeft() - this[ 0 ].getLeft()) + 'px;height:' + (d ? this.get( -1 ).getTop() - this[ 0 ].getTop() : h + vs/2 - m) + 'px;top:' + (d ? this[ 0 ].getTop() + h/2 - m : t + h + vs/2) + 'px;left:' + (d ? l + w + hs/2 : this[ 0 ].getLeft() + w/2 - m) + 'px;"></div>' : '');;
 		}
 	}
 } );

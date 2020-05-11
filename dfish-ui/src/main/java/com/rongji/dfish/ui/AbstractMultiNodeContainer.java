@@ -16,6 +16,13 @@ public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeCont
     /**
      * 构造函数
      *
+     */
+    public AbstractMultiNodeContainer() {
+        this.id = id;
+    }
+    /**
+     * 构造函数
+     *
      * @param id String
      */
     public AbstractMultiNodeContainer(String id) {
