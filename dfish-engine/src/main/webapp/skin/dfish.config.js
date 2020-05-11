@@ -14,7 +14,7 @@ dfish.config({
         // 色调
         color: 'blue'
     },
-    //表单验证效果 可选值: red,tip,alert
+    // 表单验证效果 可选值: red,tip,alert
     validate: {
         effect: 'red,tip'
     },
@@ -41,7 +41,7 @@ dfish.config({
         'Leaf': {tip: true, style: 'padding-right:10px;', widthMinus: 10},
         'Blank': {width: '*', height: '*'},
 
-        'ButtonBar': {space: 10 },
+        'ButtonBar': {space: 10},
         'ButtonBar.dlg-head-operation': {space: 0},
         'ButtonBar.x-breadcrumb': {space: 0},
         'ButtonBar.x-face-text': {space: 0},

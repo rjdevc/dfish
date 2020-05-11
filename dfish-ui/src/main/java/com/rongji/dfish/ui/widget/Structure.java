@@ -1,6 +1,7 @@
 package com.rongji.dfish.ui.widget;
 
 import com.rongji.dfish.ui.AbstractPubNodeContainer;
+import com.rongji.dfish.ui.Alignable;
 import com.rongji.dfish.ui.Scrollable;
 import com.rongji.dfish.ui.auxiliary.StructureItem;
 
@@ -10,12 +11,14 @@ import com.rongji.dfish.ui.auxiliary.StructureItem;
  * @author lamontYu
  * @since 5.0
  */
-public class Structure extends AbstractPubNodeContainer<Structure, StructureItem, StructureItem> implements Scrollable<Structure> {
+public class Structure extends AbstractPubNodeContainer<Structure, StructureItem, StructureItem>
+        implements Scrollable<Structure>, Alignable<Structure> {
 
     private String dir;
-    private Boolean scroll;
     private Integer hSpace;
     private Integer vSpace;
+    private Boolean scroll;
+    private String align;
 
     /**
      * 排列方式-横向
@@ -112,4 +115,14 @@ public class Structure extends AbstractPubNodeContainer<Structure, StructureItem
         return this;
     }
 
+    @Override
+    public String getAlign() {
+        return align;
+    }
+
+    @Override
+    public Structure setAlign(String align) {
+        this.align = align;
+        return this;
+    }
 }
