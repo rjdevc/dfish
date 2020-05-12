@@ -3,8 +3,8 @@ package com.rongji.dfish.ui;
 import com.rongji.dfish.base.util.Utils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * NodeContainerDecorator 为NodeContainer的装饰器。
@@ -31,20 +31,19 @@ public abstract class NodeContainerDecorator implements NodeContainer{
      */
     protected abstract void setNode(int i,Node node);
     @Override
-    public Node findNode(Filter filter) {
+    public Node findNode(Predicate<Node> filter) {
         List<Node> nodes=nodes();
         if(nodes==null){
             return null;
         }
-		for (Iterator<Node> iter = nodes.iterator(); iter.hasNext(); ) {
-            Node item = iter.next();
-            if(item==null){
+		for (Node node:nodes ) {
+            if(node==null){
                 continue;
             }
-			if (filter.accept(item)) {
-				return item;
-			} else if (item instanceof NodeContainer) {
-				NodeContainer cast = (NodeContainer) item;
+			if (filter.test(node)) {
+				return node;
+			} else if (node instanceof NodeContainer) {
+				NodeContainer cast = (NodeContainer) node;
 				Node c = cast.findNode(filter);
 				if (c != null) {
 					return c;
@@ -55,22 +54,21 @@ public abstract class NodeContainerDecorator implements NodeContainer{
     }
 
     @Override
-    public List<Node> findAllNodes(Filter filter) {
+    public List<Node> findAllNodes(Predicate<Node> filter) {
         List<Node> nodes=nodes();
         List<Node> ret=new ArrayList<>();
         if(nodes==null){
             return ret;
         }
-        for (Iterator<Node> iter = nodes().iterator(); iter.hasNext(); ) {
-            Node item = iter.next();
-            if(item==null){
+        for (Node node:nodes ) {
+            if(node==null){
                 continue;
             }
-            if (filter.accept(item)) {
-                ret.add(item);
+            if (filter.test(node)) {
+                ret.add(node);
             }
-            if (item instanceof NodeContainer) {
-                NodeContainer cast = (NodeContainer) item;
+            if (node instanceof NodeContainer) {
+                NodeContainer cast = (NodeContainer) node;
                 ret.addAll(cast.findAllNodes(filter)) ;
             }
         }
@@ -79,7 +77,7 @@ public abstract class NodeContainerDecorator implements NodeContainer{
 
 
     @Override
-    public Node replaceNode(Filter filter, Node node) {
+    public Node replaceNode(Predicate<Node> filter, Node node) {
         List<Node> nodes=nodes();
         if(nodes==null){
             return null;
@@ -89,7 +87,7 @@ public abstract class NodeContainerDecorator implements NodeContainer{
             if(item==null){
                 continue;
             }
-            if (filter.accept(item)) {
+            if (filter.test(item)) {
                 if(onReplace(item,node)) {
                     setNode(i, node);
                     return item;
@@ -106,7 +104,7 @@ public abstract class NodeContainerDecorator implements NodeContainer{
     }
 
     @Override
-    public int replaceAllNodes(Filter filter, Node node) {
+    public int replaceAllNodes(Predicate<Node> filter, Node node) {
         int replaced=0;
         List<Node> nodes=nodes();
         if(nodes==null){
@@ -117,7 +115,7 @@ public abstract class NodeContainerDecorator implements NodeContainer{
             if(item==null){
                 continue;
             }
-            if (filter.accept(item)) {
+            if (filter.test(item)) {
                 if(onReplace(item,node)) {
                     replaced++;
                     setNode(i,node);

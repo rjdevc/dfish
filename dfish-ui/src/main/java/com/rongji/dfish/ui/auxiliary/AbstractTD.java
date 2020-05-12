@@ -4,6 +4,7 @@ import com.rongji.dfish.ui.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
         implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> ,HtmlContentHolder<T> {
@@ -209,22 +210,22 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
     }
 
     @Override
-    public Node findNode(Filter filter) {
+    public Node findNode(Predicate<Node> filter) {
         return getNodeContainerDecorator().findNode(filter);
     }
 
     @Override
-    public List<Node> findAllNodes(Filter filter) {
+    public List<Node> findAllNodes(Predicate<Node> filter) {
         return getNodeContainerDecorator().findAllNodes(filter);
     }
 
     @Override
-    public Node replaceNode(Filter filter, Node node) {
+    public Node replaceNode(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceNode(filter, node);
     }
 
     @Override
-    public int replaceAllNodes(Filter filter, Node node) {
+    public int replaceAllNodes(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceAllNodes(filter, node);
     }
 

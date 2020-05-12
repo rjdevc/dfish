@@ -7,6 +7,7 @@ import com.rongji.dfish.ui.command.Dialog;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * picker选择框组件,这里定义选择框组件该有特性
@@ -128,22 +129,22 @@ public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends 
         };
     }
     @Override
-    public Node findNode(NodeContainer.Filter filter) {
+    public Node findNode(Predicate<Node> filter) {
         return getNodeContainerDecorator().findNode(filter);
     }
 
     @Override
-    public List<Node> findAllNodes(NodeContainer.Filter filter) {
+    public List<Node> findAllNodes(Predicate<Node> filter) {
         return getNodeContainerDecorator().findAllNodes(filter);
     }
 
     @Override
-    public Node replaceNode(NodeContainer.Filter filter, Node node) {
+    public Node replaceNode(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceNode(filter,node);
     }
 
     @Override
-    public int replaceAllNodes(NodeContainer.Filter filter, Node node) {
+    public int replaceAllNodes(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 

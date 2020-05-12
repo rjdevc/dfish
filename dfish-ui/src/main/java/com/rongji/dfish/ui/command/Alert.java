@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.widget.Button;
@@ -155,22 +156,22 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
     }
 
     @Override
-    public Node findNode(NodeContainer.Filter filter) {
+    public Node findNode(Predicate<Node> filter) {
         return getNodeContainerDecorator().findNode(filter);
     }
 
     @Override
-    public List<Node> findAllNodes(NodeContainer.Filter filter) {
+    public List<Node> findAllNodes(Predicate<Node> filter) {
         return getNodeContainerDecorator().findAllNodes(filter);
     }
 
     @Override
-    public Node replaceNode(NodeContainer.Filter filter, Node node) {
+    public Node replaceNode(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceNode(filter,node);
     }
 
     @Override
-    public int replaceAllNodes(NodeContainer.Filter filter, Node node) {
+    public int replaceAllNodes(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 

@@ -2,6 +2,7 @@ package com.rongji.dfish.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 抽象布局类，默认的布局同时还是一个Widget
@@ -77,22 +78,22 @@ public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeCont
     }
 
     @Override
-    public Node findNode(Filter filter) {
+    public Node findNode(Predicate<Node> filter) {
         return getNodeContainerDecorator().findNode(filter);
     }
 
     @Override
-    public List<Node> findAllNodes(Filter filter) {
+    public List<Node> findAllNodes(Predicate<Node> filter) {
         return getNodeContainerDecorator().findAllNodes(filter);
     }
 
     @Override
-    public Node replaceNode(Filter filter, Node node) {
+    public Node replaceNode(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceNode(filter,node);
     }
 
     @Override
-    public int replaceAllNodes(Filter filter, Node node) {
+    public int replaceAllNodes(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceAllNodes(filter,node);
     }
 

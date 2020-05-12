@@ -6,6 +6,7 @@ import com.rongji.dfish.ui.SingleNodeContainer;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 替换命令。替换某个 widget。
@@ -79,22 +80,22 @@ public class Replace extends NodeControlCommand<Replace>
     }
 
     @Override
-    public Node findNode(Filter filter) {
+    public Node findNode(Predicate<Node> filter) {
         return getNodeContainerDecorator().findNode(filter);
     }
 
     @Override
-    public List<Node> findAllNodes(Filter filter) {
+    public List<Node> findAllNodes(Predicate<Node> filter) {
         return getNodeContainerDecorator().findAllNodes(filter);
     }
 
     @Override
-    public Node replaceNode(Filter filter, Node node) {
+    public Node replaceNode(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceNode(filter, node);
     }
 
     @Override
-    public int replaceAllNodes(Filter filter, Node node) {
+    public int replaceAllNodes(Predicate<Node> filter, Node node) {
         return getNodeContainerDecorator().replaceAllNodes(filter, node);
     }
 }

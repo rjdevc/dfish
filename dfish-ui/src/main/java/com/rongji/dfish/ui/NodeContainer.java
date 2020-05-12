@@ -4,6 +4,7 @@ import com.rongji.dfish.ui.form.FormElement;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Container 为容器。
@@ -15,15 +16,7 @@ public interface NodeContainer {
     /**
      * 用于搜索，删除，替换时定位内部的Node
      */
-    interface Filter {
-        /**
-         * 条件判断器，返回true则是符合条件
-         *
-         * @param node Node 这里不会为空
-         * @return boolean
-         */
-        boolean accept(Node node);
-    }
+
 
     /**
      * 找到第一个符合条件节点
@@ -31,7 +24,7 @@ public interface NodeContainer {
      * @param filter Filter 条件过滤器
      * @return Node
      */
-    Node findNode(Filter filter);
+    Node findNode(Predicate<Node> filter);
 
     /**
      * 找到所有符合条件的节点
@@ -39,7 +32,7 @@ public interface NodeContainer {
      * @param filter 条件过滤器
      * @return 符合条件的节点集合
      */
-    List<Node> findAllNodes(Filter filter);
+    List<Node> findAllNodes(Predicate<Node> filter);
 
     /**
      * 替换第一个符合条件的节点
@@ -48,7 +41,7 @@ public interface NodeContainer {
      * @param node   Node 替换成该node 如果为null则类似于removeNode
      * @return 返回被替换前的Node 返回null的话，则没替换成功
      */
-    Node replaceNode(Filter filter, Node node);
+    Node replaceNode(Predicate<Node> filter, Node node);
 
     /**
      * 替换所有符合条件的节点
@@ -57,7 +50,7 @@ public interface NodeContainer {
      * @param node   Node 替换成该node 如果为null则类似于removeAllNodes
      * @return 成功替换的个数，0的话则没有替换成功
      */
-    int replaceAllNodes(Filter filter, Node node);
+    int replaceAllNodes(Predicate<Node> filter, Node node);
 
     /**
      * 移除第一个符合条件的节点
@@ -65,7 +58,7 @@ public interface NodeContainer {
      * @param filter Filter
      * @return 返回被删除的Node 返回null的话，则没删除成功
      */
-    default Node removeNode(Filter filter) {
+    default Node removeNode(Predicate<Node> filter) {
         return replaceNode(filter, null);
     }
 
@@ -75,7 +68,7 @@ public interface NodeContainer {
      * @param filter Filter
      * @return 成功删除的个数，0的话则没有删除成功
      */
-    default int removeAllNodes(Filter filter) {
+    default int removeAllNodes(Predicate<Node> filter) {
         return replaceAllNodes(filter, null);
     }
 
