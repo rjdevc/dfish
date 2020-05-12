@@ -645,9 +645,7 @@ public class TrieTree<V extends Object> {
 				return;
 			}
 			Node<V> p = get(c);
-			if (p == null) {
-				return;
-			} else {
+			if (p != null) {
 				if (p.end) {
 					result.add(new SearchResult<V>(wordbegin, matchbegin + 1,p.value));
 				}
@@ -679,9 +677,7 @@ public class TrieTree<V extends Object> {
 				return;
 			}
 			Node<V> p = get(c);
-			if (p == null) {
-				return;
-			} else {
+			if (p != null) {
 				if (p.end) {
 					result.add(new SearchResult<V>(matchend-1, wordend,p.value));
 				}

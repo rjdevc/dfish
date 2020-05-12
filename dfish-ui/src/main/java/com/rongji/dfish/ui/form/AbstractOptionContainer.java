@@ -61,7 +61,7 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
 
     protected List<Option> parseOptions(List<?> options) {
         if (options != null) {
-            List<Option> result = new ArrayList<>(options == null ? 0 : options.size());
+            List<Option> result = new ArrayList<>(options.size());
             for (Object item : options) {
                 if (item == null) {
                     continue;
@@ -95,9 +95,7 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
                     node = new Option(value, text);
                     node.setIcon(ic);
                 }
-                if (node != null) {
-                    result.add(node);
-                }
+                result.add(node);
             }
             return result;
         }

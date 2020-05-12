@@ -184,7 +184,7 @@ public class ImageInfo {
             if(jb.type==(byte) 0xd9){
                 jb.end=jb.start+2;//结束节点
             }else{
-               int length= readIntHl(src,jb.start+2); ;
+               int length= readIntHl(src,jb.start+2);
                jb.end=jb.start+2+length;
             }
             return jb;

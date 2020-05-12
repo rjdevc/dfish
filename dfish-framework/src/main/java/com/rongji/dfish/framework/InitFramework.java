@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework;
 
-import com.rongji.dfish.base.context.BaseBeanContextHodler;
+import com.rongji.dfish.base.context.BaseBeanContextHolder;
 import com.rongji.dfish.base.context.BeanContextHolder;
 import com.rongji.dfish.base.context.PropertiesContextHolder;
 import com.rongji.dfish.base.context.SystemContext;
@@ -52,7 +52,7 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 
 		SystemContext.getInstance().register(new PropertiesContextHolder("systemProperties",System.getProperties()));
 		SystemContext.getInstance().register(new PropertiesContextHolder("systemEnv",System.getenv()));
-		BaseBeanContextHodler frameworkContext=new BaseBeanContextHodler ("frameworkContext");
+		BaseBeanContextHolder frameworkContext=new BaseBeanContextHolder("frameworkContext");
 		SystemContext.getInstance().register(frameworkContext);
 		SystemInfo si=new SystemInfo();
 		frameworkContext.add(new SystemInfo());

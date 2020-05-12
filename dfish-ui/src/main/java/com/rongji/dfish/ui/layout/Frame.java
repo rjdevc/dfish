@@ -87,6 +87,6 @@ public class Frame extends AbstractMultiNodeContainer<Frame,Widget> implements M
 
     @Override
     public Frame add(Widget w) {
-        return add(-1, (Widget)w);
+        return add(-1, w);
     }
 }

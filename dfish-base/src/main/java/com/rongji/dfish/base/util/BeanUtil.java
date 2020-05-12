@@ -358,7 +358,7 @@ public class BeanUtil {
         }
         if (candidates.size() == 0) {
             throw nsme;
-        } else if (candidates.size() > 0) {
+        } else if (candidates.size() > 1) {
             Collections.sort(candidates, (Method o1,Method o2)-> {
                 Class c1=o1.getDeclaringClass();
                 Class c2=o2.getDeclaringClass();
@@ -380,7 +380,7 @@ public class BeanUtil {
                 }
                 return 0;
             });
-            return candidates.get(0);
+//            return candidates.get(0);
         }
         // 多个都吻合的时候要首先更具declareClass做一层判断，如果getParameterTypes 完全一致，只能留子类的方法。
         // JDK 会自动覆盖子类的方法，所以该步骤省略(测试环境oracle hotspot JDK 6)
@@ -403,7 +403,7 @@ public class BeanUtil {
             }
         }
         candidates.removeAll(toRemove);
-        if (candidates.size() == 1) {
+        if (candidates.size() > 0) {
             return candidates.get(0);
         }
         // 最后还没有办法只留下一个的 报错

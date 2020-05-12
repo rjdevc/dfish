@@ -83,7 +83,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     protected List<Node> parseNodes(List<?> options) {
         List<Node> realNodes = null;
         if (options != null) {
-            realNodes = new ArrayList<>(options == null ? 0 : options.size());
+            realNodes = new ArrayList<>( options.size());
             for (Object item : options) {
                 if (item == null) {
                     continue;
@@ -126,9 +126,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
                     node.setName(getName());
                     node.setText(text);
                 }
-                if (node != null) {
-                    realNodes.add(node);
-                }
+                realNodes.add(node);
             }
         }
         return realNodes;

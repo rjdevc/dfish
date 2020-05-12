@@ -102,7 +102,15 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
            if(label!=null && !(label instanceof Label)){
                ((LabelRow) w).setLabel(new Label(label.toString()));
            }
+        }else if (w instanceof TD){
+            if(((TD) w).getNode() instanceof LabelRow) {
+                Object label = ((LabelRow) (((TD) w).getNode())).getLabel();
+                if (label != null && !(label instanceof Label)) {
+                    ((LabelRow) (((TD) w).getNode())).setLabel(new Label(label.toString()));
+                }
+            }
         }
+
         if(nodes==null){
             nodes=new ArrayList<>();
         }
@@ -119,7 +127,15 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
      * @return this
      */
     public Form add(Widget<?> w, int colspan) {
-        return add(new TD().setColSpan(colspan).setNode(w));
+        TD td;
+        if(w instanceof TD){
+            td=(TD)w;
+        }else{
+            td=new TD();
+            td.setNode(w);
+        }
+        td.setColSpan(colspan);
+        return add(td);
     }
 
     /**
@@ -132,7 +148,16 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
      * @return 本身，这样可以继续设置属性
      */
     public Form add(Widget<?> w, int colspan, int rowspan) {
-        return add(new TD().setColSpan(colspan).setRowSpan(rowspan).setNode(w));
+        TD td;
+        if(w instanceof TD){
+            td=(TD)w;
+        }else{
+            td=new TD();
+            td.setNode(w);
+        }
+        td.setColSpan(colspan);
+        td.setRowSpan(rowspan);
+        return add(td);
     }
 
     private HiddenPart hiddens = new HiddenPart();

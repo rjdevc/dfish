@@ -97,7 +97,7 @@ public class StringUtil {
 
             sb.append(ca);
             int ascii = ca;
-            if (ascii < 0 || ascii > 255) {
+            if (ascii > 255) {
                 l += chineseCharSize;
             } else {
                 l += 1;
@@ -218,7 +218,7 @@ public class StringUtil {
                 }
             }
         }
-        if (ba == null || ba.length <= limitSize) {
+        if (ba.length <= limitSize) {
             return content;
         }
 
@@ -813,7 +813,7 @@ public class StringUtil {
         int end = Math.min(sample.length, i + j + 1);
         for (int k = i + 1; k < end; k++) {
             byte b = sample[k];
-            if (b < -128 || b >= -64) {
+            if (b >= -64) {
                 return true;
             }
         }

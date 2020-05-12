@@ -103,9 +103,7 @@ public class TypeShowUtil{
 					subList = new HashSet<String>();
 					treeMap.put(sb.toString(), subList);
 				}
-				if (i > 0) {
-					subList.add(row[i - 1]);
-				}
+				subList.add(row[i - 1]);
 			}
 		}
 		System.out.println(JsonFormat.formatJson( typeMap));
