@@ -490,12 +490,16 @@ Template = $.createClass( {
 	Const: function( t, d, g ) {
 		this.wg   = g;
 		this.template = _getTemplate( t );
-		this.data = $.extend( {}, d );
-		if ( g.x.data )
-			$.extend( this.data, g.x.data );
-		if ( g.x.args ) {
-			for ( var i = 0, a = g.x.args; i < a.length; i ++ )
-				this.data[ i ] = a[ i ];
+		if ( $.isArray( d ) ) {
+			this.data = d;
+		} else {
+			this.data = $.extend( {}, d );
+			if ( g.x.data )
+				$.extend( this.data, g.x.data );
+			if ( g.x.args ) {
+				for ( var i = 0, a = g.x.args; i < a.length; i ++ )
+					this.data[ i ] = a[ i ];
+			}
 		}
 	},
 	Extend: Node,
@@ -4691,8 +4695,7 @@ Dialog = define.widget( 'Dialog', {
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
 			if ( d === U ) d = this.x.args && this.x.args[ a ];
-			if ( d === U ) d = this._srcdata && this._srcdata[ a ];
-			return d;
+			return d !== U ? d : this._srcdata ? this._srcdata[ a ] : this.parentNode.closestData( a );
 		},
 		getContentNode: function() {
 			return this.layout && this.layout[ 0 ];
