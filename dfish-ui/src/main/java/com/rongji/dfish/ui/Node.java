@@ -35,8 +35,6 @@ public interface Node<T extends Node<T>> extends Serializable {
         return toString();
     }
 
-    ;
-
     /**
      * JsonObject的toString就是转成JSON字符串。
      *

@@ -328,7 +328,7 @@ public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, 
             for (Object[] o : toRemove) {
                 int row_ = (Integer) o[0];
                 String key = (String) o[1];
-                ((TR) nodes.get(row_)).removeData(key);
+                ( nodes.get(row_)).removeData(key);
             }
         }
 

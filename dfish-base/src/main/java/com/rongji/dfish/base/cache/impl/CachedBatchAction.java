@@ -173,7 +173,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
                     keys = new HashSet<>(waiting);
                     waiting.clear();
                 }
-                if (keys != null&&keys.size()>0) {
+                if (keys.size()>0) {
                     doAct(keys);
                 }
             }

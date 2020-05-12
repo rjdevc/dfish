@@ -888,7 +888,7 @@ public class DFishTools extends Application {
                 String sourceFileName = sourceFile.getName();
                 int dotSplit = sourceFileName.lastIndexOf(".");
                 if (dotSplit >= 0) {
-                    fileName.append(sourceFileName.substring(0, dotSplit));
+                    fileName.append(sourceFileName,0, dotSplit);
                     fileName.append('_').append(width).append('x').append(height).append('.').append(sourceFileName.substring(dotSplit + 1));
                 } else {
                     fileName.append(sourceFileName).append('_').append(width).append('x').append(height);

@@ -223,7 +223,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
         for (Object o : iter) {
             if (o == null) {
                 continue;
-            } else {
+            }
                 if (begin) {
                     begin = false;
                 } else {
@@ -234,7 +234,6 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
                 } else {
                     sb.append(o);
                 }
-            }
         }
         return sb.toString();
     }

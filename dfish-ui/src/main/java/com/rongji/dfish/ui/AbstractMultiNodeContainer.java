@@ -18,7 +18,7 @@ public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeCont
      *
      */
     public AbstractMultiNodeContainer() {
-        this.id = id;
+//        this.id = id;
     }
     /**
      * 构造函数
@@ -62,7 +62,7 @@ public abstract class AbstractMultiNodeContainer<T extends AbstractMultiNodeCont
         return new NodeContainerDecorator() {
             @Override
             protected  List<Node> nodes() {
-                return (List)nodes;
+                return nodes;
             }
 
             @Override

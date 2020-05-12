@@ -212,7 +212,7 @@ public class ChineseOrder implements java.util.Comparator<Object> {
             BufferedReader bis = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             String line = "";
             while ((line = bis.readLine()) != null) {
-                if (line == null || line.indexOf('=') < 0) {
+                if (line.indexOf('=') < 0) {
                     continue;
                 }
                 String[] pair = line.split("=");
@@ -224,9 +224,7 @@ public class ChineseOrder implements java.util.Comparator<Object> {
                     CHAR_POS.put(c, LOAD_INDEX++);//把原始数值放入到位置映射
                 }
             }
-            if (bis != null) {
-                bis.close();
-            }
+            bis.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

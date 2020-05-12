@@ -90,7 +90,7 @@ public final class MatrixToImageWriter {
 		hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 		BitMatrix matrix = null;
 		try {
-			matrix = multiFormatWriter.encode(content.toString(), BarcodeFormat.QR_CODE, size, size, hints);
+			matrix = multiFormatWriter.encode(content, BarcodeFormat.QR_CODE, size, size, hints);
 		} catch (WriterException e) {
 			LogUtil.error("二维码构建异常", e);;
 		}

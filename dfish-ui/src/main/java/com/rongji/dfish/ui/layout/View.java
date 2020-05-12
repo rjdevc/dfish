@@ -96,7 +96,7 @@ public class View extends AbstractSrc<View>{
 				int index = 1;
 				if(commands!=null) {
 					for (Map.Entry<String, Command> entry : commands.entrySet()) {
-						if (entry.getValue() instanceof Node) {
+						if (entry.getValue() !=null) {
 							result.add( entry.getValue());
 							posMap.put(index++, entry.getKey());
 						}

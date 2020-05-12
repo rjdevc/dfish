@@ -27,7 +27,7 @@ public abstract class AbstractJsonBuilder implements JsonBuilder {
 			case '\f':sb.append("\\f");break;
 			case '\t':sb.append("\\t");break;
 			default :
-				if(c<0||c>31){
+				if(c>31){
 					sb.append(c);
 				}
 			}

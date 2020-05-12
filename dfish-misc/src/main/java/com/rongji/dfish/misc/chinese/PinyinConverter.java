@@ -239,7 +239,7 @@ public class PinyinConverter {
                 String s = pinyins[0];
                 char lastChar = s.charAt(s.length() - 1);
                 if (lastChar >= '0' && lastChar <= '4') {
-                    sb.append(s.substring(0, s.length() - 1));
+                    sb.append(s,0, s.length() - 1);
                 } else {
                     sb.append(pinyins[0]);
                 }
@@ -280,7 +280,7 @@ public class PinyinConverter {
                 String s = pinyins[0];
                 char lastChar = s.charAt(s.length() - 1);
                 if (lastChar >= '0' && lastChar <= '4') {
-                    sb.append(s.substring(0, s.length() - 1));
+                    sb.append(s,0, s.length() - 1);
                 } else {
                     sb.append(pinyins[0]);
                 }

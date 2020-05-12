@@ -76,23 +76,23 @@ abstract class AbstractTR<T extends AbstractTR<T>> extends AbstractWidget<T> imp
             protected void setNode(int i, Node node) {
                 if(posMap==null){
                     return; //本不该发生
+                }
+                if(i < posMap.size()){
+                    //在data中寻找
+                    if (node == null) {
+                        data.remove(posMap.get(i));
+                    } else {
+                        data.put(posMap.get(i), node);
+                    }
                 }else {
-                    if(i < posMap.size()){
-                        //在data中寻找
-                        if (node == null) {
-                            data.remove(posMap.get(i));
-                        } else {
-                            data.put(posMap.get(i), node);
-                        }
-                    }else {
-                        //在nodes中寻找
-                        if (node == null) {
-                            nodes.remove(i-posMap.size());
-                        }else{
-                            nodes.set(i-posMap.size(), (TR)node);
-                        }
+                    //在nodes中寻找
+                    if (node == null) {
+                        nodes.remove(i-posMap.size());
+                    }else{
+                        nodes.set(i-posMap.size(), (TR)node);
                     }
                 }
+
             }
         };
     }
