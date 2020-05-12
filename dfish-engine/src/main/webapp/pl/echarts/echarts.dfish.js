@@ -2,7 +2,8 @@
  * {type: 'echarts', option: {}}
  */
 
-var echarts = require( './echarts.min' );
+var echarts = require( './echarts.min' ),
+	Q = require( 'jquery' );
 
 define.widget( 'ECharts', {
 	Listener: {
@@ -17,7 +18,17 @@ define.widget( 'ECharts', {
 	},
 	Prototype: {
 		init: function( opt ) {
-			(this.echarts = echarts.init( this.$() )).setOption( opt );
+			(this.echarts = echarts.init( this.$() )).setOption( this.parseOption( opt ) );
+		},
+		// ½âÎö "javscript:return"
+		parseOption: function( o ) {
+			for ( var k in o ) {
+				if ( typeof o[ k ] === 'string' ) {
+					if ( o[ k ].indexOf( 'javascript:' ) === 0 ) o[ k ] = this.formatJS( o[ k ] );
+				} else if ( Q.isPlainObject( o[ k ] ) )
+					this.parseOption( o[ k ] );
+			}
+			return o;
 		}
 	}
 } );
