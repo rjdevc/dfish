@@ -1056,6 +1056,7 @@ W = define( 'Widget', function() {
 		},
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
+			if ( d === U ) d = this._srcdata && this._srcdata[ a ];
 			return d !== U ? d : this.parentNode.closestData( a );
 		},
 		// 获取下一个兄弟节点
@@ -2670,14 +2671,21 @@ View = define.widget( 'View', {
 		},
 		reload: function( src, tpl, tar, fn ) {
 			// 兼容3.1业务的处理: 执行vm.reload()时，先判断一下如果是dialog的contentView，则让dialog刷新
-			var d = $.dialog( this );
-			if ( d && d.getContentView() === this ) {
-				d.reload.apply( d, arguments );
+			var g = $.dialog( this );
+			if ( g && g.getContentView() === this ) {
+				g.reload.apply( g, arguments );
 			} else
 				Section.prototype.reload.apply( this, arguments );
 		},
 		closestData: function( a ) {
-			return this.data( a );
+			var d = this.x.data && this.x.data[ a ];
+			if ( d === U ) d = this._srcdata && this._srcdata[ a ];
+			if ( d === U ) {
+				var g = $.dialog( this );
+				if ( g && g.getContentView() === this )
+					d = g.closestData( a );
+			}
+			return d;
 		},
 		// 根据ID获取wg /@a -> id
 		find: function( a ) {
@@ -4682,9 +4690,9 @@ Dialog = define.widget( 'Dialog', {
 		},
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
-			if ( d === U )
-				d = this.x.args && this.x.args[ a ];
-			return d !== U ? d : this.parentNode.closestData( a );
+			if ( d === U ) d = this.x.args && this.x.args[ a ];
+			if ( d === U ) d = this._srcdata && this._srcdata[ a ];
+			return d;
 		},
 		getContentNode: function() {
 			return this.layout && this.layout[ 0 ];
