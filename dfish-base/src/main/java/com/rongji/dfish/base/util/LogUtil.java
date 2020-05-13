@@ -6,8 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 /**
  * Description:
@@ -242,41 +242,41 @@ public class LogUtil {
     private static final ExecutorService SINGLE_EXECUTOR = ThreadUtil.newSingleThreadExecutor();
 
     /**
-     * 延迟用debug级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 延迟用debug级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#debug(Object)
      */
-    public static void lazyDebug(Callable<Object> callable) {
-        lazyDebug(LOG, callable);
+    public static void lazyDebug(Supplier<Object> message) {
+        lazyDebug(LOG, message);
     }
 
     /**
-     * 延迟用debug级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 延迟用debug级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
      * @param clz 按这个类作为标识进行分类。日志配置中可以设置某个类的。某个包的输出级别
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#debug(Object)
      */
-    public static void lazyDebug(Class<?> clz, Callable<Object> callable) {
-        lazyDebug(getLog(clz), callable);
+    public static void lazyDebug(Class<?> clz, Supplier<Object> message) {
+        lazyDebug(getLog(clz), message);
     }
 
     /**
-     * 延迟用debug级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 延迟用debug级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
      * @param log Log实体
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#debug(Object)
      */
-    public static void lazyDebug(Log log, Callable<Object> callable) {
+    public static void lazyDebug(Log log, Supplier<Object> message) {
         if (log.isDebugEnabled()) {
             SINGLE_EXECUTOR.execute(() -> {
                 try {
-                    log.debug(callable.call());
+                    log.debug(message.get());
                 } catch (Exception e) {
                     log.error(null, e);
                 }
@@ -285,39 +285,39 @@ public class LogUtil {
     }
 
     /**
-     * 迟用info级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 迟用info级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#info(Object)
      */
-    public static void lazyInfo(Callable<Object> callable) {
-        lazyInfo(LOG, callable);
+    public static void lazyInfo(Supplier<Object> message) {
+        lazyInfo(LOG, message);
     }
     /**
-     * 迟用info级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 迟用info级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
      * @param clz 按这个类作为标识进行分类。日志配置中可以设置某个类的。某个包的输出级别
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#info(Object)
      */
-    public static void lazyInfo(Class<?> clz, Callable<Object> callable) {
-        lazyInfo(getLog(clz), callable);
+    public static void lazyInfo(Class<?> clz, Supplier<Object> message) {
+        lazyInfo(getLog(clz), message);
     }
     /**
-     * 迟用info级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 迟用info级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
      * @param log Log实体
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#info(Object)
      */
-    public static void lazyInfo(Log log, Callable<Object> callable) {
+    public static void lazyInfo(Log log, Supplier<Object> message) {
         if (log.isInfoEnabled()) {
             SINGLE_EXECUTOR.execute(() -> {
                 try {
-                    log.info(callable.call());
+                    log.info(message.get());
                 } catch (Exception e) {
                     log.error(null, e);
                 }
@@ -326,41 +326,41 @@ public class LogUtil {
     }
 
     /**
-     * 迟用warn级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 迟用warn级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#warn(Object)
      */
-    public static void lazyWarn(Callable<Object> callable) {
-        lazyWarn(LOG, callable);
+    public static void lazyWarn(Supplier<Object> message) {
+        lazyWarn(LOG, message);
     }
 
     /**
-     * 迟用warn级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 迟用warn级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
      * @param clz 按这个类作为标识进行分类。日志配置中可以设置某个类的。某个包的输出级别
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#warn(Object)
      */
-    public static void lazyWarn(Class<?> clz, Callable<Object> callable) {
-        lazyWarn(getLog(clz), callable);
+    public static void lazyWarn(Class<?> clz, Supplier<Object> message) {
+        lazyWarn(getLog(clz), message);
     }
 
     /**
-     * 迟用warn级别输出日志。日志内容由callable产生
-     * 通常lazy系列日志是性能敏感时使用的。callable的内容在 log级别没有enable的时候。
+     * 迟用warn级别输出日志。日志内容由Supplier产生
+     * 通常lazy系列日志是性能敏感时使用的。Supplier的内容在 log级别没有enable的时候。
      * 是不会执行的。并且它是延后排队进行的。不会阻断主线程的工作。
      * @param log Log实体
-     * @param callable 产生日志内容的回调
+     * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#warn(Object)
      */
-    public static void lazyWarn(Log log, Callable<Object> callable) {
+    public static void lazyWarn(Log log, Supplier<Object> message) {
         if (log.isWarnEnabled()) {
             SINGLE_EXECUTOR.execute(() -> {
                 try {
-                    log.warn(callable.call());
+                    log.warn(message.get());
                 } catch (Exception e) {
                     log.error(null, e);
                 }
