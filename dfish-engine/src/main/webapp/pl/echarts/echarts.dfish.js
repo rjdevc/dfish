@@ -2,8 +2,12 @@
  * {type: 'echarts', option: {}}
  */
 
-var echarts = require( './echarts.min' ),
-	Q = require( 'jquery' );
+var Q = require( 'jquery' ),
+	echarts = require( './echarts.min' );
+
+define( 'echarts', echarts );
+require( './echarts-wordcloud.min' );
+
 
 define.widget( 'ECharts', {
 	Listener: {
