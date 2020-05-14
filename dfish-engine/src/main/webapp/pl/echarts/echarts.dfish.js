@@ -2,13 +2,14 @@
  * {type: 'echarts', option: {}}
  */
 
-var Q = require( 'jquery' );
+var Q = require( 'jquery' ),
+	echarts = require( './echarts.min' );
 
-define( 'echarts', require( './echarts.min' ) );
+define( 'echarts', echarts );
 require( './echarts-wordcloud.min' );
 
 
-define.widget( 'ECharts', {
+define.widget( 'echarts', {
 	Listener: {
 		body: {
 			ready: function() {
@@ -21,7 +22,7 @@ define.widget( 'ECharts', {
 	},
 	Prototype: {
 		init: function( opt ) {
-			(this.echarts = require( 'echarts' ).init( this.$() )).setOption( this.parseOption( opt ) );
+			(this.echarts = echarts.init( this.$() )).setOption( this.parseOption( opt ) );
 		},
 		// ½âÎö "javscript:return"
 		parseOption: function( o ) {
