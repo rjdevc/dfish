@@ -431,17 +431,17 @@ img {
     height: 40px;
 }
 
-.i-index-person {
-    background: url("img/icon-16.png") 0 -60px;
-    width: 16px;
-    height: 16px;
-}
+/*.i-index-person {*/
+/*    background: url("img/icon-16.png") 0 -60px;*/
+/*    width: 16px;*/
+/*    height: 16px;*/
+/*}*/
 
-.i-index-config {
-    background: url("img/icon-16.png") 0 -120px;
-    width: 16px;
-    height: 16px;
-}
+/*.i-index-config {*/
+/*    background: url("img/icon-16.png") 0 -120px;*/
+/*    width: 16px;*/
+/*    height: 16px;*/
+/*}*/
 
 .i-split-left {
     background: url("img/split-horizontal.png") 0 0;

@@ -20,7 +20,7 @@ import java.util.*;
  * @author lamontYu
  * @since DFish5.0
  */
-public class QueryParam<T> implements Serializable {
+public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     private static final long serialVersionUID = -4197926894871919855L;
     /**
@@ -226,7 +226,7 @@ public class QueryParam<T> implements Serializable {
         return fieldMethods;
     }
 
-    private static class FieldMethods {
+    protected static class FieldMethods {
         private String fieldName;
         private Class<?> fieldType;
         private Method setter;
