@@ -1033,19 +1033,12 @@ W = define( 'Widget', function() {
 					return;
 			}
 		},
-		snapElem: function() {
-			return this.$();
-		},
-		srcData: function() {
+		srcData: function( a ) {
 			var c = this.srcParent();
-			return c && c._srcdata;
+			return c && (a ? c._srcdata[ a ] : c._srcdata);
 		},
 		srcParent: function() {
 			return this.closest( function() { return this._srcdata } );
-		},
-		click: function() {
-			this.trigger( 'click' );
-			return this;
 		},
 		// 存取临时变量
 		data: function( a, b ) {
@@ -1060,7 +1053,6 @@ W = define( 'Widget', function() {
 		},
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
-			if ( d === U ) d = this._srcdata && this._srcdata[ a ];
 			return d !== U ? d : this.parentNode.closestData( a );
 		},
 		// 获取下一个兄弟节点
@@ -1071,9 +1063,16 @@ W = define( 'Widget', function() {
 		prev: function() {
 			 return this.parentNode && this.parentNode[ this.nodeIndex - 1 ];
 		},
+		click: function() {
+			this.trigger( 'click' );
+			return this;
+		},
 		tip: function( o ) {
 			var t = this.attr( 'tip' );
 			this.exec( $.extendDeep( {}, o, typeof t === _OBJ ? t : N, { type: 'Tip', hoverDrop: T } ) );
+		},
+		snapElem: function() {
+			return this.$();
 		},
 		// 当前节点跟a节点交换位置
 		swap: function( a ) {
@@ -1289,7 +1288,7 @@ W = define( 'Widget', function() {
 				if ( c ) {
 					v = c[ f[ i ] ];
 				} else {
-					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] ));
+					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] )) == U && (v = this.srcData( f[ i ] ));
 				}
 				m.push( d ? d( v ) : v );
 			}
@@ -2357,7 +2356,6 @@ AbsSection = define.widget( 'AbsSection', {
 		},
 		getResult: function() {
 			return this.x.result;
-			//return this.x.template ? this.x.result : this._srcdata;
 		},
 		// @force: 强制刷新，不论是否在frame内
 		load: function( tar, fn, force ) {
@@ -2427,13 +2425,6 @@ AbsSection = define.widget( 'AbsSection', {
 			this.loaded = T;
 			this.init_template( d );
 		},
-		srcData: function( x, tar ) {
-			if ( x ) {
-				this._loadEnd( x );
-				this.showLayout( tar );
-			}
-			return this._srcdata;
-		},
 		isContentData: function( x ) {
 			return x.type === this.type;
 		},
@@ -2455,8 +2446,10 @@ AbsSection = define.widget( 'AbsSection', {
 						this.showLayout( F );
 					}
 					this.load( tar, fn, T );
-				} else
-					this.srcData( s || {}, tar );
+				} else {
+					this._loadEnd( s || {} );
+					this.showLayout( tar );
+				}
 			} else {
 				this.show();
 				! this.loading && this.load( tar, fn, T );
@@ -2683,7 +2676,6 @@ View = define.widget( 'View', {
 		},
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
-			if ( d === U ) d = this._srcdata && this._srcdata[ a ];
 			if ( d === U ) {
 				var g = $.dialog( this );
 				if ( g && g.getContentView() === this )
@@ -4695,7 +4687,7 @@ Dialog = define.widget( 'Dialog', {
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
 			if ( d === U ) d = this.x.args && this.x.args[ a ];
-			return d !== U ? d : this._srcdata ? this._srcdata[ a ] : this.parentNode.closestData( a );
+			return d;
 		},
 		getContentNode: function() {
 			return this.layout && this.layout[ 0 ];
@@ -5087,6 +5079,7 @@ AlertSubmitButton = define.widget( 'AlertSubmitButton', {
 /*  `alert`  */
 Alert = define.widget( 'Alert', {
 	Const: function( x, p ) {
+		this.x = x;
 		var a = this.type === 'Alert', r = x.args, s = x.buttonCls || 'f-button',
 			b = { type: 'AlertSubmitButton', cls: s, text: '    ' + Loc.confirm + '    ' },
 			c = { type: 'AlertButton', cls: s, text: '    ' + Loc.cancel + '    ' },
@@ -9689,9 +9682,6 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				_setBadge.call( this, b );
 			}
 		},
-		srcData: function() {
-			return this._srcdata;
-		},
 		getSrc: function() {
 			return Section.prototype.getSrc.call( this );
 		},
@@ -11930,10 +11920,10 @@ StructureItem = define.widget( 'StructureItem', {
 			b.push( this );
 			this.lineIndex = b.length - 1;
 			this.offset = e.count;
-			this.length > 0 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			this.length && this.center();
 			if ( o ) {
 				if ( o.length > 1 ) {
-					o.offset = (o[ 0 ].offset + o[ o.length - 1 ].offset) / 2;
+					o.center();
 					! this.length && o.parentNode == this.parentNode && (this.offset = o.offset + 1);
 				}
 				this.offset = Math.max( this.offset, o.offset + 1 );
@@ -11961,15 +11951,15 @@ StructureItem = define.widget( 'StructureItem', {
 				this[ i ].indentStart();
 			if ( ! e ) return;
 			if ( this.nodeIndex === 0 && ! this.length ) {
-				var p = e.all[ this.level ][ 0 ] === this ? this.parentNode : this, k = [];
+				var p = this, k = [];
 				do {
 					var v = p.level && e.all[ p.level ][ p.lineIndex - 1 ];
-					k.push( v ? p.offset - v.offset - 1 : p.offset );
+					v && k.push( p.offset - v.offset - 1 );
 				} while ( (p = p.parentNode) && p.level > 0 );
-				e.count = Math.min.apply( N, k );
+				k.length && (e.count = Math.min.apply( N, k ));
 			}
 			e.count && (this.offset -= e.count);
-			this.length > 1 && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			this.length > 1 && this.center();
 			this.nodeIndex && (this.offset = Math.max( this.prev().offset + 1, this.offset ));
 			if ( this.length && this.nodeIndex ) { //让无子节点的节点向结束方向缩进
 				var v = this.prev(), a = this.offset - v.offset;
@@ -11985,19 +11975,22 @@ StructureItem = define.widget( 'StructureItem', {
 		indentEnd: function() {
 			for ( var e = this.base, i = this.length - 1; i >= 0; i -- )
 				this[ i ].indentEnd();
-			if ( ! e ) return;
+			if ( ! e ) return this.length && this.center();
 			if ( ! this.length && this.nodeIndex === this.parentNode.length - 1 && this.lineIndex < e.all[ this.level ].length - 1 ) {
-				var a = e.all[ this.level ], p = this, k = [];
+				var p = this, k = [];
 				do {
 					var v = p.level && e.all[ p.level ][ p.lineIndex + 1 ];
-					k.push( v ? v.offset - p.offset - 1 : e.getFurthest().offset - p.offset );
+					v && k.push( v.offset - p.offset - 1 );
 				} while ( (p = p.parentNode) && p.level > 0 );
 				e.count = Math.min.apply( N, k );
 			}
 			e.count && (this.offset += e.count);
-			this.length && (this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2);
+			this.length && this.center();
 			this.nodeIndex < this.parentNode.length -1 && (this.offset = Math.min( this.next().offset - 1, this.offset ));
 			if ( ! this.length && this.nodeIndex < this.parentNode.length -1 ) {this.offset = this.next().offset - 1;}
+		},
+		center: function() {
+			this.offset = (this[ 0 ].offset + this[ this.length - 1 ].offset) / 2;
 		},
 		getFurthest: function() {
 			var a = (this.base || this);
@@ -12021,13 +12014,13 @@ StructureItem = define.widget( 'StructureItem', {
 		},
 		getTop: function() {
 			return this._top !== U ? this._top :
-				(this._top = this.rootNode.x.dir === 'h' ? (this.length ? Math.ceil( (this[ 0 ].getTop() + this.get( -1 ).getTop()) / 2 ) : (this.offset - this.getMinest().offset) * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
+				(this._top = this.rootNode.x.dir === 'h' ? ((this.offset - this.getMinest().offset) * (this.attr( 'height' ) + this.rootNode.attr( 'vSpace' ))) :
 					(this.attr( 'height' ) + this.rootNode.attr( 'vSpace' )) * this.level);
 		},
 		getLeft: function() {
 			return this._left !== U ? this._left :
 				(this. _left = this.rootNode.x.dir === 'h' ? (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' )) * this.level :
-					(this.length ? Math.ceil( (this[ 0 ].getLeft() + this.get( -1 ).getLeft()) / 2 ) : (this.offset - this.getMinest().offset) * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
+					((this.offset - this.getMinest().offset) * (this.attr( 'width' ) + this.rootNode.attr( 'hSpace' ))));
 		},
 		html_prop: _html_prop_title,
 		prop_style: function() {
@@ -12046,7 +12039,6 @@ StructureItem = define.widget( 'StructureItem', {
 		}
 	}
 } );
-
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
