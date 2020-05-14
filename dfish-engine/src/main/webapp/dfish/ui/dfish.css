@@ -491,7 +491,7 @@
 .w-combobox .w-input-c{padding-left:0;min-height:28px;cursor:text}
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}
 .w-combobox ._r{color:#888;font-style:normal;font-family:verdana}
-.w-combobox ._e{display:inline-block;padding:0 2px 0 3px;height:28px;line-height:28px;text-indent:1px;border:0;vertical-align:middle;font-style:normal;outline:none}
+.w-combobox ._e{display:inline-block;margin:0 4px;padding:0 1px;height:28px;line-height:28px;border:0;vertical-align:middle;font-style:normal;outline:none}
 .w-combobox ._pick_i,.w-pickbox ._pick_i,.w-onlinebox ._pick_i,.w-linkbox ._pick_i,.w-combobox.z-ds ._pick:hover ._pick_i,.w-pickbox.z-ds:hover ._pick ._pick_i,.w-onlinebox.z-ds ._pick:hover ._pick_i{background:url(g/n.png) no-repeat -99px 50%}
 .w-combobox ._pick:hover ._pick_i,.w-linkbox ._pick:hover ._pick_i,.w-onlinebox ._pick:hover ._pick_i,.w-pickbox ._pick:hover ._pick_i{background-position:-124px 50%}
 .w-combobox.z-loading .w-input-t{color:gray}

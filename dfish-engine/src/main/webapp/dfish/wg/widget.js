@@ -10037,7 +10037,7 @@ Leaf = define.widget( 'Leaf', {
 			}
 		},
 		indent: function( a ) {
-			this.level = this.parentNode.level + 1;
+			this.level = this.parentNode.level + (this.parentNode.x.rootInvisible ? 0 : 1);
 			if ( this.x.line ) {
 				Q( '._pd,._pdvl', this.$() ).remove();
 				$.before( this.$( 'o' ), this.html_linepad() );
