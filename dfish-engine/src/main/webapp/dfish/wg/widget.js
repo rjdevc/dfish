@@ -2449,7 +2449,7 @@ AbsSection = define.widget( 'AbsSection', {
 				} else {
 					this._loadEnd( s || {} );
 					this.showLayout( tar );
-					fn && fn.call( this );
+					fn && fn.call( this, src || {} );
 				}
 			} else {
 				this.show();
