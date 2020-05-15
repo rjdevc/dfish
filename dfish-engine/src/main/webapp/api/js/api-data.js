@@ -19,7 +19,7 @@ define( {
       ] }
     ],
     Methods: [
-      { name: '$.ajax(url, [onsuccess], [context], [sync], [data], [onerror], [dataType])', remark: '发送ajax请求。返回的数据类型是字符串。', common: true, param: [
+      { name: '$.ajax(url, [onsuccess], [context], [sync], [data], [onerror], [dataType])', remark: '发送ajax请求。回调函数获取的数据类型是字符串。', common: true, param: [
         { name: 'url', type: 'String', remark: '发送请求的URL字符串' },
         { name: 'onsuccess(data)', type: 'Function', remark: '请求成功后的回调函数' },
         { name: 'context', type: 'Object', remark: '用于设置Ajax相关回调函数的上下文' },
@@ -34,14 +34,14 @@ define( {
             } );
           }
       ] },
-      { name: '$.ajaxJSON(url, [onsuccess], [context], [sync], [data], [onerror])', remark: '$.ajax()的衍生方法，返回的数据类型是JSON对象', common: true, example: [
+      { name: '$.ajaxJSON(url, [onsuccess], [context], [sync], [data], [onerror])', remark: '$.ajax()的衍生方法，回调函数获取的数据类型是JSON对象。', common: true, example: [
           function() {
             $.ajaxJSON( "data.sp?act=json", function( data ) {
               alert( typeof data ); // 显示"object"
             } );
           }
       ] },
-      { name: '$.ajaxXML(url, [onsuccess], [context], [sync], [data], [onerror])', remark: '$.ajax()的衍生方法，返回的数据是XML节点。', common: true, example: [
+      { name: '$.ajaxXML(url, [onsuccess], [context], [sync], [data], [onerror])', remark: '$.ajax()的衍生方法，回调函数获取的数据类型是XML DOM对象。', common: true, example: [
           function() {
             $.ajaxJSON( "data.sp?act=xml", function( data ) {
               alert( data.xml ); // 显示xml的内容
@@ -1918,6 +1918,7 @@ define( {
       { name: 'getFocus([name])', remark: '获取焦点状态的按钮。', param: [
         { name: 'name', type: 'String', remark: '获取相同name的焦点按钮。', optional: true }
       ] },
+      { name: 'getFocusAll()', remark: '获取所有焦点状态的按钮，返回一个数组。' },
       { name: 'getLocked()', remark: '获取锁定状态的子节点。' }
     ],
     Classes: [
