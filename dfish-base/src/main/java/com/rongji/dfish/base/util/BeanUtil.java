@@ -120,8 +120,8 @@ public class BeanUtil {
         return result;
     }
 
-    private static HashMap<MethodKey, Method> methodMap = new HashMap<MethodKey, Method>();
-    private static HashMap<Class<?>, List<String>> methodNameMap = new HashMap<Class<?>, List<String>>();
+    private static HashMap<MethodKey, Method> methodMap = new HashMap<>();
+    private static HashMap<Class<?>, List<String>> methodNameMap = new HashMap<>();
     private static final Object[] NO_ARG = new Object[0];
     private static final Class<?>[] NO_CLZ = new Class<?>[0];
 
@@ -323,7 +323,7 @@ public class BeanUtil {
             nsme = ex;
         }
 
-        List<Method> candidates = new ArrayList<Method>();
+        List<Method> candidates = new ArrayList<>();
         for (Method m : targetClass.getMethods()) {
 
             if (!Modifier.isPublic(m.getModifiers())) {
@@ -359,7 +359,7 @@ public class BeanUtil {
         if (candidates.size() == 0) {
             throw nsme;
         } else if (candidates.size() > 1) {
-            Collections.sort(candidates, (Method o1,Method o2)-> {
+            candidates.sort( (o1,o2)-> {
                 Class c1=o1.getDeclaringClass();
                 Class c2=o2.getDeclaringClass();
                 if(c1==c2) {
@@ -385,7 +385,7 @@ public class BeanUtil {
         // 多个都吻合的时候要首先更具declareClass做一层判断，如果getParameterTypes 完全一致，只能留子类的方法。
         // JDK 会自动覆盖子类的方法，所以该步骤省略(测试环境oracle hotspot JDK 6)
         // 如果留下来的方法数量，还大于1个。原则上要判断 候选项中的accpet关系。多个参数要都accept才行。
-        HashSet<Method> toRemove = new HashSet<Method>();
+        HashSet<Method> toRemove = new HashSet<>();
         for (Method a : candidates) {
             Class<?>[] aptypes = a.getParameterTypes();
             for (Method b : candidates) {
@@ -418,7 +418,7 @@ public class BeanUtil {
 //			e.printStackTrace();
 //		}
 //	}
-    private static final HashSet<Class<?>> PRIMITIVE_CLASS = new HashSet<Class<?>>(Arrays.asList(
+    private static final HashSet<Class<?>> PRIMITIVE_CLASS = new HashSet<>(Arrays.asList(
             Integer.class, int.class, Boolean.class, boolean.class,
             Long.class, long.class, Short.class, short.class,
             Byte.class, byte.class, Character.class, char.class,
@@ -491,7 +491,7 @@ public class BeanUtil {
         return mth.invoke(null, params);
     }
 
-    private static HashMap<CopyPropertiesTemplateKey, CopyPropertiesTemplate> TEMPLATES = new HashMap<CopyPropertiesTemplateKey, CopyPropertiesTemplate>();
+    private static HashMap<CopyPropertiesTemplateKey, CopyPropertiesTemplate> TEMPLATES = new HashMap<>();
 
     private static CopyPropertiesTemplate getCopyPropertiesTemplate(
             Class<?> clz1, Class<?> clz2) {
@@ -539,7 +539,7 @@ public class BeanUtil {
         }
     }
 
-    private static final Set<Class<?>> CARE_TYPES = new HashSet<Class<?>>();
+    private static final Set<Class<?>> CARE_TYPES = new HashSet<>();
 
     static {
         // 数字
@@ -590,8 +590,8 @@ public class BeanUtil {
         private List<Method> toMethods;
 
         public CopyPropertiesTemplate(Class<?> clzto, Class<?> clzfrom) {
-            fromMethods = new ArrayList<Method>();
-            toMethods = new ArrayList<Method>();
+            fromMethods = new ArrayList<>();
+            toMethods = new ArrayList<>();
             Method[] fromM = clzfrom.getMethods();
             for (int i = 0; i < fromM.length; i++) {
                 String methodName = fromM[i].getName();
@@ -649,7 +649,7 @@ public class BeanUtil {
             props = findPropNames(itemCls);
             methodNameMap.put(itemCls, props);
         }
-        Map<String, Object> propMap = new TreeMap<String, Object>();
+        Map<String, Object> propMap = new TreeMap<>();
         for (String prop : props) {
             MethodKey key = new MethodKey(itemCls, prop);
             Method m = methodMap.get(key);
@@ -677,7 +677,7 @@ public class BeanUtil {
         if (itemCls == null) {
             return null;
         }
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (Method m : itemCls.getMethods()) {
             if (!(m.getName().startsWith("get") ||
                     m.getName().startsWith("is")) ||
@@ -756,7 +756,7 @@ public class BeanUtil {
         return m.getReturnType();
     }
 
-    private static Map<String, Boolean> existsMap = new HashMap<String, Boolean>();
+    private static Map<String, Boolean> existsMap = new HashMap<>();
 
     /**
      * 判断当前环境里面有没有存在该类

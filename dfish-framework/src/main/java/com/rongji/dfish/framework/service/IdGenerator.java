@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.context.SystemContext;
@@ -55,7 +56,7 @@ public class IdGenerator {
     // 上一个时间
     private static volatile long lastTime = 0L;
     // 上一个排序号
-    private static volatile long lastIndex = 0;
+    private static volatile AtomicLong lastIndex = new AtomicLong(0);
     // 系统标示符
     private static String systemKey = "";
 
@@ -109,14 +110,16 @@ public class IdGenerator {
         idStr.append(storeSystemKey);
 
         // 计数
+        long li;
         if (timestamp != lastTime) {
             lastTime = timestamp;
-            lastIndex = 0;
+            lastIndex.set(0);
+            li=0;
         } else {
-            lastIndex++;
+            li=lastIndex.incrementAndGet();
         }
         StringBuilder storeIndex = new StringBuilder();
-        storeIndex.append(Long.toString(lastIndex, RADIX));
+        storeIndex.append(Long.toString(li, RADIX));
         fixString(storeIndex, LENGTH_INDEX);
         idStr.append(storeIndex.toString());
         String id = idStr.toString();

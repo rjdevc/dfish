@@ -61,7 +61,7 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 		propertyCryptor = propertyCryptor == null ? new DefaultPropertyCryptor() : propertyCryptor;
 		int suffixLength = ENCRYPTION_SUFFIX.length();
 		// 加密的属性
-		Map<String, String> encryptProps = new HashMap<String, String>();
+		Map<String, String> encryptProps = new HashMap<>();
 		// Entry<Object, Object> entry : properties.entrySet()
 		for (Iterator<Entry<Object, Object>> iter = properties.entrySet().iterator(); iter.hasNext();) {
 			Entry<Object, Object> entry = iter.next();

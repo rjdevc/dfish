@@ -35,7 +35,7 @@ public class ObjectTemplate {
 	}
 	private static final Class<?>[] NO_ARG=new Class<?>[0];
 	private static final Object[] NO_PARAM=new Object[0];
-	private static Map<Class<?>,ObjectTemplate> DEFAULT_INSTANCE=new HashMap<Class<?>,ObjectTemplate>();
+	private static Map<Class<?>,ObjectTemplate> DEFAULT_INSTANCE= new HashMap<>();
 	private static String PREFIX ;
 	protected static final Log LOG=LogFactory.getLog(ObjectTemplate.class);
 	protected static ResourceBundle RES_BUNDLE;
@@ -72,7 +72,7 @@ public class ObjectTemplate {
 
 	private ObjectTemplate(Class<?> itemCls){
 		this.clz=itemCls;
-		propTemps=new ArrayList<PropertyTemplate>();
+		propTemps= new ArrayList<>();
 		//读取
 
 		if(RES_BUNDLE==null){
@@ -96,7 +96,7 @@ public class ObjectTemplate {
 			String[] propTokens=propName.split("[.]");
 			Class<?> curClz=clz;
 			PropertyTemplate pt=new PropertyTemplate();
-			pt.methods=new ArrayList<Method>();
+			pt.methods= new ArrayList<>();
 			Class<?>returnType=null;
 			for(int index=0;index<propTokens.length;index++){
 				//取得getter

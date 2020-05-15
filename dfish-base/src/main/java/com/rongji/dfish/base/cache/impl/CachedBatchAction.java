@@ -86,7 +86,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
     }
 
     //正在加载的cache 防止本部分内容，在过期时，好几个线程同时加载。
-    private final Set<I> waiting = Collections.synchronizedSet(new HashSet<I>());
+    private final Set<I> waiting = Collections.synchronizedSet(new HashSet<>());
     //执行加载动作的加载器
     protected ExecutorService exec = ThreadUtil.getCachedThreadPool();
 

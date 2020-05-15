@@ -156,7 +156,7 @@ public class BaseActionController extends MultiActionController {
         return c;
     }
 
-    protected static HashMap<Class<?>, Convertor> formatMap = new HashMap<Class<?>, Convertor>();
+    protected static HashMap<Class<?>, Convertor> formatMap = new HashMap<>();
 
     /**
      * 请求数据转换器

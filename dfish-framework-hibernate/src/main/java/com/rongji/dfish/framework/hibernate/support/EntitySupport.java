@@ -25,7 +25,7 @@ public class EntitySupport<P> {
      *
      * @param clz 实体类Class
      */
-    public EntitySupport(Class<?> clz) {
+    public EntitySupport(Class clz) {
         if (clz == null) {
             throw new IllegalArgumentException("clz == null");
         }
@@ -55,10 +55,9 @@ public class EntitySupport<P> {
      * 获取实体类Class
      *
      * @param clz Class 当前实现类,一般是DAO
-     * @param <P> 实体类
      * @return Class 实体类Class
      */
-    private <P> Class<P> getEntityClass(Class<?> clz) {
+    private <P> Class<P> getEntityClass(Class<P> clz) {
         Class<?> workingClz = clz;
         while (true) {
             if (workingClz == Object.class) {

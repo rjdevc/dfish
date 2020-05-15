@@ -290,7 +290,7 @@ public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, 
         }
         // 如果有一个格子不能被移除则报错，不能被移除的可能，是指这个区域里面的某个格子被合并过单元，并且这个合并的单元格部分区域在这个区域之外。
         Map<String, Integer> columnMap = owner.getVisibleColumnNumMap();
-        List<Object[]> toRemove = new ArrayList<Object[]>();
+        List<Object[]> toRemove = new ArrayList<>();
         int row = 0;
         for (Object obj : nodes) {
             TR tr = (TR) obj;

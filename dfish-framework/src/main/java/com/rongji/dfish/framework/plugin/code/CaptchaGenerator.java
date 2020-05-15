@@ -306,7 +306,7 @@ public class CaptchaGenerator {
             JSONArray arr = (JSONArray) JSON.parse(setting);
             int i = 0;
             chars = new char[arr.size()];
-            charsMap = new HashMap<Character, Integer>();
+            charsMap = new HashMap<>();
             for (Object o : arr) {
                 String s = (String) o;
                 char[] cs = s.toCharArray();

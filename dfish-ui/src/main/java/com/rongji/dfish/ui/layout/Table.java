@@ -217,7 +217,7 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
      */
     @Transient
     public Map<String, Integer> getVisibleColumnNumMap() {
-        Map<String, Integer> columnMap = new HashMap<String, Integer>();
+        Map<String, Integer> columnMap = new HashMap<>();
         int column = 0;
         if (getColumns() != null) {
             for (Column c : getColumns()) {
@@ -488,7 +488,7 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
         //需要判定head的最大宽度和最大高度，以及Column的最大宽度
         //FIXME
 
-        Map<String, Integer> columnMap = new HashMap<String, Integer>();
+        Map<String, Integer> columnMap = new HashMap<>();
         int column = 0;
         int columnSize = 0;
         for (Column c : this.getColumns()) {

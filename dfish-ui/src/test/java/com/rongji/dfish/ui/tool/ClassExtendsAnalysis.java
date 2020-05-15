@@ -52,12 +52,13 @@ public class ClassExtendsAnalysis extends Application {
             for(Method m:c.getDeclaredMethods()){
                 String methodName=m.getName();
                 String refName=getRefName(methodName,group,groupRef);
-                Set<String> call=caller.get(refName);
-                if(call==null){
-                    call=new TreeSet<>();
-                    caller.put(refName,call);
-                }
-                call.add(c.getName());
+//                Set<String> call=caller.get(refName);
+//                if(call==null){
+//                    call=new TreeSet<>();
+//                    caller.put(refName,call);
+//                }
+//                call.add(c.getName());
+                caller.computeIfAbsent(refName,k->new TreeSet<>()).add(c.getName());
                 if(m.getName().equals("getType")&&c!= Node.class){
                     System.out.println(c.getName());
                 }
@@ -168,12 +169,13 @@ public class ClassExtendsAnalysis extends Application {
                 String s=methodName.substring(prefix.length());
                 s=(char)(s.charAt(0)+32)+s.substring(1);
                 groupRef.put(methodName,s);
-                List<String> sameName=group.get(s);
-                if(sameName==null){
-                    sameName=new ArrayList<>();
-                    group.put(s,sameName);
-                }
-                sameName.add(methodName);
+//                List<String> sameName=group.get(s);
+//                if(sameName==null){
+//                    sameName=new ArrayList<>();
+//                    group.put(s,sameName);
+//                }
+//                sameName.add(methodName);
+                group.computeIfAbsent(s,k->new ArrayList<>()).add(methodName);
                 return s;
             }
         }
@@ -183,12 +185,14 @@ public class ClassExtendsAnalysis extends Application {
 
     private void fillClassToTree(List<Class> clzs, TreeItem<String> shell) {
         //去除 interface
-        for (Iterator<Class> iter=clzs.iterator();iter.hasNext();){
-            Class clz=iter.next();
-            if(clz.isInterface()){
-                iter.remove();
-            }
-        }
+//        for (Iterator<Class> iter=clzs.iterator();iter.hasNext();){
+//            Class clz=iter.next();
+//            if(clz.isInterface()){
+//                iter.remove();
+//            }
+//        }
+        clzs.removeIf(clz->clz.isInterface());
+
         Map<Class,Integer> parentCount=new HashMap<>();
         Map<Class,List<Class>> subs=new HashMap<>();
         for(int i=0;i<clzs.size();i++){
@@ -215,12 +219,13 @@ public class ClassExtendsAnalysis extends Application {
     }
 
     private void setSubClass(Class clz1, Class clz2,Map<Class,Integer> parentCount, Map<Class,List<Class>> subs) {
-        List<Class> subList=subs.get(clz1);
-        if(subList==null){
-            subList=new ArrayList<>();
-            subs.put(clz1,subList);
-        }
-        subList.add(clz2);
+//        List<Class> subList=subs.get(clz1);
+//        if(subList==null){
+//            subList=new ArrayList<>();
+//            subs.put(clz1,subList);
+//        }
+//        subList.add(clz2);
+        subs.computeIfAbsent(clz1,k->new ArrayList<>()).add(clz2);
         Integer i=parentCount.get(clz2);
         if(i==null ){i=0;}
         parentCount.put(clz2,i+1);

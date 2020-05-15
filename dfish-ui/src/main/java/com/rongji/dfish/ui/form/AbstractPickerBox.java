@@ -46,7 +46,8 @@ public abstract class AbstractPickerBox<T extends AbstractPickerBox<T>> extends 
 
     @Override
     public T setValue(Object value) {
-        return setValue(toString(value));
+        this.value=toString(value);
+        return (T)this;
     }
 
     /**

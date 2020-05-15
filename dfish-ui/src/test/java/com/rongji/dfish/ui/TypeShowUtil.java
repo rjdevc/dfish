@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.json.JsonFormat;
 
 public class TypeShowUtil{
 	
-	private static Map<String,Map<String,Set<String>>> typeMap=new HashMap<String,Map<String,Set<String>>>(); 
+	private static Map<String,Map<String,Set<String>>> typeMap= new HashMap<>();
 	private static final String ANY_TYPE="*";
 	private static final String ANY_TYPE_PATH="/"+ANY_TYPE;
 	
@@ -84,26 +84,29 @@ public class TypeShowUtil{
 		
 		String[][] hidTypeDefs=getHidTypeDefDatas();
 		
-		Map<String, Set<String>> treeMap = null;
-		Set<String> subList = null;
+//		Map<String, Set<String>> treeMap = null;
+//		Set<String> subList = null;
 		StringBuilder sb=null;
 		int rowLen;
 		for (String[] row : hidTypeDefs) {
 			rowLen = row.length;
-			treeMap = typeMap.get(row[rowLen - 1]);
-			if (treeMap == null) {
-				treeMap = new HashMap<String, Set<String>>();
-				typeMap.put(row[rowLen - 1], treeMap);
-			}
+//			treeMap = typeMap.get(row[rowLen - 1]);
+//			if (treeMap == null) {
+//				treeMap = new HashMap<>();
+//				typeMap.put(row[rowLen - 1], treeMap);
+//			}
 			sb=new StringBuilder();
 			for (int i = rowLen - 1; i > 0; i--) {
 				sb.append('/').append(row[i]);
-				subList = treeMap.get(sb.toString());
-				if (subList == null) {
-					subList = new HashSet<String>();
-					treeMap.put(sb.toString(), subList);
-				}
-				subList.add(row[i - 1]);
+//				subList = treeMap.get(sb.toString());
+//				if (subList == null) {
+//					subList = new HashSet<>();
+//					treeMap.put(sb.toString(), subList);
+//				}
+//				subList.add(row[i - 1]);
+				typeMap.computeIfAbsent(row[rowLen-1],k-> new HashMap<>())
+						.computeIfAbsent(sb.toString(),k->new HashSet<>())
+						.add(row[i-1]);
 			}
 		}
 		System.out.println(JsonFormat.formatJson( typeMap));

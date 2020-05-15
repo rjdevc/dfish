@@ -273,7 +273,7 @@ public class StringUtil {
         if (!containNum && !containLowcase && !containUppcase && !containSymbol) {
             return "";
         }
-        StringBuffer sb = new StringBuffer(length);
+        StringBuilder sb = new StringBuilder(length);
         if (0 < length) {
             while (sb.length() < length) {
                 byte[] can = new byte[length * 2];
@@ -344,11 +344,11 @@ public class StringUtil {
             if (L > 27) {
                 return "数值溢出"; // 包括小数点和2位小数
             }
-            StringBuffer sN = new StringBuffer(); // 转换前的字符串
+            StringBuilder sN = new StringBuilder(); // 转换前的字符串
             sN.append(dblNum);
             sN.deleteCharAt(L - 3); // 删除小数点
             --L;
-            StringBuffer sT = new StringBuffer(); // 转换后的字符串
+            StringBuilder sT = new StringBuilder(); // 转换后的字符串
             if (sN.charAt(L - 1) == '0' && sN.charAt(L - 2) == '0') {
                 sT.insert(0, '整'); // 分位为零则尾部加'整'
             }
@@ -398,7 +398,7 @@ public class StringUtil {
         }
         char[] cs = elStr.toCharArray();
         //找到所有的${...}然后把内容用getter替换
-        List<Integer[]> matchs = new ArrayList<Integer[]>();
+        List<Integer[]> matchs = new ArrayList<>();
         int start = -1;
         int end = -1;
         for (int i = 0; i < cs.length; i++) {
@@ -450,11 +450,11 @@ public class StringUtil {
     /**
      * 日期格式化模板
      */
-    private static Map<String, Format> datePatterns = new HashMap<String, Format>();
+    private static Map<String, Format> datePatterns = new HashMap<>();
     /**
      * 数值格式化模板
      */
-    private static Map<String, Format> numberPatterns = new HashMap<String, Format>();
+    private static Map<String, Format> numberPatterns = new HashMap<>();
 
     /**
      * 将数据格式化成字符(目前仅提供日期和数值的格式化)
@@ -572,7 +572,7 @@ public class StringUtil {
         if (Utils.isEmpty(keyWord)) {
             return Collections.emptyList();
         }
-        List<String> splitWords = new ArrayList<String>();
+        List<String> splitWords = new ArrayList<>();
         if (matchLength <= 0) { // 全字匹配
             splitWords.add(keyWord);
         } else {
@@ -1086,7 +1086,7 @@ public class StringUtil {
 //        CharUtil.dbc2sbcl()
     }
 
-    private static Map<Map<String, String>, TrieTree<String>> tries = Collections.synchronizedMap(new HashMap<Map<String, String>, TrieTree<String>>());
+    private static Map<Map<String, String>, TrieTree<String>> tries = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * 替换字符串，同时提换多个字符串，如果几个字符串有包含关系，更长的优先。

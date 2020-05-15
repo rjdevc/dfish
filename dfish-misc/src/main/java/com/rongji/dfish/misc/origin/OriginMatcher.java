@@ -55,7 +55,7 @@ public class OriginMatcher {
     /**
      * 字典树
      */
-    protected TrieTree<List<String>> trieTree = new TrieTree<List<String>>();
+    protected TrieTree<List<String>> trieTree = new TrieTree<>();
 
     /**
 	 * 获取行政区划代码匹配类的对象，匹配范围为县级及县级以上行政区划,匹配目标为6位行政区划代码
@@ -197,7 +197,7 @@ public class OriginMatcher {
 	private void insert(String word, String code) {
 		List<String> codes = trieTree.get(word);
 		if (codes == null) {
-			codes = new ArrayList<String>();
+			codes = new ArrayList<>();
 			trieTree.put(word, codes);
 		}
 		codes.add(code);
@@ -262,7 +262,7 @@ public class OriginMatcher {
 	 */
 	public MatchResult match(String text) {
 //		System.out.print(text+":   ");
-		List<Candidate> codeList = new ArrayList<Candidate>();
+		List<Candidate> codeList = new ArrayList<>();
 		List<TrieTree.SearchResult<List<String>>> result = trieTree.search(text);
 		if (result.size() == 0) {
 			return new MatchResult(null,MatchResult.CONFIDENCE_UNMATCH);
@@ -285,7 +285,7 @@ public class OriginMatcher {
 					int comboMatchingTimes = 0;//连续匹配次数
 					int confidence = 0;//信息熵
 					//存放匹到的区号，以便计算连续匹配次数
-					ArrayList<String> matchingCodeList = new ArrayList<String>(); //存放匹到的区号
+					ArrayList<String> matchingCodeList = new ArrayList<>(); //存放匹到的区号
 					for (int k=0; k < result.size(); k++) {
 						for (int l = 0; l < result.get(k).getValue().size(); l++){
 							if(code.position==k){
@@ -312,15 +312,11 @@ public class OriginMatcher {
 			}	
 			
 			//关键步骤，numberList按照confidence值从大到小排好，同confidence值根据level大小排好
-			Collections.sort(codeList,new Comparator<Candidate>(){
-				@Override
-                public int compare(Candidate arg0, Candidate arg1){
-					if(arg0.getConfidence()==arg1.getConfidence()){
-						return arg1.getLevel()-arg0.getLevel();
-					}
-					return arg1.getConfidence()-arg0.getConfidence();
-				}
-			});
+			codeList.sort((arg0,  arg1)->
+					arg0.getConfidence()==arg1.getConfidence()?
+						arg1.getLevel()-arg0.getLevel():
+							arg1.getConfidence()-arg0.getConfidence()
+			);
 			
 			//只对应出一个区号、只有一个最大值、输入了多个相同关键词情况
 			if(codeList.size()==1||codeList.get(0).confidence>codeList.get(1).confidence

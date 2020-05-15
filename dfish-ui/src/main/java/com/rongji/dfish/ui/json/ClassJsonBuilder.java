@@ -77,7 +77,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                     LogUtil.debug(getClass(), "find a new property {name:'" + fieldName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
                 }
             }
-            Collections.sort(methods, (o1, o2) -> {
+            methods.sort( (o1, o2) -> {
                 String name1 = o1.getPropertyName();
                 String name2 = o2.getPropertyName();
                 int pos1 = ORDERED_PROPERTIES.indexOf(name1);

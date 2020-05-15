@@ -56,7 +56,7 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 		SystemContext.getInstance().register(frameworkContext);
 		SystemInfo si=new SystemInfo();
 		frameworkContext.add(new SystemInfo());
-		Map<String,String> systemInfoProps=new TreeMap<String,String>();
+		Map<String,String> systemInfoProps= new TreeMap<>();
 		systemInfoProps.put("fileEncoding",si.getFileEncoding());
 		systemInfoProps.put("operationSystem",si.getOperationSystem());
 		systemInfoProps.put("vmName",si.getVmName());
@@ -71,7 +71,7 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 		LogUtil.info("====== initing ServletContext ======");
 		ServletInfo servi=new ServletInfo(servletContext);
 		frameworkContext.add(servi);
-		Map<String,String> servletInfoProps=new TreeMap<String,String>();
+		Map<String,String> servletInfoProps= new TreeMap<>();
 		servletInfoProps.put("serverInfo",servi.getServerInfo());
 		servletInfoProps.put("servletRealPath",servi.getServletRealPath());
 		servletInfoProps.put("servletVersion",servi.getServletVersion());
@@ -167,7 +167,7 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 			DataSource ds = (DataSource) SystemContext.getInstance().get("dataSource");
 			DataBaseInfo dataBaseInfo=new DataBaseInfo(ds.getConnection());
 			frameworkContext.add(dataBaseInfo);
-			Map<String,String> dataBaseInfoProps=new TreeMap<String,String>();
+			Map<String,String> dataBaseInfoProps= new TreeMap<>();
 			dataBaseInfoProps.put("databaseUrl",dataBaseInfo.getDatabaseUrl());
 			dataBaseInfoProps.put("databaseUsername",dataBaseInfo.getDatabaseUsername());
 			dataBaseInfoProps.put("databaseProductName",dataBaseInfo.getDatabaseProductName());

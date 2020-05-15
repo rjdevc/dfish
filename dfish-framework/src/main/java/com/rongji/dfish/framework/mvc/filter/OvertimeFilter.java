@@ -53,10 +53,10 @@ public class OvertimeFilter implements Filter {
 	}
 	
 	private static String convert2JSON(HttpServletRequest request){
-		Map<String,Object> json=new LinkedHashMap<String,Object>();
-		Map<String,Object> headMap=new LinkedHashMap<String,Object>();
+		Map<String,Object> json= new LinkedHashMap<>();
+		Map<String,Object> headMap= new LinkedHashMap<>();
 		Map<String,String[]> paramMap=request.getParameterMap();
-		Map<String,Object> sessionMap=new LinkedHashMap<String,Object>();
+		Map<String,Object> sessionMap= new LinkedHashMap<>();
 		json.put("requestURI", request.getRequestURI());
 		json.put("head", headMap);
 		json.put("parameter", paramMap);
@@ -66,7 +66,7 @@ public class OvertimeFilter implements Filter {
 			java.util.Enumeration<String> headNames=request.getHeaderNames();
 			while(headNames.hasMoreElements()){
 				String n=headNames.nextElement();
-				List<String> headers=new ArrayList<String>();
+				List<String> headers= new ArrayList<>();
 				if(request.getHeaders(n)!=null){
 					headMap.put(n, headers);
 					java.util.Enumeration<String> headContent=request.getHeaders(n);

@@ -16,10 +16,10 @@ import java.util.List;
 public class ListDataComparator<T> {
     private List<T> oldList;
     private List<T> newList;
-    private List<T> insertList = new ArrayList<T>();
-    private List<T> deleteList = new ArrayList<T>();
-    private List<T> restrictList = new ArrayList<T>();
-    private List<T> updateList = new ArrayList<T>();
+    private List<T> insertList = new ArrayList<>();
+    private List<T> deleteList = new ArrayList<>();
+    private List<T> restrictList = new ArrayList<>();
+    private List<T> updateList = new ArrayList<>();
 
     public void setOldList(List<T> oldList) {
         this.oldList = oldList;
@@ -95,14 +95,10 @@ public class ListDataComparator<T> {
 
     private void compareWithOrder() {
         final OrderedDataIdentifier<T> oind = (OrderedDataIdentifier<T>) this.identifier;
-        List<T> sortedNewList = newList == null ? new ArrayList<>(0) : new ArrayList<T>(newList);
-        List<T> sortedOldList = oldList == null ? new ArrayList<>(0) : new ArrayList<T>(oldList);
-        Collections.sort(sortedNewList, (row1,row2)-> {
-            return oind.compareRow(row1, row2);
-        });
-        Collections.sort(sortedOldList, (row1,row2) ->{
-            return oind.compareRow(row1, row2);
-        });
+        List<T> sortedNewList = newList == null ? new ArrayList<>(0) : new ArrayList<>(newList);
+        List<T> sortedOldList = oldList == null ? new ArrayList<>(0) : new ArrayList<>(oldList);
+        sortedNewList.sort((row1,row2) -> oind.compareRow(row1, row2));
+        sortedOldList.sort((row1,row2) -> oind.compareRow(row1, row2));
         Iterator<T> oldIter = sortedOldList.iterator();
         Iterator<T> newIter = sortedNewList.iterator();
         int compareResult = 0;
@@ -167,8 +163,8 @@ public class ListDataComparator<T> {
      */
     private void compareWithoutOrder() {
         // 拿出newList的每条数据在oldList循环一遍，找出不变的、新增的、修改的数据
-        insertList = newList == null ? new LinkedList<T>() : new LinkedList<T>(newList);
-        deleteList = oldList == null ? new ArrayList<>() : new LinkedList<T>(oldList);
+        insertList = newList == null ? new LinkedList<>() : new LinkedList<>(newList);
+        deleteList = oldList == null ? new ArrayList<>() : new LinkedList<>(oldList);
         outer:
         for (Iterator<T> newIter = insertList.iterator(); newIter.hasNext(); ) {
             T tn = newIter.next();

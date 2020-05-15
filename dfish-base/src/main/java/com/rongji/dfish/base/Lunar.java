@@ -375,7 +375,7 @@ public class Lunar {
      * @return 农历年份数据的集合, Object[0]-农历年份,Object[1]-农历年份中文名称
      */
     public static List<Object[]> getLunarYearList(int beginLunarYear, int endLunarYear) {
-        List<Object[]> yearDataList = new ArrayList<Object[]>();
+        List<Object[]> yearDataList = new ArrayList<>();
         for (int y = beginLunarYear; y < endLunarYear; y++) {
             yearDataList.add(new Object[]{y, getChineseYearString(y) + "(" + y + ")"});
         }
@@ -390,7 +390,7 @@ public class Lunar {
      * @return 农历月份数据的集合, Object[0]-农历月份(负值表示为闰月,其余为正值),Object[1]-农历月份的中文名称
      */
     public static List<Object[]> getLunarMonthList(int lunarYear, boolean isBirthday) {
-        List<Object[]> monthDataList = new ArrayList<Object[]>();
+        List<Object[]> monthDataList = new ArrayList<>();
         int leapMonth = leapMonth(lunarYear);
         Calendar cal = Calendar.getInstance();
         Object[] result = calcLunarDate(cal);
@@ -424,7 +424,7 @@ public class Lunar {
      * @return 获取农历日数据集合, Object[0]-在月的第几天,Object[1]-农历日的中文名称
      */
     public static List<Object[]> getLunarDayList(int lunarYear, int lunarMonth, boolean isBirthday) {
-        List<Object[]> dayDataList = new ArrayList<Object[]>();
+        List<Object[]> dayDataList = new ArrayList<>();
         int monthDays = 0;
         if (lunarMonth > 0) {
             monthDays = monthDays(lunarYear, lunarMonth);

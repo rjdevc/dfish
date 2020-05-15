@@ -17,7 +17,7 @@ import com.rongji.dfish.framework.util.ServletUtil;
  */
 @Deprecated
 public class FilterParam {
-	HashMap<String ,String[]> context=new HashMap<String ,String[]>();
+	HashMap<String ,String[]> context= new HashMap<>();
 	public FilterParam(){}
 	public void registerKey(String key){
 		context.put(key, null);

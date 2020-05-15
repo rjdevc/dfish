@@ -47,11 +47,11 @@ public class DocxParser extends DocumentParser {
         Table table=new Table();
         //columns
 
-        table.setRows(new ArrayList<TableRow>() );
+        table.setRows(new ArrayList<>() );
         for( XWPFTableRow r:tbl.getRows()){
             TableRow row=new TableRow();
              table.getRows().add(row);
-             row.setCells(new ArrayList<TableCell>());
+             row.setCells(new ArrayList<>());
              for(XWPFTableCell tc:r.getTableCells()){
                  TableCell cell=new TableCell();
 //                 cell.setColSpan(tc.get);

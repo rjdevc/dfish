@@ -482,7 +482,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
              */
             public void addNode(Node sub) {
                 if (subs == null) {
-                    subs = new ArrayList<Node>();
+                    subs = new ArrayList<>();
                 }
                 subs.add(sub);
             }

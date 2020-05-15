@@ -65,7 +65,7 @@ public class PinyinWordSplitter implements WordSplitter{
 		return instance;
 	}
 
-	private TrieTree<Void> core=new TrieTree<Void>();
+	private TrieTree<Void> core= new TrieTree<>();
 	private void init() {
 		//装载matcher
 		for(String pinyin:PIN_YIN){
@@ -84,9 +84,9 @@ public class PinyinWordSplitter implements WordSplitter{
 	@Override
 	public List<String> split(String text) {
 		if(text==null||text.isEmpty()){
-			return new ArrayList<String>(0);
+			return new ArrayList<>(0);
 		}
-		List<String> result=new ArrayList<String>();
+		List<String> result= new ArrayList<>();
 		List<TrieTree.SearchResult<Void>> sr=core.search(text);
 		if(sr==null||sr.isEmpty()){
 			return result;

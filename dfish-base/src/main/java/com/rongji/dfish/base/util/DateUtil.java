@@ -119,7 +119,7 @@ public class DateUtil {
     private static final DateFormat SDF_YEAR = new SimpleDateFormat(
             PATTERN_YEAR);
 
-    private static Map<String, DateFormat> dfMap = Collections.synchronizedMap(new HashMap<String, DateFormat>());
+    private static Map<String, DateFormat> dfMap = Collections.synchronizedMap(new HashMap<>());
 
     private static final int MAP_SIZE = 512;
 

@@ -45,7 +45,7 @@ public abstract class BatchAdaptor {
 	public BatchAdaptor(int batchSize, int maxPooled) {
 		this.batchSize = batchSize;
 		this.maxPooled = maxPooled;
-		workingQueue = new LinkedList<Object>();
+		workingQueue = new LinkedList<>();
 	}
 	public BatchAdaptor() {
 		this(64,1024);
@@ -92,7 +92,7 @@ public abstract class BatchAdaptor {
 	private List<Object> findSendData(){
 		//获取要发送的数据条数
 		int count = batchSize;
-		List<Object> list = new ArrayList<Object>(count);
+		List<Object> list = new ArrayList<>(count);
 		synchronized(workingQueue){
 			count=workingQueue.size() > batchSize ? 
 					batchSize : workingQueue.size();
