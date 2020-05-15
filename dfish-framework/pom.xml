@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.1.2-SNAPSHOT</version>
+        <version>5.0.1.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-framework</artifactId>
@@ -42,13 +42,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Spring事务需要用到的包 -->
@@ -56,7 +54,6 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.9.1</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- org.apache.log4j.Logger -->
