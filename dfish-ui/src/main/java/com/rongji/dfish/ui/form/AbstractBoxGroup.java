@@ -31,10 +31,10 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
     protected Boolean noLabel;
 
     //    protected Integer space;
-//    protected List<Widget<?>> targets = new ArrayList<>();
+//    protected List<Widget> targets = new ArrayList<>();
 //    protected List<N> nodes = new ArrayList<>();
     //    protected Boolean escape;
-//    private AbstractMultiNodeContainer<?> bridgedObject = new AbstractMultiNodeContainer(null) {
+//    private AbstractMultiNodeContainer bridgedObject = new AbstractMultiNodeContainer(null) {
 //        @Override
 //        public List<N> findNodes() {
 //            return AbstractBoxGroup.this.nodes;
@@ -49,7 +49,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
      * @param checkedValue 已经选中的值
      * @param options      候选项
      */
-    public AbstractBoxGroup(String name, String label, Object checkedValue, List<?> options) {
+    public AbstractBoxGroup(String name, String label, Object checkedValue, List options) {
         super(null);
         setName(name);
         setLabel(label);
@@ -64,7 +64,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
      * @param checkedValue 已经选中的值
      * @param options      候选项
      */
-    public AbstractBoxGroup(String name, Label label, Object checkedValue, List<?> options) {
+    public AbstractBoxGroup(String name, Label label, Object checkedValue, List options) {
         super(null);
         setName(name);
         setLabel(label);
@@ -72,7 +72,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
         setOptions(options);
     }
 
-    public T setOptions(List<?> options) {
+    public T setOptions(List options) {
         nodes = parseNodes(options);
         if(nodes==null){
             nodes=new ArrayList<>();
@@ -80,7 +80,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
         return (T) this;
     }
 
-    protected List<Node> parseNodes(List<?> options) {
+    protected List<Node> parseNodes(List options) {
         List<Node> realNodes = null;
         if (options != null) {
             realNodes = new ArrayList<>( options.size());
@@ -89,7 +89,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
                     continue;
                 }
                 N node;
-                if (item instanceof AbstractBox<?>) {
+                if (item instanceof AbstractBox) {
                     node = (N) item;
                 } else if (item instanceof Option) {
                     node = newPub();
@@ -258,7 +258,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //        return add(w);
 //    }
 //
-//    public T add(Option option, Widget<?> target) {
+//    public T add(Option option, Widget target) {
 //        option = option == null ? new Option(null, null) : option;
 //        N w = buildOption(option);
 //        while (targets.size() < nodes.size()) {
@@ -280,15 +280,15 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //     * @param target 附带的元素
 //     * @return
 //     */
-//    public T add(Object value, String text, Widget<?> target) {
+//    public T add(Object value, String text, Widget target) {
 //        Option option = new Option(value, text);
 //        return add(option, target);
 //    }
 //
 //
 //    @Override
-//    public List<Widget<?>> findNodes() {
-//        List<Widget<?>> result = new ArrayList<Widget<?>>();
+//    public List<Widget> findNodes() {
+//        List<Widget> result = new ArrayList<Widget>();
 //        if (nodes != null) {
 //            result.addAll(nodes);
 //        }
@@ -301,12 +301,12 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //
 //    @Override
 //    public T removeNodeById(String id) {
-//        List<Widget<?>> nodes = findNodes();
+//        List<Widget> nodes = findNodes();
 //        if (id == null || nodes == null) {
 //            return (T) this;
 //        }
 //        for (int i = 0; i < nodes.size(); i++) {
-//            Widget<?> item = nodes.get(i);
+//            Widget item = nodes.get(i);
 //            if (id.equals(item.getId())) {
 //                nodes.remove(i);
 //                if (targets.size() > i + 1) {
@@ -318,10 +318,10 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //                targets.remove(i);
 //                i--;
 //            } else if (item instanceof Layout) {
-//                Layout<?> cast = (Layout<?>) item;
+//                Layout cast = (Layout) item;
 //                cast.removeNodeById(id);
 //            } else if (targets.size() > i && targets.get(i) instanceof Layout) {
-//                Layout<?> cast = (Layout<?>) targets.get(i);
+//                Layout cast = (Layout) targets.get(i);
 //                cast.removeNodeById(id);
 //            }
 //        }
@@ -331,14 +331,14 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //
 //    @Override
 //    public boolean replaceNodeById(Node w) {
-//        List<Widget<?>> nodes = findNodes();
+//        List<Widget> nodes = findNodes();
 //        if (w == null || w.getId() == null || nodes == null) {
 //            return false;
 //        }
 //        String id = w.getId();
 //        for (int i = 0; i < nodes.size(); i++) {
-//            Widget<?> item = nodes.get(i);
-//            Widget<?> t = targets.size() > i ? targets.get(i) : null;
+//            Widget item = nodes.get(i);
+//            Widget t = targets.size() > i ? targets.get(i) : null;
 //            if (id.equals(item.getId())) {
 //                // 替换该元素
 //                if (onReplace(item, (Widget) w)) {
@@ -356,7 +356,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //                    return false;
 //                }
 //            } else if (t != null && t instanceof Layout) {
-//                Layout<?> cast = (Layout<?>) t;
+//                Layout cast = (Layout) t;
 //                boolean replaced = cast.replaceNodeById(w);
 //                if (replaced) {
 //                    return true;
@@ -366,7 +366,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //        return false;
 //    }
 //
-//    protected boolean onReplace(Widget<?> oldItem, Widget<?> newItem) {
+//    protected boolean onReplace(Widget oldItem, Widget newItem) {
 //        return true;
 //    }
 //
@@ -430,7 +430,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //     *
 //     * @return targets
 //     */
-//    public List<Widget<?>> getTargets() {
+//    public List<Widget> getTargets() {
 //        return targets;
 //    }
 //
@@ -440,7 +440,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //     * @param w 对象
 //     * @return 本身，这样可以继续设置其他属性
 //     */
-//    public T addTarget(Widget<?> w) {
+//    public T addTarget(Widget w) {
 //        targets.add(w);
 //        return (T) this;
 //    }
@@ -457,12 +457,12 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
 //    }
 
 //    @Override
-//    public Node<?> findNodeById(String id) {
+//    public Node findNodeById(String id) {
 //        return bridgedObject.findNodeById(id);
 //    }
 
 
-//    public List<FormElement<?, ?>> findFormElementsByName(String name) {
+//    public List<FormElement> findFormElementsByName(String name) {
 //        return bridgedObject.findFormElementsByName(name);
 //    }
 

@@ -18,7 +18,7 @@ import java.util.*;
 public interface FrameworkDao4Mybatis<P, ID extends Serializable> extends FrameworkDao<P, ID> {
 
     @Override
-    default List<P> list(Pagination pagination, QueryParam<?> queryParam) {
+    default List<P> list(Pagination pagination, QueryParam queryParam) {
         return listByRowBounds(new RowBounds(pagination.getOffset(), pagination.getLimit()), queryParam != null ? queryParam.toRequestParam() : null);
     }
 

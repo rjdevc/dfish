@@ -116,7 +116,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         if (m == null) {
             return;
         }
-        for (Entry<? extends K, ? extends V> entry : m.entrySet()) {
+        for (Entry<K, V> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }

@@ -97,7 +97,7 @@ public class ProgressController extends BaseActionController {
 //        }
 //    }
 //
-//    private Command<?> getCommand(String errorMsg, boolean closeLoading) {
+//    private Command getCommand(String errorMsg, boolean closeLoading) {
 //        StringBuilder js = new StringBuilder();
 //        if (Utils.notEmpty(errorMsg)) {
 //            js.append("$.alert('").append(errorMsg).append("');");

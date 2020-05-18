@@ -54,9 +54,9 @@ public class TrieTree<V extends Object> {
 	public TrieTree(TrieTree<? extends V> another,boolean reverse) {
 		this.reverse=reverse;
 		root = new Node<>();
-		List<?> entryList=another.entryList();
+		List entryList=another.entryList();
 		for(Object o:entryList){
-			Entry<?> entry=(Entry<?>)o;
+			Entry entry=(Entry)o;
 			put(entry.getKey(),(V) entry.getValue());
 		}
 	}

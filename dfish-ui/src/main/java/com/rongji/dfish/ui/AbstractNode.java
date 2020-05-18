@@ -116,7 +116,7 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
     static {
         String version = "unspecified";
         try {
-            Class<?> clz = AbstractNode.class;
+            Class clz = AbstractNode.class;
             URL url = clz.getClassLoader().getResource(clz.getName().replace(".", "/") + ".class");
             if (url != null) {
                 Matcher m = Pattern.compile("dfish-ui-\\S+.jar").matcher(url.toString());
@@ -143,8 +143,8 @@ public abstract class AbstractNode<T extends AbstractNode<T>> implements Node<T>
     @Override
     public String toString() {
         Object o = this;
-        while (o instanceof JsonWrapper<?>) {
-            Object prototype = ((JsonWrapper<?>) o).getPrototype();
+        while (o instanceof JsonWrapper) {
+            Object prototype = ((JsonWrapper) o).getPrototype();
             if (prototype == o) {
                 break;
             }

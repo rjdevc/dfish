@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.widget.AbstractButton;
  */
 public class Tab extends AbstractButton<Tab> implements TargetHolder<Tab> {
 
-    private Widget<?> target;
+    private Widget target;
     /**
      * 构造函数
      *

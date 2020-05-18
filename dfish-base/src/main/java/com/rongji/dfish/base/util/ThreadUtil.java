@@ -124,12 +124,12 @@ public class ThreadUtil {
 	 * @param runnables
 	 */
 	public static void execute(Collection<Runnable> runnables) throws ExecutionException, InterruptedException {
-		List<Future<?>> futures=new ArrayList<>();
+		List<Future> futures=new ArrayList<>();
 		for(Runnable run:runnables){
-			Future<?> f= SHARED_THREAD_POOL.submit(run);
+			Future f= SHARED_THREAD_POOL.submit(run);
 			futures.add(f);
 		}
-		for(Future<?> f:futures){
+		for(Future f:futures){
 			f.get();
 		}
 	}

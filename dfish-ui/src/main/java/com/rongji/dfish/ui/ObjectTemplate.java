@@ -33,9 +33,9 @@ public class ObjectTemplate {
 		List<Method> methods;//最后一个method是setter前面都是getter
 		Object value;
 	}
-	private static final Class<?>[] NO_ARG=new Class<?>[0];
+	private static final Class[] NO_ARG=new Class[0];
 	private static final Object[] NO_PARAM=new Object[0];
-	private static Map<Class<?>,ObjectTemplate> DEFAULT_INSTANCE= new HashMap<>();
+	private static Map<Class,ObjectTemplate> DEFAULT_INSTANCE= new HashMap<>();
 	private static String PREFIX ;
 	protected static final Log LOG=LogFactory.getLog(ObjectTemplate.class);
 	protected static ResourceBundle RES_BUNDLE;
@@ -51,7 +51,7 @@ public class ObjectTemplate {
 		}
 	}
 		
-	private Class<?> clz;
+	private Class clz;
 	private List<PropertyTemplate> propTemps;
 	
 	/**
@@ -59,7 +59,7 @@ public class ObjectTemplate {
 	 * @param clz Class
 	 * @return ObjectTemplate
 	 */
-	public static ObjectTemplate get(Class<?> clz){
+	public static ObjectTemplate get(Class clz){
 		ObjectTemplate def=DEFAULT_INSTANCE.get(clz);
 		if(def==null){
 			//第一个对象一个个读取属性并保存
@@ -70,7 +70,7 @@ public class ObjectTemplate {
 		return def;
 	}
 
-	private ObjectTemplate(Class<?> itemCls){
+	private ObjectTemplate(Class itemCls){
 		this.clz=itemCls;
 		propTemps= new ArrayList<>();
 		//读取
@@ -94,10 +94,10 @@ public class ObjectTemplate {
 			LOG.info(clz.getName()+"."+propName+" DEFAULT_VALUE= "+propValue);
 			//如果 propName有多重，前面几重全部取getter。最后一重先从getter获取得返回值，再调用Setter
 			String[] propTokens=propName.split("[.]");
-			Class<?> curClz=clz;
+			Class curClz=clz;
 			PropertyTemplate pt=new PropertyTemplate();
 			pt.methods= new ArrayList<>();
-			Class<?>returnType=null;
+			Class returnType=null;
 			for(int index=0;index<propTokens.length;index++){
 				//取得getter
 				String propToken=propTokens[index];
@@ -114,30 +114,30 @@ public class ObjectTemplate {
 							//那么我们根据数据决定这个类型。
 							if("true".equals(propValue)||"false".equals(propValue)){
 								try{
-									setter = curClz.getMethod(setterName, new Class<?>[]{Boolean.class});
+									setter = curClz.getMethod(setterName, new Class[]{Boolean.class});
 									returnType=Boolean.class;
 								}catch (Exception e) {}
 							}
 							if(setter==null){
 								try{
 									Integer.parseInt(propValue);
-									setter = curClz.getMethod(setterName, new Class<?>[]{Integer.class});
+									setter = curClz.getMethod(setterName, new Class[]{Integer.class});
 									returnType=Integer.class;
 								}catch (Exception e) {}
 							}
 							if(setter==null){
 								try{
-									setter = curClz.getMethod(setterName, new Class<?>[]{String.class});
+									setter = curClz.getMethod(setterName, new Class[]{String.class});
 									returnType=String.class;
 								}catch (Exception e) {}
 							}
 							if(setter==null){
 								try{
-									setter = curClz.getMethod(setterName, new Class<?>[]{Object.class});
+									setter = curClz.getMethod(setterName, new Class[]{Object.class});
 								}catch (Exception e) {}
 							}
 						}else{
-							setter = curClz.getMethod(setterName, new Class<?>[]{returnType});
+							setter = curClz.getMethod(setterName, new Class[]{returnType});
 						}
 						pt.methods.add(setter);
 					}else{

@@ -357,7 +357,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * @param queryParam 查询条件
      * @return 视图对象列表
      */
-    default List<V> list(Pagination pagination, QueryParam<?> queryParam) {
+    default List<V> list(Pagination pagination, QueryParam queryParam) {
         return list(pagination, queryParam, true);
     }
 
@@ -368,7 +368,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * @param evict 是否驱逐缓存
      * @return 视图对象列表
      */
-    default List<V> list(Pagination pagination, QueryParam<?> queryParam, boolean evict) {
+    default List<V> list(Pagination pagination, QueryParam queryParam, boolean evict) {
         List<P> pos = getDao().list(pagination, queryParam);
         return parseVos(pos, evict);
     }

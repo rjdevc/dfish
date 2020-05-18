@@ -21,7 +21,7 @@ import java.util.function.Supplier;
  * 2018年4月20日 下午4:43:40		lamontYu			1.0				1.0 Version
  */
 public class LogUtil {
-    private static final Map<Class<?>, Log> LOGS = Collections.synchronizedMap(new HashMap<>());
+    private static final Map<Class, Log> LOGS = Collections.synchronizedMap(new HashMap<>());
     private static final Log LOG = getLog(LogUtil.class);
 
     /**
@@ -29,7 +29,7 @@ public class LogUtil {
      * @param clz Class
      * @return Log
      */
-    public static Log getLog(Class<?> clz) {
+    public static Log getLog(Class clz) {
         // FIXME Log是否变成WrappedLog,这里来判断实现
         Log log = LOGS.get(clz);
         if (log == null) {
@@ -65,7 +65,7 @@ public class LogUtil {
      * @param message 日志内容
      * @see org.apache.commons.logging.Log#debug(Object)
      */
-    public static void debug(Class<?> clz, Object message) {
+    public static void debug(Class clz, Object message) {
         debug(clz, message, null);
     }
 
@@ -77,7 +77,7 @@ public class LogUtil {
      * @see org.apache.commons.logging.Log#debug(Object)
      * @deprecated  一般来说 错误不该用debug级别输出
      */
-    public static void debug(Class<?> clz, Object message, Throwable t) {
+    public static void debug(Class clz, Object message, Throwable t) {
         debug(getLog(clz), message, t);
     }
 
@@ -117,7 +117,7 @@ public class LogUtil {
      * @param message 日志内容
      * @see org.apache.commons.logging.Log#info(Object)
      */
-    public static void info(Class<?> clz, Object message) {
+    public static void info(Class clz, Object message) {
         info(clz, message, null);
     }
 
@@ -128,7 +128,7 @@ public class LogUtil {
      * @param t 错误
      * @see org.apache.commons.logging.Log#info(Object)
      */
-    public static void info(Class<?> clz, Object message, Throwable t) {
+    public static void info(Class clz, Object message, Throwable t) {
         info(getLog(clz), message, t);
     }
 
@@ -168,7 +168,7 @@ public class LogUtil {
      * @param message 日志内容
      * @see org.apache.commons.logging.Log#warn(Object)
      */
-    public static void warn(Class<?> clz, Object message) {
+    public static void warn(Class clz, Object message) {
         warn(clz, message, null);
     }
 
@@ -179,7 +179,7 @@ public class LogUtil {
      * @param t 错误
      * @see org.apache.commons.logging.Log#warn(Object)
      */
-    public static void warn(Class<?> clz, Object message, Throwable t) {
+    public static void warn(Class clz, Object message, Throwable t) {
         warn(getLog(clz), message, t);
     }
 
@@ -224,7 +224,7 @@ public class LogUtil {
      * @param t 错误
      * @see org.apache.commons.logging.Log#error(Object, Throwable)
      */
-    public static void error(Class<?> clz, Object message, Throwable t) {
+    public static void error(Class clz, Object message, Throwable t) {
         error(getLog(clz), message, t);
     }
 
@@ -260,7 +260,7 @@ public class LogUtil {
      * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#debug(Object)
      */
-    public static void lazyDebug(Class<?> clz, Supplier<Object> message) {
+    public static void lazyDebug(Class clz, Supplier<Object> message) {
         lazyDebug(getLog(clz), message);
     }
 
@@ -302,7 +302,7 @@ public class LogUtil {
      * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#info(Object)
      */
-    public static void lazyInfo(Class<?> clz, Supplier<Object> message) {
+    public static void lazyInfo(Class clz, Supplier<Object> message) {
         lazyInfo(getLog(clz), message);
     }
     /**
@@ -344,7 +344,7 @@ public class LogUtil {
      * @param message 产生日志内容的回调
      * @see org.apache.commons.logging.Log#warn(Object)
      */
-    public static void lazyWarn(Class<?> clz, Supplier<Object> message) {
+    public static void lazyWarn(Class clz, Supplier<Object> message) {
         lazyWarn(getLog(clz), message);
     }
 

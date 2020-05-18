@@ -964,7 +964,7 @@ public class StringUtil {
      * @see #jion(Object[], String)
      */
     @Deprecated
-    public static String toString(Collection<?> coll, char split) {
+    public static String toString(Collection coll, char split) {
         if (coll == null) {
             return null;
         }
@@ -993,7 +993,7 @@ public class StringUtil {
      * @see #jion(Object[], String)
      */
     @Deprecated
-    public static String toString(Collection<?> coll) {
+    public static String toString(Collection coll) {
         return toString(coll, ',');
     }
 
@@ -1056,7 +1056,7 @@ public class StringUtil {
         String[] chineseOrderProviders = {"com.rongji.dfish.misc.chinese.ChineseOrder"};
         for (String prov : chineseOrderProviders) {
             try {
-                Class<?> c = Class.forName(prov);
+                Class c = Class.forName(prov);
                 CHINESE_ORDER = (Comparator<Object>) c.newInstance();
             } catch (Exception ex) {
                 ex.printStackTrace();

@@ -58,7 +58,7 @@ public class EntitySupport<P> {
      * @return Class 实体类Class
      */
     private <P> Class<P> getEntityClass(Class<P> clz) {
-        Class<?> workingClz = clz;
+        Class workingClz = clz;
         while (true) {
             if (workingClz == Object.class) {
                 break;

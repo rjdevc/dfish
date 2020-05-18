@@ -38,11 +38,11 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
     /**
      * 点击"确定"执行的命令。
      */
-    private Command<?> yes;
+    private Command yes;
     /**
      * 点击"取消"执行的命令。
      */
-    private Command<?> no;
+    private Command no;
     /**
      * 底部按钮
      */
@@ -63,7 +63,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
      * @param text 显示文本。这里一般是询问的问题内容
      * @param yes  点击"确定"执行的命令。
      */
-    public Confirm(String text, Command<?> yes) {
+    public Confirm(String text, Command yes) {
         this.text = text;
         this.yes = yes;
     }
@@ -75,7 +75,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
      * @param yes  点击"确定"执行的命令。
      * @param no   点击"取消"执行的命令。
      */
-    public Confirm(String text, Command<?> yes, Command<?> no) {
+    public Confirm(String text, Command yes, Command no) {
         this.text = text;
         this.yes = yes;
         this.no = no;
@@ -148,7 +148,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
      *
      * @return Command
      */
-    public Command<?> getYes() {
+    public Command getYes() {
         return yes;
     }
 
@@ -158,7 +158,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
      * @param yes ConfirmCommand
      * @return this
      */
-    public Confirm setYes(Command<?> yes) {
+    public Confirm setYes(Command yes) {
         this.yes = yes;
         return this;
     }
@@ -168,7 +168,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
      *
      * @return Command
      */
-    public Command<?> getNo() {
+    public Command getNo() {
         return no;
     }
 
@@ -178,7 +178,7 @@ public class Confirm extends AbstractPopup<Confirm> implements Command<Confirm>,
      * @param no Command
      * @return this
      */
-    public Confirm setNo(Command<?> no) {
+    public Confirm setNo(Command no) {
         this.no = no;
         return this;
     }

@@ -17,7 +17,7 @@ import java.io.IOException;
 public class DFishUIConverter extends ObjectToJsonConverter {
 
 	@Override
-	protected boolean supports(Class<?> clz) {
+	protected boolean supports(Class clz) {
 		return Node.class.isAssignableFrom(clz);
 	}
 

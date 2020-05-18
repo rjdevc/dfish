@@ -25,7 +25,7 @@ public class Replace extends NodeControlCommand<Replace>
      *
      * @param node 需要替换的内容
      */
-    public Replace(Node<?> node) {
+    public Replace(Node node) {
         setNode(node);
     }
 
@@ -35,15 +35,15 @@ public class Replace extends NodeControlCommand<Replace>
      * @param node   需要替换的内容
      * @param target 目标
      */
-    public Replace(Node<?> node, String target) {
+    public Replace(Node node, String target) {
         setNode(node);
         setTarget(target);
     }
 
-    private Node<?> node;
+    private Node node;
 
     @Override
-    public Node<?> getNode() {
+    public Node getNode() {
         return node;
     }
 

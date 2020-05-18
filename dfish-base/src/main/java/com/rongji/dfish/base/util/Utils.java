@@ -40,7 +40,7 @@ public class Utils {
      * @param c
      * @return
      */
-    public static boolean notEmpty(Collection<?> c) {
+    public static boolean notEmpty(Collection c) {
         return c != null && c.size() > 0;
     }
 
@@ -50,7 +50,7 @@ public class Utils {
      * @param c
      * @return
      */
-    public static boolean isEmpty(Collection<?> c) {
+    public static boolean isEmpty(Collection c) {
         return c == null || c.size() <= 0;
     }
 
@@ -79,7 +79,7 @@ public class Utils {
      * @param m
      * @return
      */
-    public static boolean notEmpty(Map<?, ?> m) {
+    public static boolean notEmpty(Map m) {
         return m != null && !m.isEmpty();
     }
 
@@ -89,7 +89,7 @@ public class Utils {
      * @param m
      * @return
      */
-    public static boolean isEmpty(Map<?, ?> m) {
+    public static boolean isEmpty(Map m) {
         return m == null || m.isEmpty();
     }
 

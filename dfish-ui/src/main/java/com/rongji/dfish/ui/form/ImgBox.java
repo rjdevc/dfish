@@ -27,7 +27,7 @@ public class ImgBox extends AbstractOptionContainer<ImgBox> {
      * @param value   选中的值
      * @param options 候选项
      */
-    public ImgBox(String name, String label, Object value, List<?> options) {
+    public ImgBox(String name, String label, Object value, List options) {
         super(name, label, value, options);
     }
 
@@ -39,7 +39,7 @@ public class ImgBox extends AbstractOptionContainer<ImgBox> {
      * @param value   选中的值
      * @param options 候选项
      */
-    public ImgBox(String name, Label label, Object value, List<?> options) {
+    public ImgBox(String name, Label label, Object value, List options) {
         super(name, label, value, options);
     }
 

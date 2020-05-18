@@ -24,7 +24,7 @@ public class Select extends AbstractOptionContainer<Select> {
 	 * @param value 值
 	 * @param options 候选项
 	 */
-	public Select(String name, String label, Object value, List<?> options) {
+	public Select(String name, String label, Object value, List options) {
 		super(name, label, value, options);
 	}
 	/**
@@ -34,7 +34,7 @@ public class Select extends AbstractOptionContainer<Select> {
 	 * @param value 值
 	 * @param options 候选项
 	 */
-	public Select(String name, Label label, Object value, List<?> options) {
+	public Select(String name, Label label, Object value, List options) {
 		super(name, label, value, options);
 	}
 

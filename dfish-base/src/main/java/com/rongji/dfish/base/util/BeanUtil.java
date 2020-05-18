@@ -19,7 +19,7 @@ public class BeanUtil {
      * @version 1.1 参照java.util.Locale 改进了性能。
      */
     static final class MethodKey implements java.io.Serializable {
-        private final Class<?> c;
+        private final Class c;
         private final String p;
         private static final long serialVersionUID = 0x00E04C1505620901L;
         /**
@@ -39,7 +39,7 @@ public class BeanUtil {
          * @param c Class 所属class
          * @param p String 方法名
          */
-        public MethodKey(Class<?> c, String p) {
+        public MethodKey(Class c, String p) {
             if (p == null) {
                 throw new NullPointerException();
             }
@@ -121,9 +121,9 @@ public class BeanUtil {
     }
 
     private static HashMap<MethodKey, Method> methodMap = new HashMap<>();
-    private static HashMap<Class<?>, List<String>> methodNameMap = new HashMap<>();
+    private static HashMap<Class, List<String>> methodNameMap = new HashMap<>();
     private static final Object[] NO_ARG = new Object[0];
-    private static final Class<?>[] NO_CLZ = new Class<?>[0];
+    private static final Class[] NO_CLZ = new Class[0];
 
     /**
      * 取得getter方法
@@ -133,7 +133,7 @@ public class BeanUtil {
      * @return Method
      * @throws NoSuchMethodException
      */
-    private static Method receiveGetterMethod(Class<?> c, String p)
+    private static Method receiveGetterMethod(Class c, String p)
             throws NoSuchMethodException {
 
         char bc = p.charAt(0);
@@ -174,12 +174,12 @@ public class BeanUtil {
                                       Object... params) throws NoSuchMethodException,
             IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
-        Class<?> targetClz = clzInstance.getClass();
+        Class targetClz = clzInstance.getClass();
         Method mth = findBestMethod(targetClz, methodName, params);
         return mth.invoke(clzInstance, params);
     }
 
-    private static Method findBestMethod(Class<?> targetClz, String methodName,
+    private static Method findBestMethod(Class targetClz, String methodName,
                                          Object... params) throws NoSuchMethodException {
         // 首先如果PARAM为空，那么可以精确查找
         if (params == null || params.length == 0) {
@@ -188,7 +188,7 @@ public class BeanUtil {
         }
         // 否则看PARAM的类型取得方法
         boolean hasNullParam = false;
-        Class<?>[] clzs = new Class[params.length];
+        Class[] clzs = new Class[params.length];
         for (int i = 0; i < params.length; i++) {
             Object obj = params[i];
             if (obj == null) {
@@ -217,7 +217,7 @@ public class BeanUtil {
             if (method.getParameterTypes().length != params.length) {
                 continue;
             }
-            Class<?>[] paramClzs = method.getParameterTypes();
+            Class[] paramClzs = method.getParameterTypes();
             for (int i = 0; i < paramClzs.length; i++) {
                 if (params[i] == null) {
                     continue;
@@ -231,7 +231,7 @@ public class BeanUtil {
         throw new NoSuchMethodException(methodName);
     }
 
-    private static Constructor findBestConstructor(Class<?> targetClz,
+    private static Constructor findBestConstructor(Class targetClz,
                                                    Object... params) throws NoSuchMethodException {
         // 首先如果PARAM为空，那么可以精确查找
         if (params == null || params.length == 0) {
@@ -240,7 +240,7 @@ public class BeanUtil {
         }
         // 否则看PARAM的类型取得方法
         boolean hasNullParam = false;
-        Class<?>[] clzs = new Class[params.length];
+        Class[] clzs = new Class[params.length];
         for (int i = 0; i < params.length; i++) {
             Object obj = params[i];
             if (obj == null) {
@@ -266,7 +266,7 @@ public class BeanUtil {
             if (method.getParameterTypes().length != params.length) {
                 continue;
             }
-            Class<?>[] paramClzs = method.getParameterTypes();
+            Class[] paramClzs = method.getParameterTypes();
 
             for (int i = 0; i < paramClzs.length; i++) {
                 if (params[i] == null) {
@@ -281,7 +281,7 @@ public class BeanUtil {
         throw new NoSuchMethodException(targetClz.getSimpleName() + "<init>");
     }
 
-    private static boolean isAssignableFrom(Class<?> type, Class<?> target) {
+    private static boolean isAssignableFrom(Class type, Class target) {
         if (type.isPrimitive()) {
             Class realClz = null;
             if (type == Boolean.TYPE) {
@@ -315,7 +315,7 @@ public class BeanUtil {
      * @return
      * @throws NoSuchMethodException
      */
-    public static Method getMethod(Class<?> targetClass, String name, Class<?>... paramTypes) throws NoSuchMethodException {
+    public static Method getMethod(Class targetClass, String name, Class... paramTypes) throws NoSuchMethodException {
         NoSuchMethodException nsme = null;
         try {
             return targetClass.getMethod(name, paramTypes);
@@ -344,7 +344,7 @@ public class BeanUtil {
             boolean accept = true;
             if (m.getParameterTypes() != null && m.getParameterTypes().length > 0) {
                 int i = 0;
-                for (Class<?> pc : m.getParameterTypes()) {
+                for (Class pc : m.getParameterTypes()) {
                     if (!accept(paramTypes[i], pc)) {
                         accept = false;
                         break;
@@ -387,10 +387,10 @@ public class BeanUtil {
         // 如果留下来的方法数量，还大于1个。原则上要判断 候选项中的accpet关系。多个参数要都accept才行。
         HashSet<Method> toRemove = new HashSet<>();
         for (Method a : candidates) {
-            Class<?>[] aptypes = a.getParameterTypes();
+            Class[] aptypes = a.getParameterTypes();
             for (Method b : candidates) {
                 //能到这步的已经必定重复率很高，所以省去很多判断。
-                Class<?>[] bptypes = b.getParameterTypes();
+                Class[] bptypes = b.getParameterTypes();
                 boolean acceptAll = true;
                 for (int i = 0; i < aptypes.length; i++) {
                     if (!accept(aptypes[i], bptypes[i])) {
@@ -418,7 +418,7 @@ public class BeanUtil {
 //			e.printStackTrace();
 //		}
 //	}
-    private static final HashSet<Class<?>> PRIMITIVE_CLASS = new HashSet<>(Arrays.asList(
+    private static final HashSet<Class> PRIMITIVE_CLASS = new HashSet<>(Arrays.asList(
             Integer.class, int.class, Boolean.class, boolean.class,
             Long.class, long.class, Short.class, short.class,
             Byte.class, byte.class, Character.class, char.class,
@@ -426,7 +426,7 @@ public class BeanUtil {
 //			Void.class,void.class
     ));
 
-    private static boolean accept(Class<?> realType, Class<?> methodParamType) {
+    private static boolean accept(Class realType, Class methodParamType) {
         if (realType == methodParamType) {
             return true;
         }
@@ -483,7 +483,7 @@ public class BeanUtil {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    public static Object invokeMethod(Class<?> clz, String methodName,
+    public static Object invokeMethod(Class clz, String methodName,
                                       Object... params) throws NoSuchMethodException,
             IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
@@ -494,7 +494,7 @@ public class BeanUtil {
     private static HashMap<CopyPropertiesTemplateKey, CopyPropertiesTemplate> TEMPLATES = new HashMap<>();
 
     private static CopyPropertiesTemplate getCopyPropertiesTemplate(
-            Class<?> clz1, Class<?> clz2) {
+            Class clz1, Class clz2) {
         CopyPropertiesTemplateKey key = new CopyPropertiesTemplateKey(clz1,
                 clz2);
         CopyPropertiesTemplate tmpl = TEMPLATES.get(key);
@@ -507,10 +507,10 @@ public class BeanUtil {
     }
 
     private static class CopyPropertiesTemplateKey {
-        private Class<?> clz1;
-        private Class<?> clz2;
+        private Class clz1;
+        private Class clz2;
 
-        public CopyPropertiesTemplateKey(Class<?> clz1, Class<?> clz2) {
+        public CopyPropertiesTemplateKey(Class clz1, Class clz2) {
             if (clz1 == null || clz2 == null) {
                 throw new NullPointerException("can not copy properties for null.");
             }
@@ -539,7 +539,7 @@ public class BeanUtil {
         }
     }
 
-    private static final Set<Class<?>> CARE_TYPES = new HashSet<>();
+    private static final Set<Class> CARE_TYPES = new HashSet<>();
 
     static {
         // 数字
@@ -589,14 +589,14 @@ public class BeanUtil {
         private List<Method> fromMethods;
         private List<Method> toMethods;
 
-        public CopyPropertiesTemplate(Class<?> clzto, Class<?> clzfrom) {
+        public CopyPropertiesTemplate(Class clzto, Class clzfrom) {
             fromMethods = new ArrayList<>();
             toMethods = new ArrayList<>();
             Method[] fromM = clzfrom.getMethods();
             for (int i = 0; i < fromM.length; i++) {
                 String methodName = fromM[i].getName();
-                Class<?> returnType = fromM[i].getReturnType();
-                Class<?>[] parapType = fromM[i].getParameterTypes();
+                Class returnType = fromM[i].getReturnType();
+                Class[] parapType = fromM[i].getParameterTypes();
                 if (CARE_TYPES.contains(returnType)
                         && (parapType == null || parapType.length == 0)) {
                     String setterName = null;
@@ -643,7 +643,7 @@ public class BeanUtil {
         if (item == null) {
             return null;
         }
-        Class<?> itemCls = item.getClass();
+        Class itemCls = item.getClass();
         List<String> props = methodNameMap.get(itemCls);
         if (props == null) {
             props = findPropNames(itemCls);
@@ -673,7 +673,7 @@ public class BeanUtil {
         return propMap;
     }
 
-    private static List<String> findPropNames(Class<?> itemCls) {
+    private static List<String> findPropNames(Class itemCls) {
         if (itemCls == null) {
             return null;
         }
@@ -726,10 +726,10 @@ public class BeanUtil {
      * @param sourceClass 定义这个方法的类(m可能是其父类定义的所以这个参数也是必须的);
      * @return 返回值类型。
      */
-    public static Class<?> getRealReturnType(Method m, Class<?> sourceClass) {
+    public static Class getRealReturnType(Method m, Class sourceClass) {
         if (m.getGenericReturnType() instanceof TypeVariable) {
-            String genName = ((TypeVariable<?>) m.getGenericReturnType()).getName();
-            TypeVariable<?>[] definedTypes = m.getDeclaringClass().getTypeParameters();
+            String genName = ((TypeVariable) m.getGenericReturnType()).getName();
+            TypeVariable[] definedTypes = m.getDeclaringClass().getTypeParameters();
             int typeIndex = -1;
             if (definedTypes == null) {
                 return m.getReturnType();
@@ -748,7 +748,7 @@ public class BeanUtil {
                     return m.getReturnType();
                 } else {
                     if (types[typeIndex] instanceof Class) {
-                        return (Class<?>) types[typeIndex];
+                        return (Class) types[typeIndex];
                     }
                 }
             }
@@ -769,7 +769,7 @@ public class BeanUtil {
             return cachedRet;
         }
         try {
-            Class<?> c = Class.forName(className);
+            Class c = Class.forName(className);
             existsMap.put(className, true);
             return true;
         } catch (ClassNotFoundException e) {
@@ -787,7 +787,7 @@ public class BeanUtil {
      */
     public static Object newInstance(String className, Object... args) {
         try {
-            Class<?> objectClass = Class.forName(className);
+            Class objectClass = Class.forName(className);
             return newInstance(objectClass, args);
         } catch (Exception e) {
             LogUtil.error("newInstance for " + className + " failed.", e);
@@ -801,7 +801,7 @@ public class BeanUtil {
      * @param args 参数
      * @return 对象
      */
-    public static Object newInstance(Class<?> objectClass, Object... args) {
+    public static Object newInstance(Class objectClass, Object... args) {
 		try {
 			if (args == null || args.length == 0) {
 				return objectClass.newInstance();

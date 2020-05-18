@@ -190,7 +190,7 @@ abstract class AbstractTR<T extends AbstractTR<T>> extends AbstractWidget<T> imp
      * @param to   AbstractTr
      * @param from AbstractTr
      */
-    protected void copyProperties(AbstractTR<?> to, AbstractTR<?> from) {
+    protected void copyProperties(AbstractTR to, AbstractTR from) {
         super.copyProperties(to, from);
         //data
         to.focus = from.focus;

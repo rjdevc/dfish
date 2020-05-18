@@ -87,8 +87,8 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
         if (w instanceof Hidden) {
             return add((Hidden) w);
 //        }else if (w instanceof LabelRow) {
-//            if (((LabelRow) w).getLabel()!=null &&"0".equals(((LabelRow<?>) w).getLabel().getWidth())) {
-//                ((LabelRow<?>) w).getLabel().setWidth(null);
+//            if (((LabelRow) w).getLabel()!=null &&"0".equals(((LabelRow) w).getLabel().getWidth())) {
+//                ((LabelRow) w).getLabel().setWidth(null);
 //            }
 //        }else if(w instanceof TD){
 //            if(((TD) w).getNode() instanceof LabelRow){
@@ -126,7 +126,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
      * @param colspan 占用宽度
      * @return this
      */
-    public Form add(Widget<?> w, int colspan) {
+    public Form add(Widget w, int colspan) {
         TD td;
         if(w instanceof TD){
             td=(TD)w;
@@ -147,7 +147,7 @@ public class Form extends AbstractPubNodeContainer<Form, Widget, TD> implements 
      * @param rowspan 占用高度
      * @return 本身，这样可以继续设置属性
      */
-    public Form add(Widget<?> w, int colspan, int rowspan) {
+    public Form add(Widget w, int colspan, int rowspan) {
         TD td;
         if(w instanceof TD){
             td=(TD)w;

@@ -18,8 +18,8 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
     private static final long serialVersionUID = -4525721180514710555L;
 
     private Object label;
-    private FormElement<?, ?> begin;
-    private FormElement<?, ?> end;
+    private FormElement begin;
+    private FormElement end;
     private Boolean noLabel;
     private Object to;
 
@@ -30,7 +30,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
      * @param begin FormElement 范围的开始表单
      * @param end   FormElement 范围的结束表单
      */
-    public Range(String label, FormElement<?, ?> begin, FormElement<?, ?> end) {
+    public Range(String label, FormElement begin, FormElement end) {
         this.setLabel(label);
         this.begin = begin;
         this.end = end;
@@ -42,7 +42,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
      * @param begin FormElement 范围的开始表单
      * @param end   FormElement 范围的结束表单
      */
-    public Range(Label label, FormElement<?, ?> begin, FormElement<?, ?> end) {
+    public Range(Label label, FormElement begin, FormElement end) {
         this.setLabel(label);
         this.begin = begin;
         this.end = end;
@@ -53,7 +53,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
      *
      * @return FormElement
      */
-    public FormElement<?, ?> getBegin() {
+    public FormElement getBegin() {
         return begin;
     }
 
@@ -63,7 +63,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
      * @param begin FormElement
      * @return this
      */
-    public Range setBegin(FormElement<?, ?> begin) {
+    public Range setBegin(FormElement begin) {
         this.begin = begin;
         return this;
     }
@@ -73,7 +73,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
      *
      * @return FormElement
      */
-    public FormElement<?, ?> getEnd() {
+    public FormElement getEnd() {
         return end;
     }
 
@@ -83,7 +83,7 @@ public class Range extends AbstractWidget<Range> implements LabelRow<Range>, Nod
      * @param end FormElement
      * @return this
      */
-    public Range setEnd(FormElement<?, ?> end) {
+    public Range setEnd(FormElement end) {
         this.end = end;
         return this;
     }

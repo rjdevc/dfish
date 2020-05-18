@@ -566,7 +566,7 @@ public class Table extends AbstractPubNodeContainer<Table, TR, TR> implements Ta
         }
     }
 
-    private void retain(List<?> list, int retainLength) {
+    private void retain(List list, int retainLength) {
         for (int i = list.size() - 1; i >= retainLength; i--) {
             list.remove(i);
         }

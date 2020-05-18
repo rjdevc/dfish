@@ -117,7 +117,7 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
      * @param to   AbstractTd
      * @param from AbstractTd
      */
-    protected void copyProperties(AbstractTD<?> to, AbstractTD<?> from) {
+    protected void copyProperties(AbstractTD to, AbstractTD from) {
         super.copyProperties(to, from);
         to.node = from.node;
         to.align = from.align;

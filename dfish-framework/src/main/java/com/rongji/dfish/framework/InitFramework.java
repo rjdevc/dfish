@@ -83,9 +83,9 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 		LogUtil.info("====== ApplicationContext inited ======");
 		// FIXME personalConfig systemConfig cache newIdGetter
 		LogUtil.info("====== initing configs ======");
-//		FrameworkCache<?, ?> cache = null;
+//		FrameworkCache cache = null;
 //		try {
-//			cache = (FrameworkCache<?, ?>) FrameworkContext.getInstance().getBeanFactory().getBean("frameworkCacheImpl");
+//			cache = (FrameworkCache) FrameworkContext.getInstance().getBeanFactory().getBean("frameworkCacheImpl");
 //		} catch (Throwable t) {
 //		}
 //		if (cache == null) {
@@ -195,7 +195,7 @@ public class InitFramework implements ServletContextAware, ApplicationContextAwa
 
 		try {
 			systemInfoProps.put("macAddress",EthNetInfo.getMacAddress());
-			for (Iterator<?> iter = EthNetInfo.getAllMacAddress().iterator(); iter.hasNext();) {
+			for (Iterator iter = EthNetInfo.getAllMacAddress().iterator(); iter.hasNext();) {
 				String item = (String) iter.next();
 				LogUtil.info(item);
 			}

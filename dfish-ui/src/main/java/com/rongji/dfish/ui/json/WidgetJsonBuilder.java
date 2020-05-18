@@ -18,7 +18,7 @@ import java.util.Stack;
  */
 public class WidgetJsonBuilder extends ClassJsonBuilder {
 
-    public WidgetJsonBuilder(Class<?> clz) {
+    public WidgetJsonBuilder(Class clz) {
         super(clz);
         for (int i = 0; i < methods.size(); i++) {
             JsonPropertyAppender jbpg = methods.get(i);
@@ -26,112 +26,112 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                 methods.set(i, new WidgetStringPropertyAppender("beforeContent") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getBeforeContent();
+                        return ((Widget) w).getBeforeContent();
                     }
                 });
             } else if ("prependContent".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("prependContent") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getPrependContent();
+                        return ((Widget) w).getPrependContent();
                     }
                 });
             } else if ("appendContent".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("appendContent") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getAppendContent();
+                        return ((Widget) w).getAppendContent();
                     }
                 });
             } else if ("afterContent".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("afterContent") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getAfterContent();
+                        return ((Widget) w).getAfterContent();
                     }
                 });
             } else if ("cls".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("cls") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getCls();
+                        return ((Widget) w).getCls();
                     }
                 });
             } else if ("style".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("style") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getStyle();
+                        return ((Widget) w).getStyle();
                     }
                 });
             } else if ("gid".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("gid") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getGid();
+                        return ((Widget) w).getGid();
                     }
                 });
             } else if ("id".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("id") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getId();
+                        return ((Widget) w).getId();
                     }
                 });
             } else if ("height".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("height") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getHeight();
+                        return ((Widget) w).getHeight();
                     }
                 });
             } else if ("width".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("width") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getWidth();
+                        return ((Widget) w).getWidth();
                     }
                 });
             } else if ("maxHeight".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("maxHeight") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getMaxHeight();
+                        return ((Widget) w).getMaxHeight();
                     }
                 });
             } else if ("maxWidth".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("maxWidth") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getMaxWidth();
+                        return ((Widget) w).getMaxWidth();
                     }
                 });
             } else if ("minHeight".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("minHeight") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getMinHeight();
+                        return ((Widget) w).getMinHeight();
                     }
                 });
             } else if ("minWidth".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetStringPropertyAppender("minWidth") {
                     @Override
                     protected String getValue(Object w) {
-                        return ((Widget<?>) w).getMinWidth();
+                        return ((Widget) w).getMinWidth();
                     }
                 });
             } else if ("heightMinus".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetIntegerPropertyAppender("heightMinus") {
                     @Override
                     protected Integer getValue(Object w) {
-                        return ((Widget<?>) w).getHeightMinus();
+                        return ((Widget) w).getHeightMinus();
                     }
                 });
             } else if ("widthMinus".equals(jbpg.getPropertyName())) {
                 methods.set(i, new WidgetIntegerPropertyAppender("widthMinus") {
                     @Override
                     protected Integer getValue(Object w) {
-                        return ((Widget<?>) w).getWidthMinus();
+                        return ((Widget) w).getWidthMinus();
                     }
                 });
             } else if ("type".equals(jbpg.getPropertyName())) {
@@ -140,7 +140,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                 methods.set(i, new WidgetPropertyAppender("on") {
                     @Override
                     public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
-                        Widget<?> w = (Widget<?>) o;
+                        Widget w = (Widget) o;
                         Map<String, String> on = w.getOn();
                         if (on != null && on.size() > 0) {
                             if (begin) {
@@ -173,7 +173,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                 methods.set(i, new WidgetPropertyAppender("data") {
                     @Override
                     public boolean appendProperty(Object o, StringBuilder sb, Stack<PathInfo> path, boolean begin) throws Exception {
-                        Widget<?> w = (Widget<?>) o;
+                        Widget w = (Widget) o;
                         Map<String, Object> data = w.getData();
                         if (data != null && data.size() > 0) {
                             if (begin) {
@@ -194,7 +194,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                     methods.set(i, new WidgetStringPropertyAppender("name") {
                         @Override
                         protected String getValue(Object w) {
-                            return ((FormElement<?, ?>) w).getName();
+                            return ((FormElement) w).getName();
                         }
                     });
                 }
@@ -204,7 +204,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                     methods.set(i, new WidgetStringPropertyAppender("align") {
                         @Override
                         protected String getValue(Object w) {
-                            return ((Alignable<?>) w).getAlign();
+                            return ((Alignable) w).getAlign();
                         }
                     });
                 }
@@ -213,7 +213,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                     methods.set(i, new WidgetStringPropertyAppender("vAlign") {
                         @Override
                         protected String getValue(Object w) {
-                            return ((VAlignable<?>) w).getVAlign();
+                            return ((VAlignable) w).getVAlign();
                         }
                     });
                 }
@@ -222,7 +222,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                     methods.set(i, new WidgetStringPropertyAppender("text") {
                         @Override
                         protected String getValue(Object w) {
-                            return ((HasText<?>) w).getText();
+                            return ((HasText) w).getText();
                         }
                     });
                 }
@@ -231,7 +231,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
                     methods.set(i, new WidgetBooleanPropertyAppender("scroll") {
                         @Override
                         protected Boolean getValue(Object w) {
-                            return ((Scrollable<?>) w).getScroll();
+                            return ((Scrollable) w).getScroll();
                         }
                     });
                 }
@@ -242,7 +242,7 @@ public class WidgetJsonBuilder extends ClassJsonBuilder {
 //				if("label".equals(jbpg.getPropertyName())){
 //					methods.set(i, new WidgetStringPropAppender("label"){
 //						protected String getValue(Object w) {
-//							return ((LabelRow<?>)w).getLabel();
+//							return ((LabelRow)w).getLabel();
 //						}});
 //				}
 //			}

@@ -22,7 +22,7 @@ public class RadioGroup extends AbstractBoxGroup<RadioGroup, Radio> {
      * @param value   值
      * @param options 候选项
      */
-    public RadioGroup(String name, String label, Object value, List<?> options) {
+    public RadioGroup(String name, String label, Object value, List options) {
         super(name, label, value, options);
     }
     /**
@@ -33,7 +33,7 @@ public class RadioGroup extends AbstractBoxGroup<RadioGroup, Radio> {
      * @param value   值
      * @param options 候选项
      */
-    public RadioGroup(String name, Label label, Object value, List<?> options) {
+    public RadioGroup(String name, Label label, Object value, List options) {
         super(name, label, value, options);
     }
 

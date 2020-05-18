@@ -25,7 +25,7 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
     /**
      * 点击"确定"执行的命令。
      */
-    private Command<?> yes;
+    private Command yes;
 
     /**
      * 构造函数
@@ -103,7 +103,7 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
      *
      * @return Command
      */
-    public Command<?> getYes() {
+    public Command getYes() {
         return yes;
     }
 
@@ -113,7 +113,7 @@ public class Alert extends AbstractPopup<Alert> implements Command<Alert>, Posit
      * @param yes ConfirmCommand
      * @return this
      */
-    public Alert setYes(Command<?> yes) {
+    public Alert setYes(Command yes) {
         this.yes = yes;
         return this;
     }

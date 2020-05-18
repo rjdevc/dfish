@@ -24,7 +24,7 @@ public class CheckBoxGroup extends AbstractBoxGroup<CheckBoxGroup, CheckBox> {
      * @param value   选中的项
      * @param options 候选项
      */
-    public CheckBoxGroup(String name, String label, Object value, List<?> options) {
+    public CheckBoxGroup(String name, String label, Object value, List options) {
         super(name, label, value, options);
     }
 
@@ -35,7 +35,7 @@ public class CheckBoxGroup extends AbstractBoxGroup<CheckBoxGroup, CheckBox> {
      * @param value   选中的项
      * @param options 候选项
      */
-    public CheckBoxGroup(String name, Label label, Object value, List<?> options) {
+    public CheckBoxGroup(String name, Label label, Object value, List options) {
         super(name, label, value, options);
     }
 

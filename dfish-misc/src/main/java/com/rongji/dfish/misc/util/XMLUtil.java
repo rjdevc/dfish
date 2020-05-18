@@ -423,7 +423,7 @@ public class XMLUtil {
 				return new String[0];
 			}
 		}
-		List<?> children = element.elements();
+		List children = element.elements();
 		int childCount = children.size();
 		String[] childrenNames = new String[childCount];
 

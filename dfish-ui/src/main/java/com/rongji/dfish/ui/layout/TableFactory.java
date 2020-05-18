@@ -224,7 +224,7 @@ public class TableFactory {
     }
 
     public static class DefaultTableFactory extends AbstractTableFactory<DefaultTableFactory> {
-        private Collection<?> bodyData;
+        private Collection bodyData;
 
         public DefaultTableFactory(String id) {
             super(id);
@@ -236,7 +236,7 @@ public class TableFactory {
          * @param bodyData Collection
          * @return 本身，这样可以继续设置其他属性
          */
-        public DefaultTableFactory setBodyData(Collection<?> bodyData) {
+        public DefaultTableFactory setBodyData(Collection bodyData) {
             this.bodyData = bodyData;
             return this;
         }
@@ -246,7 +246,7 @@ public class TableFactory {
          *
          * @return Collection
          */
-        public Collection<?> getBodyData() {
+        public Collection getBodyData() {
             return bodyData;
         }
 
@@ -296,7 +296,7 @@ public class TableFactory {
     }
 
     public static class GroupedTableFactory extends AbstractTableFactory<GroupedTableFactory> {
-        private LinkedHashMap<String, Collection<?>> col = new LinkedHashMap<>();
+        private LinkedHashMap<String, Collection> col = new LinkedHashMap<>();
 
         public GroupedTableFactory(String id) {
             super(id);
@@ -309,7 +309,7 @@ public class TableFactory {
          * @param col   具体数据
          * @return 本身，这样可以继续设置其他属性
          */
-        public GroupedTableFactory addTableData(String label, Collection<?> col) {
+        public GroupedTableFactory addTableData(String label, Collection col) {
             this.col.put(label, col);
             return this;
         }
@@ -342,7 +342,7 @@ public class TableFactory {
                 return prototype;
             }
             // 假定这个集合所有对象的类型是一致的
-            for (Map.Entry<String, Collection<?>> entry : col.entrySet()) {
+            for (Map.Entry<String, Collection> entry : col.entrySet()) {
                 //添加可折叠的标题栏
                 TR tr = new TR();
                 prototype.add(tr);

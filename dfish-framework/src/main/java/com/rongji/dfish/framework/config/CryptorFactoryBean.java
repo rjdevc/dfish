@@ -37,7 +37,7 @@ public class CryptorFactoryBean implements FactoryBean<Cryptor> {
     }
 
     @Override
-    public Class<?> getObjectType() {
+    public Class getObjectType() {
         return Cryptor.class;
     }
 
