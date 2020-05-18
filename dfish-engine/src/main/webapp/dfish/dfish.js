@@ -1629,10 +1629,10 @@ Ajax = _createClass( {
 	Const: function( a, b, c, d, e, f, g ) {
 		var x = typeof a === _STR ? { src: a, success: b, context: c, sync: d, data: e, error: f } : a,
 			c = x.context, h;
-		c && _jsonArray( this, _ajax_contexts, _uid( c ) ), (h = _ajax_contexts[ _uid( c ) ]);
+		c && ! x.sync && _jsonArray( this, _ajax_contexts, _uid( c ) ), (h = _ajax_contexts[ _uid( c ) ]);
 		!x.dataType && (x.dataType = g);
 		this.x = x;
-		if ( ! h || h.length === 1 )
+		//if ( x.sync || ! h || h.length === 1 )
 			this.go();
 	},
 	Extend: _Event,
@@ -1641,8 +1641,10 @@ Ajax = _createClass( {
 			this.x.cache ? this.sendCache() : this.send();
 		},
 		next: function() {
-			var h = this.x.context && ! this.x.context._disposed && _ajax_contexts[ _uid( this.x.context ) ];
-			h && h[ 0 ] && h[ 0 ].go();
+			if ( ! this.x.sync ) {
+				var h = this.x.context && ! this.x.context._disposed && _ajax_contexts[ _uid( this.x.context ) ];
+				h && h[ 0 ] && h[ 0 ].go();
+			}
 		},
 		sendCache: function() {
 			var x = this.x, u = _ajax_url( x.src, x.cdn ), c = _ajax_cache[ u ];
@@ -1694,7 +1696,7 @@ Ajax = _createClass( {
 				if ( l.readyState === 4 ) {
 				    c && _arrPop( _ajax_contexts[ _uid( c ) ], self );
 				    if ( self._aborted ) // ie9下执行abort()不会终止onchange进程并且读取status属性报错，因此加上_aborted参数协助判断
-				    	return this.next();
+				    	return; //this.next();
 				    var m, r;
 				    if ( l.status < 400 ) {
 				    	if ( g === 'json' ) {
@@ -1732,7 +1734,7 @@ Ajax = _createClass( {
 						}
 					}
 					x.complete && x.complete.call( c, self.response, self );
-					self.next();
+					//self.next();
 				}
 			}
 			l.onreadystatechange = _onchange;
