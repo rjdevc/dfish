@@ -61,7 +61,7 @@ public class DdosFilter implements Filter{
 	}
 	
 	private Map<String,Integer> uriConfigs;
-	private Map<String,VisitCount> visited=Collections.synchronizedMap(new HashMap<String,VisitCount>());
+	private Map<String,VisitCount> visited=Collections.synchronizedMap(new HashMap<>());
 	private long interval=10000L;
 	private long clear=3600L*1000;
 	private long lastClear=0L;
@@ -97,7 +97,7 @@ public class DdosFilter implements Filter{
 			}
 			if(now>lastClear+clear){
 				lastClear=now;
-				HashSet<String> toRemove=new HashSet<String>();
+				HashSet<String> toRemove= new HashSet<>();
 				for(Map.Entry<String, VisitCount> entry:visited.entrySet()){
 					if(now>entry.getValue().visitTime+interval){
 						toRemove.add(entry.getKey());
@@ -113,7 +113,7 @@ public class DdosFilter implements Filter{
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		uriConfigs=new HashMap<String,Integer>();
+		uriConfigs= new HashMap<>();
 		try{
 			String json = config.getInitParameter("uris");
 			List<UriConfig> uriConfigList = JsonUtil.parseArray(json, UriConfig.class);

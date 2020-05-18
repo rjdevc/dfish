@@ -74,7 +74,7 @@ public interface FrameworkDao<P, ID extends Serializable> {
      * @param queryParam 请求参数
      * @return List&lt;P&gt; 实体对象集合
      */
-    List<P> list(Pagination pagination, QueryParam<?> queryParam);
+    List<P> list(Pagination pagination, QueryParam queryParam);
 
     /**
      * 保存

@@ -43,7 +43,7 @@ public class TrieTree<V extends Object> {
 	 */
 	public TrieTree(boolean reverse) {
 		this.reverse=reverse;
-		root = new Node<V>();
+		root = new Node<>();
 	}
 	/**
 	 * 构造函数
@@ -53,10 +53,10 @@ public class TrieTree<V extends Object> {
 	@SuppressWarnings("unchecked")
 	public TrieTree(TrieTree<? extends V> another,boolean reverse) {
 		this.reverse=reverse;
-		root = new Node<V>();
-		List<?> entryList=another.entryList();
+		root = new Node<>();
+		List entryList=another.entryList();
 		for(Object o:entryList){
-			Entry<?> entry=(Entry<?>)o;
+			Entry entry=(Entry)o;
 			put(entry.getKey(),(V) entry.getValue());
 		}
 	}
@@ -114,7 +114,7 @@ public class TrieTree<V extends Object> {
 				if (child != null) {
 					current = child;
 				} else {
-					Node<V> nextNode = new Node<V>();
+					Node<V> nextNode = new Node<>();
 					current.put(chs[i],nextNode);
 					current = nextNode;
 				}
@@ -125,7 +125,7 @@ public class TrieTree<V extends Object> {
 				if (child != null) {
 					current = child;
 				} else {
-					Node<V> nextNode = new Node<V>();
+					Node<V> nextNode = new Node<>();
 					current.put(ch,nextNode);
 					current = nextNode;
 				}
@@ -218,7 +218,7 @@ public class TrieTree<V extends Object> {
 	 * @return List 查询结果列表
 	 */
 	public List<SearchResult<V>> search(String text) {
-		List<SearchResult<V>> searchResult = new ArrayList<SearchResult<V>>();
+		List<SearchResult<V>> searchResult = new ArrayList<>();
 		char[] content = text.toCharArray();
 		if(reverse){
 			for (int i = content.length; i >0; i--) {
@@ -249,7 +249,7 @@ public class TrieTree<V extends Object> {
 	 * @return List
 	 */
 	public List<SearchResult<V>> searchAll(String text) {
-		List<SearchResult<V>> searchResult = new ArrayList<SearchResult<V>>();
+		List<SearchResult<V>> searchResult = new ArrayList<>();
 		char[] content = text.toCharArray();
 		if(reverse){
 			for (int i = content.length; i >0; i--) {
@@ -466,7 +466,7 @@ public class TrieTree<V extends Object> {
 	            n = (tab = resize()).length;
 	        }
 	        if ((p = tab[i = (n - 1) & key]) == null){
-	            tab[i] = new HashNode<V>(key,child);
+	            tab[i] = new HashNode<>(key, child);
 	        }else {
 	        	HashNode<V> e; 
 	            if (p.key == key ) {
@@ -474,7 +474,7 @@ public class TrieTree<V extends Object> {
                 } else {
 	                while (true) {
 	                    if ((e = p.next) == null) {
-	                        p.next = new HashNode<V>(key,child);
+	                        p.next = new HashNode<>(key, child);
 	                        break;
 	                    }
 	                    if (e.key == key ){
@@ -579,13 +579,13 @@ public class TrieTree<V extends Object> {
 				return null;
 			} else {
 				if (p.end) {
-					result=new SearchResult<V> (begin,begin+1,p.value);
+					result= new SearchResult<>(begin, begin + 1, p.value);
 				}
 				if (p.children != null) {
 					if (begin + 1 < end) {
 						SearchResult<V> subMatch = p.match(content, begin + 1, end);
 						if (subMatch!=null) {
-							return new SearchResult<V> (begin,subMatch.end,subMatch.value);
+							return new SearchResult<>(begin, subMatch.end, subMatch.value);
 						}
 					}
 				}
@@ -612,13 +612,13 @@ public class TrieTree<V extends Object> {
 				return null;
 			} else {
 				if (p.end) {
-					result=new SearchResult<V>(end-1,end,p.value);
+					result= new SearchResult<>(end - 1, end, p.value);
 				}
 				if (p.children != null) {
 					if (begin + 1 < end) {
 						SearchResult<V> subMatch = p.matchReverse(content, begin , end-1);
 						if (subMatch!=null) {
-							return new SearchResult<V>(subMatch.begin,end,subMatch.value) ;
+							return new SearchResult<>(subMatch.begin, end, subMatch.value) ;
 						}
 					}
 				}
@@ -635,7 +635,7 @@ public class TrieTree<V extends Object> {
 		 * @return SearchResult 仅返回最长的一个结果。没有返回所有结果。
 		 */
 		public List<SearchResult<V>> matchAll(char[] content, int begin, int end ) {
-			List<SearchResult<V>>result =new ArrayList<SearchResult<V>>();
+			List<SearchResult<V>>result = new ArrayList<>();
 			doMatchAll(content, begin,begin, end, result);
 			return result;
 		}
@@ -647,7 +647,7 @@ public class TrieTree<V extends Object> {
 			Node<V> p = get(c);
 			if (p != null) {
 				if (p.end) {
-					result.add(new SearchResult<V>(wordbegin, matchbegin + 1,p.value));
+					result.add(new SearchResult<>(wordbegin, matchbegin + 1, p.value));
 				}
 				if (p.children != null) {
 					if (matchbegin + 1 < end) {
@@ -666,7 +666,7 @@ public class TrieTree<V extends Object> {
 		 * @return SearchResult 仅返回最长的一个结果。没有返回所有结果。
 		 */
 		public List<SearchResult<V>> matchAllRevers(char[] content, int begin, int end ) {
-			List<SearchResult<V>>result =new ArrayList<SearchResult<V>>();
+			List<SearchResult<V>>result = new ArrayList<>();
 			doMatchAllReverse(content, begin,end, end, result);
 //			Collections.reverse(result);
 			return result;
@@ -679,7 +679,7 @@ public class TrieTree<V extends Object> {
 			Node<V> p = get(c);
 			if (p != null) {
 				if (p.end) {
-					result.add(new SearchResult<V>(matchend-1, wordend,p.value));
+					result.add(new SearchResult<>(matchend - 1, wordend, p.value));
 				}
 				if (p.children != null) {
 					if (begin + 1 < matchend) {
@@ -766,7 +766,7 @@ public class TrieTree<V extends Object> {
 					while(node!=null){
 						String nextPrefix=prefix+node.key;
 						if(node.value.end){
-							result.add(new Entry<V>( nextPrefix,node.value.value));
+							result.add(new Entry<>(nextPrefix, node.value.value));
 						}
 						node.value.findEntryList(nextPrefix,result);
 						node=node.next;
@@ -830,7 +830,7 @@ public class TrieTree<V extends Object> {
 	 * @return List
 	 */
 	public List<Entry<V>> entryList(){
-		List<Entry<V>> result=new ArrayList<Entry<V>>();
+		List<Entry<V>> result= new ArrayList<>();
 		//把所有的节点读取出来，以便复制，备份等工作。
 		root.findEntryList("",result);
 		return result;

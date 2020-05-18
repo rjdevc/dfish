@@ -76,7 +76,7 @@ public class TablePanelTest extends DFishUITestCase {
 		
 		
 		int dataColumnIndex = 0;
-		List<Object[]> gridData = new ArrayList<Object[]>();
+		List<Object[]> gridData = new ArrayList<>();
 		for (int i=0; i<10; i++) {
 			gridData.add(new Object[]{
 					"第" + i + "行列1",

@@ -126,7 +126,7 @@ public class SummaryBuilder {
             BeanUtil.copyPropertiesExact(to, from);
         }
 
-        Class<?>clz=from.getClass();
+        Class clz=from.getClass();
         Object[] ref=REF_MAP.get(clz);
         boolean appendToSum=score.get() < summaryScore;
         if(ref!=null){

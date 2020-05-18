@@ -149,7 +149,7 @@ public class IPv4Filter {
 	 */
 	public IPv4Filter(String IPConfig){
 		String IPs[] = IPConfig.split(";");
-		List<IpSection> ipCig = new ArrayList<IpSection>();
+		List<IpSection> ipCig = new ArrayList<>();
 		for (int i = 0; i < IPs.length; i++) {
 			
 			IpSection ips = new IpSection();

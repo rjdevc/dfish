@@ -88,7 +88,7 @@ public class ClassPackageUtil {
 		Set<String> result = new TreeSet<>();
 
 		for (String path : paths) {
-			path.trim();
+			path=path.trim();
 			if (path.endsWith(".jar")) {
 				findJar(path, packageName, inner, result);
 			} else {

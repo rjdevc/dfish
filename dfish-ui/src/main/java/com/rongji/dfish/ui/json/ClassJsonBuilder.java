@@ -39,7 +39,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
      *
      * @param clz Class
      */
-    public ClassJsonBuilder(Class<?> clz) {
+    public ClassJsonBuilder(Class clz) {
         HashSet<String> propertyNames = new HashSet<>();
         for (Method m : clz.getMethods()) {
             if (Modifier.isTransient(m.getModifiers()) || Modifier.isStatic(m.getModifiers()) || !Modifier.isPublic(m.getModifiers())) {
@@ -61,13 +61,13 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                     for (JsonPropertyAppender g : methods) {
                         if (g.getPropertyName().equals(fieldName) && g instanceof ReflectAppender) {
                             ReflectAppender cast = (ReflectAppender) g;
-                            Class<?> oldClz = cast.getterMethod.getDeclaringClass();
-                            Class<?> newClz = m.getDeclaringClass();
+                            Class oldClz = cast.getterMethod.getDeclaringClass();
+                            Class newClz = m.getDeclaringClass();
                             if (oldClz != newClz && oldClz.isAssignableFrom(newClz)) {
                                 cast.getterMethod = m;
                             }
-                            Class<?> oldReturnType = cast.getterMethod.getReturnType();
-                            Class<?> newReturnType = m.getReturnType();
+                            Class oldReturnType = cast.getterMethod.getReturnType();
+                            Class newReturnType = m.getReturnType();
                             if (oldReturnType != newReturnType && oldReturnType.isAssignableFrom(newReturnType)) {
                                 cast.getterMethod = m;
                             }
@@ -77,7 +77,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                     LogUtil.debug(getClass(), "find a new property {name:'" + fieldName + "',type:'" + m.getReturnType().getName() + "',declareingCalss:'" + m.getDeclaringClass().getName() + "'}");
                 }
             }
-            Collections.sort(methods, (o1, o2) -> {
+            methods.sort( (o1, o2) -> {
                 String name1 = o1.getPropertyName();
                 String name2 = o2.getPropertyName();
                 int pos1 = ORDERED_PROPERTIES.indexOf(name1);
@@ -199,7 +199,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                 return begin;
             }
             while (v instanceof JsonWrapper) {
-                JsonWrapper<?> warp = (JsonWrapper<?>) v;
+                JsonWrapper warp = (JsonWrapper) v;
                 v = warp.getPrototype();
                 if (v == warp) {
                     break;
@@ -213,8 +213,8 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                 if ("".equals(v)) {
                     return begin;
                 }
-            } else if (v instanceof Collection<?>) {//&&((Number)v).intValue()==0
-                Collection<?> cast = (Collection<?>) v;
+            } else if (v instanceof Collection) {//&&((Number)v).intValue()==0
+                Collection cast = (Collection) v;
                 if (cast.size() == 0) {
                     return begin;
                 }
@@ -285,8 +285,8 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
                             return begin;
                         }
                 }
-            } else if (v instanceof Map<?, ?>) {//&&((Number)v).intValue()==0
-                Map<?, ?> cast = (Map<?, ?>) v;
+            } else if (v instanceof Map) {//&&((Number)v).intValue()==0
+                Map cast = (Map) v;
                 if (cast.size() == 0) {
                     return begin;
                 }

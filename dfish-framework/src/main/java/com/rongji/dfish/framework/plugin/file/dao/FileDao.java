@@ -74,12 +74,13 @@ public interface FileDao extends FrameworkDao<PubFileRecord, String> {
         List<PubFileRecord> dataList = listByLink(fileLink, fileKeys, fileStatus);
         Map<String, List<PubFileRecord>> dataMap = new HashMap<>(fileKeys.size());
         for (PubFileRecord data : dataList) {
-            List<PubFileRecord> subList = dataMap.get(data.getFileKey());
-            if (subList == null) {
-                subList = new ArrayList<>();
-                dataMap.put(data.getFileKey(), subList);
-            }
-            subList.add(data);
+//            List<PubFileRecord> subList = dataMap.get(data.getFileKey());
+//            if (subList == null) {
+//                subList = new ArrayList<>();
+//                dataMap.put(data.getFileKey(), subList);
+//            }
+//            subList.add(data);
+            dataMap.computeIfAbsent(data.getFileKey(),k->new ArrayList<>()).add(data);
         }
         return dataMap;
     }

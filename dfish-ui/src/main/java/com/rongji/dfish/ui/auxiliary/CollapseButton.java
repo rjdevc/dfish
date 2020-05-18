@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.widget.AbstractButton;
  */
 public class CollapseButton extends AbstractButton<CollapseButton> implements TargetHolder<CollapseButton> {
 
-    private Widget<?> target;
+    private Widget target;
     private String collapsedIcon;
     private String expandedIcon;
 

@@ -77,7 +77,7 @@ public class Frame extends AbstractMultiNodeContainer<Frame,Widget> implements M
         }
         if (Utils.isEmpty(dft)) {
             // 默认聚焦widgetId显示
-            Widget<?> firstNode = (Widget)nodes.get(0);
+            Widget firstNode = (Widget)nodes.get(0);
             if (firstNode != null) {
                 dft = firstNode.getId();
             }

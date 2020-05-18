@@ -38,7 +38,7 @@ public class Trad2SimpConverter {
      */
     public Trad2SimpConverter(int mod) {
         this.mod = mod;
-        trieTree = new TrieTree<String>(true);
+        trieTree = new TrieTree<>(true);
         //字库和词库都是以：简体=繁体的形式存放
         if (TRADITIONAL_TO_SIMPLIFIED == mod) {
             //繁体到简体的时候先把一个繁体对应多个简体的字库压入字典树

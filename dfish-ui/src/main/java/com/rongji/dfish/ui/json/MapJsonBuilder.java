@@ -18,8 +18,8 @@ public class MapJsonBuilder extends AbstractJsonBuilder{
     public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
 		boolean hasContent =false;
 		sb.append('{');
-		Map<?,?> cast=(Map<?,?>)o;
-		for(Map.Entry<?,?> item:cast.entrySet()){
+		Map<?,?> cast=(Map)o;
+		for(Map.Entry item:cast.entrySet()){
 			String key=(String) item.getKey();
 			Object value=item.getValue();
 			if(value==null) {

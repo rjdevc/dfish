@@ -115,7 +115,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
      * @param node 节点
      * @return 本身，这样可以继续设置其他属性
      */
-    public T add(int index, Widget<?> node) {
+    public T add(int index, Widget node) {
         if (node instanceof AbstractButton || node instanceof Split) {
             nodes.add(index, node);
             return (T) this;

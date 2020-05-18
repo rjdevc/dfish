@@ -37,7 +37,7 @@ public class ChineseOrder implements java.util.Comparator<Object> {
         this(MODE_COMMON);
     }
 
-    private static final HashMap<Integer, ChineseOrder> LOADED_MODES = new HashMap<Integer, ChineseOrder>();
+    private static final HashMap<Integer, ChineseOrder> LOADED_MODES = new HashMap<>();
 
     /**
      * 构造函数
@@ -162,7 +162,7 @@ public class ChineseOrder implements java.util.Comparator<Object> {
     }
 
 
-    private HashMap<Character, Integer> CHAR_POS = new HashMap<Character, Integer>();
+    private HashMap<Character, Integer> CHAR_POS = new HashMap<>();
     private int ZERO_POSTION;
     private int NINE_POSTION;
     private int LOAD_INDEX;

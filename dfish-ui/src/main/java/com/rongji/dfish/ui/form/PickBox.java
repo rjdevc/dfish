@@ -74,11 +74,11 @@ public class PickBox extends AbstractPickerBox<PickBox> implements HasText<PickB
     }
 
 
-    @Override
-    public PickBox setValue(Object value) {
-        this.value = toString(value);
-        return this;
-    }
+//    @Override
+//    public PickBox setValue(Object value) {
+//        this.value = toString(value);
+//        return this;
+//    }
 
     @Override
     public PickBox setEscape(Boolean escape) {

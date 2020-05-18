@@ -55,12 +55,7 @@ public class SimpleWordSplitter implements WordSplitter{
         charinfos.add(new CharInfo(WORD,"拉丁文扩展-D-1",(char)0xA720,(char)0xA7B7));
         charinfos.add(new CharInfo(WORD,"拉丁文扩展-D-2",(char)0xA7F7,(char)0xA7FF));
 
-        Collections.sort(charinfos, new Comparator<CharInfo>() {
-            @Override
-            public int compare(CharInfo o1, CharInfo o2) {
-                return o1.begin-o2.begin;
-            }
-        });
+        charinfos.sort( ( o1, o2) ->o1.begin-o2.begin);
     }
 
     /**

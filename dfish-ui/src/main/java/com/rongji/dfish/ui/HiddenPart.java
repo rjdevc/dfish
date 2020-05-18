@@ -91,12 +91,13 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
         if (hiddens == null || Utils.isEmpty(name)) {
             return this;
         }
-        for (Iterator<Hidden> iter = hiddens.iterator(); iter.hasNext(); ) {
-            Hidden h = iter.next();
-            if (h.getName().equals(name)) {
-                iter.remove();
-            }
-        }
+//        for (Iterator<Hidden> iter = hiddens.iterator(); iter.hasNext(); ) {
+//            Hidden h = iter.next();
+//            if (h.getName().equals(name)) {
+//                iter.remove();
+//            }
+//        }
+        hiddens.removeIf(h->h.getName().equals(name));
         return this;
     }
 

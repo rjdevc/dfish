@@ -44,7 +44,7 @@ public class DocParser extends DocumentParser {
             int characterNum = paragraph.numCharacterRuns();
             //FIXME 这里忽略了Drawing
             if (characterNum>0){
-                p.setBody(new ArrayList<ParagraphElement>());
+                p.setBody(new ArrayList<>());
             }
             for (int j = 0; j < characterNum; j++) {
                 CharacterRun cr = new CharacterRun();

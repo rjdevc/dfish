@@ -116,7 +116,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         if (m == null) {
             return;
         }
-        for (Entry<? extends K, ? extends V> entry : m.entrySet()) {
+        for (Entry<K, V> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -158,7 +158,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
             return Collections.emptyMap();
         }
 
-        return act(new HashSet<K>(Arrays.asList(keys)));
+        return act(new HashSet<>(Arrays.asList(keys)));
     }
 
     @Override
@@ -166,7 +166,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         if (keys == null) {
             return Collections.emptyMap();
         }
-        return act(new HashSet<K>(keys));
+        return act(new HashSet<>(keys));
     }
 
     @Override

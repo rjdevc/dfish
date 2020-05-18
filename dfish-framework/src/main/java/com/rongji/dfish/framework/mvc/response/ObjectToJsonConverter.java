@@ -28,7 +28,7 @@ public class ObjectToJsonConverter extends AbstractHttpMessageConverter<Object> 
     }
 
     @Override
-    protected Object readInternal(Class<?> clz, HttpInputMessage inputMessage) throws IOException,
+    protected Object readInternal(Class clz, HttpInputMessage inputMessage) throws IOException,
             HttpMessageNotReadableException {
         return null;
     }
@@ -61,7 +61,7 @@ public class ObjectToJsonConverter extends AbstractHttpMessageConverter<Object> 
     }
 
     @Override
-    protected boolean supports(Class<?> clz) {
+    protected boolean supports(Class clz) {
         return true;
     }
 

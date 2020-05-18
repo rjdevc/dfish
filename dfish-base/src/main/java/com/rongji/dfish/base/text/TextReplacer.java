@@ -32,7 +32,7 @@ import com.rongji.dfish.base.text.TrieTree;
  *
  */
 public class TextReplacer {
-	TrieTree<String> core=new TrieTree<String>(true);
+	TrieTree<String> core= new TrieTree<>(true);
 	/**
 	 * 增加关键词和对应替换内容
 	 * @param keyWord 关键词

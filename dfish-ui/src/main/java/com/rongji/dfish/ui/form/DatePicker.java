@@ -189,7 +189,7 @@ public class DatePicker extends AbstractInput<DatePicker, String> {
      * @param iter 时间集合
      * @return 时间文本
      */
-    protected String toString(Iterable<?> iter) {
+    protected String toString(Iterable iter) {
         StringBuilder sb = new StringBuilder();
         boolean begin = true;
         for (Object o : iter) {

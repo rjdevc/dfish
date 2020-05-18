@@ -44,7 +44,7 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
      *
      * @param td AbstractTd
      */
-    public TD(AbstractTD<?> td) {
+    public TD(AbstractTD td) {
         super();
         copyProperties(this, td);
     }
@@ -66,7 +66,7 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
                 return p;
             }
         } else {
-            Widget<?> w = getNode();
+            Widget w = getNode();
             if (isTextWidget(getNode())) {
                 String text = getTextValue(getNode());
                 return text;
@@ -100,10 +100,10 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
      * @param node Widget
      * @return String
      */
-    private String getTextValue(Widget<?> node) {
+    private String getTextValue(Widget node) {
         Object prototype = node;
         while (prototype instanceof JsonWrapper) {
-            prototype = ((JsonWrapper<?>) prototype).getPrototype();
+            prototype = ((JsonWrapper) prototype).getPrototype();
         }
         Html cast = (Html) prototype;
         return cast.getText();
@@ -115,13 +115,13 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
      * @param node
      * @return 是否文本组件
      */
-    private static boolean isTextWidget(Widget<?> node) {
+    private static boolean isTextWidget(Widget node) {
         if (node == null) {
             return false;
         }
         Object prototype = node;
         while (prototype instanceof JsonWrapper) {
-            prototype = ((JsonWrapper<?>) prototype).getPrototype();
+            prototype = ((JsonWrapper) prototype).getPrototype();
         }
         if (!(prototype instanceof Html)) {
             return false;

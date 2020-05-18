@@ -98,12 +98,12 @@ public abstract class SuggestionBox<T extends SuggestionBox<T>> extends Abstract
         return (T) this;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public T setValue(Object value) {
-        this.value = toString(value);
-        return (T) this;
-    }
+//    @SuppressWarnings("unchecked")
+//    @Override
+//    public T setValue(Object value) {
+//        this.value = toString(value);
+//        return (T) this;
+//    }
 
     /**
      * 在线匹配关键词的动作。支持 $value 和 $text 变量。

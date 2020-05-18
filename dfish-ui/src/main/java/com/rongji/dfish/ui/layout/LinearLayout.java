@@ -105,7 +105,7 @@ public abstract class LinearLayout<T extends LinearLayout<T>> extends AbstractMu
 //     * @param size String width或者height
 //     * @return 本身，这样可以继续设置其他属性
 //     */
-//    public T add(Widget<?> w, String size) {
+//    public T add(Widget w, String size) {
 //        return add(-1, w, size);
 //    }
 

@@ -82,7 +82,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
         return (T) this;
     }
 
-    protected static Map<Class<?>, Map<String, FieldMethods>> paramMethods = new HashMap<>();
+    protected static Map<Class, Map<String, FieldMethods>> paramMethods = new HashMap<>();
 
     @Override
     public String toString() {
@@ -94,7 +94,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                 String fieldName = entry.getKey();
                 try {
                     // 获取属性的类型
-                    Class<?> fieldType = field.getFieldType();
+                    Class fieldType = field.getFieldType();
                     Method getterMethod = field.getGetter();
                     Object value = getterMethod.invoke(this);
                     if (value == null) {
@@ -118,7 +118,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
         return sb.toString();
     }
 
-    private String[] toStringValue(Object value, Class<?> fieldType) {
+    private String[] toStringValue(Object value, Class fieldType) {
         String[] strArray;
         // Boolean型显示的值是0/1
         if (fieldType == Boolean.class || fieldType == boolean.class) {
@@ -130,7 +130,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
             strArray = (String[]) value;
         } else if (fieldType == List.class) {
             // 字符串集合
-            List<?> cast = (List<?>) value;
+            List cast = (List) value;
             strArray = new String[cast.size()];
             if (Utils.notEmpty(cast)) {
                 int i = 0;
@@ -166,7 +166,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                         continue;
                     }
                     // 获取属性的类型
-//                    Class<?> fieldType = field.getFieldType();
+//                    Class fieldType = field.getFieldType();
 //                    String[] strValues = toStringValue(value, fieldType);
                     requestParam.put(fieldName, value);
                 } catch (Exception e) {
@@ -178,13 +178,13 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
     }
 
     protected Map<String, FieldMethods> getDefineFields() {
-        Class<?> cls = getClass();
+        Class cls = getClass();
         Map<String, FieldMethods> fieldMethods = paramMethods.get(cls);
         if (fieldMethods == null) {
             synchronized (paramMethods) {
                 fieldMethods = new TreeMap<>();
                 synchronized (fieldMethods) {
-                    Class<?> superClass = cls;
+                    Class superClass = cls;
                     while (superClass != null) {
                         Field[] fields = superClass.getDeclaredFields();
                         for (Field field : fields) {
@@ -193,7 +193,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                                     continue;
                                 }
                                 String fieldName = field.getName();
-                                Class<?> fieldType = field.getType();
+                                Class fieldType = field.getType();
                                 String suffixName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                                 String setterName = "set" + suffixName;
                                 String getterName = fieldType == boolean.class ? "is" + suffixName : "get" + suffixName;
@@ -228,7 +228,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     protected static class FieldMethods {
         private String fieldName;
-        private Class<?> fieldType;
+        private Class fieldType;
         private Method setter;
         private Method getter;
 
@@ -240,11 +240,11 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
             this.fieldName = fieldName;
         }
 
-        public Class<?> getFieldType() {
+        public Class getFieldType() {
             return fieldType;
         }
 
-        public void setFieldType(Class<?> fieldType) {
+        public void setFieldType(Class fieldType) {
             this.fieldType = fieldType;
         }
 
@@ -280,7 +280,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                     String paramValue = ServletUtil.getParameter(request, fieldName);
                     Object value = null;
                     if (Utils.notEmpty(paramValue)) {
-                        Class<?> paramType = field.getFieldType();
+                        Class paramType = field.getFieldType();
                         if (paramType == Boolean.class || paramType == boolean.class) {
                             // Boolean 特殊处理
                             value = "1".equals(paramValue) || Boolean.parseBoolean(paramValue);

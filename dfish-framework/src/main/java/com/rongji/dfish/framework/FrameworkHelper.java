@@ -462,7 +462,7 @@ public class FrameworkHelper {
         sb.append("URI = ");
         sb.append(request.getRequestURI());
         sb.append("\r\n");
-        Enumeration<?> enum1 = request.getParameterNames();
+        Enumeration enum1 = request.getParameterNames();
         while (enum1.hasMoreElements()) {
             String key = (String) enum1.nextElement();
             String[] values = request.getParameterValues(key);

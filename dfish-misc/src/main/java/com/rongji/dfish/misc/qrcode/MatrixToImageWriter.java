@@ -86,7 +86,7 @@ public final class MatrixToImageWriter {
 
 	public static BitMatrix toBitMatrix(String content, int size) {
 		MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-		Map<EncodeHintType, String> hints = new HashMap<EncodeHintType, String>();
+		Map<EncodeHintType, String> hints = new HashMap<>();
 		hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 		BitMatrix matrix = null;
 		try {

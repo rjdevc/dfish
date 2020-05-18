@@ -37,7 +37,7 @@ public class TR extends AbstractTR<TR> implements JsonWrapper<Object> {
      *
      * @param tr another tr
      */
-    public TR(AbstractTR<?> tr) {
+    public TR(AbstractTR tr) {
         super();
         copyProperties(this, tr);
     }

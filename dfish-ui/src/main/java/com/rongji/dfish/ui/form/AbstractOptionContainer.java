@@ -25,7 +25,7 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
      * @param value   选中的值
      * @param options 候选项
      */
-    public AbstractOptionContainer(String name, String label, Object value, List<?> options) {
+    public AbstractOptionContainer(String name, String label, Object value, List options) {
         this.setName(name);
         this.setLabel(label);
         this.doSetValue(value);
@@ -37,7 +37,7 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
      * @param value   选中的值
      * @param options 候选项
      */
-    public AbstractOptionContainer(String name, Label label, Object value, List<?> options) {
+    public AbstractOptionContainer(String name, Label label, Object value, List options) {
         this.setName(name);
         this.setLabel(label);
         this.doSetValue(value);
@@ -53,13 +53,13 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
      * @param options List
      * @return 本身，这样可以继续设置其他属性
      */
-    public T setOptions(List<?> options) {
+    public T setOptions(List options) {
         List<Option> realOptions = parseOptions(options);
         this.nodes = realOptions;
         return (T) this;
     }
 
-    protected List<Option> parseOptions(List<?> options) {
+    protected List<Option> parseOptions(List options) {
         if (options != null) {
             List<Option> result = new ArrayList<>(options.size());
             for (Object item : options) {
@@ -117,8 +117,8 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
     protected void doSetValue(Object obj) {
         if (obj instanceof Object[] || obj instanceof String[]) {
             this.value = obj;
-        } else if (obj instanceof Collection<?>) {
-            Collection<?> cast = (Collection<?>) obj;
+        } else if (obj instanceof Collection) {
+            Collection cast = (Collection) obj;
             this.value = cast.toArray();
         } else {
             this.value = obj;

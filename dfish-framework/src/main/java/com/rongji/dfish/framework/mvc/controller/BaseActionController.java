@@ -118,7 +118,7 @@ public class BaseActionController extends MultiActionController {
         convertor.bind(request, obj);
     }
 
-    protected Convertor getConvertor(Class<?> clz) {
+    protected Convertor getConvertor(Class clz) {
         Convertor addpator = formatMap.get(clz);
         if (addpator == null) {
             addpator = buildConvertor(clz);
@@ -127,7 +127,7 @@ public class BaseActionController extends MultiActionController {
         return addpator;
     }
 
-    protected Convertor buildConvertor(Class<?> clz) {
+    protected Convertor buildConvertor(Class clz) {
         Convertor c = new Convertor();
         for (Method method : clz.getMethods()) {
             if (method.getName().startsWith("set") && method.getParameterTypes().length == 1) {
@@ -156,7 +156,7 @@ public class BaseActionController extends MultiActionController {
         return c;
     }
 
-    protected static HashMap<Class<?>, Convertor> formatMap = new HashMap<Class<?>, Convertor>();
+    protected static HashMap<Class, Convertor> formatMap = new HashMap<>();
 
     /**
      * 请求数据转换器
@@ -209,7 +209,7 @@ public class BaseActionController extends MultiActionController {
     public static class Format {
         String name;
         Method method;
-        Class<?> type;
+        Class type;
 
         /**
          * 名称
@@ -252,7 +252,7 @@ public class BaseActionController extends MultiActionController {
          *
          * @return
          */
-        public Class<?> getType() {
+        public Class getType() {
             return type;
         }
 
@@ -261,7 +261,7 @@ public class BaseActionController extends MultiActionController {
          *
          * @param type
          */
-        public void setType(Class<?> type) {
+        public void setType(Class type) {
             this.type = type;
         }
 
@@ -446,7 +446,7 @@ public class BaseActionController extends MultiActionController {
     @ExceptionHandler
     @ResponseBody
     public Object exception(Throwable e) {
-        JsonResponse<?> jsonResponse = new JsonResponse<>();
+        JsonResponse jsonResponse = new JsonResponse<>();
 
         HttpServletRequest request = getRequest();
         if (request != null) {

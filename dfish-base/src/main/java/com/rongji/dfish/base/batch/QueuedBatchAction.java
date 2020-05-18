@@ -45,7 +45,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 	private BatchAction<I, O> action;//注册进来的实际的批量获取实现
 	private BlockingQueue<I> waitingQueue;//等待被排队
 
-	List<OutputHook<I, O>> outputHooks = new ArrayList<OutputHook<I, O>> ();
+	List<OutputHook<I, O>> outputHooks = new ArrayList<>();
 
 	private ExecutorService exec;
 
@@ -57,7 +57,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 	 */
 	public QueuedBatchAction(BatchAction<I, O> action, int maxThread, int batchSize) {
 		exec=ThreadUtil.newFixedThreadPool(maxThread);
-		waitingQueue=new LinkedBlockingQueue<I>(batchSize);
+		waitingQueue= new LinkedBlockingQueue<>(batchSize);
 		this.action =action;
 	}
 
@@ -75,7 +75,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 			return Collections.emptyMap();
 		}
 		//已经存在的先获取，防止fetch期间部分元素还过期。
-		Map<I, O> output=new HashMap<I, O>(input.size());
+		Map<I, O> output= new HashMap<>(input.size());
 		if(input.size()>0){
 			OutputHook<I, O> oh= registerHooks(input);
 			for(I item : input){
@@ -95,7 +95,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 	}
 
 	private OutputHook<I, O> registerHooks(Set<I> input) {
-		OutputHook<I, O> hook=new OutputHook<I, O>(input);
+		OutputHook<I, O> hook= new OutputHook<>(input);
 		synchronized (outputHooks) {
 			if(input!=null&&input.size()>0){
 				outputHooks.add(hook);}
@@ -113,7 +113,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 			@Override
 			public void run() {
 				//把所有队列内容全部放置到真正的查询线程中去当做参数。
-				Set<I> input=new HashSet<I>();
+				Set<I> input= new HashSet<>();
 				waitingQueue.drainTo(input);
 				if(input.size()==0){
 					return;
@@ -156,8 +156,8 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 	
 
 	private static class OutputHook<K,V>{
-		Set<K> waiting =new HashSet<K>();
-		Map<K,V> output =new HashMap<K,V>();
+		Set<K> waiting = new HashSet<>();
+		Map<K,V> output = new HashMap<>();
 		OutputHook(Set<K> input){
 			if(input!=null&&input.size()>0){
 				waiting.addAll(input);

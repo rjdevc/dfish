@@ -184,7 +184,7 @@ public class FileController extends BaseActionController {
      */
     @RequestMapping("/upload/file")
     @ResponseBody
-    public JsonResponse<?> uploadFile(HttpServletRequest request) {
+    public JsonResponse uploadFile(HttpServletRequest request) {
         String scheme = request.getParameter("scheme");
         FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
         // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
@@ -201,8 +201,8 @@ public class FileController extends BaseActionController {
      */
     @RequestMapping("/upload/image")
     @ResponseBody
-    public JsonResponse<?> uploadImage(HttpServletRequest request) throws Exception {
-        final JsonResponse<?> jsonResponse = uploadFile(request);
+    public JsonResponse uploadImage(HttpServletRequest request) throws Exception {
+        final JsonResponse jsonResponse = uploadFile(request);
         UploadItem uploadItem = (UploadItem) jsonResponse.getData();
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
             // 这样异常结果返回可能导致前端显示异常
@@ -303,7 +303,7 @@ public class FileController extends BaseActionController {
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
 
-    protected Class<?> getMimeClass() {
+    protected Class getMimeClass() {
         return getClass();
     }
 

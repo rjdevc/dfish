@@ -186,7 +186,7 @@ public class ProgressManager {
 //     * @see #setCompleteNode(String, JsonNode)
 //     */
 //    @Deprecated
-//    public boolean setCompleteCommand(String progressKey, Command<?> completeCommand) {
+//    public boolean setCompleteCommand(String progressKey, Command completeCommand) {
 //        return setCompleteNode(progressKey, completeCommand);
 //    }
 //
@@ -197,7 +197,7 @@ public class ProgressManager {
 //     * @param progressKey
 //     * @return
 //     */
-//    public Command<?> registerProgress(final Runnable runnable, String progressKey) {
+//    public Command registerProgress(final Runnable runnable, String progressKey) {
 //        return registerProgress(runnable, progressKey, null);
 //    }
 //
@@ -209,7 +209,7 @@ public class ProgressManager {
 //     * @param progressText
 //     * @return
 //     */
-//    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText) {
+//    public Command registerProgress(final Runnable runnable, String progressKey, String progressText) {
 //        return registerProgress(runnable, progressKey, progressText, null);
 //    }
 //
@@ -222,7 +222,7 @@ public class ProgressManager {
 //     * @param completeNode
 //     * @return
 //     */
-//    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, JsonNode completeNode) {
+//    public Command registerProgress(final Runnable runnable, String progressKey, String progressText, JsonNode completeNode) {
 //        return registerProgress(runnable, progressKey, progressText, completeNode, 1);
 //    }
 //
@@ -235,7 +235,7 @@ public class ProgressManager {
 //     * @param steps
 //     * @return
 //     */
-//    public Command<?> registerProgress(final Runnable runnable, String progressKey, String progressText, int steps) {
+//    public Command registerProgress(final Runnable runnable, String progressKey, String progressText, int steps) {
 //        return registerProgress(runnable, progressKey, progressText, null, 1);
 //    }
 //
@@ -249,7 +249,7 @@ public class ProgressManager {
 //     * @param steps
 //     * @return
 //     */
-//    public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, int steps) {
+//    public Command registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, int steps) {
 //        return registerProgress(runnable, progressKey, progressText, completeNode, getStepScales(steps));
 //    }
 //
@@ -263,7 +263,7 @@ public class ProgressManager {
 //     * @param stepScale
 //     * @return
 //     */
-//    public Command<?> registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, Number[] stepScale) {
+//    public Command registerProgress(final Runnable runnable, final String progressKey, String progressText, JsonNode completeNode, Number[] stepScale) {
 //        ProgressData progressData = register(runnable, progressKey, progressText, completeNode, stepScale);
 //        Progress progress = getProgress(progressData);
 //        if (progress != null) {

@@ -267,7 +267,7 @@ public class XMLUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Element> getChildElements(Element element) {
-		List<Element> dataList = new ArrayList<Element>();
+		List<Element> dataList = new ArrayList<>();
 		List<Element> childList = element.elements();
 		if (childList != null) {
 			for (Element child : childList) {
@@ -286,7 +286,7 @@ public class XMLUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getChildElementNames(Element element) {
-		List<String> dataList = new ArrayList<String>();
+		List<String> dataList = new ArrayList<>();
 		List<Element> childList = element.elements();
 		if (childList != null) {
 			for (Element child : childList) {
@@ -305,7 +305,7 @@ public class XMLUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getChildElementValues(Element element) {
-		List<String> dataList = new ArrayList<String>();
+		List<String> dataList = new ArrayList<>();
 		List<Element> childList = element.elements();
 		if (childList != null) {
 			for (Element child : childList) {
@@ -423,7 +423,7 @@ public class XMLUtil {
 				return new String[0];
 			}
 		}
-		List<?> children = element.elements();
+		List children = element.elements();
 		int childCount = children.size();
 		String[] childrenNames = new String[childCount];
 

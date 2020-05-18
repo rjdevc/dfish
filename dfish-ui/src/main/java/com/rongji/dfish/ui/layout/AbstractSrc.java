@@ -90,7 +90,7 @@ public abstract class AbstractSrc<T extends AbstractSrc<T>> extends AbstractWidg
 	 * @deprecated 使用setNode
 	 */
 	@Deprecated
-	public T setRootWidget(Widget<?> rootWidget) {
+	public T setRootWidget(Widget rootWidget) {
 		return setNode(rootWidget);
 	}
 	

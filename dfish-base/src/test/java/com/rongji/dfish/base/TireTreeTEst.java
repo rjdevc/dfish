@@ -9,7 +9,7 @@ import com.rongji.dfish.base.text.TrieTree;
 public class TireTreeTEst {
 	@Test
 	public void testTree(){
-		TrieTree<Boolean> t=new TrieTree<Boolean>();
+		TrieTree<Boolean> t= new TrieTree<>();
 		t.put("陈小平", true);
 		t.put("陈中青", true);
 		t.put("陈明远", true);

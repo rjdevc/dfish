@@ -19,17 +19,17 @@ import java.util.*;
 @Component
 public class CacheManager {
     @Autowired(required = false)
-    private List<Cache<?, ?>> caches;
+    private List<Cache> caches;
     /**
      * 定义过的缓存
      */
-    private Map<String, Cache<?, ?>> cacheMap = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, Cache> cacheMap = Collections.synchronizedMap(new HashMap<>());
 
     @PostConstruct
     private void init() {
         // 注册缓存获取接口
         if (caches != null) {
-            for (Cache<?, ?> cache : caches) {
+            for (Cache cache : caches) {
                 registerCache(cache);
             }
         }
@@ -83,8 +83,8 @@ public class CacheManager {
      * 调用这个方法不需要过于频繁,影响系统性能,一般情况资源没有过于紧张情况下在非繁忙期清理一次即可
      */
     public void clearExpiredData() {
-        for (Map.Entry<String, Cache<?, ?>> entry : cacheMap.entrySet()) {
-            Cache<?, ?> cache = entry.getValue();
+        for (Map.Entry<String, Cache> entry : cacheMap.entrySet()) {
+            Cache cache = entry.getValue();
             if (cache.clearable()) {
                 cache.clearExpiredData();
             }

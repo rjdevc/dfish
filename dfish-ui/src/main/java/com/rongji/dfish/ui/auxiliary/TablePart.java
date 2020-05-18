@@ -98,7 +98,7 @@ public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, 
             int toColumn = column;
             int toRow = row;
             //防止加了如一个大小大于大于Table
-            AbstractTD<?> cast = (AbstractTD<?>) o;
+            AbstractTD cast = (AbstractTD) o;
             if (cast.getColSpan() != null && cast.getColSpan() > 1) {
                 toColumn += cast.getColSpan() - 1;
             }
@@ -166,7 +166,7 @@ public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, 
         if (o instanceof AbstractTD) {
             //如果是entry是TableCell就直接使用TableCell但，TableCell的rowspan和
             //colspan 会重新计算。TableCell本身是什么模式就是什么模式
-            AbstractTD<?> cell = (AbstractTD<?>) o;
+            AbstractTD cell = (AbstractTD) o;
             if (rowspan > 1) {
                 cell.setRowSpan(rowspan);
             }
@@ -178,8 +178,8 @@ public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, 
         } else if (o instanceof Widget) {
             //如果entry 是 Widget 那么将会包装在一个TableCell里面
             if (rowspan > 1 || colspan > 1) {
-                AbstractTD<?> cell = new TD();
-                cell.setNode((Widget<?>) o);
+                AbstractTD cell = new TD();
+                cell.setNode((Widget) o);
                 if (rowspan > 1) {
                     cell.setRowSpan(rowspan);
                 }
@@ -290,7 +290,7 @@ public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, 
         }
         // 如果有一个格子不能被移除则报错，不能被移除的可能，是指这个区域里面的某个格子被合并过单元，并且这个合并的单元格部分区域在这个区域之外。
         Map<String, Integer> columnMap = owner.getVisibleColumnNumMap();
-        List<Object[]> toRemove = new ArrayList<Object[]>();
+        List<Object[]> toRemove = new ArrayList<>();
         int row = 0;
         for (Object obj : nodes) {
             TR tr = (TR) obj;

@@ -129,7 +129,7 @@ public class PinyinConverter {
             synchronized (PinyinConverter.class) {
                 if (MAIN_LIB == null) {
                     //反序(从右往做匹配) 中文的词，经常后面那个字更有意义，所以反序一般会有更优的匹配度
-                    MAIN_LIB = new TrieTree<String>(true);
+                    MAIN_LIB = new TrieTree<>(true);
                     switch (mode) {
                         case MODE_PERSON_NAME:
                             loadCharLib(MAIN_LIB, "/com/rongji/dfish/misc/chinese/char_chinese_name_lib.txt");
@@ -148,7 +148,7 @@ public class PinyinConverter {
         if (VOWEL == null) {
             synchronized (PinyinConverter.class) {
                 if (VOWEL == null) {
-                    VOWEL = new TrieTree<String>();
+                    VOWEL = new TrieTree<>();
                     loadPairLib(VOWEL, "/com/rongji/dfish/misc/chinese/tone_lib.txt");//初始化韵母表
                 }
             }

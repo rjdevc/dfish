@@ -1627,12 +1627,25 @@ _ajax_cache   = {},
 Ajax = _createClass( {
 /* @ a->src, b->callback, c->context, d->sync?, e->data, f->error[false:ignore error,fn:callback], g->data type(text,xml,json)? */
 	Const: function( a, b, c, d, e, f, g ) {
-		var x = typeof a === _STR ? { src: a, success: b, context: c, sync: d, data: e, error: f } : a;
+		var x = typeof a === _STR ? { src: a, success: b, context: c, sync: d, data: e, error: f } : a,
+			c = x.context, h;
+		c && ! x.sync && _jsonArray( this, _ajax_contexts, _uid( c ) ), (h = _ajax_contexts[ _uid( c ) ]);
 		!x.dataType && (x.dataType = g);
-		(this.x = x).cache ? this.sendCache() : this.send();
+		this.x = x;
+		//if ( x.sync || ! h || h.length === 1 )
+			this.go();
 	},
 	Extend: _Event,
 	Prototype: {
+		go: function() {
+			this.x.cache ? this.sendCache() : this.send();
+		},
+		next: function() {
+			if ( ! this.x.sync ) {
+				var h = this.x.context && ! this.x.context._disposed && _ajax_contexts[ _uid( this.x.context ) ];
+				h && h[ 0 ] && h[ 0 ].go();
+			}
+		},
 		sendCache: function() {
 			var x = this.x, u = _ajax_url( x.src, x.cdn ), c = _ajax_cache[ u ];
 			if ( ! c && _opener ) {
@@ -1680,12 +1693,11 @@ Ajax = _createClass( {
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
-				if ( l.readyState === 4 && ! self._aborted ) { // ie9下执行abort()不会终止onchange进程并且读取status属性报错，因此加上_aborted参数协助判断
+				if ( l.readyState === 4 ) {
+				    c && _arrPop( _ajax_contexts[ _uid( c ) ], self );
+				    if ( self._aborted ) // ie9下执行abort()不会终止onchange进程并且读取status属性报错，因此加上_aborted参数协助判断
+				    	return; //this.next();
 				    var m, r;
-				    if ( c ) {
-				    	//delete self.request;
-				    	_arrPop( _ajax_contexts[ _uid( c ) ], self );
-				    }
 				    if ( l.status < 400 ) {
 				    	if ( g === 'json' ) {
 							try {
@@ -1722,6 +1734,7 @@ Ajax = _createClass( {
 						}
 					}
 					x.complete && x.complete.call( c, self.response, self );
+					//self.next();
 				}
 			}
 			l.onreadystatechange = _onchange;
@@ -1732,7 +1745,6 @@ Ajax = _createClass( {
 				this._timer = setTimeout( function() {
 					if ( l.readyState > 0 ) _ajax_paused && ! p ? _ajax_add_pause( function() { l.send( e ) } ) : l.send( e );
 				} );
-				c && _jsonArray( this, _ajax_contexts, _uid( c ) );
 			}
 		},
 		// 存取临时变量

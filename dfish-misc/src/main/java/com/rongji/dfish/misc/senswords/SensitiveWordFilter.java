@@ -207,7 +207,7 @@ public class SensitiveWordFilter {
         private static HashSet<Character> stopChar;
 
         static {
-            stopChar = new HashSet<Character>();
+            stopChar = new HashSet<>();
             char[] ASCII_STOP_WORDS = " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~".toCharArray();
             for (char c : ASCII_STOP_WORDS) {
                 stopChar.add(c);
@@ -245,7 +245,7 @@ public class SensitiveWordFilter {
                 if (child != null) {
                     current = child;
                 } else {
-                    Node<Boolean> nextNode = new Node<Boolean>();
+                    Node<Boolean> nextNode = new Node<>();
                     current.put(c, nextNode);
                     current = nextNode;
                 }

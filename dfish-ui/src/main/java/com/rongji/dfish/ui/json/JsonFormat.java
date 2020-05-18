@@ -17,7 +17,7 @@ import java.util.Stack;
  *
  */
 public class JsonFormat {
-	private static Map<Class<?>,JsonBuilder> djbs=new HashMap<Class<?>,JsonBuilder>();
+	private static Map<Class,JsonBuilder> djbs= new HashMap<>();
 	/**
 	 * 取得这个Class对应的Builder.
 	 * 和Gson不同，在DFISH3.0中 不同class在初次装载的时候，将会构建一个类反射的Json构建器。
@@ -34,7 +34,7 @@ public class JsonFormat {
 	 * @return JsonBuilder
 	 * @see ClassJsonBuilder
 	 */
-	public static JsonBuilder get(Class<?> clz){
+	public static JsonBuilder get(Class clz){
 		JsonBuilder jt=djbs.get(clz);
 		if(jt==null){
 			if(Map.class.isAssignableFrom(clz)){
@@ -126,7 +126,7 @@ public class JsonFormat {
 		}
 		
 		while(o instanceof JsonWrapper){
-			JsonWrapper<?> warp=(JsonWrapper<?>)o;
+			JsonWrapper warp=(JsonWrapper)o;
 			o=warp.getPrototype();
 			if(o==warp){break;}
 		}
@@ -134,7 +134,7 @@ public class JsonFormat {
 			sb.append("{}");
 			return;
 		}
-		Class<?> clz=o.getClass();
+		Class clz=o.getClass();
 		if(clz==Class.class){
 			//不处理getClass属性。否则会死循环
 			throw new java.lang.IllegalArgumentException(o.toString());

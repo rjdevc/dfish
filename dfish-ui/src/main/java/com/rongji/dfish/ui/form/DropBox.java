@@ -36,7 +36,7 @@ public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoa
 	 * @param value 值
 	 * @param options 候选项
 	 */
-	public DropBox(String name, String label, Object value, List<?> options) {
+	public DropBox(String name, String label, Object value, List options) {
 		super(name, label, value, options);
 	}
 	/**
@@ -46,7 +46,7 @@ public class DropBox extends AbstractOptionContainer<DropBox> implements LazyLoa
 	 * @param value 值
 	 * @param options 候选项
 	 */
-	public DropBox(String name, Label label, Object value, List<?> options) {
+	public DropBox(String name, Label label, Object value, List options) {
 		super(name, label, value, options);
 	}
 

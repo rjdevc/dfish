@@ -12,7 +12,7 @@ public class CollectionJsonBuilder extends AbstractJsonBuilder {
 
 	@Override
     public void buildJson(Object o, StringBuilder sb, Stack<PathInfo> path) {
-		Collection<?> cast=(Collection<?>)o;
+		Collection cast=(Collection)o;
 		boolean begin2=true;
 		sb.append('[');
 		int i=0;

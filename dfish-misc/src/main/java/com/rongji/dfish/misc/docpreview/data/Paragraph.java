@@ -64,7 +64,7 @@ public class Paragraph implements DocumentElement {
     private Integer indentation;
 
     // 行元素
-    private List<ParagraphElement> body = new ArrayList<ParagraphElement>();
+    private List<ParagraphElement> body = new ArrayList<>();
 
     @Override
     public String getType() {

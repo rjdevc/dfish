@@ -179,7 +179,7 @@ public class ScelReader {
 		int pinyingCount=readInt4();
 		
 		ret.pinyins=new String[pinyingCount];
-		ret.words=new LinkedHashMap<String, LinkedHashMap<String,Integer>>();
+		ret.words= new LinkedHashMap<>();
 		for(int i=0;i<pinyingCount;i++){
 			ret.pinyins[i]=readPinyin(i);
 		}
@@ -199,7 +199,7 @@ public class ScelReader {
 			sb.append(ret.pinyins[pinyinIndex]);
 		}
 		String wordPinyin=sb.toString();
-		LinkedHashMap<String,Integer> wordRate=new LinkedHashMap<String,Integer>();
+		LinkedHashMap<String,Integer> wordRate= new LinkedHashMap<>();
 		ret.words.put(wordPinyin, wordRate);
 		for(int i=0;i<same;i++){
 			int wordLen=readInt2();

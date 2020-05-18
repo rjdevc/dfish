@@ -2449,7 +2449,7 @@ AbsSection = define.widget( 'AbsSection', {
 				} else {
 					this._loadEnd( s || {} );
 					this.showLayout( tar );
-					fn && fn.call( this );
+					fn && fn.call( this, src || {} );
 				}
 			} else {
 				this.show();
@@ -4529,7 +4529,7 @@ _getContentView = function( a ) {
 		if ( b = _getContentView( a[ i ] ) ) return b;
 },
 _dialogPositionHooks = { topLeft: 'tl', leftTop: 'lt', topRight: 'tr', righTop: 'rt', rightBottom: 'rb', bottomRight: 'br', bottomLeft: 'bl', leftBottom: 'lb',
-				center: F, centerCenter: F, c: F, cc: F, '0': F },
+	center: F, centerCenter: F, c: F, cc: F, '0': F },
 _dialogPosition = function( a ) {
 	return a && (_dialogPositionHooks[ a ] === F ? N : '' + (_dialogPositionHooks[ a ] || a));
 },
@@ -4542,7 +4542,6 @@ _dialogSnap = function( a ) {
 			d.push( a.inner ? c[ i ] : (_dialogSnapOuter[ c[ i ] ] || c[ i ]) )
 		return d.join();
 	}
-	
 },
 /* `dialog`
  *  id 用于全局存取 ( dfish.dialog(id) ) 并保持唯一，以及用于里面的view的 path */
@@ -4688,6 +4687,7 @@ Dialog = define.widget( 'Dialog', {
 		closestData: function( a ) {
 			var d = this.x.data && this.x.data[ a ];
 			if ( d === U ) d = this.x.args && this.x.args[ a ];
+			if ( d === U && this.x.bind ) d = this.x.bind.data( a );
 			return d;
 		},
 		getContentNode: function() {
@@ -9615,7 +9615,7 @@ _reloadFocusCallack = function( a, b ) {
 	var r = a.rootNode || a, f = r.getFocus();
 	return function() {
 		f && f.x.id && !r.getFocus() && (f = this.ownerView.find( f.x.id )) && f.focus();
-		typeof b === _FUN && b.call( a );
+		b && b.call( a );
 	}
 },
 /* `absleaf` */
@@ -9674,7 +9674,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				this.$( 'i' ) ? $.replace( this.$( 'i' ), this.html_icon() ) : (this.$( 't' ) && $.before( this.$( 't' ), this.html_icon() ));
 			} else if ( a === 'focus' ) {
 				this.focus( b );
-			} else if ( a === 'src' ) {
+			} else if ( a === 'src' || a === 'folder' ) {
 				this.fixFolder();
 			} else if ( a === 'cls' ) {
 				c && this.removeClass( c );
@@ -9727,7 +9727,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 						this.exec( x );
 					} else {
 						var n = x.nodes || x;
-						n.length && this.render_nodes( n );
+						n.length && ! this.length && this.render_nodes( n );
 						this.trigger( 'load' );
 					}
 					b && b.call( this );
@@ -9812,7 +9812,7 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 					this.attr( 'text', x.text );
 			}
 			var n = x.nodes, l = n && n.length;
-			if ( l && ! this.loading ) {
+			if ( l ) {
 				if ( ! this.length ) {
 					this.render_nodes( n );
 					x.expanded && this.toggle( T );
@@ -9837,10 +9837,13 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 			}
 			return this;
 		},
-		// 深度展开。leaf需要有id进行对比  /@a -> src, b -> sync|fn?
-		expandTo: function( a, b ) {
+		// 深度展开。leaf需要有id进行对比  /@a -> src, b -> sync?, c -> fn?
+		expandTo: function( a, b, c ) {
+			typeof b === _FUN && (c = b, b = N);
+			this.loading = T;
+			this.loaded = F;
 			var f = (this.rootNode || this).getFocus();
-			this.exec( { type: 'Ajax', src: a, sync: b === T,
+			this.exec( { type: 'Ajax', src: a, sync: b,
 				success: function( x ) {
 					if ( this.x.template ) {
 						x = _compileTemplate( this, x );
@@ -9853,44 +9856,49 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 					}
 				},
 				complete: function() {
+					this.loading = F;
+					this.loaded = T;
 					var d = (this.rootNode || this).getFocus();
 					d && d !== f && d.scrollIntoView();
-					typeof b === _FUN && b.call( this );
+					c && c.call( this );
 				} } );
 		},
-		// @a -> sync|fn?
-		reload: function( a ) {
+		// @a -> sync, b -> fn?
+		reload: function( a, b ) {
+			typeof b === _FUN && (b = a, a = N);
 			if ( ! this.loading && this.getSrc() ) {
 				this.toggle( F );
 				$.ajaxAbort( this );
-				var b = _reloadFocusCallack( this, a ), i = this.length;
+				var c = _reloadFocusCallack( this, b ), i = this.length;
 				while( i -- ) this[ i ].remove();
 				this.css( 'o', 'visibility', '' );
 				this.loaded = this.loading = F;
-				this.toggle( T, b );
+				this.toggle( T, c );
 			}
 			return this;
 		},
-		// 获取最新的子节点数据，对比原有数据，如果有新增节点就显示出来 / @a -> sync|fn?
-		reloadForAdd: function( a ) {
+		// 获取最新的子节点数据，对比原有数据，如果有新增节点就显示出来 / @a -> sync, b -> fn?
+		reloadForAdd: function( a, b ) {
+			typeof b === _FUN && (b = a, a = N);
 			if ( this._disposed || this.loading )
 				return;
-			var u = this.getSrc(), b = _reloadFocusCallack( this, a );
+			var u = this.getSrc(), c = _reloadFocusCallack( this, b );
 			if ( u ) {
-				this.expandTo( u, b );
+				this.expandTo( u, c );
 			} else {
-				this.reloadForModify( a, function() { u && this.toggle( T, b ) } );
+				this.reloadForModify( a, function() { u && this.toggle( T, c ) } );
 			}
 		},
-		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync|fn?
-		reloadForModify: function( a ) {
+		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync, b -> fn?
+		reloadForModify: function( a, b ) {
+			typeof b === _FUN && (b = a, a = N);
 			if ( this._disposed )
 				return;
 			if ( this.loading )
 				$.ajaxAbort( this );
 			var u = this.parentNode.getSrc();
 			if ( u && ! this.parentNode.loading )
-				this.parentNode.expandTo( u, _reloadFocusCallack( this, a ) );
+				this.parentNode.expandTo( u, _reloadFocusCallack( this, b ) );
 		},
 		// @implement
 		removeElem: function( a ) {

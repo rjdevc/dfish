@@ -96,7 +96,7 @@ public class ThreadUtil {
 	public static ExecutorService newCachedThreadPool() {
 		return new ThreadPoolExecutor(0, MAX_THREAD_POOL_SIZE,
                 KEEP_ALIVE, TimeUnit.SECONDS,
-				new SynchronousQueue<Runnable>());
+                new SynchronousQueue<>());
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class ThreadUtil {
 	public static ExecutorService newFixedThreadPool(int nTheads) {
 		return new ThreadPoolExecutor(0, nTheads,
                 KEEP_ALIVE, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<Runnable>(MAX_QUEUE_SIZE));
+                new LinkedBlockingQueue<>(MAX_QUEUE_SIZE));
 	}
 
 	/**
@@ -124,12 +124,12 @@ public class ThreadUtil {
 	 * @param runnables
 	 */
 	public static void execute(Collection<Runnable> runnables) throws ExecutionException, InterruptedException {
-		List<Future<?>> futures=new ArrayList<>();
+		List<Future> futures=new ArrayList<>();
 		for(Runnable run:runnables){
-			Future<?> f= SHARED_THREAD_POOL.submit(run);
+			Future f= SHARED_THREAD_POOL.submit(run);
 			futures.add(f);
 		}
-		for(Future<?> f:futures){
+		for(Future f:futures){
 			f.get();
 		}
 	}

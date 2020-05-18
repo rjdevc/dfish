@@ -78,7 +78,7 @@ public class GeoHash {
 	 private int bytes ;  
 	 private final static char[] digits = BASECODE.toCharArray();
 	      
-	    final static HashMap<Character, Integer> lookup = new HashMap<Character, Integer>();  
+	    final static HashMap<Character, Integer> lookup = new HashMap<>();
 	    static {  
 	        int i = 0;  
 	        for (char c : digits)  {

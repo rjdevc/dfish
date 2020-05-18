@@ -125,7 +125,7 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
                 } else {
                     String countSql = FrameworkDao.getCountSql(hql);
                     try {
-                        List<?> countResult = queryForList(session, countSql, args);
+                        List countResult = queryForList(session, countSql, args);
                         int count = ((Number) countResult.get(0)).intValue();
                         pagination.setSize(count);
                     } catch (Exception ex) {

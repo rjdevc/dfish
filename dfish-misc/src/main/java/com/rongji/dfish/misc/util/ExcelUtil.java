@@ -272,7 +272,7 @@ public class ExcelUtil {
         }
         int sheetCount = workbook.getNumberOfSheets();
         if (sheetCount > 0) {
-            List<Object[]> dataList = new ArrayList<Object[]>();
+            List<Object[]> dataList = new ArrayList<>();
             for (int sheetIndex = 0; sheetIndex < sheetCount; sheetIndex++) {
                 dataList.addAll(getWorkbookData(workbook, sheetIndex, fromRow));
             }
@@ -328,7 +328,7 @@ public class ExcelUtil {
         if (fromRow < 0) {
             fromRow = 0;
         }
-        List<Object[]> dataList = new ArrayList<Object[]>();
+        List<Object[]> dataList = new ArrayList<>();
         if (sheet != null) {
             // 实际有数据的起始行下标
             int firstRowIndex = sheet.getFirstRowNum();
@@ -424,7 +424,7 @@ public class ExcelUtil {
         if (workbook == null) {
             return Collections.emptyList();
         }
-        List<String> sheetNames = new ArrayList<String>();
+        List<String> sheetNames = new ArrayList<>();
         int sheetCount = workbook.getNumberOfSheets();
         for (int i = 0; i < sheetCount; i++) {
             sheetNames.add(workbook.getSheetName(i));

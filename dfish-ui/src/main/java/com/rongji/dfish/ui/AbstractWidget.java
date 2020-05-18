@@ -540,7 +540,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
         return on == null ? null : on.remove(eventName);
     }
 
-    protected void copyProperties(AbstractWidget<?> to, AbstractWidget<?> from) {
+    protected void copyProperties(AbstractWidget to, AbstractWidget from) {
         //父类属性
         to.template=from.template;
         to.data=from.data;
