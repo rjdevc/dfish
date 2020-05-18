@@ -101,7 +101,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                         continue;
                     }
                     String[] strValues = toStringValue(value, fieldType);
-                    String valueStr = StringUtil.toString(strValues);
+                    String valueStr = StringUtil.joinString(strValues);
                     if (Utils.notEmpty(valueStr)) {
                         sb.append('&').append(fieldName).append('=');
                         try {
@@ -160,15 +160,15 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                 FieldMethods field = entry.getValue();
                 String fieldName = entry.getKey();
                 try {
-                    // 获取属性的类型
-                    Class<?> fieldType = field.getFieldType();
                     Method getterMethod = field.getGetter();
                     Object value = getterMethod.invoke(this);
                     if (value == null) {
                         continue;
                     }
-                    String[] strValues = toStringValue(value, fieldType);
-                    requestParam.put(fieldName, strValues);
+                    // 获取属性的类型
+//                    Class<?> fieldType = field.getFieldType();
+//                    String[] strValues = toStringValue(value, fieldType);
+                    requestParam.put(fieldName, value);
                 } catch (Exception e) {
                     LogUtil.error("获取属性值异常@" + getClass().getName() + "." + fieldName + "", e);
                 }
