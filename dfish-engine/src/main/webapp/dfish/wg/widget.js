@@ -5289,7 +5289,10 @@ Formgroup = define.widget( 'formgroup', {
 		},
 		prop_cls: function() {
 			var c = _proto.prop_cls.call( this );
-			return 'w-horz w-form w-formgroup f-nv' + (this.x.nobr !== T ? ' z-br' : '') + (c ? ' ' + c: '');
+			return 'w-horz w-form w-formgroup f-nv' + (c ? ' ' + c: '');
+		},
+		form_cls: function() {
+			return 'f-nv' + (this.x.nobr !== T ? ' f-wdbr' : '');
 		},
 		html_nodes: function() {
 			return Horz.prototype.html_nodes.call( this );
@@ -5655,7 +5658,7 @@ Checkbox = define.widget( 'checkbox', {
 		},
 		html_text: function() {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
-				(this.x.text ? '<div class="_tit f-oh ' + (this.x.nobr === F ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</div>' : '');			
+				(this.x.text ? '<span class="_tit f-oh ' + (this.x.nobr === F ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format( this.x.text, this.x.format, this.x.escape ) + '</span>' : '');			
 		},
 		html: function() {
 			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), y = '';

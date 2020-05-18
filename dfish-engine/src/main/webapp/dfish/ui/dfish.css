@@ -483,7 +483,7 @@
 .w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{padding:5px 6px 5px 0;}
 .w-checkbox,.w-radio,.w-triplebox{padding:2px 2px 2px 0;font-style:normal}
 .w-checkbox input,.w-radio input,.w-triplebox input{float:left;padding:0;vertical-align:middle}
-.w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;cursor:pointer}
+.w-checkbox ._tit,.w-radio ._tit,.w-triplebox ._tit{padding:0 3px;cursor:pointer;vertical-align:middle\0}
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
 .w-grid-triplebox,.w-grid-radio{padding:2px}
 .w-checkbox.z-ds ._tit,.w-radio.z-ds ._tit,.w-triplebox.z-ds ._tit{cursor:default}
@@ -494,14 +494,14 @@
 .w-checkbox ._t + label,.w-triplebox ._t + label,.w-radio ._t + label{position:relative;float:left;background-color:#fff;border:1px solid #c1caca;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05);padding:8px;border-radius:0;display:inline-block;margin-right:3px;vertical-align:middle;-webkit-appearance:none;cursor:pointer}
 .w-checkbox.z-ds ._t + label,.w-triplebox.z-ds ._t + label,.w-radio.z-ds ._t + label{background-color:#ddd;cursor:default}
 .w-checkbox ._t:active + label,.w-triplebox ._t:active + label{box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1)}
-.w-checkbox ._t:checked + label:after,.w-triplebox ._t:checked + label:after,.w-triplebox.z-half ._t + label:before{content:'\2714';font-family:'Times New Roman';position:absolute;top:0;left:0;color:#758794;width:100%;text-align:center;font-size:16px;font-weight:normal;vertical-align:text-top;line-height:1}
+.w-checkbox ._t:checked + label:after,.w-triplebox ._t:checked + label:after,.w-triplebox.z-half ._t + label:before{content:'\2714';font-family:'Times New Roman';position:absolute;top:0;left:0;color:#758794;width:100%;text-align:center;font-size:16px;font-weight:normal;vertical-align:middle;line-height:1}
 .w-triplebox.z-half ._t + label:before{content:'';}
-.w-triplebox.z-half ._t + label:after{content:'';position:absolute;background:#758794;top:50%;left:1px;right:1px;height:3px;margin-top:-1px;text-align:center;vertical-align:text-top;line-height:1;}
+.w-triplebox.z-half ._t + label:after{content:'';position:absolute;background:#758794;top:50%;left:1px;right:1px;height:3px;margin-top:-1px;text-align:center;vertical-align:middle;line-height:1;}
 .w-radio ._t + label{border-radius:50px;}
 .w-radio ._t:checked + label{border:1px solid #adb8c0;box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px -15px 10px -12px rgba(0,0,0,0.05),inset 15px 10px -12px rgba(255,255,255,0.1),inset 0px 0px 10px rgba(0,0,0,0.1);}
 .w-radio ._t:checked + label:after{content:' ';background:#758794;width:10px;height:10px;border-radius: 50px;position:absolute;top:3px;box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);text-shadow:0;left:3px;font-size:32px;}
 .w-radio ._t + label:active,.w-radio ._t:checked + label:active{box-shadow: 0 1px 2px rgba(0,0,0,0.05),inset 0px 1px 3px rgba(0,0,0,0.1);}
-.w-checkboxgroup ._t + label,.w-radiogroup ._t + label{vertical-align:top}
+.w-checkboxgroup ._t + label,.w-radiogroup ._t + label{vertical-align:middle}
 .w-grid-triplebox.w-triplebox ._t + label,.w-grid-radio.w-radio ._t + label{margin-right:0}
 .w-checkboxgroup.z-err .w-checkbox ._t + label,.w-radiogroup.z-err .w-radio ._t + label{border-color:#f00}
 /*  CSS3 checkbox  -->   */
