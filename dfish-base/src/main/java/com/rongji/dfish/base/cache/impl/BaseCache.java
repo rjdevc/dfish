@@ -1,12 +1,11 @@
 package com.rongji.dfish.base.cache.impl;
 
-import com.rongji.dfish.base.batch.BatchAction;
-import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.base.batch.BatchFunction;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.CacheItem;
+import com.rongji.dfish.base.util.Utils;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * 缓存抽象类,该类实现缓存获取等通用的方法
@@ -15,7 +14,7 @@ import java.util.Map.Entry;
  * @param <V> 缓存Value
  * @author lamontYu
  */
-public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K, V> {
+public class BaseCache<K, V> extends CachedBatchFunction<K, V> implements Cache<K, V> {
 
     @Override
     public String getName() {
@@ -57,8 +56,8 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
      * BaseCache里面是策略会在何时的时机回调该valueGetter
      * @return BatchAction
      */
-    public BatchAction<K, V> getValueGetter() {
-        return action;
+    public BatchFunction<K, V> getValueGetter() {
+        return function;
     }
 
     /**
@@ -66,8 +65,8 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
      * BaseCache里面是策略会在何时的时机回调该valueGetter
      * @param valueGetter BatchAction
      */
-    public void setValueGetter(BatchAction<K, V> valueGetter) {
-        this.action = valueGetter;
+    public void setValueGetter(BatchFunction<K, V> valueGetter) {
+        this.function = valueGetter;
     }
 
     /**
@@ -81,7 +80,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
      * 构造函数
      * @param valueGetter
      */
-    public BaseCache(BatchAction<K, V> valueGetter) {
+    public BaseCache(BatchFunction<K, V> valueGetter) {
         super(valueGetter);
     }
 
@@ -91,7 +90,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
      * @param maxSize 最大缓存数量
      * @param alive   最大生存时间 -毫秒
      */
-    public BaseCache(BatchAction<K, V> valueGetter, int maxSize, long alive) {
+    public BaseCache(BatchFunction<K, V> valueGetter, int maxSize, long alive) {
         super(valueGetter, maxSize, alive);
     }
 
@@ -141,7 +140,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
 
     @Override
     public V get(K key) {
-        return super.act(key);
+        return super.apply(key);
     }
 
     @Override
@@ -150,7 +149,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
             return Collections.emptyMap();
         }
 
-        return act(new HashSet<>(Arrays.asList(keys)));
+        return apply(new HashSet<>(Arrays.asList(keys)));
     }
 
     @Override
@@ -158,7 +157,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         if (keys == null) {
             return Collections.emptyMap();
         }
-        return act(new HashSet<>(keys));
+        return apply(new HashSet<>(keys));
     }
 
     @Override

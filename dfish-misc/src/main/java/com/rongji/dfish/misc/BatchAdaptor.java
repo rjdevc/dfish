@@ -1,6 +1,6 @@
 package com.rongji.dfish.misc;
 
-import com.rongji.dfish.base.batch.QueuedBatchAction;
+import com.rongji.dfish.base.batch.QueuedBatchFunction;
 import com.rongji.dfish.base.exception.MarkedException;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.Queue;
  * 如果队列已经等待最大量，抛出异常<br>
  * @author 研发中心 - IMeng
  * @deprecated 使用BatchManager
- * @see QueuedBatchAction
+ * @see QueuedBatchFunction
  *
  */
 @Deprecated
