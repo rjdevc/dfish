@@ -97,7 +97,7 @@ public class ListDataComparator<T> {
         final OrderedDataIdentifier<T> oind = (OrderedDataIdentifier<T>) this.identifier;
         List<T> sortedNewList = newList == null ? new ArrayList<>(0) : new ArrayList<>(newList);
         List<T> sortedOldList = oldList == null ? new ArrayList<>(0) : new ArrayList<>(oldList);
-        sortedNewList.sort((row1,row2) -> oind.compareRow(row1, row2));
+        sortedNewList.sort(oind::compareRow);
         sortedOldList.sort((row1,row2) -> oind.compareRow(row1, row2));
         Iterator<T> oldIter = sortedOldList.iterator();
         Iterator<T> newIter = sortedNewList.iterator();

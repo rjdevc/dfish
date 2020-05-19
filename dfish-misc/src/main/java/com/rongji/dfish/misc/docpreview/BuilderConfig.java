@@ -84,20 +84,10 @@ public class BuilderConfig {
      * 这里的URL可以写docpreview_img 表示，如果允许直接下载的话。使用这个前缀 加上文件相对路径。
      * @param url
      */
-    public void setDownloadURLFolder(final String url) {
-        this.imageURLConverter = new ImageURLConverter() {
-            @Override
-            public String getDownloadURL(String relativeURL) {
-                return url+"/"+relativeURL;
-            }
-        };
+    public void setDownloadURLFolder(String url) {
+        this.imageURLConverter = (relativeURL) -> url+"/"+relativeURL;
     }
 
-    private static ImageURLConverter NONE=new ImageURLConverter(){
-        @Override
-        public String getDownloadURL(String relativeURL) {
-            return relativeURL;
-        }
-    };
+    private static ImageURLConverter NONE=( relativeURL)->  relativeURL;
 
 }

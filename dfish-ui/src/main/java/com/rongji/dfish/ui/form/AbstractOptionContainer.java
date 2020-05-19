@@ -54,8 +54,7 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
      * @return 本身，这样可以继续设置其他属性
      */
     public T setOptions(List options) {
-        List<Option> realOptions = parseOptions(options);
-        this.nodes = realOptions;
+        this.nodes = parseOptions(options);
         return (T) this;
     }
 
@@ -73,7 +72,7 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
                     String text = null;
                     Object value;
                     String ic = null;
-                    if (item instanceof Object[] || item instanceof String[]) {
+                    if (item instanceof Object[] ) {
                         Object[] castItem = (Object[]) item;
                         value = castItem[0];
                         if (castItem.length > 2) {
@@ -115,7 +114,7 @@ public abstract class AbstractOptionContainer<T extends AbstractOptionContainer<
     }
 
     protected void doSetValue(Object obj) {
-        if (obj instanceof Object[] || obj instanceof String[]) {
+        if (obj instanceof Object[] ) {
             this.value = obj;
         } else if (obj instanceof Collection) {
             Collection cast = (Collection) obj;

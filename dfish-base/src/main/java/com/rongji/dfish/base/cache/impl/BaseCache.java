@@ -111,15 +111,7 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
         return null;
     }
 
-    @Override
-    public void putAll(Map<K, V> m) {
-        if (m == null) {
-            return;
-        }
-        for (Entry<K, V> entry : m.entrySet()) {
-            put(entry.getKey(), entry.getValue());
-        }
-    }
+
 
 
     /**
@@ -211,14 +203,15 @@ public class BaseCache<K, V> extends CachedBatchAction<K, V> implements Cache<K,
      */
     public Collection<V> values() {
 //        Collection<CacheItem<V>> col = core.values();
-        ArrayList<V> result = new ArrayList<>();
-        core.values().forEach(v->result.add(v.getValue()));
+//        ArrayList<V> result = new ArrayList<>();
 //        if (col != null) {
 //            for (CacheItem<V> item : col) {
 //                result.add(item.getValue());
 //            }
 //        }
-        return result;
+        return core.values().stream().collect(ArrayList::new,
+                (list,item)->list.add(item.getValue()),
+                List::addAll);
     }
 
     @Override

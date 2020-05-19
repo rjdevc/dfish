@@ -44,7 +44,12 @@ public interface Cache<K, V> {
 	 * 批量设置值
 	 * @param m
 	 */
-	void putAll(Map<K, V> m);
+	default void putAll(Map<K, V> m) {
+		if (m == null) {
+			return;
+		}
+		m.forEach(this::put);
+	}
 	/**
 	 * 删除一个值。
 	 * 删除这个值的时候，<strong>有可能</strong>把旧的值置放出来。

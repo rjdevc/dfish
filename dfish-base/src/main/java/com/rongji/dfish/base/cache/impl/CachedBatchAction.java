@@ -1,7 +1,6 @@
 package com.rongji.dfish.base.cache.impl;
 
 
-import com.rongji.dfish.base.batch.AbstractBaseAction;
 import com.rongji.dfish.base.batch.BatchAction;
 import com.rongji.dfish.base.cache.CacheItem;
 import com.rongji.dfish.base.util.ThreadUtil;
@@ -28,7 +27,7 @@ import java.util.concurrent.ExecutorService;
  * @param <I> 输入参数类型
  * @param <O> 输出参数类型
  */
-public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
+public class CachedBatchAction<I, O> implements BatchAction<I,O> {
     protected int maxSize;
     protected long alive;
     protected Map<I, CacheItem<O>> core;
@@ -160,9 +159,7 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
         if (!add) {
             return;
         }
-        exec.execute(new Runnable() {
-            @Override
-            public void run() {
+        exec.execute(() ->{
                 try {
                     Thread.sleep(50L);
                 } catch (InterruptedException e) {
@@ -176,7 +173,6 @@ public class CachedBatchAction<I, O> extends AbstractBaseAction<I,O> {
                 if (keys.size()>0) {
                     doAct(keys);
                 }
-            }
         });
     }
 

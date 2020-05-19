@@ -20,7 +20,7 @@ import java.util.*;
  * @version 1.0.20160801
  * 
  */
-public class TrieTree<V extends Object> {
+public class TrieTree<V> {
 	/**
 	 * 树的根节点
 	 */

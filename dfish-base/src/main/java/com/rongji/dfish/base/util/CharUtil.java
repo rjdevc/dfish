@@ -204,7 +204,7 @@ public class CharUtil {
 		 * @param c 字符
 		 * @return String
 		 */
-		public String replaceTo(char c);
+		String replaceTo(char c);
 	}
 
 	/**
@@ -222,12 +222,13 @@ public class CharUtil {
 					}
 			}
 		}
-		if((type&CHAR_TYPE_CHINESE )>0){
-			if(c >=0x3000&& c<0xA000){
-				return true;
-			}
-		}
-		return false;
+//		if((type&CHAR_TYPE_CHINESE )>0){
+//			if(c >=0x3000&& c<0xA000){
+//				return true;
+//			}
+//		}
+//		return false;
+		return (type&CHAR_TYPE_CHINESE )>0&&c >=0x3000&& c<0xA000;
 	}
 
 }

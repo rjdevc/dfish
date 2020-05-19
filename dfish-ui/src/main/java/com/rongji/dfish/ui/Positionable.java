@@ -22,80 +22,80 @@ public interface Positionable<T extends Positionable<T>> {
 	/**
 	 * 位置正中
 	 */
-	public static String POSITION_CENTER="c";
+	String POSITION_CENTER="c";
 	/**
 	 * 位置正中
 	 */
 	@Deprecated
-	public static String POSITION_MIDDLE=POSITION_CENTER;
+	String POSITION_MIDDLE=POSITION_CENTER;
 	/**
 	 * 位置右上(东北)
 	 */
-	public static String POSITION_TOP_RIGHT="tr";
+	String POSITION_TOP_RIGHT="tr";
 	/**
 	 * 位置右上(东北)
 	 */
 	@Deprecated
-	public static String POSITION_TOPRIGHT=POSITION_TOP_RIGHT;
+	String POSITION_TOPRIGHT=POSITION_TOP_RIGHT;
 
 	/**
 	 * 位置右上(东北)
 	 */
-	public static String POSITION_RIGHT_TOP="rt";
+	String POSITION_RIGHT_TOP="rt";
 
 	/**
 	 * 位置左上(西北)
 	 */
-	public static String POSITION_TOPLEFT="tl";
+	String POSITION_TOPLEFT="tl";
 	/**
 	 * 位置左上(西北)
 	 */
-	public static String POSITION_LEFT_TOP="lt";
+	String POSITION_LEFT_TOP="lt";
 
 	/**
 	 * 位置右下(东南)
 	 */
-	public static String POSITION_BOTTOM_RIGHT="br";
+	String POSITION_BOTTOM_RIGHT="br";
 	/**
 	 * 位置左下(西南)
 	 */
 	@Deprecated
-	public static String POSITION_BOTTOMRIGHT=POSITION_BOTTOM_RIGHT;
+	String POSITION_BOTTOMRIGHT=POSITION_BOTTOM_RIGHT;
 	/**
 	 * 位置左下(西南)
 	 */
 	@Deprecated
-	public static String POSITION_SOUTHWEST=POSITION_BOTTOMRIGHT;
+	String POSITION_SOUTHWEST=POSITION_BOTTOMRIGHT;
 	/**
 	 * 位置右下(东南)
 	 */
-	public static String POSITION_RIGHT_BOTTOM="rb";
+	String POSITION_RIGHT_BOTTOM="rb";
 	/**
 	 * 位置左下(西南)
 	 */
-	public static String POSITION_BOTTOM_LEFT="bl";
+	String POSITION_BOTTOM_LEFT="bl";
 
 	/**
 	 * 位置左下(西南)
 	 */
-	public static String POSITION_LEFT_BOTTOM="lb";
+	String POSITION_LEFT_BOTTOM="lb";
 
 	/**
 	 * 位置左
 	 */
-	public static String POSITION_LEFT="l";
+	String POSITION_LEFT="l";
 	/**
 	 * 位置右
 	 */
-	public static String POSITION_RIGHT="r";
+	String POSITION_RIGHT="r";
 	/**
 	 * 位置上
 	 */
-	public static String POSITION_TOP="t";
+	String POSITION_TOP="t";
 	/**
 	 * 位置下
 	 */
-	public static String POSITION_BOTTOM="b";
+	String POSITION_BOTTOM="b";
 
 
 }

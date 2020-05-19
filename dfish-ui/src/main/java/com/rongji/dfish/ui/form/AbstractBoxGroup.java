@@ -109,7 +109,7 @@ public abstract class AbstractBoxGroup<T extends AbstractBoxGroup<T, N>, N exten
                 } else {
                     String text = null;
                     Object value;
-                    if (item instanceof Object[] || item instanceof String[]) {
+                    if (item instanceof Object[]) {
                         Object[] castItem = (Object[]) item;
                         value = castItem[0];
                         if (castItem.length > 1) {

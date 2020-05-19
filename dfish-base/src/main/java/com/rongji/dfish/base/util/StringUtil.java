@@ -36,9 +36,8 @@ public class StringUtil {
     /**
      * 排序时候 中文对比器java.text.Collator
      *
-     * @deprecated java.text.Collator的中文排序不是很准确
+     *  java.text.Collator的中文排序不是很准确
      */
-    @Deprecated
     public static final Comparator<Object> CHINESE_ORDER_JDK = java.text.Collator.getInstance(java.util.Locale.SIMPLIFIED_CHINESE);
 
 
@@ -92,12 +91,9 @@ public class StringUtil {
         long l = 0;
         StringBuilder sb = new StringBuilder();
         char[] c = content.toCharArray();
-        for (int i = 0; i < c.length; i++) {
-            char ca = c[i];
-
+        for (char ca:c) {
             sb.append(ca);
-            int ascii = ca;
-            if (ascii > 255) {
+            if (ca > 255) {
                 l += chineseCharSize;
             } else {
                 l += 1;
@@ -278,17 +274,17 @@ public class StringUtil {
             while (sb.length() < length) {
                 byte[] can = new byte[length * 2];
                 r.nextBytes(can);
-                for (int i = 0; i < can.length; i++) {
-                    if ((containNum && can[i] >= '0' && can[i] <= '9')
-                            || (containLowcase && can[i] >= 'a' && can[i] <= 'z')
-                            || (containUppcase && can[i] >= 'A' && can[i] <= 'Z')
+                for (byte b:can) {
+                    if ((containNum && b >= '0' && b <= '9')
+                            || (containLowcase && b >= 'a' && b <= 'z')
+                            || (containUppcase && b >= 'A' && b <= 'Z')
                             || (containSymbol &&
-                            ((can[i] >= '!' && can[i] <= '/')
-                                    || (can[i] >= ':' && can[i] <= '@')
-                                    || (can[i] >= '[' && can[i] <= '`')
-                                    || (can[i] >= '{' && can[i] <= '~'))
+                            ((b >= '!' && b <= '/')
+                                    || (b >= ':' && b <= '@')
+                                    || (b >= '[' && b <= '`')
+                                    || (b >= '{' && b <= '~'))
                     )) {
-                        sb.append((char) can[i]);
+                        sb.append((char) b);
                         if (sb.length() >= length) {
                             break;
                         }
@@ -437,14 +433,14 @@ public class StringUtil {
      * 解析过程当中，会把xxx内容当从参数提供给这个接口回调。
      * 接口返回实际内容，则可完成解析。
      */
-    public static interface ELcontentGetter {
+    public interface ELcontentGetter {
         /**
          * 将el里面的tag转化成实际内容
          *
          * @param tag 标记
          * @return String
          */
-        public String getCotent(String tag);
+        String getCotent(String tag);
     }
 
     /**

@@ -41,7 +41,7 @@ import com.rongji.dfish.base.util.ThreadUtil;
  * @param <I>
  * @param <O>
  */
-public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
+public class QueuedBatchAction<I, O> implements BatchAction<I,O>{
 	private BatchAction<I, O> action;//注册进来的实际的批量获取实现
 	private BlockingQueue<I> waitingQueue;//等待被排队
 
@@ -109,9 +109,7 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 	 * 分组请求。取得(或者失败)以后，通知取得的结果。
 	 */
 	private void doAct() {
-		 this.exec.execute(new Runnable(){
-			@Override
-			public void run() {
+		 this.exec.execute(() ->{
 				//把所有队列内容全部放置到真正的查询线程中去当做参数。
 				Set<I> input= new HashSet<>();
 				waitingQueue.drainTo(input);
@@ -132,7 +130,6 @@ public class QueuedBatchAction<I, O> extends AbstractBaseAction<I,O>{
 					}
 					e.printStackTrace();
 				}//可能消耗较多时间。
-			}
 		 });
 	}
 	private void notifyHook(I k, O v) {

@@ -91,25 +91,25 @@ public final class DataBaseInfo {
 			driverName = dbmd.getDriverName();
 			driverVersion = dbmd.getDriverVersion();
 			String databaseName = databaseProductName.toLowerCase();
-			if (databaseName == null) {
-				databaseType = DATABASE_UNKNOWN;
-			} else if (databaseName.indexOf("oracle") != -1) {
+			if (databaseName.equals("")) {
+					databaseType = DATABASE_UNKNOWN;
+			} else if (databaseName.contains("oracle") ) {
 				databaseType = DATABASE_ORACLE;
-			} else if (databaseName.indexOf("postgresql") != -1) {
+			} else if (databaseName.contains("postgresql") ) {
 				databaseType = DATABASE_POSTGRESQL;
-			} else if (databaseName.toLowerCase().indexOf("db2") != -1) {
+			} else if (databaseName.contains("db2")) {
 				databaseType = DATABASE_DB2;
-			} else if (databaseName.indexOf("sql server") != -1) {
+			} else if (databaseName.contains("sql server") ) {
 				databaseType = DATABASE_SQLSERVER;
-			} else if (databaseName.indexOf("mysql") != -1) { // "MySQL"
+			} else if (databaseName.contains("mysql")) { // "MySQL"
 				databaseType = DATABASE_MYSQL;
-			} else if (databaseName.indexOf("hsql") != -1) {
+			} else if (databaseName.contains("hsql")) {
 				databaseType = DATABASE_HSQLDB;
-			} else if (databaseName.indexOf("sap") != -1) { // "SAP DB"
+			} else if (databaseName.contains("sap")) { // "SAP DB"
 				databaseType = DATABASE_SAPDB;
-			} else if (databaseName.indexOf("firebird") != -1) { // "firebird"
+			} else if (databaseName.contains("firebird") ) { // "firebird"
 				databaseType = DATABASE_FIREBIRD;
-			} else if (databaseName.indexOf("adaptive") != -1) { // "DATABASE_SYBASE"
+			} else if (databaseName.contains("adaptive") ) { // "DATABASE_SYBASE"
 				databaseType = DATABASE_SYBASE;
 			} else {
 				databaseType = DATABASE_UNKNOWN;

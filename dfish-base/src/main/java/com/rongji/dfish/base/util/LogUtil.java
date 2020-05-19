@@ -66,7 +66,7 @@ public class LogUtil {
      * @see org.apache.commons.logging.Log#debug(Object)
      */
     public static void debug(Class clz, Object message) {
-        debug(clz, message, null);
+        debug(getLog(clz), message, null);
     }
 
     /**

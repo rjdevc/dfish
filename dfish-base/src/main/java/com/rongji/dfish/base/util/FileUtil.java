@@ -89,7 +89,7 @@ public final class FileUtil {
      * @return String
      */
     public static String getFileExtName(String fileName) {
-        if (Utils.isEmpty(fileName) || fileName.indexOf(".") < 0) {
+        if (Utils.isEmpty(fileName) || fileName.indexOf('.') < 0) {
             return "";
         }
         int i = fileName.lastIndexOf(".");
@@ -458,11 +458,13 @@ public final class FileUtil {
         }
         if (path.isDirectory()) {
             File[] subs = path.listFiles();
-            for (int i = 0; i < subs.length; i++) {
-                if ("".equals(pathInZip)) {
-                    addDirectoyToZip(subs[i], zos, subs[i].getName(), fileNameFilter);
-                } else {
-                    addDirectoyToZip(subs[i], zos, pathInZip + "/" + subs[i].getName(), fileNameFilter);
+            if(subs!=null) {
+                for (int i = 0; i < subs.length; i++) {
+                    if ("".equals(pathInZip)) {
+                        addDirectoyToZip(subs[i], zos, subs[i].getName(), fileNameFilter);
+                    } else {
+                        addDirectoyToZip(subs[i], zos, pathInZip + "/" + subs[i].getName(), fileNameFilter);
+                    }
                 }
             }
         } else if (path.isFile()) {

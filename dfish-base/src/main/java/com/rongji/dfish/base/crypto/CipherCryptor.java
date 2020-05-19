@@ -164,7 +164,7 @@ public class CipherCryptor extends  AbstractCryptor{
             }
             // 如果包含逗号，第一段才是密码。
             String paramKey=null;
-            if(strKey.indexOf(",")>=0){
+            if(strKey.indexOf(',')>0){
                 String[] strs=strKey.split(",");
                 strKey=strs[0];
                 paramKey =strs[1];
@@ -173,8 +173,7 @@ public class CipherCryptor extends  AbstractCryptor{
             SecretKeySpec keySpec = new SecretKeySpec(getKeyBytes(strKey,builder.algorithm), builder.algorithm);
             this.secretkey=keySpec;
             if(paramKey!=null) {
-                IvParameterSpec parameter = new IvParameterSpec(getKeyBytes(paramKey,builder.algorithm));
-                this.parameter = parameter;
+                this.parameter = new IvParameterSpec(getKeyBytes(paramKey,builder.algorithm));
             }
             return keySpec;
         }

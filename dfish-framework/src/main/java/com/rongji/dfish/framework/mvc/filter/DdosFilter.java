@@ -98,11 +98,11 @@ public class DdosFilter implements Filter{
 			if(now>lastClear+clear){
 				lastClear=now;
 				HashSet<String> toRemove= new HashSet<>();
-				for(Map.Entry<String, VisitCount> entry:visited.entrySet()){
-					if(now>entry.getValue().visitTime+interval){
-						toRemove.add(entry.getKey());
+				visited.forEach((key,vcount)->{
+					if(now>vcount.visitTime+interval){
+						toRemove.add(key);
 					}
-				}
+				});
 				for(String key:toRemove){
 					visited.remove(key);
 				}

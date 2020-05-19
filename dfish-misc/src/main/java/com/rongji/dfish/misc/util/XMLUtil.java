@@ -417,8 +417,8 @@ public class XMLUtil {
 		String[] propName = parsePropertyName(parent);
 		Element element = doc.getRootElement();
 
-		for (int i = 0; i < propName.length; i++) {
-			element = element.element(propName[i]);
+		for (String prop:propName) {
+			element = element.element(prop);
 			if (element == null) {
 				return new String[0];
 			}

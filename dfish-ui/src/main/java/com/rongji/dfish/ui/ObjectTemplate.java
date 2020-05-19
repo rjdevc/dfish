@@ -35,7 +35,7 @@ public class ObjectTemplate {
 	}
 	private static final Class[] NO_ARG=new Class[0];
 	private static final Object[] NO_PARAM=new Object[0];
-	private static Map<Class,ObjectTemplate> DEFAULT_INSTANCE= new HashMap<>();
+	private static final Map<Class,ObjectTemplate> DEFAULT_INSTANCE= new HashMap<>();
 	private static String PREFIX ;
 	protected static final Log LOG=LogFactory.getLog(ObjectTemplate.class);
 	protected static ResourceBundle RES_BUNDLE;

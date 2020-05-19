@@ -94,7 +94,7 @@ public abstract class TablePart extends AbstractPubNodeContainer<TablePart, TR, 
     }
 
     private void put(int row, int column, Object o, boolean overwrite) {
-        if (o != null && o instanceof AbstractTD) {
+        if (o instanceof AbstractTD) {
             int toColumn = column;
             int toRow = row;
             //防止加了如一个大小大于大于Table

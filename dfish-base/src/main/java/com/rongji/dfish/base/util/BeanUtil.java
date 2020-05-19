@@ -183,8 +183,7 @@ public class BeanUtil {
                                          Object... params) throws NoSuchMethodException {
         // 首先如果PARAM为空，那么可以精确查找
         if (params == null || params.length == 0) {
-            Method m = targetClz.getMethod(methodName, NO_CLZ);
-            return m;
+            return targetClz.getMethod(methodName, NO_CLZ);
         }
         // 否则看PARAM的类型取得方法
         boolean hasNullParam = false;
@@ -200,8 +199,7 @@ public class BeanUtil {
         if (!hasNullParam) {
             // 尝试找到方法
             try {
-                Method m = targetClz.getMethod(methodName, clzs);
-                return m;
+                return targetClz.getMethod(methodName, clzs);
             } catch (NoSuchMethodException nsme) {
             }
         }
@@ -235,8 +233,7 @@ public class BeanUtil {
                                                    Object... params) throws NoSuchMethodException {
         // 首先如果PARAM为空，那么可以精确查找
         if (params == null || params.length == 0) {
-            Constructor m = targetClz.getConstructor(NO_CLZ);
-            return m;
+            return targetClz.getConstructor(NO_CLZ);
         }
         // 否则看PARAM的类型取得方法
         boolean hasNullParam = false;
@@ -252,8 +249,7 @@ public class BeanUtil {
         if (!hasNullParam) {
             // 尝试找到方法
             try {
-                Constructor m = targetClz.getConstructor(clzs);
-                return m;
+                return targetClz.getConstructor(clzs);
             } catch (NoSuchMethodException nsme) {
             }
         }
@@ -639,7 +635,7 @@ public class BeanUtil {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public static Map<String, Object> getPropMap(Object item) throws NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public static Map<String, Object> getPropMap(Object item) throws NoSuchMethodException, IllegalArgumentException {
         if (item == null) {
             return null;
         }

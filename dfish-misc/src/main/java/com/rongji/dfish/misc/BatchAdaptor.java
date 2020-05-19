@@ -71,19 +71,16 @@ public abstract class BatchAdaptor {
 		//空闲状态 - 执行发送
 		if(!working){
 			working = true;
-			new Thread(){
-				@Override
-                public void run() {
-					while(!workingQueue.isEmpty()) {
-						try {
-							executeBatch(findSendData());
-						} catch (Exception e) {}
-					}
-					working = false;
+			new Thread(() -> {
+				while(!workingQueue.isEmpty()) {
+					try {
+						executeBatch(findSendData());
+					} catch (Exception e) {}
 				}
-			}.start();
+				working = false;
+			}).start();
 		}
-	};
+	}
 	
 	/**
 	 * 获取当前要发送给服务器的最多数据

@@ -68,8 +68,7 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
         } else {
             Widget w = getNode();
             if (isTextWidget(getNode())) {
-                String text = getTextValue(getNode());
-                return text;
+                return getTextValue(getNode());
             } else {
                 return w;
             }

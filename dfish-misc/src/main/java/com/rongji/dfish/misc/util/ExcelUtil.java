@@ -329,7 +329,6 @@ public class ExcelUtil {
             fromRow = 0;
         }
         List<Object[]> dataList = new ArrayList<>();
-        if (sheet != null) {
             // 实际有数据的起始行下标
             int firstRowIndex = sheet.getFirstRowNum();
             if (fromRow < firstRowIndex) {
@@ -356,7 +355,6 @@ public class ExcelUtil {
                     dataList.add(data);
                 }
             }
-        }
         return dataList;
     }
 

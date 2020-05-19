@@ -74,7 +74,6 @@ public class DocxParser extends DocumentParser {
                  row.getCells().add(cell);
              }
         }
-        ;
 
         return table;
     }

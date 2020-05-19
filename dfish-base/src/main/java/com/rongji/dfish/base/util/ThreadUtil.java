@@ -56,8 +56,8 @@ public class ThreadUtil {
                 f.cancel(true);
             }
             throw e;
-        } catch (Exception e) {
-            throw e;
+//        } catch (Exception e) {
+//            throw e;
         }
     }
 

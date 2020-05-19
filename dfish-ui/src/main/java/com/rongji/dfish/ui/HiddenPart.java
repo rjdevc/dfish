@@ -77,13 +77,11 @@ public class HiddenPart implements HiddenContainer<HiddenPart> {
         if (hiddens == null) {
             return null;
         }
-        List<String> result = new ArrayList<>();
-        for (Hidden h : hiddens) {
-            if (h.getName().equals(name)) {
-                result.add(h.getValue());
-            }
-        }
-        return result;
+        return hiddens.stream().collect(ArrayList::new,
+                (list,item)->{if (item.getName().equals(name)) {
+                    list.add(item.getValue());
+                }},
+                List::addAll);
     }
 
     @Override

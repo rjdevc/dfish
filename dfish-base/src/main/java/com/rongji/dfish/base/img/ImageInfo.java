@@ -59,8 +59,6 @@ public class ImageInfo{
             } else if (ByteArrayUtil.startsWith(buff, HEAD_BMP)) {
                 return readBmpInfo(buff,read);
             }
-        }catch(IOException ex){
-            throw ex;
         }finally {
             try {
                 input.close();
