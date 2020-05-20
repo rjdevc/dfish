@@ -1617,25 +1617,8 @@ _ajax_url = $.ajaxUrl = function( a, b ) {
 },
 _ajax_xhr = (function() {
 	if ( br.app ) {
-		var originAnchor = document.createElement('a');
-		originAnchor.href = window.location.href;
-		return function( x ) {
-			if ( x.crossDomain ) { //强制使用plus跨域
-				return new plus.net.XMLHttpRequest();
-			}
-			//仅在webview的url为远程文件，且ajax请求的资源不同源下使用plus.net.XMLHttpRequest
-			if (originAnchor.protocol !== 'file:') {
-				var urlAnchor = document.createElement('a');
-				urlAnchor.href = x.url;
-				urlAnchor.href = urlAnchor.href;
-				x.crossDomain = (originAnchor.protocol + '//' + originAnchor.host) !== (urlAnchor.protocol + '//' + urlAnchor.host);
-				if ( x.crossDomain )
-					return new plus.net.XMLHttpRequest();
-			}
-			if ( br.ios && window.webkit && window.webkit.messageHandlers ) { //wkwebview下同样使用5+ xhr
-                return new plus.net.XMLHttpRequest();
-            }
-			return new window.XMLHttpRequest();
+		return function( x ) { //wkwebview下使用5+ xhr
+			return x.crossDomain || (br.ios && window.webkit && window.webkit.messageHandlers) ? new plus.net.XMLHttpRequest() : new window.XMLHttpRequest();
 		}
 	} else {
 		var a = function() { return new XMLHttpRequest() },
