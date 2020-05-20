@@ -1382,6 +1382,7 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 					if ( e.lengthComputable )
 						self.upload_progress_handler( f, e.loaded, e.total );
 				}, false );
+				//alert(xhr.upload.addEventListener);
 				xhr.addEventListener( 'load', function( e ) {
 					self.upload_success_handler( f, e.target.responseText );
 					self.upload_complete_handler( f );
