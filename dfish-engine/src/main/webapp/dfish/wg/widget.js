@@ -1033,10 +1033,6 @@ W = define( 'Widget', function() {
 					return;
 			}
 		},
-		srcData: function( a ) {
-			var c = this.srcParent();
-			return c && (a ? c._srcdata[ a ] : c._srcdata);
-		},
 		srcParent: function() {
 			return this.closest( function() { return this._srcdata } );
 		},
@@ -1288,7 +1284,7 @@ W = define( 'Widget', function() {
 				if ( c ) {
 					v = c[ f[ i ] ];
 				} else {
-					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] )) == U && (v = this.srcData( f[ i ] ));
+					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] ));
 				}
 				m.push( d ? d( v ) : v );
 			}
@@ -2356,6 +2352,9 @@ AbsSection = define.widget( 'AbsSection', {
 		},
 		getResult: function() {
 			return this.x.result;
+		},
+		srcData: function( a ) {
+			this._loadEnd( a );
 		},
 		// @force: 强制刷新，不论是否在frame内
 		load: function( tar, fn, force ) {
