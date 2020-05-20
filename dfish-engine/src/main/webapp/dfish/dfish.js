@@ -1613,23 +1613,22 @@ $.droppable = function( a, b ) {
 
 var
 _ajax_url = $.ajaxUrl = function( a, b ) {
-	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + _urlLoc( _path, a );
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : b ? _urlLoc( _path, a ) : _cfg.server ? _cfg.server + a : _urlLoc( _path, a );
 },
 _ajax_xhr = (function() {
 	if ( br.app ) {
 		return function( x ) { //wkwebview下使用5+ xhr
 			return x.crossDomain || (br.ios && window.webkit && window.webkit.messageHandlers) ? new plus.net.XMLHttpRequest() : new window.XMLHttpRequest();
 		}
-	} else {
-		var a = function() { return new XMLHttpRequest() },
-			b = function() { return new ActiveXObject( 'MSXML2.XMLHTTP' ) },
-			c = function() { return new ActiveXObject( 'Microsoft.XMLHTTP' ) };
-		// 有些ie浏览器的 XMLHttpRequest 实例化后不能调用方法，需要先试试open方法能不能用
-		try { a().open( 'GET', '/', T ); return a; } catch( e ) {}
-		try { b(); return b; } catch( e ) {}
-		try { c(); return c; } catch( e ) {}
-		$.winbox( 'Cannot create XMLHTTP object!' );
 	}
+	var a = function() { return new XMLHttpRequest() },
+		b = function() { return new ActiveXObject( 'MSXML2.XMLHTTP' ) },
+		c = function() { return new ActiveXObject( 'Microsoft.XMLHTTP' ) };
+	// 有些ie浏览器的 XMLHttpRequest 实例化后不能调用方法，需要先试试open方法能不能用
+	try { a().open( 'GET', '/', T ); return a; } catch( e ) {}
+	try { b(); return b; } catch( e ) {}
+	try { c(); return c; } catch( e ) {}
+	$.winbox( 'Cannot create XMLHTTP object!' );
 })(),
 _ajax_data = function( e ) {
 	if ( e && typeof e === _OBJ ) {
@@ -1705,8 +1704,8 @@ Ajax = _createClass( {
 				e = (e ? e + '&' : '') + _strFrom( a, '?' );
 				u = _strTo( a, '?' );
 			}
-			if ( x.base || _path )
-				u = _urlLoc( x.base || _path, u );
+			//if ( x.base || (!_ajax_httpmode( u ) && _path) )
+			//	u = _urlLoc( x.base || _path, u );
 			if ( ! br.app && x.cdn && _cfg.ver )
 				u = _urlParam( u, { _v: _cfg.ver } );
 			(l = _ajax_xhr( x )).open( e ? 'POST' : 'GET', u, ! x.sync );
