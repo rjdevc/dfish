@@ -4153,10 +4153,10 @@ Dialog = define.widget( 'dialog', {
 			$.snapTo( this.$(), r );
 			if ( vs ) {
 				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
-				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
-				t && (this.height( r.height + r.top ));
-				b && (this.height( r.height + r.bottom ));
-				(t || b) && (this._ori_height = h);
+				var xh = this.x.height, t = r.top < 0, b = r.bottom < 0, w = $.boxwd( this.$() ), h = $.boxht( this.$() );
+				t && (this.height( h + r.top ));
+				b && (this.height( h + r.bottom ));
+				(t || b) && (this._ori_height = xh, this.width( w ));
 			}
 			// 八方位浮动效果
 			n && Q( this.$() ).animate( n, 200 );
@@ -5962,8 +5962,8 @@ Calendar = define.widget( 'calendar/date', {
 			var o = _widget( a ), t = !/[ymd]/.test( b ) && /[his]/.test( b ),
 				x = { type: 'calendar/' + ( b === 'yyyy' ? 'year' : b === 'yyyy-mm' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[ymd]/.test( b ) && /[his]/.test( b ),
 					date: (t ? new Date().getFullYear() + '-01-01 ' : '') + c, begindate: e, enddate: f, padrow: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'dialog', ownproperty: T, snap: a.isFormWidget ? a.$( 'f' ) : a, cls: 'w-calendar-dialog w-form-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, indent: 1, pophide: T, node: x,
-				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
+			return o.exec( { type: 'dialog', ownproperty: T, snap: a.isFormWidget ? a.$( 'f' ) : a, cls: 'w-calendar-dialog w-form-dialog f-shadow-snap', width: -1, height: -1, wmin: 2, hmin: 2, indent: 1, pophide: T,
+				node: { type: 'vert', scroll: T, nodes: [ x ] }, on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
 	Prototype: {
@@ -6148,7 +6148,7 @@ Calendar = define.widget( 'calendar/date', {
 				~f.indexOf( 'h' ) && list( 'h', 24 );
 				~f.indexOf( 'i' ) && list( 'i', 60 );
 				~f.indexOf( 's' ) && list( 's', 60 );
-				this._dlg_time = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 33, snap: b, snaptype: '11', pophide: T, node: {
+				this._dlg_time = this.exec( { type: 'dialog', ownproperty: T, cls: 'w-calendar-time-dlg w-form-dialog f-white', width: b.width(), height: b.height(), wmin: 2, hmin: 2, snap: b, snaptype: '11', pophide: T, node: {
 					 type: 'view', node: {
 					 type: 'vert', nodes: [
 					 	{ type: 'horz', height: 29, nodes: h },
@@ -6181,17 +6181,14 @@ Calendar = define.widget( 'calendar/date', {
 									}
 								}
 					 		}
-					 	}
+					 	},
+					 	{ type: 'html', height: 31, cls: '_ok', text: this.html_ok( T ) }
 					 ] }
 				} } );
-				a && (a.innerHTML = Loc.calendar.backdate);
 			}
 		},
-		html_ok: function() {
-			if ( this.x.callback ) {
-				return '<div class=w-calendar-time>' + (this.x.timebtn ? '<div class=_time onclick=' + evw + '.popTime(this)>' + Loc.calendar.picktime + '</div>' : '') + '<div class=_ok onclick=' + evw + '.backfill(this)>' + Loc.confirm + '</div></div>';
-			}
-			return '';
+		html_ok: function( a ) {
+			return this.x.callback ? '<div class=w-calendar-time>' + (this.x.timebtn ? '<div class=_time onclick=' + abbr( this ) + '.popTime(this)>' + (a ? Loc.calendar.backdate : Loc.calendar.picktime) + '</div>' : '') + '<div class=_ok onclick=' + abbr( this ) + '.backfill(this)>' + Loc.confirm + '</div></div>' : '';
 		},
 		html_nodes: function() {
 			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusdate ? this.x.focusdate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 

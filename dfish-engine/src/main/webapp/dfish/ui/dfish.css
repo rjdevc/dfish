@@ -305,7 +305,7 @@
 .w-calendar-time ._time{float:left;padding-left:10px;cursor:pointer}
 .w-calendar-time ._ok{float:right;padding-right:10px;cursor:pointer}
 .w-calendar-time ._time:hover,.w-calendar-time ._ok:hover{text-decoration:underline}
-.w-calendar-time-dlg{margin:1px;text-align:center}
+.w-calendar-time-dlg{text-align:center}
 .w-calendar-time-dlg ._th{border-bottom:1px solid #eee;line-height:28px}
 .w-calendar-time-dlg ._bl{border-left:1px solid #eee}
 .w-calendar-time-dlg ._o{height:26px;line-height:26px}
