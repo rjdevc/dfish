@@ -83,7 +83,7 @@ br = $.br = (function() {
 		mbi = !!u.match( /\bmobile\b/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
-	return {
+	var r = {
 		ie		: ie,
 		ieVer	: iv,
 		ie7		: ie && d < 8, // ie6,ie7,兼容模式
@@ -92,8 +92,6 @@ br = $.br = (function() {
 		chm		: chm && parseFloat( chm[ 1 ] ),
 		fox		: u.indexOf( 'firefox' ) > 0,
 		safari  : !chm && u.indexOf( 'safari' ) > 0,
-		mobile  : mbi,
-		app		: location.protocol === 'file:',
 		css3	: !(ie && d < 9),
 		scroll	: mbi ? 0 : 17,
 		chdiv	: function( a, b, c ) {
@@ -108,6 +106,30 @@ br = $.br = (function() {
 			_rm( o );
 		}
 	};
+	if ( mbi ) {
+		r.mobile = T;
+		r.app = location.protocol === 'file:';
+		var wechat = u.match(/(MicroMessenger)\/([\d\.]+)/i);
+		if ( wechat ) r.wechat = { version: wechat[ 2 ].replace(/_/g, '.') };
+		var android = u.match(/(Android);?[\s\/]+([\d.]+)?/i);
+		if (android) {
+			r.android = T;
+			r.version = android[ 2 ];
+			r.isBadAndroid = !(/Chrome\/\d/.test(window.navigator.appVersion));
+		}
+		var iphone = u.match(/(iPhone\sOS)\s([\d_]+)/i);
+		if (iphone) {
+			r.ios = r.iphone = T;
+			r.version = iphone[ 2 ].replace(/_/g, '.');
+		} else {
+			var ipad = u.match(/(iPad).*OS\s([\d_]+)/i);
+			if (ipad) { //ipad
+				r.ios = r.ipad = T;
+				r.version = ipad[ 2 ].replace(/_/g, '.');
+			}
+		}
+	}
+	return r;
 })(),
 
 ie = br.ie,
@@ -1591,9 +1613,14 @@ $.droppable = function( a, b ) {
 
 var
 _ajax_url = $.ajaxUrl = function( a, b ) {
-	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + _urlLoc( _path, a );
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : b ? _urlLoc( _path, a ) : _cfg.server ? _cfg.server + a : _urlLoc( _path, a );
 },
 _ajax_xhr = (function() {
+	if ( br.app ) {
+		return function( x ) { //wkwebview下使用5+ xhr
+			return x.crossDomain || (br.ios && window.webkit && window.webkit.messageHandlers) ? new plus.net.XMLHttpRequest() : new window.XMLHttpRequest();
+		}
+	}
 	var a = function() { return new XMLHttpRequest() },
 		b = function() { return new ActiveXObject( 'MSXML2.XMLHTTP' ) },
 		c = function() { return new ActiveXObject( 'Microsoft.XMLHTTP' ) };
@@ -1677,11 +1704,11 @@ Ajax = _createClass( {
 				e = (e ? e + '&' : '') + _strFrom( a, '?' );
 				u = _strTo( a, '?' );
 			}
-			if ( x.base || _path )
-				u = _urlLoc( x.base || _path, u );
+			//if ( x.base || (!_ajax_httpmode( u ) && _path) )
+			//	u = _urlLoc( x.base || _path, u );
 			if ( ! br.app && x.cdn && _cfg.ver )
 				u = _urlParam( u, { _v: _cfg.ver } );
-			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
+			(l = _ajax_xhr( x )).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
 			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
 				return x.complete && x.complete.call( c, N, self );
@@ -1690,6 +1717,8 @@ Ajax = _createClass( {
 			! x.cdn && l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
 			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
 			l.setRequestHeader( 'x-requested-with',  _expando );
+			for ( i in _cfg.headers )
+				l.setRequestHeader( i, _cfg.headers[ i ] );
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
