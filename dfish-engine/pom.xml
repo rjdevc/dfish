@@ -32,7 +32,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <packagingExcludes>api/**,api-offline/**,css/**,m/**,webapp/**,*.jsp</packagingExcludes>
+                    <packagingExcludes>api/**,api-offline/**,m/**,webapp/**,*.jsp</packagingExcludes>
                 </configuration>
             </plugin>
         </plugins>
