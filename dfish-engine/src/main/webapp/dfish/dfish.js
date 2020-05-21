@@ -378,7 +378,7 @@ _loadCss = function( a, b, c ) {
 	typeof a === _STR && (a = [ a ]);
 	var d = doc.readyState === 'loading';
 	for ( var i = 0, l = a.length, n = l, e, f; i < l; i ++ ) {
-		f = _ajax_url( a[ i ] ) + _ver;
+		f = _ajax_url( a[ i ], T ) + _ver;
 		if ( d ) {
 			var u = b ? b[ i ] : _uid();
 			var s = '<link rel=stylesheet href="' + f + '" id="' + u + '">';
