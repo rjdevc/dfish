@@ -119,4 +119,30 @@ a:hover{color:#0088e4;text-decoration:underline}
 .w-input ._t{line-height:32px}
 .w-combobox ._o{height:28px}
    调整所有表单高度   -->  */
+.i-dlg-close {
+    background: url("g/g.png") -97px -7px;
+    width: 16px;
+    height: 16px;
+}
+
+.z-hv.x-dlg-close {
+    background-color: #d00;
+}
+
+.z-hv.x-dlg-max {
+    background-color: #0093ff;
+}
+
+/**
+主要用于操作列图标显示,不清楚是否引起其他显示异常
+ */
+.i-dlg-max {
+    background: url("g/g.png") -127px -7px;
+    width: 16px;
+    height: 16px;
+}
+
+.w-dialog.z-max .i-dlg-max {
+    background-position: -157px -7px;
+}
 
