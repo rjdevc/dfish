@@ -29,7 +29,7 @@ public class JsonUtil {
      * @param obj 待解析对象
      * @return String
      */
-    public static String toJson(Object obj) {
+    public static String toJson(Object obj) throws Exception {
         return jsonBuilder.toJson(obj);
     }
 
@@ -40,7 +40,7 @@ public class JsonUtil {
      * @param <T> 泛型类
      * @return T,解析对象
      */
-    public static <T> T parseObject(String json, Class<T> objClass) {
+    public static <T> T parseObject(String json, Class<T> objClass) throws Exception {
         return jsonBuilder.parseObject(json, objClass);
     }
 
@@ -51,7 +51,7 @@ public class JsonUtil {
      * @param <T> 泛型类
      * @return List&lt;T&gt;解析对象集合
      */
-    public static <T> List<T> parseArray(String json, Class<T> objClass) {
+    public static <T> List<T> parseArray(String json, Class<T> objClass) throws Exception {
         return jsonBuilder.parseArray(json, objClass);
     }
 

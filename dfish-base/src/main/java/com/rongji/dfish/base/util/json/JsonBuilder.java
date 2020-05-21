@@ -21,8 +21,9 @@ public interface JsonBuilder {
      * 对象转json方法
      * @param obj 待解析对象
      * @return String
+     * @throws Exception 转化异常
      */
-    String toJson(Object obj);
+    String toJson(Object obj) throws Exception;
 
     /**
      * json字符转对象方法
@@ -30,8 +31,9 @@ public interface JsonBuilder {
      * @param objClass 对象类
      * @param <T> 泛型类
      * @return T,解析对象
+     * @throws Exception 转化异常
      */
-    <T> T parseObject(String json, Class<T> objClass);
+    <T> T parseObject(String json, Class<T> objClass) throws Exception;
 
     /**
      * json字符转对象集合方法
@@ -39,7 +41,8 @@ public interface JsonBuilder {
      * @param objClass 对象类
      * @param <T> 泛型类
      * @return List&lt;T&gt;解析对象集合
+     * @throws Exception 转化异常
      */
-    <T> List<T> parseArray(String json, Class<T> objClass);
+    <T> List<T> parseArray(String json, Class<T> objClass) throws Exception;
 
 }
