@@ -1361,7 +1361,8 @@ W = define( 'widget', function() {
 			while ( i -- )
 				this[ i ].dispose( T );
 			for ( i in this.discNodes ) {
-				delete this.discNodes[ i ]; delete this[ i ];
+				this.discNodes[ i ].dispose( T );
+				delete this.discNodes[ i ];
 			}
 			if ( this.focusOwner ) {
 				delete this.focusOwner.focusNode; delete this.focusOwner;
