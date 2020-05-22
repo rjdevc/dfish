@@ -21,10 +21,10 @@ define.preload("g/form",{
 						}
 					]
 				},{
-					"type":"vert","id":"dlg_trunk","height":"*","nodes":[
+					"type":"vert","id":"dlg_trunk","cls":"dlg-trunk","height":"*","nodes":[
 						{
 							"type":"vert","height":"*","nodes":[
-								{"type":"preload/body","id":"dlg_body","height":"*"}
+								{"type":"preload/body","id":"dlg_body","cls":"dlg-body","height":"*"}
 							]
 						},{
 							"type":"horz","id":"dlg_foot","cls":"dlg-foot","style":"padding:0 20px;","height":"50","hmin":1,"wmin":40,"nodes":[

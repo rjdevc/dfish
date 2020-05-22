@@ -15,10 +15,10 @@ define.preload("g/alert",{
 						}
 					]
 				},{
-					"type":"vert","id":"dlg_trunk","height":"*","nodes":[
+					"type":"vert","id":"dlg_trunk","cls":"dlg-trunk","height":"*","nodes":[
 						{
 							"type":"vert","height":"*","nodes":[
-								{"type":"preload/body","id":"dlg_body","height":"*"}
+								{"type":"preload/body","id":"dlg_body","cls":"dlg-body","height":"*"}
 							]
 						}
 					]
