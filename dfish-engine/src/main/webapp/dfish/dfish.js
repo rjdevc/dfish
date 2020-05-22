@@ -698,6 +698,13 @@ _each = $.each = function( a, b, c ) {
     	 if( F === b.call( a[ i ], a[ i ], i, a ) ) { if ( c ) break; }
     return a;
 },
+// a -> array, b -> function
+_map = $.map = function( a, b, c ) {
+	if ( typeof b === _STR ) b = _arrfn( b );
+    for( var i = 0, l = a.length, d = []; i < l; i ++ )
+    	 d.push( b.call( a[ i ], a[ i ], i, a ) );
+    return d;
+},
 // 获取b在数组a的位置序号
 _arrIndex = $.arrIndex = function( a, b ) {
 	if ( a.indexOf ) return a.indexOf( b );
@@ -2419,7 +2426,7 @@ _merge( $, {
 	// @a -> image array, b -> style
 	previewImage: function( a, b ) {
 		if ( br.app ) {
-			plus.nativeUI.previewImage( _arrMake( a ), b );
+			plus.nativeUI.previewImage( _map( _arrMake( a ), function() { return _urlComplete( this ) } ), b );
 		} else {
 			var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
 			if ( br.mobile ) {

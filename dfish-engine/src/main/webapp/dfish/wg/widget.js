@@ -764,10 +764,6 @@ W = define( 'Widget', function() {
 			return t;
 		},
 		init_x_cls: $.rt(),
-		// @implement
-		pubParent: function() {
-			return this.rootNode;
-		},
 		// @private: 初始化配置参数
 		_init_x: function( x ) {
 			this.x = x;
@@ -852,6 +848,10 @@ W = define( 'Widget', function() {
 					this.parse( c[ j ] );
 			} else if ( c = this.x_node() )
 				this.parse( c );
+		},
+		// @implement
+		pubParent: function() {
+			return this.rootNode;
 		},
 		// 获取widget的默认配置项 /@a -> cls
 		getDefaultOption: function( a ) {
@@ -1502,6 +1502,7 @@ W = define( 'Widget', function() {
 			}
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
+			if ( typeof a === _NUM ) a = '' + a;
 			return a && typeof a === _STR && (!t || typeof t !== _OBJ) && ! b ? ' title="' + $.strQuot( c ? a.replace( /&/g, '&amp;' ) : a, !c ) + '"' : '';
 		},
 		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
@@ -2302,6 +2303,7 @@ _getReplaceTargets = function( x, tar, r ) {
 AbsSection = define.widget( 'AbsSection', {
 	Const: function( x, p, n ) {
 		typeof x === _STR && (x = { src: x });
+		x.src === U && (x.src = N);
 		W.call( this, x, p, n );
 	},
 	Prototype: {
@@ -2325,17 +2327,15 @@ AbsSection = define.widget( 'AbsSection', {
 		// @implement
 		attrSetter: function( a, b, c ) {
 			_proto.attrSetter.apply( this, arguments );
-			if ( a === 'src' ) {
-				this._runtime_src = b;
-			}
 		},
-		getSrc: function() {
-			var u = this._runtime_src; 
+		getSrc: function( a ) {
+			var u = this.x.src; 
 			if ( ! u ) {
 				var t = this.x.template;
 				t && (t = _getTemplate( t )) && (u = t.src);
-				! u && (u = this.attr( 'src' ));
 			}
+			if ( a )
+				return u;
 			if ( u && typeof u === _STR ) {
 				if ( u.indexOf( 'javascript:' ) === 0 ) {
 					u = this.formatJS( u );
@@ -2434,10 +2434,9 @@ AbsSection = define.widget( 'AbsSection', {
 			return x.type === this.type;
 		},
 		reload: function( src, tpl, tar, fn ) {
-			this._runtime_src = src;
 			var y = {};
-			src && (y.src = src);
-			tpl && (y.template = tpl);
+			src != N && (y.src = src);
+			tpl != N && (y.template = tpl);
 			$.merge( this.x, y );
 			this.reset( tar );
 			if ( this.$() ) {
@@ -2643,6 +2642,7 @@ Layout = define.widget( 'Layout', {
 /* `view` */
 View = define.widget( 'View', {
 	Const: function( x, p ) {
+		x.src === U && (x.src = N);
 		var r = (p && _view( p )) || _docView;
 		_initView.call( this );
 		_setPath.call( this, r, x );
@@ -8331,7 +8331,9 @@ ComboBox = define.widget( 'ComboBox', {
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
 			this.more = this.createPop(this.x.suggest ? $.extend({id: ''}, this.x.suggest) : {type: 'Dialog', node: {type: 'View', node: {type: 'Table'}}}, {value: this._val()});
 			if ( this.x.suggest ) {
-				this._online = typeof this.more.x.src === _STR && /\$text\b/.test(this.more.x.src) || this.more.x.src.indexOf('javascript:') === 0;
+				var s = this.more.getSrc( T );
+				if ( typeof s === _STR )
+					this._online = /\$text\b/.test( s ) || s.indexOf( 'javascript:' ) === 0;
 			}
 			var c = this.more.getContentView();
 			c && c.layout && this._init_load();
@@ -9689,8 +9691,8 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				_setBadge.call( this, b );
 			}
 		},
-		getSrc: function() {
-			return Section.prototype.getSrc.call( this );
+		getSrc: function( a ) {
+			return Section.prototype.getSrc.call( this, a );
 		},
 		isContentData: $.rt( T ),
 		isFolder: function() {

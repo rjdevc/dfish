@@ -1170,7 +1170,7 @@ AbsUpload = define.widget( 'AbsUpload', {
 			button_disabled: !!(x.status && x.status !== 'normal'),
 			flash_url: module.path + 'swfupload.swf',
 			flash9_url: module.path + 'swfupload_fp9.swf',
-			upload_url: this.post && this.post.x.src
+			upload_url: this.post && this.post.getSrc()
 		}, swfOptions( x ) );
 		var v = x.value || [];
 		if ( typeof v === 'string' )
@@ -1392,7 +1392,7 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 				ldr.loading = true;
 				ldr.xhr     = xhr;
 				var u = $.ajaxUrl( this.x.upload_url );
-				xhr.open( 'post', this.formatStr( u, null, ! /^\$\w+$/.test( u ) ) );
+				xhr.open( 'post', u );
 				xhr.send( d );
 			}
 		}
@@ -1741,15 +1741,12 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 			ready: function() {
 				this.x.file && readImage( this.x.file, this.$( 'g' ) );
 			},
-			click: {
-				occupy: true,
-				method: function() {
-					if ( this.x.data ) {
-						if ( this.u.x.preview ) {
-							this.cmd( this.u.x.preview );
-						} else if ( this.u.x.download ) {
-							this.download();
-						}
+			click:  function() {
+				if ( this.x.data ) {
+					if ( this.u.x.preview ) {
+						this.cmd( this.u.x.preview );
+					} else if ( this.u.x.download ) {
+						this.download();
 					}
 				}
 			}
@@ -1764,11 +1761,22 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
 		},
 		preview: function( a ) {
+			if ( ! this.x.data )
+				return;
+			if ( ! a && ! this.x.data.url && ! this.x.data.thumbnail )
+				a = this.u.x.thumbnail;
 			for ( var i = 0, b = this.parentNode, l = b.length, c = [], d = a && ! /^\$\w+$/.test( a ), e; i < l; i ++ ) {
-				c.push( a ? b[ i ].formatStr( a, null, d ) : (b[ i ].data( 'url' ) || b[ i ].data( 'thumbnail' )) );
-				if ( b[ i ] === this ) e = i;
+				if ( b[ i ].x.data ) {
+					var f = (b[ i ].data( 'url' ) || b[ i ].data( 'thumbnail' ));
+					if ( ! f )
+						f = a && b[ i ].formatStr( a, null, d );
+					if ( f ) {
+						c.push( f );
+						if ( b[ i ] === this ) e = c.length -1;
+					}
+				}
 			}
-			$.previewImage( c, { current: e } );
+			c.length && $.previewImage( c, { current: e } );
 		},
 		setProgress: function( a ) {
 			this.$( 'p' ).style.left = a + '%';
@@ -1782,7 +1790,9 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 			this.x.data = serverData;
 			this.u.addValue( serverData );
 			this.removeClass( 'z-loading' );
-			this.render();
+			this.removeElem( 'g' );
+			Q( '._loading', this.$() ).remove();
+			//this.render();
 		},
 		setError: function( errorCode, message ) {
 			this.loading = false;

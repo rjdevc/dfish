@@ -982,6 +982,7 @@
 .w-imageupload-value ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px;}
 .w-imageupload-value.z-err{border-color:#f00}
 .w-imageupload-value.z-err ._name,.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._close,.w-imageupload-value:hover ._cvr{display:block}
+.w-imageupload-value.z-loading ._g{opacity:.6}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-pagebar .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 
