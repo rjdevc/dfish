@@ -2350,9 +2350,28 @@ _merge( $, {
 	// @a -> src, b -> post json?, c -> options
 	download: function( a, b, c ) {
 		if ( br.app ) {
-			var dtask = plus.downloader.createDownload("http://www.abc.com/a.doc", c );
-			//dtask.addEventListener("statechanged", onStateChanged, false);
-			dtask.start(); 
+			var dtask = plus.downloader.createDownload( _ajax_url( a ), c );
+			plus.nativeUI.showWaiting();
+			dtask.addEventListener("statechanged", function(task, status) {
+				switch (task.state) {
+					case 1: // 开始
+						plus.nativeUI.toast( $.loc.download_start );
+						break;
+					case 4: // 下载完成
+						if (status == 200) {
+							plus.nativeUI.toast( $.loc.download_complete ); 
+							plus.runtime.openFile(task.filename, {}, function(e) {
+								plus.nativeUI.alert( $.loc.download_cannotopen );
+							});
+						} else {
+							plus.nativeUI.toast($.loc.download_fail + status);
+						}
+						plus.nativeUI.closeWaiting();
+						break;
+				}
+			});
+			dtask.start();
+			return;
 		}
 		var d = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
 		if ( _cfg.ajaxData ) {

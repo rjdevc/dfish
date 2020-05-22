@@ -77,6 +77,12 @@ print_preview : '打印预览',
 placeholder_input: '请输入{0}',
 placeholder_select: '请选择{0}',
 
+download_start: '开始下载..',
+download_complete: '下载完成',
+download_cannotopen: '无法打开此文件',
+download_fail: '下载失败',
+
+
 debug: {
 	sorry : '很抱歉，系统发生了错误',
 	view_more : '点击“确定”，可在新窗口查看详细错误信息',
