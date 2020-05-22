@@ -3233,6 +3233,9 @@ Button = define.widget( 'button', {
 		icon: function( a ) {
 			this.attr( 'icon', a );
 		},
+		isIconOnly: function() {
+			return this.x.text == N && ! this.x.format && this.attr( 'icon' );
+		},
 		// 新增或更换文本。如果 a == ''  / @a -> text
 		text: function( a ) {
 			this.attr( 'text', a );
@@ -3246,10 +3249,12 @@ Button = define.widget( 'button', {
 		html: function() {
 			var x = this.x, p = this.parentNode, t = this.tagName || 'div', w = this.innerWidth(),
 				a = '<' + t + ' id=' + this.id + ' class="',
-				b = this.prop_cls(), c = this._combo, d, s = '';
+				b = this.prop_cls(), c = this._combo, d, s = '', io = this.isIconOnly();
 			b += x.hidetoggle ? ' z-normal' : c ? ' z-combo' : this.more ? ' z-more' : ' z-normal';
 			if ( x.closeable || x.closeicon )
 				b += ' z-x';
+			if ( io )
+				b += ' z-i';
 			if ( w != N ) {
 				s += 'width:' + w + 'px;';
 			}

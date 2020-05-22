@@ -553,6 +553,7 @@
 .w-button ._c{padding-left:8px;overflow:hidden}
 .w-button ._t,.w-button ._i{padding-right:8px}
 .w-button ._i{float:left;line-height:1;text-align:center}
+.w-button.z-i ._i{float:none}
 .w-button ._t{overflow:hidden;white-space:pre;line-height:1}
 .w-button ._m{float:right;width:20px;text-align:center}
 .w-button ._x{float:right;padding-right:5px;color:#99a8b8;text-align:center}
