@@ -1746,7 +1746,7 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 				method: function() {
 					if ( this.x.data ) {
 						if ( this.u.x.preview ) {
-							this.preview();
+							this.cmd( this.u.x.preview );
 						} else if ( this.u.x.download ) {
 							this.download();
 						}
@@ -1763,12 +1763,12 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 			var s = this.u.x.download;
 			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
 		},
-		preview: function() {	
-			var c = this.u.x.preview;
-			if ( typeof c === 'string' )
-				c = { type: 'Ajax', src: c };
-			c.src && (c.src = this.formatStr( c.src, null, ! /^\$\w+$/.test( c.src ) ));
-			this.cmd( c );
+		preview: function( a ) {
+			for ( var i = 0, b = this.parentNode, l = b.length, c = [], d = a && ! /^\$\w+$/.test( a ), e; i < l; i ++ ) {
+				c.push( a ? b[ i ].formatStr( a, null, d ) : (b[ i ].data( 'url' ) || b[ i ].data( 'thumbnail' )) );
+				if ( b[ i ] === this ) e = i;
+			}
+			$.previewImage( c, { current: e } );
 		},
 		setProgress: function( a ) {
 			this.$( 'p' ).style.left = a + '%';

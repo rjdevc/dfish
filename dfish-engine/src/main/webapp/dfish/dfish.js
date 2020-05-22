@@ -2416,19 +2416,24 @@ _merge( $, {
 			_loadCss( s, d, f );
 		}
 	})(),
-	// @a -> image array, b -> id
+	// @a -> image array, b -> style
 	previewImage: function( a, b ) {
-		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
-		if ( br.mobile ) {
-			w = $.width() - 36;
-			h = $.height() - 36;
+		if ( br.app ) {
+			plus.nativeUI.previewImage( _arrMake( a ), b );
+		} else {
+			var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
+			if ( br.mobile ) {
+				w = $.width() - 36;
+				h = $.height() - 36;
+			}
+			if ( _isArray( a ) )
+				a = a[ (b && b.current) || 0 ];
+			a = _urlComplete( a );
+			$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
+				node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 80) + 'px;max-height:' + (h - 80) + 'px">' +
+					'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
+					'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 		}
-		a = _urlComplete( a );
-		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
-			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
-				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
-				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
-				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	// @a -> preview src
 	previewImageRotate: function( a ) {
