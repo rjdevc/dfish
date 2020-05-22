@@ -392,6 +392,7 @@ public class JigsawGenerator {
      * @return Strnig
      */
     private String getImageRawDir() {
+//        ClassLoader.getSystemResource("").getPath();
         String realServletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
         if (!realServletPath.endsWith("/")) {
             realServletPath += "/";

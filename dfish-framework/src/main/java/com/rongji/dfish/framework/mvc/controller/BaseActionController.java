@@ -461,6 +461,7 @@ public class BaseActionController {
             try {
                 requestJson = convert2JSON(request);
             } catch (Throwable t) {
+                LogUtil.error("请求Json转换异常", t);
             }
             String errMsg = null;
             if (cause instanceof SocketException) {
