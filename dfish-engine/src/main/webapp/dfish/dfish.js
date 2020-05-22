@@ -2350,7 +2350,7 @@ _merge( $, {
 	// @a -> src, b -> post json?, c -> options
 	download: function( a, b, c ) {
 		if ( br.app ) {
-			var dtask = plus.downloader.createDownload( _ajax_url( a ), c );
+			var dtask = plus.downloader.createDownload( _urlComplete( a ), c );
 			plus.nativeUI.showWaiting();
 			dtask.addEventListener("statechanged", function(task, status) {
 				switch (task.state) {
