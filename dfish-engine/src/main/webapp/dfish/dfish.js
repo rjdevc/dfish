@@ -2347,9 +2347,14 @@ _merge( $, {
 			d && d();
 		}, e[ c ] || c );
 	},	
-	// @a -> src, b -> post json?
-	download: function( a, b ) {
-		var c = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
+	// @a -> src, b -> post json?, c -> options
+	download: function( a, b, c ) {
+		if ( br.app ) {
+			var dtask = plus.downloader.createDownload("http://www.abc.com/a.doc", c );
+			//dtask.addEventListener("statechanged", onStateChanged, false);
+			dtask.start(); 
+		}
+		var d = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
 		if ( _cfg.ajaxData ) {
 			b = $.extend( b || {}, _cfg.ajaxData );
 		}
@@ -2377,8 +2382,8 @@ _merge( $, {
 			c.append( f );
 			f.submit();
 		}
-		c.appendTo( document.body );
-		b ? f.submit() : c.find( 'iframe' ).prop( 'src', a );
+		d.appendTo( document.body );
+		b ? f.submit() : d.find( 'iframe' ).prop( 'src', a );
 	},
 	// 根据文件后缀名获取文件类型
 	mimeType: (function() {

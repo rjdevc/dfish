@@ -1790,8 +1790,7 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 			this.x.data = serverData;
 			this.u.addValue( serverData );
 			this.removeClass( 'z-loading' );
-			this.removeElem( 'g' );
-			Q( '._loading', this.$() ).remove();
+			Q( '._loading,._progress', this.$() ).remove();
 			//this.render();
 		},
 		setError: function( errorCode, message ) {
