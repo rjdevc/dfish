@@ -2336,7 +2336,12 @@ AbsSection = define.widget( 'AbsSection', {
 				t && (t = _getTemplate( t )) && (u = t.src);
 				! u && (u = this.attr( 'src' ));
 			}
-			u && typeof u === _STR && this.x.args && (u = this.formatStr( u, this.x.args, T ));
+			if ( u && typeof u === _STR ) {
+				if ( u.indexOf( 'javascript:' ) === 0 ) {
+					u = this.formatJS( u );
+				} else
+					this.x.args && (u = this.formatStr( u, this.x.args, T ));
+			}
 			return u;
 		},
 		getSrcFilter: function() {
@@ -2377,7 +2382,7 @@ AbsSection = define.widget( 'AbsSection', {
 		loadData: function( tar, fn, cache ) {
 			this.abort();
 			this.loading = T;
-			var u, m, n, o, t = this.x.template, self = this,
+			var m, n, o, t = this.x.template, self = this,
 				d = this.type_view && _viewResources[ this.path ],
 				e = function() {
 					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
@@ -2388,7 +2393,8 @@ AbsSection = define.widget( 'AbsSection', {
 			} else
 				o = T;
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			(u = this.getSrc()) ? this.exec( { type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
+			u = this.getSrc();
+			u && typeof u === _STR ? this.exec( { type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
 				if ( this._success( x ) ) {
 					n = x; e();
 				}
@@ -2397,7 +2403,7 @@ AbsSection = define.widget( 'AbsSection', {
 					n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } );
 					e();
 				}
-			} } ) : (n = {}, e());
+			} } ) : (n = u && typeof u === _OBJ ? u : {}, e());
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		_success: function( x ) {
@@ -8324,8 +8330,8 @@ ComboBox = define.widget( 'ComboBox', {
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
 			this.more = this.createPop(this.x.suggest ? $.extend({id: ''}, this.x.suggest) : {type: 'Dialog', node: {type: 'View', node: {type: 'Table'}}}, {value: this._val()});
-			if (this.x.suggest) {
-				this._online = typeof this.more.x.src === _STR && /\$text\b/.test(this.more.x.src);
+			if ( this.x.suggest ) {
+				this._online = typeof this.more.x.src === _STR && /\$text\b/.test(this.more.x.src) || this.more.x.src.indexOf('javascript:') === 0;
 			}
 			var c = this.more.getContentView();
 			c && c.layout && this._init_load();
@@ -10523,6 +10529,9 @@ TableRow = define.widget( 'TableRow', {
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
+		pubParent: function() { //层级关系: Table/TBody/ContentTable/ContentTBody/TR
+			return this.parentNode.type === this.type ? this.parentNode.pubParent() : this.parentNode.parentNode.parentNode;
+		},
 		getData: function() {
 			var d = {}, l = this.length;
 			if ( l ) {
@@ -10785,10 +10794,6 @@ TR = define.widget( 'TR', {
 	Prototype: {
 		type_tr: T,
 		x_childtype: $.rt( 'TR' ),
-		pubParent: function() {
-			//层级关系: Table/TBody/ContentTable/ContentTBody/TR
-			return this.parentNode.type === this.type ? this.parentNode.pubParent() : this.parentNode.parentNode.parentNode;
-		},
 		getPageIndex: function() {
 			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.contentTBody() || [], this );
 			return r.x.limit ? Math.floor( a / r.x.limit ) + 1 : 1;
