@@ -68,7 +68,8 @@
 .w-jigsaw ._i{width:16px;height:16px}
 
 .w-upload-value-simple{height:36px}
-.w-imageupload-value ._close{display:block;background:transparent;color:#f00}
+.w-imageupload-value ._close{display:block;background:transparent;color:#f00;font-size:20px;top:-2px;right:-2px;}
+.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._cvr{display:none}
 
 .f-boxbtn{width:30px;height:38px;text-align:center;text-indent:0;font-style:normal}
 

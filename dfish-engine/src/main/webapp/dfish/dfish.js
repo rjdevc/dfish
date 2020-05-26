@@ -698,6 +698,13 @@ _each = $.each = function( a, b, c ) {
     	 if( F === b.call( a[ i ], a[ i ], i, a ) ) { if ( c ) break; }
     return a;
 },
+// a -> array, b -> function
+_map = $.map = function( a, b, c ) {
+	if ( typeof b === _STR ) b = _arrfn( b );
+    for( var i = 0, l = a.length, d = []; i < l; i ++ )
+    	 d.push( b.call( a[ i ], a[ i ], i, a ) );
+    return d;
+},
 // 获取b在数组a的位置序号
 _arrIndex = $.arrIndex = function( a, b ) {
 	if ( a.indexOf ) return a.indexOf( b );
@@ -2340,9 +2347,33 @@ _merge( $, {
 			d && d();
 		}, e[ c ] || c );
 	},	
-	// @a -> src, b -> post json?
-	download: function( a, b ) {
-		var c = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
+	// @a -> src, b -> post json?, c -> options
+	download: function( a, b, c ) {
+		if ( br.app ) {
+			var dtask = plus.downloader.createDownload( _urlComplete( a ), c );
+			plus.nativeUI.showWaiting();
+			dtask.addEventListener("statechanged", function(task, status) {
+				switch (task.state) {
+					case 1: // 开始
+						plus.nativeUI.toast( $.loc.download_start );
+						break;
+					case 4: // 下载完成
+						if (status == 200) {
+							plus.nativeUI.toast( $.loc.download_complete ); 
+							plus.runtime.openFile(task.filename, {}, function(e) {
+								plus.nativeUI.alert( $.loc.download_cannotopen );
+							});
+						} else {
+							plus.nativeUI.toast($.loc.download_fail + status);
+						}
+						plus.nativeUI.closeWaiting();
+						break;
+				}
+			});
+			dtask.start();
+			return;
+		}
+		var d = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
 		if ( _cfg.ajaxData ) {
 			b = $.extend( b || {}, _cfg.ajaxData );
 		}
@@ -2370,8 +2401,8 @@ _merge( $, {
 			c.append( f );
 			f.submit();
 		}
-		c.appendTo( document.body );
-		b ? f.submit() : c.find( 'iframe' ).prop( 'src', a );
+		d.appendTo( document.body );
+		b ? f.submit() : d.find( 'iframe' ).prop( 'src', a );
 	},
 	// 根据文件后缀名获取文件类型
 	mimeType: (function() {
@@ -2416,19 +2447,24 @@ _merge( $, {
 			_loadCss( s, d, f );
 		}
 	})(),
-	// @a -> image array, b -> id
+	// @a -> image array, b -> style
 	previewImage: function( a, b ) {
-		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
-		if ( br.mobile ) {
-			w = $.width() - 36;
-			h = $.height() - 36;
+		if ( br.app ) {
+			plus.nativeUI.previewImage( _map( _arrMake( a ), function() { return _urlComplete( this ) } ), b );
+		} else {
+			var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
+			if ( br.mobile ) {
+				w = $.width() - 36;
+				h = $.height() - 36;
+			}
+			if ( _isArray( a ) )
+				a = a[ (b && b.current) || 0 ];
+			a = _urlComplete( a );
+			$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
+				node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 80) + 'px;max-height:' + (h - 80) + 'px">' +
+					'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
+					'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 		}
-		a = _urlComplete( a );
-		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
-			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
-				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
-				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
-				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	// @a -> preview src
 	previewImageRotate: function( a ) {
