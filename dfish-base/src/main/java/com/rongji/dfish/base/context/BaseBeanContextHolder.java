@@ -2,6 +2,7 @@ package com.rongji.dfish.base.context;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -27,7 +28,9 @@ public class BaseBeanContextHolder implements BeanContextHolder {
         synchronized (contextByClass) {
             T obj = (T) contextByClass.get(clz);
             if (obj == null) {
-                for (Object o : contextByClass.values()) {
+                Iterator<Map.Entry<Class, Object>> iterator = contextByClass.entrySet().iterator();
+                for (;iterator.hasNext();) {
+                    Object o = iterator.next().getValue();
                     if (clz.isAssignableFrom(o.getClass())) {
                         obj = (T) o;
                         break;

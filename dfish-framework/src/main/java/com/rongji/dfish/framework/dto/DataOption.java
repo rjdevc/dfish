@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class DataOption implements Serializable {
 
+    private static final long serialVersionUID = -2264187221457615319L;
     private Object value;
     private String text;
     private String icon;

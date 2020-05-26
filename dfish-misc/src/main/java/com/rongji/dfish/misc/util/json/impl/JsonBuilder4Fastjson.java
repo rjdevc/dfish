@@ -14,10 +14,8 @@ import java.util.List;
  * @since DFish5.0
  */
 public class JsonBuilder4Fastjson extends AbstractJsonBuilder {
+
     @Override
-    /**
-     * 设置日期格式
-     */
     public void setDateFormat(String dateFormat) {
         super.setDateFormat(dateFormat);
         // FIXME fastjson全局设置日期格式,这个写法有问题,定制化的写法应该考虑实现方案

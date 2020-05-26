@@ -11,6 +11,11 @@
             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
        default-lazy-init="true">
 
+    <!-- Service层扫描 -->
+    <context:component-scan base-package="com.rongji.dfish.*;">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
     <!--注解式事务开启-->
     <tx:annotation-driven/>
 

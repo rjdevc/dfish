@@ -102,7 +102,7 @@
 .f-dialog-preview ._rotate a{color:#eee;cursor:pointer}
 .f-dialog-preview ._rotate ._s{margin:0 10px;color:#999}
 .f-dialog-preview ._rotate .f-i{font-size:12px;color:#ddd}
-.f-dialog-preview ._img{margin:0 40px}
+.f-dialog-preview ._img{margin:0 40px;background:#fff}
 
 .w-loading{padding:10px 15px;border:1px solid #ddd;background:#fcfcfc;text-align:center}
 .w-view-loading{width:100%;height:100%;text-align:center}
@@ -336,7 +336,7 @@
 .w-calendar-time ._time{float:left;margin-left:5px;cursor:pointer}
 .w-calendar-time ._ok{float:right;margin-right:5px;cursor:pointer}
 .w-calendar-time ._time:hover,.w-calendar-time ._ok:hover{color:#2498ff}
-.w-dialog.w-calendar-time-dlg{margin:1px;text-align:center;border:0;box-shadow:none}
+.w-dialog.w-calendar-time-dlg{text-align:center;box-shadow:none}
 .w-calendar-time-dlg ._th{border-bottom:1px solid #ddd;line-height:31px}
 .w-calendar-time-dlg ._bl{border-left:1px solid #ddd}
 .w-calendar-time-dlg ._o{height:28px;line-height:28px}
@@ -344,6 +344,8 @@
 .w-calendar-time-dlg ._o.z-on{background:#2498ff;color:#fff}
 .w-calendar-time-dlg ._o.z-ds{color:gray}
 .w-calendar-time-dlg ._o.z-ds.z-hv{background:transparent}
+.w-calendar-time-dlg .w-calendar-time ._time{margin-left:15px}
+.w-calendar-time-dlg .w-calendar-time ._ok{margin-right:15px}
 .w-calendar-date .w-calendar-head{border:0;margin:0}
 
 .w-calendar-dialog{background:#fff}
@@ -980,6 +982,7 @@
 .w-imageupload-value ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px;}
 .w-imageupload-value.z-err{border-color:#f00}
 .w-imageupload-value.z-err ._name,.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._close,.w-imageupload-value:hover ._cvr{display:block}
+.w-imageupload-value.z-loading ._g{opacity:.6}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-pagebar .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 

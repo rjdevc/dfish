@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.1.4-SNAPSHOT</version>
+        <version>5.0.1.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-framework</artifactId>
@@ -24,12 +24,7 @@
             <artifactId>dfish-misc</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- 数据库连接池 -->
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-        </dependency>
+
         <!-- 文件上传 -->
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -45,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
+            <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
         </dependency>
 

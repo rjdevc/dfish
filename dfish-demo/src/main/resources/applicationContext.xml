@@ -56,19 +56,12 @@
     </bean>
 
     <!-- dao层扫描 -->
-    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
+    <context:component-scan base-package="com.rongji.dfish.*;">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
     </context:component-scan>
-    <!-- Service层扫描 -->
-    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-    </context:component-scan>
-    <!-- Controller层扫描 -->
-    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-    </context:component-scan>
+
     <!-- Component扫描 -->
-    <context:component-scan base-package="com.rongji.dfish.*;" use-default-filters="false">
+    <context:component-scan base-package="com.rongji.dfish.*;">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
     </context:component-scan>
 

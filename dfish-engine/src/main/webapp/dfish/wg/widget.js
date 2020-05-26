@@ -764,10 +764,6 @@ W = define( 'Widget', function() {
 			return t;
 		},
 		init_x_cls: $.rt(),
-		// @implement
-		pubParent: function() {
-			return this.rootNode;
-		},
 		// @private: 初始化配置参数
 		_init_x: function( x ) {
 			this.x = x;
@@ -852,6 +848,10 @@ W = define( 'Widget', function() {
 					this.parse( c[ j ] );
 			} else if ( c = this.x_node() )
 				this.parse( c );
+		},
+		// @implement
+		pubParent: function() {
+			return this.rootNode;
 		},
 		// 获取widget的默认配置项 /@a -> cls
 		getDefaultOption: function( a ) {
@@ -1032,10 +1032,6 @@ W = define( 'Widget', function() {
 				} else
 					return;
 			}
-		},
-		srcData: function( a ) {
-			var c = this.srcParent();
-			return c && (a ? c._srcdata[ a ] : c._srcdata);
 		},
 		srcParent: function() {
 			return this.closest( function() { return this._srcdata } );
@@ -1288,7 +1284,7 @@ W = define( 'Widget', function() {
 				if ( c ) {
 					v = c[ f[ i ] ];
 				} else {
-					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] )) == U && (v = this.srcData( f[ i ] ));
+					(v = x.data && x.data[ f[ i ] ]) === U && (v = x[ f[ i ] ]) === U && (v = this.closestData( f[ i ] ));
 				}
 				m.push( d ? d( v ) : v );
 			}
@@ -1506,6 +1502,7 @@ W = define( 'Widget', function() {
 			}
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
+			if ( typeof a === _NUM ) a = '' + a;
 			return a && typeof a === _STR && (!t || typeof t !== _OBJ) && ! b ? ' title="' + $.strQuot( c ? a.replace( /&/g, '&amp;' ) : a, !c ) + '"' : '';
 		},
 		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
@@ -1574,7 +1571,7 @@ W = define( 'Widget', function() {
 				this[ i ].dispose( T );
 			for ( i in this.discNodes ) {
 				this.discNodes[ i ].dispose( T );
-				delete this.discNodes[ i ]; delete this[ i ];
+				delete this.discNodes[ i ];
 			}
 			if ( this.focusOwner ) {
 				delete this.focusOwner.focusNode; delete this.focusOwner;
@@ -2306,6 +2303,7 @@ _getReplaceTargets = function( x, tar, r ) {
 AbsSection = define.widget( 'AbsSection', {
 	Const: function( x, p, n ) {
 		typeof x === _STR && (x = { src: x });
+		x.src === U && (x.src = N);
 		W.call( this, x, p, n );
 	},
 	Prototype: {
@@ -2329,18 +2327,21 @@ AbsSection = define.widget( 'AbsSection', {
 		// @implement
 		attrSetter: function( a, b, c ) {
 			_proto.attrSetter.apply( this, arguments );
-			if ( a === 'src' ) {
-				this._runtime_src = b;
-			}
 		},
-		getSrc: function() {
-			var u = this._runtime_src; 
+		getSrc: function( a ) {
+			var u = this.x.src; 
 			if ( ! u ) {
 				var t = this.x.template;
 				t && (t = _getTemplate( t )) && (u = t.src);
-				! u && (u = this.attr( 'src' ));
 			}
-			u && typeof u === _STR && this.x.args && (u = this.formatStr( u, this.x.args, T ));
+			if ( a )
+				return u;
+			if ( u && typeof u === _STR ) {
+				if ( u.indexOf( 'javascript:' ) === 0 ) {
+					u = this.formatJS( u );
+				} else
+					this.x.args && (u = this.formatStr( u, this.x.args, T ));
+			}
 			return u;
 		},
 		getSrcFilter: function() {
@@ -2356,6 +2357,9 @@ AbsSection = define.widget( 'AbsSection', {
 		},
 		getResult: function() {
 			return this.x.result;
+		},
+		srcData: function( a ) {
+			this._loadEnd( a );
 		},
 		// @force: 强制刷新，不论是否在frame内
 		load: function( tar, fn, force ) {
@@ -2378,7 +2382,7 @@ AbsSection = define.widget( 'AbsSection', {
 		loadData: function( tar, fn, cache ) {
 			this.abort();
 			this.loading = T;
-			var u, m, n, o, t = this.x.template, self = this,
+			var m, n, o, t = this.x.template, self = this,
 				d = this.type_view && _viewResources[ this.path ],
 				e = function() {
 					if ( ! self._disposed && m && n && o ) { self._loadEnd( n ); fn && fn.call( self, n ); n = N; }
@@ -2389,7 +2393,8 @@ AbsSection = define.widget( 'AbsSection', {
 			} else
 				o = T;
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			(u = this.getSrc()) ? this.exec( { type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
+			u = this.getSrc();
+			u && typeof u === _STR ? this.exec( { type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
 				if ( this._success( x ) ) {
 					n = x; e();
 				}
@@ -2398,7 +2403,7 @@ AbsSection = define.widget( 'AbsSection', {
 					n = new Error( { text: Loc.ps( a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status ) } );
 					e();
 				}
-			} } ) : (n = {}, e());
+			} } ) : (n = u && typeof u === _OBJ ? u : {}, e());
 			cache && this.addEvent( 'unload', function() { $.ajaxClean( u ) } );
 		},
 		_success: function( x ) {
@@ -2429,10 +2434,9 @@ AbsSection = define.widget( 'AbsSection', {
 			return x.type === this.type;
 		},
 		reload: function( src, tpl, tar, fn ) {
-			this._runtime_src = src;
 			var y = {};
-			src && (y.src = src);
-			tpl && (y.template = tpl);
+			src != N && (y.src = src);
+			tpl != N && (y.template = tpl);
 			$.merge( this.x, y );
 			this.reset( tar );
 			if ( this.$() ) {
@@ -2638,6 +2642,7 @@ Layout = define.widget( 'Layout', {
 /* `view` */
 View = define.widget( 'View', {
 	Const: function( x, p ) {
+		x.src === U && (x.src = N);
 		var r = (p && _view( p )) || _docView;
 		_initView.call( this );
 		_setPath.call( this, r, x );
@@ -4800,10 +4805,10 @@ Dialog = define.widget( 'Dialog', {
 			$.snapTo( this.$(), r );
 			if ( vs && this.type === 'Dialog' ) {
 				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
-				var h = this.x.height, t = r.top < 0, b = r.bottom < 0;
-				t && (this.height( r.height + r.top ));
-				b && (this.height( r.height + r.bottom ));
-				(t || b) && (this._ori_height = h);
+				var xh = this.x.height, t = r.top < 0, b = r.bottom < 0, w = $.boxwd( this.$() ), h = $.boxht( this.$() );
+				t && (this.height( h + r.top ));
+				b && (this.height( h + r.bottom ));
+				(t || b) && (this._ori_height = xh, this.width( w ));
 			}
 			// 八方位浮动效果
 			n && Q( this.$() ).animate( n, 200 );
@@ -6841,14 +6846,16 @@ _calendarformatter = { date: 'yyyy-MM-dd', week: 'yyyy-MM-dd', month: 'yyyy-MM',
 Calendar = define.widget( 'Calendar', {
 	Const: function( x ) {
 		!x.date && x.focusDate && (x.date = x.focusDate);
+		this.face = x.face || 'date';
+		this.formatter = x.format || _calendarformatter[ this.face ];
 		var d = x.date ? this._ps( x.date ) : new Date(),
 			b = x.begindate && this._ps( x.begindate ), e = x.enddate && this._ps( x.enddate );
-		this.face = x.face || 'date';
 		this.date = $.numRange( d, b, e );
-		this.formatter = _calendarformatter[ this.face ];
 		this._nav_unit = this.face === 'date' ? 'M' : 'y';
 		this._nav_radix = this.face === 'year' ? 10 : 1;
 		this.className += ' w-calendar-' + this.face;
+		x.mini && (this.className += ' z-mini');
+		this.defaults( { widthMinus: x.mini ? 20 : 42, heightMinus: x.mini ? 0 : 22 } );
 		W.apply( this, arguments );
 		this.nowValue = this._fm( new Date() );
 	},
@@ -6856,13 +6863,12 @@ Calendar = define.widget( 'Calendar', {
 		// @a -> commander, b -> format, c -> date, d -> focusDate, e -> begindate, f -> enddate, g -> complete
 		pop: function( a, b, c, d, e, f, g ) {
 			var o = _widget( a ), t = !/[yMd]/.test( b ) && /[Hms]/.test( b ),
-				x = { type: 'Calendar', cls: 'z-mini', face: ( b === 'yyyy' ? 'year' : b === 'yyyy-MM' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[yMd]/.test( b ) && /[Hms]/.test( b ),
+				x = { type: 'Calendar', mini: T, face: ( b === 'yyyy' ? 'year' : b === 'yyyy-MM' ? 'month' : b === 'yyyy-ww' ? 'week' : 'date' ), format: b, callback: g, timebtn: /[yMd]/.test( b ) && /[Hms]/.test( b ),
 					date: t ? new Date().getFullYear() + '-01-01 ' + (c || '') : c, begindate: e, enddate: f, fillBlank: T, pub: { focusable: T }, on: t && { ready: function() { this.popTime() } } };
-			return o.exec( { type: 'Dialog', ownproperty: T, snap: { target: a.isFormWidget ? a.$( 'f' ) : a, indent: 1 }, cls: 'w-calendar-dialog w-f-dialog f-shadow-snap', width: -1, height: -1, widthMinus: 2, autoHide: T, cover: mbi, node: x,
-				on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
+			return o.exec( { type: 'Dialog', ownproperty: T, snap: { target: a.isFormWidget ? a.$( 'f' ) : a, indent: 1 }, cls: 'w-calendar-dialog w-f-dialog f-shadow-snap', width: -1, height: -1, widthMinus: 2, heightMinus: 2, autoHide: T, cover: mbi,
+				node: { type: 'Vertical', scroll: T, nodes: [ x ] }, on: {close: function(){ o.isFormWidget && !o.contains(document.activeElement) && o.focus(F); }}} );
 		}
 	},
-	Default: { widthMinus: 42, heightMinus: 22 },
 	Prototype: {
 		className: 'w-calendar',
 		x_nodes: $.rt( N ),
@@ -7048,7 +7054,7 @@ Calendar = define.widget( 'Calendar', {
 				~f.indexOf( 'H' ) && list( 'H', 24 );
 				~f.indexOf( 'm' ) && list( 'm', 60 );
 				~f.indexOf( 's' ) && list( 's', 60 );
-				this._dlg_time = this.exec( { type: 'Dialog', ownproperty: T, cls: 'w-calendar-time-dlg f-white', width: b.width() - 2, height: b.height() - 38, snap: { target: b, position: '11' }, autoHide: T, node: {
+				this._dlg_time = this.exec( { type: 'Dialog', ownproperty: T, cls: 'w-calendar-time-dlg w-f-dialog f-white', width: b.width(), height: b.height(), widthMinus: 2, heightMinus: 2, snap: { target: b, position: '11' }, autoHide: T, node: {
 					 type: 'View', node: {
 					 type: 'Vert', nodes: [
 					 	{ type: 'Horz', height: 32, nodes: h },
@@ -7081,10 +7087,10 @@ Calendar = define.widget( 'Calendar', {
 									}
 								}
 					 		}
-					 	}
+					 	},
+					 	{ type: 'Html', height: 36, cls: '_ok', text: this.html_ok( T ) }
 					 ] }
 				} } );
-				a && (a.innerHTML = Loc.calendar.backdate);
 			}
 		},
 		getItemMap: function() {
@@ -7094,8 +7100,8 @@ Calendar = define.widget( 'Calendar', {
 				return r;
 			}
 		},
-		html_ok: function() {
-			return this.x.callback ? '<div class=w-calendar-time>' + (this.x.timebtn ? '<div class=_time onclick=' + evw + '.popTime(this)>' + Loc.calendar.picktime + '</div>' : '') + '<div class=_ok onclick=' + evw + '.backfill(this)>' + Loc.confirm + '</div></div>' : '';
+		html_ok: function( a ) {
+			return this.x.callback ? '<div class=w-calendar-time>' + (this.x.timebtn ? '<div class=_time onclick=' + abbr( this ) + '.popTime(this)>' + (a ? Loc.calendar.backdate : Loc.calendar.picktime) + '</div>' : '') + '<div class=_ok onclick=' + abbr( this ) + '.backfill(this)>' + Loc.confirm + '</div></div>' : '';
 		},
 		html_date: function() {
 			var a = this.date, b = new Date( a.getTime() ), c = b.getMonth(), d = new Date( b.getTime() ), e = [], f = this.x.focusDate ? this.x.focusDate.slice( 0, 10 ) : (this.x.format && this._fm( a )), 
@@ -8324,8 +8330,10 @@ ComboBox = define.widget( 'ComboBox', {
 			this.sugger && (this.sugger.dispose(), this.sugger = N);
 			this.dropper && (this.dropper.dispose(), this.dropper = N);
 			this.more = this.createPop(this.x.suggest ? $.extend({id: ''}, this.x.suggest) : {type: 'Dialog', node: {type: 'View', node: {type: 'Table'}}}, {value: this._val()});
-			if (this.x.suggest) {
-				this._online = typeof this.more.x.src === _STR && /\$text\b/.test(this.more.x.src);
+			if ( this.x.suggest ) {
+				var s = this.more.getSrc( T );
+				if ( typeof s === _STR )
+					this._online = /\$text\b/.test( s ) || s.indexOf( 'javascript:' ) === 0;
 			}
 			var c = this.more.getContentView();
 			c && c.layout && this._init_load();
@@ -9683,8 +9691,8 @@ AbsLeaf = define.widget( 'AbsLeaf', {
 				_setBadge.call( this, b );
 			}
 		},
-		getSrc: function() {
-			return Section.prototype.getSrc.call( this );
+		getSrc: function( a ) {
+			return Section.prototype.getSrc.call( this, a );
 		},
 		isContentData: $.rt( T ),
 		isFolder: function() {
@@ -10523,6 +10531,9 @@ TableRow = define.widget( 'TableRow', {
 		className: 'w-tr',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
+		pubParent: function() { //层级关系: Table/TBody/ContentTable/ContentTBody/TR
+			return this.parentNode.type === this.type ? this.parentNode.pubParent() : this.parentNode.parentNode.parentNode;
+		},
 		getData: function() {
 			var d = {}, l = this.length;
 			if ( l ) {
@@ -10785,10 +10796,6 @@ TR = define.widget( 'TR', {
 	Prototype: {
 		type_tr: T,
 		x_childtype: $.rt( 'TR' ),
-		pubParent: function() {
-			//层级关系: Table/TBody/ContentTable/ContentTBody/TR
-			return this.parentNode.type === this.type ? this.parentNode.pubParent() : this.parentNode.parentNode.parentNode;
-		},
 		getPageIndex: function() {
 			var r = this.rootNode, a = $.arrIndex( r._filter_rows || r.contentTBody() || [], this );
 			return r.x.limit ? Math.floor( a / r.x.limit ) + 1 : 1;

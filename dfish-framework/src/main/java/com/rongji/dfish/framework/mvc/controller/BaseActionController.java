@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -29,7 +28,7 @@ import java.util.*;
  * @author lamontYu
  * @since DFish3.2
  */
-public class BaseActionController extends MultiActionController {
+public class BaseActionController {
     /**
      * 允许用户自定义分页数设置
      */
@@ -108,7 +107,6 @@ public class BaseActionController extends MultiActionController {
         return request.getParameter(key);
     }
 
-    @Override
     protected void bind(HttpServletRequest request, Object obj) throws Exception {
         if (obj == null) {
             return;
@@ -463,6 +461,7 @@ public class BaseActionController extends MultiActionController {
             try {
                 requestJson = convert2JSON(request);
             } catch (Throwable t) {
+                LogUtil.error("请求Json转换异常", t);
             }
             String errMsg = null;
             if (cause instanceof SocketException) {

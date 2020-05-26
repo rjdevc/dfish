@@ -83,7 +83,7 @@ br = $.br = (function() {
 		mbi = !!u.match( /\bmobile\b/ );
 	// 提示内容：您的浏览器版本过低，建议您升级到IE7以上或安装谷歌浏览器。
 	ie && iv < 6 && alert( '\u60a8\u7684\u6d4f\u89c8\u5668\u7248\u672c\u8fc7\u4f4e\uff0c\u5efa\u8bae\u60a8\u5347\u7ea7\u5230\u0049\u0045\u0037\u4ee5\u4e0a\u6216\u5b89\u88c5\u8c37\u6b4c\u6d4f\u89c8\u5668\u3002' );
-	return {
+	var r = {
 		ie		: ie,
 		ieVer	: iv,
 		ie7		: ie && d < 8, // ie6,ie7,兼容模式
@@ -92,8 +92,6 @@ br = $.br = (function() {
 		chm		: chm && parseFloat( chm[ 1 ] ),
 		fox		: u.indexOf( 'firefox' ) > 0,
 		safari  : !chm && u.indexOf( 'safari' ) > 0,
-		mobile  : mbi,
-		app		: location.protocol === 'file:',
 		css3	: !(ie && d < 9),
 		scroll	: mbi ? 0 : 17,
 		chdiv	: function( a, b, c ) {
@@ -108,6 +106,30 @@ br = $.br = (function() {
 			_rm( o );
 		}
 	};
+	if ( mbi ) {
+		r.mobile = T;
+		r.app = location.protocol === 'file:';
+		var wechat = u.match(/(MicroMessenger)\/([\d\.]+)/i);
+		if ( wechat ) r.wechat = { version: wechat[ 2 ].replace(/_/g, '.') };
+		var android = u.match(/(Android);?[\s\/]+([\d.]+)?/i);
+		if (android) {
+			r.android = T;
+			r.version = android[ 2 ];
+			r.isBadAndroid = !(/Chrome\/\d/.test(window.navigator.appVersion));
+		}
+		var iphone = u.match(/(iPhone\sOS)\s([\d_]+)/i);
+		if (iphone) {
+			r.ios = r.iphone = T;
+			r.version = iphone[ 2 ].replace(/_/g, '.');
+		} else {
+			var ipad = u.match(/(iPad).*OS\s([\d_]+)/i);
+			if (ipad) { //ipad
+				r.ios = r.ipad = T;
+				r.version = ipad[ 2 ].replace(/_/g, '.');
+			}
+		}
+	}
+	return r;
 })(),
 
 ie = br.ie,
@@ -356,7 +378,7 @@ _loadCss = function( a, b, c ) {
 	typeof a === _STR && (a = [ a ]);
 	var d = doc.readyState === 'loading';
 	for ( var i = 0, l = a.length, n = l, e, f; i < l; i ++ ) {
-		f = _ajax_url( a[ i ] ) + _ver;
+		f = _ajax_url( a[ i ], T ) + _ver;
 		if ( d ) {
 			var u = b ? b[ i ] : _uid();
 			var s = '<link rel=stylesheet href="' + f + '" id="' + u + '">';
@@ -675,6 +697,13 @@ _each = $.each = function( a, b, c ) {
     for( var i = 0, l = a.length; i < l; i ++ )
     	 if( F === b.call( a[ i ], a[ i ], i, a ) ) { if ( c ) break; }
     return a;
+},
+// a -> array, b -> function
+_map = $.map = function( a, b, c ) {
+	if ( typeof b === _STR ) b = _arrfn( b );
+    for( var i = 0, l = a.length, d = []; i < l; i ++ )
+    	 d.push( b.call( a[ i ], a[ i ], i, a ) );
+    return d;
 },
 // 获取b在数组a的位置序号
 _arrIndex = $.arrIndex = function( a, b ) {
@@ -1591,9 +1620,14 @@ $.droppable = function( a, b ) {
 
 var
 _ajax_url = $.ajaxUrl = function( a, b ) {
-	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : (b ? '' : (_cfg.server || '')) + _urlLoc( _path, a );
+	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : b ? _urlLoc( _path, a ) : _cfg.server ? _cfg.server + a : _urlLoc( _path, a );
 },
 _ajax_xhr = (function() {
+	if ( br.app ) {
+		return function( x ) { //wkwebview下使用5+ xhr
+			return x.crossDomain || (br.ios && window.webkit && window.webkit.messageHandlers) ? new plus.net.XMLHttpRequest() : new window.XMLHttpRequest();
+		}
+	}
 	var a = function() { return new XMLHttpRequest() },
 		b = function() { return new ActiveXObject( 'MSXML2.XMLHTTP' ) },
 		c = function() { return new ActiveXObject( 'Microsoft.XMLHTTP' ) };
@@ -1677,11 +1711,11 @@ Ajax = _createClass( {
 				e = (e ? e + '&' : '') + _strFrom( a, '?' );
 				u = _strTo( a, '?' );
 			}
-			if ( x.base || _path )
-				u = _urlLoc( x.base || _path, u );
+			//if ( x.base || (!_ajax_httpmode( u ) && _path) )
+			//	u = _urlLoc( x.base || _path, u );
 			if ( ! br.app && x.cdn && _cfg.ver )
 				u = _urlParam( u, { _v: _cfg.ver } );
-			(l = _ajax_xhr()).open( e ? 'POST' : 'GET', u, ! x.sync );
+			(l = _ajax_xhr( x )).open( e ? 'POST' : 'GET', u, ! x.sync );
 			this.request = l;
 			if ( x.beforesend && _fnapply( x.beforesend, c, '$ajax', [ self ] ) === F )
 				return x.complete && x.complete.call( c, N, self );
@@ -1690,6 +1724,8 @@ Ajax = _createClass( {
 			! x.cdn && l.setRequestHeader( 'If-Modified-Since', _ajax_ifmod );
 			e && l.setRequestHeader( 'Content-Type', _ajax_cntp );
 			l.setRequestHeader( 'x-requested-with',  _expando );
+			for ( i in _cfg.headers )
+				l.setRequestHeader( i, _cfg.headers[ i ] );
 			for ( i in x.headers )
 				l.setRequestHeader( i, x.headers[ i ] );
 			function _onchange() {
@@ -2311,9 +2347,33 @@ _merge( $, {
 			d && d();
 		}, e[ c ] || c );
 	},	
-	// @a -> src, b -> post json?
-	download: function( a, b ) {
-		var c = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
+	// @a -> src, b -> post json?, c -> options
+	download: function( a, b, c ) {
+		if ( br.app ) {
+			var dtask = plus.downloader.createDownload( _urlComplete( a ), c );
+			plus.nativeUI.showWaiting();
+			dtask.addEventListener("statechanged", function(task, status) {
+				switch (task.state) {
+					case 1: // 开始
+						plus.nativeUI.toast( $.loc.download_start );
+						break;
+					case 4: // 下载完成
+						if (status == 200) {
+							plus.nativeUI.toast( $.loc.download_complete ); 
+							plus.runtime.openFile(task.filename, {}, function(e) {
+								plus.nativeUI.alert( $.loc.download_cannotopen );
+							});
+						} else {
+							plus.nativeUI.toast($.loc.download_fail + status);
+						}
+						plus.nativeUI.closeWaiting();
+						break;
+				}
+			});
+			dtask.start();
+			return;
+		}
+		var d = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
 		if ( _cfg.ajaxData ) {
 			b = $.extend( b || {}, _cfg.ajaxData );
 		}
@@ -2341,8 +2401,8 @@ _merge( $, {
 			c.append( f );
 			f.submit();
 		}
-		c.appendTo( document.body );
-		b ? f.submit() : c.find( 'iframe' ).prop( 'src', a );
+		d.appendTo( document.body );
+		b ? f.submit() : d.find( 'iframe' ).prop( 'src', a );
 	},
 	// 根据文件后缀名获取文件类型
 	mimeType: (function() {
@@ -2387,19 +2447,24 @@ _merge( $, {
 			_loadCss( s, d, f );
 		}
 	})(),
-	// @a -> image array, b -> id
+	// @a -> image array, b -> style
 	previewImage: function( a, b ) {
-		var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
-		if ( br.mobile ) {
-			w = $.width() - 36;
-			h = $.height() - 36;
+		if ( br.app ) {
+			plus.nativeUI.previewImage( _map( _arrMake( a ), function() { return _urlComplete( this ) } ), b );
+		} else {
+			var w = Math.max( 600, $.width() - 100 ), h = Math.max( 400, $.height() - 100 );
+			if ( br.mobile ) {
+				w = $.width() - 36;
+				h = $.height() - 36;
+			}
+			if ( _isArray( a ) )
+				a = a[ (b && b.current) || 0 ];
+			a = _urlComplete( a );
+			$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
+				node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 80) + 'px;max-height:' + (h - 80) + 'px">' +
+					'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
+					'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 		}
-		a = _urlComplete( a );
-		$.vm().cmd( { type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
-			node: { type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
-				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
-				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
-				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } } );
 	},
 	// @a -> preview src
 	previewImageRotate: function( a ) {
