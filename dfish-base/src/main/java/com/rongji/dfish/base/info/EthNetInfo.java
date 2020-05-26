@@ -15,28 +15,38 @@ public class EthNetInfo {
 	public static String getMacAddress() {
 //		return "00:00:00:00:00:00";
 		// String mac = "";
+//		if (mac == null) {
+//			EthNetInfo ins = new EthNetInfo();
+//			String os = System.getProperty("os.name");
+//			try {
+//				if (os.startsWith("Windows")) {
+//					mac = ins.windowsParseMacAddress(ins
+//							.windowsRunIpConfigCommand());
+////				} else if (os.startsWith("Linux") || os.startsWith("Unix")) {
+////					mac = ins.linuxParseMacAddress(ins
+////							.linuxRunIfConfigCommand());
+//				} else if (os.startsWith("Mac OS X")) {
+//					mac = ins.osxParseMacAddress(ins.osxRunIfConfigCommand());
+//				} else if (os.toLowerCase().startsWith("aix")) {
+//					mac = ins.aixParseMacAddress(ins.aixRunIfConfigCommand());
+//				}else{
+//					mac = ins.linuxParseMacAddress(ins.linuxRunIfConfigCommand());
+//				}
+//			} catch (Throwable t) {
+//				mac=ERR_MAC;
+//				t.printStackTrace();
+//			}
+//			mac = mac.replaceAll("-", ":").toLowerCase();
+//		}
 		if (mac == null) {
-			EthNetInfo ins = new EthNetInfo();
-			String os = System.getProperty("os.name");
-			try {
-				if (os.startsWith("Windows")) {
-					mac = ins.windowsParseMacAddress(ins
-							.windowsRunIpConfigCommand());
-				} else if (os.startsWith("Linux") || os.startsWith("Unix")) {
-					mac = ins.linuxParseMacAddress(ins
-							.linuxRunIfConfigCommand());
-				} else if (os.startsWith("Mac OS X")) {
-					mac = ins.osxParseMacAddress(ins.osxRunIfConfigCommand());
-				} else if (os.toLowerCase().startsWith("aix")) {
-					mac = ins.aixParseMacAddress(ins.aixRunIfConfigCommand());
-				}else{
-					mac=ERR_MAC;
-				}
-			} catch (Throwable t) {
-				mac=ERR_MAC;
-				t.printStackTrace();
+			if (macs == null) {
+				macs = getAllMacAddress();
 			}
-			mac = mac.replaceAll("-", ":").toLowerCase();
+			if (macs.isEmpty()) {
+				mac = ERR_MAC;
+			} else {
+				mac = macs.iterator().next();
+			}
 		}
 		return mac;
 	}
@@ -56,9 +66,9 @@ public class EthNetInfo {
 				if (os.startsWith("Windows")) {
 					macs = ins.windowsParseMacAddresses(ins
 							.windowsRunIpConfigCommand());
-				} else if (os.startsWith("Linux") || os.startsWith("Unix")) {
-					macs = ins.linuxParseMacAddresses(ins
-							.linuxRunIfConfigCommand());
+//				} else if (os.startsWith("Linux") || os.startsWith("Unix")) {
+//					macs = ins.linuxParseMacAddresses(ins
+//							.linuxRunIfConfigCommand());
 				} else if (os.startsWith("Mac OS X")) {
 					macs = ins
 							.osxParseMacAddresses(ins.osxRunIfConfigCommand());
@@ -66,8 +76,7 @@ public class EthNetInfo {
 					macs = ins
 							.aixParseMacAddresses(ins.aixRunIfConfigCommand());
 				}else{
-					macs=new HashSet<String>();
-					macs.add(ERR_MAC);
+					macs = ins.linuxParseMacAddresses(ins.linuxRunIfConfigCommand());
 				}
 			} catch (Throwable t) {
 				macs=new HashSet<String>();
