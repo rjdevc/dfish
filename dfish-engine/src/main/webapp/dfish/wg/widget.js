@@ -2271,7 +2271,8 @@ _setParent = function( a ) {
 },
 _mergeLoadingProp = function( x, a ) {
 	for ( var k in a ) {
-		k !== 'node' && k !== 'nodes' && (x[ k ] = a[ k ]);
+		if ( k === 'cls' ) x[ k ] = (x[ k ] ? x[ k ] + ' ' : '') + a[ k ];
+		else k !== 'node' && k !== 'nodes' && (x[ k ] = a[ k ]);
 	}
 },
 _view_resources = cfg.view_resources || {},
