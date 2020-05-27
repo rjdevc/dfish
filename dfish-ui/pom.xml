@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.1.5-SNAPSHOT</version>
+        <version>5.0.1.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-ui</artifactId>
