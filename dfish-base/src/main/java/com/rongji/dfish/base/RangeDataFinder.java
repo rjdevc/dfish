@@ -1,9 +1,6 @@
 package com.rongji.dfish.base;
 
-import jdk.nashorn.internal.ir.ReturnNode;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -28,14 +25,12 @@ import java.util.function.Predicate;
  *
  * @param <K> 关键字的类型
  * @param <V> 范围的类型，必须是可以比较的类型。
- * @deprecated 未完成，临时提交换个环境开发。
  */
-@Deprecated
 public class RangeDataFinder<K, V extends Comparable<V>> {
     public RangeDataFinder() {
-        sequnces = new ArrayList<>();
-        NoRepeateSequnce seq = new NoRepeateSequnce();
-        sequnces.add(seq);
+        dataList = new ArrayList<>();
+        SortedData seq = new SortedData();
+        dataList.add(seq);
     }
 
     /**
@@ -49,21 +44,26 @@ public class RangeDataFinder<K, V extends Comparable<V>> {
      * @param end   范围结束值
      */
     public void add(K key, V begin, V end) {
-        for (NoRepeateSequnce<K, V> seq : sequnces) {
+        for (SortedData<K, V> seq : dataList) {
             if (seq.add(key, begin, end)) {
                 return;
             }
         }
-        NoRepeateSequnce<K, V> newSeq = new NoRepeateSequnce<>();
-        sequnces.add(newSeq);
+        SortedData<K, V> newSeq = new SortedData<>();
+        dataList.add(newSeq);
         newSeq.add(key, begin, end);
     }
 
 
+    /**
+     * 根据 区间内某个数据找到 关键字
+     * @param value
+     * @return
+     */
     public List<K> find(V value) {
         List<K> ret = new ArrayList<>();
-        for (NoRepeateSequnce<K, V> seq : sequnces) {
-            K key = seq.find(value);
+        for (SortedData<K, V> seq : dataList) {
+            K key = seq.findKey(value);
             if (key != null) {
                 ret.add(key);
             }
@@ -72,24 +72,44 @@ public class RangeDataFinder<K, V extends Comparable<V>> {
     }
 
     public String toString() {
-        return sequnces.toString();
+        return dataList.toString();
     }
 
-    private List<NoRepeateSequnce<K, V>> sequnces;
+    private List<SortedData<K, V>> dataList;
 
-    static class Entry<K, V extends Comparable<V>> {
-        K key;
-        V begin;
-        V end;
-
+    public static class Entry<K, V extends Comparable<V>> {
+        private K key;
+        private V begin;
+        private V end;
+        public Entry(){}
+        public Entry(K key,V begin,V end){
+            this.key=key;
+            this.begin=begin;
+            this.end=end;
+        }
+        public K getKey(){
+            return key;
+        }
+        public V getBegin(){
+            return begin;
+        }
+        public V getEnd(){
+            return end;
+        }
         public String toString() {
             return key + "(" + begin + "," + end + ")";
         }
     }
 
-    static class NoRepeateSequnce<K, V extends Comparable<V>> {
+    /**
+     * 排序号的数据。它可以接收数据，并快速寻找value
+     * 如果数据有重复的时候，add可能返回false。这时候，可以放在另一个SortedData中
+     * @param <K> 关键字
+     * @param <V> 值
+     */
+    static class SortedData<K, V extends Comparable<V>> {
 
-        private List<Entry<K, V>> entries = new ArrayList<>();
+        private ArrayList<Entry<K, V>> entries = new ArrayList<>();
 
         public String toString() {
             return entries.toString();
@@ -106,72 +126,97 @@ public class RangeDataFinder<K, V extends Comparable<V>> {
          * @param end
          * @return
          */
-        public boolean add(K key, V begin, V end) {
-            Entry<K, V> entry = new Entry<>();
-            entry.key = key;
-            if (begin.compareTo(end) > 0) {
-                entry.begin = end;
-                entry.end = begin;
-            } else {
-                entry.begin = begin;
-                entry.end = end;
+        public boolean add(K key,V begin,V end){
+            // entry容错，如果begin和end 异常，则交换
+            Entry<K,V> entry;
+            if(end.compareTo(begin)<0){
+                entry=new Entry(key,end,begin);
+            }else{
+                entry=new Entry(key,begin,end);
             }
-            //没有任何内容时直接添加
-            if (entries.size() == 0) {
+            //如果这个data里面还未有数据
+            if( entries.isEmpty()){
                 entries.add(entry);
+            }
+
+            // 根据 entry.begin 与已有各个数据的end比较，算出， 这个新添的数据 关联的最小元素的位置。
+            // 如果没有任何元素的end 小于等于 entry.begin 则该位置 为 entries.size()
+            int min=findFirst(en->entry.begin.compareTo(en.end)<=0);
+            // 根据 entry.end 与已有各个数据的begin比较，算出， 这个新添的数据 关联的最大元素的位置。
+            // 如果没有任何元素的begin 大于等于 entry.end 则该位置 为 -1
+            int max=findFirst(en->entry.end.compareTo(en.begin)<0)-1;
+            // 若最小位置大于最大位置 (通常也只大1)那么 直接在最小位置处插入  这个新的entry
+            if(max<min){
+                entries.add(min,entry);
                 return true;
             }
-            //找到最小的节点，当前对象的begin<= 这个节点的end 没找到则为-1
-            int left = findIndex(true, en -> en.end.compareTo(entry.begin) >=0);
-            //找到最大的节点，当前对象的end>= 这个节点的begomg 没找到则为entries.size
-            int right = findIndex(false, en -> en.begin.compareTo(entry.end) <= 0);
-            // 有错误。
-            System.out.println(this+"search " + key + "\tbegin=" + entry.begin + "\tend=" + entry.end + "\tleft=" + left + "\tright=" + right);
-            if (right - left == 1) {
-                entries.add(right, entry);
-                return true;
-            }
-            for (int i = left + 1; i < right; i++) {
-                if (!key.equals(entries.get(i).key)) {
+
+            // 如果最小位置和最大位置相同，或者最小位置小于最大位置。
+            // 判定这些位置的entry key是否与entry相同
+            // 若有一个不同，则直接返回false 不再执行任何插入。
+            for(int i=min;i<=max;i++){
+                if(!entries.get(i).key.equals(entry.key)){
                     return false;
                 }
             }
-            if (left >= 0 && entries.get(left).begin.compareTo(entry.begin) <= 0) {
-                entry.begin = entries.get(left).begin;
+
+            // 则将entry 的begin end和 对应位置的begin end 合并。其中begin取最小位置，end取最大位置。
+            // begin选择更小的那个。end选择更大的那个。 并把这个值设置回 最小位置的entry
+            if(entry.begin.compareTo( entries.get(min).begin)<0){
+                entries.get(min).begin=entry.begin;
             }
-            if (right < entries.size() && entries.get(right).end.compareTo(entry.end) >= 0) {
-                entry.end = entries.get(right).end;
+            if(entry.end.compareTo( entries.get(max).end)>0){
+                entries.get(min).end=entry.end;
+            }else{
+                entries.get(min).end=entries.get(max).end;
             }
-            entries.set(left + 1, entry);
-            //清理多余的节点
-            int clear = right - left - 2;
-            for (int i = 0; i < clear; i++) {
-                entries.remove(left + 2);
+            // 如果最小位置小于最大位置。 则最小位置后续的几个位置要删除。
+            if(max>min){
+                for(int i=0;i<max-min;i++){
+                    entries.remove(min+1);
+                }
             }
             return true;
         }
 
-        private int findIndex(boolean left, Predicate<Entry> p) {
-            //找到最小的节点，当前对象的begin<= 这个节点的end 没找到则为-1
+        //找到第一个符合条件的位置，如果都找不到，则返回 entries.size()
+        //因为是有序的，所以二分查找将会是有效的做法。
+        private int findFirst(Predicate<Entry<K,V>> p){
             int low = 0;
             int high = entries.size() - 1;
-            while (low <= high-2) {
+            while (low <high-1) {
                 int mid = (low + high) >>> 1;
-                if (p.test(entries.get(mid))==left) {
+                if (p.test(entries.get(mid))) {
                     high = mid ;
                 } else {
-                    low = mid ;
+                    low = mid + 1;
                 }
             }
-            return left ? high : low;
+            if(!p.test(entries.get(low))){
+                if(low==high||!p.test(entries.get(high))){
+                    return high+1;
+                }
+                return high;
+            }
+            return low;
         }
 
-        public K find(V value) {
-            int i = findIndex(value);
-            return i < 0 ? null : entries.get(i).key;
+        /**
+         * 找到value 所在区间的 key
+         * @param value 值
+         * @return K
+         */
+        public K findKey(V value) {
+            Entry<K,V> entry = findEntry(value);
+            return entry== null ?null: entry.key;
         }
 
-        private int findIndex(V value) {
+        /**
+         * 找到value 所在区间的 Entry
+         * @param value
+         * @return
+         */
+        public Entry<K,V> findEntry(V value) {
             int low = 0;
             int high = entries.size() - 1;
             while (low <= high) {
@@ -182,21 +227,13 @@ public class RangeDataFinder<K, V extends Comparable<V>> {
                 } else if (value.compareTo(midVal.begin) < 0) {
                     high = mid - 1;
                 } else {
-                    return mid;
+                    return midVal;
                 }
             }
-            return -1;
+            return null;
         }
     }
 
-    public static void main(String[] args) {
-        RangeDataFinder<String, Integer> rdf = new RangeDataFinder();
-        rdf.add("福州", 1, 4);
-        rdf.add("福州", 4, 6);
-        rdf.add("福州", 7, 9);
-        rdf.add("厦门", 10, 12);
-        System.out.println(rdf);
-        System.out.println(rdf.find(2));
-    }
+
 
 }
