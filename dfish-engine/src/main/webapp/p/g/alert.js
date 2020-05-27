@@ -1,4 +1,4 @@
-define.preload("g/alert",{
+define.preload({
 	"type":"dialog","cls":"dlg","node":{
 		"type":"view","commands":{
 			"close":{"type":"js","text":"dfish.close(this);"}
