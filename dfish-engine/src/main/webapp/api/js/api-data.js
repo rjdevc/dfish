@@ -11,12 +11,7 @@ define( {
         { name: '$.br.css3', type: 'Boolean', remark: '浏览器是否支持css3(ie8及以下浏览器不支持css3；ie9+、chrome等支持css3)', common: true }
       ] },*/
       { name: '$.globals', id: '$.globals', remark: '设置了 gid 参数的 widget 实例都存放在这里。可以通过 $.globals[ gid ] 来获取该实例。', common: true },
-      { name: '$.x', id: '$.x', remark: '经 $.config() 方法设置的参数对象。', common: true, example: [
-          function() {
-            dfish.config( { path: '/myPath/', lib: 'dfish/' } );
-            alert( $.x.path ); // 显示 "myPath"
-          }
-      ] }
+      { name: '$.x', id: '$.x', remark: '经 $.config() 方法设置的参数对象。', common: true }
     ],
     Methods: [
       { name: '$.ajax(url, [onsuccess], [context], [sync], [data], [onerror], [dataType])', remark: '发送ajax请求。回调函数获取的数据类型是字符串。', common: true, param: [
@@ -148,12 +143,12 @@ define( {
           { name: 'inputDetect', type: 'Object', remark: '设置表单在键入文本时是否即时检测。', param: [
             { name: 'maxLength', type: 'Boolean', remark: '设置为true，键入文本时将会即时检测是否超出最大长度。' }
           ] },
-          { name: 'lib', type: 'String', remark: 'dfish包的路径，必选项。' },
+          { name: 'lib', type: 'String', remark: 'dfish包的路径。' },
           { name: 'lang', type: 'String', remark: '语言。可选项:zh_CN,zh_TW,en' },
           { name: 'noConflict', type: 'Boolean', remark: '设置为true，将变量$的控制权让渡给第一个实现它的那个库。' },
-          { name: 'path', type: 'String', remark: '工程项目的路径。必选项。' },
+          { name: 'path', type: 'String', remark: '工程项目的路径。' },
           { name: 'preloadDir', type: 'String', remark: '预装载模板目录。' },
-          //{ name: 'server', type: 'String', remark: '服务器地址的绝对路径。当执行 ajax 命令等交互操作时会使用此路径。<br>注：如果 ajax 命令的 src 参数以 ./ 开头，将不会使用 server 参数，而是访问本地地址。', mobile: true },
+          { name: 'server', type: 'String', remark: '服务器地址的绝对路径。当执行 ajax 命令等交互操作时会使用此路径。<br>注：如果 ajax 命令的 src 参数以 ./ 开头，将不会使用 server 参数，而是访问本地地址。', mobile: true },
           { name: 'skin', type: 'Object', remark: '配置皮肤样式。', param: [
             { name: 'dir', type: 'String', remark: '皮肤目录' },
             { name: 'theme', type: 'String', remark: '主题名。在皮肤目录下应有一个和主题名相同的目录，该目录里面有一个 "主题名.css"' },
@@ -165,9 +160,10 @@ define( {
             { name: 'effect', type: 'String', remark: '表单验证效果。可选项: "red"(表单边框变成红色)；"alert"(弹出提示框)；"red,alert"(边框变红并弹出提示)' },
             { name: 'method', type: 'Function', remark: '表单验证的回调函数。函数有一个参数，接收一个验证信息的数组。' }
           ] },
-          { name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
+          //{ name: 'ver', type: 'String', remark: '版本号。这个参数将会附加在js和css的路径上，以避免更新后的浏览器缓存问题。' },
           { name: 'view', type: 'Object', remark: 'view的配置项。如果配置了此参数，将生成一个全屏view' },
-          { name: 'viewResources', type: 'Array', remark: '设置view的依赖JS或CSS。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS或CSS。' }
+          { name: 'viewResources', type: 'Array', remark: '设置view的依赖JS或CSS。以 view path 作为 key。当页面上生成这个 path 的 view 时，就会加载对应的JS或CSS。' },
+          { name: 'wifiConfirm', type: 'Boolean', remark: '非wifi网络环境下的上传下载是否提示。', mobile: true }
         ] }
       ], example: [
           function() {
@@ -2837,7 +2833,9 @@ define( {
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。<br>一般情况下，如果希望纵向滚动，内部子节点高度应该设为-1；如果希望横向滚动，子节点宽度应该设为-1。' },
       { name: 'split', type: 'Split', remark: '在子节点之间插入一个split。' },
-      { name: 'swipeDown', type: 'String', remark: '下拉刷新的URL地址。', mobile: true }
+      { name: 'pullRefresh', type: 'Object', remark: '下拉刷新。', mobile: true, param: [
+      	{ name: 'src', type: 'String', remark: '下拉刷新的地址。' }
+      ] }
     ],
     Event: [
       { name: 'scroll', remark: '滚动时触发。' }
