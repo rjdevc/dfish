@@ -383,11 +383,11 @@
 .w-f.z-trans .w-input,.w-f.z-trans.z-err .w-input{border-width:0;border-radius:0;box-shadow:none}
 .w-f-remark{float:right;padding-left:5px;height:32px;line-height:32px}
 
-.w-label{position:relative;line-height:16px;*line-height:18px}
+.w-label{position:relative}
 .w-label ._lb{margin-right:6px}
 .w-label ._bg{position:absolute;top:0;left:0}
 .w-label.z-va-top{vertical-align:top}
-.w-label.z-va-top ._lb{padding-top:9px}
+.w-label.z-va-top ._lb{padding-top:6px}
 
 .w-range{overflow:visible}
 .w-range .f-sub-horz{vertical-align:middle}
@@ -561,7 +561,7 @@
 .w-table-triplebox,.w-table-radio{padding:2px}
 
 .w-checkboxgroup-align{vertical-align:middle}
-.w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{position:relative;padding:0;height:32px;line-height:32px}
+.w-checkboxgroup .w-checkbox,.w-radiogroup .w-radio{position:relative;padding:0;height:32px}
 .w-checkboxgroup.z-err,.w-radiogroup.z-err{border-color:red}
 .w-checkboxgroup-list,.w-radiogroup-list{margin-bottom:10px}
 .w-checkboxgroup-list.z-last,.w-radiogroup-list.z-last{margin-bottom:0}
@@ -582,6 +582,7 @@
 .w-checkbox.z-ds ._t + label,.w-triplebox.z-ds ._t + label,.w-radio.z-ds ._t + label{border-color:#ccc;background-color:#e6e6e6;cursor:default}
 .w-checkbox.z-ds ._t:checked + label:after,.w-triplebox.z-ds ._t:checked + label:after,.w-triplebox.z-ds.z-half ._t + label:before{color:#ccc}
 .w-table-triplebox.w-triplebox ._t + label,.w-table-radio.w-radio ._t + label{margin-right:0}
+.w-checkboxgroup .w-checkbox ._t + label,.w-radiogroup .w-radio ._t + label{top:1px}
 .w-checkboxgroup.z-err .w-checkbox ._t + label,.w-radiogroup.z-err .w-radio ._t + label{border-color:#f00}
 /*  CSS3 checkbox  -->   */
 
@@ -599,6 +600,7 @@
 .w-switch.z-checked.z-ds ._o{border-color:#a2d2ff}
 
 .w-formlabel .w-f-remark{height:auto;line-height:inherit}
+.w-formlabel .w-formlabel-text{margin-bottom:1px}
 
 .w-album{white-space:normal;text-align:justify}
 .w-img{position:relative;text-align:center}

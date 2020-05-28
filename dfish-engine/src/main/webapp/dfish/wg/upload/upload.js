@@ -1275,6 +1275,17 @@ AbsUpload = define.widget( 'AbsUpload', {
 				! d[ i ].$() && r.push( d[ i ] );
 			return r;
 		},
+		addNewLoaders: function( numFilesSelected, numFilesQueued, numFilesInQueue ) {
+			if ( numFilesInQueue > 0 ) {
+				for ( var i = numFilesInQueue - numFilesQueued, f; i < numFilesInQueue; i ++ ) {
+					(f = this.getQueueFile( i )) && this.valuebar.add( { file: f } );
+				}
+				//this.trigger( 'fileselect' );
+				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
+					d[ i ].render();
+				this.startUpload();
+			}
+		},
 		file_queue_error_handler: function(file, errorCode, message) {
 			var ro  = SWFUpload.QUEUE_ERROR,
 				msg = message;
@@ -1290,16 +1301,8 @@ AbsUpload = define.widget( 'AbsUpload', {
 			$.alert( '上传失败：' + ( file ? file.name : '' ) + '\n\n' + msg );
 		},
 		file_dialog_complete_handler: function( numFilesSelected, numFilesQueued, numFilesInQueue ) {
-			if ( numFilesInQueue > 0 ) {
-				for ( var i = numFilesInQueue - numFilesQueued, f; i < numFilesInQueue; i ++ ) {
-					(f = this.getQueueFile( i )) && this.valuebar.add( { file: f } );
-				}
-				//this.trigger( 'fileselect' );
-				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
-					d[ i ].render();
-				this.startUpload();
-				$.classRemove( this.$(), 'z-err' );
-			}
+			$.br.app ? $.wifiConfirm( function() { this.addNewLoaders( numFilesSelected, numFilesQueued, numFilesInQueue ); }, this ) : this.addNewLoaders( numFilesSelected, numFilesQueued, numFilesInQueue );
+			$.classRemove( this.$(), 'z-err' );
 		},
 		upload_progress_handler: function( file, bytesLoaded, bytesTotal ) {
 			var ldr = this.getLoaderByFile( file );
@@ -1322,7 +1325,7 @@ AbsUpload = define.widget( 'AbsUpload', {
 		},
 		upload_complete_handler: function( file ) {
 			if ( this.getQueueFile( 0 ) )
-				this.startUpload();
+				this.doUpload();
 			else
 				this.trigger( 'change' );
 		},
@@ -1368,33 +1371,7 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 				if ( ! ldr.loading && ! ldr.loaded )
 					break;
 			}
-			if ( ldr ) {
-				var d   = new FormData(),
-					f   = ldr.x.file,
-					xhr = new XMLHttpRequest(),
-					data = $.x.ajaxData,
-					self = this;
-				d.append( 'Filedata', f );
-				for ( var i in data ) {
-					d.append( i, data[ i ] );
-				}
-				xhr.upload.addEventListener( 'progress', function( e ) {
-					if ( e.lengthComputable )
-						self.upload_progress_handler( f, e.loaded, e.total );
-				}, false );
-				xhr.addEventListener( 'load', function( e ) {
-					self.upload_success_handler( f, e.target.responseText );
-					self.upload_complete_handler( f );
-				}, false );
-				xhr.addEventListener( 'error', function( e ) {
-					self.uploadError( f, e.error, e.error );
-				}, false );
-				ldr.loading = true;
-				ldr.xhr     = xhr;
-				var u = $.ajaxUrl( this.x.upload_url );
-				xhr.open( 'post', u );
-				xhr.send( d );
-			}
+			ldr && ldr.upload();
 		}
 	}
 } ),
@@ -1756,6 +1733,25 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 	Prototype: {
 		className: 'w-imageupload-value',
 		pubParent: function() { return this.u },
+		upload: function() {
+			var d = new FormData(), f = this.x.file, u = this.u, r = $.ajaxXHR();
+			d.append( 'Filedata', f );
+			r.upload.addEventListener( 'progress', function( e ) {
+				if ( e.lengthComputable )
+					u.upload_progress_handler( f, e.loaded, e.total );
+			}, false );
+			r.addEventListener( 'load', function( e ) {
+				u.upload_success_handler( f, e.target.responseText );
+				u.upload_complete_handler( f );
+			}, false );
+			r.addEventListener( 'error', function( e ) {
+				u.uploadError( f, e.error, e.error );
+			}, false );
+			this.loading = true;
+			this.xhr     = r;
+			r.open( 'post', $.urlComplete( u.x.upload_url ) );
+			r.send( d );
+		},
 		download: function() {
 			var s = this.u.x.download;
 			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );

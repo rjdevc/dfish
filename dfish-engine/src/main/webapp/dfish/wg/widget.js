@@ -651,7 +651,7 @@ _tpl_view = function( a ) {
 			if ( v = _tpl_view( a.nodes[ i ] ) ) return v;
 	}
 },
-_compilePreloadConfig = function( a, x ) {
+_compilePreload = function( a, x ) {
 	var b = typeof a === _OBJ, p = b ? a : _getPreload( a ), y = x, x = x.type === 'Dialog' ? x.node : x, n = x, v;
 	if ( p ) {
 		if ( x.type === 'View' && x.node ) {
@@ -816,7 +816,7 @@ W = define( 'Widget', function() {
 					this.exec( x );
 				} else {
 					if ( this.x.preload ) {
-						x = _compilePreloadConfig( this.x.preload, x );
+						x = _compilePreload( this.x.preload, x );
 					}
 					if ( x ) {
 						if ( x.type && x.type !== this.type )
@@ -2013,7 +2013,7 @@ Scroll = define.widget( 'Scroll', {
 			ready: function() {
 				// widget的dom可能会被业务重新生成，需要重置相关变量
 				delete this._scr_ready; delete this._scr_wd; delete this._scr_ht;
-				this.x.swipedown && this.setSwipedown();
+				this.x.pullRefresh && this.setPullRefresh();
 			},
 			mouseOver: function() {
 				if ( this._scr_usable ) {
@@ -2206,46 +2206,45 @@ Scroll = define.widget( 'Scroll', {
 			$[ b || 'append' ]( (_putin[ b ] ? (this.$( 'vln' ) || this.$( 'cont' )) : N) || this.$(), a.isWidget ? a.$() : a );
 		},
 		// @mobile 下拉刷新
-		setSwipedown: function() {
-			var o = this.ovf(), d = this.$( 'swipedown' ), iy, rl, ht, self = this,
+		setPullRefresh: function() {
+			var c = this.$(), o = this.$( 'cont' ), d = this.$( 'pull' ), iy, rl, ht, sc, py, self = this,
 				cmp = function() {
-					Q( o ).css( { transform: 'translate3d(0,0,0)', transition: '500ms cubic-bezier(0.165, 0.84, 0.44, 1)' } );
+					Q( o ).css( { transform: 'translate3d(0,0,0)', transition: '500ms cubic-bezier(0.165,0.84,0.44,1)' } );
 			    	Q( d ).css( { visibility: '', height: '' } );
 			    	setTimeout( function() {
 			    		$.classRemove( d, 'z-loading z-release' );
 			    		Q( o ).css( { transition: '' } );
 			    	}, 500 );
 				};
-	    	o.addEventListener( 'touchStart', function( e ) {
+	    	c.addEventListener( 'touchstart', function( e ) {
 	    		Q( o ).css( 'transition', '' );
-	    		iy = e.targetTouches[ 0 ].clientY;
-	    		rl = F;
-	    		if ( ! ht ) {
+	    		iy = e.targetTouches[ 0 ].clientY, sc = c.scrollTop, rl = F, py = 0;
+				if ( ! ht ) {
 	    			ht = d.offsetHeight;
 	    		}
 	    		Q( d ).css( { visibility: 'visible', height: 0 } );
 	    	});
-	    	o.addEventListener( 'touchmove', function( e ) {
-	    		var y = e.targetTouches[ 0 ].clientY - iy;
-	    		if ( o.scrollTop == 0 && y > 0) {
+	    	c.addEventListener( 'touchmove', function( e ) {
+	    		py = e.targetTouches[ 0 ].clientY - iy - sc;
+	    		if ( c.scrollTop == 0 && py > 0 ) {
 	    			e.preventDefault();
-	    			if ( y > ht && ! rl ) {
-	    				y = ht;
+	    			if ( py > ht && ! rl ) {
+	    				py = ht;
 	    				rl = T;
-	    				$.classAdd( d, 'z-release' );
+						Q( d ).addClass( 'z-release' ).find( '._desc' ).html( Loc.release_refresh );
 	    			}
-	    			d.style.height = Math.min( ht, y ) + 'px';
-	    			Q( o ).css( { 'transform': 'translate3d(0,'+ y +'px,0)' } );
+	    			d.style.height = Math.min( ht, py ) + 'px';
+	    			Q( o ).css( { 'transform': 'translate3d(0,'+ py +'px,0)' } );
 	    		}
 	    	});
-	    	o.addEventListener( 'touchend', function( e ) {
+	    	c.addEventListener( 'touchend', function( e ) {
 	    		if ( rl ) {
 	    			$.classRemove( d, 'z-release' );
 	    			$.classAdd( d, 'z-loading' );
-		    		self.exec( { type: 'Ajax', src: self.x.swipedown, complete: cmp } );
-	    		} else
+		    		self.x.pullRefresh.src && self.exec( { type: 'Ajax', src: self.x.pullRefresh.src, complete: cmp } );
+					e.preventDefault();
+	    		} else if ( py > 0 )
 	    			cmp();
-	    		e.preventDefault();
 	    	});			
 		},
 		prop_cls: function() {
@@ -2256,24 +2255,24 @@ Scroll = define.widget( 'Scroll', {
 		},
 		html: function() {
 			this.width() == N && ! this.x.maxWidth && ! this.x.maxHeight && $.classAdd( this, 'z-autosize' );
-			mbi && this.attr( 'scroll' ) && $.classAdd( this, 'f-oa' );
 			// 执行 html_nodes 要在执行 html_prop 之前，以备html_nodes中可能要增加样式等操作
 			var s = this.html_nodes();
-			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + (this.isScroll() ? this.html_scroll( s ) : s) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
+			if ( mbi ) {
+				this.attr( 'scroll' ) && $.classAdd( this, 'f-oa' );
+				if ( this.x.pullRefresh )
+					s = '<div id=' + this.id + 'pull class=w-scroll-pull><i class=f-vi></i><i class="f-va f-i f-i-long-arrow-down"></i><span class="f-va _desc">' + Loc.pull_refresh + '</span></div><div id=' + this.id + 'cont>' + s + '</div>';		
+			}
+			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + (!mbi && this.isScroll() ? this.html_scroll( s ) : s) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
 		html_scroll: function( s ) {
 			this._scr_usable = T;
 			var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll;
-			if ( mbi ) {
-				return (this.x.swipedown ? '<div id=' + this.id + 'swipedown class=w-scroll-swipedown><i class="f-i"></i><em class="f-vi _desc"></em></div>' : '') + (s || '');		
-			} else {
-				return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
-					(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
-					(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxHeight ? 'max-height:' + (+this.x.maxHeight + c) + 'px;' : '') + (this.x.minHeight ? 'min-height:' + (+this.x.minHeight + c) + 'px;' : '') +
-					'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div id=' + this.id + 'cont>' + (s || '') + '</div>' + _html_resize_sensor.call( this ) + '</div></div></div><div id=' +
-					this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
-					this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
-			}
+			return '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
+				(w ? 'width:' + (w + c) + 'px;' : '' ) + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
+				(h ? 'height:' + (h + c) + 'px;' : '' ) + (this.x.maxHeight ? 'max-height:' + (+this.x.maxHeight + c) + 'px;' : '') + (this.x.minHeight ? 'min-height:' + (+this.x.minHeight + c) + 'px;' : '') +
+				'" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div id=' + this.id + 'cont>' + (s || '') + '</div>' + _html_resize_sensor.call( this ) + '</div></div></div><div id=' +
+				this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
+				this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
 		},
 		dispose: function() {
 			clearInterval( this._scr_timer );
@@ -2315,18 +2314,15 @@ AbsSection = define.widget( 'AbsSection', {
 		init_preload: function() {
 			var x = this.x, t = x.preload && _getPreload( x.preload );
 			if ( t ) {
+				if ( x.cls && t.cls ) x.cls += ' ' + t.cls;
 				if ( x.node ) {
-					var n = _compilePreloadConfig( x.preload, x.node );
+					var n = _compilePreload( x.preload, x.node );
 					n && $.merge( x, n );
 				} else {
 					$.extendDeep( x, t );
 					this.className += ' z-loading';
 				}
 			}
-		},
-		// @implement
-		attrSetter: function( a, b, c ) {
-			_proto.attrSetter.apply( this, arguments );
 		},
 		getSrc: function( a ) {
 			var u = this.x.src; 
@@ -6569,7 +6565,7 @@ CheckBox = define.widget( 'CheckBox', {
 			}
 			this.x.style && (y += this.x.style);
 			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.br ? '' : ' f-fix') + '"' + this.prop_title() +
-				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>' + '<input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
+				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><i class=f-vi></i><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				_html_on.call( this ) + '>' + this.html_text() + '</' + this.tagName + '>' +
 				(p.x.dir === 'v' && p[ p.length - 1 ] != this ? '<br>' : '');
@@ -7453,12 +7449,13 @@ Spinner = define.widget( 'Spinner', {
 		},
 		step: function( a ) {
 			if ( this.isNormal() ) {
-				var d = this.x.validate, m = d && this.vv( 'maxValue' ), n = d && this.vv( 'minValue' ), v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
-				m != N && (v = Math.min( m, v ));
-				n != N && (v = Math.max( n, v ));
+				var d = this.x.validate, m = d && this.vv( 'maxValue' ), n = d && this.vv( 'minValue' ), v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) ), r = v;
+				m != N && (r = Math.min( m, r ));
+				n != N && (r = Math.max( n, r ));
 				this.removeClass( 'z-err' );
 				this.focus( this.type === 'Number' );
-				this.val( v );
+				this.val( r );
+				r != v && this.tip( { text: Loc.form[ r < v ? 'step_max_value' : 'step_min_value' ] } );
 			}
 		},
 		input_prop_value: function() {

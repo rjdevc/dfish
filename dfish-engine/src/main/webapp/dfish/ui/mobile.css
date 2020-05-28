@@ -6,11 +6,12 @@
 
 .w-scroll{position:relative}
 .w-scroll-overflow{background:inherit;position:relative;overflow:auto}
-.w-scroll-swipedown{position:absolute;left:0;right:0;height:40px;text-align:center;visibility:hidden;overflow:hidden}
-.w-scroll-swipedown .f-i:before{content:'\e588'}
-.w-scroll-swipedown.z-release .f-i{-webkit-transform:rotate(180deg);-webkit-transition-duration:500ms;}
-.w-scroll-swipedown.z-loading .f-i:before{content:''}
-.w-scroll-swipedown.z-loading .f-i{width:24px;height:24px;background:url(g/loading.gif) no-repeat 50% 50%;vertical-align: middle;}
+.w-scroll-pull{position:absolute;left:0;right:0;height:40px;text-align:center;visibility:hidden;overflow:hidden;line-height:1}
+.w-scroll-pull .f-i{font-weight: 700;font-size:18px;color:#777}
+.w-scroll-pull ._desc{font-size:16px;color:#777}
+.w-scroll-pull.z-release .f-i{-webkit-transform:rotate(180deg);-webkit-transition-duration:500ms;margin-top:-5px}
+.w-scroll-pull.z-loading .f-i:before{content:''}
+.w-scroll-pull.z-loading .f-i{width:24px;height:24px;background:url(g/loading.gif) no-repeat 50% 50%}
 
 .w-label{line-height: inherit;}
 

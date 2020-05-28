@@ -25,7 +25,7 @@ doc = win.document, cvs = doc.documentElement,
 
 _opener = (function() {
 	try { return win.opener.document && win.opener; }catch(ex){}
-})();
+})(),
 
 dfish = function( a ) {
 	if ( a != N ) return a.isWidget ? a.$() : a.nodeType ? a : doc.getElementById( a );
@@ -55,7 +55,7 @@ getPath = function() {
 	!_cfg.ver && (_cfg.ver = _urlParam( u, 'ver' ));
 },
 // 浏览器缩放检测
-detectZoom = function(){
+detectZoom = function() {
     var ratio = 0;
     if ( win.devicePixelRatio !== U ) {
         ratio = win.devicePixelRatio;
@@ -70,8 +70,7 @@ detectZoom = function(){
     	ratio = Math.round(ratio * 100);
     }
     return ratio;
-};
-
+},
 // 浏览器信息
 br = $.br = (function() {
 	var u = navigator.userAgent.toLowerCase(),
@@ -1622,10 +1621,10 @@ var
 _ajax_url = $.ajaxUrl = function( a, b ) {
 	return a.indexOf( './' ) === 0 || a.indexOf( '../' ) === 0 ? _urlLoc( _path, a ) : _ajax_httpmode( a ) ? a : b ? _urlLoc( _path, a ) : _cfg.server ? _cfg.server + a : _urlLoc( _path, a );
 },
-_ajax_xhr = (function() {
+_ajax_xhr = $.ajaxXHR = (function() {
 	if ( br.app ) {
 		return function( x ) { //wkwebview下使用5+ xhr
-			return x.crossDomain || (br.ios && window.webkit && window.webkit.messageHandlers) ? new plus.net.XMLHttpRequest() : new window.XMLHttpRequest();
+			return (x && x.crossDomain) || (br.ios && window.webkit && window.webkit.messageHandlers) ? new plus.net.XMLHttpRequest() : new window.XMLHttpRequest();
 		}
 	}
 	var a = function() { return new XMLHttpRequest() },
@@ -2337,6 +2336,203 @@ _merge( $, {
 		// 业务拖动时禁用浏览器默认的拖动效果
 		br.mobile && doc.addEventListener( 'touchmove', m, { passive: F } );
 	},
+	swipe: (function(){
+		var Rhui = {};
+		Rhui.mobile = (function(){
+			var touch = {
+				distance: 30,  //滑动距离，超过该距离触发swipe事件，单位像素。
+				duration: 1000 //滑动时长，超过该时间不触发swipe，单位毫秒。
+			};
+
+			/**
+			* 绑定事件
+			* @param  el        触发事件的元素
+			* @param  swipe     事件名称，可选值为swipeLeft,swipeRight,swipeUp,swipeDown
+			* @param  callback  事件回调函数
+			* @param  isStopPropagation   是否停止冒泡，true为停止冒泡
+			* @param  isPreventDefault    是否阻止默认事件，true为阻止默认事件
+			* @param  triggerOnMove       swipe事件有两种触发方式，一种是在touchmove过程中，只要满足滑动距离条件即触发。
+			*                             一种是在touchend中，进入滑动距离判断，如果满足滑动距离触发。
+			*                             默认是在touchend中触发。
+			*/
+			function bindSwipe(el, swipe, callback, triggerOnMove, isStopPropagation, isPreventDefault){
+				var startPoint, endPoint, timer;
+
+				/**
+				* 计算滑动方向
+				* 首先根据x方向和y方向滑动的长度决定触发x方向还是y方向的事件。
+				* 然后再判断具体的滑动方向。
+				* 如果滑动距离不够长，不判断方向。
+				*/
+				function swipeDirection(x1, y1, x2, y2){
+					var diffX = x1 - x2,
+						diffY = y1 - y2,
+						absX = Math.abs(diffX),
+						absY = Math.abs(diffY),
+						swipe;
+
+					if(absX >= absY){
+						if(absX >= touch.distance){
+							swipe = diffX > 0 ? 'swipeLeft' : 'swipeRight';
+						}
+					}else{
+						if(absY >= touch.distance){
+							swipe = diffY > 0 ? 'swipeUp' : 'swipeDown';
+						}
+					}
+
+					return swipe;
+				}
+
+				// 清除本次滑动数据
+				function clearSwipe(){
+					startPoint = undefined;
+					endPoint = undefined;
+
+					if(timer !== undefined){
+						clearTimeout(timer);
+						timer = undefined;
+					}
+				}
+
+				/**
+				* 判断是否符合条件，如果符合条件就执行swipe事件
+				* @param  el     {HTMLElement}  元素
+				* @param  event  {Event}        Touch原始事件
+				* @param  return 如果执行了事件，就返回true。
+				*/
+				function execSwipe(el, event){
+					if(startPoint && endPoint && swipeDirection(startPoint.x, startPoint.y, endPoint.x, endPoint.y) === swipe){
+						callback.call(el, event);
+						return true;
+					}
+				}
+
+				el.addEventListener('touchstart', function(event){
+					var self = this, touchPoint = event.touches[0];
+
+					if(isStopPropagation){
+						event.stopPropagation();
+					}
+
+					if(isPreventDefault){
+						event.preventDefault();
+					}
+
+					startPoint = {
+						x: Math.floor(touchPoint.clientX),
+						y: Math.floor(touchPoint.clientY)
+					};
+
+					timer = setTimeout(function(){
+						//如果超时，清空本次touch数据
+						clearSwipe();
+					}, touch.duration);
+				});
+
+				el.addEventListener('touchmove', function(event){
+					var self = this, touchPoint = event.touches[0];
+
+					if(isStopPropagation){
+						event.stopPropagation();
+					}
+
+					if(isPreventDefault){
+						event.preventDefault();
+					}
+
+					if(startPoint){
+						endPoint = {
+							x: Math.floor(touchPoint.clientX),
+							y: Math.floor(touchPoint.clientY)
+						};
+
+						//执行swipe事件判断，是否符合触发事件
+						if(triggerOnMove){
+							if(execSwipe(self, event)){
+								clearSwipe();
+							}
+						}
+					}
+				});
+
+				el.addEventListener('touchend', function(event){
+					if(isStopPropagation){
+						event.stopPropagation();
+					}
+
+					if(isPreventDefault){
+						event.preventDefault();
+					}
+
+					execSwipe(self, event);
+					//清除本次touch数据
+					clearSwipe();
+				});
+			}
+
+			/**
+			* @param  el        {HTMLElement}  HTML元素
+			* @param  callback  {Function}     事件回调函数
+			* @param  options   {Object}       可选参数
+			*                   isStopPropagation  {Boolean}  是否停止冒泡，true为停止冒泡
+			*                   isPreventDefault   {Boolean}  是否阻止默认事件，true为阻止默认事件
+			*                   triggerOnMove      {Boolean}
+			*                                       swipe事件有两种触发方式，一种是在touchmove过程中，只要满足滑动距离条件即触发。
+			*                                       一种是在touchend中，进入滑动距离判断，如果满足滑动距离触发。
+			*                                       默认值为false，在touchend中触发。
+			*/
+			touch.swipeLeft = function(el, callback, options){
+				if(options){
+					bindSwipe(el, 'swipeLeft', callback, options.triggerOnMove, options.isStopPropagation, options.isPreventDefault);
+				}else{
+					bindSwipe(el, 'swipeLeft', callback);
+				}
+
+			};
+
+			touch.swipeRight = function(el, callback, options){
+				if(options){
+					bindSwipe(el, 'swipeRight', callback, options.triggerOnMove, options.isStopPropagation, options.isPreventDefault);
+				}else{
+					bindSwipe(el, 'swipeRight', callback);
+				}
+			};
+
+			touch.swipeUp = function(el, callback, options){
+				if(options){
+					bindSwipe(el, 'swipeUp', callback, options.triggerOnMove, options.isStopPropagation, options.isPreventDefault);
+				}else{
+					bindSwipe(el, 'swipeUp', callback);
+				}
+			};
+
+			touch.swipeDown = function(el, callback, options){
+				if(options){
+					bindSwipe(el, 'swipeDown', callback, options.triggerOnMove, options.isStopPropagation, options.isPreventDefault);
+				}else{
+					bindSwipe(el, 'swipeDown', callback);
+				}
+			};
+			return touch;
+		})();
+		/**
+		* 模拟touch swipe事件，支持链式调用。
+		* @param   el        {Element}   swipe元素。
+		* @param   name      {String}    swipe事件名称，值有swipeLeft、swipeRight、swipeUp、swipeDown。
+		* @param   callback  {Function}  swipe事件回调函数
+		* @param   opts      {Object}    可选参数
+		*                                isStopPropagation  {Boolean}  是否停止冒泡，true为停止冒泡
+		*                                isPreventDefault   {Boolean}  是否阻止默认事件，true为阻止默认事件
+		*                                triggerOnMove      {Boolean}  swipe事件有两种触发方式，一种是在touchmove过程中，只要满足滑动距离条件即触发。
+		*                                                              一种是在touchend中，进入滑动距离判断，如果满足滑动距离触发。
+		*                                                              默认值为false，在touchend中触发。
+		*/
+		return function(el, name, callback, opts){
+			Rhui.mobile[name](el.isWidget ? el.$() : el, callback, opts);
+		}
+   
+	})(),
 	// @a -> el, b -> type, c -> fast|normal|slow (.2s|.5s|1s), d -> fn 结束后执行的函数
 	animate: function( a, b, c, d ) {
 		c = c || 'fast';
@@ -2350,59 +2546,64 @@ _merge( $, {
 	// @a -> src, b -> post json?, c -> options
 	download: function( a, b, c ) {
 		if ( br.app ) {
-			var dtask = plus.downloader.createDownload( _urlComplete( a ), c );
-			plus.nativeUI.showWaiting();
-			dtask.addEventListener("statechanged", function(task, status) {
-				switch (task.state) {
-					case 1: // 开始
-						plus.nativeUI.toast( $.loc.download_start );
-						break;
-					case 4: // 下载完成
-						if (status == 200) {
-							plus.nativeUI.toast( $.loc.download_complete ); 
-							plus.runtime.openFile(task.filename, {}, function(e) {
-								plus.nativeUI.alert( $.loc.download_cannotopen );
-							});
-						} else {
-							plus.nativeUI.toast($.loc.download_fail + status);
+			$.wifiConfirm( function() {
+				var dtask = plus.downloader.createDownload( _urlComplete( a ), c );
+				plus.nativeUI.showWaiting();
+				dtask.addEventListener("statechanged", function(task, status) {
+					switch (task.state) {
+						case 1: // 开始
+							plus.nativeUI.toast( $.loc.download_start );
+							break;
+						case 4: // 下载完成
+							if (status == 200) {
+								plus.nativeUI.toast( $.loc.download_complete ); 
+								plus.runtime.openFile(task.filename, {}, function(e) {
+									plus.nativeUI.alert( $.loc.download_cannotopen );
+								});
+							} else {
+								plus.nativeUI.toast($.loc.download_fail + status);
+							}
+							plus.nativeUI.closeWaiting();
+							break;
+					}
+				});
+				dtask.start();
+			} );
+		} else {
+			var d = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
+			if ( _cfg.ajaxData ) {
+				b = $.extend( b || {}, _cfg.ajaxData );
+			}
+			if ( b ) {
+				var f = document.createElement( 'form' ), u = '_download_' + $.uid();
+				f.action = _ajax_url( a );
+				f.target = u;
+				f.method = 'post';
+				for ( var i in b ) {
+					if ( _isArray( b[ i ] ) ) {
+						for ( var j = 0; j < b[ i ].length; j ++ ) {
+							var	o = document.createElement( 'textarea' );
+							o.name = i;
+							o.value = b[ i ][ j ];
+							f.appendChild( o );
 						}
-						plus.nativeUI.closeWaiting();
-						break;
-				}
-			});
-			dtask.start();
-			return;
-		}
-		var d = Q( '<div class=f-none><iframe src="about:blank" name=xx></iframe></div>' );
-		if ( _cfg.ajaxData ) {
-			b = $.extend( b || {}, _cfg.ajaxData );
-		}
-		if ( b ) {
-			var f = document.createElement( 'form' ), u = '_download_' + $.uid();
-			f.action = _ajax_url( a );
-			f.target = u;
-			f.method = 'post';
-			for ( var i in b ) {
-				if ( _isArray( b[ i ] ) ) {
-					for ( var j = 0; j < b[ i ].length; j ++ ) {
+					} else {
 						var	o = document.createElement( 'textarea' );
 						o.name = i;
-						o.value = b[ i ][ j ];
+						o.value = b[ i ];
 						f.appendChild( o );
 					}
-				} else {
-					var	o = document.createElement( 'textarea' );
-					o.name = i;
-					o.value = b[ i ];
-					f.appendChild( o );
 				}
+				c.find( 'iframe' ).prop( 'name', u );
+				c.append( f );
+				f.submit();
 			}
-			c.find( 'iframe' ).prop( 'name', u );
-			c.append( f );
-			f.submit();
+			d.appendTo( document.body );
+			b ? f.submit() : d.find( 'iframe' ).prop( 'src', a );
 		}
-		d.appendTo( document.body );
-		b ? f.submit() : d.find( 'iframe' ).prop( 'src', a );
+	},
+	wifiConfirm: function( a, b ) {
+		_cfg.wifiConfirm && plus.networkinfo.getCurrentType() != 3 ? plus.nativeUI.confirm( $.loc.connection_not_wifi, function(e){e.index === 0 && a.call(b)}, {buttons:[$.loc.confirm, $.loc.cancel]} ) : a.call(b);
 	},
 	// 根据文件后缀名获取文件类型
 	mimeType: (function() {

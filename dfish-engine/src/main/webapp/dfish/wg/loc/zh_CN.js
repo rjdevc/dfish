@@ -57,6 +57,9 @@ preview_orginal_image: '查看原图',
 auth_success: '验证成功',
 auth_fail: '验证失败',
 
+pull_refresh: '下拉刷新',
+release_refresh: '释放刷新',
+
 tree_movefail1	: '无法移动：目标文件夹和源文件夹相同',
 tree_movefail2	: '无法移动：目标文件夹是源文件夹的子文件夹',
 
@@ -82,6 +85,7 @@ download_complete: '下载完成',
 download_cannotopen: '无法打开此文件',
 download_fail: '下载失败',
 
+connection_not_wifi: '您当前处于非wifi网络环境下，继续使用可能产生流量，确定继续吗？',
 
 debug: {
 	sorry : '很抱歉，系统发生了错误',
@@ -110,6 +114,8 @@ form : {
 	number_invalid: '{0}不是一个有效数字',
 	number_integer: '{0}请填入一个整数',
 	number_decimal_digit: '{0}的小数位不能超过{1}位',
+	step_max_value: '已到达最大值',
+	step_min_value: '已到达最小值',
 	time_exceed: '{0}的年份超出有效范围。有效年份：{1}年 至 {2}年',
 	time_format: '{0}的时间格式错误。正确格式范例：{1}',
 	period_invalid: '{0}的起始时间应早于结束时间',
