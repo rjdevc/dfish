@@ -89,6 +89,8 @@ form : {
 	number_invalid: '{0}不是一个有效数字',
 	number_integer: '{0}请填入一个整数',
 	number_decimal_digit: '{0}的小数位不能超过{1}位',
+	step_max_value: '已到达最大值',
+	step_min_value: '已到达最小值',
 	time_exceed: '{0}的年份超出有效范围。有效年份：{1}年 至 {2}年',
 	time_format: '{0}的时间格式错误。正确格式范例：{1}',
 	period_invalid: '{0}的起始时间应早于结束时间',

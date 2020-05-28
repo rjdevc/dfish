@@ -6605,11 +6605,12 @@ Spinner = define.widget( 'spinner', {
 		},
 		step: function( a ) {
 			if ( this.isNormal() ) {
-				var d = this.x.validate, m = d && d.maxvalue, n = d && d.minvalue, v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) );
-				m != N && (v = Math.min( m, v ));
-				n != N && (v = Math.max( n, v ));
+				var d = this.x.validate, m = d && d.maxvalue, n = d && d.minvalue, v = $.numAdd( _number( this.val() ), a * (this.x.step || 1) ), r = v;
+				m != N && (r = Math.min( m, r ));
+				n != N && (r = Math.max( n, r ));
 				this.focus();
-				this.val( v );
+				this.val( r );
+				r != v && this.cmd( { type: 'tip', text: Loc.form[ r < v ? 'step_max_value' : 'step_min_value' ] } );
 			}
 		},
 		input_prop_value: function() {
