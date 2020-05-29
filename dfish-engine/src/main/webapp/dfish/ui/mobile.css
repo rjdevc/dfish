@@ -6,14 +6,15 @@
 
 .w-scroll{position:relative}
 .w-scroll-overflow{background:inherit;position:relative;overflow:auto}
-.w-scroll-pull{position:absolute;width:100%;height:50px;transform:translateY(-100%);text-align:center;visibility:hidden;overflow:hidden;line-height:1}
+.w-scroll-pull{position:absolute;width:100%;height:0;text-align:center;overflow:hidden;line-height:1}
+.w-scroll-pull ._gut{position:absolute;width:100%;height:50px;bottom:0}
 .w-scroll-pull .f-i{font-weight: 700;font-size:18px;color:#777}
 .w-scroll-pull ._desc{font-size:16px;color:#777}
 .w-scroll-pull.z-release .f-i{-webkit-transform:rotate(180deg);-webkit-transition-duration:500ms;margin-top:-5px}
 .w-scroll-pull.z-loading .f-i:before{content:''}
 .w-scroll-pull.z-loading .f-i{width:24px;height:24px;background:url(g/loading.gif) no-repeat 50% 50%}
 
-.w-frame{white-space:nowrap}
+.w-frame{white-space:nowrap;overflow:hidden}
 
 .w-label{line-height: inherit;}
 
