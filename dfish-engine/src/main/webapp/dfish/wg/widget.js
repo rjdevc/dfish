@@ -17,11 +17,12 @@ cfg = $.x,
 eve = $.abbr + '.e(this)',
 evw = $.abbr + '.w(this)',
 ev_down = mbi ? 'ontouchStart=' : 'onmousedown=',
-plus = window.plus,
 _dfopt	= cfg.defaultOptions || {},
 _number = $.number,
 _slice  = Array.prototype.slice,
 _putin  = { append: T, prepend: T, undefined: T },
+plus = window.plus,
+swiping = N,
 
 // 给第三方插件使用的全局变量
 globalWindow = define( 'global/window', window ),
@@ -1148,9 +1149,10 @@ W = define( 'Widget', function() {
 		},
 		// 显示或隐藏 /@a -> 是否显示T/F, b -> 设置为true，验证隐藏状态下的表单。默认情况下隐藏后不验证
 		display: function( a, b ) {
-			var c = a == N || (a.isWidget ? a.x.expanded : a), p = this.parentNode, d = 'f-hide' + (b ? '' : ' f-form-hide');
+			var c = a == N || (a.isWidget ? a.x.expanded : a);
 			a != N && a.isWidget && (c ? (this._toggleCommander = N) : (this._toggleCommander = a));
-			this.addClass( d, ! c );
+			(!mbi || !(this.parentNode && this.parentNode.type_frame)) && this.addClass( 'f-hide', ! c );
+			!b && this.addClass( 'f-form-hide', ! c );
 			this.x.display = !!c;
 			!!c && this.trigger( 'display' );
 		},
@@ -2005,7 +2007,6 @@ Scroll = define.widget( 'Scroll', {
 				if ( a.isScroll && a.isScroll() && a.innerHeight() > 0 )
 					return a;
 			} while ( (a = a.parentNode) && !a.isDialogWidget );
-			//return _widget( a ).closest( function() { return this.isScroll && this.isScroll() && this.innerHeight() > 0 } );
 		}
 	},
 	Listener: {
@@ -2209,12 +2210,9 @@ Scroll = define.widget( 'Scroll', {
 		setPullRefresh: function() {
 			var c = this.$(), o = this.$( 'cont' ), d = this.$( 'pull' ), iy, rl, ht, sc, py, self = this,
 				cmp = function() {
-					Q( o ).css( { transform: 'translate3d(0,0,0)', transition: '500ms cubic-bezier(0.165,0.84,0.44,1)' } );
-			    	Q( d ).css( { visibility: '', height: '' } );
-			    	setTimeout( function() {
-			    		$.classRemove( d, 'z-loading z-release' );
-			    		Q( o ).css( { transition: '' } );
-			    	}, 500 );
+					Q( o ).css( { transform: '', transition: '500ms cubic-bezier(0.165,0.84,0.44,1)' } );
+			    	Q( d ).css( { visibility: '', transform: '' } ).find( '._desc' ).html( Loc.pull_refresh );
+					setTimeout( function() { $.classRemove( d, 'z-loading z-release' ) }, 500 );
 				};
 	    	c.addEventListener( 'touchstart', function( e ) {
 	    		Q( o ).css( 'transition', '' );
@@ -2222,30 +2220,41 @@ Scroll = define.widget( 'Scroll', {
 				if ( ! ht ) {
 	    			ht = d.offsetHeight;
 	    		}
-	    		Q( d ).css( { visibility: 'visible', height: 0 } );
+	    		Q( d ).css( { visibility: 'visible' } );
 	    	});
 	    	c.addEventListener( 'touchmove', function( e ) {
+				if ( (swiping && swiping != c) || c.scrollTop ) return;
 	    		py = e.targetTouches[ 0 ].clientY - iy - sc;
-	    		if ( c.scrollTop == 0 && py > 0 ) {
-	    			e.preventDefault();
-	    			if ( py > ht && ! rl ) {
-	    				py = ht;
-	    				rl = T;
-						Q( d ).addClass( 'z-release' ).find( '._desc' ).html( Loc.release_refresh );
-	    			}
-	    			d.style.height = Math.min( ht, py ) + 'px';
-	    			Q( o ).css( { 'transform': 'translate3d(0,'+ py +'px,0)' } );
-	    		}
+				if ( py > 5 ) {
+					swiping = c;
+					if ( py > ht ) {
+						if ( ! rl ) {
+							Q( d ).addClass( 'z-release' ).find( '._desc' ).html( Loc.release_refresh );
+							rl = T;
+						}
+					} else {
+						if ( rl ) {
+							Q( d ).removeClass( 'z-release' ).find( '._desc' ).html( Loc.pull_refresh );
+							rl = F;
+						}
+					}
+				}
+				if ( swiping ) {
+					Q( d ).css({ transform: 'translateY(-' + (100 - (Math.min(ht, py)/ht) * 100) + '%)' });
+					Q( o ).css( { transform: 'translateY('+ py +'px)' } );
+				}
 	    	});
 	    	c.addEventListener( 'touchend', function( e ) {
-	    		if ( rl ) {
-	    			$.classRemove( d, 'z-release' );
-	    			$.classAdd( d, 'z-loading' );
-		    		self.x.pullRefresh.src && self.exec( { type: 'Ajax', src: self.x.pullRefresh.src, complete: cmp } );
-					e.preventDefault();
-	    		} else if ( py > 0 )
-	    			cmp();
-	    	});			
+				if ( swiping == c ) {
+					if ( py > ht ) {
+						$.classRemove( d, 'z-release' );
+						$.classAdd( d, 'z-loading' );
+						self.x.pullRefresh.src && self.exec( { type: 'Ajax', src: self.x.pullRefresh.src, complete: cmp } );
+					} else
+						cmp();
+					swiping = N;
+				}
+	    	});
 		},
 		prop_cls: function() {
 			return _proto.prop_cls.call( this ) + (this.attr( 'scroll' ) ? ' f-scroll-wrap' : '');
@@ -2259,8 +2268,10 @@ Scroll = define.widget( 'Scroll', {
 			var s = this.html_nodes();
 			if ( mbi ) {
 				this.attr( 'scroll' ) && $.classAdd( this, 'f-oa' );
-				if ( this.x.pullRefresh )
+				if ( this.x.pullRefresh ) {
+					$.classAdd( this, 'f-rel' );
 					s = '<div id=' + this.id + 'pull class=w-scroll-pull><i class=f-vi></i><i class="f-va f-i f-i-long-arrow-down"></i><span class="f-va _desc">' + Loc.pull_refresh + '</span></div><div id=' + this.id + 'cont>' + s + '</div>';		
+				}
 			}
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + (!mbi && this.isScroll() ? this.html_scroll( s ) : s) + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
@@ -2389,7 +2400,7 @@ AbsSection = define.widget( 'AbsSection', {
 			} else
 				o = T;
 			d ? $.require( d, function() { m = T; e(); } ) : (m = T);
-			u = this.getSrc();
+			var u = this.getSrc();
 			u && typeof u === _STR ? this.exec( { type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function( x ) {
 				if ( this._success( x ) ) {
 					n = x; e();
@@ -2648,7 +2659,6 @@ View = define.widget( 'View', {
 		p && p.bind && (this.bind = p.bind);
 		this.init_nodes();
 		this._instanced = T;
-
 	},
 	Extend: Section,
 	Prototype: {
@@ -2832,7 +2842,7 @@ View = define.widget( 'View', {
 			this.layout.prepend.apply( this.layout, arguments );
 		},
 		html_nodes: function() {
-			return this.layout ? this.layout.html() : '';
+			return this.layout ? this.layout.html() : this.html_loading();
 		},
 		dispose: function() {
 			this.trigger( 'unload' );
@@ -2979,11 +2989,13 @@ Vertical = define.widget( 'Vertical', {
 		className: 'w-vertical'
 	}
 } ),
+_isFastSwipe = function( a ) {
+	for ( var i = 1, b = 0, l = a.length; i< l; i++ ) {
+		if (a[ i ] - a[ i - 1 ] > 6) return T;
+	}
+},
 /* `Frame`  子元素被约束为：高度宽度占满，只有一个可见  */
 Frame = define.widget( 'Frame', {
-	Const: function( x, p ) {
-		W.apply( this, arguments );
-	},
 	Listener: {
 		body: {
 			ready: function() {
@@ -2991,20 +3003,62 @@ Frame = define.widget( 'Frame', {
 					var d = this.focusNode;
 					!d && (d = this.x.dft ? this.ownerView.find( this.x.dft ) : this[ 0 ]) && this.focus( d );
 				}
+				mbi && this.listenSwipe();
 			}
 		}
 	},
 	Prototype: {
 		type_frame: T,
 		className: 'w-frame',
+		listenSwipe: function() {
+			var b = this.$(), c, d = Q(this.$('cont')), ix, iy, cx, px, py, wd, tm, dir, self = this;
+			this.focusNode && this.translateX( T );
+	    	b.addEventListener( 'touchstart', function( e ) {
+				if ( !(c = self.getFocus()) )
+					return;
+	    		ix = e.targetTouches[ 0 ].clientX;
+	    		iy = e.targetTouches[ 0 ].clientY;
+				wd = self.innerWidth();
+				cx = c.nodeIndex * wd;
+				tm = [];
+				d.css( 'transition', '' );
+	    	});
+	    	b.addEventListener( 'touchmove', function( e ) {
+	    		if ( (swiping && swiping != b) || ! c ) return;
+	    		px = e.targetTouches[ 0 ].clientX - ix;
+				if ( ! dir ) {
+					py = e.targetTouches[ 0 ].clientY - iy;
+					dir = (py > 10 || py < -10) ? 'y' : (px > 10 || px < -10) ? 'x' : N;
+				} 
+	    		if ( dir === 'x' ) {
+					! swiping && (swiping = b);
+					d.css( { transform: 'translateX('+ (px - cx) +'px)' } );
+					tm.push( Math.abs( px ) );
+					tm.length > 5 && tm.shift();
+	    		}
+	    	});
+	    	b.addEventListener( 'touchend', function( e ) {
+				if ( swiping == b ) {
+					var n = px < 0 && (-px > wd/2 || _isFastSwipe(tm)) ? self.focusNode.next() : px > 0 && (px > wd/2 || _isFastSwipe(tm)) ? self.focusNode.prev() : N;
+					if ( n ) {
+						$.all[ Q('[w-target="' + n.x.id + '"]', self.ownerView.$()).prop('id') ].click();
+					} else
+						self.translateX();
+					swiping = N;
+				}
+				dir = N;
+	    	});
+		},
 		childCls: function( a ) {
-			return a.x.display === T ? '' : 'f-hide';
+			return mbi ? 'f-sub-horz' : (a.x.display === T ? '' : 'f-hide');
 		},
 		getFocus: function() {
 			return this.focusNode;
 		},
+		translateX: function( a ) {
+			Q( this.$('cont') ).css({transform: 'translateX(-'+ (this.focusNode.nodeIndex * this.innerWidth()) +'px)', transition: a ? '' : '500ms cubic-bezier(0.165,0.84,0.44,1)'})
+		},
 		// @a -> wg,id
-		// animate: scrollX(横向滚动),scrollY(纵向滚动),
 		focus: function( a ) {
 			var o = this.getFocus(),
 				n = a.isWidget ? a : this.ownerView.find( a );
@@ -3013,17 +3067,15 @@ Frame = define.widget( 'Frame', {
 					delete o.focusOwner;
 				this.focusNode = n;
 				n.focusOwner = this;
-				if ( this.x.animate && o && this.$() ) {
-					var d = n.nodeIndex > o.nodeIndex ? 'Left' : 'Right';
-					n.display( T );
-					$.animate( o.$(), 'fadeOut' + d, 100 );
-					$.animate( n.$(), 'fadeIn' + d, 100, function() { o.display( F ); } );
-				} else {
-					o && o.display( F, T );
-					n.display( T );
-				}
+				o && o.display( F, T );
+				n.display( T );
+				mbi && this.$('cont') && this.translateX();
 			}
 			return n;
+		},
+		html_nodes: function() {
+			var s = _proto.html_nodes.call( this );
+			return br.app ? '<div id=' + this.id + 'cont>' + s + '</div>' : s;
 		}
 	}
 } ),

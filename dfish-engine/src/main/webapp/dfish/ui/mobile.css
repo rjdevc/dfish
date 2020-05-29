@@ -6,18 +6,19 @@
 
 .w-scroll{position:relative}
 .w-scroll-overflow{background:inherit;position:relative;overflow:auto}
-.w-scroll-pull{position:absolute;left:0;right:0;height:40px;text-align:center;visibility:hidden;overflow:hidden;line-height:1}
+.w-scroll-pull{position:absolute;width:100%;height:50px;transform:translateY(-100%);text-align:center;visibility:hidden;overflow:hidden;line-height:1}
 .w-scroll-pull .f-i{font-weight: 700;font-size:18px;color:#777}
 .w-scroll-pull ._desc{font-size:16px;color:#777}
 .w-scroll-pull.z-release .f-i{-webkit-transform:rotate(180deg);-webkit-transition-duration:500ms;margin-top:-5px}
 .w-scroll-pull.z-loading .f-i:before{content:''}
 .w-scroll-pull.z-loading .f-i{width:24px;height:24px;background:url(g/loading.gif) no-repeat 50% 50%}
 
+.w-frame{white-space:nowrap}
+
 .w-label{line-height: inherit;}
 
 .w-combobox ._plus .f-i:before,.w-pickbox ._plus .f-i:before,.w-linkbox ._plus .f-i:before,.w-onlinebox ._plus .f-i:before{content:'\e409'}
 
-.w-scroll-overflow .w-grid{overflow:visible}
 
 /*
 .w-leaf{position:relative;margin:0;padding:0;height:40px;cursor:default}
@@ -72,8 +73,6 @@
 .w-imageupload-value ._close{display:block;background:transparent;color:#f00;font-size:20px;top:-2px;right:-2px;}
 .w-imageupload-value:hover ._more,.w-imageupload-value:hover ._cvr{display:none}
 
-.f-boxbtn{width:30px;height:38px;text-align:center;text-indent:0;font-style:normal}
-
 .w-dialog-cover{opacity:.6}
 
 .w-alert.w-dialog{border-top:2px solid #2498ff}
@@ -83,6 +82,9 @@
 .w-alert-text{padding:0 10px;font-size:16px;color:#2498ff}
 .w-alert ._ico{color:#e0e0e0}
 .w-confirm .w-submitbutton{border-left-color:#ddd}
+
+.f-boxbtn{width:30px;height:38px;text-align:center;text-indent:0;font-style:normal}
+
 /*
 .f-i-back,.f-i-upload,.f-i-trash,.f-i-plus{background:none}
 .f-i-back:before{content:'\e471';}
