@@ -18,7 +18,7 @@ public class JsonUtil {
     static {
         jsonBuilder = (JsonBuilder) SystemContext.getInstance().get("jsonBuilder");
         if (jsonBuilder == null) {
-            String className = "com.rongji.dfish.misc.util.json.impl.JsonBuilder4Fastjson";
+            String className = "com.rongji.dfish.misc.util.json.impl.JsonBuilder4Jackson";
             if (BeanUtil.exists(className)) {
                 jsonBuilder = (JsonBuilder) BeanUtil.newInstance(className);
             }

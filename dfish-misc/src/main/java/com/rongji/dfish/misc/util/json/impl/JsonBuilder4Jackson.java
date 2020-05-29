@@ -15,21 +15,14 @@ import java.util.List;
  */
 public class JsonBuilder4Jackson extends AbstractJsonBuilder {
 
-    protected ObjectMapper getObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
 
-//        JavaTimeModule javaTimeModule = new JavaTimeModule();
-//        /** 序列化配置,针对java8 时间 **/
-//        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-//        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
-//
-//        /** 反序列化配置,针对java8 时间 **/
-//        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-//        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
-        if (Utils.notEmpty(dateFormat)) {
-            objectMapper.setDateFormat(new SimpleDateFormat(dateFormat));
+    protected ObjectMapper getObjectMapper() {
+        if (objectMapper == null) {
+            objectMapper = new ObjectMapper();
+            if (Utils.notEmpty(dateFormat)) {
+                objectMapper.setDateFormat(new SimpleDateFormat(dateFormat));
+            }
         }
         return objectMapper;
     }

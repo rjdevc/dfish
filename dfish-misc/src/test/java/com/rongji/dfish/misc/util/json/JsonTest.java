@@ -6,9 +6,7 @@ import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Gson;
 import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Jackson;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author lamontYu
@@ -20,6 +18,8 @@ public class JsonTest {
         private String userId;
         private String userName;
         private Date birthday = new Date();
+        private String className;
+        private TestUser brother;
 
         public TestUser() {
         }
@@ -52,6 +52,22 @@ public class JsonTest {
         public void setBirthday(Date birthday) {
             this.birthday = birthday;
         }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public void setClassName(String className) {
+            this.className = className;
+        }
+
+        public TestUser getBrother() {
+            return brother;
+        }
+
+        public void setBrother(TestUser brother) {
+            this.brother = brother;
+        }
     }
 
     @Test
@@ -80,8 +96,8 @@ public class JsonTest {
 
     private void jsonTest(JsonBuilder builder) throws Exception {
         StringBuilder sb = new StringBuilder();
-//        long begin = System.currentTimeMillis();
         TestUser user1 = new TestUser("1", "用户1");
+        user1.setClassName("一班");
         String userJson = builder.toJson(user1);
         sb.append("user1:").append(userJson).append("\r\n");
         sb.append("user1.birthday:").append(user1.getBirthday().getTime()).append("\r\n");
@@ -90,6 +106,7 @@ public class JsonTest {
         sb.append("parsedUser===userId:").append(parsedUser.getUserId()).append(",userName:").append(parsedUser.getUserName()).append("\r\n");
 
         TestUser user2 = new TestUser(null, "用户2");
+        user2.setClassName("二班");
         List<TestUser> userList = Arrays.asList(user1, user2);
 
         String listJson = builder.toJson(userList);
@@ -97,9 +114,35 @@ public class JsonTest {
 
         List<TestUser> parsedList = builder.parseArray(listJson, TestUser.class);
         sb.append("parsedList[0].userName=").append(parsedList.get(0).getUserName()).append("\r\n");
-//        long end = System.currentTimeMillis();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("testId", "001");
+        map.put("testName", "名称1");
+
+        String mapJson = builder.toJson(map);
+        sb.append("mapJson:").append(mapJson).append("\r\n");
+        Map<String, Object> parsedMap = builder.parseObject(mapJson, Map.class);
+        sb.append("parsedMap:").append(parsedMap == null ? null : ("testId:" + parsedMap.get("testId") + ",testName:" + parsedMap.get("testName"))).append("\r\n");
+
+//        Map<String, Object> objectMap = new HashMap<>();
+//        objectMap.put("testId", "002");
+//        objectMap.put("testName", "名称2");
+//        objectMap.put("user1", user1);
+//        objectMap.put("user2", user2);
+        user1.setBrother(user2);
+
+        String objectMapJson = builder.toJson(user1);
+        sb.append("objectMapJson:").append(objectMapJson).append("\r\n");
+
+        TestUser parsedUser1 = builder.parseObject(objectMapJson, TestUser.class);
+        sb.append("parsedObjectMap:").append(
+//                        "testId:" + parsedObjectMap.get("testId")
+//                        + ",testName:" + parsedObjectMap.get("testName")
+                        ",user1.name:" + parsedUser1.getUserName()
+                        +",user2.name:" + parsedUser1.getBrother().getUserName()
+                ).append("\r\n");
+
         System.out.println(sb);
-//        System.out.println("cost:" + (end - begin) + "ms\r\n");
     }
 
 }

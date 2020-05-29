@@ -1,6 +1,7 @@
 package com.rongji.dfish.misc.util.json.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.rongji.dfish.base.util.json.impl.AbstractJsonBuilder;
 import com.rongji.dfish.base.util.Utils;
@@ -14,6 +15,11 @@ import java.util.List;
  * @since DFish5.0
  */
 public class JsonBuilder4Fastjson extends AbstractJsonBuilder {
+    
+    static {
+        // 因安全漏洞需设置安全模式,涉及到autoType的业务可能有问题
+        ParserConfig.getGlobalInstance().setSafeMode(true);
+    }
 
     @Override
     public void setDateFormat(String dateFormat) {
