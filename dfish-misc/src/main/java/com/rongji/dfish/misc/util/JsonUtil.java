@@ -1,39 +1,82 @@
 package com.rongji.dfish.misc.util;
 
-import com.alibaba.fastjson.JSON;
+import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.BeanUtil;
+import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.misc.util.json.JsonBuilder;
+import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Jackson;
 
 import java.util.List;
 
 /**
- * Description: Json解析工具,实现基于阿里的fastjson
- * Copyright:   Copyright © 2018
- * Company:     rongji
- * @author		YuLM
- * @version		1.0
+ * Json处理工具类
  *
- * Modification History:
- * Date						Author			Version			Description
- * ------------------------------------------------------------------
- * 2018年4月20日 下午5:32:01		YuLM			1.0				1.0 Version
+ * @author lamontYu
+ * @since DFish5.0
  */
 public class JsonUtil {
 
-	/**
-	 * 转json字符串
-	 * @param object
-	 * @return
-	 * @author YuLM
-	 */
-	public static String toJson(Object object) {
-		return JSON.toJSONString(object);
-	}
-	
-	public static <T> T parseObject(String json, Class<T> clazz) {
-		return JSON.parseObject(json, clazz);
-	}
-	
-	public static <T> List<T> parseArray(String json, Class<T> clazz) {
-		return JSON.parseArray(json, clazz);
-	}
-	
+    private static JsonBuilder jsonBuilder = new JsonBuilder4Jackson();
+
+    /**
+     * 对象转json方法
+     *
+     * @param obj 待解析对象
+     * @return String
+     */
+    public static String toJson(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        String json = null;
+        try {
+            json = jsonBuilder.toJson(obj);
+        } catch (Exception e) {
+            LogUtil.error("Json转换异常", e);
+        }
+        return json;
+    }
+
+    /**
+     * json字符转对象方法
+     *
+     * @param json     json字符
+     * @param objClass 对象类
+     * @param <T>      泛型类
+     * @return T, 解析对象
+     */
+    public static <T> T parseObject(String json, Class<T> objClass) {
+        if (Utils.isEmpty(json)) {
+            return null;
+        }
+        T obj = null;
+        try {
+            obj = jsonBuilder.parseObject(json, objClass);
+        } catch (Exception e) {
+            LogUtil.error("Json转换异常", e);
+        }
+        return obj;
+    }
+
+    /**
+     * json字符转对象集合方法
+     *
+     * @param json     json字符
+     * @param objClass 对象类
+     * @param <T>      泛型类
+     * @return List&lt;T&gt;解析对象集合
+     */
+    public static <T> List<T> parseArray(String json, Class<T> objClass) {
+        if (Utils.isEmpty(json)) {
+            return null;
+        }
+        List<T> objList = null;
+        try {
+            objList = jsonBuilder.parseArray(json, objClass);
+        } catch (Exception e) {
+            LogUtil.error("Json转换异常", e);
+        }
+        return objList;
+    }
+
 }
