@@ -32,6 +32,9 @@ public class JsonUtil {
      * @return String
      */
     public static String toJson(Object obj) {
+        if (obj == null) {
+            return null;
+        }
         String json = null;
         try {
             json = jsonBuilder.toJson(obj);
@@ -50,6 +53,9 @@ public class JsonUtil {
      * @return T, 解析对象
      */
     public static <T> T parseObject(String json, Class<T> objClass) {
+        if (Utils.isEmpty(json)) {
+            return null;
+        }
         T obj = null;
         try {
             obj = jsonBuilder.parseObject(json, objClass);
@@ -68,7 +74,9 @@ public class JsonUtil {
      * @return List&lt;T&gt;解析对象集合
      */
     public static <T> List<T> parseArray(String json, Class<T> objClass) {
-
+        if (Utils.isEmpty(json)) {
+            return null;
+        }
         List<T> objList = null;
         try {
             objList = jsonBuilder.parseArray(json, objClass);
