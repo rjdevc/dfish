@@ -115,7 +115,7 @@
 .f-dialog-preview ._rotate{position:absolute;top:0px;left:0;right:0;margin:0 auto;height:40px;line-height:40px;color:#eee}
 .f-dialog-preview ._rotate a{cursor:pointer}
 .f-dialog-preview ._rotate ._s{margin:0 10px;color:#ccc}
-.f-dialog-preview ._img{margin:0 40px}
+.f-dialog-preview ._img{margin:auto;background:#fff;position:absolute;left:0;right:0;top:0px;bottom:0;}
 
 .w-view-loading{width:100%;height:100%;text-align:center}
 .w-view-loading ._c{display:inline-block;padding:5px 15px;margin:5px;border:1px solid #ddd;background:#fcfcfc}
