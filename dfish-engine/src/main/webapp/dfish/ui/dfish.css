@@ -104,7 +104,7 @@
 .f-dialog-preview ._rotate .f-i{font-size:12px;color:#ddd}
 .f-dialog-preview ._img{margin:0 40px;background:#fff}
 
-.w-loading{padding:10px 15px;border:1px solid #ddd;background:#fcfcfc;text-align:center}
+.w-loading{padding:10px 15px;border:1px solid #ddd;background:#fcfcfc;text-align:center;line-height:1}
 .w-view-loading{width:100%;height:100%;text-align:center}
 .w-view-loading .w-loading{margin:5px}
 .w-loading ._t{padding-top:5px;vertical-align:middle;font-style:normal}
@@ -650,7 +650,7 @@
 .w-button em,.w-tab em,.w-menu-button em{font-style:normal;font-weight:normal;vertical-align:middle}
 .w-button img,.w-tab img,.w-menu-button img{vertical-align:middle}
 .w-button ._m .f-i,.w-tab ._m .f-i{margin-left:-6px;color:#888}
-.w-button ._ld,.w-tab ._ld{position:absolute;top:0;bottom:0;left:0;right:0;background:url(g/loading-cir.gif) no-repeat 50% 50%}
+.w-button ._ld,.w-tab ._ld{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;line-height:1}
 .w-button.z-lock ._t,.w-button.z-lock ._ico,.w-tab.z-lock ._t,.w-tab.z-lock ._ico{opacity:.4}
 .w-button.z-lock ._c,.w-tab.z-lock ._c,.w-button.z-lock ._i,.w-tab.z-lock ._i{position:relative}
 .w-button.z-normal.z-hv,.w-button.z-more.z-hv{background:#f8f8f8}
@@ -669,6 +669,7 @@
 .w-button.z-dir-v,.w-tab.z-dir-v{border:0;height:auto}
 .w-button.z-dir-v ._c,.w-tab.z-dir-v ._c{padding-top:5px;padding-bottom:5px}
 .w-button.z-dir-v ._i,.w-tab.z-dir-v ._i{float:none}
+.f-ie .w-button ._ld,.f-ie .w-tab ._ld{background:url(g/loading-cir.gif) no-repeat 50% 50%}
 
 .w-button-split{vertical-align:middle;text-align:center}
 
@@ -689,6 +690,7 @@
 .z-normal.w-submitbutton.z-dn,.z-more.w-submitbutton.z-dn,.z-combo.w-submitbutton ._c.z-dn,.z-combo.w-submitbutton ._m.z-dn{background:#1b88ea}
 .w-submitbutton.z-more.z-snap,.w-submitbutton.z-combo.z-snap ._m{background:#e3e3e3}
 .w-submitbutton.z-ds{border-color:#e6e6e6}
+.w-submitbutton ._ld path{fill:#fff}
 
 .w-collapsebutton{height:34px;text-align:left;background:#fafafa;border:1px solid #d9d9d9;margin-bottom:10px}
 .w-collapsebutton.z-hv{background:#f5faff}
@@ -829,7 +831,6 @@
 .w-pagebar-button._prev .f-arw,.w-pagebar-button._next .f-arw{display:none}
 .w-pagebar-button._prev.z-ds .f-arw{border-right-color:#bbb}
 .w-pagebar-button._next.z-ds .f-arw{border-left-color:#bbb}
-
 .w-pagebar-simple-menu{color:#999;text-align:center}
 
 .w-datepicker-multiple-dialog a{color:#333}
@@ -848,40 +849,13 @@
 .w-structureitem.z-dir-h .w-structureitem-t{padding:5px}
 .w-structureitem-t.f-fix .w-structureitem-s{display:inline}
 
-.f-tab-bar{background:#f8f8f8}
-.f-tab-bar.z-horz-2,.f-tab-bar.z-horz-3{text-align:right}
-.f-tab-bar.z-horz-2 .f-tab,.f-tab-bar.z-horz-3 .f-tab{border:0;border-left:1px solid #ddd}
-.f-tab-bar.z-horz-3 .f-tab-line,.f-tab-bar.z-horz-4 .w-buttonbar-line{top:0;bottom:auto}
-.f-tab-bar .w-buttonbar-line{display:block}
-.f-tab{border-right:1px solid #ddd;background:#f8f8f8}
-.f-tab.z-on{background:#fff}
-.f-tab.z-more ._c,.f-tab .z-combo ._c{margin-right:13px}
-
-
-.f-tab-bar.z-vert-1{font-size:14px;text-align:right}
-.f-tab-bar.z-vert-1 .f-tab-line{width:0;height:auto;top:0;bottom:0;right:0;left:auto;border-left:1px solid #ddd;}
-.f-tab-bar.z-vert-1 .f-tab{display:block;height:30px;border:1px solid transparent;border-right:0;margin-left:10px}
-.f-tab-bar.z-vert-1 .f-tab.z-hv{background:#e3e3e3}
-.f-tab-bar.z-vert-1 .f-tab.z-on{border-color:#ddd;background:#fff}
-
-.f-tab-bar.z-vert-2{font-size:14px}
-.f-tab-bar.z-vert-2 .f-tab-line{width:0;height:auto;top:0;bottom:0;right:auto;left:0;border-left:1px solid #ddd;}
-.f-tab-bar.z-vert-2 .f-tab{display:block;height:30px;border:1px solid transparent;border-left:0;margin-right:10px}
-.f-tab-bar.z-vert-2 .f-tab.z-hv{background:#e3e3e3}
-.f-tab-bar.z-vert-2 .f-tab.z-on{border-color:#ddd;background:#fff}
-
-
-.f-button-path{border:1px solid transparent}
-.f-button-path.z-hv,.f-button-path.z-drop{border-color:#ddd;background:#eee}
-.f-button-path ._m{border-left:1px solid transparent}
-.f-button-path.z-hv ._m,.f-button-path.z-drop ._m{border-left-color:#ccc}
-.f-button-path ._m .f-arw{border:4px solid transparent;border-right:0;border-left-color:#555;}
-.f-button-path ._c{padding-left:8px}
-.f-button-path ._t{padding-right:8px}
-.f-button-path ._i{padding-right:8px}
-.f-button-path ._m{width:18px}
-.f-button-path ._c.z-dn,.f-button-path.z-drop ._m{background:#e3e3e3}
-.f-button-path.z-drop ._m .f-arw{border:4px solid transparent;border-bottom:0;border-top-color:#555;}
+.f-pullup{width:100%;text-align:center;overflow:hidden;line-height:1;background:#f5f5f5}
+.f-pullup ._gut{height:40px;text-align:center;}
+.f-pullup ._desc{font-size:16px;color:#777}
+.f-pullup ._rt{padding:0 2px;font-weight: 700;font-size:18px;color:#777}
+.f-pullup ._ld{display:none;line-height:0}
+.f-pullup.z-loading ._rt,.f-pullup.z-stop ._rt{display:none}
+.f-pullup.z-loading ._ld{display:inline-block}
 
 .f-arw{display:inline-block;border:4px solid transparent;vertical-align:middle;*line-height:0;*font-size:0;*overflow:hidden}
 .f-arw-b1,.f-arw-t1{border-width:5px 4px}
