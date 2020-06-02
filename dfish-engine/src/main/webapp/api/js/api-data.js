@@ -1960,6 +1960,18 @@ define( {
   	remark: '可切换标签容器。<br>子节点宽度默认为*，高度默认为*。',
   	extend: 'ButtonBar',
   	deprecate: 'dir,focusMultiple,br,scroll,.w-ButtonBar,.z-dirh,.z-dirv',
+    Config: [
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
+      { name: 'swipeFocus', type: 'Boolean', remark: '是否允许滑动切换。', mobile: true },
+      { name: 'position', type: 'String', remark: 'tab位置。可选值: <b>top</b> <b>right</b> <b>bottom</b> <b>left</b>' }
+    ],
+    Properties: [
+      { name: 'buttonBar', type: 'ButtonBar', remark: '按钮栏对象。' },
+      { name: 'frame', type: 'Frame', remark: 'Frame对象。' }
+    ],
+    Classes: [
+      { name: '.w-tabs', remark: '基础样式。' }
+    ],
 	Examples: [
 	  { example: [
           function() {
@@ -1975,17 +1987,6 @@ define( {
             }
           }
       ] }
-    ],
-    Config: [
-      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
-      { name: 'position', type: 'String', remark: 'tab位置。可选值: <b>top</b> <b>right</b> <b>bottom</b> <b>left</b>' }
-    ],
-    Properties: [
-      { name: 'buttonBar', type: 'ButtonBar', remark: '按钮栏对象。' },
-      { name: 'frame', type: 'Frame', remark: 'Frame对象。' }
-    ],
-    Classes: [
-      { name: '.w-tabs', remark: '基础样式。' }
     ]
   },
   "Tab": {
@@ -2088,6 +2089,7 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'dft', type: 'String', remark: '默认显示 widget 的 ID。' },
+      { name: 'swipeFocus', type: 'Boolean', remark: '是否允许滑动切换。', mobile: true },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' }
     ],
     Methods: [
@@ -2833,8 +2835,14 @@ define( {
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。<br>一般情况下，如果希望纵向滚动，内部子节点高度应该设为-1；如果希望横向滚动，子节点宽度应该设为-1。' },
       { name: 'split', type: 'Split', remark: '在子节点之间插入一个split。' },
-      { name: 'pullRefresh', type: 'Object', remark: '下拉刷新。', mobile: true, param: [
-      	{ name: 'src', type: 'String', remark: '下拉刷新的地址。' }
+      { name: 'pullDown', type: 'Object', remark: '下拉刷新。', mobile: true, param: [
+      	{ name: 'cls', type: 'String', remark: '样式。' },
+      	{ name: 'face', type: 'String', remark: '效果。可选值: <b>normal</b>, <b>circle</b>' },
+      	{ name: 'refresh', type: 'AjaxCommand', remark: '成功释放时执行此命令。' }
+      ] },
+      { name: 'pullUp', type: 'Object', remark: '上拉刷新。应在设置了scroll:true的情况下使用本参数。', param: [
+      	{ name: 'cls', type: 'String', remark: '样式。' },
+      	{ name: 'refresh', type: 'AjaxCommand', remark: '拉到底部时执行此命令。' }
       ] }
     ],
     Event: [
@@ -2861,7 +2869,8 @@ define( {
       { name: 'isScrollTop()', remark: '滚动条是否滚动到了顶部。' },
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' },
       { name: 'isScrollLeft()', remark: '滚动条是否滚动到了最左边。' },
-      { name: 'isScrollRight()', remark: '滚动条是否滚动到了最右边。' }
+      { name: 'isScrollRight()', remark: '滚动条是否滚动到了最右边。' },
+      { name: 'stopPullUpRefresh()', remark: '停止上拉刷新。当后台不再有返回数据时，应手动调用此方法。' }
     ],
     Classes: [
       { name: '.w-vertical', remark: '基础样式。' }
@@ -2874,18 +2883,26 @@ define( {
             {
                 type: 'Vertical',
                 height: '*',
-                nodes: [
-                    {
-                    	type: 'Html',
-                    	height: 300,
-                    	text: '内容1'
-                    },
-                    {
-                    	type: 'Html',
-                    	height: '*',
-                    	text: '内容2'
-                    }
-                ]
+                nodes: [{
+                    type: 'Html', height: 300, text: '内容1'
+                },{
+                    type: 'Html', height: '*', text: '内容2'
+                }]
+            }
+          },
+          function() {
+          	//下拉刷新
+            return~
+            {
+                type: 'Vertical',
+                height: '*',
+                scroll: true,
+                pullDown: {
+                    refresh: {type: 'Ajax', src: 'data.sp'}
+                },
+                nodes: [{
+                    type: 'Html', text: '内容1'
+                }]
             }
           }
       ] }
@@ -2894,7 +2911,7 @@ define( {
   "Horizontal": {
    	remark: '子节点按水平方向排列的布局widget。子节点的默认高度为*，默认宽度为-1。宽度可以设置数字,百分比,*。如果宽度设为-1，表示自适应宽度。',
   	extend: 'Vertical',
-  	deprecate: '.w-vertical',
+  	deprecate: '.w-vertical,pullDown,pullUp,stopPullUpRefresh',
     Config: [
       { name: 'br', type: 'Boolean', remark: '是否换行。默认值为 false。' },
 	],
@@ -3327,7 +3344,7 @@ define( {
     ],
     Methods: [
       { name: 'getFocus()', remark: '获取焦点状态的 leaf。' },
-      { name: 'expandTo(src, [sync], [fn])', remark: '通过src请求获取一个 json，并按照这个 json 的格式显示树。每个 leaf 节点都必须设置 id。', param: [
+      { name: 'expandTo(src, [sync], [fn])', remark: '通过src请求获取一个 json，并按照这个 json 的格式显示树。如使用本方法，那么每个 leaf 节点都必须设置 id。', param: [
         { name: 'src',  type: 'String',  remark: '获取 json 的地址。' },
         { name: 'sync', type: 'Boolean',  remark: '是否同步。', optional: true },
         { name: 'fn', type: 'Function',  remark: '请求结束后执行的回调函数。', optional: true }
