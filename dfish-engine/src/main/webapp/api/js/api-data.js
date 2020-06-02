@@ -2841,6 +2841,7 @@ define( {
       	{ name: 'refresh', type: 'AjaxCommand', remark: '成功释放时执行此命令。' }
       ] },
       { name: 'pullUp', type: 'Object', remark: '上拉刷新。应在设置了scroll:true的情况下使用本参数。', param: [
+      	{ name: 'auto', type: 'String', remark: '设置为true，滚动到底部时自动加载。' },
       	{ name: 'cls', type: 'String', remark: '样式。' },
       	{ name: 'refresh', type: 'AjaxCommand', remark: '拉到底部时执行此命令。' }
       ] }
@@ -2870,6 +2871,8 @@ define( {
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' },
       { name: 'isScrollLeft()', remark: '滚动条是否滚动到了最左边。' },
       { name: 'isScrollRight()', remark: '滚动条是否滚动到了最右边。' },
+      { name: 'completePullDownRefresh()', remark: '下拉刷新完成后回到初始状态。' },
+      { name: 'completePullupRefresh()', remark: '上拉刷新完成后回到初始状态。' },
       { name: 'stopPullUpRefresh()', remark: '停止上拉刷新。当后台不再有返回数据时，应手动调用此方法。' }
     ],
     Classes: [

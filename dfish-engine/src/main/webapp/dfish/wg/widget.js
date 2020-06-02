@@ -2035,7 +2035,7 @@ Scroll = define.widget('Scroll', {
 				// widget的dom可能会被业务重新生成，需要重置相关变量
 				delete this._scr_ready; delete this._scr_wd; delete this._scr_ht;
 				this.x.pullDown && this.setPullDownRefresh();
-				this.x.pullUp && this.triggerPullUpRefresh();
+				this.x.pullUp && this.x.pullUp.auto && this.isScrollBottom() && this.triggerPullUpRefresh();
 			},
 			mouseOver: function() {
 				if (this._scr_usable) {
@@ -2072,7 +2072,7 @@ Scroll = define.widget('Scroll', {
 					this.$('ytr').style.top  = Math.min(this.$('ovf').scrollTop / this._scr_rateY, this.$('y').offsetHeight - _number(this.$('ytr').style.height)) + 'px';
 				if (this._scr_rateX && this.$('xtr'))
 					this.$('xtr').style.left = (this.$('ovf').scrollLeft / this._scr_rateX) + 'px';
-				this.x.pullUp && this.triggerPullUpRefresh();
+				this.x.pullUp && this.x.pullUp.auto && this.isScrollBottom() && this.triggerPullUpRefresh();
 			},
 			resize: function() {
 				if (this.attr('scroll') && !this._scr_usable && this.innerWidth() != N && this.innerHeight() != N)
@@ -2230,14 +2230,8 @@ Scroll = define.widget('Scroll', {
 		},
 		// @mobile 下拉刷新
 		setPullDownRefresh: function() {
-			var b = this.$(), c = Q(this.$('cont')), d, ix, iy, px, py, ts, sc, rl, dir, loading, self = this,
-				nm = this.x.pullDown.face != 'circle', tr = '300ms cubic-bezier(0.165,0.84,0.44,1)',
-				end = function() {
-					loading = F;
-					self.removeEvent('unlock.pulldown', end);
-					d.removeClass('z-loading z-release').css({height: 0, transition: tr}).find('._desc').html(Loc.pulldown_refresh);;
-					nm && c.css({transform: 'translateY(0)', transition: tr});
-				};
+			var b = this.$(), c = Q(this.$('cont')), d, ix, iy, px, py, ts, sc, rl, dir, self = this,
+				nm = this.x.pullDown.face != 'circle';
 	    	b.addEventListener('touchstart', function(e) {
 				!d && (d = Q($.db(self.html_pulldown())));
 				var r = $.bcr(b);
@@ -2247,7 +2241,7 @@ Scroll = define.widget('Scroll', {
 	    		ts = new TouchScrollCheck(b, e); sc = ts.isScrolled('Y'); dir = N;
 	    	});
 	    	b.addEventListener('touchmove', function(e) {
-				if (sc || dir === F || loading || (swiping && swiping != b)) return;
+				if (sc || dir === F || self._pullDownLoading || (swiping && swiping != b)) return;
 	    		py = e.targetTouches[0].pageY - iy;
 				if (!dir) {
 					px = e.targetTouches[0].pageX - ix; 
@@ -2281,31 +2275,40 @@ Scroll = define.widget('Scroll', {
 				if (swiping == b) {
 					swiping = N;
 					if (rl) {
-						loading = T;
+						self._pullDownLoading = T;
 						d.addClass('z-loading').find('._desc').html(Loc.loading);
-						self.addEventOnce('unlock.pulldown', end);
-						var r = self.x.pullDown && self.x.pullDown.refresh;
-						r ? self.exec($.extend({type: 'Ajax', loading: F}, r)) : end();
-					} else end();
+						self.addEventOnce('unlock.pulldown', self.completePullDownRefresh);
+						self.x.pullDown.refresh ? self.exec(self.x.pullDown.refresh) : self.completePullDownRefresh();
+					} else self.completePullDownRefresh();
 				}
 	    	});
 		},
+		// 下拉刷新完成后回到初始状态
+		completePullDownRefresh: function() {
+			var t = '300ms cubic-bezier(0.165,0.84,0.44,1)';
+			this._pullDownLoading = F;
+			this.removeEvent('unlock.pulldown', this.completePullDownRefresh);
+			Q(this.$('pulldown')).removeClass('z-loading z-release').css({height: 0, transition: t}).find('._desc').html(Loc.pulldown_refresh);
+			this.x.pullDown.face != 'circle' && Q(this.$('cont')).css({transform: 'translateY(0)', transition: t});
+		},
 		// 上拉刷新
-		triggerPullUpRefresh: function(e) {
-			if (!this._pullUpStopped && !this._pullUpLoading && this.isScrollBottom()) {
+		triggerPullUpRefresh: function() {
+			if (!this._pullUpStopped && !this._pullUpLoading) {
 				this._pullUpLoading = T;
 				Q(this.$('pullup')).addClass('z-loading').find('._desc').html(Loc.loading);
-				this.addEventOnce('unlock.pullup', this.endPullUpRefresh);
-				var r = this.x.pullUp && this.x.pullUp.refresh;
-				r && this.exec($.extend({type: 'Ajax', loading: F}, r));
+				this.addEventOnce('unlock.pullup', this.completePullUpRefresh);
+				this.x.pullUp.refresh && this.exec(this.x.pullUp.refresh);
 			}
 		},
-		endPullUpRefresh: function() {
-			if (this._pullUpStopped) return;
+		// 上拉刷新完成后回到初始状态
+		completePullUpRefresh: function() {
+			if (this._pullUpStopped || !this.x.pullUp) return;
 			this._pullUpLoading = F;
+			this.removeEvent('unlock.pullup', this.completePullUpRefresh);
 			Q(this.$('pullup')).removeClass('z-loading').appendTo(this.$('cont')).find('._desc').html(Loc.pullup_refresh);
-			!this.scrollHeight && this.triggerPullUpRefresh();
+			this.x.pullUp.auto && !this.scrollHeight() && this.triggerPullUpRefresh();
 		},
+		// 停止上下拉刷新
 		stopPullUpRefresh: function() {
 			this._pullUpStopped = T;
 			this.$('pullup') && Q(this.$('pullup')).removeClass('z-loading').addClass('z-stop').find('._desc').html(Loc.pullup_nomore);
@@ -2322,7 +2325,7 @@ Scroll = define.widget('Scroll', {
 				'<i class=f-vi></i><i class="_rt f-i f-i-long-arrow-down"></i>' + $.svgLoading(22, {cls: '_ld f-va'}) +'<span class="_desc f-va">' + Loc.pulldown_refresh + '</span>') + '</div></div>';
 		},
 		html_pullup: function() {
-			return '<div id=' + this.id + 'pullup class="f-pullup' + (this.x.pullUp.cls ? ' ' + this.x.pullUp.cls : '') + '"><div class=" _gut">' +
+			return '<div id=' + this.id + 'pullup class="f-pullup' + (this.x.pullUp.cls ? ' ' + this.x.pullUp.cls : '') + '" onclick=' + evw + '.triggerPullUpRefresh()><div class=" _gut">' +
 				'<i class=f-vi></i><i class="_rt f-i f-i-long-arrow-up"></i>' + (br.ms ? $.image('%img%/loading-cir.gif', {cls: '_ld f-va'}) : $.svgLoading(22, {cls: '_ld f-va'})) +'<span class="_desc f-va">' + Loc.pullup_refresh + '</span></div></div>';
 		}, 
 		html: function() {
