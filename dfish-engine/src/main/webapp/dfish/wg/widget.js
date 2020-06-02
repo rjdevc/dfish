@@ -2231,7 +2231,7 @@ Scroll = define.widget('Scroll', {
 		// @mobile 下拉刷新
 		setPullDownRefresh: function() {
 			var b = this.$(), c = Q(this.$('cont')), d, ix, iy, px, py, ts, sc, rl, dir, loading, self = this,
-				nm = this.x.pullDown.face !== 'normal', tr = '500ms cubic-bezier(0.165,0.84,0.44,1)',
+				nm = this.x.pullDown.face != 'circle', tr = '300ms cubic-bezier(0.165,0.84,0.44,1)',
 				end = function() {
 					loading = F;
 					self.removeEvent('unlock.pulldown', end);
@@ -4113,9 +4113,11 @@ Tabs = define.widget('Tabs', {
 		}
 		!d && b[0] && ((d = b[0]).focus = T);
 		var n = this.getTabPositionName(x.position),
-			r = {type: 'TabBar', cls: 'z-position-' + n, nodes: b};
-		$.extendAny(r, 'align,dir,scroll,space,split,overflow,vAlign', x, e, {vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h'});
-		y.nodes = [{type: 'Frame', cls: 'w-tabs-frame', swipeFocus: x.swipeFocus, width: '*', height: '*', dft: d && d.id, nodes: c}];
+			r = {type: 'TabBar', cls: 'z-position-' + n, nodes: b},
+			f = {type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c};
+		$.extendAny(r, 'align,vAlign,dir,scroll,space,split,overflow', x, e, {vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h'});
+		$.extendAny(f, 'swipeFocus', x, e);
+		y.nodes = [f];
 		y.nodes[s === 'b' || s === 'r' ? 'push' : 'unshift'](r);
 		Vert.call(this, $.extend({nodes:[y], scroll: F}, x), p);
 		this.tabBar = this[0];
