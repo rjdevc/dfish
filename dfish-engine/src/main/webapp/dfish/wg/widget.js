@@ -2230,53 +2230,56 @@ Scroll = define.widget('Scroll', {
 		},
 		// @mobile 下拉刷新
 		setPullDownRefresh: function() {
-			var b = this.$(), c = Q(this.$('cont')), d, ix, iy, px, py, ts, sc, rl, dir, self = this,
+			var a = this.id + 'pulldown', b, c = Q(this.$('cont')), d = this.$(), ix, iy, px, py, ts, sc, rl, dir, self = this,
 				nm = this.x.pullDown.face != 'circle';
-	    	b.addEventListener('touchstart', function(e) {
-				!d && (d = Q($.db(self.html_pulldown())));
-				var r = $.bcr(b);
-	    		d.css({transition: '', top: r.top, left: r.left, right: r.right});
+	    	d.addEventListener('touchstart', function(e) {
+				!b && (b = Q($.db(self.html_pulldown())));
+				var r = $.bcr(d);
+	    		b.css({transition: '', top: r.top, left: r.left, right: r.right});
 				nm && c.css({transition: ''});
 	    		ix = e.targetTouches[0].pageX; iy = e.targetTouches[0].pageY;
-	    		ts = new TouchScrollCheck(b, e); sc = ts.isScrolled('Y'); dir = N;
+	    		ts = new TouchScrollCheck(d, e); sc = ts.isScrolled('Y'); swiping = dir = N;
 	    	});
-	    	b.addEventListener('touchmove', function(e) {
-				if (sc || dir === F || self._pullDownLoading || (swiping && swiping != b)) return;
+			d.addEventListener('touchmove', function(e) {
+				if (sc || dir === F || self._pullDownLoading || (swiping && swiping != a)) return;
 	    		py = e.targetTouches[0].pageY - iy;
 				if (!dir) {
 					px = e.targetTouches[0].pageX - ix; 
 					dir = ts.hasChange() || (px > 10 || px < -10) ? F : py > 10 ? T : N;
 				} 
 				if (dir) {
-					!swiping && (iy += py, py = 0, swiping = b);
+					!swiping && (iy += py, py = 0, swiping = a);
 					if (swiping && py >= 0) {
 						var v = py * 0.5;
 						if (nm) {
 							if (v >= 65) {
+								v > 75 && (iy += v - 75);
 								v = 65;
 								if (!rl) {
-									rl = T, d.addClass('z-release').find('._desc').html(Loc.release_refresh);
+									rl = T, b.addClass('z-release').find('._desc').html(Loc.release_refresh);
 								}
 							} else {
 								if (rl) {
-									rl = F, d.removeClass('z-release').find('._desc').html(Loc.pulldown_refresh);
+									rl = F, b.removeClass('z-release').find('._desc').html(Loc.pulldown_refresh);
 								}
 							}
-							d.height(v);
+							b.height(v);
 							c.css({transform: 'translateY('+ v +'px)'});
 						} else {
 							rl = v >= 80;
-							d.height(Math.min(80, v)).find('._rt').css({transform: 'rotate(' + ((60 - v)/60)*360 + 'deg)', opacity: v/120});
+							v > 90 && (iy += v - 90);
+							b.height(Math.min(80, v)).find('._rt').css({transform: 'rotate(' + ((60 - iy - v)/60)*360 + 'deg)', opacity: v/120});
 						}
-					}
+					} else if (swiping)
+						iy += py;
 				}
 	    	});
-	    	b.addEventListener('touchend', function(e) {
-				if (swiping == b) {
+			d.addEventListener('touchend', function(e) {
+				if (swiping == a) {
 					swiping = N;
 					if (rl) {
 						self._pullDownLoading = T;
-						d.addClass('z-loading').find('._desc').html(Loc.loading);
+						b.addClass('z-loading').find('._desc').html(Loc.loading);
 						self.addEventOnce('unlock.pulldown', self.completePullDownRefresh);
 						self.x.pullDown.refresh ? self.exec(self.x.pullDown.refresh) : self.completePullDownRefresh();
 					} else self.completePullDownRefresh();
@@ -3050,9 +3053,8 @@ Vertical = define.widget('Vertical', {
 	}
 }),
 _isFastSwipe = function(a) {
-	for (var i = 1, b = 0, l = a.length; i < l; i ++) {
+	for (var i = 1, b = 0, l = a.length; i < l; i ++)
 		if (a[i] - a[i - 1] > 6) return T;
-	}
 },
 /* `Frame`  子元素被约束为：高度宽度占满，只有一个可见  */
 Frame = define.widget('Frame', {
@@ -3078,7 +3080,7 @@ Frame = define.widget('Frame', {
 	    	b.addEventListener('touchstart', function(e) {
 				if (!(c = self.getFocus())) return;
 	    		ix = e.targetTouches[0].clientX; iy = e.targetTouches[0].clientY;
-				wd = self.innerWidth(); fx = c.nodeIndex * wd; tm = []; dir = N;
+				wd = self.innerWidth(); fx = c.nodeIndex * wd; tm = []; swiping = dir = N;
 				ts = new TouchScrollCheck(b, e); sc = ts.isScrolled('X');
 				d.css('transition', '');
 	    	});
