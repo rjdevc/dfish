@@ -92,14 +92,12 @@ public class FileController extends BaseController {
             String error = "上传失败,系统内部异常@" + System.currentTimeMillis();
             LogUtil.error(error, e);
             uploadItem = new UploadItem();
-            uploadItem.setError(true);
-            uploadItem.setText(error);
+            uploadItem.setError(new UploadItem.Error(error));
         }
 
         if (uploadItem == null) {
             uploadItem = new UploadItem();
-            uploadItem.setError(true);
-            uploadItem.setText("上传文件失败" + (!accept ? "：当前文件类型不符合系统规范" : ""));
+            uploadItem.setError(new UploadItem.Error("上传文件失败" + (!accept ? "：当前文件类型不符合系统规范" : "")));
         }
         return uploadItem;
     }

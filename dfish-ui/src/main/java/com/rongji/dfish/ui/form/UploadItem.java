@@ -20,7 +20,7 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	private Long size;
 	private String url;
 	private String thumbnail;
-	private Boolean error;
+	private Error error;
 	private String text;
 	private String width;
 	private String height;
@@ -93,18 +93,18 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 		return this;
 	}
 	/**
-	 * 如果上传过程出错，返回给JS引擎true
+	 * 如果上传过程出错，返回给JS引擎错误信息
 	 * @return  Boolean
 	 */
-	public Boolean getError() {
+	public Error getError() {
 		return error;
 	}
 	/**
-	 * 如果上传过程出错，返回给JS引擎true
+	 * 如果上传过程出错，返回给JS引擎错误信息
 	 * @param error Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public UploadItem setError(Boolean error) {
+	public UploadItem setError(Error error) {
 		this.error = error;
 		return this;
 	}
@@ -189,5 +189,22 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
     public String getType() {
 	    return null;
     }
+
+    public static class Error {
+		private String text;
+
+		public Error(String text) {
+			this.text = text;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public Error setText(String text) {
+			this.text = text;
+			return this;
+		}
+	}
 
 }
