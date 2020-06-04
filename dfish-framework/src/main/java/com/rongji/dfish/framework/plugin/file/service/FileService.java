@@ -590,6 +590,9 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return
      */
     public List<PubFileRecord> findFileRecords(String[] fileId) {
+        if (fileId == null) {
+            return Collections.emptyList();
+        }
         return findAll(Arrays.asList(fileId));
     }
 
@@ -678,7 +681,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (itemList.size() > BATCH_SIZE) {
             // FIXME 待分批处理,理论上应该不会出现这么多的附件
         }
-        // 这里需要将旧文件标为删除,否则之前的文件无法删除
+        // 这里需要将旧文件标为删除,否则之前的文件无法删除P
         @SuppressWarnings("unchecked")
         List<String> oldFileIds = (List<String>) pubCommonDAO.getQueryList("SELECT t.fileId FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey=? AND t.fileStatus=?", fileLink, fileKey, STATUS_NORMAL);
 
@@ -802,9 +805,9 @@ public class FileService extends BaseService<PubFileRecord, String> {
      */
     public List<UploadItem> parseUploadItems(List<PubFileRecord> fileRecords) {
         if (Utils.isEmpty(fileRecords)) {
-            return null;
+            return Collections.emptyList();
         }
-        List<UploadItem> uploadItems = new ArrayList<>();
+        List<UploadItem> uploadItems = new ArrayList<>(fileRecords.size());
         for (PubFileRecord fileRecord : fileRecords) {
             UploadItem item = parseUploadItem(fileRecord);
             if (item != null) {
