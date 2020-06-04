@@ -46,8 +46,8 @@ public class FileUploadPlugin4Ueditor extends AbstractFileUploadPlugin {
         // 百度编辑器的附件上传应该来说只有图片
         UploadItem uploadItem = saveFile(request);
         String resultJson;
-        if (uploadItem.getError() != null && uploadItem.getError()) {
-            resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getText() + "\"}";
+        if (uploadItem.getError() != null) {
+            resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getError().getText() + "\"}";
         } else {
             String scheme = request.getParameter("scheme");
             FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);

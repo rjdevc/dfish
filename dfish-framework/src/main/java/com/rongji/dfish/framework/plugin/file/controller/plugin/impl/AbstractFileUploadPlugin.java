@@ -2,6 +2,7 @@ package com.rongji.dfish.framework.plugin.file.controller.plugin.impl;
 
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.config.FileHandleManager;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
@@ -79,7 +80,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
                 String loginUserId = FrameworkHelper.getLoginUser(mRequest);
                 uploadItem = fileService.saveFile(fileData.getInputStream(), fileData.getOriginalFilename(), fileData.getSize(), loginUserId);
 
-                if (uploadItem != null && (uploadItem.getError() == null || !uploadItem.getError())) {
+                if (uploadItem != null && (uploadItem.getError() == null || Utils.isEmpty(uploadItem.getError().getText()))) {
                     String fileId = fileService.decrypt(uploadItem.getId());
                     // FIXME 哪些附件未被启用还需进一步判断
                     fileService.updateFileLink(fileId, name(), fileId);
@@ -89,14 +90,12 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
             String error = "上传失败,系统内部异常@" + System.currentTimeMillis();
             LogUtil.error(error, e);
             uploadItem = new UploadItem();
-            uploadItem.setError(true);
-            uploadItem.setText(error);
+            uploadItem.setError(new UploadItem.Error(error));
         }
 
         if (uploadItem == null) {
             uploadItem = new UploadItem();
-            uploadItem.setError(true);
-            uploadItem.setText("上传文件失败" + (!accept ? "：当前文件类型不符合系统规范" : ""));
+            uploadItem.setError(new UploadItem.Error("上传文件失败" + (!accept ? "：当前文件类型不符合系统规范" : "")));
         }
         return uploadItem;
     }
