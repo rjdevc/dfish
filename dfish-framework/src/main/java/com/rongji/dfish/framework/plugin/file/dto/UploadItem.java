@@ -17,7 +17,7 @@ public class UploadItem implements Serializable {
     private Long size;
     private String url;
     private String thumbnail;
-    private Boolean error;
+    private Error error;
     private String text;
     private Boolean escape;
     private String width;
@@ -25,6 +25,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件编号
+     *
      * @return String
      */
     public String getId() {
@@ -33,6 +34,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件编号
+     *
      * @param id String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -43,6 +45,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件名称
+     *
      * @return String
      */
     public String getName() {
@@ -51,6 +54,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件名称
+     *
      * @param name String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -61,6 +65,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件大小
+     *
      * @return Long
      */
     public Long getSize() {
@@ -69,6 +74,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件大小
+     *
      * @param size Long
      * @return 本身，这样可以继续设置其他属性
      */
@@ -79,6 +85,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件地址
+     *
      * @return String
      */
     public String getUrl() {
@@ -87,6 +94,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件地址
+     *
      * @param url String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -97,6 +105,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件缩略图(一般是图片才使用这个属性)
+     *
      * @return String
      */
     public String getThumbnail() {
@@ -105,6 +114,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 附件缩略图(一般是图片才使用这个属性)
+     *
      * @param thumbnail String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -115,24 +125,27 @@ public class UploadItem implements Serializable {
 
     /**
      * 是否有错误
+     *
      * @return Boolean
      */
-    public Boolean getError() {
+    public Error getError() {
         return error;
     }
 
     /**
      * 是否有错误
+     *
      * @param error Boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public UploadItem setError(Boolean error) {
+    public UploadItem setError(Error error) {
         this.error = error;
         return this;
     }
 
     /**
      * 提示文本信息
+     *
      * @return String
      */
     public String getText() {
@@ -141,6 +154,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 提示文本信息
+     *
      * @param text String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -151,6 +165,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 是否转义
+     *
      * @return Boolean
      */
     public Boolean getEscape() {
@@ -159,6 +174,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 是否转义
+     *
      * @param escape Boolean
      * @return 本身，这样可以继续设置其他属性
      */
@@ -169,6 +185,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 宽度
+     *
      * @return String
      */
     public String getWidth() {
@@ -177,6 +194,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 宽度
+     *
      * @param width String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -187,6 +205,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 高度
+     *
      * @return String
      */
     public String getHeight() {
@@ -195,6 +214,7 @@ public class UploadItem implements Serializable {
 
     /**
      * 高度
+     *
      * @param height String
      * @return 本身，这样可以继续设置其他属性
      */
@@ -202,4 +222,21 @@ public class UploadItem implements Serializable {
         this.height = height;
         return this;
     }
+
+    public static class Error {
+        private String text;
+
+        public Error(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+    }
+
 }
