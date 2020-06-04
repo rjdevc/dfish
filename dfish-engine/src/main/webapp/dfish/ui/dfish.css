@@ -943,7 +943,8 @@
 .w-fileupload-value ._progress{position:absolute;top:0;left:30px;right:0;bottom:0}
 .w-fileupload-value ._percent{position:absolute;top:0;left:0;bottom:0;background:#e5f3ff}
 .w-fileupload-value.z-loading ._main{background:#fff;border-color:#c7dbe3}
-.w-fileupload-value.z-err ._main{background:#fff;border-color:#f00;color:#f00}
+.w-fileupload-value.z-err{border-color:#f00;color:#f00}
+.w-fileupload-value.z-err ._main{background:#fff}
 
 .w-imageupload-value{position:relative;margin:0 10px 10px 0;border:1px solid #ddd;text-align:center}
 .w-imageupload-value ._more,.w-imageupload-value ._close{position:absolute;display:none;right:20px;top:0;width:20px;height:20px;background:#333;color:#ddd;border-left:0;cursor:pointer}

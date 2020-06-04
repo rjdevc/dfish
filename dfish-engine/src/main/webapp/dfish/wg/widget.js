@@ -2888,7 +2888,7 @@ View = define.widget('View', {
 					var o = _all[n.wid];
 					_scrollIntoView(o, N, N, T);
 					a && o.trigger('error', [{type: 'Alert', text: n.text, id: $.alert_id}]);
-					h && o.trigger('error', [o.validTip(n.text)]);
+					h && o.trigger('error', [o.validTip(n)]);
 				}
 			}
 			return !(this._err_ns = e); 
@@ -5874,8 +5874,8 @@ AbsForm = define.widget('AbsForm', {
 			this.label.width(this.label.width() + 1);
 			this.trigger('resize');
 		},
-		validTip: function(t) {
-			return {type: 'Tip', face: 'warn', text: t};
+		validTip: function(x) {
+			return {type: 'Tip', face: 'warn', text: x.text};
 		},
 		form_minus:  function() {
 			return (this.label ? this.label.outerWidth() : 0);
@@ -7716,7 +7716,7 @@ JigsawImg = define.widget('JigsawImg', {
 			this.loadData(N, function(d) {
 				var p = this.parentNode, r = this.getResult();
 				if (!r || (d instanceof Error)) {
-					r = {error: {msg: Loc.form.jigsaw_errorimg}};
+					r = {error: {text: Loc.form.jigsaw_errorimg}};
 				}
 				p.loaded = T;
 				if (r.error) {
@@ -7834,8 +7834,8 @@ Jigsaw = define.widget('Jigsaw', {
 			}
 		},
 		isModified: $.rt(F),
-		validTip: function(t) {
-			return {type: 'Tip', text: t, snap: {position: this.more ? 'rl,lr' : 'tb,bt'}, face: 'warn'};
+		validTip: function(x) {
+			return {type: 'Tip', text: x.text, snap: {position: this.more ? 'rl,lr' : 'tb,bt'}, face: 'warn'};
 		},
 		usa: function() {
 			return this.img && this.isNormal();
@@ -7907,8 +7907,8 @@ Jigsaw = define.widget('Jigsaw', {
 			return AbsForm.prototype.form_prop.call(this) + _html_on.call(this);
 		},
 		html_info: function(d) {
-			return d && d.error ? '<var class=_err>' + (d.error.msg != N ? d.error.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
-					d && d.success ? '<var class=_ok>' + (d.msg != N ? d.msg : Loc.auth_success) + '</var>' : 
+			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
+					d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
 					(this.x.placeholder || Loc.form.jigsaw_drag_right);
 		},
 		html_img: function() {

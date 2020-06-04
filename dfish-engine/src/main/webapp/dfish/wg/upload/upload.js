@@ -1334,10 +1334,11 @@ AbsUpload = define.widget( 'AbsUpload', {
 			if ( ldr ) {
 				if ( typeof message === 'string' )
 					$.alert( message );
+				else if ( message.text )
+					$.alert( message.text );
 				else if ( W.isCmd( message ) )
 					this.cmd( message );
 				ldr.setError( errorCode, message );
-				this.valid();
 			}
 		}
 	}
@@ -1441,14 +1442,6 @@ FileUpload = define.widget( 'FileUpload', {
 				Upload.Listener.body.ready.apply( this, arguments );
 				this.fixLabelVAlign();
 			},
-			error: function( e, a ) {
-				if ( typeof a === 'object' ) {
-					if ( a.type === 'tip' ) 
-						a.snap = this.getTipLoader( a.text ) || (this.uploadbar && this.uploadbar[ 0 ]) || this;
-					this.cmd( a );
-				} else
-					$.classAdd( this.$(), 'z-err', a );
-			},
 			statuschange: function() {
 				this.fixLabelVAlign();
 			}
@@ -1458,13 +1451,16 @@ FileUpload = define.widget( 'FileUpload', {
 		className: 'w-upload',
 		validHooks: {
 			valid: function( b, v ) {
-				var b = this.valuebar, l = b.length, d, e;
+				var b = this.valuebar, l = b.length, e;
 				for ( var i = 0; i < l; i ++ ) {
-					b[ i ].loading && (d = Loc.form.upload_loading);
-					b[ i ].error && (e = Loc.form.upload_invalid_file);
+					if (b[ i ].loading) { e = Loc.form.upload_loading; break; }
+					if (b[ i ].error) { e = Loc.form.upload_invalid_file; break; }
 				}
-				return (d || e) && { name: this.x.name, wid: this.id, code: 'upload', text: d || e };
+				return e && { name: this.x.name, wid: this.id, code: 'upload', text: e };
 			}
+		},
+		validTip: function(x) {
+			return {type: 'Tip', face: 'warn', text: x.text, snap: {target: this.getTipLoader()}};
 		},
 		append: function( a ) {
 			if ( typeof a === 'string' )
@@ -1486,13 +1482,10 @@ FileUpload = define.widget( 'FileUpload', {
 		fixLabelVAlign: function() {
 			this.label && this.label.addClass( 'z-va', !!(this.hasClass( 'z-lmt z-ds' ) && this._value.length) );
 		},
-		getTipLoader: function( t ) {
+		getTipLoader: function() {
 			var b = this.valuebar, l = b.length;
 			for ( var i = 0; i < l; i ++ ) {
-				if ( b[ i ].error && t === Loc.form.upload_error )
-					return b[ i ];
-				if ( b[ i ].loading && t === Loc.form.upload_loading )
-					return b[ i ];
+				if ( b[ i ].loading || b[ i ].error ) return b[ i ];
 			}
 		},
 		isLimit: function() {

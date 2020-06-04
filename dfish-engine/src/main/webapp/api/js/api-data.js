@@ -4808,7 +4808,7 @@ define( {
                 src: 'jigsawauth.sp?value=$value',
                 result: {
                     success: true,
-                    msg: '验证通过'
+                    text: '验证通过'
                 }
             }
           }
@@ -4827,7 +4827,7 @@ define( {
           { name: 'width', type: 'Number', remark: '图片宽度。' }
         ] },
         { name: 'error', type: 'Object', remark: '错误信息。', param: [
-          { name: 'msg', type: 'String', remark: '错误描述文本。' },
+          { name: 'text', type: 'String', remark: '错误描述文本。' },
           { name: 'timeout', type: 'Number', remark: '锁定并倒数时间，结束后自动刷新。单位:毫秒。' }
         ] },
         { name: 'maxValue', type: 'Number', remark: '最大值。' },
@@ -4869,7 +4869,7 @@ define( {
               src: 'getimg.sp',
               result: {
       	          error: {
-                      msg: '次数过多，请稍候再试', timeout: 15
+                      text: '次数过多，请稍候再试', timeout: 15
                   }
               }
             }
@@ -4883,7 +4883,7 @@ define( {
       { name: 'src', type: 'String', remark: '验证地址。' },
       { name: 'result', type: 'Object', remark: '设置分隔格式。', param: [
         { name: 'success', type: 'Boolean', remark: '验证是否成功。' },
-        { name: 'msg', type: 'String', remark: '验证结果的描述信息。' }
+        { name: 'text', type: 'String', remark: '验证结果的描述信息。' }
       ] }
     ],
 	Examples: [
@@ -4895,7 +4895,7 @@ define( {
               src: 'auth.sp?value=$value',
               result: {
       	          success: true,
-                  msg: '验证通过'
+                  text: '验证通过'
               }
             }
           }
