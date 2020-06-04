@@ -103,6 +103,8 @@ form : {
 	complete_required: '请完成必填项',
 	sliderjigsaw_drag_right: '向右拖动滑块填充拼图',
 	sliderjigsaw_required: '请完成滑块验证',
+	upload_loading: '正在上传，请稍候..',
+	upload_invalid_file: '无效文件',
 	no_files: '<没有文件>'
 },
 

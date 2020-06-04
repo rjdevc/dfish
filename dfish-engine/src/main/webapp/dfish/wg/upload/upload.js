@@ -1317,10 +1317,11 @@ BaseUpload = define.widget( 'upload/base', {
 			if ( ldr ) {
 				if ( typeof message === 'string' )
 					$.alert( message );
+				else if ( message.text )
+					$.alert( message.text );
 				else if ( W.isCmd( message ) )
 					this.cmd( message );
 				ldr.setError( errorCode, message );
-				this.valid();
 			}
 		}
 	}
@@ -1448,14 +1449,6 @@ define.widget( 'upload/file', {
 				Upload.Listener.body.ready.apply( this, arguments );
 				this.fixLabelVAlign();
 			},
-			error: function( e, a ) {
-				if ( typeof a === 'object' ) {
-					if ( a.type === 'tip' ) 
-						a.snap = this.getTipLoader( a.text ) || (this.uploadbar && this.uploadbar[ 0 ]) || this;
-					this.cmd( a );
-				} else
-					$.classAdd( this.$(), 'z-err', a );
-			},
 			statuschange: function() {
 				this.fixLabelVAlign();
 			}
@@ -1465,13 +1458,16 @@ define.widget( 'upload/file', {
 		className: 'w-upload',
 		validHooks: {
 			valid: function( b, v ) {
-				var b = this.valuebar, l = b.length, d, e;
+				var b = this.valuebar, l = b.length, e;
 				for ( var i = 0; i < l; i ++ ) {
-					b[ i ].error && (e = Loc.form.upload_error);
-					b[ i ].loading && (d = Loc.form.upload_loading);
+					if (b[ i ].loading) { e = Loc.form.upload_loading; break; }
+					if (b[ i ].error) { e = b[ i ].error.text || Loc.form.upload_invalid_file; break; }
 				}
-				return (e || d) && { name: this.x.name, wid: this.id, code: 'upload', text: e || d };
+				return e && { name: this.x.name, wid: this.id, code: 'upload', text: e };
 			}
+		},
+		validTip: function(t) {
+			return {type: 'tip', text: t, snap: this.getTipLoader()};
 		},
 		append: function( a ) {
 			if ( typeof a === 'string' )
@@ -1493,13 +1489,10 @@ define.widget( 'upload/file', {
 		fixLabelVAlign: function() {
 			this.label && this.label.addClass( 'z-va', !!(this.hasClass( 'z-lmt z-ds' ) && this._value.length) );
 		},
-		getTipLoader: function( t ) {
+		getTipLoader: function() {
 			var b = this.valuebar, l = b.length;
 			for ( var i = 0; i < l; i ++ ) {
-				if ( b[ i ].error && t === Loc.form.upload_error )
-					return b[ i ];
-				if ( b[ i ].loading && t === Loc.form.upload_loading )
-					return b[ i ];
+				if ( b[ i ].loading || b[ i ].error ) return b[ i ];
 			}
 		},
 		isLimit: function() {
@@ -1767,7 +1760,7 @@ define.widget( 'upload/image/value', {
 		setError: function( errorCode, message ) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = { code: errorCode };
+			this.error   = message;
 			this.removeElem( 'p' );
 			this.removeClass( 'z-loading' );
 			this.addClass( 'z-err' );
@@ -1856,7 +1849,7 @@ define.widget( 'upload/file/value', {
 		setError: function( errorCode, message ) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = { code: errorCode };
+			this.error   = message;
 			this.removeElem( 'g' );
 			$.classAdd( this.$(), 'z-err' );
 			$.classRemove( this.$(), 'z-loading' );
