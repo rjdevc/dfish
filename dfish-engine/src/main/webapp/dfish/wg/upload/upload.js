@@ -510,7 +510,7 @@ SWFUpload.prototype.displayDebugInfo = function () {
 SWFUpload.prototype.addSetting = function (name, value, default_value) {
     if (value == undefined) {
         return (this.settings[name] = default_value);
-    } else {
+   } else {
         return (this.settings[name] = value);
 	}
 };
@@ -587,7 +587,7 @@ SWFUpload.prototype.startUpload = function (fileID) {
 // Public: startUpload starts uploading the first file in the queue unless
 // the optional parameter 'fileID' specifies the ID 
 SWFUpload.prototype.startResizedUpload = function (fileID, width, height, encoding, quality, allowEnlarging) {
-	this.callFlash("StartUpload", [fileID, { "width": width, "height" : height, "encoding" : encoding, "quality" : quality, "allowEnlarging" : allowEnlarging }]);
+	this.callFlash("StartUpload", [fileID, {"width": width, "height" : height, "encoding" : encoding, "quality" : quality, "allowEnlarging" : allowEnlarging}]);
 };
 
 // Public: cancelUpload cancels any queued file.  The fileID parameter may be the file ID or index.
@@ -885,7 +885,7 @@ SWFUpload.prototype.unescapeFilePostParams = function (file) {
 		}
 
 		file.post = unescapedPost;
-		if ( ! ( window.File && file instanceof window.File ) )
+		if (! (window.File && file instanceof window.File))
 			file.name = decodeURI(file.name);
 	}
 
@@ -934,11 +934,11 @@ SWFUpload.prototype.cleanUp = function () {
 	
 	// Pro-actively unhook all the Flash functions
 	try {
-		if (movieElement && typeof(movieElement.CallFunction) === "unknown") { // We only want to do this in IE
+		if (movieElement && typeof(movieElement.CallFunction) === "unknown") {// We only want to do this in IE
 			this.debug("Removing Flash functions hooks (this should only run in IE and should prevent memory leaks)");
 			for (key in movieElement) {
 				try {
-					if (typeof(movieElement[key]) === "function" && key.charAt( 0 ) <= 'Z') {
+					if (typeof(movieElement[key]) === "function" && key.charAt(0) <= 'Z') {
 						movieElement[key] = null;
 					}
 				} catch (ex) {
@@ -1136,34 +1136,34 @@ var swfobject = function(){var D="undefined",r="object",S="Shockwave Flash",W="S
 swfobject.addDomLoadEvent(function () {if (typeof(SWFUpload.onload) === "function") {SWFUpload.onload.call(window);}});
 
 /*
-   { type: 'upload/file', download: "xxx", preview: "xxx" }
+   {type: 'upload/file', download: "xxx", preview: "xxx"}
    如果只配置了 download，点击文件都是下载。
    如果同时配置 download 和 preview，download 无效，preview 有效。
    如果只设置 preview，返回命令做处置。
-   如果需要特殊处理，比如doc文件要预览，那么设置 pub: { on: { click: "myFile.doSomething($id,$name);return false;" }
+   如果需要特殊处理，比如doc文件要预览，那么设置 pub: {on: {click: "myFile.doSomething($id,$name);return false;"}
  */
 
 /* `upload` */
 var U,
-$ = require( 'dfish' ),
-Loc = require( 'loc' ),
-W = require( 'Widget' ),
-Horz = require( 'Horz' ),
-Button = require( 'Button' ),
-ButtonBar = require( 'ButtonBar' ),
-AbsForm = require( 'AbsForm' ),
+$ = require('dfish'),
+Loc = require('loc'),
+W = require('Widget'),
+Horz = require('Horz'),
+Button = require('Button'),
+ButtonBar = require('ButtonBar'),
+AbsForm = require('AbsForm'),
 
 evw = $.abbr + '.w(this)',
 
-UploadPost = define.widget( 'UploadPost', {
+UploadPost = define.widget('UploadPost', {
 	Extend: 'AbsSection'
 }),
 
-AbsUpload = define.widget( 'AbsUpload', {
-	Const: function( x ) {
-		AbsForm.apply( this, arguments );
-		x.post && (this.post = new UploadPost( x.post, this, -1 ));
-		this.x = $.merge( {
+AbsUpload = define.widget('AbsUpload', {
+	Const: function(x) {
+		AbsForm.apply(this, arguments);
+		x.post && (this.post = new UploadPost(x.post, this, -1));
+		this.x = $.merge({
 			file_types: '*.*',
 			file_types_description: 'All Files',
 			file_upload_limit: 0,
@@ -1171,46 +1171,46 @@ AbsUpload = define.widget( 'AbsUpload', {
 			flash_url: module.path + 'swfupload.swf',
 			flash9_url: module.path + 'swfupload_fp9.swf',
 			upload_url: this.post && this.post.getSrc()
-		}, swfOptions( x ) );
+		}, swfOptions(x));
 		var v = x.value || [];
-		if ( typeof v === 'string' )
-			v = v.charAt( 0 ) == '[' ? $.jsonParse( v ) : [];
+		if (typeof v === 'string')
+			v = v.charAt(0) == '[' ? $.jsonParse(v) : [];
 		this._value    = v.concat();
-		this.uploadbar = this.add( { type: this.type + 'ButtonBar' } );
-		this.valuebar  = this.add( { type: this.type + 'ValueBar', br: true, cls: '_vbar' } );
+		this.uploadbar = this.add({type: this.type + 'ButtonBar'});
+		this.valuebar  = this.add({type: this.type + 'ValueBar', br: true, cls: '_vbar'});
 		this._queues   = [];
-		if ( ! x.uploadButtons )
+		if (! x.uploadButtons)
 			this.className += ' z-lmt';
-		if ( ! this.valuebar.length )
+		if (! this.valuebar.length)
 			this.className += ' z-nofiles';
 	},
-	Default:{ height: -1 },
+	Default:{height: -1},
 	Extend: AbsForm,
 	Prototype: {
 		isFormWidget: true,
-		val: function( a ) {
-			if ( a == null )
+		val: function(a) {
+			if (a == null)
 				return this.ipt().value;
-			if ( typeof a === 'string' )
-				a = $.jsonParse( a ) || [];
+			if (typeof a === 'string')
+				a = $.jsonParse(a) || [];
 			this._value = a;
 			this.save();
-			for ( var i = this.valuebar.length - 1; i > -1; i -- )
-				this.valuebar[ i ].loaded && this.valuebar[ i ].remove();
-			for ( i = 0; i < a.length; i ++ )
-				this.valuebar.append( { data: a[ i ] } );
+			for (var i = this.valuebar.length - 1; i > -1; i --)
+				this.valuebar[i].loaded && this.valuebar[i].remove();
+			for (i = 0; i < a.length; i ++)
+				this.valuebar.append({data: a[i]});
 		},
 		//@a -> orignal?
-		isModified: function( a ) {
+		isModified: function(a) {
 			var v = a || this._modval == null ? (this.x.value || []) : this._modval;
-			if ( typeof v === 'string' ) {
-				v = v.charAt( 0 ) == '[' ? $.jsonParse( v ) : [];
+			if (typeof v === 'string') {
+				v = v.charAt(0) == '[' ? $.jsonParse(v) : [];
 			}
 			u = this._value || [];
-			if ( v.length !== u.length )
+			if (v.length !== u.length)
 				return true;
-			for ( var i = 0; i < v.length; i ++ ) {
-				if ( v[ i ].id != u[ i ].id )
+			for (var i = 0; i < v.length; i ++) {
+				if (v[i].id != u[i].id)
 					return true;
 			}
 		},
@@ -1218,133 +1218,133 @@ AbsUpload = define.widget( 'AbsUpload', {
 			this._modval = this.val();
 		},
 		// @a -> default?
-		reset: function( a ) {
-			this.isModified( a ) && this.val( a || this._modval == null ? this.x.value : this._modval );
+		reset: function(a) {
+			this.isModified(a) && this.val(a || this._modval == null ? this.x.value : this._modval);
 		},
 		normal: function() {
 			this.x.status = 'normal';
-			$.classRemove( this.$(), 'z-err z-ds' );
-			this.setButtonDisabled( false );
-			W.prototype.normal.apply( this, arguments );
+			$.classRemove(this.$(), 'z-err z-ds');
+			this.setButtonDisabled(false);
+			W.prototype.normal.apply(this, arguments);
 			return this;
 		},
-		readonly: function( a ) {
+		readonly: function(a) {
 			a = a == null || a;
-			$.classRemove( this.$(), 'z-err' );
-			this.setButtonDisabled( a );
-			W.prototype.readonly.apply( this, arguments );
+			$.classRemove(this.$(), 'z-err');
+			this.setButtonDisabled(a);
+			W.prototype.readonly.apply(this, arguments);
 			return this;
 		},
-		validonly: function( a ) {
+		validonly: function(a) {
 			a = a == null || a;
-			$.classRemove( this.$(), 'z-err' );
-			this.setButtonDisabled( a );
-			W.prototype.validonly.apply( this, arguments );
+			$.classRemove(this.$(), 'z-err');
+			this.setButtonDisabled(a);
+			W.prototype.validonly.apply(this, arguments);
 			return this;
 		},
-		disable: function( a ) {
+		disable: function(a) {
 			a = a == null || a;
-			$.classRemove( this.$(), 'z-err' );
-			this.setButtonDisabled( a );
-			W.prototype.disable.apply( this, arguments );
+			$.classRemove(this.$(), 'z-err');
+			this.setButtonDisabled(a);
+			W.prototype.disable.apply(this, arguments);
 			return this;
 		},
 		ipt: function() {
-			return this.$( 'v' );
+			return this.$('v');
 		},
-		getLoaderByFile: function( a ) {
-			for ( var i = 0, f; i < this.valuebar.length; i ++ ) {
-				if ( (f = this.valuebar[ i ].x.file) && (f.id === a.id) )
-					return this.valuebar[ i ];
+		getLoaderByFile: function(a) {
+			for (var i = 0, f; i < this.valuebar.length; i ++) {
+				if ((f = this.valuebar[i].x.file) && (f.id === a.id))
+					return this.valuebar[i];
 			}
 		},
-		addValue: function( a ) {
-			this._value.push( a );
+		addValue: function(a) {
+			this._value.push(a);
 			this.save();
 		},
-		removeValue: function( a ) {
-			$.arrPop( this._value, a );
+		removeValue: function(a) {
+			$.arrPop(this._value, a);
 			this.save();
 		},
 		save: function() {
-			var v = $.jsonString( this._value );
+			var v = $.jsonString(this._value);
 			this.ipt().value = v == '[]' ? '' : v;
 		},
 		getNewLoaders: function() {
-			for ( var i = 0, d = this.valuebar, r = []; i < d.length; i ++ )
-				! d[ i ].$() && r.push( d[ i ] );
+			for (var i = 0, d = this.valuebar, r = []; i < d.length; i ++)
+				! d[i].$() && r.push(d[i]);
 			return r;
 		},
-		addNewLoaders: function( numFilesSelected, numFilesQueued, numFilesInQueue ) {
-			if ( numFilesInQueue > 0 ) {
-				for ( var i = numFilesInQueue - numFilesQueued, f; i < numFilesInQueue; i ++ ) {
-					(f = this.getQueueFile( i )) && this.valuebar.add( { file: f } );
+		addNewLoaders: function(numFilesSelected, numFilesQueued, numFilesInQueue) {
+			if (numFilesInQueue > 0) {
+				for (var i = numFilesInQueue - numFilesQueued, f; i < numFilesInQueue; i ++) {
+					(f = this.getQueueFile(i)) && this.valuebar.add({file: f});
 				}
-				//this.trigger( 'fileselect' );
-				for ( var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++ )
-					d[ i ].render();
+				//this.trigger('fileselect');
+				for (var i = 0, d = this.getNewLoaders(), l = d.length, s = []; i < l; i ++)
+					d[i].render();
 				this.startUpload();
 			}
 		},
 		file_queue_error_handler: function(file, errorCode, message) {
 			var ro  = SWFUpload.QUEUE_ERROR,
 				msg = message;
-			if ( errorCode == ro.QUEUE_LIMIT_EXCEEDED ) {
+			if (errorCode == ro.QUEUE_LIMIT_EXCEEDED) {
 				msg = '上传数量超过上限(最多' + this.x.file_upload_limit + '个)';
-			} else if ( errorCode == ro.INVALID_FILETYPE ) {
+			} else if (errorCode == ro.INVALID_FILETYPE) {
 				msg = '无效的文件类型';
-			} else if ( errorCode == ro.FILE_EXCEEDS_SIZE_LIMIT ) {
+			} else if (errorCode == ro.FILE_EXCEEDS_SIZE_LIMIT) {
 				msg = '文件大小不能超过' + this.x.file_size_limit + '';
-			} else if ( errorCode == ro.FILE_MIN_SIZE_LIMIT ) {
+			} else if (errorCode == ro.FILE_MIN_SIZE_LIMIT) {
 				msg = '文件大小不能小于' + this.x.minFileSize + '';
 			}
-			$.alert( '上传失败：' + ( file ? file.name : '' ) + '\n\n' + msg );
+			$.alert('上传失败：' + (file ? file.name : '') + '\n\n' + msg);
 		},
-		file_dialog_complete_handler: function( numFilesSelected, numFilesQueued, numFilesInQueue ) {
-			$.br.app ? $.wifiConfirm( function() { this.addNewLoaders( numFilesSelected, numFilesQueued, numFilesInQueue ); }, this ) : this.addNewLoaders( numFilesSelected, numFilesQueued, numFilesInQueue );
-			$.classRemove( this.$(), 'z-err' );
+		file_dialog_complete_handler: function(numFilesSelected, numFilesQueued, numFilesInQueue) {
+			$.br.app ? $.wifiConfirm(function() {this.addNewLoaders(numFilesSelected, numFilesQueued, numFilesInQueue);}, this) : this.addNewLoaders(numFilesSelected, numFilesQueued, numFilesInQueue);
+			$.classRemove(this.$(), 'z-err');
 		},
-		upload_progress_handler: function( file, bytesLoaded, bytesTotal ) {
-			var ldr = this.getLoaderByFile( file );
-			if ( ldr ) {
+		upload_progress_handler: function(file, bytesLoaded, bytesTotal) {
+			var ldr = this.getLoaderByFile(file);
+			if (ldr) {
 				var percent = Math.ceil((bytesLoaded / bytesTotal) * 100);
-				ldr.setProgress( percent );
+				ldr.setProgress(percent);
 			}
 		},
-		upload_success_handler: function( file, serverData ) {
-			var ldr = this.getLoaderByFile( file ), r;
+		upload_success_handler: function(file, serverData) {
+			var ldr = this.getLoaderByFile(file), r;
 			try {
-				eval( 'r=' + serverData );
-			} catch( e ) {}
-			if ( ! r || W.isCmd( r ) || r.error ) {
-				this.uploadError( file, SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED, (r && r.error) || serverData );	
+				eval('r=' + serverData);
+			} catch(e) {}
+			if (! r || W.isCmd(r) || r.error) {
+				this.uploadError(file, SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED, (r && r.error) || serverData);	
 			} else {
-				this.post.srcData( r );
-				ldr.setSuccess( this.post.getResult() );
+				this.post.srcData(r);
+				ldr.setSuccess(this.post.getResult());
 			}
 		},
-		upload_complete_handler: function( file ) {
-			if ( this.getQueueFile( 0 ) )
+		upload_complete_handler: function(file) {
+			if (this.getQueueFile(0))
 				this.doUpload();
 			else
-				this.trigger( 'change' );
+				this.trigger('change');
 		},
-		upload_error_handler: function( file, errorCode, message ) {
-			var ldr = this.getLoaderByFile( file );
-			if ( ldr ) {
-				if ( typeof message === 'string' )
-					$.alert( message );
-				else if ( message.text )
-					$.alert( message.text );
-				else if ( W.isCmd( message ) )
-					this.cmd( message );
-				ldr.setError( errorCode, message );
+		upload_error_handler: function(file, errorCode, message) {
+			var ldr = this.getLoaderByFile(file);
+			if (ldr) {
+				if (typeof message === 'string')
+					$.alert(message);
+				else if (message.text)
+					$.alert(message.text);
+				else if (W.isCmd(message))
+					this.cmd(message);
+				ldr.setError(errorCode, message);
 			}
 		}
 	}
-} ),
+}),
 
-Upload = AjaxUpload = define.widget( 'AjaxUpload', {
+Upload = AjaxUpload = define.widget('AjaxUpload', {
 	Extend: AbsUpload,
 	Listener: {
 		body: {
@@ -1355,91 +1355,91 @@ Upload = AjaxUpload = define.widget( 'AjaxUpload', {
 		setButtonDisabled: function() {
 			//implement
 		},
-		getQueueFile: function( i ) {
-			return this._queues[ i ]
+		getQueueFile: function(i) {
+			return this._queues[i];
 		},
 		fileQueueError: function() {
-			return this.file_queue_error_handler.apply( this, arguments );
+			return this.file_queue_error_handler.apply(this, arguments);
 		},
 		uploadError: function() {
-			return this.upload_error_handler.apply( this, arguments );
+			return this.upload_error_handler.apply(this, arguments);
 		},
 		startUpload: function() {
-			for ( var i = 0, ldr; i < this.valuebar.length; i ++ ) {
-				ldr = this.valuebar[ i ];
-				if ( ldr.loading )
+			for (var i = 0, ldr; i < this.valuebar.length; i ++) {
+				ldr = this.valuebar[i];
+				if (ldr.loading)
 					return;
-				if ( ! ldr.loading && ! ldr.loaded )
+				if (! ldr.loading && ! ldr.loaded)
 					break;
 			}
 			ldr && ldr.upload();
 		}
 	}
-} ),
+}),
 
-FlashUpload = define.widget( 'FlashUpload', {
-	Extend: [ AbsUpload, SWFUpload ],
+FlashUpload = define.widget('FlashUpload', {
+	Extend: [AbsUpload, SWFUpload],
 	Listener: {
 		body: {
 			ready: function() {
 				var s = this.x.file_size_limit;
-				if ( s && /[KMG]$/i.test( s ) )
+				if (s && /[KMG]$/i.test(s))
 					this.x.file_size_limit = s.toUpperCase() + 'B';
-				this.settings = $.extend( this.x, {
+				this.settings = $.extend(this.x, {
 					button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
 					button_cursor: SWFUpload.CURSOR.HAND,
 					button_placeholder_id: this.id + 'swf'
-				} );
-				if ( $.x.ajaxData )
-					this.settings.post_params = $.extend( this.settings.post_params || {}, $.x.ajaxData );
-				this.initSWFUpload( this.settings );
+				});
+				if ($.x.ajaxData)
+					this.settings.post_params = $.extend(this.settings.post_params || {}, $.x.ajaxData);
+				this.initSWFUpload(this.settings);
 			}
 		}
 	},
 	Prototype: {
-		uploadStats: function( i ) {
+		uploadStats: function(i) {
 			var stats = this.getStats();
-			if ( stats ) {
-				if ( i !== U ) {
+			if (stats) {
+				if (i !== U) {
 					stats.successful_uploads += i;
-					this.setStats( stats );
+					this.setStats(stats);
 				}
 				return stats.successful_uploads;
 			}
 		},
-		file_queued_handler: function( file ) {
+		file_queued_handler: function(file) {
 			var n = this.x.minFileSize;
-			if( n != null && file.size < fileByte( n ) ) {
-				this.cancelUpload( file.id );
-				this.fileQueueError( file, SWFUpload.QUEUE_ERROR.FILE_MIN_SIZE_LIMIT );
+			if(n != null && file.size < fileByte(n)) {
+				this.cancelUpload(file.id);
+				this.fileQueueError(file, SWFUpload.QUEUE_ERROR.FILE_MIN_SIZE_LIMIT);
 			}
 		},
 		swfupload_load_failed_handler: function() {
-			if ( this.x.uploadButtons )
-				this.cmd( { type: 'Alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat( $.x.support_url, [ 'flash' ] ) : 'http://flash.cn') + ' target=_blank><b>点此下载>></b></a>' } );
+			if (this.x.uploadButtons)
+				this.cmd({type: 'Alert', id: 'upload_base_swf', text: '使用上传功能需要安装flash插件。 <a href=' + ($.x.support_url ? $.urlFormat($.x.support_url, ['flash']) : 'http://flash.cn') + ' target=_blank><b>点此下载>></b></a>'});
 		},
 		swfupload_loaded_handler: function() {
-			this.uploadStats( this._value.length );
+			this.uploadStats(this._value.length);
 		}
 	}
-} ),
+}),
 
 isSWF = ! window.FormData,
 uploadCount = 0, fileCount = 0;
 
-if ( isSWF ) {
+if (isSWF) {
 	Upload = FlashUpload;
 	window.SWFUpload = SWFUpload;
 }
 
 /*! `upload/file` */
 var 
-FileUpload = define.widget( 'FileUpload', {
+FileUpload = define.widget('FileUpload', {
 	Extend: Upload,
 	Listener: {
 		body: {
 			ready: function() {
-				Upload.Listener.body.ready.apply( this, arguments );
+				Upload.Listener.body.ready.apply(this, arguments);
 				this.fixLabelVAlign();
 			},
 			statuschange: function() {
@@ -1450,183 +1450,183 @@ FileUpload = define.widget( 'FileUpload', {
 	Prototype: {
 		className: 'w-upload',
 		validHooks: {
-			valid: function( b, v ) {
+			valid: function(b, v) {
 				var b = this.valuebar, l = b.length, e;
-				for ( var i = 0; i < l; i ++ ) {
-					if (b[ i ].loading) { e = Loc.form.upload_loading; break; }
-					if (b[ i ].error) { e = Loc.form.upload_invalid_file; break; }
+				for (var i = 0; i < l; i ++) {
+					if (b[i].loading) {e = Loc.form.upload_loading; break;}
+					if (b[i].error) {e = b[i].error.text || Loc.form.upload_invalid_file; break;}
 				}
-				return e && { name: this.x.name, wid: this.id, code: 'upload', text: e };
+				return e && {name: this.x.name, wid: this.id, code: 'upload', text: e};
 			}
 		},
 		validTip: function(x) {
 			return {type: 'Tip', face: 'warn', text: x.text, snap: {target: this.getTipLoader()}};
 		},
-		append: function( a ) {
-			if ( typeof a === 'string' )
-				a = $.jsonParse( a );
-			if ( $.isArray( a ) ) {
-				for ( var i = 0; i < a.length; i ++ )
-					this.append( a[ i ] );
-			} else if ( ! this.isLimit() ) {
-				this.addValue( a );
-				this.valuebar.add( { data: a } ).render();
+		append: function(a) {
+			if (typeof a === 'string')
+				a = $.jsonParse(a);
+			if ($.isArray(a)) {
+				for (var i = 0; i < a.length; i ++)
+					this.append(a[i]);
+			} else if (! this.isLimit()) {
+				this.addValue(a);
+				this.valuebar.add({data: a}).render();
 			}
 		},
 		text: function() {
-			for ( var i = 0, s = []; i < this._value.length; i ++ ) {
-				s.push( this._value[ i ].name );
+			for (var i = 0, s = []; i < this._value.length; i ++) {
+				s.push(this._value[i].name);
 			}
-			return s.join( ', ' );
+			return s.join(', ');
 		},
 		fixLabelVAlign: function() {
-			this.label && this.label.addClass( 'z-va', !!(this.hasClass( 'z-lmt z-ds' ) && this._value.length) );
+			this.label && this.label.addClass('z-va', !!(this.hasClass('z-lmt z-ds') && this._value.length));
 		},
 		getTipLoader: function() {
 			var b = this.valuebar, l = b.length;
-			for ( var i = 0; i < l; i ++ ) {
-				if ( b[ i ].loading || b[ i ].error ) return b[ i ];
+			for (var i = 0; i < l; i ++) {
+				if (b[i].loading || b[i].error) return b[i];
 			}
 		},
 		isLimit: function() {
 			return this.x.file_upload_limit > 0 && (this.valuebar || this._value).length >= this.x.file_upload_limit;
 		},
 		html_input: function() {
-			return '<input type=hidden id=' + this.id + 'v name=' + this.x.name + ' value=\'' + (this._value.length ? $.jsonString( this._value ) : '') + '\'>';
+			return '<input type=hidden id=' + this.id + 'v name=' + this.x.name + ' value=\'' + (this._value.length ? $.jsonString(this._value) : '') + '\'>';
 		},
 		html_nodes: function() {
 			return (this.uploadbar && this.uploadbar.length ? this.uploadbar.html() : '') + this.valuebar.html() + this.html_input();
 		}
 	}
-} ),
+}),
 
 /*! upload/image */
-ImageUpload = define.widget( 'ImageUpload', {
+ImageUpload = define.widget('ImageUpload', {
 	Extend: FileUpload,
 	Prototype: {
 		html_nodes: function() {
 			return this.valuebar.html() + this.html_input();
 		}
 	}
-} ),
+}),
 
-FileUploadButtonBar = define.widget( 'FileUploadButtonBar', {
-	Const: function( x, p ) {
+FileUploadButtonBar = define.widget('FileUploadButtonBar', {
+	Const: function(x, p) {
 		this.u = p;
-		ButtonBar.apply( this, arguments );
+		ButtonBar.apply(this, arguments);
 	},
 	Extend: ButtonBar,
-	Default: { space: 10, width: -1, height: -1 },
+	Default: {space: 10, width: -1, height: -1},
 	Prototype: {
 		className: 'w-buttonbar _bbar',
-		x_nodes: function( x ) {
+		x_nodes: function(x) {
 			return this.u.x.uploadButtons;
 		},
-		x_childtype: function( t ) {
+		x_childtype: function(t) {
 			return 'FileUpload' + t;
 		}
 	}
-} ),
+}),
 
-ImageUploadButtonBar = define.widget( 'ImageUploadButtonBar', {
+ImageUploadButtonBar = define.widget('ImageUploadButtonBar', {
 	Extend: FileUploadButtonBar,
 	Prototype: {
-		x_childtype: function( t ) {
+		x_childtype: function(t) {
 			return 'ImageUpload' + t;
 		}
 	}
-} ),
+}),
 
 // 附件列表
-FileUploadValueBar = define.widget( 'FileUploadValueBar', {
-	Const: function( x, p ) {
+FileUploadValueBar = define.widget('FileUploadValueBar', {
+	Const: function(x, p) {
 		this.u = p;
 		x.width = x.height = -1;
-		Horz.call( this, x, p );
-		for ( var i = 0, n = []; i < p._value.length; i ++ )
-			p._value[ i ] && this.add( { data: p._value[ i ] } );
+		Horz.call(this, x, p);
+		for (var i = 0, n = []; i < p._value.length; i ++)
+			p._value[i] && this.add({data: p._value[i]});
 		this.childCls = p.x.dir === 'v' ? 'f-left f-clear' : 'f-sub-horz';
 	},
 	Extend: 'Horz',
 	Listener: {
 		body: {
 			ready: function() {
-				this.trigger( 'nodeChange' );
+				this.trigger('nodeChange');
 			},
 			nodeChange: function() {
 				var u = this.u;
-				$.classAdd( u.$(), 'z-lmt', u.isLimit() );
-				this.length && this.$( 'nf' ) && $.remove( this.$( 'nf' ) );
-				! this.length && ! this.$( 'nf' ) && Q( this.$() ).prepend( this.html_nofiles() );
-				$.classAdd( u.$(), 'z-nofiles', !this.length );
+				$.classAdd(u.$(), 'z-lmt', u.isLimit());
+				this.length && this.$('nf') && $.remove(this.$('nf'));
+				! this.length && ! this.$('nf') && Q(this.$()).prepend(this.html_nofiles());
+				$.classAdd(u.$(), 'z-nofiles', !this.length);
 				u.fixLabelVAlign();
 			}
 		}
 	},
 	Prototype: {
-		x_childtype: $.rt( 'FileUploadValue' ),
+		x_childtype: $.rt('FileUploadValue'),
 		html_nofiles: function() {
 			return '<div id=' + this.id + 'nf class="_nofiles f-nv">' + Loc.form.no_files + '</div>';
 		},
 		html_nodes: function() {
-			return (this.length ? '' : this.html_nofiles()) + Horz.prototype.html_nodes.call( this );
+			return (this.length ? '' : this.html_nofiles()) + Horz.prototype.html_nodes.call(this);
 		}
 	}
-} ),
+}),
 
-ImageUploadValueBar = define.widget( 'ImageUploadValueBar', {
+ImageUploadValueBar = define.widget('ImageUploadValueBar', {
 	Extend: FileUploadValueBar,
 	Prototype: {
-		x_childtype: $.rt( 'ImageUploadValue' ),
+		x_childtype: $.rt('ImageUploadValue'),
 		// @implement / a -> html|widget, b -> where(prepend|append|before|after)
-		insertHTML: function( a, b ) {
-			if ( ! b || b === 'append' ) {
-				$.before( this.parentNode.uploadbar.$(), a.isWidget ? a.$() : a );
+		insertHTML: function(a, b) {
+			if (! b || b === 'append') {
+				$.before(this.parentNode.uploadbar.$(), a.isWidget ? a.$() : a);
 			} else
-				W.prototype.insertHTML.call( this, a, b );
+				W.prototype.insertHTML.call(this, a, b);
 		},
 		html_nodes: function() {
-			return FileUploadValueBar.prototype.html_nodes.call( this ) + (this.parentNode.uploadbar ? this.parentNode.uploadbar.html() : '');
+			return FileUploadValueBar.prototype.html_nodes.call(this) + (this.parentNode.uploadbar ? this.parentNode.uploadbar.html() : '');
 		}
 	}
-} ),
+}),
 
-FileUploadButton = define.widget( 'FileUploadButton', {
-	Const: function( x, p ) {
+FileUploadButton = define.widget('FileUploadButton', {
+	Const: function(x, p) {
 		this.u = p.parentNode;
-		Button.apply( this, arguments );
+		Button.apply(this, arguments);
 	},
 	Extend: Button,
 	Prototype: {
 		className: 'w-button w-uploadbutton'
 	}
-} ),
+}),
 
-ImageUploadButton = define.widget( 'ImageUploadButton', {
-	Const: function( x, p ) {
-		FileUploadButton.apply( this, arguments );
+ImageUploadButton = define.widget('ImageUploadButton', {
+	Const: function(x, p) {
+		FileUploadButton.apply(this, arguments);
 		var b = this.u.x.pub || false, w = b.width || 80, h = b.height || 80, t = this.x.style || '';
-		if ( w || h ) {
-			t += 'width:' + (w - (this.attr( 'widthMinus' ) || 0)) + 'px;height:' + (h - (this.attr( 'heightMinus' ) || 0)) + 'px;';
+		if (w || h) {
+			t += 'width:' + (w - (this.attr('widthMinus') || 0)) + 'px;height:' + (h - (this.attr('heightMinus') || 0)) + 'px;';
 			this.x.style = t;
 		}
-		this.u.x.dir === 'v' && $.classAdd( this.parentNode, 'f-left f-clear' );
+		this.u.x.dir === 'v' && $.classAdd(this.parentNode, 'f-left f-clear');
 	},
 	Extend: FileUploadButton
-} ),
+}),
 
 // 选择本地文件的按钮
-FileUploadUploadButton = define.widget( 'FileUploadUploadButton', {
-	Const: function( x, p ) {
-		FileUploadButton.apply( this, arguments );
+FileUploadUploadButton = define.widget('FileUploadUploadButton', {
+	Const: function(x, p) {
+		FileUploadButton.apply(this, arguments);
 		this.fileID = this.id + 'u-' + uploadCount;
 	},
 	Extend: FileUploadButton,
 	Listener: {
 		body: {
 			click: function() {
-				if ( this.u.isNormal() ) {
-					Button.Listener.body.click.apply( this, arguments );
+				if (this.u.isNormal()) {
+					Button.Listener.body.click.apply(this, arguments);
 					! this.x.nodes && this.selectFile();
 				}
 			}
@@ -1635,73 +1635,73 @@ FileUploadUploadButton = define.widget( 'FileUploadUploadButton', {
 	Prototype: {
 		getAccept: function() {
 			var t = this.u.x.file_types;
-			return t && t !== '*.*' ? getFileType( t ) : '';
+			return t && t !== '*.*' ? getFileType(t) : '';
 		},
 		getFileTypes: function() {
 			var t = this.u.x.file_types;
-			return t && t !== '*.*' ? t.replace( /\*/g, '' ).replace( /;/g, ',' ).toLowerCase() : '';
+			return t && t !== '*.*' ? t.replace(/\*/g, '').replace(/;/g, ',').toLowerCase() : '';
 		},
 		selectFile: function() {
-			$( this.fileID ).click();
+			$(this.fileID).click();
 		},
-		fileSelected: function( o ) {
+		fileSelected: function(o) {
 			var u = this.u, b = o.files, d = b.length, t = this.getFileTypes();
-			for ( var i = 0, k = 0; i < d; i ++ ) {
-				if ( u.x.file_upload_limit > 1 && u.valuebar.length + (i + 1) > u.x.file_upload_limit ) {
-					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED );
+			for (var i = 0, k = 0; i < d; i ++) {
+				if (u.x.file_upload_limit > 1 && u.valuebar.length + (i + 1) > u.x.file_upload_limit) {
+					u.fileQueueError(b[i], SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED);
 					continue;
-				} else if ( u.x.file_size_limit != null && b[ i ].size > fileByte( u.x.file_size_limit ) ) {
-					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT );
+				} else if (u.x.file_size_limit != null && b[i].size > fileByte(u.x.file_size_limit)) {
+					u.fileQueueError(b[i], SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT);
 					continue;
-				} else if ( u.x.minFileSize != null && b[ i ].size < fileByte( u.x.minFileSize ) ) {
-					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.FILE_MIN_SIZE_LIMIT );
+				} else if (u.x.minFileSize != null && b[i].size < fileByte(u.x.minFileSize)) {
+					u.fileQueueError(b[i], SWFUpload.QUEUE_ERROR.FILE_MIN_SIZE_LIMIT);
 					continue;
-				} else if ( t && ! $.idsAny( t, '.' + $.strFrom( b[ i ].name, '.', true ).toLowerCase() ) ) {
-					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.INVALID_FILETYPE );
+				} else if (t && ! $.idsAny(t, '.' + $.strFrom(b[i].name, '.', true).toLowerCase())) {
+					u.fileQueueError(b[i], SWFUpload.QUEUE_ERROR.INVALID_FILETYPE);
 					continue;
-				} else if ( u.x.on && u.x.on.fileselect && (r = u.triggerHandler( 'fileselect', b[ i ] )) ) {
-					u.fileQueueError( b[ i ], SWFUpload.QUEUE_ERROR.INVALID_FILENAME, r );
+				} else if (u.x.on && u.x.on.fileselect && (r = u.triggerHandler('fileselect', b[i]))) {
+					u.fileQueueError(b[i], SWFUpload.QUEUE_ERROR.INVALID_FILENAME, r);
 					continue;
 				} else {
-					b[ i ].id = this.id + 'f-' + (fileCount ++);
-					u._queues.push( b[ i ] );
+					b[i].id = this.id + 'f-' + (fileCount ++);
+					u._queues.push(b[i]);
 					k ++;
 				}
 			}
-			u.file_dialog_complete_handler( o.files.length, k, u._queues.length );
+			u.file_dialog_complete_handler(o.files.length, k, u._queues.length);
 			this.reset();
 		},
 		reset: function() {
-			if ( ! isSWF ) {
+			if (! isSWF) {
 				var self = this;
-				setTimeout( function() {
+				setTimeout(function() {
 					uploadCount ++;
-					$.append( self.$(), self.html_append() );
+					$.append(self.$(), self.html_append());
 					self.fileID = self.id + 'u-' + uploadCount;
-				}, 0 );
+				}, 0);
 			}
 		},
 		html_append: function() {
 			return isSWF ? '<div class=w-upload-swf id=' + this.u.id + 'swf></div>' : '<input type=file style="visibility:hidden;position:absolute;width:0;height:0;" id=' + this.id + 'u-' + uploadCount + ' onchange=' + $.abbr + '.w(this).fileSelected(this) onclick=' + $.abbr + '.cancel(event)' +
-				( this.u.x.file_upload_limit !== 1 ? ' multiple' : '' ) + ' accept="' + this.getAccept() + '">';
+				(this.u.x.file_upload_limit !== 1 ? ' multiple' : '') + ' accept="' + this.getAccept() + '">';
 		}
 	}
-} ),
+}),
 
-ImageUploadUploadButton = define.widget( 'ImageUploadUploadButton', {
-	Const: function( x, p ) {
-		ImageUploadButton.apply( this, arguments );
+ImageUploadUploadButton = define.widget('ImageUploadUploadButton', {
+	Const: function(x, p) {
+		ImageUploadButton.apply(this, arguments);
 		this.fileID = this.id + 'u-' + uploadCount;
 	},
-	Default: { widthMinus: 2, heightMinus: 2 },
+	Default: {widthMinus: 2, heightMinus: 2},
 	Extend: FileUploadUploadButton
-} ),
+}),
 
 // 图片模式显示value
-ImageUploadValue = define.widget( 'ImageUploadValue', {
-	Const: function( x, p ) {
+ImageUploadValue = define.widget('ImageUploadValue', {
+	Const: function(x, p) {
 		this.u = p.u;
-		W.apply( this, arguments );
+		W.apply(this, arguments);
 		this.loading = false;
 		this.loaded  = !! x.data;
 	},
@@ -1709,112 +1709,112 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.file && readImage( this.x.file, this.$( 'g' ) );
+				this.x.file && readImage(this.x.file, this.$('g'));
 			},
 			click:  function() {
-				if ( this.x.data ) {
-					if ( this.u.x.preview ) {
-						this.cmd( this.u.x.preview );
-					} else if ( this.u.x.download ) {
+				if (this.x.data) {
+					if (this.u.x.preview) {
+						this.cmd(this.u.x.preview);
+					} else if (this.u.x.download) {
 						this.download();
 					}
 				}
 			}
 		}
 	},
-	Default: { width: 80, height: 80, widthMinus: 2, heightMinus: 2 },
+	Default: {width: 80, height: 80, widthMinus: 2, heightMinus: 2},
 	Prototype: {
 		className: 'w-imageupload-value',
-		pubParent: function() { return this.u },
+		pubParent: function() {return this.u},
 		upload: function() {
 			var d = new FormData(), f = this.x.file, u = this.u, r = $.ajaxXHR();
-			d.append( 'Filedata', f );
-			r.upload.addEventListener( 'progress', function( e ) {
-				if ( e.lengthComputable )
-					u.upload_progress_handler( f, e.loaded, e.total );
-			}, false );
-			r.addEventListener( 'load', function( e ) {
-				u.upload_success_handler( f, e.target.responseText );
-				u.upload_complete_handler( f );
-			}, false );
-			r.addEventListener( 'error', function( e ) {
-				u.uploadError( f, e.error, e.error );
-			}, false );
+			d.append('Filedata', f);
+			r.upload.addEventListener('progress', function(e) {
+				if (e.lengthComputable)
+					u.upload_progress_handler(f, e.loaded, e.total);
+			}, false);
+			r.addEventListener('load', function(e) {
+				u.upload_success_handler(f, e.target.responseText);
+				u.upload_complete_handler(f);
+			}, false);
+			r.addEventListener('error', function(e) {
+				u.uploadError(f, e.error, e.error);
+			}, false);
 			this.loading = true;
 			this.xhr     = r;
-			r.open( 'post', $.urlComplete( u.x.upload_url ) );
-			r.send( d );
+			r.open('post', $.urlComplete(u.x.upload_url));
+			r.send(d);
 		},
 		download: function() {
 			var s = this.u.x.download;
-			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
+			s && $.download(this.formatStr(s, null, ! /^\$\w+$/.test(s)));
 		},
-		preview: function( a ) {
-			if ( ! this.x.data )
+		preview: function(a) {
+			if (! this.x.data)
 				return;
-			if ( ! a && ! this.x.data.url && ! this.x.data.thumbnail )
+			if (! a && ! this.x.data.url && ! this.x.data.thumbnail)
 				a = this.u.x.thumbnail;
-			for ( var i = 0, b = this.parentNode, l = b.length, c = [], d = a && ! /^\$\w+$/.test( a ), e; i < l; i ++ ) {
-				if ( b[ i ].x.data ) {
-					var f = (b[ i ].data( 'url' ) || b[ i ].data( 'thumbnail' ));
-					if ( ! f )
-						f = a && b[ i ].formatStr( a, null, d );
-					if ( f ) {
-						c.push( f );
-						if ( b[ i ] === this ) e = c.length -1;
+			for (var i = 0, b = this.parentNode, l = b.length, c = [], d = a && ! /^\$\w+$/.test(a), e; i < l; i ++) {
+				if (b[i].x.data) {
+					var f = (b[i].data('url') || b[i].data('thumbnail'));
+					if (! f)
+						f = a && b[i].formatStr(a, null, d);
+					if (f) {
+						c.push(f);
+						if (b[i] === this) e = c.length -1;
 					}
 				}
 			}
-			c.length && $.previewImage( c, { current: e } );
+			c.length && $.previewImage(c, {current: e});
 		},
-		setProgress: function( a ) {
-			this.$( 'p' ).style.left = a + '%';
+		setProgress: function(a) {
+			this.$('p').style.left = a + '%';
 		},
-		//@serverData -> 成功返回: { id: 'ID', name: '名称', size: '字节数', url: '地址', thumbnail: '缩略图地址' }, 失败返回: { error: true, text: '失败原因' }
-		setSuccess: function( serverData ) {
+		//@serverData -> 成功返回: {id: 'ID', name: '名称', size: '字节数', url: '地址', thumbnail: '缩略图地址'}, 失败返回: {error: true, text: '失败原因'}
+		setSuccess: function(serverData) {
 			this.loading = false;
 			this.loaded  = true;
 			this.removeQueue();
 			delete this.x.file;
 			this.x.data = serverData;
-			this.u.addValue( serverData );
-			this.removeClass( 'z-loading' );
-			Q( '._loading,._progress', this.$() ).remove();
+			this.u.addValue(serverData);
+			this.removeClass('z-loading');
+			Q('._loading,._progress', this.$()).remove();
 			//this.render();
 		},
-		setError: function( errorCode, message ) {
+		setError: function(errorCode, message) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = { code: errorCode };
-			this.removeElem( 'p' );
-			this.removeClass( 'z-loading' );
-			this.addClass( 'z-err' );
-			Q( '._loading,._g', this.$() ).remove();
+			this.error   = message;
+			this.removeElem('p');
+			this.removeClass('z-loading');
+			this.addClass('z-err');
+			Q('._loading,._g', this.$()).remove();
 			this.removeQueue();
 		},
 		removeQueue: function() {
-			if ( this.x.file ) {
-				$.arrPop( this.u._queues, this.x.file );
+			if (this.x.file) {
+				$.arrPop(this.u._queues, this.x.file);
 				delete this.x.file;
 			}
 		},
 		moreNodes: function() {
-			var b = $.jsonClone( this.u.x.valueButtons ), v = this.x.data;
-			(function( d ) {
-				for ( var i = 0; i < d.length; i ++ ) {
-					d[ i ].data = v;
-					d[ i ].nodes && arguments.callee( d[ i ].nodes );
+			var b = $.jsonClone(this.u.x.valueButtons), v = this.x.data;
+			(function(d) {
+				for (var i = 0; i < d.length; i ++) {
+					d[i].data = v;
+					d[i].nodes && arguments.callee(d[i].nodes);
 				}
-			})( b );
+			})(b);
 			return b;
 		},
-		more: function( a, e ) {
-			this.cmd( { type: 'Menu', snap: { target: a }, nodes: this.moreNodes() } );
-			e && $.stop( e );
+		more: function(a, e) {
+			this.cmd({type: 'Menu', snap: {target: a}, nodes: this.moreNodes()});
+			e && $.stop(e);
 		},
-		close: function( a, e ) {
+		close: function(a, e) {
 			this.remove();
-			e && $.stop( e );
+			e && $.stop(e);
 		},
 		html_cvr: function() {
 			return (this.x.file ? '<div class="_ex f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' : '') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>';
@@ -1822,104 +1822,104 @@ ImageUploadValue = define.widget( 'ImageUploadValue', {
 		html_nodes: function() {
 			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnail,
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
-			if ( ! f ) {
+			if (! f) {
 				m = v.thumbnail;
-				! m && (m = this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
+				! m && (m = this.formatStr(c, null, ! /^\$\w+$/.test(c)));
 				! m && (m = v.url);
 			}
-			m = $.urlComplete( m );
+			m = $.urlComplete(m);
 			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif><div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
-				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret( 'd' ) + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
+				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
 		html: function() {
-			this.x.file && this.addClass( 'z-loading' );
-			return Horz.prototype.html.call( this );
+			this.x.file && this.addClass('z-loading');
+			return Horz.prototype.html.call(this);
 		},
 		remove: function() {
 			var u = this.u;
-			if ( u.x.removesrc )
-				this.cmd( { type: 'Ajax', src: u.x.removesrc, error: false } );
-			if ( this.x.data )
-				u.removeValue( this.x.data );
-			if ( isSWF ) {
-				if ( this.x.file )
-					u.cancelUpload( this.x.file.id );
-				u.uploadStats( -1 );
+			if (u.x.removesrc)
+				this.cmd({type: 'Ajax', src: u.x.removesrc, error: false});
+			if (this.x.data)
+				u.removeValue(this.x.data);
+			if (isSWF) {
+				if (this.x.file)
+					u.cancelUpload(this.x.file.id);
+				u.uploadStats(-1);
 			} else {
-				if ( this.xhr ) {
+				if (this.xhr) {
 					this.xhr.abort();
 					delete this.xhr;
 				}
 				this.removeQueue();
 			}
-			W.prototype.remove.call( this );
+			W.prototype.remove.call(this);
 		}
 	}
-} ),
+}),
 
 // 简单模式显示value
-FileUploadValue = define.widget( 'FileUploadValue', {
+FileUploadValue = define.widget('FileUploadValue', {
 	Extend: ImageUploadValue,
 	Listener: {
 		body: {
 			ready: $.rt()
 		}
 	},
-	Default: { width: -1, height: -1 },
+	Default: {width: -1, height: -1},
 	Prototype: {
 		pubParent: function() {
 			return this.u;
 		},
 		className: 'w-fileupload-value',
-		setProgress: function( a ) {
-			this.$( 'p' ).style.width = a + '%';
+		setProgress: function(a) {
+			this.$('p').style.width = a + '%';
 		},
-		setError: function( errorCode, message ) {
+		setError: function(errorCode, message) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = { code: errorCode };
-			this.removeElem( 'g' );
-			$.classAdd( this.$(), 'z-err' );
-			$.classRemove( this.$(), 'z-loading' );
+			this.error   = message;
+			this.removeElem('g');
+			$.classAdd(this.$(), 'z-err');
+			$.classRemove(this.$(), 'z-loading');
 			this.removeQueue();
 		},
 		html_nodes: function() {
 			var u = this.u, c = u.x.valueButtons, f = this.x.file, t = f ? f.name : this.x.data.name;
 			return (this.x.file ? '<div class=_progress id=' + this.id + 'g><div id=' + this.id + 'p class=_percent></div></div>' : '') +
-				'<i class="_icon f-i ' + getIco( t ) + '"></i><div class=_main>' + (c && !f ? $.image( '.f-i-more', { cls: '_more', click: evw + '.more(this,event)' } ) : '') + $.image( '.f-i-trash', { cls: '_close', click: evw + '.close(this,event)' } ) +
+				'<i class="_icon f-i ' + getIco(t) + '"></i><div class=_main>' + (c && !f ? $.image('.f-i-more', {cls: '_more', click: evw + '.more(this,event)'}) : '') + $.image('.f-i-trash', {cls: '_close', click: evw + '.close(this,event)'}) +
 				'<div class="_name f-omit" title="' + t + '"><i class=f-vi></i><span class=f-va>' + t + '</span></div></div>';
 		},
 		html: function() {
-			var u = this.u, pw = u.formWidth(), vw = u.scaleWidth( this, u.x.pub && u.x.pub.width ), nw = 130, xw = 330, tw;
-			if ( pw ) {
-				xw = Math.min( xw, pw );
-				nw = Math.min( xw, nw );
-				if ( vw != null )
+			var u = this.u, pw = u.formWidth(), vw = u.scaleWidth(this, u.x.pub && u.x.pub.width), nw = 130, xw = 330, tw;
+			if (pw) {
+				xw = Math.min(xw, pw);
+				nw = Math.min(xw, nw);
+				if (vw != null)
 					tw = vw;
-				else if ( $.br.ie7 )
-					tw = Math.min( pw, 200 );
+				else if ($.br.ie7)
+					tw = Math.min(pw, 200);
 			}
 			this.cssText = 'min-width:' + nw + 'px;max-width:' + (xw) + 'px;' + (tw != null ? 'width:' + (tw) + 'px;' : '');
-			this.x.file && this.addClass( 'z-loading' );
-			return Horz.prototype.html.call( this );
+			this.x.file && this.addClass('z-loading');
+			return Horz.prototype.html.call(this);
 		}
 	}
-} ),
+}),
 
-UploadValueButtonBar = define.widget( 'UploadValueButtonBar', {
+UploadValueButtonBar = define.widget('UploadValueButtonBar', {
 	Extend: 'ButtonBar',
 	Prototype: {
-		x_childtype: $.rt( 'UploadValueButton' )
+		x_childtype: $.rt('UploadValueButton')
 	}
-} ),
+}),
 
-UploadValueButton = define.widget( 'UploadValueButton', {
+UploadValueButton = define.widget('UploadValueButton', {
 	Extend: 'Button',
 	Listener: {
 		body: {
-			close: function( e ) {
-				if ( ! this._disposed ) {
-					$.stop( e );
+			close: function(e) {
+				if (! this._disposed) {
+					$.stop(e);
 					this.parentNode.parentNode.remove();
 				}
 			}
@@ -1927,10 +1927,10 @@ UploadValueButton = define.widget( 'UploadValueButton', {
 	},
 	Prototype: {
 		close: function() {
-			this.trigger( 'close' );
+			this.trigger('close');
 		}
 	}
-} );
+});
 
 /* helper */
 var suffix = (function() {
@@ -1948,53 +1948,53 @@ var suffix = (function() {
 		aud : 'mp3.aac.wav.wma.cda.flac.m4a.mid.mka.mp2.mpa.mpc.ape.ofr.ogg.ra.wv.tta.ac3.dts.wv.shn.vqf.spc.nsf.adx.psf.minipsf.psf2.minipsf2.rsn.zst',
 		img : 'jpg.jpeg.gif.png.bmp.tif.tiff'
 	}, r = {};
-	for ( var k in n ) {
-		for ( var i = 0, a = n[ k ].split( '.' ); i < a.length; i ++ )
-			r[ a[ i ] ] = k == '0' ? a[ i ] : k;
+	for (var k in n) {
+		for (var i = 0, a = n[k].split('.'); i < a.length; i ++)
+			r[a[i]] = k == '0' ? a[i] : k;
 	}
 	return r;
 })(),
 swfTranslate = {
 	uploadLimit: 'file_upload_limit', maxFileSize: 'file_size_limit', fileTypes: 'file_types'
 };
-function getSuffix( url ) {
-	var a = $.strFrom( url, '.', true ).toLowerCase();
-	return suffix[ a ] || 'file';
+function getSuffix(url) {
+	var a = $.strFrom(url, '.', true).toLowerCase();
+	return suffix[a] || 'file';
 };
-function swfOptions( x ) {
-	for ( var i in swfTranslate ) {
-		x[ swfTranslate[ i ] ] = x[ i ];
+function swfOptions(x) {
+	for (var i in swfTranslate) {
+		x[swfTranslate[i]] = x[i];
 	}
 	return x;
 };
 // 根据文件后缀名获取图标样式
-function getIco( url ) {
-	return 'f-i-file-' + getSuffix( url );
+function getIco(url) {
+	return 'f-i-file-' + getSuffix(url);
 };
 // html5支持预览本地图片
-function readImage( file, img ) {
-	if ( window.FileReader ) {
+function readImage(file, img) {
+	if (window.FileReader) {
 		var r = new FileReader();
-		r.onload = function( e ) { img.src = e.target.result };
-		r.readAsDataURL( file );
+		r.onload = function(e) {img.src = e.target.result};
+		r.readAsDataURL(file);
 	}
 }
 // 把 "1MB" 转为字节
-function fileByte( a ) {
+function fileByte(a) {
 	var b;
-	if ( a != null && ! isNaN( a ) )
+	if (a != null && ! isNaN(a))
 		a += 'KB';
-	a = $.number( a.replace( /[a-z]+$/i, function( $0 ) { b = $0.charAt( 0 ).toUpperCase(); return '' } ) );
-	return a * ( b === 'K' ? 1024 : b === 'M' ? 1024 * 1024 : b === 'G' ? 1024 * 1024 * 1024 : b === 'T' ? 1024 * 1024 * 1024 * 1024 : 1 );
+	a = $.number(a.replace(/[a-z]+$/i, function($0) {b = $0.charAt(0).toUpperCase(); return ''}));
+	return a * (b === 'K' ? 1024 : b === 'M' ? 1024 * 1024 : b === 'G' ? 1024 * 1024 * 1024 : b === 'T' ? 1024 * 1024 * 1024 * 1024 : 1);
 }
-function getFileType( a ) {
-	a = a.replace( /;/g, ',' ).replace( /\*/g, '' ).toLowerCase();
-	if ( $.br.ms )
+function getFileType(a) {
+	a = a.replace(/;/g, ',').replace(/\*/g, '').toLowerCase();
+	if ($.br.ms)
 		return a;
-	for ( var i = 0, b = a.split( ',' ), l = b.length, c = [], d; i < l; i ++ ) {
-		b[ i ] && c.push( $.mimeType( b[ i ] ) || b[ i ] );
+	for (var i = 0, b = a.split(','), l = b.length, c = [], d; i < l; i ++) {
+		b[i] && c.push($.mimeType(b[i]) || b[i]);
 	}
-	return c.join( ',' );
+	return c.join(',');
 }
 
 module.exports = Upload;
