@@ -2095,11 +2095,13 @@ Xsrc = define.widget( 'xsrc', {
 			}
 			var t = x.preload && _getPreload( x.preload );
 			if ( t ) {
+				var cls = (x.cls || '') + (t.cls ? ' ' + t.cls : '');
 				_mergeLoadingProp( x, t );
-				if ( x.node ) {
+				if ( x.node ) { 
 					var n = _compilePreload( x.preload, x.node );
 					n && $.merge( x, n );
 				}
+				x.cls = cls;
 			}
 		},
 		// @implement
@@ -2271,8 +2273,7 @@ _setParent = function( a ) {
 },
 _mergeLoadingProp = function( x, a ) {
 	for ( var k in a ) {
-		if ( k === 'cls' ) x[ k ] = (x[ k ] ? x[ k ] + ' ' : '') + a[ k ];
-		else k !== 'node' && k !== 'nodes' && (x[ k ] = a[ k ]);
+		k !== 'node' && k !== 'nodes' && (x[ k ] = a[ k ]);
 	}
 },
 _view_resources = cfg.view_resources || {},
