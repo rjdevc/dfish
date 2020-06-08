@@ -73,7 +73,6 @@ public class JsonUtil {
         try {
             objList = jsonBuilder.parseArray(json, objClass);
         } catch (Exception e) {
-            e.printStackTrace();
             LogUtil.error("Json转换异常", e);
         }
         return objList;
