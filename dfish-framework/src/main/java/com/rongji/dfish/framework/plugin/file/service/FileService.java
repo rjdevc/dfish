@@ -668,15 +668,13 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @param fileKey
      */
     public void updateFileLink(List<UploadItem> itemList, String fileLink, String fileKey) {
-        if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+        if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey) || Utils.isEmpty(itemList)) {
             return;
         }
 
-        List<String> newFileIds = new ArrayList<>();
-        if (Utils.notEmpty(itemList)) {
-            for (UploadItem item : itemList) {
-                newFileIds.add(decId(item.getId()));
-            }
+        List<String> newFileIds = new ArrayList<>(itemList.size());
+        for (UploadItem item : itemList) {
+            newFileIds.add(decId(item.getId()));
         }
         if (itemList.size() > BATCH_SIZE) {
             // FIXME 待分批处理,理论上应该不会出现这么多的附件
@@ -750,6 +748,9 @@ public class FileService extends BaseService<PubFileRecord, String> {
         if (Utils.notEmpty(itemJson)) {
             try {
                 List<UploadItem> itemList = JsonUtil.parseArray(itemJson, UploadItem.class);
+                if (itemList == null) {
+                    return Collections.emptyList();
+                }
                 return itemList;
             } catch (Exception e) {
                 FrameworkHelper.LOG.error("转换成文件数据项异常", e);
@@ -774,7 +775,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     public List<String> parseFileIds(String itemJson) {
         List<UploadItem> itemList = parseUploadItems(itemJson);
-        List<String> fileIds = new ArrayList<String>(itemList.size());
+        List<String> fileIds = new ArrayList<>(itemList.size());
         for (UploadItem item : itemList) {
             try {
                 String fileId = decId(item.getId());
