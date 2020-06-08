@@ -17,6 +17,7 @@ public class FileServiceTest {
 		String itemJson = "[{\"id\":\"VP2T2YW89CFRQ7J4S9CJFC9GTDH4PEV769Y7EW9KHSJX1DA6D3XZXJJ2JK6ZVQPZ\",\"name\":\"9d61e41c-d8bb-424f-945b-d27d096722d6.jpg\",\"size\":51104}]";
 		List<UploadItem> items = FileService.parseUploadItems(itemJson);
 		System.out.println(items.size());
+		System.out.println("name:" + items.get(0).getName());
 
 		String enFileId = "rV3URGH9fc6XT1tVI2bMUImVNXT_pdOo1uVnBN2oSiP-ykKUzf3e3w..";
 

@@ -5,8 +5,7 @@ import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.BaseService;
-import com.rongji.dfish.misc.util.json.JsonBuilder;
-import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Gson;
+import com.rongji.dfish.misc.util.JsonUtil;
 import com.rongji.dfish.ui.form.UploadItem;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -737,8 +736,6 @@ public class FileService extends BaseService<PubFileRecord, String> {
         pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), fileId });
     }
 
-    private static final JsonBuilder JSON_BUILDER = new JsonBuilder4Gson();
-
     /**
      * 转换成文件数据项
      *
@@ -748,7 +745,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
     public static List<UploadItem> parseUploadItems(String itemJson) {
         if (Utils.notEmpty(itemJson)) {
             try {
-                List<UploadItem> itemList = JSON_BUILDER.parseArray(itemJson, UploadItem.class);
+                List<UploadItem> itemList = JsonUtil.parseArray(itemJson, UploadItem.class);
                 if (itemList == null) {
                     return Collections.emptyList();
                 }
