@@ -1,7 +1,6 @@
 package com.rongji.dfish.misc.util;
 
 import com.rongji.dfish.base.Utils;
-import com.rongji.dfish.base.util.BeanUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.misc.util.json.JsonBuilder;
 import com.rongji.dfish.misc.util.json.impl.JsonBuilder4Jackson;
@@ -74,6 +73,7 @@ public class JsonUtil {
         try {
             objList = jsonBuilder.parseArray(json, objClass);
         } catch (Exception e) {
+            e.printStackTrace();
             LogUtil.error("Json转换异常", e);
         }
         return objList;

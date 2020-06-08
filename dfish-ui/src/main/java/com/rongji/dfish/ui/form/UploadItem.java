@@ -22,8 +22,6 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	private String thumbnail;
 	private Error error;
 	private String text;
-	private String width;
-	private String height;
 
 	/**
 	 * 显示的名称

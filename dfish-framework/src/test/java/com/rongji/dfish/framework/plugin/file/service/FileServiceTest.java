@@ -7,11 +7,14 @@ import com.rongji.dfish.base.crypt.CryptFactory;
 import com.rongji.dfish.base.crypt.StringCryptor;
 import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.ui.form.UploadItem;
+import org.junit.Test;
 
 public class FileServiceTest {
 
-	public static void main(String[] args) {
-		String itemJson = "[{\"id\":\"v0oc2POsgVZsoo9CWABs9BMAHUsrBe46vgWy-8MpJ53-ykKUzf3e3w..\",\"name\":\"阿里巴巴Java开发手册(终极版).pdf\",\"size\":1056366}]";
+	@Test
+	public void parse() {
+//		String itemJson = "[{\"id\":\"v0oc2POsgVZsoo9CWABs9BMAHUsrBe46vgWy-8MpJ53-ykKUzf3e3w..\",\"name\":\"阿里巴巴Java开发手册(终极版).pdf\",\"size\":1056366}]";
+		String itemJson = "[{\"id\":\"VP2T2YW89CFRQ7J4S9CJFC9GTDH4PEV769Y7EW9KHSJX1DA6D3XZXJJ2JK6ZVQPZ\",\"name\":\"9d61e41c-d8bb-424f-945b-d27d096722d6.jpg\",\"size\":51104}]";
 		List<UploadItem> items = FileService.parseUploadItems(itemJson);
 		System.out.println(items.size());
 
