@@ -8225,7 +8225,7 @@ Linkbox = define.widget( 'linkbox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') + '><var class="f-nv _t" id=' + this.id + 't' +
-				( this.usa() ? ' contenteditable' : '' ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
+				( this.usa() ? ' contenteditable' : '' ) + _html_on.call( this ) + '>' + (this.x.loadingtext || Loc.loading) + '</var>';
 		}
 	}
 } ),
