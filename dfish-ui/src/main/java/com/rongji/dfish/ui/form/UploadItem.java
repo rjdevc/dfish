@@ -1,8 +1,6 @@
 package com.rongji.dfish.ui.form;
 
-import com.rongji.dfish.ui.AbstractNode;
-import com.rongji.dfish.ui.AbstractWidget;
-import com.rongji.dfish.ui.HasText;
+import java.io.Serializable;
 
 /**
  * 文件上传数据项,该类既是Widget又是数据对象
@@ -10,18 +8,40 @@ import com.rongji.dfish.ui.HasText;
  * @author DFish Team
  *
  */
-public class UploadItem extends AbstractWidget<UploadItem> implements HasText<UploadItem> {
+public class UploadItem implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7730216981053285569L;
 
+	private String id;
 	private String name;
 	private Long size;
 	private String url;
 	private String thumbnail;
 	private Error error;
 	private String text;
+	private String width;
+	private String height;
+	private Boolean escape;
+
+	/**
+	 * 附件编号
+	 * @return String
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * 附件编号
+	 * @param id String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public UploadItem setId(String id) {
+		this.id = id;
+		return this;
+	}
 
 	/**
 	 * 显示的名称
@@ -110,7 +130,6 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * 显示的文本
 	 * @return String
 	 */
-	@Override
     public String getText() {
 		return text;
 	}
@@ -119,7 +138,6 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * @param text String
 	 * @return 本身，这样可以继续设置其他属性 
 	 */
-	@Override
     public UploadItem setText(String text) {
 		this.text = text;
 		return this;
@@ -129,7 +147,6 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * 宽度
 	 * @return String
 	 */
-	@Override
     public String getWidth() {
 		return width;
 	}
@@ -139,18 +156,8 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * @param width String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@Override
     public UploadItem setWidth(String width) {
 		this.width = width;
-		return this;
-	}
-	/**
-	 * 宽度
-	 * @param width Integer
-	 * @return 本身，这样可以继续设置其他属性
-	 */
-	public UploadItem setWidth(Integer width) {
-		this.width = toString(width);
 		return this;
 	}
 
@@ -158,7 +165,6 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * 高度
 	 * @return String
 	 */
-	@Override
     public String getHeight() {
 		return height;
 	}
@@ -168,26 +174,33 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
 	 * @param height String
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	@Override
     public UploadItem setHeight(String height) {
 		this.height = height;
 		return this;
 	}
+
 	/**
-	 * 高度
-	 * @param height Integer
+	 * 是否转义
+	 * @return Boolean
+	 */
+	public Boolean getEscape() {
+		return escape;
+	}
+
+	/**
+	 * 是否转义
+	 * @param escape Boolean
 	 * @return 本身，这样可以继续设置其他属性
 	 */
-	public UploadItem setHeight(Integer height) {
-		this.height = toString(height);
+	public UploadItem setEscape(Boolean escape) {
+		this.escape = escape;
 		return this;
 	}
 
-	@Override
-    public String getType() {
-	    return null;
-    }
-
+	/**
+	 * 错误对象信息
+	 * @author lamontYu
+	 */
     public static class Error {
 		private String text;
 
