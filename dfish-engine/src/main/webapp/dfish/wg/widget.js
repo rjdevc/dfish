@@ -3535,6 +3535,8 @@ Img = define.widget( 'img', {
 		W.apply( this, arguments );
 		x.focusable && x.focus && $.classAdd( this, 'z-on' );
 		x.face && $.classAdd( this, 'z-face-' + x.face );
+		!x.src && (x.text || x.format) && (this.className += ' z-t');
+		x.src && !(x.text || x.format) && (this.className += ' z-i');
 	},
 	Listener: {
 		body: {
@@ -3603,7 +3605,7 @@ Img = define.widget( 'img', {
 			}
 		},
 		prop_style: function() {
-			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
+			var t = this.cssText || '', v, c = this.rootNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
 			if ( (v = this.innerWidth()) != N )
 				t += 'width:' + v + 'px;';
 			if ( (v = this.innerHeight()) != N )
@@ -3613,6 +3615,7 @@ Img = define.widget( 'img', {
 			return t;
 		},
 		html_img: function() {
+			if (!this.x.src) return '';
 			var x = this.x, b = this.parentNode.type === 'album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call( this, this.x.src ),
 				iw = this.x.imgwidth, ih = this.x.imgheight, w = iw || mw, h = ih || mh;
 			var g = $.image( u, { width: iw, height: ih, maxwidth: mw, maxheight: mh, error: evw + '.error()', load: evw + '.imgLoad()' }, { tip: x.tip === T ? x.text + (x.description ? '\n' + x.description : '') : x.tip } );
@@ -7682,8 +7685,8 @@ Combobox = define.widget( 'combobox', {
 			this.$t().contentEditable = this.isNormal();
 			return this;
 		},
-		normal: function( a ) {
-			AbsForm.prototype.readonly.call( this, a );
+		normal: function() {
+			AbsForm.prototype.readonly.call( this, F );
 			this.$t().contentEditable = this.isNormal();
 			return this;
 		},
@@ -10532,6 +10535,123 @@ Form = define.widget( 'form', {
 		className: 'w-form'
 	}
 } );
+
+var
+_pos_codes = {top: 't', right: 'r', bottom: 'b', left: 'l'},
+_pos_names = {t: 'top', r: 'right', b: 'bottom', l: 'left', c: 'center', m: 'middle'},
+_posCode = function(a) {return (a && _pos_codes[a]) || a},
+_posName = function(a) {return (a && _pos_names[a]) || a},
+/* `timeline` 时间轴 */
+Timeline = define.widget('Timeline', {
+	Const: function(x, p) {
+		x.dir === 'h' ? (this.ts = [], this.bs = []) : (this.ls = [], this.rs = []);
+		this.className += ' z-dir-' + (x.dir || 'v');
+		Scroll.apply(this, arguments);
+		for (var i = 0, b, s, l = this.length; i < l; i ++) {
+			b = this[i]; s = b.pCode();
+			if (this.ls)
+				s === 'l' ? (b.leftIndex = this.ls.push(b) - 1) : (b.rightIndex = this.rs.push(b) - 1);
+			else
+				s === 'b' ? (b.bottomIndex = this.bs.push(b) - 1) : (b.topIndex = this.ts.push(b) - 1);
+		}
+	},
+	Extend: Scroll,
+	Default: {scroll: T},
+	Listener: {
+		body: {
+			ready: function() {this.init()},
+			resize: function(e) {Scroll.Listener.body.resize.apply(this, arguments); this.init()}
+		}
+	},
+	Prototype: {
+		className: 'w-timeline',
+		x_childtype: $.rt('TimelineItem'),
+		init: function() {
+			this.indent();
+			if (this.ls && this.x.align !== 'center') {
+				this.css('ln', this.x.align === 'right' ? {right: this._offset} : {left: this._offset - 2});
+				for (var i = 0, b; i < this.length; i ++) {
+					b = this[i];
+					b.css({marginLeft: this._offset - b.img.$().offsetWidth/2});
+				}
+			} else {
+				Q(this.$('wr')).height(0).height(this.$('wr').scrollHeight);
+				this.ts && Q(this.$('wr')).width(0).width(this.$('wr').scrollWidth);
+			}
+			var fg = $.offset(this[0].img.$(), this.$('wr')), lg = $.offset(this.get(-1).img.$(), this.$('wr'));
+			this.css('ln', this.ls ? {top: fg.top + fg.width/2, height: (lg.top + lg.height/2) - (fg.top + fg.height/2)} :
+				{top: this._middleTop -1, left: fg.left + fg.height/2, width: (lg.left + lg.width/2) - (fg.left + fg.width/2)});
+		},
+		indent: function() {
+			this._middleTop = 0;
+			for (var i = 0, b, c, d = 0, e; i < this.length; i ++) {
+				b = this[i]; c = this[i - 1]; e = b.linePrev();
+				if (c) {
+					d = c.x.space != N ? c.offset() + (this.ls ? c.img.$().offsetHeight : c.img.$().offsetWidth) + c.x.space : Math.max(e ? e.offset() + (this.ls ? e.$().offsetHeight : e.$().offsetWidth) : 0, c.offset() + (this.ls ? c.img.$().offsetHeight : c.img.$().offsetWidth) + 30);
+				}
+				b.offset(d);
+			}
+			if (this.ts) {
+				while (i --) {
+					b = this[i];
+					Q(b.$()).css({left: b._offset, top: this._middleTop - (b.topIndex != N ? b._middleTop : b.img.$().offsetHeight/2)});
+				}
+			}
+		},
+		prop_cls: function() {
+			return Scroll.prototype.prop_cls.call(this) + (this.x.align ? ' z-' + this.x.align : '') + (this.x.face ? ' z-face-' + this.x.face : '');
+		},
+		html_nodes: function() {
+			return '<div id=' + this.id + 'wr class="w-timeline-wrap f-rel"><div id=' + this.id + 'ln class=w-timeline-line></div>' + Scroll.prototype.html_nodes.apply(this, arguments) + '</div>';
+		}
+	}
+}),
+/* `timelineitem` */
+TimelineItem = define.widget('TimelineItem', {
+	Const: function(x, p) {
+		W.apply(this, arguments);
+		var g = x.img || {};
+		if (!g.src && !g.text) g.src = '._dot';
+		g.cls = '_img' + (g.cls ? ' ' + g.cls : '');
+		this.img = new Img(g, this, -1);
+		this.className += p.ls && p.x.align === 'right' ? ' z-left' : ' z-' + (_posName(this.x.position) || (p.ts ? 'top' : 'right'));
+	},
+	Default: {width: -1, height: -1},
+	Prototype: {
+		ROOT_TYPE: 'Timeline',
+		className: 'w-timelineitem f-clearfix',
+		pCode: function(){return _posCode(this.x.position) || (this.ls ? 'r' : 't')},
+		offset: function(a) {
+			if (a != N) {
+				this._offset = a;
+				var t = Q('.z-t', this.$()), p = this.parentNode, c = this.pCode();
+				t.length && t.find('.w-img-s').addClass('f-va').before('<i class=f-vi></i>');
+				var w = (this.ls ? this.img.$().offsetWidth : this.img.$().offsetHeight)/2;
+				p._offset = Math.max(w, this.parentNode._offset || 0);
+				if (p.ts) {
+					this._middleTop == N && Q(this.$()).width(this.$().offsetWidth + 1);
+					this._middleTop = w + $.offset(this.img.$()).top - $.offset(this.$()).top;
+					p._middleTop = Math.max(this._middleTop, p._middleTop);
+				} else if (p.x.align === 'center')
+					Q(this.$()).css({top: a, marginLeft: this.rightIndex != N ? -w : 0, marginRight: this.leftIndex != N ? -w : 0});
+			}
+			return this._offset;
+		},
+		linePrev: function() {
+			var p = this.parentNode;
+			return p.ls ? (this.leftIndex != N ? p.ls[this.leftIndex - 1] : p.rs[this.rightIndex - 1]) : (this.topIndex != N ? p.ts[this.topIndex - 1] : p.bs[this.bottomIndex - 1]);
+		},
+		prop_cls: function() {
+			var p = this.parentNode;
+			return _proto.prop_cls.call(this) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.length - 1 ? ' z-last' : '');
+		},
+		html_nodes: function() {
+			var gs = this.img.html(), ts = (this.x.text || this.x.format ? '<div class=_t><div class=_s>' + this.html_format(this.x.text, this.x.format, this.x.escape) + '</div>' + (this.parentNode.x.face === 'bubble' ? '<i class="_caret f-i f-i-caret-' + (this.leftIndex != N ? 'right' : this.rightIndex != N ? 'left': this.topIndex != N ? 'down': 'up') + '"></i>' : '') + '</div>' : '');
+			return this.parentNode.x.dir !== 'h' ? gs + ts : this.x.position === 'b' ? gs + ts : ts + gs;
+		}
+	}
+});
+
 
 // 扩展全局方法
 $.scrollIntoView = _scrollIntoView;
