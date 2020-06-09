@@ -2,6 +2,7 @@ package com.rongji.dfish.ui.auxiliary;
 
 import com.rongji.dfish.ui.AbstractWidget;
 import com.rongji.dfish.ui.Alignable;
+import com.rongji.dfish.ui.widget.Img;
 
 /**
  * 时间轴条目
@@ -14,8 +15,10 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
     private String align;
     private Boolean escape;
     private String format;
-    private String icon;
+//    private String icon;
     private String text;
+    private Img img;
+    private Integer space;
 
     /**
      * 构造函数
@@ -84,25 +87,25 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
         return this;
     }
 
-    /**
-     * 图标。可用 "." 开头的样式名，或图片路径。
-     *
-     * @return String
-     */
-    public String getIcon() {
-        return icon;
-    }
-
-    /**
-     * 图标。可用 "." 开头的样式名，或图片路径。
-     *
-     * @param icon 图标
-     * @return 本身，这样可以继续设置其他属性
-     */
-    public TimelineItem setIcon(String icon) {
-        this.icon = icon;
-        return this;
-    }
+//    /**
+//     * 图标。可用 "." 开头的样式名，或图片路径。
+//     *
+//     * @return String
+//     */
+//    public String getIcon() {
+//        return icon;
+//    }
+//
+//    /**
+//     * 图标。可用 "." 开头的样式名，或图片路径。
+//     *
+//     * @param icon 图标
+//     * @return 本身，这样可以继续设置其他属性
+//     */
+//    public TimelineItem setIcon(String icon) {
+//        this.icon = icon;
+//        return this;
+//    }
 
     /**
      * 显示文本。
@@ -121,6 +124,42 @@ public class TimelineItem extends AbstractWidget<TimelineItem> implements Aligna
      */
     public TimelineItem setText(String text) {
         this.text = text;
+        return this;
+    }
+
+    /**
+     * 图标。
+     * @return Img
+     */
+    public Img getImg() {
+        return img;
+    }
+
+    /**
+     * 图标。
+     * @param img Img
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public TimelineItem setImg(Img img) {
+        this.img = img;
+        return this;
+    }
+
+    /**
+     * 和下一个节点之间的距离。
+     * @return Integer
+     */
+    public Integer getSpace() {
+        return space;
+    }
+
+    /**
+     * 和下一个节点之间的距离。
+     * @param space Integer
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public TimelineItem setSpace(Integer space) {
+        this.space = space;
         return this;
     }
 }
