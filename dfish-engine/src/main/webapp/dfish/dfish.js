@@ -1137,7 +1137,14 @@ _bcr = $.bcr = function(a) {
 	return r ? {left : r.left - b + c, top : r.top - d + e, right : r.right - b + c, bottom : r.bottom - d + e, width : r.right - r.left, height : r.bottom - r.top} :
 		a == doc ? {left: c, top: e, right: cvs.clientWidth + c, bottom: cvs.clientHeight + e, width: cvs.clientWidth, height: cvs.clientHeight} : N;
 },
-_offset = function(o) {
+_offset = $.offset = function(a, b) {
+	var r = {top: 0, left: 0, width: a.offsetWidth, height: a.offsetHeight};
+	do {
+		r.top += a.offsetTop; r.left += a.offsetLeft;
+	} while((a = a.offsetParent) && b != a);
+	return r;
+},
+_canvasOffset = function(o) {
 	var a = _bcr(o);
 	a.right  = cvs.clientWidth - a.right;
 	a.bottom = cvs.clientHeight - a.bottom;
@@ -1263,7 +1270,7 @@ _snap = $.snap = function(a, b, c, d, e, f, u) {
 	if (d === 'cc' && o.top < 0)
 		o.top = 0;
 	if (u) {
-		var s = _offset(u);
+		var s = _canvasOffset(u);
 		o.top -= (s.top + 1);
 		o.left -= (s.left + 1);
 		o.right -= (s.right + 1);

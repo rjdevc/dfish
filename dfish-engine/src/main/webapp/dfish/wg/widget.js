@@ -1239,6 +1239,11 @@ W = define('Widget', function() {
 			for (i in this.discNodes)
 				!this.discNodes[i].isDialogWidget && this.discNodes[i].triggerAll(e); // 弹窗不触发来自父节点的递归事件
 		},
+		// 递归所有子节点触发事件
+		triggerAllReady: function() {
+			//this.triggerAll('domready');
+			this.triggerAll('ready');
+		},
 		// 设置事件  /@a -> event type, b -> fn
 		setOn: function(a, b) {
 			$.jsonChain(b, this.x, 'on', a);
@@ -1463,7 +1468,7 @@ W = define('Widget', function() {
 		// 生成页面可见的 DOM 元素  /@a -> target elem, b -> method[append|prepend|before|after|replace]
 		render: function(a, b) {
 			this._render(a, b);
-			this.triggerAll('ready');
+			this.triggerAllReady();
 			!this._disposed && this.nodeIndex >= 0 && this.parentNode.trigger('nodeChange');
 			return this;
 		},
@@ -1930,7 +1935,7 @@ $.each('prepend append before after'.split(' '), function(v, j) {
 			d && (((k = {})[s] = r[0].x[s]), r[0].resize(k));
 			if (!b && this.$()) {
 				for (k = 0; k < l; k ++)
-					r[k].triggerAll('ready');
+					r[k].triggerAllReady();
 			}
 			d && q && q[0] && (((k = {})[s] = q[0].x[s]), q[0].resize(k));
 			q && q.trigger('nodeChange');
@@ -2637,7 +2642,7 @@ Section = define.widget('Section', {
 			} else if (this.layout) {
 				this.showLoading(F);
 				this.layout._render();
-				re !== F && this.layout.triggerAll('ready');
+				re !== F && this.layout.triggerAllReady();
 				this.trigger('load');
 			}
 			this.removeClass('z-loading');
@@ -3249,32 +3254,111 @@ Html = define.widget('Html', {
 }),
 /* `timeline` 时间轴 */
 Timeline = define.widget('Timeline', {
+	Const: function(x, p) {
+		x.dir === 'h' ? (this.ts = [], this.bs = []) : (this.ls = [], this.rs = []);
+		this.className += ' z-dir-' + (x.dir || 'v');
+		Scroll.apply(this, arguments);
+		for (var i = 0, b, s, l = this.length; i < l; i ++) {
+			b = this[i]; s = b.pCode();
+			if (this.ls)
+				s === 'l' ? (b.leftIndex = this.ls.push(b) - 1) : (b.rightIndex = this.rs.push(b) - 1);
+			else
+				s === 'b' ? (b.bottomIndex = this.bs.push(b) - 1) : (b.topIndex = this.ts.push(b) - 1);
+		}
+	},
 	Extend: Scroll,
 	Default: {scroll: T},
+	Listener: {
+		body: {
+			ready: function() {this.init()},
+			resize: function(e) {_superTrigger(this, Scroll, e); this.init()}
+		}
+	},
 	Prototype: {
 		className: 'w-timeline',
 		x_childtype: $.rt('TimelineItem'),
+		init: function() {
+			this.indent();
+			if (this.ls && this.x.align !== 'center') {
+				this.css('ln', this.x.align === 'right' ? {right: this._offset} : {left: this._offset - 2});
+				for (var i = 0, b; i < this.length; i ++) {
+					b = this[i];
+					b.css({marginLeft: this._offset - b.img.$().offsetWidth/2});
+				}
+			} else {
+				Q(this.$('wr')).height(0).height(this.$('wr').scrollHeight);
+				this.ts && Q(this.$('wr')).width(0).width(this.$('wr').scrollWidth);
+			}
+			var fg = $.offset(this[0].img.$(), this.$('wr')), lg = $.offset(this.get(-1).img.$(), this.$('wr'));
+			this.css('ln', this.ls ? {top: fg.top + fg.width/2, height: (lg.top + lg.height/2) - (fg.top + fg.height/2)} :
+				{top: this._middleTop -2, left: fg.left + fg.height/2, width: (lg.left + lg.width/2) - (fg.left + fg.width/2)});
+		},
+		indent: function() {
+			this._middleTop = 0;
+			for (var i = 0, b, c, d = 0, e; i < this.length; i ++) {
+				b = this[i]; c = this[i - 1]; e = b.linePrev();
+				if (c) {
+					d = c.x.space != N ? c.offset() + (this.ls ? c.img.$().offsetHeight : c.img.$().offsetWidth) + c.x.space : Math.max(e ? e.offset() + (this.ls ? e.$().offsetHeight : e.$().offsetWidth) : 0, c.offset() + (this.ls ? c.img.$().offsetHeight : c.img.$().offsetWidth) + 30);
+				}
+				b.offset(d);
+			}
+			if (this.ts) {
+				while (i --) {
+					b = this[i];
+					Q(b.$()).css({left: b._offset, top: this._middleTop - (b.topIndex != N ? b._middleTop : b.img.$().offsetHeight/2)});
+				}
+			}
+		},
 		prop_cls: function() {
-			return Scroll.prototype.prop_cls.call(this) + (this.x.align ? ' z-' + this.x.align : '');
+			return Scroll.prototype.prop_cls.call(this) + (this.x.align ? ' z-' + this.x.align : '') + (this.x.face ? ' z-face-' + this.x.face : '');
+		},
+		html_nodes: function() {
+			return '<div id=' + this.id + 'wr class="w-timeline-wrap f-rel"><div id=' + this.id + 'ln class=w-timeline-line></div>' + Scroll.prototype.html_nodes.apply(this, arguments) + '</div>';
 		}
 	}
 }),
 /* `timelineitem` */
 TimelineItem = define.widget('TimelineItem', {
+	Const: function(x, p) {
+		W.apply(this, arguments);
+		var g = x.img || {};
+		if (!g.src && !g.text) g.src = '._dot';
+		g.cls = '_img' + (g.cls ? ' ' + g.cls : '');
+		this.img = new Img(g, this, -1);
+		this.className += p.ls && p.x.align === 'right' ? ' z-left' : ' z-' + (_posName(this.x.position) || (p.ts ? 'top' : 'right'));
+	},
 	Default: {width: -1, height: -1},
 	Prototype: {
 		rootType: 'Timeline',
-		className: 'w-timeline-item',
+		className: 'w-timelineitem f-clearfix',
+		pCode: function(){return _posCode(this.x.position) || (this.ls ? 'r' : 't')},
+		offset: function(a) {
+			if (a != N) {
+				this._offset = a;
+				var t = Q('.z-t', this.$()), p = this.parentNode, c = this.pCode();
+				t.length && t.find('.w-img-s').addClass('f-va').before('<i class=f-vi></i>');
+				var w = (this.ls ? this.img.$().offsetWidth : this.img.$().offsetHeight)/2;
+				p._offset = Math.max(w, this.parentNode._offset || 0);
+				if (p.ts) {
+					this._middleTop == N && Q(this.$()).width(this.$().offsetWidth + 1);
+					this._middleTop = w + $.offset(this.img.$()).top - $.offset(this.$()).top;
+					p._middleTop = Math.max(this._middleTop, p._middleTop);
+				} else if (p.x.align === 'center')
+					Q(this.$()).css({top: a, marginLeft: this.rightIndex != N ? -w : 0, marginRight: this.leftIndex != N ? -w : 0});
+			}
+			return this._offset;
+		},
+		linePrev: function() {
+			var p = this.parentNode;
+			return p.ls ? (this.leftIndex != N ? p.ls[this.leftIndex - 1] : p.rs[this.rightIndex - 1]) : (this.topIndex != N ? p.ts[this.topIndex - 1] : p.bs[this.bottomIndex - 1]);
+		},
 		prop_cls: function() {
 			var p = this.parentNode;
-			return _proto.prop_cls.call(this) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.length - 1 ? ' z-last' : '') +
-				(p.x.align === 'center' ? ' z-' + (this.x.align || 'right') : '');
-		},
-		html_icon: function() {
-			return '<div class=_i>' + (this.x.icon ? $.image(this.x.icon) : '<div class="_cir f-nv"></div>') + '<i class=f-vi></i></div>';
+			return _proto.prop_cls.call(this) + (this.nodeIndex === 0 ? ' z-first' : '') + (this.nodeIndex === p.length - 1 ? ' z-last' : '');
 		},
 		html_nodes: function() {
-			return '<div class=_line></div>' + this.html_icon() + '<div class=_t>' + this.html_format() + '</div>';
+			var gs = this.img.html(), ts = (this.x.text || this.x.format ? '<div class=_t><div class=_s>' + this.html_format() + '</div>' + (this.parentNode.x.face === 'bubble' ? '<i class="_caret f-i f-i-caret-' + (this.leftIndex != N ? 'right' : this.rightIndex != N ? 'left': this.topIndex != N ? 'down': 'up') + '"></i>' : '') + '</div>' : '');
+			return this.parentNode.x.dir !== 'h' ? gs + ts : this.x.position === 'b' ? gs + ts : ts + gs;
 		}
 	}
 }),
@@ -4096,14 +4180,16 @@ MenuSubmitButton = define.widget('MenuSubmitButton', {
 		}
 	}
 }),
-_tab_position = {top: 't', right: 'r', bottom: 'b', left: 'l'},
-_tab_position_name = {t: 'top', r: 'right', b: 'bottom', l: 'left', c: 'center', m: 'middle'},
+_pos_codes = {top: 't', right: 'r', bottom: 'b', left: 'l'},
+_pos_names = {t: 'top', r: 'right', b: 'bottom', l: 'left', c: 'center', m: 'middle'},
+_posCode = function(a) {return (a && _pos_codes[a]) || a},
+_posName = function(a) {return (a && _pos_names[a]) || a},
 /* `tabs` */
 Tabs = define.widget('Tabs', {
 	Const: function(x, p) {
 		this.id = $.uid(this);
-		this.className += ' z-position-' + this.getTabPositionName(x.position);
-		var s = this.getTabPositionCode(x.position), y = {type: s === 'r' || s === 'l' ? 'Horz' : 'Vert', width: '*', height: '*'}, b = [], c = [], d, e = this.getDefaultOption(x.cls);
+		this.className += ' z-position-' + _posName(x.position);
+		var s = _posCode(x.position), y = {type: s === 'r' || s === 'l' ? 'Horz' : 'Vert', width: '*', height: '*'}, b = [], c = [], d, e = this.getDefaultOption(x.cls);
 		for (var i = 0, n = x.nodes || []; i < n.length; i ++) {
 			if (!Q.isPlainObject(n[i].target))
 				n[i].target = {type: 'Blank'};
@@ -4117,7 +4203,7 @@ Tabs = define.widget('Tabs', {
 			}
 		}
 		!d && b[0] && ((d = b[0]).focus = T);
-		var n = this.getTabPositionName(x.position),
+		var n = _posName(x.position),
 			r = {type: 'TabBar', cls: 'z-position-' + n, nodes: b},
 			f = {type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c};
 		$.extendAny(r, 'align,vAlign,dir,scroll,space,split,overflow', x, e, {vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h'});
@@ -4130,13 +4216,7 @@ Tabs = define.widget('Tabs', {
 	},
 	Extend: Vert,
 	Prototype: {
-		className: 'w-tabs',
-		getTabPositionCode: function(s) {
-			return s && (_tab_position[s] || s);
-		},
-		getTabPositionName: function(s) {
-			return (s && (_tab_position_name[s] || s)) || 'top';
-		}
+		className: 'w-tabs'
 	}
 }),
 /* `tab` */
@@ -4198,6 +4278,8 @@ Img = define.widget('Img', {
 		W.apply(this, arguments);
 		x.dir && (this.className += ' z-dir-' + x.dir);
 		x.focus && (this.className += ' z-on');
+		!x.src && (x.text || x.format) && (this.className += ' z-t');
+		x.src && !(x.text || x.format) && (this.className += ' z-i');
 		x.badge && this.init_badge();
 		this.rootNode && this.defaults({width: -1, height: -1});
 	},
@@ -4287,9 +4369,10 @@ Img = define.widget('Img', {
 			return this._badge ? this._badge.html() : '';
 		},
 		html_img: function(t) {
+			if (!this.x.src) return this.html_badge();
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call(this, this.x.src),
-				iw = this.x.imgWidth, ih = this.x.imgHeight, w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh;
-			var g = $.image(u, {width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()'});
+				iw = this.x.imgWidth, ih = this.x.imgHeight, w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh,
+				g = $.image(u, {width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()'});
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
 		},
 		html_text: function() {
@@ -5026,7 +5109,7 @@ Dialog = define.widget('Dialog', {
 			}
 			this.vis = T;
 			this.attr('autoHide') && this.listenHide(T);
-			this.triggerAll('ready');
+			this.triggerAllReady();
 			if (this.x.timeout)
 				this.listenTimeout();
 			this.front();
@@ -5116,9 +5199,8 @@ Dialog = define.widget('Dialog', {
 		_listenHide: function(a) {
 			var self = this, d = this.x.hoverDrop;
 			$.attach(document, mbi ? 'touchend' : 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function(e) {
-				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble(e.srcElement) || (!self.x.independent && self.x.snap && self.x.snap.target && _widget(self._snapTargetElem()).hasBubble(e.srcElement))))) {
-					if (e.srcElement.id == self.id + 'cvr')
-						$.stop(e);
+				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble(e.srcElement) || (!self.x.independent && self.parentNode.hasBubble(e.srcElement))))) {
+					if (e.srcElement.id == self.id + 'cvr') $.stop(e);
 					self.close();
 				};
 			}), a);
@@ -9337,7 +9419,7 @@ LinkBox = define.widget('LinkBox', {
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + (this.x.value || '') + '"' + (this.isDisabled() ? ' disabled' : '') +
-				'><var class="f-nv w-input-t" id=' + this.id + 't' + (this.usa() ? ' contenteditable' : '') + ' ' + _html_on.call(this) + '>' + (this.x.loadingText || Loc.loading) + '</var>';
+				'><var class="f-nv w-input-t" id=' + this.id + 't' + (this.usa() ? ' contenteditable' : '') + _html_on.call(this) + '>' + (this.x.loadingText || Loc.loading) + '</var>';
 		}
 	}
 }),
@@ -9880,7 +9962,7 @@ AbsLeaf = define.widget('AbsLeaf', {
 					m.appendChild(o.firstChild);
 			}
 			for (j = 0; j < l; j ++)
-				this[j].triggerAll('ready');
+				this[j].triggerAllReady();
 			this.trigger('nodeChange');
 		},
 		toggle_nodes: function(a) {

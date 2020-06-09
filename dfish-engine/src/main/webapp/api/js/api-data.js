@@ -3760,6 +3760,8 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
+      { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>h</b><s>(横向,默认)</s>,<b>v</b><s>(纵向)</s>' },
+      { name: 'face', type: 'String', optional: true, remark: '展示效果。可选值: <b>normal</b>, <b>bubble</b>' },
       { name: 'nodes', type: 'Array', remark: '子节点数组。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' }
@@ -3803,12 +3805,25 @@ define( {
                 type: 'Timeline',
                 align: 'center', 
                 nodes: [
-                    { text: "商品已经下单" },
-                    { text: "卖家已发货", align: 'left' },
-                    { text: "包裹正在等待揽收" },
-                    { text: "正在为您派件", align: 'left' }
+                    { text: '商品已经下单', position: 'right' },
+                    { text: '卖家已发货', position: 'left' },
+                    { text: '包裹正在等待揽收', position: 'right' },
+                    { text: '正在为您派件', position: 'left' }
                ]
             }
+          },
+          function() {
+	  	    // 横向排列
+            return~
+            { type: 'Timeline', dir: 'h', pub: {escape: false, space: 80}, nodes: [
+                { img: {text: '2019', width: 40, height: 40}, space: 30 },
+                { text: '2019.10.01<br>商品已经下单' },
+                { text: '2019.09.01<br>卖家已发货', position: 'b' },
+                { img: {text: '2018', width: 40, height: 40}, space: 30 },
+                { text: '2019.08.01<br>包裹正在等待揽收' },
+                { text: '2019.07.01<br>正在为您派件', position: 'b' },
+                { img: {text: '2017', width: 40, height: 40}, space: 30 }
+            ] }
           }
       ] }
     ]
@@ -3817,14 +3832,15 @@ define( {
   	remark: '时间轴条目。',
   	extend: 'AbsWidget',
     Config: [
-      { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。仅当父节点设置align:"center"时本参数有效。可选值: <b>left</b>, <b>right</b>' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
-      { name: 'icon', type: 'String', optional: true, remark: '图标。可用 "." 开头的样式名，或图片路径。' },
+      { name: 'img', type: 'Img', optional: true, remark: '图标。' },
+      { name: 'position', type: 'String', remark: '位置。可选值: <b>t</b> <b>b</b> <b>l</b> <b>r</b> <b>top</b> <b>bottom</b> <b>left</b> <b>right</b>' },
+      { name: 'space', type: 'Number', remark: '和下一个节点之间的距离。' },
       { name: 'text', type: 'String', remark: '显示文本。' }
     ],
     Classes: [
-      { name: '.w-timeline-item', remark: '基础样式。' },
+      { name: '.w-timelineitem', remark: '基础样式。' },
       { name: '.z-first', remark: '当前节点是兄弟节点中的首个节点时的样式。' },
       { name: '.z-last', remark: '当前节点是兄弟节点中的末尾节点时的样式。' }
     ],
