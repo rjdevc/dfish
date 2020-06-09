@@ -3604,10 +3604,9 @@ Img = define.widget( 'img', {
 		},
 		prop_style: function() {
 			var t = this.cssText || '', v, c = this.parentNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
-			// 在album内，不让width设置在外框
-			if ( a && (v = this.innerWidth()) != N )
+			if ( (v = this.innerWidth()) != N )
 				t += 'width:' + v + 'px;';
-			if ( a && (v = this.innerHeight()) != N )
+			if ( (v = this.innerHeight()) != N )
 				t += 'height:' + v + 'px;';
 			c && (t += 'margin-bottom:' + c + 'px;margin-right:' + c + 'px;');
 			this.x.style && (t += this.x.style);
