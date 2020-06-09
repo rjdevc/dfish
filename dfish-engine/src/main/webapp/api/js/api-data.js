@@ -3760,7 +3760,7 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'align', type: 'String', optional: true, remark: '水平对齐方式。可选值: <b>left</b>, <b>right</b>, <b>center</b>' },
-      { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>h</b><s>(横向,默认)</s>,<b>v</b><s>(纵向)</s>' },
+      { name: 'dir', type: 'String', remark: '排列方向。可选值: <b>v</b>,<b>h</b>' },
       { name: 'face', type: 'String', optional: true, remark: '展示效果。可选值: <b>normal</b>, <b>bubble</b>' },
       { name: 'nodes', type: 'Array', remark: '子节点数组。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
@@ -3835,7 +3835,8 @@ define( {
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'img', type: 'Img', optional: true, remark: '图标。' },
-      { name: 'position', type: 'String', remark: '位置。可选值: <b>t</b> <b>b</b> <b>l</b> <b>r</b> <b>top</b> <b>bottom</b> <b>left</b> <b>right</b>' },
+      { name: 'position', type: 'String', remark: '位置。可选值: <b>t</b> <b>b</b> <b>l</b> <b>r</b> <b>top</b> <b>bottom</b> <b>left</b> <b>right</b>' +
+      	'<br>备注：t:top, r:right, b:bottom, l:left' },
       { name: 'space', type: 'Number', remark: '和下一个节点之间的距离。' },
       { name: 'text', type: 'String', remark: '显示文本。' }
     ],
