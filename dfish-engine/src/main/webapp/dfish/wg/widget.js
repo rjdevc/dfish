@@ -8868,8 +8868,8 @@ ComboBox = define.widget('ComboBox', {
 			this.$t().contentEditable = this.isNormal();
 			return this;
 		},
-		normal: function(a) {
-			AbsForm.prototype.readonly.call(this, a);
+		normal: function() {
+			AbsForm.prototype.readonly.call(this, F);
 			this.$t().contentEditable = this.isNormal();
 			return this;
 		},
