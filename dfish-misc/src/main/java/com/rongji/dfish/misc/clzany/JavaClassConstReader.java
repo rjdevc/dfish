@@ -281,13 +281,13 @@ public class JavaClassConstReader {
         }
     }
 
-//    public static void main(String[] args) throws IOException {
-//        File file =new File("D:\\IdeaProjects\\dfish-project\\fzwp_maven\\target\\classes/com/rongji/fzwp/cmp/manage/service/CallDelService.class");
-//        JavaClassConstReader reader=new JavaClassConstReader(file);
-//        Const[] consts=reader.getConsts();
-//        for (int i=0;i<consts.length;i++){
-//            Const con=consts[i];
-//            System.out.println("#"+(i)+": "+con);
-//        }
-//    }
+    public static void main(String[] args) throws IOException {
+        File file =new File("D:\\IdeaProjects\\dfish-project\\fzwp_maven\\target\\classes/com/rongji/fzwp/cmp/manage/service/CallDelService.class");
+        JavaClassConstReader reader=new JavaClassConstReader(file);
+        Const[] consts=reader.getConsts();
+        for (int i=0;i<consts.length;i++){
+            Const con=consts[i];
+            System.out.println("#"+(i)+": "+con);
+        }
+    }
 }
