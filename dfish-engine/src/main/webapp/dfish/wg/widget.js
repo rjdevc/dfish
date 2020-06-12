@@ -80,8 +80,7 @@ _widget = function(a) {
 		return b;
 	if (a.nodeType) {// htmlElement
 		do {
-			if (a.id && (b = _getWidgetById(a.id)))
-				return b;
+			if (a.id && (b = _getWidgetById(a.id))) return b;
 		} while ((a = a.parentNode) && a.nodeType === 1);
 	} else if (a.isWidget) {// widget
 		return a;
@@ -91,11 +90,9 @@ _widget = function(a) {
 },
 _getWidgetById = function(a) {
 	if (a) {
-		if (_all[a])
-			return _all[a];
+		if (_all[a]) return _all[a];
 		var b = a.indexOf(':');
-		if (b > 0 && (b = a.slice(0, b + 1)))
-			return _all[b];
+		if (b > 0 && (b = a.slice(0, b + 1))) return _all[b];
 	}
 },
 // 触发事件的入口，在html标签上显示为 onEvent="$.e(this)"  /@ a -> element
@@ -112,23 +109,8 @@ _widgetEvent = function(a) {
 // _view('/abc') 根据路径返回view
 // _view('#g')   根据globalId返回view
 _view = function(a) {
-	if (!a || a === '/')
-		return _docView;
-	if (a.type_view)
-		return a;
-	if (a.ownerView)
-		return a.ownerView;
-	if (typeof a === _STR) {
-		if (a.indexOf('javascript:') === 0)
-			return _view.call(this, Function(a).call(this));
-		return a.charAt(0) === '/' ? _viewCache[a] : a.charAt(0) === '#' ? _globals[a] : (a = $.dialog(a)) && a.getContentView();
-	} else {
-		return _vmByElem(a);
-	}
-	return _docView;
-},
-_contentView = function(a) {
-	return (a.getContentView && a.getContentView()) || _view(a);
+	return !a || a === '/' ? _docView : a.type_view ? a : a.ownerView ? a.ownerView :
+		typeof a === _STR ? (a.indexOf('javascript:') === 0 ? _view.call(this, Function(a).call(this)) : _viewCache[a]) : _vmByElem(a);
 },
 _vmByElem = function (o) {
 	var p = _widget(o);
@@ -139,8 +121,8 @@ _vmByElem = function (o) {
 	}
 	return _docView;
 },
-_url_format = function(a) {
-	return a == N ? '' : (a = '' + a).indexOf('javascript:') === 0 ? this.formatJS(a) : this.formatStr(a, N, T);
+_url_format = function(a, b) {
+	return a == N ? '' : (a = '' + a).indexOf('javascript:') === 0 ? this.formatJS(a, b) : this.formatStr(a, b, T);
 },
 // 解析 html 中的 <d:wg> 标签 /@a -> html
 _parseHTML = function(a) {
@@ -261,7 +243,7 @@ _scrollFocus = function(a) {
 		}
 	} while ((n = n.parentNode) && !n.isDialogWidget);
 },
-/*	beforesend 发送请求之前调用
+/*	beforeSend 发送请求之前调用
  *	error      请求出错时调用。传入XMLHttpRequest对象，描述错误类型的字符串以及一个异常对象（如果有的话）
  *	success    请求之后调用。传入返回后的数据，以及包含成功代码的字符串。
  *	complete   请求完成之后调用这个函数，无论成功或失败。传入XMLHttpRequest对象，以及一个包含成功或错误代码的字符串。
@@ -287,16 +269,13 @@ _ajaxCmd = function(x, a, t) {
 			r && x.template && (v = _compileTemplate(this, r, x.template));
 			$.fnapply(x.complete, this, '$response,$ajax', [v, j]);
 		}
-		if (!this._disposed)
-			this.trigger('unlock');
+		!this._disposed && this.trigger('unlock');
 	};
+	u = _url_format.call(this, u, a);
 	if (!u) return;
-	if (u.indexOf('javascript:') === 0)
-		u = this.formatJS(u, a);
 	if (typeof u !== _STR) {
 		return sc(u), cp(u);
 	}
-	u = this.formatStr(u, a, T);
 	if (t && x.data) {
 		if (typeof x.data === _OBJ) {
 			if ($.isArray(x.data)) {
@@ -313,7 +292,7 @@ _ajaxCmd = function(x, a, t) {
 		d = this.exec(typeof x.loading === _OBJ ? $.extend({type: 'Loading'}, x.loading) : {type: 'Loading', text: x.loading === T ? N : x.loading});
 	this.trigger('lock');
 	// @fixme: view base
-	$.ajaxJSON({src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter != N ? x.filter : cfg.ajaxFilter, error: x.error, beforesend: x.beforesend, 
+	$.ajaxJSON({src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter != N ? x.filter : cfg.ajaxFilter, error: x.error, beforeSend: x.beforeSend, 
 		success: sc, complete: cp});
 },
 _cmd = function(x, d) {
@@ -906,7 +885,7 @@ W = define('Widget', function() {
 			} else if (typeof a === _STR) {
 				var c = this.x[a];
 				if (c != N)
-					return typeof c === _STR && c.indexOf('javascript:') === 0 ? Function(c).call(this) : c;
+					return typeof c === _STR && c.indexOf('javascript:') === 0 ? this.formatJS(c) : c;
 				return this.defaults(a);
 			} else {/* typeof a === 'object' */
 				$.merge(this.x, a);
@@ -2412,12 +2391,8 @@ AbsSection = define.widget('AbsSection', {
 			}
 			if (a)
 				return u;
-			if (u && typeof u === _STR) {
-				if (u.indexOf('javascript:') === 0) {
-					u = this.formatJS(u);
-				} else
-					this.x.args && (u = this.formatStr(u, this.x.args, T));
-			}
+			if (typeof u === _STR)
+				u = _url_format.call(this, u, this.x.args);
 			return u;
 		},
 		getSrcFilter: function() {
@@ -2637,7 +2612,7 @@ Section = define.widget('Section', {
 		// tar -> 目标ID, re -> ready event?
 		showLayout: function(tar, re) {
 			if (tar) {
-				for (var i = 0, b = _getReplaceTargets(this.x.node, tar), c = _contentView(this); i < b.length; i ++)
+				for (var i = 0, b = _getReplaceTargets(this.x.node, tar), c = (this.getContentView && this.getContentView()) || _view(this); i < b.length; i ++)
 					c.find(b[i].id).replace(b[i]);
 			} else if (this.layout) {
 				this.showLoading(F);
@@ -3291,7 +3266,7 @@ Timeline = define.widget('Timeline', {
 			}
 			var fg = $.offset(this[0].img.$(), this.$('wr')), lg = $.offset(this.get(-1).img.$(), this.$('wr'));
 			this.css('ln', this.ls ? {top: fg.top + fg.width/2, height: (lg.top + lg.height/2) - (fg.top + fg.height/2)} :
-				{top: this._middleTop -2, left: fg.left + fg.height/2, width: (lg.left + lg.width/2) - (fg.left + fg.width/2)});
+				{top: this._middleTop -1, left: fg.left + fg.height/2, width: (lg.left + lg.width/2) - (fg.left + fg.width/2)});
 		},
 		indent: function() {
 			this._middleTop = 0;
@@ -11366,20 +11341,20 @@ ContentTable = define.widget('ContentTable', {
 	},
 	Listener: {
 		body: {
-			resize: function() {
-				if ((br.ms || mbi) && this.$()) {
-					var w = this.innerWidth();
-					this.css('width', w == N ? '' : w);
-				}
-			}
+			ready: function() { this.rootNode != this.table && this.fixWidth(); },
+			resize: function() { this.rootNode != this.table && this.fixWidth(); }
 		}
 	},
 	Prototype: {
 		rootType: 'Table,Form',
 		pubParent: $.rt(),
+		fixWidth: function() {
+			for (var i = 0, c = this.table.getColGroup(), w = 0, l = c.length; i < l; i ++) w += c[i].width();
+			this.css('width', w);
+		},
 		html: function() {
 			var s = '<table id=' + this.id + ' class=w-' + this.rootNode.type.toLowerCase() + '-tbl cellspacing=0 cellpadding=' + this.table._pad;
-			for (var t = '<tr>', w = 0, i = 0, c = this.colgroup, l = c.length, d; i < l; i ++) {
+			for (var t = '<tr>', i = 0, c = this.colgroup, l = c.length, d; i < l; i ++) {
 				d = (mbi ? 'width:' + c[i].width() + 'px;' : '') + c[i].x.style;
 				t += '<td' + (d ? ' style="' + d + '"' : '') + '>'; // 如果不加这个style，兼容模式下宽度可能会失调
 			}
@@ -12016,6 +11991,7 @@ LeftTable = define.widget('LeftTable', {
 		pubParent: $.rt(),
 		fixSize: function() {
 			this.body.height((this.rootNode.head ? this.rootNode.body : this.rootNode).innerHeight());
+			this.css({top: this.$().parentNode.currentStyle.paddingTop, left: this.$().parentNode.currentStyle.paddingLeft});
 		},
 		fixScroll: function() {
 			this.body.$().scrollTop = this.rootNode.scrollY();

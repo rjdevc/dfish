@@ -1723,7 +1723,7 @@ Ajax = _createClass({
 				u = _urlParam(u, {_v: _cfg.ver});
 			(l = _ajax_xhr(x)).open(e ? 'POST' : 'GET', u, !x.sync);
 			this.request = l;
-			if (x.beforesend && _fnapply(x.beforesend, c, '$ajax', [self]) === F)
+			if (x.beforeSend && _fnapply(x.beforeSend, c, '$ajax', [self]) === F)
 				return x.complete && x.complete.call(c, N, self);
 			if (g === 'xml' && br.ie10)
 				l.responseType = 'msxml-document';

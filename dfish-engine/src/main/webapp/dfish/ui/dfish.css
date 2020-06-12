@@ -145,7 +145,6 @@
 .w-thead:hover .w-th-rsz{border-right:1px solid #ddd}
 .w-thead:hover .w-th.z-face-cell .w-th-rsz{border-right:0}
 .w-fixedtable{position:absolute;top:0;background:#fff;z-index:1}
-.w-fixedtable .w-table-tbl{width:auto;*table-layout:auto;*width:auto}
 .w-fixedtable .w-tbody{overflow:hidden}
 .w-lefttable{left:0}
 .w-righttable{right:0}
