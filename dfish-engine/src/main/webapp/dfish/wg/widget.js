@@ -3608,7 +3608,7 @@ Img = define.widget( 'img', {
 			}
 		},
 		prop_style: function() {
-			var t = this.cssText || '', v, c = this.rootNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
+			var t = this.cssText || '', v, c = this.rootNode && this.rootNode.x.space, a = this.parentNode.type !== this.ROOT_TYPE;
 			if ( (v = this.innerWidth()) != N )
 				t += 'width:' + v + 'px;';
 			if ( (v = this.innerHeight()) != N )
