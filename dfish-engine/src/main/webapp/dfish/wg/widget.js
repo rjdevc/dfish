@@ -2776,6 +2776,11 @@ Html = define.widget( 'html', {
 _splitSize = function( a, b ) {
 	return a && a[ a.parentNode.type_horz ? 'width' : 'height' ]( b );
 },
+_initSplit = function() {
+	var i = this.length;
+	while ((--i) > 0)
+		!this[i].type_split && !this[i - 1].type_split && this.add($.extend({type: 'split', autoSplit: T}, this.x.split), i);
+},
 /* `split`  可拖动调整大小的分隔条 */
 Split = define.widget( 'split', {
 	Listener: {
@@ -2791,6 +2796,7 @@ Split = define.widget( 'split', {
 	},
 	Prototype: {
 		className: 'w-split',
+		type_split: T,
 		// 拖动调整大小
 		drag: function( a, e ) {
 			var r = $.bcr( e.srcElement.parentNode ), o = this.isOpen(), p = this.prev(), n = this.next(), d = this.x.range.split( ',' ), j = _number( d[ 0 ] ), k = _number( d[ 1 ] ),
@@ -2883,6 +2889,7 @@ Split = define.widget( 'split', {
 Buttonbar = define.widget( 'buttonbar', {
 	Const: function( x, p ) {
 		W.apply( this, arguments );
+		x.split && _initSplit.call(this);
 		this.className += ' z-dir' + (x.dir || 'h');
 		x.nobr === F && (this.className += ' z-br');
 		!this.length && (this.className += ' z-empty');
@@ -2903,7 +2910,7 @@ Buttonbar = define.widget( 'buttonbar', {
 			nodechange: function() {
 				Horz.Listener.body.nodechange.apply( this, arguments );
 				Q( '.w-button', this.$() ).removeClass( 'z-last z-first' ).first().addClass( 'z-first' ).end().last().addClass( 'z-last' );
-				Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
+				//Q( '.w-button-split', this.$() ).next().addClass( 'z-first' ).end().prev().addClass( 'z-last' );
 				this.$( 'vi' ) && ! this.length && $.remove( this.$( 'vi' ) );
 				! this.$( 'vi' ) && this.length && this.x.nobr !== F && Q( this.$() ).prepend( '<i id=' + this.id + 'vi class=f-vi-' + this.attr( 'valign' ) + '></i>' );
 				if ( this.x.space > 0 ) {
@@ -2992,12 +2999,8 @@ Buttonbar = define.widget( 'buttonbar', {
 			}
 		},
 		html_nodes: function() {
-			for ( var i = 0, l = this.length, s = [], v = this.attr( 'valign' ); i < l; i ++ ) {
-				s.push( this[ i ].html() );
-				if ( this.x.split && i < l - 1 && this[ i ].type !== 'button/split' && this[ i + 1 ].type !== 'button/split' ) {
-					s.push( this.add( $.extend( { type: 'split' }, this.x.split ), i + 1 ).html() );
-					i ++, l ++;
-				}
+			for (var i = 0, l = this.length, s  = []; i < l; i ++) {
+				s.push(this[i].html());
 			}
 			s = s.join( '' );
 			// ie7下如果既有滚动条又有垂直对齐，按钮会发生位置偏移
@@ -3264,9 +3267,9 @@ Button = define.widget( 'button', {
 			if ( x.focus && x.focusable )
 				b += ' z-on';
 			if ( p.type === this.ROOT_TYPE ) {
-				if ( this === p[ 0 ] || ((d = this.prev()) && d.type === 'button/split') )
+				if ( this === p[ 0 ] )
 					b += ' z-first';
-				if ( this === p[ p.length - 1 ] || ((d = this.next()) && d.type === 'button/split') )
+				if ( this === p[ p.length - 1 ] )
 					b += ' z-last';
 			}
 			a += b + '"';
