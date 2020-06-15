@@ -3359,6 +3359,7 @@ Split = define.widget('Split', {
 	Const: function(x, p) {
 		x.movable && (this.className += ' z-movable');
 		this.className += p.type_horz ? ' z-horizontal f-inbl' : ' z-vertical';
+		!p.type_horz && this.defaults({height: -1});
 		W.apply(this, arguments);
 	},
 	Listener: {
@@ -3530,7 +3531,6 @@ ButtonBar = define.widget('ButtonBar', {
 			nodeChange: function(e) {
 				_superTrigger(this, Horz, e);
 				Q('.w-button', this.$()).removeClass('z-last z-first').first().addClass('z-first').end().last().addClass('z-last');
-				Q('.w-button-split', this.$()).next().addClass('z-first').end().prev().addClass('z-last');
 				this.$('vi') && !this.length && $.remove(this.$('vi'));
 				!this.$('vi') && this.length && this.x.br !== T && Q(this.$('cont') || this.$()).prepend(this.html_vi());
 				if (this.x.space > 0) {
@@ -3908,10 +3908,8 @@ Button = define.widget('Button', {
 			if (x.focus && x.focusable)
 				b += ' z-on';
 			if (p === this.pubParent()) {
-				if (this === p[0] || ((d = this.prev()) && d.type_split))
-					b += ' z-first';
-				if (this === p[p.length - 1] || ((d = this.next()) && d.type_split))
-					b += ' z-last';
+				if (this === p[0]) b += ' z-first';
+				if (this === p[p.length - 1]) b += ' z-last';
 			}
 			a += b + '"';
 			if (this.attr('height') != N) {
@@ -4163,8 +4161,9 @@ _posName = function(a) {return (a && _pos_names[a]) || a},
 Tabs = define.widget('Tabs', {
 	Const: function(x, p) {
 		this.id = $.uid(this);
-		this.className += ' z-position-' + _posName(x.position);
-		var s = _posCode(x.position), y = {type: s === 'r' || s === 'l' ? 'Horz' : 'Vert', width: '*', height: '*'}, b = [], c = [], d, e = this.getDefaultOption(x.cls);
+		var s = _posCode(x.position), y = {type: s === 'r' || s === 'l' ? 'Horz' : 'Vert', width: '*', height: '*'},
+			b = [], c = [], d, e = this.getDefaultOption(x.cls), f = _posName(x.position) || 'top';
+		this.className += ' z-position-' + f;
 		for (var i = 0, n = x.nodes || []; i < n.length; i ++) {
 			if (!Q.isPlainObject(n[i].target))
 				n[i].target = {type: 'Blank'};
@@ -4178,12 +4177,11 @@ Tabs = define.widget('Tabs', {
 			}
 		}
 		!d && b[0] && ((d = b[0]).focus = T);
-		var n = _posName(x.position),
-			r = {type: 'TabBar', cls: 'z-position-' + n, nodes: b},
-			f = {type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c};
+		var r = {type: 'TabBar', cls: 'z-position-' + f, nodes: b},
+			t = {type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c};
 		$.extendAny(r, 'align,vAlign,dir,scroll,space,split,overflow', x, e, {vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h'});
 		$.extendAny(f, 'swipeFocus', x, e);
-		y.nodes = [f];
+		y.nodes = [t];
 		y.nodes[s === 'b' || s === 'r' ? 'push' : 'unshift'](r);
 		Vert.call(this, $.extend({nodes:[y], scroll: F}, x), p);
 		this.tabBar = this[0];

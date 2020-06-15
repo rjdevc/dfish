@@ -329,7 +329,7 @@
 .w-calendar-head ._iptm{width:0;height:0;visibility: hidden;}
 .w-calendar-head .f-i-caret-left{margin-right:10px;color:#777;vertical-align:middle;cursor:pointer}
 .w-calendar-head .f-i-caret-right{margin-left:10px;color:#777;vertical-align:middle;cursor:pointer}
-.w-calendar-head .f-i-caret-right:hover{color:#2498ff}
+.w-calendar-head .f-i-caret-left:hover{color:#2498ff}
 .w-calendar-head .f-i-caret-right:hover{color:#2498ff}
 .w-calendar-tbl{width:100%;table-layout:fixed;border-collapse:collapse;text-align:center;cursor:default}
 .w-calendar ._th{background:#f8f8f8;border-bottom:1px solid #ddd;height:26px}
