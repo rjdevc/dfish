@@ -118,8 +118,7 @@ public abstract class AbstractButton<T extends AbstractButton<T>> extends Abstra
     @Override
     public T add(int index, Widget node) {
         if (node instanceof AbstractButton || node instanceof Split) {
-            nodes.add(index, node);
-            return (T) this;
+            return super.add(index,node);
         } else {
             throw new java.lang.UnsupportedOperationException("Only AbstractButton(Button SubmitButton) or split is supported");
         }

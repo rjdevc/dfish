@@ -8,7 +8,6 @@ import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
