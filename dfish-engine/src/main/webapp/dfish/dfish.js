@@ -2164,18 +2164,23 @@ _merge( $, {
 	    } );
 	    return r;
 	},
-	// @a -> move fn, b -> up fn, c -> el
+	// @a -> mousedown event, b -> move fn, c -> up fn
 	moveup: function( a, b, c ) {
-		var d, f, m = function ( e ) { e.preventDefault(); };
+		var d, f, m = function ( e ) { e.preventDefault(); }, dir,
+			ix = a.clientX, iy = a.clientY;
 		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
-		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) { a( ie ? Q.event.fix( e ) : e ) }, T );
+		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) {
+			if (dir == N) {
+				if (Math.abs(e.clientX - ix) >= 5 || Math.abs(e.clientY - iy) >= 5) dir = T;
+			}
+			dir && b( ie ? Q.event.fix( e ) : e );
+		}, T );
 		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
-			b && b( ie ? Q.event.fix( e ) : e );
+			dir && c && c( ie ? Q.event.fix( e ) : e );
 			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', d, T );
 			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
 			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );
 			br.mobile && doc.removeEventListener('touchmove', m, { passive: F } );
-			c && _rm( c );
 		}, T );
 		// 业务拖动时禁用浏览器默认的拖动效果
 		br.mobile && doc.addEventListener( 'touchmove', m, { passive: F } );
