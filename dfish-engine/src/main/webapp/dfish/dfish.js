@@ -2164,19 +2164,20 @@ _merge( $, {
 	    } );
 	    return r;
 	},
-	// @a -> mousedown event, b -> move fn, c -> up fn
+	// @a -> move fn, b -> up fn, c -> mousedown event
 	moveup: function( a, b, c ) {
-		var d, f, m = function ( e ) { e.preventDefault(); }, dir,
-			ix = a.clientX, iy = a.clientY;
+		var d, f, m = function ( e ) { e.preventDefault(); },
+			ix = c && c.clientX, iy = c && c.clientY, dir = c == N;
 		ie ? _attach( doc, 'selectstart', f = $.rt( F ) ) : _classAdd( cvs, 'f-unsel' );
 		_attach( doc, br.mobile ? 'touchmove' : 'mousemove', d = function( e ) {
-			if (dir == N) {
+			if (dir) {
+				a( ie ? Q.event.fix( e ) : e );
+			} else if (c) {
 				if (Math.abs(e.clientX - ix) >= 5 || Math.abs(e.clientY - iy) >= 5) dir = T;
 			}
-			dir && b( ie ? Q.event.fix( e ) : e );
 		}, T );
 		_attach( doc, br.mobile ? 'touchend' : 'mouseup', function( e ) {
-			dir && c && c( ie ? Q.event.fix( e ) : e );
+			dir && b && b( ie ? Q.event.fix( e ) : e );
 			_detach( doc, br.mobile ? 'touchmove' : 'mousemove', d, T );
 			_detach( doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T );
 			ie ? _detach( doc, 'selectstart', f ) : _classRemove( cvs, 'f-unsel' );

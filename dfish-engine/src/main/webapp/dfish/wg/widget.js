@@ -1957,7 +1957,7 @@ Scroll = define.widget( 'scroll', {
 				y = e.clientY;
 			$.stop( e );
 			$( b + 'y' ).style.visibility = 'visible';
-			$.moveup( e, function( e ) {
+			$.moveup( function( e ) {
 				if ( _all[ b ]._scr_rateY )
 					$( b + 'ovf' ).scrollTop = t + (e.clientY - y) * _all[ b ]._scr_rateY;
 			}, function() {
@@ -1970,7 +1970,7 @@ Scroll = define.widget( 'scroll', {
 				x = e.clientX;
 			$.stop( e );
 			$( b + 'x' ).style.visibility = 'visible';
-			$.moveup( e, function( e ) {
+			$.moveup( function( e ) {
 				if ( _all[ b ]._scr_rateX )
 					$( b + 'ovf' ).scrollLeft = t + (e.clientX - x) * _all[ b ]._scr_rateX;
 			}, function() {
@@ -2807,7 +2807,7 @@ Split = define.widget( 'split', {
 				};
 			//$.stop( e );
 			down();
-			$.moveup( e, function( e ) {
+			$.moveup( function( e ) {
 				if ( e[ cln ] !== x ) {
 					f = p && _splitSize( p ), g = n && _splitSize( n );
 				}
@@ -2831,7 +2831,7 @@ Split = define.widget( 'split', {
 						self.fixHide();
 					}
 				}
-			} );
+			}, e );
 		},
 		// a -> bool/数字/百分比/*
 		toggle: function( a ) {
@@ -3910,13 +3910,13 @@ DialogTitle = define.widget( 'dialog/title', {
 						var b = o._pos.pix_b ? -1 : 1, r = o._pos.pix_r ? -1 : 1, v = b < 0 ? 'bottom' : 'top', h = r < 0 ? 'right' : 'left',
 							x = e.clientX, y = e.clientY, t = _number( o.$().style[ v ] ), l = _number( o.$().style[ h ] ), self = this, m, n = $.height(), w = $.width(), z = o.$().offsetWidth;
 						if ( o.x.moveable !== F && ! o.x.fullscreen ) {
-							$.moveup( e, function( e ) {
+							$.moveup( function( e ) {
 								! m && (m = $.db( '<div class=w-dialog-move style="width:' + $.width() + 'px;height:' + n + 'px;"></div>' ));
 								o.$().style[ v ] = $.numRange( t + b * (e.clientY - y), 0, n - 30 ) + 'px';
 								o.$().style[ h ] = $.numRange( l + r * (e.clientX - x), 100 - z, w - 30 ) + 'px';
 							}, function( e ) {
 								m && $.remove( m );
-							} );
+							}, e );
 						}
 					}
 				}
@@ -3992,7 +3992,7 @@ Dialog = define.widget( 'dialog', {
 							if ( self.isMax() )
 								return;
 							var a = this.className.match( /z-(\w+)/ )[ 1 ], b = $.bcr( self.$() ), ix = e.clientX, iy = e.clientY, o;
-							$.moveup( e, function( e ) {
+							$.moveup( function( e ) {
 								var x = e.clientX, y = e.clientY;
 								if ( ! o ) {
 									o = $.db( '<div style="position:absolute;top:' + b.top + 'px;left:' + b.left + 'px;width:' + (b.width - 6) + 'px;height:' + (b.height - 6) + 'px;border:3px solid #000;opacity:.2;z-index:11"></div>' );
@@ -4020,7 +4020,7 @@ Dialog = define.widget( 'dialog', {
 									$.remove( o );
 									s = o = N;
 								}
-							} );
+							}, e );
 						} );
 				}
 			},
@@ -6682,7 +6682,7 @@ Slider = define.widget( 'slider', {
 				g = this.thumbWidth(), w = this.formWidth() - g, self = this, t = this.attr( 'tip' ) === T ? '$0' : this.attr( 'tip' ),
 				d = this.tip( v || this.min() );
 			self.trigger( 'dragstart' );
-			$.moveup( e, function( e ) {
+			$.moveup( function( e ) {
 				var c = e.targetTouches ? e.targetTouches[ 0 ].clientX : e.clientX,
 					l = $.numRange(f + c - x, 0, w);
 				v = Math.floor( Math.floor((m - n) * l / w) );
@@ -6696,7 +6696,7 @@ Slider = define.widget( 'slider', {
 				d && d.close();
 				self.trigger( 'drop', [ v ] );
 				self.removeClass( 'z-drag' );
-			} );
+			}, e );
 		},
 		max: function() {
 			var v = this.x.validate && this.x.validate.maxvalue;
@@ -9894,12 +9894,12 @@ THead = define.widget( 'thead', {
 					Q( '.w-th-rsz', this.$() ).height( this.height() ).on( 'mousedown', function( e ) {
 						var c = this, d = c.parentNode, x = e.pageX,
 							o = $.db( '<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr( c ).top + 'px;background:#aaa;"></div>' );
-						$.moveup( e, function( e ) {
+						$.moveup( function( e ) {
 							o.style.left = e.pageX + 'px';
 						}, function( e ) {
 							r.colWidth( d.cellIndex, r.colWidth( d.cellIndex ) + e.pageX - x );
 							$.remove( o );
-						} );
+						}, e );
 					} );
 				}
 				// 排序
