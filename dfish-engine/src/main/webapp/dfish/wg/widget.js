@@ -3540,6 +3540,10 @@ Img = define.widget( 'img', {
 		x.face && $.classAdd( this, 'z-face-' + x.face );
 		!x.src && (x.text || x.format) && (this.className += ' z-t');
 		x.src && !(x.text || x.format) && (this.className += ' z-i');
+		if ( x.box ) {
+			this.box = Checkbox.parseOption( this, { cls: 'w-img-box', checked: x.focus } );
+			this.box.type === 'triplebox' && this.box.addEvent( 'change', function() { this._focus( this.box.isChecked() ) }, this );
+		}
 	},
 	Listener: {
 		body: {
@@ -3590,6 +3594,7 @@ Img = define.widget( 'img', {
 		_focus: function( a, e ) {
 			var a = a == N || a, p = this.parentNode, b = p.getFocus();
 			$.classAdd( this.$(), 'z-on', a );
+			a === F && this.box.check(F);
 			a && b && b !== this && ! p.x.focusmultiple && b._focus( F );
 		},
 		toggleFocus: function() {
@@ -3630,14 +3635,7 @@ Img = define.widget( 'img', {
 					(typeof t === _OBJ ? this.add( t, -1 ).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix" title="' + $.strQuot( x.description ) + '">' + x.description + '</div>' : '') + '</div>' : '';
 		},
 		html_nodes: function() {
-			var s = this.html_img();
-			if ( this.x.box ) {
-				this.box = Checkbox.parseOption( this, { cls: 'w-img-box', checked: this.x.focus } );
-				this.box.type === 'triplebox' && this.box.addEvent( 'change', function() { this._focus( this.box.isChecked() ) }, this );
-				s = this.box.html() + s;
-			}
-			s += this.html_text();
-			return s;
+			return (this.box ? this.box.html() : '') + this.html_img() + this.html_text();
 		}
 	}
 } ),
