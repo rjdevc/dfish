@@ -6696,7 +6696,7 @@ Slider = define.widget( 'slider', {
 				d && d.close();
 				self.trigger( 'drop', [ v ] );
 				self.removeClass( 'z-drag' );
-			}, e );
+			} );
 		},
 		max: function() {
 			var v = this.x.validate && this.x.validate.maxvalue;
