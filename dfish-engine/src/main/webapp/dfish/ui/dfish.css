@@ -924,4 +924,7 @@ tr.f-dnd-helper ._g{padding:0}
 .f-pic-prev-cursor{/*js import*/}
 .f-pic-next-cursor{/*js import*/}
 
+.f-i-prev{width:40px;height:65px;background:url(g/prev.png);cursor:pointer}
+.f-i-next{width:40px;height:65px;background:url(g/next.png);cursor:pointer}
+
 d\:wg{display:none}

@@ -2685,6 +2685,7 @@ Frame = define.widget( 'frame', {
 					this.focusNode = n;
 					n.focusOwner = this;
 					n.trigger( 'framefocus' );
+					this.trigger('change');
 				}
 			}
 			return n;

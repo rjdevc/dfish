@@ -44,7 +44,7 @@ define.widget( 'carousel', {
 		if ( typeof x.value === 'string' )
 			x.value = $.jsonParse( x.value );
 		for ( var i = 0, t = [], f = [], g = $.abbr + '.all["' + this.id + '"]', s, v = x.value, l = v && v.length; i < l; i ++ ) {
-			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseOver: g + '.pause(' + i + ')' } } );
+			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(this)' } } );
 			s = '<img class=_big src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
 			if ( v[ i ].text )
 				s += '<b class=_b></b><span class=_t>' + v[ i ].text + '</span>';
@@ -53,7 +53,9 @@ define.widget( 'carousel', {
 			f.push( { type: 'html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
 		}
 		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
-		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()' } } );
+		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()', change: g + '.frameChange()' } } );
+		this.className += ' z-hideprev';
+		if (this.tab.length <= 1) this.className += ' z-hidenext';
 	},
 	Extend: 'vert',
 	Listener: {
@@ -70,20 +72,33 @@ define.widget( 'carousel', {
 			this.timer = setTimeout( function() {
 				if ( self._disposed )
 					return;
-				var t = self.tab[ self.index ++ ];
-				((t && t.next()) || self.tab[ self.index = 0 ]).focus();
+				var t = self.tab.getFocus();
+				(t.next() || self.tab[0]).focus();
 				self.play();
 			}, 3000 );
 		},
 		pause: function( a ) {
 			clearTimeout( this.timer );
-			a != null && this.tab[ this.index = a ].focus();
+			a != null && a.focus();
 		},
 		click: function( a ) {
 			this.formatJS( this.x.value[ a ].href );
 		},
+		frameChange: function() {
+			var f = this.fra.getFocus();
+			this.addClass('z-hideprev', !f.prev() );
+			this.addClass('z-hidenext', !f.next() );
+		},
+		prev: function() {
+			var f = this.tab.getFocus();
+			f.prev() && this.pause(f.prev());
+		},
+		next: function() {
+			var f = this.tab.getFocus();
+			f.next() && this.pause(f.next());
+		},
 		html_nodes: function() {
-			return this.fra.html() + this.tab.html();
+			return this.fra.html() + this.tab.html() + '<div class="_prev f-i-prev" onclick="' + $.abbr + '.widget(this).prev()"></div><div class="_next f-i-next" onclick="' + $.abbr + '.widget(this).next()"></div>';
 		},
 		dispose: function() {
 			clearTimeout( this.timer );
