@@ -3,6 +3,8 @@
  */
 
 .w-carousel{text-align:center}
+.w-carousel ._big{position:absolute;transform:translate(-50%,-50%);top:50%;left:50%;}
+.f-css2 .w-carousel ._big{position:static}
 
 .w-carousel-btn{border:2px solid transparent;margin:2px 0;}
 .w-carousel-btn.z-on{border-color:#fa7d3c}

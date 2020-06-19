@@ -2979,6 +2979,7 @@ Buttonbar = define.widget( 'buttonbar', {
 			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
 			if ( this.$().scrollWidth > tw ) {
 				this._more = this.add( $.extend( { focusable: F, closeable: F, on: { click: '' } }, this.x.pub || {}, o.button ), -1 );
+				//alert(this._more);
 				this._more.render( this.$() );
 				var w = this._more.width() + _number( this.x.space );
 				for ( var i = 0, j; i < this.length; i ++ ) {

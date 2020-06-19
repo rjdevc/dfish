@@ -44,8 +44,8 @@ define.widget( 'carousel', {
 		if ( typeof x.value === 'string' )
 			x.value = $.jsonParse( x.value );
 		for ( var i = 0, t = [], f = [], g = $.abbr + '.all["' + this.id + '"]', s, v = x.value, l = v && v.length; i < l; i ++ ) {
-			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(' + i + ')' } } );
-			s = '<img src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
+			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseOver: g + '.pause(' + i + ')' } } );
+			s = '<img class=_big src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
 			if ( v[ i ].text )
 				s += '<b class=_b></b><span class=_t>' + v[ i ].text + '</span>';
 			if ( v[ i ].href )
