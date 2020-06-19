@@ -1329,9 +1329,11 @@ _cancel = $.cancel = function(a) {
 		a.stopPropagation ? a.stopPropagation() : (a.cancelBubble = T);
 },
 // 记录鼠标事件发生的坐标
-_event_click = {click: T, dblclick: T, contextmenu: T, mousedown: T, mouseup: T},
+_eventClick = {click: T, dblclick: T, contextmenu: T, mousedown: T, mouseup: T},
+_eventX = $.eventX = function(e) {return e.targetTouches ? e.targetTouches[0].clientX : e.clientX},
+_eventY = $.eventY = function(e) {return e.targetTouches ? e.targetTouches[0].clientY : e.clientY},
 _point = $.point = function(e) {
-	if((e || (e = window.event)) && _event_click[e.type]) {
+	if((e || (e = window.event)) && _eventClick[e.type]) {
 		_point.srcElement = e.srcElement, _point.offsetX = e.offsetX, _point.offsetY = e.offsetY, _point.clientX = e.clientX, _point.clientY = e.clientY;
 	}
 },
@@ -1501,7 +1503,7 @@ Drop = _createClass({
 	}
 }),
 _dnd_selector = {Tree: '.w-leaf', Table: '.w-tr', ButtonBar: '.w-button', Tabs: '.w-tab', Album: '.w-img'},
-_dnd_childtype = {Tree: 'Leaf', Table: 'TR', ButtonBar: 'Button', Tabs: 'Tab', Album: 'Img'}
+_dnd_childtype = {Tree: 'Leaf', Table: 'TR', ButtonBar: 'Button', Tabs: 'Tab', Album: 'Img'},
 _dndSortNormal = function(a) {
 	var d = $('_dndhelper') && $('_dndhelper').dndSortID;
 	if (d && (d = $.all[d])) {
@@ -1517,8 +1519,8 @@ $.draggable = function(a, b) {
 		return;
 	b = b || {};
 	new Drag(a, b);
-	$.query(a.$()).on('mousedown', _dnd_selector[a.type], function(downEvent) {
-		var ix = downEvent.pageX, iy = downEvent.pageY, sn, n, u, v, p, q, c = $.widget(downEvent.currentTarget), d = '_dndhelper', g = d + ':g',
+	$.query(a.$()).on('mousedown', _dnd_selector[a.type], function(dnEv) {
+		var ix = dnEv.pageX, iy = dnEv.pageY, sn, n, u, v, p, q, c = $.widget(dnEv.currentTarget), d = '_dndhelper', g = d + ':g',
 			dp = function(o) {
 				o = $.widget(o);
 				return o.rootNode && isDrop.call(o.rootNode) ? o.rootNode : o.closest(isDrop);
@@ -1614,7 +1616,7 @@ $.draggable = function(a, b) {
 				_dndSortNormal(T);
 				_rm(u), _rm(v), _rm(d), $.query('.f-dnd-notallowed').removeClass('f-dnd-notallowed'), $.query('.f-dnd-allowed').removeClass('f-dnd-allowed');
 			}
-		});
+		}, dnEv);
 	});
 }
 
@@ -2326,15 +2328,17 @@ _merge($, {
 	  });
 	    return r;
 	},
-	// @a -> move fn, b -> up fn
-	moveup: function(a, b) {
-		var d, f, m = function (e) {e.preventDefault();};
+	// @a -> move fn, b -> up fn, c -> mousedown event?
+	moveup: function(a, b, c) {
+		var d, f, m = function (e) {e.preventDefault()}, dir = c == N;
 		ie && _attach(doc, 'selectstart', _stop);
 		_classAdd(cvs, 'f-unsel');
-		_attach(doc, br.mobile ? 'touchmove' : 'mousemove', a, T);
+		_attach(doc, br.mobile ? 'touchmove' : 'mousemove', d = function(e) {
+			dir ? a(e) : c && (Math.abs(_eventX(e) - _eventX(c)) > 2 || Math.abs(_eventY(e) - _eventY(c)) > 2) && (dir = T);
+		}, T);
 		_attach(doc, br.mobile ? 'touchend' : 'mouseup', function(e) {
-			b && b(e);
-			_detach(doc, br.mobile ? 'touchmove' : 'mousemove', a, T);
+			dir && b && b(e);
+			_detach(doc, br.mobile ? 'touchmove' : 'mousemove', d, T);
 			_detach(doc, br.mobile ? 'touchend' : 'mouseup', arguments.callee, T);
 			ie && _detach(doc, 'selectstart', _stop);
 			_classRemove(cvs, 'f-unsel');
