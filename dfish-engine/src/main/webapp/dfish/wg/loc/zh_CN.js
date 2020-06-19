@@ -64,6 +64,10 @@ page_last : '尾页',
 page_next : '下页',
 page_prev : '上页',
 
+tab_close: '关闭标签',
+tab_close_others: '关闭其他标签',
+tab_close_all: '关闭全部标签',
+
 print_preview : '打印预览',
 
 debug: {
