@@ -972,6 +972,7 @@ W = define('widget', function() {
 				for (var i = 1, l = g.length; i < l; i ++)
 					c[ '$' + (i - 1) ] = g[ i ];
 			}
+			f && _event_stop[t] && _event_stop[t](e);
 			return f && (typeof f === _FUN ? f.apply(this, g) : this.formatJS(f, c));
 		},
 		// 触发系统事件
