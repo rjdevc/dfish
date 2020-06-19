@@ -21,9 +21,15 @@ define.widget( 'flowplayer', {
 		isSwf: function() {
 			if ( $.br.ie && $.br.ieVer <= 9 )
 				return true;
-			var m = $.mimeType( this.x.src );
+			var m = this.getMimeType();
 			if ( ! m || ! videoMime[ m ] )
 				return true;
+		},
+		getMimeType: function() {
+			var filePath = $.strTo(this.x.src, '?') || this.x.src,
+				fileName = $.strFrom(filePath, '/', true) || filePath,
+				suffix   = $.strFrom(fileName, '.', true);
+			return suffix ? $.mimeType( fileName ) : 'video/mp4';
 		},
 		init: function( opt ) {
 			if ( ! this.isSwf() ) {
@@ -31,7 +37,7 @@ define.widget( 'flowplayer', {
 				var fp = require( './flowplayer.min' );
 				this.flowplayer = fp( this.$(), {
 					//swf: require.resolve( './flowplayer.swf' ),
-					clip: { sources: [ { src: this.x.src, type: $.mimeType( this.x.src ) } ] }
+					clip: { sources: [ { src: this.x.src, type: this.getMimeType() } ] }
 				} );
 			}
 		},
