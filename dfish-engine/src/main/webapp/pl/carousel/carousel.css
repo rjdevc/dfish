@@ -15,7 +15,7 @@
 .w-carousel-btn ._c,.w-carousel-btn ._i{padding:0}
 
 .w-carousel-big{font-size:0}
-.w-carousel-big ._t,.w-carousel-big ._b{display:block;position:absolute;bottom:0;left:0;right:0;height:30px;line-height:30px;color:#fff;font-size:14px}
+.w-carousel-big ._t,.w-carousel-big ._b{display:block;position:absolute;bottom:0;left:0;right:0;height:30px;line-height:30px;color:#fff;font-size:14px;cursor:pointer}
 .w-carousel-big ._b{background:#333;opacity:.5}
 .w-carousel-big ._t:hover{text-decoration:underline}
 
