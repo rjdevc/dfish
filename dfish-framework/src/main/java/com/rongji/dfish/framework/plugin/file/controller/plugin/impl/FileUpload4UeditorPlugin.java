@@ -83,7 +83,7 @@ public class FileUpload4UeditorPlugin implements FileUploadPlugin {
                     "\"url\":\""+fileUrl.replace("$fileId", uploadItem.getId())+"\"," +
                     "\"title\":\""+uploadItem.getName()+"\"," +
                     "\"original\":\""+uploadItem.getName()+"\"," +
-                    "\"type\":\""+FileUtil.getFileExtName(uploadItem.getName())+"\"," +
+                    "\"type\":\""+FileUtil.getExtension(uploadItem.getName())+"\"," +
                     "\"size\":"+uploadItem.getSize()+"" +
                     "}";
         }

@@ -20,6 +20,7 @@ import com.rongji.dfish.ui.command.JSCommand;
 import com.rongji.dfish.ui.form.UploadItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 附件处理类
+ * @author lamontYu
+ */
 @RequestMapping("/file")
 @Controller
 public class FileController extends BaseController {
@@ -79,13 +84,13 @@ public class FileController extends BaseController {
                 MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
                 MultipartFile fileData = mRequest.getFile("Filedata");
 
-                String extName = FileUtil.getFileExtName(fileData.getOriginalFilename());
-                accept = accept(extName, acceptTypes);
+                String fileExtension = FileUtil.getExtension(fileData.getOriginalFilename());
+                accept = accept(fileExtension, acceptTypes);
                 if (accept) {
                     String loginUserId = FrameworkHelper.getLoginUser(mRequest);
                     uploadItem = fileService.saveFile(fileData, loginUserId);
                 } else {
-                    LogUtil.debug("上传文件失败：extName=" + extName + "&acceptTypes=" + acceptTypes);
+                    LogUtil.debug("上传文件失败：fileExtension=" + fileExtension + "&acceptTypes=" + acceptTypes);
                 }
             }
         } catch (Exception e) {
@@ -105,25 +110,22 @@ public class FileController extends BaseController {
     /**
      * 判断扩展名是否支持
      *
-     * @param extName     拓展名(不管有没.都支持;即doc和.doc)
+     * @param fileExtension     拓展名(不管有没.都支持;即doc和.doc)
      * @param acceptTypes 可接受的类型;格式如:*.doc;*.png;*.jpg;
      * @return
      */
-    static boolean accept(String extName, String acceptTypes) {
+    static boolean accept(String fileExtension, String acceptTypes) {
         if (acceptTypes == null || acceptTypes.equals("")) {
             return true;
         }
-        if (Utils.isEmpty(extName)) {
+        if (Utils.isEmpty(fileExtension)) {
             return false;
         }
-        // 这里的extName是包含.
-
         String[] accepts = acceptTypes.split("[,;]");
-//		extName=extName.toLowerCase();
         // 类型是否含.
-        int extDot = extName.lastIndexOf(".");
+        int extDot = fileExtension.lastIndexOf(".");
         // 统一去掉.
-        String realExtName = (extDot >= 0) ? extName.substring(extDot + 1) : extName;
+        String realFileExtension = (extDot >= 0) ? fileExtension.substring(extDot + 1) : fileExtension;
         for (String s : accepts) {
             if (Utils.isEmpty(s)) {
                 continue;
@@ -133,7 +135,7 @@ public class FileController extends BaseController {
                 continue;
             }
             String acc = s.substring(dotIndex + 1);
-            if (acc.equalsIgnoreCase(realExtName)) {
+            if (acc.equalsIgnoreCase(realFileExtension)) {
                 return true;
             }
         }
@@ -182,13 +184,13 @@ public class FileController extends BaseController {
                     LogUtil.warn("生成缩略图出现异常:原记录文件存储记录丢失[" + fileId + "]");
                     return;
                 }
-                int dotIndex = fileRecord.getFileUrl().lastIndexOf(".");
-                if (dotIndex < 0) {
-                    LogUtil.warn("生成缩略图出现异常:原记录文件存储记录异常[" + fileId + "]");
+                String fileExtension = fileRecord.getFileExtension();
+                if (Utils.isEmpty(fileExtension)) {
+                    LogUtil.warn("生成缩略图出现异常:原记录文件扩展名未知[" + fileId + "]");
                     return;
                 }
 
-                String fileExtName = fileRecord.getFileUrl().substring(dotIndex + 1);
+
                 File imageFile = fileService.getFile(fileRecord);
                 if (imageFile == null || !imageFile.exists()) {
                     LogUtil.warn("生成缩略图出现异常:原图丢失[" + fileId + "]");
@@ -211,11 +213,11 @@ public class FileController extends BaseController {
                         }
                         output = new FileOutputStream(outputFile);
                         if (ImageHandlingDefine.WAY_ZOOM.equals(realDefine.getWay())) {
-                            ImageUtil.zoom(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
+                            ImageUtil.zoom(input, output, fileExtension, realDefine.getWidth(), realDefine.getHeight());
                         } else if (ImageHandlingDefine.WAY_CUT.equals(realDefine.getWay())) {
-                            ImageUtil.cut(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
+                            ImageUtil.cut(input, output, fileExtension, realDefine.getWidth(), realDefine.getHeight());
                         } else if (ImageHandlingDefine.WAY_RESIZE.equals(realDefine.getWay())) {
-                            ImageUtil.resize(input, output, fileExtName, realDefine.getWidth(), realDefine.getHeight());
+                            ImageUtil.resize(input, output, fileExtension, realDefine.getWidth(), realDefine.getHeight());
                         }
                         doneFileCount.incrementAndGet();
                     } catch (Exception e) {
@@ -275,7 +277,6 @@ public class FileController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("/download")
-    @ResponseBody
     public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String enFileId = request.getParameter("fileId");
         String fileId = fileService.decId(enFileId);
@@ -285,18 +286,31 @@ public class FileController extends BaseController {
         downloadFileData(response, inline, fileRecord, null);
     }
 
+    /**
+     * 默认内联方式下载附件方法
+     *
+     * @param request
+     * @param response
+     * @param fileId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/inline/{fileId}")
+    public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileId) throws Exception {
+        fileId = fileService.decId(fileId);
+        PubFileRecord fileRecord = fileService.getFileRecord(fileId);
+        downloadFileData(response, true, fileRecord, null);
+    }
+
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
 
     protected Class<?> getMimeClass() {
         return getClass();
     }
 
-    protected String getMimeType(String extName) {
-        if (extName == null) {
+    protected String getMimeType(String fileExtension) {
+        if (Utils.isEmpty(fileExtension)) {
             return null;
-        }
-        if (extName.startsWith(".")) {
-            extName = extName.substring(1).toLowerCase();
         }
         if (MIME_MAP.size() == 0) {
             //尝试读取配置。
@@ -319,7 +333,7 @@ public class FileController extends BaseController {
                 MIME_MAP.put("[NONE]", "application/octet-stream");
             }
         }
-        return MIME_MAP.get(extName);
+        return MIME_MAP.get(fileExtension);
     }
 
     /**
@@ -387,9 +401,9 @@ public class FileController extends BaseController {
             response.setHeader("Accept-Charset", encoding);
             String contentType = null;
             if (inline) {
-                String extName = FileUtil.getFileExtName(fileName);
-                if (Utils.notEmpty(extName)) {
-                    contentType = getMimeType(extName);
+                String fileExtension = FileUtil.getExtension(fileName);
+                if (Utils.notEmpty(fileExtension)) {
+                    contentType = getMimeType(fileExtension);
                 }
             }
             if (Utils.isEmpty(contentType)) {
@@ -518,15 +532,15 @@ public class FileController extends BaseController {
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
 
         if (fileRecord != null) {
-            String fileType = FileUtil.getFileExtName(fileRecord.getFileUrl());
-            boolean isImage = accept(fileType, fileService.getImageTypes());
+            String fileExtension = FileUtil.getExtension(fileRecord.getFileUrl());
+            boolean isImage = accept(fileExtension, fileService.getImageTypes());
             FilterParam param = getFileParam(request);
             String fileParamUrl = "?fileId=" + enFileId + param;
             if (isImage) {
                 // 图片形式使用框架的预览方式
                 return new JSCommand("$.previewImage('file/thumbnail" + fileParamUrl + "');");
             } else {
-                String mimeType = getMimeType(fileType);
+                String mimeType = getMimeType(fileExtension);
                 if (Utils.notEmpty(mimeType)) { // 如果是浏览器支持可查看的内联类型,新窗口打开
                     return new JSCommand("window.open('file/download" + fileParamUrl + "&inline=1');");
                 } else { // 其他情况都是直接下载

@@ -10,11 +10,11 @@ public class ImageUtilTest {
     public static void main(String[] args) throws Exception {
 
         String rawFileName = "不忘初心";
-        String fileExtName = "gif";
+        String fileExtension = "gif";
         int width = 32;
         int height = 32;
 
-//        test(rawFileName, fileExtName, version, width, height);
+//        test(rawFileName, fileExtension, version, width, height);
         int x = 200;
         int y = 120;
 //        File dir = new File("E:\\Pictures\\dev\\others\\test\\jigsaw-files\\");
@@ -22,93 +22,93 @@ public class ImageUtilTest {
 //            if (file.isFile()) {
 //                int dotIndex = file.getName().lastIndexOf(".");
 //                String fileName = file.getName().substring(0, dotIndex);
-//                resize(fileName, fileName + "-test", fileExtName, 800, 400, null);
+//                resize(fileName, fileName + "-test", fileExtension, 800, 400, null);
 //            }
 //        }
-         zoom(rawFileName, rawFileName+"-zoom", fileExtName, 100, 100);
-         resize(rawFileName, rawFileName+"-resize", fileExtName, 100, 100);
-         cut(rawFileName, rawFileName+"-cut", fileExtName, 100, 100);
-//        alphaComposite(zoomedFileName, rawFileName+"-big", fileExtName, x, y, width, height);
-//        subCut(zoomedFileName, rawFileName+"-small", fileExtName, x, y, width, height);
+         zoom(rawFileName, rawFileName+"-zoom", fileExtension, 100, 100);
+         resize(rawFileName, rawFileName+"-resize", fileExtension, 100, 100);
+         cut(rawFileName, rawFileName+"-cut", fileExtension, 100, 100);
+//        alphaComposite(zoomedFileName, rawFileName+"-big", fileExtension, x, y, width, height);
+//        subCut(zoomedFileName, rawFileName+"-small", fileExtension, x, y, width, height);
 
     }
     
     public static final String TEST_DIR = "F:\\test_files\\zhdj\\edu\\";
 
-    public static void test(String rawFileName, String fileExtName, String version, int width, int height) throws Exception{
+    public static void test(String rawFileName, String fileExtension, String version, int width, int height) throws Exception{
         int testCount = 1;
 
         long begin = System.currentTimeMillis();
 
-        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
+        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtension);
 
         for (int i = 0; i < testCount; i++) {
-            zoom(rawFileName, rawFileName + "-zoom", fileExtName, width, height);
-            resize(rawFileName, rawFileName + "-zoom", fileExtName, width, height);
-            cut(rawFileName, rawFileName + "-zoom", fileExtName, width, height);
+            zoom(rawFileName, rawFileName + "-zoom", fileExtension, width, height);
+            resize(rawFileName, rawFileName + "-zoom", fileExtension, width, height);
+            cut(rawFileName, rawFileName + "-zoom", fileExtension, width, height);
 
         }
         long end = System.currentTimeMillis();
         System.out.println("原始文件大小[" + rawFile.length() / 1024 + "K]运行" + testCount + "次共耗时" + (end - begin) + "ms");
-        File destFile = new File(TEST_DIR + rawFileName + "-resize-" + version +"." + fileExtName);
+        File destFile = new File(TEST_DIR + rawFileName + "-resize-" + version +"." + fileExtension);
         System.out.println("目标文件[" + destFile.getName() + "]大小[" + destFile.length() / 1024 + "K]");
 
     }
 
-    public static void zoom(String rawFileName, String destFileName, String fileExtName, int width, int height) throws Exception {
-        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
+    public static void zoom(String rawFileName, String destFileName, String fileExtension, int width, int height) throws Exception {
+        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtension);
         InputStream input = new FileInputStream(rawFile);
-        OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
-        ImageUtil.zoom(input, output, fileExtName, width, height);
+        OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtension));
+        ImageUtil.zoom(input, output, fileExtension, width, height);
     }
 
     /**
      * 重新指定图片大小
      * @param rawFileName 原始图片名
      * @param destFileName 目标图片名
-     * @param fileExtName 文件扩展名
+     * @param fileExtension 文件扩展名
      * @param width 目标图片宽度
      * @param height 目标图片高度
      * @throws Exception
      */
-    public static void resize(String rawFileName, String destFileName, String fileExtName, int width, int height) throws Exception {
-        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
+    public static void resize(String rawFileName, String destFileName, String fileExtension, int width, int height) throws Exception {
+        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtension);
         InputStream input = new FileInputStream(rawFile);
-        OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
-        ImageUtil.resize(input, output, fileExtName, width, height);
+        OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtension));
+        ImageUtil.resize(input, output, fileExtension, width, height);
     }
 
     /**
      * 按照指定宽高裁剪图片(等比例缩放到合适大小后按照指定宽高居中裁剪图片,无留白,原图部分元素可能消失)
      * @param rawFileName 原始文件名
      * @param destFileName 目标文件名
-     * @param fileExtName 文件扩展名
+     * @param fileExtension 文件扩展名
      * @param width 目标图片宽度
      * @param height 目标图片高度
      * @throws Exception
      */
-    public static void cut(String rawFileName, String destFileName, String fileExtName, int width, int height) throws Exception {
-        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
+    public static void cut(String rawFileName, String destFileName, String fileExtension, int width, int height) throws Exception {
+        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtension);
         InputStream input = new FileInputStream(rawFile);
-        OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
-        ImageUtil.cut(input, output, fileExtName, width, height);
+        OutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtension));
+        ImageUtil.cut(input, output, fileExtension, width, height);
     }
 
     /**
      * 根据定位进行裁剪图片(理论上指定区域在图片范围内,若超出图片范围效果可能异常)
      * @param rawFileName 原始图片名
      * @param destFileName 目标图片名
-     * @param fileExtName 图片扩展名
+     * @param fileExtension 图片扩展名
      * @param x 横坐标
      * @param y 纵坐标
      * @param width 图片宽度
      * @param height 图片高度
      * @throws Exception
      */
-    public static void cut(String rawFileName, String destFileName, String fileExtName, int x, int y, int width, int height) throws Exception {
-        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
+    public static void cut(String rawFileName, String destFileName, String fileExtension, int x, int y, int width, int height) throws Exception {
+        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtension);
         FileInputStream input = new FileInputStream(rawFile);
-        FileOutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
+        FileOutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtension));
         try {
             // 读取原始图片
             BufferedImage rawImage = ImageIO.read(input);
@@ -130,7 +130,7 @@ public class ImageUtilTest {
 
             g.dispose();
             // 输出图片
-            ImageIO.write(destImage, fileExtName, output);
+            ImageIO.write(destImage, fileExtension, output);
         } finally {
             if (input != null) {
                 input.close();
@@ -141,10 +141,10 @@ public class ImageUtilTest {
         }
     }
 
-    public static void alphaComposite(String rawFileName, String destFileName, String fileExtName, int x, int y, int width, int height) throws Exception {
-        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtName);
+    public static void alphaComposite(String rawFileName, String destFileName, String fileExtension, int x, int y, int width, int height) throws Exception {
+        File rawFile = new File(TEST_DIR + rawFileName + "." + fileExtension);
         FileInputStream input = new FileInputStream(rawFile);
-        FileOutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtName));
+        FileOutputStream output = new FileOutputStream(new File(TEST_DIR + destFileName + "." + fileExtension));
         // 读取原始图片
         BufferedImage rawImage = ImageIO.read(input);
         Graphics g = rawImage.getGraphics();
@@ -156,7 +156,7 @@ public class ImageUtilTest {
         g.fillRect(x, y, width, height);
 
 
-        ImageIO.write(rawImage, fileExtName, output);
+        ImageIO.write(rawImage, fileExtension, output);
         g.dispose();
     }
 

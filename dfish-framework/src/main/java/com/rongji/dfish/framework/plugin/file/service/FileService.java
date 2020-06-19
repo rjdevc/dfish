@@ -122,18 +122,19 @@ public class FileService extends BaseService<PubFileRecord, String> {
             return null;
         }
 
-        String extName = FileUtil.getFileExtName(fileData.getOriginalFilename());
-
-        if (".JSP".equalsIgnoreCase(extName)) {
-            extName = ".jsp.txt";
-        }//安全加固，正规途径下载仍旧是.jsp 落盘是.jsp.txt
+        String fileExtension = FileUtil.getExtension(fileData.getOriginalFilename());
+        String saveFileExtension = "." + fileExtension;
+        if (".jsp".equalsIgnoreCase(saveFileExtension)) {
+            saveFileExtension += ".txt";
+        }
+        //安全加固，正规途径下载仍旧是.jsp 落盘是.jsp.txt
 
         String fileName = fileData.getOriginalFilename().replace(" ", "");
         long fileSize = fileData.getSize();
         String fileId = getNewId();
 
         // 直接用文件编号作为文件名
-        String saveFileName = fileId + extName;
+        String saveFileName = fileId + saveFileExtension;
 
 //		String fileType = null;
         Date now = new Date();
@@ -149,6 +150,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         fileRecord.setCreateTime(now);
         fileRecord.setUpdateTime(now);
         fileRecord.setFileLink(LINK_FILE);
+        fileRecord.setFileExtension(Utils.notEmpty(fileExtension) ? fileExtension.toLowerCase() : fileExtension);
         fileRecord.setFileKey(fileId);
         fileRecord.setFileUrl(fileDir + dirSeparator + saveFileName);
         fileRecord.setFileStatus(STATUS_NORMAL);
@@ -287,20 +289,20 @@ public class FileService extends BaseService<PubFileRecord, String> {
         }
         int dotIndex = fileRecord.getFileUrl().lastIndexOf(".");
         String oldFileName;
-        String fileExtName;
+        String dotFileExtension;
         if (dotIndex >= 0) {
             oldFileName = fileRecord.getFileUrl().substring(0, dotIndex);
-            fileExtName = fileRecord.getFileUrl().substring(dotIndex);
+            dotFileExtension = fileRecord.getFileUrl().substring(dotIndex);
         } else {
             oldFileName = fileRecord.getFileUrl();
-            fileExtName = "";
+            dotFileExtension = "";
         }
 
-        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(fileAlias) ? ("_" + fileAlias) : "") + fileExtName);
+        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(fileAlias) ? ("_" + fileAlias) : "") + dotFileExtension);
         if (!file.exists() && Utils.notEmpty(fileAlias)) {
             if (fix2Raw) {
                 // 别名文件不存在时使用原始文件
-                file = new File(getUploadDir() + oldFileName + fileExtName);
+                file = new File(getUploadDir() + oldFileName + dotFileExtension);
             }
         }
         return file;

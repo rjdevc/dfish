@@ -88,13 +88,34 @@ public final class FileUtil {
      *
      * @param fileName String
      * @return String
+     * @deprecated 这个方法返回值默认带. 在更多的场景是不需要. 所以推荐使用{@link #getExtension(String)}
      */
+    @Deprecated
     public static String getFileExtName(String fileName) {
-        if (Utils.isEmpty(fileName) || fileName.indexOf(".") < 0) {
+        if (Utils.isEmpty(fileName)) {
             return "";
         }
-        int i = fileName.lastIndexOf(".");
-        return fileName.substring(i);
+        int lastIndex = fileName.lastIndexOf(".");
+        if (lastIndex < 0) {
+            return "";
+        }
+        return fileName.substring(lastIndex);
+    }
+
+    /**
+     * 如果有扩展名,包括点号 如 txt doc等(注意这里不带.).否则返回""
+     * @param fileName String
+     * @return String
+     */
+    public static String getExtension(String fileName) {
+        if (Utils.isEmpty(fileName)) {
+            return "";
+        }
+        int lastIndex = fileName.lastIndexOf(".");
+        if (lastIndex < 0) {
+            return "";
+        }
+        return fileName.substring(lastIndex + 1);
     }
 
     /**

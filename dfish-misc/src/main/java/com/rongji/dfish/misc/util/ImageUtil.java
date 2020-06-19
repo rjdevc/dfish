@@ -19,16 +19,16 @@ public class ImageUtil {
     /**
      * 是否图片扩展名
      *
-     * @param fileExtName
+     * @param fileExtension
      * @return boolean
      */
-    public static boolean isImageExtName(String fileExtName) {
-        if (Utils.isEmpty(fileExtName)) {
+    public static boolean isImageExtension(String fileExtension) {
+        if (Utils.isEmpty(fileExtension)) {
             return false;
         }
         // 非支持格式的文件，不进行处理
         List<String> supportTypes = Arrays.asList(ImageIO.getReaderFormatNames());
-        return supportTypes.contains(fileExtName.toLowerCase());
+        return supportTypes.contains(fileExtension.toLowerCase());
     }
 
     /**
@@ -99,13 +99,13 @@ public class ImageUtil {
      *
      * @param input       图片文件输入流
      * @param output      图片文件输出流
-     * @param fileExtName 输出图片类型
+     * @param fileExtension 输出图片类型
      * @param width       输出图片的宽,<=0时采用原始图片宽度
      * @param height      输出图片的高,<=0时采用原始图片高度
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
-    public static void zoom(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
-        checkArguments(input, output, fileExtName);
+    public static void zoom(InputStream input, OutputStream output, String fileExtension, int width, int height) throws Exception {
+        checkArguments(input, output, fileExtension);
 
         try {
             // 读取原始图片
@@ -130,11 +130,11 @@ public class ImageUtil {
      *
      * @param input       图片文件输入流
      * @param output      图片文件输出流
-     * @param fileExtName 输出图片类型
+     * @param fileExtension 输出图片类型
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
-    public static void zoom(InputStream input, OutputStream output, String fileExtName) throws Exception {
-        zoom(input, output, fileExtName, -1, -1);
+    public static void zoom(InputStream input, OutputStream output, String fileExtension) throws Exception {
+        zoom(input, output, fileExtension, -1, -1);
     }
 
     /**
@@ -142,13 +142,13 @@ public class ImageUtil {
      *
      * @param input
      * @param output
-     * @param fileExtName
+     * @param fileExtension
      */
-    private static void checkArguments(InputStream input, OutputStream output, String fileExtName) {
+    private static void checkArguments(InputStream input, OutputStream output, String fileExtension) {
         if (input == null || output == null) {
             throw new IllegalArgumentException("输入流或输出流为空");
         }
-        if (!isImageExtName(fileExtName)) {
+        if (!isImageExtension(fileExtension)) {
             throw new IllegalArgumentException("输出的非图片文件类型");
         }
     }
@@ -157,13 +157,13 @@ public class ImageUtil {
      * 输入图片
      *
      * @param destImage
-     * @param fileExtName
+     * @param fileExtension
      * @param output
      * @throws Exception
      */
-    private static void writeImage(BufferedImage destImage, String fileExtName, OutputStream output) throws Exception {
+    private static void writeImage(BufferedImage destImage, String fileExtension, OutputStream output) throws Exception {
         // 输出图片
-        ImageIO.write(destImage, fileExtName, output);
+        ImageIO.write(destImage, fileExtension, output);
     }
 
     /**
@@ -172,15 +172,15 @@ public class ImageUtil {
      *
      * @param input       图片文件输入流
      * @param output      图片文件输出流
-     * @param fileExtName 输出图片类型
+     * @param fileExtension 输出图片类型
      * @param width       输出图片的宽
      * @param height      输出图片的高
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
-    public static void resize(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
-        checkArguments(input, output, fileExtName);
+    public static void resize(InputStream input, OutputStream output, String fileExtension, int width, int height) throws Exception {
+        checkArguments(input, output, fileExtension);
         if (width <= 0 && height <= 0) { // 按照原始尺寸输出
-            zoom(input, output, fileExtName);
+            zoom(input, output, fileExtension);
             return;
         }
         Graphics g = null;
@@ -232,11 +232,11 @@ public class ImageUtil {
      * @param height 缩放图片的高
      * @throws Exception 当输入流非图片或者图片绘制过程中可能有异常
      */
-    public static void cut(InputStream input, OutputStream output, String fileExtName, int width, int height) throws Exception {
-        checkArguments(input, output, fileExtName);
+    public static void cut(InputStream input, OutputStream output, String fileExtension, int width, int height) throws Exception {
+        checkArguments(input, output, fileExtension);
 
         if (width <= 0 && height <= 0) { // 按照原始尺寸输出
-            zoom(input, output, fileExtName);
+            zoom(input, output, fileExtension);
             return;
         }
 
@@ -250,7 +250,7 @@ public class ImageUtil {
             int x = (destImage.getWidth() - width) / 2;
             int y = (destImage.getHeight() - height) / 2;
 //            // 输出图片
-//            ImageIO.write(destImage.getSubimage(x, y, width, height), fileExtName, output);
+//            ImageIO.write(destImage.getSubimage(x, y, width, height), fileExtension, output);
             writeImage(destImage.getSubimage(x, y, width, height), itd.getImageTypeName(), output);
         } finally {
             if (input != null) {
@@ -261,7 +261,6 @@ public class ImageUtil {
             }
         }
     }
-
 
     static class ImageTypeDeligate extends SampleDeligate {
         public static final int TYPE_UNKNOWN = 0;

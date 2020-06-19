@@ -301,8 +301,8 @@ public class JigsawGenerator {
         FileOutputStream output = null;
         try {
             input = new FileInputStream(rawFile);
-            String fileExtName = FileUtil.getFileExtName(rawFile.getName());
-            String destFileName = jigsawFileName + "-B" + fileExtName;
+            String fileExtension = FileUtil.getExtension(rawFile.getName());
+            String destFileName = jigsawFileName + "-B" + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : "");
             File tempDestFile = getTempDestFile(destFileName);
             output = new FileOutputStream(tempDestFile);
             // 读取原始图片
@@ -316,7 +316,7 @@ public class JigsawGenerator {
             // 必须调用这个方法将背景色填充到图片去
             g.fillRect(x, y, width, height);
 
-            ImageIO.write(rawImage, getRealExtName(fileExtName), output);
+            ImageIO.write(rawImage, fileExtension, output);
             g.dispose();
 
             return parseImg(output, destFileName, rawImage.getWidth(), rawImage.getHeight());
@@ -346,8 +346,8 @@ public class JigsawGenerator {
         FileOutputStream output = null;
         try {
             input = new FileInputStream(rawFile);
-            String fileExtName = FileUtil.getFileExtName(rawFile.getName());
-            String destFileName = jigsawFileName + "-S" + fileExtName;
+            String fileExtension = FileUtil.getExtension(rawFile.getName());
+            String destFileName = jigsawFileName + "-S" + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : fileExtension);
             File tempDestFile = getTempDestFile(destFileName);
             output = new FileOutputStream(tempDestFile);
             // 读取原始图片
@@ -382,7 +382,7 @@ public class JigsawGenerator {
 
             g.dispose();
             // 输出图片
-            ImageIO.write(destImage, getRealExtName(fileExtName), output);
+            ImageIO.write(destImage, fileExtension, output);
 
             return parseImg(output, destFileName, width, height);
         } finally {
@@ -393,18 +393,6 @@ public class JigsawGenerator {
                 output.close();
             }
         }
-    }
-
-    /**
-     * 获取真实的扩展名,不含.
-     * @param fileExtName 真实的扩展名
-     * @return String
-     */
-    private String getRealExtName(String fileExtName) {
-        if (fileExtName != null && fileExtName.startsWith(".")) {
-            return fileExtName.substring(1);
-        }
-        return fileExtName;
     }
 
     /**
