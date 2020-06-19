@@ -3058,7 +3058,7 @@ Button = define.widget('button', {
 				method: function(e) {
 					//右键判断条件：当有任何一个按钮有设置closeable时(不论true/false)，即有右键菜单
 					var b = this.x.mapping || this;
-					if (b.x.closebymenu) {
+					if (b.x.quickclose) {
 						for (var i = 0, p = b.parentNode, l = p.length, so, sa; i < l; i ++) if (p[i].x.closeable) {sa = T; p[i] != b && (so = T); if (so && sa) break;}
 						this.cmd({type: 'menu', multiple: T, nodes: [
 							{text: Loc.tab_close, on: {click: abbr(this) + '.close()'}, status: b.x.closeable ? '' : 'disabled'},
