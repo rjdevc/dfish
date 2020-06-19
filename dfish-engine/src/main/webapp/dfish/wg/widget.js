@@ -3057,9 +3057,15 @@ Button = define.widget('button', {
 			contextmenu:{
 				occupy: T,
 				method: function(e) {
-					if(this.x.closeable) {
+					//右键判断条件：当有任何一个按钮有设置closeable时(不论true/false)，即有右键菜单
+					var b = this.x.mapping || this, p = b.parentNode, c, so, sa;
+					for (var i = 0, l = p.length; i < l; i ++) if (p[i].x.closeable != N) {c = T; break;}
+					if (c) {
+						for (i = 0; i < l; i ++) if (p[i].x.closeable) {sa = T; p[i] != b && (so = T); if (so && sa) break;}
 						this.cmd({type: 'menu', multiple: T, nodes: [
-							{text: Loc.tab_close, on: {click: abbr(this) + '.close()'}}, {text: Loc.tab_close_others, on: {click: abbr(this) + '.closeOthers()'}}, {text: Loc.tab_close_all, on: {click: abbr(this) + '.closeAll()'}}
+							{text: Loc.tab_close, on: {click: abbr(this) + '.close()'}, status: b.x.closeable ? '' : 'disabled'},
+							{text: Loc.tab_close_others, on: {click: abbr(this) + '.closeOthers()'}, status: so ? '' : 'disabled'},
+							{text: Loc.tab_close_all, on: {click: abbr(this) + '.closeAll()'}, status: sa ? '' : 'disabled'}
 						]});
 					}
 				}
@@ -3233,13 +3239,13 @@ Button = define.widget('button', {
 			if (! this._disposed && F !== this.trigger('close')) this.remove();
 		},
 		closeOthers: function() {
-			var b = this.x.mapping || this, n;
-			while (n = b.prev()) n.close();
-			while (n = b.next()) n.close();
+			var b = this.x.mapping || this, c = _slice.call(b.parentNode), i = c.length;
+			while (i --) c[i] != b && c[i].x.closeable && c[i].close();
+			c.length = 0;
 		},
 		closeAll: function() {
 			var b = this.x.mapping || this;
-			b.closeOthers(), b.close();
+			b.closeOthers(), b.x.closeable && b.close();
 		},
 		lock: function(a) {
 			this.trigger(a === F ? 'unlock' : 'lock');
