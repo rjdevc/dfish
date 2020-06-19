@@ -125,7 +125,6 @@ _widgetEvent = function(a) {
 		e.elemId = a.id;
 		(a = _widget(a)) ? a.trigger(e) : $.stop(e);
 	}
-	_event_stop[ t ] && _event_stop[ t ](e);
 },
 // _view(), _view('/') 返回docView
 // _view('/abc') 根据路径返回view
@@ -3058,22 +3057,21 @@ Button = define.widget('button', {
 				occupy: T,
 				method: function(e) {
 					//右键判断条件：当有任何一个按钮有设置closeable时(不论true/false)，即有右键菜单
-					var b = this.x.mapping || this, p = b.parentNode, c, so, sa;
-					for (var i = 0, l = p.length; i < l; i ++) if (p[i].x.closeable != N) {c = T; break;}
-					if (c) {
-						for (i = 0; i < l; i ++) if (p[i].x.closeable) {sa = T; p[i] != b && (so = T); if (so && sa) break;}
+					var b = this.x.mapping || this;
+					if (b.x.closebymenu) {
+						for (var i = 0, p = b.parentNode, l = p.length, so, sa; i < l; i ++) if (p[i].x.closeable) {sa = T; p[i] != b && (so = T); if (so && sa) break;}
 						this.cmd({type: 'menu', multiple: T, nodes: [
 							{text: Loc.tab_close, on: {click: abbr(this) + '.close()'}, status: b.x.closeable ? '' : 'disabled'},
 							{text: Loc.tab_close_others, on: {click: abbr(this) + '.closeOthers()'}, status: so ? '' : 'disabled'},
 							{text: Loc.tab_close_all, on: {click: abbr(this) + '.closeAll()'}, status: sa ? '' : 'disabled'}
 						]});
+						$.stop(e);
 					}
 				}
 			},
 			click: function(e) {
 				this.x.focusable && (this.parentNode.x.focusmultiple ? this.toggleFocus() : this.focus());
-				if (!(this.x.on && this.x.on.click))
-					this.drop();
+				if (!(this.x.on && this.x.on.click)) this.drop();
 			},
 			lock: function() {
 				if (! this._locked) {
