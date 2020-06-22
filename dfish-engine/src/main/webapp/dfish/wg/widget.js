@@ -3057,11 +3057,10 @@ Button = define.widget('button', {
 			contextmenu:{
 				occupy: T,
 				method: function(e) {
-					//右键判断条件：当有任何一个按钮有设置closeable时(不论true/false)，即有右键菜单
 					var b = this.x.mapping || this;
 					if (b.x.quickclose) {
 						for (var i = 0, p = b.parentNode, l = p.length, so, sa; i < l; i ++) if (p[i].x.closeable) {sa = T; p[i] != b && (so = T); if (so && sa) break;}
-						this.cmd({type: 'menu', multiple: T, nodes: [
+						this.cmd({type: 'menu', multiple: this.type === 'menu/button', nodes: [
 							{text: Loc.tab_close, on: {click: abbr(this) + '.close()'}, status: b.x.closeable ? '' : 'disabled'},
 							{text: Loc.tab_close_others, on: {click: abbr(this) + '.closeOthers()'}, status: so ? '' : 'disabled'},
 							{text: Loc.tab_close_all, on: {click: abbr(this) + '.closeAll()'}, status: sa ? '' : 'disabled'}
@@ -4372,7 +4371,7 @@ Dialog = define.widget('dialog', {
 		_listenHide: function(a) {
 			var self = this, d = this.x.hoverdrop;
 			$.attach(document, 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function(e) {
-				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble(e.srcElement) || (!self.x.independent && self.x.snap && _widget(self.x.snap).hasBubble(e.srcElement))))) {self.close()};
+				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble(e.srcElement) || (!self.x.independent && self.x.snap && _widget(self._snapElem()).hasBubble(e.srcElement))))) {self.close()};
 			}), a);
 			if (d) {
 				var o = d === T ? ($(this.x.snap) || this.parentNode.$()) : d.isWidget ? d.$() : d, f = a === F ? 'off' : 'on';
