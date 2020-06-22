@@ -3483,7 +3483,7 @@ ButtonSplit = define.widget('button/split', {
 	Prototype: {
 		className: 'w-button-split f-inbl',
 		html_nodes: function() {
-			return '<span class="f-va _vr">' + (this.x.text || '') + '</span><i class=f-vi></i>';
+			return (this.x.icon ? $.image(this.x.icon) : '') + '<span class="f-va _vr">' + (this.x.text || '') + '</span><i class=f-vi></i>';
 		}
 	}
 }),
