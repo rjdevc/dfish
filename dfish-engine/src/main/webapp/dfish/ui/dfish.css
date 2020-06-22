@@ -570,7 +570,7 @@
 .w-button.z-combo ._t{*padding-right:30px}
 .w-button.z-x ._t{*padding-right:24px}
 
-.w-button-split{vertical-align:middle;text-align:center}
+.w-button-split{vertical-align:middle;text-align:center;line-height:1}
 
 
 .f-button{height:28px;border:1px solid #d3d3d3;border-radius:2px;background:#fafafa;color:#333}
