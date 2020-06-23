@@ -1610,7 +1610,7 @@ $.each(['width', 'height'], function(v, j) {
 				return N;
 			var o = this.$();
 			for (var i = 0, e, f, n, x, r = [], l = this.length; i < l; i ++) {
-				e = b != N && this[i] === a ? b : this[i][rv] ? this[i][v]() : (o && this[i].$() && !this[i].isDisplay() ? 0 : this[i].attr(v));
+				e = b != N && this[i] === a ? b : this[i][rv] ? this[i][v]() : (o && this[i].$() && !this[i].isDisplay() ? N : this[i].attr(v));
 				f = (e == N || e < 0) && ! this[_w_bro[v]] ? '*' : e;
 				r.push({value: f, min: this[i].attr(nv), max: this[i].attr(xv)});
 			}
@@ -7874,7 +7874,7 @@ Linkbox = define.widget('linkbox', {
 							this.suggest(e.srcElement);
 						} else {
 							var c = $.rngElement();
-							c.tagName === 'U' ? this.suggest(c) : this.closePop();
+							c.tagName === 'U' && !c.getAttribute('data-value') ? this.suggest(c) : this.closePop();
 						}
 					}
 				}
