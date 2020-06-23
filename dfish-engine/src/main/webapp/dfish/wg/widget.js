@@ -6126,8 +6126,10 @@ Calendar = define.widget('calendar/date', {
 			}).on('mousewheel', function(e) {
 				t = setTimeout(function() {f(e.originalEvent.wheelDelta > 0 ? '-' : '+')});
 			}).on('click', '._i:not(.z-ds)', function() {
-				var h = this.innerText;
-				Y ? self.date.setFullYear(h) : self.date.setMonth(h - 1);
+				var h = this.innerText, t = self.date, m = Y ? t.getMonth() : h - 1, k = 0;
+				Y ? t.setFullYear(h) : t.setMonth(m);
+				while (t.getMonth() != m) {t = $.dateAdd(t, 'd', -1);}
+				self.date = t;
 				d.close();
 				self.go();
 			});
