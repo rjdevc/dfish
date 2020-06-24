@@ -3,9 +3,11 @@ package com.rongji.dfish.framework.plugin.code.controller;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.mvc.controller.BaseActionController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
+import com.rongji.dfish.framework.plugin.code.AbstractJigsawGenerator;
 import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawAuthResult;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -22,7 +24,8 @@ public class JigsawController extends BaseActionController {
     /**
      * 滑动图片生成器
      */
-    private JigsawGenerator jigsawGenerator = new JigsawGenerator();
+    @Autowired
+    private JigsawGenerator jigsawGenerator ;
 
     public JigsawGenerator getJigsawGenerator() {
         return jigsawGenerator;
