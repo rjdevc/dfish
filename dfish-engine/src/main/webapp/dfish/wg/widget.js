@@ -6126,7 +6126,7 @@ Calendar = define.widget('calendar/date', {
 			}).on('mousewheel', function(e) {
 				t = setTimeout(function() {f(e.originalEvent.wheelDelta > 0 ? '-' : '+')});
 			}).on('click', '._i:not(.z-ds)', function() {
-				var h = this.innerText, t = self.date, m = Y ? t.getMonth() : h - 1, k = 0;
+				var h = this.innerText, t = self.date, m = Y ? t.getMonth() : h - 1;
 				Y ? t.setFullYear(h) : t.setMonth(m);
 				while (t.getMonth() != m) {t = $.dateAdd(t, 'd', -1);}
 				self.date = t;
@@ -9921,7 +9921,7 @@ THead = define.widget('thead', {
 					Q('td', this.$()).append('<div class=w-th-rsz></div>');
 					Q('.w-th-rsz', this.$()).height(this.height()).on('mousedown', function(e) {
 						var c = this, d = c.parentNode, x = e.pageX,
-							o = $.db('<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr(c).top + 'px;background:#aaa;"></div>');
+							o = $.db('<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr(c).top + 'px;background:#aaa;z-index:100"></div>');
 						$.moveup(function(e) {
 							o.style.left = e.pageX + 'px';
 						}, function(e) {
