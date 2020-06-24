@@ -5,6 +5,8 @@ import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.controller.BaseController;
 import com.rongji.dfish.framework.plugin.code.CheckCodeGenerator;
 import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
+import com.rongji.dfish.framework.plugin.code.SimpleJigsawGenerator;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawAuthResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +32,7 @@ public class CheckCodeController extends BaseController {
 
 	public JigsawGenerator getJigsawGenerator() {
 		if (jigsawGenerator == null) {
-			jigsawGenerator = new JigsawGenerator();
+			jigsawGenerator = new SimpleJigsawGenerator();
 		}
 		return jigsawGenerator;
 	}
@@ -101,8 +103,8 @@ public class CheckCodeController extends BaseController {
 			offset = Double.parseDouble(request.getParameter("offset"));
 		} catch (Exception e) {
 		}
-		boolean result = getJigsawGenerator().checkJigsawOffset(request, offset);
-		return new JigsawGenerator.JigsawCheckData(result);
+		boolean result = getJigsawGenerator().checkJigsawOffset(request, offset,true);
+		return new JigsawAuthResult(result);
 	}
 
 }
