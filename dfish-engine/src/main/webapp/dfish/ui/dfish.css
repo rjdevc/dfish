@@ -627,7 +627,6 @@
 .w-album .w-img.z-on{border-color:#b7c6ce;background-color:#f2f2f2;box-shadow:0 2px 3px 0 #eee;}
 .w-album .w-img .w-img-i img{width:100%}
 .w-img .w-img-t{text-align:center;margin-top:10px}
-.w-img .w-img-d{color:gray;line-height:2}
 .w-img .w-img-i{position:relative;text-align:center;vertical-align:middle}
 .w-img.z-dir-h{text-align:left;white-space:nowrap}
 .w-img.z-dir-h .w-img-t{padding-left:10px;margin-top:0;display:inline-block;text-align:left;vertical-align:middle;*display:inline;*zoom:1}
@@ -635,7 +634,11 @@
 .w-img-box{display:none;position:absolute;top:3px;left:3px}
 .w-img-box.w-checkbox{padding:0}
 .w-img.z-hv .w-img-box,.w-img.z-on .w-img-box{display:inline-block}
- 
+.w-img-desc{visibility:hidden;position:absolute;left:0;right:0;bottom:0;padding:10px;color:#fff}
+.w-img-desc:before{content:'';position:absolute;left:0;right:0;top:0;bottom:0;background:#333;opacity:.5}
+.w-img-desc ._desc{position:relative}
+.w-img.z-hv .w-img-desc{visibility:visible}
+
 .w-buttonbar,.w-tabbar{position:relative;overflow:hidden}
 .w-buttonbar.z-br,.w-tabbar.z-br{overflow:visible}
 .w-buttonbar.z-dirh,.w-tabbar.z-dirh{white-space:nowrap;word-break:keep-all}
