@@ -4,10 +4,18 @@ import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 滑动验证码图片工具类
+ * @author LinLW
+ * @since 3.2
+ */
 public interface JigsawGenerator {
+    /**
+     * 验证码
+     */
     String KEY_CAPTCHA = "com.rongji.dfish.CAPTCHA.JIGSAW";
     @Deprecated
-    public static final String KEY_CHECKCODE = KEY_CAPTCHA;
+    String KEY_CHECKCODE = KEY_CAPTCHA;
 
     /**
      * 生成拼图

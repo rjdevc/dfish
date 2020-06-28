@@ -21,6 +21,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
+/**
+ * 预准备的滑动验证码图片工具类,访问图片生成方法时,如果服务器性能充足的情况下将实时产生图片,如果访问量大服务器繁忙时,将使用提前准备好的图片,甚至随机复用之前产生的图片,加速访问效果
+ * @author LinLW
+ * @since 3.2
+ */
 public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJigsawGenerator> {
     Semaphore SEMAPHORE;
     BlockingQueue<ImgResult> IMAGE_QUEUE;

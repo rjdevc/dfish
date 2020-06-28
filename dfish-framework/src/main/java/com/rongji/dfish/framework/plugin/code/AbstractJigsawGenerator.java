@@ -10,6 +10,10 @@ import java.awt.*;
 import java.io.File;
 import java.util.Random;
 
+/**
+ * 滑动验证码图片工具抽象类,这里将实现公用方法
+ * @param <T>
+ */
 public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator<T>> implements JigsawGenerator {
     protected static final String KEY_CAPTCHA_COUNT = "com.rongji.dfish.CAPTCHA.COUNT";
     protected static final String KEY_CAPTCHA_LOCK = "com.rongji.dfish.CAPTCHA.LOCK";
@@ -248,7 +252,7 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
         return checkJigsawOffset(request, offset, false);
     }
 
-
+    @Override
     public boolean checkJigsawOffset(HttpServletRequest request, Number offset, boolean retainCaptcha) {
         if (offset == null) {
             return false;

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 拼图滑块验证工具
+ * 简单的拼图滑块验证工具类,该工具类每次访问实时产生图片,在服务器压力比较大的情况下,性能有问题
  *
  * @author lamontYu
  * @since DFish3.2
@@ -33,6 +33,7 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
      * @return
      * @throws Exception
      */
+    @Override
     public JigsawImgResult generatorJigsaw(HttpServletRequest request) throws Exception {
 //        // 大图宽高都必须是小图的4倍
 //        int bigMinSize = smallSize << 2;

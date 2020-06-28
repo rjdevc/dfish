@@ -477,22 +477,23 @@ public class BaseController extends MultiActionController {
 	 * @return
 	 */
 	protected String getProgressKey(String sessionId, String dataId) {
-		String call = "";
-		try {
-			// 获取调用方法,这里有可能因为不同容器导致调用堆栈不同,未一一验证测试
-			StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
-			// 取上级调用方法名
-			call = callStack.getClassName() + "." + callStack.getMethodName();
-		} catch (Throwable e) {
-			LogUtil.error("获取进度条编号-调用堆栈异常", e);
-		}
+		// FIXME 不需要调用堆栈信息
+//		String call = "";
+//		try {
+//			// 获取调用方法,这里有可能因为不同容器导致调用堆栈不同,未一一验证测试
+//			StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
+//			// 取上级调用方法名
+//			call = callStack.getClassName() + "." + callStack.getMethodName();
+//		} catch (Throwable e) {
+//			LogUtil.error("获取进度条编号-调用堆栈异常", e);
+//		}
 		if (dataId == null) {
 			dataId = "";
-		} else if (dataId.length() > 64) {
-			// 名称太长时强制截取字符,这里给的100是相对比较安全的数字
-			dataId = dataId.substring(0, 64);
+		} else if (dataId.length() > 128) {
+			// 名称太长时强制截取字符,这里给的128是相对较安全的数字
+			dataId = dataId.substring(0, 128);
 		}
-		return call + "#" + sessionId + "#" + dataId;
+		return sessionId + "#" + dataId;
 	}
 
 	protected String getDataId(String progressKey) {
