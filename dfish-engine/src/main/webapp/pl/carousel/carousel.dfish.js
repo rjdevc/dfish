@@ -61,8 +61,8 @@ define.widget( 'carousel', {
 		}
 		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
 		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()', change: g + '.frameChange()' } } );
-		this.className += ' z-hideprev';
-		if (this.tab.length <= 1) this.className += ' z-hidenext';
+		//this.className += ' z-hideprev';
+		//if (this.tab.length <= 1) this.className += ' z-hidenext';
 	},
 	Extend: 'vert',
 	Listener: {
@@ -99,16 +99,16 @@ define.widget( 'carousel', {
 		},
 		frameChange: function() {
 			var f = this.fra.getFocus();
-			this.addClass('z-hideprev', !f.prev() );
-			this.addClass('z-hidenext', !f.next() );
+			//this.addClass('z-hideprev', !f.prev() );
+			//this.addClass('z-hidenext', !f.next() );
 		},
 		prev: function() {
 			var f = this.tab.getFocus();
-			f.prev() && this.pause(f.prev());
+			this.pause(f.prev() || f.parentNode.get(-1));
 		},
 		next: function() {
 			var f = this.tab.getFocus();
-			f.next() && this.pause(f.next());
+			this.pause(f.next() || f.parentNode[0]);
 		},
 		html_nodes: function() {
 			return this.fra.html() + this.tab.html() + '<div class="_prev f-i-prev" onclick="' + $.abbr + '.widget(this).prev()"></div><div class="_next f-i-next" onclick="' + $.abbr + '.widget(this).next()"></div>';
