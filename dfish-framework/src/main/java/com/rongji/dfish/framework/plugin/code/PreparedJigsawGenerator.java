@@ -505,7 +505,7 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                 b += c.getBlue();
             }
         }
-        return new Color(r / matrix.length, g / matrix.length, b / matrix.length).getRGB();
+        return new Color(r / 20, g / 20, b / 20).getRGB();
     }
     private static TemplateData getJigsawData(File file) throws Exception {
         //从缓存中取出
