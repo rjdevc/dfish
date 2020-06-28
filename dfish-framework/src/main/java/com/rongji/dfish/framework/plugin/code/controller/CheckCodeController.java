@@ -3,6 +3,7 @@ package com.rongji.dfish.framework.plugin.code.controller;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.controller.BaseController;
+import com.rongji.dfish.framework.plugin.code.AbstractJigsawGenerator;
 import com.rongji.dfish.framework.plugin.code.CheckCodeGenerator;
 import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
 import com.rongji.dfish.framework.plugin.code.SimpleJigsawGenerator;
@@ -104,7 +105,7 @@ public class CheckCodeController extends BaseController {
 		} catch (Exception e) {
 		}
 		boolean result = getJigsawGenerator().checkJigsawOffset(request, offset,true);
-		return new JigsawAuthResult(result);
+		return new AbstractJigsawGenerator.JigsawCheckData(result);
 	}
 
 }
