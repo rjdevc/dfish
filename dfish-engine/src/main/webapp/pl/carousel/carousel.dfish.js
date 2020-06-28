@@ -34,9 +34,16 @@
 
 */
 
-require.css( './carousel.css' );
+var
+$ = require( 'dfish' ),
+W = require( 'widget' ),
+_cssLoaded = null,
+cssEvent = new $.Event(),
+cssLoad = function(a, b) {
+	_cssLoaded ? a.call(b) : cssEvent.addEventOnce('load', a, b);
+};
 
-var $ = require( 'dfish' ), W = require( 'widget' );
+require.css( './carousel.css', function() {_cssLoaded = true; cssEvent.fireEvent('load');} );
 
 define.widget( 'carousel', {
 	Const: function( x, p ) {
@@ -47,7 +54,7 @@ define.widget( 'carousel', {
 			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(this)' } } );
 			s = '<img class=_big src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
 			if ( v[ i ].text )
-				s += '<b class=_b></b><span class=_t>' + v[ i ].text + '</span>';
+				s += '<b class=_b></b><span class="_t f-omit" title="' + $.strQuot(v[ i ].text) + '">' + v[ i ].text + '</span>';
 			if ( v[ i ].href )
 				s = '<a ' + (v[ i ].href.indexOf( 'javascript:' ) === 0 ? ' onclick=' + g + '.click(' + i + ')' : 'href=' + v[ i ].href + ' target=_blank') + '>' + s + '</a>';
 			f.push( { type: 'html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
@@ -60,12 +67,18 @@ define.widget( 'carousel', {
 	Extend: 'vert',
 	Listener: {
 		body: {
-			ready: function() { this.play(); }
+			ready: function() { cssLoad(this.fixText, this); this.play(); }
 		}
 	},
 	Prototype: {
 		className: 'w-carousel',
 		index: 0,
+		fixText: function() {
+			if (this.x.cls && this.x.cls.indexOf('carousel-3') > -1) {
+				var w = this.tab.$().offsetWidth;
+				Q('.w-carousel-big ._t', this.$()).css({right: w + 15});
+			}
+		},
 		play: function() {
 			var self = this;
 			clearTimeout( this.timer );
