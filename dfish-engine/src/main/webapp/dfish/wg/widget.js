@@ -6766,7 +6766,7 @@ Slider = define.widget('slider', {
 /* `SliderJigsaw`
  * {type: 'slider/jigsaw', imgsrc: '', authsrc: 'xxx?pos=$value&token=$token'}
  * @imgsrc: {big: {src: 'xxx', width: xx, height: xx}, small: {}, token: '', error: {timeout}}
- * @authsrc: {result: true, text: ''}
+ * @authsrc: {success: true, text: ''}
  */
 SliderJigsaw = define.widget('slider/jigsaw', {
 	Const: function() {
@@ -6819,7 +6819,7 @@ SliderJigsaw = define.widget('slider/jigsaw', {
 				this.draging = F;
 				this.addClass('z-authing');
 				this.cmd({type: 'ajax', src: $.urlFormat(this.x.authsrc, {value: v, token: this.img.token}), complete: function(r) {
-					this.success(r && r.result);
+					this.success(r && r.success);
 					this.valid();
 					if (this.isSuccess()) {
 						this.jigsaw && this.jigsaw.close();
