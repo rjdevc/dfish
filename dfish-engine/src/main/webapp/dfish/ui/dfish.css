@@ -162,16 +162,18 @@
 .w-th.z-last .w-th-rsz{right:0}
 .w-th-sort{cursor:pointer}
 .w-th-sort .f-i{margin-left:5px}
-.w-th-sort .f-arw{margin-left:5px;margin-top:-1px;}
-.w-th-sort .f-arw-b1{border-top-color:#ccc;border-bottom:0;margin-top:-7px}
-.w-th-sort .f-arw-t1{border-bottom-color:#ccc;border-top:0;*margin-bottom:-7px}
+.w-th-sort .f-arw{margin-left:5px;margin-top:-2px;}
+.w-th-sort .f-arw-b1{border-top-color:#ccc;border-bottom:0;margin-top:-8px}
+.w-th-sort .f-arw-t1{border-bottom-color:#ccc;border-top:0;*margin-bottom:-8px}
 .w-th-sort.z-desc .f-arw-b1,.w-th-sort .f-arw-b1:hover{border-top-color:#777}
 .w-th-sort.z-asc .f-arw-t1,.w-th-sort .f-arw-t1:hover{border-bottom-color:#777}
-.w-th-sortwrap{width:12px;margin-left:2px}
+.w-th-sortwrap{width:12px;margin-left:2px;visibility:hidden}
+.w-th-sort.z-desc .w-th-sortwrap,.w-th-sort.z-asc .w-th-sortwrap{visibility:visible}
 .w-grid-thead{position:relative;line-height:1}
 .w-grid-thead .w-grid-table{height:100%}
 .w-grid-thead:hover .w-th-rsz{border-left:1px solid #ddd}
 .w-grid-thead:hover .w-grid-face-cell .w-th-rsz{border-left:0}
+.w-grid-thead:hover .w-th-sortwrap{visibility:visible}
 .w-grid.z-nohead .w-grid-tbody.w-grid-bg{height:100%}
 
 .w-label{position:relative}
@@ -926,5 +928,6 @@ tr.f-dnd-helper ._g{padding:0}
 
 .f-i-prev{width:40px;height:65px;background:url(g/prev.png);cursor:pointer}
 .f-i-next{width:40px;height:65px;background:url(g/next.png);cursor:pointer}
+input::-ms-clear{display:none;} 
 
 d\:wg{display:none}
