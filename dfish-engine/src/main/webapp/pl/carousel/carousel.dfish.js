@@ -47,7 +47,7 @@ define.widget( 'carousel', {
 			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(this)' } } );
 			s = '<img class=_big src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
 			if ( v[ i ].text )
-				s += '<b class=_b></b><span class=_t>' + v[ i ].text + '</span>';
+				s += '<b class=_b></b><span class=_t title="' + $.strQuot(v[ i ].text) + '">' + v[ i ].text + '</span>';
 			if ( v[ i ].href )
 				s = '<a ' + (v[ i ].href.indexOf( 'javascript:' ) === 0 ? ' onclick=' + g + '.click(' + i + ')' : 'href=' + v[ i ].href + ' target=_blank') + '>' + s + '</a>';
 			f.push( { type: 'html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );

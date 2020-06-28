@@ -6928,8 +6928,8 @@ SliderJigsaw = define.widget('slider/jigsaw', {
 			return 'w-input f-nv';
 		},
 		html_info: function(d) {
-			return d && d.error ? '<var class=_err>' + (d.msg != N ? d.msg : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
-					d && d.result ? '<var class=_ok>' + (d.msg != N ? d.msg : Loc.auth_success) + '</var>' : 
+			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
+					d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
 					(this.x.placeholder || Loc.form.sliderjigsaw_drag_right);
 		},
 		html_img: function() {
