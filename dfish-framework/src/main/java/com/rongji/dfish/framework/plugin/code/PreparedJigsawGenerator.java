@@ -492,7 +492,7 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                 b += c.getBlue();
             }
         }
-        return new Color(r / matrix.length, g / matrix.length, b / matrix.length).getRGB();
+        return new Color(r / 20, g / 20, b / 20).getRGB();
     }
     private static TemplateData getJigsawData(File file) throws Exception {
         //从缓存中取出
@@ -500,8 +500,8 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
 
         List<int[]> blockList = new ArrayList<>();
         List<int[]> boundaryList = new ArrayList<>();
-        FileInputStream fileinput = new FileInputStream(file);
-        BufferedImage jigsawImage = ImageIO.read(fileinput);
+        FileInputStream fileInput = new FileInputStream(file);
+        BufferedImage jigsawImage = ImageIO.read(fileInput);
         int xLength = jigsawImage.getWidth();
         int yLength = jigsawImage.getHeight();
         for (int i = 0; i < xLength; i++) {
