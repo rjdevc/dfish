@@ -62,12 +62,13 @@ define.widget( 'carousel', {
 		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
 		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()', change: g + '.frameChange()' } } );
 		//this.className += ' z-hideprev';
-		//if (this.tab.length <= 1) this.className += ' z-hidenext';
+		if (this.tab.length <= 1) this.className += ' z-one';
 	},
 	Extend: 'vert',
 	Listener: {
 		body: {
-			ready: function() { cssLoad(this.fixText, this); this.play(); }
+			ready: function() { cssLoad(this.fixText, this); this.play(); },
+			resize: function() { cssLoad(this.fixText, this); }
 		}
 	},
 	Prototype: {
