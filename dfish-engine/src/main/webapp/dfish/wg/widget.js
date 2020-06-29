@@ -9608,7 +9608,7 @@ TD = define.widget('td', {
 			t && (s += ' style="' + t + '"');
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
 			t = this.x.text;
-			if (t) {
+			if (t != N) {
 				t = this.html_format(t, e ? this.x.format || c.x.format : this.x.format, d, _grid_f_attr);
 				if (typeof t === _OBJ)
 					this.x.node = t;
