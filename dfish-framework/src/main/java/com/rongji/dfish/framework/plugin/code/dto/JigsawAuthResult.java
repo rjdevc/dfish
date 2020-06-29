@@ -18,12 +18,12 @@ public class JigsawAuthResult implements Serializable {
     /**
      * 校验信息
      */
-    private String msg;
+    private String text;
 
     /**
      * 构造函数
      *
-     * @param success 是佛验证通过
+     * @param success 是否验证通过
      */
     public JigsawAuthResult(boolean success) {
         this.success = success;
@@ -33,11 +33,11 @@ public class JigsawAuthResult implements Serializable {
      * 构造函数
      *
      * @param success 是否验证通过
-     * @param msg     验证信息
+     * @param text     验证信息
      */
-    public JigsawAuthResult(boolean success, String msg) {
+    public JigsawAuthResult(boolean success, String text) {
         this.success = success;
-        this.msg = msg;
+        this.text = text;
     }
 
     /**
@@ -65,18 +65,18 @@ public class JigsawAuthResult implements Serializable {
      *
      * @return String
      */
-    public String getMsg() {
-        return msg;
+    public String getText() {
+        return text;
     }
 
     /**
      * 验证信息
      *
-     * @param msg String
+     * @param text String
      * @return 本身，这样可以继续设置其他属性
      */
-    public JigsawAuthResult setMsg(String msg) {
-        this.msg = msg;
+    public JigsawAuthResult setText(String text) {
+        this.text = text;
         return this;
     }
 }

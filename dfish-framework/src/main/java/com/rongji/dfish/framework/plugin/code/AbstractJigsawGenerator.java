@@ -33,7 +33,7 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
     /**
      * 验证图片目录
      */
-    protected String imageFolder = "x/jigsaw/";
+    protected String imageFolder = "m/jigsaw/";
     /**
      * 误差范围
      */
@@ -335,46 +335,5 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     protected JigsawImgItem parseImg(String destFileName, int width, int height) {
         return new JigsawImgItem(imageFolder + FOLDER_TEMP + "/" + destFileName, width, height);
-    }
-    public static class JigsawCheckData  {
-        public JigsawCheckData(boolean result) {
-            this.result = result;
-        }
-
-        public JigsawCheckData(boolean result, String msg) {
-            this.result = result;
-            this.msg = msg;
-        }
-
-        public String getType() {
-            return null;
-        }
-
-        /**
-         * 校验结果
-         */
-        private boolean result;
-        /**
-         * 校验信息
-         */
-        private String msg;
-
-        public boolean isResult() {
-            return result;
-        }
-
-        public JigsawCheckData setResult(boolean result) {
-            this.result = result;
-            return this;
-        }
-
-        public String getMsg() {
-            return msg;
-        }
-
-        public JigsawCheckData setMsg(String msg) {
-            this.msg = msg;
-            return this;
-        }
     }
 }
