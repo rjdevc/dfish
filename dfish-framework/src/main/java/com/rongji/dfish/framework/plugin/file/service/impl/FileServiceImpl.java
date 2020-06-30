@@ -483,6 +483,23 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     }
 
     @Override
+    public List<PubFileRecord> copyRecords(List<String> fileIds, String fileLink, String fileKey) {
+        if (Utils.isEmpty(fileIds) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+            throw new IllegalArgumentException("every parameter can not be empty.");
+        }
+        List<PubFileRecord> records = listByIds(fileIds);
+        Date now = new Date();
+        for (PubFileRecord record : records) {
+            record.setFileId(getNewId());
+            record.setFileLink(fileLink);
+            record.setFileKey(fileKey);
+            record.setUpdateTime(now);
+        }
+        dao.bulkSave(records);
+        return records;
+    }
+
+    @Override
     public int updateFileLink(String fileId, String fileLink, String fileKey) {
         return getDao().updateFileLink(fileId, fileLink, fileKey, STATUS_LINKED, new Date());
     }

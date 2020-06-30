@@ -533,4 +533,32 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         }
         return false;
     }
+
+    /**
+     * 拷贝附件记录
+     * @param fileItems 附件项
+     * @param fileLink 附件关联
+     * @param fileKey 关联关键字
+     * @return List&lt;PubFileRecord&gt; 拷贝完成附件记录列表
+     */
+    default List<PubFileRecord> copyRecordsByItems(List<UploadItem> fileItems, String fileLink, String fileKey) {
+        if (Utils.isEmpty(fileItems) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+            throw new IllegalArgumentException("every parameter can not be empty.");
+        }
+        List<String> fileIds = new ArrayList<>(fileItems.size());
+        for (UploadItem item : fileItems) {
+            fileIds.add(decrypt(item.getId()));
+        }
+        return copyRecords(fileIds, fileLink, fileKey);
+    }
+
+    /**
+     * 拷贝附件记录
+     * @param fileIds 附件编号
+     * @param fileLink 附件关联
+     * @param fileKey 关联关键字
+     * @return List&lt;PubFileRecord&gt; 拷贝完成附件记录列表
+     */
+    List<PubFileRecord> copyRecords(List<String> fileIds, String fileLink, String fileKey);
+
 }
