@@ -65,7 +65,8 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
                 }
             }
             if (leftTimeout > 0) {
-                JigsawImgResultError error = new JigsawImgResultError(errorMsg, leftTimeout);
+                // 由于3.2的单位是秒,这里需要除以1000
+                JigsawImgResultError error = new JigsawImgResultError(errorMsg, leftTimeout / 1000);
                 jigsaw.setError(error);
                 return jigsaw;
             }
@@ -114,9 +115,6 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
         jigsaw.setMaxValue(bigWidth);
         return jigsaw;
     }
-
-
-
 
 
     /**
@@ -220,8 +218,6 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
             }
         }
     }
-
-
 
 
 }

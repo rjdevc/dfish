@@ -23,6 +23,7 @@ import java.util.concurrent.*;
 
 /**
  * 预准备的滑动验证码图片工具类,访问图片生成方法时,如果服务器性能充足的情况下将实时产生图片,如果访问量大服务器繁忙时,将使用提前准备好的图片,甚至随机复用之前产生的图片,加速访问效果
+ *
  * @author LinLW
  * @since 3.2
  */
@@ -30,25 +31,24 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
     Semaphore SEMAPHORE;
     BlockingQueue<ImgResult> IMAGE_QUEUE;
     BlockingQueue<JsonResult> SAVE_FILE_QUEUE;
-    LinkedList<JsonResult> histories =new LinkedList<>();
+    LinkedList<JsonResult> histories = new LinkedList<>();
     private String initError;
     long lastCleanTime;
-    long cleanInterval=900000;
-    private static final Object LOCK=new Object();
-    int RESERVE_IMAGES=15;
-    int WAIT_THREAD=3;
-    int PREPARED=5;
+    long cleanInterval = 900000;
+    private static final Object LOCK = new Object();
+    int RESERVE_IMAGES = 15;
+    int WAIT_THREAD = 3;
+    int PREPARED = 5;
     List<File> imageFiles;
-    AbstractCache<File,byte[]> FILE_CACHE=new AbstractCache<>();
+    AbstractCache<File, byte[]> FILE_CACHE = new AbstractCache<>();
     TemplateData templateData;
 
 
     @Override
     public JigsawImgResult generatorJigsaw(HttpServletRequest request) throws Exception {
         ensureEnv();
-        CheckCodeController c;
-        //防止过于频繁刷新
-        if(initError!=null){
+        // 防止过于频繁刷新
+        if (initError != null) {
             JigsawImgResult jigsaw = new JigsawImgResult();
             JigsawImgResultError error = new JigsawImgResultError(initError, 0);
             jigsaw.setError(error);
@@ -78,39 +78,40 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
             }
             if (leftTimeout > 0) {
                 JigsawImgResult jigsaw = new JigsawImgResult();
-                JigsawImgResultError error = new JigsawImgResultError(errorMsg, leftTimeout);
+                // 由于3.2的单位是秒,这里需要除以1000
+                JigsawImgResultError error = new JigsawImgResultError(errorMsg, leftTimeout / 1000);
                 jigsaw.setError(error);
                 return jigsaw;
             }
         }
         session.setAttribute(KEY_CAPTCHA_COUNT, ++generatorCount);
 
-        if(SEMAPHORE.tryAcquire()){
-            JsonResult jr= SAVE_FILE_QUEUE.take();
+        if (SEMAPHORE.tryAcquire()) {
+            JsonResult jr = SAVE_FILE_QUEUE.take();
             SEMAPHORE.release();
             cleanIfNecessary();
-            session.setAttribute(KEY_CAPTCHA,jr.x);
+            session.setAttribute(KEY_CAPTCHA, jr.x);
             return jr.ret;
-        }else{
+        } else {
             //从histories 中获取信息
-            if(histories.isEmpty()){
+            if (histories.isEmpty()) {
                 JigsawImgResult jigsaw = new JigsawImgResult();
                 JigsawImgResultError error = new JigsawImgResultError("验证码服务过于繁忙，请稍后再试", 0);
                 jigsaw.setError(error);
                 return jigsaw;
             }
-            int i=RANDOM.nextInt(histories.size());
-            JsonResult jr=  histories.get(i);
+            int i = RANDOM.nextInt(histories.size());
+            JsonResult jr = histories.get(i);
             cleanIfNecessary();
-            session.setAttribute(KEY_CAPTCHA,jr.x);
+            session.setAttribute(KEY_CAPTCHA, jr.x);
             return jr.ret;
         }
     }
 
     private void ensureEnv() {
-        if(SAVE_FILE_QUEUE==null){
-            synchronized (LOCK){
-                if(SAVE_FILE_QUEUE==null){
+        if (SAVE_FILE_QUEUE == null) {
+            synchronized (LOCK) {
+                if (SAVE_FILE_QUEUE == null) {
                     initEnv();
                 }
             }
@@ -118,15 +119,15 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
     }
 
     private void cleanIfNecessary() {
-        long now=System.currentTimeMillis();
-        if(now-lastCleanTime>cleanInterval){
+        long now = System.currentTimeMillis();
+        if (now - lastCleanTime > cleanInterval) {
             //clean;
             String destDirPath = getImageRawDir() + FOLDER_TEMP + "/";
             File destDir = new File(destDirPath);
             //将最新的文件保留至少15份
-            if(destDir.exists()&&destDir.isDirectory()){
-                File[] files=destDir.listFiles();
-                if(files!=null) {
+            if (destDir.exists() && destDir.isDirectory()) {
+                File[] files = destDir.listFiles();
+                if (files != null) {
                     Arrays.sort(files, new Comparator<File>() {
                         @Override
                         public int compare(File o1, File o2) {
@@ -161,12 +162,12 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
             }
 
             if (!imageDir.isDirectory()) {
-                initError="验证码拼图路径非目录";
+                initError = "验证码拼图路径非目录";
                 return;
             }
             File[] subFiles = imageDir.listFiles();
             imageFiles = new ArrayList<>();
-            if(subFiles!=null) {
+            if (subFiles != null) {
                 for (File file : subFiles) {
                     if (file.isFile()) {
                         imageFiles.add(file);
@@ -174,20 +175,19 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                 }
             }
             if (Utils.isEmpty(imageFiles)) {
-                initError="验证码拼图缺少图片，请在该路径下补充图片[" + getImageRawDir() + "]";
+                initError = "验证码拼图缺少图片，请在该路径下补充图片[" + getImageRawDir() + "]";
                 return;
             }
             FILE_CACHE.clear();
-            lastCleanTime=now;
-
+            lastCleanTime = now;
         }
     }
 
 
     private void initEnv() {
-        SEMAPHORE=new Semaphore(WAIT_THREAD);
-        IMAGE_QUEUE =new LinkedBlockingQueue<>(1);
-        SAVE_FILE_QUEUE=new LinkedBlockingQueue<>(PREPARED);
+        SEMAPHORE = new Semaphore(WAIT_THREAD);
+        IMAGE_QUEUE = new LinkedBlockingQueue<>(1);
+        SAVE_FILE_QUEUE = new LinkedBlockingQueue<>(PREPARED);
         FILE_CACHE.setValueGetter(new CacheValueGetter<File, byte[]>() {
             @Override
             public String cacheName() {
@@ -196,38 +196,38 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
 
             @Override
             public Map<File, byte[]> gets(Set<File> set) {
-                Map<File,byte[]> ret=new HashMap<>();
-                byte[] buff=new byte[8192];
-                int read=0;
-                for(File f:set){
-                    try(FileInputStream fis=new FileInputStream(f)){
-                        ByteArrayOutputStream baos=new ByteArrayOutputStream();
-                        while((read=fis.read(buff))>=0){
-                            baos.write(buff,0,read);
+                Map<File, byte[]> ret = new HashMap<>();
+                byte[] buff = new byte[8192];
+                int read = 0;
+                for (File f : set) {
+                    try (FileInputStream fis = new FileInputStream(f)) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        while ((read = fis.read(buff)) >= 0) {
+                            baos.write(buff, 0, read);
                         }
-                        ret.put(f,baos.toByteArray());
-                    }catch (Exception ex){
-                        LogUtil.error(null,ex);
+                        ret.put(f, baos.toByteArray());
+                    } catch (Exception ex) {
+                        LogUtil.error(null, ex);
                     }
                 }
                 return ret;
             }
         });
-        //给三个都安排上任务。
-        ExecutorService SAVE_FILE_ES=Executors.newSingleThreadExecutor();
-        ExecutorService IMAGE_ES=Executors.newSingleThreadExecutor();
+        // 给三个都安排上任务。
+        ExecutorService SAVE_FILE_ES = Executors.newSingleThreadExecutor();
+        ExecutorService IMAGE_ES = Executors.newSingleThreadExecutor();
         File imageDir = new File(getImageRawDir());
         if (!imageDir.exists()) {
             imageDir.mkdirs();
         }
 
         if (!imageDir.isDirectory()) {
-            initError="验证码拼图路径非目录";
+            initError = "验证码拼图路径非目录";
             return;
         }
         File[] subFiles = imageDir.listFiles();
         imageFiles = new ArrayList<>();
-        if(subFiles!=null) {
+        if (subFiles != null) {
             for (File file : subFiles) {
                 if (file.isFile()) {
                     imageFiles.add(file);
@@ -235,22 +235,22 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
             }
         }
         if (Utils.isEmpty(imageFiles)) {
-            initError="验证码拼图缺少背景图片，请在该路径下补充图片[" + getImageRawDir() + "]";
+            initError = "验证码拼图缺少背景图片，请在该路径下补充图片[" + getImageRawDir() + "]";
             return;
         }
         try {
-            templateData = getJigsawData(new File(getImageRawDir()+"block/mask.png"));
+            templateData = getJigsawData(new File(getImageRawDir() + "mask/template.png"));
         } catch (Exception e) {
-            initError="验证码拼图缺少形状图片，请在该路径下补充图片[" + getImageRawDir() + "block/mask.png]";
+            initError = "验证码拼图缺少形状图片，请在该路径下补充图片[" + getImageRawDir() + "mask/template.png]";
             return;
         }
         this.setSmallSize(templateData.getWidth());
 
-        IMAGE_ES.submit(new Runnable (){
-
-            public void run(){
-                while(true){
-                    //生成两个
+        IMAGE_ES.submit(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    // 生成两个
                     int minWidthPosition = bigWidth >> 3;
                     int minHeightPosition = bigHeight >> 3;
 
@@ -279,28 +279,29 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                         graphics.dispose();
 
                         ImgResult r = new ImgResult();
-                        r.bImg=oriImage;
-                        r.sImg=newImage;
-                        r.rawFileName=rawFile.getName();
-                        r.x=x;
+                        r.bImg = oriImage;
+                        r.sImg = newImage;
+                        r.rawFileName = rawFile.getName();
+                        r.x = x;
                         IMAGE_QUEUE.put(r);
                     } catch (Exception e) {
-                        LogUtil.error("can not generate img",e);
+                        LogUtil.error("can not generate img", e);
                     }
                 }
-            }});
-        SAVE_FILE_ES.submit(new Runnable (){
-
-            public void run(){
-                while(true){
+            }
+        });
+        SAVE_FILE_ES.submit(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
                     //生成两个
                     try {
-                        ImgResult r=IMAGE_QUEUE.take();
-                        JsonResult ret=new JsonResult();
+                        ImgResult r = IMAGE_QUEUE.take();
+                        JsonResult ret = new JsonResult();
 
-                        ret.ret=new JigsawImgResult();
+                        ret.ret = new JigsawImgResult();
                         String fileExtName = FileUtil.getFileExtName(r.rawFileName);
-                        String jigsawFileName= IdGenerator.getSortedId32();
+                        String jigsawFileName = IdGenerator.getSortedId32();
 
 
                         String sFileName = jigsawFileName + "-S" + fileExtName;
@@ -315,20 +316,21 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
 
                         ret.ret.setBig(new JigsawImgItem(imageFolder + FOLDER_TEMP + "/" + bFileName, bigWidth, bigHeight));
                         ret.ret.setSmall(new JigsawImgItem(imageFolder + FOLDER_TEMP + "/" + sFileName, smallSize, smallSize));
-                        ret.x=r.x;
+                        ret.x = r.x;
                         ret.ret.setMaxValue(bigWidth);
 
 
                         SAVE_FILE_QUEUE.put(ret);
                         histories.add(ret);
-                        if(histories.size()>RESERVE_IMAGES){
+                        if (histories.size() > RESERVE_IMAGES) {
                             histories.poll();
                         }
                     } catch (Exception e) {
-                        LogUtil.error("can not put ret",e);
+                        LogUtil.error("can not put ret", e);
                     }
                 }
-            }});
+            }
+        });
 
     }
 
@@ -418,33 +420,33 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
 //    }
 
 
-
-    private static class ImgResult{
+    private static class ImgResult {
         BufferedImage sImg;
         BufferedImage bImg;
         String rawFileName;
         int x;
     }
-    private static class JsonResult{
+
+    private static class JsonResult {
         JigsawImgResult ret;
         int x;
     }
-    private static void cutByTemplatePic(BufferedImage oriImage, TemplateData templateData, BufferedImage newImage, int x, int y){
+
+    private void cutByTemplatePic(BufferedImage oriImage, TemplateData templateData, BufferedImage newImage, int x, int y) {
         //临时数组遍历用于高斯模糊存周边像素值
         int[][] matrix = new int[3][3];
         int[] values = new int[9];
         List<int[]> jigsawList = templateData.getJigsawList();//拼图框架坐标
         List<int[]> boundaryList = templateData.getBoundaryList();//拼图边界框架坐标
-        for (int[] jc: jigsawList) {
-            if(jc != null){
+        for (int[] jc : jigsawList) {
+            if (jc != null) {
                 int i = jc[0];
                 int j = jc[1];
                 try {
-
-                    newImage.setRGB(i, y+j, oriImage.getRGB(x + i, y + j));
-                }catch (Exception ex){
-                    System.out.println("oriImage.w="+oriImage.getWidth()+",oriImage.h="+oriImage.getHeight());
-                    System.out.println("x="+x+",y="+y+",i="+i+",j="+j);
+                    newImage.setRGB(i, y + j, oriImage.getRGB(x + i, y + j));
+                } catch (Exception ex) {
+//                    System.out.println("oriImage.w=" + oriImage.getWidth() + ",oriImage.h=" + oriImage.getHeight());
+//                    System.out.println("x=" + x + ",y=" + y + ",i=" + i + ",j=" + j);
                     throw ex;
                 }
                 //抠图区域高斯模糊
@@ -453,11 +455,11 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                 oriImage.setRGB(x + i, y + j, avgMatrix(matrix));
             }
         }
-        for (int[] bc: boundaryList) {
-            if(bc != null){
+        for (int[] bc : boundaryList) {
+            if (bc != null) {
                 int i = bc[0];
                 int j = bc[1];
-                newImage.setRGB(i, y+j, Color.white.getRGB());
+                newImage.setRGB(i, y + j, Color.white.getRGB());
             }
         }
     }
@@ -499,7 +501,7 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
         int r = 0;
         int g = 0;
         int b = 0;
-        for (int[] x: matrix) {
+        for (int[] x : matrix) {
             for (int j = 0; j < x.length; j++) {
                 if (j == 1) {
                     continue;
@@ -512,6 +514,7 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
         }
         return new Color(r / 20, g / 20, b / 20).getRGB();
     }
+
     private static TemplateData getJigsawData(File file) throws Exception {
         //从缓存中取出
 
@@ -526,15 +529,15 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
             for (int j = 0; j < yLength; j++) {
                 int rgb = jigsawImage.getRGB(i, j);
                 if (rgb < 0) {
-                    blockList.add(new int[]{i,j});
+                    blockList.add(new int[]{i, j});
                 }
-                if(i == (xLength - 1) || j == (yLength - 1)){
+                if (i == (xLength - 1) || j == (yLength - 1)) {
                     continue;
                 }
                 int rightRgb = jigsawImage.getRGB(i + 1, j);
                 int downRgb = jigsawImage.getRGB(i, j + 1);
-                if((rgb >= 0 && rightRgb < 0) || (rgb < 0 && rightRgb >= 0) || (rgb >= 0 && downRgb < 0) || (rgb < 0 && downRgb >= 0)){
-                    boundaryList.add(new int[]{i,j});
+                if ((rgb >= 0 && rightRgb < 0) || (rgb < 0 && rightRgb >= 0) || (rgb >= 0 && downRgb < 0) || (rgb < 0 && downRgb >= 0)) {
+                    boundaryList.add(new int[]{i, j});
                 }
             }
         }
@@ -560,17 +563,29 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
             this.boundaryList = boundaryList;
         }
 
-        public int getWidth() { return width; }
+        public int getWidth() {
+            return width;
+        }
 
-        public void setWidth(int width) { this.width = width; }
+        public void setWidth(int width) {
+            this.width = width;
+        }
 
-        public int getHeight() { return height; }
+        public int getHeight() {
+            return height;
+        }
 
-        public void setHeight(int height) { this.height = height; }
+        public void setHeight(int height) {
+            this.height = height;
+        }
 
-        public int getType() { return type; }
+        public int getType() {
+            return type;
+        }
 
-        public void setType(int type) { this.type = type; }
+        public void setType(int type) {
+            this.type = type;
+        }
 
         public List<int[]> getJigsawList() {
             return jigsawList;

@@ -12,9 +12,10 @@ import java.util.Random;
 
 /**
  * 滑动验证码图片工具抽象类,这里将实现公用方法
+ *
  * @param <T>
  */
-public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator<T>> implements JigsawGenerator {
+public abstract class AbstractJigsawGenerator<T extends AbstractJigsawGenerator<T>> implements JigsawGenerator {
     protected static final String KEY_CAPTCHA_COUNT = "com.rongji.dfish.CAPTCHA.COUNT";
     protected static final String KEY_CAPTCHA_LOCK = "com.rongji.dfish.CAPTCHA.LOCK";
 
@@ -59,6 +60,7 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 大拼图宽度
+     *
      * @return int
      */
     public int getBigWidth() {
@@ -67,16 +69,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 大拼图宽度
+     *
      * @param bigWidth int
      * @return 本身，这样可以继续设置其他属性
      */
     public T setBigWidth(int bigWidth) {
         this.bigWidth = bigWidth;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 大拼图高度
+     *
      * @return int
      */
     public int getBigHeight() {
@@ -85,16 +89,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 大拼图高度
+     *
      * @param bigHeight int
      * @return 本身，这样可以继续设置其他属性
      */
     public T setBigHeight(int bigHeight) {
         this.bigHeight = bigHeight;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 小拼图大小(正方形)
+     *
      * @return int
      */
     public int getSmallSize() {
@@ -103,16 +109,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 小拼图大小(正方形)
+     *
      * @param smallSize int
      * @return 本身，这样可以继续设置其他属性
      */
     public T setSmallSize(int smallSize) {
         this.smallSize = smallSize;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 图片候选目录
+     *
      * @return String
      */
     public String getImageFolder() {
@@ -121,16 +129,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 图片候选目录
+     *
      * @param imageFolder String
      * @return 本身，这样可以继续设置其他属性
      */
     public T setImageFolder(String imageFolder) {
         this.imageFolder = imageFolder;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 空隙颜色
+     *
      * @return Color
      */
     public Color getGapColor() {
@@ -139,16 +149,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 空隙颜色
+     *
      * @param gapColor Color
      * @return 本身，这样可以继续设置其他属性
      */
     public T setGapColor(Color gapColor) {
         this.gapColor = gapColor;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 容错精度范围
+     *
      * @return double
      */
     public double getErrorRange() {
@@ -157,16 +169,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 容错精度范围
+     *
      * @param errorRange double
      * @return 本身，这样可以继续设置其他属性
      */
     public T setErrorRange(double errorRange) {
         this.errorRange = errorRange;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 最大错误次数
+     *
      * @return int
      */
     public int getMaxErrorCount() {
@@ -175,16 +189,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 最大错误次数
+     *
      * @param maxErrorCount int
      * @return 本身，这样可以继续设置其他属性
      */
     public T setMaxErrorCount(int maxErrorCount) {
         this.maxErrorCount = maxErrorCount;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 错误信息
+     *
      * @return String
      */
     public String getErrorMsg() {
@@ -193,16 +209,18 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 错误信息
+     *
      * @param errorMsg String
      * @return 本身，这样可以继续设置其他属性
      */
     public T setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
-        return (T)this;
+        return (T) this;
     }
 
     /**
      * 超限后需要等待的时长(毫秒)
+     *
      * @return long
      */
     public long getTimeout() {
@@ -211,12 +229,13 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
 
     /**
      * 超限后需要等待的时长(毫秒)
+     *
      * @param timeout long
      * @return 本身，这样可以继续设置其他属性
      */
     public T setTimeout(long timeout) {
         this.timeout = timeout;
-        return (T)this;
+        return (T) this;
     }
 
     protected static final Random RANDOM = new Random();
@@ -225,7 +244,7 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
     /**
      * 校验拼图是否正确
      *
-     * @param request 请求
+     * @param request   请求
      * @param offsetStr 偏移量
      * @return boolean 是否验证通过
      */
@@ -245,7 +264,7 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
      * 校验拼图是否正确
      *
      * @param request 请求
-     * @param offset 偏移量
+     * @param offset  偏移量
      * @return boolean 是否验证通过
      */
     public boolean checkJigsawOffset(HttpServletRequest request, Number offset) {
@@ -291,8 +310,6 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
         }
         return realServletPath + imageFolder;
     }
-
-
 
 
     /**
