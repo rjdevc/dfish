@@ -103,7 +103,6 @@ _widgetEvent = function(a) {
 		e.elemId = a.id;
 		(a = _widget(a)) ? a.trigger(e) : $.stop(e);
 	}
-	_event_stop[t] && _event_stop[t](e);
 },
 // _view(), _view('/') 返回docView
 // _view('/abc') 根据路径返回view
@@ -835,13 +834,13 @@ W = define('Widget', function() {
 		pubParent: function() {
 			return this.rootNode;
 		},
-		// 获取widget的默认配置项 /@a -> cls
-		getDefaultOption: function(a) {
-			var y = _dfopt[this.type];
-			if (_dfcls[this.type]) {
-				var b = this.className + (a ? ' ' + a : ''), c = _dfcls[this.type], z;
-				for (var k in c) {
-					$.idsAll(b, k, ' ') && $.mergeDeep(z || (z = {}), c[k]);
+		// 获取widget的默认配置项 /@a -> cls, t -> type
+		getDefaultOption: function(a, b) {
+			var b = b || this.type, y = _dfopt[b];
+			if (_dfcls[b]) {
+				var c = this.className + (a ? ' ' + a : ''), d = _dfcls[b], z;
+				for (var k in d) {
+					$.idsAll(c, k, ' ') && $.mergeDeep(z || (z = {}), d[k]);
 				}
 				z && (y = $.extendDeep(z, y));
 			}
@@ -861,8 +860,7 @@ W = define('Widget', function() {
 		// @private: 解析并生成子节点
 		parse: function(x, n) {
 			var g = require(n === -1 ? x.type : this.x_childtype(x.type));
-			if (g)
-				return new g(x, this, n);
+			if (g) return new g(x, this, n);
 			alert(Loc.ps(Loc.debug.error_type, $.jsonString(x, N, 2)), N, N, N, F);
 		},
 		// 增加一个子节点 /@ a -> widget option, n -> nodeIndex?, g -> default widget option(附加的默认选项)?
@@ -958,6 +956,12 @@ W = define('Widget', function() {
 		// 获取第几个子节点
 		get: function(a) {
 			return a == N ? _slice.call(this) : a < 0 ? this[this.length + a] : this[a];
+		},
+		first: function() {
+			return this[0];
+		},
+		last: function() {
+			return this[this.length - 1];
 		},
 		// 获取所有子孙节点
 		descendants: function() {
@@ -1152,6 +1156,7 @@ W = define('Widget', function() {
 				for (var i = 1, l = g.length; i < l; i ++)
 					c['$' + (i - 1)] = g[i];
 			}
+			f && _event_stop[t] && _event_stop[t](e);
 			return f && (typeof f === _FUN ? f.apply(this, g) : this.formatJS(f, c));
 		},
 		// 触发系统事件
@@ -1556,8 +1561,7 @@ W = define('Widget', function() {
 				return;
 			this.trigger('remove');
 			var i = this.length;
-			while (i --)
-				this[i].dispose(T);
+			while (i --) this[i].dispose(T);
 			for (i in this.discNodes) {
 				this.discNodes[i].dispose(T);
 				delete this.discNodes[i];
@@ -2005,11 +2009,6 @@ getScroll = function(a) {
 },
 /* `Scroll` */
 Scroll = define.widget('Scroll', {
-	Helper: {
-		// 获取某个 widget 所在的有 scroll 的面板 / a -> widget|elem
-		get: function(a) {
-		}
-	},
 	Listener: {
 		body: {
 			ready: function() {
@@ -3098,13 +3097,13 @@ Frame = define.widget('Frame', {
 			var o = this.getFocus(),
 				n = a.isWidget ? a : this.ownerView.find(a);
 			if (n && n !== o) {
-				if (o)
-					delete o.focusOwner;
+				if (o) delete o.focusOwner;
 				this.focusNode = n;
 				n.focusOwner = this;
 				o && o.display(F, T);
 				n.display(T);
 				mbi && this.$('cont') && this.translateX();
+				o && this.trigger('change');
 			}
 			return n;
 		},
@@ -3362,11 +3361,13 @@ Split = define.widget('Split', {
 	Listener: {
 		body: {
 			ready: function() {
-				$.classAdd(this.parentNode.$(), 'f-rel');
-				var w = this.width();
-				if (w <= 1) $.classAdd(this.$(), 'z-0');
-				this.x.range && this.isExpanded() && $.classAdd(this.$(), 'z-expanded');
-				ie7 && this.css('bg', 'backgroundColor', this.$().currentStyle.backgroundColor);
+				if (this.$()) {
+					$.classAdd(this.parentNode.$(), 'f-rel');
+					var w = this.width();
+					if (w <= 1) $.classAdd(this.$(), 'z-0');
+					this.x.range && this.isExpanded() && $.classAdd(this.$(), 'z-expanded');
+					ie7 && this.css('bg', 'backgroundColor', this.$().currentStyle.backgroundColor);
+				}
 			},
 			mouseOver: function() {this.addClass('z-hv')},
 			mouseOut: function() {this.removeClass('z-hv')}
@@ -3523,7 +3524,7 @@ ButtonBar = define.widget('ButtonBar', {
 				_superTrigger(this, Horz, e);
 				!f && this.x.overflow && this.overflow();
 				var h = this.innerHeight();
-				this.$('vi') && this.css('vi', 'height', h == N ? '' : h);
+				this.attr('scroll') && this.$('vi') && this.css('vi', 'height', h == N ? '' : h);
 			},
 			nodeChange: function(e) {
 				_superTrigger(this, Horz, e);
@@ -3597,7 +3598,7 @@ ButtonBar = define.widget('ButtonBar', {
 				if (!this._more.more) {
 					var m = this._more.setMore({nodes: []}), self = this;
 					for (; i < this.length; i ++) {
-						m.add($.extend({cls: '', focus: F, closable: this[i].x.closable, on: {
+						m.add($.extend({cls: '', focus: F, closable: this[i].x.closable, mapping: this[i], on: {
 							ready: 'this.addClass("z-on",!!' + abbr(this[i]) + '.isFocus())',
 							click: 'var b=this.getCommander().parentNode;' + abbr(this[i]) + '.click();b.overflow()',
 							close: 'var o=' + $.abbr + '.all["' + this[i].id + '"],p=o.parentNode;o.close();p._more&&p._more.drop()'
@@ -3648,10 +3649,7 @@ Button = define.widget('Button', {
 				var m = _inst_get('Menu');
 				if (this.type === 'MenuButton') {
 					this.show();
-				} else if ((this.x.hoverDrop && this.more) || (m && this.more && this.more !== m && this.more.type === 'Menu' && m.parentNode.parentNode === this.parentNode)) {
-					this.drop();
-				} else if (m && !this.more && m.parentNode.parentNode === this.parentNode)
-					m.hide();
+				}
 				_hover_tip.call(this);
 			},
 			mouseOut: function(e) {
@@ -3665,8 +3663,24 @@ Button = define.widget('Button', {
 			},
 			click: function(e) {
 				this.isMultiple() ? this.toggleFocus() : this.focus();
-				if (!(this.x.on && this.x.on.click))
-					this.drop();
+				if (!(this.x.on && this.x.on.click)) this.drop();
+			},
+			contextMenu:{
+				occupy: T,
+				method: function(e) {
+					var b = this.x.mapping || this;
+					if (b.x.quickClose) {
+						for (var i = 0, p = b.parentNode, l = p.length, so, sa; i < l; i ++) if (p[i].x.closable) {sa = T; p[i] != b && (so = T); if (so && sa) break;}
+						var c = this.type === 'MenuButton' && this.getCommander(),
+							o = this.cmd({type: 'Menu', multiple: c, nodes: [
+							{text: Loc.tab_close, on: {click: abbr(this) + '.close()'}, status: b.x.closable ? '' : 'disabled'},
+							{text: Loc.tab_close_others, on: {click: abbr(this) + '.closeOthers()'}, status: so ? '' : 'disabled'},
+							{text: Loc.tab_close_all, on: {click: abbr(this) + '.closeAll()'}, status: sa ? '' : 'disabled'}
+						]});
+						c && this.rootNode.addEventOnce('hide', o.hide, o);
+						$.stop(e);
+					}
+				}
 			},
 			lock: function() {
 				if (!this._locked) {
@@ -3882,6 +3896,17 @@ Button = define.widget('Button', {
 			if (!this._disposed && F !== this.trigger('close'))
 				this.remove();
 		},
+		closeOthers: function() {
+			var b = this.x.mapping, c = _slice.call(this.parentNode), i = c.length;
+			while (i --) c[i] != this && c[i].x.closable && c[i].close();
+			c.length = 0;
+			b && b.closeOthers();
+		},
+		closeAll: function() {
+			var b = this.x.mapping;
+			this.closeOthers(), this.x.closable && this.close();
+			b && b.closeAll();
+		},
 		html_icon: function() {
 			var c = _toggleIcon.call(this);
 			return c ? $.image(c, {id: this.id + 'i', cls: '_i f-inbl'}) : '';
@@ -4046,6 +4071,12 @@ SubmitButton = define.widget('SubmitButton', {
 }),
 /* `menubutton` */
 _menu_button_height,
+_menuButtonHeight = function(a) {
+	if (!_menu_button_height)
+		br.chdiv('w-menu-button', function() {_menu_button_height = this.offsetHeight || 28});
+	return !a || a.type === 'MenuButton' ? _menu_button_height : 5;
+}
+
 MenuButton = define.widget('MenuButton', {
 	Const: function() {
 		Button.apply(this, arguments);
@@ -4067,12 +4098,6 @@ MenuButton = define.widget('MenuButton', {
 		className: 'w-menu-button f-nobr',
 		_menu_snapType: '',
 		_menu_type: 'SubMenu',
-		elemht: function() {
-			if (!_menu_button_height) {
-				br.chdiv('w-menu-button', function() {_menu_button_height = this.offsetHeight || 28});
-			}
-			return _menu_button_height;
-		},
 		getCommander: function() {
 			return this.rootNode.parentNode;
 		},
@@ -4818,13 +4843,10 @@ Dialog = define.widget('Dialog', {
 				}
 			},
 			beforeload: function() {
-				if (this.$())
-					this.draggable();
+				this.$() && this.draggable();
 			},
 			load: function() {
 				this.draggable(N, F);
-				//var u = this.getContentView();
-				//u && u.trigger('load');
 			},
 			mouseDown: function() {
 				this.front();
@@ -5128,16 +5150,13 @@ Dialog = define.widget('Dialog', {
 			this._keep_hover = a;
 		},
 		hide: function() {
-			if (this._disposed)
-				return;
+			if (this._disposed) return;
+			this.trigger('hide');
 			this._snapCls(F);
 			if (this.x.cache)
 				this.$() && ($.hide(this.$()), (this.x.cover && $.hide(this.$('cvr'))), this.vis = F);
-			else if (this.x.memory) {
-				 this._hide();
-			} else {
-				this.remove();
-			}
+			else 
+				this.x.memory ? this._hide() : this.remove();
 		},
 		_hide: function() {
 			if (this.vis) {
@@ -5163,7 +5182,7 @@ Dialog = define.widget('Dialog', {
 			} else {
 				var self = this;
 				setTimeout(function() {!self._disposed && self._listenHide(a);}, 200); // 延时处理，避免出现后立即消失的情况
-				Dialog.cleanPop(this); // 关闭除了自己之外的所有autoHide窗口
+				//Dialog.cleanPop(this); // 关闭除了自己之外的所有autoHide窗口
 			}
 		},
 		_listenHide: function(a) {
@@ -5485,20 +5504,24 @@ ProgressItem = define.widget('ProgressItem', {
 		}
 	}
 }),
+/* `MenuSplit` */
 MenuSplit = define.widget('MenuSplit', {
 	Prototype: {
-		show: $.rt(), hide: $.rt(), elemht: function() {return 5},
-		html: function() {
-			return '<div class=w-menu-split>&nbsp;</div>';
-		}
+		show: $.rt(),
+		hide: $.rt(),
+		html: function() { return '<div class=w-menu-split>&nbsp;</div>'; }
 	}
 }),
-/* `menu` */
+/* `Menu` */
 Menu = define.widget('Menu', {
 	Const: function(x, p, n) {
 		p == N && (p = _docView);
 		W.call(this, x, p, n == N ? -1 : n);
 		Dialog.all[this.id] = this;
+		if (x.id) {
+			Dialog.custom[x.id] && Dialog.custom[x.id].hide();
+			Dialog.custom[x.id] = this;
+		}
 		this._fitpos = T;
 		(this.commander = p).addEventOnce('remove', this.remove, this);
 	},
@@ -5511,8 +5534,7 @@ Menu = define.widget('Menu', {
 			// menu的DOM渲染做两次，第一次测量并调整可用范围，第二次渲染menuButton。所以第一次装载完毕时不触发用户定义的load事件，等第二次渲染menuButton时再触发
 			ready: $.rt(F),
 			mouseWheel: function(e) {
-				if (this.$('up'))
-					this.scroll(e.wheelDelta > 0 ? -1 : 1);
+				this.$('up') && this.scroll(e.wheelDelta > 0 ? -1 : 1);
 				$.stop(e);
 			},
 			// 覆盖 dialog.Listener.body.click 方法，点击不作处理
@@ -5541,10 +5563,12 @@ Menu = define.widget('Menu', {
 		_hide: function() {
 			if (this.$()) {
 				var i = this.length;
-				while (i --)
-					this[i].hide();
+				while (i --) this[i].type === 'MenuButton' && this[i].hide();
 				Dialog.prototype._hide.call(this);
-				this.type === 'Menu' && _inst_del(this);
+				if (this.type === 'Menu') {
+					var m = this.x.multiple;
+					if (!m || m.isWidget) _inst_del(this, m);
+				}
 			}
 		},
 		listenHide: function(a) {
@@ -5554,7 +5578,7 @@ Menu = define.widget('Menu', {
 		checkOverflow: function() {
 			this.echoStart = 0;
 			this.echoEnd   = this.length -1;
-			var r = $.bcr(this.$()), m = 0, g = this.$('g'), b = MenuButton.prototype.elemht(), h = $.height();
+			var r = $.bcr(this.$()), m = 0, g = this.$('g'), b = _menuButtonHeight(), h = $.height();
 			if (r.top < 0)
 				m -= r.top;
 			if (r.bottom > h)
@@ -5570,9 +5594,9 @@ Menu = define.widget('Menu', {
 				// 如果有设置focusIndex, 需要让这个menuButton滚动显示在中间
 				var f = this.x.focusIndex;
 				if (f != N && f > 0 && f < this.length) {
-					var j = f - 1, k = f + 1, l = this.length, h = this[f].elemht();
+					var j = f - 1, k = f + 1, l = this.length, h = _menuButtonHeight(this[f]);
 					while (j > - 1 || k < l) {
-						if ((j > -1 && (h += this[j --].elemht()) >= this.realht) || (k < l && (h += this[k ++].elemht()) >= this.realht))
+						if ((j > -1 && (h += _menuButtonHeight(this[j --])) >= this.realht) || (k < l && (h += _menuButtonHeight(this[k ++])) >= this.realht))
 							break;
 					}
 					this.echoStart = j + 1, this.echoEnd = k - 1;
@@ -5585,16 +5609,14 @@ Menu = define.widget('Menu', {
 			if ($.classAny(this.$(a > 0 ? 'dn': 'up'), 'z-us')) {
 				var i = a > 0 ? this.echoEnd  : this.echoStart, l = this.length, c = 0;
 				for (; i > -1 && i < l; i += (a === 0 ? 1 : a)) {
-					c += this[i].elemht();
-					if (c > this.realht)
-						break;
+					c += _menuButtonHeight(this[i]);
+					if (c > this.realht) break;
 				}
 				a > 0 ? (this.echoStart = this.echoEnd + 1, this.echoEnd = Math.min(i, l - 1)) : (this.echoEnd = this.echoStart, this.echoStart = Math.max(0, i));
 				if (c < this.realht) {
 					for (i = this.echoEnd; i < l; i ++) {
-						c += this[i].elemht();
-						if (c > this.realht)
-							break;
+						c += _menuButtonHeight(this[i]);
+						if (c > this.realht) break;
 					}
 					this.echoEnd = Math.min(i, l - 1);
 				}
@@ -5603,7 +5625,7 @@ Menu = define.widget('Menu', {
 		},
 		fill: function() {
 			for (var i = this.echoStart, l = this.echoEnd, s = '', e = h = 0, m = this.realht; i <= l; i ++) {
-				h += this[i].elemht();
+				h += _menuButtonHeight(this[i]);
 				if (h > m) {
 					this.echoEnd = i - 1;
 					break;
@@ -5626,10 +5648,12 @@ Menu = define.widget('Menu', {
 			return ie7 ? '<table cellspacing=0 cellpadding=0 border=0><tr><td>' + s + '</table>' : s;
 		},
 		render: function() {
-			if (this.type === 'Menu')
-				_inst_add(this);
+			if (this.type === 'Menu') {
+				var m = this.x.multiple;
+				if (!m || m.isWidget) _inst_add(this, m);
+			}
 			for (var i = 0, l = this.length, e = h = 0, m = $.height(); i < l; i ++) {
-				h += this[i].elemht();
+				h += _menuButtonHeight(this[i]);
 				if (h > m && !e)
 					this.echoEnd = e = i;
 			}
@@ -7117,10 +7141,10 @@ Calendar = define.widget('Calendar', {
 		},
 		// 年、月的浮动选择器
 		popYM: function(a, e) {
-			var Y = a === 'y', M = a === 'm', d = this.date, h = 20, l = M ? 12 : 10, c = [], g = d.getMinutes(), self = this,
+			var Y = a === 'y', M = a === 'm', d = this.date, h = 22, l = M ? 12 : 10, c = [], g = d.getMinutes(), self = this,
 				b = Y ? d.getFullYear() : d.getMonth() + 1,
 				y = Y ? (b - 4) : 1,
-				s = (M ? '' : '<div class="_b _scr">-</div>') + '<div class="_wr">',
+				s = (M ? '' : '<div class="_b _scr" data-act="-"><i class="f-i f-i-minus"></i></div>') + '<div class="_wr">',
 				htm = function() {
 					var d = e.type == 'CalendarNum' ? self._ps(e.val()) : self.date, g = $.dateFormat(d, 'yyyy-MM-dd'), f = Y ? 'yyyy' : 'yyyy-MM',
 						n = self.x.begindate && $.dateFormat(self._ps(self.x.begindate), f), m = self.x.enddate && $.dateFormat(self._ps(self.x.enddate), f);
@@ -7131,7 +7155,7 @@ Calendar = define.widget('Calendar', {
 					}
 					return r;
 				};
-			s += htm() + '</div>' + (M ? '' : '<div class="_b _scr">+</div>');
+			s += htm() + '</div>' + (M ? '' : '<div class="_b _scr" data-act="+"><i class="f-i f-i-plus"></i></div>');
 			var d = this.exec({type: 'Dialog', ownproperty: T, independent: T, width: 60, height: h * 12, cls: 'w-calendar-select', snap: {target: e, position: e.dropSnapType || 'cc'}, autoHide: T, node: {type: 'Html', text: s},
 					on: {mouseleave: function(){this.close()}, close: function() {clearTimeout(t); Q(d.$()).off();}}
 				}),
@@ -7144,19 +7168,20 @@ Calendar = define.widget('Calendar', {
 					}
 				}, t;
 			M && r.height(h * l);
-			Q(d.$()).on('mousedown', '._scr', function() {
-				var a = this.innerText;
-				f(a);
-				t = setTimeout(function() {f(a); t = setTimeout(arguments.callee, 90);}, 600);
-			}).on('mouseup', '._scr', function() {
-				clearTimeout(t);
-			}).on('mousewheel', function(e) {
+			Q(d.$()).on('mousewheel', function(e) {
 				t = setTimeout(function() {f(e.originalEvent.wheelDelta > 0 ? '-' : '+')});
 			}).on('click', '._i:not(.z-ds)', function() {
-				var h = this.innerText;
-				Y ? self.date.setFullYear(h) : self.date.setMonth(h - 1);
+				var h = this.innerText, t = self.date, m = Y ? t.getMonth() : h - 1;
+				Y ? t.setFullYear(h) : t.setMonth(m);
+				if (t.getMonth() != m) self.date = new Date(t.getTime() - t.getDate() * $.DATE_DAY);
 				d.close();
 				self.go();
+			}).find('._scr').on('mousedown', function() {
+				var a = this.getAttribute('data-act');
+				f(a);
+				t = setTimeout(function() {f(a); t = setTimeout(arguments.callee, 90);}, 600);
+			}).on('mouseup', function() {
+				clearTimeout(t);
 			});
 		},
 		// 弹出时间选择器 /@a -> el
@@ -7959,8 +7984,8 @@ Jigsaw = define.widget('Jigsaw', {
 		},
 		html_info: function(d) {
 			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
-					d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
-					(this.x.placeholder || Loc.form.jigsaw_drag_right);
+				d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
+				(this.x.placeholder || Loc.form.jigsaw_drag_right);
 		},
 		html_img: function() {
 			var d = this.img.getResult();
@@ -10474,6 +10499,12 @@ _table_f_attr = function(v) {
 _table_tr = function() {
 	return this.closest(function() {return this.type_tr || this.type_thr || this.type_tfr});
 },
+_table_f_dfopt = function(t) {
+	return function(a) {
+		var y = _proto.getDefaultOption.call(this, a), z = _proto.getDefaultOption.call(this, a, t);
+		return y && z ? $.extendDeep(y, z) : y || z;
+	}
+},
 /* `Tableleaf` */
 TableLeaf = define.widget('TableLeaf', {
 	Const: function(x, p) {
@@ -10505,27 +10536,17 @@ TableLeaf = define.widget('TableLeaf', {
 		className: 'w-leaf w-table-leaf',
 		_pad_left: 0,
 		tr: _table_tr,
+		getDefaultOption: _table_f_dfopt('Leaf'),
 		pubParent: $.rt(),
 		_focus: $.rt(),
 		isEllipsis: $.rt(T),
-		getLength: function() {
-			return this.row.length;
-		},
-		parent: function() {
-			return this.row.parentNode.tableLeaf;
-		},
-		offsetParent: function() {
-			return this.parentNode;
-		},
-		isFirst: function() {
-			return this.row.nodeIndex === 0;
-		},
-		isLast: function() {
-			return this.row.nodeIndex === this.row.parentNode.length - 1;
-		},
+		parent: function() { return this.row.parentNode.tableLeaf },
+		offsetParent: function() { return this.parentNode },
+		getLength: function() { return this.row.length },
+		isFirst: function() { return this.row.nodeIndex === 0 },
+		isLast: function() { return this.row.nodeIndex === this.row.parentNode.length - 1 },
 		isFolder: function() {
-			if (this.row && this.row.length) return T;
-			return Leaf.prototype.isFolder.call(this);
+			return this.row && this.row.length ? T : Leaf.prototype.isFolder.call(this);
 		},
 		fix_text_size: function() {
 			var t = this.formatNode, a = $.bcr(this.$()), b = $.bcr(t.$()), c = b.left - a.left;
@@ -10541,9 +10562,6 @@ TableLeaf = define.widget('TableLeaf', {
 		// leaf接口
 		render_nodes: function(x) {
 			this.tr().append(x);
-			//for (var i = 0, l = x.length, r = this.tr(); i < l; i ++)
-			//	r.add(x[i]);
-			//l && Q(r.$()).after(r.html_nodes());
 			this.loaded = T;
 		},
 		// leaf接口
@@ -10570,7 +10588,7 @@ TableLeaf = define.widget('TableLeaf', {
 /* `tabletoggle` */
 TableToggle = define.widget('TableToggle', {
 	Const: function(x, p) {
-		p.table.type === 'Form' && (this.className += ' z-form');
+		p.table.type === 'Form' && (this.className += ' z-form');		
 		Toggle.apply(this, arguments);
 		this.tr().tableToggle = this;
 	},
@@ -10580,20 +10598,15 @@ TableToggle = define.widget('TableToggle', {
 	},
 	Prototype: {
 		className: 'w-toggle w-tabletoggle',
-		tr: function() {
-			return this.closest('TR');
-		},
-		isExpanded: function() {
-			return this.x.expanded;
-		},
+		getDefaultOption: _table_f_dfopt('Toggle'),
+		tr: function() { return this.closest('TR') },
 		toggle: function(a, b) {
 			Toggle.prototype.toggle.apply(this, arguments);
 			var t = this.tr();
 			t.toggle_rows(this.x.expanded);
 			for (var i = t.nodeIndex + 1, d = t.parentNode, c, l = d.length; i < l; i ++) {
 				c = d[i];
-				if (c.tableToggle)
-					break;
+				if (c.tableToggle) break;
 				c.display(this, T);
 			}
 			t.table.parallel('fixFoot');
@@ -10642,6 +10655,7 @@ TableTripleBox = define.widget('TableTripleBox', {
 	},
 	Prototype: {
 		className: 'w-checkbox w-triplebox',
+		getDefaultOption: _table_f_dfopt('TripleBox'),
 		tr: _table_tr,
 		getRelates: function() {
 			var r = [], g = this.tr().table;
@@ -10674,6 +10688,7 @@ TableRadio = define.widget('TableRadio', {
 	},
 	Prototype: {
 		className: 'w-f w-radio',
+		getDefaultOption: _table_f_dfopt('Radio'),
 		tr: _table_tr
 	}
 }),
@@ -10770,12 +10785,9 @@ TableRow = define.widget('TableRow', {
 		// 高亮某个字段的关键字 /@ a -> colIndex, b -> key, c -> matchLength, d -> keyCls
 		highlight: function(a, b, c, d) {
 			var f = this.cellElem(a);
-			if (f) {
-				f.innerHTML = $.strHighlight((f._innerhtml || (f._innerhtml = f.innerHTML)), b, c, d);
-			}
-			for (var i = 0; i < this.length; i ++) {
+			if (f) f.innerHTML = $.strHighlight((f._innerhtml || (f._innerhtml = f.innerHTML)), b, c, d);
+			for (var i = 0; i < this.length; i ++) 
 				this[i].highlight(a, b, c, d);
-			}
 		},
 		html_cells: function(i, l) {
 			var a = this.nodeIndex, b = [], u = this.table, c = u.getColGroup(), d = this.x.data, e = this.type_tr, q = this.pubParent(),
@@ -10851,7 +10863,7 @@ TableRow = define.widget('TableRow', {
 });
 _parallel_methods(TableRow, 'addClass removeClass display before after append prepend replace remove');
 var
-_td_wg = {Leaf: T, Toggle: T},
+_td_wg = {Leaf: T, Toggle: T, TripleBox: T, Radio: T},
 /* `td` tcell 的子节点。当字段是一个 widget 时会先产生一个 TD 实例，包裹这个 widget 子节点。 */
 TD = define.widget('TD', {
 	Const: function(x, p) {
@@ -10890,10 +10902,9 @@ TD = define.widget('TD', {
 			t && (s += ' style="' + t + '"');
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
 			t = this.x.text;
-			if (t) {
+			if (t != N) {
 				t = this.html_format(t, e ? this.x.format || c.x.format : this.x.format, d, _table_f_attr);
-				if (typeof t === _OBJ)
-					this.x.node = t;
+				if (typeof t === _OBJ) this.x.node = t;
 			}
 			s += '>' + this.html_prepend() + this.html_nodes();
 			if (!this.x.node) {
@@ -11072,6 +11083,7 @@ THR = define.widget('THR', {
 		}
 	},
 	Prototype: {
+		className: 'w-tr w-thr',
 		type_thr: T,
 		getBox: TR.prototype.getBox,
 		isEvent4Box: TR.prototype.isEvent4Box,
@@ -11079,9 +11091,7 @@ THR = define.widget('THR', {
 		check: function(a) {
 			var b = this.getBox();
 			if (b) {
-				for (var i = 0, c = b.isChecked(), r = this.rootNode.rows(), l = r.length; i < l; i ++) {
-					r[i].check(a);
-				}
+				for (var i = 0, r = this.rootNode.rows(), l = r.length; i < l; i ++) r[i].check(a);
 			}
 		}
 	}
@@ -11090,6 +11100,7 @@ THR = define.widget('THR', {
 TFR = define.widget('TFR', {
 	Extend: THR,
 	Prototype: {
+		className: 'w-tr w-tfr',
 		type_thr: F,
 		type_tfr: T
 	}
@@ -11192,9 +11203,9 @@ ContentTHead = define.widget('ContentTHead', {
 				if (r.x.resizable) {
 					Q('td', this.$()).append('<div class=w-th-rsz></div>');
 					Q('.w-th-rsz', this.$()).height(this.height()).on('mousedown', function(e) {
-						var b = this.parentNode, n = Column.index(b), x = e.pageX,
-							o = $.db('<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr(this).top + 'px;background:#aaa;"></div>');
+						var b = this, n = Column.index(b.parentNode), x = e.pageX, o;
 						$.moveup(function(e) {
+							if (!o) o = $.db('<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr(b).top + 'px;background:#aaa;z-index:100"></div>');
 							o.style.left = e.pageX + 'px';
 						}, function(e) {
 							g.colWidth(n, g.colWidth(n) + e.pageX - x);

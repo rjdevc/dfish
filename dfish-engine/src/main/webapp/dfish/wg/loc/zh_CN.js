@@ -87,6 +87,10 @@ download_complete: '下载完成',
 download_cannotopen: '无法打开此文件',
 download_fail: '下载失败',
 
+tab_close: '关闭标签',
+tab_close_others: '关闭其他标签',
+tab_close_all: '关闭全部标签',
+
 connection_not_wifi: '您当前处于非wifi网络环境下，继续使用可能产生流量，确定继续吗？',
 
 debug: {

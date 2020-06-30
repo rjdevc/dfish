@@ -104,7 +104,6 @@ dfish.config({
             fileTypes: '*.png;*.jpg;*.jpeg;',
             uploadButtons: [{type: 'UploadButton', icon: '.f-i-upload-image'}]
         },
-
         'Toggle': {
             height: 40,
             collapsedIcon: '.f-i-plus',
@@ -113,17 +112,6 @@ dfish.config({
             heightMinus: 1
         },
         'Toggle.z-hr': {
-            cls: null,
-            heightMinus: 0
-        },
-        'TableToggle.z-form': {
-            height: 40,
-            collapsedIcon: '.f-i-plus',
-            expandedIcon: '.f-i-minus',
-            cls: 'bd-split bd-onlybottom',
-            heightMinus: 1
-        },
-        'TableToggle.z-form.z-hr': {
             cls: null,
             heightMinus: 0
         },

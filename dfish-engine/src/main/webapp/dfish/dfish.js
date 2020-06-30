@@ -1502,7 +1502,7 @@ Drop = _createClass({
 		_drop_cache[a.id] = this;
 	}
 }),
-_dnd_selector = {Tree: '.w-leaf', Table: '.w-tr', ButtonBar: '.w-button', Tabs: '.w-tab', Album: '.w-img'},
+_dnd_selector = {Tree: '.w-leaf', Table: '.w-tr:not(.w-thr,.w-tfr)', ButtonBar: '.w-button', Tabs: '.w-tab', Album: '.w-img'},
 _dnd_childtype = {Tree: 'Leaf', Table: 'TR', ButtonBar: 'Button', Tabs: 'Tab', Album: 'Img'},
 _dndSortNormal = function(a) {
 	var d = $('_dndhelper') && $('_dndhelper').dndSortID;
@@ -1534,8 +1534,7 @@ $.draggable = function(a, b) {
 				return;
 			m = f != v && f != u && (f.dndSortID ? $.all[f.dndSortID] : $.widget(f)), o;
 			n = sn = N;
-			// 鼠标按下并移动5像素后才能触发拖动，避免误操作
-			if (!u && (Math.abs(x - ix) >= 5 || Math.abs(y - iy) >= 5)) {
+			if (!u) {
 				var t = c.attr('text'), h;
 				if (!t) {
 					var ic = c.attr('icon') || (c.type === 'Img' && c.attr('src'));
@@ -1555,44 +1554,42 @@ $.draggable = function(a, b) {
 				v = h && _db('<div class=w-dialog-cover style="opacity:.3;z-index:20"></div>');
 				u = _db('<div style="position:absolute;background:#f2f2f2;padding:2px 7px;max-width:300px;border:1px dashed #ddd;opacity:.6;z-index:22" class=f-fix>' + (t || '&nbsp;') + '</div>');
 			}
-			if (u) {
-				u.style.left = (x + 7) + 'px';
-				u.style.top  = (y + 7) + 'px';
-				if (m && (p = dp(m)) && (o = _drop_cache[p.id])) {
-					if (_dnd_childtype[p.type] && m != p)
-					 	m = m.closest(_dnd_childtype[p.type]);
-					if (m == c || c.contains(m)) {
-						_classAdd(m.$(), 'f-dnd-notallowed');
-					} else {
-						if (o.cst.sort) {
-							var r = $.bcr(m.$());
-							sn = r.top <= y && y - r.top < 4 && m.prev() != c ? 'before' :
-								r.bottom > y && r.bottom - y < 4 && m.next() != c ? 'after' : F;
-							if (sn && o.cst.isDisabled && m != p && o.cst.isDisabled(e, {draggable: c, droppable: m, type: sn}))
-								sn = F;
-							if (sn) {
-								_dndSortNormal(T);
-								$.query(m.$())[sn]($(d) || (m.type === 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>'));
-								$(g).dndSortID = $(d).dndSortID = m.id;
-								$.classAdd($(d), 'z-after', sn === 'after');
-								$(g).style.left = m.padSort ? m.padSort() + 'px' : '';
-								m.trigger('mouseOut');
-								_dndSortNormal(F);
-							}
-						}
-						if (!sn && o.cst.isDisabled && o.cst.isDisabled(e, {draggable: c, droppable: m, type: 'append'}))
-							_classAdd(m.$(), 'f-dnd-notallowed');
-						else {
-							n = m;
-							_classAdd(m.$(), 'f-dnd-allowed');
+			u.style.left = (x + 7) + 'px';
+			u.style.top  = (y + 7) + 'px';
+			if (m && (p = dp(m)) && (o = _drop_cache[p.id])) {
+				if (_dnd_childtype[p.type] && m != p)
+				 	m = m.closest(_dnd_childtype[p.type]);
+				if (m == c || c.contains(m)) {
+					_classAdd(m.$(), 'f-dnd-notallowed');
+				} else {
+					if (o.cst.sort) {
+						var r = $.bcr(m.$());
+						sn = r.top <= y && y - r.top < 4 && m.prev() != c ? 'before' :
+							r.bottom > y && r.bottom - y < 4 && m.next() != c ? 'after' : F;
+						if (sn && o.cst.isDisabled && m != p && o.cst.isDisabled(e, {draggable: c, droppable: m, type: sn}))
+							sn = F;
+						if (sn) {
+							_dndSortNormal(T);
+							$.query(m.$())[sn]($(d) || (m.type === 'TR' ? '<tr id=' + d + ' class=f-dnd-sort-tr><td id=' + g + ' class=_g colspan=' + m.rootNode.getColGroup().length + '></tr>' : '<div id=' + d + ' class=f-dnd-sort><div id=' + g + ' class=_g></div></div>'));
+							$(g).dndSortID = $(d).dndSortID = m.id;
+							$.classAdd($(d), 'z-after', sn === 'after');
+							$(g).style.left = m.padSort ? m.padSort() + 'px' : '';
+							m.trigger('mouseOut');
+							_dndSortNormal(F);
 						}
 					}
+					if (!sn && o.cst.isDisabled && o.cst.isDisabled(e, {draggable: c, droppable: m, type: 'append'}))
+						_classAdd(m.$(), 'f-dnd-notallowed');
+					else {
+						n = m;
+						_classAdd(m.$(), 'f-dnd-allowed');
+					}
 				}
-				if (!sn && $(d)) {
-					_dndSortNormal(T);
-					m && m.trigger('mouseOver');
-					_rm(d);
-				}
+			}
+			if (!sn && $(d)) {
+				_dndSortNormal(T);
+				m && m.trigger('mouseOver');
+				_rm(d);
 			}
 		}, function(e) {
 			if (u) {
@@ -2334,7 +2331,7 @@ _merge($, {
 		ie && _attach(doc, 'selectstart', _stop);
 		_classAdd(cvs, 'f-unsel');
 		_attach(doc, br.mobile ? 'touchmove' : 'mousemove', d = function(e) {
-			dir ? a(e) : c && (Math.abs(_eventX(e) - _eventX(c)) > 2 || Math.abs(_eventY(e) - _eventY(c)) > 2) && (dir = T);
+			dir ? a(e) : c && (Math.abs(_eventX(e) - _eventX(c)) > 3 || Math.abs(_eventY(e) - _eventY(c)) > 3) && (dir = T);
 		}, T);
 		_attach(doc, br.mobile ? 'touchend' : 'mouseup', function(e) {
 			dir && b && b(e);
