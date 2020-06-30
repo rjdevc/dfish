@@ -3283,7 +3283,7 @@ define( {
         { name: 'checked', type: 'Booelan', remark: '是否默认选中。', optional: true },
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ] },
-      { name: 'description', type: 'String', remark: '图片说明。当 album face="straight" 时会显示说明。' },
+      { name: 'description', type: 'String', remark: '图片说明。' },
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'dir', type: 'String', remark: '排列方式。可选值: <b>h</b><s>(横排)</s>, <b>v</b><s>(竖排)</s>。默认值为h' },
       { name: 'focusable', type: 'Boolean', remark: '是否可选中。' },
@@ -4776,7 +4776,7 @@ define( {
   	extend: 'Slider',
     Config: [
       { name: 'img', type: 'String | JigsawImg', remark: '获取拼图的图片地址，或拼图图片对象。如果是地址，通过Ajax访问该地址应返回一个JigsawImg对象。' },
-      { name: 'auth', type: 'String | JigsawAuth', remark: '验证拼图是否正确的地址，或拼图验证对象。如果是地址，通过Ajax访问该地址应返回一个JigsawAuth对象。地址支持变量 <b>$response</b><s>(值)</s> 和 <b>$token</b><s>(jigsawImg的token)</s>。' }
+      { name: 'auth', type: 'String | JigsawAuth', remark: '验证拼图是否正确的地址，或拼图验证对象。如果是地址，通过Ajax访问该地址应返回一个JigsawAuth对象。地址支持变量 <b>$value</b><s>(值，范围0-100)</s> 和 <b>$token</b><s>(jigsawImg的token)</s>。' }
     ],
     Event: [
       { name: 'auth', remark: '验证完成后触发。' },
@@ -4897,7 +4897,7 @@ define( {
   "JigsawAuth": {
   	remark: '拼图的验证对象。',
     Config: [
-      { name: 'src', type: 'String', remark: '验证地址。' },
+      { name: 'src', type: 'String', remark: '验证地址。支持变量 <b>$value</b><s>(值，范围0-100)</s> 和 <b>$token</b><s>(jigsawImg的token)</s>' },
       { name: 'result', type: 'Object', remark: '设置分隔格式。', param: [
         { name: 'success', type: 'Boolean', remark: '验证是否成功。' },
         { name: 'text', type: 'String', remark: '验证结果的描述信息。' }

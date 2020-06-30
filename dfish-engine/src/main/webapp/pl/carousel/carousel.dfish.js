@@ -1,7 +1,7 @@
 /* carousel
  * 幻灯片
 
-{ "type": "carousel", "id": "f_carousel0", "width": "470", height: 540, "thumbwidth": 80, "thumbheight": 60, "bigwidth": 470, "bigheight": 470,
+{ "type": "carousel", "id": "f_carousel0", "width": "470", height: 540, "thumbWidth": 80, "thumbHeight": 60, "bigWidth": 470, "bigHeight": 470,
   "value": [
     { "thumbnail": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0",  "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0",  "text": "CBA两老板入财富榜500强 新疆冠军巨鳄令姚明望尘莫及", "href": "javascript:alert(this.id)" },
     { "thumbnail": "http://tp2.sinaimg.cn/2214257545/180/5634974717/0",  "url": "http://tp2.sinaimg.cn/2214257545/180/5634974717/0",  "text": "有钱任性！新疆队老板送30辆进口豪车 西热兴奋晒图", "href": "#1" },
@@ -10,21 +10,21 @@
     { "thumbnail": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0", "url": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0", "text": "亚冠16强对阵：淘汰赛首迎中国德比 中日霸主大对决", "href": "#4" }
   ]
 },
-{ "type": "carousel", "id": "f_carousel1", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-1",
+{ "type": "carousel", "id": "f_carousel1", "width": "470", height: 470, "bigWidth": 470, "bigHeight": 470, "cls": "carousel-1",
   "value": [
     { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0" },
     { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt" },
     { "thumbnail": ".f-dot", "url": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0" }
   ]
 },
-{ "type": "carousel", "id": "f_carousel2", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-2",
+{ "type": "carousel", "id": "f_carousel2", "width": "470", height: 470, "bigWidth": 470, "bigHeight": 470, "cls": "carousel-2",
   "value": [
     { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0",  "href": "javascript:alert(this.id)" },
     { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt",  "href": "#1" },
     { "thumbnail": ".f-dot", "url": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0", "href": "#4" }
   ]
 },
-{ "type": "carousel", "id": "f_carousel3", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-3",
+{ "type": "carousel", "id": "f_carousel3", "width": "470", height: 470, "bigWidth": 470, "bigHeight": 470, "cls": "carousel-3",
   "value": [
     { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0", "text": "CBA两老板入财富榜500强 新疆冠军巨鳄令姚明望尘莫及", "href": "javascript:alert(this.id)" },
     { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt", "text": "有钱任性！新疆队老板送30辆进口豪车 西热兴奋晒图", "href": "#1" },
@@ -34,9 +34,16 @@
 
 */
 
-require.css( './carousel.css' );
+var
+$ = require( 'dfish' ),
+W = require( 'Widget' ),
+_cssLoaded = null,
+cssEvent = new $.Event(),
+cssLoad = function(a, b) {
+	_cssLoaded ? a.call(b) : cssEvent.addEventOnce('load', a, b);
+};
 
-var $ = require( 'dfish' ), W = require( 'Widget' );
+require.css( './carousel.css', function() {_cssLoaded = true; cssEvent.fireEvent('load');} );
 
 define.widget( 'Carousel', {
 	Const: function( x, p ) {
@@ -44,46 +51,67 @@ define.widget( 'Carousel', {
 		if ( typeof x.value === 'string' )
 			x.value = $.jsonParse( x.value );
 		for ( var i = 0, t = [], f = [], g = $.abbr + '.all["' + this.id + '"]', s, v = x.value, l = v && v.length; i < l; i ++ ) {
-			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbWidth, iconheight: x.thumbHeight, width: x.thumbWidth, height: x.thumbHeight, target: this.id + 'i' + i, focus: i === 0, on: { mouseOver: g + '.pause(' + i + ')' } } );
-			s = '<img src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
+			t.push( { icon: v[ i ].thumbnail || v[ i ].url, width: x.thumbWidth, height: x.thumbHeight, target: this.id + 'i' + i, focus: i === 0, on: { mouseOver: g + '.pause(this)' } } );
+			s = '<img src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigWidth + ' height=' + x.bigHeight + '>';
 			if ( v[ i ].text )
-				s += '<b class=_b></b><span class=_t>' + v[ i ].text + '</span>';
+				s += '<b class=_b></b><span class="_t f-omit" title="' + $.strQuot(v[ i ].text) + '">' + v[ i ].text + '</span>';
 			if ( v[ i ].href )
 				s = '<a ' + (v[ i ].href.indexOf( 'javascript:' ) === 0 ? ' onclick=' + g + '.click(' + i + ')' : 'href=' + v[ i ].href + ' target=_blank') + '>' + s + '</a>';
 			f.push( { type: 'Html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
 		}
 		this.tab = this.add( { type: 'ButtonBar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseOut: g + '.play()' } } );
-		this.fra = this.add( { type: 'Frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseoVer: g + '.pause()', mouseOut: g + '.play()' } } );
+		this.fra = this.add( { type: 'Frame', width: '*', height: x.bigHeight, dft: this.id + 'i0', nodes: f, on: { mouseOver: g + '.pause()', mouseOut: g + '.play()', change: g + '.frameChange()' } } );
+		//this.className += ' z-hideprev';
+		//if (this.tab.length <= 1) this.className += ' z-hidenext';
 	},
 	Extend: 'Vert',
 	Listener: {
 		body: {
-			ready: function() { this.play(); }
+			ready: function() { cssLoad(this.fixText, this); this.play(); }
 		}
 	},
 	Prototype: {
 		className: 'w-carousel',
 		index: 0,
+		fixText: function() {
+			if (this.x.cls && this.x.cls.indexOf('carousel-3') > -1) {
+				var w = this.tab.$().offsetWidth;
+				Q('.w-carousel-big ._t', this.$()).css({right: w + 15});
+			}
+		},
 		play: function() {
 			var self = this;
 			clearTimeout( this.timer );
 			this.timer = setTimeout( function() {
 				if ( self._disposed )
 					return;
-				var t = self.tab[ self.index ++ ];
-				((t && t.next()) || self.tab[ self.index = 0 ]).focus();
+				var t = self.tab.getFocus();
+				(t.next() || self.tab[0]).focus();
 				self.play();
 			}, 3000 );
 		},
 		pause: function( a ) {
 			clearTimeout( this.timer );
-			a != null && this.tab[ this.index = a ].focus();
+			a != null && a.focus();
 		},
 		click: function( a ) {
 			this.formatJS( this.x.value[ a ].href );
 		},
+		frameChange: function() {
+			var f = this.fra.getFocus();
+			//this.addClass('z-hideprev', !f.prev() );
+			//this.addClass('z-hidenext', !f.next() );
+		},
+		prev: function() {
+			var f = this.tab.getFocus();
+			this.pause(f.prev() || f.parentNode.last());
+		},
+		next: function() {
+			var f = this.tab.getFocus();
+			this.pause(f.next() || f.parentNode[0]);
+		},
 		html_nodes: function() {
-			return this.fra.html() + this.tab.html();
+			return this.fra.html() + this.tab.html() + '<div class="_prev f-i-preview-prev" onclick="' + $.abbr + '.widget(this).prev()"></div><div class="_next f-i-preview-next" onclick="' + $.abbr + '.widget(this).next()"></div>';
 		},
 		dispose: function() {
 			clearTimeout( this.timer );
