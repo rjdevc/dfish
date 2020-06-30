@@ -4,6 +4,9 @@ import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.hibernate5.dao.impl.FrameworkDao4Hibernate;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate5.HibernateCallback;
 
 import java.util.*;
 
@@ -102,4 +105,42 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
         return dataList;
     }
 
+    @Override
+    public int bulkSave(List<PubFileRecord> entities) {
+        if (Utils.isEmpty(entities)) {
+            throw new IllegalArgumentException("entities can not be null");
+        }
+        return getHibernateTemplate().execute((session) -> {
+            for (PubFileRecord entity : entities) {
+                session.save(entity);
+            }
+            return entities.size();
+        });
+    }
+
+    @Override
+    public int bulkUpdate(List<PubFileRecord> entities) {
+        if (Utils.isEmpty(entities)) {
+            throw new IllegalArgumentException("entities can not be null");
+        }
+        return getHibernateTemplate().execute((session) -> {
+            for (PubFileRecord entity : entities) {
+                session.update(entity);
+            }
+            return entities.size();
+        });
+    }
+
+    @Override
+    public int bulkDelete(List<PubFileRecord> entities) {
+        if (Utils.isEmpty(entities)) {
+            throw new IllegalArgumentException("entities can not be null");
+        }
+        return getHibernateTemplate().execute((session) -> {
+            for (PubFileRecord entity : entities) {
+                session.delete(entity);
+            }
+            return entities.size();
+        });
+    }
 }

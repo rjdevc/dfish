@@ -236,4 +236,25 @@ public interface FrameworkDao<P, ID extends Serializable> {
      */
     void evict(Object entity);
 
+    /**
+     * 批量保存
+     * @param entities 实体对象列表
+     * @return int 保存成功数量
+     */
+    int bulkSave(List<P> entities);
+
+    /**
+     * 批量修改
+     * @param entities 实体对象列表
+     * @return int 修改成功数量
+     */
+    int bulkUpdate(List<P> entities);
+
+    /**
+     * 批量保存
+     * @param entities 实体对象列表
+     * @return int 删除成功数量
+     */
+    int bulkDelete(List<P> entities);
+
 }
