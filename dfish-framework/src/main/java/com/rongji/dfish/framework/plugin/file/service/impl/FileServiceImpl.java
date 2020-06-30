@@ -490,6 +490,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         List<PubFileRecord> records = listByIds(fileIds);
         Date now = new Date();
         for (PubFileRecord record : records) {
+            dao.evict(record);
             record.setFileId(getNewId());
             record.setFileLink(fileLink);
             record.setFileKey(fileKey);
