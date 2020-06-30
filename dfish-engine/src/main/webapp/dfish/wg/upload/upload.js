@@ -1344,7 +1344,7 @@ AbsUpload = define.widget('AbsUpload', {
 	}
 }),
 
-Upload = AjaxUpload = define.widget('AjaxUpload', {
+Upload = define.widget('AjaxUpload', {
 	Extend: AbsUpload,
 	Listener: {
 		body: {

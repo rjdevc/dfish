@@ -147,7 +147,7 @@ _superTrigger = function(a, b, c) {
 },
 _html_prop_title = function() {
 	return _proto.html_prop.call(this) + this.prop_title();
-}
+},
 // 生成html事件属性 / @a -> context, s -> 指定要有的事件
 _html_on = function(s) {
 	var s = s || '', n, h = this.Const.Listener, r = _white_events[h && h.range] || _white_events.all;
@@ -1504,10 +1504,7 @@ W = define('Widget', function() {
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
 			if (b) {
-				var s = '';
-				//try {
-					s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d, e) : this.formatStr(b, N, c !== F && 'strEscape', d, e);
-				//} catch(ex) {	throw ex;}
+				var s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d, e) : this.formatStr(b, N, c !== F && 'strEscape', d, e);
 				return typeof s === _STR ? _parseHTML.call(this, s) : s;
 			} else
 				return c !== F ? $.strEscape(a) : (a == N ? '' : '' + a);
@@ -3408,7 +3405,7 @@ Split = define.widget('Split', {
 						self.toggle(t ? k : j);
 					}
 				}
-			});
+			}, e);
 		},
 		// a -> bool/数字/百分比/*
 		toggle: function(a) {
@@ -4255,6 +4252,10 @@ Img = define.widget('Img', {
 		x.src && !(x.text || x.format) && (this.className += ' z-i');
 		x.badge && this.init_badge();
 		this.rootNode && this.defaults({width: -1, height: -1});
+		if (x.box) {
+			this.box = CheckBox.parseOption(this, {cls: 'w-img-box', checked: x.focus});
+			this.box.type === 'TripleBox' && this.box.addEvent('change', function() {this._focus(this.box.isChecked())}, this);
+		}
 	},
 	Listener: {
 		body: {
@@ -4281,9 +4282,6 @@ Img = define.widget('Img', {
 		className: 'w-img',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
-		width_minus: function() {
-			return (p.x.space || 0);
-		},
 		init_badge: function() {
 			return Button.prototype.init_badge.call(this);
 		},
@@ -4306,6 +4304,7 @@ Img = define.widget('Img', {
 		_focus: function(a, e) {
 			var a = a == N || a, p = this.parentNode, b = p && p === this.rootNode && p.getFocus();
 			$.classAdd(this.$(), 'z-on', a);
+			a === F && this.box.check(F);
 			a && b && b !== this && !p.x.focusMultiple && b._focus(F);
 		},
 		toggleFocus: function() {
@@ -4346,22 +4345,20 @@ Img = define.widget('Img', {
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call(this, this.x.src),
 				iw = this.x.imgWidth, ih = this.x.imgHeight, w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh,
 				g = $.image(u, {width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()'});
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
 		},
 		html_text: function() {
-			var x = this.x, t = this.html_format(), w = x.textWidth;
-			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (x.br ? 'wdbr' : 'fix') + '"' + this.prop_title() + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
-					(typeof t === _OBJ ? this.add(t, -1).html() : '<span class=w-img-s>' + t + '</span>') + (x.description ? '<div class="w-img-d f-fix"' + this.prop_title(x.description) + '>' + x.description + '</div>' : '') + '</div>' : '';
+			var t = this.html_format(), w = this.x.textWidth;
+			return t ? '<div id=' + this.id + 't class="w-img-t f-' + (this.x.br ? 'wdbr' : 'fix') + '"' + this.prop_title() + ' style="' + (w ? 'width:' + w + 'px' : '') + '">' +
+					(typeof t === _OBJ ? this.add(t, -1).html() : '<span class=w-img-s>' + t + '</span>') + '</div>' : '';
+		},
+		html_desc: function() {
+			var t = this.x.description;
+			return t ? '<div class=w-img-desc title=""><div class="_desc f-' + (this.x.br ? 'wdbr' : 'fix') + '">' + (typeof t === _OBJ ? this.add(t, -1).html() : t) + '</div></div>' : '';
 		},
 		html_nodes: function() {
-			var t = this.html_text(), s = this.html_img(t);
-			if (this.x.box) {
-				this.box = CheckBox.parseOption(this, {cls: 'w-img-box', checked: this.x.focus});
-				this.box.type === 'TripleBox' && this.box.addEvent('change', function() {this._focus(this.box.isChecked())}, this);
-				s += this.box.html();
-			}
-			s += t;
-			return s;
+			var t = this.html_text();
+			return this.html_img(t) + (this.box ? this.box.html() : '') + this.html_text();
 		}
 	}
 }),
@@ -4703,7 +4700,7 @@ _dialogPosition = function(a) {
 	return a && (_dialogPositionHooks[a] === F ? N : '' + (_dialogPositionHooks[a] || a));
 },
 _dialogSnapOuter = {t: 'tb', top: 'tb', r: 'rl', right: 'rl', b: 'bt', bottom: 'bt', l: 'lr', left: 'lr', c: 'cc', center: 'cc',
-	tl: '14', tr: '23', rt: '21', rb: '34', bl: '41', br: '32', lt: '12', lb: '43'};
+	tl: '14', tr: '23', rt: '21', rb: '34', bl: '41', br: '32', lt: '12', lb: '43'},
 _dialogSnap = function(a) {
 	var b = a.position;
 	if (b) {
@@ -4816,7 +4813,7 @@ Dialog = define.widget('Dialog', {
 									$.remove(o);
 									s = o = N;
 								}
-							});
+							}, e);
 						});
 				}
 			},
@@ -5016,7 +5013,7 @@ Dialog = define.widget('Dialog', {
 						o.$().style[h] = $.numRange(l + r * (e.clientX - x), 100 - z, w - 30) + 'px';
 					}, function(e) {
 						m && $.remove(m);
-					});
+					}, e);
 				}
 			}	
 		},
@@ -7704,13 +7701,12 @@ Slider = define.widget('Slider', {
 		dragStart: function(a, b) {
 			if (!this.usa())
 				return;
-			var x = b.targetTouches ? b.targetTouches[0].clientX : b.clientX, m = this.max(), n = this.min(), f = _number(a.style.left), v = this.$v().value, 
+			var x = $.eventX(b), m = this.max(), n = this.min(), f = _number(a.style.left), v = this.$v().value, 
 				g = this.thumbWidth(), w = this.formWidth() - g, self = this, t = this.attr('tip') === T ? '$0' : this.attr('tip'),
 				d = this.tip(v || this.min());
 			self.trigger('dragStart');
 			$.moveup(function(e) {
-				var c = e.targetTouches ? e.targetTouches[0].clientX : e.clientX,
-					l = $.numRange(f + c - x, 0, w);
+				var c = $.eventX(e), l = $.numRange(f + c - x, 0, w);
 				v = Math.floor(Math.floor((m - n) * l / w));
 				a.style.left = l + 'px';
 				$(self.id + 'track').style.width = (l + g) + 'px';
@@ -7722,7 +7718,7 @@ Slider = define.widget('Slider', {
 				d && d.close();
 				self.trigger('drop', [v]);
 				self.removeClass('z-drag');
-			});
+			}, b);
 		},
 		max: function() {
 			var v = this.x.validate && this.x.validate.maxValue;
@@ -11207,7 +11203,7 @@ ContentTHead = define.widget('ContentTHead', {
 								r.colWidth(d, r.colWidth(d) + e.pageX - x);
 							}
 							o && $.remove(o);
-						});
+						}, e);
 					});
 				}
 				// 排序
