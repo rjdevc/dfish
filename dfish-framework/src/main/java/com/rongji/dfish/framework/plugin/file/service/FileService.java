@@ -738,6 +738,40 @@ public class FileService extends BaseService<PubFileRecord, String> {
         pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), fileId });
     }
 
+    public void copyRecordsByItems(List<UploadItem> fileItems, String fileLink, String fileKey) {
+        if (Utils.isEmpty(fileItems) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+            throw new IllegalArgumentException("every parameter can not be empty.");
+        }
+        List<String> fileIds = new ArrayList<>(fileItems.size());
+        for (UploadItem item : fileItems) {
+            fileIds.add(decId(item.getId()));
+        }
+        copyRecords(fileIds, fileLink, fileKey);
+    }
+
+    public void copyRecords(List<String> fileIds, String fileLink, String fileKey) {
+        if (Utils.isEmpty(fileIds) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+            throw new IllegalArgumentException("every parameter can not be empty.");
+        }
+        final List<PubFileRecord> records = findFileRecords(fileIds.toArray(new String[fileIds.size()]));
+        Date now = new Date();
+        for (PubFileRecord record : records) {
+            record.setFileId(getNewId());
+            record.setFileLink(fileLink);
+            record.setFileKey(fileKey);
+            record.setUpdateTime(now);
+        }
+        pubCommonDAO.getHibernateTemplate().execute(new HibernateCallback<Object>() {
+            @Override
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                for (PubFileRecord record : records) {
+                    session.save(record);
+                }
+                return null;
+            }
+        });
+    }
+
     /**
      * 转换成文件数据项
      *
