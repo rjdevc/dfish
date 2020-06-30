@@ -731,6 +731,11 @@ public class FileService extends BaseService<PubFileRecord, String> {
         }
     }
 
+    /**
+     * 更新文件链接
+     * @param fileId 文件编号
+     * @param fileLink 文件链接
+     */
     public void updateFileLink(String fileId, String fileLink) {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
             return;
@@ -738,7 +743,14 @@ public class FileService extends BaseService<PubFileRecord, String> {
         pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), fileId });
     }
 
-    public void copyRecordsByItems(List<UploadItem> fileItems, String fileLink, String fileKey) {
+    /**
+     * 拷贝文件记录
+     * @param fileItems 文件项列表
+     * @param fileLink 文件链接
+     * @param fileKey 链接关键字
+     * @return 拷贝完成的文件记录列表
+     */
+    public List<PubFileRecord> copyRecordsByItems(List<UploadItem> fileItems, String fileLink, String fileKey) {
         if (Utils.isEmpty(fileItems) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             throw new IllegalArgumentException("every parameter can not be empty.");
         }
@@ -746,10 +758,17 @@ public class FileService extends BaseService<PubFileRecord, String> {
         for (UploadItem item : fileItems) {
             fileIds.add(decId(item.getId()));
         }
-        copyRecords(fileIds, fileLink, fileKey);
+        return copyRecords(fileIds, fileLink, fileKey);
     }
 
-    public void copyRecords(List<String> fileIds, String fileLink, String fileKey) {
+    /**
+     * 拷贝文件记录
+     * @param fileIds 文件编号
+     * @param fileLink 文件链接
+     * @param fileKey 链接关键字
+     * @return 拷贝完成的文件记录列表
+     */
+    public List<PubFileRecord> copyRecords(List<String> fileIds, String fileLink, String fileKey) {
         if (Utils.isEmpty(fileIds) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             throw new IllegalArgumentException("every parameter can not be empty.");
         }
@@ -770,6 +789,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
                 return null;
             }
         });
+        return records;
     }
 
     /**
