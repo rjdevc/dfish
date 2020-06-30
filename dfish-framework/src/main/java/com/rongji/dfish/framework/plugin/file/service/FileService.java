@@ -775,6 +775,8 @@ public class FileService extends BaseService<PubFileRecord, String> {
         final List<PubFileRecord> records = findFileRecords(fileIds.toArray(new String[fileIds.size()]));
         Date now = new Date();
         for (PubFileRecord record : records) {
+            pubCommonDAO.evictObject(record);
+
             record.setFileId(getNewId());
             record.setFileLink(fileLink);
             record.setFileKey(fileKey);
