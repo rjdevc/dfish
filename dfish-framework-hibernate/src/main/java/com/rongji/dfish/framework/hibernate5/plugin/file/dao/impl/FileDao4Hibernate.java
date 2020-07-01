@@ -108,7 +108,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
     @Override
     public int bulkSave(List<PubFileRecord> entities) {
         if (Utils.isEmpty(entities)) {
-            throw new IllegalArgumentException("entities can not be null");
+            return 0;
         }
         return getHibernateTemplate().execute((session) -> {
             for (PubFileRecord entity : entities) {
@@ -121,7 +121,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
     @Override
     public int bulkUpdate(List<PubFileRecord> entities) {
         if (Utils.isEmpty(entities)) {
-            throw new IllegalArgumentException("entities can not be null");
+            return 0;
         }
         return getHibernateTemplate().execute((session) -> {
             for (PubFileRecord entity : entities) {
@@ -134,7 +134,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
     @Override
     public int bulkDelete(List<PubFileRecord> entities) {
         if (Utils.isEmpty(entities)) {
-            throw new IllegalArgumentException("entities can not be null");
+            return 0;
         }
         return getHibernateTemplate().execute((session) -> {
             for (PubFileRecord entity : entities) {
