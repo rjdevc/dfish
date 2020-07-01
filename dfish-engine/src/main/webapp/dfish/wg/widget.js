@@ -2995,7 +2995,7 @@ Buttonbar = define.widget('buttonbar', {
 						ready: 'this.addClass("z-on",!!' + abbr(this[i]) + '.isFocus())',
 						click: 'var b=this.getCommander().parentNode;' + abbr(this[i]) + '.click();b.overflow()',
 						close: 'var o=' + $.abbr + '.all["' + this[i].id + '"],p=o.parentNode;o.close();p._more&&p._more.drop()'
-					} , text: this[i].x.text, nodes: this[i].x.nodes}));
+					} , text: this[i].x.text, icon: this[i].x.icon, nodes: this[i].x.nodes}));
 					this[i].css({visibility: 'hidden'});
 				}
 			}
