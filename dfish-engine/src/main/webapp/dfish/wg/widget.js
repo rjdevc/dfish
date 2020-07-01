@@ -6386,7 +6386,7 @@ _Date = define.widget('date', {
 			valid: function(b, v) {
 				if (v) {
 					var c = v.replace(/\b(\d)\b/g, '0$1'), d = $.dateParse(c, this.x.format), y = d.getFullYear(), m = cfg.max_year || 3000, n = cfg.min_year || 1000;
-					if (y >= m || y <= n)
+					if (y > m || y < n)
 						return _form_err.call(this, b, 'time_exceed', [n, m]);
 					if (c != $.dateFormat(d, this.x.format)) {
 						return _form_err.call(this, b, 'time_format', [$.dateFormat(d, this.x.format)]);
