@@ -32,6 +32,14 @@
   ]
 }
 
+{ "type": "carousel", "id": "f_carousel3", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-4",
+  "value": [
+    { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0", "text": "CBA两老板入财富榜500强 新疆冠军巨鳄令姚明望尘莫及", "href": "javascript:alert(this.id)" },
+    { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt", "text": "有钱任性！新疆队老板送30辆进口豪车 西热兴奋晒图", "href": "#1" },
+    { "thumbnail": ".f-dot", "url": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0", "text": "男篮双国家队集训名单：小丁与阿联各领衔红蓝队", "href": "#4" }
+  ]
+}
+
 */
 
 var
@@ -51,7 +59,7 @@ define.widget( 'carousel', {
 		if ( typeof x.value === 'string' )
 			x.value = $.jsonParse( x.value );
 		for ( var i = 0, t = [], f = [], g = $.abbr + '.all["' + this.id + '"]', s, v = x.value, l = v && v.length; i < l; i ++ ) {
-			t.push( { icon: v[ i ].thumbnail || v[ i ].url, iconwidth: x.thumbwidth, iconheight: x.thumbheight, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(this)' } } );
+			t.push( { icon: v[ i ].thumbnail || v[ i ].url, text: i + 1, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(this)' } } );
 			s = '<img class=_big src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
 			if ( v[ i ].text )
 				s += '<b class=_b></b><span class="_t f-omit" title="' + $.strQuot(v[ i ].text) + '">' + v[ i ].text + '</span>';
@@ -75,7 +83,7 @@ define.widget( 'carousel', {
 		className: 'w-carousel',
 		index: 0,
 		fixText: function() {
-			if (this.x.cls && this.x.cls.indexOf('carousel-3') > -1) {
+			if (this.x.cls && (this.x.cls.indexOf('carousel-3') > -1 || this.x.cls.indexOf('carousel-4') > -1)) {
 				var w = this.tab.$().offsetWidth;
 				Q('.w-carousel-big ._t', this.$()).css({right: w + 15});
 			}

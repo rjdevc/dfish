@@ -9,7 +9,7 @@
 .w-carousel ._prev{left:0}
 .w-carousel ._next{right:0}
 .w-carousel.z-hideprev ._prev,.w-carousel.z-hidenext ._next,.w-carousel.z-one ._prev,.w-carousel.z-one ._next{display:none}
-
+.w-carousel .w-button ._t{visibility:hidden}
 
 .w-carousel-btn{border:2px solid transparent;margin:2px 0;}
 .w-carousel-btn.z-on{border-color:#fa7d3c}
@@ -38,3 +38,11 @@
 .carousel-3 .w-carousel-btn{width:6px;height:6px;background:#f2f2f2;border:0;margin:0 3px;border-radius:3px}
 .carousel-3 .w-carousel-btn ._ico{display:none}
 .carousel-3 .w-carousel-btn.z-on{width:20px}
+
+.carousel-4{position:relative;}
+.carousel-4 .w-carousel-bbr{position:absolute;bottom:5px;right:10px;height:30px!important;width:auto!important}
+.carousel-4 .w-carousel-btn{width:20px;height:20px;border:1px solid #fff;background:#a8180f;color:#fff;margin-left:3px}
+.carousel-4 .w-carousel-btn.z-on{background:transparent;color:#333}
+.carousel-4 .w-carousel-btn.z-on:before{content:' ';position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;opacity:.7}
+.carousel-4 .w-button ._t{position:relative;visibility:visible;padding:0}
+.carousel-4 .w-button ._i{display:none}
