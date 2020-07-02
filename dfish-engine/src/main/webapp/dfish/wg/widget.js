@@ -2167,13 +2167,13 @@ Scroll = define.widget('Scroll', {
 			return this.ovf().scrollTop == 0;
 		},
 		isScrollBottom: function() {
-			return Math.ceil(this.ovf().scrollTop) == this.scrollHeight();
+			return Math.abs(this.scrollHeight() - this.ovf().scrollTop) < 1;
 		},
 		isScrollLeft: function() {
 			return this.ovf().scrollLeft == 0;
 		},
 		isScrollRight: function() {
-			return Math.ceil(this.ovf().scrollLeft) == this.ovf().scrollWidth - this.ovf().clientWidth;
+			return Math.abs(this.ovf().scrollWidth - this.ovf().clientWidth - this.ovf().scrollLeft) < 1;
 		},
 		scrollHeight: function() {
 			return this.ovf().scrollHeight - this.ovf().clientHeight;
