@@ -8704,6 +8704,7 @@ AbsLeaf = define.widget('abs/leaf', {
 			this.addClass('z-folder', this.isFolder());
 			if (this.$('o') && ! this.$('r'))
 				$.prepend(this.$('o'), $.arrow(this.id + 'r', this.isOpen() ? 'b1' : 'r1'));
+			$.classAdd(this.$('c'), 'z-open', !!(this.isFolder() && this.x.open));
 		},
 		// @a -> sync? b -> fn?
 		request: function(a, b) {
