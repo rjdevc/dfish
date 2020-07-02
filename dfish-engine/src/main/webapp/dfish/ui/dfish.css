@@ -1134,5 +1134,7 @@ d\:wg{display:none}
 .f-i-close:before{content:'\e636'}
 .f-i-spinner:before{content:'\e630'}
 
-.f-i-preview-prev{width:40px;height:65px;background:url(g/prev.png);cursor:pointer}
-.f-i-preview-next{width:40px;height:65px;background:url(g/next.png);cursor:pointer}
+.f-i-img-prev{width:32px;height:32px;background:url(g/page.png) no-repeat -169px 0;cursor:pointer}
+.f-i-img-prev:hover{background-position:-109px 0}
+.f-i-img-next{width:32px;height:32px;background:url(g/page.png) no-repeat -53px 0;cursor:pointer}
+.f-i-img-next:hover{background-position:7px 0}

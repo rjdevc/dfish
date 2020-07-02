@@ -2167,13 +2167,13 @@ Scroll = define.widget('Scroll', {
 			return this.ovf().scrollTop == 0;
 		},
 		isScrollBottom: function() {
-			return this.ovf().scrollTop == this.scrollHeight();
+			return Math.ceil(this.ovf().scrollTop) == this.scrollHeight();
 		},
 		isScrollLeft: function() {
 			return this.ovf().scrollLeft == 0;
 		},
 		isScrollRight: function() {
-			return this.ovf().scrollLeft == this.ovf().scrollWidth - this.ovf().clientWidth;
+			return Math.ceil(this.ovf().scrollLeft) == this.ovf().scrollWidth - this.ovf().clientWidth;
 		},
 		scrollHeight: function() {
 			return this.ovf().scrollHeight - this.ovf().clientHeight;
@@ -3602,7 +3602,7 @@ ButtonBar = define.widget('ButtonBar', {
 							ready: 'this.addClass("z-on",!!' + abbr(this[i]) + '.isFocus())',
 							click: 'var b=this.getCommander().parentNode;' + abbr(this[i]) + '.click();b.overflow()',
 							close: 'var o=' + $.abbr + '.all["' + this[i].id + '"],p=o.parentNode;o.close();p._more&&p._more.drop()'
-						} , text: this[i].x.text, nodes: this[i].x.nodes}));
+						} , text: this[i].x.text, icon: this[i].x.icon, nodes: this[i].x.nodes}));
 						this[i].css({visibility: 'hidden'});
 					}
 				}
@@ -7425,7 +7425,7 @@ DatePicker = define.widget('DatePicker', {
 					return;
 				if (v) {
 					var c = v.replace(/\b(\d)\b/g, '0$1'), d = $.dateParse(c, this.x.format), y = d.getFullYear(), m = cfg.max_year || 3000, n = cfg.min_year || 1000;
-					if (y >= m || y <= n)
+					if (y > m || y < n)
 						return _form_err.call(this, b, 'time_exceed', [n, m]);
 					if (c != $.dateFormat(d, this.x.format)) {
 						return _form_err.call(this, b, 'time_format', [$.dateFormat(d, this.x.format)]);
