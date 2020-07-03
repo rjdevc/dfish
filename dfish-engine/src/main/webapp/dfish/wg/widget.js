@@ -8832,8 +8832,8 @@ ComboBox = define.widget('ComboBox', {
 		pick: function() {
 			if (this.x.picker && this.isNormal()) {
 				if (this.x.picker.type === 'Dialog' || !this.x.picker.type) {
-					var c = $.extend($.jsonClone(this.x.picker), {type: 'Dialog', isPick: T});
-					c.data = $.merge(c.data || {}, {value: this.val()});
+					var c = $.extend($.jsonClone(this.x.picker), {type: 'Dialog'});
+					c.data = $.extend(c.data || {}, {value: this.val()});
 					this.exec(c).addEvent('close', function() {!this.$().contains(document.activeElement) && this.focus(F);}, this);
 				} else if (W.isCmd(this.x.picker)) {
 					this.cmd(this.x.picker, this.val());
