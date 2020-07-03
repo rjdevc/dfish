@@ -873,6 +873,11 @@
 .w-structureitem.z-dir-h .w-structureitem-t{padding:5px}
 .w-structureitem-t.f-fix .w-structureitem-s{display:inline}
 
+.w-transfer-left,.w-transfer-right{border:1px solid #ddd}
+.w-transfer-bbr{width:60px}
+.w-transfer-bbr .w-button ._c{padding-left:8px}
+.w-transfer-bbr .w-button ._i{padding-right:8px}
+
 .f-pullup{width:100%;text-align:center;overflow:hidden;line-height:1;background:#f5f5f5}
 .f-pullup ._gut{height:40px;text-align:center;}
 .f-pullup ._desc{font-size:16px;color:#777}

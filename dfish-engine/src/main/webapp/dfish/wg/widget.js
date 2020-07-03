@@ -334,7 +334,7 @@ $.each('Menu Dialog Tip Loading Alert Confirm'.split(' '), function(v, i) {
 		a && (x.args = a);
 		b && (this._srcdata = b);
 		x.title && (x.title = $.strFormat(x.title, a));
-		typeof x.src === _STR && (x.src = this.formatStr(x.src, a, T));
+		//typeof x.src === _STR && (x.src = this.formatStr(x.src, a, T));
 		if (x.hide)
 			require(v).hide(this);
 		else
@@ -8832,8 +8832,8 @@ ComboBox = define.widget('ComboBox', {
 		pick: function() {
 			if (this.x.picker && this.isNormal()) {
 				if (this.x.picker.type === 'Dialog' || !this.x.picker.type) {
-					var c = $.extend($.jsonClone(this.x.picker), {type: 'Dialog'});
-					c.data = $.extend(c.data || {}, {value: this.val()});
+					var c = $.extend($.jsonClone(this.x.picker), {type: 'Dialog', isPick: T});
+					c.data = $.merge(c.data || {}, {value: this.val()});
 					this.exec(c).addEvent('close', function() {!this.$().contains(document.activeElement) && this.focus(F);}, this);
 				} else if (W.isCmd(this.x.picker)) {
 					this.cmd(this.x.picker, this.val());
@@ -9739,7 +9739,7 @@ TreeCombo = _comboHooks.Tree = $.createClass({
 						f && (t = f + ' / ' + t);
 					}
 				}
-				return {value: v, text: t, remark: d.getAttribute('r'), forbid: d.getAttribute('x') === '1', data: g && g.x.data};
+				return {value: v, text: t, remark: d.getAttribute('r'), forbid: d.getAttribute('x') === '1', wid: g && g.id};
 			}
 		},
 		// /@a -> text|value|leaf, b -> attr name
@@ -9868,7 +9868,7 @@ AbsLeaf = define.widget('AbsLeaf', {
 			} else if (a === 'focus') {
 				this.focus(b);
 			} else if (a === 'src' || a === 'folder') {
-				this.fixFolder();
+				this.$() && this.fixFolder();
 			} else if (a === 'cls') {
 				c && this.removeClass(c);
 				b && this.addClass(b);
@@ -9881,15 +9881,12 @@ AbsLeaf = define.widget('AbsLeaf', {
 		},
 		isContentData: $.rt(T),
 		isFolder: function() {
-			if (!this._instanced && this.x.nodes && this.x.nodes.length) return T;
-			if (this.length) return T;
-			if (this.x.folder != N) return this.x.folder;
-			return (this.x.src && !this.loaded) ? T : F;
+			return !this._instanced && this.x.nodes && this.x.nodes.length ? T : this.length ? T : this.x.folder != N ? this.x.folder : !!(this.x.src && !this.loaded);
 		},
 		fixFolder: function() {
 			this.addClass('z-folder', this.isFolder());
-			if (this.$('o') && !this.$('r'))
-				$.prepend(this.$('o'), this.caret(this.isExpanded()));
+			this.$('o') && !this.$('r') && $.prepend(this.$('o'), this.caret(this.isExpanded()));
+			this.$('c') && $.classAdd(this.$('c'), 'z-open', !!(this.isFolder() && this.x.open));
 		},
 		_success: function(x) {
 			return Section.prototype._success.apply(this, arguments);
@@ -12076,7 +12073,7 @@ Structure = define.widget('Structure', {
 		for (var i = 0, l = this.length; i < l; i ++) this[i].count = 0, this[i].indentStart();
 		for (var i = this.length - 1; i >= 0; i --) this[i].count = 0, this[i].indentEnd();
 	},
-	Extend: [Scroll],
+	Extend: Scroll,
 	Default: {scroll: T, hSpace: 30, vSpace: 30},
 	Prototype: {
 		className: 'w-structure f-rel f-oh',
@@ -12221,6 +12218,58 @@ StructureItem = define.widget('StructureItem', {
 			return _proto.html_after.call(this) + _proto.html_nodes.call(this) +
 				'<div class="w-structureitem-il z-dir-' + (r.x.dir || 'v') + '" style="left:' + (d ? (l - (this.level&&(pl===1||(i&&i<pl-1)) ? hs/2 : 0)) : l + w/2) + 'px;top:' + (d ? t + h/2 : t - (this.level&&(pl===1||(i&&i<pl-1)) ? vs/2 : 0)) + 'px;width:' + (d ? w + (tl ? hs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : hs/2) : 0) + 'px;height:' + (d ? 0 : h + (tl ? vs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : vs/2)) + 'px;"></div>' +
 				(tl > 1 ? '<div class="w-structureitem-cl z-dir-' + (r.x.dir || 'v') + '" style="width:' + (d ? w + hs/2 - m : this.get(-1).getLeft() - this[0].getLeft()) + 'px;height:' + (d ? this.get(-1).getTop() - this[0].getTop() : h + vs/2 - m) + 'px;top:' + (d ? this[0].getTop() + h/2 - m : t + h + vs/2) + 'px;left:' + (d ? l + w + hs/2 : this[0].getLeft() + w/2 - m) + 'px;"></div>' : '');;
+		}
+	}
+}),
+Transfer = define.widget('Transfer', {
+	Const: function(x, p) {
+		this.x = x;
+		var n = [{type: 'Vert', cls: 'w-transfer-left', width: '*', widthMinus: 2, heightMinus: 2, nodes: [x.suggest]},
+			{type: 'ButtonBar', cls: 'w-transfer-bbr', dir: 'v', align: 'center', nodes: [{icon: '.f-i-angle-right'}, {icon: '.f-i-angle-left'}]},
+			{type: 'Vert', cls: 'w-transfer-right', width: '*', widthMinus: 2, heightMinus: 2}];
+		x.nodes = n;
+		Horz.apply(this, arguments);
+		this[2].append(this.initTable('yes', '', this.initOptions(x.value, x.text)));
+	},
+	Extend: Horz,
+	Prototype: {
+		className: 'w-transfer',
+		initOptions: function(v, t) {
+			v = v && v.split(','), t = t && t.split(',');
+			for (var i = 0, a = [], b; i < v.length; i ++) {
+				b = this.param(v[i], T);
+				_all[b.wid].check();
+				a.push({v: v[i], t: t ? t[i] : b.text});
+			}
+			return a;
+		},
+		store: function() {
+			if (this.combo) return this.combo;
+			if (this.x.bind) {
+				var c = this.x.bind.target ? this.find(this.x.bind.target) : (this[0].descendant('Table') || this[0].descendant('Tree'));
+				return c && (this.combo = new _comboHooks[c.type](c, this.x.bind));
+			}
+		},
+		// @a -> text|value|Leaf|TR, b -> isValue?
+		param: function(a, b) {
+			var s = this.store();
+			return s && s.getParam(a, b);
+		},
+		select: function() {
+			
+		},
+		// @a -> name, b -> title, c -> nodes
+		initTable: function(a, b, c) {
+			return {
+			  	type: 'Table', columns: [
+			  	  {field: 'v', width: 40, align: 'center', format: 'javascript:return {type: "TripleBox", name: "' + a + '"}'},
+			  	  {field: 't', width: '*'}
+			    ],
+			    tHead: {
+			      nodes: [ {v: {type: 'TripleBox', name: a, checkAll: true}, t: b} ]
+			    },
+			    tBody: { nodes: c }
+			  };
 		}
 	}
 });
