@@ -1907,21 +1907,22 @@ var boot = {
 		} else {
 			_$ && (win.$ = _$);
 		}
-		
 		$.skin(_cfg.skin, boot.cssReady);
+		// ie 需要定义 xmlns:d="urn:dfish" 用以解析 <d:wg> 标签
+		doc.namespaces && doc.namespaces.add( 'd', 'urn:dfish' );
 	},
 	initDocView: function() {
 		$.ready(function() {
 			_compatDOM();
 			// 生成首页view
+			// 把 <d:wg> 标签转换为 widget
+			for (var i = 0, d = _tags( br.css3 ? 'd:wg' : 'wg' ), j, l = d.length; i < l; i ++) {
+				if (eval('j = ' + d[ i ].innerHTML.replace(/&lt;/g, '<').replace('&gt;', '>')))
+					$.widget(j).render(d[ i ], 'replace');
+			}
+			
 			if (_cfg.view) {
 				$.widget(_extend(_cfg.view, { type: 'view', width: '*', height: '*' })).render(_db());
-			} else {
-				// 把 <d:wg> 标签转换为 widget
-				for (var i = 0, d = _tags('script'), j, l = d.length; i < l; i ++) {
-					if (d.getAttribute('type') === 'dfish/widget' && (eval('j = ' + d[ i ].innerHTML.replace(/&lt;/g, '<').replace('&gt;', '>'))))
-						$.widget(j).render(d[ i ], 'replace');
-				}
 			}
 			// ie6及以下浏览器，弹出浮动升级提示
 			if (ie && br.ieVer < 7) {

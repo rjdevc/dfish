@@ -10,21 +10,21 @@
     { "thumbnail": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0", "url": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0", "text": "亚冠16强对阵：淘汰赛首迎中国德比 中日霸主大对决", "href": "#4" }
   ]
 },
-{ "type": "carousel", "id": "f_carousel1", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-1",
+{ "type": "carousel", "id": "f_carousel1", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "face": "1",
   "value": [
     { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0" },
     { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt" },
     { "thumbnail": ".f-dot", "url": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0" }
   ]
 },
-{ "type": "carousel", "id": "f_carousel2", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-2",
+{ "type": "carousel", "id": "f_carousel2", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "face": "2",
   "value": [
     { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0",  "href": "javascript:alert(this.id)" },
     { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt",  "href": "#1" },
     { "thumbnail": ".f-dot", "url": "http://tp3.sinaimg.cn/1966380590/180/40021479088/0", "href": "#4" }
   ]
 },
-{ "type": "carousel", "id": "f_carousel3", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-3",
+{ "type": "carousel", "id": "f_carousel3", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "face": "3",
   "value": [
     { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0", "text": "CBA两老板入财富榜500强 新疆冠军巨鳄令姚明望尘莫及", "href": "javascript:alert(this.id)" },
     { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt", "text": "有钱任性！新疆队老板送30辆进口豪车 西热兴奋晒图", "href": "#1" },
@@ -32,7 +32,7 @@
   ]
 }
 
-{ "type": "carousel", "id": "f_carousel3", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "cls": "carousel-4",
+{ "type": "carousel", "id": "f_carousel3", "width": "470", height: 470, "bigwidth": 470, "bigheight": 470, "face": "4",
   "value": [
     { "thumbnail": ".f-dot", "url": "http://tp1.sinaimg.cn/2483245844/180/5614510120/0", "text": "CBA两老板入财富榜500强 新疆冠军巨鳄令姚明望尘莫及", "href": "javascript:alert(this.id)" },
     { "thumbnail": ".f-dot", "url": "http://wx2.sinaimg.cn/large/679ca86egy1ffh9c5bw35j20sg0n7dkt", "text": "有钱任性！新疆队老板送30辆进口豪车 西热兴奋晒图", "href": "#1" },
@@ -60,32 +60,64 @@ define.widget( 'carousel', {
 			x.value = $.jsonParse( x.value );
 		for ( var i = 0, t = [], f = [], g = $.abbr + '.all["' + this.id + '"]', s, v = x.value, l = v && v.length; i < l; i ++ ) {
 			t.push( { icon: v[ i ].thumbnail || v[ i ].url, text: i + 1, width: x.thumbwidth, height: x.thumbheight, target: this.id + 'i' + i, focus: i === 0, on: { mouseover: g + '.pause(this)' } } );
-			s = '<img class=_big src=' + (v[ i ].url || v[ i ].thumbnail) + ' width=' + x.bigwidth + ' height=' + x.bigheight + '>';
+			s = '<img class=_big onload=' + g + '.imgLoad(this) src=' + (v[ i ].url || v[ i ].thumbnail) + ' width="' + (x.bigwidth || '100%') + '">';
 			if ( v[ i ].text )
 				s += '<b class=_b></b><span class="_t f-omit" title="' + $.strQuot(v[ i ].text) + '">' + v[ i ].text + '</span>';
 			if ( v[ i ].href )
 				s = '<a ' + (v[ i ].href.indexOf( 'javascript:' ) === 0 ? ' onclick=' + g + '.click(' + i + ')' : 'href=' + v[ i ].href + ' target=_blank') + '>' + s + '</a>';
 			f.push( { type: 'html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
 		}
-		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
-		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()', change: g + '.frameChange()' } } );
-		//this.className += ' z-hideprev';
+		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: -1, pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
+		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight || '*', animate: x.animate, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()', change: g + '.frameChange()' } } );
 		if (this.tab.length <= 1) this.className += ' z-one';
+		this.className += ' carousel-' + (x.face || 0);
 	},
 	Extend: 'vert',
 	Listener: {
 		body: {
 			ready: function() { cssLoad(this.fixText, this); this.play(); },
-			resize: function() { cssLoad(this.fixText, this); }
+			resize: function() { cssLoad(this.fixText, this); this.fixImg();}
 		}
 	},
 	Prototype: {
 		className: 'w-carousel',
 		index: 0,
 		fixText: function() {
-			if (this.x.cls && (this.x.cls.indexOf('carousel-3') > -1 || this.x.cls.indexOf('carousel-4') > -1)) {
+			if (this.x.face == 3 || this.x.face == 4) {
 				var w = this.tab.$().offsetWidth;
 				Q('.w-carousel-big ._t', this.$()).css({right: w + 15});
+			}
+		},
+		fixImg: function() {
+			var self = this;
+			Q('._big', this.$()).each(function() {
+				this.isLoaded && self.fixImgSize(this);
+			});
+		},
+		imgLoad: function(a) {
+			a.isLoaded = true;
+			this.fixImgSize(a);
+		},
+		fixImgSize: function(a) {
+			if (!this.x.bigwidth && !this.x.bigheight) {
+				var b = $.widget(a), bw = b.innerWidth(), bh = b.innerHeight();
+				if (bw && bh) {
+					var g = a;
+					var gw = g.width, gh = g.height, gd = gw/gh, bd = bw/bh;
+					if (this.x.cover) {
+						if (gd > bd) {
+							a.height = bh; a.removeAttribute('width');
+						} else {
+							a.width = bw; a.removeAttribute('height');
+						}
+					} else {
+						if (gd > bd) {
+							a.width = bw; a.removeAttribute('height');
+						} else {
+							a.height = bh; a.removeAttribute('width');
+						}
+					}
+				}
 			}
 		},
 		play: function() {

@@ -931,6 +931,32 @@ tr.f-dnd-helper ._g{padding:0}
 .f-i-next{width:32px;height:32px;background:url(g/page.png) no-repeat -53px 0;cursor:pointer}
 .f-i-next:hover{background-position:7px 0}
 
-input::-ms-clear{display:none;} 
+input::-ms-clear{display:none;}
+
+/* css3 animate */
+.f-animated { animation-fill-mode: both; }
+.f-speed-fast { animation-duration:.2s; }
+.f-speed-slow { animation-duration:1s; }
+.f-speed-100 { animation-duration:.1s; }
+.f-ani-fadeInRight { position:absolute;top:0;left:0;z-index:1; animation-name:fadeInRight; }
+@keyframes fadeInRight {
+	0%{opacity:0}
+	100%{opacity:1}
+}
+.f-ani-fadeOutRight { animation-name:fadeOutRight; }
+@keyframes fadeOutRight {
+	0%{opacity:1}
+	100%{opacity:0}
+}
+.f-ani-fadeInLeft { position:absolute;top:0;left:0;z-index:1; animation-name:fadeInLeft; }
+@keyframes fadeInLeft {
+	0%{opacity:0}
+	100%{opacity:1}
+}
+.f-ani-fadeOutLeft { animation-name:fadeOutLeft; }
+@keyframes fadeOutLeft {
+	0%{opacity:1}
+	100%{opacity:0}
+}
 
 d\:wg{display:none}

@@ -666,7 +666,7 @@ W = define('widget', function() {
 	// @x -> 配置参数, p -> parentNode, n -> number/name
 	Const: function(x, p, n) {
 		_regWidget.call(this, x, p, n);
-		p && _setView.call(this, _view(p));
+		p && _setView.call(this, _view(p) || _docView);
 		this.init_nodes();
 		this._instanced = T;
 	},
@@ -2669,19 +2669,18 @@ Frame = define.widget('frame', {
 				var o = this.getFocus(), c = 'f-sub-frame', d = c + '-on',
 					n = a.isWidget ? a : this.ownerView.find(a);
 				if (n && n !== o) {
-					if (this.x.animate && o) {
-						var d = n.nodeIndex > o.nodeIndex ? 'Left' : 'Right';
-						$.classReplace(n.$(), c, d);
-						$.animate(o.$(), 'fadeOut' + d, 100);
-						$.animate(n.$(), 'fadeIn' + d, 100, function() {
-							o.$() && $.classReplace(o.$(), d, c);
-						});
+					if ( this.x.animate && o ) {
+						var e = n.nodeIndex > o.nodeIndex ? 'Left' : 'Right';
+						$.classReplace( n.$(), c, d );
+						$.animate( o.$(), 'fadeOut' + e, 'slow' );
+						$.animate( n.$(), 'fadeIn' + e, 'slow', function() {
+							o.$() && $.classReplace( o.$(), d, c );
+						} );
 					} else {
-						o && o.$() && $.classReplace(o.$(), d, c);
-						n.$() && $.classReplace(n.$(), c, d);
+						o && $.classReplace( o.$(), d, c );
+						$.classReplace( n.$(), c, d );
 					}
-					if (o)
-						delete o.focusOwner;
+					if (o) delete o.focusOwner;
 					this.focusNode = n;
 					n.focusOwner = this;
 					n.trigger('framefocus');
