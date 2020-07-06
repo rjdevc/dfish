@@ -770,7 +770,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
      */
     public List<PubFileRecord> copyRecords(List<String> fileIds, String fileLink, String fileKey) {
         if (Utils.isEmpty(fileIds) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
-            throw new IllegalArgumentException("every parameter can not be empty.");
+            return Collections.emptyList();
         }
         final List<PubFileRecord> records = findFileRecords(fileIds.toArray(new String[fileIds.size()]));
         Date now = new Date();
