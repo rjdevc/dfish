@@ -125,6 +125,7 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
         to.rowSpan = from.rowSpan;
         to.vAlign = from.vAlign;
         to.labelWidth = from.labelWidth;
+        to.text=from.text;
     }
 
     /**
