@@ -122,7 +122,6 @@ define.widget( 'carousel', {
 			}
 		},
 		play: function() {
-			return;
 			var self = this;
 			clearTimeout( this.timer );
 			this.timer = setTimeout( function() {
