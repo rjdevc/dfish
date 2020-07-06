@@ -1,5 +1,6 @@
 package com.rongji.dfish.ui.auxiliary;
 
+import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.ui.*;
 import com.rongji.dfish.ui.widget.Html;
 
@@ -55,7 +56,8 @@ public class TD extends AbstractTD<TD> implements JsonWrapper<Object> {
         if (isComplex()) {
             JsonTD p = new JsonTD();
             copyProperties(p, this);
-            if (isTextWidget(getNode())) {
+
+            if (Utils.isEmpty(this.text)&&isTextWidget(getNode())) {
                 //把文本当做cell的text
                 String text = getTextValue(getNode());
                 p.setText(text);

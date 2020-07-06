@@ -115,6 +115,7 @@ public class ClassJsonBuilder extends AbstractJsonBuilder {
             "widthMinus", "heightMinus", "align", "vAlign", "scroll",
             "focus", "pub", "src", "target",
             "node", "nodes", "on", "data",
+            "tHead", "tBody",
             // 占位符该属性不存在
             "NO_EXISTS"
     );

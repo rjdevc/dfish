@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.function.Predicate;
 
 abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
-        implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> ,HtmlContentHolder<T> {
+        implements SingleNodeContainer<T, Widget>, Alignable<T>, VAlignable<T> ,HtmlContentHolder<T> , HasText<T>{
 
     private static final long serialVersionUID = -7870476532478876521L;
 
 
     protected Integer colSpan;
     protected Integer rowSpan;
-    //	private String text;
+    protected String text;
     protected String align;
     protected String vAlign;
     protected Widget node;
@@ -162,6 +162,7 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
      * @param format String 格式化内容
      * @return 本身，这样可以继续设置其他属性
      */
+    @Override
     public T setFormat(String format) {
         this.format = format;
         return (T) this;
@@ -238,5 +239,27 @@ abstract class AbstractTD<T extends AbstractTD<T>> extends AbstractWidget<T>
     @Override
     public Widget getNode() {
         return node;
+    }
+
+    /**
+     * 文本模式时， 取得单元格内部文本的值
+     *
+     * @return String
+     */
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * 文本模式时， 设置单元格内部文本的值
+     *
+     * @param text String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    @Override
+    public T setText(String text) {
+        this.text = text;
+        return (T)this;
     }
 }

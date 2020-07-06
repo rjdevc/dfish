@@ -11,7 +11,7 @@ import com.rongji.dfish.ui.HasText;
  *
  * @author DfishTeam
  */
-class JsonTD extends AbstractTD<JsonTD> implements HasText<JsonTD> {
+class JsonTD extends AbstractTD<JsonTD>  {
     /**
      *
      */
@@ -23,25 +23,5 @@ class JsonTD extends AbstractTD<JsonTD> implements HasText<JsonTD> {
         return "TD";
     }
 
-    /**
-     * 文本模式时， 取得单元格内部文本的值
-     *
-     * @return String
-     */
-    @Override
-    public String getText() {
-        return text;
-    }
 
-    /**
-     * 文本模式时， 设置单元格内部文本的值
-     *
-     * @param text String
-     * @return 本身，这样可以继续设置其他属性
-     */
-    @Override
-    public JsonTD setText(String text) {
-        this.text = text;
-        return this;
-    }
 }
