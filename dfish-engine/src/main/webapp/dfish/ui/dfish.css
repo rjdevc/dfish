@@ -938,24 +938,24 @@ input::-ms-clear{display:none;}
 .f-speed-fast { animation-duration:.2s; }
 .f-speed-slow { animation-duration:1s; }
 .f-speed-100 { animation-duration:.1s; }
-.f-ani-fadeInRight { position:absolute;top:0;left:0;z-index:1; animation-name:fadeInRight; }
+.f-ani-fadeInRight { position:absolute;top:0;left:0;animation-name:fadeInRight; }
 @keyframes fadeInRight {
 	0%{opacity:0}
 	100%{opacity:1}
 }
-.f-ani-fadeOutRight { animation-name:fadeOutRight; }
+.f-ani-fadeOutRight { position:relative;z-index:-1;animation-name:fadeOutRight; }
 @keyframes fadeOutRight {
-	0%{opacity:1}
+	0%{opacity:.7}
 	100%{opacity:0}
 }
-.f-ani-fadeInLeft { position:absolute;top:0;left:0;z-index:1; animation-name:fadeInLeft; }
+.f-ani-fadeInLeft { position:absolute;top:0;left:0;animation-name:fadeInLeft; }
 @keyframes fadeInLeft {
 	0%{opacity:0}
 	100%{opacity:1}
 }
-.f-ani-fadeOutLeft { animation-name:fadeOutLeft; }
+.f-ani-fadeOutLeft { position:relative;z-index:-1;animation-name:fadeOutLeft; }
 @keyframes fadeOutLeft {
-	0%{opacity:1}
+	0%{opacity:.7}
 	100%{opacity:0}
 }
 
