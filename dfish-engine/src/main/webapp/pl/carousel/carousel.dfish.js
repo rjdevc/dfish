@@ -70,6 +70,7 @@ define.widget( 'carousel', {
 		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: -1, pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
 		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight || '*', animate: x.animate, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()', change: g + '.frameChange()' } } );
 		if (this.tab.length <= 1) this.className += ' z-one';
+		if (x.arrow) this.className += ' z-arrow';
 		this.className += ' carousel-' + (x.face || 0);
 	},
 	Extend: 'vert',
@@ -121,6 +122,7 @@ define.widget( 'carousel', {
 			}
 		},
 		play: function() {
+			return;
 			var self = this;
 			clearTimeout( this.timer );
 			this.timer = setTimeout( function() {
