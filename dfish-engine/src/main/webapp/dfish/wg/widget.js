@@ -2677,8 +2677,8 @@ Frame = define.widget('frame', {
 							o.$() && $.classReplace(o.$(), d, c);
 						});
 					} else {
-						o && $.classReplace(o.$(), d, c);
-						$.classReplace(n.$(), c, d);
+						o && o.$() && $.classReplace(o.$(), d, c);
+						n.$() && $.classReplace(n.$(), c, d);
 					}
 					if (o)
 						delete o.focusOwner;
@@ -3618,7 +3618,7 @@ Img = define.widget('img', {
 		_focus: function(a, e) {
 			var a = a == N || a, p = this.parentNode, b = p.getFocus();
 			$.classAdd(this.$(), 'z-on', a);
-			a === F && this.box.check(F);
+			a === F && this.box && this.box.check(F);
 			a && b && b !== this && ! p.x.focusmultiple && b._focus(F);
 		},
 		toggleFocus: function() {
