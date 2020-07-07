@@ -2449,7 +2449,8 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'data', type: 'Object', remark: '行数据。' },
-      { name: 'focus', type: 'Boolean', remark: '是否高亮。' },
+      { name: 'focus', type: 'Boolean', remark: '是否焦点状态。' },
+      { name: 'focusable', type: 'Boolean', remark: '设置为 true，点击后转为焦点状态(增加焦点样式 .z-on )' },
       { name: 'src', type: 'String', remark: '可展开内容的地址。这个 src 应当返回一个 view' },
       { name: 'nodes', type: 'Array', remark: '子节点数组。这些子节点也应该是 tr 类型。' }
     ],
