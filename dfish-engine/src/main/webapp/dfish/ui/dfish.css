@@ -922,6 +922,7 @@ tr.f-dnd-helper ._g{padding:0}
 .f-develop ._s{position:relative;z-index:11}
 .f-develop ._t:before{content:"";position:absolute;top:0;bottom:0;left:0;right:0;background:#6f84ff;opacity:.9;z-index:10}
 
+.f-watermark{position:absolute;top:20px;left:20px;padding:20px 30px;font-size:15px;font-family:"Microsoft yahei";color:#aaa;text-align:center;opacity:.4;transform:rotate(-20deg);pointer-events:none}
 
 .f-pic-prev-cursor{/*js import*/}
 .f-pic-next-cursor{/*js import*/}

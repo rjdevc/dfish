@@ -1861,6 +1861,9 @@ Scroll = define.widget('scroll', {
 		prop_cls: function() {
 			return _proto.prop_cls.call(this) + (this.x.scroll ? ' f-scroll-wrap' : '');
 		},
+		ovf: function() {
+			return mbi ? this.$() : this.$('ovf');
+		},
 		// 让元素滚动到可见区域。支持下面两种调用方式 /e -> el|wg, y -> (top,bottom,middle,auto,top+n,bottom+n,n), x -> (left,right,center,auto), p -> ease?, q -> divide(整除数字，让滚动的距离是这个数字的整数倍), r -> callback
 		scrollTo: function(e, y, x, p, q, r) {
 			var a = this.$('ovf'), b = this.$('gut') || this.$('cont'), c = $.bcr(a), d = $.bcr(b), f = e ? $.bcr(e) : d, t, l;
@@ -10245,6 +10248,9 @@ Grid = define.widget('grid', {
 			p._rowspan = {};
 			b == N && (b = p.length);
 			p[b] ? p[b].before(a) : p.append(a);
+		},
+		ovf: function() {
+			return this.head ? this.body.ovf() : Scroll.prototype.ovf.call(this);
 		},
 		prepend: function(a) {
 			this._addRow(a, 0);

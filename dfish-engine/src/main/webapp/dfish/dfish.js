@@ -2395,6 +2395,21 @@ _merge($, {
 			}
 		}
 	})(),
+	watermark: function(a, b) {
+		b = $.extend(b || {}, {hspace: 100, vspace: 50});
+		a.addClass('f-rel');
+		var c = (a.ovf && a.ovf()) || a.$(), d = $.prepend(c, '<div class=f-watermark>' + b.text + '</div>'),
+			aw = Math.max(c.offsetWidth, d.scrollWidth), ah = Math.max(c.offsetHeight, c.scrollHeight),
+			dw = d.offsetWidth, dh = d.offsetHeight, hl = Math.floor((aw - 20)/(dw + b.hspace)), vl = Math.floor((ah - 20)/(dh + b.vspace)),
+			ew = Math.floor((aw - 20 - hl * (dw + b.hspace)) / hl), eh = Math.floor((ah - 20 - vl * (dh + b.vspace)) / vl);
+		for (var i = 0, s = ''; i < vl; i ++) {
+			for (var j = i ? 0 : 1; j < hl; j ++) {
+				var t = 20 + (i * (dh + eh + b.vspace)), l = 20 + (j * (dw + ew + b.hspace));
+				s += '<div class=f-watermark style="top:' + t + 'px;left:' + l + 'px;">' + b.text + '</div>';
+			}
+		}
+		$.prepend(c, s);
+	},
 	// 调试用的方法
 	j: function(a) {
 		alert($.jsonString(a));
