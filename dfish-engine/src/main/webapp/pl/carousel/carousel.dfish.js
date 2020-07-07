@@ -68,7 +68,7 @@ define.widget( 'carousel', {
 			f.push( { type: 'html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
 		}
 		this.tab = this.add( { type: 'buttonbar', cls: 'w-carousel-bbr', width: '*', height: -1, pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseout: g + '.play()' } } );
-		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight || '*', animate: x.animate, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()', change: g + '.frameChange()' } } );
+		this.fra = this.add( { type: 'frame', width: '*', height: x.bigheight || '*', animate: x.animate, dft: this.id + 'i0', nodes: f, on: { mouseover: g + '.pause()', mouseout: g + '.play()' } } );
 		if (this.tab.length <= 1) this.className += ' z-one';
 		if (x.arrow) this.className += ' z-arrow';
 		this.className += ' carousel-' + (x.face || 0);
@@ -103,20 +103,11 @@ define.widget( 'carousel', {
 			if (!this.x.bigwidth && !this.x.bigheight) {
 				var b = $.widget(a), bw = b.innerWidth(), bh = b.innerHeight();
 				if (bw && bh) {
-					var g = a;
-					var gw = g.width, gh = g.height, gd = gw/gh, bd = bw/bh;
-					if (this.x.cover) {
-						if (gd > bd) {
-							a.height = bh; a.removeAttribute('width');
-						} else {
-							a.width = bw; a.removeAttribute('height');
-						}
+					var gw = a.width, gh = a.height, gd = gw/gh, bd = bw/bh;
+					if ((this.x.cover && gd < bd) || (!this.x.cover && gd > bd)) {
+						a.width = bw; a.removeAttribute('height');
 					} else {
-						if (gd > bd) {
-							a.width = bw; a.removeAttribute('height');
-						} else {
-							a.height = bh; a.removeAttribute('width');
-						}
+						a.height = bh; a.removeAttribute('width');
 					}
 				}
 			}
@@ -130,7 +121,7 @@ define.widget( 'carousel', {
 				var t = self.tab.getFocus();
 				(t.next() || self.tab[0]).focus();
 				self.play();
-			}, 3000 );
+			}, (this.x.time || 3) * 1000 );
 		},
 		pause: function( a ) {
 			clearTimeout( this.timer );
@@ -138,11 +129,6 @@ define.widget( 'carousel', {
 		},
 		click: function( a ) {
 			this.formatJS( this.x.value[ a ].href );
-		},
-		frameChange: function() {
-			var f = this.fra.getFocus();
-			//this.addClass('z-hideprev', !f.prev() );
-			//this.addClass('z-hidenext', !f.next() );
 		},
 		prev: function() {
 			var f = this.tab.getFocus();
