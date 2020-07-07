@@ -784,22 +784,19 @@ _dateFormat = $.dateFormat = function(a, b) {
 		a = _dateParse(a, b);
 	var o = {y : a.getFullYear(), m : a.getMonth(), d : a.getDate(), h : a.getHours(), i : a.getMinutes(), s : a.getSeconds(), w : (a.getDay() || 7)};
 	return (b || _date_sf).replace('yyyy' , o.y).replace('MM', _strPad(o.m + 1)).replace('dd', _strPad(o.d)).replace('HH', _strPad(o.h))
-		.replace('mm', _strPad(o.i)).replace('ss', _strPad(o.s));
-		//.replace('M', o.m + 1).replace('d', o.d).replace('H', o.h).replace('m', o.i).replace('s', o.s);
+		.replace('mm', _strPad(o.i)).replace('ss', _strPad(o.s))
+		.replace('M', o.m + 1).replace('d', o.d).replace('H', o.h).replace('m', o.i).replace('s', o.s);
 },
-// 字串型转为日期型 /@s -> str, f -> format?
-_dateParse = $.dateParse = function(s, f) {
-	s = '' + s;
-	!f && (f = _date_sf);
-	if (s.length != f.length) {
-		s = s.replace(/\b(\d)\b/, '0\$1');
-	}
-	var a, y = (a = f.indexOf('yyyy')) > -1 ? _number(s.substr(a, 4)) || 2020 : 2020,
-		M = (a = f.indexOf('MM')) > -1 ? _number(s.substr(a, 2) -1) : 0,
-		d = (a = f.indexOf('dd')) > -1 ? _number(s.substr(a, 2)) || 1 : 1,
-		H = (a = f.indexOf('HH')) > -1 ? _number(s.substr(a, 2)) : 0,
-		m = (a = f.indexOf('mm')) > -1 ? _number(s.substr(a, 2)) : 0,
-		s = (a = f.indexOf('ss')) > -1 ? _number(s.substr(a, 2)) : 0;
+// 字串型转为日期型 /@a -> str, b -> format?
+_dateParse = $.dateParse = function(a, b) {
+	a = ('' + a).replace(/\b(\d)\b/g, '0\$1');
+	b = (b || _date_sf).replace(/\b([MdHms])\b/g, '\$1\$1');
+	var c, y = (c = b.indexOf('yyyy')) > -1 ? _number(a.substr(c, 4)) || 2020 : 2020,
+		M = (c = b.indexOf('MM')) > -1 ? _number(a.substr(c, 2)) -1 : 0,
+		d = (c = b.indexOf('dd')) > -1 ? _number(a.substr(c, 2)) : 1,
+		H = (c = b.indexOf('HH')) > -1 ? _number(a.substr(c, 2)) : 0,
+		m = (c = b.indexOf('mm')) > -1 ? _number(a.substr(c, 2)) : 0,
+		s = (c = b.indexOf('ss')) > -1 ? _number(a.substr(c, 2)) : 0;
 	return new Date(y, M, d, H, m, s);
 },
 // 日期增减  /@ a -> date, b -> type enum (y/M/d/H/m/s), c -> value

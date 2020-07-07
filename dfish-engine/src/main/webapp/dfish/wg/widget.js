@@ -2167,7 +2167,7 @@ Scroll = define.widget('Scroll', {
 			return this.ovf().scrollTop == 0;
 		},
 		isScrollBottom: function() {
-			return Math.abs(this.scrollHeight() - this.ovf().scrollTop) < 1;
+			return Math.abs(this.maxScrollTop() - this.ovf().scrollTop) < 1;
 		},
 		isScrollLeft: function() {
 			return this.ovf().scrollLeft == 0;
@@ -2175,7 +2175,7 @@ Scroll = define.widget('Scroll', {
 		isScrollRight: function() {
 			return Math.abs(this.ovf().scrollWidth - this.ovf().clientWidth - this.ovf().scrollLeft) < 1;
 		},
-		scrollHeight: function() {
+		maxScrollTop: function() {
 			return this.ovf().scrollHeight - this.ovf().clientHeight;
 		},
 		scrollDragY: function(a, e) {
@@ -2289,7 +2289,7 @@ Scroll = define.widget('Scroll', {
 			this._pullUpLoading = F;
 			this.removeEvent('unlock.pullup', this.completePullUpRefresh);
 			Q(this.$('pullup')).removeClass('z-loading').appendTo(this.$('cont')).find('._desc').html(Loc.pullup_refresh);
-			this.x.pullUp.auto && !this.scrollHeight() && this.triggerPullUpRefresh();
+			this.x.pullUp.auto && !this.maxScrollTop() && this.triggerPullUpRefresh();
 		},
 		// 停止上下拉刷新
 		stopPullUpRefresh: function() {
@@ -4329,7 +4329,7 @@ Img = define.widget('Img', {
 		_focus: function(a, e) {
 			var a = a == N || a, p = this.parentNode, b = p && p === this.rootNode && p.getFocus();
 			$.classAdd(this.$(), 'z-on', a);
-			a === F && this.box.check(F);
+			a === F && this.box && this.box.check(F);
 			a && b && b !== this && !p.x.focusMultiple && b._focus(F);
 		},
 		toggleFocus: function() {
@@ -11853,7 +11853,7 @@ AbsTable = define.widget('AbsTable', {
 				var f = this.foot, r = this.rootNode || this,
 					b = r.body.isScroll() ? r.body : r.isScroll() ? r : N;
 				if (b) {
-					var h = b.scrollHeight();
+					var h = b.maxScrollTop();
 					f.holdBottom = !!h;
 					f.css('pad', {height: h ? f.$().offsetHeight -1 : '', display: h ? 'block' : 'none', overflow: h ? 'hidden' : 'visible'});
 					f.addClass('z-cover', !!h);
