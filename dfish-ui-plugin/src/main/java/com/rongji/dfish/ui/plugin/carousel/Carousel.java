@@ -52,6 +52,7 @@ public class Carousel extends AbstractWidget<Carousel> {
 	private String animate;
 	private Boolean cover;
 	private Boolean arrow;
+	private Long time;
 
 	/**
 	 * 
@@ -259,4 +260,21 @@ public class Carousel extends AbstractWidget<Carousel> {
 		return this;
 	}
 
+	/**
+	 * 轮播间隔时间,单位:秒
+	 * @return Long
+	 */
+	public Long getTime() {
+		return time;
+	}
+
+	/**
+	 * 轮播间隔时间,单位:秒
+	 * @param time Long
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public Carousel setTime(Long time) {
+		this.time = time;
+		return this;
+	}
 }
