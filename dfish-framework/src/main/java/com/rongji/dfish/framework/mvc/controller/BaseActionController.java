@@ -413,8 +413,8 @@ public class BaseActionController {
             final int leftLength = progressKeyLength - sessionId.length() - 1;
             LogUtil.lazyWarn(getClass(), () -> {
                 try {
-                    StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
-                    String call = "进度条编号过长[" + callDataId + "]最大支持长度为[" + leftLength + "]@" + callStack.getClassName() + "." + callStack.getMethodName();
+//                    StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
+                    String call = "进度条编号过长[" + callDataId + "]最大支持长度为[" + leftLength + "]";
                     return call;
                 } catch (Throwable e) {
                     LogUtil.error("获取进度条编号-调用堆栈异常", e);
