@@ -14,11 +14,28 @@ import com.rongji.dfish.base.Page;
 public class Pagination implements Serializable{
 
 	private static final long serialVersionUID = 8563611090473067679L;
-	
-	private Integer limit;
+
 	private Integer offset;
+	private Integer limit;
 	private Integer size;
 	private boolean autoRowCount=true;
+
+	/**
+	 * 构造方法
+	 */
+	public Pagination() {
+	}
+
+	/**
+	 * 构造方法
+	 * @param offset 偏移量，结果从第几条开始显示，初始是0条
+	 * @param limit 结果最多显示多少行
+	 */
+	public Pagination(Integer offset, Integer limit) {
+		this.offset = offset;
+		this.limit = limit;
+	}
+
 	/**
 	 * 是否在查询的时候自动统计行数，默认为true
 	 * @return boolean
