@@ -287,19 +287,33 @@ public class FileController extends BaseController {
     }
 
     /**
-     * 默认内联方式下载附件方法
+     * 内联方式下载附件方法(默认文件)
      *
-     * @param request
      * @param response
-     * @param fileId
+     * @param fileId 附件编号
      * @return
      * @throws Exception
      */
     @RequestMapping("/inline/{fileId}")
-    public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileId) throws Exception {
+    public void inline(HttpServletResponse response, @PathVariable String fileId) throws Exception {
+       inline(response, null, fileId);
+    }
+
+    /**
+     * 内联方式下载附件方法(指定别名文件)
+     *
+     * @param response
+     * @param fileAlias 附件别名
+     * @param fileId 附件编号
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/inline/{fileAlias}/{fileId}")
+    public void inline(HttpServletResponse response, @PathVariable String fileAlias, @PathVariable String fileId) throws Exception {
         fileId = fileService.decId(fileId);
+
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
-        downloadFileData(response, true, fileRecord, null);
+        downloadFileData(response, true, fileRecord, fileAlias);
     }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
