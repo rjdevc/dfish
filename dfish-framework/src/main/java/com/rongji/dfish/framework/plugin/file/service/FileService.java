@@ -752,7 +752,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
      */
     public List<PubFileRecord> copyRecordsByItems(List<UploadItem> fileItems, String fileLink, String fileKey) {
         if (Utils.isEmpty(fileItems) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
-            throw new IllegalArgumentException("every parameter can not be empty.");
+            return Collections.emptyList();
         }
         List<String> fileIds = new ArrayList<>(fileItems.size());
         for (UploadItem item : fileItems) {
