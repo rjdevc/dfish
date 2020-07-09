@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.mvc.controller;
 
 import com.rongji.dfish.base.DfishException;
+import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
 import com.rongji.dfish.base.util.DateUtil;
@@ -322,11 +323,18 @@ public class BaseActionController {
             } else if (type == String[].class) {
                 value = str.split(",");
             } else {
-                throw new UnsupportedOperationException("Can not bind value for " + name + " ("
-                        + type.getName() + ")");
+                throw new UnsupportedOperationException("Can not bind value for " + name + " (" + type.getName() + ")");
             }
             method.invoke(obj, new Object[]{value});
         }
+    }
+
+    protected Page getPage(HttpServletRequest request) {
+        return getPagination(request).toPage();
+    }
+
+    protected int getPageSize() {
+        return getPaginationLimit();
     }
 
     /**
