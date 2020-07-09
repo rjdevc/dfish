@@ -2508,7 +2508,7 @@ AbsSection = define.widget('AbsSection', {
 			}
 		},
 		template: function(tpl, tar, fn) {
-			this.reload(N, tpl, tar, fn);
+			this.reload('', tpl, tar, fn);
 		},
 		abort: function() {
 			$.ajaxAbort(this);
@@ -11482,6 +11482,9 @@ AbsTable = define.widget('AbsTable', {
 			x.limit && this.limit();
 			if (this.head && _w_lay.height.call(this))
 				this.addEvent('resize', _w_mix.height).addEvent('ready', _w_mix.height);
+		},
+		ovf: function() {
+			return this.head ? this.body.ovf() : Scroll.prototype.ovf.call(this);
 		},
 		contentTHead: function() {
 			return this.head && this.head.contentTable.contentTHead;
