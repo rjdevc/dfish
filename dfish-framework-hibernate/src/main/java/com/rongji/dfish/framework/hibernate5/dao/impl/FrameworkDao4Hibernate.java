@@ -297,4 +297,43 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         return entities.size();
     }
 
+    @Override
+    public int bulkSave(Collection<P> entities) {
+        if (Utils.isEmpty(entities)) {
+            return 0;
+        }
+        return getHibernateTemplate().execute((session) -> {
+            for (P entity : entities) {
+                session.save(entity);
+            }
+            return entities.size();
+        });
+    }
+
+    @Override
+    public int bulkUpdate(Collection<P> entities) {
+        if (Utils.isEmpty(entities)) {
+            return 0;
+        }
+        return getHibernateTemplate().execute((session) -> {
+            for (P entity : entities) {
+                session.update(entity);
+            }
+            return entities.size();
+        });
+    }
+
+    @Override
+    public int bulkDelete(Collection<P> entities) {
+        if (Utils.isEmpty(entities)) {
+            return 0;
+        }
+        return getHibernateTemplate().execute((session) -> {
+            for (P entity : entities) {
+                session.delete(entity);
+            }
+            return entities.size();
+        });
+    }
+
 }

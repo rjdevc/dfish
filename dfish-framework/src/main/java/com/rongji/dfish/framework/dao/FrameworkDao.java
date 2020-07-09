@@ -124,6 +124,8 @@ public interface FrameworkDao<P, ID extends Serializable> {
      * 批量删除
      * @param entities 实体对象集合
      * @return int 更新记录数
+     * @deprecated 换成bulkDelete
+     * @see #bulkDelete(List)
      */
     int deleteAll(Collection<P> entities);
 
@@ -241,20 +243,20 @@ public interface FrameworkDao<P, ID extends Serializable> {
      * @param entities 实体对象列表
      * @return int 保存成功数量
      */
-    int bulkSave(List<P> entities);
+    int bulkSave(Collection<P> entities);
 
     /**
      * 批量修改
      * @param entities 实体对象列表
      * @return int 修改成功数量
      */
-    int bulkUpdate(List<P> entities);
+    int bulkUpdate(Collection<P> entities);
 
     /**
      * 批量保存
      * @param entities 实体对象列表
      * @return int 删除成功数量
      */
-    int bulkDelete(List<P> entities);
+    int bulkDelete(Collection<P> entities);
 
 }
