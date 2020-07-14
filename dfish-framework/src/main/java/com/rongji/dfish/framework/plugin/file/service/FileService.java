@@ -693,6 +693,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
             final List<PubFileRecord> insertList = new ArrayList<>();
             List<String> updateIds = new ArrayList<>(fileList.size());
             for (PubFileRecord file : fileList) {
+                pubCommonDAO.evictObject(file);
                 if (LINK_FILE.equals(file.getFileLink())) { // 临时文件可直接修改模块
                     updateIds.add(file.getFileId());
                 } else { // 非临时文件将产生新的记录
