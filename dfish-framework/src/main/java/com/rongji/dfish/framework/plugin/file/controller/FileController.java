@@ -290,8 +290,9 @@ public class FileController extends BaseController {
         String fileId = fileService.decId(enFileId);
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
         boolean inline = "1".equals(request.getParameter("inline"));
+        DownloadParam downloadParam = getDownloadParam(fileRecord, null);
         // 目前文件下载统一默认都是原件下载
-        downloadFileData(response, fileRecord, new DownloadParam().setInline(inline).setEncryptedFileId(enFileId));
+        downloadFileData(response, fileRecord, downloadParam.setInline(inline).setEncryptedFileId(enFileId));
     }
 
     /**
@@ -303,8 +304,8 @@ public class FileController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("/inline/{fileId}")
-    public void inline(HttpServletResponse response, @PathVariable String fileId) throws Exception {
-       inline(response, null, fileId);
+    public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileId) throws Exception {
+       inline(request, response, null, fileId);
     }
 
     /**
@@ -317,11 +318,17 @@ public class FileController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("/inline/{fileAlias}/{fileId}")
-    public void inline(HttpServletResponse response, @PathVariable String fileAlias, @PathVariable String fileId) throws Exception {
+    public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileAlias, @PathVariable String fileId) throws Exception {
         String realFileId = fileService.decId(fileId);
 
         PubFileRecord fileRecord = fileService.getFileRecord(realFileId);
-        downloadFileData(response, fileRecord, new DownloadParam().setInline(true).setEncryptedFileId(fileId).setAlias(fileAlias));
+
+        DownloadParam downloadParam = getDownloadParam(fileRecord, fileAlias);
+        if (!checkIfModifiedSince(request, response, downloadParam)) {
+            return;
+        }
+
+        downloadFileData(response, fileRecord, downloadParam.setInline(true).setEncryptedFileId(fileId));
     }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
@@ -413,7 +420,7 @@ public class FileController extends BaseController {
     private static class DownloadParam {
         String fileName;
         long fileSize;
-        Date lastModified;
+        long lastModified;
         String alias;
         boolean inline;
         String encryptedFileId;
@@ -421,13 +428,13 @@ public class FileController extends BaseController {
         public DownloadParam() {
         }
 
-        public DownloadParam(String fileName, long fileSize, Date lastModified) {
+        public DownloadParam(String fileName, long fileSize, long lastModified) {
             this.fileName = fileName;
             this.fileSize = fileSize;
             this.lastModified = lastModified;
         }
 
-        public DownloadParam(String fileName, long fileSize, Date lastModified, String alias, boolean inline) {
+        public DownloadParam(String fileName, long fileSize, long lastModified, String alias, boolean inline) {
             this.fileName = fileName;
             this.fileSize = fileSize;
             this.lastModified = lastModified;
@@ -471,11 +478,11 @@ public class FileController extends BaseController {
             return this;
         }
 
-        public Date getLastModified() {
+        public long getLastModified() {
             return lastModified;
         }
 
-        public DownloadParam setLastModified(Date lastModified) {
+        public DownloadParam setLastModified(long lastModified) {
             this.lastModified = lastModified;
             return this;
         }
@@ -488,6 +495,18 @@ public class FileController extends BaseController {
             this.alias = alias;
             return this;
         }
+    }
+
+    private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) {
+        DownloadParam downloadParam = new DownloadParam();
+        String fileName = fileRecord.getFileName();
+        long fileSize = fileService.getFileSize(fileRecord, alias);
+        downloadParam.setFileName(fileName);
+        downloadParam.setFileSize(fileSize);
+        downloadParam.setLastModified(fileRecord.getUpdateTime() != null ? fileRecord.getUpdateTime().getTime() :
+                (fileRecord.getCreateTime() != null ? fileRecord.getCreateTime().getTime() : 0L));
+        downloadParam.setAlias(alias);
+        return downloadParam;
     }
 
     /**
@@ -520,9 +539,9 @@ public class FileController extends BaseController {
 
             response.setHeader("Content-Disposition", disposition);
             response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
-            if (downloadParam.getLastModified() != null) {
+            if (downloadParam.getLastModified() > 0L) {
                 synchronized (DF_GMT) {
-                    response.setHeader("Last-Modified", DF_GMT.format(downloadParam.getLastModified()));
+                    response.setHeader("Last-Modified", DF_GMT.format(new Date(downloadParam.getLastModified())));
                 }
                 response.setHeader("ETag", getEtag(downloadParam));
             }
@@ -542,7 +561,7 @@ public class FileController extends BaseController {
     }
 
     private static String getEtag(DownloadParam downloadParam) {
-        long lastModified = downloadParam.getLastModified() == null ? 0 : downloadParam.getLastModified().getTime();
+        long lastModified = downloadParam.getLastModified();
         String etag = getIntHex(downloadParam.getFileSize()) + getIntHex(lastModified);
         return etag;
     }
@@ -551,6 +570,30 @@ public class FileController extends BaseController {
         l = (l & 0xFFFFFFFFL) | 0x100000000L;
         String s = Long.toHexString(l);
         return s.substring(1);
+    }
+
+    protected boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, DownloadParam downloadParam) {
+        try {
+            long headerValue = request.getDateHeader("If-Modified-Since");
+            long lastModified = downloadParam.getLastModified();
+            if (headerValue != -1) {
+
+                // If an If-None-Match header has been specified, if modified since
+                // is ignored.
+                if ((request.getHeader("If-None-Match") == null) && (lastModified < headerValue + 1000L)) {
+                    // The entity has not been modified since the date
+                    // specified by the client. This is not an error case.
+                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    response.setHeader("ETag", getEtag(downloadParam));
+
+                    return false;
+                }
+            }
+        } catch (IllegalArgumentException illegalArgument) {
+            return true;
+        }
+        return true;
+
     }
 
     /**
@@ -585,8 +628,14 @@ public class FileController extends BaseController {
                     input = fileService.getFileInputStream(fileRecord);
                     fileSize = fileService.getFileSize(fileRecord);
                 }
+
+                DownloadParam downloadParam = getDownloadParam(fileRecord, fileAlias);
+                if (!checkIfModifiedSince(request, response, downloadParam)) {
+                    return;
+                }
+
                 if (input != null) {
-                    downloadFileData(response, input, new DownloadParam(fileName, fileSize, fileRecord.getUpdateTime()).setInline(true).setEncryptedFileId(enFileId));
+                    downloadFileData(response, input, downloadParam.setInline(true).setEncryptedFileId(enFileId));
                     return;
                 }
             } catch (Exception e) {
@@ -620,7 +669,7 @@ public class FileController extends BaseController {
         // 这里可能考虑重定向到具体文件目录去
         File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
         if (defaultImageFile.exists()) {
-            downloadFileData(response, new FileInputStream(defaultImageFile), new DownloadParam(defaultImageFile.getName(), defaultImageFile.length(), new Date(defaultImageFile.lastModified())).setInline(true));
+            downloadFileData(response, new FileInputStream(defaultImageFile), new DownloadParam(defaultImageFile.getName(), defaultImageFile.length(), defaultImageFile.lastModified()).setInline(true));
             return;
         } else {
             String error = "附件记录不存在@" + System.currentTimeMillis();
