@@ -105,42 +105,5 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
         return dataList;
     }
 
-    @Override
-    public int bulkSave(List<PubFileRecord> entities) {
-        if (Utils.isEmpty(entities)) {
-            return 0;
-        }
-        return getHibernateTemplate().execute((session) -> {
-            for (PubFileRecord entity : entities) {
-                session.save(entity);
-            }
-            return entities.size();
-        });
-    }
 
-    @Override
-    public int bulkUpdate(List<PubFileRecord> entities) {
-        if (Utils.isEmpty(entities)) {
-            return 0;
-        }
-        return getHibernateTemplate().execute((session) -> {
-            for (PubFileRecord entity : entities) {
-                session.update(entity);
-            }
-            return entities.size();
-        });
-    }
-
-    @Override
-    public int bulkDelete(List<PubFileRecord> entities) {
-        if (Utils.isEmpty(entities)) {
-            return 0;
-        }
-        return getHibernateTemplate().execute((session) -> {
-            for (PubFileRecord entity : entities) {
-                session.delete(entity);
-            }
-            return entities.size();
-        });
-    }
 }
