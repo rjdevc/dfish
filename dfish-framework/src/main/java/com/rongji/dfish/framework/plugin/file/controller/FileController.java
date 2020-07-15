@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,6 +54,12 @@ public class FileController extends BaseController {
     private FileHandlingManager fileHandlingManager;
 
     private Map<String, FileUploadPlugin> uploadPluginMap = new HashMap<>();
+
+    private static final DateFormat DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
+
+    static {
+        DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     @PostConstruct
     private void init() {
@@ -283,7 +291,7 @@ public class FileController extends BaseController {
         PubFileRecord fileRecord = fileService.getFileRecord(fileId);
         boolean inline = "1".equals(request.getParameter("inline"));
         // 目前文件下载统一默认都是原件下载
-        downloadFileData(response, inline, fileRecord, null);
+        downloadFileData(response, fileRecord, new DownloadParam().setInline(inline).setEncryptedFileId(enFileId));
     }
 
     /**
@@ -310,10 +318,10 @@ public class FileController extends BaseController {
      */
     @RequestMapping("/inline/{fileAlias}/{fileId}")
     public void inline(HttpServletResponse response, @PathVariable String fileAlias, @PathVariable String fileId) throws Exception {
-        fileId = fileService.decId(fileId);
+        String realFileId = fileService.decId(fileId);
 
-        PubFileRecord fileRecord = fileService.getFileRecord(fileId);
-        downloadFileData(response, true, fileRecord, fileAlias);
+        PubFileRecord fileRecord = fileService.getFileRecord(realFileId);
+        downloadFileData(response, fileRecord, new DownloadParam().setInline(true).setEncryptedFileId(fileId).setAlias(fileAlias));
     }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
@@ -374,7 +382,7 @@ public class FileController extends BaseController {
      * @param fileRecord
      * @throws Exception
      */
-    private void downloadFileData(HttpServletResponse response, boolean inline, PubFileRecord fileRecord, String fileAlias) throws Exception {
+    private void downloadFileData(HttpServletResponse response, PubFileRecord fileRecord, DownloadParam downloadParam) throws Exception {
         if (fileRecord == null) {
             LogUtil.warn("下载的附件不存在");
             return;
@@ -382,15 +390,15 @@ public class FileController extends BaseController {
         InputStream input = null;
         try {
             String fileName = fileRecord.getFileName();
-            input = fileService.getFileInputStream(fileRecord, fileAlias);
-            long fileSize = 0L;
+            input = fileService.getFileInputStream(fileRecord, downloadParam.getAlias());
+            long fileSize;
             if (input != null) {
-                fileSize = fileService.getFileSize(fileRecord, fileAlias);
+                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias());
             } else { // 当别名附件不存在时,使用原附件
                 input = fileService.getFileInputStream(fileRecord);
                 fileSize = fileService.getFileSize(fileRecord);
             }
-            downloadFileData(response, inline, input, fileName, fileSize);
+            downloadFileData(response, input, downloadParam.setFileName(fileName).setFileSize(fileSize));
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
             LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
@@ -402,30 +410,122 @@ public class FileController extends BaseController {
         }
     }
 
+    private static class DownloadParam {
+        String fileName;
+        long fileSize;
+        Date lastModified;
+        String alias;
+        boolean inline;
+        String encryptedFileId;
+
+        public DownloadParam() {
+        }
+
+        public DownloadParam(String fileName, long fileSize, Date lastModified) {
+            this.fileName = fileName;
+            this.fileSize = fileSize;
+            this.lastModified = lastModified;
+        }
+
+        public DownloadParam(String fileName, long fileSize, Date lastModified, String alias, boolean inline) {
+            this.fileName = fileName;
+            this.fileSize = fileSize;
+            this.lastModified = lastModified;
+            this.alias = alias;
+            this.inline = inline;
+        }
+
+        public boolean isInline() {
+            return inline;
+        }
+
+        public DownloadParam setInline(boolean inline) {
+            this.inline = inline;
+            return this;
+        }
+
+        public String getEncryptedFileId() {
+            return encryptedFileId;
+        }
+
+        public DownloadParam setEncryptedFileId(String encryptedFileId) {
+            this.encryptedFileId = encryptedFileId;
+            return this;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public DownloadParam setFileName(String fileName) {
+            this.fileName = fileName;
+            return this;
+        }
+
+        public long getFileSize() {
+            return fileSize;
+        }
+
+        public DownloadParam setFileSize(long fileSize) {
+            this.fileSize = fileSize;
+            return this;
+        }
+
+        public Date getLastModified() {
+            return lastModified;
+        }
+
+        public DownloadParam setLastModified(Date lastModified) {
+            this.lastModified = lastModified;
+            return this;
+        }
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public DownloadParam setAlias(String alias) {
+            this.alias = alias;
+            return this;
+        }
+    }
+
     /**
      * 附件下载
      *
      * @param response
      * @throws Exception
      */
-    private void downloadFileData(HttpServletResponse response, boolean inline, InputStream input, String fileName, long fileSize) throws Exception {
+    private void downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
         String encoding = "UTF-8";
         try {
             response.setHeader("Accept-Ranges", "bytes");
             response.setHeader("Accept-Charset", encoding);
             String contentType = null;
-            if (inline) {
-                String fileExtension = FileUtil.getExtension(fileName);
+            String disposition;
+            if (downloadParam.isInline()) {
+                String fileExtension = FileUtil.getExtension(downloadParam.getFileName());
                 if (Utils.notEmpty(fileExtension)) {
                     contentType = getMimeType(fileExtension);
                 }
+
+                disposition = "inline; filename=" + (Utils.notEmpty(downloadParam.getEncryptedFileId()) ? (downloadParam.getEncryptedFileId() + "." + fileExtension) : URLEncoder.encode(downloadParam.getFileName(), encoding));
+            } else {
+                disposition = "attachment; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
             }
             if (Utils.isEmpty(contentType)) {
                 contentType = "application/octet-stream";
             }
             response.setHeader("Content-type", contentType);
-            response.setHeader("Content-Disposition", (inline ? "inline" : "attachment") + "; filename=" + URLEncoder.encode(fileName, encoding));
-            response.setHeader("Content-Length", String.valueOf(fileSize));
+
+            response.setHeader("Content-Disposition", disposition);
+            response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
+            if (downloadParam.getLastModified() != null) {
+                synchronized (DF_GMT) {
+                    response.setHeader("Last-Modified", DF_GMT.format(downloadParam.getLastModified()));
+                }
+                response.setHeader("ETag", getEtag(downloadParam));
+            }
             response.setStatus(HttpServletResponse.SC_OK);
             if (input != null) {
                 FileUtil.downLoadData(response, input);
@@ -439,6 +539,18 @@ public class FileController extends BaseController {
                 input.close();
             }
         }
+    }
+
+    private static String getEtag(DownloadParam downloadParam) {
+        long lastModified = downloadParam.getLastModified() == null ? 0 : downloadParam.getLastModified().getTime();
+        String etag = getIntHex(downloadParam.getFileSize()) + getIntHex(lastModified);
+        return etag;
+    }
+
+    private static String getIntHex(long l) {
+        l = (l & 0xFFFFFFFFL) | 0x100000000L;
+        String s = Long.toHexString(l);
+        return s.substring(1);
     }
 
     /**
@@ -474,7 +586,7 @@ public class FileController extends BaseController {
                     fileSize = fileService.getFileSize(fileRecord);
                 }
                 if (input != null) {
-                    downloadFileData(response, true, input, fileName, fileSize);
+                    downloadFileData(response, input, new DownloadParam(fileName, fileSize, fileRecord.getUpdateTime()).setInline(true).setEncryptedFileId(enFileId));
                     return;
                 }
             } catch (Exception e) {
@@ -508,7 +620,7 @@ public class FileController extends BaseController {
         // 这里可能考虑重定向到具体文件目录去
         File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
         if (defaultImageFile.exists()) {
-            downloadFileData(response, true, new FileInputStream(defaultImageFile), defaultImageFile.getName(), defaultImageFile.length());
+            downloadFileData(response, new FileInputStream(defaultImageFile), new DownloadParam(defaultImageFile.getName(), defaultImageFile.length(), new Date(defaultImageFile.lastModified())).setInline(true));
             return;
         } else {
             String error = "附件记录不存在@" + System.currentTimeMillis();
