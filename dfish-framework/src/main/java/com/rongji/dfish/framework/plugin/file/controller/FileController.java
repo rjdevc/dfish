@@ -295,7 +295,7 @@ public class FileController extends BaseActionController {
         }
         boolean inline = "1".equals(request.getParameter("inline"));
         DownloadParam downloadParam = getDownloadParam(fileRecord, null);
-        downloadParam.setInline(inline);
+        downloadParam.setInline(inline).setEncryptedFileId(enFileId);
         downloadFileData(response, fileService.getFileInputStream(fileRecord), downloadParam);
     }
 
@@ -346,8 +346,26 @@ public class FileController extends BaseActionController {
         boolean inline;
         String fileName;
         long fileSize;
-        Date lastModified;
+        long lastModified;
         String alias;
+        String encryptedFileId;
+
+        public DownloadParam() {
+        }
+
+        public DownloadParam(String fileName, long fileSize, long lastModified) {
+            this.fileName = fileName;
+            this.fileSize = fileSize;
+            this.lastModified = lastModified;
+        }
+
+        public DownloadParam(String fileName, long fileSize, long lastModified, String alias, boolean inline) {
+            this.fileName = fileName;
+            this.fileSize = fileSize;
+            this.lastModified = lastModified;
+            this.alias = alias;
+            this.inline = inline;
+        }
 
         public boolean isInline() {
             return inline;
@@ -376,11 +394,11 @@ public class FileController extends BaseActionController {
             return this;
         }
 
-        public Date getLastModified() {
+        public long getLastModified() {
             return lastModified;
         }
 
-        public DownloadParam setLastModified(Date lastModified) {
+        public DownloadParam setLastModified(long lastModified) {
             this.lastModified = lastModified;
             return this;
         }
@@ -391,6 +409,15 @@ public class FileController extends BaseActionController {
 
         public DownloadParam setAlias(String alias) {
             this.alias = alias;
+            return this;
+        }
+
+        public String getEncryptedFileId() {
+            return encryptedFileId;
+        }
+
+        public DownloadParam setEncryptedFileId(String encryptedFileId) {
+            this.encryptedFileId = encryptedFileId;
             return this;
         }
     }
@@ -414,20 +441,24 @@ public class FileController extends BaseActionController {
             response.setHeader("Accept-Charset", encoding);
             String contentType = null;
 
+            String disposition;
             if (downloadParam.isInline()) {
                 String extName = FileUtil.getFileExtName(downloadParam.getFileName());
                 if (Utils.notEmpty(extName)) {
                     contentType = getMimeType(extName);
                 }
+                disposition = "inline; filename=" + (Utils.notEmpty(downloadParam.getEncryptedFileId()) ? (downloadParam.getEncryptedFileId() + extName) : URLEncoder.encode(downloadParam.getFileName(), encoding));
+            } else {
+                disposition = "attachment; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
             }
             if (Utils.isEmpty(contentType)) {
                 contentType = "application/octet-stream";
             }
 
             response.setHeader("Content-type", contentType);
-            response.setHeader("Content-Disposition", (downloadParam.isInline() ? "inline" : "attachment") + "; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding));
+            response.setHeader("Content-Disposition", disposition);
             response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
-            if (downloadParam.getLastModified() != null) {
+            if (downloadParam.getLastModified() > 0L) {
                 synchronized (DF_GMT) {
                     response.setHeader("Last-Modified", DF_GMT.format(downloadParam.getLastModified()));
                 }
@@ -449,7 +480,7 @@ public class FileController extends BaseActionController {
     }
 
     private static String getEtag(DownloadParam downloadParam) {
-        long lastModified = downloadParam.getLastModified() == null ? 0 : downloadParam.getLastModified().getTime();
+        long lastModified = downloadParam.getLastModified();
         String etag = getIntHex(downloadParam.getFileSize()) + getIntHex(lastModified);
         return etag;
     }
@@ -466,7 +497,7 @@ public class FileController extends BaseActionController {
     protected boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, DownloadParam downloadParam) {
         try {
             long headerValue = request.getDateHeader("If-Modified-Since");
-            long lastModified = downloadParam.getLastModified() == null ? 0 : downloadParam.getLastModified().getTime();
+            long lastModified = downloadParam.getLastModified();
             if (headerValue != -1) {
 
                 // If an If-None-Match header has been specified, if modified since
@@ -487,13 +518,14 @@ public class FileController extends BaseActionController {
 
     }
 
-    private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) throws Exception {
+    private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) {
         DownloadParam downloadParam = new DownloadParam();
         String fileName = fileRecord.getFileName();
         long fileSize = fileService.getFileSize(fileRecord, alias);
         downloadParam.setFileName(fileName);
         downloadParam.setFileSize(fileSize);
-        downloadParam.setLastModified(fileRecord.getUpdateTime());
+        downloadParam.setLastModified(fileRecord.getUpdateTime() != null ? fileRecord.getUpdateTime().getTime() :
+                (fileRecord.getCreateTime() != null ? fileRecord.getCreateTime().getTime() : 0L));
         downloadParam.setAlias(alias);
         return downloadParam;
     }
@@ -506,12 +538,54 @@ public class FileController extends BaseActionController {
      * @throws Exception
      */
     @RequestMapping("/thumbnail")
-    @ResponseBody
     public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String scheme = request.getParameter("scheme");
         String alias = request.getParameter("alias");
         String fileId = request.getParameter("fileId");
-        thumbnail(request, response, scheme, alias, fileId);
+        inline(request, response, scheme, alias, fileId);
+    }
+
+    /**
+     * 显示缩略图方法
+     *
+     * @param response
+     * @param fileId
+     * @throws Exception
+     */
+    @RequestMapping("/inline/{fileId}")
+    public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileId) throws Exception {
+        inline(request, response, null, fileId);
+    }
+
+    /**
+     * 显示缩略图方法
+     *
+     * @param response
+     * @param alias
+     * @param fileId
+     * @throws Exception
+     */
+    @RequestMapping("/inline/{alias}/{fileId}")
+    public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String alias, @PathVariable String fileId) throws Exception {
+        inline(request, response, null, alias, fileId);
+    }
+
+    /**
+     * 显示缩略图方法
+     *
+     * @param response
+     * @param scheme
+     * @param alias
+     * @param fileId
+     * @throws Exception
+     * @deprecated 原先命名不妥,换成inline方法,这里做容错
+     * @see #inline(HttpServletRequest, HttpServletResponse, String, String, String)
+     */
+    @RequestMapping("/thumbnail/{scheme}/{alias}/{fileId}")
+    @Deprecated
+    public void thumbnail(HttpServletRequest request, HttpServletResponse response, @PathVariable String scheme,
+                       @PathVariable String alias, @PathVariable String fileId) throws Exception {
+        inline(request, response, scheme, alias, fileId);
     }
 
     /**
@@ -523,9 +597,8 @@ public class FileController extends BaseActionController {
      * @param fileId
      * @throws Exception
      */
-    @RequestMapping("/thumbnail/{scheme}/{alias}/{fileId}")
-    @ResponseBody
-    public void thumbnail(HttpServletRequest request, HttpServletResponse response, @PathVariable String scheme,
+    @RequestMapping("/inline/{scheme}/{alias}/{fileId}")
+    public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String scheme,
                           @PathVariable String alias, @PathVariable String fileId) throws Exception {
         String decFileId = fileService.decrypt(fileId);
         PubFileRecord fileRecord = fileService.get(decFileId);
@@ -543,7 +616,7 @@ public class FileController extends BaseActionController {
             return;
         }
 
-        downloadParam.setInline(true);
+        downloadParam.setInline(true).setEncryptedFileId(fileId);
         boolean success = downloadFileData(response, fileService.getFileInputStream(fileRecord, realAlias), downloadParam);
         // 下载不成功,用默认图片代替
         if (!success) {
@@ -567,8 +640,7 @@ public class FileController extends BaseActionController {
             // 这里可能考虑重定向到具体文件目录去
             File defaultImageFile = new File(SystemContext.getInstance().get(ServletInfo.class).getServletRealPath() + defaultImageFolder + defaultIcon);
             if (defaultImageFile.exists()) {
-                downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length())
-                        .setLastModified(new Date(defaultImageFile.lastModified()));
+                downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length()).setLastModified(defaultImageFile.lastModified()).setEncryptedFileId(null);
 
                 downloadFileData(response, new FileInputStream(defaultImageFile), downloadParam);
                 return;
@@ -581,6 +653,12 @@ public class FileController extends BaseActionController {
     }
 
     private String getFileAlias(String alias, String scheme) {
+        if (Utils.isEmpty(scheme) || FILE_SCHEME_AUTO.equals(scheme)) {
+            if (FILE_ALIAS_AUTO.equals(alias)) {
+                return null;
+            }
+            return alias;
+        }
         if (Utils.isEmpty(alias) || FILE_ALIAS_AUTO.equals(alias)) {
             ImageHandleScheme handleScheme = fileHandleManager.getScheme(scheme);
             if (handleScheme != null && handleScheme.isHandleZoomDefault()) {

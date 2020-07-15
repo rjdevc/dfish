@@ -97,6 +97,22 @@ public final class FileUtil {
     }
 
     /**
+     * 如果有扩展名,包括点号 如 txt doc等(注意这里不带.).否则返回""
+     * @param fileName String
+     * @return String
+     */
+    public static String getExtension(String fileName) {
+        if (Utils.isEmpty(fileName)) {
+            return "";
+        }
+        int lastIndex = fileName.lastIndexOf(".");
+        if (lastIndex < 0) {
+            return "";
+        }
+        return fileName.substring(lastIndex + 1);
+    }
+
+    /**
      * 从inputStrean取得内容，注意没有关闭该inputStream
      *
      * @param inputStream InputStream
