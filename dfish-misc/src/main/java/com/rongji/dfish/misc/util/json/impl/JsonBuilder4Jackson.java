@@ -1,6 +1,6 @@
 package com.rongji.dfish.misc.util.json.impl;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.rongji.dfish.base.util.Utils;
@@ -23,6 +23,8 @@ public class JsonBuilder4Jackson extends AbstractJsonBuilder {
             if (Utils.notEmpty(dateFormat)) {
                 objectMapper.setDateFormat(new SimpleDateFormat(dateFormat));
             }
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
         }
         return objectMapper;
     }
