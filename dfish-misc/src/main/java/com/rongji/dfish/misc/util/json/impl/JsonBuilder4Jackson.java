@@ -1,5 +1,6 @@
 package com.rongji.dfish.misc.util.json.impl;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.rongji.dfish.base.Utils;
@@ -18,16 +19,11 @@ public class JsonBuilder4Jackson extends AbstractJsonBuilder {
     protected ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
             objectMapper = new ObjectMapper();
-            // 属性为null的不序列化
-//            objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
-//                @Override
-//                public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-//                    jsonGenerator.writeString("");
-//                }
-//            });
             if (Utils.notEmpty(dateFormat)) {
                 objectMapper.setDateFormat(new SimpleDateFormat(dateFormat));
             }
+            // 属性为null或“”的不序列化
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         }
         return objectMapper;
     }
