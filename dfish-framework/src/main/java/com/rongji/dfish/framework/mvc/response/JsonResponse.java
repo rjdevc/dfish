@@ -1,11 +1,10 @@
 package com.rongji.dfish.framework.mvc.response;
 
 import com.rongji.dfish.base.Pagination;
+import com.rongji.dfish.base.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -104,7 +103,9 @@ public class JsonResponse<T> {
      * @return 本身，这样可以继续设置其他属性
      */
     public JsonResponse<T> setErrMsg(String msg) {
-        error().setMsg(msg);
+        if (Utils.notEmpty(msg)) {
+            error().setMsg(msg);
+        }
         return this;
     }
 
@@ -114,7 +115,9 @@ public class JsonResponse<T> {
      * @return 本身，这样可以继续设置其他属性
      */
     public JsonResponse<T> setErrCode(String code) {
-        error().setCode(code);
+        if (Utils.notEmpty(code)) {
+            error().setCode(code);
+        }
         return this;
     }
 
@@ -149,7 +152,9 @@ public class JsonResponse<T> {
      * @return 本身，这样可以继续设置其他属性
      */
     public JsonResponse<T> setPrincipalName(String principalName) {
-        setPrincipal(new HeaderPrincipal(principalName));
+        if (Utils.notEmpty(principalName)) {
+            setPrincipal(new HeaderPrincipal(principalName));
+        }
         return this;
     }
 
