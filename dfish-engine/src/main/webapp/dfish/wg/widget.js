@@ -2587,7 +2587,9 @@ Horz = define.widget('horz', {
 	Prototype: {
 		className: 'w-horz',
 		childCls: 'f-sub-horz',
-		scaleWidth: _w_scale.width,
+		scaleWidth: function() {
+			return this.x.nobr === F ? _proto.scaleWidth.apply(this, arguments) : _w_scale.width.apply(this, arguments);
+		},
 		html_nodes: function() {
 			var v = this.attr('valign');
 			v && (this.childCls += ' f-va-' + v);
