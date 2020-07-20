@@ -471,7 +471,7 @@
 .w-slider ._track{position:absolute;height:8px;top:6px;background:#2498ff;border-radius:6px;}
 .w-slider ._thumb{position:absolute;width:12px;height:12px;top:2px;border:2px solid #2498ff;background:#fff;border-radius:10px;cursor:pointer}
 .w-slider ._thumb .f-i{display:none}
-.w-slider ._pc{float:right;width:44px;text-align:right;color:#999}
+.w-slider ._pc{float:right;width:44px;text-align:center;color:#999}
 .w-slider-tip-text{min-width:30px;text-align:center}
 
 .w-jigsaw var,.w-jigsaw em{font-style:normal}
