@@ -4749,7 +4749,9 @@ define( {
   	extend: 'Text',
   	deprecate: '.w-text,.z-trans,placeholder,transparent,focus,focusEnd,warn,change',
     Config: [
-      { name: 'tip', type: 'Boolean | String | Tip', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$value</b><s>(值)</s>。' }
+      { name: 'tip', type: 'Boolean | String | Tip', optional: true, remark: '拖动滑块时显示的tip。支持变量 <b>$value</b><s>(值)</s>。' },
+      { name: 'showPercent', type: 'Boolean', optional: true, remark: '设为true，滑块右边显示百分比数字。' },
+      { name: 'value', type: 'Number', optional: true, remark: '整数值，范围0-100。' }
     ],
     Event: [
       { name: 'dragStart', remark: '拖动开始时触发。' },

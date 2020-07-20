@@ -2973,7 +2973,9 @@ Horz = define.widget('Horz', {
 	Prototype: {
 		className: 'w-horz',
 		childCls: 'f-sub-horz',
-		scaleWidth: _w_scale.width,
+		scaleWidth: function() {
+			return (this.x.br ? _proto.scaleWidth : _w_scale.width).apply(this, arguments);
+		},
 		html_nodes: function() {
 			var v = this.attr('vAlign');
 			v && (this.childCls += ' f-va-' + v);
@@ -3197,9 +3199,12 @@ Html = define.widget('Html', {
 			if (a == N)
 				return this.x.text;
 			this.x.text = a;
-			var o = this.$('cont') || this.$();
+			var o = this.$t();
 			o && (o.innerHTML = this.html_nodes());
 			this.trigger('resize');
+		},
+		$t: function() {
+			return this.$('cont') || this.$();
 		},
 		thumb: function() {
 			$.thumbnail(this.$(), this.scaleWidth(this, this.attr('thumbWidth')));
@@ -5189,7 +5194,7 @@ Dialog = define.widget('Dialog', {
 		_listenHide: function(a) {
 			var self = this, d = this.x.hoverDrop;
 			$.attach(document, mbi ? 'touchend' : 'mousedown mousewheel', self.listenHide_ || (self.listenHide_ = function(e) {
-				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble(e.srcElement) || (!self.x.independent && self.parentNode.hasBubble(e.srcElement))))) {
+				if(!self._disposed && (e.srcElement.id == self.id + 'cvr' || !(self.hasBubble(e.srcElement) || self.parentNode.hasBubble(e.srcElement)))) {
 					if (e.srcElement.id == self.id + 'cvr') $.stop(e);
 					self.close();
 				};
@@ -6287,6 +6292,12 @@ FormLabel = define.widget('FormLabel', {
 	},
 	Extend: [AbsForm, Html],
 	Prototype: {
+		text: function() {
+			return Html.prototype.text.apply(this, arguments);
+		},
+		$t: function() {
+			return this.$('cont') || this.$('f');
+		},
 		prop_cls: function() {
 			var c = _proto.prop_cls.call(this);
 			return 'w-f w-formlabel f-nv f-nobr' + (c ? ' ' + c: '');
@@ -6704,7 +6715,9 @@ CheckBox = define.widget('CheckBox', {
 		text: function() {
 			return this.x.text;
 		},
-		groupVal: CheckBoxGroup.prototype.val,
+		groupVal: function() {
+			return this.parentNode.isBoxGroup && this.parentNode.val.apply(this, arguments);
+		},
 		val: function() {
 			var t = this.$t();
 			return t.disabled || !t.checked ? '' : t.value;
@@ -7684,6 +7697,7 @@ NumberBox = define.widget('NumberBox', {
 Slider = define.widget('Slider', {
 	Const: function(x) {
 		x.value == N && (x.value = 0);
+		x.value && (x.value = $.numRange(x.value, 0, 100));
 		AbsForm.apply(this, arguments);
 	},
 	Extend: AbsForm,
@@ -7699,6 +7713,12 @@ Slider = define.widget('Slider', {
 				_superTrigger(this, AbsForm, e);
 				this.css('t', 'width', this.formWidth());
 				this.val(this.val());
+			},
+			mouseOver: function(e) {
+				this.tip(this.val() || this.min());
+			},
+			mouseOut: function() {
+				!this._dragging && this._tip && this._tip.close();
 			},
 			change: N
 		}
@@ -7732,7 +7752,7 @@ Slider = define.widget('Slider', {
 			if (!this.usa())
 				return;
 			var x = $.eventX(b), m = this.max(), n = this.min(), f = _number(a.style.left), v = this.$v().value, 
-				g = this.thumbWidth(), w = this.formWidth() - g, self = this, t = this.attr('tip') === T ? '$0' : this.attr('tip'),
+				g = this.thumbWidth(), w = this.formWidth() - g - this.percentWidth(), self = this, t = this.attr('tip') === T ? '$0' : this.attr('tip'),
 				d = this.tip(v || this.min());
 			self.trigger('dragStart');
 			$.moveup(function(e) {
@@ -7742,10 +7762,13 @@ Slider = define.widget('Slider', {
 				$(self.id + 'track').style.width = (l + g) + 'px';
 				d && d.snapTo(a).text(self.tipText(v));
 				$(self.id + 'v').value = v;
+				self.x.showPercent && (self.$('pc').innerHTML = v + '%');
+				self._dragging = T;
 				self.addClass('z-drag');
 				self.trigger('drag', [v]);
 			}, function(e) {
 				d && d.close();
+				self._dragging = T;
 				self.trigger('drop', [v]);
 				self.removeClass('z-drag');
 			}, b);
@@ -7759,9 +7782,10 @@ Slider = define.widget('Slider', {
 			return v == N ? 0 : v;
 		},
 		thumbWidth: function() {
-			if (!this._thumb_wd)
-				this._thumb_wd = this.$('thumb').offsetWidth;
-			return this._thumb_wd;
+			return this.$('thumb').offsetWidth;
+		},
+		percentWidth: function() {
+			return this.x.showPercent ? this.$('pc').offsetWidth : 0;
 		},
 		tip: function(v) {
 			var t = this.attr('tip') === T ? '$value' : this.attr('tip');
@@ -7779,12 +7803,18 @@ Slider = define.widget('Slider', {
 			return (this.formWidth() - this.thumbWidth()) * (_number(v) - n) / (m - n);
 		},
 		form_cls: function() {
-			return 'f-nv';
+			return '';
+		},
+		form_prop: function() {
+			return AbsForm.prototype.form_prop.call(this) + _html_on.call(this);
+		},
+		html_percent: function() {
+			return this.x.showPercent ? '<div id=' + this.id + 'pc class="_pc">' + this.x.value + '%</div>' : '';
 		},
 		html_nodes: function() {
 			var w = this.formWidth();
-			return '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + this.x.value + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
-				't class=w-input-t style="width:' + w + 'px"><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + 
+			return this.html_percent() + '<input type=hidden id=' + this.id + 'v name="' + this.input_name() + '" value="' + this.x.value + '"' + (this.isDisabled() ? ' disabled' : '') + '><div id=' + this.id +
+				't class=w-input-t><div class=_road></div><div id=' + this.id + 'track class=_track></div><div id=' + this.id + 'thumb class=_thumb ' + ev_down + evw + 
 				'.dragStart(this,event) onmouseover=' + evw + '.hover(this,event) onmouseout=' + evw + '.hout(this,event)><i class=f-vi></i><i class="f-i f-i-long-arrow-right"></i><i class="f-i f-i-check"></i></div></div>' + this.html_placeholder();
 		}
 	}
@@ -7865,6 +7895,7 @@ Jigsaw = define.widget('Jigsaw', {
 	Listener: {
 		tag: 'f',
 		body: {
+			ready: N,
 			mouseOver: {
 				proxy: mbi ? 'touchStart' : N,
 				method: function() {
@@ -7982,7 +8013,7 @@ Jigsaw = define.widget('Jigsaw', {
 			this.dragStart(this.$('thumb'), a);
 		},
 		form_cls: function() {
-			return 'w-input f-nv';
+			return 'w-input';
 		},
 		form_prop: function() {
 			return AbsForm.prototype.form_prop.call(this) + _html_on.call(this);

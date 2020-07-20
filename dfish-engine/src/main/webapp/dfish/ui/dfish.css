@@ -466,10 +466,12 @@
 .w-numberbox.z-ds .f-boxbtn{background:#e6e6e6;color:#ccc}
 .w-numberbox .w-f-main.z-auto{width:126px}
 
-.w-slider .w-input-t{position:relative;height:6px;margin:2px 0;background:#e6e6e6;border-radius:6px}
-.w-slider ._track{position:absolute;height:6px;background:#2498ff;border-radius:6px;}
-.w-slider ._thumb{position:absolute;width:10px;height:10px;top:-4px;border:2px solid #2498ff;background:#fff;border-radius:10px;cursor:pointer}
+.w-slider .w-input-t{position:relative;width:auto;height:8px;padding:6px 0;margin:2px 0;overflow:hidden}
+.w-slider ._road{height:8px;background:#e6e6e6;border-radius:6px;}
+.w-slider ._track{position:absolute;height:8px;top:6px;background:#2498ff;border-radius:6px;}
+.w-slider ._thumb{position:absolute;width:12px;height:12px;top:2px;border:2px solid #2498ff;background:#fff;border-radius:10px;cursor:pointer}
 .w-slider ._thumb .f-i{display:none}
+.w-slider ._pc{float:right;width:44px;text-align:right;color:#999}
 .w-slider-tip-text{min-width:30px;text-align:center}
 
 .w-jigsaw var,.w-jigsaw em{font-style:normal}
