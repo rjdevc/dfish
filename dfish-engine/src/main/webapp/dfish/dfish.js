@@ -710,29 +710,17 @@ _dateFormat = $.dateFormat = function(a, b) {
 	return (b || _date_sf).toLowerCase().replace('yyyy' , o.y).replace('yy', o.y % 100).replace('mm', _strPad(o.m + 1)).replace('dd', _strPad(o.d)).replace('hh', _strPad(o.h))
 		.replace('ii', _strPad(o.i)).replace('ss', _strPad(o.s)).replace('m', o.m + 1).replace('d', o.d).replace('h', o.h).replace('i', o.i).replace('s', o.s);
 },
-// 字串型转为日期型 /@s -> str, f -> format?
-_dateParse = $.dateParse = function(s, f) {
-	s = '' + s;
-	if (f) {
-		var g = f.charAt(0);
-		if (g == 'm')
-			s = '2017-' + s;
-		else if (g == 'd')
-			s = '2017-03-' + s;
-		else if (g == 'h')
-			s = '2017-03-01 ' + s;
-		else if (g == 'i')
-			s = '2017-03-01 00:' + s;
-	}
-	var b = s.split('-');
-	if (b.length === 1)
-		s += '-03-01';
-	else if (b.length === 2)
-		s += '-01';
-	var a = new Date(s.replace(/-/g, '/'));
-	if (isNaN(a))
-		a = new Date(s.split(' ')[ 0 ].replace(/-/g, '/'));
-	return isNaN(a) ? new Date : a;
+// 字串型转为日期型 /@a -> str, b -> format?
+_dateParse = $.dateParse = function(a, b) {
+	a = ('' + a).replace(/\b(\d)\b/g, '0\$1');
+	b = (b || _date_sf).replace(/\b([mdhis])\b/g, '\$1\$1');
+	var c, y = (c = b.indexOf('yyyy')) > -1 ? _number(a.substr(c, 4)) || 2020 : 2020,
+		M = (c = b.indexOf('mm')) > -1 ? _number(a.substr(c, 2)) -1 : 0,
+		d = (c = b.indexOf('dd')) > -1 ? _number(a.substr(c, 2)) : 1,
+		H = (c = b.indexOf('hh')) > -1 ? _number(a.substr(c, 2)) : 0,
+		m = (c = b.indexOf('ii')) > -1 ? _number(a.substr(c, 2)) : 0,
+		s = (c = b.indexOf('ss')) > -1 ? _number(a.substr(c, 2)) : 0;
+	return new Date(y, M, d, H, m, s);
 },
 // 日期增减  /@ a -> date, b -> type enum (y/m/d/h/i/s), c -> value
 _dateAdd = $.dateAdd = function(a, b, c) {

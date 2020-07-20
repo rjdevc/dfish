@@ -6346,6 +6346,13 @@ _Date = define.widget('date', {
 		Text.apply(this, arguments);
 		if (! x.format)
 			x.format = 'yyyy-mm-dd';
+		var a = $.strEscape(x.value == N ? '' : ('' + x.value)), r = '';
+		if (a) {
+			for (var i = 0, a = a.split(','), l = a.length, r = []; i < l; i ++)
+				r.push($.dateFormat($.dateParse(a[i]), this.x.format));
+			r = r.join(',');
+		}
+		x.value = r;
 		this.defaults({width: 67 + this.x.format.length * 6});
 	},
 	Extend: Text,
@@ -6354,7 +6361,7 @@ _Date = define.widget('date', {
 			click: {
 				occupy: T,
 				method: function() {
-					! F && this.isNormal() && this.popCalendar();
+					this.isNormal() && this.popCalendar();
 				}
 			},
 			input: mbi && {
