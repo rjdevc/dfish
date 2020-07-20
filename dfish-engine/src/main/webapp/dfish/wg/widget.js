@@ -205,6 +205,10 @@ _f_val = function(a, b, r) {
 		case 'datetime-local':
 			mbi && v && (v = $.dateFormat(v.replace('T', ' '), a.getAttribute('w-format')));
 		break;
+		case 'hidden':
+			var g = a.id && a.id.indexOf(':') > -1 && _widget(a);
+			g && typeof g.val === _FUN && (v = g.val());
+		break;
 	}
 	v && (v = $.strTrim(v));
 	if (b) {
@@ -973,16 +977,14 @@ W = define('Widget', function() {
 		},
 		// 获取某个子孙节点 /@ a -> type
 		descendant: function(a) {
-			if (this.type === a)
+			if ($.idsAny(a, this.type))
 				return this;
-			if (this.isDialogWidget)
-				return;
 			for (var i = 0, l = this.length, r; i < l; i ++) {
-				if (!this[i].type_view && (r = this[i].descendant(a)))
+				if (!(this[i].type_view || this[i].isDialogWidget) && (r = this[i].descendant(a)))
 					return r;
 			}
 			for (var i in this.discNodes) {
-				if (!this.discNodes[i].type_view && (r = this.discNodes[i].descendant(a)))
+				if (!(this.discNodes[i].type_view || this.discNodes[i].isDialogWidget) && (r = this.discNodes[i].descendant(a)))
 					return r;
 			}
 		},
@@ -2871,8 +2873,7 @@ View = define.widget('View', {
 		},
 		_cleanValidError: function() {
 			var e = this._err_ns, k, n;
-			for (k in e)
-				(n = _all[e[k].wid]) && n.trigger('error', F);
+			for (k in e) (n = _all[e[k].wid]) && n.trigger('error', F);
 			_inst_hide('Tip');
 		},
 		append: function() {
@@ -2925,7 +2926,7 @@ DocView = define.widget('DocView', {
 		x: {},
 		path: '/',
 		loaded: T,
-		$: function() {	return document.body},
+		$: function() {return document.body},
 		outerWidth: function() {return $.width()},
 		outerHeight: function() {return $.height()},
 		// 调整大小
@@ -6486,7 +6487,8 @@ CheckBoxGroup = define.widget('CheckBoxGroup', {
 		val: function(a) {
 			if (a == N)
 				return $.arrSelect(this.elements(T, T), 'v.value', T).join(',');
-			this.elements().each(function() {this.checked = $.idsAny(a, this.value)});
+			for (var i = 0; i < this.length; i ++)
+				this[i].check($.idsAny(a, this[i].x.value), T);
 			this.trigger('change');
 		},
 		// @a -> valid name
@@ -6670,10 +6672,10 @@ CheckBox = define.widget('CheckBox', {
 		input_name: function() {
 			return this.x.name || this.parentNode.x.name || '';
 		},
-		check: function(a) {
-			var b = this.$t().checked;
+		check: function(a, b) {
+			var c = this.$t().checked;
 			this.$t().checked = (a = a == N || a);
-			(a != b) && this.trigger('change');
+			!b && a != c && this.trigger('change');
 		},
 		checkstate: function(a) {
 			this.check(a == 1 || a == N || a === T ? T : F);
@@ -6827,13 +6829,16 @@ TripleBox = define.widget('TripleBox', {
 		},
 		relate: function() {
 			if (this.x.name) {
-				for (var i = 0, b = this.getRelates(), l = b.length, c0 = 0, c1 = 0, c2 = 0, d; i < l; i ++) {
+				for (var i = 0, b = this.getRelates(), c = this.isPartial(), l = b.length, c0 = 0, c1 = 0, c2 = 0, d; i < l; i ++) {
 					if (this.x.checkAll) {
-						this != b[i] && b[i].checkstate(this.isChecked());
+						if (this != b[i]) {
+							if (c) {this.checkstate(b[i].checkstate()); break;}
+							else b[i].checkstate(this.isChecked());
+						}
 					} else if (b[i].x.checkAll) {
 						d = b[i];
 					} else {
-						b[i].isChecked() ? (c1 ++) : b[i].checkstate() == 2 ? (c2 ++) : (c0 ++);
+						b[i].isChecked() ? (c1 ++) : b[i].isPartial() ? (c2 ++) : (c0 ++);
 					}
 				}
 				if (d && (c0 + c1 + c2))
@@ -10647,6 +10652,12 @@ TableTripleBox = define.widget('TableTripleBox', {
 					var r = this.tr();
 					r.type_tr && r.addClass('z-checked', this.isChecked());
 				}
+			},
+			click: {
+				method: function(e) {
+					_superTrigger(this, TripleBox, e);
+					e.srcElement && $.cancel(e);
+				}
 			}
 		}
 	},
@@ -11505,6 +11516,9 @@ AbsTable = define.widget('AbsTable', {
 			if (d) {
 				if (a == N) {
 					r = _slice.call(d);
+				} else if ($.isArray(a)) {
+					for (var i = 0, e = []; i < a.length; i ++)
+						r = r.concat(this.rows(a[i]));
 				} else if ($.isNumber(a)) {
 					a = parseFloat(a);
 					if (a < 0) a = d.length + a;
@@ -11623,6 +11637,10 @@ AbsTable = define.widget('AbsTable', {
 			if (a != N && (a = this.rows(a))) {
 				var i = a.length;
 				while (i --) a[i].remove();
+			}
+			if(this.head) {
+				var c = this.head.descendant('TableTripleBox');
+				c && c.relate();
 			}
 		},
 		deleteAllRows: function() {
@@ -12228,11 +12246,14 @@ Transfer = define.widget('Transfer', {
 	Const: function(x, p) {
 		this.x = x;
 		var n = [{type: 'Vert', cls: 'w-transfer-left', width: '*', widthMinus: 2, heightMinus: 2, nodes: [x.suggest]},
-			{type: 'ButtonBar', cls: 'w-transfer-bbr', dir: 'v', align: 'center', nodes: [{icon: '.f-i-angle-right'}, {icon: '.f-i-angle-left'}]},
+			{type: 'ButtonBar', cls: 'w-transfer-bbr', dir: 'v', align: 'center', nodes: [
+				{icon: '.f-i-angle-right', on:{click: 'this.closest("Transfer").select()'}}, {icon: '.f-i-angle-left'}]},
 			{type: 'Vert', cls: 'w-transfer-right', width: '*', widthMinus: 2, heightMinus: 2}];
 		x.nodes = n;
 		Horz.apply(this, arguments);
-		this[2].append(this.initTable('yes', '', this.initOptions(x.value, x.text)));
+		this.no  = this[0].descendant('Table,Tree');
+		this.yes = this[2].append(this.initTable('yes', '', this.initOptions(x.value, x.text)));
+		this.fixNo();
 	},
 	Extend: Horz,
 	Prototype: {
@@ -12242,14 +12263,14 @@ Transfer = define.widget('Transfer', {
 			for (var i = 0, a = [], b; i < v.length; i ++) {
 				b = this.param(v[i], T);
 				_all[b.wid].check();
-				a.push({v: v[i], t: t ? t[i] : b.text});
+				a.push({value: v[i], text: t ? t[i] : b.text});
 			}
 			return a;
 		},
 		store: function() {
 			if (this.combo) return this.combo;
 			if (this.x.bind) {
-				var c = this.x.bind.target ? this.find(this.x.bind.target) : (this[0].descendant('Table') || this[0].descendant('Tree'));
+				var c = this.x.bind.target ? this.find(this.x.bind.target) : this.no;
 				return c && (this.combo = new _comboHooks[c.type](c, this.x.bind));
 			}
 		},
@@ -12258,18 +12279,33 @@ Transfer = define.widget('Transfer', {
 			var s = this.store();
 			return s && s.getParam(a, b);
 		},
+		val: function(a) {
+			if (a == N) {
+				//return this.$() ? this.ownerView.getPostData
+			}
+		},
+		fixNo: function() {
+			for (var i = 0, a = this.val(), l = a.length; i < l; i ++) {
+				this.no
+			}
+		},
 		select: function() {
-			
+			var a = this.store(), b = a.cab.getCheckedAll(), c = [];
+			for (var i = 0, v; i < b.length; i ++) {
+				c.push(this.param(b[i].box.val(), T));
+			}
+			this.yes.insertRow(c);
+			this.no.deleteRow(b);
 		},
 		// @a -> name, b -> title, c -> nodes
 		initTable: function(a, b, c) {
 			return {
 			  	type: 'Table', columns: [
-			  	  {field: 'v', width: 40, align: 'center', format: 'javascript:return {type: "TripleBox", name: "' + a + '"}'},
-			  	  {field: 't', width: '*'}
+			  	  {field: 'value', width: 40, align: 'center', format: 'javascript:return {type: "TripleBox", name: "' + a + '"}'},
+			  	  {field: 'text', width: '*'}
 			    ],
 			    tHead: {
-			      nodes: [ {v: {type: 'TripleBox', name: a, checkAll: true}, t: b} ]
+			      nodes: [ {value: {type: 'TripleBox', name: a, checkAll: true}, text: b} ]
 			    },
 			    tBody: { nodes: c }
 			  };
