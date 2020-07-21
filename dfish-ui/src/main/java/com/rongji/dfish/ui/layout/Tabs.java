@@ -21,6 +21,7 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
     private Split split;
     private OverflowButton overflow;
     private String position;
+    private Boolean swipeFocus;
     /**
      * 构造函数
      *
@@ -177,6 +178,25 @@ public class Tabs extends AbstractPubNodeContainer<Tabs, Tab, Tab> implements
      */
     public Tabs setPosition(String position) {
         this.position = position;
+        return this;
+    }
+
+
+    /**
+     * 是否允许滑动切换
+     * @return Boolean
+     */
+    public Boolean getSwipeFocus() {
+        return swipeFocus;
+    }
+
+    /**
+     * 是否允许滑动切换
+     * @param swipeFocus Boolean
+     * @return this
+     */
+    public Tabs setSwipeFocus(Boolean swipeFocus) {
+        this.swipeFocus = swipeFocus;
         return this;
     }
 

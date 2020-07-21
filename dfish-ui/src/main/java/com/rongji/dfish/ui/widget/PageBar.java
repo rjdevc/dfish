@@ -470,6 +470,7 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      *
      * @return String
      */
+    @Deprecated
     public String getInfo() {
         return info;
     }
@@ -479,7 +480,9 @@ public class PageBar extends AbstractWidget<PageBar> implements Alignable<PageBa
      *
      * @param info String
      * @return this
+     * @deprecated 设置 prependContent: '&lt;div style="float:left"&gt;info&lt;/div&gt;'
      */
+    @Deprecated
     public PageBar setInfo(String info) {
         this.info = info;
         return this;
