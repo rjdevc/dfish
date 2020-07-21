@@ -18,17 +18,42 @@
     <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
 
     <!-- 开启注解驱动 -->
-    <mvc:annotation-driven>
-        <!-- 开启多值传输功能 -->
-        <mvc:message-converters>
-            <!-- dfish-ui 包内容转化器 -->
-            <bean class="com.rongji.dfish.framework.mvc.response.DFishUIConverter"></bean>
-            <!-- 字符转换 -->
+    <!--<mvc:annotation-driven>-->
+        <!--&lt;!&ndash; 开启多值传输功能 &ndash;&gt;-->
+        <!--<mvc:message-converters>-->
+            <!--&lt;!&ndash; dfish-ui 包内容转化器 &ndash;&gt;-->
+            <!--<bean class="com.rongji.dfish.framework.mvc.response.DFishUIConverter"></bean>-->
+            <!--&lt;!&ndash; 字符转换 &ndash;&gt;-->
+            <!--<bean class="org.springframework.http.converter.StringHttpMessageConverter">-->
+                <!--<constructor-arg value="${system.encoding}"/>-->
+            <!--</bean>-->
+            <!--&lt;!&ndash; 接口开发模式的JsonResponse转换 &ndash;&gt;-->
+            <!--<bean class="com.rongji.dfish.framework.mvc.response.ObjectToJsonConverter"></bean>-->
+        <!--</mvc:message-converters>-->
+    <!--</mvc:annotation-driven>-->
+    <mvc:annotation-driven enableMatrixVariables="true">
+        <mvc:message-converters register-defaults="true">
+            <!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <constructor-arg value="${system.encoding}"/>
+                <constructor-arg value="${system.encoding}" />
             </bean>
-            <!-- 接口开发模式的JsonResponse转换 -->
-            <bean class="com.rongji.dfish.framework.mvc.response.ObjectToJsonConverter"></bean>
+            <bean class="com.rongji.dfish.framework.JsonHttpMessageConverter"/>
+            <bean
+                    class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="prefixJson" value="false" />
+                <property name="supportedMediaTypes" value="application/json" />
+                <property name="objectMapper">
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                        <property name="serializationInclusion">
+                            <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_EMPTY</value>
+                        </property>
+                        <property name="dateFormat" >
+                            <value type="java.text.SimpleDateFormat">yyyy-MM-dd HH:mm:ss</value>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+            <!--<bean class="com.rongji.dfish.frame.converter.JsonResponseHttpMessageConverter"/>-->
         </mvc:message-converters>
     </mvc:annotation-driven>
 
