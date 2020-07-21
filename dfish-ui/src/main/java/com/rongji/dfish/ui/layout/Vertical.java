@@ -1,5 +1,7 @@
 package com.rongji.dfish.ui.layout;
 
+import com.rongji.dfish.ui.auxiliary.Pull;
+import com.rongji.dfish.ui.command.Command;
 import com.rongji.dfish.ui.widget.Split;
 
 /**
@@ -70,5 +72,64 @@ public class Vertical extends LinearLayout<Vertical> {
 //		}
 //		return this;
 //	}
-	
+
+	private Pull pullUp;
+	private Pull pullDown;
+
+	/**
+	 * 上拉动作  一般是加载更多
+	 * @return Pull
+	 */
+	public Pull getPullUp() {
+		return pullUp;
+	}
+
+	/**
+	 *  上拉动作  一般是加载更多
+	 * @param pullUp Pull
+	 * @return this
+	 */
+	public Vertical setPullUp(Pull pullUp) {
+		this.pullUp = pullUp;
+		return this;
+	}
+
+	/**
+	 *  上拉动作  一般是加载更多
+	 * @param cmd Command
+	 * @return this
+	 */
+	public Vertical setPullUp(Command cmd) {
+		this.pullUp = new Pull(cmd);
+		return this;
+	}
+
+	/**
+	 *  上拉动作  一般是刷新
+	 * @return Pull
+	 */
+	public Pull getPullDown() {
+		return pullDown;
+	}
+
+	/**
+	 * 上拉动作  一般是刷新
+	 * @param pullDown Pull
+	 * @return this
+	 */
+	public Vertical setPullDown(Pull pullDown) {
+		this.pullDown = pullDown;
+		return this;
+	}
+
+	/**
+	 * 上拉动作  一般是刷新
+	 * @param cmd Command
+	 * @return this
+	 */
+	public Vertical setPullDown(Command cmd) {
+		this.pullDown = new Pull(cmd);
+		return this;
+	}
+
 }
