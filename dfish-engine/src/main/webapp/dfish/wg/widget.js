@@ -1605,7 +1605,7 @@ $.each(['width', 'height'], function(v, j) {
 		var d = b != N ? b : a.attr(v), s = this._scales;
 		if ($.isNumber(d) && d > -1 && ! this.isScaleCover)
 			return parseFloat(d);
-		if (b != N || c != N || ! s) {
+		if (b != N || c != N || ! s || this.length != s.length) {
 			if (! this.length)
 				return N;
 			var o = this.$();
