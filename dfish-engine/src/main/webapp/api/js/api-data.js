@@ -2839,12 +2839,12 @@ define( {
       { name: 'pullDown', type: 'Object', remark: '下拉刷新。', mobile: true, param: [
       	{ name: 'cls', type: 'String', remark: '样式。' },
       	{ name: 'face', type: 'String', remark: '效果。可选值: <b>normal</b>, <b>circle</b>' },
-      	{ name: 'refresh', type: 'AjaxCommand', remark: '成功释放时执行此命令。' }
+      	{ name: 'refresh', type: 'Command', remark: '成功释放时执行此命令。' }
       ] },
       { name: 'pullUp', type: 'Object', remark: '上拉刷新。应在设置了scroll:true的情况下使用本参数。', param: [
-      	{ name: 'auto', type: 'String', remark: '设置为true，滚动到底部时自动加载。' },
+      	{ name: 'auto', type: 'Boolean', remark: '设置为true，初始化时自动加载一次。' },
       	{ name: 'cls', type: 'String', remark: '样式。' },
-      	{ name: 'refresh', type: 'AjaxCommand', remark: '拉到底部时执行此命令。' }
+      	{ name: 'refresh', type: 'Command', remark: '拉到底部时执行此命令。后台返回数据后，如果数据为空，或者之后不再有返回数据，应手动调用 vertical.stopPullUpRefresh() 方法。如果仍有数据，应手动调用 vertical.completePullupRefresh() 方法。' }
       ] }
     ],
     Event: [

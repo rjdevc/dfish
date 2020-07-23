@@ -1813,7 +1813,7 @@ $.each(['width', 'height'], function(v, j) {
 		var d = b != N ? b : a.attr(v), s = this._scales;
 		if ($.isNumber(d) && d > -1 && !this.isScaleCover)
 			return parseFloat(d);
-		if (b != N || c != N || !s) {
+		if (b != N || c != N || !s || this.length != s.length) {
 			if (!this.length)
 				return N;
 			var o = this.$();
@@ -2017,7 +2017,7 @@ Scroll = define.widget('Scroll', {
 				// widget的dom可能会被业务重新生成，需要重置相关变量
 				delete this._scr_ready; delete this._scr_wd; delete this._scr_ht;
 				this.x.pullDown && this.setPullDownRefresh();
-				this.x.pullUp && this.x.pullUp.auto && this.isScrollBottom() && this.triggerPullUpRefresh();
+				this.x.pullUp && this.x.pullUp.auto && this.triggerPullUpRefresh();
 			},
 			mouseOver: function() {
 				if (this._scr_usable) {
@@ -2054,7 +2054,7 @@ Scroll = define.widget('Scroll', {
 					this.$('ytr').style.top  = Math.min(this.$('ovf').scrollTop / this._scr_rateY, this.$('y').offsetHeight - _number(this.$('ytr').style.height)) + 'px';
 				if (this._scr_rateX && this.$('xtr'))
 					this.$('xtr').style.left = (this.$('ovf').scrollLeft / this._scr_rateX) + 'px';
-				this.x.pullUp && this.x.pullUp.auto && this.isScrollBottom() && this.triggerPullUpRefresh();
+				this.x.pullUp && this.isScrollBottom() && this.triggerPullUpRefresh();
 			},
 			resize: function() {
 				if (this.attr('scroll') && !this._scr_usable && this.innerWidth() != N && this.innerHeight() != N)
@@ -2291,7 +2291,6 @@ Scroll = define.widget('Scroll', {
 			this._pullUpLoading = F;
 			this.removeEvent('unlock.pullup', this.completePullUpRefresh);
 			Q(this.$('pullup')).removeClass('z-loading').appendTo(this.$('cont')).find('._desc').html(Loc.pullup_refresh);
-			this.x.pullUp.auto && !this.maxScrollTop() && this.triggerPullUpRefresh();
 		},
 		// 停止上下拉刷新
 		stopPullUpRefresh: function() {
