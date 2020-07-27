@@ -7011,7 +7011,10 @@ CalendarNum = define.widget('CalendarNum', {
 						!this._disposed && this.x.focusable && this.trigger('focus');
 						if (p.x.callback) {
 							this.x.focusable && this.trigger('focus');
-							p.x.format && !p.x.timebtn && p.backfill();
+							if (p.x.timebtn)
+								p.popTime()
+							else if (p.x.format)
+								p.backfill();
 						}
 					}
 				}

@@ -2276,10 +2276,10 @@ _merge($, {
 			if (d) {
 				r += '<img src="' + d + '" class="_ico f-va"' + (b && b.width ? ' width=' + b.width : '') + (b && b.height ? ' height=' + b.height : '') +
 					(b && b.error ? ' onerror="' + b.error + '"' : '') + (b && b.load ? ' onload="' + b.load + '"' : '');
-				if (b && (b.maxwidth || b.maxheight)) {
+				if (b && (b.maxWidth || b.maxHeight)) {
 					var t = '';
-					b.maxwidth && (t += 'max-width:' + b.maxwidth + 'px;');
-					b.maxheight && (t += 'max-height:' + b.maxheight + 'px;');
+					b.maxWidth && (t += 'max-width:' + b.maxWidth + 'px;');
+					b.maxHeight && (t += 'max-height:' + b.maxHeight + 'px;');
 					r += ' style="' + t + '"';
 				}
 				r += (s[1] || '') + '>';
