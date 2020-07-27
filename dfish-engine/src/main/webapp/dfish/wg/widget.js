@@ -2984,7 +2984,6 @@ Buttonbar = define.widget('buttonbar', {
 			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
 			if (this.$().scrollWidth > tw) {
 				this._more = this.add($.extend({focusable: F, closeable: F, on: {click: ''}}, this.x.pub || {}, o.button), -1);
-				//alert(this._more);
 				this._more.render(this.$());
 				var w = this._more.width() + _number(this.x.space);
 				for (var i = 0, j; i < this.length; i ++) {
@@ -5941,15 +5940,19 @@ CalendarNum = define.widget('calendar/num', {
 			click: {
 				occupy: T,
 				method: function() {
-					if (! this.isDisabled()) {
-						var p = this.parentNode, d = $.dateParse(this.val(), 'yyyy-mm-dd');;
+					if (!this.isDisabled()) {
+						var p = this.parentNode, d = $.dateParse(this.val(), 'yyyy-mm-dd');
 						p.date.setFullYear(d.getFullYear());
 						p.date.setMonth(d.getMonth());
 						p.date.setDate(d.getDate());
 						! this._disposed && this.x.focusable && this.trigger('focus');
 						if (p.x.callback) {
 							this.x.focusable && this.trigger('focus');
-							p.x.format && !/[his]/.test(p.x.format) && p.backfill();
+							//p.x.format && !/[his]/.test(p.x.format) && p.backfill();
+							if (p.x.timebtn) {
+								p.popTime()
+							} else if (p.x.format)
+								p.backfill();
 						}
 					}
 				}
@@ -5993,10 +5996,10 @@ CalendarNum = define.widget('calendar/num', {
 /* `calendar` */
 Calendar = define.widget('calendar/date', {
 	Const: function(x) {
+		W.apply(this, arguments);
 		var d = x.date ? this._ps(x.date) : new Date(),
 			b = x.begindate && this._ps(x.begindate), e = x.enddate && this._ps(x.enddate);
 		this.date = $.numRange(d, b, e);
-		W.apply(this, arguments);
 		this.nowValue = this._fm(new Date());
 	},
 	Helper: {
@@ -6019,7 +6022,7 @@ Calendar = define.widget('calendar/date', {
 			return $.dateFormat(typeof a === _STR ? $.dateParse(a, this._formatter) : a, this._formatter);
 		},
 		_ps: function(a) {
-			return $.dateParse(a, this._formatter);
+			return $.dateParse(a, this.x.format || this._formatter);
 		},
 		nav: function(e) {
 			var a = e.srcElement;
@@ -6149,8 +6152,8 @@ Calendar = define.widget('calendar/date', {
 					y = {set: {h: 'setHours', i: 'setMinutes', s: 'setSeconds'}, get: {h: 'getHours', i: 'getMinutes', s: 'getSeconds'}},
 					bd = self.x.begindate && self._ps(self.x.begindate), bh = bd && bd.getHours(), bi = bd && bd.getMinutes(), bs = bd && bd.getSeconds(),
 					ed = self.x.enddate && self._ps(self.x.enddate),     eh = ed && ed.getHours(), ei = ed && ed.getMinutes(), es = ed && ed.getSeconds(),
-					ld = $.dateFormat(d, 'yyyy-mm-dd');
-					sameBeginDay = bd && $.dateFormat(bd, 'yyyy-mm-dd') == ld;
+					ld = $.dateFormat(d, 'yyyy-mm-dd'),
+					sameBeginDay = bd && $.dateFormat(bd, 'yyyy-mm-dd') == ld,
 					sameEndDay   = ed && $.dateFormat(ed, 'yyyy-mm-dd') == ld;
 				function list(t, m) {
 					var sameBeginHour = sameBeginDay && bh == d.getHours(),

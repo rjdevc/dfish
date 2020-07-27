@@ -113,7 +113,7 @@
 .f-dialog-preview ._dlg_x:hover{background-position:0 -228px}
 .f-dialog-preview ._origin{position:absolute;top:10px;right:25px;color:#fff;padding:5px 10px;background:rgba(74,74,74,0.6);border-radius:3px}
 .f-dialog-preview ._rotate{position:absolute;top:0px;left:0;right:0;margin:0 auto;height:40px;line-height:40px;color:#eee}
-.f-dialog-preview ._rotate a{cursor:pointer}
+.f-dialog-preview ._rotate a{cursor:pointer;color:#fff;font-size:14px}
 .f-dialog-preview ._rotate ._s{margin:0 10px;color:#ccc}
 .f-dialog-preview ._img{margin:auto;background:#fff;position:absolute;left:0;right:0;top:0px;bottom:0;}
 
