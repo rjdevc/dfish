@@ -5990,7 +5990,7 @@ CalendarNum = define.widget('calendar/num', {
 		toggleFocus: function() {this.focus(! this.isFocus())},
 		prop_cls: function() {return _proto.prop_cls.call(this) + (this.x.pad ? ' z-pad' : '')},
 		html_prop:  function() {return _proto.html_prop.call(this) + ' w-urn="' + this.val() + '"'},
-		html_nodes: function() {return '<div class=_num>' + this.x.num + '</div>' + (this.x.text ? '<div class=_tx>' + this.x.text + '</div>' : '')}
+		html_nodes: function() {return '<div class="_num f-nobr">' + this.x.num + '</div>' + (this.x.text ? '<div class=_tx>' + this.x.text + '</div>' : '')}
 	}
 }),
 /* `calendar` */

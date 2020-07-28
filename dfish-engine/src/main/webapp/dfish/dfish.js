@@ -715,8 +715,8 @@ _dateParse = $.dateParse = function(a, b) {
 	a = ('' + a).replace(/\b(\d)\b/g, '0\$1');
 	b = (b || _date_sf).replace(/\b([mdhis])\b/g, '\$1\$1');
 	var c, y = (c = b.indexOf('yyyy')) > -1 ? _number(a.substr(c, 4)) || 2020 : 2020,
-		M = (c = b.indexOf('mm')) > -1 ? _number(a.substr(c, 2)) -1 : 0,
-		d = (c = b.indexOf('dd')) > -1 ? _number(a.substr(c, 2)) : 1,
+		M = (c = b.indexOf('mm')) > -1 ? Math.max(_number(a.substr(c, 2)) -1, 0) : 0,
+		d = (c = b.indexOf('dd')) > -1 ? _number(a.substr(c, 2)) || 1 : 1,
 		H = (c = b.indexOf('hh')) > -1 ? _number(a.substr(c, 2)) : 0,
 		m = (c = b.indexOf('ii')) > -1 ? _number(a.substr(c, 2)) : 0,
 		s = (c = b.indexOf('ss')) > -1 ? _number(a.substr(c, 2)) : 0;
