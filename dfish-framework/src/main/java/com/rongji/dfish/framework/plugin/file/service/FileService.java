@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -736,12 +737,43 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * 更新文件链接
      * @param fileId 文件编号
      * @param fileLink 文件链接
+     * @deprecated 该方法不建议使用,仅仅修改链接而不修改旧记录状态,会让已作废的附件记录无法正确清理
+     * @see #updateFileLink(String, String, String, String)
      */
+    @Deprecated
     public void updateFileLink(String fileId, String fileLink) {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
             return;
         }
         pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), fileId });
+    }
+
+    /**
+     * 更新附件链接
+     * @param fileId 附件编号(必要)
+     * @param fileLink 附件链接(必要)
+     * @param fileKey 附件关键字(必要)
+     * @param fileCreator 附件创建人(为空时不更新)
+     */
+    @Transactional
+    public void updateFileLink(String fileId, String fileLink, String fileKey, String fileCreator) {
+        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+            throw new IllegalArgumentException("必要参数(fileId,fileLink,fileKey)不可为空");
+        }
+        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=? WHERE t.fileLink=? AND t.fileKey=?",
+                new Object[]{STATUS_DELETE, fileLink, fileKey});
+        StringBuilder hql = new StringBuilder();
+        List<Object> args = new ArrayList<>();
+        hql.append("UPDATE PubFileRecord t SET t.fileLink=?,t.fileKey=?");
+        args.add(fileLink);
+        args.add(fileKey);
+        if (Utils.notEmpty(fileCreator)) {
+            hql.append(",fileCreator=?");
+            args.add(fileCreator);
+        }
+        hql.append(" WHERE t.fileId=?");
+        args.add(fileId);
+        pubCommonDAO.bulkUpdate(hql.toString(), args.toArray());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.mvc.response;
 
+import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Pagination;
 import com.rongji.dfish.base.Utils;
 
@@ -134,6 +135,10 @@ public class JsonResponse<T> {
             header.setSize(pagination.getSize());
         }
         return this;
+    }
+
+    public JsonResponse<T> setPage(Page page) {
+        return setPagination(Pagination.fromPage(page));
     }
 
     /**
