@@ -781,7 +781,7 @@ _date_sf = 'yyyy-MM-dd HH:mm:ss',
 // 格式化日期
 _dateFormat = $.dateFormat = function(a, b) {
 	if (typeof a === _STR)
-		a = _dateParse(a, b);
+		a = _dateParse(a);
 	var o = {y : a.getFullYear(), m : a.getMonth(), d : a.getDate(), h : a.getHours(), i : a.getMinutes(), s : a.getSeconds(), w : (a.getDay() || 7)};
 	return (b || _date_sf).replace('yyyy' , o.y).replace('MM', _strPad(o.m + 1)).replace('dd', _strPad(o.d)).replace('HH', _strPad(o.h))
 		.replace('mm', _strPad(o.i)).replace('ss', _strPad(o.s))
@@ -792,8 +792,8 @@ _dateParse = $.dateParse = function(a, b) {
 	a = ('' + a).replace(/\b(\d)\b/g, '0\$1');
 	b = (b || _date_sf).replace(/\b([MdHms])\b/g, '\$1\$1');
 	var c, y = (c = b.indexOf('yyyy')) > -1 ? _number(a.substr(c, 4)) || 2020 : 2020,
-		M = (c = b.indexOf('MM')) > -1 ? _number(a.substr(c, 2)) -1 : 0,
-		d = (c = b.indexOf('dd')) > -1 ? _number(a.substr(c, 2)) : 1,
+		M = (c = b.indexOf('MM')) > -1 ? Math.max(_number(a.substr(c, 2)) -1, 0) : 0,
+		d = (c = b.indexOf('dd')) > -1 ? _number(a.substr(c, 2)) || 1 : 1,
 		H = (c = b.indexOf('HH')) > -1 ? _number(a.substr(c, 2)) : 0,
 		m = (c = b.indexOf('mm')) > -1 ? _number(a.substr(c, 2)) : 0,
 		s = (c = b.indexOf('ss')) > -1 ? _number(a.substr(c, 2)) : 0;

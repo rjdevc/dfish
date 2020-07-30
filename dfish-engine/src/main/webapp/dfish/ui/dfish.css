@@ -396,7 +396,7 @@
 .w-input{border:1px solid #ddd;background:#fff;position:relative;height:30px;text-align:left}
 .w-input-c{position:relative;padding:0 5px 0 10px;height:100%;overflow:hidden}
 .w-input-t{width:100%;height:100%;line-height:30px;*height:30px}
-.w-input-placeholder{position:absolute;top:0;left:0;right:0;height:100%;padding:0 5px 0 10px;line-height:1;color:#999;cursor:text}
+.w-input-placeholder{position:absolute;top:0;left:0;right:0;height:100%;padding:0 5px 0 10px;line-height:1;color:#999;cursor:text;pointer-events:none}}
 .w-f.z-on .w-input{border-color:#2498ff;box-shadow:none}
 .w-f.z-ds .w-input{background:#e6e6e6;box-shadow:none}
 .w-f.z-err .f-boxbtn{border-color:#f00}

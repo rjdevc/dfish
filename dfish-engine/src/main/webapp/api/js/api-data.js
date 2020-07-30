@@ -236,7 +236,7 @@ define( {
       ] },
       { name: '$.dateAdd(date, type, value)', remark: '日期增减', common: true, param: [
         { name: 'date', type: 'Date', remark: '日期对象' },
-        { name: 'type', type: 'String', remark: '要增加的日期类型，可选值：<b>y</b>(年) <b>m</b>(月) <b>d</b>(日) <b>h</b>(时) <b>i</b>(分) <b>s</b>(秒)' }
+        { name: 'type', type: 'String', remark: '要增加的日期类型，可选值：<b>y</b>(年) <b>M</b>(月) <b>d</b>(日) <b>H</b>(时) <b>m</b>(分) <b>s</b>(秒)' }
       ], example: [
           function() {
           	// 给当下的时间加一天
@@ -245,7 +245,7 @@ define( {
       ] },
       { name: '$.dateFormat(date, format)', remark: '把日期对象格式化成字串', common: true, param: [
         { name: 'date', type: 'Date', remark: '时间对象' },
-        { name: 'format', type: 'String', remark: '时间格式，可选值：<b>y</b>(年) <b>m</b>(月) <b>d</b>(日) <b>h</b>(时) <b>i</b>(分) <b>s</b>(秒)' }
+        { name: 'format', type: 'String', remark: '时间格式，可选值：<b>y</b>(年) <b>M</b>(月) <b>d</b>(日) <b>H</b>(时) <b>m</b>(分) <b>s</b>(秒)' }
       ], example: [
           function() {
             var f = $.dateFormat( new Date(), 'yyyy-MM-dd HH:mm:ss' );
