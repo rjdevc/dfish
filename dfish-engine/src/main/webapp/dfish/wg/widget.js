@@ -4373,7 +4373,7 @@ Img = define.widget('Img', {
 		html_img: function(t) {
 			if (!this.x.src) return this.html_badge();
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call(this, this.x.src),
-				iw = this.x.imgWidth, ih = this.x.imgHeight, w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh,
+				iw = $.scale(mw, [this.x.imgWidth])[0], ih = $.scale(mh, [this.x.imgHeight])[0], w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh,
 				g = $.image(u, {width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()'});
 			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
 		},
@@ -12318,9 +12318,9 @@ Transfer = define.widget('Transfer', {
 			}
 		},
 		fixNo: function() {
-			for (var i = 0, a = this.val(), l = a.length; i < l; i ++) {
+			/*for (var i = 0, a = this.val(), l = a.length; i < l; i ++) {
 				this.no
-			}
+			}*/
 		},
 		select: function() {
 			var a = this.store(), b = a.cab.getCheckedAll(), c = [];
