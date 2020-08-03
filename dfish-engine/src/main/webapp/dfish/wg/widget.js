@@ -3391,7 +3391,6 @@ Split = define.widget('Split', {
 					h = $.db('<div style="position:absolute;top:0;bottom:0;left:0;right:0;z-index:1"></div>');
 					b = $.db('<div style="position:absolute;width:' + (r.width) + 'px;height:' + (r.height) + 'px;left:' + r.left + 'px;top:' + r.top + 'px;background:#bbb;opacity:.6;z-index:1"></div>');
 				};
-			down();
 			$.moveup(function(e) {
 				if (e[cln] !== x) {
 					f = p && (p.isDisplay() ? _splitSize(p) : 0), g = n && (n.isDisplay() ? _splitSize(n) : 0);
@@ -3401,6 +3400,8 @@ Split = define.widget('Split', {
 					f && (c = Math.max(c, x - f + j));
 					g && (c = Math.min(c, x + g - k));
 					b.style[pos] = (c + r[pos] - x) + 'px';
+				} else {
+					down();
 				}
 			}, function(e) {
 				if (b) {
