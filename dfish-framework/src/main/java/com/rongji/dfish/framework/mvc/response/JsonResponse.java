@@ -1,11 +1,10 @@
 package com.rongji.dfish.framework.mvc.response;
 
+import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.Pagination;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -120,7 +119,7 @@ public class JsonResponse<T> {
 
     /**
      * 设置分批调用接口时的信息
-     * @param pagination
+     * @param pagination 分页信息
      * @return 本身，这样可以继续设置其他属性
      */
     public JsonResponse<T> setPagination(Pagination pagination) {
@@ -131,6 +130,15 @@ public class JsonResponse<T> {
             header.setSize(pagination.getSize());
         }
         return this;
+    }
+
+    /**
+     * 设置分批调用接口时的信息
+     * @param page 分页信息
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public JsonResponse<T> setPage(Page page) {
+        return setPagination(Pagination.fromPage(page));
     }
 
     /**
@@ -145,7 +153,7 @@ public class JsonResponse<T> {
 
     /**
      * 调用者主信息
-     * @param principalName
+     * @param principalName 调用者信息
      * @return 本身，这样可以继续设置其他属性
      */
     public JsonResponse<T> setPrincipalName(String principalName) {
