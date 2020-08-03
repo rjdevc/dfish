@@ -2091,9 +2091,9 @@ var boot = {
 				//Q(win).on('beforeunload', function() {g.dispose()});
 			} else {
 				// 把 <d:wg> 标签转换为 widget
-				for (var i = 0, d = _tags('script'), j, l = d.length; i < l; i ++) {
-					if (d[i].getAttribute('type') === 'dfish/widget' && (eval('j = ' + d[i].innerHTML.replace(/&lt;/g, '<').replace('&gt;', '>'))))
-						$.widget(j).render(d[i], 'replace');
+				for (var i = 0, d = _tags( br.css3 ? 'd:wg' : 'wg' ), j, l = d.length; i < l; i ++) {
+					if (eval('j = ' + d[ i ].innerHTML.replace(/&lt;/g, '<').replace('&gt;', '>')))
+						$.widget(j).render(d[ i ], 'replace');
 				}
 			}
 			// ie6及以下浏览器，弹出浮动升级提示
