@@ -782,7 +782,7 @@
 
 .w-upload ._bbar{overflow:hidden}
 .w-upload.z-ds ._close,.w-upload.z-ds ._more{width:0;height:0;visibility:hidden}
-.w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{display:none}
+.w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{width:0;height:0;overflow:hidden}
 .w-upload ._nofiles{color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
 
