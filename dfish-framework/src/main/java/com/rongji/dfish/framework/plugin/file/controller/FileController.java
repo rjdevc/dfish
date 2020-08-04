@@ -210,6 +210,7 @@ public class FileController extends BaseController {
                     try {
                         FileHandlingDefine handlingDefine = fileHandlingManager.getDefine(defineAlias);
                         if (handlingDefine == null || !(handlingDefine instanceof ImageHandlingDefine)) {
+                            LogUtil.warn("图片处理方式未定义[" + defineAlias + "]");
                             continue;
                         }
                         ImageHandlingDefine realDefine = (ImageHandlingDefine) handlingDefine;
