@@ -1266,7 +1266,6 @@ BaseUpload = define.widget( 'upload/base', {
 			var ro  = SWFUpload.QUEUE_ERROR,
 				msg = message;
 			if ( errorCode == ro.QUEUE_LIMIT_EXCEEDED ) {
-				debugger;
 				msg = '上传数量超过上限(最多' + this.x.file_upload_limit + '个)';
 			} else if ( errorCode == ro.INVALID_FILETYPE ) {
 				msg = '无效的文件类型';
