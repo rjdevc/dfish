@@ -1321,6 +1321,7 @@ AbsUpload = define.widget('AbsUpload', {
 			} else {
 				this.post.srcData(r);
 				ldr.setSuccess(this.post.getResult());
+				$.j(r)
 			}
 		},
 		upload_complete_handler: function(file) {
@@ -1780,7 +1781,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			this.u.addValue(serverData);
 			this.removeClass('z-loading');
 			Q('._loading,._progress', this.$()).remove();
-			//this.render();
+			isSWF && this.render();
 		},
 		setError: function(errorCode, message) {
 			this.loading = false;

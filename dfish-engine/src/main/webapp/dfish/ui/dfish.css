@@ -943,10 +943,10 @@
 
 .w-upload ._bbar{overflow:hidden}
 .w-upload.z-ds ._close,.w-upload.z-ds ._more{width:0;height:0;visibility:hidden}
-.w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{display:none}
+.w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{width:0;height:0;overflow:hidden}
 .w-upload ._nofiles{height:32px;line-height:32px;color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
-.w-upload.z-nofiles ._vbar{margin:0}
+.w-upload.z-ds.z-nofiles ._vbar{margin:0}
 
 .w-imageupload ._bbar,.w-imageupload ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 
@@ -959,6 +959,8 @@
 
 .w-fileupload ._vbar{margin-bottom:-10px}
 .w-fileupload .w-uploadbutton{margin-bottom:10px;height:30px;border:1px solid #ddd;background:#f8f8f8}
+
+
 
 .w-imageupload ._vbar{margin-bottom:-10px}
 .w-imageupload .w-uploadbutton{margin-bottom:10px;border:1px solid #ccc}
