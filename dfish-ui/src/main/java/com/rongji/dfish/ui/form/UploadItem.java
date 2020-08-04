@@ -16,6 +16,7 @@ public class UploadItem implements Serializable {
 
 	private String id;
 	private String name;
+	private String extension;
 	private Long size;
 	private String url;
 	private String thumbnail;
@@ -58,6 +59,24 @@ public class UploadItem implements Serializable {
 	 */
 	public UploadItem setName(String name) {
 		this.name = name;
+		return this;
+	}
+
+	/**
+	 * 附件扩展名
+	 * @return String 附件扩展名
+	 */
+	public String getExtension() {
+		return extension;
+	}
+
+	/**
+	 * 附件扩展名
+	 * @param extension String
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public UploadItem setExtension(String extension) {
+		this.extension = extension;
 		return this;
 	}
 

@@ -921,6 +921,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         String encId = encId(fileRecord.getFileId());
         item.setId(encId);
         item.setName(fileRecord.getFileName());
+        item.setExtension(FileUtil.getExtension(fileRecord.getFileName()));
         item.setSize(fileRecord.getFileSize());
         return item;
     }
