@@ -162,9 +162,28 @@ public class FileController extends BaseController {
 
     private static final ExecutorService EXECUTOR_IMAGE = Executors.newFixedThreadPool(5);
 
+
+    /**
+     * 上传图片
+     * @param request 请求
+     * @return 上传的附件信息
+     * @see #uploadMedia(HttpServletRequest)
+     */
     @RequestMapping("/uploadImage")
     @ResponseBody
+    @Deprecated
     public Object uploadImage(HttpServletRequest request) {
+        return uploadMedia(request);
+    }
+
+    /**
+     * 上传媒体类文件
+     * @param request 请求
+     * @return 上传的附件信息
+     */
+    @RequestMapping("/uploadMedia")
+    @ResponseBody
+    public Object uploadMedia(HttpServletRequest request) {
         final UploadItem uploadItem = uploadFile(request);
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
             // 这样异常结果返回可能导致前端显示异常
@@ -177,7 +196,10 @@ public class FileController extends BaseController {
 
         String scheme = request.getParameter("scheme");
         final FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
+        String fileExtension = Utils.notEmpty(uploadItem.getExtension()) ? ("." + uploadItem.getExtension()) : "";
+
         if (handlingScheme == null || Utils.isEmpty(handlingScheme.getDefines())) {
+            uploadItem.setThumbnail("file/inline/" + uploadItem.getId() + fileExtension);
             // 无需进行图片压缩
             return uploadItem;
         }
@@ -198,12 +220,12 @@ public class FileController extends BaseController {
                     return;
                 }
 
-
                 File imageFile = fileService.getFile(fileRecord);
                 if (imageFile == null || !imageFile.exists()) {
                     LogUtil.warn("生成缩略图出现异常:原图丢失[" + fileId + "]");
                     return;
                 }
+                boolean isFirst = true;
                 for (String defineAlias : handlingScheme.getDefines()) {
                     InputStream input = null;
                     OutputStream output = null;
@@ -229,6 +251,11 @@ public class FileController extends BaseController {
                             ImageUtil.resize(input, output, fileExtension, realDefine.getWidth(), realDefine.getHeight());
                         }
                         doneFileCount.incrementAndGet();
+                        if (isFirst) {
+                            uploadItem.setThumbnail("file/inline/" + defineAlias + "/" + uploadItem.getId() + fileExtension);
+                        } else {
+                            isFirst = false;
+                        }
                     } catch (Exception e) {
                         LogUtil.error("生成缩略图出现异常:详见信息", e);
                     } finally {
@@ -259,6 +286,9 @@ public class FileController extends BaseController {
             } catch (InterruptedException e) {
                 LogUtil.error("生成缩略图等待异常", e);
             }
+        }
+        if (Utils.isEmpty(uploadItem.getThumbnail())) {
+            uploadItem.setThumbnail("file/inline/" + uploadItem.getId() + fileExtension);
         }
         return uploadItem;
     }
@@ -293,7 +323,7 @@ public class FileController extends BaseController {
         boolean inline = "1".equals(request.getParameter("inline"));
         DownloadParam downloadParam = getDownloadParam(fileRecord, null);
         // 目前文件下载统一默认都是原件下载
-        downloadFileData(response, fileRecord, downloadParam.setInline(inline).setEncryptedFileId(enFileId));
+        downloadFileData(response, fileRecord, downloadParam.setInline(inline));
     }
 
     /**
@@ -329,7 +359,22 @@ public class FileController extends BaseController {
             return;
         }
 
-        downloadFileData(response, fileRecord, downloadParam.setInline(true).setEncryptedFileId(fileId));
+        downloadFileData(response, fileRecord, downloadParam.setInline(true).setFileName(getInlineFileName(fileRecord)));
+    }
+
+    /**
+     * 内联方式下载附件的名称(目前仅inline和thumbnail方法的名称调用这个方法)
+     * @param fileRecord 附件记录
+     * @return String 附件名称
+     */
+    private String getInlineFileName(PubFileRecord fileRecord) {
+        if (fileRecord == null) {
+            return "";
+        }
+        String fileExtension = fileRecord.getFileExtension();
+        // FIXME 这里先使用附件原始名字看下缓存是否正常,如果不正常将使用附件编号和访问的地址保持一致
+//        return fileService.encId(fileRecord.getFileId()) + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : "");
+        return fileRecord.getFileName() + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : "");
     }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
@@ -424,7 +469,7 @@ public class FileController extends BaseController {
         long lastModified;
         String alias;
         boolean inline;
-        String encryptedFileId;
+//        String encryptedFileId;
 
         public DownloadParam() {
         }
@@ -452,14 +497,14 @@ public class FileController extends BaseController {
             return this;
         }
 
-        public String getEncryptedFileId() {
-            return encryptedFileId;
-        }
-
-        public DownloadParam setEncryptedFileId(String encryptedFileId) {
-            this.encryptedFileId = encryptedFileId;
-            return this;
-        }
+//        public String getEncryptedFileId() {
+//            return encryptedFileId;
+//        }
+//
+//        public DownloadParam setEncryptedFileId(String encryptedFileId) {
+//            this.encryptedFileId = encryptedFileId;
+//            return this;
+//        }
 
         public String getFileName() {
             return fileName;
@@ -528,11 +573,12 @@ public class FileController extends BaseController {
                 if (Utils.notEmpty(fileExtension)) {
                     contentType = getMimeType(fileExtension);
                 }
-
-                disposition = "inline; filename=" + (Utils.notEmpty(downloadParam.getEncryptedFileId()) ? (downloadParam.getEncryptedFileId() + "." + fileExtension) : URLEncoder.encode(downloadParam.getFileName(), encoding));
+                disposition = "inline;";
             } else {
-                disposition = "attachment; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
+                disposition = "attachment;";
             }
+            disposition += " filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
+
             if (Utils.isEmpty(contentType)) {
                 contentType = "application/octet-stream";
             }
@@ -636,7 +682,7 @@ public class FileController extends BaseController {
                 }
 
                 if (input != null) {
-                    downloadFileData(response, input, downloadParam.setInline(true).setEncryptedFileId(enFileId));
+                    downloadFileData(response, input, downloadParam.setInline(true).setFileName(getInlineFileName(fileRecord)));
                     return;
                 }
             } catch (Exception e) {
@@ -717,7 +763,8 @@ public class FileController extends BaseController {
                 return new JSCommand("$.previewImage('file/thumbnail" + fileParamUrl + "');");
             } else {
                 String mimeType = getMimeType(fileExtension);
-                if (Utils.notEmpty(mimeType)) { // 如果是浏览器支持可查看的内联类型,新窗口打开
+                if (Utils.notEmpty(mimeType)) {
+                    // 如果是浏览器支持可查看的内联类型,新窗口打开
                     return new JSCommand("window.open('file/download" + fileParamUrl + "&inline=1');");
                 } else { // 其他情况都是直接下载
                     return new JSCommand("$.download('file/download" + fileParamUrl + "');");

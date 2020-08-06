@@ -755,10 +755,24 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @param fileKey 附件关键字(必要)
      * @param fileCreator 附件创建人(为空时不更新)
      */
-    @Transactional
     public void updateFileLink(String fileId, String fileLink, String fileKey, String fileCreator) {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             throw new IllegalArgumentException("必要参数(fileId,fileLink,fileKey)不可为空");
+        }
+        updateFileLink(Arrays.asList(fileId), fileLink, fileKey, fileCreator);
+    }
+
+    /**
+     * 更新附件链接
+     * @param fileIds 附件编号(必要)
+     * @param fileLink 附件链接(必要)
+     * @param fileKey 附件关键字(必要)
+     * @param fileCreator 附件创建人(为空时不更新)
+     */
+    @Transactional
+    public void updateFileLink(List<String> fileIds, String fileLink, String fileKey, String fileCreator) {
+        if (Utils.isEmpty(fileIds) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+            throw new IllegalArgumentException("必要参数(fileIds,fileLink,fileKey)不可为空");
         }
         pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=? WHERE t.fileLink=? AND t.fileKey=?",
                 new Object[]{STATUS_DELETE, fileLink, fileKey});
@@ -771,8 +785,8 @@ public class FileService extends BaseService<PubFileRecord, String> {
             hql.append(",fileCreator=?");
             args.add(fileCreator);
         }
-        hql.append(" WHERE t.fileId=?");
-        args.add(fileId);
+        hql.append(" WHERE t.fileId IN (").append(getParamStr(fileIds.size())).append(")");
+        args.addAll(fileIds);
         pubCommonDAO.bulkUpdate(hql.toString(), args.toArray());
     }
 
