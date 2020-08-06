@@ -25,6 +25,7 @@ public class UploadItem implements Serializable {
 	private String width;
 	private String height;
 	private Boolean escape;
+	private Number duration;
 
 	/**
 	 * 附件编号
@@ -213,6 +214,24 @@ public class UploadItem implements Serializable {
 	 */
 	public UploadItem setEscape(Boolean escape) {
 		this.escape = escape;
+		return this;
+	}
+
+	/**
+	 * 持续时间/播放时长(单位:秒)
+	 * @return Number 播放时长
+	 */
+	public Number getDuration() {
+		return duration;
+	}
+
+	/**
+	 * 持续时间/播放时长(单位:秒)
+	 * @param duration Number 播放时长
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public UploadItem setDuration(Number duration) {
+		this.duration = duration;
 		return this;
 	}
 

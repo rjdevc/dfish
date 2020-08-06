@@ -114,11 +114,23 @@ public class FileService extends BaseService<PubFileRecord, String> {
     /**
      * 保存文件以及文件记录
      *
-     * @param fileData
-     * @param loginUserId
+     * @param fileData 附件数据
+     * @param loginUserId 登录人员
      * @throws Exception
      */
     public UploadItem saveFile(MultipartFile fileData, String loginUserId) throws Exception {
+        return saveFile(fileData, null, loginUserId);
+    }
+
+    /**
+     * 保存文件以及文件记录
+     *
+     * @param fileData 附件数据
+     * @param fileName 附件名称
+     * @param loginUserId 登录人员
+     * @throws Exception
+     */
+    public UploadItem saveFile(MultipartFile fileData, String fileName, String loginUserId) throws Exception {
         if (fileData == null) {
             return null;
         }
@@ -130,7 +142,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
         }
         //安全加固，正规途径下载仍旧是.jsp 落盘是.jsp.txt
 
-        String fileName = fileData.getOriginalFilename().replace(" ", "");
+        fileName = Utils.notEmpty(fileName) ? fileName : fileData.getOriginalFilename().replace(" ", "");
         long fileSize = fileData.getSize();
         String fileId = getNewId();
 
@@ -173,6 +185,13 @@ public class FileService extends BaseService<PubFileRecord, String> {
             saveFileName = fileUrl.substring(splitIndex + 1);
         }
         FileUtil.saveFile(inputStream, getUploadDir() + fileDir, saveFileName);
+    }
+
+    public String getFileDir(PubFileRecord fileRecord) {
+        String fileUrl = fileRecord.getFileUrl();
+        int splitIndex = fileUrl.lastIndexOf(getDirSeparator());
+        String fileDir = fileUrl.substring(0, splitIndex);
+        return getUploadDir() + fileDir + getDirSeparator();
     }
 
     public PubFileRecord getFileRecord(String fileId) {

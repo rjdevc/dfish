@@ -18,6 +18,10 @@ import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.misc.util.ImageUtil;
 import com.rongji.dfish.ui.command.JSCommand;
 import com.rongji.dfish.ui.form.UploadItem;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.Java2DFrameConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +31,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -40,6 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 附件处理类
+ *
  * @author lamontYu
  */
 @RequestMapping("/file")
@@ -96,7 +103,8 @@ public class FileController extends BaseController {
                 accept = accept(fileExtension, acceptTypes);
                 if (accept) {
                     String loginUserId = FrameworkHelper.getLoginUser(mRequest);
-                    uploadItem = fileService.saveFile(fileData, loginUserId);
+                    String fileName = Utils.getParameter(request, "fileName");
+                    uploadItem = fileService.saveFile(fileData, fileName, loginUserId);
                 } else {
                     LogUtil.debug("上传文件失败：fileExtension=" + fileExtension + "&acceptTypes=" + acceptTypes);
                 }
@@ -118,8 +126,8 @@ public class FileController extends BaseController {
     /**
      * 判断扩展名是否支持
      *
-     * @param fileExtension     拓展名(不管有没.都支持;即doc和.doc)
-     * @param acceptTypes 可接受的类型;格式如:*.doc;*.png;*.jpg;
+     * @param fileExtension 拓展名(不管有没.都支持;即doc和.doc)
+     * @param acceptTypes   可接受的类型;格式如:*.doc;*.png;*.jpg;
      * @return
      */
     static boolean accept(String fileExtension, String acceptTypes) {
@@ -165,25 +173,13 @@ public class FileController extends BaseController {
 
     /**
      * 上传图片
+     *
      * @param request 请求
      * @return 上传的附件信息
-     * @see #uploadMedia(HttpServletRequest)
      */
     @RequestMapping("/uploadImage")
     @ResponseBody
-    @Deprecated
     public Object uploadImage(HttpServletRequest request) {
-        return uploadMedia(request);
-    }
-
-    /**
-     * 上传媒体类文件
-     * @param request 请求
-     * @return 上传的附件信息
-     */
-    @RequestMapping("/uploadMedia")
-    @ResponseBody
-    public Object uploadMedia(HttpServletRequest request) {
         final UploadItem uploadItem = uploadFile(request);
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
             // 这样异常结果返回可能导致前端显示异常
@@ -196,10 +192,10 @@ public class FileController extends BaseController {
 
         String scheme = request.getParameter("scheme");
         final FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
-        String fileExtension = Utils.notEmpty(uploadItem.getExtension()) ? ("." + uploadItem.getExtension()) : "";
+        final String extName = Utils.notEmpty(uploadItem.getExtension()) ? ("." + uploadItem.getExtension()) : "";
 
         if (handlingScheme == null || Utils.isEmpty(handlingScheme.getDefines())) {
-            uploadItem.setThumbnail("file/inline/" + uploadItem.getId() + fileExtension);
+            uploadItem.setThumbnail("file/inline/" + uploadItem.getId() + extName);
             // 无需进行图片压缩
             return uploadItem;
         }
@@ -252,7 +248,7 @@ public class FileController extends BaseController {
                         }
                         doneFileCount.incrementAndGet();
                         if (isFirst) {
-                            uploadItem.setThumbnail("file/inline/" + defineAlias + "/" + uploadItem.getId() + fileExtension);
+                            uploadItem.setThumbnail("file/inline/" + defineAlias + "/" + uploadItem.getId() + extName);
                         } else {
                             isFirst = false;
                         }
@@ -288,9 +284,120 @@ public class FileController extends BaseController {
             }
         }
         if (Utils.isEmpty(uploadItem.getThumbnail())) {
-            uploadItem.setThumbnail("file/inline/" + uploadItem.getId() + fileExtension);
+            uploadItem.setThumbnail("file/inline/" + uploadItem.getId() + extName);
         }
         return uploadItem;
+    }
+
+    /**
+     * 上传媒体类文件
+     *
+     * @param request 请求
+     * @return 上传的附件信息
+     */
+    @RequestMapping("/uploadVideo")
+    @ResponseBody
+    public Object uploadVideo(HttpServletRequest request) {
+        final UploadItem uploadItem = uploadFile(request);
+        if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
+            // 这样异常结果返回可能导致前端显示异常
+            return uploadItem;
+        }
+        // 抓取视频帧作为封面缩略图
+        grabVideoFramer(uploadItem);
+
+        return uploadItem;
+    }
+
+    /**
+     * 将视频文件帧处理并以“jpg”格式进行存储。
+     * 依赖FrameToBufferedImage方法：将frame转换为bufferedImage对象
+     *
+     * @param uploadItem
+     */
+    private void grabVideoFramer(UploadItem uploadItem) {
+        if (uploadItem == null) {
+            return;
+        }
+        String fileId = fileService.decId(uploadItem.getId());
+        PubFileRecord fileRecord = fileService.get(fileId);
+        if (fileRecord == null) {
+            return;
+        }
+        FFmpegFrameGrabber fFmpegFrameGrabber = null;
+        try {
+			 /*
+            获取视频文件
+            */
+            fFmpegFrameGrabber = new FFmpegFrameGrabber(fileService.getFileInputStream(fileRecord));
+            fFmpegFrameGrabber.start();
+
+            //获取视频总帧数
+            int frameLength = fFmpegFrameGrabber.getLengthInFrames();
+            // 这里播放时长暂时用秒
+            int duration = (int) (frameLength / fFmpegFrameGrabber.getFrameRate());
+            uploadItem.setDuration(duration);
+            // 帧下标
+            int frameIndex = 0;
+            while (frameIndex++ <= frameLength) {
+                Frame frame = fFmpegFrameGrabber.grabImage();
+                // 对目标帧进行处理
+                if (frame != null && frameIndex == getVideoThumbnailPosition()) {
+                    String saveFileName = fileId + "_" + getVideoThumbnailAlias() + "." + getVideoThumbnailExtension();
+                    //文件绝对路径+名字
+                    String fileName = fileService.getFileDir(fileRecord) + saveFileName;
+
+                    //文件储存对象
+                    File output = new File(fileName);
+
+                    // 将目标帧转换成图片
+                    Java2DFrameConverter converter = new Java2DFrameConverter();
+                    BufferedImage bufferedImage = converter.getBufferedImage(frame);
+                    ImageIO.write(bufferedImage, getVideoThumbnailExtension(), output);
+
+                    uploadItem.setThumbnail("file/inline/" + getVideoThumbnailAlias() + "/" + uploadItem.getId() + "." + getVideoThumbnailExtension());
+
+                    break;
+                }
+            }
+            fFmpegFrameGrabber.stop();
+
+        } catch (Exception e) {
+            LogUtil.error("截取视频缩略图异常", e);
+        } finally {
+            try {
+                fFmpegFrameGrabber.close();
+            } catch (FrameGrabber.Exception e) {
+                LogUtil.error("截取视频缩略图工具类关闭异常", e);
+            }
+        }
+    }
+
+    /**
+     * 获取视频缩略图的位置
+     *
+     * @return int
+     */
+    private int getVideoThumbnailPosition() {
+        return 5;
+    }
+
+    /**
+     * 获取视频缩略图的别名
+     *
+     * @return String
+     */
+    private String getVideoThumbnailAlias() {
+        return "COVER";
+    }
+
+    /**
+     * 获取视频截取帧的扩展名
+     *
+     * @return String
+     */
+    private String getVideoThumbnailExtension() {
+        return "jpg";
     }
 
     @RequestMapping("/upload4Plugin")
@@ -330,13 +437,13 @@ public class FileController extends BaseController {
      * 内联方式下载附件方法(默认文件)
      *
      * @param response
-     * @param fileId 附件编号
+     * @param fileId   附件编号
      * @return
      * @throws Exception
      */
     @RequestMapping("/inline/{fileId}")
     public void inline(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileId) throws Exception {
-       inline(request, response, null, fileId);
+        inline(request, response, null, fileId);
     }
 
     /**
@@ -344,7 +451,7 @@ public class FileController extends BaseController {
      *
      * @param response
      * @param fileAlias 附件别名
-     * @param fileId 附件编号
+     * @param fileId    附件编号
      * @return
      * @throws Exception
      */
@@ -364,6 +471,7 @@ public class FileController extends BaseController {
 
     /**
      * 内联方式下载附件的名称(目前仅inline和thumbnail方法的名称调用这个方法)
+     *
      * @param fileRecord 附件记录
      * @return String 附件名称
      */

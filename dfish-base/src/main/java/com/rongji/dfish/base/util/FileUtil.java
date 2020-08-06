@@ -148,11 +148,10 @@ public final class FileUtil {
      * 将上传文件保存成硬盘文件
      *
      * @param stream       InputStream
-     * @param floderPath   String
+     * @param folderPath   String
      * @param realFileName String
      */
-    public static void saveFile(InputStream stream, String floderPath,
-                                String realFileName) {
+    public static void saveFile(InputStream stream, String folderPath, String realFileName) {
 //		InputStream stream = null;
         OutputStream bos = null;
         try {
@@ -160,12 +159,10 @@ public final class FileUtil {
 
 
             // 附件保存的相对位置
-
-            String attachUrl = floderPath + "/" + realFileName;
+            String attachUrl = folderPath + "/" + realFileName;
 
             // 如果绝对目录不存在，新建目录
-            File filePath = new File(floderPath
-                    .replace('/', File.separatorChar));
+            File filePath = new File(folderPath.replace('/', File.separatorChar));
 
             if (!filePath.exists()) {
                 filePath.mkdirs();
