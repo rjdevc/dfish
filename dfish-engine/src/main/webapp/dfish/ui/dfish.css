@@ -130,6 +130,7 @@
 .w-horizontal-vln{width:100%}
 
 .w-frame{position:relative}
+.f-frame-hide{visibility:hidden;height:0;overflow:hidden;z-index:-1}
 
 /* table */
 .w-table,.w-form{position:relative;text-align:left;overflow:hidden}

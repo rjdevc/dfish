@@ -3044,7 +3044,7 @@ Frame = define.widget('Frame', {
 					!d && (d = this.x.dft ? this.ownerView.find(this.x.dft) : this[0]) && this.focus(d);
 				}
 				if (mbi) {
-					this.focusNode && this.translateX(T);
+					this.focusNode && this.slideShow(T);
 					this.x.swipeFocus && this.listenSwipe();
 				}
 			}
@@ -3081,18 +3081,27 @@ Frame = define.widget('Frame', {
 					swiping = N;
 					var n = px < 0 && (-px > wd/2 || _isFastSwipe(tm)) ? self.focusNode.next() : px > 0 && (px > wd/2 || _isFastSwipe(tm)) ? self.focusNode.prev() : N,
 						d = n && n.x.id && Q('[w-target="' + n.x.id + '"]', self.ownerView.$()).prop('id');
-					d ? $.all[d].click() : self.translateX();
+					d ? $.all[d].click() : self.slideShow();
 				}
 	    	});
 		},
 		childCls: function(a) {
-			return mbi ? 'f-sub-horz' : (a.x.display === T ? '' : 'f-hide');
+			return (mbi ? 'f-sub-horz ' : '') + (a.x.display === T ? '' : (mbi ? 'f-frame-hide' : 'f-hide'));
 		},
 		getFocus: function() {
 			return this.focusNode;
 		},
-		translateX: function(a) {
+		slideShow: function(a) {
+			clearTimeout(this._slideShowTimer);
+			var self = this;
+			this.focusNode.removeClass('f-frame-hide');
 			Q(this.$('cont')).css({transform: 'translateX(-'+ (this.focusNode.nodeIndex * this.innerWidth()) +'px)', transition: a ? '' : '500ms cubic-bezier(0.165,0.84,0.44,1)'});
+			if (!a) {
+				this._slideShowTimer = setTimeout(function() {
+					for (var i = 0, f = self.focusNode.nodeIndex; i < self.length; i ++)
+						if (f !== i) self[i].addClass('f-frame-hide');
+				}, 500);
+			}
 		},
 		// @a -> wg,id
 		focus: function(a) {
@@ -3104,7 +3113,7 @@ Frame = define.widget('Frame', {
 				n.focusOwner = this;
 				o && o.display(F, T);
 				n.display(T);
-				mbi && this.$('cont') && this.translateX();
+				mbi && this.$('cont') && this.slideShow();
 				o && this.trigger('change');
 			}
 			return n;
