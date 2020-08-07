@@ -4237,7 +4237,7 @@ Tabs = define.widget('Tabs', {
 		var r = {type: 'TabBar', cls: 'z-position-' + f, nodes: b},
 			t = {type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c};
 		$.extendAny(r, 'align,vAlign,dir,scroll,space,split,overflow', x, e, {vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h'});
-		$.extendAny(f, 'swipeFocus', x, e);
+		$.extendAny(t, 'swipeFocus', x, e);
 		y.nodes = [t];
 		y.nodes[s === 'b' || s === 'r' ? 'push' : 'unshift'](r);
 		Vert.call(this, $.extend({nodes:[y], scroll: F}, x), p);
