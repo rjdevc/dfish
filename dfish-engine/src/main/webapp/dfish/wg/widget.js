@@ -999,7 +999,7 @@ W = define('Widget', function() {
 					if (p.type === a)
 						return p;
 				} else if (b === _FUN) {
-					if (a.call(p, this))
+					if (a.call(this, p))
 						return p;
 				} else if (b === _OBJ) {
 					var i, r = T;
@@ -1022,7 +1022,7 @@ W = define('Widget', function() {
 			}
 		},
 		srcParent: function() {
-			return this.closest(function() {return this._srcdata});
+			return this.closest(function(a) {return a._srcdata});
 		},
 		// 存取临时变量
 		data: function(a, b) {
@@ -2017,7 +2017,7 @@ Scroll = define.widget('Scroll', {
 				// widget的dom可能会被业务重新生成，需要重置相关变量
 				delete this._scr_ready; delete this._scr_wd; delete this._scr_ht;
 				this.x.pullDown && this.setPullDownRefresh();
-				this.x.pullUp && this.x.pullUp.auto && this.triggerPullUpRefresh();
+				this.x.pullUp && this.setPullUpRefresh();
 			},
 			mouseOver: function() {
 				if (this._scr_usable) {
@@ -2054,7 +2054,6 @@ Scroll = define.widget('Scroll', {
 					this.$('ytr').style.top  = Math.min(this.$('ovf').scrollTop / this._scr_rateY, this.$('y').offsetHeight - _number(this.$('ytr').style.height)) + 'px';
 				if (this._scr_rateX && this.$('xtr'))
 					this.$('xtr').style.left = (this.$('ovf').scrollLeft / this._scr_rateX) + 'px';
-				this.x.pullUp && this.isScrollBottom() && this.triggerPullUpRefresh();
 			},
 			resize: function() {
 				if (this.attr('scroll') && !this._scr_usable && this.innerWidth() != N && this.innerHeight() != N)
@@ -2210,15 +2209,29 @@ Scroll = define.widget('Scroll', {
 		insertHTML: function(a, b) {
 			$[b || 'append']((_putin[b] ? this.$('cont') : N) || this.$(), a.isWidget ? a.$() : a);
 		},
+		setPullUpRefresh: function() {
+			this.x.pullUp.auto && this.triggerPullUpRefresh();
+			this.closest(function(a) {
+				if (a.isScroll && a.isScroll() && a.innerHeight()) {
+					a.addEvent('scroll.' + this.id, function() {
+						!this._disposed && a.isScrollBottom() && this.triggerPullUpRefresh();
+					}, this);
+					this.addEvent('remove', function() {
+						a.removeEvent('scroll.' + this.id)
+					});
+					return T;
+				}
+			});
+		},
 		// @mobile 下拉刷新
 		setPullDownRefresh: function() {
-			var a = this.id + 'pulldown', b, c = Q(this.$('cont')), d = this.$(), ix, iy, px, py, ts, sc, rl, dir, self = this,
+			var a = this.id + 'pulldown', b, c = Q(this.$('pulldowncont')), d = this.$(), ix, iy, px, py, ts, sc, rl, dir, self = this,
 				nm = this.x.pullDown.face != 'circle';
 	    	d.addEventListener('touchstart', function(e) {
 				!b && (b = Q($.db(self.html_pulldown())));
 				var r = $.bcr(d);
 	    		b.css({transition: '', top: r.top, left: r.left, right: r.right});
-				nm && c.css({transition: ''});
+				nm && c.css({transition: '', paddingBottom: ''});
 	    		ix = e.targetTouches[0].pageX; iy = e.targetTouches[0].pageY;
 	    		ts = new TouchScrollCheck(d, e); sc = ts.isScrolled('Y'); swiping = dir = N;
 	    	});
@@ -2246,7 +2259,7 @@ Scroll = define.widget('Scroll', {
 								}
 							}
 							b.height(v);
-							c.css({transform: 'translateY('+ v +'px)'});
+							c.css({transform: 'translateY('+ v +'px)', paddingBottom: v + 'px'});
 						} else {
 							rl = v >= 80;
 							v > 90 && (iy += v - 90);
@@ -2274,7 +2287,7 @@ Scroll = define.widget('Scroll', {
 			this._pullDownLoading = F;
 			this.removeEvent('unlock.pulldown', this.completePullDownRefresh);
 			Q(this.$('pulldown')).removeClass('z-loading z-release').css({height: 0, transition: t}).find('._desc').html(Loc.pulldown_refresh);
-			this.x.pullDown.face != 'circle' && Q(this.$('cont')).css({transform: 'translateY(0)', transition: t});
+			this.x.pullDown.face != 'circle' && Q(this.$('pulldowncont')).css({transform: 'translateY(0)', transition: t, paddingBottom: 0});
 		},
 		// 上拉刷新
 		triggerPullUpRefresh: function() {
@@ -2315,10 +2328,17 @@ Scroll = define.widget('Scroll', {
 		html: function() {
 			this.width() == N && !this.x.maxWidth && !this.x.maxHeight && $.classAdd(this, 'z-autosize');
 			// 执行 html_nodes 要在执行 html_prop 之前，以备html_nodes中可能要增加样式等操作
-			var s = this.html_nodes(), c = this.isScroll(), d = mbi && this.x.pullDown;
-			mbi && c && $.classAdd(this, 'f-oa');
+			var s = this.html_nodes(), c = this.isScroll();
+			if (c || this.x.pullUp) {
+				s = this.html_scroll(s);
+			}
+			if (mbi) {
+				c && $.classAdd(this, 'f-oa');
+				this.x.pullUp && (s += this.html_pullup());
+				this.x.pullDown && (s = '<div id=' + this.id + 'pulldowncont>' + s + '</div>');
+			}
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + this.html_prepend() + 
-				(d || c ? this.html_scroll(s) : s) + (mbi && this.x.pullUp ? this.html_pullup() : '') + this.html_append() + '</' + this.tagName + '>' + this.html_after();
+				s + this.html_append() + '</' + this.tagName + '>' + this.html_after();
 		},
 		html_scroll: function(s) {
 			this._scr_usable = T;
@@ -4771,7 +4791,7 @@ Dialog = define.widget('Dialog', {
 			Dialog.custom[x.id] = this;
 		}
 		if (p !== _docView) {
-			this.opener = p.closest(function() {return this.isDialogWidget});
+			this.opener = p.closest(function(a) {return a.isDialogWidget});
 		}
 		this.commander = p;
 		if (x.independent)
@@ -4792,7 +4812,7 @@ Dialog = define.widget('Dialog', {
 			if (typeof a === _STR)
 				return Dialog.custom[a];
 			if (a.isWidget)
-				return !a._disposed && a.closest(function() {return this.isDialogWidget});
+				return !a._disposed && a.closest(function(a) {return a.isDialogWidget});
 			for (var k in Dialog.all) {
 				if (Dialog.all[k].contains(a, T))
 					return Dialog.all[k];
@@ -10542,7 +10562,7 @@ _table_f_attr = function(v) {
 	return typeof v === _OBJ && v && (!v.type || v.type === TD.type) ? (v.text || '') : v;
 },
 _table_tr = function() {
-	return this.closest(function() {return this.type_tr || this.type_thr || this.type_tfr});
+	return this.closest(function(a) {return a.type_tr || a.type_thr || a.type_tfr});
 },
 _table_f_dfopt = function(t) {
 	return function(a) {
