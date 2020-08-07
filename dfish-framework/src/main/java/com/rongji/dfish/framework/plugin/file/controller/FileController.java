@@ -106,7 +106,7 @@ public class FileController extends BaseController {
                     String fileName = Utils.getParameter(request, "fileName");
                     uploadItem = fileService.saveFile(fileData, fileName, loginUserId);
                 } else {
-                    LogUtil.debug("上传文件失败：fileExtension=" + fileExtension + "&acceptTypes=" + acceptTypes);
+                    LogUtil.warn("上传文件失败：fileExtension=" + fileExtension + "&acceptTypes=" + acceptTypes);
                 }
             }
         } catch (Exception e) {
@@ -161,10 +161,23 @@ public class FileController extends BaseController {
     @RequestMapping("/uploadFile")
     @ResponseBody
     public UploadItem uploadFile(HttpServletRequest request) {
+        return uploadFile(request, null);
+    }
+
+    /**
+     * 上传附件
+     * @param request
+     * @param fileTypes
+     * @return
+     */
+    public UploadItem uploadFile(HttpServletRequest request, String fileTypes) {
         String scheme = request.getParameter("scheme");
         FileHandlingScheme handlingScheme = fileHandlingManager.getScheme(scheme);
-        // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
-        String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileService.getFileTypes();
+
+        String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandlingTypes()) ? handlingScheme.getHandlingTypes() : fileTypes;
+        if (Utils.isEmpty(acceptTypes)) {
+            acceptTypes = fileService.getFileTypes();
+        }
         return saveFile(request, fileService, acceptTypes);
     }
 
@@ -180,7 +193,7 @@ public class FileController extends BaseController {
     @RequestMapping("/uploadImage")
     @ResponseBody
     public Object uploadImage(HttpServletRequest request) {
-        final UploadItem uploadItem = uploadFile(request);
+        final UploadItem uploadItem = uploadFile(request, fileService.getImageTypes());
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
             // 这样异常结果返回可能导致前端显示异常
             return uploadItem;
@@ -234,7 +247,7 @@ public class FileController extends BaseController {
                         ImageHandlingDefine realDefine = (ImageHandlingDefine) handlingDefine;
 
                         input = new FileInputStream(imageFile);
-                        File outputFile = fileService.getFile(fileRecord, defineAlias, false);
+                        File outputFile = fileService.getFile(fileRecord, defineAlias, null, false);
                         if (!outputFile.exists()) {
                             outputFile.createNewFile();
                         }
@@ -298,7 +311,7 @@ public class FileController extends BaseController {
     @RequestMapping("/uploadVideo")
     @ResponseBody
     public Object uploadVideo(HttpServletRequest request) {
-        final UploadItem uploadItem = uploadFile(request);
+        final UploadItem uploadItem = uploadFile(request, fileService.getVideoTypes());
         if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
             // 这样异常结果返回可能导致前端显示异常
             return uploadItem;
@@ -388,7 +401,7 @@ public class FileController extends BaseController {
      * @return String
      */
     private String getVideoThumbnailAlias() {
-        return "COVER";
+        return "POSTER";
     }
 
     /**
@@ -466,24 +479,24 @@ public class FileController extends BaseController {
             return;
         }
 
-        downloadFileData(response, fileRecord, downloadParam.setInline(true).setFileName(getInlineFileName(fileRecord)));
+        downloadFileData(response, fileRecord, downloadParam.setInline(true));
     }
 
-    /**
-     * 内联方式下载附件的名称(目前仅inline和thumbnail方法的名称调用这个方法)
-     *
-     * @param fileRecord 附件记录
-     * @return String 附件名称
-     */
-    private String getInlineFileName(PubFileRecord fileRecord) {
-        if (fileRecord == null) {
-            return "";
-        }
-        String fileExtension = fileRecord.getFileExtension();
-        // FIXME 这里先使用附件原始名字看下缓存是否正常,如果不正常将使用附件编号和访问的地址保持一致
-//        return fileService.encId(fileRecord.getFileId()) + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : "");
-        return fileRecord.getFileName() + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : "");
-    }
+//    /**
+//     * 内联方式下载附件的名称(目前仅inline和thumbnail方法的名称调用这个方法)
+//     *
+//     * @param fileRecord 附件记录
+//     * @return String 附件名称
+//     */
+//    private String getInlineFileName(PubFileRecord fileRecord) {
+//        if (fileRecord == null) {
+//            return "";
+//        }
+//        String fileExtension = fileRecord.getFileExtension();
+//        // FIXME 这里先使用附件原始名字看下缓存是否正常,如果不正常将使用附件编号和访问的地址保持一致
+////        return fileService.encId(fileRecord.getFileId()) + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : "");
+//        return fileRecord.getFileName() + (Utils.notEmpty(fileExtension) ? ("." + fileExtension) : "");
+//    }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
 
@@ -550,16 +563,15 @@ public class FileController extends BaseController {
         }
         InputStream input = null;
         try {
-            String fileName = fileRecord.getFileName();
-            input = fileService.getFileInputStream(fileRecord, downloadParam.getAlias());
-            long fileSize;
-            if (input != null) {
-                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias());
-            } else { // 当别名附件不存在时,使用原附件
-                input = fileService.getFileInputStream(fileRecord);
-                fileSize = fileService.getFileSize(fileRecord);
-            }
-            downloadFileData(response, input, downloadParam.setFileName(fileName).setFileSize(fileSize));
+            input = fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+//            long fileSize;
+//            if (input != null) {
+//                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+//            } else { // 当别名附件不存在时,使用原附件
+//                input = fileService.getFileInputStream(fileRecord);
+//                fileSize = fileService.getFileSize(fileRecord);
+//            }
+            downloadFileData(response, input, downloadParam);
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
             LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
@@ -577,6 +589,7 @@ public class FileController extends BaseController {
         long lastModified;
         String alias;
         boolean inline;
+        String extension;
 //        String encryptedFileId;
 
         public DownloadParam() {
@@ -649,17 +662,41 @@ public class FileController extends BaseController {
             this.alias = alias;
             return this;
         }
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public DownloadParam setExtension(String extension) {
+            this.extension = extension;
+            return this;
+        }
     }
 
     private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) {
         DownloadParam downloadParam = new DownloadParam();
-        String fileName = fileRecord.getFileName();
-        long fileSize = fileService.getFileSize(fileRecord, alias);
-        downloadParam.setFileName(fileName);
-        downloadParam.setFileSize(fileSize);
+
         downloadParam.setLastModified(fileRecord.getUpdateTime() != null ? fileRecord.getUpdateTime().getTime() :
                 (fileRecord.getCreateTime() != null ? fileRecord.getCreateTime().getTime() : 0L));
         downloadParam.setAlias(alias);
+
+        String fileName = fileRecord.getFileName();
+        // 视频类型
+        if (accept(fileRecord.getFileExtension(), fileService.getVideoTypes()) && getVideoThumbnailAlias().equals(alias)) {
+            downloadParam.setExtension(getVideoThumbnailExtension());
+            int dotIndex = fileName.lastIndexOf(".");
+            if (dotIndex >= 0) {
+                fileName = fileName.substring(0, dotIndex + 1) + downloadParam.getExtension();
+            } else {
+                fileName += "." + downloadParam.getExtension();
+            }
+        } else {
+            downloadParam.setExtension(fileRecord.getFileExtension());
+        }
+        downloadParam.setFileName(fileName);
+        long fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+        downloadParam.setFileSize(fileSize);
+
         return downloadParam;
     }
 
@@ -677,7 +714,7 @@ public class FileController extends BaseController {
             String contentType = null;
             String disposition;
             if (downloadParam.isInline()) {
-                String fileExtension = FileUtil.getExtension(downloadParam.getFileName());
+                String fileExtension = downloadParam.getExtension();
                 if (Utils.notEmpty(fileExtension)) {
                     contentType = getMimeType(fileExtension);
                 }
@@ -790,7 +827,7 @@ public class FileController extends BaseController {
                 }
 
                 if (input != null) {
-                    downloadFileData(response, input, downloadParam.setInline(true).setFileName(getInlineFileName(fileRecord)));
+                    downloadFileData(response, input, downloadParam.setInline(true));
                     return;
                 }
             } catch (Exception e) {

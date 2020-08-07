@@ -32,6 +32,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
     public static final String CONFIG_SIZE_LIMIT = "file.sizeLimit";
     public static final String CONFIG_TYPES_FILE = "file.types.file";
     public static final String CONFIG_TYPES_IMAGE = "file.types.image";
+    public static final String CONFIG_TYPES_VIDEO = "file.types.video";
 
     public static final String LINK_FILE = "FILE";
 
@@ -112,9 +113,18 @@ public class FileService extends BaseService<PubFileRecord, String> {
     }
 
     /**
+     * 视频上传支持的类型
+     *
+     * @return
+     */
+    public String getVideoTypes() {
+        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_VIDEO, "*.mp4;");
+    }
+
+    /**
      * 保存文件以及文件记录
      *
-     * @param fileData 附件数据
+     * @param fileData    附件数据
      * @param loginUserId 登录人员
      * @throws Exception
      */
@@ -125,8 +135,8 @@ public class FileService extends BaseService<PubFileRecord, String> {
     /**
      * 保存文件以及文件记录
      *
-     * @param fileData 附件数据
-     * @param fileName 附件名称
+     * @param fileData    附件数据
+     * @param fileName    附件名称
      * @param loginUserId 登录人员
      * @throws Exception
      */
@@ -264,10 +274,21 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @throws Exception
      */
     public InputStream getFileInputStream(PubFileRecord fileRecord, String fileAlias) throws Exception {
+        return getFileInputStream(fileRecord, fileAlias, null);
+    }
+
+    /**
+     * 获取文件流
+     *
+     * @param fileRecord
+     * @return
+     * @throws Exception
+     */
+    public InputStream getFileInputStream(PubFileRecord fileRecord, String fileAlias, String extension) throws Exception {
         if (fileRecord == null || FileService.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
             return null;
         }
-        File file = getFile(fileRecord, fileAlias);
+        File file = getFile(fileRecord, fileAlias, extension);
         if (file == null || !file.exists() || file.length() <= 0) {
             return null;
         }
@@ -292,7 +313,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return
      */
     public File getFile(PubFileRecord fileRecord, String fileAlias) {
-        return getFile(fileRecord, fileAlias, true);
+        return getFile(fileRecord, fileAlias, null);
     }
 
     /**
@@ -300,10 +321,21 @@ public class FileService extends BaseService<PubFileRecord, String> {
      *
      * @param fileRecord 文件记录
      * @param fileAlias  文件别名
-     * @param fix2Raw 文件找不到时使用原始文件
      * @return
      */
-    public File getFile(PubFileRecord fileRecord, String fileAlias, boolean fix2Raw) {
+    public File getFile(PubFileRecord fileRecord, String fileAlias, String extension) {
+        return getFile(fileRecord, fileAlias, extension, true);
+    }
+
+    /**
+     * 根据文件记录获取文件
+     *
+     * @param fileRecord 文件记录
+     * @param fileAlias  文件别名
+     * @param fix2Raw    文件找不到时使用原始文件
+     * @return
+     */
+    public File getFile(PubFileRecord fileRecord, String fileAlias, String extension, boolean fix2Raw) {
         if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
             return null;
         }
@@ -318,7 +350,8 @@ public class FileService extends BaseService<PubFileRecord, String> {
             dotFileExtension = "";
         }
 
-        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(fileAlias) ? ("_" + fileAlias) : "") + dotFileExtension);
+        String aliasExtension = Utils.notEmpty(extension) ? ("." + extension) : dotFileExtension;
+        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(fileAlias) ? ("_" + fileAlias) : "") + aliasExtension);
         if (!file.exists() && Utils.notEmpty(fileAlias)) {
             if (fix2Raw) {
                 // 别名文件不存在时使用原始文件
@@ -408,6 +441,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
     public long getFileSize(PubFileRecord fileRecord) {
         return getFileSize(fileRecord, null);
     }
+
     /**
      * 获取文件大小
      *
@@ -415,13 +449,23 @@ public class FileService extends BaseService<PubFileRecord, String> {
      * @return
      */
     public long getFileSize(PubFileRecord fileRecord, String fileAlias) {
+        return getFileSize(fileRecord, fileAlias, null);
+    }
+
+    /**
+     * 获取文件大小
+     *
+     * @param fileRecord
+     * @return
+     */
+    public long getFileSize(PubFileRecord fileRecord, String fileAlias, String extension) {
         if (fileRecord == null) {
             return 0L;
         }
         if (Utils.isEmpty(fileAlias)) {
             return fileRecord.getFileSize();
         }
-        File file = getFile(fileRecord, fileAlias);
+        File file = getFile(fileRecord, fileAlias, extension);
         if (file == null || !file.exists()) {
             return 0L;
         }
@@ -618,6 +662,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     /**
      * 根据获取
+     *
      * @param fileIds
      * @return
      */
@@ -754,24 +799,26 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     /**
      * 更新文件链接
-     * @param fileId 文件编号
+     *
+     * @param fileId   文件编号
      * @param fileLink 文件链接
-     * @deprecated 该方法不建议使用,仅仅修改链接而不修改旧记录状态,会让已作废的附件记录无法正确清理
      * @see #updateFileLink(String, String, String, String)
+     * @deprecated 该方法不建议使用, 仅仅修改链接而不修改旧记录状态, 会让已作废的附件记录无法正确清理
      */
     @Deprecated
     public void updateFileLink(String fileId, String fileLink) {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
             return;
         }
-        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{ fileLink, new Date(), fileId });
+        pubCommonDAO.bulkUpdate("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=? WHERE t.fileId=?", new Object[]{fileLink, new Date(), fileId});
     }
 
     /**
      * 更新附件链接
-     * @param fileId 附件编号(必要)
-     * @param fileLink 附件链接(必要)
-     * @param fileKey 附件关键字(必要)
+     *
+     * @param fileId      附件编号(必要)
+     * @param fileLink    附件链接(必要)
+     * @param fileKey     附件关键字(必要)
      * @param fileCreator 附件创建人(为空时不更新)
      */
     public void updateFileLink(String fileId, String fileLink, String fileKey, String fileCreator) {
@@ -783,9 +830,10 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     /**
      * 更新附件链接
-     * @param fileIds 附件编号(必要)
-     * @param fileLink 附件链接(必要)
-     * @param fileKey 附件关键字(必要)
+     *
+     * @param fileIds     附件编号(必要)
+     * @param fileLink    附件链接(必要)
+     * @param fileKey     附件关键字(必要)
      * @param fileCreator 附件创建人(为空时不更新)
      */
     @Transactional
@@ -811,9 +859,10 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     /**
      * 拷贝文件记录
+     *
      * @param fileItems 文件项列表
-     * @param fileLink 文件链接
-     * @param fileKey 链接关键字
+     * @param fileLink  文件链接
+     * @param fileKey   链接关键字
      * @return 拷贝完成的文件记录列表
      */
     public List<PubFileRecord> copyRecordsByItems(List<UploadItem> fileItems, String fileLink, String fileKey) {
@@ -829,9 +878,10 @@ public class FileService extends BaseService<PubFileRecord, String> {
 
     /**
      * 拷贝文件记录
-     * @param fileIds 文件编号
+     *
+     * @param fileIds  文件编号
      * @param fileLink 文件链接
-     * @param fileKey 链接关键字
+     * @param fileKey  链接关键字
      * @return 拷贝完成的文件记录列表
      */
     public List<PubFileRecord> copyRecords(List<String> fileIds, String fileLink, String fileKey) {
