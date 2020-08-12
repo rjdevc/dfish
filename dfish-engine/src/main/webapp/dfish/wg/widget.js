@@ -3064,7 +3064,6 @@ Frame = define.widget('Frame', {
 					!d && (d = this.x.dft ? this.ownerView.find(this.x.dft) : this[0]) && this.focus(d);
 				}
 				if (mbi) {
-					this.focusNode && this.slideShow(T);
 					this.x.swipeFocus && this.listenSwipe();
 				}
 			}
@@ -3074,13 +3073,13 @@ Frame = define.widget('Frame', {
 		type_frame: T,
 		className: 'w-frame',
 		listenSwipe: function() {
-			var b = this.$(), c, d = Q(this.$('cont')), ix, iy, fx, px, py, ts, sc, wd, tm, dir, self = this;
+			var b = this.$(), c, d, f, ix, iy, fx, px, py, ts, sc, wd, tm, dir, self = this;
 	    	b.addEventListener('touchstart', function(e) {
 				if (!(c = self.getFocus())) return;
 	    		ix = e.targetTouches[0].clientX; iy = e.targetTouches[0].clientY;
 				wd = self.innerWidth(); fx = c.nodeIndex * wd; tm = []; swiping = dir = N;
 				ts = new TouchScrollCheck(b, e); sc = ts.isScrolled('X');
-				d.css('transition', '');
+				d && (d.css('transition', ''), d = N);
 	    	});
 	    	b.addEventListener('touchmove', function(e) {
 	    		if (!c || sc || dir === F || (swiping && swiping != b)) return;
@@ -3090,8 +3089,16 @@ Frame = define.widget('Frame', {
 					dir = ts.hasChange() || (py > 10 || py < -10) ? F : (px > 10 || px < -10) ? T : N;
 				} 
 	    		if (dir) {
+					if (!d) {
+						f = px < 0 ? c.next() : c.prev();
+						if (f) {
+							f.addClass('w-frame-slide-' + (px < 0 ? 'next' : 'prev'));
+							d = Q([f.$(), c.$()]);
+						} else
+							d = Q(c.$());
+					}
 					!swiping && (ix += px, px = 0, swiping = b);
-					d.css({transform: 'translateX('+ (px - fx) +'px)'});
+					d.css({transform: 'translateX('+ (px) +'px)'});
 					tm.push(Math.abs(px));
 					tm.length > 5 && tm.shift();
 	    		}
@@ -3100,28 +3107,39 @@ Frame = define.widget('Frame', {
 				if (swiping == b) {
 					swiping = N;
 					var n = px < 0 && (-px > wd/2 || _isFastSwipe(tm)) ? self.focusNode.next() : px > 0 && (px > wd/2 || _isFastSwipe(tm)) ? self.focusNode.prev() : N,
-						d = n && n.x.id && Q('[w-target="' + n.x.id + '"]', self.ownerView.$()).prop('id');
-					d ? $.all[d].click() : self.slideShow();
+						g = n && n.x.id && Q('[w-target="' + n.x.id + '"]', self.ownerView.$()).prop('id');
+					g ? $.all[g].click() : d.css({transform:'translateX(0)', transition: 'transform 500ms cubic-bezier(0.165,0.84,0.44,1)'});
 				}
 	    	});
 		},
 		childCls: function(a) {
-			return (mbi ? 'f-sub-horz ' : '') + (a.x.display === T ? '' : (mbi ? 'f-frame-hide' : 'f-hide'));
+			return (mbi ? 'f-sub-horz ' : '') + (a.x.display === T ? '' : 'f-hide');
 		},
 		getFocus: function() {
 			return this.focusNode;
 		},
-		slideShow: function(a) {
-			clearTimeout(this._slideShowTimer);
-			var self = this;
-			this.focusNode.removeClass('f-frame-hide');
-			Q(this.$('cont')).css({transform: 'translateX(-'+ (this.focusNode.nodeIndex * this.innerWidth()) +'px)', transition: a ? '' : '500ms cubic-bezier(0.165,0.84,0.44,1)'});
-			if (!a) {
-				this._slideShowTimer = setTimeout(function() {
-					for (var i = 0, f = self.focusNode.nodeIndex; i < self.length; i ++)
-						if (f !== i) self[i].addClass('f-frame-hide');
-				}, 500);
-			}
+		slideShow: function(a, b) {
+			this._slideShow && this._slideShow();
+			var c = Q([a.$(), b.$()]), t, self = this;
+			a.addClass('w-frame-slide-' + (a.nodeIndex > b.nodeIndex ? 'next' : 'prev'));
+			c.css({transform: 'translateX('+ (this.innerWidth() * (a.nodeIndex > b.nodeIndex ? -1 : 1)) +'px)', transition: 'transform 500ms cubic-bezier(0.165,0.84,0.44,1)'});
+			this._slideShow = function() {
+				c.removeClass('w-frame-slide-prev w-frame-slide-next f-hide');
+				c.css({transform:'translateX(0)', transition: ''});
+				b && b.addClass('f-hide');
+				self._slideShow = N;
+				clearTimeout(t);
+			};
+			t = setTimeout(this._slideShow, 500);
+		},
+		qSlide: function(a) {
+			var f = this.getFocus(),
+				g = a ? f.next() : f.prev();
+			if (g) {
+				g.addClass('w-frame-slide-' + (a ? 'next' : 'prev'));
+				return Q([f.$(), g.$()]);
+			} else
+				return Q(f.$());
 		},
 		// @a -> wg,id
 		focus: function(a) {
@@ -3133,14 +3151,13 @@ Frame = define.widget('Frame', {
 				n.focusOwner = this;
 				o && o.display(F, T);
 				n.display(T);
-				mbi && this.$('cont') && this.slideShow();
+				mbi && o && this.$() && this.slideShow(n, o);
 				o && this.trigger('change');
 			}
 			return n;
 		},
 		html_nodes: function() {
-			var s = _proto.html_nodes.call(this);
-			return mbi ? '<div id=' + this.id + 'cont>' + s + '</div>' : s;
+			return _proto.html_nodes.call(this);
 		}
 	}
 }),

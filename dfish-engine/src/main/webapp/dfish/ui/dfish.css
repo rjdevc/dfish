@@ -130,7 +130,8 @@
 .w-horizontal-vln{width:100%}
 
 .w-frame{position:relative}
-.f-frame-hide{visibility:hidden;height:0;overflow:hidden;z-index:-1}
+.w-frame-slide-prev.f-hide,.w-frame-slide-next.f-hide{visibility:visible;z-index:auto;width:auto;height:auto;top:0;overflow:visible}
+.w-frame-slide-next{left:100%}
 
 /* table */
 .w-table,.w-form{position:relative;text-align:left;overflow:hidden}
