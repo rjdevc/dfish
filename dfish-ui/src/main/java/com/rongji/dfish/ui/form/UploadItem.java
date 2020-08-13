@@ -13,6 +13,7 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
     private static final long serialVersionUID = 7730216981053285569L;
 
     private String name;
+    private String extension;
     private Long size;
     private String url;
     private String thumbnail;
@@ -22,6 +23,7 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
     private Boolean escape;
     private String width;
     private String height;
+    private Number duration;
 
     /**
      * 构造函数
@@ -244,6 +246,41 @@ public class UploadItem extends AbstractWidget<UploadItem> implements HasText<Up
     @Override
     public Boolean getEscape() {
         return escape;
+    }
+
+    /**
+     * 附件扩展名
+     * @return String 附件扩展名
+     */
+    public String getExtension() {
+        return extension;
+    }
+
+    /**
+     * 附件扩展名
+     * @param extension String
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public UploadItem setExtension(String extension) {
+        this.extension = extension;
+        return this;
+    }
+    /**
+     * 持续时间/播放时长(单位:秒)
+     * @return Number 播放时长
+     */
+    public Number getDuration() {
+        return duration;
+    }
+
+    /**
+     * 持续时间/播放时长(单位:秒)
+     * @param duration Number 播放时长
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public UploadItem setDuration(Number duration) {
+        this.duration = duration;
+        return this;
     }
 
 }

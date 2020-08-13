@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.file.service;
 
+import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.JsonUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
@@ -7,6 +8,7 @@ import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.FrameworkService;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -50,6 +52,11 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * 附件配置-图片类型
      */
     String CONFIG_TYPES_IMAGE = "file.types.image";
+    /**
+     * 附件配置-視頻类型
+     */
+    public static final String CONFIG_TYPES_VIDEO = "file.types.video";
+
 
     /**
      * 附件关联
@@ -60,6 +67,15 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * 附件存储路径
      */
     DateFormat DF_DIR = new SimpleDateFormat("yyyy/MM/dd");
+
+    /**
+     * 路径分隔符
+     *
+     * @return
+     */
+    default String getDirSeparator() {
+        return "/";
+    }
 
     /**
      * 保存文件以及文件记录
@@ -102,14 +118,28 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
     String getImageTypes();
 
     /**
-     * 更新文件链接
+     * 视频上传支持的类型
      *
-     * @param fileId   附件编号
-     * @param fileLink 链接名
-     * @param fileKey  关联数据
-     * @return int 更新数量
+     * @return
      */
-    int updateFileLink(String fileId, String fileLink, String fileKey);
+    public String getVideoTypes();
+//        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_VIDEO, "*.mp4;");
+
+
+
+//    /**
+//     * 更新文件链接
+//     *
+//     * @param fileId   附件编号
+//     * @param fileLink 链接名
+//     * @param fileKey  关联数据
+//     * @return int 更新数量
+//     * @deprecated 该方法不建议使用, 仅仅修改链接而不修改旧记录状态, 会让已作废的附件记录无法正确清理
+//     *
+//     */
+//    default int updateFileLink(String fileId, String fileLink, String fileKey){
+//        updateFileLink(fileId,fileLink,fileKey,null );
+//    }
 
     /**
      * 更新文件链接
@@ -118,8 +148,9 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileLink 链接名
      * @param fileKey  链接关键字
      * @return int 更新数量
+     *
      */
-    default int updateFileLinks(String itemJson, String fileLink, String fileKey) {
+    default int updateFileLinks(String itemJson, String fileLink, String fileKey,String fileCreator) {
         List<UploadItem> itemList = parseUploadItems(itemJson);
         List<PubFileRecord> oldList = getRecords(fileLink, fileKey);
         List<String> newIds = new ArrayList<>(itemList.size());
@@ -134,20 +165,49 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         insertList.removeAll(oldIds);
         List<String> deleteList = new ArrayList<>(oldIds);
         deleteList.removeAll(newIds);
-        int count = updateFileLinks(insertList, fileLink, fileKey);
+        int count = updateFileLinks(insertList, fileLink, fileKey,fileCreator);
         count += updateFileStatus(deleteList, STATUS_DELETE);
         return count + deleteList.size();
     }
+    /**
+     * 更新附件链接
+     *
+     * @param fileId      附件编号(必要)
+     * @param fileLink    附件链接(必要)
+     * @param fileKey     附件关键字(必要)
+     * @param fileCreator 附件创建人(为空时不更新)
+     */
+    default int updateFileLink(String fileId, String fileLink, String fileKey, String fileCreator) {
+        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
+            throw new IllegalArgumentException("必要参数(fileId,fileLink,fileKey)不可为空");
+        }
+        return updateFileLinks(Arrays.asList(fileId), fileLink, fileKey, fileCreator);
+    }
 
     /**
-     * 更新文件链接
+     * 更新附件链接
      *
-     * @param fileIds  附件编号集合
-     * @param fileLink 附件链接名
-     * @param fileKey  链接关键字
-     * @return int 更新记录数
+     * @param fileIds     附件编号(必要)
+     * @param fileLink    附件链接(必要)
+     * @param fileKey     附件关键字(必要)
+     * @param fileCreator 附件创建人(为空时不更新)
      */
-    int updateFileLinks(List<String> fileIds, String fileLink, String fileKey);
+    int updateFileLinks(List<String> fileIds, String fileLink, String fileKey, String fileCreator);
+
+
+
+
+//    /**
+//     * 更新文件链接
+//     *
+//     * @param fileIds  附件编号集合
+//     * @param fileLink 附件链接名
+//     * @param fileKey  链接关键字
+//     * @return int 更新记录数
+//     * @deprecated 该方法不建议使用, 仅仅修改链接而不修改旧记录状态, 会让已作废的附件记录无法正确清理
+//     *
+//     */
+//    int updateFileLinks(List<String> fileIds, String fileLink, String fileKey);
 
     /**
      * 更新文件记录状态
@@ -213,7 +273,11 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @return InputStream 输入流
      * @throws Exception 文件流异常
      */
-    InputStream getFileInputStream(PubFileRecord fileRecord, String alias) throws Exception;
+    default InputStream getFileInputStream(PubFileRecord fileRecord, String alias) throws Exception{
+        return getFileInputStream(fileRecord,alias,null);
+    }
+
+    InputStream getFileInputStream(PubFileRecord fileRecord, String alias,String extension) throws Exception;
 
     /**
      * 根据文件记录获取文件
@@ -225,6 +289,13 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         return getFile(fileRecord, null);
     }
 
+    default String getFileDir(PubFileRecord fileRecord){
+        String fileUrl = fileRecord.getFileUrl();
+        int splitIndex = fileUrl.lastIndexOf(getDirSeparator());
+        String fileDir = fileUrl.substring(0, splitIndex);
+        return getUploadDir() + fileDir + getDirSeparator();
+    }
+
     /**
      * 根据文件记录获取文件
      *
@@ -233,7 +304,18 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @return File 附件
      */
     default File getFile(PubFileRecord fileRecord, String alias) {
-        return getFile(fileRecord, alias, true);
+        return getFile(fileRecord, alias, null,true);
+    }
+    /**
+     * 根据文件记录获取文件
+     *
+     * @param fileRecord 附件记录
+     * @param alias      附件别名
+     * @param extension  扩展名
+     * @return File 附件
+     */
+    default File getFile(PubFileRecord fileRecord, String extension, String alias) {
+        return getFile(fileRecord, alias, extension,true);
     }
 
     /**
@@ -244,7 +326,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fix2Original 文件找不到时使用原始文件
      * @return File 附件
      */
-    File getFile(PubFileRecord fileRecord, String alias, boolean fix2Original);
+    File getFile(PubFileRecord fileRecord, String alias, String extension,boolean fix2Original);
 
     /**
      * 获取附件大小
@@ -263,7 +345,29 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param alias      附件别名
      * @return long 附件大小
      */
-    long getFileSize(PubFileRecord fileRecord, String alias);
+    default long getFileSize(PubFileRecord fileRecord, String alias){
+        return getFileSize(fileRecord, alias,null);
+    }
+
+    /**
+     * 获取文件大小
+     *
+     * @param fileRecord
+     * @return
+     */
+    default long getFileSize(PubFileRecord fileRecord, String fileAlias, String extension) {
+        if (fileRecord == null) {
+            return 0L;
+        }
+        if (Utils.isEmpty(fileAlias)) {
+            return fileRecord.getFileSize();
+        }
+        File file = getFile(fileRecord, fileAlias, extension);
+        if (file == null || !file.exists()) {
+            return 0L;
+        }
+        return file.length();
+    }
 
     /**
      * 查询可用的文件记录
@@ -493,6 +597,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         String encId = encrypt(fileRecord.getFileId());
         item.setId(encId);
         item.setName(fileRecord.getFileName());
+        item.setExtension(FileUtil.getExtension(fileRecord.getFileName()));
         item.setSize(fileRecord.getFileSize());
         return item;
     }

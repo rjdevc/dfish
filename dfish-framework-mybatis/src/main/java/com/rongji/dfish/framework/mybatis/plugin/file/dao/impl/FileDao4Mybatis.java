@@ -14,12 +14,13 @@ import java.util.*;
  */
 public interface FileDao4Mybatis extends FrameworkDao4Mybatis<PubFileRecord, String>, FileDao {
 
-    @Override
-    int updateFileLink(@Param("fileId") String fileId, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey,
-                       @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
+//    @Override
+//    int updateFileLink(@Param("fileId") String fileId, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey,
+//                       @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
 
     @Override
     int updateFileLinks(@Param("fileIds") List<String> fileIds, @Param("fileLink") String fileLink, @Param("fileKey") String fileKey,
+                        @Param("fileKey") String fileCreator,
                         @Param("fileStatus") String fileStatus, @Param("updateTime") Date updateTime);
 
     @Override

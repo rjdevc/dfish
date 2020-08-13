@@ -83,7 +83,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
                 if (uploadItem != null && (uploadItem.getError() == null || Utils.isEmpty(uploadItem.getError().getText()))) {
                     String fileId = fileService.decrypt(uploadItem.getId());
                     // FIXME 哪些附件未被启用还需进一步判断
-                    fileService.updateFileLink(fileId, name(), fileId);
+                    fileService.updateFileLink(fileId, name(), fileId,loginUserId);
                 }
             }
         } catch (Exception e) {

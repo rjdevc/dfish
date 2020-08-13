@@ -19,6 +19,7 @@ public class PubFileRecord implements java.io.Serializable {
 	private String fileName;
 	private String fileType;
 	private String fileUrl;
+	private String fileExtension;
 	private Long fileSize;
 	private String fileCreator;
 	private Date createTime;
@@ -109,6 +110,22 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileUrl = fileUrl;
 	}
 
+	/**
+	 * 扩展名
+	 * @return String
+	 */
+	@Column(name = "FILE_EXTENSION")
+	public String getFileExtension() {
+		return fileExtension;
+	}
+
+	/**
+	 * 扩展名
+	 * @param fileExtension
+	 */
+	public void setFileExtension(String fileExtension) {
+		this.fileExtension = fileExtension;
+	}
 	/**
 	 * 文件大小
 	 * @return Long

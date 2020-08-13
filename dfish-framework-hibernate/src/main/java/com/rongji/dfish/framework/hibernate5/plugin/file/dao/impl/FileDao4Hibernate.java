@@ -36,31 +36,31 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
         return bulkUpdate("UPDATE PubFileRecord t SET t.fileStatus=?,t.updateTime=? WHERE t.fileLink=? AND t.fileKey=?", new Object[]{fileStatus, updateTime, fileLink, fileKey});
     }
 
-    @Override
-    public int updateFileLink(String fileId, String fileLink, String fileKey, String fileStatus, Date updateTime) {
-        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
-            return 0;
-        }
-        StringBuilder hql = new StringBuilder();
-        List<Object> args = new ArrayList<>(4);
-        hql.append("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=?");
-        args.add(fileLink);
-        args.add(updateTime);
-        if (Utils.notEmpty(fileKey)) {
-            hql.append(",t.fileKey=?");
-            args.add(fileKey);
-        }
-        if (Utils.notEmpty(fileStatus)) {
-            hql.append(",t.fileStatus=?");
-            args.add(fileStatus);
-        }
-        hql.append(" WHERE t.fileId=?");
-        args.add(fileId);
-        return bulkUpdate(hql.toString(), args.toArray());
-    }
+//    @Override
+//    public int updateFileLink(String fileId, String fileLink, String fileKey, String fileStatus, Date updateTime) {
+//        if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink)) {
+//            return 0;
+//        }
+//        StringBuilder hql = new StringBuilder();
+//        List<Object> args = new ArrayList<>(4);
+//        hql.append("UPDATE PubFileRecord t SET t.fileLink=?,t.updateTime=?");
+//        args.add(fileLink);
+//        args.add(updateTime);
+//        if (Utils.notEmpty(fileKey)) {
+//            hql.append(",t.fileKey=?");
+//            args.add(fileKey);
+//        }
+//        if (Utils.notEmpty(fileStatus)) {
+//            hql.append(",t.fileStatus=?");
+//            args.add(fileStatus);
+//        }
+//        hql.append(" WHERE t.fileId=?");
+//        args.add(fileId);
+//        return bulkUpdate(hql.toString(), args.toArray());
+//    }
 
     @Override
-    public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey, String fileStatus, Date updateTime) {
+    public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey,String fileCreator, String fileStatus, Date updateTime) {
         if (Utils.isEmpty(fileIds) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             return 0;
         }
@@ -71,7 +71,10 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
         args.add(fileLink);
         args.add(fileKey);
         args.add(updateTime);
-
+        if (Utils.notEmpty(fileCreator)) {
+            hql.append(",fileCreator=?");
+            args.add(fileCreator);
+        }
         if (Utils.notEmpty(fileStatus)) {
             hql.append(",t.fileStatus=?");
             args.add(fileStatus);

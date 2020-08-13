@@ -10,6 +10,7 @@ import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -88,7 +89,10 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     public String getImageTypes() {
         return FrameworkHelper.getSystemConfig(CONFIG_TYPES_IMAGE, "*.jpg;*.gif;*.png;");
     }
-
+    @Override
+    public String getVideoTypes() {
+        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_VIDEO, "*.mp4;");
+    }
     /**
      * 保存文件以及文件记录
      *
@@ -167,6 +171,10 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         return get(fileId);
     }
 
+
+
+
+
     @Override
     public int updateFileStatus(Collection<String> fileIds, String fileStatus) {
         if (Utils.isEmpty(fileIds)) {
@@ -203,11 +211,11 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @throws Exception 文件流相关异常
      */
     @Override
-    public InputStream getFileInputStream(PubFileRecord fileRecord, String alias) throws Exception {
+    public InputStream getFileInputStream(PubFileRecord fileRecord, String alias,String extension) throws Exception {
         if (fileRecord == null || FileServiceImpl.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
             return null;
         }
-        File file = getFile(fileRecord, alias);
+        File file = getFile(fileRecord, alias,extension);
         if (file == null || !file.exists() || file.length() <= 0) {
             return null;
         }
@@ -223,7 +231,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @return File 目标文件
      */
     @Override
-    public File getFile(PubFileRecord fileRecord, String alias, boolean fix2Original) {
+    public File getFile(PubFileRecord fileRecord, String alias,String extension,  boolean fix2Original) {
         if (fileRecord == null || Utils.isEmpty(fileRecord.getFileUrl())) {
             return null;
         }
@@ -238,7 +246,8 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
             fileExtName = "";
         }
 
-        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(alias) ? ("_" + alias) : "") + fileExtName);
+        String aliasExtension = Utils.notEmpty(extension) ? ("." + extension) : fileExtName;
+        File file = new File(getUploadDir() + oldFileName + (Utils.notEmpty(alias) ? ("_" + alias) : "") + aliasExtension);
         if (!file.exists() && Utils.notEmpty(alias)) {
             if (fix2Original) {
                 // 别名文件不存在时使用原始文件
@@ -326,26 +335,6 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         return null;
     }
 
-    /**
-     * 获取文件大小
-     *
-     * @param fileRecord 文件记录
-     * @return 文件大小
-     */
-    @Override
-    public long getFileSize(PubFileRecord fileRecord, String alias) {
-        if (fileRecord == null) {
-            return 0L;
-        }
-        if (Utils.isEmpty(alias)) {
-            return fileRecord.getFileSize();
-        }
-        File file = getFile(fileRecord, alias);
-        if (file == null || !file.exists()) {
-            return 0L;
-        }
-        return file.length();
-    }
 
     /**
      * 查询可用的文件记录
@@ -500,17 +489,17 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         return records;
     }
 
-    @Override
-    public int updateFileLink(String fileId, String fileLink, String fileKey) {
-        return getDao().updateFileLink(fileId, fileLink, fileKey, STATUS_LINKED, new Date());
-    }
+//    @Override
+//    public int updateFileLink(String fileId, String fileLink, String fileKey,String creator) {
+//        return getDao().updateFileLink(fileId, fileLink, fileKey,creator, STATUS_LINKED, new Date());
+//    }
 
     @Override
-    public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey) {
+    public int updateFileLinks(List<String> fileIds, String fileLink, String fileKey,String creator) {
         if (Utils.isEmpty(fileIds)) {
             return 0;
         }
-        return getDao().updateFileLinks(fileIds, fileLink, fileKey, STATUS_LINKED, new Date());
+        return getDao().updateFileLinks(fileIds, fileLink, fileKey,creator, STATUS_LINKED, new Date());
     }
 
 }

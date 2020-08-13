@@ -22,6 +22,10 @@ import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.util.ServletUtil;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.Java2DFrameConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +35,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import javax.json.Json;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -183,6 +190,17 @@ public class FileController extends BaseActionController {
     @RequestMapping("/upload/file")
     @ResponseBody
     public JsonResponse uploadFile(HttpServletRequest request) {
+        return uploadFile(request,null);
+    }
+
+    /**
+     * 上传附件
+     *
+     * @param request
+     * @return
+     */
+
+    public JsonResponse uploadFile(HttpServletRequest request,String filTypes) {
         String scheme = request.getParameter("scheme");
         FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
         // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
@@ -253,6 +271,117 @@ public class FileController extends BaseActionController {
             String servletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
             watermark.setImageFile(new File(servletPath + watermark.getImagePath()));
         }
+    }
+
+    /**
+     * 上传媒体类文件
+     *
+     * @param request 请求
+     * @return 上传的附件信息
+     */
+    @RequestMapping("/uploadVideo")
+    @ResponseBody
+    public Object uploadVideo(HttpServletRequest request) {
+        final JsonResponse<UploadItem> uploadItem = uploadFile(request, fileService.getVideoTypes());
+        if (uploadItem == null || Utils.isEmpty(uploadItem.getData().getId())) {
+            // 这样异常结果返回可能导致前端显示异常
+            return uploadItem;
+        }
+        // 抓取视频帧作为封面缩略图
+        grabVideoFramer(uploadItem.getData());
+
+        return uploadItem;
+    }
+
+    /**
+     * 将视频文件帧处理并以“jpg”格式进行存储。
+     * 依赖FrameToBufferedImage方法：将frame转换为bufferedImage对象
+     *
+     * @param uploadItem
+     */
+    private void grabVideoFramer(UploadItem uploadItem) {
+        if (uploadItem == null) {
+            return;
+        }
+        String fileId = fileService.decrypt(uploadItem.getId());
+        PubFileRecord fileRecord = fileService.get(fileId);
+        if (fileRecord == null) {
+            return;
+        }
+        FFmpegFrameGrabber fFmpegFrameGrabber = null;
+        try {
+			 /*
+            获取视频文件
+            */
+            fFmpegFrameGrabber = new FFmpegFrameGrabber(fileService.getFileInputStream(fileRecord));
+            fFmpegFrameGrabber.start();
+
+            //获取视频总帧数
+            int frameLength = fFmpegFrameGrabber.getLengthInFrames();
+            // 这里播放时长暂时用秒
+            int duration = (int) (frameLength / fFmpegFrameGrabber.getFrameRate());
+            uploadItem.setDuration(duration);
+            // 帧下标
+            int frameIndex = 0;
+            while (frameIndex++ <= frameLength) {
+                Frame frame = fFmpegFrameGrabber.grabImage();
+                // 对目标帧进行处理
+                if (frame != null && frameIndex == getVideoThumbnailPosition()) {
+                    String saveFileName = fileId + "_" + getVideoThumbnailAlias() + "." + getVideoThumbnailExtension();
+                    //文件绝对路径+名字
+                    String fileName = fileService.getFileDir(fileRecord) + saveFileName;
+
+                    //文件储存对象
+                    File output = new File(fileName);
+
+                    // 将目标帧转换成图片
+                    Java2DFrameConverter converter = new Java2DFrameConverter();
+                    BufferedImage bufferedImage = converter.getBufferedImage(frame);
+                    ImageIO.write(bufferedImage, getVideoThumbnailExtension(), output);
+
+                    uploadItem.setThumbnail("file/inline/" + getVideoThumbnailAlias() + "/" + uploadItem.getId() + "." + getVideoThumbnailExtension());
+
+                    break;
+                }
+            }
+            fFmpegFrameGrabber.stop();
+
+        } catch (Exception e) {
+            LogUtil.error("截取视频缩略图异常", e);
+        } finally {
+            try {
+                fFmpegFrameGrabber.close();
+            } catch (FrameGrabber.Exception e) {
+                LogUtil.error("截取视频缩略图工具类关闭异常", e);
+            }
+        }
+    }
+
+    /**
+     * 获取视频缩略图的位置
+     *
+     * @return int
+     */
+    private int getVideoThumbnailPosition() {
+        return 5;
+    }
+
+    /**
+     * 获取视频缩略图的别名
+     *
+     * @return String
+     */
+    private String getVideoThumbnailAlias() {
+        return "POSTER";
+    }
+
+    /**
+     * 获取视频截取帧的扩展名
+     *
+     * @return String
+     */
+    private String getVideoThumbnailExtension() {
+        return "jpg";
     }
 
     /**
@@ -345,10 +474,20 @@ public class FileController extends BaseActionController {
     private static class DownloadParam {
         boolean inline;
         String fileName;
+        String extension;
         long fileSize;
         long lastModified;
         String alias;
         String encryptedFileId;
+
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public void setExtension(String extension) {
+            this.extension = extension;
+        }
 
         public DownloadParam() {
         }
@@ -479,6 +618,40 @@ public class FileController extends BaseActionController {
         }
     }
 
+    /**
+     * 附件下载
+     *
+     * @param response
+     * @param fileRecord
+     * @throws Exception
+     */
+    private void downloadFileData(HttpServletResponse response, PubFileRecord fileRecord, DownloadParam downloadParam) throws Exception {
+        if (fileRecord == null) {
+            LogUtil.warn("下载的附件不存在");
+            return;
+        }
+        InputStream input = null;
+        try {
+            input = fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+//            long fileSize;
+//            if (input != null) {
+//                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+//            } else { // 当别名附件不存在时,使用原附件
+//                input = fileService.getFileInputStream(fileRecord);
+//                fileSize = fileService.getFileSize(fileRecord);
+//            }
+            downloadFileData(response, input, downloadParam);
+        } catch (Exception e) {
+            String error = "下载附件异常@" + System.currentTimeMillis();
+            LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
+        } finally {
+            if (input != null) {
+                input.close();
+            }
+        }
+    }
+
     private static String getEtag(DownloadParam downloadParam) {
         long lastModified = downloadParam.getLastModified();
         String etag = getIntHex(downloadParam.getFileSize()) + getIntHex(lastModified);
@@ -520,14 +693,62 @@ public class FileController extends BaseActionController {
 
     private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) {
         DownloadParam downloadParam = new DownloadParam();
-        String fileName = fileRecord.getFileName();
-        long fileSize = fileService.getFileSize(fileRecord, alias);
-        downloadParam.setFileName(fileName);
-        downloadParam.setFileSize(fileSize);
+
         downloadParam.setLastModified(fileRecord.getUpdateTime() != null ? fileRecord.getUpdateTime().getTime() :
                 (fileRecord.getCreateTime() != null ? fileRecord.getCreateTime().getTime() : 0L));
         downloadParam.setAlias(alias);
+        String fileName = fileRecord.getFileName();
+        // 视频类型
+        if (accept(fileRecord.getFileExtension(), fileService.getVideoTypes()) && getVideoThumbnailAlias().equals(alias)) {
+            downloadParam.setExtension(getVideoThumbnailExtension());
+            int dotIndex = fileName.lastIndexOf(".");
+            if (dotIndex >= 0) {
+                fileName = fileName.substring(0, dotIndex + 1) + downloadParam.getExtension();
+            } else {
+                fileName += "." + downloadParam.getExtension();
+            }
+        } else {
+            downloadParam.setExtension(fileRecord.getFileExtension());
+        }
+        downloadParam.setFileName(fileName);
+        long fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+        downloadParam.setFileSize(fileSize);
         return downloadParam;
+    }
+
+    /**
+     * 判断扩展名是否支持
+     *
+     * @param fileExtension 拓展名(不管有没.都支持;即doc和.doc)
+     * @param acceptTypes   可接受的类型;格式如:*.doc;*.png;*.jpg;
+     * @return
+     */
+    static boolean accept(String fileExtension, String acceptTypes) {
+        if (acceptTypes == null || acceptTypes.equals("")) {
+            return true;
+        }
+        if (Utils.isEmpty(fileExtension)) {
+            return false;
+        }
+        String[] accepts = acceptTypes.split("[,;]");
+        // 类型是否含.
+        int extDot = fileExtension.lastIndexOf(".");
+        // 统一去掉.
+        String realFileExtension = (extDot >= 0) ? fileExtension.substring(extDot + 1) : fileExtension;
+        for (String s : accepts) {
+            if (Utils.isEmpty(s)) {
+                continue;
+            }
+            int dotIndex = s.lastIndexOf(".");
+            if (dotIndex < 0) {
+                continue;
+            }
+            String acc = s.substring(dotIndex + 1);
+            if (acc.equalsIgnoreCase(realFileExtension)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
