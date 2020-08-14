@@ -551,6 +551,8 @@
   .flowplayer .fp-help {
     display: none; }
   .flowplayer .fp-message {
+  	position: absolute;
+  	width: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     text-align: left;
     font-size: 1.2em;
