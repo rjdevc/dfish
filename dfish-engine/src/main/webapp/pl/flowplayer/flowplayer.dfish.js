@@ -1,8 +1,19 @@
 /* FlowPlayer
+ *
  * Ê¹ÓÃ·¶Àý£º
- * 	{ "type": "FlowPlayer", "src": "webapp/test.mp4" }
+ * 	{ type: 'FlowPlayer', src: 'webapp/test.mp4' }
+ *
  * ´íÎó´úºÅ£º
- * 	["", "Video loading aborted", "Network error", "Video not properly encoded", "Video file not found", "Unsupported video", "Skin not found", "SWF file not found", "Subtitles not found", "Invalid RTMP URL", "Unsupported video format. Try installing Adobe Flash."]            
+ * 	#1) Video loading aborted
+ *	#2)	Network error
+ *	#3)	Video not properly encoded
+ *	#4)	Video file not found
+ *	#5)	Unsupported video
+ *	#6)	Skin not found
+ *	#7) SWF file not found
+ *	#8)	Subtitles not found
+ *	#9)	Invalid RTMP URL
+ *	#10) Unsupported video format. Try installing Adobe Flash
  */
 
 var $ = require( 'dfish' );
