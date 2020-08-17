@@ -4189,12 +4189,12 @@ Dialog = define.widget('dialog', {
 				r = this._dft_pos();
 			this._pos = r;
 			$.snapTo(this.$(), r);
-			if (vs) {
+			if (vs && this.type === 'dialog') {
 				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
 				var xh = this.x.height, t = r.top < 0, b = r.bottom < 0, w = $.boxwd(this.$()), h = $.boxht(this.$());
 				t && (this.height(h + r.top));
 				b && (this.height(h + r.bottom));
-				(t || b) && (this._ori_height = xh, this.width(w));
+				(t || b) && (this._ori_height = xh, w && this.width(w));
 			}
 			// 八方位浮动效果
 			n && Q(this.$()).animate(n, 200);
@@ -4699,11 +4699,11 @@ Menu = define.widget('menu', {
 		checkOverflow: function() {
 			this.echoStart = 0;
 			this.echoEnd   = this.length -1;
-			var r = $.bcr(this.$()), m = 0, g = this.$('g'), b = MenuButton.prototype.elemht();
+			var r = $.bcr(this.$()), m = 0, g = this.$('g'), b = MenuButton.prototype.elemht(), h = $.height();
 			if (r.top < 0)
 				m -= r.top;
-			if (r.bottom < 0)
-				m -= r.bottom;
+			if (r.bottom > h)
+				m += r.bottom - h;
 			if (m) {
 				// realht 是按钮可展现区域的高度 / 22 = 上下两个翻页按钮高度 + menu的padding border高度
 				this.realht = g.offsetHeight - 22 - m;
@@ -4788,6 +4788,7 @@ Menu = define.widget('menu', {
 				this.x.line && (w = Math.max(this._pos.target.width - 2, w));
 				this.css('min-width', w);
 			}
+			this.axis();
 			this.triggerHandler('ready');
 			return this;
 		}
