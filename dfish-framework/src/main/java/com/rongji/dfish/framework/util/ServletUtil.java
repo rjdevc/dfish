@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 服务层工具类
@@ -23,6 +23,12 @@ public class ServletUtil {
 
     public static final String ENCODING_UTF8 = "UTF-8";
     public static final String DOWNLOAD_ENCODING = "ISO8859-1";
+    private static final SimpleDateFormat DF_GMT;
+    static {
+        DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
+        DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
+
 
     /**
      * 获取参数值
@@ -137,179 +143,301 @@ public class ServletUtil {
         response.addCookie(cookie);
     }
 
+
+//    /**
+//     * 下载方法
+//     *
+//     * @param response   应答
+//     * @param attachFile 文件全路径+全名(服务器端的URL)
+//     * @param fileName   用户另存为的文件名
+//     * @throws IOException
+//     * @throws UnsupportedEncodingException
+//     */
+//    public static void downLoadFile(final HttpServletResponse response, String attachFile, String fileName)
+//            throws UnsupportedEncodingException, IOException {
+//        response.setStatus(HttpServletResponse.SC_OK);
+//        File file = new File(attachFile);
+//        fileName = FileUtil.getSafeFileName(fileName);
+//        //String contentType = getContentType(fileName);
+//        String contentType = "application/octet-stream";
+//        response.setHeader("Accept-Ranges", "bytes");
+//        response.setHeader("Accept-Charset", DOWNLOAD_ENCODING);
+//        response.setHeader("Content-type", contentType);
+//        response.setHeader("Content-Disposition", "attachment; filename="
+//                + fileName);
+//        response.setHeader("Content-Length", String.valueOf(file.length()));
+//
+//        BufferedInputStream bis = null;
+//        BufferedOutputStream bos = null;
+//        if (!file.exists() || file.length() == 0) {
+//            response.sendError(404);
+//            return;
+//        }
+//        try {
+//            bis = new BufferedInputStream(new FileInputStream(file));
+//            bos = new BufferedOutputStream(response.getOutputStream());
+//
+//            byte[] buff = new byte[8192];
+//            int bytesRead;
+//
+//            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+//                bos.write(buff, 0, bytesRead);
+//            }
+//        } catch (final IOException e) {
+//            LogUtil.error("FileUtil.downLoadFile error", e);
+//        } finally {
+//            if (bis != null) {
+//                bis.close();
+//            }
+//
+//            if (bos != null) {
+//                bos.close();
+//            }
+//        }
+//    }
+//
+//    /**
+//     * 下载方法 支持断点续传
+//     *
+//     * @param response   应答
+//     * @param attachFile 文件全路径+全名(服务器端的URL)
+//     * @param fileName   用户另存为的文件名
+//     * @throws IOException
+//     * @throws UnsupportedEncodingException
+//     */
+//    public static void downLoadFile(HttpServletRequest request, HttpServletResponse response, String attachFile,
+//                                    String fileName) throws UnsupportedEncodingException, IOException {
+//        File file = new File(attachFile);
+//        //String contentType = getContentType(fileName);
+//        String contentType = "application/octet-stream";
+//        downLoadFile(request, response, file, fileName, contentType);
+//    }
+//
+//    /**
+//     * 把byte当成文件下载的方法
+//     *
+//     * @param source   byte数组
+//     * @param response -
+//     * @param fileName 文件另存为的名字,现版本可以有中文
+//     * @throws IOException
+//     * @throws UnsupportedEncodingException
+//     */
+//    public static void downloadByteArrAsFile(byte[] source, final HttpServletResponse response, String fileName)
+//            throws UnsupportedEncodingException, IOException {
+//        //String contentType = getContentType(fileName);
+//        //response.setHeader("Content-type", contentType);
+//        response.setHeader("Content-type", "application/octet-stream");
+//        response.setHeader("Accept-Ranges", "bytes");
+//        response.setHeader("Accept-Charset", DOWNLOAD_ENCODING);
+//
+//        fileName = FileUtil.getSafeFileName(fileName);
+//        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+//        response.setHeader("Content-Length", String.valueOf(source.length));
+//
+//        BufferedOutputStream bos = null;
+//
+//        try {
+//            bos = new BufferedOutputStream(response.getOutputStream());
+//            // 1 << 13 = 8192
+//            int blocks = ((source.length - 1) >> 13) + 1;
+//
+//            for (int i = 0; i < blocks; i++) {
+//                bos.write(source, i << 13, ((source.length - (i << 13)) > 8192) ? 8192 : (source.length - (i << 13)));
+//            }
+//        } catch (Exception e) {
+//            LogUtil.error("FileUtil.downloadByteArrAsFile error", e);
+//        } finally {
+//            if (bos != null) {
+//                bos.close();
+//            }
+//        }
+//    }
+//
+//    /**
+//     * 下载文件
+//     *
+//     * @param request     请求
+//     * @param response    响应
+//     * @param file        文件
+//     * @param fileName    下载的文件名
+//     * @param contentType 类型
+//     * @throws IOException
+//     */
+//    public static void downLoadFile(HttpServletRequest request, HttpServletResponse response, File file, String fileName,
+//                                    String contentType) throws IOException {
+//        downLoadFile(request, response, false, contentType, new FileInputStream(file), file.length(), fileName);
+//    }
+//
+//    /**
+//     * 下载文件
+//     *
+//     * @param request     请求
+//     * @param response    响应
+//     * @param inline      是否内联
+//     * @param contentType 类型
+//     * @param fileInput   文件输入流
+//     * @param fileLength  文件大小
+//     * @param fileName    下载的文件名
+//     * @return boolean 下载完成
+//     * @throws IOException
+//     */
+//    public static boolean downLoadFile(HttpServletRequest request, HttpServletResponse response, boolean inline, String contentType,
+//                                       InputStream fileInput, long fileLength, String fileName) throws IOException {
+//        String range = request.getHeader("Range");
+//        long from = 0L;
+//        long to = fileLength;
+//        if (range != null && !"".equals(range)) {
+//            range = range.toLowerCase();
+//            if (range.startsWith("bytes")) {
+//                int equotPos = range.indexOf("=");
+//                int toPos = range.indexOf("-");
+//                if (toPos < 0 && equotPos > 0) {
+//                    toPos = range.length();
+//                }
+//                if (toPos > 0) {
+//                    try {
+//                        String fromStr;
+//                        if (equotPos > 0) {
+//                            fromStr = range.substring(equotPos + 1, toPos);
+//                        } else {
+//                            // 从bytes开始截取
+//                            fromStr = range.substring(5, toPos);
+//                        }
+//                        if (Utils.notEmpty(fromStr) && Utils.notEmpty(fromStr.trim())) {
+//                            from = Long.parseLong(fromStr.trim());
+//                        }
+//                    } catch (Exception e) {
+//                        LogUtil.error("FileUtil.downLoadFile:getting from value error", e);
+//                    }
+//                    try {
+//                        // range中可能有斜杠,这个格式判断不是标准的,可能需要调整
+//                        int divide = range.indexOf("/");
+//                        String toStr;
+//                        if (divide > to) {
+//                            toStr = range.substring(toPos + 1, divide);
+//                        } else {
+//                            toStr = range.substring(toPos + 1);
+//                        }
+//                        if (Utils.notEmpty(toStr) && Utils.notEmpty(toStr.trim())) {
+//                            to = Long.parseLong(toStr.trim());
+//                        }
+//                    } catch (Exception e) {
+//                        LogUtil.error("FileUtil.downLoadFile:getting to value error", e);
+//                    }
+//                }
+//            }
+//        }
+//
+//        response.setHeader("Accept-Ranges", "bytes");
+//        response.setHeader("Accept-Charset", FileUtil.ENCODING);
+//        if (Utils.isEmpty(contentType)) {
+//            contentType = "application/octet-stream";
+//        }
+//        response.setHeader("Content-type", contentType);
+//
+//        long partLength = to - from;
+////		boolean complete = to >= fileLength;
+//        if (from == 0 && to >= fileLength) {
+//            response.setStatus(HttpServletResponse.SC_OK);
+//            response.setHeader("Content-Length", String.valueOf(fileLength));
+//            response.setHeader("Content-Disposition", (inline ? "inline" : "attachment") + "; filename="
+//                    + URLEncoder.encode(fileName, FileUtil.ENCODING));
+//        } else {
+//            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+//            response.setHeader("Content-Length", String.valueOf(partLength));
+//            String contentRange = "bytes " + from + "-" + (to - 1) + "/" + fileLength;
+//            response.setHeader("Content-Range", contentRange);
+//        }
+//
+//        BufferedInputStream bis = null;
+//        BufferedOutputStream bos = null;
+//        if (fileInput == null) {
+//            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+//            return false;
+//        }
+//        // long totalRead = 0;
+//        boolean complete = false;
+//        try {
+//            bis = new BufferedInputStream(fileInput);
+//            bos = new BufferedOutputStream(response.getOutputStream());
+//
+//            byte[] buff = new byte[8192];
+//            int bytesRead;
+//            if (from > 0) {
+//                bis.skip(from);
+//            }
+//            // 75%节点有被加载到认定为"完成节点"
+//            long completePointLeft = (long) (fileLength * 0.25);
+//            long loadedLeft = fileLength - from;
+//            // 剩余字节大于完成节点的剩余,有机会可被加载到"完成节点"
+//            boolean canLoadedPoint = loadedLeft >= completePointLeft;
+//
+//            long currLeftLength = partLength;
+//            // org.apache.catalina.servlets.DefaultServlet
+//            while (currLeftLength > 0 && -1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+//                bos.write(buff, 0, bytesRead);
+//                long readBytes = Long.parseLong(String.valueOf(bytesRead));
+//                currLeftLength -= readBytes;
+//                if (canLoadedPoint) { // 有机会加载到"完成节点"
+//                    // 剩余加载字节
+//                    loadedLeft -= readBytes;
+//                    // 剩余加载字节比需完成的小,说明"完成节点已被加载"
+//                    if (loadedLeft <= completePointLeft) {
+//                        // 达到或超过"完成节点"
+//                        complete = true;
+//                        // "完成节点"已被加载,无需再计算判断加载
+//                        canLoadedPoint = false;
+//                    }
+//                }
+//            }
+//        } catch (IOException e) {
+//            LogUtil.error("FileUtil.downLoadFile error", e);
+//        } finally {
+//            if (bis != null) {
+//                bis.close();
+//            }
+//
+//            if (bos != null) {
+//                bos.close();
+//            }
+//        }
+////        LOG.debug("ResponseRange[" + from + "-" + to + "/" + fileLength + "(" + (((double) from * 100) / fileLength) + "%-)],complete:" + complete);
+//        return complete;
+//    }
+
     /**
-     * 下载数据流
-     * 经过实测证明，部分浏览器/应用可能在没有content-length 属性的时候，直接停止下载。请慎用该方法
-     *
-     * @param response
-     * @param is
-     * @throws UnsupportedEncodingException
-     * @throws IOException
+     * 下载一个资源
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param downloadResource 资源
+     * @param inline true的时候当成文件直接打开。 false的时候当成附件另存为。
+     * @return
      */
-    public static void downLoadData(final HttpServletResponse response, InputStream is) throws UnsupportedEncodingException, IOException {
-        OutputStream os = response.getOutputStream();
+    public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
+                                          DownloadResource downloadResource, boolean inline)throws IOException{
+        //处理缓存。如果已经缓存了。则无需下载，直接返回HttpServletResponse.SC_NOT_MODIFIED
+        DownloadStatus status=new DownloadStatus();
+        status.setContentLength(downloadResource.getLength());
+        status.setResourceLength(downloadResource.getLength());
+        status.setRangeBegin(0);
+        status.setRangeEnd(downloadResource.getLength()-1);
         try {
-
-            byte[] buff = new byte[8192];
-            int bytesRead;
-
-            while (-1 != (bytesRead = is.read(buff, 0, buff.length))) {
-                os.write(buff, 0, bytesRead);
+            long headerValue = request.getDateHeader("If-Modified-Since");
+            if (headerValue != -1) {
+                if ((request.getHeader("If-None-Match") == null) && (downloadResource.getLastModified() < headerValue + 1000L)) {
+                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    response.setHeader("ETag", getEtag(downloadResource));
+                    status.setCached(true);
+                    return status;
+                }
             }
-        } catch (final IOException e) {
-            LogUtil.error("FileUtil.downLoadData error", e);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-            if (os != null) {
-                os.close();
-            }
+        } catch (IllegalArgumentException illegalArgument) {
         }
-    }
 
-    /**
-     * 下载方法
-     *
-     * @param response   应答
-     * @param attachFile 文件全路径+全名(服务器端的URL)
-     * @param fileName   用户另存为的文件名
-     * @throws IOException
-     * @throws UnsupportedEncodingException
-     */
-    public static void downLoadFile(final HttpServletResponse response, String attachFile, String fileName)
-            throws UnsupportedEncodingException, IOException {
-        response.setStatus(HttpServletResponse.SC_OK);
-        File file = new File(attachFile);
-        fileName = FileUtil.getSafeFileName(fileName);
-        //String contentType = getContentType(fileName);
-        String contentType = "application/octet-stream";
-        response.setHeader("Accept-Ranges", "bytes");
-        response.setHeader("Accept-Charset", DOWNLOAD_ENCODING);
-        response.setHeader("Content-type", contentType);
-        response.setHeader("Content-Disposition", "attachment; filename="
-                + fileName);
-        response.setHeader("Content-Length", String.valueOf(file.length()));
-
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-        if (!file.exists() || file.length() == 0) {
-            response.sendError(404);
-            return;
-        }
-        try {
-            bis = new BufferedInputStream(new FileInputStream(file));
-            bos = new BufferedOutputStream(response.getOutputStream());
-
-            byte[] buff = new byte[8192];
-            int bytesRead;
-
-            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
-                bos.write(buff, 0, bytesRead);
-            }
-        } catch (final IOException e) {
-            LogUtil.error("FileUtil.downLoadFile error", e);
-        } finally {
-            if (bis != null) {
-                bis.close();
-            }
-
-            if (bos != null) {
-                bos.close();
-            }
-        }
-    }
-
-    /**
-     * 下载方法 支持断点续传
-     *
-     * @param response   应答
-     * @param attachFile 文件全路径+全名(服务器端的URL)
-     * @param fileName   用户另存为的文件名
-     * @throws IOException
-     * @throws UnsupportedEncodingException
-     */
-    public static void downLoadFile(HttpServletRequest request, HttpServletResponse response, String attachFile,
-                                    String fileName) throws UnsupportedEncodingException, IOException {
-        File file = new File(attachFile);
-        //String contentType = getContentType(fileName);
-        String contentType = "application/octet-stream";
-        downLoadFile(request, response, file, fileName, contentType);
-    }
-
-    /**
-     * 把byte当成文件下载的方法
-     *
-     * @param source   byte数组
-     * @param response -
-     * @param fileName 文件另存为的名字,现版本可以有中文
-     * @throws IOException
-     * @throws UnsupportedEncodingException
-     */
-    public static void downloadByteArrAsFile(byte[] source, final HttpServletResponse response, String fileName)
-            throws UnsupportedEncodingException, IOException {
-        //String contentType = getContentType(fileName);
-        //response.setHeader("Content-type", contentType);
-        response.setHeader("Content-type", "application/octet-stream");
-        response.setHeader("Accept-Ranges", "bytes");
-        response.setHeader("Accept-Charset", DOWNLOAD_ENCODING);
-
-        fileName = FileUtil.getSafeFileName(fileName);
-        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-        response.setHeader("Content-Length", String.valueOf(source.length));
-
-        BufferedOutputStream bos = null;
-
-        try {
-            bos = new BufferedOutputStream(response.getOutputStream());
-            // 1 << 13 = 8192
-            int blocks = ((source.length - 1) >> 13) + 1;
-
-            for (int i = 0; i < blocks; i++) {
-                bos.write(source, i << 13, ((source.length - (i << 13)) > 8192) ? 8192 : (source.length - (i << 13)));
-            }
-        } catch (Exception e) {
-            LogUtil.error("FileUtil.downloadByteArrAsFile error", e);
-        } finally {
-            if (bos != null) {
-                bos.close();
-            }
-        }
-    }
-
-    /**
-     * 下载文件
-     *
-     * @param request     请求
-     * @param response    响应
-     * @param file        文件
-     * @param fileName    下载的文件名
-     * @param contentType 类型
-     * @throws IOException
-     */
-    public static void downLoadFile(HttpServletRequest request, HttpServletResponse response, File file, String fileName,
-                                    String contentType) throws IOException {
-        downLoadFile(request, response, false, contentType, new FileInputStream(file), file.length(), fileName);
-    }
-
-    /**
-     * 下载文件
-     *
-     * @param request     请求
-     * @param response    响应
-     * @param inline      是否内联
-     * @param contentType 类型
-     * @param fileInput   文件输入流
-     * @param fileLength  文件大小
-     * @param fileName    下载的文件名
-     * @return boolean 下载完成
-     * @throws IOException
-     */
-    public static boolean downLoadFile(HttpServletRequest request, HttpServletResponse response, boolean inline, String contentType,
-                                       InputStream fileInput, long fileLength, String fileName) throws IOException {
+        // 计算 需要下载数据的范围
         String range = request.getHeader("Range");
         long from = 0L;
-        long to = fileLength;
+        long to = downloadResource.getLength()-1;
         if (range != null && !"".equals(range)) {
             range = range.toLowerCase();
             if (range.startsWith("bytes")) {
@@ -351,68 +479,74 @@ public class ServletUtil {
                 }
             }
         }
+        long contentLength = to - from+1;
 
-        response.setHeader("Accept-Ranges", "bytes");
-        response.setHeader("Accept-Charset", FileUtil.ENCODING);
+        status.setContentLength(contentLength);
+        status.setRangeBegin(from);
+        status.setRangeEnd(to);
+
+        String contentType= downloadResource.getContentType();
         if (Utils.isEmpty(contentType)) {
-            contentType = "application/octet-stream";
+            String extName=FileUtil.getFileExtName(downloadResource.getName());
+            contentType=getMimeType(extName);
+            if(Utils.isEmpty(contentType)) {
+                contentType = "application/octet-stream";
+            }
         }
         response.setHeader("Content-type", contentType);
 
-        long partLength = to - from;
-//		boolean complete = to >= fileLength;
-        if (from == 0 && to >= fileLength) {
+        if (from == 0 && to >= downloadResource.getLength()-1) {
             response.setStatus(HttpServletResponse.SC_OK);
-            response.setHeader("Content-Length", String.valueOf(fileLength));
-            response.setHeader("Content-Disposition", (inline ? "inline" : "attachment") + "; filename="
-                    + URLEncoder.encode(fileName, FileUtil.ENCODING));
+            response.setHeader("Content-Length", String.valueOf(downloadResource.getLength()));
+            if(!inline){
+                response.setHeader("Content-Disposition", "attachment; filename="
+                        + URLEncoder.encode(downloadResource.getName(), FileUtil.ENCODING));
+            }
+            if (downloadResource.getLastModified() > 0L) {
+                synchronized(DF_GMT) {
+                    response.setHeader("Last-Modified", DF_GMT.format(new Date(downloadResource.getLastModified())));
+                }
+
+                response.setHeader("ETag", getEtag(downloadResource));
+            }
         } else {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-            response.setHeader("Content-Length", String.valueOf(partLength));
-            String contentRange = "bytes " + from + "-" + (to - 1) + "/" + fileLength;
+            response.setHeader("Content-Length", String.valueOf(contentLength));
+            String contentRange = "bytes " + from + "-" + to  + "/" + downloadResource.getLength();
             response.setHeader("Content-Range", contentRange);
         }
 
+
+
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
-        if (fileInput == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return false;
+        InputStream is=null;
+        if(downloadResource.getInputStreamProvider() != null){
+            is= downloadResource.getInputStreamProvider().open();
         }
-        // long totalRead = 0;
-        boolean complete = false;
+        if (is == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            LogUtil.error("DownloadResource "+ downloadResource.getName()+" does not exists",new IllegalArgumentException(downloadResource.getName()));
+            return status;
+        }
+
         try {
-            bis = new BufferedInputStream(fileInput);
+            bis = new BufferedInputStream(is);
             bos = new BufferedOutputStream(response.getOutputStream());
 
-            byte[] buff = new byte[8192];
             int bytesRead;
             if (from > 0) {
                 bis.skip(from);
             }
-            // 75%节点有被加载到认定为"完成节点"
-            long completePointLeft = (long) (fileLength * 0.25);
-            long loadedLeft = fileLength - from;
-            // 剩余字节大于完成节点的剩余,有机会可被加载到"完成节点"
-            boolean canLoadedPoint = loadedLeft >= completePointLeft;
 
-            long currLeftLength = partLength;
+            byte[] buff = new byte[8192];
+            long currLeftLength = contentLength;
             // org.apache.catalina.servlets.DefaultServlet
-            while (currLeftLength > 0 && -1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+            while (currLeftLength > 0 && -1 != (bytesRead = bis.read(buff, 0, (int)(currLeftLength>8192 ? 8192 : currLeftLength)))) {
                 bos.write(buff, 0, bytesRead);
                 long readBytes = Long.parseLong(String.valueOf(bytesRead));
                 currLeftLength -= readBytes;
-                if (canLoadedPoint) { // 有机会加载到"完成节点"
-                    // 剩余加载字节
-                    loadedLeft -= readBytes;
-                    // 剩余加载字节比需完成的小,说明"完成节点已被加载"
-                    if (loadedLeft <= completePointLeft) {
-                        // 达到或超过"完成节点"
-                        complete = true;
-                        // "完成节点"已被加载,无需再计算判断加载
-                        canLoadedPoint = false;
-                    }
-                }
+                status.setCompleteLength(status.getCompleteLength()+readBytes);
             }
         } catch (IOException e) {
             LogUtil.error("FileUtil.downLoadFile error", e);
@@ -425,8 +559,66 @@ public class ServletUtil {
                 bos.close();
             }
         }
-//        LOG.debug("ResponseRange[" + from + "-" + to + "/" + fileLength + "(" + (((double) from * 100) / fileLength) + "%-)],complete:" + complete);
-        return complete;
+
+        return status;
+    }
+
+    private static String getEtag(DownloadResource resource) {
+        String etag = getIntHex(resource.getLength()) + getIntHex(resource.getLastModified());
+        return etag;
+    }
+
+    private static String getIntHex(long l) {
+        l = (l & 0xFFFFFFFFL) | 0x100000000L;
+        String s = Long.toHexString(l);
+        return s.substring(1);
+    }
+
+    public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
+                                       final File file,boolean inline)throws IOException{
+        DownloadResource resource=new DownloadResource(file.getName(),file.length(),file.lastModified(),
+                ()->new FileInputStream(file));
+        return download(request,response,resource,inline);
+    }
+
+
+    protected static final Map<String, String> MIME_MAP = new HashMap<>();
+
+    /**
+     * 根据文件拓展名获取内联类型
+     *
+     * @param extName
+     * @return
+     */
+    public static String getMimeType(String extName) {
+        if (extName == null) {
+            return null;
+        }
+        if (extName.startsWith(".")) {
+            extName = extName.substring(1).toLowerCase();
+        }
+        if (MIME_MAP.size() == 0) {
+            //尝试读取配置。
+            try {
+                String classPath = ServletUtil.class.getName();
+                int lastDotIndex = classPath.lastIndexOf(".");
+                if (lastDotIndex > 0) {
+                    classPath = classPath.substring(0, lastDotIndex + 1).replace(".", "/");
+                }
+
+                ResourceBundle rb = ResourceBundle.getBundle(classPath + "mimetypes");
+                Enumeration<String> keys = rb.getKeys();
+                while (keys.hasMoreElements()) {
+                    String key = keys.nextElement();
+                    String value = rb.getString(key);
+                    MIME_MAP.put(key, value);
+                }
+            } catch (Throwable e) {
+                LogUtil.error("获取内联类型异常", e);
+                MIME_MAP.put("[NONE]", "application/octet-stream");
+            }
+        }
+        return MIME_MAP.get(extName);
     }
 
 }
