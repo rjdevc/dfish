@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,6 +42,11 @@ public final class FileUtil {
     public static final String ENCODING = "UTF-8";
     public static final String DOWNLOAD_ENCODING = "ISO8859-1";
     public static final String CLIENT_ENCODING = "GBK";
+    static SimpleDateFormat DF_GMT;
+    static {
+        DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
+        DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     private FileUtil() {
     }
@@ -695,7 +704,7 @@ public final class FileUtil {
 //	}
     public static void downLoadFile(HttpServletRequest request, HttpServletResponse response, File file, String fileName,
                                     String contentType) throws IOException {
-        downLoadFile(request, response, false, contentType, new FileInputStream(file), file.length(), fileName);
+        downLoadFile(request, response, false, contentType, new FileInputStream(file), file.length(),file.lastModified(), fileName);
     }
 
     private static void logError(String log, Throwable t) {
@@ -716,10 +725,17 @@ public final class FileUtil {
     }
 
     public static boolean downLoadFile(HttpServletRequest request, HttpServletResponse response, boolean inline, String contentType,
-                                       InputStream fileInput, long fileLength, String fileName) throws IOException {
+                                       InputStream fileInput, long fileLength,long lastModified, String fileName) throws IOException {
+
+        if (lastModified > 0L) {
+            if (!checkIfModifiedSince(request, response, fileLength,lastModified)) {
+                fileInput.close();
+                return true;
+            }
+        }
         String range = request.getHeader("Range");
         long from = 0L;
-        long to = fileLength;
+        long to = fileLength-1;
         if (range != null && !"".equals(range)) {
             range = range.toLowerCase();
             if (range.startsWith("bytes")) {
@@ -762,24 +778,36 @@ public final class FileUtil {
             }
         }
 
-        response.setHeader("Accept-Ranges", "bytes");
-        response.setHeader("Accept-Charset", FileUtil.ENCODING);
+//        response.setHeader("Accept-Ranges", "bytes");
+//        response.setHeader("Accept-Charset", FileUtil.ENCODING);
         if (Utils.isEmpty(contentType)) {
             contentType = "application/octet-stream";
         }
         response.setHeader("Content-type", contentType);
 
-        long partLength = to - from;
+        long partLength = to - from+1;
 //		boolean complete = to >= fileLength;
-        if (from == 0 && to >= fileLength) {
+        if (from == 0 && to >= fileLength-1) {
             response.setStatus(HttpServletResponse.SC_OK);
             response.setHeader("Content-Length", String.valueOf(fileLength));
-            response.setHeader("Content-Disposition", (inline ? "inline" : "attachment") + "; filename="
+            if(!inline){
+                response.setHeader("Content-Disposition", "attachment; filename="
                     + URLEncoder.encode(fileName, FileUtil.ENCODING));
+            }
+            if (lastModified > 0L) {
+                synchronized(DF_GMT) {
+                    response.setHeader("Last-Modified", DF_GMT.format(new Date(lastModified)));
+                }
+
+                response.setHeader("ETag", getEtag(fileLength,lastModified));
+            }
+
+//            response.setHeader("Content-Disposition", (inline ? "inline" : "attachment") + "; filename="
+//                    + URLEncoder.encode(fileName, FileUtil.ENCODING));
         } else {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
             response.setHeader("Content-Length", String.valueOf(partLength));
-            String contentRange = "bytes " + from + "-" + (to - 1) + "/" + fileLength;
+            String contentRange = "bytes " + from + "-" + to  + "/" + fileLength;
             response.setHeader("Content-Range", contentRange);
         }
 
@@ -795,7 +823,6 @@ public final class FileUtil {
             bis = new BufferedInputStream(fileInput);
             bos = new BufferedOutputStream(response.getOutputStream());
 
-            byte[] buff = new byte[8192];
             int bytesRead;
             if (from > 0) {
                 bis.skip(from);
@@ -807,6 +834,7 @@ public final class FileUtil {
             boolean canLoadedPoint = loadedLeft >= completePointLeft;
 
             long currLeftLength = partLength;
+            byte[] buff = new byte[(int)(currLeftLength>8192 ? 8192 : currLeftLength)];
             // org.apache.catalina.servlets.DefaultServlet
             while (currLeftLength > 0 && -1 != (bytesRead = bis.read(buff, 0, buff.length))) {
                 bos.write(buff, 0, bytesRead);
@@ -838,5 +866,37 @@ public final class FileUtil {
 //        LOG.debug("ResponseRange[" + from + "-" + to + "/" + fileLength + "(" + (((double) from * 100) / fileLength) + "%-)],complete:" + complete);
         return complete;
     }
+    protected static boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, long fileLength,long lastModified) {
+        try {
+            long headerValue = request.getDateHeader("If-Modified-Since");
+//            long lastModified = downloadParam.getLastModified();
+            if (headerValue != -1) {
 
+                // If an If-None-Match header has been specified, if modified since
+                // is ignored.
+                if ((request.getHeader("If-None-Match") == null) && (lastModified < headerValue + 1000L)) {
+                    // The entity has not been modified since the date
+                    // specified by the client. This is not an error case.
+                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    response.setHeader("ETag", getEtag(fileLength,lastModified));
+
+                    return false;
+                }
+            }
+        } catch (IllegalArgumentException illegalArgument) {
+            return true;
+        }
+        return true;
+
+    }
+    private static String getEtag(long fileSize,long lastModified) {
+        String etag = getIntHex(fileSize) + getIntHex(lastModified);
+        return etag;
+    }
+
+    private static String getIntHex(long l) {
+        l = (l & 0xFFFFFFFFL) | 0x100000000L;
+        String s = Long.toHexString(l);
+        return s.substring(1);
+    }
 }
