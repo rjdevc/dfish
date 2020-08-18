@@ -2,6 +2,8 @@ package com.rongji.dfish.framework.plugin.file.controller;
 
 import com.rongji.dfish.base.DfishException;
 import com.rongji.dfish.base.Utils;
+import com.rongji.dfish.base.util.DownloadResource;
+import com.rongji.dfish.base.util.DownloadStatus;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.FilterParam;
@@ -14,6 +16,7 @@ import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingSche
 import com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
+import com.rongji.dfish.framework.plugin.file.service.FileRecordParam;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.misc.util.ImageUtil;
 import com.rongji.dfish.ui.command.JSCommand;
@@ -443,7 +446,7 @@ public class FileController extends BaseController {
         boolean inline = "1".equals(request.getParameter("inline"));
         DownloadParam downloadParam = getDownloadParam(fileRecord, null);
         // 目前文件下载统一默认都是原件下载
-        downloadFileData(response, fileRecord, downloadParam.setInline(inline));
+        downloadFileData(request,response, fileRecord, downloadParam.setInline(inline));
     }
 
     /**
@@ -475,11 +478,8 @@ public class FileController extends BaseController {
         PubFileRecord fileRecord = fileService.getFileRecord(realFileId);
 
         DownloadParam downloadParam = getDownloadParam(fileRecord, fileAlias);
-        if (!checkIfModifiedSince(request, response, downloadParam)) {
-            return;
-        }
 
-        downloadFileData(response, fileRecord, downloadParam.setInline(true));
+        downloadFileData(request, response, fileRecord, downloadParam.setInline(true));
     }
 
 //    /**
@@ -549,39 +549,39 @@ public class FileController extends BaseController {
         download(request, response);
     }
 
-    /**
-     * 附件下载
-     *
-     * @param response
-     * @param fileRecord
-     * @throws Exception
-     */
-    private void downloadFileData(HttpServletResponse response, PubFileRecord fileRecord, DownloadParam downloadParam) throws Exception {
-        if (fileRecord == null) {
-            LogUtil.warn("下载的附件不存在");
-            return;
-        }
-        InputStream input = null;
-        try {
-            input = fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
-//            long fileSize;
-//            if (input != null) {
-//                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
-//            } else { // 当别名附件不存在时,使用原附件
-//                input = fileService.getFileInputStream(fileRecord);
-//                fileSize = fileService.getFileSize(fileRecord);
-//            }
-            downloadFileData(response, input, downloadParam);
-        } catch (Exception e) {
-            String error = "下载附件异常@" + System.currentTimeMillis();
-            LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
-        } finally {
-            if (input != null) {
-                input.close();
-            }
-        }
-    }
+//    /**
+//     * 附件下载
+//     *
+//     * @param response
+//     * @param fileRecord
+//     * @throws Exception
+//     */
+//    private void downloadFileData(HttpServletRequest request,HttpServletResponse response, PubFileRecord fileRecord, DownloadParam downloadParam) throws Exception {
+//        if (fileRecord == null) {
+//            LogUtil.warn("下载的附件不存在");
+//            return;
+//        }
+////        InputStream input = null;
+//        try {
+////            input = fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+////            long fileSize;
+////            if (input != null) {
+////                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+////            } else { // 当别名附件不存在时,使用原附件
+////                input = fileService.getFileInputStream(fileRecord);
+////                fileSize = fileService.getFileSize(fileRecord);
+////            }
+//            downloadFileData(response, fileRecord, downloadParam);
+//        } catch (Exception e) {
+//            String error = "下载附件异常@" + System.currentTimeMillis();
+//            LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
+//            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
+//        } finally {
+////            if (input != null) {
+////                input.close();
+////            }
+//        }
+//    }
 
     private static class DownloadParam {
         String fileName;
@@ -706,87 +706,47 @@ public class FileController extends BaseController {
      * @param response
      * @throws Exception
      */
-    private void downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
-        String encoding = "UTF-8";
+    private DownloadStatus downloadFileData(
+            HttpServletRequest request, HttpServletResponse response,
+            final PubFileRecord fileRecord, final DownloadParam downloadParam)
+            throws Exception {
+        if (fileRecord == null) {
+            LogUtil.warn("下载的附件不存在");
+            return null;
+        }
         try {
-            response.setHeader("Accept-Ranges", "bytes");
-            response.setHeader("Accept-Charset", encoding);
-            String contentType = null;
-            String disposition;
-            if (downloadParam.isInline()) {
-                String fileExtension = downloadParam.getExtension();
-                if (Utils.notEmpty(fileExtension)) {
-                    contentType = getMimeType(fileExtension);
-                }
-                disposition = "inline;";
-            } else {
-                disposition = "attachment;";
-            }
-            disposition += " filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
+//            long fileSize;
+//            if (input != null) {
+//                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+//            } else { // 当别名附件不存在时,使用原附件
+//                input = fileService.getFileInputStream(fileRecord);
+//                fileSize = fileService.getFileSize(fileRecord);
+//            }
+//            downloadFileData(response, input, downloadParam);
+            DownloadResource resource=new DownloadResource(
+                    downloadParam.getFileName(), downloadParam.getFileSize(), downloadParam.lastModified,
+                    new DownloadResource.InputStreamProvider() {
+                        @Override
+                        public InputStream open() throws IOException {
+                            try {
+                                return fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+                    });
 
-            if (Utils.isEmpty(contentType)) {
-                contentType = "application/octet-stream";
-            }
-            response.setHeader("Content-type", contentType);
-
-            response.setHeader("Content-Disposition", disposition);
-            response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
-            if (downloadParam.getLastModified() > 0L) {
-                synchronized (DF_GMT) {
-                    response.setHeader("Last-Modified", DF_GMT.format(new Date(downloadParam.getLastModified())));
-                }
-                response.setHeader("ETag", getEtag(downloadParam));
-            }
-            response.setStatus(HttpServletResponse.SC_OK);
-            if (input != null) {
-                FileUtil.downLoadData(response, input);
-            }
+            return FileUtil.download(request,response,resource,downloadParam.isInline());
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
-            LogUtil.error(error, e);
+            LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
-        } finally {
-            if (input != null) {
-                input.close();
-            }
         }
+        return null;
     }
 
-    private static String getEtag(DownloadParam downloadParam) {
-        long lastModified = downloadParam.getLastModified();
-        String etag = getIntHex(downloadParam.getFileSize()) + getIntHex(lastModified);
-        return etag;
-    }
 
-    private static String getIntHex(long l) {
-        l = (l & 0xFFFFFFFFL) | 0x100000000L;
-        String s = Long.toHexString(l);
-        return s.substring(1);
-    }
-
-    protected boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, DownloadParam downloadParam) {
-        try {
-            long headerValue = request.getDateHeader("If-Modified-Since");
-            long lastModified = downloadParam.getLastModified();
-            if (headerValue != -1) {
-
-                // If an If-None-Match header has been specified, if modified since
-                // is ignored.
-                if ((request.getHeader("If-None-Match") == null) && (lastModified < headerValue + 1000L)) {
-                    // The entity has not been modified since the date
-                    // specified by the client. This is not an error case.
-                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    response.setHeader("ETag", getEtag(downloadParam));
-
-                    return false;
-                }
-            }
-        } catch (IllegalArgumentException illegalArgument) {
-            return true;
-        }
-        return true;
-
-    }
 
     /**
      * 显示缩略图方法
@@ -809,34 +769,17 @@ public class FileController extends BaseController {
             // 获取附件别名
             String fileAlias = getFileAlias(param);
 
-            InputStream input = null;
             try {
-                String fileName = fileRecord.getFileName();
-                input = fileService.getFileInputStream(fileRecord, fileAlias);
-                long fileSize = 0L;
-                if (input != null) {
-                    fileSize = fileService.getFileSize(fileRecord, fileAlias);
-                } else if (Utils.notEmpty(fileAlias)) { // 当别名附件不存在时,使用原附件
-                    input = fileService.getFileInputStream(fileRecord);
-                    fileSize = fileService.getFileSize(fileRecord);
-                }
-
                 DownloadParam downloadParam = getDownloadParam(fileRecord, fileAlias);
-                if (!checkIfModifiedSince(request, response, downloadParam)) {
-                    return;
-                }
-
-                if (input != null) {
-                    downloadFileData(response, input, downloadParam.setInline(true));
+                if (fileRecord != null) {
+                    downloadFileData(request,response, fileRecord, downloadParam.setInline(true));
                     return;
                 }
             } catch (Exception e) {
                 String error = "下载附件异常@" + System.currentTimeMillis();
                 LogUtil.error(error, e);
             } finally {
-                if (input != null) {
-                    input.close();
-                }
+
             }
         }
 
@@ -861,7 +804,7 @@ public class FileController extends BaseController {
         // 这里可能考虑重定向到具体文件目录去
         File defaultImageFile = new File(SystemData.getInstance().getServletInfo().getServletRealPath() + "m/default/img/" + defaultIcon);
         if (defaultImageFile.exists()) {
-            downloadFileData(response, new FileInputStream(defaultImageFile), new DownloadParam(defaultImageFile.getName(), defaultImageFile.length(), defaultImageFile.lastModified()).setInline(true));
+            FileUtil.download(request,response, defaultImageFile, true);
             return;
         } else {
             String error = "附件记录不存在@" + System.currentTimeMillis();
