@@ -850,12 +850,17 @@ public class FileController extends BaseController {
                 // 图片形式使用框架的预览方式
                 return new JSCommand("$.previewImage('file/thumbnail" + fileParamUrl + "');");
             } else {
-                String mimeType = getMimeType(fileExtension);
-                if (Utils.notEmpty(mimeType)) {
-                    // 如果是浏览器支持可查看的内联类型,新窗口打开
-                    return new JSCommand("window.open('file/download" + fileParamUrl + "&inline=1');");
-                } else { // 其他情况都是直接下载
-                    return new JSCommand("$.download('file/download" + fileParamUrl + "');");
+                boolean isVideo = accept(fileExtension, fileService.getVideoTypes());
+                if (isVideo) {
+                    return new JSCommand("$.previewVideo('file/download" + fileParamUrl + "');");
+                } else {
+                    String mimeType = getMimeType(fileExtension);
+                    if (Utils.notEmpty(mimeType)) {
+                        // 如果是浏览器支持可查看的内联类型,新窗口打开
+                        return new JSCommand("window.open('file/download" + fileParamUrl + "&inline=1');");
+                    } else { // 其他情况都是直接下载
+                        return new JSCommand("$.download('file/download" + fileParamUrl + "');");
+                    }
                 }
             }
         } else {
