@@ -2527,7 +2527,7 @@ DocView = define.widget('docview', {
 			w = w || self.width(); h = h || self.height();
 			if (self._wd !== w || self._ht !== h) {
 				self.resize(self._wd = w, self._ht = h);
-				Dialog.cleanPop();
+				//Dialog.cleanPop();
 			}
 		});
 		if (ie) {// ie7监视缩放

@@ -2255,6 +2255,12 @@ _merge($, {
 			_loadCss(s, d, f);
 		}
 	})(),
+	// @a -> preview src
+	previewVideo: function(a) {
+		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100);
+		$.vm().cmd({ type: 'dialog', ownproperty: T, cls: 'f-dialog-preview z-video', width: w, height: h, cover: T, pophide: T,
+			node: { type: 'flowplayer', width: '*', height: '*', style: 'margin:0 20px', wmin: 40, src: a, aftercontent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } });
+	},
 	// @a -> preview src, b -> download src
 	previewImage: function(a, b) {
 		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100);

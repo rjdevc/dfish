@@ -1155,11 +1155,17 @@ AbsForm = require( 'abs/form' ),
 
 evw = $.abbr + '.w(this)',
 
+_dftFileTypes = {
+	'upload/file': '*.*',
+	'upload/image': '*.png;*.wpng;*.gif;*.svg;*.jpg;*.jpeg;*.tif;*.tiff;*.bmp;*.xbm;*.xpm;*.xwd;*.cal;*.cmx;*.cod;*.dcx;*.eri;*.fh4;*.fh5;*.fhc;',
+	'upload/video': '*.mp4;*.avi;*.rm;*.rmvb;*.wmv;*.webm;*.mpa;*.mpe;*.mpeg;*.mpg;*.mpg4;*.mpv2;*.3gp;*.asf;*.asr;*.asx;*.fvi;*.lsf;*.lsx;*.m4u;*.m4v;*.mng;*.mov;*.movie;*.mp2;*.pvx;*.qt;*.rv;*.vdo;*.viv;*.vivo;*.wm;*.wmx;*.wv;*.wvx;'
+},
+
 BaseUpload = define.widget( 'upload/base', {
 	Const: function( x, p, n ) {
 		AbsForm.apply( this, arguments );
 		this.x = $.merge( {
-			file_types: '*.*',
+			file_types: _dftFileTypes[this.type],
 			file_types_description: 'All Files',
 			file_upload_limit: 0,
 			button_disabled: !!(x.status && x.status !== 'normal'),
@@ -1517,6 +1523,11 @@ define.widget( 'upload/image', {
 	}
 } );
 
+/*! upload/video */
+define.widget( 'upload/video', {
+	Extend: 'upload/image'
+} );
+
 define.widget( 'upload/file/buttonbar', {
 	Const: function( x, p ) {
 		this.u = p;
@@ -1537,6 +1548,10 @@ define.widget( 'upload/file/buttonbar', {
 
 define.widget( 'upload/image/buttonbar', {
 	Extend: 'upload/file/buttonbar'
+} );
+
+define.widget( 'upload/video/buttonbar', {
+	Extend: 'upload/image/buttonbar'
 } );
 
 // 附件列表
@@ -1576,7 +1591,6 @@ define.widget( 'upload/file/valuebar', {
 	}
 } );
 
-var UploadImageValuebar =
 define.widget( 'upload/image/valuebar', {
 	Extend: 'upload/file/valuebar',
 	Prototype: {
@@ -1591,6 +1605,13 @@ define.widget( 'upload/image/valuebar', {
 		html_nodes: function() {
 			return UploadFileValuebar.prototype.html_nodes.call( this ) + (this.parentNode.uploadbar ? this.parentNode.uploadbar.html() : '');
 		}
+	}
+} );
+
+define.widget( 'upload/video/valuebar', {
+	Extend: 'upload/image/valuebar',
+	Prototype: {
+		x_childtype: $.rt( 'upload/video/value' )
 	}
 } );
 
@@ -1618,6 +1639,10 @@ define.widget( 'upload/image/button', {
 		this.u.x.dir === 'v' && $.classAdd( this.parentNode, 'f-left f-clear' );
 	},
 	Extend: 'upload/file/button'
+} );
+
+define.widget( 'upload/video/button', {
+	Extend: 'upload/image/button'
 } );
 
 // 选择本地文件的按钮
@@ -1702,6 +1727,9 @@ define.widget( 'upload/image/upload/button', {
 	Extend: 'upload/file/upload/button'
 } );
 
+define.widget( 'upload/video/upload/button', {
+	Extend: 'upload/image/upload/button'
+} );
 
 // 图片模式显示value
 define.widget( 'upload/image/value', {
@@ -1828,6 +1856,15 @@ define.widget( 'upload/image/value', {
 			}
 			W.prototype.remove.call( this );
 		}
+	}
+} );
+
+// 简单模式显示value
+define.widget( 'upload/video/value', {
+	Extend: 'upload/image/value',
+	Prototype: {
+		ROOT_TYPE: 'upload/video',
+		className: 'w-upload-value-video'
 	}
 } );
 
