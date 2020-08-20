@@ -21,6 +21,8 @@ import com.rongji.dfish.framework.plugin.file.dto.PreviewResponse;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
+import com.rongji.dfish.framework.util.DownloadResource;
+import com.rongji.dfish.framework.util.DownloadStatus;
 import com.rongji.dfish.framework.util.ServletUtil;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
@@ -36,14 +38,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.json.Json;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -425,7 +423,7 @@ public class FileController extends BaseActionController {
         boolean inline = "1".equals(request.getParameter("inline"));
         DownloadParam downloadParam = getDownloadParam(fileRecord, null);
         downloadParam.setInline(inline).setEncryptedFileId(enFileId);
-        downloadFileData(response, fileService.getFileInputStream(fileRecord), downloadParam);
+        downloadFileData(request,response, fileRecord, downloadParam);
     }
 
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
@@ -561,62 +559,62 @@ public class FileController extends BaseActionController {
         }
     }
 
-    /**
-     * 下载附件数据方法
-     * @param response
-     * @param input
-     * @param downloadParam
-     * @return
-     * @throws Exception
-     */
-    private boolean downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
-        if (input == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return false;
-        }
-        String encoding = "UTF-8";
-        try {
-            response.setHeader("Accept-Ranges", "bytes");
-            response.setHeader("Accept-Charset", encoding);
-            String contentType = null;
-
-            String disposition;
-            if (downloadParam.isInline()) {
-                String extName = FileUtil.getFileExtName(downloadParam.getFileName());
-                if (Utils.notEmpty(extName)) {
-                    contentType = getMimeType(extName);
-                }
-                disposition = "inline; filename=" + (Utils.notEmpty(downloadParam.getEncryptedFileId()) ? (downloadParam.getEncryptedFileId() + extName) : URLEncoder.encode(downloadParam.getFileName(), encoding));
-            } else {
-                disposition = "attachment; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
-            }
-            if (Utils.isEmpty(contentType)) {
-                contentType = "application/octet-stream";
-            }
-
-            response.setHeader("Content-type", contentType);
-            response.setHeader("Content-Disposition", disposition);
-            response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
-            if (downloadParam.getLastModified() > 0L) {
-                synchronized (DF_GMT) {
-                    response.setHeader("Last-Modified", DF_GMT.format(downloadParam.getLastModified()));
-                }
-                response.setHeader("ETag", getEtag(downloadParam));
-            }
-            response.setStatus(HttpServletResponse.SC_OK);
-            ServletUtil.downLoadData(response, input);
-            return true;
-        } catch (Exception e) {
-            String error = "下载附件异常@" + System.currentTimeMillis();
-            LogUtil.error(error, e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
-            return false;
-        } finally {
-            if (input != null) {
-                input.close();
-            }
-        }
-    }
+//    /**
+//     * 下载附件数据方法
+//     * @param response
+//     * @param input
+//     * @param downloadParam
+//     * @return
+//     * @throws Exception
+//     */
+//    private boolean downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
+//        if (input == null) {
+//            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+//            return false;
+//        }
+//        String encoding = "UTF-8";
+//        try {
+//            response.setHeader("Accept-Ranges", "bytes");
+//            response.setHeader("Accept-Charset", encoding);
+//            String contentType = null;
+//
+//            String disposition;
+//            if (downloadParam.isInline()) {
+//                String extName = FileUtil.getFileExtName(downloadParam.getFileName());
+//                if (Utils.notEmpty(extName)) {
+//                    contentType = getMimeType(extName);
+//                }
+//                disposition = "inline; filename=" + (Utils.notEmpty(downloadParam.getEncryptedFileId()) ? (downloadParam.getEncryptedFileId() + extName) : URLEncoder.encode(downloadParam.getFileName(), encoding));
+//            } else {
+//                disposition = "attachment; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
+//            }
+//            if (Utils.isEmpty(contentType)) {
+//                contentType = "application/octet-stream";
+//            }
+//
+//            response.setHeader("Content-type", contentType);
+//            response.setHeader("Content-Disposition", disposition);
+//            response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
+//            if (downloadParam.getLastModified() > 0L) {
+//                synchronized (DF_GMT) {
+//                    response.setHeader("Last-Modified", DF_GMT.format(downloadParam.getLastModified()));
+//                }
+//                response.setHeader("ETag", getEtag(downloadParam));
+//            }
+//            response.setStatus(HttpServletResponse.SC_OK);
+//            ServletUtil.downLoadData(response, input);
+//            return true;
+//        } catch (Exception e) {
+//            String error = "下载附件异常@" + System.currentTimeMillis();
+//            LogUtil.error(error, e);
+//            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
+//            return false;
+//        } finally {
+//            if (input != null) {
+//                input.close();
+//            }
+//        }
+//    }
 
     /**
      * 附件下载
@@ -625,14 +623,12 @@ public class FileController extends BaseActionController {
      * @param fileRecord
      * @throws Exception
      */
-    private void downloadFileData(HttpServletResponse response, PubFileRecord fileRecord, DownloadParam downloadParam) throws Exception {
+    private DownloadStatus downloadFileData(HttpServletRequest request, HttpServletResponse response, PubFileRecord fileRecord, DownloadParam downloadParam) throws Exception {
         if (fileRecord == null) {
             LogUtil.warn("下载的附件不存在");
-            return;
+            return null;
         }
-        InputStream input = null;
         try {
-            input = fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
 //            long fileSize;
 //            if (input != null) {
 //                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
@@ -640,56 +636,32 @@ public class FileController extends BaseActionController {
 //                input = fileService.getFileInputStream(fileRecord);
 //                fileSize = fileService.getFileSize(fileRecord);
 //            }
-            downloadFileData(response, input, downloadParam);
+//            downloadFileData(response, input, downloadParam);
+            DownloadResource resource=new DownloadResource(
+                    downloadParam.getFileName(),downloadParam.getFileSize(),downloadParam.lastModified,
+                    ()-> {
+                        try {
+                            return fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    });
+
+            return ServletUtil.download(request,response,resource,downloadParam.isInline());
         } catch (Exception e) {
             String error = "下载附件异常@" + System.currentTimeMillis();
             LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
-        } finally {
-            if (input != null) {
-                input.close();
-            }
         }
+        return null;
     }
 
-    private static String getEtag(DownloadParam downloadParam) {
-        long lastModified = downloadParam.getLastModified();
-        String etag = getIntHex(downloadParam.getFileSize()) + getIntHex(lastModified);
-        return etag;
-    }
-
-    private static String getIntHex(long l) {
-        l = (l & 0xFFFFFFFFL) | 0x100000000L;
-        String s = Long.toHexString(l);
-        return s.substring(1);
-    }
 
     private static final String FILE_SCHEME_AUTO = "AUTO";
     private static final String FILE_ALIAS_AUTO = "AUTO";
 
-    protected boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, DownloadParam downloadParam) {
-        try {
-            long headerValue = request.getDateHeader("If-Modified-Since");
-            long lastModified = downloadParam.getLastModified();
-            if (headerValue != -1) {
 
-                // If an If-None-Match header has been specified, if modified since
-                // is ignored.
-                if ((request.getHeader("If-None-Match") == null) && (lastModified < headerValue + 1000L)) {
-                    // The entity has not been modified since the date
-                    // specified by the client. This is not an error case.
-                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    response.setHeader("ETag", getEtag(downloadParam));
-
-                    return false;
-                }
-            }
-        } catch (IllegalArgumentException illegalArgument) {
-            return true;
-        }
-        return true;
-
-    }
 
     private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) {
         DownloadParam downloadParam = new DownloadParam();
@@ -833,12 +805,16 @@ public class FileController extends BaseActionController {
 
         DownloadParam downloadParam = getDownloadParam(fileRecord, realAlias);
         // 目前文件下载统一默认都是原件下载
-        if (!checkIfModifiedSince(request, response, downloadParam)) {
-            return;
-        }
+
 
         downloadParam.setInline(true).setEncryptedFileId(fileId);
-        boolean success = downloadFileData(response, fileService.getFileInputStream(fileRecord, realAlias), downloadParam);
+
+        DownloadStatus ds = downloadFileData(request,response, fileRecord, downloadParam);
+        boolean success=false;
+        if(ds!=null){
+            long checkPoint=ds.getResourceLength() * 3/4;
+            success = ds.getRangeBegin() <= checkPoint &&  ds.getRangeBegin()+ ds.getCompleteLength()>=checkPoint ;
+        }
         // 下载不成功,用默认图片代替
         if (!success) {
             ImageHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
@@ -861,9 +837,9 @@ public class FileController extends BaseActionController {
             // 这里可能考虑重定向到具体文件目录去
             File defaultImageFile = new File(SystemContext.getInstance().get(ServletInfo.class).getServletRealPath() + defaultImageFolder + defaultIcon);
             if (defaultImageFile.exists()) {
-                downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length()).setLastModified(defaultImageFile.lastModified()).setEncryptedFileId(null);
+//                downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length()).setLastModified(defaultImageFile.lastModified()).setEncryptedFileId(null);
 
-                downloadFileData(response, new FileInputStream(defaultImageFile), downloadParam);
+                ServletUtil.download(request,response, defaultImageFile, true);
                 return;
             } else {
                 String error = "附件不存在@" + System.currentTimeMillis();
