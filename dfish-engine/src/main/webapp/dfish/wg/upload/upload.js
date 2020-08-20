@@ -1827,7 +1827,7 @@ define.widget( 'upload/image/value', {
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
 			if ( ! f ) {
 				m = v.thumbnail;
-				! m && (m = this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
+				! m && (m = c && this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
 				! m && (m = v.url);
 			}
 			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif><div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
