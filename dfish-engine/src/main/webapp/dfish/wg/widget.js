@@ -2214,7 +2214,7 @@ Scroll = define.widget('Scroll', {
 			this.closest(function(a) {
 				if (a.isScroll && a.isScroll() && a.innerHeight()) {
 					a.addEvent('scroll.' + this.id, function() {
-						!this._disposed && a.isScrollBottom() && this.triggerPullUpRefresh();
+						!this._disposed && a.isScrollBottom() && !$.get('.f-hide [id="' + this.id + 'pullup"]') && this.triggerPullUpRefresh();
 					}, this);
 					this.addEvent('remove', function() {
 						a.removeEvent('scroll.' + this.id)
