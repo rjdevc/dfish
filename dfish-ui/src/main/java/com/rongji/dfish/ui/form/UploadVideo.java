@@ -15,6 +15,7 @@ public class UploadVideo<T extends UploadVideo<T>> extends AbstractUpload<T> imp
 	private static final long serialVersionUID = -798266151699771677L;
 	private String align;
 	private String valign;
+	private String thumbnailsrc;
 
 	/**
 	 * @param name
@@ -51,4 +52,23 @@ public class UploadVideo<T extends UploadVideo<T>> extends AbstractUpload<T> imp
 		this.valign = valign;
 		return (T) this;
 	}
+
+	/**
+	 * 缩略图地址
+	 * @return String
+	 */
+	public String getThumbnailsrc() {
+		return joinScheme(this.thumbnailsrc);
+	}
+
+	/**
+	 * 缩略图地址
+	 * @param thumbnailsrc 缩略图地址
+	 * @return 本身，这样可以继续设置其他属性
+	 */
+	public T setThumbnailsrc(String thumbnailsrc) {
+		this.thumbnailsrc = thumbnailsrc;
+		return (T) this;
+	}
+
 }

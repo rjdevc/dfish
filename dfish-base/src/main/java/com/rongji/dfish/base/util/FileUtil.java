@@ -603,7 +603,7 @@ public final class FileUtil {
         }
         if (is == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            LogUtil.error("DownloadResource "+ downloadResource.getName()+" does not exists",new IllegalArgumentException(downloadResource.getName()));
+            LogUtil.warn("DownloadResource "+ downloadResource.getName()+" does not exists");
             return status;
         }
 
@@ -626,7 +626,7 @@ public final class FileUtil {
                 status.setCompleteLength(status.getCompleteLength()+readBytes);
             }
         } catch (IOException e) {
-            LogUtil.error("FileUtil.downLoadFile error", e);
+            LogUtil.error("文件下载异常", e);
         } finally {
             if (bis != null) {
                 bis.close();
