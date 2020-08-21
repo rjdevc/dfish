@@ -27,7 +27,7 @@ define.widget( 'FlowPlayer', {
 			},
 			resize: function() {
 				var e = this.$( 'v' );
-				e && $.css( e, { width: this.innerWidth(), height: this.innerHeight() } );
+				e && $.css(e, {width: this.innerWidth(), height: this.innerHeight()});
 			}
 		}
 	},
@@ -46,7 +46,7 @@ define.widget( 'FlowPlayer', {
 			return suffix ? $.mimeType( fileName ) : 'video/mp4';
 		},
 		init: function( opt ) {
-			if ( ! this.isSwf() ) {
+			if (!$.br.mobile && !this.isSwf()) {
 				require.css( './skin/skin.css' );
 				var fp = require( './flowplayer.min' );
 				this.flowplayer = fp( this.$(), {
@@ -56,13 +56,15 @@ define.widget( 'FlowPlayer', {
 			}
 		},
 		html_nodes: function() {
-			if ( this.isSwf() ) {
-				var w = this.innerWidth(), h = this.innerHeight(), u = $.urlLoc( $.PATH, this.x.src );
+			var w = this.innerWidth(), h = this.innerHeight(), u = $.urlLoc( $.PATH, this.x.src );
+			if (this.isSwf()) {
 				return '<object id=' + this.id + 'v classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 					'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/>' +
 					'<param name="movie" value="' + $.LIB + 'wg/upload/flvplayer.swf"/>' +
 					'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
 					'<embed src="' + $.LIB + 'wg/upload/flvplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
+			} else if ($.br.mobile) {
+				return '<video id=' + this.id + 'v width="' + w + '"  height="' + h + '" src="' + u + '" controls></video>'
 			}
 			return '';
 		}
