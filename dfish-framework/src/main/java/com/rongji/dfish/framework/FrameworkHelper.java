@@ -33,6 +33,7 @@ import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.rongji.dfish.base.util.StringUtil;
 import org.apache.commons.logging.Log;
@@ -534,7 +535,8 @@ public class FrameworkHelper{
 	 * @return
 	 */
 	public static String getLoginUser(HttpServletRequest request){
-		return (String) request.getSession().getAttribute(LOGIN_USER_KEY);
+        HttpSession session=request.getSession(false);
+		return session==null?null:(String) session.getAttribute(LOGIN_USER_KEY);
 	}
 	
 	public static void setLoginUser(HttpServletRequest request, String loginUser) {
@@ -542,7 +544,8 @@ public class FrameworkHelper{
 	}
 	
 	public static void removeLoginUser(HttpServletRequest request) {
-		request.getSession().removeAttribute(LOGIN_USER_KEY);
+        HttpSession session=request.getSession(false);
+        if(session!=null)session.removeAttribute(LOGIN_USER_KEY);
 	}
 	
 //	/**

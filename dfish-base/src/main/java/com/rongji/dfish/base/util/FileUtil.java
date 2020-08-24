@@ -626,7 +626,15 @@ public final class FileUtil {
                 status.setCompleteLength(status.getCompleteLength()+readBytes);
             }
         } catch (IOException e) {
-            LogUtil.error("文件下载异常", e);
+            if(e.getClass().getSimpleName().equals("ClientAbortException")){
+                String msg="client abort when download "+request.getRequestURI() +" name="+downloadResource.getName();
+                if(range!=null){
+                    msg+=" range="+range;
+                }
+                LogUtil.info(msg);
+            }else {
+                LogUtil.error("文件下载异常", e);
+            }
         } finally {
             if (bis != null) {
                 bis.close();
