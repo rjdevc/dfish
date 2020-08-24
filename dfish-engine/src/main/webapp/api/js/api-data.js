@@ -1346,7 +1346,8 @@ define( {
       { name: 'touchMove', remark: '当触点在触控平面上移动时触发touchMove事件。', common: true },
       { name: 'touchEnd', remark: '当触点离开触控平面时触发touchEnd事件。', common: true },
       { name: 'touchCancel', remark: '当触控点被特定的实现方式打乱时触发 touchCancel 事件（例如， 创建了太多的触控点）。', common: true },
-      { name: 'tap', remark: '当触点在触控平面上接触和离开时，tap事件就会被触发。', common: true },
+      { name: 'tap', remark: '当触点在触控平面上接触和离开时，tap事件就会被触发。', mobile: true, common: true },
+      { name: 'longPress', remark: '当触点在触控平面上长按时，longPress事件就会被触发。', mobile: true, common: true },
       { name: 'mouseOver', remark: '当指针设备移动到存在监听器的元素或其子元素的时候，mouseOver事件就会被触发。', common: true },
       { name: 'mouseOut', remark: '事件在当指针设备（通常是鼠标）移出了附加侦听器的元素或关闭了它的一个子元素时触发。', common: true },
       { name: 'mouseDown', remark: '事件在指针设备按钮按下时触发。', common: true },
@@ -1959,10 +1960,9 @@ define( {
   "Tabs": {
   	remark: '可切换标签容器。<br>子节点宽度默认为*，高度默认为*。',
   	extend: 'ButtonBar',
-  	deprecate: 'dir,focusMultiple,br,scroll,.w-ButtonBar,.z-dirh,.z-dirv',
+  	deprecate: 'dir,focusMultiple,br,scroll,.w-buttonbar,.z-dirh,.z-dirv',
     Config: [
       { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
-      { name: 'swipeFocus', type: 'Boolean', remark: '是否允许滑动切换。', mobile: true },
       { name: 'position', type: 'String', remark: 'tab位置。可选值: <b>top</b> <b>right</b> <b>bottom</b> <b>left</b>' }
     ],
     Properties: [
@@ -2089,7 +2089,6 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'dft', type: 'String', remark: '默认显示 widget 的 ID。' },
-      { name: 'swipeFocus', type: 'Boolean', remark: '是否允许滑动切换。', mobile: true },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' }
     ],
     Methods: [

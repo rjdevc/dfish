@@ -1717,6 +1717,7 @@ Ajax = _createClass({
 			//	u = _urlLoc(x.base || _path, u);
 			if (!br.app && x.cdn && _cfg.ver)
 				u = _urlParam(u, {_v: _cfg.ver});
+				    
 			(l = _ajax_xhr(x)).open(e ? 'POST' : 'GET', u, !x.sync);
 			this.request = l;
 			if (x.beforeSend && _fnapply(x.beforeSend, c, '$ajax', [self]) === F)
@@ -1991,17 +1992,24 @@ function _compatDOM() {
 }
 function _compatDOMMobile() {
 	// 实现tap事件
-	var n, t, tmp;
+	var n, t, m;
 	$.query(doc).on('touchstart', function(e) {
 	    n = e; t = T;
+	    m = setTimeout(function(){
+	    	n.type = 'longpress';
+	    	t = F;
+	    	$.query(e.target).trigger(n);
+	    }, 350);
 	}).on('touchmove', function() {
 	    t = F;
+	    clearTimeout(m);
 	}).on('touchend', function(e) {
 	    if (t) {
 	    	n.type = 'tap';
 	    	$.query(e.target).trigger(n); //实现这个代理event.type的功能，要修改jquery源码的trigger方法
-	  }
+		}
 	    n = t = N;
+	    clearTimeout(m);
 	});
 	 // 检测回退键
 	/*if (win.plus) {
@@ -2057,6 +2065,7 @@ var boot = {
 				_aliasName[c] = k;
 			}
 		}
+
 		_define('dfish',  function() {return $});
 		_define('jquery', function() {return _jq});
 		_define('loc',    function() {return _loc});
@@ -2162,7 +2171,7 @@ _merge($, {
 	// 事件白名单
 	white_events: (function() {
 		var a = ['all', 'click,contextMenu,dragStart,drag,dragEnd,dragEnter,dragExit,dragLeave,dragOver,drop,keyDown,keyPress,keyUp,copy,cut,paste,scroll,select,selectStart,propertyChange,beforePaste,beforeDeactivate,' +
-			(br.mobile ? 'touchStart,touchMove,touchEnd,touchCancel,tap' : 'mouseOver,mouseOut,mouseDown,mouseUp,mouseMove,mouseWheel,mouseEnter,mouseLeave,dblClick'), 'input', 'focus,blur,input', 'option', 'change'];
+			(br.mobile ? 'touchStart,touchMove,touchEnd,touchCancel,tap,longPress' : 'mouseOver,mouseOut,mouseDown,mouseUp,mouseMove,mouseWheel,mouseEnter,mouseLeave,dblClick'), 'input', 'focus,blur,input', 'option', 'change'];
 		for (var i = 0, r = {}, j, k, v; i < a.length; i += 2) {
 			k = a[i], r[k] = {}, v = [];
 			for (j = 1; j < i + 2; j += 2)

@@ -97,7 +97,7 @@ _getWidgetById = function(a) {
 },
 // 触发事件的入口，在html标签上显示为 onEvent="$.e(this)"  /@ a -> element
 _widgetEvent = function(a) {
-	var e = window.event || arguments.callee.caller.arguments[0], // _widgetEvent.caller: 解决firefox下没有window.event的问题
+	var e = arguments.callee.caller.arguments[0], // _widgetEvent.caller: 解决firefox下没有window.event的问题
 		t = _event_hump[e.type] || e.type;
 	if (!_event_enter[t] || _event_enter[t](a, e)) {
 		e.elemId = a.id;
@@ -3063,9 +3063,7 @@ Frame = define.widget('Frame', {
 					var d = this.focusNode;
 					!d && (d = this.x.dft ? this.ownerView.find(this.x.dft) : this[0]) && this.focus(d);
 				}
-				if (mbi) {
-					this.x.swipeFocus && this.listenSwipe();
-				}
+				mbi && this.listenSwipe();
 			}
 		}
 	},
@@ -4254,10 +4252,10 @@ Tabs = define.widget('Tabs', {
 		var r = {type: 'TabBar', cls: 'z-position-' + f, nodes: b},
 			t = {type: 'Frame', cls: 'w-tabs-frame', width: '*', height: '*', dft: d && d.id, nodes: c};
 		$.extendAny(r, 'align,vAlign,dir,scroll,space,split,overflow', x, e, {vAlign: y.type === 'Horz' ? 'top' : N, dir: y.type === 'Horz' ? 'v' : 'h'});
-		$.extendAny(t, 'swipeFocus', x, e);
+		//$.extendAny(t, 'swipeFocus', x, e);
 		y.nodes = [t];
 		y.nodes[s === 'b' || s === 'r' ? 'push' : 'unshift'](r);
-		Vert.call(this, $.extend({nodes:[y], scroll: F}, x), p);
+		Vert.call(this, $.extend({nodes: [y], scroll: F}, x), p);
 		this.tabBar = this[0];
 		this.frame = this[1];
 	},
@@ -12405,4 +12403,3 @@ require('./upload/upload');
 
 // 本文件的导出
 module.exports = W;
-
