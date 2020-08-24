@@ -548,8 +548,18 @@ public class ServletUtil {
                 currLeftLength -= readBytes;
                 status.setCompleteLength(status.getCompleteLength()+readBytes);
             }
+
         } catch (IOException e) {
-            LogUtil.error("FileUtil.downLoadFile error", e);
+            if(e.getClass().getSimpleName().equals("ClientAbortException")){
+                String msg="client abort when download "+request.getRequestURI() +" name="+downloadResource.getName();
+                if(range!=null){
+                    msg+=" range="+range;
+                }
+                LogUtil.info(msg);
+            }else {
+                LogUtil.error("FileUtil.downLoadFile error", e);
+            }
+//            LogUtil.error("FileUtil.downLoadFile error", e);
         } finally {
             if (bis != null) {
                 bis.close();
