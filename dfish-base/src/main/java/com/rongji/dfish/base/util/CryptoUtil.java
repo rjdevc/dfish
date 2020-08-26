@@ -43,9 +43,13 @@ public class CryptoUtil {
 	public static final String ALGORITHM_TRIPLE_DES =  CryptorBuilder.ALGORITHM_TRIPLE_DES;
 
 	/**
-	 * 国密算法
+	 * 国密4算法
 	 */
 	public static final String ALGORITHM_SM4 = CryptorBuilder.ALGORITHM_SM4;
+	/**
+	 * 国密3算法
+	 */
+	public static final String ALGORITHM_SM3 = CryptorBuilder.ALGORITHM_SM3;
 
 	/**
 	 * MD5数字摘要方法
