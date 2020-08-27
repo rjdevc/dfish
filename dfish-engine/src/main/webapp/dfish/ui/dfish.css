@@ -97,6 +97,7 @@
 .f-shadow-snap.z-mag-t{box-shadow:0 -1px 4px #ddd}
 
 .w-dialog.f-dialog-preview{background:#333}
+.f-dialog-preview.z-video{background:#000}
 .f-dialog-preview ._dlg_x{position:absolute;top:-18px;right:-18px;width:36px;height:36px;background:url(g/i.png) no-repeat 0 -187px;cursor:pointer}
 .f-dialog-preview ._dlg_x:hover{background-position:0 -228px}
 .f-dialog-preview ._origin{position:absolute;top:10px;right:25px;color:#fff;padding:5px 10px;background:rgba(74,74,74,0.6);border-radius:3px}
@@ -950,7 +951,7 @@
 .w-upload.z-ds ._nofiles{display:block}
 .w-upload.z-ds.z-nofiles ._vbar{margin:0}
 
-.w-imageupload ._bbar,.w-imageupload ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
+.w-imageupload ._bbar,.w-imageupload ._vbar,.w-videoupload ._bbar,.w-videoupload ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 
 .w-upload-icon-local.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -145px -49px}
 .w-upload-icon-net.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -172px -49px}
@@ -962,13 +963,11 @@
 .w-fileupload ._vbar{margin-bottom:-10px}
 .w-fileupload .w-uploadbutton{margin-bottom:10px;height:30px;border:1px solid #ddd;background:#f8f8f8}
 
-
-
-.w-imageupload ._vbar{margin-bottom:-10px}
-.w-imageupload .w-uploadbutton{margin-bottom:10px;border:1px solid #ccc}
-.w-imageupload .w-uploadbutton ._m{display:none}
-.w-imageupload .w-uploadbutton.z-more ._c{margin-right:0}
-.w-imageupload .w-uploadbutton .f-i{font-size:28px}
+.w-imageupload ._vbar,.w-videoupload ._vbar{margin-bottom:-10px}
+.w-imageupload .w-uploadbutton,.w-videoupload .w-uploadbutton{margin-bottom:10px;border:1px solid #ccc}
+.w-imageupload .w-uploadbutton ._m,.w-videoupload .w-uploadbutton ._m{display:none}
+.w-imageupload .w-uploadbutton.z-more ._c,.w-videoupload .w-uploadbutton.z-more ._c{margin-right:0}
+.w-imageupload .w-uploadbutton .f-i,.w-videoupload .w-uploadbutton .f-i{font-size:28px}
 
 .w-fileupload-value{position:relative;height:30px;margin:0 10px 10px 0px;cursor:pointer;border:1px solid #ddd}
 .w-fileupload-value ._icon{float:left;width:30px;height:30px}
@@ -983,20 +982,25 @@
 .w-fileupload-value.z-err{border-color:#f00;color:#f00}
 .w-fileupload-value.z-err ._main{background:#fff}
 
-.w-imageupload-value{position:relative;margin:0 10px 10px 0;border:1px solid #ddd;text-align:center}
-.w-imageupload-value ._more,.w-imageupload-value ._close{position:absolute;display:none;right:20px;top:0;width:20px;height:20px;background:#333;color:#ddd;border-left:0;cursor:pointer}
-.w-imageupload-value ._close{right:0;line-height:17px;font-size:17px;font-family:verdana}
-.w-imageupload-value ._close:hover{background:#444;color:#f00}
-.w-imageupload-value ._more .f-arw{margin-top:0;border-top-color:#ddd}
-.w-imageupload-value ._more:hover{background:#444}
-.w-imageupload-value ._more:hover .f-arw{border-top-color:#fff}
-.w-imageupload-value ._cvr{position:absolute;display:none;top:0;left:0;right:0;bottom:0;background:#777;opacity:.6;filter:Alpha(opacity=60)}
-.w-imageupload-value ._name{display:none;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;padding:0 3px;height:20px;line-height:20px;color:#f00}
-.w-imageupload-value ._g{vertical-align:middle}
-.w-imageupload-value ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px;}
-.w-imageupload-value.z-err{border-color:#f00}
-.w-imageupload-value.z-err ._name,.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._close,.w-imageupload-value:hover ._cvr{display:block}
-.w-imageupload-value.z-loading ._g{opacity:.6}
+.w-imageupload-value,.w-videoupload-value{position:relative;margin:0 10px 10px 0;border:1px solid #ddd;text-align:center}
+.w-imageupload-value ._more,.w-imageupload-value ._close,.w-videoupload-value ._more,.w-videoupload-value ._close{position:absolute;display:none;right:20px;top:0;width:20px;height:20px;background:#333;color:#ddd;border-left:0;cursor:pointer}
+.w-imageupload-value ._close,.w-videoupload-value ._close{right:0;line-height:17px;font-size:17px;font-family:verdana}
+.w-imageupload-value ._close:hover,.w-videoupload-value ._close:hover{background:#444;color:#f00}
+.w-imageupload-value ._more .f-arw,.w-videoupload-value ._more .f-arw{margin-top:0;border-top-color:#ddd}
+.w-imageupload-value ._more:hover,.w-videoupload-value ._more:hover{background:#444}
+.w-imageupload-value ._more:hover .f-arw,.w-videoupload-value ._more:hover .f-arw{border-top-color:#fff}
+.w-imageupload-value ._cvr,.w-videoupload-value ._cvr{position:absolute;display:none;top:0;left:0;right:0;bottom:0;background:#777;color:#fff;opacity:.6;filter:Alpha(opacity=60)}
+.w-imageupload-value ._name,.w-videoupload-value ._name{display:none;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;padding:0 3px;height:20px;line-height:20px;color:#f00}
+.w-imageupload-value ._g,.w-videoupload-value ._g{vertical-align:middle;object-fit:cover;width:100%;height:100%;width:auto\0;height:auto\0;}
+.w-imageupload-value ._loading,.w-videoupload-value ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px;font-size:0}
+.w-imageupload-value.z-loading ._g,.w-videoupload-value.z-loading ._g{opacity:.6}
+.w-imageupload-value.z-err,.w-videoupload-value.z-err{border-color:#f00}
+.w-imageupload-value.z-err ._name,.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._close,.w-imageupload-value:hover ._cvr,
+.w-videoupload-value.z-err ._name,.w-videoupload-value:hover ._more,.w-videoupload-value:hover ._close{display:block}
+
+.w-videoupload-value ._cvr{display:block;filter:none;opacity:1;background:rgba(0,0,0,.35)}
+.w-videoupload-value ._play{padding:6px 7px;background:rgba(255,255,255,.5);border-radius:50%}
+.w-videoupload-value ._ico{transform:translate(2px,-1px)}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-pagebar .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 
@@ -1147,6 +1151,7 @@ d\:wg{display:none}
 .f-i-dialog-restore:before,.w-dialog.z-max .f-i-dialog-max:before{content:'\e634'}
 .f-i-close:before{content:'\e636'}
 .f-i-spinner:before{content:'\e630'}
+.f-i-play:before{content:'\e618'}
 
 .f-i-img-prev{width:32px;height:32px;background:url(g/page.png) no-repeat -169px 0;cursor:pointer}
 .f-i-img-prev:hover{background-position:-109px 0}

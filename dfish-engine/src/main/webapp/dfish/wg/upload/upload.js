@@ -1155,6 +1155,12 @@ AbsForm = require('AbsForm'),
 
 evw = $.abbr + '.w(this)',
 
+_dftFileTypes = {
+	'FileUpload': '*.*',
+	'ImageUpload': '*.png;*.wpng;*.gif;*.svg;*.jpg;*.jpeg;*.tif;*.tiff;*.bmp;*.xbm;*.xpm;*.xwd;*.cal;*.cmx;*.cod;*.dcx;*.eri;*.fh4;*.fh5;*.fhc;',
+	'VideoUpload': '*.mp4;*.avi;*.rm;*.rmvb;*.wmv;*.webm;*.mpa;*.mpe;*.mpeg;*.mpg;*.mpg4;*.mpv2;*.3gp;*.asf;*.asr;*.asx;*.fvi;*.lsf;*.lsx;*.m4u;*.m4v;*.mng;*.mov;*.movie;*.mp2;*.pvx;*.qt;*.rv;*.vdo;*.viv;*.vivo;*.wm;*.wmx;*.wv;*.wvx;'
+},
+
 UploadPost = define.widget('UploadPost', {
 	Extend: 'AbsSection'
 }),
@@ -1164,12 +1170,12 @@ AbsUpload = define.widget('AbsUpload', {
 		AbsForm.apply(this, arguments);
 		x.post && (this.post = new UploadPost(x.post, this, -1));
 		this.x = $.merge({
-			file_types: '*.*',
+			file_types: _dftFileTypes[this.type],
 			file_types_description: 'All Files',
 			file_upload_limit: 0,
 			button_disabled: !!(x.status && x.status !== 'normal'),
-			flash_url: module.path + 'swfupload.swf',
-			flash9_url: module.path + 'swfupload_fp9.swf',
+			flash_url: $.SWF_PATH + 'swfupload.swf',
+			flash9_url: $.SWF_PATH + 'swfupload_fp9.swf',
 			upload_url: this.post && this.post.getSrc()
 		}, swfOptions(x));
 		var v = x.value || [];
@@ -1321,7 +1327,6 @@ AbsUpload = define.widget('AbsUpload', {
 			} else {
 				this.post.srcData(r);
 				ldr.setSuccess(this.post.getResult());
-				$.j(r)
 			}
 		},
 		upload_complete_handler: function(file) {
@@ -1501,7 +1506,7 @@ FileUpload = define.widget('FileUpload', {
 	}
 }),
 
-/*! upload/image */
+/*! ImageUpload */
 ImageUpload = define.widget('ImageUpload', {
 	Extend: FileUpload,
 	Prototype: {
@@ -1510,6 +1515,11 @@ ImageUpload = define.widget('ImageUpload', {
 		}
 	}
 }),
+
+/*! VideoUpload */
+VideoUpload = define.widget( 'VideoUpload', {
+	Extend: ImageUpload
+} ),
 
 FileUploadButtonBar = define.widget('FileUploadButtonBar', {
 	Const: function(x, p) {
@@ -1534,6 +1544,15 @@ ImageUploadButtonBar = define.widget('ImageUploadButtonBar', {
 	Prototype: {
 		x_childtype: function(t) {
 			return 'ImageUpload' + t;
+		}
+	}
+}),
+
+VideoUploadButtonBar = define.widget('VideoUploadButtonBar', {
+	Extend: ImageUploadButtonBar,
+	Prototype: {
+		x_childtype: function(t) {
+			return 'VideoUpload' + t;
 		}
 	}
 }),
@@ -1592,6 +1611,13 @@ ImageUploadValueBar = define.widget('ImageUploadValueBar', {
 	}
 }),
 
+VideoUploadValueBar = define.widget('VideoUploadValueBar', {
+	Extend: ImageUploadValueBar,
+	Prototype: {
+		x_childtype: $.rt('VideoUploadValue')
+	}
+}),
+
 FileUploadButton = define.widget('FileUploadButton', {
 	Const: function(x, p) {
 		this.u = p.parentNode;
@@ -1614,6 +1640,10 @@ ImageUploadButton = define.widget('ImageUploadButton', {
 		this.u.x.dir === 'v' && $.classAdd(this.parentNode, 'f-left f-clear');
 	},
 	Extend: FileUploadButton
+}),
+
+VideoUploadButton = define.widget('VideoUploadButton', {
+	Extend: ImageUploadButton
 }),
 
 // 选择本地文件的按钮
@@ -1698,13 +1728,17 @@ ImageUploadUploadButton = define.widget('ImageUploadUploadButton', {
 	Extend: FileUploadUploadButton
 }),
 
+VideoUploadUploadButton = define.widget('VideoUploadUploadButton', {
+	Extend: ImageUploadUploadButton
+}),
+
 // 图片模式显示value
 ImageUploadValue = define.widget('ImageUploadValue', {
 	Const: function(x, p) {
 		this.u = p.u;
 		W.apply(this, arguments);
 		this.loading = false;
-		this.loaded  = !! x.data;
+		this.loaded  = !!x.data;
 	},
 	Extend: Horz,
 	Listener: {
@@ -1816,9 +1850,10 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 		close: function(a, e) {
 			this.remove();
 			e && $.stop(e);
+			this.x.data && this.u.trigger('change');
 		},
 		html_cvr: function() {
-			return (this.x.file ? '<div class="_ex f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' : '') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>';
+			return '<div class=_cvr></div>';
 		},
 		html_nodes: function() {
 			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnail,
@@ -1829,8 +1864,8 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 				! m && (m = v.url);
 			}
 			m = $.urlComplete(m);
-			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif><div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
-				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
+			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div>' + ($.br.ms ? $.image('%img%/loading.gif', {cls: '_loading f-va'}) : $.svgLoading(22, {cls: '_loading f-va'})) + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
+				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : this.html_cvr()) + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
 		html: function() {
 			this.x.file && this.addClass('z-loading');
@@ -1858,7 +1893,16 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 	}
 }),
 
-// 简单模式显示value
+VideoUploadValue = define.widget('VideoUploadValue', {
+	Extend: ImageUploadValue,
+	Prototype: {
+		className: 'w-videoupload-value',
+		html_cvr: function() {
+			return '<div class=_cvr>' + $.image('.f-i-play', {cls: '_play'}) + '</div>';
+		}
+	}
+}),
+
 FileUploadValue = define.widget('FileUploadValue', {
 	Extend: ImageUploadValue,
 	Listener: {
@@ -1964,7 +2008,7 @@ function getSuffix(url) {
 };
 function swfOptions(x) {
 	for (var i in swfTranslate) {
-		x[swfTranslate[i]] = x[i];
+		if (x[i] !== undefined) x[swfTranslate[i]] = x[i];
 	}
 	return x;
 };

@@ -305,6 +305,8 @@ Require = function(uri, id) {
 	r.async = function(b, f) {
 		return r(b, f, T);
 	};
+	// 把地址解析为绝对路径
+	r.resolve = function(b) {return _urlLoc(uri, b)};
 	return r;
 },
 //每个模块的运行环境下都会生成一个Define的实例
@@ -2072,7 +2074,8 @@ var boot = {
 		
 		$.PATH = _path;
 		$.LIB  = _lib;
-		$.IMGPATH = _uiPath + 'g/';
+		$.IMG_PATH = _uiPath + 'g/';
+		$.SWF_PATH = _uiPath + 'swf/';
 		$.version = version;
 		
 		$.loc     = _loc;
@@ -2466,6 +2469,12 @@ _merge($, {
 			_loadCss(s, d, f);
 		}
 	})(),
+	// @a -> preview src
+	previewVideo: function(a) {
+		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100);
+		$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview z-video', width: w, height: h, cover: T, pophide: T,
+			node: {type: 'FlowPlayer', width: '*', height: '*', style: 'margin:0 20px', widthMinus: 40, src: a, afterContent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}});
+	},
 	// @a -> image array, b -> style
 	previewImage: function(a, b) {
 		if (br.app) {

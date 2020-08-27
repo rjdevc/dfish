@@ -97,7 +97,7 @@ _getWidgetById = function(a) {
 },
 // 触发事件的入口，在html标签上显示为 onEvent="$.e(this)"  /@ a -> element
 _widgetEvent = function(a) {
-	var e = arguments.callee.caller.arguments[0], // _widgetEvent.caller: 解决firefox下没有window.event的问题
+	var e = arguments.callee.caller.arguments[0] || window.event, // _widgetEvent.caller: 解决firefox下没有window.event的问题
 		t = _event_hump[e.type] || e.type;
 	if (!_event_enter[t] || _event_enter[t](a, e)) {
 		e.elemId = a.id;
