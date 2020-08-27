@@ -1,8 +1,10 @@
 package com.rongji.dfish.framework.hibernate.support;
 
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.Utils;
 
 import javax.persistence.Id;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -33,20 +35,31 @@ public class EntitySupport<P> {
             entityClass = getEntityClass(clz);
             entityName = entityClass.getName();
             if (entityClass != null) {
-                for (Method method : entityClass.getMethods()) {
-                    if (method.getAnnotation(Id.class) != null) {
-                        String methodName = method.getName();
-                        if (methodName.startsWith("get")) {
-                            idGetter = method;
-                            idName = methodName.substring(3);
-                            idName = idName.substring(0, 1).toLowerCase() + idName.substring(1);
-                        }
+                // FIXME 联合主键的问题以后有时间再考虑优化
+                for (Field field : entityClass.getDeclaredFields()) {
+                    if (field.getAnnotation(Id.class) != null) {
+                        idName = field.getName();
+                        String methodName = "get" + idName.substring(0, 1).toUpperCase() + idName.substring(1);
+                        idGetter = entityClass.getMethod(methodName);
                         break;
+                    }
+                }
+                if (Utils.isEmpty(idName)) {
+                    for (Method method : entityClass.getMethods()) {
+                        if (method.getAnnotation(Id.class) != null) {
+                            String methodName = method.getName();
+                            if (methodName.startsWith("get")) {
+                                idGetter = method;
+                                idName = methodName.substring(3);
+                                idName = idName.substring(0, 1).toLowerCase() + idName.substring(1);
+                            }
+                            break;
+                        }
                     }
                 }
             }
         } catch (Exception e) {
-            LogUtil.error("加载实体类信息异常", e);
+            LogUtil.error("加载实体类信息异常@" + clz, e);
         }
 
     }
