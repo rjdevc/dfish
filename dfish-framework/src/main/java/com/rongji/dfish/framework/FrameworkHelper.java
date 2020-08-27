@@ -20,6 +20,7 @@ import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.*;
 
@@ -278,7 +279,8 @@ public class FrameworkHelper {
      * @return
      */
     public static String getLoginUser(HttpServletRequest request) {
-        return (String) request.getSession().getAttribute(LOGIN_USER_KEY);
+        HttpSession session=request.getSession(false);
+        return session==null?null:(String)session.getAttribute(LOGIN_USER_KEY);
     }
 
     /**
@@ -297,7 +299,8 @@ public class FrameworkHelper {
      * @param request
      */
     public static void removeLoginUser(HttpServletRequest request) {
-        request.getSession().removeAttribute(LOGIN_USER_KEY);
+        HttpSession session=request.getSession(false);
+        if(session!=null)session.removeAttribute(LOGIN_USER_KEY);
     }
 
     /**

@@ -57,10 +57,15 @@ public class CryptorBuilder {
      */
     public static final String ALGORITHM_AES = "AES";
     /**
-     * AES算法，改算法由DES和RSA融合而成，曾在美国军方使用，现已退役，但对于民用安全性还行
-     * DES 使用的秘钥 是 8byte
+     * 国密SM4 分组秘钥算法 可逆
+     * SM4 使用的秘钥 是 32byte
      */
     public static final String ALGORITHM_SM4 = "SM4";
+    /**
+     * 国密SM3 数字摘要算法 不可逆
+     * SM3 结果 32byte
+     */
+    public static final String ALGORITHM_SM3 = "SM3";
     /**
      * 三重DES算法。
      * TRIPLE_DES 使用的秘钥 是8byte
@@ -217,6 +222,9 @@ public class CryptorBuilder {
         }
         if(ALGORITHM_SM4.equals(algorithm)){
             return new SM4Cryptor(this);
+        }
+        if(ALGORITHM_SM3.equals(algorithm)){
+            return new SM3Cryptor(this);
         }
         // MD5 SHA
         return new CipherCryptor(this);
