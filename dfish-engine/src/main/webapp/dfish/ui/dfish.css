@@ -998,7 +998,7 @@
 .w-imageupload-value.z-err ._name,.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._close,.w-imageupload-value:hover ._cvr,
 .w-videoupload-value.z-err ._name,.w-videoupload-value:hover ._more,.w-videoupload-value:hover ._close{display:block}
 
-.w-videoupload-value ._cvr{display:block;filter:none;opacity:1;background:rgba(0,0,0,.35)}
+.w-videoupload-value ._cvr{display:block;filter:none;opacity:1;background:rgba(0,0,0,.2)}
 .w-videoupload-value ._play{padding:6px 7px;background:rgba(255,255,255,.5);border-radius:50%}
 .w-videoupload-value ._ico{transform:translate(2px,-1px)}
 

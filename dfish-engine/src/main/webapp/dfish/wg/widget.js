@@ -491,7 +491,12 @@ Template = $.createClass({
 	Prototype: {
 		// @a -> text, g -> templateWidget, y -> args
 		format: function(a, g, y) {
-			return a ? _proto.formatJS.call(g, 'return ' + a, y, this.data) : N;
+			try {
+				return _proto.formatJS.call(g, 'return ' + a, y, this.data);
+			} catch(ex) {
+				if (a && a.indexOf('(') > -1) window.console && console.error(ex.stack || ex);
+			}
+			//return a ? _proto.formatJS.call(g, 'return ' + a, y, this.data) : N;
 		},
 		switcher: function(s, r, g, y) {
 			if (typeof s === _STR) {
